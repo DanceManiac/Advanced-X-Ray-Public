@@ -1578,6 +1578,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\build_config_defines.h"
+					>
+				</File>
+				<File
 					RelativePath=".\blackbox\BugslayerUtil.h"
 					>
 				</File>
