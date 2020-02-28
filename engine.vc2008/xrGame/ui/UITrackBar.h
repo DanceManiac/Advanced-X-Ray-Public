@@ -29,12 +29,17 @@ public:
 			bool	GetInvert				() const	{return m_b_invert;};
 			void	SetStep					(float step);
 			void	SetType					(bool b_float){m_b_is_float=b_float;};
+			void	SetBoundReady			(bool b_ready) { m_b_bound_already_set = b_ready; };
 			bool	GetCheck				();
 			void	SetCheck				(bool b);
 			int		GetIValue				(){return m_i_val;}
 			float	GetFValue				(){return m_f_val;}
 			void	SetOptIBounds			(int imin, int imax);
 			void	SetOptFBounds			(float fmin, float fmax);
+
+			CUIStatic* m_static;
+			shared_str m_static_format;
+
 protected:
 			void 	UpdatePos				();
 			void 	UpdatePosRelativeToMouse();
@@ -43,6 +48,7 @@ protected:
 	bool				m_b_invert;
 	bool				m_b_is_float;
 	bool				m_b_mouse_capturer;
+	bool				m_b_bound_already_set;
 
 	union{
 		struct{

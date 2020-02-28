@@ -14,11 +14,17 @@ CUITrackBar::CUITrackBar()
 	  m_f_opt_backup_value(0),
 	 m_f_step(0.01f),
 	m_b_is_float(true),
-	m_b_invert(false)
+	m_b_invert(false), m_b_bound_already_set(false)
 {	
 	m_pSlider						= xr_new<CUI3tButton>();			
 	AttachChild						(m_pSlider);		
 	m_pSlider->SetAutoDelete		(true);
+
+	m_static = new CUIStatic();
+	m_static->Enable(false);
+	AttachChild(m_static);
+	m_static->SetAutoDelete(true);
+
 	m_b_mouse_capturer				= false;
 }
 
@@ -112,6 +118,7 @@ void CUITrackBar::Draw()
 {
 	CUI_IB_FrameLineWnd::Draw	();
 	m_pSlider->Draw				();
+	m_static->Draw				();
 }
 
 void CUITrackBar::Update()
@@ -129,9 +136,21 @@ void CUITrackBar::SetCurrentOptValue()
 {
 	CUIOptionsItem::SetCurrentOptValue();
 	if(m_b_is_float)
-		GetOptFloatValue	(m_f_val, m_f_min, m_f_max);
+	{
+		float fake_min, fake_max;
+		if (!m_b_bound_already_set)
+			GetOptFloatValue(m_f_val, m_f_min, m_f_max);
+		else
+			GetOptFloatValue(m_f_val, fake_min, fake_max);
+	}
 	else
-		GetOptIntegerValue	(m_i_val, m_i_min, m_i_max);
+	{
+		int fake_min, fake_max;
+		if (!m_b_bound_already_set)
+			GetOptIntegerValue(m_i_val, m_i_min, m_i_max);
+		else
+			GetOptIntegerValue(m_i_val, fake_min, fake_max);
+	}
 
 	UpdatePos			();
 }
@@ -286,6 +305,20 @@ void CUITrackBar::UpdatePos()
 		pos.x					= free_space-pos.x;
 
 	m_pSlider->SetWndPos		(pos);
+
+	if (m_static->IsEnabled())
+	{
+		string256 buff;
+		if (m_b_is_float)
+		{
+			xr_sprintf(buff, (m_static_format == NULL ? "%.1f" : m_static_format.c_str()), m_f_val);
+		}
+		else
+		{
+			xr_sprintf(buff, (m_static_format == NULL ? "%d" : m_static_format.c_str()), m_i_val);
+		}
+		m_static->TextItemControl()->SetTextST(buff);
+	}
 }
 
 void CUITrackBar::OnMessage(LPCSTR message)
