@@ -192,6 +192,31 @@ class cl_fog_color	: public R_constant_setup {
 };	static cl_fog_color		binder_fog_color;
 #endif
 
+class cl_m_v2w : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fmatrix m_v2w;
+		m_v2w.invert(Device.mView);
+		RCache.set_c(C, m_v2w);
+	}
+};
+
+static cl_m_v2w binder_m_v2w;
+
+// DWM: set weather params
+class cl_u_weather : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4	result;
+		CEnvDescriptor& desc = *g_pGamePersistent->Environment().CurrentEnv;
+		result.set(desc.sky_color.x, desc.sky_color.y, desc.sky_color.z, desc.rain_density);
+		RCache.set_c(C, result);
+	}
+};
+static cl_u_weather binder_u_weather;
+
 // times
 class cl_times		: public R_constant_setup {
 	virtual void setup(R_constant* C)
@@ -308,6 +333,12 @@ static class cl_screen_res : public R_constant_setup
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
+
+	// DWM: out to shaders view to world mat, weather params, alternative screen res
+	r_Constant("m_view2world", &binder_m_v2w);
+	r_Constant("u_weather", &binder_u_weather);
+	r_Constant("screen_res_alt", &binder_screen_res);
+
 	// matrices
 	r_Constant				("m_W",				&binder_w);
 	r_Constant				("m_invW",			&binder_invw);

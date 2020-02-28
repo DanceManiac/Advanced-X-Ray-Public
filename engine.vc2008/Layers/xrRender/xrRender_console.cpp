@@ -4,6 +4,17 @@
 #include	"xrRender_console.h"
 #include	"dxRenderDeviceRender.h"
 
+// DWM: DT SSR quality option
+u32			dt_ssr_samp = 16;
+xr_token							qdt_ssr_samp_token[] = {
+	{ "dtssr_off",					1												},
+	{ "dtssr_lowest",				4												},
+	{ "dtssr_low",					6												},
+	{ "dtssr_medium",				8												},
+	{ "dtssr_high",					16												},
+	{ 0,							0												}
+};
+
 u32			ps_Preset				=	2	;
 xr_token							qpreset_token							[ ]={
 	{ "Minimum",					0											},
@@ -854,6 +865,9 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_detail_bump",				&ps_r2_ls_flags,			R2FLAG_DETAIL_BUMP);
 
 	CMD3(CCC_Token,		"r2_sun_quality",				&ps_r_sun_quality,			qsun_quality_token);
+
+	// DWM: DT SSR quality option
+	CMD3(CCC_Token,		"r4_ssr_samples",				&dt_ssr_samp,				qdt_ssr_samp_token);
 
 	//	Igor: need restart
 	CMD3(CCC_Mask,		"r2_soft_water",				&ps_r2_ls_flags,			R2FLAG_SOFT_WATER);

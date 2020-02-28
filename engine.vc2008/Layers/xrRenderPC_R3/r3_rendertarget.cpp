@@ -398,6 +398,10 @@ CRenderTarget::CRenderTarget		()
 			rt_Generic_1_r.create(r2_RT_generic1_r,w,h,D3DFMT_A8R8G8B8, SampleCount		);
 			rt_Generic.create	 (r2_RT_generic,w,h,   D3DFMT_A8R8G8B8, 1		);
 		}
+
+		// DWM: create new rt for PP
+		rt_PPTemp.create("$user$genericpp", w, h, D3DFMT_A8R8G8B8, 1);
+
 		//	Igor: for volumetric lights
 		//rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A8R8G8B8		);
 		//	temp: for higher quality blends

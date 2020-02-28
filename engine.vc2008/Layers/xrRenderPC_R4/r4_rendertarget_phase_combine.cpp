@@ -259,6 +259,15 @@ void	CRenderTarget::phase_combine	()
       }  
    }
 
+   // DWM: Save last frame to rt_PPTemp
+   if (dt_ssr_samp > 3)
+   {
+	   if (!RImplementation.o.dx10_msaa)
+		   HW.pContext->CopyResource(rt_PPTemp->pTexture->surface_get(), rt_Generic_0->pTexture->surface_get());
+	   else
+		   HW.pContext->CopyResource(rt_PPTemp->pTexture->surface_get(), rt_Generic_0_r->pTexture->surface_get());
+   }
+
 	// Forward rendering
 	{
 		PIX_EVENT(Forward_rendering);

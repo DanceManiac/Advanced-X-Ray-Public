@@ -253,6 +253,19 @@ void	CRenderTarget::phase_combine	()
       }  
    }
 
+   // DWM: Save last frame to rt_PPTemp
+
+   FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+   if (!RImplementation.o.dx10_msaa)
+	   HW.pContext->CopyResource(rt_PPTemp->pTexture->surface_get(), rt_Generic_0->pTexture->surface_get());
+   else
+   {
+	   HW.pDevice->ClearRenderTargetView(rt_PPTemp->pRT, ColorRGBA);
+	   HW.pDevice->ResolveSubresource(rt_PPTemp->pTexture->surface_get(), 0,
+		   rt_Generic_0_r->pTexture->surface_get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
+   }
+
 	// Forward rendering
 	{
 		PIX_EVENT(Forward_rendering);

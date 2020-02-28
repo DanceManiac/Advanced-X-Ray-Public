@@ -405,11 +405,17 @@ CRenderTarget::CRenderTarget		()
 		{
 			rt_Generic_0_r.create			(r2_RT_generic0_r,w,h,D3DFMT_A8R8G8B8, SampleCount	);
 			rt_Generic_1_r.create			(r2_RT_generic1_r,w,h,D3DFMT_A8R8G8B8, SampleCount		);
-			rt_Generic.create		      (r2_RT_generic,w,h,   D3DFMT_A8R8G8B8, 1		);
 		}
+
+		rt_Generic.create(r2_RT_generic, w, h, D3DFMT_A8R8G8B8, 1);
+
+		// DWM: create new rt for PP
+		rt_PPTemp.create("$user$genericpp", w, h, D3DFMT_A8R8G8B8, (RImplementation.o.dx10_msaa) ? (SampleCount) : (1));
+
 		//	Igor: for volumetric lights
-		//rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A8R8G8B8		);
 		//	temp: for higher quality blends
+		//rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A8R8G8B8		);
+
 		if (RImplementation.o.advancedpp)
 			rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A16B16G16R16F, SampleCount );
 	}

@@ -9,6 +9,11 @@ void	CRenderTarget::phase_scene_prepare	()
 	//CHK_DX	( HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x0, 1.0f, 0L) );
 	//	Igor: soft particles
 
+	FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	// DWM: clear rt_Position
+	HW.pContext->ClearRenderTargetView(rt_Position->pRT, ColorRGBA);
+
 	CEnvDescriptor&	E = *g_pGamePersistent->Environment().CurrentEnv;
 	float fValue = E.m_fSunShaftsIntensity;
 	//	TODO: add multiplication by sun color here

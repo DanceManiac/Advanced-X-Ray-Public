@@ -901,6 +901,8 @@ HRESULT	CRender::shader_compile			(
 	char							c_sun_shafts	[32];
 	char							c_ssao			[32];
 	char							c_sun_quality	[32];
+	// DWM: For sslr setting's
+	char							c_dt_ssr_samp	[32];
 
 	char	sh_name[MAX_PATH] = "";
 	u32 len = 0;
@@ -1197,6 +1199,15 @@ HRESULT	CRender::shader_compile			(
 		def_it						++;
 	}
 	sh_name[len]='0'+char(o.dx10_gbuffer_opt); ++len;
+
+	// DWM: For sslr setting's
+	{
+		sprintf_s(c_dt_ssr_samp, "%d", dt_ssr_samp);
+		defines[def_it].Name = "SSR_SAMPLES";
+		defines[def_it].Definition = c_dt_ssr_samp;
+		def_it++;
+		sh_name[len] = '0' + char(dt_ssr_samp); ++len;
+	}
 
 	if( o.dx10_sm4_1 )
 	{

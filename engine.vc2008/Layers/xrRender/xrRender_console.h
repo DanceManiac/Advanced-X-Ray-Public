@@ -2,6 +2,10 @@
 #define xrRender_consoleH
 #pragma once
 
+// DWM: DT SSR quality option
+extern ECORE_API	u32			dt_ssr_samp;
+extern ECORE_API	xr_token	qdt_ssr_samp_token[];
+
 // Common
 extern ECORE_API	u32			ps_r_sun_shafts;	//=	0;
 extern ECORE_API	xr_token	qsun_shafts_token[];
