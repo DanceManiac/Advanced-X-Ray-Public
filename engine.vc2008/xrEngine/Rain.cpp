@@ -20,13 +20,7 @@ static const float	source_radius		= 12.5f;
 static const float	source_offset		= 40.f;
 static const float	max_distance		= source_offset*1.25f;
 static const float	sink_offset			= -(max_distance-source_offset);
-static const float	drop_length			= 5.f;
-static const float	drop_width			= 0.30f;
-static const float	drop_angle			= 3.0f;
 static const float	drop_max_angle		= deg2rad(10.f);
-static const float	drop_max_wind_vel	= 20.0f;
-static const float	drop_speed_min		= 40.f;
-static const float	drop_speed_max		= 80.f;
 
 const int	max_particles		= 1000;
 const int	particles_cache		= 400;
@@ -40,21 +34,30 @@ CEffect_Rain::CEffect_Rain()
 {
 	state							= stIdle;
 	
-	snd_Ambient.create				("ambient\\rain",st_Effect,sg_Undefined);
+	m_bWinterMode = READ_IF_EXISTS(pSettings, r_bool, "environment", "winter_mode", false);
 
-	//	Moced to p_Render constructor
-	/*
-	IReader*	F					= FS.r_open("$game_meshes$","dm\\rain.dm"); 
-	VERIFY3							(F,"Can't open file.","dm\\rain.dm");
-	DM_Drop							= ::Render->model_CreateDM		(F);
+	if (m_bWinterMode == false)
+	{
+		snd_Ambient.create("ambient\\rain", st_Effect, sg_Undefined);
+		drop_speed_min = READ_IF_EXISTS(pSettings, r_float, "rain_params", "min_rain_drop_speed", 40.0f);
+		drop_speed_max = READ_IF_EXISTS(pSettings, r_float, "rain_params", "man_rain_drop_speed", 80.0f);
+		drop_length = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_length", 5.0f);
+		drop_width = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
+		drop_angle = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_angle", 3.0f);
+		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 20.0f);
+	}
+	else
+	{
+		drop_speed_min = READ_IF_EXISTS(pSettings, r_float, "snow_params", "min_rain_drop_speed", 40.0f);
+		drop_speed_max = READ_IF_EXISTS(pSettings, r_float, "snow_params", "man_rain_drop_speed", 80.0f);
+		drop_length = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_length", 5.0f);
+		drop_width = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_width", 0.30f);
+		drop_angle = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_angle", 3.0f);
+		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 20.0f);
+	}
 
-	//
-	SH_Rain.create					("effects\\rain","fx\\fx_rain");
-	hGeom_Rain.create				(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
-	hGeom_Drops.create				(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
-	*/
+
 	p_create						();
-	//FS.r_close						(F);
 }
 
 CEffect_Rain::~CEffect_Rain()
@@ -63,8 +66,6 @@ CEffect_Rain::~CEffect_Rain()
 
 	// Cleanup
 	p_destroy						();
-	//	Moved to p_Render destructor
-	//::Render->model_Delete			(DM_Drop);
 }
 
 // Born

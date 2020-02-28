@@ -29,6 +29,7 @@
 #include "xrSash.h"
 
 #include "securom_api.h"
+#include "Rain.h"
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni		= NULL;
@@ -1309,7 +1310,14 @@ void CApplication::Level_Scan()
 
 void gen_logo_name(string_path& dest, LPCSTR level_name, int num)
 {
-	strconcat	(sizeof(dest), dest, "intro\\intro_", level_name);
+	if (g_pGamePersistent->Environment().eff_Rain->m_bWinterMode == false)
+	{
+		strconcat(sizeof(dest), dest, "intro\\intro_", level_name);
+	}
+	else
+	{
+		strconcat(sizeof(dest), dest, "intro\\intro_winter_", level_name);
+	}
 	
 	u32 len = xr_strlen(dest);
 	if(dest[len-1]=='\\')

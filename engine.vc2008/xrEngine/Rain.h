@@ -66,6 +66,14 @@ private:
 	Particle*						particle_active;
 	Particle*						particle_idle;
 
+	//Rain params
+	float							drop_speed_min;
+	float							drop_speed_max;
+	float							drop_length;
+	float							drop_width;
+	float							drop_angle;
+	float							drop_max_wind_vel;
+
 	// Sounds
 	ref_sound						snd_Ambient;
 
@@ -90,6 +98,9 @@ public:
 
 	void							Render			();
 	void							OnFrame			();
+
+	//G.S.W.R Winter Mode
+	bool							m_bWinterMode;
 };
 
 #endif //RainH

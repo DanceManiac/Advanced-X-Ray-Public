@@ -31,8 +31,19 @@ void CPSLibrary::OnCreate()
 #endif
     {
     	string_path		fn;
-        FS.update_path	(fn,_game_data_,"particles.xr");
-        Load			(fn);
+
+		m_bWinterModeParticles = READ_IF_EXISTS(pSettings, r_bool, "environment", "winter_mode", false);
+
+		if (m_bWinterModeParticles == false)
+		{
+			FS.update_path(fn, _game_data_, "particles.xr");
+			Load(fn);
+		}
+		else
+		{
+			FS.update_path(fn, _game_data_, "particles_winter.xr");
+			Load(fn);
+		}
     }
 }
  

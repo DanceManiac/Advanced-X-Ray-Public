@@ -9,13 +9,7 @@ static const float	source_radius		= 12.5f;
 static const float	source_offset		= 40.f;
 static const float	max_distance		= source_offset*1.25f;
 static const float	sink_offset			= -(max_distance-source_offset);
-static const float	drop_length			= 5.f;
-static const float	drop_width			= 0.30f;
-static const float	drop_angle			= 3.0f;
 static const float	drop_max_angle		= deg2rad(10.f);
-static const float	drop_max_wind_vel	= 20.0f;
-static const float	drop_speed_min		= 40.f;
-static const float	drop_speed_max		= 80.f;
 
 const int	max_particles		= 1000;
 const int	particles_cache		= 400;
@@ -135,7 +129,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 
 		// Build line
 		Fvector&	pos_head	= one.P;
-		Fvector		pos_trail;	pos_trail.mad	(pos_head,one.D,-drop_length*factor_visual);
+		Fvector		pos_trail;	pos_trail.mad(pos_head, one.D, -owner.drop_length*factor_visual);
 
 		// Culling
 		Fvector sC,lineD;	float sR; 
@@ -156,7 +150,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		camDir.sub			(sC,vEye);
 		camDir.normalize	();
 		lineTop.crossproduct(camDir,lineD);
-		float w = drop_width;
+		float w = owner.drop_width;
 		u32 s	= one.uv_set;
 		P.mad(pos_trail,lineTop,-w);	verts->set(P,u_rain_color,UV[s][0].x,UV[s][0].y);	verts++;
 		P.mad(pos_trail,lineTop,w);		verts->set(P,u_rain_color,UV[s][1].x,UV[s][1].y);	verts++;
