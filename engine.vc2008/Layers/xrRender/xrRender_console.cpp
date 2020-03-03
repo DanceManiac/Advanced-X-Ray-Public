@@ -178,9 +178,9 @@ Flags32		ps_r2_ls_flags_ext			= {
 int			ps_no_scale_on_fade			= 0;
 float		ps_r2_df_parallax_h			= 0.02f;
 float		ps_r2_df_parallax_range		= 75.f;
-float		ps_r2_tonemap_middlegray	= 1.f;			// r2-only
+float		ps_r2_tonemap_middlegray	= 0.95f;			// r2-only
 float		ps_r2_tonemap_adaptation	= 1.f;				// r2-only
-float		ps_r2_tonemap_low_lum		= 0.0001f;			// r2-only
+float		ps_r2_tonemap_low_lum		= 0.0035f;			// r2-only
 float		ps_r2_tonemap_amount		= 0.7f;				// r2-only
 float		ps_r2_ls_bloom_kernel_g		= 3.f;				// r2-only
 float		ps_r2_ls_bloom_kernel_b		= .7f;				// r2-only
@@ -228,7 +228,7 @@ float		ps_r2_lt_smooth				= 1.f;				// 1.f
 float		ps_r2_slight_fade			= 0.5f;				// 1.f
 
 //	x - min (0), y - focus (1.4), z - max (100)
-Fvector3	ps_r2_dof					= Fvector3().set(-1.25f, 1.4f, 600.f);
+Fvector3	ps_r2_dof					= Fvector3().set(-1.25f, 1.4f, 10000.f);
 float		ps_r2_dof_sky				= 30;				//	distance to sky
 float		ps_r2_dof_kernel_size		= 5.0f;						//	7.0f
 
@@ -250,6 +250,7 @@ float		dm_current_fade = 47.5;	//float(2*dm_current_size)-.5f;
 float		ps_current_detail_density = 0.6;
 float		ps_current_detail_scale = 1.f;
 
+Flags32		ps_actor_shadow_flags = { 0 };
 
 //- Mad Max
 float		ps_r2_gloss_factor			= 4.0f;
@@ -803,6 +804,8 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_zfill",				&ps_r2_ls_flags,			R2FLAG_ZFILL	);
 	CMD4(CCC_Float,		"r2_zfill_depth",		&ps_r2_zfill,				.001f,	.5f		);
 	CMD3(CCC_Mask,		"r2_allow_r1_lights",	&ps_r2_ls_flags,			R2FLAG_R1LIGHTS	);
+
+	CMD3(CCC_Mask,		"r__actor_shadow",		&ps_actor_shadow_flags,		RFLAG_ACTOR_SHADOW);  //Swartz
 
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);
