@@ -1374,12 +1374,20 @@ void CActor::shedule_Update	(u32 DT)
 void CActor::renderable_Render	()
 {
 	VERIFY(_valid(XFORM()));
-	inherited::renderable_Render			();
-	if(1/*!HUDview()*/)
-	{
-		CInventoryOwner::renderable_Render	();
-	}
-	VERIFY(_valid(XFORM()));
+	inherited::renderable_Render();
+	//if(1/*!HUDview()*/)
+	if ((cam_active == eacFirstEye && // first eye cam
+		::Render->get_generation() == ::Render->GENERATION_R2 && // R2
+		::Render->active_phase() == 1) // shadow map rendering on R2	
+		||
+		!(IsFocused() &&
+		(cam_active == eacFirstEye) &&
+			((!m_holder) || (m_holder && m_holder->allowWeapon() && m_holder->HUDView())))
+		)
+		//{
+		CInventoryOwner::renderable_Render();
+	//}
+	//VERIFY(_valid(XFORM()));
 }
 
 BOOL CActor::renderable_ShadowGenerate	() 
