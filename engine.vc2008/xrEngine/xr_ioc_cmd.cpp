@@ -681,6 +681,8 @@ extern Flags32		psEnvFlags;
 extern int			g_ErrorLineCount;
 
 ENGINE_API int			ps_r__Supersample			= 1;
+ENGINE_API int			ps_r__WallmarksOnSkeleton	= 0;
+
 void CCC_Register()
 {
 	// General
@@ -729,6 +731,8 @@ void CCC_Register()
 
 	// Render device states
 	CMD4(CCC_Integer,	"r__supersample",		&ps_r__Supersample,			1,		4		);
+	//Bloodmarks on Skeleton
+	CMD4(CCC_Integer,	"r__wallmarks_on_skeleton", &ps_r__WallmarksOnSkeleton,		0, 1	);
 
 
 	CMD3(CCC_Mask,		"rs_v_sync",			&psDeviceFlags,		rsVSync				);
