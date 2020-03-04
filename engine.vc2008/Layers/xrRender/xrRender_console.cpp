@@ -842,7 +842,8 @@ void		xrRender_initconsole	()
 
 	CMD3(CCC_Mask,		"r2_aa",				&ps_r2_ls_flags,			R2FLAG_AA);
 	CMD4(CCC_Float,		"r2_aa_kernel",			&ps_r2_aa_kernel,			0.3f,	0.7f	);
-	CMD4(CCC_Float,		"r2_mblur",				&ps_r2_mblur,				0.0f,	1.0f	);
+	CMD3(CCC_Mask,		"r2_mblur_enable",		&ps_r2_ls_flags,			R2FLAG_MBLUR	);
+	CMD4(CCC_Float,		"r2_mblur",				&ps_r2_mblur,				0.0f, 1.5f		);
 
 	CMD3(CCC_Mask,		"r2_gi",				&ps_r2_ls_flags,			R2FLAG_GI);
 	CMD4(CCC_Float,		"r2_gi_clip",			&ps_r2_GI_clip,				EPS,	0.1f	);
