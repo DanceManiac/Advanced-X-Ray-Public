@@ -463,7 +463,10 @@ void CWeapon::Load		(LPCSTR section)
 //	m_zoom_params.m_ZoomDof		= READ_IF_EXISTS(pSettings, r_fvector3, section, "zoom_dof", Fvector().set(-1,-1,-1));
 //	m_zoom_params.m_bZoomDofEnabled	= !def_dof.similar(m_zoom_params.m_ZoomDof);
 
-//	m_zoom_params.m_ReloadDof	= READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_dof", Fvector4().set(-1,-1,-1,-1));
+	m_zoom_params.m_ReloadDof = READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_dof", Fvector4().set(-1, -1, -1, -1));
+
+	m_zoom_params.m_ReloadEmptyDof = READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_empty_dof", Fvector4().set(-1, -1, -1, -1));
+
 
 
 	m_bHasTracers			= !!READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
@@ -1857,15 +1860,27 @@ void CWeapon::OnStateSwitch	(u32 S)
 	inherited::OnStateSwitch(S);
 	m_BriefInfo_CalcFrame = 0;
 
-	//if(GetState()==eReload)
-	//{
-	//	if(H_Parent()==Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadDof.w,-1.0f))
-	//	{
-	//		CActor* current_actor	= smart_cast<CActor*>(H_Parent());
-	//		if (current_actor)
-	//			current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadDof) );
-	//	}
-	//}
+	if (GetState() == eReload)
+	{
+		if (iAmmoElapsed == 0)
+		{
+			if (H_Parent() == Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadEmptyDof.w, -1.0f))
+			{
+				CActor* current_actor = smart_cast<CActor*>(H_Parent());
+				if (current_actor)
+					current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadEmptyDof));
+			}
+		}
+		else
+		{
+			if (H_Parent() == Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadDof.w, -1.0f))
+			{
+				CActor* current_actor = smart_cast<CActor*>(H_Parent());
+				if (current_actor)
+					current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadDof));
+			}
+		}
+	}
 }
 
 void CWeapon::OnAnimationEnd(u32 state) 
