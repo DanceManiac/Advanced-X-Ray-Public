@@ -43,6 +43,14 @@ xr_token							qsun_shafts_token							[ ]={
 	{ 0,							0												}
 };
 
+//ogse sunshafts
+u32 ps_sunshafts_mode = 0;
+xr_token sunshafts_mode_token[] = {
+	{ "volumetric", 0 },
+	{ "screen_space", 1 },
+	{ NULL, 0 }
+};
+
 u32			ps_r_ssao				=	3;
 xr_token							qssao_token									[ ]={
 	{ "st_opt_off",					0												},
@@ -249,6 +257,10 @@ u32			dm_current_cache_size = 2401;	//dm_current_cache_line*dm_current_cache_lin
 float		dm_current_fade = 47.5;	//float(2*dm_current_size)-.5f;
 float		ps_current_detail_density = 0.6;
 float		ps_current_detail_scale = 1.f;
+
+//ogse sunshafts
+float		ps_r2_ss_sunshafts_length = 1.f;
+float		ps_r2_ss_sunshafts_radius = 1.f;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
@@ -843,7 +855,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_aa",				&ps_r2_ls_flags,			R2FLAG_AA);
 	CMD4(CCC_Float,		"r2_aa_kernel",			&ps_r2_aa_kernel,			0.3f,	0.7f	);
 	CMD3(CCC_Mask,		"r2_mblur_enable",		&ps_r2_ls_flags,			R2FLAG_MBLUR	);
-	CMD4(CCC_Float,		"r2_mblur",				&ps_r2_mblur,				0.0f, 1.5f		);
+	CMD4(CCC_Float,		"r2_mblur",				&ps_r2_mblur,				0.0f, 3.0f		);
 
 	CMD3(CCC_Mask,		"r2_gi",				&ps_r2_ls_flags,			R2FLAG_GI);
 	CMD4(CCC_Float,		"r2_gi_clip",			&ps_r2_GI_clip,				EPS,	0.1f	);
@@ -893,6 +905,12 @@ void		xrRender_initconsole	()
 	
 //	float		ps_r2_dof_near			= 0.f;					// 0.f
 //	float		ps_r2_dof_focus			= 1.4f;					// 1.4f
+
+	//ogse sunshafts
+	CMD3(CCC_Token,		"r2_sunshafts_mode",			&ps_sunshafts_mode, sunshafts_mode_token);
+	CMD4(CCC_Float,		"r2_ss_sunshafts_length",		&ps_r2_ss_sunshafts_length, .2f, 1.5f);
+	CMD4(CCC_Float,		"r2_ss_sunshafts_radius",		&ps_r2_ss_sunshafts_radius, .5f, 2.f);
+	//end ogse sunshafts 
 	
 	CMD3(CCC_Mask,		"r2_volumetric_lights",			&ps_r2_ls_flags,			R2FLAG_VOLUMETRIC_LIGHTS);
 //	CMD3(CCC_Mask,		"r2_sun_shafts",				&ps_r2_ls_flags,			R2FLAG_SUN_SHAFTS);

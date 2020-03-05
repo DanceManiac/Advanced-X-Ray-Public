@@ -11,6 +11,7 @@
 #include "blender_bloom_build.h"
 #include "blender_luminance.h"
 #include "blender_ssao.h"
+#include "blender_ss_sunshafts.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -210,6 +211,7 @@ CRenderTarget::CRenderTarget		()
 	b_ssao							= xr_new<CBlender_SSAO>					();
 	b_luminance						= xr_new<CBlender_luminance>			();
 	b_combine						= xr_new<CBlender_combine>				();
+	b_sunshafts						= new CBlender_sunshafts				();
 
 	//	NORMAL
 	{
@@ -243,12 +245,21 @@ CRenderTarget::CRenderTarget		()
 		// generic(LDR) RTs
 		rt_Generic_0.create			(r2_RT_generic0,w,h,D3DFMT_A8R8G8B8		);
 		rt_Generic_1.create			(r2_RT_generic1,w,h,D3DFMT_A8R8G8B8		);
+
+
+		//ogse sunshafts
+		// RT - KD
+		rt_sunshafts_0.create(r2_RT_sunshafts0, w, h, D3DFMT_A8R8G8B8);
+		rt_sunshafts_1.create(r2_RT_sunshafts1, w, h, D3DFMT_A8R8G8B8);
+
 		//	Igor: for volumetric lights
 		//rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A8R8G8B8		);
 		//	temp: for higher quality blends
 		if (RImplementation.o.advancedpp)
 			rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A16B16G16R16F);
 	}
+
+	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
 
 	// OCCLUSION
 	s_occq.create					(b_occq,		"r2\\occq");
@@ -408,6 +419,11 @@ CRenderTarget::CRenderTarget		()
 
 		u32 fvf_aa_AA				= D3DFVF_XYZRHW|D3DFVF_TEX7|D3DFVF_TEXCOORDSIZE2(0)|D3DFVF_TEXCOORDSIZE2(1)|D3DFVF_TEXCOORDSIZE2(2)|D3DFVF_TEXCOORDSIZE2(3)|D3DFVF_TEXCOORDSIZE2(4)|D3DFVF_TEXCOORDSIZE4(5)|D3DFVF_TEXCOORDSIZE4(6);
 		g_aa_AA.create				(fvf_aa_AA,		RCache.Vertex.Buffer(), RCache.QuadIB);
+
+		//ogse sunshafts
+		u32 fvf_KD = D3DFVF_XYZRHW | D3DFVF_TEX1 | D3DFVF_TEXCOORDSIZE2(0);
+		g_KD.create(fvf_KD, RCache.Vertex.Buffer(), RCache.QuadIB);
+		//end ogse sunshafts
 
 		t_envmap_0.create			(r2_T_envs0);
 		t_envmap_1.create			(r2_T_envs1);
@@ -631,6 +647,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_accum_direct_cascade	);
 	xr_delete					(b_accum_mask			);
 	xr_delete					(b_occq					);
+	xr_delete					(b_sunshafts			);
 }
 
 void CRenderTarget::reset_light_marker( bool bResetStencil)

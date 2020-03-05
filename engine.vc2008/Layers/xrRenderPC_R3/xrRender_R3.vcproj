@@ -803,6 +803,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\blender_ss_sunshafts.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\blender_ss_sunshafts.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dx10MinMaxSMBlender.cpp"
 				>
 			</File>
@@ -1124,6 +1132,10 @@
 			</File>
 			<File
 				RelativePath=".\r3_rendertarget_wallmarks.h"
+				>
+			</File>
+			<File
+				RelativePath=".\r3_rendertarget_phase_ss_sunshafts.cpp"
 				>
 			</File>
 			<Filter

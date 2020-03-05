@@ -1083,6 +1083,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\blender_ss_sunshafts.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\blender_ss_sunshafts.h"
+				>
+			</File>
+			<File
 				RelativePath="..\xrRender\uber_deffer.cpp"
 				>
 			</File>
@@ -1364,6 +1372,10 @@
 			</File>
 			<File
 				RelativePath=".\r2_rendertarget_wallmarks.h"
+				>
+			</File>
+			<File
+				RelativePath=".\r2_rendertarget_phase_ss_sunshafts.cpp"
 				>
 			</File>
 			<Filter
