@@ -352,7 +352,7 @@ void CLensFlare::OnFrame(shared_str id)
 	vecSx.mul(vecX, fScale);
 	vecSy.mul(vecY, fScale);
 
-	CObject*	o_main		= g_pGameLevel->CurrentViewEntity();
+	CObject*	o_main		= false;
 	R_ASSERT				( _valid(vSunDir) );
 	STranspParam TP			(&m_ray_cache[0],Device.vCameraPosition,vSunDir,1000.f,EPS_L);
 
