@@ -14,6 +14,7 @@
 #include "dx10MinMaxSMBlender.h"
 #include "../xrRenderDX10/msaa/dx10MSAABlender.h"
 #include "../xrRenderDX10/DX10 Rain/dx10RainBlender.h"
+#include "blender_rain_drops.h"
 
 
 #include "../xrRender/dxRenderDeviceRender.h"
@@ -316,6 +317,7 @@ CRenderTarget::CRenderTarget		()
 	b_combine				= xr_new<CBlender_combine>				();
 	b_ssao					= xr_new<CBlender_SSAO_noMSAA>			();
 	b_sunshafts				= new CBlender_sunshafts				();
+	b_rain_drops			= xr_new<CBlender_rain_drops>			();
 
 	if( RImplementation.o.dx10_msaa )
 	{
@@ -417,6 +419,8 @@ CRenderTarget::CRenderTarget		()
 	}
 
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
+	// RAIN DROPS
+	s_rain_drops.create(b_rain_drops, "r2\\sgm_rain_drops");
 
 	// OCCLUSION
 	s_occq.create					(b_occq,		"r2\\occq");
@@ -1033,6 +1037,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_accum_direct			);
 	xr_delete					(b_ssao					);
 	xr_delete					(b_sunshafts			);
+	xr_delete					(b_rain_drops			);
 
    if( RImplementation.o.dx10_msaa )
    {

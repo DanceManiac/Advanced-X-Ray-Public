@@ -838,6 +838,14 @@
 				RelativePath="..\xrRender\uber_deffer.h"
 				>
 			</File>
+				<File
+					RelativePath="blender_rain_drops.cpp"
+					>
+				</File>
+				<File
+					RelativePath="blender_rain_drops.h"
+					>
+				</File>
 			<Filter
 				Name="R1"
 				>
@@ -1152,6 +1160,10 @@
 			</File>
 			<File
 				RelativePath=".\r4_rendertarget_phase_ss_sunshafts.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\r4_rendertarget_phase_rain_drops.cpp"
 				>
 			</File>
 			<Filter

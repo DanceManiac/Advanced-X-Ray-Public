@@ -261,6 +261,7 @@ float		ps_current_detail_scale = 1.f;
 //ogse sunshafts
 float		ps_r2_ss_sunshafts_length = 1.f;
 float		ps_r2_ss_sunshafts_radius = 1.f;
+float		droplets_power_debug = 0.f;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
@@ -928,6 +929,9 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_detail_bump",				&ps_r2_ls_flags,			R2FLAG_DETAIL_BUMP);
 
 	CMD3(CCC_Token,		"r2_sun_quality",				&ps_r_sun_quality,			qsun_quality_token);
+
+	//Raindrops
+	CMD4(CCC_Float,		"r2_rain_drops_power_debug",	&droplets_power_debug,		0.f, 3.f	);
 
 	// DWM: DT SSR quality option
 	CMD3(CCC_Token,		"r4_ssr_samples",				&dt_ssr_samp,				qdt_ssr_samp_token);

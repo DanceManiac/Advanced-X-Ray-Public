@@ -1141,6 +1141,18 @@
 					RelativePath="..\xrRender\Blender_tree.h"
 					>
 				</File>
+			<File
+				RelativePath="blender_bloom_build.h"
+				>
+			</File>
+				<File
+					RelativePath="blender_rain_drops.cpp"
+					>
+				</File>
+				<File
+					RelativePath="blender_rain_drops.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -1376,6 +1388,10 @@
 			</File>
 			<File
 				RelativePath=".\r2_rendertarget_phase_ss_sunshafts.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\r2_rendertarget_phase_rain_drops.cpp"
 				>
 			</File>
 			<Filter

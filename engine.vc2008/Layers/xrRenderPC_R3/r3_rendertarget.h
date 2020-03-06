@@ -49,6 +49,7 @@ public:
 	IBlender*					b_ssao;
 	IBlender*					b_ssao_msaa[8];
 	IBlender*					b_sunshafts;
+	IBlender*					b_rain_drops;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -118,6 +119,8 @@ private:
 	ref_shader					s_occq;
 
 	ref_shader					s_sunshafts;
+	// RAIN DROPS
+	ref_shader					s_rain_drops;
 
 
 	// SSAO
@@ -250,6 +253,7 @@ public:
 	bool						u_need_CM				();
 	BOOL						u_DBT_enable			(float zMin, float zMax);
 	void						u_DBT_disable			();
+	void						phase_rain_drops		();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

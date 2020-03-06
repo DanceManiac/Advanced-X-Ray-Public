@@ -225,5 +225,6 @@ enum
 extern void						xrRender_initconsole	();
 extern BOOL						xrRender_test_hw		();
 extern void						xrRender_apply_tf		();
+extern ECORE_API float			droplets_power_debug;
 
 #endif
