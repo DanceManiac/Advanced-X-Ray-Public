@@ -1823,6 +1823,22 @@ public:
 	}
 };
 
+// Change weather immediately
+class CCC_SetWeather : public IConsole_Command
+{
+public:
+	CCC_SetWeather(LPCSTR N) : IConsole_Command(N) {};
+	virtual void Execute(LPCSTR args)
+	{
+		if (!xr_strlen(args))
+			return;
+		if (!g_pGamePersistent)
+			return;
+		//if (!Device.editor())
+		g_pGamePersistent->Environment().SetWeather(args, true);
+	}
+};
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -2022,6 +2038,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 
 #ifdef MFS_DEVELOPER_CMD
 	CMD1(CCC_Spawn,			"g_spawn");
+	CMD1(CCC_SetWeather,	"set_weather");
 #endif // MFS_DEVELOPER_CMD
 
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
