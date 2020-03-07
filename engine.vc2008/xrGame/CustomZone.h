@@ -134,6 +134,11 @@ protected:
 	//текущее время пребывания зоны в определенном состоянии 
 	int					m_iStateTime;
 	int					m_iPreviousStateTime;
+
+	bool				m_bVolumetricBlowout;
+	float				m_fVolumetricQuality;
+	float				m_fVolumetricDistance;
+	float				m_fVolumetricIntensity;
 	
 	u32					m_TimeToDisable;
 	u32					m_TimeToEnable;

@@ -53,6 +53,11 @@ CCustomZone::CCustomZone(void)
 	m_zone_flags.set			(eFastMode, TRUE);
 
 	m_eZoneState				= eZoneStateIdle;
+
+	m_bVolumetricBlowout = true;
+	m_fVolumetricQuality = 1.0f;
+	m_fVolumetricDistance = 0.3f;
+	m_fVolumetricIntensity = 0.5f;
 }
 
 CCustomZone::~CCustomZone(void) 
@@ -260,6 +265,11 @@ void CCustomZone::Load(LPCSTR section)
 		m_fLightHeight		= pSettings->r_float(section,"light_height");
 	}
 
+	m_bVolumetricBlowout = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_blowout", true);
+	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
 	//загрузить параметры idle подсветки
 	m_zone_flags.set(eIdleLight,	pSettings->r_bool (section, "idle_light"));
 	if( m_zone_flags.test(eIdleLight) )
@@ -322,6 +332,9 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 		{
 			//m_pIdleLight->set_type				(IRender_Light::SPOT);
 			m_pIdleLight->set_volumetric		(true);
+			m_pIdleLight->set_volumetric_quality(m_fVolumetricQuality);
+			m_pIdleLight->set_volumetric_distance(m_fVolumetricDistance);
+			m_pIdleLight->set_volumetric_intensity(m_fVolumetricIntensity);
 		}
 	}
 	else
@@ -331,6 +344,10 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	{
 		m_pLight = ::Render->light_create();
 		m_pLight->set_shadow(true);
+		m_pLight->set_volumetric(m_bVolumetricBlowout);
+		m_pLight->set_volumetric_quality(m_fVolumetricQuality);
+		m_pLight->set_volumetric_distance(m_fVolumetricDistance);
+		m_pLight->set_volumetric_intensity(m_fVolumetricIntensity);
 	}else
 		m_pLight = NULL;
 
