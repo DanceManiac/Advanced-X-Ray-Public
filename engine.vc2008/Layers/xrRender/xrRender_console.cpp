@@ -265,6 +265,8 @@ float		droplets_power_debug = 0.f;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
+Flags32		ps_r2_raindrops_flags = { 0 };
+
 //- Mad Max
 float		ps_r2_gloss_factor			= 4.0f;
 //- Mad Max
@@ -819,6 +821,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_allow_r1_lights",	&ps_r2_ls_flags,			R2FLAG_R1LIGHTS	);
 
 	CMD3(CCC_Mask,		"r__actor_shadow",		&ps_actor_shadow_flags,		RFLAG_ACTOR_SHADOW);  //Swartz
+	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_raindrops_flags,		RFLAG_RAINDROPS);
 
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);
@@ -929,9 +932,6 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_detail_bump",				&ps_r2_ls_flags,			R2FLAG_DETAIL_BUMP);
 
 	CMD3(CCC_Token,		"r2_sun_quality",				&ps_r_sun_quality,			qsun_quality_token);
-
-	//Raindrops
-	CMD4(CCC_Float,		"r2_rain_drops_power_debug",	&droplets_power_debug,		0.f, 3.f	);
 
 	// DWM: DT SSR quality option
 	CMD3(CCC_Token,		"r4_ssr_samples",				&dt_ssr_samp,				qdt_ssr_samp_token);

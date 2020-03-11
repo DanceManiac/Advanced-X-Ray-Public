@@ -236,6 +236,7 @@ void	CRenderTarget::phase_combine	()
 
 	if (!_menu_pp)
 	{
+		if (ps_r2_raindrops_flags.test(RFLAG_RAINDROPS))
 		phase_rain_drops();
 	}
 

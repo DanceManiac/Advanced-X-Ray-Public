@@ -351,7 +351,8 @@ void	CRenderTarget::phase_combine	()
 	// Rain drops and other
 	if (!_menu_pp)
 	{
-		phase_rain_drops();
+		if (ps_r2_raindrops_flags.test(RFLAG_RAINDROPS))
+			phase_rain_drops();
 	}
 
 	// PP enabled ?

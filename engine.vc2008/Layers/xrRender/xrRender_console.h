@@ -222,6 +222,13 @@ enum
 	RFLAG_ACTOR_SHADOW = (1 << 0),
 };
 
+extern ECORE_API Flags32 ps_r2_raindrops_flags;
+
+enum
+{
+	RFLAG_RAINDROPS = (1 << 0),
+};
+
 extern void						xrRender_initconsole	();
 extern BOOL						xrRender_test_hw		();
 extern void						xrRender_apply_tf		();
