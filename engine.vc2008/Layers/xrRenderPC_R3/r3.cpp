@@ -1450,6 +1450,18 @@ HRESULT	CRender::shader_compile			(
 	return		_result;
 }
 
+static inline bool match_shader(LPCSTR const debug_shader_id, LPCSTR const full_shader_id, LPCSTR const mask, size_t const mask_length)
+{
+	return true;
+}
+
+static inline bool match_shader_id(LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result)
+{
+	return (strstr(Core.Params, "-noscache")) ? (true) : (false);
+}
+
+/*
+
 static inline bool match_shader		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, LPCSTR const mask, size_t const mask_length )
 {
 	u32 const full_shader_id_length	= xr_strlen( full_shader_id );
@@ -1513,3 +1525,4 @@ static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const 
 #endif // #ifdef DEBUG
 #endif// #if 1
 }
+*/
