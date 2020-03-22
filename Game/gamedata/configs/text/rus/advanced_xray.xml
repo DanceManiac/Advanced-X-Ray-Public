@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_game_window_name">
+		<text>Advanced X-Ray 0.6.5</text>
+	</string>
+	<string id="ui_mm_cam_fov">
+		<text>Поле зрения</text>
+	</string>
+	<string id="ui_mm_hud_fov">
+		<text>HUD FOV</text>
+	</string>
+	<string id="ui_mm_detail_radius">
+		<text>Дальность отр. травы</text>
+	</string>
+	<string id="ui_mm_detail_scale">
+		<text>Высота травы</text>
+	</string>
+	<string id="ui_mm_ssr_quality">
+		<text>Качество отражений</text>
+	</string>
+	<string id="dtssr_off">
+		<text>Отключено</text>
+	</string>
+	<string id="dtssr_lowest">
+		<text>Оч. низкое</text>
+	</string>
+	<string id="dtssr_low">
+		<text>Низкое</text>
+	</string>
+	<string id="dtssr_medium">
+		<text>Среднее</text>
+	</string>
+	<string id="dtssr_high">
+		<text>Высокое</text>
+	</string>
+	<string id="ui_mm_bloodmarks_on_skeleton">
+		<text>Блудмарки на трупах</text>
+	</string>
+	<string id="ui_mm_actor_shadow">
+		<text>Тень от ГГ</text>
+	</string>
+	<string id="ui_mm_mblur_enable">
+		<text>Motion Blur</text>
+	</string>
+	<string id="ui_mm_mblur">
+		<text>Инт. Motion Blur</text>
+	</string>
+	<string id="ui_mm_sunshafts_mode">
+		<text>Режим солн. лучей</text>
+	</string>
+	<string id="volumetric">
+		<text>Волюметрические</text>
+	</string>
+	<string id="screen_space">
+		<text>Screen Space</text>
+	</string>
+	<string id="ui_mm_raindrops">
+		<text>Эффект Raindrops</text>
+	</string>
+	<string id="ui_mm_sun_details">
+		<text>Тень от травы</text>
+	</string>
+</string_table>
