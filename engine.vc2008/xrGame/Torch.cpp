@@ -232,6 +232,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	
 	bool b_r2				= !!psDeviceFlags.test(rsR2);
 	b_r2					|= !!psDeviceFlags.test(rsR3);
+	b_r2					|= !!psDeviceFlags.test(rsR4);
 
 	IKinematics* K			= smart_cast<IKinematics*>(Visual());
 	CInifile* pUserData		= K->LL_UserData(); 
@@ -244,7 +245,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 
 	Fcolor clr = pUserData->r_fcolor(m_light_section, (b_r2) ? "color_r2" : "color");
 	fBrightness				= clr.intensity();
-	float range = pUserData->r_float							(m_light_section, (b_r2) ? "range_r2" : "range");
+	float range				= pUserData->r_float(m_light_section, (b_r2) ? "range_r2" : "range");
 	light_render->set_color	(clr);
 	light_render->set_range	(range);
 
