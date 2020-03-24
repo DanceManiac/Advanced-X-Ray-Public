@@ -11,6 +11,7 @@
 #include "common_functions.h"
 
 // #define USE_SUPER_SPECULAR
+#define USE_SUNMASK                		//- shader defined
 
 #ifdef        USE_R2_STATIC_SUN
 #  define xmaterial float(1.0h/4.h)
