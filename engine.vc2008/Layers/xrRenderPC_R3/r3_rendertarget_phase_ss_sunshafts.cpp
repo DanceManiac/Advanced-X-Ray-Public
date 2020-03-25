@@ -34,7 +34,7 @@ void CRenderTarget::phase_sunshafts()
     In this pass generates geometry mask
     */
     // Set RT's
-	u_setrt(rt_Generic, 0, 0, HW.pBaseZB);
+    u_setrt(rt_sunshafts_0, 0, 0, HW.pBaseZB);
 	//u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
     RCache.set_CullMode(CULL_NONE);
     RCache.set_Stencil(FALSE);
