@@ -134,7 +134,7 @@ void CRenderTarget::phase_sunshafts()
     combining sunshafts texture and image fo further processing
     */
     // Set RT's
-    u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
+    u_setrt(rt_Generic, 0, 0, HW.pBaseZB);
     RCache.set_CullMode(CULL_NONE);
     RCache.set_Stencil(FALSE);
 
