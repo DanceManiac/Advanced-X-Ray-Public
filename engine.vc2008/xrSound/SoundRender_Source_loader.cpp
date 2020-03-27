@@ -68,9 +68,7 @@ void CSoundRender_Source::LoadWave	(LPCSTR pName)
 	vorbis_info* ovi		= ov_info(&ovf,-1);
 	// verify
 	R_ASSERT3				(ovi,"Invalid source info:",pName);
-	R_ASSERT3				(ovi->rate>=44100,"Invalid source rate:",pName);
-	if (ovi->rate != 44100)
-		Msg("! Warning source rate !=44100.");
+	R_ASSERT3				(ovi->rate==44100,"Invalid source rate:",pName);
 
 #ifdef DEBUG
 	if(ovi->channels==2)
@@ -140,11 +138,12 @@ void CSoundRender_Source::load(LPCSTR name)
 	strconcat			(sizeof(fn),fn,N,".ogg");
 	if (!FS.exist("$level$",fn))	FS.update_path	(fn,"$game_sounds$",fn);
 
-#ifdef _EDITOR
-	if (!FS.exist(fn)){ 
+	if (!FS.exist(fn))
+	{
+		Msg("! Can`t find sound '%s'", name);
 		FS.update_path	(fn,"$game_sounds$","$no_sound.ogg");
     }
-#endif
+
 	LoadWave			(fn);
 	SoundRender->cache.cat_create	(CAT, dwBytesTotal);
 }
