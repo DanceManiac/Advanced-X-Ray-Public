@@ -73,6 +73,7 @@ private:
 	float							drop_width;
 	float							drop_angle;
 	float							drop_max_wind_vel;
+	float							drop_max_angle;
 
 	// Sounds
 	ref_sound						snd_Ambient;

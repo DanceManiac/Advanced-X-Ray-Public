@@ -9,7 +9,6 @@ static const float	source_radius		= 12.5f;
 static const float	source_offset		= 40.f;
 static const float	max_distance		= source_offset*1.25f;
 static const float	sink_offset			= -(max_distance-source_offset);
-static const float	drop_max_angle		= deg2rad(10.f);
 
 const int	max_particles		= 1000;
 const int	particles_cache		= 400;

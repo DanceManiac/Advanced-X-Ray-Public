@@ -20,7 +20,6 @@ static const float	source_radius		= 12.5f;
 static const float	source_offset		= 40.f;
 static const float	max_distance		= source_offset*1.25f;
 static const float	sink_offset			= -(max_distance-source_offset);
-static const float	drop_max_angle		= deg2rad(10.f);
 
 const int	max_particles		= 1000;
 const int	particles_cache		= 400;
@@ -45,6 +44,7 @@ CEffect_Rain::CEffect_Rain()
 		drop_width = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
 		drop_angle = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_angle", 3.0f);
 		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 20.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_angle", 20.0f));
 	}
 	else
 	{
@@ -54,6 +54,7 @@ CEffect_Rain::CEffect_Rain()
 		drop_width = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_width", 0.30f);
 		drop_angle = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_angle", 3.0f);
 		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 20.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_angle", 20.0f));
 	}
 
 
