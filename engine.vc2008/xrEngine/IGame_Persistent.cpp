@@ -23,6 +23,12 @@
 
 ENGINE_API	IGame_Persistent*		g_pGamePersistent	= NULL;
 
+//ECO_RENDER add
+bool IGame_Persistent::IsMainMenuActive()
+{
+    return g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive();
+}
+
 IGame_Persistent::IGame_Persistent	()
 {
 	RDEVICE.seqAppStart.Add			(this);

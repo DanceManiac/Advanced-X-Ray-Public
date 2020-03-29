@@ -68,6 +68,7 @@ public:
 	void							Prefetch			( );
 #endif
 	IMainMenu*						m_pMainMenu;	
+    static bool 					IsMainMenuActive	();
 
 
 	virtual bool					OnRenderPPUI_query	() { return FALSE; };	// should return true if we want to have second function called
