@@ -232,10 +232,14 @@ extern int ps_no_scale_on_fade;
 
 void CDetailManager::UpdateVisibleM()
 {
-#pragma todo				("M.F.S. Team WARNING: UNCOMMENT 3 STRING DOWN IN RELEASE")
-	//for (int i = 0; i != 3; i++)
-		//for (auto& vis : m_visibles[i])
-			//vis.clear();
+	for (int i = 0; i != 3; i++)
+	{
+		vis_list::iterator it = m_visibles[i].begin();
+		vis_list::iterator ite = m_visibles[i].end();
+	
+		for (; it != ite; ++it)
+			it->clear_not_free();
+	}
 
 	Fvector		EYE				= RDEVICE.vCameraPosition_saved;
 
