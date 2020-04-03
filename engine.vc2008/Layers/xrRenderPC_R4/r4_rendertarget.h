@@ -50,6 +50,7 @@ public:
 	IBlender*					b_ssao_msaa[8];
 	IBlender*					b_sunshafts;
 	IBlender*					b_rain_drops;
+    IBlender* 					b_fxaa;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -125,6 +126,9 @@ private:
 	ref_shader					s_sunshafts;
 	// RAIN DROPS
 	ref_shader					s_rain_drops;
+    //FXAA
+    ref_shader 					s_fxaa;
+    ref_geom 					g_fxaa;
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -259,6 +263,7 @@ public:
 	BOOL						u_DBT_enable			(float zMin, float zMax);
 	void						u_DBT_disable			();
 	void						phase_rain_drops		();
+    void 						phase_fxaa				();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

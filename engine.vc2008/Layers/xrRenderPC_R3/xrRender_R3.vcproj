@@ -834,6 +834,14 @@
 					RelativePath="blender_rain_drops.h"
 					>
 				</File>
+				<File
+					RelativePath="blender_fxaa.cpp"
+					>
+				</File>
+				<File
+					RelativePath="blender_fxaa.h"
+					>
+				</File>
 			<Filter
 				Name="R1"
 				>
@@ -1148,6 +1156,10 @@
 			</File>
 			<File
 				RelativePath=".\r3_rendertarget_phase_rain_drops.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\r3_rendertarget_phase_FXAA.cpp"
 				>
 			</File>
 			<Filter

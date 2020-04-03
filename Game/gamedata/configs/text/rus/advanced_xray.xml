@@ -60,4 +60,7 @@
 	<string id="ui_mm_sun_details">
 		<text>Тень от травы</text>
 	</string>
+	<string id="ui_mm_fxaa">
+		<text>FXAA Сглаживание</text>
+	</string>
 </string_table>

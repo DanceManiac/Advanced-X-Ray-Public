@@ -109,6 +109,7 @@ xr_token							qminmax_sm_token					[ ]={
 extern int			psSkeletonUpdate;
 extern float		r__dtex_range;
 
+int 		ps_r2_fxaa 					= 0		;
 //int		ps_r__Supersample			= 1		;
 int			ps_r__LightSleepFrames		= 10	;
 
@@ -951,6 +952,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Token,		"r3_minmax_sm",					&ps_r3_minmax_sm,			qminmax_sm_token);
 	CMD4(CCC_detail_radius, "r__detail_radius",			&ps_r__detail_radius,		49, 300				);
 	CMD4(CCC_Integer, "r__no_scale_on_fade",			&ps_no_scale_on_fade,		0, 1				); //Alundaio
+    CMD4(CCC_Integer, "r2_fxaa", 						&ps_r2_fxaa, 				0, 1				);
 
 
 

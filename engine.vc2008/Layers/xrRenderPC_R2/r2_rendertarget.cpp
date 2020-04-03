@@ -13,6 +13,7 @@
 #include "blender_ssao.h"
 #include "blender_ss_sunshafts.h"
 #include "blender_rain_drops.h"
+#include "blender_fxaa.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -214,6 +215,8 @@ CRenderTarget::CRenderTarget		()
 	b_combine						= xr_new<CBlender_combine>				();
 	b_sunshafts						= new CBlender_sunshafts				();
 	b_rain_drops					= xr_new<CBlender_rain_drops>			();
+    //FXAA
+    b_fxaa 							= new CBlender_FXAA						();
 
 	//	NORMAL
 	{
@@ -371,6 +374,10 @@ CRenderTarget::CRenderTarget		()
 		s_ssao.create				(b_ssao, "r2\\ssao");
 	}
 
+	//FXAA
+	s_fxaa.create(b_fxaa, "r3\\fxaa");
+	g_fxaa.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
+		
 	//SSAO
 	if (RImplementation.o.ssao_blur_on)
 	{
@@ -654,6 +661,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_occq					);
 	xr_delete					(b_sunshafts			);
 	xr_delete					(b_rain_drops			);
+    xr_delete					(b_fxaa					); //FXAA
 }
 
 void CRenderTarget::reset_light_marker( bool bResetStencil)

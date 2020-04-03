@@ -354,6 +354,14 @@ void	CRenderTarget::phase_combine	()
 		if (ps_r2_raindrops_flags.test(RFLAG_RAINDROPS))
 			phase_rain_drops();
 	}
+	
+    //FXAA
+    if (ps_r2_fxaa)
+    {
+        PIX_EVENT(FXAA);
+        phase_fxaa();
+        RCache.set_Stencil(FALSE);
+    }
 
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.

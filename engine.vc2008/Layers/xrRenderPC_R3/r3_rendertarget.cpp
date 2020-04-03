@@ -15,6 +15,7 @@
 #include "../xrRenderDX10/msaa/dx10MSAABlender.h"
 #include "../xrRenderDX10/DX10 Rain/dx10RainBlender.h"
 #include "blender_rain_drops.h"
+#include "blender_fxaa.h"
 
 
 #include "../xrRender/dxRenderDeviceRender.h"
@@ -318,6 +319,8 @@ CRenderTarget::CRenderTarget		()
 	b_ssao					= xr_new<CBlender_SSAO_noMSAA>			();
 	b_sunshafts				= new CBlender_sunshafts				();
 	b_rain_drops			= xr_new<CBlender_rain_drops>			();
+    //FXAA
+    b_fxaa 					= new CBlender_FXAA						();
 
 	if( RImplementation.o.dx10_msaa )
 	{
@@ -396,6 +399,7 @@ CRenderTarget::CRenderTarget		()
 		// generic(LDR) RTs
 		rt_Generic_0.create		(r2_RT_generic0,w,h,D3DFMT_A8R8G8B8, 1		);
 		rt_Generic_1.create		(r2_RT_generic1,w,h,D3DFMT_A8R8G8B8, 1		);
+        rt_Generic.create		(r2_RT_generic,w,h, D3DFMT_A8R8G8B8, 1		);
 
 		// RT - KD
 		rt_sunshafts_0.create(r2_RT_sunshafts0, w, h, D3DFMT_A8R8G8B8);
@@ -405,7 +409,7 @@ CRenderTarget::CRenderTarget		()
 		{
 			rt_Generic_0_r.create(r2_RT_generic0_r,w,h,D3DFMT_A8R8G8B8, SampleCount	);
 			rt_Generic_1_r.create(r2_RT_generic1_r,w,h,D3DFMT_A8R8G8B8, SampleCount		);
-			rt_Generic.create	 (r2_RT_generic,w,h,   D3DFMT_A8R8G8B8, 1		);
+			//rt_Generic.create	 (r2_RT_generic,w,h,   D3DFMT_A8R8G8B8, 1		);
 		}
 
 		// DWM: create new rt for PP
@@ -648,6 +652,10 @@ CRenderTarget::CRenderTarget		()
 
 		s_ssao.create				(b_ssao, "r2\\ssao");
 	}
+	
+    //FXAA
+    s_fxaa.create(b_fxaa, "r3\\fxaa");
+    g_fxaa.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 
     if (RImplementation.o.ssao_blur_on)
 	{
@@ -1038,6 +1046,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_ssao					);
 	xr_delete					(b_sunshafts			);
 	xr_delete					(b_rain_drops			);
+    xr_delete					(b_fxaa					); //FXAA
 
    if( RImplementation.o.dx10_msaa )
    {
