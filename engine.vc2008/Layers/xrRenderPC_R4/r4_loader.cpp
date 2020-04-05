@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "r4.h"
+#include "r2_puddles.h"
 #include "../xrRender/ResourceManager.h"
 #include "../xrRender/fbasicvisual.h"
 #include "../../xrEngine/fmesh.h"
@@ -15,10 +16,10 @@
 
 #include "../xrRender/FHierrarhyVisual.h"
 
-#pragma warning(push)
+/*#pragma warning(push)
 #pragma warning(disable:4995)
 #include <malloc.h>
-#pragma warning(pop)
+#pragma warning(pop)*/
 
 void CRender::level_Load(IReader* fs)
 {
@@ -124,6 +125,9 @@ void CRender::level_Unload()
 
 	u32 I;
 
+	// Puddles
+	Puddles->Load();
+	
 	// HOM
 	HOM.Unload				();
 

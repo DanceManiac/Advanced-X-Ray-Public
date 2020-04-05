@@ -2,6 +2,7 @@
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
 
+#include "r2_puddles.h"
 #include "../xrRender/dxEnvironmentRender.h"
 
 #define STENCIL_CULL 0
@@ -352,6 +353,9 @@ void	CRenderTarget::phase_combine	()
 		if (ps_r2_raindrops_flags.test(RFLAG_RAINDROPS))
 			phase_rain_drops();
 	}
+	
+	if (Puddles->m_bLoaded)
+		phase_puddles();
 
     //FXAA
     if (ps_r2_fxaa)

@@ -271,6 +271,7 @@ CRenderTarget::CRenderTarget		()
 
 	// OCCLUSION
 	s_occq.create					(b_occq,		"r2\\occq");
+	s_water.create					("effects\\puddles", "water\\water_water");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;

@@ -101,6 +101,9 @@ private:
     //FXAA
     ref_shader 					s_fxaa;
     ref_geom 					g_fxaa;
+	
+	// Water
+	ref_shader					s_water;
 
 	// Accum
 	ref_shader					s_accum_mask	;
@@ -231,6 +234,7 @@ public:
 	void						phase_vol_accumulator	();
 	void						phase_rain_drops		();
     void 						phase_fxaa				();
+	void						phase_puddles        	();
 	void						shadow_direct			(light* L, u32 dls_phase);
 
 	bool						need_to_render_sunshafts();

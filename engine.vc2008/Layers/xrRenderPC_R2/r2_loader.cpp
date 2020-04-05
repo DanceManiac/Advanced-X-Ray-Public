@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "r2.h"
+#include "r2_puddles.h"
 #include "../xrRender/ResourceManager.h"
 #include "../xrRender/fbasicvisual.h"
 #include "../../xrEngine/fmesh.h"
@@ -10,10 +11,12 @@
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
-#pragma warning(push)
+/*#pragma warning(push)
 #pragma warning(disable:4995)
 #include <malloc.h>
-#pragma warning(pop)
+#pragma warning(pop)*/
+
+CPuddles *Puddles;
 
 void CRender::level_Load(IReader* fs)
 {
@@ -89,6 +92,10 @@ void CRender::level_Load(IReader* fs)
 //	g_pGamePersistent->LoadTitle("st_loading_sectors_portals");
 	g_pGamePersistent->LoadTitle();
 	LoadSectors					(fs);
+	
+	// Puddles
+	Puddles = xr_new<CPuddles>();
+	Puddles->Load();
 
 	// HOM
 	HOM.Load					();
@@ -115,6 +122,9 @@ void CRender::level_Unload()
 	if (!b_loaded)				return;
 
 	u32 I;
+	
+	// Puddles
+	Puddles->Unload();
 
 	// HOM
 	HOM.Unload				();

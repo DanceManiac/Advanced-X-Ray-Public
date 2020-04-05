@@ -132,6 +132,9 @@ private:
 	ref_rt						rt_half_depth;
 	ref_shader					s_ssao;
 	ref_shader					s_ssao_msaa[8];
+	
+	// Puddles
+	ref_shader					s_water;
 
 	// Accum
 	ref_shader					s_accum_mask	;
@@ -259,6 +262,7 @@ public:
 	void						u_DBT_disable			();
 	void						phase_rain_drops		();
     void 						phase_fxaa				();
+	void						phase_puddles			();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

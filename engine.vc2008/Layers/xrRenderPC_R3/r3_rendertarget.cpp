@@ -425,6 +425,8 @@ CRenderTarget::CRenderTarget		()
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
 	// RAIN DROPS
 	s_rain_drops.create(b_rain_drops, "r2\\sgm_rain_drops");
+	// Puddles
+	s_water.create					("effects\\puddles", "water\\water_water");
 
 	// OCCLUSION
 	s_occq.create					(b_occq,		"r2\\occq");

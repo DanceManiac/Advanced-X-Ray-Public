@@ -1091,6 +1091,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\r2_puddles.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\r2_puddles.h"
+				>
+			</File>
+			<File
 				RelativePath="..\xrRender\uber_deffer.cpp"
 				>
 			</File>
@@ -1404,6 +1412,10 @@
 			</File>
 			<File
 				RelativePath=".\r2_rendertarget_phase_FXAA.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\r2_rendertarget_phase_puddles.cpp"
 				>
 			</File>
 			<Filter

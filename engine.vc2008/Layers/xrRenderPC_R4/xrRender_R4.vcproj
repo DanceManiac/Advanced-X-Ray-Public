@@ -815,6 +815,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\r3_puddles.cpp"
+				>
+			</File>
+			<File
+				RelativePath="r2_puddles.h"
+				>
+			</File>
+			<File
 				RelativePath=".\dx11HDAOCSBlender.cpp"
 				>
 			</File>
@@ -1176,6 +1184,10 @@
 			</File>
 			<File
 				RelativePath=".\r4_rendertarget_phase_FXAA.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\r2_rendertarget_phase_puddles.cpp"
 				>
 			</File>
 			<Filter

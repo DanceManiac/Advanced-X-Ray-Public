@@ -438,6 +438,8 @@ CRenderTarget::CRenderTarget		()
 	s_occq.create					(b_occq,		"r2\\occq");
 	// RAIN DROPS
 	s_rain_drops.create(b_rain_drops, "r2\\sgm_rain_drops");
+	// Puddles
+	s_water.create							("effects\\puddles", "water\\water_water");
     //FXAA
     s_fxaa.create(b_fxaa, "r3\\fxaa");
     g_fxaa.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);

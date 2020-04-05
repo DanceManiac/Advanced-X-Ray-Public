@@ -193,6 +193,8 @@ private:
 	// Luminance
 	ref_shader			s_luminance;
 	float						f_luminance_adapt;
+	
+	ref_shader				s_water;
 
 	// Combine
 	ref_geom					g_KD;
@@ -264,6 +266,7 @@ public:
 	void						u_DBT_disable			();
 	void						phase_rain_drops		();
     void 						phase_fxaa				();
+	void						phase_puddles			();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

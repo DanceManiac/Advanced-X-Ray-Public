@@ -979,6 +979,11 @@ HRESULT	CRender::shader_compile			(
 	{
 		sh_name[len]='0'; ++len;
 	}
+	
+	// Puddles
+	defines[def_it].Name = "USE_PUDDLES";
+	defines[def_it].Definition = "1";
+	def_it++;
 
 	// finish
 	defines[def_it].Name			=	0;
