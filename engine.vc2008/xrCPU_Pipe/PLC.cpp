@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-const	float		S_distance		= 48;
+const	float		S_distance		= 192;
 const	float		S_distance2		= S_distance*S_distance;
 
 const	float		S_fade			= 4.5;
