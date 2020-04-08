@@ -373,15 +373,20 @@ void CALLBACK PreErrorHandler	(INT_PTR)
 	if (*g_bug_report_file)
 		BT_AddLogFile		(g_bug_report_file);
 
-	string_path dumpPath;
-	if (FS.path_exist("$app_data_root$"))
-		FS.update_path(dumpPath, "$app_data_root$", dumpPath);
-	xr_strcat(dumpPath, "reports");
-
-	BT_SetReportFilePath(dumpPath);
 	BT_MakeSnapshot			( 0 );
 #endif // USE_BUG_TRAP
 }
+
+void xrDebug::OnFileSystemInitialized()
+{
+	string_path dumpPath;
+	if (FS.path_exist("$app_data_root$"))
+	{
+		if (FS.update_path(dumpPath, "$app_data_root$", "reports"))
+			BT_SetReportFilePath(dumpPath);
+	}
+}
+
 
 #ifdef USE_BUG_TRAP
 void SetupExceptionHandler	(const bool &dedicated)

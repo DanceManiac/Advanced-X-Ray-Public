@@ -14,6 +14,7 @@ private:
 public:
 	void			_initialize			(const bool &dedicated);
 	void			_destroy			();
+	static void		OnFileSystemInitialized();
 	
 public:
 	crashhandler*	get_crashhandler	()							{ return handler;	};
