@@ -4,6 +4,8 @@
 #include "xrdebug.h"
 #include "os_clipboard.h"
 
+#include "../xrGameSpy/xrGameSpy_MainDefs.h"
+
 #include <sal.h>
 #include "dxerr.h"
 
@@ -371,6 +373,12 @@ void CALLBACK PreErrorHandler	(INT_PTR)
 	if (*g_bug_report_file)
 		BT_AddLogFile		(g_bug_report_file);
 
+	string_path dumpPath;
+	if (FS.path_exist("$app_data_root$"))
+		FS.update_path(dumpPath, "$app_data_root$", dumpPath);
+	xr_strcat(dumpPath, "reports");
+
+	BT_SetReportFilePath(dumpPath);
 	BT_MakeSnapshot			( 0 );
 #endif // USE_BUG_TRAP
 }
@@ -391,14 +399,14 @@ void SetupExceptionHandler	(const bool &dedicated)
 	BT_SetDialogMessage				(
 		BTDM_INTRO2,
 		"\
-This is X-Ray Engine v1.6 crash reporting client. \
+This is Advanced X-Ray Engine crash reporting client. \
 To help the development process, \
 please Submit Bug or save report and email it manually (button More...).\
 \r\nMany thanks in advance and sorry for the inconvenience."
 	);
 
 	BT_SetPreErrHandler		(PreErrorHandler,0);
-	BT_SetAppName			("XRay Engine");
+	BT_SetAppName			("Advanced X-Ray Engine " GAME_VERSION);
 	BT_SetReportFormat		(BTRF_TEXT);
 	BT_SetFlags				(/**/BTF_DETAILEDMODE | /**BTF_EDIETMAIL | /**/BTF_ATTACHREPORT /**| BTF_LISTPROCESSES /**| BTF_SHOWADVANCEDUI /**| BTF_SCREENCAPTURE/**/);
 
@@ -448,9 +456,8 @@ please Submit Bug or save report and email it manually (button More...).\
 #endif // #ifndef MASTER_GOLD
 
 	BT_SetDumpType			(minidump_flags);
-	BT_SetSupportEMail		("cop-crash-report@stalker-game.com");
-//	BT_SetSupportServer		("localhost", 9999);
-//	BT_SetSupportURL		("www.gsc-game.com");
+	BT_SetSupportEMail		("mfs.team@yandex.ru");
+	BT_SetSupportURL		("https://vk.com/mfs_studio");
 }
 #endif // USE_BUG_TRAP
 
