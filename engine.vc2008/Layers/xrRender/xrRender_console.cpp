@@ -101,6 +101,20 @@ xr_token							qminmax_sm_token					[ ]={
 	{ 0,							0												}
 };
 
+//M.F.S. Team Color Drag Preset
+u32			ps_clr_preset			=	2	;
+xr_token							qclrdrag_token						[ ]={
+	{ "Default_clr",				0											},
+	{ "Sepia",						1											},
+	{ "Gray_moss",					2											},
+	{ "Graphite_gray",				3											},
+	{ "Zone",						4											},
+	{ "Misery",						5											},
+	{ "Warm_tone",					6											},
+	{ "Blue",						7											},
+	{ 0,							0											}
+};
+
 //	“Off”
 //	“DX10.0 style [Standard]”
 //	“DX10.1 style [Higher quality]”
@@ -263,6 +277,10 @@ float		ps_current_detail_scale = 1.f;
 float		ps_r2_ss_sunshafts_length = 1.f;
 float		ps_r2_ss_sunshafts_radius = 1.f;
 float		droplets_power_debug = 0.f;
+
+float 		ps_rcol = 1;
+float 		ps_gcol = 1;
+float 		ps_bcol = 1;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
@@ -485,6 +503,33 @@ public:
 			case 2:		xr_strcpy(_cfg, "rspec_default.ltx");	break;
 			case 3:		xr_strcpy(_cfg, "rspec_high.ltx");		break;
 			case 4:		xr_strcpy(_cfg, "rspec_extreme.ltx");	break;
+		}
+		FS.update_path			(_cfg,"$game_config$",_cfg);
+		strconcat				(sizeof(cmd),cmd,"cfg_load", " ", _cfg);
+		Console->Execute		(cmd);
+	}
+};
+
+//M.F.S. Team Color Drag Preset------------------------------------------
+class	CCC_ps_clr_preset		: public CCC_Token
+{
+public:
+	CCC_ps_clr_preset(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N,V,T)	{}	;
+
+	virtual void	Execute	(LPCSTR args)	{
+		CCC_Token::Execute	(args);
+		string_path		_cfg;
+		string_path		cmd;
+		
+		switch	(*value)	{
+			case 0:		xr_strcpy(_cfg, "clr_default.ltx");			break;
+			case 1:		xr_strcpy(_cfg, "clr_sepia.ltx");			break;
+			case 2:		xr_strcpy(_cfg, "clr_gray_moss.ltx");		break;
+			case 3:		xr_strcpy(_cfg, "clr_graphite_gray.ltx");	break;
+			case 4:		xr_strcpy(_cfg, "clr_zone.ltx");			break;
+			case 5:		xr_strcpy(_cfg, "clr_misery.ltx");			break;
+			case 6:		xr_strcpy(_cfg, "clr_warm_tone.ltx");		break;
+			case 7:		xr_strcpy(_cfg, "clr_blue.ltx");			break;
 		}
 		FS.update_path			(_cfg,"$game_config$",_cfg);
 		strconcat				(sizeof(cmd),cmd,"cfg_load", " ", _cfg);
@@ -719,6 +764,7 @@ public:
 void		xrRender_initconsole	()
 {
 	CMD3(CCC_Preset,	"_preset",				&ps_Preset,	qpreset_token	);
+	CMD3(CCC_ps_clr_preset,	"r2_clr_preset",	&ps_clr_preset,	qclrdrag_token	);
 
 	CMD4(CCC_Integer,	"rs_skeleton_update",	&psSkeletonUpdate,	2,		128	);
 #ifdef	DEBUG
@@ -823,6 +869,10 @@ void		xrRender_initconsole	()
 
 	CMD3(CCC_Mask,		"r__actor_shadow",		&ps_actor_shadow_flags,		RFLAG_ACTOR_SHADOW);  //Swartz
 	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_raindrops_flags,		RFLAG_RAINDROPS);
+	
+	CMD4(CCC_Float,		"r_color_r",			&ps_rcol,					0.0f,	2.55f	);
+	CMD4(CCC_Float,		"r_color_g",			&ps_gcol,					0.0f,	2.55f	);
+	CMD4(CCC_Float,		"r_color_b",			&ps_bcol,					0.0f,	2.55f	);
 
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);

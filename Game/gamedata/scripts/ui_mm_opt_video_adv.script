@@ -287,4 +287,22 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 
 	btn = xml:Init3tButton("video_adv:btn_to_simply", self)
 	handler:Register(btn, "btn_simply_graphic")
+
+--Цветокоррекция: Интенсивность красного
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_color_r", _st)
+	xml:InitTrackBar("video_adv:track_color_r", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+
+--Цветокоррекция: Интенсивность зелёного
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_color_g", _st)
+	xml:InitTrackBar("video_adv:track_color_g", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+
+--Цветокоррекция: Интенсивность синего
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_color_b", _st)
+	xml:InitTrackBar("video_adv:track_color_b", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
 end

@@ -146,6 +146,10 @@ extern ECORE_API float			ps_r2_ss_sunshafts_length;
 extern ECORE_API float			ps_r2_ss_sunshafts_radius;
 extern u32						ps_sunshafts_mode;
 
+extern ECORE_API float			ps_rcol;
+extern ECORE_API float			ps_gcol;
+extern ECORE_API float			ps_bcol;
+
 
 enum
 {

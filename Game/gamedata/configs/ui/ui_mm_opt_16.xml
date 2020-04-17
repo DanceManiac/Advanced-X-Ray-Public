@@ -110,32 +110,44 @@
 	            <d r="70" g="70" b="70"/>
 		    </text_color>
         </list_resolution>
+		
+        <cap_clr_drag_preset x="12" y="93" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_drag_preset</text>
+        </cap_clr_drag_preset>
+        <combo_clr_drag_preset x="140" y="95" width="188" height="20" always_show_scroll="1">
+            <options_item entry="r2_clr_preset" group="mm_opt_video" depend="runtime"/>
+            <list_font r="170" g="170" b="170" font="letterica16"/>
+		    <text_color>
+	            <e r="170" g="170" b="170"/>
+	            <d r="70" g="70" b="70"/>
+		    </text_color>
+        </combo_clr_drag_preset>
 
-        <cap_gamma x="12" y="93" width="108" height="24">
+        <cap_gamma x="12" y="123" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_gamma</text>
         </cap_gamma>
-        <track_gamma x="140" y="97" width="188" height="16">
+        <track_gamma x="140" y="127" width="188" height="16">
             <options_item entry="rs_c_gamma" group="mm_opt_video" depend="runtime"/>
         </track_gamma>
 
-        <cap_contrast x="12" y="123" width="108" height="24">
+        <cap_contrast x="12" y="153" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_contrast</text>
         </cap_contrast>
-        <track_contrast x="140" y="127" width="188" height="16">
+        <track_contrast x="140" y="157" width="188" height="16">
             <options_item entry="rs_c_contrast" group="mm_opt_video" depend="runtime"/>
         </track_contrast>
 
-        <cap_brightness x="12" y="153" width="108" height="24">
+        <cap_brightness x="12" y="183" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_brightness</text>
         </cap_brightness>
-        <track_brightness x="140" y="157" width="188" height="16">
+        <track_brightness x="140" y="187" width="188" height="16">
             <options_item entry="rs_c_brightness" group="mm_opt_video" depend="runtime"/>
         </track_brightness>
 
-        <cap_fullscreen x="12" y="183" width="108" height="24">
+        <cap_fullscreen x="12" y="213" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_fullscreen</text>
         </cap_fullscreen>
-        <check_fullscreen x="129" y="180" width="35" stretch="1" height="29">
+        <check_fullscreen x="129" y="210" width="35" stretch="1" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="rs_fullscreen" group="mm_opt_video" depend="vid"/>
         </check_fullscreen>
@@ -288,6 +300,36 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="r2_fxaa" group="mm_opt_video_adv" depend="vid"/>
         </check_fxaa>
+		
+        <cap_color_r x="15" y="3" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_red</text>
+        </cap_color_r>
+        <track_color_r x="132" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+            <options_item entry="r_color_r" group="mm_opt_video_adv"/>
+			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_color_r>
+		
+        <cap_color_g x="15" y="3" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_green</text>
+        </cap_color_g>
+        <track_color_g x="132" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+            <options_item entry="r_color_g" group="mm_opt_video_adv"/>
+			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_color_g>
+		
+        <cap_color_b x="15" y="3" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_blue</text>
+        </cap_color_b>
+        <track_color_b x="132" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+            <options_item entry="r_color_b" group="mm_opt_video_adv"/>
+			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_color_b>
 		
         <cap_geometry_lod x="15" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_geometry_lod</text>
