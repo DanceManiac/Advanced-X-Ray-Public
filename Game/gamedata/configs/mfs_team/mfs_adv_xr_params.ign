@@ -3,3 +3,4 @@ title =  "Advanced X-Ray 1.0.0" ;Название окна игры
 
 [gameplay]
 death_camera_mode = freelook ;;freelook|fixedlook|firsteye;;
+poltergeist_visible_corpse = true ;;Старая смерть полтергейстов true\false (вкл.\выкл.)

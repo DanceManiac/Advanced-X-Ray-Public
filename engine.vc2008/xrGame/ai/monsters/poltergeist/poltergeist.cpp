@@ -123,7 +123,9 @@ void CPoltergeist::Load(LPCSTR section)
 		m_tele->load	(section);
 	}
 
-	m_detection_pp_effector_name		= READ_IF_EXISTS(pSettings,r_string,section, "detection_pp_effector_name",		"");
+	m_dead_always_visible				= READ_IF_EXISTS(pSettings,r_bool,section, 	"dead_always_visible",			  false);
+	m_bPolterVisibleDie					= READ_IF_EXISTS(pSettings,r_bool,"gameplay", 	"poltergeist_visible_corpse", false);
+	m_detection_pp_effector_name		= READ_IF_EXISTS(pSettings,r_string,section, "detection_pp_effector_name",		 "");
 	m_detection_near_range_factor		= READ_IF_EXISTS(pSettings,r_float,section, "detection_near_range_factor",		2.f);
 	m_detection_far_range_factor		= READ_IF_EXISTS(pSettings,r_float,section, "detection_far_range_factor",		1.f);
 	m_detection_speed_factor			= READ_IF_EXISTS(pSettings,r_float,section, "detection_speed_factor",			1.f);
@@ -361,6 +363,7 @@ BOOL CPoltergeist::net_Spawn (CSE_Abstract* DC)
 void CPoltergeist::net_Destroy()
 {
 	inherited::net_Destroy();
+	CTelekinesis::deactivate();
 	Energy::disable();
 
 	ability()->on_destroy();
@@ -368,21 +371,26 @@ void CPoltergeist::net_Destroy()
 
 void CPoltergeist::Die(CObject* who)
 {
-// 	if (m_tele) {
-// 		if (state_invisible) {
-// 			setVisible(true);
-// 
-// 			if (PPhysicsShell()) {
-// 				Fmatrix M;
-// 				M.set							(XFORM());
-// 				M.translate_over				(m_current_position);
-// 				PPhysicsShell()->SetTransform	(M);
-// 			} else 
-// 				Position() = m_current_position;
-// 		}
-// 	}
+ 	if ((m_tele || m_dead_always_visible)  && m_bPolterVisibleDie == true)
+	{
+ 		if (state_invisible)
+		{
+ 			setVisible(true);
+ 
+ 			if (PPhysicsShell())
+			{
+ 				Fmatrix M;
+ 				M.set							(XFORM());
+ 				M.translate_over				(m_current_position);
+ 				PPhysicsShell()->SetTransform	(M, mh_unspecified);
+ 			} 
+			else 
+ 				Position() = m_current_position;
+ 		}
+ 	}
 
 	inherited::Die				(who);
+	CTelekinesis::deactivate();
 	Energy::disable				();
 
 	ability()->on_die			();

@@ -25,6 +25,8 @@ class CPoltergeist :	public CBaseMonster ,
 
 	float					m_height;
 	bool					m_disable_hide;
+	bool					m_dead_always_visible;
+	bool					m_bPolterVisibleDie;
 
 	SMotionVel				invisible_vel;
 
