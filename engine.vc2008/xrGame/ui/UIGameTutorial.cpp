@@ -98,6 +98,9 @@ CUISequencer::CUISequencer()
 
 void CUISequencer::Start(LPCSTR tutor_name)
 {
+	if (load_screen_renderer.IsActive() && xr_strcmp(tutor_name, "game_loaded") != 0)
+		return;
+
 	VERIFY						(m_sequencer_items.size()==0);
 	Device.seqFrame.Add			(this, REG_PRIORITY_LOW-10000);
 	
