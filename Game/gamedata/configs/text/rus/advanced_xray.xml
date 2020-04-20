@@ -99,4 +99,7 @@
 	<string id="ui_mm_clr_blue">
 		<text>Цветокоррекция: Синий</text>
 	</string>
+	<string id="ui_st_corpse_collision">
+		<text>Коллизия трупов</text>
+	</string>
 </string_table>
