@@ -102,4 +102,7 @@
 	<string id="ui_st_corpse_collision">
 		<text>Коллизия трупов</text>
 	</string>
+	<string id="ui_mm_smap_size">
+		<text>Размер карты теней</text>
+	</string>
 </string_table>

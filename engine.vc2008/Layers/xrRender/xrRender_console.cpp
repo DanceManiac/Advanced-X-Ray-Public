@@ -15,6 +15,21 @@ xr_token							qdt_ssr_samp_token[] = {
 	{ 0,							0												}
 };
 
+// SMAP Control
+
+u32 ps_r2_smapsize = 2048;
+xr_token qsmapsize_token[] =
+{
+    { "1024",						1024										},
+    { "1536",						1536										},
+    { "2048",						2048										},
+    { "2560",						2560										},
+    { "3072",						3072										},
+    { "4096",						4096										},
+    { "8192",						8192										},
+    { 0,							0											}
+};
+
 u32			ps_Preset				=	2	;
 xr_token							qpreset_token							[ ]={
 	{ "Minimum",					0											},
@@ -868,7 +883,8 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_allow_r1_lights",	&ps_r2_ls_flags,			R2FLAG_R1LIGHTS	);
 
 	CMD3(CCC_Mask,		"r__actor_shadow",		&ps_actor_shadow_flags,		RFLAG_ACTOR_SHADOW);  //Swartz
-	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_raindrops_flags,		RFLAG_RAINDROPS);
+	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_raindrops_flags,		RFLAG_RAINDROPS	);
+    CMD3(CCC_Token, 	"r2_smap_size", 		&ps_r2_smapsize, 			qsmapsize_token	);
 	
 	CMD4(CCC_Float,		"r_color_r",			&ps_rcol,					0.0f,	2.55f	);
 	CMD4(CCC_Float,		"r_color_g",			&ps_gcol,					0.0f,	2.55f	);
