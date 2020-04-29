@@ -120,9 +120,12 @@ float4 main ( v_aa_AA I ) : SV_Target
 	float4	s2 	=  s_image.Sample( smp_rtlinear, offset + I.Tex3*w);
 	float4	s3 	=  s_image.Sample( smp_rtlinear, offset + I.Tex4*w);
 
-	float3 	final	=  mblur( center, dc, (s0+s1+s2+s3)/4.h );
-	//final *= r_color_drag.rgb;
+    float3     final    =  mblur( center, dc, (s0+s1+s2+s3)/4.h );
 
-//	return combine_bloom(final,tex2D	(s_bloom, I.tc0));
-	return combine_bloom( final, s_bloom.Sample( smp_rtlinear, I.Tex0))* float4(r_color_drag.xyz, 1);
+    float4 o = combine_bloom( final, s_bloom.Sample( smp_rtlinear, I.Tex0));
+    
+    float oluma = dot(o.xyz, LUMINANCE_VECTOR);
+    
+    o.xyz = lerp(o.xyz, oluma, -r_color_drag.w) * r_color_drag.xyz; // vibrance|color correction
+    return o;
 }

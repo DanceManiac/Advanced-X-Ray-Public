@@ -110,7 +110,10 @@ c2_out main( v2p_aa_AA I )
 	float4 ptp = mul(m_P, float4(gbd.P, 1));
 	res.Depth = ptp.w==0?1:ptp.z/ptp.w;
 #endif
-
-	res.Color.xyz *= r_color_drag.xyz;
+	
+	float oluma = dot(res.Color.xyz, LUMINANCE_VECTOR);
+	
+	res.Color.xyz = lerp(res.Color.xyz, oluma, -r_color_drag.w) * r_color_drag.xyz;
+	
 	return res;
 }

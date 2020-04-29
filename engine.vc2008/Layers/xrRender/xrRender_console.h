@@ -155,6 +155,8 @@ extern ECORE_API float			ps_rcol;
 extern ECORE_API float			ps_gcol;
 extern ECORE_API float			ps_bcol;
 
+extern ECORE_API float			ps_saturation;
+
 
 enum
 {

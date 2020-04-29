@@ -328,6 +328,16 @@
 			</output_wnd>
         </track_color_b>
 		
+        <cap_saturation x="20" y="3" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_saturation</text>
+        </cap_saturation>
+        <track_cap_saturation x="170" y="6" width="158" height="16" min="-1.0" max="1.0" step="0.01">
+            <options_item entry="r_saturation" group="mm_opt_video_adv"/>
+			<output_wnd x="231" y="0" width="20" height="20" format="%f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_cap_saturation>
+		
         <cap_smap_size x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_smap_size</text>
         </cap_smap_size>

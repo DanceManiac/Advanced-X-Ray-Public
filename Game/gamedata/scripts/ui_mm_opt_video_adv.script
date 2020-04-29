@@ -312,4 +312,10 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_color_b", _st)
 	xml:InitTrackBar("video_adv:track_color_b", _st)
 	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+
+--Цветокоррекция: Цветовая насыщенность
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_saturation", _st)
+	xml:InitTrackBar("video_adv:track_cap_saturation", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
 end

@@ -69,8 +69,12 @@ half4 	main		( v2p I )	: COLOR
   half4 	s2 	=  tex2D	(s_image, offset + I.tc3*w);
   half4 	s3 	=  tex2D	(s_image, offset + I.tc4*w);
 
-	half3 	final	=  mblur	(center, dc, (s0+s1+s2+s3)/4.h);
-	final *= r_color_drag.rgb;
+    half3     final    =  mblur( center, dc, (s0+s1+s2+s3)/4.h );
 
-  return combine_bloom(final,tex2D	(s_bloom, I.tc0));
+    float4 o = combine_bloom(final,tex2D	(s_bloom, I.tc0));
+    
+    float oluma = dot(o.xyz, LUMINANCE_VECTOR);
+    
+    o.xyz = lerp(o.xyz, oluma, -r_color_drag.w) * r_color_drag.xyz; // saturation|color correction
+    return o;
 }

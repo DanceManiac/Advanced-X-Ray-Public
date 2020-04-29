@@ -297,6 +297,8 @@ float 		ps_rcol = 1;
 float 		ps_gcol = 1;
 float 		ps_bcol = 1;
 
+float 		ps_saturation = 0;
+
 Flags32		ps_actor_shadow_flags = { 0 };
 
 Flags32		ps_r2_raindrops_flags = { 0 };
@@ -889,6 +891,8 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r_color_r",			&ps_rcol,					0.0f,	2.55f	);
 	CMD4(CCC_Float,		"r_color_g",			&ps_gcol,					0.0f,	2.55f	);
 	CMD4(CCC_Float,		"r_color_b",			&ps_bcol,					0.0f,	2.55f	);
+	
+	CMD4(CCC_Float,		"r_saturation",			&ps_saturation,				-1.0f,	+1.0f	);
 
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);

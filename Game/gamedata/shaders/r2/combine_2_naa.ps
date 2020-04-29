@@ -46,8 +46,12 @@ half4 	main		( v2p I )	: COLOR
 			img		= lerp	(img,blurred,distort.z);
 #endif
 
-	//final *= r_color_drag.rgb;
- 	return 	combine_bloom		(img,bloom)* half4(r_color_drag.xyz, 1);
+ 	float4 final =	combine_bloom		(img,bloom);
+	
+	float luma = dot(final.xyz, LUMINANCE_VECTOR);
+	final.xyz = lerp(final.xyz, luma, -r_color_drag.w) * r_color_drag.xyz;
+	return final;
+	
 }
 /**/
 /*

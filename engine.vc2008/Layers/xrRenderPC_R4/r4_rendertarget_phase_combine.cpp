@@ -439,7 +439,8 @@ void	CRenderTarget::phase_combine	()
 		RCache.set_c				("m_current",	m_current);
 		RCache.set_c				("m_previous",	m_previous);
 		RCache.set_c				("m_blur",		m_blur_scale.x,m_blur_scale.y, 0,0);
-		RCache.set_c				("r_color_drag",ps_rcol,ps_gcol, ps_bcol,0);
+		RCache.set_c				("r_color_drag",ps_rcol, ps_gcol, ps_bcol, ps_saturation);
+		//RCache.set_c				("saturation",	ps_saturation, 0, 0, 0);
 		Fvector3					dof;
 		g_pGamePersistent->GetCurrentDof(dof);
 		RCache.set_c				("dof_params",	dof.x, dof.y, dof.z, ps_r2_dof_sky);
