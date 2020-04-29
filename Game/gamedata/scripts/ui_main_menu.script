@@ -30,18 +30,9 @@ function main_menu:InitControls()
 	self.message_box				= CUIMessageBoxEx()
 	self:Register					(self.message_box, "msg_box")
 
---/--==game_and_mod_ver==--
-	local _gVer = xml:InitStatic		("static_version",self)
-	local _mfsVer = xml:InitStatic		("mod_version",self)
-	local _mfs_studio	= xml:InitStatic("mfs_studio_info",self)
+	local _ver = xml:InitStatic		("static_version",self)
 	local mm						= _G.main_menu.get_main_menu()
-	_gVer:TextControl():SetText		("Advanced X-Ray ver. " .. mm:GetGSVer())
-
-	local ConfVer = ReadString("mfs_ver","version",ini_file("menu_configs.ltx"))
-	local Year = ReadString("Year","year",ini_file("menu_configs.ltx"))
-	_mfsVer:TextControl():SetText("G.S.W.R. Addon ver: Build "..ConfVer.." ")
-	_mfs_studio:TextControl():SetText("M.F.S. Team "..Year.."©. ")
---/--==game_and_mod_ver==--
+	_ver:TextControl():SetText		("Advanced X-Ray ver. " .. mm:GetGSVer())
 
     self.l_mgr = mm:GetLoginMngr()
     self.acc_mgr = mm:GetAccountMngr()

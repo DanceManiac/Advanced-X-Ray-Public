@@ -9,5 +9,5 @@
 //-VISUAL
 
 //Gamma-Ray CMD
-	//#define MFS_DEVELOPER_CMD
+	#define MFS_DEVELOPER_CMD
 //Gamma-Ray CMD
