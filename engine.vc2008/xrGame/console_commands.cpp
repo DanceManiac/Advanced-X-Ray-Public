@@ -1351,6 +1351,8 @@ public:
 	}
 };
 
+#endif // MASTER_GOLD
+
 class CCC_TimeFactor : public IConsole_Command {
 public:
 					CCC_TimeFactor	(LPCSTR N) : IConsole_Command(N) {}
@@ -1378,8 +1380,6 @@ public:
 		IConsole_Command::fill_tips( tips, mode );
 	}
 };
-
-#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
 
@@ -2034,8 +2034,8 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
 	CMD1(CCC_Script,		"run_script");
 	CMD1(CCC_ScriptCommand,	"run_string");
-	CMD1(CCC_TimeFactor,	"time_factor");		
 #endif // MASTER_GOLD
+	CMD1(CCC_TimeFactor,	"time_factor");		
 
 #ifdef MFS_DEVELOPER_CMD
 	CMD1(CCC_Spawn,			"g_spawn");

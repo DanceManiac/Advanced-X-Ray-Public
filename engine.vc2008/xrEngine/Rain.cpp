@@ -43,8 +43,8 @@ CEffect_Rain::CEffect_Rain()
 		drop_length = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_length", 5.0f);
 		drop_width = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
 		drop_angle = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_angle", 3.0f);
-		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 20.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_angle", 20.0f));
+		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 100.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_angle", 89.0f));
 	}
 	else
 	{
@@ -53,8 +53,8 @@ CEffect_Rain::CEffect_Rain()
 		drop_length = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_length", 5.0f);
 		drop_width = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_width", 0.30f);
 		drop_angle = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_angle", 3.0f);
-		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 20.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_angle", 20.0f));
+		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 100.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_angle", 89.0f));
 	}
 
 
@@ -74,7 +74,7 @@ void	CEffect_Rain::Born		(Item& dest, float radius)
 {
 	Fvector		axis;	
     axis.set			(0,-1,0);
-	float gust			= g_pGamePersistent->Environment().wind_strength_factor/10.f;
+	float gust			= g_pGamePersistent->Environment().wind_strength_factor;
 	float k				= g_pGamePersistent->Environment().CurrentEnv->wind_velocity*gust/drop_max_wind_vel;
 	clamp				(k,0.f,1.f);
 	float	pitch		= drop_max_angle*k-PI_DIV_2;
