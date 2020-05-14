@@ -1224,7 +1224,6 @@ public:
 */
 #endif
 
-#ifndef MASTER_GOLD
 #	include "game_graph.h"
 struct CCC_JumpToLevel : public IConsole_Command {
 	CCC_JumpToLevel(LPCSTR N) : IConsole_Command(N)  {};
@@ -1267,7 +1266,7 @@ struct CCC_JumpToLevel : public IConsole_Command {
 
 };
 
-//#ifndef MASTER_GOLD
+#ifndef MASTER_GOLD
 class CCC_Script : public IConsole_Command {
 public:
 	CCC_Script(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = false; };
@@ -2029,17 +2028,17 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 #endif // DEBUG
 
 #ifndef MASTER_GOLD
-	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
 	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
 	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
 	CMD1(CCC_Script,		"run_script");
 	CMD1(CCC_ScriptCommand,	"run_string");
-#endif // MASTER_GOLD
-	CMD1(CCC_TimeFactor,	"time_factor");		
+#endif // MASTER_GOLD	
 
 #ifdef MFS_DEVELOPER_CMD
 	CMD1(CCC_Spawn,			"g_spawn");
 	CMD1(CCC_SetWeather,	"set_weather");
+	CMD1(CCC_TimeFactor,	"time_factor");	
+	CMD1(CCC_JumpToLevel,	"jump_to_level")
 #endif // MFS_DEVELOPER_CMD
 
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
