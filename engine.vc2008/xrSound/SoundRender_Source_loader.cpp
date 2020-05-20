@@ -68,7 +68,9 @@ void CSoundRender_Source::LoadWave	(LPCSTR pName)
 	vorbis_info* ovi		= ov_info(&ovf,-1);
 	// verify
 	R_ASSERT3				(ovi,"Invalid source info:",pName);
-	R_ASSERT3				(ovi->rate==44100,"Invalid source rate:",pName);
+	R_ASSERT3				(ovi->rate>=44100,"Invalid source rate:",pName);
+	if (ovi->rate != 44100)
+		Msg("! Warning source rate !=44100.");
 
 #ifdef DEBUG
 	if(ovi->channels==2)
