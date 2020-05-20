@@ -77,6 +77,7 @@ private:
 
 	// Sounds
 	ref_sound						snd_Ambient;
+	ref_sound						snd_Wind;
 
 	// Utilities
 	void							p_create		();
