@@ -78,6 +78,8 @@ private:
 	// Sounds
 	ref_sound						snd_Ambient;
 	ref_sound						snd_Wind;
+	
+	bool							m_bWindWorking;
 
 	// Utilities
 	void							p_create		();

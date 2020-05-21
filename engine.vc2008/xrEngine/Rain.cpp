@@ -35,6 +35,7 @@ CEffect_Rain::CEffect_Rain()
 	
 	snd_Wind.create("ambient\\wind", st_Effect, sg_Undefined);
 	m_bWinterMode = READ_IF_EXISTS(pSettings, r_bool, "environment", "winter_mode", false);
+	m_bWindWorking = false;
 	
 	if (m_bWinterMode == false)
 	{
@@ -137,6 +138,7 @@ void	CEffect_Rain::OnFrame	()
 	// Parse states
 	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
 	float	wind_volume			= g_pGamePersistent->Environment().CurrentEnv->wind_velocity;
+	bool	wind_enabled		= (wind_volume >= EPS_L);
 	static float hemi_factor	= 0.f;
 #ifndef _EDITOR
 	CObject* E 					= g_pGameLevel->CurrentViewEntity();
@@ -157,6 +159,35 @@ void	CEffect_Rain::OnFrame	()
 	}
 #endif
 
+	if (!m_bWindWorking)
+	{
+		if (wind_enabled)
+		{
+			snd_Wind.play		(0,sm_Looped);
+			snd_Wind.set_position(Fvector().set(0,0,0));
+			snd_Wind.set_range	(source_offset,source_offset*2.f);	
+			
+			m_bWindWorking = true;
+		}
+	}
+	else
+	{
+		if (wind_enabled)
+		{
+			//Wind Sound
+			if (snd_Ambient._feedback())
+			{
+			//snd_Wind.set_volume	(_max(0.1f,wind_volume) * hemi_factor );
+			snd_Wind.set_volume	(wind_volume/10.f * hemi_factor);
+			}	
+		}
+		else
+		{
+			snd_Wind.stop();
+			m_bWindWorking = false;
+		}
+	}
+	
 	switch (state)
 	{
 	case stIdle:		
@@ -164,17 +195,13 @@ void	CEffect_Rain::OnFrame	()
 		state					= stWorking;
 		snd_Ambient.play		(0,sm_Looped);
 		snd_Ambient.set_position(Fvector().set(0,0,0));
-		snd_Ambient.set_range	(source_offset,source_offset*2.f);
-		
-		snd_Wind.play			(0,sm_Looped);
-		snd_Wind.set_position(Fvector().set(0,0,0));
-		snd_Wind.set_range	(source_offset,source_offset*2.f);		
+		snd_Ambient.set_range	(source_offset,source_offset*2.f);		
 	break;
 	case stWorking:
-		if (factor<EPS_L){
+		if (factor<EPS_L)
+		{
 			state				= stIdle;
 			snd_Ambient.stop	();
-			snd_Wind.stop		();
 			return;
 		}
 		break;
@@ -187,11 +214,6 @@ void	CEffect_Rain::OnFrame	()
 //		sndP.mad				(Device.vCameraPosition,Fvector().set(0,1,0),source_offset);
 //		snd_Ambient.set_position(sndP);
 		snd_Ambient.set_volume	(_max(0.1f,factor) * hemi_factor );
-	}
-	// Wind Sound
-	if (snd_Ambient._feedback())
-	{
-		snd_Wind.set_volume		(_max(0.1f,wind_volume) * hemi_factor );
 	}
 }
 
