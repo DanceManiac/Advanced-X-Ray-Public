@@ -88,8 +88,8 @@ void	CRenderTarget::phase_scene_begin	()
    }
    else
    {
-   	if (RImplementation.o.albedo_wo)	u_setrt		(rt_Position, rt_Accumulator,	pZB);
-	   else								u_setrt		(rt_Position,	rt_Color,		pZB);
+   	if (RImplementation.o.albedo_wo)	u_setrt		(rt_Position, rt_Accumulator,rt_DWMBuffer,	pZB);
+	   else								u_setrt		(rt_Position,	rt_Color,rt_DWMBuffer,		pZB);
 	   //else								u_setrt		(rt_Position,	rt_Color, rt_Normal,		pZB);
    }
 

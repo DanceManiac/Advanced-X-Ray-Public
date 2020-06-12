@@ -205,6 +205,22 @@ class cl_m_v2w : public R_constant_setup
 static cl_m_v2w binder_m_v2w;
 
 // DWM: set weather params
+
+class cl_rain_params : public R_constant_setup 
+{
+    virtual void setup(R_constant* C)
+    {
+        float wetness_accum    = g_pGamePersistent->Environment().wetness_accum;
+
+        LPCSTR wetness_comment = "Wetness accumulator:";
+
+            Log(wetness_comment, wetness_accum);
+
+        RCache.set_c (C, wetness_accum, 0, 0, 0);
+    }
+};
+static cl_rain_params binder_rain_params;
+
 class cl_u_weather : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -356,6 +372,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("m_view2world", &binder_m_v2w);
 	r_Constant("u_weather", &binder_u_weather);
 	r_Constant("screen_res_alt", &binder_screen_res);
+    r_Constant("puddles_accumulator", &binder_rain_params);
 
 	// matrices
 	r_Constant				("m_W",				&binder_w);

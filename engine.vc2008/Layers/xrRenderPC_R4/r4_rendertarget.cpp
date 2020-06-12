@@ -423,6 +423,7 @@ CRenderTarget::CRenderTarget		()
 
 		// DWM: create new rt for PP
 		rt_PPTemp.create("$user$genericpp", w, h, D3DFMT_A8R8G8B8, (RImplementation.o.dx10_msaa) ? (SampleCount) : (1));
+		rt_DWMBuffer.create("$user$dwmbuffer", w, h, D3DFMT_A8R8G8B8, (RImplementation.o.dx10_msaa) ? (SampleCount) : (1));
 
 		//	Igor: for volumetric lights
 		//	temp: for higher quality blends

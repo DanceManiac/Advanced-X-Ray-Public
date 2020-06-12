@@ -43,6 +43,8 @@
 
 	uniform float4 u_weather; // .xyz - sky color, .w - rain line param
 	uniform float4 screen_res_alt; // .xy - pos_decompression_params2.xy, .zw - screen_res.xy power to -1
+	uniform float4 puddles_accumulator; // .x - wetness accumulator, .yzw = 0
+	uniform float4x4	m_view2world;
 
 	float gbuf_get_depth(float2 texcoord)
 	{

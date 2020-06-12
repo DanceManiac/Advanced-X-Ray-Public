@@ -1,6 +1,10 @@
 #include "common.h"
 #include "sload.h"
 
+Texture2D s_pmask;
+	//uniform_sampler2D (s_mask, smp_base);
+//uniform sampler2D 	s_mask	: register(s1);
+
 #define	USE_4_DETAIL
 
 #if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
@@ -87,6 +91,10 @@ f_deffer 	main	( p_flat I 		)
 								Ne,	// hemi
 								float4 	(I.position.xyz + Ne.xyz*def_virtualh/2.h, 	ms			),	//
 								float4	(D.x,	D.y,	D.z,						G			) );	// OUT: rgb.gloss
+								
+#if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
+    O.DWM.x = s_pmask.Sample(smp_base, I.tcdbump).g * mask.g;
+#endif
 
   return O;
 }

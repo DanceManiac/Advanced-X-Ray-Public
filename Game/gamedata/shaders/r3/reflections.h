@@ -23,10 +23,15 @@
 			#undef SSR_QUALITY
 		#endif
 
-		#if (defined(USE_MSAA) && (defined(SM_4_1) || defined(SM_5)))
-			Texture2DMS <float3> s_pptemp; // For DX10.1 and DX11
+		#if defined(SSR_ROAD)
+			float3 eye_direction;
+			#define s_pptemp s_image
 		#else
-			Texture2D <float3> s_pptemp; // For DX10.0
+			#if (defined(USE_MSAA) && (defined(SM_4_1) || defined(SM_5)))
+				Texture2DMS <float3> s_pptemp; // For DX10.1 and DX11
+			#else
+				Texture2D <float3> s_pptemp; // For DX10.0
+			#endif
 		#endif
 
 		#if defined(SSR_QUALITY)
