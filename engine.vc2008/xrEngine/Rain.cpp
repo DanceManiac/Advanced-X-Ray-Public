@@ -50,6 +50,7 @@ CEffect_Rain::CEffect_Rain()
 	}
 	else
 	{
+		snd_Ambient.create("ambient\\rain", st_Effect, sg_Undefined); //Пусть пока будет, чтобы не было вылета
 		drop_speed_min = READ_IF_EXISTS(pSettings, r_float, "snow_params", "min_rain_drop_speed", 40.0f);
 		drop_speed_max = READ_IF_EXISTS(pSettings, r_float, "snow_params", "man_rain_drop_speed", 80.0f);
 		drop_length = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_length", 5.0f);
