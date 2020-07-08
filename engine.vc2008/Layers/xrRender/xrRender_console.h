@@ -157,6 +157,9 @@ extern ECORE_API float			ps_bcol;
 
 extern ECORE_API float			ps_saturation;
 
+extern ECORE_API float			ps_r2_rain_drops_intensity;
+extern ECORE_API float			ps_r2_rain_drops_speed;
+
 
 enum
 {
@@ -235,11 +238,12 @@ enum
 	RFLAG_ACTOR_SHADOW = (1 << 0),
 };
 
-extern ECORE_API Flags32 ps_r2_raindrops_flags;
+extern ECORE_API Flags32 ps_r2_rain_drops_flags;
 
 enum
 {
-	RFLAG_RAINDROPS = (1 << 0),
+	R2FLAG_RAIN_DROPS 			= (1 << 0),
+	R2FLAG_RAIN_DROPS_CONTROL 	= (1 << 0),
 };
 
 extern void						xrRender_initconsole	();

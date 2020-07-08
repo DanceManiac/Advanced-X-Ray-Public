@@ -1154,14 +1154,6 @@
 				>
 			</File>
 				<File
-					RelativePath="blender_rain_drops.cpp"
-					>
-				</File>
-				<File
-					RelativePath="blender_rain_drops.h"
-					>
-				</File>
-				<File
 					RelativePath="blender_fxaa.cpp"
 					>
 				</File>
@@ -1407,7 +1399,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\r2_rendertarget_phase_rain_drops.cpp"
+				RelativePath="..\xrRender\rendertarget_raindrops.cpp"
 				>
 			</File>
 			<File

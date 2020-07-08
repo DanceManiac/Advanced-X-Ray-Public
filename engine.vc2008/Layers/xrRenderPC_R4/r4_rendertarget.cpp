@@ -15,7 +15,6 @@
 #include "dx11HDAOCSBlender.h"
 #include "../xrRenderDX10/msaa/dx10MSAABlender.h"
 #include "../xrRenderDX10/DX10 Rain/dx10RainBlender.h"
-#include "blender_rain_drops.h"
 #include "blender_fxaa.h"
 
 
@@ -320,7 +319,6 @@ CRenderTarget::CRenderTarget		()
 	b_combine				= xr_new<CBlender_combine>			();
 	b_ssao					= xr_new<CBlender_SSAO_noMSAA>		();
 	b_sunshafts				= new CBlender_sunshafts			();
-	b_rain_drops			= xr_new<CBlender_rain_drops>		();
     //FXAA
     b_fxaa 					= new CBlender_FXAA					();
 
@@ -437,8 +435,6 @@ CRenderTarget::CRenderTarget		()
 
 	// OCCLUSION
 	s_occq.create					(b_occq,		"r2\\occq");
-	// RAIN DROPS
-	s_rain_drops.create(b_rain_drops, "r2\\sgm_rain_drops");
 	// Puddles
 	s_water.create							("effects\\puddles", "water\\water_water");
     //FXAA
@@ -728,6 +724,10 @@ CRenderTarget::CRenderTarget		()
 
 		t_envmap_0.create			(r2_T_envs0);
 		t_envmap_1.create			(r2_T_envs1);
+		
+		
+		s_rain_drops.create("raindrops");
+		g_rain_drops.create(fvf_aa_AA, RCache.Vertex.Buffer(), RCache.QuadIB);
 	}
 
 	// Build textures
@@ -1071,7 +1071,6 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_accum_direct			);
 	xr_delete					(b_ssao					);
 	xr_delete					(b_sunshafts			);
-	xr_delete					(b_rain_drops			);
     xr_delete					(b_fxaa					); //FXAA
 
    if( RImplementation.o.dx10_msaa )

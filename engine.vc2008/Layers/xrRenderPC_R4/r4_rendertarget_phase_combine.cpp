@@ -347,13 +347,6 @@ void	CRenderTarget::phase_combine	()
 		if (ps_r_sun_shafts > 0 && ps_sunshafts_mode == R2SS_SCREEN_SPACE)
 			phase_sunshafts();
 	}
-
-	// Rain drops and other
-	if (!_menu_pp)
-	{
-		if (ps_r2_raindrops_flags.test(RFLAG_RAINDROPS))
-			phase_rain_drops();
-	}
 	
     //FXAA
     if (ps_r2_fxaa)
@@ -368,6 +361,12 @@ void	CRenderTarget::phase_combine	()
 	BOOL	PP_Complex		= u_need_PP	() | (BOOL)RImplementation.m_bMakeAsyncSS;
 	if (_menu_pp)			PP_Complex	= FALSE;
 
+	if (!_menu_pp)
+	{
+		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS))
+			PhaseRainDrops();
+	}
+			
    // HOLGER - HACK
    PP_Complex = TRUE;
 

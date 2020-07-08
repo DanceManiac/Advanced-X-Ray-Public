@@ -297,11 +297,18 @@ float 		ps_rcol = 1;
 float 		ps_gcol = 1;
 float 		ps_bcol = 1;
 
+float		ps_r2_rain_drops_intensity = 0.00025f;
+float		ps_r2_rain_drops_speed = 1.25f;
+
 float 		ps_saturation = 0;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
-Flags32		ps_r2_raindrops_flags = { 0 };
+//Flags32		ps_r2_raindrops_flags = { 0 };
+
+Flags32		ps_r2_rain_drops_flags = { R2FLAG_RAIN_DROPS
+	| R2FLAG_RAIN_DROPS_CONTROL
+	};
 
 //- Mad Max
 float		ps_r2_gloss_factor			= 4.0f;
@@ -885,7 +892,6 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_allow_r1_lights",	&ps_r2_ls_flags,			R2FLAG_R1LIGHTS	);
 
 	CMD3(CCC_Mask,		"r__actor_shadow",		&ps_actor_shadow_flags,		RFLAG_ACTOR_SHADOW);  //Swartz
-	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_raindrops_flags,		RFLAG_RAINDROPS	);
     CMD3(CCC_Token, 	"r2_smap_size", 		&ps_r2_smapsize, 			qsmapsize_token	);
 	
 	CMD4(CCC_Float,		"r_color_r",			&ps_rcol,					0.0f,	2.55f	);
@@ -893,7 +899,11 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r_color_b",			&ps_bcol,					0.0f,	2.55f	);
 	
 	CMD4(CCC_Float,		"r_saturation",			&ps_saturation,				-1.0f,	+1.0f	);
-
+	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_rain_drops_flags,	R2FLAG_RAIN_DROPS	);	
+	CMD3(CCC_Mask,		"r2_rain_drops_control",&ps_r2_rain_drops_flags,	R2FLAG_RAIN_DROPS_CONTROL	);
+	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
+	CMD4(CCC_Float,		"r2_rain_drops_speed",	&ps_r2_rain_drops_speed, 	0.8f,	5.f		);
+	
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);
 	//- Mad Max
