@@ -75,7 +75,7 @@
 
 				float2 nfactor = clamp(Navg.xy * alpha * 0.1, -0.1, 0.1);
 
-				#if (defined(USE_MSAA) && (defined(SM_4_1) || defined(SM_5)))
+				#if defined(USE_MSAA)
 					float3	frame = s_pptemp.Load((tc + nfactor.xy) * screen_res_alt.xy, 0) * (1 - alpha) + nfactor.xxx;
 				#else
 					float3	frame = s_pptemp.Sample(smp_nofilter, tc + nfactor.xy) * (1 - alpha) + nfactor.xxx;

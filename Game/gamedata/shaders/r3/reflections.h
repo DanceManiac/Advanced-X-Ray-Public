@@ -27,8 +27,9 @@
 			float3 eye_direction;
 			#define s_pptemp s_image
 		#else
-			#if (defined(USE_MSAA) && (defined(SM_4_1) || defined(SM_5)))
-				Texture2DMS <float3> s_pptemp; // For DX10.1 and DX11
+			#if defined(USE_MSAA)
+				Texture2DMS <float4, MSAA_SAMPLES> s_pptemp;
+				//Texture2DMS <float3> s_pptemp; // For DX10.1 and DX11
 			#else
 				Texture2D <float3> s_pptemp; // For DX10.0
 			#endif
@@ -118,11 +119,17 @@
 					if((ssposi.z - ref.ssposi_tap.z) > 0) ref.error = 0; // Cut shit pixels !!!
 				#endif
 
-				#if (defined(USE_MSAA) && (defined(SM_4_1) || defined(SM_5)))
-					float3 reflection = s_pptemp.Load(ref.tc * screen_res_alt.xy, 0).xyz;
+				#if defined(USE_MSAA) && !defined(SSR_ROAD)
+					float3 reflection = s_pptemp.Load(ref.tc * screen_res_alt.xy, 0);
 				#else
 					float3 reflection = s_pptemp.Sample(smp_nofilter, ref.tc);
 				#endif
+				
+				//#if (defined(USE_MSAA) && (defined(SM_4_1) || defined(SM_5)))
+				//	float3 reflection = s_pptemp.Load(ref.tc * screen_res_alt.xy, 0).xyz;
+				//#else
+				//	float3 reflection = s_pptemp.Sample(smp_nofilter, ref.tc);
+				//#endif
 
 				#if defined(SSR_ROAD)
 					return float4((reflection * ref.error) + (sky * (1 - ref.error)), sun * (1 - ref.error));
