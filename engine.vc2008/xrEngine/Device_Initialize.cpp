@@ -68,7 +68,7 @@ PROTECT_API void CRenderDevice::Initialize			()
 
         // Create the render window
 		LPCSTR title;
-		title = READ_IF_EXISTS(pSettings, r_string, "window", "title", title);
+		title = READ_IF_EXISTS(pSettings, r_string, "window", "title", "S.T.A.L.K.E.R.: Call of Pripyat");
 		m_hWnd = CreateWindowEx( WS_EX_TOPMOST, 
 								wndclass, title, m_dwWindowStyle,
                                /*rc.left, rc.top, */CW_USEDEFAULT, CW_USEDEFAULT,
