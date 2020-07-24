@@ -54,6 +54,9 @@ void CStringTable::Init		()
 #endif // #ifdef DEBUG
 //---
 	ReparseKeyBindings();
+	
+	LPCSTR window_name = translate( "st_game_window_name" ).c_str();
+	SetWindowText(Device.m_hWnd, window_name);
 }
 
 void CStringTable::Load	(LPCSTR xml_file_full)
