@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Kernel">
+      <UniqueIdentifier>{b02b9e81-1a5c-4056-9b6e-06e801069e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kernel\Res">
+      <UniqueIdentifier>{816c95bf-7b39-45c8-b83a-3739cf088a92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kernel\Log">
+      <UniqueIdentifier>{466a8601-5d96-4e23-a051-c9cc91099352}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CDB">
+      <UniqueIdentifier>{eea0b5c5-3d03-413e-b409-e799fe90a7e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{2dd54a2e-21dd-4d90-ab59-b53d9765051f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\NV_Strips">
+      <UniqueIdentifier>{00994da6-1a2f-4e65-8f78-8d6bdb990b8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\NV_Mender2003">
+      <UniqueIdentifier>{f8e61dc4-cf38-4e31-9de6-edb03ab9e0b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\NV_Mender2002">
+      <UniqueIdentifier>{307507b9-6e6c-420e-9975-6ea2dbd06691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\NV_Mender2002\NV_Basis">
+      <UniqueIdentifier>{d8975740-f88f-42c3-ba3a-99df4c1efdac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="- OLD -">
+      <UniqueIdentifier>{d6ba40b4-7df5-40ec-a640-d293ed8d9495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a">
+      <UniqueIdentifier>{f9834c7f-f47f-4adb-93d8-dcfd794d1f50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\Deflector">
+      <UniqueIdentifier>{3de32c4f-077b-4242-b9b2-98faae4638e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\XRAY">
+      <UniqueIdentifier>{cb658ad5-8627-4100-b6dd-14705be49309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\Internal">
+      <UniqueIdentifier>{3ae69aa1-5727-41ca-a733-4d39f2acc096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\Internal\Targa">
+      <UniqueIdentifier>{b75f5d17-c354-4198-9bfe-637ad9188c39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\Internal\Targa\ILoader">
+      <UniqueIdentifier>{1ad3e0d1-e168-415f-90df-df339423b5e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\Model">
+      <UniqueIdentifier>{5ca4e3c6-4008-4270-954d-cb8bb1d21eea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%2a%2a%2a COMPILER %2a%2a%2a\net">
+      <UniqueIdentifier>{5277b5df-2b0f-4811-9e3f-36e6e45d9fed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="defines.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Kernel\Res</Filter>
+    </ClInclude>
+    <ClInclude Include="cl_log.h">
+      <Filter>Kernel\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="cl_intersect.h">
+      <Filter>CDB</Filter>
+    </ClInclude>
+    <ClInclude Include="b_globals.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshMenderLayerOGF.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshMenderLayerOrdinaryStatic.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="progmesh.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="std_classes.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="xrDXTC.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="xrHemisphere.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="xrOcclusion.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="xrSpherical.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="NV_Library\NvTriStrip.h">
+      <Filter>External\NV_Strips</Filter>
+    </ClInclude>
+    <ClInclude Include="NV_Library\NvTriStripObjects.h">
+      <Filter>External\NV_Strips</Filter>
+    </ClInclude>
+    <ClInclude Include="NV_Library\VertexCache.h">
+      <Filter>External\NV_Strips</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\NvMender2003\convert.h">
+      <Filter>External\NV_Mender2003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\NvMender2003\mender_input_output.h">
+      <Filter>External\NV_Mender2003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\NvMender2003\NVMeshMender.h">
+      <Filter>External\NV_Mender2003</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\NvMender2003\remove_isolated_verts.h">
+      <Filter>External\NV_Mender2003</Filter>
+    </ClInclude>
+    <ClInclude Include="NvMender2002\NVMeshMender.h">
+      <Filter>External\NV_Mender2002</Filter>
+    </ClInclude>
+    <ClInclude Include="NvMender2002\nv_algebra.h">
+      <Filter>External\NV_Mender2002\NV_Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="NvMender2002\nv_math.h">
+      <Filter>External\NV_Mender2002\NV_Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="NvMender2002\nv_mathdecl.h">
+      <Filter>External\NV_Mender2002\NV_Basis</Filter>
+    </ClInclude>
+    <ClInclude Include="_rect.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="Build.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="cform_build.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="ELight_def.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\face_smoth_flags.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\itterate_adjacents.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="Sector.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shader_xrLC.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="xrPhase_MergeLM_Rect.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClInclude>
+    <ClInclude Include="ArbitraryList.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClInclude>
+    <ClInclude Include="OGF_Face.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClInclude>
+    <ClInclude Include="PropSlimTools.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClInclude>
+    <ClInclude Include="vbm.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Internal\Targa\ILoader</Filter>
+    </ClInclude>
+    <ClInclude Include="net.h">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\net</Filter>
+    </ClInclude>
+    <ClInclude Include="xrGameMaterials.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="xrLC.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
+    <ClCompile Include="cl_log.cpp">
+      <Filter>Kernel\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="NV_Library\NvTriStrip.cpp">
+      <Filter>External\NV_Strips</Filter>
+    </ClCompile>
+    <ClCompile Include="NV_Library\NvTriStripObjects.cpp">
+      <Filter>External\NV_Strips</Filter>
+    </ClCompile>
+    <ClCompile Include="NV_Library\VertexCache.cpp">
+      <Filter>External\NV_Strips</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\NvMender2003\NVMeshMender.cpp">
+      <Filter>External\NV_Mender2003</Filter>
+    </ClCompile>
+    <ClCompile Include="NvMender2002\NVMeshMender.cpp">
+      <Filter>External\NV_Mender2002</Filter>
+    </ClCompile>
+    <ClCompile Include="NvMender2002\nv_algebra.cpp">
+      <Filter>External\NV_Mender2002\NV_Basis</Filter>
+    </ClCompile>
+    <ClCompile Include="xrDetailPatch.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrFlex2LOD.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrHierrarhy.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPVS.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrResolveMaterials.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrSoftenLights.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrTesselate.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrUVmapping.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="xrVis.cpp">
+      <Filter>- OLD -</Filter>
+    </ClCompile>
+    <ClCompile Include="Build.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="Build_Load.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="Sector.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrBuildCForm.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrBuildRapidModel.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrCalcNormals.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrFlex2OGF.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrLight.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xrEngine\xrLoadSurface.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrOptimizeCFORM.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrOptimizeCFORM_qslim.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_AdaptiveHT.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_AdaptiveHT_qslim.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_GI.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_MergeGeometry.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_MergeLM.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_MergeLM_Surface.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_ResolveMaterials.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_Subdivide.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_TangentBasis.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_TangentBasis2002.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPhase_UVmap.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrPreOptimize.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrSaveLights.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrSaveOGF.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrSectors.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="xrT_Junction.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a</Filter>
+    </ClCompile>
+    <ClCompile Include="fmesh.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_CalculateTB.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_CalculateTB2002.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_Face.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_Face_Save.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_Face_Sphere.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_Face_Stripify.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="OGF_RemoveIsolatedVerts.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\XRAY</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Internal\Targa\ILoader</Filter>
+    </ClCompile>
+    <ClCompile Include="xrMU_Model_Calc_ogf.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="xrMU_Model_export_cform_game.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="xrMU_Model_export_cform_game_s.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="xrMU_Model_export_geometry.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="xrMU_Model_export_OGF.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\sdk\include\hxgrid\Interface\hxGridInterface.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\net</Filter>
+    </ClCompile>
+    <ClCompile Include="net.cpp">
+      <Filter>%2a%2a%2a COMPILER %2a%2a%2a\net</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>Kernel\Res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

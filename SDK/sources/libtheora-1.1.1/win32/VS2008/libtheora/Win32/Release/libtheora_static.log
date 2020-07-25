@@ -1,0 +1,253 @@
+﻿Build started 24.07.2020 22:01:08.
+     1>Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libtheora-1.1.1\win32\VS2008\libtheora\libtheora_static.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\..\include /I..\..\..\lib /I..\..\..\..\libogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include\ /I"..\..\..\..\libogg-1.1.4\include" /I..\..\..\..\ogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include /nologo /W4 /WX- /O2 /Ob2 /Oi /Ot /Oy- /GL /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _BIND_TO_CURRENT_CRT_VERSION /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D LIBTHEORA_EXPORTS /D OC_X86_ASM /D _VC80_UPGRADE=0x0710 /D _UNICODE /D UNICODE /GF /Gm- /MD /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Release\\" /Fd"Win32\Release\vc120.pdb" /Gd /TC /wd4244 /wd4267 /wd4057 /wd4100 /wd4245 /analyze- /errorReport:prompt ..\..\..\lib\analyze.c ..\..\..\lib\apiwrapper.c ..\..\..\lib\bitpack.c ..\..\..\lib\cpu.c ..\..\..\lib\decapiwrapper.c ..\..\..\lib\decinfo.c ..\..\..\lib\dequant.c ..\..\..\lib\encapiwrapper.c ..\..\..\lib\encfrag.c ..\..\..\lib\encinfo.c ..\..\..\lib\encode.c ..\..\..\lib\enquant.c ..\..\..\lib\fdct.c ..\..\..\lib\fragment.c ..\..\..\lib\huffdec.c ..\..\..\lib\huffenc.c ..\..\..\lib\info.c ..\..\..\lib\internal.c ..\..\..\lib\mathops.c ..\..\..\lib\mcenc.c ..\..\..\lib\rate.c ..\..\..\lib\state.c ..\..\..\lib\tokenize.c ..\..\..\lib\x86_vc\mmxencfrag.c ..\..\..\lib\x86_vc\mmxfdct.c ..\..\..\lib\x86_vc\mmxfrag.c ..\..\..\lib\x86_vc\mmxidct.c ..\..\..\lib\x86_vc\mmxstate.c ..\..\..\lib\x86_vc\x86enc.c ..\..\..\lib\x86_vc\x86state.c
+         analyze.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\analyze.c(564): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\analyze.c(1550): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\..\lib\analyze.c(1589): warning C4018: '>' : signed/unsigned mismatch
+     1>..\..\..\lib\analyze.c(1729): warning C4132: 'OC_MV_ZERO' : const object should be initialized
+         apiwrapper.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         bitpack.c
+     1>..\..\..\lib\bitpack.c(41): warning C4554: '<<' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\bitpack.c(61): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\bitpack.c(81): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\bitpack.c(100): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+         cpu.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\cpu.c(157): warning C4127: conditional expression is constant
+     1>..\..\..\lib\cpu.c(163): warning C4127: conditional expression is constant
+     1>..\..\..\lib\cpu.c(171): warning C4127: conditional expression is constant
+     1>..\..\..\lib\cpu.c(174): warning C4127: conditional expression is constant
+     1>..\..\..\lib\cpu.c(178): warning C4127: conditional expression is constant
+     1>..\..\..\lib\cpu.c(193): warning C4127: conditional expression is constant
+     1>..\..\..\lib\cpu.c(206): warning C4127: conditional expression is constant
+         decapiwrapper.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         decinfo.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         dequant.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         encapiwrapper.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         encfrag.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         encinfo.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         encode.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\encode.c(577): warning C4389: '!=' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(973): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(982): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(1323): warning C4018: '>=' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(1433): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(1442): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(1444): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(1451): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\encode.c(1453): warning C4018: '<' : signed/unsigned mismatch
+         enquant.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         fdct.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         fragment.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         huffdec.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         huffenc.c
+     1>..\..\..\lib\huffenc.c(865): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+         info.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         internal.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         mathops.c
+     1>..\..\..\lib\mathops.c(180): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(188): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(196): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(197): warning C4554: '<<' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(221): warning C4554: '<<' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(227): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(257): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(258): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(265): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(266): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(273): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(274): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(281): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(282): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(289): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(290): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+     1>..\..\..\lib\mathops.c(293): warning C4554: '>>' : check operator precedence for possible error; use parentheses to clarify precedence
+         mcenc.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\mcenc.c(126): warning C4127: conditional expression is constant
+     1>..\..\..\lib\mcenc.c(127): warning C4127: conditional expression is constant
+     1>..\..\..\lib\mcenc.c(128): warning C4127: conditional expression is constant
+     1>..\..\..\lib\mcenc.c(129): warning C4127: conditional expression is constant
+     1>..\..\..\lib\mcenc.c(130): warning C4127: conditional expression is constant
+     1>..\..\..\lib\mcenc.c(131): warning C4127: conditional expression is constant
+     1>..\..\..\lib\mcenc.c(632): warning C4018: '<' : signed/unsigned mismatch
+         Compiling...
+         rate.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\rate.c(267): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\rate.c(364): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\rate.c(384): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\rate.c(488): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\rate.c(929): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\rate.c(1076): warning C4018: '<' : signed/unsigned mismatch
+     1>..\..\..\lib\rate.c(1111): warning C4018: '<' : signed/unsigned mismatch
+         state.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\state.c(509): warning C4389: '!=' : signed/unsigned mismatch
+         tokenize.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         mmxencfrag.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\x86_vc\mmxencfrag.c(73): warning C4405: 'ret' : identifier is reserved word
+     1>..\..\..\lib\x86_vc\mmxencfrag.c(170): warning C4405: 'ret' : identifier is reserved word
+     1>..\..\..\lib\x86_vc\mmxencfrag.c(476): warning C4101: 'ret2' : unreferenced local variable
+     1>..\..\..\lib\x86_vc\mmxencfrag.c(710): warning C4101: 'ret2' : unreferenced local variable
+         mmxfdct.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\x86_vc\mmxfdct.c(466): warning C4101: 'a' : unreferenced local variable
+         mmxfrag.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\x86_vc\mmxfrag.c(37): warning C4127: conditional expression is constant
+         mmxidct.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         mmxstate.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>..\..\..\lib\x86_vc\mmxstate.c(130): warning C4127: conditional expression is constant
+     1>..\..\..\lib\x86_vc\mmxstate.c(190): warning C4127: conditional expression is constant
+     1>..\..\..\lib\x86_vc\mmxstate.c(191): warning C4127: conditional expression is constant
+     1>..\..\..\lib\x86_vc\mmxstate.c(193): warning C4127: conditional expression is constant
+     1>..\..\..\lib\x86_vc\mmxstate.c(196): warning C4127: conditional expression is constant
+         x86enc.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(157): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(163): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(171): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(174): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(178): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(193): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(206): warning C4127: conditional expression is constant
+         x86state.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(157): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(163): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(171): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(174): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(178): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(193): warning C4127: conditional expression is constant
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\x86_vc\../cpu.c(206): warning C4127: conditional expression is constant
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\..\include /I..\..\..\lib /I..\..\..\..\libogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include\ /I"..\..\..\..\libogg-1.1.4\include" /I..\..\..\..\ogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include /nologo /W4 /WX- /O2 /Ob2 /Oi /Ot /Oy- /GL /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _BIND_TO_CURRENT_CRT_VERSION /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D LIBTHEORA_EXPORTS /D OC_X86_ASM /D _VC80_UPGRADE=0x0710 /D _UNICODE /D UNICODE /GF /Gm- /MD /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Release\decode1.obj" /Fd"Win32\Release\vc120.pdb" /Gd /TC /wd4244 /wd4267 /wd4057 /wd4100 /wd4245 /analyze- /errorReport:prompt ..\..\..\lib\decode.c
+         decode.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\..\include /I..\..\..\lib /I..\..\..\..\libogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include\ /I"..\..\..\..\libogg-1.1.4\include" /I..\..\..\..\ogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include /nologo /W4 /WX- /O2 /Ob2 /Oi /Ot /Oy- /GL /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _BIND_TO_CURRENT_CRT_VERSION /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D LIBTHEORA_EXPORTS /D OC_X86_ASM /D _VC80_UPGRADE=0x0710 /D _UNICODE /D UNICODE /GF /Gm- /MD /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Release\idct1.obj" /Fd"Win32\Release\vc120.pdb" /Gd /TC /wd4244 /wd4267 /wd4057 /wd4100 /wd4245 /analyze- /errorReport:prompt ..\..\..\lib\idct.c
+         idct.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\..\include /I..\..\..\lib /I..\..\..\..\libogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include\ /I"..\..\..\..\libogg-1.1.4\include" /I..\..\..\..\ogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include /nologo /W4 /WX- /O2 /Ob2 /Oi /Ot /Oy- /GL /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _BIND_TO_CURRENT_CRT_VERSION /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D LIBTHEORA_EXPORTS /D OC_X86_ASM /D _VC80_UPGRADE=0x0710 /D _UNICODE /D UNICODE /GF /Gm- /MD /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Release\quant1.obj" /Fd"Win32\Release\vc120.pdb" /Gd /TC /wd4244 /wd4267 /wd4057 /wd4100 /wd4245 /analyze- /errorReport:prompt ..\..\..\lib\quant.c
+         quant.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: nonstandard extension used : bit field types other than int
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: nonstandard extension used : bit field types other than int
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libtheora-1.1.1\win32\VS2008\Win32\Release\libtheora_static.lib" /NOLOGO /LTCG Win32\Release\analyze.obj
+         Win32\Release\apiwrapper.obj
+         Win32\Release\bitpack.obj
+         Win32\Release\cpu.obj
+         Win32\Release\decapiwrapper.obj
+         Win32\Release\decinfo.obj
+         Win32\Release\dequant.obj
+         Win32\Release\encapiwrapper.obj
+         Win32\Release\encfrag.obj
+         Win32\Release\encinfo.obj
+         Win32\Release\encode.obj
+         Win32\Release\enquant.obj
+         Win32\Release\fdct.obj
+         Win32\Release\fragment.obj
+         Win32\Release\huffdec.obj
+         Win32\Release\huffenc.obj
+         Win32\Release\info.obj
+         Win32\Release\internal.obj
+         Win32\Release\mathops.obj
+         Win32\Release\mcenc.obj
+         Win32\Release\rate.obj
+         Win32\Release\state.obj
+         Win32\Release\tokenize.obj
+         Win32\Release\mmxencfrag.obj
+         Win32\Release\mmxfdct.obj
+         Win32\Release\mmxfrag.obj
+         Win32\Release\mmxidct.obj
+         Win32\Release\mmxstate.obj
+         Win32\Release\x86enc.obj
+         Win32\Release\x86state.obj
+         Win32\Release\decode1.obj
+         Win32\Release\idct1.obj
+         Win32\Release\quant1.obj
+         libtheora_static.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libtheora-1.1.1\win32\VS2008\Win32\Release\libtheora_static.lib
+     1>Done Building Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libtheora-1.1.1\win32\VS2008\libtheora\libtheora_static.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.42

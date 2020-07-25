@@ -1,0 +1,29 @@
+﻿Build started 24.07.2020 22:21:33.
+     1>Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oatest\oatestlib.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Iinc /I../inc /I../oarpc/inc /Zi /nologo /W3 /WX- /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt src\oacContext.cpp src\oacFileLogger.cpp src\oacLog.cpp src\oacLogger.cpp src\oacOAUtils.cpp src\oacProcess.cpp src\oacTestBase.cpp src\oacTextLogger.cpp tests\RunBenchmark.cpp
+         oacContext.cpp
+         oacFileLogger.cpp
+         oacLog.cpp
+         oacLogger.cpp
+         oacOAUtils.cpp
+         oacProcess.cpp
+         oacTestBase.cpp
+         oacTextLogger.cpp
+         RunBenchmark.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oatestlib.lib" /NOLOGO /LTCG Release\oacContext.obj
+         Release\oacFileLogger.obj
+         Release\oacLog.obj
+         Release\oacLogger.obj
+         Release\oacOAUtils.obj
+         Release\oacProcess.obj
+         Release\oacTestBase.obj
+         Release\oacTextLogger.obj
+         Release\RunBenchmark.obj
+         oatestlib.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oatestlib.lib
+     1>Done Building Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oatest\oatestlib.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:03.87

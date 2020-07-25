@@ -1,0 +1,17 @@
+﻿Build started 24.07.2020 22:21:02.
+     1>Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oarpc\oaremote\oaremote.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../../inc /I../inc /Zi /nologo /W3 /WX- /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt oaremote.cpp
+         oaremote.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oaremote.exe" /INCREMENTAL:NO /NOLOGO wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oaremote.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oaremote.lib" /MACHINE:X86 /SAFESEH Release\oaremote.obj
+         "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oalib.lib"
+         "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oarpclib.lib"
+     1>oarpclib.lib(oaRPCSocketTransport.obj) : error LNK2001: unresolved external symbol __imp__freeaddrinfo@4
+     1>oarpclib.lib(oaRPCSocketTransport.obj) : error LNK2001: unresolved external symbol __imp__getaddrinfo@16
+     1>C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oaremote.exe : fatal error LNK1120: 2 unresolved externals
+     1>Done Building Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oarpc\oaremote\oaremote.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.62

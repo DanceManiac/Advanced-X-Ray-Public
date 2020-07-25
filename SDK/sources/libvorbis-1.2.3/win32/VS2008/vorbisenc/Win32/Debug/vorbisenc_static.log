@@ -1,0 +1,15 @@
+﻿Build started 24.07.2020 22:08:21.
+     1>Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libvorbis-1.2.3\win32\VS2008\vorbisenc\vorbisenc_static.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\..\include /I..\..\..\..\libogg\include /I"..\..\..\..\libogg-1.1.3\include" /I..\..\..\..\ogg\include /I..\..\..\..\..\..\..\core\ogg\libogg\include /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _VC80_UPGRADE=0x0710 /D _UNICODE /D UNICODE /Gm /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"Win32\Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\..\examples\encoder_example.c
+         encoder_example.c
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libvorbis-1.2.3\examples\encoder_example.c(128): warning C4305: 'function' : truncation from 'double' to 'float'
+     1>c:\mfs-team\advanced-x-rayvs2013\sdk\sources\libvorbis-1.2.3\examples\encoder_example.c(147): warning C4244: 'function' : conversion from 'time_t' to 'unsigned int', possible loss of data
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\vorbisenc.lib" /NOLOGO Win32\Debug\encoder_example.obj
+         vorbisenc_static.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\vorbisenc.lib
+     1>Done Building Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\libvorbis-1.2.3\win32\VS2008\vorbisenc\vorbisenc_static.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.38

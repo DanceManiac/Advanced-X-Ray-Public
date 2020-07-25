@@ -670,7 +670,7 @@ CRenderTarget::CRenderTarget		()
     const bool ssao_hdao_ultra = RImplementation.o.ssao_hdao && RImplementation.o.ssao_ultra;
     if (ssao_blur_on || ssao_hdao_ultra)
     {
-        const auto int w = Device.dwWidth, h = Device.dwHeight;
+        const auto w = Device.dwWidth, h = Device.dwHeight;
         rt_ssao_temp.create(r2_RT_ssao_temp, w, h, D3DFMT_G16R16F, SampleCount, true);
 		
         if (ssao_hdao_ultra)
