@@ -16,14 +16,14 @@
 //#include "game_object_space.h"
 //#pragma warning(disable:4995)
 //#pragma warning(disable:4267)
-//#include "../3rd party/ode/ode/src/collision_kernel.h"
+//#include "../../3rd party/ode/ode/src/collision_kernel.h"
 //#pragma warning(default:4995)
 //#pragma warning(default:4267)
 ///////////////////////////////////////////////////////////////
 ///#pragma warning(disable:4995)
 
-//#include "../3rd party/ode/ode/src/joint.h"
-//#include "../3rd party/ode/ode/src/objects.h"
+//#include "../../3rd party/ode/ode/src/joint.h"
+//#include "../../3rd party/ode/ode/src/objects.h"
 
 //#pragma warning(default:4995)
 ///////////////////////////////////////////////////////////////////
@@ -998,7 +998,7 @@ void CPHShell::EnabledCallbacks(BOOL val)
 
 
 template< typename T>
-void for_each_bone_id( IKinematics &K, T op )
+void for_each_bone_id( IKinematics &K, T& op )
 {
 	u16 bn =  K.LL_BoneCount();
 	for(u16 i = 0; i < bn; ++i )

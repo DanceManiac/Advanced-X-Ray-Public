@@ -1,0 +1,7 @@
+﻿  bitwise.c
+  framing.c
+c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libogg-1.1.4\src\framing.c(669): warning C4456: объявление "page" скрывает предыдущее локальное объявление
+  c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libogg-1.1.4\src\framing.c(614): note:  см. объявление "page"
+c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libogg-1.1.4\src\framing.c(670): warning C4456: объявление "bytes" скрывает предыдущее локальное объявление
+  c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libogg-1.1.4\src\framing.c(616): note:  см. объявление "bytes"
+  libogg_static.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2017\SDK\sources\libogg-1.1.4\win32\VS2008\Win32\Release\libogg_static.lib

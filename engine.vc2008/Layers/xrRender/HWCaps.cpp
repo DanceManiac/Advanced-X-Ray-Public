@@ -6,7 +6,7 @@
 
 #ifndef _EDITOR
 	#include "NVAPI/nvapi.h"
-	#include "ATI/atimgpud.h"
+	//#include "ATI/atimgpud.h"
 #endif
 
 namespace
@@ -69,7 +69,7 @@ u32 GetNVGpuNum()
 	return iGpuNum;
 }
 
-u32 GetATIGpuNum()
+/*u32 GetATIGpuNum()
 {
 	int iGpuNum = AtiMultiGPUAdapters();
 	//int iGpuNum = 1;
@@ -80,13 +80,13 @@ u32 GetATIGpuNum()
 	}
 
 	return iGpuNum;
-}
+}*/
 
 u32 GetGpuNum()
 {
 	u32 res = GetNVGpuNum();
 
-	res = _max( res, GetATIGpuNum() );
+	//res = _max( res, GetATIGpuNum() );
 
 	res = _max( res, 2 );
 
@@ -229,7 +229,7 @@ void CHWCaps::Update()
 	// ***************** PIXEL processing
 	raster_major				= 4;
 	raster_minor				= 0;
-	raster.dwStages				= 16;
+	raster.dwStages				= 15;
 	raster.bNonPow2				= TRUE;
 	raster.bCubemap				= TRUE;
 	raster.dwMRT_count			= 4;

@@ -12,7 +12,7 @@
 #include "ai_space.h"
 #include "script_engine.h"
 
-IC	CGameObject &CScriptGameObject::object	() const
+/*CGameObject &CScriptGameObject::object	() const
 {
 #ifdef DEBUG
 	__try {
@@ -26,4 +26,4 @@ IC	CGameObject &CScriptGameObject::object	() const
 	THROW2			(m_game_object && m_game_object->lua_game_object() == this,"Probably, you are trying to use a destroyed object!");
 #endif // #ifdef DEBUG
 	return			(*m_game_object);
-}
+}*/

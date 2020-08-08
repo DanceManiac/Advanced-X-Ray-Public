@@ -218,6 +218,12 @@ LPCSTR CObjectHandlerPlanner::property2string(const _condition_type &id)
 }
 #endif
 
+CObjectHandlerPlanner::_condition_type CObjectHandlerPlanner::uid(const u32 id0, const u32 id1) const
+{
+	VERIFY				(!((id0 << 16) & id1));
+	return				((id0 << 16) | id1);
+}
+
 void CObjectHandlerPlanner::remove_evaluators	(CObject *object)
 {
 #pragma todo("Dima to Dima : safe, but not optimal!")

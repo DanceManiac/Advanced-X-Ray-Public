@@ -1,13 +1,2 @@
-﻿Build started 24.07.2020 22:20:53.
-     1>Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oalib\oalib.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\src\OpenAutomate.c
-         OpenAutomate.c
-       Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oalib.lib" /NOLOGO /LTCG Release\OpenAutomate.obj
-         oalib.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oalib.lib
-     1>Done Building Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oalib\oalib.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:00.69
+﻿  OpenAutomate.c
+  oalib.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2017\SDK\sources\OpenAutomate\Release\oalib.lib

@@ -1865,7 +1865,7 @@ CPHDestroyable*	CActor::ph_destroyable	()
 CEntityConditionSimple *CActor::create_entity_condition	(CEntityConditionSimple* ec)
 {
 	if(!ec)
-		m_entity_condition		= xr_new<CActorCondition>(this);
+		m_entity_condition		= new CActorCondition(this);
 	else
 		m_entity_condition		= smart_cast<CActorCondition*>(ec);
 	
