@@ -23,6 +23,8 @@
 #include "script_game_object.h"
 
 ENGINE_API	bool	g_dedicated_server;
+ENGINE_API  extern float psHUD_FOV;
+ENGINE_API  extern float psHUD_FOV_def;
 
 CUIXml*				pWpnScopeXml = NULL;
 
@@ -731,6 +733,7 @@ void CWeaponMagazined::switch2_Hidden()
 
 	signal_HideComplete		();
 	RemoveShotEffector		();
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 void CWeaponMagazined::switch2_Showing()
 {
