@@ -24,6 +24,9 @@ class CUIWindow;
 class CBinocularsVision;
 class CNightVisionEffector;
 
+#define WEAPON_INDOOR_HEMI_FACTOR 0.01f         // Сила освещённости персонжаей солнечным светом, ниже которой считается что персонаж в помещении 
+#define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f   // Коэфицент на который домножается громкость звука эха от выстрела, если он был сделат от 1-го лица
+
 class CWeapon : public CHudItemObject,
 				public CShootingObject
 {

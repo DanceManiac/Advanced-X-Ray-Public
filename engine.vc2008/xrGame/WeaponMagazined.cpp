@@ -77,7 +77,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_holster", "sndHide"		, false, m_eSoundHide		);
 	m_sounds.LoadSound(section,"snd_shoot", "sndShot"		, false, m_eSoundShot		);
 	m_sounds.LoadSound(section,"snd_empty", "sndEmptyClick"	, false, m_eSoundEmptyClick	);
-	m_sounds.LoadSound(section,"snd_reload", "sndReload"		, true, m_eSoundReload		);
+	m_sounds.LoadSound(section,"snd_reload", "sndReload"	, true,	 m_eSoundReload		);
+	m_sounds.LoadSound(section, "snd_reflect", "sndReflect"	, true,	 m_eSoundReflect	);
 	
 	m_sSndShotCurrent = "sndShot";
 		
@@ -607,6 +608,26 @@ void CWeaponMagazined::OnShot()
 	//дым из ствола
 	ForceUpdateFireParticles	();
 	StartSmokeParticles			(get_LastFP(), vel);
+
+	// Ёхо выстрела
+	if (IsSilencerAttached() == false)
+	{
+		bool bIndoor = false;
+		if (H_Parent() != nullptr)
+		{
+			bIndoor = H_Parent()->renderable_ROS()->get_luminocity_hemi() < WEAPON_INDOOR_HEMI_FACTOR;
+		}
+
+		if (bIndoor && m_sounds.FindSoundItem("sndReflect", false))
+		{
+			if (IsHudModeNow())
+			{
+				HUD_SOUND_ITEM::SetHudSndGlobalVolumeFactor(WEAPON_SND_REFLECTION_HUD_FACTOR);
+			}
+			PlaySound("sndReflect", get_LastFP());
+			HUD_SOUND_ITEM::SetHudSndGlobalVolumeFactor(1.0f);
+		}
+	}
 }
 
 
@@ -1348,6 +1369,10 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 
 	result2 = process_if_exists_set( section, "snd_reload", &CInifile::r_string, str, test );
 	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_reload"	, "sndReload"		, true, m_eSoundReload	);	}
+	result |= result2;
+
+	result2 = process_if_exists_set(section, "snd_reflect", &CInifile::r_string, str, test);
+	if (result2 && !test) { m_sounds.LoadSound(section, "snd_reflect", "sndReflect", false, m_eSoundReflect); }
 	result |= result2;
 
 	//snd_shoot1     = weapons\ak74u_shot_1 ??

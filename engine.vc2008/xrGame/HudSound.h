@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../xrSound/Sound.h"
 
 struct HUD_SOUND_ITEM
 {
@@ -25,6 +25,9 @@ struct HUD_SOUND_ITEM
 										bool looped = false,
 										u8 index=u8(-1));
 
+	static void PlaySoundAdd(HUD_SOUND_ITEM& snd, //--#SM+#--
+		const Fvector& position, const CObject* parent, bool hud_mode, bool looped = false, u8 index = u8(-1));
+
 	static void		StopSound		(	HUD_SOUND_ITEM& snd);
 
 	ICF BOOL		playing			()
@@ -40,6 +43,20 @@ struct HUD_SOUND_ITEM
 									m_activeSnd->snd.set_position	(pos);
 			else					m_activeSnd	= NULL;
 		}
+	}
+
+	static float g_fHudSndVolumeFactor; //--#SM+#--
+	ICF static void SetHudSndGlobalVolumeFactor(const float& fVolume)
+	{
+		// SM_TODO: Bad for parallelization
+		g_fHudSndVolumeFactor = fVolume;
+	}
+
+	static float g_fHudSndFrequency; //--#SM+#--
+	ICF static void SetHudSndGlobalFrequency(const float& fFreq)
+	{
+		// SM_TODO: Bad for parallelization
+		g_fHudSndFrequency = fFreq;
 	}
 
 	struct SSnd		{

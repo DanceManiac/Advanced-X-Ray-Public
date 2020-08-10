@@ -28,6 +28,7 @@ protected:
 	ESoundTypes		m_eSoundShot;
 	ESoundTypes		m_eSoundEmptyClick;
 	ESoundTypes		m_eSoundReload;
+	ESoundTypes		m_eSoundReflect;
 	bool			m_sounds_enabled;
 	// General
 	//кадр момента пересчета UpdateSounds
