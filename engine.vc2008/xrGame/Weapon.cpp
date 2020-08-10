@@ -33,7 +33,7 @@ ENGINE_API extern float psHUD_FOV_def;
 BOOL	b_toggle_weapon_aim		= FALSE;
 extern CUIXml*	pWpnScopeXml;
 
-CWeapon::CWeapon() : m_fLR_MovingFactor(0.f), m_strafe_offset{}
+CWeapon::CWeapon()
 {
 	SetState				(eHidden);
 	SetNextState			(eHidden);
@@ -492,47 +492,6 @@ void CWeapon::Load		(LPCSTR section)
 	m_zoom_params.m_bUseDynamicZoom				= READ_IF_EXISTS(pSettings,r_bool,section,"scope_dynamic_zoom",FALSE);
 	m_zoom_params.m_sUseZoomPostprocess			= 0;
 	m_zoom_params.m_sUseBinocularVision			= 0;
-
-
-	////////////////////////////////////////////
-	//--#SM+# Begin--
-	string16 _prefix = { "" };
-	//xr_sprintf(_prefix, "%s", UI()->is_widescreen() ? "_16x9" : ""); //KRodin: на мой взгляд это лишнее.
-
-	string128 val_name;
-
-	if (pSettings->line_exist(hud_sect, "strafe_enabled"))
-	{
-		// Смещение в стрейфе
-		strconcat(sizeof(val_name), val_name, "strafe_hud_offset_pos", _prefix);
-		m_strafe_offset[0][0] = pSettings->r_fvector3(hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "strafe_hud_offset_rot", _prefix);
-		m_strafe_offset[1][0] = pSettings->r_fvector3(hud_sect, val_name);
-
-		// Поворот в стрейфе
-		strconcat(sizeof(val_name), val_name, "strafe_aim_hud_offset_pos", _prefix);
-		m_strafe_offset[0][1] = pSettings->r_fvector3(hud_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "strafe_aim_hud_offset_rot", _prefix);
-		m_strafe_offset[1][1] = pSettings->r_fvector3(hud_sect, val_name);
-	}
-	else
-	{
-		m_strafe_offset[0][0] = Fvector().set(0.015f, 0.f, 0.f);
-		m_strafe_offset[1][0] = Fvector().set(0.f, 0.f, 4.5f);
-		m_strafe_offset[0][1] = Fvector().set(0.005f, 0.f, 0.f);
-		m_strafe_offset[1][1] = Fvector().set(0.f, 0.f, 2.5f);
-	}
-
-	// Параметры стрейфа
-	float fFullStrafeTime = READ_IF_EXISTS(pSettings, r_float, hud_sect, "strafe_transition_time", 0.5f);
-	float fFullStrafeTime_aim = READ_IF_EXISTS(pSettings, r_float, hud_sect, "strafe_aim_transition_time", 0.15f);
-	bool bStrafeEnabled = !!READ_IF_EXISTS(pSettings, r_bool, hud_sect, "strafe_enabled", TRUE);
-	bool bStrafeEnabled_aim = !!READ_IF_EXISTS(pSettings, r_bool, hud_sect, "strafe_aim_enabled", FALSE);
-
-	m_strafe_offset[2][0].set(bStrafeEnabled, fFullStrafeTime, 0.f); // normal
-	m_strafe_offset[2][1].set(bStrafeEnabled_aim, fFullStrafeTime_aim, 0.f); // aim-GL
-	//--#SM+# End--
-	////////////////////////////////////////////
 }
 
 void CWeapon::LoadFireParams		(LPCSTR section)
@@ -1427,7 +1386,7 @@ void CWeapon::OnZoomIn()
 	else
 		m_zoom_params.m_fCurrentZoomFactor	= CurrentZoomFactor();
 
-	EnableHudInertion					(FALSE);
+	//EnableHudInertion					(FALSE);
 
 	
 	//if(m_zoom_params.m_bZoomDofEnabled && !IsScopeAttached())
@@ -1457,7 +1416,7 @@ void CWeapon::OnZoomOut()
 	m_zoom_params.m_bIsZoomModeNow		= false;
 	m_fRTZoomFactor = GetZoomFactor();//store current
 	m_zoom_params.m_fCurrentZoomFactor	= g_fov;
-	EnableHudInertion					(TRUE);
+	//EnableHudInertion					(TRUE);
 
 // 	GamePersistent().RestoreEffectorDOF	();
 
@@ -1694,29 +1653,10 @@ bool CWeapon::ready_to_kill	() const
 	);
 }
 
-// Получить индекс текущих координат худа
-u8 CWeapon::GetCurrentHudOffsetIdx() const
-{
-	auto pActor = smart_cast<const CActor*>(H_Parent());
-	if (!pActor)
-		return 0;
-
-	bool b_aiming = ((IsZoomed() && /*m_zoom_params.*/m_zoom_params.m_fZoomRotationFactor <= 1.f) || (!IsZoomed() && /*m_zoom_params.*/m_zoom_params.m_fZoomRotationFactor > 0.f));
-
-	if (!b_aiming)
-		return 0;
-	//else if (IsGrenadeMode())
-	//	return 2;
-	else
-		return 1;
-}
-
 void CWeapon::UpdateHudAdditonal		(Fmatrix& trans)
 {
-	auto pActor = smart_cast<const CActor*>(H_Parent());
+	CActor* pActor	= smart_cast<CActor*>(H_Parent());
 	if(!pActor)		return;
-
-	u8 idx = GetCurrentHudOffsetIdx();
 
 	if(		(IsZoomed() && m_zoom_params.m_fZoomRotationFactor<=1.f) ||
 			(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor>0.f))
@@ -1754,89 +1694,6 @@ void CWeapon::UpdateHudAdditonal		(Fmatrix& trans)
 			m_zoom_params.m_fZoomRotationFactor -= Device.fTimeDelta/m_zoom_params.m_fZoomRotateTime;
 
 		clamp(m_zoom_params.m_fZoomRotationFactor, 0.f, 1.f);
-	}
-	// Боковой стрейф с оружием
-	clamp(idx, 0ui8, 1ui8);
-
-	// Рассчитываем фактор боковой ходьбы
-	float fStrafeMaxTime = /*hi->m_measures.*/m_strafe_offset[2][idx].y; // Макс. время в секундах, за которое мы наклонимся из центрального положения
-	if (fStrafeMaxTime <= EPS)
-		fStrafeMaxTime = 0.01f;
-
-	float fStepPerUpd = Device.fTimeDelta / fStrafeMaxTime; // Величина изменение фактора поворота
-
-	u32 iMovingState = pActor->MovingState();
-	if ((iMovingState & mcLStrafe) != 0)
-	{ // Движемся влево
-		float fVal = (m_fLR_MovingFactor > 0.f ? fStepPerUpd * 3 : fStepPerUpd);
-		m_fLR_MovingFactor -= fVal;
-	}
-	else if ((iMovingState & mcRStrafe) != 0)
-	{ // Движемся вправо
-		float fVal = (m_fLR_MovingFactor < 0.f ? fStepPerUpd * 3 : fStepPerUpd);
-		m_fLR_MovingFactor += fVal;
-	}
-	else
-	{ // Двигаемся в любом другом направлении
-		if (m_fLR_MovingFactor < 0.0f)
-		{
-			m_fLR_MovingFactor += fStepPerUpd;
-			clamp(m_fLR_MovingFactor, -1.0f, 0.0f);
-		}
-		else
-		{
-			m_fLR_MovingFactor -= fStepPerUpd;
-			clamp(m_fLR_MovingFactor, 0.0f, 1.0f);
-		}
-	}
-
-	clamp(m_fLR_MovingFactor, -1.0f, 1.0f); // Фактор боковой ходьбы не должен превышать эти лимиты
-
-	// Производим наклон ствола для нормального режима и аима
-	for (int _idx = 0; _idx <= 1; _idx++)
-	{
-		bool bEnabled = /*hi->m_measures.*/m_strafe_offset[2][_idx].x;
-		if (!bEnabled)
-			continue;
-
-		Fvector curr_offs, curr_rot;
-
-		// Смещение позиции худа в стрейфе
-		curr_offs = /*hi->m_measures.*/m_strafe_offset[0][_idx]; //pos
-		curr_offs.mul(m_fLR_MovingFactor);                   // Умножаем на фактор стрейфа
-
-		// Поворот худа в стрейфе
-		curr_rot = /*hi->m_measures.*/m_strafe_offset[1][_idx]; //rot
-		curr_rot.mul(-PI / 180.f);                          // Преобразуем углы в радианы
-		curr_rot.mul(m_fLR_MovingFactor);                   // Умножаем на фактор стрейфа
-
-		if (_idx == 0)
-		{ // От бедра
-			curr_offs.mul(1.f - /*m_zoom_params.*/m_zoom_params.m_fZoomRotationFactor);
-			curr_rot.mul(1.f - /*m_zoom_params.*/m_zoom_params.m_fZoomRotationFactor);
-		}
-		else
-		{ // Во время аима
-			curr_offs.mul(/*m_zoom_params.*/m_zoom_params.m_fZoomRotationFactor);
-			curr_rot.mul(/*m_zoom_params.*/m_zoom_params.m_fZoomRotationFactor);
-		}
-
-		Fmatrix hud_rotation;
-		Fmatrix hud_rotation_y;
-
-		hud_rotation.identity();
-		hud_rotation.rotateX(curr_rot.x);
-
-		hud_rotation_y.identity();
-		hud_rotation_y.rotateY(curr_rot.y);
-		hud_rotation.mulA_43(hud_rotation_y);
-
-		hud_rotation_y.identity();
-		hud_rotation_y.rotateZ(curr_rot.z);
-		hud_rotation.mulA_43(hud_rotation_y);
-
-		hud_rotation.translate_over(curr_offs);
-		trans.mulB_43(hud_rotation);
 	}
 }
 
