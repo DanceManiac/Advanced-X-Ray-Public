@@ -1,5 +1,5 @@
 #pragma once
-
+#include "../xrSound/Sound.h"
 
 struct HUD_SOUND_ITEM
 {
@@ -25,6 +25,9 @@ struct HUD_SOUND_ITEM
 										bool looped = false,
 										u8 index=u8(-1));
 
+	static void PlaySoundAdd(HUD_SOUND_ITEM& snd, //--#SM+#--
+		const Fvector& position, const CObject* parent, bool hud_mode, bool looped = false, u8 index = u8(-1));
+
 	static void		StopSound		(	HUD_SOUND_ITEM& snd);
 
 	ICF BOOL		playing			()
@@ -42,6 +45,20 @@ struct HUD_SOUND_ITEM
 		}
 	}
 
+	static float g_fHudSndVolumeFactor; //--#SM+#--
+	ICF static void SetHudSndGlobalVolumeFactor(const float& fVolume)
+	{
+		// SM_TODO: Bad for parallelization
+		g_fHudSndVolumeFactor = fVolume;
+	}
+
+	static float g_fHudSndFrequency; //--#SM+#--
+	ICF static void SetHudSndGlobalFrequency(const float& fFreq)
+	{
+		// SM_TODO: Bad for parallelization
+		g_fHudSndFrequency = fFreq;
+	}
+
 	struct SSnd		{
 		ref_sound	snd;
 		float		delay;		//задержка перед проигрыванием
@@ -57,8 +74,8 @@ struct HUD_SOUND_ITEM
 class HUD_SOUND_COLLECTION
 {
 	xr_vector<HUD_SOUND_ITEM>	m_sound_items;
-	HUD_SOUND_ITEM*				FindSoundItem	(	LPCSTR alias, bool b_assert);
 public:
+	HUD_SOUND_ITEM*				FindSoundItem(LPCSTR alias, bool b_assert);
 								~HUD_SOUND_COLLECTION();
 	void						PlaySound		(	LPCSTR alias, 
 													const Fvector& position,

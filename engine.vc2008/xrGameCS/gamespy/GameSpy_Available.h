@@ -17,7 +17,7 @@ public:
 private:
 	//------------------------------- GameSpy_Available ---------------------------
 //	GAMESPY_FN_VAR_DECL(void,	GSIStartAvailableCheck, (const char * gamename));
-	GAMESPY_FN_VAR_DECL(void,	GSIStartAvailableCheck, ());
+	GAMESPY_FN_VAR_DECL(void,	GSIStartAvailableCheckA, ());
 	GAMESPY_FN_VAR_DECL(GSIACResult, GSIAvailableCheckThink, ());
 	GAMESPY_FN_VAR_DECL(void, msleep, (unsigned long msec));
 public:

@@ -11,7 +11,7 @@
 #include "ai_stalker_space.h"
 #include "../../bolt.h"
 #include "../../inventory.h"
-#include "../../../xrServerEntities/character_info.h"
+#include "../../../XrServerEntitiesCS/character_info.h"
 #include "../../relation_registry.h"
 #include "../../memory_manager.h"
 #include "../../item_manager.h"

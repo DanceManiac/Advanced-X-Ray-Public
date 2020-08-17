@@ -48,8 +48,8 @@ CBaseMonster::SDebugInfo CBaseMonster::show_debug_info()
 
 	string256	text;
 
-	u32			color			= D3DCOLOR_XRGB(0,255,0);
-	u32			delimiter_color	= D3DCOLOR_XRGB(0,0,255);
+	u32			color			= color_xrgb(0,255,0);
+	u32			delimiter_color	= color_xrgb(0,0,255);
 
 	DBG().text(this).clear	 ();
 	DBG().text(this).add_item("---------------------------------------", x, y+=delta_y, delimiter_color);
@@ -286,11 +286,11 @@ void CBaseMonster::debug_fsm()
 	DBG().object_info(this,this).remove_item (u32(1));
 	DBG().object_info(this,this).remove_item (u32(2));
 
-	DBG().object_info(this,this).add_item	 (*cName(), D3DCOLOR_XRGB(255,0,0), 0);
-	DBG().object_info(this,this).add_item	 (st, D3DCOLOR_XRGB(255,0,0), 1);
+	DBG().object_info(this,this).add_item	 (*cName(), color_xrgb(255,0,0), 0);
+	DBG().object_info(this,this).add_item	 (st, color_xrgb(255,0,0), 1);
 	
 	sprintf_s(st, "Team[%u]Squad[%u]Group[%u]", g_Team(), g_Squad(), g_Group());
-	DBG().object_info(this,this).add_item	 (st, D3DCOLOR_XRGB(255,0,0), 2);
+	DBG().object_info(this,this).add_item	 (st, color_xrgb(255,0,0), 2);
 
 	CEntityAlive *entity = smart_cast<CEntityAlive *>(Level().CurrentEntity());
 	if (entity && entity->character_physics_support()->movement()) {
@@ -487,7 +487,7 @@ void   add_debug_info (debug::text_tree& root_s, CBlend* p_blend)
 	root_s.add_line("Blend_Amount", p_blend->blendAmount);
 	root_s.add_line("Time_Current", p_blend->timeCurrent);
 	root_s.add_line("Time_Total", p_blend->timeTotal);
-	root_s.add_line("Blend_Type", p_blend->blend);
+	root_s.add_line("Blend_Type", p_blend->blend_state());
 	root_s.add_line("Blend_Accrue", p_blend->blendAccrue);
 	root_s.add_line("Blend_Falloff", p_blend->blendFalloff);
 	root_s.add_line("Blend_Power", p_blend->blendPower);

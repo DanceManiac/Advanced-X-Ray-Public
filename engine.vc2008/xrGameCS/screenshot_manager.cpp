@@ -10,11 +10,7 @@
 #endif
 
 #include <ddraw.h>
-#include "../3rd party/cximage/cximage/ximage.h"
-#include "../3rd party/cximage/cximage/xmemfile.h"
 
-#pragma comment(lib,"cximage.lib")
-#pragma comment(lib,"jpeg.lib")
 
 void*	cxalloc(size_t size)
 {
@@ -122,7 +118,7 @@ void screenshot_manager::prepare_image()
 
 void screenshot_manager::make_jpeg_file()
 {
-	u32*	sizes = reinterpret_cast<u32*>(m_result_writer.pointer());
+/*	u32*	sizes = reinterpret_cast<u32*>(m_result_writer.pointer());
 	u32		width = *sizes;
 	u32		height = *(++sizes);
 	u8* rgb24data = reinterpret_cast<u8*>(m_result_writer.pointer() + 2*sizeof(u32) );
@@ -148,16 +144,16 @@ void screenshot_manager::make_jpeg_file()
 
 #ifdef DEBUG
 	Msg("* JPEG encoded to %d bytes", m_jpeg_buffer_size);
-#endif
+#endif*/
 }
 
 void screenshot_manager::sign_jpeg_file()
 {
-	screenshots::writer	tmp_writer		(m_jpeg_buffer, m_jpeg_buffer_size, m_jpeg_buffer_capacity);
+	/*screenshots::writer	tmp_writer		(m_jpeg_buffer, m_jpeg_buffer_size, m_jpeg_buffer_capacity);
 	game_cl_mp*	tmp_cl_game				= smart_cast<game_cl_mp*>(&Game());
 	tmp_writer.set_player_name			(tmp_cl_game->local_player->name);
 	tmp_writer.set_player_cdkey_digest	(Level().get_cdkey_digest());
-	m_jpeg_buffer_size					= tmp_writer.write_info(&g_jpeg_encode_delegate);
+	m_jpeg_buffer_size					= tmp_writer.write_info(&g_jpeg_encode_delegate);*/
 }
 
 
@@ -216,10 +212,10 @@ void screenshot_manager::shedule_Update(u32 dt)
 			btwCount1(static_cast<u32>(process_affinity_mask)) == 1
 		);
 	}
-	if (is_drawing_downloads())
+/*	if (is_drawing_downloads())
 	{
 		static_cast<game_cl_mp*>(Level().game)->draw_all_active_binder_states();
-	}
+	}*/
 }
 
 void screenshot_manager::make_screenshot(complete_callback_t cb)
@@ -266,7 +262,7 @@ void screenshot_manager::set_draw_downloads(bool draw)
 
 void screenshot_manager::process_screenshot(bool singlecore)
 {
-	if (singlecore)
+/*	if (singlecore)
 	{
 		//g_jpeg_encode_cb = &jpeg_encode_callback;
 		g_jpeg_encode_delegate.bind(this,
@@ -286,16 +282,16 @@ void screenshot_manager::process_screenshot(bool singlecore)
 	m_make_done_event	= CreateEvent(NULL, FALSE, FALSE, NULL);
 	thread_spawn	(&screenshot_manager::screenshot_maker_thread, "screenshot_maker", 0, this);
 }
-void	__stdcall	screenshot_manager::jpeg_compress_cb(long progress)
+void		screenshot_manager::jpeg_compress_cb(long progress)
 {
-/*#ifdef DEBUG
+#ifdef DEBUG
 	Msg("* JPEG encoding progress : %d%%", progress);
-#endif*/
+#endif
 	if (progress % 5 == 0)
 	{
 		if (!SwitchToThread())
 			Sleep(10);
-	}
+	}*/
 }
 
 void screenshot_manager::screenshot_maker_thread(void* arg_ptr)

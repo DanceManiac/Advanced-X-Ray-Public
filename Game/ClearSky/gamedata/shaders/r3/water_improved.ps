@@ -1,0 +1,93 @@
+
+	#define WATER_PIXEL
+	#define W_DEBUG 0
+	#define USE_WATER_RIPPLES 1
+	#include "common.h"
+	#include "water_pv.h"
+	#include "lmodel.h"
+	#include "reflections.h"
+
+	float4 main(wivs_out _in) : SV_Target
+	{
+		float4 base = s_base.Sample(smp_base, _in.tbase);
+
+		float actorDepth, waterDepth, alpha;
+
+		actorDepth = _in.tctexgen.z;
+
+		waterDepth = gbuf_get_depth(float4(_in.tctexgen)) - actorDepth;
+
+		alpha  = saturate(waterDepth);
+		alpha  = saturate(alpha * 4);
+
+		#if defined(USE_SOFT_WATER)
+			#if USE_WATER_RIPPLES==1
+				float ripples_mixer = smooth_out_depth(actorDepth, 12, 2) * 0.6;
+
+				base = mix(base, RipplesPS(s_base, smp_base, _in.tbase, 10), ripples_mixer * u_weather.w);
+			#endif
+
+			#if W_DEBUG>0
+				#define s_nmap s_nmap_empty
+			#endif
+
+			float3  Navg	= SampleMix(s_nmap, smp_base, _in.tnorm0.xy, _in.tnorm0.zw);
+
+			float3	Nw	= mul(float3x3(_in.M1, _in.M2, _in.M3), Navg);
+					Nw	= normalize(Nw);
+
+			float2 tc = ss_tc_from_wo_posi(_in.position_w);
+
+			#if defined(SSR_QUALITY)
+				float3 c_reflection = depth_traced_ssr(_in.position_w, Nw, float3(tc, actorDepth));
+			#else
+				float3	v2point	= normalize(_in.v2point);
+				float3  vreflect = reflect(v2point, Nw.xyz);
+				float3  c_reflection = sky_fake_reflection(s_env0, s_env1, vreflect);
+			#endif
+
+			float3	final	 = mix(c_reflection,base.xyz,base.w);
+
+			#if USE_WATER_FOAM==1
+				float4 tex_foam = s_foam.Sample(smp_base, _in.tbase);
+
+				float	calc_cos = -dot(float3(_in.M1.z, _in.M2.z, _in.M3.z),  normalize(normalize(_in.v2point)));
+
+				float	calc_depth = saturate(waterDepth * calc_cos);
+
+				float	fFoamfact = smoothstep(0.025, 0.05, calc_depth);
+						fFoamfact *= smoothstep(0.1, 0.075, calc_depth);
+
+				final		= mix(final, tex_foam, tex_foam.w * fFoamfact);
+
+				alpha		= mix(alpha, tex_foam.w, tex_foam.w * fFoamfact);
+			#endif
+
+			final = mix(0,			final,   alpha);
+			final = mix(fog_color,	final, _in.fog);
+
+			alpha = clamp(alpha *  pow(_in.fog, 2), 0.05, 0.825);
+
+			#if (SSR_QUALITY>1)
+				final *= alpha;
+
+				alpha -= 0.05;
+
+				float2 nfactor = clamp(Navg.xy * alpha * 0.1, -0.1, 0.1);
+
+				#if defined(USE_MSAA)
+					float3	frame = s_pptemp.Load((tc + nfactor.xy) * screen_res_alt.xy, 0) * (1 - alpha) + nfactor.xxx;
+				#else
+					float3	frame = s_pptemp.Sample(smp_nofilter, tc + nfactor.xy) * (1 - alpha) + nfactor.xxx;
+				#endif
+
+				final += frame;
+
+				return  float4(saturate(final), 1);
+			#else
+				return  float4(final, alpha);
+			#endif
+		#else
+			return  float4(base.xyz, 0.75);
+		#endif	
+	}

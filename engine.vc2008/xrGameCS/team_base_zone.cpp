@@ -18,7 +18,7 @@
 #include "map_manager.h"
 #include "map_location.h"
 #include "../xrEngine/IGame_Persistent.h"
-
+#include "../XrEngine/xr_collide_form.h"
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #endif
@@ -166,13 +166,13 @@ void CTeamBaseZone::OnRender()
 				l_ball.scale(l_sphere.R, l_sphere.R, l_sphere.R);
 				Fvector l_p; XFORM().transform(l_p, l_sphere.P);
 				l_ball.translate_add(l_p);
-				Level().debug_renderer().draw_ellipse(l_ball, D3DCOLOR_XRGB(0,255,255));
+				Level().debug_renderer().draw_ellipse(l_ball, color_xrgb(0,255,255));
 			}
 			break;
 		case 1:
 			{
 				l_box.mul(XFORM(), l_pShape->data.box);
-				Level().debug_renderer().draw_obb(l_box, l_half, D3DCOLOR_XRGB(0,255,255));
+				Level().debug_renderer().draw_obb(l_box, l_half, color_xrgb(0,255,255));
 			}
 			break;
 		}

@@ -22,6 +22,10 @@ class CWeaponMagazined;
 class CParticlesObject;
 class CUIWindow;
 
+#define WEAPON_INDOOR_HEMI_FACTOR 0.01f
+#define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f
+
+
 class CWeapon : public CHudItemObject,
 				public CShootingObject
 {
@@ -151,6 +155,15 @@ public:
 	//инициализация свойств присоединенных аддонов
 	virtual void InitAddons();
 
+	float m_hud_fov_add_mod;
+	float m_nearwall_dist_max;
+	float m_nearwall_dist_min;
+	float m_nearwall_last_hud_fov;
+	float m_nearwall_target_hud_fov;
+	float m_nearwall_speed_mod;
+
+	float GetHudFov();
+
 	//для отоброажения иконок апгрейдов в интерфейсе
 	int	GetScopeX() {return m_iScopeX;}
 	int	GetScopeY() {return m_iScopeY;}
@@ -205,6 +218,7 @@ protected:
 		
 		Fvector			m_ZoomDof;
 		Fvector4		m_ReloadDof;
+		Fvector4		m_ReloadEmptyDof;
 
 	} m_zoom_params;
 	

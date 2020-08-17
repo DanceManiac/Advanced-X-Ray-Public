@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ai_monster_defs.h"
-#include "../../../xrServerEntities/ai_sounds.h"
+#include "../../../XrServerEntitiesCS/ai_sounds.h"
 
 class CBaseMonster;
 
@@ -41,11 +41,11 @@ typedef struct tagSoundElement
 {
 	const CObject		*who;
 	TSoundDangerValue	type;
-	Fvector				position;		// позиция звука, не объекта, издавшего звук
+	Fvector				position;		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	float				power;
-	TTime				time;			// время обнаружения звука
+	TTime				time;			// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
-	int					value;			// оценочное значение данного звука		
+	int					value;			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ		
 
 	tagSoundElement() {  
 		who = 0; type = NONE_DANGEROUS_SOUND; position.set(0,0,0); power = 0.f; time = 0; value = 0;
@@ -65,7 +65,7 @@ typedef struct tagSoundElement
 } SoundElem;
 
 class CMonsterSoundMemory {
-	TTime					time_memory;				// время хранения звуков
+	TTime					time_memory;				// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	xr_vector<SoundElem>	Sounds;
 
 	CBaseMonster			*monster;
@@ -87,7 +87,7 @@ public:
 	int         GetNumSounds            () {return Sounds.size();}
 	void        GetFirstSound           (SoundElem& s, bool& bDangerous);
 
-	void		GetSound				(SoundElem& s, bool& bDangerous);	// возвращает самый опасный звук
+	void		GetSound				(SoundElem& s, bool& bDangerous);	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	SoundElem	&GetSound				();
 	bool		get_sound_from_object	(const CObject* who, SoundElem	&value);	
 

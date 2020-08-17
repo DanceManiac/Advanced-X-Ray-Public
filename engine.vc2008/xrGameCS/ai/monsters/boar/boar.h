@@ -2,7 +2,7 @@
 
 #include "../BaseMonster/base_monster.h"
 #include "../controlled_entity.h"
-#include "../../../../xrServerEntities/script_export_space.h"
+#include "../../../../XrServerEntitiesCS/script_export_space.h"
 
 class CAI_Boar : public CBaseMonster,
 				 public CControlledEntity<CAI_Boar> {
@@ -24,7 +24,7 @@ public:
 	virtual void	CheckSpecParams		(u32 spec_params);
 
 	// look at enemy
-	static void		BoneCallback	(CBoneInstance *B);
+	static void	_BCL	BoneCallback	(CBoneInstance *B);
 	
 			float	_velocity;
 			float	_cur_delta, _target_delta;

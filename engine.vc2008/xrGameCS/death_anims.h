@@ -1,7 +1,7 @@
 #pragma once
 struct SHit;
 
-#include "../include/xrRender/animation_motion.h"
+#include "../Include/xrRender/animation_motion.h"
 struct MotionID;
 
 class  CInifile;
@@ -45,7 +45,7 @@ static const u16		dirs_number		= 4;
 public:	
 	type_motion			( ){}
 virtual				~type_motion		( );
-		type_motion	*setup				( IKinematicsAnimated* k, CInifile* ini, LPCSTR section, LPCSTR type );
+		type_motion	*setup				( IKinematicsAnimated* k, CInifile const * ini, LPCSTR section, LPCSTR type );
 		MotionID	motion				( edirection dr )	const;
 virtual	bool		predicate			( CEntityAlive& ea, const SHit& H, MotionID &m, float &angle ) const=0;
 private:
@@ -63,7 +63,7 @@ class death_anims
 public:
 					death_anims	( );
 					~death_anims( );
-	void			setup		( IKinematicsAnimated* k, LPCSTR section, CInifile* ini );
+	void			setup		( IKinematicsAnimated* k, LPCSTR section, CInifile const * ini );
 	void			clear		( );
 	MotionID		motion		( CEntityAlive& ea, const SHit& H, float& angle )	const;
 	

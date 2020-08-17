@@ -5,7 +5,7 @@
 #include "../controlled_entity.h"
 #include "../controlled_actor.h"
 #include "../anim_triple.h"
-#include "../../../../xrServerEntities/script_export_space.h"
+#include "../../../../XrServerEntitiesCS/script_export_space.h"
 #include "bloodsucker_alien.h"
 
 
@@ -51,9 +51,9 @@ public:
 	// Bones
 	//--------------------------------------------------------------------
 private:
-	static	void			BoneCallback			(CBoneInstance *B);
-			void			vfAssignBones			();
-			void			LookDirection			(Fvector to_dir, float bone_turn_speed);
+	static	void	_BCL		BoneCallback			(CBoneInstance *B);
+			void				vfAssignBones			();
+			void				LookDirection			(Fvector to_dir, float bone_turn_speed);
 
 
 	bonesManipulation		Bones;

@@ -8,7 +8,7 @@
 
 #include "stdafx.h"
 #include "smart_cover_object.h"
-#include "../xrServerEntities/xrServer_Objects_ALife.h"
+#include "../XrServerEntitiesCS/xrServer_Objects_ALife.h"
 #include "level.h"
 #include "debug_renderer.h"
 #include "ai_space.h"
@@ -17,7 +17,7 @@
 #include "smart_cover.h"
 #include "smart_cover_description.h"
 #include "smart_cover_loophole.h"
-
+#include "..\XrEngine\xr_collide_form.h"
 using smart_cover::object;
 
 void object::Load			(LPCSTR section)
@@ -101,7 +101,7 @@ void object::OnRender		()
 	DRender->OnFrameEnd				();
 	Fvector							l_half; l_half.set(.5f, .5f, .5f);
 	Fmatrix							l_ball, l_box;
-	u32								Color = D3DCOLOR_XRGB(0,255,0);
+	u32								Color = color_xrgb(0,255,0);
 
 	typedef xr_vector<CCF_Shape::shape_def>	Shapes;
 	Shapes							&l_shapes = ((CCF_Shape*)CFORM())->Shapes();

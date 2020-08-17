@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////
-// UIPdaMsgListItem.cpp: элемент окна списка в основном 
-// экране для сообщений PDA
+// UIPdaMsgListItem.cpp: пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ PDA
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "UIPdaMsgListItem.h"
 #include "../Entity.h"
-#include "../../xrServerEntities/character_info.h"
+#include "../../XrServerEntitiesCS/character_info.h"
 #include "UIInventoryUtilities.h"
 #include "xrUIXmlParser.h"
 #include "UIXmlInit.h"

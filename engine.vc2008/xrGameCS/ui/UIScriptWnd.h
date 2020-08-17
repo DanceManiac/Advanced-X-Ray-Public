@@ -1,8 +1,8 @@
 #pragma once
 
 #include "UIDialogWnd.h"
-#include "../../xrServerEntities/script_space_forward.h"
-#include "../../xrServerEntities/script_export_space.h"
+#include "../../XrServerEntitiesCS/script_space_forward.h"
+#include "../../XrServerEntitiesCS/script_export_space.h"
 
 struct SCallbackInfo;
 

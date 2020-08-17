@@ -168,7 +168,7 @@ void game_sv_Deathmatch::OnRoundStart()
 	fastdelegate::FastDelegate1<IClient*, void> tmp_delegate;
 	tmp_delegate.bind(this, &game_sv_Deathmatch::RespawnPlayerAsSpectator);
 	m_server->ForEachClientDoSender(tmp_delegate);
-	
+	/*
 	//Clear disconnected players
 	struct DisconnectedPlayersClearer
 	{
@@ -188,7 +188,7 @@ void game_sv_Deathmatch::OnRoundStart()
 		}
 	};
 	DisconnectedPlayersClearer tmp_functor(this);
-	m_server->ForEachDisconnectedClientDo(tmp_functor);
+	m_server->ForEachDisconnectedClientDo(tmp_functor);*/
 	m_item_respawner.respawn_all_items();
 }
 
@@ -1761,10 +1761,10 @@ void game_sv_Deathmatch::OnDetach(u16 eid_who, u16 eid_what)
 
 		if (EventPack.B.count > 2)	
 			u_EventSend						(EventPack);
-
-		std::for_each(to_reject.begin(), to_reject.end(),
-			std::bind1st(std::mem_fun<void,	game_sv_mp, CSE_Abstract*>(
-			&game_sv_mp::RejectGameItem), this));
+		for (auto& i : to_reject)
+		{
+			RejectGameItem(i);
+		}
 	};
 }
 

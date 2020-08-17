@@ -31,6 +31,7 @@ private:
 
 public:
 							default_behaviour_planner	(animation_planner *object, LPCSTR action_name);
+							virtual ~default_behaviour_planner() {}
 		virtual	void		setup						(animation_planner *object, CPropertyStorage *storage);
 		virtual	void		initialize					();
 		virtual void		update						();

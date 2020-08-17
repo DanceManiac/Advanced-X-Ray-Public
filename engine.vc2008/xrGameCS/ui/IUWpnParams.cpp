@@ -4,7 +4,7 @@
 #include "../level.h"
 #include "game_base_space.h"
 #include "../ai_space.h"
-#include "../../xrServerEntities/script_engine.h"
+#include "../../XrServerEntitiesCS/script_engine.h"
 
 struct SLuaWpnParams{
 	luabind::functor<float>		m_functorRPM;

@@ -19,7 +19,7 @@
 #include "../ai_space.h"
 #include "../alife_simulator.h"
 
-#include "../../xrServerEntities/script_engine.h"
+#include "../../XrServerEntitiesCS/script_engine.h"
 #include "../character_community.h"
 #include "../character_reputation.h"
 #include "../relation_registry.h"

@@ -19,13 +19,13 @@
 #include "../../inventory.h"
 #include "../../artefact.h"
 #include "../../phmovementcontrol.h"
-#include "../../../xrServerEntities/xrserver_objects_alife_monsters.h"
+#include "../../../XrServerEntitiesCS/xrserver_objects_alife_monsters.h"
 #include "../../cover_evaluators.h"
 #include "../../xrserver.h"
 #include "../../xr_level_controller.h"
 #include "../../hudmanager.h"
 #include "../../../Include/xrRender/Kinematics.h"
-#include "../../../xrServerEntities/character_info.h"
+#include "../../../XrServerEntitiesCS/character_info.h"
 #include "../../actor.h"
 #include "../../relation_registry.h"
 #include "../../stalker_animation_manager.h"
@@ -41,7 +41,7 @@
 #include "../../ai_object_location.h"
 #include "../../stalker_movement_manager_smart_cover.h"
 #include "../../entitycondition.h"
-#include "../../../xrServerEntities/script_engine.h"
+#include "../../../XrServerEntitiesCS/script_engine.h"
 #include "ai_stalker_impl.h"
 #include "../../sound_player.h"
 #include "../../stalker_sound_data.h"
@@ -51,7 +51,7 @@
 #include "../../effectorshot.h"
 #include "../../visual_memory_manager.h"
 #include "../../enemy_manager.h"
-#include "../../../xrServerEntities/alife_human_brain.h"
+#include "../../../XrServerEntitiesCS/alife_human_brain.h"
 #include "../../profiler.h"
 #include "../../BoneProtections.h"
 #include "../../stalker_animation_names.h"
@@ -110,7 +110,7 @@ void CAI_Stalker::reinit			()
 	animation().reinit				();
 //	movement().reinit				();
 
-	//загрузка спецевической звуковой схемы для сталкера согласно m_SpecificCharacter
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ m_SpecificCharacter
 	sound().sound_prefix			(SpecificCharacter().sound_voice_prefix());
 
 #ifdef DEBUG_MEMORY_MANAGER
@@ -296,7 +296,7 @@ void CAI_Stalker::Die				(CObject* who)
 
 	inherited::Die					(who);
 	
-	//запретить использование слотов в инвенторе
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	inventory().SetSlotsUseful		(false);
 
 	if (inventory().GetActiveSlot() >= inventory().m_slots.size())
@@ -393,7 +393,7 @@ BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
 	if (!g_Alive())
 		sound().set_sound_mask(u32(eStalkerSoundMaskDie));
 
-	//загрузить иммунитеты из модельки сталкера
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual()); VERIFY(pKinematics);
 	CInifile* ini = pKinematics->LL_UserData();
 	if(ini)
@@ -410,7 +410,7 @@ BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
 		}
 	}
 
-	//вычислить иммунета в зависимости от ранга
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	static float novice_rank_immunity			= pSettings->r_float("ranks_properties", "immunities_novice_k");
 	static float expirienced_rank_immunity		= pSettings->r_float("ranks_properties", "immunities_experienced_k");
 

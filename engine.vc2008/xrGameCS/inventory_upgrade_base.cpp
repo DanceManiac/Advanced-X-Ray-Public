@@ -42,7 +42,7 @@ void UpgradeBase::add_dependent_groups( LPCSTR groups_str, Manager& manager_r )
 
 	for ( int n = _GetItemCount( groups_str ), i = 0; i < n; ++i )
 	{
-		Group* group_p = manager_r.add_group( _GetItem( groups_str, i, temp ), *this );
+		Group* group_p = manager_r.add_group( _GetItem( groups_str, i, temp ,xr_strlen(groups_str) + 1), *this );
 
 		if ( std::find( m_depended_groups.begin(), m_depended_groups.end(), group_p ) == m_depended_groups.end() )
 		{

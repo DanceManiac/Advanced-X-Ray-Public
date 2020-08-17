@@ -46,8 +46,8 @@ void	CGameSpy_HTTP::LoadGameSpy(HMODULE hGameSpyDLL)
 	GAMESPY_LOAD_FN(xrGS_ghttpCleanup);
 	GAMESPY_LOAD_FN(xrGS_ghttpThink);
 
-	GAMESPY_LOAD_FN(xrGS_ghttpSave);
-	GAMESPY_LOAD_FN(xrGS_ghttpSaveEx);
+	GAMESPY_LOAD_FN(xrGS_ghttpSaveA);
+	GAMESPY_LOAD_FN(xrGS_ghttpSaveExA);
 	GAMESPY_LOAD_FN(xrGS_ghttpCancelRequest);
 
 	GAMESPY_LOAD_FN(xrGS_GetGameID);
@@ -121,7 +121,7 @@ void		CGameSpy_HTTP::DownloadFile(LPCSTR URL, LPCSTR FileName)
 //	GHTTPRequest res = xrGS_ghttpSave(URL, FileName, GHTTPFalse, CompletedCallBack, this);
 	Msg		("URL:  %s",URL);
 	Msg		("File: %s",FileName);
-	m_LastRequest = xrGS_ghttpSaveEx(URL, FileName, "", NULL, GHTTPFalse, GHTTPFalse, ProgressCallback, CompletedCallBack, this);
+	m_LastRequest = xrGS_ghttpSaveExA(URL, FileName, "", NULL, GHTTPFalse, GHTTPFalse, ProgressCallback, CompletedCallBack, this);
 	Msg		("Code: %d",m_LastRequest);
 	if (m_LastRequest < 0)
 	{

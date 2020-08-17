@@ -35,11 +35,11 @@ private:
 	virtual	void	state_end	(  );
 	virtual	void	state_start (  );
 
-static	void	rootbone_callback	( CBoneInstance *BI );
-		void	init_bones			();
-		void	deinit_bones		();
-		void	set_root_callback	();
-		void	remove_root_callback();
+static	void _BCL	rootbone_callback	( CBoneInstance *BI );
+		void		init_bones			();
+		void		deinit_bones		();
+		void		set_root_callback	();
+		void		remove_root_callback();
 
 			void	interactive_motion_diagnostic( LPCSTR message );
 };

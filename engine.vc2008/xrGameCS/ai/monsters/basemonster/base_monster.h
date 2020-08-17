@@ -236,7 +236,7 @@ public:
 	ref_smem<SMonsterSettings>	m_base_settings;
 	ref_smem<SMonsterSettings>	m_current_settings;
 	
-	void						settings_read			(CInifile *ini, LPCSTR section, SMonsterSettings &data);
+	void						settings_read			(CInifile const *ini, LPCSTR section, SMonsterSettings &data);
 	void						settings_load			(LPCSTR section);
 	void						settings_overrides		();
 
@@ -383,6 +383,7 @@ IC	void					wake_up				(){m_bSleep = false;}
 
 private:
 	bool					ignore_collision_hit;	
+	shared_str				m_section;
 	
 public:
 	IC	void				set_ignore_collision_hit (bool value) {ignore_collision_hit = value;}
@@ -440,6 +441,7 @@ protected:
 	
 
 public:	
+	shared_str						get_section()	const { return m_section; }
 
 
 //////////////////////////////////////////////////////////////////////////

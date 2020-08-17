@@ -56,7 +56,7 @@ public:
 			m_object->m_path_state		= CMovementManager::ePathStatePathVerification;
 	}
 
-			void __stdcall	process			()
+			void 	__stdcall	process			()
 	{
 		process_impl		();
 	}

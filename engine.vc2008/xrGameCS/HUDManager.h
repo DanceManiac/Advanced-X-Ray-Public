@@ -54,6 +54,7 @@ public:
 	
 	virtual		void		Render_First		();
 	virtual		void		Render_Last			();	   
+	virtual		void		Render_Actor_Shadow	(); // added by KD  
 	virtual		void		OnFrame				();
 
 	virtual		void		RenderUI			();
@@ -84,7 +85,7 @@ public:
 	virtual void			OnConnected			();
 	virtual	void			RenderActiveItemUI	();
 	virtual	bool			RenderActiveItemUIQuery();
-
+	virtual void			OnScreenResolutionChanged();
 	//Lain: added
 				void		SetRenderable       (bool renderable) { m_Renderable = renderable; }
 				bool		IsRenderable        () { return m_Renderable; }

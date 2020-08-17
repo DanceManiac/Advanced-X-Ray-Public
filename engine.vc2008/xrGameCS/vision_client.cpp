@@ -18,7 +18,8 @@ IC	const CEntity &vision_client::object		() const
 }
 
 vision_client::vision_client					(CEntity *object, const u32 &update_interval) :
-	m_object					(object)
+	Feel::Vision(object),
+	m_object(object)
 {
 	VERIFY						(m_object);
 

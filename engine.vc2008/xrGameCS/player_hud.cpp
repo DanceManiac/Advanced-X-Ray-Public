@@ -12,6 +12,17 @@ player_hud* g_player_hud = NULL;
 Fvector _ancor_pos;
 Fvector _wpn_root_pos;
 
+// clang-format off
+static const float PITCH_OFFSET_R = 0.017f;		// --#SM+#--
+static const float PITCH_OFFSET_N = 0.012f;		// --#SM+#--
+static const float PITCH_OFFSET_D = 0.02f;		// --#SM+#--
+static const float PITCH_LOW_LIMIT = -PI;		// --#SM+#--
+static const float ORIGIN_OFFSET = -0.05f;		// --#SM+#--
+static const float ORIGIN_OFFSET_AIM = -0.03f;  // --#SM+#--
+static const float TENDTO_SPEED = 5.f;			// --#SM+#--
+static const float TENDTO_SPEED_AIM = 8.f;      // --#SM+#--
+// clang-format on
+
 float CalcMotionSpeed(const shared_str& anim_name)
 {
 
@@ -291,6 +302,19 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	R_ASSERT2(pSettings->line_exist(sect_name,"shell_point")==pSettings->line_exist(sect_name,"shell_bone"),	sect_name.c_str());
 
 	m_prop_flags.set(e_16x9_mode_now,is_16x9);
+
+
+	//--#SM+# Begin--
+	m_inertion_params.m_pitch_offset_r = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_right", PITCH_OFFSET_R);
+	m_inertion_params.m_pitch_offset_n = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_up", PITCH_OFFSET_N);
+	m_inertion_params.m_pitch_offset_d = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_forward", PITCH_OFFSET_D);
+	m_inertion_params.m_pitch_low_limit = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_up_low_limit", PITCH_LOW_LIMIT);
+
+	m_inertion_params.m_origin_offset = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_origin_offset", ORIGIN_OFFSET);
+	m_inertion_params.m_origin_offset_aim = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_origin_aim_offset", ORIGIN_OFFSET_AIM);
+	m_inertion_params.m_tendto_speed = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_tendto_speed", TENDTO_SPEED);
+	m_inertion_params.m_tendto_speed_aim = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_tendto_aim_speed", TENDTO_SPEED_AIM);
+	//--#SM+# End--	
 }
 
 attachable_hud_item::~attachable_hud_item()
@@ -606,22 +630,42 @@ void player_hud::update_additional	(Fmatrix& trans)
 		m_attached_items[1]->update_hud_additional(trans);
 }
 
-
-static const float PITCH_OFFSET_R	= 0.017f;
-static const float PITCH_OFFSET_N	= 0.012f;
-static const float PITCH_OFFSET_D	= 0.02f;
-static const float ORIGIN_OFFSET	= -0.05f;
-static const float TENDTO_SPEED		= 5.f;
-
 void player_hud::update_inertion(Fmatrix& trans)
 {
 	if ( inertion_allowed() )
 	{
+		attachable_hud_item* pMainHud = m_attached_items[0];
+
 		Fmatrix								xform;
 		Fvector& origin						= trans.c; 
 		xform								= trans;
 
 		static Fvector						st_last_dir={0,0,0};
+
+		// load params
+		hud_item_measures::inertion_params inertion_data;
+		if (pMainHud != NULL)
+		{
+			inertion_data.m_pitch_offset_r = pMainHud->m_measures.m_inertion_params.m_pitch_offset_r;
+			inertion_data.m_pitch_offset_n = pMainHud->m_measures.m_inertion_params.m_pitch_offset_n;
+			inertion_data.m_pitch_offset_d = pMainHud->m_measures.m_inertion_params.m_pitch_offset_d;
+			inertion_data.m_pitch_low_limit = pMainHud->m_measures.m_inertion_params.m_pitch_low_limit;
+			inertion_data.m_origin_offset = pMainHud->m_measures.m_inertion_params.m_origin_offset;
+			inertion_data.m_origin_offset_aim = pMainHud->m_measures.m_inertion_params.m_origin_offset_aim;
+			inertion_data.m_tendto_speed = pMainHud->m_measures.m_inertion_params.m_tendto_speed;
+			inertion_data.m_tendto_speed_aim = pMainHud->m_measures.m_inertion_params.m_tendto_speed_aim;
+		}
+		else
+		{
+			inertion_data.m_pitch_offset_r = PITCH_OFFSET_R;
+			inertion_data.m_pitch_offset_n = PITCH_OFFSET_N;
+			inertion_data.m_pitch_offset_d = PITCH_OFFSET_D;
+			inertion_data.m_pitch_low_limit = PITCH_LOW_LIMIT;
+			inertion_data.m_origin_offset = ORIGIN_OFFSET;
+			inertion_data.m_origin_offset_aim = ORIGIN_OFFSET_AIM;
+			inertion_data.m_tendto_speed = TENDTO_SPEED;
+			inertion_data.m_tendto_speed_aim = TENDTO_SPEED_AIM;
+		}
 
 		// calc difference
 		Fvector								diff_dir;
@@ -638,14 +682,42 @@ void player_hud::update_inertion(Fmatrix& trans)
 		}
 
 		// tend to forward
-		st_last_dir.mad						(diff_dir,TENDTO_SPEED*Device.fTimeDelta);
-		origin.mad							(diff_dir,ORIGIN_OFFSET);
+		float _tendto_speed, _origin_offset;
+		if (pMainHud != NULL && pMainHud->m_parent_hud_item->GetCurrentHudOffsetIdx() > 0)
+		{
+			float factor = pMainHud->m_parent_hud_item->GetInertionFactor();
+			_tendto_speed = inertion_data.m_tendto_speed_aim - (inertion_data.m_tendto_speed_aim - inertion_data.m_tendto_speed) * factor;
+			_origin_offset =
+				inertion_data.m_origin_offset_aim - (inertion_data.m_origin_offset_aim - inertion_data.m_origin_offset) * factor;
+		}
+		else
+		{
+			_tendto_speed = inertion_data.m_tendto_speed;
+			_origin_offset = inertion_data.m_origin_offset;
+		}
+
+		if (pMainHud != NULL)
+		{
+			float power_factor = pMainHud->m_parent_hud_item->GetInertionPowerFactor();
+			_tendto_speed *= power_factor;
+			_origin_offset *= power_factor;
+		}
+
+		st_last_dir.mad(diff_dir, _tendto_speed * Device.fTimeDelta);
+		origin.mad(diff_dir, _origin_offset);
 
 		// pitch compensation
 		float pitch							= angle_normalize_signed(xform.k.getP());
-		origin.mad							(xform.k,	-pitch * PITCH_OFFSET_D);
-		origin.mad							(xform.i,	-pitch * PITCH_OFFSET_R);
-		origin.mad							(xform.j,	-pitch * PITCH_OFFSET_N);
+
+		if (pMainHud != NULL)
+			pitch *= pMainHud->m_parent_hud_item->GetInertionFactor();
+
+		origin.mad(xform.k, -pitch * inertion_data.m_pitch_offset_d);
+
+		origin.mad(xform.i, -pitch * inertion_data.m_pitch_offset_r);
+
+		clamp(pitch, inertion_data.m_pitch_low_limit, PI);
+		origin.mad(xform.j, -pitch * inertion_data.m_pitch_offset_n);
 	}
 }
 

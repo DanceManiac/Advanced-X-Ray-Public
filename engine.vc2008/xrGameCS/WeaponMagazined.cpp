@@ -20,6 +20,8 @@
 #include "ui/UIStatic.h"
 
 ENGINE_API	bool	g_dedicated_server;
+ENGINE_API  extern float psHUD_FOV;
+ENGINE_API  extern float psHUD_FOV_def;
 
 CUIXml*				pWpnScopeXml = NULL;
 
@@ -71,6 +73,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_shoot", "sndShot"		, m_eSoundShot		);
 	m_sounds.LoadSound(section,"snd_empty", "sndEmptyClick"	, m_eSoundEmptyClick	);
 	m_sounds.LoadSound(section,"snd_reload", "sndReload"		, m_eSoundReload		);
+	m_sounds.LoadSound(section, "snd_reflect", "sndReflect",  m_eSoundReflect);
 	
 	m_sSndShotCurrent = "sndShot";
 		
@@ -591,6 +594,26 @@ void CWeaponMagazined::OnShot()
 	//дым из ствола
 	ForceUpdateFireParticles	();
 	StartSmokeParticles			(get_LastFP(), vel);
+
+	// snd reflection
+	if (IsSilencerAttached() == false)
+	{
+		bool bIndoor = false;
+		if (H_Parent() != nullptr)
+		{
+			bIndoor = H_Parent()->renderable_ROS()->get_luminocity_hemi() < WEAPON_INDOOR_HEMI_FACTOR;
+		}
+
+		if (bIndoor && m_sounds.FindSoundItem("sndReflect", false))
+		{
+			if (IsHudModeNow())
+			{
+				HUD_SOUND_ITEM::SetHudSndGlobalVolumeFactor(WEAPON_SND_REFLECTION_HUD_FACTOR);
+			}
+			PlaySound("sndReflect", get_LastFP());
+			HUD_SOUND_ITEM::SetHudSndGlobalVolumeFactor(1.0f);
+		}
+	}
 }
 
 
@@ -709,6 +732,7 @@ void CWeaponMagazined::switch2_Hidden()
 
 	signal_HideComplete		();
 	RemoveShotEffector		();
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 void CWeaponMagazined::switch2_Showing()
 {
@@ -1241,6 +1265,10 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 
 	result2 = process_if_exists_set( section, "snd_reload", &CInifile::r_string, str, test );
 	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_reload"	, "sndReload"		, m_eSoundReload	);	}
+	result |= result2;
+
+	result2 = process_if_exists_set(section, "snd_reflect", &CInifile::r_string, str, test);
+	if (result2 && !test) { m_sounds.LoadSound(section, "snd_reflect", "sndReflect"			, m_eSoundReflect); }
 	result |= result2;
 
 	//snd_shoot1     = weapons\ak74u_shot_1 ??

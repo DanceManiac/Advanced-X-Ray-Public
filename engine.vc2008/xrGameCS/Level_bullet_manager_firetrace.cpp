@@ -16,10 +16,13 @@
 #include "AI/Stalker/ai_stalker.h"
 #include "character_info.h"
 #include "game_cl_base_weapon_usage_statistic.h"
-#include "../xrEngine/xr_collide_defs.h"
+#include "../XrCDB/xr_collide_defs.h"
 #include "weapon.h"
 #include "ik/math3d.h"
 #include "actor.h"
+#include "../XrEngine/xr_collide_form.h"
+
+extern ENGINE_API int ps_r__WallmarksOnSkeleton;
 
 //константы ShootFactor, определ€ющие 
 //поведение пули при столкновении с объектом
@@ -153,9 +156,8 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 	SGameMtlPair* mtl_pair	= GMLib.GetMaterialPair(bullet->bullet_material_idx, target_material);
 	Fvector particle_dir	= vNormal;
 
-	if (R.O)
+	if (R.O && ps_r__WallmarksOnSkeleton)
 	{
-/*  add_SkeletonWallmark not implemented now...
 		particle_dir		 = vDir;
 		particle_dir.invert	();
 
@@ -175,7 +177,6 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 													bullet->dir, 
 													bullet->wallmark_size);
 		}
-*/
 	} 
 	else 
 	{

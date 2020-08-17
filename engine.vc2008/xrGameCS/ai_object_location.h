@@ -29,12 +29,12 @@ public:
 	IC	void				init				();
 	IC	void				reinit				();
 	IC	void				game_vertex			(CVertex const *game_vertex);
-	IC	void				game_vertex			(_GRAPH_ID const &game_vertex_id);
+		void				game_vertex			(_GRAPH_ID const &game_vertex_id);
 	IC	const CVertex		*game_vertex		() const;
 	IC	const _GRAPH_ID		game_vertex_id		() const;
-	IC	void				level_vertex		(CLevelVertex const *level_vertex);
-	IC	void				level_vertex		(u32 const &level_vertex_id);
-	IC	const CLevelVertex	*level_vertex		() const;
+		void				level_vertex		(CLevelVertex const *level_vertex);
+		void				level_vertex		(u32 const &level_vertex_id);
+		const CLevelVertex	*level_vertex		() const;
 	IC	const u32			level_vertex_id		() const;
 };
 

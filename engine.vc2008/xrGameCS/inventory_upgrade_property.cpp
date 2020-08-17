@@ -8,7 +8,7 @@
 
 #include "pch_script.h"
 #include "ai_space.h"
-#include "../xrServerEntities/script_engine.h"
+#include "../XrServerEntitiesCS/script_engine.h"
 #include "string_table.h"
 
 #include "inventory_upgrade_property.h"
@@ -51,7 +51,7 @@ void Property::construct( shared_str const& property_id, Manager& manager_r )
 	PSTR	temp = (PSTR)_alloca( (xr_strlen(funct_params_str) + 1) * sizeof(char) );
 	for ( int n = _GetItemCount( funct_params_str ), i = 0; i < n; ++i )
 	{
-		LPCSTR i_param = ( _GetItem( funct_params_str, i, temp ) );
+		LPCSTR i_param = ( _GetItem( funct_params_str, i, temp , xr_strlen(funct_params_str) + 1) );
 		m_functor_params.push_back( i_param );
 	}
 

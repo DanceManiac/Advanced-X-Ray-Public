@@ -529,7 +529,7 @@ void CMainMenu::OnNewPatchFound(LPCSTR VersionName, LPCSTR URL)
 		INIT_MSGBOX(m_pMB_ErrDlgs[NewPatchFound], "msg_box_new_patch");
 
 		shared_str tmpText;
-		tmpText.sprintf(m_pMB_ErrDlgs[NewPatchFound]->GetText(), VersionName, URL);
+		tmpText.printf(m_pMB_ErrDlgs[NewPatchFound]->GetText(), VersionName, URL);
 		m_pMB_ErrDlgs[NewPatchFound]->SetText(*tmpText);		
 	}
 	m_sPatchURL = URL;
@@ -568,7 +568,7 @@ void CMainMenu::OnDownloadPatch(CUIWindow*, void*)
 		m_sPatchFileName = fname;
 	}
 	else
-		m_sPatchFileName.sprintf	("downloads\\%s", FileName);	
+		m_sPatchFileName.printf	("downloads\\%s", FileName);	
 	
 	m_sPDProgress.IsInProgress	= true;
 	m_sPDProgress.Progress		= 0;

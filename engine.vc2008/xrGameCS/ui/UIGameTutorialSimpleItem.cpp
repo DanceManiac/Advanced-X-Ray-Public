@@ -13,7 +13,7 @@
 #include "UIActorMenu.h"
 #include "UITalkWnd.h"
 #include "UICarBodyWnd.h"
-#include "../../xrServerEntities/script_engine.h"
+#include "../../XrServerEntitiesCS/script_engine.h"
 #include "../ai_space.h"
 
 extern ENGINE_API BOOL bShowPauseString;

@@ -133,7 +133,7 @@ class CActorDeathEffector
 	ref_sound				m_death_sound;
 	bool					m_b_actual;
 	float					m_start_health;
-	void xr_stdcall			OnPPEffectorReleased		();
+	void 		xr_stdcall	OnPPEffectorReleased		();
 public:
 			CActorDeathEffector	(CActorCondition* parent, LPCSTR sect);	// -((
 			~CActorDeathEffector();

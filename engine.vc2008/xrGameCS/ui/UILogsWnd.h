@@ -12,7 +12,7 @@
 #include "UIWndCallback.h"
 
 #include "../ai_space.h"
-#include "../../xrServerEntities/alife_space.h"
+#include "../../XrServerEntitiesCS/alife_space.h"
 #include "xrUIXmlParser.h"
 
 class CUIStatic;
@@ -78,16 +78,16 @@ public:
 	virtual bool		OnKeyboardHold		(int dik);
 
 	IC		void		UpdateNews			()	{ m_need_reload = true; }
-	void	xr_stdcall	PerformWork			();
+	void	__stdcall	PerformWork			();
 
 protected:
 			void		ReLoadNews			();
 			void		AddNewsItem			( GAME_NEWS_DATA& news_data, CUIWindow* item );
 	ALife::_TIME_ID		GetShiftPeriod		( ALife::_TIME_ID datetime, int shift_day );
 
-			void xr_stdcall	UpdateChecks	( CUIWindow* w, void* d);
-			void xr_stdcall	PrevPeriod		( CUIWindow* w, void* d);
-			void xr_stdcall	NextPeriod		( CUIWindow* w, void* d);
+			void 	__stdcall	UpdateChecks	( CUIWindow* w, void* d);
+			void 	__stdcall	PrevPeriod		( CUIWindow* w, void* d);
+			void 	__stdcall	NextPeriod		( CUIWindow* w, void* d);
 	
 			void 		on_scroll_keys		( int dik );
 
@@ -95,7 +95,7 @@ protected:
 protected:
 	void		add_faction			( CUIXml& xml, shared_str const& faction_id );
 	void		clear_all_factions		();
-	bool	__stdcall	SortingLessFunction		( CUIWindow* left, CUIWindow* right );
+	bool		SortingLessFunction		( CUIWindow* left, CUIWindow* right );
 */
 }; // class CUILogsWnd
 

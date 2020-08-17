@@ -53,6 +53,9 @@ void CStringTable::Init		()
 	Msg("StringTable: loaded %d files", fset.size());
 #endif // #ifdef DEBUG
 //---
+
+	LPCSTR window_name = translate("st_game_window_name").c_str();
+	SetWindowText(Device.m_hWnd, window_name);
 }
 
 void CStringTable::Load	(LPCSTR xml_file_full)

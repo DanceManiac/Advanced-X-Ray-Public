@@ -75,7 +75,7 @@ animation_movement_controller::~animation_movement_controller( )
 
 IC bool is_blending_in( CBlend &b)
 {
-	return b.blend == CBlend::eAccrue && b.blendPower - EPS > b.blendAmount;
+	return b.blend_state() == CBlend::eAccrue && b.blendPower - EPS > b.blendAmount;
 
 }
 

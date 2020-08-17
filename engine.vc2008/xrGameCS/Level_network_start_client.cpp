@@ -56,7 +56,9 @@ bool	CLevel::net_start_client2				()
 void rescan_mp_archives()
 {
 	FS_Path* mp_archs_path = FS.get_path("$game_arch_mp$");
-	FS.rescan_path(mp_archs_path->m_Path,
+	CLocatorAPI* RealFS = dynamic_cast<CLocatorAPI*>(xr_FS);
+	VERIFY(RealFS);
+	RealFS->rescan_path(mp_archs_path->m_Path,
 		mp_archs_path->m_Flags.is(FS_Path::flRecurse)
 	);
 }
@@ -169,7 +171,7 @@ bool	CLevel::net_start_client5				()
 		// Textures
 		if	(!g_dedicated_server)
 		{
-			//pHUD->Load							();
+			//HUD().Load							();
 			g_pGamePersistent->LoadTitle				("st_loading_textures");
 			//Device.Resources->DeferredLoad		(FALSE);
 			Device.m_pRender->DeferredLoad(FALSE);
@@ -198,7 +200,7 @@ bool	CLevel::net_start_client6				()
 		
 		if	(!g_dedicated_server)
 		{
-			pHUD->Load							();
+			HUD().Load							();
 			//g_pGamePersistent->LoadTitle				("st_loading_textures");
 		}
 
@@ -219,7 +221,7 @@ bool	CLevel::net_start_client6				()
 		}
 
 		g_pGamePersistent->LoadTitle		("st_client_synchronising");
-		Device.PreCache						(30);
+		Device.PreCache						(60,true,false);
 		net_start_result_total				= TRUE;
 
 	}else{

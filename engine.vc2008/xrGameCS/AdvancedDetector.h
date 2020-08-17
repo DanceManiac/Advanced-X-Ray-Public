@@ -33,7 +33,7 @@ public:
 	void					construct						(CAdvancedDetector* p);
 	void					SetValue						(const float v1, const Fvector& v2);
 	float					CurrentYRotation				()	const;
-	static void 			BoneCallback					(CBoneInstance *B);
+	static void 	_BCL	BoneCallback					(CBoneInstance *B);
 	void					ResetBoneCallbacks				();
 	void					SetBoneCallbacks				();
 };

@@ -18,7 +18,7 @@
 	CAttachableItem*	CAttachableItem::m_dbgItem = NULL;
 #endif
 
-IC	CPhysicsShellHolder &CAttachableItem::object	() const
+CPhysicsShellHolder &CAttachableItem::object	() const
 {
 	return				(item().object());
 }
@@ -115,7 +115,7 @@ bool  CAttachableItem::can_be_attached	() const
 	if (!item().m_pInventory->IsBeltUseful())
 		return				(true);
 
-	if (item().m_eItemCurrPlace != eItemPlaceBelt)
+	if (item().m_eItemCurrPlace != EItemPlaceBelt)
 		return				(false);
 	 
 	return					(true);

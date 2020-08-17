@@ -13,7 +13,7 @@ class CPhysicsShellAnimator
 	void											CreateJoints( LPCSTR controled );
 	void											CreateJoint( CPHElement *e );
 public:
-													CPhysicsShellAnimator		( CPhysicsShell* _pPhysicsShell, CInifile* ini, LPCSTR section );
+													CPhysicsShellAnimator		(CPhysicsShell* _pPhysicsShell, CInifile const * ini, LPCSTR section);
 													~CPhysicsShellAnimator		();
 	void											OnFrame						();
 };

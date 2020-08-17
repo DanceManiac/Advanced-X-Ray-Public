@@ -21,10 +21,10 @@ private:
 private:
 	CCameraBase*			camera;
 	// 
-	static void				BoneCallbackX		(CBoneInstance *B);
-	static void				BoneCallbackY		(CBoneInstance *B);
-	void					SetBoneCallbacks	();
-	void					ResetBoneCallbacks	();
+	static void		_BCL		BoneCallbackX		(CBoneInstance *B);
+	static void		_BCL		BoneCallbackY		(CBoneInstance *B);
+	void						SetBoneCallbacks	();
+	void						ResetBoneCallbacks	();
 
 	HUD_SOUND_COLLECTION	m_sounds;
 

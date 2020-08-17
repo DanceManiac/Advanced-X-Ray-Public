@@ -161,7 +161,7 @@ bool CUIActorMenu::ToActorTrade(CUICellItem* itm, bool b_use_cursor_pos)
 bool CUIActorMenu::ToPartnerTrade(CUICellItem* itm, bool b_use_cursor_pos)
 {
 	PIItem	iitem						= (PIItem)itm->m_pData;
-	if ( !m_pPartnerInvOwner->AllowItemToTrade( iitem, eItemPlaceRuck ) )
+	if ( !m_pPartnerInvOwner->AllowItemToTrade( iitem, EItemPlaceRuck ) )
 	{
 		///R_ASSERT2( 0, make_string( "Partner can`t cell item (%s)", iitem->NameItem() ) );
 		Msg( "! Partner can`t cell item (%s)", iitem->NameItem() );
@@ -425,7 +425,7 @@ void CUIActorMenu::TransferItems( CUIDragDropListEx* pSellList, CUIDragDropListE
 		
 		if ( bBuying )
 		{
-			if ( pTrade->pThis.inv_owner->CInventoryOwner::AllowItemToTrade( item, eItemPlaceRuck ) )
+			if ( pTrade->pThis.inv_owner->CInventoryOwner::AllowItemToTrade( item, EItemPlaceRuck ) )
 			{
 				pBuyList->SetItem( cell_item );
 			}

@@ -8,7 +8,7 @@
 #include "../../../game_graph.h"
 #include "../../../phmovementcontrol.h"
 #include "../ai_monster_squad_manager.h"
-#include "../../../../xrServerEntities/xrserver_objects_alife_monsters.h"
+#include "../../../../XrServerEntitiesCS/xrserver_objects_alife_monsters.h"
 #include "../corpse_cover.h"
 #include "../../../cover_evaluators.h"
 #include "../../../seniority_hierarchy_holder.h"
@@ -41,7 +41,7 @@
 #include "../../../actor.h"
 #include "../../../ai_object_location.h"
 #include "../../../ai_space.h"
-#include "../../../../xrServerEntities/script_engine.h"
+#include "../../../../XrServerEntitiesCS/script_engine.h"
 
 // Lain: added 
 #include "../../../level_debug.h"
@@ -70,7 +70,7 @@ CBaseMonster::CBaseMonster()
 	EnemyMan.init_external			(this);
 	CorpseMan.init_external			(this);
 
-	// Инициализация параметров анимации	
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ	
 
 	StateMan						= 0;
 
@@ -524,13 +524,13 @@ void CBaseMonster::on_kill_enemy(const CEntity *obj)
 {
 	const CEntityAlive *entity	= smart_cast<const CEntityAlive *>(obj);
 	
-	// добавить в список трупов	
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ	
 	CorpseMemory.add_corpse		(entity);
 	
-	// удалить всю информацию о хитах
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
 	HitMemory.remove_hit_info	(entity);
 
-	// удалить всю информацию о звуках
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	SoundMemory.clear			();
 }
 
@@ -604,7 +604,7 @@ CParticlesObject* CBaseMonster::PlayParticles(const shared_str& name, const Fvec
 {
 	CParticlesObject* ps = CParticlesObject::Create(name.c_str(),auto_remove);
 	
-	// вычислить позицию и направленность партикла
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	Fmatrix	matrix; 
 
 	matrix.identity			();
@@ -680,7 +680,7 @@ void CBaseMonster::OnEvent(NET_Packet& P, u16 type)
 			CGameObject			*GO = smart_cast<CGameObject*>(O);
 			CInventoryItem		*pIItem = smart_cast<CInventoryItem*>(GO);
 			VERIFY				(inventory().CanTakeItem(pIItem));
-			pIItem->m_eItemCurrPlace = eItemPlaceRuck;
+			pIItem->m_eItemCurrPlace = EItemPlaceRuck;
 
 			O->H_SetParent		(this);
 			inventory().Take	(GO, true, true);

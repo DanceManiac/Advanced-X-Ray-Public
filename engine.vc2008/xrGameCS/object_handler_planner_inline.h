@@ -8,7 +8,7 @@
 
 #pragma once
 
-IC	CAI_Stalker	&CObjectHandlerPlanner::object			() const
+CAI_Stalker	&CObjectHandlerPlanner::object			() const
 {
 	VERIFY	(m_object);
 	return	(*m_object);

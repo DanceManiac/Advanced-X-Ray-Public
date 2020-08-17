@@ -444,7 +444,7 @@ void	CActor::Hit							(SHit* pHDS)
 	if(ph_dbg_draw_mask.test(phDbgCharacterControl)) {
 		DBG_OpenCashedDraw();
 		Fvector to;to.add(Position(),Fvector().mul(HDS.dir,HDS.phys_impulse()));
-		DBG_DrawLine(Position(),to,D3DCOLOR_XRGB(124,124,0));
+		DBG_DrawLine(Position(),to,color_xrgb(124,124,0));
 		DBG_ClosedCashedDraw(500);
 	}
 #endif // DEBUG
@@ -753,7 +753,15 @@ void CActor::Die	(CObject* who)
 		};
 	};
 
-	cam_Set					(eacFreeLook);
+	pcstr m_sDeathCamera = READ_IF_EXISTS(pSettings, r_string, "gameplay", "death_camera_mode", "freelook");
+
+	if (xr_strcmp("freelook", m_sDeathCamera) == 0)
+		cam_Set(eacFreeLook);
+	else if (xr_strcmp("fixedlook", m_sDeathCamera) == 0)
+		cam_Set(eacLookAt);
+	else if (xr_strcmp("firsteye", m_sDeathCamera) == 0)
+		cam_Set(eacFirstEye);
+
 	mstate_wishful	&=		~mcAnyMove;
 	mstate_real		&=		~mcAnyMove;
 
@@ -1281,11 +1289,20 @@ void CActor::shedule_Update	(u32 DT)
 void CActor::renderable_Render	()
 {
 	VERIFY(_valid(XFORM()));
-	inherited::renderable_Render			();
-	if (!HUDview()){
-		CInventoryOwner::renderable_Render	();
-	}
-	VERIFY(_valid(XFORM()));
+	inherited::renderable_Render();
+	//if(1/*!HUDview()*/)
+	if ((cam_active == eacFirstEye && // first eye cam
+		::Render->get_generation() == ::Render->GENERATION_R2 && // R2
+		::Render->active_phase() == 1) // shadow map rendering on R2	
+		||
+		!(IsFocused() &&
+		(cam_active == eacFirstEye) &&
+			((!m_holder) || (m_holder && m_holder->allowWeapon() && m_holder->HUDView())))
+		)
+		//{
+		CInventoryOwner::renderable_Render();
+	//}
+	//VERIFY(_valid(XFORM()));
 }
 
 BOOL CActor::renderable_ShadowGenerate	() 
@@ -1549,11 +1566,11 @@ void CActor::OnItemDrop(CInventoryItem *inventory_item)
 	CInventoryOwner::OnItemDrop(inventory_item);
 
 	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
-	if(artefact && artefact->m_eItemCurrPlace == eItemPlaceBelt)
+	if(artefact && artefact->m_eItemCurrPlace == EItemPlaceBelt)
 		MoveArtefactBelt(artefact, false);
 
 	CCustomOutfit* outfit		= smart_cast<CCustomOutfit*>(inventory_item);
-	if(outfit && inventory_item->m_eItemCurrPlace==eItemPlaceSlot)
+	if(outfit && inventory_item->m_eItemCurrPlace==EItemPlaceSlot)
 	{
 		outfit->ApplySkinModel	(this, false, false);
 	}
@@ -1580,7 +1597,7 @@ void CActor::OnItemRuck		(CInventoryItem *inventory_item, EItemPlace previous_pl
 	CInventoryOwner::OnItemRuck(inventory_item, previous_place);
 
 	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
-	if(artefact && previous_place == eItemPlaceBelt)
+	if(artefact && previous_place == EItemPlaceBelt)
 		MoveArtefactBelt(artefact, false);
 }
 void CActor::OnItemBelt		(CInventoryItem *inventory_item, EItemPlace previous_place)

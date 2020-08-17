@@ -1,7 +1,7 @@
 #pragma once
 #include "UIWindow.h"
 #include "UIWndCallback.h"
-#include "../../xrServerEntities/associative_vector.h"
+#include "../../XrServerEntitiesCS/associative_vector.h"
 #include "../GameTaskDefs.h"
 
 class CUIMapWnd;
@@ -67,10 +67,10 @@ private:
 
 	void						OnNextTaskClicked		();
 	void 						OnPrevTaskClicked		();
-	void xr_stdcall				OnShowSecondTaskWnd		(CUIWindow* w, void* d);
+	void 		__stdcall		OnShowSecondTaskWnd		(CUIWindow* w, void* d);
 
-	void xr_stdcall				OnTask1DbClicked		(CUIWindow*, void*);
-	void xr_stdcall				OnTask2DbClicked		(CUIWindow*, void*);
+	void 		__stdcall		OnTask1DbClicked		(CUIWindow*, void*);
+	void 		__stdcall		OnTask2DbClicked		(CUIWindow*, void*);
 
 };
 

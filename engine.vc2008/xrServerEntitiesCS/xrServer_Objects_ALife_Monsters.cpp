@@ -32,7 +32,7 @@
 #	include "date_time.h"
 #endif
 
-void setup_location_types_section(GameGraph::TERRAIN_VECTOR &m_vertex_types, CInifile *ini, LPCSTR section)
+void setup_location_types_section(GameGraph::TERRAIN_VECTOR &m_vertex_types, CInifile const * ini, LPCSTR section)
 {
 	VERIFY3							(ini->section_exist(section),"cannot open section",section);
 	GameGraph::STerrainPlace		terrain_mask;
@@ -88,7 +88,7 @@ void setup_location_types_line(GameGraph::TERRAIN_VECTOR &m_vertex_types, LPCSTR
 	}
 }
 
-void setup_location_types(GameGraph::TERRAIN_VECTOR &m_vertex_types, CInifile *ini, LPCSTR string)
+void setup_location_types(GameGraph::TERRAIN_VECTOR &m_vertex_types, CInifile const * ini, LPCSTR string)
 {
 	m_vertex_types.clear			();
 	if (ini->section_exist(string) && ini->line_count(string))
@@ -1092,13 +1092,13 @@ bool CSE_ALifeCreatureAbstract::can_switch_offline	() const
 	return						(inherited::can_switch_offline() && (get_health() > 0.f));
 }
 
-IC	void CSE_ALifeCreatureAbstract::set_health	(float const health_value)
+void CSE_ALifeCreatureAbstract::set_health	(float const health_value)
 {
 	VERIFY( !((get_killer_id() != u16(-1)) && (health_value > 0.f)) );
 	fHealth = health_value;
 }
 
-IC	void CSE_ALifeCreatureAbstract::set_killer_id	(ALife::_OBJECT_ID const killer_id)
+void CSE_ALifeCreatureAbstract::set_killer_id	(ALife::_OBJECT_ID const killer_id)
 {
 	m_killer_id = killer_id;
 }

@@ -36,7 +36,7 @@
 #include "../../../monster_community.h"
 #include "../../../character_community.h"
 #include "../../../InventoryOwner.h"
-#include "../../../../xrServerEntities/character_info.h"
+#include "../../../../XrServerEntitiesCS/character_info.h"
 
 #include "controller_psy_hit.h"
 #include "../monster_cover_manager.h"
@@ -311,12 +311,12 @@ BOOL CController::net_Spawn(CSE_Abstract *DC)
 
 void CController::UpdateControlled()
 {
-	// если есть враг, проверить может ли быть враг взят под контроль
+	// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	if (EnemyMan.get_enemy()) {
 		CControlledEntityBase *entity = smart_cast<CControlledEntityBase *>(const_cast<CEntityAlive *>(EnemyMan.get_enemy()));
 		if (entity) {
 			if (!entity->is_under_control() && (m_controlled_objects.size() < m_max_controlled_number)) {
-				// взять под контроль
+				// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 				entity->set_under_control	(this);
 				entity->set_task_follow		(this);
 				m_controlled_objects.push_back(const_cast<CEntityAlive *>(EnemyMan.get_enemy()));
@@ -531,7 +531,7 @@ void CController::draw_fire_particles()
 	CEntityAlive *enemy	= const_cast<CEntityAlive*>(EnemyMan.get_enemy());
 	if (!EnemyMan.see_enemy_now()) return;
 
-	// вычислить позицию и направленность партикла
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	Fvector my_head_pos;
 	my_head_pos.set	(get_head_position(this));
 	
@@ -762,8 +762,8 @@ CBaseMonster::SDebugInfo CController::show_debug_info()
 
 		enemy_pos.y += 1.0f;
 	
-		DBG().level_info(this).add_item(my_pos,	new_pos, D3DCOLOR_XRGB(0,255,255));
-		DBG().level_info(this).add_item(enemy_pos, new_pos, D3DCOLOR_XRGB(0,255,255));
+		DBG().level_info(this).add_item(my_pos,	new_pos, color_xrgb(0,255,255));
+		DBG().level_info(this).add_item(enemy_pos, new_pos, color_xrgb(0,255,255));
 	}
 
 	return CBaseMonster::SDebugInfo();

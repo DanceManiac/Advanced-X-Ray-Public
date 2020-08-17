@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "level.h"
-#include "../xrEngine/frustum.h"
+#include "../xrCDB/frustum.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -111,7 +111,7 @@ void dbg_draw_frustum	(float FOV, float _FAR, float A, Fvector &P, Fvector &D, F
 	Fmatrix& M	= Fidentity;
 	//ref_shader				l_tShaderReference = Level().ObjectSpace.dbgGetShader();
 	//RCache.set_Shader		(l_tShaderReference);
-	Level().ObjectSpace.m_pRender->SetShader();
+	(*Level().ObjectSpace.m_pRender)->SetShader();
 //	RCache.dbg_DrawTRI	(M,COP,_F[0],_F[1],CT);
 //	RCache.dbg_DrawTRI	(M,COP,_F[1],_F[2],CT);
 //	RCache.dbg_DrawTRI	(M,COP,_F[2],_F[3],CT);

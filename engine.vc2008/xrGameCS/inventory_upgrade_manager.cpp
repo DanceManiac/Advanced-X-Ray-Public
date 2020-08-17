@@ -391,7 +391,7 @@ void Manager::init_install( CInventoryItem& item )
 
 			for ( int n = _GetItemCount(installed_upgrades_str), i = 0; i < n; ++i )
 			{
-				upgrade_install( item, _GetItem( installed_upgrades_str, i, temp ), true );
+				upgrade_install( item, _GetItem( installed_upgrades_str, i, temp, xr_strlen(installed_upgrades_str)), true );
 			}
 		}
 	}//if exist

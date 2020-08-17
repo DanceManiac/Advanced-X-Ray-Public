@@ -73,7 +73,7 @@ void type_motion::set_motion( IKinematicsAnimated* k, u16 id_motion, LPCSTR dir_
 }
 
 
-type_motion* type_motion::setup( IKinematicsAnimated* k, CInifile* ini, LPCSTR section, LPCSTR type )
+type_motion* type_motion::setup( IKinematicsAnimated* k, CInifile const * ini, LPCSTR section, LPCSTR type )
 {
 	anims.resize( dirs_number, 0 );
 	if( ini->line_exist( section ,type ) )

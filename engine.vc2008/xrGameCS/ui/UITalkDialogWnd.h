@@ -78,10 +78,10 @@ private:
 	// ÷вет тeкста и шрифт наших реплик
 	u32					m_uOurReplicsColor;
 
-	void __stdcall		OnTradeClicked			(CUIWindow* w, void*);
-	void __stdcall		OnUpgradeClicked		(CUIWindow* w, void*);
-	void __stdcall		OnQuestionClicked		(CUIWindow* w, void*);
-	void __stdcall		OnExitClicked			(CUIWindow* w, void*);
+	void 	__stdcall	OnTradeClicked			(CUIWindow* w, void*);
+	void 	__stdcall	OnUpgradeClicked		(CUIWindow* w, void*);
+	void 	__stdcall	OnQuestionClicked		(CUIWindow* w, void*);
+	void 	__stdcall	OnExitClicked			(CUIWindow* w, void*);
 };
 
 

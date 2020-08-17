@@ -67,7 +67,7 @@ public:
 protected:
 			void		add_faction				( CUIXml& xml, shared_str const& faction_id );
 			void		clear_all_factions		();
-	bool	__stdcall	SortingLessFunction		( CUIWindow* left, CUIWindow* right );
+	bool	xr_stdcall	SortingLessFunction		( CUIWindow* left, CUIWindow* right );
 			void		get_value_from_script	();
 
 }; // class CUIRankingWnd

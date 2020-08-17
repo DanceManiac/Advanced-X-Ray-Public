@@ -290,7 +290,7 @@ virtual				void						GetGlobalTransformDynamic					(Fmatrix* m) 																
 	virtual			void						SetRagDoll									()																							= 0;
 	virtual			void						SetIgnoreRagDoll							()																							= 0;
 
-	virtual			void						CreateShellAnimator							( CInifile* ini, LPCSTR section )															= 0;
+	virtual			void						CreateShellAnimator							( CInifile const * ini, LPCSTR section )													= 0;
 	virtual			void						SetIgnoreAnimated							()																							= 0;
 //	virtual			bool						Animated									()																							= 0;
 
@@ -387,7 +387,7 @@ CPhysicsShell*				P_build_Shell				(CGameObject* obj,bool not_active_state,U16Ve
 CPhysicsShell*				P_build_Shell				(CGameObject* obj,bool not_active_state,BONE_P_MAP* bone_map, LPCSTR fixed_bones)							;
 CPhysicsShell*				P_build_Shell				(CGameObject* obj,bool not_active_state,BONE_P_MAP* bone_map = 0, bool not_set_bone_callbacks = false)		;
 CPhysicsShell*				P_build_SimpleShell			(CGameObject* obj,float mass,bool not_active_state)															;
-		void				ApplySpawnIniToPhysicShell	(CInifile* ini,CPhysicsShell* physics_shell,bool fixed)														;
+		void				ApplySpawnIniToPhysicShell	(CInifile const * ini,CPhysicsShell* physics_shell,bool fixed)														;
 		void				fix_bones					(LPCSTR	fixed_bones,CPhysicsShell* shell )																	;
 		void				destroy_physics_shell		(CPhysicsShell* &p)																							;
 		void				destroy_physics_shell		(CPhysicsShell* &p)																							;

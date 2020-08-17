@@ -12,7 +12,7 @@
 #include "../../object_handler.h"
 #include "../../AI_PhraseDialogManager.h"
 #include "../../step_manager.h"
-#include "../../../xrServerEntities/script_export_space.h"
+#include "../../../XrServerEntitiesCS/script_export_space.h"
 
 #ifdef DEBUG
 	template <typename _object_type>
@@ -303,8 +303,8 @@ public:
 	virtual BOOL						feel_touch_contact		(CObject* O);
 	virtual BOOL						feel_touch_on_contact	(CObject* O);
 
-	//флаги, какие действия совершал актер по отношению к сталкеру
-	//(помог, атаковал и т.д.)
+	//пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	//(пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ.пїЅ.)
 	Flags32								m_actor_relation_flags;
 
 	// ALife
@@ -392,7 +392,7 @@ private:
 public:
 	IC		bool						group_behaviour					() const;
 	virtual	void						update_range_fov				(float &new_range, float &new_fov, float start_range, float start_fov);
-			void __stdcall				update_object_handler			();
+			void 		xr_stdcall		update_object_handler			();
 			bool						zoom_state						() const;
 			void						react_on_grenades				();
 			void						react_on_member_death			();
@@ -578,7 +578,7 @@ private:
 			void						on_enemy_wounded_or_killed					(const CAI_Stalker *wounded_or_killed);
 			void						notify_on_wounded_or_killed					(CObject *object);
 			void						notify_on_wounded_or_killed					();
-			void	xr_stdcall			remove_critical_hit							();
+			void		xr_stdcall		remove_critical_hit							();
 //////////////////////////////////////////////////////////////////////////
 private:
 	bool	m_registered_in_combat_on_migration;

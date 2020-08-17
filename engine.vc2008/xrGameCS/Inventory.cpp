@@ -126,35 +126,35 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	m_all.push_back						(pIItem);
 
 	if(!strict_placement)
-		pIItem->m_eItemCurrPlace			= eItemPlaceUndefined;
+		pIItem->m_eItemCurrPlace			= EItemPlaceUndefined;
 
 	bool result							= false;
 	switch(pIItem->m_eItemCurrPlace)
 	{
-	case eItemPlaceBelt:
+	case EItemPlaceBelt:
 		result							= Belt(pIItem, strict_placement); 
 		if(!result)
-			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
+			pIItem->m_eItemCurrPlace	= EItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
 			Msg("cant put in belt item %s", *pIItem->object().cName());
 #endif
 
 		break;
-	case eItemPlaceRuck:
+	case EItemPlaceRuck:
 		result							= Ruck(pIItem, strict_placement);
 		if(!result)
-			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
+			pIItem->m_eItemCurrPlace	= EItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
 			Msg("cant put in ruck item %s", *pIItem->object().cName());
 #endif
 
 		break;
-	case eItemPlaceSlot:
+	case EItemPlaceSlot:
 		result							= Slot(pIItem, bNotActivate, strict_placement); 
 		if(!result)
-			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
+			pIItem->m_eItemCurrPlace	= EItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
 			Msg("cant slot in slot item %s", *pIItem->object().cName());
@@ -162,7 +162,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		break;
 	}
 
-	if(pIItem->m_eItemCurrPlace==eItemPlaceUndefined)
+	if(pIItem->m_eItemCurrPlace==EItemPlaceUndefined)
 	{
 		if( !pIItem->RuckDefault() )
 		{
@@ -189,7 +189,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	InvalidateState						();
 
 	pIItem->object().processing_deactivate();
-	VERIFY								(pIItem->m_eItemCurrPlace != eItemPlaceUndefined);
+	VERIFY								(pIItem->m_eItemCurrPlace != EItemPlaceUndefined);
 
 
 	CUI* ui				= HUD().GetUI();
@@ -208,13 +208,13 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 	VERIFY								(pIItem);
 	VERIFY								(pIItem->m_pInventory);
 	VERIFY								(pIItem->m_pInventory==this);
-	VERIFY								(pIItem->m_eItemCurrPlace!=eItemPlaceUndefined);
+	VERIFY								(pIItem->m_eItemCurrPlace!=EItemPlaceUndefined);
 	
 	pIItem->object().processing_activate(); 
 	
 	switch(pIItem->m_eItemCurrPlace)
 	{
-	case eItemPlaceBelt:{
+	case EItemPlaceBelt:{
 			VERIFY(InBelt(pIItem));
 			TIItemContainer::iterator temp_iter = std::find(m_belt.begin(), m_belt.end(), pIItem);
 			if (temp_iter != m_belt.end())
@@ -226,7 +226,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 			}
 			pIItem->object().processing_deactivate();
 		}break;
-	case eItemPlaceRuck:{
+	case EItemPlaceRuck:{
 			VERIFY(InRuck(pIItem));
 			TIItemContainer::iterator temp_iter = std::find(m_ruck.begin(), m_ruck.end(), pIItem);
 			if (temp_iter != m_ruck.end())
@@ -237,7 +237,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 				Msg("! ERROR: CInventory::Drop item not found in ruck...");
 			}
 		}break;
-	case eItemPlaceSlot:{
+	case EItemPlaceSlot:{
 			VERIFY			(InSlot(pIItem));
 			if(m_iActiveSlot == pIItem->GetSlot())
 			{
@@ -375,7 +375,7 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 	}
 	
 	m_pOwner->OnItemSlot		(pIItem, pIItem->m_eItemCurrPlace);
-	pIItem->m_eItemCurrPlace	= eItemPlaceSlot;
+	pIItem->m_eItemCurrPlace	= EItemPlaceSlot;
 	pIItem->OnMoveToSlot		();
 	
 	pIItem->object().processing_activate();
@@ -407,7 +407,7 @@ bool CInventory::Belt(PIItem pIItem, bool strict_placement)
 	InvalidateState();
 
 	EItemPlace p = pIItem->m_eItemCurrPlace;
-	pIItem->m_eItemCurrPlace = eItemPlaceBelt;
+	pIItem->m_eItemCurrPlace = EItemPlaceBelt;
 	m_pOwner->OnItemBelt(pIItem, p);
 	pIItem->OnMoveToBelt();
 
@@ -468,7 +468,7 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 
 	m_pOwner->OnItemRuck							(pIItem, pIItem->m_eItemCurrPlace);
 	EItemPlace prev_place							= pIItem->m_eItemCurrPlace;
-	pIItem->m_eItemCurrPlace						= eItemPlaceRuck;
+	pIItem->m_eItemCurrPlace						= EItemPlaceRuck;
 	pIItem->OnMoveToRuck							(prev_place);
 
 	if(in_slot)
@@ -927,7 +927,7 @@ void CInventory::UpdateDropTasks()
 			UpdateDropItem		(m_slots[i].m_pIItem);
 	}
 
-	for(i = 0; i < 2; ++i)	
+	for(u32 i = 0; i < 2; ++i)	
 	{
 		TIItemContainer &list			= i?m_ruck:m_belt;
 		TIItemContainer::iterator it	= list.begin();
@@ -1264,8 +1264,8 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 	if (inventory_item->object().getDestroy()) return false;
 
 	if(!inventory_item->CanTake()) return false;
-
-	for(TIItemContainer::const_iterator it = m_all.begin(); it != m_all.end(); it++)
+	TIItemContainer::const_iterator it = m_all.begin();
+	for(; it != m_all.end(); it++)
 		if((*it)->object().ID() == inventory_item->object().ID()) break;
 	VERIFY3(it == m_all.end(), "item already exists in inventory",*inventory_item->object().cName());
 

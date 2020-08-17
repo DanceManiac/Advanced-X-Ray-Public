@@ -25,6 +25,7 @@ private:
 	Descriptions	m_descriptions;
 
 public:
+							storage() {}
 							~storage		();
 			DescriptionPtr	description		(shared_str const &table_id);
 			void			collect_garbage	();

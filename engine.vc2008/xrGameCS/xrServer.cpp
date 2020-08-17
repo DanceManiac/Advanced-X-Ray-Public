@@ -62,6 +62,7 @@ xrServer::xrServer():IPureServer(Device.GetTimerGlobal(), g_dedicated_server)
 
 xrServer::~xrServer()
 {
+
 	struct ClientDestroyer
 	{
 		static bool true_generator(IClient*)
@@ -75,15 +76,9 @@ xrServer::~xrServer()
 		client_Destroy(tmp_client);
 		tmp_client = net_players.GetFoundClient(&ClientDestroyer::true_generator);
 	}
-	tmp_client = net_players.GetFoundDisconnectedClient(&ClientDestroyer::true_generator);
-	while (tmp_client)
-	{
-		client_Destroy(tmp_client);
-		tmp_client = net_players.GetFoundDisconnectedClient(&ClientDestroyer::true_generator);
-	}
-	m_aUpdatePackets.clear();
 	m_aDelayedPackets.clear();
 	entities.clear();
+	m_aUpdatePackets.clear();
 }
 
 bool  xrServer::HasBattlEye()
@@ -117,51 +112,28 @@ void		xrServer::client_Replicate	()
 
 IClient*	xrServer::client_Find_Get	(ClientID ID)
 {
-	DWORD	dwPort			= 0;
-	
-	struct AddressSearcherPredicate
-	{
-		ip_address			m_cAddress;
-		bool operator()(IClient* client)
-		{
-			return client->m_cAddress == m_cAddress;
-		};
-	};
-	AddressSearcherPredicate	search_predicate;
+	DWORD dwPort = 0;
+	ip_address tmp_ip_address;
 
 
-	if ( !psNET_direct_connect )
-		GetClientAddress( ID, search_predicate.m_cAddress, &dwPort );
+	if (!psNET_direct_connect)
+		GetClientAddress(ID, tmp_ip_address, &dwPort);
 	else
-		search_predicate.m_cAddress.set( "127.0.0.1" );
-
-	if ( !psNET_direct_connect )
-	{	
-		IClient* disconnected_client = net_players.FindAndEraseDisconnectedClient(search_predicate);
-		if (disconnected_client)
-		{
-			disconnected_client->m_dwPort			= dwPort;
-			disconnected_client->flags.bReconnect	= TRUE;
-			disconnected_client->server				= this;
-			net_players.AddNewClient				(disconnected_client);
-			Msg( "# Player found" );
-			return disconnected_client;
-		}
-	};
+		tmp_ip_address.set("127.0.0.1");
 
 	IClient* newCL = client_Create();
 	newCL->ID = ID;
-	if(!psNET_direct_connect)
+	if (!psNET_direct_connect)
 	{
-		newCL->m_cAddress	= search_predicate.m_cAddress;	
-		newCL->m_dwPort		= dwPort;
+		newCL->m_cAddress = tmp_ip_address;
+		newCL->m_dwPort = dwPort;
 	}
 
-	newCL->server			= this;
+	newCL->server = this;
 	net_players.AddNewClient(newCL);
 
 #ifndef MASTER_GOLD
-	Msg		("# Player not found. New player created.");
+	Msg("# New player created.");
 #endif // #ifndef MASTER_GOLD
 	return newCL;
 };
@@ -173,16 +145,8 @@ void		xrServer::client_Destroy	(IClient* C)
 	// Delete assosiated entity
 	// xrClientData*	D = (xrClientData*)C;
 	// CSE_Abstract* E = D->owner;
-	IClient* deleted_client = net_players.FindAndEraseDisconnectedClient(
-		std::bind1st(std::equal_to<IClient*>(), C)
-	);
-	if (deleted_client)
-	{
-		xr_delete(deleted_client);
-	}
-	IClient* alife_client = net_players.FindAndEraseClient(
-		std::bind1st(std::equal_to<IClient*>(), C)
-	);
+	
+	IClient* alife_client = net_players.FindAndEraseClient([&C](IClient* A)->bool {return A == C; });
 	//VERIFY(alife_client);
 	if (alife_client)
 	{
@@ -223,14 +187,13 @@ void		xrServer::client_Destroy	(IClient* C)
 		else
 		{
 			alife_client->dwTime_LastUpdate = Device.dwTimeGlobal;
-			net_players.AddNewDisconnectedClient(alife_client);
 			static_cast<xrClientData*>(alife_client)->Clear();
 		};
 	}
 }
 void xrServer::clear_DisconnectedClients()
 {
-	struct true_generator
+	/*struct true_generator
 	{
 		bool operator()(IClient* client)
 		{
@@ -242,7 +205,7 @@ void xrServer::clear_DisconnectedClients()
 	{
 		xr_delete(deleting_client);
 		deleting_client = net_players.FindAndEraseDisconnectedClient(true_generator());
-	}
+	}*/
 }
 
 //--------------------------------------------------------------------
@@ -303,7 +266,7 @@ void xrServer::Update	()
 			return false;
 		}
 	};
-	IClient* tmp_client = net_players.GetFoundDisconnectedClient(
+	/*IClient* tmp_client = net_players.GetFoundDisconnectedClient(
 		LongTimeClient::Searher);
 
 	while (tmp_client)
@@ -311,7 +274,7 @@ void xrServer::Update	()
 		client_Destroy(tmp_client);
 		tmp_client = net_players.GetFoundDisconnectedClient(
 			LongTimeClient::Searher);
-	}
+	}*/
 
 	PerformCheckClientsForMaxPing	();
 
@@ -323,7 +286,7 @@ void xrServer::Update	()
 	}
 }
 
-void _stdcall xrServer::SendUpdateTo(IClient* client)
+void  xrServer::SendUpdateTo(IClient* client)
 {
 	xrClientData*	xr_client = static_cast<xrClientData*>(client);
 	VERIFY			(xr_client);

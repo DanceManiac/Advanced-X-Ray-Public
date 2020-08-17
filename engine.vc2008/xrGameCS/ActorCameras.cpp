@@ -22,6 +22,9 @@
 
 #include "PHMovementControl.h"
 
+ENGINE_API extern float psHUD_FOV;
+ENGINE_API extern float psHUD_FOV_def;
+
 extern BOOL dbg_draw_camera_collision;
 void	collide_camera( CCameraBase & camera, float _viewport_near  );
 
@@ -161,15 +164,15 @@ void	dbg_draw_viewport( const T &cam_info, float _viewport_near )
 	const Fvector	bottom_left = Fvector().sub( near_plane_center,  right ).sub( up );
 	const Fvector	bottom_right = Fvector().add( near_plane_center,  right ).sub( up );
 	
-	DBG_DrawLine( cam_info.Position(), top_left, D3DCOLOR_XRGB(255, 0, 0 ) );
-	DBG_DrawLine( cam_info.Position(), top_right, D3DCOLOR_XRGB(255, 0, 0 ) );
-	DBG_DrawLine( cam_info.Position(), bottom_left, D3DCOLOR_XRGB(255, 0, 0 ) );
-	DBG_DrawLine( cam_info.Position(), bottom_right, D3DCOLOR_XRGB(255, 0, 0 ) );
+	DBG_DrawLine( cam_info.Position(), top_left, color_xrgb(255, 0, 0 ) );
+	DBG_DrawLine( cam_info.Position(), top_right, color_xrgb(255, 0, 0 ) );
+	DBG_DrawLine( cam_info.Position(), bottom_left, color_xrgb(255, 0, 0 ) );
+	DBG_DrawLine( cam_info.Position(), bottom_right, color_xrgb(255, 0, 0 ) );
 
-	DBG_DrawLine( top_right, top_left, D3DCOLOR_XRGB(255, 0, 0 ) );
-	DBG_DrawLine( bottom_right, top_right, D3DCOLOR_XRGB(255, 0, 0 ) );
-	DBG_DrawLine( top_left, bottom_left, D3DCOLOR_XRGB(255, 0, 0 ) );
-	DBG_DrawLine( bottom_left, bottom_right, D3DCOLOR_XRGB(255, 0, 0 ) );
+	DBG_DrawLine( top_right, top_left, color_xrgb(255, 0, 0 ) );
+	DBG_DrawLine( bottom_right, top_right, color_xrgb(255, 0, 0 ) );
+	DBG_DrawLine( top_left, bottom_left, color_xrgb(255, 0, 0 ) );
+	DBG_DrawLine( bottom_left, bottom_right, color_xrgb(255, 0, 0 ) );
 
 }
 #endif
@@ -250,7 +253,8 @@ void	CActor::cam_Lookout	( const Fmatrix &xform, float camera_height )
 					da			= PI/1000.f;
 					if (!fis_zero(r_torso.roll))
 						da		*= r_torso.roll/_abs(r_torso.roll);
-					for (float angle=0.f; _abs(angle)<_abs(alpha); angle+=da)
+					float angle = 0.f;
+					for (; _abs(angle)<_abs(alpha); angle+=da)
 					{
 						Fvector				pt;
 						calc_gl_point( pt, xform, radius, angle );
@@ -271,7 +275,18 @@ void	CActor::cam_Lookout	( const Fmatrix &xform, float camera_height )
 }
 void CActor::cam_Update(float dt, float fFOV)
 {
-	if(m_holder)		return;
+	if (m_holder)
+		return;
+
+	// HUD FOV Update
+	if (this == Level().CurrentControlEntity())
+	{
+		CWeapon* pWeapon = smart_cast<CWeapon*>(this->inventory().ActiveItem());
+		if (eacFirstEye == cam_active && pWeapon)
+			psHUD_FOV = pWeapon->GetHudFov();
+		else
+			psHUD_FOV = psHUD_FOV_def;
+	}
 
 	if( (mstate_real & mcClimb) && (cam_active!=eacFreeLook) )
 		camUpdateLadder(dt);

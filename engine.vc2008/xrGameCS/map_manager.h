@@ -14,7 +14,7 @@ public:
 
 							CMapManager					();
 							~CMapManager				();
-	void	__stdcall		Update						();
+	void	_BCL			Update						();
 	/*ICF */Locations&		Locations					();//{return *m_locations;}
 	CMapLocation*			AddMapLocation				(const shared_str& spot_type, u16 id);
 	CMapLocation*			AddRelationLocation			(CInventoryOwner* pInvOwner);

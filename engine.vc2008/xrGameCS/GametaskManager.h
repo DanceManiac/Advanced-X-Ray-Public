@@ -28,7 +28,7 @@ public:
 	void					SetTaskState					(const shared_str& id, ETaskState state);
 	void					SetTaskState					(CGameTask* t, ETaskState state);
 
-	void		__stdcall	UpdateTasks						();
+	void	_BCL			UpdateTasks						();
 
 	CGameTask*				ActiveTask						(ETaskType type);
 //	void					SetActiveTask					(const shared_str& id, ETaskType type);

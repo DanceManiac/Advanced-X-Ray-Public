@@ -10,7 +10,7 @@
 #define STALKER_MOVEMENT_MANAGER_SMART_COVER_H_INCLUDED
 
 #include "stalker_movement_manager_obstacles.h"
-#include "../include/xrrender/animation_motion.h"
+#include "../Include/xrRender/animation_motion.h"
 
 class CCoverPoint;
 class CPropertyStorage;
@@ -174,8 +174,8 @@ private:
 
 private:
 			MotionID xr_stdcall	select_animation		(bool& animation_movement_controller);
-			void xr_stdcall		on_animation_end		();
-			void xr_stdcall		modify_animation		(CBlend* blend);
+			void 	xr_stdcall	on_animation_end		();
+			void 	xr_stdcall	modify_animation		(CBlend* blend);
 			bool				test_pick				(Fvector source, Fvector destination) const;
 
 private:

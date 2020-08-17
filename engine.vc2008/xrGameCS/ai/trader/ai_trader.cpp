@@ -12,17 +12,17 @@
 #include "../../script_entity_action.h"
 #include "../../script_game_object.h"
 #include "../../inventory.h"
-#include "../../../xrServerEntities/xrserver_objects_alife_monsters.h"
+#include "../../../XrServerEntitiesCS/xrserver_objects_alife_monsters.h"
 #include "../../artefact.h"
 #include "../../xrserver.h"
 #include "../../relation_registry.h"
-#include "../../../xrServerEntities/object_broker.h"
+#include "../../../XrServerEntitiesCS/object_broker.h"
 #include "../../sound_player.h"
 #include "../../level.h"
 #include "../../script_callback_ex.h"
 #include "../../game_object_space.h"
 #include "trader_animation.h"
-#include "../../../xrServerEntities/clsid_game.h"
+#include "../../../XrServerEntitiesCS/clsid_game.h"
 
 CAI_Trader::CAI_Trader()
 {
@@ -120,7 +120,7 @@ BOOL CAI_Trader::net_Spawn			(CSE_Abstract* DC)
 	CSE_ALifeTrader			*l_tpTrader = smart_cast<CSE_ALifeTrader*>(e);
 	R_ASSERT				(l_tpTrader);
 
-	//проспавнить PDA у InventoryOwner
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ PDA пїЅ InventoryOwner
 	if (!CInventoryOwner::net_Spawn(DC))
 		return				(FALSE);
 
@@ -132,7 +132,7 @@ BOOL CAI_Trader::net_Spawn			(CSE_Abstract* DC)
 
 	set_money				( l_tpTrader->m_dwMoney, false );
 
-	// Установка callback на кости
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ callback пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 	CBoneInstance			*bone_head =	&smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(smart_cast<IKinematics*>(Visual())->LL_BoneID("bip01_head"));
 	bone_head->set_callback	(bctCustom,BoneCallback,this);
 
@@ -335,13 +335,13 @@ void CAI_Trader::load (IReader &input_packet)
 }
 
 
-//проверяет список артефактов в заказах
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 u32 CAI_Trader::ArtefactPrice (CArtefact* pArtefact)
 {
 	return pArtefact->Cost();
 }
 
-//продажа артефакта, с последуещим изменением списка заказов (true - если артефакт был в списке)
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (true - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
 bool CAI_Trader::BuyArtefact (CArtefact* pArtefact)
 {
 	VERIFY(pArtefact);

@@ -20,12 +20,12 @@
 #include "../monster_home.h"
 #include "../../../ai_object_location.h"
 #include "../../../level.h"
-#include "../../../../xrServerEntities/xrserver_objects_alife_monsters.h"
+#include "../../../../XrServerEntitiesCS/xrserver_objects_alife_monsters.h"
 #include "../../../alife_simulator.h"
 #include "../../../alife_object_registry.h"
 #include "../../../xrServer.h"
 #include "../../../inventory_item.h"
-#include "../../../../xrServerEntities/xrServer_objects_ALife.h"
+#include "../../../../XrServerEntitiesCS/xrServer_objects_ALife.h"
 #include "../../../phMovementControl.h"
 #include "../ai_monster_squad.h"
 
@@ -264,7 +264,7 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 
 void CBaseMonster::net_Destroy()
 {
-	// функция должена быть вызвана перед inherited
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ inherited
 	if (m_controlled) m_controlled->on_destroy	();
 	if (StateMan) StateMan->critical_finalize	();
 
@@ -287,7 +287,7 @@ void CBaseMonster::net_Destroy()
 	else if (ltx->line_exist(section,name)) var = ltx->method(section,name);\
 }
 
-void CBaseMonster::settings_read(CInifile *ini, LPCSTR section, SMonsterSettings &data)
+void CBaseMonster::settings_read(CInifile const *ini, LPCSTR section, SMonsterSettings &data)
 {
 	READ_SETTINGS(data.m_fSoundThreshold, "SoundThreshold", r_float, ini, section);
 

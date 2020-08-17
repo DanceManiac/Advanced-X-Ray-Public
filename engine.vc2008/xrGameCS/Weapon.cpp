@@ -22,6 +22,9 @@
 #include "static_cast_checked.hpp"
 #include "clsid_game.h"
 #include "ui/UIWindow.h"
+#include "HUDManager.h"
+
+ENGINE_API extern float psHUD_FOV_def;
 
 #define WEAPON_REMOVE_TIME		60000
 #define ROTATION_TIME			0.25f
@@ -71,6 +74,7 @@ CWeapon::CWeapon()
 	m_UIScope				= NULL;
 	m_set_next_ammoType_on_reload = u32(-1);
 	m_crosshair_inertion	= 0.f;
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 
 CWeapon::~CWeapon		()
@@ -350,6 +354,13 @@ void CWeapon::Load		(LPCSTR section)
 	m_first_bullet_controller.load	(section);
 
 	fireDispersionConditionFactor = pSettings->r_float(section,"fire_dispersion_condition_factor"); 
+
+	//HUD FOV
+	m_nearwall_target_hud_fov = READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_hud_fov", 0.27f);
+	m_nearwall_dist_min = READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
+	m_nearwall_dist_max = READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
+	m_nearwall_speed_mod = READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
+
 	misfireProbability			  = pSettings->r_float(section,"misfire_probability"); 
 	misfireConditionK			  = READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
 	conditionDecreasePerShot	  = pSettings->r_float(section,"condition_shot_dec"); 
@@ -426,6 +437,7 @@ void CWeapon::Load		(LPCSTR section)
 	m_zoom_params.m_bZoomDofEnabled	= !def_dof.similar(m_zoom_params.m_ZoomDof);
 
 	m_zoom_params.m_ReloadDof	= READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_dof", Fvector4().set(-1,-1,-1,-1));
+	m_zoom_params.m_ReloadEmptyDof = READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_empty_dof", Fvector4().set(-1, -1, -1, -1));
 
 
 	m_bHasTracers			= READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
@@ -670,6 +682,7 @@ void CWeapon::OnH_B_Independent	(bool just_before_destroy)
 	m_zoom_params.m_bIsZoomModeNow	= false;
 	UpdateXForm					();
 
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 
 void CWeapon::OnH_A_Independent	()
@@ -744,6 +757,7 @@ void CWeapon::OnH_B_Chield		()
 
 	OnZoomOut					();
 	m_set_next_ammoType_on_reload	= u32(-1);
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 
 extern u32 hud_adj_mode;
@@ -1288,7 +1302,7 @@ void CWeapon::OnZoomIn()
 {
 	m_zoom_params.m_bIsZoomModeNow		= true;
 	m_zoom_params.m_fCurrentZoomFactor	= CurrentZoomFactor();
-	EnableHudInertion					(FALSE);
+	//EnableHudInertion					(FALSE);
 
 	
 	if(m_zoom_params.m_bZoomDofEnabled && !IsScopeAttached())
@@ -1299,7 +1313,7 @@ void CWeapon::OnZoomOut()
 {
 	m_zoom_params.m_bIsZoomModeNow		= false;
 	m_zoom_params.m_fCurrentZoomFactor	= g_fov;
-	EnableHudInertion					(TRUE);
+	//EnableHudInertion					(TRUE);
 
  	GamePersistent().RestoreEffectorDOF	();
 	ResetSubStateTime					();
@@ -1693,13 +1707,13 @@ void CWeapon::debug_draw_firedeps()
 		CDebugRenderer			&render = Level().debug_renderer();
 
 		if(hud_adj_mode==5)
-			render.draw_aabb(get_LastFP(),	0.005f,0.005f,0.005f,D3DCOLOR_XRGB(255,0,0));
+			render.draw_aabb(get_LastFP(),	0.005f,0.005f,0.005f,color_xrgb(255,0,0));
 
 		if(hud_adj_mode==6)
-			render.draw_aabb(get_LastFP2(),	0.005f,0.005f,0.005f,D3DCOLOR_XRGB(0,0,255));
+			render.draw_aabb(get_LastFP2(),	0.005f,0.005f,0.005f,color_xrgb(0,0,255));
 
 		if(hud_adj_mode==7)
-			render.draw_aabb(get_LastSP(),		0.005f,0.005f,0.005f,D3DCOLOR_XRGB(0,255,0));
+			render.draw_aabb(get_LastSP(),		0.005f,0.005f,0.005f,color_xrgb(0,255,0));
 	}
 #endif // DEBUG
 }
@@ -1715,13 +1729,25 @@ void CWeapon::OnStateSwitch	(u32 S)
 	inherited::OnStateSwitch(S);
 	m_dwAmmoCurrentCalcFrame = 0;
 
-	if(GetState()==eReload)
+	if (GetState() == eReload)
 	{
-		if(H_Parent()==Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadDof.w,-1.0f))
+		if (iAmmoElapsed == 0)
 		{
-			CActor* current_actor	= smart_cast<CActor*>(H_Parent());
-			if (current_actor)
-				current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadDof) );
+			if (H_Parent() == Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadEmptyDof.w, -1.0f))
+			{
+				CActor* current_actor = smart_cast<CActor*>(H_Parent());
+				if (current_actor)
+					current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadEmptyDof));
+			}
+		}
+		else
+		{
+			if (H_Parent() == Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadDof.w, -1.0f))
+			{
+				CActor* current_actor = smart_cast<CActor*>(H_Parent());
+				if (current_actor)
+					current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadDof));
+			}
 		}
 	}
 }
@@ -1743,6 +1769,29 @@ u8 CWeapon::GetCurrentHudOffsetIdx()
 		return		0;
 	else
 		return		1;
+}
+
+float CWeapon::GetHudFov()
+{
+	if (ParentIsActor() && Level().CurrentViewEntity() == H_Parent())
+	{
+		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+		float dist = RQ.range;
+
+		clamp(dist, m_nearwall_dist_min, m_nearwall_dist_max);
+		float fDistanceMod = ((dist - m_nearwall_dist_min) / (m_nearwall_dist_max - m_nearwall_dist_min)); // 0.f ... 1.f
+
+		float fBaseFov = psHUD_FOV_def + m_hud_fov_add_mod;
+		clamp(fBaseFov, 0.0f, FLT_MAX);
+
+		float src = m_nearwall_speed_mod * Device.fTimeDelta;
+		clamp(src, 0.f, 1.f);
+
+		float fTrgFov = m_nearwall_target_hud_fov + fDistanceMod * (fBaseFov - m_nearwall_target_hud_fov);
+		m_nearwall_last_hud_fov = m_nearwall_last_hud_fov * (1 - src) + fTrgFov * src;
+	}
+
+	return m_nearwall_last_hud_fov;
 }
 
 void CWeapon::render_hud_mode()

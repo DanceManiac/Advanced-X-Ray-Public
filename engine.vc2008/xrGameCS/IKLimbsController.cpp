@@ -70,7 +70,7 @@ void	CIKLimbsController::LimbUpdate( CIKLimb &L )
 
 IC void	update_blend (CBlend* &b)
 {
-	if(b && CBlend::eFREE_SLOT == b->blend)
+	if(b && CBlend::eFREE_SLOT == b->blend_state())
 		b = 0;
 }
 
@@ -270,7 +270,7 @@ void CIKLimbsController::Calculate( )
 		Fvector toe;
 		cd[j].m_limb->dbg_ik_foot().ToePosition( toe );
 		m.transform_tiny( toe );
-		DBG_DrawLine( toe, Fvector().add( toe, Fvector().set( 0, -_object_shift.shift(), 0 ) ), D3DCOLOR_XRGB( 255, 0, 0 )  );
+		DBG_DrawLine( toe, Fvector().add( toe, Fvector().set( 0, -_object_shift.shift(), 0 ) ), color_xrgb( 255, 0, 0 )  );
 	}
 #endif
 	}
@@ -299,7 +299,7 @@ void CIKLimbsController::Destroy(CGameObject* O)
 	_bone_chains.clear();
 }
 
-void _stdcall CIKLimbsController:: IKVisualCallback( IKinematics* K )
+void  CIKLimbsController:: IKVisualCallback( IKinematics* K )
 {
 	//if (Device.Paused())
 	//	return;

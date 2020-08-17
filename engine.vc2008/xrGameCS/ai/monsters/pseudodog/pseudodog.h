@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../BaseMonster/base_monster.h"
-#include "../../../../xrServerEntities/script_export_space.h"
+#include "../../../../XrServerEntitiesCS/script_export_space.h"
 
 class CAI_PseudoDog : public CBaseMonster {
 	typedef		CBaseMonster	inherited;
@@ -13,7 +13,7 @@ public:
 
 	TTime			m_time_became_angry;
 
-	TTime			time_growling;			// время нахождения в состоянии пугания
+	TTime			time_growling;			// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 	enum {
 		eAdditionalSounds		= MonsterSound::eMonsterSoundCustom,

@@ -19,7 +19,7 @@ public:
 	void	Load				(LPCSTR section);
 	void	Update				(float dist, float radius);
 	void	Stop				();
-	float xr_stdcall GetFactor	();
+	float  __stdcall	GetFactor	();
 
 private:
 	void	Activate			();

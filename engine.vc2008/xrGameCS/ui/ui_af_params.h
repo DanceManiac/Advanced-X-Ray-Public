@@ -1,6 +1,6 @@
 #pragma once
 #include "UIWindow.h"
-#include "..\..\xrServerEntities\alife_space.h"
+#include "..\..\XrServerEntitiesCS\alife_space.h"
 
 
 class CUIXml;

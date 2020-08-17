@@ -45,7 +45,7 @@
 #define KILLEVENT_GRID_HEIGHT	64
 
 #include "game_cl_mp_snd_messages.h"
-#include "../3rd party/crypto/crypto.h"
+#include "../3rd party/crypto/crypto.h""
 #include "player_name_modifyer.h"
 
 BOOL g_draw_downloads = TRUE;
@@ -234,12 +234,12 @@ bool game_cl_mp::OnKeyboardPress(int key)
 
 				if (kCHAT_TEAM == key)
 				{
-					prefix.sprintf("%s> ", *st.translate("st_mp_say_to_team"));
+					prefix.printf("%s> ", *st.translate("st_mp_say_to_team"));
 					pChatWnd->TeamChat();
 				}
 				else
 				{
-					prefix.sprintf("%s> ", *st.translate("st_mp_say_to_all"));					
+					prefix.printf("%s> ", *st.translate("st_mp_say_to_all"));					
 					pChatWnd->AllChat();
 				}
 				
@@ -753,7 +753,7 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 		{
 			m_bSpectatorSelected = FALSE;
 
-			if (Level().pHUD && HUD().GetUI())
+			if (g_hud && HUD().GetUI())
 			{
 				CUIMessagesWindow*	messages_window = NULL;
 				CUI*				ui_window = HUD().GetUI();
@@ -796,7 +796,7 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 
 	default:
 		{
-			if (Level().pHUD && HUD().GetUI())
+			if (g_hud && HUD().GetUI())
 				HUD().GetUI()->ShowGameIndicators(false);
 			HideMessageMenus();
 		}break;
@@ -1278,7 +1278,7 @@ void	game_cl_mp::OnEventMoneyChanged			(NET_Packet& P)
 			}break;
 		case SKT_KIR: 
 			{				
-				BName.sprintf("%d_kill_in_row", BonusKills);
+				BName.printf("%d_kill_in_row", BonusKills);
 
 				sprintf_s		(MoneyStr, sizeof(MoneyStr), "%d", BonusKills);
 				BMS.m_killer.m_name = MoneyStr;
@@ -1479,7 +1479,7 @@ void game_cl_mp::OnConnected()
 	}
 };
 
-void __stdcall game_cl_mp::sending_screenshot_callback(file_transfer::sending_status_t status, u32 bytes_sent, u32 data_size)
+void  game_cl_mp::sending_screenshot_callback(file_transfer::sending_status_t status, u32 bytes_sent, u32 data_size)
 {
 	switch (status)
 	{
@@ -1639,7 +1639,7 @@ void game_cl_mp::PrepareToReceiveFile(ClientID const & from_client, shared_str c
 }
 
 
-void __stdcall	game_cl_mp::fr_callback_binder::receiving_file_callback(
+void 	game_cl_mp::fr_callback_binder::receiving_file_callback(
 															file_transfer::receiving_status_t status,
 															u32 bytes_received,
 															u32 data_size){
@@ -1821,7 +1821,7 @@ void game_cl_mp::draw_all_active_binder_states()
 	CGameFont* F = HUD().Font().pFontDI;
 	F->SetHeightI	(0.015f);
 	F->OutSetI		(0.1f,0.2f);
-	F->SetColor		(D3DCOLOR_XRGB(0,255,0));
+	F->SetColor		(color_xrgb(0,255,0));
 	
 	for (u32 i = 0; i < MAX_PLAYERS_COUNT; ++i)
 	{
@@ -1836,7 +1836,7 @@ void game_cl_mp::draw_all_active_binder_states()
 		}
 	}
 
-	F->SetColor		(D3DCOLOR_XRGB(255,0,0));
+	F->SetColor		(color_xrgb(255,0,0));
 	for (cheaters_collection_t::iterator i = m_detected_cheaters.begin(),
 		ie = m_detected_cheaters.end(); i != ie; ++i)
 	{

@@ -32,7 +32,7 @@
 #include "ZoneCampfire.h"
 #include "physicobject.h"
 #include "artefact.h"
-
+#include "sight_manager_space.h"
 using namespace luabind;
 
 class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject> &instance)

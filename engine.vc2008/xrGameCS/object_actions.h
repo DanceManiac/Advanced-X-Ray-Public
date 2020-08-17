@@ -170,7 +170,7 @@ private:
 	bool				m_callback_removed;
 
 private:
-		void xr_stdcall	on_animation_end		();
+		void 	__stdcall	on_animation_end		();
 
 public:
 						CObjectActionStrapping	(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");
@@ -192,7 +192,7 @@ private:
 	bool				m_callback_removed;
 
 private:
-		void xr_stdcall	on_animation_end		();
+		void 	__stdcall	on_animation_end		();
 
 public:
 						CObjectActionStrappingToIdle	(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");
@@ -214,7 +214,7 @@ private:
 	bool				m_callback_removed;
 
 private:
-		void xr_stdcall	on_animation_end			();
+		void 	_stdcall	on_animation_end			();
 
 public:
 						CObjectActionUnstrapping	(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");
@@ -236,7 +236,7 @@ private:
 	bool				m_callback_removed;
 
 private:
-		void xr_stdcall	on_animation_end		();
+		void 	__stdcall	on_animation_end		();
 
 public:
 						CObjectActionUnstrappingToIdle	(CInventoryItem *item, CAI_Stalker *owner, CPropertyStorage *storage, LPCSTR action_name = "");

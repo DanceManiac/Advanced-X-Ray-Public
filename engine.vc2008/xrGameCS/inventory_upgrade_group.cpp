@@ -36,7 +36,7 @@ void Group::construct( const shared_str& group_id, UpgradeBase& parent_upgrade, 
 	PSTR	temp  = (PSTR)_alloca( (xr_strlen(upgrades_str) + 1) * sizeof(char) );
 	for ( int n = _GetItemCount(upgrades_str), i = 0; i < n; ++i )
 	{
-		UpgradeBase* upgrade_p = (UpgradeBase*)manager_r.add_upgrade( _GetItem( upgrades_str, i, temp ), *this );
+		UpgradeBase* upgrade_p = (UpgradeBase*)manager_r.add_upgrade( _GetItem( upgrades_str, i, temp , xr_strlen(upgrades_str) + 1), *this );
 		m_included_upgrades.push_back( upgrade_p );
 	}
 }

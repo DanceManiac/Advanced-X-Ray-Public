@@ -484,11 +484,15 @@ void CGamePersistent::start_game_intro		()
 		}
 	}
 }
-void CGamePersistent::update_game_intro			()
+void CGamePersistent::update_game_intro()
 {
-	if(m_intro && (false==m_intro->IsActive())){
-		xr_delete				(m_intro);
-		m_intro_event			= 0;
+	if (m_intro && (false == m_intro->IsActive())) {
+		xr_delete(m_intro);
+		m_intro_event = 0;
+	}
+	else if (!m_intro)
+	{
+		m_intro_event = 0;
 	}
 }
 #include "holder_custom.h"
@@ -510,7 +514,8 @@ void CGamePersistent::OnFrame	()
 	++m_frame_counter;
 #endif
 	if (!g_dedicated_server && !m_intro_event.empty())	m_intro_event();
-
+	if (!g_dedicated_server && Device.dwPrecacheFrame == 0 && !m_intro && m_intro_event.empty())
+		load_screen_renderer.stop();
 	if( !m_pMainMenu->IsActive() )
 		m_pMainMenu->DestroyInternal(false);
 
@@ -711,7 +716,7 @@ void CGamePersistent::LoadTitle(LPCSTR str)
 {
 	string512			buff;
 	sprintf_s			(buff, "%s...", CStringTable().translate(str).c_str());
-	pApp->LoadTitleInt	(buff);
+	pApp->LoadTitleInt	(buff,"","");
 }
 
 bool CGamePersistent::CanBePaused()

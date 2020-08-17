@@ -3,6 +3,9 @@
 #include "HudSound.h"
 
 float psHUDSoundVolume			= 1.0f;
+float HUD_SOUND_ITEM::g_fHudSndFrequency = 1.0f; //--#SM+#--
+float HUD_SOUND_ITEM::g_fHudSndVolumeFactor = 1.0f; //--#SM+#--
+
 void InitHudSoundSettings()
 {
 	psHUDSoundVolume = pSettings->r_float("hud_sound", "hud_sound_vol_k");
@@ -103,7 +106,34 @@ void HUD_SOUND_ITEM::PlaySound(	HUD_SOUND_ITEM&		hud_snd,
 											flags,
 											hud_snd.m_activeSnd->delay);
 
-	hud_snd.m_activeSnd->snd.set_volume		(hud_snd.m_activeSnd->volume * b_hud_mode?psHUDSoundVolume:1.0f);
+	//--#SM+ Begin#--
+	float fVolume = hud_snd.m_activeSnd->volume * (b_hud_mode ? psHUDSoundVolume : 1.0f);
+	fVolume *= g_fHudSndVolumeFactor;
+	hud_snd.m_activeSnd->snd.set_volume(fVolume);
+	hud_snd.m_activeSnd->snd.set_frequency(g_fHudSndFrequency);
+	//--#SM+ Begin#--
+}
+
+// [Play overlapped sound]
+void HUD_SOUND_ITEM::PlaySoundAdd(
+	HUD_SOUND_ITEM& hud_snd, const Fvector& position, const CObject* parent, bool b_hud_mode, bool looped, u8 index)
+{
+	if (hud_snd.sounds.empty())
+		return;
+	hud_snd.m_activeSnd = nullptr;
+	u32 flags = b_hud_mode ? sm_2D : 0;
+	if (looped)
+		flags |= sm_Looped;
+	if (index == u8(-1))
+		index = (u8)Random.randI(hud_snd.sounds.size());
+	hud_snd.m_activeSnd = &hud_snd.sounds[index];
+
+	Fvector pos = flags & sm_2D ? Fvector().set(0, 0, 0) : position;
+	float vol = hud_snd.m_activeSnd->volume * (b_hud_mode ? psHUDSoundVolume : 1.0f);
+
+	vol *= g_fHudSndVolumeFactor;
+	hud_snd.m_activeSnd->snd.play_no_feedback(
+		const_cast<CObject*>(parent), flags, hud_snd.m_activeSnd->delay, &pos, &vol, &g_fHudSndFrequency);
 }
 
 void HUD_SOUND_ITEM::StopSound(HUD_SOUND_ITEM& hud_snd)

@@ -125,7 +125,7 @@ public:
 class PropItem
 {
 	friend class		CPropHelper;
-    friend class		TProperties;
+    friend class		UIPropertiesForm;
     shared_str			key;
     EPropType			type;
 	void*				item;
@@ -133,7 +133,7 @@ public:
 	DEFINE_VECTOR		(PropValue*,PropValueVec,PropValueIt);
 private:
     PropValueVec		values;
-    TProperties* 		m_Owner;
+    UIPropertiesForm* 		m_Owner;
 // events
 public:
 	typedef fastdelegate::FastDelegate1<PropItem*> 	TOnPropItemFocused;
@@ -152,6 +152,7 @@ public:
         flMixed			= (1<<3),
         flDrawThumbnail	= (1<<4),
         flSorted		= (1<<5),
+        flIgnoreMixed   = (1<<6),
     };
     Flags32				m_Flags;
 public:
@@ -161,7 +162,7 @@ public:
     	for (PropValueIt it=values.begin(); values.end() != it; ++it)
         	xr_delete	(*it);
     };
-    IC TProperties*		Owner			(){return m_Owner;}
+    IC UIPropertiesForm*		Owner			(){return m_Owner;}
     void				SetName			(const shared_str& name)
     {
     	key=name;
@@ -181,7 +182,7 @@ public:
     IC xr_string		GetDrawText		()
     {
     	VERIFY(!values.empty()); 
-        return m_Flags.is(flMixed)?xr_string("(mixed)"):values.front()->GetDrawText(OnDrawTextEvent);
+        return (m_Flags.is(flMixed) && !m_Flags.is(flIgnoreMixed) )? xr_string("(mixed)") : values.front()->GetDrawText(OnDrawTextEvent);
     }
 	IC void				CheckMixed		()
     {
@@ -223,7 +224,10 @@ public:
                 if (!CV->OnChangeEvent.empty()) CV->OnChangeEvent(*it);
             }
             if (!CV->Equal(values.front()))
-                m_Flags.set	(flMixed,TRUE);
+            {
+                m_Flags.set(flMixed, TRUE);
+                m_Flags.set(flIgnoreMixed, FALSE);
+            }
         }
         return bChanged;
     }
@@ -271,7 +275,7 @@ class CanvasValue: public PropValue{
 	shared_str			value;
 public:
 	typedef fastdelegate::FastDelegate3<CanvasValue*,CanvasValue*,bool&>					TOnTestEqual;
-	typedef fastdelegate::FastDelegate3<CanvasValue*,void* /* TCanvas* */, const Irect&>	TOnDrawCanvasEvent;
+	typedef fastdelegate::FastDelegate1<CanvasValue*>	TOnDrawCanvasEvent;
 public:
     int					height;
     TOnTestEqual		OnTestEqual;
@@ -392,13 +396,13 @@ public:
     bool				ApplyValue		(LPCSTR val)
     {
         if (0!=xr_strcmp(value,val)){
-            strcpy		(value,val);
+            xr_strcpy	(value,xr_strlen(val)+1,val);
             return		true;
         }
         return 			false;
     }
     LPSTR				GetValue		(){return value;}
-    virtual void		ResetValue		(){strcpy(value,init_value.c_str());}
+    virtual void		ResetValue		(){xr_strcpy(value,init_value.size()+1,init_value.c_str());}
 };
 //------------------------------------------------------------------------------
 
@@ -411,12 +415,12 @@ public:
     ChooseItemVec*		m_Items;
 	typedef fastdelegate::FastDelegate1<ChooseValue*>	TOnChooseValueFill;
     TOnChooseValueFill	OnChooseFillEvent;
-    TOnDrawThumbnail	OnDrawThumbnailEvent;
+    //TOnDrawThumbnail	OnDrawThumbnailEvent;
     void*				m_FillParam;
 // utils
     void				AppendChooseItem	(LPCSTR name, LPCSTR hint){VERIFY(m_Items); m_Items->push_back(SChooseItem(name,hint));}
 public:
-						ChooseValue			(shared_str* val, u32 cid, LPCSTR path, void* param, u32 sub_item_count, u32 choose_flags):RTextValue(val),m_ChooseID(cid),m_StartPath(path),subitem(sub_item_count),m_Items(0),m_FillParam(param),OnChooseFillEvent(0),OnDrawThumbnailEvent(0),m_ChooseFlags(choose_flags){}
+						ChooseValue			(shared_str* val, u32 cid, LPCSTR path, void* param, u32 sub_item_count, u32 choose_flags):RTextValue(val),m_ChooseID(cid),m_StartPath(path),subitem(sub_item_count),m_Items(0),m_FillParam(param),OnChooseFillEvent(0),/*OnDrawThumbnailEvent(0),*/m_ChooseFlags(choose_flags){}
 };
 
 typedef CustomValue<BOOL>		BOOLValue;
@@ -482,12 +486,12 @@ public:
 //------------------------------------------------------------------------------
 template <class T>
 IC xr_string draw_sprintf(xr_string& s, const T& V, int tag)
-{  string256 tmp; sprintf_s(tmp,sizeof(tmp),"%d",V); s=tmp; return s;}
+{  string256 tmp; xr_sprintf(tmp,sizeof(tmp),"%d",V); s=tmp; return s;}
 //------------------------------------------------------------------------------
 IC xr_string draw_sprintf(xr_string& s, const float& V, int dec)
 {
-    string32 	fmt; sprintf_s(fmt,sizeof(fmt),"%%.%df",dec);
-	string256 	tmp; sprintf_s(tmp,sizeof(tmp),fmt,V);
+    string32 	fmt; xr_sprintf(fmt,"%%.%df",dec);
+	string256 	tmp; xr_sprintf(tmp,fmt,V);
     s			= tmp; 
     return s;
 }
@@ -502,8 +506,8 @@ IC void clamp(Fvector& V, const Fvector& mn, const Fvector& mx)
 }
 IC xr_string draw_sprintf(xr_string& s, const Fvector& V, int dec)
 {
-	string128 fmt;	sprintf_s(fmt,sizeof(fmt),"{%%.%df, %%.%df, %%.%df}",dec,dec,dec);
-    string256 tmp;	sprintf_s(tmp,sizeof(tmp),fmt,V.x,V.y,V.z);
+	string128 fmt;	xr_sprintf(fmt,sizeof(fmt),"{%%.%df, %%.%df, %%.%df}",dec,dec,dec);
+    string256 tmp;	xr_sprintf(tmp,sizeof(tmp),fmt,V.x,V.y,V.z);
     s 				= tmp;
     return s;
 }

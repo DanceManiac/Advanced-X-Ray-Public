@@ -14,7 +14,7 @@ class CInventory;
 
 #include "UIOutfitInfo2.h"
 #include "UIItemInfo.h"
-#include "../../xrServerEntities/inventory_space.h"
+#include "../../XrServerEntitiesCS/inventory_space.h"
 
 class CArtefact;
 class CUI3tButton;
@@ -102,11 +102,11 @@ protected:
 	EListType					GetType						(CUIDragDropListEx* l);
 	CUIDragDropListEx*			GetSlotList					(u32 slot_idx);
 
-	bool		xr_stdcall		OnItemDrop					(CUICellItem* itm);
-	bool		xr_stdcall		OnItemStartDrag				(CUICellItem* itm);
-	bool		xr_stdcall		OnItemDbClick				(CUICellItem* itm);
-	bool		xr_stdcall		OnItemSelected				(CUICellItem* itm);
-	bool		xr_stdcall		OnItemRButtonClick			(CUICellItem* itm);
+	bool				OnItemDrop					(CUICellItem* itm);
+	bool				OnItemStartDrag				(CUICellItem* itm);
+	bool				OnItemDbClick				(CUICellItem* itm);
+	bool				OnItemSelected				(CUICellItem* itm);
+	bool				OnItemRButtonClick			(CUICellItem* itm);
 
 
 	CUIStatic					UIProgressBack;
@@ -118,7 +118,7 @@ protected:
 
 	CUIPropertiesBox			UIPropertiesBox;
 	
-	//информация о персонаже
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	CUIOutfitInfo2				UIOutfitInfo;
 	CUIItemInfo					UIItemInfo;
 

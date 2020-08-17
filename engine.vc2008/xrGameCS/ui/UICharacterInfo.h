@@ -1,10 +1,10 @@
-// UICharacterInfo.h:  окошко, с информацией о персонаже
+// UICharacterInfo.h:  пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 // 
 //////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "uiwindow.h"
-#include "../../xrServerEntities/alife_space.h"
+#include "../../XrServerEntitiesCS/alife_space.h"
 #include "character_info_defs.h"
 
 class CUIStatic;

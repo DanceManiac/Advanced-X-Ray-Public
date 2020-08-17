@@ -5,7 +5,7 @@
 #include "uicharacterinfo.h"
 #include "../actor.h"
 #include "../level.h"
-#include "../../xrServerEntities/character_info.h"
+#include "../../XrServerEntitiesCS/character_info.h"
 #include "../string_table.h"
 #include "../relation_registry.h"
 
@@ -20,7 +20,7 @@
 #include "../ai_space.h"
 #include "../alife_object_registry.h"
 #include "../xrServer.h"
-#include "../../xrServerEntities/xrServer_Objects_ALife_Monsters.h"
+#include "../../XrServerEntitiesCS/xrServer_Objects_ALife_Monsters.h"
 
 using namespace InventoryUtilities;
 
@@ -364,8 +364,8 @@ bool CUICharacterInfo::get_actor_community( shared_str* our, shared_str* enemy )
 	u32   size_temp   = (xr_strlen(vs_teams) + 1) * sizeof(char);
 	PSTR  our_fract   = (PSTR)_alloca( size_temp );
 	PSTR  enemy_fract = (PSTR)_alloca( size_temp );
-	_GetItem( vs_teams, 0, our_fract );
-	_GetItem( vs_teams, 1, enemy_fract );
+	_GetItem( vs_teams, 0, our_fract , (xr_strlen(vs_teams) + 1));
+	_GetItem( vs_teams, 1, enemy_fract, (xr_strlen(vs_teams) + 1));
 
 	if ( xr_strlen(our_fract) == 0 || xr_strlen(enemy_fract) == 0 )
 	{

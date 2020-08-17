@@ -21,7 +21,7 @@ void				game_cl_mp::AddMessageMenu			(LPCSTR	menu_section, LPCSTR snd_path, LPCS
 	for (u32 i=0; i<10; i++)
 	{
 		shared_str LineName;
-		LineName.sprintf("phrase_%d", i);
+		LineName.printf("phrase_%d", i);
 		if (!pSettings->line_exist(menu_section, *LineName)) break;
 		//---------------------------------------------------------
 		string4096			Line;
@@ -80,7 +80,7 @@ void				game_cl_mp::LoadMessagesMenu		(LPCSTR menus_section)
 	for (int i=0; i<10; i++)
 	{
 		shared_str LineName;
-		LineName.sprintf("menu_%d", i);
+		LineName.printf("menu_%d", i);
 		if (!pSettings->line_exist(menus_section, *LineName)) break;
 		shared_str menu_section = pSettings->r_string(menus_section, *LineName);
 		AddMessageMenu(*menu_section, *Sounds_Path, *Team_Prefix);

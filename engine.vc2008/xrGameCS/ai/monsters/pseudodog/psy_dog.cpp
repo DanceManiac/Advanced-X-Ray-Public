@@ -3,7 +3,7 @@
 #include "../../../level_graph.h"
 #include "../../../ai_space.h"
 #include "../../../alife_simulator.h"
-#include "../../../../xrServerEntities/xrServer_Object_Base.h"
+#include "../../../../XrServerEntitiesCS/xrServer_Object_Base.h"
 #include "../../../xrserver.h"
 #include "../../../ai_object_location.h"
 #include "../../../level.h"
@@ -16,7 +16,7 @@
 #include "psy_dog_aura.h"
 #include "psy_dog_state_manager.h"
 #include "../../../alife_object_registry.h"
-#include "../../../../xrServerEntities/xrserver_objects_alife_monsters.h"
+#include "../../../../XrServerEntitiesCS/xrserver_objects_alife_monsters.h"
 
 CPsyDog::CPsyDog()
 {
@@ -82,7 +82,10 @@ bool CPsyDog::spawn_phantom()
 	if (!control().path_builder().get_node_in_radius(ai_location().level_vertex_id(), 4,8,5,node)) return false;
 	
  	// set id to created server object
-	CSE_Abstract			*phantom = Level().spawn_item("psy_dog_phantom", ai().level_graph().vertex_position(node), node, 0xffff, true);
+	//Alundaio:
+	pcstr phantomSection = READ_IF_EXISTS(pSettings, r_string, this->get_section(), "phantom_section", "psy_dog_phantom");
+	CSE_Abstract	*phantom = Level().spawn_item(phantomSection, ai().level_graph().vertex_position(node), node, 0xffff, true);
+	//Alundaio: END
 	CSE_ALifeMonsterBase	*pSE_Monster = smart_cast<CSE_ALifeMonsterBase*>(phantom);
 	VERIFY(pSE_Monster);
 
@@ -215,7 +218,7 @@ void CPsyDogPhantom::Think()
 	Fvector target;
 	target.mad(Position(),Direction(), 10.f);
 
-	// нода в прямой видимости?
+	// пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?
 	control().path_builder().restrictions().add_border(Position(), target);
 	u32 node = ai().level_graph().check_position_in_direction(ai_location().level_vertex_id(),Position(),target);
 	control().path_builder().restrictions().remove_border();

@@ -31,10 +31,10 @@ typedef xr_vector<PIItem>			TIItemContainer;
 
 enum EItemPlace
 {			
-	eItemPlaceUndefined,
-	eItemPlaceSlot,
-	eItemPlaceBelt,
-	eItemPlaceRuck
+	EItemPlaceUndefined,
+	EItemPlaceSlot,
+	EItemPlaceBelt,
+	EItemPlaceRuck
 };
 
 extern u32	INV_STATE_LADDER;

@@ -51,7 +51,7 @@ public:
 			P.r				(&*data.begin(),size);
 		}
 	}
-	void				export		(NET_Packet& P)
+	void				export_		(NET_Packet& P)
 	{
 		u16	ID			=	M_EVENT;
 		P.w_begin		(ID			);

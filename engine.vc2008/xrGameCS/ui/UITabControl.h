@@ -1,7 +1,7 @@
 #pragma once
 
 #include "uiwindow.h"
-#include "../../xrServerEntities/script_export_space.h"
+#include "../../XrServerEntitiesCS/script_export_space.h"
 #include "UIOptionsItem.h"
 
 class CUITabButton;
@@ -26,7 +26,7 @@ public:
 	virtual void		OnStaticFocusReceive		(CUIWindow* pWnd);
 	virtual void		OnStaticFocusLost			(CUIWindow* pWnd);
 
-	// Добавление кнопки-закладки в список закладок контрола
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	bool				AddItem						(LPCSTR pItemName, LPCSTR pTexName, Fvector2 pos, Fvector2 size);
 	bool				AddItem						(CUITabButton *pButton);
 
@@ -42,7 +42,7 @@ public:
 			void		SetActiveTab_script			(LPCSTR sNewTab)				{SetActiveTab(sNewTab);};
 	const	u32			GetTabsCount				() const						{ return m_TabsArr.size(); }
 	
-	// Режим клавилатурных акселераторов (вкл/выкл)
+	// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ/пїЅпїЅпїЅпїЅ)
 	IC bool				GetAcceleratorsMode			() const						{ return m_bAcceleratorsEnable; }
 	void				SetAcceleratorsMode			(bool bEnable)					{ m_bAcceleratorsEnable = bEnable; }
 
@@ -55,20 +55,20 @@ public:
 
 	void		ResetTab					();
 protected:
-	// Список кнопок - переключателей закладок
+	// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	TABS_VECTOR			m_TabsArr;
 
 	shared_str			m_sPushedId;
 	shared_str			m_sPrevPushedId;
-// Текущая нажатая кнопка. -1 - ни одна, 0 - первая, 1 - вторая, и т.д.
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. -1 - пїЅпїЅ пїЅпїЅпїЅпїЅ, 0 - пїЅпїЅпїЅпїЅпїЅпїЅ, 1 - пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅ.пїЅ.
 //.	int					m_iPushedIndex;
 //.	int					m_iPrevPushedIndex;
 
-	// Цвет неактивных элементов
+	// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	u32					m_cGlobalTextColor;
 	u32					m_cGlobalButtonColor;
 
-	// Цвет надписи на активном элементе
+	// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	u32					m_cActiveTextColor;
 	u32					m_cActiveButtonColor;
 

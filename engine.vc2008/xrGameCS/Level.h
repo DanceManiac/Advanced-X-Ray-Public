@@ -7,6 +7,7 @@
 #pragma once
 
 #include "../xrEngine/igame_level.h"
+#include "../xrEngine/CustomHUD.h"
 #include "../xrEngine/IGame_Persistent.h"
 #include "../xrNetServer/net_client.h"
 #include "script_export_space.h"
@@ -262,7 +263,7 @@ public:
 
 	// Events
 	virtual void				OnEvent					( EVENT E, u64 P1, u64 P2 );
-	virtual void				OnFrame					( void );
+	virtual void	_BCL		OnFrame					( void );
 	virtual void				OnRender				( );
 	void						cl_Process_Event		(u16 dest, u16 type, NET_Packet& P);
 	void						cl_Process_Spawn		(NET_Packet& P);
@@ -306,7 +307,7 @@ public:
 #ifdef DEBUG
 	IC CDebugRenderer				&debug_renderer				();
 #endif
-	void	__stdcall				script_gc					();			// GC-cycle
+	void		_BCL				script_gc					();			// GC-cycle
 
 	IC CPHCommander					&ph_commander				();
 	IC CPHCommander					&ph_commander_scripts		();
@@ -379,6 +380,12 @@ public:
 			file_transfer::client_site*					m_file_transfer;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
+	public:
+
+		virtual	shared_str			OpenDemoFile(LPCSTR demo_file_name) {
+			return "";
+		}
+		virtual void				net_StartPlayDemo() {}
 };
 add_to_type_list(CLevel)
 #undef script_type_list
@@ -389,7 +396,7 @@ IC game_cl_GameState&	Game()		{ return *Level().game;					}
 	u32					GameID();
 
 
-IC CHUDManager&			HUD()		{ return *((CHUDManager*)Level().pHUD);	}
+IC CHUDManager&			HUD()		{ return *((CHUDManager*)g_hud);	}
 
 #ifdef DEBUG
 IC CLevelDebug&			DBG()		{return *((CLevelDebug*)Level().m_level_debug);}

@@ -48,6 +48,8 @@
 #include "GameSpy/GameSpy_Full.h"
 #include "GameSpy/GameSpy_Patching.h"
 
+#include "../build_config_defines.h"
+
 #ifdef DEBUG
 #	include "PHDebug.h"
 #	include "ui/UIDebugFonts.h" 
@@ -70,7 +72,7 @@ extern	u64		g_qwStartGameTime;
 extern	u64		g_qwEStartGameTime;
 
 ENGINE_API
-extern	float	psHUD_FOV;
+extern	float	psHUD_FOV_def;
 extern	float	psSqueezeVelocity;
 extern	int		psLUA_GCSTEP;
 
@@ -184,6 +186,40 @@ public:
 };
 
 // console commands
+// g_spawn
+class CCC_Spawn : public IConsole_Command {
+public:
+	CCC_Spawn(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR args) {
+		if (!g_pGameLevel) return;
+
+		//#ifndef	DEBUG
+		if (GameID() != eGameIDSingle)
+		{
+			Msg("For this game type entity-spawning is disabled.");
+			return;
+		};
+		//#endif
+
+		if (!pSettings->section_exist(args))
+		{
+			Msg("! Section [%s] isn`t exist...", args);
+			return;
+		}
+
+		char	Name[128];	Name[0] = 0;
+		sscanf(args, "%s", Name);
+		Fvector pos = Actor()->Position();
+		pos.y += 3.0f;
+		Level().g_cl_Spawn(Name, 0xff, M_SPAWN_OBJECT_LOCAL, pos);
+	}
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+};
+// g_spawn
+
 class CCC_GameDifficulty : public CCC_Token {
 public:
 	CCC_GameDifficulty(LPCSTR N) : CCC_Token(N,(u32*)&g_SingleGameDifficulty,difficulty_type_token)  {};
@@ -1050,7 +1086,6 @@ struct CCC_ClearSmartCastStats : public IConsole_Command {
 };
 #endif
 
-#ifndef MASTER_GOLD
 #	include "game_graph.h"
 struct CCC_JumpToLevel : public IConsole_Command {
 	CCC_JumpToLevel(LPCSTR N) : IConsole_Command(N)  {};
@@ -1074,6 +1109,7 @@ struct CCC_JumpToLevel : public IConsole_Command {
 	}
 };
 
+#ifndef MASTER_GOLD
 class CCC_Script : public IConsole_Command {
 public:
 	CCC_Script(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1087,7 +1123,9 @@ public:
 			// rescan pathes
 			FS_Path* P = FS.get_path("$game_scripts$");
 			P->m_Flags.set	(FS_Path::flNeedRescan,TRUE);
-			FS.rescan_pathes();
+			CLocatorAPI* RealFS = dynamic_cast<CLocatorAPI*>(xr_FS);
+			VERIFY(RealFS);
+			RealFS->rescan_pathes();
 			// run script
 			if (ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel))
 				ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel)->add_script(S,false,true);
@@ -1124,6 +1162,7 @@ public:
 		}
 	}
 };
+#endif // MASTER_GOLD
 
 class CCC_TimeFactor : public IConsole_Command {
 public:
@@ -1145,7 +1184,6 @@ public:
 	}
 };
 
-#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
 
@@ -1550,6 +1588,23 @@ private:
 };
 
 #endif
+
+// Change weather immediately
+class CCC_SetWeather : public IConsole_Command
+{
+public:
+	CCC_SetWeather(LPCSTR N) : IConsole_Command(N) {};
+	virtual void Execute(LPCSTR args)
+	{
+		if (!xr_strlen(args))
+			return;
+		if (!g_pGamePersistent)
+			return;
+		//if (!Device.editor())
+		g_pGamePersistent->Environment().SetWeather(args, true);
+	}
+};
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -1599,10 +1654,9 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 
-#ifdef DEBUG
-	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);
-	CMD4(CCC_Float,				"fov",					&g_fov,			5.0f,	180.0f);
-#endif // DEBUG
+	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV_def,		0.25f,	1.0f);
+	CMD4(CCC_Float,				"cam_fov",				&g_fov,			5.0f,	180.0f);
+	CMD3(CCC_Mask,				"ph_corpse_collision",	&psActorFlags,	AF_COLLISION);
 
 	// Demo
 	CMD1(CCC_DemoPlay,			"demo_play"				);
@@ -1735,13 +1789,18 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 #endif // DEBUG
 
 #ifndef MASTER_GOLD
-	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
 	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
 	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
 	CMD1(CCC_Script,		"run_script");
-	CMD1(CCC_ScriptCommand,	"run_string");
-	CMD1(CCC_TimeFactor,	"time_factor");		
+	CMD1(CCC_ScriptCommand,	"run_string");	
 #endif // MASTER_GOLD
+
+#ifdef MFS_DEVELOPER_CMD
+	CMD1(CCC_Spawn, "g_spawn");
+	CMD1(CCC_SetWeather, "set_weather");
+	CMD1(CCC_TimeFactor, "time_factor");
+	CMD1(CCC_JumpToLevel, "jump_to_level");
+#endif // MFS_DEVELOPER_CMD
 
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
 	CMD3(CCC_Mask,		"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);

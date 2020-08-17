@@ -10,7 +10,7 @@
 #include "ai_stalker.h"
 #include "../../pda.h"
 #include "../../inventory.h"
-#include "../../../xrServerEntities/xrmessages.h"
+#include "../../../XrServerEntitiesCS/xrmessages.h"
 #include "../../shootingobject.h"
 #include "../../level.h"
 #include "../../ai_monster_space.h"
@@ -164,7 +164,7 @@ void CAI_Stalker::UpdateAvailableDialogs(CPhraseDialogManager* partner)
 		for(KNOWN_INFO_VECTOR::const_iterator it = CInventoryOwner::m_known_info_registry->registry().objects_ptr()->begin();
 			CInventoryOwner::m_known_info_registry->registry().objects_ptr()->end() != it; ++it)
 		{
-			//подгрузить кусочек информации с которым мы работаем
+			//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			CInfoPortion info_portion;
 			info_portion.Load((*it).id);
 

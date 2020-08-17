@@ -16,7 +16,7 @@ public:
 	void CheckForPatch	(bool InformOfNoPatch);
 private:
 	//--------------------- GCD_Client -------------------------------------------	
-	GAMESPY_FN_VAR_DECL(bool, ptCheckForPatch, (
+	GAMESPY_FN_VAR_DECL(bool, ptCheckForPatchA, (
 //		int productID,  const char * versionUniqueID,  int distributionID, 
 		ptPatchCallback callback, 
 		PTBool blocking, 

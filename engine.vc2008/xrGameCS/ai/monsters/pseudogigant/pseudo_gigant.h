@@ -1,7 +1,7 @@
 #pragma once
 #include "../BaseMonster/base_monster.h"
 #include "../controlled_entity.h"
-#include "../../../../xrServerEntities/script_export_space.h"
+#include "../../../../XrServerEntitiesCS/script_export_space.h"
 
 
 class CPseudoGigant : public CBaseMonster,
@@ -21,8 +21,8 @@ private:
 	} step_effector;
 
 	SAttackEffector m_threaten_effector;
-	ref_sound		m_sound_threaten_hit;		// звук, который играется в голове у актера
-	ref_sound		m_sound_start_threaten;		// звук, который играется в голове у актера
+	ref_sound		m_sound_threaten_hit;		// пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	ref_sound		m_sound_start_threaten;		// пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	
 	u32				m_time_next_threaten;
 	

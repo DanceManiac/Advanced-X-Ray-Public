@@ -125,7 +125,7 @@ public:
 	void			OnRenderPPUI_PP					();
 
 	virtual void	OnRender						();
-	virtual void	OnFrame							(void);
+	virtual void	_BCL	OnFrame					(void);
 	virtual void	StartStopMenu					(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	virtual bool	UseIndicators					()						{return false;}
 
@@ -142,19 +142,19 @@ public:
 	void			SwitchToMultiplayerMenu			();
 	void			OnNewPatchFound					(LPCSTR VersionName, LPCSTR URL);
 	void			OnNoNewPatchFound				();
-	void xr_stdcall OnDownloadPatch					(CUIWindow*, void*);
-	void xr_stdcall OnConnectToMasterServerOkClicked(CUIWindow*, void*);
+	void  __stdcall OnDownloadPatch					(CUIWindow*, void*);
+	void  __stdcall OnConnectToMasterServerOkClicked(CUIWindow*, void*);
 
 	void			Show_DownloadMPMap				(LPCSTR text, LPCSTR url);
-	void xr_stdcall OnDownloadMPMap_CopyURL			(CUIWindow*, void*);
-	void xr_stdcall OnDownloadMPMap					(CUIWindow*, void*);
+	void  __stdcall OnDownloadMPMap_CopyURL			(CUIWindow*, void*);
+	void  __stdcall OnDownloadMPMap					(CUIWindow*, void*);
 
 	void			OnSessionTerminate				(LPCSTR reason);
 	void			OnLoadError						(LPCSTR module);
 	void			OnDownloadPatchError			();
 	void			OnDownloadPatchSuccess			();
 	void			OnDownloadPatchProgress			(u64 bytesReceived, u64 totalSize);
-	void xr_stdcall OnRunDownloadedPatch			(CUIWindow*, void*);
+	void  __stdcall OnRunDownloadedPatch			(CUIWindow*, void*);
 	void			Show_CTMS_Dialog				();
 	void			Hide_CTMS_Dialog				();
 	void			SetNeedVidRestart				();

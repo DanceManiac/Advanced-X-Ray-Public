@@ -1,7 +1,7 @@
 #pragma once
 #include "../BaseMonster/base_monster.h"
 #include "../anim_triple.h"
-#include "../../../../xrServerEntities/script_export_space.h"
+#include "../../../../XrServerEntitiesCS/script_export_space.h"
 
 class CControllerAnimation;
 class CControllerDirection;
@@ -13,8 +13,8 @@ class CController : public CBaseMonster {
 	typedef		CBaseMonster	inherited;
 
 	u8					m_max_controlled_number;
-	ref_sound			control_start_sound;		// звук, который играется в голове у актера
-	ref_sound			control_hit_sound;			// звук, который играется в голове у актера
+	ref_sound			control_start_sound;		// пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+	ref_sound			control_hit_sound;			// пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 	ref_sound			m_sound_hit_fx;
 	SndShockEffector*	m_sndShockEffector;					
@@ -116,7 +116,7 @@ public:
 			void	TakeUnderControl	(CEntity *);
 			void	UpdateControlled	();
 			void	FreeFromControl		();
-			void	OnFreedFromControl	(const CEntity *);  // если монстр сам себя освободил (destroyed || die)
+			void	OnFreedFromControl	(const CEntity *);  // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (destroyed || die)
 
 			void	set_controlled_task (u32 task);
 

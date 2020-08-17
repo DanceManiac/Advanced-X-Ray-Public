@@ -116,7 +116,7 @@ private:
 	u32							OnDelayedMessage		(NET_Packet& P, ClientID sender);			// Non-Zero means broadcasting with "flags" as returned
 
 	void						SendUpdatesToAll		();
-	void	_stdcall			SendUpdateTo			(IClient* client);
+	void		xr_stdcall		SendUpdateTo			(IClient* client);
 private:
 	typedef 
 		CID_Generator<

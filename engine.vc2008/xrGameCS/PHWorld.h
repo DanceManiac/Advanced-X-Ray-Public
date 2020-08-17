@@ -101,7 +101,7 @@ IC	u16							StepsShortCnt					()							{return m_steps_short_num;}
 #ifdef DEBUG
 	virtual void 				OnRender						()							;
 #endif
-	virtual void				OnFrame							()							;
+	virtual void	_BCL		OnFrame							()							;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

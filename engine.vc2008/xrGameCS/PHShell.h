@@ -51,8 +51,8 @@ public:
 	virtual void			applyImpulseTrace		(const Fvector& pos, const Fvector& dir, float val,const u16 id);
 	virtual void			applyHit				(const Fvector& pos, const Fvector& dir, float val,const u16 id,ALife::EHitType hit_type);
 
-	static void 			BonesCallback				(CBoneInstance* B);
-	static void 			StataticRootBonesCallBack	(CBoneInstance* B);
+	static void 	_BCL	BonesCallback				(CBoneInstance* B);
+	static void 	_BCL	StataticRootBonesCallBack	(CBoneInstance* B);
 	virtual	BoneCallbackFun* GetBonesCallback		()	{return BonesCallback ;}
 	virtual BoneCallbackFun* GetStaticObjectBonesCallback()	{ VERIFY( false ); return StataticRootBonesCallBack; }
 	virtual	void			add_Element				(CPhysicsElement* E);
@@ -106,7 +106,7 @@ public:
 	virtual			void	SetRagDoll				()											;
 	virtual			void	SetIgnoreRagDoll		()											;
 
-	virtual			void	CreateShellAnimator		( CInifile* ini, LPCSTR section )											;
+	virtual			void	CreateShellAnimator		( CInifile const * ini, LPCSTR section )	;
 	virtual			void	SetIgnoreAnimated		()											;
 
 	virtual			void	SetSmall				()											;

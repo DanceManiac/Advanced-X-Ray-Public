@@ -32,6 +32,7 @@ public:
 												MonsterSpace::EBodyState const& body_state,
 												MonsterSpace::EMovementType const& movement_type
 											);
+											virtual ~animation_action() {}
 	IC	bool								has_animation	() const;
 	IC	Fvector const&						position		() const;
 	IC	shared_str const&					animation_id	() const;

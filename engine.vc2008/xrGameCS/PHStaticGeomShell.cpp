@@ -40,7 +40,7 @@ CPHStaticGeomShell::CPHStaticGeomShell()
 		spatial.type|=STYPE_PHYSIC;
 }
 
-void cb(CBoneInstance* B)
+void _BCL cb(CBoneInstance* B)
 {
 
 }

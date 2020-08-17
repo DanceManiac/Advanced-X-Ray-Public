@@ -600,7 +600,7 @@ void CSE_SmartCover::check_enterable_loopholes(shared_str const &description)
 
 class CSE_SmartVisual : public CSE_Visual {
 public:
-	virtual CSE_Visual* __stdcall visual ()
+	virtual CSE_Visual* _ visual ()
 	{
 		return					(this);
 	}

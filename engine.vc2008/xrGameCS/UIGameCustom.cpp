@@ -394,9 +394,10 @@ void CMapListHelper::Load()
 	FS_Path* game_levels			= FS.get_path("$game_levels$");
 	xr_string prev_root				= game_levels->m_Root;
 	game_levels->_set_root			(tmp_entrypoint);
-
-	CLocatorAPI::archives_it it		= FS.m_archives.begin();
-	CLocatorAPI::archives_it it_e	= FS.m_archives.end();
+	CLocatorAPI* RealFS = dynamic_cast<CLocatorAPI*>(xr_FS);
+	VERIFY(RealFS);
+	CLocatorAPI::archives_it it = RealFS->m_archives.begin();
+	CLocatorAPI::archives_it it_e = RealFS->m_archives.end();
 
 	for(;it!=it_e;++it)
 	{
@@ -405,7 +406,7 @@ void CMapListHelper::Load()
 
 		LPCSTR ln					= A.header->r_string("header", "level_name");
 		LPCSTR lv					= A.header->r_string("header", "level_ver");
-		FS.LoadArchive				(A, tmp_entrypoint);
+		RealFS->LoadArchive(A, tmp_entrypoint);
 
 		string_path					map_cfg_fn;
 		FS.update_path				(map_cfg_fn, "$game_levels$", ln);
@@ -413,7 +414,7 @@ void CMapListHelper::Load()
 		
 		strcat_s					(map_cfg_fn,"\\level.ltx");
 		LoadMapInfo					(map_cfg_fn, ln, lv);
-		FS.unload_archive			(A);
+		RealFS->unload_archive(A);
 	}
 	game_levels->_set_root			(prev_root.c_str());
 

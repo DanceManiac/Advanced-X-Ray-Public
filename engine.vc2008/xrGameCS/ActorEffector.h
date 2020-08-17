@@ -43,7 +43,7 @@ public:
 				void			SetPP		(CEffectorPP* p)				{m_pe=p;}
 				void			SetCam		(CEffectorCam* p)				{m_ce=p;}
 	virtual		BOOL			Valid		()								{return m_ce||m_pe;};
-	virtual	float xr_stdcall	GetFactor	()								=0;
+	virtual	float 	xr_stdcall	GetFactor	()								=0;
 };
 
 class CAnimatorCamEffector :public CEffectorCam
@@ -124,7 +124,7 @@ public:
 
 	virtual		BOOL			Valid				();
 				BOOL			InWork				();
-	virtual	float xr_stdcall	GetFactor			();
+	virtual	float 	__stdcall	GetFactor			();
 };
 
 

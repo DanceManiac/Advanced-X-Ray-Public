@@ -177,7 +177,7 @@ CPhysicsShell*	P_build_SimpleShell(CGameObject* obj,float mass,bool not_active_s
 	return pPhysicsShell;
 }
 
-void ApplySpawnIniToPhysicShell(CInifile* ini,CPhysicsShell* physics_shell,bool fixed)
+void ApplySpawnIniToPhysicShell(CInifile const * ini, CPhysicsShell* physics_shell, bool fixed)
 {
 		if(!ini)
 			return;

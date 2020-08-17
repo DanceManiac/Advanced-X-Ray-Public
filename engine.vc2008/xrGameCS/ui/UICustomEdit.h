@@ -45,9 +45,9 @@ public:
 protected:
 			void				Register_callbacks();
 
-			void  xr_stdcall	nothing();
-			void  xr_stdcall	press_escape();
-			void  xr_stdcall	press_commit();
+			void  	__stdcall	nothing();
+			void  	__stdcall	press_escape();
+			void  	__stdcall	press_commit();
 
 protected:
 	typedef  fastdelegate::FastDelegate0<void>		Callback;

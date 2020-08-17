@@ -13,7 +13,7 @@
 #include "../character_reputation.h"
 #include "../relation_registry.h"
 #include "../ai_space.h"
-#include "../../xrServerEntities/script_engine.h"
+#include "../../XrServerEntitiesCS/script_engine.h"
 
 using namespace luabind;
 
@@ -102,9 +102,9 @@ void FactionState::update_info()
 	CActor* pActor = smart_cast<CActor*>( Level().CurrentEntity() );
 	if ( pActor )
 	{
-		CHARACTER_COMMUNITY		char_ñomm;
-		char_ñomm.set( m_id );
-		m_actor_goodwill = RELATION_REGISTRY().GetCommunityGoodwill( char_ñomm.index(), pActor->object_id() );
+		CHARACTER_COMMUNITY		char_ï¿½omm;
+		char_ï¿½omm.set( m_id );
+		m_actor_goodwill = RELATION_REGISTRY().GetCommunityGoodwill( char_ï¿½omm.index(), pActor->object_id() );
 	}
 	ResetStates();
 

@@ -1,6 +1,6 @@
 #pragma once
 #include "../BaseMonster/base_monster.h"
-#include "../../../../xrServerEntities/script_export_space.h"
+#include "../../../../XrServerEntitiesCS/script_export_space.h"
 
 class CStateManagerFracture;
 

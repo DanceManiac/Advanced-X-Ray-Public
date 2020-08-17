@@ -73,7 +73,7 @@
 // 57 - CSE_ALifeObjectPhysic			appended with source_id
 // 58 - CSE_ALifeObject					appended with ini_string
 // 59 - CSE_ALifeItemPDA				appended with m_original_owner
-// 60 - CSE_AlifeInventoryItem			appended with property m_eItemPlace
+// 60 - CSE_AlifeInventoryItem			appended with property m_EItemPlace
 // 61 - CSE_AlifeObjectPhysic			appended with bones_mask, root_bone
 // 62 - CSE_AlifeObject					appended with m_story_id
 // 63 - CSE_AlifeTraderAbstract			remove bug with money
@@ -88,7 +88,7 @@
 //		CSE_ALifeHelicopter				heritage changed
 // 70 -	CSE_Abstract					appended with m_script_version, script version support
 // 71 -	CSE_Abstract					appended with m_client_data, ability to save/load client data
-// 72 -	CSE_AlifeInventoryItem			removed property m_eItemPlace, added flag
+// 72 -	CSE_AlifeInventoryItem			removed property m_EItemPlace, added flag
 // 73 -	CSE_AlifeMonsterAbstract		appended with property m_space_restrictors
 // 74 -	CSE_AlifeMonsterAbstract		appended with property m_in_space_restrictors
 // 75 -	CSE_AlifeSpaceRestrictor		new class added, hierarchy changed
@@ -167,8 +167,8 @@ public:
 	void							cform_write		(NET_Packet& P);
 									CSE_Shape		();
 	virtual							~CSE_Shape		();
-	virtual ISE_Shape*  __stdcall	shape			() = 0;
-	virtual void __stdcall			assign_shapes	(CShapeData::shape_def* shapes, u32 cnt);
+	virtual ISE_Shape*  	shape			() = 0;
+	virtual void 			assign_shapes	(CShapeData::shape_def* shapes, u32 cnt);
 };
 add_to_type_list(CSE_Shape)
 #define script_type_list save_type_list(CSE_Shape)
@@ -221,7 +221,7 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_AbstractVisual,CSE_Abstract,CSE_Visual)
 
 	CSE_AbstractVisual										(LPCSTR caSection);
 	virtual	~CSE_AbstractVisual								();
-	virtual CSE_Visual* __stdcall	visual					();
+	virtual CSE_Visual* 	visual					();
 	LPCSTR							getStartupAnimation		();
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_AbstractVisual)

@@ -11,7 +11,7 @@
 
 
 
-CPhysicsShellAnimator::CPhysicsShellAnimator( CPhysicsShell* _pPhysicsShell, CInifile* ini, LPCSTR section ) : m_pPhysicsShell( _pPhysicsShell ) 
+CPhysicsShellAnimator::CPhysicsShellAnimator(CPhysicsShell* _pPhysicsShell, CInifile const* ini, LPCSTR section) : m_pPhysicsShell(_pPhysicsShell)
 {
 	VERIFY( ini->section_exist( section ) );
 	CPhysicsShellHolder *obj = (*(_pPhysicsShell->Elements().begin()))->PhysicsRefObject();

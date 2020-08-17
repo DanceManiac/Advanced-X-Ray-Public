@@ -3,7 +3,7 @@
 
 #include "uiwindow.h"
 #include "../uistaticitem.h"
-#include "../../xrServerEntities/script_export_space.h"
+#include "../../XrServerEntitiesCS/script_export_space.h"
 
 class CUIFrameWindow;
 class CLAItem;
@@ -157,7 +157,7 @@ public:
 	CUILines*				m_pLines;
 protected:
 	bool			m_bEnableTextHighlighting;
-		// Цвет подсветки
+		// пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	u32				m_HighlightColor;
 
 	// this array of color will be useful in CUI3tButton class

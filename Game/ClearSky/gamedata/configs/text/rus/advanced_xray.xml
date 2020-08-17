@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_game_window_name">
+		<text>Global Stalker Weather Rework</text>
+	</string>
+	<string id="ui_mm_cam_fov">
+		<text>Поле зрения</text>
+	</string>
+	<string id="ui_mm_hud_fov">
+		<text>HUD FOV</text>
+	</string>
+	<string id="ui_mm_detail_radius">
+		<text>Дальность отр. травы</text>
+	</string>
+	<string id="ui_mm_detail_scale">
+		<text>Высота травы</text>
+	</string>
+	<string id="ui_mm_ssr_quality">
+		<text>Качество отражений</text>
+	</string>
+	<string id="dtssr_off">
+		<text>Отключено</text>
+	</string>
+	<string id="dtssr_lowest">
+		<text>Оч. низкое</text>
+	</string>
+	<string id="dtssr_low">
+		<text>Низкое</text>
+	</string>
+	<string id="dtssr_medium">
+		<text>Среднее</text>
+	</string>
+	<string id="dtssr_high">
+		<text>Высокое</text>
+	</string>
+	<string id="ui_mm_bloodmarks_on_skeleton">
+		<text>Блудмарки на трупах</text>
+	</string>
+	<string id="ui_mm_actor_shadow">
+		<text>Тень от ГГ</text>
+	</string>
+	<string id="ui_mm_mblur_enable">
+		<text>Motion Blur</text>
+	</string>
+	<string id="ui_mm_mblur">
+		<text>Инт. Motion Blur</text>
+	</string>
+	<string id="ui_mm_sunshafts_mode">
+		<text>Режим солн. лучей</text>
+	</string>
+	<string id="volumetric">
+		<text>Волюметрические</text>
+	</string>
+	<string id="screen_space">
+		<text>Screen Space</text>
+	</string>
+	<string id="ui_mm_raindrops">
+		<text>Эффект Raindrops</text>
+	</string>
+	<string id="ui_mm_sun_details">
+		<text>Тень от травы</text>
+	</string>
+	<string id="ui_mm_fxaa">
+		<text>FXAA Сглаживание</text>
+	</string>
+	<string id="ui_mm_clr_drag_preset">
+		<text>Пресет Цветокоррекции</text>
+	</string>
+	<string id="Default_clr">
+		<text>Оригинальный</text>
+	</string>
+	<string id="Sepia">
+		<text>Сепия</text>
+	</string>
+	<string id="Gray_moss">
+		<text>Серый Мох</text>
+	</string>
+	<string id="Graphite_gray">
+		<text>Графитовый Серый</text>
+	</string>
+	<string id="Zone">
+		<text>Мрачная Зона</text>
+	</string>
+	<string id="Misery">
+		<text>Misery</text>
+	</string>
+	<string id="Warm_tone">
+		<text>Тёплые Тона</text>
+	</string>
+	<string id="Blue">
+		<text>Оттенок Синего</text>
+	</string>
+	<string id="ui_mm_clr_red">
+		<text>Цветокоррекция: Красный</text>
+	</string>
+	<string id="ui_mm_clr_green">
+		<text>Цветокоррекция: Зелёный</text>
+	</string>
+	<string id="ui_mm_clr_blue">
+		<text>Цветокоррекция: Синий</text>
+	</string>
+	<string id="ui_st_corpse_collision">
+		<text>Коллизия трупов</text>
+	</string>
+	<string id="ui_mm_smap_size">
+		<text>Размер карты теней</text>
+	</string>
+	<string id="ui_mm_saturation">
+		<text>Насыщенность цветов</text>
+	</string>
+</string_table>

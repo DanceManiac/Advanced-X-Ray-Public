@@ -4,7 +4,7 @@
 #include "ParticlesObject.h"
 #include "level.h"
 #include "physicsshellholder.h"
-
+#include "..\XrEngine\xr_collide_form.h"
 CMosquitoBald::CMosquitoBald(void) 
 {
 	m_fHitImpulseScale		= 1.f;
