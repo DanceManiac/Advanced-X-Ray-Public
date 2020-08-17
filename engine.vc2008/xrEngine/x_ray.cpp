@@ -30,9 +30,11 @@
 
 #include "securom_api.h"
 #include "Rain.h"
+#include "..\Layers\xrAPI\xrGameManager.h"
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni		= NULL;
+XRAPI_API extern EGamePath GCurrentGame;
 BOOL	g_bIntroFinished			= FALSE;
 extern	void	Intro				( void* fn );
 extern	void	Intro_DSHOW			( void* fn );
@@ -796,6 +798,16 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 //	g_temporary_stuff			= &trivial_encryptor::decode;
 	
 	compute_build_id			();
+
+	if (strstr(lpCmdLine, "-cs"))
+	{
+		GCurrentGame = EGamePath::CS_1510;
+	}
+	else
+	{
+		GCurrentGame = EGamePath::COP_1602;
+	}
+
 	Core._initialize			("xray",NULL, TRUE, fsgame[0] ? fsgame : NULL);
 
 	InitSettings				();

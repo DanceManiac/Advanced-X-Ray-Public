@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.960
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bugtrap", "bugtrap", "{6BE93BFF-E2B4-43F2-ADBB-F8971E43CD5A}"
 EndProject
@@ -103,6 +103,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp_configs_verifyer", "utils\mp_configs_verifyer\mp_configs_verifyer.vcxproj", "{1924EF23-A05E-40E5-93F2-6CCD64BE1F8B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "minizip", "3rd party\bugtrap\minizip\minizip.vcxproj", "{893279CB-0805-405F-B484-9BB728A18261}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGameCS", "xrGameCS\xrGameCS.vcxproj", "{F6DF8D5E-3198-44D4-80B6-E633421D1130}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -801,6 +803,27 @@ Global
 		{893279CB-0805-405F-B484-9BB728A18261}.Release|Win32.ActiveCfg = Release|Win32
 		{893279CB-0805-405F-B484-9BB728A18261}.Release|Win32.Build.0 = Release|Win32
 		{893279CB-0805-405F-B484-9BB728A18261}.Release|Xbox 360.ActiveCfg = Release|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Debug_Dedicated|Win32.ActiveCfg = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Debug_Dedicated|Win32.Build.0 = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Debug_Dedicated|Xbox 360.ActiveCfg = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Debug_Dedicated|Xbox 360.Build.0 = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Debug|Win32.Build.0 = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Debug|Xbox 360.ActiveCfg = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Mixed_Dedicated|Win32.ActiveCfg = Mixed|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Mixed_Dedicated|Win32.Build.0 = Mixed|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Mixed_Dedicated|Xbox 360.ActiveCfg = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Mixed_Dedicated|Xbox 360.Build.0 = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Mixed|Win32.ActiveCfg = Mixed|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Mixed|Win32.Build.0 = Mixed|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Mixed|Xbox 360.ActiveCfg = Mixed|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Release_Dedicated|Win32.ActiveCfg = Release|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Release_Dedicated|Win32.Build.0 = Release|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Release_Dedicated|Xbox 360.ActiveCfg = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Release_Dedicated|Xbox 360.Build.0 = Debug|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Release|Win32.ActiveCfg = Release|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Release|Win32.Build.0 = Release|Win32
+		{F6DF8D5E-3198-44D4-80B6-E633421D1130}.Release|Xbox 360.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -836,6 +859,9 @@ Global
 		{032A10AB-E44C-4751-A290-001EF99E664A} = {89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}
 		{1924EF23-A05E-40E5-93F2-6CCD64BE1F8B} = {89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}
 		{893279CB-0805-405F-B484-9BB728A18261} = {6BE93BFF-E2B4-43F2-ADBB-F8971E43CD5A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {283579B6-2B38-4F65-9A16-23C5E4F755F3}
 	EndGlobalSection
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}

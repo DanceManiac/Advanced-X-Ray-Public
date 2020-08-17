@@ -14,6 +14,7 @@
 #include "../xrRender/dxRenderDeviceRender.h"
 #include "../xrRender/dxWallMarkArray.h"
 #include "../xrRender/dxUIShader.h"
+#include "../xrAPI/xrGameManager.h"
 //#include "../../xrServerEntities/smart_cast.h"
 
 #ifndef _EDITOR
@@ -71,13 +72,25 @@ void					CRender::create					()
 	u32		v_need	= CAP_VERSION(1,4);
 	if ( v_dev >= v_need )						o.distortion = TRUE;
 	else										o.distortion = FALSE;
-	if (strstr(Core.Params,"-nodistort"))		o.distortion = FALSE;
+
+	if (strstr(Core.Params, "-nodistort"))		o.distortion = FALSE;
+
+	if (xrGameManager::GetGame() == EGame::CS)
+	{
+		o.distortion = FALSE;
+	}
+
 	Msg				("* distortion: %s, dev(%d),need(%d)",o.distortion?"used":"unavailable",v_dev,v_need);
 
 	//	Color mapping
 	if ( v_dev >= v_need )						o.color_mapping = TRUE;
 	else										o.color_mapping = FALSE;
-	if (strstr(Core.Params,"-nocolormap"))		o.color_mapping = FALSE;
+
+	if (xrGameManager::GetGame() == EGame::CS)
+	{
+		o.color_mapping = FALSE;
+	}
+
 	Msg				("* color_mapping: %s, dev(%d),need(%d)",o.color_mapping?"used":"unavailable",v_dev,v_need);
 
 	m_skinning					= -1;

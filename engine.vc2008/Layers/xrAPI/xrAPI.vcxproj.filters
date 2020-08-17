@@ -13,12 +13,18 @@
     <ClCompile Include="xrAPI.cpp">
       <Filter>Kernel</Filter>
     </ClCompile>
+    <ClCompile Include="xrGameManager.cpp">
+      <Filter>Kernel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Kernel</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Include\xrAPI\xrAPI.h">
+      <Filter>Kernel</Filter>
+    </ClInclude>
+    <ClInclude Include="xrGameManager.h">
       <Filter>Kernel</Filter>
     </ClInclude>
   </ItemGroup>
