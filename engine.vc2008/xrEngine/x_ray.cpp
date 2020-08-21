@@ -32,6 +32,8 @@
 #include "Rain.h"
 #include "..\Layers\xrAPI\xrGameManager.h"
 
+#include "DiscordRichPresense.h"
+
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni		= NULL;
 XRAPI_API extern EGamePath GCurrentGame;
@@ -373,38 +375,38 @@ void Startup()
 	g_SpatialSpace				= xr_new<ISpatial_DB>	();
 	g_SpatialSpacePhysic		= xr_new<ISpatial_DB>	();
 	
+	g_discord.Initialize();
+
 	// Destroy LOGO
 	DestroyWindow				(logoWindow);
 	logoWindow					= NULL;
 
 	// Main cycle
 	CheckCopyProtection			( );
-Memory.mem_usage();
+	Memory.mem_usage();
 	Device.Run					( );
 
 	// Destroy APP
-	xr_delete					( g_SpatialSpacePhysic	);
-	xr_delete					( g_SpatialSpace		);
-	DEL_INSTANCE				( g_pGamePersistent		);
-	xr_delete					( pApp					);
-	Engine.Event.Dump			( );
+	xr_delete(g_SpatialSpacePhysic);
+	xr_delete(g_SpatialSpace);
+	DEL_INSTANCE(g_pGamePersistent);
+	xr_delete(pApp);
+	Engine.Event.Dump();
+
+	g_discord.Shutdown();
 
 	// Destroying
-//.	destroySound();
-	destroyInput();
-
-	if( !g_bBenchmark && !g_SASH.IsRunning())
+	if (!g_bBenchmark && !g_SASH.IsRunning())
 		destroySettings();
 
-	LALib.OnDestroy				( );
-	
-	if( !g_bBenchmark && !g_SASH.IsRunning())
+	LALib.OnDestroy();
+
+	if (!g_bBenchmark && !g_SASH.IsRunning())
 		destroyConsole();
 	else
 		Console->Destroy();
 
 	destroySound();
-
 	destroyEngine();
 }
 
@@ -1376,6 +1378,8 @@ void CApplication::Level_Set(u32 L)
 	if(path[0])
 		m_pRender->setLevelLogo	(path);
 
+	g_discord.SetStatus(xrDiscordPresense::StatusId::In_Game);
+
 	CheckCopyProtection			();
 
 	SECUROM_MARKER_PERFORMANCE_OFF(9)
@@ -1415,6 +1419,10 @@ int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)
 	{
 		if (0==stricmp(buffer,Levels[I].folder))	
 		{
+			if (Levels[I].name == nullptr)
+			{
+				Levels[I].name = xr_strdup(name);
+			}
 			result = int(I);	
 			break;
 		}

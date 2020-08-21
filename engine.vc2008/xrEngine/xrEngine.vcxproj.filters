@@ -621,6 +621,9 @@
     <ClInclude Include="xrSASH.h">
       <Filter>OpenAutomate</Filter>
     </ClInclude>
+    <ClInclude Include="DiscordRichPresense.h">
+      <Filter>General</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="defines.cpp">
@@ -964,6 +967,9 @@
     </ClCompile>
     <ClCompile Include="xrSASH.cpp">
       <Filter>OpenAutomate</Filter>
+    </ClCompile>
+    <ClCompile Include="DiscordRichPresense.cpp">
+      <Filter>General</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,8 @@
 #include "stats_submitter.h"
 #include "atlas_submit_queue.h"
 
+#include "../xrEngine/DiscordRichPresense.h"
+
 //#define DEMO_BUILD
 
 string128	ErrMsgBoxTemplate	[]	= {
@@ -144,6 +146,8 @@ CMainMenu::~CMainMenu	()
 
 	xr_delete						(m_demo_info_loader);
 	delete_data						(m_pMB_ErrDlgs);	
+
+	g_discord.SetStatus(xrDiscordPresense::StatusId::In_Game);
 }
 
 void CMainMenu::ReadTextureInfo()
@@ -215,6 +219,11 @@ void CMainMenu::Activate	(bool bActivate)
 		Device.seqRender.Add				(this, 4); // 1-console 2-cursor 3-tutorial
 
 		Console->Execute					("stat_memory");
+
+		if (g_pGameLevel == nullptr)
+		{
+			g_discord.SetStatus(xrDiscordPresense::StatusId::Menu);
+		}
 	}else{
 		m_deactivated_frame					= Device.dwFrame;
 		m_Flags.set							(flActive,				FALSE);

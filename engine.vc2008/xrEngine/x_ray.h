@@ -12,6 +12,7 @@ class ENGINE_API CApplication	:
 	public pureFrame,
 	public IEventReceiver
 {
+public:
 	friend class dxApplicationRender;
 
 	// levels
@@ -20,7 +21,7 @@ class ENGINE_API CApplication	:
 		char*				folder;
 		char*				name;
 	};
-public:
+
 	string2048				ls_header;
 	string2048				ls_tip_number;
 	string2048				ls_tip;
