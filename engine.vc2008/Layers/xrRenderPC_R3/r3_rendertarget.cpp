@@ -656,6 +656,9 @@ CRenderTarget::CRenderTarget		()
     s_fxaa.create(b_fxaa, "r3\\fxaa");
     g_fxaa.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 
+	//DLAA
+	s_dlaa.create("effects_dlaa");
+
     if (RImplementation.o.ssao_blur_on)
 	{
 		u32		w = Device.dwWidth, h = Device.dwHeight;

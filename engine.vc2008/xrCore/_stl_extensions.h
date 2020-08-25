@@ -224,6 +224,19 @@ struct pred_stri	: public std::binary_function<char*, char*, bool>	{
 	IC bool operator()(const char* x, const char* y) const				{	return stricmp(x,y)<0;	}
 };
 
+// auxilary definition
+using LPSTRVec = xr_vector<LPSTR>;
+using U8Vec = xr_vector<u8>;
+using U16Vec = xr_vector<u16>;
+using U32Vec = xr_vector<u32>;
+using FloatVec = xr_vector<float>;
+using IntVec = xr_vector<int>;
+using boolVec = xr_vector<bool>;
+
+template <typename K, class V, class Hasher = std::hash<K>, class Traits = std::equal_to<K>,
+	typename allocator = xalloc<std::pair<const K, V>>>
+	using xr_unordered_map = std::unordered_map<K, V, Hasher, Traits, allocator>;
+
 // STL extensions
 #define DEF_VECTOR(N,T)				typedef xr_vector< T > N;		typedef N::iterator N##_it;
 #define DEF_LIST(N,T)				typedef xr_list< T > N;			typedef N::iterator N##_it;

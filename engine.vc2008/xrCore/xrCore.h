@@ -53,6 +53,8 @@
 
 #	include "xrCore_platform.h"
 
+#include <unordered_map>
+
 /*
 // stl-config
 // *** disable exceptions for both STLport and VC7.1 STL

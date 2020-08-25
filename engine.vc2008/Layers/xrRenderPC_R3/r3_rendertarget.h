@@ -124,6 +124,9 @@ private:
     ref_shader 					s_fxaa;
     ref_geom 					g_fxaa;
 
+	//DLAA
+	ref_shader					s_dlaa;
+
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -262,6 +265,7 @@ public:
 	void						u_DBT_disable			();
 	void 						PhaseRainDrops			();
     void 						phase_fxaa				();
+	void						phase_dlaa				();
 	void						phase_puddles			();
 
 	void						phase_sunshafts			();
@@ -354,4 +358,7 @@ public:
 	IC void						dbg_addline				(Fvector& P0, Fvector& P1, u32 c)					{}
 	IC void						dbg_addplane			(Fplane& P0,  u32 c)								{}
 #endif
+private:
+	void						RenderScreenQuad(u32 w, u32 h, ID3DRenderTargetView* rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);
+	void						RenderScreenQuad(u32 w, u32 h, ref_rt &rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);
 };

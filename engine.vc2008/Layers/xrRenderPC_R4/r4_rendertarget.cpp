@@ -441,6 +441,9 @@ CRenderTarget::CRenderTarget		()
     s_fxaa.create(b_fxaa, "r3\\fxaa");
     g_fxaa.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 
+	//DLAA
+	s_dlaa.create("effects_dlaa");
+
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
 

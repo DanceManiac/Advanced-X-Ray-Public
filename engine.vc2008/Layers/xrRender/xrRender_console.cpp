@@ -15,6 +15,17 @@ xr_token							qdt_ssr_samp_token[] = {
 	{ 0,							0												}
 };
 
+// AA Modes
+
+u32			r2_aa_mode = 1;
+xr_token							r2_aa_mode_token[] = {
+	{ "opt_noaa",					1												},
+	{ "opt_fxaa",					2												},
+	{ "opt_dlaa",					3												},
+	{ "opt_smaa",					4												},
+	{ 0,							0												}
+};
+
 // SMAP Control
 
 u32 ps_r2_smapsize = 2048;
@@ -138,7 +149,6 @@ xr_token							qclrdrag_token						[ ]={
 extern int			psSkeletonUpdate;
 extern float		r__dtex_range;
 
-int 		ps_r2_fxaa 					= 0		;
 //int		ps_r__Supersample			= 1		;
 int			ps_r__LightSleepFrames		= 10	;
 
@@ -1016,6 +1026,8 @@ void		xrRender_initconsole	()
 
 	// DWM: DT SSR quality option
 	CMD3(CCC_Token,		"r4_ssr_samples",				&dt_ssr_samp,				qdt_ssr_samp_token);
+	// AA Mode
+	CMD3(CCC_Token,		"r2_aa_mode",					&r2_aa_mode,				r2_aa_mode_token);
 
 	//	Igor: need restart
 	CMD3(CCC_Mask,		"r2_soft_water",				&ps_r2_ls_flags,			R2FLAG_SOFT_WATER);
@@ -1032,7 +1044,6 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Token,		"r3_minmax_sm",					&ps_r3_minmax_sm,			qminmax_sm_token);
 	CMD4(CCC_detail_radius, "r__detail_radius",			&ps_r__detail_radius,		49, 300				);
 	CMD4(CCC_Integer, "r__no_scale_on_fade",			&ps_no_scale_on_fade,		0, 1				); //Alundaio
-    CMD4(CCC_Integer, "r2_fxaa", 						&ps_r2_fxaa, 				0, 1				);
 
 
 

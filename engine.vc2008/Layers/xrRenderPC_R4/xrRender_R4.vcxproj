@@ -500,6 +500,8 @@
     <ClCompile Include="..\xrRender\ParticleEffectDef.cpp" />
     <ClCompile Include="..\xrRender\ParticleGroup.cpp" />
     <ClCompile Include="..\xrRender\PSLibrary.cpp" />
+    <ClCompile Include="..\xrRender\RenderScreenQuad.cpp" />
+    <ClCompile Include="..\xrRender\rendertarget_phase_dlaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_raindrops.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager_Loader.cpp" />
