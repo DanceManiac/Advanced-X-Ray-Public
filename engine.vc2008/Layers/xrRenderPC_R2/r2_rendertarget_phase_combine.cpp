@@ -240,10 +240,6 @@ void	CRenderTarget::phase_combine	()
 	//DLAA
 	if (r2_aa_mode == 3)
 		phase_dlaa();
-
-	/*if (r2_aa_mode == 4)
-		phase_smaa();
-		RCache.set_Stencil(FALSE);*/
 	
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.

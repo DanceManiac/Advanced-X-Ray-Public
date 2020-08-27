@@ -50,6 +50,7 @@ public:
 	IBlender*					b_ssao_msaa[8];
 	IBlender*					b_sunshafts;
     IBlender* 					b_fxaa;
+	IBlender* 					b_smaa;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -127,6 +128,10 @@ private:
 	//DLAA
 	ref_shader					s_dlaa;
 
+	//SMAA
+	ref_shader					s_smaa;
+	ref_rt						rt_smaa_edgetex;
+	ref_rt						rt_smaa_blendtex;
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -266,6 +271,7 @@ public:
 	void 						PhaseRainDrops			();
     void 						phase_fxaa				();
 	void						phase_dlaa				();
+	void						phase_smaa				();
 	void						phase_puddles			();
 
 	void						phase_sunshafts			();

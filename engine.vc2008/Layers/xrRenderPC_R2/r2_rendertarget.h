@@ -343,11 +343,4 @@ public:
 private:
 	void						RenderScreenQuad(u32 w, u32 h, ID3DRenderTargetView* rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);
 	void						RenderScreenQuad(u32 w, u32 h, ref_rt &rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);
-
-	// Anti Aliasing
-	/*ref_shader s_pp_antialiasing;
-	ref_rt rt_smaa_edgetex;
-	ref_rt rt_smaa_blendtex;
-
-	void phase_smaa();*/
 };

@@ -22,7 +22,9 @@ xr_token							r2_aa_mode_token[] = {
 	{ "opt_noaa",					1												},
 	{ "opt_fxaa",					2												},
 	{ "opt_dlaa",					3												},
+#if defined(USE_DX10) || defined(USE_DX11)
 	{ "opt_smaa",					4												},
+#endif
 	{ 0,							0												}
 };
 

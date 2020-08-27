@@ -15,6 +15,7 @@
 #include "../xrRenderDX10/msaa/dx10MSAABlender.h"
 #include "../xrRenderDX10/DX10 Rain/dx10RainBlender.h"
 #include "blender_fxaa.h"
+#include "../xrRender/blender_smaa.h"
 
 
 #include "../xrRender/dxRenderDeviceRender.h"
@@ -319,6 +320,8 @@ CRenderTarget::CRenderTarget		()
 	b_sunshafts				= new CBlender_sunshafts				();
     //FXAA
     b_fxaa 					= new CBlender_FXAA						();
+	//SMAA
+	b_smaa					= new CBlender_SMAA						();
 
 	if( RImplementation.o.dx10_msaa )
 	{
@@ -658,6 +661,17 @@ CRenderTarget::CRenderTarget		()
 
 	//DLAA
 	s_dlaa.create("effects_dlaa");
+
+	// SMAA RTs
+	{
+		u32	w = Device.dwWidth;
+		u32 h = Device.dwHeight;
+
+		rt_smaa_edgetex.create(r2_RT_smaa_edgetex, w, h, D3DFMT_A8R8G8B8);
+		rt_smaa_blendtex.create(r2_RT_smaa_blendtex, w, h, D3DFMT_A8R8G8B8);
+
+		s_smaa.create(b_smaa, "r3\\smaa");
+	}
 
     if (RImplementation.o.ssao_blur_on)
 	{
@@ -1051,6 +1065,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_ssao					);
 	xr_delete					(b_sunshafts			);
     xr_delete					(b_fxaa					); //FXAA
+	xr_delete					(b_smaa					); //SMAA
 
    if( RImplementation.o.dx10_msaa )
    {

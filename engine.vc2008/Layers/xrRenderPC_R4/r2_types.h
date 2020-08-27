@@ -32,6 +32,10 @@
 #define		r2_RT_generic2		"$user$generic2"		// ---	//	Igor: for volumetric lights
 #define		r2_RT_generic		"$user$generic"		// ---
 
+// SMAA
+#define		r2_RT_smaa_edgetex  "$user$smaa_edgetex"
+#define		r2_RT_smaa_blendtex "$user$smaa_blendtex"
+
 #define		r2_RT_bloom1		"$user$bloom1"			// ---
 #define		r2_RT_bloom2		"$user$bloom2"			// ---
 

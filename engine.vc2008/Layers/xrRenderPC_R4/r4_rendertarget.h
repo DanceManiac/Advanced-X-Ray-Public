@@ -50,6 +50,7 @@ public:
 	IBlender*					b_ssao_msaa[8];
 	IBlender*					b_sunshafts;
     IBlender* 					b_fxaa;
+	IBlender* 					b_smaa;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -130,6 +131,11 @@ private:
 
 	//DLAA
 	ref_shader					s_dlaa;
+
+	//SMAA
+	ref_shader					s_smaa;
+	ref_rt						rt_smaa_edgetex;
+	ref_rt						rt_smaa_blendtex;
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -269,6 +275,7 @@ public:
 	void						u_DBT_disable			();
     void 						phase_fxaa				();
 	void 						phase_dlaa				();
+	void						phase_smaa				();
 	void						phase_puddles			();
 
 	void						phase_sunshafts			();

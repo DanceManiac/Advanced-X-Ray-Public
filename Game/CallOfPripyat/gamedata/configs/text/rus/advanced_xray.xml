@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_game_window_name">
-		<text>Advanced X-Ray</text>
+		<text>Global Stalker Weather Rework</text>
 	</string>
 	<string id="ui_mm_cam_fov">
 		<text>Поле зрения</text>
@@ -60,9 +60,6 @@
 	<string id="ui_mm_sun_details">
 		<text>Тень от травы</text>
 	</string>
-	<string id="ui_mm_fxaa">
-		<text>FXAA Сглаживание</text>
-	</string>
 	<string id="ui_mm_clr_drag_preset">
 		<text>Пресет Цветокоррекции</text>
 	</string>
@@ -107,5 +104,20 @@
 	</string>
 	<string id="ui_mm_saturation">
 		<text>Насыщенность цветов</text>
+	</string>
+	<string id="ui_mm_r2_aa_mode">
+		<text>Тип доп. сглаживания</text>
+	</string>
+	<string id="opt_noaa">
+		<text>Отключено</text>
+	</string>
+	<string id="opt_smaa">
+		<text>SMAA</text>
+	</string>
+	<string id="opt_dlaa">
+		<text>DLAA</text>
+	</string>
+	<string id="opt_fxaa">
+		<text>FXAA</text>
 	</string>
 </string_table>
