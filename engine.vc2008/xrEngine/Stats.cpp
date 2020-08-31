@@ -15,6 +15,15 @@ Flags32 g_stats_flags		= {0};
 // stats
 DECLARE_RP(Stats);
 
+//Format: Alpha, Red, Green, Blue
+enum DebugTextColor : DWORD
+{
+	DTC_RED = 0xFFF0672B,
+	DTC_YELLOW = 0xFFF6D434,
+	DTC_GREEN = 0xFF67F92E,
+	DTC_BLUE = 0xFF0000FF,
+};
+
 class	optimizer	{
 	float	average_	;
 	BOOL	enabled_	;
@@ -50,6 +59,7 @@ CStats::CStats	()
 {
 	fFPS				= 30.f;
 	fRFPS				= 30.f;
+	fLastDisplayedFPS	= 30.f;
 	fTPS				= 0;
 	pFont				= 0;
 	fMem_calls			= 0;
@@ -327,6 +337,32 @@ void CStats::Show()
 		seqStats.Process				(rp_Stats);
 		pFont->OnRender					();
 	};
+
+	if (psDeviceFlags.test(rsDrawFPS))
+	{
+		//On every 25 frame, update last known fps
+		if ((Core.dwFrame % 25) == 0)
+		{
+			fLastDisplayedFPS = fFPS;
+		}
+		float sz = pFont->GetHeight();
+		pFont->SetHeightI(0.018f);
+
+		if (fLastDisplayedFPS > 50.0f)			pFont->SetColor(DebugTextColor::DTC_GREEN);
+		else if (fLastDisplayedFPS > 30.0f)		pFont->SetColor(DebugTextColor::DTC_YELLOW);
+		else									pFont->SetColor(DebugTextColor::DTC_RED);
+
+		const char* FPSFormat = "FPS: %0.0f";
+		//If game paused, engine not updating deltaTime variable, so FPS variable is freezed to last value
+		if (Device.Paused())
+		{
+			FPSFormat = "LAST KNOWN FPS: %0.0f";
+		}
+
+		pFont->Out(10, 650, FPSFormat, fLastDisplayedFPS);
+		pFont->SetHeight(sz);
+		pFont->OnRender();
+	}
 
 	if( /*psDeviceFlags.test(rsStatistic) ||*/ psDeviceFlags.test(rsCameraPos) ){
 		_draw_cam_pos					(pFont);

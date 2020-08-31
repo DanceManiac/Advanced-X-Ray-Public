@@ -28,7 +28,7 @@ class ENGINE_API CStats:
 public:
 	CGameFont*	pFont;
 
-	float		fFPS,fRFPS,fTPS		;			// FPS, RenderFPS, TPS
+	float		fFPS,fRFPS,fTPS, fLastDisplayedFPS;			// FPS, RenderFPS, TPS
 	float		fMem_calls			;
 	u32			dwMem_calls			;
 	u32			dwSND_Played,dwSND_Allocated;	// Play/Alloc
