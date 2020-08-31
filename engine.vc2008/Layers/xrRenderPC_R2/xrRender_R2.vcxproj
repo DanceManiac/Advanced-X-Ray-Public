@@ -349,6 +349,7 @@
     <ClInclude Include="blender_luminance.h" />
     <ClInclude Include="blender_ssao.h" />
     <ClInclude Include="blender_ss_sunshafts.h" />
+    <ClInclude Include="blender_vignette.h" />
     <ClInclude Include="cl_intersect.h" />
     <ClInclude Include="DetailFormat.h" />
     <ClInclude Include="light.h" />
@@ -446,6 +447,7 @@
     <ClCompile Include="..\xrRender\ParticleGroup.cpp" />
     <ClCompile Include="..\xrRender\PSLibrary.cpp" />
     <ClCompile Include="..\xrRender\RenderScreenQuad.cpp" />
+    <ClCompile Include="..\xrRender\RenderTargetPhaseVignette.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_dlaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_raindrops.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager.cpp" />
@@ -506,6 +508,7 @@
     <ClCompile Include="blender_luminance.cpp" />
     <ClCompile Include="blender_ssao.cpp" />
     <ClCompile Include="blender_ss_sunshafts.cpp" />
+    <ClCompile Include="blender_vignette.cpp" />
     <ClCompile Include="light_GI.cpp" />
     <ClCompile Include="Light_Render_Direct.cpp" />
     <ClCompile Include="Light_Render_Direct_ComputeXFS.cpp" />

@@ -33,6 +33,7 @@ public:
 	IBlender*					b_combine;
 	IBlender*					b_sunshafts;
     IBlender* 					b_fxaa;
+	IBlender* 					b_vignette;
 #ifdef DEBUG
 	struct		dbg_line_t		{
 		Fvector	P0,P1;
@@ -101,6 +102,8 @@ private:
 
 	//DLAA
 	ref_shader					s_dlaa;
+	// Vignette
+	ref_shader					s_vignette;
 	
 	// Water
 	ref_shader					s_water;
@@ -238,6 +241,7 @@ public:
 	void						phase_dlaa				();
 	void						phase_puddles        	();
 	void 						PhaseRainDrops			();
+	void						PhaseVignette			();
 	void						shadow_direct			(light* L, u32 dls_phase);
 
 	bool						need_to_render_sunshafts();

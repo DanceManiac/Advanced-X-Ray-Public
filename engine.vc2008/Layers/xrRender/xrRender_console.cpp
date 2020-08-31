@@ -322,6 +322,8 @@ Flags32		ps_r2_rain_drops_flags = { R2FLAG_RAIN_DROPS
 	| R2FLAG_RAIN_DROPS_CONTROL
 	};
 
+Flags32		ps_r2_vignette_flags = { R_FLAG_VIGNETTE };
+
 //- Mad Max
 float		ps_r2_gloss_factor			= 4.0f;
 //- Mad Max
@@ -915,6 +917,8 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_rain_drops_control",&ps_r2_rain_drops_flags,	R2FLAG_RAIN_DROPS_CONTROL	);
 	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
 	CMD4(CCC_Float,		"r2_rain_drops_speed",	&ps_r2_rain_drops_speed, 	0.8f,	5.f		);
+	// Vignette
+	CMD3(CCC_Mask,		"r2_vignette",			&ps_r2_vignette_flags,		R_FLAG_VIGNETTE	);
 	
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);

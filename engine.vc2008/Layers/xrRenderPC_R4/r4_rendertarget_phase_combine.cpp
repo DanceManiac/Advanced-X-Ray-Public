@@ -358,11 +358,24 @@ void	CRenderTarget::phase_combine	()
 
 	//DLAA
 	if (r2_aa_mode == 3)
+	{
+		//PIX_EVENT(DLAA);
 		phase_dlaa();
+	}
 
 	//SMAA
 	if (r2_aa_mode == 4)
+	{
+		//PIX_EVENT(SMAA);
 		phase_smaa();
+	}
+
+	// Vignette effect
+	if (ps_r2_vignette_flags.test(R_FLAG_VIGNETTE))
+	{
+		//PIX_EVENT(phase_vignette);
+		PhaseVignette();
+	}
 
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.

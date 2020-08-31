@@ -251,6 +251,7 @@
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10StateCache.h" />
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10StateCacheImpl.h" />
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10StateManager.h" />
+    <ClInclude Include="..\xrRenderPC_R3\blender_vignette.h" />
     <ClInclude Include="..\xrRender\Animation.h" />
     <ClInclude Include="..\xrRender\blenders\Blender.h" />
     <ClInclude Include="..\xrRender\blenders\Blender_CLSID.h" />
@@ -423,6 +424,7 @@
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10State.cpp" />
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateCache.cpp" />
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateManager.cpp" />
+    <ClCompile Include="..\xrRenderPC_R3\blender_vignette.cpp" />
     <ClCompile Include="..\xrRender\Animation.cpp" />
     <ClCompile Include="..\xrRender\blenders\Blender.cpp" />
     <ClCompile Include="..\xrRender\blenders\Blender_Palette.cpp" />
@@ -503,6 +505,7 @@
     <ClCompile Include="..\xrRender\ParticleGroup.cpp" />
     <ClCompile Include="..\xrRender\PSLibrary.cpp" />
     <ClCompile Include="..\xrRender\RenderScreenQuad.cpp" />
+    <ClCompile Include="..\xrRender\RenderTargetPhaseVignette.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_dlaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_smaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_raindrops.cpp" />

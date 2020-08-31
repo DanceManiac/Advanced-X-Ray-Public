@@ -13,6 +13,7 @@
 #include "blender_ssao.h"
 #include "blender_ss_sunshafts.h"
 #include "blender_fxaa.h"
+#include "blender_vignette.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -215,7 +216,8 @@ CRenderTarget::CRenderTarget		()
 	b_sunshafts						= new CBlender_sunshafts				();
     //FXAA
     b_fxaa 							= new CBlender_FXAA						();
-
+	//Vignette
+	b_vignette						= new CBlender_Vignette					();
 	//	NORMAL
 	{
 		u32		w=Device.dwWidth, h=Device.dwHeight;
@@ -377,6 +379,8 @@ CRenderTarget::CRenderTarget		()
 
 	//DLAA
 	s_dlaa.create("effects_dlaa");
+	//Vignette
+	s_vignette.create(b_vignette, "r2\\vignette");
 		
 	//SSAO
 	if (RImplementation.o.ssao_blur_on)
@@ -664,6 +668,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_occq					);
 	xr_delete					(b_sunshafts			);
     xr_delete					(b_fxaa					); //FXAA
+	xr_delete					(b_vignette				); //Vignette
 }
 
 void CRenderTarget::reset_light_marker( bool bResetStencil)

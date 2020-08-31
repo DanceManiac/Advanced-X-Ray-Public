@@ -51,6 +51,7 @@ public:
 	IBlender*					b_sunshafts;
     IBlender* 					b_fxaa;
 	IBlender* 					b_smaa;
+	IBlender* 					b_vignette;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -132,6 +133,9 @@ private:
 	ref_shader					s_smaa;
 	ref_rt						rt_smaa_edgetex;
 	ref_rt						rt_smaa_blendtex;
+
+	// Vignette
+	ref_shader					s_vignette;
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -273,6 +277,7 @@ public:
 	void						phase_dlaa				();
 	void						phase_smaa				();
 	void						phase_puddles			();
+	void						PhaseVignette			();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

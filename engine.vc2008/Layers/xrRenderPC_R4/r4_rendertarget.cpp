@@ -17,6 +17,7 @@
 #include "../xrRenderDX10/DX10 Rain/dx10RainBlender.h"
 #include "blender_fxaa.h"
 #include "../xrRender/blender_smaa.h"
+#include "../xrRenderPC_R3/blender_vignette.h"
 
 
 #include "../xrRender/dxRenderDeviceRender.h"
@@ -324,6 +325,8 @@ CRenderTarget::CRenderTarget		()
     b_fxaa 					= new CBlender_FXAA					();
 	//SMAA
 	b_smaa					= new CBlender_SMAA					();
+	//Vignette
+	b_vignette				= new CBlender_Vignette				();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -457,6 +460,9 @@ CRenderTarget::CRenderTarget		()
 
 		s_smaa.create(b_smaa, "r3\\smaa");
 	}
+
+	//Vignette
+	s_vignette.create(b_vignette, "r3\\vignette");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -1090,6 +1096,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_sunshafts			);
     xr_delete					(b_fxaa					); //FXAA
 	xr_delete					(b_smaa					); //SMAA
+	xr_delete					(b_vignette				); //Vignette
 
    if( RImplementation.o.dx10_msaa )
    {
