@@ -220,6 +220,61 @@ public:
 };
 // g_spawn
 
+class CCC_Giveinfo : public IConsole_Command {
+public:
+	CCC_Giveinfo(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR info_id) {
+		if (!g_pGameLevel) return;
+
+		char	Name[128];	Name[0] = 0;
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (actor)
+			actor->OnReceiveInfo(info_id);
+
+	}
+};
+
+class CCC_Disinfo : public IConsole_Command {
+public:
+	CCC_Disinfo(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR info_id) {
+		if (!g_pGameLevel) return;
+
+		char	Name[128];	Name[0] = 0;
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (actor)
+			actor->OnDisableInfo(info_id);
+
+	}
+};
+
+class CCC_Spawn_to_inv : public IConsole_Command {
+public:
+	CCC_Spawn_to_inv(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR args) {
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		if (!pSettings->section_exist(args))
+		{
+			Msg("! Section [%s] isn`t exist...", args);
+			return;
+		}
+
+		char	Name[128];	Name[0] = 0;
+		sscanf(args, "%s", Name);
+
+		Level().spawn_item(Name, Actor()->Position(), false, Actor()->ID());
+	}
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+};
+
 class CCC_GameDifficulty : public CCC_Token {
 public:
 	CCC_GameDifficulty(LPCSTR N) : CCC_Token(N,(u32*)&g_SingleGameDifficulty,difficulty_type_token)  {};
@@ -1795,9 +1850,12 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 
 #ifdef MFS_DEVELOPER_CMD
 	CMD1(CCC_Spawn, "g_spawn");
-	CMD1(CCC_SetWeather, "set_weather");
-	CMD1(CCC_TimeFactor, "time_factor");
-	CMD1(CCC_JumpToLevel, "jump_to_level");
+	CMD1(CCC_SetWeather,	"set_weather");
+	CMD1(CCC_TimeFactor,	"time_factor");
+	CMD1(CCC_JumpToLevel,	"jump_to_level");
+	CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
+	CMD1(CCC_Giveinfo,		"g_info");
+	CMD1(CCC_Disinfo,		"d_info");
 #endif // MFS_DEVELOPER_CMD
 
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
