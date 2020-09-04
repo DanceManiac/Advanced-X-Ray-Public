@@ -1404,7 +1404,6 @@ public:
 		IConsole_Command::fill_tips( tips, mode );
 	}
 };
-
 #endif // MASTER_GOLD
 
 class CCC_TimeFactor : public IConsole_Command {

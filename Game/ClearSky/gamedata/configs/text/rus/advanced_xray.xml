@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
 	<string id="st_game_window_name">
-		<text>Global Stalker Weather Rework</text>
+		<text>Advanced X-Ray 1.3.20</text>
 	</string>
 	<string id="ui_mm_cam_fov">
 		<text>Поле зрения</text>
