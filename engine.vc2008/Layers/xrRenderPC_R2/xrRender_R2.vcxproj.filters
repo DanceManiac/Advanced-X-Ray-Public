@@ -648,6 +648,9 @@
     <ClInclude Include="blender_vignette.h">
       <Filter>Core_Target</Filter>
     </ClInclude>
+    <ClInclude Include="blender_hud_mask.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1179,6 +1182,12 @@
       <Filter>Core_Target</Filter>
     </ClCompile>
     <ClCompile Include="blender_vignette.cpp">
+      <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_hud_mask.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="r2_rendertarget_phase_hud_mask.cpp">
       <Filter>Core_Target</Filter>
     </ClCompile>
   </ItemGroup>

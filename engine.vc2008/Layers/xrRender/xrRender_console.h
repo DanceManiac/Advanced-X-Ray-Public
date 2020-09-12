@@ -254,6 +254,13 @@ enum
 	R_FLAG_VIGNETTE = (1 << 0),
 };
 
+extern ECORE_API Flags32 ps_r2_hud_mask_flags;
+
+enum
+{
+	R_FLAG_HUD_MASK = (1 << 0),
+};
+
 extern void						xrRender_initconsole	();
 extern BOOL						xrRender_test_hw		();
 extern void						xrRender_apply_tf		();

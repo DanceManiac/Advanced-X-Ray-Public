@@ -94,6 +94,8 @@ public:
 	virtual void		SetBaseDof				(const Fvector3& dof);
 	virtual void		OnSectorChanged			(int sector);
 	virtual void		OnAssetsChanged			();
+			int			GetHudMaskElement		();
+			bool		GetHelmetStatus			();
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}

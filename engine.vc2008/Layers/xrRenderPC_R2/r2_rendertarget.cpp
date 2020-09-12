@@ -14,6 +14,7 @@
 #include "blender_ss_sunshafts.h"
 #include "blender_fxaa.h"
 #include "blender_vignette.h"
+#include "blender_hud_mask.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -218,6 +219,8 @@ CRenderTarget::CRenderTarget		()
     b_fxaa 							= new CBlender_FXAA						();
 	//Vignette
 	b_vignette						= new CBlender_Vignette					();
+	//HUD MASK
+	b_hud_mask						= xr_new<CBlender_hud_mask>				();
 	//	NORMAL
 	{
 		u32		w=Device.dwWidth, h=Device.dwHeight;
@@ -381,6 +384,9 @@ CRenderTarget::CRenderTarget		()
 	s_dlaa.create("effects_dlaa");
 	//Vignette
 	s_vignette.create(b_vignette, "r2\\vignette");
+
+	//Hud Mask
+	s_hud_mask.create(b_hud_mask, "r2\\hud_mask");
 		
 	//SSAO
 	if (RImplementation.o.ssao_blur_on)
@@ -669,6 +675,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_sunshafts			);
     xr_delete					(b_fxaa					); //FXAA
 	xr_delete					(b_vignette				); //Vignette
+	xr_delete					(b_hud_mask				); //Hud Mask
 }
 
 void CRenderTarget::reset_light_marker( bool bResetStencil)

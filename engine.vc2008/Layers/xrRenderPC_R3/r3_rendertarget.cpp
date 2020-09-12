@@ -17,6 +17,7 @@
 #include "blender_fxaa.h"
 #include "../xrRender/blender_smaa.h"
 #include "blender_vignette.h"
+#include "blender_hud_mask.h"
 
 
 #include "../xrRender/dxRenderDeviceRender.h"
@@ -325,6 +326,8 @@ CRenderTarget::CRenderTarget		()
 	b_smaa					= new CBlender_SMAA						();
 	//Vignette
 	b_vignette				= new CBlender_Vignette					();
+	//HUD MASK
+	b_hud_mask				= xr_new<CBlender_hud_mask>				();
 
 	if( RImplementation.o.dx10_msaa )
 	{
@@ -678,6 +681,8 @@ CRenderTarget::CRenderTarget		()
 
 	//Vignette
 	s_vignette.create(b_vignette, "r3\\vignette");
+	//Hud Mask
+	s_hud_mask.create(b_hud_mask, "r3\\hud_mask");
 
     if (RImplementation.o.ssao_blur_on)
 	{
@@ -1073,6 +1078,7 @@ CRenderTarget::~CRenderTarget	()
     xr_delete					(b_fxaa					); //FXAA
 	xr_delete					(b_smaa					); //SMAA
 	xr_delete					(b_vignette				); //Vignette
+	xr_delete					(b_hud_mask				); //Hud Mask
 
    if( RImplementation.o.dx10_msaa )
    {

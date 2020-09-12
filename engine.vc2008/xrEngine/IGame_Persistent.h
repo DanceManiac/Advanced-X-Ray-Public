@@ -90,6 +90,8 @@ public:
 	virtual void					SetBaseDof			(const Fvector3& dof){};
 	virtual void					OnSectorChanged		(int sector){};
 	virtual void					OnAssetsChanged		();
+	virtual int						GetHudMaskElement	() { return 0; };
+	virtual bool					GetHelmetStatus		() { return 0; };
 
 	virtual void					RegisterModel		(IRenderVisual* V)
 #ifndef _EDITOR

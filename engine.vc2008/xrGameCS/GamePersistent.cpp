@@ -20,6 +20,7 @@
 #include "spectator.h"
 
 #include "../xrEngine/xrSASH.h"
+#include "CustomOutfit.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -738,6 +739,18 @@ void CGamePersistent::GetCurrentDof(Fvector3& dof)
 void CGamePersistent::SetBaseDof(const Fvector3& dof)
 {
 	m_dof[0]=m_dof[1]=m_dof[2]=m_dof[3]	= dof;
+}
+
+int CGamePersistent::GetHudMaskElement()
+{
+	CCustomOutfit Outfit;
+	return	(Outfit.GetHudMaskElement());
+}
+
+bool CGamePersistent::GetHelmetStatus()
+{
+	CCustomOutfit Outfit;
+	return	(Outfit.GetHelmetStatus());
 }
 
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)

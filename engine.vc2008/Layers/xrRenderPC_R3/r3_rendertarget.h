@@ -52,6 +52,7 @@ public:
     IBlender* 					b_fxaa;
 	IBlender* 					b_smaa;
 	IBlender* 					b_vignette;
+	IBlender*					b_hud_mask;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -136,6 +137,8 @@ private:
 
 	// Vignette
 	ref_shader					s_vignette;
+	//Hud Mask
+	ref_shader					s_hud_mask;
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -278,6 +281,7 @@ public:
 	void						phase_smaa				();
 	void						phase_puddles			();
 	void						PhaseVignette			();
+	void						phase_hud_mask			();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

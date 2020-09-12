@@ -756,6 +756,9 @@
     <ClInclude Include="..\xrRenderPC_R3\blender_vignette.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_hud_mask.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1399,6 +1402,12 @@
     </ClCompile>
     <ClCompile Include="..\xrRenderPC_R3\blender_vignette.cpp">
       <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_hud_mask.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_hud_mask.cpp">
+      <Filter>Core_Target</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -24,6 +24,7 @@ public:
 	virtual void			net_Export				(NET_Packet& P);
 	virtual void			net_Import				(NET_Packet& P);
 	virtual void			OnH_A_Chield			();
+	virtual void			UpdateHudMask			();
 
 	float					GetDefHitTypeProtection	(ALife::EHitType hit_type);
 	float					GetHitTypeProtection	(ALife::EHitType hit_type, s16 element);
@@ -39,6 +40,11 @@ public:
 	float					m_fBleedingRestoreSpeed;
 
 	float					m_fShowNearestEnemiesDistance;
+
+	int						HudMaskElement;
+	bool					HelmetInSlot;
+	IC int					GetHudMaskElement		()	const { return HudMaskElement; }
+	IC bool					GetHelmetStatus			()	const { return HelmetInSlot; }
 
 	void					ReloadBonesProtection	();
 	void					AddBonesProtection		(LPCSTR bones_section);

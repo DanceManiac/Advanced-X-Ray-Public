@@ -371,6 +371,14 @@ void	CRenderTarget::phase_combine	()
 	{
 		PhaseVignette();
 	}
+
+	//Hud Mask
+	if (!_menu_pp)
+	{
+		bool HelmetStatus = g_pGamePersistent->GetHelmetStatus();
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HelmetStatus)
+			phase_hud_mask();
+	}
 	
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.

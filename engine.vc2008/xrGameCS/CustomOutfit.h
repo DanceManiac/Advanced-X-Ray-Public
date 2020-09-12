@@ -64,8 +64,14 @@ public:
 	virtual BOOL			net_Spawn				(CSE_Abstract* DC);
 	virtual void			net_Export				(NET_Packet& P);
 	virtual void			net_Import				(NET_Packet& P);
+	virtual void			UpdateHudMask			();
 			void			ApplySkinModel			(CActor* pActor, bool bDress, bool bHUDOnly);
 			void			ReloadBonesProtection	(CActor* pActor);
+
+			int				HudMaskElement;
+			bool			HelmetInSlot;
+			IC int			GetHudMaskElement		()	const { return HudMaskElement; }
+			IC bool			GetHelmetStatus			()	const { return HelmetInSlot; }
 
 protected:
 	virtual bool			install_upgrade_impl( LPCSTR section, bool test );
