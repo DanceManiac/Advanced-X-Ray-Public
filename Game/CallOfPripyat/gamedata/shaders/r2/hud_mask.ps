@@ -9,5 +9,6 @@ float4 main(AntiAliasingStruct INStruct) : COLOR
 	float2 texcoord_offset = (hud_mask_distortion.xy - (127.f / 255.f))*def_distort;//fix newtral offset
 	float2 texcoord = INStruct.texCoord0 + texcoord_offset * hud_mask_params.x;
 	float3 scene = tex2D(s_image,texcoord);
+	scene = lerp(scene, hud_mask_distortion.www, 0.075);
 	return float4(scene, 1.f);
 } 
