@@ -120,4 +120,10 @@
 	<string id="opt_fxaa">
 		<text>FXAA</text>
 	</string>
+	<string id="ui_mm_vignette_effect">
+		<text>Ёффект виньетки</text>
+	</string>
+	<string id="ui_mm_hud_mask">
+		<text>ƒинамический HUD масок</text>
+	</string>
 </string_table>

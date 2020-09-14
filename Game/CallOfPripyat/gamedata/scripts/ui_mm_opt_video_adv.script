@@ -268,6 +268,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_vignette_effect", _st)
 	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
 
+--Динамический hud масок	
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_hud_mask", _st)
+	ctl = xml:InitCheck("video_adv:check_hud_mask", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+
 --Тип сглаживания	
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_r2_aa_mode", _st)

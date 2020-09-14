@@ -1285,3 +1285,9 @@ function change_team_sqaud_group(se_obj, team, squad, group)
 	--printf("_G:TSG: [%s][%s][%s]", tostring(se_obj.team), tostring(se_obj.squad), tostring(se_obj.group))
 end
 
+--//M.F.S. Team
+
+function ReadString(iSec,sLin,fIni)
+	if not fIni then fIni=system_ini() end
+	return fIni:r_string(iSec,sLin)
+end

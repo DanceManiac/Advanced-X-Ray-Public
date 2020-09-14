@@ -1,0 +1,84 @@
+------------------------------
+--Главный скрипт M.F.S. Team--
+------------------------------
+----------Автор: IGN----------
+-----------27.12.19-----------
+------------------------------
+
+--Апдейт актора. Вызывается из bind_stalker.script
+
+local rain_drops_ctrl = false
+
+function mfs_scripts_update()
+	mfs_scripts.update_helmet_effects()
+end
+
+function update_helmet_effects()
+   local console = get_console()
+   local slot_5 = db.actor:item_in_slot(5)
+   local slot_12 = db.actor:item_in_slot(12)
+   local helm1 = db.actor:object("helm_respirator")
+   local helm2 = db.actor:object("helm_protective")
+   local helm3 = db.actor:object("helm_tactic")
+   local helm4 = db.actor:object("helm_battle")
+   local science_suit = db.actor:object("scientific_outfit")
+   local neutral_exo = db.actor:object("exo_outfit")
+   local joker_antigas = db.actor:object("helm_respirator_joker")
+--Противогаз
+   	if slot_12 and slot_12:section() == "helm_respirator" and helm1 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Шлем "Заслон"
+    	elseif slot_12 and slot_12:section() == "helm_protective" and helm2 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Тактический Шлем
+    	elseif slot_12 and slot_12:section() == "helm_tactic" and helm3 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Сфера 12
+    	elseif slot_12 and slot_12:section() == "helm_battle" and helm4 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Противогаз Джокера
+    	elseif slot_12 and slot_12:section() == "helm_respirator_joker" and joker_antigas ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Сева
+    	elseif slot_5 and slot_5:section() == "scientific_outfit" and science_suit ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Экзоскелет
+    	elseif slot_5 and slot_5:section() == "exo_outfit" and neutral_exo ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Другое\нет шлема
+	else
+		if rain_drops_ctrl == true then
+			console:execute			("r2_rain_drops_control off")
+			console:execute			("r2_hud_mask_control off")
+			rain_drops_ctrl = false
+		end
+    	end
+end

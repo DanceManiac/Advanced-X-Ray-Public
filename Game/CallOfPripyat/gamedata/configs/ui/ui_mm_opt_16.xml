@@ -246,6 +246,14 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="r__actor_shadow" group="mm_opt_video_adv" depend="vid"/>
         </check_actor_shadow>
+
+        <cap_hud_mask x="15" y="3" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_hud_mask</text>
+        </cap_hud_mask>
+        <check_hud_mask x="133" y="0" width="35" stretch="1" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r2_hud_mask" group="mm_opt_video_adv" depend="vid"/>
+        </check_hud_mask>
 		
         <cap_mblur_enable x="15" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_mblur_enable</text>

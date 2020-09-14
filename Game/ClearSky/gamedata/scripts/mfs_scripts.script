@@ -1,0 +1,123 @@
+------------------------------
+--Главный скрипт M.F.S. Team--
+------------------------------
+----------Автор: IGN----------
+-----------27.12.19-----------
+------------------------------
+
+--Апдейт актора. Вызывается из bind_stalker.script
+
+local rain_drops_ctrl = false
+
+function mfs_scripts_update()
+	mfs_scripts.update_helmet_effects()
+end
+
+function update_helmet_effects()
+   local console = get_console()
+   local slot_5 = db.actor:item_in_slot(6)
+   local outfit1 = db.actor:object("stalker_outfit")
+   local outfit2 = db.actor:object("scientific_outfit")
+   local outfit3 = db.actor:object("cs_heavy_outfit")
+   local outfit4 = db.actor:object("svoboda_heavy_outfit")
+   local outfit5 = db.actor:object("military_outfit")
+   local outfit6 = db.actor:object("dolg_heavy_outfit")
+   local outfit7 = db.actor:object("exo_outfit")
+   local outfit8 = db.actor:object("svoboda_exo_outfit")
+   local outfit9 = db.actor:object("stalker_outfit_up_stalk")
+   local outfit10 = db.actor:object("outfit_stalker_m1")
+   local outfit11 = db.actor:object("outfit_stalker_m2")
+   local outfit12 = db.actor:object("outfit_exo_m1")
+--Заря
+    	if slot_5 and slot_5:section() == "stalker_outfit" and outfit1 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Научный костюм
+    	elseif slot_5 and slot_5:section() == "scientific_outfit" and outfit2 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Тяжёлый костюм ЧН
+    	elseif slot_5 and slot_5:section() == "cs_heavy_outfit" and outfit3 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Тяжёлый костюм Свободы
+    	elseif slot_5 and slot_5:section() == "svoboda_heavy_outfit" and outfit4 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Костюм Милитари
+    	elseif slot_5 and slot_5:section() == "military_outfit" and outfit5 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Тяжёлый костюм Долга
+    	elseif slot_5 and slot_5:section() == "dolg_heavy_outfit" and outfit6 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Экзоскелет нейтрала
+    	elseif slot_5 and slot_5:section() == "exo_outfit" and outfit7 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Экзоскелет Свободы
+    	elseif slot_5 and slot_5:section() == "svoboda_exo_outfit" and outfit8 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Заря с апгрейдами
+    	elseif slot_5 and slot_5:section() == "stalker_outfit_up_stalk" and outfit9 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Кобинезон призрачного сталкера
+    	elseif slot_5 and slot_5:section() == "outfit_stalker_m1" and outfit10 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Куртка и рюкзак бывалого
+    	elseif slot_5 and slot_5:section() == "outfit_stalker_m2" and outfit11 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Модифицированый экзоскелет
+    	elseif slot_5 and slot_5:section() == "outfit_exo_m1" and outfit12 ~= nil then
+		if rain_drops_ctrl == false then
+			console:execute			("r2_rain_drops_control on")
+			console:execute			("r2_hud_mask_control on")
+			rain_drops_ctrl = true
+		end
+--Другое\нет шлема
+	else
+		if rain_drops_ctrl == true then
+			console:execute			("r2_rain_drops_control off")
+			console:execute			("r2_hud_mask_control off")
+			rain_drops_ctrl = false
+		end
+    	end
+end

@@ -12,6 +12,7 @@ r2a		= 1
 r2		= 2
 r2.5	= 3
 r3		= 4
+r4		= 5
 ]]
 
 -- R1 only
@@ -47,6 +48,12 @@ end
 -- >=R3
 function only_3_and_more_mode(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
 	local bEnabled	= _id>=4
+	ctrl:Enable		(bEnabled)
+end
+
+-- >=R4
+function only_4_and_more_mode(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
+	local bEnabled	= _id>=5
 	ctrl:Enable		(bEnabled)
 end
 
@@ -125,8 +132,17 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_detail_density",		_st)
 	xml:InitTrackBar							("video_adv:track_detail_density",		_st)
+	
+--Дальность отрисовки травы
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_detail_radius", _st)
+	xml:InitTrackBar("video_adv:track_detail_radius", _st)
 
-
+--Высота травы	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_detail_scale", _st)
+	xml:InitTrackBar("video_adv:track_detail_scale", _st)
+	
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r2_sun",				_st)
 	ctl			= xml:InitCheck					("video_adv:check_r2_sun",				_st)
@@ -141,6 +157,24 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_particles_distance",	_st)
 	ctl				= xml:InitTrackBar			("video_adv:track_particles_distance",	_st)
 	handler.m_preconditions[ctl]		= only_2a_and_more_mode
+	
+--Размер карты теней
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_smap_size", _st)
+	ctl = xml:InitComboBox("video_adv:combo_smap_size", _st)
+	handler.combo_smap_size = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+	
+--Тень от ГГ
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_actor_shadow", _st)
+	ctl = xml:InitCheck("video_adv:check_actor_shadow", _st)
+	
+--Тень от травы
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_sun_details", _st)
+	ctl = xml:InitCheck("video_adv:check_sun_details", _st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
 
 	_st											= xml:InitStatic						("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_npc_torch",				_st)
@@ -168,10 +202,17 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_r2_sun_quality",	_st)
 	ctl			= xml:InitComboBox				("video_adv:list_r2_sun_quality",_st)
 	handler.m_preconditions[ctl]		= only_25_and_more_mode
-
+	
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_sun_shafts",			_st)
 	ctl				= xml:InitComboBox			("video_adv:combo_sun_shafts",			_st)
+	handler.m_preconditions[ctl]		= only_25_and_more_mode
+	
+--Режим солнечных лучей
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_sunshafts_mode", _st)
+	ctl = xml:InitComboBox("video_adv:combo_sunshafts_mode", _st)
+	handler.combo_sunshafts_mode = ctl
 	handler.m_preconditions[ctl]		= only_25_and_more_mode
 
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
@@ -179,6 +220,13 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl				= xml:InitComboBox			("video_adv:combo_ssao",				_st)
 	handler.m_preconditions[ctl]		= only_25_and_more_mode
 
+--Отражения от воды
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_ssr_quality", _st)
+	ctl = xml:InitComboBox("video_adv:combo_ssr_quality", _st)
+	handler.combo_ssr_quality = ctl
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+	
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_soft_water",			_st)
 	ctl				= xml:InitCheck				("video_adv:check_soft_water",			_st)
@@ -233,6 +281,17 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_60hz",					_st)
 	xml:InitCheck								("video_adv:check_60hz",				_st)
+	
+--Блудмарки на дин. объектах
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_bloodmarks_on_skeleton", _st)
+	ctl = xml:InitCheck("video_adv:check_bloodmarks_on_skeleton", _st)
+
+--Эффект Raindrops	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_raindrops", _st)
+	ctl = xml:InitCheck("video_adv:check_raindrops", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
 
 	btn		= xml:Init3tButton					("video_adv:btn_to_simply",	self)	
 	handler:Register							(btn, "btn_simply_graphic")	

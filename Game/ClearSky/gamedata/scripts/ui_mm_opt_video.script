@@ -38,6 +38,10 @@ function opt_video:InitControls(x, y, xml, handler)
 	handler.combo_renderer			= xml:InitComboBox("tab_video:list_renderer",		self)
 	handler:Register				(handler.combo_renderer, "combo_renderer")
 
+--Пресет цветокоррекции
+	xml:InitStatic					("tab_video:cap_clr_drag_preset",			self)
+	xml:InitComboBox("tab_video:combo_clr_drag_preset",	self)
+	
 	btn		= xml:Init3tButton		("tab_video:btn_advanced",	self)	
 	handler:Register				(btn, "btn_advanced_graphic")	
 end
