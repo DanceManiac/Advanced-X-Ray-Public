@@ -244,7 +244,7 @@ extern ECORE_API Flags32 ps_r2_rain_drops_flags;
 enum
 {
 	R2FLAG_RAIN_DROPS 			= (1 << 0),
-	R2FLAG_RAIN_DROPS_CONTROL 	= (1 << 0),
+	R2FLAG_RAIN_DROPS_CONTROL 	= (1 << 1),
 };
 
 extern ECORE_API Flags32 ps_r2_vignette_flags;
