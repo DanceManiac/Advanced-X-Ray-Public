@@ -376,7 +376,7 @@ void	CRenderTarget::phase_combine	()
 	if (!_menu_pp)
 	{
 		bool HelmetStatus = g_pGamePersistent->GetHelmetStatus();
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HelmetStatus)
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK_CONTROL) && HelmetStatus)
 			phase_hud_mask();
 	}
 	

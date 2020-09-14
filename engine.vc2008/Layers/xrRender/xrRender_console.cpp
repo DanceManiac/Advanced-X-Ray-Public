@@ -322,7 +322,9 @@ Flags32		ps_r2_rain_drops_flags = { R2FLAG_RAIN_DROPS
 
 Flags32		ps_r2_vignette_flags = { R_FLAG_VIGNETTE };
 
-Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK };
+Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
+	| R_FLAG_HUD_MASK_CONTROL
+	};
 
 //- Mad Max
 float		ps_r2_gloss_factor			= 4.0f;
@@ -921,6 +923,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_vignette",			&ps_r2_vignette_flags,		R_FLAG_VIGNETTE	);
 	// Hud Mask
 	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK);
+	CMD3(CCC_Mask,		"r2_hud_mask_control",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK_CONTROL);
 	
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);
