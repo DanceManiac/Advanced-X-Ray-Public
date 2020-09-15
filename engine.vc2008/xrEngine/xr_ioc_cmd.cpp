@@ -667,7 +667,6 @@ public		:
 };
 
 
-//ENGINE_API float	psHUD_FOV=0.45f;
 ENGINE_API float psHUD_FOV_def = 0.45f;
 ENGINE_API float psHUD_FOV = psHUD_FOV_def;
 

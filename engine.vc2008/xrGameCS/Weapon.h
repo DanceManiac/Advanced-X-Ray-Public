@@ -222,6 +222,7 @@ protected:
 
 	} m_zoom_params;
 	
+	float					m_fFactor;
 	CUIWindow*				m_UIScope;
 public:
 

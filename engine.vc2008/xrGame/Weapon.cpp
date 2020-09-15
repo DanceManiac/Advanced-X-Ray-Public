@@ -31,6 +31,7 @@ ENGINE_API extern float psHUD_FOV_def;
 #define ROTATION_TIME			0.25f
 
 BOOL	b_toggle_weapon_aim		= FALSE;
+BOOL	b_hud_collision			= FALSE;
 extern CUIXml*	pWpnScopeXml;
 
 CWeapon::CWeapon()
@@ -1658,42 +1659,44 @@ void CWeapon::UpdateHudAdditonal		(Fmatrix& trans)
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
 	if(!pActor)		return;
 
-	if(		(IsZoomed() && m_zoom_params.m_fZoomRotationFactor<=1.f) ||
-			(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor>0.f))
+	if (b_hud_collision)
 	{
+
 		u8 idx = GetCurrentHudOffsetIdx();
-//		if(idx==0)					return;
+		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+		float dist = RQ.range;
+		//		if(idx==0)					return;
 
 		attachable_hud_item*		hi = HudItemData();
-		R_ASSERT					(hi);
+		R_ASSERT(hi);
 		Fvector						curr_offs, curr_rot;
-		curr_offs					= hi->m_measures.m_hands_offset[0][idx];//pos,aim
-		curr_rot					= hi->m_measures.m_hands_offset[1][idx];//rot,aim
-		curr_offs.mul				(m_zoom_params.m_fZoomRotationFactor);
-		curr_rot.mul				(m_zoom_params.m_fZoomRotationFactor);
+		curr_offs = hi->m_measures.m_collision_offset[0];//pos,aim
+		curr_rot = hi->m_measures.m_collision_offset[1];//rot,aim
+		curr_offs.mul(m_fFactor);
+		curr_rot.mul(m_fFactor);
+
+		if (dist <= 0.8)
+			m_fFactor += Device.fTimeDelta / 0.3;
+		else
+			m_fFactor -= Device.fTimeDelta / 0.3;
 
 		Fmatrix						hud_rotation;
-		hud_rotation.identity		();
-		hud_rotation.rotateX		(curr_rot.x);
+		hud_rotation.identity();
+		hud_rotation.rotateX(curr_rot.x);
 
 		Fmatrix						hud_rotation_y;
-		hud_rotation_y.identity		();
-		hud_rotation_y.rotateY		(curr_rot.y);
-		hud_rotation.mulA_43		(hud_rotation_y);
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateY(curr_rot.y);
+		hud_rotation.mulA_43(hud_rotation_y);
 
-		hud_rotation_y.identity		();
-		hud_rotation_y.rotateZ		(curr_rot.z);
-		hud_rotation.mulA_43		(hud_rotation_y);
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateZ(curr_rot.z);
+		hud_rotation.mulA_43(hud_rotation_y);
 
-		hud_rotation.translate_over	(curr_offs);
-		trans.mulB_43				(hud_rotation);
+		hud_rotation.translate_over(curr_offs);
+		trans.mulB_43(hud_rotation);
 
-		if(pActor->IsZoomAimingMode())
-			m_zoom_params.m_fZoomRotationFactor += Device.fTimeDelta/m_zoom_params.m_fZoomRotateTime;
-		else
-			m_zoom_params.m_fZoomRotationFactor -= Device.fTimeDelta/m_zoom_params.m_fZoomRotateTime;
-
-		clamp(m_zoom_params.m_fZoomRotationFactor, 0.f, 1.f);
+		clamp(m_fFactor, 0.f, 1.f);
 	}
 }
 
