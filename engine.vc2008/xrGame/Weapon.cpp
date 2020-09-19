@@ -1659,6 +1659,44 @@ void CWeapon::UpdateHudAdditonal		(Fmatrix& trans)
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
 	if(!pActor)		return;
 
+	if ((IsZoomed() && m_zoom_params.m_fZoomRotationFactor <= 1.f) ||
+		(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor > 0.f))
+	{
+		u8 idx = GetCurrentHudOffsetIdx();
+		//		if(idx==0)					return;
+
+		attachable_hud_item*		hi = HudItemData();
+		R_ASSERT(hi);
+		Fvector						curr_offs, curr_rot;
+		curr_offs = hi->m_measures.m_hands_offset[0][idx];//pos,aim
+		curr_rot = hi->m_measures.m_hands_offset[1][idx];//rot,aim
+		curr_offs.mul(m_zoom_params.m_fZoomRotationFactor);
+		curr_rot.mul(m_zoom_params.m_fZoomRotationFactor);
+
+		Fmatrix						hud_rotation;
+		hud_rotation.identity();
+		hud_rotation.rotateX(curr_rot.x);
+
+		Fmatrix						hud_rotation_y;
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateY(curr_rot.y);
+		hud_rotation.mulA_43(hud_rotation_y);
+
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateZ(curr_rot.z);
+		hud_rotation.mulA_43(hud_rotation_y);
+
+		hud_rotation.translate_over(curr_offs);
+		trans.mulB_43(hud_rotation);
+
+		if (pActor->IsZoomAimingMode())
+			m_zoom_params.m_fZoomRotationFactor += Device.fTimeDelta / m_zoom_params.m_fZoomRotateTime;
+		else
+			m_zoom_params.m_fZoomRotationFactor -= Device.fTimeDelta / m_zoom_params.m_fZoomRotateTime;
+
+		clamp(m_zoom_params.m_fZoomRotationFactor, 0.f, 1.f);
+	}
+
 	if (b_hud_collision)
 	{
 
