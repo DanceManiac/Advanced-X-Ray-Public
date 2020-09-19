@@ -774,10 +774,18 @@
         <options_item entry="hud_draw" group="mm_opt_gameplay"/>
       </check_hud_draw>
 	  
-      <cap_corpse_collision x="15" y="273" width="135" height="24">
+      <cap_hud_collision x="15" y="273" width="135" height="24">
+        <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_hud_collision</text>
+      </cap_hud_collision>
+      <check_hud_collision x="162" y="270" width="44" height="29">
+        <texture>ui_inGame2_checkbox</texture>
+        <options_item entry="hud_collision" group="mm_opt_gameplay"/>
+      </check_hud_collision>
+	  
+      <cap_corpse_collision x="15" y="303" width="135" height="24">
         <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_corpse_collision</text>
       </cap_corpse_collision>
-      <check_corpse_collision x="162" y="270" width="44" height="29">
+      <check_corpse_collision x="162" y="300" width="44" height="29">
         <texture>ui_inGame2_checkbox</texture>
         <options_item entry="ph_corpse_collision" group="mm_opt_gameplay"/>
       </check_corpse_collision>

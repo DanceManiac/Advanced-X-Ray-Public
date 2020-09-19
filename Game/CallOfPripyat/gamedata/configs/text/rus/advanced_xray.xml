@@ -126,4 +126,7 @@
 	<string id="ui_mm_hud_mask">
 		<text>Динамический HUD масок</text>
 	</string>
+	<string id="ui_st_hud_collision">
+		<text>Коллизия HUD оружия</text>
+	</string>
 </string_table>
