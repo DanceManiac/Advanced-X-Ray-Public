@@ -205,7 +205,7 @@ void CMissile::OnH_B_Independent(bool just_before_destroy)
 	}
 }
 
-extern u32 hud_adj_mode;
+extern int hud_adj_mode;
 
 void CMissile::UpdateCL() 
 {

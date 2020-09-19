@@ -11,7 +11,7 @@
 #include "ui_base.h"
 #include "debug_renderer.h"
 
-u32 hud_adj_mode		= 0;
+int hud_adj_mode		= 0;
 u32 hud_adj_item_idx	= 0;
 // "press SHIFT+NUM 0-return 1-hud_pos 2-hud_rot 3-itm_pos 4-itm_rot 5-fire_point 6-fire_2_point 7-shell_point";
 
@@ -107,7 +107,6 @@ void calc_cam_diff_rot(Fmatrix item_transform, Fvector diff, Fvector& res)
 
 void attachable_hud_item::tune(Ivector values)
 {
-#ifndef MASTER_GOLD
 	if(!is_attachable_item_tuning_mode() )
 		return;
 
@@ -178,7 +177,6 @@ void attachable_hud_item::tune(Ivector values)
 			Log("-----------");
 		}
 	}
-#endif // #ifndef MASTER_GOLD
 }
 
 void attachable_hud_item::debug_draw_firedeps()
@@ -208,7 +206,6 @@ void attachable_hud_item::debug_draw_firedeps()
 
 void player_hud::tune(Ivector _values)
 {
-#ifndef MASTER_GOLD
 	Ivector				values;
 	tune_remap			(_values,values);
 
@@ -283,7 +280,6 @@ void player_hud::tune(Ivector _values)
 		if(!hi)	return;
 		hi->tune(values);
 	}
-#endif // #ifndef MASTER_GOLD
 }
 
 void hud_draw_adjust_mode()

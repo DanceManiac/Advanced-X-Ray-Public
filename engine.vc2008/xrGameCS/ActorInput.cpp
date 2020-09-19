@@ -32,7 +32,7 @@
 #include "clsid_game.h"
 
 bool g_bAutoClearCrouch = true;
-extern u32 hud_adj_mode;
+extern int hud_adj_mode;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {

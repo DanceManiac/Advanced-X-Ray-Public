@@ -70,6 +70,7 @@ extern void release_smart_cast_stats	();
 
 extern	u64		g_qwStartGameTime;
 extern	u64		g_qwEStartGameTime;
+extern 	int 	hud_adj_mode;
 
 ENGINE_API
 extern	float	psHUD_FOV_def;
@@ -1857,6 +1858,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
 	CMD1(CCC_Giveinfo,		"g_info");
 	CMD1(CCC_Disinfo,		"d_info");
+	CMD4(CCC_Integer,		"hud_adjust_mode", &hud_adj_mode, 0, 5);
 #endif // MFS_DEVELOPER_CMD
 
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);

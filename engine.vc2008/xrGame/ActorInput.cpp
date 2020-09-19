@@ -34,7 +34,7 @@
 #include "hudmanager.h"
 #include "Weapon.h"
 
-extern u32 hud_adj_mode;
+extern int hud_adj_mode;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
