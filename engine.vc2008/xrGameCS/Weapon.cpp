@@ -1326,6 +1326,7 @@ void CWeapon::OnZoomOut()
 		CActor *pA = smart_cast<CActor *>(H_Parent());
 		if (pA)
 			pA->cam_Set(eacLookAt);
+			m_freelook_switch_back = false;
 	}
 
 	m_zoom_params.m_bIsZoomModeNow		= false;
