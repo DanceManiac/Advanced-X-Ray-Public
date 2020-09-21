@@ -104,20 +104,25 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	cameras[eacFirstEye]	= xr_new<CCameraFirstEye>				(this);
 	cameras[eacFirstEye]->Load("actor_firsteye_cam");
 
+	//Alundaio -psp always
+	/*
 	if(strstr(Core.Params,"-psp"))
 		psActorFlags.set(AF_PSP, TRUE);
 	else
 		psActorFlags.set(AF_PSP, FALSE);
+	*/
 
-	if( psActorFlags.test(AF_PSP) )
-	{
+	//if( psActorFlags.test(AF_PSP) )
+	//{
 		cameras[eacLookAt]		= xr_new<CCameraLook2>				(this);
 		cameras[eacLookAt]->Load("actor_look_cam_psp");
-	}else
-	{
-		cameras[eacLookAt]		= xr_new<CCameraLook>				(this);
-		cameras[eacLookAt]->Load("actor_look_cam");
-	}
+	//}
+	//else
+	//{
+	//    cameras[eacLookAt] = xr_new<CCameraLook>(this);
+	//    cameras[eacLookAt]->Load("actor_look_cam");
+	//}
+	//-Alundaio
 	cameras[eacFreeLook]	= xr_new<CCameraLook>					(this);
 	cameras[eacFreeLook]->Load("actor_free_cam");
 	cameras[eacFixedLookAt]	= xr_new<CCameraFixedLook>				(this);
@@ -400,10 +405,12 @@ if(!g_dedicated_server)
 		m_DangerSnd.create		(pSettings->r_string(section,"heavy_danger_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
 	}
 }
-	if( psActorFlags.test(AF_PSP) )
-		cam_Set					(eacLookAt);
-	else
-		cam_Set					(eacFirstEye);
+//Alundaio -psp always
+//if (psActorFlags.test(AF_PSP))
+//    cam_Set(eacLookAt);
+//else
+//-Alundaio
+	cam_Set					(eacFirstEye);
 
 	// sheduler
 	shedule.t_min				= shedule.t_max = 1;

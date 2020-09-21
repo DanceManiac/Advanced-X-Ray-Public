@@ -323,8 +323,9 @@ public:
 
 	IC EActorCameras		active_cam			()  { return cam_active; } // KD: need to know which cam active outside actor methods
 
-protected:
 	virtual	void			cam_Set					(EActorCameras style);
+
+protected:
 	void					cam_Update				(float dt, float fFOV);
 	void					cam_Lookout				( const Fmatrix &xform, float camera_height );
 	void					camUpdateLadder			(float dt);

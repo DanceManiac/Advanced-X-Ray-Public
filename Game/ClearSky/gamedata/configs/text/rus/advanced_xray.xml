@@ -120,4 +120,28 @@
 	<string id="opt_fxaa">
 		<text>FXAA</text>
 	</string>
+	<string id="ui_mm_vignette_effect">
+		<text>Эффект виньетки</text>
+	</string>
+	<string id="ui_mm_hud_mask">
+		<text>Динамический HUD масок</text>
+	</string>
+	<string id="ui_st_hud_collision">
+		<text>Коллизия HUD оружия</text>
+	</string>
+	<string id="ui_mm_hud_draw">
+		<text>Показывать интерфейс</text>
+	</string>
+	<string id="renderer_r4">
+		<text>Улучшеное полное освещение (DX11)</text>
+	</string>
+	<string id="camera_1">
+		<text>Вид от 1-ого лица</text>
+	</string>
+	<string id="camera_2">
+		<text>Вид от 2-ого лица</text>
+	</string>
+	<string id="camera_3">
+		<text>Вид от 3-ого лица</text>
+	</string>
 </string_table>

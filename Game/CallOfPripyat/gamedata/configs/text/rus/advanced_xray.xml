@@ -129,4 +129,13 @@
 	<string id="ui_st_hud_collision">
 		<text>Коллизия HUD оружия</text>
 	</string>
+	<string id="camera_1">
+		<text>Вид от 1-ого лица</text>
+	</string>
+	<string id="camera_2">
+		<text>Вид от 2-ого лица</text>
+	</string>
+	<string id="camera_3">
+		<text>Вид от 3-ого лица</text>
+	</string>
 </string_table>

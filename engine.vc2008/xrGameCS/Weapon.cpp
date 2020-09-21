@@ -1301,6 +1301,14 @@ float CWeapon::CurrentZoomFactor()
 
 void CWeapon::OnZoomIn()
 {
+	//Alun: Force switch to first-person for zooming
+	CActor *pA = smart_cast<CActor *>(H_Parent());
+	if (pA->active_cam() == eacLookAt)
+	{
+		pA->cam_Set(eacFirstEye);
+		m_freelook_switch_back = true;
+	}
+
 	m_zoom_params.m_bIsZoomModeNow		= true;
 	m_zoom_params.m_fCurrentZoomFactor	= CurrentZoomFactor();
 	//EnableHudInertion					(FALSE);
@@ -1312,6 +1320,14 @@ void CWeapon::OnZoomIn()
 
 void CWeapon::OnZoomOut()
 {
+	//Alun: Switch back to third-person if was forced
+	if (m_freelook_switch_back)
+	{
+		CActor *pA = smart_cast<CActor *>(H_Parent());
+		if (pA)
+			pA->cam_Set(eacLookAt);
+	}
+
 	m_zoom_params.m_bIsZoomModeNow		= false;
 	m_zoom_params.m_fCurrentZoomFactor	= g_fov;
 	//EnableHudInertion					(TRUE);

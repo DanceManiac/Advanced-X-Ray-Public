@@ -183,7 +183,8 @@ void CCameraLook2::UpdateAutoAim()
 void CCameraLook2::Load(LPCSTR section)
 {
 	CCameraLook::Load		(section);
-	m_cam_offset			= pSettings->r_fvector3	(section,"offset");
+	m_cam_offset = Fvector().set(0.750f, 0.2f, -2.0f);
+	dist = 1.4f;
 	m_autoaim_inertion_yaw	= pSettings->r_fvector2	(section,"autoaim_speed_y");
 	m_autoaim_inertion_pitch= pSettings->r_fvector2	(section,"autoaim_speed_x");
 }
