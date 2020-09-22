@@ -792,6 +792,16 @@
         <texture>ui_inGame2_checkbox</texture>
         <options_item entry="ph_corpse_collision" group="mm_opt_gameplay"/>
       </check_corpse_collision>
+	  
+      <cap_quick_saves_count x="15" y="333" width="108" height="24">
+          <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_quick_saves_count</text>
+      </cap_quick_saves_count>
+      <track_quick_saves_count x="132" y="330" width="158" height="16" min="0.0" max="25.0" step="1.0">
+          <options_item entry="quick_save_counter" group="mm_opt_gameplay"/>
+			<output_wnd x="180" y="0" width="20" height="20" format="%.f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+      </track_quick_saves_count>
 
       <btn_check_updates x="270" y="322" width="86" height="24" stretch="1">
             <text align="c" font="letterica16">ui_mm_check_updates</text>
