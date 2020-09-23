@@ -10910,9 +10910,6 @@
     <ClCompile Include="death_anims.cpp">
       <Filter>Physics\CharacterSupport\death_anims</Filter>
     </ClCompile>
-    <ClCompile Include="death_anims_predicates.cpp">
-      <Filter>Physics\CharacterSupport\death_anims</Filter>
-    </ClCompile>
     <ClCompile Include="character_hit_animations.cpp">
       <Filter>Physics\CharacterSupport\hit_anims</Filter>
     </ClCompile>
@@ -11023,6 +11020,9 @@
     </ClCompile>
     <ClCompile Include="physics_world_scripted.cpp">
       <Filter>Physics\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="death_anims_predicates.cpp">
+      <Filter>Physics\CharacterSupport\death_anims</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -521,6 +521,36 @@ bool valid_saved_game_name(LPCSTR file_name)
 	return		(true);
 }
 
+void get_files_list(xr_vector<shared_str>& files, LPCSTR dir, LPCSTR file_ext)
+{
+	VERIFY(dir && file_ext);
+	files.clear_not_free();
+
+	FS_Path* P = FS.get_path(dir);
+	P->m_Flags.set(FS_Path::flNeedRescan, TRUE);
+	FS.m_Flags.set(CLocatorAPI::flNeedCheck, TRUE);
+	FS.rescan_pathes();
+
+	LPCSTR fext;
+	STRCONCAT(fext, "*", file_ext);
+
+	FS_FileSet  files_set;
+	FS.file_list(files_set, dir, FS_ListFiles, fext);
+	u32 len_str_ext = xr_strlen(file_ext);
+
+	FS_FileSetIt itb = files_set.begin();
+	FS_FileSetIt ite = files_set.end();
+
+	for (; itb != ite; ++itb)
+	{
+		LPCSTR fn_ext = (*itb).name.c_str();
+		VERIFY(xr_strlen(fn_ext) > len_str_ext);
+		string_path fn;
+		strncpy_s(fn, sizeof(fn), fn_ext, xr_strlen(fn_ext) - len_str_ext);
+		files.push_back(fn);
+	}
+	FS.m_Flags.set(CLocatorAPI::flNeedCheck, FALSE);
+}
 
 #include "UIGameCustom.h"
 #include "HUDManager.h"
@@ -1663,6 +1693,11 @@ public:
 			return;
 		//if (!Device.editor())
 		g_pGamePersistent->Environment().SetWeather(args, true);
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		get_files_list(tips, "$game_weathers$", ".ltx");
 	}
 };
 
