@@ -126,7 +126,6 @@ void key_binding_registrator::script_register(lua_State *L)
 				value("DIK_DELETE",						int(DIK_DELETE		)),
 				value("DIK_RWIN",						int(DIK_RWIN		)),
 				value("DIK_PAUSE",						int(DIK_PAUSE		)),
-				value("MOUSE_2",						int(MOUSE_2			)),
 				value("DIK_1",							int(DIK_1			)),
 				value("DIK_3",							int(DIK_3			)),
 				value("DIK_5",							int(DIK_5			)),
@@ -188,7 +187,10 @@ void key_binding_registrator::script_register(lua_State *L)
 				value("DIK_LWIN",						int(DIK_LWIN		)),
 				value("DIK_APPS",						int(DIK_APPS		)),
 				value("MOUSE_1",						int(MOUSE_1			)),
+				value("MOUSE_2",						int(MOUSE_2			)),
 				value("MOUSE_3",						int(MOUSE_3			)),
+				value("MOUSE_4",						int(MOUSE_4			)),
+				value("MOUSE_5",						int(MOUSE_5			)),
 				value("DIK_RETURN",						int(DIK_RETURN		)),
 				value("DIK_NUMPADENTER",				int(DIK_NUMPADENTER	))
 				
