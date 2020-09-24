@@ -458,9 +458,6 @@ _value_type CStalkerPropertyEvaluatorShouldThrowGrenade::evaluate	()
 	if (!enemy)
 		return					(false);
 
-	if (!enemy->human_being())
-		return					(false);
-
 	if (object().memory().visual().visible_now(enemy))
 		return					(false);
 
