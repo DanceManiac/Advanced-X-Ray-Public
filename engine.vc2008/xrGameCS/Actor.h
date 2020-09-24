@@ -340,6 +340,7 @@ protected:
 	Fvector					vPrevCamDir;
 	float					fCurAVelocity;
 	CEffectorBobbing*		pCamBobbing;
+	float					current_ik_cam_shift;
 
 
 	//менеджер эффекторов, есть у каждого актрера
@@ -405,6 +406,7 @@ public:
 	bool					CanJump					();
 	bool					CanMove					();
 	float					CameraHeight			();
+	float					CurrentHeight; 	// Alex ADD: for smooth crouch fix
 	bool					CanSprint				();
 	bool					CanRun					();
 	void					StopAnyMove				();
