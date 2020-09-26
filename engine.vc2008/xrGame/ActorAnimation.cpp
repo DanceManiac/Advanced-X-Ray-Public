@@ -535,6 +535,13 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 				}
 			}
 		}
+		else if (!m_bAnimTorsoPlayed)
+		{
+		if (moving_idx == STorsoWpn::eSprint)
+			M_torso = ST->m_torso[0].moving[moving_idx];
+		else
+			M_torso = ST->m_torso[4].moving[moving_idx]; //Alundaio: Fix torso anim no wpn
+		}
 	}
 	MotionID		mid = smart_cast<IKinematicsAnimated*>(Visual())->ID_Cycle("norm_idle_0");
 
