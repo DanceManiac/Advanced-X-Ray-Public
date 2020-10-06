@@ -7,9 +7,30 @@
 	#include "lmodel.h"
 	#include "reflections.h"
 
+	float compute_height_fog(float H_world, float3 P_view)
+	{
+		//Settings
+		float height = lowland_fog_params.x; //Fog height
+		float density = lowland_fog_params.y; //Fog density (keep it low, it's exponential fog without any distance attenuation)
+
+		//Calculate height factor
+		float height_factor = height - H_world;
+
+		//Get length of view space position
+		float P_dist = length(P_view) * height_factor;
+
+		//Calculate exponential fog
+		float fog = 1.0 - exp(-P_dist * density);
+
+		//Output
+		return saturate(fog);
+	}
+
 	float4 main(wivs_out _in) : SV_Target
 	{
 		float4 base = s_base.Sample(smp_base, _in.tbase);
+
+		float2 tc = ss_tc_from_wo_posi(_in.position_w);
 
 		float actorDepth, waterDepth, alpha;
 
@@ -19,6 +40,8 @@
 
 		alpha  = saturate(waterDepth);
 		alpha  = saturate(alpha * 4);
+
+		float3 P_view = float3(tc.xy * pos_decompression_params2.xy * pos_decompression_params.zw - pos_decompression_params.xy, 1) * actorDepth;
 
 		#if defined(USE_SOFT_WATER)
 			#if USE_WATER_RIPPLES==1
@@ -35,8 +58,6 @@
 
 			float3	Nw	= mul(float3x3(_in.M1, _in.M2, _in.M3), Navg);
 					Nw	= normalize(Nw);
-
-			float2 tc = ss_tc_from_wo_posi(_in.position_w);
 
 			#if defined(SSR_QUALITY)
 				float3 c_reflection = depth_traced_ssr(_in.position_w, Nw, float3(tc, actorDepth));
@@ -81,13 +102,16 @@
 					float3	frame = s_pptemp.Sample(smp_nofilter, tc + nfactor.xy) * (1 - alpha) + nfactor.xxx;
 				#endif
 
-				final += frame;
-
-				return  float4(saturate(final), 1);
-			#else
-				return  float4(final, alpha);
+				final = saturate(final + frame);
+				alpha = 1;
 			#endif
+
+			final = mix(final, fog_color, compute_height_fog(_in.position_w.y, P_view));
+
+			return float4(final, alpha);
 		#else
+			base.xyz = mix(base.xyz, fog_color, compute_height_fog(_in.position_w.y, P_view));
+
 			return  float4(base.xyz, 0.75);
 		#endif	
 	}

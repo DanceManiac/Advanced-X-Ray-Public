@@ -7,6 +7,28 @@
 #include "lmodel.h"
 #include "hmodel.h"
 
+float compute_height_fog(float3 P_view)
+{
+    //Settings
+    float height = lowland_fog_params.x;    //Fog height    
+    float density = lowland_fog_params.y;    //Fog density (keep it low, it's exponential fog without any distance attenuation)
+    
+    //Transform view space position into world space
+    float3 P_world = mul(m_v2w, float4(P_view, 1.f)).xyz;
+    
+    //Calculate height factor
+    float height_factor = height - P_world.y;    
+    
+    //Get length of view space position
+    float P_dist = length(P_view.xyz) * height_factor;
+    
+    //Calculate exponential fog
+    float fog = 1.0 - exp(-P_dist * density);
+
+    //Output
+    return saturate(fog);
+}
+
 uniform	Texture2D					s_half_depth;
 
 //#include "ssao_blur.ps"
@@ -216,7 +238,9 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
         float3        	pos        		= P.xyz;
         float         	distance		= length		(pos);
         float         	fog				= saturate		(distance*fog_params.w + fog_params.x); //
-                      	color			= lerp     		(color,fog_color,fog);        			//
+		                color			= lerp     		(color, fog_color, fog);        		//
+						color 			= lerp			(color, fog_color, compute_height_fog(P.xyz));
+
         float        	skyblend		= saturate		(fog*fog);
 
 #ifdef         DBG_TMAPPING

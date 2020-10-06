@@ -115,6 +115,7 @@ float4 main( vf I ) : SV_Target
 
 	//	Fogging
 	final 		= lerp(fog_color, final, I.fog);
+	final 		= lerp(fog_color, final, compute_height_fog(_P.xyz));
 	alpha		*= I.fog*I.fog;
 
 	return  float4   (final, alpha )                ;
@@ -124,6 +125,7 @@ float4 main( vf I ) : SV_Target
 //	return  float4   (final, 1 )                ;
 	//	Fogging
 	final 		= lerp(fog_color, final, I.fog);
+	final 		= lerp(fog_color, final, compute_height_fog(_P.xyz));
 	return  float4   (final, I.fog*I.fog )      ;
 
 #endif	//	NEED_SOFT_WATER
