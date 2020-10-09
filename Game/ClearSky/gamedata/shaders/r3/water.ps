@@ -1,4 +1,6 @@
 #include "common.h"
+#include "lmodel.h"
+#include "hmodel.h"
 
 struct   vf
 {
@@ -31,6 +33,27 @@ float3	water_intensity;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel
+
+float compute_height_fog(float3 P_view)
+{
+	//Settings
+	float height = lowland_fog_params.x; //Fog height
+	float density = lowland_fog_params.y; //Fog density (keep it low, it's exponential fog without any distance attenuation)
+
+    float3 P_world = mul(m_v2w, float4(P_view, 1.f)).xyz;
+	
+	//Calculate height factor
+	float height_factor = height - P_world.y; 
+
+	//Get length of view space position
+	float P_dist = length(P_view.xyz) * height_factor;
+
+	//Calculate exponential fog
+	float fog = 1.0 - exp(-P_dist * density);
+
+	//Output
+	return saturate(fog);
+}
 
 #ifdef GBUFFER_OPTIMIZATION
 float4 main( vf I, float4 pos2d : SV_Position ) : SV_Target
@@ -115,7 +138,7 @@ float4 main( vf I ) : SV_Target
 
 	//	Fogging
 	final 		= lerp(fog_color, final, I.fog);
-	final 		= lerp(fog_color, final, compute_height_fog(_P.xyz));
+	//final 		= lerp(fog_color, final, compute_height_fog(_P.xyz));
 	alpha		*= I.fog*I.fog;
 
 	return  float4   (final, alpha )                ;

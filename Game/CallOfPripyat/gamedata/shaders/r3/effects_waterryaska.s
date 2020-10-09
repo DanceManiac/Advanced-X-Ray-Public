@@ -5,7 +5,7 @@ local tex_env0                = "$user$sky0"         -- "sky\\sky_8_cube"
 local tex_env1                = "$user$sky1"         -- "sky\\sky_8_cube"
 
 function normal                (shader, t_base, t_second, t_detail)
-  shader:begin                ("water","water")
+  shader:begin                ("water_soft","water_soft")
         : sorting        (2, false)
         : blend                (false,blend.srcalpha,blend.invsrcalpha)
               : zb                (true,false)
