@@ -218,7 +218,7 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) :
 	fog_color.set		(1,1,1);
 	fog_density			= 0.0f;
 	fog_distance		= 400.0f;
-	lowland_fog_height	= -50.0f;
+	lowland_fog_height	= 0.0f;
 	lowland_fog_density = 0.0f;
 
 	rain_density		= 0.0f;

@@ -32,6 +32,7 @@ public:
 	void Shutdown();
 
 	void SetStatus(StatusId status);
+	float LowlandFogBaseHeight;
 
 	~xrDiscordPresense();
 

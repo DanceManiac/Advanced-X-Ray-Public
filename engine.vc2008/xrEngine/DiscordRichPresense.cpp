@@ -35,6 +35,8 @@ void xrDiscordPresense::SetStatus(StatusId status)
 	ZeroMemory(&presenseInfo, sizeof(presenseInfo));
 
 	StatusId realStatus = status;
+	LowlandFogBaseHeight = 0.0;
+
 	if (status == StatusId::In_Game)
 	{
 		// get level name, and set status to different value, when we found vanilla levels
@@ -44,70 +46,87 @@ void xrDiscordPresense::SetStatus(StatusId status)
 			if (LevelInfo.name == nullptr) return;
 			if (xr_strcmp(LevelInfo.name, "zaton") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "zaton", 0.0f);
 				realStatus = StatusId::Zaton;
 			}
 			if (xr_strcmp(LevelInfo.name, "jupiter") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "jupiter", 0.0f);
 				realStatus = StatusId::Upiter;
 			}
 			if (xr_strcmp(LevelInfo.name, "pripyat") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "pripyat", 0.0f);
 				realStatus = StatusId::Pripyat;
 			}
 			if (xr_strcmp(LevelInfo.name, "labx8") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "labx8", 0.0f);
 				realStatus = StatusId::LabX8;
 			}
 			if (xr_strcmp(LevelInfo.name, "jupiter_underground") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "jupiter_underground", 0.0f);
 				realStatus = StatusId::JupiterUnder;
 			}
 			if (xr_strcmp(LevelInfo.name, "marsh") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "marsh", 0.0f);
 				realStatus = StatusId::Marsh;
 			}
 			if (xr_strcmp(LevelInfo.name, "escape") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "escape", 0.0f);
 				realStatus = StatusId::Escape;
 			}
 			if (xr_strcmp(LevelInfo.name, "garbage") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "garbage", 0.0f);
 				realStatus = StatusId::Garbage;
 			}
 			if (xr_strcmp(LevelInfo.name, "darkvalley") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "darkvalley", 0.0f);
 				realStatus = StatusId::Darkvalley;
 			}
 			if (xr_strcmp(LevelInfo.name, "agroprom") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "agroprom", 0.0f);
 				realStatus = StatusId::Agroprom;
 			}
 			if (xr_strcmp(LevelInfo.name, "agroprom_underground") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "agroprom_underground", 0.0f);
 				realStatus = StatusId::AgrUnder;
 			}
 			if (xr_strcmp(LevelInfo.name, "yantar") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "yantar", 0.0f);
 				realStatus = StatusId::Yantar;
 			}
 			if (xr_strcmp(LevelInfo.name, "red_forest") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "red_forest", 0.0f);
 				realStatus = StatusId::RedForest;
 			}
 			if (xr_strcmp(LevelInfo.name, "military") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "military", 0.0f);
 				realStatus = StatusId::Military;
 			}
 			if (xr_strcmp(LevelInfo.name, "limansk") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "limansk", 0.0f);
 				realStatus = StatusId::Limansk;
 			}
 			if (xr_strcmp(LevelInfo.name, "hospital") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "hospital", 0.0f);
 				realStatus = StatusId::Hospital;
 			}
 			if (xr_strcmp(LevelInfo.name, "stancia_2") == 0)
 			{
+				LowlandFogBaseHeight = READ_IF_EXISTS(pSettings, r_float, "lowland_fog_params", "stancia_2", 0.0f);
 				realStatus = StatusId::Stancia2;
 			}
 		}

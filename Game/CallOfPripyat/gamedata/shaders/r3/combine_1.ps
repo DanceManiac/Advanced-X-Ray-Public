@@ -12,12 +12,13 @@ float compute_height_fog(float3 P_view)
     //Settings
     float height = lowland_fog_params.x;    //Fog height    
     float density = lowland_fog_params.y;    //Fog density (keep it low, it's exponential fog without any distance attenuation)
+	float base_height = lowland_fog_params.z; //Fog base height (base height of lowland fog, for current level)
     
     //Transform view space position into world space
     float3 P_world = mul(m_v2w, float4(P_view, 1.f)).xyz;
     
     //Calculate height factor
-    float height_factor = height - P_world.y;    
+    float height_factor = base_height + height - P_world.y;    
     
     //Get length of view space position
     float P_dist = length(P_view.xyz) * height_factor;
@@ -195,7 +196,7 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
         float4         light       = float4         (L.rgb + hdiffuse, L.w)        ;
         float4         C           = D*light       ;                             // rgb.gloss * light(diffuse.specular)
 //        float3         spec        = (C.rgb*.5h + .5h)*C.w + hspecular + hspecular + hspecular;			// replicated specular
-	float3         spec        = C.www         + hspecular;      // replicated specular
+		float3 spec 				= C.www * L.rgb + hspecular * C.rgba; // replicated specular
 
 #ifdef         USE_SUPER_SPECULAR
                       spec      = (C.rgb*.5h + .5h)*C.w + hspecular        ;

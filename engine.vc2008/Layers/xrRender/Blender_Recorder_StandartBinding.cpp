@@ -12,6 +12,7 @@
 
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
+#include "../../xrEngine/DiscordRichPresense.h"
 
 #include "dxRenderDeviceRender.h"
 
@@ -200,7 +201,8 @@ class cl_lowland_fog_params : public R_constant_setup
 		CEnvDescriptor&	desc = *g_pGamePersistent->Environment().CurrentEnv;
 		float low_fog_height = desc.lowland_fog_height;
 		float low_fog_density = desc.lowland_fog_density;
-		RCache.set_c(C, low_fog_height, low_fog_density, 0, 0);
+		float low_fog_base_height = g_discord.LowlandFogBaseHeight;
+		RCache.set_c(C, low_fog_height, low_fog_density, low_fog_base_height, 0);
 	}
 };	static cl_lowland_fog_params binder_lowland_fog_params;
 

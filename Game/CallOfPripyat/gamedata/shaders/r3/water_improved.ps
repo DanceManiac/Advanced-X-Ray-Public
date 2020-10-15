@@ -12,9 +12,10 @@
 		//Settings
 		float height = lowland_fog_params.x; //Fog height
 		float density = lowland_fog_params.y; //Fog density (keep it low, it's exponential fog without any distance attenuation)
+		float base_height = lowland_fog_params.z; //Fog base height (base height of lowland fog, for current level)
 
 		//Calculate height factor
-		float height_factor = height - H_world;
+		float height_factor = base_height + height - H_world;
 
 		//Get length of view space position
 		float P_dist = length(P_view) * height_factor;
