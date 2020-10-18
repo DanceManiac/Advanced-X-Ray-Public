@@ -35,6 +35,11 @@ Texture2D 	s_dn_g;                	//
 Texture2D 	s_dn_b;                	//
 Texture2D 	s_dn_a;                	//
 
+Texture2D 	s_dp_r;                	//
+Texture2D 	s_dp_g;                	//
+Texture2D 	s_dp_b;                	//
+Texture2D 	s_dp_a;                	//
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // Lighting/shadowing phase                     //
 

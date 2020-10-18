@@ -1,3 +1,7 @@
+#if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
+#define DEFFER_TERRAIN
+#endif
+
 #include "common.h"
 #include "sload.h"
 
@@ -5,6 +9,18 @@
 
 #if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
 #	define	USE_4_BUMP
+float2 UpdateTerrainTC(p_bumped I, sampler2D s_dp)
+{
+	float3	 eye = mul (float3x3(I.M1.x, I.M2.x, I.M3.x,
+								 I.M1.y, I.M2.y, I.M3.y,
+								 I.M1.z, I.M2.z, I.M3.z), -I.position.xyz);
+								 
+	float	height	= tex2D(s_dp, I.tcdbump).w;
+			height	= height*(parallax.x) + (parallax.y);	//
+	float2	new_tc  = I.tcdbump + height * normalize(eye);	//
+
+	return new_tc;
+}
 #endif
 
 #ifdef USE_4_BUMP
@@ -26,20 +42,25 @@ f_deffer 	main	( p_flat I 		)
 	half4	mask= tex2D		(s_mask, I.tcdh);
 	half 	mag	= dot 		(mask,1);
 			mask= mask/mag	;
+			
+	float2 tc_r = UpdateTerrainTC(I, s_dp_r);
+	float2 tc_g = UpdateTerrainTC(I, s_dp_g);
+	float2 tc_b = UpdateTerrainTC(I, s_dp_b);
+	float2 tc_a = UpdateTerrainTC(I, s_dp_a);
 
-	half3	d_R	= tex2D		(s_dt_r, I.tcdbump)*mask.r;
-	half3	d_G	= tex2D		(s_dt_g, I.tcdbump)*mask.g;
-	half3	d_B	= tex2D		(s_dt_b, I.tcdbump)*mask.b;
-	half3	d_A	= tex2D		(s_dt_a, I.tcdbump)*mask.a;
+	half3	d_R	= tex2D		(s_dt_r, tc_r)*mask.r;
+	half3	d_G	= tex2D		(s_dt_g, tc_g)*mask.g;
+	half3	d_B	= tex2D		(s_dt_b, tc_b)*mask.b;
+	half3	d_A	= tex2D		(s_dt_a, tc_a)*mask.a;
 	half3	dt	= d_R+d_G+d_B+d_A;
 		D.rgb	= 2*D.rgb*dt	 ;
 
   # ifdef USE_4_BUMP
 
- 	 half4	n_Rt = tex2D	(s_dn_r, I.tcdbump).wzyx;
-	 half4	n_Gt = tex2D	(s_dn_g, I.tcdbump).wzyx;
-	 half4	n_Bt = tex2D	(s_dn_b, I.tcdbump).wzyx;
-	 half4	n_At = tex2D	(s_dn_a, I.tcdbump).wzyx;
+ 	 half4	n_Rt = tex2D	(s_dn_r, tc_r).wzyx;
+	 half4	n_Gt = tex2D	(s_dn_g, tc_g).wzyx;
+	 half4	n_Bt = tex2D	(s_dn_b, tc_b).wzyx;
+	 half4	n_At = tex2D	(s_dn_a, tc_a).wzyx;
 	 
  	 half3	n_R = (n_Rt-0.5)*mask.r; half g_R=n_Rt.w*mask.r;
 	 half3	n_G = (n_Gt-0.5)*mask.g; half g_G=n_Gt.w*mask.g;

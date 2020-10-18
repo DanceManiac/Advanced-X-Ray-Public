@@ -47,6 +47,7 @@
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
 uniform half4 				 u_weather; // .xyz - sky color, .w - rain line param
+uniform half4 				 lowland_fog_params; // x - low fog height, y - low fog density, z - base height, w - null
 uniform half4                hemi_cube_pos_faces;
 uniform half4                hemi_cube_neg_faces;
 uniform half4                L_material;                            // 0,0,0,mid
@@ -210,6 +211,11 @@ uniform sampler2D       s_dn_r;                	//
 uniform sampler2D       s_dn_g;                	//
 uniform sampler2D       s_dn_b;                	//
 uniform sampler2D       s_dn_a;                	//
+
+uniform sampler2D 		s_dp_r;                	//
+uniform sampler2D 		s_dp_g;                	//
+uniform sampler2D 		s_dp_b;                	//
+uniform sampler2D 		s_dp_a;                	//
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // Lighting/shadowing phase                     //
