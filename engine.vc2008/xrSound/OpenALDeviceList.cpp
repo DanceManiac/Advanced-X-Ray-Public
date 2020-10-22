@@ -91,11 +91,13 @@ void ALDeviceList::Enumerate()
 		// Also we assume that if "Generic Hardware" exists, than "Generic Software" is also exists
 		// Maybe wrong
 		
+#if 0
 		if(0==stricmp(m_defaultDeviceName, AL_GENERIC_HARDWARE))
 		{
 			xr_strcpy			(m_defaultDeviceName, AL_GENERIC_SOFTWARE);
 			Msg("SOUND: OpenAL: default SndDevice name set to %s", m_defaultDeviceName);
 		}
+#endif
 
 		index				= 0;
 		// go through device list (each device terminated with a single NULL, list terminated with double NULL)
