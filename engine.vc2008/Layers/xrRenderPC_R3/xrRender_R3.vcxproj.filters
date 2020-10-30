@@ -184,6 +184,9 @@
     <Filter Include="Debug">
       <UniqueIdentifier>{309d7795-2f45-48b5-8582-345f667961fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imgui_render">
+      <UniqueIdentifier>{bc8d142b-09a8-4cb4-b406-9fdf362bb8e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -740,6 +743,9 @@
     </ClInclude>
     <ClInclude Include="blender_hud_mask.h">
       <Filter>Shading templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRenderDX10\imgui_impl_dx10.h">
+      <Filter>imgui_render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1375,6 +1381,9 @@
     </ClCompile>
     <ClCompile Include="r3_rendertarget_phase_hud_mask.cpp">
       <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\imgui_impl_dx10.cpp">
+      <Filter>imgui_render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

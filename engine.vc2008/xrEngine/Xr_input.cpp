@@ -579,3 +579,11 @@ void  CInput::feedback(u16 s1, u16 s2, float time)
 //.	set_vibration (s1, s2);
 #endif
 }
+
+int CInput::scancodeToChar(int scanCode, uint16_t ch[2])
+{
+	UINT vk = MapVirtualKey(scanCode, MAPVK_VSC_TO_VK);
+	if (vk == 0)
+		return 0;
+	return ToAscii(vk, scanCode, KBState, ch, 0);
+}

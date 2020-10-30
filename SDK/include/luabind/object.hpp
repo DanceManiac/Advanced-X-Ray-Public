@@ -510,15 +510,10 @@ namespace luabind
 
 	class LUABIND_API object
 	{
-
-#if !(defined (BOOST_MSVC) && (BOOST_MSVC <= 1200))
-
 	template<class T>
 	friend T object_cast(const object& obj);
 	template<class T>
 	friend struct detail::primitive_converter;
-
-#endif
 
 	friend object get_globals(lua_State*);
 	friend object get_registry(lua_State*);

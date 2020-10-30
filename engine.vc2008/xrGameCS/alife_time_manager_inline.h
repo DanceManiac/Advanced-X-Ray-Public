@@ -34,3 +34,10 @@ IC	float			CALifeTimeManager::normal_time_factor	() const
 {
 	return						(m_normal_time_factor);
 }
+
+IC void CALifeTimeManager::set_game_time_factor(ALife::_TIME_ID gameTime, const float timeFactor)
+{
+	m_game_time = gameTime;
+	m_start_time = Device.dwTimeGlobal;
+	m_time_factor = timeFactor;
+}

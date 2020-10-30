@@ -335,6 +335,9 @@ public:
 	void				SetGameTimeFactor		(const float fTimeFactor);
 	void				SetGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
 	virtual void		SetEnvironmentGameTimeFactor(u64 const& GameTime, float const& fTimeFactor);
+	virtual float		GetEnvironmentTimeFactor() const; // override;
+	virtual void		SetEnvironmentTimeFactor(const float fTimeFactor); // override;
+	virtual u64			GetEnvironmentGameTime	() const; // override
 
 	// gets current daytime [0..23]
 	u8					GetDayTime				();

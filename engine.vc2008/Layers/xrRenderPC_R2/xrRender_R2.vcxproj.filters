@@ -160,6 +160,9 @@
     <Filter Include="Interfase implementations\UI\UISequenceVideoItem">
       <UniqueIdentifier>{36276a7f-f712-4328-b134-8f6485cfa872}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imgui_render">
+      <UniqueIdentifier>{51d720e3-210b-4767-afa6-af4b01394302}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl_intersect.h">
@@ -650,6 +653,9 @@
     </ClInclude>
     <ClInclude Include="blender_hud_mask.h">
       <Filter>Shading templates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRenderDX9\imgui_impl_dx9.h">
+      <Filter>imgui_render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1189,6 +1195,9 @@
     </ClCompile>
     <ClCompile Include="r2_rendertarget_phase_hud_mask.cpp">
       <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX9\imgui_impl_dx9.cpp">
+      <Filter>imgui_render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

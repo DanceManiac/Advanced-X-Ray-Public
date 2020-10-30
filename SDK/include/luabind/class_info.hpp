@@ -41,9 +41,9 @@ namespace luabind
 		object attributes;
 	};
 
-	class_info get_class_info(const object&);
+LUABIND_API	class_info get_class_info(const object&);
 
-	void bind_class_info(lua_State*);
+	LUABIND_API void bind_class_info(lua_State*);
 }
 
 #endif

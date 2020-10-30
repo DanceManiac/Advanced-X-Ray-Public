@@ -2578,6 +2578,9 @@
     <Filter Include="UI\Tutorial">
       <UniqueIdentifier>{8a004816-5370-4fa7-8d4f-a9f909934d14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EmbeddedEditor">
+      <UniqueIdentifier>{ce5a2bf0-cb8c-429e-a751-e9f672d23e9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7473,6 +7476,15 @@
     <ClInclude Include="ui\UIGameTutorial.h">
       <Filter>UI\Tutorial</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_helper.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_main.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_weather.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11122,6 +11134,15 @@
     </ClCompile>
     <ClCompile Include="ui\UIGameTutorialVideoItem.cpp">
       <Filter>UI\Tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

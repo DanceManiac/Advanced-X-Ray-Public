@@ -81,6 +81,7 @@ public:
 	bool				operator!	() const						{	return p_ == 0;									}
 	char				operator[]	(size_t id)						{	return p_->value[id];							}
 	str_c				c_str		() const						{	return p_?p_->value:0;							}
+	str_c				data		() const						{ return p_ ? p_->value : "";						}
 
 	// misc func
 	u32					size		()						const	{	if (0==p_) return 0; else return p_->dwLength;	}

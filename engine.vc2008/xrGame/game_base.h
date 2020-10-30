@@ -176,12 +176,12 @@ public:
 	virtual		ALife::_TIME_ID		GetStartGameTime		();
 	virtual		ALife::_TIME_ID		GetGameTime				();	
 	virtual		float				GetGameTimeFactor		();	
-				void				SetGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
+	virtual		void				SetGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
 	virtual		void				SetGameTimeFactor		(const float fTimeFactor);
 	
 
 	virtual		ALife::_TIME_ID		GetEnvironmentGameTime	();
 	virtual		float				GetEnvironmentGameTimeFactor		();
-				void				SetEnvironmentGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
+	virtual		void				SetEnvironmentGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
 	virtual		void				SetEnvironmentGameTimeFactor		(const float fTimeFactor);
 };

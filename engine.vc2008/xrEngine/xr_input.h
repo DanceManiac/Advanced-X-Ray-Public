@@ -52,7 +52,7 @@ private:
 	BOOL						mouseState	[COUNT_MOUSE_BUTTONS];
 
 	//----------------------
-	BOOL						KBState		[COUNT_KB_BUTTONS];
+	uint8_t						KBState		[COUNT_KB_BUTTONS];
 
 	HRESULT						CreateInputDevice(	LPDIRECTINPUTDEVICE8* device, GUID guidDevice,
 													const DIDATAFORMAT* pdidDataFormat, u32 dwFlags,
@@ -96,6 +96,7 @@ public:
 			bool				get_dik_name				(int dik, LPSTR dest, int dest_sz);
 
 			void				feedback					(u16 s1, u16 s2, float time);
+			int					scancodeToChar				(int scanCode, uint16_t ch[2]);
 };
 
 extern ENGINE_API CInput *		pInput;

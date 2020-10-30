@@ -14,6 +14,10 @@
 #include "StateManager\dx10SamplerStateCache.h"
 #include "StateManager\dx10StateCache.h"
 
+#include <imgui.h>
+#include "imgui_impl_dx10.h"
+#include "imgui_impl_dx11.h"
+
 #ifndef _EDITOR
 void	fill_vid_mode_list			(CHW* _hw);
 void	free_vid_mode_list			();
@@ -426,10 +430,21 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	updateWindowProps							(m_hWnd);
 	fill_vid_mode_list							(this);
 #endif
+
+#ifdef USE_DX11
+	ImGui_ImplDX11_Init(m_hWnd, pDevice, pContext);
+#else
+	ImGui_ImplDX10_Init(m_hWnd, pDevice);
+#endif
 }
 
 void CHW::DestroyDevice()
 {
+#ifdef USE_DX11
+	ImGui_ImplDX11_Shutdown();
+#else
+	ImGui_ImplDX10_Shutdown();
+#endif
 	//	Destroy state managers
 	StateManager.Reset();
 	RSManager.ClearStateArray();
@@ -475,6 +490,12 @@ void CHW::DestroyDevice()
 //////////////////////////////////////////////////////////////////////
 void CHW::Reset (HWND hwnd)
 {
+#ifdef USE_DX11
+	ImGui_ImplDX11_InvalidateDeviceObjects();
+#else
+	ImGui_ImplDX10_InvalidateDeviceObjects();
+#endif
+
 	DXGI_SWAP_CHAIN_DESC &cd = m_ChainDesc;
 
 	BOOL	bWindowed		= !psDeviceFlags.is	(rsFullscreen);
@@ -579,6 +600,12 @@ void CHW::Reset (HWND hwnd)
 	updateWindowProps	(hwnd);
 #endif
 	*/
+
+#ifdef USE_DX11
+	ImGui_ImplDX11_CreateDeviceObjects();
+#else
+	ImGui_ImplDX10_CreateDeviceObjects();
+#endif
 }
 
 D3DFORMAT CHW::selectDepthStencil	(D3DFORMAT fTarget)

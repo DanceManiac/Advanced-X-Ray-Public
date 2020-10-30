@@ -121,7 +121,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft DirectX SDK (March 2009)\Include;../../../sdk/include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\Microsoft DirectX SDK (March 2009)\Include;../../../sdk/include/;$(SolutionDir)3rd party/imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_DX10;WIN32;NDEBUG;_WINDOWS;_USRDLL;XRRENDER_R3_EXPORTS;_SECURE_SCL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling />
@@ -243,6 +243,7 @@
     <ClInclude Include="..\xrRenderDX10\dx10r_constants_cache.h" />
     <ClInclude Include="..\xrRenderDX10\dx10StateUtils.h" />
     <ClInclude Include="..\xrRenderDX10\dx10TextureUtils.h" />
+    <ClInclude Include="..\xrRenderDX10\imgui_impl_dx10.h" />
     <ClInclude Include="..\xrRenderDX10\MSAA\dx10MSAABlender.h" />
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10SamplerStateCache.h" />
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10ShaderResourceStateCache.h" />
@@ -413,6 +414,10 @@
     <ClCompile Include="..\xrRenderDX10\dx10StateUtils.cpp" />
     <ClCompile Include="..\xrRenderDX10\dx10Texture.cpp" />
     <ClCompile Include="..\xrRenderDX10\dx10TextureUtils.cpp" />
+    <ClCompile Include="..\xrRenderDX10\imgui_impl_dx10.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4456;4457;4458;4459;4577;4595</DisableSpecificWarnings>
+    </ClCompile>
     <ClCompile Include="..\xrRenderDX10\MSAA\dx10MSAABlender.cpp" />
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10SamplerStateCache.cpp" />
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10ShaderResourceStateCache.cpp" />
@@ -618,6 +623,9 @@
     <None Include="VTune\xrRender_R3.vpj" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\3rd party\imgui\imgui.vcxproj">
+      <Project>{c8fbc3ce-d6de-4fc3-bc15-7b647614db09}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\xrCPU_Pipe\xrCPU_Pipe.vcxproj">
       <Project>{ca0649dd-d089-423a-981c-46b57a884eb9}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

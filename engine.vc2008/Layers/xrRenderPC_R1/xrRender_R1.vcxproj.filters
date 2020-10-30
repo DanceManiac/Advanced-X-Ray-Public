@@ -154,6 +154,9 @@
     <Filter Include="Models\Visuals">
       <UniqueIdentifier>{ad9d2b78-442c-47a9-9151-3a062b8546a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imgui_render">
+      <UniqueIdentifier>{c740ee0a-716c-4441-88fc-b4255b70d58f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\xrRender\cl_intersect.h">
@@ -600,6 +603,9 @@
     <ClInclude Include="..\xrRender\ParticleGroup.h">
       <Filter>Models\Visuals</Filter>
     </ClInclude>
+    <ClInclude Include="..\xrRenderDX9\imgui_impl_dx9.h">
+      <Filter>imgui_render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1000,6 +1006,9 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\ParticleGroup.cpp">
       <Filter>Models\Visuals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX9\imgui_impl_dx9.cpp">
+      <Filter>imgui_render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

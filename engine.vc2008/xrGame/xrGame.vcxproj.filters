@@ -2488,6 +2488,9 @@
     <Filter Include="Physics\scripts">
       <UniqueIdentifier>{1de78397-bd31-4532-b2e2-a3d8aad04d54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EmbeddedEditor">
+      <UniqueIdentifier>{31bb450c-ccdf-490a-a0be-a71c3d69d2a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7377,6 +7380,15 @@
     <ClInclude Include="physics_world_scripted.h">
       <Filter>Physics\scripts</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_main.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_weather.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_helper.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11023,6 +11035,15 @@
     </ClCompile>
     <ClCompile Include="death_anims_predicates.cpp">
       <Filter>Physics\CharacterSupport\death_anims</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

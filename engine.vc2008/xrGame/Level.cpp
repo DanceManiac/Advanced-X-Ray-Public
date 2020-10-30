@@ -63,6 +63,8 @@
 #	include "debug_text_tree.h"
 #endif
 
+#include "embedded_editor/embedded_editor_main.h"
+
 ENGINE_API bool g_dedicated_server;
 
 //extern BOOL	g_bDebugDumpPhysicsStep;
@@ -767,6 +769,7 @@ void CLevel::OnFrame	()
 		pStatGraphR->AppendItem(float(m_dwRPC)*fRPC_Mult, 0xffff0000, 1);
 		pStatGraphR->AppendItem(float(m_dwRPS)*fRPS_Mult, 0xff00ff00, 0);
 	};
+	ShowEditor();
 }
 
 int		psLUA_GCSTEP					= 10			;
@@ -1167,10 +1170,30 @@ void CLevel::GetGameDateTime	(u32& year, u32& month, u32& day, u32& hours, u32& 
 	split_time(GetGameTime(), year, month, day, hours, mins, secs, milisecs);
 }
 
+float CLevel::GetEnvironmentTimeFactor() const
+{
+	if (!game)
+		return 0.0f;
+	return game->GetEnvironmentGameTimeFactor();
+}
+
+void CLevel::SetEnvironmentTimeFactor(const float fTimeFactor)
+{
+	if (!game)
+		return;
+	game->SetEnvironmentGameTimeFactor(fTimeFactor);
+}
 
 float CLevel::GetGameTimeFactor()
 {
 	return			(game->GetGameTimeFactor());
+}
+
+u64 CLevel::GetEnvironmentGameTime() const
+{
+	if (!game)
+		return 0;
+	return game->GetEnvironmentGameTime();
 }
 
 void CLevel::SetGameTimeFactor(const float fTimeFactor)
@@ -1190,6 +1213,7 @@ void CLevel::SetEnvironmentGameTimeFactor(u64 const& GameTime, float const& fTim
 
 	game->SetEnvironmentGameTimeFactor(GameTime, fTimeFactor);
 }
+
 bool CLevel::IsServer ()
 {
 	if (!Server || IsDemoPlayStarted()) return false;

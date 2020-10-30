@@ -108,6 +108,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGameCS", "xrGameCS\xrGame
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DiscordRPC", "3rd party\DiscordRPC\DiscordRPC.vcxproj", "{464C98E8-CB6D-4DBC-9AC0-275F24C6A987}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "3rd party\imgui\imgui.vcxproj", "{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Dedicated|Win32 = Debug_Dedicated|Win32
@@ -1296,6 +1298,40 @@ Global
 		{464C98E8-CB6D-4DBC-9AC0-275F24C6A987}.Release|x64.ActiveCfg = Release|x64
 		{464C98E8-CB6D-4DBC-9AC0-275F24C6A987}.Release|x64.Build.0 = Release|x64
 		{464C98E8-CB6D-4DBC-9AC0-275F24C6A987}.Release|Xbox 360.ActiveCfg = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug_Dedicated|Win32.ActiveCfg = Debug|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug_Dedicated|Win32.Build.0 = Debug|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug_Dedicated|x64.ActiveCfg = Debug|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug_Dedicated|x64.Build.0 = Debug|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug_Dedicated|Xbox 360.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug_Dedicated|Xbox 360.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug|Win32.Build.0 = Debug|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug|x64.ActiveCfg = Debug|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug|x64.Build.0 = Debug|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Debug|Xbox 360.ActiveCfg = Debug|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed_Dedicated|Win32.ActiveCfg = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed_Dedicated|Win32.Build.0 = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed_Dedicated|x64.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed_Dedicated|x64.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed_Dedicated|Xbox 360.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed_Dedicated|Xbox 360.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed|Win32.ActiveCfg = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed|Win32.Build.0 = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed|x64.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed|x64.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed|Xbox 360.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Mixed|Xbox 360.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release_Dedicated|Win32.ActiveCfg = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release_Dedicated|Win32.Build.0 = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release_Dedicated|x64.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release_Dedicated|x64.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release_Dedicated|Xbox 360.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release_Dedicated|Xbox 360.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release|Win32.ActiveCfg = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release|Win32.Build.0 = Release|Win32
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release|x64.ActiveCfg = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release|x64.Build.0 = Release|x64
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09}.Release|Xbox 360.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1332,6 +1368,7 @@ Global
 		{1924EF23-A05E-40E5-93F2-6CCD64BE1F8B} = {89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}
 		{893279CB-0805-405F-B484-9BB728A18261} = {6BE93BFF-E2B4-43F2-ADBB-F8971E43CD5A}
 		{464C98E8-CB6D-4DBC-9AC0-275F24C6A987} = {2BFC806B-CE92-4EA4-8FE8-5F2EA54BA348}
+		{C8FBC3CE-D6DE-4FC3-BC15-7B647614DB09} = {2BFC806B-CE92-4EA4-8FE8-5F2EA54BA348}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {283579B6-2B38-4F65-9A16-23C5E4F755F3}
