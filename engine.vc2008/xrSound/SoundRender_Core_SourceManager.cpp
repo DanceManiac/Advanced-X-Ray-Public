@@ -21,8 +21,3 @@ CSoundRender_Source*	CSoundRender_Core::i_create_source		(LPCSTR name)
 	s_sources.push_back		(S);
 	return S;
 }
-
-void					CSoundRender_Core::i_destroy_source		(CSoundRender_Source*  S)
-{
-	// No actual destroy at all
-}

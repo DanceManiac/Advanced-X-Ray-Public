@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include ".\soundrender_cache.h"
+#include "SoundRender_cache.h"
 
 CSoundRender_Cache::CSoundRender_Cache	()
 {
@@ -50,7 +50,6 @@ BOOL	CSoundRender_Cache::request		(cache_cat& cat, u32 id)
 {
 	// 1. check if cached version available
 	id				%= cat.size;
-//.	R_ASSERT		(id<cat.size);
 	u16&	cptr	= cat.table[id];
 	if (CAT_FREE != cptr)	{
 		// cache line exists - change it's priority and return

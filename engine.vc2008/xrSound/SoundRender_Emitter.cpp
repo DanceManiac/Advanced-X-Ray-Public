@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "soundrender_emitter.h"
-#include "soundrender_core.h"
-#include "soundrender_source.h"
-#include "soundrender_targetA.h"
+#include "SoundRender_Emitter.h"
+#include "SoundRender_Core.h"
+#include "SoundRender_Source.h"
+#include "SoundRender_TargetA.h"
 
 extern	u32				psSoundModel;
 extern	float			psSoundVEffects;
@@ -121,7 +121,6 @@ void CSoundRender_Emitter::set_cursor(u32 p)
 		u32 bt = ((CSoundRender_Source*)owner_data->handle)->dwBytesTotal;
 		if(m_stream_cursor >= m_cur_handle_cursor+bt )
 		{
-			SoundRender->i_destroy_source	((CSoundRender_Source*)owner_data->handle);
 			owner_data->handle				= SoundRender->i_create_source(owner_data->fn_attached[0].c_str());
 			owner_data->fn_attached[0]		= owner_data->fn_attached[1];
 			owner_data->fn_attached[1]		= "";

@@ -8,40 +8,6 @@
 
 void	CSoundRender_Emitter::fill_data(u8* _dest, u32 offset, u32 size)
 {
-/*
-	Msg				("stream: %10s - %d",*source->fname,size);
-	CopyMemory	(_dest,&source->m_buffer.front()+offset,size);
-	return;
-//*/
-/*
-	Memory.mem_fill	(_dest,0,size);	// debug only
-	//	Msg			("stream: %10s - %d",*source->fname,size);
-	int				dummy;
-	ov_pcm_seek		(source->ovf,(psSoundFreq==sf_22K)?offset:offset/2);
-//	ov_pcm_seek		(source->ovf,0);
-	char* dest		= (char*)_dest;
-	u32	left		= size;
-	while (left)
-	{                     
-		int ret		= ov_read(source->ovf,dest,left,0,2,1,&dummy);
-//		Msg			("Part: %d - %d",left,ret);
-		if (ret==0){	
-        	ret=0;
-        	break;
-        }if (ret>0){
-			left		-= ret;
-			dest		+= ret;
-		}else{
-			switch (ret){
-			case OV_HOLE:		Msg("OV_HOLE");		continue; break;
-			case OV_EBADLINK:	Msg("OV_EBADLINK"); continue; break;
-			}
-			break;
-		}
-	}
-//	Msg			("Final: %d - %d",size,size-left);
-/*/
-//*
 	u32		line_size						= SoundRender->cache.get_linesize();
 	u32		line							= offset / line_size;
 
@@ -74,7 +40,6 @@ void	CSoundRender_Emitter::fill_data(u8* _dest, u32 offset, u32 size)
 
 void	CSoundRender_Emitter::fill_block	(void* ptr, u32 size)
 {
-	//Msg			("stream: %10s - [%X]:%d, p=%d, t=%d",*source->fname,ptr,size,position,source->dwBytesTotal);
 	LPBYTE		dest = LPBYTE(ptr);
 	u32 dwBytesTotal = get_bytes_total();
 

@@ -25,10 +25,8 @@
 
 #include "OpenALDeviceList.h"
 
-#pragma warning(push)
-#pragma warning(disable:4995)
 #include <objbase.h>
-#pragma warning(pop)
+#pragma warning(default: 4995)
 
 #ifdef _EDITOR
 	log_fn_ptr_type*	pLog = NULL;

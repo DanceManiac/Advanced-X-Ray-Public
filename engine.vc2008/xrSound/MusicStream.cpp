@@ -62,18 +62,10 @@ void	CMusicStream::DeleteSound	(CSoundStream* pSnd)
 void CMusicStream::OnMove()
 {
 	for(u32 i=0; i<streams.size(); i++) streams[i]->OnMove();
-/*	if (psDeviceFlags&rsStatistic)
-	{
-		int cnt = 0;
-		for(int i=0; i<streams.size(); i++) cnt+=streams[i]->isPlaying()?1:0;
-		pApp->pFont->Out(0,0.5f,"%d / %d",cnt,streams.size());
-	}
-*/
 }
 
 void CMusicStream::Reload()
 {
-	// ...
 }
 
 void CMusicStream::Update()

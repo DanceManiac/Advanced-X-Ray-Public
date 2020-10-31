@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #pragma hdrstop
-/*
+
 #include "soundrender_targetD.h"
 #include "soundrender.h"
-//. #include "soundrender_coreD.h"
+#include "soundrender_coreD.h"
 #include "soundrender_emitter.h"
 
 CSoundRender_TargetD::CSoundRender_TargetD():CSoundRender_Target()
@@ -103,7 +103,6 @@ void	CSoundRender_TargetD::stop			()
 	if (rendering){
 		R_CHK		(pBuffer->Stop());
 		R_CHK		(pControl->SetMode(DS3DMODE_HEADRELATIVE,DS3D_DEFERRED));
-//		R_CHK		(pControl->SetMode(DS3DMODE_DISABLE,DS3D_DEFERRED));
 	}
     inherited::stop	();
 }
@@ -143,8 +142,7 @@ void	CSoundRender_TargetD::update			()
 	R_CHK			(pBuffer->GetCurrentPosition(0,LPDWORD(&cursor_write)));
 	u32				r_write		= calc_interval(pos_write);
 	u32				r_cursor	= (calc_interval(cursor_write)+1)%sdef_target_count;
-	if (r_write==r_cursor)	fill_block	();     
-//	Msg				("write: 0x%8x",cursor_write);
+	if (r_write==r_cursor)	fill_block	();
 }
 
 void	CSoundRender_TargetD::fill_parameters()
@@ -202,4 +200,3 @@ void	CSoundRender_TargetD::fill_block		()
 
 	R_CHK			(pBuffer->Unlock(ptr1, bytes1, ptr2, bytes2));
 }
-*/

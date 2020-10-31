@@ -2,28 +2,28 @@
 #pragma hdrstop
 
 #include "../xrEngine/xrLevel.h"
-#include "soundrender_core.h"
-#include "soundrender_source.h"
-#include "soundrender_emitter.h"
+#include "SoundRender_Core.h"
+#include "SoundRender_Source.h"
+#include "SoundRender_Emitter.h"
 #pragma warning(push)
 #pragma warning(disable:4995)
 #include <eax/eax.h>
 #pragma warning(pop)
 
 int		psSoundTargets			= 32;
+int		psSoundCacheSizeMB		= 32;
 Flags32	psSoundFlags			= {ss_Hardware | ss_EAX};
 float	psSoundOcclusionScale	= 0.5f;
 float	psSoundCull				= 0.01f;
 float	psSoundRolloff			= 0.75f;
-u32		psSoundModel			= 0;
 float	psSoundVEffects			= 1.0f;
 float	psSoundVFactor			= 1.0f;
-
 float	psSoundVMusic			= 1.f;
-int		psSoundCacheSizeMB		= 32;
+u32		psSoundModel			= 0;
 
-CSoundRender_Core*				SoundRender = 0;
-CSound_manager_interface*		Sound		= 0;
+CSoundRender_Core* SoundRender = nullptr;
+CSound_manager_interface* Sound = nullptr;
+
 
 CSoundRender_Core::CSoundRender_Core	()
 {
@@ -50,13 +50,8 @@ CSoundRender_Core::CSoundRender_Core	()
 
 CSoundRender_Core::~CSoundRender_Core()
 {
-#ifdef _EDITOR
-	ETOOLS::destroy_model		(geom_ENV);
-	ETOOLS::destroy_model		(geom_SOM);
-#else
 	xr_delete					(geom_ENV);
 	xr_delete					(geom_SOM);
-#endif
 }
 
 void CSoundRender_Core::_initialize(int stage)
@@ -117,7 +112,7 @@ int CSoundRender_Core::pause_emitters(bool val)
 void CSoundRender_Core::env_load	()
 {
 	// Load environment
-	string_path					fn;
+	string_path	fn;
 	if (FS.exist(fn,"$game_data$",SNDENV_FILENAME))
 	{
 		s_environment				= xr_new<SoundEnvironment_LIB>();
@@ -135,8 +130,6 @@ void CSoundRender_Core::env_unload	()
 	if (s_environment)
 		s_environment->Unload	();
 	xr_delete					(s_environment);
-
-	// Unload geometry
 }
 
 void CSoundRender_Core::_restart		()
@@ -181,18 +174,7 @@ void CSoundRender_Core::set_geometry_som(IReader* I)
 		float		occ;
 	};
 	// Create AABB-tree
-#ifdef _EDITOR    
-	CDB::Collector*	CL			= ETOOLS::create_collector();
-	while (!geom->eof()){
-		SOM_poly				P;
-		geom->r					(&P,sizeof(P));
-        ETOOLS::collector_add_face_pd		(CL,P.v1,P.v2,P.v3,*(u32*)&P.occ,0.01f);
-		if (P.b2sided)
-			ETOOLS::collector_add_face_pd	(CL,P.v3,P.v2,P.v1,*(u32*)&P.occ,0.01f);
-	}
-	geom_SOM					= ETOOLS::create_model_cl(CL);
-    ETOOLS::destroy_collector	(CL);
-#else
+
 	CDB::Collector				CL;			
 	while (!geom->eof()){
 		SOM_poly				P;
@@ -203,7 +185,6 @@ void CSoundRender_Core::set_geometry_som(IReader* I)
 	}
 	geom_SOM			= xr_new<CDB::MODEL> ();
 	geom_SOM->build		(CL.getV(),int(CL.getVS()),CL.getT(),int(CL.getTS()));
-#endif
 
 	geom->close();
 }
@@ -277,13 +258,7 @@ void	CSoundRender_Core::attach_tail				( ref_sound& S, const char* fName)
 	string_path			fn;
 	xr_strcpy			(fn,fName);
     if (strext(fn))		*strext(fn)	= 0;
-	if(S._p->fn_attached[0].size()&&S._p->fn_attached[1].size())
-	{
-#ifdef DEBUG
-		Msg("! 2 file already in queue [%s][%s]",S._p->fn_attached[0].c_str(),S._p->fn_attached[1].c_str());
-#endif // #ifdef DEBUG
-		return;
-	}
+	if (S._p->fn_attached[0].size() && S._p->fn_attached[1].size()) return;
 
 	u32 idx = S._p->fn_attached[0].size()?1:0;
 	
@@ -294,8 +269,6 @@ void	CSoundRender_Core::attach_tail				( ref_sound& S, const char* fName)
 	S._p->fTimeTotal				+= s->length_sec();
     if(S._feedback())
     	((CSoundRender_Emitter*)S._feedback())->fTimeToStop		+= s->length_sec();
-
-	SoundRender->i_destroy_source	(s);
 }
 
 void	CSoundRender_Core::clone				( ref_sound& S, const ref_sound& from, esound_type sound_type, int	game_type )
@@ -390,7 +363,6 @@ void CSoundRender_Core::_destroy_data( ref_sound_data& S)
 		E->stop						(FALSE);
 	}
 	R_ASSERT						(0==S.feedback);
-	SoundRender->i_destroy_source	((CSoundRender_Source*)S.handle);
 	
 	S.handle						= NULL;
 }
@@ -399,10 +371,10 @@ CSoundRender_Environment*	CSoundRender_Core::get_environment			( const Fvector& 
 {
 	static CSoundRender_Environment	identity;
 
-	if (bUserEnvironment){
-		return &s_user_environment;
-	}else{
-		if (geom_ENV){
+	if (!bUserEnvironment)
+	{
+		if (geom_ENV)
+		{
 			Fvector	dir				= {0,-1,0};
 #ifdef _EDITOR
 			ETOOLS::ray_options		(CDB::OPT_ONLYNEAREST);
@@ -412,44 +384,36 @@ CSoundRender_Environment*	CSoundRender_Core::get_environment			( const Fvector& 
 #else
 			geom_DB.ray_options		(CDB::OPT_ONLYNEAREST);
 			geom_DB.ray_query		(geom_ENV,P,dir,1000.f);
-			if (geom_DB.r_count()){
+			if (geom_DB.r_count())
+			{
 				CDB::RESULT*		r	= geom_DB.r_begin();
 #endif            
-				CDB::TRI*			T	= geom_ENV->get_tris()+r->id;
-				Fvector*			V	= geom_ENV->get_verts();
+				CDB::TRI*		T = geom_ENV->get_tris() + r->id;
+				Fvector*		V = geom_ENV->get_verts();
 				Fvector tri_norm;
 				tri_norm.mknormal		(V[T->verts[0]],V[T->verts[1]],V[T->verts[2]]);
 				float	dot				= dir.dotproduct(tri_norm);
-				if (dot<0){
+				if (dot < 0)
+				{
 					u16		id_front	= (u16)((T->dummy&0x0000ffff)>>0);		//	front face
 					return	s_environment->Get(id_front);
-				}else{
+				}
+				else
+				{
 					u16		id_back		= (u16)((T->dummy&0xffff0000)>>16);	//	back face
 					return	s_environment->Get(id_back);
 				}
-			}else{
-				identity.set_identity	();
-				return &identity;
 			}
-		}else{
-			identity.set_identity	();
-			return &identity;
 		}
 	}
+	else return &s_user_environment;
+
+	identity.set_identity();
+	return &identity;
 }
 
 void CSoundRender_Core::env_apply		()
 {
-/*
-	// Force all sounds to change their environment
-	// (set their positions to signal changes in environment)
-	for (u32 it=0; it<s_emitters.size(); it++)
-	{
-		CSoundRender_Emitter*	pEmitter	= s_emitters[it];
-		const CSound_params*	pParams		= pEmitter->get_params	();
-		pEmitter->set_position	(pParams->position);
-	}
-*/
     bListenerMoved			= TRUE;
 }
 
@@ -522,13 +486,11 @@ void CSoundRender_Core::i_eax_commit_setting()
 
 void CSoundRender_Core::object_relcase( CObject* obj )
 {
-	if (obj){
-		for (u32 eit=0; eit<s_emitters.size(); eit++){
-        	if (s_emitters[eit])
-                if (s_emitters[eit]->owner_data)
-                 	if (obj==s_emitters[eit]->owner_data->g_object) 
-	                    s_emitters[eit]->owner_data->g_object	= 0;     
-        }
+	if (obj) for (u32 eit = 0; eit < s_emitters.size(); eit++)
+	{
+		if (s_emitters[eit] && s_emitters[eit]->owner_data)
+			if (obj == s_emitters[eit]->owner_data->g_object)
+				s_emitters[eit]->owner_data->g_object = 0;
     }
 }
 

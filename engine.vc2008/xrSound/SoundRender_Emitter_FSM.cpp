@@ -139,13 +139,6 @@ void CSoundRender_Emitter::update(float dt)
 			{
 				// switch to: PLAY
 				m_current_state				= stPlaying;
-/*
-				u32 ptr						= calc_cursor(	fTimeStarted, 
-															fTime, 
-															get_length_sec(), 
-															source()->m_wformat); 
-				set_cursor					(ptr);
-*/
 				SoundRender->i_start		(this);
 			}
 		}
@@ -195,7 +188,6 @@ void CSoundRender_Emitter::update(float dt)
 		break;
 	}
 
-	// if deffered stop active and volume==0 -> physically stop sound
 	if (bStopping&&fis_zero(fade_volume)) 
 		i_stop();
 

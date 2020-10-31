@@ -1,5 +1,5 @@
-#ifndef soundrender_environmentH
-#define soundrender_environmentH
+#ifndef SoundRender_EnvironmentH
+#define SoundRender_EnvironmentH
 #pragma once
 
 // refs
