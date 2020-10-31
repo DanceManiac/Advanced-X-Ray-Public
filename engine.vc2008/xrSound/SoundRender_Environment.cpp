@@ -5,7 +5,7 @@
 #include "SoundRender_Environment.h"
 #pragma warning(push)
 #pragma warning(disable:4995)
-#include <eax/eax.h>
+#include <openal\efx.h>
 #pragma warning(pop)
 
 CSoundRender_Environment::CSoundRender_Environment(void)
@@ -20,25 +20,26 @@ CSoundRender_Environment::~CSoundRender_Environment(void)
 
 void CSoundRender_Environment::set_default	()
 {
-	Environment				= EAX_ENVIRONMENT_GENERIC;
-    Room                    = EAXLISTENER_DEFAULTROOM;
-    RoomHF                  = EAXLISTENER_DEFAULTROOMHF;
-    RoomRolloffFactor       = EAXLISTENER_DEFAULTROOMROLLOFFFACTOR;
-    DecayTime               = EAXLISTENER_DEFAULTDECAYTIME;
-    DecayHFRatio            = EAXLISTENER_DEFAULTDECAYHFRATIO;
-    Reflections             = EAXLISTENER_DEFAULTREFLECTIONS;
-    ReflectionsDelay        = EAXLISTENER_DEFAULTREFLECTIONSDELAY;
-    Reverb                  = EAXLISTENER_DEFAULTREVERB;
-    ReverbDelay             = EAXLISTENER_DEFAULTREVERBDELAY;
-    EnvironmentSize         = EAXLISTENER_DEFAULTENVIRONMENTSIZE;
-    EnvironmentDiffusion    = EAXLISTENER_DEFAULTENVIRONMENTDIFFUSION;
-    AirAbsorptionHF         = EAXLISTENER_DEFAULTAIRABSORPTIONHF;
+	Environment			= 0u;
+	Room				= AL_REVERB_DEFAULT_GAIN;
+	RoomHF				= AL_REVERB_DEFAULT_GAINHF;
+	RoomRolloffFactor	= AL_REVERB_DEFAULT_ROOM_ROLLOFF_FACTOR;
+	DecayTime			= AL_REVERB_DEFAULT_DECAY_TIME;
+	DecayHFRatio		= AL_REVERB_DEFAULT_DECAY_HFRATIO;
+	Reflections			= AL_REVERB_DEFAULT_REFLECTIONS_GAIN;
+	ReflectionsDelay	= AL_REVERB_DEFAULT_REFLECTIONS_DELAY;
+	Reverb				= AL_REVERB_DEFAULT_LATE_REVERB_GAIN;
+	ReverbDelay			= AL_REVERB_DEFAULT_LATE_REVERB_DELAY;
+	EnvironmentSize		= 7.5f;
+	EnvironmentDiffusion= AL_REVERB_DEFAULT_DIFFUSION;
+	AirAbsorptionHF		= AL_REVERB_DEFAULT_AIR_ABSORPTION_GAINHF;
+
 }
 
 void CSoundRender_Environment::set_identity	()
 {
 	set_default				();
-    Room                    = EAXLISTENER_MINROOM;
+	Room				= AL_REVERB_MIN_GAIN;
 	clamp				  	();
 }
 
@@ -83,40 +84,47 @@ void CSoundRender_Environment::get			(EAXLISTENERPROPERTIES& ep)
 */
 void CSoundRender_Environment::clamp		()
 {
-    ::clamp(Room,             		(float)EAXLISTENER_MINROOM, 	  	(float)EAXLISTENER_MAXROOM			);
-    ::clamp(RoomHF,              	(float)EAXLISTENER_MINROOMHF, 	  	(float)EAXLISTENER_MAXROOMHF		);
-    ::clamp(RoomRolloffFactor,   	EAXLISTENER_MINROOMROLLOFFFACTOR, 	EAXLISTENER_MAXROOMROLLOFFFACTOR	);
-    ::clamp(DecayTime,           	EAXLISTENER_MINDECAYTIME, 			EAXLISTENER_MAXDECAYTIME			);
-    ::clamp(DecayHFRatio,        	EAXLISTENER_MINDECAYHFRATIO, 		EAXLISTENER_MAXDECAYHFRATIO			);
-    ::clamp(Reflections,         	(float)EAXLISTENER_MINREFLECTIONS,	(float)EAXLISTENER_MAXREFLECTIONS	);
-    ::clamp(ReflectionsDelay,    	EAXLISTENER_MINREFLECTIONSDELAY, 	EAXLISTENER_MAXREFLECTIONSDELAY		);
-    ::clamp(Reverb,              	(float)EAXLISTENER_MINREVERB, 	  	(float)EAXLISTENER_MAXREVERB		);
-    ::clamp(ReverbDelay,         	EAXLISTENER_MINREVERBDELAY, 		EAXLISTENER_MAXREVERBDELAY			);
-    ::clamp(EnvironmentSize,     	EAXLISTENER_MINENVIRONMENTSIZE, 	EAXLISTENER_MAXENVIRONMENTSIZE		);
-    ::clamp(EnvironmentDiffusion,	EAXLISTENER_MINENVIRONMENTDIFFUSION,EAXLISTENER_MAXENVIRONMENTDIFFUSION	);
-    ::clamp(AirAbsorptionHF,     	EAXLISTENER_MINAIRABSORPTIONHF, 	EAXLISTENER_MAXAIRABSORPTIONHF		);
+	::clamp(Room, AL_REVERB_MIN_GAIN, AL_REVERB_MAX_GAIN);
+	::clamp(RoomHF, AL_REVERB_MIN_GAINHF, AL_REVERB_MAX_GAINHF);
+	::clamp(RoomRolloffFactor, AL_REVERB_MIN_ROOM_ROLLOFF_FACTOR, AL_REVERB_MAX_ROOM_ROLLOFF_FACTOR);
+	::clamp(DecayTime, AL_REVERB_MIN_DECAY_TIME, AL_REVERB_MAX_DECAY_TIME);
+	::clamp(DecayHFRatio, AL_REVERB_MIN_DECAY_HFRATIO, AL_REVERB_MAX_DECAY_HFRATIO);
+	::clamp(Reflections, AL_REVERB_MIN_REFLECTIONS_GAIN, AL_REVERB_MAX_REFLECTIONS_GAIN);
+	::clamp(ReflectionsDelay, AL_REVERB_MIN_REFLECTIONS_DELAY, AL_REVERB_MAX_REFLECTIONS_DELAY);
+	::clamp(Reverb, AL_REVERB_MIN_LATE_REVERB_GAIN, AL_REVERB_MAX_LATE_REVERB_GAIN);
+	::clamp(ReverbDelay, AL_REVERB_MIN_LATE_REVERB_DELAY, AL_REVERB_MAX_LATE_REVERB_DELAY);
+	::clamp(AirAbsorptionHF, AL_REVERB_MIN_AIR_ABSORPTION_GAINHF, AL_REVERB_MAX_AIR_ABSORPTION_GAINHF);
+
+	::clamp(EnvironmentDiffusion, 0.f, 1.f);
+	::clamp(EnvironmentSize, 1.f, 100.f);
 }
 
 bool CSoundRender_Environment::load			(IReader* fs)
 {
-	version							= fs->r_u32();
+	version = fs->r_u32();
 
-	if (version >= 0x0003){
+	auto mB_to_gain = [this](float mb)
+	{
+		return version >= 0x0005 ? mb : powf(10.0f, mb / 2000.0f);
+	};
+
+	if (version >= 0x0003)
+	{
         fs->r_stringZ			    (name);
 
-        Room                		= fs->r_float();
-        RoomHF              		= fs->r_float();
+		Room						= mB_to_gain(fs->r_float());
+		RoomHF						= mB_to_gain(fs->r_float());
         RoomRolloffFactor   		= fs->r_float();
         DecayTime           		= fs->r_float();
         DecayHFRatio        		= fs->r_float();
-        Reflections         		= fs->r_float();
+		Reflections					= mB_to_gain(fs->r_float());
         ReflectionsDelay    		= fs->r_float();
-        Reverb              		= fs->r_float();
+		Reverb						= mB_to_gain(fs->r_float());
         ReverbDelay         		= fs->r_float();
         EnvironmentSize     		= fs->r_float();
         EnvironmentDiffusion		= fs->r_float();
-        AirAbsorptionHF     		= fs->r_float();
-		if (version > 0x0003)
+		AirAbsorptionHF				= mB_to_gain(fs->r_float());
+		if (version >= 0x0004)
 	        Environment     		= fs->r_u32();
         return true;
     }

@@ -1,5 +1,3 @@
-#ifndef SoundRender_TargetAH
-#define SoundRender_TargetAH
 #pragma once
 
 #include "SoundRender_Target.h"
@@ -13,7 +11,7 @@ class CSoundRender_TargetA: public CSoundRender_Target
     ALuint						pSource;
 	ALuint						pBuffers[sdef_target_count];
     float						cache_gain;
-    float						cache_pitch;
+	float 						cache_pitch;
 
     ALuint						buf_block;
 private:
@@ -33,5 +31,5 @@ public:
 	virtual void				update					();
 	virtual void				fill_parameters			();
 			void				source_changed			();
+	virtual	void				alAuxInit				(ALuint slot);
 };
-#endif

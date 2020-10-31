@@ -28,9 +28,7 @@
 #include <objbase.h>
 #pragma warning(default: 4995)
 
-#ifdef _EDITOR
-	log_fn_ptr_type*	pLog = NULL;
-#endif
+const char* DeviceName;
 
 ALDeviceList::ALDeviceList()
 {
@@ -73,23 +71,6 @@ void ALDeviceList::Enumerate()
 		Msg					("devices %s",devices);
 		xr_strcpy(			m_defaultDeviceName, (char *)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER));
 		Msg("SOUND: OpenAL: system  default SndDevice name is %s", m_defaultDeviceName);
-		
-		// ManowaR
-		// "Generic Hardware" device on software AC'97 codecs introduce 
-		// high CPU usage ( up to 30% ) as a consequence - freezes, FPS drop
-		// So if default device is "Generic Hardware" which maps to DirectSound3D interface
-		// We re-assign it to "Generic Software" to get use of old good DirectSound interface
-		// This makes 3D-sound processing unusable on cheap AC'97 codecs
-		// Also we assume that if "Generic Hardware" exists, than "Generic Software" is also exists
-		// Maybe wrong
-		
-#if 0
-		if(0==stricmp(m_defaultDeviceName, AL_GENERIC_HARDWARE))
-		{
-			xr_strcpy			(m_defaultDeviceName, AL_GENERIC_SOFTWARE);
-			Msg("SOUND: OpenAL: default SndDevice name set to %s", m_defaultDeviceName);
-		}
-#endif
 
 		index				= 0;
 		// go through device list (each device terminated with a single NULL, list terminated with double NULL)
@@ -105,23 +86,16 @@ void ALDeviceList::Enumerate()
 					// if new actual device name isn't already in the list, then add it...
 					actualDeviceName = alcGetString(device, ALC_DEVICE_SPECIFIER);
 
-					if ( (actualDeviceName != NULL) && xr_strlen(actualDeviceName)>0 ) 
+					if ((actualDeviceName != nullptr) && xr_strlen(actualDeviceName) > 0)
 					{
-						alcGetIntegerv						(device, ALC_MAJOR_VERSION, sizeof(int), &major);
-						alcGetIntegerv						(device, ALC_MINOR_VERSION, sizeof(int), &minor);
-						m_devices.push_back					(ALDeviceDesc(actualDeviceName,minor,major));
-						m_devices.back().props.eax			= 0;
-						if(alIsExtensionPresent("EAX2.0"))
-							m_devices.back().props.eax		= 2;	
-						if(alIsExtensionPresent("EAX3.0"))
-							m_devices.back().props.eax		= 3;	
-						if(alIsExtensionPresent("EAX4.0"))
-							m_devices.back().props.eax		= 4;	
-						if(alIsExtensionPresent("EAX5.0"))
-							m_devices.back().props.eax		= 5;	
+						alcGetIntegerv(device, ALC_MAJOR_VERSION, sizeof(int), &major);
+						alcGetIntegerv(device, ALC_MINOR_VERSION, sizeof(int), &minor);
+						m_devices.push_back(ALDeviceDesc(actualDeviceName, minor, major));
 
-						m_devices.back().props.efx			= (alIsExtensionPresent("ALC_EXT_EFX") == TRUE);
-						m_devices.back().props.xram			= (alIsExtensionPresent("EAX_RAM") == TRUE);
+						m_devices.back().props.efx = alcIsExtensionPresent(alcGetContextsDevice(alcGetCurrentContext()), "ALC_EXT_EFX");
+						m_devices.back().props.xram = alcIsExtensionPresent(alcGetContextsDevice(alcGetCurrentContext()), "EAX_RAM");
+
+						Msg("[OpenAL] device: %s, EFX Support: %s", actualDeviceName, m_devices.back().props.efx ? "yes" : "no");
 
 						m_devices.back().props.eax_unwanted	= ((0==xr_strcmp(actualDeviceName,AL_GENERIC_HARDWARE))||
 															(0==xr_strcmp(actualDeviceName,AL_GENERIC_SOFTWARE)));
@@ -165,16 +139,6 @@ void ALDeviceList::Enumerate()
 	for (u32 j = 0; j < GetNumDevices(); j++)
 	{
 		GetDeviceVersion		(j, &majorVersion, &minorVersion);
-		Msg	("%d. %s, Spec Version %d.%d %s eax[%d] efx[%s] xram[%s]", 
-			j+1, 
-			GetDeviceName(j), 
-			majorVersion, 
-			minorVersion,
-			(stricmp(GetDeviceName(j),m_defaultDeviceName)==0)? "(default)":"",
-			GetDeviceDesc(j).props.eax,
-			GetDeviceDesc(j).props.efx?"yes":"no",
-			GetDeviceDesc(j).props.xram?"yes":"no"
-			);
 	}
 	if (!strstr(GetCommandLine(),"-editor"))
 		CoInitializeEx (NULL, COINIT_MULTITHREADED);
@@ -214,13 +178,15 @@ void ALDeviceList::SelectBestDevice()
 		{
 			R_ASSERT(GetNumDevices()!=0);
 			new_device_id = 0; //first
-		};
+		}
 		snd_device_id = new_device_id;
 	}
-	if(GetNumDevices()==0)
-		Msg("SOUND: Can't select device. List empty");
-	else
-		Msg("SOUND: Selected device is %s", GetDeviceName(snd_device_id));
+	if (GetNumDevices())
+	{
+		DeviceName = GetDeviceName(snd_device_id);
+		Msg("[SOUND]: Selected device is [%s]", DeviceName);
+	}
+	else Msg("[SOUND]: Can't select device. List empty");
 }
 
 /*
@@ -230,5 +196,4 @@ void ALDeviceList::GetDeviceVersion(u32 index, int *major, int *minor)
 {
 	*major = m_devices[index].major_ver;
 	*minor = m_devices[index].minor_ver;
-	return;
 }

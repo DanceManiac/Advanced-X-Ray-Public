@@ -778,10 +778,10 @@ void CCC_Register()
 	CMD2(CCC_Float,		"snd_volume_eff",		&psSoundVEffects);
 	CMD2(CCC_Float,		"snd_volume_music",		&psSoundVMusic);
 	CMD1(CCC_SND_Restart,"snd_restart"			);
-	CMD3(CCC_Mask,		"snd_acceleration",		&psSoundFlags,		ss_Hardware	);
-	CMD3(CCC_Mask,		"snd_efx",				&psSoundFlags,		ss_EAX		);
-	CMD4(CCC_Integer,	"snd_targets",			&psSoundTargets,	4,32		);
-	CMD4(CCC_Integer,	"snd_cache_size",		&psSoundCacheSizeMB,4,32		);
+	CMD3(CCC_Mask,		"snd_acceleration",		&psSoundFlags,			ss_Hardware	);
+	CMD3(CCC_Mask,		"snd_efx",				&psSoundFlags,			ss_EFX);
+	CMD4(CCC_Integer,	"snd_targets",			&psSoundTargets,		4, 256);
+	CMD4(CCC_Integer,	"snd_cache_size",		&psSoundCacheSizeMB,	4, 512);
 
 #ifdef DEBUG
 	CMD3(CCC_Mask,		"snd_stats",			&g_stats_flags,		st_sound	);

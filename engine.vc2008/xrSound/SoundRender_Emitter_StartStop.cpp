@@ -9,7 +9,6 @@ void CSoundRender_Emitter::start(ref_sound* _owner, BOOL _loop, float delay)
 {
 	starting_delay			= delay;
 
-    VERIFY					(_owner);
 	owner_data				= _owner->_p;			VERIFY(owner_data);
 	p_source.position.set	(0,0,0);
 	p_source.min_distance	= source()->m_fMinDist;	// DS3D_DEFAULTMINDISTANCE;
@@ -76,7 +75,6 @@ void CSoundRender_Emitter::pause(BOOL bVal, int id)
 
 void CSoundRender_Emitter::cancel()
 {
-	// Msg		("- %10s : %3d[%1.4f] : %s","cancel",dbg_ID,priority(),source->fname);
 	switch	(m_current_state) 
 	{
 	case stPlaying:

@@ -18,6 +18,8 @@ CSoundRender_TargetA::~CSoundRender_TargetA()
 {
 }
 
+#include <openal\efx.h>
+
 BOOL	CSoundRender_TargetA::_initialize		()
 {
 	inherited::_initialize();
@@ -30,12 +32,19 @@ BOOL	CSoundRender_TargetA::_initialize		()
         A_CHK(alSourcef	(pSource, AL_MIN_GAIN, 0.f));
         A_CHK(alSourcef	(pSource, AL_MAX_GAIN, 1.f));
         A_CHK(alSourcef	(pSource, AL_GAIN, 	cache_gain));
-        A_CHK(alSourcef	(pSource, AL_PITCH,	cache_pitch));
+		A_CHK(alSourcef	(pSource, AL_PITCH, cache_pitch));
         return			TRUE;
-    }else{
-    	Msg				("! sound: OpenAL: Can't create source. Error: %s.",(LPCSTR)alGetString(error));
-        return 			FALSE;
+	}
+	else
+	{
+		Msg("[OpenA] Can't create source. Error: %s.", (LPCSTR)alGetString(error));
+		return false;
     }
+}
+
+void CSoundRender_TargetA::alAuxInit(ALuint slot)
+{
+	A_CHK(alSource3i(pSource, AL_AUXILIARY_SEND_FILTER, slot, 0, AL_FILTER_NULL));
 }
 
 void	CSoundRender_TargetA::_destroy		()
@@ -99,28 +108,45 @@ void	CSoundRender_TargetA::update			()
 {
 	inherited::update();
 
-	ALint			processed;
-    // Get status
-    A_CHK			(alGetSourcei(pSource, AL_BUFFERS_PROCESSED, &processed));
+	ALint processed, state;
 
-    if (processed > 0)
+	/* Get relevant source info */
+	alGetSourcei(pSource, AL_SOURCE_STATE, &state);
+	alGetSourcei(pSource, AL_BUFFERS_PROCESSED, &processed);
+	if (alGetError() != AL_NO_ERROR)
 	{
-        while (processed)
+		Msg("!![%s]Error checking source state!", __FUNCTION__);
+		return;
+	}
+
+	while (processed > 0)
+	{
+		ALuint BufferID;
+		A_CHK(alSourceUnqueueBuffers(pSource, 1, &BufferID));
+		fill_block(BufferID);
+		A_CHK(alSourceQueueBuffers(pSource, 1, &BufferID));
+		processed--;
+		if (alGetError() != AL_NO_ERROR)
 		{
-			ALuint			BufferID;
-            A_CHK			(alSourceUnqueueBuffers(pSource, 1, &BufferID));
-            fill_block		(BufferID);
-            A_CHK			(alSourceQueueBuffers(pSource, 1, &BufferID));
-            --processed;
-        }
-    }else{ 
-    	// processed == 0
-        // check play status -- if stopped then queue is not being filled fast enough
-        ALint		state;
-	    A_CHK		(alGetSourcei(pSource, AL_SOURCE_STATE, &state));
-        if (state != AL_PLAYING)
+			Msg("!![%s]Error buffering data", __FUNCTION__);
+			return;
+		}
+	}
+	/* Make sure the source hasn't underrun */
+	if (state != AL_PLAYING && state != AL_PAUSED)
+	{
+		ALint queued;
+
+		/* If no buffers are queued, playback is finished */
+		alGetSourcei(pSource, AL_BUFFERS_QUEUED, &queued);
+		if (queued == 0)
+			return;
+
+		alSourcePlay(pSource);
+		if (alGetError() != AL_NO_ERROR)
 		{
-			A_CHK	(alSourcePlay(pSource));
+			Msg("!![%s]Error restarting playback", __FUNCTION__);
+			return;
         }
     }
 }
@@ -154,13 +180,13 @@ void	CSoundRender_TargetA::fill_parameters()
         A_CHK(alSourcef	(pSource, AL_GAIN,				_gain));
     }
 
-	VERIFY2(m_pEmitter,SE->source()->file_name());
-    float	_pitch	= m_pEmitter->p_source.freq;			clamp	(_pitch,EPS_L,2.f);
-    if (!fsimilar(_pitch,cache_pitch)){
-        cache_pitch	= _pitch;
-        A_CHK(alSourcef	(pSource, AL_PITCH,				_pitch));
+	VERIFY2(m_pEmitter, SE->source()->file_name());
+	float	_pitch = m_pEmitter->p_source.freq;			clamp(_pitch, EPS_L, 2.f);
+	if (!fsimilar(_pitch, cache_pitch)) {
+		cache_pitch = _pitch;
+		A_CHK(alSourcef(pSource, AL_PITCH, _pitch));
     }
-	VERIFY2(m_pEmitter,SE->source()->file_name());
+	VERIFY2(m_pEmitter, SE->source()->file_name());
 }
 
 void	CSoundRender_TargetA::fill_block	(ALuint BufferID)

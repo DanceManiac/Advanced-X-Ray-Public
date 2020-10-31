@@ -1,10 +1,12 @@
 #pragma once
-                                          
+
+#include <openal\al.h>
+#include <openal/efx-presets.h>   
 #include "SoundRender.h"
 #include "SoundRender_Environment.h"
 #include "SoundRender_Cache.h"
 
-class CSoundRender_Core					: public CSound_manager_interface
+class XRSOUND_API CSoundRender_Core : public CSound_manager_interface
 {
     volatile BOOL						bLocked;
 protected:
@@ -21,8 +23,7 @@ public:
 public:
 	BOOL								bPresent;
 	BOOL								bUserEnvironment;
-    BOOL	 							bEAX;					// Boolean variable to indicate presence of EAX Extension 
-    BOOL								bDeferredEAX;
+	bool	 							bEFX; // boolean variable to indicate presence of EAX Extension 
     BOOL								bReady;
 
 	CTimer								Timer;
@@ -53,9 +54,6 @@ public:
 	// Cache
 	CSoundRender_Cache					cache;
 	u32									cache_bytes_per_line;
-protected:
-	virtual void						i_eax_set				(const GUID* guid, u32 prop, void* val, u32 sz)=0;
-	virtual void						i_eax_get				(const GUID* guid, u32 prop, void* val, u32 sz)=0;
 public:
 										CSoundRender_Core		();
 	virtual								~CSoundRender_Core		();
@@ -91,18 +89,9 @@ public:
 	// listener
 	virtual void						update_listener			(const Fvector& P, const Fvector& D, const Fvector& N, float dt)=0;
 	// eax listener
-	void								i_eax_commit_setting	();
-	void								i_eax_listener_set		(CSound_environment* E);
-	void								i_eax_listener_get		(CSound_environment* E);
+	bool								i_efx_commit_setting	();
+	void								i_efx_listener_set		(CSound_environment* _E);
 
-#ifdef _EDITOR
-	virtual SoundEnvironment_LIB*		get_env_library			()																{ return s_environment; }
-	virtual void						refresh_env_library		();
-	virtual void						set_user_env			(CSound_environment* E);
-	virtual void						refresh_sources			();
-    virtual void						set_environment			(u32 id, CSound_environment** dst_env);
-    virtual void						set_environment_size	(CSound_environment* src_env, CSound_environment** dst_env);
-#endif
 public:
 	CSoundRender_Source*				i_create_source			( LPCSTR name				);
 	CSoundRender_Emitter*				i_play					( ref_sound* S, BOOL _loop, float delay	);
@@ -121,5 +110,12 @@ public:
 	void								env_load				();
 	void								env_unload				();
 	void								env_apply				();
+
+	protected: // EFX
+	EFXEAXREVERBPROPERTIES				efx_reverb;
+	ALuint								effect;
+	ALuint								slot;
+	bool 								EFXTestSupport			();
+	void								InitAlEFXAPI			();
 };
-extern CSoundRender_Core* SoundRender;
+extern XRSOUND_API CSoundRender_Core* SoundRender;

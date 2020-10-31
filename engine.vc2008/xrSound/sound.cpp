@@ -12,23 +12,18 @@ void CSound_manager_interface::_create(int stage)
 		SoundRenderA	= xr_new<CSoundRender_CoreA>();
 		SoundRender		= SoundRenderA;
 		Sound			= SoundRender;
-
-		if (strstr			( Core.Params,"-nosound"))
-		{
-			SoundRender->bPresent = FALSE;
-			return;
-		}else
-			SoundRender->bPresent = TRUE;
-
+		SoundRender->bPresent = !(strstr(Core.Params, "-nosound"));
 	}
 
-	if(!SoundRender->bPresent) return;
-	Sound->_initialize	(stage);
+	if (SoundRender->bPresent)
+	{
+		Sound->_initialize(stage);
+	}
 }
 
 void CSound_manager_interface::_destroy	()
 {
 	Sound->_clear		();
     xr_delete			(SoundRender);
-    Sound				= 0;
+	Sound				= nullptr;
 }

@@ -1,5 +1,3 @@
-#ifndef SoundH
-#define SoundH
 #pragma once
 
 #ifdef XRSOUND_EXPORTS
@@ -43,7 +41,7 @@ XRSOUND_API extern u32				snd_device_id			;
 // Flags
 enum {
 	ss_Hardware			= (1ul<<1ul),	//!< Use hardware mixing only
-    ss_EAX				= (1ul<<2ul),	//!< Use eax
+	ss_EFX				= (1ul << 2ul),	//!< Use EFX
 	ss_forcedword		= u32(-1)
 };
 
@@ -321,7 +319,3 @@ IC void	ref_sound::set_params					( CSound_params* p )
         _feedback()->set_volume   	(p->volume);
     }
 }
-
-
-
-#endif

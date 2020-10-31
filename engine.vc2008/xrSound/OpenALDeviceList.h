@@ -15,7 +15,6 @@ struct ALDeviceDesc{
 	{
 		struct{
 			u16				selected	:1;
-			u16				eax			:3;
 			u16				efx			:1;
 			u16				xram		:1;
 			u16				eax_unwanted:1;
