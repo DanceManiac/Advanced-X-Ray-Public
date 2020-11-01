@@ -4,3 +4,4 @@
 /ipch
 *.VC.VC.opendb
 *.user
+*.cache
