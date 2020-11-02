@@ -85,16 +85,16 @@ See [Release](https://github.com/ign-1997/Advanced-X-Ray/releases) section.
 
 Thanks to
 ------------
-[OpenXRay](https://github.com/OpenXRay/xray-16)
-[OGSR Engine](https://github.com/OGSR/OGSR-Engine)
-[ForserX](https://github.com/ForserX)
-[Xottab_DUTY](https://github.com/Xottab-DUTY)
-[Abramcumner](https://github.com/abramcumner)
-[LVutner](https://github.com/LVutner)
-[OldSerpskiStalker](https://github.com/oldSerpskiStalker)
-[ggGhosTt](https://gitlab.com/ggGhosTt)
-ValeroK
-DWM Team
-xrOxygen
+- [OpenXRay](https://github.com/OpenXRay/xray-16)
+- [OGSR Engine](https://github.com/OGSR/OGSR-Engine)
+- [ForserX](https://github.com/ForserX)
+- [Xottab_DUTY](https://github.com/Xottab-DUTY)
+- [Abramcumner](https://github.com/abramcumner)
+- [LVutner](https://github.com/LVutner)
+- [OldSerpskiStalker](https://github.com/oldSerpskiStalker)
+- [ggGhosTt](https://gitlab.com/ggGhosTt)
+- ValeroK
+- DWM Team
+- xrOxygen
 
 Sorry if I forgot someone. Write to VK and I'll add it.

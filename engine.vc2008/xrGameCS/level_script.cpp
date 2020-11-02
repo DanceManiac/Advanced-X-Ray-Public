@@ -30,6 +30,7 @@
 #include "phworld.h"
 #include "alife_simulator.h"
 #include "alife_time_manager.h"
+#include "game_sv_single.h"
 
 using namespace luabind;
 
@@ -118,6 +119,41 @@ bool set_weather_fx	(LPCSTR weather_name)
 bool is_wfx_playing	()
 {
 	return			(g_pGamePersistent->Environment().IsWFXPlaying());
+}
+
+float get_wfx_time()
+{
+	return			(g_pGamePersistent->Environment().wfx_time);
+}
+
+void stop_weather_fx()
+{
+	g_pGamePersistent->Environment().StopWFX();
+}
+
+bool start_weather_fx_from_time(LPCSTR weather_name, float time)
+{
+#ifdef INGAME_EDITOR
+	if (!Device.editor())
+#endif // #ifdef INGAME_EDITOR
+		return		(g_pGamePersistent->Environment().StartWeatherFXFromTime(weather_name, time));
+
+#ifdef INGAME_EDITOR
+	return			(false);
+#endif // #ifdef INGAME_EDITOR
+}
+
+void change_game_time(u32 days, u32 hours, u32 mins)
+{
+	game_sv_Single	*tpGame = smart_cast<game_sv_Single *>(Level().Server->game);
+	if (tpGame && ai().get_alife())
+	{
+		u32 value = days * 86400 + hours * 3600 + mins * 60;
+		float fValue = static_cast<float> (value);
+		value *= 1000;//msec		
+		g_pGamePersistent->Environment().ChangeGameTime(fValue);
+		tpGame->alife().time_manager().change_game_time(value);
+	}
 }
 
 void set_time_factor(float time_factor)
@@ -660,7 +696,10 @@ void CLevel::script_register(lua_State *L)
 		def("get_weather",						get_weather),
 		def("set_weather",						set_weather),
 		def("set_weather_fx",					set_weather_fx),
+		def("start_weather_fx_from_time",		start_weather_fx_from_time),
 		def("is_wfx_playing",					is_wfx_playing),
+		def("get_wfx_time",						get_wfx_time),
+		def("stop_weather_fx",					stop_weather_fx),
 
 		def("environment",						environment),
 		
@@ -673,6 +712,7 @@ void CLevel::script_register(lua_State *L)
 		def("get_time_days",					get_time_days),
 		def("get_time_hours",					get_time_hours),
 		def("get_time_minutes",					get_time_minutes),
+		def("change_game_time",					change_game_time),
 
 		def("high_cover_in_direction",			high_cover_in_direction),
 		def("low_cover_in_direction",			low_cover_in_direction),
