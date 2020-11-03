@@ -95,6 +95,7 @@ Thanks to
 - [ggGhosTt](https://gitlab.com/ggGhosTt)
 - ValeroK
 - DWM Team
+- CorryZeron
 - xrOxygen
 
 Sorry if I forgot someone. Write to VK and I'll add it.

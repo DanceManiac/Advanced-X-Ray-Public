@@ -64,9 +64,10 @@ private:
 
 	void	CalculateRenderTextureSize(int screenWidth, int screenHeight);
 	void	CreateRayDataResources( int width, int height );
+	void	PrepareCBuffer(const dx103DFluidData &FluidData, u32 RTWidth, u32 RTHeight);
 
-	void	ComputeRayData();
-	void	ComputeEdgeTexture();
+	void	ComputeRayData(const dx103DFluidData &FluidData);
+	void	ComputeEdgeTexture(const dx103DFluidData &FluidData);
 
 	void	DrawScreenQuad();
 	void	DrawBox();
@@ -83,7 +84,6 @@ private:
 	int			m_iRenderTextureHeight;
 
 	D3DXMATRIX	m_gridMatrix;
-	//Fmatrix		m_gridMatrix;
 
 	D3DFORMAT				RTFormats[ RRT_NumRT ];
 	ref_rt					RT[ RRT_NumRT ];
