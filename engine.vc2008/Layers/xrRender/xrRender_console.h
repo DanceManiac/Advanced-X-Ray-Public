@@ -9,7 +9,7 @@ extern ECORE_API	xr_token	qdt_ssr_samp_token[];
 // SMAP Control
 
 extern ECORE_API 	u32 		ps_r2_smapsize;
-extern ECORE_API    xr_token qsmapsize_token[];
+extern ECORE_API    xr_token	qsmapsize_token[];
 
 // Common
 extern ECORE_API	u32			ps_r_sun_shafts;	//=	0;

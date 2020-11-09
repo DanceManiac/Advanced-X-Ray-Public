@@ -130,16 +130,15 @@ xr_token							qminmax_sm_token					[ ]={
 };
 
 //M.F.S. Team Color Drag Preset
-u32			ps_clr_preset			=	2	;
+u32			ps_clr_preset			=	0	;
 xr_token							qclrdrag_token						[ ]={
 	{ "Default_clr",				0											},
 	{ "Sepia",						1											},
 	{ "Gray_moss",					2											},
 	{ "Graphite_gray",				3											},
 	{ "Zone",						4											},
-	{ "Misery",						5											},
-	{ "Warm_tone",					6											},
-	{ "Blue",						7											},
+	{ "Warm_tone",					5											},
+	{ "Blue",						6											},
 	{ 0,							0											}
 };
 
