@@ -47,6 +47,7 @@ public:
 	R_dsgraph::mapSorted_T										mapWmark;			// sorted
 	R_dsgraph::mapSorted_T										mapEmissive;
 	R_dsgraph::mapSorted_T										mapHUDEmissive;
+	R_dsgraph::mapHUD_T											mapHUDSorted;
 #endif
 
 	// Runtime structures 
@@ -149,6 +150,8 @@ public:
 #if RENDER!=R_R1
 		mapWmark.destroy		();
 		mapEmissive.destroy		();
+		mapHUDEmissive.destroy	();
+		mapHUDSorted.destroy	();
 #endif
 	}
 
