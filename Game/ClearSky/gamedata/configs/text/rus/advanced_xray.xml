@@ -147,4 +147,7 @@
 	<string id="ui_mm_quick_saves_count">
 		<text>Кол-во быстрых сохранений</text>
 	</string>
+	<string id="ui_st_loading_stages">
+		<text>Стадии загрузки игры</text>
+	</string>
 </string_table>

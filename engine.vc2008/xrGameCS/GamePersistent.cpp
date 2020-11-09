@@ -502,6 +502,11 @@ extern CUISequencer * g_tutorial2;
 
 void CGamePersistent::OnFrame	()
 {
+	if (Device.dwPrecacheFrame == 0 && m_intro_event.empty())
+	{
+		SetLoadStageTitle();
+	}
+
 	if(g_tutorial2){ 
 		g_tutorial2->Destroy	();
 		xr_delete				(g_tutorial2);
@@ -713,6 +718,19 @@ void CGamePersistent::OnRenderPPUI_PP()
 }
 #include "string_table.h"
 #include "../xrEngine/x_ray.h"
+
+void CGamePersistent::SetLoadStageTitle(const char* ls_title)
+{
+	string256	buff;
+	if (ls_title)
+	{
+		xr_sprintf(buff, "%s%s", CStringTable().translate(ls_title).c_str(), "...");
+		pApp->SetLoadStageTitle(buff);
+	}
+	else
+		pApp->SetLoadStageTitle("");
+}
+
 void CGamePersistent::LoadTitle(LPCSTR str)
 {
 	string512			buff;

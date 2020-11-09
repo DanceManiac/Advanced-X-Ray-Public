@@ -78,6 +78,7 @@ public:
 	virtual void		OnRenderPPUI_main		();
 	virtual void		OnRenderPPUI_PP			();
 	virtual	void		LoadTitle				(LPCSTR str);
+	void				SetLoadStageTitle		(const char* ls_title = nullptr) override;
 
 	virtual bool		CanBePaused				();
 

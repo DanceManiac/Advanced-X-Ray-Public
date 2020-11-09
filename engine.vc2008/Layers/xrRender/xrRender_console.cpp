@@ -326,6 +326,8 @@ Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
 	| R_FLAG_HUD_MASK_CONTROL
 	};
 
+int ps_rs_loading_stages = 0;
+
 //- Mad Max
 float		ps_r2_gloss_factor			= 4.0f;
 //- Mad Max
@@ -1055,6 +1057,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Token,		"r3_minmax_sm",					&ps_r3_minmax_sm,			qminmax_sm_token);
 	CMD4(CCC_detail_radius, "r__detail_radius",			&ps_r__detail_radius,		49, 300				);
 	CMD4(CCC_Integer, "r__no_scale_on_fade",			&ps_no_scale_on_fade,		0, 1				); //Alundaio
+	CMD4(CCC_Integer, "rs_loadingstages",				&ps_rs_loading_stages,		0, 1				);
 
 
 

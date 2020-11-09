@@ -1243,6 +1243,11 @@ PROTECT_API void CApplication::LoadDraw		()
 	CheckCopyProtection			();
 }
 
+void CApplication::SetLoadStageTitle(const char* _ls_title)
+{
+	xr_strcpy(ls_title, _ls_title);
+}
+
 void CApplication::LoadTitleInt(LPCSTR str1, LPCSTR str2, LPCSTR str3)
 {
 	xr_strcpy					(ls_header, str1);

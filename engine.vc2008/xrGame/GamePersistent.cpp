@@ -545,6 +545,7 @@ void CGamePersistent::OnFrame	()
 {
 	if(Device.dwPrecacheFrame==5 && m_intro_event.empty())
 	{
+		SetLoadStageTitle();
 		m_intro_event.bind			(this,&CGamePersistent::game_loaded);
 	}
 
@@ -809,6 +810,19 @@ void CGamePersistent::OnRenderPPUI_PP()
 }
 #include "string_table.h"
 #include "../xrEngine/x_ray.h"
+
+void CGamePersistent::SetLoadStageTitle(const char* ls_title)
+{
+	string256	buff;
+	if (ls_title)
+	{
+		xr_sprintf(buff, "%s%s", CStringTable().translate(ls_title).c_str(), "...");
+		pApp->SetLoadStageTitle(buff);
+	}
+	else
+		pApp->SetLoadStageTitle("");
+}
+
 void CGamePersistent::LoadTitle(bool change_tip, shared_str map_name)
 {
 	pApp->LoadStage();

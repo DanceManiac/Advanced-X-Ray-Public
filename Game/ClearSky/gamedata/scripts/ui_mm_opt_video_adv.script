@@ -293,6 +293,68 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_raindrops", _st)
 	handler.m_preconditions[ctl]				= only_2_and_more_mode
 
+--Виньетка	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_vignette_effect", _st)
+	ctl = xml:InitCheck("video_adv:check_vignette_effect", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
+
+--Динамический hud масок	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_hud_mask", _st)
+	ctl = xml:InitCheck("video_adv:check_hud_mask", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
+
+--Тип сглаживания
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_r2_aa_mode", _st)
+	ctl = xml:InitComboBox("video_adv:combo_r2_aa_mode", _st)
+	handler.combo_r2_aa_mode = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--Motion Blur	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_mblur_enable", _st)
+	ctl = xml:InitCheck("video_adv:check_mblur_enable", _st)
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--Интенсивность Motion Blur
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_mblur", _st)
+	ctl = xml:InitTrackBar("video_adv:track_mblur", _st)
+	handler.track_mblur = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--Cam FOV
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_fov", _st)
+	ctl = xml:InitTrackBar("video_adv:track_fov", _st)
+
+--HUD FOV
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_hud_fov", _st)
+	ctl = xml:InitTrackBar("video_adv:track_hud_fov", _st)
+
+--Цветокоррекция: Интенсивность красного
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_color_r", _st)
+	ctl = xml:InitTrackBar("video_adv:track_color_r", _st)
+
+--Цветокоррекция: Интенсивность зелёного
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_color_g", _st)
+	ctl = xml:InitTrackBar("video_adv:track_color_g", _st)
+
+--Цветокоррекция: Интенсивность синего
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_color_b", _st)
+	ctl = xml:InitTrackBar("video_adv:track_color_b", _st)
+
+--Цветокоррекция: Цветовая насыщенность
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_saturation", _st)
+	ctl = xml:InitTrackBar("video_adv:track_cap_saturation", _st)
+
 	btn		= xml:Init3tButton					("video_adv:btn_to_simply",	self)	
 	handler:Register							(btn, "btn_simply_graphic")	
 end
