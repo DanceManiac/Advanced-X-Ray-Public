@@ -23,6 +23,7 @@ void	XRCORE_API				FlushLog	();
 
 extern 	XRCORE_API	xr_vector<shared_str>*		LogFile;
 extern 	XRCORE_API	BOOL						LogExecCB;
+		XRCORE_API	LPCSTR						logFullName();
 
 #endif
 

@@ -1,11 +1,8 @@
 #include "stdafx.h"
-#pragma hdrstop
 
 #include "xrdebug.h"
 #include "os_clipboard.h"
-
 #include "../xrGameSpy/xrGameSpy_MainDefs.h"
-
 #include <sal.h>
 #include "dxerr.h"
 
@@ -14,8 +11,6 @@
 #include <malloc.h>
 #include <direct.h>
 #pragma warning(pop)
-
-extern bool shared_str_initialized;
 
 #ifdef __BORLANDC__
     #	include "d3d9.h"
@@ -54,6 +49,7 @@ extern bool shared_str_initialized;
 
 #include <new.h>							// for _set_new_mode
 #include <signal.h>							// for signals
+#include <Shellapi.h>
 
 #ifdef DEBUG
 #	define USE_OWN_ERROR_MESSAGE_WINDOW
@@ -68,6 +64,7 @@ static bool	error_after_dialog = false;
 extern void BuildStackTrace();
 extern char g_stackTrace[100][4096];
 extern int	g_stackTraceCount;
+extern bool shared_str_initialized;
 
 void LogStackTrace	(LPCSTR header)
 {
@@ -238,6 +235,8 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 #		ifdef USE_BUG_TRAP
 			BT_SetUserMessage	(assertion_info);
 #		endif // USE_BUG_TRAP
+			if (strstr(GetCommandLine(), "-show_log"))
+				ShellExecute(nullptr, "open", logFullName(), nullptr, nullptr, SW_SHOWNORMAL);
 		DEBUG_INVOKE;
 #	endif // USE_OWN_ERROR_MESSAGE_WINDOW
 #endif

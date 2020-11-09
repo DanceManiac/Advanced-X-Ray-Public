@@ -171,6 +171,11 @@ LPCSTR log_name			()
 	return				(log_file_name);
 }
 
+LPCSTR logFullName()
+{
+	return logFName;
+}
+
 void InitLog()
 {
 	R_ASSERT			(LogFile==NULL);
