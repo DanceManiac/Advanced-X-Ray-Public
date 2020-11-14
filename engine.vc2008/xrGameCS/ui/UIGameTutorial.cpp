@@ -9,6 +9,8 @@
 #include "../../XrServerEntitiesCS/script_engine.h"
 #include "../ai_space.h"
 
+extern ENGINE_API BOOL bShowPauseString;
+
 void CUISequenceItem::Load(CUIXml* xml, int idx)
 {
 	XML_NODE* _stored_root			= xml->GetLocalRoot();
@@ -103,11 +105,27 @@ void CUISequencer::Start(LPCSTR tutor_name)
 		pItem->Load				(&uiXml,i);
 	}
 
+	uiXml.SetLocalRoot(uiXml.NavigateToNode("global_wnd", 0));
+	{
+		LPCSTR str = uiXml.Read("pause_state", 0, "ignore");
+		m_flags.set(etsNeedPauseOn, 0 == _stricmp(str, "on"));
+		m_flags.set(etsNeedPauseOff, 0 == _stricmp(str, "off"));
+	}
+
 	CUISequenceItem* pCurrItem	= m_items.front();
 	pCurrItem->Start			();
 	m_pStoredInputReceiver		= pInput->CurrentIR();
 	IR_Capture					();
 	m_bActive					= true;
+
+	if (m_flags.test(etsNeedPauseOn) && !m_flags.test(etsStoredPauseState))
+	{
+		Device.Pause(TRUE, TRUE, TRUE, "tutorial_start");
+		bShowPauseString = FALSE;
+	}
+
+	if (m_flags.test(etsNeedPauseOff) && m_flags.test(etsStoredPauseState))
+		Device.Pause(FALSE, TRUE, FALSE, "tutorial_start");
 }
 
 void CUISequencer::Destroy()
@@ -119,6 +137,9 @@ void CUISequencer::Destroy()
 	IR_Release					();
 	m_bActive					= false;
 	m_pStoredInputReceiver		= NULL;
+
+	if (!m_on_destroy_event.empty())
+		m_on_destroy_event();
 }
 
 void CUISequencer::Stop()

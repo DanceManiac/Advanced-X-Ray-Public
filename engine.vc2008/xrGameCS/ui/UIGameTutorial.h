@@ -44,6 +44,18 @@ public:
 	virtual void			IR_OnMouseWheel		(int direction)	;
 	virtual void			IR_OnActivate		(void);
 
+	fastdelegate::FastDelegate0<>	m_on_destroy_event;
+
+	enum {
+		etsNeedPauseOn = (1 << 0),
+		etsNeedPauseOff = (1 << 1),
+		etsStoredPauseState = (1 << 2),
+		etsPersistent = (1 << 3),
+		etsPlayEachItem = (1 << 4),
+		etsActive = (1 << 5),
+		etsOverMainMenu = (1 << 6),
+	};
+	Flags32					m_flags;
 };
 
 class CUISequenceItem

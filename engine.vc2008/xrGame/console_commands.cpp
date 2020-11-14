@@ -75,8 +75,7 @@ extern	u64		g_qwStartGameTime;
 extern	u64		g_qwEStartGameTime;
 extern 	int 	hud_adj_mode;
 
-ENGINE_API
-extern  float   psHUD_FOV_def;
+ENGINE_API extern float psHUD_FOV_def;
 extern	float	psSqueezeVelocity;
 extern	int		psLUA_GCSTEP;
 

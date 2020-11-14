@@ -73,8 +73,7 @@ extern	u64		g_qwStartGameTime;
 extern	u64		g_qwEStartGameTime;
 extern 	int 	hud_adj_mode;
 
-ENGINE_API
-extern	float	psHUD_FOV_def;
+ENGINE_API extern float	psHUD_FOV_def;
 extern	float	psSqueezeVelocity;
 extern	int		psLUA_GCSTEP;
 
@@ -101,6 +100,8 @@ extern int		g_upgrades_log;
 extern float	g_smart_cover_animation_speed_factor;
 
 ENGINE_API extern float	g_console_sensitive;
+
+int				g_keypress_on_start = 1;
 
 void register_mp_console_commands();
 //-----------------------------------------------------------
@@ -2099,6 +2100,7 @@ extern BOOL dbg_moving_bones_snd_player;
 	*g_last_saved_game	= 0;
 
 	CMD4(CCC_Integer,	"quick_save_counter",		&quick_save_counter,	0, 25);
+	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);
 
 	register_mp_console_commands					();
 }

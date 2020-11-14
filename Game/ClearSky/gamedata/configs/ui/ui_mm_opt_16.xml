@@ -899,6 +899,11 @@
 			<options_item entry="rs_loadingstages" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_loading_stages</text>
 		</check_loading_stages>
+		
+		<check_keypress_on_start x="17" y="12" width="27" height="21">
+			<options_item entry="keypress_on_start" group="mm_opt_gameplay"/>
+			<text font="letterica16" color="ui_6">ui_st_keypress_on_start</text>
+		</check_keypress_on_start>
 
 		<btn_check_updates x="270" y="290" width="111" height="29">
 			<text align="c" font="letterica16" r="227" g="199" b="178">ui_mm_check_updates</text>	

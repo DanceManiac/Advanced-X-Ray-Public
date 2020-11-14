@@ -814,6 +814,14 @@
 				</output_wnd>
 		  </track_quick_saves_count>
 
+		  <cap_keypress_on_start x="15" y="3" width="135" height="24">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_keypress_on_start</text>
+		  </cap_keypress_on_start>
+		  <check_keypress_on_start x="162" y="1" width="44" height="29">
+			<texture>ui_inGame2_checkbox</texture>
+			<options_item entry="keypress_on_start" group="mm_opt_gameplay"/>
+		  </check_keypress_on_start>
+		  
 		  <btn_check_updates x="338" y="322" width="108" height="24">
 				<text align="c" font="letterica16">ui_mm_check_updates</text>
 				<texture>ui_inGame2_button</texture>

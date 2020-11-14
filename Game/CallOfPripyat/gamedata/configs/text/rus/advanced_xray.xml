@@ -141,4 +141,7 @@
 	<string id="ui_st_loading_stages">
 		<text>Стадии загрузки игры</text>
 	</string>
+	<string id="ui_st_keypress_on_start">
+		<text>Автопауза после загрузки</text>
+	</string>
 </string_table>
