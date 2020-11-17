@@ -160,11 +160,11 @@ public:
 	virtual void InitAddons();
 
 	float m_hud_fov_add_mod;
-	float m_nearwall_dist_max;
-	float m_nearwall_dist_min;
 	float m_nearwall_last_hud_fov;
-	float m_nearwall_target_hud_fov;
-	float m_nearwall_speed_mod;
+	float m_nearwall_dist_max = 0.f;
+	float m_nearwall_dist_min = 0.f;
+	float m_nearwall_target_hud_fov = 0.f;
+	float m_nearwall_speed_mod = 0.f;
 
 	float GetHudFov();
 

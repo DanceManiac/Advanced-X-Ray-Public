@@ -27,6 +27,7 @@
 #include "HUDManager.h"
 
 ENGINE_API extern float psHUD_FOV_def;
+
 #define WEAPON_REMOVE_TIME		60000
 #define ROTATION_TIME			0.25f
 
@@ -1975,7 +1976,7 @@ float CWeapon::GetHudFov()
 		clamp(dist, m_nearwall_dist_min, m_nearwall_dist_max);
 		float fDistanceMod = ((dist - m_nearwall_dist_min) / (m_nearwall_dist_max - m_nearwall_dist_min)); // 0.f ... 1.f
 
-		float fBaseFov = psHUD_FOV_def + m_hud_fov_add_mod;
+		float fBaseFov = psHUD_FOV_def;
 		clamp(fBaseFov, 0.0f, FLT_MAX);
 
 		float src = m_nearwall_speed_mod * Device.fTimeDelta;
