@@ -63,6 +63,8 @@ CGamePersistent::CGamePersistent(void)
 	ambient_effect_wind_out_time= 0.f;
 	ambient_effect_wind_on		= false;
 
+	ls_tips_enabled = READ_IF_EXISTS(pSettings, r_bool, "global", "ls_tips_enabled", true);
+
 	ZeroMemory					(ambient_sound_next_time, sizeof(ambient_sound_next_time));
 	
 
@@ -831,7 +833,7 @@ void CGamePersistent::SetLoadStageTitle(const char* ls_title)
 void CGamePersistent::LoadTitle(bool change_tip, shared_str map_name)
 {
 	pApp->LoadStage();
-	if(change_tip)
+	if(ls_tips_enabled && change_tip)
 	{
 		string512				buff;
 		u8						tip_num;

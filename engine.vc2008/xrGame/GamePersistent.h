@@ -25,6 +25,8 @@ class CGamePersistent:
 	float				ambient_effect_wind_out_time;
 	bool				ambient_effect_wind_on;
 
+	bool				ls_tips_enabled;
+
 	bool				m_bPickableDOF;
 
 	CUISequencer*		m_intro;

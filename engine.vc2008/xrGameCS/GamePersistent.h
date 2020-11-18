@@ -25,6 +25,8 @@ class CGamePersistent:
 	float				ambient_effect_wind_out_time;
 	bool				ambient_effect_wind_on;
 
+	bool				ls_tips_enabled;
+
 	bool				m_bPickableDOF;
 
 	CUISequencer*		m_intro;
@@ -79,7 +81,7 @@ public:
 	virtual bool		OnRenderPPUI_query		();
 	virtual void		OnRenderPPUI_main		();
 	virtual void		OnRenderPPUI_PP			();
-	virtual	void		LoadTitle				(LPCSTR str);
+	virtual	void		LoadTitle				(bool change_tip = false, shared_str map_name = "");
 	void				SetLoadStageTitle		(const char* ls_title = nullptr) override;
 
 	virtual bool		CanBePaused				();
