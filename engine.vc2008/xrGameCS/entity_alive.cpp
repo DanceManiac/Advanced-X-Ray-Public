@@ -314,11 +314,6 @@ void	CEntityAlive::Hit							(SHit* pHDS)
 
 }
 
-void CEntityAlive::OnEvent(NET_Packet& P, u16 type)
-{
-	inherited::OnEvent(P, type);
-}
-
 void CEntityAlive::Die	(CObject* who)
 {
 	if(IsGameTypeSingle())
