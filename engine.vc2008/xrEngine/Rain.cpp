@@ -176,9 +176,9 @@ void	CEffect_Rain::OnFrame	()
 		if (wind_enabled)
 		{
 			//Wind Sound
-			if (snd_Ambient._feedback())
+			if (snd_Wind._feedback())
 			{
-			snd_Wind.set_volume	(wind_volume/15.f);
+				snd_Wind.set_volume	(wind_volume/15.f);
 			}	
 		}
 		else
