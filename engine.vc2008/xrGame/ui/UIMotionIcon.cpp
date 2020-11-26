@@ -52,6 +52,7 @@ void CUIMotionIcon::Init(Frect const& zonemap_rect)
 	xml_init.InitProgressShape	(uiXml, "luminosity_progress", 0, &m_luminosity_progress);	
 	m_luminosity_progress.SetWndSize(sz);
 	m_luminosity_progress.SetWndPos(pos);
+	m_luminosity_progress.SetPos(0.f); // Lex Addon (correct by Suhar_) 23.04.2017
 
 	AttachChild					(&m_noise_progress);
 	xml_init.InitProgressShape	(uiXml, "noise_progress", 0, &m_noise_progress);
