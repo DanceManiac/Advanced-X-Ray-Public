@@ -1199,6 +1199,22 @@ struct CCC_JumpToLevel : public IConsole_Command {
 			}
 		Msg							("! There is no level \"%s\" in the game graph!",level);
 	}
+	virtual void	Save(IWriter *F) {};
+	virtual void	fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+
+		GameGraph::LEVEL_MAP::const_iterator	itb = ai().game_graph().header().levels().begin();
+		GameGraph::LEVEL_MAP::const_iterator	ite = ai().game_graph().header().levels().end();
+		for (; itb != ite; ++itb)
+		{
+			tips.push_back((*itb).second.name());
+		}
+	}
 };
 
 #ifndef MASTER_GOLD
