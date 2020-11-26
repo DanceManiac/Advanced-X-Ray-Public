@@ -13,7 +13,7 @@ class ENGINE_API IRender_DetailModel;
 
 #include "../Include/xrRender/FactoryPtr.h"
 #include "../Include/xrRender/RainRender.h"
-//
+
 class ENGINE_API CEffect_Rain
 {
 	friend class dxRainRender;
@@ -47,15 +47,6 @@ private:
 private:
 	// Visualization	(rain) and (drops)
 	FactoryPtr<IRainRender>	m_pRender;
-	/*
-	// Visualization	(rain)
-	ref_shader						SH_Rain;
-	ref_geom						hGeom_Rain;
-
-	// Visualization	(drops)
-	IRender_DetailModel*			DM_Drop;
-	ref_geom						hGeom_Drops;
-	*/
 	
 	// Data and logic
 	xr_vector<Item>					items;
@@ -78,6 +69,7 @@ private:
 	// Sounds
 	ref_sound						snd_Ambient;
 	ref_sound						snd_Wind;
+	ref_sound						snd_RainOnMask;
 	
 	bool							m_bWindWorking;
 
