@@ -79,6 +79,9 @@ Texture2D<float> s_occ;
 #ifdef	USE_HBAO
 #include "ssao_hbao.ps"
 #endif	//	USE_HBAO
+#ifdef	USE_SSDO
+#include "ssao_ssdo.ps"
+#endif	//	USE_SSDO
 #endif // USE_HDAO
 
 struct	_input
@@ -182,6 +185,9 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 #else // USE_HBAO
 	float occ = calc_ssao( CS_P(P, N, I.tc0, I.tcJ, I.pos2d, ISAMPLE ) );
 #endif
+#ifdef USE_SSDO
+    occ                 = calc_ssdo(P, N, I.tc0);
+#endif //USE SSDO
 #endif // USE_HDAO
 	
 	hmodel	(hdiffuse, hspecular, mtl, N.w, D.w, P.xyz, N.xyz);

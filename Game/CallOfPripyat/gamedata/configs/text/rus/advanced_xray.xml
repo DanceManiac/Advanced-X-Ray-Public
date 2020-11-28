@@ -144,4 +144,7 @@
 	<string id="ui_st_keypress_on_start">
 		<text>Автопауза после загрузки</text>
 	</string>
+	<string id="ssdo">
+		<text>SSDO</text>
+	</string>
 </string_table>

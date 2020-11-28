@@ -290,6 +290,7 @@ void					CRender::create					()
 	o.ssao_half_data	= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HALF_DATA) && o.ssao_opt_data && (ps_r_ssao != 0);
 	o.ssao_hdao			= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HDAO) && (ps_r_ssao != 0);
 	o.ssao_hbao			= !o.ssao_hdao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HBAO) && (ps_r_ssao != 0);
+	o.ssao_ssdo			= !o.ssao_hdao && !o.ssao_hbao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO) && (ps_r_ssao != 0);
 
 	//	TODO: fix hbao shader to allow to perform per-subsample effect!
 	o.hbao_vectorized = false;
@@ -1165,6 +1166,14 @@ HRESULT	CRender::shader_compile			(
 			defines[def_it].Name		=	"USE_HBAO";
 			defines[def_it].Definition	=	"1";
 			def_it						++;
+		}
+		if (o.ssao_ssdo)
+		{
+
+			defines[def_it].Name = "USE_SSDO";
+			defines[def_it].Definition = "1";
+
+			def_it++;
 		}
 	}
 

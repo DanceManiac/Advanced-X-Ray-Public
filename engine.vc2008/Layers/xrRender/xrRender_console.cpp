@@ -71,6 +71,7 @@ xr_token							qssao_mode_token						[ ]={
 	{ "default",					1											},
 	{ "hdao",						2											},
 	{ "hbao",						3											},
+	{ "ssdo",						4											},
 	{ 0,							0											}
 };
 
@@ -499,6 +500,7 @@ public:
 				ps_r_ssao = 0;
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HBAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
 				break;
 			}
 			case 1:
@@ -510,6 +512,7 @@ public:
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HBAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HALF_DATA, 0);
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
 				break;
 			}
 			case 2:
@@ -522,17 +525,31 @@ public:
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 1);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_OPT_DATA, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HALF_DATA, 0);
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
 				break;
 			}
 			case 3:
 			{
-				if (ps_r_ssao==0)
+				if (ps_r_ssao == 0)
 				{
 					ps_r_ssao = 1;
 				}
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HBAO, 1);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
 				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_OPT_DATA, 1);
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 0);
+				break;
+			}
+			case 4:
+			{
+				if (ps_r_ssao == 0)
+				{
+					ps_r_ssao = 1;
+				}
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HBAO, 0);
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_HDAO, 0);
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_OPT_DATA, 1);
+				ps_r2_ls_flags_ext.set(R2FLAGEXT_SSAO_SSDO, 1);
 				break;
 			}
 		}
@@ -1041,6 +1058,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_ssao_half_data",			&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_HALF_DATA);//Need restart
 	CMD3(CCC_Mask,		"r2_ssao_hbao",					&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_HBAO);//Need restart
 	CMD3(CCC_Mask,		"r2_ssao_hdao",					&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_HDAO);//Need restart
+	CMD3(CCC_Mask,		"r2_ssao_ssdo",					&ps_r2_ls_flags_ext,		R2FLAGEXT_SSAO_SSDO);//Need restart
 	CMD3(CCC_Mask,		"r4_enable_tessellation",		&ps_r2_ls_flags_ext,		R2FLAGEXT_ENABLE_TESSELLATION);//Need restart
 	CMD3(CCC_Mask,		"r4_wireframe",					&ps_r2_ls_flags_ext,		R2FLAGEXT_WIREFRAME);//Need restart
 	CMD3(CCC_Mask,		"r2_steep_parallax",			&ps_r2_ls_flags,			R2FLAG_STEEP_PARALLAX);
