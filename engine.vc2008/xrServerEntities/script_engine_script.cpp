@@ -209,6 +209,7 @@ static bool is_enough_address_space_available_impl()
 void CScriptEngine::script_register(lua_State *L)
 {
 	module(L)[
+			 def("log1", (void(*)(LPCSTR)) &Log), //GC: adding log1
 		class_<profile_timer_script>("profile_timer")
 			.def(constructor<>())
 			.def(constructor<profile_timer_script&>())
