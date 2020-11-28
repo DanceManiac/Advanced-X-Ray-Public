@@ -49,6 +49,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_iShotNum					= 0;
 	m_iQueueSize				= WEAPON_ININITE_QUEUE;
 	m_bLockType					= false;
+	m_bAutoreloadEnabled = READ_IF_EXISTS(pSettings, r_bool, "gameplay", "autoreload_enabled", true);
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -157,9 +158,12 @@ void CWeaponMagazined::FireEnd()
 {
 	inherited::FireEnd();
 
-	CActor	*actor = smart_cast<CActor*>(H_Parent());
-	if(!iAmmoElapsed && actor && GetState()!=eReload) 
-		Reload();
+	if (m_bAutoreloadEnabled)
+	{
+		CActor	*actor = smart_cast<CActor*>(H_Parent());
+		if (m_pInventory && !iAmmoElapsed && actor && GetState() != eReload)
+			Reload();
+	}
 }
 
 void CWeaponMagazined::Reload() 
@@ -187,28 +191,25 @@ bool CWeaponMagazined::TryReload()
 			m_pAmmo = NULL;
 
 		
-		if(IsMisfire() && iAmmoElapsed)
+		if ((IsMisfire() && iAmmoElapsed) || m_pAmmo || unlimited_ammo())
 		{
 			SetPending			(TRUE);
 			SwitchState			(eReload); 
 			return				true;
 		}
-
-		if(m_pAmmo || unlimited_ammo())  
-		{
-			SetPending			(TRUE);
-			SwitchState			(eReload); 
-			return				true;
-		} 
+ 
 		else for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 		{
-			m_pAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny( *m_ammoTypes[i] ));
-			if(m_pAmmo) 
-			{ 
-				m_ammoType			= i; 
-				SetPending			(TRUE);
-				SwitchState			(eReload);
-				return				true;
+			for (u32 i = 0; i < m_ammoTypes.size(); ++i)
+			{
+				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[i]));
+				if (m_pAmmo)
+				{
+					m_ammoType = i;
+					SetPending(TRUE);
+					SwitchState(eReload);
+					return true;
+				}
 			}
 		}
 
@@ -223,12 +224,16 @@ bool CWeaponMagazined::TryReload()
 bool CWeaponMagazined::IsAmmoAvailable()
 {
 	if (smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[m_ammoType])))
-		return	(true);
+		return true;
 	else
-		for(u32 i = 0; i < m_ammoTypes.size(); ++i)
+	{
+		for (u32 i = 0; i < m_ammoTypes.size(); ++i)
+		{
 			if (smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[i])))
-				return	(true);
-	return		(false);
+				return true;
+		}
+	}
+	return false;
 }
 
 void CWeaponMagazined::OnMagazineEmpty() 
@@ -693,14 +698,21 @@ void CWeaponMagazined::switch2_Fire	()
 void CWeaponMagazined::switch2_Empty()
 {
 	OnZoomOut();
-	
-	if(!TryReload())
+
+	if (m_bAutoreloadEnabled)
 	{
-		OnEmptyClick();
+		if (!TryReload())
+		{
+			OnEmptyClick();
+		}
+		else
+		{
+			inherited::FireEnd();
+		}
 	}
 	else
-	{
-		inherited::FireEnd();
+	{ 
+		OnEmptyClick();
 	}
 }
 void CWeaponMagazined::PlayReloadSound()

@@ -127,6 +127,7 @@ protected:
 	//переменная блокирует использование
 	//только разных типов патронов
 	bool m_bLockType;
+	bool m_bAutoreloadEnabled;
 
 public:
 	virtual void	OnZoomIn			();
