@@ -1010,6 +1010,8 @@ HRESULT	CRender::shader_compile			(
 	char							c_sun_quality	[32];
 	// DWM: For sslr setting's
 	char							c_dt_ssr_samp	[32];
+	// SMAA Quality
+	char							c_aa			[32];
 
 	char	sh_name[MAX_PATH] = "";
 	
@@ -1271,6 +1273,26 @@ HRESULT	CRender::shader_compile			(
 	else
 	{
 		sh_name[len]='0'; ++len;
+	}
+
+	if (RImplementation.o.advancedpp && ps_r_aa_quality)
+	{
+		xr_sprintf(c_aa, "%d", ps_r_aa_quality);
+
+		defines[def_it].Name = "SMAA_QUALITY";
+		defines[def_it].Definition = c_aa;
+
+		def_it++;
+
+		sh_name[len] = '0' + char(ps_r_aa_quality);
+
+		++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+
+		++len;
 	}
 
 	if (RImplementation.o.advancedpp && ps_r_sun_shafts)

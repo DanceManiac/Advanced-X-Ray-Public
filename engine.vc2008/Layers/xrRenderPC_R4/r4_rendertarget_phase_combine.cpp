@@ -366,9 +366,11 @@ void	CRenderTarget::phase_combine	()
 	//SMAA
 	if (r2_aa_mode == 4)
 	{
-		//PIX_EVENT(SMAA);
+		PIX_EVENT(SMAA);
 		phase_smaa();
+		RCache.set_Stencil(FALSE);
 	}
+
 
 	// Vignette effect
 	if (ps_r2_vignette_flags.test(R_FLAG_VIGNETTE))

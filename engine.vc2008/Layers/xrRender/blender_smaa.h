@@ -3,12 +3,12 @@
 class CBlender_SMAA : public IBlender
 {
 public:
-    LPCSTR getComment() override { return "SMAA"; }
-    BOOL canBeDetailed() override { return FALSE; }
-    BOOL canBeLMAPped() override { return FALSE; }
+	virtual		LPCSTR		getComment() { return "SMAA"; }
+	virtual		BOOL		canBeDetailed() { return FALSE; }
+	virtual		BOOL		canBeLMAPped() { return FALSE; }
 
-    void Compile(CBlender_Compile& C) override;
+	virtual		void		Compile(CBlender_Compile& C);
 
-    CBlender_SMAA();
-    virtual ~CBlender_SMAA();
+	CBlender_SMAA();
+	virtual ~CBlender_SMAA();
 };

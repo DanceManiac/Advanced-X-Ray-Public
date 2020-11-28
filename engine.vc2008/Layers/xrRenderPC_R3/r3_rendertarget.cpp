@@ -416,7 +416,9 @@ CRenderTarget::CRenderTarget		()
 		{
 			rt_Generic_0_r.create(r2_RT_generic0_r,w,h,D3DFMT_A8R8G8B8, SampleCount	);
 			rt_Generic_1_r.create(r2_RT_generic1_r,w,h,D3DFMT_A8R8G8B8, SampleCount		);
-			//rt_Generic.create	 (r2_RT_generic,w,h,   D3DFMT_A8R8G8B8, 1		);
+
+			rt_smaa_edgetex.create(r2_RT_smaa_edgetex, w, h, D3DFMT_A8R8G8B8);
+			rt_smaa_blendtex.create(r2_RT_smaa_blendtex, w, h, D3DFMT_A8R8G8B8);
 		}
 
 		// DWM: create new rt for PP
@@ -667,17 +669,8 @@ CRenderTarget::CRenderTarget		()
 
 	//DLAA
 	s_dlaa.create("effects_dlaa");
-
-	// SMAA RTs
-	{
-		u32	w = Device.dwWidth;
-		u32 h = Device.dwHeight;
-
-		rt_smaa_edgetex.create(r2_RT_smaa_edgetex, w, h, D3DFMT_A8R8G8B8);
-		rt_smaa_blendtex.create(r2_RT_smaa_blendtex, w, h, D3DFMT_A8R8G8B8);
-
-		s_smaa.create(b_smaa, "r3\\smaa");
-	}
+	// SMAA
+	s_smaa.create(b_smaa, "r3\\smaa");
 
 	//Vignette
 	s_vignette.create(b_vignette, "r3\\vignette");

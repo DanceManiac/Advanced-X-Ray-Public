@@ -3,6 +3,7 @@
 
 #include	"xrRender_console.h"
 #include	"dxRenderDeviceRender.h"
+#include "../../build_config_defines.h"
 
 // DWM: DT SSR quality option
 u32			dt_ssr_samp = 16;
@@ -26,6 +27,17 @@ xr_token							r2_aa_mode_token[] = {
 	{ "opt_smaa",					4												},
 #endif
 	{ 0,							0												}
+};
+
+u32 ps_r_aa_quality = 3;
+xr_token qaa_token[] =
+{
+	{ "st_aa_off",					0 },
+	{ "st_aa_low",					1 },
+	{ "st_aa_medium",				2 },
+	{ "st_aa_high",					3 },
+	{ "st_aa_ultra",				4 },
+	{ 0,							0 }
 };
 
 // SMAP Control
@@ -1040,6 +1052,11 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Token,		"r4_ssr_samples",				&dt_ssr_samp,				qdt_ssr_samp_token);
 	// AA Mode
 	CMD3(CCC_Token,		"r2_aa_mode",					&r2_aa_mode,				r2_aa_mode_token);
+
+#ifdef MFS_DEVELOPER_CMD
+	// SMAA Quality
+	CMD3(CCC_Token,		"r2_smaa_quality",				&ps_r_aa_quality,					qaa_token);
+#endif
 
 	//	Igor: need restart
 	CMD3(CCC_Mask,		"r2_soft_water",				&ps_r2_ls_flags,			R2FLAG_SOFT_WATER);
