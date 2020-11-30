@@ -252,6 +252,14 @@
             <options_item entry="r2_hud_mask" group="mm_opt_video_adv" depend="vid"/>
         </check_hud_mask>
 		
+        <cap_hud_dyn_effects x="20" y="3" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_hud_dynamic_effects</text>
+        </cap_hud_dyn_effects>
+        <check_hud_dyn_effects x="167" y="0" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r2_hud_dyn_effects" group="mm_opt_video_adv" depend="vid"/>
+        </check_hud_dyn_effects>
+		
         <cap_mblur_enable x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_mblur_enable</text>
         </cap_mblur_enable>
@@ -813,7 +821,7 @@
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 				</output_wnd>
 		  </track_quick_saves_count>
-
+		  
 		  <cap_keypress_on_start x="15" y="3" width="135" height="24">
 			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_keypress_on_start</text>
 		  </cap_keypress_on_start>
@@ -821,7 +829,7 @@
 			<texture>ui_inGame2_checkbox</texture>
 			<options_item entry="keypress_on_start" group="mm_opt_gameplay"/>
 		  </check_keypress_on_start>
-		  
+
 		  <btn_check_updates x="338" y="322" width="108" height="24">
 				<text align="c" font="letterica16">ui_mm_check_updates</text>
 				<texture>ui_inGame2_button</texture>

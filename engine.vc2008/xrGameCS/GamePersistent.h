@@ -96,6 +96,8 @@ public:
 	virtual void		OnAssetsChanged			();
 			int			GetHudMaskElement		();
 			bool		GetHelmetStatus			();
+			float		GetActorMaxHealth		() override;
+			float		GetActorHealth			() override;
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}

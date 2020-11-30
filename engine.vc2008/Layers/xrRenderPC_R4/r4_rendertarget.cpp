@@ -19,6 +19,7 @@
 #include "../xrRender/blender_smaa.h"
 #include "../xrRenderPC_R3/blender_vignette.h"
 #include "blender_hud_mask.h"
+#include "blender_hud_blood.h"
 
 
 #include "../xrRender/dxRenderDeviceRender.h"
@@ -330,6 +331,8 @@ CRenderTarget::CRenderTarget		()
 	b_vignette				= new CBlender_Vignette				();
 	//HUD MASK
 	b_hud_mask				= xr_new<CBlender_hud_mask>			();
+	//HUD BLOOD
+	b_hud_blood				= xr_new<CBlender_Hud_Blood>		();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -462,6 +465,8 @@ CRenderTarget::CRenderTarget		()
 	s_vignette.create(b_vignette, "r3\\vignette");
 	//Hud Mask
 	s_hud_mask.create(b_hud_mask, "r3\\hud_mask");
+	//Hud Blood
+	s_hud_blood.create(b_hud_blood, "r3\\hud_blood");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -1097,6 +1102,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_smaa					); //SMAA
 	xr_delete					(b_vignette				); //Vignette
 	xr_delete					(b_hud_mask				); //Hud Mask
+	xr_delete					(b_hud_blood			); //Hud Blood
 
    if( RImplementation.o.dx10_msaa )
    {

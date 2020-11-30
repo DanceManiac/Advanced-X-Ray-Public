@@ -895,6 +895,16 @@ bool CGamePersistent::GetHelmetStatus()
 	return	(Helmet.GetHelmetStatus());
 }
 
+float CGamePersistent::GetActorMaxHealth()
+{
+	return	(Actor()->GetMaxHealth());
+}
+
+float CGamePersistent::GetActorHealth()
+{
+	return	(Actor()->GetfHealth());
+}
+
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
 {
 	if(m_bPickableDOF)	return;

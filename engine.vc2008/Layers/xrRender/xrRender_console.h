@@ -264,6 +264,7 @@ enum
 {
 	R_FLAG_HUD_MASK = (1 << 0),
 	R_FLAG_HUD_MASK_CONTROL = (1 << 1),
+	R_FLAG_HUD_DYN_EFFECTS = (1 << 2),
 };
 
 extern ECORE_API int ps_rs_loading_stages;

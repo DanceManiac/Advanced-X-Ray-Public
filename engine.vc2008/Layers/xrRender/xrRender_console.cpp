@@ -336,6 +336,7 @@ Flags32		ps_r2_vignette_flags = { R_FLAG_VIGNETTE };
 
 Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
 	| R_FLAG_HUD_MASK_CONTROL
+	| R_FLAG_HUD_DYN_EFFECTS
 	};
 
 int ps_rs_loading_stages = 0;
@@ -954,6 +955,7 @@ void		xrRender_initconsole	()
 	// Hud Mask
 	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK);
 	CMD3(CCC_Mask,		"r2_hud_mask_control",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK_CONTROL);
+	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_DYN_EFFECTS);
 	
 	//- Mad Max
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);

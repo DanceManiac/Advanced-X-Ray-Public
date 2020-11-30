@@ -156,4 +156,7 @@
 	<string id="ssdo">
 		<text>SSDO</text>
 	</string>
+	<string id="ui_mm_hud_dynamic_effects">
+		<text>Динамические эффекты HUD</text>
+	</string>
 </string_table>

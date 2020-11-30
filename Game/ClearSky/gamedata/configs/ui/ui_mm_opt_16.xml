@@ -489,6 +489,13 @@
 			<options_item entry="r2_hud_mask" group="mm_opt_video_adv"  depend="vid"/>
 		</check_hud_mask>
 		
+		<cap_hud_dyn_effects x="17" y="0" width="119" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_hud_dynamic_effects</text>
+		</cap_hud_dyn_effects>
+		<check_hud_dyn_effects x="162" y="0" width="27" height="21">
+			<options_item entry="r2_hud_dyn_effects" group="mm_opt_video_adv"  depend="vid"/>
+		</check_hud_dyn_effects>
+		
 		<cap_mblur_enable x="17" y="0" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_mblur_enable</text>
 		</cap_mblur_enable>

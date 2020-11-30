@@ -53,6 +53,7 @@ public:
 	IBlender* 					b_smaa;
 	IBlender* 					b_vignette;
 	IBlender*					b_hud_mask;
+	IBlender*					b_hud_blood;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -143,6 +144,8 @@ private:
 	ref_shader					s_vignette;
 	//Hud Mask
 	ref_shader					s_hud_mask;
+	//Hud Blood
+	ref_shader					s_hud_blood;
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -286,6 +289,7 @@ public:
 	void						phase_puddles			();
 	void						PhaseVignette			();
 	void						phase_hud_mask			();
+	void						phase_hud_blood			();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

@@ -747,6 +747,9 @@
     <ClInclude Include="..\xrRenderDX10\imgui_impl_dx10.h">
       <Filter>imgui_render</Filter>
     </ClInclude>
+    <ClInclude Include="blender_hud_blood.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1384,6 +1387,12 @@
     </ClCompile>
     <ClCompile Include="..\xrRenderDX10\imgui_impl_dx10.cpp">
       <Filter>imgui_render</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_hud_blood.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects.cpp">
+      <Filter>Core_Target</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

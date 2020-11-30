@@ -92,6 +92,8 @@ public:
 	virtual void					OnAssetsChanged		();
 	virtual int						GetHudMaskElement	() { return 0; };
 	virtual bool					GetHelmetStatus		() { return 0; };
+	virtual float					GetActorMaxHealth	() { return 0; };
+	virtual float					GetActorHealth		() { return 0; };
 
 	virtual void					RegisterModel		(IRenderVisual* V)
 #ifndef _EDITOR

@@ -304,6 +304,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_hud_mask", _st)
 	ctl = xml:InitCheck("video_adv:check_hud_mask", _st)
 	handler.m_preconditions[ctl]				= only_2_and_more_mode
+	
+--Динамические эффекты HUD	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_hud_dyn_effects", _st)
+	ctl = xml:InitCheck("video_adv:check_hud_dyn_effects", _st)
+	handler.m_preconditions[ctl]				= only_2_and_more_mode
 
 --Тип сглаживания
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)

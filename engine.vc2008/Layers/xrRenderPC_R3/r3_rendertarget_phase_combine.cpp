@@ -386,6 +386,13 @@ void	CRenderTarget::phase_combine	()
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK_CONTROL) && HelmetStatus)
 			phase_hud_mask();
 	}
+
+	//Hud Effects
+	if (!_menu_pp)
+	{
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS))
+			phase_hud_blood();
+	}
 	
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.
