@@ -98,6 +98,8 @@ public:
 			bool		GetHelmetStatus			();
 			float		GetActorMaxHealth		() override;
 			float		GetActorHealth			() override;
+			float		GetActorMaxPower		() override;
+			float		GetActorPower			() override;
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}

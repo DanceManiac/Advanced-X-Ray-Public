@@ -54,6 +54,7 @@ public:
 	IBlender* 					b_vignette;
 	IBlender*					b_hud_mask;
 	IBlender*					b_hud_blood;
+	IBlender*					b_hud_power;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -142,6 +143,8 @@ private:
 	ref_shader					s_hud_mask;
 	//Hud Blood
 	ref_shader					s_hud_blood;
+	//Hud Stamina
+	ref_shader					s_hud_power;
 
 	// SSAO
 	ref_rt						rt_ssao_temp;
@@ -286,6 +289,7 @@ public:
 	void						PhaseVignette			();
 	void						phase_hud_mask			();
 	void						phase_hud_blood			();
+	void						phase_hud_power			();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

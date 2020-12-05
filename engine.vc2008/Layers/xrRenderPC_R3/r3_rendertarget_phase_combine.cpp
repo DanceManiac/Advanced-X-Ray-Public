@@ -392,6 +392,7 @@ void	CRenderTarget::phase_combine	()
 	{
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS))
 			phase_hud_blood();
+			phase_hud_power();
 	}
 	
 	// PP enabled ?

@@ -16,6 +16,7 @@
 #include "blender_vignette.h"
 #include "blender_hud_mask.h"
 #include "blender_hud_blood.h"
+#include "blender_hud_stamina.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -224,6 +225,8 @@ CRenderTarget::CRenderTarget		()
 	b_hud_mask						= xr_new<CBlender_hud_mask>				();
 	//HUD BLOOD
 	b_hud_blood						= xr_new<CBlender_Hud_Blood>			();
+	//HUD STAMINA
+	b_hud_power						= xr_new<CBlender_Hud_Stamina>			();
 
 	//	NORMAL
 	{
@@ -393,6 +396,8 @@ CRenderTarget::CRenderTarget		()
 	s_hud_mask.create(b_hud_mask, "r2\\hud_mask");
 	//Hud Blood
 	s_hud_blood.create(b_hud_blood, "r2\\hud_blood");
+	//Hud Stamina
+	s_hud_power.create(b_hud_power, "r2\\hud_power");
 		
 	//SSAO
 	if (RImplementation.o.ssao_blur_on)
@@ -683,6 +688,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_vignette				); //Vignette
 	xr_delete					(b_hud_mask				); //Hud Mask
 	xr_delete					(b_hud_blood			); //Hud Blood
+	xr_delete					(b_hud_power			); //Hud Stamina
 }
 
 void CRenderTarget::reset_light_marker( bool bResetStencil)

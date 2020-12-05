@@ -25,6 +25,7 @@
 #include "../xrEngine/x_ray.h"
 #include "ai_space.h"
 #include "../xrServerEntitiesCS/script_engine.h"
+#include "ActorCondition.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -855,6 +856,16 @@ float CGamePersistent::GetActorMaxHealth()
 float CGamePersistent::GetActorHealth()
 {
 	return	(Actor()->GetfHealth());
+}
+
+float CGamePersistent::GetActorMaxPower()
+{
+	return	(Actor()->conditions().GetMaxPower());
+}
+
+float CGamePersistent::GetActorPower()
+{
+	return	(Actor()->conditions().GetPower());
 }
 
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)

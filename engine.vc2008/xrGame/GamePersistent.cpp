@@ -30,6 +30,7 @@
 #include "../xrServerEntities/xrServer_Object_Base.h"
 #include "UI/UIGameTutorial.h"
 #include "ActorHelmet.h"
+#include "ActorCondition.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -903,6 +904,16 @@ float CGamePersistent::GetActorMaxHealth()
 float CGamePersistent::GetActorHealth()
 {
 	return	(Actor()->GetfHealth());
+}
+
+float CGamePersistent::GetActorMaxPower()
+{
+	return	(Actor()->conditions().GetMaxPower());
+}
+
+float CGamePersistent::GetActorPower()
+{
+	return	(Actor()->conditions().GetPower());
 }
 
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
