@@ -96,6 +96,8 @@ public:
 	virtual float					GetActorHealth		() { return 0; };
 	virtual float					GetActorMaxPower	() { return 0; };
 	virtual float					GetActorPower		() { return 0; };
+	virtual float					GetActorBleeding	() { return 0; };
+	virtual bool					GetActorAliveStatus () { return 0; };
 
 	virtual void					RegisterModel		(IRenderVisual* V)
 #ifndef _EDITOR

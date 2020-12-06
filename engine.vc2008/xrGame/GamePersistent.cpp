@@ -916,6 +916,16 @@ float CGamePersistent::GetActorPower()
 	return	(Actor()->conditions().GetPower());
 }
 
+float CGamePersistent::GetActorBleeding()
+{
+	return	(Actor()->conditions().BleedingSpeed());
+}
+
+bool CGamePersistent::GetActorAliveStatus()
+{
+	return	(Actor()->g_Alive());
+}
+
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
 {
 	if(m_bPickableDOF)	return;

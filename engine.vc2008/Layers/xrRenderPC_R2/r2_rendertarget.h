@@ -37,6 +37,7 @@ public:
 	IBlender*					b_hud_mask;
 	IBlender*					b_hud_blood;
 	IBlender*					b_hud_power;
+	IBlender*					b_hud_bleeding;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -114,6 +115,8 @@ private:
 	ref_shader					s_hud_blood;
 	//Hud Stamina
 	ref_shader					s_hud_power;
+	//Hud Bleeding
+	ref_shader					s_hud_bleeding;
 	
 	// Water
 	ref_shader					s_water;
@@ -255,6 +258,7 @@ public:
 	void						phase_hud_mask			();
 	void						phase_hud_blood			();
 	void						phase_hud_power			();
+	void						phase_hud_bleeding		();
 	void						shadow_direct			(light* L, u32 dls_phase);
 
 	bool						need_to_render_sunshafts();

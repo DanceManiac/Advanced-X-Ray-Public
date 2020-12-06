@@ -20,6 +20,7 @@
 #include "blender_hud_mask.h"
 #include "blender_hud_blood.h"
 #include "blender_hud_stamina.h"
+#include "blender_hud_bleeding.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -333,6 +334,8 @@ CRenderTarget::CRenderTarget		()
 	b_hud_blood				= xr_new<CBlender_Hud_Blood>			();
 	//HUD STAMINA
 	b_hud_power				= xr_new<CBlender_Hud_Stamina>			();
+	//HUD BLEEDING
+	b_hud_bleeding			= xr_new<CBlender_Hud_Bleeding>			();
 
 	if( RImplementation.o.dx10_msaa )
 	{
@@ -685,6 +688,8 @@ CRenderTarget::CRenderTarget		()
 	s_hud_blood.create(b_hud_blood, "r3\\hud_blood");
 	//Hud Stamina
 	s_hud_power.create(b_hud_power, "r3\\hud_power");
+	//Hud Bleeding
+	s_hud_bleeding.create(b_hud_bleeding, "r3\\hud_bleeding");
 
     if (RImplementation.o.ssao_blur_on)
 	{
@@ -1083,6 +1088,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_hud_mask				); //Hud Mask
 	xr_delete					(b_hud_blood			); //Hud Blood
 	xr_delete					(b_hud_power			); //Hud Stamina
+	xr_delete					(b_hud_bleeding			); //Hud Bleeding
 
    if( RImplementation.o.dx10_msaa )
    {

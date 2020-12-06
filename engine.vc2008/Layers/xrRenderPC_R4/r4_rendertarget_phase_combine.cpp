@@ -383,16 +383,19 @@ void	CRenderTarget::phase_combine	()
 	if (!_menu_pp)
 	{
 		bool HelmetStatus = g_pGamePersistent->GetHelmetStatus();
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK_CONTROL) && HelmetStatus)
+		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK_CONTROL) && HelmetStatus && IsActorAlive)
 			phase_hud_mask();
 	}
 
 	//Hud Effects
 	if (!_menu_pp)
 	{
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS))
+		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
 			phase_hud_blood();
 			phase_hud_power();
+			phase_hud_bleeding();
 	}
 
 	// PP enabled ?
