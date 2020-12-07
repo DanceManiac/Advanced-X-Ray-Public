@@ -36,8 +36,6 @@ void CRenderDevice::Destroy	(void) {
 	//xr_delete					(Resources);
 	//HW.DestroyDevice			();
 
-	ChangeDisplaySettings(NULL, 0);
-
 	seqRender.R.clear			();
 	seqAppActivate.R.clear		();
 	seqAppDeactivate.R.clear	();
