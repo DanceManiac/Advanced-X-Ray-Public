@@ -1617,6 +1617,10 @@ void CWeapon::UpdateHudAdditonal		(Fmatrix& trans)
 
 		clamp(m_fFactor, 0.f, 1.f);
 	}
+	else
+	{
+		m_fFactor = 0.0;
+	}
 }
 
 void CWeapon::SetAmmoElapsed(int ammo_count)
