@@ -1,6 +1,7 @@
 [zone_mine_electric]:zone_base
 GroupControlSection	= spawn_group_zone
-$def_sphere = 2
+$spawn 			= "zones\base\mine_electric"
+$def_sphere = 1.5
 $prefetch 					= 16
 class						= ZS_MBALD
 
@@ -10,12 +11,18 @@ effective_radius			= 1.0 ;размер радиуса в процентах от оригинального, где дейст
 ef_anomaly_type				= 1
 ef_weapon_type				= 13
 
+sound						= zone_mosquito_bald
 postprocess					= postprocess_electra_mine
+
+artefacts					=
+BirthProbability 			= 0
 
 
 ;----------- Anomaly settings -----------------------
 max_start_power		= 1.00
 attenuation			= 1
+period				= 1
+
 
 idle_particles		= zones_mine\zone_electric_mine_idle
 blowout_particles	= anomaly2\electra2_blast
@@ -47,12 +54,14 @@ disable_time_small	= 500		;время игнорирования маленького неживого объекта в зон
 disable_idle_time	= 100	;время отключения idle партиклов
 
 awaking_time		= 100
-blowout_time		= 100
-accamulate_time		= 1500
+blowout_time		= 1000
+accamulate_time		= 1000
 
 ignore_nonalive		= false
 ignore_small		= false
 ignore_artefacts	= true
+
+visible_by_detector = on
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ветер
@@ -63,6 +72,10 @@ blowout_wind_time_peak      = 150
 blowout_wind_time_end		= 299
 blowout_wind_power			= 0.2			;сила поднимаего ветра (от 0 до 1), в момент blowout_wind_time_peak
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;рождение артефактов во время срабатывания
+spawn_blowout_artefacts = off
+
 shape_transp_color		= 255, 0, 0, 60
 shape_edge_color		= 32, 32, 32, 255
 
@@ -71,100 +84,26 @@ volumetric_quality = 0.5
 volumetric_distance = 0.5
 volumetric_intensity = 0.5
 
-
 [zone_mine_electric_weak]:zone_mine_electric
 $spawn 						= "zones\mine_electric_weak"
-max_start_power		= 0.8
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
 
+;----------- Anomaly settings -----------------------
+max_start_power		= 0.5
+attenuation			= 1
+period				= 1
 
 [zone_mine_electric_average]:zone_mine_electric
 $spawn 						= "zones\mine_electric_average"
-max_start_power		= 0.8
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
 
+;----------- Anomaly settings -----------------------
+max_start_power		= 0.7
+attenuation			= 1
+period				= 1
 
 [zone_mine_electric_strong]:zone_mine_electric
 $spawn 						= "zones\mine_electric_strong"
-max_start_power		= 0.8
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
 
-
-
-[zone_mine_static]:zone_base
-postprocess		= postprocess_electra_mine
-idle_particles		= anomaly2\electra_idle
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
-
-
-[zone_mine_static_weak]:zone_mine_electric_weak, zone_mine_static
-$spawn 			= "zones\scenes\mine_static_weak"
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
-
-
-[zone_mine_static_average]:zone_mine_electric_average, zone_mine_static
-$spawn 			= "zones\scenes\mine_static_average"
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
-
-
-[zone_mine_static_strong]:zone_mine_electric_strong, zone_mine_static
-$spawn 			= "zones\scenes\mine_static_strong"
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
-
-
-
-[zone_witches_galantine]:zone_mine_electric
-postprocess		= postprocess_electra
-idle_particles		= anomaly2\electra_idle
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
-
-
-[zone_witches_galantine_weak]:zone_witches_galantine
-$spawn 			= "zones\mp\witches_galantine_weak"
-max_start_power		= 0.50
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
-
-
-[zone_witches_galantine_average]:zone_witches_galantine
-$spawn 			= "zones\mp\witches_galantine_average"
-max_start_power		= 1.20
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
-
-
-[zone_witches_galantine_strong]:zone_witches_galantine
-$spawn 			= "zones\mp\witches_galantine_strong"
-max_start_power		= 2.00
-volumetric_blowout = true
-volumetric_quality = 1.0
-volumetric_distance = 0.5
-volumetric_intensity = 0.5
+;----------- Anomaly settings -----------------------
+max_start_power		= 0.9
+attenuation			= 1
+period				= 1
