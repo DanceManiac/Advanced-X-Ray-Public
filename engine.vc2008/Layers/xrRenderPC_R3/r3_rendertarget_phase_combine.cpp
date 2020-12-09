@@ -380,7 +380,7 @@ void	CRenderTarget::phase_combine	()
 	}
 
 	//Hud Mask
-	if (!_menu_pp)
+	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
 		bool HelmetStatus = g_pGamePersistent->GetHelmetStatus();
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
@@ -389,7 +389,7 @@ void	CRenderTarget::phase_combine	()
 	}
 
 	//Hud Effects
-	if (!_menu_pp)
+	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)

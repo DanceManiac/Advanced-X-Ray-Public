@@ -878,6 +878,11 @@ bool CGamePersistent::GetActorAliveStatus()
 	return	(Actor()->g_Alive());
 }
 
+bool CGamePersistent::GetActor()
+{
+	return	(Actor());
+}
+
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
 {
 	if(m_bPickableDOF)	return;

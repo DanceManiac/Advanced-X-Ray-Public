@@ -105,6 +105,7 @@ public:
 			float		GetActorPower			() override;
 			float		GetActorBleeding		() override;
 			bool		GetActorAliveStatus		();
+			bool		GetActor				();
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}

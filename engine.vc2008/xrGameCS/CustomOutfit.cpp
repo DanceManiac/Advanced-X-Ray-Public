@@ -23,7 +23,11 @@ CCustomOutfit::CCustomOutfit()
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_artefact_count = 0;
 	m_BonesProtectionSect = NULL;
-	UpdateHudMask();
+
+	if (Actor())
+		UpdateHudMask();
+	else
+		HudMaskElement = 0;
 }
 
 CCustomOutfit::~CCustomOutfit() 

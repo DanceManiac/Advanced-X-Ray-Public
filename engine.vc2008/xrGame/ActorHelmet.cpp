@@ -15,7 +15,11 @@ CHelmet::CHelmet()
 		m_HitTypeProtection[i] = 1.0f;
 
 	m_boneProtection = xr_new<SBoneProtections>();
-	UpdateHudMask();
+
+	if (Actor())
+		UpdateHudMask();
+	else
+		HudMaskElement = 0;
 }
 
 CHelmet::~CHelmet()
