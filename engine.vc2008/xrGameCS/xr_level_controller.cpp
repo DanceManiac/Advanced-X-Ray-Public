@@ -364,11 +364,11 @@ void GetActionAllBinding		(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 
 	if(pbinding->m_keyboard[0])
 	{
-		strcpy_s(prim, pbinding->m_keyboard[0]->key_local_name.c_str());
+		xr_strcpy(prim, pbinding->m_keyboard[0]->key_local_name.c_str());
 	}
 	if(pbinding->m_keyboard[1])
 	{
-		strcpy_s(sec, pbinding->m_keyboard[1]->key_local_name.c_str());
+		xr_strcpy(sec, pbinding->m_keyboard[1]->key_local_name.c_str());
 	}
 	
 	sprintf_s		(dst_buff, dst_buff_sz, "%s%s%s", prim[0]?prim:"", (sec[0]&&prim[0])?" , ":"", sec[0]?sec:"");
