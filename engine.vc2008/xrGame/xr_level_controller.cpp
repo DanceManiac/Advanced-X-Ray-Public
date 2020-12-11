@@ -349,9 +349,17 @@ EGameActions get_binded_action(int _dik)
 	return kNOTBINDED;
 }
 
-void GetActionAllBinding		(LPCSTR _action, char* dst_buff, int dst_buff_sz)
+bool GetActionAllBinding(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 {
 	int			action_id	= action_name_to_id(_action);
+
+	if (action_id == kNOTBINDED)
+	{
+		// Just insert the unknown action name as is
+		xr_strcpy(dst_buff, dst_buff_sz, _action);
+		return false;
+	}
+
 	_binding*	pbinding	= &g_key_bindings[action_id];
 
 	string128	prim;
@@ -370,9 +378,12 @@ void GetActionAllBinding		(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 	if(NULL==pbinding->m_keyboard[0] && NULL==pbinding->m_keyboard[1])
 	{
 		xr_sprintf		(dst_buff, dst_buff_sz, "%s", CStringTable().translate("st_key_notbinded").c_str());
-	}else
-		xr_sprintf		(dst_buff, dst_buff_sz, "%s%s%s", prim[0]?prim:"", (sec[0]&&prim[0])?" , ":"", sec[0]?sec:"");
-					
+	}
+	else
+	{
+		xr_sprintf(dst_buff, dst_buff_sz, "%s%s%s", prim[0] ? prim : "", (sec[0] && prim[0]) ? " , " : "", sec[0] ? sec : "");
+	}
+	return true;		
 }
 
 ConsoleBindCmds	bindConsoleCmds;

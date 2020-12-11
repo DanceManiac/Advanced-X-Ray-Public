@@ -152,7 +152,7 @@ public:
 	void 	save			(IWriter* F);
 };
 
-void GetActionAllBinding	(LPCSTR action, char* dst_buff, int dst_buff_sz);
+bool GetActionAllBinding(LPCSTR action, char* dst_buff, int dst_buff_sz);
 
 extern ConsoleBindCmds		bindConsoleCmds;
 
