@@ -51,6 +51,8 @@ XRCORE_API	u32		build_id;
 #	define NO_MULTI_INSTANCES
 #endif // #ifdef MASTER_GOLD
 
+ENGINE_API bool CallOfPripyatMode = false;
+ENGINE_API bool ClearSkyMode = false;
 
 static LPSTR month_id[12] = {
 	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
@@ -211,39 +213,51 @@ struct path_excluder_predicate
 	xr_auth_strings_t const *	m_ignore;
 };
 
-PROTECT_API void InitSettings	()
+template <typename T>
+void InitConfig(T& config, pcstr name, bool fatal = true,
+	bool readOnly = true, bool loadAtStart = true, bool saveAtEnd = true,
+	u32 sectCount = 0, const CInifile::allow_include_func_t& allowIncludeFunc = nullptr)
 {
-	#ifndef DEDICATED_SERVER
-		Msg( "EH: %s\n" , ComputeModuleHash( szEngineHash ) );
-	#endif // DEDICATED_SERVER
+	string_path fname;
+	FS.update_path(fname, "$game_config$", name);
+	config = xr_new<CInifile>(fname, readOnly, loadAtStart, saveAtEnd, sectCount, allowIncludeFunc);
 
-	string_path					fname; 
-	FS.update_path				(fname,"$game_config$","system.ltx");
-#ifdef DEBUG
-	Msg							("Updated path to system.ltx is %s", fname);
-#endif // #ifdef DEBUG
-	pSettings					= xr_new<CInifile>	(fname,TRUE);
-	CHECK_OR_EXIT				(0!=pSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.",fname));
+	CHECK_OR_EXIT(config->section_count() || !fatal,
+		make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+}
 
-	xr_auth_strings_t			tmp_ignore_pathes;
-	xr_auth_strings_t			tmp_check_pathes;
-	fill_auth_check_params		(tmp_ignore_pathes, tmp_check_pathes);
-	
-	path_excluder_predicate			tmp_excluder(&tmp_ignore_pathes);
-	CInifile::allow_include_func_t	tmp_functor;
-	tmp_functor.bind(&tmp_excluder, &path_excluder_predicate::is_allow_include);
-	pSettingsAuth					= xr_new<CInifile>(
-		fname,
-		TRUE,
-		TRUE,
-		FALSE,
-		0,
-		tmp_functor
-	);
+PROTECT_API void InitSettings()
+{
+	Msg("# Compute Module Hash: %s", ComputeModuleHash(szEngineHash));
 
-	FS.update_path				(fname,"$game_config$","game.ltx");
-	pGameIni					= xr_new<CInifile>	(fname,TRUE);
-	CHECK_OR_EXIT				(0!=pGameIni->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.",fname));
+	string_path fname;
+	FS.update_path(fname, "$game_config$", "system.ltx");
+	pSettings = xr_new<CInifile>(fname, TRUE);
+	CHECK_OR_EXIT(0 != pSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+
+	xr_auth_strings_t tmp_ignore_pathes, tmp_check_pathes;
+	fill_auth_check_params(tmp_ignore_pathes, tmp_check_pathes);
+
+	path_excluder_predicate tmp_excluder(&tmp_ignore_pathes);
+	CInifile::allow_include_func_t includeFilter;
+	includeFilter.bind(&tmp_excluder, &path_excluder_predicate::is_allow_include);
+
+	InitConfig(pSettings, "system.ltx");
+	InitConfig(pSettingsAuth, "system.ltx", true, true, true, false, 0, includeFilter);
+	InitConfig(pGameIni, "game.ltx");
+
+	pcstr EngineMode = READ_IF_EXISTS(pSettings, r_string, "global", "engine_mode", "cop");
+
+	if (xr_strcmp("cop", EngineMode) == 0)
+	{
+		CallOfPripyatMode = true;
+		ClearSkyMode = false;
+	}
+	else if (xr_strcmp("cs", EngineMode) == 0)
+	{
+		CallOfPripyatMode = false;
+		ClearSkyMode = true;
+	}
 }
 PROTECT_API void InitConsole	()
 {
@@ -752,15 +766,6 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 	
 	compute_build_id			();
 
-	if (strstr(lpCmdLine, "-cs"))
-	{
-		GCurrentGame = EGamePath::CS_1510;
-	}
-	else
-	{
-		GCurrentGame = EGamePath::COP_1602;
-	}
-
 	Core._initialize			("xray",NULL, TRUE, fsgame[0] ? fsgame : NULL);
 
 	InitSettings				();
@@ -769,6 +774,15 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 	if ( pSettings->line_exist( "string_table" , "no_native_input" ) ) {
 			xr_strcpy( Core.UserName , sizeof( Core.UserName ) , "Player" );
 			xr_strcpy( Core.CompName , sizeof( Core.CompName ) , "Computer" );
+	}
+
+	if (ClearSkyMode)
+	{
+		GCurrentGame = EGamePath::CS_1510;
+	}
+	else if (CallOfPripyatMode)
+	{
+		GCurrentGame = EGamePath::COP_1602;
 	}
 
 #ifndef DEDICATED_SERVER

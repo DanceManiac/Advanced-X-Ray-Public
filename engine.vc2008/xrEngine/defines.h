@@ -10,6 +10,8 @@
 #define _RELEASE(x)			{ if(x) { (x)->Release();       (x)=NULL; } }
 #define _SHOW_REF(msg, x)   { if(x) { x->AddRef(); Log(msg,u32(x->Release()));}}
 
+ENGINE_API extern	bool		CallOfPripyatMode;
+ENGINE_API extern	bool		ClearSkyMode;
 // textures
 ENGINE_API extern	int		psTextureLOD		;
 
