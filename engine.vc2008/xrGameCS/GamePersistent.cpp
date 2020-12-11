@@ -59,7 +59,7 @@ CGamePersistent::CGamePersistent(void)
 	ambient_effect_wind_out_time= 0.f;
 	ambient_effect_wind_on		= false;
 
-	ls_tips_enabled = READ_IF_EXISTS(pSettings, r_bool, "global", "ls_tips_enabled", true);
+	ls_tips_enabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "ls_tips_enabled", true);
 
 	ZeroMemory					(ambient_sound_next_time, sizeof(ambient_sound_next_time));
 	

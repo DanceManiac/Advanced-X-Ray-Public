@@ -243,10 +243,15 @@ PROTECT_API void InitSettings()
 	includeFilter.bind(&tmp_excluder, &path_excluder_predicate::is_allow_include);
 
 	InitConfig(pSettings, "system.ltx");
+	InitConfig(pAdvancedSettings, "AdvancedXRay.ltx");
 	InitConfig(pSettingsAuth, "system.ltx", true, true, true, false, 0, includeFilter);
 	InitConfig(pGameIni, "game.ltx");
 
-	pcstr EngineMode = READ_IF_EXISTS(pSettings, r_string, "global", "engine_mode", "cop");
+	pcstr EngineMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "global", "engine_mode", "cop");
+	bool WinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
+
+	Msg("# Engine Mode: %s", EngineMode);
+	Msg("# Winter Mode: %d", WinterMode);
 
 	if (xr_strcmp("cop", EngineMode) == 0)
 	{

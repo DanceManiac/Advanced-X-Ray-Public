@@ -34,31 +34,31 @@ CEffect_Rain::CEffect_Rain()
 	state							= stIdle;
 	
 	snd_Wind.create("mfs_team\\ambient\\weather\\wind", st_Effect, sg_Undefined);
-	m_bWinterMode = READ_IF_EXISTS(pSettings, r_bool, "environment", "winter_mode", false);
+	m_bWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
 	snd_RainOnMask.create("mfs_team\\ambient\\weather\\rain_on_mask", st_Effect, sg_Undefined);
 	m_bWindWorking = false;
 	
 	if (m_bWinterMode == false)
 	{
 		snd_Ambient.create("mfs_team\\ambient\\weather\\rain", st_Effect, sg_Undefined);
-		drop_speed_min = READ_IF_EXISTS(pSettings, r_float, "rain_params", "min_rain_drop_speed", 40.0f);
-		drop_speed_max = READ_IF_EXISTS(pSettings, r_float, "rain_params", "man_rain_drop_speed", 80.0f);
-		drop_length = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_length", 5.0f);
-		drop_width = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
-		drop_angle = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_angle", 3.0f);
-		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 100.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "rain_params", "rain_drop_max_angle", 89.0f));
+		drop_speed_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "min_rain_drop_speed", 40.0f);
+		drop_speed_max = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "man_rain_drop_speed", 80.0f);
+		drop_length = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_length", 5.0f);
+		drop_width = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
+		drop_angle = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_angle", 3.0f);
+		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 100.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_angle", 89.0f));
 	}
 	else
 	{
 		snd_Ambient.create("mfs_team\\ambient\\weather\\rain", st_Effect, sg_Undefined); //Пусть пока будет, чтобы не было вылета
-		drop_speed_min = READ_IF_EXISTS(pSettings, r_float, "snow_params", "min_rain_drop_speed", 40.0f);
-		drop_speed_max = READ_IF_EXISTS(pSettings, r_float, "snow_params", "man_rain_drop_speed", 80.0f);
-		drop_length = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_length", 5.0f);
-		drop_width = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_width", 0.30f);
-		drop_angle = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_angle", 3.0f);
-		drop_max_wind_vel = READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 100.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pSettings, r_float, "snow_params", "rain_drop_max_angle", 89.0f));
+		drop_speed_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "min_rain_drop_speed", 40.0f);
+		drop_speed_max = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "man_rain_drop_speed", 80.0f);
+		drop_length = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_length", 5.0f);
+		drop_width = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_width", 0.30f);
+		drop_angle = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_angle", 3.0f);
+		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 100.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_angle", 89.0f));
 	}
 
 

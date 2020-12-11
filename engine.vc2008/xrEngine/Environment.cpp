@@ -95,7 +95,7 @@ CEnvironment::CEnvironment	() :
 //	tsky1					= Device.Resources->_CreateTexture("$user$sky1");
 
 	// Environment configuration by OpenXRay (modified)
-	useDynamicSunDir = READ_IF_EXISTS(pSettings, r_bool, "environment", "dynamic_sun_dir", true);
+	useDynamicSunDir = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "dynamic_sun_dir", true);
 
 	string_path				file_name;
 	m_ambients_config		=

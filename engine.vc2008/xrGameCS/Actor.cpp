@@ -765,7 +765,7 @@ void CActor::Die	(CObject* who)
 		};
 	};
 
-	pcstr m_sDeathCamera = READ_IF_EXISTS(pSettings, r_string, "gameplay", "death_camera_mode", "freelook");
+	pcstr m_sDeathCamera = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "death_camera_mode", "freelook");
 
 	if (xr_strcmp("freelook", m_sDeathCamera) == 0)
 		cam_Set(eacFreeLook);

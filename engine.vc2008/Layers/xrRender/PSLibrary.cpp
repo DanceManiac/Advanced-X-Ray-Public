@@ -32,7 +32,7 @@ void CPSLibrary::OnCreate()
     {
     	string_path		fn;
 
-		m_bWinterModeParticles = READ_IF_EXISTS(pSettings, r_bool, "environment", "winter_mode", false);
+		m_bWinterModeParticles = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
 
 		if (m_bWinterModeParticles == false)
 		{

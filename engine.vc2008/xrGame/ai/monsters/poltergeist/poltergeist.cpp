@@ -124,7 +124,7 @@ void CPoltergeist::Load(LPCSTR section)
 	}
 
 	m_dead_always_visible				= READ_IF_EXISTS(pSettings,r_bool,section, 	"dead_always_visible",			  false);
-	m_bPolterVisibleDie					= READ_IF_EXISTS(pSettings,r_bool,"gameplay", 	"poltergeist_visible_corpse", false);
+	m_bPolterVisibleDie					= READ_IF_EXISTS(pAdvancedSettings,r_bool,"gameplay", 	"poltergeist_visible_corpse", false);
 	m_detection_pp_effector_name		= READ_IF_EXISTS(pSettings,r_string,section, "detection_pp_effector_name",		 "");
 	m_detection_near_range_factor		= READ_IF_EXISTS(pSettings,r_float,section, "detection_near_range_factor",		2.f);
 	m_detection_far_range_factor		= READ_IF_EXISTS(pSettings,r_float,section, "detection_far_range_factor",		1.f);
