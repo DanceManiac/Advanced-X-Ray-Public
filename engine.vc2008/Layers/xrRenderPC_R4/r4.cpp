@@ -15,6 +15,7 @@
 #include "../xrRender/ShaderResourceTraits.h"
 
 #include "D3DX10Core.h"
+#include "../../xrEngine/Rain.h"
 
 CRender										RImplementation;
 
@@ -348,6 +349,7 @@ void					CRender::create					()
 
 	o.dx10_minmax_sm = ps_r3_minmax_sm;
 	o.dx10_minmax_sm_screenarea_threshold = 1600*1200;
+	o.dx10_winter_mode = !CEffect_Rain().m_bWinterMode;
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -1401,6 +1403,14 @@ HRESULT	CRender::shader_compile			(
 	   def_it++;
    }
 	sh_name[len]='0'+char(o.dx10_minmax_sm!=0); ++len;
+
+	if (o.dx10_winter_mode)
+	{
+		defines[def_it].Name = "WINTER_MODE";
+		defines[def_it].Definition = "1";
+		def_it++;
+	}
+	sh_name[len] = '0' + char(o.dx10_winter_mode); ++len;
 
 	//Be carefull!!!!! this should be at the end to correctly generate
 	//compiled shader name;

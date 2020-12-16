@@ -5,6 +5,7 @@
 #include "../../xrEngine/xr_object.h"
 
 #include "../xrRender/QueryHelper.h"
+#include "../../xrEngine/Rain.h"
 
 IC	bool	pred_sp_sort	(ISpatial*	_1, ISpatial* _2)
 {
@@ -444,7 +445,7 @@ void CRender::Render		()
    }
 
 	//	TODO: DX10: Implement DX10 rain.
-	if (ps_r2_ls_flags.test(R3FLAG_DYN_WET_SURF))
+	if (ps_r2_ls_flags.test(R3FLAG_DYN_WET_SURF) && !CEffect_Rain().m_bWinterMode)
 	{
 		PIX_EVENT(DEFER_RAIN);
 		render_rain();

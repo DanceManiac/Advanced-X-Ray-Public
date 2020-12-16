@@ -3,6 +3,7 @@
 #include "../../xrEngine/environment.h"
 
 #include "../xrRender/dxEnvironmentRender.h"
+#include "../../xrEngine/Rain.h"
 
 #define STENCIL_CULL 0
 
@@ -405,7 +406,7 @@ void	CRenderTarget::phase_combine	()
 
 	if (!_menu_pp)
 	{
-		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS))
+		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !CEffect_Rain().m_bWinterMode)
 			PhaseRainDrops();
 	}
 			

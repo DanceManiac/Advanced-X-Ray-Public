@@ -45,7 +45,7 @@
 		float3 P_view = float3(tc.xy * pos_decompression_params2.xy * pos_decompression_params.zw - pos_decompression_params.xy, 1) * actorDepth;
 
 		#if defined(USE_SOFT_WATER)
-			#if USE_WATER_RIPPLES==1
+			#if USE_WATER_RIPPLES==1 && defined(WINTER_MODE)
 				float ripples_mixer = smooth_out_depth(actorDepth, 12, 2) * 0.6;
 
 				base = mix(base, RipplesPS(s_base, smp_base, _in.tbase, 10), ripples_mixer * u_weather.w);

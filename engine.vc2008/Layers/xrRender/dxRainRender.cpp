@@ -16,17 +16,35 @@ const float particles_time		= .3f;
 
 dxRainRender::dxRainRender()
 {
-	IReader* F = FS.r_open("$game_meshes$","dm\\rain.dm"); 
-	VERIFY3(F,"Can't open file.","dm\\rain.dm");
+	m_bWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
+	if (!m_bWinterMode)
+	{
+		IReader* F = FS.r_open("$game_meshes$", "dm\\rain.dm");
+		VERIFY3(F, "Can't open file.", "dm\\rain.dm");
 
-	DM_Drop	= ::RImplementation.model_CreateDM		(F);
+		DM_Drop = ::RImplementation.model_CreateDM(F);
 
-	//
-	SH_Rain.create("effects\\rain","fx\\fx_rain");
-	hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
-	hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
-	
-	FS.r_close(F);
+		//
+		SH_Rain.create("effects\\rain", "fx\\fx_rain");
+		hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
+		hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+
+		FS.r_close(F);
+	}
+	else
+	{
+		IReader* F = FS.r_open("$game_meshes$", "dm\\snow.dm");
+		VERIFY3(F, "Can't open file.", "dm\\snow.dm");
+
+		DM_Drop = ::RImplementation.model_CreateDM(F);
+
+		//
+		SH_Rain.create("effects\\snow", "fx\\fx_snow");
+		hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
+		hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
+
+		FS.r_close(F);
+	}
 }
 
 dxRainRender::~dxRainRender()

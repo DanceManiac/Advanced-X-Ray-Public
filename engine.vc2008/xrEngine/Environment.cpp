@@ -27,6 +27,7 @@
 #include "../Include/xrRender/LensFlareRender.h"
 #include "../Include/xrRender/RainRender.h"
 #include "../Include/xrRender/ThunderboltRender.h"
+#include "../../xrEngine/Rain.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -521,12 +522,15 @@ void CEnvironment::OnFrame()
 
     const float rain_density = CurrentEnv ? CurrentEnv->rain_density : 0.0f;
 
-    if (rain_density > 0.f && wetness_accum < 1.f)
-        wetness_accum += 0.000775f * rain_density;
-    else if(fis_zero(rain_density) && wetness_accum > 0.f)
-        wetness_accum -= 0.000425f;
+	if (!CEffect_Rain().m_bWinterMode)
+	{
+		if (rain_density > 0.f && wetness_accum < 1.f)
+			wetness_accum += 0.000775f * rain_density;
+		else if (fis_zero(rain_density) && wetness_accum > 0.f)
+			wetness_accum -= 0.000425f;
 
-    clamp(wetness_accum, 0.f, 1.f);
+		clamp(wetness_accum, 0.f, 1.f);
+	}
 
 	PerlinNoise1D->SetFrequency		(wind_gust_factor*MAX_NOISE_FREQ);
 	wind_strength_factor			= clampr(PerlinNoise1D->GetContinious(Device.fTimeGlobal)+0.5f,0.f,1.f); 
