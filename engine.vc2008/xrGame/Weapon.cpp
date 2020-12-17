@@ -82,6 +82,7 @@ CWeapon::CWeapon()
 	m_cur_scope				= NULL;
 	m_bRememberActorNVisnStatus = false;
 	m_nearwall_last_hud_fov = psHUD_FOV_def;
+	m_freelook_switch_back  = false;
 }
 
 CWeapon::~CWeapon		()

@@ -76,6 +76,7 @@ CWeapon::CWeapon()
 	m_set_next_ammoType_on_reload = u32(-1);
 	m_crosshair_inertion	= 0.f;
 	m_nearwall_last_hud_fov = psHUD_FOV_def;
+	m_freelook_switch_back	= false;
 }
 
 CWeapon::~CWeapon		()
