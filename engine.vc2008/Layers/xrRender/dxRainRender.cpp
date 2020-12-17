@@ -146,7 +146,16 @@ void dxRainRender::Render(CEffect_Rain &owner)
 
 		// Build line
 		Fvector&	pos_head	= one.P;
-		Fvector		pos_trail;	pos_trail.mad(pos_head, one.D, -owner.drop_length*factor_visual);
+		Fvector		pos_trail;
+
+		if (!m_bWinterMode)
+		{
+			pos_trail.mad(pos_head, one.D, -owner.drop_length*factor_visual);
+		}
+		else
+		{
+			pos_trail.mad(pos_head, one.D, -owner.drop_length*5.5f);
+		}
 
 		// Culling
 		Fvector sC,lineD;	float sR; 
