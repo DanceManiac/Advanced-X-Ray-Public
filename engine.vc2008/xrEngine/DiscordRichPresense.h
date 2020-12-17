@@ -33,6 +33,7 @@ public:
 
 	void SetStatus(StatusId status);
 	float LowlandFogBaseHeight;
+	LPCSTR discord_app_id;
 
 	~xrDiscordPresense();
 

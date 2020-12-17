@@ -5,10 +5,10 @@
 #include "x_ray.h"
 
 ENGINE_API xrDiscordPresense g_discord;
+extern int g_current_renderer;
 
 void xrDiscordPresense::Initialize()
 {
-	LPCSTR discord_app_id;
 	discord_app_id = READ_IF_EXISTS(pAdvancedSettings, r_string, "global", "discord_app_id", "745606008499601438");
 	// We don't have multiplayer mode, so no need to invite system to support
 	DiscordEventHandlers nullHandlers;
@@ -133,85 +133,120 @@ void xrDiscordPresense::SetStatus(StatusId status)
 	}
 
 	presenseInfo.startTimestamp = time(0);
-	presenseInfo.largeImageText = "Zone Awaits...";
+
+	if (g_current_renderer == 1)
+	{
+		presenseInfo.state = "In Game: Render R1 (DX9)";
+	}
+	else if (g_current_renderer == 2)
+	{
+		presenseInfo.state = "In Game: Render R2 (DX9)";
+	}
+	else if (g_current_renderer == 3)
+	{
+		presenseInfo.state = "In Game: Render R3 (DX10)";
+	}
+	else
+	{
+		presenseInfo.state = "In Game: Render R4 (DX11)";
+	}
+
+	if (CallOfPripyatMode)
+	{
+		presenseInfo.largeImageText = "Engine Mode: Call Of Pripyat";
+	}
+	else if (ClearSkyMode)
+	{
+		presenseInfo.largeImageText = "Engine Mode: Clear Sky";
+	}
+	else
+	{
+		presenseInfo.largeImageText = "Zone Awaits...";
+	}
+
+	if (discord_app_id != "745606008499601438")
+	{
+		presenseInfo.smallImageKey = "advanced_xray";
+		presenseInfo.smallImageText = "Advanced X-Ray Engine";
+	}
 
 	switch (realStatus)
 	{
 	case StatusId::In_Game:
-		presenseInfo.details		= "In Game";
-		presenseInfo.largeImageKey	= "zaton";
+		presenseInfo.details		= "Main Menu";
+		presenseInfo.largeImageKey	= "main_picture";
 		break;
 	case StatusId::Zaton:
-		presenseInfo.details		= "In Game: Zaton";
+		presenseInfo.details		= "Location: Zaton";
 		presenseInfo.largeImageKey  = "zaton";
 		break;
 	case StatusId::Upiter:
-		presenseInfo.details		= "In Game: Jupiter";
+		presenseInfo.details		= "Location: Jupiter";
 		presenseInfo.largeImageKey  = "jupiter";
 		break;
 	case StatusId::Pripyat:
-		presenseInfo.details		= "In Game: Pripyat";
+		presenseInfo.details		= "Location: Pripyat";
 		presenseInfo.largeImageKey  = "pripyat";
 		break;
 	case StatusId::LabX8:
-		presenseInfo.details		= "In Game: X-8";
+		presenseInfo.details		= "Location: X-8";
 		presenseInfo.largeImageKey	= "labx8";
 		break;
 	case StatusId::JupiterUnder:
-		presenseInfo.details		= "In Game: Jupiter Underground";
+		presenseInfo.details		= "Location: Jupiter Underground";
 		presenseInfo.largeImageKey	= "jupiter_underground";
 		break;
 	case StatusId::Marsh:
-		presenseInfo.details		= "In Game: Marsh";
+		presenseInfo.details		= "Location: Marsh";
 		presenseInfo.largeImageKey	= "marsh";
 		break;
 	case StatusId::Escape:
-		presenseInfo.details		= "In Game: Escape";
+		presenseInfo.details		= "Location: Escape";
 		presenseInfo.largeImageKey	= "escape";
 		break;
 	case StatusId::Garbage:
-		presenseInfo.details		= "In Game: Garbage";
+		presenseInfo.details		= "Location: Garbage";
 		presenseInfo.largeImageKey	= "garbage";
 		break;
 	case StatusId::Darkvalley:
-		presenseInfo.details		= "In Game: Darkvalley";
+		presenseInfo.details		= "Location: Darkvalley";
 		presenseInfo.largeImageKey	= "darkvalley";
 		break;
 	case StatusId::Agroprom:
-		presenseInfo.details		= "In Game: Agroprom";
+		presenseInfo.details		= "Location: Agroprom";
 		presenseInfo.largeImageKey	= "agroprom";
 		break;
 	case StatusId::AgrUnder:
-		presenseInfo.details		= "In Game: Agroprom Underground";
+		presenseInfo.details		= "Location: Agroprom Underground";
 		presenseInfo.largeImageKey	= "agroprom_underground";
 		break;
 	case StatusId::Yantar:
-		presenseInfo.details = "In Game: Yantar";
-		presenseInfo.largeImageKey = "yantar";
+		presenseInfo.details		= "Location: Yantar";
+		presenseInfo.largeImageKey	= "yantar";
 		break;
 	case StatusId::RedForest:
-		presenseInfo.details = "In Game: Red Forest";
-		presenseInfo.largeImageKey = "red_forest";
+		presenseInfo.details		= "Location: Red Forest";
+		presenseInfo.largeImageKey	= "red_forest";
 		break;
 	case StatusId::Military:
-		presenseInfo.details = "In Game: Military";
-		presenseInfo.largeImageKey = "military";
+		presenseInfo.details		= "Location: Military";
+		presenseInfo.largeImageKey	= "military";
 		break;
 	case StatusId::Limansk:
-		presenseInfo.details = "In Game: Limansk";
-		presenseInfo.largeImageKey = "limansk";
+		presenseInfo.details		= "Location: Limansk";
+		presenseInfo.largeImageKey	= "limansk";
 		break;
 	case StatusId::Hospital:
-		presenseInfo.details = "In Game: Hospital";
-		presenseInfo.largeImageKey = "hospital";
+		presenseInfo.details		= "Location: Hospital";
+		presenseInfo.largeImageKey	= "hospital";
 		break;
 	case StatusId::Stancia2:
-		presenseInfo.details = "In Game: Stancia 2";
-		presenseInfo.largeImageKey = "stancia_2";
+		presenseInfo.details		= "Location: Stancia 2";
+		presenseInfo.largeImageKey	= "stancia_2";
 		break;
 	default:
 	case StatusId::Menu:
-		presenseInfo.details		= "In Game: Main Menu";
+		presenseInfo.details		= "Main Menu";
 		presenseInfo.largeImageKey	= "main_picture";
 		break;
 	}
