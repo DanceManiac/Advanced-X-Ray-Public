@@ -180,12 +180,14 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitComboBox("video_adv:combo_sunshafts_mode", _st)
 	handler.combo_sunshafts_mode = ctl
 	table.insert(handler.m_preconditions, {func=mode_ge_25, control=_st})
-	
+
 	_st = xml:InitStatic("video_adv:templ_item", nil)
-	xml:InitStatic("video_adv:cap_ssao_mode", _st)
-	ctl = xml:InitComboBox("video_adv:combo_ssao_mode", _st)
-	handler.combo_ssao_mode = ctl
-	table.insert(handler.m_preconditions, {func=mode_ge_25, control=_st})	
+	_st:SetWndSize(vector2():set(_st:GetWidth(), 106))
+	xml:InitStatic("video_adv:cap_ao", _st)
+	ctl = xml:InitTab("video_adv:radio_tab_ao_options", _st)
+	handler.tab_ao_opt = ctl
+	handler:Register(ctl, "tab_ao_opt")
+	table.insert(handler.m_preconditions, {func=mode_ge_25, control=_st})
 
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_ssao", _st)

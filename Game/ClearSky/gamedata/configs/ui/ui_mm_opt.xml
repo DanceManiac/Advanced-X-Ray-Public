@@ -713,6 +713,19 @@
       <list_font	 r="216" g="186" b="140" font="letterica16"/>
     </combo_sun_shafts>
 
+    <cap_ssao_mode x="20" y="0" width="143" height="21">
+      <text font="letterica16" color="ui_6">ui_mm_ssao_text</text>
+    </cap_ssao_mode>
+    <combo_ssao_mode x="194" y="0" width="245" height="21" always_show_scroll="1">
+      <options_item entry="r2_ssao_mode" group="mm_opt_video" depend="restart"/>
+      <text_color>
+        <e r="216" g="186" b="140"/>
+        <d color="ui_gray"/>
+      </text_color>
+      <list_font_s r="240" g="217" b="182"/>
+      <list_font	 r="216" g="186" b="140" font="letterica16"/>
+    </combo_ssao_mode>
+	
     <cap_ssao x="20" y="0" width="143" height="21">
       <text font="letterica16" color="ui_6">ui_mm_ssao</text>
     </cap_ssao>

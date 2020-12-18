@@ -153,10 +153,25 @@
 	<string id="ui_st_keypress_on_start">
 		<text>Автопауза после загрузки</text>
 	</string>
-	<string id="ssdo">
-		<text>SSDO</text>
-	</string>
 	<string id="ui_mm_hud_dynamic_effects">
 		<text>Динамические эффекты HUD</text>
+	</string>
+	<string id="ui_mm_ssao_text">
+		<text>Режим SSAO</text>
+	</string>
+	<string id="disabled">
+		<text>Отключено</text>
+	</string>
+	<string id="default">
+		<text>SSAO</text>
+	</string>
+	<string id="hdao">
+		<text>HDAO</text>
+	</string>
+	<string id="hbao">
+		<text>HBAO</text>
+	</string>
+	<string id="ssdo">
+		<text>SSDO</text>
 	</string>
 </string_table>

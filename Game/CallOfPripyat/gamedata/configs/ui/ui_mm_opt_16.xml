@@ -547,41 +547,18 @@
 	            <d r="70" g="70" b="70"/>
 		    </text_color>
         </combo_sun_shafts>
-
-        <cap_ao x="15" y="3" width="108" height="76">
+		
+        <cap_ssao_mode x="15" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_ssao_text</text>
-        </cap_ao>
-		<radio_tab_ao_options x="132" y="0" width="108" height="101" radio="1">
-			<options_item entry="r2_ssao_mode" group="mm_opt_video" depend="restart"/>
-			<button x="-8" y="0" width="37" height="28" id="disabled" stretch="1">
-				<text font="letterica16" vert_align="c" x="29" y="3" align="l">st_opt_off</text>
-	            <text_color>
-	                <e r="170" g="170" b="170"/>
-	                <d r="70" g="70" b="70"/>
-	            </text_color>
-			</button>
-			<button x="-8" y="25" width="37" height="28" id="default" stretch="1">
-				<text font="letterica16" vert_align="c" x="29" y="3" align="l">ui_mm_ssao</text>
-	            <text_color>
-	                <e r="170" g="170" b="170"/>
-	                <d r="70" g="70" b="70"/>
-	            </text_color>
-			</button>
-			<button x="-8" y="50" width="37" height="28" id="hdao" stretch="1">
-				<text font="letterica16" vert_align="c" x="29" y="3" align="l">ui_mm_hdao</text>
-	            <text_color>
-	                <e r="170" g="170" b="170"/>
-	                <d r="70" g="70" b="70"/>
-	            </text_color>
-			</button>
-			<button x="-8" y="75" width="37" height="28" id="hbao" stretch="1">
-				<text font="letterica16" vert_align="c" x="29" y="3" align="l">ui_mm_hbao</text>
-	            <text_color>
-	                <e r="170" g="170" b="170"/>
-	                <d r="70" g="70" b="70"/>
-	            </text_color>
-			</button>
-		</radio_tab_ao_options>
+        </cap_ssao_mode>
+        <combo_ssao_mode x="132" y="0" width="158" height="20" always_show_scroll="1">
+            <options_item entry="r2_ssao_mode" group="mm_opt_video" depend="restart"/>
+            <list_font r="170" g="170" b="170" font="letterica16"/>
+		    <text_color>
+	            <e r="170" g="170" b="170"/>
+	            <d r="70" g="70" b="70"/>
+		    </text_color>
+        </combo_ssao_mode>
 
         <cap_ssao x="15" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_ssao_quality</text>
