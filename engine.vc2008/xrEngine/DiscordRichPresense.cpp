@@ -136,32 +136,32 @@ void xrDiscordPresense::SetStatus(StatusId status)
 
 	if (g_current_renderer == 1)
 	{
-		presenseInfo.state = "In Game: Render R1 (DX9)";
+		presenseInfo.state = "В Игре: Рендер R1 (DX9)";
 	}
 	else if (g_current_renderer == 2)
 	{
-		presenseInfo.state = "In Game: Render R2 (DX9)";
+		presenseInfo.state = "В Игре: Рендер R2 (DX9)";
 	}
 	else if (g_current_renderer == 3)
 	{
-		presenseInfo.state = "In Game: Render R3 (DX10)";
+		presenseInfo.state = "В Игре: Рендер R3 (DX10)";
 	}
 	else
 	{
-		presenseInfo.state = "In Game: Render R4 (DX11)";
+		presenseInfo.state = "В Игре: Рендер R4 (DX11)";
 	}
 
 	if (CallOfPripyatMode)
 	{
-		presenseInfo.largeImageText = "Engine Mode: Call Of Pripyat";
+		presenseInfo.largeImageText = "Режим Движка: Зов Припяти";
 	}
 	else if (ClearSkyMode)
 	{
-		presenseInfo.largeImageText = "Engine Mode: Clear Sky";
+		presenseInfo.largeImageText = "Режим Движка: Чистое Небо";
 	}
 	else
 	{
-		presenseInfo.largeImageText = "Zone Awaits...";
+		presenseInfo.largeImageText = "Зона ожидает...";
 	}
 
 	if (discord_app_id != "745606008499601438")
@@ -173,80 +173,80 @@ void xrDiscordPresense::SetStatus(StatusId status)
 	switch (realStatus)
 	{
 	case StatusId::In_Game:
-		presenseInfo.details		= "Main Menu";
+		presenseInfo.details		= "Главное Меню";
 		presenseInfo.largeImageKey	= "main_picture";
 		break;
 	case StatusId::Zaton:
-		presenseInfo.details		= "Location: Zaton";
+		presenseInfo.details		= "Локация: Затон";
 		presenseInfo.largeImageKey  = "zaton";
 		break;
 	case StatusId::Upiter:
-		presenseInfo.details		= "Location: Jupiter";
+		presenseInfo.details		= "Локация: Окрестности Юпитера";
 		presenseInfo.largeImageKey  = "jupiter";
 		break;
 	case StatusId::Pripyat:
-		presenseInfo.details		= "Location: Pripyat";
+		presenseInfo.details		= "Локация: Припять";
 		presenseInfo.largeImageKey  = "pripyat";
 		break;
 	case StatusId::LabX8:
-		presenseInfo.details		= "Location: X-8";
+		presenseInfo.details		= "Локация: Лаборатория Х-8";
 		presenseInfo.largeImageKey	= "labx8";
 		break;
 	case StatusId::JupiterUnder:
-		presenseInfo.details		= "Location: Jupiter Underground";
+		presenseInfo.details		= "Локация: Путепровод Припять-1";
 		presenseInfo.largeImageKey	= "jupiter_underground";
 		break;
 	case StatusId::Marsh:
-		presenseInfo.details		= "Location: Marsh";
+		presenseInfo.details		= "Локация: Болота";
 		presenseInfo.largeImageKey	= "marsh";
 		break;
 	case StatusId::Escape:
-		presenseInfo.details		= "Location: Escape";
+		presenseInfo.details		= "Локация: Кордон";
 		presenseInfo.largeImageKey	= "escape";
 		break;
 	case StatusId::Garbage:
-		presenseInfo.details		= "Location: Garbage";
+		presenseInfo.details		= "Локация: Свалка";
 		presenseInfo.largeImageKey	= "garbage";
 		break;
 	case StatusId::Darkvalley:
-		presenseInfo.details		= "Location: Darkvalley";
+		presenseInfo.details		= "Локация: Тёмная Долина";
 		presenseInfo.largeImageKey	= "darkvalley";
 		break;
 	case StatusId::Agroprom:
-		presenseInfo.details		= "Location: Agroprom";
+		presenseInfo.details		= "Локация: НИИ Агропром";
 		presenseInfo.largeImageKey	= "agroprom";
 		break;
 	case StatusId::AgrUnder:
-		presenseInfo.details		= "Location: Agroprom Underground";
+		presenseInfo.details		= "Локация: Подземелья Агропрома";
 		presenseInfo.largeImageKey	= "agroprom_underground";
 		break;
 	case StatusId::Yantar:
-		presenseInfo.details		= "Location: Yantar";
+		presenseInfo.details		= "Локация: Янтарь";
 		presenseInfo.largeImageKey	= "yantar";
 		break;
 	case StatusId::RedForest:
-		presenseInfo.details		= "Location: Red Forest";
+		presenseInfo.details		= "Локация: Рыжий Лес";
 		presenseInfo.largeImageKey	= "red_forest";
 		break;
 	case StatusId::Military:
-		presenseInfo.details		= "Location: Military";
+		presenseInfo.details		= "Локация: Армейские склады";
 		presenseInfo.largeImageKey	= "military";
 		break;
 	case StatusId::Limansk:
-		presenseInfo.details		= "Location: Limansk";
+		presenseInfo.details		= "Локация: Лиманск";
 		presenseInfo.largeImageKey	= "limansk";
 		break;
 	case StatusId::Hospital:
-		presenseInfo.details		= "Location: Hospital";
+		presenseInfo.details		= "Локация: Госпиталь";
 		presenseInfo.largeImageKey	= "hospital";
 		break;
 	case StatusId::Stancia2:
-		presenseInfo.details		= "Location: Stancia 2";
+		presenseInfo.details		= "Локация: ЧАЭС";
 		presenseInfo.largeImageKey	= "stancia_2";
 		break;
 	default:
 	case StatusId::Menu:
-		presenseInfo.details		= "Main Menu";
+		presenseInfo.details		= "Главное Меню";
 		presenseInfo.largeImageKey	= "main_picture";
 		break;
 	}
