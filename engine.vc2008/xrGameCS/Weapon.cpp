@@ -1581,20 +1581,32 @@ bool CWeapon::ready_to_kill	() const
 	);
 }
 
-
-/*void CWeapon::UpdateHudAdditonal		(Fmatrix& trans)
+void _inertion(float& _val_cur, const float& _val_trgt, const float& _friction)
 {
-	CActor* pActor	= smart_cast<CActor*>(H_Parent());
-	if(!pActor)		return;
+	float friction_i = 1.f - _friction;
+	_val_cur = _val_cur * _friction + _val_trgt * friction_i;
+}
 
+float _lerp(const float& _val_a, const float& _val_b, const float& _factor)
+{
+	return (_val_a * (1.0 - _factor)) + (_val_b * _factor);
+}
+
+void CWeapon::UpdateHudAdditonal(Fmatrix& trans)
+{
+	CActor* pActor = smart_cast<CActor*>(H_Parent());
+	if (!pActor)
+		return;
+
+	attachable_hud_item* hi = HudItemData();
+	R_ASSERT(hi);
+
+	u8 idx = GetCurrentHudOffsetIdx();
+
+	//============= Поворот ствола во время аима =============//
 	if ((IsZoomed() && m_zoom_params.m_fZoomRotationFactor <= 1.f) ||
 		(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor > 0.f))
 	{
-		u8 idx = GetCurrentHudOffsetIdx();
-		//		if(idx==0)					return;
-
-		attachable_hud_item*		hi = HudItemData();
-		R_ASSERT(hi);
 		Fvector						curr_offs, curr_rot;
 		curr_offs = hi->m_measures.m_hands_offset[0][idx];//pos,aim
 		curr_rot = hi->m_measures.m_hands_offset[1][idx];//rot,aim
@@ -1625,18 +1637,15 @@ bool CWeapon::ready_to_kill	() const
 		clamp(m_zoom_params.m_fZoomRotationFactor, 0.f, 1.f);
 	}
 
+	//============= Коллизия оружия =============//
 	if (b_hud_collision)
 	{
-		u8 idx = GetCurrentHudOffsetIdx();
 		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
 		float dist = RQ.range;
-		//		if(idx==0)					return;
 
-		attachable_hud_item*		hi = HudItemData();
-		R_ASSERT					(hi);
-		Fvector						curr_offs, curr_rot;
-		curr_offs					= hi->m_measures.m_collision_offset[0];//pos,aim
-		curr_rot					= hi->m_measures.m_collision_offset[1];//rot,aim
+		Fvector curr_offs, curr_rot;
+		curr_offs = hi->m_measures.m_collision_offset[0];//pos,aim
+		curr_rot = hi->m_measures.m_collision_offset[1];//rot,aim
 		curr_offs.mul(m_fFactor);
 		curr_rot.mul(m_fFactor);
 
@@ -1644,62 +1653,6 @@ bool CWeapon::ready_to_kill	() const
 			m_fFactor += Device.fTimeDelta / 0.3;
 		else
 			m_fFactor -= Device.fTimeDelta / 0.3;
-
-		Fmatrix						hud_rotation;
-		hud_rotation.identity		();
-		hud_rotation.rotateX		(curr_rot.x);
-
-		Fmatrix						hud_rotation_y;
-		hud_rotation_y.identity		();
-		hud_rotation_y.rotateY		(curr_rot.y);
-		hud_rotation.mulA_43		(hud_rotation_y);
-
-		hud_rotation_y.identity		();
-		hud_rotation_y.rotateZ		(curr_rot.z);
-		hud_rotation.mulA_43		(hud_rotation_y);
-
-		hud_rotation.translate_over	(curr_offs);
-		trans.mulB_43				(hud_rotation);
-
-		clamp(m_fFactor, 0.f, 1.f);
-	}
-	else
-	{
-		m_fFactor = 0.0;
-	}
-}*/
-
-void _inertion(float& _val_cur, const float& _val_trgt, const float& _friction)
-{
-	float friction_i = 1.f - _friction;
-	_val_cur = _val_cur * _friction + _val_trgt * friction_i;
-}
-
-float _lerp(const float& _val_a, const float& _val_b, const float& _factor)
-{
-	return (_val_a * (1.0 - _factor)) + (_val_b * _factor);
-}
-
-void CWeapon::UpdateHudAdditonal(Fmatrix& trans)
-{
-	CActor* pActor = smart_cast<CActor*>(H_Parent());
-	if (!pActor)
-		return;
-
-	attachable_hud_item* hi = HudItemData();
-	R_ASSERT(hi);
-
-	u8 idx = GetCurrentHudOffsetIdx();
-
-	//============= Поворот ствола во время аима =============//
-	if ((IsZoomed() && m_zoom_params.m_fZoomRotationFactor <= 1.f) || (!IsZoomed() && m_zoom_params.m_fZoomRotationFactor > 0.f))
-	{
-		Fvector curr_offs, curr_rot;
-		curr_offs = hi->m_measures.m_hands_offset[0][idx]; //pos,aim
-		curr_rot = hi->m_measures.m_hands_offset[1][idx]; //rot,aim
-
-		curr_offs.mul(m_zoom_params.m_fZoomRotationFactor);
-		curr_rot.mul(m_zoom_params.m_fZoomRotationFactor);
 
 		Fmatrix hud_rotation;
 		hud_rotation.identity();
@@ -1717,12 +1670,11 @@ void CWeapon::UpdateHudAdditonal(Fmatrix& trans)
 		hud_rotation.translate_over(curr_offs);
 		trans.mulB_43(hud_rotation);
 
-		if (pActor->IsZoomAimingMode())
-			m_zoom_params.m_fZoomRotationFactor += Device.fTimeDelta / m_zoom_params.m_fZoomRotateTime;
-		else
-			m_zoom_params.m_fZoomRotationFactor -= Device.fTimeDelta / m_zoom_params.m_fZoomRotateTime;
-
-		clamp(m_zoom_params.m_fZoomRotationFactor, 0.f, 1.f);
+		clamp(m_fFactor, 0.f, 1.f);
+	}
+	else
+	{
+		m_fFactor = 0.0;
 	}
 
 	//============= Подготавливаем общие переменные =============//
