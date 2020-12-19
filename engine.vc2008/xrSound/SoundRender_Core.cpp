@@ -16,6 +16,8 @@ float	psSoundVEffects			= 1.0f;
 float	psSoundVFactor			= 1.0f;
 float	psSoundVMusic			= 1.f;
 u32		psSoundModel			= 0;
+int		psUseDistDelay			= 1;
+float	psSoundSpeed			= 250.f;
 
 XRSOUND_API CSoundRender_Core* SoundRender = nullptr;
 CSound_manager_interface* Sound = nullptr;
@@ -387,14 +389,27 @@ void	CSoundRender_Core::play_no_feedback		( ref_sound& S, CObject* O, u32 flags,
 
 void	CSoundRender_Core::play_at_pos			( ref_sound& S, CObject* O, const Fvector &pos, u32 flags, float delay)
 {
-	if (!bPresent || 0==S._handle())return;
-	S._p->g_object		= O;
-	if (S._feedback())	((CSoundRender_Emitter*)S._feedback())->rewind ();
-	else				i_play					(&S,flags&sm_Looped,delay);
-	
-	S._feedback()->set_position					(pos);
-	
-	if (flags&sm_2D || S._handle()->channels_num()==2)	
+	if (!bPresent || 0 == S._handle())
+		return;
+
+	S._p->g_object = O;
+
+	// Delay the sound starting, depending on distance from camer(sound speed feature)
+	if (psUseDistDelay && !(flags&sm_2D)) // dont apply on 2d sounds
+	{
+		float dist_to_listener = SoundRender->listener_position().distance_to(pos);
+
+		delay = dist_to_listener / psSoundSpeed;
+	}
+
+	if (S._feedback())
+		((CSoundRender_Emitter*)S._feedback())->rewind();
+	else
+		i_play(&S, flags&sm_Looped, delay);
+
+	S._feedback()->set_position(pos);
+
+	if (flags&sm_2D || S._handle()->channels_num() == 2)
 		S._feedback()->switch_to_2D();
 }
 void	CSoundRender_Core::destroy	(ref_sound& S )

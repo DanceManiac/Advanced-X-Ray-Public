@@ -779,6 +779,8 @@ void CCC_Register()
 	CMD3(CCC_Mask,		"snd_efx",				&psSoundFlags,			ss_EFX);
 	CMD4(CCC_Integer,	"snd_targets",			&psSoundTargets,		4, 256);
 	CMD4(CCC_Integer,	"snd_cache_size",		&psSoundCacheSizeMB,	4, 512);
+	CMD4(CCC_Integer,	"snd_use_distance_delay", &psUseDistDelay,		0, 1);
+	CMD4(CCC_Float,		"snd_sound_speed",		&psSoundSpeed,			1.f, 1000.f);
 
 #ifdef DEBUG
 	CMD3(CCC_Mask,		"snd_stats",			&g_stats_flags,		st_sound	);

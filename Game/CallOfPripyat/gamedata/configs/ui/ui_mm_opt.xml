@@ -680,6 +680,14 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="g_dynamic_music" group="mm_opt_sound" depend="snd"/>
         </check_dynamic_music>
+		
+        <cap_check_snd_delay x="15" y="153" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_snd_delay</text>
+        </cap_check_snd_delay>
+        <check_snd_delay x="162" y="150" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="snd_use_distance_delay" group="mm_opt_sound" depend="snd"/>
+        </check_snd_delay>
     </tab_sound>
     <tab_gameplay>
         <scroll_g x="-4" y="0" width="450" height="320"
