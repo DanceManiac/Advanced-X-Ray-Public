@@ -21,6 +21,7 @@
 #include "game_object_space.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"
+#include "AdvancedXrayGameConstants.h"
 
 ENGINE_API	bool	g_dedicated_server;
 ENGINE_API  extern float psHUD_FOV;
@@ -45,8 +46,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_eSoundEmptyClick			= ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
 	m_eSoundReload				= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	m_sounds_enabled			= true;
-	
-	m_sSndShotCurrent			= NULL;
+
 	m_sSilencerFlameParticles	= m_sSilencerSmokeParticles = NULL;
 
 	m_bFireSingleShot			= false;
@@ -55,6 +55,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_iQueueSize				= WEAPON_ININITE_QUEUE;
 	m_bLockType					= false;
 	m_bAutoreloadEnabled		= READ_IF_EXISTS(pSettings, r_bool, "gameplay", "autoreload_enabled", true);
+	m_bHasDistantShotSound		= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -80,8 +81,12 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_empty", "sndEmptyClick"	, false, m_eSoundEmptyClick	);
 	m_sounds.LoadSound(section,"snd_reload", "sndReload"	, true,	 m_eSoundReload		);
 	m_sounds.LoadSound(section, "snd_reflect", "sndReflect"	, true,	 m_eSoundReflect	);
-	
-	m_sSndShotCurrent = "sndShot";
+
+	if (pSettings->line_exist(section, "snd_shoot_dist")) // distant sound
+	{
+		m_sounds.LoadSound(section, "snd_shoot_distant", "sndShotDist", false, m_eSoundShot);
+		m_bHasDistantShotSound = true;
+	}
 		
 	//звуки и партиклы глушителя, еслит такой есть
 	if ( m_eSilencerStatus == ALife::eAddonAttachable || m_eSilencerStatus == ALife::eAddonPermanent )
@@ -597,7 +602,15 @@ void CWeaponMagazined::SetDefaults	()
 void CWeaponMagazined::OnShot()
 {
 	// Sound
-	PlaySound					(m_sSndShotCurrent.c_str(), get_LastFP());
+	if (IsSilencerAttached() && SilencerAttachable()) //skyloader: dont touch SilencerAttachable(), it needs for pb, vss, val
+		PlaySound("sndSilencerShot", get_LastFP());
+	else
+	{
+		if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+			PlaySound("sndShotDist", get_LastFP());
+		else
+			PlaySound("sndShot", get_LastFP());
+	}
 
 	// Camera	
 	AddShotEffector				();
@@ -1051,7 +1064,6 @@ void CWeaponMagazined::InitAddons()
 	{		
 		m_sFlameParticlesCurrent	= m_sSilencerFlameParticles;
 		m_sSmokeParticlesCurrent	= m_sSilencerSmokeParticles;
-		m_sSndShotCurrent			= "sndSilencerShot";
 
 		//подсветка от выстрела
 		LoadLights					(*cNameSect(), "silencer_");
@@ -1061,7 +1073,6 @@ void CWeaponMagazined::InitAddons()
 	{
 		m_sFlameParticlesCurrent	= m_sFlameParticles;
 		m_sSmokeParticlesCurrent	= m_sSmokeParticles;
-		m_sSndShotCurrent			= "sndShot";
 
 		//подсветка от выстрела
 		LoadLights		(*cNameSect(), "");
@@ -1388,6 +1399,14 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 
 	result2 = process_if_exists_set(section, "snd_reflect", &CInifile::r_string, str, test);
 	if (result2 && !test) { m_sounds.LoadSound(section, "snd_reflect", "sndReflect", false, m_eSoundReflect); }
+	result |= result2;
+
+	result2 = process_if_exists_set(section, "snd_shoot_dist", &CInifile::r_string, str, test);
+	if (result2 && !test)
+	{
+		m_sounds.LoadSound(section, "snd_shoot_dist", "sndShotDist", false, m_eSoundShot);
+		m_bHasDistantShotSound = true;
+	}
 	result |= result2;
 
 	//snd_shoot1     = weapons\ak74u_shot_1 ??

@@ -13,6 +13,7 @@
 #include "game_base_space.h"
 #include "MathUtils.h"
 #include "player_hud.h"
+#include "AdvancedXrayGameConstants.h"
 
 #ifdef DEBUG
 #	include "phdebug.h"
@@ -22,6 +23,7 @@ CWeaponMagazinedWGrenade::CWeaponMagazinedWGrenade(ESoundTypes eSoundType) : CWe
 {
 	m_ammoType2 = 0;
     m_bGrenadeMode = false;
+	m_bHasDistantShotGSnd = false;
 }
 
 CWeaponMagazinedWGrenade::~CWeaponMagazinedWGrenade()
@@ -38,6 +40,12 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_shoot_grenade"	, "sndShotG"		, m_eSoundShot);
 	m_sounds.LoadSound(section,"snd_reload_grenade"	, "sndReloadG"	, m_eSoundReload);
 	m_sounds.LoadSound(section,"snd_switch"			, "sndSwitch"		, m_eSoundReload);
+
+	if (pSettings->line_exist(section, "snd_shoot_grenade_dist")) // distant sound
+	{
+		m_sounds.LoadSound(section, "snd_shoot_grenade_dist", "sndShotGDist", m_eSoundShot);
+		m_bHasDistantShotGSnd = true;
+	}
 	
 
 	m_sFlameParticles2 = pSettings->r_string(section, "grenade_flame_particles");
@@ -144,7 +152,10 @@ void CWeaponMagazinedWGrenade::OnShot		()
 	if(m_bGrenadeMode)
 	{
 		PlayAnimShoot		();
-		PlaySound			("sndShotG", get_LastFP2());
+		if (m_bHasDistantShotGSnd && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+			PlaySound("sndShotGDist", get_LastFP());
+		else
+			PlaySound("sndShotG", get_LastFP());
 		AddShotEffector		();
 		StartFlameParticles2();
 	} 
@@ -288,7 +299,10 @@ void CWeaponMagazinedWGrenade::OnEvent(NET_Packet& P, u16 type)
 				if(bLaunch)
 				{
 					PlayAnimShoot		();
-					PlaySound			("sndShotG", get_LastFP2());
+					if (m_bHasDistantShotGSnd && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+						PlaySound("sndShotGDist", get_LastFP());
+					else
+						PlaySound("sndShotG", get_LastFP());
 					AddShotEffector		();
 					StartFlameParticles2();
 				}
@@ -716,7 +730,8 @@ void CWeaponMagazinedWGrenade::UpdateSounds	()
 {
 	inherited::UpdateSounds			();
 	Fvector P						= get_LastFP();
-	m_sounds.SetPosition("sndShotG", P);
+	if (m_bHasDistantShotGSnd)
+		m_sounds.SetPosition("sndShotDistG", P);
 	m_sounds.SetPosition("sndReloadG", P);
 	m_sounds.SetPosition("sndSwitch", P);
 }
@@ -850,6 +865,10 @@ bool CWeaponMagazinedWGrenade::install_upgrade_impl( LPCSTR section, bool test )
 
 	result2 = process_if_exists_set( section, "snd_shoot_grenade", &CInifile::r_string, str, test );
 	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_shoot_grenade", "sndShotG", m_eSoundShot );	}
+	result |= result2;
+
+	result2 = process_if_exists_set(section, "snd_shoot_grenade_dist", &CInifile::r_string, str, test);
+	if (result2 && !test) { m_sounds.LoadSound(section, "snd_shoot_grenade_dist", "sndShotGDist", m_eSoundShot); m_bHasDistantShotGSnd = true; }
 	result |= result2;
 
 	result2 = process_if_exists_set( section, "snd_reload_grenade", &CInifile::r_string, str, test );

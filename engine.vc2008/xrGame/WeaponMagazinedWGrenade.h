@@ -75,6 +75,8 @@ private:
 	
 			int		GetAmmoCount2				( u8 ammo2_type ) const;
 
+			bool	m_bHasDistantShotGSnd;
+
 public:
 	//дополнительные параметры патронов 
 	//для подствольника

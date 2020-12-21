@@ -2,6 +2,7 @@
 #include "weaponpistol.h"
 #include "ParticlesObject.h"
 #include "actor.h"
+#include "AdvancedXrayGameConstants.h"
 
 CWeaponPistol::CWeaponPistol()
 {
@@ -140,7 +141,15 @@ void CWeaponPistol::OnAnimationEnd(u32 state)
 
 void CWeaponPistol::OnShot		()
 {
-	PlaySound		(m_sSndShotCurrent.c_str(),get_LastFP());
+	if (IsSilencerAttached() && SilencerAttachable()) //skyloader: dont touch SilencerAttachable(), it needs for pb, vss, val
+		PlaySound("sndSilencerShot", get_LastFP());
+	else
+	{
+		if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+			PlaySound("sndShotDist", get_LastFP());
+		else
+			PlaySound("sndShot", get_LastFP());
+	}
 
 	AddShotEffector	();
 	

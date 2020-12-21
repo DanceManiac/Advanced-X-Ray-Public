@@ -34,6 +34,8 @@
 #include "profiler.h"
 
 #include "../Include/xrRender/Kinematics.h"
+#include "AdvancedXrayGameConstants.h"
+
 #define EFFECTOR_RADIUS 30.f
 const u16	TEST_RAYS_PER_OBJECT=5;
 const u16	BLASTED_OBJ_PROCESSED_PER_FRAME=3;
@@ -69,6 +71,7 @@ CExplosive::CExplosive(void)
 	m_fExplodeHideDurationMax = 0;
 	m_bDynamicParticles		= FALSE;
 	m_pExpParticle			= NULL;
+	m_bHasDistantSound = false;
 }
 
 void CExplosive::LightCreate()
@@ -84,7 +87,10 @@ void CExplosive::LightDestroy()
 
 CExplosive::~CExplosive(void) 
 {
-	sndExplode.destroy		();
+	sndExplode.destroy();
+
+	if (m_bHasDistantSound)
+		sndDistantExplode.destroy();
 }
 
 void CExplosive::Load(LPCSTR section) 
@@ -148,6 +154,14 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_bDynamicParticles	 = FALSE;
 	if (ini->line_exist(section, "dynamic_explosion_particles"))
 		m_bDynamicParticles = ini->r_bool(section, "dynamic_explosion_particles");
+
+	if (ini->line_exist(section, "snd_distant_explode"))
+	{
+		snd_name = ini->r_string(section, "snd_explode_dist");
+		sndDistantExplode.create(snd_name, st_Effect, m_eSoundExplode);
+
+		m_bHasDistantSound = true;
+	}
 }
 
 void CExplosive::net_Destroy	()
@@ -333,7 +347,10 @@ void CExplosive::Explode()
 //	Msg("---------CExplosive Explode [%d] frame[%d]",cast_game_object()->ID(), Device.dwFrame);
 	OnBeforeExplosion();
 	//играем звук взрыва
-	Sound->play_at_pos(sndExplode, 0, pos, false);
+	if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+		Sound->play_at_pos(sndDistantExplode, 0, pos, false);
+	else
+		Sound->play_at_pos(sndExplode, 0, pos, false);
 	
 	//показываем эффекты
 
