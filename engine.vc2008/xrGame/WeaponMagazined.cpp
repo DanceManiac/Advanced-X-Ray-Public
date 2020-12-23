@@ -85,6 +85,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (pSettings->line_exist(section, "snd_shoot_dist")) // distant sound
 	{
 		m_sounds.LoadSound(section, "snd_shoot_distant", "sndShotDist", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_distant_far", "sndShotDistFar", false, m_eSoundShot);
+
 		m_bHasDistantShotSound = true;
 	}
 		
@@ -606,8 +608,10 @@ void CWeaponMagazined::OnShot()
 		PlaySound("sndSilencerShot", get_LastFP());
 	else
 	{
-		if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+		if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && Position().distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
 			PlaySound("sndShotDist", get_LastFP());
+		else if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
+			PlaySound("sndShotDistFar", get_LastFP());
 		else
 			PlaySound("sndShot", get_LastFP());
 	}
@@ -1404,7 +1408,8 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 	result2 = process_if_exists_set(section, "snd_shoot_dist", &CInifile::r_string, str, test);
 	if (result2 && !test)
 	{
-		m_sounds.LoadSound(section, "snd_shoot_dist", "sndShotDist", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_distant", "sndShotDist", false, m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_distant_far", "sndShotDistFar", false, m_eSoundShot);
 		m_bHasDistantShotSound = true;
 	}
 	result |= result2;

@@ -145,8 +145,10 @@ void CWeaponPistol::OnShot		()
 		PlaySound("sndSilencerShot", get_LastFP());
 	else
 	{
-		if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+		if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && Position().distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
 			PlaySound("sndShotDist", get_LastFP());
+		else if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
+			PlaySound("sndShotDistFar", get_LastFP());
 		else
 			PlaySound("sndShot", get_LastFP());
 	}

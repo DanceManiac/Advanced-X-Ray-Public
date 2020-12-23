@@ -26,6 +26,7 @@
 #include "ai_space.h"
 #include "../xrServerEntitiesCS/script_engine.h"
 #include "ActorCondition.h"
+#include "AdvancedXrayGameConstants.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -184,7 +185,7 @@ void CGamePersistent::OnGameStart()
 	__super::OnGameStart		();
 	
 	UpdateGameType				();
-
+	GameConstants::LoadConstants();
 }
 
 LPCSTR GameTypeToString(EGameIDs gt, bool bShort)

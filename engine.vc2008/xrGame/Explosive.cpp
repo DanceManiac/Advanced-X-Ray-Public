@@ -91,6 +91,7 @@ CExplosive::~CExplosive(void)
 
 	if (m_bHasDistantSound)
 		sndDistantExplode.destroy();
+		sndDistantExplodeFar.destroy();
 }
 
 void CExplosive::Load(LPCSTR section) 
@@ -128,6 +129,8 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_fFragmentSpeed			= ini->r_float	(section,"fragment_speed"				);
 
 	LPCSTR	snd_name		= ini->r_string(section,"snd_explode");
+	LPCSTR	snd_name2		= ini->r_string(section, "snd_explode");
+
 	sndExplode.create		(snd_name, st_Effect,m_eSoundExplode);
 
 	m_fExplodeDurationMax	= ini->r_float(section, "explode_duration");
@@ -157,7 +160,9 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	if (ini->line_exist(section, "snd_distant_explode"))
 	{
 		snd_name = ini->r_string(section, "snd_explode_dist");
+		snd_name2 = ini->r_string(section, "snd_explode_dist_far");
 		sndDistantExplode.create(snd_name, st_Effect, m_eSoundExplode);
+		sndDistantExplodeFar.create(snd_name2, st_Effect, m_eSoundExplode);
 
 		m_bHasDistantSound = true;
 	}
@@ -346,8 +351,10 @@ void CExplosive::Explode()
 //	Msg("---------CExplosive Explode [%d] frame[%d]",cast_game_object()->ID(), Device.dwFrame);
 	OnBeforeExplosion();
 	//играем звук взрыва
-	if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance())
+	if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && pos.distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
 		Sound->play_at_pos(sndDistantExplode, 0, pos, false);
+	else if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
+		Sound->play_at_pos(sndDistantExplodeFar, 0, pos, false);
 	else
 		Sound->play_at_pos(sndExplode, 0, pos, false);
 

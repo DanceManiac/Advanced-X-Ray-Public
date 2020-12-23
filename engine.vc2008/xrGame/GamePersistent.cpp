@@ -31,6 +31,7 @@
 #include "UI/UIGameTutorial.h"
 #include "ActorHelmet.h"
 #include "ActorCondition.h"
+#include "AdvancedXrayGameConstants.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -188,6 +189,7 @@ void CGamePersistent::OnGameStart()
 {
 	__super::OnGameStart		();
 	UpdateGameType				();
+	GameConstants::LoadConstants();
 }
 
 LPCSTR GameTypeToString(EGameIDs gt, bool bShort)
