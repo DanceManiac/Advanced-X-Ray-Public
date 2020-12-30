@@ -39,6 +39,7 @@
 #endif
 #define PARALLAX_H 0.02
 #define parallax float2(PARALLAX_H, -PARALLAX_H/2)
+#define SKY_DEPTH	float(10000.f)
 
 #ifdef        USE_R2_STATIC_SUN
 #  define xmaterial half(1.0h/4.h)
@@ -47,7 +48,7 @@
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
 uniform half4 				 u_weather; // .xyz - sky color, .w - rain line param
-uniform half4 				 lowland_fog_params; // x - low fog height, y - low fog density, zw - null
+uniform half4 				 lowland_fog_params; // x - low fog height, y - low fog density, z - base height, w - null
 uniform half4                hemi_cube_pos_faces;
 uniform half4                hemi_cube_neg_faces;
 uniform half4                L_material;                            // 0,0,0,mid

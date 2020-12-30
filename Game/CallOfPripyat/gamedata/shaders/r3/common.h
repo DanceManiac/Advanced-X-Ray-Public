@@ -12,6 +12,7 @@
 
 // #define USE_SUPER_SPECULAR
 #define USE_SUNMASK                		//- shader defined
+#define SKY_DEPTH	float(10000.f)
 
 #ifdef        USE_R2_STATIC_SUN
 #  define xmaterial float(1.0h/4.h)
