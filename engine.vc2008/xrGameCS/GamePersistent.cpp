@@ -489,11 +489,6 @@ void CGamePersistent::game_loaded()
 			Msg("intro_start game_loaded");
 			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
 		}
-		else
-		{
-			load_screen_renderer.stop();
-			start_game_intro();
-		}
 		m_intro_event = 0;
 	}
 }
