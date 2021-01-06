@@ -595,8 +595,9 @@ public:
 		return				(true);
 	}
 
-	virtual	shared_str			GetDefaultVisualOutfit	() const	{return m_DefaultVisualOutfit;};
+	virtual	shared_str		GetDefaultVisualOutfit	() const {return m_DefaultVisualOutfit;};
 	virtual	void			SetDefaultVisualOutfit	(shared_str DefaultOutfit) {m_DefaultVisualOutfit = DefaultOutfit;};
+
 	virtual void			UpdateAnimation			() 	{ g_SetAnimation(mstate_real); };
 
 	virtual void			ChangeVisual			( shared_str NewVisual );

@@ -60,7 +60,7 @@ Fbox get_level_screenshot_bound()
 	return res;
 }
 void _InitializeFont(CGameFont*& F, LPCSTR section, u32 flags);
-CDemoRecord::CDemoRecord(const char *name,float life_time) : CEffectorCam(cefDemo,life_time/*,FALSE*/)
+CDemoRecord::CDemoRecord(const char *name, float life_time) : CEffectorCam(cefDemo, life_time/*,FALSE*/)
 {
 	stored_red_text = g_bDisableRedText;
 	g_bDisableRedText = TRUE;
@@ -123,6 +123,7 @@ CDemoRecord::~CDemoRecord()
 		IR_Release	();	// release input
 		FS.w_close	(file);
 	}
+
 	g_bDisableRedText	= stored_red_text;
 
 	Device.seqRender.Remove		( this		);

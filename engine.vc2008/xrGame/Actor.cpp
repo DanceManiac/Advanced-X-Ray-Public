@@ -1306,10 +1306,10 @@ void CActor::shedule_Update	(u32 DT)
 		if(!g_Alive()&&m_DangerSnd._feedback())
 			m_DangerSnd.stop();
 	}
-	
+
 	//если в режиме HUD, то сама модель актера не рисуется
 	if(!character_physics_support()->IsRemoved())
-		setVisible				(!HUDview	());
+		setVisible(!HUDview());
 
 	//что актер видит перед собой
 	collide::rq_result& RQ				= HUD().GetCurrentRayQuery();

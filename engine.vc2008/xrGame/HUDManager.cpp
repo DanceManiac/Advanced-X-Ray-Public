@@ -170,6 +170,7 @@ void CHUDManager::Render_First()
 	if (!A)							return;
 	if (A && !A->HUDview())			return;
 
+
 	// only shadow 
 	::Render->set_Invisible			(TRUE);
 	::Render->set_Object			(O->H_Root());

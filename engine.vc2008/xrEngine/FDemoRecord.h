@@ -51,7 +51,7 @@ private:
 	void		MakeScreenshot			();
 	void		MakeLevelMapScreenshot	(BOOL bHQ);
 public:
-				CDemoRecord				(const char *name, float life_time=60*60*1000);
+				CDemoRecord				(const char *name, float life_time = 60 * 60 * 1000);
 	virtual		~CDemoRecord();
 
 	virtual void IR_OnKeyboardPress		(int dik);
