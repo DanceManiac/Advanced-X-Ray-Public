@@ -265,7 +265,7 @@ void CCustomZone::Load(LPCSTR section)
 		m_fLightHeight		= pSettings->r_float(section,"light_height");
 	}
 
-	m_bVolumetricBlowout = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_blowout", true);
+	m_bVolumetricBlowout = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_blowout", false);
 	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
 	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
 	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
