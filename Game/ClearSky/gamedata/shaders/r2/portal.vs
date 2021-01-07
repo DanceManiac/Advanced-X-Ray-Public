@@ -21,7 +21,7 @@ vf main (v_vert v)
 	o.fog 		= calc_fogging(v.pos);			// fog, input in world coords
 	o.fog 		= saturate(o.fog);
 	o.c.rgb 	= lerp(fog_color, o.c, o.fog);
-	o.c.a		= o.fog;
+	o.c.a		= o.fog*o.fog;
 
 #ifdef	USE_VTF
 	float scale = tex2Dlod	(s_tonemap,float4(.5,.5,.5,.5)).x ;

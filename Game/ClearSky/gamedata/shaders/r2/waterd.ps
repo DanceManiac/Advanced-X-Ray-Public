@@ -43,9 +43,6 @@ half4        main        ( v2p I )        : COLOR
 
         // out
 	//	Igor: need for alpha water
-#ifdef	NEED_SOFT_WATER
+
 	return  half4  (faded, 0.0h, alpha);
-#else	//	NEED_SOFT_WATER
-        return  half4  (faded, .08h, alpha);
-#endif	//	NEED_SOFT_WATER
 }
