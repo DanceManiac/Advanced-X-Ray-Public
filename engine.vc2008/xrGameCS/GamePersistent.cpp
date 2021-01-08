@@ -482,7 +482,7 @@ void CGamePersistent::game_loaded()
 			load_screen_renderer.b_need_user_input	&&
 			m_game_params.m_e_game_type == eGameIDSingle)
 		{
-			LoadTitle("st_press_any_key"); //Костылёк до лучших времён
+			g_pGamePersistent->SetLoadStageTitle("st_press_any_key"); //Костылёк до лучших времён
 			VERIFY(NULL == m_intro);
 			m_intro = xr_new<CUISequencer>();
 			m_intro->Start("game_loaded");
