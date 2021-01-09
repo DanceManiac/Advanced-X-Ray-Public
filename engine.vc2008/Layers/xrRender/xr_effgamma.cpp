@@ -13,12 +13,14 @@ void CGammaControl::Update()
 		IDXGIOutput *pOutput;
 
 		CHK_DX (HW.m_pSwapChain->GetContainingOutput(&pOutput));
+		// Метод выполнится успешно только в полноэкранном режиме.
 		HRESULT hr = pOutput->GetGammaControlCapabilities(&GC);
 		if (SUCCEEDED(hr))
 		{
 			GenLUT( GC, G );
 			pOutput->SetGammaControl(&G);
 		}
+		_RELEASE(pOutput);
 	}
 }
 

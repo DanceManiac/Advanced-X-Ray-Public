@@ -319,7 +319,9 @@ void destroySound	()
 void destroySettings()
 {
 	CInifile** s				= (CInifile**)(&pSettings);
-	xr_delete					( *s		);
+	xr_delete(*s);
+	CInifile** sa = (CInifile**)(&pSettingsAuth);
+	xr_delete(*sa);
 	xr_delete					( pGameIni		);
 }
 

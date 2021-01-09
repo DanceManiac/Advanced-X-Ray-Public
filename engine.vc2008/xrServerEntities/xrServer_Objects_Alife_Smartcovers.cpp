@@ -357,13 +357,13 @@ void CSE_SmartCover::fill_visuals()
 		if (!I->is_enterable)
 			return;
 
-		CSE_Visual *visual			= xr_new<CSE_SmartVisual>();
-		visual->set_visual			("actors\\stalker_neutral\\stalker_neutral_1");
-
 		if (I->animation_id.size() == 0) {
 			Msg						("cover [%s] doesn't have idle_2_fire animation", I->string_identifier.c_str());
 			return;
 		}
+
+		CSE_Visual *visual = xr_new<CSE_SmartVisual>();
+		visual->set_visual("actors\\stalker_neutral\\stalker_neutral_1");
 
 		visual->startup_animation	= I->animation_id;
 

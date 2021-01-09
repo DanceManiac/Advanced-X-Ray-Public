@@ -64,10 +64,11 @@ public:
 	}
 	
 	// ref and unref
-	void Unref ()	{ 
+	void Unref()
+	{
 		if (--m_refCount == 0) 
 		{
-			Memory.mem_free	(this);
+			delete this;
 		}
 	}
 	

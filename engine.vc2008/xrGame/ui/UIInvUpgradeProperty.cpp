@@ -181,6 +181,7 @@ void UIInvUpgPropertiesWnd::init_from_xml( LPCSTR xml_name )
 		if ( !ui_property->init_property( property_id ) )
 		{
 			Msg( "! Invalid property <%s> in inventory upgrade manager!", property_id );
+			xr_delete(ui_property);
 			continue;
 		}
 
