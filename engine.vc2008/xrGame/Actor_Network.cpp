@@ -654,7 +654,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 
 
 	//-------------------------------------
-	m_States.empty();
+	m_States.clear(); // Xottab_DUTY: check if replace is correct
 	//-------------------------------------
 	if (!g_Alive())
 	{

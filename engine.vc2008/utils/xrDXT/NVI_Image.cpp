@@ -240,10 +240,10 @@ void	NVI_Image::ABGR8_To_ARGB8()
 	{
 		GetPixel_ARGB8( &col, i );
 
-		a = ( col >> 24 ) && 0x000000FF;
-		b = ( col >> 16 ) && 0x000000FF;
-		g = ( col >> 8  ) && 0x000000FF;
-		r = ( col >> 0  ) && 0x000000FF;
+		a = ( col >> 24 ) & 0x000000FF;
+		b = ( col >> 16 ) & 0x000000FF;
+		g = ( col >> 8  ) & 0x000000FF;
+		r = ( col >> 0  ) & 0x000000FF;
 
 		col = ( a << 24 ) | ( r << 16 ) | ( g << 8 ) | b ;
 

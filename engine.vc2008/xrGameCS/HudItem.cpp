@@ -340,14 +340,9 @@ BOOL CHudItem::GetHUDmode()
 	if(object().H_Parent())
 	{
 		CActor* A = smart_cast<CActor*>(object().H_Parent());
-		return ( A && A->HUDview() && HudItemData() && 
-				(HudItemData())
-//				(
-//				HudItemData()==g_player_hud->attached_item(0) ||
-//				HudItemData()==g_player_hud->attached_item(1) 
-//				)
-			);
-	}else
+		return (A && A->HUDview() && HudItemData());
+	}
+	else
 		return FALSE;
 }
 
