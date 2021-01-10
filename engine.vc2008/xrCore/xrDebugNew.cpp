@@ -676,12 +676,23 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 	ReportFault				( pExceptionInfo, 0 );
 #endif
 
+	if (!previous_filter) {
+#ifdef USE_OWN_ERROR_MESSAGE_WINDOW
+		if (Debug.get_on_dialog())
+			Debug.get_on_dialog()	(false);
+#endif // USE_OWN_ERROR_MESSAGE_WINDOW
+
+		return				(EXCEPTION_CONTINUE_SEARCH);
+	}
+
+	previous_filter(pExceptionInfo);
+
 #ifdef USE_OWN_ERROR_MESSAGE_WINDOW
 	if (Debug.get_on_dialog())
 		Debug.get_on_dialog()		(false);
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
 
-	return EXCEPTION_EXECUTE_HANDLER;
+	return					(EXCEPTION_CONTINUE_SEARCH);
 }
 #endif
 
