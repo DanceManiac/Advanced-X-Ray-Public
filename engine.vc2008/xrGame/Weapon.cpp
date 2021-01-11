@@ -1427,6 +1427,9 @@ float CWeapon::CurrentZoomFactor()
 	return IsScopeAttached() ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
 };
 void GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
+// Lex Addon (correct by Suhar_) 24.10.2018		(begin)
+float LastZoomFactor = NULL;
+
 void CWeapon::OnZoomIn()
 {
 	//Alun: Force switch to first-person for zooming
@@ -1438,10 +1441,21 @@ void CWeapon::OnZoomIn()
 	}
 
 	m_zoom_params.m_bIsZoomModeNow		= true;
-	if(m_zoom_params.m_bUseDynamicZoom)
+	if (m_zoom_params.m_bUseDynamicZoom && IsScopeAttached())
+	{     
+		if (LastZoomFactor)
+			m_fRTZoomFactor = LastZoomFactor;
+		else
+			m_fRTZoomFactor = CurrentZoomFactor();
+		float delta, min_zoom_factor;
+		GetZoomData(m_zoom_params.m_fScopeZoomFactor, delta, min_zoom_factor);    
+		clamp(m_fRTZoomFactor, m_zoom_params.m_fScopeZoomFactor, min_zoom_factor);
+
 		SetZoomFactor(m_fRTZoomFactor);
+	}
 	else
-		m_zoom_params.m_fCurrentZoomFactor	= CurrentZoomFactor();
+		m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+	// Lex Addon (correct by Suhar_) 24.10.2018		(end)
 
 	//EnableHudInertion					(FALSE);
 
@@ -2326,6 +2340,10 @@ void CWeapon::ZoomInc()
 	float f					= GetZoomFactor()-delta;
 	clamp					(f,m_zoom_params.m_fScopeZoomFactor,min_zoom_factor);
 	SetZoomFactor			( f );
+	// Lex Addon (correct by Suhar_) 24.10.2018		(begin)  
+	LastZoomFactor = f;
+	// Lex Addon (correct by Suhar_) 24.10.2018		(end)
+
 }
 
 void CWeapon::ZoomDec()
@@ -2338,7 +2356,10 @@ void CWeapon::ZoomDec()
 	float f					= GetZoomFactor()+delta;
 	clamp					(f,m_zoom_params.m_fScopeZoomFactor,min_zoom_factor);
 	SetZoomFactor			( f );
-
+	// Lex Addon (correct by Suhar_) 24.10.2018		(begin)
+	//    ,         
+	LastZoomFactor = f;
+	// Lex Addon (correct by Suhar_) 24.10.2018		(end)
 }
 u32 CWeapon::Cost() const
 {
