@@ -71,6 +71,13 @@ CUIWpnParams::CUIWpnParams()
 	AttachChild(&m_textAmmoUsedType);
 	AttachChild(&m_stAmmoType1);
 	AttachChild(&m_stAmmoType2);
+	// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
+	// Инициализируем переменные для отображения ещё 4 типов патронов в свойствах оружия
+	AttachChild(&m_stAmmoType3);
+	AttachChild(&m_stAmmoType4);
+	AttachChild(&m_stAmmoType5);
+	AttachChild(&m_stAmmoType6);
+	// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 }
 
 CUIWpnParams::~CUIWpnParams()
@@ -107,6 +114,13 @@ void CUIWpnParams::InitFromXml(CUIXml& xml_doc)
 		CUIXmlInit::InitTextWnd			(xml_doc, "wpn_params:cap_ammo_used_type",	0, &m_textAmmoUsedType);
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type1",	0, &m_stAmmoType1);
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type2",	0, &m_stAmmoType2);
+		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
+		// Читаем параметры отображения отображения ещё 4 типов патронов в свойствах оружия
+		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type3",	0, &m_stAmmoType3);
+		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type4",	0, &m_stAmmoType4);
+		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type5",	0, &m_stAmmoType5);
+		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type6",	0, &m_stAmmoType6);
+		// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 	}
 
 }
@@ -156,6 +170,8 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 
 	if(IsGameTypeSingle())
 	{
+		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
+		// Инициализируем переменную используемых оружием патронов
 		xr_vector<shared_str> ammo_types;
 
 		CWeapon* weapon = cur_wpn.cast_weapon();
@@ -186,6 +202,8 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		ammo_types = weapon->m_ammoTypes;
 		if(ammo_types.empty())
 			return;
+		// Получаем количчество видов используемых оружием патронов
+		ammo_types_size = ammo_types.size();
 
 		xr_sprintf(str, sizeof(str), "%s", pSettings->r_string(ammo_types[0].c_str(), "inv_name_short"));
 		m_textAmmoUsedType.SetTextST(str);
@@ -203,7 +221,7 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		m_stAmmoType1.SetWndSize(Fvector2().set((tex_rect.x2-tex_rect.x1)*UI().get_current_kx(), tex_rect.y2-tex_rect.y1));
 
 		m_stAmmoType2.SetShader(InventoryUtilities::GetEquipmentIconsShader());
-		if(ammo_types.size()==1)
+		if(ammo_types_size <= 1)
 		{
 			tex_rect.set(0,0,1,1);
 		}
@@ -219,6 +237,79 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		m_stAmmoType2.TextureOn();
 		m_stAmmoType2.SetStretchTexture(true);
 		m_stAmmoType2.SetWndSize(Fvector2().set((tex_rect.x2-tex_rect.x1)*UI().get_current_kx(), tex_rect.y2-tex_rect.y1));
+
+		m_stAmmoType3.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		if (ammo_types_size <= 2)
+		{
+			tex_rect.set(0, 0, 1, 1);
+		}
+		else
+		{
+			tex_rect.x1 = float(pSettings->r_u32(ammo_types[2].c_str(), "inv_grid_x") * INV_GRID_WIDTH);
+			tex_rect.y1 = float(pSettings->r_u32(ammo_types[2].c_str(), "inv_grid_y") * INV_GRID_HEIGHT);
+			tex_rect.x2 = float(pSettings->r_u32(ammo_types[2].c_str(), "inv_grid_width") * INV_GRID_WIDTH);
+			tex_rect.y2 = float(pSettings->r_u32(ammo_types[2].c_str(), "inv_grid_height") * INV_GRID_HEIGHT);
+			tex_rect.rb.add(tex_rect.lt);
+		}
+		m_stAmmoType3.SetTextureRect(tex_rect);
+		m_stAmmoType3.TextureOn();
+		m_stAmmoType3.SetStretchTexture(true);
+		m_stAmmoType3.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1)*UI().get_current_kx(), tex_rect.y2 - tex_rect.y1));
+
+		m_stAmmoType4.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		if (ammo_types_size <= 3)
+		{
+			tex_rect.set(0, 0, 1, 1);
+		}
+		else
+		{
+			tex_rect.x1 = float(pSettings->r_u32(ammo_types[3].c_str(), "inv_grid_x") * INV_GRID_WIDTH);
+			tex_rect.y1 = float(pSettings->r_u32(ammo_types[3].c_str(), "inv_grid_y") * INV_GRID_HEIGHT);
+			tex_rect.x2 = float(pSettings->r_u32(ammo_types[3].c_str(), "inv_grid_width") * INV_GRID_WIDTH);
+			tex_rect.y2 = float(pSettings->r_u32(ammo_types[3].c_str(), "inv_grid_height") * INV_GRID_HEIGHT);
+			tex_rect.rb.add(tex_rect.lt);
+		}
+		m_stAmmoType4.SetTextureRect(tex_rect);
+		m_stAmmoType4.TextureOn();
+		m_stAmmoType4.SetStretchTexture(true);
+		m_stAmmoType4.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1)*UI().get_current_kx(), tex_rect.y2 - tex_rect.y1));
+
+		m_stAmmoType5.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		if (ammo_types_size <= 4)
+		{
+			tex_rect.set(0, 0, 1, 1);
+		}
+		else
+		{
+			tex_rect.x1 = float(pSettings->r_u32(ammo_types[4].c_str(), "inv_grid_x") * INV_GRID_WIDTH);
+			tex_rect.y1 = float(pSettings->r_u32(ammo_types[4].c_str(), "inv_grid_y") * INV_GRID_HEIGHT);
+			tex_rect.x2 = float(pSettings->r_u32(ammo_types[4].c_str(), "inv_grid_width") * INV_GRID_WIDTH);
+			tex_rect.y2 = float(pSettings->r_u32(ammo_types[4].c_str(), "inv_grid_height") * INV_GRID_HEIGHT);
+			tex_rect.rb.add(tex_rect.lt);
+		}
+		m_stAmmoType5.SetTextureRect(tex_rect);
+		m_stAmmoType5.TextureOn();
+		m_stAmmoType5.SetStretchTexture(true);
+		m_stAmmoType5.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1)*UI().get_current_kx(), tex_rect.y2 - tex_rect.y1));
+
+		m_stAmmoType6.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		if (ammo_types_size <= 5)
+		{
+			tex_rect.set(0, 0, 1, 1);
+		}
+		else
+		{
+			tex_rect.x1 = float(pSettings->r_u32(ammo_types[5].c_str(), "inv_grid_x") * INV_GRID_WIDTH);
+			tex_rect.y1 = float(pSettings->r_u32(ammo_types[5].c_str(), "inv_grid_y") * INV_GRID_HEIGHT);
+			tex_rect.x2 = float(pSettings->r_u32(ammo_types[5].c_str(), "inv_grid_width") * INV_GRID_WIDTH);
+			tex_rect.y2 = float(pSettings->r_u32(ammo_types[5].c_str(), "inv_grid_height") * INV_GRID_HEIGHT);
+			tex_rect.rb.add(tex_rect.lt);
+		}
+		m_stAmmoType6.SetTextureRect(tex_rect);
+		m_stAmmoType6.TextureOn();
+		m_stAmmoType6.SetStretchTexture(true);
+		m_stAmmoType6.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1)*UI().get_current_kx(), tex_rect.y2 - tex_rect.y1));
+		// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 	}
 }
 

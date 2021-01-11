@@ -1321,6 +1321,29 @@ bool CWeaponMagazined::GetBriefInfo( II_BriefInfo& info )
 	{
 		//GetSuitableAmmoTotal(); //mp = all type
 
+		// Lex Addon (correct by Suhar_) 28.03.2017		(begin)
+		int add_ammo_count = 0;
+   
+		for (int i = 0; i < at_size; i++)
+		{
+			if (m_ammoType == i)
+			{        
+				xr_sprintf(int_str, "%d", GetAmmoCount(i));
+				info.fmj_ammo = int_str;
+			}
+			else
+			{   
+				add_ammo_count += GetAmmoCount(i);
+			}
+		}
+		if (at_size > 1)   
+			xr_sprintf(int_str, "%d", add_ammo_count);
+		else
+			xr_sprintf(int_str, "%s", "");
+     
+		info.ap_ammo = int_str;
+
+		/*
 		xr_sprintf( int_str, "%d", GetAmmoCount( 0 ) ); // !!!!!!!!!!! == 0 temp
 		if(m_ammoType==0)
 			info.fmj_ammo			= int_str;
@@ -1339,6 +1362,9 @@ bool CWeaponMagazined::GetBriefInfo( II_BriefInfo& info )
 		{
 			info.ap_ammo			= "";
 		}
+		*/
+
+		// Lex Addon (correct by Suhar_) 28.07.2017		(end)
 	}
 	
 	if ( ae != 0 && m_magazine.size() != 0 )

@@ -59,6 +59,11 @@ public:
 	CUIScrollView*		UIDesc;
 	bool				m_complex_desc;
 
+	// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
+	// Переменная высоты окна свойств оружия
+	float				WpnWndSiseY;
+	// Lex Addon (correct by Suhar_) 7.08.2018		(end)
+
 //	CUIConditionParams*		UIConditionWnd;
 	CUIWpnParams*			UIWpnParams;
 	CUIArtefactParams*		UIArtefactParams;

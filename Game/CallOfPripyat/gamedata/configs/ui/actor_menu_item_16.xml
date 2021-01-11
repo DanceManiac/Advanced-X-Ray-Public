@@ -132,6 +132,10 @@
 		</cap_ammo_used_type>
 	    <static_ammo_type1 x="12" y="117" width="80" height="40" />
 	    <static_ammo_type2 x="84" y="117" width="80" height="40" />
+		<static_ammo_type3 x="12" y="170" width="80" height="40" />
+		<static_ammo_type4 x="84" y="170" width="80" height="40" />
+	    <static_ammo_type5 x="12" y="223" width="80" height="40" />
+	    <static_ammo_type6 x="84" y="223" width="80" height="40" />
 	</wpn_params>
 
 #include "ui\af_params_16.xml"

@@ -19,6 +19,7 @@ public:
 	void 					InitFromXml			(CUIXml& xml_doc);
 	void					SetInfo				(CInventoryItem* slot_wpn, CInventoryItem& cur_wpn);
 	bool 					Check				(const shared_str& wpn_section);
+	int						ammo_types_size; //Lex Addon
 
 protected:
 	CUIDoubleProgressBar	m_progressAccuracy; // red or green
@@ -42,6 +43,13 @@ protected:
 	CUITextWnd				m_textAmmoCount2;
 	CUIStatic				m_stAmmoType1;
 	CUIStatic				m_stAmmoType2;
+	// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
+	// Вводим дополнительные переменные для отображения 3-го и 4-го типа патронов в свойствах оружия
+	CUIStatic				m_stAmmoType3;
+	CUIStatic				m_stAmmoType4;
+	CUIStatic				m_stAmmoType5;
+	CUIStatic				m_stAmmoType6;
+	// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 	CUIStatic				m_Prop_line;
 };
 

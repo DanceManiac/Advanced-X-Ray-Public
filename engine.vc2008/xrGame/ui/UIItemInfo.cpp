@@ -362,6 +362,38 @@ void CUIItemInfo::TryAddWpnInfo( CInventoryItem& pInvItem, CInventoryItem* pComp
 	{
 		UIWpnParams->SetInfo( pCompareItem, pInvItem );
 		UIDesc->AddWindow( UIWpnParams, false );
+
+		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
+		// Необходимо расширить окно для отображения дополнительных иконок патронов
+		// Получаем кол-во типов патронов, используемых оружием
+		CWeapon*						weapon = smart_cast<CWeapon*>(&pInvItem);
+		xr_vector<shared_str> ammo_types;
+		ammo_types = weapon->m_ammoTypes;
+		int ammo_types_size = ammo_types.size();
+		// Проверяем переменную высоты окна свойств оружия
+		if (WpnWndSiseY == NULL)
+			// Если переменная пуста, то необходимо считать её из xml и запомнить
+			WpnWndSiseY = UIWpnParams->GetWndSize().y;
+		// Вектор-переменная размера окна
+		Fvector2 new_size;
+		// Параметр ширины вектор-переменной остаётся неизменным
+		new_size.x = UIWpnParams->GetWndSize().x;
+		// Параметр высоты вектор-переменной меняется в зависимости от ammo_types_size
+		new_size.y = WpnWndSiseY;
+		// Если ammo_types_size привысил 2, то необходим дополнительный ряд
+		if (ammo_types_size >= 3)
+			// Увеличиваем высоту окна на 50 пикселей
+			new_size.y += 50.0f;
+		// Если ammo_types_size привысил 4, то необходим дополнительный ряд
+		if (ammo_types_size >= 5)
+			// Увеличиваем высоту окна на 50 пикселей
+			new_size.y += 50.0f;
+		// Устанавливаем окну свойств оружия новые размеры
+		UIWpnParams->SetWndSize(new_size);
+		// Корректируем размер фонового изображения
+		if (UIBackground)
+			UIBackground->SetWndSize(new_size);
+		// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 	}
 }
 
