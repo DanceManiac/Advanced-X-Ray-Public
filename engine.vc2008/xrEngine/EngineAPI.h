@@ -47,7 +47,7 @@ public:
 	void				Initialize	();
 	
 	#ifndef DEDICATED_SERVER
-		void				InitializeNotDedicated();
+	void				InitializeRenderer();
 	#endif // DEDICATED_SERVER
 	
 	void				Destroy		();

@@ -15,7 +15,7 @@
 
 #include "xr_object.h"
 
-xr_token*							vid_quality_token = NULL;
+xr_vector<xr_token> vid_quality_token;
 
 xr_token							vid_bpp_token							[ ]={
 	{ "16",							16											},
@@ -538,12 +538,13 @@ public:
 	{
 		//fill_render_mode_list	();
 		//	vid_quality_token must be already created!
-		tokens					= vid_quality_token;
+		tokens = vid_quality_token.data();
 
 		inherited::Execute		(args);
 		//	0 - r1
 		//	1..3 - r2
 		//	4 - r3
+		psDeviceFlags.set		(rsR1, renderer_value == 0);
 		psDeviceFlags.set		(rsR2, ((renderer_value>0) && renderer_value<4) );
 		psDeviceFlags.set		(rsR3, (renderer_value==4) );
 		psDeviceFlags.set		(rsR4, (renderer_value>=5) );
@@ -556,7 +557,7 @@ public:
 	virtual void	Save	(IWriter *F)	
 	{
 		//fill_render_mode_list	();
-		tokens					= vid_quality_token;
+		tokens = vid_quality_token.data();
 		if( !strstr(Core.Params, "-r2") )
 		{
 			inherited::Save(F);
@@ -564,7 +565,7 @@ public:
 	}
 	virtual xr_token* GetToken()
 	{
-		tokens					= vid_quality_token;
+		tokens = vid_quality_token.data();
 		return					inherited::GetToken();
 	}
 
