@@ -25,7 +25,7 @@ void CRenderTarget::phase_sunshafts()
     // constants
 
     Fvector4 params = { 0,0,0,0 };
-    params.x = env.m_fSunShaftsIntensity;
+    params.x = env.m_fSunShaftsIntensity*4;
     params.y = ps_r2_ss_sunshafts_length;
     params.w = ps_r2_ss_sunshafts_radius;
 
