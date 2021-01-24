@@ -1421,9 +1421,6 @@
     <ClCompile Include="blender_hud_mask.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
-    <ClCompile Include="r4_rendertarget_phase_hud_mask.cpp">
-      <Filter>Core_Target</Filter>
-    </ClCompile>
     <ClCompile Include="..\xrRenderDX10\imgui_impl_dx11.cpp">
       <Filter>imgui_render</Filter>
     </ClCompile>
@@ -1438,6 +1435,9 @@
     </ClCompile>
     <ClCompile Include="blender_hud_bleeding.cpp">
       <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\rendertarget_phase_hud_mask.cpp">
+      <Filter>Core_Target</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

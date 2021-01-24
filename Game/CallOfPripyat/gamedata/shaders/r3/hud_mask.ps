@@ -3,11 +3,11 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //pixel
-float4 main(AntiAliasingStruct INStruct) : SV_Target
+float4 main(p_screen I) : SV_Target
 {
-	float4 hud_mask_distortion = s_hud_mask.Sample(smp_rtlinear, INStruct.texCoord0);
+	float4 hud_mask_distortion = s_hud_mask.Sample(smp_rtlinear, I.tc0);
 	float2 texcoord_offset = (hud_mask_distortion.xy - (127.f / 255.f)) * def_distort; //fix newtral offset
-	float2 texcoord = INStruct.texCoord0 + texcoord_offset * hud_mask_params.x;
+	float2 texcoord = I.tc0 + texcoord_offset * hud_mask_params.x;
 	float3 scene = s_image.Sample(smp_rtlinear, texcoord);
 	scene = lerp(scene, hud_mask_distortion.www, 0.075);
 	return float4(scene, 1.f);
