@@ -57,4 +57,16 @@ float4		proj2screen(float4 Project)
 	return Screen;
 }
 
+float4 screen_res;
+
+//Gasmask settings
+#define GM_DIST_INT 0.1 //Refraction intensity
+#define GM_DIFF_INT 0.15 //Diffuse cracks intensity
+#define GM_VIG_INT 0.5 //Vignette intensity
+
+//Glass reflections settings
+#define GM_VIS_NUM 16 //Reflection quality
+#define GM_VIS_RADIUS 0.45 //Reflection radius
+#define GM_VIS_INTENSITY 1.0 //Reflection intensity
+
 #endif//EXTCOMMON_H_INCLUDED
