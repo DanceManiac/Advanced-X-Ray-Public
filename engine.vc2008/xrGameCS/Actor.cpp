@@ -207,7 +207,7 @@ CActor::CActor() : CEntityAlive()
 	m_block_sprint_counter	= 0;
 
 	// Alex ADD: for smooth crouch fix
-	CurrentHeight = 0.f;
+	CurrentHeight = -1.f;
 }
 
 
@@ -424,9 +424,6 @@ if(!g_dedicated_server)
 	m_sInventoryBoxUseAction		= "inventory_box_use";
 	//---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
-
-	// Alex ADD: for smooth crouch fix
-	CurrentHeight = CameraHeight();
 }
 
 void CActor::PHHit(SHit &H)
