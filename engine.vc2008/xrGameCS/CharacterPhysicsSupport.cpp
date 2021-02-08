@@ -481,8 +481,17 @@ void CCharacterPhysicsSupport::in_Hit( SHit &H, bool is_killing )
 	if( ( !m_EntityAlife.g_Alive() || is_killing ) )
 		m_character_shell_control.set_kill_hit( H );
 
-	if(!m_pPhysicsShell&&is_killing)
-		KillHit( H );
+	if (!m_pPhysicsShell && is_killing)
+	{
+		bool is_actor_holder = false;
+		if (m_eType == etActor)
+		{
+			CActor* A = smart_cast<CActor*>(&m_EntityAlife);
+			if (A->Holder()) is_actor_holder = true;
+		};
+		if (!is_actor_holder)
+			KillHit(H);
+	};
 
 	if( m_flags.test(fl_use_hit_anims) && Type() != etBitting && !m_flags.test(fl_death_anim_on) ) //&& Type() == etStalker
 	{
@@ -1366,6 +1375,13 @@ void		CCharacterPhysicsSupport::in_Die( )
 	{
 		if( m_EntityAlife.use_simplified_visual( ) )
 			return;
+		bool is_actor_holder = false;
+		if (m_eType == etActor)
+		{
+			CActor* A = smart_cast<CActor*>(&m_EntityAlife);
+			if (A->Holder()) is_actor_holder = true;
+		};
+		if (!is_actor_holder)
 		ActivateShell( NULL );
 		m_PhysicMovementControl->DestroyCharacter( );
 		return;
