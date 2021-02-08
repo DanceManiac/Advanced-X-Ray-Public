@@ -80,3 +80,25 @@ void CCarDamageParticles::Clear()
 	bones1.clear();
 	bones2.clear();
 }
+
+/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
+// функции для выключения партиклов дыма
+void CCarDamageParticles::Stop1(CCar* car)
+{
+	if (*m_car_damage_particles1)
+	{
+		auto i = bones1.begin(), e = bones1.end();
+		for (; e != i; ++i) car->StopParticles(car->ID(), *i, false);
+	}
+}
+
+void CCarDamageParticles::Stop2(CCar* car)
+{
+	VERIFY(!physics_world()->Processing());
+	if (*m_car_damage_particles2)
+	{
+		auto i = bones2.begin(), e = bones2.end();
+		for (; e != i; ++i) car->StopParticles(car->ID(), *i, false);
+	}
+}
+/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/

@@ -123,19 +123,67 @@ void CCar::OnKeyboardPress(int cmd)
 
 	switch (cmd)	
 	{
-	case kCAM_1:	OnCameraChange(ectFirst);	break;
-	case kCAM_2:	OnCameraChange(ectChase);	break;
-	case kCAM_3:	OnCameraChange(ectFree);	break;
-	case kACCEL:	TransmissionUp();			break;
-	case kCROUCH:	TransmissionDown();			break;
-	case kFWD:		PressForward();				break;
-	case kBACK:		PressBack();				break;
-	case kR_STRAFE:	PressRight();				if (OwnerActor()) OwnerActor()->steer_Vehicle(1);	break;
-	case kL_STRAFE:	PressLeft();				if (OwnerActor()) OwnerActor()->steer_Vehicle(-1);break;
-	case kJUMP:		PressBreaks();				break;
-	case kDETECTOR:	SwitchEngine();				break;
-	case kTORCH:	m_lights.SwitchHeadLights();break;
-	case kUSE:									break;
+	case kCAM_1:
+		OnCameraChange(ectFirst);
+		break;
+
+	case kCAM_2:
+		OnCameraChange(ectChase);
+		break;
+
+	case kCAM_3:
+		OnCameraChange(ectFree);
+		break;
+
+	case kACCEL:
+		TransmissionUp();
+		break;
+
+	case kCROUCH:
+		TransmissionDown();
+		break;
+
+	case kFWD:
+		PressForward();
+		break;
+
+	case kBACK:
+		PressBack();
+		break;
+
+	case kR_STRAFE:
+		PressRight();
+		if (OwnerActor())
+			OwnerActor()->steer_Vehicle(1);
+		break;
+
+	case kL_STRAFE:
+		PressLeft();
+		if (OwnerActor())
+			OwnerActor()->steer_Vehicle(-1);
+		break;
+
+	case kJUMP:
+		PressBreaks();
+		break;
+
+	case kDETECTOR:
+		SwitchEngine();
+		if (HasWeapon())
+			m_car_weapon->Action(CCarWeapon::eWpnActivate, b_engine_on);
+		break;
+
+	case kTORCH:
+		m_lights.SwitchHeadLights();
+		break;
+
+	case kUSE:
+		break;
+
+	case kWPN_FIRE:
+		if (HasWeapon())
+			m_car_weapon->Action(CCarWeapon::eWpnFire, 1);
+		break;
 	};
 
 }

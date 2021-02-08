@@ -31,6 +31,8 @@
 #include "CharacterPhysicsSupport.h"
 #include "car_memory.h"
 #include "../xrphysics/IPHWorld.h"
+#include "hudmanager.h"
+
 BONE_P_MAP CCar::bone_map=BONE_P_MAP();
 
 //extern CPHWorld*	ph_world;
@@ -403,8 +405,6 @@ void CCar::UpdateEx			(float fov)
 	DbgUbdateCl();
 	#endif
 
-	//	Log("UpdateCL",Device.dwFrame);
-	//XFORM().set(m_pPhysicsShell->mXFORM);
 	VisualUpdate(fov);
 	if(OwnerActor() && OwnerActor()->IsMyCamera()) 
 	{
@@ -421,23 +421,31 @@ BOOL CCar::AlwaysTheCrow()
 	return (m_car_weapon && m_car_weapon->IsActive() );
 }
 
-void CCar::UpdateCL				( )
+void CCar::UpdateCL()
 {
 	inherited::UpdateCL();
 	CExplosive::UpdateCL();
-	if(m_car_weapon)
+	if (m_car_weapon)
 	{
 		m_car_weapon->UpdateCL();
-		if(m_memory)
+		if (m_memory)
 			m_memory->set_camera(m_car_weapon->ViewCameraPos(), m_car_weapon->ViewCameraDir(), m_car_weapon->ViewCameraNorm());
+
+		if (OwnerActor() && HasWeapon() && m_car_weapon->IsActive())
+		{
+			collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+			CCameraBase* C = active_camera;
+			m_car_weapon->SetParam(CCarWeapon::eWpnDesiredPos, C->vPosition.add(C->vDirection.mul(RQ.range)));
+		}
 	}
-	ASCUpdate			();
-	if(Owner()) return;
-//	UpdateEx			(g_fov);
+
+	ASCUpdate();
+
+	if (Owner())
+		return;
 	VisualUpdate(90);
 	if (GetScriptControl())
-			ProcessScripts();
-
+		ProcessScripts();
 }
 
  void CCar::VisualUpdate(float fov)
@@ -604,18 +612,20 @@ void CCar::ApplyDamage(u16 level)
 }
 void CCar::detach_Actor()
 {
-	if(!Owner()) return;
+	if (!Owner())
+		return;
 	Owner()->setVisible(1);
 	CHolderCustom::detach_Actor();
 	PPhysicsShell()->remove_ObjectContactCallback(ActorObstacleCallback);
 	NeutralDrive();
 	Unclutch();
 	ResetKeys();
-	m_current_rpm=m_min_rpm;
-//	CurrentGameUI()->UIMainIngameWnd->CarPanel().Show(false);
-	///Break();
-	//H_SetParent(NULL);
+	m_current_rpm = m_min_rpm;
 	HandBreak();
+
+	if (HasWeapon())
+		m_car_weapon->Action(CCarWeapon::eWpnFire, 0);
+
 	processing_deactivate();
 #ifdef DEBUG
 	DBgClearPlots();
@@ -827,24 +837,21 @@ void CCar::ParseDefinitions()
 
 void CCar::CreateSkeleton(CSE_Abstract	*po)
 {
+	if (m_pPhysicsShell)
+		return;
 
-	if (!Visual()) return;
+	if (!Visual())
+		return;
 	IRenderVisual *pVis = Visual();
 	IKinematics* pK = smart_cast<IKinematics*>(pVis);
 	IKinematicsAnimated* pKA = smart_cast<IKinematicsAnimated*>(pVis);
 	if(pKA)
 	{
-		pKA->PlayCycle		("idle");
-		pK->CalculateBones	(TRUE);
+		pKA->PlayCycle("idle");
+		pK->CalculateBones(TRUE);
 	}
 	phys_shell_verify_object_model ( *this );
-#pragma todo(" replace below by P_build_Shell or call inherited")
-	m_pPhysicsShell		= P_create_Shell();
-	m_pPhysicsShell->build_FromKinematics(pK,&bone_map);
-	m_pPhysicsShell->set_PhysicsRefObject(this);
-	m_pPhysicsShell->mXFORM.set(XFORM());
-	m_pPhysicsShell->Activate(true);
-	m_pPhysicsShell->SetAirResistance(0.f,0.f);
+	m_pPhysicsShell = P_build_Shell(this, true, &bone_map);
 	m_pPhysicsShell->SetPrefereExactIntegration();
 
 	ApplySpawnIniToPhysicShell(&po->spawn_ini(),m_pPhysicsShell,false);
@@ -2037,3 +2044,75 @@ Fvector	CCar::		ExitVelocity				()
 }
 
 //#endif // #if 0
+
+/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
+
+float CCar::GetfFuel()
+{
+	return m_fuel;
+}
+void CCar::SetfFuel(float fuel)
+{
+	m_fuel = fuel;
+}
+
+float CCar::GetfFuelTank()
+{
+	return m_fuel_tank;
+}
+void CCar::SetfFuelTank(float fuel_tank)
+{
+	m_fuel_tank = fuel_tank;
+}
+
+float CCar::GetfFuelConsumption()
+{
+	return m_fuel_consumption;
+}
+void CCar::SetfFuelConsumption(float fuel_consumption)
+{
+	m_fuel_consumption = fuel_consumption;
+}
+
+void CCar::ChangefFuel(float fuel)
+{
+	if (m_fuel + fuel < 0)
+	{
+		m_fuel = 0;
+		return;
+	}
+
+	if (fuel < m_fuel_tank - m_fuel)
+	{
+		m_fuel += fuel;
+	}
+	else
+	{
+		m_fuel = m_fuel_tank;
+	}
+}
+
+void CCar::ChangefHealth(float health)
+{
+	float current_health = GetfHealth();
+	if (current_health + health < 0)
+	{
+		SetfHealth(0);
+		return;
+	}
+
+	if (health < 1 - current_health)
+	{
+		SetfHealth(current_health + health);
+	}
+	else
+	{
+		SetfHealth(1);
+	}
+}
+
+bool CCar::isActiveEngine()
+{
+	return b_engine_on;
+}
+/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
