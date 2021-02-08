@@ -124,6 +124,22 @@ void CCar::reload		(LPCSTR section)
 		m_memory->reload	(section);
 }
 
+void CCar::Rotate_z(CBoneInstance* B)
+{
+
+	CCar*	C = static_cast<CCar*>(B->callback_param());
+	Fmatrix m;
+
+
+	u32 cur_time = Device.dwTimeGlobal;
+	if (C->b_engine_on != true)
+		m.rotateZ(0);
+	else
+		m.rotateZ(cur_time / 100.0f*0.5f);
+
+	B->mTransform.mulB_43(m);
+}
+
 void CCar::cb_Steer			(CBoneInstance* B)
 {
 	VERIFY2(fsimilar(DET(B->mTransform),1.f,DET_CHECK_EPS),"Bones receive returns 0 matrix");
@@ -885,6 +901,16 @@ void CCar::Init()
 		VERIFY2(fsimilar(DET(pKinematics->LL_GetTransform(m_bone_steer)),1.f,EPS_L),"BBADD MTX");
 		pKinematics->LL_GetBoneInstance(m_bone_steer).set_callback(bctPhysics,cb_Steer,this);
 	}
+
+	if (ini->line_exist("car_definition", "rotate_z"))
+	{
+
+
+		m_bone_steer = pKinematics->LL_BoneID(ini->r_string("car_definition", "rotate_z"));
+		VERIFY2(fsimilar(DET(pKinematics->LL_GetTransform(m_bone_steer)), 1.f, EPS_L), "BBADD MTX");
+		pKinematics->LL_GetBoneInstance(m_bone_steer).set_callback(bctPhysics, Rotate_z, this);
+	}
+
 	m_steer_angle=0.f;
 	//ref_wheel.Init();
 	m_ref_radius=ini->r_float("car_definition","reference_radius");//ref_wheel.radius;
