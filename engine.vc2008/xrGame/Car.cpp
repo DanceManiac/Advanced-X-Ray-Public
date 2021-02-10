@@ -1099,6 +1099,17 @@ void CCar::SwitchEngine()
 	if(b_engine_on) StopEngine();
 	else			StartEngine();
 }
+
+///**Horn**///
+void CCar::SwitchHorn()
+{
+	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual());
+	CInifile* ini = pKinematics->LL_UserData();
+	snd_horn.create(ini->r_string("car_sound", "snd_horn_name"), st_Effect, sg_SourceType);
+	snd_horn.play_at_pos(Actor(), Actor()->Position());
+}
+///**Horn**///
+
 void CCar::Clutch()
 {
 	b_clutch=true;

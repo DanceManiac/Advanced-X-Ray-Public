@@ -38,7 +38,7 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 	IRenderVisual *pVis = Visual();
 	IKinematicsAnimated* V = smart_cast<IKinematicsAnimated*>(pVis); R_ASSERT(V);
 	IKinematics* pK = smart_cast<IKinematics*>(pVis);
-	
+
 	u16 anim_type = car->DriverAnimationType();
 	SVehicleAnimCollection& anims = m_vehicle_anims->m_vehicles_type_collections[anim_type];
 	V->PlayCycle(anims.idles[0], FALSE);
@@ -54,7 +54,7 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 
 	SetWeaponHideState(INV_STATE_CAR, true);
 
-	CStepManager::on_animation_start(MotionID(), 0);
+	CStepManager::on_animation_start(MotionID(), nullptr);
 }
 
 void CActor::detach_Vehicle()

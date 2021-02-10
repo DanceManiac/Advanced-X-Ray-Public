@@ -436,6 +436,7 @@ private:
 	CCarLights				m_lights;
 	////////////////////////////////////////////////////
 	/////////////////////////////////////////////////
+ public:
 	void				InitParabola();
 	float		Parabola(float rpm);
 	//float GetSteerAngle();
@@ -449,6 +450,10 @@ private:
 	void				 Unclutch							()	;
 	void				 SwitchEngine						()	;
 	void				 NeutralDrive						()	;
+
+	void				 SwitchHorn							()	;
+	ref_sound 			 snd_horn								;
+
 	void				 UpdatePower						()	;
 	void				 ReleasePedals						()	;
 	void				 ResetKeys							()	;

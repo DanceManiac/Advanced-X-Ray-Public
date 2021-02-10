@@ -34,6 +34,10 @@
 		<command id="kb_firemode_next"		exe="wpn_firemode_next"/>
 		<command id="kb_firemode_prev"		exe="wpn_firemode_prev"/>		
 	</group>
+	<group name="kb_grp_auto">
+		<command id="kb_turn_engine"				exe="turn_engine"/>
+		<command id="kb_switch_horn"					exe="switch_horn"/>	
+	</group>
 	<group name="kb_grp_inventory">
 		<command id="kb_inventory"				exe="inventory"/>
 		<command id="kb_active_jobs"			exe="active_jobs"/>

@@ -177,4 +177,7 @@
 	<string id="ui_mm_snd_delay">
 		<text>Задержка звуков вдалеке</text>
 	</string>
+	<string id="kb_grp_auto">
+		<text>Транспорт</text>
+	</string>
 </string_table>

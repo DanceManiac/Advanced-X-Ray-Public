@@ -148,7 +148,10 @@
 		<text>Фонарик</text>
 	</string>
 	<string id="kb_turn_engine">
-		<text>Включить</text>
+		<text>Завести двигатель</text>
+	</string>
+	<string id="kb_switch_horn">
+		<text>Посигналить</text>
 	</string>
 	<string id="kb_up">
 		<text>Вверх</text>
