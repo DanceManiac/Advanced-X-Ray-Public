@@ -4,6 +4,7 @@
 #include "../xr_level_controller.h"
 #include "embedded_editor_helper.h"
 #include "embedded_editor_weather.h"
+#include "../../build_config_defines.h"
 #include <addons/imguinodegrapheditor/imguinodegrapheditor.h>
 #include <dinput.h>
 #include <imgui.h>
@@ -84,12 +85,14 @@ void ShowEditor()
 bool isRControl = false, isLControl = false, isRShift = false, isLShift = false;
 bool Editor_KeyPress(int key)
 {
+#ifdef MFS_DEVELOPER_CMD
 	if (key == DIK_F10)
 	{
 		stage = static_cast<EditorStage>((static_cast<int>(stage) + 1) % static_cast<int>(EditorStage::Count));
 	}
 	else if (key == DIK_RALT || key == DIK_LALT)
         isAlt = true;
+#endif
 
     if (!IsEditorActive())
         return false;
