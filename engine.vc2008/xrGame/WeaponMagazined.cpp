@@ -1068,21 +1068,12 @@ void CWeaponMagazined::InitAddons()
 		shared_str scope_tex_name;
 		if ( m_eScopeStatus == ALife::eAddonAttachable )
 		{
+			ScopeIsHasTexture = false;
 			if (pSettings->line_exist(GetScopeName(), "scope_texture"))
 			{
 				scope_tex_name = pSettings->r_string(GetScopeName(), "scope_texture");
 				if (xr_strcmp(scope_tex_name, "none") != 0)
-				{
 					ScopeIsHasTexture = true;
-				}
-				else
-				{
-					ScopeIsHasTexture = false;
-				}
-			}
-			else
-			{
-				ScopeIsHasTexture = false;
 			}
 
 			m_zoom_params.m_fScopeZoomFactor	= pSettings->r_float( GetScopeName(), "scope_zoom_factor");
@@ -1099,7 +1090,7 @@ void CWeaponMagazined::InitAddons()
 				xr_delete(m_UIScope);
 			}
 
-			if (!g_dedicated_server && ScopeIsHasTexture)
+			if (ScopeIsHasTexture)
 			{
 				m_UIScope				= xr_new<CUIWindow>();
 				createWpnScopeXML		();
