@@ -9,5 +9,5 @@
 //-VISUAL
 
 //Advanced X-Ray CMD
-	//#define MFS_DEVELOPER_CMD
+	#define MFS_DEVELOPER_CMD
 //Advanced X-Ray CMD

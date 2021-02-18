@@ -128,6 +128,11 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	LoadSilencerKoeffs();
 }
 
+bool CWeaponMagazined::UseScopeTexture()
+{
+	return ScopeIsHasTexture;
+}
+
 void CWeaponMagazined::FireStart		()
 {
 	if(!IsMisfire())
@@ -847,8 +852,16 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 		SCOPES_VECTOR_IT it = m_scopes.begin();
 		for(; it!=m_scopes.end(); it++)
 		{
-			if(pSettings->r_string((*it),"scope_name")==pIItem->object().cNameSect())
-				return true;
+			if (UseAltScope)
+			{
+				if (*it == pIItem->object().cNameSect())
+					return true;
+			}
+			else
+			{
+				if (pSettings->r_string((*it), "scope_name") == pIItem->object().cNameSect())
+					return true;
+			}
 		}
 		return false;
 	}
@@ -875,8 +888,16 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 		SCOPES_VECTOR_IT it = m_scopes.begin();
 		for(; it!=m_scopes.end(); it++)
 		{
-			if(pSettings->r_string((*it),"scope_name")==item_section_name)
-				return true;
+			if (UseAltScope)
+			{
+				if (*it == item_section_name)
+					return true;
+			}
+			else
+			{
+				if (pSettings->r_string((*it), "scope_name") == item_section_name)
+					return true;
+			}
 		}
 		return false;
 	}
@@ -909,8 +930,16 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		SCOPES_VECTOR_IT it = m_scopes.begin();
 		for(; it!=m_scopes.end(); it++)
 		{
-			if(pSettings->r_string((*it),"scope_name")==pIItem->object().cNameSect())
-				m_cur_scope = u8(it-m_scopes.begin());
+			if (UseAltScope)
+			{
+				if (*it == pIItem->object().cNameSect())
+					m_cur_scope = u8(it - m_scopes.begin());
+			}
+			else
+			{
+				if (pSettings->r_string((*it), "scope_name") == pIItem->object().cNameSect())
+					m_cur_scope = u8(it - m_scopes.begin());
+			}
 		}
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonScope;
 		result = true;
@@ -941,6 +970,7 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 			pIItem->object().DestroyObject	();
 		};
 
+		UpdateAltScope();
 		UpdateAddonsVisibility();
 		InitAddons();
 
@@ -954,9 +984,17 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 {
 	bool detached = false;
 	SCOPES_VECTOR_IT it = m_scopes.begin();
+	shared_str iter_scope_name = "none";
 	for(; it!=m_scopes.end(); it++)
 	{
-		LPCSTR iter_scope_name = pSettings->r_string((*it),"scope_name");
+		if (UseAltScope)
+		{
+			iter_scope_name = (*it);
+		}
+		else
+		{
+			iter_scope_name = pSettings->r_string((*it), "scope_name");
+		}
 		if(!xr_strcmp(iter_scope_name, item_section_name))
 		{
 			m_cur_scope = NULL;
@@ -978,6 +1016,7 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 		}
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonScope;
 		
+		UpdateAltScope();
 		UpdateAddonsVisibility();
 		InitAddons();
 
@@ -1029,21 +1068,38 @@ void CWeaponMagazined::InitAddons()
 		shared_str scope_tex_name;
 		if ( m_eScopeStatus == ALife::eAddonAttachable )
 		{
-			//m_scopes[cur_scope]->m_sScopeName = pSettings->r_string(cNameSect(), "scope_name");
-			//m_scopes[cur_scope]->m_iScopeX	 = pSettings->r_s32(cNameSect(),"scope_x");
-			//m_scopes[cur_scope]->m_iScopeY	 = pSettings->r_s32(cNameSect(),"scope_y");
-
-			scope_tex_name						= pSettings->r_string(GetScopeName(), "scope_texture");
-			m_zoom_params.m_fScopeZoomFactor	= pSettings->r_float( GetScopeName(), "scope_zoom_factor");
-			m_zoom_params.m_sUseZoomPostprocess	= READ_IF_EXISTS(pSettings,r_string,GetScopeName(), "scope_nightvision", 0);
-			m_zoom_params.m_bUseDynamicZoom		= READ_IF_EXISTS(pSettings,r_bool,GetScopeName(),"scope_dynamic_zoom",FALSE);
-			m_zoom_params.m_sUseBinocularVision	= READ_IF_EXISTS(pSettings,r_string,GetScopeName(),"scope_alive_detector",0);
-			if ( m_UIScope )
+			if (pSettings->line_exist(GetScopeName(), "scope_texture"))
 			{
-				xr_delete( m_UIScope );
+				scope_tex_name = pSettings->r_string(GetScopeName(), "scope_texture");
+				if (xr_strcmp(scope_tex_name, "none") != 0)
+				{
+					ScopeIsHasTexture = true;
+				}
+				else
+				{
+					ScopeIsHasTexture = false;
+				}
+			}
+			else
+			{
+				ScopeIsHasTexture = false;
 			}
 
-			if ( !g_dedicated_server )
+			m_zoom_params.m_fScopeZoomFactor	= pSettings->r_float( GetScopeName(), "scope_zoom_factor");
+			if (ScopeIsHasTexture)
+			{
+				m_zoom_params.m_sUseZoomPostprocess = READ_IF_EXISTS(pSettings, r_string, GetScopeName(), "scope_nightvision", 0);
+				m_zoom_params.m_bUseDynamicZoom = READ_IF_EXISTS(pSettings, r_bool, GetScopeName(), "scope_dynamic_zoom", FALSE);
+				m_zoom_params.m_sUseBinocularVision = READ_IF_EXISTS(pSettings, r_string, GetScopeName(), "scope_alive_detector", 0);
+			}
+			m_fRTZoomFactor = m_zoom_params.m_fScopeZoomFactor;
+
+			if (m_UIScope)
+			{
+				xr_delete(m_UIScope);
+			}
+
+			if (!g_dedicated_server && ScopeIsHasTexture)
 			{
 				m_UIScope				= xr_new<CUIWindow>();
 				createWpnScopeXML		();
