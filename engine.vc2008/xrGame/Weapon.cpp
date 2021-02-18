@@ -154,7 +154,15 @@ void CWeapon::UpdateAltScope()
 shared_str CWeapon::GetNameWithAttachment()
 {
 	string64 str;
-	xr_sprintf(str, "%s_%s", m_section_id.c_str(), GetScopeName().c_str());
+	if (pSettings->line_exist(m_section_id.c_str(), "parent_section"))
+	{
+		shared_str parent = pSettings->r_string(m_section_id.c_str(), "parent_section");
+		xr_sprintf(str, "%s_%s", parent.c_str(), GetScopeName().c_str());
+	}
+	else
+	{
+		xr_sprintf(str, "%s_%s", m_section_id.c_str(), GetScopeName().c_str());
+	}
 	return (shared_str)str;
 }
 
