@@ -37,6 +37,39 @@ public:
 							CWeapon				();
 	virtual					~CWeapon			();
 
+	// [FFT++]: аддоны и управление аддонами
+	bool					bUseAltScope;
+	bool					bScopeIsHasTexture;
+	bool					bNVsecondVPavaible;
+	bool					bNVsecondVPstatus;
+
+	virtual	bool			bInZoomRightNow() const { return m_zoom_params.m_fZoomRotationFactor > 0.05; }
+	IC		bool			bIsSecondVPZoomPresent() const { return GetSecondVPZoomFactor() > 0.000f; }
+	BOOL					bLoadAltScopesParams(LPCSTR section);
+			bool            bChangeNVSecondVPStatus();
+	virtual	bool            bMarkCanShow() { return IsZoomed(); }
+
+
+	virtual void			UpdateSecondVP(bool bInGrenade = false);
+	void					Load3DScopeParams(LPCSTR section);
+	void					LoadOriginalScopesParams(LPCSTR section);
+	void					LoadCurrentScopeParams(LPCSTR section);
+	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
+	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
+	void					UpdateAltScope();
+
+	virtual float			GetControlInertionFactor() const;
+	IC		float			GetZRotatingFactor()    const { return m_zoom_params.m_fZoomRotationFactor; }
+	IC		float			GetSecondVPZoomFactor() const { return m_zoom_params.m_fSecondVPFovFactor; }
+	float					GetSecondVPFov() const;
+
+	shared_str				GetNameWithAttachment();
+
+
+	float					m_fScopeInertionFactor;
+	float					m_fZoomStepCount;
+	float					m_fZoomMinKoeff;
+
 	// Generic
 	virtual void			Load				(LPCSTR section);
 
@@ -53,12 +86,6 @@ public:
 	virtual void			save				(NET_Packet &output_packet);
 	virtual void			load				(IReader &input_packet);
 	virtual BOOL			net_SaveRelevant	()								{return inherited::net_SaveRelevant();}
-
-	/*------------------STCoP Weapon Pack SECTION-----------------------*/
-	bool					UseAltScope;
-	void					UpdateAltScope();
-	bool					ScopeIsHasTexture;
-	shared_str				GetNameWithAttachment();
 
 	virtual void			UpdateCL			();
 	virtual void			shedule_Update		(u32 dt);
@@ -231,6 +258,7 @@ protected:
 		float			m_fScopeZoomFactor;		//коэффициент увеличения прицела
 
 		float			m_fZoomRotationFactor;
+		float           m_fSecondVPFovFactor;
 
 //		float           m_fSecondVP_FovFactor;
 		
@@ -331,29 +359,28 @@ protected:
 	virtual void			OnAnimationEnd			(u32 state);
 
 	//трассирование полета пули
-	virtual	void			FireTrace			(const Fvector& P, const Fvector& D);
-	virtual float			GetWeaponDeterioration	();
+	virtual	void			FireTrace(const Fvector& P, const Fvector& D);
+	virtual float			GetWeaponDeterioration();
 
-	virtual void			FireStart			() {CShootingObject::FireStart();}
-	virtual void			FireEnd				();
+	virtual void			FireStart() { CShootingObject::FireStart(); }
+	virtual void			FireEnd();
 
-	virtual void			Reload				();
-			void			StopShooting		();
-    
+	virtual void			Reload();
+	void					StopShooting();
 
 	// обработка визуализации выстрела
-	virtual void			OnShot				(){};
-	virtual void			AddShotEffector		();
-	virtual void			RemoveShotEffector	();
-	virtual	void			ClearShotEffector	();
-	virtual	void			StopShotEffector	();
+	virtual void			OnShot() {};
+	virtual void			AddShotEffector();
+	virtual void			RemoveShotEffector();
+	virtual	void			ClearShotEffector();
+	virtual	void			StopShotEffector();
 
 public:
-	float					GetBaseDispersion	(float cartridge_k);
-	float					GetFireDispersion	(bool with_cartridge, bool for_crosshair = false);
-	virtual float			GetFireDispersion	(float cartridge_k, bool for_crosshair = false);
-	virtual	int				ShotsFired			() { return 0; }
-	virtual	int				GetCurrentFireMode	() { return 1; }
+	float					GetBaseDispersion(float cartridge_k);
+	float					GetFireDispersion(bool with_cartridge, bool for_crosshair = false);
+	virtual float			GetFireDispersion(float cartridge_k, bool for_crosshair = false);
+	virtual	int				ShotsFired() { return 0; }
+	virtual	int				GetCurrentFireMode() { return 1; }
 
 	//параметы оружия в зависимоти от его состояния исправности
 	float					GetConditionDispersionFactor	() const;
@@ -406,11 +433,11 @@ protected:
 	float					m_fMinRadius;
 	float					m_fMaxRadius;
 
-protected:	
+protected:
 	//для второго ствола
-			void			StartFlameParticles2();
-			void			StopFlameParticles2	();
-			void			UpdateFlameParticles2();
+	void			StartFlameParticles2();
+	void			StopFlameParticles2();
+	void			UpdateFlameParticles2();
 protected:
 	shared_str				m_sFlameParticles2;
 	//объект партиклов для стрельбы из 2-го ствола

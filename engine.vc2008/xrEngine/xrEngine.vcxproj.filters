@@ -624,6 +624,9 @@
     <ClInclude Include="DiscordRichPresense.h">
       <Filter>General</Filter>
     </ClInclude>
+    <ClInclude Include="ShadersExternalData.h">
+      <Filter>Game API\Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="defines.cpp">

@@ -211,9 +211,9 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 		{
 			result |= process_if_exists( section, "holder_range_modifier", &CInifile::r_float, m_addon_holder_range_modifier, test );
 			result |= process_if_exists( section, "holder_fov_modifier",   &CInifile::r_float, m_addon_holder_fov_modifier,   test );
-			UseAltScope = pSettings->line_exist(section, "scopes");
+			bUseAltScope = pSettings->line_exist(section, "scopes");
 
-			if (UseAltScope)
+			if (bUseAltScope)
 			{
 				LPCSTR str = pSettings->r_string(section, "scopes");
 				for (int i = 0, count = _GetItemCount(str); i < count; ++i)
@@ -223,7 +223,7 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 
 					if (!xr_strcmp(scope_section, "none"))
 					{
-						UseAltScope = 0;
+						bUseAltScope = 0;
 					}
 					else
 					{
@@ -232,7 +232,7 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 				}
 			}
 
-			if (!UseAltScope)
+			if (!bUseAltScope)
 			{
 				if (m_eScopeStatus == ALife::eAddonAttachable)
 				{

@@ -464,3 +464,19 @@ void CRender::render_forward				()
 
 	RImplementation.o.distortion				= FALSE;				// disable distorion
 }
+
+//     --#SM+#-- +SecondVP+
+void CRender::BeforeWorldRender() {}
+
+//     - --#SM+#-- +SecondVP+
+void CRender::AfterWorldRender()
+{
+	if (Device.m_SecondViewport.IsSVPFrame())
+	{
+		//    ( )  -  
+		IDirect3DSurface9* pBackBuffer = NULL;
+		HW.pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer); //    
+		D3DXLoadSurfaceFromSurface(Target->rt_secondVP->pRT, 0, 0, pBackBuffer, 0, 0, D3DX_DEFAULT, 0);
+		pBackBuffer->Release(); //      (    )
+	}
+}

@@ -410,6 +410,11 @@ if(!g_dedicated_server)
 		m_BloodSnd.create		(pSettings->r_string(section,"heavy_blood_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
 		m_DangerSnd.create		(pSettings->r_string(section,"heavy_danger_snd"), st_Effect,SOUND_TYPE_MONSTER_INJURING);
 	}
+
+	if (this == Level().CurrentEntity()) //--#SM+#--      [reset some render flags]
+	{
+		g_pGamePersistent->m_pGShaderConstants->m_blender_mode.set(0.f, 0.f, 0.f, 0.f);
+	}
 }
 //Alundaio -psp always
 //if (psActorFlags.test(AF_PSP))
@@ -1022,7 +1027,10 @@ void CActor::UpdateCL	()
 			
 			fire_disp_full = m_fdisp_controller.GetCurrentDispertion();
 
-			HUD().SetCrosshairDisp(fire_disp_full, 0.02f);
+			//--#SM+#-- +SecondVP+        FOV (Sin!) [fix for crosshair shaking while SecondVP]
+			if (!Device.m_SecondViewport.IsSVPFrame())
+				HUD().SetCrosshairDisp(fire_disp_full, 0.02f);
+
 			HUD().ShowCrosshair(pWeapon->use_crosshair());
 #ifdef DEBUG
 			HUD().SetFirstBulletCrosshairDisp(pWeapon->GetFirstBulletDisp());
@@ -1039,6 +1047,21 @@ void CActor::UpdateCL	()
 
 			
 			psHUD_Flags.set( HUD_DRAW_RT,		pWeapon->show_indicators() );
+
+			//      [Update SecondVP with weapon data]
+			pWeapon->UpdateSecondVP(); //--#SM+#-- +SecondVP+
+			bool bUseMark = !!pWeapon->bMarkCanShow();
+			bool bInZoom = !!(pWeapon->bInZoomRightNow() && pWeapon->bIsSecondVPZoomPresent());
+
+			//float fVPRotFactor = pWeapon->bNVsecondVPstatus ? pWeapon->GetZRotatingFactor() : 0.0f;
+
+			bool bNVEnbl = !!pWeapon->bNVsecondVPstatus;
+
+			//      
+			g_pGamePersistent->m_pGShaderConstants->hud_params.x = bInZoom;  //--#SM+#--
+			g_pGamePersistent->m_pGShaderConstants->hud_params.y = pWeapon->GetSecondVPFov(); //--#SM+#--
+			g_pGamePersistent->m_pGShaderConstants->hud_params.z = bUseMark; //--#SM+#--
+			g_pGamePersistent->m_pGShaderConstants->m_blender_mode.x = bNVEnbl;  //--#SM+#--
 		}
 
 	}
@@ -1048,6 +1071,14 @@ void CActor::UpdateCL	()
 		{
 			HUD().SetCrosshairDisp(0.f);
 			HUD().ShowCrosshair(false);
+
+			//      
+			g_pGamePersistent->m_pGShaderConstants->hud_params.set(0.f, 0.f, 0.f, 0.f); //--#SM+#--
+			g_pGamePersistent->m_pGShaderConstants->m_blender_mode.set(0.f, 0.f, 0.f, 0.f); //--#SM+#--
+
+			//    [Turn off SecondVP]
+			//CWeapon::UpdateSecondVP();
+			Device.m_SecondViewport.SetSVPActive(false); //--#SM+#-- +SecondVP+
 		}
 	}
 

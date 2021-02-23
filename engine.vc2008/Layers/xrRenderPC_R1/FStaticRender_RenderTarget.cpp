@@ -6,6 +6,7 @@
 static LPCSTR		RTname			= "$user$rendertarget";
 static LPCSTR		RTname_color_map= "$user$rendertarget_color_map";
 static LPCSTR		RTname_distort	= "$user$distort";
+static LPCSTR		RTname_SecondVP = "$user$viewport2"; //--#SM+#-- +SecondVP+
 
 CRenderTarget::CRenderTarget()
 {
@@ -24,6 +25,7 @@ CRenderTarget::CRenderTarget()
 	param_noise_fps		= 25.f;
 	param_noise_scale	= 1.f;
 
+	RT_SecondVP			= nullptr; //--#SM+# +SecondVP+
 	param_color_map_influence	=	0.0f;
 	param_color_map_interpolate	=	0.0f;
 
@@ -62,6 +64,8 @@ BOOL CRenderTarget::Create	()
 		RT_color_map.create	(RTname_color_map,	curWidth, curHeight, HW.Caps.fTarget);
 	}
 	//RImplementation.o.color_mapping = RT_color_map->valid();
+
+	RT_SecondVP.create(RTname_SecondVP, rtWidth, rtHeight, HW.Caps.fTarget); //--#SM+#-- +SecondVP+
 
 	if ((rtHeight!=Device.dwHeight) || (rtWidth!=Device.dwWidth))	{
 		R_CHK		(HW.pDevice->CreateDepthStencilSurface	(rtWidth,rtHeight,HW.Caps.fDepth,D3DMULTISAMPLE_NONE,0,TRUE,&ZB,NULL));
@@ -104,6 +108,7 @@ CRenderTarget::~CRenderTarget	()
 	RT_distort.destroy			();
 	RT_color_map.destroy		();
 	RT.destroy					();
+	RT_SecondVP.destroy			(); //--#SM+#-- +SecondVP+
 }
 
 void	CRenderTarget::calc_tc_noise		(Fvector2& p0, Fvector2& p1)

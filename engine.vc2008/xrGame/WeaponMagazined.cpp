@@ -27,16 +27,7 @@ ENGINE_API	bool	g_dedicated_server;
 ENGINE_API  extern float psHUD_FOV;
 ENGINE_API  extern float psHUD_FOV_def;
 
-CUIXml*				pWpnScopeXml = NULL;
-
-void createWpnScopeXML()
-{
-	if(!pWpnScopeXml)
-	{
-		pWpnScopeXml			= xr_new<CUIXml>();
-		pWpnScopeXml->Load		(CONFIG_PATH, UI_PATH, "scopes.xml");
-	}
-}
+//CUIXml*				pWpnScopeXml = NULL;
 
 CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 {
@@ -130,7 +121,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 bool CWeaponMagazined::UseScopeTexture()
 {
-	return ScopeIsHasTexture;
+	return bScopeIsHasTexture;
 }
 
 void CWeaponMagazined::FireStart		()
@@ -852,7 +843,7 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 		SCOPES_VECTOR_IT it = m_scopes.begin();
 		for(; it!=m_scopes.end(); it++)
 		{
-			if (UseAltScope)
+			if (bUseAltScope)
 			{
 				if (*it == pIItem->object().cNameSect())
 					return true;
@@ -888,7 +879,7 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 		SCOPES_VECTOR_IT it = m_scopes.begin();
 		for(; it!=m_scopes.end(); it++)
 		{
-			if (UseAltScope)
+			if (bUseAltScope)
 			{
 				if (*it == item_section_name)
 					return true;
@@ -930,7 +921,7 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		SCOPES_VECTOR_IT it = m_scopes.begin();
 		for(; it!=m_scopes.end(); it++)
 		{
-			if (UseAltScope)
+			if (bUseAltScope)
 			{
 				if (*it == pIItem->object().cNameSect())
 					m_cur_scope = u8(it - m_scopes.begin());
@@ -963,6 +954,11 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 
 	if(result)
 	{
+		if (pScope && bUseAltScope)
+		{
+			bNVsecondVPstatus = !!pSettings->line_exist(pIItem->object().cNameSect(), "scope_nightvision");
+		}
+
 		if (b_send_event && OnServer())
 		{
 			//уничтожить подсоединенную вещь из инвентаря
@@ -987,7 +983,7 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 	shared_str iter_scope_name = "none";
 	for(; it!=m_scopes.end(); it++)
 	{
-		if (UseAltScope)
+		if (bUseAltScope)
 		{
 			iter_scope_name = (*it);
 		}
@@ -1065,50 +1061,21 @@ void CWeaponMagazined::InitAddons()
 	m_zoom_params.m_fIronSightZoomFactor = READ_IF_EXISTS( pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 50.0f );
 	if ( IsScopeAttached() )
 	{
-		shared_str scope_tex_name;
 		if ( m_eScopeStatus == ALife::eAddonAttachable )
 		{
-			ScopeIsHasTexture = false;
-			if (pSettings->line_exist(GetScopeName(), "scope_texture"))
-			{
-				scope_tex_name = pSettings->r_string(GetScopeName(), "scope_texture");
-				if (xr_strcmp(scope_tex_name, "none") != 0)
-					ScopeIsHasTexture = true;
-			}
-
-			m_zoom_params.m_fScopeZoomFactor	= pSettings->r_float( GetScopeName(), "scope_zoom_factor");
-			if (ScopeIsHasTexture)
-			{
-				m_zoom_params.m_sUseZoomPostprocess = READ_IF_EXISTS(pSettings, r_string, GetScopeName(), "scope_nightvision", 0);
-				m_zoom_params.m_bUseDynamicZoom = READ_IF_EXISTS(pSettings, r_bool, GetScopeName(), "scope_dynamic_zoom", FALSE);
-				m_zoom_params.m_sUseBinocularVision = READ_IF_EXISTS(pSettings, r_string, GetScopeName(), "scope_alive_detector", 0);
-			}
-			m_fRTZoomFactor = m_zoom_params.m_fScopeZoomFactor;
-
-			if (m_UIScope)
-			{
-				xr_delete(m_UIScope);
-			}
-
-			if (ScopeIsHasTexture)
-			{
-				m_UIScope				= xr_new<CUIWindow>();
-				createWpnScopeXML		();
-				CUIXmlInit::InitWindow	(*pWpnScopeXml, scope_tex_name.c_str(), 0, m_UIScope);
-			}
+			LoadCurrentScopeParams(GetScopeName().c_str());
 		}
 	}
 	else
 	{
 		if ( m_UIScope )
-		{
 			xr_delete( m_UIScope );
-		}
+
+		if (bIsSecondVPZoomPresent())
+			m_zoom_params.m_fSecondVPFovFactor = 0.0f;
 		
 		if ( IsZoomEnabled() )
-		{
 			m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float( cNameSect(), "scope_zoom_factor" );
-		}
 	}
 
 	if ( IsSilencerAttached()/* && SilencerAttachable() */)

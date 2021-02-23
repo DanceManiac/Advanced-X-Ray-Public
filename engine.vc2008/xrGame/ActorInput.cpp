@@ -45,6 +45,13 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	if (IsTalking())	return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 	
+	if (pInput->iGetAsyncKeyState(DIK_ADD))
+		inventory().Action((u16)kWPN_ZOOM_INC, CMD_START);
+	else if (pInput->iGetAsyncKeyState(DIK_SUBTRACT))
+		inventory().Action((u16)kWPN_ZOOM_DEC, CMD_START);
+	else if (pInput->iGetAsyncKeyState(DIK_HOME))
+		inventory().Action((u16)kWPN_NV_CHANGE, CMD_START);
+
 	switch (cmd)
 	{
 	case kWPN_FIRE:

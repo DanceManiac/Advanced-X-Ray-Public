@@ -351,6 +351,22 @@ class cl_hemi_color	: public R_constant_setup {
 };	static cl_hemi_color		binder_hemi_color;
 #endif
 
+// SM_TODO: RCache.hemi    "" 
+static class cl_hud_params : public R_constant_setup //--#SM+#--
+{
+	virtual void setup(R_constant* C) { RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->hud_params); }
+} binder_hud_params;
+
+static class cl_script_params : public R_constant_setup //--#SM+#--
+{
+	virtual void setup(R_constant* C) { RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_script_params); }
+} binder_script_params;
+
+static class cl_blend_mode : public R_constant_setup //--#SM+#--
+{
+	virtual void setup(R_constant* C) { RCache.set_c(C, g_pGamePersistent->m_pGShaderConstants->m_blender_mode); }
+} binder_blend_mode;
+
 static class cl_screen_res : public R_constant_setup		
 {	
 	virtual void setup	(R_constant* C)
@@ -387,6 +403,11 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("u_weather", &binder_u_weather);
 	r_Constant("screen_res_alt", &binder_screen_res);
     r_Constant("puddles_accumulator", &binder_rain_params);
+
+	// misc
+	r_Constant("m_hud_params", &binder_hud_params);	//--#SM+#--
+	r_Constant("m_script_params", &binder_script_params); //--#SM+#--
+	r_Constant("m_blender_mode", &binder_blend_mode);	//--#SM+#--
 
 	// matrices
 	r_Constant				("m_W",				&binder_w);

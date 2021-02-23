@@ -263,6 +263,7 @@ CRenderTarget::CRenderTarget		()
 		// generic(LDR) RTs
 		rt_Generic_0.create			(r2_RT_generic0,w,h,D3DFMT_A8R8G8B8		);
 		rt_Generic_1.create			(r2_RT_generic1,w,h,D3DFMT_A8R8G8B8		);
+		rt_secondVP.create			(r2_RT_secondVP, w, h, D3DFMT_A8R8G8B8	); //--#SM+#-- +SecondVP+
 
 
 		//ogse sunshafts

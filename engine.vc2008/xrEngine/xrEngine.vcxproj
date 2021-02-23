@@ -569,6 +569,7 @@
     <ClInclude Include="Rain.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ShadersExternalData.h" />
     <ClInclude Include="Shader_xrLC.h" />
     <ClInclude Include="SkeletonMotionDefs.h" />
     <ClInclude Include="SkeletonMotions.h" />

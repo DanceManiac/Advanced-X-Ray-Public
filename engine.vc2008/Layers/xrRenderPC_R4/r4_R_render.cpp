@@ -530,3 +530,19 @@ void CRender::render_forward				()
 
 	RImplementation.o.distortion				= FALSE;				// disable distorion
 }
+
+//     --#SM+#-- +SecondVP+
+void CRender::BeforeWorldRender() {}
+
+//     - --#SM+#-- +SecondVP+
+void CRender::AfterWorldRender()
+{
+	if (Device.m_SecondViewport.IsSVPFrame())
+	{
+		//    ( )  -  
+		ID3DTexture2D* pBuffer = NULL;
+		HW.m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& pBuffer);
+		HW.pContext->CopyResource(Target->rt_secondVP->pSurface, pBuffer);
+		pBuffer->Release(); //      (    )
+	}
+}
