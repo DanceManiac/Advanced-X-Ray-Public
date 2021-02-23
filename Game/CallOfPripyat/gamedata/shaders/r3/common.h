@@ -47,6 +47,10 @@
 	uniform float4 screen_res_alt; // .xy - pos_decompression_params2.xy, .zw - screen_res.xy power to -1
 	uniform float4 puddles_accumulator; // .x - wetness accumulator, .yzw = 0
 	uniform float4x4	m_view2world;
+	
+	// Глобальные параметры шейдеров --#SM+#--
+	uniform	float4		m_hud_params;	// zoom_rotate_factor, secondVP_zoom_factor, NULL, NULL
+	uniform	float4		m_blender_mode;	
 
 	float gbuf_get_depth(float2 texcoord)
 	{
@@ -160,6 +164,12 @@
 	float3 sky_true_reflection(TextureCube skytex1, TextureCube skytex2, float3 vreflect)
 	{
 		return sky_fake_reflection(skytex1, skytex2, true_remapping(vreflect));
+	}
+	
+	// Активен-ли двойной рендер --#SM+#--
+	inline bool isSecondVPActive()
+	{
+		return (m_blender_mode.z == 1.f);
 	}
 
 #endif

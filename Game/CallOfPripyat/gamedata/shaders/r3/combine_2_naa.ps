@@ -7,7 +7,6 @@
 
 #if defined(USE_MSAA)
 Texture2DMS <float4, MSAA_SAMPLES> s_puddles;
-//Texture2DMS <float3> s_pptemp; // For DX10.1 and DX11
 #else
 Texture2D <float> s_puddles;
 #endif
@@ -101,6 +100,7 @@ c2_out main( v2p_aa_AA I )
 	
 //			img 	= mblur		(center,tex2D(s_position,I.tc0),img.rgb);
 //			img 	= mblur( center, s_position.Sample( smp_nofilter, tc0), img.rgb);
+	if (!isSecondVPActive())
 			img 	= mblur( center, ( gbd ).P, img.rgb);
 
 #ifdef 	USE_DISTORT
@@ -127,8 +127,7 @@ c2_out main( v2p_aa_AA I )
 	#else
 		float mask = s_puddles.Sample(smp_nofilter, center);
 	#endif
-	
-    //float mask = s_puddles.Sample(smp_nofilter, center);
+
 	if(gbd.P.z <= 0.01) mask = 0;
     
     if(mask != 0)

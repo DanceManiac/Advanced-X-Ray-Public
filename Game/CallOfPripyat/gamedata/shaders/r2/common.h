@@ -59,6 +59,10 @@ uniform half4                Ldynamic_dir;                        // dynamic lig
 uniform half4                J_direct        [6];
 uniform half4                J_spot                [6];
 
+// Глобальные параметры шейдеров --#SM+#--
+uniform	half4				m_hud_params;	//
+uniform	half4				m_blender_mode;	// 
+
 half          calc_fogging               (half4 w_pos)      { return dot(w_pos,fog_plane);         }
 half2         calc_detail                (half3 w_pos)      {
         float                 dtl        = distance                (w_pos,eye_position)*dt_params.w;
@@ -309,6 +313,12 @@ half Contrast(half Input, half ContrastPower)
      half Output = 0.5*pow(ToRaise, ContrastPower);
      Output = IsAboveHalf ? 1-Output : Output;
      return Output;
+}
+
+// Активен-ли двойной рендер --#SM+#--
+inline bool isSecondVPActive()
+{
+	return (m_blender_mode.z == 1.f);
 }
 
 #define FXPS technique _render{pass _code{PixelShader=compile ps_3_0 main();}}

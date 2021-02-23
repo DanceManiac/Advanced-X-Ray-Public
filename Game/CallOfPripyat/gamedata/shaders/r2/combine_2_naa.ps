@@ -39,6 +39,7 @@ half4 	main		( v2p I )	: COLOR
 	half3	img	= dof(center);
 	half4 	bloom	= tex2D		(s_bloom, center);
 	
+	if (!isSecondVPActive())
 			img 	= mblur		(center,tex2D(s_position,I.tc0),img.rgb);
 
 #ifdef 	USE_DISTORT

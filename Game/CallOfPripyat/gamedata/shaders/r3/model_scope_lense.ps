@@ -7,16 +7,6 @@ uniform	float4		screen_res;
 
 #include "pnv.h"
 
-// Глобальные параметры шейдеров --#SM+#--
-uniform	float4		m_hud_params;	// zoom_rotate_factor, secondVP_zoom_factor, NULL, NULL
-uniform	float4		m_blender_mode;	
-
-// Активен-ли двойной рендер --#SM+#--
-inline bool isSecondVPActive()
-{
-	return (m_blender_mode.z == 1.f);
-}
-
 Texture2D 	s_vp2;
 
 float resize(float input, float factor, float offset)
