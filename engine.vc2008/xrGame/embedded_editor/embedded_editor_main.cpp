@@ -9,6 +9,8 @@
 #include <dinput.h>
 #include <imgui.h>
 
+bool bDeveloperModeEditor = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
+
 bool bShowWindow = true;
 bool show_test_window = true;
 bool show_weather_window = false;
@@ -85,14 +87,15 @@ void ShowEditor()
 bool isRControl = false, isLControl = false, isRShift = false, isLShift = false;
 bool Editor_KeyPress(int key)
 {
-#ifdef MFS_DEVELOPER_CMD
-	if (key == DIK_F10)
+	if (bDeveloperModeEditor)
 	{
-		stage = static_cast<EditorStage>((static_cast<int>(stage) + 1) % static_cast<int>(EditorStage::Count));
+		if (key == DIK_F10)
+		{
+			stage = static_cast<EditorStage>((static_cast<int>(stage) + 1) % static_cast<int>(EditorStage::Count));
+		}
+		else if (key == DIK_RALT || key == DIK_LALT)
+			isAlt = true;
 	}
-	else if (key == DIK_RALT || key == DIK_LALT)
-        isAlt = true;
-#endif
 
     if (!IsEditorActive())
         return false;

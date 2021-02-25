@@ -99,6 +99,8 @@ extern float	g_smart_cover_factor;
 extern int		g_upgrades_log;
 extern float	g_smart_cover_animation_speed_factor;
 
+bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
+
 ENGINE_API extern float	g_console_sensitive;
 
 int				g_keypress_on_start = 1;
@@ -1900,22 +1902,23 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 #endif // DEBUG
 
 #ifndef MASTER_GOLD
-	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
-	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
 	CMD1(CCC_Script,		"run_script");
 	CMD1(CCC_ScriptCommand,	"run_string");	
 #endif // MASTER_GOLD
 
-#ifdef MFS_DEVELOPER_CMD
-	CMD1(CCC_Spawn, "g_spawn");
-	CMD1(CCC_SetWeather,	"set_weather");
-	CMD1(CCC_TimeFactor,	"time_factor");
-	CMD1(CCC_JumpToLevel,	"jump_to_level");
-	CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
-	CMD1(CCC_Giveinfo,		"g_info");
-	CMD1(CCC_Disinfo,		"d_info");
-	CMD4(CCC_Integer,		"hud_adjust_mode", &hud_adj_mode, 0, 5);
-#endif // MFS_DEVELOPER_CMD
+	if (bDeveloperMode)
+	{
+		CMD1(CCC_Spawn,			"g_spawn");
+		CMD1(CCC_SetWeather,	"set_weather");
+		CMD1(CCC_TimeFactor,	"time_factor");
+		CMD1(CCC_JumpToLevel,	"jump_to_level")
+		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
+		CMD1(CCC_Giveinfo,		"g_info");
+		CMD1(CCC_Disinfo,		"d_info");
+		CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE);
+		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
+		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode,	0, 5);
+	}
 
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
 	CMD3(CCC_Mask,		"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);

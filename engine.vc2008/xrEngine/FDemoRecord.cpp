@@ -21,6 +21,7 @@ BOOL stored_red_text;
 
 CDemoRecord * xrDemoRecord = 0;
 CDemoRecord::force_position CDemoRecord:: g_position = { false, { 0, 0, 0 } };
+bool bDeveloperMode;
 
 Fbox curr_lm_fbox;
 void setup_lm_screenshot_matrices()
@@ -274,6 +275,8 @@ void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 
 BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 {
+	bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
+
 	info.dont_apply					= false;
 	if (0==file)					return TRUE;
 
@@ -406,16 +409,17 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 	if (dik == DIK_F12)		MakeScreenshot			();
 	if (dik == DIK_ESCAPE)	fLifeTime				= -1;
 
-#ifndef MFS_DEVELOPER_CMD
-	if (dik == DIK_RETURN)
-	{	
-		if (g_pGameLevel->CurrentEntity())
+	if (bDeveloperMode)
+	{
+		if (dik == DIK_RETURN)
 		{
-			g_pGameLevel->CurrentEntity()->ForceTransform(m_Camera);
-			fLifeTime		= -1; 
+			if (g_pGameLevel->CurrentEntity())
+			{
+				g_pGameLevel->CurrentEntity()->ForceTransform(m_Camera);
+				fLifeTime = -1;
+			}
 		}
 	}
-#endif // #ifndef MFS_DEVELOPER_CMD
 
 	if	(dik == DIK_PAUSE)		
 		Device.Pause(!Device.Paused(), TRUE, TRUE, "demo_record");

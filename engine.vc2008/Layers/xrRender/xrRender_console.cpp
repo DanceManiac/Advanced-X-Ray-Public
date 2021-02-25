@@ -344,6 +344,9 @@ int ps_rs_loading_stages = 0;
 //- Mad Max
 float		ps_r2_gloss_factor			= 4.0f;
 //- Mad Max
+
+bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
+
 #ifndef _EDITOR
 #include	"../../xrEngine/xr_ioconsole.h"
 #include	"../../xrEngine/xr_ioc_cmd.h"
@@ -1073,10 +1076,11 @@ void		xrRender_initconsole	()
 	// AA Mode
 	CMD3(CCC_Token,		"r2_aa_mode",					&r2_aa_mode,				r2_aa_mode_token);
 
-#ifdef MFS_DEVELOPER_CMD
-	// SMAA Quality
-	CMD3(CCC_Token,		"r2_smaa_quality",				&ps_r_aa_quality,					qaa_token);
-#endif
+	if (bDeveloperMode)
+	{
+		// SMAA Quality
+		CMD3(CCC_Token,		"r2_smaa_quality",				&ps_r_aa_quality,			qaa_token);
+	}
 
 	//	Igor: need restart
 	CMD3(CCC_Mask,		"r2_soft_water",				&ps_r2_ls_flags,			R2FLAG_SOFT_WATER);
