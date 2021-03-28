@@ -28,6 +28,7 @@
 #include "../MPPlayersBag.h"
 #include "../HUDManager.h"
 #include "../player_hud.h"
+#include "AdvancedXrayGameConstants.h"
 
 
 void move_item_from_to(u16 from_id, u16 to_id, u16 what_id);
@@ -43,6 +44,11 @@ void CUIActorMenu::InitInventoryMode()
 	
 	m_RightDelimiter->Show				(false);
 	m_clock_value->Show					(true);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_pInventoryKnifeList->Show(true);
+	}
 
 	InitInventoryContents				(m_pInventoryBagList);
 
@@ -232,6 +238,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryBagList,
 		m_pTradeActorBagList,
 		m_pTradeActorList,
+		m_pInventoryKnifeList,
 		NULL
 	};
 
@@ -382,6 +389,11 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	InitCellForSlot				(OUTFIT_SLOT);
 	InitCellForSlot				(DETECTOR_SLOT);
 	InitCellForSlot				(GRENADE_SLOT);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		InitCellForSlot(KNIFE_SLOT);
+	}
 
 	curr_list					= m_pInventoryBeltList;
 	TIItemContainer::iterator itb = m_pActorInvOwner->inventory().m_belt.begin();
@@ -612,6 +624,12 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 			}
 			return m_pInventoryBagList;
 			break;
+
+			if (GameConstants::GetKnifeSlotEnabled())
+			{
+				case KNIFE_SLOT:
+					return m_pInventoryKnifeList;
+			}
 	};
 	return NULL;
 }

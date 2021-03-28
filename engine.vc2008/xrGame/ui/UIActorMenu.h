@@ -101,6 +101,7 @@ protected:
 	CUIDragDropListEx*			m_pTradePartnerList;
 	CUIDragDropListEx*			m_pDeadBodyBagList;
 	CUIDragDropListEx*			m_pTrashList;
+	CUIDragDropListEx*			m_pInventoryKnifeList;
 
 	enum						{e_af_count = 5};
 	CUIStatic*					m_belt_list_over[e_af_count];
@@ -113,6 +114,7 @@ protected:
 	CUIStatic*					m_DetectorSlotHighlight;
 	CUIStatic*					m_QuickSlotsHighlight[4];
 	CUIStatic*					m_ArtefactSlotsHighlight[e_af_count];
+	CUIStatic*					m_KnifeSlotHighlight;
 
 	CUIInventoryUpgradeWnd*		m_pUpgradeWnd;
 	
@@ -137,6 +139,8 @@ protected:
 	CUIProgressBar*				m_WeaponSlot2_progress;
 	CUIProgressBar*				m_Helmet_progress;
 	CUIProgressBar*				m_Outfit_progress;
+	CUIProgressBar*				m_Knife_progress;
+
 	// bottom ---------------------------------
 	CUIStatic*					m_ActorBottomInfo;
 	CUITextWnd*					m_ActorWeight;

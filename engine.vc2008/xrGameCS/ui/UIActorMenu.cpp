@@ -22,6 +22,8 @@
 #include "UIMessageBoxEx.h"
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
+#include "AdvancedXrayGameConstants.h"
+#include "WeaponKnife.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -297,6 +299,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pTradePartnerBagList)		return iPartnerTradeBag;
 	if(l==m_pTradePartnerList)			return iPartnerTrade;
 	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		if (l == m_pInventoryKnifeList)	return iActorSlot;
+	}
 
 	R_ASSERT(0);
 	
@@ -612,6 +619,11 @@ void CUIActorMenu::ClearAllLists()
 	m_pTradePartnerBagList->ClearAll			(true);
 	m_pTradePartnerList->ClearAll				(true);
 	m_pDeadBodyBagList->ClearAll				(true);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_pInventoryKnifeList->ClearAll(true);
+	}
 }
 
 bool CUIActorMenu::OnMouse( float x, float y, EUIMessages mouse_action )

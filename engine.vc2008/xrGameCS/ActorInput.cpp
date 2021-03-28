@@ -42,7 +42,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 
 	if (IsTalking())	return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
-	
+
 	switch (cmd)
 	{
 	case kWPN_FIRE:

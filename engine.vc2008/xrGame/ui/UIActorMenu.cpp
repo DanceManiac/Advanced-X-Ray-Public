@@ -37,6 +37,8 @@
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
 #include "../Trade.h"
+#include "AdvancedXrayGameConstants.h"
+#include "WeaponKnife.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -305,6 +307,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pQuickSlot)					return iQuickSlot;
 	if(l==m_pTrashList)					return iTrashSlot;
 
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		if(l==m_pInventoryKnifeList)	return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -469,6 +476,12 @@ void CUIActorMenu::clear_highlight_lists()
 	m_HelmetSlotHighlight->Show(false);
 	m_OutfitSlotHighlight->Show(false);
 	m_DetectorSlotHighlight->Show(false);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_KnifeSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -511,6 +524,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CCustomDetector* detector = smart_cast<CCustomDetector*>(item);
 	CEatableItem* eatable = smart_cast<CEatableItem*>(item);
 	CArtefact* artefact = smart_cast<CArtefact*>(item);
+	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
 
 	if(weapon)
 	{
@@ -551,6 +565,18 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		for(u8 i=0; i<cap.x; i++)
 			m_ArtefactSlotsHighlight[i]->Show(true);
 		return;
+	}
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		if (knife)
+		{
+			if (m_KnifeSlotHighlight)
+			{
+				m_KnifeSlotHighlight->Show(true);
+			}
+			return;
+		}
 	}
 }
 void CUIActorMenu::set_highlight_item( CUICellItem* cell_item )
@@ -811,6 +837,11 @@ void CUIActorMenu::ClearAllLists()
 	m_pTradePartnerBagList->ClearAll			(true);
 	m_pTradePartnerList->ClearAll				(true);
 	m_pDeadBodyBagList->ClearAll				(true);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_pInventoryKnifeList->ClearAll(true);
+	}
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )
@@ -904,4 +935,16 @@ void CUIActorMenu::UpdateConditionProgressBars()
 		m_Helmet_progress->SetProgressPos(iCeil(itm->GetCondition()*15.0f)/15.0f);
 	else
 		m_Helmet_progress->SetProgressPos(0);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		if (m_Knife_progress)
+		{
+			itm = m_pActorInvOwner->inventory().ItemFromSlot(KNIFE_SLOT);
+			if (itm)
+				m_Knife_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+			else
+				m_Knife_progress->SetProgressPos(0);
+		}
+	}
 }

@@ -76,6 +76,10 @@
 	<artefact_slot_highlight x="387" y="476" width="41" height="52" dx="52" stretch="1">
 		<texture>ui_inGame2_artefakt_highlighter</texture>
 	</artefact_slot_highlight>
+	
+	<knife_slot_highlight x="472" y="72" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</knife_slot_highlight>
 
 	<quick_slot1_text x="386" y="446" width="14" height="13">
 		<text align="c" font="letterica16">quick_use_str_1</text>
@@ -122,6 +126,15 @@
 		<middle_color r="255" g="255" b="118"/>
 		<max_color r="107" g="207" b="119"/>
     </progess_bar_helmet>
+	
+    <progess_bar_knife x="487" y="75" width="47" height="5" horz="1" min="0" max="1" pos="0">
+        <progress stretch="1">
+            <texture r="142" g="149" b="149">ui_inGame2_inventory_status_bar</texture>
+        </progress>
+		<min_color r="196" g="18" b="18"/>
+		<middle_color r="255" g="255" b="118"/>
+		<max_color r="107" g="207" b="119"/>
+    </progess_bar_knife>
 
 	<actor_weight_caption x="750" y="736" width="57" height="16">
 		<text align="r" font="letterica16" color="ui_3">ui_total_weight</text>
@@ -234,6 +247,11 @@
 	<dragdrop_quick_slots x="398" y="407" width="227" height="41"
 	    cell_width="33" cell_height="41" a="0" rows_num="1"	cols_num="4"
 		cell_sp_x="32" cell_sp_y="0" custom_placement="1"/>
+		
+	<dragdrop_knife x="469" y="69" width="85" height="55"
+		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
+		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
+		vc_horiz_align="c"/>
 
 	<trade_buy_button x="113" y="295" width="107" height="26" stretch="1" hint="ui_st_buy_hint">
 	    <window_name>trade_buy_button</window_name>

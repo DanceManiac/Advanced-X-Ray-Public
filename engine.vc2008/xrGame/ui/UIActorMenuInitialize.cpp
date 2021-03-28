@@ -23,6 +23,7 @@
 #include "UIProgressBar.h"
 #include "ui_base.h"
 #include "../string_table.h"
+#include "AdvancedXrayGameConstants.h"
 
 CUIActorMenu::CUIActorMenu()
 {
@@ -109,6 +110,12 @@ void CUIActorMenu::Construct()
 	m_ArtefactSlotsHighlight[0]	= UIHelper::CreateStatic(uiXml, "artefact_slot_highlight", this);
 	m_ArtefactSlotsHighlight[0]	->Show(false);
 
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this);
+		m_KnifeSlotHighlight->Show(false);
+	}
+
 	Fvector2 pos;
 	pos								= m_QuickSlotsHighlight[0]->GetWndPos();
 	float dx						= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
@@ -144,6 +151,11 @@ void CUIActorMenu::Construct()
 	m_pQuickSlot				= UIHelper::CreateDragDropReferenceList(uiXml, "dragdrop_quick_slots", this);
 	m_pQuickSlot->Initialize	();
 
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_pInventoryKnifeList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this);
+	}
+
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
 	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
 	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
@@ -171,6 +183,11 @@ void CUIActorMenu::Construct()
 	m_WeaponSlot2_progress	= UIHelper::CreateProgressBar(uiXml, "progess_bar_weapon2", this);
 	m_Helmet_progress		= UIHelper::CreateProgressBar(uiXml, "progess_bar_helmet", this);
 	m_Outfit_progress		= UIHelper::CreateProgressBar(uiXml, "progess_bar_outfit", this);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_Knife_progress = UIHelper::CreateProgressBar(uiXml, "progess_bar_knife", this);
+	}
 
 	m_trade_buy_button	= UIHelper::Create3tButton(uiXml, "trade_buy_button", this);
 	m_trade_sell_button	= UIHelper::Create3tButton(uiXml, "trade_sell_button", this);
@@ -249,6 +266,11 @@ void CUIActorMenu::Construct()
 	BindDragDropListEvents				(m_pTradePartnerList);
 	BindDragDropListEvents				(m_pDeadBodyBagList);
 	BindDragDropListEvents				(m_pQuickSlot);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryKnifeList);
+	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);
 	m_allowed_drops[iTrashSlot].push_back(iActorSlot);

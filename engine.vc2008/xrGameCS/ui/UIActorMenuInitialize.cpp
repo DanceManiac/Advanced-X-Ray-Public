@@ -19,6 +19,7 @@
 #include "object_broker.h"
 #include "UIWndCallback.h"
 #include "UIHelper.h"
+#include "AdvancedXrayGameConstants.h"
 
 
 CUIActorMenu::CUIActorMenu()
@@ -101,6 +102,11 @@ void CUIActorMenu::Construct()
 	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
 	m_pTradePartnerBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
 	m_pTradePartnerList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_pInventoryKnifeList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this);
+	}
 
 	m_belt_list_over[0] = UIHelper::CreateStatic(uiXml, "belt_list_over", this);
 	Fvector2 pos;
@@ -189,6 +195,11 @@ void CUIActorMenu::Construct()
 	BindDragDropListEvents				(m_pTradePartnerBagList);
 	BindDragDropListEvents				(m_pTradePartnerList);
 	BindDragDropListEvents				(m_pDeadBodyBagList);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryKnifeList);
+	}
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);
 	m_allowed_drops[iActorSlot].push_back(iActorTrade);
