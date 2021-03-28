@@ -122,6 +122,12 @@ void CUIActorMenu::Construct()
 		m_BinocularSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		if ((m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this)))
+			m_TorchSlotHighlight->Show(false);
+	}
+
 	Fvector2 pos;
 	pos								= m_QuickSlotsHighlight[0]->GetWndPos();
 	float dx						= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
@@ -165,6 +171,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		m_pInventoryBinocularList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_binocular", this);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		m_pInventoryTorchList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_torch", this);
 	}
 
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
@@ -286,6 +297,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryBinocularList);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryTorchList);
 	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);

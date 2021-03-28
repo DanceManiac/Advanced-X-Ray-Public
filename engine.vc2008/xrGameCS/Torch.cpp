@@ -506,16 +506,11 @@ void CTorch::net_Import			(NET_Packet& P)
 
 bool  CTorch::can_be_attached		() const
 {
-//	if( !inherited::can_be_attached() ) return false;
-
 	const CActor *pA = smart_cast<const CActor *>(H_Parent());
-	if (pA) 
+	if (pA)
 	{
-//		if(pA->inventory().Get(ID(), false))
-		if((const CTorch*)smart_cast<CTorch*>(pA->inventory().m_slots[GetSlot()].m_pIItem) == this )
-			return true;
-		else
-			return false;
+		//return pA->inventory().InSlot(this);
+		return (this == smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT)));
 	}
 	return true;
 }

@@ -25,6 +25,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "WeaponKnife.h"
 #include "WeaponBinoculars.h"
+#include "Torch.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -309,6 +310,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		if (l == m_pInventoryBinocularList) return iActorSlot;;
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		if (l == m_pInventoryTorchList) return iActorSlot;
 	}
 
 	R_ASSERT(0);
@@ -634,6 +640,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		m_pInventoryBinocularList->ClearAll(true);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		m_pInventoryTorchList->ClearAll(true);
 	}
 }
 

@@ -40,6 +40,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "WeaponKnife.h"
 #include "WeaponBinoculars.h"
+#include "Torch.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -310,12 +311,17 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
-		if(l==m_pInventoryKnifeList)	return iActorSlot;
+		if(l == m_pInventoryKnifeList) return iActorSlot;
 	}
 
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		if (l == m_pInventoryBinocularList) return iActorSlot;
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		if (l == m_pInventoryTorchList) return iActorSlot;
 	}
 
 	R_ASSERT(0);
@@ -493,6 +499,12 @@ void CUIActorMenu::clear_highlight_lists()
 		m_BinocularSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		if (m_TorchSlotHighlight)
+			m_TorchSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -537,6 +549,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CArtefact* artefact = smart_cast<CArtefact*>(item);
 	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
+	CTorch* torch = smart_cast<CTorch*>(item);
 
 	if(weapon)
 	{
@@ -598,6 +611,18 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 			if (m_BinocularSlotHighlight)
 			{
 				m_BinocularSlotHighlight->Show(true);
+			}
+			return;
+		}
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		if (torch)
+		{
+			if (m_TorchSlotHighlight)
+			{
+				m_TorchSlotHighlight->Show(true);
 			}
 			return;
 		}
@@ -870,6 +895,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		m_pInventoryBinocularList->ClearAll(true);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		m_pInventoryTorchList->ClearAll(true);
 	}
 }
 

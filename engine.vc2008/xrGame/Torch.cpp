@@ -492,9 +492,11 @@ bool  CTorch::can_be_attached		() const
 {
 	const CActor *pA = smart_cast<const CActor *>(H_Parent());
 	if (pA)
-		return pA->inventory().InSlot(this);
-	else
-		return true;
+	{
+		//return pA->inventory().InSlot(this);
+		return (this == smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT)));
+	}
+	return true;
 }
 
 void CTorch::afterDetach			()

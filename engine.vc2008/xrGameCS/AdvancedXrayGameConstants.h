@@ -7,6 +7,7 @@ namespace GameConstants
 	bool GetDistantSoundsEnabled();
 	bool GetKnifeSlotEnabled();
 	bool GetBinocularSlotEnabled();
+	bool GetTorchSlotEnabled();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

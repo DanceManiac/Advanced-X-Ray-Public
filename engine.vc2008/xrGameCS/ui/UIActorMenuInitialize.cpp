@@ -113,6 +113,11 @@ void CUIActorMenu::Construct()
 		m_pInventoryBinocularList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_binocular", this);
 	}
 
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		m_pInventoryTorchList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_torch", this);
+	}
+
 	m_belt_list_over[0] = UIHelper::CreateStatic(uiXml, "belt_list_over", this);
 	Fvector2 pos;
 	pos = m_belt_list_over[0]->GetWndPos();
@@ -209,6 +214,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryBinocularList);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryTorchList);
 	}
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);

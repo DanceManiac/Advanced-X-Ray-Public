@@ -55,6 +55,11 @@ void CUIActorMenu::InitInventoryMode()
 		m_pInventoryBinocularList->Show(true);
 	}
 
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		m_pInventoryTorchList->Show(true);
+	}
+
 	InitInventoryContents				(m_pInventoryBagList);
 
 	VERIFY( HUD().GetUI() && HUD().GetUI()->UIMainIngameWnd );
@@ -245,6 +250,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pTradeActorList,
 		m_pInventoryKnifeList,
 		m_pInventoryBinocularList,
+		m_pInventoryTorchList,
 		NULL
 	};
 
@@ -404,6 +410,11 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
 		InitCellForSlot(APPARATUS_SLOT);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		InitCellForSlot(TORCH_SLOT);
 	}
 
 	curr_list					= m_pInventoryBeltList;
@@ -646,6 +657,12 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 			{
 				case APPARATUS_SLOT:
 					return m_pInventoryBinocularList;
+			}
+
+			if (GameConstants::GetTorchSlotEnabled())
+			{
+				case TORCH_SLOT:
+					return m_pInventoryTorchList;
 			}
 	};
 	return NULL;

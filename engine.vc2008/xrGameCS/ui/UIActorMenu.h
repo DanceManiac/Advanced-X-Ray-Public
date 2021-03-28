@@ -95,6 +95,7 @@ protected:
 	CUIDragDropListEx*			m_pDeadBodyBagList;
 	CUIDragDropListEx*			m_pInventoryKnifeList;
 	CUIDragDropListEx*			m_pInventoryBinocularList;
+	CUIDragDropListEx*			m_pInventoryTorchList;
 
 	enum						{e_af_count = 5};
 	CUIStatic*					m_belt_list_over[e_af_count];
