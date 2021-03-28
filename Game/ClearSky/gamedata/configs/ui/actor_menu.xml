@@ -126,53 +126,57 @@
 	<texture a="200">ui_closed_af_slot</texture>
   </belt_list_over>
 	
-  <dragdrop_bag x="705" y="140" width="308" height="590"
-          cell_width="41" cell_height="41" rows_num="14" cols_num="7"
-          unlimited="1" group_similar="1" always_show_scroll="1"/>
+	<dragdrop_bag x="705" y="140" width="308" height="590"
+			cell_width="41" cell_height="41" rows_num="14" cols_num="7"
+			unlimited="1" group_similar="1" always_show_scroll="1"/>
 
-  <dragdrop_belt x="363" y="97" width="45" height="320"
-          cell_width="45" cell_height="45" rows_num="5" cols_num="1"
-		  cell_sp_x="0" cell_sp_y="20" a="0"/>
+	<dragdrop_belt x="363" y="97" width="45" height="320"
+			cell_width="45" cell_height="45" rows_num="5" cols_num="1"
+			cell_sp_x="0" cell_sp_y="20" a="0"/>
 
-  <dragdrop_outfit x="455" y="160" width="82" height="123"
-          cell_width="41" cell_height="41" rows_num="3" cols_num="2"
-          custom_placement="0" a="0"/>
+	<dragdrop_outfit x="455" y="160" width="82" height="123"
+			cell_width="41" cell_height="41" rows_num="3" cols_num="2"
+			custom_placement="0" a="0"/>
 
-  <dragdrop_detector x="475" y="100" width="41" height="41"
-          cell_width="41" cell_height="41" rows_num="1" cols_num="1"
-          custom_placement="0" a="0"/>
+	<dragdrop_detector x="475" y="100" width="41" height="41"
+			cell_width="41" cell_height="41" rows_num="1" cols_num="1"
+			custom_placement="0" a="0"/>
 
-  <dragdrop_pistol x="455" y="305" width="82" height="41"
-          cell_width="41" cell_height="41" rows_num="1" cols_num="2"
-          custom_placement="0" a="0"/>
+	<dragdrop_pistol x="455" y="305" width="82" height="41"
+			cell_width="41" cell_height="41" rows_num="1" cols_num="2"
+			custom_placement="0" a="0"/>
 
-  <dragdrop_automatic x="560" y="100" width="82" height="246"
-          cell_width="41" cell_height="41" rows_num="6" cols_num="2"
-          custom_placement="0" vertical_placement="1" a="0"/>
+	<dragdrop_automatic x="560" y="100" width="82" height="246"
+			cell_width="41" cell_height="41" rows_num="6" cols_num="2"
+			custom_placement="0" vertical_placement="1" a="0"/>
   
     <dragdrop_actor_trade x="705" y="144" width="308" height="180"
-          cell_width="41" cell_height="41" rows_num="4" cols_num="7"
-          unlimited="1" group_similar="1" always_show_scroll="1"/>
+			cell_width="41" cell_height="41" rows_num="4" cols_num="7"
+			unlimited="1" group_similar="1" always_show_scroll="1"/>
 
-  <dragdrop_actor_trade_bag x="705" y="365" width="308" height="363"
-          cell_width="41" cell_height="41" rows_num="8" cols_num="7"
-          unlimited="1" group_similar="1" always_show_scroll="1"/>
+	<dragdrop_actor_trade_bag x="705" y="365" width="308" height="363"
+			cell_width="41" cell_height="41" rows_num="8" cols_num="7"
+			unlimited="1" group_similar="1" always_show_scroll="1"/>
 
-  <dragdrop_partner_trade x="10" y="144" width="308" height="180"
+	<dragdrop_partner_trade x="10" y="144" width="308" height="180"
             cell_width="41" cell_height="41" rows_num="4" cols_num="7"
             unlimited="1" group_similar="1" always_show_scroll="1"/>
 
-  <dragdrop_partner_bag x="10" y="365" width="308" height="363"
+	<dragdrop_partner_bag x="10" y="365" width="308" height="363"
             cell_width="41" cell_height="41" rows_num="8" cols_num="7"
             unlimited="1" group_similar="1" always_show_scroll="1"/>
 
-  <dragdrop_deadbody_bag x="10" y="140" width="308" height="590"
+	<dragdrop_deadbody_bag x="10" y="140" width="308" height="590"
             cell_width="41" cell_height="41" rows_num="14" cols_num="7"
             unlimited="1" group_similar="1" always_show_scroll="1"/>	
 
 	<dragdrop_knife x="469" y="69" width="85" height="55"
-		cell_width="41" cell_height="41" rows_num="1" cols_num="2"
-		custom_placement="0" a="0"/>			
+			cell_width="41" cell_height="41" rows_num="1" cols_num="2"
+			custom_placement="0" a="0"/>
+
+	<dragdrop_binocular x="469" y="15" width="90" height="60"
+			cell_width="41" cell_height="41" rows_num="1" cols_num="2"
+			custom_placement="0" a="0"/>
 
   <trade_button x="355" y="725" width="157" height="48">
     <window_name>trade_button</window_name>

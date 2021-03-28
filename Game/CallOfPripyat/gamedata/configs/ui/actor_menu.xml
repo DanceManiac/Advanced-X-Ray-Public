@@ -74,6 +74,10 @@
 	<knife_slot_highlight x="472" y="72" width="76" height="48" stretch="1">
 		<texture>ui_inGame2_detector_highlighter</texture>
 	</knife_slot_highlight>
+	
+	<binocular_slot_highlight x="472" y="22" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</binocular_slot_highlight>
 
 	<quick_slot1_text x="355" y="446" width="18" height="13">
 		<text align="c" font="letterica16">quick_use_str_1</text>
@@ -244,6 +248,11 @@
 		cell_sp_x="40" cell_sp_y="0" custom_placement="1"/>
 		
 	<dragdrop_knife x="469" y="69" width="85" height="55"
+		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
+		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
+		vc_horiz_align="c"/>
+		
+	<dragdrop_binocular x="469" y="15" width="90" height="60"
 		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
 		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
 		vc_horiz_align="c"/>

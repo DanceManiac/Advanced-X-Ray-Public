@@ -24,6 +24,7 @@
 #include "UIMainIngameWnd.h"
 #include "AdvancedXrayGameConstants.h"
 #include "WeaponKnife.h"
+#include "WeaponBinoculars.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -303,6 +304,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
 		if (l == m_pInventoryKnifeList)	return iActorSlot;
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		if (l == m_pInventoryBinocularList) return iActorSlot;;
 	}
 
 	R_ASSERT(0);
@@ -623,6 +629,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
 		m_pInventoryKnifeList->ClearAll(true);
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		m_pInventoryBinocularList->ClearAll(true);
 	}
 }
 

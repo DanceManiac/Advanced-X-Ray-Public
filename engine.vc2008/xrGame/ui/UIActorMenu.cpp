@@ -39,6 +39,7 @@
 #include "../Trade.h"
 #include "AdvancedXrayGameConstants.h"
 #include "WeaponKnife.h"
+#include "WeaponBinoculars.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -312,6 +313,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 		if(l==m_pInventoryKnifeList)	return iActorSlot;
 	}
 
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		if (l == m_pInventoryBinocularList) return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -482,6 +488,11 @@ void CUIActorMenu::clear_highlight_lists()
 		m_KnifeSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		m_BinocularSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -525,6 +536,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CEatableItem* eatable = smart_cast<CEatableItem*>(item);
 	CArtefact* artefact = smart_cast<CArtefact*>(item);
 	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
+	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
 
 	if(weapon)
 	{
@@ -574,6 +586,18 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 			if (m_KnifeSlotHighlight)
 			{
 				m_KnifeSlotHighlight->Show(true);
+			}
+			return;
+		}
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		if (binoculars)
+		{
+			if (m_BinocularSlotHighlight)
+			{
+				m_BinocularSlotHighlight->Show(true);
 			}
 			return;
 		}
@@ -841,6 +865,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
 		m_pInventoryKnifeList->ClearAll(true);
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		m_pInventoryBinocularList->ClearAll(true);
 	}
 }
 

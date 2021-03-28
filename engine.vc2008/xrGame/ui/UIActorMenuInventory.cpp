@@ -58,6 +58,11 @@ void CUIActorMenu::InitInventoryMode()
 		m_pInventoryKnifeList->Show(true);
 	}
 
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		m_pInventoryBinocularList->Show(true);
+	}
+
 	InitInventoryContents				(m_pInventoryBagList);
 
 	VERIFY( CurrentGameUI() );
@@ -251,6 +256,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pTradeActorBagList,
 		m_pTradeActorList,
 		m_pInventoryKnifeList,
+		m_pInventoryBinocularList,
 		NULL
 	};
 
@@ -435,6 +441,11 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
 		InitCellForSlot(KNIFE_SLOT);
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		InitCellForSlot(BINOCULAR_SLOT);
 	}
 
 	curr_list					= m_pInventoryBeltList;
@@ -731,6 +742,12 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u16 slot_idx)
 			{
 				case KNIFE_SLOT:
 					return m_pInventoryKnifeList;
+			}
+
+			if (GameConstants::GetBinocularSlotEnabled())
+			{
+				case BINOCULAR_SLOT:
+					return m_pInventoryBinocularList;
 			}
 	};
 	return NULL;

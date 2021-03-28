@@ -108,6 +108,11 @@ void CUIActorMenu::Construct()
 		m_pInventoryKnifeList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_knife", this);
 	}
 
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		m_pInventoryBinocularList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_binocular", this);
+	}
+
 	m_belt_list_over[0] = UIHelper::CreateStatic(uiXml, "belt_list_over", this);
 	Fvector2 pos;
 	pos = m_belt_list_over[0]->GetWndPos();
@@ -199,6 +204,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryKnifeList);
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryBinocularList);
 	}
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);
