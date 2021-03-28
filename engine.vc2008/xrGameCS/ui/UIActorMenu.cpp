@@ -26,6 +26,7 @@
 #include "WeaponKnife.h"
 #include "WeaponBinoculars.h"
 #include "Torch.h"
+#include "Backpack.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -315,6 +316,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if (GameConstants::GetTorchSlotEnabled())
 	{
 		if (l == m_pInventoryTorchList) return iActorSlot;
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		if (l == m_pInventoryBackpackList) return iActorSlot;
 	}
 
 	R_ASSERT(0);
@@ -645,6 +651,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetTorchSlotEnabled())
 	{
 		m_pInventoryTorchList->ClearAll(true);
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		m_pInventoryBackpackList->ClearAll(true);
 	}
 }
 

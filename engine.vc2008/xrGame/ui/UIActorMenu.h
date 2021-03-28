@@ -104,6 +104,7 @@ protected:
 	CUIDragDropListEx*			m_pInventoryKnifeList;
 	CUIDragDropListEx*			m_pInventoryBinocularList;
 	CUIDragDropListEx*			m_pInventoryTorchList;
+	CUIDragDropListEx*			m_pInventoryBackpackList;
 
 	enum						{e_af_count = 5};
 	CUIStatic*					m_belt_list_over[e_af_count];
@@ -119,6 +120,7 @@ protected:
 	CUIStatic*					m_KnifeSlotHighlight;
 	CUIStatic*					m_BinocularSlotHighlight;
 	CUIStatic*					m_TorchSlotHighlight;
+	CUIStatic*					m_BackpackSlotHighlight;
 
 	CUIInventoryUpgradeWnd*		m_pUpgradeWnd;
 	

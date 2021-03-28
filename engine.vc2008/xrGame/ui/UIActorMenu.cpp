@@ -41,6 +41,7 @@
 #include "WeaponKnife.h"
 #include "WeaponBinoculars.h"
 #include "Torch.h"
+#include "Backpack.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -324,6 +325,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 		if (l == m_pInventoryTorchList) return iActorSlot;
 	}
 
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		if (l == m_pInventoryBackpackList) return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -505,6 +511,12 @@ void CUIActorMenu::clear_highlight_lists()
 			m_TorchSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		if (m_BackpackSlotHighlight)
+			m_BackpackSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -550,6 +562,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
 	CTorch* torch = smart_cast<CTorch*>(item);
+	CBackpack* backpack = smart_cast<CBackpack*>(item);
 
 	if(weapon)
 	{
@@ -623,6 +636,18 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 			if (m_TorchSlotHighlight)
 			{
 				m_TorchSlotHighlight->Show(true);
+			}
+			return;
+		}
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		if (backpack)
+		{
+			if (m_BackpackSlotHighlight)
+			{
+				m_BackpackSlotHighlight->Show(true);
 			}
 			return;
 		}
@@ -900,6 +925,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetTorchSlotEnabled())
 	{
 		m_pInventoryTorchList->ClearAll(true);
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		m_pInventoryBackpackList->ClearAll(true);
 	}
 }
 

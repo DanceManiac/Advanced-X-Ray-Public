@@ -16,6 +16,7 @@
 #define TORCH_SLOT			9
 #define ARTEFACT_SLOT		10
 #define FLARE_SLOT			11
+#define BACKPACK_SLOT		12
 //.#define SLOTS_TOTAL			12
 
 

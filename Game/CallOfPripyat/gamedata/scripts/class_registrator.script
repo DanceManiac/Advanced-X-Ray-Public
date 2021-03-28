@@ -68,6 +68,7 @@ function register(object_factory)
 
 	cs_register	(object_factory, "CStalkerOutfit",  			"se_item.se_outfit",					"E_STLK",			"equ_stalker_s")
 	cs_register	(object_factory, "CHelmet",  					"se_item.se_helmet",					"E_HLMET",			"equ_helmet_s")
+	cs_register	(object_factory, "CBackpack",  					"se_item.se_item",						"E_BKPK",			"equ_backpack_s")
 
 	-- WEAPONS ----------------------------------------------------------------------------------------------------------------------------
 

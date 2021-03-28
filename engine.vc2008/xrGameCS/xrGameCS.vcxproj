@@ -825,6 +825,7 @@
     <ClInclude Include="autosave_manager_inline.h" />
     <ClInclude Include="a_star.h" />
     <ClInclude Include="a_star_inline.h" />
+    <ClInclude Include="Backpack.h" />
     <ClInclude Include="base_client_classes.h" />
     <ClInclude Include="base_client_classes_wrappers.h" />
     <ClInclude Include="BastArtifact.h" />
@@ -2913,6 +2914,7 @@
     <ClCompile Include="attachable_item.cpp" />
     <ClCompile Include="attachment_owner.cpp" />
     <ClCompile Include="autosave_manager.cpp" />
+    <ClCompile Include="Backpack.cpp" />
     <ClCompile Include="base_client_classes_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>

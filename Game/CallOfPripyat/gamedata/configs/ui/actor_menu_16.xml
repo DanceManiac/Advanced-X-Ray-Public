@@ -88,6 +88,10 @@
 	<torch_slot_highlight x="473" y="396" width="76" height="48" stretch="1">
 		<texture>ui_inGame2_detector_highlighter</texture>
 	</torch_slot_highlight>
+	
+	<backpack_slot_highlight x="473" y="472" width="76" height="98" stretch="1">
+		<texture>ui_inGame2_helmet_highlighter</texture>
+	</backpack_slot_highlight>
 
 	<quick_slot1_text x="386" y="446" width="14" height="13">
 		<text align="c" font="letterica16">quick_use_str_1</text>
@@ -270,6 +274,11 @@
 		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
 		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
 		vc_horiz_align="c"/>
+		
+	<dragdrop_backpack x="470" y="469" width="85" height="110"
+		cell_width="33" cell_height="41" rows_num="2" cols_num="2"
+		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
+		vc_horiz_align="c" />
 
 	<trade_buy_button x="113" y="295" width="107" height="26" stretch="1" hint="ui_st_buy_hint">
 	    <window_name>trade_buy_button</window_name>

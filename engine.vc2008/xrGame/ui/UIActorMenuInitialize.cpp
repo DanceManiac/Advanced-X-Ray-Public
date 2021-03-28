@@ -112,20 +112,26 @@ void CUIActorMenu::Construct()
 
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
-		m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this);
-		m_KnifeSlotHighlight->Show(false);
+		if ((m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this)))
+			m_KnifeSlotHighlight->Show(false);
 	}
 
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
-		m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this);
-		m_BinocularSlotHighlight->Show(false);
+		if ((m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this)))
+			m_BinocularSlotHighlight->Show(false);
 	}
 
 	if (GameConstants::GetTorchSlotEnabled())
 	{
 		if ((m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this)))
 			m_TorchSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		if ((m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this)))
+			m_BackpackSlotHighlight->Show(false);
 	}
 
 	Fvector2 pos;
@@ -176,6 +182,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetTorchSlotEnabled())
 	{
 		m_pInventoryTorchList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_torch", this);
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		m_pInventoryBackpackList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_backpack", this);
 	}
 
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
@@ -302,6 +313,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetTorchSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryTorchList);
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryBackpackList);
 	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);
