@@ -45,6 +45,7 @@ public:
 	bool					HelmetInSlot;
 	IC int					GetHudMaskElement		()	const { return HudMaskElement; }
 	IC bool					GetHelmetStatus			()	const { return HelmetInSlot; }
+	bool					m_bSecondHelmetEnabled;
 
 	void					ReloadBonesProtection	();
 	void					AddBonesProtection		(LPCSTR bones_section);

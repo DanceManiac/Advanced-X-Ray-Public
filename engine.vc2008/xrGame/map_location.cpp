@@ -781,10 +781,21 @@ bool CRelationMapLocation::Update()
 			{
 				const CGameObject* pObj = smart_cast<const CGameObject*>(_object_);
 				CActor* pAct = smart_cast<CActor*>(Level().Objects.net_Find(m_pInvOwnerActorID));
-				CHelmet* helm = smart_cast<CHelmet*>(pAct->inventory().ItemFromSlot(HELMET_SLOT));
-				if(helm && helm->m_fShowNearestEnemiesDistance)
+				CHelmet* helm1 = smart_cast<CHelmet*>(pAct->inventory().ItemFromSlot(HELMET_SLOT));
+				CHelmet* helm2 = smart_cast<CHelmet*>(pAct->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+				float distance = 0.0f;
+				if (helm1)
 				{
-					if(pAct->Position().distance_to(pObj->Position()) < helm->m_fShowNearestEnemiesDistance)
+					distance = helm1->m_fShowNearestEnemiesDistance;
+				}
+				if (helm2)
+				{
+					distance = std::max(distance, helm1->m_fShowNearestEnemiesDistance);
+				}
+				if (distance > 0.0f)
+				{
+					if (pAct->Position().distance_to(pObj->Position()) < distance)
 						vis_res = true;
 					else
 						vis_res = Actor()->memory().visual().visible_now(pObj);

@@ -134,6 +134,12 @@ void CUIActorMenu::Construct()
 			m_BackpackSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if ((m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this)))
+			m_SecondHelmetSlotHighlight->Show(false);
+	}
+
 	Fvector2 pos;
 	pos								= m_QuickSlotsHighlight[0]->GetWndPos();
 	float dx						= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
@@ -189,6 +195,11 @@ void CUIActorMenu::Construct()
 		m_pInventoryBackpackList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_backpack", this);
 	}
 
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_pInventorySecondHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_second_helmet", this);
+	}
+
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
 	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
 	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
@@ -220,6 +231,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
 		m_Knife_progress = UIHelper::CreateProgressBar(uiXml, "progess_bar_knife", this);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_SecondHelmet_progress = UIHelper::CreateProgressBar(uiXml, "progess_bar_second_helmet", this);
 	}
 
 	m_trade_buy_button	= UIHelper::Create3tButton(uiXml, "trade_buy_button", this);
@@ -318,6 +334,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetBackpackSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryBackpackList);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventorySecondHelmetList);
 	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);

@@ -217,10 +217,27 @@ void	CCustomOutfit::OnMoveToSlot		(const SInvItemPlace& prev)
 				CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 				if(pTorch && pTorch->GetNightVisionStatus())
 					pTorch->SwitchNightVision(true, false);
+
+				if (bIsHelmetAvaliable)
+					return;
+
+				CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
+
+				if (pHelmet1)
+				{
+					pActor->inventory().Ruck(pHelmet1, false);
+				}
+
+				CHelmet* pHelmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+				if (pHelmet2)
+				{
+					pActor->inventory().Ruck(pHelmet2, false);
+				}
 			}
-			PIItem pHelmet = pActor->inventory().ItemFromSlot(HELMET_SLOT);
+			/*PIItem pHelmet = pActor->inventory().ItemFromSlot(HELMET_SLOT);
 			if(pHelmet && !bIsHelmetAvaliable)
-				pActor->inventory().Ruck(pHelmet, false);
+				pActor->inventory().Ruck(pHelmet, false);*/
 		}
 	}
 }

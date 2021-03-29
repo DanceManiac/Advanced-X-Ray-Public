@@ -84,6 +84,9 @@ void CHelmet::Load(LPCSTR section)
 	m_fPowerRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",     0.0f );
 	m_fBleedingRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",  0.0f );
 	m_fPowerLoss					= READ_IF_EXISTS(pSettings, r_float, section, "power_loss",    1.0f );
+
+	m_bSecondHelmetEnabled			= READ_IF_EXISTS(pSettings, r_bool, section, "second_helmet_enabled", true);
+
 	clamp							( m_fPowerLoss, 0.0f, 1.0f );
 
 	m_BonesProtectionSect			= READ_IF_EXISTS(pSettings, r_string, section, "bones_koeff_protection",  "" );
@@ -133,14 +136,35 @@ void CHelmet::OnH_A_Chield()
 void CHelmet::OnMoveToSlot(const SInvItemPlace& previous_place)
 {
 	inherited::OnMoveToSlot		(previous_place);
-	if (m_pInventory && (previous_place.type==eItemPlaceSlot))
+	if (m_pInventory)
 	{
 		CActor* pActor = smart_cast<CActor*> (H_Parent());
-		if (pActor)
+		if (!pActor)
+			return;
+
+		if (previous_place.type == eItemPlaceSlot)
 		{
 			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 			if(pTorch && pTorch->GetNightVisionStatus())
 				pTorch->SwitchNightVision(true, false);
+		}
+
+		CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
+		CHelmet* pHelmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+		if (this == pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
+		{
+			if (pHelmet2)
+			{
+				pActor->inventory().Ruck(pHelmet2, false);
+			}
+		}
+		else if (this == pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+		{
+			if (pHelmet1)
+			{
+				pActor->inventory().Ruck(pHelmet1, false);
+			}
 		}
 	}
 }

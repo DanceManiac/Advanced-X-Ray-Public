@@ -1800,8 +1800,9 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 	}
 	else
 	{
-		CHelmet* pHelmet				= smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
-		if(!pHelmet)
+		CHelmet* pHelmet1 = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+		CHelmet* pHelmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+		if (!pHelmet1 && !pHelmet2)
 		{
 			CTorch* pTorch = smart_cast<CTorch*>( inventory().ItemFromSlot(TORCH_SLOT) );
 			if ( pTorch && pTorch->GetNightVisionStatus() )

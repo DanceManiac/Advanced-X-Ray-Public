@@ -73,6 +73,11 @@ void CUIActorMenu::InitInventoryMode()
 		m_pInventoryBackpackList->Show(true);
 	}
 
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_pInventorySecondHelmetList->Show(true);
+	}
+
 	InitInventoryContents				(m_pInventoryBagList);
 
 	VERIFY( CurrentGameUI() );
@@ -269,6 +274,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryBinocularList,
 		m_pInventoryTorchList,
 		m_pInventoryBackpackList,
+		m_pInventorySecondHelmetList,
 		NULL
 	};
 
@@ -470,6 +476,11 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 		InitCellForSlot(BACKPACK_SLOT);
 	}
 
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		InitCellForSlot(SECOND_HELMET_SLOT);
+	}
+
 	curr_list					= m_pInventoryBeltList;
 	TIItemContainer::iterator itb = m_pActorInvOwner->inventory().m_belt.begin();
 	TIItemContainer::iterator ite = m_pActorInvOwner->inventory().m_belt.end();
@@ -540,11 +551,47 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place, u16 slot_id)
 	PIItem	iitem							= (PIItem)itm->m_pData;
 
 	bool b_own_item							= (iitem->parent_id()==m_pActorInvOwner->object_id());
-	if (slot_id==HELMET_SLOT)
+	if (slot_id == HELMET_SLOT || slot_id == SECOND_HELMET_SLOT)
 	{
 		CCustomOutfit* pOutfit = m_pActorInvOwner->GetOutfit();
 		if(pOutfit && !pOutfit->bIsHelmetAvaliable)
 			return false;
+
+		CHelmet* helmet = smart_cast<CHelmet*>(iitem);
+
+		if (helmet)
+		{
+			CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+			CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+			CUIDragDropListEx* currentHelmetList = nullptr;
+			CUICellItem* currentHelmetCell = nullptr;
+
+			if (helmet->BaseSlot() == HELMET_SLOT)
+			{
+				if (pHelmet2 && (!helmet->m_bSecondHelmetEnabled || !pHelmet2->m_bSecondHelmetEnabled))
+				{
+					currentHelmetList = GetSlotList(SECOND_HELMET_SLOT);
+				}
+			}
+			else if (helmet->BaseSlot() == SECOND_HELMET_SLOT)
+			{
+				if (pHelmet1 && (!helmet->m_bSecondHelmetEnabled || !pHelmet1->m_bSecondHelmetEnabled))
+				{
+					currentHelmetList = GetSlotList(HELMET_SLOT);
+				}
+			}
+
+			if (currentHelmetList)
+			{
+				currentHelmetCell = (currentHelmetList->ItemsCount() == 1) ? currentHelmetList->GetItemIdx(0) : nullptr;
+
+				if (currentHelmetCell)
+				{
+					ToBag(currentHelmetCell, false);
+				}
+			}
+		}
 	}
 
 	if(m_pActorInvOwner->inventory().CanPutInSlot(iitem, slot_id))
@@ -782,6 +829,12 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u16 slot_idx)
 			{
 				case BACKPACK_SLOT:
 					return m_pInventoryBackpackList;
+			}
+
+			if (GameConstants::GetSecondHelmetSlotEnabled())
+			{
+				case SECOND_HELMET_SLOT:
+					return m_pInventorySecondHelmetList;
 			}
 	};
 	return NULL;

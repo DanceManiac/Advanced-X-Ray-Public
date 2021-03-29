@@ -18,7 +18,8 @@ enum{
 	ARTEFACT_SLOT,	// artefact
 	HELMET_SLOT,
 	BACKPACK_SLOT,	// Backpack 13 slot
-	LAST_SLOT		= BACKPACK_SLOT
+	SECOND_HELMET_SLOT, // Second Helmet 14 slot
+	LAST_SLOT		= SECOND_HELMET_SLOT
 };
 
 #define RUCK_HEIGHT			280

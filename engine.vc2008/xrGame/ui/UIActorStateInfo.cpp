@@ -123,6 +123,8 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 	CCustomOutfit* outfit = actor->GetOutfit();
 	PIItem itm = actor->inventory().ItemFromSlot(HELMET_SLOT);
 	CHelmet* helmet = smart_cast<CHelmet*>(itm);
+	itm = actor->inventory().ItemFromSlot(SECOND_HELMET_SLOT);
+	CHelmet* helmet2 = smart_cast<CHelmet*>(itm);
 
 	m_state[stt_fire]->set_progress(0.0f);
 	m_state[stt_radia]->set_progress(0.0f);
@@ -187,6 +189,21 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		VERIFY(ikv);
 		u16 spine_bone = ikv->LL_BoneID("bip01_head");
 		fwou_value += helmet->GetBoneArmor(spine_bone)*helmet->GetCondition();
+	}
+
+	if (helmet2)
+	{
+		burn_value += helmet2->GetDefHitTypeProtection(ALife::eHitTypeBurn);
+		radi_value += helmet2->GetDefHitTypeProtection(ALife::eHitTypeRadiation);
+		cmbn_value += helmet2->GetDefHitTypeProtection(ALife::eHitTypeChemicalBurn);
+		tele_value += helmet2->GetDefHitTypeProtection(ALife::eHitTypeTelepatic);
+		woun_value += helmet2->GetDefHitTypeProtection(ALife::eHitTypeWound);
+		shoc_value += helmet2->GetDefHitTypeProtection(ALife::eHitTypeShock);
+
+		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
+		VERIFY(ikv);
+		const auto head_bone = ikv->LL_BoneID("bip01_head");
+		fwou_value += helmet2->GetBoneArmor(head_bone) * helmet2->GetCondition();
 	}
 	
 //fire burn protection progress bar

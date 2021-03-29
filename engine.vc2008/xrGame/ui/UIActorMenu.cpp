@@ -330,6 +330,12 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 		if (l == m_pInventoryBackpackList) return iActorSlot;
 	}
 
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if (l == m_pInventorySecondHelmetList)
+			return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -517,6 +523,12 @@ void CUIActorMenu::clear_highlight_lists()
 			m_BackpackSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if (m_SecondHelmetSlotHighlight)
+			m_SecondHelmetSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -573,6 +585,12 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	if(helmet)
 	{
 		m_HelmetSlotHighlight->Show(true);
+
+		if (GameConstants::GetSecondHelmetSlotEnabled())
+		{
+			if (m_SecondHelmetSlotHighlight)
+				m_SecondHelmetSlotHighlight->Show(true);
+		}
 		return;
 	}
 	if(outfit)
@@ -931,6 +949,11 @@ void CUIActorMenu::ClearAllLists()
 	{
 		m_pInventoryBackpackList->ClearAll(true);
 	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_pInventorySecondHelmetList->ClearAll(true);
+	}
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )
@@ -1034,6 +1057,18 @@ void CUIActorMenu::UpdateConditionProgressBars()
 				m_Knife_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
 			else
 				m_Knife_progress->SetProgressPos(0);
+		}
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if (m_SecondHelmet_progress)
+		{
+			itm = m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT);
+			if (itm)
+				m_SecondHelmet_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+			else
+				m_SecondHelmet_progress->SetProgressPos(0);
 		}
 	}
 }
