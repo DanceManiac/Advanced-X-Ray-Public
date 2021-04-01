@@ -140,6 +140,12 @@ void CUIActorMenu::Construct()
 			m_SecondHelmetSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		if ((m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this)))
+			m_DosimeterSlotHighlight->Show(false);
+	}
+
 	Fvector2 pos;
 	pos								= m_QuickSlotsHighlight[0]->GetWndPos();
 	float dx						= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
@@ -198,6 +204,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetSecondHelmetSlotEnabled())
 	{
 		m_pInventorySecondHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_second_helmet", this);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		m_pInventoryDosimeterList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this);
 	}
 
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
@@ -339,6 +350,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetSecondHelmetSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventorySecondHelmetList);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryDosimeterList);
 	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);

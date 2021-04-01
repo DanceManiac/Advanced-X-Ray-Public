@@ -833,6 +833,7 @@
     <ClInclude Include="animation_movement_controller.h" />
     <ClInclude Include="animation_script_callback.h" />
     <ClInclude Include="animation_utils.h" />
+    <ClInclude Include="AnomalyDetector.h" />
     <ClInclude Include="anticheat_dumpable_object.h" />
     <ClInclude Include="antirad.h" />
     <ClInclude Include="Artefact.h" />
@@ -2928,6 +2929,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="animation_utils.cpp" />
+    <ClCompile Include="AnomalyDetector.cpp" />
     <ClCompile Include="antirad.cpp" />
     <ClCompile Include="Artefact.cpp" />
     <ClCompile Include="artefact_activation.cpp" />

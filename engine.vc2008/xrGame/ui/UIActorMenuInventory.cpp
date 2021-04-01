@@ -78,6 +78,11 @@ void CUIActorMenu::InitInventoryMode()
 		m_pInventorySecondHelmetList->Show(true);
 	}
 
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		m_pInventoryDosimeterList->Show(true);
+	}
+
 	InitInventoryContents				(m_pInventoryBagList);
 
 	VERIFY( CurrentGameUI() );
@@ -275,6 +280,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryTorchList,
 		m_pInventoryBackpackList,
 		m_pInventorySecondHelmetList,
+		m_pInventoryDosimeterList,
 		NULL
 	};
 
@@ -479,6 +485,11 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	if (GameConstants::GetSecondHelmetSlotEnabled())
 	{
 		InitCellForSlot(SECOND_HELMET_SLOT);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		InitCellForSlot(DOSIMETER_SLOT);
 	}
 
 	curr_list					= m_pInventoryBeltList;
@@ -835,6 +846,12 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u16 slot_idx)
 			{
 				case SECOND_HELMET_SLOT:
 					return m_pInventorySecondHelmetList;
+			}
+
+			if (GameConstants::GetDosimeterSlotEnabled())
+			{
+				case DOSIMETER_SLOT:
+					return m_pInventoryDosimeterList;
 			}
 	};
 	return NULL;

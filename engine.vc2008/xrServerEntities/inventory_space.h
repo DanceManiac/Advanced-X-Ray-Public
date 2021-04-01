@@ -19,7 +19,8 @@ enum{
 	HELMET_SLOT,
 	BACKPACK_SLOT,	// Backpack 13 slot
 	SECOND_HELMET_SLOT, // Second Helmet 14 slot
-	LAST_SLOT		= SECOND_HELMET_SLOT
+	DOSIMETER_SLOT, // Dosimeter 15 slot
+	LAST_SLOT		= DOSIMETER_SLOT
 };
 
 #define RUCK_HEIGHT			280

@@ -65,6 +65,11 @@ void CUIActorMenu::InitInventoryMode()
 		m_pInventoryBackpackList->Show(true);
 	}
 
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		m_pInventoryDosimeterList->Show(true);
+	}
+
 	InitInventoryContents				(m_pInventoryBagList);
 
 	VERIFY( HUD().GetUI() && HUD().GetUI()->UIMainIngameWnd );
@@ -257,6 +262,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryBinocularList,
 		m_pInventoryTorchList,
 		m_pInventoryBackpackList,
+		m_pInventoryDosimeterList,
 		NULL
 	};
 
@@ -426,6 +432,11 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	if (GameConstants::GetBackpackSlotEnabled())
 	{
 		InitCellForSlot(BACKPACK_SLOT);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		InitCellForSlot(DOSIMETER_SLOT);
 	}
 
 	curr_list					= m_pInventoryBeltList;
@@ -680,6 +691,12 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 			{
 				case BACKPACK_SLOT:
 					return m_pInventoryBackpackList;
+			}
+
+			if (GameConstants::GetDosimeterSlotEnabled())
+			{
+				case DOSIMETER_SLOT:
+					return m_pInventoryDosimeterList;
 			}
 	};
 	return NULL;

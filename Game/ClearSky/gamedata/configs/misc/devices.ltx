@@ -322,3 +322,172 @@ anm_hide_fast_16x9		= dev_detector_3_holster_ws_quick
 anm_idle_16x9			= dev_detector_3_idle_ws, dev_detector_3_idle
 anm_idle_moving_16x9		= dev_detector_3_idle_moving_ws, dev_detector_3_idle_moving
 anm_idle_sprint_16x9		= dev_detector_3_idle_moving_ws, dev_detector_3_idle_moving
+
+;;M.F.S. Team
+
+[detector_anomaly]:identity_immunities
+GroupControlSection	= spawn_group
+discovery_dependency =
+$spawn 				= "devices\detector_anomaly"
+$prefetch 			= 32
+class				= D_ANODET
+cform				= skeleton
+visual				= dynamics\devices\dev_datchik_1\dev_datchik_1.ogf
+radius				= 10	;15
+buzzer_radius		= 1.5
+noise				= zone_mosquito_bald       ;detectors\geiger_noise_loop
+buzzer				= zone_mosquito_bald       ;detectors\DA-2_alarm_loop
+slot				= 13
+ef_detector_type	= 1
+
+inv_name			= st_detector
+inv_name_short		= st_detector
+description			= st_detector_descr
+inv_weight			= 0.25
+
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x			= 9
+inv_grid_y			= 14
+cost				= 250	;30
+;belt				= true;
+default_to_ruck		= false
+
+
+;описание распознаваемых детектором зон
+
+zone_class_1		= zone_mine_electric_weak
+zone_class_2		= zone_mine_electric_average
+zone_class_3		= zone_mine_electric_strong
+
+zone_class_4		= zone_mine_gravitational_weak
+zone_class_5		= zone_mine_gravitational_average
+zone_class_6		= zone_mine_gravitational_strong
+
+zone_class_7		= zone_field_radioactive
+zone_class_8		= zone_field_radioactive_weak
+zone_class_9		= zone_field_radioactive_average
+zone_class_10		= zone_field_radioactive_strong
+
+zone_class_11		= zone_radioactive
+zone_class_12		= zone_radioactive_weak
+zone_class_13		= zone_radioactive_average
+zone_class_14		= zone_radioactive_strong
+
+zone_sound_1_		= detectors\DA-2_beep1
+zone_sound_2_		= detectors\DA-2_beep1
+zone_sound_3_		= detectors\DA-2_beep1
+
+zone_sound_4_		= detectors\DA-2_beep1
+zone_sound_5_		= detectors\DA-2_beep1
+zone_sound_6_		= detectors\DA-2_beep1
+
+zone_sound_7_		= detectors\geiger_1
+zone_sound_7_1		= detectors\geiger_2
+zone_sound_7_2		= detectors\geiger_3
+zone_sound_7_3		= detectors\geiger_4
+zone_sound_7_4		= detectors\geiger_5
+zone_sound_7_5		= detectors\geiger_6
+zone_sound_7_6		= detectors\geiger_1
+zone_sound_7_7		= detectors\geiger_1
+zone_sound_7_8		= detectors\geiger_1
+
+zone_sound_8_		= detectors\geiger_1
+zone_sound_8_1		= detectors\geiger_2
+zone_sound_8_2		= detectors\geiger_3
+zone_sound_8_3		= detectors\geiger_4
+zone_sound_8_4		= detectors\geiger_5
+zone_sound_8_5		= detectors\geiger_6
+zone_sound_8_6		= detectors\geiger_1
+zone_sound_8_7		= detectors\geiger_1
+zone_sound_8_8		= detectors\geiger_1
+
+zone_sound_9_		= detectors\geiger_1
+zone_sound_9_1		= detectors\geiger_2
+zone_sound_9_2		= detectors\geiger_3
+zone_sound_9_3		= detectors\geiger_4
+zone_sound_9_4		= detectors\geiger_5
+zone_sound_9_5		= detectors\geiger_6
+zone_sound_9_6		= detectors\geiger_1
+zone_sound_9_7		= detectors\geiger_1
+zone_sound_9_8		= detectors\geiger_1
+
+zone_sound_10_		= detectors\geiger_1
+zone_sound_10_1		= detectors\geiger_2
+zone_sound_10_2		= detectors\geiger_3
+zone_sound_10_3		= detectors\geiger_4
+zone_sound_10_4		= detectors\geiger_5
+zone_sound_10_5		= detectors\geiger_6
+zone_sound_10_6		= detectors\geiger_1
+zone_sound_10_7		= detectors\geiger_1
+zone_sound_10_8		= detectors\geiger_1
+
+
+zone_sound_11_		= detectors\geiger_1
+zone_sound_11_1		= detectors\geiger_2
+zone_sound_11_2		= detectors\geiger_3
+zone_sound_11_3		= detectors\geiger_4
+zone_sound_11_4		= detectors\geiger_5
+zone_sound_11_5		= detectors\geiger_6
+zone_sound_11_6		= detectors\geiger_1
+zone_sound_11_7		= detectors\geiger_1
+zone_sound_11_8		= detectors\geiger_1
+
+zone_sound_12_		= detectors\geiger_1
+zone_sound_12_1		= detectors\geiger_2
+zone_sound_12_2		= detectors\geiger_3
+zone_sound_12_3		= detectors\geiger_4
+zone_sound_12_4		= detectors\geiger_5
+zone_sound_12_5		= detectors\geiger_6
+zone_sound_12_6		= detectors\geiger_1
+zone_sound_12_7		= detectors\geiger_1
+zone_sound_12_8		= detectors\geiger_1
+
+zone_sound_13_		= detectors\geiger_1
+zone_sound_13_1		= detectors\geiger_2
+zone_sound_13_2		= detectors\geiger_3
+zone_sound_13_3		= detectors\geiger_4
+zone_sound_13_4		= detectors\geiger_5
+zone_sound_13_5		= detectors\geiger_6
+zone_sound_13_6		= detectors\geiger_1
+zone_sound_13_7		= detectors\geiger_1
+zone_sound_13_8		= detectors\geiger_1
+
+zone_sound_14_		= detectors\geiger_1
+zone_sound_14_1		= detectors\geiger_2
+zone_sound_14_2		= detectors\geiger_3
+zone_sound_14_3		= detectors\geiger_4
+zone_sound_14_4		= detectors\geiger_5
+zone_sound_14_5		= detectors\geiger_6
+zone_sound_14_6		= detectors\geiger_1
+zone_sound_14_7		= detectors\geiger_1
+zone_sound_14_8		= detectors\geiger_1
+
+zone_min_freq_1		= 0.1	;0.5
+zone_max_freq_1		= 40
+zone_min_freq_2		= 0.1	;0.5
+zone_max_freq_2		= 40
+zone_min_freq_3		= 0.1	;0.5
+zone_max_freq_3		= 40
+zone_min_freq_4		= 0.1	;0.5
+zone_max_freq_4		= 40
+zone_min_freq_5		= 0.1	;0.5
+zone_max_freq_5		= 40
+zone_min_freq_6		= 0.1	;0.5
+zone_max_freq_6		= 40
+zone_min_freq_7		= 0.1	;0.5
+zone_max_freq_7		= 40
+zone_min_freq_8		= 0.1	;0.5
+zone_max_freq_8		= 40
+zone_min_freq_9		= 0.1	;0.5
+zone_max_freq_9		= 40
+zone_min_freq_10	= 0.1	;0.5
+zone_max_freq_10	= 40
+zone_min_freq_11	= 0.1	;0.5
+zone_max_freq_11	= 40
+zone_min_freq_12	= 0.1	;0.5
+zone_max_freq_12	= 40
+zone_min_freq_13	= 0.1	;0.5
+zone_max_freq_13	= 40
+zone_min_freq_14	= 0.1	;0.5
+zone_max_freq_14	= 40

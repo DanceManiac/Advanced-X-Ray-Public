@@ -63,6 +63,7 @@ function register(object_factory)
 	cs_register	(object_factory, "CScope",						"se_item.se_item",						"WP_SCOPE",			"wpn_scope_s")
 	cs_register	(object_factory, "CSilencer",	  				"se_item.se_item",						"WP_SILEN",			"wpn_silencer_s")
 	cs_register	(object_factory, "CGrenadeLauncher",			"se_item.se_item",						"WP_GLAUN",			"wpn_grenade_launcher_s")
+	cs_register	(object_factory, "CDetectorAnomaly",          	"se_item.se_detector",					"D_ANODET",			"device_detector_anomaly_s")
 
 	-- OUTFITS ----------------------------------------------------------------------------------------------------------------------------
 

@@ -7491,6 +7491,9 @@
     <ClInclude Include="Backpack.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
+    <ClInclude Include="AnomalyDetector.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11155,6 +11158,9 @@
     </ClCompile>
     <ClCompile Include="Backpack.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="AnomalyDetector.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

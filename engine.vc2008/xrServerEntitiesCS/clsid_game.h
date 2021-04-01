@@ -159,6 +159,7 @@
 #define CLSID_DETECTOR_SIMPLE		MK_CLSID('D','_','S','I','M','D','E','T')
 #define CLSID_DETECTOR_ADVANCED		MK_CLSID('D','_','A','D','V','A','N','C')
 #define CLSID_DETECTOR_ELITE		MK_CLSID('D','_','E','L','I','T','E',' ')
+#define CLSID_DETECTOR_ANOMALY		MK_CLSID('D','_','A','N','O','D','E','T')
 
 // PDA
 #define CLSID_DEVICE_PDA			MK_CLSID('D','_','P','D','A',' ',' ',' ')

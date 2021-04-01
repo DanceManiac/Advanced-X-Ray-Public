@@ -96,6 +96,10 @@
 	<second_helmet_slot_highlight x="563" y="372" width="76" height="98" stretch="1">
 		<texture>ui_inGame2_helmet_highlighter</texture>
 	</second_helmet_slot_highlight>
+	
+	<dosimeter_slot_highlight x="150" y="702" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</dosimeter_slot_highlight>
 
 	<quick_slot1_text x="386" y="446" width="14" height="13">
 		<text align="c" font="letterica16">quick_use_str_1</text>
@@ -295,6 +299,11 @@
 		
 	<dragdrop_second_helmet x="560" y="369" width="85" height="110"
 		cell_width="33" cell_height="41" rows_num="2" cols_num="2"
+		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
+		vc_horiz_align="c"/>
+		
+	<dragdrop_dosimeter x="150" y="702" width="85" height="55"
+		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
 		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
 		vc_horiz_align="c"/>
 

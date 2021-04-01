@@ -42,6 +42,7 @@
 #include "WeaponBinoculars.h"
 #include "Torch.h"
 #include "Backpack.h"
+#include "AnomalyDetector.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -336,6 +337,12 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 			return iActorSlot;
 	}
 
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		if (l == m_pInventoryDosimeterList)
+			return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -529,6 +536,12 @@ void CUIActorMenu::clear_highlight_lists()
 			m_SecondHelmetSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		if (m_DosimeterSlotHighlight)
+			m_DosimeterSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -575,6 +588,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
 	CTorch* torch = smart_cast<CTorch*>(item);
 	CBackpack* backpack = smart_cast<CBackpack*>(item);
+	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(item);
 
 	if(weapon)
 	{
@@ -667,6 +681,15 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 			{
 				m_BackpackSlotHighlight->Show(true);
 			}
+			return;
+		}
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		if (anomaly_detector)
+		{
+			m_DosimeterSlotHighlight->Show(true);
 			return;
 		}
 	}
@@ -953,6 +976,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetSecondHelmetSlotEnabled())
 	{
 		m_pInventorySecondHelmetList->ClearAll(true);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		m_pInventoryDosimeterList->ClearAll(true);
 	}
 }
 

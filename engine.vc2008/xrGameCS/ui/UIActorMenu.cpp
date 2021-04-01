@@ -23,10 +23,6 @@
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
 #include "AdvancedXrayGameConstants.h"
-#include "WeaponKnife.h"
-#include "WeaponBinoculars.h"
-#include "Torch.h"
-#include "Backpack.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -321,6 +317,12 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if (GameConstants::GetBackpackSlotEnabled())
 	{
 		if (l == m_pInventoryBackpackList) return iActorSlot;
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		if (l == m_pInventoryDosimeterList)
+			return iActorSlot;
 	}
 
 	R_ASSERT(0);
@@ -656,6 +658,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetBackpackSlotEnabled())
 	{
 		m_pInventoryBackpackList->ClearAll(true);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		m_pInventoryDosimeterList->ClearAll(true);
 	}
 }
 

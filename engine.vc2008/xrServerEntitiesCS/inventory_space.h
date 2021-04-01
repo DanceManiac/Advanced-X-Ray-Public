@@ -17,6 +17,7 @@
 #define ARTEFACT_SLOT		10
 #define FLARE_SLOT			11
 #define BACKPACK_SLOT		12
+#define DOSIMETER_SLOT		13
 //.#define SLOTS_TOTAL			12
 
 

@@ -7,6 +7,7 @@ bool	m_bKnifeSlotEnabled = false;
 bool	m_bBinocularSlotEnabled = false;
 bool	m_bTorchSlotEnabled = false;
 bool	m_bBackpackSlotEnabled = false;
+bool	m_bDosimeterSlotEnabled = false;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -19,6 +20,7 @@ namespace GameConstants
 		m_bBinocularSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_binocular_slot", false);
 		m_bTorchSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_torch_slot", false);
 		m_bBackpackSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_backpack_slot", false);
+		m_bDosimeterSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_dosimeter_slot", false);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 
@@ -48,6 +50,11 @@ namespace GameConstants
 	bool GetBackpackSlotEnabled()
 	{
 		return m_bBackpackSlotEnabled;
+	}
+
+	bool GetDosimeterSlotEnabled()
+	{
+		return m_bDosimeterSlotEnabled;
 	}
 
 	float GetDistantSndDistance()
