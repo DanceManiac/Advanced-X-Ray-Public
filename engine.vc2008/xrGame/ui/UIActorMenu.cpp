@@ -43,6 +43,7 @@
 #include "Torch.h"
 #include "Backpack.h"
 #include "AnomalyDetector.h"
+#include "PDA.h"
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -349,6 +350,12 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 			return iActorSlot;
 	}
 
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		if (l == m_pInventoryPdaList)
+			return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -554,6 +561,12 @@ void CUIActorMenu::clear_highlight_lists()
 			m_PantsSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		if (m_PdaSlotHighlight)
+			m_PdaSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -601,6 +614,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CTorch* torch = smart_cast<CTorch*>(item);
 	CBackpack* backpack = smart_cast<CBackpack*>(item);
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(item);
+	CPda* pda = smart_cast<CPda*>(item);
 
 	if(weapon)
 	{
@@ -708,6 +722,15 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		if (anomaly_detector)
 		{
 			m_DosimeterSlotHighlight->Show(true);
+			return;
+		}
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		if (pda)
+		{
+			m_PdaSlotHighlight->Show(true);
 			return;
 		}
 	}
@@ -1004,6 +1027,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetPantsSlotEnabled())
 	{
 		m_pInventoryPantsList->ClearAll(true);
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		m_pInventoryPdaList->ClearAll(true);
 	}
 }
 

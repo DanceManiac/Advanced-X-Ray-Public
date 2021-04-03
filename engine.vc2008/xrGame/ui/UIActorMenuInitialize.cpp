@@ -152,6 +152,12 @@ void CUIActorMenu::Construct()
 			m_PantsSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		if ((m_PdaSlotHighlight = UIHelper::CreateStatic(uiXml, "pda_slot_highlight", this)))
+			m_PdaSlotHighlight->Show(false);
+	}
+
 	Fvector2 pos;
 	pos								= m_QuickSlotsHighlight[0]->GetWndPos();
 	float dx						= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
@@ -220,6 +226,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetPantsSlotEnabled())
 	{
 		m_pInventoryPantsList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this);
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		m_pInventoryPdaList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this);
 	}
 
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
@@ -376,6 +387,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetPantsSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryPantsList);
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryPdaList);
 	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);

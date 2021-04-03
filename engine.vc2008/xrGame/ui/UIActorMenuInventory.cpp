@@ -88,6 +88,11 @@ void CUIActorMenu::InitInventoryMode()
 		m_pInventoryPantsList->Show(true);
 	}
 
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		m_pInventoryPdaList->Show(true);
+	}
+
 	InitInventoryContents				(m_pInventoryBagList);
 
 	VERIFY( CurrentGameUI() );
@@ -287,6 +292,7 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventorySecondHelmetList,
 		m_pInventoryDosimeterList,
 		m_pInventoryPantsList,
+		m_pInventoryPdaList,
 		NULL
 	};
 
@@ -501,6 +507,11 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	if (GameConstants::GetPantsSlotEnabled())
 	{
 		InitCellForSlot(PANTS_SLOT);
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		InitCellForSlot(PDA_SLOT);
 	}
 
 	curr_list					= m_pInventoryBeltList;
@@ -869,6 +880,12 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u16 slot_idx)
 			{
 				case PANTS_SLOT:
 					return m_pInventoryPantsList;
+			}
+
+			if (GameConstants::GetPdaSlotEnabled())
+			{
+				case PDA_SLOT:
+					return m_pInventoryPdaList;
 			}
 	};
 	return NULL;

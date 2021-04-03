@@ -18,6 +18,9 @@
 #include "ui/UIMessageBox.h"
 #include "UIDialogHolder.h"
 
+#include "AdvancedXrayGameConstants.h"
+#include "Inventory.h"
+
 CUIGameSP::CUIGameSP()
 {
 	m_game			= NULL;
@@ -73,9 +76,18 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	CEntityAlive* EA			= smart_cast<CEntityAlive*>(Level().CurrentEntity());
 	if (!EA || !EA->g_Alive() )	return false;
 
+	CActor *pActor = smart_cast<CActor*>(pInvOwner);
+
 	switch ( get_binded_action(dik) )
 	{
 	case kACTIVE_JOBS:
+		if (GameConstants::GetPdaSlotEnabled())
+		{
+			if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+				ShowPdaMenu();
+			break;
+		}
+		else
 		{
 			ShowPdaMenu();
 			break;

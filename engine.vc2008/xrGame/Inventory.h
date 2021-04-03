@@ -128,9 +128,8 @@ public:
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TIItemContainer			m_activ_last_items;
-
-protected:
 	TISlotArr				m_slots;
+
 public:
 	//возвращает все кроме PDA в слоте и болта
 	void				AddAvailableItems			(TIItemContainer& items_container, bool for_trade) const;

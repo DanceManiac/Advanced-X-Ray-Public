@@ -133,6 +133,11 @@ void CUIActorMenu::Construct()
 		m_pInventoryPantsList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this);
 	}
 
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		m_pInventoryPdaList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this);
+	}
+
 	m_belt_list_over[0] = UIHelper::CreateStatic(uiXml, "belt_list_over", this);
 	Fvector2 pos;
 	pos = m_belt_list_over[0]->GetWndPos();
@@ -249,6 +254,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetPantsSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryPantsList);
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryPdaList);
 	}
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);

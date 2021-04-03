@@ -21,6 +21,9 @@
 #include "ui/UITalkWnd.h"
 #include "ui/UIMessageBox.h"
 
+#include "AdvancedXrayGameConstants.h"
+#include "Inventory.h"
+
 
 CUIGameSP::CUIGameSP()
 :m_game(NULL),m_game_objective(NULL)
@@ -110,8 +113,18 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	switch ( get_binded_action(dik) )
 	{
 	case kACTIVE_JOBS:
+		if (GameConstants::GetPdaSlotEnabled())
 		{
-			if ( !pActor->inventory_disabled() )
+			if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+			{
+				if (!pActor->inventory_disabled())
+					ShowPdaMenu();
+				break;
+			}
+		}
+		else
+		{
+			if (!pActor->inventory_disabled())
 				ShowPdaMenu();
 			break;
 		}

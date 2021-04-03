@@ -193,6 +193,10 @@
 	<dragdrop_pants x="560" y="469" width="85" height="110"
 		cell_width="33" cell_height="41" rows_num="2" cols_num="2"
 		custom_placement="0" a="0"/>
+		
+	<dragdrop_pda x="150" y="602" width="85" height="55"
+		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
+		custom_placement="0" a="0"/>
 
   <trade_button x="355" y="725" width="157" height="48">
     <window_name>trade_button</window_name>

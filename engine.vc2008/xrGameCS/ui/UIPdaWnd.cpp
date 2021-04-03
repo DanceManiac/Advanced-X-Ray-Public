@@ -31,6 +31,10 @@
 #include "UIRankingWnd.h"
 #include "UILogsWnd.h"
 
+#include "AdvancedXrayGameConstants.h"
+#include "../Actor.h"
+#include "../Inventory.h"
+
 #define PDA_XML		"pda.xml"
 
 u32 g_pda_info_state = 0;
@@ -169,6 +173,12 @@ void CUIPdaWnd::Update()
 	m_pActiveDialog->Update();
 
 	Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(pUILogsWnd,&CUILogsWnd::PerformWork));
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		if (!g_actor->inventory().m_slots[PDA_SLOT].m_pIItem && IsShown())
+			GetHolder()->StartStopMenu(this, true);
+	}
 }
 
 void CUIPdaWnd::SetActiveSubdialog(const shared_str& section)
