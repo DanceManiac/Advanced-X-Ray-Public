@@ -121,6 +121,7 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 	}
 
 	CCustomOutfit* outfit = actor->GetOutfit();
+	CCustomOutfit* pants = smart_cast<CCustomOutfit*>(actor->inventory().ItemFromSlot(PANTS_SLOT));
 	PIItem itm = actor->inventory().ItemFromSlot(HELMET_SLOT);
 	CHelmet* helmet = smart_cast<CHelmet*>(itm);
 	itm = actor->inventory().ItemFromSlot(SECOND_HELMET_SLOT);
@@ -176,6 +177,32 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 			fwou_value += outfit->GetBoneArmor(spine_bone)*outfit->GetCondition();
 		}
 	}
+
+	if (pants)
+	{
+		value = pants->GetCondition();
+
+		burn_value += pants->GetDefHitTypeProtection(ALife::eHitTypeBurn);
+		radi_value += pants->GetDefHitTypeProtection(ALife::eHitTypeRadiation);
+		cmbn_value += pants->GetDefHitTypeProtection(ALife::eHitTypeChemicalBurn);
+		tele_value += pants->GetDefHitTypeProtection(ALife::eHitTypeTelepatic);
+		woun_value += pants->GetDefHitTypeProtection(ALife::eHitTypeWound);
+		shoc_value += pants->GetDefHitTypeProtection(ALife::eHitTypeShock);
+
+		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
+		VERIFY(ikv);
+		const auto spine_bone = ikv->LL_BoneID("bip01_spine");
+
+		value = pants->GetBoneArmor(spine_bone);
+
+		fwou_value += value * pants->GetCondition();
+		if (!pants->bIsHelmetAvaliable)
+		{
+			const auto head_bone = ikv->LL_BoneID("bip01_head");
+			fwou_value += pants->GetBoneArmor(head_bone) * pants->GetCondition();
+		}
+	}
+
 	if(helmet)
 	{
 		burn_value += helmet->GetDefHitTypeProtection(ALife::eHitTypeBurn);

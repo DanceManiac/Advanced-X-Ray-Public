@@ -128,6 +128,11 @@ void CUIActorMenu::Construct()
 		m_pInventoryDosimeterList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this);
 	}
 
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		m_pInventoryPantsList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this);
+	}
+
 	m_belt_list_over[0] = UIHelper::CreateStatic(uiXml, "belt_list_over", this);
 	Fvector2 pos;
 	pos = m_belt_list_over[0]->GetWndPos();
@@ -239,6 +244,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetDosimeterSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryDosimeterList);
+	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryPantsList);
 	}
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);

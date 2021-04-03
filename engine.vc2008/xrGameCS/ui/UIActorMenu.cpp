@@ -325,6 +325,12 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 			return iActorSlot;
 	}
 
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		if (l == m_pInventoryPantsList)
+			return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -663,6 +669,11 @@ void CUIActorMenu::ClearAllLists()
 	if (GameConstants::GetDosimeterSlotEnabled())
 	{
 		m_pInventoryDosimeterList->ClearAll(true);
+	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		m_pInventoryPantsList->ClearAll(true);
 	}
 }
 

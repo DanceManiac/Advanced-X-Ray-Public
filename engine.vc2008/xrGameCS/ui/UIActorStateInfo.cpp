@@ -86,7 +86,9 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 	value = actor->conditions().BleedingSpeed();					m_state[stt_health]->show_static( (value > 0.01f) );
 
 	CCustomOutfit* outfit = actor->GetOutfit();
-	if ( outfit )
+	CCustomOutfit* pants = actor->GetPants();
+
+	if (outfit)
 	{
 		value = outfit->GetCondition();								m_state[stt_armor]->set_progress( value );
 
@@ -95,7 +97,18 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		u16 spine_bone = ikv->LL_BoneID( "bip01_spine" );
 		value = outfit->GetBoneArmor( spine_bone );					m_state[stt_armor]->set_text( value );
 	}
-	else
+
+	if (pants)
+	{
+		value = pants->GetCondition();								m_state[stt_armor]->set_progress(value);
+
+		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
+		VERIFY(ikv);
+		u16 spine_bone = ikv->LL_BoneID("bip01_spine");
+		value = pants->GetBoneArmor(spine_bone);					m_state[stt_armor]->set_text(value);
+	}
+
+	if (!outfit && !pants)
 	{
 		m_state[stt_armor]->set_progress( 0.0f );
 		m_state[stt_armor]->set_text( 0.0f );

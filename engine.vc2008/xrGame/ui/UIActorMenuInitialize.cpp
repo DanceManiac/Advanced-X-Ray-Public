@@ -146,6 +146,12 @@ void CUIActorMenu::Construct()
 			m_DosimeterSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		if ((m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this)))
+			m_PantsSlotHighlight->Show(false);
+	}
+
 	Fvector2 pos;
 	pos								= m_QuickSlotsHighlight[0]->GetWndPos();
 	float dx						= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
@@ -211,6 +217,11 @@ void CUIActorMenu::Construct()
 		m_pInventoryDosimeterList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this);
 	}
 
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		m_pInventoryPantsList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pants", this);
+	}
+
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
 	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
 	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
@@ -247,6 +258,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetSecondHelmetSlotEnabled())
 	{
 		m_SecondHelmet_progress = UIHelper::CreateProgressBar(uiXml, "progess_bar_second_helmet", this);
+	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		m_Pants_progress = UIHelper::CreateProgressBar(uiXml, "progess_bar_pants", this);
 	}
 
 	m_trade_buy_button	= UIHelper::Create3tButton(uiXml, "trade_buy_button", this);
@@ -355,6 +371,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetDosimeterSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryDosimeterList);
+	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryPantsList);
 	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);

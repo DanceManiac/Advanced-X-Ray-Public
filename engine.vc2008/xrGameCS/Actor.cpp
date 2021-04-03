@@ -1901,6 +1901,12 @@ CCustomOutfit* CActor::GetOutfit() const
 	return _of?smart_cast<CCustomOutfit*>(_of):NULL;
 }
 
+CCustomOutfit* CActor::GetPants() const
+{
+	PIItem _of = inventory().m_slots[PANTS_SLOT].m_pIItem;
+	return _of ? smart_cast<CCustomOutfit*>(_of) : NULL;
+}
+
 bool CActor::is_ai_obstacle				() const
 {
 	return							(false);//true);

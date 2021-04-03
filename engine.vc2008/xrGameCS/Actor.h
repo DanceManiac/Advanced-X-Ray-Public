@@ -657,6 +657,7 @@ public:
 		void							SetWeaponHideState				(u32 State, bool bSet);
 		void							SetCantRunState					(bool bSet);
 		virtual CCustomOutfit*			GetOutfit() const;
+		virtual CCustomOutfit*			GetPants() const;
 private:
 	CActorCondition				*m_entity_condition;
 

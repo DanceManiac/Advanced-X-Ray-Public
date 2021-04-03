@@ -18,6 +18,7 @@
 #define FLARE_SLOT			11
 #define BACKPACK_SLOT		12
 #define DOSIMETER_SLOT		13
+#define PANTS_SLOT			14
 //.#define SLOTS_TOTAL			12
 
 

@@ -343,6 +343,12 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 			return iActorSlot;
 	}
 
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		if (l == m_pInventoryPantsList)
+			return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -542,6 +548,12 @@ void CUIActorMenu::clear_highlight_lists()
 			m_DosimeterSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		if (m_PantsSlotHighlight)
+			m_PantsSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<e_af_count; i++)
@@ -610,6 +622,12 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	if(outfit)
 	{
 		m_OutfitSlotHighlight->Show(true);
+
+		if (GameConstants::GetPantsSlotEnabled())
+		{
+			if (m_PantsSlotHighlight)
+				m_PantsSlotHighlight->Show(true);
+		}
 		return;
 	}
 	if(detector)
@@ -982,6 +1000,11 @@ void CUIActorMenu::ClearAllLists()
 	{
 		m_pInventoryDosimeterList->ClearAll(true);
 	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		m_pInventoryPantsList->ClearAll(true);
+	}
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )
@@ -1097,6 +1120,18 @@ void CUIActorMenu::UpdateConditionProgressBars()
 				m_SecondHelmet_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
 			else
 				m_SecondHelmet_progress->SetProgressPos(0);
+		}
+	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		if (m_Pants_progress)
+		{
+			itm = m_pActorInvOwner->inventory().ItemFromSlot(PANTS_SLOT);
+			if (itm)
+				m_Pants_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+			else
+				m_Pants_progress->SetProgressPos(0);
 		}
 	}
 }

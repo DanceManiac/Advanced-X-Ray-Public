@@ -100,6 +100,10 @@
 	<dosimeter_slot_highlight x="150" y="702" width="76" height="48" stretch="1">
 		<texture>ui_inGame2_detector_highlighter</texture>
 	</dosimeter_slot_highlight>
+	
+	<pants_slot_highlight x="563" y="472" width="76" height="98" stretch="1">
+		<texture>ui_inGame2_helmet_highlighter</texture>
+	</pants_slot_highlight>
 
 	<quick_slot1_text x="386" y="446" width="14" height="13">
 		<text align="c" font="letterica16">quick_use_str_1</text>
@@ -164,6 +168,15 @@
 		<middle_color r="255" g="255" b="118"/>
 		<max_color r="107" g="207" b="119"/>
     </progess_bar_second_helmet>
+	
+    <progess_bar_pants x="578" y="475" width="47" height="5" horz="1" min="0" max="1" pos="0">
+        <progress stretch="1">
+            <texture r="142" g="149" b="149">ui_inGame2_inventory_status_bar</texture>
+        </progress>
+		<min_color r="196" g="18" b="18"/>
+		<middle_color r="255" g="255" b="118"/>
+		<max_color r="107" g="207" b="119"/>
+    </progess_bar_pants>
 
 	<actor_weight_caption x="750" y="736" width="57" height="16">
 		<text align="r" font="letterica16" color="ui_3">ui_total_weight</text>
@@ -306,6 +319,11 @@
 		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
 		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
 		vc_horiz_align="c"/>
+		
+	<dragdrop_pants x="560" y="469" width="85" height="110"
+		cell_width="33" cell_height="41" rows_num="2" cols_num="2"
+		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
+		vc_horiz_align="c" />
 
 	<trade_buy_button x="113" y="295" width="107" height="26" stretch="1" hint="ui_st_buy_hint">
 	    <window_name>trade_buy_button</window_name>

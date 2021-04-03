@@ -646,5 +646,11 @@ float CActor::get_additional_weight() const
 		res += backpack->AdditionalInventoryWeight();
 	}
 
+	CCustomOutfit* pants = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(PANTS_SLOT));
+	if (pants)
+	{
+		res += pants->m_additional_weight;
+	}
+
 	return res;
 }
