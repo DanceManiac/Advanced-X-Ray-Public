@@ -82,7 +82,6 @@ public:
 			
 			float	xr_stdcall	GetAlcohol			()	{return m_fAlcohol;}
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
-			float				GetSatiety			()  {return m_fSatiety;}
 	IC		float				GetSatietyPower		() const {return m_fV_SatietyPower*m_fSatiety;};
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
@@ -99,7 +98,6 @@ public:
 	}
 	virtual void			save					(NET_Packet &output_packet);
 	virtual void			load					(IReader &input_packet);
-//	IC		float const&	Satiety					()	{ return m_fSatiety; }
 	IC		float const&	V_Satiety				()	{ return m_fV_Satiety; }
 	IC		float const&	V_SatietyPower			()	{ return m_fV_SatietyPower; }
 	IC		float const&	V_SatietyHealth			()	{ return m_fV_SatietyHealth; }
@@ -122,7 +120,6 @@ protected:
 	float m_fAlcohol;
 	float m_fV_Alcohol;
 //--
-	float m_fSatiety;
 	float m_fV_Satiety;
 	float m_fV_SatietyPower;
 	float m_fV_SatietyHealth;

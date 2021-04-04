@@ -90,6 +90,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 
 	m_bIsBleeding			= false;
 	m_bCanBeHarmed			= true;
+	m_fSatiety				= 1.0f;
 }
 
 CEntityCondition::~CEntityCondition(void)

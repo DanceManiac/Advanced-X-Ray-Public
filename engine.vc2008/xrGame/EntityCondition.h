@@ -109,7 +109,7 @@ public:
 	IC float				GetPower				() const			{return m_fPower;}	
 	IC float				GetRadiation			() const			{return m_fRadiation;}
 	IC float				GetPsyHealth			() const			{return m_fPsyHealth;}
-	IC float				GetSatiety				() const			{return 1.0f;}	
+	IC float				GetSatiety				() const			{return m_fSatiety;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -186,6 +186,7 @@ protected:
 	float m_fRadiation;				//доза радиактивного облучения
 	float m_fPsyHealth;				//здоровье
 	float m_fEntityMorale;			//мораль
+	float m_fSatiety;				//Сытость
 
 	//максимальные величины
 	//	float m_fSatietyMax;
