@@ -22,8 +22,6 @@ public:
 
 	virtual void	OnZoomIn			();
 	virtual void	OnZoomOut			();
-	virtual	void	ZoomInc				();
-	virtual	void	ZoomDec				();
 	virtual void	net_Destroy			();
 	virtual BOOL	net_Spawn			(CSE_Abstract* DC);
 	bool			can_kill			() const;

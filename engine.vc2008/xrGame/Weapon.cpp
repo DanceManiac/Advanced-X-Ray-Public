@@ -550,10 +550,6 @@ void CWeapon::Load		(LPCSTR section)
 	m_zoom_params.m_bZoomEnabled		= !!pSettings->r_bool(section,"zoom_enabled");
 	m_zoom_params.m_fZoomRotateTime		= pSettings->r_float(section,"zoom_rotate_time");
 
-	m_zoom_params.m_bUseDynamicZoom = FALSE;
-	m_zoom_params.m_sUseZoomPostprocess = 0;
-	m_zoom_params.m_sUseBinocularVision = 0;
-
 	bUseAltScope = !!bLoadAltScopesParams(section);
 
 	if (!bUseAltScope)
@@ -2689,7 +2685,7 @@ void CWeapon::UpdateSecondVP(bool bInGrenade)
 
 	bool bCond_1 = bInZoomRightNow();		// Мы должны целиться  
 
-	bool bCond_2 = bIsSecondVPZoomPresent();							// В конфиге должен быть прописан фактор зума для линзы (scope_lense_factor
+	bool bCond_2 = bIsSecondVPZoomPresent();						// В конфиге должен быть прописан фактор зума для линзы (scope_lense_factor
 																	// больше чем 0)
 	bool bCond_3 = pActor->cam_Active() == pActor->cam_FirstEye();	// Мы должны быть от 1-го лица	
 

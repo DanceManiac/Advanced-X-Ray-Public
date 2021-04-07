@@ -21,6 +21,51 @@ uniform half3		eye_direction;
 uniform half3		eye_normal;
 uniform	half4 		dt_params;
 
+// Глобальные параметры шейдеров --#SM+#--
+uniform float4x4	m_script_params; 
+uniform	half4		m_hud_params;	// zoom_rotate_factor, secondVP_zoom_factor, NULL, NULL
+uniform	half4		m_blender_mode;	// x\y = [0 - default, 1 - night vision, 2 - thermal vision]; x - основной вьюпорт, y - второй впьюпорт, z = ?, w = [0 - идёт рендер обычного объекта, 1 - идёт рендер детальных объектов (трава, мусор)]
+
+// Параметры, уникальные для разных моделей --#SM+#--
+uniform float4x4	m_obj_camo_data; 
+uniform half4		m_obj_custom_data;
+uniform half4		m_obj_generic_data;
+
+// Активен-ли двойной рендер --#SM+#--
+inline bool isSecondVPActive()
+{
+	return (m_blender_mode.z == 1.f);
+}
+
+// Возвращает 1.f, если сейчас идёт рендер второго вьюпорта --#SM+#--
+inline bool isSecondVP()
+{
+	return m_blender_mode.z > 0.5f;
+}
+
+// Возвращает режим блендинга для текущего вьюпорта --#SM+#--
+float blender_mode()
+{
+	float ret = m_blender_mode.x;
+	
+	if (isSecondVP() == true)
+		ret = m_blender_mode.y;
+		
+	return ret;
+}
+
+// В данный момент рендерятся детальные элементы (трава, мусор) --#SM+#--
+inline bool isDetailRender()
+{
+	return (m_blender_mode.w == 1.f);
+}
+
+// Включён термо-режим --#SM+#--
+inline bool isThermalMode()
+{
+	return (blender_mode() == 2.f);
+}
+
 half3 	unpack_normal	(half3 v)	{ return 2*v-1;			}
 half3 	unpack_bx2	(half3 v)	{ return 2*v-1; 		}
 half3 	unpack_bx4	(half3 v)	{ return 4*v-2; 		}

@@ -36,6 +36,39 @@ public:
 							CWeapon				();
 	virtual					~CWeapon			();
 
+	// [FFT++]: аддоны и управление аддонами
+	bool					bUseAltScope;
+	bool					bScopeIsHasTexture;
+	bool					bNVsecondVPavaible;
+	bool					bNVsecondVPstatus;
+
+	virtual	bool			bInZoomRightNow() const { return m_zoom_params.m_fZoomRotationFactor > 0.05; }
+	IC		bool			bIsSecondVPZoomPresent() const { return GetSecondVPZoomFactor() > 0.000f; }
+	BOOL					bLoadAltScopesParams(LPCSTR section);
+	bool            bChangeNVSecondVPStatus();
+	virtual	bool            bMarkCanShow() { return IsZoomed(); }
+
+
+	virtual void			UpdateSecondVP(bool bInGrenade = false);
+	void					Load3DScopeParams(LPCSTR section);
+	void					LoadOriginalScopesParams(LPCSTR section);
+	void					LoadCurrentScopeParams(LPCSTR section);
+	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
+	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
+	void					UpdateAltScope();
+
+	virtual float			GetControlInertionFactor() const;
+	IC		float			GetZRotatingFactor()    const { return m_zoom_params.m_fZoomRotationFactor; }
+	IC		float			GetSecondVPZoomFactor() const { return m_zoom_params.m_fSecondVPFovFactor; }
+	float					GetSecondVPFov() const;
+
+	shared_str				GetNameWithAttachment();
+
+
+	float					m_fScopeInertionFactor;
+	float					m_fZoomStepCount;
+	float					m_fZoomMinKoeff;
+
 	// Generic
 	virtual void			Load				(LPCSTR section);
 
@@ -171,8 +204,8 @@ public:
 	float GetHudFov();
 
 	//для отоброажения иконок апгрейдов в интерфейсе
-	int	GetScopeX() {return m_iScopeX;}
-	int	GetScopeY() {return m_iScopeY;}
+	int GetScopeX();
+	int GetScopeY();
 	int	GetSilencerX() {return m_iSilencerX;}
 	int	GetSilencerY() {return m_iSilencerY;}
 	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
@@ -221,20 +254,25 @@ protected:
 		float			m_fScopeZoomFactor;		//коэффициент увеличения прицела
 
 		float			m_fZoomRotationFactor;
+		float           m_fSecondVPFovFactor;
 		
 		Fvector			m_ZoomDof;
 		Fvector4		m_ReloadDof;
 		Fvector4		m_ReloadEmptyDof;
+		shared_str		m_sUseBinocularVision;
+		BOOL			m_bUseDynamicZoom;
+		shared_str		m_sUseZoomPostprocess;
 
 	} m_zoom_params;
 	
 	float					m_fFactor;
+	float					m_fRTZoomFactor; //run-time zoom factor
 	CUIWindow*				m_UIScope;
 public:
 
 	IC bool					IsZoomEnabled		()	const		{return m_zoom_params.m_bZoomEnabled;}
-	virtual	void			ZoomInc				(){};
-	virtual	void			ZoomDec				(){};
+	virtual	void			ZoomInc				();
+	virtual	void			ZoomDec				();
 	virtual void			OnZoomIn			();
 	virtual void			OnZoomOut			();
 	IC		bool			IsZoomed			()	const		{return m_zoom_params.m_bIsZoomModeNow;};
@@ -313,22 +351,22 @@ protected:
 	virtual void			OnAnimationEnd			(u32 state);
 
 	//трассирование полета пули
-	virtual	void			FireTrace			(const Fvector& P, const Fvector& D);
-	virtual float			GetWeaponDeterioration	();
+	virtual	void			FireTrace(const Fvector& P, const Fvector& D);
+	virtual float			GetWeaponDeterioration();
 
-	virtual void			FireStart			() {CShootingObject::FireStart();}
-	virtual void			FireEnd				();
+	virtual void			FireStart() { CShootingObject::FireStart(); }
+	virtual void			FireEnd();
 
-	virtual void			Reload				();
-			void			StopShooting		();
+	virtual void			Reload();
+	void					StopShooting();
     
 
 	// обработка визуализации выстрела
-	virtual void			OnShot				(){};
-	virtual void			AddShotEffector		();
-	virtual void			RemoveShotEffector	();
-	virtual	void			ClearShotEffector	();
-	virtual	void			StopShotEffector	();
+	virtual void			OnShot() {};
+	virtual void			AddShotEffector();
+	virtual void			RemoveShotEffector();
+	virtual	void			ClearShotEffector();
+	virtual	void			StopShotEffector();
 
 public:
 	float					GetFireDispersion	(bool with_cartridge)			;
@@ -420,6 +458,10 @@ protected:
 
 public:
 	xr_vector<shared_str>	m_ammoTypes;
+
+	DEFINE_VECTOR(shared_str, SCOPES_VECTOR, SCOPES_VECTOR_IT);
+	SCOPES_VECTOR			m_scopes;
+	u8						m_cur_scope;
 
 	CWeaponAmmo*			m_pAmmo;
 	u32						m_ammoType;

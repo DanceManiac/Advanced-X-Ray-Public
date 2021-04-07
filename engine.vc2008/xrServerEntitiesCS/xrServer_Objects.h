@@ -158,8 +158,9 @@
 // 121 - GameTypeChooser				m_gameType using instead og u8 value;
 // 122 - CSE_ALifeItemWeapon			appended with count of grenades to spawn in grenade launcher (if it attached)
 // 123 - CSE_ALifeInventoryItem			added functions has_upgrade & add_upgrade, xr_vector<shared_str> m_upgrades;
+// 124   CSE_ALifeItemWeapon            added cur_scope for alternative installed scopes
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(124)
+#define SPAWN_VERSION	u16(125)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:
