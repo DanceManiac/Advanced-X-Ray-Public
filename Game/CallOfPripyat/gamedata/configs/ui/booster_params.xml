@@ -163,4 +163,14 @@
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</boost_time>
+	
+	<boost_battery x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_battery_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_battery>
 </booster_params>

@@ -19,6 +19,9 @@
 #include "CustomOutfit.h"
 #include "ActorHelmet.h"
 
+#include "AdvancedXrayGameConstants.h"
+#include "Battery.h"
+
 static const float		TORCH_INERTION_CLAMP		= PI_DIV_6;
 static const float		TORCH_INERTION_SPEED_MAX	= 7.5f;
 static const float		TORCH_INERTION_SPEED_MIN	= 0.5f;
@@ -47,6 +50,12 @@ CTorch::CTorch(void)
 	m_prev_hp.set				(0,0);
 	m_delta_h					= 0;
 	m_night_vision				= NULL;
+
+	m_fMaxChargeLevel			= 0.0f;
+	m_fCurrentChargeLevel		= 1.0f;
+	m_fUnchargeSpeed			= 0.0f;
+	m_fMaxRange					= 20.f;
+	m_fCurveRange				= 20.f;
 
 	// Disabling shift by x and z axes for 1st render, 
 	// because we don't have dynamic lighting in it. 
@@ -83,12 +92,22 @@ void CTorch::Load(LPCSTR section)
 	light_trace_bone		= pSettings->r_string(section,"light_trace_bone");
 
 	m_light_section = READ_IF_EXISTS(pSettings, r_string, section, "light_section", "torch_definition");
+	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
+	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+
 	if (pSettings->line_exist(section, "snd_turn_on"))
 		m_sounds.LoadSound(section, "snd_turn_on", "sndTurnOn", false, SOUND_TYPE_ITEM_USING);
 	if (pSettings->line_exist(section, "snd_turn_off"))
 		m_sounds.LoadSound(section, "snd_turn_off", "sndTurnOff", false, SOUND_TYPE_ITEM_USING);
 
 	m_bNightVisionEnabled = !!pSettings->r_bool(section,"night_vision");
+
+	//Случайный начальный заряд батареек в фонарике, если включена опция ограниченного заряда батареек у фонарика
+	if (GameConstants::GetTorchHasBattery())
+	{
+		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
+		m_fCurrentChargeLevel = rnd_charge;
+	}
 }
 
 void CTorch::SwitchNightVision()
@@ -197,6 +216,11 @@ void CTorch::Switch(bool light_on)
 		}
 	}
 
+	if (light_on && m_fCurrentChargeLevel <= 0.0f)
+	{
+		light_on = false;
+	}
+
 	m_switched_on			= light_on;
 	if (can_use_dynamic_lights())
 	{
@@ -251,9 +275,13 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 
 	Fcolor clr = pUserData->r_fcolor(m_light_section, (b_r2) ? "color_r2" : "color");
 	fBrightness				= clr.intensity();
+
+	m_fMaxRange = pUserData->r_float(m_light_section, (b_r2) ? "max_range_r2" : "max_range");
+	m_fCurveRange = pUserData->r_float(m_light_section, "curve_range");
+
 	float range				= pUserData->r_float(m_light_section, (b_r2) ? "range_r2" : "range");
-	light_render->set_color	(clr);
-	light_render->set_range	(range);
+	light_render->set_color(clr);
+	light_render->set_range(m_fMaxRange);
 
 	Fcolor clr_o			= pUserData->r_fcolor(m_light_section, (b_r2) ? "omni_color_r2" : "omni_color");
 	float range_o			= pUserData->r_float(m_light_section, (b_r2) ? "omni_range_r2" : "omni_range");
@@ -285,7 +313,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	//else
 	//	SwitchNightVision	(false, false);
 
-	m_delta_h				= PI_DIV_2-atan((range*0.5f)/_abs(TORCH_OFFSET.x));
+	m_delta_h				= PI_DIV_2-atan((m_fMaxRange*0.5f)/_abs(TORCH_OFFSET.x));
 
 	return					(TRUE);
 }
@@ -314,9 +342,43 @@ void CTorch::OnH_B_Independent(bool just_before_destroy)
 	m_sounds.StopAllSounds		();
 }
 
+void CTorch::UpdateChargeLevel(void)
+{
+	if (m_switched_on)
+	{
+		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
+
+		m_fCurrentChargeLevel -= uncharge_coef;
+
+		float condition = 1.f * m_fCurrentChargeLevel;
+		SetCondition(condition);
+
+		float rangeCoef = atan(m_fCurveRange * m_fCurrentChargeLevel) / PI_DIV_2;
+		clamp(rangeCoef, 0.f, 1.f);
+		float range = m_fMaxRange * rangeCoef;
+
+		light_render->set_range(range);
+		m_delta_h = PI_DIV_2 - atan((range*0.5f) / _abs(TORCH_OFFSET.x));
+
+		//Msg("Torch Charge is: %f", m_fCurrentChargeLevel); //Для тестов
+
+		if (m_fCurrentChargeLevel < 0.0)
+		{
+			m_fCurrentChargeLevel = 0.0;
+			Switch(false);
+			return;
+		}
+	}
+	else
+		SetCondition(m_fCurrentChargeLevel);
+}
+
 void CTorch::UpdateCL() 
 {
 	inherited::UpdateCL			();
+
+	if (GameConstants::GetTorchHasBattery)
+		UpdateChargeLevel();
 	
 	if (!m_switched_on)			return;
 
@@ -494,6 +556,20 @@ void CTorch::net_Import			(NET_Packet& P)
 		}
 	}
 }
+
+void CTorch::save(NET_Packet &output_packet)
+{
+	inherited::save(output_packet);
+	save_data(m_fCurrentChargeLevel, output_packet);
+
+}
+
+void CTorch::load(IReader &input_packet)
+{
+	inherited::load(input_packet);
+	load_data(m_fCurrentChargeLevel, input_packet);
+}
+
 bool  CTorch::can_be_attached		() const
 {
 	const CActor *pA = smart_cast<const CActor *>(H_Parent());
@@ -598,4 +674,38 @@ void CNightVisionEffector::PlaySounds(EPlaySounds which)
 		}break;
 	default: NODEFAULT;
 	}
+}
+
+float CTorch::GetUnchargeSpeed() const
+{
+	return m_fUnchargeSpeed;
+}
+
+float CTorch::GetCurrentChargeLevel() const
+{
+	return m_fCurrentChargeLevel;
+}
+
+bool CTorch::IsSwitchedOn() const
+{
+	return m_switched_on;
+}
+
+void CTorch::SetCurrentChargeLevel(float val)
+{
+	m_fCurrentChargeLevel = val;
+	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
+	SetCondition(condition);
+}
+
+void CTorch::Recharge(float val)
+{
+	m_fCurrentChargeLevel = m_fCurrentChargeLevel + val;
+
+	SetCondition(m_fCurrentChargeLevel);
+
+	//Msg("Battery Charge in Recharge is: %f", val); //Для тестов
+
+	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
+		m_fCurrentChargeLevel = m_fMaxChargeLevel;
 }

@@ -14,6 +14,7 @@
 		<texture>ui_hud_icon_weapon</texture>
 	</weapon_jammed_static>
 
+    <indicator_torch_battery x="980" y="310" width="33" height="35"/>
     <indicator_starvation x="980" y="350" width="33" height="35"/>
     <indicator_helmet_broken x="980" y="390" width="33" height="35"/>
     <indicator_outfit_broken x="980" y="430" width="33" height="35"/>

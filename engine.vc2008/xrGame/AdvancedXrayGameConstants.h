@@ -13,6 +13,7 @@ namespace GameConstants
 	bool GetDosimeterSlotEnabled();
 	bool GetPantsSlotEnabled();
 	bool GetPdaSlotEnabled();
+	bool GetTorchHasBattery();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

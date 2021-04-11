@@ -18,6 +18,7 @@ CUIBoosterInfo::CUIBoosterInfo()
 	m_booster_satiety = NULL;
 	m_booster_anabiotic = NULL;
 	m_booster_time = NULL;
+	m_booster_battery = NULL;
 }
 
 CUIBoosterInfo::~CUIBoosterInfo()
@@ -26,6 +27,7 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	xr_delete(m_booster_satiety);
 	xr_delete(m_booster_anabiotic);
 	xr_delete(m_booster_time);
+	xr_delete(m_booster_battery);
 	xr_delete(m_Prop_line);
 }
 
@@ -87,6 +89,13 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	name = CStringTable().translate("ui_inv_survive_surge").c_str();
 	m_booster_anabiotic->SetCaption(name);
 	xml.SetLocalRoot( base_node );
+
+	m_booster_battery = xr_new<UIBoosterInfoItem>();
+	m_booster_battery->Init(xml, "boost_battery");
+	m_booster_battery->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_battery").c_str();
+	m_booster_battery->SetCaption(name);
+	xml.SetLocalRoot(base_node);
 
 	m_booster_time = xr_new<UIBoosterInfoItem>();
 	m_booster_time->Init(xml, "boost_time");
@@ -204,6 +213,22 @@ void CUIBoosterInfo::SetInfo( shared_str const& section )
 			AttachChild(m_booster_time);
 		}
 	}
+
+	if (pSettings->line_exist(section.c_str(), "charge_level"))
+	{
+		val = pSettings->r_float(section, "charge_level");
+		if (!fis_zero(val))
+		{
+			m_booster_battery->SetValue(val);
+			pos.set(m_booster_battery->GetWndPos());
+			pos.y = h;
+			m_booster_battery->SetWndPos(pos);
+
+			h += m_booster_battery->GetWndSize().y;
+			AttachChild(m_booster_battery);
+		}
+	}
+
 	SetHeight(h);
 }
 

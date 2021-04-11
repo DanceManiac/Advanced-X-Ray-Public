@@ -141,6 +141,7 @@
 
 #include "ui\af_params.xml"
 #include "ui\booster_params.xml"
+#include "ui\inventory_items_params.xml"
 
 	<upgrade_info>
 		<main_frame x="0" y="0" width="320" height="100"/>
@@ -336,7 +337,24 @@
 				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 			</static_value>
 		</fire_wound_immunity>
-
 	</outfit_info>
-
+	
+		<static_damage x="0" y="10" width="18" height="18" stretch="1">
+			<texture>ui_item_battery_icon</texture>
+		</static_damage>
+		
+		<cap_damage x="22" y="12" width="100" height="8">
+			<text font="letterica16" r="170" g="170" b="170" align="l">ui_inv_battery</text>
+		</cap_damage>
+		
+		<progress_damage x="130" y="104" width="128" height="9" horz="1">
+			<progress>
+				<texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
+			</progress>
+			<background>
+				<texture>ui_inGame2_hint_wnd_bar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_damage>
 </w>

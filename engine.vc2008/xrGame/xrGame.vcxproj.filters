@@ -2491,6 +2491,9 @@
     <Filter Include="EmbeddedEditor">
       <UniqueIdentifier>{31bb450c-ccdf-490a-a0be-a71c3d69d2a6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Battery">
+      <UniqueIdentifier>{671b2682-c463-4887-8384-91bd9bade277}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7398,6 +7401,12 @@
     <ClInclude Include="AnomalyDetector.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClInclude>
+    <ClInclude Include="Battery.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Battery</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIInventoryItemParams.h">
+      <Filter>UI\Common\ui-item-infos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11062,6 +11071,12 @@
     </ClCompile>
     <ClCompile Include="AnomalyDetector.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
+    </ClCompile>
+    <ClCompile Include="Battery.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Battery</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInventoryItemParams.cpp">
+      <Filter>UI\Common\ui-item-infos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

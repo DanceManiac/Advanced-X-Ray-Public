@@ -54,6 +54,8 @@
 #include "UIHudStatesWnd.h"
 #include "UIActorMenu.h"
 
+#include "Torch.h"
+
 void test_draw	();
 void test_key	(int dik);
 
@@ -157,6 +159,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_health		= UIHelper::CreateStatic(uiXml, "indicator_booster_health", this);
 	m_ind_boost_power		= UIHelper::CreateStatic(uiXml, "indicator_booster_power", this);
 	m_ind_boost_rad			= UIHelper::CreateStatic(uiXml, "indicator_booster_rad", this);
+	m_ind_torch_battery		= UIHelper::CreateStatic(uiXml, "indicator_torch_battery", this);
 	m_ind_boost_psy			->Show(false);
 	m_ind_boost_radia		->Show(false);
 	m_ind_boost_chem		->Show(false);
@@ -809,6 +812,20 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		//	m_ind_overweight->InitTexture("ui_inGame2_circle_Overweight_yellow");
 		else
 			m_ind_overweight->InitTexture("ui_inGame2_circle_Overweight_yellow");
+	}
+
+
+	// M.F.S. Team Torch Battery icon
+	CTorch* torch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
+	m_ind_torch_battery->Show(false);
+	if (torch)
+	{
+		float condition = torch->m_fCurrentChargeLevel;
+		if (condition <= 0.0f)
+		{
+			m_ind_torch_battery->Show(true);
+			m_ind_torch_battery->InitTexture("ui_inGame2_circle_TorchLowBattery_red");
+		}
 	}
 }
 

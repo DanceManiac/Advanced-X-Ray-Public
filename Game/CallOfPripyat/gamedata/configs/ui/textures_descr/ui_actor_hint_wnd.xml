@@ -114,4 +114,11 @@
 	    <texture id="ui_inGame2_radiation_inv_yellow" 	x="773" y="933" width="45" height="45" />
 	    <texture id="ui_inGame2_radiation_inv_red" 		x="589" y="933" width="45" height="45" />
 	</file>
+	
+    <file name="mfs_team\ui\ui_mfs_new_inGame2_icons">
+	    <texture id="ui_inGame2_circle_TorchLowBattery_green" 		x="0" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_TorchLowBattery_yellow" 		x="0" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_TorchLowBattery_orange" 		x="0" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_TorchLowBattery_red" 		x="0" y="114" width="33" height="35" />
+	</file>
 </w>

@@ -53,9 +53,10 @@
 
     <texture id="ui_save_load_back" x="692" y="0" width="288" height="428" />
    </file>
-<!--
-    <file name="ui\ui_sky_panorama">
-	    <texture id="ui_sleep_sky" x="0" y="0" width="2048" height="128" />
+
+    <file name="mfs_team\ui\ui_mfs_new_items_params_icons">
+		<texture id="ui_item_battery_icon" x="0" y="0" width="19" height="19" />
+		<texture id="ui_item_battery_uncharge_icon" x="19" y="0" width="19" height="19" />
+		<texture id="ui_item_battery_max_icon" x="38" y="0" width="19" height="19" />
    </file>
--->
 </w>

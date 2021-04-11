@@ -140,6 +140,7 @@
 
 #include "ui\af_params_16.xml"
 #include "ui\booster_params_16.xml"
+#include "ui\inventory_items_params_16.xml"
 
 	<upgrade_info>
 		<main_frame x="0" y="0" width="256" height="100"/>
@@ -335,7 +336,24 @@
 				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 			</static_value>
 		</fire_wound_immunity>
-
 	</outfit_info>
-
+	
+	<static_current_charge_level x="0" y="10" width="14" height="18" stretch="1">
+		<texture>ui_item_battery_icon</texture>
+	</static_current_charge_level>
+	
+	<cap_current_charge_level x="18" y="12" width="80" height="8">
+		<text font="letterica16" r="170" g="170" b="170" align="l">ui_inv_battery</text>
+	</cap_current_charge_level>
+	
+	<progress_current_charge_level x="104" y="14" width="101" height="9" horz="1">
+		<progress>
+			<texture a="150">ui_inGame2_hint_wnd_bar_alfa_line_16</texture>
+		</progress>
+		<background>
+			<texture>ui_inGame2_hint_wnd_bar_16</texture>
+		</background>
+		<color_less color="pda_red"  />
+		<color_more color="pda_green"/>
+	</progress_current_charge_level>
 </w>

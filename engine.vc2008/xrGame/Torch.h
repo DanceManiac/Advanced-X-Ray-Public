@@ -3,6 +3,7 @@
 #include "inventory_item_object.h"
 #include "hudsound.h"
 #include "script_export_space.h"
+#include "Battery.h"
 
 class CLAItem;
 class CNightVisionEffector;
@@ -26,6 +27,7 @@ protected:
 	ref_glow		glow_render;
 	Fvector			m_focus;
 	shared_str		m_light_section;
+
 private:
 	inline	bool	can_use_dynamic_lights	();
 
@@ -47,11 +49,25 @@ public:
 			void	Switch					();
 			void	Switch					(bool light_on);
 			bool	torch_active			() const;
+			void	UpdateChargeLevel		(void);
+	virtual void	save					(NET_Packet &output_packet);
+	virtual void	load					(IReader &input_packet);
+			float	GetCurrentChargeLevel	(void) const;
+			void	SetCurrentChargeLevel	(float val);
+			bool	IsSwitchedOn			(void) const;
+			float	GetUnchargeSpeed		(void) const;
+			void	Recharge				(float val);
 
 	virtual bool	can_be_attached			() const;
 
 	//CAttachableItem
 	virtual	void	enable					(bool value);
+
+	float			m_fMaxChargeLevel;
+	float			m_fCurrentChargeLevel;
+	float			m_fUnchargeSpeed;
+	float			m_fMaxRange;
+	float			m_fCurveRange;
  
 public:
 			void	SwitchNightVision		();

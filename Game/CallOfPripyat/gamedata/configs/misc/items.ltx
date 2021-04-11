@@ -693,6 +693,10 @@ inv_grid_height		= 1
 inv_grid_x			= 16
 inv_grid_y			= 12
 
+;Заряд
+max_charge_level		= 1.0 	;; Максимальный уровень заряда
+uncharge_speed			= 0.025 ;; Скорость разрядки
+
 ;вещью нельзя торговать
 can_trade			= true
 
@@ -744,3 +748,29 @@ anim_hide			= vodka_4
 anim_play			= vodka_5
 anim_prepare		= vodka_5
 anim_eat			= vodka_3
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;M.F.S. Team;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+[torch_battery]:booster
+$spawn 				= "food and drugs\kolbasa"
+class				= II_BATTE
+visual				= dynamics\equipments\battery.ogf
+description			= st_battery_descr
+
+inv_name			= st_battery
+inv_name_short			= st_battery
+inv_weight			= 0.025
+
+inv_grid_width			= 1
+inv_grid_height			= 1
+inv_grid_x				= 0
+inv_grid_y				= 27
+
+cost				= 25
+
+charge_level			= 1.0
+
+use_sound			= mfs_team\item_use\inv_battery
+

@@ -174,4 +174,19 @@
 	<string id="kb_switch_horn">
 		<text>Посигналить</text>
 	</string>
+	<string id="ui_inv_battery">
+		<text>Заряд батареи</text>
+	</string>
+	<string id="ui_inv_max_charge">
+		<text>Макс. заряд</text>
+	</string>
+	<string id="ui_inv_uncharge_speed">
+		<text>Расход батареи</text>
+	</string>
+	<string id="st_battery">
+		<text>Батарейка</text>
+	</string>
+	<string id="st_battery_descr">
+		<text>Стандартная пальчиковая батарейка. Повсеместно применяется сталкерами для зарядки различных приборов.</text>
+	</string>
 </string_table>

@@ -853,6 +853,7 @@
     <ClInclude Include="base_client_classes.h" />
     <ClInclude Include="base_client_classes_wrappers.h" />
     <ClInclude Include="BastArtifact.h" />
+    <ClInclude Include="Battery.h" />
     <ClInclude Include="best_scores_helper.h" />
     <ClInclude Include="best_scores_store.h" />
     <ClInclude Include="BlackDrops.h" />
@@ -1735,6 +1736,7 @@
     <ClInclude Include="ui\UIHint.h" />
     <ClInclude Include="ui\UIHudStatesWnd.h" />
     <ClInclude Include="ui\UIInteractiveBackground.h" />
+    <ClInclude Include="ui\UIInventoryItemParams.h" />
     <ClInclude Include="ui\UIInventoryUpgradeWnd.h" />
     <ClInclude Include="ui\UIInventoryUtilities.h" />
     <ClInclude Include="ui\UIInvUpgrade.h" />
@@ -2964,6 +2966,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="BastArtifact.cpp" />
+    <ClCompile Include="Battery.cpp" />
     <ClCompile Include="best_scores_helper.cpp" />
     <ClCompile Include="best_scores_store.cpp" />
     <ClCompile Include="BlackDrops.cpp" />
@@ -5048,6 +5051,7 @@
     <ClCompile Include="ui\UIHelper.cpp" />
     <ClCompile Include="ui\UIHint.cpp" />
     <ClCompile Include="ui\UIHudStatesWnd.cpp" />
+    <ClCompile Include="ui\UIInventoryItemParams.cpp" />
     <ClCompile Include="ui\UIInventoryUpgradeWnd.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
