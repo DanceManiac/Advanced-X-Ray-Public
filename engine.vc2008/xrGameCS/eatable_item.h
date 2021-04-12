@@ -9,7 +9,7 @@ class CEatableItem : public CInventoryItem {
 private:
 	typedef CInventoryItem	inherited;
 
-private:
+protected:
 	CPhysicItem		*m_physic_item;
 
 public:

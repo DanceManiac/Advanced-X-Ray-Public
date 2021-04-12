@@ -95,6 +95,7 @@
 	</wpn_params>
 
 #include "ui\af_params.xml"
+#include "ui\inventory_items_params.xml"
 
 	<upgrade_info>
 		<main_frame x="0" y="0" width="320" height="200"/>
@@ -302,7 +303,21 @@
 				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 			</static_value>
 		</fire_wound_immunity>
-
 	</outfit_info>
+	
+		<cap_current_charge_level x="0" y="0" width="121" height="8">
+			<text font="letterica16" r="124" g="119" b="115">ui_inv_battery</text>
+		</cap_current_charge_level>
+
+		<progress_current_charge_level x="0" y="16" width="121" height="8" horz="1">
+			<progress>
+				<texture a="255" r="55" g="255" b="255">ui_buymenu_progBar</texture>
+			</progress>
+			<background>
+				<texture a="90" r="55" g="255" b="255">ui_buymenu_progBar</texture>
+			</background>
+			<color_less color="pda_red"  />
+			<color_more color="pda_green"/>
+		</progress_current_charge_level>
 
 </w>

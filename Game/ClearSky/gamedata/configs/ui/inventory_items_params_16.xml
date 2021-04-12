@@ -1,0 +1,24 @@
+<inventory_items_info x="0" y="0" width="217" height="50">
+    <prop_line x="0" y="25" width="208" height="9" stretch="1">
+    </prop_line>
+	
+	<max_charge x="0" y="0" width="214" height="20">
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_item_battery_max_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="100">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</max_charge>
+
+	<uncharge_speed x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_item_battery_uncharge_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="100">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</uncharge_speed>
+</inventory_items_info>

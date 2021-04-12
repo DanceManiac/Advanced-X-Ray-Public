@@ -22,6 +22,9 @@
 #include "UIOutfitInfo.h"
 #include "../Weapon.h"
 #include "../CustomOutfit.h"
+#include "UIInventoryItemParams.h"
+#include "../AdvancedXrayGameConstants.h"
+#include "../Torch.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
 
@@ -41,9 +44,11 @@ CUIItemInfo::CUIItemInfo()
 	UIProperties				= NULL;
 	UIOutfitInfo				= NULL;
 	UIArtefactParams			= NULL;
+	UIInventoryItem				= NULL;
 	UIName						= NULL;
 	UIBackground				= NULL;
 	m_pInvItem					= NULL;
+	UIChargeConditionParams		= NULL;
 	m_b_FitToHeight				= false;
 	m_complex_desc				= false;
 }
@@ -55,6 +60,8 @@ CUIItemInfo::~CUIItemInfo()
 	xr_delete	(UIArtefactParams);
 	xr_delete	(UIProperties);
 	xr_delete	(UIOutfitInfo);
+	xr_delete	(UIInventoryItem);
+	xr_delete	(UIChargeConditionParams);
 }
 
 void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
@@ -113,6 +120,8 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 	{
 		UIConditionWnd					= xr_new<CUIConditionParams>();
 		UIConditionWnd->InitFromXml		(uiXml);
+		UIChargeConditionParams			= xr_new<CUIItemConditionParams>();
+		UIChargeConditionParams->InitFromXml(uiXml);
 		UIWpnParams						= xr_new<CUIWpnParams>();
 		UIWpnParams->InitFromXml		(uiXml);
 		UIArtefactParams				= xr_new<CUIArtefactParams>();
@@ -150,6 +159,15 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 	{
 		UIOutfitInfo			= xr_new<CUIOutfitInfo>();
 		UIOutfitInfo->InitFromXml( uiXml );
+	}
+
+	if (GameConstants::GetTorchHasBattery())
+	{
+		if (uiXml.NavigateToNode("inventory_items_info", 0))
+		{
+			UIInventoryItem = xr_new<CUIInventoryItem>();
+			UIInventoryItem->InitFromXml(uiXml);
+		}
 	}
 
 	xml_init.InitAutoStaticGroup	(uiXml, "auto", 0, this);
@@ -248,6 +266,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem, CInventoryItem* pCompareIte
 		TryAddArtefactInfo					(pInvItem->object().cNameSect());
 		TryAddOutfitInfo					(*pInvItem, pCompareItem);
 		TryAddUpgradeInfo					(*pInvItem);
+		TryAddItemInfo						(*pInvItem);
 
 		if(m_b_FitToHeight)
 		{
@@ -294,10 +313,17 @@ void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem*
 {
 	CWeapon*		weapon = smart_cast<CWeapon*>( &pInvItem );
 	CCustomOutfit*	outfit = smart_cast<CCustomOutfit*>( &pInvItem );
-	if ( weapon || outfit )
+	CTorch*			torch = smart_cast<CTorch*>(&pInvItem);
+	if ( weapon || outfit)
 	{
 		UIConditionWnd->SetInfo( pCompareItem, pInvItem );
 		UIDesc->AddWindow( UIConditionWnd, false );
+	}
+
+	if (torch)
+	{
+		UIChargeConditionParams->SetInfo(pCompareItem, pInvItem);
+		UIDesc->AddWindow(UIChargeConditionParams, false);
 	}
 }
 
@@ -336,6 +362,16 @@ void CUIItemInfo::TryAddUpgradeInfo( CInventoryItem& pInvItem )
 	{
 		UIProperties->set_item_info( pInvItem );
 		UIDesc->AddWindow( UIProperties, false );
+	}
+}
+
+void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
+{
+	CInventoryItemObject* item = smart_cast<CInventoryItemObject*>(&pInvItem);
+	if (item && UIInventoryItem)
+	{
+		UIInventoryItem->SetInfo(pInvItem.object().cNameSect());
+		UIDesc->AddWindow(UIInventoryItem, false);
 	}
 }
 

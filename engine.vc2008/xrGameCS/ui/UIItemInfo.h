@@ -12,6 +12,8 @@ class CUIArtefactParams;
 class CUIFrameWindow;
 class UIInvUpgPropertiesWnd;
 class CUIOutfitInfo;
+class CUIInventoryItem;
+class CUIItemConditionParams;
 
 extern const char * const 		fieldsCaptionColor;
 
@@ -41,6 +43,7 @@ public:
 	void				TryAddArtefactInfo	(const shared_str& af_section);
 	void				TryAddOutfitInfo	(CInventoryItem& pInvItem, CInventoryItem* pCompareItem);
 	void				TryAddUpgradeInfo	(CInventoryItem& pInvItem);
+	void				TryAddItemInfo		(CInventoryItem& pInvItem);
 	
 	virtual void		Draw				();
 	bool				m_b_FitToHeight;
@@ -54,10 +57,12 @@ public:
 	bool				m_complex_desc;
 
 	CUIConditionParams*		UIConditionWnd;
+	CUIItemConditionParams* UIChargeConditionParams;
 	CUIWpnParams*			UIWpnParams;
 	CUIArtefactParams*		UIArtefactParams;
 	UIInvUpgPropertiesWnd*	UIProperties;
 	CUIOutfitInfo*			UIOutfitInfo;
+	CUIInventoryItem*		UIInventoryItem;
 
 	Fvector2			UIItemImageSize; 
 	CUIStatic*			UIItemImage;

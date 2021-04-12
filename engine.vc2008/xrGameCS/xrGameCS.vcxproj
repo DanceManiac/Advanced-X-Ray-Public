@@ -830,6 +830,7 @@
     <ClInclude Include="base_client_classes.h" />
     <ClInclude Include="base_client_classes_wrappers.h" />
     <ClInclude Include="BastArtifact.h" />
+    <ClInclude Include="Battery.h" />
     <ClInclude Include="battleye.h" />
     <ClInclude Include="battleye_system.h" />
     <ClInclude Include="BlackDrops.h" />
@@ -1718,6 +1719,7 @@
     <ClInclude Include="ui\UIHint.h" />
     <ClInclude Include="ui\UIHudStatesWnd.h" />
     <ClInclude Include="ui\UIInteractiveBackground.h" />
+    <ClInclude Include="ui\UIInventoryItemParams.h" />
     <ClInclude Include="ui\UIInventoryUpgradeWnd.h" />
     <ClInclude Include="ui\UIInventoryUtilities.h" />
     <ClInclude Include="ui\UIInventoryWnd.h" />
@@ -2926,6 +2928,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="BastArtifact.cpp" />
+    <ClCompile Include="Battery.cpp" />
     <ClCompile Include="battleye_system.cpp" />
     <ClCompile Include="BlackDrops.cpp" />
     <ClCompile Include="BlackGraviArtifact.cpp" />
@@ -5040,6 +5043,7 @@
     <ClCompile Include="ui\UIHelper.cpp" />
     <ClCompile Include="ui\UIHint.cpp" />
     <ClCompile Include="ui\UIHudStatesWnd.cpp" />
+    <ClCompile Include="ui\UIInventoryItemParams.cpp" />
     <ClCompile Include="ui\UIInventoryUpgradeWnd.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>

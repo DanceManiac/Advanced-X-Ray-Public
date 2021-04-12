@@ -180,4 +180,25 @@
 	<string id="kb_grp_auto">
 		<text>Транспорт</text>
 	</string>
+	<string id="ui_inv_battery">
+		<text>Заряд батареи</text>
+	</string>
+	<string id="ui_inv_max_charge">
+		<text>Макс. заряд</text>
+	</string>
+	<string id="ui_inv_uncharge_speed">
+		<text>Расход батареи</text>
+	</string>
+	<string id="st_battery">
+		<text>Батарейка</text>
+	</string>
+	<string id="st_battery_descr">
+		<text>Стандартная пальчиковая батарейка. Повсеместно применяется сталкерами для зарядки различных приборов.</text>
+	</string>
+	<string id="st_device_torch">
+		<text>Фонарик</text>
+	</string>
+	<string id="st_device_torch_descr">
+		<text>Фонарь с креплением на голову. Пригодится сталкеру, которого ночь застала в дороге. C другой стороны, может привлечь чьё-то нежелательное внимание.</text>
+	</string>
 </string_table>

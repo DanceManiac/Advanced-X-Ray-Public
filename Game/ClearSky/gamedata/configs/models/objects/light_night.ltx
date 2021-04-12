@@ -1,4 +1,7 @@
 [torch_definition]
+max_range       = 30					; range max                <in meters> (increase this when range_curve is low to compensate, see formula below)
+max_range_r2    = 25					; range max                <in meters>
+curve_range     = 30 					; range curvature, the formula is: range = range_max * atan(range_curve * condition) / (pi/2)
 range           = 15					; range                 <in meters>
 range_r2        = 15			 		; range                 <in meters>
 color           = 1.0,1.0,1.0,0.2			; four color components <r,g,b,a> 0.f<X<3.f

@@ -168,7 +168,10 @@
     <!--texture id="merc_icon"      x="490" y="843" width="56" height="54" /-->
 
     <texture id="ui_hud_shk_stamina_new"		x="789" y="862" width="68" height="14" />
-
-
     </file>
+	
+    <file name="mfs_team\ui\mfs_new_items_icons_cs">
+		<texture id="ui_item_battery_max_icon" x="0" y="0" width="18" height="18" />
+		<texture id="ui_item_battery_uncharge_icon" x="20" y="0" width="18" height="18" />
+	</file>
 </w>
