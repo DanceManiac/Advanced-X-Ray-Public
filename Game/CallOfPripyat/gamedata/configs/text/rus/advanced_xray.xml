@@ -189,4 +189,7 @@
 	<string id="st_battery_descr">
 		<text>Стандартная пальчиковая батарейка. Повсеместно применяется сталкерами для зарядки различных приборов.</text>
 	</string>
+	<string id="st_charge_item">
+		<text>Зарядить</text>
+	</string>
 </string_table>

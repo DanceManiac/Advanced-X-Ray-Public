@@ -120,4 +120,7 @@ enum EUIMessages
 	MAP_SELECT_SPOT,
 
 	MAIN_MENU_RELOADED,
+
+	//Battery
+	BATTERY_CHARGE_TORCH,
 };

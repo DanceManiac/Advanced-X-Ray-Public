@@ -43,6 +43,10 @@ bool CBattery::Useful() const
 {
 	if (!inherited::Useful()) return false;
 
+	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+
+	if (!flashlight) return false;
+
 	//проверить не все ли еще съедено
 	if (m_iPortionsNum == 0) return false;
 
@@ -51,16 +55,19 @@ bool CBattery::Useful() const
 
 void CBattery::UseBy(CEntityAlive* entity_alive)
 {
+	//уменьшить количество порций
+	if (m_iPortionsNum > 0)
+		--(m_iPortionsNum);
+	else
+		m_iPortionsNum = 0;
+}
+
+void CBattery::ChargeTorch()
+{
 	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 
 	if (flashlight)
 		flashlight->Recharge(m_fBatteryChargeLevel);
 
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
-
-	//уменьшить количество порций
-	if (m_iPortionsNum > 0)
-		--(m_iPortionsNum);
-	else
-		m_iPortionsNum = 0;
 }

@@ -24,6 +24,7 @@
 #include "../Medkit.h"
 #include "../Antirad.h"
 #include "../CustomOutfit.h"
+#include "../Battery.h"
 #include "../UICursor.h"
 #include "../MPPlayersBag.h"
 #include "../HUDManager.h"
@@ -748,8 +749,9 @@ bool CUIActorMenu::TryUseItem( CUICellItem* cell_itm )
 	CMedkit*		pMedkit			= smart_cast<CMedkit*>		(item);
 	CAntirad*		pAntirad		= smart_cast<CAntirad*>		(item);
 	CEatableItem*	pEatableItem	= smart_cast<CEatableItem*>	(item);
+	CBattery*		pBattery		= smart_cast<CBattery*>		(item);
 
-	if ( !(pMedkit || pAntirad || pEatableItem || pBottleItem) )
+	if ( !(pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery) )
 	{
 		return false;
 	}
@@ -987,17 +989,34 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 	}
 }
 
+#include "../string_table.h"
+
 void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 {
 	CMedkit*		pMedkit			= smart_cast<CMedkit*>		(item);
 	CAntirad*		pAntirad		= smart_cast<CAntirad*>		(item);
 	CEatableItem*	pEatableItem	= smart_cast<CEatableItem*>	(item);
 	CBottleItem*	pBottleItem		= smart_cast<CBottleItem*>	(item);
+	CBattery*		pBattery = smart_cast<CBattery*>		(item);
+
+	CInventory*	inv = &m_pActorInvOwner->inventory();
+	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
 
 	LPCSTR act_str = NULL;
 	if ( pMedkit || pAntirad )
 	{
 		act_str = "st_use";
+	}
+	else if (pBattery)
+	{
+		if (item_in_torch_slot)
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_torch_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_torch_slot, BATTERY_CHARGE_TORCH);
+			b_show = true;
+		}
+		return;
 	}
 	else if ( pEatableItem )
 	{
@@ -1122,6 +1141,15 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 		{
 			TryRepairItem(this,0);
 			return;
+			break;
+		}
+	case BATTERY_CHARGE_TORCH:
+		{
+			CBattery* battery = smart_cast<CBattery*>(item);
+			if (!battery)
+				break;
+			battery->ChargeTorch();
+			TryUseItem(cell_item);
 			break;
 		}
 	}//switch

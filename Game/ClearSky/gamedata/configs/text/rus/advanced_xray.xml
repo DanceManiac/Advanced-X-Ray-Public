@@ -201,4 +201,7 @@
 	<string id="st_device_torch_descr">
 		<text>‘онарь с креплением на голову. ѕригодитс€ сталкеру, которого ночь застала в дороге. C другой стороны, может привлечь чьЄ-то нежелательное внимание.</text>
 	</string>
+	<string id="st_charge_item">
+		<text>«ар€дить</text>
+	</string>
 </string_table>

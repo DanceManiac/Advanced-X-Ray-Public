@@ -19,6 +19,7 @@ public:
 	virtual	bool			Empty() { return PortionsNum() == 0; };
 			int				PortionsNum()	const { return m_iPortionsNum; }
 			float			m_fBatteryChargeLevel;
+			void			ChargeTorch();
 protected:
 			int				m_iPortionsNum;
 };

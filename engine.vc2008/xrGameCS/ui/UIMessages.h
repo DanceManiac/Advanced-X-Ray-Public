@@ -144,4 +144,7 @@ enum EUIMessages
 	MAP_SHOW_HINT,
 	MAP_HIDE_HINT,
 	MAP_SELECT_SPOT,
+
+	//Battery
+	BATTERY_CHARGE_TORCH,
 };
