@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: Battery.cpp
 //	Created 	: 07.04.2021
-//  Modified 	: 07.04.2021
+//  Modified 	: 19.04.2021
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Torch battery
 ////////////////////////////////////////////////////////////////////////////
@@ -11,6 +11,7 @@
 #include "Torch.h"
 #include "Actor.h"
 #include "inventory.h"
+#include "CustomDetector.h"
 
 CBattery::CBattery()
 {
@@ -44,8 +45,11 @@ bool CBattery::Useful() const
 	if (!inherited::Useful()) return false;
 
 	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* artifact_detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (!flashlight) return false;
+
+	if (!artifact_detector) return false;
 
 	//проверить не все ли еще съедено
 	if (m_iPortionsNum == 0) return false;
@@ -68,6 +72,16 @@ void CBattery::ChargeTorch()
 
 	if (flashlight)
 		flashlight->Recharge(m_fBatteryChargeLevel);
+
+	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
+}
+
+void CBattery::ChargeArtifactDetector()
+{
+	CCustomDetector* artifact_detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (artifact_detector)
+		artifact_detector->Recharge(m_fBatteryChargeLevel);
 
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }

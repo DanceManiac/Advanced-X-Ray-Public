@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: UIInventoryItemParams.cpp
 //	Created 	: 08.04.2021
-//  Modified 	: 11.04.2021
+//  Modified 	: 18.04.2021
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Inventory Item Window Class
 ////////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,7 @@
 #include "UIActorMenu.h"
 
 #include "../Torch.h"
+#include "../CustomDetector.h"
 
 CUIInventoryItem::CUIInventoryItem()
 {

@@ -10,7 +10,8 @@ bool	m_bBackpackSlotEnabled = false;
 bool	m_bDosimeterSlotEnabled = false;
 bool	m_bPantsSlotEnabled = false;
 bool	m_bPdaSlotEnabled = false;
-bool	m_bTorchHasBattery = false;
+bool	m_bTorchUseBattery = false;
+bool	m_bArtefactDetectorUseBattery = false;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -19,7 +20,8 @@ namespace GameConstants
 	void LoadConstants()
 	{
 		m_bDistantSoundsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "distant_sounds_enabled", true);
-		m_bTorchHasBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "torch_has_battery", false);
+		m_bTorchUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "torch_use_battery", false);
+		m_bArtefactDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefact_detector_use_battery", false);
 		m_bKnifeSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_knife_slot", false);
 		m_bBinocularSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_binocular_slot", false);
 		m_bTorchSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_torch_slot", false);
@@ -35,7 +37,12 @@ namespace GameConstants
 	
 	bool GetTorchHasBattery()
 	{
-		return m_bTorchHasBattery;
+		return m_bTorchUseBattery;
+	}
+
+	bool GetArtDetectorUseBattery()
+	{
+		return m_bArtefactDetectorUseBattery;
 	}
 
 	bool GetDistantSoundsEnabled()

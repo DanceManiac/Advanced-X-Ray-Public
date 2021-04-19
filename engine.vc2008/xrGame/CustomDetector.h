@@ -7,6 +7,8 @@
 #include "ai_sounds.h"
 //#include "ui/ArtefactDetectorUI.h"
 
+#include "Battery.h"
+
 class CCustomZone;
 class CInventoryOwner;
 
@@ -151,6 +153,18 @@ public:
 	virtual bool	CheckCompatibility	(CHudItem* itm);
 
 	virtual u32		ef_detector_type	() const	{return 1;};
+
+			void	UpdateChargeLevel	(void);
+	virtual void	save				(NET_Packet &output_packet);
+	virtual void	load				(IReader &input_packet);
+			float	GetCurrentChargeLevel(void) const;
+			void	SetCurrentChargeLevel(float val);
+			float	GetUnchargeSpeed	(void) const;
+			void	Recharge			(float val);
+
+			float	m_fMaxChargeLevel;
+			float	m_fCurrentChargeLevel;
+			float	m_fUnchargeSpeed;
 protected:
 			bool	CheckCompatibilityInt		(CHudItem* itm, u16* slot_to_activate);
 			void 	TurnDetectorInternal		(bool b);

@@ -10,6 +10,8 @@
 #include "ui/UIWindow.h"
 #include "player_hud.h"
 #include "weapon.h"
+#include "AdvancedXrayGameConstants.h"
+#include "Battery.h"
 
 ITEM_INFO::ITEM_INFO()
 {
@@ -184,6 +186,10 @@ CCustomDetector::CCustomDetector()
 	m_ui				= NULL;
 	m_bFastAnimMode		= false;
 	m_bNeedActivation	= false;
+
+	m_fMaxChargeLevel = 0.0f;
+	m_fCurrentChargeLevel = 1.0f;
+	m_fUnchargeSpeed = 0.0f;
 }
 
 CCustomDetector::~CCustomDetector() 
@@ -209,6 +215,15 @@ void CCustomDetector::Load(LPCSTR section)
 
 	m_sounds.LoadSound( section, "snd_draw", "sndShow");
 	m_sounds.LoadSound( section, "snd_holster", "sndHide");
+
+	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
+	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+
+	if (GameConstants::GetArtDetectorUseBattery())
+	{
+		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
+		m_fCurrentChargeLevel = rnd_charge;
+	}
 }
 
 
@@ -233,6 +248,7 @@ bool CCustomDetector::IsWorking()
 
 void CCustomDetector::UpfateWork()
 {
+	if (m_fCurrentChargeLevel > 0)
 	UpdateAf				();
 	m_ui->update			();
 }
@@ -280,6 +296,9 @@ void CCustomDetector::UpdateVisibility()
 void CCustomDetector::UpdateCL() 
 {
 	inherited::UpdateCL();
+
+	if (GameConstants::GetArtDetectorUseBattery())
+		UpdateChargeLevel();
 
 	if(H_Parent()!=Level().CurrentEntity() )			return;
 
@@ -337,6 +356,68 @@ void CCustomDetector::TurnDetectorInternal(bool b)
 #include "game_base_space.h"
 void CCustomDetector::UpdateNightVisionMode(bool b_on)
 {
+}
+
+void CCustomDetector::save(NET_Packet &output_packet)
+{
+	inherited::save(output_packet);
+	save_data(m_fCurrentChargeLevel, output_packet);
+
+}
+
+void CCustomDetector::load(IReader &input_packet)
+{
+	inherited::load(input_packet);
+	load_data(m_fCurrentChargeLevel, input_packet);
+}
+
+void CCustomDetector::UpdateChargeLevel(void)
+{
+	if (IsWorking())
+	{
+		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
+
+		m_fCurrentChargeLevel -= uncharge_coef;
+
+		float condition = 1.f * m_fCurrentChargeLevel;
+		SetCondition(condition);
+
+		//Msg("Заряд детектора: %f", m_fCurrentChargeLevel); //Для тестов
+
+		clamp(m_fCurrentChargeLevel, 0.f, 1.f);
+		SetCondition(m_fCurrentChargeLevel);
+	}
+	/*else
+		SetCondition(m_fCurrentChargeLevel);*/
+}
+
+float CCustomDetector::GetUnchargeSpeed() const
+{
+	return m_fUnchargeSpeed;
+}
+
+float CCustomDetector::GetCurrentChargeLevel() const
+{
+	return m_fCurrentChargeLevel;
+}
+
+void CCustomDetector::SetCurrentChargeLevel(float val)
+{
+	m_fCurrentChargeLevel = val;
+	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
+	SetCondition(condition);
+}
+
+void CCustomDetector::Recharge(float val)
+{
+	m_fCurrentChargeLevel = m_fCurrentChargeLevel + val;
+
+	SetCondition(m_fCurrentChargeLevel);
+
+	//Msg("Переданый в детектор заряд: %f", val); //Для Тестов
+
+	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
+		m_fCurrentChargeLevel = m_fMaxChargeLevel;
 }
 
 BOOL CAfList::feel_touch_contact	(CObject* O)

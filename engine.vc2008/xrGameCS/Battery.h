@@ -20,6 +20,7 @@ public:
 			int				PortionsNum()	const { return m_iPortionsNum; }
 			float			m_fBatteryChargeLevel;
 			void			ChargeTorch();
+			void			ChargeArtifactDetector();
 protected:
 			int				m_iPortionsNum;
 };

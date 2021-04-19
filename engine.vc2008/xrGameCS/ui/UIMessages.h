@@ -147,4 +147,5 @@ enum EUIMessages
 
 	//Battery
 	BATTERY_CHARGE_TORCH,
+	BATTERY_CHARGE_DETECTOR,
 };

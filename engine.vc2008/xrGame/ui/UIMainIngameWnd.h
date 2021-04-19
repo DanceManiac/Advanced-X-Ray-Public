@@ -52,7 +52,7 @@ public:
 	CUIStatic*			m_ind_boost_health;
 	CUIStatic*			m_ind_boost_power;
 	CUIStatic*			m_ind_boost_rad;
-	CUIStatic*			m_ind_torch_battery;
+	CUIStatic*			m_ind_battery;
 
 public:
 		void			ShowZoneMap(bool status);
