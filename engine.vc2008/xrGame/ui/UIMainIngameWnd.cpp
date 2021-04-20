@@ -56,6 +56,7 @@
 
 #include "Torch.h"
 #include "CustomDetector.h"
+#include "AnomalyDetector.h"
 
 void test_draw	();
 void test_key	(int dik);
@@ -819,6 +820,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	// M.F.S. Team Torch Battery icon
 	CTorch* torch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
 	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(pActor->inventory().ItemFromSlot(DETECTOR_SLOT));
+	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(pActor->inventory().ItemFromSlot(DOSIMETER_SLOT));
 	m_ind_battery->Show(false);
 	if (torch)
 	{
@@ -829,9 +831,20 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			m_ind_battery->InitTexture("ui_inGame2_circle_TorchLowBattery_red");
 		}
 	}
-	else if (artefact_detector)
+
+	if (artefact_detector)
 	{
 		float condition = artefact_detector->m_fCurrentChargeLevel;
+		if (condition <= 0.0f)
+		{
+			m_ind_battery->Show(true);
+			m_ind_battery->InitTexture("ui_inGame2_circle_TorchLowBattery_red");
+		}
+	}
+	
+	if (anomaly_detector)
+	{
+		float condition = anomaly_detector->m_fCurrentChargeLevel;
 		if (condition <= 0.0f)
 		{
 			m_ind_battery->Show(true);

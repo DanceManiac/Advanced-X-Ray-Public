@@ -1002,6 +1002,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CInventory*	inv = &m_pActorInvOwner->inventory();
 	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
 	PIItem	item_in_art_detector_slot = inv->ItemFromSlot(DETECTOR_SLOT);
+	PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
 
 	LPCSTR act_str = NULL;
 	if ( pMedkit || pAntirad )
@@ -1023,6 +1024,14 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_art_detector_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_art_detector_slot, BATTERY_CHARGE_DETECTOR);
+			b_show = true;
+		}
+
+		if (item_in_anomaly_detector_slot)
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
 			b_show = true;
 		}
 		return;
@@ -1167,6 +1176,15 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			if (!battery)
 				break;
 			battery->ChargeArtifactDetector();
+			TryUseItem(cell_item);
+			break;
+		}
+	case BATTERY_CHARGE_DOSIMETER:
+		{
+			CBattery* battery = smart_cast<CBattery*>(item);
+			if (!battery)
+				break;
+			battery->ChargeAnomalyDetector();
 			TryUseItem(cell_item);
 			break;
 		}

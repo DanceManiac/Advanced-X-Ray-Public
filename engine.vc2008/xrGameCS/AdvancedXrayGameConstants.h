@@ -14,6 +14,7 @@ namespace GameConstants
 	bool GetPdaSlotEnabled();
 	bool GetTorchHasBattery();
 	bool GetArtDetectorUseBattery();
+	bool GetAnoDetectorUseBattery();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

@@ -11,6 +11,8 @@
 #include "ai_sounds.h"
 #include "player_hud.h"
 #include "weapon.h"
+#include "AdvancedXrayGameConstants.h"
+#include "Battery.h"
 
 ZONE_INFO::ZONE_INFO	()
 {
@@ -26,6 +28,9 @@ ZONE_INFO::~ZONE_INFO	()
 CDetectorAnomaly::CDetectorAnomaly(void)
 {
 	m_bWorking					= false;
+	m_fMaxChargeLevel			= 0.0f;
+	m_fCurrentChargeLevel		= 1.0f;
+	m_fUnchargeSpeed			= 0.0f;
 }
 
 CDetectorAnomaly::~CDetectorAnomaly(void)
@@ -89,6 +94,15 @@ void CDetectorAnomaly::Load(LPCSTR section)
 	} while(true);
 
 	m_ef_detector_type	= pSettings->r_u32(section,"ef_detector_type");
+
+	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
+	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+
+	if (GameConstants::GetAnoDetectorUseBattery())
+	{
+		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
+		m_fCurrentChargeLevel = rnd_charge;
+	}
 }
 
 
@@ -124,8 +138,12 @@ void CDetectorAnomaly::UpdateCL()
 {
 	inherited::UpdateCL();
 
+	if (GameConstants::GetAnoDetectorUseBattery())
+		UpdateChargeLevel();
+
 	if( !IsWorking() ) return;
 	if( !H_Parent()  ) return;
+	if (m_fCurrentChargeLevel <= 0.0) return;
 
 	if(!m_pCurrentActor) return;
 
@@ -235,6 +253,68 @@ void CDetectorAnomaly::TurnOn()
 void CDetectorAnomaly::TurnOff()
 {
 	m_bWorking				= false;
+}
+
+void CDetectorAnomaly::save(NET_Packet &output_packet)
+{
+	inherited::save(output_packet);
+	save_data(m_fCurrentChargeLevel, output_packet);
+
+}
+
+void CDetectorAnomaly::load(IReader &input_packet)
+{
+	inherited::load(input_packet);
+	load_data(m_fCurrentChargeLevel, input_packet);
+}
+
+void CDetectorAnomaly::UpdateChargeLevel(void)
+{
+	if (IsWorking())
+	{
+		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
+
+		m_fCurrentChargeLevel -= uncharge_coef;
+
+		float condition = 1.f * m_fCurrentChargeLevel;
+		SetCondition(condition);
+
+		//Msg("Update Charge Lvl Anomaly Detector: %f", m_fCurrentChargeLevel); //For test
+
+		clamp(m_fCurrentChargeLevel, 0.f, 1.f);
+		SetCondition(m_fCurrentChargeLevel);
+	}
+	/*else
+		SetCondition(m_fCurrentChargeLevel);*/
+}
+
+float CDetectorAnomaly::GetUnchargeSpeed() const
+{
+	return m_fUnchargeSpeed;
+}
+
+float CDetectorAnomaly::GetCurrentChargeLevel() const
+{
+	return m_fCurrentChargeLevel;
+}
+
+void CDetectorAnomaly::SetCurrentChargeLevel(float val)
+{
+	m_fCurrentChargeLevel = val;
+	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
+	SetCondition(condition);
+}
+
+void CDetectorAnomaly::Recharge(float val)
+{
+	m_fCurrentChargeLevel = m_fCurrentChargeLevel + val;
+
+	SetCondition(m_fCurrentChargeLevel);
+
+	//Msg("Charge Level In Recharge: %f", val); //For Test
+
+	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
+		m_fCurrentChargeLevel = m_fMaxChargeLevel;
 }
 
 /*void CCustomDetector::AddRemoveMapSpot(CCustomZone* pZone, bool bAdd)

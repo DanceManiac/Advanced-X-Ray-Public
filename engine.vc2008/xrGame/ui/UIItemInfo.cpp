@@ -28,6 +28,7 @@
 #include "../AdvancedXrayGameConstants.h"
 #include "../Torch.h"
 #include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
 
@@ -184,7 +185,7 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 		UIOutfitInfo->InitFromXml	(uiXml);
 	}
 
-	if (GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery())
+	if (GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery() || GameConstants::GetAnoDetectorUseBattery())
 	{
 		if (uiXml.NavigateToNode("inventory_items_info", 0))
 		{
@@ -373,8 +374,9 @@ void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem*
 	//CCustomOutfit*	outfit = smart_cast<CCustomOutfit*>( &pInvItem );
 	CTorch*			torch = smart_cast<CTorch*>(&pInvItem);
 	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
+	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
 
-	if ( torch || artefact_detector)
+	if ( torch || artefact_detector || anomaly_detector)
 	{
 		UIItemConditionParams->SetInfo( pCompareItem, pInvItem );
 		UIDesc->AddWindow(UIItemConditionParams, false );

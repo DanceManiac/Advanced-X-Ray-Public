@@ -21,6 +21,7 @@ public:
 			float			m_fBatteryChargeLevel;
 			void			ChargeTorch();
 			void			ChargeArtifactDetector();
+			void			ChargeAnomalyDetector();
 protected:
 			int				m_iPortionsNum;
 };

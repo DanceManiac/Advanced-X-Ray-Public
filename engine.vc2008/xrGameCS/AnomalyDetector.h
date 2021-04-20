@@ -2,6 +2,7 @@
 #include "inventory_item_object.h"
 #include "../xrEngine/Feel_Touch.h"
 #include "hudsound.h"
+#include "Battery.h"
 
 class CCustomZone;
 //описание типа зоны
@@ -60,6 +61,18 @@ public:
 
 	virtual void OnMoveToSlot		();
 	virtual void OnMoveToRuck		(EItemPlace prev);
+
+			void UpdateChargeLevel	(void);
+	virtual void save				(NET_Packet &output_packet);
+	virtual void load				(IReader &input_packet);
+			float GetCurrentChargeLevel(void) const;
+			void SetCurrentChargeLevel(float val);
+			float GetUnchargeSpeed	(void) const;
+			void Recharge			(float val);
+
+			float m_fMaxChargeLevel;
+			float m_fCurrentChargeLevel;
+			float m_fUnchargeSpeed;
 
 protected:
 	void StopAllSounds				();

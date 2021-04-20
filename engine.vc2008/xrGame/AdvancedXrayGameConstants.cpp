@@ -13,6 +13,7 @@ bool	m_bPantsSlotEnabled = false;
 bool	m_bPdaSlotEnabled = false;
 bool	m_bTorchUseBattery = false;
 bool	m_bArtefactDetectorUseBattery = false;
+bool	m_bAnomalyDetectorUseBattery = false;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -23,6 +24,7 @@ namespace GameConstants
 		m_bDistantSoundsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "distant_sounds_enabled", true);
 		m_bTorchUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "torch_use_battery", false);
 		m_bArtefactDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefact_detector_use_battery", false);
+		m_bAnomalyDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "anomaly_detector_use_battery", false);
 		m_bKnifeSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_knife_slot", false);
 		m_bBinocularSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_binocular_slot", false);
 		m_bTorchSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_torch_slot", false);
@@ -90,6 +92,11 @@ namespace GameConstants
 	bool GetArtDetectorUseBattery()
 	{
 		return m_bArtefactDetectorUseBattery;
+	}
+
+	bool GetAnoDetectorUseBattery()
+	{
+		return m_bAnomalyDetectorUseBattery;
 	}
 
 	float GetDistantSndDistance()
