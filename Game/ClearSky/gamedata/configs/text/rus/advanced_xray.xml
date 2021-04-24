@@ -3,6 +3,9 @@
 	<string id="st_game_window_name">
 		<text>Advanced X-Ray 1.3.90</text>
 	</string>
+	<string id="st_discord_menu">
+		<text>Главное Меню</text>
+	</string>
 	<string id="ui_mm_cam_fov">
 		<text>Поле зрения</text>
 	</string>

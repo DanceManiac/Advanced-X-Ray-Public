@@ -25,6 +25,7 @@
 #include "object_broker.h"
 
 #include "../xrEngine/DiscordRichPresense.h"
+#include "../xrEngine/x_ray.h"
 
 //#define DEMO_BUILD
 
@@ -108,8 +109,6 @@ CMainMenu::~CMainMenu	()
 	g_pGamePersistent->m_pMainMenu	= NULL;
 	xr_delete						(m_pGameSpyFull);
 	delete_data						(m_pMB_ErrDlgs);
-
-	g_discord.SetStatus(xrDiscordPresense::StatusId::In_Game);
 }
 
 void CMainMenu::ReadTextureInfo()
@@ -185,7 +184,8 @@ void CMainMenu::Activate	(bool bActivate)
 
 		if (g_pGameLevel == nullptr)
 		{
-			g_discord.SetStatus(xrDiscordPresense::StatusId::Menu);
+			snprintf(rpc_settings.Detail, 128, ToUTF8(*CStringTable().translate("st_discord_menu")).c_str());
+			g_discord.SetStatus();
 		}
 	}else{
 		m_deactivated_frame					= Device.dwFrame;

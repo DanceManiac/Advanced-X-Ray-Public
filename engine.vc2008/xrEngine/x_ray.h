@@ -76,5 +76,6 @@ public:
 };
 
 extern ENGINE_API	CApplication*	pApp;
+extern ENGINE_API	std::string ToUTF8			(const char* str);
 
 #endif //__XR_BASE_H__

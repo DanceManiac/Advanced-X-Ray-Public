@@ -13,6 +13,8 @@
 #include "NET_Queue.h"
 #include "file_transfer.h"
 
+#include "../xrEngine/DiscordRichPresense.h"
+
 extern	pureFrame*				g_pNetProcessor;
 
 BOOL CLevel::net_Start_client	( LPCSTR options )
@@ -109,6 +111,11 @@ bool	CLevel::net_start_client3				()
 		map_data.m_map_loaded			= true;
 		
 		deny_m_spawn			= FALSE;
+
+		snprintf(rpc_settings.Detail, 128, ToUTF8(*CStringTable().translate(level_name)).c_str());
+		snprintf(rpc_settings.LargeImageKey, 128, level_name);
+		g_discord.SetStatus();
+
 		// Load level
 		R_ASSERT2				(Load(level_id),"Loading failed.");
 		map_data.m_level_geom_crc32 = 0;

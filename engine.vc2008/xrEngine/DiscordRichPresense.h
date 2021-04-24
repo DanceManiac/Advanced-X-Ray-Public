@@ -3,42 +3,34 @@
 class ENGINE_API xrDiscordPresense
 {
 public:
-	enum class StatusId
+	struct RPC_Settings
 	{
-		Menu,
-		In_Game,
-		Zaton,
-		Upiter,
-		Pripyat,
-		LabX8,
-		JupiterUnder,
-		Marsh,
-		Escape,
-		Garbage,
-		Darkvalley,
-		Agroprom,
-		AgrUnder,
-		Yantar,
-		RedForest,
-		Military,
-		Limansk,
-		Hospital,
-		Stancia2
+		void Default()
+		{
+			strcpy_s(Detail, "");
+			strcpy_s(State, "");
+			strcpy_s(LargeImageKey, "main_picture");
+			strcpy_s(LargeImageText, "");
+		}
+		char Detail[128];
+		char State[128];
+		char LargeImageKey[128];
+		char SmallImageKey[128];
+		char LargeImageText[128];
+		char SmallImageText[128];
 	};
-
-public:
-
 	void Initialize();
 	void Shutdown();
 
-	void SetStatus(StatusId status);
-	float LowlandFogBaseHeight;
-	LPCSTR discord_app_id;
-
+	void SetStatus();
 	~xrDiscordPresense();
 
+	float LowlandFogBaseHeight;
+	LPCSTR discord_app_id;
 private:
 	bool bInitialize = false;
+	bool bGameRPCInfoInit = false;
 };
 
 extern ENGINE_API xrDiscordPresense g_discord;
+extern ENGINE_API xrDiscordPresense::RPC_Settings rpc_settings;
