@@ -168,6 +168,14 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 	m_progressHandling.SetTwoPos( cur_hand,   slot_hand );
 	m_progressRPM.SetTwoPos(      cur_rpm,    slot_rpm );
 
+	const bool showAmmo READ_IF_EXISTS(pSettings, r_bool, cur_section, "show_ammo", true);
+	m_progressRPM.Show(showAmmo);
+	m_progressAccuracy.Show(showAmmo);
+	m_textAccuracy.Show(showAmmo);
+	m_textRPM.Show(showAmmo);
+	m_icon_rpm.Show(showAmmo);
+	m_icon_acc.Show(showAmmo);
+
 	if(IsGameTypeSingle())
 	{
 		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
@@ -175,7 +183,23 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		xr_vector<shared_str> ammo_types;
 
 		CWeapon* weapon = cur_wpn.cast_weapon();
+
 		if(!weapon)
+			return;
+
+			m_stAmmo.Show(showAmmo);
+			m_textAmmoCount.Show(showAmmo);
+			m_textAmmoCount2.Show(showAmmo);
+			m_textAmmoTypes.Show(showAmmo);
+			m_textAmmoUsedType.Show(showAmmo);
+			m_stAmmoType1.Show(showAmmo);
+			m_stAmmoType2.Show(showAmmo);
+			m_stAmmoType3.Show(showAmmo);
+			m_stAmmoType4.Show(showAmmo);
+			m_stAmmoType5.Show(showAmmo);
+			m_stAmmoType6.Show(showAmmo);
+
+		if (!showAmmo)
 			return;
 
 		int ammo_count = weapon->GetAmmoMagSize();
