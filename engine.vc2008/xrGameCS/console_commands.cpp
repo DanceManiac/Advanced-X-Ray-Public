@@ -60,6 +60,7 @@
 
 string_path		g_last_saved_game;
 int				quick_save_counter = 0;
+extern u32		last_quick;
 
 #ifdef DEBUG
 	extern float air_resistance_epsilon;
@@ -587,8 +588,8 @@ public:
 		CTimer					timer;
 		timer.Start				();
 #endif
-		if (!xr_strlen(S)){
-			static u32 last_quick = 0;
+		if (!xr_strlen(S))
+		{
 			xr_sprintf(S, "%s - quicksave %d", Core.UserName, last_quick);
 			NET_Packet			net_packet;
 			net_packet.w_begin	(M_SAVE_GAME);
@@ -597,7 +598,9 @@ public:
 			Level().Send		(net_packet,net_flags(TRUE));
 			if (last_quick < quick_save_counter) last_quick++;
 			else last_quick = 0;
-		}else{
+		}
+		else
+		{
 			if(!valid_saved_game_name(S)){
 				Msg("! Save failed: invalid file name - %s", S);
 				return;
