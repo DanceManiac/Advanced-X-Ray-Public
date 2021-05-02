@@ -269,13 +269,13 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		m_pInventoryBagList,
 		m_pTradeActorBagList,
 		m_pTradeActorList,
-		m_pInventoryKnifeList,
-		m_pInventoryBinocularList,
-		m_pInventoryTorchList,
-		m_pInventoryBackpackList,
-		m_pInventoryDosimeterList,
-		m_pInventoryPantsList,
-		m_pInventoryPdaList,
+		GameConstants::GetKnifeSlotEnabled() ? m_pInventoryKnifeList : nullptr,
+		GameConstants::GetBinocularSlotEnabled() ? m_pInventoryBinocularList : nullptr,
+		GameConstants::GetTorchSlotEnabled() ? m_pInventoryTorchList : nullptr,
+		GameConstants::GetBackpackSlotEnabled() ? m_pInventoryBackpackList : nullptr,
+		GameConstants::GetDosimeterSlotEnabled() ? m_pInventoryDosimeterList : nullptr,
+		GameConstants::GetPantsSlotEnabled() ? m_pInventoryPantsList : nullptr,
+		GameConstants::GetPdaSlotEnabled() ? m_pInventoryPdaList : nullptr,
 		NULL
 	};
 
@@ -284,10 +284,9 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		case GE_TRADE_BUY :
 		case GE_OWNERSHIP_TAKE : 
 			{
-				u32 i			= 0;
 				bool b_already	= false;
 
-				CUIDragDropListEx* lst_to_add		= NULL;
+				CUIDragDropListEx* lst_to_add		= nullptr;
 				EItemPlace pl						= pItem->m_eItemCurrPlace;
 				if ( pItem->GetSlot() == GRENADE_SLOT )
 				{
@@ -304,63 +303,68 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 				else if(pl==EItemPlaceBelt)
 					lst_to_add						= GetListByType(iActorBelt);
 
+		for (auto& curr : all_lists)
+		{
+			if (!curr) // m_pInventoryHelmetList can be nullptr
+				continue;
+			CUICellItem* ci = nullptr;
 
-				while ( all_lists[i] )
-				{
-					CUIDragDropListEx*	curr = all_lists[i];
-					CUICellItem*		ci   = NULL;
-
-					if ( FindItemInList(curr, pItem, ci) )
-					{
-						if ( lst_to_add != curr )
-						{
-							RemoveItemFromList(curr, pItem);
-						}
-						else
-						{
-							b_already = true;
-						}
-						//break;
-					}
-					++i;
-				}
-				if ( !b_already )
-				{
-					if ( lst_to_add )
-					{
-						CUICellItem* itm	= create_cell_item(pItem);
-						lst_to_add->SetItem	(itm);
-					}
-				}
-			}break;
-		case GE_TRADE_SELL :
-		case GE_OWNERSHIP_REJECT : 
+			if (FindItemInList(curr, pItem, ci))
 			{
-				if(CUIDragDropListEx::m_drag_item)
+				if (lst_to_add != curr)
 				{
-					CUIInventoryCellItem* ici = smart_cast<CUIInventoryCellItem*>(CUIDragDropListEx::m_drag_item->ParentItem());
-					R_ASSERT(ici);
-					if(ici->object()==pItem)
-					{
-						CUIDragDropListEx*	_drag_owner		= ici->OwnerList();
-						_drag_owner->DestroyDragItem		();
-					}
+					RemoveItemFromList(curr, pItem);
 				}
-				
-				u32 i = 0;
-				while(all_lists[i])
+				else
 				{
-					CUIDragDropListEx* curr = all_lists[i];
-					if(RemoveItemFromList(curr, pItem))
-					{
-#ifndef MASTER_GOLD
-						Msg("all ok. item [%d] removed from list", pItem->object_id());
-#endif // #ifndef MASTER_GOLD
-						break;
-					}
-					++i;
+					b_already = true;
 				}
-			}break;
+				// break;
+			}
+		}
+		CUICellItem* ci = nullptr;
+		if (GetMenuMode() == mmDeadBodySearch && FindItemInList(m_pDeadBodyBagList, pItem, ci))
+			break;
+
+		if (!b_already)
+		{
+			if (lst_to_add)
+			{
+				CUICellItem* itm = create_cell_item(pItem);
+				lst_to_add->SetItem(itm);
+			}
+		}
+	}
+	break;
+	case GE_TRADE_SELL:
+	case GE_OWNERSHIP_REJECT:
+	{
+		if (CUIDragDropListEx::m_drag_item)
+		{
+			CUIInventoryCellItem* ici = smart_cast<CUIInventoryCellItem*>(CUIDragDropListEx::m_drag_item->ParentItem());
+			R_ASSERT(ici);
+			if (ici->object() == pItem)
+			{
+				CUIDragDropListEx* _drag_owner = ici->OwnerList();
+				_drag_owner->DestroyDragItem();
+			}
+		}
+
+		for (auto& curr : all_lists)
+		{
+			if (!curr) // m_pInventoryHelmetList can be nullptr
+				continue;
+
+			if (RemoveItemFromList(curr, pItem))
+			{
+#ifdef DEBUG
+				Msg("all ok. item [%d] removed from list", pItem->object_id());
+#endif
+				break;
+			}
+		}
+	}
+	break;
 	}
 	UpdateItemsPlace();
 }
