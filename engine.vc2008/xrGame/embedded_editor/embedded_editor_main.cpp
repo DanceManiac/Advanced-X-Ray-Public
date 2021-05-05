@@ -4,6 +4,7 @@
 #include "../xr_level_controller.h"
 #include "embedded_editor_helper.h"
 #include "embedded_editor_weather.h"
+#include "embedded_editor_hud.h"
 #include "../../build_config_defines.h"
 #include <addons/imguinodegrapheditor/imguinodegrapheditor.h>
 #include <dinput.h>
@@ -14,6 +15,7 @@ bool bDeveloperModeEditor = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", 
 bool bShowWindow = true;
 bool show_test_window = true;
 bool show_weather_window = false;
+bool show_hud_editor = false;
 /*bool show_info_window = false;
 bool show_prop_window = false;
 bool show_restr_window = false;
@@ -49,6 +51,8 @@ void ShowMain()
 		show_node_editor ^= 1;*/
 	if (ImGui::Button("Weather"))
 		show_weather_window ^= 1;
+	/*if (ImGui::Button("HUD Editor"))
+		show_hud_editor = !show_hud_editor;*/
 	bool full = stage == EditorStage::Full;
 	if (ImGui::Checkbox("Active", &full))
 		stage = full ? EditorStage::Full : EditorStage::Light;
@@ -76,6 +80,8 @@ void ShowEditor()
     }*/
     if (show_weather_window)
         ShowWeatherEditor(show_weather_window);
+	/*if (show_hud_editor)
+		ShowHudEditor(show_hud_editor);*/
     /*if (show_prop_window)
         ShowPropEditor(show_prop_window);
 	if (show_lua_binder)

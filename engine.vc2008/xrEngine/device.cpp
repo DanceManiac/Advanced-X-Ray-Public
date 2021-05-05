@@ -32,6 +32,7 @@
 
 #include "../build_config_defines.h"
 #include <imgui.h>
+//#include <addons/ImGuizmo/ImGuizmo.h>
 
 ENGINE_API CRenderDevice Device;
 ENGINE_API CLoadScreenRenderer load_screen_renderer;
@@ -279,6 +280,7 @@ void ImGui_NewFrame()
 
 	// Start the frame
 	ImGui::NewFrame();
+	//ImGuizmo::BeginFrame(); //For HUD Editor
 }
 
 void CRenderDevice::on_idle		()

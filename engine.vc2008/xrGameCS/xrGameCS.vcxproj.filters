@@ -7503,6 +7503,9 @@
     <ClInclude Include="ui\UIInventoryItemParams.h">
       <Filter>UI\Common\ui-item-infos</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_hud.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11176,6 +11179,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIInventoryItemParams.cpp">
       <Filter>UI\Common\ui-item-infos</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
