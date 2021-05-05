@@ -370,11 +370,17 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 
 void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem* pCompareItem )
 {
-	//CWeapon*		weapon = smart_cast<CWeapon*>( &pInvItem );
-	//CCustomOutfit*	outfit = smart_cast<CCustomOutfit*>( &pInvItem );
 	CTorch*			torch = smart_cast<CTorch*>(&pInvItem);
 	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
+	CWeapon*		weapon = smart_cast<CWeapon*>(&pInvItem);
+	CCustomOutfit*	outfit = smart_cast<CCustomOutfit*>(&pInvItem);
+
+	if (weapon || outfit)
+	{
+		//UIConditionWnd->SetInfo( pCompareItem, pInvItem );
+		//UIDesc->AddWindow( UIConditionWnd, false );
+	}
 
 	if ( torch || artefact_detector || anomaly_detector)
 	{
