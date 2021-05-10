@@ -1702,10 +1702,12 @@ void CWeapon::OnZoomIn()
 		GetZoomData(m_zoom_params.m_fScopeZoomFactor, delta, min_zoom_factor);    
 		clamp(m_fRTZoomFactor, m_zoom_params.m_fScopeZoomFactor, min_zoom_factor);
 
-		SetZoomFactor(CurrentZoomFactor());
+		SetZoomFactor(m_fRTZoomFactor);
 	}
 	else
-		SetZoomFactor(m_zoom_params.m_bUseDynamicZoom ? m_fRTZoomFactor : CurrentZoomFactor());
+		m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
+
+		//SetZoomFactor(m_zoom_params.m_bUseDynamicZoom ? m_fRTZoomFactor : CurrentZoomFactor());
 	// Lex Addon (correct by Suhar_) 24.10.2018		(end)
 
 	//EnableHudInertion					(FALSE);
