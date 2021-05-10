@@ -906,7 +906,12 @@
 		<check_corpse_collision x="20" y="12" width="30" height="21">
 			<options_item entry="ph_corpse_collision" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_corpse_collision</text>
-		</check_corpse_collision>	
+		</check_corpse_collision>
+		
+		<check_walk_inertion x="20" y="12" width="30" height="21">
+			<options_item entry="actor_walk_inertion" group="mm_opt_gameplay"/>
+			<text font="letterica16" color="ui_6">ui_st_walk_inertion</text>
+		</check_walk_inertion>
 		
 		<check_loading_stages x="20" y="12" width="30" height="21">
 			<options_item entry="rs_loadingstages" group="mm_opt_gameplay"/>

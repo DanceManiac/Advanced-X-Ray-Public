@@ -789,6 +789,14 @@
 			<options_item entry="ph_corpse_collision" group="mm_opt_gameplay"/>
 		  </check_corpse_collision>
 		  
+		  <cap_walk_inertion x="15" y="3" width="135" height="24">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_walk_inertion</text>
+		  </cap_walk_inertion>
+		  <check_walk_inertion x="162" y="1" width="44" height="29">
+			<texture>ui_inGame2_checkbox</texture>
+			<options_item entry="actor_walk_inertion" group="mm_opt_gameplay"/>
+		  </check_walk_inertion>
+		  
 		  <cap_loading_stages x="15" y="3" width="135" height="24">
 			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_loading_stages</text>
 		  </cap_loading_stages>

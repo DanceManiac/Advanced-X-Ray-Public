@@ -920,6 +920,11 @@
 			<text font="letterica16" color="ui_6">ui_st_corpse_collision</text>
 		</check_corpse_collision>
 		
+		<check_walk_inertion x="17" y="12" width="27" height="21">
+			<options_item entry="actor_walk_inertion" group="mm_opt_gameplay"/>
+			<text font="letterica16" color="ui_6">ui_st_walk_inertion</text>
+		</check_walk_inertion>
+		
 		<check_loading_stages x="17" y="12" width="27" height="21">
 			<options_item entry="rs_loadingstages" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_loading_stages</text>
