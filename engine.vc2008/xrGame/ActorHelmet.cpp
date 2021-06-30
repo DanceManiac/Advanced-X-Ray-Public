@@ -5,6 +5,7 @@
 #include "Torch.h"
 #include "BoneProtections.h"
 #include "../Include/xrRender/Kinematics.h"
+#include "DynamicHudGlass.h"
 //#include "CustomOutfit.h"
 
 CHelmet::CHelmet()
@@ -15,45 +16,11 @@ CHelmet::CHelmet()
 		m_HitTypeProtection[i] = 1.0f;
 
 	m_boneProtection = xr_new<SBoneProtections>();
-
-	if (Actor())
-		UpdateHudMask();
-	else
-		HudMaskElement = 0;
 }
 
 CHelmet::~CHelmet()
 {
 	xr_delete(m_boneProtection);
-}
-
-void CHelmet::UpdateHudMask()
-{
-	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
-	if (!helmet)
-	{
-		HelmetInSlot = false;
-		HudMaskElement = 0;
-	}
-	else
-	{
-		float condition = helmet->GetCondition();
-		HudMaskElement = 0;
-		HelmetInSlot = true;
-		if (condition < 0.85)
-		{
-			if (condition > 0.75)
-				HudMaskElement = 1;
-			else if (condition > 0.65)
-				HudMaskElement = 2;
-			else if (condition > 0.45)
-				HudMaskElement = 3;
-			else if (condition > 0.25)
-				HudMaskElement = 4;
-			else
-				HudMaskElement = 5;
-		}
-	}
 }
 
 void CHelmet::Load(LPCSTR section) 
@@ -131,6 +98,14 @@ void CHelmet::OnH_A_Chield()
 {
 	inherited::OnH_A_Chield();
 //	ReloadBonesProtection();
+}
+
+void CHelmet::UpdateCL()
+{
+	inherited::UpdateCL();
+
+	if (Actor())
+		DynamicHudGlass::UpdateDynamicHudGlass();
 }
 
 void CHelmet::OnMoveToSlot(const SInvItemPlace& previous_place)

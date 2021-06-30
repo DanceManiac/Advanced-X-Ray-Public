@@ -10,6 +10,7 @@
 #include "BoneProtections.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "player_hud.h"
+#include "DynamicHudGlass.h"
 
 
 CCustomOutfit::CCustomOutfit()
@@ -23,11 +24,6 @@ CCustomOutfit::CCustomOutfit()
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_artefact_count = 0;
 	m_BonesProtectionSect = NULL;
-
-	if (Actor())
-		UpdateHudMask();
-	else
-		HudMaskElement = 0;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -53,35 +49,6 @@ void CCustomOutfit::net_Import(NET_Packet& P)
 	float _cond;
 	P.r_float_q8			(_cond,0.0f,1.0f);
 	SetCondition			(_cond);
-}
-
-void CCustomOutfit::UpdateHudMask()
-{
-	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
-	if (!outfit)
-	{
-		HelmetInSlot = false;
-		HudMaskElement = 0;
-	}
-	else
-	{
-		float condition = outfit->GetCondition();
-		HudMaskElement = 0;
-		HelmetInSlot = true;
-		if (condition < 0.85)
-		{
-			if (condition > 0.75)
-				HudMaskElement = 1;
-			else if (condition > 0.65)
-				HudMaskElement = 2;
-			else if (condition > 0.45)
-				HudMaskElement = 3;
-			else if (condition > 0.25)
-				HudMaskElement = 4;
-			else
-				HudMaskElement = 5;
-		}
-	}
 }
 
 void CCustomOutfit::Load(LPCSTR section) 
@@ -141,6 +108,14 @@ void CCustomOutfit::Load(LPCSTR section)
 	}
 	CActor* pActor = smart_cast<CActor*>( Level().CurrentViewEntity() );
 	ReloadBonesProtection( pActor );
+}
+
+void CCustomOutfit::UpdateCL()
+{
+	inherited::UpdateCL();
+
+	if (Actor())
+		DynamicHudGlass::UpdateDynamicHudGlass();
 }
 
 void CCustomOutfit::ReloadBonesProtection( CActor* pActor )

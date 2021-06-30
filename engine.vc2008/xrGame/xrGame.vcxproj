@@ -963,6 +963,7 @@
     <ClInclude Include="double_shot_double_kill.h" />
     <ClInclude Include="DummyArtifact.h" />
     <ClInclude Include="DynamicHeightMap.h" />
+    <ClInclude Include="DynamicHudGlass.h" />
     <ClInclude Include="dynamic_obstacles_avoider.h" />
     <ClInclude Include="dynamic_obstacles_avoider_inline.h" />
     <ClInclude Include="eatable_item.h" />
@@ -3127,6 +3128,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="DynamicHudGlass.cpp" />
     <ClCompile Include="dynamic_obstacles_avoider.cpp" />
     <ClCompile Include="eatable_item.cpp" />
     <ClCompile Include="eatable_item_object.cpp" />

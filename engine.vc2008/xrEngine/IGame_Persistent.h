@@ -95,8 +95,8 @@ public:
 	virtual void					SetBaseDof			(const Fvector3& dof){};
 	virtual void					OnSectorChanged		(int sector){};
 	virtual void					OnAssetsChanged		();
-	virtual int						GetHudMaskElement	() { return 0; };
-	virtual bool					GetHelmetStatus		() { return 0; };
+	virtual int						GetHudGlassElement	() { return 0; };
+	virtual bool					GetHudGlassEnabled	() { return 0; };
 	virtual float					GetActorMaxHealth	() { return 0; };
 	virtual float					GetActorHealth		() { return 0; };
 	virtual float					GetActorMaxPower	() { return 0; };

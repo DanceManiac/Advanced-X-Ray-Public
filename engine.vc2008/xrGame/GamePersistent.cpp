@@ -32,6 +32,7 @@
 #include "ActorHelmet.h"
 #include "ActorCondition.h"
 #include "AdvancedXrayGameConstants.h"
+#include "DynamicHudGlass.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -881,16 +882,14 @@ void CGamePersistent::SetBaseDof(const Fvector3& dof)
 	m_dof[0]=m_dof[1]=m_dof[2]=m_dof[3]	= dof;
 }
 
-int CGamePersistent::GetHudMaskElement()
+int CGamePersistent::GetHudGlassElement()
 {
-	CHelmet Helmet;
-	return	(Helmet.GetHudMaskElement());
+	return	(DynamicHudGlass::GetHudGlassElement());
 }
 
-bool CGamePersistent::GetHelmetStatus()
+bool CGamePersistent::GetHudGlassEnabled()
 {
-	CHelmet Helmet;
-	return	(Helmet.GetHelmetStatus());
+	return	(DynamicHudGlass::GetHudGlassEnabled());
 }
 
 float CGamePersistent::GetActorMaxHealth()

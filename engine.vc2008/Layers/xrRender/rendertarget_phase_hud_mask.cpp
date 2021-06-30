@@ -6,7 +6,7 @@ void CRenderTarget::phase_hud_mask()
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
 	
-	int HudMaskElement = g_pGamePersistent->GetHudMaskElement();
+	int HudGlassElement = g_pGamePersistent->GetHudGlassElement();
 
 	float d_Z = EPS_S;
 	float d_W = 1.0f;
@@ -43,7 +43,7 @@ void CRenderTarget::phase_hud_mask()
 	RCache.Vertex.Unlock(4, g_combine->vb_stride);
 
 	//Set pass
-	RCache.set_Element(s_hud_mask->E[HudMaskElement]);
+	RCache.set_Element(s_hud_mask->E[HudGlassElement]);
 	RCache.set_c("hud_mask_params", 1.0, 0, 0, 0);
 	RCache.set_Geometry(g_combine);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);

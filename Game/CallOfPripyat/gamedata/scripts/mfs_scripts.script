@@ -15,7 +15,7 @@ end
 
 function update_helmet_effects()
    local console = get_console()
-   local slot_5 = db.actor:item_in_slot(5)
+   local slot_7 = db.actor:item_in_slot(7)
    local slot_12 = db.actor:item_in_slot(12)
    local helm1 = db.actor:object("helm_respirator")
    local helm2 = db.actor:object("helm_protective")
@@ -60,14 +60,14 @@ function update_helmet_effects()
 			rain_drops_ctrl = true
 		end
 --Сева
-    	elseif slot_5 and slot_5:section() == "scientific_outfit" and science_suit ~= nil then
+    	elseif slot_7 and slot_7:section() == "scientific_outfit" and science_suit ~= nil then
 		if rain_drops_ctrl == false then
 			console:execute			("r2_rain_drops_control on")
 			console:execute			("r2_hud_mask_control on")
 			rain_drops_ctrl = true
 		end
 --Экзоскелет
-    	elseif slot_5 and slot_5:section() == "exo_outfit" and neutral_exo ~= nil then
+    	elseif slot_7 and slot_7:section() == "exo_outfit" and neutral_exo ~= nil then
 		if rain_drops_ctrl == false then
 			console:execute			("r2_rain_drops_control on")
 			console:execute			("r2_hud_mask_control on")

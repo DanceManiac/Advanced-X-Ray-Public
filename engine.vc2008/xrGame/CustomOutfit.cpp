@@ -11,6 +11,7 @@
 #include "../Include/xrRender/Kinematics.h"
 #include "player_hud.h"
 #include "ActorHelmet.h"
+#include "DynamicHudGlass.h"
 
 
 CCustomOutfit::CCustomOutfit()
@@ -61,6 +62,13 @@ void CCustomOutfit::OnH_A_Chield()
 		ReloadBonesProtection();
 }
 
+void CCustomOutfit::UpdateCL()
+{
+	inherited::UpdateCL();
+
+	if (Actor())
+		DynamicHudGlass::UpdateDynamicHudGlass();
+}
 
 void CCustomOutfit::Load(LPCSTR section) 
 {

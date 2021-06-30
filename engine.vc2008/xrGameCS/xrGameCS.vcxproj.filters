@@ -7506,6 +7506,9 @@
     <ClInclude Include="embedded_editor\embedded_editor_hud.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicHudGlass.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11182,6 +11185,9 @@
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
       <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicHudGlass.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
