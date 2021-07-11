@@ -328,14 +328,11 @@ float 		ps_saturation = 0;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
-Flags32		ps_r2_rain_drops_flags = { R2FLAG_RAIN_DROPS
-	| R2FLAG_RAIN_DROPS_CONTROL
-	};
+Flags32		ps_r2_rain_drops_flags = { R2FLAG_RAIN_DROPS };
 
 Flags32		ps_r2_vignette_flags = { R_FLAG_VIGNETTE };
 
 Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
-	| R_FLAG_HUD_MASK_CONTROL
 	| R_FLAG_HUD_DYN_EFFECTS
 	};
 
@@ -950,14 +947,12 @@ void		xrRender_initconsole	()
 	
 	CMD4(CCC_Float,		"r_saturation",			&ps_saturation,				-1.0f,	+1.0f	);
 	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_rain_drops_flags,	R2FLAG_RAIN_DROPS	);	
-	CMD3(CCC_Mask,		"r2_rain_drops_control",&ps_r2_rain_drops_flags,	R2FLAG_RAIN_DROPS_CONTROL	);
 	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
 	CMD4(CCC_Float,		"r2_rain_drops_speed",	&ps_r2_rain_drops_speed, 	0.8f,	5.f		);
 	// Vignette
 	CMD3(CCC_Mask,		"r2_vignette",			&ps_r2_vignette_flags,		R_FLAG_VIGNETTE	);
 	// Hud Mask
 	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK);
-	CMD3(CCC_Mask,		"r2_hud_mask_control",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK_CONTROL);
 	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_DYN_EFFECTS);
 	
 	//- Mad Max

@@ -25,6 +25,8 @@ CCustomOutfit::CCustomOutfit()
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_artefact_count = 0;
 	m_BonesProtectionSect = NULL;
+
+	m_b_HasGlass = false;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -65,9 +67,6 @@ void CCustomOutfit::OnH_A_Chield()
 void CCustomOutfit::UpdateCL()
 {
 	inherited::UpdateCL();
-
-	if (Actor())
-		DynamicHudGlass::UpdateDynamicHudGlass();
 }
 
 void CCustomOutfit::Load(LPCSTR section) 
@@ -117,6 +116,8 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_BonesProtectionSect	= READ_IF_EXISTS(pSettings, r_string, section, "bones_koeff_protection",  "" );
 	bIsHelmetAvaliable		= !!READ_IF_EXISTS(pSettings, r_bool, section, "helmet_avaliable", true);
+
+	m_b_HasGlass			= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 }
 
 void CCustomOutfit::ReloadBonesProtection()

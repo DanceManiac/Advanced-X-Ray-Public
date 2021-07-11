@@ -248,7 +248,6 @@ extern ECORE_API Flags32 ps_r2_rain_drops_flags;
 enum
 {
 	R2FLAG_RAIN_DROPS 			= (1 << 0),
-	R2FLAG_RAIN_DROPS_CONTROL 	= (1 << 1),
 };
 
 extern ECORE_API Flags32 ps_r2_vignette_flags;
@@ -263,8 +262,7 @@ extern ECORE_API Flags32 ps_r2_hud_mask_flags;
 enum
 {
 	R_FLAG_HUD_MASK = (1 << 0),
-	R_FLAG_HUD_MASK_CONTROL = (1 << 1),
-	R_FLAG_HUD_DYN_EFFECTS = (1 << 2),
+	R_FLAG_HUD_DYN_EFFECTS = (1 << 1),
 };
 
 extern ECORE_API int ps_rs_loading_stages;

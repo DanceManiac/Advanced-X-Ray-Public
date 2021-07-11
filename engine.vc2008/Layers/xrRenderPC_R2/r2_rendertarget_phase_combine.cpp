@@ -263,7 +263,7 @@ void	CRenderTarget::phase_combine	()
 	{
 		bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK_CONTROL) && HudGlassEnabled && IsActorAlive)
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 			phase_hud_mask();
 	}
 

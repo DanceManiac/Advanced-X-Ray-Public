@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: DynamicHudGlass.cpp
 //	Created 	: 12.05.2021
-//  Modified 	: 29.06.2021
+//  Modified 	: 11.07.2021
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Dynamic HUD glass functions and variables
 ////////////////////////////////////////////////////////////////////////////
@@ -24,8 +24,18 @@ namespace DynamicHudGlass
 		if (outfit)
 		{
 			float condition = outfit->GetCondition();
+			bool OutfitHasGlass = outfit->m_b_HasGlass;
 			HudGlassElement = 0;
-			DynamicHudGlassEnabled = true;
+
+			if (OutfitHasGlass)
+			{
+				DynamicHudGlassEnabled = true;
+			}
+			else
+			{
+				DynamicHudGlassEnabled = false;
+			}
+
 			if (condition < 0.85)
 			{
 				if (condition > 0.75)
@@ -43,6 +53,7 @@ namespace DynamicHudGlass
 		else
 		{
 			HudGlassElement = 0;
+			DynamicHudGlassEnabled = false;
 		}
 	}
 }

@@ -6,9 +6,12 @@ void CRenderTarget::PhaseRainDrops()
 	static float rain_drops_factor = 0.f;
 	static u32 steps_finished = 0;
 
-	// Чтобы по команде r2_rain_drops_control off/on эффект перезапускался.
+	// Чтобы эффект перезапускался по HudGlassEnabled.
 	static bool saved_rain_drops_control = false;
-	bool current_rain_drops_control = !!ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS_CONTROL);
+
+	bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
+
+	bool current_rain_drops_control = !!HudGlassEnabled;
 	if (saved_rain_drops_control != current_rain_drops_control) {
 		saved_rain_drops_control = current_rain_drops_control;
 

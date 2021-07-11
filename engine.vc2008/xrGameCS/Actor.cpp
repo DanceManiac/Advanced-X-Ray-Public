@@ -70,6 +70,8 @@
 
 #include "ai_object_location.h"
 
+#include "DynamicHudGlass.h"
+
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
 const float		respawn_auto	= 7.f;
@@ -1323,6 +1325,9 @@ void CActor::shedule_Update	(u32 DT)
 	UpdateArtefactsOnBeltAndOutfit				();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
+
+	if (Actor())
+		DynamicHudGlass::UpdateDynamicHudGlass();
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()

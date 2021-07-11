@@ -449,8 +449,6 @@ function actor_binder:update(delta)
 	if guiders.teleported_to_another_level and not guiders.level_changed then
 		guiders.action_teleport_to_point()
 	end
-	--M.F.S. Main Script Update
-	mfs_scripts.mfs_scripts_update()
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:save(packet)

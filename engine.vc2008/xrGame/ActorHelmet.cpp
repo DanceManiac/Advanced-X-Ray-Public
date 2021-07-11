@@ -16,6 +16,8 @@ CHelmet::CHelmet()
 		m_HitTypeProtection[i] = 1.0f;
 
 	m_boneProtection = xr_new<SBoneProtections>();
+
+	m_b_HasGlass = false;
 }
 
 CHelmet::~CHelmet()
@@ -59,6 +61,7 @@ void CHelmet::Load(LPCSTR section)
 	m_BonesProtectionSect			= READ_IF_EXISTS(pSettings, r_string, section, "bones_koeff_protection",  "" );
 	m_fShowNearestEnemiesDistance	= READ_IF_EXISTS(pSettings, r_float, section, "nearest_enemies_show_dist",  0.0f );
 
+	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 }
 
 void CHelmet::ReloadBonesProtection()
@@ -103,9 +106,6 @@ void CHelmet::OnH_A_Chield()
 void CHelmet::UpdateCL()
 {
 	inherited::UpdateCL();
-
-	if (Actor())
-		DynamicHudGlass::UpdateDynamicHudGlass();
 }
 
 void CHelmet::OnMoveToSlot(const SInvItemPlace& previous_place)

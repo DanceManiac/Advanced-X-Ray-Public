@@ -24,6 +24,8 @@ CCustomOutfit::CCustomOutfit()
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_artefact_count = 0;
 	m_BonesProtectionSect = NULL;
+
+	m_b_HasGlass = false;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -92,6 +94,8 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fSatietyRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",   0.0f );
 	m_fPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",     0.0f );
 	m_fBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",  0.0f );
+
+	m_b_HasGlass				= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 
 	if (pSettings->line_exist(section, "nightvision_sect"))
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");

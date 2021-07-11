@@ -42,6 +42,7 @@ public:
 	float					m_fShowNearestEnemiesDistance;
 
 	bool					m_bSecondHelmetEnabled;
+	bool					m_b_HasGlass;
 
 	void					ReloadBonesProtection	();
 	void					AddBonesProtection		(LPCSTR bones_section);
