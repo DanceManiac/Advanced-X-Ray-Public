@@ -9,9 +9,8 @@ void CRenderTarget::PhaseRainDrops()
 	// Чтобы эффект перезапускался по HudGlassEnabled.
 	static bool saved_rain_drops_control = false;
 
-	bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
+	bool current_rain_drops_control = g_pGamePersistent->GetHudGlassEnabled();
 
-	bool current_rain_drops_control = !!HudGlassEnabled;
 	if (saved_rain_drops_control != current_rain_drops_control) {
 		saved_rain_drops_control = current_rain_drops_control;
 
