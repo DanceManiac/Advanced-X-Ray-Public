@@ -141,7 +141,7 @@ void	CEffect_Rain::OnFrame	()
 
 	// Parse states
 	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
-	float	wind_volume			= g_pGamePersistent->Environment().CurrentEnv->wind_velocity;
+	float	wind_volume			= g_pGamePersistent->Environment().CurrentEnv->wind_velocity/12;
 	bool	wind_enabled		= (wind_volume >= EPS_L);
 	static float hemi_factor	= 0.f;
 #ifndef _EDITOR
