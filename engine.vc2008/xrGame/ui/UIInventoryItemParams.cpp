@@ -16,9 +16,6 @@
 #include "UIXmlInit.h"
 #include "UIHelper.h"
 #include "../string_table.h"
-#include "../Inventory.h"
-#include "clsid_game.h"
-#include "UIActorMenu.h"
 
 #include "../Torch.h"
 #include "../CustomDetector.h"

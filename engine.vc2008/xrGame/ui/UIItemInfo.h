@@ -47,7 +47,7 @@ public:
 	void				TryAddOutfitInfo	(CInventoryItem& pInvItem, CInventoryItem* pCompareItem);
 	void				TryAddUpgradeInfo	(CInventoryItem& pInvItem);
 	void				TryAddBoosterInfo	(CInventoryItem& pInvItem);
-	void				TryAddItemInfo		(CInventoryItem& pInvItem);
+	//void				TryAddItemInfo		(CInventoryItem& pInvItem);
 	
 	virtual void		Draw				();
 	bool				m_b_FitToHeight;
@@ -68,13 +68,13 @@ public:
 	// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 
 	//CUIConditionParams*		UIConditionWnd;
-	CUIItemConditionParams* UIItemConditionParams;
+	//CUIItemConditionParams* UIItemConditionParams;
 	CUIWpnParams*			UIWpnParams;
 	CUIArtefactParams*		UIArtefactParams;
 	UIInvUpgPropertiesWnd*	UIProperties;
 	CUIOutfitInfo*			UIOutfitInfo;
 	CUIBoosterInfo*			UIBoosterInfo;
-	CUIInventoryItem*		UIInventoryItem;
+	//CUIInventoryItem*		UIInventoryItem;
 
 	Fvector2			UIItemImageSize; 
 	CUIStatic*			UIItemImage;
