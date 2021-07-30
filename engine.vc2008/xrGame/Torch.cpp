@@ -344,7 +344,7 @@ void CTorch::OnH_B_Independent(bool just_before_destroy)
 
 void CTorch::UpdateChargeLevel(void)
 {
-	if (m_switched_on)
+	if (GameConstants::GetTorchHasBattery())
 	{
 		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
 
@@ -376,11 +376,10 @@ void CTorch::UpdateChargeLevel(void)
 void CTorch::UpdateCL() 
 {
 	inherited::UpdateCL			();
-
-	if (GameConstants::GetTorchHasBattery)
-		UpdateChargeLevel();
 	
 	if (!m_switched_on)			return;
+
+	UpdateChargeLevel();
 
 	CBoneInstance			&BI = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
 	Fmatrix					M;
