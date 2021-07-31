@@ -2042,7 +2042,7 @@ void CWeapon::UpdateHudAdditonal(Fmatrix& trans)
 		curr_offs.mul(m_fFactor);
 		curr_rot.mul(m_fFactor);
 
-		if (dist <= 0.8)
+		if (dist <= 0.8 && !IsZoomed())
 			m_fFactor += Device.fTimeDelta / 0.3;
 		else
 			m_fFactor -= Device.fTimeDelta / 0.3;
