@@ -336,6 +336,8 @@ Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
 	| R_FLAG_HUD_DYN_EFFECTS
 	};
 
+Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
+
 int ps_rs_loading_stages = 0;
 
 //- Mad Max
@@ -950,7 +952,9 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
 	CMD4(CCC_Float,		"r2_rain_drops_speed",	&ps_r2_rain_drops_speed, 	0.8f,	5.f		);
 	// Vignette
-	CMD3(CCC_Mask,		"r2_vignette",			&ps_r2_vignette_flags,		R_FLAG_VIGNETTE	);
+	CMD3(CCC_Mask,		"r2_vignette",			&ps_r2_vignette_flags,		R_FLAG_VIGNETTE);
+	// No Ram Textures
+	CMD3(CCC_Mask,		"r3_no_ram_textures",	&ps_r_textures_flags,		R3_NO_RAM_TEXTURES);
 	// Hud Mask
 	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK);
 	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_DYN_EFFECTS);

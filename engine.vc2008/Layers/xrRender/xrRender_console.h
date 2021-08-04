@@ -265,6 +265,13 @@ enum
 	R_FLAG_HUD_DYN_EFFECTS = (1 << 1),
 };
 
+extern ECORE_API Flags32 ps_r_textures_flags;
+
+enum
+{
+	R3_NO_RAM_TEXTURES = (1 << 0),
+};
+
 extern ECORE_API int ps_rs_loading_stages;
 
 extern void						xrRender_initconsole	();
