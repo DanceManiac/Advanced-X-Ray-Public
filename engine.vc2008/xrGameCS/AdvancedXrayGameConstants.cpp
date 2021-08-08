@@ -13,6 +13,7 @@ bool	m_bPdaSlotEnabled = false;
 bool	m_bTorchUseBattery = false;
 bool	m_bArtefactDetectorUseBattery = false;
 bool	m_bAnomalyDetectorUseBattery = false;
+bool	m_bLimitedBolts = false;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -31,6 +32,7 @@ namespace GameConstants
 		m_bDosimeterSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_dosimeter_slot", false);
 		m_bPantsSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pants_slot", false);
 		m_bPdaSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pda_slot", false);
+		m_bLimitedBolts = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "limited_bolts", false);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 
@@ -90,6 +92,11 @@ namespace GameConstants
 	bool GetPdaSlotEnabled()
 	{
 		return m_bPdaSlotEnabled;
+	}
+
+	bool GetLimitedBolts()
+	{
+		return m_bLimitedBolts;
 	}
 
 	float GetDistantSndDistance()

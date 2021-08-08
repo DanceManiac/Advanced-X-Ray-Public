@@ -21,6 +21,9 @@ public:
 	virtual bool Useful				() const;
     virtual void activate_physic_shell	();
 
+	void		 PutNextToSlot		();
+	virtual void State				(u32 state);
+
 	virtual BOOL UsedAI_Locations	() {return FALSE;}
 	virtual IDamageSource*	cast_IDamageSource			()	{return this;}
 };
