@@ -40,6 +40,11 @@ CArtefact::CArtefact()
 	m_activationObj				= NULL;
 	m_detectorObj				= NULL;
 	m_additional_weight			= 0.0f;
+
+	m_bVolumetricLights			= false;
+	m_fVolumetricQuality		= 1.0f;
+	m_fVolumetricDistance		= 0.3f;
+	m_fVolumetricIntensity		= 0.5f;
 }
 
 
@@ -75,6 +80,11 @@ void CArtefact::Load(LPCSTR section)
 	m_bCanSpawnZone			= !!pSettings->line_exist("artefact_spawn_zones", section);
 	m_af_rank				= pSettings->r_u8(section, "af_rank");
 	m_additional_weight		= pSettings->r_float(section,"additional_inventory_weight");
+
+	m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
 }
 
 BOOL CArtefact::net_Spawn(CSE_Abstract* DC) 
@@ -259,6 +269,11 @@ void CArtefact::StartLights()
 	m_pTrailLight->set_range	(m_fTrailLightRange);
 	m_pTrailLight->set_position	(Position()); 
 	m_pTrailLight->set_active	(true);
+
+	m_pTrailLight->set_volumetric(m_bVolumetricLights);
+	m_pTrailLight->set_volumetric_quality(m_fVolumetricQuality);
+	m_pTrailLight->set_volumetric_distance(m_fVolumetricDistance);
+	m_pTrailLight->set_volumetric_intensity(m_fVolumetricIntensity);
 }
 
 void CArtefact::StopLights()
