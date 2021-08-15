@@ -1117,6 +1117,9 @@ void CActor::UpdateCL	()
 }
 
 float	NET_Jump = 0;
+
+#include "ai\monsters\ai_monster_utils.h"
+
 void CActor::set_state_box(u32	mstate)
 {
 		if ( mstate & mcCrouch)
@@ -1345,7 +1348,18 @@ void CActor::shedule_Update	(u32 DT)
 	collide::rq_result& RQ				= HUD().GetCurrentRayQuery();
 	
 
-	if(!input_external_handler_installed() && RQ.O && RQ.O->getVisible() &&  RQ.range<2.0f) 
+	float InteractionDist;
+	if (eacFirstEye != cam_active) {
+		InteractionDist = 2.4f;
+	}
+	else {
+		InteractionDist = 2.0f;
+	}
+
+	float dist_to_obj = RQ.range;
+	if (RQ.O && eacFirstEye != cam_active)
+		dist_to_obj = get_bone_position(this, "bip01_spine").distance_to((smart_cast<CGameObject*>(RQ.O))->Position());
+	if (!input_external_handler_installed() && RQ.O && dist_to_obj < InteractionDist)
 	{
 		m_pObjectWeLookingAt			= smart_cast<CGameObject*>(RQ.O);
 		
