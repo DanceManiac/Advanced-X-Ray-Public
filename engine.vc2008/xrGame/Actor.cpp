@@ -1349,10 +1349,12 @@ void CActor::shedule_Update	(u32 DT)
 	
 
 	float InteractionDist;
-	if (eacFirstEye != cam_active) {
+	if (eacFirstEye != cam_active) 
+	{
 		InteractionDist = 2.4f;
 	}
-	else {
+	else 
+	{
 		InteractionDist = 2.0f;
 	}
 

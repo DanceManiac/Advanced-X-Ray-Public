@@ -11,6 +11,7 @@ enum{
 		AF_DYNAMIC_MUSIC	=(1<<7),
 		AF_GODMODE_RT		=(1<<8),
 		AF_COLLISION		=(1<<10),
+		AF_RIGHT_SHOULDER	=(1<<11),
 };
 
 extern Flags32 psActorFlags;

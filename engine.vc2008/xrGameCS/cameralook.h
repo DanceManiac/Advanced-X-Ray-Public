@@ -21,6 +21,9 @@ public:
 
 	virtual float	GetWorldYaw		( )	{ return -yaw;	};
 	virtual float	GetWorldPitch	( )	{ return pitch; };
+
+protected:
+			void	UpdateDistance	(Fvector& point);
 };
 
 class CCameraLook2	: public CCameraLook

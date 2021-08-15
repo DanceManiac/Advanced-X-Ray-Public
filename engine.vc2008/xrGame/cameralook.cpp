@@ -15,9 +15,9 @@ void CCameraLook::Load(LPCSTR section)
 {
 	inherited::Load		(section);
 	style				= csLookAt;
-	lim_zoom			= pSettings->r_fvector2	(section,"lim_zoom");
-	dist				= (lim_zoom[0]+lim_zoom[1])*0.5f;
-	prev_d				= 0;
+	lim_zoom			= pSettings->r_fvector2(section, "lim_zoom");
+	dist				= (lim_zoom[0] + lim_zoom[1])*0.5f;
+	prev_d				= 0.0f;
 }
 
 CCameraLook::~CCameraLook()
@@ -40,20 +40,20 @@ void CCameraLook::Update(Fvector& point, Fvector& /**noise_dangle/**/)
 	UpdateDistance		(point);
 }
 
-void CCameraLook::UpdateDistance( Fvector& point )
+void CCameraLook::UpdateDistance(Fvector& point)
 {
-	Fvector				vDir;
-	collide::rq_result	R;
+	Fvector vDir;
+	vDir.invert(vDirection);
 
-	float				covariance = VIEWPORT_NEAR*6.f;
-	vDir.invert			(vDirection);
-	g_pGameLevel->ObjectSpace.RayPick( point, vDir, dist+covariance, collide::rqtBoth, R, parent);
+	collide::rq_result R;
+	float covariance = VIEWPORT_NEAR * 6.0f;
+	g_pGameLevel->ObjectSpace.RayPick(point, vDir, dist + covariance, collide::rqtBoth, R, parent);
 
-	float d				= psCamSlideInert*prev_d+(1.f-psCamSlideInert)*(R.range-covariance);
+	float d = psCamSlideInert * prev_d + (1.0f - psCamSlideInert)*(R.range - covariance);
 	prev_d = d;
 	
-	vPosition.mul		(vDirection,-d-VIEWPORT_NEAR);
-	vPosition.add		(point);
+	vPosition.mul(vDirection, -d - VIEWPORT_NEAR);
+	vPosition.add(point);
 }
 
 void CCameraLook::Move( int cmd, float val, float factor)
@@ -89,13 +89,18 @@ void CCameraLook::OnActivate( CCameraBase* old_cam )
 int cam_dik = DIK_LSHIFT;
 
 Fvector CCameraLook2::m_cam_offset;
-void CCameraLook2::OnActivate( CCameraBase* old_cam )
+void CCameraLook2::OnActivate(CCameraBase* old_cam)
 {
-	CCameraLook::OnActivate( old_cam );
+	CCameraLook::OnActivate(old_cam);
 }
 
 void CCameraLook2::Update(Fvector& point, Fvector&)
 {
+	if (psActorFlags.test(AF_RIGHT_SHOULDER))
+		m_cam_offset = Fvector().set(-0.400f, 0.2f, 0.0f);
+	else
+		m_cam_offset = Fvector().set(0.314f, 0.2f, 0.0f);
+
 	if(!m_locked_enemy)
 	{//autoaim
 		if( pInput->iGetAsyncKeyState(cam_dik) )
@@ -148,6 +153,7 @@ void CCameraLook2::Update(Fvector& point, Fvector&)
 	Fvector _off					= m_cam_offset;
 	a_xform.transform_tiny			(_off);
 	vPosition.set					(_off);
+	UpdateDistance					(_off);
 }
 
 void CCameraLook2::UpdateAutoAim()
@@ -183,8 +189,9 @@ void CCameraLook2::UpdateAutoAim()
 void CCameraLook2::Load(LPCSTR section)
 {
 	CCameraLook::Load		(section);
-	m_cam_offset = Fvector().set(0.750f, 0.2f, -2.0f);
+	m_cam_offset = Fvector().set(0.314f, 0.2f, 0.0f);
 	dist = 1.4f;
+	prev_d = 0.0f;
 	m_autoaim_inertion_yaw	= pSettings->r_fvector2	(section,"autoaim_speed_y");
 	m_autoaim_inertion_pitch= pSettings->r_fvector2	(section,"autoaim_speed_x");
 }
