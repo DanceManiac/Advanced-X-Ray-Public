@@ -3,6 +3,7 @@
 #include "ActorAnimation.h"
 #include "actor_anim_defs.h"
 #include "weapon.h"
+#include "WeaponKnife.h"
 #include "inventory.h"
 #include "missile.h"
 #include "level.h"
@@ -459,9 +460,6 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 	}
 
 	CHudItem		*H = smart_cast<CHudItem*>(_i);
-	CWeapon			*W = smart_cast<CWeapon*>(_i);
-	CMissile		*M = smart_cast<CMissile*>(_i);
-	CArtefact		*A = smart_cast<CArtefact*>(_i);
 	
 	if (!M_torso)
 	{
@@ -480,12 +478,17 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 					m_bAnimTorsoPlayed = TRUE;
 				}
 				else {
-					if (!m_bAnimTorsoPlayed) {
-						if (W) {
+					if (!m_bAnimTorsoPlayed) 
+					{
+						CWeapon			*W = smart_cast<CWeapon*>(_i);
+						CMissile		*M = smart_cast<CMissile*>(_i);
+						CArtefact		*A = smart_cast<CArtefact*>(_i);
+						if (W) 
+						{
 							bool K = inventory().GetActiveSlot() == KNIFE_SLOT;
 							bool R3 = W->IsTriStateReload();
 
-							if (K)
+							if (smart_cast<CWeaponKnife*>(W))
 							{
 								switch (W->GetState()) {
 								case CWeapon::eIdle:		M_torso = TW->moving[moving_idx];		break;
@@ -534,8 +537,11 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 								default:  M_torso = TW->moving[moving_idx];	break;
 								}
 							}
+							if (!M_torso)
+								M_torso = ST->m_torso[4].moving[moving_idx]; //Alundaio: Fix torso animations for binoc
 						}
-						else if (M) {
+						else if (M) 
+						{
 							if (is_standing)
 							{
 								switch (M->GetState()) {
