@@ -766,6 +766,8 @@ public:
 			bool				is_door_blocked_by_npc					() const;
 			bool				is_weapon_going_to_be_strapped			( CScriptGameObject const* object ) const;
 
+			bool				addon_IsActorHideout					() const;		// проверка что актор под каким либо укрытием
+
 	doors::door*				m_door;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

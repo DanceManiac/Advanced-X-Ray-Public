@@ -686,6 +686,8 @@ public:
 			void				take_items_enabled						(bool value);
 			bool				take_items_enabled						() const;
 
+			bool				addon_IsActorHideout					() const;		// проверка что актор под каким либо укрытием
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CScriptGameObject)

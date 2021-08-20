@@ -330,6 +330,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("start_particles",				&CScriptGameObject::start_particles)
 		.def("stop_particles",				&CScriptGameObject::stop_particles)
 
+		.def("is_ActorHide",				&CScriptGameObject::addon_IsActorHideout)			// проверка что актор под  каким либо укрытием
 
 	;return	(instance);
 }
