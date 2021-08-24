@@ -42,4 +42,5 @@ public:
 
 	void					ResetStorage					() {m_gametasks = NULL;};
 	void					DumpTasks						();
+	void					DiscordUpdateTask				();
 };

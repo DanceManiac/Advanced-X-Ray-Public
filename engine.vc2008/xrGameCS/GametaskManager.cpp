@@ -12,6 +12,9 @@
 #include "ui/UIPDAWnd.h"
 #include "encyclopedia_article.h"
 #include "ui/UIMapWnd.h"
+#include "../xrEngine/DiscordRichPresense.h"
+#include "string_table.h"
+#include "../xrEngine/x_ray.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -55,6 +58,7 @@ CGameTaskManager::CGameTaskManager()
 				VERIFY( t->GetTaskType() == (ETaskType)i );
 				SetActiveTask( t );
 			}
+			DiscordUpdateTask();
 		}
 }
 
@@ -220,9 +224,17 @@ void CGameTaskManager::UpdateActiveTask()
 				SetActiveTask	(_front);
 		}
 	}
-
 	m_flags.set					(eChanged, FALSE);
 	m_actual_frame				= Device.dwFrame;
+	DiscordUpdateTask();
+}
+
+void CGameTaskManager::DiscordUpdateTask()
+{
+	CGameTask* t = ActiveTask(eTaskTypeStoryline);
+	std::string task = ToUTF8(CStringTable().translate(t ? t->m_Title.c_str() : "st_no_active_task").c_str());
+	snprintf(rpc_settings.SmallImageText, 128, task.c_str());
+	g_discord.SetStatus();
 }
 
 CGameTask* CGameTaskManager::ActiveTask(ETaskType type)
