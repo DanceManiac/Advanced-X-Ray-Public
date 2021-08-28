@@ -54,6 +54,7 @@ LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
 	"power_restore_speed",			// ePowerRestoreSpeed=2
 	"bleeding_restore_speed",		// eBleedingRestoreSpeed=3
 	"radiation_restore_speed",		// eRadiationRestoreSpeed=4
+	"thirst_restore_speed",			// eThirstRestoreSpeed=5
 };
 
 LPCSTR af_immunity_caption[] =  // ALife::EInfluenceType
@@ -77,6 +78,7 @@ LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
 	"ui_inv_power",
 	"ui_inv_bleeding",
 	"ui_inv_radiation",
+	"ui_inv_thirst",
 };
 
 /*

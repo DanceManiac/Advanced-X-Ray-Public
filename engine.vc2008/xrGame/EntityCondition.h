@@ -62,6 +62,7 @@ struct SMedicineInfluenceValues{
 	float fHealth;
 	float fPower;
 	float fSatiety;
+	float fThirst;
 	float fRadiation;
 	float fWoundsHeal;
 	float fMaxPowerUp;
@@ -110,6 +111,7 @@ public:
 	IC float				GetRadiation			() const			{return m_fRadiation;}
 	IC float				GetPsyHealth			() const			{return m_fPsyHealth;}
 	IC float				GetSatiety				() const			{return m_fSatiety;}
+	IC float				GetThirst				() const			{return m_fThirst;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -118,6 +120,7 @@ public:
 	virtual bool 			IsLimping				() const;
 
 	virtual void			ChangeSatiety			(const float value)		{};
+	virtual void			ChangeThirst			(const float value)		{};
 	void 					ChangeHealth			(const float value);
 	void 					ChangePower				(const float value);
 	void 					ChangeRadiation			(const float value);
@@ -187,6 +190,7 @@ protected:
 	float m_fPsyHealth;				//здоровье
 	float m_fEntityMorale;			//мораль
 	float m_fSatiety;				//—ытость
+	float m_fThirst;				//∆ажда
 
 	//максимальные величины
 	//	float m_fSatietyMax;

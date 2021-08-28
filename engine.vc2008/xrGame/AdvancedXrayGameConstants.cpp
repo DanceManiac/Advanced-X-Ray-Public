@@ -15,6 +15,7 @@ bool	m_bTorchUseBattery = false;
 bool	m_bArtefactDetectorUseBattery = false;
 bool	m_bAnomalyDetectorUseBattery = false;
 bool	m_bLimitedBolts = false;
+bool	m_bActorThirst = false;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -35,6 +36,7 @@ namespace GameConstants
 		m_bPantsSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pants_slot", false);
 		m_bPdaSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pda_slot", false);
 		m_bLimitedBolts = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "limited_bolts", false);
+		m_bActorThirst = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_thirst_enabled", false);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 
@@ -104,6 +106,11 @@ namespace GameConstants
 	bool GetLimitedBolts()
 	{
 		return m_bLimitedBolts;
+	}
+
+	bool GetActorThirst()
+	{
+		return m_bActorThirst;
 	}
 
 	float GetDistantSndDistance()

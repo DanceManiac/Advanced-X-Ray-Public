@@ -631,6 +631,10 @@ end
 function on_actor_satiety()
 end
 
+--' Жажда
+function on_actor_thirst()
+end
+
 --' іадиация
 function on_actor_radiation()
 

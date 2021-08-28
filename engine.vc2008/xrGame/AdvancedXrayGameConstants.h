@@ -17,6 +17,7 @@ namespace GameConstants
 	bool GetArtDetectorUseBattery();
 	bool GetAnoDetectorUseBattery();
 	bool GetLimitedBolts();
+	bool GetActorThirst();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

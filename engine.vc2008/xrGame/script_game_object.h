@@ -187,6 +187,7 @@ public:
 	_DECLARE_FUNCTION10	(GetSatiety			,			float);
 	_DECLARE_FUNCTION10	(GetBleeding		,			float);
 	_DECLARE_FUNCTION10	(GetMorale			,			float);
+	_DECLARE_FUNCTION10	(GetThirst			,			float);
 
 	_DECLARE_FUNCTION11	(SetHealth,			void, float);
 	_DECLARE_FUNCTION11	(SetPsyHealth,		void, float);
@@ -196,6 +197,7 @@ public:
 	_DECLARE_FUNCTION11	(SetBleeding,		void, float);
 	_DECLARE_FUNCTION11	(SetCircumspection,	void, float);
 	_DECLARE_FUNCTION11	(SetMorale,			void, float);
+	_DECLARE_FUNCTION11	(ChangeThirst,		void, float);
 
 			void				set_fov				(float new_fov);
 			void				set_range			(float new_range);

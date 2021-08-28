@@ -50,6 +50,7 @@ public:
 	float 					m_fSatietyRestoreSpeed;
 	float					m_fPowerRestoreSpeed;
 	float					m_fBleedingRestoreSpeed;
+	float 					m_fThirstRestoreSpeed;
 
 	shared_str				m_BonesProtectionSect;
 	shared_str				m_NightVisionSect;

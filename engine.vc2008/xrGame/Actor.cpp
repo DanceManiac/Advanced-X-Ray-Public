@@ -1800,6 +1800,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			conditions().ChangeHealth		(artefact->m_fHealthRestoreSpeed    * f_update_time);
 			conditions().ChangePower		(artefact->m_fPowerRestoreSpeed     * f_update_time);
 			conditions().ChangeSatiety		(artefact->m_fSatietyRestoreSpeed   * f_update_time);
+			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
 			if(artefact->m_fRadiationRestoreSpeed>0.0f) 
 			{
 				float val = artefact->m_fRadiationRestoreSpeed - conditions().GetBoostRadiationImmunity();
@@ -2117,6 +2118,27 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if ( outfit )
 		{
 			res += outfit->m_fBleedingRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eThirstRestoreSpeed:
+	{
+		res = conditions().V_Thirst();
+
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact*	artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fThirstRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fThirstRestoreSpeed;
 		}
 		break;
 	}
