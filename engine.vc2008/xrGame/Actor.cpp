@@ -1818,6 +1818,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeHealth		(outfit->m_fHealthRestoreSpeed    * f_update_time);
 		conditions().ChangePower		(outfit->m_fPowerRestoreSpeed     * f_update_time);
 		conditions().ChangeSatiety		(outfit->m_fSatietyRestoreSpeed   * f_update_time);
+		conditions().ChangeThirst		(outfit->m_fThirstRestoreSpeed	  * f_update_time);
 		conditions().ChangeRadiation	(outfit->m_fRadiationRestoreSpeed * f_update_time);
 	}
 	else

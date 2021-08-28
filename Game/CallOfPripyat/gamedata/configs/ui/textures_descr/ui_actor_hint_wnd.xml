@@ -120,9 +120,9 @@
 	    <texture id="ui_inGame2_circle_TorchLowBattery_yellow" 		x="0" y="38" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_TorchLowBattery_orange" 		x="0" y="76" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_TorchLowBattery_red" 		x="0" y="114" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_Thirst_green" 				x="36" y="0" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_Thirst_yellow" 				x="36" y="38" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_Thirst_orange" 				x="36" y="76" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_Thirst_red" 					x="36" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_thirst_green" 				x="36" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_thirst_yellow" 				x="36" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_thirst_orange" 				x="36" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_thirst_red" 					x="36" y="114" width="33" height="35" />
 	</file>
 </w>
