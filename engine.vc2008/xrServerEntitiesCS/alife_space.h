@@ -110,6 +110,7 @@ namespace ALife {
 		eHealthRestoreSpeed = u32(0),
 		eRadiationRestoreSpeed,
 		eSatietyRestoreSpeed,
+		eThirstRestoreSpeed,
 		ePowerRestoreSpeed,
 		eBleedingRestoreSpeed,
 		eRestoreTypeMax,

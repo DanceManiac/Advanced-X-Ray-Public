@@ -210,4 +210,7 @@
 	<string id="ui_st_walk_inertion">
 		<text>Инерция ходьбы героя</text>
 	</string>
+	<string id="ui_inv_thirst">
+		<text>Утоление жажды</text>
+	</string>
 </string_table>

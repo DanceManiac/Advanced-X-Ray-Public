@@ -17,8 +17,12 @@
 #include "object_broker.h"
 #include "weapon.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 #define MAX_SATIETY					1.0f
 #define START_SATIETY				0.5f
+#define MAX_THIRST					1.0f
+#define START_THIRST				0.5f
 
 BOOL	GodMode	()	
 { 
@@ -41,6 +45,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fSprintK					= 0.f;
 	m_fAlcohol					= 0.f;
 	m_fSatiety					= 1.0f;
+	m_fThirst					= 1.0f;
 
 	VERIFY						(object);
 	m_object					= object;
@@ -121,6 +126,11 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	VERIFY( !fis_zero(m_zone_max_power[ALife::infl_acid]) );
 	VERIFY( !fis_zero(m_zone_max_power[ALife::infl_psi]) );
 	VERIFY( !fis_zero(m_zone_max_power[ALife::infl_electra]) );
+
+	// M.F.S. Team Thirst
+	m_fV_Thirst					= pSettings->r_float(section, "thirst_v");
+	m_fV_ThirstPower			= pSettings->r_float(section, "thirst_power_v");
+	m_fV_ThirstHealth			= pSettings->r_float(section, "thirst_health_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -242,6 +252,11 @@ void CActorCondition::UpdateCondition()
 	};
 
 	UpdateSatiety				();
+
+	if (GameConstants::GetActorThirst())
+	{
+		UpdateThirst();
+	}
 
 	inherited::UpdateCondition	();
 
@@ -391,6 +406,38 @@ void CActorCondition::UpdateSatiety()
 				m_fDeltaTime;
 }
 
+//M.F.S. Team Thirst
+void CActorCondition::UpdateThirst()
+{
+	if (!IsGameTypeSingle()) return;
+
+	float k = 1.0f;
+	if (m_fThirst > 0)
+	{
+		m_fThirst -= m_fV_Thirst *
+			k*
+			m_fDeltaTime;
+
+		clamp(m_fThirst, 0.0f, 1.0f);
+
+	}
+
+	//жажда увеличивает здоровье только если нет открытых ран
+	if (!m_bIsBleeding)
+	{
+		m_fDeltaHealth += CanBeHarmed() ?
+			(m_fV_ThirstHealth*(m_fThirst > 0.0f ? 1.f : -1.f)*m_fDeltaTime)
+			: 0;
+	}
+
+	//коэффициенты уменьшения восстановления силы от жажды
+	float thirst_power_k = 1.f;
+
+	m_fDeltaPower += m_fV_ThirstPower *
+		thirst_power_k*
+		m_fDeltaTime;
+}
+
 
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
@@ -471,6 +518,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fAlcohol, output_packet);
 	save_data			(m_condition_flags, output_packet);
 	save_data			(m_fSatiety, output_packet);
+	save_data			(m_fThirst,  output_packet);
 }
 
 void CActorCondition::load(IReader &input_packet)
@@ -479,6 +527,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fAlcohol, input_packet);
 	load_data			(m_condition_flags, input_packet);
 	load_data			(m_fSatiety, input_packet);
+	load_data			(m_fThirst,  input_packet);
 }
 
 void CActorCondition::reinit	()
@@ -499,6 +548,13 @@ void CActorCondition::ChangeSatiety(float value)
 	clamp		(m_fSatiety, 0.0f, 1.0f);
 }
 
+//M.F.S. Team Thirst
+void CActorCondition::ChangeThirst(float value)
+{
+	m_fThirst += value;
+	clamp(m_fThirst, 0.0f, 1.0f);
+}
+
 void CActorCondition::UpdateTutorialThresholds()
 {
 	string256						cb_name;
@@ -506,6 +562,7 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cPowerMaxThr		= pSettings->r_float("tutorial_conditions_thresholds","max_power");
 	static float _cBleeding			= pSettings->r_float("tutorial_conditions_thresholds","bleeding");
 	static float _cSatiety			= pSettings->r_float("tutorial_conditions_thresholds","satiety");
+	static float _cThirst			= pSettings->r_float("tutorial_conditions_thresholds","thirst");
 	static float _cRadiation		= pSettings->r_float("tutorial_conditions_thresholds","radiation");
 	static float _cWpnCondition		= pSettings->r_float("tutorial_conditions_thresholds","weapon_jammed");
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
@@ -535,6 +592,13 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set			(eCriticalSatietyReached, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_satiety");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalThirstReached) && GetThirst()<_cThirst)
+	{
+		m_condition_flags.set(eCriticalThirstReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_thirst");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){

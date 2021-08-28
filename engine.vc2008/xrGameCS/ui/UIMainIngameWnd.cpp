@@ -181,6 +181,7 @@ void CUIMainIngameWnd::Init()
 		"radiation",
 		"wounds",
 		"starvation",
+		"thirst",
 		"fatigue",
 		"invincible"
 		"artefact"
