@@ -1970,7 +1970,7 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 	case ALife::eHealthRestoreSpeed:
 	{
 		res = conditions().change_v().m_fV_HealthRestore;
-		res += conditions().V_SatietyHealth() * ( (conditions().Satiety() > 0.0f) ? 1.0f : -1.0f );
+		res += conditions().V_SatietyHealth() * ( (conditions().GetSatiety() > 0.0f) ? 1.0f : -1.0f );
 
 		TIItemContainer::iterator itb = inventory().m_belt.begin();
 		TIItemContainer::iterator ite = inventory().m_belt.end();

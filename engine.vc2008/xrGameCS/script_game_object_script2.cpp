@@ -68,10 +68,10 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.property("health",					&CScriptGameObject::GetHealth,			&CScriptGameObject::SetHealth)
 		.property("psy_health",				&CScriptGameObject::GetPsyHealth,		&CScriptGameObject::SetPsyHealth)
 		.property("power",					&CScriptGameObject::GetPower,			&CScriptGameObject::SetPower)
-//		.property("satiety",				&CScriptGameObject::GetSatiety,			&CScriptGameObject::SetSatiety)
+		.property("satiety",				&CScriptGameObject::GetSatiety,			&CScriptGameObject::SetSatiety)
 		.property("radiation",				&CScriptGameObject::GetRadiation,		&CScriptGameObject::SetRadiation)
 		.property("morale",					&CScriptGameObject::GetMorale,			&CScriptGameObject::SetMorale)
-		//.property("thirst",					&CScriptGameObject::GetThirst,			&CScriptGameObject::ChangeThirst)
+		.property("thirst",					&CScriptGameObject::GetThirst,			&CScriptGameObject::ChangeThirst)
 
 		.def("get_bleeding",				&CScriptGameObject::GetBleeding)
 		.def("center",						&CScriptGameObject::Center)
