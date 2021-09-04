@@ -17,9 +17,9 @@ CUIBoosterInfo::CUIBoosterInfo()
 	}
 	m_booster_satiety = NULL;
 	m_booster_anabiotic = NULL;
-	m_booster_time = NULL;
 	m_booster_battery = NULL;
 	m_booster_thirst = NULL;
+	m_booster_time = NULL;
 }
 
 CUIBoosterInfo::~CUIBoosterInfo()
@@ -27,10 +27,10 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	delete_data(m_booster_items);
 	xr_delete(m_booster_satiety);
 	xr_delete(m_booster_anabiotic);
-	xr_delete(m_booster_time);
 	xr_delete(m_booster_battery);
-	xr_delete(m_Prop_line);
 	xr_delete(m_booster_thirst);
+	xr_delete(m_booster_time);
+	xr_delete(m_Prop_line);
 }
 
 LPCSTR boost_influence_caption[] =
@@ -209,21 +209,6 @@ void CUIBoosterInfo::SetInfo( shared_str const& section )
 		AttachChild(m_booster_anabiotic);
 	}
 
-	if(pSettings->line_exist(section.c_str(), "boost_time"))
-	{
-		val	= pSettings->r_float(section, "boost_time");
-		if(!fis_zero(val))
-		{
-			m_booster_time->SetValue(val);
-			pos.set(m_booster_time->GetWndPos());
-			pos.y = h;
-			m_booster_time->SetWndPos(pos);
-
-			h += m_booster_time->GetWndSize().y;
-			AttachChild(m_booster_time);
-		}
-	}
-
 	if (pSettings->line_exist(section.c_str(), "charge_level"))
 	{
 		val = pSettings->r_float(section, "charge_level");
@@ -252,6 +237,21 @@ void CUIBoosterInfo::SetInfo( shared_str const& section )
 
 			h += m_booster_thirst->GetWndSize().y;
 			AttachChild(m_booster_thirst);
+		}
+	}
+
+	if(pSettings->line_exist(section.c_str(), "boost_time"))
+	{
+		val	= pSettings->r_float(section, "boost_time");
+		if(!fis_zero(val))
+		{
+			m_booster_time->SetValue(val);
+			pos.set(m_booster_time->GetWndPos());
+			pos.y = h;
+			m_booster_time->SetWndPos(pos);
+
+			h += m_booster_time->GetWndSize().y;
+			AttachChild(m_booster_time);
 		}
 	}
 
