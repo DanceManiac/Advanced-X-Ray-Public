@@ -289,6 +289,11 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	
 --Блудмарки на дин. объектах
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_3d_scopes_enable", _st)
+	ctl = xml:InitCheck("video_adv:check_3d_scopes_enable", _st)
+
+--Блудмарки на дин. объектах
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_bloodmarks_on_skeleton", _st)
 	ctl = xml:InitCheck("video_adv:check_bloodmarks_on_skeleton", _st)
 

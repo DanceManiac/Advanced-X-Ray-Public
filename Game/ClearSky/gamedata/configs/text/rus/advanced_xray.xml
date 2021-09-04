@@ -213,4 +213,7 @@
 	<string id="ui_inv_thirst">
 		<text>Утоление жажды</text>
 	</string>
+	<string id="ui_mm_3d_scopes">
+		<text>3D Прицелы</text>
+	</string>
 </string_table>

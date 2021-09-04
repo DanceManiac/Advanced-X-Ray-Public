@@ -631,13 +631,13 @@ void CWeapon::LoadFireParams		(LPCSTR section)
 	CShootingObject::LoadFireParams(section);
 };
 
-BOOL CWeapon::bLoadAltScopesParams(LPCSTR section)
+bool CWeapon::bLoadAltScopesParams(LPCSTR section)
 {
 	if (!pSettings->line_exist(section, "scopes"))
-		return FALSE;
+		return false;
 
 	if (!xr_strcmp(pSettings->r_string(section, "scopes"), "none"))
-		return FALSE;
+		return false;
 
 	if (m_eScopeStatus == ALife::eAddonAttachable)
 	{
@@ -654,7 +654,7 @@ BOOL CWeapon::bLoadAltScopesParams(LPCSTR section)
 		LoadCurrentScopeParams(section);
 	}
 
-	return TRUE;
+	return true;
 }
 
 void CWeapon::LoadOriginalScopesParams(LPCSTR section)
@@ -756,9 +756,7 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 
 void CWeapon::Load3DScopeParams(LPCSTR section)
 {
-	bool SWM_3D_SCOPES = !!READ_IF_EXISTS(pAdvancedSettings, r_bool, "stcop_base_variables", "SWM_3D_scopes", false);
-
-	if (SWM_3D_SCOPES)
+	if (psActorFlags.test(AF_3DSCOPE_ENABLE))
 		m_zoom_params.m_fSecondVPFovFactor = READ_IF_EXISTS(pSettings, r_float, section, "3d_fov", 0.0f);
 	else
 		m_zoom_params.m_fSecondVPFovFactor = 0.0f;
@@ -1724,7 +1722,7 @@ void CWeapon::OnZoomIn()
 
 	if (pA && IsScopeAttached())
 	{
-		if (bIsSecondVPZoomPresent())
+		if (psActorFlags.test(AF_PNV_W_SCOPE_DIS) && bIsSecondVPZoomPresent())
 		{
 			CTorch* pTorch = smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT));
 			if (pTorch && pTorch->GetNightVisionStatus())

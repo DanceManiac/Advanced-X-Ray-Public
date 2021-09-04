@@ -462,6 +462,13 @@
             </text_color>
         </combo_ssr_quality>
 		
+		<cap_3d_scopes_enable x="20" y="0" width="143" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_3d_scopes</text>
+		</cap_3d_scopes_enable>
+		<check_3d_scopes_enable x="194" y="0" width="30" height="21">
+			<options_item entry="g_3d_scopes" group="mm_opt_video_adv" depend="restart"/>
+		</check_3d_scopes_enable>
+		
 		<cap_bloodmarks_on_skeleton x="20" y="0" width="143" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_bloodmarks_on_skeleton</text>
 		</cap_bloodmarks_on_skeleton>

@@ -1053,7 +1053,7 @@ void CActor::UpdateCL	()
 			//      [Update SecondVP with weapon data]
 			pWeapon->UpdateSecondVP(); //--#SM+#-- +SecondVP+
 			bool bUseMark = !!pWeapon->bMarkCanShow();
-			bool bInZoom = !!(pWeapon->bInZoomRightNow() && pWeapon->bIsSecondVPZoomPresent());
+			bool bInZoom = !!(pWeapon->bInZoomRightNow() && pWeapon->bIsSecondVPZoomPresent() && psActorFlags.test(AF_3DSCOPE_ENABLE));
 
 			//float fVPRotFactor = pWeapon->bNVsecondVPstatus ? pWeapon->GetZRotatingFactor() : 0.0f;
 

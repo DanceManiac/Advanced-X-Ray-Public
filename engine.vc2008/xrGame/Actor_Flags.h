@@ -13,6 +13,8 @@ enum{
 		AF_CROUCH_TOGGLE	=(1<<10),
 		AF_COLLISION		=(1<<11),
 		AF_RIGHT_SHOULDER	=(1<<12),
+		AF_3DSCOPE_ENABLE	=(1<<13),
+		AF_PNV_W_SCOPE_DIS	=(1<<14),
 };
 
 extern Flags32	psActorFlags;

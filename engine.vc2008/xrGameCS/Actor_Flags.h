@@ -12,6 +12,8 @@ enum{
 		AF_GODMODE_RT		=(1<<8),
 		AF_COLLISION		=(1<<10),
 		AF_RIGHT_SHOULDER	=(1<<11),
+		AF_3DSCOPE_ENABLE	=(1<<12),
+		AF_PNV_W_SCOPE_DIS	=(1 <<13),
 };
 
 extern Flags32 psActorFlags;

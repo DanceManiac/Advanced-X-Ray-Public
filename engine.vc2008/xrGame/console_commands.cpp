@@ -2117,6 +2117,9 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
 	}
 
+	CMD3(CCC_Mask,		"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
+	CMD3(CCC_Mask,		"g_pnv_in_scope",		&psActorFlags,	AF_PNV_W_SCOPE_DIS);
+
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
 	CMD3(CCC_Mask,		"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);
 	CMD3(CCC_Mask,		"g_important_save",		&psActorFlags,	AF_IMPORTANT_SAVE);

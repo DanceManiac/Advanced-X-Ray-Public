@@ -965,7 +965,7 @@ void CActor::UpdateCL	()
 			//      [Update SecondVP with weapon data]
 			pWeapon->UpdateSecondVP(); //--#SM+#-- +SecondVP+
 			bool bUseMark = !!pWeapon->IsZoomed();
-			bool bInZoom = !!(pWeapon->bInZoomRightNow() && pWeapon->bIsSecondVPZoomPresent());
+			bool bInZoom = !!(pWeapon->bInZoomRightNow() && pWeapon->bIsSecondVPZoomPresent() && psActorFlags.test(AF_3DSCOPE_ENABLE));
 			bool bNVEnbl = !!pWeapon->bNVsecondVPstatus;
 
 			//      
