@@ -171,10 +171,9 @@ HUD_SOUND_ITEM* HUD_SOUND_COLLECTION::FindSoundItem(LPCSTR alias, bool b_assert)
 	
 	if(it!=m_sound_items.end())
 		return &*it;
-	else{
-		R_ASSERT3(!b_assert,"sound item not found in collection", alias);
-		return NULL;
-	}
+
+	R_ASSERT3(!b_assert, "sound item not found in collection", alias);
+	return NULL;
 }
 
 void HUD_SOUND_COLLECTION::PlaySound(	LPCSTR alias, 

@@ -630,20 +630,18 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 {
 	VERIFY(GetState()==eReload);
 
-	if (iAmmoElapsed == 0 && pSettings->line_exist(hud_sect, "anm_reload_empty"))
+	if (IsGrenadeLauncherAttached())
 	{
-		if (IsGrenadeLauncherAttached())
-			PlayHUDMotion("anm_reload_empty_w_gl", TRUE, this, GetState());
+		if (iAmmoElapsed == 0)
+			if (isHUDAnimationExist("anm_reload_w_gl_empty"))
+				PlayHUDMotion("anm_reload_w_gl_empty", TRUE, this, GetState());
+			else
+				PlayHUDMotion("anm_reload_w_gl", TRUE, this, GetState());
 		else
-			PlayHUDMotion("anm_reload_empty", TRUE, this, GetState());
-	}
-	else 
-	{
-		if (IsGrenadeLauncherAttached())
 			PlayHUDMotion("anm_reload_w_gl", TRUE, this, GetState());
-		else
-			PlayHUDMotion("anm_reload", TRUE, this, GetState());
 	}
+	else
+		inherited::PlayAnimReload();
 }
 
 void CWeaponMagazinedWGrenade::PlayAnimIdle()
@@ -705,15 +703,28 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 
 void CWeaponMagazinedWGrenade::PlayAnimShoot()
 {
-	if(m_bGrenadeMode)
+	if (m_bGrenadeMode)
 	{
-		PlayHUDMotion("anm_shots_g" ,FALSE, this, eFire);
+		PlayHUDMotion("anm_shots_g", FALSE, this, eFire);
 	}
 	else
 	{
-		VERIFY(GetState()==eFire);
-		if(IsGrenadeLauncherAttached())
-			PlayHUDMotion("anm_shots_w_gl" ,FALSE, this, GetState());
+		VERIFY(GetState() == eFire);
+
+		if (IsGrenadeLauncherAttached())
+		{
+			if (IsZoomed())
+			{
+				if (isHUDAnimationExist("anm_shots_w_gl_when_aim"))
+					PlayHUDMotion("anm_shots_w_gl_when_aim", FALSE, this, GetState());
+				else
+					PlayHUDMotion("anm_shots_w_gl", FALSE, this, GetState());
+			}
+			else
+			{
+				PlayHUDMotion("anm_shots_w_gl", FALSE, this, GetState());
+			}
+		}
 		else
 			inherited::PlayAnimShoot();
 	}
@@ -1020,5 +1031,48 @@ int CWeaponMagazinedWGrenade::GetAmmoCount2( u8 ammo2_type ) const
 	return GetAmmoCount_forType( m_ammoTypes2[ammo2_type] );
 }
 
+void CWeaponMagazinedWGrenade::switch2_Unmis()
+{
+	if (m_bGrenadeMode) return;
 
+	VERIFY(GetState() == eUnMisfire);
 
+	if (GrenadeLauncherAttachable() && IsGrenadeLauncherAttached())
+	{
+		if (m_sounds_enabled)
+		{
+			if (m_sounds.FindSoundItem("sndReloadMisfire", false))
+				PlaySound("sndReloadMisfire", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadEmpty", false))
+				PlaySound("sndReloadEmpty", get_LastFP());
+			else
+				PlaySound("sndReload", get_LastFP());
+		}
+		if (isHUDAnimationExist("anm_reload_w_gl_misfire"))
+			PlayHUDMotion("anm_reload_w_gl_misfire", TRUE, this, GetState());
+		else if (isHUDAnimationExist("anm_reload_w_gl_empty"))
+			PlayHUDMotion("anm_reload_w_gl_empty", TRUE, this, GetState());
+		else
+			PlayHUDMotion("anm_reload_w_gl", TRUE, this, GetState());
+	}
+	else
+		inherited::switch2_Unmis();
+}
+
+void CWeaponMagazinedWGrenade::CheckMagazine()
+{
+	if (m_bGrenadeMode || !ParentIsActor())
+	{
+		m_bNeedBulletInGun = false;
+		return;
+	}
+
+	if (m_bHasReloadEmpty == true && iAmmoElapsed >= 1 && m_bNeedBulletInGun == false)
+	{
+		m_bNeedBulletInGun = true;
+	}
+	else if (m_bHasReloadEmpty == true && iAmmoElapsed == 0 && m_bNeedBulletInGun == true)
+	{
+		m_bNeedBulletInGun = false;
+	}
+}
