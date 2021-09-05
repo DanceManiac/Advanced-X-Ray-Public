@@ -89,7 +89,7 @@ void HUD_SOUND_ITEM::PlaySound(	HUD_SOUND_ITEM&		hud_snd,
 	if (hud_snd.sounds.empty())	return;
 
 	hud_snd.m_activeSnd			= NULL;
-	StopSound					(hud_snd);
+	//StopSound					(hud_snd);
 
 	u32 flags = b_hud_mode?sm_2D:0;
 	if(looped)
@@ -165,10 +165,9 @@ HUD_SOUND_ITEM* HUD_SOUND_COLLECTION::FindSoundItem(LPCSTR alias, bool b_assert)
 	
 	if(it!=m_sound_items.end())
 		return &*it;
-	else{
-		R_ASSERT3(!b_assert,"sound item not found in collection", alias);
-		return NULL;
-	}
+
+	R_ASSERT3(!b_assert, "sound item not found in collection", alias);
+	return NULL;
 }
 
 void HUD_SOUND_COLLECTION::PlaySound(	LPCSTR alias, 

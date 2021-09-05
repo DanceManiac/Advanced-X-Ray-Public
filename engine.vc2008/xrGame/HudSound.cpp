@@ -92,7 +92,7 @@ void HUD_SOUND_ITEM::PlaySound(	HUD_SOUND_ITEM&		hud_snd,
 	if (hud_snd.sounds.empty())	return;
 
 	hud_snd.m_activeSnd			= NULL;
-	StopSound					(hud_snd);
+	//StopSound					(hud_snd);
 
 	u32 flags = b_hud_mode?sm_2D:0;
 	if(looped)

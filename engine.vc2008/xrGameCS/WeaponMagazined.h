@@ -26,12 +26,18 @@ protected:
 	ESoundTypes		m_eSoundShot;
 	ESoundTypes		m_eSoundEmptyClick;
 	ESoundTypes		m_eSoundReload;
-	ESoundTypes		m_eSoundReloadEmpty;
 	ESoundTypes		m_eSoundReflect;
 	// General
 	//кадр момента пересчета UpdateSounds
 	u32				dwUpdateSounds_Frame;
 	bool			m_bHasDistantShotSound;
+
+	virtual void    CheckMagazine();
+
+	bool            m_bHasReloadEmpty;
+	bool            m_bNeedBulletInGun;
+
+	bool            m_bCustomShotSounds;
 protected:
 	virtual void	OnMagazineEmpty	();
 
@@ -42,6 +48,7 @@ protected:
 	virtual void	switch2_Hiding	();
 	virtual void	switch2_Hidden	();
 	virtual void	switch2_Showing	();
+	virtual void    switch2_Unmis	();
 	
 	virtual void	OnShot			();	
 	
@@ -156,6 +163,8 @@ protected:
 	virtual void	PlayAnimShoot		();
 	virtual void	PlayReloadSound		();
 	virtual void	PlayAnimAim			();
+
+	bool WeaponSoundExist(LPCSTR section, LPCSTR sound_name) const;
 
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();

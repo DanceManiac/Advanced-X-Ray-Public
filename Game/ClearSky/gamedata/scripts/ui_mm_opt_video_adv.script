@@ -287,7 +287,7 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_60hz",					_st)
 	xml:InitCheck								("video_adv:check_60hz",				_st)
 	
---Блудмарки на дин. объектах
+--3D прицелы
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_3d_scopes_enable", _st)
 	ctl = xml:InitCheck("video_adv:check_3d_scopes_enable", _st)
