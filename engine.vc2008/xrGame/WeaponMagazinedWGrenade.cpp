@@ -34,6 +34,9 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	inherited::Load			(section);
 	CRocketLauncher::Load	(section);
 	
+	SetAnimFlag(ANM_RELOAD_EMPTY_GL,	"anm_reload_empty_w_gl");
+	SetAnimFlag(ANM_SHOT_AIM_GL,		"anm_shots_w_gl_when_aim");
+	SetAnimFlag(ANM_MISFIRE_GL,			"anm_reload_misfire_w_gl");
 	
 	//// Sounds
 	m_sounds.LoadSound(section,"snd_shoot_grenade", "sndShotG", false, m_eSoundShot);
@@ -601,29 +604,30 @@ float	CWeaponMagazinedWGrenade::CurrentZoomFactor	()
 void CWeaponMagazinedWGrenade::PlayAnimShow()
 {
 	VERIFY(GetState()==eShowing);
-	if(IsGrenadeLauncherAttached())
+
+	if (IsGrenadeLauncherAttached())
 	{
-		if(!m_bGrenadeMode)
+		if (!m_bGrenadeMode)
 			PlayHUDMotion("anm_show_w_gl", FALSE, this, GetState());
 		else
 			PlayHUDMotion("anm_show_g", FALSE, this, GetState());
-	}	
+	}
 	else
-		PlayHUDMotion("anm_show", FALSE, this, GetState());
+		inherited::PlayAnimShow();
 }
 
 void CWeaponMagazinedWGrenade::PlayAnimHide()
 {
 	VERIFY(GetState()==eHiding);
 	
-	if(IsGrenadeLauncherAttached())
-		if(!m_bGrenadeMode)
+	if (IsGrenadeLauncherAttached())
+		if (!m_bGrenadeMode)
 			PlayHUDMotion("anm_hide_w_gl", TRUE, this, GetState());
 		else
 			PlayHUDMotion("anm_hide_g", TRUE, this, GetState());
 
 	else
-		PlayHUDMotion("anm_hide", TRUE, this, GetState());
+		inherited::PlayAnimHide();
 }
 
 void CWeaponMagazinedWGrenade::PlayAnimReload()
@@ -632,11 +636,8 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 
 	if (IsGrenadeLauncherAttached())
 	{
-		if (iAmmoElapsed == 0)
-			if (isHUDAnimationExist("anm_reload_w_gl_empty"))
-				PlayHUDMotion("anm_reload_w_gl_empty", TRUE, this, GetState());
-			else
-				PlayHUDMotion("anm_reload_w_gl", TRUE, this, GetState());
+		if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
+			PlayHUDMotion("anm_reload_empty_w_gl", TRUE, this, GetState());
 		else
 			PlayHUDMotion("anm_reload_w_gl", TRUE, this, GetState());
 	}
@@ -713,17 +714,10 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 
 		if (IsGrenadeLauncherAttached())
 		{
-			if (IsZoomed())
-			{
-				if (isHUDAnimationExist("anm_shots_w_gl_when_aim"))
-					PlayHUDMotion("anm_shots_w_gl_when_aim", FALSE, this, GetState());
-				else
-					PlayHUDMotion("anm_shots_w_gl", FALSE, this, GetState());
-			}
+			if (IsZoomed() && psWpnAnimsFlag.test(ANM_SHOT_AIM_GL) && IsScopeAttached())
+				PlayHUDMotion("anm_shots_w_gl_when_aim", FALSE, this, GetState());
 			else
-			{
 				PlayHUDMotion("anm_shots_w_gl", FALSE, this, GetState());
-			}
 		}
 		else
 			inherited::PlayAnimShoot();
@@ -1041,16 +1035,17 @@ void CWeaponMagazinedWGrenade::switch2_Unmis()
 	{
 		if (m_sounds_enabled)
 		{
-			if (m_sounds.FindSoundItem("sndReloadMisfire", false))
+			if (m_sounds.FindSoundItem("sndReloadMisfire", false) && psWpnAnimsFlag.test(ANM_MISFIRE_GL))
 				PlaySound("sndReloadMisfire", get_LastFP());
-			else if (m_sounds.FindSoundItem("sndReloadEmpty", false))
+			else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
 				PlaySound("sndReloadEmpty", get_LastFP());
 			else
 				PlaySound("sndReload", get_LastFP());
 		}
-		if (isHUDAnimationExist("anm_reload_w_gl_misfire"))
+
+		if (psWpnAnimsFlag.test(ANM_MISFIRE_GL))
 			PlayHUDMotion("anm_reload_w_gl_misfire", TRUE, this, GetState());
-		else if (isHUDAnimationExist("anm_reload_w_gl_empty"))
+		else if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
 			PlayHUDMotion("anm_reload_w_gl_empty", TRUE, this, GetState());
 		else
 			PlayHUDMotion("anm_reload_w_gl", TRUE, this, GetState());
@@ -1067,11 +1062,11 @@ void CWeaponMagazinedWGrenade::CheckMagazine()
 		return;
 	}
 
-	if (m_bHasReloadEmpty == true && iAmmoElapsed >= 1 && m_bNeedBulletInGun == false)
+	if ((psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL) || psWpnAnimsFlag.test(ANM_RELOAD_EMPTY)) && iAmmoElapsed >= 1 && m_bNeedBulletInGun == false)
 	{
 		m_bNeedBulletInGun = true;
 	}
-	else if (m_bHasReloadEmpty == true && iAmmoElapsed == 0 && m_bNeedBulletInGun == true)
+	else if ((psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL) || psWpnAnimsFlag.test(ANM_RELOAD_EMPTY)) && iAmmoElapsed == 0 && m_bNeedBulletInGun == true)
 	{
 		m_bNeedBulletInGun = false;
 	}
