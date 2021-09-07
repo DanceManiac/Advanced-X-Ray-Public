@@ -86,6 +86,9 @@ public:
 	float							m_fVolumetricQuality;
 	float							m_fVolumetricDistance;
 	float							m_fVolumetricIntensity;
+
+	float							m_fChargeLevel;
+	float							m_fDegradationSpeed;
 public:
 	enum EAFHudStates {
 		eActivating = eLastBaseState+1,
@@ -105,6 +108,8 @@ public:
 	virtual void					OnStateSwitch		(u32 S);
 	virtual void					OnAnimationEnd		(u32 state);
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
+
+			void					UpdateDegradation	(void);
 
 	// optimization FAST/SLOW mode
 	u32						o_render_frame				;

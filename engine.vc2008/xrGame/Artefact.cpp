@@ -20,6 +20,8 @@
 #include "ai_space.h"
 #include "patrol_path.h"
 #include "patrol_path_storage.h"
+#include "Actor.h"
+#include "AdvancedXrayGameConstants.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
@@ -45,6 +47,9 @@ CArtefact::CArtefact()
 	m_fVolumetricQuality		= 1.0f;
 	m_fVolumetricDistance		= 0.3f;
 	m_fVolumetricIntensity		= 0.5f;
+
+	m_fChargeLevel				= 1.0f;
+	m_fDegradationSpeed			= 1.0f;
 }
 
 
@@ -86,6 +91,8 @@ void CArtefact::Load(LPCSTR section)
 	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
 	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
 	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
+	m_fDegradationSpeed = READ_IF_EXISTS(pSettings, r_float, section, "degradation_speed", 0.0f);
 }
 
 BOOL CArtefact::net_Spawn(CSE_Abstract* DC) 
@@ -175,6 +182,9 @@ void CArtefact::SwitchAfParticles(bool bOn)
 void CArtefact::UpdateCL		() 
 {
 	inherited::UpdateCL			();
+
+	if (GameConstants::GetArtefactsDegradation())
+		UpdateDegradation();
 	
 	if (o_fastmode || m_activationObj)
 		UpdateWorkload			(Device.dwTimeDelta);	
@@ -185,7 +195,7 @@ void CArtefact::Interpolate()
 {
 	if (OnServer())
 		return;
-	
+
 	net_updateInvData* p = NetSync();
 	while (p->NET_IItem.size() > 1)	//in real no interpolation, just get latest state
 	{
@@ -196,6 +206,55 @@ void CArtefact::Interpolate()
 	if (p->NET_IItem.size())	
 	{
 		p->NET_IItem.clear(); //same as p->NET_IItem.pop_front();
+	}
+}
+
+void CArtefact::UpdateDegradation(void)
+{
+
+	TIItemContainer::iterator itb = Actor()->inventory().m_belt.begin();
+	TIItemContainer::iterator ite = Actor()->inventory().m_belt.end();
+
+	CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+
+	//CArtefact* artefact = smart_cast<CArtefact*>(Actor()->inventory().m_belt.begin());
+
+	for ( ; itb != ite; ++itb)
+	{
+		if (artefact)
+		{
+			float uncharge_coef = (m_fDegradationSpeed / 16) * Device.fTimeDelta;
+
+			m_fChargeLevel -= uncharge_coef;
+
+			float condition = 1.f * m_fChargeLevel;
+			SetCondition(condition);
+
+			clamp(m_fChargeLevel, 0.f, 1.f);
+			SetCondition(m_fChargeLevel);
+
+			float inert_charge_level = (1.0f - m_fChargeLevel) / 1000.0f;
+
+			if (m_fHealthRestoreSpeed >= 0.0f)
+				m_fHealthRestoreSpeed = m_fHealthRestoreSpeed - inert_charge_level;
+			else if (m_fSatietyRestoreSpeed >= 0.0f)
+				m_fSatietyRestoreSpeed = m_fSatietyRestoreSpeed - inert_charge_level;
+			else if (m_fPowerRestoreSpeed >= 0.0f)
+				m_fPowerRestoreSpeed = m_fPowerRestoreSpeed - inert_charge_level;
+			else if (m_fBleedingRestoreSpeed >= 0.0f)
+				m_fBleedingRestoreSpeed = m_fBleedingRestoreSpeed - inert_charge_level;
+			else if (m_fThirstRestoreSpeed >= 0.0f)
+				m_fThirstRestoreSpeed = m_fThirstRestoreSpeed - inert_charge_level;
+			else if (m_additional_weight >= 0.0f)
+				m_additional_weight = m_additional_weight - ((1.0f - m_fChargeLevel) * 10);
+
+			Msg("m_fChargeLevel is: %f", m_fChargeLevel);
+			Msg("m_fHealthRestoreSpeed is: %f", m_fHealthRestoreSpeed);
+			Msg("m_fSatietyRestoreSpeed is: %f", m_fSatietyRestoreSpeed);
+			Msg("m_fPowerRestoreSpeed is: %f", m_fPowerRestoreSpeed);
+			Msg("m_fBleedingRestoreSpeed is: %f", m_fBleedingRestoreSpeed);
+			Msg("m_additional_weight is: %f", m_additional_weight);
+		}
 	}
 }
 
