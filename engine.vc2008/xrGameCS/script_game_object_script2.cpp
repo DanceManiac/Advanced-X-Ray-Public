@@ -209,6 +209,10 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("path_type",					&CScriptGameObject::path_type				)
 		.def("detail_path_type",			&CScriptGameObject::detail_path_type		)
 
+		// eatable items
+		.def("get_portions_num",			&CScriptGameObject::GetPortionsNum			)
+		.def("set_portions_num",			&CScriptGameObject::SetPortionsNum			)
+
 		//
 		.def("set_desired_position",		(void (CScriptGameObject::*)())(&CScriptGameObject::set_desired_position))
 		.def("set_desired_position",		(void (CScriptGameObject::*)(const Fvector *))(&CScriptGameObject::set_desired_position))

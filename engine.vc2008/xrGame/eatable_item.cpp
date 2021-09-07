@@ -17,7 +17,7 @@
 
 CEatableItem::CEatableItem()
 {
-	m_iPortionsNum = -1;
+	m_iPortionsNum = 1;
 	m_physic_item	= 0;
 }
 
@@ -35,7 +35,7 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_iPortionsNum				= pSettings->r_s32	(section, "eat_portions_num");
+	m_iPortionsNum = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
 	VERIFY						(m_iPortionsNum<10000);
 }
 
@@ -76,6 +76,18 @@ void CEatableItem::OnH_B_Independent(bool just_before_destroy)
 	inherited::OnH_B_Independent(just_before_destroy);
 }
 
+void CEatableItem::save(NET_Packet &packet)
+{
+	inherited::save(packet);
+	save_data(m_iPortionsNum, packet);
+}
+
+void CEatableItem::load(IReader &packet)
+{
+	inherited::load(packet);
+	load_data(m_iPortionsNum, packet);
+}
+
 bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	SMedicineInfluenceValues	V;
@@ -106,10 +118,13 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 		Level().Send			(tmp_packet);
 	}
 	
-	if(m_iPortionsNum > 0)
-		--m_iPortionsNum;
-	else
-		m_iPortionsNum = 0;
+	if (m_iPortionsNum != -1)
+	{
+		if (m_iPortionsNum > 0)
+			--(m_iPortionsNum);
+		else
+			m_iPortionsNum = 0;
+	}
 
 	return true;
 }

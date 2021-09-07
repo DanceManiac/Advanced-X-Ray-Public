@@ -25,10 +25,15 @@ public:
 
 	virtual void			OnH_B_Independent			(bool just_before_destroy);
 	virtual void			OnH_A_Independent			();
+	virtual void			save						(NET_Packet &output_packet);
+	virtual void			load						(IReader &input_packet);
 	virtual	bool			UseBy						(CEntityAlive* npc);
 	virtual	bool			Empty						()						{return PortionsNum()==0;};
 			int				PortionsNum					()	const				{return m_iPortionsNum;}
-protected:	
-	int						m_iPortionsNum;
+
+	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
+			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
+protected:
+	u32						m_iPortionsNum;
 };
 

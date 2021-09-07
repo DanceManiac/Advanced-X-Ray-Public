@@ -349,6 +349,35 @@ u32 CScriptGameObject::GetSuitableAmmoTotal() const
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
+#include "eatable_item.h"
+
+void CScriptGameObject::SetPortionsNum(u32 num)
+{
+	CEatableItem	*item = smart_cast<CEatableItem*>(&object());
+	if (!item)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CEatableItem : cannot access class member SetPortionsNum!");
+		return;
+	}
+
+	item->SetPortionsNum(num);
+}
+
+u32 CScriptGameObject::GetPortionsNum() const
+{
+	const CEatableItem	*item = smart_cast<const CEatableItem*>(&object());
+	if (!item)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CEatableItem : cannot access class member GetPortionsNum!");
+		return 0;
+	}
+
+	return			(item->GetPortionsNum());
+}
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 void CScriptGameObject::SetQueueSize(u32 queue_size)
 {

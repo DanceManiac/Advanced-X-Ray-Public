@@ -403,6 +403,8 @@ public:
 			CScriptGameObject	*GetBestEnemy		();
 			const CDangerObject	*GetBestDanger		();
 			CScriptGameObject	*GetBestItem		();
+			void				SetPortionsNum		(u32 num);
+			u32					GetPortionsNum		() const;
 
 	_DECLARE_FUNCTION10			(GetActionCount,u32);
 	

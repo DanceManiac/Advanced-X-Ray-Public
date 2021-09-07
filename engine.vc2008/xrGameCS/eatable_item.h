@@ -26,8 +26,13 @@ public:
 	virtual void			OnH_B_Independent			(bool just_before_destroy);
 	virtual void			OnH_A_Independent			();
 	virtual	void			UseBy						(CEntityAlive* npc);
+	virtual void			save						(NET_Packet &output_packet);
+	virtual void			load						(IReader &input_packet);
 	virtual	bool			Empty						()						{return PortionsNum()==0;};
 			int				PortionsNum					()	const				{return m_iPortionsNum;}
+
+	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
+			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
 protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;
@@ -40,7 +45,6 @@ protected:
 
 	//количество порций еды, 
 	//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)
-	int						m_iPortionsNum;
-	int						m_iStartPortionsNum;
+	u32						m_iPortionsNum;
 };
 

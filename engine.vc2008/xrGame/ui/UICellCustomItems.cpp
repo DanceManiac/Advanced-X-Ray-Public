@@ -4,6 +4,7 @@
 #include "../Weapon.h"
 #include "UIDragDropListEx.h"
 #include "UIProgressBar.h"
+#include "../eatable_item.h"
 
 #define INV_GRID_WIDTHF			50.0f
 #define INV_GRID_HEIGHTF		50.0f
@@ -57,6 +58,11 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 		return false;
 	}
 	if ( !object()->equal_upgrades( ci->object()->upgardes() ) )
+	{
+		return false;
+	}
+	auto eatable = smart_cast<CEatableItem*>(object());
+	if (eatable && eatable->GetPortionsNum() != smart_cast<CEatableItem*>(ci->object())->GetPortionsNum())
 	{
 		return false;
 	}
