@@ -470,9 +470,9 @@ void CUIItemInfo::TryAddUpgradeInfo( CInventoryItem& pInvItem )
 void CUIItemInfo::TryAddBoosterInfo(CInventoryItem& pInvItem)
 {
 	CEatableItem* food = smart_cast<CEatableItem*>(&pInvItem);
-	if ( food && UIBoosterInfo )
+	if (food && UIBoosterInfo)
 	{
-		UIBoosterInfo->SetInfo(pInvItem.object().cNameSect());
+		UIBoosterInfo->SetInfo(pInvItem);
 		UIDesc->AddWindow( UIBoosterInfo, false );
 	}
 }

@@ -6,6 +6,7 @@ class CUIXml;
 class CUIStatic;
 class CUITextWnd;
 class UIBoosterInfoItem;
+class CInventoryItem;
 
 class CUIBoosterInfo : public CUIWindow
 {
@@ -13,7 +14,7 @@ public:
 					CUIBoosterInfo		();
 	virtual			~CUIBoosterInfo		();
 			void	InitFromXml				(CUIXml& xml);
-			void	SetInfo					(const shared_str& section);
+			void	SetInfo					(CInventoryItem& pInvItem);
 
 protected:
 	UIBoosterInfoItem*	m_booster_items[eBoostExplImmunity];
@@ -22,6 +23,7 @@ protected:
 	UIBoosterInfoItem*	m_booster_time;
 	UIBoosterInfoItem*	m_booster_battery;
 	UIBoosterInfoItem*	m_booster_thirst;
+	UIBoosterInfoItem*	m_portions;
 
 	CUIStatic*			m_Prop_line;
 

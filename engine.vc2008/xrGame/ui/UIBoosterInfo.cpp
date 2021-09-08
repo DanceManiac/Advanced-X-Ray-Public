@@ -8,6 +8,8 @@
 #include "UIXmlInit.h"
 #include "UIHelper.h"
 #include "../string_table.h"
+#include "../Inventory_Item.h"
+#include "../eatable_item.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
 {
@@ -19,6 +21,7 @@ CUIBoosterInfo::CUIBoosterInfo()
 	m_booster_anabiotic = NULL;
 	m_booster_battery = NULL;
 	m_booster_thirst = NULL;
+	m_portions = NULL;
 	m_booster_time = NULL;
 }
 
@@ -29,6 +32,7 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	xr_delete(m_booster_anabiotic);
 	xr_delete(m_booster_battery);
 	xr_delete(m_booster_thirst);
+	xr_delete(m_portions);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
 }
@@ -107,6 +111,14 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_booster_thirst->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
+	//Portions
+	m_portions = xr_new<UIBoosterInfoItem>();
+	m_portions->Init(xml, "item_portions");
+	m_portions->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_portions").c_str();
+	m_portions->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	m_booster_time = xr_new<UIBoosterInfoItem>();
 	m_booster_time->Init(xml, "boost_time");
 	m_booster_time->SetAutoDelete(false);
@@ -116,7 +128,7 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	xml.SetLocalRoot( stored_root );
 }
 
-void CUIBoosterInfo::SetInfo( shared_str const& section )
+void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 {
 	DetachAll();
 	AttachChild( m_Prop_line );
@@ -127,6 +139,8 @@ void CUIBoosterInfo::SetInfo( shared_str const& section )
 		return;
 	}
 
+	const shared_str& section = pInvItem.object().cNameSect();
+	CEatableItem* eatable = pInvItem.cast_eatable_item();
 	CEntityCondition::BOOSTER_MAP boosters = actor->conditions().GetCurBoosterInfluences();
 
 	float val = 0.0f, max_val = 1.0f;
@@ -237,6 +251,23 @@ void CUIBoosterInfo::SetInfo( shared_str const& section )
 
 			h += m_booster_thirst->GetWndSize().y;
 			AttachChild(m_booster_thirst);
+		}
+	}
+
+	//Portions
+	if (eatable)
+	{
+		val = eatable->m_iPortionsNum;
+
+		if (!fis_zero(val))
+		{
+			m_portions->SetValue(val);
+			pos.set(m_portions->GetWndPos());
+			pos.y = h;
+			m_portions->SetWndPos(pos);
+
+			h += m_portions->GetWndSize().y;
+			AttachChild(m_portions);
 		}
 	}
 

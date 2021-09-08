@@ -59,5 +59,6 @@
 		<texture id="ui_item_battery_uncharge_icon" x="19" y="0" width="19" height="19" />
 		<texture id="ui_item_battery_max_icon" x="38" y="0" width="19" height="19" />
 		<texture id="ui_mfs_thirst_restore_speed" x="57" y="0" width="19" height="19" />
+		<texture id="ui_mfs_item_effectiveness" x="76" y="0" width="19" height="19" />
    </file>
 </w>
