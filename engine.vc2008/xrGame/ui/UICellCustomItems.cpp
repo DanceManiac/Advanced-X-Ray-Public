@@ -5,6 +5,7 @@
 #include "UIDragDropListEx.h"
 #include "UIProgressBar.h"
 #include "../eatable_item.h"
+#include "../Artefact.h"
 
 #define INV_GRID_WIDTHF			50.0f
 #define INV_GRID_HEIGHTF		50.0f
@@ -63,6 +64,11 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	}
 	auto eatable = smart_cast<CEatableItem*>(object());
 	if (eatable && eatable->GetPortionsNum() != smart_cast<CEatableItem*>(ci->object())->GetPortionsNum())
+	{
+		return false;
+	}
+	auto artefact = smart_cast<CArtefact*>(object());
+	if (artefact && artefact->GetCurrentChargeLevel() != smart_cast<CArtefact*>(ci->object())->GetCurrentChargeLevel())
 	{
 		return false;
 	}

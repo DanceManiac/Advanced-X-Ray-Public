@@ -21,7 +21,6 @@
 #include "patrol_path.h"
 #include "patrol_path_storage.h"
 #include "Actor.h"
-#include "AdvancedXrayGameConstants.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
@@ -50,6 +49,9 @@ CArtefact::CArtefact()
 
 	m_fChargeLevel				= 1.0f;
 	m_fDegradationSpeed			= 1.0f;
+
+	//For Degradation
+	m_fConstAdditionalWeight = 0.0f;
 }
 
 
@@ -68,16 +70,36 @@ void CArtefact::Load(LPCSTR section)
 	if(m_bLightsEnabled){
 		sscanf(pSettings->r_string(section,"trail_light_color"), "%f,%f,%f", 
 			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
-		m_fTrailLightRange	= pSettings->r_float(section,"trail_light_range");
+		m_fConstTrailLightRange = pSettings->r_float(section,"trail_light_range");
 	}
 
+	m_fConstHealthRestoreSpeed = pSettings->r_float(section, "health_restore_speed");
+	m_fConstRadiationRestoreSpeed = pSettings->r_float(section, "radiation_restore_speed");
+	m_fConstSatietyRestoreSpeed = pSettings->r_float(section, "satiety_restore_speed");
+	m_fConstPowerRestoreSpeed = pSettings->r_float(section, "power_restore_speed");
+	m_fConstBleedingRestoreSpeed = pSettings->r_float(section, "bleeding_restore_speed");
+	m_fConstThirstRestoreSpeed = pSettings->r_float(section, "thirst_restore_speed");
+	m_fConstAdditionalWeight = pSettings->r_float(section, "additional_inventory_weight");
 
-	m_fHealthRestoreSpeed    = pSettings->r_float	(section,"health_restore_speed"		);
-	m_fRadiationRestoreSpeed = pSettings->r_float	(section,"radiation_restore_speed"	);
-	m_fSatietyRestoreSpeed   = pSettings->r_float	(section,"satiety_restore_speed"	);
-	m_fPowerRestoreSpeed     = pSettings->r_float	(section,"power_restore_speed"		);
-	m_fBleedingRestoreSpeed  = pSettings->r_float	(section,"bleeding_restore_speed"	);
-	m_fThirstRestoreSpeed	 = pSettings->r_float	(section,"thirst_restore_speed"		);
+	m_fChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "artefact_charge_level", 1.0f);
+
+	m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+	m_fConstVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+	m_fConstVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
+	m_fTrailLightRange = m_fConstTrailLightRange;
+
+	m_fVolumetricDistance = m_fConstVolumetricDistance;
+	m_fVolumetricIntensity = m_fConstVolumetricIntensity;
+
+	m_fHealthRestoreSpeed = m_fConstHealthRestoreSpeed;
+	m_fRadiationRestoreSpeed = m_fConstRadiationRestoreSpeed;
+	m_fSatietyRestoreSpeed = m_fConstSatietyRestoreSpeed;
+	m_fPowerRestoreSpeed = m_fConstPowerRestoreSpeed;
+	m_fBleedingRestoreSpeed = m_fConstBleedingRestoreSpeed;
+	m_fThirstRestoreSpeed = m_fConstThirstRestoreSpeed;
+	m_additional_weight = m_fConstAdditionalWeight;
 	
 	if(pSettings->section_exist(pSettings->r_string(section,"hit_absorbation_sect")))
 	{
@@ -85,12 +107,6 @@ void CArtefact::Load(LPCSTR section)
 	}
 	m_bCanSpawnZone			= !!pSettings->line_exist("artefact_spawn_zones", section);
 	m_af_rank				= pSettings->r_u8(section, "af_rank");
-	m_additional_weight		= pSettings->r_float(section,"additional_inventory_weight");
-
-	m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
-	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
-	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
-	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
 
 	m_fDegradationSpeed = READ_IF_EXISTS(pSettings, r_float, section, "degradation_speed", 0.0f);
 }
@@ -162,6 +178,37 @@ void CArtefact::OnH_B_Independent(bool just_before_destroy)
 	SwitchAfParticles	(true);
 }
 
+void CArtefact::save(NET_Packet &packet)
+{
+	inherited::save(packet);
+
+	save_data(m_fChargeLevel, packet);
+	save_data(m_fVolumetricIntensity, packet);
+	save_data(m_fVolumetricDistance, packet);
+	save_data(m_additional_weight, packet);
+	save_data(m_fHealthRestoreSpeed, packet);
+	save_data(m_fRadiationRestoreSpeed, packet);
+	save_data(m_fSatietyRestoreSpeed, packet);
+	save_data(m_fPowerRestoreSpeed, packet);
+	save_data(m_fBleedingRestoreSpeed, packet);
+	save_data(m_fThirstRestoreSpeed, packet);
+}
+
+void CArtefact::load(IReader &packet)
+{
+	inherited::load(packet);
+	load_data(m_fChargeLevel, packet);
+	load_data(m_fVolumetricIntensity, packet);
+	load_data(m_fVolumetricDistance, packet);
+	load_data(m_additional_weight, packet);
+	load_data(m_fHealthRestoreSpeed, packet);
+	load_data(m_fRadiationRestoreSpeed, packet);
+	load_data(m_fSatietyRestoreSpeed, packet);
+	load_data(m_fPowerRestoreSpeed, packet);
+	load_data(m_fBleedingRestoreSpeed, packet);
+	load_data(m_fThirstRestoreSpeed, packet);
+}
+
 void CArtefact::SwitchAfParticles(bool bOn)
 {
 	if(m_sParticlesName.size()==0)
@@ -182,13 +229,14 @@ void CArtefact::SwitchAfParticles(bool bOn)
 void CArtefact::UpdateCL		() 
 {
 	inherited::UpdateCL			();
-
-	if (GameConstants::GetArtefactsDegradation())
-		UpdateDegradation();
 	
 	if (o_fastmode || m_activationObj)
 		UpdateWorkload			(Device.dwTimeDelta);	
 
+	if (m_fChargeLevel <= 0.5f)
+	{
+		m_bCanSpawnZone = false;
+	}
 }
 
 void CArtefact::Interpolate()
@@ -211,50 +259,52 @@ void CArtefact::Interpolate()
 
 void CArtefact::UpdateDegradation(void)
 {
-
-	TIItemContainer::iterator itb = Actor()->inventory().m_belt.begin();
-	TIItemContainer::iterator ite = Actor()->inventory().m_belt.end();
-
-	CArtefact* artefact = smart_cast<CArtefact*>(*itb);
-
-	//CArtefact* artefact = smart_cast<CArtefact*>(Actor()->inventory().m_belt.begin());
-
-	for ( ; itb != ite; ++itb)
+	for (TIItemContainer::iterator it = Actor()->inventory().m_belt.begin();
+		Actor()->inventory().m_belt.end() != it; ++it)
 	{
-		if (artefact)
-		{
-			float uncharge_coef = (m_fDegradationSpeed / 16) * Device.fTimeDelta;
+		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
+			if (artefact)
+			{
+				float uncharge_coef = (m_fDegradationSpeed / 16) * Device.fTimeDelta;
 
-			m_fChargeLevel -= uncharge_coef;
+				artefact->m_fChargeLevel -= uncharge_coef;
+				clamp(artefact->m_fChargeLevel, 0.f, 1.f);
 
-			float condition = 1.f * m_fChargeLevel;
-			SetCondition(condition);
+				float percent = artefact->m_fChargeLevel * 100;
 
-			clamp(m_fChargeLevel, 0.f, 1.f);
-			SetCondition(m_fChargeLevel);
+				if (artefact->m_fHealthRestoreSpeed > 0.0f && m_fConstHealthRestoreSpeed > 0.0f)
+					artefact->m_fHealthRestoreSpeed = (m_fConstHealthRestoreSpeed / 100)*percent;
+				else if (artefact->m_fSatietyRestoreSpeed > 0.0f && m_fConstHealthRestoreSpeed > 0.0f)
+					artefact->m_fSatietyRestoreSpeed = (m_fConstSatietyRestoreSpeed / 100)*percent;
+				else if (artefact->m_fPowerRestoreSpeed > 0.0f && m_fConstPowerRestoreSpeed > 0.0f)
+					artefact->m_fPowerRestoreSpeed = (m_fConstPowerRestoreSpeed / 100)*percent;
+				else if (artefact->m_fBleedingRestoreSpeed > 0.0f && m_fConstBleedingRestoreSpeed > 0.0f)
+					artefact->m_fBleedingRestoreSpeed = (m_fConstBleedingRestoreSpeed / 100)*percent;
+				else if (artefact->m_fThirstRestoreSpeed > 0.0f && m_fConstThirstRestoreSpeed > 0.0f)
+					artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100)*percent;
+				else if (artefact->m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
+					artefact->m_additional_weight = (m_fConstAdditionalWeight / 100)*percent;
 
-			float inert_charge_level = (1.0f - m_fChargeLevel) / 1000.0f;
+				//Lights
+				if (m_bLightsEnabled)
+				{
+					if (m_fTrailLightRange >= 0.0f)
+						m_fTrailLightRange = (m_fConstTrailLightRange / 100)*percent;
+					else
+						m_bLightsEnabled = false;
+				}
 
-			if (m_fHealthRestoreSpeed >= 0.0f)
-				m_fHealthRestoreSpeed = m_fHealthRestoreSpeed - inert_charge_level;
-			else if (m_fSatietyRestoreSpeed >= 0.0f)
-				m_fSatietyRestoreSpeed = m_fSatietyRestoreSpeed - inert_charge_level;
-			else if (m_fPowerRestoreSpeed >= 0.0f)
-				m_fPowerRestoreSpeed = m_fPowerRestoreSpeed - inert_charge_level;
-			else if (m_fBleedingRestoreSpeed >= 0.0f)
-				m_fBleedingRestoreSpeed = m_fBleedingRestoreSpeed - inert_charge_level;
-			else if (m_fThirstRestoreSpeed >= 0.0f)
-				m_fThirstRestoreSpeed = m_fThirstRestoreSpeed - inert_charge_level;
-			else if (m_additional_weight >= 0.0f)
-				m_additional_weight = m_additional_weight - ((1.0f - m_fChargeLevel) * 10);
-
-			Msg("m_fChargeLevel is: %f", m_fChargeLevel);
-			Msg("m_fHealthRestoreSpeed is: %f", m_fHealthRestoreSpeed);
-			Msg("m_fSatietyRestoreSpeed is: %f", m_fSatietyRestoreSpeed);
-			Msg("m_fPowerRestoreSpeed is: %f", m_fPowerRestoreSpeed);
-			Msg("m_fBleedingRestoreSpeed is: %f", m_fBleedingRestoreSpeed);
-			Msg("m_additional_weight is: %f", m_additional_weight);
-		}
+				//Volumetric Lights
+				if (m_bVolumetricLights)
+				{
+					if (m_fVolumetricDistance >= 0.0f)
+						m_fVolumetricDistance = (m_fConstVolumetricDistance / 100)*percent;
+					else if (m_fVolumetricIntensity >= 0.0f)
+						m_fVolumetricIntensity = (m_fConstVolumetricIntensity / 100)*percent;
+					else
+						m_bVolumetricLights = false;
+				}
+			}
 	}
 }
 
@@ -321,9 +371,9 @@ void CArtefact::StartLights()
 
 	VERIFY						(m_pTrailLight == NULL);
 	m_pTrailLight				= ::Render->light_create();
-	bool const b_light_shadow	= !!pSettings->r_bool(cNameSect(), "idle_light_shadow");
+	//bool const b_light_shadow = m_bLightsEnabled;  //!!pSettings->r_bool(cNameSect(), "idle_light_shadow");
 
-	m_pTrailLight->set_shadow	(b_light_shadow);
+	m_pTrailLight->set_shadow	(m_bLightsEnabled);
 
 	m_pTrailLight->set_color	(m_TrailLightColor); 
 	m_pTrailLight->set_range	(m_fTrailLightRange);
@@ -695,4 +745,9 @@ void CArtefact::OnHiddenItem ()
 	inherited::OnHiddenItem		();
 	SetState					(eHidden);
 	SetNextState				(eHidden);
+}
+
+float CArtefact::GetCurrentChargeLevel() const
+{
+	return m_fChargeLevel;
 }

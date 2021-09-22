@@ -169,7 +169,7 @@
 			<texture>ui_item_battery_icon</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
 		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="10">
+		<value x="140" y="0" width="30" height="20" magnitude="10" unit_str="%">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</boost_battery>

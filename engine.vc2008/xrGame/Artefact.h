@@ -7,6 +7,7 @@
 #include "patrol_path.h"
 
 class SArtefactActivation;
+class CInventoryItem;
 struct SArtefactDetectorsSupport;
 
 class CArtefact :	public CHudItemObject, 
@@ -23,6 +24,8 @@ public:
 
 	virtual void					OnH_A_Chield					();
 	virtual void					OnH_B_Independent				(bool just_before_destroy);
+	virtual void					save							(NET_Packet &output_packet);
+	virtual void					load							(IReader &input_packet);
 	virtual void					OnActiveItem					();
 	virtual void					OnHiddenItem					();
 	
@@ -54,7 +57,6 @@ protected:
 	float							m_fTrailLightRange;
 	u8								m_af_rank;
 	bool							m_bLightsEnabled;
-	float							m_additional_weight;
 
 	virtual void					UpdateLights					();
 public:
@@ -72,6 +74,7 @@ public:
 	virtual void					PhDataUpdate					(float step);
 	virtual void					PhTune							(float step)	{};
 
+	float							m_additional_weight;
 	float							AdditionalInventoryWeight		() const {return m_additional_weight;}
 	bool							m_bCanSpawnZone;
 	float							m_fHealthRestoreSpeed;
@@ -82,13 +85,26 @@ public:
 	float 							m_fThirstRestoreSpeed;
 	CHitImmunity 					m_ArtefactHitImmunities;
 
+	//For Degradation
+	float							m_fConstHealthRestoreSpeed;
+	float							m_fConstRadiationRestoreSpeed;
+	float							m_fConstSatietyRestoreSpeed;
+	float							m_fConstPowerRestoreSpeed;
+	float							m_fConstBleedingRestoreSpeed;
+	float							m_fConstThirstRestoreSpeed;
+	float							m_fConstAdditionalWeight;
+	float							m_fConstTrailLightRange;
+	float							m_fConstVolumetricDistance;
+	float							m_fConstVolumetricIntensity;
+	float							m_fChargeLevel;
+	float							m_fCurrentChargeLevel;
+	float							m_fDegradationSpeed;
+	float							GetCurrentChargeLevel(void) const;
+
 	bool							m_bVolumetricLights;
 	float							m_fVolumetricQuality;
 	float							m_fVolumetricDistance;
 	float							m_fVolumetricIntensity;
-
-	float							m_fChargeLevel;
-	float							m_fDegradationSpeed;
 public:
 	enum EAFHudStates {
 		eActivating = eLastBaseState+1,

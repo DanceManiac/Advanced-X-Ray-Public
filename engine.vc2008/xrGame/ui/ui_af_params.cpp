@@ -8,6 +8,9 @@
 #include "UIXmlInit.h"
 #include "UIHelper.h"
 #include "../string_table.h"
+#include "../Inventory_Item.h"
+#include "../Artefact.h"
+#include "../AdvancedXrayGameConstants.h"
 
 u32 const red_clr   = color_argb(255,210,50,50);
 u32 const green_clr = color_argb(255,170,170,170);
@@ -18,19 +21,29 @@ CUIArtefactParams::CUIArtefactParams()
 	{
 		m_immunity_item[i] = NULL;
 	}
-	for ( u32 i = 0; i < ALife::eRestoreTypeMax; ++i )
-	{
-		m_restore_item[i] = NULL;
-	}
+
+	m_fHealthRestoreSpeed = NULL;
+	m_fRadiationRestoreSpeed = NULL;
+	m_fSatietyRestoreSpeed = NULL;
+	m_fPowerRestoreSpeed = NULL;
+	m_fBleedingRestoreSpeed = NULL;
+	m_fThirstRestoreSpeed = NULL;
 	m_additional_weight = NULL;
+	m_fChargeLevel = NULL;
 }
 
 CUIArtefactParams::~CUIArtefactParams()
 {
-	delete_data	( m_immunity_item );
-	delete_data	( m_restore_item );
-	xr_delete	( m_additional_weight );
-	xr_delete	( m_Prop_line );
+	delete_data	(m_immunity_item);
+	xr_delete	(m_fHealthRestoreSpeed);
+	xr_delete	(m_fRadiationRestoreSpeed);
+	xr_delete	(m_fSatietyRestoreSpeed);
+	xr_delete	(m_fPowerRestoreSpeed);
+	xr_delete	(m_fBleedingRestoreSpeed);
+	xr_delete	(m_fThirstRestoreSpeed);
+	xr_delete	(m_additional_weight);
+	xr_delete	(m_fChargeLevel);
+	xr_delete	(m_Prop_line);
 }
 
 LPCSTR af_immunity_section_names[] = // ALife::EInfluenceType
@@ -122,30 +135,61 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 		xml.SetLocalRoot( base_node );
 	}
 
-	for ( u32 i = 0; i < ALife::eRestoreTypeMax; ++i )
-	{
-		m_restore_item[i] = xr_new<UIArtefactParamItem>();
-		m_restore_item[i]->Init( xml, af_restore_section_names[i] );
-		m_restore_item[i]->SetAutoDelete(false);
+	m_fHealthRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fHealthRestoreSpeed->Init( xml, "health_restore_speed");
+	m_fHealthRestoreSpeed->SetAutoDelete(false);
+	LPCSTR name = CStringTable().translate("ui_inv_health").c_str();
+	m_fHealthRestoreSpeed->SetCaption( name );
+	xml.SetLocalRoot(base_node);
 
-		LPCSTR name = CStringTable().translate(af_restore_caption[i]).c_str();
-		m_restore_item[i]->SetCaption( name );
+	m_fRadiationRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fRadiationRestoreSpeed->Init(xml, "radiation_restore_speed");
+	m_fRadiationRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_radiation").c_str();
+	m_fRadiationRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
 
-		xml.SetLocalRoot( base_node );
-	}
+	m_fSatietyRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fSatietyRestoreSpeed->Init(xml, "satiety_restore_speed");
+	m_fSatietyRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_satiety").c_str();
+	m_fSatietyRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fPowerRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fPowerRestoreSpeed->Init(xml, "power_restore_speed");
+	m_fPowerRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_power").c_str();
+	m_fPowerRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fBleedingRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fBleedingRestoreSpeed->Init(xml, "bleeding_restore_speed");
+	m_fBleedingRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_bleeding").c_str();
+	m_fBleedingRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fThirstRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fThirstRestoreSpeed->Init(xml, "thirst_restore_speed");
+	m_fThirstRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_thirst").c_str();
+	m_fThirstRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
 	
-	{
-		m_additional_weight = xr_new<UIArtefactParamItem>();
-		m_additional_weight->Init( xml, "additional_weight" );
-		m_additional_weight->SetAutoDelete(false);
+	m_additional_weight = xr_new<UIArtefactParamItem>();
+	m_additional_weight->Init(xml, "additional_weight");
+	m_additional_weight->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_weight").c_str();
+	m_additional_weight->SetCaption(name);
+	xml.SetLocalRoot(base_node);
 
-		LPCSTR name = CStringTable().translate( "ui_inv_weight" ).c_str();
-		m_additional_weight->SetCaption( name );
-
-		//xml.SetLocalRoot( base_node );
-	}
-
-	xml.SetLocalRoot( stored_root );
+	m_fChargeLevel = xr_new<UIArtefactParamItem>();
+	m_fChargeLevel->Init(xml, "artefact_charge_level");
+	m_fChargeLevel->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_artefact_charge").c_str();
+	m_fChargeLevel->SetCaption(name);
+	xml.SetLocalRoot(stored_root);
 }
 
 bool CUIArtefactParams::Check(const shared_str& af_section)
@@ -153,7 +197,7 @@ bool CUIArtefactParams::Check(const shared_str& af_section)
 	return !!pSettings->line_exist(af_section, "af_actor_properties");
 }
 
-void CUIArtefactParams::SetInfo( shared_str const& af_section )
+void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 {
 	DetachAll();
 	AttachChild( m_Prop_line );
@@ -167,6 +211,8 @@ void CUIArtefactParams::SetInfo( shared_str const& af_section )
 	float val = 0.0f, max_val = 1.0f;
 	Fvector2 pos;
 	float h = m_Prop_line->GetWndPos().y+m_Prop_line->GetWndSize().y;
+	const shared_str& af_section = pInvItem.object().cNameSect();
+	CArtefact* artefact = pInvItem.object().cast_artefact();
 
 	for ( u32 i = 0; i < ALife::infl_max_count; ++i )
 	{
@@ -188,36 +234,111 @@ void CUIArtefactParams::SetInfo( shared_str const& af_section )
 		AttachChild( m_immunity_item[i] );
 	}
 
+	if (artefact)
 	{
-		val	= pSettings->r_float( af_section, "additional_inventory_weight" );
-		if ( !fis_zero(val) )
+		val = artefact->m_additional_weight;
+		if (!fis_zero(val))
 		{
-			m_additional_weight->SetValue( val );
+			m_additional_weight->SetValue(val);
 
-			pos.set( m_additional_weight->GetWndPos() );
+			pos.set(m_additional_weight->GetWndPos());
 			pos.y = h;
-			m_additional_weight->SetWndPos( pos );
+			m_additional_weight->SetWndPos(pos);
 
 			h += m_additional_weight->GetWndSize().y;
-			AttachChild( m_additional_weight );
+			AttachChild(m_additional_weight);
 		}
-	}
 
-	for ( u32 i = 0; i < ALife::eRestoreTypeMax; ++i )
-	{
-		val	= pSettings->r_float( af_section, af_restore_section_names[i] );
-		if ( fis_zero(val) )
+		val = artefact->m_fHealthRestoreSpeed;
+		if (!fis_zero(val))
 		{
-			continue;
+			m_fHealthRestoreSpeed->SetValue(val);
+
+			pos.set(m_fHealthRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fHealthRestoreSpeed->SetWndPos(pos);
+
+			h += m_fHealthRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fHealthRestoreSpeed);
 		}
-		m_restore_item[i]->SetValue( val );
 
-		pos.set( m_restore_item[i]->GetWndPos() );
-		pos.y = h;
-		m_restore_item[i]->SetWndPos( pos );
+		val = artefact->m_fRadiationRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fRadiationRestoreSpeed->SetValue(val);
 
-		h += m_restore_item[i]->GetWndSize().y;
-		AttachChild( m_restore_item[i] );
+			pos.set(m_fRadiationRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fRadiationRestoreSpeed->SetWndPos(pos);
+
+			h += m_fRadiationRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fRadiationRestoreSpeed);
+		}
+
+		val = artefact->m_fSatietyRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fSatietyRestoreSpeed->SetValue(val);
+
+			pos.set(m_fSatietyRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fSatietyRestoreSpeed->SetWndPos(pos);
+
+			h += m_fSatietyRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fSatietyRestoreSpeed);
+		}
+
+		val = artefact->m_fPowerRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fPowerRestoreSpeed->SetValue(val);
+
+			pos.set(m_fPowerRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fPowerRestoreSpeed->SetWndPos(pos);
+
+			h += m_fPowerRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fPowerRestoreSpeed);
+		}
+
+		val = artefact->m_fBleedingRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fBleedingRestoreSpeed->SetValue(val);
+
+			pos.set(m_fBleedingRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fBleedingRestoreSpeed->SetWndPos(pos);
+
+			h += m_fBleedingRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fBleedingRestoreSpeed);
+		}
+
+		val = artefact->m_fThirstRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fThirstRestoreSpeed->SetValue(val);
+
+			pos.set(m_fThirstRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fThirstRestoreSpeed->SetWndPos(pos);
+
+			h += m_fThirstRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fThirstRestoreSpeed);
+		}
+
+		val = artefact->m_fChargeLevel;
+		if (!fis_zero(val) || GameConstants::GetArtefactsDegradation())
+		{
+			m_fChargeLevel->SetValue(val);
+
+			pos.set(m_fChargeLevel->GetWndPos());
+			pos.y = h;
+			m_fChargeLevel->SetWndPos(pos);
+
+			h += m_fChargeLevel->GetWndSize().y;
+			AttachChild(m_fChargeLevel);
+		}
 	}
 	
 	SetHeight( h );
@@ -231,6 +352,7 @@ UIArtefactParamItem::UIArtefactParamItem()
 	m_value     = NULL;
 	m_magnitude = 1.0f;
 	m_sign_inverse = false;
+	m_show_sign = false;
 	
 	m_unit_str._set( "" );
 	m_texture_minus._set( "" );
@@ -250,6 +372,7 @@ void UIArtefactParamItem::Init( CUIXml& xml, LPCSTR section )
 	m_value     = UIHelper::CreateTextWnd( xml, "value",   this );
 	m_magnitude = xml.ReadAttribFlt( "value", 0, "magnitude", 1.0f );
 	m_sign_inverse = (xml.ReadAttribInt( "value", 0, "sign_inverse", 0 ) == 1);
+	m_show_sign = (xml.ReadAttribInt("value", 0, "show_sign", 1) == 1);
 	
 	LPCSTR unit_str = xml.ReadAttrib( "value", 0, "unit_str", "" );
 	m_unit_str._set( CStringTable().translate( unit_str ) );
@@ -274,7 +397,11 @@ void UIArtefactParamItem::SetValue( float value )
 {
 	value *= m_magnitude;
 	string32	buf;
-	xr_sprintf( buf, "%+.0f", value );
+
+	if (m_show_sign)
+		xr_sprintf(buf, "%+.0f", value);
+	else
+		xr_sprintf(buf, "%.0f", value);
 	
 	LPSTR		str;
 	if ( m_unit_str.size() )

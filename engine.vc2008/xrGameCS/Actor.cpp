@@ -71,6 +71,7 @@
 #include "ai_object_location.h"
 
 #include "DynamicHudGlass.h"
+#include "AdvancedXrayGameConstants.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -1719,6 +1720,9 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			conditions().ChangeSatiety		(artefact->m_fSatietyRestoreSpeed   * f_update_time);
 			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
 			conditions().ChangeRadiation	(artefact->m_fRadiationRestoreSpeed * f_update_time);
+
+			if (GameConstants::GetArtefactsDegradation())
+				artefact->UpdateDegradation();
 		}
 	}
 	CCustomOutfit* outfit = GetOutfit();

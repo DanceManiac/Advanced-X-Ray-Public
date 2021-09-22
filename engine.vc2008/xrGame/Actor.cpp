@@ -75,6 +75,7 @@
 #include "UI/UIDragDropReferenceList.h"
 
 #include "DynamicHudGlass.h"
+#include "AdvancedXrayGameConstants.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -1801,6 +1802,10 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			conditions().ChangePower		(artefact->m_fPowerRestoreSpeed     * f_update_time);
 			conditions().ChangeSatiety		(artefact->m_fSatietyRestoreSpeed   * f_update_time);
 			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
+
+			if (GameConstants::GetArtefactsDegradation())
+				artefact->UpdateDegradation();
+
 			if(artefact->m_fRadiationRestoreSpeed>0.0f) 
 			{
 				float val = artefact->m_fRadiationRestoreSpeed - conditions().GetBoostRadiationImmunity();
