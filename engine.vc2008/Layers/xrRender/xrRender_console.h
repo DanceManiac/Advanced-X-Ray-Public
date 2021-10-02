@@ -233,6 +233,7 @@ enum
 {
 	R2SS_VOLUMETRIC,
 	R2SS_SCREEN_SPACE,
+	R2SS_COMBINE_SUNSHAFTS,
 };
 //end ogse sunshafts
 

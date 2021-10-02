@@ -57,6 +57,9 @@
 	<string id="screen_space">
 		<text>Screen Space</text>
 	</string>
+	<string id="combine_sunshafts">
+		<text>Комбинированные</text>
+	</string>
 	<string id="ui_mm_raindrops">
 		<text>Эффект Raindrops</text>
 	</string>
