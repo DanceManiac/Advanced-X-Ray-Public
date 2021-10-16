@@ -526,7 +526,7 @@ void CWeaponMagazined::UpdateSounds	()
 	Fvector P						= get_LastFP();
 	m_sounds.SetPosition("sndShow", P);
 	m_sounds.SetPosition("sndHide", P);
-	if (psWpnAnimsFlag.test(ANM_HIDE_EMPTY)) m_sounds.SetPosition("sndClose", P);
+	//if (psWpnAnimsFlag.test(ANM_HIDE_EMPTY)) m_sounds.SetPosition("sndClose", P);
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);
 //. nah	m_sounds.SetPosition("sndEmptyClick", P);
@@ -1131,6 +1131,7 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 		if(!xr_strcmp(iter_scope_name, item_section_name))
 		{
 			m_cur_scope = NULL;
+			m_cur_scope_bone = NULL;
 			detached = true;
 		}
 	}
@@ -1205,6 +1206,12 @@ void CWeaponMagazined::InitAddons()
 		if ( m_eScopeStatus == ALife::eAddonAttachable )
 		{
 			LoadCurrentScopeParams(GetScopeName().c_str());
+
+			if (pSettings->line_exist(m_scopes[m_cur_scope], "bones"))
+			{
+				pcstr ScopeBone = pSettings->r_string(m_scopes[m_cur_scope], "bones");
+				m_cur_scope_bone = ScopeBone;
+			}
 		}
 	}
 	else

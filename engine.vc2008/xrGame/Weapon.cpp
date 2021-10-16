@@ -332,6 +332,10 @@ void CWeapon::ForceUpdateFireParticles()
 	}
 }
 
+LPCSTR wpn_scope_def_bone = "wpn_scope";
+LPCSTR wpn_silencer_def_bone = "wpn_silencer";
+LPCSTR wpn_launcher_def_bone = "wpn_launcher";
+
 void CWeapon::Load		(LPCSTR section)
 {
 	inherited::Load					(section);
@@ -606,6 +610,51 @@ void CWeapon::Load		(LPCSTR section)
 	{
 		strconcat					(sizeof(temp),temp,"hit_probability_",get_token_name(difficulty_type_token,i));
 		m_hit_probability[i]		= READ_IF_EXISTS(pSettings,r_float,section,temp,1.f);
+	}
+
+	if (pSettings->line_exist(section, "silencer_bone"))
+		m_sWpn_silencer_bone = pSettings->r_string(section, "silencer_bone");
+	else
+		m_sWpn_silencer_bone = wpn_silencer_def_bone;
+
+	if (pSettings->line_exist(section, "launcher_bone"))
+		m_sWpn_launcher_bone = pSettings->r_string(section, "launcher_bone");
+	else
+		m_sWpn_launcher_bone = wpn_launcher_def_bone;
+
+	auto LoadBoneNames = [](pcstr section, pcstr line, RStringVec& list)
+	{
+		list.clear();
+		if (pSettings->line_exist(section, line))
+		{
+			pcstr lineStr = pSettings->r_string(section, line);
+			for (int j = 0, cnt = _GetItemCount(lineStr); j < cnt; ++j)
+			{
+				string128 bone_name;
+				_GetItem(lineStr, j, bone_name);
+				list.push_back(bone_name);
+			}
+			return true;
+		}
+		return false;
+	};
+
+	// Default shown bones
+	LoadBoneNames(section, "def_show_bones", m_defShownBones);
+
+	// Default hidden bones
+	LoadBoneNames(section, "def_hide_bones", m_defHiddenBones);
+
+	if (pSettings->line_exist(section, "bones"))
+	{
+		pcstr ScopeSect = pSettings->r_string(section, "scope_sect");
+		for (int i = 0; i < _GetItemCount(ScopeSect); i++)
+		{
+			string128 scope;
+			_GetItem(ScopeSect, i, scope);
+			shared_str bone = pSettings->r_string(scope, "bones");
+			m_all_scope_bones.push_back(bone);
+		}
 	}
 }
 
@@ -1520,60 +1569,75 @@ bool CWeapon::SilencerAttachable()
 	return (ALife::eAddonAttachable == m_eSilencerStatus);
 }
 
-shared_str wpn_scope				= "wpn_scope";
-shared_str wpn_silencer				= "wpn_silencer";
-shared_str wpn_grenade_launcher		= "wpn_launcher";
-
-
-
-
 void CWeapon::UpdateHUDAddonsVisibility()
 {//actor only
 	if(!GetHUDmode())										return;
 
 //.	return;
 
-	u16 bone_id = HudItemData()->m_model->LL_BoneID(wpn_scope);
+	u16 bone_id = HudItemData()->m_model->LL_BoneID(wpn_scope_def_bone);
+
+	auto SetBoneVisible = [&](const shared_str& boneName, BOOL visibility)
+	{
+		HudItemData()->set_bone_visible(boneName, visibility, TRUE);
+	};
+
+	// Hide default bones
+	for (const shared_str& bone : m_defHiddenBones)
+	{
+		SetBoneVisible(bone, FALSE);
+	}
+
+	// Show default bones
+	for (const shared_str& bone : m_defShownBones)
+	{
+		SetBoneVisible(bone, TRUE);
+	}
+
+	for (int i = 0; i < m_all_scope_bones.size(); i++)
+		SetBoneVisible(m_all_scope_bones[i], FALSE);
+
+	if (m_cur_scope_bone != NULL)
+		SetBoneVisible(m_cur_scope_bone, TRUE);
 
 	if (bone_id != BI_NONE)
 	{
 		if (ScopeAttachable())
 		{
-			HudItemData()->set_bone_visible(wpn_scope, IsScopeAttached());
+			HudItemData()->set_bone_visible(wpn_scope_def_bone, IsScopeAttached());
 		}
 
 		if (m_eScopeStatus == ALife::eAddonDisabled)
 		{
-			HudItemData()->set_bone_visible(wpn_scope, FALSE, TRUE);
+			HudItemData()->set_bone_visible(wpn_scope_def_bone, FALSE, TRUE);
 		}
 		else
 			if (m_eScopeStatus == ALife::eAddonPermanent)
-				HudItemData()->set_bone_visible(wpn_scope, TRUE, TRUE);
+				HudItemData()->set_bone_visible(wpn_scope_def_bone, TRUE, TRUE);
 	}
 
 	if(SilencerAttachable())
 	{
-		HudItemData()->set_bone_visible(wpn_silencer, IsSilencerAttached());
+		SetBoneVisible(m_sWpn_silencer_bone, IsSilencerAttached());
 	}
 	if(m_eSilencerStatus==ALife::eAddonDisabled )
 	{
-		HudItemData()->set_bone_visible(wpn_silencer, FALSE, TRUE);
+		SetBoneVisible(m_sWpn_silencer_bone, FALSE);
 	}
 	else
 		if(m_eSilencerStatus==ALife::eAddonPermanent)
-			HudItemData()->set_bone_visible(wpn_silencer, TRUE, TRUE);
+			SetBoneVisible(m_sWpn_silencer_bone, TRUE);
 
 	if(GrenadeLauncherAttachable())
 	{
-		HudItemData()->set_bone_visible(wpn_grenade_launcher, IsGrenadeLauncherAttached());
+		SetBoneVisible(m_sWpn_launcher_bone, IsGrenadeLauncherAttached());
 	}
 	if(m_eGrenadeLauncherStatus==ALife::eAddonDisabled )
 	{
-		HudItemData()->set_bone_visible(wpn_grenade_launcher, FALSE, TRUE);
+		SetBoneVisible(m_sWpn_launcher_bone, FALSE);
 	}else
 		if(m_eGrenadeLauncherStatus==ALife::eAddonPermanent)
-			HudItemData()->set_bone_visible(wpn_grenade_launcher, TRUE, TRUE);
-
+			SetBoneVisible(m_sWpn_launcher_bone, TRUE);
 }
 
 void CWeapon::UpdateAddonsVisibility()
@@ -1585,7 +1649,7 @@ void CWeapon::UpdateAddonsVisibility()
 
 	pWeaponVisual->CalculateBones_Invalidate				();
 
-	bone_id = pWeaponVisual->LL_BoneID					(wpn_scope);
+	bone_id = pWeaponVisual->LL_BoneID					(wpn_scope_def_bone);
 	if(ScopeAttachable())
 	{
 		if(IsScopeAttached())
@@ -1605,7 +1669,7 @@ void CWeapon::UpdateAddonsVisibility()
 		pWeaponVisual->LL_SetBoneVisible					(bone_id,FALSE,TRUE);
 //		Log("scope", pWeaponVisual->LL_GetBoneVisible		(bone_id));
 	}
-	bone_id = pWeaponVisual->LL_BoneID						(wpn_silencer);
+	bone_id = pWeaponVisual->LL_BoneID						(m_sWpn_silencer_bone);
 	if(SilencerAttachable())
 	{
 		if(IsSilencerAttached()){
@@ -1623,7 +1687,7 @@ void CWeapon::UpdateAddonsVisibility()
 //		Log("silencer", pWeaponVisual->LL_GetBoneVisible	(bone_id));
 	}
 
-	bone_id = pWeaponVisual->LL_BoneID						(wpn_grenade_launcher);
+	bone_id = pWeaponVisual->LL_BoneID						(m_sWpn_launcher_bone);
 	if(GrenadeLauncherAttachable())
 	{
 		if(IsGrenadeLauncherAttached())
