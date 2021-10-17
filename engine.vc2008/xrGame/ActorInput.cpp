@@ -631,18 +631,9 @@ void CActor::SwitchNightVision()
 
 void CActor::SwitchTorch()
 { 
-	xr_vector<CAttachableItem*> const& all = CAttachmentOwner::attached_objects();
-	xr_vector<CAttachableItem*>::const_iterator it = all.begin();
-	xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
-	for ( ; it != it_e; ++it )
-	{
-		CTorch* torch = smart_cast<CTorch*>(*it);
-		if ( torch )
-		{		
-			torch->Switch();
-			return;
-		}
-	}
+	CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+	if (pTorch)
+		pTorch->Switch();
 }
 
 #ifdef DEBUG
