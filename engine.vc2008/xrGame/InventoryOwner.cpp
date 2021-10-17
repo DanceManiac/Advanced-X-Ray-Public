@@ -655,3 +655,19 @@ void CInventoryOwner::deadbody_closed( bool status )
 	P.w_u8( (m_deadbody_closed)? 1 : 0 );
 	CGameObject::u_EventSend( P );
 }
+
+void CInventoryOwner::AfterLoad()
+{
+	TIItemContainer::iterator I = inventory().m_all.begin();
+	TIItemContainer::iterator E = inventory().m_all.end();
+	for (; I != E; ++I)
+	{
+		CBolt* pBolt = smart_cast<CBolt*>((*I));
+		if (pBolt)
+			pBolt->DestroyObject();
+	}
+
+	CGameObject* game_object = smart_cast<CGameObject*>(this);
+	VERIFY(game_object);
+	Level().spawn_item("bolt", game_object->Position(), game_object->ai_location().level_vertex_id(), game_object->ID());
+}

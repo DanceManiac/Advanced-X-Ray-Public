@@ -207,6 +207,8 @@ public:
 public:
 	virtual	bool				use_simplified_visual	() const {return (false);};
 
+			void				AfterLoad				();
+
 private:
 	CTradeParameters			*m_trade_parameters;
 	CPurchaseList				*m_purchase_list;

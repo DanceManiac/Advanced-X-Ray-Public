@@ -235,6 +235,7 @@ public:
 	IC		bool				deadbody_can_take_status() const { return m_deadbody_can_take; }
 			void				deadbody_closed			(bool status);
 	IC		bool				deadbody_closed_status	() const { return m_deadbody_closed; }
+			void				AfterLoad				();
 };
 
 #include "inventory_owner_inline.h"

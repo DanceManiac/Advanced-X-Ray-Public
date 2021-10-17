@@ -617,3 +617,19 @@ bool CInventoryOwner::use_throw_randomness		()
 {
 	return						(true);
 }
+
+void CInventoryOwner::AfterLoad()
+{
+	TIItemContainer::iterator I = inventory().m_all.begin();
+	TIItemContainer::iterator E = inventory().m_all.end();
+	for (; I != E; ++I)
+	{
+		CBolt* pBolt = smart_cast<CBolt*>((*I));
+		if (pBolt)
+			pBolt->DestroyObject();
+	}
+
+	CGameObject* game_object = smart_cast<CGameObject*>(this);
+	VERIFY(game_object);
+	Level().spawn_item("bolt", game_object->Position(), game_object->ai_location().level_vertex_id(), game_object->ID());
+}

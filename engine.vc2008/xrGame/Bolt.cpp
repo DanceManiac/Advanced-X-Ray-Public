@@ -30,7 +30,7 @@ void CBolt::State(u32 state)
 	{
 		case eThrowEnd:
 		{
-			if (GameConstants::GetLimitedBolts())
+			if (GameConstants::GetLimitedBolts() && smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
 			{
 				if (m_pPhysicsShell) m_pPhysicsShell->Deactivate();
 				xr_delete(m_pPhysicsShell);
@@ -38,12 +38,13 @@ void CBolt::State(u32 state)
 				PutNextToSlot();
 				if (Local())
 				{
-					//Msg("Destroying local bolt[%d][%d]", ID(), Device.dwFrame);
+#ifdef DEBUG
+					Msg("Destroying local bolt[%d][%d]", ID(), Device.dwFrame);
+#endif
 					DestroyObject();
 				}
 			}
-		}
-		break;
+		}break;
 	}
 	inherited::State(state);
 }
@@ -124,6 +125,19 @@ void CBolt::PutNextToSlot()
 			m_pInventory->SetActiveSlot(pNext->BaseSlot());
 		}
 	}
+}
+
+void CBolt::OnAnimationEnd(u32 state)
+{
+	switch (state)
+	{
+		case eThrowEnd:
+		{
+			if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+				SwitchState(eHidden);
+		}break;
+	}
+	inherited::OnAnimationEnd(state);
 }
 
 void CBolt::activate_physic_shell	()
