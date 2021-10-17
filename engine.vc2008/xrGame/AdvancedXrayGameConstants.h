@@ -19,6 +19,7 @@ namespace GameConstants
 	bool GetLimitedBolts();
 	bool GetActorThirst();
 	bool GetArtefactsDegradation();
+	bool GetMultiItemPickup();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

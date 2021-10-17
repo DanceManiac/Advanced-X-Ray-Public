@@ -18,6 +18,8 @@
 #include "clsid_game.h"
 #include "hudmanager.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
 
 void CActor::feel_touch_new				(CObject* O)
@@ -127,8 +129,8 @@ void CActor::PickupModeUpdate()
 		m_pObjectWeLookingAt->cast_inventory_item()				&& 
 		m_pObjectWeLookingAt->cast_inventory_item()->Useful()	&&
 		m_pUsableObject											&& 
-		!m_pUsableObject->nonscript_usable()					&&
-		!Level().m_feel_deny.is_object_denied(m_pObjectWeLookingAt) )
+		m_pUsableObject->nonscript_usable()						&& 
+		!Level().m_feel_deny.is_object_denied(m_pObjectWeLookingAt))
 	{
 		m_pUsableObject->use(this);
 		Game().SendPickUpEvent(ID(), m_pObjectWeLookingAt->ID());
@@ -231,6 +233,9 @@ void	CActor::PickupModeUpdate_COD	()
 
 		//подбирание объекта
 		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
+
+		if (!GameConstants::GetMultiItemPickup())
+			m_bPickupMode = false;
 	}
 };
 

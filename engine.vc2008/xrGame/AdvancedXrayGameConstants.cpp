@@ -17,6 +17,7 @@ bool	m_bAnomalyDetectorUseBattery = false;
 bool	m_bLimitedBolts = false;
 bool	m_bActorThirst = false;
 bool	m_bArtefactsDegradation = false;
+bool	m_bMultiItemPickup = true;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -39,6 +40,7 @@ namespace GameConstants
 		m_bLimitedBolts = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "limited_bolts", false);
 		m_bActorThirst = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_thirst_enabled", false);
 		m_bArtefactsDegradation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefacts_degradation", false);
+		m_bMultiItemPickup = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "multi_item_pickup", true);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 
@@ -118,6 +120,11 @@ namespace GameConstants
 	bool GetArtefactsDegradation()
 	{
 		return m_bArtefactsDegradation;
+	}
+
+	bool GetMultiItemPickup()
+	{
+		return m_bMultiItemPickup;
 	}
 
 	float GetDistantSndDistance()

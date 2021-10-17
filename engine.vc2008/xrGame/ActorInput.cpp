@@ -34,6 +34,8 @@
 #include "hudmanager.h"
 #include "Weapon.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 extern int hud_adj_mode;
 
 void CActor::IR_OnKeyboardPress(int cmd)
@@ -225,6 +227,9 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 
 	if (g_Alive())	
 	{
+		if (cmd == kUSE && !GameConstants::GetMultiItemPickup())
+			m_bPickupMode = false;
+
 		if(m_holder)
 		{
 			m_holder->OnKeyboardRelease(cmd);
@@ -387,6 +392,9 @@ void CActor::ActorUse()
 		CGameObject::u_EventSend	(P);
 		return;
 	}
+
+	if (!GameConstants::GetMultiItemPickup())
+		m_bPickupMode = true;
 				
 	if(character_physics_support()->movement()->PHCapture())
 		character_physics_support()->movement()->PHReleaseObject();
