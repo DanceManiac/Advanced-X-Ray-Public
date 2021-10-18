@@ -343,7 +343,7 @@ void CUIItemInfo::TryAddWpnInfo( CInventoryItem& pInvItem, CInventoryItem* pComp
 
 void CUIItemInfo::TryAddArtefactInfo(CInventoryItem& pInvItem)
 {
-	if (UIArtefactParams->Check(pInvItem.object().cNameSect()))
+	if (UIArtefactParams->Check(pInvItem.object().cNameSect()) && UIArtefactParams->CheckDescrInfoPortions(pInvItem.object().cNameSect()))
 	{
 		UIArtefactParams->SetInfo(pInvItem);
 		UIDesc->AddWindow( UIArtefactParams, false );

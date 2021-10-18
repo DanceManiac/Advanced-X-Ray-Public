@@ -193,6 +193,20 @@ bool CUIArtefactParams::Check(const shared_str& af_section)
 	return !!pSettings->line_exist(af_section, "af_actor_properties");
 }
 
+bool CUIArtefactParams::CheckDescrInfoPortions(const shared_str& af_section)
+{
+	if (pSettings->line_exist(af_section, "af_description_infoportion"))
+	{
+		shared_str ArtifactDescrInfo = pSettings->r_string(af_section, "af_description_infoportion");
+		if (Actor()->HasInfo(ArtifactDescrInfo))
+			return true;
+		else
+			return false;
+	}
+	else
+		return true;
+}
+
 void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 {
 	DetachAll();
