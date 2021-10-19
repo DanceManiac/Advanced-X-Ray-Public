@@ -334,7 +334,7 @@ void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem*
 
 void CUIItemInfo::TryAddWpnInfo( CInventoryItem& pInvItem, CInventoryItem* pCompareItem )
 {
-	if ( UIWpnParams->Check( pInvItem.object().cNameSect() ) )
+	if (UIWpnParams->Check( pInvItem.object().cNameSect()) && GameConstants::GetShowWpnInfo())
 	{
 		UIWpnParams->SetInfo( pCompareItem, pInvItem );
 		UIDesc->AddWindow( UIWpnParams, false );

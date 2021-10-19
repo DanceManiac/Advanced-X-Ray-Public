@@ -20,6 +20,7 @@ namespace GameConstants
 	bool GetActorThirst();
 	bool GetArtefactsDegradation();
 	bool GetMultiItemPickup();
+	bool GetShowWpnInfo();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

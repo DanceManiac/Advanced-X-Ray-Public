@@ -18,6 +18,7 @@ namespace GameConstants
 	bool GetLimitedBolts();
 	bool GetActorThirst();
 	bool GetArtefactsDegradation();
+	bool GetShowWpnInfo();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };
