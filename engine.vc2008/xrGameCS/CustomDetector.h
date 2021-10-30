@@ -183,4 +183,6 @@ protected:
 	float			m_fAfVisRadius;
 
 	CAfList			m_artefacts;
+
+	virtual bool	install_upgrade_impl		(LPCSTR section, bool test);
 };

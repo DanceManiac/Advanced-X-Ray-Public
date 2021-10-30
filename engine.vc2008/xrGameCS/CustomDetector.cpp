@@ -401,3 +401,17 @@ BOOL CAfList::feel_touch_contact	(CObject* O)
 	}
 	return						res;
 }
+
+bool CCustomDetector::install_upgrade_impl(LPCSTR section, bool test)
+{
+	//Msg("Detector Upgrade");
+	bool result = inherited::install_upgrade_impl(section, test);
+
+	result |= process_if_exists(section, "af_radius", &CInifile::r_float, m_fAfDetectRadius, test);
+	result |= process_if_exists(section, "af_vis_radius", &CInifile::r_float, m_fAfVisRadius, test);
+	result |= process_if_exists(section, "max_charge_level", &CInifile::r_float, m_fMaxChargeLevel, test);
+	result |= process_if_exists(section, "uncharge_speed", &CInifile::r_float, m_fUnchargeSpeed, test);
+	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
+
+	return result;
+}
