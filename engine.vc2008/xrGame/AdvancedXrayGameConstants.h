@@ -21,6 +21,7 @@ namespace GameConstants
 	bool GetArtefactsDegradation();
 	bool GetMultiItemPickup();
 	bool GetShowWpnInfo();
+	bool GetJumpSpeedWeightCalc();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };
