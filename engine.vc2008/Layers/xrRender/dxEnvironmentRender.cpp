@@ -28,10 +28,17 @@ static	Fvector3	hbox_verts[24] =
 	{-1.f,   1.f,    1.f}, {-1.f,    1.f,    1.f},
 	{ 1.f,   1.f,    1.f}, {1.f,     1.f,    1.f},
 	/* AVO: end */
+#ifdef SKY_BOX_FULL_MAPS
+	{-1.f,  1.f, -1.f}, {-1.f,  1.f,   -1.f},     // half
+	{ 1.f,  1.f, -1.f}, { 1.f,  1.f,   -1.f},     // half
+	{ 1.f,  1.f,  1.f}, { 1.f,  1.f,    1.f},     // half
+	{-1.f,  1.f,  1.f}, {-1.f,  1.f,    1.f}      // half
+#else
 	{-1.f,	 0.f,	-1.f}, {-1.f,	-1.f,	-1.f},	// half
 	{ 1.f,	 0.f,	-1.f}, { 1.f,	-1.f,	-1.f},	// half
 	{ 1.f,	 0.f,	 1.f}, { 1.f,	-1.f,	 1.f},	// half
 	{-1.f,	 0.f,	 1.f}, {-1.f,	-1.f,	 1.f}	// half
+#endif
 };
 static	u16			hbox_faces[20 * 3] =
 {
