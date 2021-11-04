@@ -25,6 +25,7 @@ void xrDiscordPresense::Initialize()
     presenseInfo.smallImageKey =  rpc_settings.LargeImageKey;
     presenseInfo.smallImageText = rpc_settings.SmallImageText;
     presenseInfo.largeImageKey    = rpc_settings.LargeImageKey;
+	presenseInfo.state = rpc_settings.State;
 }
 
 void xrDiscordPresense::Shutdown()
@@ -62,32 +63,32 @@ void xrDiscordPresense::SetStatus()
 
 	if (CallOfPripyatMode)
 	{
-		presenseInfo.largeImageText = "Режим Движка: Зов Припяти";
+		presenseInfo.largeImageText = "Режим Advanced X-Ray: Зов Припяти";
 	}
 	else if (ClearSkyMode)
 	{
-		presenseInfo.largeImageText = "Режим Движка: Чистое Небо";
+		presenseInfo.largeImageText = "Режим Advanced X-Ray: Чистое Небо";
 	}
 	else
 	{
-		presenseInfo.largeImageText = "Зона ожидает...";
+		presenseInfo.largeImageText = "Advanced X-Ray Engine";
 	}
 
 	if (g_current_renderer == 1)
 	{
-		presenseInfo.state = "В Игре: Рендер R1 (DX9)";
+		presenseInfo.smallImageText = "В Игре: Рендер R1 (DX9)";
 	}
 	else if (g_current_renderer == 2)
 	{
-		presenseInfo.state = "В Игре: Рендер R2 (DX9)";
+		presenseInfo.smallImageText = "В Игре: Рендер R2 (DX9)";
 	}
 	else if (g_current_renderer == 3)
 	{
-		presenseInfo.state = "В Игре: Рендер R3 (DX10)";
+		presenseInfo.smallImageText = "В Игре: Рендер R3 (DX10)";
 	}
 	else
 	{
-		presenseInfo.state = "В Игре: Рендер R4 (DX11)";
+		presenseInfo.smallImageText = "В Игре: Рендер R4 (DX11)";
 	}
 
     Discord_UpdatePresence(&presenseInfo);

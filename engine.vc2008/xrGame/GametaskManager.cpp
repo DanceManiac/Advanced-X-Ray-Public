@@ -222,7 +222,7 @@ void CGameTaskManager::DiscordUpdateTask()
 {
 	CGameTask* t = ActiveTask();
 	std::string task = ToUTF8(CStringTable().translate(t ? t->m_Title.c_str() : "st_no_active_task").c_str());
-	snprintf(rpc_settings.SmallImageText, 128, task.c_str());
+	snprintf(rpc_settings.State, 128, task.c_str());
 	g_discord.SetStatus();
 }
 
