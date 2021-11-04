@@ -17,6 +17,7 @@
 #include "static_cast_checked.hpp"
 #include "player_hud.h"
 
+#include "Artefact.h"
 #include "AdvancedXrayGameConstants.h"
 
 #ifdef DEBUG
@@ -200,13 +201,25 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			m_fJumpTime			= s_fJumpTime;
 
 			float jump_k = 0.0;
+			float max_jump_speed = 10.0f;
 
 			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real&mcJump)
 				jump_k = m_fJumpSpeed - (cur_weight / 25);
 			else
 				jump_k = m_fJumpSpeed;
 
-			clamp(jump_k, 0.0f, m_fJumpSpeed);
+			TIItemContainer::iterator it = inventory().m_belt.begin();
+			TIItemContainer::iterator ite = inventory().m_belt.end();
+			for (; it != ite; ++it)
+			{
+				CArtefact* artefact = smart_cast<CArtefact*>(*it);
+				if (artefact)
+				{
+					jump_k *= (artefact->m_fJumpSpeed * artefact->GetCondition());
+				}
+			}
+
+			clamp(jump_k, 0.0f, max_jump_speed);
 
 			character_physics_support()->movement()->SetJumpUpVelocity(jump_k);
 
@@ -268,6 +281,17 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				if (cur_weight >= 25 && GameConstants::GetJumpSpeedWeightCalc())
 				{
 					accel_k -= cur_weight / 6;
+				}
+
+				TIItemContainer::iterator it = inventory().m_belt.begin();
+				TIItemContainer::iterator ite = inventory().m_belt.end();
+				for (; it != ite; ++it)
+				{
+					CArtefact* artefact = smart_cast<CArtefact*>(*it);
+					if (artefact)
+					{
+						accel_k *= (artefact->m_fWalkAccel * artefact->GetCondition());
+					}
 				}
 
 				scale	= accel_k/scale;

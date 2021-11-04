@@ -28,6 +28,8 @@ CUIArtefactParams::CUIArtefactParams()
 	m_fPowerRestoreSpeed = NULL;
 	m_fBleedingRestoreSpeed = NULL;
 	m_fThirstRestoreSpeed = NULL;
+	m_fWalkAccel = NULL;
+	m_fJumpSpeed = NULL;
 	m_additional_weight = NULL;
 	m_fChargeLevel = NULL;
 }
@@ -41,6 +43,8 @@ CUIArtefactParams::~CUIArtefactParams()
 	xr_delete(m_fPowerRestoreSpeed);
 	xr_delete(m_fBleedingRestoreSpeed);
 	xr_delete(m_fThirstRestoreSpeed);
+	xr_delete(m_fWalkAccel);
+	xr_delete(m_fJumpSpeed);
 	xr_delete(m_additional_weight);
 	xr_delete(m_fChargeLevel);
 }
@@ -169,6 +173,20 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_fThirstRestoreSpeed->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_thirst").c_str();
 	m_fThirstRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fWalkAccel = xr_new<UIArtefactParamItem>();
+	m_fWalkAccel->Init(xml, "walk_accel");
+	m_fWalkAccel->SetAutoDelete(false);
+	name = CStringTable().translate("ui_walk_accel").c_str();
+	m_fWalkAccel->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fJumpSpeed = xr_new<UIArtefactParamItem>();
+	m_fJumpSpeed->Init(xml, "jump_speed");
+	m_fJumpSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_jump_speed").c_str();
+	m_fJumpSpeed->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 	
 	m_additional_weight = xr_new<UIArtefactParamItem>();
@@ -334,6 +352,32 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_fThirstRestoreSpeed->GetWndSize().y;
 			AttachChild(m_fThirstRestoreSpeed);
+		}
+
+		val = artefact->m_fWalkAccel;
+		if (!fis_zero(val))
+		{
+			m_fWalkAccel->SetValue(val);
+
+			pos.set(m_fWalkAccel->GetWndPos());
+			pos.y = h;
+			m_fWalkAccel->SetWndPos(pos);
+
+			h += m_fWalkAccel->GetWndSize().y;
+			AttachChild(m_fWalkAccel);
+		}
+
+		val = artefact->m_fJumpSpeed;
+		if (!fis_zero(val))
+		{
+			m_fJumpSpeed->SetValue(val);
+
+			pos.set(m_fJumpSpeed->GetWndPos());
+			pos.y = h;
+			m_fJumpSpeed->SetWndPos(pos);
+
+			h += m_fJumpSpeed->GetWndSize().y;
+			AttachChild(m_fJumpSpeed);
 		}
 
 		val = artefact->m_fChargeLevel;

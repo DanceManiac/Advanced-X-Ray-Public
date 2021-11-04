@@ -83,6 +83,8 @@ public:
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
 	float 							m_fThirstRestoreSpeed;
+	float							m_fJumpSpeed;
+	float							m_fWalkAccel;
 	CHitImmunity 					m_ArtefactHitImmunities;
 
 	//For Degradation
@@ -96,6 +98,8 @@ public:
 	float							m_fConstTrailLightRange;
 	float							m_fConstVolumetricDistance;
 	float							m_fConstVolumetricIntensity;
+	float							m_fConstJumpSpeed;
+	float							m_fConstWalkAccel;
 	float							m_fChargeLevel;
 	float							m_fCurrentChargeLevel;
 	float							m_fDegradationSpeed;

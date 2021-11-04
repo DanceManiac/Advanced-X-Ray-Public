@@ -27,6 +27,8 @@ protected:
 	UIArtefactParamItem*	m_fPowerRestoreSpeed;
 	UIArtefactParamItem*	m_fBleedingRestoreSpeed;
 	UIArtefactParamItem*	m_fThirstRestoreSpeed;
+	UIArtefactParamItem*	m_fJumpSpeed;
+	UIArtefactParamItem*	m_fWalkAccel;
 	UIArtefactParamItem*	m_fChargeLevel;
 
 }; // class CUIArtefactParams

@@ -132,4 +132,24 @@
 		</value>
 	</artefact_charge_level>
 	
+	<walk_accel x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_item_walk_accel</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</walk_accel>
+	
+	<jump_speed x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_item_jump_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</jump_speed>
+	
 </af_params>

@@ -88,6 +88,9 @@ void CArtefact::Load(LPCSTR section)
 	m_fConstVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
 	m_fConstVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
 
+	m_fConstJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
+	m_fConstWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
+
 	m_fTrailLightRange = m_fConstTrailLightRange;
 
 	m_fVolumetricDistance = m_fConstVolumetricDistance;
@@ -100,6 +103,8 @@ void CArtefact::Load(LPCSTR section)
 	m_fBleedingRestoreSpeed = m_fConstBleedingRestoreSpeed;
 	m_fThirstRestoreSpeed = m_fConstThirstRestoreSpeed;
 	m_additional_weight = m_fConstAdditionalWeight;
+	m_fJumpSpeed = m_fConstJumpSpeed;
+	m_fWalkAccel = m_fConstWalkAccel;
 	
 	if(pSettings->section_exist(pSettings->r_string(section,"hit_absorbation_sect")))
 	{
@@ -284,6 +289,10 @@ void CArtefact::UpdateDegradation(void)
 					artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100)*percent;
 				else if (artefact->m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
 					artefact->m_additional_weight = (m_fConstAdditionalWeight / 100)*percent;
+				else if (artefact->m_fJumpSpeed > 0.0f && m_fConstJumpSpeed > 0.0f)
+					artefact->m_fJumpSpeed = (m_fConstJumpSpeed/100)*percent;
+				else if (artefact->m_fWalkAccel > 0.0f && m_fConstWalkAccel > 0.0f)
+					artefact->m_fWalkAccel = (m_fConstWalkAccel / 100)*percent;
 
 				//Lights
 				if (m_bLightsEnabled)

@@ -60,5 +60,7 @@
 		<texture id="ui_item_battery_max_icon" x="38" y="0" width="19" height="19" />
 		<texture id="ui_mfs_thirst_restore_speed" x="57" y="0" width="19" height="19" />
 		<texture id="ui_mfs_item_effectiveness" x="76" y="0" width="19" height="19" />
+		<texture id="ui_mfs_item_walk_accel" x="95" y="0" width="19" height="19" />
+		<texture id="ui_mfs_item_jump_speed" x="114" y="0" width="19" height="19" />
    </file>
 </w>

@@ -222,4 +222,10 @@
 	<string id="ui_inv_artefact_charge">
 		<text>Заряд артефакта</text>
 	</string>
+	<string id="ui_walk_accel">
+		<text>Скорость</text>
+	</string>
+	<string id="ui_jump_speed">
+		<text>Высота прыжка</text>
+	</string>
 </string_table>
