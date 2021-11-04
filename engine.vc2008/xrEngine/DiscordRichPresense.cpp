@@ -13,6 +13,7 @@ DiscordRichPresence presenseInfo;
 void xrDiscordPresense::Initialize()
 {
 	discord_app_id = READ_IF_EXISTS(pAdvancedSettings, r_string, "global", "discord_app_id", "745606008499601438");
+	show_task = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "discord_show_task", true);
     DiscordEventHandlers nullHandlers;
     ZeroMemory(&nullHandlers, sizeof(nullHandlers));
 	Discord_Initialize(discord_app_id, &nullHandlers, TRUE, nullptr);
@@ -25,7 +26,9 @@ void xrDiscordPresense::Initialize()
     presenseInfo.smallImageKey =  rpc_settings.LargeImageKey;
     presenseInfo.smallImageText = rpc_settings.SmallImageText;
     presenseInfo.largeImageKey    = rpc_settings.LargeImageKey;
-	presenseInfo.state = rpc_settings.State;
+
+	if (show_task)
+		presenseInfo.state = rpc_settings.State;
 }
 
 void xrDiscordPresense::Shutdown()

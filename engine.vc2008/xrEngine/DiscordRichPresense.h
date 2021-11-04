@@ -30,6 +30,7 @@ public:
 private:
 	bool bInitialize = false;
 	bool bGameRPCInfoInit = false;
+	bool show_task = true;
 };
 
 extern ENGINE_API xrDiscordPresense g_discord;
