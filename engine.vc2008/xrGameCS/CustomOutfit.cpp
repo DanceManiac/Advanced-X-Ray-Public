@@ -196,7 +196,6 @@ BOOL	CCustomOutfit::BonePassBullet					(int boneID)
 	return m_boneProtection->getBonePassBullet(s16(boneID));
 }
 
-#include "torch.h"
 void	CCustomOutfit::OnMoveToSlot		()
 {
 	if ( m_pInventory )
@@ -264,11 +263,8 @@ void	CCustomOutfit::OnMoveToRuck		(EItemPlace prev)
 		CActor* pActor = smart_cast<CActor*> (m_pInventory->GetOwner());
 		if (pActor && prev == EItemPlaceSlot)
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
-			if(pTorch)
-			{
-				pTorch->SwitchNightVision(false);
-			}
+			//if(!bIsHelmetAvaliable)
+				pActor->SwitchNightVision(false);
 			ApplySkinModel(pActor, false, false);
 		}
 	}

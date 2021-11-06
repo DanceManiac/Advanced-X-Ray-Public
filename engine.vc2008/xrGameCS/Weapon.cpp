@@ -25,6 +25,7 @@
 #include "ui/UIXmlInit.h"
 #include "HUDManager.h"
 #include "Torch.h"
+#include "ActorNightVision.h"
 
 ENGINE_API extern float psHUD_FOV_def;
 
@@ -1743,8 +1744,7 @@ void CWeapon::OnZoomIn()
 	{
 		if (psActorFlags.test(AF_PNV_W_SCOPE_DIS) && bIsSecondVPZoomPresent())
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT));
-			if (pTorch && pTorch->GetNightVisionStatus())
+			if (pA->GetNightVisionStatus())
 			{
 				OnZoomOut();
 			}

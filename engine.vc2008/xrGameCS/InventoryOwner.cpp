@@ -42,6 +42,8 @@ CInventoryOwner::CInventoryOwner			()
 	m_known_info_registry		= xr_new<CInfoPortionWrapper>();
 	m_tmp_active_slot_num		= NO_ACTIVE_SLOT;
 	m_need_osoznanie_mode		= FALSE;
+
+	m_trader_flags.zero();
 }
 
 DLL_Pure *CInventoryOwner::_construct		()
@@ -138,6 +140,8 @@ BOOL CInventoryOwner::net_Spawn		(CSE_Abstract* DC)
 			dialog_manager->SetDefaultStartDialog(CharacterInfo().StartDialog());
 		}
 		m_game_name			= pTrader->m_character_name;
+
+		m_trader_flags.assign(pTrader->m_trader_flags.get());
 	}
 	else
 	{

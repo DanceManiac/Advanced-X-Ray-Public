@@ -25,6 +25,7 @@
 #include "ui/UIXmlInit.h"
 #include "Torch.h"
 #include "HUDManager.h"
+#include "ActorNightVision.h"
 
 ENGINE_API extern float psHUD_FOV_def;
 
@@ -1163,11 +1164,10 @@ void CWeapon::UpdateCL		()
 		{
 			CActor *pA = smart_cast<CActor *>(H_Parent());
 			R_ASSERT(pA);
-			CTorch* pTorch = smart_cast<CTorch*>( pA->inventory().ItemFromSlot(TORCH_SLOT) );
-			if ( pTorch && pTorch->GetNightVisionStatus() )
+			if (pA->GetNightVisionStatus())
 			{
-				m_bRememberActorNVisnStatus = pTorch->GetNightVisionStatus();
-				pTorch->SwitchNightVision(false, false);
+				m_bRememberActorNVisnStatus = pA->GetNightVisionStatus();
+				pA->SwitchNightVision(false, false, false);
 			}
 			m_zoom_params.m_pNight_vision->Start(m_zoom_params.m_sUseZoomPostprocess, pA, false);
 		}
@@ -1190,12 +1190,8 @@ void CWeapon::EnableActorNVisnAfterZoom()
 
 	if(pA)
 	{
-		CTorch* pTorch = smart_cast<CTorch*>( pA->inventory().ItemFromSlot(TORCH_SLOT) );
-		if ( pTorch )
-		{
-			pTorch->SwitchNightVision(true, false);
-			pTorch->GetNightVision()->PlaySounds(CNightVisionEffector::eIdleSound);
-		}
+		pA->SwitchNightVision(true, false, false);
+		pA->GetNightVision()->PlaySounds(CNightVisionEffector::eIdleSound);
 	}
 }
 
@@ -1788,8 +1784,7 @@ void CWeapon::OnZoomIn()
 	{
 		if (psActorFlags.test(AF_PNV_W_SCOPE_DIS) && bIsSecondVPZoomPresent())
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT));
-			if (pTorch && pTorch->GetNightVisionStatus())
+			if (pA->GetNightVisionStatus())
 			{
 				OnZoomOut();
 			}

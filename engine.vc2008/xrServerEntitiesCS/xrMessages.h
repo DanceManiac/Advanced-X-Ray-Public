@@ -76,6 +76,8 @@ enum {
 	M_SECURE_KEY_SYNC,
 	M_SECURE_MESSAGE,
 
+	GE_TRADER_FLAGS,
+
 	MSG_FORCEDWORD				= u32(-1)
 };
 
@@ -150,7 +152,7 @@ enum {
 	//-------------------------------------
 	GE_KILL_SOMEONE,
 
-	GE_FREEZE_OBJECT,
+	GE_FREEZE_OBJECT = 50,
 	GE_LAUNCH_ROCKET,
 
 	GE_FORCEDWORD				= u32(-1)

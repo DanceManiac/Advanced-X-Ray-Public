@@ -103,6 +103,7 @@ public:
 	void				set_money		(u32 amount, bool bSendEvent);
 protected:
 	u32					m_money;
+	Flags32				m_trader_flags;
 	// торговля
 	CTrade*				m_pTrade;
 	bool				m_bTrading;

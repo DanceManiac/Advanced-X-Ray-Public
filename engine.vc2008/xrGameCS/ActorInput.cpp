@@ -553,18 +553,7 @@ void CActor::set_input_external_handler(CActorInputHandler *handler)
 
 void CActor::SwitchNightVision()
 {
-	xr_vector<CAttachableItem*> const& all = CAttachmentOwner::attached_objects();
-	xr_vector<CAttachableItem*>::const_iterator it = all.begin();
-	xr_vector<CAttachableItem*>::const_iterator it_e = all.end();
-	for ( ; it != it_e; ++it )
-	{
-		CTorch* torch = smart_cast<CTorch*>(*it);
-		if ( torch )
-		{		
-			torch->SwitchNightVision();
-			return;
-		}
-	}
+	SwitchNightVision(!m_bNightVisionOn);
 }
 
 void CActor::SwitchTorch()
