@@ -18,6 +18,7 @@
 #include "player_hud.h"
 
 #include "Artefact.h"
+#include "CustomOutfit.h"
 #include "AdvancedXrayGameConstants.h"
 
 #ifdef DEBUG
@@ -219,6 +220,10 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				}
 			}
 
+			CCustomOutfit* outfit = GetOutfit();
+			if (outfit)
+				jump_k *= outfit->m_fJumpSpeed;
+
 			clamp(jump_k, 0.0f, max_jump_speed);
 
 			character_physics_support()->movement()->SetJumpUpVelocity(jump_k);
@@ -293,6 +298,10 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 						accel_k *= (artefact->m_fWalkAccel * artefact->GetCondition());
 					}
 				}
+
+				CCustomOutfit* outfit = GetOutfit();
+				if (outfit)
+					accel_k *= outfit->m_fWalkAccel;
 
 				scale	= accel_k/scale;
 				if (bAccelerated)
@@ -685,7 +694,6 @@ bool CActor::is_jump()
 }
 
 //максимальный переносимы вес
-#include "CustomOutfit.h"
 float CActor::MaxCarryWeight () const
 {
 	float res = inventory().GetMaxWeight();
