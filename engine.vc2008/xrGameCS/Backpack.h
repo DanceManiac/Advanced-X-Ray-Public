@@ -6,11 +6,17 @@
 
 class CBackpack : public CInventoryItemObject
 {
-private:
-    using inherited = CInventoryItemObject;
-    float m_additional_weight;
-
 public:
+    using inherited = CInventoryItemObject;
+    float		m_additional_weight;
+	float		m_additional_weight2;
+	float		m_fPowerRestoreSpeed;
+	float		m_fPowerLoss;
+
+	float		m_fJumpSpeed;
+	float		m_fWalkAccel;
+	float		m_fOverweightWalkK;
+
     CBackpack() : m_additional_weight(0.f){};
     virtual ~CBackpack() = default;
 

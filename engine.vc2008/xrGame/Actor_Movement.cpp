@@ -19,6 +19,7 @@
 
 #include "Artefact.h"
 #include "CustomOutfit.h"
+#include "Backpack.h"
 #include "AdvancedXrayGameConstants.h"
 
 #ifdef DEBUG
@@ -224,6 +225,10 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			if (outfit)
 				jump_k *= outfit->m_fJumpSpeed;
 
+			CBackpack* backpack = smart_cast<CBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+			if (backpack)
+				jump_k *= backpack->m_fJumpSpeed;
+
 			clamp(jump_k, 0.0f, max_jump_speed);
 
 			character_physics_support()->movement()->SetJumpUpVelocity(jump_k);
@@ -301,7 +306,20 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 				CCustomOutfit* outfit = GetOutfit();
 				if (outfit)
+				{
 					accel_k *= outfit->m_fWalkAccel;
+					if (inventory().TotalWeight() > MaxWalkWeight())
+						accel_k *= outfit->m_fOverweightWalkK;
+				}
+
+				CBackpack* backpack = smart_cast<CBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+				if (backpack)
+				{
+					accel_k *= backpack->m_fWalkAccel;
+
+					if (inventory().TotalWeight() > MaxWalkWeight())
+						accel_k *= backpack->m_fOverweightWalkK;
+				}
 
 				scale	= accel_k/scale;
 				if (bAccelerated)
