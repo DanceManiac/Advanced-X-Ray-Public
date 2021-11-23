@@ -132,7 +132,7 @@ public:
 	virtual	void					SetLoadStageTitle	(const char* ls_title = nullptr) {}
 	virtual bool					CanBePaused			()		{ return true;}
 
-	/*struct pda_data // Нужно для 3д кпк
+	/*struct pda_data
 	{
 		float pda_display_factor;
 		float pda_psy_influence;

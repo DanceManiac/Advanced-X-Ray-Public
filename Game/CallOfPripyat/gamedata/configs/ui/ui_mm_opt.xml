@@ -716,6 +716,19 @@
 					<d r="70" g="70" b="70"/>
 				</text_color>
 			</list_difficulty>
+			
+			<cap_crosshair_type x="15" y="3" width="135" height="24">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_crosshair_type</text>
+			</cap_crosshair_type>
+
+			<list_crosshair_type x="175" y="5" width="235" height="20">
+				<options_item entry="g_crosshair_type" group="mm_opt_gameplay"/>
+				<list_font r="170" g="170" b="170" font="letterica16"/>
+				<text_color>
+					<e r="170" g="170" b="170"/>
+					<d r="70" g="70" b="70"/>
+				</text_color>
+			</list_crosshair_type>
 
 			<cap_check_crosshair x="15" y="3" width="135" height="24">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_show_crosshair</text>

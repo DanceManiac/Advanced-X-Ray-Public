@@ -25,6 +25,11 @@ function opt_gameplay:InitControls(x, y, xml, handler)
 	self.scroll_g:AddWindow(_st, true)
 
 	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	xml:InitStatic("tab_gameplay:cap_crosshair_type",		_st)
+	xml:InitComboBox("tab_gameplay:list_crosshair_type",		_st)
+	self.scroll_g:AddWindow(_st, true)
+
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
 	xml:InitStatic("tab_gameplay:cap_quick_saves_count",		_st)
 	xml:InitTrackBar("tab_gameplay:track_quick_saves_count",	_st)
 	self.scroll_g:AddWindow(_st, true)

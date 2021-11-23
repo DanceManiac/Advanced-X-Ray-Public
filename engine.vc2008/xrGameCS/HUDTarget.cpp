@@ -28,6 +28,7 @@ u32 C_ON_ENEMY	=	color_rgba(0xff,0,0,0x80);
 u32 C_ON_NEUTRAL=	color_rgba(0xff,0xff,0x80,0x80);
 u32 C_ON_FRIEND	=	color_rgba(0,0xff,0,0x80);
 
+u32	crosshair_type = 1;
 
 #define C_DEFAULT	color_rgba(0xff,0xff,0xff,0x80)
 #define C_SIZE		0.025f
@@ -54,7 +55,9 @@ CHUDTarget::CHUDTarget	()
 {    
 	fuzzyShowInfo		= 0.f;
 	PP.RQ.range			= 0.f;
-	hShader->create		("hud\\cursor","ui\\cursor");
+
+	hShader->create("hud\\cursor", "ui\\cursor");
+	hShaderCrosshairBuild->create("hud\\cursor", "ui\\crosshair_build");
 
 	PP.RQ.set				(NULL, 0.f, -1);
 
@@ -271,7 +274,7 @@ void CHUDTarget::Render()
 	}
 
 	//отрендерить кружочек или крестик
-	if(!m_bShowCrosshair)
+	if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)
 	{
 		
 		UIRender->StartPrimitive	(6, IUIRender::ptTriList, UI()->m_currentPointType);
@@ -301,13 +304,20 @@ void CHUDTarget::Render()
 		UIRender->PushPoint(cx + size_x, cy - size_y, 0, C, 1, 0);
 
 		// unlock VB and Render it as triangle LIST
-		UIRender->SetShader(*hShader);
-		UIRender->FlushPrimitive();
 
-	}else{
+		if (crosshair_type == 2)
+			UIRender->SetShader(*hShaderCrosshairBuild);
+
+		if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 3)
+			UIRender->SetShader(*hShader);
+
+		UIRender->FlushPrimitive();
+	}
+	else
+	{
 		//отрендерить прицел
-		HUDCrosshair.cross_color	= C;
-		HUDCrosshair.OnRender		();
+		HUDCrosshair.cross_color = C;
+		HUDCrosshair.OnRender();
 	}
 }
 

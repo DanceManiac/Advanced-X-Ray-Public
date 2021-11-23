@@ -868,6 +868,19 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_difficulty>
 		
+		<cap_crosshair_type x="20" y="20" width="143" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_crosshair_type</text>			
+		</cap_crosshair_type>
+
+		<list_crosshair_type x="194" y="20" width="221" height="21">	
+			<options_item entry="g_crosshair_type" group="mm_opt_gameplay"/>
+			<text_color>
+				<e r="216" g="186" b="140"/>
+			</text_color>
+			<list_font_s r="240" g="217" b="182"/>
+			<list_font	 r="216" g="186" b="140" font="letterica16"/>
+		</list_crosshair_type>
+		
 		<cap_quick_saves_count x="20" y="20" width="143" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_quick_saves_count</text>			
 		</cap_quick_saves_count>

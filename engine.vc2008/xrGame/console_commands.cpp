@@ -60,6 +60,15 @@
 #	include "CharacterPhysicsSupport.h"
 #endif // DEBUG
 
+// M.F.S. Crosshair Type
+extern u32	crosshair_type;
+xr_token							crosshair_type_token[] = {
+	{ "default_crosshair",			1												},
+	{ "builds_crosshair",			2												},
+	{ "point_crosshair",			3												},
+	{ 0,							0												}
+};
+
 string_path		g_last_saved_game;
 int				quick_save_counter = 0;
 extern u32		last_quick;
@@ -2375,6 +2384,9 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD3(CCC_String,    "slot_1",				g_quick_use_slots[1], 32);
 	CMD3(CCC_String,    "slot_2",				g_quick_use_slots[2], 32);
 	CMD3(CCC_String,    "slot_3",				g_quick_use_slots[3], 32);
+
+	//M.F.S. Crosshair Type
+	CMD3(CCC_Token,		"g_crosshair_type",		&crosshair_type, crosshair_type_token);
 
 	CMD4(CCC_Integer,	"keypress_on_start",	&g_keypress_on_start, 0, 1);
 
