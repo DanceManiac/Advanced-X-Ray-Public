@@ -14,6 +14,7 @@
 #include "../xrEngine/SkeletonMotions.h"
 #include "player_hud.h"
 #include "ActorEffector.h"
+#include "Level_Bullet_Manager.h"
 
 #define KNIFE_MATERIAL_NAME "objects\\knife"
 
@@ -201,7 +202,9 @@ void CWeaponKnife::MakeShot(Fvector const & pos, Fvector const & dir, float cons
 	CActor*	actor = smart_cast<CActor*>(H_Parent());
 	if (actor->active_cam() != eacFirstEye) 
 	{
-		Level().BulletManager().AddBullet(pos,
+		if (ParentIsActor() && !fis_zero(conditionDecreasePerShotOnHit) && GetCondition() < 0.95f)
+			fCurrentHit = fCurrentHit * (GetCondition() / 0.95f);
+		SBullet& bullet = Level().BulletManager().AddBullet(pos,
 			dir,
 			m_fStartBulletSpeed,
 			fCurrentHit,
@@ -213,10 +216,14 @@ void CWeaponKnife::MakeShot(Fvector const & pos, Fvector const & dir, float cons
 			cartridge,
 			1.f,
 			SendHit);
+		if (ParentIsActor())
+			bullet.setOnBulletHit(true);
 	}
 	else 
 	{
-		Level().BulletManager().AddBullet(pos,
+		if (ParentIsActor() && !fis_zero(conditionDecreasePerShotOnHit) && GetCondition() < 0.95f)
+			fCurrentHit = fCurrentHit * (GetCondition() / 0.95f);
+		SBullet& bullet = Level().BulletManager().AddBullet(pos,
 			dir,
 			m_fStartBulletSpeed,
 			fCurrentHit,
@@ -228,6 +235,8 @@ void CWeaponKnife::MakeShot(Fvector const & pos, Fvector const & dir, float cons
 			cartridge,
 			1.f,
 			SendHit);
+		if (ParentIsActor())
+			bullet.setOnBulletHit(true);
 	}
 }
 

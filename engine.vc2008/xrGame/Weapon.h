@@ -417,6 +417,7 @@ protected:
 	float misfireEndProbability;			//шанс осечки при изношености больше чем misfireEndCondition
 	float conditionDecreasePerQueueShot;	//увеличение изношености при выстреле очередью
 	float conditionDecreasePerShot;			//увеличение изношености при одиночном выстреле
+	float conditionDecreasePerShotOnHit;
 
 public:
 	float GetMisfireStartCondition	() const {return misfireStartCondition;};
@@ -571,4 +572,5 @@ public:
 	
 	virtual void				DumpActiveParams			(shared_str const & section_name, CInifile & dst_ini) const;
 	virtual shared_str const	GetAnticheatSectionName		() const { return cNameSect(); };
+	virtual void				OnBulletHit();
 };

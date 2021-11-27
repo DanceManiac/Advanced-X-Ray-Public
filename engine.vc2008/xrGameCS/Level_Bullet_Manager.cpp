@@ -18,6 +18,8 @@
 #	include "debug_renderer.h"
 #endif
 
+#include "Weapon.h"
+
 #define HIT_POWER_EPSILON 0.05f
 #define WALLMARK_SIZE 0.04f
 
@@ -30,7 +32,8 @@ float const CBulletManager::parent_ignore_distance	= 3.f;
 	static float const air_resistance_epsilon		= .1f;
 #endif // #ifdef DEBUG
 
-SBullet::SBullet()
+SBullet::SBullet() :
+	m_on_bullet_hit(false)
 {
 }
 
@@ -178,7 +181,7 @@ void CBulletManager::Clear		()
 	m_Events.clear			();
 }
 
-void CBulletManager::AddBullet(const Fvector& position,
+SBullet& CBulletManager::AddBullet(const Fvector& position,
 							   const Fvector& direction,
 							   float starting_speed,
 							   float power,
@@ -203,6 +206,8 @@ void CBulletManager::AddBullet(const Fvector& position,
 	bullet.Init					(position, direction, starting_speed, power, power_critical, impulse, sender_id, sendersweapon_id, e_hit_type, maximum_distance, cartridge, SendHit);
 //	bullet.frame_num			= Device.dwFrame;
 	bullet.flags.aim_bullet		= AimBullet;
+	return bullet;
+
 	if (SendHit && !IsGameTypeSingle())
 		Game().m_WeaponUsageStatistic->OnBullet_Fire(&bullet, cartridge);
 
@@ -1011,6 +1016,14 @@ void CBulletManager::CommitEvents			()	// @ the start of frame
 			{
 				if (E.dynamic)	DynamicObjectHit	(E);
 				else			StaticObjectHit		(E);
+
+				if (E.bullet.isOnBulletHit()) {
+					CObject* O = Level().Objects.net_Find(E.bullet.weapon_id);
+					if (O) {
+						CWeapon* W = smart_cast<CWeapon*>(O);
+						if (W) W->OnBulletHit();
+					}
+				}
 			}break;
 		case EVENT_REMOVE:
 			{

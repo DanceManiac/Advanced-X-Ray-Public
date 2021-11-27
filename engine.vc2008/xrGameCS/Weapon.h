@@ -403,6 +403,7 @@ protected:
 	float					misfireConditionK;
 	//увеличение изношености при выстреле
 	float					conditionDecreasePerShot;
+	float					conditionDecreasePerShotOnHit;
 	
 	struct SPDM
 	{
@@ -528,4 +529,5 @@ public:
 	
 	virtual void				DumpActiveParams			(shared_str const & section_name, CInifile & dst_ini) const;
 	virtual shared_str const	GetAnticheatSectionName		() const { return cNameSect(); };
+	virtual void				OnBulletHit();
 };

@@ -12,6 +12,7 @@
 #include "ai_sounds.h"
 #include "game_cl_single.h"
 #include "../xrEngine/SkeletonMotions.h"
+#include "Level_Bullet_Manager.h"
 
 #define KNIFE_MATERIAL_NAME "objects\\knife"
 
@@ -137,7 +138,9 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 	CActor*	actor = smart_cast<CActor*>(H_Parent());
 	if (actor->active_cam() != eacFirstEye) 
 	{
-		Level().BulletManager().AddBullet(pos,
+		if (ParentIsActor() && !fis_zero(conditionDecreasePerShotOnHit) && GetCondition() < 0.95f)
+			fCurrentHit = fCurrentHit * (GetCondition() / 0.95f);
+		SBullet& bullet = Level().BulletManager().AddBullet(pos,
 			dir,
 			m_fStartBulletSpeed,
 			fCurrentHit,
@@ -150,10 +153,14 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 			cartridge,
 			1.f,
 			SendHit);
+		if (ParentIsActor())
+			bullet.setOnBulletHit(true);
 	}
 	else 
 	{
-		Level().BulletManager().AddBullet(pos,
+		if (ParentIsActor() && !fis_zero(conditionDecreasePerShotOnHit) && GetCondition() < 0.95f)
+			fCurrentHit = fCurrentHit * (GetCondition() / 0.95f);
+		SBullet& bullet = Level().BulletManager().AddBullet(pos,
 			dir,
 			m_fStartBulletSpeed,
 			fCurrentHit,
@@ -166,6 +173,8 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 			cartridge,
 			1.f,
 			SendHit);
+		if (ParentIsActor())
+			bullet.setOnBulletHit(true);
 	}
 }
 

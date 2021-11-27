@@ -526,9 +526,7 @@ void CWeapon::Load		(LPCSTR section)
 	misfireEndProbability			= pSettings->r_float(section, "misfire_end_prob");
 	conditionDecreasePerShot		= pSettings->r_float(section,"condition_shot_dec"); 
 	conditionDecreasePerQueueShot	= READ_IF_EXISTS(pSettings, r_float, section, "condition_queue_shot_dec", conditionDecreasePerShot); 
-
-
-
+	conditionDecreasePerShotOnHit	= READ_IF_EXISTS(pSettings, r_float, section, "condition_shot_dec_on_hit", 0.f);
 
 	vLoadedFirePoint	= pSettings->r_fvector3		(section,"fire_point"		);
 	
@@ -2751,4 +2749,9 @@ void CWeapon::UpdateSecondVP(bool bInGrenade)
 
 
 	Device.m_SecondViewport.SetSVPActive(bCond_1 && bCond_2 && bCond_3 && !bInGrenade);
+}
+
+void CWeapon::OnBulletHit() {
+	if (!fis_zero(conditionDecreasePerShotOnHit))
+		ChangeCondition(-conditionDecreasePerShotOnHit);
 }
