@@ -696,6 +696,14 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="snd_use_distance_delay" group="mm_opt_sound" depend="snd"/>
         </check_snd_delay>
+		
+        <cap_check_snd_precache x="15" y="183" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_snd_precache</text>
+        </cap_check_snd_precache>
+        <check_snd_precache x="162" y="180" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="snd_precache_all" group="mm_opt_sound" depend="snd"/>
+        </check_snd_precache>
     </tab_sound>
     <tab_gameplay>
         <scroll_g x="-4" y="0" width="450" height="320"

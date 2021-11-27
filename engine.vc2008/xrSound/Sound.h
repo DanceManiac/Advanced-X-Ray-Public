@@ -39,6 +39,7 @@ XRSOUND_API extern xr_token*		snd_devices_token		;
 XRSOUND_API extern u32				snd_device_id			;
 XRSOUND_API extern int				psUseDistDelay			;
 XRSOUND_API extern float			psSoundSpeed			;
+XRSOUND_API extern u32				psSoundPrecacheAll		;
 
 // Flags
 enum {

@@ -22,6 +22,12 @@ xr_token							vid_bpp_token							[ ]={
 	{ "32",							32											},
 	{ 0,							0											}
 };
+
+xr_token snd_precache_all_token[] = { 
+	{"off", 0}, 
+	{"on", 1}, 
+	{nullptr, 0} 
+};
 //-----------------------------------------------------------------------
 
 
@@ -776,6 +782,7 @@ void CCC_Register()
 	CMD2(CCC_Float,		"snd_volume_eff",		&psSoundVEffects);
 	CMD2(CCC_Float,		"snd_volume_music",		&psSoundVMusic);
 	CMD1(CCC_SND_Restart,"snd_restart"			);
+	CMD3(CCC_Token,		"snd_precache_all",		&psSoundPrecacheAll,	snd_precache_all_token);
 	CMD3(CCC_Mask,		"snd_acceleration",		&psSoundFlags,			ss_Hardware	);
 	CMD3(CCC_Mask,		"snd_efx",				&psSoundFlags,			ss_EFX);
 	CMD4(CCC_Integer,	"snd_targets",			&psSoundTargets,		4, 256);

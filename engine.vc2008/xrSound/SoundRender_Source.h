@@ -27,12 +27,12 @@ public:
 	u32						m_uGameType;
 private:
 	void 					i_decompress_fr			(OggVorbis_File* ovf, char* dest, u32 size);    
-	void					LoadWave 				(LPCSTR name);
+	bool					LoadWave				(pcstr name, bool crashOnError);
 public:
 							CSoundRender_Source		();
 							~CSoundRender_Source	();
 
-	void					load					(LPCSTR name);
+	bool					load					(pcstr name, bool replaceWithNoSound = true, bool crashOnError = true);
     void					unload					();
 	void					decompress				(u32 line, OggVorbis_File* ovf);
 	

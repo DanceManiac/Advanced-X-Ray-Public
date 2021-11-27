@@ -102,6 +102,7 @@ public:
     virtual BOOL						i_locked 				(){return bLocked;}
 
 	virtual void						object_relcase			( CObject* obj );
+			void						i_create_all_sources	();
 
 	virtual float						get_occlusion_to		( const Fvector& hear_pt, const Fvector& snd_pt, float dispersion=0.2f );
 	float								get_occlusion			( Fvector& P, float R, Fvector* occ );

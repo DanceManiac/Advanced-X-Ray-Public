@@ -838,6 +838,11 @@
 			<options_item entry="snd_use_distance_delay" group="mm_opt_sound" depend="snd"/>
 			<text font="letterica16" color="ui_6">ui_mm_snd_delay</text>
 		</check_snd_delay>
+		
+		<check_snd_precache x="17" y="200" width="27" height="21" stretch="1">
+			<options_item entry="snd_precache_all" group="mm_opt_sound" depend="snd"/>
+			<text font="letterica16" color="ui_6">ui_mm_snd_precache</text>
+		</check_snd_precache>
 
     <track_mastervolume x="162" y="20" width="217" height="21">
 			<options_item entry="snd_volume_eff" group="mm_opt_sound"/>

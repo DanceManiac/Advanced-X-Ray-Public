@@ -231,4 +231,7 @@
 	<string id="point_crosshair">
 		<text>Точка</text>
 	</string>
+	<string id="ui_mm_snd_precache">
+		<text>Прекэш всех звуков</text>
+	</string>
 </string_table>

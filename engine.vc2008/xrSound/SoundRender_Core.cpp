@@ -18,6 +18,7 @@ float	psSoundVMusic			= 1.f;
 u32		psSoundModel			= 0;
 int		psUseDistDelay			= 1;
 float	psSoundSpeed			= 250.f;
+u32		psSoundPrecacheAll		= 0;
 
 XRSOUND_API CSoundRender_Core* SoundRender = nullptr;
 CSound_manager_interface* Sound = nullptr;
@@ -96,6 +97,11 @@ void CSoundRender_Core::_initialize(int stage)
     cache.initialize			(psSoundCacheSizeMB*1024,cache_bytes_per_line);
 
     bReady						= TRUE;
+
+	if (psSoundPrecacheAll == 1)
+	{
+		i_create_all_sources();
+	}
 }
 
 extern xr_vector<u8> g_target_temp_data;

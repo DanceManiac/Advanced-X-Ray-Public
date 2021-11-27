@@ -54,7 +54,7 @@ void CSoundRender_Source::decompress(u32 line, OggVorbis_File* ovf)
 	i_decompress_fr(ovf,dest,left);
 }
 
-void CSoundRender_Source::LoadWave	(LPCSTR pName)
+bool CSoundRender_Source::LoadWave(pcstr pName, bool crashOnError)
 {
 	pname					= pName;
 
@@ -126,9 +126,10 @@ void CSoundRender_Source::LoadWave	(LPCSTR pName)
 
 	ov_clear				(&ovf);
 	FS.r_close				(wave);
+	return true;
 }
 
-void CSoundRender_Source::load(LPCSTR name)
+bool CSoundRender_Source::load(pcstr name, bool replaceWithNoSound /*= true*/, bool crashOnError /*= true*/)
 {
 	string_path			fn,N;
 	xr_strcpy				(N,name);
@@ -146,7 +147,8 @@ void CSoundRender_Source::load(LPCSTR name)
 		FS.update_path	(fn,"$game_sounds$","$no_sound.ogg");
     }
 
-	LoadWave			(fn);
+	if (!LoadWave(fn, crashOnError))
+		return false;
 	SoundRender->cache.cat_create	(CAT, dwBytesTotal);
 }
 
