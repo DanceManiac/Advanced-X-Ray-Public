@@ -453,6 +453,11 @@ void CInventoryOwner::SetRank			(CHARACTER_RANK_VALUE rank)
 	trader->m_rank  = rank;
 }
 
+void CInventoryOwner::SetName(LPCSTR name)
+{
+	m_game_name = name;
+}
+
 void CInventoryOwner::ChangeRank			(CHARACTER_RANK_VALUE delta)
 {
 	SetRank(Rank()+delta);
