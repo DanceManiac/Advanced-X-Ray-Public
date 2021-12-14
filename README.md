@@ -134,7 +134,7 @@ Thanks to
 - [Xottab_DUTY](https://github.com/Xottab-DUTY)
 - [Abramcumner](https://github.com/abramcumner)
 - [LVutner](https://github.com/LVutner)
-- [OldSerpskiStalker](https://github.com/oldSerpskiStalker)
+- [Zaurus'72](https://github.com/oldSerpskiStalker)
 - [ggGhosTt](https://gitlab.com/ggGhosTt)
 - ValeroK
 - DWM Team
