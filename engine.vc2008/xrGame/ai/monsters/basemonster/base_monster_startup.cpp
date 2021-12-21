@@ -149,6 +149,21 @@ void CBaseMonster::Load(LPCSTR section)
 	}
 
 	m_force_anti_aim						=	false;
+
+	m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
+	light_bone = READ_IF_EXISTS(pSettings, r_string, section, "light_bone", "bip01_head");
+
+	m_bLightsEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "lights_enabled", false);
+	if (m_bLightsEnabled)
+	{
+		sscanf(pSettings->r_string(section, "light_color"), "%f,%f,%f",
+			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
+		m_fTrailLightRange = pSettings->r_float(section, "light_range");
+	}
 }
 
 void CBaseMonster::PostLoad (LPCSTR section)
@@ -342,6 +357,8 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 	control().update_frame();
 	control().update_schedule();
 
+	StartLights();
+
 	// spawn inventory item
 //	if (ai().get_alife()) {
 //		
@@ -385,6 +402,8 @@ void CBaseMonster::net_Destroy()
 	m_pPhysics_support->in_NetDestroy	();
 
 	monster_squad().remove_member		((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(),this);
+
+	StopLights();
 
 #ifdef DEBUG
 	m_show_debug_info				= 0;
@@ -532,4 +551,55 @@ void CBaseMonster::fill_bones_body_parts	(LPCSTR body_part, CriticalWoundType wo
 				u32(wound_type)
 			)
 		);
+}
+
+void CBaseMonster::StartLights()
+{
+	VERIFY(!physics_world()->Processing());
+	if (!m_bLightsEnabled)		return;
+
+	VERIFY(m_pTrailLight == NULL);
+	m_pTrailLight = ::Render->light_create();
+
+	IKinematics*          model = Visual()->dcast_PKinematics();
+	u16                  boneID = model->LL_BoneID(light_bone);
+	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);
+	Fvector bonePositionInModel = boneMatrix.c;
+	Fvector bonePositionInWorld = bonePositionInModel + Position();
+
+	m_pTrailLight->set_shadow(m_bLightsEnabled);
+
+	m_pTrailLight->set_color(m_TrailLightColor);
+	m_pTrailLight->set_range(m_fTrailLightRange);
+	m_pTrailLight->set_position(bonePositionInWorld);
+	m_pTrailLight->set_active(true);
+
+	m_pTrailLight->set_volumetric(m_bVolumetricLights);
+	m_pTrailLight->set_volumetric_quality(m_fVolumetricQuality);
+	m_pTrailLight->set_volumetric_distance(m_fVolumetricDistance);
+	m_pTrailLight->set_volumetric_intensity(m_fVolumetricIntensity);
+}
+
+void CBaseMonster::StopLights()
+{
+	VERIFY(!physics_world()->Processing());
+	if (!m_bLightsEnabled || !m_pTrailLight)
+		return;
+
+	m_pTrailLight->set_active(false);
+	m_pTrailLight.destroy();
+}
+
+void CBaseMonster::UpdateLights()
+{
+	VERIFY(!physics_world()->Processing());
+	if (!m_bLightsEnabled || !m_pTrailLight || !m_pTrailLight->get_active()) return;
+
+	IKinematics*          model = Visual()->dcast_PKinematics();
+	u16                  boneID = model->LL_BoneID(light_bone);
+	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);
+	Fvector bonePositionInModel = boneMatrix.c;
+	Fvector bonePositionInWorld = bonePositionInModel + Position();
+
+	m_pTrailLight->set_position(bonePositionInWorld);
 }

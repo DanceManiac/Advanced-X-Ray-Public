@@ -100,6 +100,8 @@ CBaseMonster::CBaseMonster()
 	m_last_grouping_behaviour_update_tick  = 0;
 	m_feel_enemy_who_just_hit_max_distance = 0;
 	m_feel_enemy_max_distance			   = 0;
+
+	light_bone = "bip01_head";
 }
 
 CBaseMonster::~CBaseMonster()
@@ -224,6 +226,8 @@ void CBaseMonster::UpdateCL()
 	}
 
 #endif
+
+	UpdateLights();
 }
 
 void CBaseMonster::shedule_Update(u32 dt)

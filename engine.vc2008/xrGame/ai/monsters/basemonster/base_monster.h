@@ -378,6 +378,21 @@ public:
 
 	void						set_aggressive				(bool val = true) {m_bAggressive = val;}
 
+	ref_light					m_pTrailLight;
+	Fcolor						m_TrailLightColor;
+	float						m_fTrailLightRange;
+	bool						m_bLightsEnabled;
+	bool						m_bVolumetricLights;
+	float						m_fVolumetricQuality;
+	float						m_fVolumetricDistance;
+	float						m_fVolumetricIntensity;
+
+	shared_str					light_bone;
+
+	virtual void				StartLights();
+	virtual void				StopLights();
+	virtual void				UpdateLights();
+
 	//---------------------------------------------------------------------------------------
 
 

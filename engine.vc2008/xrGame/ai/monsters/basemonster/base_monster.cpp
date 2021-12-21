@@ -112,6 +112,8 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_first_tick_enemy_inaccessible			=	0;
 	m_last_tick_enemy_inaccessible			=	0;
 	m_first_tick_object_not_at_home			=	0;
+
+	light_bone								= "bip01_head";
 }
 
 #pragma warning (pop)
@@ -350,6 +352,8 @@ void CBaseMonster::UpdateCL()
 	control().update_frame();
 
 	m_pPhysics_support->in_UpdateCL();
+
+	UpdateLights();
 }
 
 void CBaseMonster::shedule_Update(u32 dt)
