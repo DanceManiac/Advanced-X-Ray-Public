@@ -102,6 +102,7 @@ CBaseMonster::CBaseMonster()
 	m_feel_enemy_max_distance			   = 0;
 
 	light_bone = "bip01_head";
+	particles_bone = "bip01_head";
 }
 
 CBaseMonster::~CBaseMonster()
@@ -272,6 +273,8 @@ void CBaseMonster::Die(CObject* who)
 	
 	
 	if (m_controlled)			m_controlled->on_die();
+
+	SwitchMonsterParticles(false);
 }
 
 

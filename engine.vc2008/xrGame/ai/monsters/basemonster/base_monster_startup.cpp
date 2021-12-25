@@ -156,6 +156,7 @@ void CBaseMonster::Load(LPCSTR section)
 	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
 
 	light_bone = READ_IF_EXISTS(pSettings, r_string, section, "light_bone", "bip01_head");
+	particles_bone = READ_IF_EXISTS(pSettings, r_string, section, "particles_bone", "bip01_head");
 
 	m_bLightsEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "lights_enabled", false);
 	if (m_bLightsEnabled)
@@ -164,6 +165,9 @@ void CBaseMonster::Load(LPCSTR section)
 			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
 		m_fTrailLightRange = pSettings->r_float(section, "light_range");
 	}
+
+	m_bParticlesEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "particles_enabled", false);
+	m_sParticlesIdleName = READ_IF_EXISTS(pSettings, r_string, section, "particles_idle", NULL);
 }
 
 void CBaseMonster::PostLoad (LPCSTR section)
@@ -358,6 +362,8 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 	control().update_schedule();
 
 	StartLights();
+
+	SwitchMonsterParticles(true);
 
 	// spawn inventory item
 //	if (ai().get_alife()) {
@@ -602,4 +608,27 @@ void CBaseMonster::UpdateLights()
 	Fvector bonePositionInWorld = bonePositionInModel + Position();
 
 	m_pTrailLight->set_position(bonePositionInWorld);
+}
+
+void CBaseMonster::SwitchMonsterParticles(bool bOn)
+{
+	IKinematics*          model = Visual()->dcast_PKinematics();
+	u16                  boneID = model->LL_BoneID(particles_bone);
+	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);
+	Fvector bonePositionInModel = boneMatrix.c;
+	Fvector bonePositionInWorld = bonePositionInModel + Position();
+
+	if (m_sParticlesIdleName.size() == 0)
+		return;
+
+	if (bOn)
+	{
+		Fvector dir;
+		dir.set(0, 1, 0);
+		CParticlesPlayer::StartParticles(m_sParticlesIdleName, bonePositionInWorld, ID(), -1, false);
+	}
+	else
+	{
+		CParticlesPlayer::StopParticles(m_sParticlesIdleName, BI_NONE, true);
+	}
 }

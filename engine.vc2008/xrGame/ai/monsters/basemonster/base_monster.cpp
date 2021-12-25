@@ -114,6 +114,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_first_tick_object_not_at_home			=	0;
 
 	light_bone								= "bip01_head";
+	particles_bone							= "bip01_head";
 }
 
 #pragma warning (pop)
@@ -429,6 +430,8 @@ void CBaseMonster::Die(CObject* who)
 	
 	
 	if (m_controlled)			m_controlled->on_die();
+
+	SwitchMonsterParticles(false);
 }
 
 
