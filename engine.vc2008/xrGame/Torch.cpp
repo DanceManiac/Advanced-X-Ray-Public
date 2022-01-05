@@ -553,3 +553,8 @@ void CTorch::Recharge(float val)
 	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
 		m_fCurrentChargeLevel = m_fMaxChargeLevel;
 }
+
+float CTorch::get_range() const 
+{
+	return light_render->get_range();
+}

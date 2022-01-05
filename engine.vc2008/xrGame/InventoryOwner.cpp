@@ -680,3 +680,8 @@ void CInventoryOwner::AfterLoad()
 	VERIFY(game_object);
 	Level().spawn_item("bolt", game_object->Position(), game_object->ai_location().level_vertex_id(), game_object->ID());
 }
+
+CInventoryItem* CInventoryOwner::GetCurrentTorch() const 
+{
+	return inventory().ItemFromSlot(TORCH_SLOT);
+}

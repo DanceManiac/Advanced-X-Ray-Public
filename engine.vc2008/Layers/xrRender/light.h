@@ -122,6 +122,8 @@ public:
 	virtual void	set_hud_mode			(bool b)						{flags.bHudMode=b;}
 	virtual bool	get_hud_mode			()								{return flags.bHudMode;};
 
+			float	get_range				() const override { return range; };
+
 	virtual	void	spatial_move			();
 	virtual	Fvector	spatial_sector_point	();
 

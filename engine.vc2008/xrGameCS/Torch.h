@@ -56,6 +56,7 @@ public:
 
 			void	Switch				();
 			void	Switch				(bool light_on);
+			bool	torch_active		() const;
 
 			void	UpdateChargeLevel	(void);
 	virtual void	save				(NET_Packet &output_packet);
@@ -67,6 +68,8 @@ public:
 			void	Recharge			(float val);
 
 	virtual bool	can_be_attached		() const;
+
+			float	get_range			() const;
 
 	//CAttachableItem
 	virtual	void				enable					(bool value);

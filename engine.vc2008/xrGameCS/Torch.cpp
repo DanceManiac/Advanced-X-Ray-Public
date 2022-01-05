@@ -175,6 +175,11 @@ void CTorch::Switch	(bool light_on)
 	}
 }
 
+bool CTorch::torch_active() const
+{
+	return (m_switched_on);
+}
+
 BOOL CTorch::net_Spawn(CSE_Abstract* DC) 
 {
 	CSE_Abstract			*e	= (CSE_Abstract*)(DC);
@@ -553,4 +558,9 @@ void CTorch::Recharge(float val)
 
 	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
 		m_fCurrentChargeLevel = m_fMaxChargeLevel;
+}
+
+float CTorch::get_range() const 
+{
+	return light_render->get_range();
 }

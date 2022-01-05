@@ -192,6 +192,8 @@ public:
 	virtual bool			use_bolts				() const {return(true);}
 	virtual	void			spawn_supplies			();
 
+	CInventoryItem*			GetCurrentTorch			() const;
+
 	CInventoryItem* CInventoryOwner::GetCurrentOutfit() const;
 
 	//////////////////////////////////////////////////////////////////////////

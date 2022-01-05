@@ -66,6 +66,8 @@ public:
 
 	virtual bool	can_be_attached			() const;
 
+			float	get_range				() const;
+
 	//CAttachableItem
 	virtual	void	enable					(bool value);
 

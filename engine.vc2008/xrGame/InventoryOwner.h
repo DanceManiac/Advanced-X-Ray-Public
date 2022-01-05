@@ -199,6 +199,8 @@ public:
 	virtual bool			use_bolts				() const {return(true);}
 	virtual	void			spawn_supplies			();
 
+	CInventoryItem*			GetCurrentTorch			() const;
+
 protected:
 	shared_str					m_item_to_spawn;
 	u32							m_ammo_in_box_to_spawn;
