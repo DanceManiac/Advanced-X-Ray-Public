@@ -52,6 +52,7 @@
 #include "ai_debug_variables.h"
 #include "../xrphysics/console_vars.h"
 #include "../build_config_defines.h"
+#include "ai_object_location.h"
 
 #ifdef DEBUG
 #	include "PHDebug.h"
@@ -256,7 +257,8 @@ public:
 		sscanf(args, "%s", Name);
 		Fvector pos = Actor()->Position();
 		pos.y += 3.0f;
-		Level().g_cl_Spawn(Name, 0xff, M_SPAWN_OBJECT_LOCAL, pos);
+		if (auto tpGame = smart_cast<game_sv_Single*>(Level().Server->game))
+			tpGame->alife().spawn_item(args, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
 	}
 	virtual void	Info(TInfo& I)
 	{
