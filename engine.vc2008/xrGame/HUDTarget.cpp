@@ -22,6 +22,7 @@
 
 #include <ai/monsters/poltergeist/poltergeist.h>
 #include "HudItem.h"
+#include "Weapon.h"
 
 
 u32 C_ON_ENEMY		D3DCOLOR_RGBA(0xff,0,0,0x80);
@@ -282,6 +283,11 @@ void CHUDTarget::Render()
 		F->OutNext		("%4.1f", PP.RQ.range);
 #endif
 	}
+
+	auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem());
+
+		if (Wpn && Wpn->IsLaserOn())
+			return;
 
 	Fvector2 scr_size;
 	scr_size.set(float(Device.dwWidth), float(Device.dwHeight));

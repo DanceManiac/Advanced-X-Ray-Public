@@ -7,6 +7,7 @@
 #include "static_cast_checked.hpp"
 #include "actoreffector.h"
 #include "../xrEngine/IGame_Persistent.h"
+#include "Weapon.h"
 
 player_hud* g_player_hud = NULL;
 Fvector _ancor_pos;
@@ -194,6 +195,12 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 		Fmatrix& fire_mat								= m_model->LL_GetTransform(m_measures.m_fire_bone);
 		fire_mat.transform_tiny							(fd.vLastFP, m_measures.m_fire_point_offset);
 		m_item_transform.transform_tiny					(fd.vLastFP);
+
+		//if (auto Wpn = smart_cast<CWeapon*>(m_parent_hud_item))
+		auto Wpn = smart_cast<CWeapon*>(m_parent_hud_item);
+
+			if (Wpn) // && m_measures.useCopFirePoint)
+				Wpn->CorrectDirFromWorldToHud(fd.vLastFD);
 
 		fd.vLastFD.set									(0.f,0.f,1.f);
 		m_item_transform.transform_dir					(fd.vLastFD);

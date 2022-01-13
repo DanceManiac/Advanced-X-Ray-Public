@@ -23,6 +23,7 @@ class CParticlesObject;
 class CUIWindow;
 class CBinocularsVision;
 class CNightVisionEffector;
+class CLAItem;
 
 #define WEAPON_INDOOR_HEMI_FACTOR 0.01f         // Сила освещённости персонжаей солнечным светом, ниже которой считается что персонаж в помещении 
 #define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f   // Коэфицент на который домножается громкость звука эха от выстрела, если он был сделат от 1-го лица
@@ -223,7 +224,7 @@ public:
 	IC void	ForceUpdateAmmo						()		{ m_BriefInfo_CalcFrame = 0; }
 
 	u8		GetAddonsState						()		const		{return m_flagsAddOnState;};
-	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}//dont use!!! for buy menu only!!!
+	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}
 protected:
 	//состояние подключенных аддонов
 	u8 m_flagsAddOnState;
@@ -241,6 +242,10 @@ protected:
 	shared_str		m_sWpn_scope_bone;
 	shared_str		m_sWpn_silencer_bone;
 	shared_str		m_sWpn_launcher_bone;
+	shared_str		m_sWpn_laser_bone;
+	shared_str		m_sWpn_flashlight_bone;
+	shared_str		m_sHud_wpn_laser_bone;
+	shared_str		m_sHud_wpn_flashlight_bone;
 
 	xr_vector<shared_str> m_all_scope_bones;
 	shared_str		m_cur_scope_bone;
@@ -573,4 +578,63 @@ public:
 	virtual void				DumpActiveParams			(shared_str const & section_name, CInifile & dst_ini) const;
 	virtual shared_str const	GetAnticheatSectionName		() const { return cNameSect(); };
 	virtual void				OnBulletHit();
+
+	virtual void processing_deactivate() override 
+	{
+		UpdateLaser();
+		UpdateFlashlight();
+		inherited::processing_deactivate();
+	}
+
+	void GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset);
+	//Функция из ганслингера для приблизительной коррекции разности фовов худа и мира. Так себе на самом деле, но более годных способов я не нашел.
+	void CorrectDirFromWorldToHud(Fvector& dir);
+
+private:
+	bool has_laser;
+	ref_light laser_light_render;
+	CLAItem* laser_lanim;
+	float laser_fBrightness{ 1.f };
+
+	void UpdateLaser();
+public:
+	void SwitchLaser(bool on) 
+	{
+		if (!has_laser)
+			return;
+
+		if (on)
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+		else
+			m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+	}
+	inline bool IsLaserOn() const 
+	{
+		return m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+	}
+
+private:
+	bool has_flashlight;
+	ref_light flashlight_render;
+	ref_light flashlight_omni;
+	ref_glow flashlight_glow;
+	CLAItem* flashlight_lanim;
+	float flashlight_fBrightness{ 1.f };
+
+	void UpdateFlashlight();
+public:
+	void SwitchFlashlight(bool on) 
+	{
+		if (!has_flashlight)
+			return;
+
+		if (on)
+			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+		else
+			m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+	}
+	inline bool IsFlashlightOn() const 
+	{
+		return m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+	}
 };

@@ -149,7 +149,7 @@ virtual	const IObjectPhysicsCollision	*physics_collision	()					{ return  0; }
 	
 	// Properties
 	void								processing_activate		();				// request	to enable	UpdateCL
-	void								processing_deactivate	();				// request	to disable	UpdateCL
+	virtual	void						processing_deactivate	();				// request	to disable	UpdateCL
 	bool								processing_enabled		()				{ return 0!=Props.bActiveCounter;	}
 
 	void								setVisible			(BOOL _visible);

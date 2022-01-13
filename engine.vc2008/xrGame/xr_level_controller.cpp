@@ -46,6 +46,8 @@ _action  actions[]		= {
 	{ "wpn_4",				kWPN_4					,_both},	
 	{ "wpn_5",				kWPN_5					,_both},	
 	{ "wpn_6",				kWPN_6					,_both},	
+	{ "laser_on",			kLASER_ON				,_both}, //DEF_ACTION("laser_on",			kLASER_ON)
+	{ "flashlight",			kFLASHLIGHT				,_both}, //DEF_ACTION("flashlight",		kFLASHLIGHT)
 	{ "artefact",			kARTEFACT				,_both/*_mp*/},		
 	{ "wpn_next",			kWPN_NEXT				,_both},	// means next ammo type
 	{ "wpn_fire",			kWPN_FIRE				,_both},	
@@ -60,7 +62,7 @@ _action  actions[]		= {
 	{ "pause",				kPAUSE					,_both},	
 	{ "drop",				kDROP					,_both},	
 	{ "use",				kUSE					,_both},	
-	{ "scores",				kSCORES					,_both},	
+	{ "scores",				kSCORES					,_both},
 	{ "chat",				kCHAT					,_mp},		
 	{ "chat_team",			kCHAT_TEAM				,_mp},		
 	{ "screenshot",			kSCREENSHOT				,_both},	

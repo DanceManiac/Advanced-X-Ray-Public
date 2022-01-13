@@ -33,6 +33,7 @@
 #include "clsid_game.h"
 #include "hudmanager.h"
 #include "Weapon.h"
+#include "WeaponMagazined.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -196,6 +197,18 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					CurrentGameUI()->ActorMenu().m_pQuickSlot->ReloadReferences(this);
 				}
 			}
+		}break;
+	case kLASER_ON:
+		{
+		auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+				if (wpn)
+					wpn->SwitchLaser(!wpn->IsLaserOn());
+		}break;
+	case kFLASHLIGHT:
+		{
+			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+				if (wpn)
+					wpn->SwitchFlashlight(!wpn->IsFlashlightOn());
 		}break;
 	}
 }
