@@ -36,6 +36,7 @@
 #include "ui/UIInventoryUtilities.h"
 #include "alife_object_registry.h"
 #include "xrServer_Objects_ALife_Monsters.h"
+#include "HUDManager.h"
 
 using namespace luabind;
 
@@ -708,7 +709,28 @@ bool has_active_tutotial()
 	return (g_tutorial!=NULL);
 }
 
+//Alundaio: namespace level exports extension
 
+//ability to get the target game_object at crosshair
+CScriptGameObject* g_get_target_obj()
+{
+	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+	if (RQ.O)
+	{
+		CGameObject* game_object = smart_cast<CGameObject*>(RQ.O);
+		if (game_object)
+			return game_object->lua_game_object();
+	}
+	return nullptr;
+}
+
+float g_get_target_dist()
+{
+	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+	return RQ.range;
+}
+
+//Alundaio: END
 
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
@@ -723,6 +745,8 @@ void CLevel::script_register(lua_State *L)
 	module(L,"level")
 	[
 		// obsolete\deprecated
+		def("get_target_obj",					g_get_target_obj), //intentionally named to what is in xray extensions
+		def("get_target_dist",					g_get_target_dist),
 		def("object_by_id",						get_object_by_id),
 #ifdef DEBUG
 		def("debug_object",						get_object_by_name),
