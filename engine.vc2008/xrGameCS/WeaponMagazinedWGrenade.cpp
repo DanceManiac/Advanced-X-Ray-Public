@@ -923,7 +923,13 @@ void CWeaponMagazinedWGrenade::switch2_Unmis()
 			PlaySound("sndReload", get_LastFP());
 
 		if (psWpnAnimsFlag.test(ANM_MISFIRE_GL))
+		{
 			PlayHUDMotion("anm_reload_w_gl_misfire", TRUE, this, GetState());
+			// Shell Drop
+			Fvector vel;
+			PHGetLinearVell(vel);
+			OnShellDrop(get_LastSP(), vel);
+		}
 		else if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
 			PlayHUDMotion("anm_reload_w_gl_empty", TRUE, this, GetState());
 		else
