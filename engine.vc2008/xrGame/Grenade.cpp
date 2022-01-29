@@ -200,7 +200,8 @@ void CGrenade::Destroy()
 	}
 
 	FindNormal					(normal);
-	CExplosive::GenExplodeEvent	(Position(), normal);
+	Fvector C; Center(C);
+	CExplosive::GenExplodeEvent(C, normal);
 }
 
 
