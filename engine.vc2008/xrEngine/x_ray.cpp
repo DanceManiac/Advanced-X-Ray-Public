@@ -43,6 +43,8 @@ extern	void	Intro_DSHOW			( void* fn );
 extern	int PASCAL IntroDSHOW_wnd	(HINSTANCE hInstC, HINSTANCE hInstP, LPSTR lpCmdLine, int nCmdShow);
 //int		max_load_stage = 0;
 
+const TCHAR* c_szSplashClass = _T("SplashWindow");
+
 // computing build id
 XRCORE_API	LPCSTR	build_date;
 XRCORE_API	u32		build_id;
@@ -72,6 +74,8 @@ static int start_year	= 1999;	// 1999
 
 #include "../xrGameSpy/gamespy/md5c.c"
 #include <ctype.h>
+#include <wincodec.h>
+#include <thread>
 
 #define DEFAULT_MODULE_HASH "3CAABCFCFF6F3A810019C6A72180F166"
 static char szEngineHash[33] = DEFAULT_MODULE_HASH;
@@ -431,6 +435,198 @@ void Startup()
 	destroyEngine();
 }
 
+IStream* CreateStreamOnResource(LPCTSTR lpName, LPCTSTR lpType)
+{
+	IStream* ipStream = NULL;
+
+	HRSRC hrsrc = FindResource(NULL, lpName, lpType);
+	if (hrsrc == NULL)
+		goto Return;
+
+	DWORD dwResourceSize = SizeofResource(NULL, hrsrc);
+	HGLOBAL hglbImage = LoadResource(NULL, hrsrc);
+	if (hglbImage == NULL)
+		goto Return;
+
+	LPVOID pvSourceResourceData = LockResource(hglbImage);
+	if (pvSourceResourceData == NULL)
+		goto Return;
+
+	HGLOBAL hgblResourceData = GlobalAlloc(GMEM_MOVEABLE, dwResourceSize);
+	if (hgblResourceData == NULL)
+		goto Return;
+
+	LPVOID pvResourceData = GlobalLock(hgblResourceData);
+
+	if (pvResourceData == NULL)
+		goto FreeData;
+
+	CopyMemory(pvResourceData, pvSourceResourceData, dwResourceSize);
+
+	GlobalUnlock(hgblResourceData);
+
+	if (SUCCEEDED(CreateStreamOnHGlobal(hgblResourceData, TRUE, &ipStream)))
+		goto Return;
+
+FreeData:
+	GlobalFree(hgblResourceData);
+
+Return:
+	return ipStream;
+}
+
+void RegisterWindowClass(HINSTANCE hInst)
+{
+	WNDCLASS wc = { 0 };
+	wc.lpfnWndProc = DefWindowProc;
+	wc.hInstance = hInst;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.lpszClassName = c_szSplashClass;
+	RegisterClass(&wc);
+}
+
+HWND CreateSplashWindow(HINSTANCE hInst)
+{
+	HWND hwndOwner = CreateWindow(c_szSplashClass, NULL, WS_POPUP,
+		0, 0, 0, 0, NULL, NULL, hInst, NULL);
+	return CreateWindowEx(WS_EX_LAYERED, c_szSplashClass, NULL, WS_POPUP | WS_VISIBLE,
+		0, 0, 0, 0, hwndOwner, NULL, hInst, NULL);
+}
+
+HWND WINAPI ShowSplash(HINSTANCE hInstance, int nCmdShow)
+{
+	MSG msg;
+	HWND hWnd;
+
+	//image
+	CImage img;                             //объект изображения
+
+	WCHAR path[MAX_PATH];
+
+	GetModuleFileNameW(NULL, path, MAX_PATH);
+	std::wstring ws(path);
+
+	std::string splash_path(ws.begin(), ws.end());
+	splash_path = splash_path.erase(splash_path.find_last_of('\\'), splash_path.size() - 1);
+	splash_path += "\\splash.png";
+
+	img.Load(splash_path.c_str());              //загрузка сплеша
+
+	int splashWidth = img.GetWidth();            //фиксируем ширину картинки
+	int splashHeight = img.GetHeight();            //фиксируем высоту картинки
+
+	if (splashWidth == 0 || splashHeight == 0)  //если картинки нет на диске, то грузим из ресурсов
+	{
+		img.Destroy();
+		img.Load(CreateStreamOnResource(MAKEINTRESOURCE(IDB_PNG1), _T("PNG")));//загружаем сплеш
+		splashWidth = img.GetWidth();
+		splashHeight = img.GetHeight();
+	}
+
+	//float temp_x_size = 860.f;
+	//float temp_y_size = 461.f;
+	int scr_x = GetSystemMetrics(SM_CXSCREEN);
+	int scr_y = GetSystemMetrics(SM_CYSCREEN);
+
+	int pos_x = (scr_x / 2) - (splashWidth / 2);
+	int pos_y = (scr_y / 2) - (splashHeight / 2);
+
+	//if (!RegClass(SplashProc, szClass, COLOR_WINDOW)) return FALSE;
+	hWnd = CreateSplashWindow(hInstance);
+
+	if (!hWnd) return FALSE;
+
+	HDC hdcScreen = GetDC(NULL);
+	HDC hDC = CreateCompatibleDC(hdcScreen);
+
+	HBITMAP hBmp = CreateCompatibleBitmap(hdcScreen, splashWidth, splashHeight);
+	HBITMAP hBmpOld = (HBITMAP)SelectObject(hDC, hBmp);
+	//рисуем картиночку
+	for (int i = 0; i < img.GetWidth(); i++)
+	{
+		for (int j = 0; j < img.GetHeight(); j++)
+		{
+			BYTE* ptr = (BYTE*)img.GetPixelAddress(i, j);
+			ptr[0] = ((ptr[0] * ptr[3]) + 127) / 255;
+			ptr[1] = ((ptr[1] * ptr[3]) + 127) / 255;
+			ptr[2] = ((ptr[2] * ptr[3]) + 127) / 255;
+		}
+	}
+
+	img.AlphaBlend(hDC, 0, 0, splashWidth, splashHeight, 0, 0, splashWidth, splashHeight);
+
+	//alpha
+	BLENDFUNCTION blend = { 0 };
+	blend.BlendOp = AC_SRC_OVER;
+	blend.SourceConstantAlpha = 255;
+	blend.AlphaFormat = AC_SRC_ALPHA;
+
+	POINT ptPos = { 0, 0 };
+	SIZE sizeWnd = { splashWidth, splashHeight };
+	POINT ptSrc = { 0, 0 };
+	HWND hDT = GetDesktopWindow();
+
+	if (hDT)
+	{
+		RECT rcDT;
+		GetWindowRect(hDT, &rcDT);
+		ptPos.x = (rcDT.right - splashWidth) / 2;
+		ptPos.y = (rcDT.bottom - splashHeight) / 2;
+	}
+
+	UpdateLayeredWindow(hWnd, hdcScreen, &ptPos, &sizeWnd, hDC, &ptSrc, 0, &blend, ULW_ALPHA);
+
+	return hWnd;
+}
+
+void SetSplashImage(HWND hwndSplash, HBITMAP hbmpSplash)
+{
+	// get the size of the bitmap
+
+	BITMAP bm;
+	GetObject(hbmpSplash, sizeof(bm), &bm);
+	SIZE sizeSplash = { bm.bmWidth, bm.bmHeight };
+
+	// get the primary monitor's info
+
+	POINT ptZero = { 0 };
+	HMONITOR hmonPrimary = MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
+	MONITORINFO monitorinfo = { 0 };
+	monitorinfo.cbSize = sizeof(monitorinfo);
+	GetMonitorInfo(hmonPrimary, &monitorinfo);
+
+	// center the splash screen in the middle of the primary work area
+
+	const RECT& rcWork = monitorinfo.rcWork;
+	POINT ptOrigin;
+	ptOrigin.x = rcWork.left + (rcWork.right - rcWork.left - sizeSplash.cx) / 2;
+	ptOrigin.y = rcWork.top + (rcWork.bottom - rcWork.top - sizeSplash.cy) / 2;
+
+	// create a memory DC holding the splash bitmap
+
+	HDC hdcScreen = GetDC(NULL);
+	HDC hdcMem = CreateCompatibleDC(hdcScreen);
+	HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcMem, hbmpSplash);
+
+	// use the source image's alpha channel for blending
+
+	BLENDFUNCTION blend = { 0 };
+	blend.BlendOp = AC_SRC_OVER;
+	blend.SourceConstantAlpha = 255;
+	blend.AlphaFormat = AC_SRC_ALPHA;
+
+	// paint the window (in the right location) with the alpha-blended bitmap
+
+	UpdateLayeredWindow(hwndSplash, hdcScreen, &ptOrigin, &sizeSplash,
+		hdcMem, &ptZero, RGB(0, 0, 0), &blend, ULW_ALPHA);
+
+	// delete temporary objects
+
+	SelectObject(hdcMem, hbmpOld);
+	DeleteDC(hdcMem);
+	ReleaseDC(NULL, hdcScreen);
+}
+
 static BOOL CALLBACK logDlgProc( HWND hw, UINT msg, WPARAM wp, LPARAM lp )
 {
 	switch( msg ){
@@ -733,13 +929,36 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 #endif // DEDICATED_SERVER
 
 	// Title window
-	logoWindow					= CreateDialog(GetModuleHandle(NULL),	MAKEINTRESOURCE(IDD_STARTUP), 0, logDlgProc );
-	
-	HWND logoPicture			= GetDlgItem(logoWindow, IDC_STATIC_LOGO);
-	RECT logoRect;
-	GetWindowRect(logoPicture, &logoRect);
+	//IStream* pStream = CreateStreamOnResource(MAKEINTRESOURCE(IDB_PNG1), _T("PNG"));
 
-	SetWindowPos				(
+	//WICBitmapSource* res = LoadBitmapFromStream(CreateStreamOnResource(MAKEINTRESOURCE(IDB_PNG1), _T("PNG")));
+
+	//HBITMAP img = LoadSplashImage();
+	//image.
+
+	RegisterWindowClass(hInstance);
+	//logoWindow = CreateSplashWindow(hInstance);
+	logoWindow = ShowSplash(hInstance, nCmdShow);
+
+	SendMessage(logoWindow, WM_DESTROY, 0, 0);
+
+	//SendMessageTimeout(logoWindow, WM_DESTROY,3)
+	//SetSplashImage(logoWindow, image);
+
+	//logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logDlgProc);
+
+
+	//HWND logoPicture = GetDlgItem(logoWindow, IDC_STATIC_LOGO);
+	//HWND logoPicture2 = GetDlgItem(logoWindow, IDD_STARTUP);
+	//RECT logoRect;
+	//GetWindowRect(logoPicture, &logoRect);
+
+	//SetWindowLong(logoWindow, GetWindowLong(logoWindow, GWL_EXSTYLE), GetWindowLong(logoWindow, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
+	//SetWindowLong(logoPicture, GetWindowLong(logoPicture, GWL_EXSTYLE), GetWindowLong(logoPicture, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
+
+	//SetLayeredWindowAttributes(logoPicture, 0, 0, LWA_ALPHA);
+
+	/*SetWindowPos(
 		logoWindow,
 #ifndef DEBUG
 		HWND_TOPMOST,
@@ -752,7 +971,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		logoRect.bottom - logoRect.top,
 		SWP_NOMOVE | SWP_SHOWWINDOW// | SWP_NOSIZE
 	);
-	UpdateWindow(logoWindow);
+	UpdateWindow(logoWindow);*/
 
 	// AVI
 	g_bIntroFinished			= TRUE;

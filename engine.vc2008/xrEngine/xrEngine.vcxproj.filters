@@ -981,10 +981,13 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="splash_xrcs_en.bmp">
+    <Image Include="stalker_cs.ico">
       <Filter>General\Resources</Filter>
     </Image>
-    <Image Include="stalker_cs.ico">
+    <Image Include="advanced_xray_splash.bmp">
+      <Filter>General\Resources</Filter>
+    </Image>
+    <Image Include="advanced_xray_splash.png">
       <Filter>General\Resources</Filter>
     </Image>
   </ItemGroup>

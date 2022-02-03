@@ -16,10 +16,9 @@
 // Russian resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-#ifdef _WIN32
+
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 #pragma code_page(1251)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -35,7 +34,7 @@ IDI_ICON1               ICON                    "stalker_cs.ico"
 // Bitmap
 //
 
-IDB_BITMAP1             BITMAP                  "splash_xrcs_en.bmp"
+IDB_BITMAP1             BITMAP                  "advanced_xray_splash.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -59,11 +58,11 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "CompanyName", "GSC Game World"
-            VALUE "FileDescription", "X-Ray 1.6 Engine"
+            VALUE "CompanyName", "M.F.S. Team"
+            VALUE "FileDescription", "Advanced X-Ray"
             VALUE "FileVersion", "1.6.02"
             VALUE "InternalName", "xrEngine"
-            VALUE "LegalCopyright", "Copyright © 2009 GSC Game World"
+            VALUE "LegalCopyright", "Copyright © 2022"
             VALUE "OriginalFilename", "xrEngine.exe"
             VALUE "ProductName", "S.T.A.L.K.E.R.: Call Of Pripyat"
             VALUE "ProductVersion", "1.6.02"
@@ -75,7 +74,14 @@ BEGIN
     END
 END
 
-#endif    // Russian resources
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_PNG1 PNG "advanced_xray_splash.png"
+#endif    // Russian (Russia) resources
+
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -83,10 +89,9 @@ END
 // Ukrainian resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_UKR)
-#ifdef _WIN32
+
 LANGUAGE LANG_UKRAINIAN, SUBLANG_DEFAULT
 #pragma code_page(1251)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -121,10 +126,9 @@ END
 // English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
+
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -132,10 +136,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 IDD_STARTUP DIALOGEX 0, 0, 333, 165
-STYLE DS_ABSALIGN | DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_VISIBLE
+STYLE DS_ABSALIGN | DS_SETFONT | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CLIPCHILDREN
+EXSTYLE WS_EX_TRANSPARENT
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    CONTROL         123,IDC_STATIC_LOGO,"Static",SS_BITMAP | SS_REALSIZEIMAGE,0,0,333,165
+    CONTROL         "",IDC_STATIC_LOGO,"Static",SS_OWNERDRAW,0,0,332,164,WS_EX_TRANSPARENT
 END
 
 
@@ -154,7 +159,17 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_STARTUP AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
