@@ -138,6 +138,7 @@ Thanks to
 - [ggGhosTt](https://gitlab.com/ggGhosTt)
 - [Mortan](https://github.com/mortany)
 - [RedProjects](https://github.com/RedPandaProjects)
+- [i-love-kfc](https://github.com/i-love-kfc)
 - ValeroK
 - DWM Team
 - CorryZeron
