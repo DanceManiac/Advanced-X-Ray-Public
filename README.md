@@ -136,8 +136,8 @@ Thanks to
 - [LVutner](https://github.com/LVutner)
 - [Zaurus'72](https://github.com/oldSerpskiStalker)
 - [ggGhosTt](https://gitlab.com/ggGhosTt)
-- [Mortan] (https://github.com/mortany)
-- [RedProjects] (https://github.com/RedPandaProjects)
+- [Mortan](https://github.com/mortany)
+- [RedProjects](https://github.com/RedPandaProjects)
 - ValeroK
 - DWM Team
 - CorryZeron
