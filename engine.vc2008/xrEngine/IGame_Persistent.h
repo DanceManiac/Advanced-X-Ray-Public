@@ -104,6 +104,8 @@ public:
 	virtual float					GetActorBleeding	() { return 0; };
 	virtual bool					GetActorAliveStatus () { return 0; };
 	virtual bool					GetActor			() { return 0; };
+	virtual bool					GetActorNightvision	() { return 0; };
+	virtual int						GetNightvisionType	() { return 0; };
 
 	virtual void					RegisterModel		(IRenderVisual* V)
 #ifndef _EDITOR

@@ -26,6 +26,8 @@ public:
 	virtual void			net_Import				(NET_Packet& P);
 	virtual void			OnH_A_Chield			();
 
+			IC int			GetHelmetNV_Type		() const { return m_NightVisionType; }
+
 	float					GetDefHitTypeProtection	(ALife::EHitType hit_type);
 	float					GetHitTypeProtection	(ALife::EHitType hit_type, s16 element);
 	float					GetBoneArmor			(s16 element);
@@ -43,6 +45,7 @@ public:
 
 	bool					m_bSecondHelmetEnabled;
 	bool					m_b_HasGlass;
+	u32						m_NightVisionType;
 
 	void					ReloadBonesProtection	();
 	void					AddBonesProtection		(LPCSTR bones_section);

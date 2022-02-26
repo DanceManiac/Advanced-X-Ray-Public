@@ -7,6 +7,8 @@
 
 #include "ActorNightVision.h"
 
+ENGINE_API extern int ps_r__ShaderNVG;
+
 CNightVisionEffector::CNightVisionEffector(const shared_str& section)
 {
 	m_sounds.LoadSound(section.c_str(), "snd_night_vision_on", "NightVisionOnSnd", false, SOUND_TYPE_ITEM_USING);
@@ -17,7 +19,9 @@ CNightVisionEffector::CNightVisionEffector(const shared_str& section)
 
 void CNightVisionEffector::Start(const shared_str& sect, CActor* pA, bool play_sound)
 {
-	AddEffector(pA, effNightvision, sect);
+	if (ps_r__ShaderNVG == 0)
+		AddEffector(pA, effNightvision, sect);
+
 	if (play_sound)
 	{
 		PlaySounds(eStartSound);
@@ -33,11 +37,24 @@ void CNightVisionEffector::Stop(const float factor, bool play_sound)
 	if (pp)
 	{
 		pp->Stop(factor);
-		if (play_sound)
-			PlaySounds(eStopSound);
-
-		m_sounds.StopSound("NightVisionIdleSnd");
 	}
+
+	if (play_sound)
+	{
+		m_sounds.StopSound("NightVisionIdleSnd");
+
+		if (ps_r__ShaderNVG == 0) //Временная затычка
+			PlaySounds(eStopSound);
+	}
+}
+
+void CNightVisionEffector::StopOnlyEffector(const float factor)
+{
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentControlEntity());
+	if (!pActor)		return;
+	CEffectorPP* pp = pActor->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
+	if (pp)
+		pp->Stop(factor);
 }
 
 bool CNightVisionEffector::IsActive()

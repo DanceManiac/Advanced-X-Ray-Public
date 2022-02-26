@@ -63,6 +63,7 @@ public:
 	shared_str				m_BonesProtectionSect;
 
 	bool					m_b_HasGlass;
+	u32						m_NightVisionType;
 
 	virtual u32				ef_equipment_type		() const;
 	virtual	BOOL			BonePassBullet			(int boneID);
@@ -74,6 +75,8 @@ public:
 	virtual void			net_Import				(NET_Packet& P);
 			void			ApplySkinModel			(CActor* pActor, bool bDress, bool bHUDOnly);
 			void			ReloadBonesProtection	(CActor* pActor);
+
+			IC int			GetOutfitNV_Type		() const {return m_NightVisionType;}
 
 protected:
 	virtual bool			install_upgrade_impl( LPCSTR section, bool test );

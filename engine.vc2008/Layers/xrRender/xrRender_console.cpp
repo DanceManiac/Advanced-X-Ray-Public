@@ -349,6 +349,19 @@ int ps_rs_loading_stages = 0;
 float		ps_r2_gloss_factor			= 4.0f;
 //- Mad Max
 
+Fvector4 ps_pp_bloom_thresh = { .7, .8f, .9f, .0f };
+Fvector4 ps_pp_bloom_weight = { .33f, .33f, .33f, .0f };
+
+//debug
+Fvector4 ps_dev_param_1 = { .0f, .0f, .0f, .0f };
+Fvector4 ps_dev_param_2 = { .0f, .0f, .0f, .0f };
+Fvector4 ps_dev_param_3 = { .0f, .0f, .0f, .0f };
+Fvector4 ps_dev_param_4 = { .0f, .0f, .0f, .0f };
+Fvector4 ps_dev_param_5 = { .0f, .0f, .0f, .0f };
+Fvector4 ps_dev_param_6 = { .0f, .0f, .0f, .0f };
+Fvector4 ps_dev_param_7 = { .0f, .0f, .0f, .0f };
+Fvector4 ps_dev_param_8 = { .0f, .0f, .0f, .0f };
+
 bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
 
 #ifndef _EDITOR
@@ -1080,10 +1093,27 @@ void		xrRender_initconsole	()
 	// AA Mode
 	CMD3(CCC_Token,		"r2_aa_mode",					&r2_aa_mode,				r2_aa_mode_token);
 
+	//Refactor
+	Fvector4 twb_min = { 0.f, 0.f, 0.f, 0.f };
+	Fvector4 twb_max = { 1.f, 1.f, 1.f, 1.f };
+	CMD4(CCC_Vector4, "r__bloom_weight", &ps_pp_bloom_weight, twb_min, twb_max);
+	CMD4(CCC_Vector4, "r__bloom_thresh", &ps_pp_bloom_thresh, twb_min, twb_max);
+
 	if (bDeveloperMode)
 	{
 		// SMAA Quality
 		CMD3(CCC_Token,		"r2_smaa_quality",				&ps_r_aa_quality,			qaa_token);
+		//Shader param stuff
+		Fvector4 tw2_min = { -100.f, -100.f, -100.f, -100.f };
+		Fvector4 tw2_max = { 100.f, 100.f, 100.f, 100.f };
+		CMD4(CCC_Vector4,	"shader_param_1",				&ps_dev_param_1,			tw2_min, tw2_max);
+		CMD4(CCC_Vector4,	"shader_param_2",				&ps_dev_param_2,			tw2_min, tw2_max);
+		CMD4(CCC_Vector4,	"shader_param_3",				&ps_dev_param_3,			tw2_min, tw2_max);
+		CMD4(CCC_Vector4,	"shader_param_4",				&ps_dev_param_4,			tw2_min, tw2_max);
+		CMD4(CCC_Vector4,	"shader_param_5",				&ps_dev_param_5,			tw2_min, tw2_max);
+		CMD4(CCC_Vector4,	"shader_param_6",				&ps_dev_param_6,			tw2_min, tw2_max);
+		CMD4(CCC_Vector4,	"shader_param_7",				&ps_dev_param_7,			tw2_min, tw2_max);
+		CMD4(CCC_Vector4,	"shader_param_8",				&ps_dev_param_8,			tw2_min, tw2_max);
 	}
 
 	//	Igor: need restart

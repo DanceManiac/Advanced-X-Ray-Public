@@ -98,7 +98,9 @@ public:
 	virtual void		OnSectorChanged			(int sector);
 	virtual void		OnAssetsChanged			();
 			int			GetHudGlassElement		();
+			int			GetNightvisionType		();
 			bool		GetHudGlassEnabled		();
+			bool		GetActorNightvision		();
 			float		GetActorMaxHealth		() override;
 			float		GetActorHealth			() override;
 			float		GetActorMaxPower		() override;

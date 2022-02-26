@@ -6,6 +6,8 @@
 
 #define STENCIL_CULL 0
 
+ENGINE_API extern int ps_r__ShaderNVG;
+
 void CRenderTarget::DoAsyncScreenshot()
 {
 	//	Igor: screenshot will not have postprocess applied.
@@ -407,6 +409,22 @@ void	CRenderTarget::phase_combine	()
 			phase_hud_power();
 			phase_hud_bleeding();
 	}
+
+	//Nightvision
+	if (!_menu_pp && g_pGamePersistent->GetActor())
+	{
+		bool NightVisionEnabled = g_pGamePersistent->GetActorNightvision();
+		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+		int NightVisionType = g_pGamePersistent->GetNightvisionType();
+		if (IsActorAlive && NightVisionEnabled && NightVisionType > 0 && ps_r__ShaderNVG == 1)
+			phase_nightvision();
+	}
+
+	//Compute blur textures
+	phase_blur();
+
+	//Compute bloom (new)
+	//phase_pp_bloom(); Пока вырубил
 
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.

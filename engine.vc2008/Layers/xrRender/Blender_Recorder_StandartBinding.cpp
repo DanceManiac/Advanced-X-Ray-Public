@@ -390,6 +390,80 @@ static class cl_screen_params : public R_constant_setup
 };
 static cl_screen_params binder_screen_params;
 
+//Sneaky debug stuff
+extern Fvector4 ps_dev_param_1;
+extern Fvector4 ps_dev_param_2;
+extern Fvector4 ps_dev_param_3;
+extern Fvector4 ps_dev_param_4;
+extern Fvector4 ps_dev_param_5;
+extern Fvector4 ps_dev_param_6;
+extern Fvector4 ps_dev_param_7;
+extern Fvector4 ps_dev_param_8;
+
+static class dev_param_1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_1.x, ps_dev_param_1.y, ps_dev_param_1.z, ps_dev_param_1.w);
+	}
+}    dev_param_1;
+
+static class dev_param_2 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_2.x, ps_dev_param_2.y, ps_dev_param_2.z, ps_dev_param_2.w);
+	}
+}    dev_param_2;
+
+static class dev_param_3 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_3.x, ps_dev_param_3.y, ps_dev_param_3.z, ps_dev_param_3.w);
+	}
+}    dev_param_3;
+
+static class dev_param_4 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_4.x, ps_dev_param_4.y, ps_dev_param_4.z, ps_dev_param_4.w);
+	}
+}    dev_param_4;
+
+static class dev_param_5 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_5.x, ps_dev_param_5.y, ps_dev_param_5.z, ps_dev_param_5.w);
+	}
+}    dev_param_5;
+
+static class dev_param_6 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_6.x, ps_dev_param_6.y, ps_dev_param_6.z, ps_dev_param_6.w);
+	}
+}    dev_param_6;
+
+static class dev_param_7 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_7.x, ps_dev_param_7.y, ps_dev_param_7.z, ps_dev_param_7.w);
+	}
+}    dev_param_7;
+
+static class dev_param_8 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_dev_param_8.x, ps_dev_param_8.y, ps_dev_param_8.z, ps_dev_param_8.w);
+	}
+}    dev_param_8;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -461,6 +535,16 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("L_ambient",		&binder_amb_color);
 #endif
 	r_Constant				("screen_res",		&binder_screen_res);
+
+	// Shader stuff
+	r_Constant				("shader_param_1",	&dev_param_1);
+	r_Constant				("shader_param_2",	&dev_param_2);
+	r_Constant				("shader_param_3",	&dev_param_3);
+	r_Constant				("shader_param_4",	&dev_param_4);
+	r_Constant				("shader_param_5",	&dev_param_5);
+	r_Constant				("shader_param_6",	&dev_param_6);
+	r_Constant				("shader_param_7",	&dev_param_7);
+	r_Constant				("shader_param_8",	&dev_param_8);
 
 	// detail
 	//if (bDetail	&& detail_scaler)

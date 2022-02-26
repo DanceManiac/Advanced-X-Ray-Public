@@ -1,11 +1,13 @@
 #include "common.h"
 #include "rainbow_draw.h"
+#include "night_vision.h"
 
 struct         v2p
 {
 	float4	factor	: COLOR0;        // for SM3 - factor.rgb - tonemap-prescaled
 	float3	tc0		: TEXCOORD0;
 	float3	tc1		: TEXCOORD1;
+	float4  sv    	: SV_Position;
 };
 struct        _out
 {
@@ -34,6 +36,9 @@ _out main( v2p I )
 
 	o.low        	=		sky.xyzz;
 	o.high        	=		o.low/def_hdr;
+	
+	float2 texturecoord = I.sv.xy / screen_res.xy;
+	float2 texturecoord_2 = I.sv.xy / screen_res.xy;
 
 float diff_green_red = L_sun_color.g - L_sun_color.r;
 float diff_green_blue = L_sun_color.g - L_sun_color.b;

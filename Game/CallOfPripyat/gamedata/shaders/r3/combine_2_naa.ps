@@ -96,7 +96,9 @@ c2_out main( v2p_aa_AA I )
 
 	float3	img	= dof(center);
 //	float4 	bloom	= tex2D		(s_bloom, center);
-	float4 	bloom	= s_bloom.Sample( smp_rtlinear, center);
+    float4 bloom = s_bloom_new.Sample(smp_rtlinear,center);
+	float4 bloom_orig = s_bloom.Sample(smp_rtlinear,center);
+	bloom = (bloom + bloom_orig);
 	
 //			img 	= mblur		(center,tex2D(s_position,I.tc0),img.rgb);
 //			img 	= mblur( center, s_position.Sample( smp_nofilter, tc0), img.rgb);

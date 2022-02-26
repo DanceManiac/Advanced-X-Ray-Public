@@ -234,4 +234,7 @@
 	<string id="ui_mm_snd_precache">
 		<text>Прекэш всех звуков</text>
 	</string>
+	<string id="ui_mm_shader_nvg">
+		<text>Шейдерный ПНВ</text>
+	</string>
 </string_table>

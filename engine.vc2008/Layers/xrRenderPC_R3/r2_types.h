@@ -57,7 +57,18 @@
 #define		r2_jitter_mipped	"$user$jitter_mipped"			// --- dither
 #define		r2_sunmask			"sunmask"
 
-#define		r2_RT_secondVP		"$user$viewport2"		// --#SM+#-- +SecondVP+   
+#define		r2_RT_secondVP		"$user$viewport2"		// --#SM+#-- +SecondVP+
+
+#define		r2_RT_blur_h_2		"$user$blur_h_2"
+#define		r2_RT_blur_2		"$user$blur_2"
+
+#define		r2_RT_blur_h_4		"$user$blur_h_4"
+#define		r2_RT_blur_4		"$user$blur_4"
+
+#define		r2_RT_blur_h_8		"$user$blur_h_8"
+#define		r2_RT_blur_8		"$user$blur_8"
+
+#define		r2_RT_pp_bloom		"$user$pp_bloom"
 
 #define		JITTER(a) r2_jitter #a
 

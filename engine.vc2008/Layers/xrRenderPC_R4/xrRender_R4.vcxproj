@@ -359,6 +359,7 @@
     <ClInclude Include="..\xrRender\xrStripify.h" />
     <ClInclude Include="..\xrRender\xr_effgamma.h" />
     <ClInclude Include="blender_bloom_build.h" />
+    <ClInclude Include="blender_blur.h" />
     <ClInclude Include="blender_combine.h" />
     <ClInclude Include="blender_deffer_aref.h" />
     <ClInclude Include="blender_deffer_flat.h" />
@@ -375,6 +376,8 @@
     <ClInclude Include="blender_light_reflected.h" />
     <ClInclude Include="blender_light_spot.h" />
     <ClInclude Include="blender_luminance.h" />
+    <ClInclude Include="blender_nightvision.h" />
+    <ClInclude Include="blender_pp_bloom.h" />
     <ClInclude Include="blender_ssao.h" />
     <ClInclude Include="blender_ss_sunshafts.h" />
     <ClInclude Include="cl_intersect.h" />
@@ -514,9 +517,12 @@
     <ClCompile Include="..\xrRender\PSLibrary.cpp" />
     <ClCompile Include="..\xrRender\RenderScreenQuad.cpp" />
     <ClCompile Include="..\xrRender\RenderTargetPhaseVignette.cpp" />
+    <ClCompile Include="..\xrRender\rendertarget_phase_blur.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_dlaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_mask.cpp" />
+    <ClCompile Include="..\xrRender\rendertarget_phase_nightvision.cpp" />
+    <ClCompile Include="..\xrRender\rendertarget_phase_pp_bloom.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_smaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_raindrops.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager.cpp" />
@@ -558,6 +564,7 @@
     <ClCompile Include="..\xrRender\xrStripify.cpp" />
     <ClCompile Include="..\xrRender\xr_effgamma.cpp" />
     <ClCompile Include="blender_bloom_build.cpp" />
+    <ClCompile Include="blender_blur.cpp" />
     <ClCompile Include="blender_combine.cpp" />
     <ClCompile Include="blender_deffer_aref.cpp" />
     <ClCompile Include="blender_deffer_flat.cpp" />
@@ -574,6 +581,8 @@
     <ClCompile Include="blender_light_reflected.cpp" />
     <ClCompile Include="blender_light_spot.cpp" />
     <ClCompile Include="blender_luminance.cpp" />
+    <ClCompile Include="blender_nightvision.cpp" />
+    <ClCompile Include="blender_pp_bloom.cpp" />
     <ClCompile Include="blender_ssao.cpp" />
     <ClCompile Include="blender_ss_sunshafts.cpp" />
     <ClCompile Include="ComputeShader.cpp" />

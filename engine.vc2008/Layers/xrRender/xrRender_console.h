@@ -164,7 +164,6 @@ extern ECORE_API float			ps_saturation;
 extern ECORE_API float			ps_r2_rain_drops_intensity;
 extern ECORE_API float			ps_r2_rain_drops_speed;
 
-
 enum
 {
 	R2FLAG_SUN					= (1<<0),

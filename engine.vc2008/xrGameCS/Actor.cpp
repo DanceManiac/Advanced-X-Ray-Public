@@ -96,7 +96,7 @@ static Fvector	vFootExt;
 
 Flags32			psActorFlags={/*AF_DYNAMIC_MUSIC|*/AF_GODMODE_RT};
 
-
+ENGINE_API extern int ps_r__ShaderNVG;
 
 CActor::CActor() : CEntityAlive()
 {
@@ -2152,7 +2152,7 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 		}
 	}
 
-	if (!m_bNightVisionOn && bIsActiveNow)
+	if ((!m_bNightVisionOn && bIsActiveNow) || (!m_bNightVisionOn && ps_r__ShaderNVG == 1))
 	{
 		m_night_vision->Stop(100000.0f, use_sounds);
 	}

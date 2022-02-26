@@ -64,6 +64,10 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_distort",		r2_RT_generic1);
 		C.r_dx10Texture		("sky_s0",			r2_T_sky0			);
 		C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
+		C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+		C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+		C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+		C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_rtlinear");
@@ -86,6 +90,10 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("sky_s0",			r2_T_sky0			);
 		C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
 		C.r_dx10Texture		("s_puddles",		"$user$dwmbuffer"	);
+		C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+		C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+		C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+		C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_rtlinear");
@@ -104,6 +112,10 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_image",			r2_RT_generic0);
 		C.r_dx10Texture		("s_bloom",			r2_RT_bloom1);
 		C.r_dx10Texture		("s_distort",		r2_RT_generic1);
+		C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+		C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+		C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+		C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_rtlinear");
@@ -126,6 +138,10 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("sky_s0",			r2_T_sky0			);
 		C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
 		C.r_dx10Texture		("s_puddles",		"$user$dwmbuffer"	);
+		C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+		C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+		C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+		C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_rtlinear");
@@ -180,6 +196,10 @@ void	CBlender_combine_msaa::Compile(CBlender_Compile& C)
       C.r_dx10Texture		("env_s1",			r2_T_envs1			);
       C.r_dx10Texture		("sky_s0",			r2_T_sky0			);
       C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
+	  C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+	  C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+	  C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+	  C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
       jitter(C);
 
@@ -203,6 +223,10 @@ void	CBlender_combine_msaa::Compile(CBlender_Compile& C)
       C.r_dx10Texture		("s_distort",		r2_RT_generic1_r);
       C.r_dx10Texture		("sky_s0",			r2_T_sky0			);
       C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
+	  C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+	  C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+	  C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+	  C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
       C.r_dx10Sampler		("smp_nofilter");
       C.r_dx10Sampler		("smp_rtlinear");
@@ -225,6 +249,10 @@ void	CBlender_combine_msaa::Compile(CBlender_Compile& C)
       C.r_dx10Texture		("sky_s0",			r2_T_sky0			);
       C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
 	  C.r_dx10Texture		("s_puddles",		"$user$dwmbuffer"	);
+	  C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+	  C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+	  C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+	  C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
       C.r_dx10Sampler		("smp_nofilter");
       C.r_dx10Sampler		("smp_rtlinear");
@@ -243,6 +271,10 @@ void	CBlender_combine_msaa::Compile(CBlender_Compile& C)
       C.r_dx10Texture		("s_image",			r2_RT_generic0);
       C.r_dx10Texture		("s_bloom",			r2_RT_bloom1);
       C.r_dx10Texture		("s_distort",		r2_RT_generic1_r);
+	  C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+	  C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+	  C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+	  C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
       C.r_dx10Sampler		("smp_nofilter");
       C.r_dx10Sampler		("smp_rtlinear");
@@ -265,6 +297,10 @@ void	CBlender_combine_msaa::Compile(CBlender_Compile& C)
       C.r_dx10Texture		("sky_s0",			r2_T_sky0			);
       C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
 	  C.r_dx10Texture		("s_puddles",		"$user$dwmbuffer"	);
+	  C.r_dx10Texture		("s_bloom_new",		r2_RT_pp_bloom);
+	  C.r_dx10Texture		("s_blur_2",		r2_RT_blur_2);
+	  C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
+	  C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 
       C.r_dx10Sampler		("smp_nofilter");
       C.r_dx10Sampler		("smp_rtlinear");

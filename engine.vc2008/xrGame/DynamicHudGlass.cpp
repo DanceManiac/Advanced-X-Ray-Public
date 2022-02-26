@@ -17,6 +17,7 @@ namespace DynamicHudGlass
 {
 	bool DynamicHudGlassEnabled = false;
 	int	HudGlassElement = 0;
+	int NightVisionType = 0;
 
 	void UpdateDynamicHudGlass()
 	{
@@ -28,6 +29,7 @@ namespace DynamicHudGlass
 			float condition = helmet->GetCondition();
 			HudGlassElement = 0;
 			bool HelmetHasGlass = helmet->m_b_HasGlass;
+			NightVisionType = helmet->m_NightVisionType;
 
 			if (HelmetHasGlass)
 			{
@@ -58,6 +60,7 @@ namespace DynamicHudGlass
 			float condition = outfit->GetCondition();
 			bool OutfitHasGlass = outfit->m_b_HasGlass;
 			HudGlassElement = 0;
+			NightVisionType = outfit->m_NightVisionType;
 
 			if (OutfitHasGlass)
 			{

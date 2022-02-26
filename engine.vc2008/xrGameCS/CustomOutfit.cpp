@@ -26,6 +26,7 @@ CCustomOutfit::CCustomOutfit()
 	m_BonesProtectionSect = NULL;
 
 	m_b_HasGlass = false;
+	m_NightVisionType = 0;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -101,6 +102,7 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fOverweightWalkK			= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
 	m_b_HasGlass				= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
+	m_NightVisionType			= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
 
 	if (pSettings->line_exist(section, "nightvision_sect"))
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");
@@ -340,6 +342,8 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
+
+	result |= process_if_exists(section, "night_vision_type", &CInifile::r_u32, m_NightVisionType, test);
 
 	m_fJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);

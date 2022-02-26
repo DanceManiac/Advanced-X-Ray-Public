@@ -28,6 +28,7 @@
 #include "ActorCondition.h"
 #include "AdvancedXrayGameConstants.h"
 #include "DynamicHudGlass.h"
+#include "CustomOutfit.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -866,6 +867,16 @@ float CGamePersistent::GetActorPower()
 float CGamePersistent::GetActorBleeding()
 {
 	return	(Actor()->conditions().BleedingSpeed());
+}
+
+bool CGamePersistent::GetActorNightvision()
+{
+	return	(Actor()->GetNightVisionStatus());
+}
+
+int CGamePersistent::GetNightvisionType()
+{
+	return (DynamicHudGlass::GetNightvisionType());
 }
 
 bool CGamePersistent::GetActorAliveStatus()

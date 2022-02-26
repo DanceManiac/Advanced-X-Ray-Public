@@ -692,6 +692,8 @@ extern int			g_ErrorLineCount;
 ENGINE_API int			ps_r__Supersample			= 1;
 ENGINE_API int			ps_r__WallmarksOnSkeleton	= 0;
 
+ENGINE_API int			ps_r__ShaderNVG				= 0;
+
 void CCC_Register()
 {
 	// General
@@ -742,6 +744,8 @@ void CCC_Register()
 	CMD4(CCC_Integer,	"r__supersample",		&ps_r__Supersample,			1,		4		);
 	//Bloodmarks on Skeleton
 	CMD4(CCC_Integer,	"r__wallmarks_on_skeleton", &ps_r__WallmarksOnSkeleton,		0, 1	);
+	//Nightvision Type (PPE/Shader)
+	CMD4(CCC_Integer,	"r__shader_nvg",		&ps_r__ShaderNVG, 0, 1);
 
 
 	CMD3(CCC_Mask,		"rs_v_sync",			&psDeviceFlags,		rsVSync				);

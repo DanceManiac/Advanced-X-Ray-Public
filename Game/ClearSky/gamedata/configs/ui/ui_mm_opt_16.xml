@@ -503,6 +503,13 @@
 			<options_item entry="r2_hud_dyn_effects" group="mm_opt_video_adv"  depend="vid"/>
 		</check_hud_dyn_effects>
 		
+		<cap_shader_nvg x="17" y="0" width="119" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_shader_nvg</text>
+		</cap_shader_nvg>
+		<check_shader_nvg x="162" y="0" width="27" height="21">
+			<options_item entry="r__shader_nvg" group="mm_opt_video_adv"  depend="vid"/>
+		</check_shader_nvg>
+		
 		<cap_mblur_enable x="17" y="0" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_mblur_enable</text>
 		</cap_mblur_enable>

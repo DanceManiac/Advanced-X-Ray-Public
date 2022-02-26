@@ -21,6 +21,9 @@
 #include "blender_hud_blood.h"
 #include "blender_hud_stamina.h"
 #include "blender_hud_bleeding.h"
+#include "blender_nightvision.h"
+#include "blender_blur.h"
+#include "blender_pp_bloom.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -336,6 +339,12 @@ CRenderTarget::CRenderTarget		()
 	b_hud_power				= xr_new<CBlender_Hud_Stamina>			();
 	//HUD BLEEDING
 	b_hud_bleeding			= xr_new<CBlender_Hud_Bleeding>			();
+	//Nightvision
+	b_nightvision			= xr_new<CBlender_nightvision>			();
+	//Blur
+	b_blur					= xr_new<CBlender_blur>					();
+	//PP Bloom
+	b_pp_bloom				= xr_new<CBlender_pp_bloom>				();
 
 	if( RImplementation.o.dx10_msaa )
 	{
@@ -440,6 +449,18 @@ CRenderTarget::CRenderTarget		()
 		//	temp: for higher quality blends
 		if (RImplementation.o.advancedpp)
 			rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A16B16G16R16F, SampleCount );
+
+		// RT Blur
+		rt_blur_h_2.create(r2_RT_blur_h_2, u32(w / 2), u32(h / 2), D3DFMT_A8R8G8B8);
+		rt_blur_2.create(r2_RT_blur_2, u32(w / 2), u32(h / 2), D3DFMT_A8R8G8B8);
+
+		rt_blur_h_4.create(r2_RT_blur_h_4, u32(w / 4), u32(h / 4), D3DFMT_A8R8G8B8);
+		rt_blur_4.create(r2_RT_blur_4, u32(w / 4), u32(h / 4), D3DFMT_A8R8G8B8);
+
+		rt_blur_h_8.create(r2_RT_blur_h_8, u32(w / 8), u32(h / 8), D3DFMT_A8R8G8B8);
+		rt_blur_8.create(r2_RT_blur_8, u32(w / 8), u32(h / 8), D3DFMT_A8R8G8B8);
+
+		rt_pp_bloom.create(r2_RT_pp_bloom, w, h, D3DFMT_A8R8G8B8);
 	}
 
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
@@ -692,6 +713,12 @@ CRenderTarget::CRenderTarget		()
 	s_hud_power.create(b_hud_power, "r3\\hud_power");
 	//Hud Bleeding
 	s_hud_bleeding.create(b_hud_bleeding, "r3\\hud_bleeding");
+	//Nightvision
+	s_nightvision.create(b_nightvision, "r2\\nightvision");
+	//Blur
+	s_blur.create(b_blur, "r2\\blur");
+	//PP Bloom
+	s_pp_bloom.create(b_pp_bloom, "r2\\pp_bloom");
 
     if (RImplementation.o.ssao_blur_on)
 	{
@@ -1091,6 +1118,9 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_hud_blood			); //Hud Blood
 	xr_delete					(b_hud_power			); //Hud Stamina
 	xr_delete					(b_hud_bleeding			); //Hud Bleeding
+	xr_delete					(b_nightvision			); //Nightvision
+	xr_delete					(b_blur					); //Blur (LVutner)
+	xr_delete					(b_pp_bloom				); //PP Bloom (LVutner)
 
    if( RImplementation.o.dx10_msaa )
    {

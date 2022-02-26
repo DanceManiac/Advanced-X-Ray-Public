@@ -1,4 +1,5 @@
 #include "common.h"
+#include "anomaly_shaders.h"
 
 //#define USE_SUPER_SPECULAR
 //#define USE_ORIGINAL_SSAO
@@ -6,6 +7,7 @@
 
 #include "lmodel.h"
 #include "hmodel.h"
+#include "night_vision.h"
 
 float compute_height_fog(float3 P_view)
 {
@@ -268,9 +270,11 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 //		color = occ; // holger test
 		//color = gbd.N;
         _out        	o;
-        tonemap        	(o.low, o.high, color, tm_scale )	;
-                        o.low.a         = skyblend	;
-						o.high.a		= skyblend	;
+		
+		tonemap        	(o.low, o.high, color, tm_scale )	;
+        o.low.a         = skyblend;
+		o.high.a		= skyblend;
+		
 //		o.low	= skyblend;
 //		o.hight	= 0;
 

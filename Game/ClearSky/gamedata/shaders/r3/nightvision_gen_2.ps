@@ -1,0 +1,122 @@
+///////////////////////////////////////////////////////
+//      BEEF'S SHADER BASED NIGHT VISION EFFECT      //
+///////////////////////////////////////////////////////
+// Huge credit TO LVutner from Anomaly Discord, who  //
+// literally taught me everything I know, to Sky4Ace //
+// who's simple_blur function I've adapted for this  //
+// shader, and to Meltac, who provided some advice   //
+// and inspiration for developing this shader.       //
+///////////////////////////////////////////////////////
+// Note: You are free to distribute and adapt this   //
+// Shader and any components, just please provide    //
+// credit to myself and/or the above individuals. I  //
+// have provided credit for individual functions and //
+// their original authors where applicable.	- BEEF   //
+///////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////
+// STEP 0 - GLOBAL DEFINITIONS AND INCLUDES
+///////////////////////////////////////////////////////
+
+#include "night_vision.h"
+#include "common.h"
+
+float4 main(p_screen I) : SV_Target
+{
+	///////////////////////////////////////////////////////
+	// STEP 0 - LOCAL DEFINITIONS
+	///////////////////////////////////////////////////////
+	
+	// TC vars
+	float2 corrected_texturecoords = aspect_ratio_correction(I.tc0);
+	
+	// Adjustable settings
+	float night_vision_generation = 3;
+	
+	///////////////////////////////////////////////////////
+	// STEP 0 - MAIN SAMPLES
+	///////////////////////////////////////////////////////
+	float3 image = s_image.Sample(smp_base, I.tc0).xyz;
+	
+		
+	///////////////////////////////////////////////////////
+	// STEP 0 - MAIN FUNCTION
+	///////////////////////////////////////////////////////
+	if (compute_lens_mask(corrected_texturecoords, night_vision_generation) == 1) // see if we're inside the lens mask
+	{
+			// GRAB SAMPLES FOR NVG SHADER
+			float3 eighth_res_bloom = s_blur_8.Sample(smp_base, I.tc0).rgb;
+			float3 quarter_res_bloom = s_blur_4.Sample(smp_base, I.tc0).rgb;
+			float3 half_res_blur = s_blur_2.Sample(smp_base, I.tc0).rgb;
+			float4 jitter = float4(
+					frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 12345.0),
+					frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 67890.0),
+					frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 78372.0),
+					frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 37857.0));
+			float depth = blurred_depth(I.tc0,5,45);
+
+
+			// BLUR EFFECT
+			if (depth > 0 && depth < 800)
+			{ 
+				image = lerp(image,half_res_blur,clamp(1-smoothstep(0,5,depth),gen_2_min_blur_factor,gen_2_max_blur_factor)); // NEAR BLUR
+				image = lerp(image,half_res_blur,clamp(smoothstep(45,100,depth),gen_2_min_blur_factor,gen_2_max_blur_factor)); // FAR BLUR
+			}
+			image *= 2;
+			
+			// DIM FAR OBJECTS (EXCEPT SKY)
+			/*float light_att = pow(1.0f-(smoothstep(gen_2_min_vision_distance,gen_2_max_vision_distance,depth)),2.0f); // Distance from full brightness to full black
+			if ((image.r + image.g + image.b)/3.0f < gen_2_dim_threshold) 
+			{
+				image *= (light_att+0.1f); //Apply light attenuation (plus offset to prevent sky turning black)
+			}*/
+			
+			// APPLY BRIGHTNESS ADJUSTMENT
+			image = exposer_increaser(image, 1.0, 1.0);
+			
+			// APPLY BRIGHTNESS ADJUSTMENT
+			//image *= (2); - Эта фигня даёт дикий засвет
+						
+			// APPLY CRT EFFECT
+			image = lerp(image,make_crt_ified(image, I.tc0),gen_2_crt_effect_factor); // Adds a CRT effect that I think looks better than draw_scanlines
+			
+			// APPLY LUMA SHARPEN
+			image = lerp(image,luma_sharpen(image, I.tc0),0.7);
+			
+			// APPLY NOISE
+			image += jitter.y * (gen_2_nvg_noise_factor); // Add the noise to the image
+			
+			// APPLY SCINTILLATION EFFECT
+			if (jitter.z > gen_2_scintillation_constant)
+			image.rgb = 1.0f;
+			
+			// APPLY IMAGE COLOR CORRECTION
+			image.rgb = saturate(((image.r + image.g + image.b)/3.0f) * gen_2_saturation_color);
+						
+			// GAMMA AND BRIGHTNESS POST-PASS CORRECTION
+			//image = pow(image, 1.0 / (gen_2_gamma_correction_factor));
+						
+			// APPLY VIGNETTE
+			float vignette = calc_vignette(night_vision_generation, I.tc0);
+
+		image = clamp(image,0.0,1.0);
+		image *= vignette;
+		// RETURN THE RESULTING IMAGE
+		return float4(image, 1.0);
+	}
+	
+	
+	///////////////////////////////////////////////////////	
+	// OUTSIDE NVG CIRCLES OF EFFECT - If the absolute distance from screen center is farther than circle_radius, then we'll run the other shader effects below                                           
+	///////////////////////////////////////////////////////
+	else
+	{	
+		// ADD THE "NO EFFECT" SHADER EFFECT :P (As of right now, the perihperal area outside the NVG shader isn't touched.
+		
+		// RETURN THE RESULTING IMAGE
+		return float4(image, 1.0);
+	}
+	
+	
+} 
