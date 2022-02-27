@@ -125,9 +125,11 @@ public:
 
 	virtual	void				UpdateXForm			()						= 0;
 
-	u32							PlayHUDMotion		(const shared_str& M, BOOL bMixIn, CHudItem*  W, u32 state);
-	bool						isHUDAnimationExist (LPCSTR anim_name);
-	u32							PlayHUDMotion_noCB	(const shared_str& M, BOOL bMixIn);
+	u32							PlayHUDMotion			(const shared_str& M, BOOL bMixIn, CHudItem*  W, u32 state);
+	u32							PlayHUDMotionNew			(const shared_str& M, const bool bMixIn, const u32 state, const bool randomAnim = true);
+	u32							PlayHUDMotionIfExists	(std::initializer_list<const char*>, const bool bMixIn, const u32 state, const bool randomAnim = true);
+	u32							PlayHUDMotion_noCB		(const shared_str& M, const bool bMixIn, const bool randomAnim = true);
+	bool						isHUDAnimationExist		(LPCSTR anim_name);
 	void						StopCurrentAnimWithoutCallback();
 
 	IC void						RenderHud				(BOOL B)	{ m_huditem_flags.set(fl_renderhud, B);}
