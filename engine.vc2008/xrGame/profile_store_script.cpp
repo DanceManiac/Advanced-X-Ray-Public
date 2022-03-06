@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "profile_data_types_script.h"
 #include "profile_store.h"
 
 using namespace luabind;

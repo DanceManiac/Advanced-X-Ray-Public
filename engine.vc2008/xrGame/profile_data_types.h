@@ -95,7 +95,7 @@ enum_best_score_type	get_best_score_type_by_sname(char const * stat_name);
 
 typedef associative_vector<enum_best_score_type, s32> all_best_scores_t;
 
-typedef mixed_delegate<void (bool, char const *), store_operation_cb_tag>	store_operation_cb;
+//typedef mixed_delegate<void (bool, char const *), store_operation_cb_tag>	store_operation_cb;
 
 extern char * profile_table_name;
 
@@ -110,7 +110,7 @@ extern char * profile_last_submit_time;
 } //namespace gamespy_profile
 
 
-typedef gamespy_profile::store_operation_cb	gamespy_profile_store_operation_cb;
+/*typedef gamespy_profile::store_operation_cb	gamespy_profile_store_operation_cb;
 
 add_to_type_list(gamespy_profile_store_operation_cb)
 #undef script_type_list
@@ -123,7 +123,7 @@ struct profile_data_script_registrator
 
 add_to_type_list(profile_data_script_registrator)
 #undef script_type_list
-#define script_type_list save_type_list(profile_data_script_registrator)
+#define script_type_list save_type_list(profile_data_script_registrator)*/
 
 
 #endif //#ifndef PLAYER_AWARDS

@@ -32,7 +32,7 @@
 #include "lcp.h"
 #include "util.h"
 #include "stdlib.h"
-
+#include <random>
 #include <algorithm>
 
 
@@ -425,7 +425,7 @@ static void SOR_LCP (int m, int nb, dRealMutablePtr J, int *jb, dxBody * const *
 #endif
 #ifdef RANDOMLY_REORDER_CONSTRAINTS
 		if ((iteration & 3) == 0) {
-			std::random_shuffle	(order,order+m);
+			std::shuffle(order, order + m, std::random_device());
 			/*
 			for (i=1; i<m; ++i) {
 				IndexError tmp = order[i];

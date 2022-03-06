@@ -7414,6 +7414,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
     <ClInclude Include="ActorNightVision.h" />
+    <ClInclude Include="profile_data_types_script.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">

@@ -228,6 +228,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4237;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1368,6 +1369,7 @@
     <ClInclude Include="profiler.h" />
     <ClInclude Include="profiler_inline.h" />
     <ClInclude Include="profile_data_types.h" />
+    <ClInclude Include="profile_data_types_script.h" />
     <ClInclude Include="profile_store.h" />
     <ClInclude Include="PropertiesListHelper.h" />
     <ClInclude Include="property_evaluator.h" />

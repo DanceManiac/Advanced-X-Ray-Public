@@ -139,7 +139,7 @@ Thanks to
 - [Mortan](https://github.com/mortany)
 - [RedProjects](https://github.com/RedPandaProjects)
 - [i-love-kfc](https://github.com/i-love-kfc)
-- [Anomaly] (https://github.com/Roman-n/xray-monolith)
+- [Anomaly](https://github.com/Roman-n/xray-monolith)
 - ValeroK
 - DWM Team
 - CorryZeron
