@@ -40,7 +40,7 @@ public:
 	template <typename T>
 	IC		u32						accessible_nearest			(T restriction, const Fvector &position, Fvector &result, bool out_restriction);
 	template <typename T>
-	IC		const xr_vector<u32>	&accessible_neighbour_border(T &restriction, bool out_restriction);
+	IC		const xr_vector<u32>	&accessible_neighbour_border(T restriction, bool out_restriction);
 };
 
 #include "space_restriction_bridge_inline.h"

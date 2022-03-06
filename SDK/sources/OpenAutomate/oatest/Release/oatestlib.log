@@ -1,29 +1,29 @@
-﻿Build started 24.07.2020 22:21:33.
-     1>Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oatest\oatestlib.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Iinc /I../inc /I../oarpc/inc /Zi /nologo /W3 /WX- /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt src\oacContext.cpp src\oacFileLogger.cpp src\oacLog.cpp src\oacLogger.cpp src\oacOAUtils.cpp src\oacProcess.cpp src\oacTestBase.cpp src\oacTextLogger.cpp tests\RunBenchmark.cpp
-         oacContext.cpp
-         oacFileLogger.cpp
-         oacLog.cpp
-         oacLogger.cpp
-         oacOAUtils.cpp
-         oacProcess.cpp
-         oacTestBase.cpp
-         oacTextLogger.cpp
-         RunBenchmark.cpp
-       Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oatestlib.lib" /NOLOGO /LTCG Release\oacContext.obj
-         Release\oacFileLogger.obj
-         Release\oacLog.obj
-         Release\oacLogger.obj
-         Release\oacOAUtils.obj
-         Release\oacProcess.obj
-         Release\oacTestBase.obj
-         Release\oacTextLogger.obj
-         Release\RunBenchmark.obj
-         oatestlib.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oatestlib.lib
-     1>Done Building Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\oatest\oatestlib.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:03.87
+﻿  oacProcess.cpp
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(45,37): error C2039: "string": не является членом "std".
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vector(24): message : см. объявление "std"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(45): error C2065: string: необъявленный идентификатор
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(45,25): error C2923: std::vector: "string" не является допустимым аргументом типа шаблон для параметра "_Ty"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(45): message : см. объявление "string"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(45,25): error C2976: std::vector: слишком мало аргументов шаблон
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vector(443): message : см. объявление "std::vector"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(45,13): error C2065: string: необъявленный идентификатор
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(64,20): error C2039: "string": не является членом "std".
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vector(24): message : см. объявление "std"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(64,26): error C2065: string: необъявленный идентификатор
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(64,8): error C2923: std::vector: "string" не является допустимым аргументом типа шаблон для параметра "_Ty"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(64): message : см. объявление "string"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(64,8): error C2976: std::vector: слишком мало аргументов шаблон
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vector(443): message : см. объявление "std::vector"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(86,33): error C2664: "std::string ConstructCmd(const std::vector<std::string,std::allocator<std::string>> &)": невозможно преобразовать аргумент 1 из "std::vector" в "const std::vector<std::string,std::allocator<std::string>> &"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(86,33): message : Причина: невозможно преобразовать "std::vector" в "const std::vector<std::string,std::allocator<std::string>>"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(86,29): message : Для выполнения данного преобразования нет доступного оператора преобразования, определенного пользователем, или вызов оператора невозможен
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(57,15): message : см. объявление "ConstructCmd"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(180,1): error C2512: std::vector: нет подходящего конструктора по умолчанию
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vector(443,14): message : см. объявление "std::vector"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(187,9): error C2663: std::vector<_Ty,_Alloc>::push_back: для 2 перегрузок нет допустимого преобразования для указателя "this"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(191,1): error C2511: oacProcess::oacProcess(const std::vector<std::string,std::allocator<std::string>> &): перегруженная функция-член не найдена в "oacProcess"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(40): message : см. объявление "oacProcess"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(192,3): error C2352: oacProcess::Init: недопустимый вызов нестатической функции-члена
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(171): message : см. объявление "oacProcess::Init"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\src\oacProcess.cpp(196,3): error C2597: недопустимая ссылка на нестатический член "oacProcess::pCmd"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\oatest\inc\oac\Process.h(64): message : см. объявление "oacProcess::pCmd"

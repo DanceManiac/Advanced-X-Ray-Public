@@ -1,23 +1,22 @@
 ﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
   vorbisfile.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(258): warning C4244: функция: преобразование "ogg_int64_t" в "long", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(272): warning C4244: =: преобразование "ogg_int64_t" в "int", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(536): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(562): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(566): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(576): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(638): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(868): warning C4244: функция: преобразование "ogg_int64_t" в "long", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1007): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note:  см. объявление "fopen"
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1104): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1105): warning C4244: return: преобразование "double" в "long", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1109): warning C4244: return: преобразование "double" в "long", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1137): warning C4244: =: преобразование "double" в "long", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1653): warning C4244: =: преобразование "ogg_int64_t" в "long", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1689): warning C4244: инициализация: преобразование "double" в "ogg_int64_t", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(1719): warning C4244: инициализация: преобразование "double" в "ogg_int64_t", возможна потеря данных
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libvorbis-1.2.3\lib\vorbisfile.c(2052): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1397,5): warning MSB8012: TargetPath(C:\MFS-Team\Advanced-X-RayVS2017\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbisfile.lib) не соответствует значению свойства выходного файла (C:\MFS-Team\Advanced-X-RayVS2017\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbisfile_static.lib) для Library. Это может привести к неправильной сборке проекта. Чтобы исправить это, убедитесь, что значения свойств $(OutDir), $(TargetName) и $(TargetExt) соответствуют значению, указанному в %(Lib.OutputFile).
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(1399,5): warning MSB8012: TargetName(libvorbisfile) не соответствует значению свойства выходного файла (libvorbisfile_static) для Library. Это может привести к неправильной сборке проекта. Чтобы исправить это, убедитесь, что значения свойств $(OutDir), $(TargetName) и $(TargetExt) соответствуют значению, указанному в %(Lib.OutputFile).
-  libvorbisfile_static.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2017\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbisfile.lib
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(258,42): warning C4244: функция: преобразование "ogg_int64_t" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(272,27): warning C4244: =: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(536,25): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(562,25): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(566,23): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(576,23): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(638,23): warning C4244: return: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(868,21): warning C4244: функция: преобразование "ogg_int64_t" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1007,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1104,35): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1105,21): warning C4244: return: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1109,80): warning C4244: return: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1137,54): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1653,37): warning C4244: =: преобразование "ogg_int64_t" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1689,1): warning C4244: инициализация: преобразование "double" в "ogg_int64_t", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(1719,1): warning C4244: инициализация: преобразование "double" в "ogg_int64_t", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisfile.c(2052,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1545,5): warning MSB8012: TargetPath(C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbisfile.lib) не соответствует значению свойства выходного файла (C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbisfile_static.lib) для Library. Это может привести к неправильной сборке проекта. Чтобы исправить это, убедитесь, что значения свойств $(OutDir), $(TargetName) и $(TargetExt) соответствуют значению, указанному в %(Lib.OutputFile).
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1547,5): warning MSB8012: TargetName(libvorbisfile) не соответствует значению свойства выходного файла (libvorbisfile_static) для Library. Это может привести к неправильной сборке проекта. Чтобы исправить это, убедитесь, что значения свойств $(OutDir), $(TargetName) и $(TargetExt) соответствуют значению, указанному в %(Lib.OutputFile).
+  libvorbisfile_static.vcxproj -> C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbisfile.lib

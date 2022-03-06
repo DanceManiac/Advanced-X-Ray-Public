@@ -1,2 +1,2 @@
-#TargetFrameworkVersion=v4.0:PlatformToolSet=v120:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit
-Release|Win32|C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\|
+PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30133:VCServicingVersionCrtHeaders=14.29.30136:TargetPlatformVersion=8.1:
+Release|Win32|C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\|

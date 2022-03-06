@@ -122,7 +122,7 @@ IC	u32	CSpaceRestrictionBridge::accessible_nearest(T restriction, const Fvector 
 }
 
 template <typename T>
-IC	const xr_vector<u32> &CSpaceRestrictionBridge::accessible_neighbour_border(T &restriction, bool out_restriction)
+IC	const xr_vector<u32> &CSpaceRestrictionBridge::accessible_neighbour_border(T restriction, bool out_restriction)
 {
 	return		(object().accessible_neighbour_border(restriction,out_restriction));
 }

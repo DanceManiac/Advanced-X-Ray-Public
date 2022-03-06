@@ -1,176 +1,89 @@
 ﻿  analyze.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\analyze.c(564): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\analyze.c(1537): warning C4456: объявление "mask" скрывает предыдущее локальное объявление
-  c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\analyze.c(1504): note:  см. объявление "mask"
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\analyze.c(1550): warning C4018: >: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\analyze.c(1589): warning C4018: >: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\analyze.c(1729): warning C4132: OC_MV_ZERO: для константного объекта требуется инициализация
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\analyze.c(564,25): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\analyze.c(1537,23): warning C4456: объявление "mask" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\analyze.c(1504,27): message : см. объявление "mask"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\analyze.c(1550,28): warning C4018: >: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\analyze.c(1589,30): warning C4018: >: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\analyze.c(1729,32): warning C4132: OC_MV_ZERO: для константного объекта требуется инициализация
   apiwrapper.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   bitpack.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\bitpack.c(41): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\bitpack.c(61): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\bitpack.c(81): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\bitpack.c(100): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\bitpack.c(41,62): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\bitpack.c(61,37): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\bitpack.c(81,41): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\bitpack.c(100,37): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
   cpu.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   decapiwrapper.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   decinfo.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   dequant.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   encapiwrapper.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   encfrag.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   encinfo.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   encode.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(577): warning C4389: !=: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(973): warning C4018: >=: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(982): warning C4018: >=: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(1323): warning C4018: >=: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(1433): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(1442): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(1444): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(1451): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\encode.c(1453): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(577,38): warning C4389: !=: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(973,26): warning C4018: >=: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(973,47): warning C4018: >=: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(982,26): warning C4018: >=: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(982,47): warning C4018: >=: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(1323,19): warning C4018: >=: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(1433,14): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(1442,16): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(1444,30): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(1451,16): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\encode.c(1453,30): warning C4018: <: несоответствие типов со знаком и без знака
   enquant.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   fdct.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   fragment.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   huffdec.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   huffenc.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\huffenc.c(865): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\huffenc.c(865,39): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
   info.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   internal.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   mathops.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(180): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(188): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(196): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(197): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(221): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(227): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(257): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(258): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(265): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(266): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(273): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(274): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(281): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(282): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(289): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(290): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mathops.c(293): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(180,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(188,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(196,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(197,42): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(221,45): warning C4554: "<<": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(227,29): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(227,35): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(257,15): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(258,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(265,15): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(266,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(273,15): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(274,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(281,15): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(282,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(289,15): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(290,17): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mathops.c(293,13): warning C4554: ">>": проверьте приоритет операторов на ошибки; для уточнения приоритета используйте скобки
   mcenc.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\mcenc.c(632): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\mcenc.c(632,11): warning C4018: <: несоответствие типов со знаком и без знака
   Компиляция...
   rate.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\rate.c(267): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\rate.c(364): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\rate.c(383): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\rate.c(488): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\rate.c(929): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\rate.c(1073): warning C4018: <: несоответствие типов со знаком и без знака
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\rate.c(1108): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\rate.c(267,4): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\rate.c(364,6): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\rate.c(383,15): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\rate.c(488,38): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\rate.c(929,33): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\rate.c(1073,1): warning C4018: <: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\rate.c(1108,1): warning C4018: <: несоответствие типов со знаком и без знака
   state.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\state.c(509): warning C4389: !=: несоответствие типов со знаком и без знака
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\state.c(509,24): warning C4389: !=: несоответствие типов со знаком и без знака
   tokenize.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   mmxencfrag.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(73): warning C4405: ret: идентификатор является зарезервированным словом
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(170): warning C4405: ret: идентификатор является зарезервированным словом
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(476): warning C4101: ret2: неиспользованная локальная переменная
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(710): warning C4101: ret2: неиспользованная локальная переменная
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(73): warning C4405: ret: идентификатор является зарезервированным словом
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(170): warning C4405: ret: идентификатор является зарезервированным словом
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(476,26): warning C4101: ret2: неиспользованная локальная переменная
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\x86_vc\mmxencfrag.c(710,26): warning C4101: ret2: неиспользованная локальная переменная
   mmxfdct.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\x86_vc\mmxfdct.c(466): warning C4101: a: неиспользованная локальная переменная
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\lib\x86_vc\mmxfdct.c(466,13): warning C4101: a: неиспользованная локальная переменная
   mmxfrag.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   mmxidct.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   mmxstate.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   x86enc.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   x86state.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   decode.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   idct.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
   quant.c
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(200): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(201): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-c:\mfs-team\advanced-x-rayvs2017\sdk\sources\libtheora-1.1.1\lib\internal.h(202): warning C4214: нестандартное расширение: типы битовых полей, отличные от int
-  libtheora_static.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2017\SDK\sources\libtheora-1.1.1\win32\VS2008\Win32\Release\libtheora_static.lib
+  libtheora_static.vcxproj -> C:\MFS-Team\Advanced-X-Ray\SDK\sources\libtheora-1.1.1\win32\VS2008\Win32\Release\libtheora_static.lib

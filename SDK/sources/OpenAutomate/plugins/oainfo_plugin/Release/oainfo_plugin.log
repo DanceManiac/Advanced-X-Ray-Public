@@ -1,17 +1,7 @@
-﻿Build started 24.07.2020 22:21:25.
-     1>Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\plugins\oainfo_plugin\oainfo_plugin.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\inc /Zi /nologo /W3 /WX- /O2 /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D OAINFO_PLUGIN_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt oainfo_plugin.cpp
-         oainfo_plugin.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oainfo_plugin.dll" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oainfo_plugin.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oainfo_plugin.lib" /MACHINE:X86 /SAFESEH /DLL Release\oainfo_plugin.obj
-         "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oalib.lib"
-            Creating library C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oainfo_plugin.lib and object C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oainfo_plugin.exp
-         Generating code
-         Finished generating code
-         oainfo_plugin.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\Release\oainfo_plugin.dll
-     1>Done Building Project "C:\MFS-Team\Advanced-X-RayVS2013\SDK\sources\OpenAutomate\plugins\oainfo_plugin\oainfo_plugin.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:01.13
+﻿     Создается библиотека C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\Release\oainfo_plugin.lib и объект C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\Release\oainfo_plugin.exp
+  Создание кода
+  0 of 15 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  oainfo_plugin.vcxproj -> C:\MFS-Team\Advanced-X-Ray\SDK\sources\OpenAutomate\Release\oainfo_plugin.dll

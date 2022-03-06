@@ -1,1 +1,280 @@
-﻿  libvorbis_static.vcxproj -> C:\MFS-Team\Advanced-X-RayVS2017\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbis_static.lib
+﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
+  window.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+  vorbisenc.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\modes\psych_44.h(27,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\modes\psych_44.h(33,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\modes\psych_44.h(39,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\modes\psych_44.h(45,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\modes\psych_44.h(51,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(203,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(259,88): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(260,91): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(262,56): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(242,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(283,74): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(284,74): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(285,32): warning C4244: =: преобразование "float" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(287,65): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(288,70): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(289,70): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(295,74): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(296,74): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(297,32): warning C4244: =: преобразование "float" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(300,87): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(302,70): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(303,70): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(269,1): warning C4244: инициализация: преобразование "const double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(270,1): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(282,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(293,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(323,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(357,66): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(358,66): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(359,66): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(360,63): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(361,57): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(363,47): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(366,63): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(350,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(389,66): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(374,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(400,59): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(395,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(415,57): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(422,73): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(429,34): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(410,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(441,39): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(442,39): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(459,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(553,28): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(583,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(612,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(652,1): warning C4244: инициализация: преобразование "const double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(653,1): warning C4244: инициализация: преобразование "const double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(654,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(831,54): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(837,68): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(839,26): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(870,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(910,20): warning C4305: +=: усечение из "double" в "float"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(911,31): warning C4305: =: усечение из "double" в "float"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(955,53): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(957,41): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(980,26): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(1064,66): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(1080,49): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\vorbisenc.c(1083,37): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+  synthesis.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+  smallft.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\smallft.c(99,25): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\smallft.c(100,25): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\smallft.c(283,15): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\smallft.c(284,15): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\smallft.c(853,15): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\smallft.c(854,15): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  sharedbook.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(55,32): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(56,40): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(67,51): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(164,1): warning C4244: инициализация: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(223,44): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(243,44): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(222,1): warning C4244: инициализация: преобразование "long" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(242,1): warning C4244: инициализация: преобразование "long" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\sharedbook.c(393,60): warning C4244: =: преобразование "long" в "char", возможна потеря данных
+  res0.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(348,10): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(320,21): message : см. объявление "i"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(378,45): warning C4100: acc: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(428,63): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(429,41): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(411,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(491,53): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(493,55): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\res0.c(521,37): warning C4100: vb: неиспользованный формальный параметр
+  registry.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+  psy.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(137,78): warning C4244: функция: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(139,53): warning C4244: функция: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(173,34): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(174,41): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(175,44): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(239,16): warning C4456: объявление "bin" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(160,27): message : см. объявление "bin"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(254,21): warning C4244: =: преобразование "int" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(259,21): warning C4244: =: преобразование "int" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(192,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(193,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(217,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(218,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(239,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(274,63): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(276,78): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(277,57): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(290,39): warning C4305: =: усечение из "double" в "float"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(291,41): warning C4305: =: усечение из "double" в "float"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(301,28): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(325,66): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(327,56): warning C4244: функция: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(348,44): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(296,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(312,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(336,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(402,60): warning C4244: =: преобразование "const float" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(404,17): warning C4244: =: преобразование "const float" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(571,17): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(825,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(887,21): warning C4305: =: усечение из "double" в "float"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(893,41): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(900,31): warning C4305: =: усечение из "double" в "float"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(904,42): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(944,24): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(949,45): warning C4305: инициализация: усечение из "double" в "const float"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(981,33): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(982,33): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(983,26): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(985,32): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(986,32): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(987,23): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(991,33): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(992,33): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(993,26): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(995,32): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(996,32): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(997,23): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1026,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1027,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1086,25): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1099,29): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1117,23): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1169,80): warning C4244: =: преобразование "const double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1158,1): warning C4244: инициализация: преобразование "const double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1159,1): warning C4244: инициализация: преобразование "const double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1228,69): warning C4244: *=: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\psy.c(1222,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+  mdct.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(58,55): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(66,43): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(67,46): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(68,52): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(69,54): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(72,50): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(73,53): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(79,32): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(56,7): message : см. объявление "i"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(440,19): warning C4456: объявление "iX" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mdct.c(404,14): message : см. объявление "iX"
+  mapping0.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mapping0.c(272,33): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mapping0.c(318,41): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mapping0.c(335,61): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\mapping0.c(393,40): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  lsp.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lsp.c(252,41): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lsp.c(276,38): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lsp.c(259,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lsp.c(352,15): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lsp.c(399,37): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lsp.c(451,28): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lsp.c(454,30): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  lpc.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\lpc.c(130,15): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+  lookup.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+  info.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(57,29): warning C4244: =: преобразование "long" в "char", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(72,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(79,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(80,3): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(81,3): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(103,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(104,3): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(122,3): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\info.c(123,3): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  floor1.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(190,57): warning C4100: vd: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(282,1): warning C4244: инициализация: преобразование "const float" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(452,1): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(507,15): warning C4457: объявление "a" скрывает параметр функции
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(465,32): message : см. объявление "a"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(509,23): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(510,23): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(734,13): warning C4456: объявление "y0" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(633,9): message : см. объявление "y0"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(735,13): warning C4456: объявление "y1" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor1.c(634,9): message : см. объявление "y1"
+  floor0.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor0.c(124,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor0.c(134,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\floor0.c(144,57): warning C4100: vd: неиспользованный формальный параметр
+  envelope.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\envelope.c(48,38): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\envelope.c(65,46): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\envelope.c(68,41): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\envelope.c(145,31): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\envelope.c(127,1): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+  codebook.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+  block.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\block.c(253,10): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\block.c(182,7): message : см. объявление "i"
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\block.c(859,62): warning C4244: -=: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\block.c(862,63): warning C4244: +=: преобразование "ogg_int64_t" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\block.c(875,1): warning C4244: инициализация: преобразование "ogg_int64_t" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\block.c(988,10): warning C4456: объявление "i" скрывает предыдущее локальное объявление
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\block.c(931,7): message : см. объявление "i"
+  bitrate.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\bitrate.c(42,67): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\bitrate.c(43,67): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\bitrate.c(44,67): warning C4244: =: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\bitrate.c(51,1): warning C4244: инициализация: преобразование "double" в "long", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\bitrate.c(135,54): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\bitrate.c(83,1): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\bitrate.c(88,1): warning C4244: инициализация: преобразование "double" в "long", возможна потеря данных
+  Создание кода...
+  Компиляция...
+  analysis.c
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(137,62): warning C4100: fpu: неиспользованный формальный параметр
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\os.h(140,60): warning C4100: fpu: неиспользованный формальный параметр
+  Создание кода...
+C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\lib\analysis.c(47): warning C4706: назначение в пределах условного выражения
+  libvorbis_static.vcxproj -> C:\MFS-Team\Advanced-X-Ray\SDK\sources\libvorbis-1.2.3\win32\VS2008\Win32\Debug\libvorbis_static.lib

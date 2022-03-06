@@ -338,8 +338,11 @@ IReader*	IReader::open_chunk(u32 ID)
 		}
 	} else return 0;
 };
-void	IReader::close()
-{	xr_delete((IReader*)this); }
+void IReader::close()
+{
+	this->~IReader();
+	Memory.mem_free(this);
+}
 
 #include "FS_impl.h"
 

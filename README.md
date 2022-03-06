@@ -115,7 +115,7 @@ Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer
 How to Build
 ------------
 
-- Install Visual Studio 2017
+- Install Visual Studio 2019
 - Install DirectX SDK`s (March 2009 and June 2010)
 - Set environment variable DXSDK to DirectX SDK path
 - Open engine.sln
@@ -139,6 +139,7 @@ Thanks to
 - [Mortan](https://github.com/mortany)
 - [RedProjects](https://github.com/RedPandaProjects)
 - [i-love-kfc](https://github.com/i-love-kfc)
+- [Anomaly] (https://github.com/Roman-n/xray-monolith)
 - ValeroK
 - DWM Team
 - CorryZeron
