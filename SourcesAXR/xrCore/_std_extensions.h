@@ -179,6 +179,14 @@ IC s64		_max	(s64 x, s64 y)	{ return x - ((x - y) & ((x - y) >> (sizeof(s64) * 8
 IC u32							xr_strlen				( const char* S );
 
 // string management
+template<typename StrType, typename... Args>
+inline char* xr_strconcat(StrType& dest, Args... args) {
+	static_assert(std::is_array_v<StrType>);
+	static_assert(std::is_same_v<std::remove_extent_t<StrType>, char>);
+	dest[0] = 0;
+	(strcat_s(dest, args), ...);
+	return &dest[0];
+}
 
 // return pointer to ".ext"
 IC char*						strext					( const char* S )
