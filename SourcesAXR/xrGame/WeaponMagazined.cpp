@@ -655,6 +655,10 @@ void CWeaponMagazined::SetDefaults	()
 
 void CWeaponMagazined::OnShot()
 {
+	// Если актор бежит - останавливаем его
+	if (ParentIsActor())
+		Actor()->set_state_wishful(Actor()->get_state_wishful() & (~mcSprint));
+
 	// Sound
 	if (IsSilencerAttached() && SilencerAttachable()) //skyloader: dont touch SilencerAttachable(), it needs for pb, vss, val
 		PlaySound("sndSilencerShot", get_LastFP());

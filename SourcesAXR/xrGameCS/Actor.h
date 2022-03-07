@@ -755,6 +755,17 @@ public:
 			{
 				return this->mstate_real;
 			}
+
+			IC u32 get_state_wishful() const
+			{
+				return this->mstate_wishful;
+			}
+
+			IC void set_state_wishful(u32 state)
+			{
+				mstate_wishful = state;
+			}
+
 private:
 	static const float		cam_inert_value;
 	float					prev_cam_inert_value;

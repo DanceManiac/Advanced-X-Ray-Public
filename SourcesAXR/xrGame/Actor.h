@@ -745,6 +745,16 @@ public:
 				return this->mstate_real;
 			}
 
+			IC u32 get_state_wishful() const
+			{
+				return this->mstate_wishful;
+			}
+
+			IC void set_state_wishful(u32 state)
+			{
+				mstate_wishful = state;
+			}
+
 public:
 	virtual void			On_SetEntity();
 	virtual void			On_LostEntity() {};
