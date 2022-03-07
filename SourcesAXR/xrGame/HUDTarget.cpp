@@ -284,10 +284,8 @@ void CHUDTarget::Render()
 #endif
 	}
 
-	auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem());
-
-		if (Wpn && Wpn->IsLaserOn())
-			return;
+	if (auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem()); Wpn && Wpn->IsLaserOn())
+		return;
 
 	Fvector2 scr_size;
 	scr_size.set(float(Device.dwWidth), float(Device.dwHeight));

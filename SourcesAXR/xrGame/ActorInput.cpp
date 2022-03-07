@@ -200,15 +200,13 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}break;
 	case kLASER_ON:
 		{
-		auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
-				if (wpn)
-					wpn->SwitchLaser(!wpn->IsLaserOn());
+			if (auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem()))
+				wpn->SwitchLaser(!wpn->IsLaserOn());
 		}break;
 	case kFLASHLIGHT:
 		{
-			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
-				if (wpn)
-					wpn->SwitchFlashlight(!wpn->IsFlashlightOn());
+			if (auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem()))
+				wpn->SwitchFlashlight(!wpn->IsFlashlightOn());
 		}break;
 	}
 }
