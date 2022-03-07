@@ -750,6 +750,11 @@ public:
 	virtual	bool				is_ai_obstacle					() const;
 	
 			float				GetRestoreSpeed					(ALife::EConditionRestoreType const& type);
+
+			IC u32 get_state() const
+			{
+				return this->mstate_real;
+			}
 private:
 	static const float		cam_inert_value;
 	float					prev_cam_inert_value;

@@ -301,6 +301,7 @@ public:
 	virtual void			OnZoomOut			();
 	IC		bool			IsZoomed			()	const		{return m_zoom_params.m_bIsZoomModeNow;};
 	CUIWindow*				ZoomTexture			();	
+			bool			IsPartlyReloading	();
 
 
 			bool			ZoomHideCrosshair	()				{return m_zoom_params.m_bHideCrosshairInZoom || ZoomTexture();}
@@ -311,6 +312,7 @@ public:
 	virtual	float			CurrentZoomFactor	();
 	//показывает, что оружие находится в соостоянии поворота для приближенного прицеливания
 			bool			IsRotatingToZoom	() const		{	return (m_zoom_params.m_fZoomRotationFactor<1.f);}
+			bool			IsRotatingFromZoom	() const		{	return (m_zoom_params.m_fZoomRotationFactor>0.f);}
 
 	virtual	u8				GetCurrentHudOffsetIdx ();
 
@@ -370,7 +372,7 @@ public:
 protected:
 	virtual void			SetDefaults				();
 	
-	virtual bool			MovingAnimAllowedNow	();
+	virtual bool			MovingAnimAllowedNow();
 	virtual void			OnStateSwitch			(u32 S);
 	virtual void			OnAnimationEnd			(u32 state);
 

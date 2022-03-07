@@ -2687,7 +2687,13 @@ void CWeapon::UpdateSecondVP(bool bInGrenade)
 	Device.m_SecondViewport.SetSVPActive(bCond_1 && bCond_2 && bCond_3);
 }
 
-void CWeapon::OnBulletHit() {
+void CWeapon::OnBulletHit() 
+{
 	if (!fis_zero(conditionDecreasePerShotOnHit))
 		ChangeCondition(-conditionDecreasePerShotOnHit);
+}
+
+bool CWeapon::IsPartlyReloading()
+{
+	return (m_set_next_ammoType_on_reload == u32(-1) && GetAmmoElapsed() > 0 && !IsMisfire());
 }

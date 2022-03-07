@@ -137,6 +137,7 @@ protected:
 	//только разных типов патронов
 	bool m_bLockType;
 	bool m_bAutoreloadEnabled;
+	bool m_opened;
 
 public:
 	virtual void	OnZoomIn			();
@@ -168,6 +169,11 @@ protected:
 	virtual void	PlayAnimIdleMoving	();
 
 	virtual void    SetAnimFlag(u32 flag, LPCSTR anim_name);
+
+private:
+	string64 guns_aim_anm;
+protected:
+	const	char*	GetAnimAimName		();
 
 	enum {
 		ANM_SHOW_EMPTY = (1 << 0),

@@ -412,22 +412,37 @@ void CHudItem::PlayAnimIdle()
 
 bool CHudItem::TryPlayAnimIdle()
 {
-	if(MovingAnimAllowedNow())
+	if (MovingAnimAllowedNow())
 	{
 		CActor* pActor = smart_cast<CActor*>(object().H_Parent());
-		if(pActor)
+		if (pActor)
 		{
-			CEntity::SEntityState st;
-			pActor->g_State(st);
-			if(st.bSprint)
+			const u32 State = pActor->get_state();
+			if (State & mcSprint)
 			{
 				PlayAnimIdleSprint();
 				return true;
-			}else
-			if(!st.bCrouch && pActor->AnyMove())
+			}
+			else if (State & mcAnyMove)
 			{
-				PlayAnimIdleMoving();
-				return true;
+				if (!(State & mcCrouch))
+				{
+					if (State & mcAccel) //Ходьба медленная (SHIFT)
+						PlayAnimIdleMovingSlow();
+					else
+						PlayAnimIdleMoving();
+					return true;
+				}
+				else if (State & mcAccel) //Ходьба в присяде (CTRL+SHIFT)
+				{
+					PlayAnimIdleMovingCrouchSlow();
+					return true;
+				}
+				else
+				{
+					PlayAnimIdleMovingCrouch();
+					return true;
+				}
 			}
 		}
 	}
@@ -436,23 +451,35 @@ bool CHudItem::TryPlayAnimIdle()
 
 void CHudItem::PlayAnimIdleMoving()
 {
-	PlayHUDMotion("anm_idle_moving", TRUE, NULL, GetState());
+	PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle" }, true, GetState());
+}
+
+void CHudItem::PlayAnimIdleMovingSlow()
+{
+	PlayHUDMotionIfExists({ "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+}
+
+void CHudItem::PlayAnimIdleMovingCrouch()
+{
+	PlayHUDMotionIfExists({ "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+}
+
+void CHudItem::PlayAnimIdleMovingCrouchSlow()
+{
+	PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
 }
 
 void CHudItem::PlayAnimIdleSprint()
 {
-	PlayHUDMotion("anm_idle_sprint", TRUE, NULL,GetState());
+	PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle" }, true, GetState());
 }
 
 void CHudItem::OnMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 {
 	if(GetState()==eIdle)
 	{
-		if( (cmd == ACTOR_DEFS::mcSprint) || (cmd == ACTOR_DEFS::mcAnyMove)  )
-		{
-			PlayAnimIdle						();
-			ResetSubStateTime					();
-		}
+		PlayAnimIdle();
+		ResetSubStateTime();
 	}
 }
 
