@@ -978,7 +978,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_DYN_EFFECTS);
 	
 	//- Mad Max
-	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	10.f	);
+	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	50.f	);
 	//- Mad Max
 
 #ifdef DEBUG
