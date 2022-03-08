@@ -345,9 +345,8 @@ Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
 int ps_rs_loading_stages = 0;
 
-//- Mad Max
-float		ps_r2_gloss_factor			= 4.0f;
-//- Mad Max
+float ps_r2_gloss_factor = 10.0f;
+float ps_r2_gloss_min = 0.0f;
 
 Fvector4 ps_pp_bloom_thresh = { .7, .8f, .9f, .0f };
 Fvector4 ps_pp_bloom_weight = { .33f, .33f, .33f, .0f };
@@ -976,10 +975,9 @@ void		xrRender_initconsole	()
 	// Hud Mask
 	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK);
 	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_DYN_EFFECTS);
-	
-	//- Mad Max
+
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	50.f	);
-	//- Mad Max
+	CMD4(CCC_Float,		"r2_gloss_min",			&ps_r2_gloss_min,			.001f,	1.0f	);
 
 #ifdef DEBUG
 	CMD3(CCC_Mask,		"r2_use_nvdbt",			&ps_r2_ls_flags,			R2FLAG_USE_NVDBT);
