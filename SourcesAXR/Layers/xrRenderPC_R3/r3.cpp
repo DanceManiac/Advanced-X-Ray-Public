@@ -284,6 +284,8 @@ void					CRender::create					()
 	o.ssao_hbao			= !o.ssao_hdao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HBAO) && (ps_r_ssao != 0);
 	o.ssao_ssdo			= !o.ssao_hdao && !o.ssao_hbao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO) && (ps_r_ssao != 0);
 
+	o.pseudo_pbr		= ps_r3_pbr_flags.test(R_FLAG_PSEUDOPBR);
+
 	//	TODO: fix hbao shader to allow to perform per-subsample effect!
 	o.hbao_vectorized = false;
 	if (o.ssao_hdao )
@@ -997,6 +999,14 @@ HRESULT	CRender::shader_compile			(
 		def_it						++	;
 	}
 	sh_name[len]='0'+char(o.mblur); ++len;
+
+	if (o.pseudo_pbr)
+	{
+		defines[def_it].Name		= "USE_PBR";
+		defines[def_it].Definition	= "1";
+		def_it						++	;
+	}
+	sh_name[len] = '0' + char(o.pseudo_pbr); ++len;
 
 	if (o.sunfilter)		{
 		defines[def_it].Name		=	"USE_SUNFILTER";

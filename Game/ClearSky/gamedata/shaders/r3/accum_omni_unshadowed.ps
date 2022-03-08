@@ -27,6 +27,7 @@ float4 main ( float4 tc:TEXCOORD0 ) : SV_Target
 
 	float4 _P		= float4( gbd.P,gbd.mtl );
 	float4 _N		= float4( gbd.N,gbd.hemi );
+	float4 _C		= float4( gbd.C, gbd.gloss );
 
 	float 	m	= xmaterial	;
 # ifndef USE_R2_STATIC_SUN
@@ -34,6 +35,10 @@ float4 main ( float4 tc:TEXCOORD0 ) : SV_Target
 # endif
 
 	float	rsqr;
-	float4	light 		= plight_local( m, _P, _N, Ldynamic_pos, Ldynamic_pos.w, rsqr );
+#ifdef USE_PBR
+	float4	light 		= plight_local( m, _P, _N, _C, Ldynamic_pos, Ldynamic_pos.w, rsqr );
+#else
+	float4	light 		= plight_local( m, _P, _N, 0, Ldynamic_pos, Ldynamic_pos.w, rsqr );
+#endif
 	return 	blendp( Ldynamic_color * light, tc);
 }

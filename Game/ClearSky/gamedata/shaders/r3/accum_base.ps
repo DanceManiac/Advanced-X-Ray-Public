@@ -41,6 +41,7 @@ float4 main( p_volume I ) : SV_Target
 
 	float4 _P				= float4( gbd.P, gbd.mtl );
 	float4 _N				= float4( gbd.N, gbd.hemi );
+	float4 _C				= float4( gbd.C, gbd.gloss );
 
 	float 	m	= xmaterial	;
 # ifndef USE_R2_STATIC_SUN
@@ -48,7 +49,12 @@ float4 main( p_volume I ) : SV_Target
 # endif
         // ----- light-model
       	float        		rsqr;
-        float4        		light   = plight_local( m, _P, _N, Ldynamic_pos, Ldynamic_pos.w, rsqr );
+		
+#ifdef USE_PBR
+		float4        		light   = plight_local( m, _P, _N, _C, Ldynamic_pos, Ldynamic_pos.w, rsqr );
+#else
+		float4        		light   = plight_local( m, _P, _N, 0, Ldynamic_pos, Ldynamic_pos.w, rsqr );
+#endif
 
         // ----- shadow
 		float4          		P4      = float4( _P.x, _P.y, _P.z, 1);

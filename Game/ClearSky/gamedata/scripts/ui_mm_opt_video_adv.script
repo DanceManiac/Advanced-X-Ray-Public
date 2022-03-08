@@ -327,6 +327,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_shader_nvg", _st)
 	handler.m_preconditions[ctl]		= only_3_and_more_mode
 
+--Псевдо ПБР	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_pbr", _st)
+	ctl = xml:InitCheck("video_adv:check_pbr", _st)
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+
 --Тип сглаживания
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_r2_aa_mode", _st)

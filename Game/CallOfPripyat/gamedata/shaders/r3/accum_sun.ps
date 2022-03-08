@@ -34,13 +34,19 @@ float4 	main	( p_aa_AA_sun I ) : SV_Target
 //  float4  _N		= tex2D 	(s_normal,   	I.tc); 
 	float4 	_P	= float4( gbd.P, gbd.mtl );
 	float4	_N	= float4( gbd.N, gbd.hemi );
+	float4  _C	= float4( gbd.C, gbd.gloss );
 
 	// ----- light-model
 	float 	m	= xmaterial	;
 # ifndef USE_R2_STATIC_SUN
 			m 	= _P.w		;
 # endif
-	float4	light	= plight_infinity( m, _P, _N, Ldynamic_dir );
+
+#ifdef USE_PBR
+	float4	light	= plight_infinity( m, _P, _N, _C, Ldynamic_dir );
+#else
+	float4	light	= plight_infinity( m, _P, _N, 0, Ldynamic_dir );
+#endif
 
 	// ----- shadow
 	float4 	s_sum;
