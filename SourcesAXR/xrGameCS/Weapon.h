@@ -362,6 +362,7 @@ protected:
 	virtual void			SetDefaults				();
 	
 	virtual bool			MovingAnimAllowedNow	();
+	virtual bool			IsMisfireNow			();
 	virtual void			OnStateSwitch			(u32 S);
 	virtual void			OnAnimationEnd			(u32 state);
 

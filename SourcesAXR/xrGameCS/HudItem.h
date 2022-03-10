@@ -111,7 +111,8 @@ public:
 	virtual void				PlayAnimIdle		();
 	virtual void				PlayAnimBore		();
 	bool						TryPlayAnimIdle		();
-	virtual bool				MovingAnimAllowedNow ()				{return true;}
+	virtual bool				MovingAnimAllowedNow() { return true; }
+	virtual bool				IsMisfireNow		() { return false; }
 
 	virtual void				PlayAnimIdleMoving	();
 	virtual void				PlayAnimIdleSprint	();

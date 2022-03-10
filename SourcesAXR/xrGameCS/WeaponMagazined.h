@@ -139,6 +139,7 @@ protected:
 	bool m_bLockType;
 	bool m_bAutoreloadEnabled;
 	bool m_opened;
+	bool m_bUseFiremodeChangeAnim;
 
 public:
 	virtual void	OnZoomIn			();
