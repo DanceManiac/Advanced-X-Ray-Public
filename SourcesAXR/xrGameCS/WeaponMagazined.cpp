@@ -93,6 +93,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_reload", "sndReload"		, m_eSoundReload		);
 	m_sounds.LoadSound(section, "snd_reflect", "sndReflect",  m_eSoundReflect);
 
+	if (WeaponSoundExist(section, "snd_changefiremode"))
+		m_sounds.LoadSound(section, "snd_changefiremode", "sndFireModes", m_eSoundEmptyClick);
 
 	if (WeaponSoundExist(section, "snd_close"))
 		m_sounds.LoadSound(section, "snd_close", "sndClose", m_eSoundClose);
@@ -171,6 +173,10 @@ void CWeaponMagazined::FireStart		()
 				if (GetState() == eMisfire)
 					return;
 				if (GetState() == eUnMisfire)
+					return;
+				if (GetState() == eFiremodePrev)
+					return;
+				if (GetState() == eFiremodeNext)
 					return;
 
 				inherited::FireStart();
@@ -431,6 +437,16 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 	inherited::OnStateSwitch(S);
 	switch (S)
 	{
+	case eFiremodeNext:
+	{
+		PlaySound("sndFireModes", get_LastFP());
+		switch2_ChangeFireMode();
+	}break;
+	case eFiremodePrev:
+	{
+		PlaySound("sndFireModes", get_LastFP());
+		switch2_ChangeFireMode();
+	}break;
 	case eIdle:
 		switch2_Idle	();
 		break;
@@ -511,6 +527,8 @@ void CWeaponMagazined::UpdateSounds	()
 	m_sounds.SetPosition("sndHide", P);
 	if (psWpnAnimsFlag.test(ANM_HIDE_EMPTY) && WeaponSoundExist(m_section_id.c_str(), "snd_close"))
 		m_sounds.SetPosition("sndClose", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_changefiremode"))
+		m_sounds.SetPosition("sndFireModes", P);
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);
 //. nah	m_sounds.SetPosition("sndEmptyClick", P);
@@ -739,6 +757,16 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 			iAmmoElapsed--;
 			SwitchState(eIdle);
 		}break; // End of UnMisfire animation
+		case eFiremodePrev:
+		{
+			SwitchState(eIdle);
+			break;
+		}
+		case eFiremodeNext:
+		{
+			SwitchState(eIdle);
+			break;
+		}
 	}
 	inherited::OnAnimationEnd(state);
 }
@@ -747,6 +775,24 @@ void CWeaponMagazined::switch2_Idle	()
 {
 	SetPending			(FALSE);
 	PlayAnimIdle		();
+}
+
+void CWeaponMagazined::switch2_ChangeFireMode()
+{
+	if (GetState() != eFiremodeNext && GetState() != eFiremodePrev)
+		return;
+
+	FireEnd();
+	PlayAnimFireMode();
+	SetPending(TRUE);
+}
+
+void CWeaponMagazined::PlayAnimFireMode()
+{
+	if (IsGrenadeLauncherAttached())
+		PlayHUDMotion("anm_changefiremode_from_1_to_a", true, this, GetState());
+	else
+		PlayHUDMotion("anm_changefiremode_from_1_to_a", true, this, GetState());
 }
 
 #ifdef DEBUG
@@ -1457,6 +1503,10 @@ bool CWeaponMagazined::SwitchMode			()
 void	CWeaponMagazined::OnNextFireMode		()
 {
 	if (!m_bHasDifferentFireModes) return;
+
+	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a"))
+		SwitchState(eFiremodeNext);
+
 	if (GetState() != eIdle) return;
 	m_iCurFireMode = (m_iCurFireMode+1+m_aFireModes.size()) % m_aFireModes.size();
 	SetQueueSize(GetCurrentFireMode());
@@ -1465,6 +1515,10 @@ void	CWeaponMagazined::OnNextFireMode		()
 void	CWeaponMagazined::OnPrevFireMode		()
 {
 	if (!m_bHasDifferentFireModes) return;
+
+	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a"))
+		SwitchState(eFiremodePrev);
+
 	if (GetState() != eIdle) return;
 	m_iCurFireMode = (m_iCurFireMode-1+m_aFireModes.size()) % m_aFireModes.size();
 	SetQueueSize(GetCurrentFireMode());	
