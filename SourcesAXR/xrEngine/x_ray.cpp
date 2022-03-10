@@ -33,6 +33,7 @@
 #include "..\Layers\xrAPI\xrGameManager.h"
 
 #include "DiscordRichPresense.h"
+#include <atlimage.h>
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni		= NULL;
