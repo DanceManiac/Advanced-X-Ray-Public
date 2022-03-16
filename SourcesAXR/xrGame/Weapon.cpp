@@ -2353,12 +2353,6 @@ bool CWeapon::ready_to_kill	() const
 	);
 }
 
-void _inertion(float& _val_cur, const float& _val_trgt, const float& _friction)
-{
-	float friction_i = 1.f - _friction;
-	_val_cur = _val_cur * _friction + _val_trgt * friction_i;
-}
-
 float _lerp(const float& _val_a, const float& _val_b, const float& _factor)
 {
 	return (_val_a * (1.0 - _factor)) + (_val_b * _factor);

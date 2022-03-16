@@ -167,6 +167,28 @@ private:
 	attachable_hud_item*				m_attached_items[2];
 	xr_vector<attachable_hud_item*>		m_pool;
 
+	static void _BCL Thumb0Callback(CBoneInstance* B);
+	static void _BCL Thumb01Callback(CBoneInstance* B);
+	static void _BCL Thumb02Callback(CBoneInstance* B);
+
+public:
+	Fvector target_thumb0rot, target_thumb01rot, target_thumb02rot;
+	Fvector thumb0rot, thumb01rot, thumb02rot;
+	u8 script_anim_part;
+
+	void reset_thumb(bool bForce)
+	{
+		if (bForce)
+		{
+			thumb0rot.set(0.f, 0.f, 0.f);
+			thumb01rot.set(0.f, 0.f, 0.f);
+			thumb02rot.set(0.f, 0.f, 0.f);
+		}
+
+		target_thumb0rot.set(0.f, 0.f, 0.f);
+		target_thumb01rot.set(0.f, 0.f, 0.f);
+		target_thumb02rot.set(0.f, 0.f, 0.f);
+	}
 };
 
 extern player_hud* g_player_hud;

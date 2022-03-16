@@ -480,3 +480,26 @@ void CRender::AfterWorldRender()
 		pBackBuffer->Release(); //      (    )
 	}
 }
+
+void CRender::RenderToTarget(RRT target)
+{
+	ref_rt* RT;
+
+	switch (target)
+	{
+	case rtPDA:
+		RT = &Target->rt_ui_pda;
+		break;
+	case rtSVP:
+		RT = &Target->rt_secondVP;
+		break;
+	default:
+		Debug.fatal(DEBUG_INFO, "None or wrong Target specified: %i", target);
+		break;
+	}
+
+	IDirect3DSurface9* pBackBuffer = nullptr;
+	HW.pDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+	D3DXLoadSurfaceFromSurface((*RT)->pRT, 0, 0, pBackBuffer, 0, 0, D3DX_DEFAULT, 0);
+	pBackBuffer->Release();
+}

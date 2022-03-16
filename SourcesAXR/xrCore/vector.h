@@ -108,6 +108,13 @@ IC float snapto	( float value, float snap )	{
 	return float(iFloor((value+(snap*0.5f)) / snap )) * snap;
 };
 
+// inertion
+IC float _inertion(float _val_cur, float _val_trgt, float _friction)
+{
+	float friction_i = 1.f - _friction;
+	return _val_cur * _friction + _val_trgt * friction_i;
+}
+
 // pre-definitions
 template <class T> struct _quaternion;
 

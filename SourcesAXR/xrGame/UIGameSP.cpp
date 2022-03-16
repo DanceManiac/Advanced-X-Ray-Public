@@ -113,27 +113,27 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	switch ( get_binded_action(dik) )
 	{
 	case kACTIVE_JOBS:
-		if (GameConstants::GetPdaSlotEnabled())
 		{
-			if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
+			if (!psActorFlags.test(AF_3D_PDA) && !pActor->inventory_disabled())
 			{
-				if (!pActor->inventory_disabled())
-					ShowPdaMenu();
-				break;
+				luabind::functor<bool> funct;
+				if (ai().script_engine().functor("pda.pda_use", funct))
+				{
+					if (funct())
+						ShowPdaMenu();
+				}
 			}
-		}
-		else
-		{
-			if (!pActor->inventory_disabled())
-				ShowPdaMenu();
 			break;
 		}
-
 	case kINVENTORY:
 		{
-			if ( !pActor->inventory_disabled() )
-				ShowActorMenu();
+			if (!pActor->inventory_disabled())
+			{
+				if (psActorFlags.test(AF_3D_PDA) && CurrentGameUI()->GetPdaMenu().IsShown())
+					pActor->inventory().Activate(NO_ACTIVE_SLOT);
 
+				ShowActorMenu();
+			}
 			break;
 		}
 

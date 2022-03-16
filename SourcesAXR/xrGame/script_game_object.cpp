@@ -39,6 +39,7 @@
 #include "smart_cover.h"
 #include "smart_cover_description.h"
 #include "physics_shell_scripted.h"
+#include "PDA.h"
 
 class CScriptBinderObject;
 
@@ -434,6 +435,30 @@ void CScriptGameObject::SetCondition	(float val)
 	}
 	val					-= inventory_item->GetCondition();
 	inventory_item->ChangeCondition			(val);
+}
+
+float CScriptGameObject::GetPsyFactor() const
+{
+	CPda* pda = smart_cast<CPda*>(&object());
+	if (!pda)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CSciptEntity : cannot access class member GetPsyFactor!");
+		return 0.f;
+	}
+	return (pda->m_psy_factor);
+}
+
+void CScriptGameObject::SetPsyFactor(float val)
+{
+	CPda* pda = smart_cast<CPda*>(&object());
+	if (!pda)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CSciptEntity : cannot access class member SetPsyFactor!");
+		return;
+	}
+	pda->m_psy_factor = val;
 }
 
 void CScriptGameObject::eat				(CScriptGameObject *item)

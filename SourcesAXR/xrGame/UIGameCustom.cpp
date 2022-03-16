@@ -175,9 +175,12 @@ bool CUIGameCustom::ShowActorMenu()
 	if ( m_ActorMenu->IsShown() )
 	{
 		m_ActorMenu->HideDialog();
-	}else
+	}
+	else
 	{
-		HidePdaMenu();
+		if (!psActorFlags.test(AF_3D_PDA)) HidePdaMenu();
+
+		//HidePdaMenu();
 		CInventoryOwner* pIOActor	= smart_cast<CInventoryOwner*>( Level().CurrentViewEntity() );
 		VERIFY						(pIOActor);
 		m_ActorMenu->SetActor		(pIOActor);
@@ -284,7 +287,7 @@ void CUIGameCustom::CommonMessageOut(LPCSTR text)
 }
 void CUIGameCustom::UpdatePda()
 {
-	PdaMenu().UpdatePda();
+	GetPdaMenu().UpdatePda();
 }
 
 void CUIGameCustom::update_fake_indicators(u8 type, float power)

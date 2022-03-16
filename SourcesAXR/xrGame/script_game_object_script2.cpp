@@ -247,6 +247,10 @@ class_<CScriptGameObject> &script_register_game_object1(class_<CScriptGameObject
 		.def("get_portions_num",			&CScriptGameObject::GetPortionsNum			)
 		.def("set_portions_num",			&CScriptGameObject::SetPortionsNum			)
 
+		// PDA Psy Factor
+		.def("psy_factor",					&CScriptGameObject::GetPsyFactor			)
+		.def("set_psy_factor",				&CScriptGameObject::SetPsyFactor			)
+
 		//
 		.def("set_desired_position",		(void (CScriptGameObject::*)())(&CScriptGameObject::set_desired_position))
 		.def("set_desired_position",		(void (CScriptGameObject::*)(const Fvector *))(&CScriptGameObject::set_desired_position))

@@ -7,6 +7,7 @@ static LPCSTR		RTname			= "$user$rendertarget";
 static LPCSTR		RTname_color_map= "$user$rendertarget_color_map";
 static LPCSTR		RTname_distort	= "$user$distort";
 static LPCSTR		RTname_SecondVP = "$user$viewport2"; //--#SM+#-- +SecondVP+
+static LPCSTR		RTname_pda_ui	= "$user$ui";
 
 CRenderTarget::CRenderTarget()
 {
@@ -66,6 +67,7 @@ BOOL CRenderTarget::Create	()
 	//RImplementation.o.color_mapping = RT_color_map->valid();
 
 	RT_SecondVP.create(RTname_SecondVP, rtWidth, rtHeight, HW.Caps.fTarget); //--#SM+#-- +SecondVP+
+	rt_ui_pda.create(RTname_pda_ui, Device.dwWidth, Device.dwHeight, HW.Caps.fTarget);
 
 	if ((rtHeight!=Device.dwHeight) || (rtWidth!=Device.dwWidth))	{
 		R_CHK		(HW.pDevice->CreateDepthStencilSurface	(rtWidth,rtHeight,HW.Caps.fDepth,D3DMULTISAMPLE_NONE,0,TRUE,&ZB,NULL));

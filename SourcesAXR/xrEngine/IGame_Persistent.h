@@ -134,12 +134,12 @@ public:
 	virtual	void					SetLoadStageTitle	(const char* ls_title = nullptr) {}
 	virtual bool					CanBePaused			()		{ return true;}
 
-	/*struct pda_data
+	struct pda_data
 	{
 		float pda_display_factor;
 		float pda_psy_influence;
 		float pda_displaybrightness;
-	} pda_shader_data;*/
+	} pda_shader_data;
 };
 
 class IMainMenu

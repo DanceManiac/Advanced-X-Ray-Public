@@ -107,7 +107,7 @@ public:
 	virtual void _BCL	OnFrame					();
 	
 	IC CUIActorMenu&	ActorMenu				() const { return *m_ActorMenu; }
-	IC CUIPdaWnd&		PdaMenu					() const { return *m_PdaMenu;   }
+	IC CUIPdaWnd&		GetPdaMenu				() const { return *m_PdaMenu;   }
 			bool		ShowActorMenu			();
 			void		HideActorMenu			();
 			bool		ShowPdaMenu				();

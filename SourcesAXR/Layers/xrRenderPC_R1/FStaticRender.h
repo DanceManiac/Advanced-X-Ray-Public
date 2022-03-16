@@ -213,6 +213,7 @@ public:
 	virtual void					rmNormal				();
 
 	virtual u32						active_phase() { return phase; };
+	void							RenderToTarget(RRT target);
 
 	// Constructor/destructor/loader
 	CRender							();

@@ -512,3 +512,16 @@ attachable_hud_item* CHudItem::HudItemData()
 
 	return NULL;
 }
+
+BOOL CHudItem::ParentIsActor()
+{
+	CObject* O = object().H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return !!EA->cast_actor();
+}

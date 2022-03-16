@@ -464,6 +464,8 @@ player_hud::player_hud()
 	m_attached_items[1]		= NULL;
 	m_transform.identity();
 	m_transform_2.identity();
+	script_anim_part = u8(-1);
+	reset_thumb(true);
 }
 
 
@@ -485,6 +487,108 @@ player_hud::~player_hud()
 		xr_delete				(a);
 	}
 	m_pool.clear				();
+}
+
+void player_hud::Thumb0Callback(CBoneInstance* B)
+{
+	player_hud* P = static_cast<player_hud*>(B->callback_param());
+
+	Fvector& target = P->target_thumb0rot;
+	Fvector& current = P->thumb0rot;
+
+	if (!target.similar(current))
+	{
+		Fvector diff[2];
+		diff[0] = target;
+		diff[0].sub(current);
+		diff[0].mul(Device.fTimeDelta / .1f);
+		current.add(diff[0]);
+	}
+	else
+		current.set(target);
+
+	Fmatrix rotation;
+	rotation.identity();
+	rotation.rotateX(current.x);
+
+	Fmatrix rotation_y;
+	rotation_y.identity();
+	rotation_y.rotateY(current.y);
+	rotation.mulA_43(rotation_y);
+
+	rotation_y.identity();
+	rotation_y.rotateZ(current.z);
+	rotation.mulA_43(rotation_y);
+
+	B->mTransform.mulB_43(rotation);
+}
+
+void player_hud::Thumb01Callback(CBoneInstance* B)
+{
+	player_hud* P = static_cast<player_hud*>(B->callback_param());
+
+	Fvector& target = P->target_thumb01rot;
+	Fvector& current = P->thumb01rot;
+
+	if (!target.similar(current))
+	{
+		Fvector diff[2];
+		diff[0] = target;
+		diff[0].sub(current);
+		diff[0].mul(Device.fTimeDelta / .1f);
+		current.add(diff[0]);
+	}
+	else
+		current.set(target);
+
+	Fmatrix rotation;
+	rotation.identity();
+	rotation.rotateX(current.x);
+
+	Fmatrix rotation_y;
+	rotation_y.identity();
+	rotation_y.rotateY(current.y);
+	rotation.mulA_43(rotation_y);
+
+	rotation_y.identity();
+	rotation_y.rotateZ(current.z);
+	rotation.mulA_43(rotation_y);
+
+	B->mTransform.mulB_43(rotation);
+}
+
+void player_hud::Thumb02Callback(CBoneInstance* B)
+{
+	player_hud* P = static_cast<player_hud*>(B->callback_param());
+
+	Fvector& target = P->target_thumb02rot;
+	Fvector& current = P->thumb02rot;
+
+	if (!target.similar(current))
+	{
+		Fvector diff[2];
+		diff[0] = target;
+		diff[0].sub(current);
+		diff[0].mul(Device.fTimeDelta / .1f);
+		current.add(diff[0]);
+	}
+	else
+		current.set(target);
+
+	Fmatrix rotation;
+	rotation.identity();
+	rotation.rotateX(current.x);
+
+	Fmatrix rotation_y;
+	rotation_y.identity();
+	rotation_y.rotateY(current.y);
+	rotation.mulA_43(rotation_y);
+
+	rotation_y.identity();
+	rotation_y.rotateZ(current.z);
+	rotation.mulA_43(rotation_y);
+
+	B->mTransform.mulB_43(rotation);
 }
 
 void player_hud::load(const shared_str& player_hud_sect)
@@ -511,6 +615,14 @@ void player_hud::load(const shared_str& player_hud_sect)
 
 	u16 l_arm = m_model->dcast_PKinematics()->LL_BoneID("l_clavicle");
 	u16 r_arm = m_model_2->dcast_PKinematics()->LL_BoneID("r_clavicle");
+
+	u16 r_finger0 = m_model->dcast_PKinematics()->LL_BoneID("r_finger0");
+	u16 r_finger01 = m_model->dcast_PKinematics()->LL_BoneID("r_finger01");
+	u16 r_finger02 = m_model->dcast_PKinematics()->LL_BoneID("r_finger02");
+
+	m_model->dcast_PKinematics()->LL_GetBoneInstance(r_finger0).set_callback(bctCustom, Thumb0Callback, this);
+	m_model->dcast_PKinematics()->LL_GetBoneInstance(r_finger01).set_callback(bctCustom, Thumb01Callback, this);
+	m_model->dcast_PKinematics()->LL_GetBoneInstance(r_finger02).set_callback(bctCustom, Thumb02Callback, this);
 
 	// hides the unused arm meshes
 	m_model->dcast_PKinematics()->LL_SetBoneVisible(l_arm, FALSE, TRUE);
@@ -574,8 +686,8 @@ void player_hud::render_hud()
 {
 	if(!m_attached_items[0] && !m_attached_items[1])	return;
 
-	bool b_r0 = (m_attached_items[0] && m_attached_items[0]->need_renderable());
-	bool b_r1 = (m_attached_items[1] && m_attached_items[1]->need_renderable());
+	bool b_r0 = ((m_attached_items[0] && m_attached_items[0]->need_renderable()) /*|| script_anim_part == 0 || script_anim_part == 2*/);
+	bool b_r1 = ((m_attached_items[1] && m_attached_items[1]->need_renderable()) /*|| script_anim_part == 1 || script_anim_part == 2*/);
 
 	if(!b_r0 && !b_r1)									return;
 
@@ -659,6 +771,38 @@ void player_hud::update(const Fmatrix& cam_trans)
 		trans_2 = trans;
 
 	// override hand offset for single hand animation
+	/*if (script_anim_offset_factor != 0.f)
+	{
+		if (script_anim_part == 2 || (!m_attached_items[0] && !m_attached_items[1]))
+		{
+			m1pos = script_anim_offset[0];
+			m2pos = script_anim_offset[0];
+			m1rot = script_anim_offset[1];
+			m2rot = script_anim_offset[1];
+			trans = trans_b;
+			trans_2 = trans_b;
+		}
+		else
+		{
+			Fvector& hand_pos = script_anim_part == 0 ? m1pos : m2pos;
+			Fvector& hand_rot = script_anim_part == 0 ? m1rot : m2rot;
+
+			hand_pos.lerp(script_anim_part == 0 ? m1pos : m2pos, script_anim_offset[0], script_anim_offset_factor);
+			hand_rot.lerp(script_anim_part == 0 ? m1rot : m2rot, script_anim_offset[1], script_anim_offset_factor);
+
+			if (script_anim_part == 0)
+			{
+				trans_b.inertion(trans, script_anim_offset_factor);
+				trans = trans_b;
+			}
+			else
+			{
+				trans_b.inertion(trans_2, script_anim_offset_factor);
+				trans_2 = trans_b;
+			}
+		}
+	}*/
+
 	m1rot.mul(PI / 180.f);
 	m_attach_offset.setHPB(m1rot.x, m1rot.y, m1rot.z);
 	m_attach_offset.translate_over(m1pos);

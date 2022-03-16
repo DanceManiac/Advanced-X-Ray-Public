@@ -174,6 +174,13 @@ public:
 		SM_FOR_MPSENDING			= 4,
 		SM_forcedword				= u32(-1)
 	};
+
+	enum RRT
+	{
+		rtPDA = 1,
+		rtSVP,
+	};
+
 public:
 	// options
 	s32								m_skinning;
@@ -298,6 +305,7 @@ public:
 	virtual u32						memory_usage			()											= 0;
 
 	virtual							u32 active_phase		()											= 0;
+	virtual void					RenderToTarget			(RRT target)								= 0;
 
 	// Constructor/destructor
 	virtual ~IRender_interface();

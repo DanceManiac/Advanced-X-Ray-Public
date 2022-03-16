@@ -245,6 +245,8 @@ int g_svDedicateServerUpdateReate = 100;
 
 ENGINE_API xr_list<LOADING_EVENT>			g_loading_events;
 
+//extern bool IsMainMenuActive(); //ECO_RENDER add
+
 void ImGui_NewFrame()
 {
 	ImGuiIO& io = ImGui::GetIO();

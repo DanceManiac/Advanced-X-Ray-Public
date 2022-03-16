@@ -426,6 +426,7 @@ CRenderTarget::CRenderTarget		()
         rt_Generic.create		(r2_RT_generic,w,h, D3DFMT_A8R8G8B8, 1		);
 
 		rt_secondVP.create		(r2_RT_secondVP, w, h, D3DFMT_A8R8G8B8, 1	); //--#SM+#-- +SecondVP+
+		rt_ui_pda.create		(r2_RT_ui, w, h, D3DFMT_A8R8G8B8, 1			);
 
 		// RT - KD
 		rt_sunshafts_0.create(r2_RT_sunshafts0, w, h, D3DFMT_A8R8G8B8);

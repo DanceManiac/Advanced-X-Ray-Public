@@ -58,6 +58,7 @@
 #define		r2_sunmask			"sunmask"
 
 #define		r2_RT_secondVP		"$user$viewport2"		// --#SM+#-- +SecondVP+
+#define		r2_RT_ui			"$user$ui"
 
 #define		r2_RT_blur_h_2		"$user$blur_h_2"
 #define		r2_RT_blur_2		"$user$blur_2"

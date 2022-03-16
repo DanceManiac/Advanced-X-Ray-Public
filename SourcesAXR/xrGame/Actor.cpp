@@ -149,6 +149,7 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	// эффекторы
 	pCamBobbing				= 0;
 
+	cam_freelook			= eflDisabled;
 
 	r_torso.yaw				= 0;
 	r_torso.pitch			= 0;
@@ -1257,6 +1258,29 @@ void CActor::shedule_Update	(u32 DT)
 		mstate_wishful &=~mcBack;
 		if( !psActorFlags.test(AF_CROUCH_TOGGLE) )
 			mstate_wishful &=~mcCrouch;
+		if (!psActorFlags.test(AF_WALK_TOGGLE))
+			mstate_wishful &= ~mcAccel;
+		if (!psActorFlags.test(AF_SPRINT_TOGGLE))
+			mstate_wishful &= ~mcSprint;
+		if (!psActorFlags.test(AF_LOOKOUT_TOGGLE) || cam_freelook != eflDisabled)
+		{
+			mstate_wishful &= ~mcLLookout;
+			mstate_wishful &= ~mcRLookout;
+		}
+
+		if (cam_freelook == eflEnabled)
+		{
+			if (psActorFlags.test(AF_FREELOOK_TOGGLE))
+			{
+				if (!CanUseFreelook())
+					cam_UnsetFreelook();
+			}
+			else
+			{
+				if (!CanUseFreelook() || !pInput->iGetAsyncKeyState(get_action_dik(kFREELOOK)))
+					cam_UnsetFreelook();
+			}
+		}
 		}
 	}
 	else 
