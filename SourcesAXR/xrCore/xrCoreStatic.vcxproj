@@ -353,7 +353,6 @@
     <ClCompile Include="xrMemory_subst_msvc.cpp" />
     <ClCompile Include="xrsharedmem.cpp" />
     <ClCompile Include="xrstring.cpp" />
-    <ClCompile Include="xrSyncronize.cpp" />
     <ClCompile Include="Xr_ini.cpp" />
     <ClCompile Include="xr_shared.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

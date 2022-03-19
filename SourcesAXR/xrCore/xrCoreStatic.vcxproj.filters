@@ -256,7 +256,6 @@
       <Filter>string_concatenations</Filter>
     </ClCompile>
     <ClCompile Include="os_clipboard.cpp" />
-    <ClCompile Include="xrSyncronize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FTimer.h">
