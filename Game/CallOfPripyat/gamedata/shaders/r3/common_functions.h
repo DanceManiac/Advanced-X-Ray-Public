@@ -342,6 +342,11 @@ gbuffer_data gbuffer_load_data_offset( float2 tc : TEXCOORD, float2 OffsetTC : T
 
 #endif // GBUFFER_OPTIMIZATION
 
+float rand(float n)
+{
+    return frac(cos(n)*343.42);
+}
+
 //////////////////////////////////////////////////////////////////////////
 //	Aplha to coverage code
 #if ( defined( MSAA_ALPHATEST_DX10_1_ATOC ) || defined( MSAA_ALPHATEST_DX10_1 ) )

@@ -321,6 +321,16 @@ inline bool isSecondVPActive()
 	return (m_blender_mode.z == 1.f);
 }
 
+float rand(float n)
+{
+    return frac(cos(n)*343.42);
+}
+
+float noise(float2 tc)
+{
+    return frac(sin(dot(tc, float2(12.0, 78.0) + (timers.x) )) * 43758.0)*0.25f; 
+}
+
 #define FXPS technique _render{pass _code{PixelShader=compile ps_3_0 main();}}
 #define FXVS technique _render{pass _code{VertexShader=compile vs_3_0 main();}}
 

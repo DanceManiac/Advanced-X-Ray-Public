@@ -195,7 +195,7 @@ void CPda::JoystickCallback(CBoneInstance* B)
 	CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
 
 	static float fAvgTimeDelta = Device.fTimeDelta;
-	fAvgTimeDelta = _inertion(fAvgTimeDelta, Device.fTimeDelta, 0.8f);
+	fAvgTimeDelta = inertion(fAvgTimeDelta, Device.fTimeDelta, 0.8f);
 
 	Fvector& target = pda->target_joystickrot;
 	Fvector& current = pda->joystickrot;
@@ -417,7 +417,7 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 	SetPending(FALSE);
 }
 
-/*void CPda::UpdateHudAdditional(Fmatrix& trans)
+void CPda::UpdateHudAdditional(Fmatrix& trans)
 {
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 	if (!pActor)
@@ -425,6 +425,8 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 
 	attachable_hud_item* hi = HudItemData();
 	R_ASSERT(hi);
+
+	//u8 idx = GetCurrentHudOffsetIdx();
 
 	if (pActor->cam_freelook == eflEnabled || pActor->cam_freelook == eflEnabling || g_player_hud->script_anim_part != u8(-1))
 	{
@@ -447,8 +449,12 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 	}
 
 	Fvector curr_offs, curr_rot;
-	curr_offs = g_player_hud->m_adjust_mode ? g_player_hud->m_adjust_offset[0][1] : hi->m_measures.m_hands_offset[0][1];
-	curr_rot = g_player_hud->m_adjust_mode ? g_player_hud->m_adjust_offset[1][1] : hi->m_measures.m_hands_offset[1][1];
+
+	//curr_offs = g_player_hud->m_adjust_mode ? g_player_hud->m_adjust_offset[0][1] : hi->m_measures.m_hands_offset[0][1];
+	//curr_rot = g_player_hud->m_adjust_mode ? g_player_hud->m_adjust_offset[1][1] : hi->m_measures.m_hands_offset[1][1];
+
+	curr_offs = hi->m_measures.m_hands_offset[0][1];//pos,aim
+	curr_rot = hi->m_measures.m_hands_offset[1][1];//rot,aim
 
 	curr_offs.mul(m_fZoomfactor);
 	curr_rot.mul(m_fZoomfactor);
@@ -480,180 +486,44 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 		return;
 
 	static float fAvgTimeDelta = Device.fTimeDelta;
-	fAvgTimeDelta = _inertion(fAvgTimeDelta, Device.fTimeDelta, 0.8f);
+	fAvgTimeDelta = inertion(fAvgTimeDelta, Device.fTimeDelta, 0.8f);
 
 	u8 idx = m_bZoomed ? 1 : 0;
 
 	float fYMag = pActor->fFPCamYawMagnitude;
 	float fPMag = pActor->fFPCamPitchMagnitude;
 
-	float fStrafeMaxTime = hi->m_measures.m_strafe_offset[2][idx].y;
-	// Макс. время в секундах, за которое мы наклонимся из центрального положения
-	if (fStrafeMaxTime <= EPS)
-		fStrafeMaxTime = 0.01f;
-
-	float fStepPerUpd = fAvgTimeDelta / fStrafeMaxTime; // Величина изменение фактора поворота
-
-														// Добавляем боковой наклон от движения камеры
-	float fCamReturnSpeedMod = 1.5f;
-	// Восколько ускоряем нормализацию наклона, полученного от движения камеры (только от бедра)
-
-	// Высчитываем минимальную скорость поворота камеры для начала инерции
-	float fStrafeMinAngle = _lerp(
-		hi->m_measures.m_strafe_offset[3][0].y,
-		hi->m_measures.m_strafe_offset[3][1].y,
-		m_fZoomfactor);
-
-	// Высчитываем мксимальный наклон от поворота камеры
-	float fCamLimitBlend = _lerp(
-		hi->m_measures.m_strafe_offset[3][0].x,
-		hi->m_measures.m_strafe_offset[3][1].x,
-		m_fZoomfactor);
-
-	// Считаем стрейф от поворота камеры
-	if (abs(fYMag) > (m_fLR_CameraFactor == 0.0f ? fStrafeMinAngle : 0.0f))
-	{
-		//--> Камера крутится по оси Y
-		m_fLR_CameraFactor -= (fYMag * fAvgTimeDelta * 0.75f);
-		clamp(m_fLR_CameraFactor, -fCamLimitBlend, fCamLimitBlend);
-	}
-	else
-	{
-		//--> Камера не поворачивается - убираем наклон
-		if (m_fLR_CameraFactor < 0.0f)
-		{
-			m_fLR_CameraFactor += fStepPerUpd * (m_bZoomed ? 1.0f : fCamReturnSpeedMod);
-			clamp(m_fLR_CameraFactor, -fCamLimitBlend, 0.0f);
-		}
-		else
-		{
-			m_fLR_CameraFactor -= fStepPerUpd * (m_bZoomed ? 1.0f : fCamReturnSpeedMod);
-			clamp(m_fLR_CameraFactor, 0.0f, fCamLimitBlend);
-		}
-	}
-
-	// Добавляем боковой наклон от ходьбы вбок
-	float fChangeDirSpeedMod = 3;
-	// Восколько быстро меняем направление направление наклона, если оно в другую сторону от текущего
-	u32 iMovingState = pActor->MovingState();
-	if ((iMovingState & mcLStrafe) != 0)
-	{
-		// Движемся влево
-		float fVal = (m_fLR_MovingFactor > 0.f ? fStepPerUpd * fChangeDirSpeedMod : fStepPerUpd);
-		m_fLR_MovingFactor -= fVal;
-	}
-	else if ((iMovingState & mcRStrafe) != 0)
-	{
-		// Движемся вправо
-		float fVal = (m_fLR_MovingFactor < 0.f ? fStepPerUpd * fChangeDirSpeedMod : fStepPerUpd);
-		m_fLR_MovingFactor += fVal;
-	}
-	else
-	{
-		// Двигаемся в любом другом направлении - плавно убираем наклон
-		if (m_fLR_MovingFactor < 0.0f)
-		{
-			m_fLR_MovingFactor += fStepPerUpd;
-			clamp(m_fLR_MovingFactor, -1.0f, 0.0f);
-		}
-		else
-		{
-			m_fLR_MovingFactor -= fStepPerUpd;
-			clamp(m_fLR_MovingFactor, 0.0f, 1.0f);
-		}
-	}
-	clamp(m_fLR_MovingFactor, -1.0f, 1.0f); // Фактор боковой ходьбы не должен превышать эти лимиты
-
-											// Вычисляем и нормализируем итоговый фактор наклона
-	float fLR_Factor = m_fLR_MovingFactor;
-
-	// No cam strafe inertia while in freelook mode
-	if (pActor->cam_freelook == eflDisabled)
-		fLR_Factor += m_fLR_CameraFactor;
-
-	clamp(fLR_Factor, -1.0f, 1.0f); // Фактор боковой ходьбы не должен превышать эти лимиты
-
-									// Производим наклон ствола для нормального режима и аима
-	for (int _idx = 0; _idx <= 1; _idx++) //<-- Для плавного перехода
-	{
-		bool bEnabled = (hi->m_measures.m_strafe_offset[2][_idx].x != 0.0f);
-		if (!bEnabled)
-			continue;
-
-		Fvector curr_offs, curr_rot;
-
-		// Смещение позиции худа в стрейфе
-		curr_offs = hi->m_measures.m_strafe_offset[0][_idx]; // pos
-		curr_offs.mul(fLR_Factor); // Умножаем на фактор стрейфа
-
-								   // Поворот худа в стрейфе
-		curr_rot = hi->m_measures.m_strafe_offset[1][_idx]; // rot
-		curr_rot.mul(-PI / 180.f); // Преобразуем углы в радианы
-		curr_rot.mul(fLR_Factor); // Умножаем на фактор стрейфа
-
-								  // Мягкий переход между бедром \ прицелом
-		if (_idx == 0)
-		{
-			// От бедра
-			curr_offs.mul(1.f - m_fZoomfactor);
-			curr_rot.mul(1.f - m_fZoomfactor);
-		}
-		else
-		{
-			// Во время аима
-			curr_offs.mul(m_fZoomfactor);
-			curr_rot.mul(m_fZoomfactor);
-		}
-
-		Fmatrix hud_rotation;
-		Fmatrix hud_rotation_y;
-
-		hud_rotation.identity();
-		hud_rotation.rotateX(curr_rot.x);
-
-		hud_rotation_y.identity();
-		hud_rotation_y.rotateY(curr_rot.y);
-		hud_rotation.mulA_43(hud_rotation_y);
-
-		hud_rotation_y.identity();
-		hud_rotation_y.rotateZ(curr_rot.z);
-		hud_rotation.mulA_43(hud_rotation_y);
-
-		hud_rotation.translate_over(curr_offs);
-		trans.mulB_43(hud_rotation);
-	}
-
 	//============= Инерция оружия =============//
 	// Параметры инерции
-	float fInertiaSpeedMod = _lerp(
+	float fInertiaSpeedMod = lerp(
 		hi->m_measures.m_inertion_params.m_tendto_speed,
 		hi->m_measures.m_inertion_params.m_tendto_speed_aim,
 		m_fZoomfactor);
 
-	float fInertiaReturnSpeedMod = _lerp(
+	float fInertiaReturnSpeedMod = lerp(
 		hi->m_measures.m_inertion_params.m_tendto_ret_speed,
 		hi->m_measures.m_inertion_params.m_tendto_ret_speed_aim,
 		m_fZoomfactor);
 
-	float fInertiaMinAngle = _lerp(
+	float fInertiaMinAngle = lerp(
 		hi->m_measures.m_inertion_params.m_min_angle,
 		hi->m_measures.m_inertion_params.m_min_angle_aim,
 		m_fZoomfactor);
 
 	Fvector4 vIOffsets; // x = L, y = R, z = U, w = D
-	vIOffsets.x = _lerp(
+	vIOffsets.x = lerp(
 		hi->m_measures.m_inertion_params.m_offset_LRUD.x,
 		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.x,
 		m_fZoomfactor);
-	vIOffsets.y = _lerp(
+	vIOffsets.y = lerp(
 		hi->m_measures.m_inertion_params.m_offset_LRUD.y,
 		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.y,
 		m_fZoomfactor);
-	vIOffsets.z = _lerp(
+	vIOffsets.z = lerp(
 		hi->m_measures.m_inertion_params.m_offset_LRUD.z,
 		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.z,
 		m_fZoomfactor);
-	vIOffsets.w = _lerp(
+	vIOffsets.w = lerp(
 		hi->m_measures.m_inertion_params.m_offset_LRUD.w,
 		hi->m_measures.m_inertion_params.m_offset_LRUD_aim.w,
 		m_fZoomfactor);
@@ -732,7 +602,7 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 	hud_rotation.identity();
 	hud_rotation.translate_over(curr_offs);
 	trans.mulB_43(hud_rotation);
-}*/
+}
 
 void CPda::UpdateXForm()
 {

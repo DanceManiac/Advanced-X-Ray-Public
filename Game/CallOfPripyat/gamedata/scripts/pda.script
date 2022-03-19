@@ -364,3 +364,12 @@ function change_anomalies_names()
 		end
 	end
 end
+
+
+function pda_use() -- from engine
+	return true
+end
+
+function on_low_battery() -- from engine
+
+end

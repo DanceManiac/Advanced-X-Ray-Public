@@ -95,7 +95,7 @@ protected:
 public:
 	virtual void OnStateSwitch(u32 S);
 	virtual void OnAnimationEnd(u32 state);
-	//virtual void UpdateHudAdditional(Fmatrix& trans);
+	virtual void UpdateHudAdditional(Fmatrix& trans);
 	virtual void OnMoveToRuck(const SInvItemPlace& prev);
 	virtual void UpdateCL();
 	virtual void UpdateXForm();
