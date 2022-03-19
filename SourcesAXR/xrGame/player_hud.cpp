@@ -182,7 +182,7 @@ void attachable_hud_item::update_hud_additional(Fmatrix& trans)
 {
 	if(m_parent_hud_item)
 	{
-		m_parent_hud_item->UpdateHudAdditonal(trans);
+		m_parent_hud_item->UpdateHudAdditional(trans);
 	}
 }
 

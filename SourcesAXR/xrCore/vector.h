@@ -108,8 +108,15 @@ IC float snapto	( float value, float snap )	{
 	return float(iFloor((value+(snap*0.5f)) / snap )) * snap;
 };
 
+// linear interpolation
+template <class T>
+inline constexpr T lerp(const T& _val_a, const T& _val_b, const float& _factor)
+{
+	return (_val_a * (1.0 - _factor)) + (_val_b * _factor);
+}
+
 // inertion
-IC float _inertion(float _val_cur, float _val_trgt, float _friction)
+IC float inertion(float _val_cur, float _val_trgt, float _friction)
 {
 	float friction_i = 1.f - _friction;
 	return _val_cur * _friction + _val_trgt * friction_i;

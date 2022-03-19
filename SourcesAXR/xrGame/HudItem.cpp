@@ -178,7 +178,7 @@ void CHudItem::SendHiddenItem()
 }
 
 
-void CHudItem::UpdateHudAdditonal		(Fmatrix& hud_trans)
+void CHudItem::UpdateHudAdditional(Fmatrix& hud_trans)
 {
 }
 
