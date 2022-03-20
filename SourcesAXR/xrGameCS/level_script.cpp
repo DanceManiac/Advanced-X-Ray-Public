@@ -696,6 +696,23 @@ float g_get_target_dist()
 
 //Alundaio: END
 
+void send_event_key_press(int dik)
+{
+	Level().IR_OnKeyboardPress(dik);
+}
+void send_event_key_release(int dik)
+{
+	Level().IR_OnKeyboardRelease(dik);
+}
+void send_event_key_hold(int dik)
+{
+	Level().IR_OnKeyboardHold(dik);
+}
+void send_event_mouse_wheel(int vol)
+{
+	Level().IR_OnMouseWheel(vol);
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -718,6 +735,11 @@ void CLevel::script_register(lua_State *L)
 		def("check_object",						check_object),
 #endif
 		
+		def("send_event_key_press",				&send_event_key_press),
+		def("send_event_key_release",			&send_event_key_release),
+		def("send_event_key_hold",				&send_event_key_hold),
+		def("send_event_mouse_wheel",			&send_event_mouse_wheel),
+
 		def("get_weather",						get_weather),
 		def("set_weather",						set_weather),
 		def("set_weather_fx",					set_weather_fx),
