@@ -455,6 +455,7 @@ static	u32 SlotsToCheck [] = {
 		GRENADE_SLOT	,		// 3
 		APPARATUS_SLOT	,		// 4
 		ARTEFACT_SLOT	,		// 10
+		PDA_SLOT		,
 };
 
 void	CActor::OnNextWeaponSlot()
@@ -480,6 +481,10 @@ void	CActor::OnNextWeaponSlot()
 			if (SlotsToCheck[i] == ARTEFACT_SLOT) 
 			{
 				IR_OnKeyboardPress(kARTEFACT);
+			}
+			else if (SlotsToCheck[i] == PDA_SLOT)
+			{
+				IR_OnKeyboardPress(kACTIVE_JOBS);
 			}
 			else
 				IR_OnKeyboardPress(kWPN_1+(i-KNIFE_SLOT));

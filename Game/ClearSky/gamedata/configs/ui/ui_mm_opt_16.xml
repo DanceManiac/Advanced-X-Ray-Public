@@ -482,6 +482,13 @@
 			<options_item entry="g_3d_scopes" group="mm_opt_video_adv" depend="restart"/>
 		</check_3d_scopes_enable>
 		
+		<cap_3d_pda_enable x="17" y="0" width="119" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_3d_pda</text>
+		</cap_3d_pda_enable>
+		<check_3d_pda_enable x="162" y="0" width="27" height="21">
+			<options_item entry="g_3d_pda" group="mm_opt_video_adv"/>
+		</check_3d_pda_enable>
+		
 		<cap_bloodmarks_on_skeleton x="17" y="0" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_bloodmarks_on_skeleton</text>
 		</cap_bloodmarks_on_skeleton>

@@ -20,6 +20,9 @@
 
 #include "AdvancedXrayGameConstants.h"
 #include "Inventory.h"
+#include "alife_registry_wrappers.h"
+#include "../xrServerEntitiesCS/script_engine.h"
+#include "HUDManager.h"
 
 CUIGameSP::CUIGameSP()
 {
@@ -81,22 +84,25 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	switch ( get_binded_action(dik) )
 	{
 	case kACTIVE_JOBS:
-		if (GameConstants::GetPdaSlotEnabled())
 		{
-			if (pActor->inventory().m_slots[PDA_SLOT].m_pIItem)
-				ShowPdaMenu();
+			if (!psActorFlags.test(AF_3D_PDA))
+			{
+				luabind::functor<bool> funct;
+				if (ai().script_engine().functor("pda.pda_use", funct))
+				{
+					if (funct())
+						ShowPdaMenu();
+				}
+			}
 			break;
 		}
-		else
-		{
-			ShowPdaMenu();
-			break;
-		}
-
 	case kINVENTORY:
 		{
+		if (psActorFlags.test(AF_3D_PDA) && HUD().GetUI()->UIGame()->PdaMenu().IsShown())
+			pActor->inventory().Activate(NO_ACTIVE_SLOT);
+
 			ShowActorMenu();
-			break;
+		break;
 		}
 
 	case kSCORES:

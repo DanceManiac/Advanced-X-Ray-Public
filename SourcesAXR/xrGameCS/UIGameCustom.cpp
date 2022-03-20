@@ -11,6 +11,7 @@
 #include "InventoryOwner.h"
 #include "ui/UIActorMenu.h"
 #include "ui/UIPdaWnd.h"
+#include "actor.h"
 
 #include "../xrEngine/x_ray.h"
 EGameIDs ParseStringToGameType(LPCSTR str);
@@ -231,6 +232,8 @@ bool CUIGameCustom::ShowActorMenu()
 	{
 		if ( !m_ActorMenu->IsShown() )
 		{
+			if (!psActorFlags.test(AF_3D_PDA)) HidePdaMenu();
+
 //			CInventoryOwner* pIOActor	= smart_cast<CInventoryOwner*>( Level().CurrentControlEntity() );
 			CInventoryOwner* pIOActor	= smart_cast<CInventoryOwner*>( Level().CurrentViewEntity() );
 			VERIFY						(pIOActor);

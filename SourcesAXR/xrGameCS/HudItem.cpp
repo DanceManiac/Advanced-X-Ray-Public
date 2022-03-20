@@ -189,7 +189,7 @@ void CHudItem::SendHiddenItem()
 }
 
 
-void CHudItem::UpdateHudAdditonal		(Fmatrix& hud_trans)
+void CHudItem::UpdateHudAdditional(Fmatrix& hud_trans)
 {
 }
 
@@ -516,4 +516,17 @@ attachable_hud_item* CHudItem::HudItemData()
 		return hi;
 
 	return NULL;
+}
+
+BOOL CHudItem::ParentIsActor()
+{
+	CObject* O = object().H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return !!EA->cast_actor();
 }

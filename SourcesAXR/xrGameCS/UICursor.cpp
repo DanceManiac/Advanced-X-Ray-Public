@@ -67,9 +67,15 @@ void CUICursor::OnRender	()
 	}
 #endif
 
+	u32 curFrame = Device.dwFrame;
+	if (curFrame == last_render_frame)
+		return;
+
 	m_static->SetWndPos	(vPos);
 	m_static->Update	();
 	m_static->Draw		();
+
+	last_render_frame = curFrame;
 }
 
 Fvector2 CUICursor::GetCursorPosition()

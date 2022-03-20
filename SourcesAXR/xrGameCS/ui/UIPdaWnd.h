@@ -5,77 +5,119 @@
 
 class CInventoryOwner;
 class CUIFrameLineWnd;
-class CUIButton;
-class CUI3tButtonEx;
+class CUI3tButton;
 class CUITabControl;
 class CUIStatic;
+class CUITextWnd;
 class CUIXml;
 class CUIFrameWindow;
 class UIHint;
 
-class CUIActorInfoWnd;
-class CUIPdaContactsWnd;
 class CUITaskWnd;
-class CUIFactionWarWnd;
+//-class CUIFactionWarWnd;
 class CUIRankingWnd;
 class CUILogsWnd;
 class CUIAnimatedStatic;
 class UIHint;
+class CUIProgressBar;
+
+class CMapSpot;
 
 
-class CUIPdaWnd: public CUIDialogWnd
+class CUIPdaWnd : public CUIDialogWnd
 {
-	typedef CUIDialogWnd	inherited;
+	typedef CUIDialogWnd inherited;
 protected:
-	CUITabControl*			UITabControl;
-	CUI3tButtonEx*			m_btn_close;
+	CUITabControl* UITabControl;
+	CUI3tButton* m_btn_close;
 
-	CUIStatic*				UIMainPdaFrame;
-	CUIStatic*				UINoice;
-	
-	CUIStatic*				m_caption;
-	shared_str				m_caption_const;
-	CUIAnimatedStatic*		m_anim_static;
+	CUIStatic* UIMainPdaFrame;
+	CUIStatic* UINoice;
+
+	CUIStatic* m_caption;
+	shared_str m_caption_const;
+	//	CUIAnimatedStatic*		m_anim_static;
+	CUIStatic* m_clock;
 
 	// Текущий активный диалог
-	CUIWindow*				m_pActiveDialog;
-	shared_str				m_sActiveSection;
+	CUIWindow* m_pActiveDialog;
+	shared_str m_sActiveSection;
 
-	UIHint*					m_hint_wnd;
+	UIHint* m_hint_wnd;
 
-public:
-	CUITaskWnd*				pUITaskWnd;
-	CUIFactionWarWnd*		pUIFactionWarWnd;
-	CUIRankingWnd*			pUIRankingWnd;
-	CUILogsWnd*				pUILogsWnd;
+	u32 dwPDAFrame;
 
-	virtual void			Reset				();
+	CUIProgressBar* m_battery_bar;
+
+	bool bButtonL, bButtonR;
 
 public:
-							CUIPdaWnd			();
-	virtual					~CUIPdaWnd			();
+	CUITaskWnd* pUITaskWnd;
+	//-	CUIFactionWarWnd*		pUIFactionWarWnd;
+	CUIRankingWnd* pUIRankingWnd;
+	CUILogsWnd* pUILogsWnd;
+	Frect m_cursor_box;
+	CMapSpot* pSelectedMapSpot;
 
-	virtual void 			Init				();
+	virtual void Reset();
+public:
+	CUIPdaWnd();
+	virtual ~CUIPdaWnd();
 
-	virtual void 			SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+	virtual void Init();
 
-	virtual void 			Draw				();
-	virtual void 			Update				();
-	virtual void 			Show				();
-	virtual void 			Hide				();
-	virtual bool			OnMouse				(float x, float y, EUIMessages mouse_action) {CUIDialogWnd::OnMouse(x,y,mouse_action);return true;} //always true because StopAnyMove() == false
+	virtual void SendMessage(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+
+	virtual void Draw();
+	virtual void Update();
+	virtual void Show();
+
+	virtual bool OnMouse(float x, float y, EUIMessages mouse_action);
+	void MouseMovement(float x, float y);
+	virtual void Enable(bool status);
+	virtual bool OnKeyboard(int dik, EUIMessages keyboard_action);
+
+	UIHint* get_hint_wnd() const { return m_hint_wnd; }
+	void DrawHint();
+
+	void SetActiveCaption();
+	void SetCaption(LPCSTR text);
+	void Show_SecondTaskWnd(bool status);
+	void Show_MapLegendWnd(bool status);
+
+	void SetActiveDialog(CUIWindow* pUI) { m_pActiveDialog = pUI; };
+	CUIWindow* GetActiveDialog() { return m_pActiveDialog; };
+	LPCSTR GetActiveSection() { return m_sActiveSection.c_str(); };
+	CUITabControl* GetTabControl() { return UITabControl; };
+
+	void SetActiveSubdialog(const shared_str& section);
+	void SetActiveSubdialog_script(LPCSTR section) { SetActiveSubdialog((const shared_str&)section); };
+	virtual bool StopAnyMove() { return false; }
+
+	void UpdatePda();
+	void UpdateRankingWnd();
+	void ResetCursor();
+	float m_power;
+	Fvector2 last_cursor_pos;
+
+	Fvector target_joystickrot, joystickrot;
+	float target_buttonpress, buttonpress;
+
+	void ResetJoystick(bool bForce)
+	{
+		if (bForce)
+		{
+			joystickrot.set(0.f, 0.f, 0.f);
+			buttonpress = 0.f;
+		}
 		
-			UIHint*			get_hint_wnd		() const { return m_hint_wnd; }
-			void			DrawHint			();
+		target_joystickrot.set(0.f, 0.f, 0.f);
+		target_buttonpress = 0.f;
+	}
 
-			void			SetActiveCaption	();
-			void			SetCaption			(LPCSTR text);
-			void			Show_SecondTaskWnd	(bool status);
-			void			Show_MapLegendWnd	(bool status);
-
-			void			SetActiveSubdialog	(const shared_str& section);
-	virtual bool			StopAnyMove			(){return false;}
-
-			void			UpdatePda			();
-
+DECLARE_SCRIPT_REGISTER_FUNCTION
 };
+
+add_to_type_list(CUIPdaWnd)
+#undef script_type_list
+#define script_type_list save_type_list(CUIPdaWnd)

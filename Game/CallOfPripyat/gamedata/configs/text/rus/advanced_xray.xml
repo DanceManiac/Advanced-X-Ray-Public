@@ -240,4 +240,7 @@
 	<string id="ui_mm_pbr">
 		<text>Псевдо PBR</text>
 	</string>
+	<string id="ui_mm_3d_pda">
+		<text>3D КПК</text>
+	</string>
 </string_table>

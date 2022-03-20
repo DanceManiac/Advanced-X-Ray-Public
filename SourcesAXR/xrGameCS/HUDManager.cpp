@@ -400,3 +400,11 @@ void CHUDManager::OnScreenResolutionChanged()
 
 	pUI->OnConnected();
 }
+
+CDialogHolder* CurrentDialogHolder()
+{
+	if (MainMenu()->IsActive())
+		return MainMenu();
+	else
+		return HUD().GetUI();
+}

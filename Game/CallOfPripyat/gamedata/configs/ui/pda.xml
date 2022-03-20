@@ -37,6 +37,18 @@
 		</text>
 	</hint_wnd>
 
+	<battery_bar x="703" y="28" width="24" height="15" horz="1" min="0" max="1.1" pos="1" stretch="1">
+		<background stretch="1">
+			<texture>ui_inGame2_pda_battery_bar_background</texture>
+		</background>
+		<progress x="-0.5" stretch="1">
+			<texture r="142" g="149" b="149">ui_inGame2_pda_battery_bar</texture>
+		</progress>
+		<min_color r="196" g="18" b="18"/>
+		<middle_color r="100" g="100" b="100"/>
+		<max_color r="100" g="100" b="100"/>
+    </battery_bar>
+	
 	<tab x="443" y="57" width="468" height="27">
 	<button x="0" y="0" width="172" height="27" id="eptTasks" hint="pda_btn_quests_hint" frame_mode="0">
 		<text align="c" vert_align="c" x="0" y="0" width="157" height="27" font="letterica16">pda_btn_quests</text>

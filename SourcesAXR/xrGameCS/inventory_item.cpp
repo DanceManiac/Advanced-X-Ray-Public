@@ -122,6 +122,7 @@ void CInventoryItem::Load(LPCSTR section)
 	}
 	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",		NULL);
 
+	m_fLowestBatteryCharge		= READ_IF_EXISTS(pSettings, r_float, section, "power_critical", .03f);
 }
 
 void  CInventoryItem::ChangeCondition(float fDeltaCondition)
@@ -133,7 +134,7 @@ void  CInventoryItem::ChangeCondition(float fDeltaCondition)
 
 void	CInventoryItem::Hit					(SHit* pHDS)
 {
-	if( !m_flags.test(FUsingCondition) ) return;
+	if (IsUsingCondition() == false) return;
 
 	float hit_power = pHDS->damage();
 	hit_power *= m_HitTypeK[pHDS->hit_type];

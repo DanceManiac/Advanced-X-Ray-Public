@@ -172,6 +172,21 @@ bool CUIDialogWnd::IR_process()
 	return true;
 }
 
-void CUIDialogWnd::Update(){
+void CUIDialogWnd::Update()
+{
 	CUIWindow::Update();
+}
+
+CDialogHolder* CurrentDialogHolder();
+
+void CUIDialogWnd::ShowDialog(bool bDoHideIndicators)
+{
+	if (!IsShown())
+		CurrentDialogHolder()->StartDialog(this, bDoHideIndicators);
+}
+
+void CUIDialogWnd::HideDialog()
+{
+	R_ASSERT2(IsShown(), "dialog already hidden");
+	GetHolder()->StopDialog(this);
 }

@@ -380,3 +380,11 @@ function get_stat(index) -- index= int        return string
 		return tostring(xr_statistic.actor_statistic.killed_monsters)
 	end
 end
+
+function pda_use() -- from engine
+	return true
+end
+
+function on_low_battery() -- from engine
+
+end

@@ -124,7 +124,7 @@ public:
 	virtual void				renderable_Render	();
 
 
-	virtual void				UpdateHudAdditonal	(Fmatrix&);
+	virtual void				UpdateHudAdditional	(Fmatrix&);
 
 
 	virtual	void				UpdateXForm			()						= 0;
@@ -151,6 +151,7 @@ public:
 	virtual bool				render_item_3d_ui_query	()					{return false;}
 
 	virtual bool				CheckCompatibility		(CHudItem*)			{return true;}
+	virtual BOOL				ParentIsActor			();
 protected:
 
 	IC		void				SetPending			(BOOL H)			{ m_huditem_flags.set(fl_pending, H);}

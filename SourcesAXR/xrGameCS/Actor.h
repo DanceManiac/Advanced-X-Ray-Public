@@ -333,6 +333,10 @@ protected:
 	void					camUpdateLadder			(float dt);
 	void					cam_SetLadder			();
 	void					cam_UnsetLadder			();
+	void					camUpdateFreelook		(float dt);
+	void					cam_SetFreelook			();
+	void					cam_UnsetFreelook		();
+	bool					CanUseFreelook			();
 	float					currentFOV				();
 
 	// Cameras
@@ -351,6 +355,11 @@ protected:
 public:
 	float					fFPCamYawMagnitude;			//--#SM+#--
 	float					fFPCamPitchMagnitude;		//--#SM+#--
+
+	// Rezy - Freelook
+	u8						cam_freelook;
+	float					freelook_cam_control;
+	float					old_torso_yaw;
 public:
 	virtual void			feel_touch_new				(CObject* O);
 	virtual void			feel_touch_delete			(CObject* O);
@@ -415,6 +424,7 @@ public:
 	bool					CanSprint				();
 	bool					CanRun					();
 	void					StopAnyMove				();
+	void					StopSprint				() {mstate_wishful &= ~mcSprint;}
 
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
 	bool					AnyMove					()	{return (mstate_real & mcAnyMove) != 0;};
