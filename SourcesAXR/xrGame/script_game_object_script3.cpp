@@ -335,5 +335,18 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 
 		.def("is_ActorHide",				&CScriptGameObject::addon_IsActorHideout)			// проверка что актор под  каким либо укрытием
 
+		/*added by Ray Twitty (aka Shadows) START*/
+		.def("get_actor_max_weight",			&CScriptGameObject::GetActorMaxWeight)
+		.def("set_actor_max_weight",			&CScriptGameObject::SetActorMaxWeight)
+		.def("get_actor_max_walk_weight",		&CScriptGameObject::GetActorMaxWalkWeight)
+		.def("set_actor_max_walk_weight",		&CScriptGameObject::SetActorMaxWalkWeight)
+		.def("get_additional_max_weight",		&CScriptGameObject::GetAdditionalMaxWeight)
+		.def("set_additional_max_weight",		&CScriptGameObject::SetAdditionalMaxWeight)
+		.def("get_additional_max_walk_weight",	&CScriptGameObject::GetAdditionalMaxWalkWeight)
+		.def("set_additional_max_walk_weight",	&CScriptGameObject::SetAdditionalMaxWalkWeight)
+		.def("get_total_weight",				&CScriptGameObject::GetTotalWeight)
+		.def("weight",							&CScriptGameObject::Weight)
+		/*added by Ray Twitty (aka Shadows) END*/
+
 	;return	(instance);
 }

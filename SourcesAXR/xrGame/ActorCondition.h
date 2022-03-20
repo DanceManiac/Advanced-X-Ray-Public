@@ -126,7 +126,7 @@ public:
 	float	GetMaxWoundProtection					() {return m_max_wound_protection;};
 	float	GetMaxFireWoundProtection				() {return m_max_fire_wound_protection;};
 
-protected:
+public:
 	SMedicineInfluenceValues						m_curr_medicine_influence;
 	float m_fAlcohol;
 	float m_fV_Alcohol;

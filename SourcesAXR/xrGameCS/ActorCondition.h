@@ -88,7 +88,7 @@ public:
 	bool	PlayHitSound							(SHit* pHDS);
 	float	HitSlowmo								(SHit* pHDS);
 
-protected:
+public:
 	float m_fAlcohol;
 	float m_fV_Alcohol;
 //--
