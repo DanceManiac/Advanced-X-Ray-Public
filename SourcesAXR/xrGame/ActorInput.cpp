@@ -34,6 +34,7 @@
 #include "hudmanager.h"
 #include "Weapon.h"
 #include "WeaponMagazined.h"
+#include "script_engine.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -41,6 +42,8 @@ extern int hud_adj_mode;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
 	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
 
 	if (Remote())		return;
@@ -230,6 +233,8 @@ void CActor::IR_OnMouseWheel(int direction)
 
 void CActor::IR_OnKeyboardRelease(int cmd)
 {
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
 	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
 
 	if (Remote())	return;
@@ -262,6 +267,8 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 
 void CActor::IR_OnKeyboardHold(int cmd)
 {
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
 	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
 
 	if (Remote() || !g_Alive())					return;

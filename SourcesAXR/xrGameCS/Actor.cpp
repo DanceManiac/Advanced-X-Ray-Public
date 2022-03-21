@@ -2193,3 +2193,20 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 		//Msg("GE_TRADER_FLAGS event sent %d", m_trader_flags.get());
 	}
 }
+
+void CActor::block_action(EGameActions cmd)
+{
+	if (m_blocked_actions.find(cmd) == m_blocked_actions.end())
+	{
+		m_blocked_actions[cmd] = true;
+	}
+}
+
+void CActor::unblock_action(EGameActions cmd)
+{
+	auto iter = m_blocked_actions.find(cmd);
+	if (iter != m_blocked_actions.end())
+	{
+		m_blocked_actions.erase(iter);
+	}
+}
