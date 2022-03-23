@@ -99,6 +99,8 @@ public:
 	virtual void	afterDetach				();
 	virtual void	renderable_Render		();
 
+	virtual bool	install_upgrade_impl	(LPCSTR section, bool test);
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 

@@ -564,3 +564,14 @@ float CTorch::get_range() const
 {
 	return light_render->get_range();
 }
+
+bool CTorch::install_upgrade_impl(LPCSTR section, bool test)
+{
+	//Msg("Torch Upgrade");
+	bool result = inherited::install_upgrade_impl(section, test);
+
+	result |= process_if_exists(section, "uncharge_speed", &CInifile::r_float, m_fUnchargeSpeed, test);
+	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
+
+	return result;
+}

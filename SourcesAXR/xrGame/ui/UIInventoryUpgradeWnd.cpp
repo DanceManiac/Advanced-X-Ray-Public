@@ -37,6 +37,7 @@
 #include "../ActorHelmet.h"
 
 #include "../CustomDetector.h"
+#include "../Torch.h"
 
 // -----
 
@@ -115,7 +116,7 @@ void CUIInventoryUpgradeWnd::InitInventory( CInventoryItem* item, bool can_upgra
 		if(smart_cast<CWeaponRPG7*>(item))
 			m_item->SetShader(InventoryUtilities::GetOutfitUpgradeIconsShader());
 	}
-	else if(smart_cast<CCustomOutfit*>(item) || smart_cast<CHelmet*>(item) || smart_cast<CCustomDetector*>(item))
+	else if(smart_cast<CCustomOutfit*>(item) || smart_cast<CHelmet*>(item) || smart_cast<CCustomDetector*>(item) || smart_cast<CTorch*>(item))
 	{
 		is_shader = true;
 		m_item->SetShader(InventoryUtilities::GetOutfitUpgradeIconsShader());
