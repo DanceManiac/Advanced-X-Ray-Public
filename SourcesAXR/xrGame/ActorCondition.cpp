@@ -54,6 +54,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fAlcohol					= 0.f;
 	m_fSatiety					= 1.0f;
 	m_fThirst					= 1.0f;
+	m_fIntoxication				= 0.0f;
 
 //	m_vecBoosts.clear();
 
@@ -155,6 +156,12 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Thirst = pSettings->r_float(section, "thirst_v");
 	m_fV_ThirstPower = pSettings->r_float(section, "thirst_power_v");
 	m_fV_ThirstHealth = pSettings->r_float(section, "thirst_health_v");
+
+	// M.F.S. Team Intoxication
+	m_fIntoxicationCritical = pSettings->r_float(section, "intoxication_critical");
+	clamp(m_fIntoxicationCritical, 0.0f, 1.0f);
+	m_fV_Intoxication = pSettings->r_float(section, "intoxication_v");
+	m_fV_IntoxicationHealth = pSettings->r_float(section, "intoxication_health_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -205,8 +212,14 @@ void CActorCondition::UpdateCondition()
 			UpdateThirst();
 		}
 
+		if (GameConstants::GetActorIntoxication())
+		{
+			UpdateIntoxication();
+		}
+
 		m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
 		clamp			(m_fAlcohol,			0.0f,		1.0f);
+
 		if(IsGameTypeSingle())
 		{
 			CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
@@ -298,6 +311,11 @@ void CActorCondition::UpdateCondition()
 	if (GameConstants::GetActorThirst())
 	{
 		UpdateThirst();
+	}
+
+	if (GameConstants::GetActorIntoxication())
+	{
+		UpdateIntoxication();
 	}
 
 	inherited::UpdateCondition();
@@ -501,6 +519,36 @@ void CActorCondition::UpdateThirst()
 	}
 }
 
+//M.F.S. Team Intoxication
+void CActorCondition::UpdateIntoxication()
+{
+	CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effIntoxication);
+	if ((m_fIntoxication>=m_fIntoxicationCritical))
+	{
+		if (!ce) 
+			AddEffector(m_object, effIntoxication, "effector_intoxication", GET_KOEFF_FUNC(this, &CActorCondition::GetIntoxication));
+	}
+	else 
+	{
+		if (ce)
+			RemoveEffector(m_object, effIntoxication);
+	}
+
+	if (m_fIntoxication > 0)
+	{
+		m_fIntoxication -= m_fV_Intoxication*m_fDeltaTime;
+		clamp(m_fIntoxication, 0.0f, 1.0f);
+	}
+
+	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+	{
+		if (m_fIntoxication>=m_fIntoxicationCritical && GetHealth()>=0.25)
+			m_fDeltaHealth -= m_fV_IntoxicationHealth*m_fIntoxication*m_fDeltaTime;
+		else if (m_fIntoxication>=0.9f && GetHealth()<=0.25)
+			m_fDeltaHealth -= m_fV_IntoxicationHealth*m_fIntoxication*m_fDeltaTime;
+	}
+}
+
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
@@ -593,6 +641,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_condition_flags, output_packet);
 	save_data			(m_fSatiety, output_packet);
 	save_data			(m_fThirst, output_packet);
+	save_data			(m_fIntoxication, output_packet);
 
 	save_data			(m_curr_medicine_influence.fHealth, output_packet);
 	save_data			(m_curr_medicine_influence.fPower, output_packet);
@@ -604,6 +653,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_curr_medicine_influence.fTimeTotal, output_packet);
 	save_data			(m_curr_medicine_influence.fTimeCurrent, output_packet);
 	save_data			(m_curr_medicine_influence.fThirst, output_packet);
+	save_data			(m_curr_medicine_influence.fIntoxication, output_packet);
 
 	output_packet.w_u8((u8)m_booster_influences.size());
 	BOOSTER_MAP::iterator b = m_booster_influences.begin(), e = m_booster_influences.end();
@@ -622,6 +672,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_condition_flags, input_packet);
 	load_data			(m_fSatiety, input_packet);
 	load_data			(m_fThirst, input_packet);
+	load_data			(m_fIntoxication, input_packet);
 
 	load_data			(m_curr_medicine_influence.fHealth, input_packet);
 	load_data			(m_curr_medicine_influence.fPower, input_packet);
@@ -633,6 +684,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_curr_medicine_influence.fTimeTotal, input_packet);
 	load_data			(m_curr_medicine_influence.fTimeCurrent, input_packet);
 	load_data			(m_curr_medicine_influence.fThirst, input_packet);
+	load_data			(m_curr_medicine_influence.fIntoxication, input_packet);
 
 	u8 cntr = input_packet.r_u8();
 	for(; cntr>0; cntr--)
@@ -657,6 +709,7 @@ void CActorCondition::ChangeAlcohol	(float value)
 {
 	m_fAlcohol += value;
 }
+
 void CActorCondition::ChangeSatiety(float value)
 {
 	m_fSatiety += value;
@@ -668,6 +721,13 @@ void CActorCondition::ChangeThirst(float value)
 {
 	m_fThirst += value;
 	clamp(m_fThirst, 0.0f, 1.0f);
+}
+
+//M.F.S. Team Intoxication
+void CActorCondition::ChangeIntoxication(float value)
+{
+	m_fIntoxication += value;
+	clamp(m_fIntoxication, 0.0f, 1.0f);
 }
 
 void CActorCondition::BoostParameters(const SBooster& B)
@@ -802,6 +862,7 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cBleeding			= pSettings->r_float("tutorial_conditions_thresholds","bleeding");
 	static float _cSatiety			= pSettings->r_float("tutorial_conditions_thresholds","satiety");
 	static float _cThirst			= pSettings->r_float("tutorial_conditions_thresholds", "thirst");
+	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
 	static float _cRadiation		= pSettings->r_float("tutorial_conditions_thresholds","radiation");
 	static float _cWpnCondition		= pSettings->r_float("tutorial_conditions_thresholds","weapon_jammed");
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
@@ -837,6 +898,12 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalThirstReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_thirst");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalIntoxicationReached) && GetIntoxication()>_cIntoxication) {
+		m_condition_flags.set(eCriticalIntoxicationReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_intoxication");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){

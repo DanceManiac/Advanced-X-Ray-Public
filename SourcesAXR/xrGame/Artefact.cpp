@@ -79,6 +79,7 @@ void CArtefact::Load(LPCSTR section)
 	m_fConstPowerRestoreSpeed = pSettings->r_float(section, "power_restore_speed");
 	m_fConstBleedingRestoreSpeed = pSettings->r_float(section, "bleeding_restore_speed");
 	m_fConstThirstRestoreSpeed = pSettings->r_float(section, "thirst_restore_speed");
+	m_fConstIntoxicationRestoreSpeed = pSettings->r_float(section, "intoxication_restore_speed");
 	m_fConstAdditionalWeight = pSettings->r_float(section, "additional_inventory_weight");
 
 	m_fChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "artefact_charge_level", 1.0f);
@@ -102,6 +103,7 @@ void CArtefact::Load(LPCSTR section)
 	m_fPowerRestoreSpeed = m_fConstPowerRestoreSpeed;
 	m_fBleedingRestoreSpeed = m_fConstBleedingRestoreSpeed;
 	m_fThirstRestoreSpeed = m_fConstThirstRestoreSpeed;
+	m_fIntoxicationRestoreSpeed = m_fConstIntoxicationRestoreSpeed;
 	m_additional_weight = m_fConstAdditionalWeight;
 	m_fJumpSpeed = m_fConstJumpSpeed;
 	m_fWalkAccel = m_fConstWalkAccel;

@@ -39,6 +39,7 @@ protected:
 	CUIStatic*			m_ind_radiation;
 	CUIStatic*			m_ind_starvation;
 	CUIStatic*			m_ind_thirst;
+	CUIStatic*			m_ind_intoxication;
 	CUIStatic*			m_ind_weapon_broken;
 	CUIStatic*			m_ind_helmet_broken;
 	CUIStatic*			m_ind_outfit_broken;

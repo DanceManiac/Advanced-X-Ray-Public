@@ -149,6 +149,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_radiation			= UIHelper::CreateStatic(uiXml, "indicator_radiation", this);
 	m_ind_starvation		= UIHelper::CreateStatic(uiXml, "indicator_starvation", this);
 	m_ind_thirst			= UIHelper::CreateStatic(uiXml, "indicator_thirst", this);
+	m_ind_intoxication		= UIHelper::CreateStatic(uiXml, "indicator_intoxication", this);
 	m_ind_weapon_broken		= UIHelper::CreateStatic(uiXml, "indicator_weapon_broken", this);
 	m_ind_helmet_broken		= UIHelper::CreateStatic(uiXml, "indicator_helmet_broken", this);
 	m_ind_outfit_broken		= UIHelper::CreateStatic(uiXml, "indicator_outfit_broken", this);
@@ -761,6 +762,29 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			m_ind_thirst->InitTexture("ui_inGame2_circle_thirst_yellow");
 		else
 			m_ind_thirst->InitTexture("ui_inGame2_circle_thirst_red");
+	}
+
+	// M.F.S. Team Intoxication icon
+	float intoxication = pActor->conditions().GetIntoxication();
+	if (fis_zero(intoxication, EPS))
+	{
+		m_ind_intoxication->Show(false);
+	}
+	else
+	{
+		m_ind_intoxication->Show(true);
+		if (intoxication < 0.35f)
+		{
+			m_ind_intoxication->InitTexture("ui_inGame2_circle_intoxication_green");
+		}
+		else if (intoxication < 0.7f)
+		{
+			m_ind_intoxication->InitTexture("ui_inGame2_circle_intoxication_yellow");
+		}
+		else
+		{
+			m_ind_intoxication->InitTexture("ui_inGame2_circle_intoxication_red");
+		}
 	}
 
 // Armor broken icon

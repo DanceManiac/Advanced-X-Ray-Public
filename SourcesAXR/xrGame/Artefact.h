@@ -83,6 +83,7 @@ public:
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
 	float 							m_fThirstRestoreSpeed;
+	float 							m_fIntoxicationRestoreSpeed;
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 	CHitImmunity 					m_ArtefactHitImmunities;
@@ -94,6 +95,7 @@ public:
 	float							m_fConstPowerRestoreSpeed;
 	float							m_fConstBleedingRestoreSpeed;
 	float							m_fConstThirstRestoreSpeed;
+	float							m_fConstIntoxicationRestoreSpeed;
 	float							m_fConstAdditionalWeight;
 	float							m_fConstTrailLightRange;
 	float							m_fConstVolumetricDistance;

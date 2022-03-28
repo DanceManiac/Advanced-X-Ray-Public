@@ -21,6 +21,7 @@ CUIBoosterInfo::CUIBoosterInfo()
 	m_booster_anabiotic = NULL;
 	m_booster_battery = NULL;
 	m_booster_thirst = NULL;
+	m_booster_intoxication = NULL;
 	m_portions = NULL;
 	m_booster_time = NULL;
 }
@@ -32,6 +33,7 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	xr_delete(m_booster_anabiotic);
 	xr_delete(m_booster_battery);
 	xr_delete(m_booster_thirst);
+	xr_delete(m_booster_intoxication);
 	xr_delete(m_portions);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
@@ -109,6 +111,14 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_booster_thirst->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_thirst").c_str();
 	m_booster_thirst->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	//M.F.S. Team Intoxication
+	m_booster_intoxication = xr_new<UIBoosterInfoItem>();
+	m_booster_intoxication->Init(xml, "boost_intoxication");
+	m_booster_intoxication->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_intoxication").c_str();
+	m_booster_intoxication->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	//Portions
@@ -251,6 +261,22 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_booster_thirst->GetWndSize().y;
 			AttachChild(m_booster_thirst);
+		}
+	}
+
+	//M.F.S. Team Intoxication
+	if (pSettings->line_exist(section.c_str(), "eat_intoxication"))
+	{
+		val = pSettings->r_float(section, "eat_intoxication");
+		if (!fis_zero(val))
+		{
+			m_booster_intoxication->SetValue(val);
+			pos.set(m_booster_intoxication->GetWndPos());
+			pos.y = h;
+			m_booster_intoxication->SetWndPos(pos);
+
+			h += m_booster_intoxication->GetWndSize().y;
+			AttachChild(m_booster_intoxication);
 		}
 	}
 

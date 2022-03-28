@@ -124,5 +124,9 @@
 	    <texture id="ui_inGame2_circle_thirst_yellow" 				x="36" y="38" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_thirst_orange" 				x="36" y="76" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_thirst_red" 					x="36" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_intoxication_green" 			x="71" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_intoxication_yellow" 		x="71" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_intoxication_orange" 		x="71" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_intoxication_red" 			x="71" y="114" width="33" height="35" />
 	</file>
 </w>

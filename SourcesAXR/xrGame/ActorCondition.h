@@ -25,6 +25,7 @@ private:
 			eCantWalkWeight					=(1<<7),
 			eCantWalkWeightReached			=(1<<8),
 			eCriticalThirstReached			=(1<<9),
+			eCriticalIntoxicationReached	=(1<<10),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -33,6 +34,7 @@ private:
 	void				UpdateTutorialThresholds	();
 			void 		UpdateSatiety				();
 			void 		UpdateThirst				();
+			void 		UpdateIntoxication			();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
@@ -50,6 +52,7 @@ public:
 	virtual void 		ChangeAlcohol				(const float value);
 	virtual void 		ChangeSatiety				(const float value);
 	virtual void 		ChangeThirst				(const float value);
+	virtual void 		ChangeIntoxication			(const float value);
 
 	void 				BoostParameters				(const SBooster& B);
 	void 				DisableBoostParameters		(const SBooster& B);
@@ -90,6 +93,7 @@ public:
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
 	IC		float				GetSatietyPower		() const {return m_fV_SatietyPower*m_fSatiety;};
 	IC		float				GetThirstPower		() const { return m_fV_ThirstPower * m_fThirst; };
+			float	xr_stdcall	GetIntoxication		() { return m_fIntoxication; }
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
@@ -113,6 +117,9 @@ public:
 	IC		float const&	V_ThirstPower			() { return m_fV_ThirstPower; }
 	IC		float const&	V_ThirstHealth			() { return m_fV_ThirstHealth; }
 	IC		float const&	ThirstCritical			() { return m_fThirstCritical; }
+	IC		float const&	V_Intoxication			() { return m_fV_Intoxication; }
+	IC		float const&	V_IntoxicationHealth	() { return m_fV_IntoxicationHealth; }
+	IC		float const&	IntoxicationCritical	() { return m_fIntoxicationCritical; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -137,12 +144,16 @@ public:
 	float m_fSatietyCritical;
 //--
 
-//--M.F.S. Team Thirst
+//--M.F.S. Team
 	float m_fV_Thirst;
 	float m_fV_ThirstPower;
 	float m_fV_ThirstHealth;
 	float m_fThirstCritical;
-//--M.F.S. Team Thirst
+
+	float m_fV_Intoxication;
+	float m_fV_IntoxicationHealth;
+	float m_fIntoxicationCritical;
+//--M.F.S. Team
 
 	float m_fPowerLeakSpeed;
 

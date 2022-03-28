@@ -16,6 +16,7 @@
 #define effControllerAura2		(eStartEffectorID+8)
 #define effBigMonsterHit		(eStartEffectorID+9)
 #define effActorDeath			(eStartEffectorID+10)
+#define effIntoxication			(eStartEffectorID+11)
 
 #define	eCEFall					((ECamEffectorType)(cefNext+1))
 #define	eCENoise				((ECamEffectorType)(cefNext+2))

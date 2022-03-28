@@ -23,6 +23,7 @@ protected:
 	UIBoosterInfoItem*	m_booster_time;
 	UIBoosterInfoItem*	m_booster_battery;
 	UIBoosterInfoItem*	m_booster_thirst;
+	UIBoosterInfoItem*	m_booster_intoxication;
 	UIBoosterInfoItem*	m_portions;
 
 	CUIStatic*			m_Prop_line;

@@ -88,6 +88,8 @@ BIND_FUNCTION10	(&object(),	CScriptGameObject::GetActionCount,		CScriptEntity,	G
 BIND_FUNCTION10	(&object(),	CScriptGameObject::can_script_capture,	CScriptEntity,	can_script_capture,	bool,					0);
 BIND_FUNCTION10 (&object(), CScriptGameObject::GetThirst,			CEntityAlive,	conditions().GetThirst, float, -1);
 BIND_FUNCTION01 (&object(), CScriptGameObject::ChangeThirst,		CEntityAlive,	conditions().ChangeThirst, float, float);
+BIND_FUNCTION10 (&object(), CScriptGameObject::GetIntoxication,		CEntityAlive,	conditions().GetIntoxication, float, -1);
+BIND_FUNCTION01 (&object(), CScriptGameObject::ChangeIntoxication,	CEntityAlive,	conditions().ChangeIntoxication, float, float);
 
 u32	CScriptGameObject::level_vertex_id		() const
 {

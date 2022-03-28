@@ -28,6 +28,7 @@ CUIArtefactParams::CUIArtefactParams()
 	m_fPowerRestoreSpeed = NULL;
 	m_fBleedingRestoreSpeed = NULL;
 	m_fThirstRestoreSpeed = NULL;
+	m_fIntoxicationRestoreSpeed = NULL;
 	m_fWalkAccel = NULL;
 	m_fJumpSpeed = NULL;
 	m_additional_weight = NULL;
@@ -43,6 +44,7 @@ CUIArtefactParams::~CUIArtefactParams()
 	xr_delete	(m_fPowerRestoreSpeed);
 	xr_delete	(m_fBleedingRestoreSpeed);
 	xr_delete	(m_fThirstRestoreSpeed);
+	xr_delete	(m_fIntoxicationRestoreSpeed);
 	xr_delete	(m_fWalkAccel);
 	xr_delete	(m_fJumpSpeed);
 	xr_delete	(m_additional_weight);
@@ -72,6 +74,7 @@ LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
 	"bleeding_restore_speed",		// eBleedingRestoreSpeed=3
 	"radiation_restore_speed",		// eRadiationRestoreSpeed=4
 	"thirst_restore_speed",			// eThirstRestoreSpeed=5
+	"intoxication_restore_speed",	// eIntoxicationRestoreSpeed=6
 };
 
 LPCSTR af_immunity_caption[] =  // ALife::EInfluenceType
@@ -96,6 +99,7 @@ LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
 	"ui_inv_bleeding",
 	"ui_inv_radiation",
 	"ui_inv_thirst",
+	"ui_inv_intoxication",
 };
 
 /*
@@ -179,6 +183,13 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_fThirstRestoreSpeed->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_thirst").c_str();
 	m_fThirstRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fIntoxicationRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fIntoxicationRestoreSpeed->Init(xml, "intoxication_restore_speed");
+	m_fIntoxicationRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_intoxication").c_str();
+	m_fIntoxicationRestoreSpeed->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_fWalkAccel = xr_new<UIArtefactParamItem>();
@@ -357,6 +368,19 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_fThirstRestoreSpeed->GetWndSize().y;
 			AttachChild(m_fThirstRestoreSpeed);
+		}
+
+		val = artefact->m_fIntoxicationRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fIntoxicationRestoreSpeed->SetValue(val);
+
+			pos.set(m_fIntoxicationRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fIntoxicationRestoreSpeed->SetWndPos(pos);
+
+			h += m_fIntoxicationRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fIntoxicationRestoreSpeed);
 		}
 
 		val = artefact->m_fWalkAccel;

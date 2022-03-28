@@ -23,6 +23,7 @@ private:
 			ePhyHealthMinReached			=(1<<6),
 			eCantWalkWeight					=(1<<7),
 			eCriticalThirstReached			=(1<<8),
+			eCriticalIntoxicationReached	=(1<<9),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -31,6 +32,7 @@ private:
 	void				UpdateTutorialThresholds	();
 			void 		UpdateSatiety				();
 			void 		UpdateThirst				();
+			void 		UpdateIntoxication			();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
@@ -45,6 +47,7 @@ public:
 	virtual void 		ChangeAlcohol				(float value);
 	virtual void 		ChangeSatiety				(float value);
 	virtual void 		ChangeThirst				(float value);
+	virtual void 		ChangeIntoxication			(const float value);
 
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;
@@ -59,6 +62,7 @@ public:
 			
 			float	xr_stdcall	GetAlcohol			()	{return m_fAlcohol;}
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
+			float	xr_stdcall	GetIntoxication		()	{return m_fIntoxication;}
 
 			void		AffectDamage_InjuriousMaterial();
 			float		GetInjuriousMaterialDamage	();
@@ -80,6 +84,9 @@ public:
 	IC		float const&	V_Thirst				()  { return m_fV_Thirst; }
 	IC		float const&	V_ThirstPower			()  { return m_fV_ThirstPower; }
 	IC		float const&	V_ThirstHealth			()  { return m_fV_ThirstHealth; }
+	IC		float const&	V_Intoxication			() { return m_fV_Intoxication; }
+	IC		float const&	V_IntoxicationHealth	() { return m_fV_IntoxicationHealth; }
+	IC		float const&	IntoxicationCritical	() { return m_fIntoxicationCritical; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -97,11 +104,14 @@ public:
 	float m_fV_SatietyHealth;
 //--
 
-//--M.F.S. Team Thirst
+//--M.F.S. Team
 	float m_fV_Thirst;
 	float m_fV_ThirstPower;
 	float m_fV_ThirstHealth;
-//--M.F.S. Team Thirst
+	float m_fV_Intoxication;
+	float m_fV_IntoxicationHealth;
+	float m_fIntoxicationCritical;
+//--M.F.S. Team
 
 	float m_fPowerLeakSpeed;
 

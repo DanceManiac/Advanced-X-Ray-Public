@@ -1036,6 +1036,10 @@ end
 function on_actor_thirst()
 end
 
+--' Интоксикация
+function on_actor_intoxication()
+end
+
 --' іадиация
 function on_actor_radiation()
 

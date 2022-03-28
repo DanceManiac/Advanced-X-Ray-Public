@@ -47,6 +47,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fAlcohol					= 0.f;
 	m_fSatiety					= 1.0f;
 	m_fThirst					= 1.0f;
+	m_fIntoxication				= 0.0f;
 
 	VERIFY						(object);
 	m_object					= object;
@@ -132,6 +133,13 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Thirst					= pSettings->r_float(section, "thirst_v");
 	m_fV_ThirstPower			= pSettings->r_float(section, "thirst_power_v");
 	m_fV_ThirstHealth			= pSettings->r_float(section, "thirst_health_v");
+
+
+	// M.F.S. Team Intoxication
+	m_fIntoxicationCritical = pSettings->r_float(section, "intoxication_critical");
+	clamp(m_fIntoxicationCritical, 0.0f, 1.0f);
+	m_fV_Intoxication = pSettings->r_float(section, "intoxication_v");
+	m_fV_IntoxicationHealth = pSettings->r_float(section, "intoxication_health_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -257,6 +265,11 @@ void CActorCondition::UpdateCondition()
 	if (GameConstants::GetActorThirst())
 	{
 		UpdateThirst();
+	}
+
+	if (GameConstants::GetActorIntoxication())
+	{
+		UpdateIntoxication();
 	}
 
 	inherited::UpdateCondition	();
@@ -439,6 +452,35 @@ void CActorCondition::UpdateThirst()
 		m_fDeltaTime;
 }
 
+//M.F.S. Team Intoxication
+void CActorCondition::UpdateIntoxication()
+{
+	CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effIntoxication);
+	if ((m_fIntoxication >= m_fIntoxicationCritical))
+	{
+		if (!ce)
+			AddEffector(m_object, effIntoxication, "effector_intoxication", GET_KOEFF_FUNC(this, &CActorCondition::GetIntoxication));
+	}
+	else
+	{
+		if (ce)
+			RemoveEffector(m_object, effIntoxication);
+	}
+
+	if (m_fIntoxication > 0)
+	{
+		m_fIntoxication -= m_fV_Intoxication * m_fDeltaTime;
+		clamp(m_fIntoxication, 0.0f, 1.0f);
+	}
+
+	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+	{
+		if (m_fIntoxication >= m_fIntoxicationCritical && GetHealth() >= 0.25)
+			m_fDeltaHealth -= m_fV_IntoxicationHealth * m_fIntoxication * m_fDeltaTime;
+		else if (m_fIntoxication >= 0.9f && GetHealth() <= 0.25)
+			m_fDeltaHealth -= m_fV_IntoxicationHealth * m_fIntoxication * m_fDeltaTime;
+	}
+}
 
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
@@ -526,6 +568,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_condition_flags, output_packet);
 	save_data			(m_fSatiety, output_packet);
 	save_data			(m_fThirst,  output_packet);
+	save_data			(m_fIntoxication, output_packet);
 }
 
 void CActorCondition::load(IReader &input_packet)
@@ -535,6 +578,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_condition_flags, input_packet);
 	load_data			(m_fSatiety, input_packet);
 	load_data			(m_fThirst,  input_packet);
+	load_data			(m_fIntoxication, input_packet);
 }
 
 void CActorCondition::reinit	()
@@ -562,6 +606,13 @@ void CActorCondition::ChangeThirst(float value)
 	clamp(m_fThirst, 0.0f, 1.0f);
 }
 
+//M.F.S. Team Intoxication
+void CActorCondition::ChangeIntoxication(float value)
+{
+	m_fIntoxication += value;
+	clamp(m_fIntoxication, 0.0f, 1.0f);
+}
+
 void CActorCondition::UpdateTutorialThresholds()
 {
 	string256						cb_name;
@@ -573,6 +624,7 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cRadiation		= pSettings->r_float("tutorial_conditions_thresholds","radiation");
 	static float _cWpnCondition		= pSettings->r_float("tutorial_conditions_thresholds","weapon_jammed");
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
+	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
 
 
 
@@ -606,6 +658,12 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalThirstReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_thirst");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalIntoxicationReached) && GetIntoxication() > _cIntoxication) {
+		m_condition_flags.set(eCriticalIntoxicationReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_intoxication");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){
