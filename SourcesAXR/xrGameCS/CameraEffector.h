@@ -17,6 +17,7 @@
 #define effBigMonsterHit		(eStartEffectorID+9)
 #define effActorDeath			(eStartEffectorID+10)
 #define effIntoxication			(eStartEffectorID+11)
+#define effSleepeness			(eStartEffectorID+12)
 
 #define	eCEFall					((ECamEffectorType)(cefNext+1))
 #define	eCENoise				((ECamEffectorType)(cefNext+2))

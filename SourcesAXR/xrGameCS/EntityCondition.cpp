@@ -76,6 +76,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fSatiety				= 1.0f;
 	m_fThirst				= 1.0f;
 	m_fIntoxication			= 0.0f;
+	m_fSleepeness			= 0.0f;
 }
 
 CEntityCondition::~CEntityCondition(void)

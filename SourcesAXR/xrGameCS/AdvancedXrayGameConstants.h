@@ -18,6 +18,7 @@ namespace GameConstants
 	bool GetLimitedBolts();
 	bool GetActorThirst();
 	bool GetActorIntoxication();
+	bool GetActorSleepeness();
 	bool GetArtefactsDegradation();
 	bool GetShowWpnInfo();
 	bool GetJumpSpeedWeightCalc();

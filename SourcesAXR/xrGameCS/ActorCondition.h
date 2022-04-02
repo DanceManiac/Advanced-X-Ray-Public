@@ -24,6 +24,7 @@ private:
 			eCantWalkWeight					=(1<<7),
 			eCriticalThirstReached			=(1<<8),
 			eCriticalIntoxicationReached	=(1<<9),
+			eCriticalSleepenessReached		=(1<<10),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -32,6 +33,7 @@ private:
 	void				UpdateTutorialThresholds	();
 			void 		UpdateSatiety				();
 			void 		UpdateThirst				();
+			void 		UpdateSleepeness			();
 			void 		UpdateIntoxication			();
 	virtual void		UpdateRadiation				();
 public:
@@ -48,6 +50,7 @@ public:
 	virtual void 		ChangeSatiety				(float value);
 	virtual void 		ChangeThirst				(float value);
 	virtual void 		ChangeIntoxication			(const float value);
+	virtual void 		ChangeSleepeness			(const float value);
 
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;
@@ -63,6 +66,7 @@ public:
 			float	xr_stdcall	GetAlcohol			()	{return m_fAlcohol;}
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
 			float	xr_stdcall	GetIntoxication		()	{return m_fIntoxication;}
+			float	xr_stdcall	GetSleepeness		()	{return m_fSleepeness;}
 
 			void		AffectDamage_InjuriousMaterial();
 			float		GetInjuriousMaterialDamage	();
@@ -87,6 +91,10 @@ public:
 	IC		float const&	V_Intoxication			() { return m_fV_Intoxication; }
 	IC		float const&	V_IntoxicationHealth	() { return m_fV_IntoxicationHealth; }
 	IC		float const&	IntoxicationCritical	() { return m_fIntoxicationCritical; }
+	IC		float const&	V_Sleepeness			() { return m_fV_Sleepeness; }
+	IC		float const&	V_SleepenessPower		() { return m_fV_SleepenessPower; }
+	IC		float const&	SleepenessCritical		() { return m_fSleepenessCritical; }
+	IC		float const&	Sleepeness_V_Sleep		() { return m_fSleepeness_V_Sleep; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -111,6 +119,10 @@ public:
 	float m_fV_Intoxication;
 	float m_fV_IntoxicationHealth;
 	float m_fIntoxicationCritical;
+	float m_fV_Sleepeness;
+	float m_fV_SleepenessPower;
+	float m_fSleepenessCritical;
+	float m_fSleepeness_V_Sleep;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

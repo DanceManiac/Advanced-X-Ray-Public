@@ -150,6 +150,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_starvation		= UIHelper::CreateStatic(uiXml, "indicator_starvation", this);
 	m_ind_thirst			= UIHelper::CreateStatic(uiXml, "indicator_thirst", this);
 	m_ind_intoxication		= UIHelper::CreateStatic(uiXml, "indicator_intoxication", this);
+	m_ind_sleepeness		= UIHelper::CreateStatic(uiXml, "indicator_sleepeness", this);
 	m_ind_weapon_broken		= UIHelper::CreateStatic(uiXml, "indicator_weapon_broken", this);
 	m_ind_helmet_broken		= UIHelper::CreateStatic(uiXml, "indicator_helmet_broken", this);
 	m_ind_outfit_broken		= UIHelper::CreateStatic(uiXml, "indicator_outfit_broken", this);
@@ -784,6 +785,29 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		else
 		{
 			m_ind_intoxication->InitTexture("ui_inGame2_circle_intoxication_red");
+		}
+	}
+
+	// M.F.S. Team Sleepeness icon
+	float sleepeness = pActor->conditions().GetSleepeness();
+	if (sleepeness < 0.5)
+	{
+		m_ind_sleepeness->Show(false);
+	}
+	else
+	{
+		m_ind_sleepeness->Show(true);
+		if (sleepeness >= 0.5f && sleepeness <= 0.75f)
+		{
+			m_ind_sleepeness->InitTexture("ui_inGame2_circle_sleepeness_green");
+		}
+		else if (sleepeness >= 0.75f && sleepeness <= 0.85f)
+		{
+			m_ind_sleepeness->InitTexture("ui_inGame2_circle_sleepeness_yellow");
+		}
+		else if (sleepeness >= 0.85f)
+		{
+			m_ind_sleepeness->InitTexture("ui_inGame2_circle_sleepeness_red");
 		}
 	}
 

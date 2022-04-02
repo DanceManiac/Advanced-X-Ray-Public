@@ -48,6 +48,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fSatiety					= 1.0f;
 	m_fThirst					= 1.0f;
 	m_fIntoxication				= 0.0f;
+	m_fSleepeness				= 0.0f;
 
 	VERIFY						(object);
 	m_object					= object;
@@ -140,6 +141,13 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	clamp(m_fIntoxicationCritical, 0.0f, 1.0f);
 	m_fV_Intoxication = pSettings->r_float(section, "intoxication_v");
 	m_fV_IntoxicationHealth = pSettings->r_float(section, "intoxication_health_v");
+
+	// M.F.S. Team Sleepeness
+	m_fSleepenessCritical = pSettings->r_float(section, "sleepeness_critical");
+	clamp(m_fSleepenessCritical, 0.0f, 1.0f);
+	m_fV_Sleepeness = pSettings->r_float(section, "sleepeness_v");
+	m_fV_SleepenessPower = pSettings->r_float(section, "sleepeness_power_v");
+	m_fSleepeness_V_Sleep = pSettings->r_float(section, "sleepeness_v_sleep");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -270,6 +278,11 @@ void CActorCondition::UpdateCondition()
 	if (GameConstants::GetActorIntoxication())
 	{
 		UpdateIntoxication();
+	}
+
+	if (GameConstants::GetActorSleepeness())
+	{
+		UpdateSleepeness();
 	}
 
 	inherited::UpdateCondition	();
@@ -482,6 +495,52 @@ void CActorCondition::UpdateIntoxication()
 	}
 }
 
+//M.F.S. Team Sleepeness
+void CActorCondition::UpdateSleepeness()
+{
+	if (GetSleepeness() >= 0.85f)
+	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.generate_phantoms", funct))
+			funct();
+	}
+
+	if (GetSleepeness() >= 1.0f)
+	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.put_the_actor_to_sleep", funct))
+			funct();
+	}
+
+	CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effSleepeness);
+	if (m_fSleepeness <= m_fSleepenessCritical)
+	{
+		if (!ce)
+			AddEffector(m_object, effSleepeness, "effector_sleepeness", GET_KOEFF_FUNC(this, &CActorCondition::GetSleepeness));
+	}
+	else
+	{
+		if (ce)
+			RemoveEffector(m_object, effSleepeness);
+	}
+
+	if (m_fSleepeness < 1.0f)
+	{
+		if (Actor()->HasInfo("actor_is_sleeping"))
+			m_fSleepeness -= m_fSleepeness_V_Sleep * m_fDeltaTime;
+		else
+			m_fSleepeness += m_fV_Sleepeness * m_fDeltaTime;
+
+		clamp(m_fSleepeness, 0.0f, 1.0f);
+	}
+
+	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+	{
+		if (m_fSleepeness >= m_fSleepenessCritical)
+			m_fDeltaPower -= m_fV_SleepenessPower * m_fSleepeness * m_fDeltaTime;
+	}
+}
+
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
@@ -569,6 +628,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fSatiety, output_packet);
 	save_data			(m_fThirst,  output_packet);
 	save_data			(m_fIntoxication, output_packet);
+	save_data			(m_fSleepeness, output_packet);
 }
 
 void CActorCondition::load(IReader &input_packet)
@@ -579,6 +639,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fSatiety, input_packet);
 	load_data			(m_fThirst,  input_packet);
 	load_data			(m_fIntoxication, input_packet);
+	load_data			(m_fSleepeness, input_packet);
 }
 
 void CActorCondition::reinit	()
@@ -613,6 +674,13 @@ void CActorCondition::ChangeIntoxication(float value)
 	clamp(m_fIntoxication, 0.0f, 1.0f);
 }
 
+//M.F.S. Team Sleepeness
+void CActorCondition::ChangeSleepeness(float value)
+{
+	m_fSleepeness += value;
+	clamp(m_fSleepeness, 0.0f, 1.0f);
+}
+
 void CActorCondition::UpdateTutorialThresholds()
 {
 	string256						cb_name;
@@ -625,6 +693,7 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cWpnCondition		= pSettings->r_float("tutorial_conditions_thresholds","weapon_jammed");
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
 	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
+	static float _cSleepeness		= pSettings->r_float("tutorial_conditions_thresholds", "sleepeness");
 
 
 
@@ -664,6 +733,12 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalIntoxicationReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_intoxication");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalSleepenessReached) && GetSleepeness() >= _cSleepeness) {
+		m_condition_flags.set(eCriticalSleepenessReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_sleepeness");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){

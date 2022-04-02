@@ -29,6 +29,7 @@ CUIArtefactParams::CUIArtefactParams()
 	m_fBleedingRestoreSpeed = NULL;
 	m_fThirstRestoreSpeed = NULL;
 	m_fIntoxicationRestoreSpeed = NULL;
+	m_fSleepenessRestoreSpeed = NULL;
 	m_fWalkAccel = NULL;
 	m_fJumpSpeed = NULL;
 	m_additional_weight = NULL;
@@ -45,6 +46,7 @@ CUIArtefactParams::~CUIArtefactParams()
 	xr_delete	(m_fBleedingRestoreSpeed);
 	xr_delete	(m_fThirstRestoreSpeed);
 	xr_delete	(m_fIntoxicationRestoreSpeed);
+	xr_delete	(m_fSleepenessRestoreSpeed);
 	xr_delete	(m_fWalkAccel);
 	xr_delete	(m_fJumpSpeed);
 	xr_delete	(m_additional_weight);
@@ -75,6 +77,7 @@ LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
 	"radiation_restore_speed",		// eRadiationRestoreSpeed=4
 	"thirst_restore_speed",			// eThirstRestoreSpeed=5
 	"intoxication_restore_speed",	// eIntoxicationRestoreSpeed=6
+	"sleepeness_restore_speed",		// eSleepenessRestoreSpeed=7
 };
 
 LPCSTR af_immunity_caption[] =  // ALife::EInfluenceType
@@ -100,6 +103,7 @@ LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
 	"ui_inv_radiation",
 	"ui_inv_thirst",
 	"ui_inv_intoxication",
+	"ui_inv_sleepeness",
 };
 
 /*
@@ -190,6 +194,13 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_fIntoxicationRestoreSpeed->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_intoxication").c_str();
 	m_fIntoxicationRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fSleepenessRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fSleepenessRestoreSpeed->Init(xml, "sleepeness_restore_speed");
+	m_fSleepenessRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_sleepeness").c_str();
+	m_fSleepenessRestoreSpeed->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_fWalkAccel = xr_new<UIArtefactParamItem>();
@@ -381,6 +392,19 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_fIntoxicationRestoreSpeed->GetWndSize().y;
 			AttachChild(m_fIntoxicationRestoreSpeed);
+		}
+
+		val = artefact->m_fSleepenessRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fSleepenessRestoreSpeed->SetValue(val);
+
+			pos.set(m_fSleepenessRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fSleepenessRestoreSpeed->SetWndPos(pos);
+
+			h += m_fSleepenessRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fSleepenessRestoreSpeed);
 		}
 
 		val = artefact->m_fWalkAccel;

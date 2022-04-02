@@ -563,13 +563,3 @@ function restore_weapon(zone_id)
 	printf("[WEAPON_CONTROL]:restoring weapon from zone [%s] in section [%s]!!!", zone_id, db.storage[zone_id].active_section)
 	weapon_hide[zone_id] = false
 end
-
-
-
-
-
-
-
-
-
-

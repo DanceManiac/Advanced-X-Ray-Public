@@ -16,6 +16,7 @@ bool	m_bAnomalyDetectorUseBattery = false;
 bool	m_bLimitedBolts = false;
 bool	m_bActorThirst = false;
 bool	m_bActorIntoxication = false;
+bool	m_bActorSleepeness = false;
 bool	m_bArtefactsDegradation = false;
 bool	m_bShowWpnInfo = true;
 bool	m_bJumpSpeedWeightCalc = false;
@@ -40,6 +41,7 @@ namespace GameConstants
 		m_bLimitedBolts = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "limited_bolts", false);
 		m_bActorThirst = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_thirst_enabled", false);
 		m_bActorIntoxication = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_intoxication_enabled", false);
+		m_bActorSleepeness = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_sleepeness_enabled", false);
 		m_bArtefactsDegradation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefacts_degradation", false);
 		m_bShowWpnInfo = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "show_wpn_info", true);
 		m_bJumpSpeedWeightCalc = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "jump_and_speed_weight_calc", false);
@@ -117,6 +119,11 @@ namespace GameConstants
 	bool GetActorIntoxication()
 	{
 		return m_bActorIntoxication;
+	}
+
+	bool GetActorSleepeness()
+	{
+		return m_bActorSleepeness;
 	}
 
 	bool GetArtefactsDegradation()

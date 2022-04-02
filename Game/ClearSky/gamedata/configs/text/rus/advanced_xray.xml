@@ -255,4 +255,7 @@
 	<string id="ui_inv_intoxication">
 		<text>Интоксикация</text>
 	</string>
+	<string id="ui_inv_sleepeness">
+		<text>Сонливость</text>
+	</string>
 </string_table>

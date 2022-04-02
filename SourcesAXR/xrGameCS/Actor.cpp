@@ -1752,6 +1752,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
 			conditions().ChangeRadiation	(artefact->m_fRadiationRestoreSpeed * f_update_time);
 			conditions().ChangeIntoxication	(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
+			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -1766,7 +1767,8 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeSatiety		(outfit->m_fSatietyRestoreSpeed   * f_update_time);
 		conditions().ChangeThirst		(outfit->m_fThirstRestoreSpeed    * f_update_time);
 		conditions().ChangeRadiation	(outfit->m_fRadiationRestoreSpeed * f_update_time);
-		conditions().ChangeIntoxication	(outfit->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication	(outfit->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness	(outfit->m_fSleepenessRestoreSpeed * f_update_time);
 	}
 	else
 	{
@@ -2143,6 +2145,25 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fIntoxicationRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eSleepenessRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fSleepenessRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fSleepenessRestoreSpeed;
 		}
 		break;
 	}

@@ -18,3 +18,49 @@ function ReadPolterDieMode()
       return false
    end
 end
+
+-- 'Уложить героя спать на 5 часов, если он слишком давно не спал
+function put_the_actor_to_sleep()
+	local hours = tonumber(5)
+	local minutes = tonumber(0)
+
+	level.change_game_time(0,hours,minutes)
+	level_weathers.get_weather_manager():forced_weather_change()
+	surge_manager.get_surge_manager().time_forwarded = true
+
+	xr_effects.disable_ui_only(db.actor, nil)
+	db.actor.sleepeness = -0.5
+	level.add_cam_effector("camera_effects\\surge_02.anm", 10, false, "bind_stalker.anabiotic_callback")
+	level.add_pp_effector("surge_fade.ppe", 11, false)
+	_G.mus_vol = get_console():get_float("snd_volume_music")
+	_G.amb_vol = get_console():get_float("snd_volume_eff")
+	get_console():execute("snd_volume_music 0")
+	get_console():execute("snd_volume_eff 0")
+end
+
+-- 'Создавать фантомов, если ГГ слишком давно не спал
+function generate_phantoms()
+	local phantom_idle = 0
+	local phantom_time = 0
+	local phantom_spawn_radius = 30.0
+	local phantom_fov = 45
+	local phantom_spawn_probability = 1
+	local phantom_max = 5
+	
+	if phantom_idle == nil then
+		phantom_idle = math.random(2000,5000)
+	end
+	if time_global() - phantom_time > phantom_idle then
+		phantom_time				= time_global()
+		phantom_idle = math.random(5000,10000)
+		if math.random(0, 500) < phantom_spawn_probability then
+			if phantom_manager:phantom_count() < phantom_max then
+				local radius = phantom_spawn_radius * ( math.random()/2.0+0.5 )
+				local ang    = phantom_fov * math.random() - phantom_fov * 0.5
+				local dir    = vector_rotate_y( db.actor:direction(), ang )
+
+				phantom_manager.spawn_phantom( db.actor:position():add( dir:mul(radius) ) )
+			end
+		end
+	end
+end

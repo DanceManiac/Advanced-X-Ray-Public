@@ -40,6 +40,9 @@ protected:
 	float					m_fSatietyInfluence;
 	float					m_fRadiationInfluence;
 	float					m_fMaxPowerUpInfluence;
+	float					m_fThirstInfluence;
+	float					m_fIntoxicationInfluence;
+	float					m_fSleepenessInfluence;
 	//заживление ран на кол-во процентов
 	float					m_fWoundsHealPerc;
 
