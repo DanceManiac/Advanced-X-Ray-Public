@@ -9,6 +9,9 @@
 
 ENGINE_API extern int ps_r__ShaderNVG;
 
+bool br1_2 = (0 == psDeviceFlags.test(rsR3 | rsR4));
+bool render_ver_allowed = !br1_2;
+
 CNightVisionEffector::CNightVisionEffector(const shared_str& section)
 {
 	m_sounds.LoadSound(section.c_str(), "snd_night_vision_on", "NightVisionOnSnd", false, SOUND_TYPE_ITEM_USING);
@@ -19,7 +22,7 @@ CNightVisionEffector::CNightVisionEffector(const shared_str& section)
 
 void CNightVisionEffector::Start(const shared_str& sect, CActor* pA, bool play_sound)
 {
-	if (ps_r__ShaderNVG == 0)
+	if (ps_r__ShaderNVG == 0 || !render_ver_allowed)
 		AddEffector(pA, effNightvision, sect);
 
 	if (play_sound)
@@ -43,7 +46,7 @@ void CNightVisionEffector::Stop(const float factor, bool play_sound)
 	{
 		m_sounds.StopSound("NightVisionIdleSnd");
 
-		if (ps_r__ShaderNVG == 0) //Временная затычка
+		if (ps_r__ShaderNVG == 0 || !render_ver_allowed) //Временная затычка
 			PlaySounds(eStopSound);
 	}
 }
