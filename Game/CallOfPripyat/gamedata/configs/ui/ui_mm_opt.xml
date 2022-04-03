@@ -423,7 +423,7 @@
         <cap_detail_density x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_detail_density</text>
         </cap_detail_density>
-        <track_detail_density x="170" y="6" width="200" height="16" min="0.3" max="1.5" step="0.1">
+        <track_detail_density x="170" y="6" width="200" height="16" invert="1" min="0.3" max="1.5" step="0.1">
             <options_item entry="r__detail_density" group="mm_opt_video_adv"/>
 				<output_wnd x="231" y="0" width="20" height="20" format="%f">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
