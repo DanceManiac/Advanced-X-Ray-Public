@@ -287,7 +287,7 @@ void CUIGameCustom::CommonMessageOut(LPCSTR text)
 }
 void CUIGameCustom::UpdatePda()
 {
-	GetPdaMenu().UpdatePda();
+	PdaMenu().UpdatePda();
 }
 
 void CUIGameCustom::update_fake_indicators(u8 type, float power)

@@ -672,7 +672,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 
 	UpdateQuickSlots();
 	if (IsGameTypeSingle())
-		CurrentGameUI()->GetPdaMenu().UpdateRankingWnd();
+		CurrentGameUI()->PdaMenu().UpdateRankingWnd();
 
 	u8 flags = 0;
 	flags |= LA_CYCLIC;

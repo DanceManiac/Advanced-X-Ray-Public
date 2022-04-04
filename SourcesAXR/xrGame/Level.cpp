@@ -795,9 +795,9 @@ extern void draw_wnds_rects();
 void CLevel::OnRender()
 {
 	// PDA
-	if (game && CurrentGameUI() && &CurrentGameUI()->GetPdaMenu() != nullptr)
+	if (game && CurrentGameUI() && &CurrentGameUI()->PdaMenu() != nullptr)
 	{
-		CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
+		CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
 		if (psActorFlags.test(AF_3D_PDA) && pda->IsShown())
 		{
 			pda->Draw();

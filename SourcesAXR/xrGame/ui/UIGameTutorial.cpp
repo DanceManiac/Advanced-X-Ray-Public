@@ -410,7 +410,7 @@ void CUISequencer::IR_OnKeyboardPress	(int dik)
 			CurrentGameUI()->HideActorMenu();
 			return;
 		}
-		if(CurrentGameUI()->GetPdaMenu().IsShown())
+		if(CurrentGameUI()->PdaMenu().IsShown())
 		{
 			CurrentGameUI()->HidePdaMenu();
 			return;

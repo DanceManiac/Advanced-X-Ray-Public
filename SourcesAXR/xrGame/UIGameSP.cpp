@@ -129,7 +129,7 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 		{
 			if (!pActor->inventory_disabled())
 			{
-				if (psActorFlags.test(AF_3D_PDA) && CurrentGameUI()->GetPdaMenu().IsShown())
+				if (psActorFlags.test(AF_3D_PDA) && CurrentGameUI()->PdaMenu().IsShown())
 					pActor->inventory().Activate(NO_ACTIVE_SLOT);
 
 				ShowActorMenu();

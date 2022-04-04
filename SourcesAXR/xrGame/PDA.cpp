@@ -105,9 +105,9 @@ void CPda::OnStateSwitch(u32 S)
 		PlayHUDMotion(!m_bNoticedEmptyBattery ? "anm_hide" : "anm_hide_empty", TRUE, this, GetState());
 		SetPending(TRUE);
 		m_bZoomed = false;
-		CurrentGameUI()->GetPdaMenu().Enable(false);
+		CurrentGameUI()->PdaMenu().Enable(false);
 		g_player_hud->reset_thumb(false);
-		CurrentGameUI()->GetPdaMenu().ResetJoystick(false);
+		CurrentGameUI()->PdaMenu().ResetJoystick(false);
 		if (joystick != BI_NONE && HudItemData())
 			HudItemData()->m_model->LL_GetBoneInstance(joystick).reset_callback();
 		target_screen_switch = Device.fTimeGlobal + m_screen_off_delay;
@@ -117,7 +117,7 @@ void CPda::OnStateSwitch(u32 S)
 	{
 		m_bZoomed = false;
 		m_fZoomfactor = 0.f;
-		CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
+		CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
 
 		if (pda->IsShown())
 		{
@@ -192,7 +192,7 @@ void CPda::OnAnimationEnd(u32 state)
 void CPda::JoystickCallback(CBoneInstance* B)
 {
 	CPda* Pda = static_cast<CPda*>(B->callback_param());
-	CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
+	CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
 
 	static float fAvgTimeDelta = Device.fTimeDelta;
 	fAvgTimeDelta = inertion(fAvgTimeDelta, Device.fTimeDelta, 0.8f);
@@ -261,7 +261,7 @@ void CPda::UpdateCL()
 
 	// For battery icon
 	float condition = GetCondition();
-	CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
+	CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
 	pda->m_power = condition;
 
 	if (!psActorFlags.test(AF_3D_PDA))
@@ -411,7 +411,7 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 			HudItemData()->m_model->LL_GetBoneInstance(joystick).reset_callback();
 		g_player_hud->detach_item(this);
 	}
-	CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
+	CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
 	if (pda->IsShown()) pda->HideDialog();
 	StopCurrentAnimWithoutCallback();
 	SetPending(FALSE);
@@ -430,7 +430,7 @@ void CPda::UpdateHudAdditional(Fmatrix& trans)
 
 	if (pActor->cam_freelook == eflEnabled || pActor->cam_freelook == eflEnabling || g_player_hud->script_anim_part != u8(-1))
 	{
-		CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
+		CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
 
 		if (pda->IsEnabled())
 		{
@@ -716,7 +716,7 @@ void CPda::OnH_B_Independent(bool just_before_destroy)
 	m_bZoomed = false;
 	m_fZoomfactor = 0.f;
 
-	CUIPdaWnd* pda = &CurrentGameUI()->GetPdaMenu();
+	CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
 	if (pda->IsShown()) pda->HideDialog();
 	g_player_hud->reset_thumb(true);
 	pda->ResetJoystick(true);
