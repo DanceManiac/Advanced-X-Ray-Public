@@ -295,12 +295,12 @@ void CPda::UpdateCL()
 				pda->Update();
 				if (m_eDeferredEnable == eEnable || m_eDeferredEnable == eEnableZoomed)
 				{
-					if (Actor()->cam_freelook == eflDisabled && g_player_hud->script_anim_part == u8(-1))
-					{
-						pda->Enable(true);
-						m_bZoomed = m_eDeferredEnable == eEnableZoomed;
-						m_eDeferredEnable = eDefault;
-					}
+					//if (Actor()->cam_freelook == eflDisabled && g_player_hud->script_anim_part == u8(-1))
+					//{
+					pda->Enable(true);
+					m_bZoomed = m_eDeferredEnable == eEnableZoomed;
+					m_eDeferredEnable = eDefault;
+					//}
 				}
 			}
 
@@ -430,7 +430,7 @@ void CPda::UpdateHudAdditional(Fmatrix& trans)
 
 	//u8 idx = GetCurrentHudOffsetIdx();
 
-	if (pActor->cam_freelook == eflEnabled || pActor->cam_freelook == eflEnabling || g_player_hud->script_anim_part != u8(-1))
+	if (/*pActor->cam_freelook == eflEnabled || pActor->cam_freelook == eflEnabling ||*/ g_player_hud->script_anim_part != u8(-1))
 	{
 		CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
 

@@ -504,7 +504,7 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 				}
 
 				// Don't allow zoom in while draw/holster animation plays, freelook is enabled or a hand animation plays
-				if (pda->IsPending() || Actor()->cam_freelook == eflEnabled || Actor()->cam_freelook == eflEnabling || g_player_hud->script_anim_part != u8(-1))
+				if (pda->IsPending() /* || Actor()->cam_freelook == eflEnabled || Actor()->cam_freelook == eflEnabling*/ || g_player_hud->script_anim_part != u8(-1))
 					return false;
 
 				// Simple PDA input mode - only allow input if PDA is zoomed in. Both left and right mouse button will zoom in instead of only right mouse button

@@ -334,10 +334,6 @@ protected:
 	void					camUpdateLadder			(float dt);
 	void					cam_SetLadder			();
 	void					cam_UnsetLadder			();
-	void					camUpdateFreelook		(float dt);
-	void					cam_SetFreelook			();
-	void					cam_UnsetFreelook		();
-	bool					CanUseFreelook			();
 	float					currentFOV				();
 
 	// Cameras
@@ -357,10 +353,6 @@ public:
 	float					fFPCamYawMagnitude;			//--#SM+#--
 	float					fFPCamPitchMagnitude;		//--#SM+#--
 
-	// Rezy - Freelook
-	u8						cam_freelook;
-	float					freelook_cam_control;
-	float					old_torso_yaw;
 public:
 	virtual void			feel_touch_new				(CObject* O);
 	virtual void			feel_touch_delete			(CObject* O);
