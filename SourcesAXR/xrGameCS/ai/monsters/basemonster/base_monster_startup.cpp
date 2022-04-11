@@ -501,6 +501,9 @@ void CBaseMonster::UpdateLights()
 
 void CBaseMonster::SwitchMonsterParticles(bool bOn)
 {
+	VERIFY(!physics_world()->Processing());
+	if (!m_bParticlesEnabled) return;
+
 	IKinematics*          model = Visual()->dcast_PKinematics();
 	u16                  boneID = model->LL_BoneID(particles_bone);
 	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);
