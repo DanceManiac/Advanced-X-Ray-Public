@@ -97,7 +97,7 @@ CWeapon::CWeapon()
 	m_fZoomMinKoeff		= 0.3f;
 }
 
-/*const shared_str CWeapon::GetScopeName() const
+const shared_str CWeapon::GetScopeName() const
 {
 	if (bUseAltScope)
 	{
@@ -105,9 +105,9 @@ CWeapon::CWeapon()
 	}
 	else
 	{
-		return pSettings->r_string(m_scopes[m_cur_scope], "scope_name");
+		return m_sScopeName;
 	}
-}*/
+}
 
 void CWeapon::UpdateAltScope()
 {
@@ -201,7 +201,7 @@ int CWeapon::GetScopeY()
 CWeapon::~CWeapon		()
 {
 	xr_delete	(m_UIScope);
-	//delete_data	(m_scopes);
+	delete_data	(m_scopes);
 }
 
 void CWeapon::Hit					(SHit* pHDS)
@@ -547,6 +547,13 @@ void CWeapon::Load(LPCSTR section)
 
 	m_zoom_params.m_bZoomEnabled		= !!pSettings->r_bool(section,"zoom_enabled");
 	m_zoom_params.m_fZoomRotateTime		= pSettings->r_float(section,"zoom_rotate_time");
+
+	if (m_eScopeStatus == ALife::eAddonAttachable)
+	{
+		m_sScopeName = pSettings->r_string(section, "scope_name");
+		m_iScopeX = pSettings->r_s32(section, "scope_x");
+		m_iScopeY = pSettings->r_s32(section, "scope_y");
+	}
 
 	bUseAltScope = !!bLoadAltScopesParams(section);
 
@@ -1931,11 +1938,13 @@ void CWeapon::reload			(LPCSTR section)
 	else
 		m_can_be_strapped		= false;
 
-	if (m_eScopeStatus == ALife::eAddonAttachable) {
-		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings,r_float,m_sScopeName,"holder_range_modifier",m_holder_range_modifier);
-		m_addon_holder_fov_modifier		= READ_IF_EXISTS(pSettings,r_float,m_sScopeName,"holder_fov_modifier",m_holder_fov_modifier);
+	if (m_eScopeStatus == ALife::eAddonAttachable) 
+	{
+		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings,r_float, GetScopeName(),"holder_range_modifier",m_holder_range_modifier);
+		m_addon_holder_fov_modifier		= READ_IF_EXISTS(pSettings,r_float, GetScopeName(),"holder_fov_modifier",m_holder_fov_modifier);
 	}
-	else {
+	else 
+	{
 		m_addon_holder_range_modifier	= m_holder_range_modifier;
 		m_addon_holder_fov_modifier		= m_holder_fov_modifier;
 	}

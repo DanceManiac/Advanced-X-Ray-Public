@@ -215,7 +215,7 @@ public:
 	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
 
 	const shared_str& GetGrenadeLauncherName	()		{return m_sGrenadeLauncherName;}
-	const shared_str& GetScopeName				()		{return m_sScopeName;}
+	const shared_str  GetScopeName				()		const;
 	const shared_str& GetSilencerName			()		{return m_sSilencerName;}
 
 	IC void	ForceUpdateAmmo						()		{ m_dwAmmoCurrentCalcFrame = 0; }
