@@ -193,7 +193,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 #ifdef USE_DX11
 					CHK_DX				(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_PNG, &saved, 0));
 #else
-					CHK_DX				(D3DX10SaveTextureToMemory(pSrcTexture, D3DX11_IFF_PNG, &saved, 0));
+					CHK_DX				(D3DX10SaveTextureToMemory(pSrcTexture, D3DX10_IFF_PNG, &saved, 0));
 #endif
 					IWriter* fs = FS.w_open("$screenshots$", buf); R_ASSERT(fs);
 					fs->w(saved->GetBufferPointer(), saved->GetBufferSize());
