@@ -179,12 +179,26 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 					CHK_DX				(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_BMP, &saved, 0));
 #else
 					CHK_DX				(D3DX10SaveTextureToMemory( pSrcTexture, D3DX10_IFF_BMP, &saved, 0));
-					//		CHK_DX				(D3DXSaveSurfaceToFileInMemory (&saved,D3DXIFF_TGA,pFB,0,0));
 #endif
 					IWriter*		fs	= FS.w_open	("$screenshots$",buf); R_ASSERT(fs);
 					fs->w				(saved->GetBufferPointer(),(u32)saved->GetBufferSize());
 					FS.w_close			(fs);
 					_RELEASE			(saved);
+				}
+				else if (strstr(Core.Params, "-ss_png")) 
+				{ // hq png
+					sprintf_s(buf, sizeof(buf), "ssq_%s_%s_(%s).png", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
+					ID3DBlob* saved = 0;
+					//CHK_DX(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_PNG, pFB, 0, srcRect));
+#ifdef USE_DX11
+					CHK_DX				(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_PNG, &saved, 0));
+#else
+					CHK_DX				(D3DX10SaveTextureToMemory(pSrcTexture, D3DX11_IFF_PNG, &saved, 0));
+#endif
+					IWriter* fs = FS.w_open("$screenshots$", buf); R_ASSERT(fs);
+					fs->w(saved->GetBufferPointer(), saved->GetBufferSize());
+					FS.w_close(fs);
+					_RELEASE(saved);
 				}
 			}
 			break;
