@@ -7,7 +7,7 @@
 #include "resource.h"
 #include "dbghelp.h"
  
-#include "dxerr.h"
+#include "DxErr/src/dxerr.h"
 
 #ifdef __BORLANDC__
 	#include "d3d9.h"
@@ -23,9 +23,6 @@
 #define DEBUG_INVOKE	DebugBreak	()
 #else
 #define DEBUG_INVOKE	__asm		{ int 3 }
-#ifndef __BORLANDC__
-	#pragma comment			(lib,"dxerr.lib")
-#endif
 #endif
 
 XRCORE_API	xrDebug		Debug;

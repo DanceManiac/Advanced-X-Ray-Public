@@ -4,7 +4,7 @@
 #include "os_clipboard.h"
 #include "../xrGameSpy/xrGameSpy_MainDefs.h"
 #include <sal.h>
-#include "dxerr.h"
+#include "DxErr/src/dxerr.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -28,12 +28,6 @@
 
 #ifndef USE_BUG_TRAP
 #	include <exception>
-#endif
-
-#ifndef _M_AMD64
-#	ifndef __BORLANDC__
-#		pragma comment(lib,"dxerr.lib")
-#	endif
 #endif
 
 #include <dbghelp.h>						// MiniDump flags
@@ -254,7 +248,7 @@ LPCSTR xrDebug::error2string	(long code)
 
 #ifdef _M_AMD64
 #else
-	result				= DXGetErrorDescription	(code);
+	result = DXGetErrorString (code);
 #endif
 	if (0==result)
 	{
