@@ -2,6 +2,7 @@
 /intermediate
 *.VC.VC.opendb
 *.cache
+OutputDirectory/
 
 # User-specific files
 *.rsuser
