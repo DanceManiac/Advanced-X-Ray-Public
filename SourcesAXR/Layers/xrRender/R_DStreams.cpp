@@ -9,7 +9,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-int		rsDVB_Size			= 4096; // Фикс вылета (bytes_need<=mSize) && vl_Count 
+int		rsDVB_Size			= 16384; // Фикс вылета (bytes_need<=mSize) && vl_Count 
 int		rsDIB_Size			= 512;
 
 void _VertexStream::Create	()
