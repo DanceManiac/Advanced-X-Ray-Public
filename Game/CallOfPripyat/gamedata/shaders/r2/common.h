@@ -49,6 +49,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 uniform half4 				 u_weather; // .xyz - sky color, .w - rain line param
 uniform half4 				 lowland_fog_params; // x - low fog height, y - low fog density, z - base height, w - null
+uniform float4				 screen_res;
 uniform half4                hemi_cube_pos_faces;
 uniform half4                hemi_cube_neg_faces;
 uniform half4                L_material;                            // 0,0,0,mid

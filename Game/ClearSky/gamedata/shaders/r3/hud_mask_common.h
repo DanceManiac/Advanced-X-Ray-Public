@@ -19,8 +19,6 @@ Texture2D s_hud_mask;
 
 uniform float2 hud_mask_params;
 
-float4 screen_res;
-
 //Gasmask settings
 #define GM_DIST_INT 0.1 //Refraction intensity
 #define GM_DIFF_INT 0.15 //Diffuse cracks intensity

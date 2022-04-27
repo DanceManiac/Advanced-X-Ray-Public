@@ -57,8 +57,6 @@ float4		proj2screen(float4 Project)
 	return Screen;
 }
 
-float4 screen_res;
-
 //Gasmask settings
 #define GM_DIST_INT 0.1 //Refraction intensity
 #define GM_DIFF_INT 0.15 //Diffuse cracks intensity

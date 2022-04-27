@@ -90,8 +90,6 @@
 		#define gen_1_vignette_amount float (0.1f)
 		#define gen_2_vignette_amount float (0.08f)
 		#define gen_3_vignette_amount float	(0.05f)
-		
-uniform	float4		screen_res;
 
 ///////////////////////////////////////////////////////
 // DEFINE NVG MASK (Credit to LVutner for huge assistance in designing the functions)

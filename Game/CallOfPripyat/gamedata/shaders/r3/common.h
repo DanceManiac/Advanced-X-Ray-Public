@@ -51,6 +51,8 @@
 	// Глобальные параметры шейдеров --#SM+#--
 	uniform	float4		m_hud_params;	// zoom_rotate_factor, secondVP_zoom_factor, NULL, NULL
 	uniform	float4		m_blender_mode;	
+	
+	uniform float4		screen_res;
 
 	float gbuf_get_depth(float2 texcoord)
 	{
