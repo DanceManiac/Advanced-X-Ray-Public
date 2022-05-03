@@ -106,9 +106,14 @@ void CHUDCrosshair::OnRenderFirstBulletDispertion()
 #endif
 
 extern ENGINE_API BOOL g_bRendering; 
-void CHUDCrosshair::OnRender(const Fvector2& center, const Fvector2& scr_size)
+void CHUDCrosshair::OnRender()
 {
 	VERIFY			(g_bRendering);
+
+	Fvector2		center;
+	Fvector2		scr_size;
+	scr_size.set(float(::Render->getTarget()->get_width()), float(::Render->getTarget()->get_height()));
+	center.set(scr_size.x / 2.0f, scr_size.y / 2.0f);
 
 	UIRender->StartPrimitive		(10, IUIRender::ptLineList, UI().m_currentPointType);
 	

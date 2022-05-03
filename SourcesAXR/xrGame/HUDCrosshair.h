@@ -30,7 +30,7 @@ public:
 					CHUDCrosshair	();
 					~CHUDCrosshair	();
 
-			void	OnRender(const Fvector2& center, const Fvector2& scr_size);
+			void	OnRender		();
 			void	SetDispersion	(float disp);
 #ifdef DEBUG
 			void	SetFirstBulletDispertion(float fbdisp);

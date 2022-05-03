@@ -150,13 +150,14 @@ void CHUDTarget::Render()
 	VERIFY				(g_bRendering);
 
 	CActor* Actor = smart_cast<CActor*>(Level().CurrentEntity());
-	if (!Actor)	return;
+
+	CObject* O = Level().CurrentEntity();
+	if (0 == O)			return;
+	CEntity* E = smart_cast<CEntity*>(O);
+	if (0 == E)			return;
 
 	Fvector p1 = Device.vCameraPosition;
 	Fvector dir = Device.vCameraDirection;
-
-	if (auto Wpn = smart_cast<CHudItem*>(Actor->inventory().ActiveItem()))
-		Actor->g_fireParams(Wpn, p1, dir);
 	
 	// Render cursor
 	u32 C				= C_DEFAULT;
@@ -287,25 +288,25 @@ void CHUDTarget::Render()
 	if (auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem()); Wpn && Wpn->IsLaserOn())
 		return;
 
-	Fvector2 scr_size;
-	scr_size.set(float(Device.dwWidth), float(Device.dwHeight));
-	float size_x = scr_size.x * di_size;
-	float size_y = scr_size.y * di_size;
-		
-	size_y = size_x;
-
-	float w_2 = scr_size.x / 2.0f;
-	float h_2 = scr_size.y / 2.0f;
-
-	// Convert to screen coords
-	float cx = (pt.x + 1) * w_2;
-	float cy = (pt.y + 1) * h_2;
-
 	//отрендерить кружочек или крестик
-	if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)
+	if (!m_bShowCrosshair && crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)
 	{
 
-		UIRender->StartPrimitive	(6, IUIRender::ptTriList, UI().m_currentPointType);
+		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI().m_currentPointType);
+		
+		Fvector2		scr_size;
+		scr_size.set(float(Device.dwWidth), float(Device.dwHeight));
+		float			size_x = scr_size.x * di_size;
+		float			size_y = scr_size.y * di_size;
+
+		size_y = size_x;
+
+		float			w_2 = scr_size.x / 2.0f;
+		float			h_2 = scr_size.y / 2.0f;
+
+		// Convert to screen coords
+		float cx = (pt.x + 1) * w_2;
+		float cy = (pt.y + 1) * h_2;
 
 		//	TODO: return code back to indexed rendering since we use quads
 		//	Tri 1
@@ -331,7 +332,7 @@ void CHUDTarget::Render()
 	{
 		//отрендерить прицел
 		HUDCrosshair.cross_color = C;
-		HUDCrosshair.OnRender(Fvector2{ cx, cy }, scr_size);
+		HUDCrosshair.OnRender();
 	}
 }
 
