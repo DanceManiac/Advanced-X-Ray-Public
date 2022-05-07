@@ -152,6 +152,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_r1_detail_textures", _st)
 	table.insert(handler.m_preconditions, {func=mode_1, control=_st})
 
+-- Использовать бампы
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_r2_use_bump", _st)
+	ctl = xml:InitCheck("video_adv:check_r2_use_bump", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+
 -- r2_detail_bump			=>r2
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_r2_detail_bump", _st)

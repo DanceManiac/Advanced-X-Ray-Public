@@ -475,6 +475,14 @@
             <options_item entry="r1_detail_textures" group="mm_opt_video"/>
         </check_r1_detail_textures>
 
+        <cap_r2_use_bump x="20" y="3" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_r2_use_bump</text>
+        </cap_r2_use_bump>
+        <check_r2_use_bump x="167" y="0" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r2_use_bump" group="mm_opt_video" depend="restart"/>
+        </check_r2_use_bump>
+		
         <cap_r2_detail_bump x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_r2_detail_bump</text>
         </cap_r2_detail_bump>

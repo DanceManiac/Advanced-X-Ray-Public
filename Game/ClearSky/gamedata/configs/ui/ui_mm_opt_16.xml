@@ -658,7 +658,6 @@
       <options_item entry="r2_sun" group="mm_opt_video"/>
     </check_r2_sun>
 
-//
     <cap_r1_no_detail_textures x="17" y="0" width="119" height="21">
       <text font="letterica16" color="ui_6">ui_mm_r1_no_detail_textures</text>
     </cap_r1_no_detail_textures>
@@ -666,6 +665,13 @@
       <options_item entry="r1_no_detail_textures" group="mm_opt_video"/>
     </check_r1_no_detail_textures>
 
+    <cap_r2_use_bump x="17" y="0" width="119" height="21">
+      <text font="letterica16" color="ui_6">ui_mm_r2_use_bump</text>
+    </cap_r2_use_bump>
+    <check_r2_use_bump x="162" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r2_use_bump" group="mm_opt_video" depend="restart"/>
+    </check_r2_use_bump>
+	
     <cap_r2_detail_bump x="17" y="0" width="119" height="21">
       <text font="letterica16" color="ui_6">ui_mm_r2_detail_bump</text>
     </cap_r2_detail_bump>

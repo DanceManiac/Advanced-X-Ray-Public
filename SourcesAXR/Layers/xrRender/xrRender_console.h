@@ -279,6 +279,13 @@ enum
 	R_FLAG_PSEUDOPBR = (1 << 0),
 };
 
+extern ECORE_API Flags32 ps_r2_use_bump_flags;
+
+enum
+{
+	R2FLAG_USE_BUMP = (1 << 0),
+};
+
 extern ECORE_API int ps_rs_loading_stages;
 
 extern void						xrRender_initconsole	();

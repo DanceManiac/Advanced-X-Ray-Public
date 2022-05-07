@@ -366,6 +366,9 @@ float ps_r3_pbr_intensity = 25.0f;
 float ps_r3_pbr_roughness = 0.5f;
 Flags32	ps_r3_pbr_flags = { R_FLAG_PSEUDOPBR };
 
+//Use Bump
+Flags32	ps_r2_use_bump_flags = { R2FLAG_USE_BUMP };
+
 bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
 
 #ifndef _EDITOR
@@ -1093,6 +1096,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r4_wireframe",					&ps_r2_ls_flags_ext,		R2FLAGEXT_WIREFRAME);//Need restart
 	CMD3(CCC_Mask,		"r2_steep_parallax",			&ps_r2_ls_flags,			R2FLAG_STEEP_PARALLAX);
 	CMD3(CCC_Mask,		"r2_detail_bump",				&ps_r2_ls_flags,			R2FLAG_DETAIL_BUMP);
+	CMD3(CCC_Mask,		"r2_use_bump",					&ps_r2_use_bump_flags,		R2FLAG_USE_BUMP);//Need restart
 
 	CMD3(CCC_Token,		"r2_sun_quality",				&ps_r_sun_quality,			qsun_quality_token);
 
@@ -1104,8 +1108,8 @@ void		xrRender_initconsole	()
 	//Refactor
 	Fvector4 twb_min = { 0.f, 0.f, 0.f, 0.f };
 	Fvector4 twb_max = { 1.f, 1.f, 1.f, 1.f };
-	CMD4(CCC_Vector4, "r__bloom_weight", &ps_pp_bloom_weight, twb_min, twb_max);
-	CMD4(CCC_Vector4, "r__bloom_thresh", &ps_pp_bloom_thresh, twb_min, twb_max);
+	CMD4(CCC_Vector4,	"r__bloom_weight",				&ps_pp_bloom_weight,		twb_min, twb_max);
+	CMD4(CCC_Vector4,	"r__bloom_thresh",				&ps_pp_bloom_thresh,		twb_min, twb_max);
 
 	if (bDeveloperMode)
 	{
