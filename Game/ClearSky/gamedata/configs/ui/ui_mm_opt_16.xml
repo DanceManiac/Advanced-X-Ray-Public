@@ -144,31 +144,31 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</combo_clr_drag_preset>
 
-		<cap_gamma x="17" y="100" width="119" height="21">
+		<cap_gamma x="17" y="130" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_gamma</text>
 		</cap_gamma>
-		<track_gamma x="162" y="100" width="218" height="21">
+		<track_gamma x="162" y="130" width="218" height="21">
 			<options_item entry="rs_c_gamma" group="mm_opt_video"/>
 		</track_gamma>
 
-		<cap_contrast x="17" y="130" width="119" height="21">
+		<cap_contrast x="17" y="160" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_contrast</text>
 		</cap_contrast>
-		<track_contrast x="162" y="130" width="218" height="21">
+		<track_contrast x="162" y="160" width="218" height="21">
 			<options_item entry="rs_c_contrast" group="mm_opt_video"/>
 		</track_contrast>
 
-		<cap_brightness x="17" y="160" width="119" height="21">
+		<cap_brightness x="17" y="190" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_brightness</text>
 		</cap_brightness>
-		<track_brightness x="162" y="160" width="218" height="21">
+		<track_brightness x="162" y="190" width="218" height="21">
 			<options_item entry="rs_c_brightness" group="mm_opt_video"/>
 		</track_brightness>
 
-		<cap_fullscreen x="17" y="190" width="119" height="21">
+		<cap_fullscreen x="17" y="220" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_fullscreen</text>
 		</cap_fullscreen>
-		<check_fullscreen x="162" y="190" width="27" height="21" stretch="1">
+		<check_fullscreen x="162" y="220" width="27" height="21" stretch="1">
 			<options_item entry="rs_fullscreen" group="mm_opt_video" depend="vid"/>	
 		</check_fullscreen>
 		
@@ -444,7 +444,7 @@
     </track_detail_density>
 	
 		<cap_detail_radius x="17" y="0" width="119" height="21">
-        <text font="letterica16" color="ui_6">ui_mm_detail_radius</text>
+			<text font="letterica16" color="ui_6">ui_mm_detail_radius</text>
         </cap_detail_radius>	
 		<track_detail_radius x="162" y="0" width="200" height="21" min="49.0" max="300.0" step="0.1">
         <options_item entry="r__detail_radius" group="mm_opt_video_adv"/>
@@ -535,7 +535,7 @@
 			<text font="letterica16" color="ui_6">ui_mm_mblur</text>
 		</cap_mblur>
 		<track_mblur x="162" y="0" width="200" height="21" invert="1" step="0.1">
-			<options_item entry="r2_blur" group="mm_opt_video_adv"/>
+			<options_item entry="r2_mblur" group="mm_opt_video_adv"/>
 				<output_wnd x="231" y="0" width="20" height="20" format="%f">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 				</output_wnd>
