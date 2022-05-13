@@ -1,0 +1,52 @@
+/*
+				/////////////////
+			   Rain forward shader
+				/////////////////
+				Author: LVutner
+				/////////////////	
+			 Inspiration: Xerxes1138
+				/////////////////
+*/
+
+#include "common.h"
+
+//#define NO_ALPHA //Outputs alpha
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//Pixel shader
+float4 main ( p_TL I, float4 pos2d : SV_Position ) : SV_Target
+{
+	//Settings///////////////////////
+	const float RAIN_DIST_INT = 0.05; //Refraction intensity
+	const float RAIN_DIFF_INT = 0.15; //Diffuse color intensity
+	/////////////////////////////////
+
+	//Screen UV
+	float2 screen_uv = pos2d.xy / screen_res.xy;
+
+	//Diffuse texture, blended with vertex color
+	float4 diffuse = s_base.Sample( smp_base, I.Tex0) * I.Color.rgba;
+	
+	//Bump texture
+	float2 bump = s_bump.Sample(smp_base, I.Tex0).xy;
+	
+	//Get refraction factor
+    float4 distortion = float4(1, 1, 1,1) + bump.xyxy * RAIN_DIST_INT;
+	
+    float4 refracted_tc = float4(screen_uv, 1,1);
+    refracted_tc *= distortion;
+    refracted_tc.xy /= refracted_tc.w;	
+	
+	//Image with refraction
+	float3 image = s_image.Sample(smp_base, refracted_tc).xyz;
+	
+	//Blend image with diffuse colour
+	float3 final = lerp(image, diffuse.rgb, diffuse.a * RAIN_DIFF_INT);
+
+	//Output
+#ifndef NO_ALPHA	
+	return float4(final,diffuse.a); //Fixes problem with AREF surfaces
+#else
+	return float4(final, 1.0); //Alpha 1.0 because we render it to 
+#endif
+}
