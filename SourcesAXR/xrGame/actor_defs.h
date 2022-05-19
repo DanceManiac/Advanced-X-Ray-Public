@@ -59,14 +59,6 @@ enum EActorAction
 	eaaSearchCorpse,
 };
 
-enum EFreelookStates
-{
-	eflDisabled,
-	eflEnabled,
-	eflEnabling,
-	eflDisabling,
-};
-
 typedef const char*		EActorSleep;
 extern EActorSleep		easCanSleepResult;
 extern 	string32		g_quick_use_slots[4];

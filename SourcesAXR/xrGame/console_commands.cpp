@@ -1929,19 +1929,9 @@ void CCC_RegisterCommands()
 	CMD1(CCC_MemCheckpoint,		"stat_memory_checkpoint");
 #endif //#ifdef DEBUG	
 	// game
-	psActorFlags.set(AF_CROUCH_TOGGLE, FALSE);
-	psActorFlags.set(AF_WALK_TOGGLE, FALSE);
-	psActorFlags.set(AF_SPRINT_TOGGLE, TRUE);
-	psActorFlags.set(AF_LOOKOUT_TOGGLE, FALSE);
-	psActorFlags.set(AF_FREELOOK_TOGGLE, FALSE);
 	psActorFlags.set(AF_SIMPLE_PDA, TRUE);
 	psActorFlags.set(AF_3D_PDA, TRUE);
 
-	CMD3(CCC_Mask,				"g_crouch_toggle",		&psActorFlags, AF_CROUCH_TOGGLE);
-	CMD3(CCC_Mask,				"g_walk_toggle",		&psActorFlags, AF_WALK_TOGGLE);
-	CMD3(CCC_Mask,				"g_sprint_toggle",		&psActorFlags, AF_SPRINT_TOGGLE);
-	CMD3(CCC_Mask,				"g_lookout_toggle",		&psActorFlags, AF_LOOKOUT_TOGGLE);
-	CMD3(CCC_Mask,				"g_freelook_toggle",	&psActorFlags, AF_FREELOOK_TOGGLE);
 	CMD3(CCC_Mask,				"g_3d_pda",				&psActorFlags, AF_3D_PDA);
 	CMD3(CCC_Mask,				"g_simple_pda",			&psActorFlags, AF_SIMPLE_PDA);
 

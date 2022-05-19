@@ -840,12 +840,6 @@ void CLevel::OnRender()
 			}
 			Render->RenderToTarget(Render->rtPDA);
 		}
-
-		/*if (Actor() && Actor()->m_bDelayDrawPickupItems)
-		{
-			Actor()->m_bDelayDrawPickupItems = false;
-			Actor()->DrawPickupItems();
-		}*/
 	}
 
 	::Render->BeforeWorldRender();	//--#SM+#-- +SecondVP+
