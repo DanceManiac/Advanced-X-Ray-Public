@@ -64,6 +64,8 @@ SourcesAXR/Generated\ Files/
 *.pidb
 *.svclog
 *.scc
+*.tlog
+*.recipe
 
 # Chutzpah Test files
 _Chutzpah*
