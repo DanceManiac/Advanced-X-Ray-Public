@@ -283,7 +283,7 @@ void CArtefact::UpdateDegradation(void)
 
 			if (artefact->m_fHealthRestoreSpeed > 0.0f && m_fConstHealthRestoreSpeed > 0.0f)
 				artefact->m_fHealthRestoreSpeed = (m_fConstHealthRestoreSpeed / 100)*percent;
-			else if (artefact->m_fSatietyRestoreSpeed > 0.0f && m_fConstHealthRestoreSpeed > 0.0f)
+			else if (artefact->m_fSatietyRestoreSpeed > 0.0f && m_fConstSatietyRestoreSpeed > 0.0f)
 				artefact->m_fSatietyRestoreSpeed = (m_fConstSatietyRestoreSpeed / 100)*percent;
 			else if (artefact->m_fPowerRestoreSpeed > 0.0f && m_fConstPowerRestoreSpeed > 0.0f)
 				artefact->m_fPowerRestoreSpeed = (m_fConstPowerRestoreSpeed / 100)*percent;
