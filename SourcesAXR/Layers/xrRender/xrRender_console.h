@@ -279,11 +279,12 @@ enum
 	R_FLAG_PSEUDOPBR = (1 << 0),
 };
 
-extern ECORE_API Flags32 ps_r2_use_bump_flags;
+extern ECORE_API Flags32 ps_r2_static_flags;
 
 enum
 {
-	R2FLAG_USE_BUMP = (1 << 0),
+	R2FLAG_USE_BUMP		= (1 << 0),
+	R2FLAG_STATIC_SUN	= (1 << 1),
 };
 
 extern ECORE_API int ps_rs_loading_stages;

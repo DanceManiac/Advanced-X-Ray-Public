@@ -1,6 +1,6 @@
 #include	"common.h"
 
-#if defined(USE_R2_STATIC_SUN) && !defined(USE_LM_HEMI)
+#if defined(USE_R2_STATIC_SUN2) && !defined(USE_LM_HEMI)
 #define	v_in	v_static_color	
 #else
 #define	v_in	v_static
@@ -22,7 +22,7 @@ v2p_bumped main( v_in I )
 	O.position	= float4	(Pe, hemi			);
 //	O.position	= float4	(O.hpos.xyz, hemi	);
 
-#if defined(USE_R2_STATIC_SUN) && !defined(USE_LM_HEMI)
+#if defined(USE_R2_STATIC_SUN2) && !defined(USE_LM_HEMI)
 	O.tcdh.w	= I.color.w;					// (r,g,b,dir-occlusion)
 #endif
 

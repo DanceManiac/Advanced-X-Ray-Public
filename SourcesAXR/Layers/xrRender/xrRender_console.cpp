@@ -366,8 +366,10 @@ float ps_r3_pbr_intensity = 25.0f;
 float ps_r3_pbr_roughness = 0.5f;
 Flags32	ps_r3_pbr_flags = { R_FLAG_PSEUDOPBR };
 
-//Use Bump
-Flags32	ps_r2_use_bump_flags = { R2FLAG_USE_BUMP };
+//Static on R2+
+Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP
+	| R2FLAG_STATIC_SUN
+	};
 
 bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
 
@@ -991,7 +993,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_use_nvdbt",			&ps_r2_ls_flags,			R2FLAG_USE_NVDBT);
 	CMD3(CCC_Mask,		"r2_mt",				&ps_r2_ls_flags,			R2FLAG_EXP_MT_CALC);
 #endif // DEBUG
-
+	
 	CMD3(CCC_Mask,		"r2_sun",				&ps_r2_ls_flags,			R2FLAG_SUN		);
 	CMD3(CCC_Mask,		"r2_sun_details",		&ps_r2_ls_flags,			R2FLAG_SUN_DETAILS);
 	CMD3(CCC_Mask,		"r2_sun_focus",			&ps_r2_ls_flags,			R2FLAG_SUN_FOCUS);
@@ -1096,7 +1098,10 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r4_wireframe",					&ps_r2_ls_flags_ext,		R2FLAGEXT_WIREFRAME);//Need restart
 	CMD3(CCC_Mask,		"r2_steep_parallax",			&ps_r2_ls_flags,			R2FLAG_STEEP_PARALLAX);
 	CMD3(CCC_Mask,		"r2_detail_bump",				&ps_r2_ls_flags,			R2FLAG_DETAIL_BUMP);
-	CMD3(CCC_Mask,		"r2_use_bump",					&ps_r2_use_bump_flags,		R2FLAG_USE_BUMP);//Need restart
+
+	//Static on R2+
+	CMD3(CCC_Mask,		"r2_use_bump",					&ps_r2_static_flags,		R2FLAG_USE_BUMP);//Need restart
+	CMD3(CCC_Mask,		"r2_static_sun",				&ps_r2_static_flags,		R2FLAG_STATIC_SUN);//Need restart
 
 	CMD3(CCC_Token,		"r2_sun_quality",				&ps_r_sun_quality,			qsun_quality_token);
 
