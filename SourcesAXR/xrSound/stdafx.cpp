@@ -16,10 +16,7 @@
 #	pragma comment(lib,	"dsoundb.lib" 		)
 //#	pragma comment(lib,	"xrapi.lib" 		)
 #else
-#	pragma comment(lib,	"eax.lib"			)
-#	pragma comment(lib,	"xrCore.lib"		)
-#	pragma comment(lib,	"xrCDB.lib"			)
 #	pragma comment(lib,	"dsound.lib" 		)
-#	pragma comment(lib,	"xrapi.lib" 		)
+#	pragma comment(lib,	"xrCDB.lib"			)
 #endif
 

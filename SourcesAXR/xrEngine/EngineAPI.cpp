@@ -272,9 +272,5 @@ void CEngineAPI::CreateRendererList()
 		if (mode.name)
 			Log(mode.name);
 
-#ifdef DEBUG
-	Msg("Available render modes[%d]:",_tmp.size());
-#endif // DEBUG
-
 	vid_quality_token = std::move(modes);
 }
