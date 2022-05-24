@@ -1,4 +1,4 @@
-#include "pch_script.h"
+#include "stdafx.h"
 #include "embedded_editor_weather.h"
 #include "../../xrEngine/Environment.h"
 #include "../../xrEngine/IGame_Level.h"
