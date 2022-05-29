@@ -173,7 +173,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				PIItem itm = inventory().item((cmd==kUSE_BANDAGE)?  CLSID_IITEM_BANDAGE:CLSID_IITEM_MEDKIT );	
 				if(itm)
 				{
-					inventory().Eat				(itm);
+					inventory().ChooseItmAnimOrNot(itm);
 					SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
 					_s->m_endTime				= Device.fTimeGlobal+3.0f;
 					string1024					str;

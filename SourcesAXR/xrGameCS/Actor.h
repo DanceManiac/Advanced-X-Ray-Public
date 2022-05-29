@@ -202,6 +202,7 @@ public:
 
 	//свойства артефактов
 	virtual void		UpdateArtefactsOnBeltAndOutfit();
+	virtual void		UpdateInventoryItems();
 	virtual void		MoveArtefactBelt		(const CArtefact* artefact, bool on_belt);
 			float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 			float		GetProtection_ArtefactsOnBelt(ALife::EHitType hit_type);
@@ -790,6 +791,8 @@ public:
 	void					block_action(EGameActions cmd);
 	void					unblock_action(EGameActions cmd);
 	// Real Wolf. End. 14.10.2014
+
+	bool					m_bEatAnimActive;
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;

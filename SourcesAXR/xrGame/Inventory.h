@@ -125,6 +125,8 @@ public:
 	void					UnblockSlot(u16 slot_id);
 	bool					IsSlotBlocked(PIItem const iitem) const;
 
+	void					ChooseItmAnimOrNot	(PIItem pIItem);
+
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TIItemContainer			m_activ_last_items;

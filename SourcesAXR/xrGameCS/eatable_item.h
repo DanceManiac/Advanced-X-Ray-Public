@@ -33,6 +33,24 @@ public:
 
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
+
+			void			UpdateInRuck				();
+			void			UpdateUseAnim				();
+			void			StartAnimation				();
+			void			HideWeapon					();
+
+			bool			m_bHasAnimation;
+			bool			m_bActivated;
+			bool			m_bTimerEnd;
+			bool			ItmStartAnim;
+			float			m_fEffectorIntensity;
+			int				m_iTiming;
+			u32				UseTimer;
+			LPCSTR			anim_sect;
+			shared_str		use_cam_effector;
+			u16				last_slot_id;
+			ref_sound		m_using_sound;
+
 protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;

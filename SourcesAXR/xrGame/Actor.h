@@ -200,6 +200,8 @@ public:
 			float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 			float		GetProtection_ArtefactsOnBelt(ALife::EHitType hit_type);
 
+	virtual void		UpdateInventoryItems();
+
 protected:
 	//звук тяжелого дыхания
 	ref_sound			m_HeavyBreathSnd;
@@ -785,6 +787,8 @@ public:
 	void					block_action(EGameActions cmd);
 	void					unblock_action(EGameActions cmd);
 	// Real Wolf. End. 14.10.2014
+
+	bool					m_bEatAnimActive;
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;

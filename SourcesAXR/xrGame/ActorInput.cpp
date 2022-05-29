@@ -181,12 +181,13 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if(item_name.size())
 			{
 				PIItem itm = inventory().GetAny(item_name.c_str());
+				CEatableItem* pItemToEat = smart_cast<CEatableItem*>(itm);
 
 				if(itm)
 				{
 					if (IsGameTypeSingle())
 					{
-						inventory().Eat				(itm);
+						inventory().ChooseItmAnimOrNot(itm);
 					} else
 					{
 						inventory().ClientEat		(itm);

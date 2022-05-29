@@ -231,6 +231,8 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_night_vision = NULL;
 	m_bNightVisionAllow = true;
 	m_bNightVisionOn = false;
+
+	m_bEatAnimActive = false;
 }
 
 
@@ -1460,6 +1462,8 @@ void CActor::shedule_Update	(u32 DT)
 
 	if (Actor())
 		DynamicHudGlass::UpdateDynamicHudGlass();
+
+	UpdateInventoryItems();
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()
@@ -1859,6 +1863,21 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			/* 		if (GetNightVisionStatus())
 			{
 			}*/
+		}
+	}
+}
+
+void CActor::UpdateInventoryItems()
+{
+	TIItemContainer::iterator it = inventory().m_ruck.begin();
+	TIItemContainer::iterator ite = inventory().m_ruck.end();
+
+	for (; it != ite; ++it)
+	{
+		CEatableItem* current_eatable = smart_cast<CEatableItem*>(*it);
+		if (current_eatable)
+		{
+			current_eatable->UpdateInRuck();
 		}
 	}
 }

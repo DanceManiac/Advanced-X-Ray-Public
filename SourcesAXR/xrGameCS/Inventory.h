@@ -110,6 +110,9 @@ public:
 	void 					SetBeltUseful		(bool belt_useful)	{m_bBeltUseful = belt_useful;}
 
 	void					SetSlotsBlocked		(u16 mask, bool bBlock);
+
+	void					ChooseItmAnimOrNot	(PIItem pIItem);
+
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TIItemContainer			m_activ_last_items;
