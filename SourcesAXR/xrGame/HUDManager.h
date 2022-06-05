@@ -3,6 +3,7 @@
 #include "../xrEngine/CustomHUD.h"
 #include "HitMarker.h"
 
+extern	u32	ui_hud_type;
 class CHUDTarget;
 class CUIGameCustom;
 

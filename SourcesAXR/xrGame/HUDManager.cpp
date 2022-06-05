@@ -17,6 +17,7 @@
 #include "phdebug.h"
 #endif
 
+u32	ui_hud_type;
 extern CUIGameCustom*	CurrentGameUI()	{return HUD().GetGameUI();}
 
 CFontManager::CFontManager()

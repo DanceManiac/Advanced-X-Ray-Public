@@ -57,7 +57,15 @@
 #	include "game_graph.h"
 #endif // DEBUG
 
-#include "hudmanager.h"
+#include "HUDManager.h"
+
+
+// Hud Type
+xr_token			qhud_type_token[] = {
+	{ "hud_1",					1},
+	{ "hud_2",					2},
+	{ 0,						0}
+};
 
 // M.F.S. Crosshair Type
 extern u32	crosshair_type;
@@ -762,6 +770,24 @@ public:
 			return;
 
 		F->w_printf				("%s %s\r\n",cName,g_last_saved_game); 
+	}
+};
+
+class CCC_UiHud_Mode : public CCC_Token
+{
+public:
+	CCC_UiHud_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N, V, T) {};
+
+	virtual void	Execute(LPCSTR args) {
+		CCC_Token::Execute(args);
+
+		if (g_pGamePersistent && g_pGameLevel && Level().game)
+		{
+			if (*value >= 1 && *value <= 3)
+			{
+				HUD().OnScreenResolutionChanged();
+			}
+		}
 	}
 };
 
@@ -2150,6 +2176,8 @@ extern BOOL dbg_moving_bones_snd_player;
 
 	CMD4(CCC_Integer,	"quick_save_counter",		&quick_save_counter,	0, 25);
 	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);
+
+	CMD3(CCC_UiHud_Mode, "hud_type",				&ui_hud_type,			qhud_type_token);
 
 	register_mp_console_commands					();
 }

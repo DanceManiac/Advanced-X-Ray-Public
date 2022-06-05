@@ -13,6 +13,9 @@
 #ifdef	DEBUG
 #include "phdebug.h"
 #endif
+
+u32	ui_hud_type;
+
 CFontManager::CFontManager()
 {
 	Device.seqDeviceReset.Add(this,REG_PRIORITY_HIGH);
