@@ -727,7 +727,6 @@ void CPHElement::InterpolateGlobalTransform(Fmatrix* m){
 }
 void CPHElement::GetGlobalTransformDynamic(Fmatrix* m) const
 {
-#pragma todo ("lost alpha not normal")
 	if (m_body == 0) return;
 
 	PHDynamicData::DMXPStoFMX(dBodyGetRotation(m_body),dBodyGetPosition(m_body),*m);
