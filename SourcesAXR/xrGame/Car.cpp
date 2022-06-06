@@ -754,8 +754,11 @@ void CCar::ParseDefinitions()
 	CInifile* ini = pKinematics->LL_UserData();
 	R_ASSERT2(ini,"Car has no description !!! See ActorEditor Object - UserData");
 	CExplosive::Load(ini,"explosion");
-	//CExplosive::SetInitiator(ID());
-	m_camera_position			= ini->r_fvector3("car_definition","camera_pos");
+
+	m_camera_position_firsteye	= ini->r_fvector3("car_definition", "camera_pos_firsteye");
+	m_camera_position_lookat	= ini->r_fvector3("car_definition", "camera_pos_lookat");
+	m_camera_position_free		= ini->r_fvector3("car_definition", "camera_pos_free");
+
 	///////////////////////////car definition///////////////////////////////////////////////////
 	fill_wheel_vector			(ini->r_string	("car_definition","driving_wheels"),m_driving_wheels);
 	fill_wheel_vector			(ini->r_string	("car_definition","steering_wheels"),m_steering_wheels);
