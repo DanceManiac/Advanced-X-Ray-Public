@@ -867,7 +867,7 @@ void CCar::CreateSkeleton(CSE_Abstract	*po)
 		pK->CalculateBones(TRUE);
 	}
 	phys_shell_verify_object_model ( *this );
-	m_pPhysicsShell = P_build_Shell(this, true, &bone_map);
+	m_pPhysicsShell = P_build_Shell(this, false, &bone_map);
 	m_pPhysicsShell->SetPrefereExactIntegration();
 
 	ApplySpawnIniToPhysicShell(&po->spawn_ini(),m_pPhysicsShell,false);
