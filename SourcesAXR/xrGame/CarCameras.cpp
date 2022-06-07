@@ -14,7 +14,6 @@
 #include "camerafirsteye.h"
 #include "level.h"
 #include "../xrEngine/cameramanager.h"
-#include "../../Include/xrRender/Kinematics.h"
 
 bool CCar::HUDView() const		
 {
@@ -58,14 +57,6 @@ void	CCar::OnCameraChange		(int type)
 			Owner()->setVisible(TRUE);
 		else
 			Owner()->setVisible(FALSE);
-
-		IKinematics* pKinematics = smart_cast<IKinematics*>(Owner()->Visual());
-		u16 		head_bone = pKinematics->LL_BoneID("bip01_head");
-
-		if (type == ectFirst)
-			pKinematics->LL_SetBoneVisible(head_bone, false, false);
-		else if (active_camera->tag == ectFirst)
-			pKinematics->LL_SetBoneVisible(head_bone, true, true);
 	}
 	
 	if (!active_camera||active_camera->tag!=type){
