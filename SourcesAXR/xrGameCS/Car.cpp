@@ -486,7 +486,7 @@ void CCar::UpdateCL()
 		
 		if(m_pPhysicsShell->isEnabled())
 		{
-			Owner()->XFORM().mul_43	(XFORM(),m_sits_transforms[0]);
+			Owner()->XFORM().mul_43	(XFORM(),m_sits_transforms);
 		}
 // 
 // 		if(OwnerActor() && OwnerActor()->IsMyCamera()) 
@@ -660,15 +660,26 @@ bool CCar::attach_Actor(CGameObject* actor)
 	IKinematics* K	= smart_cast<IKinematics*>(Visual());
 	CInifile* ini	= K->LL_UserData();
 	int id;
-	if(ini->line_exist("car_definition","driver_place"))
+	Fmatrix	driver_xform;
+	if (ini->line_exist("car_definition", "driver_position") && ini->line_exist("car_definition", "driver_direction"))
+	{
+		driver_xform.c.set(ini->r_fvector3("car_definition", "driver_position"));
+		driver_xform.k.set(ini->r_fvector3("car_definition", "driver_direction"));
+	}
+	else if (ini->line_exist("car_definition", "driver_place")) 
+	{
 		id=K->LL_BoneID(ini->r_string("car_definition","driver_place"));
-	else
-	{	
+		CBoneInstance& instance = K->LL_GetBoneInstance(u16(id));
+		driver_xform.set(instance.mTransform);
+	}
+	else 
+	{
 		Owner()->setVisible(0);
 		id=K->LL_GetBoneRoot();
+		CBoneInstance& instance = K->LL_GetBoneInstance(u16(id));
+		driver_xform.set(instance.mTransform);
 	}
-	CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
-	m_sits_transforms.push_back(instance.mTransform);
+	m_sits_transforms.set(driver_xform);
 	OnCameraChange(ectFirst);
 	PPhysicsShell()->Enable();
 	PPhysicsShell()->add_ObjectContactCallback(ActorObstacleCallback);
