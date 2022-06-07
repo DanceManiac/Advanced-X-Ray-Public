@@ -44,6 +44,7 @@ public:
 
 	virtual float	BlowoutRadiusPercent(CPhysicsShellHolder* /*GO*/){return m_fBlowoutRadiusPercent;}
 protected:
+	virtual void	exit_Zone(SZoneObjectInfo& io);
 	virtual CTelekinesis& Telekinesis()						=0;
 protected:
 	//сила импульса вт€гивани€ в зону (дл€ веса 100 кг)
