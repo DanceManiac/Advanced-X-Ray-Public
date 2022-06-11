@@ -1300,7 +1300,7 @@ struct callback_param {
 	u16				bone_id;
 };
 
-static void test_callback			(CBoneInstance *B)
+static void _BCL test_callback			(CBoneInstance *B)
 {
 	VERIFY								(B);
 

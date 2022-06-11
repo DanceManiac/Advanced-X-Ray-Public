@@ -58,7 +58,7 @@ private:
 	CFunctionGraph 					m_dbg_torque_rpm		;
 	CStatGraph	   					*m_dbg_dynamic_plot		;
 	bool							b_plots					;
-	float 			TorqueRpmFun		(float rpm)		{return Parabola(rpm)/rpm;}
+	float _stdcall			TorqueRpmFun(float rpm) { return Parabola(rpm) / rpm; }
 	void 					InitDebug			()				;
 	void 					DbgSheduleUpdate	()				;
 	void 					DbgUbdateCl			()				;

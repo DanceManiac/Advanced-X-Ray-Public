@@ -31,9 +31,9 @@ struct lua_Debug;
 		class CScriptDebugger;
 #	else // #ifndef USE_LUA_STUDIO
 		namespace cs {
-			namespace lua_debugger {
+			namespace lua_studio {
 				struct world;
-			} // namespace lua_debugger
+			} // namespace lua_studio
 		} // namespace cs
 
 		class lua_studio_engine;
@@ -59,7 +59,7 @@ protected:
 #	ifndef USE_LUA_STUDIO
 		CScriptDebugger				*m_scriptDebugger;
 #	else // #ifndef USE_LUA_STUDIO
-		cs::lua_debugger::world*	m_lua_studio_world;
+		cs::lua_studio::world*	m_lua_studio_world;
 		lua_studio_engine*			m_lua_studio_engine;
 #	endif // #ifndef USE_LUA_STUDIO
 #endif // #ifdef USE_DEBUGGER
@@ -107,7 +107,7 @@ public:
 #	else // ifndef USE_LUA_STUDIO
 			void				try_connect_to_debugger		();
 			void				disconnect_from_debugger	();
-	inline cs::lua_debugger::world*	debugger				() const { return m_lua_studio_world; }
+	inline cs::lua_studio::world*	debugger				() const { return m_lua_studio_world; }
 #	endif // ifndef USE_LUA_STUDIO
 #endif
 	virtual	void				on_error					(lua_State* state);
