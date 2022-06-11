@@ -68,6 +68,10 @@
       <ImportLibrary>..\..\..\..\libraries\$(TargetName).lib</ImportLibrary>
       <TargetMachine>NotSet</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

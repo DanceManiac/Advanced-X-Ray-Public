@@ -134,6 +134,9 @@
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <EnableUAC>true</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>copy ..\..\OutputDirectory\Libraries\Debug\crypto.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
     <Midl>

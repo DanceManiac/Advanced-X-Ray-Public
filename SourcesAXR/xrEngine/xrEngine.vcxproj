@@ -107,6 +107,7 @@
     <ExtensionsToDeleteOnClean>*.idb%3b*.obj%3b*.ilk%3b*.pdb%3b*.tlb%3b*.tli%3b*.tlh%3b*.tmp%3b*.rsp%3b*.bat%3b$(TargetPath)</ExtensionsToDeleteOnClean>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
     <OutDir>..\..\..\binaries\</OutDir>
@@ -192,6 +193,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\AdvancedXRay.lib</ImportLibrary>
+      <ProgramDatabaseFile>$(OutDir)AdvancedXRay.pdb</ProgramDatabaseFile>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>as-invoker-manifest-part.xml;%(AdditionalManifestFiles)</AdditionalManifestFiles>
