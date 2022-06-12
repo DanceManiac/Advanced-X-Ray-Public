@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "pch_script.h"
 #pragma hdrstop
 
 #include "object_factory_impl.h"

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "embedded_editor_helper.h"
 #include <luabind/class_info.hpp>
 
