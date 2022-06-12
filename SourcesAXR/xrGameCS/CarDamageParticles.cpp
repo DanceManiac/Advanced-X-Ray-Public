@@ -94,7 +94,8 @@ void CCarDamageParticles::Stop1(CCar* car)
 
 void CCarDamageParticles::Stop2(CCar* car)
 {
-	VERIFY(!physics_world()->Processing());
+	VERIFY(!ph_world->Processing());
+
 	if (*m_car_damage_particles2)
 	{
 		auto i = bones2.begin(), e = bones2.end();

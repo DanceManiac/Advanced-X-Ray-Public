@@ -1,7 +1,7 @@
 #pragma once
 #include "UIWindow.h"
 #include "..\..\xrServerEntities\alife_space.h"
-
+#include "..\inventory_item.h"
 
 class CUIXml;
 class CUIStatic;

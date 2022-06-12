@@ -32,6 +32,7 @@
 #include "../control_animation_base.h"
 #include "../monster_velocity_space.h"
 #include "../anti_aim_ability.h"
+#include "../xrphysics/IPHWorld.h"
 
 namespace detail
 {

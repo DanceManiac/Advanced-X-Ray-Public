@@ -3,7 +3,7 @@
 #pragma hdrstop
 #include "gamefont.h"
 #include <sal.h>
-#include "dxerr.h"
+#include "DxErr/src/dxerr.h"
 #include "ImageManager.h"
 #include "ui_main.h"
 #include "render.h"

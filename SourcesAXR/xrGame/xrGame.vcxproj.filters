@@ -6222,9 +6222,6 @@
     <ClInclude Include="RegistryFuncs.h">
       <Filter>Core\Common\Registry</Filter>
     </ClInclude>
-    <ClInclude Include="debug_make_final.hpp">
-      <Filter>Core\Common\debug\make_final</Filter>
-    </ClInclude>
     <ClInclude Include="static_cast_checked.hpp">
       <Filter>Core\Common\debug\static_cast_checked</Filter>
     </ClInclude>
@@ -9813,9 +9810,6 @@
     </ClCompile>
     <ClCompile Include="RegistryFuncs.cpp">
       <Filter>Core\Common\Registry</Filter>
-    </ClCompile>
-    <ClCompile Include="debug_make_final_test.cpp">
-      <Filter>Core\Common\debug\make_final</Filter>
     </ClCompile>
     <ClCompile Include="static_cast_checked_test.cpp">
       <Filter>Core\Common\debug\static_cast_checked</Filter>
