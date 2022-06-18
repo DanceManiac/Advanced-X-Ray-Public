@@ -42,6 +42,7 @@ class CAttachableItem;
 class animation_movement_controller;
 class CBlend;
 class ai_obstacle;
+class CTorch;
 
 class IKinematics;
 
@@ -88,6 +89,7 @@ public:
 	virtual CAttachableItem*			cast_attachable_item		()						{return NULL;}
 	virtual CHolderCustom*				cast_holder_custom			()						{return NULL;}
 	virtual CBaseMonster*				cast_base_monster			()						{return NULL;}
+	virtual CTorch*						cast_torch					()						{return NULL;}
 
 public:
 	virtual BOOL						feel_touch_on_contact	(CObject *)					{return TRUE;}

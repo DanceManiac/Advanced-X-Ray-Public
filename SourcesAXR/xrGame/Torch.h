@@ -76,6 +76,8 @@ public:
 	float			m_fUnchargeSpeed;
 	float			m_fMaxRange;
 	float			m_fCurveRange;
+
+	virtual CTorch* cast_torch				() { return this; }
  
 protected:
 	HUD_SOUND_COLLECTION	m_sounds;
