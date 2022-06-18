@@ -73,10 +73,10 @@ CUIWpnParams::CUIWpnParams()
 	AttachChild(&m_stAmmoType2);
 	// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
 	// Инициализируем переменные для отображения ещё 4 типов патронов в свойствах оружия
-	AttachChild(&m_stAmmoType3);
+	/*AttachChild(&m_stAmmoType3);
 	AttachChild(&m_stAmmoType4);
 	AttachChild(&m_stAmmoType5);
-	AttachChild(&m_stAmmoType6);
+	AttachChild(&m_stAmmoType6);*/
 	// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 }
 
@@ -116,10 +116,10 @@ void CUIWpnParams::InitFromXml(CUIXml& xml_doc)
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type2",	0, &m_stAmmoType2);
 		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
 		// Читаем параметры отображения отображения ещё 4 типов патронов в свойствах оружия
-		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type3",	0, &m_stAmmoType3);
+		/*CUIXmlInit::InitStatic(xml_doc, "wpn_params:static_ammo_type3", 0, &m_stAmmoType3);
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type4",	0, &m_stAmmoType4);
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type5",	0, &m_stAmmoType5);
-		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type6",	0, &m_stAmmoType6);
+		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type6",	0, &m_stAmmoType6);*/
 		// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 	}
 
@@ -194,10 +194,10 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 			m_textAmmoUsedType.Show(showAmmo);
 			m_stAmmoType1.Show(showAmmo);
 			m_stAmmoType2.Show(showAmmo);
-			m_stAmmoType3.Show(showAmmo);
+			/*m_stAmmoType3.Show(showAmmo);
 			m_stAmmoType4.Show(showAmmo);
 			m_stAmmoType5.Show(showAmmo);
-			m_stAmmoType6.Show(showAmmo);
+			m_stAmmoType6.Show(showAmmo);*/
 
 		if (!showAmmo)
 			return;
@@ -245,7 +245,7 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		m_stAmmoType1.SetWndSize(Fvector2().set((tex_rect.x2-tex_rect.x1)*UI().get_current_kx(), tex_rect.y2-tex_rect.y1));
 
 		m_stAmmoType2.SetShader(InventoryUtilities::GetEquipmentIconsShader());
-		if(ammo_types_size <= 1)
+		if(ammo_types.size() == 1)
 		{
 			tex_rect.set(0,0,1,1);
 		}
@@ -262,7 +262,7 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		m_stAmmoType2.SetStretchTexture(true);
 		m_stAmmoType2.SetWndSize(Fvector2().set((tex_rect.x2-tex_rect.x1)*UI().get_current_kx(), tex_rect.y2-tex_rect.y1));
 
-		m_stAmmoType3.SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		/*m_stAmmoType3.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 		if (ammo_types_size <= 2)
 		{
 			tex_rect.set(0, 0, 1, 1);
@@ -333,6 +333,7 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		m_stAmmoType6.TextureOn();
 		m_stAmmoType6.SetStretchTexture(true);
 		m_stAmmoType6.SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1)*UI().get_current_kx(), tex_rect.y2 - tex_rect.y1));
+		*/
 		// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 	}
 }

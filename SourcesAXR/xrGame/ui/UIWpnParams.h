@@ -45,10 +45,10 @@ protected:
 	CUIStatic				m_stAmmoType2;
 	// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
 	// Вводим дополнительные переменные для отображения 3-го и 4-го типа патронов в свойствах оружия
-	CUIStatic				m_stAmmoType3;
+	/*CUIStatic				m_stAmmoType3;
 	CUIStatic				m_stAmmoType4;
 	CUIStatic				m_stAmmoType5;
-	CUIStatic				m_stAmmoType6;
+	CUIStatic				m_stAmmoType6;*/
 	// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 	CUIStatic				m_Prop_line;
 };

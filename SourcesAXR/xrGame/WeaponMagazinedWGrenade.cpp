@@ -1066,7 +1066,7 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 		u8 ammo_type = m_bGrenadeMode ? m_ammoType2 : m_ammoType;
 		// Lex Addon (correct by Suhar_) 28.03.2017		(begin)
 		//            WeaponMagazined.cpp
-		int add_ammo_count = 0;
+		/*int add_ammo_count = 0;
 		for (int i = 0; i < at_size; i++)
 		{
 			if (ammo_type == i)
@@ -1083,9 +1083,8 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 			xr_sprintf(int_str, "%d", add_ammo_count);
 		else
 			xr_sprintf(int_str, "%s", "");
-		info.ap_ammo._set(int_str);
+		info.ap_ammo._set(int_str);*/
 
-		/*
 		xr_sprintf(int_str, "%d", m_bGrenadeMode ? GetAmmoCount2(0) : GetAmmoCount(0));
 		if(ammo_type==0)
 			info.fmj_ammo._set(int_str);
@@ -1102,9 +1101,7 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 		}
 		else
 			info.ap_ammo._set("");
-		*/
 		// Lex Addon (correct by Suhar_) 28.07.2017		(end)
-
 	}
 
 	if(ae != 0 && m_magazine.size() != 0)
