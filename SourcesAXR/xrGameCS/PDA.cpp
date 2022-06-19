@@ -40,14 +40,14 @@ CPda::~CPda() {}
 
 BOOL CPda::net_Spawn(CSE_Abstract* DC)
 {
-	BOOL res = inherited::net_Spawn(DC);
+	inherited::net_Spawn(DC);
 	CSE_Abstract* abstract = (CSE_Abstract*)(DC);
 	CSE_ALifeItemPDA* pda = smart_cast<CSE_ALifeItemPDA*>(abstract);
 	R_ASSERT(pda);
 	m_idOriginalOwner = pda->m_original_owner;
 	m_SpecificChracterOwner = pda->m_specific_character;
 
-	return (res);
+	return (TRUE);
 }
 
 void CPda::net_Destroy()
@@ -295,12 +295,9 @@ void CPda::UpdateCL()
 				pda->Update();
 				if (m_eDeferredEnable == eEnable || m_eDeferredEnable == eEnableZoomed)
 				{
-					//if (Actor()->cam_freelook == eflDisabled && g_player_hud->script_anim_part == u8(-1))
-					//{
 					pda->Enable(true);
 					m_bZoomed = m_eDeferredEnable == eEnableZoomed;
 					m_eDeferredEnable = eDefault;
-					//}
 				}
 			}
 
@@ -319,13 +316,13 @@ void CPda::UpdateCL()
 			// Turn on "power saving" on low battery charge (dims the screen).
 			if (IsUsingCondition() && condition < m_fPowerSavingCharge)
 			{
-				if (!m_bPowerSaving)
+				/*if (!m_bPowerSaving)
 				{
 					luabind::functor<void> funct;
 					if (ai().script_engine().functor("pda.on_low_battery", funct))
 						funct();
 					m_bPowerSaving = true;
-				}
+				}*/
 			}
 
 			// Turn off "power saving" if battery has sufficient charge.
@@ -430,7 +427,7 @@ void CPda::UpdateHudAdditional(Fmatrix& trans)
 
 	//u8 idx = GetCurrentHudOffsetIdx();
 
-	if (/*pActor->cam_freelook == eflEnabled || pActor->cam_freelook == eflEnabling ||*/ g_player_hud->script_anim_part != u8(-1))
+	/*if (g_player_hud->script_anim_part != u8(-1))
 	{
 		CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
 
@@ -448,7 +445,7 @@ void CPda::UpdateHudAdditional(Fmatrix& trans)
 
 			pda->Enable(false);
 		}
-	}
+	}*/
 
 	Fvector curr_offs, curr_rot;
 

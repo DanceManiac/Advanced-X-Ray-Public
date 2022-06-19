@@ -464,7 +464,6 @@ player_hud::player_hud()
 	m_attached_items[1]		= NULL;
 	m_transform.identity();
 	m_transform_2.identity();
-	script_anim_part = u8(-1);
 	reset_thumb(true);
 }
 
@@ -686,8 +685,8 @@ void player_hud::render_hud()
 {
 	if(!m_attached_items[0] && !m_attached_items[1])	return;
 
-	bool b_r0 = ((m_attached_items[0] && m_attached_items[0]->need_renderable()) /*|| script_anim_part == 0 || script_anim_part == 2*/);
-	bool b_r1 = ((m_attached_items[1] && m_attached_items[1]->need_renderable()) /*|| script_anim_part == 1 || script_anim_part == 2*/);
+	bool b_r0 = (m_attached_items[0] && m_attached_items[0]->need_renderable());
+	bool b_r1 = (m_attached_items[1] && m_attached_items[1]->need_renderable());
 
 	if(!b_r0 && !b_r1)									return;
 
@@ -769,39 +768,6 @@ void player_hud::update(const Fmatrix& cam_trans)
 		m_attached_items[1]->update_hud_additional(trans_2);
 	else
 		trans_2 = trans;
-
-	// override hand offset for single hand animation
-	/*if (script_anim_offset_factor != 0.f)
-	{
-		if (script_anim_part == 2 || (!m_attached_items[0] && !m_attached_items[1]))
-		{
-			m1pos = script_anim_offset[0];
-			m2pos = script_anim_offset[0];
-			m1rot = script_anim_offset[1];
-			m2rot = script_anim_offset[1];
-			trans = trans_b;
-			trans_2 = trans_b;
-		}
-		else
-		{
-			Fvector& hand_pos = script_anim_part == 0 ? m1pos : m2pos;
-			Fvector& hand_rot = script_anim_part == 0 ? m1rot : m2rot;
-
-			hand_pos.lerp(script_anim_part == 0 ? m1pos : m2pos, script_anim_offset[0], script_anim_offset_factor);
-			hand_rot.lerp(script_anim_part == 0 ? m1rot : m2rot, script_anim_offset[1], script_anim_offset_factor);
-
-			if (script_anim_part == 0)
-			{
-				trans_b.inertion(trans, script_anim_offset_factor);
-				trans = trans_b;
-			}
-			else
-			{
-				trans_b.inertion(trans_2, script_anim_offset_factor);
-				trans_2 = trans_b;
-			}
-		}
-	}*/
 
 	m1rot.mul(PI / 180.f);
 	m_attach_offset.setHPB(m1rot.x, m1rot.y, m1rot.z);

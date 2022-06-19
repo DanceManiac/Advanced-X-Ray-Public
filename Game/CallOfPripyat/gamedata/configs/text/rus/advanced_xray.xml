@@ -174,12 +174,6 @@
 	<string id="kb_grp_auto">
 		<text>Транспорт</text>
 	</string>
-	<string id="kb_turn_engine">
-		<text>Завести двигатель</text>
-	</string>
-	<string id="kb_switch_horn">
-		<text>Посигналить</text>
-	</string>
 	<string id="ui_inv_battery">
 		<text>Заряд батареи</text>
 	</string>
@@ -251,5 +245,8 @@
 	</string>
 	<string id="ui_mm_r2_use_bump">
 		<text>Использовать бампы</text>
+	</string>
+	<string id="st_bolt_descr">
+		<text>Металлическое крепёжное изделие в виде стержня с наружной резьбой и шестигранной головкой под гаечный ключ. Используется сталкерами для обнаружения, определения границ и разрядки аномалий, а также для обнаружения мин.</text>
 	</string>
 </string_table>

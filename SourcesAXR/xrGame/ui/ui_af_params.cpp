@@ -408,7 +408,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		}
 
 		val = artefact->m_fWalkAccel;
-		if (!fis_zero(val))
+		if (!fis_zero(val) && val > 1.0f)
 		{
 			m_fWalkAccel->SetValue(val);
 
@@ -421,7 +421,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		}
 
 		val = artefact->m_fJumpSpeed;
-		if (!fis_zero(val))
+		if (!fis_zero(val) && val > 1.0f)
 		{
 			m_fJumpSpeed->SetValue(val);
 

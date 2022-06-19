@@ -174,7 +174,6 @@ private:
 public:
 	Fvector target_thumb0rot, target_thumb01rot, target_thumb02rot;
 	Fvector thumb0rot, thumb01rot, thumb02rot;
-	u8 script_anim_part;
 
 	void reset_thumb(bool bForce)
 	{

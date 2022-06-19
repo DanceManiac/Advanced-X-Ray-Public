@@ -357,4 +357,23 @@
 			<color_less color="pda_red"  />
 			<color_more color="pda_green"/>
 		</progress_damage>
+		
+	<static_current_charge_level x="0" y="10" width="14" height="18" stretch="1">
+		<texture>ui_item_battery_icon</texture>
+	</static_current_charge_level>
+	
+	<cap_current_charge_level x="18" y="12" width="80" height="8">
+		<text font="letterica16" r="170" g="170" b="170" align="l">ui_inv_battery</text>
+	</cap_current_charge_level>
+	
+	<progress_current_charge_level x="104" y="14" width="101" height="9" horz="1">
+		<progress>
+			<texture a="150">ui_inGame2_hint_wnd_bar_alfa_line_16</texture>
+		</progress>
+		<background>
+			<texture>ui_inGame2_hint_wnd_bar_16</texture>
+		</background>
+		<color_less color="pda_red"  />
+		<color_more color="pda_green"/>
+	</progress_current_charge_level>
 </w>
