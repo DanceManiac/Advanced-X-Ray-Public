@@ -217,7 +217,7 @@ public:
 public:
 	virtual	bool				use_simplified_visual	() const {return (false);};
 
-			void				AfterLoad				();
+	void xr_stdcall				AfterLoad				();
 
 private:
 	CTradeParameters			*m_trade_parameters;
