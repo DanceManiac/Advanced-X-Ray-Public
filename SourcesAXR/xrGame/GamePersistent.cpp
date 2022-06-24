@@ -500,6 +500,11 @@ void CGamePersistent::game_loaded()
 			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
 		}
 		m_intro_event			= 0;
+
+		for (u32 i = 0; i < GameLoadedCallback.size(); i++)
+			GameLoadedCallback[i]();
+
+		GameLoadedCallback.clear();
 	}
 }
 

@@ -108,6 +108,8 @@ public:
 			float		GetActorBleeding		() override;
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
+
+	xr_vector<fastdelegate::FastDelegate0<>>    GameLoadedCallback;
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}
