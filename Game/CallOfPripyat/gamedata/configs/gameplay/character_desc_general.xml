@@ -16,6 +16,7 @@
 			[spawn] \n
 			device_torch \n
 			wpn_binoc \n
+			bolt \n
 			wpn_knife \n
 			detector_simple \n
 			helm_respirator \n
