@@ -366,6 +366,12 @@ float ps_r3_pbr_intensity = 25.0f;
 float ps_r3_pbr_roughness = 0.5f;
 Flags32	ps_r3_pbr_flags = { R_FLAG_PSEUDOPBR };
 
+//Geometry optimization from Anomaly
+int opt_static = 0;
+int opt_dynamic = 0;
+
+Flags32 psDeviceFlags2 = { 0 };
+
 //Static on R2+
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP
 	| R2FLAG_STATIC_SUN
@@ -1150,8 +1156,6 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer, "r__no_scale_on_fade",			&ps_no_scale_on_fade,		0, 1				); //Alundaio
 	CMD4(CCC_Integer, "rs_loadingstages",				&ps_rs_loading_stages,		0, 1				);
 
-
-
 	//	Allow real-time fog config reload
 #if	(RENDER == R_R3) || (RENDER == R_R4)
 #ifdef	DEBUG
@@ -1167,6 +1171,11 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r3_volumetric_smoke",			&ps_r2_ls_flags,			R3FLAG_VOLUMETRIC_SMOKE);
 	CMD1(CCC_memory_stats,	"render_memory_stats" );
 	
+	// Geometry optimization
+	CMD4(CCC_Integer,		"r__optimize_static_geom",		&opt_static,				0,	4		);
+	CMD4(CCC_Integer,		"r__optimize_dynamic_geom",		&opt_dynamic,				0,	4		);
+	psDeviceFlags2.set(rsOptShadowGeom, TRUE);
+	CMD3(CCC_Mask,			"r__optimize_shadow_geom",		&psDeviceFlags2,			rsOptShadowGeom);
 
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }

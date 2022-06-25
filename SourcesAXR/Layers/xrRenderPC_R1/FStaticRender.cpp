@@ -233,7 +233,7 @@ ENGINE_API	extern BOOL g_bRendering;
 void					CRender::add_Visual				(IRenderVisual* V )
 {
 	VERIFY				(g_bRendering);
-	add_leafs_Dynamic	((dxRender_Visual*)V);									
+	add_leafs_Dynamic((dxRender_Visual*)V, V->_ignore_optimization);
 }
 void					CRender::add_Geometry			(IRenderVisual* V ){ add_Static((dxRender_Visual*)V,View->getMask());						}
 void					CRender::add_StaticWallmark		(ref_shader& S, const Fvector& P, float s, CDB::TRI* T, Fvector* verts)

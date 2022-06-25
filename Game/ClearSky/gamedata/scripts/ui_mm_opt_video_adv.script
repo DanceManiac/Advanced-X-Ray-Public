@@ -373,6 +373,21 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_hud_fov", _st)
 	ctl = xml:InitTrackBar("video_adv:track_hud_fov", _st)
+	
+--Оптимизация статической геометрии	
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_optimize_static_geom", _st)
+	xml:InitTrackBar("video_adv:track_optimize_static_geom", _st)
+	
+--Оптимизация динамической геометрии	
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_optimize_dynamic_geom", _st)
+	xml:InitTrackBar("video_adv:track_optimize_dynamic_geom", _st)
+	
+--Оптимизация теневых карт	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_optimize_shadow_geom", _st)
+	ctl = xml:InitCheck("video_adv:check_optimize_shadow_geom", _st)
 
 --Цветокоррекция: Интенсивность красного
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)

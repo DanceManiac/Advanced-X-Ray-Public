@@ -164,6 +164,9 @@ extern ECORE_API float			ps_saturation;
 extern ECORE_API float			ps_r2_rain_drops_intensity;
 extern ECORE_API float			ps_r2_rain_drops_speed;
 
+extern ECORE_API int			opt_static;
+extern ECORE_API int			opt_dynamic;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),
@@ -286,6 +289,9 @@ enum
 	R2FLAG_USE_BUMP		= (1 << 0),
 	R2FLAG_STATIC_SUN	= (1 << 1),
 };
+
+//Rezy: cleanup flags
+extern Flags32 psDeviceFlags2;
 
 extern ECORE_API int ps_rs_loading_stages;
 

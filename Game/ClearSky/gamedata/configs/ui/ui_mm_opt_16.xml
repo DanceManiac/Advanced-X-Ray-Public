@@ -579,6 +579,33 @@
             </text_color>
         </combo_r2_aa_mode>
 		
+		<cap_optimize_static_geom x="17" y="0" width="119" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_optimize_static_geom</text>
+		</cap_optimize_static_geom>
+		<track_optimize_static_geom x="162" y="0" width="200" height="21" min="0.0f" max="4.0f" step="1">
+			<options_item entry="r__optimize_static_geom" group="mm_opt_video_adv"/>
+				<output_wnd x="231" y="0" width="20" height="20" format="%.0f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
+		</track_optimize_static_geom>
+		
+		<cap_optimize_dynamic_geom x="17" y="0" width="119" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_optimize_dynamic_geom</text>
+		</cap_optimize_dynamic_geom>
+		<track_optimize_dynamic_geom x="162" y="0" width="200" height="21" min="0.0f" max="4.0f" step="1">
+			<options_item entry="r__optimize_dynamic_geom" group="mm_opt_video_adv"/>
+				<output_wnd x="231" y="0" width="20" height="20" format="%.0f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
+		</track_optimize_dynamic_geom>
+		
+		<cap_optimize_shadow_geom x="17" y="0" width="119" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_optimize_shadow_geom</text>
+		</cap_optimize_shadow_geom>
+		<check_optimize_shadow_geom x="162" y="0" width="27" height="21">
+			<options_item entry="r__optimize_shadow_geom" group="mm_opt_video_adv"  depend="vid"/>
+		</check_optimize_shadow_geom>
+		
 		<cap_color_r x="17" y="0" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_clr_red</text>
 		</cap_color_r>

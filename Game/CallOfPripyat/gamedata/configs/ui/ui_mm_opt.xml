@@ -165,8 +165,8 @@
         vert_interval="0" always_show_scroll="0"/>
 
         <templ_item width="430" height="30"/>
-
-        <cap_vis_dist x="20" y="3" width="108" height="24">
+		
+        <cap_vis_dist x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_vis_distance</text>
         </cap_vis_dist>
         <track_vis_dist x="170" y="6" width="200" height="16" min="0.4" max="1.5" step="0.1">
@@ -181,7 +181,7 @@
         </cap_fov>	
 		<track_fov x="170" y="6" width="200" height="16" min="5.0" max="180.0" step="0.1">
         <options_item entry="cam_fov" group="mm_opt_video_adv"/>
-			<output_wnd x="231" y="0" width="20" height="20" format="%.0f">
+			<output_wnd x="195" y="0" width="20" height="20" format="%.0f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_fov>
@@ -201,7 +201,7 @@
         </cap_detail_radius>	
 		<track_detail_radius x="170" y="6" width="200" height="16" min="49.0" max="300.0" step="0.1">
         <options_item entry="r__detail_radius" group="mm_opt_video_adv"/>
-			<output_wnd x="231" y="0" width="20" height="20" format="%.0f">
+			<output_wnd x="185" y="0" width="20" height="20" format="%.0f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_detail_radius>
@@ -358,40 +358,40 @@
             </text_color>
         </combo_r2_aa_mode>
 
-        <cap_color_r x="20" y="3" width="108" height="24">
+        <cap_color_r x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_red</text>
         </cap_color_r>
-        <track_color_r x="170" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+        <track_color_r x="170" y="6" width="200" height="16" min="0.5" max="2.55" step="0.01">
             <options_item entry="r_color_r" group="mm_opt_video_adv"/>
 			<output_wnd x="231" y="0" width="20" height="20" format="%f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_color_r>
 		
-        <cap_color_g x="20" y="3" width="108" height="24">
+        <cap_color_g x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_green</text>
         </cap_color_g>
-        <track_color_g x="170" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+        <track_color_g x="170" y="6" width="200" height="16" min="0.5" max="2.55" step="0.01">
             <options_item entry="r_color_g" group="mm_opt_video_adv"/>
 			<output_wnd x="231" y="0" width="20" height="20" format="%f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_color_g>
 		
-        <cap_color_b x="20" y="3" width="108" height="24">
+        <cap_color_b x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_blue</text>
         </cap_color_b>
-        <track_color_b x="170" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+        <track_color_b x="170" y="6" width="200" height="16" min="0.5" max="2.55" step="0.01">
             <options_item entry="r_color_b" group="mm_opt_video_adv"/>
 			<output_wnd x="231" y="0" width="20" height="20" format="%f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_color_b>
 		
-        <cap_saturation x="20" y="3" width="108" height="24">
+        <cap_saturation x="20" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_saturation</text>
         </cap_saturation>
-        <track_cap_saturation x="170" y="6" width="158" height="16" min="-1.0" max="1.0" step="0.01">
+        <track_cap_saturation x="170" y="6" width="200" height="16" min="-1.0" max="1.0" step="0.01">
             <options_item entry="r_saturation" group="mm_opt_video_adv"/>
 			<output_wnd x="231" y="0" width="20" height="20" format="%f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
@@ -668,6 +668,34 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="r4_enable_tessellation" group="mm_opt_video_adv" depend="vid"/>
         </check_r4_tessellation>
+		
+        <cap_optimize_static_geom x="20" y="3" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_optimize_static_geom</text>
+        </cap_optimize_static_geom>
+        <track_optimize_static_geom x="170" y="6" width="200" height="16" min="0.0f" max="4.0f" step="1">
+            <options_item entry="r__optimize_static_geom" group="mm_opt_video_adv"/>
+			<output_wnd x="185" y="0" width="20" height="20" format="%.0f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_optimize_static_geom>
+		
+        <cap_optimize_dynamic_geom x="20" y="3" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_optimize_dynamic_geom</text>
+        </cap_optimize_dynamic_geom>
+        <track_optimize_dynamic_geom x="170" y="6" width="200" height="16" min="0.0f" max="4.0f" step="1">
+            <options_item entry="r__optimize_dynamic_geom" group="mm_opt_video_adv"/>
+			<output_wnd x="185" y="0" width="20" height="20" format="%.0f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_optimize_dynamic_geom>
+		
+        <cap_optimize_shadow_geom x="20" y="3" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_optimize_shadow_geom</text>
+        </cap_optimize_shadow_geom>
+        <check_optimize_shadow_geom x="167" y="0" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r__optimize_shadow_geom" group="mm_opt_video_adv" depend="vid"/>
+        </check_optimize_shadow_geom>
 
         <btn_to_simply x="338" y="322" width="108" height="24">
             <text align="c" font="letterica16">ui_mm_simply</text>
