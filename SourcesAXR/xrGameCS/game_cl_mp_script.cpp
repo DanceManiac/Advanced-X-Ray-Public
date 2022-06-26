@@ -30,7 +30,9 @@ struct CWrapperBase : public T, public luabind::wrap_base {
 	DEFINE_LUA_WRAPPER_METHOD_R2P1_V1(GetMapEntities, xr_vector<SZoneMapEntityData>)
 
 	virtual game_PlayerState* createPlayerState()
-	{ return call_member<game_PlayerState*>(this,"createPlayerState")[adopt(result)];}
+	{
+		return call_member<game_PlayerState*>(this, "createPlayerState")[adopt<result>()];
+	}
 	static game_PlayerState* createPlayerState_static(inherited* ptr)
 	{ return ptr->self_type::inherited::createPlayerState();}
 };
@@ -126,7 +128,7 @@ void game_cl_mp_script::script_register(lua_State *L)
 			.def("FillMapEntities",		&BaseType::GetMapEntities, &WrapType::GetMapEntities_static)
 			.def("TranslateGameMessage",&BaseType::TranslateGameMessage, &WrapType::TranslateGameMessage_static)
 
-			.def("createPlayerState",	&BaseType::createPlayerState, &WrapType::createPlayerState_static, adopt(result) )
-			.def("createGameUI",		&BaseType::createGameUI, &WrapType::createGameUI_static, adopt(result) )
+			.def("createPlayerState",	&BaseType::createPlayerState, &WrapType::createPlayerState_static, adopt<result>() )
+			.def("createGameUI",		&BaseType::createGameUI, &WrapType::createGameUI_static, adopt<result>() )
 	];
 }
