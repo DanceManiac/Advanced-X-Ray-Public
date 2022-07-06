@@ -5,7 +5,6 @@
 #include "../xrServerEntities/associative_vector.h"
 #include "../xrGameSpy/GameSpy/sake/sake.h"
 #include "profile_data_types.h"
-#include "profile_data_types_script.h"
 
 class CGameSpy_Full;
 class CGameSpy_SAKE;

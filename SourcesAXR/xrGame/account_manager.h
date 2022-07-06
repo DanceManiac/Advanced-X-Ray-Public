@@ -6,7 +6,6 @@
 #include "GameSpy/GameSpy_FuncDefs.h"
 #include "script_export_space.h"
 #include "queued_async_method.h"
-#include "profile_data_types_script.h"
 
 class CGameSpy_GP;
 

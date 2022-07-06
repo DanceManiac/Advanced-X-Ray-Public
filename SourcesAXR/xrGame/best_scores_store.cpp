@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "profile_data_types_script.h"
 #include "best_scores_store.h"
 #include "GameSpy/GameSpy_Full.h"
 #include "GameSpy/GAmeSpy_SAKE.h"

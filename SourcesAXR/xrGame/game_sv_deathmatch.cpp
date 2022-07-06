@@ -19,11 +19,9 @@
 //#define DELAYED_ROUND_TIME	7000
 #include "ui\UIBuyWndShared.h"
 #include "../xrEngine/xr_ioconsole.h"
-#include <functional>
 
 #define UNBUYABLESLOT		20
 
-using namespace std::placeholders;
 //-----------------------------------------------------------------
 u32		g_sv_dm_dwForceRespawn			= 0;
 s32		g_sv_dm_dwFragLimit				= 10;

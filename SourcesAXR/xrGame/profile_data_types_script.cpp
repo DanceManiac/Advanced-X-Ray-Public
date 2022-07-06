@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "profile_data_types.h"
-#include "profile_data_types_script.h"
 
 using namespace luabind;
 

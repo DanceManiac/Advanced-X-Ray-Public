@@ -37,7 +37,7 @@ private:
 	typedef respawn_sections_map::iterator					respawn_section_iter;
 
 
-	struct search_by_id_predicate
+	struct search_by_id_predicate : public std::binary_function<spawn_item, u16, bool>
 	{
 		bool operator()(spawn_item const & left, u16 right) const;
 	};
