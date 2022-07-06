@@ -196,7 +196,9 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 		fire_mat.transform_tiny							(fd.vLastFP, m_measures.m_fire_point_offset);
 		m_item_transform.transform_tiny					(fd.vLastFP);
 
-		if (auto Wpn = smart_cast<CWeapon*>(m_parent_hud_item))
+		auto Wpn = smart_cast<CWeapon*>(m_parent_hud_item);
+
+		if (Wpn) // && m_measures.useCopFirePoint)
 			Wpn->CorrectDirFromWorldToHud(fd.vLastFD);
 
 		fd.vLastFD.set									(0.f,0.f,1.f);

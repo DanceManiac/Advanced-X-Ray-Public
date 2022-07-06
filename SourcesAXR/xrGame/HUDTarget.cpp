@@ -285,7 +285,9 @@ void CHUDTarget::Render()
 #endif
 	}
 
-	if (auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem()); Wpn && Wpn->IsLaserOn())
+	auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem());
+
+	if (Wpn && Wpn->IsLaserOn())
 		return;
 
 	//отрендерить кружочек или крестик

@@ -795,7 +795,7 @@ void CWeaponMagazined::switch2_ChangeFireMode()
 void CWeaponMagazined::PlayAnimFireMode()
 {
 	//string_path guns_firemode_anm{};
-	//xr_strconcat(guns_firemode_anm, "anm_changefiremode_from_", (m_iCurFireMode == 0) ? "a_to_1" : (m_iCurFireMode == 1) ? "1_to_2" : (m_iCurFireMode == 2) ? "2_to_a" : "a_to_1"); //Это может когда-нибудь пригодится
+	//strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_from_", (m_iCurFireMode == 0) ? "a_to_1" : (m_iCurFireMode == 1) ? "1_to_2" : (m_iCurFireMode == 2) ? "2_to_a" : "a_to_1"); //Это может когда-нибудь пригодится
 
 	if (IsGrenadeLauncherAttached())
 		PlayHUDMotion("anm_changefiremode_from_1_to_a", true, this, GetState());
@@ -1394,7 +1394,7 @@ const char* CWeaponMagazined::GetAnimAimName()
 				return guns_aim_anm;
 			}
 			else
-				return xr_strconcat(guns_aim_anm, "anm_idle_aim_moving", (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""));
+				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_moving", (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""));
 		}
 	}
 	return nullptr;
@@ -1459,7 +1459,7 @@ void CWeaponMagazined::PlayAnimShoot()
 	VERIFY(GetState()==eFire);
 
 	string_path guns_shoot_anm{};
-	xr_strconcat(guns_shoot_anm, "anm_shoot", (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() ? "_aim_scope" : "_aim") : "", IsSilencerAttached() ? "_sil" : "");
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, "anm_shoot", (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() ? "_aim_scope" : "_aim") : "", IsSilencerAttached() ? "_sil" : "");
 
 	if (IsZoomed() && psWpnAnimsFlag.test(ANM_SHOT_AIM) && IsScopeAttached())
 		PlayHUDMotion("anm_shots_when_aim", FALSE, this, GetState());

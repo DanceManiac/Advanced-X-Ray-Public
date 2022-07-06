@@ -25,7 +25,7 @@ void CWeaponBM16::PlayAnimShoot()
 		return;
 
 	string_path guns_shoot_anm{};
-	xr_strconcat(guns_shoot_anm, "anm_shoot", (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim_" : "_", std::to_string(m_magazine.size()).c_str());
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, "anm_shoot", (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim_" : "_", std::to_string(m_magazine.size()).c_str());
 	if (isHUDAnimationExist(guns_shoot_anm))
 	{
 		PlayHUDMotionNew(guns_shoot_anm, false, GetState());
@@ -191,7 +191,7 @@ void CWeaponBM16::PlayAnimIdle()
 		if (IsRotatingToZoom())
 		{
 			string32 guns_aim_anm;
-			xr_strconcat(guns_aim_anm, "anm_idle_aim_start_", std::to_string(m_magazine.size()).c_str());
+			strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_start_", std::to_string(m_magazine.size()).c_str());
 			if (isHUDAnimationExist(guns_aim_anm))
 			{
 				PlayHUDMotionNew(guns_aim_anm, true, GetState());
@@ -201,7 +201,7 @@ void CWeaponBM16::PlayAnimIdle()
 		if (const char* guns_aim_anm = GetAnimAimName())
 		{
 			string64 guns_aim_anm_full;
-			xr_strconcat(guns_aim_anm_full, guns_aim_anm, "_", std::to_string(m_magazine.size()).c_str());
+			strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_aim_anm, "_", std::to_string(m_magazine.size()).c_str());
 			if (isHUDAnimationExist(guns_aim_anm_full)) {
 				PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
 				return;
@@ -226,7 +226,7 @@ void CWeaponBM16::PlayAnimIdle()
 		if (IsRotatingFromZoom())
 		{
 			string32 guns_aim_anm;
-			xr_strconcat(guns_aim_anm, "anm_idle_aim_end_", std::to_string(m_magazine.size()).c_str());
+			strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_end_", std::to_string(m_magazine.size()).c_str());
 			if (isHUDAnimationExist(guns_aim_anm))
 			{
 				PlayHUDMotionNew(guns_aim_anm, true, GetState());
