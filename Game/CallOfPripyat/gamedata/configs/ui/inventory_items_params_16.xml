@@ -3,6 +3,26 @@
         <texture>ui_inGame2_hint_wnd_Properties</texture>
     </prop_line>
 
+	<af_radius x="0" y="0" width="214" height="20">
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_item_af_radius</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="ì">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</af_radius>
+	
+	<af_vis_radius x="0" y="0" width="214" height="20">
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_item_af_radius</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="ì">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</af_vis_radius>
+	
 	<max_charge x="0" y="0" width="214" height="20">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_item_battery_max_icon</texture>

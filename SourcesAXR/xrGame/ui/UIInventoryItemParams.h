@@ -18,6 +18,8 @@ public:
 	void				SetInfo(const shared_str& section);
 
 protected:
+	CUIInventoryItemInfo*	m_af_radius;
+	CUIInventoryItemInfo*	m_af_vis_radius;
 	CUIInventoryItemInfo*	m_charge_level;
 	CUIInventoryItemInfo*	m_max_charge;
 	CUIInventoryItemInfo*	m_uncharge_speed;

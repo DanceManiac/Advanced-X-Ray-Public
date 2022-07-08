@@ -185,13 +185,10 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 		UIOutfitInfo->InitFromXml	(uiXml);
 	}
 
-	if (GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery() || GameConstants::GetAnoDetectorUseBattery())
+	if (uiXml.NavigateToNode("inventory_items_info", 0))
 	{
-		if (uiXml.NavigateToNode("inventory_items_info", 0))
-		{
-			UIInventoryItem = xr_new<CUIInventoryItem>();
-			UIInventoryItem->InitFromXml(uiXml);
-		}
+		UIInventoryItem = xr_new<CUIInventoryItem>();
+		UIInventoryItem->InitFromXml(uiXml);
 	}
 
 	xml_init.InitAutoStaticGroup	(uiXml, "auto", 0, this);
@@ -376,13 +373,15 @@ void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem*
 	CWeapon*		weapon = smart_cast<CWeapon*>(&pInvItem);
 	CCustomOutfit*	outfit = smart_cast<CCustomOutfit*>(&pInvItem);
 
+	bool ShowCharge = GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery() || GameConstants::GetAnoDetectorUseBattery();
+
 	if (weapon || outfit)
 	{
 		//UIConditionWnd->SetInfo( pCompareItem, pInvItem );
 		//UIDesc->AddWindow( UIConditionWnd, false );
 	}
 
-	if (torch || artefact_detector || anomaly_detector)
+	if ((torch || artefact_detector || anomaly_detector) && ShowCharge)
 	{
 		UIItemConditionParams->SetInfo( pCompareItem, pInvItem );
 		UIDesc->AddWindow(UIItemConditionParams, false );

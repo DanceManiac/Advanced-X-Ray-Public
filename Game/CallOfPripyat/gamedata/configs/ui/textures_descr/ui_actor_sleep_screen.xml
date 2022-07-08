@@ -64,5 +64,6 @@
 		<texture id="ui_mfs_item_jump_speed" x="114" y="0" width="19" height="19" />
 		<texture id="ui_mfs_intoxication_restore_speed" x="133" y="0" width="19" height="19" />
 		<texture id="ui_mfs_sleepeness_restore_speed" x="152" y="0" width="19" height="19" />
+		<texture id="ui_item_af_radius" x="171" y="0" width="19" height="19" />
    </file>
 </w>

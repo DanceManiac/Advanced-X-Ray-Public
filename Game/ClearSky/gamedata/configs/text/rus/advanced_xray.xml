@@ -276,4 +276,10 @@
 	<string id="ui_mm_r2_static_sun">
 		<text>Статическое солнце</text>
 	</string>
+	<string id="ui_inv_af_radius">
+		<text>Радиус действия</text>
+	</string>
+	<string id="ui_inv_af_vis_radius">
+		<text>Радиус обнаружения</text>
+	</string>
 </string_table>

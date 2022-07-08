@@ -23,9 +23,12 @@
 #include "../Torch.h"
 #include "../CustomDetector.h"
 #include "../AnomalyDetector.h"
+#include "../AdvancedXrayGameConstants.h"
 
 CUIInventoryItem::CUIInventoryItem()
 {
+	m_af_radius = NULL;
+	m_af_vis_radius = NULL;
 	m_charge_level = NULL;
 	m_max_charge = NULL;
 	m_uncharge_speed = NULL;
@@ -33,6 +36,8 @@ CUIInventoryItem::CUIInventoryItem()
 
 CUIInventoryItem::~CUIInventoryItem()
 {
+	xr_delete(m_af_radius);
+	xr_delete(m_af_vis_radius);
 	xr_delete(m_charge_level);
 	xr_delete(m_max_charge);
 	xr_delete(m_uncharge_speed);
@@ -41,6 +46,8 @@ CUIInventoryItem::~CUIInventoryItem()
 
 LPCSTR item_influence_caption[] =
 {
+	"ui_inv_af_radius",
+	"ui_inv_af_vis_radius",
 	"ui_inv_charge_level",
 	"ui_inv_max_charge",
 	"ui_inv_uncharge_speed"
@@ -62,10 +69,24 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 	m_Prop_line->SetAutoDelete(false);
 	CUIXmlInit::InitStatic(xml, "prop_line", 0, m_Prop_line);
 
+	m_af_radius = xr_new<CUIInventoryItemInfo>();
+	m_af_radius->Init(xml, "af_radius");
+	m_af_radius->SetAutoDelete(false);
+	LPCSTR name = CStringTable().translate("ui_inv_af_radius").c_str();
+	m_af_radius->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_af_vis_radius = xr_new<CUIInventoryItemInfo>();
+	m_af_vis_radius->Init(xml, "af_vis_radius");
+	m_af_vis_radius->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_af_vis_radius").c_str();
+	m_af_vis_radius->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	m_max_charge = xr_new<CUIInventoryItemInfo>();
 	m_max_charge->Init(xml, "max_charge");
 	m_max_charge->SetAutoDelete(false);
-	LPCSTR name = CStringTable().translate("ui_inv_max_charge").c_str();
+	name = CStringTable().translate("ui_inv_max_charge").c_str();
 	m_max_charge->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
@@ -92,7 +113,39 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 	Fvector2 pos;
 	float h = m_Prop_line->GetWndPos().y + m_Prop_line->GetWndSize().y;
 
-	if (pSettings->line_exist(section.c_str(), "max_charge_level"))
+	bool ShowCharge = GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery() || GameConstants::GetAnoDetectorUseBattery();
+
+	if (pSettings->line_exist(section.c_str(), "af_radius"))
+	{
+		val = pSettings->r_float(section, "af_radius");
+		if (!fis_zero(val))
+		{
+			m_af_radius->SetValue(val);
+			pos.set(m_af_radius->GetWndPos());
+			pos.y = h;
+			m_af_radius->SetWndPos(pos);
+
+			h += m_af_radius->GetWndSize().y;
+			AttachChild(m_af_radius);
+		}
+	}
+
+	if (pSettings->line_exist(section.c_str(), "af_vis_radius"))
+	{
+		val = pSettings->r_float(section, "af_vis_radius");
+		if (!fis_zero(val))
+		{
+			m_af_vis_radius->SetValue(val);
+			pos.set(m_af_vis_radius->GetWndPos());
+			pos.y = h;
+			m_af_vis_radius->SetWndPos(pos);
+
+			h += m_af_vis_radius->GetWndSize().y;
+			AttachChild(m_af_vis_radius);
+		}
+	}
+
+	if (ShowCharge && pSettings->line_exist(section.c_str(), "max_charge_level"))
 	{
 		val = pSettings->r_float(section, "max_charge_level");
 		if (!fis_zero(val))
@@ -107,7 +160,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		}
 	}
 
-	if (pSettings->line_exist(section.c_str(), "uncharge_speed"))
+	if (ShowCharge && pSettings->line_exist(section.c_str(), "uncharge_speed"))
 	{
 		val = pSettings->r_float(section, "uncharge_speed");
 		if (!fis_zero(val))
