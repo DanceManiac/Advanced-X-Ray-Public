@@ -258,4 +258,7 @@
 	<string id="ui_mm_optimize_shadow_geom">
 		<text>Оптимизация карт теней</text>
 	</string>
+	<string id="ui_mm_r2_static_sun">
+		<text>Статическое солнце</text>
+	</string>
 </string_table>

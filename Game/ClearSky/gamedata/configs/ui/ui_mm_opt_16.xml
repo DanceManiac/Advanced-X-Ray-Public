@@ -684,6 +684,13 @@
     <check_r2_sun x="162" y="0" width="27" height="21" stretch="1">
       <options_item entry="r2_sun" group="mm_opt_video"/>
     </check_r2_sun>
+	
+    <cap_r2_static_sun x="17" y="0" width="119" height="21">
+      <text font="letterica16" color="ui_6">ui_mm_r2_static_sun</text>
+    </cap_r2_static_sun>
+    <check_r2_static_sun x="162" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r2_static_sun" group="mm_opt_video" depend="restart"/>
+    </check_r2_static_sun>
 
     <cap_r1_no_detail_textures x="17" y="0" width="119" height="21">
       <text font="letterica16" color="ui_6">ui_mm_r1_no_detail_textures</text>
