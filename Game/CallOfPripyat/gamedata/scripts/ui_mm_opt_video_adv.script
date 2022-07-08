@@ -303,10 +303,10 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
 
 --Псевдо ПБР
-	_st = xml:InitStatic("video_adv:templ_item", nil)
+	--[[_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_pbr", _st)
 	ctl = xml:InitCheck("video_adv:check_pbr", _st)
-	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
+	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})]]--
 
 --Тип сглаживания	
 	_st = xml:InitStatic("video_adv:templ_item", nil)
