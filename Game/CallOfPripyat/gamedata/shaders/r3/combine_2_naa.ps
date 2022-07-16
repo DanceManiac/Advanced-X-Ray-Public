@@ -132,6 +132,8 @@ c2_out main( v2p_aa_AA I )
 
 	if(gbd.P.z <= 0.01) mask = 0;
     
+	
+#if defined(SSR_QUALITY)
     if(mask != 0)
     {
         // Get world normal
@@ -159,6 +161,7 @@ c2_out main( v2p_aa_AA I )
         
         res.Color.xyz = lerp(res.Color.xyz, reflections_f, mask * puddles_accumulator.x);
     }
+#endif
 	
 	float oluma = dot(res.Color.xyz, LUMINANCE_VECTOR);
 	
