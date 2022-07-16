@@ -48,7 +48,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_fOldBulletSpeed			= 0;
 	m_iQueueSize				= WEAPON_ININITE_QUEUE;
 	m_bLockType					= false;
-	m_bAutoreloadEnabled		= READ_IF_EXISTS(pSettings, r_bool, "gameplay", "autoreload_enabled", true);
+	m_bAutoreloadEnabled		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "autoreload_enabled", true);
 	m_bHasDistantShotSound		= false;
 	m_bNeedBulletInGun			= false;
 	m_bHasDifferentFireModes	= false;
