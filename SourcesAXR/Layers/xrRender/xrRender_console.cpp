@@ -335,7 +335,7 @@ Flags32		ps_actor_shadow_flags = { 0 };
 
 Flags32		ps_r2_rain_drops_flags = { R2FLAG_RAIN_DROPS };
 
-Flags32		ps_r2_vignette_flags = { R_FLAG_VIGNETTE };
+Flags32		ps_r2_vignette_flags = { 0 };
 
 Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
 	| R_FLAG_HUD_DYN_EFFECTS
