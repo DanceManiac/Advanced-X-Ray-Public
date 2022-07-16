@@ -10,6 +10,7 @@
 #include "ui/UIMainIngameWnd.h"
 #include "ui/UIMessagesWindow.h"
 #include "ui/UIPdaWnd.h"
+#include "PDA.h"
 
 CUI::CUI(CHUDManager* p)
 {
@@ -52,10 +53,12 @@ void CUI::UnLoad()
 void CUI::UIOnFrame()
 {
 	CEntity* m_Actor = smart_cast<CEntity*>(Level().CurrentEntity());
-	if (m_Actor){
+	CPda* pda = Actor()->GetPDA();
+	if (m_Actor)
+	{
 		
 		//update windows
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) )
+		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) && !pda->m_bZoomed)
 		{
 			UIMainIngameWnd->Update	();
 		}
@@ -96,7 +99,9 @@ bool CUI::Render()
 			}
 		}
 
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) )
+		CPda* pda = Actor()->GetPDA();
+
+		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
 		{
 			UIMainIngameWnd->Draw();
 			m_pMessagesWnd->Draw();

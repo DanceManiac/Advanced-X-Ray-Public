@@ -17,6 +17,7 @@
 #include "game_cl_base.h"
 
 #include "../xrEngine/x_ray.h"
+#include "PDA.h"
 
 EGameIDs ParseStringToGameType(LPCSTR str);
 
@@ -75,8 +76,10 @@ void CUIGameCustom::OnFrame()
 	}
 	m_window->Update();
 
+	CPda* pda = Actor()->GetPDA();
+
 	//update windows
-	if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) )
+	if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) && !pda->m_bZoomed)
 		UIMainIngameWnd->Update	();
 
 	m_pMessagesWnd->Update();
@@ -92,6 +95,7 @@ void CUIGameCustom::Render()
 	m_window->Draw();
 
 	CEntity* pEntity = smart_cast<CEntity*>(Level().CurrentEntity());
+	CPda* pda = Actor()->GetPDA();
 	if (pEntity)
 	{
 		CActor* pActor			=	smart_cast<CActor*>(pEntity);
@@ -108,7 +112,7 @@ void CUIGameCustom::Render()
 			}
 		}
 
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) )
+		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
 			UIMainIngameWnd->Draw();
 	}
 
