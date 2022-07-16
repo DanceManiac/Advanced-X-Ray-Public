@@ -960,6 +960,8 @@ void CWeaponMagazined::switch2_Unmis()
 	}
 	else if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
 		PlayHUDMotionIfExists({ "anm_reload_empty", "anm_reload" }, true, GetState());
+	else
+		PlayHUDMotion("anm_reload", TRUE, this, GetState());
 }
 
 void CWeaponMagazined::switch2_Hidden()
