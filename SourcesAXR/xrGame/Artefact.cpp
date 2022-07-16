@@ -293,9 +293,9 @@ void CArtefact::UpdateDegradation(void)
 					artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100)*percent;
 				else if (artefact->m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
 					artefact->m_additional_weight = (m_fConstAdditionalWeight / 100)*percent;
-				else if (artefact->m_fJumpSpeed > 0.0f && m_fConstJumpSpeed > 0.0f)
+				else if (artefact->m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)
 					artefact->m_fJumpSpeed = (m_fConstJumpSpeed/100)*percent;
-				else if (artefact->m_fWalkAccel > 0.0f && m_fConstWalkAccel > 0.0f)
+				else if (artefact->m_fWalkAccel > 1.f && m_fConstWalkAccel > 1.f)
 					artefact->m_fWalkAccel = (m_fConstWalkAccel / 100)*percent;
 
 				//Lights
