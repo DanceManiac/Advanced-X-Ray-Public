@@ -63,13 +63,21 @@ function action_no_weapon:switch_state( actor )
 end
 
 function action_no_weapon:zone_enter()
-	self.state = state_inside
-	bind_stalker.hide_weapon(self.object:id())
+	local weap_obj = db.actor:active_item()
+	
+	if not weap_obj == nil or isWeapon(weap_obj) then
+		self.state = state_inside
+		bind_stalker.hide_weapon(self.object:id())
+	end
 end
 
 function action_no_weapon:zone_leave()
-	self.state = state_outside
-	bind_stalker.restore_weapon(self.object:id())
+	local weap_obj = db.actor:active_item()
+	
+	if weap_obj == nil or not isWeapon(weap_obj) then
+		self.state = state_outside
+		bind_stalker.restore_weapon(self.object:id())
+	end
 end
 
 ---------------------------------------------------------------------------------------------------------------------

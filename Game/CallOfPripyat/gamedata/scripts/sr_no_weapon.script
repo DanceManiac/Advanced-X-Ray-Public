@@ -77,29 +77,37 @@ function action_no_weapon:switch_state( actor )
 end
 
 function action_no_weapon:zone_enter()
-	self.state = state_inside
-	bind_stalker.hide_weapon(self.object:id())
-	local hud = get_hud()
-	local custom_static = hud:GetCustomStatic("can_use_weapon_now")
-	if custom_static ~= nil then
-		hud:RemoveCustomStatic("can_use_weapon_now")
+	local weap_obj = db.actor:active_item()
+	
+	if isWeapon(weap_obj) then
+		self.state = state_inside
+		bind_stalker.hide_weapon(self.object:id())
+		local hud = get_hud()
+		local custom_static = hud:GetCustomStatic("can_use_weapon_now")
+		if custom_static ~= nil then
+			hud:RemoveCustomStatic("can_use_weapon_now")
+		end
+		printf("entering no weapon zone [%s]", tostring(self.object:name()))
 	end
-	printf("entering no weapon zone [%s]", tostring(self.object:name()))
 end
 
 function action_no_weapon:zone_leave()
-	self.state = state_outside
-	bind_stalker.restore_weapon(self.object:id())
-	local hud = get_hud()
-	local custom_static = hud:GetCustomStatic("can_use_weapon_now")
-	if db.no_weap_zones[self.object:name()] == true then
-		db.no_weap_zones[self.object:name()] = false
-	elseif custom_static == nil then
-		hud:AddCustomStatic("can_use_weapon_now", true)
-		hud:GetCustomStatic("can_use_weapon_now"):wnd():TextControl():SetTextST("st_can_use_weapon_now")
+	local weap_obj = db.actor:active_item()
+	
+	if not isWeapon(weap_obj) then
+		self.state = state_outside
+		bind_stalker.restore_weapon(self.object:id())
+		local hud = get_hud()
+		local custom_static = hud:GetCustomStatic("can_use_weapon_now")
+		if db.no_weap_zones[self.object:name()] == true then
+			db.no_weap_zones[self.object:name()] = false
+		elseif custom_static == nil then
+			hud:AddCustomStatic("can_use_weapon_now", true)
+			hud:GetCustomStatic("can_use_weapon_now"):wnd():TextControl():SetTextST("st_can_use_weapon_now")
+		end
+		printf("exiting no weapon zone [%s]", tostring(self.object:name()))
+		self.inited_time = game.get_game_time()
 	end
-	printf("exiting no weapon zone [%s]", tostring(self.object:name()))
-	self.inited_time = game.get_game_time()
 end
 
 ---------------------------------------------------------------------------------------------------------------------
