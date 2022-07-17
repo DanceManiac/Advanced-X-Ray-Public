@@ -26,7 +26,7 @@ eat_radiation		= 0
 eat_alcohol			= 0
 wounds_heal_perc	= 0
 eat_portions_num	= 1
-eat_thirst		= 0
+eat_thirst			= 0
 eat_intoxication	= 0
 eat_sleepeness		= 0
 
@@ -51,6 +51,31 @@ boost_wound_immunity		= 0.0
 boost_explosion_immunity	= 0.0
 boost_fire_wound_immunity	= 0.0
 ;use_sound			= characters_voice\multiplayer\team_1\voice_roger_3
+
+[base_quest_item]:identity_immunities
+GroupControlSection                                = spawn_group 
+discovery_dependency                               = 
+$spawn                                             = "devices\pda"
+$prefetch                                          = 16
+cform                                              = skeleton 
+visual                                   	   	   = dynamics\devices\dev_pda\dev_pda.ogf
+class                                              = S_ATTCH 
+default_to_ruck                                    = false
+sprint_allowed                                     = true
+description                                        = st_pda_descr
+inv_name                                           = st_pda_name
+inv_name_short                                     = st_pda_name
+inv_weight                               	   	   = 0.1
+inv_grid_width                                     = 1
+inv_grid_height                                    = 1
+inv_grid_x										   = 11
+inv_grid_y										   = 22
+cost                                     	   	   = 0
+attach_angle_offset                                = 0.000000, -1.204452, -1.262921 
+attach_position_offset                             = 0.081856, -0.035081, 0.011694 
+attach_bone_name                                   = bip01_l_hand 
+auto_attach                                        = false 
+can_trade                               	   	   = false
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -598,14 +623,12 @@ use_sound			= interface\inv_pills
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	DEVICES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;--==========================< PDA >=============================
-;;--==========================< Devices >=============================
 [device_pda]:identity_immunities
 GroupControlSection                                = spawn_group
 discovery_dependency                               =
 $spawn                                             = "devices\pda"
 $prefetch                                          = 16
-class                                              = D_PDA	                                       ;Change to S_PDA if you want to use se_item.se_explosive script binding!
+class                                              = S_PDA	                                       ;Change to S_PDA if you want to use se_item.se_explosive script binding!
 cform                                              = skeleton
 visual                                             = dynamics\devices\dev_pda\dev_pda.ogf
 description                                        = st_pda_descr
@@ -615,7 +638,6 @@ default_to_ruck                                    = false
 sprint_allowed                                     = true
 control_inertion_factor                            = 1
 script_binding                                     = bind_physic_object.init
-release_on_first_update							   = true
 
 inv_name                                           = st_pda_name
 inv_name_short                                     = st_pda_name
@@ -626,11 +648,11 @@ inv_grid_height                                    = 1
 inv_grid_x                                         = 6
 inv_grid_y                                         = 13
 cost                                               = 0
-attach_angle_offset                                = -1.303,0.107,-1.702	                                       ;onoaiaaeeaaaony a ?aaeaiao Angle*PI/180
+attach_angle_offset                                = -1.303,0.107,-1.702 ;устанавливается в радианах Angle*PI/180
 attach_position_offset                             = 0.14,0.001,0.02
 attach_bone_name                                   = bip01_l_hand
 auto_attach                                        = false
-anim_item								           = true
+
 hud                                                = pda_hud
 animation_slot                                     = 2
 joystick_bone                                      = joystick
@@ -733,31 +755,6 @@ inv_name_short		= st_pda_name
 description			= st_pda_descr
 cost				= 50
 can_trade			= false
-
-[base_quest_item]:identity_immunities
-GroupControlSection                                = spawn_group 
-discovery_dependency                               = 
-$spawn                                             = "devices\pda"
-$prefetch                                          = 16
-cform                                              = skeleton 
-visual                                   	   	   = dynamics\devices\dev_pda\dev_pda.ogf
-class                                              = II_ATTCH 
-default_to_ruck                                    = false
-sprint_allowed                                     = true
-description                                        = st_pda_descr
-inv_name                                           = st_pda_name
-inv_name_short                                     = st_pda_name
-inv_weight                               	   	   = 0.1
-inv_grid_width                                     = 1
-inv_grid_height                                    = 1
-inv_grid_x										   = 11
-inv_grid_y										   = 22
-cost                                     	   	   = 0
-attach_angle_offset                                = 0.000000, -1.204452, -1.262921 
-attach_position_offset                             = 0.081856, -0.035081, 0.011694 
-attach_bone_name                                   = bip01_l_hand 
-auto_attach                                        = false 
-can_trade                               	   	   = false
 
 [device_torch]:identity_immunities
 GroupControlSection	= spawn_group

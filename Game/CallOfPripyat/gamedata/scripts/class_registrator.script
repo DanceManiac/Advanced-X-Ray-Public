@@ -133,7 +133,6 @@ function register(object_factory)
 
 	cs_register (object_factory, "CPda",						"se_item.se_pda",						"S_PDA",			"obj_pda_s")
 
-
 	-- ONLINE_OFFLINE_GROUP --------------------------------------------------------------------------------------------------------------
 
 	s_register	(object_factory, 							"sim_squad_scripted.sim_squad_scripted",	"ON_OFF_S",			"online_offline_group_s")
