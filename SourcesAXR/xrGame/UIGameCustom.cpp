@@ -79,8 +79,17 @@ void CUIGameCustom::OnFrame()
 	CPda* pda = Actor()->GetPDA();
 
 	//update windows
-	if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) && !pda->m_bZoomed)
-		UIMainIngameWnd->Update	();
+
+	if (pda)
+	{
+		if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
+			UIMainIngameWnd->Update();
+	}
+	else
+	{
+		if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+			UIMainIngameWnd->Update();
+	}
 
 	m_pMessagesWnd->Update();
 }
@@ -112,8 +121,16 @@ void CUIGameCustom::Render()
 			}
 		}
 
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
-			UIMainIngameWnd->Draw();
+		if (pda)
+		{
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
+				UIMainIngameWnd->Draw();
+		}
+		else
+		{
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+				UIMainIngameWnd->Draw();
+		}
 	}
 
 	m_pMessagesWnd->Draw();

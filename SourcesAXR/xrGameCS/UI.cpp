@@ -58,9 +58,16 @@ void CUI::UIOnFrame()
 	{
 		
 		//update windows
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) && !pda->m_bZoomed)
+
+		if (pda)
 		{
-			UIMainIngameWnd->Update	();
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
+				UIMainIngameWnd->Update();
+		}
+		else
+		{
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+				UIMainIngameWnd->Update();
 		}
 	}
 
@@ -101,27 +108,54 @@ bool CUI::Render()
 
 		CPda* pda = Actor()->GetPDA();
 
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
+		if (pda)
 		{
-			UIMainIngameWnd->Draw();
-			m_pMessagesWnd->Draw();
-		}
-		else
-		{
-			//hack - draw messagess wnd in scope mode
-			CUIGameSP* gSP = smart_cast<CUIGameSP*>( HUD().GetUI()->UIGame() );
-			if ( gSP )
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
 			{
-				if ( !gSP->PdaMenu().GetVisible() )
+				UIMainIngameWnd->Draw();
+				m_pMessagesWnd->Draw();
+			}
+			else
+			{
+				//hack - draw messagess wnd in scope mode
+				CUIGameSP* gSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+				if (gSP)
+				{
+					if (!gSP->PdaMenu().GetVisible())
+					{
+						m_pMessagesWnd->Draw();
+					}
+				}
+				else
 				{
 					m_pMessagesWnd->Draw();
 				}
 			}
-			else
+		}
+		else
+		{
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
 			{
+				UIMainIngameWnd->Draw();
 				m_pMessagesWnd->Draw();
 			}
-		}	
+			else
+			{
+				//hack - draw messagess wnd in scope mode
+				CUIGameSP* gSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+				if (gSP)
+				{
+					if (!gSP->PdaMenu().GetVisible())
+					{
+						m_pMessagesWnd->Draw();
+					}
+				}
+				else
+				{
+					m_pMessagesWnd->Draw();
+				}
+			}
+		}
 	}
 	else
 	{
