@@ -18,7 +18,7 @@ float	psSoundVMusic			= 1.f;
 u32		psSoundModel			= 0;
 int		psUseDistDelay			= 1;
 float	psSoundSpeed			= 250.f;
-u32		psSoundPrecacheAll		= 0;
+int		psSoundPrecacheAll		= 0;
 
 XRSOUND_API CSoundRender_Core* SoundRender = nullptr;
 CSound_manager_interface* Sound = nullptr;
