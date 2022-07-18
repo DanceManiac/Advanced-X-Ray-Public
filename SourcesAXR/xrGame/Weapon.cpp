@@ -1241,7 +1241,7 @@ void CWeapon::UpdateCL		()
 				m_bRememberActorNVisnStatus = pA->GetNightVisionStatus();
 				pA->SwitchNightVision(false, false, false);
 			}
-			m_zoom_params.m_pNight_vision->Start(m_zoom_params.m_sUseZoomPostprocess, pA, false);
+			m_zoom_params.m_pNight_vision->StartForScope(m_zoom_params.m_sUseZoomPostprocess, pA, false);
 		}
 
 	}
@@ -2128,7 +2128,7 @@ void CWeapon::OnZoomOut()
 	xr_delete							(m_zoom_params.m_pVision);
 	if(m_zoom_params.m_pNight_vision)
 	{
-		m_zoom_params.m_pNight_vision->Stop(100000.0f, false);
+		m_zoom_params.m_pNight_vision->StopForScope(100000.0f, false);
 		xr_delete(m_zoom_params.m_pNight_vision);
 	}
 }

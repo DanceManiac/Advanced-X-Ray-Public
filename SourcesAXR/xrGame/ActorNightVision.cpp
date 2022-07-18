@@ -51,6 +51,30 @@ void CNightVisionEffector::Stop(const float factor, bool play_sound)
 	}
 }
 
+void CNightVisionEffector::StartForScope(const shared_str& sect, CActor* pA, bool play_sound)
+{
+	AddEffector(pA, effNightvision, sect);
+
+	if (play_sound)
+	{
+		PlaySounds(eStartSound);
+		PlaySounds(eIdleSound);
+	}
+}
+
+void CNightVisionEffector::StopForScope(const float factor, bool play_sound)
+{
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentControlEntity());
+	if (!pActor)		return;
+	CEffectorPP* pp = pActor->Cameras().GetPPEffector((EEffectorPPType)effNightvision);
+	if (pp)
+	{
+		pp->Stop(factor);
+		if (play_sound)
+			PlaySounds(eStopSound);
+	}
+}
+
 void CNightVisionEffector::StopOnlyEffector(const float factor)
 {
 	CActor* pActor = smart_cast<CActor*>(Level().CurrentControlEntity());
