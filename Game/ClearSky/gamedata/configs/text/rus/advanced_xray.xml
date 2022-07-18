@@ -241,7 +241,7 @@
 		<text>Точка</text>
 	</string>
 	<string id="ui_mm_snd_precache">
-		<text>Прекэш всех звуков</text>
+		<text>Предзагрузка звуков</text>
 	</string>
 	<string id="ui_mm_shader_nvg">
 		<text>Шейдерный ПНВ</text>
@@ -281,5 +281,8 @@
 	</string>
 	<string id="ui_inv_af_vis_radius">
 		<text>Радиус обнаружения</text>
+	</string>
+	<string id="ui_mm_snd_targets">
+		<text>Источники звука</text>
 	</string>
 </string_table>

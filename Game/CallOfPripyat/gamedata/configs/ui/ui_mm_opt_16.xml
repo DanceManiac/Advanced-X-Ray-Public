@@ -721,21 +721,37 @@
         <cap_mastervolume x="12" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_master_volume</text>
         </cap_mastervolume>
-        <track_mastervolume x="140" y="6" width="188" height="16">
+        <track_mastervolume x="140" y="6" width="188" height="16" min="0.0f" max="1.0f" step="0.01">
             <options_item entry="snd_volume_eff" group="mm_opt_sound"/>
+			<output_wnd x="185" y="0" width="20" height="20" format="%f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
         </track_mastervolume>
 
         <cap_musicvolume x="12" y="33" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_music_volume</text>
         </cap_musicvolume>
-        <track_musicvolume x="140" y="36" width="188" height="16">
+        <track_musicvolume x="140" y="36" width="188" height="16" min="0.0f" max="1.0f" step="0.01">
             <options_item entry="snd_volume_music" group="mm_opt_sound"/>
+			<output_wnd x="185" y="0" width="20" height="20" format="%f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
         </track_musicvolume>
+		
+        <cap_snd_targets x="12" y="63" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_snd_targets</text>
+        </cap_snd_targets>
+        <track_snd_targets x="140" y="66" width="188" height="16" min="4.0" max="256.0" step="4.0">
+            <options_item entry="snd_targets" group="mm_opt_sound"/>
+			<output_wnd x="185" y="0" width="20" height="20" format="%.0f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_snd_targets>
 
-        <cap_snd_device x="12" y="63" width="108" height="24">
+        <cap_snd_device x="12" y="93" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_snd_device</text>
         </cap_snd_device>
-        <list_snd_device x="140" y="65" width="188" height="20" always_show_scroll="1">
+        <list_snd_device x="140" y="95" width="188" height="20" always_show_scroll="1">
             <options_item entry="snd_device" group="mm_opt_sound" depend="restart"/>
             <list_font r="170" g="170" b="170" font="letterica16"/>
 		    <text_color>
@@ -744,18 +760,18 @@
 		    </text_color>
         </list_snd_device>
 
-        <cap_check_eax x="12" y="93" width="108" height="24">
+        <cap_check_eax x="12" y="123" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_eax</text>
         </cap_check_eax>
-        <check_eax x="129" y="90" width="35" stretch="1" height="29">
+        <check_eax x="129" y="120" width="35" stretch="1" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="snd_efx" group="mm_opt_sound" depend="snd"/>
         </check_eax>
 
-        <cap_check_dynamic_music x="12" y="123" width="108" height="24">
+        <cap_check_dynamic_music x="12" y="153" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_dynamic_music</text>
         </cap_check_dynamic_music>
-        <check_dynamic_music x="129" y="120" width="35" stretch="1" height="29">
+        <check_dynamic_music x="129" y="150" width="35" stretch="1" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="g_dynamic_music" group="mm_opt_sound" depend="snd"/>
         </check_dynamic_music>
@@ -768,10 +784,10 @@
             <options_item entry="snd_use_distance_delay" group="mm_opt_sound" depend="snd"/>
         </check_snd_delay>
 		
-        <cap_check_snd_precache x="12" y="153" width="108" height="24">
+        <cap_check_snd_precache x="12" y="213" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_snd_precache</text>
         </cap_check_snd_precache>
-        <check_snd_precache x="129" y="150" width="35" stretch="1" height="29">
+        <check_snd_precache x="129" y="210" width="35" stretch="1" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="snd_precache_all" group="mm_opt_sound" depend="snd"/>
         </check_snd_precache>
