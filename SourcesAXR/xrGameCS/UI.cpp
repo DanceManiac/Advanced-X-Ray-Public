@@ -53,22 +53,13 @@ void CUI::UnLoad()
 void CUI::UIOnFrame()
 {
 	CEntity* m_Actor = smart_cast<CEntity*>(Level().CurrentEntity());
-	CPda* pda = Actor()->GetPDA();
+
 	if (m_Actor)
 	{
 		
 		//update windows
-
-		if (pda)
-		{
-			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
-				UIMainIngameWnd->Update();
-		}
-		else
-		{
-			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
-				UIMainIngameWnd->Update();
-		}
+		if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+			UIMainIngameWnd->Update();
 	}
 
 	// out GAME-style depend information
@@ -92,7 +83,8 @@ bool CUI::Render()
 	CEntity* pEntity = smart_cast<CEntity*>(Level().CurrentEntity());
 	if (pEntity)
 	{
-		CActor* pActor			=	smart_cast<CActor*>(pEntity);
+		CActor* pActor			= smart_cast<CActor*>(pEntity);
+		CPda* pda				= pActor->GetPDA();
 		if(pActor && pActor->HUDview() && psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))
 		{
 			TISlotArr& inv_slots	= pActor->inventory().m_slots;
@@ -105,8 +97,6 @@ bool CUI::Render()
 					itm->render_item_ui();
 			}
 		}
-
-		CPda* pda = Actor()->GetPDA();
 
 		if (pda)
 		{

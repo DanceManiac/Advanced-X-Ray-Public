@@ -76,20 +76,9 @@ void CUIGameCustom::OnFrame()
 	}
 	m_window->Update();
 
-	CPda* pda = Actor()->GetPDA();
-
 	//update windows
-
-	if (pda)
-	{
-		if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
-			UIMainIngameWnd->Update();
-	}
-	else
-	{
-		if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
-			UIMainIngameWnd->Update();
-	}
+	if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+		UIMainIngameWnd->Update();
 
 	m_pMessagesWnd->Update();
 }
@@ -104,10 +93,11 @@ void CUIGameCustom::Render()
 	m_window->Draw();
 
 	CEntity* pEntity = smart_cast<CEntity*>(Level().CurrentEntity());
-	CPda* pda = Actor()->GetPDA();
+
 	if (pEntity)
 	{
 		CActor* pActor			=	smart_cast<CActor*>(pEntity);
+		CPda* pda				= pActor->GetPDA();
 		if(pActor && pActor->HUDview() && pActor->g_Alive() && psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))
 		{
 			u16 ISlot = pActor->inventory().FirstSlot();
