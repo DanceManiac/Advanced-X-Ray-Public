@@ -1420,7 +1420,9 @@ const char* CWeaponMagazined::GetAnimAimName()
 	auto pActor = smart_cast<const CActor*>(H_Parent());
 	if (pActor)
 	{
-		if (const u32 state = pActor->get_state() && state & mcAnyMove) 
+		const u32 state = pActor->get_state();
+
+		if (state && state & mcAnyMove) 
 		{
 			if (IsScopeAttached()) 
 			{
