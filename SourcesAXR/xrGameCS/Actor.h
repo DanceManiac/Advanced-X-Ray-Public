@@ -344,7 +344,6 @@ protected:
 	Fvector					vPrevCamDir;
 	float					fCurAVelocity;
 	CEffectorBobbing*		pCamBobbing;
-	float					current_ik_cam_shift;
 
 
 	//менеджер эффекторов, есть у каждого актрера
