@@ -1248,38 +1248,36 @@ void CWeaponMagazined::InitAddons()
 				m_cur_scope_bone = ScopeBone;
 			}
 		}
-		else
-		{
-			if (m_UIScope)
-				xr_delete(m_UIScope);
+	}
+	else
+	{
+		if (m_UIScope)
+			xr_delete(m_UIScope);
 
-			/*if (bIsSecondVPZoomPresent())
-			{
-				m_zoom_params.m_fSecondVPFovFactor = 0.0f;
-			}*/
+		if (bIsSecondVPZoomPresent())
+			m_zoom_params.m_fSecondVPFovFactor = 0.0f;
 
-			if (IsZoomEnabled())
-				m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
-		}
+		if (IsZoomEnabled())
+			m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+	}
 
-		if (IsSilencerAttached() && SilencerAttachable())
-		{
-			m_sFlameParticlesCurrent = m_sSilencerFlameParticles;
-			m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
+	if (IsSilencerAttached() && SilencerAttachable())
+	{
+		m_sFlameParticlesCurrent = m_sSilencerFlameParticles;
+		m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
 
-			//подсветка от выстрела
-			LoadLights(*cNameSect(), "silencer_");
-			ApplySilencerKoeffs();
-		}
-		else
-		{
-			m_sFlameParticlesCurrent = m_sFlameParticles;
-			m_sSmokeParticlesCurrent = m_sSmokeParticles;
+		//подсветка от выстрела
+		LoadLights(*cNameSect(), "silencer_");
+		ApplySilencerKoeffs();
+	}
+	else
+	{
+		m_sFlameParticlesCurrent = m_sFlameParticles;
+		m_sSmokeParticlesCurrent = m_sSmokeParticles;
 
-			//подсветка от выстрела
-			LoadLights(*cNameSect(), "");
-			ResetSilencerKoeffs();
-		}
+		//подсветка от выстрела
+		LoadLights(*cNameSect(), "");
+		ResetSilencerKoeffs();
 	}
 
 	inherited::InitAddons();

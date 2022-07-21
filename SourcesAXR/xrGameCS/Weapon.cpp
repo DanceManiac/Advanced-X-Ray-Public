@@ -106,7 +106,6 @@ const shared_str CWeapon::GetScopeName() const
 	else
 	{
 		return pSettings->r_string(m_scopes[m_cur_scope], "scope_name");
-		Msg("Scope Name is: %d", m_scopes[m_cur_scope]);
 	}
 }
 
