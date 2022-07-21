@@ -105,7 +105,8 @@ const shared_str CWeapon::GetScopeName() const
 	}
 	else
 	{
-		return m_sScopeName;
+		return pSettings->r_string(m_scopes[m_cur_scope], "scope_name");
+		Msg("Scope Name is: %d", m_scopes[m_cur_scope]);
 	}
 }
 
@@ -547,13 +548,6 @@ void CWeapon::Load(LPCSTR section)
 
 	m_zoom_params.m_bZoomEnabled		= !!pSettings->r_bool(section,"zoom_enabled");
 	m_zoom_params.m_fZoomRotateTime		= pSettings->r_float(section,"zoom_rotate_time");
-
-	if (m_eScopeStatus == ALife::eAddonAttachable)
-	{
-		m_sScopeName = pSettings->r_string(section, "scope_name");
-		m_iScopeX = pSettings->r_s32(section, "scope_x");
-		m_iScopeY = pSettings->r_s32(section, "scope_y");
-	}
 
 	bUseAltScope = !!bLoadAltScopesParams(section);
 
@@ -1938,10 +1932,10 @@ void CWeapon::reload			(LPCSTR section)
 	else
 		m_can_be_strapped		= false;
 
-	if (m_eScopeStatus == ALife::eAddonAttachable) 
+	if (m_eScopeStatus == ALife::eAddonAttachable)
 	{
-		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings,r_float, GetScopeName(),"holder_range_modifier",m_holder_range_modifier);
-		m_addon_holder_fov_modifier		= READ_IF_EXISTS(pSettings,r_float, GetScopeName(),"holder_fov_modifier",m_holder_fov_modifier);
+		m_addon_holder_range_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_range_modifier", m_holder_range_modifier);
+		m_addon_holder_fov_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_fov_modifier", m_holder_fov_modifier);
 	}
 	else 
 	{
@@ -2507,10 +2501,12 @@ LPCSTR	CWeapon::GetCurrentAmmo_ShortName	()
 float CWeapon::Weight()
 {
 	float res = CInventoryItemObject::Weight();
-	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size()){
+	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size())
+	{
 		res += pSettings->r_float(GetGrenadeLauncherName(),"inv_weight");
 	}
-	if(IsScopeAttached()&&GetScopeName().size()){
+	if(IsScopeAttached()&&m_scopes.size())
+	{
 		res += pSettings->r_float(GetScopeName(),"inv_weight");
 	}
 	if(IsSilencerAttached()&&GetSilencerName().size()){
