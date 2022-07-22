@@ -17,9 +17,10 @@ CUITrackBar::CUITrackBar()
 	  m_f_max(1),
 	  m_f_val(0),
 	  m_f_back_up(0),
-	 m_f_step(0.01f),
-	m_b_is_float(true),
-	m_b_invert(false)
+	  m_f_step(0.01f),
+	  m_b_is_float(true),
+	  m_b_invert(false), 
+	  m_b_bound_already_set(false)
 {	
 	m_pFrameLine					= xr_new<CUIFrameLineWnd>();	
 	AttachChild						(m_pFrameLine);	
@@ -31,7 +32,12 @@ CUITrackBar::CUITrackBar()
 	m_pSlider						= xr_new<CUI3tButton>();			
 	AttachChild						(m_pSlider);		
 	m_pSlider->SetAutoDelete		(true);
-//.	m_pSlider->SetOwner				(this);
+
+	m_static = new CUIStatic();
+	m_static->Enable(false);
+	AttachChild(m_static);
+	m_static->SetAutoDelete(true);
+
 	m_b_mouse_capturer				= false;
 }
 
@@ -114,6 +120,23 @@ void CUITrackBar::Draw()
 void CUITrackBar::Update()
 {
 	CUIWindow::Update();
+
+	if (m_b_is_float)
+	{
+		float fake_min, fake_max;
+		if (!m_b_bound_already_set)
+			GetOptFloatValue(m_f_val, m_f_min, m_f_max);
+		else
+			GetOptFloatValue(m_f_val, fake_min, fake_max);
+	}
+	else
+	{
+		int fake_min, fake_max;
+		if (!m_b_bound_already_set)
+			GetOptIntegerValue(m_i_val, m_i_min, m_i_max);
+		else
+			GetOptIntegerValue(m_i_val, fake_min, fake_max);
+	}
 
 	if(m_b_mouse_capturer)
 	{
@@ -270,6 +293,21 @@ void CUITrackBar::UpdatePos()
 		pos.x					= free_space-pos.x;
 
 	m_pSlider->SetWndPos		(pos);
+
+	if (m_static->IsEnabled())
+	{
+		string256 buff;
+		if (m_b_is_float)
+		{
+			xr_sprintf(buff, (m_static_format == NULL ? "%.1f" : m_static_format.c_str()), m_f_val);
+		}
+		else
+		{
+			xr_sprintf(buff, (m_static_format == NULL ? "%d" : m_static_format.c_str()), m_i_val);
+		}
+		m_static->SetTextST(buff);
+	}
+
 	SaveValue					();
 }
 
@@ -296,4 +334,24 @@ void CUITrackBar::SetCheck(bool b)
 {
 	VERIFY(!m_b_is_float);
 	m_i_val = (b)?m_i_max:m_i_min;
+}
+
+void CUITrackBar::SetOptIBounds(int imin, int imax)
+{
+	m_i_min = imin;
+	m_i_max = imax;
+	if (m_i_val<m_i_min || m_i_val>m_i_max)
+	{
+		clamp(m_i_val, m_i_min, m_i_max);
+	}
+}
+
+void CUITrackBar::SetOptFBounds(float fmin, float fmax)
+{
+	m_f_min = fmin;
+	m_f_max = fmax;
+	if (m_f_val<m_f_min || m_f_val>m_f_max)
+	{
+		clamp(m_f_val, m_f_min, m_f_max);
+	}
 }

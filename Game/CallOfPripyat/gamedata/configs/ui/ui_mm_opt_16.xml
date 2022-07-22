@@ -174,7 +174,7 @@
         </cap_vis_dist>
         <track_vis_dist x="182" y="6" width="158" height="16" min="0.4" max="1.5" step="0.1">
             <options_item entry="rs_vis_distance" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_vis_dist>
@@ -184,7 +184,7 @@
         </cap_fov>	
 		<track_fov x="182" y="6" width="158" height="16" min="5.0" max="180.0" step="1.0">
         <options_item entry="cam_fov" group="mm_opt_video_adv"/>
-			<output_wnd x="155" y="0" width="20" height="20" format="%.0f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.0f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_fov>
@@ -192,9 +192,9 @@
 		<cap_hud_fov x="65" y="3" width="108" height="24">
         <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_hud_fov</text>
         </cap_hud_fov>	
-		<track_hud_fov x="182" y="6" width="158" height="16" min="0.45" max="1.0" step="0.1">
+		<track_hud_fov x="182" y="6" width="158" height="16" min="0.25" max="1.0" step="0.1">
         <options_item entry="hud_fov" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_hud_fov>
@@ -204,7 +204,7 @@
         </cap_detail_radius>	
 		<track_detail_radius x="182" y="6" width="158" height="16" min="5" max="300" step="1" is_integer="1">
         <options_item entry="r__detail_radius" group="mm_opt_video_adv"/>
-			<output_wnd x="155" y="0" width="20" height="20" format="%d">
+			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_detail_radius>
@@ -214,7 +214,7 @@
         </cap_detail_scale>	
 		<track_detail_scale x="182" y="6" width="158" height="16" min="0.2" max="3.0" step="0.1">
         <options_item entry="r__detail_scale" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_detail_scale>
@@ -306,9 +306,9 @@
 		<cap_mblur x="65" y="3" width="108" height="24">
         <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_mblur</text>
         </cap_mblur>	
-		<track_mblur x="182" y="6" width="158" height="16" min="0.0" max="1.5" step="0.1">
+		<track_mblur x="182" y="6" width="158" height="16" min="0.05" max="0.25" step="0.01">
         <options_item entry="r2_mblur" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_mblur>
@@ -364,9 +364,9 @@
         <cap_color_r x="65" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_red</text>
         </cap_color_r>
-        <track_color_r x="182" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+        <track_color_r x="182" y="6" width="158" height="16" min="0.0" max="2.55" step="0.01">
             <options_item entry="r_color_r" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_color_r>
@@ -374,9 +374,9 @@
         <cap_color_g x="65" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_green</text>
         </cap_color_g>
-        <track_color_g x="182" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+        <track_color_g x="182" y="6" width="158" height="16" min="0.0" max="2.55" step="0.01">
             <options_item entry="r_color_g" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_color_g>
@@ -384,9 +384,9 @@
         <cap_color_b x="65" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_clr_blue</text>
         </cap_color_b>
-        <track_color_b x="182" y="6" width="158" height="16" min="0.5" max="2.55" step="0.01">
+        <track_color_b x="182" y="6" width="158" height="16" min="0.0" max="2.55" step="0.01">
             <options_item entry="r_color_b" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_color_b>
@@ -396,7 +396,7 @@
         </cap_saturation>
         <track_cap_saturation x="182" y="6" width="158" height="16" min="-1.0" max="1.0" step="0.01">
             <options_item entry="r_saturation" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_cap_saturation>
@@ -418,7 +418,7 @@
         </cap_geometry_lod>
         <track_geometry_lod x="182" y="6" width="158" height="16" min="0.1" max="3.0" step="0.1">
             <options_item entry="r__geometry_lod" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_geometry_lod>
@@ -428,7 +428,7 @@
         </cap_detail_density>
         <track_detail_density x="182" y="6" width="158" height="16" invert="1" min="0.3" max="1.5" step="0.02">
             <options_item entry="r__detail_density" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_detail_density>
@@ -438,7 +438,7 @@
         </cap_texture_lod>
         <track_texture_lod x="182" y="6" width="158" height="16" invert="1" min="0" max="4" step="1" is_integer="1">
             <options_item entry="texture_lod" group="mm_opt_video_adv" depend="restart"/>
-			<output_wnd x="150" y="0" width="20" height="20" format="%d">
+			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_texture_lod>
@@ -448,7 +448,7 @@
         </cap_aniso>
         <track_aniso x="182" y="6" width="158" height="16" min="1" max="16" step="1" is_integer="1">
             <options_item entry="r__tf_aniso" group="mm_opt_video_adv"/>
-			<output_wnd x="150" y="0" width="20" height="20" format="%d">
+			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_aniso>
@@ -458,7 +458,7 @@
         </cap_ssample>
         <track_ssample x="182" y="6" width="158" height="16" min="1" max="8" step="1" is_integer="1">
             <options_item entry="r__supersample" group="mm_opt_video_adv" depend="vid"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%d">
+			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_ssample>
@@ -553,7 +553,7 @@
         </cap_light_distance>
         <track_light_distance x="182" y="6" width="158" height="16" min="0.2" max="1.0">
             <options_item entry="r2_slight_fade" group="mm_opt_video_adv"/>
-			<output_wnd x="180" y="0" width="20" height="20" format="%f">
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_light_distance>
@@ -571,7 +571,7 @@
         </cap_particles_distance>
         <track_particles_distance x="182" y="6" width="158" height="16" min="0.5" max="1.0" step="0.1">
             <options_item entry="r2_ls_squality" group="mm_opt_video_adv"/>
-				<output_wnd x="180" y="0" width="20" height="20" format="%f">
+				<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 				</output_wnd>
         </track_particles_distance>
@@ -694,7 +694,7 @@
         </cap_optimize_static_geom>
         <track_optimize_static_geom x="182" y="6" width="158" height="16" min="0" max="4" step="1" is_integer="1">
             <options_item entry="r__optimize_static_geom" group="mm_opt_video_adv"/>
-			<output_wnd x="155" y="0" width="20" height="20" format="%d">
+			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_optimize_static_geom>
@@ -704,7 +704,7 @@
         </cap_optimize_dynamic_geom>
         <track_optimize_dynamic_geom x="182" y="6" width="158" height="16" min="0" max="4" step="1" is_integer="1">
             <options_item entry="r__optimize_dynamic_geom" group="mm_opt_video_adv"/>
-			<output_wnd x="155" y="0" width="20" height="20" format="%d">
+			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_optimize_dynamic_geom>
@@ -730,9 +730,9 @@
         <cap_mastervolume x="12" y="3" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_master_volume</text>
         </cap_mastervolume>
-        <track_mastervolume x="140" y="6" width="188" height="16" min="0.0f" max="1.0f" step="0.01">
+        <track_mastervolume x="140" y="6" width="188" height="16" min="0.0" max="1.0" step="0.1">
             <options_item entry="snd_volume_eff" group="mm_opt_sound"/>
-			<output_wnd x="210" y="0" width="20" height="20" format="%f">
+			<output_wnd x="190" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_mastervolume>
@@ -740,9 +740,9 @@
         <cap_musicvolume x="12" y="33" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_music_volume</text>
         </cap_musicvolume>
-        <track_musicvolume x="140" y="36" width="188" height="16" min="0.0f" max="1.0f" step="0.01">
+        <track_musicvolume x="140" y="36" width="188" height="16" min="0.0" max="1.0" step="0.1">
             <options_item entry="snd_volume_music" group="mm_opt_sound"/>
-			<output_wnd x="210" y="0" width="20" height="20" format="%f">
+			<output_wnd x="190" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_musicvolume>
@@ -752,7 +752,7 @@
         </cap_snd_targets>
         <track_snd_targets x="140" y="66" width="188" height="16" is_integer="1" min="4" max="256" step="4">
             <options_item entry="snd_targets" group="mm_opt_sound"/>
-			<output_wnd x="185" y="0" width="20" height="20" format="%d">
+			<output_wnd x="190" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
         </track_snd_targets>
@@ -935,7 +935,7 @@
 		  </cap_quick_saves_count>
 		  <track_quick_saves_count x="199" y="1" width="158" height="16" min="0" max="25" step="1" is_integer="1">
 			  <options_item entry="quick_save_counter" group="mm_opt_gameplay"/>
-				<output_wnd x="150" y="0" width="20" height="20" format="%d">
+				<output_wnd x="155" y="0" width="20" height="20" format="%d">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 				</output_wnd>
 		  </track_quick_saves_count>

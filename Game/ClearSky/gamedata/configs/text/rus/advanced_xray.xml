@@ -127,7 +127,7 @@
 		<text>Эффект виньетки</text>
 	</string>
 	<string id="ui_mm_hud_mask">
-		<text>Динамический HUD масок</text>
+		<text>Динам. HUD масок</text>
 	</string>
 	<string id="ui_st_hud_collision">
 		<text>Коллизия HUD оружия</text>
@@ -136,7 +136,7 @@
 		<text>Показывать интерфейс</text>
 	</string>
 	<string id="renderer_r4">
-		<text>Улучшеное полное освещение (DX11)</text>
+		<text>Ул. полное освещение (DX11)</text>
 	</string>
 	<string id="camera_1">
 		<text>Вид от 1-ого лица</text>
@@ -160,7 +160,7 @@
 		<text>Автопауза после загрузки</text>
 	</string>
 	<string id="ui_mm_hud_dynamic_effects">
-		<text>Динамические эффекты HUD</text>
+		<text>Динам. эффекты HUD</text>
 	</string>
 	<string id="ui_mm_ssao_text">
 		<text>Режим SSAO</text>
