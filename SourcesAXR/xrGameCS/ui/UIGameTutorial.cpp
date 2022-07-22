@@ -118,6 +118,9 @@ void CUISequencer::Start(LPCSTR tutor_name)
 	IR_Capture					();
 	m_bActive					= true;
 
+	m_flags.set(etsActive, TRUE);
+	m_flags.set(etsStoredPauseState, Device.Paused());
+
 	if (m_flags.test(etsNeedPauseOn) && !m_flags.test(etsStoredPauseState))
 	{
 		Device.Pause(TRUE, TRUE, TRUE, "tutorial_start");
@@ -144,15 +147,26 @@ void CUISequencer::Destroy()
 
 void CUISequencer::Stop()
 {
-	if(m_items.size()){ 
-		if (m_bPlayEachItem){
-			Next				();
+	if(m_items.size())
+	{ 
+		if (m_bPlayEachItem)
+		{
+			Next();
 			return;
-		}else{
+		}
+		else
+		{
 			CUISequenceItem* pCurrItem	= m_items.front();
-			pCurrItem->Stop		(true);
+			pCurrItem->Stop(true);
 		}
 	}
+
+	if (m_flags.test(etsNeedPauseOn) && !m_flags.test(etsStoredPauseState))
+		Device.Pause(FALSE, TRUE, TRUE, "tutorial_stop");
+
+	if (m_flags.test(etsNeedPauseOff) && m_flags.test(etsStoredPauseState))
+		Device.Pause(TRUE, TRUE, FALSE, "tutorial_stop");
+
 	Destroy			();
 }
 
