@@ -214,9 +214,9 @@ public:
 	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
 	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
 
-	const shared_str& GetGrenadeLauncherName	()		{return m_sGrenadeLauncherName;}
-	const shared_str GetScopeName				()		const;
-	const shared_str& GetSilencerName			()		{return m_sSilencerName;}
+	const shared_str& GetGrenadeLauncherName	() const {return m_sGrenadeLauncherName;}
+	const shared_str GetScopeName				() const;
+	const shared_str& GetSilencerName			() const {return m_sSilencerName;}
 
 	IC void	ForceUpdateAmmo						()		{ m_dwAmmoCurrentCalcFrame = 0; }
 
@@ -305,7 +305,8 @@ public:
 
 	virtual	u8				GetCurrentHudOffsetIdx ();
 
-	virtual float				Weight			();		
+	virtual	u32					Cost			() const;
+	virtual float				Weight			() const;		
 
 public:
     virtual EHandDependence		HandDependence		()	const		{	return eHandDependence;}

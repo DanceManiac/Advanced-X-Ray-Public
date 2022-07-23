@@ -133,8 +133,8 @@ public:
 			BOOL				IsInvalid			() const;
 
 			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}			
-			u32					Cost				() const	{ return m_cost; }
-	virtual float				Weight				() 			{ return m_weight;}		
+	virtual	u32					Cost				() const	{ return m_cost; }
+	virtual float				Weight				() const	{ return m_weight;}		
 
 public:
 	CInventory*					m_pInventory;

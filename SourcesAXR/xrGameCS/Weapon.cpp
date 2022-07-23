@@ -2497,7 +2497,34 @@ LPCSTR	CWeapon::GetCurrentAmmo_ShortName	()
 	return *(l_cartridge.m_InvShortName);
 }
 
-float CWeapon::Weight()
+u32 CWeapon::Cost() const
+{
+	u32 res = CInventoryItem::Cost();
+	if (IsGrenadeLauncherAttached() && GetGrenadeLauncherName().size()) 
+	{
+		res += pSettings->r_u32(GetGrenadeLauncherName(), "cost");
+	}
+	if (IsScopeAttached() && m_scopes.size()) 
+	{
+		res += pSettings->r_u32(GetScopeName(), "cost");
+	}
+	if (IsSilencerAttached() && GetSilencerName().size()) 
+	{
+		res += pSettings->r_u32(GetSilencerName(), "cost");
+	}
+
+	if (iAmmoElapsed)
+	{
+		float w = pSettings->r_float(m_ammoTypes[m_ammoType].c_str(), "cost");
+		float bs = pSettings->r_float(m_ammoTypes[m_ammoType].c_str(), "box_size");
+
+		res += iFloor(w * (iAmmoElapsed / bs));
+	}
+	return res;
+
+}
+
+float CWeapon::Weight() const
 {
 	float res = CInventoryItemObject::Weight();
 	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size())
