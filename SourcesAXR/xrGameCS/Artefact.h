@@ -40,6 +40,7 @@ public:
 	virtual void					create_physic_shell				();
 
 	virtual CArtefact*				cast_artefact					()		{return this;}
+	virtual	u32						Cost							() const;
 
 protected:
 	virtual void					UpdateCLChild					()		{};

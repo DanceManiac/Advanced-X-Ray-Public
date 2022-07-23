@@ -21,6 +21,7 @@
 #include "patrol_path.h"
 #include "patrol_path_storage.h"
 #include "Actor.h"
+#include "AdvancedXrayGameConstants.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
@@ -756,4 +757,20 @@ void CArtefact::OnHiddenItem ()
 float CArtefact::GetCurrentChargeLevel() const
 {
 	return m_fChargeLevel;
+}
+
+u32 CArtefact::Cost() const
+{
+	float percent = m_fChargeLevel*100;
+	u32 res = CInventoryItem::Cost();
+
+	if (GameConstants::GetArtefactsDegradation())
+	{
+		if (percent >= 10)
+			res = (res / 100) * percent;
+		else
+			res = (res / 100) * 10;
+	}
+
+	return res;
 }
