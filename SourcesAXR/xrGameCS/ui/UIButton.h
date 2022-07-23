@@ -56,7 +56,7 @@ public:
 	// ������ � �������������
 	// ��� ������������ ������� �� ����� dinput.h, �� DirectX SDK.
 	// ��������: ������ A - ��� 0x1E(DIK_A)
-	void				SetAccelerator			(int iAccel, int idx)	{VERIFY(idx==0||idx==1); m_uAccelerator[idx] = iAccel; }
+	void                SetAccelerator			(int iAccel, int idx);
 	const int			GetAccelerator			(int idx) const			{VERIFY(idx==0||idx==1); return m_uAccelerator[idx]; }
 	IC bool				IsAccelerator			(int iAccel) const		{return (m_uAccelerator[0]==iAccel)||(m_uAccelerator[1]==iAccel) ;}
 
