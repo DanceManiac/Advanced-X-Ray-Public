@@ -213,4 +213,10 @@
 	<string id="kb_detector">
 		<text>Детектор</text>
 	</string>
+	<string id="kb_laser_on">
+		<text>ЛЦУ</text>
+	</string>
+	<string id="kb_flashlight_on">
+		<text>Тактический фонарик</text>
+	</string>
 </string_table>
