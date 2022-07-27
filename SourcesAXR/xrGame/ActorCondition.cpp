@@ -414,13 +414,13 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 			}
 			else
 			{
-				if (!monster->get_disable_psy_aura_after_die())
+				if (monster->get_enable_psy_aura_after_die())
 					psy_influence += monster->get_psy_influence();
 
-				if (!monster->get_disable_rad_aura_after_die())
+				if (monster->get_enable_rad_aura_after_die())
 					radiation_influence += monster->get_radiation_influence();
 
-				if (!monster->get_disable_fire_aura_after_die())
+				if (monster->get_enable_fire_aura_after_die())
 					fire_influence += monster->get_fire_influence();
 			}
 		}

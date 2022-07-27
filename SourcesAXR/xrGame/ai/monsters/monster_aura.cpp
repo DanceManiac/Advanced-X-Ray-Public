@@ -15,7 +15,7 @@ namespace detail
 	static pcstr const	s_max_distance_string		=	"_max_distance";
 	static pcstr const	s_sound_string				=	"_sound";
 	static pcstr const	s_detect_sound_string		=	"_detect_sound";
-	static pcstr const	s_enable_for_dead_string	=	"_effector_enable_for_dead";
+	static pcstr const	s_enable_for_dead_string	=	"_aura_enable_for_dead";
 
 } // namespace detail
 

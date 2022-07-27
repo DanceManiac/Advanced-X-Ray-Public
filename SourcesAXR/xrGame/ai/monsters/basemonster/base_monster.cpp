@@ -115,9 +115,9 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 
 	light_bone								= "bip01_head";
 	particles_bone							= "bip01_head";
-	m_bDisablePsyAuraAfterDie				= true;
-	m_bDisableRadAuraAfterDie				= true;
-	m_bDisableFireAuraAfterDie				= true;
+	m_bEnablePsyAuraAfterDie				= false;
+	m_bEnableRadAuraAfterDie				= false;
+	m_bEnableFireAuraAfterDie				= false;
 }
 
 #pragma warning (pop)
@@ -987,19 +987,19 @@ float   CBaseMonster::get_fire_influence ()
 	return m_fire_aura.calculate();
 }
 
-bool   CBaseMonster::get_disable_psy_aura_after_die()
+bool   CBaseMonster::get_enable_psy_aura_after_die()
 {
-	return m_bDisablePsyAuraAfterDie;
+	return m_bEnablePsyAuraAfterDie;
 }
 
-bool   CBaseMonster::get_disable_rad_aura_after_die()
+bool   CBaseMonster::get_enable_rad_aura_after_die()
 {
-	return m_bDisableRadAuraAfterDie;
+	return m_bEnableRadAuraAfterDie;
 }
 
-bool   CBaseMonster::get_disable_fire_aura_after_die()
+bool   CBaseMonster::get_enable_fire_aura_after_die()
 {
-	return m_bDisableFireAuraAfterDie;
+	return m_bEnableFireAuraAfterDie;
 }
 
 void   CBaseMonster::play_detector_sound()

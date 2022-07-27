@@ -170,9 +170,9 @@ void CBaseMonster::Load(LPCSTR section)
 	m_bParticlesEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "particles_enabled", false);
 	m_sParticlesIdleName = READ_IF_EXISTS(pSettings, r_string, section, "particles_idle", NULL);
 
-	m_bDisablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "disable_psy_aura_influence_after_die", true);
-	m_bDisableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "disable_rad_aura_influence_after_die", true);
-	m_bDisableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "disable_fire_aura_influence_after_die", true);
+	m_bEnablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
+	m_bEnableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
+	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
 }
 
 void CBaseMonster::PostLoad (LPCSTR section)
