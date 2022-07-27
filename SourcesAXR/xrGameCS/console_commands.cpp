@@ -50,6 +50,7 @@
 
 #include "../build_config_defines.h"
 #include "ai_object_location.h"
+#include "GametaskManager.h"
 
 #ifdef DEBUG
 #	include "PHDebug.h"
@@ -131,11 +132,21 @@ BOOL			b_script_cmd2 = 0;
 BOOL			b_script_cmd3 = 0;
 BOOL			b_script_cmd4 = 0;
 BOOL			b_script_cmd5 = 0;
+BOOL			b_script_cmd6 = 0;
+BOOL			b_script_cmd7 = 0;
+BOOL			b_script_cmd8 = 0;
+BOOL			b_script_cmd9 = 0;
+BOOL			b_script_cmd10 = 0;
 int				i_script_cmd1 = 0;
 int				i_script_cmd2 = 0;
 int				i_script_cmd3 = 0;
 int				i_script_cmd4 = 0;
 int				i_script_cmd5 = 0;
+int				i_script_cmd6 = 0;
+int				i_script_cmd7 = 0;
+int				i_script_cmd8 = 0;
+int				i_script_cmd9 = 0;
+int				i_script_cmd10 = 0;
 //Custom commands for scripts end
 
 void register_mp_console_commands();
@@ -2231,16 +2242,26 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD3(CCC_UiHud_Mode, "hud_type",				&ui_hud_type,			qhud_type_token);
 
 	//Custom commands for scripts
-	CMD4(CCC_Integer, "b_script_cmd1", &b_script_cmd1, 0, 1);
-	CMD4(CCC_Integer, "b_script_cmd2", &b_script_cmd2, 0, 1);
-	CMD4(CCC_Integer, "b_script_cmd3", &b_script_cmd3, 0, 1);
-	CMD4(CCC_Integer, "b_script_cmd4", &b_script_cmd4, 0, 1);
-	CMD4(CCC_Integer, "b_script_cmd5", &b_script_cmd5, 0, 1);
-	CMD4(CCC_Integer, "i_script_cmd1", &i_script_cmd1, 0, 64);
-	CMD4(CCC_Integer, "i_script_cmd2", &i_script_cmd2, 0, 64);
-	CMD4(CCC_Integer, "i_script_cmd3", &i_script_cmd3, 0, 64);
-	CMD4(CCC_Integer, "i_script_cmd4", &i_script_cmd4, 0, 64);
-	CMD4(CCC_Integer, "i_script_cmd5", &i_script_cmd5, 0, 64);
+	CMD4(CCC_Integer,	"b_script_cmd1",		&b_script_cmd1, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd2",		&b_script_cmd2, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd3",		&b_script_cmd3, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd4",		&b_script_cmd4, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd5",		&b_script_cmd5, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd6",		&b_script_cmd6, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd7",		&b_script_cmd7, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd8",		&b_script_cmd8, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd9",		&b_script_cmd9, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd10",		&b_script_cmd10, 0, 1);
+	CMD4(CCC_Integer,	"i_script_cmd1",		&i_script_cmd1, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd2",		&i_script_cmd2, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd3",		&i_script_cmd3, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd4",		&i_script_cmd4, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd5",		&i_script_cmd5, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd6",		&i_script_cmd6, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd7",		&i_script_cmd7, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd8",		&i_script_cmd8, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd9",		&i_script_cmd9, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd10",		&i_script_cmd10, 0, 64);
 	//Custom commands for scripts end
 
 	register_mp_console_commands					();
