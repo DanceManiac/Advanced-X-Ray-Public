@@ -404,11 +404,25 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 										++it )
 		{
 			CBaseMonster* const	monster		=	smart_cast<CBaseMonster*>(*it);
-			if ( !monster || !monster->g_Alive() ) continue;
+			if (!monster) continue;
 
-			psy_influence					+=	monster->get_psy_influence();
-			radiation_influence				+=	monster->get_radiation_influence();
-			fire_influence					+=	monster->get_fire_influence();
+			if (monster->g_Alive())
+			{
+				psy_influence		+= monster->get_psy_influence();
+				radiation_influence += monster->get_radiation_influence();
+				fire_influence		+= monster->get_fire_influence();
+			}
+			else
+			{
+				if (!monster->get_disable_psy_aura_after_die())
+					psy_influence += monster->get_psy_influence();
+
+				if (!monster->get_disable_rad_aura_after_die())
+					radiation_influence += monster->get_radiation_influence();
+
+				if (!monster->get_disable_fire_aura_after_die())
+					fire_influence += monster->get_fire_influence();
+			}
 		}
 	}
 

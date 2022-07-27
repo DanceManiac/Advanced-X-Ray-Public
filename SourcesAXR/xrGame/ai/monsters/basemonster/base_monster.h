@@ -387,6 +387,9 @@ public:
 	float						m_fVolumetricQuality;
 	float						m_fVolumetricDistance;
 	float						m_fVolumetricIntensity;
+	bool						m_bDisablePsyAuraAfterDie;
+	bool						m_bDisableRadAuraAfterDie;
+	bool						m_bDisableFireAuraAfterDie;
 
 	shared_str					light_bone;
 	shared_str					particles_bone;
@@ -584,10 +587,13 @@ public:
 // CBaseMonster's  Auras
 //-------------------------------------------------------------------
 public:
-	float							get_psy_influence			();
-	float							get_radiation_influence		();
-	float							get_fire_influence			();
-	void							play_detector_sound			();
+	float							get_psy_influence				();
+	float							get_radiation_influence			();
+	float							get_fire_influence				();
+	bool							get_disable_psy_aura_after_die	();
+	bool							get_disable_rad_aura_after_die	();
+	bool							get_disable_fire_aura_after_die	();
+	void							play_detector_sound				();
 
 private:
 	monster_aura					m_psy_aura;
