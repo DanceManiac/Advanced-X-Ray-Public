@@ -125,6 +125,19 @@ ENGINE_API extern float	g_console_sensitive;
 
 int				g_keypress_on_start = 1;
 
+//Custom commands for scripts
+BOOL			b_script_cmd1 = 0;
+BOOL			b_script_cmd2 = 0;
+BOOL			b_script_cmd3 = 0;
+BOOL			b_script_cmd4 = 0;
+BOOL			b_script_cmd5 = 0;
+int				i_script_cmd1 = 0;
+int				i_script_cmd2 = 0;
+int				i_script_cmd3 = 0;
+int				i_script_cmd4 = 0;
+int				i_script_cmd5 = 0;
+//Custom commands for scripts end
+
 void register_mp_console_commands();
 //-----------------------------------------------------------
 
@@ -2195,6 +2208,19 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);
 
 	CMD3(CCC_UiHud_Mode, "hud_type",				&ui_hud_type,			qhud_type_token);
+
+	//Custom commands for scripts
+	CMD4(CCC_Integer, "b_script_cmd1", &b_script_cmd1, 0, 1);
+	CMD4(CCC_Integer, "b_script_cmd2", &b_script_cmd2, 0, 1);
+	CMD4(CCC_Integer, "b_script_cmd3", &b_script_cmd3, 0, 1);
+	CMD4(CCC_Integer, "b_script_cmd4", &b_script_cmd4, 0, 1);
+	CMD4(CCC_Integer, "b_script_cmd5", &b_script_cmd5, 0, 1);
+	CMD4(CCC_Integer, "i_script_cmd1", &i_script_cmd1, 0, 64);
+	CMD4(CCC_Integer, "i_script_cmd2", &i_script_cmd2, 0, 64);
+	CMD4(CCC_Integer, "i_script_cmd3", &i_script_cmd3, 0, 64);
+	CMD4(CCC_Integer, "i_script_cmd4", &i_script_cmd4, 0, 64);
+	CMD4(CCC_Integer, "i_script_cmd5", &i_script_cmd5, 0, 64);
+	//Custom commands for scripts end
 
 	register_mp_console_commands					();
 }
