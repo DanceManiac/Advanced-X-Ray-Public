@@ -53,6 +53,7 @@
 #include "../xrphysics/console_vars.h"
 #include "../build_config_defines.h"
 #include "ai_object_location.h"
+#include "GametaskManager.h"
 
 #ifdef DEBUG
 #	include "PHDebug.h"
@@ -359,6 +360,26 @@ public:
 	virtual void	Info(TInfo& I)
 	{
 		strcpy(I, "name,team,squad,group");
+	}
+};
+
+class CCC_GiveTask : public IConsole_Command 
+{
+public:
+	CCC_GiveTask(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR task) 
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (actor)
+			Level().GameTaskManager().GiveTaskScript(task);
+		else
+			Msg("! [g_task] : Actor not found!");
 	}
 };
 
@@ -2189,6 +2210,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
 		CMD1(CCC_Giveinfo,		"g_info");
 		CMD1(CCC_Disinfo,		"d_info");
+		CMD1(CCC_GiveTask,		"g_task");
 		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);

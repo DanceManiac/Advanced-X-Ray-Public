@@ -128,6 +128,29 @@ CGameTask*	CGameTaskManager::GiveGameTaskToActor(CGameTask* t, u32 timeToComplet
 	return t;
 }
 
+void CGameTaskManager::GiveTaskScript(LPCSTR task)
+{
+	CGameTask* has_task = HasGameTask(task, true);
+
+	if (task == nullptr)
+	{
+		Msg("! [g_task] : task is [NULL]");
+		VERIFY2(0, make_string("[g_task] : Task is [NULL]!"));
+		return;
+	}
+
+	if (has_task)
+	{
+		Msg("! [g_task] : task [%s] already inprocess", has_task->m_ID.c_str());
+		VERIFY2(0, make_string("[g_task] : Task [%s] already inprocess!", has_task->m_ID.c_str()));
+		return;
+	}
+
+	luabind::functor<void> funct;
+	if (ai().script_engine().functor("mfs_functions.g_task_script", funct))
+		funct(task);
+}
+
 void CGameTaskManager::SetTaskState(CGameTask* t, ETaskState state)
 {
 	m_flags.set						(eChanged, TRUE);

@@ -80,3 +80,8 @@ function generate_phantoms()
 		end
 	end
 end
+
+-- 'Для команды g_task. Не трогать!
+function g_task_script(task)
+		task_manager.get_task_manager():give_task(task)
+end

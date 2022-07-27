@@ -27,6 +27,7 @@ public:
 	CGameTask*				GiveGameTaskToActor				(CGameTask* t, u32 timeToComplete, bool bCheckExisting, u32 timer_ttl);
 	void					SetTaskState					(const shared_str& id, ETaskState state);
 	void					SetTaskState					(CGameTask* t, ETaskState state);
+	void					GiveTaskScript					(LPCSTR task);
 
 	void	_BCL			UpdateTasks						();
 
