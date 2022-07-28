@@ -21,7 +21,6 @@ BOOL stored_red_text;
 
 CDemoRecord * xrDemoRecord = 0;
 CDemoRecord::force_position CDemoRecord:: g_position = { false, { 0, 0, 0 } };
-bool bDeveloperMode;
 
 Fbox curr_lm_fbox;
 void setup_lm_screenshot_matrices()
@@ -275,8 +274,6 @@ void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 
 BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 {
-	bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
-
 	info.dont_apply					= false;
 	if (0==file)					return TRUE;
 

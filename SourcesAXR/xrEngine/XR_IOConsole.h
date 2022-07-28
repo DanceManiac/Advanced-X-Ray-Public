@@ -215,5 +215,6 @@ protected:
 }; // class CConsole
 
 ENGINE_API extern CConsole* Console;
+ENGINE_API extern bool bDeveloperMode;
 
 #endif // XR_IOCONSOLE_H_INCLUDED

@@ -36,10 +36,10 @@ static u32 const tips_word_color    = color_rgba(   5, 100,  56, 200 );
 static u32 const tips_scroll_back_color  = color_rgba( 15, 15, 15, 230 );
 static u32 const tips_scroll_pos_color   = color_rgba( 70, 70, 70, 240 );
 
-bool bDevModeXrEngine;
 bool bBlockConsole;
 
-ENGINE_API CConsole*		Console		=	NULL;
+ENGINE_API CConsole* Console = NULL;
+ENGINE_API bool bDeveloperMode = false;
 
 extern char const * const	ioc_prompt;
        char const * const	ioc_prompt	=	">>> ";
@@ -113,7 +113,7 @@ void CConsole::Initialize()
 
 	bBlockConsole		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "block_console", false);
 	bAutoSndTargets		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "auto_snd_targets", false);
-	bDevModeXrEngine	= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
+	bDeveloperMode		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
 	
 	m_cmd_history.reserve( m_cmd_history_max + 2 );
 	m_cmd_history.clear_not_free();
@@ -613,7 +613,7 @@ void CConsole::Show()
 {
 	SECUROM_MARKER_HIGH_SECURITY_ON(11)
 
-	if ( bVisible || bBlockConsole && !bDevModeXrEngine)
+	if ( bVisible || bBlockConsole && !bDeveloperMode)
 		return;
 
 	bVisible = true;

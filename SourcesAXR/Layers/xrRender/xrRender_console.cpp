@@ -377,8 +377,6 @@ Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP
 	| R2FLAG_STATIC_SUN
 	};
 
-bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
-
 #ifndef _EDITOR
 #include	"../../xrEngine/xr_ioconsole.h"
 #include	"../../xrEngine/xr_ioc_cmd.h"
