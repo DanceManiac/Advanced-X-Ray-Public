@@ -3,6 +3,7 @@
 
 #include	"xrRender_console.h"
 #include	"dxRenderDeviceRender.h"
+#include	"../../xrEngine/x_ray.h"
 #include "../../build_config_defines.h"
 
 // DWM: DT SSR quality option

@@ -56,6 +56,8 @@ XRCORE_API	u32		build_id;
 
 ENGINE_API bool CallOfPripyatMode = false;
 ENGINE_API bool ClearSkyMode = false;
+ENGINE_API bool bDeveloperMode = false;
+ENGINE_API bool bWinterMode = false;
 
 static LPSTR month_id[12] = {
 	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
@@ -253,10 +255,11 @@ PROTECT_API void InitSettings()
 	InitConfig(pGameIni, "game.ltx");
 
 	pcstr EngineMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "global", "engine_mode", "cop");
-	bool WinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
+	bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
+	bWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
 
 	Msg("# Engine Mode: %s", EngineMode);
-	Msg("# Winter Mode: %d", WinterMode);
+	Msg("# Winter Mode: %d", bWinterMode);
 
 	if (xr_strcmp("cop", EngineMode) == 0)
 	{
@@ -1521,7 +1524,7 @@ void CApplication::Level_Scan()
 
 void gen_logo_name(string_path& dest, LPCSTR level_name, int num)
 {
-	if (g_pGamePersistent->Environment().eff_Rain->m_bWinterMode == false)
+	if (!bWinterMode)
 	{
 		strconcat(sizeof(dest), dest, "intro\\intro_", level_name);
 	}

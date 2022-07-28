@@ -12,6 +12,7 @@
 #include "../xrRender/dxUIShader.h"
 //#include "../../xrServerEntities/smart_cast.h"
 #include "../../xrEngine/Rain.h"
+#include "../../xrEngine/x_ray.h"
 
 CRender										RImplementation;
 
@@ -257,7 +258,7 @@ void					CRender::create					()
 	o.ssao_half_data	= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HALF_DATA) && o.ssao_opt_data && (ps_r_ssao != 0);
 	o.ssao_hbao			= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HBAO) && (ps_r_ssao != 0);
 
-	o.winter_mode = !CEffect_Rain().m_bWinterMode;
+	o.winter_mode = !bWinterMode;
 	
 	if ((HW.Caps.id_vendor==0x1002)&&(HW.Caps.id_device<=0x72FF))	
 	{

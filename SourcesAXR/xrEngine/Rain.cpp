@@ -4,6 +4,7 @@
 #include "Rain.h"
 #include "igame_persistent.h"
 #include "environment.h"
+#include "x_ray.h"
 
 #ifdef _EDITOR
     #include "ui_toolscustom.h"
@@ -34,10 +35,9 @@ CEffect_Rain::CEffect_Rain()
 	state							= stIdle;
 	
 	snd_Wind.create("mfs_team\\ambient\\weather\\wind", st_Effect, sg_Undefined);
-	m_bWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
 	m_bWindWorking = false;
 	
-	if (!m_bWinterMode)
+	if (!bWinterMode)
 	{
 		snd_Ambient.create("mfs_team\\ambient\\weather\\rain", st_Effect, sg_Undefined);
 		snd_RainOnMask.create("mfs_team\\ambient\\weather\\rain_on_mask", st_Effect, sg_Undefined);
@@ -66,7 +66,7 @@ CEffect_Rain::CEffect_Rain()
 
 CEffect_Rain::~CEffect_Rain()
 {
-	if (!m_bWinterMode)
+	if (!bWinterMode)
 	{
 		snd_Ambient.destroy();
 		snd_RainOnMask.destroy();
@@ -191,7 +191,7 @@ void	CEffect_Rain::OnFrame	()
 		}
 	}
 	
-	if (!m_bWinterMode)
+	if (!bWinterMode)
 	{
 		switch (state)
 		{

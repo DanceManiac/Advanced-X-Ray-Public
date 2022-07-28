@@ -39,7 +39,6 @@ static u32 const tips_scroll_pos_color   = color_rgba( 70, 70, 70, 240 );
 bool bBlockConsole;
 
 ENGINE_API CConsole* Console = NULL;
-ENGINE_API bool bDeveloperMode = false;
 
 extern char const * const	ioc_prompt;
        char const * const	ioc_prompt	=	">>> ";
@@ -113,8 +112,7 @@ void CConsole::Initialize()
 
 	bBlockConsole		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "block_console", false);
 	bAutoSndTargets		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "auto_snd_targets", false);
-	bDeveloperMode		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
-	
+
 	m_cmd_history.reserve( m_cmd_history_max + 2 );
 	m_cmd_history.clear_not_free();
 	reset_cmd_history_idx();

@@ -1,7 +1,7 @@
 #include "stdAfx.h"
 #include "embedded_editor_main.h"
 #include "../../xrEngine/xr_input.h"
-#include "../../xrEngine/xr_ioconsole.h"
+#include "../../xrEngine/x_ray.h"
 #include "../xr_level_controller.h"
 #include "embedded_editor_helper.h"
 #include "embedded_editor_weather.h"

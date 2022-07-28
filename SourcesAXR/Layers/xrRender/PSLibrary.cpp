@@ -7,6 +7,7 @@
 #include "PSLibrary.h"
 #include "ParticleEffect.h"
 #include "ParticleGroup.h"
+#include "../../xrEngine/x_ray.h"
 
 #ifdef _EDITOR
 #	include "ParticleEffectActions.h"
@@ -32,9 +33,7 @@ void CPSLibrary::OnCreate()
     {
     	string_path		fn;
 
-		m_bWinterModeParticles = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
-
-		if (m_bWinterModeParticles == false)
+		if (!bWinterMode)
 		{
 			FS.update_path(fn, _game_data_, "particles.xr");
 			Load(fn);

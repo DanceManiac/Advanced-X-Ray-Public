@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
-
 #include "../xrRender/dxEnvironmentRender.h"
+#include "../../xrEngine/x_ray.h"
 
 #define STENCIL_CULL 0
 
@@ -433,8 +433,7 @@ void	CRenderTarget::phase_combine	()
 
 	if (!_menu_pp)
 	{
-		bool RenderWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
-		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !RenderWinterMode)
+		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
 			PhaseRainDrops();
 	}
 			

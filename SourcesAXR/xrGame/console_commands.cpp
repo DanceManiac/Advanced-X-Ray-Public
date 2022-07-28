@@ -1,5 +1,6 @@
 #include "pch_script.h"
 #include "../xrEngine/xr_ioconsole.h"
+#include "../xrEngine/x_ray.h"
 #include "../xrEngine/xr_ioc_cmd.h"
 #include "../xrEngine/customhud.h"
 #include "../xrEngine/fdemorecord.h"
