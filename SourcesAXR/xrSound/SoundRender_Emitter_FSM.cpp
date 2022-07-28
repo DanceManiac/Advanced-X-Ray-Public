@@ -261,7 +261,12 @@ float CSoundRender_Emitter::priority()
 
 void CSoundRender_Emitter::update_environment(float dt)
 {
-	if (bMoved)			e_target	= *SoundRender->get_environment	(p_source.position);
+	if (bMoved)
+	{
+		e_target = *SoundRender->get_environment(p_source.position);
+		// Cribbledirge: updates the velocity of the sound.
+		p_source.update_velocity(dt);
+	}
 	e_current.lerp		(e_current,e_target, dt);
 
 }
