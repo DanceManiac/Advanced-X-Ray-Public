@@ -1,4 +1,4 @@
-// XR_IOConsole.cpp: implementation of the CConsole class.
+п»ї// XR_IOConsole.cpp: implementation of the CConsole class.
 // modify 15.05.2008 sea
 
 #include "stdafx.h"
@@ -105,6 +105,7 @@ void CConsole::Initialize()
 	bVisible		= false;
 	pFont			= NULL;
 	pFont2			= NULL;
+	bBlockConsole	= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "block_console", false);
 
 	m_mouse_pos.x	= 0;
 	m_mouse_pos.y	= 0;
@@ -179,7 +180,7 @@ void CConsole::OutFont( LPCSTR text, float& pos_y )
 		int ln	= 0;
 		PSTR one_line = (PSTR)_alloca( (CONSOLE_BUF_SIZE + 1) * sizeof(char) );
 		
-		while( text[sz] && (ln + sz < CONSOLE_BUF_SIZE-5) )// перенос строк
+		while( text[sz] && (ln + sz < CONSOLE_BUF_SIZE-5) )// РїРµСЂРµРЅРѕСЃ СЃС‚СЂРѕРє
 		{
 			one_line[ln+sz]   = text[sz];
 			one_line[ln+sz+1] = 0;
@@ -608,10 +609,9 @@ void CConsole::Show()
 {
 	SECUROM_MARKER_HIGH_SECURITY_ON(11)
 
-	if ( bVisible )
-	{
+	if ( bVisible || bBlockConsole)
 		return;
-	}
+
 	bVisible = true;
 	
 	GetCursorPos( &m_mouse_pos );

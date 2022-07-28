@@ -1,4 +1,4 @@
-// XR_IOConsole.h: interface for the CConsole class.
+﻿// XR_IOConsole.h: interface for the CConsole class.
 //
 //////////////////////////////////////////////////////////////////////
 #ifndef XR_IOCONSOLE_H_INCLUDED
@@ -114,6 +114,7 @@ public:
 	virtual void	OnScreenResolutionChanged();
 	string64		ConfigFile;
 	bool			bVisible;
+	bool			bBlockConsole;
 	vecCMD			Commands;
 
 	void			AddCommand			( IConsole_Command* cc );
