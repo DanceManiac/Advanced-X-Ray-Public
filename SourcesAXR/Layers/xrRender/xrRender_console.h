@@ -1,4 +1,4 @@
-#ifndef xrRender_consoleH
+﻿#ifndef xrRender_consoleH
 #define xrRender_consoleH
 #pragma once
 
@@ -299,5 +299,9 @@ extern void						xrRender_initconsole	();
 extern BOOL						xrRender_test_hw		();
 extern void						xrRender_apply_tf		();
 extern ECORE_API float			droplets_power_debug;
+
+// M.F.S. Team: Flares Render
+extern ECORE_API	u32			ps_r2_flares;
+extern ECORE_API	xr_token	qflares_token[];
 
 #endif

@@ -398,11 +398,23 @@
 			</output_wnd>
         </track_cap_saturation>
 		
+        <cap_flares x="70" y="3" width="135" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_flares_render</text>
+        </cap_flares>
+        <combo_flares x="220" y="0" width="200" height="20" always_show_scroll="1">
+            <options_item entry="r2_use_flares" group="mm_opt_video_adv"/>
+            <list_font r="170" g="170" b="170" font="letterica16"/>
+            <text_color>
+	            <e r="170" g="170" b="170"/>
+	            <d r="70" g="70" b="70"/>
+            </text_color>
+        </combo_flares>
+		
         <cap_smap_size x="70" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_smap_size</text>
         </cap_smap_size>
         <combo_smap_size x="220" y="0" width="200" height="20" always_show_scroll="1">
-            <options_item entry="r2_smap_size" group="mm_opt_video" depend="restart"/>
+            <options_item entry="r2_smap_size" group="mm_opt_video_adv" depend="restart"/>
             <list_font r="170" g="170" b="170" font="letterica16"/>
             <text_color>
 	            <e r="170" g="170" b="170"/>

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
 
@@ -35,6 +35,7 @@ float	hclip(float v, float dim)		{ return 2.f*v/dim - 1.f; }
 void	CRenderTarget::phase_combine	()
 {
 	bool	_menu_pp	= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
+	bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
 
 	u32			Offset					= 0;
 	Fvector2	p0,p1;
@@ -262,7 +263,6 @@ void	CRenderTarget::phase_combine	()
 	//Hud Mask
 	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
-		bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 			phase_hud_mask();
@@ -356,7 +356,9 @@ void	CRenderTarget::phase_combine	()
 	RCache.set_Stencil		(FALSE);
 
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
-	/* if (!RImplementation.o.fp16_blend)*/	g_pGamePersistent->Environment().RenderFlares	();	// lens-flares
+
+	if (HudGlassEnabled && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
+		g_pGamePersistent->Environment().RenderFlares();// lens-flares
 
 	//	Igor: screenshot will not have postprocess applied.
 	//	TODO: fox that later

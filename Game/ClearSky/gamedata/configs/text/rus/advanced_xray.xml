@@ -285,4 +285,13 @@
 	<string id="ui_mm_snd_targets">
 		<text>Источники звука</text>
 	</string>
+	<string id="ui_mm_flares_render">
+		<text>Рендеринг бликов</text>
+	</string>
+	<string id="st_opt_always">
+		<text>Всегда</text>
+	</string>
+	<string id="st_opt_on_helmet">
+		<text>В зависимости от шлема</text>
+	</string>
 </string_table>

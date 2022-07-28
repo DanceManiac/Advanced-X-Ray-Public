@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
 #include "r2_puddles.h"
@@ -44,6 +44,7 @@ void	CRenderTarget::phase_combine	()
 
 	//	TODO: DX10: Remove half poxel offset
 	bool	_menu_pp	= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
+	bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
 
 	u32			Offset					= 0;
 	Fvector2	p0,p1;
@@ -395,7 +396,6 @@ void	CRenderTarget::phase_combine	()
 	//Hud Mask
 	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
-		bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 			phase_hud_mask();
@@ -425,7 +425,7 @@ void	CRenderTarget::phase_combine	()
 	phase_blur();
 
 	//Compute bloom (new)
-	//phase_pp_bloom(); //Пока вырубил
+	//phase_pp_bloom(); //???? ???????
 	
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.
@@ -523,7 +523,9 @@ void	CRenderTarget::phase_combine	()
 	RCache.set_Stencil		(FALSE);
 
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
-	/* if (!RImplementation.o.fp16_blend)*/	g_pGamePersistent->Environment().RenderFlares	();	// lens-flares
+
+	if (HudGlassEnabled && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
+		g_pGamePersistent->Environment().RenderFlares();// lens-flares
 
 	//	PP-if required
 	if (PP_Complex)		

@@ -416,11 +416,23 @@
 				</output_wnd>
 		</track_hud_fov>
 		
+        <cap_flares x="77" y="0" width="119" height="21">
+            <text font="letterica16" color="ui_6">ui_mm_flares_render</text>
+        </cap_flares>
+        <combo_flares x="200" y="0" width="200" height="21" always_show_scroll="1">
+            <options_item entry="r2_use_flares" group="mm_opt_video_adv"/>
+            <list_font r="170" g="170" b="170" font="letterica16"/>
+            <text_color>
+				<e r="216" g="186" b="140"/>
+				<d color="ui_gray"/>
+            </text_color>
+        </combo_flares>
+		
         <cap_smap_size x="77" y="0" width="119" height="21">
             <text font="letterica16" color="ui_6">ui_mm_smap_size</text>
         </cap_smap_size>
         <combo_smap_size x="200" y="0" width="200" height="21" always_show_scroll="1">
-            <options_item entry="r2_smap_size" group="mm_opt_video" depend="restart"/>
+            <options_item entry="r2_smap_size" group="mm_opt_video_adv" depend="restart"/>
             <list_font r="170" g="170" b="170" font="letterica16"/>
             <text_color>
 				<e r="216" g="186" b="140"/>
