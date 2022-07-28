@@ -114,7 +114,6 @@ public:
 	virtual void	OnScreenResolutionChanged();
 	string64		ConfigFile;
 	bool			bVisible;
-	bool			bBlockConsole;
 	vecCMD			Commands;
 
 	void			AddCommand			( IConsole_Command* cc );

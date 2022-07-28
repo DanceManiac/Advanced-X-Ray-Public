@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifdef XRSOUND_EXPORTS
 	#define XRSOUND_API __declspec(dllexport)
@@ -40,6 +40,7 @@ XRSOUND_API extern u32				snd_device_id			;
 XRSOUND_API extern int				psUseDistDelay			;
 XRSOUND_API extern float			psSoundSpeed			;
 XRSOUND_API extern int				psSoundPrecacheAll		;
+XRSOUND_API extern bool				bAutoSndTargets			;
 
 // Flags
 enum {

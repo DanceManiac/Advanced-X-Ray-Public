@@ -17,7 +17,6 @@ function opt_sound:InitControls(x, y, xml, handler)
 
 	xml:InitStatic("tab_sound:cap_mastervolume",		self)
 	xml:InitStatic("tab_sound:cap_musicvolume",			self)
-	xml:InitStatic("tab_sound:cap_snd_targets",			self)
 
 	xml:InitStatic("tab_sound:cap_check_eax",			self)
 	xml:InitStatic("tab_sound:cap_check_dynamic_music",	self)
@@ -32,7 +31,6 @@ function opt_sound:InitControls(x, y, xml, handler)
 
 	xml:InitTrackBar				("tab_sound:track_musicvolume",	self)
 	xml:InitTrackBar				("tab_sound:track_mastervolume",self)
-	xml:InitTrackBar				("tab_sound:track_snd_targets",	self)
 
 	xml:InitStatic					("tab_sound:cap_snd_device",		self)
 	xml:InitComboBox				("tab_sound:list_snd_device",	self)

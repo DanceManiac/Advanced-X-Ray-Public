@@ -1,10 +1,11 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #pragma hdrstop
 
 #include "SoundRender_Core.h"
 #include "SoundRender_Emitter.h"
 #include "SoundRender_Target.h"
 #include "SoundRender_Source.h"
+#include "SoundRender_TargetA.h"
 
 void	CSoundRender_Core::i_start		(CSoundRender_Emitter* E)
 {
@@ -24,9 +25,37 @@ void	CSoundRender_Core::i_start		(CSoundRender_Emitter* E)
 		}
 	}
 
-	// Stop currently playing
-	if (T->get_emitter())
-		T->get_emitter()->cancel();
+	if (bAutoSndTargets)
+	{
+		if (T->get_emitter())
+		{
+#ifdef DEBUG
+			Msg("[xrSound] : increasing max_targets to %u", s_targets.size() + 1);
+#endif
+			CSoundRender_Target* T2 = xr_new<CSoundRender_TargetA>();
+			if (T2->_initialize())
+			{
+				s_targets.push_back(T2);
+				T = T2;
+			}
+			else
+			{
+#ifdef DEBUG
+				Msg("[xrSound] : can't increase max_targets from %u", s_targets.size());
+#endif
+				T2->_destroy();
+				xr_delete(T2);
+				// Stop currently playing
+				T->get_emitter()->cancel();
+			}
+		}
+	}
+	else
+	{
+		// Stop currently playing
+		if (T->get_emitter())
+			T->get_emitter()->cancel();
+	}
 
 	// Associate
 	E->target			= T;

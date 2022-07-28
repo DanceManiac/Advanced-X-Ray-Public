@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #pragma hdrstop
 
 #include "../xrEngine/xrLevel.h"
@@ -19,6 +19,7 @@ u32		psSoundModel			= 0;
 int		psUseDistDelay			= 1;
 float	psSoundSpeed			= 250.f;
 int		psSoundPrecacheAll		= 0;
+bool		bAutoSndTargets		= false;
 
 XRSOUND_API CSoundRender_Core* SoundRender = nullptr;
 CSound_manager_interface* Sound = nullptr;
