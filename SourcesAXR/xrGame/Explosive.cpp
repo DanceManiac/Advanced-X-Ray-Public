@@ -106,6 +106,9 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_fBlastHitImpulse	= ini->r_float(section,"blast_impulse");
 
 	m_iFragsNum			= ini->r_s32(section,"frags");
+	// KRodin: в оригинале осколки летели только в верхнюю полусверу после взрыва объекта.
+	// Здесь это поправлено, поэтому число осколков удвоено. Раньше допустим 50 летело только вверх, а теперь будет 50 вверх и 50 вниз, иначе многие гранаты из-за этого могли бы потерять в убойности.
+	m_iFragsNum			*= 2;
 	m_fFragsRadius		= ini->r_float(section,"frags_r");
 	m_fFragHit			= ini->r_float(section,"frag_hit");
 	m_fFragHitImpulse	= ini->r_float(section,"frag_hit_impulse");
@@ -357,11 +360,11 @@ void CExplosive::Explode()
 		who = Level().Objects.net_Find(Initiator());
 
 	if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && pos.distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
-		Sound->play_at_pos(sndDistantExplode, 0, pos, false);
+		Sound->play_at_pos(sndDistantExplode, who, pos, false);
 	else if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
-		Sound->play_at_pos(sndDistantExplodeFar, 0, pos, false);
+		Sound->play_at_pos(sndDistantExplodeFar, who, pos, false);
 	else
-		Sound->play_at_pos(sndExplode, 0, pos, false);
+		Sound->play_at_pos(sndExplode, who, pos, false);
 
 	
 	//показываем эффекты
