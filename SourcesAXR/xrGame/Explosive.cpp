@@ -351,6 +351,11 @@ void CExplosive::Explode()
 //	Msg("---------CExplosive Explode [%d] frame[%d]",cast_game_object()->ID(), Device.dwFrame);
 	OnBeforeExplosion();
 	//играем звук взрыва
+
+	CObject* who = nullptr;
+	if (Initiator() != ALife::_OBJECT_ID(-1))
+		who = Level().Objects.net_Find(Initiator());
+
 	if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && pos.distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
 		Sound->play_at_pos(sndDistantExplode, 0, pos, false);
 	else if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
