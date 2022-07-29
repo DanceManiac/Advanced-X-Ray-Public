@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace GameConstants
 {
@@ -22,6 +22,7 @@ namespace GameConstants
 	bool GetArtefactsDegradation();
 	bool GetShowWpnInfo();
 	bool GetJumpSpeedWeightCalc();
+	bool GetHideWeaponInInventory();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

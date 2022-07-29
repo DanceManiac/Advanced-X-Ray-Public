@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "UIActorMenu.h"
 #include "UIActorStateInfo.h"
 #include "../actor.h"
@@ -177,19 +177,33 @@ void CUIActorMenu::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 
 void CUIActorMenu::Show()
 {
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
 	SetMenuMode							(m_currMenuMode);
 	inherited::Show						();
 	PlaySnd								(eSndOpen);
 	m_ActorStateInfo->Show				(true);
 	m_ActorStateInfo->UpdateActorInfo	(m_pActorInvOwner);
+
+	if (pActor && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	}
 }
 
 void CUIActorMenu::Hide()
 {
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
 	inherited::Hide						();
 	PlaySnd								(eSndClose);
 	SetMenuMode							(mmUndefined);
 	m_ActorStateInfo->Show				(false);
+
+	if (pActor && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	}
 }
 
 void CUIActorMenu::Draw()
@@ -242,7 +256,7 @@ void CUIActorMenu::Update()
 	m_ItemInfo->Update();
 	m_hint_wnd->Update();
 }
-bool CUIActorMenu::StopAnyMove()  // true = актёр не идёт при открытом меню
+bool CUIActorMenu::StopAnyMove()  // true = ????? ?? ???? ??? ???????? ????
 {
 	switch ( m_currMenuMode )
 	{

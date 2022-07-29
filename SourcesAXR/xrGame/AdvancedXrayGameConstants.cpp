@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+﻿#include "StdAfx.h"
 #include "AdvancedXrayGameConstants.h"
 #include "GamePersistent.h"
 
@@ -22,6 +22,7 @@ bool	m_bArtefactsDegradation = false;
 bool	m_bMultiItemPickup = true;
 bool	m_bShowWpnInfo = true;
 bool	m_bJumpSpeedWeightCalc = false;
+bool	m_bHideWeaponInInventory = false;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -49,6 +50,7 @@ namespace GameConstants
 		m_bMultiItemPickup = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "multi_item_pickup", true);
 		m_bShowWpnInfo = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "show_wpn_info", true);
 		m_bJumpSpeedWeightCalc = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "jump_and_speed_weight_calc", false);
+		m_bHideWeaponInInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_weapon_in_inventory", false);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 
@@ -153,6 +155,11 @@ namespace GameConstants
 	bool GetJumpSpeedWeightCalc()
 	{
 		return m_bJumpSpeedWeightCalc;
+	}
+
+	bool GetHideWeaponInInventory()
+	{
+		return m_bHideWeaponInInventory;
 	}
 
 	float GetDistantSndDistance()
