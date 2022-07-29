@@ -90,6 +90,7 @@ CAI_Stalker::CAI_Stalker			() :
 	m_dbg_hud_draw					= false;
 #endif // DEBUG
 	m_registered_in_combat_on_migration	= false;
+	m_bLastHittedInHead				= false;
 }
 
 CAI_Stalker::~CAI_Stalker			()
@@ -190,7 +191,8 @@ void CAI_Stalker::reinit			()
 			m_critical_wound_weights.push_back((float)atof(_GetItem(weights,i,temp)));
 	}
 
-	m_update_rotation_on_frame						= false;
+	m_update_rotation_on_frame = false;
+	m_bLastHittedInHead = false;
 }
 
 void CAI_Stalker::LoadSounds		(LPCSTR section)
@@ -289,7 +291,7 @@ void CAI_Stalker::Die				(CObject* who)
 	//sound().set_sound_mask			(0);
 	if (is_special_killer(who))
 		sound().play				(eStalkerSoundDieInAnomaly);
-	else
+	else if (!m_bLastHittedInHead) // dont play sound when head shoted
 		sound().play				(eStalkerSoundDie);
 	
 	m_hammer_is_clutched			= m_clutched_hammer_enabled && !CObjectHandler::planner().m_storage.property(ObjectHandlerSpace::eWorldPropertyStrapped) && !::Random.randI(0,2);
