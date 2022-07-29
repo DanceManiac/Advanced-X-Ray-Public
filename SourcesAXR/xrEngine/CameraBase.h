@@ -1,4 +1,4 @@
-// CameraBase.h: interface for the CCameraBase class.
+﻿// CameraBase.h: interface for the CCameraBase class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -49,6 +49,7 @@ public:
 					CCameraBase		( CObject* p, u32 flags );
 	virtual			~CCameraBase	( );
 	virtual void	Load			(LPCSTR section);
+	CObject*		GetParent		() const { return parent; }
 	void			SetParent		( CObject* p )								{parent=p; VERIFY(p);}
 	virtual	void	OnActivate		( CCameraBase* old_cam )					{;}
 	virtual	void	OnDeactivate	( )											{;}
