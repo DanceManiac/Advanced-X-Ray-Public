@@ -15,7 +15,8 @@
 #include "../../../detail_path_manager.h"
 #include "../../../CharacterPhysicsSupport.h"
 #include "../control_path_builder_base.h"
-
+#include "Inventory.h"
+#include "AdvancedXrayGameConstants.h"
 
 CPseudoGigant::CPseudoGigant()
 {
@@ -310,7 +311,13 @@ void CPseudoGigant::on_threaten_execute()
 	HS.impulse			= (80 * pA->character_physics_support()->movement()->GetMass());						//	l_P.w_float	(20 * pA->movement_control()->GetMass());
 	HS.hit_type			= ( ALife::eHitTypeStrike);										//	l_P.w_u16	( u16(ALife::eHitTypeWound) );
 	HS.Write_Packet		(l_P);
-	u_EventSend			(l_P);	
+	u_EventSend			(l_P);
+
+	if (Actor() && GameConstants::GetPseudogigantDropItem())
+	{
+		CInventoryItem* active_item = Actor()->inventory().ActiveItem();
+		active_item->SetDropManual(true);
+	}
 }
 
 void CPseudoGigant::HitEntityInJump		(const CEntity *pEntity) 
