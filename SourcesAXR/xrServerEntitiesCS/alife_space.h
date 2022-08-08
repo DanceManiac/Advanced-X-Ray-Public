@@ -103,6 +103,10 @@ namespace ALife {
 		infl_acid,
 		infl_psi,
 		infl_electra,
+		infl_strike,
+		infl_wound,
+		infl_explossion,
+		infl_fire_wound,
 		infl_max_count
 	};
 
