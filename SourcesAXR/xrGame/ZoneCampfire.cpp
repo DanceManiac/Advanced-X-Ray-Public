@@ -14,8 +14,7 @@ void turn_zone()
 		g_zone->turn_on_script();
 }
 */
-CZoneCampfire::CZoneCampfire()
-:m_pDisabledParticles(NULL),m_pEnablingParticles(NULL),m_turned_on(true),m_turn_time(0)
+CZoneCampfire::CZoneCampfire() : m_pDisabledParticles(NULL),m_pEnablingParticles(NULL),m_turned_on(true),m_turn_time(0)
 {
 //.	g_zone = this;
 }
@@ -24,7 +23,7 @@ CZoneCampfire::~CZoneCampfire()
 {
 	CParticlesObject::Destroy	(m_pDisabledParticles);
 	CParticlesObject::Destroy	(m_pEnablingParticles);
-	m_disabled_sound.destroy	();
+	m_sound.destroy	();
 }
 
 void CZoneCampfire::Load(LPCSTR section)
@@ -42,13 +41,17 @@ void CZoneCampfire::GoEnabledState()
 		CParticlesObject::Destroy	(m_pDisabledParticles);
 	}
 
-	m_disabled_sound.stop		();
-	m_disabled_sound.destroy	();
+	m_sound.stop();
+	m_sound.destroy();
 
 	LPCSTR str						= pSettings->r_string(cNameSect(),"enabling_particles");
 	m_pEnablingParticles			= CParticlesObject::Create(str,FALSE);
 	m_pEnablingParticles->UpdateParent(XFORM(),zero_vel);
 	m_pEnablingParticles->Play		(false);
+
+	str = pSettings->r_string(cNameSect(), "enabling_sound");
+	m_sound.create(str, st_Effect, sg_SourceType);
+	m_sound.play_at_pos(this, Position(), true);
 }
 
 void CZoneCampfire::GoDisabledState()
@@ -61,10 +64,12 @@ void CZoneCampfire::GoDisabledState()
 	m_pDisabledParticles->UpdateParent	(XFORM(),zero_vel);
 	m_pDisabledParticles->Play			(false);
 	
-	
-	str = pSettings->r_string		(cNameSect(),"disabled_sound");
-	m_disabled_sound.create			(str, st_Effect,sg_SourceType);
-	m_disabled_sound.play_at_pos	(0, Position(), true);
+	m_sound.stop();
+	m_sound.destroy();
+
+	str = pSettings->r_string(cNameSect(), "disabled_sound");
+	m_sound.create(str, st_Effect, sg_SourceType);
+	m_sound.play_at_pos(this, Position(), true);
 }
 
 #define OVL_TIME 3000
