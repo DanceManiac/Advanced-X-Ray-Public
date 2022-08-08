@@ -124,6 +124,7 @@ extern float	g_smart_cover_animation_speed_factor;
 ENGINE_API extern float	g_console_sensitive;
 
 int				g_keypress_on_start = 1;
+extern	BOOL	g_b_COD_PickUpMode;
 
 //Custom commands for scripts
 BOOL			b_script_cmd1 = 0;
@@ -2237,6 +2238,7 @@ extern BOOL dbg_moving_bones_snd_player;
 
 	CMD4(CCC_Integer,	"quick_save_counter",		&quick_save_counter,	0, 25);
 	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);
+	CMD4(CCC_Integer,	"soc_pickup_mode",			&g_b_COD_PickUpMode,	0, 1);
 
 	CMD3(CCC_UiHud_Mode, "hud_type",				&ui_hud_type,			qhud_type_token);
 
