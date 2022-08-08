@@ -500,6 +500,8 @@ public:
 		bool				unlimited_ammo				();
 	IC	bool				can_be_strapped				() const {return m_can_be_strapped;};
 
+	float					GetMagazineWeight			(const decltype(m_magazine)& mag) const;
+
 	LPCSTR					GetCurrentAmmo_ShortName	();
 
 protected:
