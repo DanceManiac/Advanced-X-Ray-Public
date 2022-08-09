@@ -175,6 +175,18 @@ public:
 //	int					tb_id;
 	shared_str			lens_flare_id;
 	shared_str			tb_id;
+
+	//: swing values
+	struct EnvSwingValue
+	{
+		float						rot1;
+		float						rot2;
+		float						amp1;
+		float						amp2;
+		float						speed;
+		void						lerp(const EnvSwingValue& v1, const EnvSwingValue& v2, float factor);
+	};
+	EnvSwingValue						m_cSwingDesc[2];
     
 	CEnvAmbient*		env_ambient;
 
