@@ -1081,6 +1081,7 @@
     <ClInclude Include="EliteDetector.h" />
     <ClInclude Include="embedded_editor\embedded_editor_helper.h" />
     <ClInclude Include="embedded_editor\embedded_editor_hud.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_imgui_hud.h" />
     <ClInclude Include="embedded_editor\embedded_editor_main.h" />
     <ClInclude Include="embedded_editor\embedded_editor_weather.h" />
     <ClInclude Include="encyclopedia_article.h" />
@@ -3482,6 +3483,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_hud.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_imgui_hud.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>

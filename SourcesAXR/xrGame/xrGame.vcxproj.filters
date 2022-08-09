@@ -7412,6 +7412,9 @@
     </ClInclude>
     <ClInclude Include="ActorNightVision.h" />
     <ClInclude Include="profile_data_types_script.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_imgui_hud.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11087,6 +11090,9 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
     <ClCompile Include="ActorNightVision.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_imgui_hud.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ai\monsters\chimera\chimera_attack_state.h">
