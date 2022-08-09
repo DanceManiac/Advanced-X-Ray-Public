@@ -118,6 +118,9 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot1", el->m_cSwingDesc[1].rot1);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot2", el->m_cSwingDesc[1].rot2);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_speed", el->m_cSwingDesc[1].speed);
+		f.w_fvector3(el->m_identifier.c_str(), "dof", el->dof_value);
+		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
+		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
 	}
 	string_path fileName;
 	FS.update_path(fileName, "$game_weathers$", name.c_str());
@@ -465,6 +468,15 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("swing_fast_rot2", &cur->m_cSwingDesc[1].rot2, 0.0f, 300.0f))
 		changed = true;
 	if (ImGui::SliderFloat("swing_fast_speed", &cur->m_cSwingDesc[1].speed, 0.0f, 10.0f))
+		changed = true;
+
+	ImGui::Text(u8"DoF parameters");
+
+	if (ImGui::InputFloat3("dof", (float*)&cur->dof_value), 3)
+		changed = true;
+	if (ImGui::SliderFloat("dof_kernel", &cur->dof_kernel, 0.0f, 10.0f))
+		changed = true;
+	if (ImGui::SliderFloat("dof_sky", &cur->dof_sky, -10000.0f, 10000.0f))
 		changed = true;
 
 	if (changed)

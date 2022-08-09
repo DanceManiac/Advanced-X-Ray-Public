@@ -58,6 +58,7 @@ ENGINE_API bool CallOfPripyatMode = false;
 ENGINE_API bool ClearSkyMode = false;
 ENGINE_API bool bDeveloperMode = false;
 ENGINE_API bool bWinterMode = false;
+ENGINE_API bool bDofWeather = false;
 
 static LPSTR month_id[12] = {
 	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
@@ -257,8 +258,10 @@ PROTECT_API void InitSettings()
 	pcstr EngineMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "global", "engine_mode", "cop");
 	bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
 	bWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
+	bDofWeather = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "weather_dof", false);
 
 	Msg("# Engine Mode: %s", EngineMode);
+	Msg("# Developer Mode: %d", bDeveloperMode);
 	Msg("# Winter Mode: %d", bWinterMode);
 
 	if (xr_strcmp("cop", EngineMode) == 0)

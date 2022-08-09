@@ -13,6 +13,16 @@ class CGamePersistent:
 	public IGame_Persistent, 
 	public IEventReceiver
 {
+	enum
+	{
+		eDofDest = 0,
+		eDofCurrent,
+		eDofFrom,
+		eDofOriginal,
+
+		eDofParamsCount,
+	};
+
 	// ambient particles
 	CParticlesObject*	ambient_particles; 
 	u32					ambient_sound_next_time		[20]; //max snd channels
@@ -31,7 +41,7 @@ class CGamePersistent:
 
 	CUISequencer*		m_intro;
 	EVENT				eQuickLoad;
-	Fvector				m_dof		[4];	// 0-dest 1-current 2-from 3-original
+	Fvector 			m_dof[eDofParamsCount]; // 0-dest 1-current 2-from 3-original
 
 	fastdelegate::FastDelegate0<> m_intro_event;
 

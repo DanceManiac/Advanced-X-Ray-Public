@@ -486,10 +486,22 @@ void	CRenderTarget::phase_combine	()
 		pv->p.set(float(_w+EPS),EPS,			EPS,1.f); pv->uv0.set(p1.x, p0.y);pv->uv1.set(p1.x-ddw,p0.y-ddh);pv->uv2.set(p1.x+ddw,p0.y+ddh);pv->uv3.set(p1.x+ddw,p0.y-ddh);pv->uv4.set(p1.x-ddw,p0.y+ddh);pv->uv5.set(p1.x-ddw,p0.y,p0.y,p1.x+ddw);pv->uv6.set(p1.x,p0.y-ddh,p0.y+ddh,p1.x);pv++;
 		RCache.Vertex.Unlock		(4,g_aa_AA->vb_stride);
 
+		// : get value from weather or from console
+		float kernel_size = ps_r2_dof_kernel_size;
+		float dof_sky = ps_r2_dof_sky;
+		Fvector3 dof_value = ps_r2_dof;
+		if (bDofWeather)
+		{
+			kernel_size = g_pGamePersistent->Environment().CurrentEnv->dof_kernel;
+			dof_sky = g_pGamePersistent->Environment().CurrentEnv->dof_sky;
+			dof_value = g_pGamePersistent->Environment().CurrentEnv->dof_value;
+		}
+		g_pGamePersistent->SetBaseDof(dof_value);
+
 		//	Set up variable
 		Fvector2	vDofKernel;
 		vDofKernel.set(0.5f/Device.dwWidth, 0.5f/Device.dwHeight);
-		vDofKernel.mul(ps_r2_dof_kernel_size);
+		vDofKernel.mul(kernel_size);
 
 		// Draw COLOR
       if( !RImplementation.o.dx10_msaa )

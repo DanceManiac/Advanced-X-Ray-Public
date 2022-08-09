@@ -166,6 +166,10 @@ public:
 	float				m_fSunShaftsIntensity;
 	float				m_fWaterIntensity;
 
+	Fvector3			dof_value;
+	float				dof_kernel;
+	float				dof_sky;
+
 #ifdef TREE_WIND_EFFECT
 	float m_fTreeAmplitudeIntensity;
 #endif
