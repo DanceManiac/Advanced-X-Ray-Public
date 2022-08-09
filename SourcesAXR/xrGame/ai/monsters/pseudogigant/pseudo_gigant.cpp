@@ -313,7 +313,9 @@ void CPseudoGigant::on_threaten_execute()
 	HS.Write_Packet		(l_P);
 	u_EventSend			(l_P);
 
-	if (Actor() && GameConstants::GetPseudogigantDropItem())
+	int drop_item_chance = ::Random.randI(1, 100);
+
+	if (Actor() && GameConstants::GetPseudogigantDropItem() && drop_item_chance <= GameConstants::GetMonstersDropItemPer())
 	{
 		CInventoryItem* active_item = Actor()->inventory().ActiveItem();
 		active_item->SetDropManual(true);

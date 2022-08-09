@@ -23,6 +23,7 @@ bool	m_bJumpSpeedWeightCalc = false;
 bool	m_bHideWeaponInInventory = false;
 bool	m_bPseudogigantDropItem = false;
 bool	m_bSnorkDropItem = false;
+int		m_iMonstersDropItemPer = 50;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -51,6 +52,7 @@ namespace GameConstants
 		m_bHideWeaponInInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_weapon_in_inventory", false);
 		m_bPseudogigantDropItem = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "gigant_can_drop_active_item", false);
 		m_bSnorkDropItem = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "snork_can_drop_active_item", false);
+		m_iMonstersDropItemPer = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "monsters_drop_item_per", 50);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 
@@ -160,6 +162,11 @@ namespace GameConstants
 	bool GetSnorkDropItem()
 	{
 		return m_bSnorkDropItem;
+	}
+
+	int GetMonstersDropItemPer()
+	{
+		return m_iMonstersDropItemPer;
 	}
 
 	float GetDistantSndDistance()
