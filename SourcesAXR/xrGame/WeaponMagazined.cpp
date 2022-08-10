@@ -221,6 +221,10 @@ void CWeaponMagazined::FireEnd()
 	if (m_bAutoreloadEnabled)
 	{
 		CActor	*actor = smart_cast<CActor*>(H_Parent());
+
+		if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
+			return;
+
 		if (m_pInventory && !iAmmoElapsed && actor && GetState() != eReload)
 			Reload();
 	}
@@ -996,7 +1000,9 @@ bool CWeaponMagazined::Action(u16 cmd, u32 flags)
 	{
 	case kWPN_RELOAD:
 		{
-			if(flags&CMD_START) 
+			if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
+				break;
+			else if(flags&CMD_START) 
 				if (iAmmoElapsed < iMagazineSize || IsMisfire())
 				{
 					if (GetState() == eUnMisfire) // Rietmon: Запрещаем перезарядку, если играет анима передергивания затвора
