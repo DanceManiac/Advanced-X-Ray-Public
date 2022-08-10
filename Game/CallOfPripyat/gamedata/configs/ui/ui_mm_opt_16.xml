@@ -203,7 +203,7 @@
         <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_detail_radius</text>
         </cap_detail_radius>	
 		<track_detail_radius x="182" y="6" width="158" height="16" min="5" max="300" step="1" is_integer="1">
-        <options_item entry="r__detail_radius" group="mm_opt_video_adv"/>
+        <options_item entry="r__detail_radius" group="mm_opt_video_adv" depend="vid"/>
 			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
@@ -213,7 +213,7 @@
         <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_detail_scale</text>
         </cap_detail_scale>	
 		<track_detail_scale x="182" y="6" width="158" height="16" min="0.2" max="3.0" step="0.1">
-        <options_item entry="r__detail_scale" group="mm_opt_video_adv"/>
+        <options_item entry="r__detail_scale" group="mm_opt_video_adv" depend="vid"/>
 			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
