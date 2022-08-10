@@ -56,6 +56,7 @@ public		:
 		g_SASH.OnConsoleInvalidSyntax("~ Valid arguments: %s", I, true);
 	}
 	virtual void	Execute	(LPCSTR args)	= 0;
+			void	SetEnabled(bool v) { bEnabled = v; }
 	virtual void	Status	(TStatus& S)	{ S[0]=0; }
 	virtual void	Info	(TInfo& I)		{ xr_strcpy(I,"(no arguments)"); }
 	virtual void	Save	(IWriter *F)	{
