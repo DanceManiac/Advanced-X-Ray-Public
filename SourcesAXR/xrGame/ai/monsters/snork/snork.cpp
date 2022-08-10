@@ -254,7 +254,7 @@ void CSnork::HitEntityInJump(const CEntity *pEntity)
 	HitEntity			(pEntity, params.hit_power, params.impulse, params.impulse_dir);
 	int drop_item_chance = ::Random.randI(1, 100);
 
-	if (Actor() && GameConstants::GetSnorkDropItem() && drop_item_chance <= GameConstants::GetMonstersDropItemPer())
+	if (Actor() && this->m_bDropItemAfterSuperAttack && drop_item_chance <= this->m_iSuperAttackDropItemPer)
 	{
 		CInventoryItem* active_item = Actor()->inventory().ActiveItem();
 		active_item->SetDropManual(true);

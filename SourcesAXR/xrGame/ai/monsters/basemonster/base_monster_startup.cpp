@@ -173,6 +173,8 @@ void CBaseMonster::Load(LPCSTR section)
 	m_bEnablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
 	m_bEnableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
 	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
+	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
+	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
 }
 
 void CBaseMonster::PostLoad (LPCSTR section)

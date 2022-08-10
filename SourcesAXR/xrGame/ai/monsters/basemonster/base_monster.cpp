@@ -118,6 +118,8 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_bEnablePsyAuraAfterDie				= false;
 	m_bEnableRadAuraAfterDie				= false;
 	m_bEnableFireAuraAfterDie				= false;
+	m_bDropItemAfterSuperAttack				= false;
+	m_iSuperAttackDropItemPer				= 50;
 }
 
 #pragma warning (pop)

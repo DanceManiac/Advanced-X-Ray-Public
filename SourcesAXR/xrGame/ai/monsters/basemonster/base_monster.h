@@ -390,6 +390,8 @@ public:
 	bool						m_bEnablePsyAuraAfterDie;
 	bool						m_bEnableRadAuraAfterDie;
 	bool						m_bEnableFireAuraAfterDie;
+	bool						m_bDropItemAfterSuperAttack;
+	int							m_iSuperAttackDropItemPer;
 
 	shared_str					light_bone;
 	shared_str					particles_bone;

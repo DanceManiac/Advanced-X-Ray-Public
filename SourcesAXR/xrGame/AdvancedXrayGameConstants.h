@@ -25,9 +25,6 @@ namespace GameConstants
 	bool GetShowWpnInfo();
 	bool GetJumpSpeedWeightCalc();
 	bool GetHideWeaponInInventory();
-	bool GetPseudogigantDropItem();
-	bool GetSnorkDropItem();
-	int GetMonstersDropItemPer();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };
