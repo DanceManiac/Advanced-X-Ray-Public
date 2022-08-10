@@ -300,7 +300,7 @@
         </cap_mblur_enable>
         <check_mblur_enable x="183" y="0" width="35" stretch="1" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
-            <options_item entry="r2_mblur_enable" group="mm_opt_video_adv" depend="vid"/>
+            <options_item entry="r2_mblur_enable" group="mm_opt_video_adv" depend="restart"/>
         </check_mblur_enable>
 		
 		<cap_mblur x="65" y="3" width="108" height="24">
@@ -439,7 +439,7 @@
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_detail_density</text>
         </cap_detail_density>
         <track_detail_density x="182" y="6" width="158" height="16" invert="1" min="0.3" max="1.5" step="0.02">
-            <options_item entry="r__detail_density" group="mm_opt_video_adv"/>
+            <options_item entry="r__detail_density" group="mm_opt_video_adv" depend="vid"/>
 			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>

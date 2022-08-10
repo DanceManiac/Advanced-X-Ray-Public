@@ -458,7 +458,7 @@
       <text font="letterica16" color="ui_6">ui_mm_detail_density</text>
     </cap_detail_density>
     <track_detail_density x="200" y="0" width="200" height="21" invert="1" min="0.3" max="1.5" step="0.02">
-      <options_item entry="r__detail_density" group="mm_opt_video_adv"/>
+      <options_item entry="r__detail_density" group="mm_opt_video_adv" depend="vid"/>
 		<output_wnd x="200" y="0" width="20" height="20" format="%.1f">
 			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 		</output_wnd>
@@ -549,7 +549,7 @@
 			<text font="letterica16" color="ui_6">ui_mm_mblur_enable</text>
 		</cap_mblur_enable>
 		<check_mblur_enable x="200" y="0" width="27" height="21">
-			<options_item entry="r2_mblur_enable" group="mm_opt_video_adv"  depend="vid"/>
+			<options_item entry="r2_mblur_enable" group="mm_opt_video_adv"  depend="restart"/>
 		</check_mblur_enable>
 
 		<cap_mblur x="77" y="0" width="119" height="21">
