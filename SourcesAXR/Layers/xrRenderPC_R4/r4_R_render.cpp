@@ -206,11 +206,9 @@ void CRender::Render		()
 		return					;
 	};
 
-	IMainMenu*	pMainMenu = g_pGamePersistent?g_pGamePersistent->m_pMainMenu:0;
-	bool	bMenu = pMainMenu?pMainMenu->CanSkipSceneRendering():false;
+	bool is_blocked = g_pGamePersistent ? g_pGamePersistent->SceneRenderingBlocked() : false;
 
-	if( !(g_pGameLevel && g_hud)
-		|| bMenu)	
+	if (!(g_pGameLevel && g_hud) || is_blocked)
 	{
 		Target->u_setrt				( Device.dwWidth,Device.dwHeight,HW.pBaseRT,NULL,NULL,HW.pBaseZB);
 		return;

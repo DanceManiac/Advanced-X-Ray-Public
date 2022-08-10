@@ -51,15 +51,15 @@ public:
 		}
 	};
 	params							m_game_params;
-public:
+
 	xr_set<CPS_Instance*>			ps_active;
 	xr_vector<CPS_Instance*>		ps_destroy;
 	xr_vector<CPS_Instance*>		ps_needtoplay;
 
-public:
+
 			void					destroy_particles	(const bool &all_particles);
 
-public:
+
 	virtual void					PreStart			(LPCSTR op);
 	virtual void					Start				(LPCSTR op);
 	virtual void					Disconnect			();
@@ -133,6 +133,8 @@ public:
 	virtual	void					LoadTitle			(bool change_tip=false, shared_str map_name=""){}
 	virtual	void					SetLoadStageTitle	(const char* ls_title = nullptr) {}
 	virtual bool					CanBePaused			()		{ return true;}
+			bool					render_scene;
+		 IC bool					SceneRenderingBlocked();
 
 	struct pda_data
 	{

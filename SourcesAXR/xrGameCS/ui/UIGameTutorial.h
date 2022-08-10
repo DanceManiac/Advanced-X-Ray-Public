@@ -70,7 +70,8 @@ protected:
 		etiGrabInput		= (1<<4),
 		etiNeedPauseSound	= (1<<5),
 		etiStoredCursorState= (1<<6),
-		eti_last			= 7,
+		etiSkipSceneRendering=(1<<7),
+		eti_last = 8,
 	};
 	xr_vector<shared_str>		m_start_lua_functions;
 	xr_vector<shared_str>		m_stop_lua_functions;
