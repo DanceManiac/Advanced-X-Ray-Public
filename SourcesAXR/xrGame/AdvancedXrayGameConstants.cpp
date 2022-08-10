@@ -23,6 +23,7 @@ bool	m_bMultiItemPickup = true;
 bool	m_bShowWpnInfo = true;
 bool	m_bJumpSpeedWeightCalc = false;
 bool	m_bHideWeaponInInventory = false;
+bool	m_bStopActorIfShoot = false;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 
@@ -51,6 +52,7 @@ namespace GameConstants
 		m_bShowWpnInfo = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "show_wpn_info", true);
 		m_bJumpSpeedWeightCalc = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "jump_and_speed_weight_calc", false);
 		m_bHideWeaponInInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_weapon_in_inventory", false);
+		m_bStopActorIfShoot = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "stop_actor_sprint_if_shoot", false);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 
@@ -160,6 +162,11 @@ namespace GameConstants
 	bool GetHideWeaponInInventory()
 	{
 		return m_bHideWeaponInInventory;
+	}
+
+	bool GetStopActorIfShoot()
+	{
+		return m_bStopActorIfShoot;
 	}
 
 	float GetDistantSndDistance()

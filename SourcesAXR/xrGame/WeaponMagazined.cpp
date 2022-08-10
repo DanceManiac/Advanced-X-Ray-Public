@@ -680,7 +680,7 @@ void CWeaponMagazined::SetDefaults	()
 void CWeaponMagazined::OnShot()
 {
 	// Если актор бежит - останавливаем его
-	if (ParentIsActor())
+	if (ParentIsActor() && GameConstants::GetStopActorIfShoot())
 		Actor()->set_state_wishful(Actor()->get_state_wishful() & (~mcSprint));
 
 	// Sound

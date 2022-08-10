@@ -23,6 +23,7 @@ namespace GameConstants
 	bool GetShowWpnInfo();
 	bool GetJumpSpeedWeightCalc();
 	bool GetHideWeaponInInventory();
+	bool GetStopActorIfShoot();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };
