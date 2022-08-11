@@ -1,0 +1,92 @@
+#include "common.h"
+
+uniform float4		m_lfx_coords;	
+uniform float4		m_lfx_color;	
+
+struct	v2p 
+{
+	float2 	Tex0	: TEXCOORD0;
+	float4 	HPos	: SV_Position;	 
+};
+
+//from: https://www.shadertoy.com/view/XdfXRX
+float3 lensflares(float2 uv, float2 pos, out float3 sunflare, out float3 lensflare)
+{
+	float2 main = uv-pos;
+	float2 uvd = uv*(length(uv));
+
+	float ang = atan2(main.y, main.x);
+	float dist = length(main);
+    dist = pow(dist, 0.1);
+
+	float f0 = 1.0/(length(uv-pos)*25.0+1.0);
+	f0 = pow(f0, 2.0);
+
+	f0 = f0+f0*(sin((ang+1.0/18.0)*12.0)*.1+dist*.1+.8);
+
+	float f2 = max(1.0/(1.0+32.0*pow(length(uvd+0.8*pos),2.0)),.0)*00.25;
+	float f22 = max(1.0/(1.0+32.0*pow(length(uvd+0.85*pos),2.0)),.0)*00.23;
+	float f23 = max(1.0/(1.0+32.0*pow(length(uvd+0.9*pos),2.0)),.0)*00.21;
+
+	float2 uvx = lerp(uv,uvd,-0.5);
+
+	float f4 = max(0.01-pow(length(uvx+0.4*pos),2.4),.0)*6.0;
+	float f42 = max(0.01-pow(length(uvx+0.45*pos),2.4),.0)*5.0;
+	float f43 = max(0.01-pow(length(uvx+0.5*pos),2.4),.0)*3.0;
+
+	uvx = lerp(uv,uvd,-.4);
+
+	float f5 = max(0.01-pow(length(uvx+0.2*pos),5.5),.0)*2.0;
+	float f52 = max(0.01-pow(length(uvx+0.4*pos),5.5),.0)*2.0;
+	float f53 = max(0.01-pow(length(uvx+0.6*pos),5.5),.0)*2.0;
+
+	uvx = lerp(uv,uvd,-0.5);
+
+	float f6 = max(0.01-pow(length(uvx-0.3*pos),1.6),.0)*6.0;
+	float f62 = max(0.01-pow(length(uvx-0.325*pos),1.6),.0)*3.0;
+	float f63 = max(0.01-pow(length(uvx-0.35*pos),1.6),.0)*5.0;
+
+    sunflare = f0;
+    lensflare = float3(f2+f4+f5+f6, f22+f42+f52+f62, f23+f43+f53+f63);
+
+	return sunflare+lensflare;
+}
+
+float3 anflares(float2 uv, float intensity, float stretch, float brightness)
+{
+    uv.x *= 1.0/(intensity*stretch);
+    uv.y *= 0.5;
+	return smoothstep(0.009, 0.0, length(uv))*brightness;
+}
+
+float4 main (  v2p I ) : SV_Target
+{
+    // Normalized pixel coordinates (from 0 to 1)
+    float2 uv = I.Tex0.xy;
+    float2 mouse = m_lfx_coords.xy;
+    
+    uv.x *= 16.0/9.0;
+    mouse.x *= 16.0/9.0;
+
+    float3 col = 0.0;
+    
+    float3 sun = 0.0, sunflare, lensflare;
+    float3 flare = lensflares(uv*1.5, mouse*1.5, sunflare, lensflare);
+  
+	float3 anflare = pow(anflares(uv-mouse, 400.0, 0.5, 0.6), 1.0);
+    anflare += smoothstep(0.0025, 1.0, anflare);
+    anflare *= smoothstep(0.0, 1.0, anflare) * 0.1;
+    
+    
+    sun += (flare + anflare) * normalize(m_lfx_color.xyz);
+    col += sun;
+    
+    
+    //col = 1.0 - exp(-1.0 * col);
+	// col = pow(col, 1.0/2.2);
+    
+	// col /= (1.0 + col);
+	float fade = smoothstep(m_lfx_coords.w, 2.0, 2.5) * smoothstep(m_lfx_coords.w, 20.0, 18.0);
+    // Output to screen
+	return col.xyzz * 0.2 * fade;// * 0.2;
+}

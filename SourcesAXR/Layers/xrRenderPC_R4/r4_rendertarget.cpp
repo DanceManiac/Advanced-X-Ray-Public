@@ -25,6 +25,7 @@
 #include "blender_nightvision.h"
 #include "blender_blur.h"
 #include "blender_pp_bloom.h"
+#include "blender_lens_flares.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -347,6 +348,8 @@ CRenderTarget::CRenderTarget		()
 	b_blur					= xr_new<CBlender_blur>				();
 	//PP Bloom
 	b_pp_bloom				= xr_new<CBlender_pp_bloom>			();
+	//SFZ Lens Flares
+	b_lfx					= xr_new<CBlender_LFX>				();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -505,6 +508,9 @@ CRenderTarget::CRenderTarget		()
 	s_blur.create(b_blur, "r2\\blur");
 	//PP Bloom
 	s_pp_bloom.create(b_pp_bloom, "r2\\pp_bloom");
+	//SFZ Lens Flares
+	s_lfx.create(b_lfx, "r3\\lfx");
+	g_lfx.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -1146,6 +1152,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_nightvision			); //Nightvision
 	xr_delete					(b_blur					); //Blur (LVutner)
 	xr_delete					(b_pp_bloom				); //PP Bloom (LVutner)
+	xr_delete					(b_lfx					); //SFZ Lens Flares
 
    if( RImplementation.o.dx10_msaa )
    {

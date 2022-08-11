@@ -381,6 +381,9 @@ Flags32	ps_r3_pbr_flags = { 0 };
 int opt_static = 0;
 int opt_dynamic = 0;
 
+//SFZ Lens Flares
+int ps_r2_lfx = 1;
+
 Flags32 psDeviceFlags2 = { 0 };
 
 //Static on R2+
@@ -1187,6 +1190,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r__optimize_shadow_geom",		&psDeviceFlags2,			rsOptShadowGeom);
 
 	CMD3(CCC_Token,			"r2_use_flares",				&ps_r2_flares,				qflares_token);
+	CMD4(CCC_Integer,		"r2_lfx",						&ps_r2_lfx,					 0, 1		); //SFZ Lens Flares
 
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }

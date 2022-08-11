@@ -756,6 +756,9 @@
     <ClInclude Include="blender_hud_bleeding.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_lens_flares.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1422,6 +1425,12 @@
       <Filter>Shading templates</Filter>
     </ClCompile>
     <ClCompile Include="blender_pp_bloom.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="r3_rendertarget_phase_lens_flares.cpp">
+      <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_lens_flares.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
   </ItemGroup>
