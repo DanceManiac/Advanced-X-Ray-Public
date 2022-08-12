@@ -303,6 +303,16 @@ public:
 				tpGame->alife().spawn_item(Name, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
 		}
 	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections())
+		{
+			if (sect->line_exist("class") && sect->line_exist("inv_weight") || sect->line_exist("class") && sect->line_exist("$spawn") && sect->line_exist("Spawn_Inventory_Item_Section"))
+				tips.push_back(sect->Name.c_str());
+		}
+	}
+
 	virtual void	Info(TInfo& I)
 	{
 		strcpy(I, "name,team,squad,group");
@@ -364,6 +374,12 @@ public:
 			return;
 		}
 
+		if (!pSettings->line_exist(Name, "class") || !pSettings->line_exist(Name, "inv_weight") || !pSettings->line_exist(Name, "visual"))
+		{
+			Msg("!Failed to load section!");
+			return;
+		}
+
 		for (int i = 0; i < count; ++i)
 			Level().spawn_item(Name, Actor()->Position(), false, Actor()->ID());
 	}
@@ -371,6 +387,14 @@ public:
 	virtual void	Info(TInfo& I)
 	{
 		strcpy(I, "name,team,squad,group");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections()) {
+			if (sect->line_exist("class") && sect->line_exist("inv_weight"))
+				tips.push_back(sect->Name.c_str());
+		}
 	}
 };
 
