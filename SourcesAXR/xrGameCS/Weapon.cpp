@@ -2408,10 +2408,32 @@ void CWeapon::UpdateHudAdditional(Fmatrix& trans)
 		curr_offs.mul(m_fFactor);
 		curr_rot.mul(m_fFactor);
 
+		float m_fColPosition;
+		float m_fColRotation;
+
 		if (dist <= 0.8 && !IsZoomed())
-			m_fFactor += Device.fTimeDelta / 0.3;
+		{
+			m_fColPosition = curr_offs.y + ((1 - dist - 0.2) * 5.0f);
+			m_fColRotation = curr_rot.x + ((1 - dist - 0.2) * 5.0f);
+		}
 		else
+		{
+			m_fColPosition = curr_offs.y;
+			m_fColRotation = curr_rot.x;
+		}
+
+		if (m_fFactor < m_fColPosition)
+		{
+			m_fFactor += Device.fTimeDelta / 0.3;
+			if (m_fFactor > m_fColPosition)
+				m_fFactor = m_fColPosition;
+		}
+		else if (m_fFactor > m_fColPosition)
+		{
 			m_fFactor -= Device.fTimeDelta / 0.3;
+			if (m_fFactor < m_fColPosition)
+				m_fFactor = m_fColPosition;
+		}
 
 		Fmatrix hud_rotation;
 		hud_rotation.identity();
