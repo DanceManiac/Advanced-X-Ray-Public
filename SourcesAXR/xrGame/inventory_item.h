@@ -81,6 +81,7 @@ protected:
 
 	Flags16						m_flags;
 	BOOL						m_can_trade;
+	bool						m_bCanUse;
 public:
 								CInventoryItem		();
 	virtual						~CInventoryItem		();

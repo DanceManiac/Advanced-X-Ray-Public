@@ -1009,6 +1009,10 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
 
 	LPCSTR act_str = NULL;
+
+	if (!item->Useful())
+		return;
+
 	if ( pMedkit || pAntirad )
 	{
 		act_str = "st_use";

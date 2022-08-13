@@ -1238,6 +1238,9 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 	LPCSTR act_str = NULL;
 
+	if (!item->Useful())
+		return;
+
 	if ( pMedkit || pAntirad )
 	{
 		act_str = "st_use";
