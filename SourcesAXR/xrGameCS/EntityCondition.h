@@ -59,6 +59,7 @@ public:
 	virtual void 			ChangeThirst			(float value){};
 	virtual void			ChangeIntoxication		(const float value){};
 	virtual void			ChangeSleepeness		(const float value){};
+	virtual void			ChangeAlcoholism		(const float value){};
 
 	IC void					MaxPower				()					{m_fPower = m_fPowerMax;};
 	IC void					SetMaxPower				(float val)			{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
@@ -67,6 +68,7 @@ public:
 	IC float				GetThirst				() const			{return m_fThirst;}
 	IC float				GetIntoxication			() const			{return m_fIntoxication;}
 	IC float				GetSleepeness			() const			{return m_fSleepeness;}
+	IC float				GetAlcoholism			() const			{return m_fAlcoholism;}
 
 	void 					ChangeBleeding			(float percent);
 
@@ -125,6 +127,7 @@ protected:
 	float m_fThirst;				//жажда
 	float m_fIntoxication;			//Интоксикация
 	float m_fSleepeness;			//Потребность во сне
+	float m_fAlcoholism;			//Алкоголизм
 
 	//максимальные величины
 	//	float m_fSatietyMax;

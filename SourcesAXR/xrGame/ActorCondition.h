@@ -27,6 +27,7 @@ private:
 			eCriticalThirstReached			=(1<<9),
 			eCriticalIntoxicationReached	=(1<<10),
 			eCriticalSleepenessReached		=(1<<11),
+			eCriticalAlcoholismReached		=(1<<12),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -37,6 +38,7 @@ private:
 			void 		UpdateThirst				();
 			void 		UpdateIntoxication			();
 			void 		UpdateSleepeness			();
+			void 		UpdateAlcoholism			();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
@@ -56,6 +58,7 @@ public:
 	virtual void 		ChangeThirst				(const float value);
 	virtual void 		ChangeIntoxication			(const float value);
 	virtual void 		ChangeSleepeness			(const float value);
+	virtual void 		ChangeAlcoholism			(const float value);
 
 	void 				BoostParameters				(const SBooster& B);
 	void 				DisableBoostParameters		(const SBooster& B);
@@ -98,6 +101,7 @@ public:
 	IC		float				GetThirstPower		() const { return m_fV_ThirstPower * m_fThirst; };
 			float	xr_stdcall	GetIntoxication		() { return m_fIntoxication; }
 			float	xr_stdcall	GetSleepeness		() { return m_fSleepeness; }
+			float	xr_stdcall	GetAlcoholism		() { return m_fAlcoholism; }
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
@@ -128,6 +132,7 @@ public:
 	IC		float const&	V_SleepenessPower		() { return m_fV_SleepenessPower; }
 	IC		float const&	SleepenessCritical		() { return m_fSleepenessCritical; }
 	IC		float const&	Sleepeness_V_Sleep		() { return m_fSleepeness_V_Sleep; }
+	IC		float const&	V_Alcoholism			() { return m_fV_Alcoholism; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -166,6 +171,8 @@ public:
 	float m_fV_SleepenessPower;
 	float m_fSleepenessCritical;
 	float m_fSleepeness_V_Sleep;
+
+	float m_fV_Alcoholism;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

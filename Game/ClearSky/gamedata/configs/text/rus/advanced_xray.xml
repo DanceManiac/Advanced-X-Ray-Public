@@ -294,4 +294,7 @@
 	<string id="st_opt_on_helmet">
 		<text>В зависимости от шлема</text>
 	</string>
+	<string id="ui_inv_alcoholism">
+		<text>Зависимость</text>
+	</string>
 </string_table>

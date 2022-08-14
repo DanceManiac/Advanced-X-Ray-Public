@@ -41,6 +41,7 @@ protected:
 	CUIStatic*			m_ind_thirst;
 	CUIStatic*			m_ind_intoxication;
 	CUIStatic*			m_ind_sleepeness;
+	CUIStatic*			m_ind_alcoholism;
 	CUIStatic*			m_ind_weapon_broken;
 	CUIStatic*			m_ind_helmet_broken;
 	CUIStatic*			m_ind_outfit_broken;

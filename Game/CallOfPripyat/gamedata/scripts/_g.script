@@ -643,6 +643,10 @@ end
 function on_actor_sleepeness()
 end
 
+--' Алкоголизм
+function on_actor_alcoholism()
+end
+
 --' іадиация
 function on_actor_radiation()
 

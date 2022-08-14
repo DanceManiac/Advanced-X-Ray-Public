@@ -49,6 +49,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fThirst					= 1.0f;
 	m_fIntoxication				= 0.0f;
 	m_fSleepeness				= 0.0f;
+	m_fAlcoholism				= -1.0f;
 
 	VERIFY						(object);
 	m_object					= object;
@@ -148,6 +149,9 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Sleepeness = pSettings->r_float(section, "sleepeness_v");
 	m_fV_SleepenessPower = pSettings->r_float(section, "sleepeness_power_v");
 	m_fSleepeness_V_Sleep = pSettings->r_float(section, "sleepeness_v_sleep");
+
+	// M.F.S. Team Alcoholism (History Of Puhtinskyi)
+	m_fV_Alcoholism = pSettings->r_float(section, "alcoholism_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -283,6 +287,11 @@ void CActorCondition::UpdateCondition()
 	if (GameConstants::GetActorSleepeness())
 	{
 		UpdateSleepeness();
+	}
+
+	if (GameConstants::GetActorAlcoholism())
+	{
+		UpdateAlcoholism();
 	}
 
 	inherited::UpdateCondition	();
@@ -541,6 +550,26 @@ void CActorCondition::UpdateSleepeness()
 	}
 }
 
+//M.F.S. Team Alcoholism
+void CActorCondition::UpdateAlcoholism()
+{
+	if (m_fAlcoholism > -1.0f)
+	{
+		if (m_fAlcohol <= 0.0f)
+		{
+			m_fAlcoholism -= m_fV_Alcoholism * m_fDeltaTime;
+			clamp(m_fAlcoholism, -1.0f, 3.0f);
+		}
+	}
+
+	if (m_fAlcoholism >= 0.0f && m_fAlcohol <= 0.0f)
+	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.alcoholism_effects", funct))
+			funct();
+	}
+}
+
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
@@ -629,6 +658,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fThirst,  output_packet);
 	save_data			(m_fIntoxication, output_packet);
 	save_data			(m_fSleepeness, output_packet);
+	save_data			(m_fAlcoholism, output_packet);
 }
 
 void CActorCondition::load(IReader &input_packet)
@@ -640,6 +670,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fThirst,  input_packet);
 	load_data			(m_fIntoxication, input_packet);
 	load_data			(m_fSleepeness, input_packet);
+	load_data			(m_fAlcoholism, input_packet);
 }
 
 void CActorCondition::reinit	()
@@ -681,6 +712,13 @@ void CActorCondition::ChangeSleepeness(float value)
 	clamp(m_fSleepeness, 0.0f, 1.0f);
 }
 
+//M.F.S. Team Alcoholism (HoP)
+void CActorCondition::ChangeAlcoholism(float value)
+{
+	m_fAlcoholism += value;
+	clamp(m_fAlcoholism, -1.0f, 3.0f);
+}
+
 void CActorCondition::UpdateTutorialThresholds()
 {
 	string256						cb_name;
@@ -694,6 +732,7 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
 	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
 	static float _cSleepeness		= pSettings->r_float("tutorial_conditions_thresholds", "sleepeness");
+	static float _cAlcoholism		= pSettings->r_float("tutorial_conditions_thresholds", "alcoholism");
 
 
 
@@ -739,6 +778,12 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalSleepenessReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_sleepeness");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalAlcoholismReached) && GetAlcoholism() > _cAlcoholism) {
+		m_condition_flags.set(eCriticalAlcoholismReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_alcoholism");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){

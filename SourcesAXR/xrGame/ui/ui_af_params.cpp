@@ -30,6 +30,7 @@ CUIArtefactParams::CUIArtefactParams()
 	m_fThirstRestoreSpeed = NULL;
 	m_fIntoxicationRestoreSpeed = NULL;
 	m_fSleepenessRestoreSpeed = NULL;
+	m_fAlcoholismRestoreSpeed = NULL;
 	m_fWalkAccel = NULL;
 	m_fJumpSpeed = NULL;
 	m_additional_weight = NULL;
@@ -47,6 +48,7 @@ CUIArtefactParams::~CUIArtefactParams()
 	xr_delete	(m_fThirstRestoreSpeed);
 	xr_delete	(m_fIntoxicationRestoreSpeed);
 	xr_delete	(m_fSleepenessRestoreSpeed);
+	xr_delete	(m_fAlcoholismRestoreSpeed);
 	xr_delete	(m_fWalkAccel);
 	xr_delete	(m_fJumpSpeed);
 	xr_delete	(m_additional_weight);
@@ -77,6 +79,7 @@ LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
 	"thirst_restore_speed",			// eThirstRestoreSpeed=5
 	"intoxication_restore_speed",	// eIntoxicationRestoreSpeed=6
 	"sleepeness_restore_speed",		// eSleepenessRestoreSpeed=7
+	"alcoholism_restore_speed",		// eAlcoholismRestoreSpeed=8
 };
 
 LPCSTR af_immunity_caption[] =  // ALife::EInfluenceType
@@ -102,6 +105,7 @@ LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
 	"ui_inv_thirst",
 	"ui_inv_intoxication",
 	"ui_inv_sleepeness",
+	"ui_inv_alcoholism",
 };
 
 /*
@@ -199,6 +203,13 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_fSleepenessRestoreSpeed->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_sleepeness").c_str();
 	m_fSleepenessRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fAlcoholismRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fAlcoholismRestoreSpeed->Init(xml, "alcoholism_restore_speed");
+	m_fAlcoholismRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_alcoholism").c_str();
+	m_fAlcoholismRestoreSpeed->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_fWalkAccel = xr_new<UIArtefactParamItem>();
@@ -403,6 +414,19 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_fSleepenessRestoreSpeed->GetWndSize().y;
 			AttachChild(m_fSleepenessRestoreSpeed);
+		}
+
+		val = artefact->m_fAlcoholismRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fAlcoholismRestoreSpeed->SetValue(val);
+
+			pos.set(m_fAlcoholismRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fAlcoholismRestoreSpeed->SetWndPos(pos);
+
+			h += m_fAlcoholismRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fAlcoholismRestoreSpeed);
 		}
 
 		val = artefact->m_fWalkAccel;

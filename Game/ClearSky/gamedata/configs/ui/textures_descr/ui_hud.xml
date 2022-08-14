@@ -181,5 +181,6 @@
 		<texture id="ui_inv_icon_intoxication_restore_speed" x="140" y="0" width="18" height="18" />
 		<texture id="ui_inv_icon_sleepeness_restore_speed" x="160" y="0" width="18" height="18" />
 		<texture id="ui_item_af_radius" x="180" y="0" width="18" height="18" />
+		<texture id="ui_inv_icon_alcoholism_restore_speed" x="200" y="0" width="18" height="18" />
 	</file>
 </w>
