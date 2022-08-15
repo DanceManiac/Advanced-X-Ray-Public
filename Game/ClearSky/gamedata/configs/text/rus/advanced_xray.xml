@@ -297,4 +297,7 @@
 	<string id="ui_inv_alcoholism">
 		<text>Зависимость</text>
 	</string>
+	<string id="ui_inv_hangover">
+		<text>Похмелье</text>
+	</string>
 </string_table>

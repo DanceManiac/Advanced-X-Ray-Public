@@ -814,6 +814,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 
 	// M.F.S. Team Alcoholism icon (HoP)
 	float alcoholism = pActor->conditions().GetAlcoholism();
+	float hangover = pActor->conditions().GetHangover();
 	if (alcoholism < 0.0)
 	{
 		m_ind_alcoholism->Show(false);
@@ -823,15 +824,36 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		m_ind_alcoholism->Show(true);
 		if (alcoholism > 0.0f && alcoholism <= 1.0f)
 		{
-			m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_green");
+			if (hangover >= 1.0f && hangover <= 2.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
+			else if (hangover >= 2.0f && hangover <= 3.0f)
+					m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
+			else if (hangover >= 3.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
+			else
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_green");
 		}
 		else if (alcoholism >= 1.0f && alcoholism <= 2.0f)
 		{
-			m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_yellow");
+			if (hangover >= 1.0f && hangover <= 2.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
+			else if (hangover >= 2.0f && hangover <= 3.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
+			else if (hangover >= 3.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
+			else
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_yellow");
 		}
 		else if (alcoholism >= 2.75f)
 		{
-			m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_red");
+			if (hangover >= 1.0f && hangover <= 2.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
+			else if (hangover >= 2.0f && hangover <= 3.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
+			else if (hangover >= 3.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
+			else
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_red");
 		}
 	}
 

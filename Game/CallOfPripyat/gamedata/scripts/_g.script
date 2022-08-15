@@ -647,6 +647,10 @@ end
 function on_actor_alcoholism()
 end
 
+--' Похмелье
+function on_actor_hangover()
+end
+
 --' іадиация
 function on_actor_radiation()
 

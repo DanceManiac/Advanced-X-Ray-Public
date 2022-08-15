@@ -81,8 +81,8 @@ function generate_phantoms()
 	end
 end
 
--- 'Апдейтер алкоголизма
-function alcoholism_effects()
+-- 'Апдейтер похмелья
+function on_actor_hangover()
 
 end
 

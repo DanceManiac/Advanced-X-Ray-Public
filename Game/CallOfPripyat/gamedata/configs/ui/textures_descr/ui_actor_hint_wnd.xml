@@ -136,5 +136,9 @@
 	    <texture id="ui_inGame2_circle_alcoholism_yellow" 			x="143" y="38" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_alcoholism_orange" 			x="143" y="76" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_alcoholism_red" 				x="143" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_green" 				x="179" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_yellow" 			x="179" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_orange" 			x="179" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_red" 				x="179" y="114" width="33" height="35" />
 	</file>
 </w>

@@ -214,6 +214,16 @@
 		</value>
 	</boost_alcoholism>
 	
+	<boost_hangover x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_hangover_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_hangover>
+	
 	<item_portions x="0" y="0" width="214" height="20" >
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_mfs_item_effectiveness</texture>

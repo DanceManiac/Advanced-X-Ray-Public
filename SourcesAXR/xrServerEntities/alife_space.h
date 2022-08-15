@@ -119,6 +119,7 @@ namespace ALife {
 		eIntoxicationRestoreSpeed,
 		eSleepenessRestoreSpeed,
 		eAlcoholismRestoreSpeed,
+		eHangoverRestoreSpeed,
 		ePowerRestoreSpeed,
 		eBleedingRestoreSpeed,
 		eRadiationRestoreSpeed,
