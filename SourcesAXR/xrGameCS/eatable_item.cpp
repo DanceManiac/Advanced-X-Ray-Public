@@ -35,6 +35,7 @@ CEatableItem::CEatableItem()
 	m_fSleepenessInfluence = 0;
 	m_fAlcoholismInfluence = 0;
 	m_fHangoverInfluence = 0;
+	m_fNarcotismInfluence = 0;
 	m_iPortionsNum = 1;
 	anim_sect = nullptr;
 	use_cam_effector = nullptr;
@@ -72,6 +73,7 @@ void CEatableItem::Load(LPCSTR section)
 	m_fSleepenessInfluence		= pSettings->r_float(section, "eat_sleepeness");
 	m_fAlcoholismInfluence		= pSettings->r_float(section, "eat_alcoholism");
 	m_fHangoverInfluence		= pSettings->r_float(section, "eat_hangover");
+	m_fNarcotismInfluence		= pSettings->r_float(section, "eat_narcotism");
 	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
 	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
 	
@@ -320,6 +322,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	entity_alive->conditions().ChangeSleepeness	(m_fSleepenessInfluence);
 	entity_alive->conditions().ChangeAlcoholism (m_fAlcoholismInfluence);
 	entity_alive->conditions().ChangeHangover	(m_fHangoverInfluence);
+	entity_alive->conditions().ChangeNarcotism	(m_fNarcotismInfluence);
 	
 	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	

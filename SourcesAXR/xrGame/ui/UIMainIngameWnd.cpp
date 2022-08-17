@@ -152,6 +152,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_intoxication		= UIHelper::CreateStatic(uiXml, "indicator_intoxication", this);
 	m_ind_sleepeness		= UIHelper::CreateStatic(uiXml, "indicator_sleepeness", this);
 	m_ind_alcoholism		= UIHelper::CreateStatic(uiXml, "indicator_alcoholism", this);
+	m_ind_narcotism			= UIHelper::CreateStatic(uiXml, "indicator_narcotism", this);
 	m_ind_weapon_broken		= UIHelper::CreateStatic(uiXml, "indicator_weapon_broken", this);
 	m_ind_helmet_broken		= UIHelper::CreateStatic(uiXml, "indicator_helmet_broken", this);
 	m_ind_outfit_broken		= UIHelper::CreateStatic(uiXml, "indicator_outfit_broken", this);
@@ -854,6 +855,29 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
 			else
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_red");
+		}
+	}
+
+	// M.F.S. Team Narcotism icon (HoP)
+	float narcotism = pActor->conditions().GetNarcotism();
+	if (narcotism < 0.0)
+	{
+		m_ind_narcotism->Show(false);
+	}
+	else
+	{
+		m_ind_narcotism->Show(true);
+		if (narcotism > 0.0f && narcotism <= 2.5f)
+		{
+			m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_green");
+		}
+		else if (narcotism >= 2.5f && narcotism <= 5.0f)
+		{
+			m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_yellow");
+		}
+		else if (narcotism >= 7.5f)
+		{
+			m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_red");
 		}
 	}
 

@@ -21,6 +21,7 @@ namespace GameConstants
 	bool GetActorIntoxication();
 	bool GetActorSleepeness();
 	bool GetActorAlcoholism();
+	bool GetActorNarcotism();
 	bool GetArtefactsDegradation();
 	bool GetMultiItemPickup();
 	bool GetShowWpnInfo();

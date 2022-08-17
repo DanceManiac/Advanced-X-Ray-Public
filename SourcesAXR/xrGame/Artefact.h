@@ -87,6 +87,7 @@ public:
 	float 							m_fIntoxicationRestoreSpeed;
 	float 							m_fSleepenessRestoreSpeed;
 	float 							m_fAlcoholismRestoreSpeed;
+	float 							m_fNarcotismRestoreSpeed;
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 	CHitImmunity 					m_ArtefactHitImmunities;
@@ -101,6 +102,7 @@ public:
 	float							m_fConstIntoxicationRestoreSpeed;
 	float							m_fConstSleepenessRestoreSpeed;
 	float							m_fConstAlcoholismRestoreSpeed;
+	float							m_fConstNarcotismRestoreSpeed;
 	float							m_fConstAdditionalWeight;
 	float							m_fConstTrailLightRange;
 	float							m_fConstVolumetricDistance;

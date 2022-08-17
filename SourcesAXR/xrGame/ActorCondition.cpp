@@ -58,6 +58,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fSleepeness				= 0.0f;
 	m_fAlcoholism				= -1.0f;
 	m_fHangover					= 0.0f;
+	m_fNarcotism				= -1.0f;
 
 //	m_vecBoosts.clear();
 
@@ -179,6 +180,9 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	clamp(m_fHangoverCritical, 0.0f, 1.0f);
 	m_fV_Hangover = pSettings->r_float(section, "hangover_v");
 	m_fV_HangoverPower = pSettings->r_float(section, "hangover_power_v");
+
+	// M.F.S. Team Narcotism (History Of Puhtinskyi)
+	m_fV_Narcotism = pSettings->r_float(section, "narcotism_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -242,6 +246,11 @@ void CActorCondition::UpdateCondition()
 		if (GameConstants::GetActorAlcoholism())
 		{
 			UpdateAlcoholism();
+		}
+
+		if (GameConstants::GetActorNarcotism())
+		{
+			UpdateNarcotism();
 		}
 
 		m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
@@ -353,6 +362,11 @@ void CActorCondition::UpdateCondition()
 	if (GameConstants::GetActorAlcoholism())
 	{
 		UpdateAlcoholism();
+	}
+
+	if (GameConstants::GetActorNarcotism())
+	{
+		UpdateNarcotism();
 	}
 
 	inherited::UpdateCondition();
@@ -682,6 +696,19 @@ void CActorCondition::UpdateAlcoholism()
 	}
 }
 
+//M.F.S. Team Intoxication
+void CActorCondition::UpdateNarcotism()
+{
+	if (m_fNarcotism > -1.0f)
+	{
+		//if (m_fAlcohol <= 0.0f)
+		//{
+			m_fNarcotism -= m_fV_Narcotism * m_fDeltaTime;
+			clamp(m_fNarcotism, -1.0f, 10.0f);
+		//}
+	}
+}
+
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
@@ -778,6 +805,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fSleepeness, output_packet);
 	save_data			(m_fAlcoholism, output_packet);
 	save_data			(m_fHangover, output_packet);
+	save_data			(m_fNarcotism, output_packet);
 
 	save_data			(m_curr_medicine_influence.fHealth, output_packet);
 	save_data			(m_curr_medicine_influence.fPower, output_packet);
@@ -793,6 +821,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_curr_medicine_influence.fSleepeness, output_packet);
 	save_data			(m_curr_medicine_influence.fAlcoholism, output_packet);
 	save_data			(m_curr_medicine_influence.fHangover, output_packet);
+	save_data			(m_curr_medicine_influence.fNarcotism, output_packet);
 
 	output_packet.w_u8((u8)m_booster_influences.size());
 	BOOSTER_MAP::iterator b = m_booster_influences.begin(), e = m_booster_influences.end();
@@ -815,6 +844,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fSleepeness, input_packet);
 	load_data			(m_fAlcoholism, input_packet);
 	load_data			(m_fHangover, input_packet);
+	load_data			(m_fNarcotism, input_packet);
 
 	load_data			(m_curr_medicine_influence.fHealth, input_packet);
 	load_data			(m_curr_medicine_influence.fPower, input_packet);
@@ -830,6 +860,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_curr_medicine_influence.fSleepeness, input_packet);
 	load_data			(m_curr_medicine_influence.fAlcoholism, input_packet);
 	load_data			(m_curr_medicine_influence.fHangover, input_packet);
+	load_data			(m_curr_medicine_influence.fNarcotism, input_packet);
 
 	u8 cntr = input_packet.r_u8();
 	for(; cntr>0; cntr--)
@@ -887,6 +918,13 @@ void CActorCondition::ChangeAlcoholism(float value)
 {
 	m_fAlcoholism += value;
 	clamp(m_fAlcoholism, -1.0f, 3.0f);
+}
+
+//M.F.S. Team Narcotism (HoP)
+void CActorCondition::ChangeNarcotism(float value)
+{
+	m_fNarcotism += value;
+	clamp(m_fNarcotism, -1.0f, 10.0f);
 }
 
 void CActorCondition::ChangeHangover(float value)
@@ -1033,6 +1071,7 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cSleepeness		= pSettings->r_float("tutorial_conditions_thresholds", "sleepeness");
 	static float _cAlcoholism		= pSettings->r_float("tutorial_conditions_thresholds", "alcoholism");
 	static float _cHangover			= pSettings->r_float("tutorial_conditions_thresholds", "hangover");
+	static float _cNarcotism		= pSettings->r_float("tutorial_conditions_thresholds", "narcotism");
 
 	bool b = true;
 	if(b && !m_condition_flags.test(eCriticalPowerReached) && GetPower()<_cPowerThr){
@@ -1087,6 +1126,12 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalHangoverReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_hangover");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalNarcotismReached) && GetNarcotism() > _cNarcotism) {
+		m_condition_flags.set(eCriticalNarcotismReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_narcotism");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){

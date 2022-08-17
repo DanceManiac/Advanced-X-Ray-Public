@@ -25,6 +25,7 @@ CUIBoosterInfo::CUIBoosterInfo()
 	m_booster_sleepeness = NULL;
 	m_booster_alcoholism = NULL;
 	m_booster_hangover = NULL;
+	m_booster_narcotism = NULL;
 	m_portions = NULL;
 	m_booster_time = NULL;
 }
@@ -40,6 +41,7 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	xr_delete(m_booster_sleepeness);
 	xr_delete(m_booster_alcoholism);
 	xr_delete(m_booster_hangover);
+	xr_delete(m_booster_narcotism);
 	xr_delete(m_portions);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
@@ -149,6 +151,14 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_booster_hangover->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_hangover").c_str();
 	m_booster_hangover->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	//M.F.S. Team Narcotism (HoP)
+	m_booster_narcotism = xr_new<UIBoosterInfoItem>();
+	m_booster_narcotism->Init(xml, "boost_narcotism");
+	m_booster_narcotism->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_narcotism").c_str();
+	m_booster_narcotism->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	//Portions
@@ -355,6 +365,22 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_booster_hangover->GetWndSize().y;
 			AttachChild(m_booster_hangover);
+		}
+	}
+
+	//M.F.S. Team Narcotism (HoP)
+	if (pSettings->line_exist(section.c_str(), "eat_narcotism"))
+	{
+		val = pSettings->r_float(section, "eat_narcotism");
+		if (!fis_zero(val))
+		{
+			m_booster_narcotism->SetValue(val);
+			pos.set(m_booster_narcotism->GetWndPos());
+			pos.y = h;
+			m_booster_narcotism->SetWndPos(pos);
+
+			h += m_booster_narcotism->GetWndSize().y;
+			AttachChild(m_booster_narcotism);
 		}
 	}
 

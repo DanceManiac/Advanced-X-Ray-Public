@@ -1052,6 +1052,10 @@ end
 function on_actor_hangover()
 end
 
+--' Наркомания
+function on_actor_narcotism()
+end
+
 --' іадиация
 function on_actor_radiation()
 

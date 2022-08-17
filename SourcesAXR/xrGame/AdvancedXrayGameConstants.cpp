@@ -19,6 +19,7 @@ bool	m_bActorThirst = false;
 bool	m_bActorIntoxication = false;
 bool	m_bActorSleepeness = false;
 bool	m_bActorAlcoholism = false;
+bool	m_bActorNarcotism = false;
 bool	m_bArtefactsDegradation = false;
 bool	m_bMultiItemPickup = true;
 bool	m_bShowWpnInfo = true;
@@ -50,6 +51,7 @@ namespace GameConstants
 		m_bActorIntoxication = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_intoxication_enabled", false);
 		m_bActorSleepeness = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_sleepeness_enabled", false);
 		m_bActorAlcoholism = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_alcoholism_enabled", false);
+		m_bActorNarcotism = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_narcotism_enabled", false);
 		m_bArtefactsDegradation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefacts_degradation", false);
 		m_bMultiItemPickup = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "multi_item_pickup", true);
 		m_bShowWpnInfo = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "show_wpn_info", true);
@@ -146,6 +148,11 @@ namespace GameConstants
 	bool GetActorAlcoholism()
 	{
 		return m_bActorAlcoholism;
+	}
+
+	bool GetActorNarcotism()
+	{
+		return m_bActorNarcotism;
 	}
 
 	bool GetArtefactsDegradation()

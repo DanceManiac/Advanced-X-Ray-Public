@@ -295,9 +295,12 @@
 		<text>В зависимости от шлема</text>
 	</string>
 	<string id="ui_inv_alcoholism">
-		<text>Зависимость</text>
+		<text>Алкозависимость</text>
 	</string>
 	<string id="ui_inv_hangover">
 		<text>Похмелье</text>
+	</string>
+	<string id="ui_inv_narcotism">
+		<text>Наркозависимость</text>
 	</string>
 </string_table>

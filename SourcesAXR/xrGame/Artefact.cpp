@@ -83,6 +83,7 @@ void CArtefact::Load(LPCSTR section)
 	m_fConstIntoxicationRestoreSpeed = pSettings->r_float(section, "intoxication_restore_speed");
 	m_fConstSleepenessRestoreSpeed = pSettings->r_float(section, "sleepeness_restore_speed");
 	m_fConstAlcoholismRestoreSpeed = pSettings->r_float(section, "alcoholism_restore_speed");
+	m_fConstNarcotismRestoreSpeed = pSettings->r_float(section, "narcotism_restore_speed");
 	m_fConstAdditionalWeight = pSettings->r_float(section, "additional_inventory_weight");
 
 	m_fChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "artefact_charge_level", 1.0f);
@@ -109,6 +110,7 @@ void CArtefact::Load(LPCSTR section)
 	m_fIntoxicationRestoreSpeed = m_fConstIntoxicationRestoreSpeed;
 	m_fSleepenessRestoreSpeed = m_fConstSleepenessRestoreSpeed;
 	m_fAlcoholismRestoreSpeed = m_fConstAlcoholismRestoreSpeed;
+	m_fNarcotismRestoreSpeed = m_fConstNarcotismRestoreSpeed;
 	m_additional_weight = m_fConstAdditionalWeight;
 	m_fJumpSpeed = m_fConstJumpSpeed;
 	m_fWalkAccel = m_fConstWalkAccel;

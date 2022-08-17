@@ -63,6 +63,7 @@ protected:
 	float					m_fSleepenessInfluence;
 	float					m_fAlcoholismInfluence;
 	float					m_fHangoverInfluence;
+	float					m_fNarcotismInfluence;
 	//заживление ран на кол-во процентов
 	float					m_fWoundsHealPerc;
 

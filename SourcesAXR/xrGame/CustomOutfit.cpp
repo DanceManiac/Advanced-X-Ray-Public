@@ -113,6 +113,7 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fIntoxicationRestoreSpeed = READ_IF_EXISTS(pSettings, r_float, section, "intoxication_restore_speed", 0.0f);
 	m_fSleepenessRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "sleepeness_restore_speed", 0.0f);
 	m_fAlcoholismRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "alcoholism_restore_speed", 0.0f);
+	m_fNarcotismRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed", 0.0f);
 
 	m_fJumpSpeed				= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
@@ -372,6 +373,7 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	result |= process_if_exists( section, "intoxication_restore_speed", &CInifile::r_float, m_fIntoxicationRestoreSpeed, test);
 	result |= process_if_exists( section, "sleepeness_restore_speed",&CInifile::r_float, m_fSleepenessRestoreSpeed,test );
 	result |= process_if_exists( section, "alcoholism_restore_speed",&CInifile::r_float, m_fAlcoholismRestoreSpeed,test);
+	result |= process_if_exists( section, "narcotism_restore_speed", &CInifile::r_float, m_fNarcotismRestoreSpeed, test);
 
 	result |= process_if_exists( section, "power_loss", &CInifile::r_float, m_fPowerLoss, test );
 	clamp( m_fPowerLoss, 0.0f, 1.0f );

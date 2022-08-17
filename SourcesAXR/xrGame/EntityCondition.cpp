@@ -96,6 +96,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fSleepeness			= 0.0f;
 	m_fAlcoholism			= -1.0f;
 	m_fHangover				= 0.0f;
+	m_fNarcotism			= -1.0f;
 }
 
 CEntityCondition::~CEntityCondition(void)
@@ -659,6 +660,7 @@ bool CEntityCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const s
 	ChangeSleepeness(V.fSleepeness);
 	ChangeAlcoholism(V.fAlcoholism);
 	ChangeHangover	(V.fHangover);
+	ChangeNarcotism	(V.fNarcotism);
 	return true;
 }
 
@@ -677,6 +679,7 @@ void SMedicineInfluenceValues::Load(const shared_str& sect)
 	fSleepeness		= pSettings->r_float(sect.c_str(), "eat_sleepeness");
 	fAlcoholism		= pSettings->r_float(sect.c_str(), "eat_alcoholism");
 	fHangover		= pSettings->r_float(sect.c_str(), "eat_hangover");
+	fNarcotism		= pSettings->r_float(sect.c_str(), "eat_narcotism");
 	fRadiation		= pSettings->r_float(sect.c_str(), "eat_radiation");
 	fWoundsHeal		= pSettings->r_float(sect.c_str(), "wounds_heal_perc");
 	clamp			(fWoundsHeal, 0.f, 1.f);

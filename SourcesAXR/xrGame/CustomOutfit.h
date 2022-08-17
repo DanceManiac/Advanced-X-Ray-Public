@@ -54,6 +54,7 @@ public:
 	float 					m_fIntoxicationRestoreSpeed;
 	float 					m_fSleepenessRestoreSpeed;
 	float 					m_fAlcoholismRestoreSpeed;
+	float 					m_fNarcotismRestoreSpeed;
 
 	float					m_fJumpSpeed;
 	float					m_fWalkAccel;
