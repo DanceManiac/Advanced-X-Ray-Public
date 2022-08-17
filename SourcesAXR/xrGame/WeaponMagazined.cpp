@@ -340,6 +340,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
+
+	if (iAmmoElapsed < 0)
+		iAmmoElapsed = 0;
 	
 	if (!spawn_ammo)
 		return;
@@ -359,6 +362,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 		}
 		if(l_it->second && !unlimited_ammo()) SpawnAmmo(l_it->second, l_it->first);
 	}
+
+	if (iAmmoElapsed < 0)
+		iAmmoElapsed = 0;
 }
 
 void CWeaponMagazined::ReloadMagazine() 
