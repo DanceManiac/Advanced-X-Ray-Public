@@ -823,7 +823,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	else
 	{
 		m_ind_alcoholism->Show(true);
-		if (alcoholism > 0.0f && alcoholism <= 1.0f)
+		if (alcoholism > 1.0f && alcoholism <= 2.0f)
 		{
 			if (hangover >= 1.0f && hangover <= 2.0f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
@@ -834,7 +834,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			else
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_green");
 		}
-		else if (alcoholism >= 1.0f && alcoholism <= 2.0f)
+		else if (alcoholism >= 2.0f && alcoholism <= 3.0f)
 		{
 			if (hangover >= 1.0f && hangover <= 2.0f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
@@ -845,7 +845,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			else
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_yellow");
 		}
-		else if (alcoholism >= 2.75f)
+		else if (alcoholism >= 3.75f)
 		{
 			if (hangover >= 1.0f && hangover <= 2.0f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
@@ -868,7 +868,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	else
 	{
 		m_ind_narcotism->Show(true);
-		if (narcotism > 0.0f && narcotism <= 2.5f)
+		if (narcotism > 1.0f && narcotism <= 3.5f)
 		{
 			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
 				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
@@ -879,7 +879,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			else
 				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_green");
 		}
-		else if (narcotism >= 2.5f && narcotism <= 5.0f)
+		else if (narcotism >= 3.5f && narcotism <= 6.0f)
 		{
 			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
 				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
@@ -890,7 +890,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			else
 				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_yellow");
 		}
-		else if (narcotism > 7.5f)
+		else if (narcotism > 8.5f)
 		{
 			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
 				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");

@@ -49,9 +49,9 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fThirst					= 1.0f;
 	m_fIntoxication				= 0.0f;
 	m_fSleepeness				= 0.0f;
-	m_fAlcoholism				= -1.0f;
+	m_fAlcoholism				= 0.0f;
 	m_fHangover					= 0.0f;
-	m_fNarcotism				= -1.0f;
+	m_fNarcotism				= 0.0f;
 	m_fWithdrawal				= 0.0f;
 
 	VERIFY						(object);
@@ -573,16 +573,16 @@ void CActorCondition::UpdateSleepeness()
 //M.F.S. Team Alcoholism
 void CActorCondition::UpdateAlcoholism()
 {
-	if (m_fAlcoholism > -1.0f)
+	if (m_fAlcoholism > 0.0f)
 	{
 		if (m_fAlcohol <= 0.0f)
 		{
 			m_fAlcoholism -= m_fV_Alcoholism * m_fDeltaTime;
-			clamp(m_fAlcoholism, -1.0f, 3.0f);
+			clamp(m_fAlcoholism, 0.0f, 4.0f);
 		}
 	}
 
-	if (m_fAlcoholism >= 0.0f && m_fAlcohol <= 0.0f)
+	if (m_fAlcoholism >= 1.0f && m_fAlcohol <= 0.0f)
 	{
 		if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
 		{
@@ -609,16 +609,16 @@ void CActorCondition::UpdateAlcoholism()
 //M.F.S. Team Narcotism
 void CActorCondition::UpdateNarcotism()
 {
-	if (m_fNarcotism > -1.0f)
+	if (m_fNarcotism > 0.0f)
 	{
 		//if (m_fAlcohol <= 0.0f)
 		//{
 			m_fNarcotism -= m_fV_Narcotism * m_fDeltaTime;
-			clamp(m_fNarcotism, -1.0f, 10.0f);
+			clamp(m_fNarcotism, 0.0f, 10.0f);
 		//}
 	}
 
-	if (m_fNarcotism >= 0.0f /* && m_fAlcohol <= 0.0f */)
+	if (m_fNarcotism >= 1.0f /* && m_fAlcohol <= 0.0f */)
 	{
 		if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
 		{
@@ -797,7 +797,7 @@ void CActorCondition::ChangeSleepeness(float value)
 void CActorCondition::ChangeAlcoholism(float value)
 {
 	m_fAlcoholism += value;
-	clamp(m_fAlcoholism, -1.0f, 3.0f);
+	clamp(m_fAlcoholism, 0.0f, 4.0f);
 }
 
 void CActorCondition::ChangeHangover(float value)
@@ -810,7 +810,7 @@ void CActorCondition::ChangeHangover(float value)
 void CActorCondition::ChangeNarcotism(float value)
 {
 	m_fNarcotism += value;
-	clamp(m_fNarcotism, -1.0f, 10.0f);
+	clamp(m_fNarcotism, 0.0f, 10.0f);
 }
 
 void CActorCondition::ChangeHangover(float value)
