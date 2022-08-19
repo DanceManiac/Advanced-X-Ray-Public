@@ -144,5 +144,9 @@
 	    <texture id="ui_inGame2_circle_narcotism_yellow" 			x="215" y="38" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_narcotism_orange" 			x="215" y="76" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_narcotism_red" 				x="215" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_green" 			x="251" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_yellow" 			x="251" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_orange" 			x="251" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_red" 				x="251" y="114" width="33" height="35" />
 	</file>
 </w>

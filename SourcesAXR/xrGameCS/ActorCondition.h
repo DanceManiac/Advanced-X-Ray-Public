@@ -28,6 +28,7 @@ private:
 			eCriticalAlcoholismReached		=(1<<11),
 			eCriticalHangoverReached		=(1<<12),
 			eCriticalNarcotismReached		=(1<<13),
+			eCriticalWithdrawalReached		=(1<<14),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -57,8 +58,9 @@ public:
 	virtual void 		ChangeIntoxication			(const float value);
 	virtual void 		ChangeSleepeness			(const float value);
 	virtual void 		ChangeAlcoholism			(const float value);
-	virtual void 		ChangeNarcotism				(const float value);
 	virtual void 		ChangeHangover				(const float value);
+	virtual void 		ChangeNarcotism				(const float value);
+	virtual void 		ChangeWithdrawal			(const float value);
 
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;
@@ -77,6 +79,7 @@ public:
 			float	xr_stdcall	GetSleepeness		()	{return m_fSleepeness;}
 			float	xr_stdcall	GetAlcoholism		()	{return m_fAlcoholism;}
 			float	xr_stdcall	GetNarcotism		()	{return m_fNarcotism;}
+			float	xr_stdcall	GetWithdrawal		()	{return m_fWithdrawal;}
 			float	xr_stdcall	GetHangover			()	{return m_fHangover;}
 
 			void		AffectDamage_InjuriousMaterial();
@@ -109,6 +112,7 @@ public:
 	IC		float const&	V_Alcoholism			() { return m_fV_Alcoholism; }
 	IC		float const&	V_Hangover				() { return m_fV_Hangover; }
 	IC		float const&	V_Narcotism				() { return m_fV_Narcotism; }
+	IC		float const&	V_Withdrawal			() { return m_fV_Withdrawal; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -142,6 +146,10 @@ public:
 	float m_fV_HangoverPower;
 	float m_fHangoverCritical;
 	float m_fV_Narcotism;
+	float m_fV_Withdrawal;
+	float m_fV_WithdrawalPower;
+	float m_fV_WithdrawalHealth;
+	float m_fWithdrawalCritical;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

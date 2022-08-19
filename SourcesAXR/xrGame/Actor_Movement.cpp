@@ -206,11 +206,12 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float jump_k = 0.0;
 			float max_jump_speed = 10.0f;
 			float hangover = conditions().GetHangover();
+			float withdrawal = conditions().GetWithdrawal();
 
 			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real&mcJump)
-				jump_k = (m_fJumpSpeed - hangover) - (cur_weight / 25);
+				jump_k = (m_fJumpSpeed - (hangover + withdrawal)) - (cur_weight / 25);
 			else
-				jump_k = m_fJumpSpeed - hangover;
+				jump_k = m_fJumpSpeed - (hangover + withdrawal);
 
 			TIItemContainer::iterator it = inventory().m_belt.begin();
 			TIItemContainer::iterator ite = inventory().m_belt.end();
@@ -287,10 +288,11 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			// normalize and analyze crouch and run
 			float	scale			= vControlAccel.magnitude();
 			float hangover			= conditions().GetHangover();
+			float withdrawal		= conditions().GetWithdrawal();
 
 			if(scale>EPS)	
 			{
-				float accel_k = m_fWalkAccel - hangover;
+				float accel_k = m_fWalkAccel - (hangover + withdrawal);
 
 				if (cur_weight >= 25 && GameConstants::GetJumpSpeedWeightCalc())
 				{

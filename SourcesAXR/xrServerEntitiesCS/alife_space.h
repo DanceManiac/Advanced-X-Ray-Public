@@ -120,6 +120,7 @@ namespace ALife {
 		eAlcoholismRestoreSpeed,
 		eHangoverRestoreSpeed,
 		eNarcotismRestoreSpeed,
+		eWithDrawalRestoreSpeed,
 		ePowerRestoreSpeed,
 		eBleedingRestoreSpeed,
 		eRestoreTypeMax,

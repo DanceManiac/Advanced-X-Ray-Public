@@ -26,6 +26,7 @@ CUIBoosterInfo::CUIBoosterInfo()
 	m_booster_alcoholism = NULL;
 	m_booster_hangover = NULL;
 	m_booster_narcotism = NULL;
+	m_booster_withdrawal = NULL;
 	m_portions = NULL;
 	m_booster_time = NULL;
 }
@@ -42,6 +43,7 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	xr_delete(m_booster_alcoholism);
 	xr_delete(m_booster_hangover);
 	xr_delete(m_booster_narcotism);
+	xr_delete(m_booster_withdrawal);
 	xr_delete(m_portions);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
@@ -159,6 +161,14 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_booster_narcotism->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_narcotism").c_str();
 	m_booster_narcotism->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	//M.F.S. Team Drug Withdrawal (HoP)
+	m_booster_withdrawal = xr_new<UIBoosterInfoItem>();
+	m_booster_withdrawal->Init(xml, "boost_withdrawal");
+	m_booster_withdrawal->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_withdrawal").c_str();
+	m_booster_withdrawal->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	//Portions
@@ -381,6 +391,22 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_booster_narcotism->GetWndSize().y;
 			AttachChild(m_booster_narcotism);
+		}
+	}
+
+	//M.F.S. Team Drug Withdrawal (HoP)
+	if (pSettings->line_exist(section.c_str(), "eat_withdrawal"))
+	{
+		val = pSettings->r_float(section, "eat_withdrawal");
+		if (!fis_zero(val))
+		{
+			m_booster_withdrawal->SetValue(val);
+			pos.set(m_booster_withdrawal->GetWndPos());
+			pos.y = h;
+			m_booster_withdrawal->SetWndPos(pos);
+
+			h += m_booster_withdrawal->GetWndSize().y;
+			AttachChild(m_booster_withdrawal);
 		}
 	}
 

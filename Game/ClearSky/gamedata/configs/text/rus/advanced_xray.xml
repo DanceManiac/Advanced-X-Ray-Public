@@ -303,4 +303,7 @@
 	<string id="ui_inv_narcotism">
 		<text>Наркозависимость</text>
 	</string>
+	<string id="ui_inv_withdrawal">
+		<text>Ломка</text>
+	</string>
 </string_table>

@@ -30,6 +30,7 @@ private:
 			eCriticalAlcoholismReached		=(1<<12),
 			eCriticalHangoverReached		=(1<<13),
 			eCriticalNarcotismReached		=(1<<14),
+			eCriticalWithdrawalReached		=(1<<15),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -64,6 +65,7 @@ public:
 	virtual void 		ChangeAlcoholism			(const float value);
 	virtual void 		ChangeHangover				(const float value);
 	virtual void 		ChangeNarcotism				(const float value);
+	virtual void 		ChangeWithdrawal			(const float value);
 
 	void 				BoostParameters				(const SBooster& B);
 	void 				DisableBoostParameters		(const SBooster& B);
@@ -109,6 +111,7 @@ public:
 			float	xr_stdcall	GetAlcoholism		() { return m_fAlcoholism; }
 			float	xr_stdcall	GetHangover			() { return m_fHangover; }
 			float	xr_stdcall	GetNarcotism		() { return m_fNarcotism; }
+			float	xr_stdcall	GetWithdrawal		() { return m_fWithdrawal; }
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
@@ -142,6 +145,7 @@ public:
 	IC		float const&	V_Alcoholism			() { return m_fV_Alcoholism; }
 	IC		float const&	V_Hangover				() { return m_fV_Hangover; }
 	IC		float const&	V_Narcotism				() { return m_fV_Narcotism; }
+	IC		float const&	V_Withdrawal			() { return m_fV_Withdrawal; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -187,6 +191,10 @@ public:
 	float m_fHangoverCritical;
 
 	float m_fV_Narcotism;
+	float m_fV_Withdrawal;
+	float m_fV_WithdrawalPower;
+	float m_fV_WithdrawalHealth;
+	float m_fWithdrawalCritical;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

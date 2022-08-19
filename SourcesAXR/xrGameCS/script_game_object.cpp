@@ -98,6 +98,8 @@ BIND_FUNCTION10	(&object(), CScriptGameObject::GetHangover,			CEntityAlive,	cond
 BIND_FUNCTION01	(&object(), CScriptGameObject::ChangeHangover,		CEntityAlive,	conditions().ChangeHangover, float, float);
 BIND_FUNCTION10	(&object(), CScriptGameObject::GetNarcotism,		CEntityAlive,	conditions().GetNarcotism, float, -1);
 BIND_FUNCTION01	(&object(), CScriptGameObject::ChangeNarcotism,		CEntityAlive,	conditions().ChangeNarcotism, float, float);
+BIND_FUNCTION10	(&object(), CScriptGameObject::GetWithdrawal,		CEntityAlive,	conditions().GetWithdrawal, float, -1);
+BIND_FUNCTION01	(&object(), CScriptGameObject::ChangeWithdrawal,	CEntityAlive,	conditions().ChangeWithdrawal, float, float);
 
 u32	CScriptGameObject::level_vertex_id		() const
 {

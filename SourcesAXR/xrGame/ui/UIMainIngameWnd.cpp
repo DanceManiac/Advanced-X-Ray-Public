@@ -807,7 +807,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		{
 			m_ind_sleepeness->InitTexture("ui_inGame2_circle_sleepeness_yellow");
 		}
-		else if (sleepeness >= 0.85f)
+		else if (sleepeness > 0.85f)
 		{
 			m_ind_sleepeness->InitTexture("ui_inGame2_circle_sleepeness_red");
 		}
@@ -827,9 +827,9 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		{
 			if (hangover >= 1.0f && hangover <= 2.0f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
-			else if (hangover >= 2.0f && hangover <= 3.0f)
+			else if (hangover >= 2.0f && hangover <= 2.5f)
 					m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
-			else if (hangover >= 3.0f)
+			else if (hangover > 2.5f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
 			else
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_green");
@@ -838,9 +838,9 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		{
 			if (hangover >= 1.0f && hangover <= 2.0f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
-			else if (hangover >= 2.0f && hangover <= 3.0f)
+			else if (hangover >= 2.0f && hangover <= 2.5f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
-			else if (hangover >= 3.0f)
+			else if (hangover > 2.5f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
 			else
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_yellow");
@@ -849,9 +849,9 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		{
 			if (hangover >= 1.0f && hangover <= 2.0f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
-			else if (hangover >= 2.0f && hangover <= 3.0f)
+			else if (hangover >= 2.0f && hangover <= 2.5f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
-			else if (hangover >= 3.0f)
+			else if (hangover > 2.5f)
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
 			else
 				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_red");
@@ -860,6 +860,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 
 	// M.F.S. Team Narcotism icon (HoP)
 	float narcotism = pActor->conditions().GetNarcotism();
+	float withdrawal = pActor->conditions().GetWithdrawal();
 	if (narcotism < 0.0)
 	{
 		m_ind_narcotism->Show(false);
@@ -869,15 +870,36 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		m_ind_narcotism->Show(true);
 		if (narcotism > 0.0f && narcotism <= 2.5f)
 		{
-			m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_green");
+			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
+			else if (withdrawal >= 2.0f && withdrawal <= 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_yellow");
+			else if (withdrawal > 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_red");
+			else
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_green");
 		}
 		else if (narcotism >= 2.5f && narcotism <= 5.0f)
 		{
-			m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_yellow");
+			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
+			else if (withdrawal >= 2.0f && withdrawal <= 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_yellow");
+			else if (withdrawal > 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_red");
+			else
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_yellow");
 		}
-		else if (narcotism >= 7.5f)
+		else if (narcotism > 7.5f)
 		{
-			m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_red");
+			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
+			else if (withdrawal >= 2.0f && withdrawal <= 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_yellow");
+			else if (withdrawal > 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_red");
+			else
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_red");
 		}
 	}
 

@@ -655,6 +655,10 @@ end
 function on_actor_narcotism()
 end
 
+--' Ломка
+function on_actor_withdrawal()
+end
+
 --' іадиация
 function on_actor_radiation()
 

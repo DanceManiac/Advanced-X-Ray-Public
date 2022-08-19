@@ -28,6 +28,7 @@ protected:
 	UIBoosterInfoItem*  m_booster_alcoholism;
 	UIBoosterInfoItem*	m_booster_hangover;
 	UIBoosterInfoItem*	m_booster_narcotism;
+	UIBoosterInfoItem*	m_booster_withdrawal;
 	UIBoosterInfoItem*	m_portions;
 
 	CUIStatic*			m_Prop_line;
