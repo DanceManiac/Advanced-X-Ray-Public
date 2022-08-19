@@ -73,6 +73,7 @@ struct SMedicineInfluenceValues{
 	float fWoundsHeal;
 	float fMaxPowerUp;
 	float fAlcohol;
+	float fDrugs;
 	float fTimeTotal;
 	float fTimeCurrent;
 
@@ -139,6 +140,7 @@ public:
 	virtual void			ChangeHangover			(const float value)		{};
 	virtual void			ChangeNarcotism			(const float value)		{};
 	virtual void			ChangeWithdrawal		(const float value)		{};
+	virtual void 			ChangeDrugs				(const float value)		{};
 	void 					ChangeHealth			(const float value);
 	void 					ChangePower				(const float value);
 	void 					ChangeRadiation			(const float value);

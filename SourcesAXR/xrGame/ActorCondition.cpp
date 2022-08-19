@@ -60,6 +60,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fHangover					= 0.0f;
 	m_fNarcotism				= 0.0f;
 	m_fWithdrawal				= 0.0f;
+	m_fDrugs					= 0.f;
 
 //	m_vecBoosts.clear();
 
@@ -189,6 +190,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Withdrawal = pSettings->r_float(section, "withdrawal_v");
 	m_fV_WithdrawalPower = pSettings->r_float(section, "withdrawal_power_v");
 	m_fV_WithdrawalHealth = pSettings->r_float(section, "withdrawal_health_v");
+	m_fV_Drugs = pSettings->r_float(section, "drugs_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -262,6 +264,9 @@ void CActorCondition::UpdateCondition()
 		m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
 		clamp			(m_fAlcohol,			0.0f,		1.0f);
 
+		m_fDrugs += m_fV_Drugs * m_fDeltaTime;
+		clamp(m_fDrugs, 0.0f, 1.0f);
+
 		if(IsGameTypeSingle())
 		{
 			CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
@@ -307,6 +312,9 @@ void CActorCondition::UpdateCondition()
 	m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
 	clamp			(m_fAlcohol,			0.0f,		1.0f);
 
+	m_fDrugs		+= m_fV_Drugs * m_fDeltaTime;
+	clamp			(m_fDrugs,				0.0f,		1.0f);
+
 	if ( IsGameTypeSingle() )
 	{	
 		CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
@@ -318,6 +326,20 @@ void CActorCondition::UpdateCondition()
 			if(ce)
 				RemoveEffector(m_object,effAlcohol);
 		}
+
+		/*CEffectorCam* ceDrugs = Actor()->Cameras().GetCamEffector((ECamEffectorType)effDrugs);
+		if ((m_fDrugs > 0.0001f)) 
+		{
+			if (!ceDrugs) 
+			{
+				AddEffector(m_object, effDrugs, "effector_drugs", GET_KOEFF_FUNC(this, &CActorCondition::GetDrugs));
+			}
+		}
+		else 
+		{
+			if (ceDrugs)
+				RemoveEffector(m_object, effDrugs);
+		}*/
 
 		
 		string512			pp_sect_name;
@@ -707,14 +729,14 @@ void CActorCondition::UpdateNarcotism()
 {
 	if (m_fNarcotism > 0.0f)
 	{
-		//if (m_fAlcohol <= 0.0f)
-		//{
+		if (m_fDrugs <= 0.0f)
+		{
 			m_fNarcotism -= m_fV_Narcotism * m_fDeltaTime;
 			clamp(m_fNarcotism, 0.0f, 10.0f);
-		//}
+		}
 	}
 
-	if (m_fNarcotism >= 1.0f /* && m_fAlcohol <= 0.0f */ )
+	if (m_fNarcotism >= 1.0f && m_fDrugs <= 0.0f)
 	{
 		if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
 		{
@@ -839,6 +861,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fHangover, output_packet);
 	save_data			(m_fNarcotism, output_packet);
 	save_data			(m_fWithdrawal, output_packet);
+	save_data			(m_fDrugs, output_packet);
 
 	save_data			(m_curr_medicine_influence.fHealth, output_packet);
 	save_data			(m_curr_medicine_influence.fPower, output_packet);
@@ -856,6 +879,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_curr_medicine_influence.fHangover, output_packet);
 	save_data			(m_curr_medicine_influence.fNarcotism, output_packet);
 	save_data			(m_curr_medicine_influence.fWithdrawal, output_packet);
+	save_data			(m_curr_medicine_influence.fDrugs, output_packet);
 
 	output_packet.w_u8((u8)m_booster_influences.size());
 	BOOSTER_MAP::iterator b = m_booster_influences.begin(), e = m_booster_influences.end();
@@ -880,6 +904,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fHangover, input_packet);
 	load_data			(m_fNarcotism, input_packet);
 	load_data			(m_fWithdrawal, input_packet);
+	load_data			(m_fDrugs, input_packet);
 
 	load_data			(m_curr_medicine_influence.fHealth, input_packet);
 	load_data			(m_curr_medicine_influence.fPower, input_packet);
@@ -897,6 +922,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_curr_medicine_influence.fHangover, input_packet);
 	load_data			(m_curr_medicine_influence.fNarcotism, input_packet);
 	load_data			(m_curr_medicine_influence.fWithdrawal, input_packet);
+	load_data			(m_curr_medicine_influence.fDrugs, input_packet);
 
 	u8 cntr = input_packet.r_u8();
 	for(; cntr>0; cntr--)
@@ -973,6 +999,11 @@ void CActorCondition::ChangeWithdrawal(float value)
 {
 	m_fWithdrawal += value;
 	clamp(m_fWithdrawal, 0.0f, 3.0f);
+}
+
+void CActorCondition::ChangeDrugs(float value)
+{
+	m_fDrugs += value;
 }
 
 void CActorCondition::BoostParameters(const SBooster& B)

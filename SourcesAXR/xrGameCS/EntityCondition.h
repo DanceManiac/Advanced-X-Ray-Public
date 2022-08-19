@@ -63,6 +63,7 @@ public:
 	virtual void			ChangeHangover			(const float value){};
 	virtual void			ChangeNarcotism			(const float value){};
 	virtual void			ChangeWithdrawal		(const float value){};
+	virtual void 			ChangeDrugs				(float value){};
 
 	IC void					MaxPower				()					{m_fPower = m_fPowerMax;};
 	IC void					SetMaxPower				(float val)			{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};

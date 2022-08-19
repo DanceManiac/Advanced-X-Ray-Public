@@ -663,6 +663,7 @@ bool CEntityCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const s
 	ChangeHangover	(V.fHangover);
 	ChangeNarcotism	(V.fNarcotism);
 	ChangeWithdrawal(V.fWithdrawal);
+	ChangeDrugs		(V.fDrugs);
 	return true;
 }
 
@@ -688,6 +689,7 @@ void SMedicineInfluenceValues::Load(const shared_str& sect)
 	clamp			(fWoundsHeal, 0.f, 1.f);
 	fMaxPowerUp		= READ_IF_EXISTS	(pSettings,r_float,sect.c_str(),	"eat_max_power",0.0f);
 	fAlcohol		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_alcohol", 0.0f);
+	fDrugs			= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_drugs", 0.0f);
 	fTimeTotal		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"apply_time_sec", -1.0f);
 }
 

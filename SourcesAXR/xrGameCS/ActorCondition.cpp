@@ -53,6 +53,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fHangover					= 0.0f;
 	m_fNarcotism				= 0.0f;
 	m_fWithdrawal				= 0.0f;
+	m_fDrugs					= 0.f;
 
 	VERIFY						(object);
 	m_object					= object;
@@ -167,6 +168,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Withdrawal = pSettings->r_float(section, "withdrawal_v");
 	m_fV_WithdrawalPower = pSettings->r_float(section, "withdrawal_power_v");
 	m_fV_WithdrawalHealth = pSettings->r_float(section, "withdrawal_health_v");
+	m_fV_Drugs = pSettings->r_float(section, "drugs_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -247,6 +249,9 @@ void CActorCondition::UpdateCondition()
 	m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
 	clamp			(m_fAlcohol,			0.0f,		1.0f);
 
+	m_fDrugs		+= m_fV_Drugs * m_fDeltaTime;
+	clamp			(m_fDrugs,				0.0f,		1.0f);
+
 	if ( IsGameTypeSingle() )
 	{	
 		CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
@@ -259,6 +264,19 @@ void CActorCondition::UpdateCondition()
 				RemoveEffector(m_object,effAlcohol);
 		}
 
+		/*CEffectorCam* ceDrugs = Actor()->Cameras().GetCamEffector((ECamEffectorType)effDrugs);
+		if ((m_fDrugs > 0.0001f))
+		{
+			if (!ceDrugs)
+			{
+				AddEffector(m_object, effDrugs, "effector_drugs", GET_KOEFF_FUNC(this, &CActorCondition::GetDrugs));
+			}
+		}
+		else
+		{
+			if (ceDrugs)
+				RemoveEffector(m_object, effDrugs);
+		}*/
 		
 		string512			pp_sect_name;
 		shared_str ln		= Level().name();
@@ -611,14 +629,14 @@ void CActorCondition::UpdateNarcotism()
 {
 	if (m_fNarcotism > 0.0f)
 	{
-		//if (m_fAlcohol <= 0.0f)
-		//{
+		if (m_fDrugs <= 0.0f)
+		{
 			m_fNarcotism -= m_fV_Narcotism * m_fDeltaTime;
 			clamp(m_fNarcotism, 0.0f, 10.0f);
-		//}
+		}
 	}
 
-	if (m_fNarcotism >= 1.0f /* && m_fAlcohol <= 0.0f */)
+	if (m_fNarcotism >= 1.0f && m_fDrugs <= 0.0f)
 	{
 		if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
 		{
@@ -737,6 +755,7 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fHangover, output_packet);
 	save_data			(m_fNarcotism, output_packet);
 	save_data			(m_fWithdrawal, output_packet);
+	save_data			(m_fDrugs, output_packet);
 }
 
 void CActorCondition::load(IReader &input_packet)
@@ -752,6 +771,7 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fHangover, input_packet);
 	load_data			(m_fNarcotism, input_packet);
 	load_data			(m_fWithdrawal, input_packet);
+	load_data			(m_fDrugs, input_packet);
 }
 
 void CActorCondition::reinit	()
@@ -813,10 +833,15 @@ void CActorCondition::ChangeNarcotism(float value)
 	clamp(m_fNarcotism, 0.0f, 10.0f);
 }
 
-void CActorCondition::ChangeHangover(float value)
+void CActorCondition::ChangeWithdrawal(float value)
 {
 	m_fHangover += value;
-	clamp(m_fHangover, 0.0f, 3.0f);
+	clamp(m_fWithdrawal, 0.0f, 3.0f);
+}
+
+void CActorCondition::ChangeDrugs(float value)
+{
+	m_fDrugs += value;
 }
 
 void CActorCondition::UpdateTutorialThresholds()

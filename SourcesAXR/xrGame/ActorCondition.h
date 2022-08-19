@@ -66,6 +66,7 @@ public:
 	virtual void 		ChangeHangover				(const float value);
 	virtual void 		ChangeNarcotism				(const float value);
 	virtual void 		ChangeWithdrawal			(const float value);
+	virtual void 		ChangeDrugs					(const float value);
 
 	void 				BoostParameters				(const SBooster& B);
 	void 				DisableBoostParameters		(const SBooster& B);
@@ -112,6 +113,7 @@ public:
 			float	xr_stdcall	GetHangover			() { return m_fHangover; }
 			float	xr_stdcall	GetNarcotism		() { return m_fNarcotism; }
 			float	xr_stdcall	GetWithdrawal		() { return m_fWithdrawal; }
+			float	xr_stdcall	GetDrugs			() { return m_fDrugs; }
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
@@ -195,6 +197,8 @@ public:
 	float m_fV_WithdrawalPower;
 	float m_fV_WithdrawalHealth;
 	float m_fWithdrawalCritical;
+	float m_fDrugs;
+	float m_fV_Drugs;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;
