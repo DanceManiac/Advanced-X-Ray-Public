@@ -529,9 +529,8 @@ void	CRenderTarget::phase_combine	()
 		//RCache.set_c				("saturation",	ps_saturation, 0, 0, 0);
 		Fvector3					dof;
 		g_pGamePersistent->GetCurrentDof(dof);
-		RCache.set_c				("dof_params",	dof.x, dof.y, dof.z, ps_r2_dof_sky);
-//.		RCache.set_c				("dof_params",	ps_r2_dof.x, ps_r2_dof.y, ps_r2_dof.z, ps_r2_dof_sky);
-		RCache.set_c				("dof_kernel",	vDofKernel.x, vDofKernel.y, ps_r2_dof_kernel_size, 0);
+		RCache.set_c				("dof_params", dof.x, dof.y, dof.z, dof_sky);
+		RCache.set_c				("dof_kernel", vDofKernel.x, vDofKernel.y, kernel_size, 0);
 		
 		RCache.set_Geometry			(g_aa_AA);
 		RCache.Render				(D3DPT_TRIANGLELIST,Offset,0,4,0,2);
