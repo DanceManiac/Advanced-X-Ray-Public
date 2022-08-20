@@ -19,6 +19,7 @@
 #define effIntoxication			(eStartEffectorID+11)
 #define effSleepeness			(eStartEffectorID+12)
 #define effUseItem				(eStartEffectorID+13)
+#define effDrugs				(eStartEffectorID+14)
 
 #define	eCEFall					((ECamEffectorType)(cefNext+1))
 #define	eCENoise				((ECamEffectorType)(cefNext+2))

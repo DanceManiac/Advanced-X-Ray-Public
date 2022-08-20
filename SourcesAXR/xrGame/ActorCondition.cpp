@@ -327,7 +327,7 @@ void CActorCondition::UpdateCondition()
 				RemoveEffector(m_object,effAlcohol);
 		}
 
-		/*CEffectorCam* ceDrugs = Actor()->Cameras().GetCamEffector((ECamEffectorType)effDrugs);
+		CEffectorCam* ceDrugs = Actor()->Cameras().GetCamEffector((ECamEffectorType)effDrugs);
 		if ((m_fDrugs > 0.0001f)) 
 		{
 			if (!ceDrugs) 
@@ -339,7 +339,7 @@ void CActorCondition::UpdateCondition()
 		{
 			if (ceDrugs)
 				RemoveEffector(m_object, effDrugs);
-		}*/
+		}
 
 		
 		string512			pp_sect_name;
@@ -736,6 +736,13 @@ void CActorCondition::UpdateNarcotism()
 		}
 	}
 
+	if (m_fDrugs >= 0.5f)
+	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.on_actor_drugs", funct))
+			funct();
+	}
+
 	if (m_fNarcotism >= 1.0f && m_fDrugs <= 0.0f)
 	{
 		if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
@@ -747,9 +754,9 @@ void CActorCondition::UpdateNarcotism()
 				if (GetHealth() >= 0.5)
 					m_fDeltaHealth -= m_fV_WithdrawalHealth * m_fWithdrawal * m_fDeltaTime;
 
-				luabind::functor<void> funct;
-				if (ai().script_engine().functor("mfs_functions.on_actor_withdrawal", funct))
-					funct();
+				luabind::functor<void> funct2;
+				if (ai().script_engine().functor("mfs_functions.on_actor_withdrawal", funct2))
+					funct2();
 			}
 		}
 
