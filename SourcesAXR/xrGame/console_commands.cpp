@@ -418,6 +418,29 @@ public:
 	}
 };
 
+class CCC_GiveMoney : public IConsole_Command
+{
+public:
+	CCC_GiveMoney(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR money)
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		int	m_iMoney = (int)atoi(money);
+		if (actor)
+		{
+			Actor()->set_money(Actor()->get_money() + m_iMoney, false);
+		}
+		else
+			Msg("! [g_money] : Actor not found!");
+	}
+};
+
 class CCC_GameDifficulty : public CCC_Token {
 public:
 	CCC_GameDifficulty(LPCSTR N) : CCC_Token(N,(u32*)&g_SingleGameDifficulty,difficulty_type_token)  {};
@@ -2246,6 +2269,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD1(CCC_Giveinfo,		"g_info");
 		CMD1(CCC_Disinfo,		"d_info");
 		CMD1(CCC_GiveTask,		"g_task");
+		CMD1(CCC_GiveMoney,		"g_money");
 		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
