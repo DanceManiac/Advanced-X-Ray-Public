@@ -412,8 +412,8 @@ void CDetailManager::Render	()
 	float factor			= 0.3f;
 #endif
 
-	swing_desc[0].set(g_pGamePersistent->Environment().Current[0]->m_cSwingDesc[0]);
-	swing_desc[1].set(g_pGamePersistent->Environment().Current[0]->m_cSwingDesc[1]);
+	//swing_desc[0].set(g_pGamePersistent->Environment().Current[0]->m_cSwingDesc[0]);
+	//swing_desc[1].set(g_pGamePersistent->Environment().Current[0]->m_cSwingDesc[1]);
 
 	swing_current.lerp		(swing_desc[0],swing_desc[1],factor);
 

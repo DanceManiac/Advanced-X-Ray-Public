@@ -1204,7 +1204,7 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 
 void CUIActorMenu::UpdateOutfit()
 {
-	for ( u8 i = 0; i < e_af_count ; ++i )
+	for ( u8 i = 0; i < GameConstants::GetArtefactsCount(); ++i )
 	{
 		m_belt_list_over[i]->SetVisible( true );
 	}

@@ -101,8 +101,7 @@ protected:
 	CUIDragDropListEx*			m_pInventoryPantsList;
 	CUIDragDropListEx*			m_pInventoryPdaList;
 
-	enum						{e_af_count = 5};
-	CUIStatic*					m_belt_list_over[e_af_count];
+	xr_vector<CUIStatic*>		m_belt_list_over;
 
 	CUIInventoryUpgradeWnd*		m_pUpgradeWnd;
 	

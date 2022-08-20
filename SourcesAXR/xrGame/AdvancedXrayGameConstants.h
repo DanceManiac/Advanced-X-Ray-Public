@@ -29,6 +29,7 @@ namespace GameConstants
 	bool GetHideWeaponInInventory();
 	bool GetStopActorIfShoot();
 	bool GetReloadIfSprint();
+	int GetArtefactsCount();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 };

@@ -582,7 +582,7 @@ void CUIActorMenu::clear_highlight_lists()
 
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
-	for(u8 i=0; i<e_af_count; i++)
+	for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
 		m_ArtefactSlotsHighlight[i]->Show(false);
 
 	m_pInventoryBagList->clear_select_armament();
