@@ -27,6 +27,7 @@
 #include "../Torch.h"
 #include "../CustomDetector.h"
 #include "../AnomalyDetector.h"
+#include "UIBoosterInfo.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
 
@@ -47,6 +48,7 @@ CUIItemInfo::CUIItemInfo()
 	UIOutfitInfo				= NULL;
 	UIArtefactParams			= NULL;
 	UIInventoryItem				= NULL;
+	UIBoosterInfo				= NULL;
 	UIName						= NULL;
 	UIBackground				= NULL;
 	m_pInvItem					= NULL;
@@ -64,6 +66,7 @@ CUIItemInfo::~CUIItemInfo()
 	xr_delete	(UIOutfitInfo);
 	xr_delete	(UIInventoryItem);
 	xr_delete	(UIChargeConditionParams);
+	xr_delete	(UIBoosterInfo);
 }
 
 void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
@@ -128,6 +131,8 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 		UIWpnParams->InitFromXml		(uiXml);
 		UIArtefactParams				= xr_new<CUIArtefactParams>();
 		UIArtefactParams->InitFromXml	(uiXml);
+		UIBoosterInfo					= xr_new<CUIBoosterInfo>();
+		UIBoosterInfo->InitFromXml		(uiXml);
 
 		if ( ai().get_alife() ) // (-designer)
 		{
@@ -266,6 +271,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem, CInventoryItem* pCompareIte
 		TryAddOutfitInfo					(*pInvItem, pCompareItem);
 		TryAddUpgradeInfo					(*pInvItem);
 		TryAddItemInfo						(*pInvItem);
+		TryAddBoosterInfo					(*pInvItem);
 
 		if(m_b_FitToHeight)
 		{
@@ -378,6 +384,16 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem.object().cNameSect());
 		UIDesc->AddWindow(UIInventoryItem, false);
+	}
+}
+
+void CUIItemInfo::TryAddBoosterInfo(CInventoryItem& pInvItem)
+{
+	CEatableItem* food = smart_cast<CEatableItem*>(&pInvItem);
+	if (food && UIBoosterInfo)
+	{
+		UIBoosterInfo->SetInfo(pInvItem);
+		UIDesc->AddWindow(UIBoosterInfo, false);
 	}
 }
 

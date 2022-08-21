@@ -7507,6 +7507,9 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
     <ClInclude Include="ActorNightVision.h" />
+    <ClInclude Include="ui\UIBoosterInfo.h">
+      <Filter>UI\Common\ui-item-infos</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11185,6 +11188,9 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
     <ClCompile Include="ActorNightVision.cpp" />
+    <ClCompile Include="ui\UIBoosterInfo.cpp">
+      <Filter>UI\Common\ui-item-infos</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

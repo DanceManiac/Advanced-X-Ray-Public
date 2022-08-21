@@ -51,7 +51,6 @@ public:
 			u16				last_slot_id;
 			ref_sound		m_using_sound;
 
-protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;
 	float					m_fPowerInfluence;
