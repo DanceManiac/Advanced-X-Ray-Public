@@ -230,7 +230,7 @@ void CUIInventoryItemInfo::SetValue(float value)
 	value *= m_magnitude;
 	string32 buf;
 	if (m_show_sign)
-		xr_sprintf(buf, "%.0f", value);
+		xr_sprintf(buf, "%+.0f", value);
 	else
 		xr_sprintf(buf, "%.0f", value);
 

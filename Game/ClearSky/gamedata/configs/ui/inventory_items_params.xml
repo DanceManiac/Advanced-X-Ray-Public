@@ -37,7 +37,7 @@
 			<texture>ui_item_battery_uncharge_icon</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
 		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="100" unit_str="%">
+		<value x="140" y="0" width="30" height="20" magnitude="100" show_sign="0" unit_str="%">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</uncharge_speed>
