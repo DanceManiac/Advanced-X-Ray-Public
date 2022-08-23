@@ -10,6 +10,7 @@
 #include "../string_table.h"
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
+#include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
 {
@@ -183,7 +184,6 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 {
 	DetachAll();
 	AttachChild(m_Prop_line);
-
 	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
 	if (!actor)
 	{
@@ -482,9 +482,12 @@ void UIBoosterInfoItem::SetValue(float value)
 		STRCONCAT(str, buf);
 
 	m_value->SetText(str);
-
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
 	bool positive = (value >= 0.0f);
-	m_value->SetTextColor(color_rgba(170, 170, 170, 255));
+	GameConstants::GetColorizeValues()?
+		positive?m_value->SetTextColor(color_rgba(red.x, red.y, red.z, red.w)):m_value->SetTextColor(color_rgba(green.x, green.y, green.z, green.w)):
+		m_value->SetTextColor(color_rgba(170, 170, 170, 255));
 
 	if (m_texture_minus.size())
 	{

@@ -34,6 +34,8 @@ protected:
 	UIBoosterInfoItem* m_booster_withdrawal;
 	UIBoosterInfoItem* m_portions;
 
+	UIBoosterInfoItem* m_pointer;
+
 	CUIStatic* m_Prop_line;
 
 }; // class CUIBoosterInfo
@@ -49,10 +51,10 @@ public:
 	void	Init(CUIXml& xml, LPCSTR section);
 	void	SetCaption(LPCSTR name);
 	void	SetValue(float value);
+	CUIStatic* m_value;
 
 private:
 	CUIStatic*	m_caption;
-	CUIStatic*	m_value;
 	float		m_magnitude;
 	bool		m_show_sign;
 	shared_str	m_unit_str;

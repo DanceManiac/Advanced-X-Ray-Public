@@ -27,7 +27,10 @@ namespace GameConstants
 	bool GetHideWeaponInInventory();
 	bool GetStopActorIfShoot();
 	bool GetReloadIfSprint();
-	int GetArtefactsCount();
+	bool GetColorizeValues();
+	int  GetArtefactsCount();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
+	Fvector4 GetRedColor();
+	Fvector4 GetGreenColor();
 };
