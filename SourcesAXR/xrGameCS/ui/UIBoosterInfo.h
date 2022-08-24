@@ -17,24 +17,30 @@ public:
 	void	SetInfo(CInventoryItem& pInvItem);
 
 protected:
-	UIBoosterInfoItem* m_booster_satiety;
-	UIBoosterInfoItem* m_booster_health;
-	UIBoosterInfoItem* m_booster_radiation;
-	UIBoosterInfoItem* m_booster_power;
-	UIBoosterInfoItem* m_booster_bleeding;
-	UIBoosterInfoItem* m_booster_anabiotic;
-	UIBoosterInfoItem* m_booster_time;
-	UIBoosterInfoItem* m_booster_battery;
-	UIBoosterInfoItem* m_booster_thirst;
-	UIBoosterInfoItem* m_booster_intoxication;
-	UIBoosterInfoItem* m_booster_sleepeness;
-	UIBoosterInfoItem* m_booster_alcoholism;
-	UIBoosterInfoItem* m_booster_hangover;
-	UIBoosterInfoItem* m_booster_narcotism;
-	UIBoosterInfoItem* m_booster_withdrawal;
-	UIBoosterInfoItem* m_portions;
+	enum {
+		_item_start = 0,
+		_item_satiety_restore_speed = _item_start,
+		_item_health_restore_speed,
+		_item_radiation_restore_speed,
+		_item_power_restore_speed,
+		_item_bleeding_restore_speed,
 
-	UIBoosterInfoItem* m_pointer;
+		//M.F.S Team additions
+		_item_battery,
+		_item_thirst,
+		_item_intoxication,
+		_item_sleepeness,
+
+		//HoP
+		_item_alcoholism,
+		_item_hangover,
+		_item_narcotism,
+		_item_withdrawal,
+
+		eBoostExplImmunity
+	};
+	UIBoosterInfoItem* m_booster_items[eBoostExplImmunity];
+	UIBoosterInfoItem* m_portions;
 
 	CUIStatic* m_Prop_line;
 
@@ -50,7 +56,7 @@ public:
 
 	void	Init(CUIXml& xml, LPCSTR section);
 	void	SetCaption(LPCSTR name);
-	void	SetValue(float value);
+	void	SetValue(int vle,float value);
 	CUIStatic* m_value;
 
 private:
