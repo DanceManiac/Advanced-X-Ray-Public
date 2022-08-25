@@ -119,6 +119,27 @@ void CArtefact::Load(LPCSTR section)
 	{
 		m_ArtefactHitImmunities.LoadImmunities(pSettings->r_string(section,"hit_absorbation_sect"),pSettings);
 	}
+
+	m_ConstHitTypeProtection[ALife::infl_fire] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn);
+	m_ConstHitTypeProtection[ALife::infl_strike] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike);
+	m_ConstHitTypeProtection[ALife::infl_electra] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock);
+	m_ConstHitTypeProtection[ALife::infl_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound);
+	m_ConstHitTypeProtection[ALife::infl_rad] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation);
+	m_ConstHitTypeProtection[ALife::infl_psi] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic);
+	m_ConstHitTypeProtection[ALife::infl_acid] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn);
+	m_ConstHitTypeProtection[ALife::infl_explossion] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion);
+	m_ConstHitTypeProtection[ALife::infl_fire_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound);
+
+	m_HitTypeProtection[ALife::infl_fire] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn);
+	m_HitTypeProtection[ALife::infl_strike] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike);
+	m_HitTypeProtection[ALife::infl_electra] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock);
+	m_HitTypeProtection[ALife::infl_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound);
+	m_HitTypeProtection[ALife::infl_rad] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation);
+	m_HitTypeProtection[ALife::infl_psi] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic);
+	m_HitTypeProtection[ALife::infl_acid] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn);
+	m_HitTypeProtection[ALife::infl_explossion] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion);
+	m_HitTypeProtection[ALife::infl_fire_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound);
+
 	m_bCanSpawnZone			= !!pSettings->line_exist("artefact_spawn_zones", section);
 	m_af_rank				= pSettings->r_u8(section, "af_rank");
 
@@ -206,6 +227,13 @@ void CArtefact::save(NET_Packet &packet)
 	save_data(m_fPowerRestoreSpeed, packet);
 	save_data(m_fBleedingRestoreSpeed, packet);
 	save_data(m_fThirstRestoreSpeed, packet);
+	save_data(m_fIntoxicationRestoreSpeed, packet);
+	save_data(m_fSleepenessRestoreSpeed, packet);
+	save_data(m_fAlcoholismRestoreSpeed, packet);
+	save_data(m_fNarcotismRestoreSpeed, packet);
+	save_data(m_additional_weight, packet);
+	save_data(m_fJumpSpeed, packet);
+	save_data(m_fWalkAccel, packet);
 }
 
 void CArtefact::load(IReader &packet)
@@ -221,6 +249,13 @@ void CArtefact::load(IReader &packet)
 	load_data(m_fPowerRestoreSpeed, packet);
 	load_data(m_fBleedingRestoreSpeed, packet);
 	load_data(m_fThirstRestoreSpeed, packet);
+	load_data(m_fIntoxicationRestoreSpeed, packet);
+	load_data(m_fSleepenessRestoreSpeed, packet);
+	load_data(m_fAlcoholismRestoreSpeed, packet);
+	load_data(m_fNarcotismRestoreSpeed, packet);
+	load_data(m_additional_weight, packet);
+	load_data(m_fJumpSpeed, packet);
+	load_data(m_fWalkAccel, packet);
 }
 
 void CArtefact::SwitchAfParticles(bool bOn)
@@ -287,21 +322,37 @@ void CArtefact::UpdateDegradation(void)
 			float percent = artefact->m_fChargeLevel * 100;
 
 			if (artefact->m_fHealthRestoreSpeed > 0.0f && m_fConstHealthRestoreSpeed > 0.0f)
-				artefact->m_fHealthRestoreSpeed = (m_fConstHealthRestoreSpeed / 100)*percent;
+				artefact->m_fHealthRestoreSpeed = (m_fConstHealthRestoreSpeed / 100) * percent;
+			else if (artefact->m_fRadiationRestoreSpeed < 0.0f && m_fConstRadiationRestoreSpeed < 0.0f)
+				artefact->m_fRadiationRestoreSpeed = (m_fConstRadiationRestoreSpeed / 100) * percent;
 			else if (artefact->m_fSatietyRestoreSpeed > 0.0f && m_fConstSatietyRestoreSpeed > 0.0f)
-				artefact->m_fSatietyRestoreSpeed = (m_fConstSatietyRestoreSpeed / 100)*percent;
+				artefact->m_fSatietyRestoreSpeed = (m_fConstSatietyRestoreSpeed / 100) * percent;
 			else if (artefact->m_fPowerRestoreSpeed > 0.0f && m_fConstPowerRestoreSpeed > 0.0f)
-				artefact->m_fPowerRestoreSpeed = (m_fConstPowerRestoreSpeed / 100)*percent;
+				artefact->m_fPowerRestoreSpeed = (m_fConstPowerRestoreSpeed / 100) * percent;
 			else if (artefact->m_fBleedingRestoreSpeed > 0.0f && m_fConstBleedingRestoreSpeed > 0.0f)
-				artefact->m_fBleedingRestoreSpeed = (m_fConstBleedingRestoreSpeed / 100)*percent;
+				artefact->m_fBleedingRestoreSpeed = (m_fConstBleedingRestoreSpeed / 100) * percent;
 			else if (artefact->m_fThirstRestoreSpeed > 0.0f && m_fConstThirstRestoreSpeed > 0.0f)
-				artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100)*percent;
+				artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100) * percent;
+			else if (artefact->m_fIntoxicationRestoreSpeed > 0.0f && m_fConstIntoxicationRestoreSpeed > 0.0f)
+				artefact->m_fIntoxicationRestoreSpeed = (m_fConstIntoxicationRestoreSpeed / 100) * percent;
+			else if (artefact->m_fSleepenessRestoreSpeed > 0.0f && m_fConstSleepenessRestoreSpeed > 0.0f)
+				artefact->m_fSleepenessRestoreSpeed = (m_fConstSleepenessRestoreSpeed / 100) * percent;
+			else if (artefact->m_fAlcoholismRestoreSpeed > 0.0f && m_fConstAlcoholismRestoreSpeed > 0.0f)
+				artefact->m_fAlcoholismRestoreSpeed = (m_fConstAlcoholismRestoreSpeed / 100) * percent;
+			else if (artefact->m_fNarcotismRestoreSpeed > 0.0f && m_fConstNarcotismRestoreSpeed > 0.0f)
+				artefact->m_fNarcotismRestoreSpeed = (m_fConstNarcotismRestoreSpeed / 100) * percent;
 			else if (artefact->m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
-				artefact->m_additional_weight = (m_fConstAdditionalWeight / 100)*percent;
+				artefact->m_additional_weight = (m_fConstAdditionalWeight / 100) * percent;
 			else if (artefact->m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)
-				artefact->m_fJumpSpeed = (m_fConstJumpSpeed / 100)*percent;
+				artefact->m_fJumpSpeed = (m_fConstJumpSpeed / 100) * percent;
 			else if (artefact->m_fWalkAccel > 1.f && m_fConstWalkAccel > 1.f)
-				artefact->m_fWalkAccel = (m_fConstWalkAccel / 100)*percent;
+				artefact->m_fWalkAccel = (m_fConstWalkAccel / 100) * percent;
+
+			for (u32 i = 0; i < ALife::infl_max_count; ++i)
+			{
+				if (!fis_zero(artefact->m_HitTypeProtection[i]) && !fis_zero(m_ConstHitTypeProtection[i]))
+					artefact->m_HitTypeProtection[i] = (m_ConstHitTypeProtection[i] / 100) * percent;
+			}
 
 			//Lights
 			if (m_bLightsEnabled)

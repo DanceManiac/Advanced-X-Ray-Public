@@ -90,6 +90,8 @@ public:
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 	CHitImmunity 					m_ArtefactHitImmunities;
+	HitImmunity::HitTypeSVec		m_HitTypeProtection;
+	HitImmunity::HitTypeSVec		m_ConstHitTypeProtection;
 
 	//For Degradation
 	float							m_fConstHealthRestoreSpeed;

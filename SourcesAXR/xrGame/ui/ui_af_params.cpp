@@ -280,7 +280,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 	for ( u32 i = 0; i < ALife::infl_max_count; ++i )
 	{
 		shared_str const& sect = pSettings->r_string( af_section, "hit_absorbation_sect" );
-		val	= pSettings->r_float( sect, af_immunity_section_names[i] );
+		val = artefact->m_HitTypeProtection[i];
 		if ( fis_zero(val) )
 		{
 			continue;
