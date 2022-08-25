@@ -25,12 +25,12 @@ bool	m_bJumpSpeedWeightCalc = false;
 bool	m_bHideWeaponInInventory = false;
 bool	m_bStopActorIfShoot = false;
 bool	m_bReloadIfSprint = true;
-bool	m_bColorizeValues = true;
+bool	m_bColorizeValues = false;
 int		m_iArtefactsCount = 5;
-Fvector4 m_FV4RedColor	 = Fvector4().set(255, 0, 0, 255);
-Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 255);
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
+Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
+Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 255);
 
 namespace GameConstants
 {
@@ -193,6 +193,15 @@ namespace GameConstants
 	{
 		return m_iArtefactsCount;
 	}
+	float GetDistantSndDistance()
+	{
+		return m_fDistantSndDistance;
+	}
+
+	float GetDistantSndDistanceFar()
+	{
+		return m_fDistantSndDistanceFar;
+	}
 
 	Fvector4 GetRedColor()
 	{
@@ -202,14 +211,5 @@ namespace GameConstants
 	Fvector4 GetGreenColor()
 	{
 		return m_FV4GreenColor;
-	}
-	float GetDistantSndDistance()
-	{
-		return m_fDistantSndDistance;
-	}
-
-	float GetDistantSndDistanceFar()
-	{
-		return m_fDistantSndDistanceFar;
 	}
 }

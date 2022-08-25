@@ -224,7 +224,7 @@ void CUIHudStatesWnd::Update()
 
 	UpdateHealth( actor );
 	UpdateActiveItemInfo( actor );
-	UpdateIndicators( actor );
+	//UpdateIndicators( actor );
 	
 	UpdateZones();
 
@@ -672,7 +672,7 @@ void CUIHudStatesWnd::DrawZoneIndicators()
 	if(!actor)
 		return;
 
-	UpdateIndicators(actor);
+	//UpdateIndicators(actor);
 
 	if(m_indik[ALife::infl_rad]->IsShown())
 		m_indik[ALife::infl_rad]->Draw();

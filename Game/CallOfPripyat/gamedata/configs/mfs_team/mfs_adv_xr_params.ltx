@@ -1,5 +1,5 @@
 [global]
-engine_mode = cop 			;; Режим работы движка cop|cs (Зов Припяти|Чистое Небо)
+engine_mode = cop 				;; Режим работы движка cop|cs (Зов Припяти|Чистое Небо)
 discord_app_id = 745606008499601438	;; ID приложения для Discord Rich Presense
 discord_show_task = true		;; Выводить в статус Дискорда текущий квест
 ls_tips_enabled = true			;; Включены ли 100 советов по выживанию в Зоне
@@ -10,37 +10,40 @@ auto_snd_targets = true			;; Автоматическое определение кол-ва источников звука
 [gameplay]
 death_camera_mode = freelook 		;; freelook|fixedlook|firsteye
 poltergeist_visible_corpse = false 	;; Старая смерть полтергейстов true\false (вкл.\выкл.)
-autoreload_enabled = true		;; Включена ли автоматическая перезарядка оружия
+autoreload_enabled = true			;; Включена ли автоматическая перезарядка оружия
 distant_sounds_enabled = true		;; Включено ли приглушение звуков вдалеке
 distant_snd_distance = 150.0		;; Дистанция после которой звуки становятся приглушенными
 distant_snd_distance_far = 250.0	;; Дистанция свыше которой звуки становятся сильно приглушенными
-torch_use_battery = false		;; Ограниченный заряд фонаря
-artefact_detector_use_battery = false	;; Ограниченный заряд детектора артефактов
-anomaly_detector_use_battery = false	;; Ограниченный заряд детектора аномалий
-limited_bolts = false			;; Лимитированные болты
+torch_use_battery = false			;; Ограниченный заряд фонаря
+artefact_detector_use_battery = false ;; Ограниченный заряд детектора артефактов
+anomaly_detector_use_battery  = false ;; Ограниченный заряд детектора аномалий
+limited_bolts = false				;; Лимитированные болты
 actor_thirst_enabled = false		;; Жажда ГГ
 actor_intoxication_enabled = false	;; Интоксикация ГГ
 actor_sleepeness_enabled = false	;; Потребность ГГ во сне
 actor_alcoholism_enabled = false	;; Алкоголизм
 actor_narcotism_enabled = false		;; Наркомания
 artefacts_degradation = false		;; Деградация артефактов на поясе
-multi_item_pickup = true		;; Подбор сразу нескольких предметов
-show_wpn_info = true			;; Показывать характеристики оружия
+multi_item_pickup = true			;; Подбор сразу нескольких предметов
+show_wpn_info = true				;; Показывать характеристики оружия
 jump_and_speed_weight_calc = false	;; Снижение скорости передвижений и высоты прыжков от веса в рюкзаке
 hide_weapon_in_inventory = false	;; Убирать оружие, если открыт инвентарь
 stop_actor_sprint_if_shoot = false	;; Останавливать спринт во время стрельбы
 enable_reload_if_sprint = true		;; Разрешить перезарядку во время спринта
+colorize_values = false				;; Подкрашивание значения у артефактов, бустеров
+colorize_values_red = 255,0,0,255	;; Цвет негативного значения у артефактов, бустеров(RGBA)
+colorize_values_green = 0,255,0,255	;; Цвет положительного значения у артефактов, бустеров(RBGA)
 
 [inventory]
-enable_knife_slot = false		;; Включен ли слот ножа
+enable_knife_slot = false			;; Включен ли слот ножа
 enable_binocular_slot = false		;; Включен ли слот бинокля
-enable_torch_slot = false		;; Включен ли слот фонарика
+enable_torch_slot = false			;; Включен ли слот фонарика
 enable_backpack_slot = false		;; Включен ли слот рюкзака
 enable_second_helmet_slot = false	;; Включен ли слот второго шлема
 enable_dosimeter_slot = false		;; Включен ли слот дозиметра
-enable_pants_slot = false		;; Включен ли слот штанов
-enable_pda_slot = false			;; Включен ли слот КПК
-artefacts_count = 5			;; Количество слотов под артефакты
+enable_pants_slot = false			;; Включен ли слот штанов
+enable_pda_slot = false				;; Включен ли слот КПК
+artefacts_count = 5					;; Количество слотов под артефакты
 
 [start_settings];Стартовые значения необходимых настроек
 tonemap_middlegray = 0.95

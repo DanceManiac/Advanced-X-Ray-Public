@@ -10,6 +10,7 @@
 #include "../string_table.h"
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
+#include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
 {
@@ -247,7 +248,11 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 					break;
 			}
 			val /= max_val;
-			m_booster_items[i]->SetValue(val);
+			int vle = 2;
+			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
+			if (i == eBoostRadiationRestore)
+				vle = 1; 
+			m_booster_items[i]->SetValue(vle, val);
 
 			pos.set(m_booster_items[i]->GetWndPos());
 			pos.y = h;
@@ -263,7 +268,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val	= pSettings->r_float(section, "eat_satiety");
 		if(!fis_zero(val))
 		{
-			m_booster_satiety->SetValue(val);
+			m_booster_satiety->SetValue(2,val);
 			pos.set(m_booster_satiety->GetWndPos());
 			pos.y = h;
 			m_booster_satiety->SetWndPos(pos);
@@ -288,7 +293,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "charge_level");
 		if (!fis_zero(val))
 		{
-			m_booster_battery->SetValue(val);
+			m_booster_battery->SetValue(0,val);
 			pos.set(m_booster_battery->GetWndPos());
 			pos.y = h;
 			m_booster_battery->SetWndPos(pos);
@@ -304,7 +309,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "eat_thirst");
 		if (!fis_zero(val))
 		{
-			m_booster_thirst->SetValue(val);
+			m_booster_thirst->SetValue(2, val);
 			pos.set(m_booster_thirst->GetWndPos());
 			pos.y = h;
 			m_booster_thirst->SetWndPos(pos);
@@ -320,7 +325,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "eat_intoxication");
 		if (!fis_zero(val))
 		{
-			m_booster_intoxication->SetValue(val);
+			m_booster_intoxication->SetValue(1, val);
 			pos.set(m_booster_intoxication->GetWndPos());
 			pos.y = h;
 			m_booster_intoxication->SetWndPos(pos);
@@ -336,7 +341,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "eat_sleepeness");
 		if (!fis_zero(val))
 		{
-			m_booster_sleepeness->SetValue(val);
+			m_booster_sleepeness->SetValue(1, val);
 			pos.set(m_booster_sleepeness->GetWndPos());
 			pos.y = h;
 			m_booster_sleepeness->SetWndPos(pos);
@@ -352,7 +357,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "eat_alcoholism");
 		if (!fis_zero(val))
 		{
-			m_booster_alcoholism->SetValue(val);
+			m_booster_alcoholism->SetValue(1, val);
 			pos.set(m_booster_alcoholism->GetWndPos());
 			pos.y = h;
 			m_booster_alcoholism->SetWndPos(pos);
@@ -368,7 +373,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "eat_hangover");
 		if (!fis_zero(val))
 		{
-			m_booster_hangover->SetValue(val);
+			m_booster_hangover->SetValue(1, val);
 			pos.set(m_booster_hangover->GetWndPos());
 			pos.y = h;
 			m_booster_hangover->SetWndPos(pos);
@@ -384,7 +389,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "eat_narcotism");
 		if (!fis_zero(val))
 		{
-			m_booster_narcotism->SetValue(val);
+			m_booster_narcotism->SetValue(1, val);
 			pos.set(m_booster_narcotism->GetWndPos());
 			pos.y = h;
 			m_booster_narcotism->SetWndPos(pos);
@@ -400,7 +405,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val = pSettings->r_float(section, "eat_withdrawal");
 		if (!fis_zero(val))
 		{
-			m_booster_withdrawal->SetValue(val);
+			m_booster_withdrawal->SetValue(1, val);
 			pos.set(m_booster_withdrawal->GetWndPos());
 			pos.y = h;
 			m_booster_withdrawal->SetWndPos(pos);
@@ -417,7 +422,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 		if (!fis_zero(val))
 		{
-			m_portions->SetValue(val);
+			m_portions->SetValue(0,val);
 			pos.set(m_portions->GetWndPos());
 			pos.y = h;
 			m_portions->SetWndPos(pos);
@@ -432,7 +437,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val	= pSettings->r_float(section, "boost_time");
 		if(!fis_zero(val))
 		{
-			m_booster_time->SetValue(val);
+			m_booster_time->SetValue(0, val);
 			pos.set(m_booster_time->GetWndPos());
 			pos.y = h;
 			m_booster_time->SetWndPos(pos);
@@ -492,7 +497,7 @@ void UIBoosterInfoItem::SetCaption(LPCSTR name)
 	m_caption->TextItemControl()->SetText(name);
 }
 
-void UIBoosterInfoItem::SetValue(float value)
+void UIBoosterInfoItem::SetValue(int vle, float value)
 {
 	value *= m_magnitude;
 	string32 buf;
@@ -510,7 +515,23 @@ void UIBoosterInfoItem::SetValue(float value)
 	m_value->SetText(str);
 
 	bool positive = (value >= 0.0f);
-	m_value->SetTextColor(color_rgba(170,170,170,255));
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	u32 red_color = color_rgba(red.x, red.y, red.z, red.w);
+	u32 green_color = color_rgba(green.x, green.y, green.z, green.w);
+	if (GameConstants::GetColorizeValues())
+	{
+		if (vle == 1)
+		{
+			positive?m_value->SetTextColor(red_color):m_value->SetTextColor(green_color);
+		}
+		else if (vle == 2)
+		{
+			positive?m_value->SetTextColor(green_color):m_value->SetTextColor(red_color);
+		}
+	}
+	else
+		m_value->SetTextColor(color_rgba(170,170,170,255));
 
 	if(m_texture_minus.size())
 	{
