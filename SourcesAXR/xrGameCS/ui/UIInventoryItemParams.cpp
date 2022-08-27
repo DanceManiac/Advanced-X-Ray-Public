@@ -120,7 +120,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "af_radius");
 		if (!fis_zero(val))
 		{
-			m_af_radius->SetValue(val);
+			m_af_radius->SetValue(0, val);
 			pos.set(m_af_radius->GetWndPos());
 			pos.y = h;
 			m_af_radius->SetWndPos(pos);
@@ -135,7 +135,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "af_vis_radius");
 		if (!fis_zero(val))
 		{
-			m_af_vis_radius->SetValue(val);
+			m_af_vis_radius->SetValue(0, val);
 			pos.set(m_af_vis_radius->GetWndPos());
 			pos.y = h;
 			m_af_vis_radius->SetWndPos(pos);
@@ -150,7 +150,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "max_charge_level");
 		if (!fis_zero(val))
 		{
-			m_max_charge->SetValue(val);
+			m_max_charge->SetValue(0, val);
 			pos.set(m_max_charge->GetWndPos());
 			pos.y = h;
 			m_max_charge->SetWndPos(pos);
@@ -165,7 +165,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "uncharge_speed");
 		if (!fis_zero(val))
 		{
-			m_uncharge_speed->SetValue(val);
+			m_uncharge_speed->SetValue(0, val);
 			pos.set(m_uncharge_speed->GetWndPos());
 			pos.y = h;
 			m_uncharge_speed->SetWndPos(pos);
@@ -225,7 +225,7 @@ void CUIInventoryItemInfo::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void CUIInventoryItemInfo::SetValue(float value)
+void CUIInventoryItemInfo::SetValue(int vle, float value)
 {
 	value *= m_magnitude;
 	string32 buf;
@@ -243,7 +243,31 @@ void CUIInventoryItemInfo::SetValue(float value)
 	m_value->SetText(str);
 
 	bool positive = (value >= 0.0f);
-	m_value->SetTextColor(color_rgba(170, 170, 170, 255));
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
+	u32 red_color = color_rgba(red.x, red.y, red.z, red.w);
+	u32 green_color = color_rgba(green.x, green.y, green.z, green.w);
+	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
+	u32 color = (positive) ? green_color : red_color;
+
+	if (GameConstants::GetColorizeValues())
+	{
+		if (vle == 0)
+		{
+			m_value->SetTextColor(neutral_color);
+		}
+		else if (vle == 1)
+		{
+			positive ? m_value->SetTextColor(red_color) : m_value->SetTextColor(green_color);
+		}
+		else if (vle == 2)
+		{
+			positive ? m_value->SetTextColor(green_color) : m_value->SetTextColor(red_color);
+		}
+	}
+	else
+		m_value->SetTextColor(color_rgba(170, 170, 170, 255));
 
 	if (m_texture_minus.size())
 	{

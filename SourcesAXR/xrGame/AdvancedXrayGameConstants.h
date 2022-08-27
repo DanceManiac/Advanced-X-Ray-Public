@@ -35,4 +35,5 @@ namespace GameConstants
 	float GetDistantSndDistanceFar();
 	Fvector4 GetRedColor();
 	Fvector4 GetGreenColor();
+	Fvector4 GetNeutralColor();
 };

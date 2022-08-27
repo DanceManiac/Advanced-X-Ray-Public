@@ -253,14 +253,22 @@ void UIBoosterInfoItem::SetValue(int vle,float value)
 		STRCONCAT(str, buf);
 
 	m_value->SetText(str);
+	bool positive = (value >= 0.0f);
 	Fvector4 red = GameConstants::GetRedColor();
 	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
 	u32 red_color = color_rgba(red.x, red.y, red.z, red.w);
 	u32 green_color = color_rgba(green.x, green.y, green.z, green.w);
-	bool positive = (value >= 0.0f);
+	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
+	u32 color = (positive) ? green_color : red_color;
+
 	if (GameConstants::GetColorizeValues())
 	{
-		if (vle == 1)
+		if (vle == 0)
+		{
+			m_value->SetTextColor(neutral_color);
+		}
+		else if (vle == 1)
 		{
 			positive?m_value->SetTextColor(red_color):m_value->SetTextColor(green_color);
 		}
