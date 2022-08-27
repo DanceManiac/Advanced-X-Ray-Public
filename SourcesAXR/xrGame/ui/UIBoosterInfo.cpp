@@ -18,16 +18,8 @@ CUIBoosterInfo::CUIBoosterInfo()
 	{
 		m_booster_items[i] = NULL;
 	}
-	m_booster_satiety = NULL;
+
 	m_booster_anabiotic = NULL;
-	m_booster_battery = NULL;
-	m_booster_thirst = NULL;
-	m_booster_intoxication = NULL;
-	m_booster_sleepeness = NULL;
-	m_booster_alcoholism = NULL;
-	m_booster_hangover = NULL;
-	m_booster_narcotism = NULL;
-	m_booster_withdrawal = NULL;
 	m_portions = NULL;
 	m_booster_time = NULL;
 }
@@ -35,20 +27,45 @@ CUIBoosterInfo::CUIBoosterInfo()
 CUIBoosterInfo::~CUIBoosterInfo()
 {
 	delete_data(m_booster_items);
-	xr_delete(m_booster_satiety);
 	xr_delete(m_booster_anabiotic);
-	xr_delete(m_booster_battery);
-	xr_delete(m_booster_thirst);
-	xr_delete(m_booster_intoxication);
-	xr_delete(m_booster_sleepeness);
-	xr_delete(m_booster_alcoholism);
-	xr_delete(m_booster_hangover);
-	xr_delete(m_booster_narcotism);
-	xr_delete(m_booster_withdrawal);
 	xr_delete(m_portions);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
 }
+
+LPCSTR ef_boosters_values_names[] =
+{
+	"boost_health_restore",
+	"boost_power_restore",
+	"boost_radiation_restore",
+	"boost_bleeding_restore",
+	"boost_max_weight",
+	"boost_radiation_protection",
+	"boost_telepat_protection",
+	"boost_chemburn_protection",
+	/*"boost_burn_immunity",
+	"boost_shock_immunity",
+	"boost_radiation_immunity",
+	"boost_telepat_immunity",
+	"boost_chemburn_immunity",
+	"boost_explosion_immunity",
+	"boost_strike_immunity",
+	"boost_fire_wound_immunity",
+	"boost_wound_immunity",*/
+	"eat_satiety",
+
+	//M.F.S team additions
+	"eat_battery",
+	"eat_thirst",
+	"eat_intoxication",
+	"eat_sleepeness",
+
+	//HoP
+	"eat_alcoholism",
+	"eat_hangover",
+	"eat_narcotism",
+	"eat_withdrawal",
+};
 
 LPCSTR boost_influence_caption[] =
 {
@@ -60,11 +77,24 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",
 	"ui_inv_outfit_chemical_burn_protection",
-	"ui_inv_outfit_burn_immunity",
+	/*"ui_inv_outfit_burn_immunity",
 	"ui_inv_outfit_shock_immunity",
 	"ui_inv_outfit_radiation_immunity",
 	"ui_inv_outfit_telepatic_immunity",
-	"ui_inv_outfit_chemical_burn_immunity"
+	"ui_inv_outfit_chemical_burn_immunity"*/
+	"ui_inv_satiety",
+
+	//M.F.S Team additions
+	"ui_inv_battery",
+	"ui_inv_thirst",
+	"ui_inv_intoxication",
+	"ui_inv_sleepeness",
+
+	//HoP
+	"ui_inv_alcoholism",
+	"ui_inv_hangover",
+	"ui_inv_narcotism",
+	"ui_inv_withdrawal",
 };
 
 void CUIBoosterInfo::InitFromXml(CUIXml& xml)
@@ -95,82 +125,12 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 		xml.SetLocalRoot(base_node);
 	}
 
-	m_booster_satiety = xr_new<UIBoosterInfoItem>();
-	m_booster_satiety->Init(xml, "boost_satiety");
-	m_booster_satiety->SetAutoDelete(false);
-	LPCSTR name = CStringTable().translate("ui_inv_satiety").c_str();
-	m_booster_satiety->SetCaption(name);
-	xml.SetLocalRoot( base_node );
-
 	m_booster_anabiotic = xr_new<UIBoosterInfoItem>();
 	m_booster_anabiotic->Init(xml, "boost_anabiotic");
 	m_booster_anabiotic->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_survive_surge").c_str();
+	LPCSTR name = CStringTable().translate("ui_inv_survive_surge").c_str();
 	m_booster_anabiotic->SetCaption(name);
 	xml.SetLocalRoot( base_node );
-
-	m_booster_battery = xr_new<UIBoosterInfoItem>();
-	m_booster_battery->Init(xml, "boost_battery");
-	m_booster_battery->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_battery").c_str();
-	m_booster_battery->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Thirst
-	m_booster_thirst = xr_new<UIBoosterInfoItem>();
-	m_booster_thirst->Init(xml, "boost_thirst");
-	m_booster_thirst->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_thirst").c_str();
-	m_booster_thirst->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Intoxication
-	m_booster_intoxication = xr_new<UIBoosterInfoItem>();
-	m_booster_intoxication->Init(xml, "boost_intoxication");
-	m_booster_intoxication->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_intoxication").c_str();
-	m_booster_intoxication->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Sleepeness
-	m_booster_sleepeness = xr_new<UIBoosterInfoItem>();
-	m_booster_sleepeness->Init(xml, "boost_sleepeness");
-	m_booster_sleepeness->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_sleepeness").c_str();
-	m_booster_sleepeness->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Alcoholism (HoP)
-	m_booster_alcoholism = xr_new<UIBoosterInfoItem>();
-	m_booster_alcoholism->Init(xml, "boost_alcoholism");
-	m_booster_alcoholism->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_alcoholism").c_str();
-	m_booster_alcoholism->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Hangover (HoP)
-	m_booster_hangover = xr_new<UIBoosterInfoItem>();
-	m_booster_hangover->Init(xml, "boost_hangover");
-	m_booster_hangover->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_hangover").c_str();
-	m_booster_hangover->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Narcotism (HoP)
-	m_booster_narcotism = xr_new<UIBoosterInfoItem>();
-	m_booster_narcotism->Init(xml, "boost_narcotism");
-	m_booster_narcotism->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_narcotism").c_str();
-	m_booster_narcotism->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Drug Withdrawal (HoP)
-	m_booster_withdrawal = xr_new<UIBoosterInfoItem>();
-	m_booster_withdrawal->Init(xml, "boost_withdrawal");
-	m_booster_withdrawal->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_withdrawal").c_str();
-	m_booster_withdrawal->SetCaption(name);
-	xml.SetLocalRoot(base_node);
 
 	//Portions
 	m_portions = xr_new<UIBoosterInfoItem>();
@@ -210,9 +170,9 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 	for (u32 i = 0; i < eBoostExplImmunity; ++i)
 	{
-		if(pSettings->line_exist(section.c_str(), ef_boosters_section_names[i]))
+		if(pSettings->line_exist(section.c_str(), ef_boosters_values_names[i]))
 		{
-			val	= pSettings->r_float(section, ef_boosters_section_names[i]);
+			val	= pSettings->r_float(section, ef_boosters_values_names[i]);
 			if(fis_zero(val))
 				continue;
 
@@ -263,21 +223,6 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	if(pSettings->line_exist(section.c_str(), "eat_satiety"))
-	{
-		val	= pSettings->r_float(section, "eat_satiety");
-		if(!fis_zero(val))
-		{
-			m_booster_satiety->SetValue(2,val);
-			pos.set(m_booster_satiety->GetWndPos());
-			pos.y = h;
-			m_booster_satiety->SetWndPos(pos);
-
-			h += m_booster_satiety->GetWndSize().y;
-			AttachChild(m_booster_satiety);
-		}
-	}
-
 	if(!xr_strcmp(section.c_str(), "drug_anabiotic"))
 	{
 		pos.set(m_booster_anabiotic->GetWndPos());
@@ -286,133 +231,6 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 		h += m_booster_anabiotic->GetWndSize().y;
 		AttachChild(m_booster_anabiotic);
-	}
-
-	if (pSettings->line_exist(section.c_str(), "charge_level"))
-	{
-		val = pSettings->r_float(section, "charge_level");
-		if (!fis_zero(val))
-		{
-			m_booster_battery->SetValue(0,val);
-			pos.set(m_booster_battery->GetWndPos());
-			pos.y = h;
-			m_booster_battery->SetWndPos(pos);
-
-			h += m_booster_battery->GetWndSize().y;
-			AttachChild(m_booster_battery);
-		}
-	}
-
-	//M.F.S. Team Thirst
-	if (pSettings->line_exist(section.c_str(), "eat_thirst"))
-	{
-		val = pSettings->r_float(section, "eat_thirst");
-		if (!fis_zero(val))
-		{
-			m_booster_thirst->SetValue(2, val);
-			pos.set(m_booster_thirst->GetWndPos());
-			pos.y = h;
-			m_booster_thirst->SetWndPos(pos);
-
-			h += m_booster_thirst->GetWndSize().y;
-			AttachChild(m_booster_thirst);
-		}
-	}
-
-	//M.F.S. Team Intoxication
-	if (pSettings->line_exist(section.c_str(), "eat_intoxication"))
-	{
-		val = pSettings->r_float(section, "eat_intoxication");
-		if (!fis_zero(val))
-		{
-			m_booster_intoxication->SetValue(1, val);
-			pos.set(m_booster_intoxication->GetWndPos());
-			pos.y = h;
-			m_booster_intoxication->SetWndPos(pos);
-
-			h += m_booster_intoxication->GetWndSize().y;
-			AttachChild(m_booster_intoxication);
-		}
-	}
-
-	//M.F.S. Team Sleepeness
-	if (pSettings->line_exist(section.c_str(), "eat_sleepeness"))
-	{
-		val = pSettings->r_float(section, "eat_sleepeness");
-		if (!fis_zero(val))
-		{
-			m_booster_sleepeness->SetValue(1, val);
-			pos.set(m_booster_sleepeness->GetWndPos());
-			pos.y = h;
-			m_booster_sleepeness->SetWndPos(pos);
-
-			h += m_booster_sleepeness->GetWndSize().y;
-			AttachChild(m_booster_sleepeness);
-		}
-	}
-
-	//M.F.S. Team Alcoholism (HoP)
-	if (pSettings->line_exist(section.c_str(), "eat_alcoholism"))
-	{
-		val = pSettings->r_float(section, "eat_alcoholism");
-		if (!fis_zero(val))
-		{
-			m_booster_alcoholism->SetValue(1, val);
-			pos.set(m_booster_alcoholism->GetWndPos());
-			pos.y = h;
-			m_booster_alcoholism->SetWndPos(pos);
-
-			h += m_booster_alcoholism->GetWndSize().y;
-			AttachChild(m_booster_alcoholism);
-		}
-	}
-
-	//M.F.S. Team Hangover (HoP)
-	if (pSettings->line_exist(section.c_str(), "eat_hangover"))
-	{
-		val = pSettings->r_float(section, "eat_hangover");
-		if (!fis_zero(val))
-		{
-			m_booster_hangover->SetValue(1, val);
-			pos.set(m_booster_hangover->GetWndPos());
-			pos.y = h;
-			m_booster_hangover->SetWndPos(pos);
-
-			h += m_booster_hangover->GetWndSize().y;
-			AttachChild(m_booster_hangover);
-		}
-	}
-
-	//M.F.S. Team Narcotism (HoP)
-	if (pSettings->line_exist(section.c_str(), "eat_narcotism"))
-	{
-		val = pSettings->r_float(section, "eat_narcotism");
-		if (!fis_zero(val))
-		{
-			m_booster_narcotism->SetValue(1, val);
-			pos.set(m_booster_narcotism->GetWndPos());
-			pos.y = h;
-			m_booster_narcotism->SetWndPos(pos);
-
-			h += m_booster_narcotism->GetWndSize().y;
-			AttachChild(m_booster_narcotism);
-		}
-	}
-
-	//M.F.S. Team Drug Withdrawal (HoP)
-	if (pSettings->line_exist(section.c_str(), "eat_withdrawal"))
-	{
-		val = pSettings->r_float(section, "eat_withdrawal");
-		if (!fis_zero(val))
-		{
-			m_booster_withdrawal->SetValue(1, val);
-			pos.set(m_booster_withdrawal->GetWndPos());
-			pos.y = h;
-			m_booster_withdrawal->SetWndPos(pos);
-
-			h += m_booster_withdrawal->GetWndSize().y;
-			AttachChild(m_booster_withdrawal);
-		}
 	}
 
 	//Portions
