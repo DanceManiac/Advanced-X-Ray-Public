@@ -177,7 +177,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 		if (!fis_zero(val))
 		{
-			m_portions->SetValue(0,val);
+			m_portions->SetValue(val);
 			pos.set(m_portions->GetWndPos());
 			pos.y = h;
 			m_portions->SetWndPos(pos);
@@ -237,7 +237,7 @@ void UIBoosterInfoItem::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void UIBoosterInfoItem::SetValue(int vle,float value)
+void UIBoosterInfoItem::SetValue(float value, int vle = 0)
 {
 	value *= m_magnitude;
 	string32 buf;

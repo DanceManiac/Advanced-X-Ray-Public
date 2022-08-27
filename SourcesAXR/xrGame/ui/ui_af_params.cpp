@@ -458,7 +458,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fChargeLevel;
 		if (!fis_zero(val) || GameConstants::GetArtefactsDegradation())
 		{
-			m_fChargeLevel->SetValue(0, val);
+			m_fChargeLevel->SetValue(val);
 
 			pos.set(m_fChargeLevel->GetWndPos());
 			pos.y = h;
@@ -521,7 +521,7 @@ void UIArtefactParamItem::SetCaption( LPCSTR name )
 	m_caption->TextItemControl()->SetText( name );
 }
 
-void UIArtefactParamItem::SetValue(int vle, float value )
+void UIArtefactParamItem::SetValue(float value, int vle )
 {
 	value *= m_magnitude;
 	string32	buf;

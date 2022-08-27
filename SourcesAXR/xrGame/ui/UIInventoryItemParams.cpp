@@ -117,7 +117,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "af_radius");
 		if (!fis_zero(val))
 		{
-			m_af_radius->SetValue(0, val);
+			m_af_radius->SetValue(val);
 			pos.set(m_af_radius->GetWndPos());
 			pos.y = h;
 			m_af_radius->SetWndPos(pos);
@@ -132,7 +132,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "af_vis_radius");
 		if (!fis_zero(val))
 		{
-			m_af_vis_radius->SetValue(0, val);
+			m_af_vis_radius->SetValue(val);
 			pos.set(m_af_vis_radius->GetWndPos());
 			pos.y = h;
 			m_af_vis_radius->SetWndPos(pos);
@@ -147,7 +147,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "max_charge_level");
 		if (!fis_zero(val))
 		{
-			m_max_charge->SetValue(0, val);
+			m_max_charge->SetValue(val);
 			pos.set(m_max_charge->GetWndPos());
 			pos.y = h;
 			m_max_charge->SetWndPos(pos);
@@ -162,7 +162,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 		val = pSettings->r_float(section, "uncharge_speed");
 		if (!fis_zero(val))
 		{
-			m_uncharge_speed->SetValue(0, val);
+			m_uncharge_speed->SetValue(val);
 			pos.set(m_uncharge_speed->GetWndPos());
 			pos.y = h;
 			m_uncharge_speed->SetWndPos(pos);
@@ -222,7 +222,7 @@ void CUIInventoryItemInfo::SetCaption(LPCSTR name)
 	m_caption->TextItemControl()->SetText(name);
 }
 
-void CUIInventoryItemInfo::SetValue(int vle, float value)
+void CUIInventoryItemInfo::SetValue(float value, int vle)
 {
 	value *= m_magnitude;
 	string32 buf;
