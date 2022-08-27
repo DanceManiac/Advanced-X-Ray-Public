@@ -436,17 +436,6 @@ void CGamePersistent::WeathersUpdate()
 
 void CGamePersistent::start_logo_intro		()
 {
-#ifdef MASTER_GOLD
-	if (g_SASH.IsRunning())
-#else	// #ifdef MASTER_GOLD
-	if ((0!=strstr(Core.Params,"-nointro")) || g_SASH.IsRunning())
-#endif	// #ifdef MASTER_GOLD
-	{
-		m_intro_event			= 0;
-		Console->Show			();
-		Console->Execute		("main_menu on");
-		return;
-	}
 	if (Device.dwPrecacheFrame==0)
 	{
 		m_intro_event.bind		(this,&CGamePersistent::update_logo_intro);
@@ -455,6 +444,7 @@ void CGamePersistent::start_logo_intro		()
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("intro_logo");
+			Msg					("intro_start intro_logo");
 			Console->Hide		();
 		}
 	}
@@ -465,6 +455,10 @@ void CGamePersistent::update_logo_intro			()
 		m_intro_event			= 0;
 		xr_delete				(m_intro);
 		Console->Execute		("main_menu on");
+	}
+	else if (!m_intro)
+	{
+		m_intro_event = 0;
 	}
 }
 
@@ -513,16 +507,6 @@ void CGamePersistent::start_game_intro		()
 	if (!allow_intro())
 	{
 		m_intro_event = 0;
-		return;
-	}
-
-#ifdef MASTER_GOLD
-	if (g_SASH.IsRunning())
-#else	// #ifdef MASTER_GOLD
-	if ((0!=strstr(Core.Params,"-nointro")) || g_SASH.IsRunning())
-#endif	// #ifdef MASTER_GOLD
-	{
-		m_intro_event			= 0;
 		return;
 	}
 
