@@ -225,7 +225,7 @@ void CUIInventoryItemInfo::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void CUIInventoryItemInfo::SetValue(float value, int vle = 0)
+void CUIInventoryItemInfo::SetValue(float value, int vle)
 {
 	value *= m_magnitude;
 	string32 buf;

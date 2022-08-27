@@ -283,7 +283,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		max_val = actor->conditions().GetZoneMaxPower( (ALife::EInfluenceType)i );
 		val /= max_val;
 
-		m_immunity_item[i]->SetValue(2, val );
+		m_immunity_item[i]->SetValue(val, 2);
 
 		pos.set( m_immunity_item[i]->GetWndPos() );
 		pos.y = h;
@@ -298,7 +298,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_additional_weight;
 		if (!fis_zero(val))
 		{
-			m_additional_weight->SetValue(2, val);
+			m_additional_weight->SetValue(val, 2);
 
 			pos.set(m_additional_weight->GetWndPos());
 			pos.y = h;
@@ -311,7 +311,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fHealthRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fHealthRestoreSpeed->SetValue(2, val);
+			m_fHealthRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fHealthRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -324,7 +324,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fRadiationRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fRadiationRestoreSpeed->SetValue(1, val);
+			m_fRadiationRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fRadiationRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -337,7 +337,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fSatietyRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fSatietyRestoreSpeed->SetValue(2, val);
+			m_fSatietyRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fSatietyRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -350,7 +350,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fPowerRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fPowerRestoreSpeed->SetValue(2, val);
+			m_fPowerRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fPowerRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -363,7 +363,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fBleedingRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fBleedingRestoreSpeed->SetValue(2, val);
+			m_fBleedingRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fBleedingRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -376,7 +376,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fThirstRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fThirstRestoreSpeed->SetValue(2, val);
+			m_fThirstRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fThirstRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -389,7 +389,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fIntoxicationRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fIntoxicationRestoreSpeed->SetValue(1, val);
+			m_fIntoxicationRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fIntoxicationRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -402,7 +402,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fSleepenessRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fSleepenessRestoreSpeed->SetValue(1, val);
+			m_fSleepenessRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fSleepenessRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -415,7 +415,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fAlcoholismRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fAlcoholismRestoreSpeed->SetValue(1, val);
+			m_fAlcoholismRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fAlcoholismRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -428,7 +428,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fWalkAccel;
 		if (!fis_zero(val) && val > 1.0f)
 		{
-			m_fWalkAccel->SetValue(2, val);
+			m_fWalkAccel->SetValue(val, 2);
 
 			pos.set(m_fWalkAccel->GetWndPos());
 			pos.y = h;
@@ -441,7 +441,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fJumpSpeed;
 		if (!fis_zero(val) && val > 1.0f)
 		{
-			m_fJumpSpeed->SetValue(2, val);
+			m_fJumpSpeed->SetValue(val, 2);
 
 			pos.set(m_fJumpSpeed->GetWndPos());
 			pos.y = h;

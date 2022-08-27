@@ -157,7 +157,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 			if (i == _item_radiation_restore_speed || i == _item_bleeding_restore_speed || i >= _item_intoxication)
 				vle = 1;
-			m_booster_items[i]->SetValue(vle, val);
+			m_booster_items[i]->SetValue(val, vle);
 
 			pos.set(m_booster_items[i]->GetWndPos());
 			pos.y = h;
@@ -237,7 +237,7 @@ void UIBoosterInfoItem::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void UIBoosterInfoItem::SetValue(float value, int vle = 0)
+void UIBoosterInfoItem::SetValue(float value, int vle)
 {
 	value *= m_magnitude;
 	string32 buf;

@@ -210,9 +210,9 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			val /= max_val;
 			int vle = 2;
 			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
-			if (i == eBoostRadiationRestore)
+			if (i == _item_boost_radiation_restore || i == _item_boost_bleeding_restore || i >= _item_intoxication)
 				vle = 1; 
-			m_booster_items[i]->SetValue(vle, val);
+			m_booster_items[i]->SetValue(val, vle);
 
 			pos.set(m_booster_items[i]->GetWndPos());
 			pos.y = h;
@@ -240,7 +240,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 		if (!fis_zero(val))
 		{
-			m_portions->SetValue(0,val);
+			m_portions->SetValue(val);
 			pos.set(m_portions->GetWndPos());
 			pos.y = h;
 			m_portions->SetWndPos(pos);
@@ -255,7 +255,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		val	= pSettings->r_float(section, "boost_time");
 		if(!fis_zero(val))
 		{
-			m_booster_time->SetValue(0, val);
+			m_booster_time->SetValue(val);
 			pos.set(m_booster_time->GetWndPos());
 			pos.y = h;
 			m_booster_time->SetWndPos(pos);
@@ -315,7 +315,7 @@ void UIBoosterInfoItem::SetCaption(LPCSTR name)
 	m_caption->TextItemControl()->SetText(name);
 }
 
-void UIBoosterInfoItem::SetValue(int vle, float value)
+void UIBoosterInfoItem::SetValue(float value, int vle)
 {
 	value *= m_magnitude;
 	string32 buf;
