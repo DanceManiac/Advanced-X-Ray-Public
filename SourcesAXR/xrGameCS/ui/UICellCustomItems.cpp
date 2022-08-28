@@ -71,6 +71,10 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	{
 		return false;
 	}
+	if (artefact && artefact->GetCurrentAfRank() != smart_cast<CArtefact*>(ci->object())->GetCurrentAfRank())
+	{
+		return false;
+	}
 	return true;
 }
 

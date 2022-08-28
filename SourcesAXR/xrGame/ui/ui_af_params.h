@@ -33,6 +33,7 @@ protected:
 	UIArtefactParamItem*	m_fAlcoholismRestoreSpeed;
 	UIArtefactParamItem*	m_fJumpSpeed;
 	UIArtefactParamItem*	m_fWalkAccel;
+	UIArtefactParamItem*	m_iArtefactRank;
 	UIArtefactParamItem*	m_fChargeLevel;
 
 	CUIStatic*				m_Prop_line;

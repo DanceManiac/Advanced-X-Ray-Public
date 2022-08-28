@@ -34,6 +34,7 @@ CUIArtefactParams::CUIArtefactParams()
 	m_fWalkAccel = NULL;
 	m_fJumpSpeed = NULL;
 	m_additional_weight = NULL;
+	m_iArtefactRank = NULL;
 	m_fChargeLevel = NULL;
 }
 
@@ -52,6 +53,7 @@ CUIArtefactParams::~CUIArtefactParams()
 	xr_delete	(m_fWalkAccel);
 	xr_delete	(m_fJumpSpeed);
 	xr_delete	(m_additional_weight);
+	xr_delete	(m_iArtefactRank);
 	xr_delete	(m_fChargeLevel);
 	xr_delete	(m_Prop_line);
 }
@@ -231,6 +233,13 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_additional_weight->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_weight").c_str();
 	m_additional_weight->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_iArtefactRank = xr_new<UIArtefactParamItem>();
+	m_iArtefactRank->Init(xml, "artefact_rank");
+	m_iArtefactRank->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_af_rank").c_str();
+	m_iArtefactRank->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_fChargeLevel = xr_new<UIArtefactParamItem>();
@@ -455,8 +464,21 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 			AttachChild(m_fJumpSpeed);
 		}
 
+		val = artefact->m_iAfRank;
+		if (!fis_zero(val) && GameConstants::GetAfRanks())
+		{
+			m_iArtefactRank->SetValue(val);
+
+			pos.set(m_iArtefactRank->GetWndPos());
+			pos.y = h;
+			m_iArtefactRank->SetWndPos(pos);
+
+			h += m_iArtefactRank->GetWndSize().y;
+			AttachChild(m_iArtefactRank);
+		}
+
 		val = artefact->m_fChargeLevel;
-		if (!fis_zero(val) || GameConstants::GetArtefactsDegradation())
+		if (!fis_zero(val) && GameConstants::GetArtefactsDegradation())
 		{
 			m_fChargeLevel->SetValue(val);
 

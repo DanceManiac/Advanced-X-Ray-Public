@@ -30,6 +30,7 @@ namespace GameConstants
 	bool GetStopActorIfShoot();
 	bool GetReloadIfSprint();
 	bool GetColorizeValues();
+	bool GetAfRanks();
 	int  GetArtefactsCount();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();

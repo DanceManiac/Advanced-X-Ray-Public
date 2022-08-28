@@ -114,11 +114,14 @@ public:
 	float							m_fCurrentChargeLevel;
 	float							m_fDegradationSpeed;
 	float							GetCurrentChargeLevel(void) const;
+	int								GetCurrentAfRank(void) const;
 
 	bool							m_bVolumetricLights;
 	float							m_fVolumetricQuality;
 	float							m_fVolumetricDistance;
 	float							m_fVolumetricIntensity;
+
+	int								m_iAfRank;
 public:
 	enum EAFHudStates {
 		eActivating = eLastBaseState+1,
