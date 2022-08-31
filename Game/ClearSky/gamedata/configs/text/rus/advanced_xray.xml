@@ -321,4 +321,7 @@
 	<string id="st_change_filter">
 		<text>Заменить фильтр у</text>
 	</string>
+	<string id="ui_inv_portions">
+		<text>Кол-во порций</text>
+	</string>
 </string_table>
