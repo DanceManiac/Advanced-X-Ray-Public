@@ -2491,7 +2491,7 @@
     <Filter Include="EmbeddedEditor">
       <UniqueIdentifier>{31bb450c-ccdf-490a-a0be-a71c3d69d2a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Client\Objects\items &amp; weapons\Battery">
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Consumables">
       <UniqueIdentifier>{671b2682-c463-4887-8384-91bd9bade277}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -7399,7 +7399,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClInclude>
     <ClInclude Include="Battery.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Battery</Filter>
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIInventoryItemParams.h">
       <Filter>UI\Common\ui-item-infos</Filter>
@@ -7414,6 +7414,9 @@
     <ClInclude Include="profile_data_types_script.h" />
     <ClInclude Include="embedded_editor\embedded_editor_imgui_hud.h">
       <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="AntigasFilter.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -11078,7 +11081,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClCompile>
     <ClCompile Include="Battery.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Battery</Filter>
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIInventoryItemParams.cpp">
       <Filter>UI\Common\ui-item-infos</Filter>
@@ -11092,6 +11095,9 @@
     <ClCompile Include="ActorNightVision.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_imgui_hud.cpp">
       <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="AntigasFilter.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

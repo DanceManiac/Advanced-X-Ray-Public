@@ -16,11 +16,15 @@ public:
 	virtual			~CUIOutfitImmunity	();
 
 			void	InitFromXml			( CUIXml& xml_doc, LPCSTR base_str, u32 hit_type );
+			void	InitFromXml			(CUIXml& xml_doc, LPCSTR base_str);
 			void	SetProgressValue	( float cur, float comp );
+			void	SetFilterProgressValue(float cur, float comp);
 
 protected:
 	CUIStatic				m_name; // texture + name
+	CUIStatic				m_filter_name;
 	CUIDoubleProgressBar	m_progress;
+	CUIDoubleProgressBar	m_filter_progress;
 	CUIStatic				m_value; // 100%
 	float					m_magnitude;
 
@@ -54,5 +58,6 @@ protected:
 	
 	CUIStatic*			m_caption;
 	CUIOutfitImmunity*	m_items[max_count];
+	CUIOutfitImmunity*	m_outfit_filter_condition;
 
 }; // class CUIOutfitInfo

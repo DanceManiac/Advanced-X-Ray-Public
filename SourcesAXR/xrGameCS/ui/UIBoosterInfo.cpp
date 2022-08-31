@@ -47,6 +47,8 @@ LPCSTR ef_boosters_nodes_names[] =
 	"boost_hangover",
 	"boost_narcotism",
 	"boost_withdrawal",
+
+	"boost_filter_condition",
 };
 
 LPCSTR ef_boosters_section_names[] =
@@ -68,6 +70,8 @@ LPCSTR ef_boosters_section_names[] =
 	"eat_hangover",
 	"eat_narcotism",
 	"eat_withdrawal",
+
+	"filter_condition",
 };
 
 LPCSTR boost_influence_caption[] =
@@ -89,6 +93,8 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_hangover",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
+
+	"ui_inv_filter_condition",
 };
 
 void CUIBoosterInfo::InitFromXml(CUIXml& xml)

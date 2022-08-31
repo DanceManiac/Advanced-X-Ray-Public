@@ -29,9 +29,15 @@ public:
 	virtual void			OnMoveToSlot		(const SInvItemPlace& prev);
 	virtual void			OnMoveToRuck		(const SInvItemPlace& previous_place);
 	virtual void			OnH_A_Chield		();
+	virtual void			save				(NET_Packet& output_packet);
+	virtual void			load				(IReader& input_packet);
+	void					UpdateFilterCondition(void);
+	float					GetFilterCondition	(void) const;
+	void					SetFilterCondition	(float val);
+	float					GetDegradationSpeed	(void) const;
+	void					FilterReplace		(float val);
 
 protected:
-	HitImmunity::HitTypeSVec		m_HitTypeProtection;
 
 	shared_str				m_ActorVisual;
 	shared_str				m_full_icon_name;
@@ -60,11 +66,15 @@ public:
 	float					m_fWalkAccel;
 	float					m_fOverweightWalkK;
 
+	float					m_fFilterDegradation;
+	float					m_fFilterCondition;
+
 	shared_str				m_BonesProtectionSect;
 	shared_str				m_NightVisionSect;
 
 	bool					bIsHelmetAvaliable;
 	bool					m_b_HasGlass;
+	bool					m_bUseFilter;
 	u32						m_NightVisionType;
 
 	virtual u32				ef_equipment_type		() const;
@@ -81,6 +91,8 @@ public:
 
 			IC int			GetOutfitNV_Type		() const { return m_NightVisionType; }
 
+	HitImmunity::HitTypeSVec m_ConstHitTypeProtection;
+	HitImmunity::HitTypeSVec m_HitTypeProtection;
 protected:
 	virtual bool			install_upgrade_impl( LPCSTR section, bool test );
 };

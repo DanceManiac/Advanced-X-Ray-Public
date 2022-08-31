@@ -6,6 +6,8 @@
 #include "UIProgressBar.h"
 #include "../eatable_item.h"
 #include "../Artefact.h"
+#include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 
 #define INV_GRID_WIDTHF			50.0f
 #define INV_GRID_HEIGHTF		50.0f
@@ -73,6 +75,16 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 		return false;
 	}
 	if (artefact && artefact->GetCurrentAfRank() != smart_cast<CArtefact*>(ci->object())->GetCurrentAfRank())
+	{
+		return false;
+	}
+	auto outfit = smart_cast<CCustomOutfit*>(object());
+	if (outfit && outfit->GetFilterCondition() != smart_cast<CCustomOutfit*>(ci->object())->GetFilterCondition())
+	{
+		return false;
+	}
+	auto helmet = smart_cast<CHelmet*>(object());
+	if (helmet && helmet->GetFilterCondition() != smart_cast<CHelmet*>(ci->object())->GetFilterCondition())
 	{
 		return false;
 	}

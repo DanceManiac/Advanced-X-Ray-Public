@@ -933,6 +933,7 @@
     <ClInclude Include="animation_utils.h" />
     <ClInclude Include="AnomalyDetector.h" />
     <ClInclude Include="anticheat_dumpable_object.h" />
+    <ClInclude Include="AntigasFilter.h" />
     <ClInclude Include="antirad.h" />
     <ClInclude Include="Artefact.h" />
     <ClInclude Include="artefact_activation.h" />
@@ -3238,6 +3239,7 @@
     </ClCompile>
     <ClCompile Include="animation_utils.cpp" />
     <ClCompile Include="AnomalyDetector.cpp" />
+    <ClCompile Include="AntigasFilter.cpp" />
     <ClCompile Include="antirad.cpp" />
     <ClCompile Include="Artefact.cpp" />
     <ClCompile Include="artefact_activation.cpp" />

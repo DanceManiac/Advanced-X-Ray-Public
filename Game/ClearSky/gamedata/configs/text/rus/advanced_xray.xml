@@ -309,4 +309,16 @@
 	<string id="ui_inv_af_rank">
 		<text>Ранг</text>
 	</string>
+	<string id="ui_inv_filter_condition">
+		<text>Чистота фильтра</text>
+	</string>
+	<string id="st_filter">
+		<text>Фильтр противогаза</text>
+	</string>
+	<string id="st_filter_descr">
+		<text>Обычный фильтр для противогаза.</text>
+	</string>
+	<string id="st_change_filter">
+		<text>Заменить фильтр у</text>
+	</string>
 </string_table>

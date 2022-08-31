@@ -43,6 +43,7 @@ protected:
 	CUIStatic*			m_ind_sleepeness;
 	CUIStatic*			m_ind_alcoholism;
 	CUIStatic*			m_ind_narcotism;
+	CUIStatic*			m_ind_filter_dirty;
 	CUIStatic*			m_ind_weapon_broken;
 	CUIStatic*			m_ind_helmet_broken;
 	CUIStatic*			m_ind_outfit_broken;

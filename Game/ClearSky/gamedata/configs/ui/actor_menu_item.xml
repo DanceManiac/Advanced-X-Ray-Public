@@ -304,6 +304,21 @@
 				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 			</static_value>
 		</fire_wound_immunity>
+		
+		<antigas_filter x="0" y="0" width="18" height="18">
+			<texture>ui_item_filter_icon</texture>
+			<text font="letterica16" x="22" y="0" color="ui_3" align="l" vert_align="c">ui_inv_filter_condition</text>
+			<progress_bar x="130" y="4" width="100" height="8" horz="1">
+				<progress>
+					<texture a="255" r="55" g="255" b="255">ui_buymenu_progBar</texture>
+				</progress>
+				<background>
+					<texture a="90" r="55" g="255" b="255">ui_buymenu_progBar</texture>
+				</background>
+				<color_less color="pda_red"  />
+				<color_more color="pda_green"/>
+			</progress_bar>
+		</antigas_filter>
 	</outfit_info>
 	
 		<cap_current_charge_level x="0" y="0" width="121" height="8">

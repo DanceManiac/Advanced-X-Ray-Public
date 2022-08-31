@@ -25,6 +25,13 @@ public:
 	virtual void			net_Export				(NET_Packet& P);
 	virtual void			net_Import				(NET_Packet& P);
 	virtual void			OnH_A_Chield			();
+	virtual void			save					(NET_Packet& output_packet);
+	virtual void			load					(IReader& input_packet);
+			void			UpdateFilterCondition	(void);
+			float			GetFilterCondition		(void) const;
+			void			SetFilterCondition		(float val);
+			float			GetDegradationSpeed		(void) const;
+			void			FilterReplace			(float val);
 
 			IC int			GetHelmetNV_Type		() const { return m_NightVisionType; }
 
@@ -40,16 +47,20 @@ public:
 	float 					m_fSatietyRestoreSpeed;
 	float					m_fPowerRestoreSpeed;
 	float					m_fBleedingRestoreSpeed;
+	float					m_fFilterDegradation;
+	float					m_fFilterCondition;
 
 	float					m_fShowNearestEnemiesDistance;
 
 	bool					m_bSecondHelmetEnabled;
 	bool					m_b_HasGlass;
+	bool					m_bUseFilter;
 	u32						m_NightVisionType;
 
 	void					ReloadBonesProtection	();
 	void					AddBonesProtection		(LPCSTR bones_section);
 protected:
+	HitImmunity::HitTypeSVec	m_ConstHitTypeProtection;
 	HitImmunity::HitTypeSVec	m_HitTypeProtection;
 	SBoneProtections*		m_boneProtection;	
 

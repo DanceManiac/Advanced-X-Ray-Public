@@ -34,8 +34,10 @@
 #include "../CustomDetector.h"
 #include "../PDA.h"
 #include "../Battery.h"
+#include "../AntigasFilter.h"
 
 #include "../actor_defs.h"
+#include "../Actor.h"
 #include "AdvancedXrayGameConstants.h"
 
 
@@ -906,8 +908,9 @@ bool CUIActorMenu::TryUseItem( CUICellItem* cell_itm )
 	CAntirad*		pAntirad		= smart_cast<CAntirad*>		(item);
 	CEatableItem*	pEatableItem	= smart_cast<CEatableItem*>	(item);
 	CBattery*		pBattery		= smart_cast<CBattery*>		(item);
+	CAntigasFilter* pFilter			= smart_cast<CAntigasFilter*>(item);
 
-	if ( !(pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery) )
+	if ( !(pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery || pFilter) )
 	{
 		return false;
 	}
@@ -1230,11 +1233,25 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CEatableItem*	pEatableItem	= smart_cast<CEatableItem*>	(item);
 	CBottleItem*	pBottleItem		= smart_cast<CBottleItem*>	(item);
 	CBattery*		pBattery		= smart_cast<CBattery*>		(item);
+	CAntigasFilter* pFilter			= smart_cast<CAntigasFilter*>(item);
 
 	CInventory*	inv	= &m_pActorInvOwner->inventory();
 	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
 	PIItem	item_in_art_detector_slot = inv->ItemFromSlot(DETECTOR_SLOT);
 	PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
+	PIItem	item_in_outfit_slot = inv->ItemFromSlot(OUTFIT_SLOT);
+	PIItem	item_in_helmet_slot = inv->ItemFromSlot(HELMET_SLOT);
+
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+
+	bool outfit_use_filter = false;
+	bool helmet_use_filter = false;
+
+	if (outfit)
+		outfit_use_filter = outfit->m_bUseFilter;
+	if (helmet)
+		helmet_use_filter = helmet->m_bUseFilter;
 
 	LPCSTR act_str = NULL;
 
@@ -1272,6 +1289,25 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
+			b_show = true;
+		}
+		return;
+	}
+	else if (pFilter)
+	{
+		if (item_in_outfit_slot && outfit_use_filter)
+		{
+			shared_str str = CStringTable().translate("st_change_filter");
+			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, FILTER_CHANGE_OUTFIT);
+			b_show = true;
+		}
+
+		if (item_in_helmet_slot && helmet_use_filter)
+		{
+			shared_str str = CStringTable().translate("st_change_filter");
+			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, FILTER_CHANGE_HELMET);
 			b_show = true;
 		}
 		return;
@@ -1483,14 +1519,32 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			break;
 		}
 	case BATTERY_CHARGE_DOSIMETER:
-	{
-		CBattery* battery = smart_cast<CBattery*>(item);
-		if (!battery)
+		{
+			CBattery* battery = smart_cast<CBattery*>(item);
+			if (!battery)
+				break;
+			battery->ChargeAnomalyDetector();
+			TryUseItem(cell_item);
 			break;
-		battery->ChargeAnomalyDetector();
-		TryUseItem(cell_item);
-		break;
-	}
+		}
+	case FILTER_CHANGE_OUTFIT:
+		{
+			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
+			if (!filter)
+				break;
+			filter->ChangeInOutfit();
+			TryUseItem(cell_item);
+			break;
+		}
+	case FILTER_CHANGE_HELMET:
+		{
+			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
+			if (!filter)
+				break;
+			filter->ChangeInHelmet();
+			TryUseItem(cell_item);
+			break;
+		}
 	}//switch
 
 	SetCurrentItem( NULL );

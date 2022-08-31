@@ -31,6 +31,7 @@ namespace GameConstants
 	bool GetReloadIfSprint();
 	bool GetColorizeValues();
 	bool GetAfRanks();
+	bool GetOutfitUseFilters();
 	int  GetArtefactsCount();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();

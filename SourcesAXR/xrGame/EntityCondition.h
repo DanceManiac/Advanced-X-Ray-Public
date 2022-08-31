@@ -60,7 +60,9 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_alcoholism",
 	"boost_hangover",
 	"boost_narcotism",
-	"boost_withdrawal"
+	"boost_withdrawal",
+
+	"boost_filter_condition"
 };
 
 struct SBooster{

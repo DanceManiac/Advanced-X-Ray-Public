@@ -153,6 +153,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_sleepeness		= UIHelper::CreateStatic(uiXml, "indicator_sleepeness", this);
 	m_ind_alcoholism		= UIHelper::CreateStatic(uiXml, "indicator_alcoholism", this);
 	m_ind_narcotism			= UIHelper::CreateStatic(uiXml, "indicator_narcotism", this);
+	m_ind_filter_dirty		= UIHelper::CreateStatic(uiXml, "indicator_filter", this);
 	m_ind_weapon_broken		= UIHelper::CreateStatic(uiXml, "indicator_weapon_broken", this);
 	m_ind_helmet_broken		= UIHelper::CreateStatic(uiXml, "indicator_helmet_broken", this);
 	m_ind_outfit_broken		= UIHelper::CreateStatic(uiXml, "indicator_outfit_broken", this);
@@ -906,9 +907,12 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 // Armor broken icon
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(pActor->inventory().ItemFromSlot(OUTFIT_SLOT));
 	m_ind_outfit_broken->Show(false);
+	m_ind_filter_dirty->Show(false);
+
 	if(outfit)
 	{
 		float condition = outfit->GetCondition();
+		float filter_cond = outfit->GetFilterCondition();
 		if(condition<0.75f)
 		{
 			m_ind_outfit_broken->Show(true);
@@ -919,6 +923,17 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			else
 				m_ind_outfit_broken->InitTexture("ui_inGame2_circle_Armorbroken_red");
 		}
+
+		if (filter_cond < 0.75f)
+		{
+			m_ind_filter_dirty->Show(true);
+			if (filter_cond > 0.5f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_green");
+			else if (filter_cond > 0.25f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_yellow");
+			else
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_red");
+		}
 	}
 // Helmet broken icon
 	CHelmet* helmet = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
@@ -926,6 +941,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	if(helmet)
 	{
 		float condition = helmet->GetCondition();
+		float filter_cond = helmet->GetFilterCondition();
 		if(condition<0.75f)
 		{
 			m_ind_helmet_broken->Show(true);
@@ -935,6 +951,17 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_yellow");
 			else
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_red");
+		}
+
+		if (filter_cond < 0.75f)
+		{
+			m_ind_filter_dirty->Show(true);
+			if (filter_cond > 0.5f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_green");
+			else if (filter_cond > 0.25f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_yellow");
+			else
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_red");
 		}
 	}
 // Weapon broken icon

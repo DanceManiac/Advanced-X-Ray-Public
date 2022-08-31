@@ -72,5 +72,6 @@
 		<texture id="ui_mfs_narcotism_restore_speed" x="266" y="0" width="19" height="19" />
 		<texture id="ui_mfs_withdrawal_restore_speed" x="285" y="0" width="19" height="19" />
 		<texture id="ui_inv_af_rank" x="304" y="0" width="19" height="19" />
+		<texture id="ui_item_filter_icon" x="323" y="0" width="19" height="19" />
    </file>
 </w>

@@ -55,7 +55,7 @@ LPCSTR ef_boosters_values_names[] =
 	"eat_satiety",
 
 	//M.F.S team additions
-	"eat_battery",
+	"charge_level",
 	"eat_thirst",
 	"eat_intoxication",
 	"eat_sleepeness",
@@ -65,6 +65,8 @@ LPCSTR ef_boosters_values_names[] =
 	"eat_hangover",
 	"eat_narcotism",
 	"eat_withdrawal",
+
+	"filter_condition",
 };
 
 LPCSTR boost_influence_caption[] =
@@ -95,6 +97,8 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_hangover",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
+
+	"ui_inv_filter_condition",
 };
 
 void CUIBoosterInfo::InitFromXml(CUIXml& xml)
