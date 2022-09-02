@@ -384,11 +384,11 @@ void UIBoosterInfoItem::SetValue(float value, int vle)
 	else
 		m_value->SetTextColor(color_rgba(170,170,170,255));
 
-	if(m_texture_minus.size())
+	if (m_texture_minus.size())
 	{
-		if(positive)
-			m_caption->InitTexture(m_texture_plus.c_str());
+		if (vle > 2)
+			positive ? m_caption->InitTexture(m_texture_plus.c_str()) : m_caption->InitTexture(m_texture_minus.c_str());
 		else
-			m_caption->InitTexture(m_texture_minus.c_str());
+			positive ? m_caption->InitTexture(m_texture_minus.c_str()) : m_caption->InitTexture(m_texture_plus.c_str());
 	}
 }

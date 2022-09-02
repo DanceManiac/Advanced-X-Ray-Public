@@ -337,7 +337,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fRadiationRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fRadiationRestoreSpeed->SetValue(val, 2);
+			m_fRadiationRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fRadiationRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -402,7 +402,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fIntoxicationRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fIntoxicationRestoreSpeed->SetValue(val, 2);
+			m_fIntoxicationRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fIntoxicationRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -592,14 +592,9 @@ void UIArtefactParamItem::SetValue(float value, int vle )
 
 	if ( m_texture_minus.size() )
 	{
-		if ( positive )
-		{
-			m_caption->InitTexture( m_texture_plus.c_str() );
-		}
+		if (vle > 2)
+			positive ? m_caption->InitTexture(m_texture_plus.c_str()) : m_caption->InitTexture(m_texture_minus.c_str());
 		else
-		{
-			m_caption->InitTexture( m_texture_minus.c_str() );
-		}
+			positive ? m_caption->InitTexture(m_texture_minus.c_str()) : m_caption->InitTexture(m_texture_plus.c_str());
 	}
-
 }

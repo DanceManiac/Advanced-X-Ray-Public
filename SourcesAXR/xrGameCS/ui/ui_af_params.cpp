@@ -372,7 +372,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fBleedingRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fBleedingRestoreSpeed->SetValue(val, 2);
+			m_fBleedingRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fBleedingRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -586,16 +586,11 @@ void UIArtefactParamItem::SetValue(float value, int vle)
 	else
 		m_value->SetTextColor(color_rgba(170, 170, 170, 255));
 
-	if ( m_texture_minus.size() )
+	if (m_texture_minus.size())
 	{
-		if ( positive )
-		{
-			m_caption->InitTexture( m_texture_plus.c_str() );
-		}
+		if (vle > 2)
+			positive ? m_caption->InitTexture(m_texture_plus.c_str()) : m_caption->InitTexture(m_texture_minus.c_str());
 		else
-		{
-			m_caption->InitTexture( m_texture_minus.c_str() );
-		}
+			positive ? m_caption->InitTexture(m_texture_minus.c_str()) : m_caption->InitTexture(m_texture_plus.c_str());
 	}
-
 }
