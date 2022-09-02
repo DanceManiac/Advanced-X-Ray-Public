@@ -112,7 +112,7 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../../../sdk/include/;../../../sdk/include/directx;$(SolutionDir)3rd party/imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -152,7 +152,7 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../../../sdk/include/;../../../sdk/include/directx;$(SolutionDir)3rd party/imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -200,7 +200,7 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../../../sdk/include/;../../../sdk/include/directx;$(SolutionDir)3rd party/imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -246,7 +246,7 @@
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>./;../../../sdk/include/;../../../sdk/include/directx;$(SolutionDir)3rd party/imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
