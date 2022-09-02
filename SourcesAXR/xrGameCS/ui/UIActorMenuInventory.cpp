@@ -1018,7 +1018,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	bool outfit_use_filter = false;
 
 	if (outfit)
-		outfit_use_filter = outfit->m_bUseFilter;
+		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f;
 
 	LPCSTR act_str = NULL;
 
@@ -1224,7 +1224,6 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
 			if (!filter)
 				break;
-			filter->ChangeInOutfit();
 			TryUseItem(cell_item);
 			break;
 		}

@@ -16,6 +16,7 @@
 CAntigasFilter::CAntigasFilter()
 {
 	m_iPortionsNum = -1;
+	m_iUseFor = 0;
 	m_fCondition = 1.0f;
 	m_physic_item = 0;
 }
@@ -70,30 +71,39 @@ bool CAntigasFilter::UseBy(CEntityAlive* entity_alive)
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
 
-	if (outfit && !helmet)
+	if (m_iUseFor == 0)
 	{
-		if (outfit->m_bUseFilter)
-			ChangeInOutfit();
+		if (outfit && !helmet)
+		{
+			if (outfit->m_bUseFilter)
+				ChangeInOutfit();
+		}
+		else if (!outfit && helmet)
+		{
+			if (helmet->m_bUseFilter)
+				ChangeInHelmet();
+		}
+		else if (outfit && helmet)
+		{
+			float outfit_filter = outfit->m_fFilterCondition;
+			float helmet_filter = helmet->m_fFilterCondition;
+			if (outfit->m_bUseFilter && (outfit_filter < helmet_filter))
+				ChangeInOutfit();
+			else if (helmet->m_bUseFilter)
+				ChangeInHelmet();
+		}
 	}
-	else if (!outfit && helmet)
-	{
-		if (helmet->m_bUseFilter)
-			ChangeInHelmet();
-	}
-	else if (outfit && helmet)
-	{
-		float outfit_filter = outfit->m_fFilterCondition;
-		float helmet_filter = helmet->m_fFilterCondition;
-		if (outfit->m_bUseFilter && (outfit_filter < helmet_filter))
-			ChangeInOutfit();
-		else if (helmet->m_bUseFilter)
-			ChangeInHelmet();
-	}
+	else if (m_iUseFor == 1)
+		ChangeInOutfit();
+	else
+		ChangeInHelmet();
 
 	if (m_iPortionsNum > 0)
 		--m_iPortionsNum;
 	else
 		m_iPortionsNum = 0;
+
+	m_iUseFor = 0;
 
 	return true;
 }
@@ -124,7 +134,7 @@ void CAntigasFilter::ChangeFilterCondition(float val)
 	clamp(m_fCondition, 0.f, 1.f);
 }
 
-float CCustomOutfit::GetFilterCondition() const
+float CAntigasFilter::GetFilterCondition() const
 {
-	return m_fFilterCondition;
+	return m_fCondition;
 }

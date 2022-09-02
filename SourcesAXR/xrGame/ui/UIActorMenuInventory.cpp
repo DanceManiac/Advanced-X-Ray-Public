@@ -1249,9 +1249,9 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	bool helmet_use_filter = false;
 
 	if (outfit)
-		outfit_use_filter = outfit->m_bUseFilter;
+		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f;
 	if (helmet)
-		helmet_use_filter = helmet->m_bUseFilter;
+		helmet_use_filter = helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f;
 
 	LPCSTR act_str = NULL;
 
@@ -1295,7 +1295,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	}
 	else if (pFilter)
 	{
-		if (item_in_outfit_slot && outfit_use_filter)
+		if (item_in_outfit_slot && outfit_use_filter )
 		{
 			shared_str str = CStringTable().translate("st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
@@ -1532,7 +1532,7 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
 			if (!filter)
 				break;
-			filter->ChangeInOutfit();
+			filter->m_iUseFor = 1;
 			TryUseItem(cell_item);
 			break;
 		}
@@ -1541,7 +1541,7 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
 			if (!filter)
 				break;
-			filter->ChangeInHelmet();
+			filter->m_iUseFor = 2;
 			TryUseItem(cell_item);
 			break;
 		}

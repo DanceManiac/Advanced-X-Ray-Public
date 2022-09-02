@@ -19,6 +19,7 @@ public:
 	virtual	bool			UseBy(CEntityAlive* npc);
 	virtual	bool			Empty() { return PortionsNum() == 0; };
 	int						PortionsNum()	const { return m_iPortionsNum; }
+	int						m_iUseFor;
 	float					m_fCondition;
 	void					ChangeInOutfit();
 	void					ChangeInHelmet();
