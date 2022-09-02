@@ -10,6 +10,7 @@
 #include "../string_table.h"
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
+#include "../AntigasFilter.h"
 #include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
@@ -21,6 +22,7 @@ CUIBoosterInfo::CUIBoosterInfo()
 
 	m_booster_anabiotic = NULL;
 	m_portions = NULL;
+	m_filter = NULL;
 	m_booster_time = NULL;
 }
 
@@ -29,6 +31,7 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	delete_data(m_booster_items);
 	xr_delete(m_booster_anabiotic);
 	xr_delete(m_portions);
+	xr_delete(m_filter);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
 }
@@ -65,8 +68,6 @@ LPCSTR ef_boosters_values_names[] =
 	"eat_hangover",
 	"eat_narcotism",
 	"eat_withdrawal",
-
-	"filter_condition",
 };
 
 LPCSTR boost_influence_caption[] =
@@ -97,8 +98,6 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_hangover",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
-
-	"ui_inv_filter_condition",
 };
 
 void CUIBoosterInfo::InitFromXml(CUIXml& xml)
@@ -144,6 +143,14 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_portions->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
+	//Filter
+	m_filter = xr_new<UIBoosterInfoItem>();
+	m_filter->Init(xml, "boost_filter_condition");
+	m_filter->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_filter_condition").c_str();
+	m_filter->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	m_booster_time = xr_new<UIBoosterInfoItem>();
 	m_booster_time->Init(xml, "boost_time");
 	m_booster_time->SetAutoDelete(false);
@@ -166,6 +173,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 	const shared_str& section = pInvItem.object().cNameSect();
 	CEatableItem* eatable = pInvItem.cast_eatable_item();
+	CAntigasFilter* pFilter = pInvItem.cast_filter();
 	CEntityCondition::BOOSTER_MAP boosters = actor->conditions().GetCurBoosterInfluences();
 
 	float val = 0.0f, max_val = 1.0f;
@@ -242,7 +250,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 	{
 		val = eatable->m_iPortionsNum;
 
-		if (!fis_zero(val))
+		if (val > 1)
 		{
 			m_portions->SetValue(val);
 			pos.set(m_portions->GetWndPos());
@@ -252,6 +260,20 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			h += m_portions->GetWndSize().y;
 			AttachChild(m_portions);
 		}
+	}
+
+	//Filter
+	if (pFilter)
+	{
+		val = pFilter->m_fCondition;
+
+		m_filter->SetValue(val);
+		pos.set(m_filter->GetWndPos());
+		pos.y = h;
+		m_filter->SetWndPos(pos);
+
+		h += m_filter->GetWndSize().y;
+		AttachChild(m_filter);
 	}
 
 	if(pSettings->line_exist(section.c_str(), "boost_time"))

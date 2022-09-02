@@ -23,6 +23,9 @@
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
 #include "AdvancedXrayGameConstants.h"
+#include "Antigasfilter.h"
+#include "../xrEngine/x_ray.h"
+#include <dinput.h>
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -750,6 +753,28 @@ bool CUIActorMenu::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 	}	
 
+	if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
+	{
+		CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(CurrentIItem());
+		{
+			if (DIK_NUMPAD7 == dik && CurrentIItem() && CurrentIItem()->IsUsingCondition() && !pFilter)
+			{
+				CurrentIItem()->ChangeCondition(-0.05f);
+			}
+			else if (DIK_NUMPAD8 == dik && CurrentIItem() && CurrentIItem()->IsUsingCondition() && !pFilter)
+			{
+				CurrentIItem()->ChangeCondition(0.05f);
+			}
+			else if (DIK_NUMPAD7 == dik && CurrentIItem() && pFilter)
+			{
+				pFilter->ChangeFilterCondition(-0.05f);
+			}
+			else if (DIK_NUMPAD8 == dik && CurrentIItem() && pFilter)
+			{
+				pFilter->ChangeFilterCondition(0.05f);
+			}
+		}
+	}
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
 	return false;

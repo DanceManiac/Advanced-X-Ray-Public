@@ -30,6 +30,7 @@ class CWeapon;
 class CPhysicsShellHolder;
 class NET_Packet;
 class CEatableItem;
+class CAntigasFilter;
 struct SPHNetState;
 struct net_update_IItem;
 
@@ -260,6 +261,7 @@ public:
 	virtual CAttachableItem		*cast_attachable_item		()	{return this;}
 	virtual CPhysicsShellHolder	*cast_physics_shell_holder	()	{return 0;}
 	virtual CEatableItem		*cast_eatable_item			()	{return 0;}
+	virtual CAntigasFilter		*cast_filter				()	{return 0;}
 	virtual CWeapon				*cast_weapon				()	{return 0;}
 	virtual CFoodItem			*cast_food_item				()	{return 0;}
 	virtual CMissile			*cast_missile				()	{return 0;}

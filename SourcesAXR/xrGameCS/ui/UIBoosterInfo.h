@@ -37,12 +37,11 @@ protected:
 		_item_narcotism,
 		_item_withdrawal,
 
-		_item_filter,
-
 		eBoostExplImmunity
 	};
 	UIBoosterInfoItem* m_booster_items[eBoostExplImmunity];
 	UIBoosterInfoItem* m_portions;
+	UIBoosterInfoItem* m_filter;
 
 	CUIStatic* m_Prop_line;
 

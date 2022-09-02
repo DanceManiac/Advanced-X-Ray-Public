@@ -9,6 +9,7 @@ class CAntigasFilter : public CEatableItemObject
 public:
 	CAntigasFilter();
 	virtual					~CAntigasFilter();
+	virtual CAntigasFilter  *cast_filter			()	{return this;}
 
 	virtual void			Load(LPCSTR section);
 	virtual bool			Useful() const;
@@ -21,6 +22,7 @@ public:
 	float					m_fCondition;
 	void					ChangeInOutfit();
 	void					ChangeInHelmet();
+	void					ChangeFilterCondition(float val);
 protected:
 	int						m_iPortionsNum;
 };

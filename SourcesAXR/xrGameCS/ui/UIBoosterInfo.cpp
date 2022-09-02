@@ -10,6 +10,7 @@
 #include "../string_table.h"
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
+#include "../AntigasFilter.h"
 #include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
@@ -19,12 +20,14 @@ CUIBoosterInfo::CUIBoosterInfo()
 		m_booster_items[i] = NULL;
 	}
 	m_portions = NULL;
+	m_filter = NULL;
 }
 
 CUIBoosterInfo::~CUIBoosterInfo()
 {
 	delete_data(m_booster_items);
 	xr_delete(m_portions);
+	xr_delete(m_filter);
 	xr_delete(m_Prop_line);
 }
 
@@ -47,8 +50,6 @@ LPCSTR ef_boosters_nodes_names[] =
 	"boost_hangover",
 	"boost_narcotism",
 	"boost_withdrawal",
-
-	"boost_filter_condition",
 };
 
 LPCSTR ef_boosters_section_names[] =
@@ -70,8 +71,6 @@ LPCSTR ef_boosters_section_names[] =
 	"eat_hangover",
 	"eat_narcotism",
 	"eat_withdrawal",
-
-	"filter_condition",
 };
 
 LPCSTR boost_influence_caption[] =
@@ -93,8 +92,6 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_hangover",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
-
-	"ui_inv_filter_condition",
 };
 
 void CUIBoosterInfo::InitFromXml(CUIXml& xml)
@@ -125,11 +122,19 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_Prop_line->SetAutoDelete(false);
 	CUIXmlInit::InitStatic(xml, "prop_line", 0, m_Prop_line);
 
+	//Filter
+	m_filter = xr_new<UIBoosterInfoItem>();
+	m_filter->Init(xml, "boost_filter_condition");
+	m_filter->SetAutoDelete(false);
+	LPCSTR name = CStringTable().translate("ui_inv_filter_condition").c_str();
+	m_filter->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	//Portions
 	m_portions = xr_new<UIBoosterInfoItem>();
 	m_portions->Init(xml, "item_portions");
 	m_portions->SetAutoDelete(false);
-	LPCSTR name = CStringTable().translate("ui_inv_portions").c_str();
+	name = CStringTable().translate("ui_inv_portions").c_str();
 	m_portions->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 }
@@ -150,6 +155,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 	const shared_str& section = pInvItem.object().cNameSect();
 	CEatableItem* eatable = pInvItem.cast_eatable_item();
+	CAntigasFilter* pFilter = pInvItem.cast_filter();
 
 	for (u32 i = 0; i < eBoostExplImmunity; ++i)
 	{
@@ -174,14 +180,26 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	
+	//Filter
+	if (pFilter)
+	{
+		val = pFilter->m_fCondition;
+
+		m_filter->SetValue(val);
+		pos.set(m_filter->GetWndPos());
+		pos.y = h;
+		m_filter->SetWndPos(pos);
+
+		h += m_filter->GetWndSize().y;
+		AttachChild(m_filter);
+	}
 
 	//Portions
 	if (eatable)
 	{
 		val = eatable->m_iPortionsNum;
 
-		if (!fis_zero(val))
+		if (val > 1)
 		{
 			m_portions->SetValue(val);
 			pos.set(m_portions->GetWndPos());
