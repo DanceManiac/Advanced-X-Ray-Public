@@ -7,6 +7,9 @@
 #include "../Artefact.h"
 #include "../CustomOutfit.h"
 #include "../AntigasFilter.h"
+#include "../CustomDetector.h"
+#include "../Torch.h"
+#include "../AnomalyDetector.h"
 
 #define INV_GRID_WIDTHF			50.0f
 #define INV_GRID_HEIGHTF		50.0f
@@ -84,6 +87,21 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	}
 	auto filter = smart_cast<CAntigasFilter*>(object());
 	if (filter && filter->GetFilterCondition() != smart_cast<CAntigasFilter*>(ci->object())->GetFilterCondition())
+	{
+		return false;
+	}
+	auto torch = smart_cast<CTorch*>(object());
+	if (torch && torch->GetCurrentChargeLevel() != smart_cast<CTorch*>(ci->object())->GetCurrentChargeLevel())
+	{
+		return false;
+	}
+	auto art_det = smart_cast<CCustomDetector*>(object());
+	if (art_det && art_det->GetCurrentChargeLevel() != smart_cast<CCustomDetector*>(ci->object())->GetCurrentChargeLevel())
+	{
+		return false;
+	}
+	auto ano_det = smart_cast<CDetectorAnomaly*>(object());
+	if (ano_det && ano_det->GetCurrentChargeLevel() != smart_cast<CDetectorAnomaly*>(ci->object())->GetCurrentChargeLevel())
 	{
 		return false;
 	}

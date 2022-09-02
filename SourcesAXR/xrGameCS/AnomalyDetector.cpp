@@ -281,7 +281,7 @@ void CDetectorAnomaly::UpdateChargeLevel(void)
 
 		//Msg("Update Charge Lvl Anomaly Detector: %f", m_fCurrentChargeLevel); //For test
 
-		clamp(m_fCurrentChargeLevel, 0.f, 1.f);
+		clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 		SetCondition(m_fCurrentChargeLevel);
 	}
 	/*else
@@ -301,20 +301,20 @@ float CDetectorAnomaly::GetCurrentChargeLevel() const
 void CDetectorAnomaly::SetCurrentChargeLevel(float val)
 {
 	m_fCurrentChargeLevel = val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
 	SetCondition(condition);
 }
 
 void CDetectorAnomaly::Recharge(float val)
 {
-	m_fCurrentChargeLevel = m_fCurrentChargeLevel + val;
+	m_fCurrentChargeLevel += val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	SetCondition(m_fCurrentChargeLevel);
 
 	//Msg("Charge Level In Recharge: %f", val); //For Test
-
-	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
-		m_fCurrentChargeLevel = m_fMaxChargeLevel;
 }
 
 /*void CCustomDetector::AddRemoveMapSpot(CCustomZone* pZone, bool bAdd)

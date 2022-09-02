@@ -1505,7 +1505,7 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CBattery* battery = smart_cast<CBattery*>(item);
 			if (!battery)
 				break;
-			battery->ChargeTorch();
+			battery->m_iUseFor = 1;
 			TryUseItem(cell_item);
 			break;
 		}
@@ -1514,7 +1514,7 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CBattery* battery = smart_cast<CBattery*>(item);
 			if (!battery)
 				break;
-			battery->ChargeArtifactDetector();
+			battery->m_iUseFor = 2;
 			TryUseItem(cell_item);
 			break;
 		}
@@ -1523,7 +1523,7 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CBattery* battery = smart_cast<CBattery*>(item);
 			if (!battery)
 				break;
-			battery->ChargeAnomalyDetector();
+			battery->m_iUseFor = 3;
 			TryUseItem(cell_item);
 			break;
 		}
