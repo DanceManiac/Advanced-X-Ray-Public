@@ -8,6 +8,7 @@
 #include "../Artefact.h"
 #include "../CustomOutfit.h"
 #include "../ActorHelmet.h"
+#include "../AntigasFilter.h"
 
 #define INV_GRID_WIDTHF			50.0f
 #define INV_GRID_HEIGHTF		50.0f
@@ -85,6 +86,11 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	}
 	auto helmet = smart_cast<CHelmet*>(object());
 	if (helmet && helmet->GetFilterCondition() != smart_cast<CHelmet*>(ci->object())->GetFilterCondition())
+	{
+		return false;
+	}
+	auto filter = smart_cast<CAntigasFilter*>(object());
+	if (filter && filter->GetFilterCondition() != smart_cast<CAntigasFilter*>(ci->object())->GetFilterCondition())
 	{
 		return false;
 	}

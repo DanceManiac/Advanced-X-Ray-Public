@@ -48,6 +48,7 @@ public:
 	float					m_fPowerRestoreSpeed;
 	float					m_fBleedingRestoreSpeed;
 	float					m_fFilterDegradation;
+	float					m_fMaxFilterCondition;
 	float					m_fFilterCondition;
 
 	float					m_fShowNearestEnemiesDistance;

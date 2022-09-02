@@ -91,3 +91,8 @@ void CAntigasFilter::ChangeFilterCondition(float val)
 	m_fCondition += val;
 	clamp(m_fCondition, 0.f, 1.f);
 }
+
+float CAntigasFilter::GetFilterCondition() const
+{
+	return m_fCondition;
+}

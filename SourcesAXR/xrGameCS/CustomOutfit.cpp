@@ -125,6 +125,7 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fOverweightWalkK			= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
 	m_fFilterDegradation		= READ_IF_EXISTS(pSettings, r_float, section, "filter_degradation_speed", 0.0f);
+	m_fMaxFilterCondition		= READ_IF_EXISTS(pSettings, r_float, section, "max_filter_condition", 1.0f);
 
 	m_b_HasGlass				= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter				= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
@@ -148,7 +149,7 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	if (GameConstants::GetOutfitUseFilters())
 	{
-		float rnd_cond = ::Random.randF(0.0f, 1.0f);
+		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
 		m_fFilterCondition = rnd_cond;
 	}
 }
@@ -173,7 +174,7 @@ void CCustomOutfit::UpdateFilterCondition(void)
 		float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 
 		m_fFilterCondition -= uncharge_coef;
-		clamp(m_fFilterCondition, 0.0f, 1.0f);
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 
 		float condition = 1.f * m_fFilterCondition;
 		float percent = outfit->m_fFilterCondition * 100;
@@ -439,6 +440,6 @@ void CCustomOutfit::SetFilterCondition(float val)
 
 void CCustomOutfit::FilterReplace(float val)
 {
-	m_fFilterCondition = m_fFilterCondition + val;
-	clamp(m_fFilterCondition, 0.0f, 1.0f);
+	m_fFilterCondition += val;
+	clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 }

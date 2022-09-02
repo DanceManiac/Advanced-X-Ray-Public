@@ -69,6 +69,7 @@ public:
 	float					m_fWalkAccel;
 	float					m_fOverweightWalkK;
 	float					m_fFilterDegradation;
+	float					m_fMaxFilterCondition;
 	float					m_fFilterCondition;
 
 	shared_str				m_NightVisionSect;

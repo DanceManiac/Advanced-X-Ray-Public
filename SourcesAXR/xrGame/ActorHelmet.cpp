@@ -62,6 +62,7 @@ void CHelmet::Load(LPCSTR section)
 	m_fBleedingRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",  0.0f );
 	m_fPowerLoss					= READ_IF_EXISTS(pSettings, r_float, section, "power_loss",    1.0f );
 	m_fFilterDegradation			= READ_IF_EXISTS(pSettings, r_float, section, "filter_degradation_speed", 0.0f);
+	m_fMaxFilterCondition			= READ_IF_EXISTS(pSettings, r_float, section, "max_filter_condition", 1.0f);
 
 	m_bSecondHelmetEnabled			= READ_IF_EXISTS(pSettings, r_bool, section, "second_helmet_enabled", true);
 
@@ -76,7 +77,7 @@ void CHelmet::Load(LPCSTR section)
 
 	if (GameConstants::GetOutfitUseFilters())
 	{
-		float rnd_cond = ::Random.randF(0.0f, 1.0f);
+		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
 		m_fFilterCondition = rnd_cond;
 	}
 }
@@ -142,7 +143,7 @@ void CHelmet::UpdateFilterCondition(void)
 		float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 
 		m_fFilterCondition -= uncharge_coef;
-		clamp(m_fFilterCondition, 0.0f, 1.0f);
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 
 		float condition = 1.f * m_fFilterCondition;
 		float percent = helmet->m_fFilterCondition * 100;
@@ -372,6 +373,6 @@ void CHelmet::SetFilterCondition(float val)
 
 void CHelmet::FilterReplace(float val)
 {
-	m_fFilterCondition = m_fFilterCondition + val;
-	clamp(m_fFilterCondition, 0.0f, 1.0f);
+	m_fFilterCondition += val;
+	clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 }
