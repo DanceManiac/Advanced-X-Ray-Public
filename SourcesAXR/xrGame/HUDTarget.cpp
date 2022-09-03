@@ -23,6 +23,7 @@
 #include <ai/monsters/poltergeist/poltergeist.h>
 #include "HudItem.h"
 #include "Weapon.h"
+#include "PDA.h"
 
 
 u32 C_ON_ENEMY		D3DCOLOR_RGBA(0xff,0,0,0x80);
@@ -288,6 +289,9 @@ void CHUDTarget::Render()
 	auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem());
 
 	if (Wpn && Wpn->IsLaserOn())
+		return;
+
+	if (smart_cast<CPda*>(Actor->inventory().ActiveItem()))
 		return;
 
 	//отрендерить кружочек или крестик
