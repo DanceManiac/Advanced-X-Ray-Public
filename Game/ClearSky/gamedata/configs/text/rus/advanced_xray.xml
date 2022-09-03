@@ -208,7 +208,7 @@
 		<text>Фонарь с креплением на голову. Пригодится сталкеру, которого ночь застала в дороге. C другой стороны, может привлечь чьё-то нежелательное внимание.</text>
 	</string>
 	<string id="st_charge_item">
-		<text>Зарядить</text>
+		<text>Зарядить:</text>
 	</string>
 	<string id="ui_st_walk_inertion">
 		<text>Инерция ходьбы героя</text>
@@ -319,7 +319,7 @@
 		<text>Обычный фильтр для противогаза.</text>
 	</string>
 	<string id="st_change_filter">
-		<text>Заменить фильтр у</text>
+		<text>Заменить фильтр:</text>
 	</string>
 	<string id="ui_inv_portions">
 		<text>Кол-во порций</text>

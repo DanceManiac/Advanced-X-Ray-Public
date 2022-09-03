@@ -190,7 +190,7 @@
 		<text>Стандартная пальчиковая батарейка. Повсеместно применяется сталкерами для зарядки различных приборов.</text>
 	</string>
 	<string id="st_charge_item">
-		<text>Зарядить</text>
+		<text>Зарядить:</text>
 	</string>
 	<string id="ui_st_walk_inertion">
 		<text>Инерция ходьбы героя</text>
@@ -310,6 +310,6 @@
 		<text>Обычный фильтр для противогаза.</text>
 	</string>
 	<string id="st_change_filter">
-		<text>Заменить фильтр у</text>
+		<text>Заменить фильтр:</text>
 	</string>
 </string_table>
