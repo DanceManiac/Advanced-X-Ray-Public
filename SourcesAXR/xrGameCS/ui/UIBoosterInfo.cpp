@@ -136,7 +136,9 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_portions->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_portions").c_str();
 	m_portions->SetCaption(name);
-	xml.SetLocalRoot(base_node);
+	xml.SetLocalRoot(stored_root);
+
+	xml.SetLocalRoot(stored_root);
 }
 
 void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
