@@ -16,6 +16,7 @@
 #include "../Include/xrRender/Kinematics.h"
 #include "level.h"
 #include "CarWeapon.h"
+#include "UIGameCustom.h"
 
 void	CCar::OnMouseMove(int dx, int dy)
 {
@@ -188,8 +189,12 @@ void CCar::OnKeyboardPress(int cmd)
 	case kSWITCH_HORN:
 		SwitchHorn();
 		break;
-	};
 
+	case kSPRINT_TOGGLE:
+		if (!CurrentGameUI()->TopInputReceiver())
+			ShowTrunk();
+		break;
+	};
 }
 
 void	CCar::OnKeyboardRelease(int cmd)

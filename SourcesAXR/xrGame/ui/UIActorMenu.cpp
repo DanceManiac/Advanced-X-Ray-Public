@@ -91,6 +91,16 @@ void CUIActorMenu::SetInvBox(CInventoryBox* box)
 	}
 }
 
+void CUIActorMenu::SetCarTrunk(CCar* pCar)
+{
+	R_ASSERT(!IsShown());
+	m_pCar = pCar;
+	if (m_pCar)
+	{
+		SetPartner(NULL);
+	}
+}
+
 void CUIActorMenu::SetMenuMode(EMenuMode mode)
 {
 	SetCurrentItem( NULL );
@@ -283,7 +293,7 @@ void CUIActorMenu::CheckDistance()
 	CGameObject* pActorGO	= smart_cast<CGameObject*>(m_pActorInvOwner);
 	CGameObject* pPartnerGO	= smart_cast<CGameObject*>(m_pPartnerInvOwner);
 	CGameObject* pBoxGO		= smart_cast<CGameObject*>(m_pInvBox);
-	VERIFY( pActorGO && (pPartnerGO || pBoxGO) );
+	VERIFY( pActorGO && (pPartnerGO || pBoxGO || m_pCar) );
 
 	if ( pPartnerGO )
 	{
@@ -293,6 +303,10 @@ void CUIActorMenu::CheckDistance()
 			g_btnHint->Discard();
 			HideDialog();
 		}
+	}
+	else if (m_pCar && Actor()->Holder())
+	{
+		//nop
 	}
 	else //pBoxGO
 	{

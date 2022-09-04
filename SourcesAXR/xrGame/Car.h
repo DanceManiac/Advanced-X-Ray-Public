@@ -614,8 +614,10 @@ public:
 	void					SetExplodeTime				(u32 et)	;
 			u32				ExplodeTime					()			;
 	// Inventory for the car	
-	CInventory*						GetInventory						(){return inventory;}
+	CInventory*						GetInventory						() {return NULL/*inventory*/;}
 		  void						VisualUpdate						(float fov=90.0f);
+		  void						AddAvailableItems					(TIItemContainer& items_container) const;
+		  void						ShowTrunk							();
 protected:
 	virtual void					SpawnInitPhysics					(CSE_Abstract	*D)																;
 	virtual void					net_Save							(NET_Packet& P)																	;
@@ -633,13 +635,12 @@ public:
 
 public:
 	virtual CEntity*					cast_entity				()						{return this;}
+	u32 GetSize() {return m_items.size();}
+	xr_vector<u16> m_items;
 private:
 	template <class T> IC void fill_wheel_vector(LPCSTR S,xr_vector<T>& type_wheels);
 	IC void fill_exhaust_vector(LPCSTR S,xr_vector<SExhaust>& exhausts);
 	IC void fill_doors_map(LPCSTR S,xr_map<u16,SDoor>& doors);
-
-	//Inventory for the car
-	CInventory	*inventory;
 	
 	virtual	void reinit			();
 	virtual	void reload			(LPCSTR section);

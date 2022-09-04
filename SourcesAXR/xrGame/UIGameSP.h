@@ -12,6 +12,7 @@ class CChangeLevelWnd;
 class CUIMessageBox;
 class CInventoryBox;
 class CInventoryOwner;
+class CCar;
 
 class CUIGameSP : public CUIGameCustom
 {
@@ -31,6 +32,7 @@ public:
 	void				StartUpgrade			(CInventoryOwner* pActorInv, CInventoryOwner* pMech);
 	void				StartCarBody			(CInventoryOwner* pActorInv, CInventoryOwner* pOtherOwner);
 	void				StartCarBody			(CInventoryOwner* pActorInv, CInventoryBox* pBox);
+	void				StartCarBody			(CInventoryOwner* pActorInv, CCar* pCar);
 	void				ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_vert_id, Fvector pos, Fvector ang, Fvector pos2, Fvector ang2, bool b, const shared_str& message, bool b_allow_change_level);
 
 	virtual void		HideShownDialogs		();

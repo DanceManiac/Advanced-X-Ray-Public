@@ -32,6 +32,7 @@
 #include "car_memory.h"
 #include "../xrphysics/IPHWorld.h"
 #include "hudmanager.h"
+#include "UIGameSP.h"
 
 BONE_P_MAP CCar::bone_map=BONE_P_MAP();
 
@@ -74,8 +75,6 @@ CCar::CCar()
 	m_car_sound			=xr_new<SCarSound>	(this);
 
 	//у машины слотов в инвентаре нет
-	inventory			= xr_new<CInventory>();
-	inventory->SetSlotsUseful(false);
 	m_doors_torque_factor = 2.f;
 	m_power_increment_factor=0.5f;
 	m_rpm_increment_factor=0.5f;
@@ -102,7 +101,6 @@ CCar::~CCar(void)
 	xr_delete			(camera[2]);
 	xr_delete			(m_car_sound);
 	ClearExhausts		();
-	xr_delete			(inventory);
 	xr_delete			(m_car_weapon);
 	xr_delete			(m_memory);
  //	xr_delete			(l_tpEntityAction);
@@ -1747,38 +1745,36 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 	{
 	case GE_OWNERSHIP_TAKE:
 		{
+			u16 id;
 			P.r_u16		(id);
-			CObject* O	= Level().Objects.net_Find	(id);
-			if( GetInventory()->CanTakeItem(smart_cast<CInventoryItem*>(O)) ) 
+			CObject* itm = Level().Objects.net_Find(id);  VERIFY(itm);
+			m_items.push_back(id);
+			itm->H_SetParent(this);
+			itm->setVisible(FALSE);
+			itm->setEnabled(FALSE);
+			if (auto obj = smart_cast<CGameObject*>(itm))
 			{
-				O->H_SetParent(this);
-				GetInventory()->Take(smart_cast<CGameObject*>(O), false, false);
-			}
-			else 
-			{
-				if (!O || !O->H_Parent() || (this != O->H_Parent())) return;
-				NET_Packet P;
-				u_EventGen(P,GE_OWNERSHIP_REJECT,ID());
-				P.w_u16(u16(O->ID()));
-				u_EventSend(P);
+				//callback(GameObject::eInvBoxItemTake)(obj->lua_game_object());
 			}
 		}break;
 	case GE_OWNERSHIP_REJECT:
 		{
+			u16 id;
 			P.r_u16		(id);
-			CObject* O	= Level().Objects.net_Find	(id);
+			CObject* itm = Level().Objects.net_Find(id);  VERIFY(itm);
+			xr_vector<u16>::iterator it;
+			it = std::find(m_items.begin(), m_items.end(), id); VERIFY(it != m_items.end());
+			m_items.erase(it);
 
-			bool just_before_destroy		= !P.r_eof() && P.r_u8();
-			O->SetTmpPreDestroy				(just_before_destroy);
-			GetInventory()->DropItem(smart_cast<CGameObject*>(O), just_before_destroy, just_before_destroy);
-			//if(GetInventory()->DropItem(smart_cast<CGameObject*>(O), just_before_destroy)) 
-			//{
-			//	O->H_SetParent(0, just_before_destroy);
-			//}
-			//moved to DropItem
+			bool dont_create_shell = !P.r_eof() && P.r_u8();
+			itm->H_SetParent(NULL, dont_create_shell);
+
+			if (CGameObject* obj = smart_cast<CGameObject*>(itm))
+			{
+				//callback(GameObject::eInvBoxItemTake)(obj->lua_game_object());
+			}
 		}break;
 	}
-
 }
 
 void CCar::ResetScriptData(void	*P)
@@ -2171,3 +2167,20 @@ bool CCar::isActiveEngine()
 	return b_engine_on;
 }
 /*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/
+
+void CCar::AddAvailableItems(TIItemContainer& items_container) const
+{
+	auto it = m_items.begin();
+	auto it_e = m_items.end();
+	for (; it != it_e; ++it)
+	{
+		PIItem itm = smart_cast<PIItem>(Level().Objects.net_Find(*it)); VERIFY(itm);
+		items_container.push_back(itm);
+	}
+}
+
+void CCar::ShowTrunk()
+{
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
+	if (pGameSP) pGameSP->StartCarBody(Actor(), this);
+}
