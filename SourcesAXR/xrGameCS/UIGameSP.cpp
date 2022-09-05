@@ -204,7 +204,7 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CCar* pCar) //Car trunk
 
 	m_ActorMenu->SetActor(pActorInv);
 	m_ActorMenu->SetCarTrunk(pCar);
-	VERIFY(pBox);
+	VERIFY(pCar);
 
 	m_ActorMenu->SetMenuMode(mmDeadBodySearch);
 	m_game->StartStopMenu(m_ActorMenu, true);
