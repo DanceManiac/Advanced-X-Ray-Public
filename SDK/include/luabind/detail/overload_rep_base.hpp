@@ -25,7 +25,7 @@
 #include <luabind/config.hpp>
 #include <functional>
 
-namespace luabind::detail
+namespace luabind { namespace detail
 {
 	// this class represents a specific overload of a member-function.
     template class LUABIND_API std::function<int(lua_State*)>;
@@ -83,4 +83,4 @@ namespace luabind::detail
 		int m_arity;
 	};
 
-} // namespace luabind::detail
+}} // namespace luabind::detail

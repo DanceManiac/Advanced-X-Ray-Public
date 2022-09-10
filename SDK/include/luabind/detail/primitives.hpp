@@ -27,7 +27,15 @@
 namespace luabind { namespace detail
 {
 	template<class T>
+	struct identity
+	{
+		typedef T type;
+	};
+
+	template<class T>
 	struct type {};
+
+	struct null_type {};
 
     enum class Direction : unsigned
     {
@@ -58,13 +66,14 @@ namespace luabind { namespace detail
 	};
 
 	// returns the offset added to a Derived* when cast to a Base*
+	// TODO: return ptrdiff
 	template<class Derived, class Base>
-	ptrdiff_t ptr_offset()
+	int ptr_offset(type<Derived>, type<Base>)
 	{
 		aligned<sizeof(Derived)> obj;
 		Derived* ptr = reinterpret_cast<Derived*>(&obj);
 
-		return ptrdiff_t(static_cast<char*>(static_cast<void*>(static_cast<Base*>(ptr)))
+		return int(static_cast<char*>(static_cast<void*>(static_cast<Base*>(ptr)))
 		- static_cast<char*>(static_cast<void*>(ptr)));
 	}
 

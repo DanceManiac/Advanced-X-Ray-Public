@@ -74,6 +74,7 @@
 #include <cassert>
 
 #include <imdexlib/mpl.hpp>
+#include <imdexlib/utility.hpp>
 #include <imdexlib/typelist.hpp>
 
 #include <luabind/config.hpp>
@@ -118,7 +119,15 @@ namespace luabind
 	template<class T, typename... Xs>
 	struct class_;
 
-    inline std::in_place_t* get_const_holder(...)
+/*    template <typename... Ts>
+    detail::null_type* get_const_holder(Ts&&...)
+    {
+        static_assert(imdexlib::false_v<Ts...>, "this function will only be invoked if the user hasn't defined a correct overload");
+        return nullptr;
+    }*/
+    // TODO: this function will only be invoked if the user hasn't defined a correct overload
+    // maybe we should have a static assert in here?
+    inline detail::null_type* get_const_holder(...)
     {
         return nullptr;
     }
@@ -268,7 +277,7 @@ namespace luabind
 		};
 
 		template<>
-		struct internal_holder_extractor<std::in_place_t>
+		struct internal_holder_extractor<detail::null_type>
 		{
 			using extractor_fun = void*(*)(void*);
 
@@ -303,7 +312,7 @@ namespace luabind
 		};
 
 		template<>
-		struct const_converter<std::in_place_t>
+		struct const_converter<detail::null_type>
 		{
 			using converter_fun = void(*)(void*, void*);
 
@@ -336,7 +345,7 @@ namespace luabind
 		};
 
 		template<>
-		struct internal_const_holder_extractor<std::in_place_t>
+		struct internal_const_holder_extractor<detail::null_type>
 		{
 			using extractor_fun = const void*(*)(void*);
 
@@ -362,7 +371,7 @@ namespace luabind
 		};
 
 		template<>
-		struct internal_holder_type<std::in_place_t>
+		struct internal_holder_type<detail::null_type>
 		{
 			static LUABIND_TYPE_INFO apply()
 			{
@@ -406,7 +415,7 @@ namespace luabind
 		};
 
 		template<>
-		struct holder_constructor<std::in_place_t>
+		struct holder_constructor<detail::null_type>
 		{
 			using constructor = void(*)(void*,void*);
 			template<typename T>
@@ -439,7 +448,7 @@ namespace luabind
 		};
 
 		template<>
-		struct const_holder_constructor<std::in_place_t>
+		struct const_holder_constructor<detail::null_type>
 		{
 			using constructor = void(*)(void*,void*);
 			template<typename T>
@@ -465,7 +474,7 @@ namespace luabind
 		};
 
 		template<>
-		struct holder_default_constructor<std::in_place_t>
+		struct holder_default_constructor<detail::null_type>
 		{
 			using constructor = void(*)(void*);
 			template<typename T>
@@ -500,7 +509,7 @@ namespace luabind
 		};
 
 		template<>
-		struct const_holder_default_constructor<std::in_place_t>
+		struct const_holder_default_constructor<detail::null_type>
 		{
 			using constructor = void(*)(void*);
 			template<typename T>
@@ -528,7 +537,7 @@ namespace luabind
 		};
 
 		template <>
-		struct internal_holder_size<std::in_place_t>
+		struct internal_holder_size<detail::null_type>
 		{
 			static int apply() {	return 0; }
 		};
@@ -550,7 +559,7 @@ namespace luabind
 
 		// if we don't have a held type, return the destructor of the raw type
 		template<>
-		struct internal_holder_destructor<std::in_place_t>
+		struct internal_holder_destructor<detail::null_type>
 		{
 			using destructor_t = void(*)(void*);
 			template<typename T>
@@ -584,7 +593,7 @@ namespace luabind
 
 		// if we don't have a held type, return the destructor of the raw type
 		template<>
-		struct internal_const_holder_destructor<std::in_place_t>
+		struct internal_const_holder_destructor<detail::null_type>
 		{
 			using destructor_t = void(*)(void*);
 			template<typename T>
@@ -615,7 +624,7 @@ namespace luabind
 		};
 
 		template<>
-		struct get_holder_alignment<std::in_place_t>
+		struct get_holder_alignment<detail::null_type>
 		{
 			static int apply()
 			{
@@ -689,7 +698,7 @@ namespace luabind
 			struct base_desc
 			{
 				LUABIND_TYPE_INFO type;
-				ptrdiff_t ptr_offset;
+				int ptr_offset;
 			};
 
 			void init(
@@ -709,16 +718,16 @@ namespace luabind
 				, int holder_size
 				, int holder_alignment);
 
-			void add_getter(const char* name, std::function<int(lua_State*, ptrdiff_t)> g);
+			void add_getter(const char* name, std::function<int(lua_State*, int)> g);
 
 #ifdef LUABIND_NO_ERROR_CHECKING
 			void add_setter(
 				const char* name
-				, std::function<int(lua_State*, ptrdiff_t)> s);
+				, std::function<int(lua_State*, int)> s);
 #else
 			void class_base::add_setter(
 				const char* name
-				, std::function<int(lua_State*, ptrdiff_t)> s
+				, std::function<int(lua_State*, int)> s
 				, int (*match)(lua_State*, int)
 				, void (*get_sig_ptr)(lua_State*, string_class&));
 #endif
@@ -818,13 +827,13 @@ namespace luabind
         // WrappedType MUST inherit from T
         using WrappedType = typename detail::extract_parameter<
             WrappedTypePredicate,
-            std::in_place_t,
+            detail::null_type,
             Xs...
         >::type;
 
         using HeldType = typename detail::extract_parameter<
             HeldTypePredicate,
-            std::in_place_t,
+            detail::null_type,
             Xs...
         >::type;
 
@@ -845,7 +854,7 @@ namespace luabind
 			// store the information in this class' base class-vector
 			base_desc base;
 			base.type = LUABIND_TYPEID(To);
-			base.ptr_offset = detail::ptr_offset<T, To>();
+			base.ptr_offset = detail::ptr_offset(detail::type<T>(), detail::type<To>());
 			add_base(base);
 		}
 
@@ -887,7 +896,7 @@ namespace luabind
 		class_&& def(constructor<Ts...> sig) &&
 		{
             return std::move(*this).def_constructor(
-                std::is_same<WrappedType, std::in_place_t>(), sig, detail::policy_cons<>()
+                std::is_same<WrappedType, detail::null_type>(), sig, detail::policy_cons<>()
 			);
 		}
 
@@ -895,7 +904,7 @@ namespace luabind
 		class_&& def(constructor<Ts...> sig, const detail::policy_cons<Policies...> policies) &&
 		{
             return std::move(*this).def_constructor(
-				std::is_same<WrappedType, std::in_place_t>(), sig, policies
+				std::is_same<WrappedType, detail::null_type>(), sig, policies
 			);
 		}
 
@@ -1208,7 +1217,7 @@ namespace luabind
 
 		void set_back_reference(detail::default_back_reference*)
 		{
-			back_reference<T>::has_wrapper = !std::is_same_v<WrappedType, std::in_place_t>;
+			back_reference<T>::has_wrapper = !std::is_same_v<WrappedType, detail::null_type>;
 		}
 
 		void set_back_reference(void*) const
@@ -1223,7 +1232,7 @@ namespace luabind
             return &detail::adopt_function<T, W>::execute;
 		}
 
-		adopt_fun_t get_adopt_fun(std::in_place_t*)
+		adopt_fun_t get_adopt_fun(detail::null_type*)
 		{
 			return nullptr;
 		}

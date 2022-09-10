@@ -265,7 +265,7 @@ namespace luabind { namespace detail {
         m_registration->m_holder_alignment = holder_alignment;
     }
 
-    void class_base::add_getter(const char* name, std::function<int(lua_State*, ptrdiff_t)> g)
+    void class_base::add_getter(const char* name, std::function<int(lua_State*, int)> g)
     {
         detail::class_rep::callback c;
         c.func = std::move(g);
@@ -276,7 +276,7 @@ namespace luabind { namespace detail {
     }
 
 #ifdef LUABIND_NO_ERROR_CHECKING
-    void class_base::add_setter(const char* name, std::function<int(lua_State*, ptrdiff_t)> s)
+    void class_base::add_setter(const char* name, std::function<int(lua_State*, int)> s)
 #else
     void class_base::add_setter(
         const char* name

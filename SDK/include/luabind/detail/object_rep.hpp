@@ -46,7 +46,7 @@ namespace luabind { namespace detail
 
 		void* ptr() const { return m_object; }
 
-		void* ptr(ptrdiff_t pointer_offset) const
+		void* ptr(int pointer_offset) const
 		{
 			return reinterpret_cast<char*>(m_object) + pointer_offset;
 		}

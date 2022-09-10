@@ -26,6 +26,8 @@
 #include <luabind/raw_policy.hpp>
 #include <luabind/detail/policy_cons.hpp>
 
+#include <imdexlib/identity.hpp>
+
 namespace luabind 
 { 
     namespace detail 
@@ -101,10 +103,10 @@ namespace luabind { namespace detail {
     {
         using type = std::conditional_t<
             std::is_same_v<T, self_type>,
-            std::type_identity_t<W&>,
+            imdexlib::identity_t<W&>,
             std::conditional_t<
                 std::is_same_v<T, const_self_type>,
-                std::type_identity_t<W const&>,
+                imdexlib::identity_t<W const&>,
                 typename unwrap_other<T>::type
             >
         >;

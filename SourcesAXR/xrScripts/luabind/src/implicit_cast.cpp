@@ -43,9 +43,9 @@ namespace luabind { namespace detail {
     int implicit_cast(
         class_rep const* crep
       , LUABIND_TYPE_INFO const& type_id
-      , ptrdiff_t& pointer_offset)
+      , int& pointer_offset)
     {
-        ptrdiff_t offset = 0;
+        int offset = 0;
         if (LUABIND_TYPE_INFO_EQUAL(crep->type(), type_id)) return 0;
 
         for (vector_class<class_rep::base_info>::const_iterator i = 

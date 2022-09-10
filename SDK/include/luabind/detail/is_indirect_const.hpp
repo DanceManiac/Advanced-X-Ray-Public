@@ -1,4 +1,4 @@
-// Copyright (c) 2003 Daniel Wallin and Arvid Norberg
+// Copyright (c) 2004 Daniel Wallin and Arvid Norberg
 
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -22,16 +22,16 @@
 
 #pragma once
 
-#include <luabind/detail/overload_rep.hpp>
+#include <type_traits>
 
-namespace luabind { namespace detail
-{
-	inline int overload_rep::call(lua_State* L, bool force_static_call) const 
-	{ 
-		if (force_static_call)
-			return call_fun_static(L);
-		else
-			return call_fun(L);
-	}
+namespace luabind {
 
-}} // namespace luabind::detail
+// returns true for:
+//    T = U*  is_const<U>
+//    T = U&  is_const<U>
+//    T = U   is_const<U>
+template <typename T>
+struct is_indirect_const : public std::is_const<std::remove_pointer_t<std::remove_reference_t<T>>> {
+};
+
+} // namespace luabind

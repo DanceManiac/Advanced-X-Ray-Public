@@ -46,7 +46,7 @@ namespace luabind { namespace detail
 	{
 		get_caller() {}
 
-		int operator()(lua_State* L, ptrdiff_t pointer_offset, F f)
+		int operator()(lua_State* L, int pointer_offset, F f)
 		{
 			// parameters on the lua stack:
 			// 1. object_rep
@@ -67,7 +67,7 @@ namespace luabind { namespace detail
 	template<typename T, typename F, typename... Policies>
 	struct set_caller
 	{
-		int operator()(lua_State* L, ptrdiff_t pointer_offset, F f)
+		int operator()(lua_State* L, int pointer_offset, F f)
 		{
 			// parameters on the lua stack:
 			// 1. object_rep
@@ -82,7 +82,7 @@ namespace luabind { namespace detail
 		}
 	};
 
-	using match_fun_ptr = int (*)(lua_State*, ptrdiff_t);
+	typedef int (*match_fun_ptr)(lua_State*, int);
 
 	template<typename T, typename... Policies>
 	struct set_matcher
@@ -113,7 +113,7 @@ namespace luabind { namespace detail
 	{
 		auto_set() {}
 
-		int operator()(lua_State* L, ptrdiff_t pointer_offset, D T::*member)
+		int operator()(lua_State* L, int pointer_offset, D T::*member)
 		{
 			const int nargs = lua_gettop(L);
 
@@ -153,7 +153,7 @@ namespace luabind { namespace detail
 	{
 		auto_get() {}
 
-		int operator()(lua_State* L, ptrdiff_t pointer_offset, D T::*member)
+		int operator()(lua_State* L, int pointer_offset, D T::*member)
 		{
 			const int nargs = lua_gettop(L);
 

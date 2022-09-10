@@ -1348,7 +1348,7 @@ void* luabind::detail::class_rep::convert_to(
 	assert(obj == 0 || obj->crep() == this);
 
 	int steps = 0;
-	ptrdiff_t offset = 0;
+	int offset = 0;
 	if (!(LUABIND_TYPE_INFO_EQUAL(holder_type(), target_type))
 		&& !(LUABIND_TYPE_INFO_EQUAL(const_holder_type(), target_type)))
 	{

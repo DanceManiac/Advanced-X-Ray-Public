@@ -15,7 +15,7 @@
 #endif // #ifdef DEBUG
 
 //#include <luabind/luabind_types.h>
-#include "../../engine.vc2008/xrScripts/xrScripts.h"
+#include "../../SourcesAXR/xrScripts/xrScripts.h"
 
 namespace luabind {
 	typedef void* memory_allocation_function_parameter;

@@ -33,7 +33,6 @@
 #include <luabind/detail/decorate_type.hpp>
 #include <luabind/detail/class_registry.hpp>
 #include <luabind/detail/class_cache.hpp>
-#include <luabind/detail/implicit_cast.hpp>
 
 namespace luabind
 {
@@ -98,6 +97,8 @@ namespace luabind
 		{
             static constexpr bool value = std::is_same_v<decltype(converters::is_user_defined(LUABIND_DECORATE_TYPE(T))), std::true_type>;
 		};
+
+		LUABIND_API int implicit_cast(const class_rep* crep, LUABIND_TYPE_INFO const&, int& pointer_offset);
 	}
 
 	 template<class T> class functor;
@@ -135,7 +136,7 @@ namespace luabind { namespace detail
             const type<T>&,
             std::conditional_t<
                 std::is_reference_v<T> || std::is_pointer_v<T>,
-                typename std::type_identity<T>::type,
+                typename identity<T>::type,
                 std::add_lvalue_reference_t<T>
             >
         >;
@@ -314,7 +315,7 @@ namespace luabind { namespace detail
 			(void)L;
 			//return std::numeric_limits<int>::max() / LUABIND_MAX_ARITY;
             constexpr const int kMaxArity = 1000;
-            return std::numeric_limits<int>::max() / kMaxArity;
+            return INT_MAX / kMaxArity;
 		}
 
 		PRIMITIVE_CONVERTER(luabind::weak_ref)
@@ -322,7 +323,7 @@ namespace luabind { namespace detail
 			return luabind::weak_ref(L, index);
 		}
 
-		PRIMITIVE_MATCHER(luabind::weak_ref) { (void)index; (void)L; return std::numeric_limits<int>::max() - 1; }
+		PRIMITIVE_MATCHER(luabind::weak_ref) { (void)index; (void)L; return INT_MAX - 1; }
 		
 		const char* apply(lua_State* L, detail::by_const_pointer<char>, int index) { return static_cast<const char*>(lua_tostring(L, index)); }
 		const char* apply(lua_State* L, detail::by_const_pointer<const char>, int index) { return static_cast<const char*>(lua_tostring(L, index)); }
@@ -482,7 +483,7 @@ namespace luabind { namespace detail
 			if (LUABIND_TYPE_INFO_EQUAL(obj->crep()->const_holder_type(), LUABIND_TYPEID(T)))
 				return (obj->flags() & object_rep::constant)?0:-1;
 
-			ptrdiff_t d;
+			int d;
 			return implicit_cast(obj->crep(), LUABIND_TYPEID(T), d);
 		}
 
@@ -618,7 +619,7 @@ namespace luabind { namespace detail
 
 			object_rep* obj = is_class_object(L, index);
 			if (obj == nullptr) return -1;
-			ptrdiff_t d;
+			int d;
 
 			if (LUABIND_TYPE_INFO_EQUAL(obj->crep()->holder_type(), LUABIND_TYPEID(T)))
 				return (obj->flags() & object_rep::constant)?-1:0;
@@ -694,7 +695,7 @@ namespace luabind { namespace detail
 				return (obj->flags() & object_rep::constant)?0:1;
 
             bool const_ = obj->flags() & object_rep::constant;
-			ptrdiff_t d;
+			int d;
 			return implicit_cast(obj->crep(), LUABIND_TYPEID(T), d) + !const_;
 		}
 
@@ -852,7 +853,7 @@ namespace luabind { namespace detail
 				return (obj->flags() & object_rep::constant)?0:1;
 
             bool const_ = obj->flags() & object_rep::constant;
-			ptrdiff_t d;
+			int d;
 			return implicit_cast(obj->crep(), LUABIND_TYPEID(T), d) + !const_;
 		}
 

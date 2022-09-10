@@ -25,38 +25,67 @@
 #include <luabind/config.hpp>
 #include <luabind/detail/policy.hpp>
 
+#include <imdexlib/is_reference_wrapper.hpp>
+
 namespace luabind { namespace detail
 {
+	template<bool IsReferenceWrapper = false, bool IsFundamental = false>
+	struct unwrap_ref
+	{
+		template<class T>
+		static const T& get(const T& r) { return r; }
+
+		template<class T>
+		struct apply
+		{
+			typedef T type;
+		};
+	};
+
+	template<>
+	struct unwrap_ref<true>
+	{
+		template<class T>
+		static T& get(const std::reference_wrapper<T>& r) { return r.get(); }
+
+		template<class T>
+		struct apply
+		{
+			typedef typename T::type& type;
+		};
+	};
+
+	template<>
+	struct unwrap_ref<true, true>
+	{
+		template<class T>
+		static T& get(const std::reference_wrapper<T>& r) { return r.get(); }
+
+		template<class T>
+		struct apply
+		{
+			typedef T type;
+		};
+	};
+
 	template<class T>
 	void convert_to_lua(lua_State* L, const T& v)
 	{
-		using value_type = typename std::unwrap_reference<T>::type;
+        using unwrap = unwrap_ref<imdexlib::is_reference_wrapper_v<T>, std::is_fundamental<T>::value>;
+	    using value_type = typename unwrap::template apply<T>::type;
 		typename default_policy::generate_converter<value_type, Direction::cpp_to_lua>::type converter;
 
-		if constexpr (boost_legacy::is_reference_wrapper_v<T>)
-		{
-			converter.apply(L, v.get());
-		}
-		else
-		{
-			converter.apply(L, v);
-		}
+		converter.apply(L, unwrap::get(v));
 	}
 
 	template<int Index, class T, typename... Policies>
 	void convert_to_lua_p(lua_State* L, const T& v, const policy_cons<Policies...>)
 	{
-		using value_type = typename std::unwrap_reference<T>::type;
+        using unwrap = unwrap_ref<imdexlib::is_reference_wrapper_v<T>>;
+	    using value_type = typename unwrap::template apply<T>::type;
 	    using converter_policy = typename find_conversion_policy<Index, Policies...>::type;
 		typename converter_policy::template generate_converter<value_type, Direction::cpp_to_lua>::type converter;
 
-		if constexpr (boost_legacy::is_reference_wrapper_v<T>)
-		{
-			converter.apply(L, v.get());
-		}
-		else
-		{
-			converter.apply(L, v);
-		}
+		converter.apply(L, unwrap::get(v));
 	}
 }}

@@ -39,7 +39,7 @@ namespace luabind { namespace detail
 			// getmetatable().__lua_class is true
 			// object_rep->flags() & object_rep::constant == 0
 
-			ptrdiff_t offset = 0;
+			int offset = 0;
 			object_rep* obj = static_cast<object_rep*>(lua_touserdata(L, index));
 			assert((obj != nullptr) && "internal error, please report");
 			const class_rep* crep = obj->crep();
@@ -62,7 +62,7 @@ namespace luabind { namespace detail
 			// cannot cast a constant object to nonconst
 			if (obj->flags() & object_rep::constant) return -1;
 			if (!(obj->flags() & object_rep::owner)) return -1;
-			ptrdiff_t d;
+			int d;
 			return implicit_cast(obj->crep(), LUABIND_TYPEID(T), d);	
 		}
 

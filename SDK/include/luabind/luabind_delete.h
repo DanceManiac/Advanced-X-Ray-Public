@@ -9,7 +9,7 @@
 #pragma once
 
 #include <type_traits>
-#include "../../engine.vc2008/xrScripts/xrScripts.h"
+#include "../../SourcesAXR/xrScripts/xrScripts.h"
 
 namespace luabind 
 {

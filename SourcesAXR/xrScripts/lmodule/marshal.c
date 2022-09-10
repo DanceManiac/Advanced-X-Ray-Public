@@ -65,12 +65,12 @@ static void buf_init(lua_State *L, mar_Buffer *buf)
 	buf->size = 128;
 	buf->seek = 0;
 	buf->head = 0;
-	if (!(buf->data = xr_malloc_C(buf->size))) luaL_error(L, "Out of memory!");
+	if (!(buf->data = malloc(buf->size))) luaL_error(L, "Out of memory!");
 }
 
 static void buf_done(lua_State* L, mar_Buffer *buf)
 {
-	xr_free_C(buf->data);
+	free(buf->data);
 }
 
 static int buf_write(lua_State* L, const char* str, size_t len, mar_Buffer *buf)
@@ -82,7 +82,7 @@ static int buf_write(lua_State* L, const char* str, size_t len, mar_Buffer *buf)
 		while (new_size - cur_head <= len) {
 			new_size = new_size << 1;
 		}
-		if (!(buf->data = xr_realloc_C(buf->data, new_size))) {
+		if (!(buf->data = realloc(buf->data, new_size))) {
 			luaL_error(L, "Out of memory!");
 		}
 		buf->size = new_size;

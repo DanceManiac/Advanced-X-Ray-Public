@@ -33,11 +33,11 @@ namespace luabind
 		class proxy_raw_object;
 		class proxy_array_object;
 
-		template<class T>
-		void convert_to_lua(lua_State* L, const T& v);
+		template<typename T>
+		void convert_to_lua(lua_State*, const T&);
 
-		template<int Index, class T, typename... Policies>
-		void convert_to_lua_p(lua_State* L, const T& v, const policy_cons<Policies...>);
+		template<int Index, typename T, typename... Policies>
+		void convert_to_lua_p(lua_State*, const T&, const policy_cons<Policies...>);
 
 		template<int Index>
 		struct push_args_from_tuple

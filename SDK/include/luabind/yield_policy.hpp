@@ -25,7 +25,7 @@
 #include <luabind/config.hpp>
 #include <luabind/detail/policy.hpp>
 
-namespace luabind::detail 
+namespace luabind { namespace detail 
 {
 	struct yield_policy
 	{
@@ -57,7 +57,7 @@ namespace luabind::detail
 
     template <typename... Policies>
     constexpr bool has_yield_v = has_yield<Policies...>::value;
-}
+}}
 
 namespace luabind
 {

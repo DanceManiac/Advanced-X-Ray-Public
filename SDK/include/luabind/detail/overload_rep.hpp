@@ -25,11 +25,12 @@
 #include <luabind/config.hpp>
 #include <luabind/detail/overload_rep_base.hpp>
 #include <luabind/detail/class_rep.hpp>
+#include <luabind/detail/is_indirect_const.hpp>
 #include <luabind/detail/calc_has_arg.hpp>
 
 #include <imdexlib/typelist.hpp>
 
-namespace luabind::detail
+namespace luabind { namespace detail
 {
 	// this class represents a specific overload of a member-function.
 	struct LUABIND_API overload_rep : public overload_rep_base
@@ -119,4 +120,4 @@ namespace luabind::detail
 		// is true if the overload is const (this is a part of the signature)
 		bool m_const;
 	};
-} // namespace luabind::detail
+}} // namespace luabind::detail

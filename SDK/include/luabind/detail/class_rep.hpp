@@ -135,7 +135,7 @@ namespace luabind { namespace detail
 
 		struct base_info
 		{
-			ptrdiff_t pointer_offset; // the offset added to the pointer to obtain a basepointer (due to multiple-inheritance)
+			int pointer_offset; // the offset added to the pointer to obtain a basepointer (due to multiple-inheritance)
 			class_rep* base;
 		};
 
@@ -249,7 +249,7 @@ namespace luabind { namespace detail
                 return *this;
             }
 
-            std::function<int(lua_State*, ptrdiff_t)> func;
+            std::function<int(lua_State*, int)> func;
 
 #ifndef LUABIND_NO_ERROR_CHECKING
 			int (*match)(lua_State*, int);
@@ -257,7 +257,7 @@ namespace luabind { namespace detail
 			typedef void(*get_sig_ptr)(lua_State*, string_class&);
 			get_sig_ptr sig;
 #endif
-			ptrdiff_t pointer_offset;
+			int pointer_offset;
 		};
 
 		const map_class<const char*, callback, ltstr>& properties() const;

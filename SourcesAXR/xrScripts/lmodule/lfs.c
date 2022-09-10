@@ -135,7 +135,7 @@ static int get_dir (lua_State *L) {
     size_t size = LFS_MAXPATHLEN; /* initial buffer size */
     int result;
     while (1) {
-        path = xr_realloc_C(path, size);
+        path = realloc(path, size);
         if (!path) /* failed to allocate */
             return pusherror(L, "get_dir realloc() failed");
         if (getcwd(path, (int)size) != NULL) {
@@ -151,7 +151,7 @@ static int get_dir (lua_State *L) {
         /* ERANGE = insufficient buffer capacity, double size and retry */
         size *= 2;
     }
-    xr_free_C(path);
+    free(path);
     return result;
 #endif
 }
@@ -238,7 +238,7 @@ static int lfs_lock_dir(lua_State *L) {
   char *ln;
   const char *lockfile = "/lockfile.lfs";
   const char *path = luaL_checklstring(L, 1, &pathl);
-  ln = (char*)xr_malloc_C(pathl + strlen(lockfile) + 1);
+  ln = (char*)malloc(pathl + strlen(lockfile) + 1);
   if(!ln) {
     lua_pushnil(L); lua_pushstring(L, strerror(errno)); return 2;
   }
@@ -246,14 +246,14 @@ static int lfs_lock_dir(lua_State *L) {
   if((fd = CreateFile(ln, GENERIC_WRITE, 0, NULL, CREATE_NEW,
                 FILE_ATTRIBUTE_NORMAL | FILE_FLAG_DELETE_ON_CLOSE, NULL)) == INVALID_HANDLE_VALUE) {
         int en = GetLastError();
-        xr_free_C(ln); lua_pushnil(L);
+        free(ln); lua_pushnil(L);
         if(en == ERROR_FILE_EXISTS || en == ERROR_SHARING_VIOLATION)
                 lua_pushstring(L, "File exists");
         else
                 lua_pushstring(L, strerror(en));
         return 2;
   }
-  xr_free_C(ln);
+  free(ln);
   lock = (lfs_Lock*)lua_newuserdata(L, sizeof(lfs_Lock));
   lock->fd = fd;
   luaL_getmetatable (L, LOCK_METATABLE);
@@ -279,13 +279,13 @@ static int lfs_lock_dir(lua_State *L) {
   const char *lockfile = "/lockfile.lfs";
   const char *path = luaL_checklstring(L, 1, &pathl);
   lock = (lfs_Lock*)lua_newuserdata(L, sizeof(lfs_Lock));
-  ln = (char*)xr_malloc_C(pathl + strlen(lockfile) + 1);
+  ln = (char*)malloc(pathl + strlen(lockfile) + 1);
   if(!ln) {
     lua_pushnil(L); lua_pushstring(L, strerror(errno)); return 2;
   }
   strcpy(ln, path); strcat(ln, lockfile);
   if(symlink("lock", ln) == -1) {
-      xr_free_C(ln); lua_pushnil(L);
+      free(ln); lua_pushnil(L);
     lua_pushstring(L, strerror(errno)); return 2;
   }
   lock->ln = ln;
@@ -297,7 +297,7 @@ static int lfs_unlock_dir(lua_State *L) {
   lfs_Lock *lock = (lfs_Lock *)luaL_checkudata(L, 1, LOCK_METATABLE);
   if(lock->ln) {
     unlink(lock->ln);
-    xr_free_C(lock->ln);
+    free(lock->ln);
     lock->ln = NULL;
   }
   return 0;
@@ -827,12 +827,12 @@ static int push_link_target(lua_State *L) {
         char *target = NULL;
         int tsize, size = 256; /* size = initial buffer capacity */
         while (1) {
-            target = xr_realloc_C(target, size);
+            target = realloc(target, size);
             if (!target) /* failed to allocate */
                 return 0;
             tsize = readlink(file, target, size);
             if (tsize < 0) { /* a readlink() error occurred */
-                xr_free_C(target);
+                free(target);
                 return 0;
             }
             if (tsize < size)
@@ -842,7 +842,7 @@ static int push_link_target(lua_State *L) {
         }
         target[tsize] = '\0';
         lua_pushlstring(L, target, tsize);
-        xr_free_C(target);
+        free(target);
         return 1;
 #endif
 }

@@ -330,10 +330,10 @@ static void *mem_alloc(void *ud, void *ptr, size_t osize, size_t nsize)
   (void)ud;
   (void)osize;
   if (nsize == 0) {
-      xr_free_C(ptr);
+      free(ptr);
     return NULL;
   } else {
-    return xr_realloc_C(ptr, nsize);
+    return realloc(ptr, nsize);
   }
 }
 

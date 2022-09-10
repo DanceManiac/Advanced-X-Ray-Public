@@ -72,7 +72,7 @@
 #	define LUABIND_TYPE_INFO const type_info*
 #	define LUABIND_TYPEID(t) &typeid(t)
 #	define LUABIND_TYPE_INFO_EQUAL(i1, i2) *i1 == *i2
-#	define LUABIND_INVALID_TYPE_INFO &typeid(std::in_place_t)
+#	define LUABIND_INVALID_TYPE_INFO &typeid(detail::null_type)
 #	include <typeinfo>
 #endif
 
@@ -92,7 +92,7 @@
 
 // this define is set if we're currently building a luabind file
 // select import or export depending on it
-#include "../../../engine.vc2008/xrScripts/xrScripts.h"
+#include "../../SourcesAXR/xrScripts/xrScripts.h"
 #include <luabind/luabind_memory.h>
 
 using	string_class =	luabind::internal_string;

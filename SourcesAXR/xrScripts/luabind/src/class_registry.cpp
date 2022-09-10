@@ -27,9 +27,6 @@
 #include <luabind/detail/operator_id.hpp>
 #include <luabind/detail/garbage_collector.hpp>
 
-//To XRay Log
-#include "../../engine.vc2008/xrCore/xrCore.h"
-
 namespace luabind { namespace detail {
 
     namespace {
