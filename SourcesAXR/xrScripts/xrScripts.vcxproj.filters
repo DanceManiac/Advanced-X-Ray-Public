@@ -25,20 +25,11 @@
     <Filter Include="Core\Imdexlib">
       <UniqueIdentifier>{07668c46-1ee4-4a76-892f-674287756a63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Import">
-      <UniqueIdentifier>{ed7cfdbb-0734-4a80-a164-aac979dc5440}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Import\LuaCore">
-      <UniqueIdentifier>{ab044b2c-b584-4848-9ec2-c76139638f5a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Lua\LuaJIT\source">
       <UniqueIdentifier>{f184226d-bc2e-4733-b96c-5328ef9c5b3c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Lua\LuaJIT\include">
       <UniqueIdentifier>{71cf5c88-bbf6-4e97-9927-df4d26fd2110}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Import\CLExport">
-      <UniqueIdentifier>{5ee35b7f-53bc-409d-ae41-879bd2c47899}</UniqueIdentifier>
     </Filter>
     <Filter Include="Lua\Lua">
       <UniqueIdentifier>{0bf4a17a-80cd-4ee1-86f4-3726b94742f1}</UniqueIdentifier>
@@ -125,9 +116,6 @@
     </ClCompile>
     <ClCompile Include="library_set.cpp">
       <Filter>Lua\LuaBind</Filter>
-    </ClCompile>
-    <ClCompile Include="import_ses.cpp">
-      <Filter>Import\LuaCore</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lib_aux.c">
       <Filter>Lua\LuaJIT\source</Filter>
@@ -312,39 +300,6 @@
     <ClCompile Include="luajit\lj_gdbjit.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="Export\script_fcolor_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_flags_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_fmatrix_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_fvector_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_net_packet_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_reader_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_rtoken_list_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_sound_type_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_token_list.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="Export\script_token_list_script.cpp">
-      <Filter>Import\CLExport</Filter>
-    </ClCompile>
-    <ClCompile Include="lopen.cpp">
-      <Filter>Lua\LuaEtc</Filter>
-    </ClCompile>
     <ClCompile Include="lmodule\marshal.c">
       <Filter>Lua\LuaEtc\Marshal</Filter>
     </ClCompile>
@@ -358,9 +313,6 @@
       <Filter>Lua\LuaEtc\Traceback</Filter>
     </ClCompile>
     <ClCompile Include="export\script_abstract_action.cpp" />
-    <ClCompile Include="VMLua.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="luajit\lj_strfmt.c">
       <Filter>Lua\LuaJIT</Filter>
     </ClCompile>
@@ -672,9 +624,6 @@
     <ClInclude Include="xrScripts.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="import_ses.hpp">
-      <Filter>Import\LuaCore</Filter>
-    </ClInclude>
     <ClInclude Include="luajit\lj_alloc.h">
       <Filter>Lua\LuaJIT\include</Filter>
     </ClInclude>
@@ -873,42 +822,6 @@
     <ClInclude Include="luajit\lj_vmevent.h">
       <Filter>Lua\LuaJIT\include</Filter>
     </ClInclude>
-    <ClInclude Include="Export\script_export_space.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_fcolor.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_flags.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_fmatrix.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_fvector.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_net_packet.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_reader.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_rtoken_list.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_rtoken_list_inline.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_sound_type.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_token_list.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
-    <ClInclude Include="Export\script_token_list_inline.h">
-      <Filter>Import\CLExport</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\SDK\include\imdexlib\traits.hpp">
       <Filter>Core\Imdexlib</Filter>
     </ClInclude>
@@ -945,9 +858,6 @@
     <ClInclude Include="luajit\lualib.h">
       <Filter>Lua\Lua</Filter>
     </ClInclude>
-    <ClInclude Include="luaopen.hpp">
-      <Filter>Lua\LuaEtc</Filter>
-    </ClInclude>
     <ClInclude Include="lmodule\lfs.h">
       <Filter>Lua\LuaEtc\LFS</Filter>
     </ClInclude>
@@ -958,9 +868,6 @@
       <Filter>Lua\LuaBind\include</Filter>
     </ClInclude>
     <ClInclude Include="export\script_abstract_action.h" />
-    <ClInclude Include="VMLua.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Core</Filter>
     </ClInclude>

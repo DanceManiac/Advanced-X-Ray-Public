@@ -81,47 +81,27 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ASAN|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
-    <Import Project="..\..\Oxy_ASAN.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ASAN|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
-    <Import Project="..\..\Oxy_ASAN.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_ASAN|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
-    <Import Project="..\..\Oxy_ASAN.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_ASAN|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
-    <Import Project="..\..\Oxy_ASAN.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\F-Ray.props" />
-    <Import Project="..\..\WindowsPlatform.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -156,6 +136,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <NMakeBuildCommandLine />
+    <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+    <IntDir>..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ASAN|x64'">
     <NMakeBuildCommandLine />
@@ -262,7 +244,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./;../../sdk/include;../../../include;../../sdk/include/tbb/include;../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../sdk/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LUA_BUILD_AS_DLL;XR_SCRIPTS;WIN32;DEBUG;LUABIND_BUILDING;LUABIND_NO_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -286,7 +268,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(xrLib)$(TargetName).lib</ImportLibrary>
       <AdditionalOptions>lj_vm.obj  /ignore:4281 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>xrCore.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <EntryPointSymbol>
       </EntryPointSymbol>
@@ -300,7 +282,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./;../../sdk/include;../../../include;../../sdk/include/tbb/include;../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../../sdk/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LUA_BUILD_AS_DLL;XR_SCRIPTS;WIN32;DEBUG;LUABIND_BUILDING;LUABIND_NO_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <ExceptionHandling>Sync</ExceptionHandling>
@@ -324,7 +306,7 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(xrLib)$(TargetName).lib</ImportLibrary>
       <AdditionalOptions>lj_vm.obj  /ignore:4281 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>xrCore.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <EntryPointSymbol>
       </EntryPointSymbol>
@@ -503,17 +485,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cstdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="export\script_abstract_action.cpp" />
-    <ClCompile Include="Export\script_fcolor_script.cpp" />
-    <ClCompile Include="Export\script_flags_script.cpp" />
-    <ClCompile Include="Export\script_fmatrix_script.cpp" />
-    <ClCompile Include="Export\script_fvector_script.cpp" />
-    <ClCompile Include="Export\script_net_packet_script.cpp" />
-    <ClCompile Include="Export\script_reader_script.cpp" />
-    <ClCompile Include="Export\script_rtoken_list_script.cpp" />
-    <ClCompile Include="Export\script_sound_type_script.cpp" />
-    <ClCompile Include="Export\script_token_list.cpp" />
-    <ClCompile Include="Export\script_token_list_script.cpp" />
-    <ClCompile Include="import_ses.cpp" />
     <ClCompile Include="library_set.cpp" />
     <ClCompile Include="lmodule\lfs.c">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cstdafx.h</PrecompiledHeaderFile>
@@ -569,7 +540,6 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)C.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)C.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="lopen.cpp" />
     <ClCompile Include="luabind\src\class.cpp" />
     <ClCompile Include="luabind\src\class_info.cpp" />
     <ClCompile Include="luabind\src\class_registry.cpp" />
@@ -2042,7 +2012,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="VMLua.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\SDK\include\luabind\adopt_policy.hpp" />
@@ -2127,19 +2096,6 @@
     <ClInclude Include="cstdafx.h" />
     <ClInclude Include="Export\ai_sounds.h" />
     <ClInclude Include="export\script_abstract_action.h" />
-    <ClInclude Include="Export\script_export_space.h" />
-    <ClInclude Include="Export\script_fcolor.h" />
-    <ClInclude Include="Export\script_flags.h" />
-    <ClInclude Include="Export\script_fmatrix.h" />
-    <ClInclude Include="Export\script_fvector.h" />
-    <ClInclude Include="Export\script_net_packet.h" />
-    <ClInclude Include="Export\script_reader.h" />
-    <ClInclude Include="Export\script_rtoken_list.h" />
-    <ClInclude Include="Export\script_rtoken_list_inline.h" />
-    <ClInclude Include="Export\script_sound_type.h" />
-    <ClInclude Include="Export\script_token_list.h" />
-    <ClInclude Include="Export\script_token_list_inline.h" />
-    <ClInclude Include="import_ses.hpp" />
     <ClInclude Include="lmodule\lfs.h" />
     <ClInclude Include="luajit\lauxlib.h" />
     <ClInclude Include="luajit\lj_alloc.h" />
@@ -2214,7 +2170,6 @@
     <ClInclude Include="luajit\luaconf.h" />
     <ClInclude Include="luajit\luajit.h" />
     <ClInclude Include="luajit\lualib.h" />
-    <ClInclude Include="luaopen.hpp" />
     <ClInclude Include="luapdebug\libpdebug.h" />
     <ClInclude Include="luasocket\auxiliar.h" />
     <ClInclude Include="luasocket\buffer.h" />
@@ -2238,11 +2193,15 @@
     <ClInclude Include="luasocket\wsocket.h" />
     <ClInclude Include="lua_traceback.hpp" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="VMLua.h" />
     <ClInclude Include="xrScripts.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Export\luabind.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xrCore\xrCore.vcxproj">
+      <Project>{a0f7d1fb-59a7-4717-a7e4-96f37e91998e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
