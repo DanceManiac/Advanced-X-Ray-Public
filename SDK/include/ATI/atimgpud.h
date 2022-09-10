@@ -2,9 +2,9 @@
 // File: atimgpud.h
 // Copyright (c) 2005 ATI Technologies Inc. All rights reserved.
 //-----------------------------------------------------------------------------
+#pragma once 
 
-#ifndef __ATIMGPUD_H
-#define __ATIMGPUD_H
+#ifndef _M_X64
 
 #include <windows.h>
 
