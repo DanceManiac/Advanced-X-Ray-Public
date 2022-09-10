@@ -12,19 +12,10 @@
 #include <direct.h>
 #pragma warning(pop)
 
-#ifdef __BORLANDC__
-    #	include "d3d9.h"
-    #	include "d3dx9.h"
-    #	include "D3DX_Wrapper.h"
-    #	pragma comment(lib,"EToolsB.lib")
-    #	define DEBUG_INVOKE	DebugBreak()
-        static BOOL			bException	= TRUE;
-    #   define USE_BUG_TRAP
-#else
-    #   define USE_BUG_TRAP
-    #	define DEBUG_INVOKE	__asm int 3
-        static BOOL			bException	= FALSE;
-#endif
+// #   define USE_BUG_TRAP
+#define DEBUG_INVOKE	DebugBreak();
+static BOOL bException = FALSE;
+char g_application_path[256];
 
 #ifndef USE_BUG_TRAP
 #	include <exception>
@@ -54,10 +45,6 @@
 XRCORE_API	xrDebug		Debug;
 
 static bool	error_after_dialog = false;
-
-extern void BuildStackTrace();
-extern char g_stackTrace[100][4096];
-extern int	g_stackTraceCount;
 extern bool shared_str_initialized;
 
 void LogStackTrace	(LPCSTR header)
@@ -65,12 +52,13 @@ void LogStackTrace	(LPCSTR header)
 	if (!shared_str_initialized)
 		return;
 
-	BuildStackTrace	();		
+	//BuildStackTrace	();		
 
 	Msg				("%s",header);
-
+#if 0
 	for (int i=1; i<g_stackTraceCount; ++i)
 		Msg			("%s",g_stackTrace[i]);
+#endif
 }
 
 void xrDebug::gather_info		(const char *expression, const char *description, const char *argument0, const char *argument1, const char *file, int line, const char *function, LPSTR assertion_info, u32 const assertion_info_size)
@@ -136,7 +124,7 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 #ifdef USE_OWN_ERROR_MESSAGE_WINDOW
 		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"stack trace:%s%s",endline,endline);
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
-
+#if 0
 		BuildStackTrace	();		
 
 		for (int i=2; i<g_stackTraceCount; ++i) {
@@ -147,7 +135,7 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 			buffer		+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%s%s",g_stackTrace[i],endline);
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
 		}
-
+#endif
 		if (shared_str_initialized)
 			FlushLog	();
 
@@ -372,12 +360,14 @@ void CALLBACK PreErrorHandler	(INT_PTR)
 
 void xrDebug::OnFileSystemInitialized()
 {
+#if 0
 	string_path dumpPath;
 	if (FS.path_exist("$app_data_root$"))
 	{
 		if (FS.update_path(dumpPath, "$app_data_root$", "reports"))
 			BT_SetReportFilePath(dumpPath);
 	}
+#endif
 }
 
 
@@ -459,7 +449,7 @@ please Submit Bug or save report and email it manually (button More...).\
 }
 #endif // USE_BUG_TRAP
 
-#if 1
+#if 0
 extern void BuildStackTrace(struct _EXCEPTION_POINTERS *pExceptionInfo);
 typedef LONG WINAPI UnhandledExceptionFilterType(struct _EXCEPTION_POINTERS *pExceptionInfo);
 typedef LONG ( __stdcall *PFNCHFILTFN ) ( EXCEPTION_POINTERS * pExPtrs ) ;
@@ -741,7 +731,7 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 		
 		LPCSTR					endline = "\r\n";
 		LPSTR					buffer = assertion_info + xr_strlen(assertion_info);
-		buffer					+= xr_sprintf(buffer,"Press OK to abort execution%s",endline);
+		buffer					+= xr_sprintf(buffer, sizeof(buffer), "Press OK to abort execution%s",endline);
 
 		MessageBox				(
 			GetTopWindow(NULL),
@@ -908,7 +898,7 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 #ifdef USE_BUG_TRAP
 		SetupExceptionHandler			( is_dedicated );
 #endif // USE_BUG_TRAP
-		previous_filter					= ::SetUnhandledExceptionFilter(UnhandledFilter);	// exception handler to all "unhandled" exceptions
+		//previous_filter					= ::SetUnhandledExceptionFilter(UnhandledFilter);	// exception handler to all "unhandled" exceptions
 
 #if 0
 		struct foo {static void	recurs	(const u32 &count)

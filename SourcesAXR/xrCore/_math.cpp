@@ -16,287 +16,207 @@ XRCORE_API	Fmatrix			Fidentity;
 XRCORE_API	Dmatrix			Didentity;
 XRCORE_API	CRandom			Random;
 
-#ifdef _M_AMD64
-u16			getFPUsw()		{ return 0;	}
-
-namespace	FPU 
+typedef struct _PROCESSOR_POWER_INFORMATION
 {
-	XRCORE_API void 	m24		(void)	{
-		_control87	( _PC_24,   MCW_PC );
-		_control87	( _RC_CHOP, MCW_RC );
-	}
-	XRCORE_API void 	m24r	(void)	{
-		_control87	( _PC_24,   MCW_PC );
-		_control87	( _RC_NEAR, MCW_RC );
-	}
-	XRCORE_API void 	m53		(void)	{
-		_control87	( _PC_53,   MCW_PC );
-		_control87	( _RC_CHOP, MCW_RC );
-	}
-	XRCORE_API void 	m53r	(void)	{
-		_control87	( _PC_53,   MCW_PC );
-		_control87	( _RC_NEAR, MCW_RC );
-	}
-	XRCORE_API void 	m64		(void)	{
-		_control87	( _PC_64,   MCW_PC );
-		_control87	( _RC_CHOP, MCW_RC );
-	}
-	XRCORE_API void 	m64r	(void)	{
-		_control87	( _PC_64,   MCW_PC );
-		_control87	( _RC_NEAR, MCW_RC );
-	}
+	DWORD Number;
+	DWORD MaxMhz;
+	DWORD CurrentMhz;
+	DWORD MhzLimit;
+	DWORD MaxIdleState;
+	DWORD CurrentIdleState;
+} PROCESSOR_POWER_INFORMATION, * PPROCESSOR_POWER_INFORMATION;
 
-	void		initialize		()				{}
-};
-#else
-u16 getFPUsw() 
+namespace FPU
 {
-	u16		SW;
-	__asm	fstcw SW;
-	return	SW;
-}
-
-namespace FPU 
-{
-	u16			_24	=0;
-	u16			_24r=0;
-	u16			_53	=0;
-	u16			_53r=0;
-	u16			_64	=0;
-	u16			_64r=0;
-
-	XRCORE_API void 	m24		()	{
-		u16		p	= _24;
-		__asm fldcw p;	
-	}
-	XRCORE_API void 	m24r	()	{
-		u16		p	= _24r;
-		__asm fldcw p;  
-	}
-	XRCORE_API void 	m53		()	{
-		u16		p	= _53;
-		__asm fldcw p;	
-	}
-	XRCORE_API void 	m53r	()	{
-		u16		p	= _53r;
-		__asm fldcw p;	
-	}
-	XRCORE_API void 	m64		()	{ 
-		u16		p	= _64;
-		__asm fldcw p;	
-	}
-	XRCORE_API void 	m64r	()	{
-		u16		p	= _64r;
-		__asm fldcw p;  
-	}
-
-	void		initialize		()
+	void initialize()
 	{
-		_clear87	();
-
-		_control87	( _PC_24,   MCW_PC );
-		_control87	( _RC_CHOP, MCW_RC );
-		_24			= getFPUsw();	// 24, chop
-		_control87	( _RC_NEAR, MCW_RC );
-		_24r		= getFPUsw();	// 24, rounding
-
-		_control87	( _PC_53,   MCW_PC );
-		_control87	( _RC_CHOP, MCW_RC );
-		_53			= getFPUsw();	// 53, chop
-		_control87	( _RC_NEAR, MCW_RC );
-		_53r		= getFPUsw();	// 53, rounding
-
-		_control87	( _PC_64,   MCW_PC );
-		_control87	( _RC_CHOP, MCW_RC );
-		_64			= getFPUsw();	// 64, chop
-		_control87	( _RC_NEAR, MCW_RC );
-		_64r		= getFPUsw();	// 64, rounding
-
-#ifndef XRCORE_STATIC
-
-		m24r		();
-
-#endif	//XRCORE_STATIC
-
-		::Random.seed	( u32(CPU::GetCLK()%(1i64<<32i64)) );
+		::Random.seed(u32(CPU::GetCLK() % (1i64 << 32i64)));
 	}
 };
-#endif
 
-namespace CPU 
+namespace CPU
 {
-	XRCORE_API u64				clk_per_second	;
-	XRCORE_API u64				clk_per_milisec	;
-	XRCORE_API u64				clk_per_microsec;
-	XRCORE_API u64				clk_overhead	;
-	XRCORE_API float			clk_to_seconds	;
-	XRCORE_API float			clk_to_milisec	;
-	XRCORE_API float			clk_to_microsec	;
-	XRCORE_API u64				qpc_freq		= 0	;
-	XRCORE_API u64				qpc_overhead	= 0	;
-	XRCORE_API u32				qpc_counter		= 0	;
-	
-	XRCORE_API _processor_info	ID;
+	XRCORE_API u64 qpc_freq;
+	XRCORE_API u32 qpc_counter = 0;
+	XRCORE_API processor_info Info;
 
-	XRCORE_API u64				QPC	()			{
-		u64		_dest	;
-		QueryPerformanceCounter			((PLARGE_INTEGER)&_dest);
-		qpc_counter	++	;
-		return	_dest	;
+	XRCORE_API u64 clk_per_second = 0;
+	XRCORE_API u64 QPC() noexcept
+	{
+		u64 _dest;
+		QueryPerformanceCounter(reinterpret_cast<PLARGE_INTEGER>(&_dest));
+		qpc_counter++;
+		return _dest;
 	}
 
-#ifdef M_BORLAND
-	u64	__fastcall GetCLK		(void)
+	void Detect()
 	{
-		_asm    db 0x0F;
-		_asm    db 0x31;
-	}
-#endif
-
-	void Detect	()
-	{
-		// General CPU identification
-		if (!_cpuid	(&ID))	
-		{
-			// Core.Fatal		("Fatal error: can't detect CPU/FPU.");
-			abort				();
-		}
-
 		// Timers & frequency
-		u64			start,end;
-		u32			dwStart,dwTest;
+		SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
 
-		SetPriorityClass		(GetCurrentProcess(),REALTIME_PRIORITY_CLASS);
+		u64 start = GetCLK();
+		while (GetCLK() - start < 1000);
+		u64 end = GetCLK();
 
-		// Detect Freq
-		dwTest	= timeGetTime();
-		do { dwStart = timeGetTime(); } while (dwTest==dwStart);
-		start	= GetCLK();
-		while (timeGetTime()-dwStart<1000) ;
-		end		= GetCLK();
-		clk_per_second = end-start;
+		clk_per_second = end - start;
 
 		// Detect RDTSC Overhead
-		clk_overhead	= 0;
-		u64 dummy		= 0;
-		for (int i=0; i<256; i++)	{
-			start			=	GetCLK();
-			clk_overhead	+=	GetCLK()-start-dummy;
+		u64 clk_overhead = 0;
+		for (u32 i = 0; i < 256; i++)
+		{
+			start = GetCLK();
+			clk_overhead += GetCLK() - start;
 		}
-		clk_overhead		/=	256;
 
-		// Detect QPC Overhead
-		QueryPerformanceFrequency	((PLARGE_INTEGER)&qpc_freq)	;
-		qpc_overhead	= 0;
-		for (i=0; i<256; i++)	{
-			start			=	QPC();
-			qpc_overhead	+=	QPC()-start-dummy;
-		}
-		qpc_overhead		/=	256;
+		clk_overhead /= 256;
+		clk_per_second -= clk_overhead;
 
-		SetPriorityClass	(GetCurrentProcess(),NORMAL_PRIORITY_CLASS);
+		// Detect QPC
+		LARGE_INTEGER Freq;
+		QueryPerformanceFrequency(&Freq);
+		qpc_freq = Freq.QuadPart;
 
-		clk_per_second	-=	clk_overhead;
-		clk_per_milisec	=	clk_per_second/1000;
-		clk_per_microsec	=	clk_per_milisec/1000;
-
-		_control87	( _PC_64,   MCW_PC );
-//		_control87	( _RC_CHOP, MCW_RC );
-		double a,b;
-		a = 1;		b = double(clk_per_second);
-		clk_to_seconds = float(double(a/b));
-		a = 1000;	b = double(clk_per_second);
-		clk_to_milisec = float(double(a/b));
-		a = 1000000;b = double(clk_per_second);
-		clk_to_microsec = float(double(a/b));
+		// Restore normal priority
+		SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
 	}
 };
 
 bool g_initialize_cpu_called = false;
 
 //------------------------------------------------------------------------------------
-void _initialize_cpu	(void) 
+
+//------------------------------------------------------------------------------------
+void _initialize_cpu(void)
 {
-	Msg("* Detected CPU: %s [%s], F%d/M%d/S%d, %.2f mhz, %d-clk 'rdtsc'",
-		CPU::ID.model_name,CPU::ID.v_name,
-		CPU::ID.family,CPU::ID.model,CPU::ID.stepping,
-		float(CPU::clk_per_second/u64(1000000)),
-		u32(CPU::clk_overhead)
-		);
+	const char* vendor = "Unknown";
 
-//	DUMP_PHASE;
+	if (CPU::Info.isAmd)
+		vendor = "AMD";
+	else if (CPU::Info.isIntel)
+		vendor = "Intel";
 
-	if (strstr(Core.Params,"-x86"))		{
-		CPU::ID.feature	&= ~_CPU_FEATURE_MMX	;
-		CPU::ID.feature	&= ~_CPU_FEATURE_3DNOW	;
-		CPU::ID.feature	&= ~_CPU_FEATURE_SSE	;
-		CPU::ID.feature	&= ~_CPU_FEATURE_SSE2	;
-		CPU::ID.feature	&= ~_CPU_FEATURE_SSE3	;
-		CPU::ID.feature	&= ~_CPU_FEATURE_SSSE3	;
-		CPU::ID.feature	&= ~_CPU_FEATURE_SSE4_1	;
-		CPU::ID.feature	&= ~_CPU_FEATURE_SSE4_2	;
-	};
+	Msg("* Vendor CPU: %s", vendor);
+	Msg("* Detected CPU: %s", CPU::Info.modelName);
 
-	string256	features;	xr_strcpy(features,sizeof(features),"RDTSC");
-    if (CPU::ID.feature&_CPU_FEATURE_MMX)	xr_strcat(features,", MMX");
-    if (CPU::ID.feature&_CPU_FEATURE_3DNOW)	xr_strcat(features,", 3DNow!");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE)	xr_strcat(features,", SSE");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE2)	xr_strcat(features,", SSE2");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE3)	xr_strcat(features,", SSE3");
-    if (CPU::ID.feature&_CPU_FEATURE_SSSE3)	xr_strcat(features,", SSSE3");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE4_1)xr_strcat(features,", SSE4.1");
-    if (CPU::ID.feature&_CPU_FEATURE_SSE4_2)xr_strcat(features,", SSE4.2");
-    if (CPU::ID.feature&_CPU_FEATURE_HTT)	xr_strcat(features,", HTT");
+	string256 features;
+	xr_strcpy(features, sizeof(features), "RDTSC");
+	
+	if (CPU::Info.hasFeature(CPUFeature::MMX))
+		xr_strcat(features, ", MMX");
 
-	Msg("* CPU features: %s" , features );
-	Msg("* CPU cores/threads: %d/%d\n" , CPU::ID.n_cores , CPU::ID.n_threads );
+	if (CPU::Info.hasFeature(CPUFeature::AMD_3DNow))
+		xr_strcat(features, ", 3DNow!");
 
-	Fidentity.identity		();	// Identity matrix
-	Didentity.identity		();	// Identity matrix
-	pvInitializeStatics		();	// Lookup table for compressed normals
-	FPU::initialize			();
-	_initialize_cpu_thread	();
+	if (CPU::Info.hasFeature(CPUFeature::AMD_3DNowExt))
+		xr_strcat(features, ", 3DNowExt!");
+
+	if (CPU::Info.hasFeature(CPUFeature::SSE))
+		xr_strcat(features, ", SSE");
+
+	if (CPU::Info.hasFeature(CPUFeature::SSE2))
+		xr_strcat(features, ", SSE2");
+
+	if (CPU::Info.hasFeature(CPUFeature::SSE3))
+		xr_strcat(features, ", SSE3");
+
+	if (CPU::Info.hasFeature(CPUFeature::MWait))
+		xr_strcat(features, ", MONITOR/MWAIT");
+
+	if (CPU::Info.hasFeature(CPUFeature::SSSE3))
+		xr_strcat(features, ", SSSE3");
+
+	if (CPU::Info.hasFeature(CPUFeature::SSE41))
+		xr_strcat(features, ", SSE4.1");
+
+	if (CPU::Info.hasFeature(CPUFeature::SSE42))
+		xr_strcat(features, ", SSE4.2");
+
+	if (CPU::Info.hasFeature(CPUFeature::HT))
+		xr_strcat(features, ", HTT");
+
+	if (CPU::Info.hasFeature(CPUFeature::AVX))
+		xr_strcat(features, ", AVX");
+#ifdef __AVX__
+	else Debug.do_exit(NULL, "X-Ray x64 using AVX anyway!");
+#endif
+
+	if (CPU::Info.hasFeature(CPUFeature::AVX2))
+		xr_strcat(features, ", AVX2");
+
+	if (CPU::Info.hasFeature(CPUFeature::SSE4a))
+		xr_strcat(features, ", SSE4.a");
+
+	if (CPU::Info.hasFeature(CPUFeature::MMXExt))
+		xr_strcat(features, ", MMXExt");
+
+	if (CPU::Info.hasFeature(CPUFeature::TM2))
+		xr_strcat(features, ", TM2");
+
+	if (CPU::Info.hasFeature(CPUFeature::AES))
+		xr_strcat(features, ", AES");
+
+	if (CPU::Info.hasFeature(CPUFeature::VMX))
+		xr_strcat(features, ", VMX");
+
+	if (CPU::Info.hasFeature(CPUFeature::EST))
+		xr_strcat(features, ", EST");
+
+	if (CPU::Info.hasFeature(CPUFeature::XFSR))
+		xr_strcat(features, ", XFSR");
+
+	Msg("* CPU features: %s", features);
+	Msg("* CPU cores/threads: %d/%d \n", CPU::Info.n_cores, CPU::Info.n_threads);
+
+	// Per second and QPC, lol 
+	CPU::Detect();
+
+	Fidentity.identity();	// Identity matrix
+	Didentity.identity();	// Identity matrix
+	pvInitializeStatics();	// Lookup table for compressed normals
+	FPU::initialize();
+	_initialize_cpu_thread();
 
 	g_initialize_cpu_called = true;
 }
 
-#ifdef M_BORLAND
-void _initialize_cpu_thread	()
-{
-}
-#else
+
 // per-thread initialization
 #include <xmmintrin.h>
-#define _MM_DENORMALS_ZERO_MASK 0x0040
-#define _MM_DENORMALS_ZERO_ON 0x0040
-#define _MM_FLUSH_ZERO_MASK 0x8000
-#define _MM_FLUSH_ZERO_ON 0x8000
-#define _MM_SET_FLUSH_ZERO_MODE(mode) _mm_setcsr((_mm_getcsr() & ~_MM_FLUSH_ZERO_MASK) | (mode))
-#define _MM_SET_DENORMALS_ZERO_MODE(mode) _mm_setcsr((_mm_getcsr() & ~_MM_DENORMALS_ZERO_MASK) | (mode))
-static	BOOL	_denormals_are_zero_supported	= TRUE;
-extern void __cdecl _terminate		();
-void debug_on_thread_spawn	();
+constexpr int _MM_DENORMALS_ZERO = 0x0040;
+constexpr int _MM_FLUSH_ZERO = 0x8000;
 
-void _initialize_cpu_thread	()
+inline void _mm_set_flush_zero_mode(u32 mode)
 {
-	debug_on_thread_spawn	();
-#ifndef XRCORE_STATIC
-	// fpu & sse 
-	FPU::m24r	();
-#endif  // XRCORE_STATIC
-	if (CPU::ID.feature&_CPU_FEATURE_SSE)	{
-		//_mm_setcsr ( _mm_getcsr() | (_MM_FLUSH_ZERO_ON+_MM_DENORMALS_ZERO_ON) );
-		_MM_SET_FLUSH_ZERO_MODE			(_MM_FLUSH_ZERO_ON);
-		if (_denormals_are_zero_supported)	{
-			__try	{
-				_MM_SET_DENORMALS_ZERO_MODE	(_MM_DENORMALS_ZERO_ON);
-			} __except(EXCEPTION_EXECUTE_HANDLER) {
-				_denormals_are_zero_supported	= FALSE;
-			}
+	_mm_setcsr((_mm_getcsr() & ~_MM_FLUSH_ZERO) | (mode));
+}
+
+inline void _mm_set_denormals_zero_mode(u32 mode)
+{
+	_mm_setcsr((_mm_getcsr() & ~_MM_DENORMALS_ZERO) | (mode));
+}
+
+static	bool _denormals_are_zero_supported = true;
+
+extern void debug_on_thread_spawn();
+
+void _initialize_cpu_thread()
+{
+	debug_on_thread_spawn();
+
+	_mm_set_flush_zero_mode(_MM_FLUSH_ZERO);
+	if (_denormals_are_zero_supported)
+	{
+		__try
+		{
+			_mm_set_denormals_zero_mode(_MM_DENORMALS_ZERO);
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			_denormals_are_zero_supported = false;
 		}
 	}
 }
-#endif
+
 // threading API 
 #pragma pack(push,8)
 struct THREAD_NAME	{
@@ -314,7 +234,7 @@ void	thread_name	(const char* name)
 	tn.dwFlags		= 0;
 	__try
 	{
-		RaiseException(0x406D1388,0,sizeof(tn)/sizeof(DWORD),(DWORD*)&tn);
+		RaiseException(0x406D1388,0,sizeof(tn)/sizeof(DWORD),(ULONG_PTR*)&tn);
 	}
 	__except(EXCEPTION_CONTINUE_EXECUTION)
 	{

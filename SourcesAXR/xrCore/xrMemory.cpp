@@ -65,20 +65,23 @@ void	xrMemory::_initialize	(BOOL bDebug)
 	stat_calls				= 0;
 	stat_counter			= 0;
 
-	u32	features		= CPU::ID.feature;
-	if (features & _CPU_FEATURE_MMX)
+#ifndef _M_X64
+	if (CPU::Info.hasFeature(CPUFeature::MMX))
 	{
 		mem_copy	= xrMemCopy_MMX;
 		mem_fill	= xrMemFill_x86;
 		mem_fill32	= xrMemFill32_MMX;
-	} else {
+	} else 
+#endif
+	{
 		mem_copy	= xrMemCopy_x86;
 		mem_fill	= xrMemFill_x86;
 		mem_fill32	= xrMemFill32_x86;
 	}
 
-#ifndef M_BORLAND
-	if (!strstr(Core.Params,"-pure_alloc")) {
+#ifndef _M_X64
+	if (!strstr(Core.Params,"-pure_alloc")) 
+	{
 		// initialize POOLs
 		u32	element		= mem_pools_ebase;
 		u32 sector		= mem_pools_ebase*1024;
@@ -88,7 +91,7 @@ void	xrMemory::_initialize	(BOOL bDebug)
 			element		+=	mem_pools_ebase;
 		}
 	}
-#endif // M_BORLAND
+#endif
 
 #ifdef DEBUG_MEMORY_MANAGER
 	if (0==strstr(Core.Params,"-memo"))	mem_initialized				= TRUE;

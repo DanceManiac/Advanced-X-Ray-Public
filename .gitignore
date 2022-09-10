@@ -97,3 +97,4 @@ SourcesAXR/ipch/
 # Local History for Visual Studio
 .localhistory/
 SourcesAXR/xrEngine/xrEngine.vcxproj.user
+*.idb
