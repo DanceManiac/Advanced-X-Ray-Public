@@ -20,21 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef LUABIND_OVERLOAD_REP_IMPL_HPP_INCLUDED
-#define LUABIND_OVERLOAD_REP_IMPL_HPP_INCLUDED
+#pragma once
 
 #include <luabind/detail/overload_rep.hpp>
 
-namespace luabind { namespace detail
+namespace luabind::detail
 {
-	inline int overload_rep::call(lua_State* L, bool force_static_call) const 
-	{ 
+	inline int overload_rep::call(lua_State* L, bool force_static_call) const
+	{
 		if (force_static_call)
 			return call_fun_static(L);
 		else
 			return call_fun(L);
 	}
 
-}} // namespace luabind::detail
-
-#endif // LUABIND_OVERLOAD_REP_IMPL_HPP_INCLUDED
+}

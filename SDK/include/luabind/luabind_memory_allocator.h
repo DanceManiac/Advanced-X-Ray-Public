@@ -6,8 +6,7 @@
 //	Description : luabind memory allocator template class
 ////////////////////////////////////////////////////////////////////////////
 
-#ifndef LUABIND_MEMORY_ALLOCATOR_H_INCLUDED
-#define LUABIND_MEMORY_ALLOCATOR_H_INCLUDED
+#pragma once
 
 namespace luabind {
 
@@ -63,5 +62,3 @@ public:
 } // namespace luabind
 
 #include <luabind/luabind_memory_allocator_inline.h>
-
-#endif // #ifndef LUABIND_MEMORY_ALLOCATOR_H_INCLUDED

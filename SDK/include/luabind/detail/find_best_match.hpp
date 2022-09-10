@@ -20,13 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-#ifndef LUABIND_FIND_BEST_MATCH_HPP_INCLUDED
-#define LUABIND_FIND_BEST_MATCH_HPP_INCLUDED
+#pragma once
 
 #include <luabind/config.hpp>
-
-#include <boost/limits.hpp>
 
 namespace luabind { namespace detail
 {
@@ -45,6 +41,3 @@ namespace luabind { namespace detail
 	LUABIND_API void find_exact_match(lua_State* L, const detail::overload_rep_base* start, int num_overloads, size_t orep_size, int cmp_match, int num_params, vector_class<const overload_rep_base*>& dest);
 
 }}
-
-#endif // LUABIND_FIND_BEST_MATCH_HPP_INCLUDED
-

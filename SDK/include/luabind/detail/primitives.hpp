@@ -20,33 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-#ifndef LUABIND_PRIMITIVES_HPP_INCLUDED
-#define LUABIND_PRIMITIVES_HPP_INCLUDED
-
-#include <algorithm>
+#pragma once
 
 #include <luabind/config.hpp>
-#include <luabind/detail/yes_no.hpp>
 
 namespace luabind { namespace detail
 {
 	template<class T>
-	struct identity
-	{
-		typedef T type;
-	};
-
-	template<class T>
 	struct type {};
 
-	struct null_type {};
-
-/*	typedef char yes_t;
-	typedef double no_t;*/
-
-	struct lua_to_cpp {};
-	struct cpp_to_lua {};
+    enum class Direction : unsigned
+    {
+        lua_to_cpp,
+        cpp_to_lua
+    };
 
 	template<class T> struct by_value {};
 	template<class T> struct by_reference {};
@@ -64,14 +51,6 @@ namespace luabind { namespace detail
 #pragma warning(pop)
 	};
 
-//	inline char* dup_string(const char* s)
-//	{
-//		std::size_t l = std::strlen(s);
-//		char* c = new char[l+1];
-//		std::copy(s, s+l+1, c);
-//		return c;
-//	}
-
 	template<int N>
 	struct aligned 
 	{
@@ -79,17 +58,14 @@ namespace luabind { namespace detail
 	};
 
 	// returns the offset added to a Derived* when cast to a Base*
-	// TODO: return ptrdiff
 	template<class Derived, class Base>
-	int ptr_offset(type<Derived>, type<Base>)
+	ptrdiff_t ptr_offset()
 	{
 		aligned<sizeof(Derived)> obj;
 		Derived* ptr = reinterpret_cast<Derived*>(&obj);
 
-		return int(static_cast<char*>(static_cast<void*>(static_cast<Base*>(ptr)))
+		return ptrdiff_t(static_cast<char*>(static_cast<void*>(static_cast<Base*>(ptr)))
 		- static_cast<char*>(static_cast<void*>(ptr)));
 	}
 
 }}
-
-#endif // LUABIND_PRIMITIVES_HPP_INCLUDED
