@@ -34,27 +34,6 @@
     <Filter Include="Lua\Lua">
       <UniqueIdentifier>{0bf4a17a-80cd-4ee1-86f4-3726b94742f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Lua\LuaEtc">
-      <UniqueIdentifier>{7e098132-9b36-4fc1-88cc-2c656dcb14f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lua\LuaEtc\Marshal">
-      <UniqueIdentifier>{b39a7005-a3ad-48e6-bc11-5b5be0b2e50d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lua\LuaEtc\LuaXML">
-      <UniqueIdentifier>{52ec6702-f7a8-45f0-b25d-c55a20935bce}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lua\LuaEtc\LFS">
-      <UniqueIdentifier>{3be3ceef-8688-4518-9e92-6a9f1a2a990a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Lua\LuaEtc\Traceback">
-      <UniqueIdentifier>{503e50f6-8088-4894-9204-4662ba5ead85}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LuaSocket">
-      <UniqueIdentifier>{466b5157-9167-4433-9122-f1453d9bbb86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="luapdebug">
-      <UniqueIdentifier>{ab459e38-082c-4f5f-bba8-c57e8c01ba46}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="luabind\src\class.cpp">
@@ -117,6 +96,36 @@
     <ClCompile Include="library_set.cpp">
       <Filter>Lua\LuaBind</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="cstdafx.c">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_strscan.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_tab.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_trace.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_udata.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_vmevent.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_vmmath.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\ljamalg.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\luajit.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
     <ClCompile Include="luajit\lib_aux.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
@@ -124,6 +133,9 @@
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lib_bit.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lib_buffer.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lib_debug.c">
@@ -165,6 +177,9 @@
     <ClCompile Include="luajit\lj_asm.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
+    <ClCompile Include="luajit\lj_assert.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
     <ClCompile Include="luajit\lj_bc.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
@@ -172,6 +187,9 @@
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lj_bcwrite.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_buf.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lj_carith.c">
@@ -207,6 +225,9 @@
     <ClCompile Include="luajit\lj_debug.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
+    <ClCompile Include="luajit\lj_dispatch.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
     <ClCompile Include="luajit\lj_err.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
@@ -217,6 +238,9 @@
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lj_gc.c">
+      <Filter>Lua\LuaJIT\source</Filter>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_gdbjit.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lj_ir.c">
@@ -264,144 +288,32 @@
     <ClCompile Include="luajit\lj_parse.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="luajit\lj_record.c">
+    <ClCompile Include="luajit\lj_prng.c">
       <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_snap.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_strscan.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_str.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_state.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_tab.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_trace.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_udata.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_vmmath.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_vmevent.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_dispatch.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_gdbjit.c">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClCompile>
-    <ClCompile Include="lmodule\marshal.c">
-      <Filter>Lua\LuaEtc\Marshal</Filter>
-    </ClCompile>
-    <ClCompile Include="lmodule\LuaXML.c">
-      <Filter>Lua\LuaEtc\LuaXML</Filter>
-    </ClCompile>
-    <ClCompile Include="lmodule\lfs.c">
-      <Filter>Lua\LuaEtc\LFS</Filter>
-    </ClCompile>
-    <ClCompile Include="lua_traceback.cpp">
-      <Filter>Lua\LuaEtc\Traceback</Filter>
-    </ClCompile>
-    <ClCompile Include="export\script_abstract_action.cpp" />
-    <ClCompile Include="luajit\lj_strfmt.c">
-      <Filter>Lua\LuaJIT</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_strfmt_num.c">
-      <Filter>Lua\LuaJIT</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lj_buf.c">
-      <Filter>Lua\LuaJIT</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lj_profile.c">
-      <Filter>Lua\LuaJIT</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="cstdafx.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="luajit\lib_buffer.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="luajit\lj_assert.c">
+    <ClCompile Include="luajit\lj_record.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
     <ClCompile Include="luajit\lj_serialize.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="luajit\lj_prng.c">
+    <ClCompile Include="luajit\lj_snap.c">
       <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="luasocket\luasocket.c">
-      <Filter>LuaSocket</Filter>
+    <ClCompile Include="luajit\lj_state.c">
+      <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="luasocket\mime.c">
-      <Filter>LuaSocket</Filter>
+    <ClCompile Include="luajit\lj_str.c">
+      <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="luasocket\options.c">
-      <Filter>LuaSocket</Filter>
+    <ClCompile Include="luajit\lj_strfmt.c">
+      <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
-    <ClCompile Include="luasocket\select.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\serial.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\tcp.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\timeout.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\udp.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\unix.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\unixdgram.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\unixstream.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\usocket.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\wsocket.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\auxiliar.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\buffer.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\compat.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\except.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\inet.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luasocket\io.c">
-      <Filter>LuaSocket</Filter>
-    </ClCompile>
-    <ClCompile Include="luapdebug\libpdebug.cpp">
-      <Filter>luapdebug</Filter>
+    <ClCompile Include="luajit\lj_strfmt_num.c">
+      <Filter>Lua\LuaJIT\source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -540,6 +452,9 @@
     <ClInclude Include="..\..\SDK\include\luabind\detail\implicit_cast.hpp">
       <Filter>Lua\LuaBind\include\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\SDK\include\luabind\detail\is_indirect_const.hpp">
+      <Filter>Lua\LuaBind\include\detail</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\SDK\include\luabind\detail\link_compatibility.hpp">
       <Filter>Lua\LuaBind\include\detail</Filter>
     </ClInclude>
@@ -556,6 +471,12 @@
       <Filter>Lua\LuaBind\include\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\SDK\include\luabind\detail\operator_id.hpp">
+      <Filter>Lua\LuaBind\include\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SDK\include\luabind\detail\operators.hpp">
+      <Filter>Lua\LuaBind\include\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SDK\include\luabind\detail\other.hpp">
       <Filter>Lua\LuaBind\include\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\SDK\include\luabind\detail\overload_rep.hpp">
@@ -597,6 +518,9 @@
     <ClInclude Include="..\..\SDK\include\luabind\detail\typetraits.hpp">
       <Filter>Lua\LuaBind\include\detail</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\SDK\include\luabind\detail\yes_no.hpp">
+      <Filter>Lua\LuaBind\include\detail</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\SDK\include\luabind\detail\calc_arity.hpp">
       <Filter>Lua\LuaBind\include\detail</Filter>
     </ClInclude>
@@ -624,203 +548,11 @@
     <ClInclude Include="xrScripts.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="luajit\lj_alloc.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_arch.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_asm.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_asm_arm.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_asm_mips.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_asm_ppc.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_asm_x86.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_bc.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_bcdef.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_bcdump.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_carith.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_ccall.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_ccallback.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_cconv.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_cdata.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_char.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_clib.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_cparse.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_crecord.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_ctype.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_debug.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_def.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_dispatch.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_emit_arm.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_emit_mips.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_emit_ppc.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_emit_x86.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_err.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_errmsg.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_ff.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_ffdef.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
     <ClInclude Include="Export\ai_sounds.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="luajit\lj_ffrecord.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_folddef.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_frame.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_func.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_gc.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_gdbjit.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_ir.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_ircall.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_iropt.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_jit.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_lex.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_lib.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_libdef.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_mcode.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_meta.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_obj.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_parse.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_recdef.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_record.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_snap.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_state.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_str.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_strscan.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_tab.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_target.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_target_arm.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_target_mips.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_target_ppc.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_target_x86.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_trace.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_traceerr.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_udata.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_vm.h">
-      <Filter>Lua\LuaJIT\include</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_vmevent.h">
-      <Filter>Lua\LuaJIT\include</Filter>
+    <ClInclude Include="..\..\SDK\include\imdexlib\utility.hpp">
+      <Filter>Core\Imdexlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\SDK\include\imdexlib\traits.hpp">
       <Filter>Core\Imdexlib</Filter>
@@ -858,90 +590,14 @@
     <ClInclude Include="luajit\lualib.h">
       <Filter>Lua\Lua</Filter>
     </ClInclude>
-    <ClInclude Include="lmodule\lfs.h">
-      <Filter>Lua\LuaEtc\LFS</Filter>
-    </ClInclude>
-    <ClInclude Include="lua_traceback.hpp">
-      <Filter>Lua\LuaEtc\Traceback</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\SDK\include\luabind\iterator_pair_policy.hpp">
       <Filter>Lua\LuaBind\include</Filter>
     </ClInclude>
-    <ClInclude Include="export\script_abstract_action.h" />
     <ClInclude Include="stdafx.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="cstdafx.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_prng.h">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClInclude>
-    <ClInclude Include="luajit\lj_serialize.h">
-      <Filter>Lua\LuaJIT\source</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\luasocket.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\mime.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\options.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\pierror.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\select.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\socket.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\tcp.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\timeout.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\udp.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\unix.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\unixdgram.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\unixstream.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\usocket.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\wsocket.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\auxiliar.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\buffer.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\compat.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\except.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\inet.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luasocket\io.h">
-      <Filter>LuaSocket</Filter>
-    </ClInclude>
-    <ClInclude Include="luapdebug\libpdebug.h">
-      <Filter>luapdebug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,6 @@
 ** Debugging and introspection.
 ** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
 
 #define lj_debug_c
 #define LUA_CORE
@@ -649,7 +648,7 @@ void lj_debug_dumpstack(lua_State *L, SBuf *sb, const char *fmt, int depth)
     level += dir;
   }
   if (lastlen)
-    sb->w = sb->b + lastlen;  /* Zap trailing separator. */
+    setsbufP(sb, sbufB(sb) + lastlen);  /* Zap trailing separator. */
 }
 #endif
 

@@ -1,8 +1,7 @@
 /*
 ** Bytecode instruction modes.
-** Copyright (C) 2005-2017 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
 
 #define lj_bc_c
 #define LUA_CORE

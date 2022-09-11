@@ -2,7 +2,6 @@
 ** Low-overhead profiling.
 ** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
 
 #define lj_profile_c
 #define LUA_CORE
@@ -347,7 +346,8 @@ LUA_API void luaJIT_profile_stop(lua_State *L)
     lj_trace_flushall(L);
 #endif
     lj_buf_free(g, &ps->sb);
-    ps->sb.w = ps->sb.e = NULL;
+    setmref(ps->sb.b, NULL);
+    setmref(ps->sb.e, NULL);
     ps->g = NULL;
   }
 }
@@ -362,7 +362,7 @@ LUA_API const char *luaJIT_profile_dumpstack(lua_State *L, const char *fmt,
   lj_buf_reset(sb);
   lj_debug_dumpstack(L, sb, fmt, depth);
   *len = (size_t)sbuflen(sb);
-  return sb->b;
+  return sbufB(sb);
 }
 
 #endif

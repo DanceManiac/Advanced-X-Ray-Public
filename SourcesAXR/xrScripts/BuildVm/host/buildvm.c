@@ -241,6 +241,48 @@ static int build_code(BuildCtx *ctx)
   return 0;
 }
 
+static int clean_ctx(BuildCtx *ctx)
+{
+    if(ctx->glob)
+        free(ctx->glob);
+
+    if(ctx->bc_ofs)
+        free(ctx->bc_ofs);
+
+    if(ctx->code)
+        free(ctx->code);
+
+    ptrdiff_t i = ctx->nsym;
+
+    if(ctx->sym[0].name)
+        free(ctx->sym[0].name);
+
+    while (i > 0) {
+        if(ctx->sym[i].name)
+            free(ctx->sym[i].name);
+        i--;
+    }
+
+    int j;
+
+    for (j = 0; j < (int)NRELOCSYM; j++)
+    {
+        if(relocmap[j] >= 0)
+        {
+            if(ctx->relocsym[relocmap[j]])
+                free(ctx->relocsym[relocmap[j]]);
+        }
+    }
+
+    if(ctx->relocsym)
+        free(ctx->relocsym);
+
+    if(ctx->sym)
+        free(ctx->sym);
+
+    if(ctx->beginsym)
+        free(ctx->beginsym);
+}
 /* -- Generate VM enums --------------------------------------------------- */
 
 const char *const bc_names[] = {
@@ -438,6 +480,7 @@ int main(int argc, char **argv)
   if (sizeof(void *) != 4*LJ_32+8*LJ_64) {
     fprintf(stderr,"Error: pointer size mismatch in cross-build.\n");
     fprintf(stderr,"Try: make HOST_CC=\"gcc -m32\" CROSS=...\n\n");
+    clean_ctx(ctx);
     return 1;
   }
 
@@ -446,6 +489,7 @@ int main(int argc, char **argv)
 
   if ((status = build_code(ctx))) {
     fprintf(stderr,"Error: DASM error %08x\n", status);
+    clean_ctx(ctx);
     return 1;
   }
 
@@ -468,6 +512,7 @@ int main(int argc, char **argv)
   } else if (!(ctx->fp = fopen(ctx->outname, binmode ? "wb" : "w"))) {
     fprintf(stderr, "Error: cannot open output file '%s': %s\n",
 	    ctx->outname, strerror(errno));
+    clean_ctx(ctx);
     exit(1);
   }
 
@@ -509,9 +554,11 @@ int main(int argc, char **argv)
   if (ferror(ctx->fp)) {
     fprintf(stderr, "Error: cannot write to output file: %s\n",
 	    strerror(errno));
+    clean_ctx(ctx);
     exit(1);
   }
   fclose(ctx->fp);
+  clean_ctx(ctx);
 
   return 0;
 }

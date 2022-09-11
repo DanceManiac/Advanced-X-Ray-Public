@@ -2,7 +2,6 @@
 ** Load and dump code.
 ** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
 
 #include <errno.h>
 #include <stdio.h>

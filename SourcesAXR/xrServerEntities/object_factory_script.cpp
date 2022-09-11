@@ -83,9 +83,7 @@ void CObjectFactory::register_script	() const
 
 	luabind::class_<CInternal>	instance("clsid");
 
-	const_iterator				I = clsids().begin(), B = I;
-	const_iterator				E = clsids().end();
-
+	const_iterator				B = clsids().begin();
 	for (auto const_it = B; const_it != clsids().end(); ++const_it)
 		instance = std::move(instance).enum_("_clsid")[luabind::value(*(*const_it)->script_clsid(), int(const_it - B))];
 

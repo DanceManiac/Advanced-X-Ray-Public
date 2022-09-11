@@ -98,3 +98,9 @@ SourcesAXR/ipch/
 .localhistory/
 SourcesAXR/xrEngine/xrEngine.vcxproj.user
 *.idb
+*.sarif
+*.txt
+*.xml
+*.ipch
+*.db-wal
+*.db-shm

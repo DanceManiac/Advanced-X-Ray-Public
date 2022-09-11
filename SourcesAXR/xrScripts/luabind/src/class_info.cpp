@@ -28,7 +28,7 @@
 
 namespace luabind
 {
-	LUABIND_API class_info get_class_info(const object& o)
+	class_info get_class_info(const object& o)
 	{
 		lua_State* L = o.lua_state();
 	
@@ -57,7 +57,7 @@ namespace luabind
 		return ciResult;
 	}
 
-	LUABIND_API void bind_class_info(lua_State* L)
+	void bind_class_info(lua_State* L)
 	{
 		module(L)
 		[

@@ -8,7 +8,7 @@ irnames = "LT    GE    LE    GT    ULT   UGE   ULE   UGT   EQ    NE    ABC   RET
 
 irfpm = { [0]="floor", "ceil", "trunc", "sqrt", "log", "log2", "other", },
 
-irfield = { [0]="str.len", "func.env", "func.pc", "func.ffid", "thread.env", "tab.meta", "tab.array", "tab.node", "tab.asize", "tab.hmask", "tab.nomm", "udata.meta", "udata.udtype", "udata.file", "udata.buf_r", "cdata.ctypeid", "cdata.ptr", "cdata.int", "cdata.int64", "cdata.int64_4", },
+irfield = { [0]="str.len", "func.env", "func.pc", "func.ffid", "thread.env", "tab.meta", "tab.array", "tab.node", "tab.asize", "tab.hmask", "tab.nomm", "udata.meta", "udata.udtype", "udata.file", "cdata.ctypeid", "cdata.ptr", "cdata.int", "cdata.int64", "cdata.int64_4", },
 
 ircall = {
 [0]="lj_str_cmp",
@@ -193,6 +193,7 @@ ffnames = {
 "coroutine.isyieldable",
 "coroutine.create",
 "coroutine.yield",
+"coroutine.cstacksize",
 "coroutine.resume",
 "coroutine.wrap_aux",
 "coroutine.wrap",
@@ -305,7 +306,6 @@ ffnames = {
 "jit.off",
 "jit.flush",
 "jit.status",
-"jit.security",
 "jit.attach",
 "jit.util.funcinfo",
 "jit.util.funcbc",

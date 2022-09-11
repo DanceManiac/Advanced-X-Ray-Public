@@ -65,7 +65,8 @@ struct	BTHREAD_params
 	TRI*				T;
 	int					Tcnt;
 	build_callback*		BC;
-	void*				BCP;
+	void*				BCP;	
+	bool                rebuildTrisRequired;
 };
 
 void	MODEL::build_thread		(void *params)
@@ -79,7 +80,7 @@ void	MODEL::build_thread		(void *params)
 	//Msg						("* xrCDB: cform build completed, memory usage: %d K",P.M->memory()/1024);
 }
 
-void	MODEL::build			(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, void* bcp)
+void	MODEL::build			(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, void* bcp, bool rebuildTrisRequired)
 {
 	R_ASSERT					(S_INIT == status);
     R_ASSERT					((Vcnt>=4)&&(Tcnt>=2));
@@ -90,18 +91,19 @@ void	MODEL::build			(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc,
 #else
 	if(!strstr(Core.Params, "-mt_cdb"))
 	{
-		build_internal				(V,Vcnt,T,Tcnt,bc,bcp);
+		build_internal(V, Vcnt, T, Tcnt, bc, bcp, rebuildTrisRequired);
 		status						= S_READY;
-	}else
+	}
+	else
 	{
-		BTHREAD_params				P = { this, V, Vcnt, T, Tcnt, bc, bcp };
+		BTHREAD_params				P = { this, V, Vcnt, T, Tcnt, bc, bcp, rebuildTrisRequired };
 		thread_spawn				(build_thread,"CDB-construction",0,&P);
 		while						(S_INIT	== status)	Sleep	(5);
 	}
 #endif
 }
 
-void	MODEL::build_internal	(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, void* bcp)
+void	MODEL::build_internal	(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc, void* bcp, bool rebuildTrisRequired)
 {
 	// verts
 	verts_count	= Vcnt;
@@ -111,7 +113,27 @@ void	MODEL::build_internal	(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callba
 	// tris
 	tris_count	= Tcnt;
 	tris		= CALLOC(TRI,tris_count);
-	CopyMemory	(tris,T,tris_count*sizeof(TRI));
+#ifdef _M_X64
+	if (rebuildTrisRequired)
+	{
+
+		TRI_DEPRECATED* realT = reinterpret_cast<TRI_DEPRECATED*> (T);
+		for (int triIter = 0; triIter < tris_count; ++triIter)
+		{
+			TRI_DEPRECATED& oldTri = realT[triIter];
+			TRI& newTri = tris[triIter];
+			newTri = oldTri;
+		}
+	}
+	else
+	{
+		std::memcpy(tris, T, tris_count * sizeof(TRI));
+	}
+#else
+
+	std::memcpy(tris, T, tris_count * sizeof(TRI));
+
+#endif
 
 	// callback
 	if (bc)		bc	(verts,Vcnt,tris,Tcnt,bcp);

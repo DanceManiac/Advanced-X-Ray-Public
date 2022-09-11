@@ -2,7 +2,7 @@
 ** Internal assertions.
 ** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
+
 #define lj_assert_c
 #define LUA_CORE
 

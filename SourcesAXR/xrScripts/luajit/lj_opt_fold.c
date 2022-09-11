@@ -4,7 +4,6 @@
 ** CSE: Common-Subexpression Elimination.
 ** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
 
 #define lj_opt_fold_c
 #define LUA_CORE

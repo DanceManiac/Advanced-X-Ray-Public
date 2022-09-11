@@ -13,7 +13,7 @@
 #include "lj_def.h"
 #include "lj_arch.h"
 
-/* -- Memory references --------------------------------------------------- */
+/* -- Memory references (32 bit address space) ---------------------------- */
 
 /* Memory and GC object sizes. */
 typedef uint32_t MSize;
@@ -34,21 +34,17 @@ typedef struct MRef {
 
 #if LJ_GC64
 #define mref(r, t)	((t *)(void *)(r).ptr64)
-#define mrefu(r)	((r).ptr64)
 
 #define setmref(r, p)	((r).ptr64 = (uint64_t)(void *)(p))
-#define setmrefu(r, u)	((r).ptr64 = (uint64_t)(u))
 #define setmrefr(r, v)	((r).ptr64 = (v).ptr64)
 #else
 #define mref(r, t)	((t *)(void *)(uintptr_t)(r).ptr32)
-#define mrefu(r)	((r).ptr32)
 
 #define setmref(r, p)	((r).ptr32 = (uint32_t)(uintptr_t)(void *)(p))
-#define setmrefu(r, u)	((r).ptr32 = (uint32_t)(u))
 #define setmrefr(r, v)	((r).ptr32 = (v).ptr32)
 #endif
 
-/* -- GC object references ------------------------------------------------ */
+/* -- GC object references (32 bit address space) ------------------------- */
 
 /* GCobj reference */
 typedef struct GCRef {
@@ -157,9 +153,11 @@ typedef int32_t BCLine;  /* Bytecode line number. */
 typedef void (*ASMFunction)(void);
 
 /* Resizable string buffer. Need this here, details in lj_buf.h. */
-#define SBufHeader	char *w, *e, *b; MRef L
 typedef struct SBuf {
-  SBufHeader;
+  MRef p;		/* String buffer pointer. */
+  MRef e;		/* String buffer end pointer. */
+  MRef b;		/* String buffer base. */
+  MRef L;		/* lua_State, used for buffer resizing. */
 } SBuf;
 
 /* -- Tags and values ----------------------------------------------------- */
@@ -296,16 +294,12 @@ typedef const TValue cTValue;
 
 /* -- String object ------------------------------------------------------- */
 
-typedef uint32_t StrHash;	/* String hash value. */
-typedef uint32_t StrID;		/* String ID. */
-
 /* String object header. String payload follows. */
 typedef struct GCstr {
   GCHeader;
   uint8_t reserved;	/* Used by lexer for fast lookup of reserved words. */
-  uint8_t hashalg;	/* Hash algorithm. */
-  StrID sid;		/* Interned string ID. */
-  StrHash hash;		/* Hash of string. */
+  uint8_t unused;
+  MSize hash;		/* Hash of string. */
   MSize len;		/* Size of string. */
 } GCstr;
 
@@ -313,6 +307,7 @@ typedef struct GCstr {
 #define strdata(s)	((const char *)((s)+1))
 #define strdatawr(s)	((char *)((s)+1))
 #define strVdata(o)	strdata(strV(o))
+#define sizestring(s)	(sizeof(struct GCstr)+(s)->len+1)
 
 /* -- Userdata object ----------------------------------------------------- */
 
@@ -332,7 +327,6 @@ enum {
   UDTYPE_USERDATA,	/* Regular userdata. */
   UDTYPE_IO_FILE,	/* I/O library FILE. */
   UDTYPE_FFI_CLIB,	/* FFI C library namespace. */
-  UDTYPE_BUFFER,	/* String buffer. */
   UDTYPE__MAX
 };
 
@@ -583,7 +577,6 @@ typedef enum {
 #define basemt_obj(g, o)	((g)->gcroot[GCROOT_BASEMT+itypemap(o)])
 #define mmname_str(g, mm)	(strref((g)->gcroot[GCROOT_MMNAME+(mm)]))
 
-/* Garbage collector state. */
 typedef struct GCState {
   GCSize total;		/* Memory currently allocated. */
   GCSize threshold;	/* Memory threshold. */
@@ -611,36 +604,25 @@ typedef struct GCState {
 #endif
 } GCState;
 
-/* String interning state. */
-typedef struct StrInternState {
-  GCRef *tab;		/* String hash table anchors. */
-  MSize mask;		/* String hash mask (size of hash table - 1). */
-  MSize num;		/* Number of strings in hash table. */
-  StrID id;		/* Next string ID. */
-  uint8_t idreseed;	/* String ID reseed counter. */
-  uint8_t second;	/* String interning table uses secondary hashing. */
-  uint8_t unused1;
-  uint8_t unused2;
-  LJ_ALIGN(8) uint64_t seed;	/* Random string seed. */
-} StrInternState;
-
 /* Global state, shared by all threads of a Lua universe. */
 typedef struct global_State {
+  GCRef *strhash;	/* String hash table (hash chain anchors). */
+  MSize strmask;	/* String hash mask (size of hash table - 1). */
+  MSize strnum;		/* Number of strings in hash table. */
   lua_Alloc allocf;	/* Memory allocator. */
   void *allocd;		/* Memory allocator data. */
   GCState gc;		/* Garbage collector. */
+  volatile int32_t vmstate;  /* VM state or current JIT code trace number. */
+  SBuf tmpbuf;		/* Temporary string buffer. */
   GCstr strempty;	/* Empty string. */
   uint8_t stremptyz;	/* Zero terminator of empty string. */
   uint8_t hookmask;	/* Hook mask. */
   uint8_t dispatchmode;	/* Dispatch mode. */
   uint8_t vmevmask;	/* VM event mask. */
-  StrInternState str;	/* String interning. */
-  volatile int32_t vmstate;  /* VM state or current JIT code trace number. */
   GCRef mainthref;	/* Link to main thread. */
-  SBuf tmpbuf;		/* Temporary string buffer. */
+  TValue registrytv;	/* Anchor for registry. */
   TValue tmptv, tmptv2;	/* Temporary TValues. */
   Node nilnode;		/* Fallback 1-element hash part (nil key and value). */
-  TValue registrytv;	/* Anchor for registry. */
   GCupval uvhead;	/* Head of double-linked list of all open upvalues. */
   int32_t hookcount;	/* Instruction hook countdown. */
   int32_t hookcstart;	/* Start count for instruction hook counter. */
@@ -923,7 +905,7 @@ static LJ_AINLINE void setgcV(lua_State *L, TValue *o, GCobj *v, uint32_t it)
 }
 
 #define define_setV(name, type, tag) \
-static LJ_AINLINE void name(lua_State *L, TValue *o, const type *v) \
+static LJ_AINLINE void name(lua_State *L, TValue *o, type *v) \
 { \
   setgcV(L, o, obj2gco(v), tag); \
 }

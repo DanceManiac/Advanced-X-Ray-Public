@@ -1,0 +1,489 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Gaming.Xbox.Scarlett.x64">
+      <Configuration>Debug</Configuration>
+      <Platform>Gaming.Xbox.Scarlett.x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Gaming.Xbox.Scarlett.x64">
+      <Configuration>Release</Configuration>
+      <Platform>Gaming.Xbox.Scarlett.x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CC52E0B3-CC35-4934-9302-035B748F3F2C}</ProjectGuid>
+    <RootNamespace>luabind</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>PGOptimize</WholeProgramOptimization>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>PGOptimize</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="..\xray.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="..\xray.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">
+    <Import Project="..\xray.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">
+    <Import Project="..\xray.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(ProjectDir)\luajit;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)\luajit;$(VC_SourcePath)</SourcePath>
+    <NMakeBuildCommandLine>
+    </NMakeBuildCommandLine>
+    <IntDir>..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">
+    <IncludePath>$(ProjectDir)\luajit;$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)\luajit;$(VC_SourcePath)</SourcePath>
+    <NMakeBuildCommandLine />
+    <IntDir>..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeBuildCommandLine>
+    </NMakeBuildCommandLine>
+    <IntDir>..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">
+    <NMakeBuildCommandLine />
+    <IntDir>..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>./;../../sdk/include/;$(DXSDK_DIR)Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LUA_BUILD_AS_DLL;XR_SCRIPTS;WIN32;NDEBUG;LUABIND_BUILDING;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4530;4100;4714;4127;4005;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <AdditionalOptions>lj_vm.obj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>xrCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\binares\$(Platform)-$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <AdditionalIncludeDirectories>../../sdk/include;../../../include;../../sdk/include/tbb/include;../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LUA_BUILD_AS_DLL;XR_SCRIPTS;WIN32;NDEBUG;LUABIND_BUILDING;LUABIND_NO_EXCEPTIONS;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4530;4100;4714;4127;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions>/Zo %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>
+      </MapFileName>
+      <SubSystem>NotSet</SubSystem>
+      <LargeAddressAware>true</LargeAddressAware>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(xrLib)$(TargetName).lib</ImportLibrary>
+      <AdditionalOptions>lj_vm.obj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>xrCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy $(TargetPath) $(SolutionDir)Xbox\engine.vc2008\xrPlayXbox\Gaming.Xbox.Scarlett.x64\Layout\Image\Loose\$(TargetFilename)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./;../../sdk/include/;$(DXSDK_DIR)Include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LUA_BUILD_AS_DLL;XR_SCRIPTS;WIN32;DEBUG;LUABIND_BUILDING;LUABIND_NO_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>false</StringPooling>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <AdditionalOptions>lj_vm.obj  /ignore:4281 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>xrCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <BaseAddress>0x28000000</BaseAddress>
+      <FixedBaseAddress>true</FixedBaseAddress>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\binares\$(Platform)-$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../sdk/include;../../../include;../../sdk/include/tbb/include;../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LUA_BUILD_AS_DLL;XR_SCRIPTS;WIN32;DEBUG;LUABIND_BUILDING;LUABIND_NO_EXCEPTIONS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>false</StringPooling>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <SubSystem>Windows</SubSystem>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <ImportLibrary>$(xrLib)$(TargetName).lib</ImportLibrary>
+      <AdditionalOptions>lj_vm.obj  /ignore:4281 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>xrCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <CreateHotPatchableImage>Enabled</CreateHotPatchableImage>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy $(TargetPath) $(SolutionDir)Xbox\engine.vc2008\xrPlayXbox\Gaming.Xbox.Scarlett.x64\Layout\Image\Loose\$(TargetFilename)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="cstdafx.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)C.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">$(IntDir)$(ProjectName)C.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)C.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">$(IntDir)$(ProjectName)C.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cstdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">cstdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cstdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">cstdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="library_set.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="luabind\src\class.cpp" />
+    <ClCompile Include="luabind\src\class_info.cpp" />
+    <ClCompile Include="luabind\src\class_registry.cpp" />
+    <ClCompile Include="luabind\src\class_rep.cpp" />
+    <ClCompile Include="luabind\src\create_class.cpp" />
+    <ClCompile Include="luabind\src\error.cpp" />
+    <ClCompile Include="luabind\src\find_best_match.cpp" />
+    <ClCompile Include="luabind\src\function.cpp" />
+    <ClCompile Include="luabind\src\implicit_cast.cpp" />
+    <ClCompile Include="luabind\src\link_compatibility.cpp" />
+    <ClCompile Include="luabind\src\object.cpp" />
+    <ClCompile Include="luabind\src\object_rep.cpp" />
+    <ClCompile Include="luabind\src\open.cpp" />
+    <ClCompile Include="luabind\src\pcall.cpp" />
+    <ClCompile Include="luabind\src\ref.cpp" />
+    <ClCompile Include="luabind\src\scope.cpp" />
+    <ClCompile Include="luabind\src\stack_content_by_name.cpp" />
+    <ClCompile Include="luabind\src\weak_ref.cpp" />
+    <ClCompile Include="luabind\src\wrapper_base.cpp" />
+    <ClCompile Include="luajit\lib_aux.c" />
+    <ClCompile Include="luajit\lib_base.c" />
+    <ClCompile Include="luajit\lib_bit.c" />
+    <ClCompile Include="luajit\lib_buffer.c" />
+    <ClCompile Include="luajit\lib_debug.c" />
+    <ClCompile Include="luajit\lib_ffi.c" />
+    <ClCompile Include="luajit\lib_init.c" />
+    <ClCompile Include="luajit\lib_io.c" />
+    <ClCompile Include="luajit\lib_jit.c" />
+    <ClCompile Include="luajit\lib_math.c" />
+    <ClCompile Include="luajit\lib_os.c" />
+    <ClCompile Include="luajit\lib_package.c" />
+    <ClCompile Include="luajit\lib_string.c" />
+    <ClCompile Include="luajit\lib_table.c" />
+    <ClCompile Include="luajit\ljamalg.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="luajit\lj_alloc.c" />
+    <ClCompile Include="luajit\lj_api.c" />
+    <ClCompile Include="luajit\lj_asm.c" />
+    <ClCompile Include="luajit\lj_assert.c" />
+    <ClCompile Include="luajit\lj_bc.c" />
+    <ClCompile Include="luajit\lj_bcread.c" />
+    <ClCompile Include="luajit\lj_bcwrite.c" />
+    <ClCompile Include="luajit\lj_buf.c" />
+    <ClCompile Include="luajit\lj_carith.c" />
+    <ClCompile Include="luajit\lj_ccall.c" />
+    <ClCompile Include="luajit\lj_ccallback.c" />
+    <ClCompile Include="luajit\lj_cconv.c" />
+    <ClCompile Include="luajit\lj_cdata.c" />
+    <ClCompile Include="luajit\lj_char.c" />
+    <ClCompile Include="luajit\lj_clib.c" />
+    <ClCompile Include="luajit\lj_cparse.c" />
+    <ClCompile Include="luajit\lj_crecord.c" />
+    <ClCompile Include="luajit\lj_ctype.c" />
+    <ClCompile Include="luajit\lj_debug.c" />
+    <ClCompile Include="luajit\lj_dispatch.c" />
+    <ClCompile Include="luajit\lj_err.c" />
+    <ClCompile Include="luajit\lj_ffrecord.c" />
+    <ClCompile Include="luajit\lj_func.c" />
+    <ClCompile Include="luajit\lj_gc.c" />
+    <ClCompile Include="luajit\lj_gdbjit.c" />
+    <ClCompile Include="luajit\lj_ir.c" />
+    <ClCompile Include="luajit\lj_lex.c" />
+    <ClCompile Include="luajit\lj_lib.c" />
+    <ClCompile Include="luajit\lj_load.c" />
+    <ClCompile Include="luajit\lj_mcode.c" />
+    <ClCompile Include="luajit\lj_meta.c" />
+    <ClCompile Include="luajit\lj_obj.c" />
+    <ClCompile Include="luajit\lj_opt_dce.c" />
+    <ClCompile Include="luajit\lj_opt_fold.c" />
+    <ClCompile Include="luajit\lj_opt_loop.c" />
+    <ClCompile Include="luajit\lj_opt_mem.c" />
+    <ClCompile Include="luajit\lj_opt_narrow.c" />
+    <ClCompile Include="luajit\lj_opt_sink.c" />
+    <ClCompile Include="luajit\lj_opt_split.c" />
+    <ClCompile Include="luajit\lj_parse.c" />
+    <ClCompile Include="luajit\lj_prng.c" />
+    <ClCompile Include="luajit\lj_profile.c" />
+    <ClCompile Include="luajit\lj_record.c" />
+    <ClCompile Include="luajit\lj_serialize.c" />
+    <ClCompile Include="luajit\lj_snap.c" />
+    <ClCompile Include="luajit\lj_state.c" />
+    <ClCompile Include="luajit\lj_str.c" />
+    <ClCompile Include="luajit\lj_strfmt.c" />
+    <ClCompile Include="luajit\lj_strfmt_num.c" />
+    <ClCompile Include="luajit\lj_strscan.c" />
+    <ClCompile Include="luajit\lj_tab.c" />
+    <ClCompile Include="luajit\lj_trace.c" />
+    <ClCompile Include="luajit\lj_udata.c" />
+    <ClCompile Include="luajit\lj_vmevent.c" />
+    <ClCompile Include="luajit\lj_vmmath.c" />
+    <ClCompile Include="luajit\luajit.c" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Gaming.Xbox.Scarlett.x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Gaming.Xbox.Scarlett.x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\SDK\include\luabind\adopt_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\back_reference.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\back_reference_fwd.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\class.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\class_info.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\config.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\container_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\copy_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\dependency_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\calc_arity.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\call.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\call_function.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\call_member.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\call_operator_iterate.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\class_cache.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\class_registry.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\class_rep.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\class_rep_scope.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\constructor.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\construct_rep.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\convert_to_lua.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\decorate_type.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\enum_maker.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\find_best_match.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\garbage_collector.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\get_overload_signature.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\get_signature.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\implicit_cast.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\is_indirect_const.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\link_compatibility.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\method_rep.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\object_funs.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\object_rep.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\open.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\operators.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\operator_id.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\other.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\overload_rep.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\overload_rep_base.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\overload_rep_impl.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\pcall.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\pointee_sizeof.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\pointee_typeid.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\primitives.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\property.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\ref.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\signature_match.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\stack_utils.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\typetraits.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\detail\yes_no.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\discard_result_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\error.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\function.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\functor.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\iterator_pair_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\iterator_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\library_linkage.h" />
+    <ClInclude Include="..\..\SDK\include\luabind\luabind.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\luabind_delete.h" />
+    <ClInclude Include="..\..\SDK\include\luabind\luabind_memory.h" />
+    <ClInclude Include="..\..\SDK\include\luabind\luabind_memory_allocator.h" />
+    <ClInclude Include="..\..\SDK\include\luabind\luabind_memory_allocator_inline.h" />
+    <ClInclude Include="..\..\SDK\include\luabind\luabind_memory_manager_generator.h" />
+    <ClInclude Include="..\..\SDK\include\luabind\luabind_types.h" />
+    <ClInclude Include="..\..\SDK\include\luabind\lua_include.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\object.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\open.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\operator.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\out_value_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\prefix.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\raw_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\return_reference_to_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\scope.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\weak_ref.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\wrapper_base.hpp" />
+    <ClInclude Include="..\..\SDK\include\luabind\yield_policy.hpp" />
+    <ClInclude Include="..\..\SDK\include\imdexlib\identity.hpp" />
+    <ClInclude Include="..\..\SDK\include\imdexlib\is_reference_wrapper.hpp" />
+    <ClInclude Include="..\..\SDK\include\imdexlib\mpl.hpp" />
+    <ClInclude Include="..\..\SDK\include\imdexlib\option.hpp" />
+    <ClInclude Include="..\..\SDK\include\imdexlib\traits.hpp" />
+    <ClInclude Include="..\..\SDK\include\imdexlib\typelist.hpp" />
+    <ClInclude Include="..\..\SDK\include\imdexlib\utility.hpp" />
+    <ClInclude Include="cstdafx.h" />
+    <ClInclude Include="Export\ai_sounds.h" />
+    <ClInclude Include="luajit\lauxlib.h" />
+    <ClInclude Include="luajit\lua.h" />
+    <ClInclude Include="luajit\lua.hpp" />
+    <ClInclude Include="luajit\luaconf.h" />
+    <ClInclude Include="luajit\luajit.h" />
+    <ClInclude Include="luajit\lualib.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="xrScripts.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Export\luabind.inl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

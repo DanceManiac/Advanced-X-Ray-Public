@@ -369,7 +369,7 @@ void CRender::LoadSectors(IReader* fs)
 
 		// build portal model
 		rmPortals = xr_new<CDB::MODEL> ();
-		rmPortals->build	(CL.getV(),int(CL.getVS()),CL.getT(),int(CL.getTS()));
+		rmPortals->build(CL.getV(), int(CL.getVS()), CL.getT(), int(CL.getTS()));
 	} else {
 		rmPortals = 0;
 	}

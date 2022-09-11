@@ -1,11 +1,14 @@
 /*
 ** Configuration header.
-** Copyright (C) 2005-2017 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
 
 #ifndef luaconf_h
 #define luaconf_h
 
+#ifndef WINVER
+#define WINVER 0x0501
+#endif
 #include <limits.h>
 #include <stddef.h>
 
@@ -89,6 +92,10 @@
 #define LUAI_GCMUL	200	/* Run GC at 200% of allocation speed. */
 #define LUA_MAXCAPTURES	32	/* Max. pattern captures. */
 
+/* Compatibility with older library function names. */
+#define LUA_COMPAT_MOD		/* OLD: math.mod, NEW: math.fmod */
+#define LUA_COMPAT_GFIND	/* OLD: string.gfind, NEW: string.gmatch */
+
 /* Configuration for the frontend (the luajit executable). */
 #if defined(luajit_c)
 #define LUA_PROGNAME	"luajit"  /* Fallback frontend name. */
@@ -120,9 +127,11 @@
 #define LUA_INTFRMLEN		"l"
 #define LUA_INTFRM_T		long
 
+/* Linkage of public API functions. */
+#include "../xrScripts.h"
 #define LUALIB_API	LUA_API
 
-/* Support for internal assertions. */
+/* Compatibility support for assertions. */
 #if defined(LUA_USE_ASSERT) || defined(LUA_USE_APICHECK)
 #include <assert.h>
 #endif

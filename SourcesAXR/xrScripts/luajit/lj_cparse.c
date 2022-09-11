@@ -2,7 +2,6 @@
 ** C declaration parser.
 ** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
 
 #include "lj_obj.h"
 
@@ -134,9 +133,9 @@ LJ_NORET static void cp_errmsg(CPState *cp, CPToken tok, ErrMsg em, ...)
     tokstr = NULL;
   } else if (tok == CTOK_IDENT || tok == CTOK_INTEGER || tok == CTOK_STRING ||
 	     tok >= CTOK_FIRSTDECL) {
-    if (cp->sb.w == cp->sb.b) cp_save(cp, '$');
+    if (sbufP(&cp->sb) == sbufB(&cp->sb)) cp_save(cp, '$');
     cp_save(cp, '\0');
-    tokstr = cp->sb.b;
+    tokstr = sbufB(&cp->sb);
   } else {
     tokstr = cp_tok2str(cp, tok);
   }
@@ -176,7 +175,7 @@ static CPToken cp_number(CPState *cp)
   TValue o;
   do { cp_save(cp, cp->c); } while (lj_char_isident(cp_get(cp)));
   cp_save(cp, '\0');
-  fmt = lj_strscan_scan((const uint8_t *)(cp->sb.b), sbuflen(&cp->sb)-1,
+  fmt = lj_strscan_scan((const uint8_t *)sbufB(&cp->sb), sbuflen(&cp->sb)-1,
 			&o, STRSCAN_OPT_C);
   if (fmt == STRSCAN_INT) cp->val.id = CTID_INT32;
   else if (fmt == STRSCAN_U32) cp->val.id = CTID_UINT32;
@@ -280,7 +279,7 @@ static CPToken cp_string(CPState *cp)
     return CTOK_STRING;
   } else {
     if (sbuflen(&cp->sb) != 1) cp_err_token(cp, '\'');
-    cp->val.i32 = (int32_t)(char)*cp->sb.b;
+    cp->val.i32 = (int32_t)(char)*sbufB(&cp->sb);
     cp->val.id = CTID_INT32;
     return CTOK_INTEGER;
   }
@@ -1382,7 +1381,7 @@ static CTypeID cp_decl_struct(CPState *cp, CPDecl *sdecl, CTInfo sinfo)
 	ctypeid = cp_decl_intern(cp, &decl);
 
 	if ((scl & CDF_STATIC)) {  /* Static constant in struct namespace. */
-	  CType *ct = NULL;
+	  CType *ct;
 	  CTypeID fieldid = cp_decl_constinit(cp, &ct, ctypeid);
 	  ctype_get(cp->cts, lastid)->sib = fieldid;
 	  lastid = fieldid;
@@ -1843,7 +1842,7 @@ static void cp_decl_multi(CPState *cp)
       cp_declarator(cp, &decl);
       ctypeid = cp_decl_intern(cp, &decl);
       if (decl.name && !decl.nameid) {  /* NYI: redeclarations are ignored. */
-	CType *ct = NULL;
+	CType *ct;
 	CTypeID id;
 	if ((scl & CDF_TYPEDEF)) {  /* Create new typedef. */
 	  id = lj_ctype_new(cp->cts, &ct);

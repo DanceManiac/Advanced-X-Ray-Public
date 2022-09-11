@@ -94,6 +94,8 @@ extern XRCORE_API	xrMemory	Memory;
 	#include "xrMemory_subst_msvc.h"
 #endif
 
+#pragma warning(push)
+#pragma warning(disable: 4595)
 // generic "C"-like allocations/deallocations
 #ifdef DEBUG_MEMORY_NAME
 	#include <typeinfo>
@@ -144,4 +146,6 @@ XRCORE_API void vminfo			(size_t *_free, size_t *reserved, size_t *committed);
 XRCORE_API void log_vminfo		();
 XRCORE_API u32	mem_usage_impl	(HANDLE heap_handle, u32* pBlocksUsed, u32* pBlocksFree);
 
+
+#pragma warning(pop)
 #endif // xrMemoryH

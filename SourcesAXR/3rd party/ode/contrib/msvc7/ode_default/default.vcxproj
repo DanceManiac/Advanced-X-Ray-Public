@@ -139,6 +139,8 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <OutDir>..\..\..\..\..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\..\..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
@@ -151,6 +153,8 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <OutDir>..\..\..\..\..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
     <OutDir>..\..\..\..\..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
@@ -175,6 +179,8 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <OutDir>..\..\..\..\..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>

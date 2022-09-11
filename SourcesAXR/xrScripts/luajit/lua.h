@@ -11,7 +11,7 @@
 
 #include <stdarg.h>
 #include <stddef.h>
-#include "../xrScripts.h"
+
 
 #include "luaconf.h"
 

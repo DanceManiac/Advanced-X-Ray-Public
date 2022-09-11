@@ -5,7 +5,6 @@
 ** Major parts taken verbatim or adapted from the Lua interpreter.
 ** Copyright (C) 1994-2008 Lua.org, PUC-Rio. See Copyright Notice in lua.h
 */
-#include "cstdafx.h"
 
 #include <errno.h>
 #include <stdarg.h>
@@ -330,7 +329,7 @@ static void *mem_alloc(void *ud, void *ptr, size_t osize, size_t nsize)
   (void)ud;
   (void)osize;
   if (nsize == 0) {
-      free(ptr);
+    free(ptr);
     return NULL;
   } else {
     return realloc(ptr, nsize);

@@ -19,7 +19,6 @@
 ** - ptmalloc: https://www.malloc.de/
 ** - nedmalloc: https://www.nedprod.com/programs/portable/nedmalloc/
 */
-#include "cstdafx.h"
 
 #define lj_alloc_c
 #define LUA_CORE
@@ -366,7 +365,7 @@ static void *CALL_MREMAP_(void *ptr, size_t osz, size_t nsz, int flags)
 #define CALL_MREMAP(addr, osz, nsz, mv) CALL_MREMAP_((addr), (osz), (nsz), (mv))
 #define CALL_MREMAP_NOMOVE	0
 #define CALL_MREMAP_MAYMOVE	1
-#if LJ_64 && (!LJ_GC64 || LJ_TARGET_ARM64)
+#if LJ_64 && !LJ_GC64
 #define CALL_MREMAP_MV		CALL_MREMAP_NOMOVE
 #else
 #define CALL_MREMAP_MV		CALL_MREMAP_MAYMOVE

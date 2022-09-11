@@ -15,7 +15,6 @@
 ** If you really need proper character types for UTF-8 strings, please use
 ** an add-on library such as slnunicode: http://luaforge.net/projects/sln/
 */
-#include "cstdafx.h"
 
 #define lj_char_c
 #define LUA_CORE

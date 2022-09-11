@@ -721,7 +721,7 @@ static void asm_href(ASMState *as, IRIns *ir, IROp merge)
     if (isk) {
       /* Nothing to do. */
     } else if (irt_isstr(kt)) {
-      emit_tai(as, PPCI_LWZ, tmp1, key, (int32_t)offsetof(GCstr, sid));
+      emit_tai(as, PPCI_LWZ, tmp1, key, (int32_t)offsetof(GCstr, hash));
     } else {  /* Must match with hash*() in lj_tab.c. */
       emit_tab(as, PPCI_SUBF, tmp1, tmp2, tmp1);
       emit_rotlwi(as, tmp2, tmp2, HASH_ROT3);
@@ -894,7 +894,7 @@ static void asm_fload(ASMState *as, IRIns *ir)
   int32_t ofs;
   if (ir->op1 == REF_NIL) {  /* FLOAD from GG_State with offset. */
     idx = RID_JGL;
-    ofs = (ir->op2 << 2) - 32768 - GG_OFS(g);
+    ofs = (ir->op2 << 2) - 32768;
   } else {
     idx = ra_alloc1(as, ir->op1, RSET_GPR);
     if (ir->op2 == IRFL_TAB_ARRAY) {

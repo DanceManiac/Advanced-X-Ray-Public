@@ -2,7 +2,6 @@
 ** JIT library.
 ** Copyright (C) 2005-2021 Mike Pall. See Copyright Notice in luajit.h
 */
-#include "cstdafx.h"
 
 #define lib_jit_c
 #define LUA_LIB
@@ -112,13 +111,6 @@ LJLIB_CF(jit_status)
   setboolV(L->top++, 0);
   return 1;
 #endif
-}
-
-LJLIB_CF(jit_security)
-{
-  int idx = lj_lib_checkopt(L, 1, -1, LJ_SECURITY_MODESTRING);
-  setintV(L->top++, ((LJ_SECURITY_MODE >> (2*idx)) & 3));
-  return 1;
 }
 
 LJLIB_CF(jit_attach)
@@ -347,7 +339,11 @@ LJLIB_CF(jit_util_tracek)
       ir = &T->ir[ir->op1];
     }
 #if LJ_HASFFI
-    if (ir->o == IR_KINT64) ctype_loadffi(L);
+    if (ir->o == IR_KINT64 && !ctype_ctsG(G(L))) {
+      ptrdiff_t oldtop = savestack(L, L->top);
+      luaopen_ffi(L);  /* Load FFI library on-demand. */
+      L->top = restorestack(L, oldtop);
+    }
 #endif
     lj_ir_kvalue(L, L->top-2, ir);
     setintV(L->top-1, (int32_t)irt_type(ir->t));

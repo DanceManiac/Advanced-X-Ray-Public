@@ -5,7 +5,6 @@
 ** Major portions taken verbatim or adapted from the Lua interpreter.
 ** Copyright (C) 1994-2008 Lua.org, PUC-Rio. See Copyright Notice in lua.h
 */
-#include "cstdafx.h"
 
 #define lj_parse_c
 #define LUA_CORE
@@ -1466,7 +1465,7 @@ static size_t fs_prep_var(LexState *ls, FuncState *fs, size_t *ofsvar)
     MSize len = s->len+1;
     char *p = lj_buf_more(&ls->sb, len);
     p = lj_buf_wmem(p, strdata(s), len);
-    ls->sb.w = p;
+    setsbufP(&ls->sb, p);
   }
   *ofsvar = sbuflen(&ls->sb);
   lastpc = 0;
@@ -1487,7 +1486,7 @@ static size_t fs_prep_var(LexState *ls, FuncState *fs, size_t *ofsvar)
       startpc = vs->startpc;
       p = lj_strfmt_wuleb128(p, startpc-lastpc);
       p = lj_strfmt_wuleb128(p, vs->endpc-startpc);
-      ls->sb.w = p;
+      setsbufP(&ls->sb, p);
       lastpc = startpc;
     }
   }
@@ -1500,7 +1499,7 @@ static void fs_fixup_var(LexState *ls, GCproto *pt, uint8_t *p, size_t ofsvar)
 {
   setmref(pt->uvinfo, p);
   setmref(pt->varinfo, (char *)p + ofsvar);
-  memcpy(p, ls->sb.b, sbuflen(&ls->sb));  /* Copy from temp. buffer. */
+  memcpy(p, sbufB(&ls->sb), sbuflen(&ls->sb));  /* Copy from temp. buffer. */
 }
 #else
 

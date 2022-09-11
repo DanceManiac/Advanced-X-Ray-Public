@@ -76,7 +76,7 @@ void CUICursor::OnRender	()
 	}
 #endif
 
-	u32 curFrame = Device.dwFrame;
+	static u32 curFrame = Device.dwFrame;
 	if (curFrame == last_render_frame)
 		return;
 
