@@ -138,7 +138,7 @@ void configs_dumper::write_configs()
 	string16 tmp_strbuff;
 	for (active_objects_t::size_type i = 0; i < aobjs_count; ++i)
 	{
-		sprintf_s				(tmp_strbuff, "%d", i + 1);
+		sprintf_s				(tmp_strbuff, "%zd", i + 1);
 		m_active_params.dump	(active_objects[i], tmp_strbuff, active_params_dumper);
 	}
 	active_params_dumper.save_as	(m_dump_result);
@@ -204,8 +204,8 @@ void configs_dumper::dump_config(complete_callback_t complete_cb)
 		return;
 	}
 
-	DWORD	process_affinity_mask;
-	DWORD	tmp_dword;
+	DWORD_PTR	process_affinity_mask;
+	DWORD_PTR	tmp_dword;
 	GetProcessAffinityMask(
 		GetCurrentProcess(),
 		&process_affinity_mask,

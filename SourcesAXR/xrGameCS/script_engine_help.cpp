@@ -18,6 +18,7 @@
 
 xr_string to_string					(luabind::object const& o)
 {
+#if 0
 	using namespace luabind;
 	if (o.type() == LUA_TSTRING) return object_cast<luabind::internal_string>(o).c_str();
 	lua_State* L = o.lua_state();
@@ -31,6 +32,8 @@ xr_string to_string					(luabind::object const& o)
 	}
 
 	return xr_string("<") + lua_typename(L, o.type()) + ">";
+#endif
+	return xr_string();
 }
 
 void strreplaceall						(xr_string &str, LPCSTR S, LPCSTR N)
@@ -53,7 +56,7 @@ xr_string &process_signature				(xr_string &str)
 
 xr_string member_to_string			(luabind::object const& e, LPCSTR function_signature)
 {
-#if 1 || !defined(LUABIND_NO_ERROR_CHECKING)
+#if 0 || !defined(LUABIND_NO_ERROR_CHECKING)
     using namespace luabind;
 	lua_State* L = e.lua_state();
 	LUABIND_CHECK_STACK(L);
@@ -112,6 +115,7 @@ xr_string member_to_string			(luabind::object const& e, LPCSTR function_signatur
 
 void print_class						(lua_State *L, luabind::detail::class_rep *crep)
 {
+#if 0
 	xr_string			S;
 	// print class and bases
 	{
@@ -208,10 +212,12 @@ void print_class						(lua_State *L, luabind::detail::class_rep *crep)
 		}
 	}
 	Msg			("};\n");
+#endif
 }
 
 void print_free_functions				(lua_State *L, const luabind::object &object, LPCSTR header, const xr_string &indent)
 {
+#if 0
 	u32							count = 0;
 	luabind::object::iterator	I = object.begin();
 	luabind::object::iterator	E = object.end();
@@ -277,6 +283,7 @@ void print_free_functions				(lua_State *L, const luabind::object &object, LPCST
 	}
 	if (count)
 		Msg("%s};",indent.c_str());
+#endif
 }
 
 void print_help							(lua_State *L)
