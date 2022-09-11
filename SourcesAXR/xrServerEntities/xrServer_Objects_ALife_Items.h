@@ -193,6 +193,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	virtual void					OnEvent				(NET_Packet& P, u16 type, u32 time, ClientID sender );
 	virtual u32						ef_main_weapon_type	() const;
 	virtual u32						ef_weapon_type		() const;
+	virtual	bool					keep_saved_data_anyway() const { return true; };
+
 	u8								get_slot			();
 	u16								get_ammo_limit		();
 	u16								get_ammo_total		();

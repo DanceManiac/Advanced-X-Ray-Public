@@ -459,14 +459,9 @@ _DDS_2D:
 #else
 			D3DX10_IMAGE_LOAD_INFO LoadInfo;
 #endif
-			//LoadInfo.FirstMipLevel = img_loaded_lod;
+			LoadInfo.FirstMipLevel = img_loaded_lod;
 			LoadInfo.Width	= IMG.Width;
 			LoadInfo.Height	= IMG.Height;
-
-			if (img_loaded_lod)
-			{
-				Reduce(LoadInfo.Width, LoadInfo.Height, IMG.MipLevels, img_loaded_lod);
-			}
 
 			//LoadInfo.Usage = D3D_USAGE_IMMUTABLE;
 			if (bStaging)
