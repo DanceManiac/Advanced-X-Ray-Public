@@ -67,7 +67,7 @@ PROTECT_API void CRenderDevice::Initialize()
 
 		ChangeDisplaySettings(&screen_settings, CDS_FULLSCREEN);
 
-		m_hWnd = CreateWindowEx(WS_EX_TOPMOST, wndclass, "S.T.A.L.K.E.R.: Call of Pripyat", m_dwWindowStyle, 0, 0, screen_width, screen_height, 0L, 0, hInstance, 0L);
+		m_hWnd = CreateWindowExA(WS_EX_TOPMOST, wndclass, wndclass, m_dwWindowStyle, 0, 0, screen_width, screen_height, 0L, 0, hInstance, 0L);
 }
 
 	// Save window properties
