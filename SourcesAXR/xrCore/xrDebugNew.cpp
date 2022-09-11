@@ -187,8 +187,8 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 #else
 #	ifdef USE_OWN_ERROR_MESSAGE_WINDOW
 		int					result = 
-			MessageBox(
-				GetTopWindow(NULL),
+			MessageBoxA(
+				0,
 				assertion_info,
 				"Fatal Error",
 				MB_CANCELTRYCONTINUE|MB_ICONERROR|MB_SYSTEMMODAL
@@ -211,7 +211,7 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 				ignore_always	= true;
 				break;
 			}
-			default : NODEFAULT;
+			default : DebugBreak();
 		}
 #	else // USE_OWN_ERROR_MESSAGE_WINDOW
 #		ifdef USE_BUG_TRAP

@@ -21,7 +21,7 @@ xr_string to_string					(luabind::object const& o)
 	using namespace luabind;
 	if (o.type() == LUA_TSTRING) return object_cast<luabind::internal_string>(o).c_str();
 	lua_State* L = o.lua_state();
-	LUABIND_CHECK_STACK(L);
+	//LUABIND_CHECK_STACK(L);
 
 	if (o.type() == LUA_TNUMBER)
 	{
@@ -53,10 +53,10 @@ xr_string &process_signature				(xr_string &str)
 
 xr_string member_to_string			(luabind::object const& e, LPCSTR function_signature)
 {
-#if 1 || !defined(LUABIND_NO_ERROR_CHECKING)
+#if 0 || !defined(LUABIND_NO_ERROR_CHECKING)
     using namespace luabind;
 	lua_State* L = e.lua_state();
-	LUABIND_CHECK_STACK(L);
+	//LUABIND_CHECK_STACK(L);
 
 	if (e.type() == LUA_TFUNCTION)
 	{
@@ -75,7 +75,7 @@ xr_string member_to_string			(luabind::object const& e, LPCSTR function_signatur
 // 		std::stringstream s;
 // #endif
 		xr_string s = "";
-
+		#
 		{
 			lua_getupvalue(L, -1, 2);
 			detail::stack_pop p2(L, 1);
@@ -112,6 +112,7 @@ xr_string member_to_string			(luabind::object const& e, LPCSTR function_signatur
 
 void print_class						(lua_State *L, luabind::detail::class_rep *crep)
 {
+	/*
 	xr_string			S;
 	// print class and bases
 	{
@@ -208,10 +209,12 @@ void print_class						(lua_State *L, luabind::detail::class_rep *crep)
 		}
 	}
 	Msg			("};\n");
+	*/
 }
 
 void print_free_functions				(lua_State *L, const luabind::object &object, LPCSTR header, const xr_string &indent)
 {
+#if 0
 	u32							count = 0;
 	luabind::object::iterator	I = object.begin();
 	luabind::object::iterator	E = object.end();
@@ -277,6 +280,8 @@ void print_free_functions				(lua_State *L, const luabind::object &object, LPCST
 	}
 	if (count)
 		Msg("%s};",indent.c_str());
+
+#endif
 }
 
 void print_help							(lua_State *L)

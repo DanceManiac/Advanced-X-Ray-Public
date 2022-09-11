@@ -28,7 +28,7 @@
 
 namespace luabind
 {
-	struct class_info
+	struct LUABIND_API class_info
 	{
 		class_info(lua_State* L)
 			: methods(L)
@@ -39,7 +39,7 @@ namespace luabind
 		object attributes;
 	};
 
-	class_info get_class_info(const object&);
+	LUABIND_API class_info get_class_info(const object&);
 
-	void bind_class_info(lua_State*);
+	LUABIND_API void bind_class_info(lua_State*);
 }

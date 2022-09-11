@@ -11,9 +11,7 @@
 #include "ui/xrUIXmlParser.h"
 #include "xr_level_controller.h"
 #include "profiler.h"
-
-#include "lua/library_linkage.h"
-#include "luabind/library_linkage.h"
+#include "../xrScripts/xrScripts.h"
 
 //#pragma comment(lib,"ode.lib")
 #pragma comment(lib,"AdvancedXRay.lib")

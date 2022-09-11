@@ -114,7 +114,7 @@ public:
 class 	ISpatial_NODE
 {
 public:
-	typedef	_W64 unsigned		ptrt;
+	typedef	_W64 size_t		ptrt;
 public:
 	ISpatial_NODE*				parent;					// parent node for "empty-members" optimization
 	ISpatial_NODE*				children		[8];	// children nodes

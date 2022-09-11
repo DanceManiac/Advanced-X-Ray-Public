@@ -36,9 +36,9 @@
 
 using namespace luabind;
 
-class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject> &instance)
+class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject> &&instance)
 {
-	instance
+	return std::move(instance)
 		.def("add_sound",					(u32 (CScriptGameObject::*)(LPCSTR,u32,ESoundTypes,u32,u32,u32))(&CScriptGameObject::add_sound))
 		.def("add_sound",					(u32 (CScriptGameObject::*)(LPCSTR,u32,ESoundTypes,u32,u32,u32,LPCSTR))(&CScriptGameObject::add_sound))
 		.def("add_combat_sound",			(u32 (CScriptGameObject::*)(LPCSTR,u32,ESoundTypes,u32,u32,u32,LPCSTR))(&CScriptGameObject::add_combat_sound))
@@ -105,7 +105,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("base_out_restrictions",		&CScriptGameObject::base_out_restrictions)
 		.def("accessible",					&CScriptGameObject::accessible_position)
 		.def("accessible",					&CScriptGameObject::accessible_vertex_id)
-		.def("accessible_nearest",			&CScriptGameObject::accessible_nearest, out_value(_3))
+		.def("accessible_nearest",			&CScriptGameObject::accessible_nearest, out_value<3>())
 
 		//////////////////////////////////////////////////////////////////////////
 		.def("enable_attachable_item",		&CScriptGameObject::enable_attachable_item)
@@ -143,7 +143,7 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 
 		.def("get_task_state",				&CScriptGameObject::GetGameTaskState)
 		.def("set_task_state",				&CScriptGameObject::SetGameTaskState)
-		.def("give_task",					&CScriptGameObject::GiveTaskToActor,		adopt(_2))
+		.def("give_task",					&CScriptGameObject::GiveTaskToActor,		adopt<2>())
 		.def("set_active_task",				&CScriptGameObject::SetActiveTask)
 		.def("is_active_task",				&CScriptGameObject::IsActiveTask)
 		.def("get_task",					&CScriptGameObject::GetTask)
@@ -348,5 +348,5 @@ class_<CScriptGameObject> &script_register_game_object2(class_<CScriptGameObject
 		.def("weight",							&CScriptGameObject::Weight)
 		/*added by Ray Twitty (aka Shadows) END*/
 
-	;return	(instance);
+	;
 }

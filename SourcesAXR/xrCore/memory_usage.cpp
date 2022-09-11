@@ -33,104 +33,104 @@ XRCORE_API void log_vminfo	()
 		w_committed/1024
 	);
 }
-
-int heap_walk (
-	    HANDLE heap_handle,
+int heap_walk(
+	HANDLE heap_handle,
 	PROCESS_HEAP_ENTRY* Entry
-        )
+)
 {
-        DWORD errval;
-        int errflag;
-        int retval = _HEAPOK;
+	DWORD errval;
+	int errflag;
+	int retval = _HEAPOK;
 
-		if (Entry->lpData == NULL) {
-			if (!HeapWalk(heap_handle, Entry)) {
-                if ( GetLastError() == ERROR_CALL_NOT_IMPLEMENTED ) {
-                    _doserrno = ERROR_CALL_NOT_IMPLEMENTED;
-                    errno = ENOSYS;
-                    return _HEAPEND;
-                }
-                return _HEAPBADBEGIN;
-            }
-        }
-        else {
-			if (Entry->wFlags == PROCESS_HEAP_ENTRY_BUSY) {
-				if (!HeapValidate(heap_handle, 0, Entry->lpData))
-                    return _HEAPBADNODE;
-				Entry->wFlags = PROCESS_HEAP_ENTRY_BUSY;
-            }
-nextBlock:
-            /*
-             * Guard the HeapWalk call in case we were passed a bad pointer
-             * to an allegedly free block.
-             */
-            __try {
-                errflag = 0;
-				if (!HeapWalk(heap_handle, Entry))
-                    errflag = 1;
-            }
-            __except( EXCEPTION_EXECUTE_HANDLER ) {
-                errflag = 2;
-            }
+	if (Entry->lpData == NULL) {
+		if (!HeapWalk(heap_handle, Entry)) {
+			if (GetLastError() == ERROR_CALL_NOT_IMPLEMENTED) {
+				_doserrno = ERROR_CALL_NOT_IMPLEMENTED;
+				errno = ENOSYS;
+				return _HEAPEND;
+			}
+			return _HEAPBADBEGIN;
+		}
+	}
+	else {
+		if (Entry->wFlags == PROCESS_HEAP_ENTRY_BUSY) {
+			if (!HeapValidate(heap_handle, 0, Entry->lpData))
+				return _HEAPBADNODE;
+			Entry->wFlags = PROCESS_HEAP_ENTRY_BUSY;
+		}
+	nextBlock:
+		/*
+		 * Guard the HeapWalk call in case we were passed a bad pointer
+		 * to an allegedly free block.
+		 */
+		__try {
+			errflag = 0;
+			if (!HeapWalk(heap_handle, Entry))
+				errflag = 1;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER) {
+			errflag = 2;
+		}
 
-            /*
-             * Check errflag to see how HeapWalk fared...
-             */
-            if ( errflag == 1 ) {
-                /*
-                 * HeapWalk returned an error.
-                 */
-                if ( (errval = GetLastError()) == ERROR_NO_MORE_ITEMS ) {
-                    return _HEAPEND;
-                }
-                else if ( errval == ERROR_CALL_NOT_IMPLEMENTED ) {
-                    _doserrno = errval;
-                    errno = ENOSYS;
-                    return _HEAPEND;
-                }
-                return _HEAPBADNODE;
-            }
-            else if ( errflag == 2 ) {
-                /*
-                 * Exception occurred during the HeapWalk!
-                 */
-                return _HEAPBADNODE;
-            }
-        }
+		/*
+		 * Check errflag to see how HeapWalk fared...
+		 */
+		if (errflag == 1) {
+			/*
+			 * HeapWalk returned an error.
+			 */
+			if ((errval = GetLastError()) == ERROR_NO_MORE_ITEMS) {
+				return _HEAPEND;
+			}
+			else if (errval == ERROR_CALL_NOT_IMPLEMENTED) {
+				_doserrno = errval;
+				errno = ENOSYS;
+				return _HEAPEND;
+			}
+			return _HEAPBADNODE;
+		}
+		else if (errflag == 2) {
+			/*
+			 * Exception occurred during the HeapWalk!
+			 */
+			return _HEAPBADNODE;
+		}
+	}
 
-		if (Entry->wFlags & (PROCESS_HEAP_REGION |
-             PROCESS_HEAP_UNCOMMITTED_RANGE) )
-        {
-            goto nextBlock;
-        }
+	if (Entry->wFlags & (PROCESS_HEAP_REGION |
+		PROCESS_HEAP_UNCOMMITTED_RANGE))
+	{
+		goto nextBlock;
+	}
 
-        return( retval );
+	return(retval);
 }
 
-u32	mem_usage_impl	(HANDLE heap_handle, u32* pBlocksUsed, u32* pBlocksFree)
+u32	mem_usage_impl(HANDLE heap_handle, u32* pBlocksUsed, u32* pBlocksFree)
 {
-	static bool no_memory_usage = !!strstr( GetCommandLine(), "-no_memory_usage");
-	if ( no_memory_usage )
+	static bool no_memory_usage = !!strstr(GetCommandLine(), "-no_memory_usage");
+	if (no_memory_usage)
 		return		0;
 
 	int				heapstatus;
-	size_t	total	= 0;
-	u32	blocks_free	= 0;
-	u32	blocks_used	= 0;
+	size_t	total = 0;
+	u32	blocks_free = 0;
+	u32	blocks_used = 0;
 	PROCESS_HEAP_ENTRY hinfo = {};
-	while( ( heapstatus = heap_walk( heap_handle, &hinfo ) ) == _HEAPOK )
-	{ 
+	while ((heapstatus = heap_walk(heap_handle, &hinfo)) == _HEAPOK)
+	{
 		if (hinfo.wFlags == PROCESS_HEAP_ENTRY_BUSY) {
 			total += hinfo.cbData;
-			blocks_used	+= 1;
-		} else {
-			blocks_free	+= 1;
+			blocks_used += 1;
+		}
+		else {
+			blocks_free += 1;
 		}
 	}
-	if (pBlocksFree)	*pBlocksFree= 1024*(u32)blocks_free;
-	if (pBlocksUsed)	*pBlocksUsed= 1024*(u32)blocks_used;
+	if (pBlocksFree)	*pBlocksFree = 1024 * (u32)blocks_free;
+	if (pBlocksUsed)	*pBlocksUsed = 1024 * (u32)blocks_used;
 
-	switch( heapstatus )
+	switch (heapstatus)
 	{
 	case _HEAPEMPTY:
 		break;
@@ -138,30 +138,34 @@ u32	mem_usage_impl	(HANDLE heap_handle, u32* pBlocksUsed, u32* pBlocksFree)
 		break;
 	case _HEAPBADPTR:
 #ifndef MASTER_GOLD
-		FATAL			("bad pointer to heap");
+		FATAL("bad pointer to heap");
 #else // #ifndef MASTER_GOLD
-		Msg				("! bad pointer to heap");
+		Msg("! bad pointer to heap");
 #endif // #ifndef MASTER_GOLD
 		break;
 	case _HEAPBADBEGIN:
 #ifndef MASTER_GOLD
-		FATAL			("bad start of heap");
+		FATAL("bad start of heap");
 #else // #ifndef MASTER_GOLD
-		Msg				("! bad start of heap");
+		Msg("! bad start of heap");
 #endif // #ifndef MASTER_GOLD
 		break;
 	case _HEAPBADNODE:
 #ifndef MASTER_GOLD
-		FATAL			("bad node in heap");
+		FATAL("bad node in heap");
 #else // #ifndef MASTER_GOLD
-		Msg				("! bad node in heap");
+		Msg("! bad node in heap");
 #endif // #ifndef MASTER_GOLD
 		break;
 	}
-	return (u32) total;
+	return (u32)total;
 }
 
-u32		xrMemory::mem_usage		(u32* pBlocksUsed, u32* pBlocksFree)
+u32		xrMemory::mem_usage(u32* pBlocksUsed, u32* pBlocksFree)
 {
-	return				(mem_usage_impl((HANDLE)_get_heap_handle(),pBlocksUsed,pBlocksFree));
+#ifdef _M_X64
+	return 0;
+#else
+	return				(mem_usage_impl((HANDLE)_get_heap_handle(), pBlocksUsed, pBlocksFree));
+#endif
 }

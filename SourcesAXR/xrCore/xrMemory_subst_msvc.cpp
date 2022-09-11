@@ -30,7 +30,7 @@ ICF	u32		get_pool			(size_t size)
 	else						return pid;
 }
 
-#ifdef PURE_ALLOC
+#if defined(PURE_ALLOC)
 bool	g_use_pure_alloc		= false;
 #endif // PURE_ALLOC
 
@@ -47,7 +47,7 @@ void*	xrMemory::mem_alloc		(size_t size
 	if (!g_use_pure_alloc_initialized) {
 		g_use_pure_alloc_initialized	= true;
 		g_use_pure_alloc				= 
-#	ifdef XRCORE_STATIC
+#	if defined(XRCORE_STATIC) | defined(_M_X64)
 			true
 #	else // XRCORE_STATIC
 			!!strstr(GetCommandLine(),"-pure_alloc")
