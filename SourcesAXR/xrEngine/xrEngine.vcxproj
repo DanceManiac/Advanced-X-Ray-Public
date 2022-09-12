@@ -173,8 +173,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28March 2009%29\Include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28March 2009%29\Lib\x86;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <TargetName>AdvancedXRay</TargetName>
     <IntDir>..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
     <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
@@ -651,7 +651,7 @@
       </AdditionalOptions>
       <AdditionalDependencies>d3dx9.lib;DiscordRPC.lib;soft_oal.lib;vfw32.lib;Windowscodecs.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\sdk\libraries;..\..\OutputDirectory\Libraries\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\sdk\libraries\x64;..\..\OutputDirectory\Libraries\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)AdvancedXRay.pdb</ProgramDatabaseFile>

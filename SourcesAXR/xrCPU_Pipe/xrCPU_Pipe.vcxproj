@@ -131,6 +131,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>
+    <IntDir>..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\..\OutputDirectory\Binaries\$(Configuration)\</OutDir>

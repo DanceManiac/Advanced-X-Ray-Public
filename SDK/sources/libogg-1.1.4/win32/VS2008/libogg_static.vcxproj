@@ -161,8 +161,8 @@
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>..\..\..\..\..\OutputDirectory\Libraries\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\OutputDirectory\Intermediate\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">
     <OutDir>..\..\..\..\..\OutputDirectory\Libraries\$(Configuration)\</OutDir>
