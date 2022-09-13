@@ -88,14 +88,14 @@ bool g_initialize_cpu_called = false;
 //------------------------------------------------------------------------------------
 void _initialize_cpu(void)
 {
-	const char* vendor = "Unknown";
+	shared_str vendor = "Unknown";
 
 	if (CPU::Info.isAmd)
 		vendor = "AMD";
 	else if (CPU::Info.isIntel)
 		vendor = "Intel";
 
-	Msg("* Vendor CPU: %s", vendor);
+	Msg("* Vendor CPU: %s", *vendor);
 	Msg("* Detected CPU: %s", CPU::Info.modelName);
 
 	string256 features;

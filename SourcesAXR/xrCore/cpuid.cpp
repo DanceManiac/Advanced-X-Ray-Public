@@ -247,9 +247,15 @@ processor_info::processor_info()
 	m_dwNumberOfProcessors = sysInfo.dwNumberOfProcessors;
 	const size_t PerformanceInfoSize = sizeof(SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION) * m_dwNumberOfProcessors;
 
+#ifdef DEBUG_MEMORY_NAME
 	fUsage = static_cast<float*>(Memory.mem_alloc(sizeof(float) * m_dwNumberOfProcessors, ""));
 	m_pNtQuerySystemInformation = (NTQUERYSYSTEMINFORMATION)(GetProcAddress(GetModuleHandleA("ntdll.dll"), "NtQuerySystemInformation"));
 	perfomanceInfo = static_cast<SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION*>(Memory.mem_alloc(PerformanceInfoSize, ""));
+#else
+	fUsage = static_cast<float*>(Memory.mem_alloc(sizeof(float) * m_dwNumberOfProcessors));
+	m_pNtQuerySystemInformation = (NTQUERYSYSTEMINFORMATION)(GetProcAddress(GetModuleHandleA("ntdll.dll"), "NtQuerySystemInformation"));
+	perfomanceInfo = static_cast<SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION*>(Memory.mem_alloc(PerformanceInfoSize));
+#endif
 }
 
 processor_info::~processor_info()

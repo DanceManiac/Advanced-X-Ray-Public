@@ -9,4 +9,9 @@
 #	endif // DEBUG
 #endif // XRCORE_STATIC
 
+#ifdef _M_X64
+#undef PURE_ALLOC
+#define PURE_ALLOC
+#endif
+
 #endif // XRMEMORY_PURE_H
