@@ -222,9 +222,9 @@ float					game_sv_GameState::get_option_f				(LPCSTR lst, LPCSTR name, float def
 		return def;
 }
 
-shared_str			game_sv_GameState::get_option_s				(LPCSTR lst, LPCSTR name, LPCSTR def)
+LPCSTR			game_sv_GameState::get_option_s				(LPCSTR lst, LPCSTR name, LPCSTR def)
 {
-	shared_str	ret;
+	string64	ret;
 
 	string64		op;
 	strconcat		(sizeof(op),op,"/",name,"=");
@@ -236,8 +236,8 @@ shared_str			game_sv_GameState::get_option_s				(LPCSTR lst, LPCSTR name, LPCSTR
 	}
 	else			
 	{
-		if (def)	ret = def;
-		else		ret = "";
+		if (def)	strcpy_s(ret, def);
+		else		ret[0] = 0;
 	}
 	return ret;
 }
