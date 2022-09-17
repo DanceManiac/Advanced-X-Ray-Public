@@ -38,7 +38,7 @@ public:
 
 	void	Init(CUIXml& xml, LPCSTR section);
 	void	SetCaption(LPCSTR name);
-	void	SetValue(float value);
+	void	SetValue(float value, int vle = 0);
 
 private:
 	CUIStatic*	m_caption;

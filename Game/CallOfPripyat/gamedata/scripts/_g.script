@@ -643,6 +643,22 @@ end
 function on_actor_sleepeness()
 end
 
+--' Алкоголизм
+function on_actor_alcoholism()
+end
+
+--' Похмелье
+function on_actor_hangover()
+end
+
+--' Наркомания
+function on_actor_narcotism()
+end
+
+--' Ломка
+function on_actor_withdrawal()
+end
+
 --' іадиация
 function on_actor_radiation()
 

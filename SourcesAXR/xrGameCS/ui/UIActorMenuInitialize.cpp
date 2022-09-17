@@ -37,6 +37,8 @@ CUIActorMenu::~CUIActorMenu()
 	xr_delete			(m_hint_wnd);
 	xr_delete			(m_ItemInfo);
 
+	m_belt_list_over.clear();
+
 	ClearAllLists		();
 }
 
@@ -138,14 +140,14 @@ void CUIActorMenu::Construct()
 		m_pInventoryPdaList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this);
 	}
 
-	m_belt_list_over[0] = UIHelper::CreateStatic(uiXml, "belt_list_over", this);
+	m_belt_list_over.push_back(UIHelper::CreateStatic(uiXml, "belt_list_over", this));
 	Fvector2 pos;
 	pos = m_belt_list_over[0]->GetWndPos();
 	float dy = uiXml.ReadAttribFlt("belt_list_over", 0, "dy", 10.0f);
-	for ( u8 i = 1; i < e_af_count; ++i )
+	for ( u8 i = 1; i < GameConstants::GetArtefactsCount(); ++i )
 	{
 		pos.y += dy;
-		m_belt_list_over[i] = UIHelper::CreateStatic(uiXml, "belt_list_over", this);
+		m_belt_list_over.push_back(UIHelper::CreateStatic(uiXml, "belt_list_over", this));
 		m_belt_list_over[i]->SetWndPos( pos );
 	}
 

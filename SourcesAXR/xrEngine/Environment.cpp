@@ -11,8 +11,8 @@
 #include "thunderbolt.h"
 #include "xrHemisphere.h"
 #include "perlin.h"
-
 #include "xr_input.h"
+#include "x_ray.h"
 
 //#include "resourcemanager.h"
 
@@ -522,7 +522,7 @@ void CEnvironment::OnFrame()
 
     const float rain_density = CurrentEnv ? CurrentEnv->rain_density : 0.0f;
 
-	if (!CEffect_Rain().m_bWinterMode)
+	if (!bWinterMode)
 	{
 		if (rain_density > 0.f && wetness_accum < 1.f)
 			wetness_accum += 0.000775f * rain_density;

@@ -10,6 +10,8 @@
 #include "../string_table.h"
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
+#include "../AntigasFilter.h"
+#include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
 {
@@ -17,29 +19,56 @@ CUIBoosterInfo::CUIBoosterInfo()
 	{
 		m_booster_items[i] = NULL;
 	}
-	m_booster_satiety = NULL;
+
 	m_booster_anabiotic = NULL;
-	m_booster_battery = NULL;
-	m_booster_thirst = NULL;
-	m_booster_intoxication = NULL;
-	m_booster_sleepeness = NULL;
 	m_portions = NULL;
+	m_filter = NULL;
 	m_booster_time = NULL;
 }
 
 CUIBoosterInfo::~CUIBoosterInfo()
 {
 	delete_data(m_booster_items);
-	xr_delete(m_booster_satiety);
 	xr_delete(m_booster_anabiotic);
-	xr_delete(m_booster_battery);
-	xr_delete(m_booster_thirst);
-	xr_delete(m_booster_intoxication);
-	xr_delete(m_booster_sleepeness);
 	xr_delete(m_portions);
+	xr_delete(m_filter);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
 }
+
+LPCSTR ef_boosters_values_names[] =
+{
+	"boost_health_restore",
+	"boost_power_restore",
+	"boost_radiation_restore",
+	"boost_bleeding_restore",
+	"boost_max_weight",
+	"boost_radiation_protection",
+	"boost_telepat_protection",
+	"boost_chemburn_protection",
+	/*"boost_burn_immunity",
+	"boost_shock_immunity",
+	"boost_radiation_immunity",
+	"boost_telepat_immunity",
+	"boost_chemburn_immunity",
+	"boost_explosion_immunity",
+	"boost_strike_immunity",
+	"boost_fire_wound_immunity",
+	"boost_wound_immunity",*/
+	"eat_satiety",
+
+	//M.F.S team additions
+	"charge_level",
+	"eat_thirst",
+	"eat_intoxication",
+	"eat_sleepeness",
+
+	//HoP
+	"eat_alcoholism",
+	"eat_hangover",
+	"eat_narcotism",
+	"eat_withdrawal",
+};
 
 LPCSTR boost_influence_caption[] =
 {
@@ -51,11 +80,24 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",
 	"ui_inv_outfit_chemical_burn_protection",
-	"ui_inv_outfit_burn_immunity",
+	/*"ui_inv_outfit_burn_immunity",
 	"ui_inv_outfit_shock_immunity",
 	"ui_inv_outfit_radiation_immunity",
 	"ui_inv_outfit_telepatic_immunity",
-	"ui_inv_outfit_chemical_burn_immunity"
+	"ui_inv_outfit_chemical_burn_immunity"*/
+	"ui_inv_satiety",
+
+	//M.F.S Team additions
+	"ui_inv_battery",
+	"ui_inv_thirst",
+	"ui_inv_intoxication",
+	"ui_inv_sleepeness",
+
+	//HoP
+	"ui_inv_alcoholism",
+	"ui_inv_hangover",
+	"ui_inv_narcotism",
+	"ui_inv_withdrawal",
 };
 
 void CUIBoosterInfo::InitFromXml(CUIXml& xml)
@@ -86,50 +128,12 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 		xml.SetLocalRoot(base_node);
 	}
 
-	m_booster_satiety = xr_new<UIBoosterInfoItem>();
-	m_booster_satiety->Init(xml, "boost_satiety");
-	m_booster_satiety->SetAutoDelete(false);
-	LPCSTR name = CStringTable().translate("ui_inv_satiety").c_str();
-	m_booster_satiety->SetCaption(name);
-	xml.SetLocalRoot( base_node );
-
 	m_booster_anabiotic = xr_new<UIBoosterInfoItem>();
 	m_booster_anabiotic->Init(xml, "boost_anabiotic");
 	m_booster_anabiotic->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_survive_surge").c_str();
+	LPCSTR name = CStringTable().translate("ui_inv_survive_surge").c_str();
 	m_booster_anabiotic->SetCaption(name);
 	xml.SetLocalRoot( base_node );
-
-	m_booster_battery = xr_new<UIBoosterInfoItem>();
-	m_booster_battery->Init(xml, "boost_battery");
-	m_booster_battery->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_battery").c_str();
-	m_booster_battery->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Thirst
-	m_booster_thirst = xr_new<UIBoosterInfoItem>();
-	m_booster_thirst->Init(xml, "boost_thirst");
-	m_booster_thirst->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_thirst").c_str();
-	m_booster_thirst->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Intoxication
-	m_booster_intoxication = xr_new<UIBoosterInfoItem>();
-	m_booster_intoxication->Init(xml, "boost_intoxication");
-	m_booster_intoxication->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_intoxication").c_str();
-	m_booster_intoxication->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//M.F.S. Team Sleepeness
-	m_booster_sleepeness = xr_new<UIBoosterInfoItem>();
-	m_booster_sleepeness->Init(xml, "boost_sleepeness");
-	m_booster_sleepeness->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_sleepeness").c_str();
-	m_booster_sleepeness->SetCaption(name);
-	xml.SetLocalRoot(base_node);
 
 	//Portions
 	m_portions = xr_new<UIBoosterInfoItem>();
@@ -137,6 +141,14 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_portions->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_portions").c_str();
 	m_portions->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	//Filter
+	m_filter = xr_new<UIBoosterInfoItem>();
+	m_filter->Init(xml, "boost_filter_condition");
+	m_filter->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_filter_condition").c_str();
+	m_filter->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_booster_time = xr_new<UIBoosterInfoItem>();
@@ -161,6 +173,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 	const shared_str& section = pInvItem.object().cNameSect();
 	CEatableItem* eatable = pInvItem.cast_eatable_item();
+	CAntigasFilter* pFilter = pInvItem.cast_filter();
 	CEntityCondition::BOOSTER_MAP boosters = actor->conditions().GetCurBoosterInfluences();
 
 	float val = 0.0f, max_val = 1.0f;
@@ -169,9 +182,9 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 	for (u32 i = 0; i < eBoostExplImmunity; ++i)
 	{
-		if(pSettings->line_exist(section.c_str(), ef_boosters_section_names[i]))
+		if(pSettings->line_exist(section.c_str(), ef_boosters_values_names[i]))
 		{
-			val	= pSettings->r_float(section, ef_boosters_section_names[i]);
+			val	= pSettings->r_float(section, ef_boosters_values_names[i]);
 			if(fis_zero(val))
 				continue;
 
@@ -207,7 +220,11 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 					break;
 			}
 			val /= max_val;
-			m_booster_items[i]->SetValue(val);
+			int vle = 2;
+			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
+			if (i == _item_boost_radiation_restore || i == _item_boost_bleeding_restore || i >= _item_intoxication)
+				vle = 1; 
+			m_booster_items[i]->SetValue(val, vle);
 
 			pos.set(m_booster_items[i]->GetWndPos());
 			pos.y = h;
@@ -215,21 +232,6 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_booster_items[i]->GetWndSize().y;
 			AttachChild(m_booster_items[i]);
-		}
-	}
-
-	if(pSettings->line_exist(section.c_str(), "eat_satiety"))
-	{
-		val	= pSettings->r_float(section, "eat_satiety");
-		if(!fis_zero(val))
-		{
-			m_booster_satiety->SetValue(val);
-			pos.set(m_booster_satiety->GetWndPos());
-			pos.y = h;
-			m_booster_satiety->SetWndPos(pos);
-
-			h += m_booster_satiety->GetWndSize().y;
-			AttachChild(m_booster_satiety);
 		}
 	}
 
@@ -243,75 +245,12 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		AttachChild(m_booster_anabiotic);
 	}
 
-	if (pSettings->line_exist(section.c_str(), "charge_level"))
-	{
-		val = pSettings->r_float(section, "charge_level");
-		if (!fis_zero(val))
-		{
-			m_booster_battery->SetValue(val);
-			pos.set(m_booster_battery->GetWndPos());
-			pos.y = h;
-			m_booster_battery->SetWndPos(pos);
-
-			h += m_booster_battery->GetWndSize().y;
-			AttachChild(m_booster_battery);
-		}
-	}
-
-	//M.F.S. Team Thirst
-	if (pSettings->line_exist(section.c_str(), "eat_thirst"))
-	{
-		val = pSettings->r_float(section, "eat_thirst");
-		if (!fis_zero(val))
-		{
-			m_booster_thirst->SetValue(val);
-			pos.set(m_booster_thirst->GetWndPos());
-			pos.y = h;
-			m_booster_thirst->SetWndPos(pos);
-
-			h += m_booster_thirst->GetWndSize().y;
-			AttachChild(m_booster_thirst);
-		}
-	}
-
-	//M.F.S. Team Intoxication
-	if (pSettings->line_exist(section.c_str(), "eat_intoxication"))
-	{
-		val = pSettings->r_float(section, "eat_intoxication");
-		if (!fis_zero(val))
-		{
-			m_booster_intoxication->SetValue(val);
-			pos.set(m_booster_intoxication->GetWndPos());
-			pos.y = h;
-			m_booster_intoxication->SetWndPos(pos);
-
-			h += m_booster_intoxication->GetWndSize().y;
-			AttachChild(m_booster_intoxication);
-		}
-	}
-
-	//M.F.S. Team Sleepeness
-	if (pSettings->line_exist(section.c_str(), "eat_sleepeness"))
-	{
-		val = pSettings->r_float(section, "eat_sleepeness");
-		if (!fis_zero(val))
-		{
-			m_booster_sleepeness->SetValue(val);
-			pos.set(m_booster_sleepeness->GetWndPos());
-			pos.y = h;
-			m_booster_sleepeness->SetWndPos(pos);
-
-			h += m_booster_sleepeness->GetWndSize().y;
-			AttachChild(m_booster_sleepeness);
-		}
-	}
-
 	//Portions
 	if (eatable)
 	{
 		val = eatable->m_iPortionsNum;
 
-		if (!fis_zero(val))
+		if (val > 1)
 		{
 			m_portions->SetValue(val);
 			pos.set(m_portions->GetWndPos());
@@ -321,6 +260,20 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			h += m_portions->GetWndSize().y;
 			AttachChild(m_portions);
 		}
+	}
+
+	//Filter
+	if (pFilter)
+	{
+		val = pFilter->m_fCondition;
+
+		m_filter->SetValue(val);
+		pos.set(m_filter->GetWndPos());
+		pos.y = h;
+		m_filter->SetWndPos(pos);
+
+		h += m_filter->GetWndSize().y;
+		AttachChild(m_filter);
 	}
 
 	if(pSettings->line_exist(section.c_str(), "boost_time"))
@@ -388,7 +341,7 @@ void UIBoosterInfoItem::SetCaption(LPCSTR name)
 	m_caption->TextItemControl()->SetText(name);
 }
 
-void UIBoosterInfoItem::SetValue(float value)
+void UIBoosterInfoItem::SetValue(float value, int vle)
 {
 	value *= m_magnitude;
 	string32 buf;
@@ -406,13 +359,36 @@ void UIBoosterInfoItem::SetValue(float value)
 	m_value->SetText(str);
 
 	bool positive = (value >= 0.0f);
-	m_value->SetTextColor(color_rgba(170,170,170,255));
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
+	u32 red_color = color_rgba(red.x, red.y, red.z, red.w);
+	u32 green_color = color_rgba(green.x, green.y, green.z, green.w);
+	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
 
-	if(m_texture_minus.size())
+	if (GameConstants::GetColorizeValues())
 	{
-		if(positive)
-			m_caption->InitTexture(m_texture_plus.c_str());
+		if (vle == 0)
+		{
+			m_value->SetTextColor(neutral_color);
+		}
+		else if (vle == 1)
+		{
+			positive?m_value->SetTextColor(red_color):m_value->SetTextColor(green_color);
+		}
+		else if (vle == 2)
+		{
+			positive?m_value->SetTextColor(green_color):m_value->SetTextColor(red_color);
+		}
+	}
+	else
+		m_value->SetTextColor(color_rgba(170,170,170,255));
+
+	if (m_texture_minus.size())
+	{
+		if (vle > 2)
+			positive ? m_caption->InitTexture(m_texture_plus.c_str()) : m_caption->InitTexture(m_texture_minus.c_str());
 		else
-			m_caption->InitTexture(m_texture_minus.c_str());
+			positive ? m_caption->InitTexture(m_texture_minus.c_str()) : m_caption->InitTexture(m_texture_plus.c_str());
 	}
 }

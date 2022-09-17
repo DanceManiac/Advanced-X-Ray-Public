@@ -64,3 +64,23 @@ function generate_phantoms()
 		end
 	end
 end
+
+-- 'Апдейтер похмелья
+function on_actor_hangover()
+
+end
+
+-- 'Апдейтер ломки
+function on_actor_withdrawal()
+
+end
+
+-- 'Апдейтер наркотического опьянения
+function on_actor_drugs()
+
+end
+
+-- 'Для команды g_task. Не трогать!
+function g_task_script(task)
+		task_manager.get_task_manager():give_task(task)
+end

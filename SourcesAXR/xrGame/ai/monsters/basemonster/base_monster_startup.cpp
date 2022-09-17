@@ -133,7 +133,7 @@ void CBaseMonster::Load(LPCSTR section)
 	//------------------------------------
 
 	m_psy_aura.load_from_ini					(pSettings, section);
-	m_radiation_aura.load_from_ini				(pSettings, section, true);
+	m_radiation_aura.load_from_ini				(pSettings, section);
 	m_fire_aura.load_from_ini					(pSettings, section);
 	m_base_aura.load_from_ini					(pSettings, section);
 
@@ -169,6 +169,12 @@ void CBaseMonster::Load(LPCSTR section)
 
 	m_bParticlesEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "particles_enabled", false);
 	m_sParticlesIdleName = READ_IF_EXISTS(pSettings, r_string, section, "particles_idle", NULL);
+
+	m_bEnablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
+	m_bEnableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
+	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
+	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
+	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
 }
 
 void CBaseMonster::PostLoad (LPCSTR section)

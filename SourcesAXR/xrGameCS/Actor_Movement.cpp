@@ -205,11 +205,13 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			float jump_k = 0.0;
 			float max_jump_speed = 10.0f;
+			float hangover = conditions().GetHangover();
+			float withdrawal = conditions().GetWithdrawal();
 
 			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real&mcJump)
-				jump_k = m_fJumpSpeed - (cur_weight / 25);
+				jump_k = (m_fJumpSpeed - (hangover + withdrawal)) - (cur_weight / 25);
 			else
-				jump_k = m_fJumpSpeed;
+				jump_k = m_fJumpSpeed - (hangover + withdrawal);
 
 			TIItemContainer::iterator it = inventory().m_belt.begin();
 			TIItemContainer::iterator ite = inventory().m_belt.end();
@@ -284,9 +286,12 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			// normalize and analyze crouch and run
 			float	scale			= vControlAccel.magnitude();
+			float hangover = conditions().GetHangover();
+			float withdrawal = conditions().GetWithdrawal();
+
 			if(scale>EPS)	
 			{
-				float accel_k = m_fWalkAccel;
+				float accel_k = m_fWalkAccel - (hangover + withdrawal);
 
 				if (cur_weight >= 25 && GameConstants::GetJumpSpeedWeightCalc())
 				{
@@ -472,9 +477,11 @@ void CActor::g_Orientate	(u32 mstate_rl, float dt)
 		if( (mstate_rl&mcLLookout) && (mstate_rl&mcRLookout) )
 			tgt_roll	= 0.0f;
 	}
-	if (!fsimilar(tgt_roll,r_torso_tgt_roll,EPS)){
-		angle_lerp		(r_torso_tgt_roll,tgt_roll,PI_MUL_2,dt);
-		r_torso_tgt_roll= angle_normalize_signed(r_torso_tgt_roll);
+
+	if (!fsimilar(tgt_roll, r_torso_tgt_roll, EPS))
+	{
+		r_torso_tgt_roll = angle_inertion_var(r_torso_tgt_roll, tgt_roll, 0.f, CurrentHeight * PI_MUL_2, PI_DIV_2, dt);
+		r_torso_tgt_roll = angle_normalize_signed(r_torso_tgt_roll);
 	}
 }
 bool CActor::g_LadderOrient()

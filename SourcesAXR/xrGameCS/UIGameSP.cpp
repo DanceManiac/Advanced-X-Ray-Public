@@ -198,6 +198,17 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryBox* pBox) //
 	m_game->StartStopMenu		(m_ActorMenu,true);
 }
 
+void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CCar* pCar) //Car trunk search
+{
+	if (MainInputReceiver()) return;
+
+	m_ActorMenu->SetActor(pActorInv);
+	m_ActorMenu->SetCarTrunk(pCar);
+	VERIFY(pCar);
+
+	m_ActorMenu->SetMenuMode(mmDeadBodySearch);
+	m_game->StartStopMenu(m_ActorMenu, true);
+}
 
 extern ENGINE_API BOOL bShowPauseString;
 void CUIGameSP::ChangeLevel(	GameGraph::_GRAPH_ID game_vert_id, 

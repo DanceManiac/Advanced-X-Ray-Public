@@ -10,12 +10,12 @@
 #include "gameobject.h"
 #include "script_game_object.h"
 
-CPhrase::CPhrase	(void)
+CPhrase::CPhrase() : m_b_finalizer(false), m_ID(""), m_iGoodwillLevel(0)
 {
 	m_ID				= "";
 	m_iGoodwillLevel	= 0;
 }
-CPhrase::~CPhrase	(void)
+CPhrase::~CPhrase()
 {
 }
 

@@ -5,6 +5,8 @@
 #include "BoneProtections.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "DynamicHudGlass.h"
+#include "AdvancedXrayGameConstants.h"
+#include "AntigasFilter.h"
 //#include "CustomOutfit.h"
 
 CHelmet::CHelmet()
@@ -17,7 +19,10 @@ CHelmet::CHelmet()
 	m_boneProtection = xr_new<SBoneProtections>();
 
 	m_b_HasGlass = false;
+	m_bUseFilter = false;
 	m_NightVisionType = 0;
+	m_fFilterDegradation = 0.0f;
+	m_fFilterCondition = 1.0f;
 }
 
 CHelmet::~CHelmet()
@@ -29,15 +34,18 @@ void CHelmet::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
+	m_ConstHitTypeProtection[ALife::eHitTypeRadiation] = pSettings->r_float(section, "radiation_protection");
+	m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] = pSettings->r_float(section, "chemical_burn_protection");
+
 	m_HitTypeProtection[ALife::eHitTypeBurn]		= pSettings->r_float(section,"burn_protection");
 	m_HitTypeProtection[ALife::eHitTypeStrike]		= pSettings->r_float(section,"strike_protection");
 	m_HitTypeProtection[ALife::eHitTypeShock]		= pSettings->r_float(section,"shock_protection");
 	m_HitTypeProtection[ALife::eHitTypeWound]		= pSettings->r_float(section,"wound_protection");
-	m_HitTypeProtection[ALife::eHitTypeRadiation]	= pSettings->r_float(section,"radiation_protection");
+	m_HitTypeProtection[ALife::eHitTypeRadiation]	= m_ConstHitTypeProtection[ALife::eHitTypeRadiation];
 	m_HitTypeProtection[ALife::eHitTypeTelepatic]	= pSettings->r_float(section,"telepatic_protection");
-	m_HitTypeProtection[ALife::eHitTypeChemicalBurn]= pSettings->r_float(section,"chemical_burn_protection");
+	m_HitTypeProtection[ALife::eHitTypeChemicalBurn]= m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn];
 	m_HitTypeProtection[ALife::eHitTypeExplosion]	= pSettings->r_float(section,"explosion_protection");
-	m_HitTypeProtection[ALife::eHitTypeFireWound]	= 0.0f;//pSettings->r_float(section,"fire_wound_protection");
+	m_HitTypeProtection[ALife::eHitTypeFireWound]	= pSettings->r_float(section,"fire_wound_protection");
 //	m_HitTypeProtection[ALife::eHitTypePhysicStrike]= pSettings->r_float(section,"physic_strike_protection");
 	m_HitTypeProtection[ALife::eHitTypeLightBurn]	= m_HitTypeProtection[ALife::eHitTypeBurn];
 	m_boneProtection->m_fHitFracActor				= pSettings->r_float(section, "hit_fraction_actor");
@@ -53,6 +61,8 @@ void CHelmet::Load(LPCSTR section)
 	m_fPowerRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",     0.0f );
 	m_fBleedingRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",  0.0f );
 	m_fPowerLoss					= READ_IF_EXISTS(pSettings, r_float, section, "power_loss",    1.0f );
+	m_fFilterDegradation			= READ_IF_EXISTS(pSettings, r_float, section, "filter_degradation_speed", 0.0f);
+	m_fMaxFilterCondition			= READ_IF_EXISTS(pSettings, r_float, section, "max_filter_condition", 1.0f);
 
 	m_bSecondHelmetEnabled			= READ_IF_EXISTS(pSettings, r_bool, section, "second_helmet_enabled", true);
 
@@ -62,7 +72,14 @@ void CHelmet::Load(LPCSTR section)
 	m_fShowNearestEnemiesDistance	= READ_IF_EXISTS(pSettings, r_float, section, "nearest_enemies_show_dist",  0.0f );
 
 	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
+	m_bUseFilter					= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
 	m_NightVisionType				= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
+
+	if (GameConstants::GetOutfitUseFilters())
+	{
+		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
+		m_fFilterCondition = rnd_cond;
+	}
 }
 
 void CHelmet::ReloadBonesProtection()
@@ -98,15 +115,62 @@ void CHelmet::net_Import(NET_Packet& P)
 	SetCondition(_cond);
 }
 
+void CHelmet::save(NET_Packet& output_packet)
+{
+	inherited::save(output_packet);
+	save_data(m_fFilterCondition, output_packet);
+
+}
+
+void CHelmet::load(IReader& input_packet)
+{
+	inherited::load(input_packet);
+	load_data(m_fFilterCondition, input_packet);
+}
+
 void CHelmet::OnH_A_Chield()
 {
 	inherited::OnH_A_Chield();
 //	ReloadBonesProtection();
 }
 
+void CHelmet::UpdateFilterCondition(void)
+{
+	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+
+	if (helmet && m_bUseFilter)
+	{
+		float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
+
+		m_fFilterCondition -= uncharge_coef;
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+
+		float condition = 1.f * m_fFilterCondition;
+		float percent = helmet->m_fFilterCondition * 100;
+
+		if (percent > 20.0f)
+		{
+			if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+				helmet->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
+			if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+				helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
+		}
+		else
+		{
+			if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+				helmet->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
+			if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+				helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
+		}
+	}
+}
+
 void CHelmet::UpdateCL()
 {
 	inherited::UpdateCL();
+
+	if (GameConstants::GetOutfitUseFilters())
+		UpdateFilterCondition();
 }
 
 void CHelmet::OnMoveToSlot(const SInvItemPlace& previous_place)
@@ -290,4 +354,25 @@ float CHelmet::HitThroughArmor(float hit_power, s16 element, float ap, bool& add
 	Hit(hit_power, hit_type);
 
 	return NewHitPower;
+}
+
+float CHelmet::GetDegradationSpeed() const
+{
+	return m_fFilterDegradation;
+}
+
+float CHelmet::GetFilterCondition() const
+{
+	return m_fFilterCondition;
+}
+
+void CHelmet::SetFilterCondition(float val)
+{
+	m_fFilterCondition = val;
+}
+
+void CHelmet::FilterReplace(float val)
+{
+	m_fFilterCondition += val;
+	clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 }

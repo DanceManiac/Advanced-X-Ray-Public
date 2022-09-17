@@ -544,20 +544,20 @@ bool CTorch::IsSwitchedOn() const
 void CTorch::SetCurrentChargeLevel(float val)
 {
 	m_fCurrentChargeLevel = val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
 	SetCondition(condition);
 }
 
 void CTorch::Recharge(float val)
 {
-	m_fCurrentChargeLevel = m_fCurrentChargeLevel + val;
+	m_fCurrentChargeLevel += val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	SetCondition(m_fCurrentChargeLevel);
 
 	//Msg("Battery Charge in Recharge is: %f", val); //Для тестов
-
-	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
-		m_fCurrentChargeLevel = m_fMaxChargeLevel;
 }
 
 float CTorch::get_range() const 

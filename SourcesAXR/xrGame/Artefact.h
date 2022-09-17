@@ -41,6 +41,7 @@ public:
 	virtual void					create_physic_shell				();
 
 	virtual CArtefact*				cast_artefact					()		{return this;}
+	virtual	u32						Cost							() const;
 
 protected:
 	virtual void					UpdateCLChild					()		{};
@@ -85,9 +86,13 @@ public:
 	float 							m_fThirstRestoreSpeed;
 	float 							m_fIntoxicationRestoreSpeed;
 	float 							m_fSleepenessRestoreSpeed;
+	float 							m_fAlcoholismRestoreSpeed;
+	float 							m_fNarcotismRestoreSpeed;
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 	CHitImmunity 					m_ArtefactHitImmunities;
+	HitImmunity::HitTypeSVec		m_HitTypeProtection;
+	HitImmunity::HitTypeSVec		m_ConstHitTypeProtection;
 
 	//For Degradation
 	float							m_fConstHealthRestoreSpeed;
@@ -98,6 +103,8 @@ public:
 	float							m_fConstThirstRestoreSpeed;
 	float							m_fConstIntoxicationRestoreSpeed;
 	float							m_fConstSleepenessRestoreSpeed;
+	float							m_fConstAlcoholismRestoreSpeed;
+	float							m_fConstNarcotismRestoreSpeed;
 	float							m_fConstAdditionalWeight;
 	float							m_fConstTrailLightRange;
 	float							m_fConstVolumetricDistance;
@@ -108,11 +115,14 @@ public:
 	float							m_fCurrentChargeLevel;
 	float							m_fDegradationSpeed;
 	float							GetCurrentChargeLevel(void) const;
+	int								GetCurrentAfRank(void) const;
 
 	bool							m_bVolumetricLights;
 	float							m_fVolumetricQuality;
 	float							m_fVolumetricDistance;
 	float							m_fVolumetricIntensity;
+
+	int								m_iAfRank;
 public:
 	enum EAFHudStates {
 		eActivating = eLastBaseState+1,

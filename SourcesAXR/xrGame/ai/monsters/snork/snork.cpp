@@ -9,6 +9,9 @@
 #include "../control_animation_base.h"
 #include "../control_movement_base.h"
 #include "../../../PHMovementControl.h"
+#include "Inventory.h"
+#include "Actor.h"
+#include "AdvancedXrayGameConstants.h"
 
 #ifdef _DEBUG
 #	include <dinput.h>
@@ -18,9 +21,6 @@
 #	include "../../../cover_point.h"
 #	include "../monster_cover_manager.h"
 #endif
-
-
-
 
 CSnork::CSnork() 
 {
@@ -252,6 +252,13 @@ void CSnork::HitEntityInJump(const CEntity *pEntity)
 	
 	SAAParam &params	= anim().AA_GetParams("stand_attack_2_1");
 	HitEntity			(pEntity, params.hit_power, params.impulse, params.impulse_dir);
+	int drop_item_chance = ::Random.randI(1, 100);
+
+	if (Actor() && this->m_bDropItemAfterSuperAttack && drop_item_chance <= this->m_iSuperAttackDropItemPer)
+	{
+		CInventoryItem* active_item = Actor()->inventory().ActiveItem();
+		active_item->SetDropManual(true);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

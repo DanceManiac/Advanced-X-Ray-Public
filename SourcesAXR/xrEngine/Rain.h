@@ -94,9 +94,6 @@ public:
 
 	void							Render			();
 	void							OnFrame			();
-
-	//G.S.W.R Winter Mode
-	bool							m_bWinterMode;
 };
 
 #endif //RainH

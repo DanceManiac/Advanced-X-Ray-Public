@@ -123,6 +123,7 @@ function register(object_factory)
 	cs_register (object_factory, "CFoodItem",					"se_item.se_eatable",					"S_FOOD",			"obj_food_s")
 	cs_register (object_factory, "CBottleItem",					"se_item.se_eatable",					"S_BOTTL",			"obj_bottle_s")
 	cs_register	(object_factory, "CBattery",  					"se_item.se_item",						"S_BATTE",			"obj_battery_s")
+	cs_register	(object_factory, "CAntigasFilter",  			"se_item.se_item",						"S_FILTE",			"obj_filter_s")
 	-- INVENTORY BOX ---------------------------------------------------------------------------------------------------------------------
 
 	cs_register (object_factory, "CInventoryBox",				"se_item.se_invbox",					"S_INVBOX",			"inventory_box_s")

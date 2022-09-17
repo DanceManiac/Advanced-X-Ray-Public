@@ -1,6 +1,7 @@
 [environment] ;Различные настройки для погоды
 dynamic_sun_dir = true ;Движение солнца по погодным конфигам
 winter_mode = false ;Зимний режим (влияет на циклы и эффекты)
+weather_dof = false ;Использовать параметры DoF из погоды
 
 [rain_params] ;Параметры для дождя
 min_rain_drop_speed = 40.0
@@ -19,6 +20,18 @@ rain_drop_width = 0.25
 rain_drop_angle = 3.0
 rain_drop_max_wind_vel = 100.0
 rain_drop_max_angle = 89.0
+
+[details_params] ;Стандартные параметры колыхания травы
+swing_normal_amp1 = 0.011000
+swing_normal_amp2 = 0.006000
+swing_normal_rot1 = 300.000000
+swing_normal_rot2 = 15.000000
+swing_normal_speed = 2.000000
+swing_fast_amp1	= 0.400000
+swing_fast_amp2	= 0.300000
+swing_fast_rot1	= 5.500000
+swing_fast_rot2	= 0.600000
+swing_fast_speed = 0.600000
 
 [lowland_fog_params] ;Базовые высоты тумана в низинах для каждого уровня
 ;Зов Припяти

@@ -436,17 +436,6 @@ void CGamePersistent::WeathersUpdate()
 
 void CGamePersistent::start_logo_intro		()
 {
-#ifdef MASTER_GOLD
-	if (g_SASH.IsRunning())
-#else	// #ifdef MASTER_GOLD
-	if ((0!=strstr(Core.Params,"-nointro")) || g_SASH.IsRunning())
-#endif	// #ifdef MASTER_GOLD
-	{
-		m_intro_event			= 0;
-		Console->Show			();
-		Console->Execute		("main_menu on");
-		return;
-	}
 	if (Device.dwPrecacheFrame==0)
 	{
 		m_intro_event.bind		(this,&CGamePersistent::update_logo_intro);
@@ -455,6 +444,7 @@ void CGamePersistent::start_logo_intro		()
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("intro_logo");
+			Msg					("intro_start intro_logo");
 			Console->Hide		();
 		}
 	}
@@ -466,6 +456,10 @@ void CGamePersistent::update_logo_intro			()
 		xr_delete				(m_intro);
 		Console->Execute		("main_menu on");
 	}
+	else if (!m_intro)
+	{
+		m_intro_event = 0;
+	}
 }
 
 bool allow_intro()
@@ -476,15 +470,15 @@ bool allow_intro()
 extern int g_keypress_on_start;
 void CGamePersistent::game_loaded()
 {
-	if (Device.dwPrecacheFrame<=2)
+	if (Device.dwPrecacheFrame <= 2)
 	{
-		if (g_pGameLevel							&&
-			g_pGameLevel->bReady					&&
-			(allow_intro() && g_keypress_on_start)	&&
-			load_screen_renderer.b_need_user_input	&&
+		if (g_pGameLevel &&
+			g_pGameLevel->bReady &&
+			(allow_intro() && g_keypress_on_start) &&
+			load_screen_renderer.b_need_user_input &&
 			m_game_params.m_e_game_type == eGameIDSingle)
 		{
-			g_pGamePersistent->SetLoadStageTitle("st_press_any_key"); //Костылёк до лучших времён
+			g_pGamePersistent->SetLoadStageTitle("st_press_any_key"); //Автопауза
 			VERIFY(NULL == m_intro);
 			m_intro = xr_new<CUISequencer>();
 			m_intro->Start("game_loaded");
@@ -513,16 +507,6 @@ void CGamePersistent::start_game_intro		()
 	if (!allow_intro())
 	{
 		m_intro_event = 0;
-		return;
-	}
-
-#ifdef MASTER_GOLD
-	if (g_SASH.IsRunning())
-#else	// #ifdef MASTER_GOLD
-	if ((0!=strstr(Core.Params,"-nointro")) || g_SASH.IsRunning())
-#endif	// #ifdef MASTER_GOLD
-	{
-		m_intro_event			= 0;
 		return;
 	}
 
@@ -572,7 +556,7 @@ void CGamePersistent::OnFrame	()
 #ifdef DEBUG
 	++m_frame_counter;
 #endif
-	if (!g_dedicated_server && !m_intro_event.empty())	
+	if (!g_dedicated_server && !m_intro_event.empty())
 		m_intro_event();
 
 	if (!g_dedicated_server && Device.dwPrecacheFrame == 0 && !m_intro && m_intro_event.empty())
@@ -831,12 +815,12 @@ void CGamePersistent::SetPickableEffectorDOF(bool bSet)
 
 void CGamePersistent::GetCurrentDof(Fvector3& dof)
 {
-	dof = m_dof[1];
+	dof = m_dof[eDofCurrent];
 }
 
 void CGamePersistent::SetBaseDof(const Fvector3& dof)
 {
-	m_dof[0]=m_dof[1]=m_dof[2]=m_dof[3]	= dof;
+	m_dof[eDofDest] = m_dof[eDofCurrent] = m_dof[eDofFrom] = m_dof[eDofOriginal] = dof;
 }
 
 int CGamePersistent::GetHudGlassElement()
@@ -897,13 +881,13 @@ bool CGamePersistent::GetActor()
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
 {
 	if(m_bPickableDOF)	return;
-	m_dof[0]	= needed_dof;
-	m_dof[2]	= m_dof[1]; //current
+	m_dof[eDofDest] = needed_dof;
+	m_dof[eDofFrom] = m_dof[eDofCurrent];
 }
 
 void CGamePersistent::RestoreEffectorDOF()
 {
-	SetEffectorDOF			(m_dof[3]);
+	SetEffectorDOF(m_dof[eDofOriginal]);
 }
 #include "hudmanager.h"
 
@@ -919,20 +903,29 @@ void CGamePersistent::UpdateDof()
 		pick_dof.y	= HUD().GetCurrentRayQuery().range;
 		pick_dof.x	= pick_dof.y+diff_near;
 		pick_dof.z	= pick_dof.y+diff_far;
-		m_dof[0]	= pick_dof;
-		m_dof[2]	= m_dof[1]; //current
+		m_dof[eDofDest] = pick_dof;
+		m_dof[eDofFrom] = m_dof[eDofCurrent];
 	}
-	if(m_dof[1].similar(m_dof[0]))
+	if (m_dof[eDofCurrent].similar(m_dof[eDofDest]))
 						return;
 
 	float td			= Device.fTimeDelta;
 	Fvector				diff;
-	diff.sub			(m_dof[0], m_dof[2]);
+	diff.sub			(m_dof[eDofDest], m_dof[eDofFrom]);
 	diff.mul			(td/0.2f); //0.2 sec
-	m_dof[1].add		(diff);
-	(m_dof[0].x<m_dof[2].x)?clamp(m_dof[1].x,m_dof[0].x,m_dof[2].x):clamp(m_dof[1].x,m_dof[2].x,m_dof[0].x);
-	(m_dof[0].y<m_dof[2].y)?clamp(m_dof[1].y,m_dof[0].y,m_dof[2].y):clamp(m_dof[1].y,m_dof[2].y,m_dof[0].y);
-	(m_dof[0].z<m_dof[2].z)?clamp(m_dof[1].z,m_dof[0].z,m_dof[2].z):clamp(m_dof[1].z,m_dof[2].z,m_dof[0].z);
+	m_dof[eDofCurrent].add(diff);
+	if (m_dof[eDofDest].x < m_dof[eDofFrom].x)
+		clamp(m_dof[eDofCurrent].x, m_dof[eDofDest].x, m_dof[eDofFrom].x);
+	else
+		clamp(m_dof[eDofCurrent].x, m_dof[eDofFrom].x, m_dof[eDofDest].x);
+	if (m_dof[eDofDest].y < m_dof[eDofFrom].y)
+		clamp(m_dof[eDofCurrent].y, m_dof[eDofDest].y, m_dof[eDofFrom].y);
+	else
+		clamp(m_dof[eDofCurrent].y, m_dof[eDofFrom].y, m_dof[eDofDest].y);
+	if (m_dof[eDofDest].z < m_dof[eDofFrom].z)
+		clamp(m_dof[eDofCurrent].z, m_dof[eDofDest].z, m_dof[eDofFrom].z);
+	else
+		clamp(m_dof[eDofCurrent].z, m_dof[eDofFrom].z, m_dof[eDofDest].z);
 }
 
 #include "ui\uimainingamewnd.h"

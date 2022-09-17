@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "../xrCDB/frustum.h"
 
 #pragma warning(disable:4995)
@@ -274,6 +274,28 @@ void ImGui_NewFrame()
 	// Start the frame
 	ImGui::NewFrame();
 	//ImGuizmo::BeginFrame(); //For HUD Editor
+}
+
+ENGINE_API void GetMonitorResolution(u32& horizontal, u32& vertical)
+{
+	HMONITOR hMonitor = MonitorFromWindow(
+		Device.m_hWnd, MONITOR_DEFAULTTOPRIMARY);
+
+	MONITORINFO mi;
+	mi.cbSize = sizeof(mi);
+	if (GetMonitorInfoA(hMonitor, &mi))
+	{
+		horizontal = mi.rcMonitor.right - mi.rcMonitor.left;
+		vertical = mi.rcMonitor.bottom - mi.rcMonitor.top;
+	}
+	else
+	{
+		RECT desktop;
+		const HWND hDesktop = GetDesktopWindow();
+		GetWindowRect(hDesktop, &desktop);
+		horizontal = desktop.right - desktop.left;
+		vertical = desktop.bottom - desktop.top;
+	}
 }
 
 void CRenderDevice::on_idle		()

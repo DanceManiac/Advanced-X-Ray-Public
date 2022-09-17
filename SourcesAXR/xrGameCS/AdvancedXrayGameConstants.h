@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace GameConstants
 {
@@ -19,9 +19,21 @@ namespace GameConstants
 	bool GetActorThirst();
 	bool GetActorIntoxication();
 	bool GetActorSleepeness();
+	bool GetActorAlcoholism();
+	bool GetActorNarcotism();
 	bool GetArtefactsDegradation();
 	bool GetShowWpnInfo();
 	bool GetJumpSpeedWeightCalc();
+	bool GetHideWeaponInInventory();
+	bool GetStopActorIfShoot();
+	bool GetReloadIfSprint();
+	bool GetColorizeValues();
+	bool GetAfRanks();
+	bool GetOutfitUseFilters();
+	int  GetArtefactsCount();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
+	Fvector4 GetRedColor();
+	Fvector4 GetGreenColor();
+	Fvector4 GetNeutralColor();
 };

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "UIDialogWnd.h"
 #include "UIWndCallback.h"
@@ -18,6 +18,7 @@ class CUITextWnd;
 class CUI3tButton;
 class CInventoryOwner;
 class CInventoryBox;
+class CCar;
 class CUIInventoryUpgradeWnd;
 class UIInvUpgradeInfo;
 class CUIMessageBoxEx;
@@ -50,6 +51,7 @@ enum EMenuMode{
 		mmTrade,
 		mmUpgrade,
 		mmDeadBodySearch,
+		mmCarTrunk,
 };
 
 class CUIActorMenu :	public CUIDialogWnd, 
@@ -110,8 +112,7 @@ protected:
 	CUIDragDropListEx*			m_pInventoryPantsList;
 	CUIDragDropListEx*			m_pInventoryPdaList;
 
-	enum						{e_af_count = 5};
-	CUIStatic*					m_belt_list_over[e_af_count];
+	xr_vector<CUIStatic*>		m_belt_list_over;
 	CUIStatic*					m_HelmetOver;
 
 	CUIStatic*					m_InvSlot2Highlight;
@@ -120,7 +121,7 @@ protected:
 	CUIStatic*					m_OutfitSlotHighlight;
 	CUIStatic*					m_DetectorSlotHighlight;
 	CUIStatic*					m_QuickSlotsHighlight[4];
-	CUIStatic*					m_ArtefactSlotsHighlight[e_af_count];
+	xr_vector<CUIStatic*>		m_ArtefactSlotsHighlight;
 	CUIStatic*					m_KnifeSlotHighlight;
 	CUIStatic*					m_BinocularSlotHighlight;
 	CUIStatic*					m_TorchSlotHighlight;
@@ -141,6 +142,7 @@ protected:
 	CInventoryOwner*			m_pActorInvOwner;
 	CInventoryOwner*			m_pPartnerInvOwner;
 	CInventoryBox*				m_pInvBox;
+	CCar*						m_pCar;
 
 	CUITextWnd*					m_ActorMoney;
 	CUITextWnd*					m_PartnerMoney;
@@ -203,6 +205,7 @@ public:
 	CInventoryOwner*			GetPartner					() {return m_pPartnerInvOwner;};
 	void						SetInvBox					(CInventoryBox* box);
 	CInventoryBox*				GetInvBox					() {return m_pInvBox;};
+	void						SetCarTrunk					(CCar* pCar);
 private:
 	void						PropertiesBoxForSlots		(PIItem item, bool& b_show);
 	void						PropertiesBoxForWeapon		(CUICellItem* cell_item, PIItem item, bool& b_show);

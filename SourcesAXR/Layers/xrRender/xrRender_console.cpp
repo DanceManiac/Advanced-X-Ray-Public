@@ -1,8 +1,9 @@
-#include	"stdafx.h"
+Ôªø#include	"stdafx.h"
 #pragma		hdrstop
 
 #include	"xrRender_console.h"
 #include	"dxRenderDeviceRender.h"
+#include	"../../xrEngine/x_ray.h"
 #include "../../build_config_defines.h"
 
 // DWM: DT SSR quality option
@@ -156,9 +157,18 @@ xr_token							qclrdrag_token						[ ]={
 	{ 0,							0											}
 };
 
-//	ìOffî
-//	ìDX10.0 style [Standard]î
-//	ìDX10.1 style [Higher quality]î
+u32			ps_r2_flares = 2;			//	=	0;
+xr_token							qflares_token[] = {
+	{ "st_opt_off",					0												},
+	{ "st_opt_always",				1												},
+	{ "st_opt_on_helmet",			2												},
+	{ 0,							0												}
+};
+
+
+//	‚ÄúOff‚Äù
+//	‚ÄúDX10.0 style [Standard]‚Äù
+//	‚ÄúDX10.1 style [Higher quality]‚Äù
 
 // Common
 extern int			psSkeletonUpdate;
@@ -344,6 +354,7 @@ Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
 int ps_rs_loading_stages = 0;
+int ps_force_enable_lens_flares = 0;
 
 float ps_r2_gloss_factor = 10.0f;
 float ps_r2_gloss_min = 0.0f;
@@ -370,14 +381,15 @@ Flags32	ps_r3_pbr_flags = { 0 };
 int opt_static = 0;
 int opt_dynamic = 0;
 
+//SFZ Lens Flares
+int ps_r2_lfx = 1;
+
 Flags32 psDeviceFlags2 = { 0 };
 
 //Static on R2+
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP
 	| R2FLAG_STATIC_SUN
 	};
-
-bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
 
 #ifndef _EDITOR
 #include	"../../xrEngine/xr_ioconsole.h"
@@ -1176,6 +1188,9 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"r__optimize_dynamic_geom",		&opt_dynamic,				0,	4		);
 	psDeviceFlags2.set(rsOptShadowGeom, TRUE);
 	CMD3(CCC_Mask,			"r__optimize_shadow_geom",		&psDeviceFlags2,			rsOptShadowGeom);
+
+	CMD3(CCC_Token,			"r2_use_flares",				&ps_r2_flares,				qflares_token);
+	CMD4(CCC_Integer,		"r2_lfx",						&ps_r2_lfx,					 0, 1		); //SFZ Lens Flares
 
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }

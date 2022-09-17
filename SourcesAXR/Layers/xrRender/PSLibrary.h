@@ -57,9 +57,6 @@ public:
     void				Reload			();
     bool				Save			();
 
-	//G.S.W.R Winter Mode
-	bool				m_bWinterModeParticles;
-
 	virtual	PS::CPGDef const* const*	particles_group_begin	() const;
 	virtual	PS::CPGDef const* const*	particles_group_end		() const;
 	virtual	void						particles_group_next	(PS::CPGDef const* const*& iterator) const;

@@ -33,6 +33,16 @@ void CEnvModifier::load	(IReader* fs, u32 version)
 	}
 }
 
+void CEnvDescriptor::EnvSwingValue::lerp(const EnvSwingValue& A, const EnvSwingValue& B, float f)
+{
+	float fi = 1.f - f;
+	amp1 = fi * A.amp1 + f * B.amp1;
+	amp2 = fi * A.amp2 + f * B.amp2;
+	rot1 = fi * A.rot1 + f * B.rot1;
+	rot2 = fi * A.rot2 + f * B.rot2;
+	speed = fi * A.speed + f * B.speed;
+}
+
 float	CEnvModifier::sum	(CEnvModifier& M, Fvector3& view)
 {
 	float	_dist_sq	=	view.distance_to_sqr(M.position);
@@ -242,6 +252,10 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) :
 	m_fTreeAmplitudeIntensity = 0.01;
 #endif
 
+	dof_value.set(-1.25f, 1.4f, 10000.f);
+	dof_kernel			= 5.0f;
+	dof_sky				= 30.0f;
+
     lens_flare_id		= "";
 	tb_id				= "";
     
@@ -313,11 +327,29 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 		m_fTreeAmplitudeIntensity = config.r_float(m_identifier.c_str(), "tree_amplitude_intensity");
 #endif
 
+	dof_value = config.line_exist(m_identifier.c_str(), "dof") ? config.r_fvector3(m_identifier.c_str(), "dof") : Fvector3().set(-1.25f, 1.4f, 10000.f);
+	dof_kernel = config.line_exist(m_identifier.c_str(), "dof_kernel") ? config.r_float(m_identifier.c_str(), "dof_kernel") : 7.0f;
+	dof_sky = config.line_exist(m_identifier.c_str(), "dof_sky") ? config.r_float(m_identifier.c_str(), "dof_sky") : 30.0f;
+
 	if (config.line_exist(m_identifier.c_str(), "lowland_fog_height"))
 		lowland_fog_height	= config.r_float(m_identifier.c_str(), "lowland_fog_height");
 
 	if (config.line_exist(m_identifier.c_str(), "lowland_fog_density"))
 		lowland_fog_density = config.r_float(m_identifier.c_str(), "lowland_fog_density");
+
+	// swing desc
+	// normal
+	m_cSwingDesc[0].amp1 = config.line_exist(m_identifier.c_str(), "swing_normal_amp1") ? config.r_float(m_identifier.c_str(), "swing_normal_amp1") : pAdvancedSettings->r_float("details_params", "swing_normal_amp1");
+	m_cSwingDesc[0].amp2 = config.line_exist(m_identifier.c_str(), "swing_normal_amp2") ? config.r_float(m_identifier.c_str(), "swing_normal_amp2") : pAdvancedSettings->r_float("details_params", "swing_normal_amp2");
+	m_cSwingDesc[0].rot1 = config.line_exist(m_identifier.c_str(), "swing_normal_rot1") ? config.r_float(m_identifier.c_str(), "swing_normal_rot1") : pAdvancedSettings->r_float("details_params", "swing_normal_rot1");
+	m_cSwingDesc[0].rot2 = config.line_exist(m_identifier.c_str(), "swing_normal_rot2") ? config.r_float(m_identifier.c_str(), "swing_normal_rot2") : pAdvancedSettings->r_float("details_params", "swing_normal_rot2");
+	m_cSwingDesc[0].speed = config.line_exist(m_identifier.c_str(), "swing_normal_speed") ? config.r_float(m_identifier.c_str(), "swing_normal_speed") : pAdvancedSettings->r_float("details_params", "swing_normal_speed");
+	// fast
+	m_cSwingDesc[1].amp1 = config.line_exist(m_identifier.c_str(), "swing_fast_amp1") ? config.r_float(m_identifier.c_str(), "swing_fast_amp1") : pAdvancedSettings->r_float("details_params", "swing_fast_amp1");
+	m_cSwingDesc[1].amp2 = config.line_exist(m_identifier.c_str(), "swing_fast_amp2") ? config.r_float(m_identifier.c_str(), "swing_fast_amp2") : pAdvancedSettings->r_float("details_params", "swing_fast_amp2");
+	m_cSwingDesc[1].rot1 = config.line_exist(m_identifier.c_str(), "swing_fast_rot1") ? config.r_float(m_identifier.c_str(), "swing_fast_rot1") : pAdvancedSettings->r_float("details_params", "swing_fast_rot1");
+	m_cSwingDesc[1].rot2 = config.line_exist(m_identifier.c_str(), "swing_fast_rot2") ? config.r_float(m_identifier.c_str(), "swing_fast_rot2") : pAdvancedSettings->r_float("details_params", "swing_fast_rot2");
+	m_cSwingDesc[1].speed = config.line_exist(m_identifier.c_str(), "swing_fast_speed") ? config.r_float(m_identifier.c_str(), "swing_fast_speed") : pAdvancedSettings->r_float("details_params", "swing_fast_speed");
 
 	C_CHECK					(clouds_color);
 	C_CHECK					(sky_color	);
@@ -484,6 +516,13 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 		ambient.add(Mdf.ambient).mul(modif_power);
 
 	hemi_color.lerp			(A.hemi_color,B.hemi_color,f);
+
+	m_cSwingDesc[0].lerp(A.m_cSwingDesc[0], B.m_cSwingDesc[0], f);
+	m_cSwingDesc[1].lerp(A.m_cSwingDesc[1], B.m_cSwingDesc[1], f);
+
+	dof_value.lerp(A.dof_value, B.dof_value, f);
+	dof_kernel = fi * A.dof_kernel + f * B.dof_kernel;
+	dof_sky = fi * A.dof_sky + f * B.dof_sky;
 
 	if(Mdf.use_flags.test(eHemiColor))
 	{

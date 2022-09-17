@@ -59,6 +59,7 @@ public:
 	IBlender*					b_nightvision;
 	IBlender*					b_blur;
 	IBlender*					b_pp_bloom;
+	IBlender*					b_lfx;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -161,6 +162,8 @@ private:
 	ref_shader					s_blur;
 	//PP Bloom
 	ref_shader					s_pp_bloom;
+	//SFZ Lens Falres
+	ref_shader					s_lfx;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -239,18 +242,19 @@ private:
 	float						f_luminance_adapt;
 
 	// Combine
-	ref_geom					g_KD;
-	ref_geom					g_combine;
-	ref_geom					g_combine_VP;		// xy=p,zw=tc
-	ref_geom					g_combine_2UV;
-	ref_geom					g_combine_cuboid;
-	ref_geom					g_aa_blur;
-	ref_geom					g_aa_AA;
+	ref_geom				g_KD;
+	ref_geom				g_combine;
+	ref_geom				g_combine_VP;		// xy=p,zw=tc
+	ref_geom				g_combine_2UV;
+	ref_geom				g_combine_cuboid;
+	ref_geom				g_aa_blur;
+	ref_geom				g_aa_AA;
+	ref_geom				g_lfx;
 	ref_shader				s_combine_dbg_0;
 	ref_shader				s_combine_dbg_1;
 	ref_shader				s_combine_dbg_Accumulator;
 	ref_shader				s_combine;
-   ref_shader				s_combine_msaa[8];
+	ref_shader				s_combine_msaa[8];
 	ref_shader				s_combine_volumetric;
 	ref_geom				g_rain_drops;
 	ref_shader				s_rain_drops;
@@ -321,6 +325,7 @@ public:
 	void						phase_nightvision		();
 	void						phase_blur				();
 	void						phase_pp_bloom			();
+	void						phase_lfx				(int i);
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();
@@ -412,6 +417,11 @@ public:
 	IC void						dbg_addline				(Fvector& P0, Fvector& P1, u32 c)					{}
 	IC void						dbg_addplane			(Fplane& P0,  u32 c)								{}
 #endif
+
+	//SFZ Lens Flares
+	xr_vector<Fvector4>			m_miltaka_lfx_coords;
+	xr_vector<Fvector4>			m_miltaka_lfx_color;
+
 private:
 	void						RenderScreenQuad(u32 w, u32 h, ID3DRenderTargetView* rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);
 	void						RenderScreenQuad(u32 w, u32 h, ref_rt &rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);

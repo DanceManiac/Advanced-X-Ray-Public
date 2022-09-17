@@ -15,7 +15,8 @@
 #include "../../../detail_path_manager.h"
 #include "../../../CharacterPhysicsSupport.h"
 #include "../control_path_builder_base.h"
-
+#include "Inventory.h"
+#include "AdvancedXrayGameConstants.h"
 
 CPseudoGigant::CPseudoGigant()
 {
@@ -247,9 +248,13 @@ void CPseudoGigant::on_threaten_execute()
 	// נאחבנמסטעü מבתוךעû
 	m_nearest.clear_not_free		();
 	Level().ObjectSpace.GetNearest	(m_nearest,Position(), 15.f, NULL); 
-	for (u32 i=0;i<m_nearest.size();i++) {
+	for (u32 i=0;i<m_nearest.size();i++) 
+	{
 		CPhysicsShellHolder  *obj = smart_cast<CPhysicsShellHolder *>(m_nearest[i]);
-		if (!obj || !obj->m_pPhysicsShell) continue;
+		if (!obj || !obj->m_pPhysicsShell || 
+			(obj->spawn_ini() && obj->spawn_ini()->section_exist("ph_heavy")) || 
+			(pSettings->line_exist(obj->cNameSect().c_str(), "ph_heavy") && pSettings->r_bool(obj->cNameSect().c_str(), "ph_heavy")) ||
+			(pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && pSettings->r_bool(obj->cNameSect().c_str(), "quest_item"))) continue;
 
 		Fvector dir;
 		Fvector pos;
@@ -306,7 +311,15 @@ void CPseudoGigant::on_threaten_execute()
 	HS.impulse			= (80 * pA->character_physics_support()->movement()->GetMass());						//	l_P.w_float	(20 * pA->movement_control()->GetMass());
 	HS.hit_type			= ( ALife::eHitTypeStrike);										//	l_P.w_u16	( u16(ALife::eHitTypeWound) );
 	HS.Write_Packet		(l_P);
-	u_EventSend			(l_P);	
+	u_EventSend			(l_P);
+
+	int drop_item_chance = ::Random.randI(1, 100);
+
+	if (Actor() && this->m_bDropItemAfterSuperAttack && drop_item_chance <= this->m_iSuperAttackDropItemPer)
+	{
+		CInventoryItem* active_item = Actor()->inventory().ActiveItem();
+		active_item->SetDropManual(true);
+	}
 }
 
 void CPseudoGigant::HitEntityInJump		(const CEntity *pEntity) 

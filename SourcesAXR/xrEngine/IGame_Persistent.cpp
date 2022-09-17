@@ -51,6 +51,8 @@ IGame_Persistent::IGame_Persistent	()
 	else
 		pEnvironment				= xr_new<CEnvironment>();
 #endif // #ifdef INGAME_EDITOR
+
+	render_scene = true;
 }
 
 IGame_Persistent::~IGame_Persistent	()
@@ -146,6 +148,16 @@ void IGame_Persistent::OnGameStart()
 	if(!strstr(Core.Params,"-noprefetch"))
 		Prefetch();
 #endif
+}
+
+IC bool IGame_Persistent::SceneRenderingBlocked()
+{
+	if (!render_scene || (m_pMainMenu && m_pMainMenu->CanSkipSceneRendering()))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 #ifndef _EDITOR

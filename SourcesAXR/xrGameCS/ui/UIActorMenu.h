@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "UIDialogWnd.h"
 #include "UIWndCallback.h"
@@ -15,6 +15,7 @@ class CUIStatic;
 class CUI3tButtonEx;
 class CInventoryOwner;
 class CInventoryBox;
+class CCar;
 class CUIInventoryUpgradeWnd;
 class UIInvUpgradeInfo;
 class CUIMessageBoxEx;
@@ -44,6 +45,7 @@ enum EMenuMode{
 		mmTrade,
 		mmUpgrade,
 		mmDeadBodySearch,
+		mmCarTrunk,
 };
 
 class CUIActorMenu :	public CUIDialogWnd, 
@@ -101,8 +103,7 @@ protected:
 	CUIDragDropListEx*			m_pInventoryPantsList;
 	CUIDragDropListEx*			m_pInventoryPdaList;
 
-	enum						{e_af_count = 5};
-	CUIStatic*					m_belt_list_over[e_af_count];
+	xr_vector<CUIStatic*>		m_belt_list_over;
 
 	CUIInventoryUpgradeWnd*		m_pUpgradeWnd;
 	
@@ -115,6 +116,7 @@ protected:
 	CInventoryOwner*			m_pActorInvOwner;
 	CInventoryOwner*			m_pPartnerInvOwner;
 	CInventoryBox*				m_pInvBox;
+	CCar*						m_pCar;
 
 	CUIStatic*					m_ActorMoney;
 	CUIStatic*					m_PartnerMoney;
@@ -157,6 +159,7 @@ public:
 	void						SetActor					(CInventoryOwner* io);
 	void						SetPartner					(CInventoryOwner* io);
 	void						SetInvBox					(CInventoryBox* box);
+	void						SetCarTrunk					(CCar* pCar);
 	void						SetSimpleHintText			(LPCSTR text);
 
 private:

@@ -108,6 +108,19 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "sun_altitude", rad2deg(el->sun_dir.getH()));
 		f.w_float(el->m_identifier.c_str(), "sun_longitude", rad2deg(el->sun_dir.getP()));
 		f.w_float(el->m_identifier.c_str(), "tree_amplitude_intensity", el->m_fTreeAmplitudeIntensity);
+		f.w_float(el->m_identifier.c_str(), "swing_normal_amp1", el->m_cSwingDesc[0].amp1);
+		f.w_float(el->m_identifier.c_str(), "swing_normal_amp2", el->m_cSwingDesc[0].amp2);
+		f.w_float(el->m_identifier.c_str(), "swing_normal_rot1", el->m_cSwingDesc[0].rot1);
+		f.w_float(el->m_identifier.c_str(), "swing_normal_rot2", el->m_cSwingDesc[0].rot2);
+		f.w_float(el->m_identifier.c_str(), "swing_normal_speed", el->m_cSwingDesc[0].speed);
+		f.w_float(el->m_identifier.c_str(), "swing_fast_amp1", el->m_cSwingDesc[1].amp1);
+		f.w_float(el->m_identifier.c_str(), "swing_fast_amp2", el->m_cSwingDesc[1].amp2);
+		f.w_float(el->m_identifier.c_str(), "swing_fast_rot1", el->m_cSwingDesc[1].rot1);
+		f.w_float(el->m_identifier.c_str(), "swing_fast_rot2", el->m_cSwingDesc[1].rot2);
+		f.w_float(el->m_identifier.c_str(), "swing_fast_speed", el->m_cSwingDesc[1].speed);
+		f.w_fvector3(el->m_identifier.c_str(), "dof", el->dof_value);
+		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
+		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
 	}
 	string_path fileName;
 	FS.update_path(fileName, "$game_weathers$", name.c_str());
@@ -278,42 +291,54 @@ void ShowWeatherEditor(bool& show)
         if (el.first == env.CurrentWeatherName)
             iCycle = cycles.size() - 1;
     }
-    if (ImGui::Combo("Weather cycle", &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
-        env.SetWeather(cycles[iCycle], true);
-    int sel = -1;
-    for (int i = 0; i != env.CurrentWeather->size(); i++)
-        if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
-            sel = i;
-    if (ImGui::Combo("Current section", &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {
-        env.SetGameTime(env.CurrentWeather->at(sel)->exec_time + 0.5f, tf);
-        time = time / (24 * 60 * 60) * 24 * 60 * 60 * 1000;
-        time += u64(env.CurrentWeather->at(sel)->exec_time * 1000 + 0.5f);
-        Level().SetEnvironmentGameTimeFactor(time, tf);
-        env.SetWeather(cycles[iCycle], true);
-    }
-    static bool b = getScriptWeather();
-    if (ImGui::Checkbox("Script weather", &b))
-        setScriptWeather(b);
-    ImGui::Separator();
+
+	ImGui::Text(u8"Main parameters");
+
+	if (ImGui::Combo("Weather cycle", &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
+		env.SetWeather(cycles[iCycle], true);
+	int sel = -1;
+	for (int i = 0; i != env.CurrentWeather->size(); i++)
+		if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
+			sel = i;
+	if (ImGui::Combo("Current section", &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {
+		env.SetGameTime(env.CurrentWeather->at(sel)->exec_time + 0.5f, tf);
+		time = time / (24 * 60 * 60) * 24 * 60 * 60 * 1000;
+		time += u64(env.CurrentWeather->at(sel)->exec_time * 1000 + 0.5f);
+		Level().SetEnvironmentGameTimeFactor(time, tf);
+		env.SetWeather(cycles[iCycle], true);
+	}
+	static bool b = getScriptWeather();
+	if (ImGui::Checkbox("Script weather", &b))
+		setScriptWeather(b);
+	ImGui::Separator();
 	bool changed = false;
 	sel = -1;
 	for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
 		if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
 			sel = i;
+
+	ImGui::Text(u8"Ambient light parameters");
+
 	if (ImGui::Combo("ambient", &sel, enumIni, env.m_ambients_config, env.m_ambients_config->sections().size())) {
 		cur->env_ambient = env.AppendEnvAmb(env.m_ambients_config->sections()[sel]->Name);
 		changed = true;
 	}
 	if (ImGui::ColorEdit3("ambient_color", (float*)&cur->ambient))
 		changed = true;
+
+	ImGui::Text(u8"Clouds parameters");
+
 	if (ImGui::ColorEdit4("clouds_color", (float*)&cur->clouds_color, ImGuiColorEditFlags_AlphaBar))
 		changed = true;
 	char buf[100];
-	if (editTexture("clouds_texture", cur->clouds_texture_name)) 
+	if (editTexture("clouds_texture", cur->clouds_texture_name))
 	{
 		cur->on_device_create();
 		changed = true;
 	}
+
+	ImGui::Text(u8"Fog parameters");
+
 	if (ImGui::SliderFloat("far_plane", &cur->far_plane, 0.01f, 10000.0f))
 		changed = true;
 	if (ImGui::SliderFloat("fog_distance", &cur->fog_distance, 0.0f, 10000.0f))
@@ -326,12 +351,20 @@ void ShowWeatherEditor(bool& show)
 		changed = true;
 	if (ImGui::ColorEdit3("fog_color", (float*)&cur->fog_color))
 		changed = true;
+
+	ImGui::Text(u8"Hemi parameters");
+
 	if (ImGui::ColorEdit4("hemisphere_color", (float*)&cur->hemi_color, ImGuiColorEditFlags_AlphaBar))
 		changed = true;
+
+	ImGui::Text(u8"Rain parameters");
+
 	if (ImGui::SliderFloat("rain_density", &cur->rain_density, 0.0f, 10.0f))
 		changed = true;
 	if (ImGui::ColorEdit3("rain_color", (float*)&cur->rain_color))
 		changed = true;
+
+	ImGui::Text(u8"Sky parameters");
 
 	Fvector temp;
 	temp = convert(cur->sky_color);
@@ -346,6 +379,9 @@ void ShowWeatherEditor(bool& show)
 		cur->on_device_create();
 		changed = true;
 	}
+
+	ImGui::Text(u8"Sun parameters");
+
 	sel = -1;
 	for (int i = 0; i != env.m_suns_config->sections().size(); i++)
 		if (cur->lens_flare_id == env.m_suns_config->sections()[i]->Name)
@@ -378,6 +414,9 @@ void ShowWeatherEditor(bool& show)
 	for (int i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
 		if (cur->tb_id == env.m_thunderbolt_collections_config->sections()[i]->Name)
 			sel = i + 1;
+
+	ImGui::Text(u8"Thunder bolt parameters");
+
 	if (ImGui::Combo("thunderbolt_collection", &sel, enumIniWithEmpty, env.m_thunderbolt_collections_config,
 		env.m_thunderbolt_collections_config->sections().size() + 1)) {
 		cur->tb_id = (sel == 0)
@@ -390,14 +429,56 @@ void ShowWeatherEditor(bool& show)
 		changed = true;
 	if (ImGui::SliderFloat("thunderbolt_period", &cur->bolt_period, 0.0f, 10.0f))
 		changed = true;
+
+	ImGui::Text(u8"Water parameters");
+
 	if (ImGui::SliderFloat("water_intensity", &cur->m_fWaterIntensity, 0.0f, 2.0f))
 		changed = true;
+
+	ImGui::Text(u8"Wind parameters");
+
 	if (ImGui::SliderFloat("wind_velocity", &cur->wind_velocity, 0.0f, 100.0f))
 		changed = true;
 	if (ImGui::SliderFloat("wind_direction", &cur->wind_direction, 0.0f, 360.0f))
 		changed = true;
+
+	ImGui::Text(u8"Trees parameters");
+
 	if (ImGui::SliderFloat("trees_amplitude_intensity", &cur->m_fTreeAmplitudeIntensity, 0.01f, 0.250f))
 		changed = true;
+
+	ImGui::Text(u8"Grass swing parameters");
+
+	if (ImGui::SliderFloat("swing_normal_amp1", &cur->m_cSwingDesc[0].amp1, 0.0f, 10.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_normal_amp2", &cur->m_cSwingDesc[0].amp2, 0.0f, 10.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_normal_rot1", &cur->m_cSwingDesc[0].rot1, 0.0f, 300.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_normal_rot2", &cur->m_cSwingDesc[0].rot2, 0.0f, 300.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_normal_speed", &cur->m_cSwingDesc[0].speed, 0.0f, 10.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_fast_amp1", &cur->m_cSwingDesc[1].amp1, 0.0f, 10.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_fast_amp2", &cur->m_cSwingDesc[1].amp2, 0.0f, 10.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_fast_rot1", &cur->m_cSwingDesc[1].rot1, 0.0f, 300.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_fast_rot2", &cur->m_cSwingDesc[1].rot2, 0.0f, 300.0f))
+		changed = true;
+	if (ImGui::SliderFloat("swing_fast_speed", &cur->m_cSwingDesc[1].speed, 0.0f, 10.0f))
+		changed = true;
+
+	ImGui::Text(u8"DoF parameters");
+
+	if (ImGui::InputFloat3("dof", (float*)&cur->dof_value), 3)
+		changed = true;
+	if (ImGui::SliderFloat("dof_kernel", &cur->dof_kernel, 0.0f, 10.0f))
+		changed = true;
+	if (ImGui::SliderFloat("dof_sky", &cur->dof_sky, -10000.0f, 10000.0f))
+		changed = true;
+
 	if (changed)
 		modifiedWeathers.insert(env.CurrentWeatherName);
 	if (ImGui::Button("Save")) {

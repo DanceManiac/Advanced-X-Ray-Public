@@ -51,7 +51,6 @@ public:
 			u16				last_slot_id;
 			ref_sound		m_using_sound;
 
-protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;
 	float					m_fPowerInfluence;
@@ -61,6 +60,10 @@ protected:
 	float					m_fThirstInfluence;
 	float					m_fIntoxicationInfluence;
 	float					m_fSleepenessInfluence;
+	float					m_fAlcoholismInfluence;
+	float					m_fHangoverInfluence;
+	float					m_fNarcotismInfluence;
+	float					m_fWithdrawalInfluence;
 	//заживление ран на кол-во процентов
 	float					m_fWoundsHealPerc;
 

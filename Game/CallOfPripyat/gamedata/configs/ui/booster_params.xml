@@ -204,6 +204,56 @@
 		</value>
 	</boost_sleepeness>
 	
+	<boost_alcoholism x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_mfs_alcoholism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_alcoholism>
+	
+	<boost_hangover x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_mfs_hangover_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_hangover>
+	
+	<boost_narcotism x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_mfs_narcotism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_narcotism>
+	
+	<boost_withdrawal x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_mfs_withdrawal_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_withdrawal>
+	
+	<boost_filter_condition x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_filter_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="100" show_sign="0" unit_str="%">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_filter_condition>
+	
 	<item_portions x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_mfs_item_effectiveness</texture>

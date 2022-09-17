@@ -1,5 +1,6 @@
 #include "pch_script.h"
 #include "../xrEngine/xr_ioconsole.h"
+#include "../xrEngine/x_ray.h"
 #include "../xrEngine/xr_ioc_cmd.h"
 #include "../xrEngine/customhud.h"
 #include "../xrEngine/fdemorecord.h"
@@ -53,6 +54,7 @@
 #include "../xrphysics/console_vars.h"
 #include "../build_config_defines.h"
 #include "ai_object_location.h"
+#include "GametaskManager.h"
 
 #ifdef DEBUG
 #	include "PHDebug.h"
@@ -122,11 +124,34 @@ extern float	g_smart_cover_factor;
 extern int		g_upgrades_log;
 extern float	g_smart_cover_animation_speed_factor;
 
-bool bDeveloperMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
-
 extern	BOOL	g_ai_use_old_vision;
 float			g_aim_predict_time = 0.44f;
 int				g_keypress_on_start	= 1;
+
+extern	BOOL	g_b_COD_PickUpMode;
+
+//Custom commands for scripts
+BOOL			b_script_cmd1 = 0;
+BOOL			b_script_cmd2 = 0;
+BOOL			b_script_cmd3 = 0;
+BOOL			b_script_cmd4 = 0;
+BOOL			b_script_cmd5 = 0;
+BOOL			b_script_cmd6 = 0;
+BOOL			b_script_cmd7 = 0;
+BOOL			b_script_cmd8 = 0;
+BOOL			b_script_cmd9 = 0;
+BOOL			b_script_cmd10 = 0;
+int				i_script_cmd1 = 0;
+int				i_script_cmd2 = 0;
+int				i_script_cmd3 = 0;
+int				i_script_cmd4 = 0;
+int				i_script_cmd5 = 0;
+int				i_script_cmd6 = 0;
+int				i_script_cmd7 = 0;
+int				i_script_cmd8 = 0;
+int				i_script_cmd9 = 0;
+int				i_script_cmd10 = 0;
+//Custom commands for scripts end
 
 ENGINE_API extern float	g_console_sensitive;
 
@@ -248,27 +273,46 @@ public:
 	virtual void Execute(LPCSTR args) {
 		if (!g_pGameLevel) return;
 
-		//#ifndef	DEBUG
+		int count = 1;
+		char	Name[128];	Name[0] = 0;
+		sscanf(args, "%s %d", Name, &count);
+
 		if (GameID() != eGameIDSingle)
 		{
 			Msg("For this game type entity-spawning is disabled.");
 			return;
 		};
-		//#endif
 
-		if (!pSettings->section_exist(args))
+		if (count > 50)
 		{
-			Msg("! Section [%s] isn`t exist...", args);
+			Msg("! [g_spawn]: Cancel the command. Maximum value of the second argument: 50. Cound is: %d", count);
 			return;
 		}
 
-		char	Name[128];	Name[0] = 0;
-		sscanf(args, "%s", Name);
+		if (!pSettings->section_exist(Name))
+		{
+			Msg("! Section [%s] isn`t exist...", Name);
+			return;
+		}
+
 		Fvector pos = Actor()->Position();
 		pos.y += 3.0f;
 		if (auto tpGame = smart_cast<game_sv_Single*>(Level().Server->game))
-			tpGame->alife().spawn_item(args, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
+		{
+			for (int i = 0; i < count; ++i)
+				tpGame->alife().spawn_item(Name, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
+		}
 	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections())
+		{
+			if (sect->line_exist("class") && sect->line_exist("inv_weight") || sect->line_exist("class") && sect->line_exist("$spawn") && sect->line_exist("Spawn_Inventory_Item_Section"))
+				tips.push_back(sect->Name.c_str());
+		}
+	}
+
 	virtual void	Info(TInfo& I)
 	{
 		strcpy(I, "name,team,squad,group");
@@ -314,20 +358,86 @@ public:
 			return;
 		}
 
-		if (!pSettings->section_exist(args))
+		int count = 1;
+		char	Name[128];	Name[0] = 0;
+		sscanf(args, "%s %d", Name, &count);
+
+		if (count > 250)
 		{
-			Msg("! Section [%s] isn`t exist...", args);
+			Msg("! [g_spawn_to_inventory]: Cancel the command. Maximum value of the second argument: 250. Cound is: %d", count);
 			return;
 		}
 
-		char	Name[128];	Name[0] = 0;
-		sscanf(args, "%s", Name);
+		if (!pSettings->section_exist(Name))
+		{
+			Msg("! Section [%s] isn`t exist...", Name);
+			return;
+		}
 
-		Level().spawn_item(Name, Actor()->Position(), false, Actor()->ID());
+		if (!pSettings->line_exist(Name, "class") || !pSettings->line_exist(Name, "inv_weight") || !pSettings->line_exist(Name, "visual"))
+		{
+			Msg("!Failed to load section!");
+			return;
+		}
+
+		for (int i = 0; i < count; ++i)
+			Level().spawn_item(Name, Actor()->Position(), false, Actor()->ID());
 	}
+
 	virtual void	Info(TInfo& I)
 	{
 		strcpy(I, "name,team,squad,group");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections()) {
+			if (sect->line_exist("class") && sect->line_exist("inv_weight"))
+				tips.push_back(sect->Name.c_str());
+		}
+	}
+};
+
+class CCC_GiveTask : public IConsole_Command 
+{
+public:
+	CCC_GiveTask(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR task) 
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (actor)
+			Level().GameTaskManager().GiveTaskScript(task);
+		else
+			Msg("! [g_task] : Actor not found!");
+	}
+};
+
+class CCC_GiveMoney : public IConsole_Command
+{
+public:
+	CCC_GiveMoney(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR money)
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		int	m_iMoney = (int)atoi(money);
+		if (actor)
+		{
+			Actor()->set_money(Actor()->get_money() + m_iMoney, false);
+		}
+		else
+			Msg("! [g_money] : Actor not found!");
 	}
 };
 
@@ -2158,6 +2268,8 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
 		CMD1(CCC_Giveinfo,		"g_info");
 		CMD1(CCC_Disinfo,		"d_info");
+		CMD1(CCC_GiveTask,		"g_task");
+		CMD1(CCC_GiveMoney,		"g_money");
 		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
@@ -2428,8 +2540,32 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD4(CCC_Integer,	"keypress_on_start",	&g_keypress_on_start, 0, 1);
 
 	CMD4(CCC_Integer,	"quick_save_counter",	&quick_save_counter, 0, 25);
+	CMD4(CCC_Integer,	"soc_pickup_mode",		&g_b_COD_PickUpMode, 0, 1);
 
 	CMD3(CCC_UiHud_Mode, "hud_type",			&ui_hud_type, qhud_type_token);
+
+	//Custom commands for scripts
+	CMD4(CCC_Integer,	"b_script_cmd1",		&b_script_cmd1, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd2",		&b_script_cmd2, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd3",		&b_script_cmd3, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd4",		&b_script_cmd4, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd5",		&b_script_cmd5, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd6",		&b_script_cmd6, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd7",		&b_script_cmd7, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd8",		&b_script_cmd8, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd9",		&b_script_cmd9, 0, 1);
+	CMD4(CCC_Integer,	"b_script_cmd10",		&b_script_cmd10, 0, 1);
+	CMD4(CCC_Integer,	"i_script_cmd1",		&i_script_cmd1, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd2",		&i_script_cmd2, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd3",		&i_script_cmd3, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd4",		&i_script_cmd4, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd5",		&i_script_cmd5, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd6",		&i_script_cmd6, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd7",		&i_script_cmd7, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd8",		&i_script_cmd8, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd9",		&i_script_cmd9, 0, 64);
+	CMD4(CCC_Integer,	"i_script_cmd10",		&i_script_cmd10, 0, 64);
+	//Custom commands for scripts end
 
 	register_mp_console_commands				();
 }

@@ -344,7 +344,6 @@ protected:
 	Fvector					vPrevCamDir;
 	float					fCurAVelocity;
 	CEffectorBobbing*		pCamBobbing;
-	float					current_ik_cam_shift;
 
 
 	//менеджер эффекторов, есть у каждого актрера
@@ -425,7 +424,7 @@ public:
 
 	bool					is_jump					();
 	u32						MovingState				() const {return mstate_real;}
-protected:
+
 	u32						mstate_wishful;
 	u32						mstate_old;
 	u32						mstate_real;

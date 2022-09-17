@@ -2,6 +2,7 @@
 #include "dxRainRender.h"
 
 #include "../../xrEngine/Rain.h"
+#include "../../xrEngine/x_ray.h"
 
 //	Warning: duplicated in rain.cpp
 static const int	max_desired_items	= 2500;
@@ -16,8 +17,7 @@ const float particles_time		= .3f;
 
 dxRainRender::dxRainRender()
 {
-	m_bWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
-	if (!m_bWinterMode)
+	if (!bWinterMode)
 	{
 		IReader* F = FS.r_open("$game_meshes$", "dm\\rain.dm");
 		VERIFY3(F, "Can't open file.", "dm\\rain.dm");
@@ -148,7 +148,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		Fvector&	pos_head	= one.P;
 		Fvector		pos_trail;
 
-		if (!m_bWinterMode)
+		if (!bWinterMode)
 		{
 			pos_trail.mad(pos_head, one.D, -owner.drop_length*factor_visual);
 		}

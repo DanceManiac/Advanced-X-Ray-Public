@@ -1,0 +1,77 @@
+[red_laser]
+laser_light_section = red_laser_definition
+laser_ray_bones = line
+
+laserdot_attach_bone = line
+laserdot_attach_offset_x = 0.0
+laserdot_attach_offset_y = 0.017
+laserdot_attach_offset_z = -0.6
+
+laserdot_world_attach_offset_x = 0.0
+laserdot_world_attach_offset_y = 0.1
+laserdot_world_attach_offset_z = 0.05
+
+[red_laser_definition]
+range           = 100	                            ; дальность в метрах
+range_r2        = 100	                            ; дальность в метрах (для динамического освещения)
+color           = 3.0f, 0.0f, 0.0f, 1.0f			; цвет, из 4 компонентов <r,g,b,a> значением от 0 до 3.
+color_r2        = 3.0f, 0.0f, 0.0f, 1.0f			; цвет, из 4 компонентов <r,g,b,a> значением от 0 до 3. (для динамического освещения)
+color_animator  = ;battery_low								; цвет аниматора (empty - аниматор не используется). //light_torch_01
+;spot_texture    = internal\internal_light_torch_r3	; текстура яркой точки (только для динамического освещения).
+spot_angle      = 0.3	                            ; угол разлета света (определяет размер пятна)		; угол освещения в градусах.
+
+
+[green_laser]:red_laser
+
+laser_light_section = green_laser_definition
+
+[green_laser_definition]:red_laser_definition
+
+color           = 0.0f, 0.0f, 3.0f, 1.0f			; цвет, из 4 компонентов <r,g,b,a> значением от 0 до 3.
+color_r2        = 0.0f, 0.0f, 3.0f, 1.0f			; цвет, из 4 компонентов <r,g,b,a> значением от 0 до 3. (для динамического освещения)
+
+[tactical_torch]
+flashlight_section = flashlight_definition
+
+torch_cone_bones = light
+
+torch_light_bone = wpn_body
+
+torch_attach_offset_x = -0.008
+torch_attach_offset_y = 0.048
+torch_attach_offset_z = 0.0
+
+torch_world_attach_offset_x = 0.0
+torch_world_attach_offset_y = 0.05
+torch_world_attach_offset_z = 0.25
+
+
+torch_omni_attach_offset_x = 0.0 
+torch_omni_attach_offset_y = 0.0
+torch_omni_attach_offset_z = 0.0
+
+torch_omni_world_attach_offset_x = 0.0 
+torch_omni_world_attach_offset_y = 0.0
+torch_omni_world_attach_offset_z = 0.0
+
+[flashlight_definition]
+;DIRECT		= 0,
+;POINT		= 1,
+;SPOT		= 2,
+;OMNIPART	= 3,
+;REFLECTED	= 4,
+omni_type = 2 ;KRodin: вообще omni это обычно поинт, но поинт светит во все стороны от себя, поэтому тут спот используется.
+
+range           = 50	                            ; дальность в метрах
+range_r2        = 50	                            ; дальность в метрах (для динамического освещения)
+color           = 1.0,1.0,1.0,0.6					; цвет, из 4 компонентов <r,g,b,a> значением от 0 до 3.
+color_r2        = 1.0,1.1,1.2,1.2					; цвет, из 4 компонентов <r,g,b,a> значением от 0 до 3. (для динамического освещения)
+omni_range      = 0.25								; дистанция освещения от фонариков неписей в метрах.
+omni_range_r2   = 0.25								; дистанция освещения от фонариков неписей в метрах. (для динамического освещения)
+omni_color      = 1.0,1.0,1.0,0.3					; цвет фонариков неписей, из 4 компонентов <r,g,b,a> значением от 0 до 3.
+omni_color_r2   = 1.0,1.1,1.2,0.2					; цвет фонариков неписей, из 4 компонентов <r,g,b,a> значением от 0 до 3. (для динамического освещения)
+color_animator  = empty								; цвет аниматора (empty - аниматор не используется). //light_torch_01
+spot_texture    = internal\internal_light_torch_tactical_r2 ; текстура яркой точки (только для динамического освещения).
+spot_angle      = 60	                            ; угол разлета света (определяет размер пятна)		; угол освещения в градусах.
+glow_texture    = glow\glow_torch_r2			    ; текстура свечения фонарика, когда он направлен в глаза (обязательный параметр).
+glow_radius     = 0.3								; радиус свечения в метрах.

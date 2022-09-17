@@ -1,6 +1,7 @@
 #include "pch_script.h"
 #include "console_registrator.h"
 #include "../xrEngine/xr_ioconsole.h"
+#include "../xrEngine/xr_ioc_cmd.h"
 
 using namespace luabind;
 
@@ -33,6 +34,31 @@ void execute_console_command_deferred	(CConsole* c, LPCSTR string_to_execute)
 	Engine.Event.Defer	("KERNEL:console", size_t(xr_strdup(string_to_execute)) );
 }
 
+IConsole_Command* find_cmd(CConsole* c, LPCSTR cmd)
+{
+	CConsole::vecCMD_IT I = c->Commands.find(cmd);
+	IConsole_Command* icmd = NULL;
+
+	if (I != c->Commands.end())
+		icmd = I->second;
+
+	return icmd;
+}
+
+void disable_cmd(CConsole* c, LPCSTR cmd)
+{
+	IConsole_Command* icmd = find_cmd(c, cmd);
+	if (icmd)
+		icmd->SetEnabled(false);
+}
+
+void enable_cmd(CConsole* c, LPCSTR cmd)
+{
+	IConsole_Command* icmd = find_cmd(c, cmd);
+	if (icmd)
+		icmd->SetEnabled(true);
+}
+
 #pragma optimize("s",on)
 void console_registrator::script_register(lua_State *L)
 {
@@ -41,6 +67,8 @@ void console_registrator::script_register(lua_State *L)
 		def("get_console",					&console),
 
 		class_<CConsole>("CConsole")
+			.def("disable_command",			&disable_cmd)
+			.def("enable_command",			&enable_cmd)
 			.def("execute",					&CConsole::Execute)
 			.def("execute_script",			&CConsole::ExecuteScript)
 			.def("show",					&CConsole::Show)

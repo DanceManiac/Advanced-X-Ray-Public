@@ -1132,8 +1132,12 @@ void CActor::UpdateCL	()
 	}else
 		Cameras().camera_Matrix			(trans);
 	
-	if(IsFocused())
-		g_player_hud->update			(trans);
+	if (IsFocused()) 
+	{
+		trans.c.sub(Device.vCameraPosition);
+		g_player_hud->update(trans);
+	}
+
 
 	if (GameConstants::GetMultiItemPickup())
 		m_bPickupMode = false;
@@ -1828,6 +1832,8 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
 			conditions().ChangeIntoxication	(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
 			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
+			conditions().ChangeAlcoholism	(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
+			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -1853,6 +1859,8 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeRadiation	(outfit->m_fRadiationRestoreSpeed * f_update_time);
 		conditions().ChangeIntoxication	(outfit->m_fIntoxicationRestoreSpeed * f_update_time);
 		conditions().ChangeSleepeness	(outfit->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism	(outfit->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism	(outfit->m_fNarcotismRestoreSpeed * f_update_time);
 	}
 	else
 	{
@@ -1891,7 +1899,7 @@ float	CActor::HitArtefactsOnBelt(float hit_power, ALife::EHitType hit_type)
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		if ( artefact )
 		{
-			hit_power -= artefact->m_ArtefactHitImmunities.AffectHit( 1.0f, hit_type );
+			hit_power -= artefact->m_HitTypeProtection[hit_type];
 		}
 	}
 	clamp(hit_power, 0.0f, flt_max);
@@ -1909,7 +1917,7 @@ float CActor::GetProtection_ArtefactsOnBelt( ALife::EHitType hit_type )
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		if ( artefact )
 		{
-			sum += artefact->m_ArtefactHitImmunities.AffectHit( 1.0f, hit_type );
+			sum += artefact->m_HitTypeProtection[hit_type];
 		}
 	}
 	return sum;
@@ -2224,6 +2232,44 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fSleepenessRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eAlcoholismRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fAlcoholismRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fAlcoholismRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eNarcotismRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fNarcotismRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fNarcotismRestoreSpeed;
 		}
 		break;
 	}

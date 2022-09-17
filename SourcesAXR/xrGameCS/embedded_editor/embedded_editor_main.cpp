@@ -1,6 +1,7 @@
 #include "stdAfx.h"
 #include "embedded_editor_main.h"
 #include "../../xrEngine/xr_input.h"
+#include "../../xrEngine/x_ray.h"
 #include "../xr_level_controller.h"
 #include "embedded_editor_helper.h"
 #include "embedded_editor_weather.h"
@@ -9,8 +10,6 @@
 #include <addons/imguinodegrapheditor/imguinodegrapheditor.h>
 #include <dinput.h>
 #include <imgui.h>
-
-bool bDeveloperModeEditor = READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "developer_mode", false);
 
 bool bShowWindow = true;
 bool show_test_window = true;
@@ -93,7 +92,7 @@ void ShowEditor()
 bool isRControl = false, isLControl = false, isRShift = false, isLShift = false;
 bool Editor_KeyPress(int key)
 {
-	if (bDeveloperModeEditor)
+	if (bDeveloperMode)
 	{
 		if (key == DIK_F10)
 		{

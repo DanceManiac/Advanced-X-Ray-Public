@@ -371,6 +371,8 @@ public:
 	float						m_fVolumetricQuality;
 	float						m_fVolumetricDistance;
 	float						m_fVolumetricIntensity;
+	bool						m_bDropItemAfterSuperAttack;
+	int							m_iSuperAttackDropItemPer;
 
 	shared_str					light_bone;
 	shared_str					particles_bone;

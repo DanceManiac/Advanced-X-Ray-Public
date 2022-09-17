@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "UIActorMenu.h"
 #include "UIActorStateInfo.h"
 #include "../actor.h"
@@ -88,6 +88,16 @@ void CUIActorMenu::SetInvBox(CInventoryBox* box)
 	{
 		m_pInvBox->set_in_use( true );
 		SetPartner( NULL );
+	}
+}
+
+void CUIActorMenu::SetCarTrunk(CCar* pCar)
+{
+	R_ASSERT(!IsShown());
+	m_pCar = pCar;
+	if (m_pCar)
+	{
+		SetPartner(NULL);
 	}
 }
 
@@ -183,16 +193,29 @@ void CUIActorMenu::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 
 void CUIActorMenu::Show(bool status)
 {
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	inherited::Show							(status);
+
 	if(status)
 	{
 		SetMenuMode							(m_currMenuMode);
 		PlaySnd								(eSndOpen);
 		m_ActorStateInfo->UpdateActorInfo	(m_pActorInvOwner);
-	}else
+
+		if (pActor && GameConstants::GetHideWeaponInInventory())
+		{
+			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+		}
+	}
+	else
 	{
 		PlaySnd								(eSndClose);
 		SetMenuMode							(mmUndefined);
+
+		if (pActor && GameConstants::GetHideWeaponInInventory())
+		{
+			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+		}
 	}
 	m_ActorStateInfo->Show					(status);
 }
@@ -250,7 +273,7 @@ void CUIActorMenu::Update()
 	m_hint_wnd->Update();
 }
 
-bool CUIActorMenu::StopAnyMove()  // true = актёр не идёт при открытом меню
+bool CUIActorMenu::StopAnyMove()  // true = ????? ?? ???? ??? ???????? ????
 {
 	switch ( m_currMenuMode )
 	{
@@ -270,7 +293,7 @@ void CUIActorMenu::CheckDistance()
 	CGameObject* pActorGO	= smart_cast<CGameObject*>(m_pActorInvOwner);
 	CGameObject* pPartnerGO	= smart_cast<CGameObject*>(m_pPartnerInvOwner);
 	CGameObject* pBoxGO		= smart_cast<CGameObject*>(m_pInvBox);
-	VERIFY( pActorGO && (pPartnerGO || pBoxGO) );
+	VERIFY( pActorGO && (pPartnerGO || pBoxGO || m_pCar) );
 
 	if ( pPartnerGO )
 	{
@@ -280,6 +303,10 @@ void CUIActorMenu::CheckDistance()
 			g_btnHint->Discard();
 			HideDialog();
 		}
+	}
+	else if (m_pCar && Actor()->Holder())
+	{
+		//nop
 	}
 	else //pBoxGO
 	{
@@ -569,7 +596,7 @@ void CUIActorMenu::clear_highlight_lists()
 
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
-	for(u8 i=0; i<e_af_count; i++)
+	for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
 		m_ArtefactSlotsHighlight[i]->Show(false);
 
 	m_pInventoryBagList->clear_select_armament();

@@ -30,8 +30,10 @@ protected:
 	UIArtefactParamItem*	m_fThirstRestoreSpeed;
 	UIArtefactParamItem*	m_fIntoxicationRestoreSpeed;
 	UIArtefactParamItem*	m_fSleepenessRestoreSpeed;
+	UIArtefactParamItem*	m_fAlcoholismRestoreSpeed;
 	UIArtefactParamItem*	m_fJumpSpeed;
 	UIArtefactParamItem*	m_fWalkAccel;
+	UIArtefactParamItem*	m_iArtefactRank;
 	UIArtefactParamItem*	m_fChargeLevel;
 
 	CUIStatic*				m_Prop_line;
@@ -48,7 +50,7 @@ public:
 		
 		void	Init				( CUIXml& xml, LPCSTR section );
 		void	SetCaption			( LPCSTR name );
-		void	SetValue			( float value );
+		void	SetValue			( float value, int vle = 0 );
 	
 private:
 	CUIStatic*	m_caption;

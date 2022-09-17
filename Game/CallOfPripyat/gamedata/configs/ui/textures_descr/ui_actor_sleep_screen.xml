@@ -65,5 +65,13 @@
 		<texture id="ui_mfs_intoxication_restore_speed" x="133" y="0" width="19" height="19" />
 		<texture id="ui_mfs_sleepeness_restore_speed" x="152" y="0" width="19" height="19" />
 		<texture id="ui_item_af_radius" x="171" y="0" width="19" height="19" />
+		<texture id="ui_am_prop_exlp" x="190" y="0" width="19" height="19" />
+		<texture id="ui_am_prop_strike" x="209" y="0" width="19" height="19" />
+		<texture id="ui_mfs_alcoholism_restore_speed" x="228" y="0" width="19" height="19" />
+		<texture id="ui_mfs_hangover_restore_speed" x="247" y="0" width="19" height="19" />
+		<texture id="ui_mfs_narcotism_restore_speed" x="266" y="0" width="19" height="19" />
+		<texture id="ui_mfs_withdrawal_restore_speed" x="285" y="0" width="19" height="19" />
+		<texture id="ui_inv_af_rank" x="304" y="0" width="19" height="19" />
+		<texture id="ui_item_filter_icon" x="323" y="0" width="19" height="19" />
    </file>
 </w>

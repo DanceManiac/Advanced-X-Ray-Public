@@ -60,16 +60,29 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 void CActor::detach_Vehicle()
 {
 	if(!m_holder) return;
+
 	CCar* car=smart_cast<CCar*>(m_holder);
+
 	if(!car)return;
+
+	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual()); R_ASSERT(pKinematics);
+	u16	head_bone = pKinematics->LL_BoneID("bip01_head");
+	pKinematics->LL_SetBoneVisible(head_bone, true, true);
+
 	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
-	if(sh)sh->Deactivate();
+
+	if(sh)
+		sh->Deactivate();
+
 	if(!character_physics_support()->movement()->ActivateBoxDynamic(0))
 	{
 		if(sh)sh->Activate();
 		return;
 	}
-	if(sh)sh->Activate();
+
+	if(sh)
+		sh->Activate();
+
 	m_holder->detach_Actor();
 
 	character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());

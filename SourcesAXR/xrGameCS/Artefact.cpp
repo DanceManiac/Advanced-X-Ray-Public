@@ -21,6 +21,7 @@
 #include "patrol_path.h"
 #include "patrol_path_storage.h"
 #include "Actor.h"
+#include "AdvancedXrayGameConstants.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
@@ -49,6 +50,7 @@ CArtefact::CArtefact()
 
 	m_fChargeLevel				= 1.0f;
 	m_fDegradationSpeed			= 1.0f;
+	m_iAfRank					= 1;
 
 	//For Degradation
 	m_fConstAdditionalWeight = 0.0f;
@@ -73,15 +75,34 @@ void CArtefact::Load(LPCSTR section)
 		m_fConstTrailLightRange = pSettings->r_float(section, "trail_light_range");
 	}
 
-	m_fConstHealthRestoreSpeed = pSettings->r_float(section, "health_restore_speed");
+	//Случайный начальный ранг артефакта
+	if (GameConstants::GetAfRanks())
+	{
+		int rnd_rank = ::Random.randI(1, 100);
+
+		if (rnd_rank <= 50) //50%
+			m_iAfRank = 1;
+		else if (rnd_rank > 50 && rnd_rank <= 75) //25%
+			m_iAfRank = 2;
+		else if (rnd_rank > 75 && rnd_rank <= 90) //15%
+			m_iAfRank = 3;
+		else if (rnd_rank > 90 && rnd_rank <= 98) //7%
+			m_iAfRank = 4;
+		else if (rnd_rank > 98) //2%
+			m_iAfRank = 5;
+	}
+
+	m_fConstHealthRestoreSpeed = pSettings->r_float(section, "health_restore_speed") * m_iAfRank;
 	m_fConstRadiationRestoreSpeed = pSettings->r_float(section, "radiation_restore_speed");
-	m_fConstSatietyRestoreSpeed = pSettings->r_float(section, "satiety_restore_speed");
-	m_fConstPowerRestoreSpeed = pSettings->r_float(section, "power_restore_speed");
-	m_fConstBleedingRestoreSpeed = pSettings->r_float(section, "bleeding_restore_speed");
-	m_fConstThirstRestoreSpeed = pSettings->r_float(section, "thirst_restore_speed");
-	m_fConstIntoxicationRestoreSpeed = pSettings->r_float(section, "intoxication_restore_speed");
-	m_fConstSleepenessRestoreSpeed = pSettings->r_float(section, "sleepeness_restore_speed");
-	m_fConstAdditionalWeight = pSettings->r_float(section, "additional_inventory_weight");
+	m_fConstSatietyRestoreSpeed = pSettings->r_float(section, "satiety_restore_speed") * m_iAfRank;
+	m_fConstPowerRestoreSpeed = pSettings->r_float(section, "power_restore_speed") * m_iAfRank;
+	m_fConstBleedingRestoreSpeed = pSettings->r_float(section, "bleeding_restore_speed") * m_iAfRank;
+	m_fConstThirstRestoreSpeed = pSettings->r_float(section, "thirst_restore_speed") * m_iAfRank;
+	m_fConstIntoxicationRestoreSpeed = pSettings->r_float(section, "intoxication_restore_speed") * m_iAfRank;
+	m_fConstSleepenessRestoreSpeed = pSettings->r_float(section, "sleepeness_restore_speed") * m_iAfRank;
+	m_fConstAlcoholismRestoreSpeed = pSettings->r_float(section, "alcoholism_restore_speed") * m_iAfRank;
+	m_fConstNarcotismRestoreSpeed = pSettings->r_float(section, "narcotism_restore_speed") * m_iAfRank;
+	m_fConstAdditionalWeight = pSettings->r_float(section, "additional_inventory_weight") * m_iAfRank;
 
 	m_fChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "artefact_charge_level", 1.0f);
 
@@ -106,6 +127,8 @@ void CArtefact::Load(LPCSTR section)
 	m_fThirstRestoreSpeed = m_fConstThirstRestoreSpeed;
 	m_fIntoxicationRestoreSpeed = m_fConstIntoxicationRestoreSpeed;
 	m_fSleepenessRestoreSpeed = m_fConstSleepenessRestoreSpeed;
+	m_fAlcoholismRestoreSpeed = m_fConstAlcoholismRestoreSpeed;
+	m_fNarcotismRestoreSpeed = m_fConstNarcotismRestoreSpeed;
 	m_additional_weight = m_fConstAdditionalWeight;
 	m_fJumpSpeed = m_fConstJumpSpeed;
 	m_fWalkAccel = m_fConstWalkAccel;
@@ -114,6 +137,27 @@ void CArtefact::Load(LPCSTR section)
 	{
 		m_ArtefactHitImmunities.LoadImmunities(pSettings->r_string(section,"hit_absorbation_sect"),pSettings);
 	}
+
+	m_ConstHitTypeProtection[ALife::infl_fire] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_strike] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_electra] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_rad] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_psi] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_acid] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_explossion] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::infl_fire_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound) * m_iAfRank;
+
+	m_HitTypeProtection[ALife::infl_fire] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_strike] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_electra] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_rad] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_psi] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_acid] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_explossion] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion) * m_iAfRank;
+	m_HitTypeProtection[ALife::infl_fire_wound] = m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound) * m_iAfRank;
+
 	m_bCanSpawnZone			= !!pSettings->line_exist("artefact_spawn_zones", section);
 	m_af_rank				= pSettings->r_u8(section, "af_rank");
 
@@ -201,6 +245,14 @@ void CArtefact::save(NET_Packet &packet)
 	save_data(m_fPowerRestoreSpeed, packet);
 	save_data(m_fBleedingRestoreSpeed, packet);
 	save_data(m_fThirstRestoreSpeed, packet);
+	save_data(m_fIntoxicationRestoreSpeed, packet);
+	save_data(m_fSleepenessRestoreSpeed, packet);
+	save_data(m_fAlcoholismRestoreSpeed, packet);
+	save_data(m_fNarcotismRestoreSpeed, packet);
+	save_data(m_additional_weight, packet);
+	save_data(m_fJumpSpeed, packet);
+	save_data(m_fWalkAccel, packet);
+	save_data(m_iAfRank, packet);
 }
 
 void CArtefact::load(IReader &packet)
@@ -216,6 +268,14 @@ void CArtefact::load(IReader &packet)
 	load_data(m_fPowerRestoreSpeed, packet);
 	load_data(m_fBleedingRestoreSpeed, packet);
 	load_data(m_fThirstRestoreSpeed, packet);
+	load_data(m_fIntoxicationRestoreSpeed, packet);
+	load_data(m_fSleepenessRestoreSpeed, packet);
+	load_data(m_fAlcoholismRestoreSpeed, packet);
+	load_data(m_fNarcotismRestoreSpeed, packet);
+	load_data(m_additional_weight, packet);
+	load_data(m_fJumpSpeed, packet);
+	load_data(m_fWalkAccel, packet);
+	load_data(m_iAfRank, packet);
 }
 
 void CArtefact::SwitchAfParticles(bool bOn)
@@ -282,21 +342,39 @@ void CArtefact::UpdateDegradation(void)
 			float percent = artefact->m_fChargeLevel * 100;
 
 			if (artefact->m_fHealthRestoreSpeed > 0.0f && m_fConstHealthRestoreSpeed > 0.0f)
-				artefact->m_fHealthRestoreSpeed = (m_fConstHealthRestoreSpeed / 100)*percent;
+				artefact->m_fHealthRestoreSpeed = (m_fConstHealthRestoreSpeed / 100) * percent;
+			else if (artefact->m_fRadiationRestoreSpeed < 0.0f && m_fConstRadiationRestoreSpeed < 0.0f)
+				artefact->m_fRadiationRestoreSpeed = (m_fConstRadiationRestoreSpeed / 100) * percent;
 			else if (artefact->m_fSatietyRestoreSpeed > 0.0f && m_fConstSatietyRestoreSpeed > 0.0f)
-				artefact->m_fSatietyRestoreSpeed = (m_fConstSatietyRestoreSpeed / 100)*percent;
+				artefact->m_fSatietyRestoreSpeed = (m_fConstSatietyRestoreSpeed / 100) * percent;
 			else if (artefact->m_fPowerRestoreSpeed > 0.0f && m_fConstPowerRestoreSpeed > 0.0f)
-				artefact->m_fPowerRestoreSpeed = (m_fConstPowerRestoreSpeed / 100)*percent;
+				artefact->m_fPowerRestoreSpeed = (m_fConstPowerRestoreSpeed / 100) * percent;
 			else if (artefact->m_fBleedingRestoreSpeed > 0.0f && m_fConstBleedingRestoreSpeed > 0.0f)
-				artefact->m_fBleedingRestoreSpeed = (m_fConstBleedingRestoreSpeed / 100)*percent;
+				artefact->m_fBleedingRestoreSpeed = (m_fConstBleedingRestoreSpeed / 100) * percent;
 			else if (artefact->m_fThirstRestoreSpeed > 0.0f && m_fConstThirstRestoreSpeed > 0.0f)
-				artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100)*percent;
+				artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100) * percent;
+			else if (artefact->m_fIntoxicationRestoreSpeed > 0.0f && m_fConstIntoxicationRestoreSpeed > 0.0f)
+				artefact->m_fIntoxicationRestoreSpeed = (m_fConstIntoxicationRestoreSpeed / 100) * percent;
+			else if (artefact->m_fSleepenessRestoreSpeed > 0.0f && m_fConstSleepenessRestoreSpeed > 0.0f)
+				artefact->m_fSleepenessRestoreSpeed = (m_fConstSleepenessRestoreSpeed / 100) * percent;
+			else if (artefact->m_fAlcoholismRestoreSpeed > 0.0f && m_fConstAlcoholismRestoreSpeed > 0.0f)
+				artefact->m_fAlcoholismRestoreSpeed = (m_fConstAlcoholismRestoreSpeed / 100) * percent;
+			else if (artefact->m_fNarcotismRestoreSpeed > 0.0f && m_fConstNarcotismRestoreSpeed > 0.0f)
+				artefact->m_fNarcotismRestoreSpeed = (m_fConstNarcotismRestoreSpeed / 100) * percent;
 			else if (artefact->m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
-				artefact->m_additional_weight = (m_fConstAdditionalWeight / 100)*percent;
+				artefact->m_additional_weight = (m_fConstAdditionalWeight / 100) * percent;
 			else if (artefact->m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)
-				artefact->m_fJumpSpeed = (m_fConstJumpSpeed / 100)*percent;
+				artefact->m_fJumpSpeed = (m_fConstJumpSpeed / 100) * percent;
 			else if (artefact->m_fWalkAccel > 1.f && m_fConstWalkAccel > 1.f)
-				artefact->m_fWalkAccel = (m_fConstWalkAccel / 100)*percent;
+				artefact->m_fWalkAccel = (m_fConstWalkAccel / 100) * percent;
+			else if (m_fChargeLevel <= 0.0f)
+				artefact->m_iAfRank = 0;
+
+			for (u32 i = 0; i < ALife::infl_max_count; ++i)
+			{
+				if (!fis_zero(artefact->m_HitTypeProtection[i]) && !fis_zero(m_ConstHitTypeProtection[i]))
+					artefact->m_HitTypeProtection[i] = (m_ConstHitTypeProtection[i] / 100) * percent;
+			}
 
 			//Lights
 			if (m_bLightsEnabled)
@@ -756,4 +834,25 @@ void CArtefact::OnHiddenItem ()
 float CArtefact::GetCurrentChargeLevel() const
 {
 	return m_fChargeLevel;
+}
+
+int CArtefact::GetCurrentAfRank() const
+{
+	return m_iAfRank;
+}
+
+u32 CArtefact::Cost() const
+{
+	float percent = m_fChargeLevel*100;
+	u32 res = CInventoryItem::Cost() * m_iAfRank;
+
+	if (GameConstants::GetArtefactsDegradation())
+	{
+		if (percent >= 10)
+			res = (res / 100) * percent;
+		else
+			res = (res / 100) * 10;
+	}
+
+	return res;
 }

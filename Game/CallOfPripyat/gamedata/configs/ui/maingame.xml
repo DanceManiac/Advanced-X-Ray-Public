@@ -14,6 +14,9 @@
 		<texture>ui_hud_icon_weapon</texture>
 	</weapon_jammed_static>
 
+    <indicator_filter x="980" y="70" width="33" height="35"/>
+    <indicator_narcotism x="980" y="110" width="33" height="35"/>
+    <indicator_alcoholism x="980" y="150" width="33" height="35"/>
     <indicator_sleepeness x="980" y="190" width="33" height="35"/>
     <indicator_intoxication x="980" y="230" width="33" height="35"/>
     <indicator_thirst x="980" y="270" width="33" height="35"/>

@@ -23,7 +23,6 @@ private:
 	// Visualization	(drops)
 	IRender_DetailModel*			DM_Drop;
 	ref_geom						hGeom_Drops;
-	bool							m_bWinterMode;
 };
 
 #endif	//	RainRender_included

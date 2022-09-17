@@ -212,6 +212,34 @@ void	CRender::render_lights	(light_Package& LP)
 
 void	CRender::render_indirect			(light* L)
 {
+	if (!!ps_r2_lfx)
+	{
+		Fvector4 pos;
+		Device.mFullTransform.transform(pos, L->position);
+
+		Fvector ldir = Fvector().set(L->position).sub(Device.vCameraPosition);
+		float dist = ldir.magnitude(); ldir.normalize();
+		float cosLo = ldir.dotproduct(Device.vCameraDirection);
+
+		if (dist <= 20.f && dist >= 2.0f && cosLo > 0.0f)
+		{
+			float x = (1.f + pos.x) / 2.f;
+			float y = (1.f - pos.y) / 2.f;
+			collide::rq_result l_rq;
+
+			if (g_pGameLevel)
+			{
+				g_pGameLevel->ObjectSpace.RayPick(Device.vCameraPosition, ldir, dist, collide::rqtBoth, l_rq, g_pGameLevel->CurrentViewEntity());
+				float fade = (dist - l_rq.range) / 0.4f; clamp(fade, 0.0f, 1.0f); fade = 1.0f - fade; fade *= cosLo * 0.2f;
+				Fvector3 color = Fvector3().set(L->color.r, L->color.g, L->color.b); color.normalize();
+				{
+					Target->m_miltaka_lfx_coords.push_back(Fvector4().set(x, y, dist, dist));
+					Target->m_miltaka_lfx_color.push_back(Fvector4().set(fade * color.x, fade * color.y, fade * color.z, dist));
+				}
+			}
+		}
+	}
+
 	if (!ps_r2_ls_flags.test(R2FLAG_GI))	return;
 
 	light									LIGEN;

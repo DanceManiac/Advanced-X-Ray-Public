@@ -49,6 +49,11 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fThirst					= 1.0f;
 	m_fIntoxication				= 0.0f;
 	m_fSleepeness				= 0.0f;
+	m_fAlcoholism				= 0.0f;
+	m_fHangover					= 0.0f;
+	m_fNarcotism				= 0.0f;
+	m_fWithdrawal				= 0.0f;
+	m_fDrugs					= 0.f;
 
 	VERIFY						(object);
 	m_object					= object;
@@ -148,6 +153,22 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Sleepeness = pSettings->r_float(section, "sleepeness_v");
 	m_fV_SleepenessPower = pSettings->r_float(section, "sleepeness_power_v");
 	m_fSleepeness_V_Sleep = pSettings->r_float(section, "sleepeness_v_sleep");
+
+	// M.F.S. Team Alcoholism (History Of Puhtinskyi)
+	m_fV_Alcoholism = pSettings->r_float(section, "alcoholism_v");
+	m_fHangoverCritical = pSettings->r_float(section, "hangover_critical");
+	clamp(m_fHangoverCritical, 0.0f, 1.0f);
+	m_fV_Hangover = pSettings->r_float(section, "hangover_v");
+	m_fV_HangoverPower = pSettings->r_float(section, "hangover_power_v");
+
+	// M.F.S. Team Narcotism (History Of Puhtinskyi)
+	m_fV_Narcotism = pSettings->r_float(section, "narcotism_v");
+	m_fWithdrawalCritical = pSettings->r_float(section, "withdrawal_critical");
+	clamp(m_fWithdrawalCritical, 0.0f, 1.0f);
+	m_fV_Withdrawal = pSettings->r_float(section, "withdrawal_v");
+	m_fV_WithdrawalPower = pSettings->r_float(section, "withdrawal_power_v");
+	m_fV_WithdrawalHealth = pSettings->r_float(section, "withdrawal_health_v");
+	m_fV_Drugs = pSettings->r_float(section, "drugs_v");
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const
@@ -228,6 +249,9 @@ void CActorCondition::UpdateCondition()
 	m_fAlcohol		+= m_fV_Alcohol*m_fDeltaTime;
 	clamp			(m_fAlcohol,			0.0f,		1.0f);
 
+	m_fDrugs		+= m_fV_Drugs * m_fDeltaTime;
+	clamp			(m_fDrugs,				0.0f,		1.0f);
+
 	if ( IsGameTypeSingle() )
 	{	
 		CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effAlcohol);
@@ -240,6 +264,19 @@ void CActorCondition::UpdateCondition()
 				RemoveEffector(m_object,effAlcohol);
 		}
 
+		CEffectorCam* ceDrugs = Actor()->Cameras().GetCamEffector((ECamEffectorType)effDrugs);
+		if ((m_fDrugs > 0.0001f))
+		{
+			if (!ceDrugs)
+			{
+				AddEffector(m_object, effDrugs, "effector_drugs", GET_KOEFF_FUNC(this, &CActorCondition::GetDrugs));
+			}
+		}
+		else
+		{
+			if (ceDrugs)
+				RemoveEffector(m_object, effDrugs);
+		}
 		
 		string512			pp_sect_name;
 		shared_str ln		= Level().name();
@@ -283,6 +320,16 @@ void CActorCondition::UpdateCondition()
 	if (GameConstants::GetActorSleepeness())
 	{
 		UpdateSleepeness();
+	}
+
+	if (GameConstants::GetActorAlcoholism())
+	{
+		UpdateAlcoholism();
+	}
+
+	if (GameConstants::GetActorNarcotism())
+	{
+		UpdateNarcotism();
 	}
 
 	inherited::UpdateCondition	();
@@ -541,6 +588,88 @@ void CActorCondition::UpdateSleepeness()
 	}
 }
 
+//M.F.S. Team Alcoholism
+void CActorCondition::UpdateAlcoholism()
+{
+	if (m_fAlcoholism > 0.0f)
+	{
+		if (m_fAlcohol <= 0.0f)
+		{
+			m_fAlcoholism -= m_fV_Alcoholism * m_fDeltaTime;
+			clamp(m_fAlcoholism, 0.0f, 4.0f);
+		}
+	}
+
+	if (m_fAlcoholism >= 1.0f && m_fAlcohol <= 0.0f)
+	{
+		if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+		{
+			if (m_fHangover >= m_fHangoverCritical)
+			{
+				m_fDeltaPower -= m_fV_HangoverPower * m_fHangover * m_fDeltaTime;
+
+				luabind::functor<void> funct;
+				if (ai().script_engine().functor("mfs_functions.on_actor_hangover", funct))
+					funct();
+			}
+		}
+
+		m_fHangover += m_fV_Hangover * m_fDeltaTime;
+		clamp(m_fHangover, 0.0f, 3.0f);
+	}
+	else
+	{
+		m_fHangover -= m_fV_Hangover * m_fDeltaTime;
+		clamp(m_fHangover, 0.0f, 3.0f);
+	}
+}
+
+//M.F.S. Team Narcotism
+void CActorCondition::UpdateNarcotism()
+{
+	if (m_fNarcotism > 0.0f)
+	{
+		if (m_fDrugs <= 0.0f)
+		{
+			m_fNarcotism -= m_fV_Narcotism * m_fDeltaTime;
+			clamp(m_fNarcotism, 0.0f, 10.0f);
+		}
+	}
+
+	if (m_fDrugs >= 0.5f)
+	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.on_actor_drugs", funct))
+			funct();
+	}
+
+	if (m_fNarcotism >= 1.0f && m_fDrugs <= 0.0f)
+	{
+		if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+		{
+			if (m_fWithdrawal >= m_fWithdrawalCritical)
+			{
+				m_fDeltaPower -= m_fV_WithdrawalPower * m_fWithdrawal * m_fDeltaTime;
+
+				if (GetHealth() >= 0.5)
+					m_fDeltaHealth -= m_fV_WithdrawalHealth * m_fWithdrawal * m_fDeltaTime;
+
+				luabind::functor<void> funct2;
+				if (ai().script_engine().functor("mfs_functions.on_actor_withdrawal", funct2))
+					funct2();
+			}
+		}
+
+		m_fWithdrawal += m_fV_Withdrawal * m_fDeltaTime;
+		clamp(m_fWithdrawal, 0.0f, 3.0f);
+	}
+	else
+	{
+		m_fWithdrawal -= m_fV_Withdrawal * m_fDeltaTime;
+		clamp(m_fWithdrawal, 0.0f, 3.0f);
+	}
+}
+
 CWound* CActorCondition::ConditionHit(SHit* pHDS)
 {
 	if (GodMode()) return NULL;
@@ -629,6 +758,11 @@ void CActorCondition::save(NET_Packet &output_packet)
 	save_data			(m_fThirst,  output_packet);
 	save_data			(m_fIntoxication, output_packet);
 	save_data			(m_fSleepeness, output_packet);
+	save_data			(m_fAlcoholism, output_packet);
+	save_data			(m_fHangover, output_packet);
+	save_data			(m_fNarcotism, output_packet);
+	save_data			(m_fWithdrawal, output_packet);
+	save_data			(m_fDrugs, output_packet);
 }
 
 void CActorCondition::load(IReader &input_packet)
@@ -640,6 +774,11 @@ void CActorCondition::load(IReader &input_packet)
 	load_data			(m_fThirst,  input_packet);
 	load_data			(m_fIntoxication, input_packet);
 	load_data			(m_fSleepeness, input_packet);
+	load_data			(m_fAlcoholism, input_packet);
+	load_data			(m_fHangover, input_packet);
+	load_data			(m_fNarcotism, input_packet);
+	load_data			(m_fWithdrawal, input_packet);
+	load_data			(m_fDrugs, input_packet);
 }
 
 void CActorCondition::reinit	()
@@ -681,6 +820,37 @@ void CActorCondition::ChangeSleepeness(float value)
 	clamp(m_fSleepeness, 0.0f, 1.0f);
 }
 
+//M.F.S. Team Alcoholism (HoP)
+void CActorCondition::ChangeAlcoholism(float value)
+{
+	m_fAlcoholism += value;
+	clamp(m_fAlcoholism, 0.0f, 4.0f);
+}
+
+void CActorCondition::ChangeHangover(float value)
+{
+	m_fHangover += value;
+	clamp(m_fHangover, 0.0f, 3.0f);
+}
+
+//M.F.S. Team Narcotism (HoP)
+void CActorCondition::ChangeNarcotism(float value)
+{
+	m_fNarcotism += value;
+	clamp(m_fNarcotism, 0.0f, 10.0f);
+}
+
+void CActorCondition::ChangeWithdrawal(float value)
+{
+	m_fHangover += value;
+	clamp(m_fWithdrawal, 0.0f, 3.0f);
+}
+
+void CActorCondition::ChangeDrugs(float value)
+{
+	m_fDrugs += value;
+}
+
 void CActorCondition::UpdateTutorialThresholds()
 {
 	string256						cb_name;
@@ -694,8 +864,10 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
 	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
 	static float _cSleepeness		= pSettings->r_float("tutorial_conditions_thresholds", "sleepeness");
-
-
+	static float _cAlcoholism		= pSettings->r_float("tutorial_conditions_thresholds", "alcoholism");
+	static float _cHangover			= pSettings->r_float("tutorial_conditions_thresholds", "hangover");
+	static float _cNarcotism		= pSettings->r_float("tutorial_conditions_thresholds", "narcotism");
+	static float _cWithdrawal		= pSettings->r_float("tutorial_conditions_thresholds", "withdrawal");
 
 	bool b = true;
 	if(b && !m_condition_flags.test(eCriticalPowerReached) && GetPower()<_cPowerThr){
@@ -739,6 +911,30 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalSleepenessReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_sleepeness");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalAlcoholismReached) && GetAlcoholism() > _cAlcoholism) {
+		m_condition_flags.set(eCriticalAlcoholismReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_alcoholism");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalNarcotismReached) && GetNarcotism() > _cNarcotism) {
+		m_condition_flags.set(eCriticalNarcotismReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_narcotism");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalWithdrawalReached) && GetWithdrawal() > _cWithdrawal) {
+		m_condition_flags.set(eCriticalWithdrawalReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_withdrawal");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalHangoverReached) && GetHangover() > _cHangover) {
+		m_condition_flags.set(eCriticalHangoverReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_hangover");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){

@@ -94,6 +94,10 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fThirst				= 1.0f;
 	m_fIntoxication			= 0.0f;
 	m_fSleepeness			= 0.0f;
+	m_fAlcoholism			= 0.0f;
+	m_fHangover				= 0.0f;
+	m_fNarcotism			= 0.0f;
+	m_fWithdrawal			= 0.0f;
 }
 
 CEntityCondition::~CEntityCondition(void)
@@ -655,6 +659,11 @@ bool CEntityCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const s
 	ChangeThirst	(V.fThirst);
 	ChangeIntoxication(V.fIntoxication);
 	ChangeSleepeness(V.fSleepeness);
+	ChangeAlcoholism(V.fAlcoholism);
+	ChangeHangover	(V.fHangover);
+	ChangeNarcotism	(V.fNarcotism);
+	ChangeWithdrawal(V.fWithdrawal);
+	ChangeDrugs		(V.fDrugs);
 	return true;
 }
 
@@ -671,11 +680,16 @@ void SMedicineInfluenceValues::Load(const shared_str& sect)
 	fThirst			= pSettings->r_float(sect.c_str(), "eat_thirst");
 	fIntoxication	= pSettings->r_float(sect.c_str(), "eat_intoxication");
 	fSleepeness		= pSettings->r_float(sect.c_str(), "eat_sleepeness");
+	fAlcoholism		= pSettings->r_float(sect.c_str(), "eat_alcoholism");
+	fHangover		= pSettings->r_float(sect.c_str(), "eat_hangover");
+	fNarcotism		= pSettings->r_float(sect.c_str(), "eat_narcotism");
+	fWithdrawal		= pSettings->r_float(sect.c_str(), "eat_withdrawal");
 	fRadiation		= pSettings->r_float(sect.c_str(), "eat_radiation");
 	fWoundsHeal		= pSettings->r_float(sect.c_str(), "wounds_heal_perc");
 	clamp			(fWoundsHeal, 0.f, 1.f);
 	fMaxPowerUp		= READ_IF_EXISTS	(pSettings,r_float,sect.c_str(),	"eat_max_power",0.0f);
 	fAlcohol		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_alcohol", 0.0f);
+	fDrugs			= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_drugs", 0.0f);
 	fTimeTotal		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"apply_time_sec", -1.0f);
 }
 

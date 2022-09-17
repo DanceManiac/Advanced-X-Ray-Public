@@ -1,4 +1,4 @@
-// XR_IOConsole.h: interface for the CConsole class.
+﻿// XR_IOConsole.h: interface for the CConsole class.
 //
 //////////////////////////////////////////////////////////////////////
 #ifndef XR_IOCONSOLE_H_INCLUDED

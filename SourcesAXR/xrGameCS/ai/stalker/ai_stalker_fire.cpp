@@ -258,8 +258,12 @@ void CAI_Stalker::Hit			(SHit* pHDS)
 			}
 		}
 
-		const CEntityAlive	*entity_alive = smart_cast<const CEntityAlive*>(HDS.initiator());
-		if (entity_alive && !wounded()) {
+		const CEntityAlive* entity_alive = smart_cast<const CEntityAlive*>(HDS.initiator());
+		IKinematics* tpKinematics = smart_cast<IKinematics*>(Visual());
+		m_bLastHittedInHead = HDS.bone() == tpKinematics->LL_BoneID("bip01_head") ? true : false;
+
+		if (entity_alive && !wounded() && !m_bLastHittedInHead)
+		{
 			if (is_relation_enemy(entity_alive))
 				sound().play		(eStalkerSoundInjuring);
 //			else
@@ -289,8 +293,6 @@ void CAI_Stalker::Hit			(SHit* pHDS)
 				float					power_factor = m_power_fx_factor * HDS.damage() / 100.f;
 				clamp					(power_factor,0.f,1.f);
 
-				//IKinematicsAnimated		*tpKinematics = smart_cast<IKinematicsAnimated*>(Visual());
-				IKinematics *tpKinematics = smart_cast<IKinematics*>(Visual());
 	#ifdef DEBUG
 				tpKinematics->LL_GetBoneInstance	(HDS.bone());
 				if (HDS.bone() >= tpKinematics->LL_BoneCount()) {

@@ -27,7 +27,6 @@ extern	u32		g_cl_InterpolationMaxPoints;
 extern string64	gsCDKey;
 extern	u32		g_dwMaxCorpses;
 extern	float	g_fTimeFactor;
-extern	BOOL	g_b_COD_PickUpMode		;
 extern	int		g_iWeaponRemove			;
 extern	int		g_iCorpseRemove			;
 extern	BOOL	g_bCollectStatisticData ;
@@ -1904,8 +1903,6 @@ void register_mp_console_commands()
 	CMD1(CCC_StartTimeEnvironment,	"sv_setenvtime");
 
 	CMD1(CCC_SetWeather,	"sv_setweather"			);
-
-	CMD4(CCC_Integer,		"cl_cod_pickup_mode",	&g_b_COD_PickUpMode,	0, 1)	;
 
 	CMD4(CCC_Integer,		"sv_remove_weapon",		&g_iWeaponRemove, -1, 1);
 	CMD4(CCC_Integer,		"sv_remove_corpse",		&g_iCorpseRemove, -1, 1);

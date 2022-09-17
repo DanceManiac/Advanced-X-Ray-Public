@@ -17,16 +17,18 @@
 #include "../InventoryBox.h"
 #include "../string_table.h"
 #include "../ai/monsters/BaseMonster/base_monster.h"
+#include "clsid_game.h"
+#include "Car.h"
 
 void move_item_from_to (u16 from_id, u16 to_id, u16 what_id)
 {
 	NET_Packet P;
-	CGameObject::u_EventGen					(P, GE_TRADE_SELL, from_id);
+	CGameObject::u_EventGen					(P, GE_OWNERSHIP_REJECT, from_id);
 	P.w_u16									(what_id);
 	CGameObject::u_EventSend				(P);
 
 	//другому инвентарю - взять вещь 
-	CGameObject::u_EventGen					(P, GE_TRADE_BUY, to_id);
+	CGameObject::u_EventGen					(P, GE_OWNERSHIP_TAKE, to_id);
 	P.w_u16									(what_id);
 	CGameObject::u_EventSend				(P);
 }
@@ -74,11 +76,15 @@ void CUIActorMenu::InitDeadBodySearchMode()
 		m_pPartnerInvOwner->inventory().AddAvailableItems( items_list, false ); //true
 		UpdatePartnerBag();
 	}
-	else
+	else if (m_pInvBox)
 	{
-		VERIFY( m_pInvBox );
+		//VERIFY( m_pInvBox );
 		m_pInvBox->m_in_use = true;
 		m_pInvBox->AddAvailableItems( items_list );
+	}
+	else if (m_pCar)
+	{
+		m_pCar->AddAvailableItems(items_list);
 	}
 
 	std::sort( items_list.begin(), items_list.end(),InventoryUtilities::GreaterRoomInRuck );
@@ -128,6 +134,9 @@ void CUIActorMenu::DeInitDeadBodySearchMode()
 	{
 		m_pInvBox->m_in_use = false;
 	}
+
+	m_pInvBox = NULL;
+	m_pCar = NULL;
 }
 
 bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)
@@ -155,9 +164,13 @@ bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)
 	{
 		move_item_from_to				(m_pActorInvOwner->object_id(), m_pPartnerInvOwner->object_id(), iitem->object_id());
 	}
-	else // box
+	else if (m_pInvBox) // box
 	{
 		move_item_from_to				(m_pActorInvOwner->object_id(), m_pInvBox->ID(), iitem->object_id());
+	}
+	else if (m_pCar) //car trunk
+	{
+		move_item_from_to(m_pActorInvOwner->object_id(), m_pCar->ID(), iitem->object_id());
 	}
 	
 	UpdateDeadBodyBag();
@@ -186,7 +199,7 @@ void CUIActorMenu::TakeAllFromPartner(CUIWindow* w, void* d)
 	VERIFY( m_pActorInvOwner );
 	if ( !m_pPartnerInvOwner )
 	{
-		if ( m_pInvBox )
+		if ( m_pInvBox || m_pCar)
 		{
 			TakeAllFromInventoryBox();
 		}
@@ -211,6 +224,7 @@ void CUIActorMenu::TakeAllFromPartner(CUIWindow* w, void* d)
 void CUIActorMenu::TakeAllFromInventoryBox()
 {
 	u16 actor_id = m_pActorInvOwner->object_id();
+	u16 _id = m_pInvBox ? m_pInvBox->ID() : m_pCar->ID();
 
 	u32 const cnt = m_pDeadBodyBagList->ItemsCount();
 	for ( u32 i = 0; i < cnt; ++i )
@@ -219,11 +233,11 @@ void CUIActorMenu::TakeAllFromInventoryBox()
 		for ( u32 j = 0; j < ci->ChildsCount(); ++j )
 		{
 			PIItem j_item = (PIItem)(ci->Child(j)->m_pData);
-			move_item_from_to( m_pInvBox->ID(), actor_id, j_item->object_id() );
+			move_item_from_to(_id, actor_id, j_item->object_id());
 		}
 
 		PIItem item = (PIItem)(ci->m_pData);
-		move_item_from_to( m_pInvBox->ID(), actor_id, item->object_id() );
+		move_item_from_to(_id, actor_id, item->object_id());
 	}//for i
 	m_pDeadBodyBagList->ClearAll( true ); // false
 }

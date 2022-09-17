@@ -31,6 +31,8 @@
 #include "CustomDetector.h"
 #include "clsid_game.h"
 #include "script_engine.h"
+#include "Weapon.h"
+#include "WeaponMagazined.h"
 
 bool g_bAutoClearCrouch = true;
 extern int hud_adj_mode;
@@ -181,6 +183,18 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					_s->wnd()->SetText			(str);
 				}
 			}
+		}break;
+	case kLASER_ON:
+		{
+			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+			if (wpn)
+				wpn->SwitchLaser(!wpn->IsLaserOn());
+		}break;
+	case kFLASHLIGHT:
+		{
+			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+			if (wpn)
+				wpn->SwitchFlashlight(!wpn->IsFlashlightOn());
 		}break;
 	}
 }

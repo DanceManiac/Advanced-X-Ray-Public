@@ -77,5 +77,8 @@ public:
 
 extern ENGINE_API	CApplication*	pApp;
 extern ENGINE_API	std::string ToUTF8			(const char* str);
+ENGINE_API extern bool bDeveloperMode;
+ENGINE_API extern bool bWinterMode;
+ENGINE_API extern bool bDofWeather;
 
 #endif //__XR_BASE_H__

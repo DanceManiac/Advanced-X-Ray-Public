@@ -60,6 +60,7 @@ CInventoryItem::CInventoryItem()
 	m_Description		= "";
 	m_section_id		= 0;
 	m_is_helper			= false;
+	m_bCanUse			= true;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -123,6 +124,7 @@ void CInventoryItem::Load(LPCSTR section)
 	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",		NULL);
 
 	m_fLowestBatteryCharge		= READ_IF_EXISTS(pSettings, r_float, section, "power_critical", .03f);
+	m_bCanUse					= READ_IF_EXISTS(pSettings, r_bool, section, "can_use", true);
 }
 
 void  CInventoryItem::ChangeCondition(float fDeltaCondition)
@@ -174,6 +176,8 @@ LPCSTR CInventoryItem::NameComplex()
 */
 bool CInventoryItem::Useful() const
 {
+	if (!m_bCanUse) return false;
+
 	return CanTake();
 }
 

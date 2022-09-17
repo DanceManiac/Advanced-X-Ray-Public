@@ -16,6 +16,13 @@ public:
 	//уменьшенная версия хита, для вызова, когда костюм надет на персонажа
 	virtual void			Hit					(float P, ALife::EHitType hit_type);
 	virtual void			UpdateCL			();
+	virtual void			save				(NET_Packet& output_packet);
+	virtual void			load				(IReader& input_packet);
+	void					UpdateFilterCondition(void);
+	float					GetFilterCondition	(void) const;
+	void					SetFilterCondition	(float val);
+	float					GetDegradationSpeed	(void) const;
+	void					FilterReplace		(float val);
 
 	//коэффициенты на которые домножается хит
 	//при соответствующем типе воздействия
@@ -34,7 +41,6 @@ public:
 	virtual void			OnMoveToRuck		(EItemPlace prev);
 
 protected:
-	HitImmunity::HitTypeSVec		m_HitTypeProtection;
 	float							m_fPowerLoss;
 
 	shared_str				m_ActorVisual;
@@ -56,15 +62,21 @@ public:
 	float 					m_fThirstRestoreSpeed;
 	float 					m_fIntoxicationRestoreSpeed;
 	float 					m_fSleepenessRestoreSpeed;
+	float 					m_fAlcoholismRestoreSpeed;
+	float 					m_fNarcotismRestoreSpeed;
 
 	float					m_fJumpSpeed;
 	float					m_fWalkAccel;
 	float					m_fOverweightWalkK;
+	float					m_fFilterDegradation;
+	float					m_fMaxFilterCondition;
+	float					m_fFilterCondition;
 
 	shared_str				m_NightVisionSect;
 	shared_str				m_BonesProtectionSect;
 
 	bool					m_b_HasGlass;
+	bool					m_bUseFilter;
 	u32						m_NightVisionType;
 
 	virtual u32				ef_equipment_type		() const;
@@ -80,6 +92,8 @@ public:
 
 			IC int			GetOutfitNV_Type		() const {return m_NightVisionType;}
 
+	HitImmunity::HitTypeSVec m_ConstHitTypeProtection;
+	HitImmunity::HitTypeSVec m_HitTypeProtection;
 protected:
 	virtual bool			install_upgrade_impl( LPCSTR section, bool test );
 };

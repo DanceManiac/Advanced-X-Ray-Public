@@ -64,7 +64,7 @@ void CUICursor::OnRender	()
 #ifdef DEBUG
 	VERIFY(!g_pGamePersistent->IsMainMenuActive() || last_render_frame != Device.dwFrame);
 
-	if(bDebug)
+	if (bDebug)
 	{
 	CGameFont* F		= UI().Font().pFontDI;
 	F->SetAligment		(CGameFont::alCenter);

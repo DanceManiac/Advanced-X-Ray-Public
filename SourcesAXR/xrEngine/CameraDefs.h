@@ -1,4 +1,4 @@
-#ifndef CAMERA_DEFS_H_INCLUDED
+﻿#ifndef CAMERA_DEFS_H_INCLUDED
 #define CAMERA_DEFS_H_INCLUDED
 
 #pragma once
@@ -8,6 +8,22 @@ struct ENGINE_API SBaseEffector
 	typedef fastdelegate::FastDelegate0<>		CB_ON_B_REMOVE;
 	CB_ON_B_REMOVE				m_on_b_remove_callback;
 	virtual ~SBaseEffector(){}
+};
+
+enum ECameraStyle
+{
+	csCamDebug,
+	csFirstEye,
+	csLookAt,
+	csMax,
+	csFixed,
+	cs_forcedword = u32(-1)
+};
+
+enum ECamEffectorType
+{
+	cefDemo = 0,
+	cefNext
 };
 
 struct ENGINE_API SCamEffectorInfo
@@ -21,6 +37,10 @@ struct ENGINE_API SCamEffectorInfo
 	float		fAspect; 
 	bool		dont_apply;
 	bool		affected_on_hud;
+
+	ECameraStyle style;
+	CObject* parent;
+
 	SCamEffectorInfo();
 	SCamEffectorInfo& operator	= (const SCamEffectorInfo& other)
 	{
@@ -33,22 +53,10 @@ struct ENGINE_API SCamEffectorInfo
 		fAspect				= other.fAspect; 
 		dont_apply			= other.dont_apply;
 		affected_on_hud		= other.affected_on_hud;
+		style				= other.style;
+		parent				= other.parent;
 		return				*this;
 	}
-};
-
-enum ECameraStyle       {
-	csCamDebug,
-	csFirstEye,
-	csLookAt,
-    csMax,
-	csFixed,
-	cs_forcedword = u32(-1)
-};
-
-enum ECamEffectorType		{
-	cefDemo		=0,
-	cefNext
 };
 
 enum EEffectorPPType	{

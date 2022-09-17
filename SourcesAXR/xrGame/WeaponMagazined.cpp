@@ -221,6 +221,10 @@ void CWeaponMagazined::FireEnd()
 	if (m_bAutoreloadEnabled)
 	{
 		CActor	*actor = smart_cast<CActor*>(H_Parent());
+
+		if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
+			return;
+
 		if (m_pInventory && !iAmmoElapsed && actor && GetState() != eReload)
 			Reload();
 	}
@@ -336,6 +340,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
+
+	if (iAmmoElapsed < 0)
+		iAmmoElapsed = 0;
 	
 	if (!spawn_ammo)
 		return;
@@ -355,6 +362,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 		}
 		if(l_it->second && !unlimited_ammo()) SpawnAmmo(l_it->second, l_it->first);
 	}
+
+	if (iAmmoElapsed < 0)
+		iAmmoElapsed = 0;
 }
 
 void CWeaponMagazined::ReloadMagazine() 
@@ -680,7 +690,7 @@ void CWeaponMagazined::SetDefaults	()
 void CWeaponMagazined::OnShot()
 {
 	// ≈сли актор бежит - останавливаем его
-	if (ParentIsActor())
+	if (ParentIsActor() && GameConstants::GetStopActorIfShoot())
 		Actor()->set_state_wishful(Actor()->get_state_wishful() & (~mcSprint));
 
 	// Sound
@@ -996,7 +1006,9 @@ bool CWeaponMagazined::Action(u16 cmd, u32 flags)
 	{
 	case kWPN_RELOAD:
 		{
-			if(flags&CMD_START) 
+			if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
+				break;
+			else if(flags&CMD_START) 
 				if (iAmmoElapsed < iMagazineSize || IsMisfire())
 				{
 					if (GetState() == eUnMisfire) // Rietmon: «апрещаем перезар€дку, если играет анима передергивани€ затвора
@@ -1420,7 +1432,9 @@ const char* CWeaponMagazined::GetAnimAimName()
 	auto pActor = smart_cast<const CActor*>(H_Parent());
 	if (pActor)
 	{
-		if (const u32 state = pActor->get_state() && state & mcAnyMove) 
+		const u32 state = pActor->get_state();
+
+		if (state && state & mcAnyMove) 
 		{
 			if (IsScopeAttached()) 
 			{

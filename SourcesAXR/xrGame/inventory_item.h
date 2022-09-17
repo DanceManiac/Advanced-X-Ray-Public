@@ -30,6 +30,8 @@ class CWeapon;
 class CPhysicsShellHolder;
 class NET_Packet;
 class CEatableItem;
+class CAntigasFilter;
+class CBattery;
 struct SPHNetState;
 struct net_update_IItem;
 
@@ -81,6 +83,7 @@ protected:
 
 	Flags16						m_flags;
 	BOOL						m_can_trade;
+	bool						m_bCanUse;
 public:
 								CInventoryItem		();
 	virtual						~CInventoryItem		();
@@ -259,6 +262,8 @@ public:
 	virtual CAttachableItem		*cast_attachable_item		()	{return this;}
 	virtual CPhysicsShellHolder	*cast_physics_shell_holder	()	{return 0;}
 	virtual CEatableItem		*cast_eatable_item			()	{return 0;}
+	virtual CAntigasFilter		*cast_filter				()	{return 0;}
+	virtual CBattery			*cast_battery				()	{return 0;}
 	virtual CWeapon				*cast_weapon				()	{return 0;}
 	virtual CFoodItem			*cast_food_item				()	{return 0;}
 	virtual CMissile			*cast_missile				()	{return 0;}

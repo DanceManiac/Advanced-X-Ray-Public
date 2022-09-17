@@ -11,6 +11,7 @@
 #include "..\ActorCondition.h"
 #include "..\player_hud.h"
 
+#include "AdvancedXrayGameConstants.h"
 
 LPCSTR immunity_names[]=
 {
@@ -21,8 +22,8 @@ LPCSTR immunity_names[]=
 	"telepatic_immunity",
 	"wound_immunity",		
 	"fire_wound_immunity",
-//	"strike_immunity",
-//	"explosion_immunity",
+	"strike_immunity",
+	"explosion_immunity",
 };
 
 LPCSTR immunity_st_names[]=
@@ -34,8 +35,8 @@ LPCSTR immunity_st_names[]=
 	"ui_inv_outfit_telepatic_protection",
 	"ui_inv_outfit_wound_protection",
 	"ui_inv_outfit_fire_wound_protection",
-//	"ui_inv_outfit_strike_protection",
-//	"ui_inv_outfit_explosion_protection",
+	"ui_inv_outfit_strike_protection",
+	"ui_inv_outfit_explosion_protection",
 };
 
 CUIOutfitImmunity::CUIOutfitImmunity()
@@ -43,6 +44,8 @@ CUIOutfitImmunity::CUIOutfitImmunity()
 	AttachChild( &m_name );
 	AttachChild( &m_progress );
 	AttachChild( &m_value );
+	AttachChild(&m_filter_name);
+	AttachChild(&m_filter_progress);
 	m_magnitude = 1.0f;
 }
 
@@ -70,6 +73,21 @@ void CUIOutfitImmunity::InitFromXml( CUIXml& xml_doc, LPCSTR base_str, u32 hit_t
 	m_magnitude = xml_doc.ReadAttribFlt( buf, 0, "magnitude", 1.0f );
 }
 
+void CUIOutfitImmunity::InitFromXml(CUIXml& xml_doc, LPCSTR base_str)
+{
+	CUIXmlInit::InitWindow(xml_doc, base_str, 0, this);
+
+	string256 buf;
+
+	strconcat(sizeof(buf), buf, base_str, ":", "antigas_filter");
+	CUIXmlInit::InitWindow(xml_doc, buf, 0, this);
+	CUIXmlInit::InitStatic(xml_doc, buf, 0, &m_filter_name);
+	strconcat(sizeof(buf), buf, base_str, ":", "antigas_filter", ":progress_bar");
+	m_filter_progress.InitFromXml(xml_doc, buf);
+
+	m_magnitude = xml_doc.ReadAttribFlt(buf, 0, "magnitude", 1.0f);
+}
+
 void CUIOutfitImmunity::SetProgressValue( float cur, float comp )
 {
 	cur  *= m_magnitude;
@@ -81,6 +99,13 @@ void CUIOutfitImmunity::SetProgressValue( float cur, float comp )
 	m_value.SetText( buf );
 }
 
+void CUIOutfitImmunity::SetFilterProgressValue(float cur, float comp)
+{
+	cur *= m_magnitude;
+	comp *= m_magnitude;
+	m_filter_progress.SetTwoPos(cur, comp);
+}
+
 // ===========================================================================================
 
 CUIOutfitInfo::CUIOutfitInfo()
@@ -89,6 +114,8 @@ CUIOutfitInfo::CUIOutfitInfo()
 	{
 		m_items[i] = NULL;
 	}
+
+	m_outfit_filter_condition = NULL;
 }
 
 CUIOutfitInfo::~CUIOutfitInfo()
@@ -97,9 +124,11 @@ CUIOutfitInfo::~CUIOutfitInfo()
 	{
 		xr_delete( m_items[i] );
 	}
+
+	xr_delete(m_outfit_filter_condition);
 }
 
-void CUIOutfitInfo::InitFromXml( CUIXml& xml_doc )
+void CUIOutfitInfo::InitFromXml( CUIXml& xml_doc)
 {
 	LPCSTR base_str	= "outfit_info";
 
@@ -131,6 +160,16 @@ void CUIOutfitInfo::InitFromXml( CUIXml& xml_doc )
 		m_items[i]->SetWndPos( pos );
 		pos.y += m_items[i]->GetWndSize().y;
 	}
+
+	if (GameConstants::GetOutfitUseFilters())
+	{
+		m_outfit_filter_condition = xr_new<CUIOutfitImmunity>();
+		m_outfit_filter_condition->InitFromXml(xml_doc, base_str);
+		AttachChild(m_outfit_filter_condition);
+		m_outfit_filter_condition->SetWndPos(pos);
+		pos.y += m_outfit_filter_condition->GetWndSize().y;
+	}
+
 	pos.x = GetWndSize().x;
 	SetWndSize( pos );
 }
@@ -193,6 +232,15 @@ void CUIOutfitInfo::UpdateInfo( CCustomOutfit* cur_outfit, CCustomOutfit* slot_o
 		slot /= max_power;
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue( cur, slot );
 	}
+
+	float cur_filter = cur_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS;
+	float slot_filter = cur_filter;
+
+	if (slot_outfit && (slot_outfit != cur_outfit))
+	{
+		slot_filter = slot_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS;
+	}
+	m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
 }
 
 
@@ -238,4 +286,12 @@ void CUIOutfitInfo::UpdateInfo( CHelmet* cur_helmet, CHelmet* slot_helmet )
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue( cur, slot );
 	}
 
+	float cur_filter = cur_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS;
+	float slot_filter = cur_filter;
+
+	if (slot_helmet && (slot_helmet != cur_helmet))
+	{
+		slot_filter = slot_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS;
+	}
+	m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
 }

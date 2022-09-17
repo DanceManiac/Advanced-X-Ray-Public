@@ -1,4 +1,4 @@
-// HW.cpp: implementation of the CHW class.
+﻿// HW.cpp: implementation of the CHW class.
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -188,9 +188,16 @@ void	CHW::DestroyDevice	()
 	free_vid_mode_list		();
 #endif
 }
+
+extern ENGINE_API void GetMonitorResolution(u32& horizontal, u32& vertical);
+
 void	CHW::selectResolution	(u32 &dwWidth, u32 &dwHeight, BOOL bWindowed)
 {
 	fill_vid_mode_list			(this);
+
+	if (psCurrentVidMode[0] == 0 || psCurrentVidMode[1] == 0)
+		GetMonitorResolution(psCurrentVidMode[0], psCurrentVidMode[1]);
+
 #ifndef _EDITOR
 	if (g_dedicated_server)
 	{

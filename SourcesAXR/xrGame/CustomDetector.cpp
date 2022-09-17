@@ -384,7 +384,7 @@ void CCustomDetector::UpdateChargeLevel(void)
 
 		//Msg("Заряд детектора: %f", m_fCurrentChargeLevel); //Для тестов
 
-		clamp(m_fCurrentChargeLevel, 0.f, 1.f);
+		clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 		SetCondition(m_fCurrentChargeLevel);
 	}
 	/*else
@@ -404,20 +404,20 @@ float CCustomDetector::GetCurrentChargeLevel() const
 void CCustomDetector::SetCurrentChargeLevel(float val)
 {
 	m_fCurrentChargeLevel = val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
 	SetCondition(condition);
 }
 
 void CCustomDetector::Recharge(float val)
 {
-	m_fCurrentChargeLevel = m_fCurrentChargeLevel + val;
+	m_fCurrentChargeLevel += val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	SetCondition(m_fCurrentChargeLevel);
 
 	//Msg("Переданый в детектор заряд: %f", val); //Для Тестов
-
-	if (m_fCurrentChargeLevel > m_fMaxChargeLevel)
-		m_fCurrentChargeLevel = m_fMaxChargeLevel;
 }
 
 BOOL CAfList::feel_touch_contact	(CObject* O)

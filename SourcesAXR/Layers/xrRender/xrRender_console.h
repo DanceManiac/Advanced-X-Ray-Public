@@ -1,4 +1,4 @@
-#ifndef xrRender_consoleH
+﻿#ifndef xrRender_consoleH
 #define xrRender_consoleH
 #pragma once
 
@@ -166,6 +166,8 @@ extern ECORE_API float			ps_r2_rain_drops_speed;
 
 extern ECORE_API int			opt_static;
 extern ECORE_API int			opt_dynamic;
+//SFZ Lens Flares
+extern ECORE_API int			ps_r2_lfx;
 
 enum
 {
@@ -299,5 +301,9 @@ extern void						xrRender_initconsole	();
 extern BOOL						xrRender_test_hw		();
 extern void						xrRender_apply_tf		();
 extern ECORE_API float			droplets_power_debug;
+
+// M.F.S. Team: Flares Render
+extern ECORE_API	u32			ps_r2_flares;
+extern ECORE_API	xr_token	qflares_token[];
 
 #endif

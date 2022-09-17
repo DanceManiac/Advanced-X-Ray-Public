@@ -1,4 +1,4 @@
-// dx10HW.cpp: implementation of the DX10 specialisation of CHW.
+﻿// dx10HW.cpp: implementation of the DX10 specialisation of CHW.
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -615,9 +615,14 @@ D3DFORMAT CHW::selectDepthStencil	(D3DFORMAT fTarget)
 	return D3DFMT_D24S8;
 }
 
+extern ENGINE_API void GetMonitorResolution(u32& horizontal, u32& vertical);
+
 void CHW::selectResolution( u32 &dwWidth, u32 &dwHeight, BOOL bWindowed )
 {
 	fill_vid_mode_list			(this);
+
+	if (psCurrentVidMode[0] == 0 || psCurrentVidMode[1] == 0)
+		GetMonitorResolution(psCurrentVidMode[0], psCurrentVidMode[1]);
 
 	if(bWindowed)
 	{

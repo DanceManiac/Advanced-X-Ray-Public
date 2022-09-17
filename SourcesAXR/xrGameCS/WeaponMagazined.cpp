@@ -214,6 +214,10 @@ void CWeaponMagazined::FireEnd()
 	if (m_bAutoreloadEnabled)
 	{
 		CActor	*actor = smart_cast<CActor*>(H_Parent());
+
+		if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
+			return;
+
 		if (m_pInventory && !iAmmoElapsed && actor && GetState() != eReload)
 			Reload();
 	}
@@ -335,6 +339,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 	}
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
+
+	if (iAmmoElapsed < 0)
+		iAmmoElapsed = 0;
 	
 	if (!spawn_ammo)
 		return;
@@ -351,6 +358,9 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 		}
 		if(l_it->second && !unlimited_ammo()) SpawnAmmo(l_it->second, l_it->first);
 	}
+
+	if (iAmmoElapsed < 0)
+		iAmmoElapsed = 0;
 }
 
 void CWeaponMagazined::ReloadMagazine() 
@@ -661,7 +671,7 @@ void CWeaponMagazined::SetDefaults	()
 void CWeaponMagazined::OnShot()
 {
 	// Если актор бежит - останавливаем его
-	if (ParentIsActor())
+	if (ParentIsActor() && GameConstants::GetStopActorIfShoot())
 		Actor()->set_state_wishful(Actor()->get_state_wishful() & (~mcSprint));
 
 	// Sound
@@ -961,7 +971,9 @@ bool CWeaponMagazined::Action(s32 cmd, u32 flags)
 	{
 	case kWPN_RELOAD:
 		{
-			if(flags&CMD_START) 
+			if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
+				break;
+			else if (flags & CMD_START)
 				if (iAmmoElapsed < iMagazineSize || IsMisfire())
 				{
 					if (GetState() == eUnMisfire) // Rietmon: Запрещаем перезарядку, если играет анима передергивания затвора
@@ -1248,38 +1260,36 @@ void CWeaponMagazined::InitAddons()
 				m_cur_scope_bone = ScopeBone;
 			}
 		}
-		else
-		{
-			if (m_UIScope)
-				xr_delete(m_UIScope);
+	}
+	else
+	{
+		if (m_UIScope)
+			xr_delete(m_UIScope);
 
-			/*if (bIsSecondVPZoomPresent())
-			{
-				m_zoom_params.m_fSecondVPFovFactor = 0.0f;
-			}*/
+		if (bIsSecondVPZoomPresent())
+			m_zoom_params.m_fSecondVPFovFactor = 0.0f;
 
-			if (IsZoomEnabled())
-				m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
-		}
+		if (IsZoomEnabled())
+			m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+	}
 
-		if (IsSilencerAttached() && SilencerAttachable())
-		{
-			m_sFlameParticlesCurrent = m_sSilencerFlameParticles;
-			m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
+	if (IsSilencerAttached() && SilencerAttachable())
+	{
+		m_sFlameParticlesCurrent = m_sSilencerFlameParticles;
+		m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
 
-			//подсветка от выстрела
-			LoadLights(*cNameSect(), "silencer_");
-			ApplySilencerKoeffs();
-		}
-		else
-		{
-			m_sFlameParticlesCurrent = m_sFlameParticles;
-			m_sSmokeParticlesCurrent = m_sSmokeParticles;
+		//подсветка от выстрела
+		LoadLights(*cNameSect(), "silencer_");
+		ApplySilencerKoeffs();
+	}
+	else
+	{
+		m_sFlameParticlesCurrent = m_sFlameParticles;
+		m_sSmokeParticlesCurrent = m_sSmokeParticles;
 
-			//подсветка от выстрела
-			LoadLights(*cNameSect(), "");
-			ResetSilencerKoeffs();
-		}
+		//подсветка от выстрела
+		LoadLights(*cNameSect(), "");
+		ResetSilencerKoeffs();
 	}
 
 	inherited::InitAddons();
@@ -1388,7 +1398,9 @@ const char* CWeaponMagazined::GetAnimAimName()
 	auto pActor = smart_cast<const CActor*>(H_Parent());
 	if (pActor)
 	{
-		if (const u32 state = pActor->get_state() && state & mcAnyMove)
+		const u32 state = pActor->get_state();
+
+		if (state && state & mcAnyMove)
 		{
 			if (IsScopeAttached())
 			{

@@ -39,7 +39,7 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_radiation_protection",
 	"boost_telepat_protection",
 	"boost_chemburn_protection",
-	"boost_burn_immunity",
+	/*"boost_burn_immunity",
 	"boost_shock_immunity",
 	"boost_radiation_immunity",
 	"boost_telepat_immunity",
@@ -47,7 +47,22 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_explosion_immunity",
 	"boost_strike_immunity",
 	"boost_fire_wound_immunity",
-	"boost_wound_immunity"
+	"boost_wound_immunity",*/
+	"boost_satiety",
+
+	//M.F.S team additions
+	"boost_battery",
+	"boost_thirst",
+	"boost_intoxication",
+	"boost_sleepeness",
+
+	//HoP
+	"boost_alcoholism",
+	"boost_hangover",
+	"boost_narcotism",
+	"boost_withdrawal",
+
+	"boost_filter_condition"
 };
 
 struct SBooster{
@@ -65,10 +80,15 @@ struct SMedicineInfluenceValues{
 	float fThirst;
 	float fIntoxication;
 	float fSleepeness;
+	float fAlcoholism;
+	float fHangover;
+	float fNarcotism;
+	float fWithdrawal;
 	float fRadiation;
 	float fWoundsHeal;
 	float fMaxPowerUp;
 	float fAlcohol;
+	float fDrugs;
 	float fTimeTotal;
 	float fTimeCurrent;
 
@@ -116,6 +136,10 @@ public:
 	IC float				GetThirst				() const			{return m_fThirst;}
 	IC float				GetIntoxication			() const			{return m_fIntoxication;}
 	IC float				GetSleepeness			() const			{return m_fSleepeness;}
+	IC float				GetAlcoholism			() const			{return m_fAlcoholism;}
+	IC float				GetHangover				() const			{return m_fHangover;}
+	IC float				GetNarcotism			() const			{return m_fNarcotism;}
+	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -127,6 +151,11 @@ public:
 	virtual void			ChangeThirst			(const float value)		{};
 	virtual void			ChangeIntoxication		(const float value)		{};
 	virtual void			ChangeSleepeness		(const float value)		{};
+	virtual void			ChangeAlcoholism		(const float value)		{};
+	virtual void			ChangeHangover			(const float value)		{};
+	virtual void			ChangeNarcotism			(const float value)		{};
+	virtual void			ChangeWithdrawal		(const float value)		{};
+	virtual void 			ChangeDrugs				(const float value)		{};
 	void 					ChangeHealth			(const float value);
 	void 					ChangePower				(const float value);
 	void 					ChangeRadiation			(const float value);
@@ -199,6 +228,10 @@ protected:
 	float m_fThirst;				//Жажда
 	float m_fIntoxication;			//Интоксикация
 	float m_fSleepeness;			//Сонливость
+	float m_fAlcoholism;			//Алкоголизм
+	float m_fHangover;				//Похмелье
+	float m_fNarcotism;				//Наркомания
+	float m_fWithdrawal;			//Ломка
 
 	//максимальные величины
 	//	float m_fSatietyMax;

@@ -31,6 +31,7 @@ public:
 	virtual void					UseBy				(CEntityAlive* entity_alive);
 protected:
 	float		m_alcohol;
+	float		m_drugs;
 	//партиклы разбивания бутылки
 	shared_str m_sBreakParticles;
 	ref_sound sndBreaking;

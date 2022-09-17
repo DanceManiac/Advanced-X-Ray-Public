@@ -104,6 +104,46 @@
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</chemical_burn_immunity>
+	
+	<strike_immunity x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_prop_strike</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="30">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</strike_immunity>
+	
+	<wound_immunity x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_prop_damage</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="30">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</wound_immunity>
+	
+	<explosion_immunity x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_prop_exlp</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="30">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</explosion_immunity>
+	
+	<fire_wound_immunity x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_propery_01</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="30">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</fire_wound_immunity>
 
 	<additional_weight x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
@@ -145,6 +185,26 @@
 		</value>
 	</sleepeness_restore_speed>
 	
+	<alcoholism_restore_speed x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_mfs_alcoholism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</alcoholism_restore_speed>
+	
+	<narcotism_restore_speed x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_mfs_narcotism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</narcotism_restore_speed>
+	
 	<artefact_charge_level x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_mfs_item_effectiveness</texture>
@@ -174,5 +234,15 @@
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</jump_speed>
+	
+	<artefact_rank x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_af_rank</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" show_sign="0">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</artefact_rank>
 
 </af_params>

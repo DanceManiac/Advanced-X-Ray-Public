@@ -1,12 +1,17 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
-
 #include "../xrRender/dxEnvironmentRender.h"
+#include "../../xrEngine/x_ray.h"
 
 #define STENCIL_CULL 0
 
 ENGINE_API extern int ps_r__ShaderNVG;
+
+bool sort_function(Fvector4 i, Fvector4 j)
+{
+	return (i.w < j.w);
+}
 
 void CRenderTarget::DoAsyncScreenshot()
 {
@@ -43,6 +48,7 @@ void	CRenderTarget::phase_combine	()
 
 	//	TODO: DX10: Remove half poxel offset
 	bool	_menu_pp	= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
+	bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
 
 	u32			Offset					= 0;
 	Fvector2	p0,p1;
@@ -394,7 +400,6 @@ void	CRenderTarget::phase_combine	()
 	//Hud Mask
 	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
-		bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 			phase_hud_mask();
@@ -424,7 +429,7 @@ void	CRenderTarget::phase_combine	()
 	phase_blur();
 
 	//Compute bloom (new)
-	//phase_pp_bloom(); Пока вырубил
+	//phase_pp_bloom(); ???? ???????
 
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.
@@ -433,8 +438,7 @@ void	CRenderTarget::phase_combine	()
 
 	if (!_menu_pp)
 	{
-		bool RenderWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
-		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !RenderWinterMode)
+		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
 			PhaseRainDrops();
 	}
 			
@@ -487,10 +491,22 @@ void	CRenderTarget::phase_combine	()
 		pv->p.set(float(_w+EPS),EPS,			EPS,1.f); pv->uv0.set(p1.x, p0.y);pv->uv1.set(p1.x-ddw,p0.y-ddh);pv->uv2.set(p1.x+ddw,p0.y+ddh);pv->uv3.set(p1.x+ddw,p0.y-ddh);pv->uv4.set(p1.x-ddw,p0.y+ddh);pv->uv5.set(p1.x-ddw,p0.y,p0.y,p1.x+ddw);pv->uv6.set(p1.x,p0.y-ddh,p0.y+ddh,p1.x);pv++;
 		RCache.Vertex.Unlock		(4,g_aa_AA->vb_stride);
 
+		// : get value from weather or from console
+		float kernel_size = ps_r2_dof_kernel_size;
+		float dof_sky = ps_r2_dof_sky;
+		Fvector3 dof_value = ps_r2_dof;
+		if (bDofWeather)
+		{
+			kernel_size = g_pGamePersistent->Environment().CurrentEnv->dof_kernel;
+			dof_sky = g_pGamePersistent->Environment().CurrentEnv->dof_sky;
+			dof_value = g_pGamePersistent->Environment().CurrentEnv->dof_value;
+		}
+		g_pGamePersistent->SetBaseDof(dof_value);
+
 		//	Set up variable
 		Fvector2	vDofKernel;
 		vDofKernel.set(0.5f/Device.dwWidth, 0.5f/Device.dwHeight);
-		vDofKernel.mul(ps_r2_dof_kernel_size);
+		vDofKernel.mul(kernel_size);
 
 		// Draw COLOR
       if( !RImplementation.o.dx10_msaa )
@@ -513,9 +529,8 @@ void	CRenderTarget::phase_combine	()
 		//RCache.set_c				("saturation",	ps_saturation, 0, 0, 0);
 		Fvector3					dof;
 		g_pGamePersistent->GetCurrentDof(dof);
-		RCache.set_c				("dof_params",	dof.x, dof.y, dof.z, ps_r2_dof_sky);
-//.		RCache.set_c				("dof_params",	ps_r2_dof.x, ps_r2_dof.y, ps_r2_dof.z, ps_r2_dof_sky);
-		RCache.set_c				("dof_kernel",	vDofKernel.x, vDofKernel.y, ps_r2_dof_kernel_size, 0);
+		RCache.set_c				("dof_params", dof.x, dof.y, dof.z, dof_sky);
+		RCache.set_c				("dof_kernel", vDofKernel.x, vDofKernel.y, kernel_size, 0);
 		
 		RCache.set_Geometry			(g_aa_AA);
 		RCache.Render				(D3DPT_TRIANGLELIST,Offset,0,4,0,2);
@@ -523,7 +538,25 @@ void	CRenderTarget::phase_combine	()
 	RCache.set_Stencil		(FALSE);
 
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
-	/* if (!RImplementation.o.fp16_blend)*/	g_pGamePersistent->Environment().RenderFlares	();	// lens-flares
+
+	if (HudGlassEnabled && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
+	{
+		g_pGamePersistent->Environment().RenderFlares();// lens-flares
+
+		if (!!ps_r2_lfx)
+		{
+			std::sort(m_miltaka_lfx_color.begin(), m_miltaka_lfx_color.end(), sort_function);
+			std::sort(m_miltaka_lfx_coords.begin(), m_miltaka_lfx_coords.end(), sort_function);
+
+			for (u32 i = 0; i < _min((u32)3, m_miltaka_lfx_coords.size()); ++i)
+			{
+				phase_lfx(i);
+			}
+		}
+	}
+
+	m_miltaka_lfx_color.clear_not_free();
+	m_miltaka_lfx_coords.clear_not_free();
 
 	//	PP-if required
 	if (PP_Complex)		

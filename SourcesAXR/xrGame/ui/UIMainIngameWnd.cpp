@@ -151,6 +151,9 @@ void CUIMainIngameWnd::Init()
 	m_ind_thirst			= UIHelper::CreateStatic(uiXml, "indicator_thirst", this);
 	m_ind_intoxication		= UIHelper::CreateStatic(uiXml, "indicator_intoxication", this);
 	m_ind_sleepeness		= UIHelper::CreateStatic(uiXml, "indicator_sleepeness", this);
+	m_ind_alcoholism		= UIHelper::CreateStatic(uiXml, "indicator_alcoholism", this);
+	m_ind_narcotism			= UIHelper::CreateStatic(uiXml, "indicator_narcotism", this);
+	m_ind_filter_dirty		= UIHelper::CreateStatic(uiXml, "indicator_filter", this);
 	m_ind_weapon_broken		= UIHelper::CreateStatic(uiXml, "indicator_weapon_broken", this);
 	m_ind_helmet_broken		= UIHelper::CreateStatic(uiXml, "indicator_helmet_broken", this);
 	m_ind_outfit_broken		= UIHelper::CreateStatic(uiXml, "indicator_outfit_broken", this);
@@ -805,18 +808,111 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		{
 			m_ind_sleepeness->InitTexture("ui_inGame2_circle_sleepeness_yellow");
 		}
-		else if (sleepeness >= 0.85f)
+		else if (sleepeness > 0.85f)
 		{
 			m_ind_sleepeness->InitTexture("ui_inGame2_circle_sleepeness_red");
+		}
+	}
+
+	// M.F.S. Team Alcoholism icon (HoP)
+	float alcoholism = pActor->conditions().GetAlcoholism();
+	float hangover = pActor->conditions().GetHangover();
+	if (alcoholism < 0.0)
+	{
+		m_ind_alcoholism->Show(false);
+	}
+	else
+	{
+		m_ind_alcoholism->Show(true);
+		if (alcoholism > 1.0f && alcoholism <= 2.0f)
+		{
+			if (hangover >= 1.0f && hangover <= 2.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
+			else if (hangover >= 2.0f && hangover <= 2.5f)
+					m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
+			else if (hangover > 2.5f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
+			else
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_green");
+		}
+		else if (alcoholism >= 2.0f && alcoholism <= 3.0f)
+		{
+			if (hangover >= 1.0f && hangover <= 2.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
+			else if (hangover >= 2.0f && hangover <= 2.5f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
+			else if (hangover > 2.5f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
+			else
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_yellow");
+		}
+		else if (alcoholism >= 3.75f)
+		{
+			if (hangover >= 1.0f && hangover <= 2.0f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_green");
+			else if (hangover >= 2.0f && hangover <= 2.5f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_yellow");
+			else if (hangover > 2.5f)
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_hangover_red");
+			else
+				m_ind_alcoholism->InitTexture("ui_inGame2_circle_alcoholism_red");
+		}
+	}
+
+	// M.F.S. Team Narcotism icon (HoP)
+	float narcotism = pActor->conditions().GetNarcotism();
+	float withdrawal = pActor->conditions().GetWithdrawal();
+	if (narcotism < 0.0)
+	{
+		m_ind_narcotism->Show(false);
+	}
+	else
+	{
+		m_ind_narcotism->Show(true);
+		if (narcotism > 1.0f && narcotism <= 3.5f)
+		{
+			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
+			else if (withdrawal >= 2.0f && withdrawal <= 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_yellow");
+			else if (withdrawal > 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_red");
+			else
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_green");
+		}
+		else if (narcotism >= 3.5f && narcotism <= 6.0f)
+		{
+			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
+			else if (withdrawal >= 2.0f && withdrawal <= 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_yellow");
+			else if (withdrawal > 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_red");
+			else
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_yellow");
+		}
+		else if (narcotism > 8.5f)
+		{
+			if (withdrawal >= 1.0f && withdrawal <= 2.0f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_green");
+			else if (withdrawal >= 2.0f && withdrawal <= 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_yellow");
+			else if (withdrawal > 2.5f)
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_red");
+			else
+				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_red");
 		}
 	}
 
 // Armor broken icon
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(pActor->inventory().ItemFromSlot(OUTFIT_SLOT));
 	m_ind_outfit_broken->Show(false);
+	m_ind_filter_dirty->Show(false);
+
 	if(outfit)
 	{
 		float condition = outfit->GetCondition();
+		float filter_cond = outfit->GetFilterCondition();
 		if(condition<0.75f)
 		{
 			m_ind_outfit_broken->Show(true);
@@ -827,6 +923,17 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			else
 				m_ind_outfit_broken->InitTexture("ui_inGame2_circle_Armorbroken_red");
 		}
+
+		if (filter_cond < 0.75f)
+		{
+			m_ind_filter_dirty->Show(true);
+			if (filter_cond > 0.5f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_green");
+			else if (filter_cond > 0.25f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_yellow");
+			else
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_red");
+		}
 	}
 // Helmet broken icon
 	CHelmet* helmet = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
@@ -834,6 +941,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	if(helmet)
 	{
 		float condition = helmet->GetCondition();
+		float filter_cond = helmet->GetFilterCondition();
 		if(condition<0.75f)
 		{
 			m_ind_helmet_broken->Show(true);
@@ -843,6 +951,17 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_yellow");
 			else
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_red");
+		}
+
+		if (filter_cond < 0.75f)
+		{
+			m_ind_filter_dirty->Show(true);
+			if (filter_cond > 0.5f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_green");
+			else if (filter_cond > 0.25f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_yellow");
+			else
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_red");
 		}
 	}
 // Weapon broken icon

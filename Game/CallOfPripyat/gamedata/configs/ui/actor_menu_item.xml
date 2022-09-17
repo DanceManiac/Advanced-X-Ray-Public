@@ -320,6 +320,42 @@
 			</static_value>
 		</wound_immunity>
 
+		<strike_immunity x="0" y="0" width="18" height="18" stretch="1">
+			<texture>ui_am_prop_strike</texture>
+			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
+			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+				<progress>
+	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
+	            </progress>
+	            <background>
+	                <texture>ui_inGame2_hint_wnd_bar</texture>
+	            </background>
+				<color_less color="pda_red"  />
+				<color_more color="pda_green"/>
+			</progress_immunity>
+			<static_value x="225" y="0" width="40" height="18" magnitude="100">
+				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+			</static_value>
+		</strike_immunity>
+		
+		<explosion_immunity x="0" y="0" width="18" height="18" stretch="1">
+			<texture>ui_am_prop_exlp</texture>
+			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
+			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+				<progress>
+	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
+	            </progress>
+	            <background>
+	                <texture>ui_inGame2_hint_wnd_bar</texture>
+	            </background>
+				<color_less color="pda_red"  />
+				<color_more color="pda_green"/>
+			</progress_immunity>
+			<static_value x="225" y="0" width="40" height="18" magnitude="100">
+				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+			</static_value>
+		</explosion_immunity>
+		
 		<fire_wound_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_propery_01</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -337,6 +373,21 @@
 				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 			</static_value>
 		</fire_wound_immunity>
+
+		<antigas_filter x="0" y="0" width="18" height="18" stretch="1">
+			<texture>ui_item_filter_icon</texture>
+			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c">ui_inv_filter_condition</text>
+			<progress_bar x="130" y="4" width="128" height="9" horz="1">
+				<progress>
+	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
+	            </progress>
+	            <background>
+	                <texture>ui_inGame2_hint_wnd_bar</texture>
+	            </background>
+				<color_less color="pda_red"  />
+				<color_more color="pda_green"/>
+			</progress_bar>
+		</antigas_filter>
 	</outfit_info>
 	
 		<static_damage x="0" y="10" width="18" height="18" stretch="1">

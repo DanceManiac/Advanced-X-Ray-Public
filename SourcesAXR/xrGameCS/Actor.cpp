@@ -1045,8 +1045,11 @@ void CActor::UpdateCL	()
 		Cameras().camera_Matrix			(trans);
 	
 	
-	if(IsFocused())
-		g_player_hud->update			(trans);
+	if (IsFocused())
+	{
+		trans.c.sub(Device.vCameraPosition);
+		g_player_hud->update(trans);
+	}
 }
 
 float	NET_Jump = 0;
@@ -1733,6 +1736,8 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 			conditions().ChangeRadiation	(artefact->m_fRadiationRestoreSpeed * f_update_time);
 			conditions().ChangeIntoxication	(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
 			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
+			conditions().ChangeAlcoholism	(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
+			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -1749,6 +1754,8 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeRadiation	(outfit->m_fRadiationRestoreSpeed * f_update_time);
 		conditions().ChangeIntoxication	(outfit->m_fIntoxicationRestoreSpeed * f_update_time);
 		conditions().ChangeSleepeness	(outfit->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism	(outfit->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism	(outfit->m_fNarcotismRestoreSpeed * f_update_time);
 	}
 	else
 	{
@@ -2159,6 +2166,44 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fSleepenessRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eAlcoholismRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fAlcoholismRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fAlcoholismRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eNarcotismRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fNarcotismRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fNarcotismRestoreSpeed;
 		}
 		break;
 	}

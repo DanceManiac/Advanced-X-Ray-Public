@@ -59,6 +59,15 @@ void bwdithermap	(int levels, int magic[16][16])
 }
 //--------------------------------------------------- Decompression
 
+void CDetailManager::SSwingValue::set(const CEnvDescriptor::EnvSwingValue& A)
+{
+	amp1 = A.amp1;
+	amp2 = A.amp2;
+	rot1 = A.rot1;
+	rot2 = A.rot2;
+	speed = A.speed;
+}
+
 void CDetailManager::SSwingValue::lerp(const SSwingValue& A, const SSwingValue& B, float f)
 {
 	float fi	= 1.f-f;
@@ -402,6 +411,10 @@ void CDetailManager::Render	()
 #else
 	float factor			= 0.3f;
 #endif
+
+	//swing_desc[0].set(g_pGamePersistent->Environment().Current[0]->m_cSwingDesc[0]);
+	//swing_desc[1].set(g_pGamePersistent->Environment().Current[0]->m_cSwingDesc[1]);
+
 	swing_current.lerp		(swing_desc[0],swing_desc[1],factor);
 
 	RCache.set_CullMode		(CULL_NONE);

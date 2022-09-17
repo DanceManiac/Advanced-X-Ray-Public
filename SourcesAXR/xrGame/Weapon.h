@@ -533,6 +533,7 @@ public:
 
 		bool				unlimited_ammo				();
 	IC	bool				can_be_strapped				() const {return m_can_be_strapped;};
+	float					GetMagazineWeight			(const decltype(m_magazine)& mag) const;
 
 protected:
 	u32						m_ef_main_weapon_type;
@@ -597,7 +598,11 @@ public:
 	void CorrectDirFromWorldToHud(Fvector& dir);
 
 private:
+	float hud_recalc_koef;
+
 	bool has_laser;
+	shared_str laserdot_attach_bone;
+	Fvector laserdot_attach_offset, laserdot_world_attach_offset;
 	ref_light laser_light_render;
 	CLAItem* laser_lanim;
 	float laser_fBrightness{ 1.f };
@@ -621,6 +626,8 @@ public:
 
 private:
 	bool has_flashlight;
+	shared_str flashlight_attach_bone;
+	Fvector flashlight_attach_offset, flashlight_omni_attach_offset, flashlight_world_attach_offset, flashlight_omni_world_attach_offset;
 	ref_light flashlight_render;
 	ref_light flashlight_omni;
 	ref_glow flashlight_glow;

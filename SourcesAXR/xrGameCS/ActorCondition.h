@@ -25,6 +25,10 @@ private:
 			eCriticalThirstReached			=(1<<8),
 			eCriticalIntoxicationReached	=(1<<9),
 			eCriticalSleepenessReached		=(1<<10),
+			eCriticalAlcoholismReached		=(1<<11),
+			eCriticalHangoverReached		=(1<<12),
+			eCriticalNarcotismReached		=(1<<13),
+			eCriticalWithdrawalReached		=(1<<14),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -35,6 +39,8 @@ private:
 			void 		UpdateThirst				();
 			void 		UpdateSleepeness			();
 			void 		UpdateIntoxication			();
+			void 		UpdateAlcoholism			();
+			void 		UpdateNarcotism				();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
@@ -51,6 +57,11 @@ public:
 	virtual void 		ChangeThirst				(float value);
 	virtual void 		ChangeIntoxication			(const float value);
 	virtual void 		ChangeSleepeness			(const float value);
+	virtual void 		ChangeAlcoholism			(const float value);
+	virtual void 		ChangeHangover				(const float value);
+	virtual void 		ChangeNarcotism				(const float value);
+	virtual void 		ChangeWithdrawal			(const float value);
+	virtual void 		ChangeDrugs					(const float value);
 
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;
@@ -67,6 +78,11 @@ public:
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
 			float	xr_stdcall	GetIntoxication		()	{return m_fIntoxication;}
 			float	xr_stdcall	GetSleepeness		()	{return m_fSleepeness;}
+			float	xr_stdcall	GetAlcoholism		()	{return m_fAlcoholism;}
+			float	xr_stdcall	GetNarcotism		()	{return m_fNarcotism;}
+			float	xr_stdcall	GetWithdrawal		()	{return m_fWithdrawal;}
+			float	xr_stdcall	GetHangover			()	{return m_fHangover;}
+			float	xr_stdcall	GetDrugs			()	{return m_fDrugs;}
 
 			void		AffectDamage_InjuriousMaterial();
 			float		GetInjuriousMaterialDamage	();
@@ -95,6 +111,10 @@ public:
 	IC		float const&	V_SleepenessPower		() { return m_fV_SleepenessPower; }
 	IC		float const&	SleepenessCritical		() { return m_fSleepenessCritical; }
 	IC		float const&	Sleepeness_V_Sleep		() { return m_fSleepeness_V_Sleep; }
+	IC		float const&	V_Alcoholism			() { return m_fV_Alcoholism; }
+	IC		float const&	V_Hangover				() { return m_fV_Hangover; }
+	IC		float const&	V_Narcotism				() { return m_fV_Narcotism; }
+	IC		float const&	V_Withdrawal			() { return m_fV_Withdrawal; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -123,6 +143,17 @@ public:
 	float m_fV_SleepenessPower;
 	float m_fSleepenessCritical;
 	float m_fSleepeness_V_Sleep;
+	float m_fV_Alcoholism;
+	float m_fV_Hangover;
+	float m_fV_HangoverPower;
+	float m_fHangoverCritical;
+	float m_fV_Narcotism;
+	float m_fV_Withdrawal;
+	float m_fV_WithdrawalPower;
+	float m_fV_WithdrawalHealth;
+	float m_fWithdrawalCritical;
+	float m_fDrugs;
+	float m_fV_Drugs;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

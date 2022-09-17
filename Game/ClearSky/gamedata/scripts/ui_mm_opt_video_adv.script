@@ -153,6 +153,13 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_r2_static_sun",			_st)
 	ctl			= xml:InitCheck					("video_adv:check_r2_static_sun",		_st)
 	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--Рендеринг бликов
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_flares", _st)
+	ctl = xml:InitComboBox("video_adv:combo_flares", _st)
+	handler.combo_smap_size = ctl
+	handler.m_preconditions[ctl]		= only_2_and_more_mode
 	
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_light_distance",		_st)
@@ -381,12 +388,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitTrackBar("video_adv:track_hud_fov", _st)
 	
 --Оптимизация статической геометрии	
-	_st = xml:InitStatic("video_adv:templ_item", nil)
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_optimize_static_geom", _st)
 	xml:InitTrackBar("video_adv:track_optimize_static_geom", _st)
 	
 --Оптимизация динамической геометрии	
-	_st = xml:InitStatic("video_adv:templ_item", nil)
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_optimize_dynamic_geom", _st)
 	xml:InitTrackBar("video_adv:track_optimize_dynamic_geom", _st)
 	

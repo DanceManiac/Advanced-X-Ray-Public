@@ -225,12 +225,12 @@ void CUIInventoryItemInfo::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void CUIInventoryItemInfo::SetValue(float value)
+void CUIInventoryItemInfo::SetValue(float value, int vle)
 {
 	value *= m_magnitude;
 	string32 buf;
 	if (m_show_sign)
-		xr_sprintf(buf, "%.0f", value);
+		xr_sprintf(buf, "%+.0f", value);
 	else
 		xr_sprintf(buf, "%.0f", value);
 
@@ -243,14 +243,38 @@ void CUIInventoryItemInfo::SetValue(float value)
 	m_value->SetText(str);
 
 	bool positive = (value >= 0.0f);
-	m_value->SetTextColor(color_rgba(170, 170, 170, 255));
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
+	u32 red_color = color_rgba(red.x, red.y, red.z, red.w);
+	u32 green_color = color_rgba(green.x, green.y, green.z, green.w);
+	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
+	u32 color = (positive) ? green_color : red_color;
+
+	if (GameConstants::GetColorizeValues())
+	{
+		if (vle == 0)
+		{
+			m_value->SetTextColor(neutral_color);
+		}
+		else if (vle == 1)
+		{
+			positive ? m_value->SetTextColor(red_color) : m_value->SetTextColor(green_color);
+		}
+		else if (vle == 2)
+		{
+			positive ? m_value->SetTextColor(green_color) : m_value->SetTextColor(red_color);
+		}
+	}
+	else
+		m_value->SetTextColor(color_rgba(170, 170, 170, 255));
 
 	if (m_texture_minus.size())
 	{
-		if (positive)
-			m_caption->InitTexture(m_texture_plus.c_str());
+		if (vle > 2)
+			positive ? m_caption->InitTexture(m_texture_plus.c_str()) : m_caption->InitTexture(m_texture_minus.c_str());
 		else
-			m_caption->InitTexture(m_texture_minus.c_str());
+			positive ? m_caption->InitTexture(m_texture_minus.c_str()) : m_caption->InitTexture(m_texture_plus.c_str());
 	}
 }
 

@@ -53,9 +53,9 @@ void CUICursor::OnRender	()
 	if( !IsVisible() ) return;
 #ifdef DEBUG
 	VERIFY(last_render_frame != Device.dwFrame);
-	last_render_frame = Device.dwFrame;
+	//last_render_frame = Device.dwFrame;
 
-	if(bDebug)
+	if (bDebug)
 	{
 	CGameFont* F		= UI()->Font()->pFontDI;
 	F->SetAligment		(CGameFont::alCenter);

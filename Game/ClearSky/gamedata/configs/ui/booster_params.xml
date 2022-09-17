@@ -1,0 +1,159 @@
+<booster_params x="0" y="0" width="260" height="20">
+    <prop_line x="0" y="25" width="208" height="9" stretch="1">
+    </prop_line>
+	
+	<descr_list x="13" y="63" width="288" height="131" always_show_scroll="0" right_ident="10" left_ident="20" fit_to_height="1">
+		<font font="letterica16"  color="ui_6"/>
+	</descr_list>
+
+	<boost_health_restore x="0" y="0" width="257" height="20">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_health_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_health_restore>
+
+	<boost_radiation_restore x="0" y="0" width="257" height="20">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_radiation_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+<!--		<texture_minus>ui_am_prop_radio_restore</texture_minus> -->
+		<value x="140" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_radiation_restore>
+
+	<boost_satiety x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_satiety_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_satiety>
+
+	<boost_power_restore x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_power_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="2000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_power_restore>
+
+	<boost_bleeding_restore x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_bleeding_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_bleeding_restore>
+	
+	<boost_battery x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_battery_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10" unit_str="%">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_battery>
+	
+	<boost_thirst x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_thirst_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_thirst>
+	
+	<boost_intoxication x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_intoxication_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_intoxication>
+	
+	<boost_sleepeness x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_sleepeness_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_sleepeness>
+	
+	<boost_alcoholism x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_alcoholism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_alcoholism>
+	
+	<boost_hangover x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_hangover_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_hangover>
+	
+	<boost_narcotism x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_narcotism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_narcotism>
+	
+	<boost_withdrawal x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_inv_icon_withdrawal_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_withdrawal>
+	
+	<boost_filter_condition x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_filter_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="10" show_sign="0" unit_str="%">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_filter_condition>
+	
+	<item_portions x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_mfs_item_effectiveness</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="1" show_sign="0">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</item_portions>
+</booster_params>

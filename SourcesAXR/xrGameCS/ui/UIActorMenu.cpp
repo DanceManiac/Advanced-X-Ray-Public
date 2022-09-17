@@ -1,4 +1,4 @@
-#include "stdafx.h"
+п»ї#include "stdafx.h"
 #include "UIActorMenu.h"
 #include "UIActorStateInfo.h"
 #include "../actor.h"
@@ -23,6 +23,9 @@
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
 #include "AdvancedXrayGameConstants.h"
+#include "Antigasfilter.h"
+#include "../xrEngine/x_ray.h"
+#include <dinput.h>
 
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
@@ -80,6 +83,16 @@ void CUIActorMenu::SetInvBox(CInventoryBox* box)
 	{
 		m_pInvBox->m_in_use = true;
 		SetPartner( NULL );
+	}
+}
+
+void CUIActorMenu::SetCarTrunk(CCar* pCar)
+{
+	R_ASSERT(!IsShown());
+	m_pCar = pCar;
+	if (m_pCar)
+	{
+		SetPartner(NULL);
 	}
 }
 
@@ -177,19 +190,33 @@ void CUIActorMenu::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 
 void CUIActorMenu::Show()
 {
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
 	SetMenuMode							(m_currMenuMode);
 	inherited::Show						();
 	PlaySnd								(eSndOpen);
 	m_ActorStateInfo->Show				(true);
 	m_ActorStateInfo->UpdateActorInfo	(m_pActorInvOwner);
+
+	if (pActor && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	}
 }
 
 void CUIActorMenu::Hide()
 {
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
 	inherited::Hide						();
 	PlaySnd								(eSndClose);
 	SetMenuMode							(mmUndefined);
 	m_ActorStateInfo->Show				(false);
+
+	if (pActor && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	}
 }
 
 void CUIActorMenu::Draw()
@@ -242,7 +269,7 @@ void CUIActorMenu::Update()
 	m_ItemInfo->Update();
 	m_hint_wnd->Update();
 }
-bool CUIActorMenu::StopAnyMove()  // true = актёр не идёт при открытом меню
+bool CUIActorMenu::StopAnyMove()  // true = ????? ?? ???? ??? ???????? ????
 {
 	switch ( m_currMenuMode )
 	{
@@ -262,7 +289,7 @@ void CUIActorMenu::CheckDistance()
 	CGameObject* pActorGO	= smart_cast<CGameObject*>(m_pActorInvOwner);
 	CGameObject* pPartnerGO	= smart_cast<CGameObject*>(m_pPartnerInvOwner);
 	CGameObject* pBoxGO		= smart_cast<CGameObject*>(m_pInvBox);
-	VERIFY( pActorGO && (pPartnerGO || pBoxGO) );
+	VERIFY( pActorGO && (pPartnerGO || pBoxGO || m_pCar) );
 
 	if ( pPartnerGO )
 	{
@@ -271,6 +298,10 @@ void CUIActorMenu::CheckDistance()
 		{
 			GetHolder()->StartStopMenu( this, true ); // hide actor menu
 		}
+	}
+	else if (m_pCar && Actor()->Holder())
+	{
+		//nop
 	}
 	else //pBoxGO
 	{
@@ -736,6 +767,28 @@ bool CUIActorMenu::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 	}	
 
+	if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
+	{
+		CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(CurrentIItem());
+		{
+			if (DIK_NUMPAD7 == dik && CurrentIItem() && CurrentIItem()->IsUsingCondition() && !pFilter)
+			{
+				CurrentIItem()->ChangeCondition(-0.05f);
+			}
+			else if (DIK_NUMPAD8 == dik && CurrentIItem() && CurrentIItem()->IsUsingCondition() && !pFilter)
+			{
+				CurrentIItem()->ChangeCondition(0.05f);
+			}
+			else if (DIK_NUMPAD7 == dik && CurrentIItem() && pFilter)
+			{
+				pFilter->ChangeFilterCondition(-0.05f);
+			}
+			else if (DIK_NUMPAD8 == dik && CurrentIItem() && pFilter)
+			{
+				pFilter->ChangeFilterCondition(0.05f);
+			}
+		}
+	}
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
 	return false;

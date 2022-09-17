@@ -10,10 +10,9 @@
 #include "../xrRender/dxRenderDeviceRender.h"
 #include "../xrRender/dxWallMarkArray.h"
 #include "../xrRender/dxUIShader.h"
-
 #include "../xrRenderDX10/3DFluid/dx103DFluidManager.h"
 #include "../xrRender/ShaderResourceTraits.h"
-
+#include "../../xrEngine/x_ray.h"
 #include "D3DX10Core.h"
 
 CRender										RImplementation;
@@ -36,7 +35,6 @@ public:
 };
 
 float		r_dtex_range		= 50.f;
-bool RenderWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
 //////////////////////////////////////////////////////////////////////////
 ShaderElement*			CRender::rimp_select_sh_dynamic	(dxRender_Visual	*pVisual, float cdist_sq)
 {
@@ -349,7 +347,7 @@ void					CRender::create					()
 
 	o.dx10_minmax_sm = ps_r3_minmax_sm;
 	o.dx10_minmax_sm_screenarea_threshold = 1600*1200;
-	o.dx10_winter_mode = !RenderWinterMode;
+	o.dx10_winter_mode = !bWinterMode;
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 

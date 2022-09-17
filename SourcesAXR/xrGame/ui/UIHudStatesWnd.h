@@ -13,7 +13,7 @@ class CUIXml;
 class UI_Arrow;
 class CActor;
 
-int const it_max = ALife::infl_max_count - 1;
+int const it_max = ALife::infl_max_count - 5;
 
 class CUIHudStatesWnd : public CUIWindow
 {

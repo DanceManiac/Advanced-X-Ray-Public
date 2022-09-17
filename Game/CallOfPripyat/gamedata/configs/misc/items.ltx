@@ -29,6 +29,11 @@ eat_portions_num	= 1
 eat_thirst			= 0
 eat_intoxication	= 0
 eat_sleepeness		= 0
+eat_alcoholism		= 0
+eat_hangover		= 0
+eat_narcotism		= 0
+eat_withdrawal		= 0
+eat_drugs		= 0
 
 boost_time				= 0.0
 boost_max_weight		= 0.0
@@ -52,14 +57,13 @@ boost_explosion_immunity	= 0.0
 boost_fire_wound_immunity	= 0.0
 ;use_sound			= characters_voice\multiplayer\team_1\voice_roger_3
 
-[base_quest_item]:identity_immunities
+[base_quest_item]:booster
 GroupControlSection                                = spawn_group 
 discovery_dependency                               = 
 $spawn                                             = "devices\pda"
 $prefetch                                          = 16
 cform                                              = skeleton 
-visual                                   	   	   = dynamics\devices\dev_pda\dev_pda.ogf
-class                                              = S_ATTCH 
+visual                                   	   	   = dynamics\devices\dev_pda\dev_pda.ogf 
 default_to_ruck                                    = false
 sprint_allowed                                     = true
 description                                        = st_pda_descr
@@ -75,8 +79,8 @@ attach_angle_offset                                = 0.000000, -1.204452, -1.262
 attach_position_offset                             = 0.081856, -0.035081, 0.011694 
 attach_bone_name                                   = bip01_l_hand 
 auto_attach                                        = false 
-can_trade                               	   	   = false
-
+can_trade                               	   = false
+can_use 					   = false
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	FOOD
@@ -855,3 +859,23 @@ charge_level			= 1.0
 
 use_sound			= mfs_team\item_use\inv_battery
 
+[antigas_filter]:booster
+$spawn 				= "food and drugs\kolbasa"
+class				= D_FILTER
+visual				= mfs_team\items\itm_devices\antigas_filter.ogf
+description			= st_filter_descr
+
+inv_name			= st_filter
+inv_name_short			= st_filter
+inv_weight			= 0.25
+
+inv_grid_width			= 1
+inv_grid_height			= 1
+inv_grid_x				= 2
+inv_grid_y				= 27
+
+cost				= 250
+
+filter_condition		= 1.0
+
+use_sound			= interface\inv_attach_addon

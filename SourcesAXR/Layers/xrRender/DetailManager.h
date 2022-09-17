@@ -106,6 +106,7 @@ public:
 		float						amp1;
 		float						amp2;
 		float						speed;
+		void 						set		(const CEnvDescriptor::EnvSwingValue& A);
 		void						lerp	(const SSwingValue& v1, const SSwingValue& v2, float factor);
 	};
 	SSwingValue						swing_desc[2];

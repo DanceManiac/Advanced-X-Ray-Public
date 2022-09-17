@@ -2581,7 +2581,7 @@
     <Filter Include="EmbeddedEditor">
       <UniqueIdentifier>{ce5a2bf0-cb8c-429e-a751-e9f672d23e9f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Client\Objects\items &amp; weapons\Battery">
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Consumables">
       <UniqueIdentifier>{ad12579f-fb0b-44c2-8944-183220c5c2f5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -7495,7 +7495,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClInclude>
     <ClInclude Include="Battery.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Battery</Filter>
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIInventoryItemParams.h">
       <Filter>UI\Common\ui-item-infos</Filter>
@@ -7507,6 +7507,12 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
     <ClInclude Include="ActorNightVision.h" />
+    <ClInclude Include="ui\UIBoosterInfo.h">
+      <Filter>UI\Common\ui-item-infos</Filter>
+    </ClInclude>
+    <ClInclude Include="AntigasFilter.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11173,7 +11179,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClCompile>
     <ClCompile Include="Battery.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Battery</Filter>
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIInventoryItemParams.cpp">
       <Filter>UI\Common\ui-item-infos</Filter>
@@ -11185,6 +11191,12 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
     <ClCompile Include="ActorNightVision.cpp" />
+    <ClCompile Include="ui\UIBoosterInfo.cpp">
+      <Filter>UI\Common\ui-item-infos</Filter>
+    </ClCompile>
+    <ClCompile Include="AntigasFilter.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

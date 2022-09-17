@@ -181,5 +181,11 @@
 		<texture id="ui_inv_icon_intoxication_restore_speed" x="140" y="0" width="18" height="18" />
 		<texture id="ui_inv_icon_sleepeness_restore_speed" x="160" y="0" width="18" height="18" />
 		<texture id="ui_item_af_radius" x="180" y="0" width="18" height="18" />
+		<texture id="ui_inv_icon_alcoholism_restore_speed" x="200" y="0" width="18" height="18" />
+		<texture id="ui_inv_icon_hangover_restore_speed" x="220" y="0" width="18" height="18" />
+		<texture id="ui_inv_icon_narcotism_restore_speed" x="240" y="0" width="18" height="18" />
+		<texture id="ui_inv_icon_withdrawal_restore_speed" x="260" y="0" width="18" height="18" />
+		<texture id="ui_inv_af_rank" x="280" y="0" width="18" height="18" />
+		<texture id="ui_item_filter_icon" x="300" y="0" width="18" height="18" />
 	</file>
 </w>

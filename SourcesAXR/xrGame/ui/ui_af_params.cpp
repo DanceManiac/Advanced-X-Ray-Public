@@ -30,9 +30,11 @@ CUIArtefactParams::CUIArtefactParams()
 	m_fThirstRestoreSpeed = NULL;
 	m_fIntoxicationRestoreSpeed = NULL;
 	m_fSleepenessRestoreSpeed = NULL;
+	m_fAlcoholismRestoreSpeed = NULL;
 	m_fWalkAccel = NULL;
 	m_fJumpSpeed = NULL;
 	m_additional_weight = NULL;
+	m_iArtefactRank = NULL;
 	m_fChargeLevel = NULL;
 }
 
@@ -47,9 +49,11 @@ CUIArtefactParams::~CUIArtefactParams()
 	xr_delete	(m_fThirstRestoreSpeed);
 	xr_delete	(m_fIntoxicationRestoreSpeed);
 	xr_delete	(m_fSleepenessRestoreSpeed);
+	xr_delete	(m_fAlcoholismRestoreSpeed);
 	xr_delete	(m_fWalkAccel);
 	xr_delete	(m_fJumpSpeed);
 	xr_delete	(m_additional_weight);
+	xr_delete	(m_iArtefactRank);
 	xr_delete	(m_fChargeLevel);
 	xr_delete	(m_Prop_line);
 }
@@ -61,11 +65,10 @@ LPCSTR af_immunity_section_names[] = // ALife::EInfluenceType
 	"chemical_burn_immunity",	// infl_acid=2
 	"telepatic_immunity",		// infl_psi=3
 	"shock_immunity",			// infl_electra=4
-
-//	"strike_immunity",
-//	"wound_immunity",		
-//	"explosion_immunity",
-//	"fire_wound_immunity",
+	"strike_immunity",			// infl_strike=5
+	"wound_immunity",			// infl_wound=6
+	"explosion_immunity",		// infl_explossion=7
+	"fire_wound_immunity",		// infl_fire_wound=8
 };
 
 LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
@@ -78,6 +81,7 @@ LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
 	"thirst_restore_speed",			// eThirstRestoreSpeed=5
 	"intoxication_restore_speed",	// eIntoxicationRestoreSpeed=6
 	"sleepeness_restore_speed",		// eSleepenessRestoreSpeed=7
+	"alcoholism_restore_speed",		// eAlcoholismRestoreSpeed=8
 };
 
 LPCSTR af_immunity_caption[] =  // ALife::EInfluenceType
@@ -87,11 +91,10 @@ LPCSTR af_immunity_caption[] =  // ALife::EInfluenceType
 	"ui_inv_outfit_chemical_burn_protection",	// "(chemical_burn_imm)",
 	"ui_inv_outfit_telepatic_protection",		// "(telepatic_imm)",
 	"ui_inv_outfit_shock_protection",			// "(shock_imm)",
-
-//	"ui_inv_outfit_strike_protection",			// "(strike_imm)",
-//	"ui_inv_outfit_wound_protection",			// "(wound_imm)",
-//	"ui_inv_outfit_explosion_protection",		// "(explosion_imm)",
-//	"ui_inv_outfit_fire_wound_protection",		// "(fire_wound_imm)",
+	"ui_inv_outfit_strike_protection",			// "(strike_imm)",
+	"ui_inv_outfit_wound_protection",			// "(wound_imm)",
+	"ui_inv_outfit_explosion_protection",		// "(explosion_imm)",
+	"ui_inv_outfit_fire_wound_protection",		// "(fire_wound_imm)",
 };
 
 LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
@@ -104,6 +107,7 @@ LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
 	"ui_inv_thirst",
 	"ui_inv_intoxication",
 	"ui_inv_sleepeness",
+	"ui_inv_alcoholism",
 };
 
 /*
@@ -203,6 +207,13 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_fSleepenessRestoreSpeed->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
+	m_fAlcoholismRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fAlcoholismRestoreSpeed->Init(xml, "alcoholism_restore_speed");
+	m_fAlcoholismRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_alcoholism").c_str();
+	m_fAlcoholismRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	m_fWalkAccel = xr_new<UIArtefactParamItem>();
 	m_fWalkAccel->Init(xml, "walk_accel");
 	m_fWalkAccel->SetAutoDelete(false);
@@ -222,6 +233,13 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_additional_weight->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_weight").c_str();
 	m_additional_weight->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_iArtefactRank = xr_new<UIArtefactParamItem>();
+	m_iArtefactRank->Init(xml, "artefact_rank");
+	m_iArtefactRank->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_af_rank").c_str();
+	m_iArtefactRank->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_fChargeLevel = xr_new<UIArtefactParamItem>();
@@ -271,14 +289,14 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 	for ( u32 i = 0; i < ALife::infl_max_count; ++i )
 	{
 		shared_str const& sect = pSettings->r_string( af_section, "hit_absorbation_sect" );
-		val	= pSettings->r_float( sect, af_immunity_section_names[i] );
+		val = artefact->m_HitTypeProtection[i];
 		if ( fis_zero(val) )
 		{
 			continue;
 		}
 		max_val = actor->conditions().GetZoneMaxPower( (ALife::EInfluenceType)i );
 		val /= max_val;
-		m_immunity_item[i]->SetValue( val );
+		m_immunity_item[i]->SetValue(val, 2);
 
 		pos.set( m_immunity_item[i]->GetWndPos() );
 		pos.y = h;
@@ -293,7 +311,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_additional_weight;
 		if (!fis_zero(val))
 		{
-			m_additional_weight->SetValue(val);
+			m_additional_weight->SetValue(val, 2);
 
 			pos.set(m_additional_weight->GetWndPos());
 			pos.y = h;
@@ -306,7 +324,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fHealthRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fHealthRestoreSpeed->SetValue(val);
+			m_fHealthRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fHealthRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -319,7 +337,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fRadiationRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fRadiationRestoreSpeed->SetValue(val);
+			m_fRadiationRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fRadiationRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -332,7 +350,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fSatietyRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fSatietyRestoreSpeed->SetValue(val);
+			m_fSatietyRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fSatietyRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -345,7 +363,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fPowerRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fPowerRestoreSpeed->SetValue(val);
+			m_fPowerRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fPowerRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -358,7 +376,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fBleedingRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fBleedingRestoreSpeed->SetValue(val);
+			m_fBleedingRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fBleedingRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -371,7 +389,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fThirstRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fThirstRestoreSpeed->SetValue(val);
+			m_fThirstRestoreSpeed->SetValue(val, 2);
 
 			pos.set(m_fThirstRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -384,7 +402,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fIntoxicationRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fIntoxicationRestoreSpeed->SetValue(val);
+			m_fIntoxicationRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fIntoxicationRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -397,7 +415,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fSleepenessRestoreSpeed;
 		if (!fis_zero(val))
 		{
-			m_fSleepenessRestoreSpeed->SetValue(val);
+			m_fSleepenessRestoreSpeed->SetValue(val, 1);
 
 			pos.set(m_fSleepenessRestoreSpeed->GetWndPos());
 			pos.y = h;
@@ -407,10 +425,23 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 			AttachChild(m_fSleepenessRestoreSpeed);
 		}
 
+		val = artefact->m_fAlcoholismRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fAlcoholismRestoreSpeed->SetValue(val, 1);
+
+			pos.set(m_fAlcoholismRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fAlcoholismRestoreSpeed->SetWndPos(pos);
+
+			h += m_fAlcoholismRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fAlcoholismRestoreSpeed);
+		}
+
 		val = artefact->m_fWalkAccel;
 		if (!fis_zero(val) && val > 1.0f)
 		{
-			m_fWalkAccel->SetValue(val);
+			m_fWalkAccel->SetValue(val, 2);
 
 			pos.set(m_fWalkAccel->GetWndPos());
 			pos.y = h;
@@ -423,7 +454,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 		val = artefact->m_fJumpSpeed;
 		if (!fis_zero(val) && val > 1.0f)
 		{
-			m_fJumpSpeed->SetValue(val);
+			m_fJumpSpeed->SetValue(val, 2);
 
 			pos.set(m_fJumpSpeed->GetWndPos());
 			pos.y = h;
@@ -433,8 +464,21 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 			AttachChild(m_fJumpSpeed);
 		}
 
+		val = artefact->m_iAfRank;
+		if (!fis_zero(val) && GameConstants::GetAfRanks())
+		{
+			m_iArtefactRank->SetValue(val);
+
+			pos.set(m_iArtefactRank->GetWndPos());
+			pos.y = h;
+			m_iArtefactRank->SetWndPos(pos);
+
+			h += m_iArtefactRank->GetWndSize().y;
+			AttachChild(m_iArtefactRank);
+		}
+
 		val = artefact->m_fChargeLevel;
-		if (!fis_zero(val) || GameConstants::GetArtefactsDegradation())
+		if (!fis_zero(val) && GameConstants::GetArtefactsDegradation())
 		{
 			m_fChargeLevel->SetValue(val);
 
@@ -499,7 +543,7 @@ void UIArtefactParamItem::SetCaption( LPCSTR name )
 	m_caption->TextItemControl()->SetText( name );
 }
 
-void UIArtefactParamItem::SetValue( float value )
+void UIArtefactParamItem::SetValue(float value, int vle )
 {
 	value *= m_magnitude;
 	string32	buf;
@@ -521,20 +565,36 @@ void UIArtefactParamItem::SetValue( float value )
 	m_value->SetText( str );
 
 	bool positive = (value >= 0.0f);
-	positive      = (m_sign_inverse)? !positive : positive;
-	u32 color     = (positive      )? green_clr : red_clr;
-	m_value->SetTextColor( color );
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
+	u32 red_color = color_rgba(red.x, red.y, red.z, red.w);
+	u32 green_color = color_rgba(green.x, green.y, green.z, green.w);
+	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
+
+	if (GameConstants::GetColorizeValues())
+	{
+		if (vle == 0)
+		{
+			m_value->SetTextColor(neutral_color);
+		}
+		else if (vle == 1)
+		{
+			positive ? m_value->SetTextColor(red_color) : m_value->SetTextColor(green_color);
+		}
+		else if (vle == 2)
+		{
+			positive ? m_value->SetTextColor(green_color) : m_value->SetTextColor(red_color);
+		}
+	}
+	else
+		m_value->SetTextColor(color_rgba(170, 170, 170, 255));
 
 	if ( m_texture_minus.size() )
 	{
-		if ( positive )
-		{
-			m_caption->InitTexture( m_texture_plus.c_str() );
-		}
+		if (vle > 2)
+			positive ? m_caption->InitTexture(m_texture_plus.c_str()) : m_caption->InitTexture(m_texture_minus.c_str());
 		else
-		{
-			m_caption->InitTexture( m_texture_minus.c_str() );
-		}
+			positive ? m_caption->InitTexture(m_texture_minus.c_str()) : m_caption->InitTexture(m_texture_plus.c_str());
 	}
-
 }

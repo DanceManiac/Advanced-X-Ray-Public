@@ -1,4 +1,4 @@
-// XR_IOConsole.cpp: implementation of the CConsole class.
+п»ї// XR_IOConsole.cpp: implementation of the CConsole class.
 // modify 15.05.2008 sea
 
 #include "stdafx.h"
@@ -36,8 +36,9 @@ static u32 const tips_word_color    = color_rgba(   5, 100,  56, 200 );
 static u32 const tips_scroll_back_color  = color_rgba( 15, 15, 15, 230 );
 static u32 const tips_scroll_pos_color   = color_rgba( 70, 70, 70, 240 );
 
+bool bBlockConsole;
 
-ENGINE_API CConsole*		Console		=	NULL;
+ENGINE_API CConsole* Console = NULL;
 
 extern char const * const	ioc_prompt;
        char const * const	ioc_prompt	=	">>> ";
@@ -101,15 +102,17 @@ CConsole::CConsole()
 
 void CConsole::Initialize()
 {
-	scroll_delta	= 0;
-	bVisible		= false;
-	pFont			= NULL;
-	pFont2			= NULL;
+	scroll_delta		= 0;
+	bVisible			= false;
+	pFont				= NULL;
+	pFont2				= NULL;
+	m_mouse_pos.x		= 0;
+	m_mouse_pos.y		= 0;
+	m_last_cmd			= NULL;
 
-	m_mouse_pos.x	= 0;
-	m_mouse_pos.y	= 0;
-	m_last_cmd		= NULL;
-	
+	bBlockConsole		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "block_console", false);
+	bAutoSndTargets		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "global", "auto_snd_targets", false);
+
 	m_cmd_history.reserve( m_cmd_history_max + 2 );
 	m_cmd_history.clear_not_free();
 	reset_cmd_history_idx();
@@ -179,7 +182,7 @@ void CConsole::OutFont( LPCSTR text, float& pos_y )
 		int ln	= 0;
 		PSTR one_line = (PSTR)_alloca( (CONSOLE_BUF_SIZE + 1) * sizeof(char) );
 		
-		while( text[sz] && (ln + sz < CONSOLE_BUF_SIZE-5) )// перенос строк
+		while( text[sz] && (ln + sz < CONSOLE_BUF_SIZE-5) )// РїРµСЂРµРЅРѕСЃ СЃС‚СЂРѕРє
 		{
 			one_line[ln+sz]   = text[sz];
 			one_line[ln+sz+1] = 0;
@@ -608,10 +611,9 @@ void CConsole::Show()
 {
 	SECUROM_MARKER_HIGH_SECURITY_ON(11)
 
-	if ( bVisible )
-	{
+	if ( bVisible || bBlockConsole && !bDeveloperMode)
 		return;
-	}
+
 	bVisible = true;
 	
 	GetCursorPos( &m_mouse_pos );
