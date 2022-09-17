@@ -7507,11 +7507,11 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
     <ClInclude Include="ActorNightVision.h" />
-    <ClInclude Include="ui\UIBoosterInfo.h">
-      <Filter>UI\Common\ui-item-infos</Filter>
-    </ClInclude>
     <ClInclude Include="AntigasFilter.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIBoosterInfo.h">
+      <Filter>UI\Common\ui-item-infos</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -11191,11 +11191,11 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
     <ClCompile Include="ActorNightVision.cpp" />
-    <ClCompile Include="ui\UIBoosterInfo.cpp">
-      <Filter>UI\Common\ui-item-infos</Filter>
-    </ClCompile>
     <ClCompile Include="AntigasFilter.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIBoosterInfo.cpp">
+      <Filter>UI\Common\ui-item-infos</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

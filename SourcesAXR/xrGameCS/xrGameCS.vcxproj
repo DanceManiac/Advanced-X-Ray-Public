@@ -1216,6 +1216,7 @@
     <ClInclude Include="animation_utils.h" />
     <ClInclude Include="AnomalyDetector.h" />
     <ClInclude Include="anticheat_dumpable_object.h" />
+    <ClInclude Include="AntigasFilter.h" />
     <ClInclude Include="antirad.h" />
     <ClInclude Include="Artefact.h" />
     <ClInclude Include="artefact_activation.h" />
@@ -2079,6 +2080,7 @@
     <ClInclude Include="ui\UIActorMenu.h" />
     <ClInclude Include="ui\UIActorStateInfo.h" />
     <ClInclude Include="ui\UIAnimatedStatic.h" />
+    <ClInclude Include="ui\UIBoosterInfo.h" />
     <ClInclude Include="ui\UIBtnHint.h" />
     <ClInclude Include="ui\UIButton.h" />
     <ClInclude Include="ui\UIBuyWeaponTab.h" />
@@ -4305,6 +4307,7 @@
     </ClCompile>
     <ClCompile Include="animation_utils.cpp" />
     <ClCompile Include="AnomalyDetector.cpp" />
+    <ClCompile Include="AntigasFilter.cpp" />
     <ClCompile Include="antirad.cpp" />
     <ClCompile Include="Artefact.cpp" />
     <ClCompile Include="artefact_activation.cpp" />
@@ -8274,6 +8277,7 @@
     </ClCompile>
     <ClCompile Include="ui\UIActorStateInfo.cpp" />
     <ClCompile Include="ui\UIAnimatedStatic.cpp" />
+    <ClCompile Include="ui\UIBoosterInfo.cpp" />
     <ClCompile Include="ui\UIBtnHint.cpp" />
     <ClCompile Include="ui\UIButton.cpp" />
     <ClCompile Include="ui\UIButton_script.cpp">
