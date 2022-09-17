@@ -1800,8 +1800,8 @@ void game_sv_mp::ReadOptions(shared_str &options)
 	g_sv_dwMaxClientPing					= get_option_i(*options,"maxping",g_sv_dwMaxClientPing);
 
 	string64	StartTime, TimeFactor;
-	strcpy_s(StartTime,get_option_s			(*options,"estime","9:00").c_str());
-	strcpy_s(TimeFactor,get_option_s		(*options,"etimef","1").c_str());
+	strcpy_s(StartTime,get_option_s			(*options,"estime","9:00"));
+	strcpy_s(TimeFactor,get_option_s		(*options,"etimef","1"));
 
 	u32 hours = 0, mins = 0;
 	sscanf									(StartTime,"%d:%d",&hours,&mins);

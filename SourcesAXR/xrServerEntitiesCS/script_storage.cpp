@@ -241,7 +241,7 @@ void CScriptStorage::reinit	()
 		lua_close			(m_virtual_machine);
 
 #ifndef USE_DL_ALLOCATOR
-	m_virtual_machine		= lua_newstate(lua_alloc_xr, NULL);
+	m_virtual_machine		= luaL_newstate();
 #else // USE_DL_ALLOCATOR
 	m_virtual_machine		= lua_newstate(lua_alloc_dl, NULL);
 #endif // USE_DL_ALLOCATOR
