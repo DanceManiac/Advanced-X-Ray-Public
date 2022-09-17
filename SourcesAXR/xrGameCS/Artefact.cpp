@@ -370,10 +370,10 @@ void CArtefact::UpdateDegradation(void)
 			else if (m_fChargeLevel <= 0.0f)
 				artefact->m_iAfRank = 0;
 
-			for (u32 i = 0; i < ALife::infl_max_count; ++i)
+			for (size_t i = 0; i < ALife::infl_max_count; ++i)
 			{
-				if (!fis_zero(artefact->m_HitTypeProtection[i]) && !fis_zero(m_ConstHitTypeProtection[i]))
-					artefact->m_HitTypeProtection[i] = (m_ConstHitTypeProtection[i] / 100) * percent;
+				if (!fis_zero(artefact->m_HitTypeProtection[(ALife::EInfluenceType)i]) && !fis_zero(m_ConstHitTypeProtection[(ALife::EInfluenceType)i]))
+					artefact->m_HitTypeProtection[(ALife::EInfluenceType)i] = (m_ConstHitTypeProtection[(ALife::EInfluenceType)i] / 100) * percent;
 			}
 
 			//Lights
