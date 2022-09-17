@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{f0cd5bef-1cec-4075-a261-be27bb668be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{db5c9cd9-ade2-4ca6-8cfb-88a828805a63}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include=".\host\buildvm_peobj.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include=".\host\buildvm.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="host\buildvm_asm.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="host\buildvm_fold.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="host\buildvm_lib.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include=".\host\buildvm.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="host\buildvm_libbc.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="host\genlibbc.lua" />
+    <None Include="host\genminilua.lua" />
+  </ItemGroup>
+</Project>

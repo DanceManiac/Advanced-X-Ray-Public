@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#ifndef _M_X64
 #include "xrTheora_Surface_mmx.h"
 
 #pragma warning( disable : 4731 )
@@ -282,3 +282,4 @@ _tb_loop:
 } // tv_yuv2argb
 
 #pragma warning( default : 4731 )
+#endif

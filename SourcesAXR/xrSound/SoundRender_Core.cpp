@@ -294,29 +294,17 @@ void CSoundRender_Core::set_geometry_env(IReader* I)
 
 	IReader* geom		= xr_new<IReader>(_data, geom_ch->length(), 0);
 	
-	hdrCFORM			H;
-	geom->r				(&H,sizeof(hdrCFORM));
-	Fvector*	verts	= (Fvector*)geom->pointer();
-	CDB::TRI*	tris	= (CDB::TRI*)(verts+H.vertcount);
-	for (u32 it=0; it<H.facecount; it++)
-	{
-		CDB::TRI*	T	= tris+it;
-		u16		id_front= (u16)((T->dummy&0x0000ffff)>>0);		//	front face
-		u16		id_back	= (u16)((T->dummy&0xffff0000)>>16);		//	back face
-		R_ASSERT		(id_front<(u16)ids.size());
-		R_ASSERT		(id_back<(u16)ids.size());
-		T->dummy		= u32(ids[id_back]<<16) | u32(ids[id_front]);
-	}
-#ifdef _EDITOR    
-	geom_ENV			= ETOOLS::create_model(verts, H.vertcount, tris, H.facecount);
-	env_apply			();
-#else
-	geom_ENV			= xr_new<CDB::MODEL> ();
-	geom_ENV->build		(verts, H.vertcount, tris, H.facecount);
-#endif
-	geom_ch->close			();
-	geom->close				();
-	xr_free					(_data);
+
+	hdrCFORM realCform;
+	geom->r(&realCform, sizeof(hdrCFORM));
+
+	Fvector* verts = (Fvector*)geom->pointer();
+	CDB::TRI* tris = (CDB::TRI*)(verts + realCform.vertcount);
+	geom_ENV = new CDB::MODEL();
+	geom_ENV->build(verts, realCform.vertcount, tris, realCform.facecount); // x64 using tris converter
+	geom_ch->close();
+	geom->close();
+	xr_free(_data);
 }
 
 void	CSoundRender_Core::create				( ref_sound& S, const char* fName, esound_type sound_type, int game_type )

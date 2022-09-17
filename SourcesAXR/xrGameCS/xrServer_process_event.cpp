@@ -174,7 +174,7 @@ void xrServer::Process_event	(NET_Packet& P, ClientID sender)
 #ifndef MASTER_GOLD
 			if ((game->Type() != eGameIDSingle) && l_pC && l_pC->owner)
 			{
-				Msg					("* [%2d] killed by [%2d] - sended by [%s:%2d]", id_dest, id_src, game->get_option_s(*l_pC->name,"name","Player"), l_pC->owner->ID);
+				Msg					("* [%2d] killed by [%2d] - sended by [%s:%2d]", id_dest, id_src, *game->get_option_s(*l_pC->name,"name","Player"), l_pC->owner->ID);
 			}
 #endif // #ifndef MASTER_GOLD
 

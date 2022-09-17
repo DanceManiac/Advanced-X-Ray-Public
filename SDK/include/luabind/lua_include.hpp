@@ -20,14 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef LUA_INCLUDE_HPP_INCLUDED
-#define LUA_INCLUDE_HPP_INCLUDED
+#pragma once
 
 extern "C" {
 	#include <lua/lua.h>
 	#include <lua/lauxlib.h>
 	#include <lua/lualib.h>
 } // extern "C"
-
-#endif
-

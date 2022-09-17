@@ -6,10 +6,13 @@
 //	Description : luabind delete
 ////////////////////////////////////////////////////////////////////////////
 
-#ifndef LUABIND_DELETE_H_INCLUDED
-#define LUABIND_DELETE_H_INCLUDED
+#pragma once
 
-namespace luabind {
+#include <type_traits>
+#include "../../SourcesAXR/xrScripts/xrScripts.h"
+
+namespace luabind 
+{
 	extern LUABIND_API	memory_allocation_function_pointer	allocator;
 
 	template <typename T>
@@ -37,18 +40,11 @@ namespace luabind {
 	};
 
 	template <typename T>
-	inline void luabind_delete		(T *&pointer)
+	inline void luabind_delete(T *&pointer)
 	{
-		if (!pointer)
-			return;
-
-		delete_helper<
-			T,
-			boost::is_polymorphic<T>::value
-		>::apply					(
-			pointer
-		);
-	}
+		if (pointer)
+		{
+			delete_helper<T, std::is_polymorphic_v<T>>::apply(pointer);
+		}
+	};
 } // namespace luabind
-
-#endif // #ifndef LUABIND_DELETE_H_INCLUDED

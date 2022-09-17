@@ -20,16 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-#ifndef LUABIND_OBJECT_REP_HPP_INCLUDED
-#define LUABIND_OBJECT_REP_HPP_INCLUDED
+#pragma once
 
 #include <luabind/config.hpp>
 #include <luabind/detail/ref.hpp>
 
 namespace luabind { namespace detail
 {
-	class class_rep;
+	//class class_rep;
 
 	void finalize(lua_State* L, class_rep* crep);
 
@@ -39,7 +37,7 @@ namespace luabind { namespace detail
 	class LUABIND_API object_rep
 	{
 	public:
-		enum { constant = 1, owner = 2, lua_class = 4, call_super = 8 };
+		enum: unsigned { constant = 1, owner = 2, lua_class = 4, call_super = 8 };
 
 		// dest is a function that is called to delete the c++ object this struct holds
 		object_rep(void* obj, class_rep* crep, int flags, void(*dest)(void*));
@@ -106,10 +104,6 @@ namespace luabind { namespace detail
 	{
 		static void apply(void* ptr)
 		{
-#ifndef NDEBUG
-			int completeness_check[sizeof(T)];
-			(void)completeness_check;
-#endif
 			static_cast<T*>(ptr)->~T();
 		}
 	};
@@ -118,19 +112,14 @@ namespace luabind { namespace detail
 	inline object_rep* is_class_object(lua_State* L, int index)
 	{
 		object_rep* obj = static_cast<detail::object_rep*>(lua_touserdata(L, index));
-		if (!obj) return 0;
-		if (lua_getmetatable(L, index) == 0) return 0;
+		if (!obj) return nullptr;
+		if (!lua_getmetatable(L, index)) return 0;
 
 		lua_pushstring(L, "__luabind_class");
 		lua_gettable(L, -2);
 		bool confirmation = lua_toboolean(L, -1) != 0;
 		lua_pop(L, 2);
-		if (!confirmation) return 0;
+		if (!confirmation) return nullptr;
 		return obj;
-
 	}
-
 }}
-
-#endif // LUABIND_OBJECT_REP_HPP_INCLUDED
-

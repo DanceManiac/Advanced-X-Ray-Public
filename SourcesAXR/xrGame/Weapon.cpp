@@ -966,7 +966,7 @@ void CWeapon::net_Export(NET_Packet& P)
 	P.w_u8					(m_ammoType);
 	P.w_u8					((u8)GetState());
 	P.w_u8					((u8)IsZoomed());
-	P.w_u8					((u8)m_cur_scope);
+//	P.w_u8					((u8)m_cur_scope);
 }
 
 void CWeapon::net_Import(NET_Packet& P)
@@ -996,10 +996,10 @@ void CWeapon::net_Import(NET_Packet& P)
 	u8 Zoom;
 	P.r_u8					((u8)Zoom);
 
-	u8 scope;
-	P.r_u8(scope);
-
-	m_cur_scope = scope;
+	//u8 scope;
+	//P.r_u8(scope);
+	//
+	//m_cur_scope = scope;
 
 	if (H_Parent() && H_Parent()->Remote())
 	{

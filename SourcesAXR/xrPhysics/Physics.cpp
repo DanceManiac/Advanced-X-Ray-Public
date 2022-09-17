@@ -151,6 +151,12 @@ IC static int CollideIntoGroup(dGeomID o1, dGeomID o2,dJointGroupID jointGroup,C
 		if(!is_tri_2&&!is_tri_1) surface.mode=0;
 		if(is_tri_1) material_idx_1=(u16)surface.mode;
 		if(is_tri_2) material_idx_2=(u16)surface.mode;
+
+		size_t MatCount = GMLibrary().CountMaterial();
+
+		material_idx_1 = (material_idx_1 > MatCount) ? 0 : material_idx_1;
+		material_idx_2 = (material_idx_2 > MatCount) ? 0 : material_idx_2;
+
 		SGameMtl* material_1=GMLibrary().GetMaterialByIdx(material_idx_1);
 		SGameMtl* material_2=GMLibrary().GetMaterialByIdx(material_idx_2);
 		////////////////params can be changed in callbacks//////////////////////////////////////////////////////////////////////////
@@ -258,7 +264,7 @@ IC static int CollideIntoGroup(dGeomID o1, dGeomID o2,dJointGroupID jointGroup,C
 
 
 		if	(pushing_neg)
-			surface.mu=dInfinity;
+			surface.mu=FLT_MAX;
 		if	(do_collide && collided_contacts<MAX_CONTACTS)
 		{
 			++collided_contacts;

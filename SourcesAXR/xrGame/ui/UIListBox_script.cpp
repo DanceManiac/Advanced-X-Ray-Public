@@ -41,7 +41,7 @@ void CUIListBox::script_register(lua_State *L)
 		.def("GetItem",					&CUIListBox::GetItem)		
 		.def("RemoveItem",				&CUIListBox::RemoveWindow)
 		.def("AddTextItem",				&CUIListBox::AddTextItem)
-		.def("AddExistingItem",         &CUIListBox::AddExistingItem, adopt(_2)),
+		.def("AddExistingItem",         &CUIListBox::AddExistingItem, adopt<2>()),
 
 		class_<CUIListBoxItem, CUIFrameLineWnd, CUIListBoxItemWrapper>("CUIListBoxItem")
 		.def(							constructor<float>())

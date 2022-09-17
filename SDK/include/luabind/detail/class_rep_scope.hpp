@@ -20,14 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-#ifndef LUABIND_CLASS_REP_HPP_INCLUDED
-#define LUABIND_CLASS_REP_HPP_INCLUDED
-
-//#include <cstdlib>
-
-#include <boost/limits.hpp>
-#include <boost/preprocessor/repetition/enum_params_with_a_default.hpp>
+#pragma once
 
 #include <luabind/config.hpp>
 #include <luabind/detail/object_rep.hpp>
@@ -44,9 +37,10 @@
 namespace luabind
 {
 
-	template<BOOST_PP_ENUM_PARAMS_WITH_A_DEFAULT(LUABIND_MAX_BASES, class A, detail::null_type)>
+	template<typename... Ts>
 	struct bases {};
-	typedef bases<detail::null_type> no_bases;
+
+    using no_bases = bases<>;
 
 	struct class_base;
 
@@ -224,7 +218,6 @@ namespace luabind { namespace detail
 			{
 				// this block is needed to make sure the string_class is destructed before
 				// lua_error() is called
-#ifdef BOOST_MSVC
 				{
 					// msvc has a bug which deletes the string twice, that's
 					// why we have to create it on the heap
@@ -235,16 +228,6 @@ namespace luabind { namespace detail
 					msg += "'";
 					lua_pushstring(L, msg.c_str());
 				}
-#else
-				{
-					string_class msg = "cannot set attribute '";
-					msg += obj->crep()->m_name;
-					msg += ".";
-					msg += lua_tostring(L, -2);
-					msg += "'";
-					lua_pushstring(L, msg.c_str());
-				}
-#endif
 				lua_error(L);
 			}
 
@@ -277,10 +260,6 @@ namespace luabind { namespace detail
 			bool ambiguous = false;
 			int match_index = -1;
 			int min_match = std::numeric_limits<int>::max();
-
-//			std::cout << "operator_dispatcher\n";
-//			std::cout << "num overloads: " << num_overloads[0] + num_overloads[1] << "\n";
-//			std::cout << "operator: " << id << "\n";
 
 #ifdef LUABIND_NO_ERROR_CHECKING
 
@@ -756,20 +735,25 @@ namespace luabind { namespace detail
 		inline LUABIND_TYPE_INFO type() const throw() { return m_type; }
 		inline void set_type(LUABIND_TYPE_INFO t) { m_type = t; }
 
-		inline void add_function(const char* name, const overload_rep& o)
+		void add_function(const char* name, const overload_rep& o)
 		{
+            auto copy = o;
+            add_function(name, std::move(copy));
+		}
 
+        void add_function(const char* name, overload_rep&& o)
+		{
 #ifdef LUABIND_DONT_COPY_STRINGS
-			detail::method_rep& method = m_methods[name];
-			method.name = name;
+            detail::method_rep& method = m_methods[name];
+            method.name = name;
 #else
-			m_strings.push_back(dup_string(name));
-			detail::method_rep& method = m_methods[m_strings.back()];
-			method.name = m_strings.back();
+            m_strings.push_back(dup_string(name));
+            detail::method_rep& method = m_methods[m_strings.back()];
+            method.name = m_strings.back();
 #endif
 
-			method.add_overload(o);
-			method.crep = this;
+            method.add_overload(std::move(o));
+            method.crep = this;
 		}
 
 		inline void add_constructor(const detail::construct_rep::overload_t& o)
@@ -791,10 +775,11 @@ namespace luabind { namespace detail
 #endif
 		}
 
-		inline void add_getter(const char* name, const boost::function2<int, lua_State*, int, luabind::memory_allocator<boost::function_base> >& g)
+        template <typename Fn>
+		inline void add_getter(const char* name, Fn&& g)
 		{
 			callback c;
-			c.func = g;
+			c.func = std::forward<Fn>(g);
 			c.pointer_offset = 0;
 #ifndef LUABIND_DONT_COPY_STRINGS
 			m_strings.push_back(dup_string(name));
@@ -804,10 +789,11 @@ namespace luabind { namespace detail
 #endif
 		}
 
-		inline void add_setter(const char* name, const boost::function2<int, lua_State*, int, luabind::memory_allocator<boost::function_base> >& s)
+        template <typename Fn>
+		inline void add_setter(const char* name, Fn&& s)
 		{
 			callback c;
-			c.func = s;
+			c.func = std::forward<Fn>(s);
 			c.pointer_offset = 0;
 #ifndef LUABIND_DONT_COPY_STRINGS
 			m_strings.push_back(dup_string(name));
@@ -818,9 +804,9 @@ namespace luabind { namespace detail
 		}
 
 #ifndef LUABIND_NO_ERROR_CHECKING
-		inline void add_operator(lua_State*, int op_id,  int(*func)(lua_State*), int(*matcher)(lua_State*), void(*sig)(lua_State*, string_class&), int arity)
+		void add_operator(lua_State*, int op_id,  int(*func)(lua_State*), int(*matcher)(lua_State*), void(*sig)(lua_State*, string_class&), int arity)
 #else
-		inline void add_operator(lua_State*, int op_id,  int(*func)(lua_State*), int(*matcher)(lua_State*), int arity)
+		void add_operator(lua_State*, int op_id,  int(*func)(lua_State*), int(*matcher)(lua_State*), int arity)
 #endif
 		{
 			operator_callback o;
@@ -837,16 +823,16 @@ namespace luabind { namespace detail
 		}
 		
 		// the lua reference to this class_rep
-		inline int self_ref() const throw() { return m_self_ref; }
+		int self_ref() const throw() { return m_self_ref; }
 
 		// the lua reference to the metatable for this class' instances
-		inline int metatable_ref() const throw() { return m_instance_metatable; }
+		int metatable_ref() const throw() { return m_instance_metatable; }
 
-		inline int table_ref() const { return m_table_ref; }
+		int table_ref() const { return m_table_ref; }
 
-		inline void(*destructor() const)(void*) { return m_destructor; }
+		void(*destructor() const)(void*) { return m_destructor; }
 
-		inline class_type get_class_type() const { return m_class_type; }
+		class_type get_class_type() const { return m_class_type; }
 
 		void add_static_constant(const char* name, int val)
 		{
@@ -858,7 +844,7 @@ namespace luabind { namespace detail
 #endif
 		}
 
-	static inline int super_callback(lua_State* L)
+	static int super_callback(lua_State* L)
 	{
 		int args = lua_gettop(L);
 		
@@ -1046,7 +1032,7 @@ namespace luabind { namespace detail
 		lua_rawset(L, -3);
 		return 0;
 	}
-
+	
 	static int construct_lua_class_callback(lua_State* L)
 	{
 		class_rep* crep = static_cast<class_rep*>(lua_touserdata(L, 1));
@@ -1131,7 +1117,10 @@ namespace luabind { namespace detail
 		// TODO: lua_call may invoke longjump! make sure we don't have any memory leaks!
 		// we don't have any stack objects here
 		lua_call(L, args, 0);
-
+		lua_pushstring(L, "super");
+		lua_pushnil(L);
+		lua_settable(L, LUA_GLOBALSINDEX);
+		
 #ifndef LUABIND_NO_ERROR_CHECKING
 
 		object_rep* obj = static_cast<object_rep*>(obj_ptr);
@@ -1385,7 +1374,21 @@ namespace luabind { namespace detail
 
 		struct callback
 		{
-			boost::function2<int, lua_State*, int, luabind::memory_allocator<boost::function_base> > func;
+		private:
+
+            luabind::memory_allocator<unsigned char> allocator;
+
+		public:
+            callback()
+                : allocator(),
+		          func(std::allocator_arg_t(), allocator),
+                  pointer_offset(0)
+            {
+            }
+            callback(const callback&) = default;
+            callback(callback&&) = default;
+
+			std::function<int(lua_State*, int)> func;
 			int pointer_offset;
 		};
 
@@ -1431,6 +1434,3 @@ namespace luabind { namespace detail
 	}
 
 }}
-
-#endif // LUABIND_CLASS_REP_HPP_INCLUDED
-

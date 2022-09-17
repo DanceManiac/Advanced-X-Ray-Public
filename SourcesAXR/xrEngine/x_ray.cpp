@@ -1024,7 +1024,6 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		(void)filter;
 #endif // DEDICATED_SERVER
 
-		FPU::m24r				();
 		InitEngine				();
 
 		InitInput				();

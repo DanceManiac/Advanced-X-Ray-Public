@@ -20,9 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-#ifndef LUABIND_ENUM_MAKER_HPP_INCLUDED
-#define LUABIND_ENUM_MAKER_HPP_INCLUDED
+#pragma once
 
 #include <vector>
 #include <string>
@@ -95,38 +93,43 @@ namespace luabind
 
 	namespace detail
 	{
-		template<class From>
+		template<typename From>
 		struct enum_maker
 		{
-			explicit enum_maker(From& from): from_(from) {}
+			explicit enum_maker(From&& from): from_(std::move(from)) {}
 
-			From& operator[](const value& val)
+            enum_maker(const enum_maker&) = delete;
+            enum_maker& operator= (const enum_maker&) = delete;
+
+            enum_maker(enum_maker&& that) noexcept
+                : from_(std::move(that.from_))
+            {
+            }
+
+            enum_maker& operator= (enum_maker&& that) noexcept
+            {
+                from_ = std::move(that.from_);
+                return *this;
+            }
+
+			From operator[](const value& val) &&
 			{
 				from_.add_static_constant(val.name_, val.val_);
-				return from_;
-			}
-			
-			enum_maker<From>& operator=(const enum_maker<From> &val)
-			{
-				return 	(*this = val);
+				return std::move(from_);
 			}
 
-			From& operator[](const value_vector& values)
+			From operator[](const value_vector& values) &&
 			{
 				for (value_vector::const_iterator i = values.begin(); i != values.end(); ++i)
 				{
 					from_.add_static_constant(i->name_, i->val_);
 				}
 
-				return from_;
+				return std::move(from_);
 			}
 
-			From& from_;
-
 		private:
-			template<class T> void operator,(T const&) const;
+            From from_;
 		};
 	}
 }
-
-#endif // LUABIND_ENUM_MAKER_HPP_INCLUDED

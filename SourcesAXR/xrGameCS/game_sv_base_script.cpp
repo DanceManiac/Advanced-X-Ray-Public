@@ -82,7 +82,7 @@ void game_sv_GameState::script_register(lua_State *L)
 		.def("setHMS"				,&xrTime::setHMS)
 		.def("setHMSms"				,&xrTime::setHMSms)
 		.def("set"					,&xrTime::set)
-		.def("get"					,&xrTime::get, out_value(_2) + out_value(_3) + out_value(_4) + out_value(_5) + out_value(_6) + out_value(_7) + out_value(_8))
+		.def("get"					,&xrTime::get, out_value<2>() + out_value<3>() + out_value<4>() + out_value<5>() + out_value<6>() + out_value<7>() + out_value<8>())
 		.def("dateToString"			,&xrTime::dateToString)
 		.def("timeToString"			,&xrTime::timeToString),
 		// declarations
@@ -90,14 +90,11 @@ void game_sv_GameState::script_register(lua_State *L)
 		def("get_game_time",		get_time_struct),
 //		def("get_surge_time",	Game::get_surge_time),
 //		def("get_object_by_name",Game::get_object_by_name),
-	
+
 	class_< game_sv_GameState, game_GameState >("game_sv_GameState")
 
 	.def("get_eid",				&game_sv_GameState::get_eid)
 	.def("get_id",				&game_sv_GameState::get_id)
-	//.def("get_it",				&game_sv_GameState::get_it)
-	//.def("get_it_2_id",			&game_sv_GameState::get_it_2_id)
-	//.def("get_name_it",			&game_sv_GameState::get_name_it)
 	.def("get_name_id",			&game_sv_GameState::get_name_id)
 	.def("get_player_name_id",	&game_sv_GameState::get_player_name_id)
 	
@@ -117,7 +114,7 @@ void game_sv_GameState::script_register(lua_State *L)
 	def("translate_string",		&translate_string)
 
 	];
-	
+
 	module(L)
 	[
 	class_<enum_exporter<EGamePlayerFlags> >("game_player_flags")
