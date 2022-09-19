@@ -30,6 +30,7 @@ SourcesAXR/intermediate/
 # Visual Studio 2015/2017 cache/options directory
 SDK/sources/OpenAutomate/.vs
 SourcesAXR/.vs/
+SourcesAXR/xrScripts/BuildVm.exe
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #SourcesAXR/wwwroot/
 
