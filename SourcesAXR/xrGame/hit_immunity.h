@@ -20,6 +20,6 @@ public:
 
 			void		LoadImmunities	(LPCSTR section, CInifile const * ini);
 			void		AddImmunities	(LPCSTR section, CInifile const * ini);
-			float		GetHitImmunity	(ALife::EHitType hit_type) const				{return m_HitImmunityKoefs[hit_type];}
-			float		AffectHit		(float power, ALife::EHitType hit_type) const	{return power*GetHitImmunity(hit_type);}
+			float		GetHitImmunity	(ALife::EHitType hit_type) {return m_HitImmunityKoefs[hit_type];}
+			float		AffectHit		(float power, ALife::EHitType hit_type) {return power*GetHitImmunity(hit_type);}
 };

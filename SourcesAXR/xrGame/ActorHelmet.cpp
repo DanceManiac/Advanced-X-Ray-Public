@@ -12,9 +12,8 @@
 CHelmet::CHelmet()
 {
 	m_flags.set(FUsingCondition, TRUE);
-	m_HitTypeProtection.resize(ALife::eHitTypeMax);
 	for(int i=0; i<ALife::eHitTypeMax; i++)
-		m_HitTypeProtection[i] = 1.0f;
+		m_HitTypeProtection[(ALife::EHitType)i] = 1.0f;
 
 	m_boneProtection = xr_new<SBoneProtections>();
 
