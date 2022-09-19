@@ -21,6 +21,12 @@
 	#define REGISTRY_PATH					"Software\\GSC Game World\\STALKER-COP\\"
 #endif
 
+#ifndef _M_X64
+#define GAME_PLATFORM						"x32"
+#else
+#define GAME_PLATFORM						"x64"
+#endif
+
 #define GAMESPY_GP_NAMESPACE_ID				1 /*gamespy global namespace*/
 
 #define	GAMESPY_QR2_BASEPORT				5445

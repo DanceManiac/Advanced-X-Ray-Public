@@ -32,32 +32,22 @@ void	FillSecretKey(char* SecretKey)
 
 const char* GetGameVersion	()
 {
-	/*HKEY KeyCDKey = 0;
-	long res = RegOpenKeyEx(REGISTRY_BASE, 
-		REGISTRY_PATH, 0, KEY_READ, &KeyCDKey);
-
-//	char	KeyValue[1024] = "";
-	DWORD KeyValueSize = 128;
-	DWORD KeyValueType = REG_SZ;
-	if (res == ERROR_SUCCESS && KeyCDKey != 0)
-	{
-		res = RegQueryValueEx(KeyCDKey, REGISTRY_VALUE_VERSION, NULL, &KeyValueType, (LPBYTE)KeyValue, &KeyValueSize);
-	};
-	if (KeyCDKey != 0) RegCloseKey(KeyCDKey);
-
-	if (res == ERROR_PATH_NOT_FOUND ||
-		res == ERROR_FILE_NOT_FOUND ||
-		KeyValueSize == 0)
-	{
-		return GAME_VERSION;
-	};*/
-//	return KeyValue;	
 	return GAME_VERSION;
+}
+
+const char* GetAxrPlatform()
+{	
+	return GAME_PLATFORM;
 }
 
 XRGAMESPY_API const char* xrGS_GetGameVersion	()
 {
 	return GetGameVersion();
+}
+
+XRGAMESPY_API const char* xrGS_GetAxrPlatform()
+{
+	return GetAxrPlatform();
 }
 
 XRGAMESPY_API void xrGS_GetGameID	(int* GameID, int verID)

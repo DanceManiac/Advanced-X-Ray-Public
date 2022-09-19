@@ -804,6 +804,21 @@ LPCSTR CMainMenu::GetGSVer()
 	return buff;
 }
 
+LPCSTR CMainMenu::GetAxrPlatform()
+{
+	static string256	buff;
+	if (m_pGameSpyFull)
+	{
+		xr_strcpy(buff, m_pGameSpyFull->GetAxrPlatform());
+	}
+	else
+	{
+		buff[0] = 0;
+	}
+
+	return buff;
+}
+
 LPCSTR CMainMenu::GetPlayerName()
 {
 	gamespy_gp::login_manager* l_mngr		= GetLoginMngr();

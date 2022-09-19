@@ -113,7 +113,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 	#endif
 #endif
 		FS._initialize		(flags,0,fs_fname);
-		Msg					("'%s' build %d, ver. %s, M.F.S. Team %s\n","Advanced X-Ray",build_id, GAME_VERSION, build_date);
+		Msg					("'%s %s' build %d, ver. %s, M.F.S. Team %s\n","Advanced X-Ray", GAME_PLATFORM, build_id, GAME_VERSION, build_date);
 		EFS._initialize		();
 #ifdef DEBUG
     #ifndef	_EDITOR

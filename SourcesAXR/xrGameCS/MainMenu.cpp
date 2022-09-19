@@ -772,6 +772,23 @@ LPCSTR CMainMenu::GetGSVer()
 	return buff2;
 }
 
+LPCSTR CMainMenu::GetAxrPlatform()
+{
+	static string256	buff;
+	static string256	buff2;
+	if (m_pGameSpyFull)
+	{
+		strcpy_s(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
+	}
+	else
+	{
+		buff[0] = 0;
+		buff2[0] = 0;
+	}
+
+	return buff2;
+}
+
 LPCSTR CMainMenu::GetPlayerNameFromRegistry()
 {
 	string512 name;

@@ -193,6 +193,7 @@ public:
 	void			SetNeedVidRestart				();
 	virtual void	OnDeviceReset					();
 	LPCSTR			GetGSVer						();
+	LPCSTR			GetAxrPlatform					();
 
 			bool	IsCDKeyIsValid					();
 			bool	ValidateCDKey					();

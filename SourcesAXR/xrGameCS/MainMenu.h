@@ -160,6 +160,7 @@ public:
 	void			SetNeedVidRestart				();
 	virtual void	OnDeviceReset					();
 	LPCSTR			GetGSVer						();
+	LPCSTR			GetAxrPlatform					();
 
 	static	LPCSTR	AddHyphens						(LPCSTR str);
 	static	LPCSTR	DelHyphens						(LPCSTR str);

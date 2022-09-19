@@ -32,7 +32,7 @@ function main_menu:InitControls()
 
 	local _ver = xml:InitStatic		("static_version",self)
 	local mm						= _G.main_menu.get_main_menu()
-	_ver:TextControl():SetText		("Advanced X-Ray ver. " .. mm:GetGSVer())
+	_ver:TextControl():SetText		("Advanced X-Ray ver. " .. mm:GetGSVer() .. " (" .. mm:GetAxrPlatform() .. ")")
 
     self.l_mgr = mm:GetLoginMngr()
     self.acc_mgr = mm:GetAccountMngr()

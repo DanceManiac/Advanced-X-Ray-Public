@@ -67,6 +67,7 @@ void	CGameSpy_Full::LoadGameSpy()
 
 	HMODULE	hGameSpyDLL		= m_hGameSpyDLL;
 	GAMESPY_LOAD_FN			(xrGS_GetGameVersion);
+	GAMESPY_LOAD_FN			(xrGS_GetAxrPlatform);
 	GAMESPY_LOAD_FN			(xrGS_gsCoreInitialize);
 	GAMESPY_LOAD_FN			(xrGS_gsCoreThink);
 	GAMESPY_LOAD_FN			(xrGS_gsCoreShutdown);
@@ -89,4 +90,9 @@ void	CGameSpy_Full::Update	()
 const	char*	CGameSpy_Full::GetGameVersion()
 {
 	return xrGS_GetGameVersion();
+};
+
+const	char* CGameSpy_Full::GetAxrPlatform()
+{
+	return xrGS_GetAxrPlatform();
 };
