@@ -5,7 +5,7 @@
 #include "UI.h"
 #include "HUDManager.h"
 #include "ui/UIStatic.h"
-
+#include "../xrEngine/IGame_Persistent.h"
 
 #define C_DEFAULT	color_xrgb(0xff,0xff,0xff)
 
@@ -52,8 +52,7 @@ void CUICursor::OnRender	()
 {
 	if( !IsVisible() ) return;
 #ifdef DEBUG
-	VERIFY(last_render_frame != Device.dwFrame);
-	//last_render_frame = Device.dwFrame;
+	VERIFY(!g_pGamePersistent->IsMainMenuActive() || last_render_frame != Device.dwFrame);
 
 	if (bDebug)
 	{
@@ -68,14 +67,14 @@ void CUICursor::OnRender	()
 #endif
 
 	u32 curFrame = Device.dwFrame;
-	if (curFrame == last_render_frame)
-		return;
+	if (g_pGamePersistent->IsMainMenuActive() || curFrame != last_render_frame)
+	{
+		m_static->SetWndPos(vPos);
+		m_static->Update();
+		m_static->Draw();
+	}
 
-	m_static->SetWndPos	(vPos);
-	m_static->Update	();
-	m_static->Draw		();
-
-	last_render_frame = curFrame;
+	last_render_frame = Device.dwFrame;
 }
 
 Fvector2 CUICursor::GetCursorPosition()
