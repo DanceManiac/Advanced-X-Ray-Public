@@ -293,5 +293,7 @@ void CUIOutfitInfo::UpdateInfo( CHelmet* cur_helmet, CHelmet* slot_helmet )
 	{
 		slot_filter = slot_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS;
 	}
-	m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
+
+	if (GameConstants::GetOutfitUseFilters())
+		m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
 }
