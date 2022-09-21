@@ -25,6 +25,7 @@ protected:
 	CUIStatic				m_filter_name;
 	CUIDoubleProgressBar	m_progress;
 	CUIDoubleProgressBar	m_filter_progress;
+	CUIStatic				m_filter_value; // 100%
 	CUIStatic				m_value; // 100%
 	float					m_magnitude;
 

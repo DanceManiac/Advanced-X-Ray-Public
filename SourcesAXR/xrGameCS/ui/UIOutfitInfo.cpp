@@ -45,6 +45,7 @@ CUIOutfitImmunity::CUIOutfitImmunity()
 	AttachChild( &m_value );
 	AttachChild(&m_filter_name);
 	AttachChild(&m_filter_progress);
+	AttachChild(&m_filter_value);
 	m_magnitude = 1.0f;
 }
 
@@ -90,6 +91,17 @@ void CUIOutfitImmunity::InitFromXml(CUIXml& xml_doc, LPCSTR base_str)
 	strconcat(sizeof(buf), buf, base_str, ":", "antigas_filter", ":progress_bar");
 	m_filter_progress.InitFromXml(xml_doc, buf);
 
+	strconcat(sizeof(buf), buf, base_str, ":", "antigas_filter", ":static_value");
+	if (xml_doc.NavigateToNode(buf, 0))
+	{
+		CUIXmlInit::InitStatic(xml_doc, buf, 0, &m_filter_value);
+		m_filter_value.SetVisible(true);
+	}
+	else
+	{
+		m_filter_value.SetVisible(false);
+	}
+
 	m_magnitude = xml_doc.ReadAttribFlt(buf, 0, "magnitude", 1.0f);
 }
 
@@ -109,6 +121,10 @@ void CUIOutfitImmunity::SetFilterProgressValue(float cur, float comp)
 	cur *= m_magnitude;
 	comp *= m_magnitude;
 	m_filter_progress.SetTwoPos(cur, comp);
+
+	string32 buf;
+	sprintf_s(buf, sizeof(buf), "%.0f", cur);
+	m_filter_value.SetText(buf);
 }
 
 // ===========================================================================================
