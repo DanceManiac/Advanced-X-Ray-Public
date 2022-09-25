@@ -74,7 +74,7 @@ public:
 		
 		void	Init				( CUIXml& xml, LPCSTR section );
 		void	SetCaption			( LPCSTR name );
-		void	SetValue			(float value, int vle = 0);
+		void	SetValue			(float value, int vle = 0, float max_val = 0);
 	
 private:
 	CUIStatic*	m_caption;
@@ -82,6 +82,7 @@ private:
 	float		m_magnitude;
 	bool		m_show_sign;
 	shared_str	m_unit_str;
+	shared_str	m_unit_str_max;
 	shared_str	m_texture_minus;
 	shared_str	m_texture_plus;
 

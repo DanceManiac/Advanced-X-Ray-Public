@@ -151,7 +151,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		return;
 	}
 
-	float val = 0.0f, max_val = 1.0f;
+	float val = 0.0f, max_val = 1.0f, max_value = 0.0f;
 	Fvector2 pos;
 	float h = m_Prop_line->GetWndPos().y + m_Prop_line->GetWndSize().y;
 
@@ -200,10 +200,11 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 	if (eatable)
 	{
 		val = eatable->m_iPortionsNum;
+		max_value = pSettings->r_float(section, "eat_portions_num");
 
 		if (val > 1)
 		{
-			m_portions->SetValue(val);
+			m_portions->SetValue(val, 0, max_value);
 			pos.set(m_portions->GetWndPos());
 			pos.y = h;
 			m_portions->SetWndPos(pos);
@@ -226,6 +227,7 @@ UIBoosterInfoItem::UIBoosterInfoItem()
 	m_show_sign = false;
 
 	m_unit_str._set("");
+	m_unit_str_max._set("");
 	m_texture_minus._set("");
 	m_texture_plus._set("");
 }
@@ -246,6 +248,9 @@ void UIBoosterInfoItem::Init(CUIXml& xml, LPCSTR section)
 	
 	LPCSTR unit_str = xml.ReadAttrib( "value", 0, "unit_str", "" );
 	m_unit_str._set( CStringTable().translate( unit_str ) );
+
+	LPCSTR unit_str_max = xml.ReadAttrib("value", 0, "unit_str_max", "");
+	m_unit_str_max._set(CStringTable().translate(unit_str_max));
 	
 	LPCSTR texture_minus = xml.Read( "texture_minus", 0, "" );
 	if ( texture_minus && xr_strlen(texture_minus) )
@@ -263,22 +268,31 @@ void UIBoosterInfoItem::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void UIBoosterInfoItem::SetValue(float value, int vle)
+void UIBoosterInfoItem::SetValue(float value, int vle, float max_val)
 {
 	value *= m_magnitude;
-	string32 buf;
-	if (m_show_sign)
-		xr_sprintf(buf, "%+.0f", value);
-	else
-		xr_sprintf(buf, "%.0f", value);
+	max_val *= m_magnitude;
+	string32 buf, buf2;
 
-	LPSTR str;
+	m_show_sign ? xr_sprintf(buf, "%+.0f", value) : xr_sprintf(buf, "%.0f", value);
+
+	xr_sprintf(buf2, "%.0f", max_val);
+
+	LPSTR str, str2, comp_str;
 	if (m_unit_str.size())
 		STRCONCAT(str, buf, " ", m_unit_str.c_str());
 	else
 		STRCONCAT(str, buf);
 
-	m_value->SetText(str);
+	if (m_unit_str_max.size())
+		STRCONCAT(str2, buf2, " ", m_unit_str_max.c_str());
+	else
+		STRCONCAT(str2, buf2);
+
+	STRCONCAT(comp_str, str, "/", str2);
+
+	fis_zero(max_val) ? m_value->SetText(str) : m_value->SetText(comp_str);
+
 	bool positive = (value >= 0.0f);
 	Fvector4 red = GameConstants::GetRedColor();
 	Fvector4 green = GameConstants::GetGreenColor();
