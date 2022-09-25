@@ -103,6 +103,7 @@ void CUIOutfitImmunity::SetFilterProgressValue(float cur, float comp)
 {
 	cur *= m_magnitude;
 	comp *= m_magnitude;
+
 	m_filter_progress.SetTwoPos(cur, comp);
 }
 
@@ -240,7 +241,9 @@ void CUIOutfitInfo::UpdateInfo( CCustomOutfit* cur_outfit, CCustomOutfit* slot_o
 	{
 		slot_filter = slot_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS;
 	}
-	m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
+
+	if (GameConstants::GetOutfitUseFilters())
+		m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
 }
 
 
