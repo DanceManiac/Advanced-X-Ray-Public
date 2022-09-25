@@ -33,6 +33,7 @@ CEatableItem::CEatableItem()
 	m_bTimerEnd = false;
 	m_bHasAnimation = false;
 	ItmStartAnim = false;
+	m_bUnlimited = false;
 	last_slot_id = NO_ACTIVE_SLOT;
 	m_iTiming = 0;
 	UseTimer = 0;
@@ -56,6 +57,7 @@ void CEatableItem::Load(LPCSTR section)
 
 	m_iPortionsNum = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
 	m_bHasAnimation = READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
+	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
 	m_iTiming = READ_IF_EXISTS(pSettings, r_u32, section, "timing", 0);
 	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
 	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "animation_item", nullptr);
@@ -75,7 +77,7 @@ bool CEatableItem::Useful() const
 	if(!inherited::Useful()) return false;
 
 	//проверить не все ли еще съедено
-	if(m_iPortionsNum == 0) return false;
+	if(m_iPortionsNum == 0 && !m_bUnlimited) return false;
 
 	return true;
 }
@@ -318,7 +320,7 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 		Level().Send(tmp_packet);
 	}
 
-	if (m_iPortionsNum != -1)
+	if (m_iPortionsNum != -1 && !m_bUnlimited)
 	{
 		if (m_iPortionsNum > 0)
 			--(m_iPortionsNum);

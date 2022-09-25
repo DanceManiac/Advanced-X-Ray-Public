@@ -43,6 +43,7 @@ public:
 			bool			m_bActivated;
 			bool			m_bTimerEnd;
 			bool			ItmStartAnim;
+			bool			m_bUnlimited;
 			float			m_fEffectorIntensity;
 			int				m_iTiming;
 			u32				UseTimer;
