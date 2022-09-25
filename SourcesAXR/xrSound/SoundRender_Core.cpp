@@ -20,6 +20,7 @@ int		psUseDistDelay			= 1;
 float	psSoundSpeed			= 250.f;
 int		psSoundPrecacheAll		= 0;
 bool	bAutoSndTargets			= false;
+float psSpeedOfSound			= 1.0f;
 
 XRSOUND_API CSoundRender_Core* SoundRender = nullptr;
 CSound_manager_interface* Sound = nullptr;
@@ -428,7 +429,7 @@ void CSoundRender_Core::_create_data( ref_sound_data& S, LPCSTR fName, esound_ty
     S.g_object			= 0; 
     S.g_userdata		= 0;
 	S.dwBytesTotal		= S.handle->bytes_total();
-	S.fTimeTotal		= S.handle->length_sec();
+	S.fTimeTotal		= S.handle->length_sec() / psSpeedOfSound * 3.2f;
 }
 void CSoundRender_Core::_destroy_data( ref_sound_data& S)
 {

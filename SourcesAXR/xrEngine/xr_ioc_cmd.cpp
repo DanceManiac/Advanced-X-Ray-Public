@@ -796,6 +796,7 @@ void CCC_Register()
 	CMD3(CCC_Mask,		"snd_stats_ai_dist",	&g_stats_flags,		st_sound_ai_dist );
 	CMD3(CCC_Mask,		"snd_stats_info_name",	&g_stats_flags,		st_sound_info_name );
 	CMD3(CCC_Mask,		"snd_stats_info_object",&g_stats_flags,		st_sound_info_object );
+	CMD4(CCC_Float,		"snd_speed_of_sound",	&psSpeedOfSound,	0.2f, 2.0f);
 
 	CMD4(CCC_Integer,	"error_line_count",		&g_ErrorLineCount,	6,	1024	);
 #endif // DEBUG

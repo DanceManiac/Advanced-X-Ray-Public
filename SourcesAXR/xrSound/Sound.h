@@ -41,6 +41,7 @@ XRSOUND_API extern int				psUseDistDelay			;
 XRSOUND_API extern float			psSoundSpeed			;
 XRSOUND_API extern int				psSoundPrecacheAll		;
 XRSOUND_API extern bool				bAutoSndTargets			;
+XRSOUND_API extern float			psSpeedOfSound			;
 
 // Flags
 enum {
