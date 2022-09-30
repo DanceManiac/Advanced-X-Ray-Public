@@ -10,6 +10,7 @@
 
 #include "xrCore.h"
 #include "xrCore_platform.h"
+#include <chrono>
 //.#include "../../Include/xrAPI/xrAPI.h"
 #endif
 
