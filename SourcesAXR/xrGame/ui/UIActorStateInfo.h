@@ -29,12 +29,9 @@ private:
 
 	enum EStateType
 	{
-//		stt_stamina = 0,
 		stt_health = 0,
 		stt_bleeding,
 		stt_radiation,
-//		stt_armor,
-//		stt_main,
 		stt_fire,
 		stt_radia,
 		stt_acid,
@@ -43,6 +40,14 @@ private:
 		stt_fire_wound,
 		stt_shock,
 		stt_power,
+		stt_satiety,
+		stt_thirst,
+		stt_intoxication,
+		stt_sleepeness,
+		stt_alcoholism,
+		stt_hangover,
+		stt_narcotism,
+		stt_withdrawal,
 		stt_count
 	};
 	ui_actor_state_item*	m_state[stt_count];

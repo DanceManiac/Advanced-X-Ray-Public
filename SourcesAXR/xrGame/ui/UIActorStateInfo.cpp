@@ -47,6 +47,14 @@ LPCSTR ef_states_names[] =
 	"fire_wound_sensor",
 	"shock_sensor",
 	"power_sensor",
+	"satiety_state",
+	"thirst_state",
+	"intoxication_state",
+	"sleepeness_state",
+	"alcoholism_state",
+	"hangover_state",
+	"narcotism_state",
+	"withdrawal_state",
 };
 
 ui_actor_state_wnd::ui_actor_state_wnd()
@@ -128,6 +136,38 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 			m_state[stt_radiation]->show_static(true, 3);
 	}
 
+	value = actor->conditions().GetSatiety();
+	m_state[stt_satiety]->set_progress(value);
+	m_state[stt_satiety]->set_value(value);
+
+	value = actor->conditions().GetThirst();
+	m_state[stt_thirst]->set_progress(value);
+	m_state[stt_thirst]->set_value(value);
+
+	value = actor->conditions().GetIntoxication();
+	m_state[stt_intoxication]->set_progress(value);
+	m_state[stt_intoxication]->set_value(value);
+
+	value = actor->conditions().GetSleepeness();
+	m_state[stt_sleepeness]->set_progress(value);
+	m_state[stt_sleepeness]->set_value(value);
+
+	value = actor->conditions().GetAlcoholism();
+	m_state[stt_alcoholism]->set_progress(value);
+	m_state[stt_alcoholism]->set_value(value);
+
+	value = actor->conditions().GetHangover();
+	m_state[stt_hangover]->set_progress(value);
+	m_state[stt_hangover]->set_value(value);
+
+	value = actor->conditions().GetNarcotism();
+	m_state[stt_narcotism]->set_progress(value);
+	m_state[stt_narcotism]->set_value(value);
+
+	value = actor->conditions().GetWithdrawal();
+	m_state[stt_withdrawal]->set_progress(value);
+	m_state[stt_withdrawal]->set_value(value);
+
 	CCustomOutfit* outfit = actor->GetOutfit();
 	CCustomOutfit* pants = smart_cast<CCustomOutfit*>(actor->inventory().ItemFromSlot(PANTS_SLOT));
 	PIItem itm = actor->inventory().ItemFromSlot(HELMET_SLOT);
@@ -135,22 +175,14 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 	itm = actor->inventory().ItemFromSlot(SECOND_HELMET_SLOT);
 	CHelmet* helmet2 = smart_cast<CHelmet*>(itm);
 
-	m_state[stt_fire]->set_progress(0.0f);
-	m_state[stt_fire]->set_value(0.0f);
-	m_state[stt_radia]->set_progress(0.0f);
-	m_state[stt_radia]->set_value(0.0f);
-	m_state[stt_acid]->set_progress(0.0f);
-	m_state[stt_acid]->set_value(0.0f);
-	m_state[stt_psi]->set_progress(0.0f);
-	m_state[stt_psi]->set_value(0.0f);
-	m_state[stt_wound]->set_progress(0.0f);
-	m_state[stt_wound]->set_value(0.0f);
-	m_state[stt_fire_wound]->set_progress(0.0f);
-	m_state[stt_fire_wound]->set_value(0.0f);
-	m_state[stt_shock]->set_progress(0.0f);
-	m_state[stt_shock]->set_value(0.0f);
-	m_state[stt_power]->set_progress(0.0f);
-	m_state[stt_power]->set_value(0.0f);
+	for (int i = 0; i < stt_satiety; ++i)
+	{
+		if (i > stt_radiation)
+		{
+			m_state[i]->set_progress(0.0f);
+			m_state[i]->set_value(0.0f);
+		}
+	}
 
 	float burn_value = 0.0f;
 	float radi_value = 0.0f;
