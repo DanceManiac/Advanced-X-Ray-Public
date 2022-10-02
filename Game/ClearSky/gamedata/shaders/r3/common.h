@@ -47,6 +47,7 @@
 	uniform float4 screen_res_alt; // .xy - pos_decompression_params2.xy, .zw - screen_res.xy power to -1
 	uniform float4 puddles_accumulator; // .x - wetness accumulator, .yzw = 0
 	uniform float4x4	m_view2world;
+	uniform float3x4	m_inv_V;
 	
 	// Глобальные параметры шейдеров --#SM+#--
 	uniform	float4		m_hud_params;	// zoom_rotate_factor, secondVP_zoom_factor, NULL, NULL
