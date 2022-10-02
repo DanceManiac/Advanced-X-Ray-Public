@@ -33,6 +33,22 @@
 #include "../Inventory.h"
 #include "../Artefact.h"
 #include "../string_table.h"
+
+LPCSTR ef_states_names[] =
+{
+	"health_state",
+	"bleeding_state",
+	"radiation_state",
+	"fire_sensor",
+	"radia_sensor",
+	"acid_sensor",
+	"psi_sensor",
+	"wound_sensor",
+	"fire_wound_sensor",
+	"shock_sensor",
+	"power_sensor",
+};
+
 ui_actor_state_wnd::ui_actor_state_wnd()
 {
 }
@@ -55,25 +71,13 @@ void ui_actor_state_wnd::init_from_xml( CUIXml& xml, LPCSTR path )
 	for ( int i = 0; i < stt_count; ++i )
 	{
 		m_state[i] = xr_new<ui_actor_state_item>();
-		m_state[i]->SetAutoDelete( true );
-		AttachChild( m_state[i] );
-		m_state[i]->set_hint_wnd( m_hint_wnd );
-	}
-//	m_state[stt_stamina]->init_from_xml( xml, "stamina_state" );
-	m_state[stt_health]->init_from_xml( xml, "health_state");
-	m_state[stt_bleeding]->init_from_xml( xml, "bleeding_state");
-	m_state[stt_radiation]->init_from_xml( xml, "radiation_state");
-//	m_state[stt_armor]->init_from_xml( xml, "armor_state");
+		m_state[i]->SetAutoDelete(true);
+		AttachChild(m_state[i]);
+		m_state[i]->set_hint_wnd(m_hint_wnd);
 
-//	m_state[stt_main]->init_from_xml( xml, "main_sensor");
-	m_state[stt_fire]->init_from_xml( xml, "fire_sensor");
-	m_state[stt_radia]->init_from_xml( xml, "radia_sensor");
-	m_state[stt_acid ]->init_from_xml( xml, "acid_sensor");
-	m_state[stt_psi]->init_from_xml( xml, "psi_sensor");
-	m_state[stt_wound]->init_from_xml( xml, "wound_sensor");
-	m_state[stt_fire_wound]->init_from_xml( xml, "fire_wound_sensor");
-	m_state[stt_shock]->init_from_xml( xml, "shock_sensor");
-	m_state[stt_power]->init_from_xml( xml, "power_sensor");
+		if (xml.NavigateToNode(ef_states_names[i], 0))
+			m_state[i]->init_from_xml(xml, ef_states_names[i]);
+	}
 
 	xml.SetLocalRoot( stored_root );
 }
