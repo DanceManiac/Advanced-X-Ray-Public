@@ -159,7 +159,7 @@ c2_out main( v2p_aa_AA I )
 
         float3 reflections_f = reflections.xyz + reflections.w * L_sun_color;
         
-        res.Color.xyz = lerp(res.Color.xyz, reflections_f, mask * puddles_accumulator.x);
+        res.Color.xyz = lerp(res.Color.xyz, reflections_f, mask * rain_params.y);
     }
 #endif
 	

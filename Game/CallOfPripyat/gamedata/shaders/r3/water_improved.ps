@@ -48,7 +48,7 @@
 			#if USE_WATER_RIPPLES==1 && defined(WINTER_MODE)
 				float ripples_mixer = smooth_out_depth(actorDepth, 12, 2) * 0.6;
 
-				base = mix(base, RipplesPS(s_base, smp_base, _in.tbase, 10), ripples_mixer * u_weather.w);
+				base = mix(base, RipplesPS(s_base, smp_base, _in.tbase, 10), ripples_mixer * rain_params.x);
 			#endif
 
 			#if W_DEBUG>0

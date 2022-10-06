@@ -40,7 +40,7 @@ float diff_green_red = L_sun_color.g - L_sun_color.r;
 float diff_green_blue = L_sun_color.g - L_sun_color.b;
 float amount = (diff_green_red-RB_GREENREDDIFF)+(diff_green_blue-RB_GREENBLUEDIFF);
 #ifdef WINTER_MODE
-	if (I.tc0.z >= RB_VIEWANGLE.x && I.tc0.z <= RB_VIEWANGLE.y && I.tc0.y >= RB_VIEWANGLE.z && I.tc0.y <= RB_VIEWANGLE.w && amount > 0 && u_weather.w > 0)
+	if (I.tc0.z >= RB_VIEWANGLE.x && I.tc0.z <= RB_VIEWANGLE.y && I.tc0.y >= RB_VIEWANGLE.z && I.tc0.y <= RB_VIEWANGLE.w && amount > 0 && rain_params.x > 0)
 	{	
 		float sun_intensity = saturate((L_sun_color.r+L_sun_color.g+L_sun_color.b)*RB_SUNFACTOR/3);
 		bool white = false;

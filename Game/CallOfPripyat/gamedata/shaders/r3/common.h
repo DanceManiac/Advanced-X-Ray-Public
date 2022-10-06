@@ -42,10 +42,10 @@
 		return screen; 
 	}
 	
-	uniform float4 u_weather; // .xyz - sky color, .w - rain line param
+	uniform float4 sky_color; // .xyz - sky color, .w - sky rotation
 	uniform float4 lowland_fog_params; // x - low fog height, y - low fog density, z - base height, w - null
 	uniform float4 screen_res_alt; // .xy - pos_decompression_params2.xy, .zw - screen_res.xy power to -1
-	uniform float4 puddles_accumulator; // .x - wetness accumulator, .yzw = 0
+	uniform float4 rain_params; // .x - rain density, .y - wetness accumulator, .zw = 0
 	uniform float4x4	m_view2world;
 	uniform float3x4	m_inv_V;
 	

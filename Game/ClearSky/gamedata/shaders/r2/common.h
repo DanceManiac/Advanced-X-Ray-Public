@@ -47,7 +47,7 @@
 #  define xmaterial half(L_material.w)
 #endif
 //////////////////////////////////////////////////////////////////////////////////////////
-uniform half4 				 u_weather; // .xyz - sky color, .w - rain line param
+uniform half4 				 sky_color; // .xyz - sky color, .w - sky_rotation
 uniform half4 				 lowland_fog_params; // x - low fog height, y - low fog density, z - base height, w - null
 uniform float4				 screen_res;
 uniform half4                hemi_cube_pos_faces;

@@ -101,9 +101,9 @@
 				#endif
 
 				#if defined(SSR_ROAD)
-					sky *= clamp(u_weather, 0, 0.5);
+					sky *= clamp(sky_color, 0, 0.5);
 				#else
-					sky *= u_weather.xyz;
+					sky *= sky_color.xyz;
 				#endif
 
 				// DT

@@ -224,28 +224,29 @@ class cl_rain_params : public R_constant_setup
 {
     virtual void setup(R_constant* C)
     {
+		float rainDensity = g_pGamePersistent->Environment().CurrentEnv->rain_density;
         float wetness_accum    = g_pGamePersistent->Environment().wetness_accum;
 
         LPCSTR wetness_comment = "Wetness accumulator:";
 
             //Log(wetness_comment, wetness_accum);
 
-        RCache.set_c (C, wetness_accum, 0, 0, 0);
+        RCache.set_c (C, rainDensity, wetness_accum, 0, 0);
     }
 };
 static cl_rain_params binder_rain_params;
 
-class cl_u_weather : public R_constant_setup
+class cl_sky_color : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
 		Fvector4	result;
 		CEnvDescriptor& desc = *g_pGamePersistent->Environment().CurrentEnv;
-		result.set(desc.sky_color.x, desc.sky_color.y, desc.sky_color.z, desc.rain_density);
+		result.set(desc.sky_color.x, desc.sky_color.y, desc.sky_color.z, desc.sky_rotation);
 		RCache.set_c(C, result);
 	}
 };
-static cl_u_weather binder_u_weather;
+static cl_sky_color binder_sky_color;
 
 // times
 class cl_times		: public R_constant_setup {
@@ -491,6 +492,19 @@ static class cl_pda_params : public R_constant_setup
 
 } binder_pda_params;
 
+static class cl_inv_v : public R_constant_setup
+{
+	u32	marker;
+	Fmatrix	result;
+
+	virtual void setup(R_constant* C)
+	{
+		result.invert(Device.mView);
+
+		RCache.set_c(C, result);
+	}
+} binder_inv_v;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -501,9 +515,9 @@ void	CBlender_Compile::SetMapping	()
 
 	// DWM: out to shaders view to world mat, weather params, alternative screen res
 	r_Constant("m_view2world", &binder_m_v2w);
-	r_Constant("u_weather", &binder_u_weather);
+	r_Constant("sky_color", &binder_sky_color);
 	r_Constant("screen_res_alt", &binder_screen_res);
-    r_Constant("puddles_accumulator", &binder_rain_params);
+    r_Constant("rain_params", &binder_rain_params);
 
 	// misc
 	r_Constant("m_hud_params", &binder_hud_params);	//--#SM+#--
@@ -518,6 +532,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("m_WV",			&binder_wv);
 	r_Constant				("m_VP",			&binder_vp);
 	r_Constant				("m_WVP",			&binder_wvp);
+	r_Constant				("m_inv_V",			&binder_inv_v);
 
 	r_Constant				("m_xform_v",		&tree_binder_m_xform_v);
 	r_Constant				("m_xform",			&tree_binder_m_xform);
