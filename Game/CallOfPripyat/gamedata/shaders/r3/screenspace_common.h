@@ -7,6 +7,7 @@
  */
 
 #define SSFX_READY
+#define SSFX_MODEXE
 
 #include "screenspace_common_noise.h"
 #include "common.h"
@@ -14,7 +15,7 @@
 
 #include "check_screenspace.h"
 
-uniform float4 sky_color;
+//uniform float4 sky_color;
 
 static const float4 SSFX_ripples_timemul = float4(1.0f, 0.85f, 0.93f, 1.13f); 
 static const float4 SSFX_ripples_timeadd = float4(0.0f, 0.2f, 0.45f, 0.7f);
@@ -218,7 +219,7 @@ float3 SSFX_calc_sky(float3 dir)
 #ifndef SSFX_MODEXE
 	return saturate(L_hemi_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #else
-	return saturate(sky_color.bgr * 3.0f) * lerp(sky0, sky1, L_ambient.w);
+	return saturate(sky_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #endif
 }
 
