@@ -107,7 +107,7 @@ f_deffer 	main	( p_flat I 		)
 	float size_f = (1.0f - (rain_params.y-0.1) * 1.1f);
 
 	// Texture mask
-	float puddles_mask = 1.0f - s_puddles_mask.Sample(smp_base, I.tcdh).r * mask.g;
+	float puddles_mask = 1.0f - s_puddles_mask.Sample(smp_base, I.tcdh).r;
 
 	// Puddles perlin
 	float puddles = saturate((s_puddles_perlin.Sample(smp_base, I.tcdh * 15.0f / G_PUDDLES_GLOBAL_SIZE).r - size_f) * puddles_f);
@@ -192,7 +192,7 @@ f_deffer 	main	( p_flat I 		)
 								float4	(D.x,	D.y,	D.z,						G			) );	// OUT: rgb.gloss
 								
 #if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
-    O.DWM.x = puddles.r * mask.g;
+    O.DWM.x = puddles.r * puddles_mask;
 #endif
 
   return O;
