@@ -4,7 +4,6 @@
 #include "common.h"
 #include "sload.h"
 #include "settings_screenspace_PUDDLES.h"
-#define lerp(a, b, t) mix(a, b, t)
 
 Texture2D s_puddles_normal;
 Texture2D s_puddles_perlin;
@@ -151,10 +150,10 @@ f_deffer 	main	( p_flat I 		)
 
 	// Normal Up and ripples for puddles
 	float3 MirrorUp	= mul(m_V,  float3(ripplesNormal.x, 1.0f, ripplesNormal.y));
-	N = lerp(N, MirrorUp, puddles);
+	//N = lerp(N, MirrorUp, puddles);
 
 	// Apply tint
-	D.rgb = lerp(D.rgb, D.rgb * G_PUDDLES_TINT, puddles);
+	//D.rgb = lerp(D.rgb, D.rgb * G_PUDDLES_TINT, puddles);
 
 	// Limit pudddle reflection.
 	puddles = clamp(puddles, 0, G_PUDDLES_REFLECTIVITY);
@@ -163,7 +162,7 @@ f_deffer 	main	( p_flat I 		)
 	puddles = puddles + saturate(wetness_f * 2.0f) * G_PUDDLES_TERRAIN_EXTRA_WETNESS;
 
 	// Add gloss and puddles to the final gloss result
-	G = max(g_R + g_G + g_B + g_A, puddles);
+	G = max(g_R + g_G + g_B + g_A, 0.0f);
 //			G 	= 0			;
 //			G 	= mix.w		;		// gloss
   # else
