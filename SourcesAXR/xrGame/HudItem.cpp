@@ -447,6 +447,12 @@ bool CHudItem::TryPlayAnimIdle()
 	return false;
 }
 
+bool CHudItem::NeedBlendAnm()
+{
+	u32 state = GetState();
+	return (state != eIdle && state != eHidden);
+}
+
 void CHudItem::PlayAnimIdleMoving()
 {
 	if (IsMisfireNow())

@@ -9,7 +9,8 @@ class ENGINE_API CObjectAnimator
 {
 private:
 	DEFINE_VECTOR		(COMotion*,MotionVec,MotionIt);
-protected:
+public:
+	const SAnimParams&	anim_param() { return m_MParam; }
 	bool				bLoop;
 
     shared_str			m_Name;
@@ -23,7 +24,7 @@ protected:
 	void				LoadMotions		(LPCSTR fname);
 	void				SetActiveMotion	(COMotion* mot);
 	COMotion*			FindMotionByName(LPCSTR name);
-public:
+
 						CObjectAnimator	();
 	virtual				~CObjectAnimator();
 
