@@ -131,6 +131,7 @@ void CHudItem::OnStateSwitch(u32 S)
 
 		break;
 	}
+	g_player_hud->updateMovementLayerState();
 }
 
 void CHudItem::OnAnimationEnd(u32 state)

@@ -475,7 +475,7 @@ player_hud::player_hud()
 	m_item_pos.identity();
 	reset_thumb(true);
 
-	/*m_movement_layers.reserve(move_anms_end);
+	m_movement_layers.reserve(move_anms_end);
 
 	for (int i = 0; i < move_anms_end; i++)
 	{
@@ -484,8 +484,8 @@ player_hud::player_hud()
 		char temp[20];
 		string512 tmp;
 		strconcat(sizeof(temp), temp, "movement_layer_", std::to_string(i).c_str());
-		R_ASSERT2(pSettings->line_exist("hud_movement_layers", temp), make_string("Missing definition for [hud_movement_layers] %s", temp));
-		LPCSTR layer_def = pSettings->r_string("hud_movement_layers", temp);
+		R_ASSERT2(pAdvancedSettings->line_exist("hud_movement_layers", temp), make_string("Missing definition for [hud_movement_layers] %s", temp));
+		LPCSTR layer_def = pAdvancedSettings->r_string("hud_movement_layers", temp);
 		R_ASSERT2(_GetItemCount(layer_def) > 0, make_string("Wrong definition for [hud_movement_layers] %s", temp));
 
 		_GetItem(layer_def, 0, tmp);
@@ -495,7 +495,7 @@ player_hud::player_hud()
 		_GetItem(layer_def, 2, tmp);
 		anm->m_power = (atof(tmp) ? atof(tmp) : 1.f);
 		m_movement_layers.push_back(anm);
-	}*/
+	}
 }
 
 
@@ -520,7 +520,7 @@ player_hud::~player_hud()
 
 	delete_data(m_hand_motions);
 	delete_data(m_script_layers);
-	//delete_data(m_movement_layers);
+	delete_data(m_movement_layers);
 }
 
 void player_hud::Thumb0Callback(CBoneInstance* B)
@@ -1648,6 +1648,7 @@ void player_hud::OnMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 		if(m_attached_items[1])
 			m_attached_items[1]->m_parent_hud_item->OnMovementChanged(cmd);
 	}
+	updateMovementLayerState();
 }
 
 bool player_hud::allow_script_anim()

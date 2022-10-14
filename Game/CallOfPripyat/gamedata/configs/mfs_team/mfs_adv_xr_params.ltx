@@ -50,6 +50,16 @@ colorize_values_red = 255,0,0,255	;; ÷вет негативного значени€ у артефактов, бус
 colorize_values_green = 0,255,0,255	;; ÷вет положительного значени€ у артефактов, бустеров(RBGA)
 colorize_values_neutral = 170,170,170,255 ;; ÷вет нейтрального значени€ у артефактов, бустеров(RBGA)
 
+[hud_movement_layers]; Ёффекты камеры при ходьбе из Anomaly
+;types: 0 = aim_walk, 1 = aim_crouch, 2 = crouch, 3 = walk, 4 = run, 5 = sprint
+;type		   path  				 		 speed   power
+movement_layer_0 = mfs_team\camera_effects\movement\aim_walk.anm,	 1,	 0.85
+movement_layer_1 = mfs_team\camera_effects\movement\aim_walk.anm,	 0.75,	 0.5
+movement_layer_2 = mfs_team\camera_effects\movement\newwalk.anm, 	 1, 	 0.1
+movement_layer_3 = mfs_team\camera_effects\movement\newwalk.anm, 	 1, 	 0.1
+movement_layer_4 = mfs_team\camera_effects\movement\newwalk.anm, 	 1.25,	 0.125
+movement_layer_5 = mfs_team\camera_effects\movement\newrunreload.anm,    1, 	 0.15
+
 [start_settings];—тартовые значени€ необходимых настроек
 tonemap_middlegray = 0.95
 tonemap_adaptation = 1.0
