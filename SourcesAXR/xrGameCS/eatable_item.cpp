@@ -23,6 +23,10 @@
 #include "actorEffector.h"
 #include "HudManager.h"
 #include "UIGameCustom.h"
+#include "player_hud.h"
+
+extern bool g_block_all_except_movement;
+extern bool g_actor_allow_ladder;
 
 CEatableItem::CEatableItem()
 {
@@ -40,16 +44,14 @@ CEatableItem::CEatableItem()
 	m_iPortionsNum = 1;
 	anim_sect = nullptr;
 	use_cam_effector = nullptr;
-	m_bActivated = false;
-	m_bTimerEnd = false;
 	m_bHasAnimation = false;
-	ItmStartAnim = false;
 	m_bUnlimited = false;
-	last_slot_id = NO_ACTIVE_SLOT;
-	m_iTiming = 0;
-	UseTimer = 0;
 	m_physic_item	= 0;
 	m_fEffectorIntensity = 1.0f;
+	m_iAnimHandsCnt = 1;
+	m_iAnimLength = 0;
+	m_bActivated = false;
+	m_bItmStartAnim = false;
 }
 
 CEatableItem::~CEatableItem()
@@ -86,9 +88,8 @@ void CEatableItem::Load(LPCSTR section)
 
 	m_bHasAnimation = READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
 	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
-	m_iTiming = READ_IF_EXISTS(pSettings, r_u32, section, "timing", 0);
+	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
 	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
-	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "animation_item", nullptr);
 	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
 }
 
@@ -114,70 +115,9 @@ void CEatableItem::HideWeapon()
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 	CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(Level().CurrentEntity());
 	CActor* pActor = smart_cast<CActor*>(pInvOwner);
-	CGameObject* game_object = smart_cast<CGameObject*>(this);
-	VERIFY(game_object);
-	Level().spawn_item(anim_sect, Actor()->Position(), false, Actor()->ID());
 
-	u16 cur_active_slot = Actor()->inventory().GetActiveSlot();
-	bool active_item = Actor()->inventory().ActiveItem();
-
-	if (cur_active_slot == KNIFE_SLOT)
-	{
-		last_slot_id = KNIFE_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-	else if (cur_active_slot == PISTOL_SLOT)
-	{
-		last_slot_id = PISTOL_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-	else if (cur_active_slot == RIFLE_SLOT)
-	{
-		last_slot_id = RIFLE_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-	else if (cur_active_slot == GRENADE_SLOT)
-	{
-		last_slot_id = GRENADE_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-	else if (cur_active_slot == APPARATUS_SLOT)
-	{
-		last_slot_id = APPARATUS_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-	else if (cur_active_slot == BOLT_SLOT)
-	{
-		last_slot_id = BOLT_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-	else if (cur_active_slot == PDA_SLOT)
-	{
-		last_slot_id = PDA_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-	else if (cur_active_slot == DETECTOR_SLOT)
-	{
-		last_slot_id = DETECTOR_SLOT;
-		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-	}
-
-	Actor()->block_action(kWPN_1);
-	Actor()->block_action(kWPN_2);
-	Actor()->block_action(kWPN_3);
-	Actor()->block_action(kWPN_4);
-	Actor()->block_action(kWPN_5);
-	Actor()->block_action(kWPN_6);
-	Actor()->block_action(kWPN_NEXT);
-	Actor()->block_action(kDETECTOR);
-	Actor()->block_action(kNEXT_SLOT);
-	Actor()->block_action(kPREV_SLOT);
-	Actor()->block_action(kACTIVE_JOBS);
-	Actor()->block_action(kQUICK_SAVE);
-	Actor()->block_action(kINVENTORY);
-
-	Actor()->m_bEatAnimActive = true;
-	ItmStartAnim = true;
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	m_bItmStartAnim = true;
 
 	if (!pActor)
 		HUD().GetUI()->UIGame()->HideActorMenu();
@@ -189,10 +129,18 @@ void CEatableItem::StartAnimation()
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 
-	UseTimer = Device.dwTimeGlobal + m_iTiming;
+	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
+		m_iAnimHandsCnt = pSettings->r_u32(anim_sect, "single_handed_anim");
 
-	Actor()->inventory().Activate(ANIMATION_SLOT, true);
-	ItmStartAnim = false;
+	m_bItmStartAnim = false;
+	g_block_all_except_movement = true;
+	g_actor_allow_ladder = false;
+
+	if (pSettings->line_exist(anim_sect, "anm_use"))
+	{
+		g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", true, 1.0f);
+		m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", 1.0f);
+	}
 
 	if (!effector && use_cam_effector != nullptr)
 		AddEffector(Actor(), effUseItem, use_cam_effector, m_fEffectorIntensity);
@@ -250,62 +198,25 @@ void CEatableItem::UpdateUseAnim()
 	if (!m_bHasAnimation) return;
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
-	CWeapon* cur_anim_itm = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(ANIMATION_SLOT));
 
-	bool cur_active_slot = Actor()->inventory().GetActiveSlot();
-	bool active_item = Actor()->inventory().ActiveItem();
-
-	if (ItmStartAnim)
+	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT)
 		StartAnimation();
 
 	if (m_bActivated)
 	{
-		if (UseTimer <= Device.dwTimeGlobal)
+		if (m_iAnimLength <= Device.dwTimeGlobal)
 		{
+			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
-			if (last_slot_id == 0)
-				Actor()->inventory().Activate(NO_ACTIVE_SLOT);
-			if (last_slot_id == 1)
-				Actor()->inventory().Activate(KNIFE_SLOT);
-			if (last_slot_id == 2)
-				Actor()->inventory().Activate(PISTOL_SLOT);
-			if (last_slot_id == 3)
-				Actor()->inventory().Activate(RIFLE_SLOT);
-			if (last_slot_id == 4)
-				Actor()->inventory().Activate(GRENADE_SLOT);
-			if (last_slot_id == 5)
-				Actor()->inventory().Activate(APPARATUS_SLOT);
-			if (last_slot_id == 6)
-				Actor()->inventory().Activate(BOLT_SLOT);
-			if (last_slot_id == 8)
-				Actor()->inventory().Activate(PDA_SLOT);
-			if (last_slot_id == 9)
-				Actor()->inventory().Activate(DETECTOR_SLOT);
-
-			Actor()->inventory().Eat(this);
-			UseTimer = Device.dwTimeGlobal;
+			m_iAnimLength = Device.dwTimeGlobal;
 			m_bActivated = false;
-			Actor()->m_bEatAnimActive = false;
-
-			if (cur_anim_itm)
-				cur_anim_itm->DestroyObject();
+			g_block_all_except_movement = false;
+			g_actor_allow_ladder = true;
 
 			if (effector)
 				RemoveEffector(Actor(), effUseItem);
 
-			Actor()->unblock_action(kWPN_1);
-			Actor()->unblock_action(kWPN_2);
-			Actor()->unblock_action(kWPN_3);
-			Actor()->unblock_action(kWPN_4);
-			Actor()->unblock_action(kWPN_5);
-			Actor()->unblock_action(kWPN_6);
-			Actor()->unblock_action(kWPN_NEXT);
-			Actor()->unblock_action(kDETECTOR);
-			Actor()->unblock_action(kNEXT_SLOT);
-			Actor()->unblock_action(kPREV_SLOT);
-			Actor()->unblock_action(kACTIVE_JOBS);
-			Actor()->unblock_action(kQUICK_SAVE);
-			Actor()->unblock_action(kINVENTORY);
+			Actor()->inventory().Eat(this);
 		}
 	}
 }

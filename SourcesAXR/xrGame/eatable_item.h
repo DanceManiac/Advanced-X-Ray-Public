@@ -29,27 +29,24 @@ public:
 	virtual void			load						(IReader &input_packet);
 			void			UpdateInRuck				();
 			void			UpdateUseAnim				();
+			void			HideWeapon					();
+			void			StartAnimation				();
 	virtual	bool			UseBy						(CEntityAlive* npc);
 	virtual	bool			Empty						()						{return PortionsNum()==0;};
 			int				PortionsNum					()	const				{return m_iPortionsNum;}
-
-			void			StartAnimation				();
-			void			HideWeapon					();
 
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
 			u32				m_iPortionsNum;
 			bool			m_bHasAnimation;
-			bool			m_bActivated;
-			bool			m_bTimerEnd;
-			bool			ItmStartAnim;
 			bool			m_bUnlimited;
+			bool			m_bActivated;
+			bool			m_bItmStartAnim;
+			int				m_iAnimHandsCnt;
+			int				m_iAnimLength;
 			float			m_fEffectorIntensity;
-			int				m_iTiming;
-			u32				UseTimer;
 			LPCSTR			anim_sect;
 			shared_str		use_cam_effector;
-			u16				last_slot_id;
 			ref_sound		m_using_sound;
 };
 

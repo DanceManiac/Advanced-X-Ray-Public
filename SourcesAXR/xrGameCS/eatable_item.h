@@ -41,15 +41,13 @@ public:
 
 			bool			m_bHasAnimation;
 			bool			m_bActivated;
-			bool			m_bTimerEnd;
-			bool			ItmStartAnim;
+			bool			m_bItmStartAnim;
+			int				m_iAnimHandsCnt;
+			int				m_iAnimLength;
 			bool			m_bUnlimited;
 			float			m_fEffectorIntensity;
-			int				m_iTiming;
-			u32				UseTimer;
 			LPCSTR			anim_sect;
 			shared_str		use_cam_effector;
-			u16				last_slot_id;
 			ref_sound		m_using_sound;
 
 	//влияние при поедании вещи на параметры игрока
