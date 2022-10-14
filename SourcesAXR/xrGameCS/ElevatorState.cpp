@@ -17,6 +17,8 @@ static const float out_dist				=1.5f;
 static const float look_angle_cosine	=0.9238795f;//22.5
 static const float lookup_angle_sine	=0.34202014f;//20
 extern	class CPHWorld	*ph_world;
+bool g_actor_allow_ladder = true;
+
 CElevatorState::CElevatorState()
 {
 	m_state=clbNoLadder;
@@ -38,6 +40,20 @@ void CElevatorState::PhTune(float step)
 {	
 	VERIFY(m_character&&m_character->b_exist&&m_character->is_active());
 	if(!m_ladder)			return;
+
+	if ((!g_actor_allow_ladder && m_character->RestrictionType() == CPHCharacter::rtActor) || m_character->RestrictionType() == CPHCharacter::rtMonsterMedium)
+	{
+		if (m_state != clbNoLadder)
+			UpdateDepart();
+		else
+		{
+			m_state = clbNoLadder;
+			m_ladder = NULL;
+		}
+
+		return;
+	}
+
 	switch(m_state)
 	{
 	case	clbNone			:UpdateStNone()			;		break;			

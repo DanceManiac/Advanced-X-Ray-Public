@@ -64,4 +64,5 @@ public:
 
 };
 
+extern XRPHYSICS_API bool g_actor_allow_ladder;
 #endif

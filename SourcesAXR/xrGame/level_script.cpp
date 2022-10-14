@@ -38,8 +38,10 @@
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "HUDManager.h"
 #include "player_hud.h"
+#include "../xrPhysics/ElevatorState.h"
 
 using namespace luabind;
+bool g_block_all_except_movement;
 
 LPCSTR command_line	()
 {
@@ -817,6 +819,26 @@ void unblock_player_action(EGameActions dik)
 	Actor()->unblock_action(dik);
 }
 
+void block_all_except_movement(bool b)
+{
+	g_block_all_except_movement = b;
+}
+
+bool only_movement_allowed()
+{
+	return g_block_all_except_movement;
+}
+
+void set_actor_allow_ladder(bool b)
+{
+	g_actor_allow_ladder = b;
+}
+
+bool actor_allow_ladder()
+{
+	return g_actor_allow_ladder;
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -1008,7 +1030,11 @@ void CLevel::script_register(lua_State *L)
 	def("play_hud_anm",			PlayBlendAnm), 
 	def("stop_hud_anm",			StopBlendAnm), 
 	def("stop_all_hud_anms",	StopAllBlendAnms),
-	def("set_hud_anm_time",		SetBlendAnmTime)
+	def("set_hud_anm_time",		SetBlendAnmTime),
+	def("only_allow_movekeys",	block_all_except_movement),
+	def("only_movekeys_allowed",only_movement_allowed),
+	def("set_actor_allow_ladder", set_actor_allow_ladder),
+	def("actor_ladder_allowed", actor_allow_ladder)
 
 	];
 }

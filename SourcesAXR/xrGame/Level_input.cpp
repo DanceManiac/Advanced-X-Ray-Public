@@ -96,6 +96,7 @@ void CLevel::IR_OnMouseMove( int dx, int dy )
 
 // Обработка нажатия клавиш
 extern bool g_block_pause;
+extern bool g_block_all_except_movement;
 
 // Lain: added TEMP!!!
 extern float g_separate_factor;
@@ -121,6 +122,12 @@ void CLevel::IR_OnKeyboardPress	(int key)
 	bool b_ui_exist = (!!CurrentGameUI());
 
 	EGameActions _curr = get_binded_action(key);
+
+	if (g_block_all_except_movement)
+	{
+		if (!(_curr < kCAM_1 || _curr == kWPN_FIRE || _curr == kPAUSE || _curr == kDROP || _curr == kSCREENSHOT || _curr == kQUIT || _curr == kCONSOLE))
+			return;
+	}
 
 	if(_curr==kPAUSE)
 	{
