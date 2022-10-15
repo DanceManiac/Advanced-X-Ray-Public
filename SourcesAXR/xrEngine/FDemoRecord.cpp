@@ -138,12 +138,12 @@ void CDemoRecord::MakeScreenshotFace()
 {
 	switch (m_Stage){
 	case 0:
-		s_hud_flag.assign	(psHUD_Flags);
-		psHUD_Flags.assign	(0);
+		//s_hud_flag.assign	(psHUD_Flags);
+		//psHUD_Flags.assign	(0);
 	break;
 	case 1:
 		Render->Screenshot	();
-		psHUD_Flags.assign	(s_hud_flag);
+		//psHUD_Flags.assign	(s_hud_flag);
 		m_bMakeScreenshot= FALSE;
 	break;
 	}
