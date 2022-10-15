@@ -574,8 +574,10 @@ void CInventoryOwner::sell_useless_items		()
 			continue;
 		}
 		CInventoryItem* item = smart_cast<CInventoryItem*>( *I );
-		if (item->CurrSlot()&&item->cast_weapon())
+		if (item->CurrSlot() && item->cast_weapon() && item->CurrPlace() == eItemPlaceSlot)
+		{
 			continue;
+		}
 
 		CPda* pda = smart_cast<CPda*>( *I );
 		if ( pda )
