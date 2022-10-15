@@ -113,6 +113,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", true, m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_reload_jammed"))
 		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", true, m_eSoundReload);
+	if (WeaponSoundExist(section, "snd_pump_gun"))
+		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", true, m_eSoundReload);
 
 	if (WeaponSoundExist(section, "snd_shoot_dist")) // distant sound
 	{
@@ -705,6 +707,10 @@ void CWeaponMagazined::OnShot()
 		else
 			PlaySound("sndShot", get_LastFP());
 	}
+
+	// Проиграем звук помпы отдельно, если не будет работать то будем думать что делать и как быть
+	if (m_sounds.FindSoundItem("sndPumpGun", false)) 
+		PlaySound("sndPumpGun", get_LastFP());
 
 	// Camera	
 	AddShotEffector				();
