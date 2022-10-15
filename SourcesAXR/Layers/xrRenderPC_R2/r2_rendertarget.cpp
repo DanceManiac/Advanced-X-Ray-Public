@@ -202,7 +202,7 @@ CRenderTarget::CRenderTarget		()
 	param_color_gray	= color_rgba(85,85,85,		0);
 	param_color_add.set( 0.0f, 0.0f, 0.0f );
 
-	dwAccumulatorClearMark			= 0;
+	needClearAccumulator = true;
 	dxRenderDeviceRender::Instance().Resources->Evict			();
 
 	// Blenders

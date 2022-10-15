@@ -198,6 +198,8 @@ void CRender::Render		()
 	g_r						= 1;
 	VERIFY					(0==mapDistort.size());
 
+	Target->needClearAccumulator = true;
+
 	rmNormal();
 
 	bool	_menu_pp		= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;

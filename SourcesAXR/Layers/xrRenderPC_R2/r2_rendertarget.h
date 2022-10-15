@@ -16,8 +16,9 @@ class CRenderTarget		: public IRender_Target
 private:
 	u32							dwWidth;
 	u32							dwHeight;
-	u32							dwAccumulatorClearMark;
 public:
+
+	bool						needClearAccumulator;
 	u32							dwLightMarkerID;
 	// 
 	IBlender*					b_occq;

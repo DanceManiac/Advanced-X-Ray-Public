@@ -4,6 +4,13 @@
 void	CRenderTarget::phase_scene_prepare	()
 {
 	PIX_EVENT(phase_scene_prepare);
+
+	u_setrt(rt_Position, rt_Color, nullptr, 0);
+	FLOAT color_RGBA[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+	HW.pContext->ClearRenderTargetView(RCache.get_RT(), color_RGBA);
+	HW.pContext->ClearRenderTargetView(RCache.get_RT(1), color_RGBA);
+
 	// Clear depth & stencil
 	//u_setrt	( Device.dwWidth,Device.dwHeight,HW.pBaseRT,NULL,NULL,HW.pBaseZB );
 	//CHK_DX	( HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x0, 1.0f, 0L) );
