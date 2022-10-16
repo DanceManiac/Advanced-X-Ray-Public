@@ -158,8 +158,10 @@ c2_out main( v2p_aa_AA I )
         float4 reflections = depth_traced_ssr(WP, WN, gbd.P);
 
         float3 reflections_f = reflections.xyz + reflections.w * L_sun_color;
+		float fog = 1.0 - saturate((length(gbd.P.xyz) * fog_params.w + fog_params.x));
         
-        res.Color.xyz = lerp(res.Color.xyz, reflections_f, mask * rain_params.y);
+        res.Color.xyz = lerp(res.Color.xyz, reflections_f, mask * fog * fog * rain_params.y);
+		
     }
 #endif
 	
