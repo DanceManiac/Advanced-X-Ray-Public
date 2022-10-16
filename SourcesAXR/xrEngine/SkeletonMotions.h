@@ -19,6 +19,7 @@ enum{
     flTKeyPresent 	= (1<<0),
     flRKeyAbsent 	= (1<<1),
     flTKey16IsBit 	= (1<<2),
+	flTKeyFFT_Bit	= (1<<3),
 };
 #pragma pack(push,2)
 struct  CKey
@@ -38,6 +39,17 @@ struct  CKeyQT16
 {
 	s16			x1,y1,z1;
 };
+
+struct CKeyQT_FFT
+{
+	float x1, y1, z1;
+};
+
+struct CKeyQR_FFT
+{
+	float x, y, z, w; // rotation
+};
+
 /*
 struct  CKeyQT
 {
@@ -56,8 +68,10 @@ class 	ENGINE_API	CMotion
     };
 public:
     ref_smem<CKeyQR>	_keysR;
+	ref_smem<CKeyQR_FFT> _keysR_FFT;
     ref_smem<CKeyQT8>	_keysT8;
     ref_smem<CKeyQT16>	_keysT16;
+	ref_smem<CKeyQT_FFT> _keysT_FFT;
 	Fvector				_initT;
     Fvector				_sizeT;
 public:    
@@ -75,6 +89,8 @@ public:
 		if (_keysR.size()) sz += _keysR.size()*sizeof(CKeyQR)/_keysR.ref_count();
 		if (_keysT8.size()) sz += _keysT8.size()*sizeof(CKeyQT8)/_keysT8.ref_count();
 		if (_keysT16.size()) sz += _keysT16.size()*sizeof(CKeyQT16)/_keysT16.ref_count();
+		if (_keysR_FFT.size()) sz += _keysR_FFT.size() * sizeof(CKeyQR_FFT) / _keysR_FFT.ref_count();
+		if (_keysT_FFT.size()) sz += _keysT_FFT.size() * sizeof(CKeyQT_FFT) / _keysT_FFT.ref_count();
 		return			sz;
 	}
 };
