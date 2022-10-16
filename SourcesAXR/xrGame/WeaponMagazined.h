@@ -3,6 +3,7 @@
 #include "weapon.h"
 #include "hudsound.h"
 #include "ai_sounds.h"
+#include "hud_item_object.h"
 
 class ENGINE_API CMotionDef;
 
@@ -105,6 +106,8 @@ public:
 	virtual bool	Action			(u16 cmd, u32 flags);
 	bool			IsAmmoAvailable	();
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
+	virtual int     CheckAmmoBeforeReload(u8& v_ammoType);
+	virtual void	OnMotionMark	(u32 state, const motion_marks& M);
 
 	virtual bool	GetBriefInfo	(II_BriefInfo& info);
 

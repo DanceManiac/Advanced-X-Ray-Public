@@ -99,6 +99,9 @@ CWeapon::CWeapon()
 	bNVsecondVPstatus		= false;
 	m_fZoomStepCount		= 3.0f;
 	m_fZoomMinKoeff			= 0.3f;
+
+	bHasBulletsToHide		= false;
+	bullet_cnt				= 0;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -1804,6 +1807,37 @@ bool CWeapon::ScopeAttachable()
 bool CWeapon::SilencerAttachable()
 {
 	return (ALife::eAddonAttachable == m_eSilencerStatus);
+}
+
+void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
+{
+	if (!bHasBulletsToHide)
+		return;
+
+	/*if (m_pInventory->ModifyFrame() <= m_BriefInfo_CalcFrame)
+	{
+		return;
+	}*/
+
+	if (!GetHUDmode()) return;
+
+	//return;
+
+	bool hide = true;
+
+	Msg("Print %d bullets", last_hide_bullet);
+
+	if (last_hide_bullet == bullet_cnt || force) hide = false;
+
+	for (u8 b = 0; b < bullet_cnt; b++)
+	{
+		u16 bone_id = HudItemData()->m_model->LL_BoneID(bullets_bones[b]);
+
+		if (bone_id != BI_NONE)
+			HudItemData()->set_bone_visible(bullets_bones[b], !hide);
+
+		if (b == last_hide_bullet) hide = false;
+	}
 }
 
 void CWeapon::UpdateHUDAddonsVisibility()

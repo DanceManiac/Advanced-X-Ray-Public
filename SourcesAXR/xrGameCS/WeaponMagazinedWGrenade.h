@@ -52,6 +52,7 @@ public:
 	virtual void	OnShot			();
 	virtual void	OnEvent			(NET_Packet& P, u16 type);
 	virtual void	ReloadMagazine	();
+	virtual void	OnMotionMark	(u32 state, const motion_marks& M);
 
 	virtual bool	Action			(s32 cmd, u32 flags);
 

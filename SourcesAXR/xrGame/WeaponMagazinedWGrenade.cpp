@@ -169,6 +169,12 @@ void CWeaponMagazinedWGrenade::OnShot		()
 		inherited::OnShot	();
 }
 
+
+void CWeaponMagazinedWGrenade::OnMotionMark(u32 state, const motion_marks& M)
+{
+	inherited::OnMotionMark(state, M);
+}
+
 bool CWeaponMagazinedWGrenade::SwitchMode() 
 {
 	bool bUsefulStateToSwitch = ((eIdle==GetState())||(eHidden==GetState())||(eMisfire==GetState())||(eMagEmpty==GetState())) && (!IsPending());
@@ -608,6 +614,9 @@ void CWeaponMagazinedWGrenade::PlayAnimShow()
 	if (IsGrenadeLauncherAttached())
 	{
 		if (!m_bGrenadeMode)
+			HUD_VisualBulletUpdate();
+
+		if (!m_bGrenadeMode)
 			if (IsMisfire() && isHUDAnimationExist("anm_show_jammed_w_gl"))
 				PlayHUDMotion("anm_show_jammed_w_gl", FALSE, this, GetState());
 			else
@@ -655,6 +664,9 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 
 void CWeaponMagazinedWGrenade::PlayAnimIdle()
 {
+	if (GetState() == eSwitch)
+		return;
+
 	if(IsGrenadeLauncherAttached())
 	{
 		if(IsZoomed())
@@ -829,6 +841,8 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 	}
 	else
 	{
+		//HUD_VisualBulletUpdate();
+
 		VERIFY(GetState() == eFire);
 
 		if (IsGrenadeLauncherAttached())
@@ -1040,6 +1054,13 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 	int	ae = GetAmmoElapsed();
 	xr_sprintf(int_str, "%d", ae);
 	info.cur_ammo._set(int_str);
+
+	if (bHasBulletsToHide && !m_bGrenadeMode)
+	{
+		last_hide_bullet = ae >= bullet_cnt ? bullet_cnt : bullet_cnt - ae - 1;
+		if (ae == 0) last_hide_bullet = -1;
+	}
+
 	if(HasFireModes())
 	{
 		if(m_iQueueSize == WEAPON_ININITE_QUEUE)

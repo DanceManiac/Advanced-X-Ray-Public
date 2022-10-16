@@ -58,6 +58,15 @@ public:
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
 
+	// Up
+// Magazine system & etc
+	xr_vector<shared_str>	bullets_bones;
+	int						bullet_cnt;
+	int						last_hide_bullet;
+	bool					bHasBulletsToHide;
+
+	virtual void			HUD_VisualBulletUpdate(bool force = false, int force_idx = -1);
+
 	virtual float			GetControlInertionFactor() const;
 	IC		float			GetZRotatingFactor()    const { return m_zoom_params.m_fZoomRotationFactor; }
 	IC		float			GetSecondVPZoomFactor() const { return m_zoom_params.m_fSecondVPFovFactor; }
@@ -446,6 +455,9 @@ protected:
 	shared_str				m_sFlameParticles2;
 	//объект партиклов для стрельбы из 2-го ствола
 	CParticlesObject*		m_pFlameParticles2;
+
+	int						GetAmmoCount_forType(shared_str const& ammo_type) const;
+	int						GetAmmoCount		(u8 ammo_type) const;
 
 public:
 	IC int					GetAmmoElapsed		()	const		{	return /*int(m_magazine.size())*/iAmmoElapsed;}

@@ -170,6 +170,11 @@ void CWeaponMagazinedWGrenade::OnShot		()
 		inherited::OnShot	();
 }
 
+void CWeaponMagazinedWGrenade::OnMotionMark(u32 state, const motion_marks& M)
+{
+	inherited::OnMotionMark(state, M);
+}
+
 bool CWeaponMagazinedWGrenade::SwitchMode() 
 {
 	bool bUsefulStateToSwitch = ((eIdle==GetState())||(eHidden==GetState())||(eMisfire==GetState())||(eMagEmpty==GetState())) && (!IsPending());
@@ -607,6 +612,9 @@ void CWeaponMagazinedWGrenade::PlayAnimShow()
 	if (IsGrenadeLauncherAttached())
 	{
 		if (!m_bGrenadeMode)
+			HUD_VisualBulletUpdate();
+
+		if (!m_bGrenadeMode)
 			if (IsMisfire() && isHUDAnimationExist("anm_show_jammed_w_gl"))
 				PlayHUDMotion("anm_show_jammed_w_gl", FALSE, this, GetState());
 			else
@@ -654,6 +662,9 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 
 void CWeaponMagazinedWGrenade::PlayAnimIdle()
 {
+	if (GetState() == eSwitch)
+		return;
+
 	if(IsGrenadeLauncherAttached())
 	{
 		if(IsZoomed())
@@ -827,6 +838,8 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 	}
 	else
 	{
+		//HUD_VisualBulletUpdate();
+
 		VERIFY(GetState()==eFire);
 
 		if (IsGrenadeLauncherAttached())
