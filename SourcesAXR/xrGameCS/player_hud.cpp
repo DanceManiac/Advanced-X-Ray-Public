@@ -472,6 +472,7 @@ player_hud::player_hud()
 	m_transform_2.identity	();
 	script_anim_part = u8(-1);
 	script_anim_offset_factor = 0.f;
+	script_anim_item_model = nullptr;
 	m_item_pos.identity();
 	reset_thumb(true);
 
