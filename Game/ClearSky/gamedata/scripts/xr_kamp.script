@@ -289,12 +289,15 @@ function CKampManager:getDestVertex(npc, radius)
 	local pp = self.patrol:point(0)
 	local dir = self.position[self.npc[npc_id].position].dir
 
+	
+
 	-- —читаем рандомное отклонение направлени€.
-	dir.x = dir.x + math.random(-1,1)/5
-	dir.z = dir.z + math.random(-1,1)/5
+	--dir.x = dir.x + math.random(-1,1)/5
+	--dir.z = dir.z + math.random(-1,1)/5
 	dir:normalize()
 
-	radius = radius + math.random(-0.3,0.3)
+	--radius = radius + math.random(-0.3,0.3)
+	radius = radius + 0.3
 
  	local dest_vertex = 4294967295
 
@@ -306,10 +309,15 @@ function CKampManager:getDestVertex(npc, radius)
 	 	dest_vertex = level.vertex_id(tmp_pos)
 	 	if dest_vertex == 4294967295 then
 	 		if radius < 1 then
-	 			abort("Invalid AI map at kamp point [%s]", self.kamp_name)
+	 			--abort("Invalid AI map at kamp point [%s]", self.kamp_name)
+	 			log("Invalid AI map at kamp point [%s]", self.kamp_name)
+				--' taking new vertex
+				dest_vertex = utils.send_to_nearest_accessible_vertex(npc, dest_vertex)
+--				log("ac_go_position:NPC=[%s],dest_vertex=[%s]~>[%s]", npc:name(), npc:level_vertex_id(), dest_vertex)
+				return dest_vertex, self.npc[npc_id].position
 	 		else
 	 			radius = radius - 0.5
-	 		end
+			end
 	 	end
  	end
 
