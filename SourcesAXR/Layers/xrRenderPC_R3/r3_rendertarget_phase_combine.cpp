@@ -501,6 +501,7 @@ void	CRenderTarget::phase_combine	()
 			kernel_size = g_pGamePersistent->Environment().CurrentEnv->dof_kernel;
 			dof_sky = g_pGamePersistent->Environment().CurrentEnv->dof_sky;
 			dof_value = g_pGamePersistent->Environment().CurrentEnv->dof_value;
+			dof_value.z = g_pGamePersistent->Environment().CurrentEnv->fog_distance;
 		}
 		g_pGamePersistent->SetBaseDof(dof_value);
 
