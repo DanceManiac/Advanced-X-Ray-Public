@@ -150,14 +150,14 @@ CUIWindow::~CUIWindow()
 #endif
 }
 
-
-
 void CUIWindow::Draw()
 {
-	for(WINDOW_LIST_it it = m_ChildWndList.begin(); m_ChildWndList.end() != it; ++it){
-		if(!(*it)->IsShown())		continue;
-		if((*it)->GetCustomDraw())	continue;
-		(*it)->Draw					();
+	for (CUIWindow* Wnd : m_ChildWndList)
+	{
+		if (!Wnd->IsShown() || Wnd->GetCustomDraw())		
+			continue;
+
+		Wnd->Draw();
 	}
 #ifdef DEBUG
 	if(g_show_wnd_rect2){
