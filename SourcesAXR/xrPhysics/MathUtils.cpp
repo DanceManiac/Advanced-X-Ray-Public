@@ -1,7 +1,12 @@
 #include "stdafx.h"
 #include "mathutils.h"
 #include "../3rd party/ode/include/ode/common.h"
-XRPHYSICS_API const float	phInfinity = dInfinity;
+
+#ifdef _M_X64
+XRPHYSICS_API const float	phInfinity = std::numeric_limits<float>::max();
+#else
+XRPHYSICS_API const float	phInfinity = std::numeric_limits<float>::infinity();
+#endif
 /*
 #include "MathUtils.h"
 enum EBoxSideNearestPointCode
