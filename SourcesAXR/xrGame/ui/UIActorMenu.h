@@ -225,8 +225,10 @@ private:
 	bool						highlight_addons_for_weapon	(PIItem weapon_item, CUICellItem* ci);
 	void						highlight_weapons_for_addon	(PIItem addon_item, CUIDragDropListEx* ddlist);
 
-protected:			
+public:
 	void						Construct					();
+
+protected:			
 	void						InitCallbacks				();
 
 	void						InitCellForSlot				(u16 slot_idx);

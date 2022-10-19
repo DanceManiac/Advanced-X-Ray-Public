@@ -81,9 +81,13 @@ const u32	g_clWhite					= 0xffffffff;
 #define				MAININGAME_XML				"maingame.xml"
 
 CUIMainIngameWnd::CUIMainIngameWnd()
-:/*m_pGrenade(NULL),m_pItem(NULL),*/m_pPickUpItem(NULL),m_pMPChatWnd(NULL),UIArtefactIcon(NULL),m_pMPLogWnd(NULL)
+	:/*m_pGrenade(NULL),m_pItem(NULL),*/m_pPickUpItem(NULL), m_pMPChatWnd(NULL), UIArtefactIcon(NULL), m_pMPLogWnd(NULL)
 {
-	UIZoneMap					= xr_new<CUIZoneMap>();
+	UIZoneMap = xr_new<CUIZoneMap>();
+	m_UIIcons = nullptr;
+
+	UIMotionIcon = nullptr;
+	m_ui_hud_states = nullptr;
 }
 
 #include "UIProgressShape.h"
@@ -140,6 +144,11 @@ void CUIMainIngameWnd::Init()
 	UIStaticQuickHelp			= UIHelper::CreateTextWnd(uiXml, "quick_info", this);
 
 	uiXml.SetLocalRoot			(uiXml.GetRoot());
+
+	if (m_UIIcons)
+	{
+		DetachChild(m_UIIcons);
+	}
 
 	m_UIIcons					= xr_new<CUIScrollView>(); m_UIIcons->SetAutoDelete(true);
 	xml_init.InitScrollView		(uiXml, "icons_scroll_view", 0, m_UIIcons);
@@ -244,22 +253,42 @@ void CUIMainIngameWnd::Init()
 	InitFlashingIcons						(&uiXml);
 
 	uiXml.SetLocalRoot						(uiXml.GetRoot());
-	
+
+	if (UIMotionIcon)
+	{
+		UIZoneMap->MapFrame().DetachChild(UIMotionIcon);
+	}
+
 	UIMotionIcon							= xr_new<CUIMotionIcon>(); UIMotionIcon->SetAutoDelete(true);
 	UIZoneMap->MapFrame().AttachChild		(UIMotionIcon);
 	UIMotionIcon->Init						(UIZoneMap->MapFrame().GetWndRect());
 
 	UIStaticDiskIO							= UIHelper::CreateStatic(uiXml, "disk_io", this);
 
+	if (m_ui_hud_states)
+	{
+		DetachChild(m_ui_hud_states);
+	}
+
 	m_ui_hud_states							= xr_new<CUIHudStatesWnd>();
 	m_ui_hud_states->SetAutoDelete			(true);
 	AttachChild								(m_ui_hud_states);
 	m_ui_hud_states->InitFromXml			(uiXml, "hud_states");
 
+	if (!m_quick_slots_icons.empty())
+	{
+		for (auto it : m_quick_slots_icons)
+		{
+			DetachChild(it);
+		}
+		m_quick_slots_icons.clear();
+	}
+
 	for(int i=0; i<4; i++)
 	{
 		m_quick_slots_icons.push_back	(xr_new<CUIStatic>());
 		m_quick_slots_icons.back()	->SetAutoDelete(true);
+
 		AttachChild				(m_quick_slots_icons.back());
 		string32 path;
 		xr_sprintf				(path, "quick_slot%d", i);
@@ -516,6 +545,8 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 	icon->second->Show(enable);
 }
 
+extern BOOL UIRedraw;
+
 void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 {
 	const char * const flashingIconNodeName = "flashing_icon";
@@ -537,7 +568,17 @@ void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 		else if (iconType == "mail")	type = efiMail;
 		else	R_ASSERT(!"Unknown type of mainingame flashing icon");
 
-		R_ASSERT2(m_FlashingIcons.find(type) == m_FlashingIcons.end(), "Flashing icon with this type already exists");
+		if (UIRedraw && m_FlashingIcons.find(type) != m_FlashingIcons.end())
+		{
+			CUIStatic*& val = m_FlashingIcons[type];
+			DetachChild(val);
+
+			m_FlashingIcons.erase(type);
+		}
+		else
+		{
+			R_ASSERT2(m_FlashingIcons.find(type) == m_FlashingIcons.end(), "Flashing icon with this type already exists");
+		}
 
 		CUIStatic* &val	= m_FlashingIcons[type];
 		val			= pIcon;

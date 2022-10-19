@@ -45,8 +45,15 @@
 #include "AnomalyDetector.h"
 #include "PDA.h"
 
+extern BOOL UIRedraw;
+
 void CUIActorMenu::SetActor(CInventoryOwner* io)
 {
+	if (UIRedraw)
+	{
+		Show(false);
+	}
+
 	R_ASSERT			(!IsShown());
 	m_last_time			= Device.dwTimeGlobal;
 	m_pActorInvOwner	= io;
@@ -1128,6 +1135,9 @@ bool CUIActorMenu::CanSetItemToList(PIItem item, CUIDragDropListEx* l, u16& ret_
 }
 void CUIActorMenu::UpdateConditionProgressBars()
 {
+	if (!m_pActorInvOwner)
+		return;
+
 	PIItem itm = m_pActorInvOwner->inventory().ItemFromSlot(INV_SLOT_2);
 	if(itm)
 	{

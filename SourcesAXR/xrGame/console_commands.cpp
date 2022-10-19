@@ -2058,6 +2058,8 @@ public:
 	}
 };
 
+extern BOOL UIRedraw;
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -2567,6 +2569,8 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD4(CCC_Integer,	"i_script_cmd9",		&i_script_cmd9, 0, 64);
 	CMD4(CCC_Integer,	"i_script_cmd10",		&i_script_cmd10, 0, 64);
 	//Custom commands for scripts end
+
+	CMD4(CCC_Integer, "dbg_ui_redraw", &UIRedraw, FALSE, TRUE);
 
 	register_mp_console_commands				();
 }

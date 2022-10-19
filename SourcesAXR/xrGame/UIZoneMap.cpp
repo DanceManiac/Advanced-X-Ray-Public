@@ -22,6 +22,7 @@ CUIZoneMap::CUIZoneMap()
 :m_current_map_idx(u8(-1)),
 visible(true)
 {	
+	m_activeMap = nullptr;
 }
 
 CUIZoneMap::~CUIZoneMap()
@@ -31,20 +32,30 @@ CUIZoneMap::~CUIZoneMap()
 void CUIZoneMap::Init()
 {
 	CUIXml uiXml;
-	uiXml.Load						(CONFIG_PATH, UI_PATH, "zone_map.xml");
+	uiXml.Load(CONFIG_PATH, UI_PATH, "zone_map.xml");
 
 	CUIXmlInit						xml_init;
-	xml_init.InitStatic				(uiXml, "minimap:background",	0, &m_background);
-	xml_init.InitWindow				(uiXml, "minimap:level_frame",	0, &m_clipFrame);
-	xml_init.InitStatic				(uiXml, "minimap:center",		0, &m_center);
-	
-	m_clock_wnd						= UIHelper::CreateStatic(uiXml, "minimap:clock_wnd", &m_background);
+	xml_init.InitStatic(uiXml, "minimap:background", 0, &m_background);
+	xml_init.InitWindow(uiXml, "minimap:level_frame", 0, &m_clipFrame);
+	xml_init.InitStatic(uiXml, "minimap:center", 0, &m_center);
 
-	m_activeMap						= xr_new<CUIMiniMap>();
-	m_clipFrame.AttachChild			(m_activeMap);
-	m_activeMap->SetAutoDelete		(true);
+	m_clock_wnd = UIHelper::CreateStatic(uiXml, "minimap:clock_wnd", &m_background);
 
-	m_activeMap->EnableHeading		(true);  
+	if (!m_activeMap)
+	{
+		m_activeMap = xr_new<CUIMiniMap>();
+		m_clipFrame.AttachChild(m_activeMap);
+		m_activeMap->SetAutoDelete(true);
+		m_activeMap->EnableHeading(true);
+	}
+	else
+	{
+		m_background.DetachChild(&m_compass);
+		m_clipFrame.DetachChild(&m_center);
+		m_Counter.DetachChild(&m_Counter_text);
+		m_background.DetachChild(&m_Counter);
+	}
+
 	xml_init.InitStatic				(uiXml, "minimap:compass", 0, &m_compass);
 	m_background.AttachChild		(&m_compass);
 

@@ -51,9 +51,20 @@ CUIGameCustom::~CUIGameCustom()
 	g_b_ClearGameCaptions	= false;
 }
 
+BOOL UIRedraw = false;
 
 void CUIGameCustom::OnFrame() 
 {
+	if (UIRedraw)
+	{
+		m_msgs_xml->Load(CONFIG_PATH, UI_PATH, "ui_custom_msgs.xml");
+		m_ActorMenu->Construct();
+		m_PdaMenu->Init();
+		UIMainIngameWnd->Init();
+
+		UIRedraw = false;
+	}
+
 	CDialogHolder::OnFrame();
 	st_vec_it it = m_custom_statics.begin();
 	st_vec_it it_e = m_custom_statics.end();
