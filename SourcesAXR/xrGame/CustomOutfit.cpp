@@ -14,6 +14,9 @@
 #include "DynamicHudGlass.h"
 #include "AdvancedXrayGameConstants.h"
 #include "AntigasFilter.h"
+#include "ui/UIMainIngameWnd.h"
+#include "ui/UIHudStatesWnd.h"
+#include "UIGameCustom.h"
 
 CCustomOutfit::CCustomOutfit()
 {
@@ -84,10 +87,13 @@ void CCustomOutfit::OnH_A_Chield()
 void CCustomOutfit::UpdateFilterCondition(void)
 {
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+	CUIHudStatesWnd* wnd = CurrentGameUI()->UIMainIngameWnd->get_hud_states();
 
 	if (outfit && m_bUseFilter)
 	{
-		float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
+		float m_radia_hit = wnd->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
+		float m_chemical_hit = wnd->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
+		float uncharge_coef = ((m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
 
 		m_fFilterCondition -= uncharge_coef;
 		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);

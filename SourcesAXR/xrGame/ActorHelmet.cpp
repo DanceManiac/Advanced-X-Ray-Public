@@ -7,6 +7,9 @@
 #include "DynamicHudGlass.h"
 #include "AdvancedXrayGameConstants.h"
 #include "AntigasFilter.h"
+#include "ui/UIMainIngameWnd.h"
+#include "ui/UIHudStatesWnd.h"
+#include "UIGameCustom.h"
 //#include "CustomOutfit.h"
 
 CHelmet::CHelmet()
@@ -136,10 +139,13 @@ void CHelmet::OnH_A_Chield()
 void CHelmet::UpdateFilterCondition(void)
 {
 	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+	CUIHudStatesWnd* wnd = CurrentGameUI()->UIMainIngameWnd->get_hud_states();
 
 	if (helmet && m_bUseFilter)
 	{
-		float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
+		float m_radia_hit = wnd->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
+		float m_chemical_hit = wnd->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
+		float uncharge_coef = ((m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
 
 		m_fFilterCondition -= uncharge_coef;
 		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
