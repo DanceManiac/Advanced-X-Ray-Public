@@ -27,9 +27,6 @@ CUIGameCustom* game_cl_Single::createGameUI()
 	R_ASSERT				(pUIGame);
 	pUIGame->Load			();
 	pUIGame->SetClGame		(this);
-	pUIGame->Init			(0);
-	pUIGame->Init			(1);
-	pUIGame->Init			(2);
 	return					pUIGame;
 }
 
