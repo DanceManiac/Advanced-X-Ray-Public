@@ -1,5 +1,6 @@
 #ifndef	MBLUR_H
 #define MBLUR_H
+#define MBLUR_WPN
 #include "common.h"
 
 #ifndef USE_MBLUR
@@ -28,6 +29,12 @@ float3 mblur(float2 UV, float3 pos, float3 c_original)
 	float4	p_previous 	= mul(m_previous, pos4);
 	float2	p_velocity 	= m_blur * ((p_current.xy/p_current.w) - (p_previous.xy/p_previous.w));
 			p_velocity	= clamp(p_velocity, -MBLUR_CLAMP, +MBLUR_CLAMP);
+			
+	//Small hud attenuation
+	#ifdef MBLUR_WPN
+    if (pos.z < 2.0) // disable for hud
+        p_velocity = 0.0;
+	#endif
 
 	// For each sample, sum up each sample's color in "Blurred" and then divide
 	// to average the color after all the samples are added.
