@@ -33,11 +33,6 @@ void CUIDoubleProgressBar::InitFromXml( CUIXml& xml_doc, LPCSTR path )
 		u32 color = CUIXmlInit::GetColor(xml_doc, buf, 0, 0xff);
 		m_progress_two.m_minColor.set(color);
 
-		strconcat(sizeof(buf), buf, path, ":first_middle_color");
-
-		color = CUIXmlInit::GetColor(xml_doc, buf, 0, 0xff);
-		m_progress_two.m_middleColor.set(color);
-
 		strconcat(sizeof(buf), buf, path, ":first_max_color");
 
 		color = CUIXmlInit::GetColor(xml_doc, buf, 0, 0xff);
