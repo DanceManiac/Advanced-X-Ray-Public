@@ -1722,27 +1722,11 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		update_time		= 0.0f;
 	}
 
-	for(TIItemContainer::iterator it = inventory().m_belt.begin(); 
-		inventory().m_belt.end() != it; ++it) 
-	{
-		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if(artefact)
-		{
-			conditions().ChangeBleeding		(artefact->m_fBleedingRestoreSpeed  * f_update_time);
-			conditions().ChangeHealth		(artefact->m_fHealthRestoreSpeed    * f_update_time);
-			conditions().ChangePower		(artefact->m_fPowerRestoreSpeed     * f_update_time);
-			conditions().ChangeSatiety		(artefact->m_fSatietyRestoreSpeed   * f_update_time);
-			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
-			conditions().ChangeRadiation	(artefact->m_fRadiationRestoreSpeed * f_update_time);
-			conditions().ChangeIntoxication	(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
-			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
-			conditions().ChangeAlcoholism	(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
-			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
+	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
+		UpdateArtefactsOnBelt();
+	else if (xr_strcmp("from_ruck", GameConstants::GetAfInfluenceMode()) == 0)
+		UpdateArtefactsInRuck();
 
-			if (GameConstants::GetArtefactsDegradation())
-				artefact->UpdateDegradation();
-		}
-	}
 	CCustomOutfit* outfit = GetOutfit();
 	if ( outfit )
 	{
@@ -1765,6 +1749,106 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 	}
 }
 
+void CActor::UpdateArtefactsOnBelt()
+{
+	static float update_time = 0;
+
+	float f_update_time = 0;
+
+	if (update_time < ARTEFACTS_UPDATE_TIME)
+	{
+		update_time += conditions().fdelta_time();
+		return;
+	}
+	else
+	{
+		f_update_time = update_time;
+		update_time = 0.0f;
+	}
+
+	TIItemContainer::iterator it = inventory().m_belt.begin();
+	TIItemContainer::iterator ite = inventory().m_belt.end();
+	TIItemContainer::iterator itR = inventory().m_ruck.begin();
+	TIItemContainer::iterator iteR = inventory().m_ruck.end();
+
+	if (xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
+	{
+		for (itR; iteR != itR; ++itR)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itR);
+			if (artefact)
+			{
+				conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time);
+			}
+		}
+	}
+
+	for(TIItemContainer::iterator it = inventory().m_belt.begin(); 
+		inventory().m_belt.end() != it; ++it) 
+	{
+		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
+		if(artefact)
+		{
+			conditions().ChangeBleeding		(artefact->m_fBleedingRestoreSpeed  * f_update_time);
+			conditions().ChangeHealth		(artefact->m_fHealthRestoreSpeed    * f_update_time);
+			conditions().ChangePower		(artefact->m_fPowerRestoreSpeed     * f_update_time);
+			conditions().ChangeSatiety		(artefact->m_fSatietyRestoreSpeed   * f_update_time);
+			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
+			conditions().ChangeRadiation	(artefact->m_fRadiationRestoreSpeed * f_update_time);
+			conditions().ChangeIntoxication	(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
+			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
+			conditions().ChangeAlcoholism	(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
+			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
+
+			if (GameConstants::GetArtefactsDegradation())
+				artefact->UpdateDegradation();
+		}
+	}
+}
+
+void CActor::UpdateArtefactsInRuck()
+{
+	static float update_time = 0;
+
+	float f_update_time = 0;
+
+	if (update_time < ARTEFACTS_UPDATE_TIME)
+	{
+		update_time += conditions().fdelta_time();
+		return;
+	}
+	else
+	{
+		f_update_time = update_time;
+		update_time = 0.0f;
+	}
+
+	TIItemContainer::iterator it = inventory().m_ruck.begin();
+	TIItemContainer::iterator ite = inventory().m_ruck.end();
+
+	for(TIItemContainer::iterator it = inventory().m_belt.begin(); 
+		inventory().m_belt.end() != it; ++it) 
+	{
+		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
+		if(artefact)
+		{
+			conditions().ChangeBleeding		(artefact->m_fBleedingRestoreSpeed  * f_update_time);
+			conditions().ChangeHealth		(artefact->m_fHealthRestoreSpeed    * f_update_time);
+			conditions().ChangePower		(artefact->m_fPowerRestoreSpeed     * f_update_time);
+			conditions().ChangeSatiety		(artefact->m_fSatietyRestoreSpeed   * f_update_time);
+			conditions().ChangeThirst		(artefact->m_fThirstRestoreSpeed	* f_update_time);
+			conditions().ChangeRadiation	(artefact->m_fRadiationRestoreSpeed * f_update_time);
+			conditions().ChangeIntoxication	(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
+			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
+			conditions().ChangeAlcoholism	(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
+			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
+
+			if (GameConstants::GetArtefactsDegradation())
+				artefact->UpdateDegradation();
+		}
+	}
+}
+
 void CActor::UpdateInventoryItems()
 {
 	TIItemContainer::iterator it = inventory().m_ruck.begin();
@@ -1783,51 +1867,69 @@ void CActor::UpdateInventoryItems()
 float	CActor::HitArtefactsOnBelt(float hit_power, ALife::EHitType hit_type)
 {
 	TIItemContainer::iterator it  = inventory().m_belt.begin(); 
-	TIItemContainer::iterator ite = inventory().m_belt.end() ;
-	for( ; it != ite; ++it )
+	TIItemContainer::iterator ite = inventory().m_belt.end();
+	TIItemContainer::iterator itR = inventory().m_ruck.begin();
+	TIItemContainer::iterator iteR = inventory().m_ruck.end();
+
+	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
 	{
-		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if ( artefact )
+		for (; it != ite; ++it)
 		{
-			hit_power -= artefact->m_ArtefactHitImmunities.AffectHit( 1.0f, hit_type );
+			CArtefact* artefact = smart_cast<CArtefact*>(*it);
+			if (artefact)
+			{
+				hit_power -= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			}
 		}
 	}
+	else if (xr_strcmp("from_ruck", GameConstants::GetAfInfluenceMode()) == 0)
+	{
+		for (; itR != iteR; ++itR)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itR);
+			if (artefact)
+			{
+				hit_power -= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			}
+		}
+	}
+
 	clamp(hit_power, 0.0f, flt_max);
 
 	return hit_power;
-
-/*
-	float res_hit_power_k		= 1.0f;
-	float _af_count				= 0.0f;
-
-	for(TIItemContainer::iterator it = inventory().m_belt.begin(); 
-		inventory().m_belt.end() != it; ++it) 
-	{
-		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if(artefact){
-			res_hit_power_k	+= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
-			_af_count		+= 1.0f;
-		}
-	}
-	res_hit_power_k			-= _af_count;
-
-	return					res_hit_power_k * hit_power;
-*/
 }
 
 float CActor::GetProtection_ArtefactsOnBelt( ALife::EHitType hit_type )
 {
 	float sum = 0.0f;
 	TIItemContainer::iterator it  = inventory().m_belt.begin(); 
-	TIItemContainer::iterator ite = inventory().m_belt.end() ;
-	for( ; it != ite; ++it )
+	TIItemContainer::iterator ite = inventory().m_belt.end();
+	TIItemContainer::iterator itR = inventory().m_ruck.begin();
+	TIItemContainer::iterator iteR = inventory().m_ruck.end();
+
+	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
 	{
-		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if ( artefact )
+		for (; it != ite; ++it)
 		{
-			sum += artefact->m_ArtefactHitImmunities.AffectHit( 1.0f, hit_type );
+			CArtefact* artefact = smart_cast<CArtefact*>(*it);
+			if (artefact)
+			{
+				sum += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			}
 		}
 	}
+	else if (xr_strcmp("from_ruck", GameConstants::GetAfInfluenceMode()) == 0)
+	{
+		for (; itR != iteR; ++itR)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itR);
+			if (artefact)
+			{
+				sum += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			}
+		}
+	}
+
 	return sum;
 }
 

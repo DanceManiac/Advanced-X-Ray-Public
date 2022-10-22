@@ -201,6 +201,8 @@ public:
 			float		GetProtection_ArtefactsOnBelt(ALife::EHitType hit_type);
 
 	virtual void		UpdateInventoryItems();
+			void		UpdateArtefactsOnBelt();
+			void		UpdateArtefactsInRuck();
 
 protected:
 	//звук тяжелого дыхания
