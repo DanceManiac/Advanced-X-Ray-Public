@@ -59,6 +59,10 @@ movement_layer_3 = mfs_team\camera_effects\movement\newwalk.anm, 	 1, 	 0.1
 movement_layer_4 = mfs_team\camera_effects\movement\newwalk.anm, 	 1.25,	 0.125
 movement_layer_5 = mfs_team\camera_effects\movement\newrunreload.anm,    1, 	 0.15
 
+[vis_shaders_replace]; Замена шейдеров в визуалах
+; шейдер тесселяции: models\model -> models\model_pn
+dynamics\weapons\wpn_hand = models\model,models\model_pn, models\weapons,models\model_pn
+
 [start_settings];Стартовые значения необходимых настроек
 tonemap_middlegray = 0.95
 tonemap_adaptation = 1.0

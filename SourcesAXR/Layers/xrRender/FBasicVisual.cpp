@@ -11,6 +11,7 @@
 
 #include "fbasicvisual.h"
 #include "../../xrEngine/fmesh.h"
+#include <filesystem>
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -37,7 +38,56 @@ void dxRender_Visual::Release		()
 {
 }
 
-//CStatTimer						tscreate;
+static bool replaceShadersLine(const char* N, char* fnS, u32 fnS_size, LPCSTR item)
+{
+    if (!pAdvancedSettings->line_exist("vis_shaders_replace", item))
+        return false;
+
+    LPCSTR overrides = pAdvancedSettings->r_string("vis_shaders_replace", item);
+    u32 cnt = _GetItemCount(overrides);
+    R_ASSERT(cnt % 2 == 0, "[%s]: vis_shaders_replace: wrong format cnt = %u: %s = %s", __FUNCTION__, cnt, item, overrides);
+
+    for (u32 i = 0; i < cnt; i += 2)
+    {
+        string256 s1, s2;
+        _GetItem(overrides, i, s1);
+        _GetItem(overrides, i + 1, s2);
+        if (xr_strcmp(s1, fnS) == 0)
+        {
+            xr_strcpy(fnS, fnS_size, s2);
+            break;
+        }
+    }
+
+    return true;
+}
+
+static bool replaceShaders(const char* N, char* fnS, u32 fnS_size)
+{
+    if (!pSettings->section_exist("vis_shaders_replace"))
+        return false;
+
+    if (replaceShadersLine(N, fnS, fnS_size, N))
+        return true;
+
+    if (strchr(N, ':'))
+    {
+        std::string s(N);
+        s.erase(s.find(":"));
+        if (replaceShadersLine(N, fnS, fnS_size, s.c_str()))
+            return true;
+    }
+
+    std::filesystem::path p = N;
+    while (p.has_parent_path())
+    {
+        p = p.parent_path();
+        if (replaceShadersLine(N, fnS, fnS_size, p.string().c_str()))
+            return true;
+    }
+
+    return false;
+}
 
 void dxRender_Visual::Load		(const char* N, IReader *data, u32 )
 {
@@ -65,6 +115,10 @@ void dxRender_Visual::Load		(const char* N, IReader *data, u32 )
 		string256		fnT,fnS;
 		data->r_stringZ	(fnT,sizeof(fnT));
 		data->r_stringZ	(fnS,sizeof(fnS));
+        if (replaceShaders(N, fnS, sizeof fnS)) 
+        {
+            //Msg("~~[%s] replaced shaders for [%s]: %s", __FUNCTION__, N, fnS);
+        }
 		shader.create	(fnS,fnT);
 	}
 
