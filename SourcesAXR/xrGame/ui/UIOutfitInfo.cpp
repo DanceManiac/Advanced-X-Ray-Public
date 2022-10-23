@@ -243,7 +243,14 @@ void CUIOutfitInfo::UpdateInfo( CCustomOutfit* cur_outfit, CCustomOutfit* slot_o
 	}
 
 	if (GameConstants::GetOutfitUseFilters())
+	{
 		m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
+
+		if (cur_outfit->m_bUseFilter)
+			m_outfit_filter_condition->SetVisible(true);
+		else
+			m_outfit_filter_condition->SetVisible(false);
+	}
 }
 
 
@@ -298,5 +305,12 @@ void CUIOutfitInfo::UpdateInfo( CHelmet* cur_helmet, CHelmet* slot_helmet )
 	}
 
 	if (GameConstants::GetOutfitUseFilters())
+	{
 		m_outfit_filter_condition->SetFilterProgressValue(cur_filter, slot_filter);
+
+		if (cur_helmet->m_bUseFilter)
+			m_outfit_filter_condition->SetVisible(true);
+		else
+			m_outfit_filter_condition->SetVisible(false);
+	}
 }
