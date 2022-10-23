@@ -113,78 +113,67 @@ void prefetch_module(LPCSTR file_name)
 	ai().script_engine().process_file(file_name);
 }
 
-struct profile_timer_script {
-	u64							m_start_cpu_tick_count;
-	u64							m_accumulator;
-	u64							m_count;
-	int							m_recurse_mark;
-	
-	IC								profile_timer_script	()
+struct profile_timer_script
+{
+	using Clock = std::chrono::high_resolution_clock;
+	using Time = Clock::time_point;
+	using Duration = Clock::duration;
+
+	Time start_time;
+	Duration accumulator;
+	u64 count = 0;
+	int recurse_mark = 0;
+
+	profile_timer_script() : start_time(), accumulator(), count(0), recurse_mark(0) {}
+
+	bool operator<(const profile_timer_script& profile_timer) const
 	{
-		m_start_cpu_tick_count	= 0;
-		m_accumulator			= 0;
-		m_count					= 0;
-		m_recurse_mark			= 0;
+		return accumulator < profile_timer.accumulator;
 	}
 
-	IC								profile_timer_script	(const profile_timer_script &profile_timer)
+	void start()
 	{
-		*this					= profile_timer;
-	}
-
-	IC		profile_timer_script&	operator=				(const profile_timer_script &profile_timer)
-	{
-		m_start_cpu_tick_count	= profile_timer.m_start_cpu_tick_count;
-		m_accumulator			= profile_timer.m_accumulator;
-		m_count					= profile_timer.m_count;
-		m_recurse_mark			= profile_timer.m_recurse_mark;
-		return					(*this);
-	}
-
-	IC		bool					operator<				(const profile_timer_script &profile_timer) const
-	{
-		return					(m_accumulator < profile_timer.m_accumulator);
-	}
-
-	IC		void					start					()
-	{
-		if (m_recurse_mark) {
-			++m_recurse_mark;
+		if (recurse_mark)
+		{
+			++recurse_mark;
 			return;
 		}
 
-		++m_recurse_mark;
-		++m_count;
-		m_start_cpu_tick_count	= CPU::GetCLK();
+		++recurse_mark;
+		++count;
+		start_time = Clock::now();
 	}
 
-	IC		void					stop					()
+	void stop()
 	{
-		THROW					(m_recurse_mark);
-		--m_recurse_mark;
-		
-		if (m_recurse_mark)
+		if (!recurse_mark)
 			return;
-		
-		u64						finish = CPU::GetCLK();
-		if (finish > m_start_cpu_tick_count)
-			m_accumulator		+= finish - m_start_cpu_tick_count;
+
+		--recurse_mark;
+
+		if (recurse_mark)
+			return;
+
+		const auto finish = Clock::now();
+		if (finish > start_time)
+			accumulator += finish - start_time;
 	}
 
-	IC		float					time					() const
+	float time() const
 	{
-		float					result = (float(double(m_accumulator)/double(CPU::clk_per_second))*1000000.f);
-		return					(result);
+		using namespace std::chrono;
+		return float(duration_cast<microseconds>(accumulator).count());
 	}
 };
 
-IC	profile_timer_script	operator+	(const profile_timer_script &portion0, const profile_timer_script &portion1)
+inline profile_timer_script operator+(const profile_timer_script& portion0, const profile_timer_script& portion1)
 {
-	profile_timer_script	result;
-	result.m_accumulator	= portion0.m_accumulator + portion1.m_accumulator;
-	result.m_count			= portion0.m_count + portion1.m_count;
-	return					(result);
+	profile_timer_script result;
+	result.accumulator = portion0.accumulator + portion1.accumulator;
+	result.count = portion0.count + portion1.count;
+	return result;
 }
+
 
 // IC	std::ostream& operator<<(std::ostream &stream, profile_timer_script &timer)
 // {

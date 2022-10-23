@@ -18,11 +18,6 @@ XRCORE_API		xrCore	Core;
 XRCORE_API		u32		build_id;
 XRCORE_API		LPCSTR	build_date;
 
-namespace CPU
-{
-	extern	void			Detect	();
-};
-
 static u32	init_counter	= 0;
 
 extern char g_application_path[256];
@@ -74,9 +69,6 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
 
 		DWORD	sz_comp		= sizeof(CompName);
 		GetComputerName		(CompName,&sz_comp);
-
-		// Mathematics & PSI detection
-		CPU::Detect			();
 		
 		Memory._initialize	(strstr(Params,"-mem_debug") ? TRUE : FALSE);
 
