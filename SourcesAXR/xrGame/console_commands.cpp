@@ -779,13 +779,17 @@ public:
 #endif
 		if (!xr_strlen(S))
 		{
-			xr_sprintf(S, "%s - quicksave %d", Core.UserName, last_quick);
+			if (last_quick < 1 && quick_save_counter == 0)
+				strconcat(sizeof(S), S, Core.UserName, "_", "quicksave");
+			else
+				xr_sprintf(S, "%s - quicksave %d", Core.UserName, last_quick);
+
 			NET_Packet			net_packet;
 			net_packet.w_begin	(M_SAVE_GAME);
 			net_packet.w_stringZ(S);
 			net_packet.w_u8		(0);
 			Level().Send		(net_packet,net_flags(TRUE));
-			if (last_quick < quick_save_counter) last_quick++;
+			if (last_quick < quick_save_counter && quick_save_counter > 0) last_quick++;
 			else last_quick = 0;
 		}
 		else
@@ -2572,5 +2576,5 @@ extern BOOL dbg_moving_bones_snd_player;
 
 	CMD4(CCC_Integer, "dbg_ui_redraw", &UIRedraw, FALSE, TRUE);
 
-	register_mp_console_commands				();
+	//register_mp_console_commands				();
 }
