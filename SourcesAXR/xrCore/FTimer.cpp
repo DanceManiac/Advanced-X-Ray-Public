@@ -3,19 +3,23 @@
 
 XRCORE_API BOOL			g_bEnableStatGather	= FALSE;
 
+CStatTimer::CStatTimer()
+{
+	accum	= 0;
+	result	= 0.f;
+	count	= 0;
+}
+
 void	CStatTimer::FrameStart	()
 {
-	accum = Duration();
+	accum	= 0;
 	count	= 0;
 }
 void	CStatTimer::FrameEnd	()
 {
-	const float time = GetElapsed_sec() * 1000.0f;;
-
-	if (time > result)
-		result = time;
-	else
-		result = 0.99f * result + 0.01f * time;
+	float _time			= 1000.f*float(double(accum)/double(CPU::qpc_freq)	)	;
+	if (_time > result)	result	=	_time		;
+	else				result	=	0.99f*result + 0.01f*_time;
 }
 
 XRCORE_API pauseMngr	g_pauseMngr;
