@@ -32,7 +32,6 @@ class PROTECT_API CDialogHolder :public ISheduled,public pureFrame
 
 	void					StartMenu						(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	void					StopMenu						(CUIDialogWnd* pDialog);
-	void					SetMainInputReceiver			(CUIDialogWnd* ir, bool _find_remove);
 protected:
 	void					DoRenderDialogs					();
 	void					CleanInternals					();
@@ -54,4 +53,5 @@ public:
 	virtual bool			UseIndicators					()						{return true;}
 	virtual void			StartDialog						(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	virtual void			StopDialog						(CUIDialogWnd* pDialog);
+			void			SetMainInputReceiver			(CUIDialogWnd* ir, bool _find_remove);
 };

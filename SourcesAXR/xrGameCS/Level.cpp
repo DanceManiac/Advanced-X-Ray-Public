@@ -50,6 +50,7 @@
 #include "UIGameCustom.h"
 #include "ui/UIPdaWnd.h"
 #include "UICursor.h"
+#include "PDA.h"
 
 #ifdef DEBUG
 #	include "level_debug.h"
@@ -779,18 +780,22 @@ extern void draw_wnds_rects();
 void CLevel::OnRender()
 {
 	// PDA
-	if (game && HUD().GetUI()->UIGame() && &HUD().GetUI()->UIGame()->PdaMenu() != nullptr)
+	if (game && HUD().GetUI()->UIGame() && &HUD().GetUI()->UIGame()->PdaMenu())
 	{
-		CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
-		if (psActorFlags.test(AF_3D_PDA) && pda->IsShown())
+		const auto pda = &HUD().GetUI()->UIGame()->PdaMenu();
+		const auto pda_actor = Actor() ? Actor()->GetPDA() : nullptr;
+		if (psActorFlags.test(AF_3D_PDA) && pda && pda->IsShown())
 		{
 			pda->Draw();
 			CUICursor* cursor = UI()->GetUICursor();
 
 			if (cursor)
 			{
-				static bool need_reset;
-				bool is_top = HUD().GetUI()->UIGame()->MainInputReceiver() == pda;
+				static bool need_reset{};
+				if (pda_actor && pda_actor->m_bZoomed && HUD().GetUI()->UIGame()->MainInputReceiver() != pda)
+					HUD().GetUI()->SetMainInputReceiver(pda, false);
+
+				const bool is_top = HUD().GetUI()->UIGame()->MainInputReceiver() == pda;
 
 				if (pda->IsEnabled() && is_top && !Console->bVisible)
 				{
@@ -819,8 +824,7 @@ void CLevel::OnRender()
 				else
 					need_reset = true;
 
-				if (is_top)
-					cursor->OnRender();
+				cursor->OnRender();
 			}
 			Render->RenderToTarget(Render->rtPDA);
 		}

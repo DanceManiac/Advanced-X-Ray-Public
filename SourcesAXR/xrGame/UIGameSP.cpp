@@ -23,7 +23,7 @@
 
 #include "AdvancedXrayGameConstants.h"
 #include "Inventory.h"
-
+#include "PDA.h"
 
 CUIGameSP::CUIGameSP()
 :m_game(NULL),m_game_objective(NULL)

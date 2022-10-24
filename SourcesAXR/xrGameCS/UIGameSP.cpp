@@ -23,6 +23,7 @@
 #include "alife_registry_wrappers.h"
 #include "../xrServerEntitiesCS/script_engine.h"
 #include "HUDManager.h"
+#include "PDA.h"
 
 CUIGameSP::CUIGameSP()
 {
