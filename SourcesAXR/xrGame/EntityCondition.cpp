@@ -68,6 +68,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fBoostRadiationProtection		= 0.f;
 	m_fBoostTelepaticProtection		= 0.f;
 	m_fBoostChemicalBurnProtection	= 0.f;
+	m_fBoostTimeFactor				= 0.f;
 
 	m_fDeltaHealth			= 0;
 	m_fDeltaPower			= 0;
@@ -716,6 +717,7 @@ void SBooster::Load(const shared_str& sect, EBoostParams type)
 		case eBoostRadiationProtection: fBoostValue = pSettings->r_float(sect.c_str(), "boost_radiation_protection"); break;
 		case eBoostTelepaticProtection: fBoostValue = pSettings->r_float(sect.c_str(), "boost_telepat_protection"); break;
 		case eBoostChemicalBurnProtection: fBoostValue = pSettings->r_float(sect.c_str(), "boost_chemburn_protection"); break;
+		case eBoostTimeFactor: fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor"); break;
 		default: NODEFAULT;	
 	}
 }

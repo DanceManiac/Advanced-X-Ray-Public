@@ -68,7 +68,7 @@ public:
 	virtual void 		ChangeWithdrawal			(const float value);
 	virtual void 		ChangeDrugs					(const float value);
 
-	void 				BoostParameters				(const SBooster& B);
+	void 				BoostParameters				(const SBooster& B, bool need_change_tf = true);
 	void 				DisableBoostParameters		(const SBooster& B);
 	IC void				BoostMaxWeight				(const float value);
 	IC void				BoostHpRestore				(const float value);
@@ -87,6 +87,7 @@ public:
 	IC void				BoostRadiationProtection	(const float value);
 	IC void				BoostTelepaticProtection	(const float value);
 	IC void				BoostChemicalBurnProtection	(const float value);
+	IC void				BoostTimeFactor				(const float value);
 	BOOSTER_MAP			GetCurBoosterInfluences		() {return m_booster_influences;};
 
 	// хромание при потере сил и здоровья

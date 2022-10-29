@@ -939,7 +939,7 @@ void CActorCondition::load(IReader &input_packet)
 		B.fBoostValue = input_packet.r_float();
 		B.fBoostTime = input_packet.r_float();
 		m_booster_influences[B.m_type] = B;
-		BoostParameters(B);
+		BoostParameters(B, false);
 	}
 }
 
@@ -1013,7 +1013,7 @@ void CActorCondition::ChangeDrugs(float value)
 	m_fDrugs += value;
 }
 
-void CActorCondition::BoostParameters(const SBooster& B)
+void CActorCondition::BoostParameters(const SBooster& B, bool need_change_tf)
 {
 	if(OnServer())
 	{
@@ -1036,6 +1036,7 @@ void CActorCondition::BoostParameters(const SBooster& B)
 			case eBoostRadiationProtection: BoostRadiationProtection(B.fBoostValue); break;
 			case eBoostTelepaticProtection: BoostTelepaticProtection(B.fBoostValue); break;
 			case eBoostChemicalBurnProtection: BoostChemicalBurnProtection(B.fBoostValue); break;
+			case eBoostTimeFactor: need_change_tf ? BoostTimeFactor(B.fBoostValue) : BoostTimeFactor(0.0f); break;
 			default: NODEFAULT;	
 		}
 	}
@@ -1064,6 +1065,7 @@ void CActorCondition::DisableBoostParameters(const SBooster& B)
 		case eBoostRadiationProtection: BoostRadiationProtection(-B.fBoostValue); break;
 		case eBoostTelepaticProtection: BoostTelepaticProtection(-B.fBoostValue); break;
 		case eBoostChemicalBurnProtection: BoostChemicalBurnProtection(-B.fBoostValue); break;
+		case eBoostTimeFactor: BoostTimeFactor(-B.fBoostValue); break;
 		default: NODEFAULT;	
 	}
 }
@@ -1135,6 +1137,17 @@ void CActorCondition::BoostTelepaticProtection(const float value)
 void CActorCondition::BoostChemicalBurnProtection(const float value)
 {
 	m_fBoostChemicalBurnProtection += value;
+}
+
+void CActorCondition::BoostTimeFactor(const float value)
+{
+	m_fBoostTimeFactor = Device.time_factor();
+
+	m_fBoostTimeFactor += value;
+	clamp(m_fBoostTimeFactor, 0.25f, 1.5f);
+
+	Device.time_factor(m_fBoostTimeFactor);
+	psSpeedOfSound = m_fBoostTimeFactor;
 }
 
 void CActorCondition::UpdateTutorialThresholds()
@@ -1339,7 +1352,7 @@ bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const sh
 }
 bool CActorCondition::ApplyBooster(const SBooster& B, const shared_str& sect)
 {
-	if(B.fBoostValue>0.0f)
+	if(!fis_zero(B.fBoostValue))
 	{
 		if (m_object->Local() && m_object == Level().CurrentViewEntity())
 		{
@@ -1347,7 +1360,6 @@ bool CActorCondition::ApplyBooster(const SBooster& B, const shared_str& sect)
 			{
 				if(m_use_sound._feedback())
 					m_use_sound.stop		();
-
 				shared_str snd_name			= pSettings->r_string(sect, "use_sound");
 				m_use_sound.create			(snd_name.c_str(), st_Effect, sg_SourceType);
 				m_use_sound.play			(NULL, sm_2D);
@@ -1357,7 +1369,6 @@ bool CActorCondition::ApplyBooster(const SBooster& B, const shared_str& sect)
 		BOOSTER_MAP::iterator it = m_booster_influences.find(B.m_type);
 		if(it!=m_booster_influences.end())
 			DisableBoostParameters((*it).second);
-
 		m_booster_influences[B.m_type] = B;
 		BoostParameters(B);
 	}

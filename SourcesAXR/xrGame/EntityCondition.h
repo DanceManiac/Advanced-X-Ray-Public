@@ -26,6 +26,8 @@ enum EBoostParams{
 	eBoostStrikeImmunity,
 	eBoostFireWoundImmunity,
 	eBoostWoundImmunity,
+	eBoostSatiety,
+	eBoostTimeFactor,
 	eBoostMaxCount,
 };
 
@@ -62,7 +64,8 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_narcotism",
 	"boost_withdrawal",
 
-	"boost_filter_condition"
+	"boost_filter_condition",
+	"boost_time_factor"
 };
 
 struct SBooster{
@@ -284,6 +287,7 @@ protected:
 	float 				m_fBoostRadiationProtection;
 	float 				m_fBoostTelepaticProtection;
 	float 				m_fBoostChemicalBurnProtection;
+	float 				m_fBoostTimeFactor;
 
 	//потеря здоровья от последнего хита
 	float				m_fHealthLost;
