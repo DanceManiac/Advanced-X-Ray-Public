@@ -1,88 +1,31 @@
 #include "common.h"
-#include "night_vision.h"
 
 float4 blur_params;
 
-// functions
-
-float hash12n(float2 p)
-{
-	p  = frac(sin(dot(p, float2(12.0f, 78.0f) + (timers.x * 3.17f) )) * 43758.0f);
-    p += dot(p.yx, p.xy + float2(21.5351, 14.3137));
-	return frac(p.x * p.y * 95.4307);
-}
-
-// main 
 float4 main(p_screen I) : SV_Target
 {
-	float4 jitter = float4(
-	frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 12345.0),
-	frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 67890.0),
-	frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 78372.0),
-	frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 37857.0));
+	const float GAUSS_SIGMA = 2.5;
+	const int support = int(GAUSS_SIGMA * 1.5);
 	
+	//Get direction
+	float2 dir = (0,0);
+	if(blur_params.x == 1.0)
+		dir = float2(1.0/blur_params.z, 0.f);
+	else if(blur_params.y == 1.0)
+		dir = float2(0.0, 1.0/blur_params.w);
+		
+	//Accumulation
+	float3 image = (0.0, 0.0, 0.0);
+	float norm = 0.0;
 	
-	float rando = frac(sin(dot(I.tc0, float2(12.0f, 78.0f) + (timers.x * 3.17f) )) * 43758.0f);
-	float rando_high = lerp(0.8f,1.0f,rando);
-	float rando_low = lerp(0.0f,0.2f,rando);
-	float luminance = pow(YUVFromRGB(s_image.Sample(smp_base, I.tc0).rgb).r,0.5);
-	float blurdist_px = (10 * luminance)+1.0f;
-	float NUM_SAMPLES = 32;
-	float THRESHOLD = 0.01;
-	float MULT = 10.0;
-	int iSample = 0;
-	float2 texturecoord = I.tc0;
-	float2 coord = texturecoord * blur_params.zw;
-	float2 uv;
-	float blurdist;
-
-
-			const float weights[5] 	= {0.121647, 0.217609, 0.139405, 0.06253, 0.019632};  	// weights
-			const float2 offsets[6] 	= {
-											float2(1.5, 0), float2(3.5,0),
-											float2(1.5, 1.5),
-											float2(0, 1.5), float2(0, 3.5),
-											float2(-1.5, 1.5)
-											};			// offsets, trying to hit "interpolated" pixel between gaussian kernel
-			
-			float4 Color;
-			float2 tex_coord = I.tc0;
-			float2 texel_size = float2(screen_res.x, screen_res.y);
-			if (blur_params.y==1.0) texel_size = blur_params.zw; //float2(screen_res.x, screen_res.y);
-			texel_size = 1.0 / texel_size;
-			tex_coord += 0.5 * texel_size;
-			texel_size *=2.0;
-			
-			float4 right;
-			float4 left;
-			float4 sample_summ = s_image.Sample(smp_linear, tex_coord);//.rgb,pow(s_position.SampleLevel( smp_nofilter, (I.tc0 * screen_res.xy), 0).z * 0.001,0.5));//pow(length(I.hpos.xyz)*0.001,0.5));
-			float4 weight_summ = 1.0;;// = 0.0f;
-			for (int i = 0; i < 6; i++)
-			{		
-				//	if (blur_params.x == 1.0)
-				//	{
-				//		right.rgb 	=	s_image.SampleLevel(smp_linear, tex_coord + texel_size * offsets[i],0).rgb;
-				//		left.rgb 	=	s_image.SampleLevel(smp_linear, tex_coord - texel_size * offsets[i],0).rgb;
-						//right.w 	= 	pow(length(I.hpos.xyz)*0.001,0.5)
-						//left.w		=	pow(length(I.hpos.xyz)*0.001,0.5)
-						//right.w = pow(I.hpos.z*0.001,0.5);
-						//left.w = pow(I.hpos.z*0.001,0.5);
-						//gbuffer_load_data(I.Tex0, I.HPos, iSample )
-						//right.w = s_position.Load( int3( I.hpos.xy,0),0).z
-						//left.w = s_position.Load( int3( I.hpos.xy,0),0).z
-						//right.w = pow(s_position.SampleLevel( smp_nofilter, (I.tc0 * screen_res.xy) + texel_size * offsets[i] , 0).z * 0.001,0.5);
-						//left.w =  pow(s_position.SampleLevel( smp_nofilter, (I.tc0 * screen_res.xy) - texel_size * offsets[i] , 0).z * 0.001,0.5);
-				//	}	
-				//	else
-				//	{
-						right 	=	s_image.SampleLevel(smp_linear, tex_coord + texel_size * offsets[i],0);
-						left 	=	s_image.SampleLevel(smp_linear, tex_coord - texel_size * offsets[i],0);
-				//	}	
-					sample_summ += right * 1.0f;//weights[i];
-					sample_summ += left * 1.0f;//weights[i];
-					weight_summ.x += 2.0;// * weights[i]; // will need if weights summ <> 1.0
-			}
-				
-			Color = sample_summ / weight_summ.x; // will need if weights summ <> 1.0
-			return float4(lerp(Color.rgb,jitter.rgb,lerp(0.0f,0.001f,jitter.w)),Color.w); //float4(image, 1.0f);
-}
+	//Blur loop
+	[unroll]
+	for (int i = -support; i <= support; i++) 
+	{
+		float coeff = exp(-0.5 * float(i) * float(i) / (GAUSS_SIGMA * GAUSS_SIGMA));
+		image += s_image.SampleLevel(smp_nofilter, I.tc0 + float(i) * dir, 0).xyz * coeff;
+		norm += coeff;
+	}
+	image *= 1.0/norm; 
+    return float4(image, 1.0);
+} 

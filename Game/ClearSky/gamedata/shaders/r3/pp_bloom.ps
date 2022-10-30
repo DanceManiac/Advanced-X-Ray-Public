@@ -1,46 +1,7 @@
 #include "common.h"
-#include "night_vision.h"
 
-// BLOOM SHADER v0.53
-
-uniform float4 pp_bloom_weight; // X is full res, Y is half res, Z is quarter res
-uniform float4 pp_bloom_thresh; // X is full res, Y is half res, Z is quarter res, W currently unused
-
-	static const float2 offsets[8]={
-	float2(1.,1.),
-	float2(1.,-1.),
-	float2(-1.,1.),
-	float2(-1.,-1.),
-	float2(0.,1.),
-	float2(0.,-1.),
-	float2(1.,0.),
-	float2(-1.,0.)
-	};
-	
-float4 main (p_screen I) : SV_Target
-{    
-	float4 bloom_weight = pp_bloom_weight;
-	float4 bloom_thresh = pp_bloom_thresh;
-
-   // Gather Bloom Samples //
-    float4 bloom_1 = s_blur_2.Sample(smp_rtlinear, I.tc0);
-      bloom_1 -= bloom_thresh.x; //threshold
-    float4 bloom_2 = s_blur_4.Sample(smp_rtlinear, I.tc0);
-      bloom_2 -= bloom_thresh.y; //threshold
-    float4 bloom_3 = s_blur_8.Sample(smp_rtlinear, I.tc0);
-      bloom_3 -= bloom_thresh.z; //threshold
-
-    // Blend Bloom Samples based on weight //
-    float3 bloom_final = (bloom_1.rgb * bloom_weight.x  
-                        + bloom_2.rgb * bloom_weight.y 
-                        + bloom_3.rgb * bloom_weight.z);
-
-    // Apply luminance weight //
-    float weight = dot(bloom_weight.xyz, 1.0);
-    bloom_final *= 1/weight;
-
-    // Remove negative values //
-    bloom_final = max(bloom_final, 0.0f);
-	
-    return float4 (bloom_final, 1.0f);
-}
+float4 main(p_screen I) : SV_Target
+{
+	float3 image = s_image.Sample(smp_nofilter, I.tc0).xyz;
+	return float4(image, 1.0);
+} 
