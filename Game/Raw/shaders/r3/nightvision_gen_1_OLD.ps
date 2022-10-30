@@ -1,0 +1,67 @@
+///////////////////////////////////////////////////////
+//      BEEF'S SHADER BASED NIGHT VISION EFFECT      //
+///////////////////////////////////////////////////////
+// Huge credit TO LVutner from Anomaly Discord, who  //
+// literally taught me everything I know, to Sky4Ace //
+// who's simple_blur function I've adapted for this  //
+// shader, and to Meltac, who provided some advice   //
+// and inspiration for developing this shader.       //
+///////////////////////////////////////////////////////
+// Note: You are free to distribute and adapt this   //
+// Shader and any components, just please provide    //
+// credit to myself and/or the above individuals. I  //
+// have provided credit for individual functions and //
+// their original authors where applicable.	- BEEF   //
+///////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////
+// STEP 0 - GLOBAL DEFINITIONS AND INCLUDES
+///////////////////////////////////////////////////////
+
+#include "night_vision.h"
+#include "common.h"
+
+uniform float4 shader_param_1;
+uniform float4 shader_param_2;
+
+float4 main(p_screen I) : SV_Target
+{
+	float4 jitter = float4(
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 12345.0),
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 67890.0),
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 78372.0),
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 37857.0));
+    
+	float2 uv = I.hpos.xy * screen_res.zw;
+    
+    float distanceFromCenter = length( uv - float2(0.5,0.5) );
+    
+    float vignetteAmount;
+    
+    float lum;
+    
+    vignetteAmount = 1.0 - distanceFromCenter;
+    vignetteAmount = smoothstep(0.1, 1.0, vignetteAmount);
+    
+    float3 color = s_image.Sample(smp_base, I.tc0).xyz;
+    
+    // luminance hack, responses to red channel most
+    lum = dot(color.rgb, float3(1.0, 5.0, 1.0));
+    
+    color.rgb = float3(0.0, 1.2, 0.0);
+    
+    // scanlines
+    color += 0.1*sin(uv.y*screen_res.y*2.0);
+    
+    // screen flicker
+    color += 0.005 * sin(timers.x*16.0);
+	
+	// APPLY NOISE
+	color += jitter.y * (0.25); // Add the noise to the image
+    
+    // vignetting
+    color *=  vignetteAmount*1.0;
+    
+	return float4(color, 1.0);
+} 
