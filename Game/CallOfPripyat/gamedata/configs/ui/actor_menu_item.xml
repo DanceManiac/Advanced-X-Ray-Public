@@ -215,7 +215,7 @@
 		<burn_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_prop_thermo</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -233,7 +233,7 @@
 		<shock_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_prop_electro</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -251,7 +251,7 @@
 		<chemical_burn_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_prop_chem</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -269,7 +269,7 @@
 		<radiation_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_propery_09</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -287,7 +287,7 @@
 		<telepatic_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_propery_11</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -305,7 +305,7 @@
 		<wound_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_prop_damage</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -323,7 +323,7 @@
 		<strike_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_prop_strike</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -341,7 +341,7 @@
 		<explosion_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_prop_exlp</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -359,7 +359,7 @@
 		<fire_wound_immunity x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_am_propery_01</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
-			<progress_immunity x="130" y="4" width="128" height="9" horz="1">
+			<progress_immunity x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -377,7 +377,7 @@
 		<antigas_filter x="0" y="0" width="18" height="18" stretch="1">
 			<texture>ui_item_filter_icon</texture>
 			<text font="letterica16" x="22" y="0" r="170" g="170" b="170" align="l" vert_align="c">ui_inv_filter_condition</text>
-			<progress_bar x="130" y="4" width="128" height="9" horz="1">
+			<progress_bar x="130" y="4" width="110" height="9" horz="1">
 				<progress>
 	                <texture a="150">ui_inGame2_hint_wnd_bar_alfa_line</texture>
 	            </progress>
@@ -387,6 +387,9 @@
 				<color_less color="pda_red"  />
 				<color_more color="pda_green"/>
 			</progress_bar>
+			<static_filter_value x="225" y="0" width="40" height="18" magnitude="1">
+				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
+			</static_filter_value>
 		</antigas_filter>
 	</outfit_info>
 	

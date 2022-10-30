@@ -68,7 +68,16 @@ void CUIOutfitImmunity::InitFromXml( CUIXml& xml_doc, LPCSTR base_str, u32 hit_t
 	m_progress.InitFromXml( xml_doc, buf );
 	
 	strconcat( sizeof(buf), buf, base_str, ":", immunity_names[hit_type], ":static_value" );
-	m_value.SetVisible( false );
+
+	if (xml_doc.NavigateToNode(buf, 0))
+	{
+		CUIXmlInit::InitTextWnd(xml_doc, buf, 0, &m_value);
+		m_value.SetVisible(true);
+	}
+	else
+	{
+		m_value.SetVisible(false);
+	}
 
 	m_magnitude = xml_doc.ReadAttribFlt( buf, 0, "magnitude", 1.0f );
 }
@@ -85,6 +94,18 @@ void CUIOutfitImmunity::InitFromXml(CUIXml& xml_doc, LPCSTR base_str)
 	strconcat(sizeof(buf), buf, base_str, ":", "antigas_filter", ":progress_bar");
 	m_filter_progress.InitFromXml(xml_doc, buf);
 
+	strconcat(sizeof(buf), buf, base_str, ":", "antigas_filter", ":static_filter_value");
+
+	if (xml_doc.NavigateToNode(buf, 0))
+	{
+		CUIXmlInit::InitTextWnd(xml_doc, buf, 0, &m_value);
+		m_value.SetVisible(true);
+	}
+	else
+	{
+		m_value.SetVisible(false);
+	}
+
 	m_magnitude = xml_doc.ReadAttribFlt(buf, 0, "magnitude", 1.0f);
 }
 
@@ -94,8 +115,21 @@ void CUIOutfitImmunity::SetProgressValue( float cur, float comp )
 	comp *= m_magnitude;
 	m_progress.SetTwoPos( cur, comp );
 	string32 buf;
+
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
+	u32 negative_color = color_rgba(red.x, red.y, red.z, red.w);
+	u32 positive_color = color_rgba(green.x, green.y, green.z, green.w);
+	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
 //	xr_sprintf( buf, sizeof(buf), "%d %%", (int)cur );
 	xr_sprintf( buf, sizeof(buf), "%.0f", cur );
+
+	if (cur == comp)
+		m_value.SetTextColor(neutral_color);
+	else
+		cur > comp ? m_value.SetTextColor(positive_color) : m_value.SetTextColor(negative_color);
+
 	m_value.SetText( buf );
 }
 
@@ -105,6 +139,22 @@ void CUIOutfitImmunity::SetFilterProgressValue(float cur, float comp)
 	comp *= m_magnitude;
 
 	m_filter_progress.SetTwoPos(cur, comp);
+	string32 buf;
+
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
+	u32 negative_color = color_rgba(red.x, red.y, red.z, red.w);
+	u32 positive_color = color_rgba(green.x, green.y, green.z, green.w);
+	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
+	xr_sprintf(buf, sizeof(buf), "%.0f", cur);
+
+	if (cur == comp)
+		m_value.SetTextColor(neutral_color);
+	else
+		cur > comp ? m_value.SetTextColor(positive_color) : m_value.SetTextColor(negative_color);
+
+	m_value.SetText(buf);
 }
 
 // ===========================================================================================
