@@ -152,14 +152,10 @@ void xrDebug::do_exit	(const std::string &message)
 
 void xrDebug::backend	(const char *expression, const char *description, const char *argument0, const char *argument1, const char *file, int line, const char *function, bool &ignore_always)
 {
-	if (IsDebuggerPresent())DebugBreak();
-	static xrCriticalSection CS
 #ifdef PROFILE_CRITICAL_SECTIONS
 	(MUTEX_PROFILE_ID(xrDebug::backend))
 #endif // PROFILE_CRITICAL_SECTIONS
 	;
-
-	CS.Enter			();
 
 	error_after_dialog	= true;
 
@@ -174,6 +170,12 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 	buffer				+= xr_sprintf(buffer,sizeof(assertion_info) - u32(buffer - &assertion_info[0]),"Press TRY AGAIN to continue execution%s",endline);
 	buffer				+= xr_sprintf(buffer,sizeof(assertion_info) - u32(buffer - &assertion_info[0]),"Press CONTINUE to continue execution and ignore all the errors of this type%s%s",endline,endline);
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
+
+	if (IsDebuggerPresent())
+	{
+		DebugBreak();
+		return;
+	}
 
 	if (handler)
 		handler			();
@@ -226,8 +228,6 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 
 	if (get_on_dialog())
 		get_on_dialog()	(false);
-
-	CS.Leave			();
 }
 
 LPCSTR xrDebug::error2string	(long code)
