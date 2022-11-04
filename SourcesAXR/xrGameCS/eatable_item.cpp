@@ -138,7 +138,7 @@ void CEatableItem::StartAnimation()
 
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
-		g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", true, 1.0f);
+		g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", false, 1.0f);
 		m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", 1.0f);
 	}
 
