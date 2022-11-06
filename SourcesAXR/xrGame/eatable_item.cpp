@@ -25,6 +25,7 @@
 #include "UIGameCustom.h"
 #include "player_hud.h"
 #include "../xrPhysics/ElevatorState.h"
+#include "CustomDetector.h"
 
 extern bool g_block_all_except_movement;
 
@@ -123,8 +124,13 @@ void CEatableItem::UpdateInRuck(void)
 void CEatableItem::HideWeapon()
 {
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+
+	if (pDet)
+		pDet->HideDetector(true);
+
 	m_bItmStartAnim = true;
 
 	if (!Actor()->inventory_disabled())

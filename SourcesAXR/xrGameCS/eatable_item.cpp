@@ -24,6 +24,7 @@
 #include "HudManager.h"
 #include "UIGameCustom.h"
 #include "player_hud.h"
+#include "CustomDetector.h"
 
 extern bool g_block_all_except_movement;
 extern bool g_actor_allow_ladder;
@@ -113,10 +114,15 @@ bool CEatableItem::Useful() const
 void CEatableItem::HideWeapon()
 {
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(Level().CurrentEntity());
 	CActor* pActor = smart_cast<CActor*>(pInvOwner);
 
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+
+	if (pDet)
+		pDet->HideDetector(true);
+
 	m_bItmStartAnim = true;
 
 	if (!pActor)
