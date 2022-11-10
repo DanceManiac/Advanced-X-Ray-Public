@@ -60,7 +60,7 @@ void CFontManager::InitializeFonts()
 
 LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 {
-	static char* tex_names[]={"texture800","texture","texture1600"};
+	static char* tex_names[] = { "texture800", "texture", "texture1600", "texture2k", "texture4k" };
 	int def_idx		= 1;//default 1024x768
 	int idx			= def_idx;
 #if 0
@@ -71,10 +71,12 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	else 			idx = 2;
 #else
 	u32 h = Device.dwHeight;
-
-	if(h<=600)		idx = 0;
-	else if(h<1024)	idx = 1;
-	else 			idx = 2;
+	
+	if		(h<=600)	idx = 0;
+	else if (h<1024)	idx = 1;
+	else if (h<1200)	idx = 2;
+	else if (h<1440)	idx = 3;
+	else				idx = 4;
 #endif
 
 	while(idx>=0){
