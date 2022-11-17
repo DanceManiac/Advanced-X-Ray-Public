@@ -135,9 +135,11 @@ void xrSASH::LoopNative()
 			ini.r_line( "benchmark", i, &test_name, &t);
 			//xr_strcpy(g_sBenchmarkName, test_name);
 
-			test_command = ini.r_string_wb("benchmark",test_name);
-			xr_strcpy( Core.Params, *test_command );
-			_strlwr_s( Core.Params );
+			test_command = ini.r_string_wb("benchmark", test_name);
+			u32 cmdSize = test_command.size() + 1;
+			Core.Params = (char*)xr_realloc(Core.Params, cmdSize);
+			xr_strcpy(Core.Params, cmdSize, test_command.c_str());
+			xr_strlwr(Core.Params);
 
 			RunBenchmark(test_name);
 
