@@ -64,7 +64,7 @@ public:
 		// if not found - create appropriate shared data object
 		if (_shared_tab.end() == shared_it) {
 			_data		= xr_new<SHARED_TYPE>();
-			_shared_tab.insert(mk_pair(id, _data));
+			_shared_tab.insert(std::make_pair(id, _data));
 		} else _data = shared_it->second;
 
 		return _data;

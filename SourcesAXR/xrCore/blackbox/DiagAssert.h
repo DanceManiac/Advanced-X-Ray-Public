@@ -295,7 +295,7 @@ void  __stdcall
 
 #ifdef __cplusplus
 //inline void TraceOutput(LPCTSTR, ...) { }
-#define TRACE   (void)0
+#define TRACE(fmt)
 #endif
 
 #define TRACE0(fmt)

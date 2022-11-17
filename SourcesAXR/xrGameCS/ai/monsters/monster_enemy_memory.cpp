@@ -82,7 +82,7 @@ void CMonsterEnemyMemory::add_enemy(const CEntityAlive *enemy)
 		it->second = enemy_info;
 	} else {
 		// добавить врага в список объектов
-		m_objects.insert(mk_pair(enemy, enemy_info));
+		m_objects.insert(std::make_pair(enemy, enemy_info));
 	}
 }
 
@@ -100,7 +100,7 @@ void CMonsterEnemyMemory::add_enemy(const CEntityAlive *enemy, const Fvector &po
 		if (it->second.time < enemy_info.time) it->second = enemy_info;
 	} else {
 		// добавить врага в список объектов
-		m_objects.insert(mk_pair(enemy, enemy_info));
+		m_objects.insert(std::make_pair(enemy, enemy_info));
 	}
 }
 

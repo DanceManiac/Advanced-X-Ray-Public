@@ -222,8 +222,8 @@ void	CKinematics::Load(const char* N, IReader *data, u32 dwFlags)
 		pBone->name					= shared_str(buf);
 		pBone->child_faces.resize	(children.size());
 		bones->push_back			(pBone);
-		bone_map_N->push_back		(mk_pair(pBone->name,ID));
-		bone_map_P->push_back		(mk_pair(pBone->name,ID));
+		bone_map_N->push_back		(std::make_pair(pBone->name,ID));
+		bone_map_P->push_back		(std::make_pair(pBone->name,ID));
 
 		// It's parent
 		data->r_stringZ				(buf,sizeof(buf));	strlwr(buf);
@@ -295,7 +295,7 @@ void	CKinematics::Load(const char* N, IReader *data, u32 dwFlags)
 				std::sort						(faces.begin(),faces.end());
 				CBoneData::FacesVecIt new_end	= std::unique(faces.begin(),faces.end());
 				faces.erase						(new_end,faces.end());
-				B->child_faces[child_idx].clear_and_free();
+				B->child_faces[child_idx].clear();
 				B->child_faces[child_idx]		= faces;
 			}
 		}

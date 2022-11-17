@@ -230,7 +230,7 @@ void CLightShadows::calculate	()
 
 			//Msg			("* near(%f), near-x(%f)",p_near,p_nearR);
 			
-			mProject.build_projection_HAT	(p_hat,p_asp,p_near,	p_far);
+			mProject.build_projection_l	(p_hat,p_asp,p_near,	p_far);
 			//	Igor: strange bug with building projection_hat
 			//	building projection with the same parameters fails for the 
 			//	second time

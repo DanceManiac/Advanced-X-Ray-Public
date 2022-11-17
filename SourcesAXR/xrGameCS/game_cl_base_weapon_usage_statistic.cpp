@@ -80,7 +80,7 @@ Weapon_Statistic::Weapon_Statistic(LPCSTR Name)
 };
 Weapon_Statistic::~Weapon_Statistic()
 {
-	m_Hits.clear_and_free();
+	m_Hits.clear();
 	ZeroMemory(m_Basket, sizeof(m_Basket));
 };
 
@@ -304,7 +304,7 @@ Player_Statistic::Player_Statistic(LPCSTR Name)
 
 Player_Statistic::~Player_Statistic()
 {
-	aWeaponStats.clear_and_free();
+	aWeaponStats.clear();
 };
 
 u32 Player_Statistic::create_victims_table(victims_table & victims_table)

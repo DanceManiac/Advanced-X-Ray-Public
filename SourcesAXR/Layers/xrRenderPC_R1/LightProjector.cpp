@@ -202,7 +202,7 @@ void CLightProjector::calculate	()
 		float		p_asp		=	1.f;
 		float		p_near		=	P_cam_dist-EPS_L;									
 		float		p_far		=	P_cam_dist+p_R+P_cam_range;	
-		mProject.build_projection_HAT	(p_hat,p_asp,p_near,p_far);
+		mProject.build_projection_l(p_hat, p_asp, p_near, p_far);
 		RCache.set_xform_project		(mProject);
 		
 		// calculate view-matrix

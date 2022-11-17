@@ -112,7 +112,7 @@ void manager::loophole_path					(cover const &cover, shared_str const &source_ra
 
 	typedef GraphEngineSpace::CBaseParameters	CBaseParameters;
 	CBaseParameters			parameters(u32(-1),u32(-1),u32(-1));
-	path.clear_not_free		();
+	path.clear();
 	R_ASSERT2				(
 		ai().graph_engine().search(
 			cover.description()->transitions(),
@@ -185,7 +185,7 @@ void manager::build_enter_path				()
 {
 	VERIFY					(m_target_cover);
 
-	m_path.clear_not_free	();
+	m_path.clear			();
 
 	shared_str				target = transform_vertex(m_target_loophole ? m_target_loophole->id() : "", false);
 	float					value = flt_max;

@@ -120,9 +120,9 @@ namespace	R_dsgraph
 	// NORMAL
 	typedef xr_vector<_NormalItem,render_allocator::helper<_NormalItem>::result>			mapNormalDirect;
 	struct	mapNormalItems		: public	mapNormalDirect										{	float	ssa;	};
-	struct	mapNormalTextures	: public	FixedMAP<STextureList*,mapNormalItems,render_allocator>				{	float	ssa;	};
-	struct	mapNormalStates		: public	FixedMAP<ID3DState*,mapNormalTextures,render_allocator>	{	float	ssa;	};
-	struct	mapNormalCS			: public	FixedMAP<R_constant_table*,mapNormalStates,render_allocator>			{	float	ssa;	};
+	struct	mapNormalTextures	: public	xr_fixed_map<STextureList*,mapNormalItems>				{	float	ssa;	};
+	struct	mapNormalStates		: public	xr_fixed_map<ID3DState*,mapNormalTextures>	{	float	ssa;	};
+	struct	mapNormalCS			: public	xr_fixed_map<R_constant_table*,mapNormalStates>			{	float	ssa;	};
 #ifdef USE_DX11
 	struct	mapNormalAdvStages
 	{
@@ -130,15 +130,15 @@ namespace	R_dsgraph
 		ds_type		ds;
 		mapNormalCS	mapCS;
 	};
-	struct	mapNormalPS			: public	FixedMAP<ps_type, mapNormalAdvStages,render_allocator>						{	float	ssa;	};
+	struct	mapNormalPS : public	xr_fixed_map<ps_type, mapNormalAdvStages> { float	ssa; };
 #else
-	struct	mapNormalPS			: public	FixedMAP<ps_type, mapNormalCS,render_allocator>						{	float	ssa;	};
+	struct	mapNormalPS : public	xr_fixed_map<ps_type, mapNormalCS> { float	ssa; };
 #endif	//	USE_DX11
 #if defined(USE_DX10) || defined(USE_DX11)
-	struct	mapNormalGS			: public	FixedMAP<gs_type, mapNormalPS,render_allocator>						{	float	ssa;	};
-	struct	mapNormalVS			: public	FixedMAP<vs_type, mapNormalGS,render_allocator>						{	};
+	struct	mapNormalGS : public	xr_fixed_map<gs_type, mapNormalPS> { float	ssa; };
+	struct	mapNormalVS : public	xr_fixed_map<vs_type, mapNormalGS> {	};
 #else	//	USE_DX10
-	struct	mapNormalVS			: public	FixedMAP<vs_type, mapNormalPS,render_allocator>						{	};
+	struct	mapNormalVS : public	xr_fixed_map<vs_type, mapNormalPS> {	};
 #endif	//	USE_DX10
 	typedef mapNormalVS			mapNormal_T;
 	typedef mapNormal_T			mapNormalPasses_T[SHADER_PASSES_MAX];
@@ -146,9 +146,9 @@ namespace	R_dsgraph
 	// MATRIX
 	typedef xr_vector<_MatrixItem,render_allocator::helper<_MatrixItem>::result>	mapMatrixDirect;
 	struct	mapMatrixItems		: public	mapMatrixDirect										{	float	ssa;	};
-	struct	mapMatrixTextures	: public	FixedMAP<STextureList*,mapMatrixItems,render_allocator>				{	float	ssa;	};
-	struct	mapMatrixStates		: public	FixedMAP<ID3DState*,mapMatrixTextures,render_allocator>	{	float	ssa;	};
-	struct	mapMatrixCS			: public	FixedMAP<R_constant_table*,mapMatrixStates,render_allocator>			{	float	ssa;	};
+	struct	mapMatrixTextures	: public	xr_fixed_map<STextureList*,mapMatrixItems>				{	float	ssa;	};
+	struct	mapMatrixStates		: public	xr_fixed_map<ID3DState*,mapMatrixTextures>	{	float	ssa;	};
+	struct	mapMatrixCS			: public	xr_fixed_map<R_constant_table*,mapMatrixStates>			{	float	ssa;	};
 #ifdef USE_DX11
 	struct	mapMatrixAdvStages
 	{
@@ -156,26 +156,26 @@ namespace	R_dsgraph
 		ds_type		ds;
 		mapMatrixCS	mapCS;
 	};
-	struct	mapMatrixPS			: public	FixedMAP<ps_type, mapMatrixAdvStages,render_allocator>						{	float	ssa;	};
+	struct	mapMatrixPS : public	xr_fixed_map<ps_type, mapMatrixAdvStages> { float	ssa; };
 #else
-	struct	mapMatrixPS			: public	FixedMAP<ps_type, mapMatrixCS,render_allocator>						{	float	ssa;	};
+	struct	mapMatrixPS : public	xr_fixed_map<ps_type, mapMatrixCS> { float	ssa; };
 #endif	//	USE_DX11
 #if defined(USE_DX10) || defined(USE_DX11)
-	struct	mapMatrixGS			: public	FixedMAP<gs_type, mapMatrixPS,render_allocator>						{	float	ssa;	};
-	struct	mapMatrixVS			: public	FixedMAP<vs_type, mapMatrixGS,render_allocator>						{	};
+	struct	mapMatrixGS			: public	xr_fixed_map<gs_type, mapMatrixPS>						{	float	ssa;	};
+	struct	mapMatrixVS			: public	xr_fixed_map<vs_type, mapMatrixGS>						{	};
 #else	//	USE_DX10
-	struct	mapMatrixVS			: public	FixedMAP<vs_type, mapMatrixPS,render_allocator>						{	};
+	struct	mapMatrixVS			: public	xr_fixed_map<vs_type, mapMatrixPS>						{	};
 #endif	//	USE_DX10
 	typedef mapMatrixVS			mapMatrix_T;
 	typedef mapMatrix_T			mapMatrixPasses_T[SHADER_PASSES_MAX];
 
 	// Top level
-	typedef FixedMAP<float,_MatrixItemS,render_allocator>			mapSorted_T;
-	typedef mapSorted_T::TNode						mapSorted_Node;
+	typedef xr_fixed_map<float, _MatrixItemS>			mapSorted_T;
+	typedef mapSorted_T::value_type						mapSorted_Node;
 
-	typedef FixedMAP<float,_MatrixItemS,render_allocator>			mapHUD_T;
-	typedef mapHUD_T::TNode							mapHUD_Node;
+	typedef xr_fixed_map<float, _MatrixItemS>			mapHUD_T;
+	typedef mapHUD_T::value_type						mapHUD_Node;
 
-	typedef FixedMAP<float,_LodItem,render_allocator>				mapLOD_T;
-	typedef mapLOD_T::TNode							mapLOD_Node;
+	typedef xr_fixed_map<float, _LodItem>				mapLOD_T;
+	typedef mapLOD_T::value_type						mapLOD_Node;
 };

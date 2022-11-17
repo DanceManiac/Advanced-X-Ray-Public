@@ -2,37 +2,38 @@
 #include <malloc.h>
 #include <errno.h>
 
-XRCORE_API void vminfo (size_t *_free, size_t *reserved, size_t *committed) {
+XRCORE_API void vminfo(size_t* _free, size_t* reserved, size_t* committed) {
 	MEMORY_BASIC_INFORMATION memory_info;
 	memory_info.BaseAddress = 0;
 	*_free = *reserved = *committed = 0;
-	while (VirtualQuery (memory_info.BaseAddress, &memory_info, sizeof (memory_info))) {
+	while (VirtualQuery(memory_info.BaseAddress, &memory_info, sizeof(memory_info))) {
 		switch (memory_info.State) {
 		case MEM_FREE:
-			*_free		+= memory_info.RegionSize;
+			*_free += memory_info.RegionSize;
 			break;
 		case MEM_RESERVE:
-			*reserved	+= memory_info.RegionSize;
+			*reserved += memory_info.RegionSize;
 			break;
 		case MEM_COMMIT:
 			*committed += memory_info.RegionSize;
 			break;
 		}
-		memory_info.BaseAddress = (char *) memory_info.BaseAddress + memory_info.RegionSize;
+		memory_info.BaseAddress = (char*)memory_info.BaseAddress + memory_info.RegionSize;
 	}
 }
 
-XRCORE_API void log_vminfo	()
+XRCORE_API void log_vminfo()
 {
 	size_t  w_free, w_reserved, w_committed;
-	vminfo	(&w_free, &w_reserved, &w_committed);
-	Msg		(
-		"* [win32]: free[%d K], reserved[%d K], committed[%d K]",
-		w_free/1024,
-		w_reserved/1024,
-		w_committed/1024
+	vminfo(&w_free, &w_reserved, &w_committed);
+	Msg(
+		"* [win32]: free[%lld K], reserved[%lld K], committed[%lld K]",
+		w_free / 1024,
+		w_reserved / 1024,
+		w_committed / 1024
 	);
 }
+
 int heap_walk(
 	HANDLE heap_handle,
 	PROCESS_HEAP_ENTRY* Entry
@@ -161,11 +162,7 @@ u32	mem_usage_impl(HANDLE heap_handle, u32* pBlocksUsed, u32* pBlocksFree)
 	return (u32)total;
 }
 
-u32		xrMemory::mem_usage(u32* pBlocksUsed, u32* pBlocksFree)
+size_t		xrMemory::mem_usage(u32* pBlocksUsed, u32* pBlocksFree)
 {
-#ifdef _M_X64
-	return 0;
-#else
 	return				(mem_usage_impl((HANDLE)_get_heap_handle(), pBlocksUsed, pBlocksFree));
-#endif
 }

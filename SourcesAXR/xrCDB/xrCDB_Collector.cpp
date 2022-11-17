@@ -10,14 +10,14 @@ namespace CDB
 	{
 		xr_vector<Fvector>::iterator I,E;
 		I=verts.begin();	E=verts.end();
-		for (;I!=E;I++)		if (I->similar(V,eps)) return u32(I-verts.begin());
+		for (;I!=E;++I)		if (I->similar(V,eps)) return u32(I-verts.begin());
 		verts.push_back		(V);
 		return verts.size	()-1;
 	}
 
 	void	Collector::add_face_D	(
 		const Fvector& v0, const Fvector& v1, const Fvector& v2,	// vertices
-		size_t dummy								// misc
+		u32 dummy								// misc
 		)
 	{
 		TRI T;
@@ -64,7 +64,7 @@ namespace CDB
 
 	void	Collector::add_face_packed_D	(
 		const Fvector& v0, const Fvector& v1, const Fvector& v2,	// vertices
-		size_t		dummy,	float eps
+		u32		dummy,	float eps
 		)
 	{
 		TRI T;
@@ -318,7 +318,7 @@ namespace CDB
 
 	void	CollectorPacked::add_face_D(
 		const Fvector& v0, const Fvector& v1, const Fvector& v2,	// vertices
-		size_t dummy, u32 _flags										// misc
+		u32 dummy, u32 _flags										// misc
 		)
 	{
 		TRI T;
@@ -345,7 +345,7 @@ namespace CDB
 		{
 			DWORDList* vl;
 			vl = &(VM[ix][iy][iz]);
-			for(DWORDIt it=vl->begin();it!=vl->end(); it++)
+			for(DWORDIt it=vl->begin();it!=vl->end(); ++it)
 				if( verts[*it].similar(V) )	{
 					P = *it;
 					break;
@@ -379,12 +379,12 @@ namespace CDB
 
 	void	CollectorPacked::clear()
 	{
-		verts.clear_and_free	();
-		faces.clear_and_free	();
-		flags.clear_and_free	();
+		verts.clear	();
+		faces.clear	();
+		flags.clear	();
 		for (u32 _x=0; _x<=clpMX; _x++)
 			for (u32 _y=0; _y<=clpMY; _y++)
 				for (u32 _z=0; _z<=clpMZ; _z++)
-					VM[_x][_y][_z].clear_and_free	();
+					VM[_x][_y][_z].clear	();
 	}
 };

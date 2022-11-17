@@ -98,6 +98,9 @@ namespace collide
 	};
 	DEFINE_VECTOR	(rq_result,rqVec,rqIt);
 	
+	using rqVec = xr_vector< rq_result>;
+	using rqIt = rqVec::iterator;
+
 	class			rq_results
 	{
 	protected:
@@ -131,7 +134,7 @@ namespace collide
 		IC int			r_count			()	{ return results.size();	}
 		IC rq_result*	r_begin			()	{ return &*results.begin();	}
 		IC rq_result*	r_end			()	{ return &*results.end();	}
-		IC void			r_clear			()	{ results.clear_not_free();	}
+		IC void			r_clear			()	{ results.clear();	}
 		IC void			r_sort			()	{ std::sort(results.begin(),results.end(),r_sort_pred);}
 		IC rqVec		&r_results		()	{ return results; }
 
