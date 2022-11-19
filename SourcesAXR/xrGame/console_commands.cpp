@@ -64,6 +64,7 @@
 #endif // DEBUG
 
 #include "HUDManager.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 
 // Hud Type
 xr_token			qhud_type_token[] = {
@@ -297,10 +298,23 @@ public:
 
 		Fvector pos = Actor()->Position();
 		pos.y += 3.0f;
+
 		if (auto tpGame = smart_cast<game_sv_Single*>(Level().Server->game))
 		{
 			for (int i = 0; i < count; ++i)
-				tpGame->alife().spawn_item(Name, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
+			{
+				CSE_Abstract* entity = tpGame->alife().spawn_item(Name, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
+
+				if (CSE_ALifeAnomalousZone* anom = smart_cast<CSE_ALifeAnomalousZone*>(entity))
+				{
+					CShapeData::shape_def _shape;
+					_shape.data.sphere.P.set(0.0f, 0.0f, 0.0f);
+					_shape.data.sphere.R = 3.0f;
+					_shape.type = CShapeData::cfSphere;
+					anom->assign_shapes(&_shape, 1);
+					anom->m_space_restrictor_type = RestrictionSpace::eRestrictorTypeNone;
+				}
+			}
 		}
 	}
 
