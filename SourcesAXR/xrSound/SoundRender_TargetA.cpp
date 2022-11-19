@@ -12,7 +12,7 @@ xr_vector<u8> g_target_temp_data;
 CSoundRender_TargetA::CSoundRender_TargetA():CSoundRender_Target()
 {
     cache_gain			= 0.f;
-    psSpeedOfSound		= 1.f;
+    cache_pitch			= 1.f;
     pSource				= 0;
 }
 
@@ -33,7 +33,7 @@ BOOL	CSoundRender_TargetA::_initialize		()
 		A_CHK(alSourcef(pSource, AL_MIN_GAIN, 0.f));
 		A_CHK(alSourcef(pSource, AL_MAX_GAIN, 1.f));
 		A_CHK(alSourcef(pSource, AL_GAIN, cache_gain));
-		A_CHK(alSourcef(pSource, AL_PITCH, psSpeedOfSound));
+        A_CHK(alSourcef(pSource, AL_PITCH, cache_pitch));
 		return true;
 	}
 	Msg("! sound: OpenAL: Can't create source. Error: %s.", static_cast<pcstr>(alGetString(error)));
@@ -183,8 +183,20 @@ void	CSoundRender_TargetA::fill_parameters()
         A_CHK(alSourcef(pSource, AL_GAIN, _gain));
     }
 
-    A_CHK(alSourcef(pSource, AL_PITCH, psSpeedOfSound));
+    VERIFY2(m_pEmitter, SE->source()->file_name());
+    float	_pitch = m_pEmitter->p_source.freq;			
+    clamp(_pitch, EPS_L, 2.f);
 
+    if (!fsimilar(cache_pitch, _pitch * psSpeedOfSound))
+    {
+        cache_pitch = _pitch * psSpeedOfSound;
+
+        // Only update time to stop for non-looped sounds
+        if (!m_pEmitter->iPaused && (m_pEmitter->m_current_state == CSoundRender_Emitter::stStarting || m_pEmitter->m_current_state == CSoundRender_Emitter::stPlaying || m_pEmitter->m_current_state == CSoundRender_Emitter::stSimulating))
+            m_pEmitter->fTimeToStop = SoundRender->fTimer_Value + ((m_pEmitter->get_length_sec() - (SoundRender->fTimer_Value - m_pEmitter->fTimeStarted)) / cache_pitch);
+
+        A_CHK(alSourcef(pSource, AL_PITCH, cache_pitch));
+    }
     VERIFY2(m_pEmitter, SE->source()->file_name());
 }
 

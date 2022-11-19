@@ -428,7 +428,7 @@ void CSoundRender_Core::_create_data( ref_sound_data& S, LPCSTR fName, esound_ty
     S.g_object			= 0; 
     S.g_userdata		= 0;
 	S.dwBytesTotal		= S.handle->bytes_total();
-	S.fTimeTotal		= S.handle->length_sec() / psSpeedOfSound;
+	S.fTimeTotal		= S.handle->length_sec();
 }
 void CSoundRender_Core::_destroy_data( ref_sound_data& S)
 {

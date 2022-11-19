@@ -11,6 +11,7 @@ class CSoundRender_TargetA: public CSoundRender_Target
     ALuint						pSource;
 	ALuint						pBuffers[sdef_target_count];
     float						cache_gain;
+	float 						cache_pitch;
 
     ALuint						buf_block;
 private:
