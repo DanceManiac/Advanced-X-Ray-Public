@@ -702,42 +702,49 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 			{
 				case KNIFE_SLOT:
 					return m_pInventoryKnifeList;
+					break;
 			}
 
 			if (GameConstants::GetBinocularSlotEnabled())
 			{
 				case APPARATUS_SLOT:
 					return m_pInventoryBinocularList;
+					break;
 			}
 
 			if (GameConstants::GetTorchSlotEnabled())
 			{
 				case TORCH_SLOT:
 					return m_pInventoryTorchList;
+					break;
 			}
 
 			if (GameConstants::GetBackpackSlotEnabled())
 			{
 				case BACKPACK_SLOT:
 					return m_pInventoryBackpackList;
+					break;
 			}
 
 			if (GameConstants::GetDosimeterSlotEnabled())
 			{
 				case DOSIMETER_SLOT:
 					return m_pInventoryDosimeterList;
+					break;
 			}
 
 			if (GameConstants::GetPantsSlotEnabled())
 			{
 				case PANTS_SLOT:
 					return m_pInventoryPantsList;
+					break;
 			}
 
 			if (GameConstants::GetPdaSlotEnabled())
 			{
 				case PDA_SLOT:
 					return m_pInventoryPdaList;
+					break;
 			}
 	};
 	return NULL;
