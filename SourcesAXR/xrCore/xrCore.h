@@ -34,8 +34,7 @@
 #error Please enable exceptions...
 #endif
 #define _HAS_EXCEPTIONS 1 // STL
-#define XRAY_EXCEPTIONS 0 // XRAY
-#define LUABIND_NO_EXCEPTIONS
+#define XRAY_EXCEPTIONS 1 // XRAY
 #else
 // "release"
 #if defined(_CPPUNWIND) && !defined __BORLANDC__
