@@ -7412,7 +7412,7 @@
     </ClInclude>
     <ClInclude Include="ActorNightVision.h" />
     <ClInclude Include="profile_data_types_script.h" />
-    <ClInclude Include="embedded_editor\embedded_editor_imgui_hud.h">
+    <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="AntigasFilter.h">
@@ -11093,7 +11093,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
     <ClCompile Include="ActorNightVision.cpp" />
-    <ClCompile Include="embedded_editor\embedded_editor_imgui_hud.cpp">
+    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="AntigasFilter.cpp">

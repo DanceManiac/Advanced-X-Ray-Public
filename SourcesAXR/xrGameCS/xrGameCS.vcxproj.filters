@@ -7513,6 +7513,9 @@
     <ClInclude Include="ui\UIBoosterInfo.h">
       <Filter>UI\Common\ui-item-infos</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11196,6 +11199,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIBoosterInfo.cpp">
       <Filter>UI\Common\ui-item-infos</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

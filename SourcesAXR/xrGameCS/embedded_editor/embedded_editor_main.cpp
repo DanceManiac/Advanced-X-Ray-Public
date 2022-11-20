@@ -6,6 +6,7 @@
 #include "embedded_editor_helper.h"
 #include "embedded_editor_weather.h"
 #include "embedded_editor_hud.h"
+#include "embedded_editor_pos_informer.h"
 #include "../../build_config_defines.h"
 #include <addons/imguinodegrapheditor/imguinodegrapheditor.h>
 #include <dinput.h>
@@ -15,6 +16,7 @@ bool bShowWindow = true;
 bool show_test_window = true;
 bool show_weather_window = false;
 bool show_hud_editor = false;
+bool show_position_informer = false;
 /*bool show_info_window = false;
 bool show_prop_window = false;
 bool show_restr_window = false;
@@ -50,6 +52,8 @@ void ShowMain()
 		show_node_editor ^= 1;*/
 	if (ImGui::Button("Weather"))
 		show_weather_window ^= 1;
+    if (ImGui::Button("Position Informer"))
+        show_position_informer = !show_position_informer;
 	/*if (ImGui::Button("HUD Editor"))
 		show_hud_editor = !show_hud_editor;*/
 	bool full = stage == EditorStage::Full;
@@ -79,6 +83,8 @@ void ShowEditor()
     }*/
     if (show_weather_window)
         ShowWeatherEditor(show_weather_window);
+    if (show_position_informer)
+        ShowPositionInformer(show_position_informer);
 	/*if (show_hud_editor)
 		ShowHudEditor(show_hud_editor);*/
     /*if (show_prop_window)
