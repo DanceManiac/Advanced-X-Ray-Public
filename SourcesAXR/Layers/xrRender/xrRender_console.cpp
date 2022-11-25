@@ -6,17 +6,6 @@
 #include	"../../xrEngine/x_ray.h"
 #include "../../build_config_defines.h"
 
-// DWM: DT SSR quality option
-u32			dt_ssr_samp = 16;
-xr_token							qdt_ssr_samp_token[] = {
-	{ "dtssr_off",					1												},
-	{ "dtssr_lowest",				4												},
-	{ "dtssr_low",					6												},
-	{ "dtssr_medium",				8												},
-	{ "dtssr_high",					16												},
-	{ 0,							0												}
-};
-
 // AA Modes
 
 u32			r2_aa_mode = 1;
@@ -1123,8 +1112,6 @@ void		xrRender_initconsole	()
 
 	CMD3(CCC_Token,		"r2_sun_quality",				&ps_r_sun_quality,			qsun_quality_token);
 
-	// DWM: DT SSR quality option
-	CMD3(CCC_Token,		"r4_ssr_samples",				&dt_ssr_samp,				qdt_ssr_samp_token);
 	// AA Mode
 	CMD3(CCC_Token,		"r2_aa_mode",					&r2_aa_mode,				r2_aa_mode_token);
 

@@ -222,8 +222,6 @@ f_deffer pack_gbuffer( float4 norm, float4 pos, float4 col, uint imask )
    res.mask = imask;
 #endif
 
-res.DWM = float4(0,0,0,0); // For ordinary gbuffer
-
 	return res;
 }
 

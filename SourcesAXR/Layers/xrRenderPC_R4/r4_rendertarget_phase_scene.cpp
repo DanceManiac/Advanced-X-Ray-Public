@@ -16,10 +16,6 @@ void	CRenderTarget::phase_scene_prepare	()
 	//CHK_DX	( HW.pDevice->Clear	( 0L, NULL, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0x0, 1.0f, 0L) );
 	//	Igor: soft particles
 
-	// DWM: clear rt_Position
-	FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	HW.pContext->ClearRenderTargetView(rt_Position->pRT, ColorRGBA);
-
 	CEnvDescriptor&	E = *g_pGamePersistent->Environment().CurrentEnv;
 	float fValue = E.m_fSunShaftsIntensity;
 	//	TODO: add multiplication by sun color here
@@ -94,8 +90,8 @@ void	CRenderTarget::phase_scene_begin	()
    }
    else
    {
-   	if (RImplementation.o.albedo_wo)	u_setrt		(rt_Position, rt_Accumulator,rt_DWMBuffer,	pZB);
-	   else								u_setrt		(rt_Position,	rt_Color,rt_DWMBuffer,		pZB);
+   	if (RImplementation.o.albedo_wo)	u_setrt		(rt_Position, rt_Accumulator,	pZB);
+	   else								u_setrt		(rt_Position,	rt_Color,		pZB);
 	   //else								u_setrt		(rt_Position,	rt_Color, rt_Normal,		pZB);
    }
 

@@ -96,6 +96,7 @@ float4 plight_local(float m, float3 pnt, float3 normal, float4 c_tex, float3 lig
 	
   	return att*light; //output (albedo.gloss)
 }
+
 //	TODO: DX10: Remove path without blending
 float4 blendp(float4 value, float4 tcp)
 {

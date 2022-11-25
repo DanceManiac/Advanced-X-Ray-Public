@@ -2,10 +2,6 @@
 #define xrRender_consoleH
 #pragma once
 
-// DWM: DT SSR quality option
-extern ECORE_API	u32			dt_ssr_samp;
-extern ECORE_API	xr_token	qdt_ssr_samp_token[];
-
 // SMAP Control
 
 extern ECORE_API 	u32 		ps_r2_smapsize;

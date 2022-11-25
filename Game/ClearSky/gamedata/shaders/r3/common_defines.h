@@ -21,8 +21,4 @@
 #define parallax float2(PARALLAX_H, -PARALLAX_H/2)
 //////////////////////////////////////////////////////////////////////////////////////////
 
-//For Screen Space Shaders 11.3
-#define MAT_FLORA 6.0
-#define SKY_EPS float(0.001)
-
 #endif	//	common_defines_h_included

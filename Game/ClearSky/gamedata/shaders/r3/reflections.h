@@ -1,142 +1,84 @@
-#ifndef SSLR_INCLUDED
-#define SSLR_INCLUDED
+#ifndef REFLECTIONS_H
+#define REFLECTIONS_H
+#define WATER_SPLASHES_MAX_RADIUS 1.5 // Maximum number of cells a ripple can cross.
+//#define WATER_SPLASHES_DOUBLE_HASH	  // дополнительный шум
 
-	#include "common.h"
-	#include "hmodel.h"
+TextureCube	s_env0;
+TextureCube	s_env1;
 
-	//--------------------------------------------------------------
-	// Screen Space Reflections, moved to G.S.W.R. Addon by DWM Team, VK: https://vk.com/mihan323
-	// Source: https://habr.com/ru/post/244367/
-	//--------------------------------------------------------------
+float3 calc_envmap(float3 vreflect)
+{
+	float3 vreflectabs = abs(vreflect);
+	float  vreflectmax = max(vreflectabs.x, max(vreflectabs.y, vreflectabs.z));
+	vreflect /= vreflectmax;
+	if (vreflect.y < 0.999)
+			vreflect.y= vreflect.y * 2 - 1; // fake remapping
 
-		// SSR_SAMPLES --> r4_ssr_samples, is integer
+	float3 env0 = s_env0.SampleLevel(smp_base, vreflect.xyz, 0).xyz;
+	float3 env1 = s_env1.SampleLevel(smp_base, vreflect.xyz, 0).xyz;
+	env0 *= env0*2;
+	env1 *= env1*2;
+	return lerp(env0, env1, L_ambient.w);
+}
+//*******************************************************************************************************************
+//*******************************************************************************************************************
+float3 specular_phong(float3 pnt, float3 normal, float3 light_direction)
+{
+    return L_sun_color.rgb * pow( abs( dot(normalize(pnt + light_direction), normal) ), 256.0);
+}
+//*******************************************************************************************************************
+//*******************************************************************************************************************
 
-		#if 	((SSR_SAMPLES>3) && (SSR_SAMPLES<6)) 	// [4..5]
-			#define SSR_QUALITY 1
-		#elif 	((SSR_SAMPLES>5) && (SSR_SAMPLES<8)) 	// [6..7]
-			#define SSR_QUALITY 2
-		#elif 	((SSR_SAMPLES>7) && (SSR_SAMPLES<16))	// [8..15]
-			#define SSR_QUALITY 3
-		#elif 	((SSR_SAMPLES>15) && (SSR_SAMPLES<21))	// [16..20]
-			#define SSR_QUALITY 4
-		#else											// [0..3] or [20+] - not rendering SRR
-			#undef SSR_QUALITY
-		#endif
+float hash12(float2 p)
+{
+	float3 p3  = frac(float3(p.xyx) * .1031);
+    p3 += dot(p3, p3.yzx + 19.19);
+    return frac((p3.x + p3.y) * p3.z);
+}
 
-		#if defined(SSR_ROAD)
-			float3 eye_direction;
-			#define s_pptemp s_image
+float2 hash22(float2 p)
+{
+	float3 p3 = frac(float3(p.xyx) * float3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yzx+19.19);
+    return frac((p3.xx+p3.yz)*p3.zy);
+}
+
+float3 calc_rain_splashes(float2 tc)
+{
+	float2 p0 = floor(tc * 35);
+
+	float circles = 0;
+
+	for (int j = -WATER_SPLASHES_MAX_RADIUS; j <= WATER_SPLASHES_MAX_RADIUS; ++j)
+	{
+		for (int i = -WATER_SPLASHES_MAX_RADIUS; i <= WATER_SPLASHES_MAX_RADIUS; ++i)
+		{
+			float2 pi = p0 + float2(i, j);
+		#ifdef WATER_SPLASHES_DOUBLE_HASH
+			float2 hsh = hash22(pi);
 		#else
-			#if defined(USE_MSAA)
-				Texture2DMS <float4, MSAA_SAMPLES> s_pptemp;
-				//Texture2DMS <float3> s_pptemp; // For DX10.1 and DX11
-			#else
-				Texture2D <float3> s_pptemp; // For DX10.0
-			#endif
+			float2 hsh = pi;
 		#endif
+			float2 p = pi + hash22(hsh);
 
-		#if defined(SSR_QUALITY)
-			struct dt_ssr
-			{
-				float3 ssposi;
-				float3 wposi;
-				float3 wreflect;
+			float t = frac(1.45f * timers.x + hash12(hsh));
+			float2 v = p - tc * 35;
 
-				float tap;
-				float error;
+			float d = (length(v) * 2.0f) - (float(WATER_SPLASHES_MAX_RADIUS) + 1.0) * t;
 
-				float3 ssposi_tap;
-				float2 tc;
-			};
+			const float h = 1e-3;
+			float d1 = d - h;
+			float d2 = d + h;
+			float p1 = sin(31. * d1) * smoothstep(-0.6, -0.3, d1) * smoothstep(0., -0.3, d1);
+			float p2 = sin(31. * d2) * smoothstep(-0.6, -0.3, d2) * smoothstep(0., -0.3, d2);
+			circles += 0.5 * normalize(v) * ((p2 - p1) / (2. * h) * (1. - t) * (1. - t));
+		}
+	}
 
-			void p_trace(inout dt_ssr ref)
-			{
-				ref.tc = ss_tc_from_wo_posi(ref.wposi + ref.wreflect * ref.tap); // Convert to screen space tc
+	float c = float(WATER_SPLASHES_MAX_RADIUS * 2 + 1);
+	circles /= c * c;
 
-				#if (SSR_QUALITY>3)
-					ref.ssposi_tap = gbuf_get_position(ref.tc); // Read new screen space position
+	return float3(circles.xx, sqrt(1.0f - dot(circles, circles)));
+}
 
-					if(ref.ssposi_tap.z == gbuf_transform_depth(ref.ssposi_tap.z)) // Compare depth, cut sky
-						ref.error = 0;
-				#else
-					ref.ssposi_tap = gbuf_get_position(ref.tc, false); // Read new screen space position with fast sky depth
-				#endif
-
-				if((ref.tc.x > 1) || (ref.tc.x < 0) || (ref.tc.y > 1) || (ref.tc.y < 0) || (ref.ssposi_tap.z > 140)) // Fix sky/clamping artefacts
-					ref.error = 0;
-
-				ref.tap = length(ref.ssposi_tap - ref.ssposi); // Calc screen space position differnce, step of new sample
-
-				#if (SSR_QUALITY==1)
-					ref.error = (ref.tap > 12.5) ? (0) : (1);
-				#endif
-			}
-
-			#if defined(SSR_ROAD)
-				float4 depth_traced_ssr(in float3 wposi, in float3 wnorm, in float3 ssposi)
-			#else
-				float3 depth_traced_ssr(in float3 wposi, in float3 wnorm, in float3 pposi)
-			#endif
-			{
-				#if !defined(SSR_ROAD)
-					float3 ssposi = float3((pposi.xy * float2(2.0, -2.0) - float2(1.0, -1.0)) * InvFocalLen * pposi.z, pposi.z);
-				#endif
-
-				float3 to_point  = normalize(wposi - eye_position);
-
-				// Fill refl struct (not all)
-				dt_ssr	ref;
-						ref.ssposi 		= ssposi;
-						ref.wposi 		= wposi;
-						ref.wreflect	= normalize(reflect(to_point, wnorm));
-						ref.tap			= 0.25;
-						ref.error		= 1;
-
-				float sun = pow(abs(dot(normalize(to_point + L_sun_dir_w), wnorm)), 192.0) * 0.75; // Sun specular (LVutner)
-
-				#if (SSR_QUALITY==1)
-					float3 sky = sky_fake_reflection(sky_s0, sky_s1, ref.wreflect); // Get fast sky cubemap
-				#else
-					float3 sky = sky_true_reflection(sky_s0, sky_s1, ref.wreflect); // Get true sky cubemap
-				#endif
-
-				#if defined(SSR_ROAD)
-					sky *= clamp(sky_color, 0, 0.5);
-				#else
-					sky *= sky_color.xyz;
-				#endif
-
-				// DT
-				[unroll(SSR_SAMPLES)] for(int i = 0; i <= SSR_SAMPLES; i++)
-					p_trace(ref); // Main target --> remaped tc
-
-				ref.error *= saturate(2.8 * pow(1 + dot(eye_direction, wnorm), 2));
-
-				#if (SSR_QUALITY>2)
-					// Additional sky lerper (fog distance)
-					ref.error *= 1 - saturate(pow(saturate(length(ref.ssposi_tap) * fog_params.w + fog_params.x),2));
-
-					if((ssposi.z - ref.ssposi_tap.z) > 0) ref.error = 0; // Cut shit pixels !!!
-				#endif
-
-				#if defined(USE_MSAA) && !defined(SSR_ROAD)
-					float3 reflection = s_pptemp.Load(ref.tc * screen_res_alt.xy, 0);
-				#else
-					float3 reflection = s_pptemp.Sample(smp_nofilter, ref.tc);
-				#endif
-				
-				//#if (defined(USE_MSAA) && (defined(SM_4_1) || defined(SM_5)))
-				//	float3 reflection = s_pptemp.Load(ref.tc * screen_res_alt.xy, 0).xyz;
-				//#else
-				//	float3 reflection = s_pptemp.Sample(smp_nofilter, ref.tc);
-				//#endif
-
-				#if defined(SSR_ROAD)
-					return float4((reflection * ref.error) + (sky * (1 - ref.error)), sun * (1 - ref.error));
-				#else
-					return (reflection * ref.error * 0.75 + (sky + (sun * L_sun_color.rgb)) * (1 - ref.error)) * 0.5; // Mix
-				#endif
-			}
-		#endif
-	//--------------------------------------------------------------
 #endif

@@ -292,7 +292,6 @@ struct                  f_deffer
 	float4	position: SV_Target0;        // px,py,pz, m-id
 	float4	Ne		  : SV_Target1;        // nx,ny,nz, hemi
 	float4	C		  : SV_Target2;        // r, g, b,  gloss
-//  float4  DWM 	  : SV_Target3; // Потом надо будет сделать
 	
 #ifdef EXTEND_F_DEFFER
    uint     mask    : SV_COVERAGE;
@@ -303,7 +302,6 @@ struct                  f_deffer
 {
 	float4	position: SV_Target0;        // xy=encoded normal, z = pz, w = encoded(m-id,hemi)
 	float4	C		  : SV_Target1;        // r, g, b,  gloss
-	float4  DWM 	  : SV_Target2;
 #ifdef EXTEND_F_DEFFER
    uint     mask    : SV_COVERAGE;
 #endif

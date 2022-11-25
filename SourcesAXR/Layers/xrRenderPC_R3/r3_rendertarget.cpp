@@ -444,10 +444,6 @@ CRenderTarget::CRenderTarget		()
 			rt_smaa_blendtex.create(r2_RT_smaa_blendtex, w, h, D3DFMT_A8R8G8B8);
 		}
 
-		// DWM: create new rt for PP
-		rt_PPTemp.create("$user$genericpp", w, h, D3DFMT_A8R8G8B8, 1);
-		rt_DWMBuffer.create("$user$dwmbuffer", w, h, D3DFMT_A8R8G8B8, (RImplementation.o.dx10_msaa) ? (SampleCount) : (1));
-
 		//	Igor: for volumetric lights
 		//rt_Generic_2.create			(r2_RT_generic2,w,h,D3DFMT_A8R8G8B8		);
 		//	temp: for higher quality blends
