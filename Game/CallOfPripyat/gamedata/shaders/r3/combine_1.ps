@@ -8,6 +8,13 @@
 #include "lmodel.h"
 #include "hmodel.h"
 
+// Check MODs
+#include "check_screenspace.h"
+
+#ifdef SSFX_SSR
+	#include "screenspace_reflections.h"
+#endif
+
 float compute_height_fog(float3 P_view)
 {
     //Settings
@@ -199,6 +206,11 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 //	hdiffuse *= (occ*(D.rgb + .1h));
 	hdiffuse *= occ;
 	hspecular *= occ;
+	
+	// Disable specular if SSR is enabled. ( Temporary fix? )
+#ifdef SSFX_SSR
+	hspecular = 0;
+#endif
 
     float4         light       = float4(L.rgb + hdiffuse, L.w);
 	float4         C           = D*light;                             
@@ -240,6 +252,11 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 					color 		= spec;
 #endif
 ////////////////////////////////////////////////////////////////////////////////
+
+	// SSR Implementation
+#ifdef SSFX_SSR
+	SSFX_ScreenSpaceReflections(I.tc0, P, N, D.a, color, ISAMPLE);	
+#endif
 
         // here should be distance fog
         float3        	pos        		= P.xyz;
