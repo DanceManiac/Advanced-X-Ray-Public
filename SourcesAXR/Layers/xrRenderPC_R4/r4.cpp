@@ -1009,6 +1009,8 @@ HRESULT	CRender::shader_compile			(
 	char							c_sun_shafts	[32];
 	char							c_ssao			[32];
 	char							c_sun_quality	[32];
+	//For SSR setting's
+	char							c_dt_ssr_samp	[32];
 	// SMAA Quality
 	char							c_aa			[32];
 
@@ -1372,6 +1374,15 @@ HRESULT	CRender::shader_compile			(
 		def_it						++;
 	}
 	sh_name[len]='0'+char(o.dx10_gbuffer_opt); ++len;
+
+	// DWM: For SSR setting's
+	{
+		sprintf_s(c_dt_ssr_samp, "%d", dt_ssr_samp);
+		defines[def_it].Name = "G_SSR_WATER_QUALITY";
+		defines[def_it].Definition = c_dt_ssr_samp;
+		def_it++;
+		sh_name[len] = '0' + char(dt_ssr_samp); ++len;
+	}
 
    //R_ASSERT						( !o.dx10_sm4_1 );
    if( o.dx10_sm4_1 )

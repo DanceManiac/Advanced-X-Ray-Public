@@ -17,11 +17,6 @@
 
 #include "check_screenspace.h"
 
-//uniform float4 sky_color;
-
-static const float4 SSFX_ripples_timemul = float4(1.0f, 0.85f, 0.93f, 1.13f); 
-static const float4 SSFX_ripples_timeadd = float4(0.0f, 0.2f, 0.45f, 0.7f);
-
 struct RayTrace
 {
 	float2 r_pos;
@@ -221,7 +216,7 @@ float3 SSFX_calc_sky(float3 dir)
 #ifndef SSFX_MODEXE
 	return saturate(L_hemi_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #else
-	return saturate(sky_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
+	return saturate(sky_color.bgr * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #endif
 }
 
@@ -256,41 +251,4 @@ float SSFX_calc_fresnel(float3 V, float3 N, float ior)
 	float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
 
 	return (Rs * Rs + Rp * Rp) / 2;
-}
-
-// https://seblagarde.wordpress.com/2013/01/03/water-drop-2b-dynamic-rain-and-its-effects/
-float3 SSFX_computeripple(float4 Ripple, float CurrentTime, float Weight)
-{
-	Ripple.yz = Ripple.yz * 2 - 1; // Decompress perturbation
-
-	float DropFrac = frac(Ripple.w + CurrentTime); // Apply time shift
-	float TimeFrac = DropFrac - 1.0f + Ripple.x;
-	float DropFactor = saturate(0.2f + Weight * 0.8f - DropFrac);
-	float FinalFactor = DropFactor * Ripple.x * 
-						sin( clamp(TimeFrac * 9.0f, 0.0f, 3.0f) * 3.14159265359);
-
-	return float3(Ripple.yz * FinalFactor * 0.65f, 1.0f);
-}
-
-float3 SSFX_ripples( Texture2D ripple_tex, float2 tc ) 
-{
-	float4 Times = (timers.x * SSFX_ripples_timemul + SSFX_ripples_timeadd) * 1.5f;
-	Times = frac(Times);
-
-	float4 Weights = float4( 0, 1.0, 0.65, 0.25);
-
-	float3 Ripple1 = SSFX_computeripple(ripple_tex.Sample( smp_base, tc + float2( 0.25f,0.0f)), Times.x, Weights.x);
-	float3 Ripple2 = SSFX_computeripple(ripple_tex.Sample( smp_base, tc + float2(-0.55f,0.3f)), Times.y, Weights.y);
-	float3 Ripple3 = SSFX_computeripple(ripple_tex.Sample( smp_base, tc + float2(0.6f, 0.85f)), Times.z, Weights.z);
-	float3 Ripple4 = SSFX_computeripple(ripple_tex.Sample( smp_base, tc + float2(0.5f,-0.75f)), Times.w, Weights.w);
-	
-	Weights = saturate(Weights * 4);
-	float4 Z = lerp(1, float4(Ripple1.z, Ripple2.z, Ripple3.z, Ripple4.z), Weights);
-	float3 Normal = float3( Weights.x * Ripple1.xy +
-							Weights.y * Ripple2.xy + 
-							Weights.z * Ripple3.xy +
-							Weights.w * Ripple4.xy, 
-							Z.x * Z.y * Z.z * Z.w);
-	
-	return normalize(Normal) * 0.5 + 0.5;
 }

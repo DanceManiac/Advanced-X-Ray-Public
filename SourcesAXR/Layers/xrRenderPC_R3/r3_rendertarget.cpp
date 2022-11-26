@@ -428,6 +428,11 @@ CRenderTarget::CRenderTarget		()
 		rt_Generic_1.create		(r2_RT_generic1,w,h,D3DFMT_A8R8G8B8, 1		);
         rt_Generic.create		(r2_RT_generic,w,h, D3DFMT_A8R8G8B8, 1		);
 
+		if (RImplementation.o.dx10_msaa)
+			rt_Generic_temp.create("$user$generic_temp", w, h, D3DFMT_A8R8G8B8, SampleCount);
+		else
+			rt_Generic_temp.create("$user$generic_temp", w, h, D3DFMT_A8R8G8B8, 1);
+
 		rt_secondVP.create		(r2_RT_secondVP, w, h, D3DFMT_A8R8G8B8, 1	); //--#SM+#-- +SecondVP+
 		rt_ui_pda.create		(r2_RT_ui, w, h, D3DFMT_A8R8G8B8, 1			);
 
