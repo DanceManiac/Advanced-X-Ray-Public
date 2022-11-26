@@ -25,17 +25,17 @@ float3 SSFX_ssr_water_ray(float3 ray_start_vs, float3 ray_dir_vs, float noise, u
 	int prev_sign;
 	float3 behind_hit = 0;
 
-	float RayThick = clamp( 48.0f / q_steps[G_SSR_WATER_QUALITY].x, 1.0f, 3.0f);
+	float RayThick = clamp( 48.0f / q_steps[G_SSR_QUALITY].x, 1.0f, 3.0f);
 
 	// Initialize Ray
-	RayTrace ssr_ray = SSFX_ray_init(ray_start_vs, ray_dir_vs, 150, q_steps[G_SSR_WATER_QUALITY].x, noise);
+	RayTrace ssr_ray = SSFX_ray_init(ray_start_vs, ray_dir_vs, 150, q_steps[G_SSR_QUALITY].x, noise);
 
 	// Depth from the start of the ray
 	float ray_depthstart = SSFX_get_depth(ssr_ray.r_start, iSample);
 
 	// Ray-march
-	[unroll (q_steps[G_SSR_WATER_QUALITY].x)]
-	for (int step = 1; step <= q_steps[G_SSR_WATER_QUALITY].x; step++)
+	[unroll (q_steps[G_SSR_QUALITY].x)]
+	for (int step = 1; step <= q_steps[G_SSR_QUALITY].x; step++)
 	{
 		// Ray out of screen...
 		if (!SSFX_is_valid_uv(ssr_ray.r_pos))
@@ -64,7 +64,7 @@ float3 SSFX_ssr_water_ray(float3 ray_start_vs, float3 ray_dir_vs, float noise, u
 			prev_sign = -1;
 
 			// Binary Search
-			for (int x = 0; x < q_steps[G_SSR_WATER_QUALITY].y; x++)
+			for (int x = 0; x < q_steps[G_SSR_QUALITY].y; x++)
 			{
 				// Half and flip depending on depth difference sign
 				if (sign(ray_check.x) != prev_sign)
@@ -98,7 +98,7 @@ float3 SSFX_ssr_water_ray(float3 ray_start_vs, float3 ray_dir_vs, float noise, u
 		}
 
 		// Pass through condition
-		bool PTh = (!NoWpnSky && ray_check.y > 0.01f && step > q_steps[G_SSR_WATER_QUALITY].x * 0.4f);
+		bool PTh = (!NoWpnSky && ray_check.y > 0.01f && step > q_steps[G_SSR_QUALITY].x * 0.4f);
 
 		// Step ray... Try to pass through closer objects ( Like weapons and sights )
 		ssr_ray.r_pos += ssr_ray.r_step * (1.0f + 2.5f * PTh);

@@ -1378,7 +1378,7 @@ HRESULT	CRender::shader_compile			(
 	// DWM: For SSR setting's
 	{
 		sprintf_s(c_dt_ssr_samp, "%d", dt_ssr_samp);
-		defines[def_it].Name = "G_SSR_WATER_QUALITY";
+		defines[def_it].Name = "G_SSR_QUALITY";
 		defines[def_it].Definition = c_dt_ssr_samp;
 		def_it++;
 		sh_name[len] = '0' + char(dt_ssr_samp); ++len;

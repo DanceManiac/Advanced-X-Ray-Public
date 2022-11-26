@@ -101,7 +101,7 @@ float4 main( vf I ) : SV_Target
 	// Get current Skybox
 	refl_skybox = SSFX_calc_sky(vreflect) * G_SSR_WATER_SKY_REFLECTION;
 		
-#if((G_SSR_WATER_QUALITY>0))
+#if((G_SSR_QUALITY>0))
 	
 	// Blue Noise & Normal for noise
 	float3 NN = normalize(float3(basenormal.x * 0.15f, basenormal.y * 0.15f, basenormal.z));

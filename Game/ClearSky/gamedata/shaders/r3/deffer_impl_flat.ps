@@ -3,6 +3,7 @@
 #endif
 #include "common.h"
 #include "sload.h"
+#include "settings_screenspace_SSR.h"
 
 #define	USE_4_DETAIL
 
@@ -63,10 +64,6 @@ f_deffer 	main	( p_flat I 		)
 
   # ifdef USE_4_BUMP
 
-// 	 float4	n_Rt = tex2D	(s_dn_r, I.tcdbump).wzyx;
-//	 float4	n_Gt = tex2D	(s_dn_g, I.tcdbump).wzyx;
-//	 float4	n_Bt = tex2D	(s_dn_b, I.tcdbump).wzyx;
-//	 float4	n_At = tex2D	(s_dn_a, I.tcdbump).wzyx;
  	 float4	n_Rt = s_dn_r.Sample ( smp_linear, tc_r).wzyx;
 	 float4	n_Gt = s_dn_g.Sample ( smp_linear, tc_g).wzyx;
 	 float4	n_Bt = s_dn_b.Sample ( smp_linear, tc_b).wzyx;
@@ -78,19 +75,16 @@ f_deffer 	main	( p_flat I 		)
 	 float3	n_A = (n_At-0.5)*mask.a; float g_A=n_At.w*mask.a;
 
 	 float3	mix		= 	n_R+n_G+n_B+n_A;
-			mix.z	*=	0.5;		//. make bump twice as contrast (fake, remove me if possible)
+			mix		*=	float3(G_SSR_TERRAIN_BUMP_INTENSITY, G_SSR_TERRAIN_BUMP_INTENSITY, 1); // Adjust bump strength
 	 float3	N		= 	mul     	(float3x3(I.M1, I.M2, I.M3), mix.xyz);
 
 	 G 		= 	g_R+g_G+g_B+g_A;
 
-//			G 	= 0			;
-//			G 	= mix.w		;		// gloss
   # else
 	float3	N 	= I.N.xyz	;
   # endif
 
  # else
-//	D.rgb	= 2*D.rgb*tex2D	(s_detail, I.tcdbump).rgb;
 	D.rgb	= 2*D.rgb*s_detail.Sample( smp_base, I.tcdbump).rgb;
  # endif
 # else
@@ -107,7 +101,7 @@ f_deffer 	main	( p_flat I 		)
   float4     Ne = float4	(normalize(N), 									D.w			);
   O				= pack_gbuffer( 
 								Ne,	// hemi
-								float4 	(I.position.xyz + Ne.xyz*def_virtualh/2.h, 	ms			),	//
+								float4 	(I.position.xyz + Ne.xyz*def_virtualh/2.h, 	0.95f			),	//
 								float4	(D.x,	D.y,	D.z,						G			) );	// OUT: rgb.gloss
 
   return O;
