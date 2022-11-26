@@ -253,17 +253,17 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 #endif
 ////////////////////////////////////////////////////////////////////////////////
 
-	// SSR Implementation
-#ifdef SSFX_SSR
-	SSFX_ScreenSpaceReflections(I.tc0, P, N, D.a, color, ISAMPLE);	
-#endif
-
         // here should be distance fog
         float3        	pos        		= P.xyz;
         float         	distance		= length		(pos);
         float         	fog				= saturate		(distance*fog_params.w + fog_params.x); //
 		                color			= lerp     		(color, fog_color, fog);        		//
 						color 			= lerp			(color, fog_color, compute_height_fog(P.xyz));
+
+	// SSR Implementation
+#ifdef SSFX_SSR
+	SSFX_ScreenSpaceReflections(I.tc0, P, N, D.a, color, ISAMPLE);	
+#endif
 
         float        	skyblend		= saturate		(fog*fog);
 
