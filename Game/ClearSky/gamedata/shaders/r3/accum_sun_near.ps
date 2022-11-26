@@ -15,6 +15,9 @@
 
 #include "shadow.h"
 
+// SSS Implementation
+#include "screenspace_shadows.h"
+
 #ifdef USE_SUNFILTER
 #ifdef MSAA_OPTIMIZATION
 float4 main ( v2p_volume I, uint iSample : SV_SAMPLEINDEX  ) : SV_Target
@@ -90,6 +93,8 @@ float4 main ( v2p_volume I ) : SV_Target
 #endif
 	#endif
 	
-	return 		blend( Ldynamic_color * light * s/*float4( 1.f, 0.2f, 0.2f, 1.f)*/, I.tc );
+	s *= SSFX_ScreenSpaceShadows(_P, I.hpos, ISAMPLE);
+
+	return 		blend( Ldynamic_color * light * s, I.tc );
 }
 #endif

@@ -9,6 +9,10 @@
 #define SSFX_READY
 #define SSFX_MODEXE
 
+//For Screen Space Shaders 12.4
+#define MAT_FLORA 6.0
+#define SKY_EPS float(0.001)
+
 #include "common.h"
 #include "hmodel.h"
 
