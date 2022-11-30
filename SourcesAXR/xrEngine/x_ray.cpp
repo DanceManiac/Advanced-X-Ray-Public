@@ -59,6 +59,8 @@ ENGINE_API bool ClearSkyMode = false;
 ENGINE_API bool bDeveloperMode = false;
 ENGINE_API bool bWinterMode = false;
 ENGINE_API bool bDofWeather = false;
+ENGINE_API Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
+ENGINE_API float ps_ssfx_wpn_dof_2 = 1.0f;
 
 static LPSTR month_id[12] = {
 	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"

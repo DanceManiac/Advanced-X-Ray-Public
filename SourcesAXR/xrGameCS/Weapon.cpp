@@ -27,6 +27,8 @@
 #include "Torch.h"
 #include "ActorNightVision.h"
 #include "../xrEngine/LightAnimLibrary.h"
+#include "../xrEngine/x_ray.h"
+#include "AdvancedXrayGameConstants.h"
 
 ENGINE_API extern float psHUD_FOV_def;
 
@@ -2992,26 +2994,15 @@ void CWeapon::OnStateSwitch	(u32 S)
 	inherited::OnStateSwitch(S);
 	m_dwAmmoCurrentCalcFrame = 0;
 
-	if (GetState() == eReload)
+	if (GetState() == eReload || GetState() == eUnMisfire || GetState() == eBore)
 	{
-		if (iAmmoElapsed == 0)
-		{
-			if (H_Parent() == Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadEmptyDof.w, -1.0f))
-			{
-				CActor* current_actor = smart_cast<CActor*>(H_Parent());
-				if (current_actor)
-					current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadEmptyDof));
-			}
-		}
-		else
-		{
-			if (H_Parent() == Level().CurrentEntity() && !fsimilar(m_zoom_params.m_ReloadDof.w, -1.0f))
-			{
-				CActor* current_actor = smart_cast<CActor*>(H_Parent());
-				if (current_actor)
-					current_actor->Cameras().AddCamEffector(xr_new<CEffectorDOF>(m_zoom_params.m_ReloadDof));
-			}
-		}
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+	}
+	else
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 	}
 }
 

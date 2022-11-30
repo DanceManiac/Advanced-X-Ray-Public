@@ -759,6 +759,9 @@
     <ClInclude Include="blender_lens_flares.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_dof.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1432,6 +1435,12 @@
     </ClCompile>
     <ClCompile Include="blender_lens_flares.cpp">
       <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_dof.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\rendertarget_phase_dof.cpp">
+      <Filter>Core_Target</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

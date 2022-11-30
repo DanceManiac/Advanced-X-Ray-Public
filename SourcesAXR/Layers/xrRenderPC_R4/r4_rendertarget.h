@@ -60,6 +60,7 @@ public:
 	IBlender*					b_blur;
 	IBlender*					b_pp_bloom;
 	IBlender*					b_lfx;
+	IBlender*					b_dof;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -95,6 +96,7 @@ public:
 	resptr_core<CRT, resptrcode_crt> rt_Generic_temp;
 	//  Second viewport
 	ref_rt						rt_secondVP;		// 32bit		(r,g,b,a) --//#SM+#-- +SecondVP+
+	ref_rt						rt_dof;
 	ref_rt						rt_ui_pda;
 
 	//	Igor: for volumetric lights
@@ -166,6 +168,8 @@ private:
 	ref_shader					s_pp_bloom;
 	//SFZ Lens Falres
 	ref_shader					s_lfx;
+	//Anomaly DoF
+	ref_shader					s_dof;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -230,17 +234,17 @@ private:
 	ID3DIndexBuffer*		g_accum_volumetric_ib;
 
 	// Bloom
-	ref_geom					g_bloom_build;
-	ref_geom					g_bloom_filter;
+	ref_geom				g_bloom_build;
+	ref_geom				g_bloom_filter;
 	ref_shader				s_bloom_dbg_1;
 	ref_shader				s_bloom_dbg_2;
 	ref_shader				s_bloom;
-   ref_shader				s_bloom_msaa;
-	float							f_bloom_factor;
+	ref_shader				s_bloom_msaa;
+	float					f_bloom_factor;
 
 	// Luminance
-	ref_shader			s_luminance;
-	float						f_luminance_adapt;
+	ref_shader				s_luminance;
+	float					f_luminance_adapt;
 	
 	ref_shader				s_water;
 
@@ -263,10 +267,10 @@ private:
 	ref_shader				s_rain_drops;
 public:
 	ref_shader				s_postprocess;
-   ref_shader           s_postprocess_msaa;
-	ref_geom					g_postprocess;
+   ref_shader				s_postprocess_msaa;
+	ref_geom				g_postprocess;
 	ref_shader				s_menu;
-	ref_geom					g_menu;
+	ref_geom				g_menu;
 private:
 	float						im_noise_time;
 	u32							im_noise_shift_w;
@@ -328,6 +332,7 @@ public:
 	void						phase_blur				();
 	void						phase_pp_bloom			();
 	void						phase_lfx				(int i);
+	void						phase_dof				();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

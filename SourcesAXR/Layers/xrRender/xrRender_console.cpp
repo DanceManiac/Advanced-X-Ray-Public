@@ -390,6 +390,10 @@ Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP
 	| R2FLAG_STATIC_SUN
 	};
 
+//Screen Space Shaders Stuff
+//Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
+//extern float ps_ssfx_wpn_dof_2 = 1.0f;
+
 #ifndef _EDITOR
 #include	"../../xrEngine/xr_ioconsole.h"
 #include	"../../xrEngine/xr_ioc_cmd.h"
@@ -1134,13 +1138,14 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,	"r__bloom_weight",				&ps_pp_bloom_weight,		twb_min, twb_max);
 	CMD4(CCC_Vector4,	"r__bloom_thresh",				&ps_pp_bloom_thresh,		twb_min, twb_max);
 
+	Fvector4 tw2_min = { -100.f, -100.f, -100.f, -100.f };
+	Fvector4 tw2_max = { 100.f, 100.f, 100.f, 100.f };
+
 	if (bDeveloperMode)
 	{
 		// SMAA Quality
 		CMD3(CCC_Token,		"r2_smaa_quality",				&ps_r_aa_quality,			qaa_token);
 		//Shader param stuff
-		Fvector4 tw2_min = { -100.f, -100.f, -100.f, -100.f };
-		Fvector4 tw2_max = { 100.f, 100.f, 100.f, 100.f };
 		CMD4(CCC_Vector4,	"shader_param_1",				&ps_dev_param_1,			tw2_min, tw2_max);
 		CMD4(CCC_Vector4,	"shader_param_2",				&ps_dev_param_2,			tw2_min, tw2_max);
 		CMD4(CCC_Vector4,	"shader_param_3",				&ps_dev_param_3,			tw2_min, tw2_max);
@@ -1191,6 +1196,10 @@ void		xrRender_initconsole	()
 
 	CMD3(CCC_Token,			"r2_use_flares",				&ps_r2_flares,				qflares_token);
 	CMD4(CCC_Integer,		"r2_lfx",						&ps_r2_lfx,					 0, 1		); //SFZ Lens Flares
+
+	// Screen Space Shaders
+	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
+	CMD4(CCC_Float,			"ssfx_wpn_dof_2",				&ps_ssfx_wpn_dof_2,			0, 1);
 
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }

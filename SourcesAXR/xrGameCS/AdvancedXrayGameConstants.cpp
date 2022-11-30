@@ -34,6 +34,9 @@ float	m_fDistantSndDistanceFar = 250.f;
 Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
 Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 255, 255);
 Fvector4 m_FV4NeutralColor = Fvector4().set(170, 170, 170, 255);
+//SSFX DoF
+Fvector4 m_FV4DefaultDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
+Fvector4 m_FV4FocusDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
 LPCSTR	m_sAfInfluenceMode = "from_belt";
 
 namespace GameConstants
@@ -72,6 +75,8 @@ namespace GameConstants
 		m_FV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_red", Fvector4().set(255, 0, 0, 255));
 		m_FV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_green", Fvector4().set(0, 255, 0, 255));
 		m_FV4NeutralColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_neutral", Fvector4().set(170, 170, 170, 255));
+		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
+		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
@@ -234,6 +239,16 @@ namespace GameConstants
 	Fvector4 GetNeutralColor()
 	{
 		return m_FV4NeutralColor;
+	}
+
+	Fvector4 GetSSFX_DefaultDoF()
+	{
+		return m_FV4DefaultDoF;
+	}
+
+	Fvector4 GetSSFX_FocusDoF()
+	{
+		return m_FV4FocusDoF;
 	}
 
 	LPCSTR GetAfInfluenceMode()

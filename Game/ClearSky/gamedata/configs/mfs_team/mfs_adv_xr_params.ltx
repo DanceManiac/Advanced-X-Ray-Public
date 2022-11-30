@@ -63,6 +63,10 @@ movement_layer_5 = mfs_team\camera_effects\movement\newrunreload.anm,    1, 	 0.
 ; шейдер тесселяции: models\model -> models\model_pn
 dynamics\weapons\wpn_hand = models\model,models\model_pn, models\weapons,models\model_pn
 
+[ssfx_dof]; Удаление отдельных строк или всей секции отключит эффект.
+default_dof = 0.1, 0.25, 0.0, 0.0 ;;Постоянное значение DoF
+focus_dof = 0.1, 0.25, 1.0, 0.0 ;;Значение DoF при условиях
+
 [start_settings];Стартовые значения необходимых настроек
 tonemap_middlegray = 0.95
 tonemap_adaptation = 1.0

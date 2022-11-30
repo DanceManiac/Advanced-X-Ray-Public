@@ -13,6 +13,7 @@
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
 #include "../../xrEngine/DiscordRichPresense.h"
+#include "../../xrEngine/x_ray.h"
 
 #include "dxRenderDeviceRender.h"
 
@@ -505,6 +506,22 @@ static class cl_inv_v : public R_constant_setup
 	}
 } binder_inv_v;
 
+static class ssfx_wpn_dof_1 : public R_constant_setup
+{
+	virtual void setup(R_constant * C)
+	{
+		RCache.set_c(C, ps_ssfx_wpn_dof_1.x, ps_ssfx_wpn_dof_1.y, ps_ssfx_wpn_dof_1.z, ps_ssfx_wpn_dof_1.w);
+	}
+} ssfx_wpn_dof_1;
+
+static class ssfx_wpn_dof_2 : public R_constant_setup
+{
+	virtual void setup(R_constant * C)
+	{
+		RCache.set_c(C, ps_ssfx_wpn_dof_2, 0, 0, 0);
+	}
+} ssfx_wpn_dof_2;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -592,6 +609,9 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("pbr_settings",	&cl_pseudopbr);
 	// PDA
 	r_Constant				("pda_params",		&binder_pda_params);
+	//SSS DoF
+	r_Constant				("ssfx_wpn_dof_1",	&ssfx_wpn_dof_1);
+	r_Constant				("ssfx_wpn_dof_2",	&ssfx_wpn_dof_2);
 
 	// detail
 	//if (bDetail	&& detail_scaler)

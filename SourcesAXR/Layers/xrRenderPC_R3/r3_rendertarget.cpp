@@ -25,6 +25,7 @@
 #include "blender_blur.h"
 #include "blender_pp_bloom.h"
 #include "blender_lens_flares.h"
+#include "blender_dof.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -348,6 +349,8 @@ CRenderTarget::CRenderTarget		()
 	b_pp_bloom				= xr_new<CBlender_pp_bloom>				();
 	//SFZ Lens Flares
 	b_lfx					= xr_new<CBlender_LFX>					();
+	//Anomaly DoF
+	b_dof					= xr_new<CBlender_dof>					();
 
 	if( RImplementation.o.dx10_msaa )
 	{
@@ -433,6 +436,7 @@ CRenderTarget::CRenderTarget		()
 		else
 			rt_Generic_temp.create("$user$generic_temp", w, h, D3DFMT_A8R8G8B8, 1);
 
+		rt_dof.create			(r2_RT_dof, w, h, D3DFMT_A8R8G8B8);
 		rt_secondVP.create		(r2_RT_secondVP, w, h, D3DFMT_A8R8G8B8, 1	); //--#SM+#-- +SecondVP+
 		rt_ui_pda.create		(r2_RT_ui, w, h, D3DFMT_A8R8G8B8, 1			);
 
@@ -727,6 +731,8 @@ CRenderTarget::CRenderTarget		()
 	//SFZ Lens Flares
 	s_lfx.create(b_lfx, "r3\\lfx");
 	g_lfx.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
+	//Anomaly DoF
+	s_dof.create(b_dof, "r3\\dof");
 
     if (RImplementation.o.ssao_blur_on)
 	{
@@ -1130,6 +1136,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_blur					); //Blur (LVutner)
 	xr_delete					(b_pp_bloom				); //PP Bloom (LVutner)
 	xr_delete					(b_lfx					); //SFZ Lens Flares
+	xr_delete					(b_dof					); //Anomaly DoF
 
    if( RImplementation.o.dx10_msaa )
    {

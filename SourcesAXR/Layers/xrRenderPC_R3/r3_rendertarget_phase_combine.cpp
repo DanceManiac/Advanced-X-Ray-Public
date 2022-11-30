@@ -424,6 +424,9 @@ void	CRenderTarget::phase_combine	()
 
 	//Compute bloom (new)
 	//phase_pp_bloom(); //???? ???????
+
+	if (ps_r2_ls_flags.test(R2FLAG_DOF))
+		phase_dof();
 	
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.

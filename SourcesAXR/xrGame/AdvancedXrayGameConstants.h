@@ -38,5 +38,7 @@ namespace GameConstants
 	Fvector4 GetRedColor();
 	Fvector4 GetGreenColor();
 	Fvector4 GetNeutralColor();
+	Fvector4 GetSSFX_DefaultDoF();
+	Fvector4 GetSSFX_FocusDoF();
 	LPCSTR GetAfInfluenceMode();
 };

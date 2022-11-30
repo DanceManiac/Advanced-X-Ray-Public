@@ -60,6 +60,7 @@ public:
 	IBlender*					b_blur;
 	IBlender*					b_pp_bloom;
 	IBlender*					b_lfx;
+	IBlender*					b_dof;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -92,6 +93,7 @@ public:
 
 	//  Second viewport
 	ref_rt						rt_secondVP;		// 32bit		(r,g,b,a) --//#SM+#-- +SecondVP+
+	ref_rt						rt_dof;
 	// 3d PDA
 	ref_rt						rt_ui_pda;
 	//	Igor: for volumetric lights
@@ -163,6 +165,8 @@ private:
 	ref_shader					s_pp_bloom;
 	//SFZ Lens Falres
 	ref_shader					s_lfx;
+	//Anomaly DoF
+	ref_shader					s_dof;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -185,12 +189,12 @@ private:
 	ref_shader					s_water;
 
 	// Accum
-	ref_shader					s_accum_mask	;
-	ref_shader					s_accum_direct	;
+	ref_shader					s_accum_mask;
+	ref_shader					s_accum_direct;
 	ref_shader					s_accum_direct_volumetric;
 	ref_shader					s_accum_direct_volumetric_minmax;
-	ref_shader					s_accum_point	;
-	ref_shader					s_accum_spot	;
+	ref_shader					s_accum_point;
+	ref_shader					s_accum_spot;
 	ref_shader					s_accum_reflected;
 	ref_shader					s_accum_volume;
 
@@ -201,43 +205,43 @@ private:
 	ref_shader					s_rain;
 	
 	ref_shader					s_rain_msaa[8]	; // up to 8 shaders for DX10.0 support
-	ref_shader              s_accum_direct_volumetric_msaa[8];
+	ref_shader					s_accum_direct_volumetric_msaa[8];
 	ref_shader					s_accum_mask_msaa[8];
 	ref_shader					s_accum_direct_msaa[8];
    ref_shader					s_mark_msaa_edges;
-	ref_shader					s_accum_point_msaa[8]	;
-	ref_shader					s_accum_spot_msaa[8]	;
+	ref_shader					s_accum_point_msaa[8];
+	ref_shader					s_accum_spot_msaa[8];
 	ref_shader					s_accum_reflected_msaa[8];
 	ref_shader					s_accum_volume_msaa[8];
 
-	ref_geom						g_accum_point	;
-	ref_geom						g_accum_spot	;
-	ref_geom						g_accum_omnipart;
-	ref_geom						g_accum_volumetric;
+	ref_geom					g_accum_point;
+	ref_geom					g_accum_spot;
+	ref_geom					g_accum_omnipart;
+	ref_geom					g_accum_volumetric;
 
-	ID3DVertexBuffer*		g_accum_point_vb;
-	ID3DIndexBuffer*		g_accum_point_ib;
+	ID3DVertexBuffer*			g_accum_point_vb;
+	ID3DIndexBuffer*			g_accum_point_ib;
 
-	ID3DVertexBuffer*		g_accum_omnip_vb;
-	ID3DIndexBuffer*		g_accum_omnip_ib;
+	ID3DVertexBuffer*			g_accum_omnip_vb;
+	ID3DIndexBuffer*			g_accum_omnip_ib;
 
-	ID3DVertexBuffer*		g_accum_spot_vb	;
-	ID3DIndexBuffer*		g_accum_spot_ib	;
+	ID3DVertexBuffer*			g_accum_spot_vb	;
+	ID3DIndexBuffer*			g_accum_spot_ib	;
 
-	ID3DVertexBuffer*		g_accum_volumetric_vb;
-	ID3DIndexBuffer*		g_accum_volumetric_ib;
+	ID3DVertexBuffer*			g_accum_volumetric_vb;
+	ID3DIndexBuffer*			g_accum_volumetric_ib;
 
 	// Bloom
 	ref_geom					g_bloom_build;
 	ref_geom					g_bloom_filter;
-	ref_shader				s_bloom_dbg_1;
-	ref_shader				s_bloom_dbg_2;
-	ref_shader				s_bloom;
-   ref_shader				s_bloom_msaa;
-	float							f_bloom_factor;
+	ref_shader					s_bloom_dbg_1;
+	ref_shader					s_bloom_dbg_2;
+	ref_shader					s_bloom;
+   ref_shader					s_bloom_msaa;
+	float						f_bloom_factor;
 
 	// Luminance
-	ref_shader			s_luminance;
+	ref_shader					s_luminance;
 	float						f_luminance_adapt;
 
 	// Combine
@@ -259,10 +263,10 @@ private:
 	ref_shader				s_rain_drops;
 public:
 	ref_shader				s_postprocess;
-   ref_shader           s_postprocess_msaa;
-	ref_geom					g_postprocess;
+   ref_shader				s_postprocess_msaa;
+	ref_geom				g_postprocess;
 	ref_shader				s_menu;
-	ref_geom					g_menu;
+	ref_geom				g_menu;
 private:
 	float						im_noise_time;
 	u32							im_noise_shift_w;
@@ -325,6 +329,7 @@ public:
 	void						phase_blur				();
 	void						phase_pp_bloom			();
 	void						phase_lfx				(int i);
+	void						phase_dof				();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();
