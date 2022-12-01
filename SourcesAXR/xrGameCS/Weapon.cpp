@@ -2994,15 +2994,20 @@ void CWeapon::OnStateSwitch	(u32 S)
 	inherited::OnStateSwitch(S);
 	m_dwAmmoCurrentCalcFrame = 0;
 
-	if (GetState() == eReload || GetState() == eUnMisfire || GetState() == eBore)
+	if (H_Parent() == Level().CurrentEntity())
 	{
-		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
-		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
-	}
-	else
-	{
-		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		CActor* current_actor = smart_cast<CActor*>(H_Parent());
+
+		if ((GetState() == eReload || GetState() == eUnMisfire || GetState() == eBore) && current_actor)
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		}
+		else
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		}
 	}
 }
 
