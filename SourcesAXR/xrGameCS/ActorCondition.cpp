@@ -433,7 +433,7 @@ void CActorCondition::SetZoneDanger( float danger, ALife::EInfluenceType type )
 float CActorCondition::GetZoneDanger() const
 {
 	float sum = 0.0f;
-	for ( u8 i = 0; i < ALife::infl_max_count; ++i )
+	for ( u8 i = 0; i < ALife::infl_strike; ++i )
 	{
 		sum += m_zone_danger[i];
 	}
