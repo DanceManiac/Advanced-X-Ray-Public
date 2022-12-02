@@ -235,7 +235,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	glow_render->set_color	(clr);
 	glow_render->set_radius(pUserData->r_float(m_light_section, "glow_radius"));
 
-	if (e->ID_Parent == g_actor->ID())
+	if (g_actor && e->ID_Parent == g_actor->ID())
 		light_render->set_volumetric(!!READ_IF_EXISTS(pUserData, r_bool, m_light_section, "volumetric_for_actor", 0));
 	else
 		light_render->set_volumetric(!!READ_IF_EXISTS(pUserData, r_bool, m_light_section, "volumetric", 0));
