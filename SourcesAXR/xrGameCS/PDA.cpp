@@ -19,6 +19,10 @@
 #include "ai_sounds.h"
 #include "Inventory.h"
 #include "HUDManager.h"
+#include "../xrEngine/x_ray.h"
+#include "AdvancedXrayGameConstants.h"
+
+bool SSFX_PDA_DoF_active = false;
 
 CPda::CPda(void)
 {
@@ -293,9 +297,7 @@ void CPda::UpdateCL()
 			{
 				pda->Update();
 				if (m_bZoomed)
-				{
 					pda->Enable(true);
-				}
 			}
 
 			// Turn on "power saving" on low battery charge (dims the screen).
@@ -357,6 +359,22 @@ void CPda::UpdateCL()
 		}
 
 		clamp(g_pGamePersistent->pda_shader_data.pda_display_factor, 0.f, 1.f);
+	}
+
+	if (m_bZoomed)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		SSFX_PDA_DoF_active = true;
+	}
+	else
+	{
+		if (SSFX_PDA_DoF_active)
+		{
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+			SSFX_PDA_DoF_active = false;
+		}
 	}
 }
 
