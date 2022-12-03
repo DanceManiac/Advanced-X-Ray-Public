@@ -304,9 +304,6 @@ void	CCustomOutfit::OnMoveToSlot		(const SInvItemPlace& prev)
 				if (pActor->GetNightVisionStatus())
 					pActor->SwitchNightVision(true, false);
 
-				if (bIsHelmetAvaliable)
-					return;
-
 				CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
 
 				if (pHelmet1)
