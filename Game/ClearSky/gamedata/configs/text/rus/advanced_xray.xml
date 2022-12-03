@@ -324,4 +324,7 @@
 	<string id="ui_inv_portions">
 		<text>Кол-во порций</text>
 	</string>
+	<string id="ui_mm_crouch_toggle">
+		<text>Режим сесть-встать</text>
+	</string>
 </string_table>

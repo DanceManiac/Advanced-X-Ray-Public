@@ -34,7 +34,6 @@
 #include "Weapon.h"
 #include "WeaponMagazined.h"
 
-bool g_bAutoClearCrouch = true;
 extern int hud_adj_mode;
 
 void CActor::IR_OnKeyboardPress(int cmd)
@@ -94,13 +93,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			mstate_wishful |= mcJump;
 		}break;
-	case kCROUCH_TOGGLE:
-		{
-			g_bAutoClearCrouch = !g_bAutoClearCrouch;
-			if (!g_bAutoClearCrouch)
-				mstate_wishful |= mcCrouch;
-
-		}break;
+	case kCROUCH:
+	{
+		if (psActorFlags.test(AF_CROUCH_TOGGLE))
+			mstate_wishful ^= mcCrouch;
+	}break;
 	case kSPRINT_TOGGLE:	
 		{
 			if (mstate_wishful & mcSprint)
@@ -246,7 +243,6 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 		{
 		case kJUMP:		mstate_wishful &=~mcJump;		break;
 		case kDROP:		if(GAME_PHASE_INPROGRESS == Game().Phase()) g_PerformDrop();				break;
-		case kCROUCH:	g_bAutoClearCrouch = true;
 		}
 	}
 }
@@ -287,9 +283,12 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	case kR_LOOKOUT:mstate_wishful |= mcRLookout;								break;
 	case kFWD:		mstate_wishful |= mcFwd;									break;
 	case kBACK:		mstate_wishful |= mcBack;									break;
-	case kCROUCH:	mstate_wishful |= mcCrouch;									break;
+	case kCROUCH:
+	{
+		if (!psActorFlags.test(AF_CROUCH_TOGGLE))
+			mstate_wishful |= mcCrouch;
 
-
+	}break;
 	}
 }
 

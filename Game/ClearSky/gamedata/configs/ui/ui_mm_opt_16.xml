@@ -1045,6 +1045,11 @@
 			<text font="letterica16" color="ui_6">ui_mm_crosshair_distance</text>
 		</check_dist>
 		
+		<check_crouch_toggle x="7" y="12" width="27" height="21">
+			<options_item entry="g_crouch_toggle" group="mm_opt_gameplay"/>
+			<text font="letterica16" color="ui_6">ui_mm_crouch_toggle</text>
+		</check_crouch_toggle>
+		
 		<check_hud_draw x="7" y="12" width="27" height="21">
 			<options_item entry="hud_draw" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_hud_draw</text>
