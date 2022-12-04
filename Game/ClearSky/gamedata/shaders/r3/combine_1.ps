@@ -217,12 +217,14 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 	float3 spec 				= C.www * L.rgb + hspecular * C.rgba; // replicated specular
 
 #ifdef         USE_SUPER_SPECULAR
-                      spec      = (C.rgb*.5h + .5h)*C.w + hspecular        ;
+                      spec      = (C.rgb*.5h + .5h)*C.w + hspecular;
 #endif
-//		float3       color     = C.rgb + D.rgb*spec     ;
-//		float3       color     = C.rgb + (D.rgb*spec+spec)/0.5h;
-		float3       color     = C.rgb + spec     ;
-//		float3       color     = C.rgb + D.rgb*spec+hspecular+hspecular     ;	//	More realistic and contrast specular - Ugrumiy edition
+		float3       color     = C.rgb + spec;
+		
+	// SSR Implementation
+#ifdef SSFX_SSR
+	SSFX_ScreenSpaceReflections(I.tc0, P, N, rain_params.y / 5.0f, color, ISAMPLE);	
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 /// For Test ///////////////////////////////////////////////////////////////////
@@ -259,11 +261,6 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
         float         	fog				= saturate		(distance*fog_params.w + fog_params.x); //
 		                color			= lerp     		(color, fog_color, fog);        		//
 						color 			= lerp			(color, fog_color, compute_height_fog(P.xyz));
-
-	// SSR Implementation
-#ifdef SSFX_SSR
-	SSFX_ScreenSpaceReflections(I.tc0, P, N, D.a, color, ISAMPLE);	
-#endif
 
         float        	skyblend		= saturate		(fog*fog);
 
