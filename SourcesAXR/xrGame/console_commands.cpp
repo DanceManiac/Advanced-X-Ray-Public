@@ -142,16 +142,11 @@ BOOL			b_script_cmd7 = 0;
 BOOL			b_script_cmd8 = 0;
 BOOL			b_script_cmd9 = 0;
 BOOL			b_script_cmd10 = 0;
-int				i_script_cmd1 = 0;
-int				i_script_cmd2 = 0;
-int				i_script_cmd3 = 0;
-int				i_script_cmd4 = 0;
-int				i_script_cmd5 = 0;
-int				i_script_cmd6 = 0;
-int				i_script_cmd7 = 0;
-int				i_script_cmd8 = 0;
-int				i_script_cmd9 = 0;
-int				i_script_cmd10 = 0;
+
+const int I_SCRIPT_CMDS_COUNT = 10;
+xr_vector<int> i_script_cmd(I_SCRIPT_CMDS_COUNT);
+xr_vector<xr_string> i_script_cmd_name(I_SCRIPT_CMDS_COUNT);
+
 //Custom commands for scripts end
 
 ENGINE_API extern float	g_console_sensitive;
@@ -2575,16 +2570,16 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD4(CCC_Integer,	"b_script_cmd8",		&b_script_cmd8, 0, 1);
 	CMD4(CCC_Integer,	"b_script_cmd9",		&b_script_cmd9, 0, 1);
 	CMD4(CCC_Integer,	"b_script_cmd10",		&b_script_cmd10, 0, 1);
-	CMD4(CCC_Integer,	"i_script_cmd1",		&i_script_cmd1, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd2",		&i_script_cmd2, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd3",		&i_script_cmd3, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd4",		&i_script_cmd4, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd5",		&i_script_cmd5, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd6",		&i_script_cmd6, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd7",		&i_script_cmd7, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd8",		&i_script_cmd8, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd9",		&i_script_cmd9, 0, 64);
-	CMD4(CCC_Integer,	"i_script_cmd10",		&i_script_cmd10, 0, 64);
+
+	i_script_cmd_name.clear();
+
+	for (int i = 0; i < I_SCRIPT_CMDS_COUNT; ++i)
+	{
+		xr_string buff = "i_script_cmd_";
+		buff += std::to_string(i).c_str();
+		CMD4(CCC_Integer, i_script_cmd_name.emplace_back(std::move(buff)).c_str(), &i_script_cmd[i], 0, 64);
+	}
+
 	//Custom commands for scripts end
 
 	CMD4(CCC_Integer, "dbg_ui_redraw", &UIRedraw, FALSE, TRUE);
