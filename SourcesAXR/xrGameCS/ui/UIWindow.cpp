@@ -5,15 +5,9 @@
 #include "UIWindow.h"
 #include "../UICursor.h"
 #include "../MainMenu.h"
-#include "UIGameCustom.h"
-#include "UIActorMenu.h"
-#include "HUDManager.h"
-#include "../level.h"
 
 #include "../Include/xrRender/DebugRender.h"
 #include "../Include/xrRender/UIRender.h"
-#include "../../xrEngine/x_ray.h"
-#include "../AdvancedXrayGameConstants.h"
 
 //#define LOG_ALL_WNDS
 #ifdef LOG_ALL_WNDS
@@ -36,7 +30,6 @@
 
 xr_vector<Frect> g_wnds_rects;
 BOOL g_show_wnd_rect2 = FALSE;
-bool SSFX_UI_DoF_active = false;
 
 void clean_wnd_rects()
 {
@@ -208,22 +201,6 @@ void CUIWindow::Update()
 	for(WINDOW_LIST_it it = m_ChildWndList.begin(); m_ChildWndList.end()!=it; ++it){
 		if(!(*it)->IsShown()) continue;
 			(*it)->Update();
-	}
-
-	if (HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() >= 1)
-	{
-		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
-		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
-		SSFX_UI_DoF_active = true;
-	}
-	else
-	{
-		if (SSFX_UI_DoF_active)
-		{
-			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
-			SSFX_UI_DoF_active = false;
-		}
 	}
 }
 
