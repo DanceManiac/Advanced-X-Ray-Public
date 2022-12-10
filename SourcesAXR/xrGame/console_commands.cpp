@@ -2577,7 +2577,9 @@ extern BOOL dbg_moving_bones_snd_player;
 	{
 		xr_string buff = "i_script_cmd_";
 		buff += std::to_string(i).c_str();
-		CMD4(CCC_Integer, i_script_cmd_name.emplace_back(std::move(buff)).c_str(), &i_script_cmd[i], 0, 64);
+		i_script_cmd_name.emplace_back(std::move(buff));
+		const xr_string& test = i_script_cmd_name.back();
+		CMD4_X(CCC_Integer, test.c_str(), &i_script_cmd[i], 0, 64);
 	}
 
 	//Custom commands for scripts end
