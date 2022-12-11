@@ -65,6 +65,7 @@
 
 #include "HUDManager.h"
 #include "xrServer_Objects_ALife_Monsters.h"
+#include "AdvancedXrayGameConstants.h"
 
 // Hud Type
 xr_token			qhud_type_token[] = {
@@ -132,20 +133,13 @@ int				g_keypress_on_start	= 1;
 extern	BOOL	g_b_COD_PickUpMode;
 
 //Custom commands for scripts
-BOOL			b_script_cmd1 = 0;
-BOOL			b_script_cmd2 = 0;
-BOOL			b_script_cmd3 = 0;
-BOOL			b_script_cmd4 = 0;
-BOOL			b_script_cmd5 = 0;
-BOOL			b_script_cmd6 = 0;
-BOOL			b_script_cmd7 = 0;
-BOOL			b_script_cmd8 = 0;
-BOOL			b_script_cmd9 = 0;
-BOOL			b_script_cmd10 = 0;
 
-const int I_SCRIPT_CMDS_COUNT = 10;
+const int I_SCRIPT_CMDS_COUNT = GameConstants::GetIntScriptCMDCount();
+const BOOL B_SCRIPT_CMDS_COUNT = GameConstants::GetBOOLScriptCMDCount();
 xr_vector<int> i_script_cmd(I_SCRIPT_CMDS_COUNT);
 xr_vector<xr_string> i_script_cmd_name(I_SCRIPT_CMDS_COUNT);
+xr_vector<BOOL> b_script_cmd(B_SCRIPT_CMDS_COUNT);
+xr_vector<xr_string> b_script_cmd_name(B_SCRIPT_CMDS_COUNT);
 
 //Custom commands for scripts end
 
@@ -2559,27 +2553,27 @@ extern BOOL dbg_moving_bones_snd_player;
 
 	CMD3(CCC_UiHud_Mode, "hud_type",			&ui_hud_type, qhud_type_token);
 
-	//Custom commands for scripts
-	CMD4(CCC_Integer,	"b_script_cmd1",		&b_script_cmd1, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd2",		&b_script_cmd2, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd3",		&b_script_cmd3, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd4",		&b_script_cmd4, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd5",		&b_script_cmd5, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd6",		&b_script_cmd6, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd7",		&b_script_cmd7, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd8",		&b_script_cmd8, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd9",		&b_script_cmd9, 0, 1);
-	CMD4(CCC_Integer,	"b_script_cmd10",		&b_script_cmd10, 0, 1);
+	//Custom commands fo scripts
 
 	i_script_cmd_name.clear();
+	b_script_cmd_name.clear();
 
 	for (int i = 0; i < I_SCRIPT_CMDS_COUNT; ++i)
 	{
 		xr_string buff = "i_script_cmd_";
 		buff += std::to_string(i).c_str();
 		i_script_cmd_name.emplace_back(std::move(buff));
-		const xr_string& test = i_script_cmd_name.back();
-		CMD4_X(CCC_Integer, test.c_str(), &i_script_cmd[i], 0, 64);
+		const xr_string& cmd = i_script_cmd_name.back();
+		CMD4_X(CCC_Integer, cmd.c_str(), &i_script_cmd[i], 0, 64);
+	}
+
+	for (int i = 0; i < B_SCRIPT_CMDS_COUNT; ++i)
+	{
+		xr_string buff = "b_script_cmd_";
+		buff += std::to_string(i).c_str();
+		b_script_cmd_name.emplace_back(std::move(buff));
+		const xr_string& cmd = b_script_cmd_name.back();
+		CMD4_X(CCC_Integer, cmd.c_str(), &b_script_cmd[i], 0, 1);
 	}
 
 	//Custom commands for scripts end

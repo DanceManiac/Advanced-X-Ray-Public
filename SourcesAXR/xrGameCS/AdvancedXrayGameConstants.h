@@ -31,6 +31,8 @@ namespace GameConstants
 	bool GetAfRanks();
 	bool GetOutfitUseFilters();
 	int  GetArtefactsCount();
+	int  GetIntScriptCMDCount();
+	int  GetBOOLScriptCMDCount();
 	float GetDistantSndDistance();
 	float GetDistantSndDistanceFar();
 	Fvector4 GetRedColor();

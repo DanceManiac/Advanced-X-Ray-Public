@@ -31,6 +31,8 @@ bool	m_bColorizeValues = false;
 bool	m_bArtefactsRanks = false;
 bool	m_bUseFilters = false;
 int		m_iArtefactsCount = 5;
+int		m_i_CMD_Count = 1;
+int		m_B_CMD_Count = 1;
 float	m_fDistantSndDistance = 150.f;
 float	m_fDistantSndDistanceFar = 250.f;
 Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
@@ -73,6 +75,8 @@ namespace GameConstants
 		m_bArtefactsRanks = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_artefacts_ranks", false);
 		m_bUseFilters = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_antigas_filters", false);
 		m_iArtefactsCount = READ_IF_EXISTS(pAdvancedSettings, r_u32, "inventory", "artefacts_count", 5);
+		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
+		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 		m_bColorizeValues = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "colorize_values", false);
@@ -229,6 +233,16 @@ namespace GameConstants
 	int GetArtefactsCount()
 	{
 		return m_iArtefactsCount;
+	}
+
+	int GetIntScriptCMDCount()
+	{
+		return m_i_CMD_Count;
+	}
+
+	int GetBOOLScriptCMDCount()
+	{
+		return m_B_CMD_Count;
 	}
 
 	float GetDistantSndDistance()
