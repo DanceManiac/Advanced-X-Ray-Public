@@ -6,6 +6,7 @@
 #include <mmsystem.h>
 #include <objbase.h>
 #include "xrCore.h"
+#include "../xrGameSpy/xrGameSpy_MainDefs.h"
 
 #ifdef DEBUG
 # include <malloc.h>
@@ -113,12 +114,13 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
 #endif
 #endif
         FS._initialize(flags, 0, fs_fname);
-		Msg("Build: %d\nBuild date: %s\n", build_id, build_date);
-		Msg("Engine Discord: https://discord.gg/MVu2FzyJV5");
+        Msg("'%s %s' build %d, ver. %s, M.F.S. Team %s\n", "Advanced X-Ray", GAME_PLATFORM, build_id, GAME_VERSION, build_date);
+        Msg("M.F.S. Team VK: https://vk.com/mfs_studio");
+		Msg("M.F.S. Team Discord: https://discord.gg/EBxyge9AH6");
         EFS._initialize();
 #ifdef DEBUG
 #ifndef _EDITOR
-        Msg("Process heap 0x%08x", GetProcessHeap());
+        Msg("\nProcess heap 0x%08x", GetProcessHeap());
 #endif
 #endif // DEBUG
     }
