@@ -312,4 +312,7 @@
 	<string id="st_change_filter">
 		<text>Заменить фильтр:</text>
 	</string>
+	<string id="ui_mm_mt_textures_load">
+		<text>MT загрузка текстур</text>
+	</string>
 </string_table>

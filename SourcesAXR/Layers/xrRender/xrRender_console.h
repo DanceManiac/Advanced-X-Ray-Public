@@ -168,6 +168,9 @@ extern ECORE_API int			opt_dynamic;
 //SFZ Lens Flares
 extern ECORE_API int			ps_r2_lfx;
 
+//Многопоточная загрузка текстур
+extern ECORE_API int			ps_mt_texture_load;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),

@@ -402,6 +402,11 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_optimize_shadow_geom", _st)
 	ctl = xml:InitCheck("video_adv:check_optimize_shadow_geom", _st)
 
+--Многопоточная загрузка текстур	
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_mt_textures_load", _st)
+	ctl = xml:InitCheck("video_adv:check_mt_textures_load", _st)
+
 --Цветокоррекция: Интенсивность красного
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_color_r", _st)

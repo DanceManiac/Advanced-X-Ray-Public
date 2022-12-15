@@ -13,7 +13,7 @@
 #include "tss.h"
 #include "blenders\blender.h"
 #include "blenders\blender_recorder.h"
-#include <thread>
+#include <execution>
 
 //	Already defined in Texture.cpp
 void fix_texture_name(LPSTR fn);
@@ -358,36 +358,17 @@ void TextureLoading(u16 thread_num)
 void CResourceManager::DeferredUpload()
 {
 	if (!RDEVICE.b_is_Ready) return;
-	tex_to_load.clear();
 
-	Msg("CResourceManager::DeferredUpload -> START, size = %d", m_textures.size());
+	Msg("CResourceManager::DeferredUpload [%s] -> START, size = [%u]", ps_mt_texture_load ? "MT" : "NO MT", m_textures.size());
 
-	CTimer timer;
-	timer.Start();
-
-	if (m_textures.size() <= 100)
-	{
-		Msg("CResourceManager::DeferredUpload -> one thread");
-		for (map_TextureIt t = m_textures.begin(); t != m_textures.end(); t++)
-			t->second->Load();
-	}
+	// “еперь многопоточна€ загрузка текстур даЄт очень существенный прирост скорости, проверено.
+	if (ps_mt_texture_load)
+		std::for_each(std::execution::par_unseq, m_textures.begin(), m_textures.end(), [](auto& pair) { pair.second->Load(); });
 	else
-	{
-		u32 th_count = (m_textures.size() / 100) + 1;
-		std::thread* th_arr = new std::thread[th_count];
-		for (auto tex : m_textures)
-			tex_to_load.push_back(tex.second);
+		for (auto& pair : m_textures)
+			pair.second->Load();
 
-		for (u16 i = 0; i < th_count; i++)
-			th_arr[i] = std::thread(TextureLoading, i + 1);
-
-		for (size_t i = 0; i < th_count; i++)
-			th_arr[i].join();
-
-		tex_to_load.clear();
-	}
-
-	Msg("texture loading time: %d", timer.GetElapsed_ms());
+	Msg("CResourceManager::DeferredUpload -> END");
 }
 /*
 void	CResourceManager::DeferredUnload	()

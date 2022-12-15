@@ -383,6 +383,9 @@ int opt_dynamic = 0;
 //SFZ Lens Flares
 int ps_r2_lfx = 1;
 
+//Многопоточная загрузка текстур
+int ps_mt_texture_load = 1;
+
 Flags32 psDeviceFlags2 = { 0 };
 
 //Static on R2+
@@ -1200,6 +1203,8 @@ void		xrRender_initconsole	()
 	// Screen Space Shaders
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
 	CMD4(CCC_Float,			"ssfx_wpn_dof_2",				&ps_ssfx_wpn_dof_2,			0, 1);
+
+	CMD4(CCC_Integer,		"r__mt_textures_load",			&ps_mt_texture_load,		0, 1); //Многопоточная загрузка текстур
 
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
