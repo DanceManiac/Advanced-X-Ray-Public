@@ -250,22 +250,21 @@ Flags32		ps_r2_ls_flags_ext			= {
 int			ps_no_scale_on_fade			= 0;
 float		ps_r2_df_parallax_h			= 0.02f;
 float		ps_r2_df_parallax_range		= 75.f;
-//float		ps_r2_tonemap_middlegray	= 0.95f;			// r2-only
-//float		ps_r2_tonemap_adaptation	= 1.f;				// r2-only
-//float		ps_r2_tonemap_low_lum		= 0.0035f;			// r2-only
-//float		ps_r2_tonemap_amount		= 0.7f;				// r2-only
+
 float		ps_r2_tonemap_middlegray	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "tonemap_middlegray", 0.95f);
 float		ps_r2_tonemap_adaptation	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "tonemap_adaptation", 1.f);
 float		ps_r2_tonemap_low_lum		= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "tonemap_low_lum", 0.0035f);
 float		ps_r2_tonemap_amount		= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "tonemap_amount", 0.7f);
-float		ps_r2_ls_bloom_kernel_g		= 3.f;				// r2-only
-float		ps_r2_ls_bloom_kernel_b		= .7f;				// r2-only
-float		ps_r2_ls_bloom_speed		= 100.f;				// r2-only
-float		ps_r2_ls_bloom_kernel_scale	= .7f;				// r2-only	// gauss
+
+float		ps_r2_ls_bloom_kernel_g		= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_kernel_g", 3.0f);
+float		ps_r2_ls_bloom_kernel_b		= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_kernel_b", 0.7f);
+float		ps_r2_ls_bloom_speed		= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_speed", 100.0f);
+float		ps_r2_ls_bloom_kernel_scale = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_kernel_scale", 0.7f);
+float		ps_r2_ls_bloom_threshold	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_threshold", 0.00001f);
+
 float		ps_r2_ls_dsm_kernel			= .7f;				// r2-only
 float		ps_r2_ls_psm_kernel			= .7f;				// r2-only
 float		ps_r2_ls_ssm_kernel			= .7f;				// r2-only
-float		ps_r2_ls_bloom_threshold	= .00001f;				// r2-only
 Fvector		ps_r2_aa_barier				= { .8f, .1f, 0};	// r2-only
 Fvector		ps_r2_aa_weight				= { .25f,.25f,0};	// r2-only
 float		ps_r2_aa_kernel				= .5f;				// r2-only
