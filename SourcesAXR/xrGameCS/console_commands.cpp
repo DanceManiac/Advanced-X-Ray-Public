@@ -767,6 +767,11 @@ public:
 		Msg						("Screenshot overhead : %f milliseconds",timer.GetElapsed_sec()*1000.f);
 #endif
 	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		get_files_list(tips, "$game_saves$", SAVE_EXTENSION);
+	}
 };
 
 class CCC_ALifeLoadFrom : public IConsole_Command {
@@ -829,6 +834,11 @@ public:
 		net_packet.w_begin			(M_LOAD_GAME);
 		net_packet.w_stringZ		(saved_game);
 		Level().Send				(net_packet,net_flags(TRUE));
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		get_files_list(tips, "$game_saves$", SAVE_EXTENSION);
 	}
 };
 
