@@ -44,6 +44,7 @@ namespace base_monster
 
 void CBaseMonster::Load(LPCSTR section)
 {
+	m_section						= section;
 	// load parameters from ".ltx" file
 	inherited::Load					(section);
 
