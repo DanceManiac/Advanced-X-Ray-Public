@@ -776,7 +776,7 @@ bool CUIActorMenu::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 	}	
 
-	if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
+	/*if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
 	{
 		CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(CurrentIItem());
 		{
@@ -797,7 +797,7 @@ bool CUIActorMenu::OnKeyboard(int dik, EUIMessages keyboard_action)
 				pFilter->ChangeFilterCondition(0.05f);
 			}
 		}
-	}
+	}*/
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
 	return false;
