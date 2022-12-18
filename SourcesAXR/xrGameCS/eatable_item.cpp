@@ -127,7 +127,7 @@ void CEatableItem::HideWeapon()
 
 	m_bItmStartAnim = true;
 
-	if (!pActor)
+	if (pActor)
 		HUD().GetUI()->UIGame()->HideActorMenu();
 }
 
