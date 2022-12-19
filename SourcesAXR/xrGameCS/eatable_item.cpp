@@ -208,13 +208,14 @@ void CEatableItem::UpdateUseAnim()
 	if (!m_bHasAnimation) return;
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
 	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT)
 		StartAnimation();
 
 	if (m_bActivated)
 	{
-		if (m_iAnimLength <= Device.dwTimeGlobal)
+		if (m_iAnimLength <= Device.dwTimeGlobal || !IsActorAlive)
 		{
 			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
@@ -229,7 +230,8 @@ void CEatableItem::UpdateUseAnim()
 			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
 			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 
-			Actor()->inventory().Eat(this);
+			if (IsActorAlive)
+				Actor()->inventory().Eat(this);
 		}
 	}
 }
