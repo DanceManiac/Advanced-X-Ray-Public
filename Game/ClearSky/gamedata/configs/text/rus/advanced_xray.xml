@@ -330,4 +330,7 @@
 	<string id="ui_mm_mt_textures_load">
 		<text>MT загрузка текстур</text>
 	</string>
+	<string id="agroprom_underground">
+		<text>Подземелья Агропрома</text>
+	</string>
 </string_table>
