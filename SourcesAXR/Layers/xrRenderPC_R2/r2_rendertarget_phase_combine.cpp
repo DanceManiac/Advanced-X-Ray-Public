@@ -284,14 +284,11 @@ void	CRenderTarget::phase_combine	()
 	BOOL	PP_Complex		= u_need_PP	() | (BOOL)RImplementation.m_bMakeAsyncSS;
 	if (_menu_pp)			PP_Complex	= FALSE;
 
-	if (!_menu_pp)
-	{
-		if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
-			PhaseRainDrops();
-	}
+	if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
+		PhaseRainDrops();
 	
-		if(Puddles->m_bLoaded)
-			phase_puddles();
+	if(Puddles->m_bLoaded)
+		phase_puddles();
 
 	// Combine everything + perform AA
 	if		(PP_Complex)	u_setrt		( rt_Color,0,0,HW.pBaseZB );			// LDR RT

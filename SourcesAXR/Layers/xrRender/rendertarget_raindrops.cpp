@@ -1,7 +1,9 @@
 #include "stdafx.h"
-	
+
 void CRenderTarget::PhaseRainDrops()
 {
+	if (Device.m_SecondViewport.IsSVPFrame()) //В прицеле не рендерим
+		return;
 
 	static float rain_drops_factor = 0.f;
 	static u32 steps_finished = 0;
@@ -11,7 +13,8 @@ void CRenderTarget::PhaseRainDrops()
 
 	bool current_rain_drops_control = g_pGamePersistent->GetHudGlassEnabled();
 
-	if (saved_rain_drops_control != current_rain_drops_control) {
+	if (saved_rain_drops_control != current_rain_drops_control)
+	{
 		saved_rain_drops_control = current_rain_drops_control;
 
 		rain_drops_factor = 0.f;
@@ -33,31 +36,38 @@ void CRenderTarget::PhaseRainDrops()
 			constexpr float step_rain_factor_change = 1.f / float(steps_count);
 
 			static bool saved_rain_flag = act_on_rain;
-			if (saved_rain_flag != act_on_rain) {
+			if (saved_rain_flag != act_on_rain)
+			{
 				saved_rain_flag = act_on_rain;
 				steps_finished = 0;
 			}
 
-			if (steps_finished < (steps_count + 1)) { // + 1 обязательно из за неровного деления. Иначе эффект при максимальном шторме может не до конца отключаться при входе в укрытие.
+			if (steps_finished < (steps_count + 1))
+			{ // + 1 обязательно из за неровного деления. Иначе эффект при максимальном шторме может не до конца отключаться при входе в укрытие.
 				static u32 last_update = Device.dwTimeGlobal;
-				if (Device.dwTimeGlobal > (last_update + change_step)) {
+				if (Device.dwTimeGlobal > (last_update + change_step))
+				{
 					last_update = Device.dwTimeGlobal;
 					steps_finished++;
-					if (act_on_rain) { //плавное повышение интенсивности капель.
+					if (act_on_rain)
+					{ //плавное повышение интенсивности капель.
 						rain_drops_factor += step_rain_factor_change;
 					}
-					else { //плавное понижение интенсивности капель.
+					else
+					{ //плавное понижение интенсивности капель.
 						rain_drops_factor -= step_rain_factor_change;
 					}
 				}
 			}
-			else if (act_on_rain) { //Если актор не находится в укрытии - синхронизируем rain_drops_factor с интенсивностью дождя
+			else if (act_on_rain)
+			{ //Если актор не находится в укрытии - синхронизируем rain_drops_factor с интенсивностью дождя
 				rain_drops_factor = std::max(rain_drops_factor, rain_factor);
 			}
 
-			//rain_drops_factor = std::clamp(rain_drops_factor, 0.f, rain_factor); //Уравниваем, чтобы не было превышения
+			rain_drops_factor = std::clamp(rain_drops_factor, 0.f, rain_factor); //Уравниваем, чтобы не было превышения
 		}
-		else {
+		else
+		{
 			steps_finished = 0;
 			rain_drops_factor = 0.f;
 		}
@@ -65,7 +75,8 @@ void CRenderTarget::PhaseRainDrops()
 
 	static bool actor_in_hideout = true;
 	static u32 last_ray_pick_time = Device.dwTimeGlobal;
-	if (Device.dwTimeGlobal > (last_ray_pick_time + 1000)) { //Апдейт рейтрейса - раз в секунду. Чаще апдейтить нет смысла.
+	if (Device.dwTimeGlobal > (last_ray_pick_time + 1000))
+	{ //Апдейт рейтрейса - раз в секунду. Чаще апдейтить нет смысла.
 		last_ray_pick_time = Device.dwTimeGlobal;
 
 		collide::rq_result RQ;
@@ -80,7 +91,8 @@ void CRenderTarget::PhaseRainDrops()
 	u32 Offset = 0;
 	Fvector2 p0, p1;
 
-	struct v_aa {
+	struct v_aa
+	{
 		Fvector4 p;
 		Fvector2 uv0;
 		Fvector2 uv1;
