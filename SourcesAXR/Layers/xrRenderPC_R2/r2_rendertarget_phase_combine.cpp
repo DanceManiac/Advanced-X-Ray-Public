@@ -260,23 +260,19 @@ void	CRenderTarget::phase_combine	()
 		PhaseVignette();
 	}
 
-	//Hud Mask
-	if (!_menu_pp && g_pGamePersistent->GetActor())
-	{
-		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
-			phase_hud_mask();
-	}
-
-
-	//Hud Effects
+	//Hud Effects & Hud Mask
 	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
+		{
 			phase_hud_blood();
 			phase_hud_power();
 			phase_hud_bleeding();
+		}
+
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
+			phase_hud_mask();
 	}
 	
 	// PP enabled ?

@@ -394,30 +394,22 @@ void	CRenderTarget::phase_combine	()
 		PhaseVignette();
 	}
 
-	//Hud Mask
+	//Hud Effects, Hud Mask, Nightvision
 	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
-			phase_hud_mask();
-	}
-
-	//Hud Effects
-	if (!_menu_pp && g_pGamePersistent->GetActor())
-	{
-		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+		int NightVisionType = g_pGamePersistent->GetNightvisionType();
+		bool NightVisionEnabled = g_pGamePersistent->GetActorNightvision();
 		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
+		{
 			phase_hud_blood();
 			phase_hud_power();
 			phase_hud_bleeding();
-	}
+		}
 
-	//Nightvision
-	if (!_menu_pp && g_pGamePersistent->GetActor())
-	{
-		bool NightVisionEnabled = g_pGamePersistent->GetActorNightvision();
-		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
-		int NightVisionType = g_pGamePersistent->GetNightvisionType();
+		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
+			phase_hud_mask();
+
 		if (IsActorAlive && NightVisionEnabled && NightVisionType > 0 && ps_r__ShaderNVG == 1)
 			phase_nightvision();
 	}
