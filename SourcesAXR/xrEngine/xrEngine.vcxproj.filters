@@ -250,6 +250,9 @@
     <Filter Include="My Amplifier Results">
       <UniqueIdentifier>{71be839b-6da0-40e6-8a1c-40ae5804c8f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CPU">
+      <UniqueIdentifier>{04312686-2922-46ff-a327-588c5977ea5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="_d3d_extensions.h">
@@ -626,6 +629,9 @@
     </ClInclude>
     <ClInclude Include="ShadersExternalData.h">
       <Filter>Game API\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="CPU\PLC.h">
+      <Filter>CPU</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

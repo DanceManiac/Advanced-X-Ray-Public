@@ -8,6 +8,7 @@
 #include "../../xrEngine/xr_object.h"
 #include "../xrRender/fbasicvisual.h"
 #include "../../xrEngine/CustomHUD.h"
+#include "../../xrEngine/CPU/PLC.h"
 
 #ifndef _EDITOR
 #include "../../xrCPU_Pipe/ttapi.h"
@@ -518,7 +519,7 @@ void CLightShadows::render	()
 			*/
 			int	c0,c1,c2;
 
-			PSGP.PLC_calc3(c0,c1,c2,Device,v,TT.N,S.L,Le,S.C);
+			XRay::Math::PLCCalc_SSE(c0, c1, c2, Device.vCameraPosition, v, TT.N, S.L, Le, S.C);
 
 			if (c0>S_clip && c1>S_clip && c2>S_clip)		continue;	
 			clamp		(c0,S_ambient,255);
