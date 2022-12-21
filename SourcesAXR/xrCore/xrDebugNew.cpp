@@ -36,11 +36,7 @@ char g_application_path[256];
 #include <signal.h>							// for signals
 #include <Shellapi.h>
 
-#ifdef DEBUG
-#	define USE_OWN_ERROR_MESSAGE_WINDOW
-#else // DEBUG
-#	define USE_OWN_MINI_DUMP
-#endif // DEBUG
+#define USE_OWN_ERROR_MESSAGE_WINDOW
 
 XRCORE_API	xrDebug		Debug;
 
@@ -170,12 +166,6 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 	buffer				+= xr_sprintf(buffer,sizeof(assertion_info) - u32(buffer - &assertion_info[0]),"Press TRY AGAIN to continue execution%s",endline);
 	buffer				+= xr_sprintf(buffer,sizeof(assertion_info) - u32(buffer - &assertion_info[0]),"Press CONTINUE to continue execution and ignore all the errors of this type%s%s",endline,endline);
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
-
-	if (IsDebuggerPresent())
-	{
-		DebugBreak();
-		return;
-	}
 
 	if (handler)
 		handler			();
