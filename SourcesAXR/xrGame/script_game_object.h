@@ -394,8 +394,8 @@ public:
 			void				RunTalkDialog		(CScriptGameObject* pToWho, bool disable_break);
 			void				AllowBreakTalkDialog(bool disable_break);
 
-			void				HideWeapon			();
-			void				RestoreWeapon		();
+			void				HideWeapon			(int mode = 0);
+			void				RestoreWeapon		(int mode = 0);
 			void				AllowSprint			(bool b);
 
 			bool				Weapon_IsGrenadeLauncherAttached();

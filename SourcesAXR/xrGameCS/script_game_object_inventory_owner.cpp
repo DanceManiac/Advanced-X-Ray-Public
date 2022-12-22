@@ -945,14 +945,28 @@ bool CScriptGameObject::attachable_item_enabled	() const
 	return									(attachable_item->enabled());
 }
 
-void  CScriptGameObject::RestoreWeapon		()
+void  CScriptGameObject::RestoreWeapon(int mode)
 {
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL,false);
+	switch (mode)
+	{
+			case 1:
+				Actor()->SetWeaponHideState(INV_STATE_HIDE_WEAPON, false);
+			break;
+			default:
+				Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	}
 }
 
-void  CScriptGameObject::HideWeapon			()
+void  CScriptGameObject::HideWeapon(int mode)
 {
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL,true);
+	switch (mode)
+	{
+		case 1:
+			Actor()->SetWeaponHideState(INV_STATE_HIDE_WEAPON, true);
+			break;
+		default:
+			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	}
 }
 
 int CScriptGameObject::Weapon_GrenadeLauncher_Status()

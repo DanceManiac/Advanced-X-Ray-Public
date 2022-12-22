@@ -284,13 +284,13 @@ function actor_binder:update(delta)
 	if check_for_weapon_hide_by_zones() == true then
 		if self.weapon_hide == false then
 			printf("hiding weapon!!!")
-			self.object:hide_weapon()
+			self.object:hide_weapon(1)
 			self.weapon_hide = true
 		end
 	else
 		if self.weapon_hide == true then
 			printf("restoring weapon!!!")
-			self.object:restore_weapon()
+			self.object:restore_weapon(1)
 			self.weapon_hide = false
 		end
 	end

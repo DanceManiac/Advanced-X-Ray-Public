@@ -308,7 +308,7 @@ function actor_binder:update(delta)
 					--printf("weapon_hide1 = [%s]", tostring(weapon_hide))
 								if self.weapon_hide == false then
 										--printf("PL:HIDE_W1 ---> self.weapon_hide = [%s] weapon_hide = [%s]", tostring(self.weapon_hide), tostring(weapon_hide))
-												self.object:hide_weapon()
+												self.object:hide_weapon(1)
 												self.weapon_hide = true
 						--printf("PL:HIDE_W2 ---> self.weapon_hide = [%s] weapon_hide = [%s]", tostring(self.weapon_hide), tostring(weapon_hide))
 								end
@@ -316,7 +316,7 @@ function actor_binder:update(delta)
 					--printf("weapon_hide3 = [%s]", tostring(weapon_hide))
 								if self.weapon_hide == true then
 										--printf("PL:RESTORE_W1 ---> self.weapon_hide = [%s] weapon_hide = [%s]", tostring(self.weapon_hide), tostring(weapon_hide))
-												self.object:restore_weapon()
+												self.object:restore_weapon(1)
 												self.weapon_hide = false
 						--printf("PL:RESTORE_W2 ---> self.weapon_hide = [%s] weapon_hide = [%s]", tostring(self.weapon_hide), tostring(weapon_hide))
 								end
