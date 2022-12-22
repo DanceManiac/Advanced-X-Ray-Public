@@ -169,8 +169,11 @@ void CEatableItem::StartAnimation()
 void CEatableItem::OnH_A_Independent() 
 {
 	inherited::OnH_A_Independent();
-	if(!Useful()) {
-		if (object().Local() && OnServer())	object().DestroyObject	();
+
+	if(!Useful() && this->m_bCanUse) 
+	{
+		if (object().Local() && OnServer())	
+			object().DestroyObject	();
 	}	
 }
 
