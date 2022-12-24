@@ -214,7 +214,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -314,7 +314,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
@@ -493,7 +493,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
       <AssemblerOutput>
       </AssemblerOutput>
@@ -523,6 +523,15 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="blackbox\BlackBoxUI.cpp" />
+    <ClCompile Include="blackbox\BSUFunctions.cpp" />
+    <ClCompile Include="blackbox\CrashHandler.cpp" />
+    <ClCompile Include="blackbox\DiagAssert.cpp" />
+    <ClCompile Include="blackbox\GetLoadedModules.cpp" />
+    <ClCompile Include="blackbox\IsNT.cpp" />
+    <ClCompile Include="blackbox\NT4ProcessInfo.cpp" />
+    <ClCompile Include="blackbox\stdafx_.cpp" />
+    <ClCompile Include="blackbox\TLHELPProcessInfo.cpp" />
     <ClCompile Include="clsid.cpp" />
     <ClCompile Include="cpuid.cpp" />
     <ClCompile Include="crc32.cpp" />
@@ -695,6 +704,14 @@
     <ClCompile Include="_std_extensions.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="blackbox\BugslayerUtil.h" />
+    <ClInclude Include="blackbox\CrashHandler.h" />
+    <ClInclude Include="blackbox\DiagAssert.h" />
+    <ClInclude Include="blackbox\Internal.h" />
+    <ClInclude Include="blackbox\stdafx_.h" />
+    <ClInclude Include="blackbox\SymbolEngine.h" />
+    <ClInclude Include="blackbox\WarningsOff.h" />
+    <ClInclude Include="blackbox\WarningsOn.h" />
     <ClInclude Include="buffer_vector.h" />
     <ClInclude Include="buffer_vector_inline.h" />
     <ClInclude Include="clsid.h" />

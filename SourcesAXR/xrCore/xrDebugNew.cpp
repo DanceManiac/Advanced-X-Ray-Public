@@ -12,10 +12,9 @@
 #include <direct.h>
 #pragma warning(pop)
 
-// #   define USE_BUG_TRAP
+//#define USE_BUG_TRAP
 #define DEBUG_INVOKE	DebugBreak();
 static BOOL bException = FALSE;
-char g_application_path[256];
 
 #ifndef USE_BUG_TRAP
 #	include <exception>
@@ -24,12 +23,8 @@ char g_application_path[256];
 #include <dbghelp.h>						// MiniDump flags
 
 #ifdef USE_BUG_TRAP
-#	include "../3rd party/bugtrap/bugtrap/bugtrap.h"						// for BugTrap functionality
-    #ifndef __BORLANDC__
-        #	pragma comment(lib,"BugTrap.lib")		// Link to ANSI DLL
-    #else
-        #	pragma comment(lib,"BugTrapB.lib")		// Link to ANSI DLL
-    #endif
+#	include "../3rd party/BugTrap/Client/bugtrap.h"						// for BugTrap functionality
+        #pragma comment(lib,"BugTrap-x64.lib")		// Link to ANSI DLL
 #endif // USE_BUG_TRAP
 
 #include <new.h>							// for _set_new_mode
@@ -41,6 +36,10 @@ char g_application_path[256];
 XRCORE_API	xrDebug		Debug;
 
 static bool	error_after_dialog = false;
+
+extern void BuildStackTrace();
+extern char g_stackTrace[100][4096];
+extern int	g_stackTraceCount;
 extern bool shared_str_initialized;
 
 void LogStackTrace	(LPCSTR header)
@@ -48,13 +47,12 @@ void LogStackTrace	(LPCSTR header)
 	if (!shared_str_initialized)
 		return;
 
-	//BuildStackTrace	();		
+	BuildStackTrace	();		
 
 	Msg				("%s",header);
-#if 0
+
 	for (int i=1; i<g_stackTraceCount; ++i)
 		Msg			("%s",g_stackTrace[i]);
-#endif
 }
 
 void xrDebug::gather_info		(const char *expression, const char *description, const char *argument0, const char *argument1, const char *file, int line, const char *function, LPSTR assertion_info, u32 const assertion_info_size)
@@ -120,7 +118,7 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 #ifdef USE_OWN_ERROR_MESSAGE_WINDOW
 		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"stack trace:%s%s",endline,endline);
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
-#if 0
+
 		BuildStackTrace	();		
 
 		for (int i=2; i<g_stackTraceCount; ++i) {
@@ -131,7 +129,7 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 			buffer		+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%s%s",g_stackTrace[i],endline);
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
 		}
-#endif
+
 		if (shared_str_initialized)
 			FlushLog	();
 
@@ -345,20 +343,20 @@ void CALLBACK PreErrorHandler	(INT_PTR)
 	if (*g_bug_report_file)
 		BT_AddLogFile		(g_bug_report_file);
 
-	BT_MakeSnapshot			( 0 );
+	BT_SaveSnapshot			( 0 );
 #endif // USE_BUG_TRAP
 }
 
 void xrDebug::OnFileSystemInitialized()
 {
-#if 0
+#ifdef USE_BUG_TRAP
 	string_path dumpPath;
 	if (FS.path_exist("$app_data_root$"))
 	{
 		if (FS.update_path(dumpPath, "$app_data_root$", "reports"))
 			BT_SetReportFilePath(dumpPath);
 	}
-#endif
+#endif // USE_BUG_TRAP
 }
 
 
@@ -440,7 +438,7 @@ please Submit Bug or save report and email it manually (button More...).\
 }
 #endif // USE_BUG_TRAP
 
-#if 0
+#if 1
 extern void BuildStackTrace(struct _EXCEPTION_POINTERS *pExceptionInfo);
 typedef LONG WINAPI UnhandledExceptionFilterType(struct _EXCEPTION_POINTERS *pExceptionInfo);
 typedef LONG ( __stdcall *PFNCHFILTFN ) ( EXCEPTION_POINTERS * pExPtrs ) ;
@@ -889,7 +887,7 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 #ifdef USE_BUG_TRAP
 		SetupExceptionHandler			( is_dedicated );
 #endif // USE_BUG_TRAP
-		//previous_filter					= ::SetUnhandledExceptionFilter(UnhandledFilter);	// exception handler to all "unhandled" exceptions
+		previous_filter					= ::SetUnhandledExceptionFilter(UnhandledFilter);	// exception handler to all "unhandled" exceptions
 
 #if 0
 		struct foo {static void	recurs	(const u32 &count)
