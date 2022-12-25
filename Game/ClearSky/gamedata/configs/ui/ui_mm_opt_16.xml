@@ -1041,6 +1041,11 @@
 			<options_item entry="cl_dynamiccrosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_dyn_crosshair</text>
 		</check_dyn_crosshair>
+		
+		<check_adv_crosshair x="7" y="12" width="27" height="21" stretch="1">
+			<options_item entry="g_advanced_crosshair" group="mm_opt_gameplay"/>
+			<text font="letterica16" color="ui_6">ui_mm_adv_crosshair</text>
+		</check_adv_crosshair>
 
 		<check_show_weapon x="7" y="12" width="27" height="21" stretch="1">
 			<options_item entry="hud_weapon" group="mm_opt_gameplay"/>

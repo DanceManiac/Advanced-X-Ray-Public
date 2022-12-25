@@ -129,6 +129,7 @@ extern float	g_smart_cover_animation_speed_factor;
 extern	BOOL	g_ai_use_old_vision;
 float			g_aim_predict_time = 0.44f;
 int				g_keypress_on_start	= 1;
+extern	BOOL	g_advanced_crosshair;
 
 extern	BOOL	g_b_COD_PickUpMode;
 
@@ -2545,6 +2546,7 @@ extern BOOL dbg_moving_bones_snd_player;
 
 	//M.F.S. Crosshair Type
 	CMD3(CCC_Token,		"g_crosshair_type",		&crosshair_type, crosshair_type_token);
+	CMD4(CCC_Integer,	"g_advanced_crosshair",	&g_advanced_crosshair, 0, 1);
 
 	CMD4(CCC_Integer,	"keypress_on_start",	&g_keypress_on_start, 0, 1);
 

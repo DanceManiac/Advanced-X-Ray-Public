@@ -333,4 +333,7 @@
 	<string id="agroprom_underground">
 		<text>Подземелья Агропрома</text>
 	</string>
+	<string id="ui_mm_adv_crosshair">
+		<text>Улучшенное перекрестие</text>
+	</string>
 </string_table>

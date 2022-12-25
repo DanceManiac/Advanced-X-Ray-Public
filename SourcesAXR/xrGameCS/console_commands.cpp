@@ -126,6 +126,7 @@ ENGINE_API extern float	g_console_sensitive;
 
 int				g_keypress_on_start = 1;
 extern	BOOL	g_b_COD_PickUpMode;
+extern	BOOL	g_advanced_crosshair;
 
 //Custom commands for scripts
 
@@ -2301,6 +2302,7 @@ extern BOOL dbg_moving_bones_snd_player;
 
 	//M.F.S. Crosshair Type
 	CMD3(CCC_Token,		"g_crosshair_type",			&crosshair_type, crosshair_type_token);
+	CMD4(CCC_Integer,	"g_advanced_crosshair",		&g_advanced_crosshair,	0, 1);
 
 	CMD4(CCC_Integer,	"quick_save_counter",		&quick_save_counter,	0, 25);
 	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);

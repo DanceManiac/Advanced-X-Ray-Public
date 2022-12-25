@@ -869,6 +869,14 @@
 				<texture>ui_inGame2_checkbox</texture>
 				<options_item entry="cl_dynamiccrosshair" group="mm_opt_gameplay"/>
 			</check_dyn_crosshair>
+			
+			<cap_check_adv_crosshair x="62" y="3" width="108" height="24">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_adv_crosshair</text>
+			</cap_check_adv_crosshair>
+			<check_adv_crosshair x="199" y="1" width="35" stretch="1" height="29">
+				<texture>ui_inGame2_checkbox</texture>
+				<options_item entry="g_advanced_crosshair" group="mm_opt_gameplay"/>
+			</check_adv_crosshair>
 
 			<cap_check_show_weapon x="62" y="3" width="108" height="24">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_show_weapon</text>

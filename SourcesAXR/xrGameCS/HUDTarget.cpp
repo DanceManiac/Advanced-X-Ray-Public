@@ -301,7 +301,6 @@ void CHUDTarget::Render()
 	//отрендерить кружочек или крестик
 	if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)
 	{
-
 		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI()->m_currentPointType);
 
 		//	TODO: return code back to indexed rendering since we use quads
