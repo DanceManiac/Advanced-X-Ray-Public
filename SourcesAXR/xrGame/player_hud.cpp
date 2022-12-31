@@ -245,7 +245,7 @@ bool  attachable_hud_item::need_renderable()
 void attachable_hud_item::render()
 {
 	::Render->set_Transform		(&m_item_transform);
-	::Render->add_Visual		(m_model->dcast_RenderVisual());
+	::Render->add_Visual		(m_model->dcast_RenderVisual(), true);
 	debug_draw_firedeps			();
 	m_parent_hud_item->render_hud_mode();
 }
@@ -725,9 +725,9 @@ void player_hud::render_hud()
 	if(!b_r0 && !b_r1)									return;
 
 	::Render->set_Transform		(&m_transform);
-	::Render->add_Visual		(m_model->dcast_RenderVisual());
+	::Render->add_Visual		(m_model->dcast_RenderVisual(), true);
 	::Render->set_Transform		(&m_transform_2);
-	::Render->add_Visual		(m_model_2->dcast_RenderVisual());
+	::Render->add_Visual		(m_model_2->dcast_RenderVisual(), true);
 	
 	if(m_attached_items[0])
 		m_attached_items[0]->render();
@@ -738,7 +738,7 @@ void player_hud::render_hud()
 	if (script_anim_item_model)
 	{
 		::Render->set_Transform(&m_item_pos);
-		::Render->add_Visual(script_anim_item_model->dcast_RenderVisual());
+		::Render->add_Visual(script_anim_item_model->dcast_RenderVisual(), true);
 	}
 }
 
