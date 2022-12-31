@@ -169,7 +169,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			if (fis_zero(val))
 				continue;
 
-			if (i == _item_radiation_restore_speed || i == _item_bleeding_restore_speed || i >= _item_intoxication)
+			if (i == _item_radiation_restore_speed || i >= _item_intoxication)
 				vle = 1;
 			m_booster_items[i]->SetValue(val, vle);
 

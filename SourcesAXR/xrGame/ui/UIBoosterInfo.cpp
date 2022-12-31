@@ -222,7 +222,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			val /= max_val;
 			int vle = 2;
 			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
-			if (i == _item_boost_radiation_restore || i == _item_boost_bleeding_restore || i >= _item_intoxication)
+			if (i == _item_boost_radiation_restore || i >= _item_intoxication)
 				vle = 1; 
 			m_booster_items[i]->SetValue(val, vle);
 
