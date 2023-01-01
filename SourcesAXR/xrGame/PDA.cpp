@@ -282,6 +282,7 @@ void CPda::UpdateCL()
 		// Hide PDA UI on low condition (battery) or when the item is hidden.
 		if (!enoughBatteryPower || state == eHidden)
 		{
+			CurrentGameUI()->SetMainInputReceiver(nullptr, false);
 			pda->HideDialog();
 			m_bZoomed = false;
 
