@@ -235,8 +235,6 @@ void CUIPdaWnd::Hide()
 	inherited::Hide();
 	if (m_pActiveDialog)
 		m_pActiveDialog->Update();
-
-	pUILogsWnd->PerformWork();
 }
 
 void CUIPdaWnd::Update()
@@ -244,7 +242,7 @@ void CUIPdaWnd::Update()
 	inherited::Update();
 	m_pActiveDialog->Update();
 
-	Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(pUILogsWnd, &CUILogsWnd::PerformWork));
+	pUILogsWnd->PerformWork();
 }
 
 void CUIPdaWnd::SetActiveSubdialog(const shared_str& section)
