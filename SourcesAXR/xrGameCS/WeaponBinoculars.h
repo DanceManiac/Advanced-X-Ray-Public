@@ -22,6 +22,12 @@ public:
 
 	virtual void	OnZoomIn			();
 	virtual void	OnZoomOut			();
+	virtual	void	ZoomInc				();
+	virtual	void	ZoomDec				();
+	virtual void	GetZoomData			(const float scope_factor, float& delta, float& min_zoom_factor);
+
+	virtual	float	CurrentZoomFactor	() {return m_fRTZoomFactor;}
+
 	virtual void	net_Destroy			();
 	virtual BOOL	net_Spawn			(CSE_Abstract* DC);
 	bool			can_kill			() const;
