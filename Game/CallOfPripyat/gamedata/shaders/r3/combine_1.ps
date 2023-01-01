@@ -15,6 +15,10 @@
 	#include "screenspace_reflections.h"
 #endif
 
+#ifdef SSFX_FOG
+	#include "screenspace_fog.h"
+#endif
+
 float compute_height_fog(float3 P_view)
 {
     //Settings
@@ -256,11 +260,14 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 ////////////////////////////////////////////////////////////////////////////////
 
         // here should be distance fog
-        float3        	pos        		= P.xyz;
-        float         	distance		= length		(pos);
-        float         	fog				= saturate		(distance*fog_params.w + fog_params.x); //
-		                color			= lerp     		(color, fog_color, fog);        		//
-						color 			= lerp			(color, fog_color, compute_height_fog(P.xyz));
+#ifdef SSFX_FOG
+		float3 		WorldP			= mul(m_inv_V, float4(P.xyz, 1));
+		float		fog				= SSFX_HEIGHT_FOG(P.xyz, WorldP.y, color);
+#else
+		float		distance		= length		(P.xyz);
+		float		fog				= saturate		(distance*fog_params.w + fog_params.x);
+					color			= lerp			(color,fog_color,fog);
+#endif
 
         float        	skyblend		= saturate		(fog*fog);
 

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "screenspace_fog.h"
 
 struct	v_vert
 {
@@ -18,13 +19,14 @@ v2p main (v_vert v)
 
 	o.hpos		= mul(m_VP, v.pos);				// xform, input in world coords
 	o.c			= v.color;
-	o.fog 		= calc_fogging(v.pos);			// fog, input in world coords
-	o.fog 		= saturate(o.fog);
-	o.c.rgb 	= lerp(fog_color, o.c, o.fog);
+	
+	float fog	= calc_fogging(v.pos);			// fog, input in world coords
+	o.fog 		= SSFX_FOGGING(1.0 - fog, v.pos.y); // Add SSFX Fog
+	o.c.rgb 	= lerp(fog_color, o.c, o.fog * o.fog);	// fog blending
 
 	float scale = s_tonemap.Load(int3(0,0,0)).x;
-	o.c.rgb		= o.c.rgb*scale;      		// copy color, pre-scale by tonemap //float4 ( v.c.rgb*scale*2, v.c.a );
-	o.c.a		= o.fog*o.fog;
+	o.c.rgb		= o.c.rgb * scale; // copy color, pre-scale by tonemap //float4 ( v.c.rgb*scale*2, v.c.a );
+	o.c.a		= saturate(fog);//1.0f - o.fog;
 
 	return o;
 	

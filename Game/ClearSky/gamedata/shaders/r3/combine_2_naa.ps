@@ -2,6 +2,13 @@
 #include "mblur.h"
 #include "dof.h"
 
+// Check Screen Space Shaders
+#include "check_screenspace.h"
+
+#ifdef SSFX_DEBAND
+	#include "screenspace_debanding.h"
+#endif
+
 /*
 struct 	v2p
 {
@@ -58,11 +65,9 @@ c2_out main( v2p_aa_AA I )
 #else
 	gbuffer_data gbd	= gbuffer_load_data(I.Tex0, iSample );
 #endif
-	
+  	float 	depth 		= gbd.P.z;
+		
 #ifdef 	USE_DISTORT
-//  	float 	depth 	= tex2D 	(s_position, 	I.tc0).z;
-//	float4 	distort	= tex2D		(s_distort, 	I.tc0);
-  	float 	depth 	= gbd.P.z;
 #ifndef USE_MSAA
 	float4 	distort	= s_distort.Sample(smp_nofilter, I.Tex0);
 #else // USE_MSAA
@@ -83,17 +88,16 @@ c2_out main( v2p_aa_AA I )
 #else // USE_DISTORT
 	float2	center 	= I.Tex0;
 #endif
-   	//float3 	img 	= tex2D		(s_image, center);
 
 	float3	img	= dof(center);
-//	float4 	bloom	= tex2D		(s_bloom, center);
-    /*float4 bloom = s_bloom_new.Sample(smp_rtlinear,center);
-	float4 bloom_orig = s_bloom.Sample(smp_rtlinear,center);
-	bloom = (bloom + bloom_orig);*/
 	float4 	bloom	= s_bloom.Sample( smp_rtlinear, center);
-	
-//			img 	= mblur		(center,tex2D(s_position,I.tc0),img.rgb);
-//			img 	= mblur( center, s_position.Sample( smp_nofilter, tc0), img.rgb);
+
+	// Sky Debanding Implementation
+#ifdef SSFX_DEBAND
+	if (depth <= SKY_EPS)
+		img = ssfx_debanding(img, I.Tex0.xy);
+#endif
+
 	if (!isSecondVPActive())
 			img 	= mblur( center, ( gbd ).P, img.rgb);
 
