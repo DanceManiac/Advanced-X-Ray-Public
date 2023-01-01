@@ -1866,3 +1866,11 @@ end
 function autosave_game()
 	get_console():execute("save "..user_name().."_autosave")
 end
+
+function hide_actor_weapon()
+	db.actor:hide_weapon()
+end
+
+function show_actor_weapon()
+	db.actor:restore_weapon()
+end
