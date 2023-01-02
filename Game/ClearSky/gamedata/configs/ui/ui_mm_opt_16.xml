@@ -374,7 +374,7 @@
 					right_ident="0" left_ident="0" top_indent="0" bottom_indent="0"
 					vert_interval="0" always_show_scroll="0"/>
 
-    <templ_item width="375" height="25"/>
+    <templ_item width="395" height="25"/>
 
     <cap_vis_dist x="77" y="0" width="119" height="21">
       <text font="letterica16" color="ui_6">ui_mm_vis_distance</text>

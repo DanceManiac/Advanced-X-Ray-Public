@@ -361,7 +361,7 @@
 					right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" 
 					vert_interval="0" always_show_scroll="0"/>
 
-		<templ_item width="450" height="30"/>
+		<templ_item width="500" height="30"/>
 
 		<cap_vis_dist x="120" y="0" width="143" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_vis_distance</text>
@@ -616,8 +616,8 @@
 		
 		<cap_mt_textures_load x="120" y="0" width="143" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_mt_textures_load</text>
-		</cap_mt_textures_loadcheck_mt_textures_load>
-		<check_optimize_shadow_geom x="264" y="0" width="30" height="21">
+		</cap_mt_textures_load>
+		<check_mt_textures_load x="264" y="0" width="30" height="21">
 			<options_item entry="r__mt_textures_load" group="mm_opt_video_adv" depend="vid"/>
 		</check_mt_textures_load>
 		
