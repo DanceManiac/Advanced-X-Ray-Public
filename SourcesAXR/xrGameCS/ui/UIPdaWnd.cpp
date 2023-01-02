@@ -162,8 +162,8 @@ bool CUIPdaWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 		CPda* pda = Actor()->GetPDA();
 		if (pda)
 		{
-			if (pda->IsPending())
-				return true;
+			//if (pda->IsPending())
+			//	return true;
 
 			if (mouse_action == WINDOW_LBUTTON_DOWN)
 				bButtonL = true;
