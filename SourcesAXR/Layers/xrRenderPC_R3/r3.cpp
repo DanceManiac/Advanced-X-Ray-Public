@@ -338,6 +338,7 @@ void					CRender::create					()
 	o.dx10_minmax_sm = ps_r3_minmax_sm;
 	o.dx10_minmax_sm_screenarea_threshold = 1600*1200;
 	o.dx10_winter_mode = !bWinterMode;
+	o.dx10_lowland_fog_mode = bLowlandFogWeather;
 
 	if (o.dx10_minmax_sm==MMSM_AUTODETECT)
 	{
@@ -1265,6 +1266,14 @@ HRESULT	CRender::shader_compile			(
 			def_it++;
 	}
 	sh_name[len] = '0' + char(o.dx10_winter_mode); ++len;
+
+	if (o.dx10_lowland_fog_mode)
+	{
+		defines[def_it].Name = "G_USE_PARAMS_FROM_WEATHER";
+		defines[def_it].Definition = "1";
+		def_it++;
+	}
+	sh_name[len] = '0' + char(o.dx10_lowland_fog_mode); ++len;
 
 	// add a #define for DX10_1 MSAA support
    if( o.dx10_msaa )
