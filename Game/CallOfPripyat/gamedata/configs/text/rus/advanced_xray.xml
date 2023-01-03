@@ -318,4 +318,13 @@
 	<string id="ui_mm_adv_crosshair">
 		<text>Улучшенное перекрестие</text>
 	</string>
+	<string id="ui_mm_lowland_fog_type">
+		<text>Тип низинного тумана</text>
+	</string>
+	<string id="st_gswr">
+		<text>G.S.W.R.</text>
+	</string>
+	<string id="st_screen_space_shaders">
+		<text>Screen Space Shaders</text>
+	</string>
 </string_table>

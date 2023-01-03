@@ -1014,6 +1014,8 @@ HRESULT	CRender::shader_compile			(
 	char							c_dt_ssr_samp	[32];
 	// SMAA Quality
 	char							c_aa			[32];
+	//For lowland fog type
+	char							c_low_fog_type	[32];
 
 	char	sh_name[MAX_PATH] = "";
 	
@@ -1426,6 +1428,15 @@ HRESULT	CRender::shader_compile			(
 		def_it++;
 	}
 	sh_name[len] = '0' + char(o.dx10_lowland_fog_mode); ++len;
+
+	// Тип низинного тумана
+	{
+		sprintf_s(c_low_fog_type, "%d", ps_lowland_fog_type);
+		defines[def_it].Name = "LOWLAND_FOG_TYPE";
+		defines[def_it].Definition = c_low_fog_type;
+		def_it++;
+		sh_name[len] = '0' + char(ps_lowland_fog_type); ++len;
+	}
 
 	//Be carefull!!!!! this should be at the end to correctly generate
 	//compiled shader name;

@@ -899,6 +899,18 @@
       <options_item entry="r3_use_dx10_1" group="mm_opt_video_adv" depend="vid"/>
     </check_r3_msaa_opt>
 
+    <cap_r3_lowland_fog_type x="120" y="0" width="143" height="21">
+      <text font="letterica16" color="ui_6">ui_mm_lowland_fog_type</text>
+    </cap_r3_lowland_fog_type>
+    <combo_r3_lowland_fog_type x="264" y="0" width="245" height="21" always_show_scroll="1">
+      <options_item entry="r3_lowland_fog_type" group="mm_opt_video_adv" depend="vid"/>
+      <text_color>
+        <e r="216" g="186" b="140"/>
+        <d color="ui_gray"/>
+      </text_color>
+      <list_font_s r="240" g="217" b="182"/>
+      <list_font	 r="216" g="186" b="140" font="letterica16"/>
+    </combo_r3_lowland_fog_type>
 
     <btn_to_simply x="342" y="325" width="111" height="29">
 			<text align="c" font="letterica16" r="227" g="199" b="178">ui_mm_simply</text>	

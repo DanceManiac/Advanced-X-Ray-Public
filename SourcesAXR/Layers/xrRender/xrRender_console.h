@@ -171,6 +171,10 @@ extern ECORE_API int			ps_r2_lfx;
 //Многопоточная загрузка текстур
 extern ECORE_API int			ps_mt_texture_load;
 
+//Тип низинного тумана
+extern ECORE_API	u32			ps_lowland_fog_type;
+extern ECORE_API	xr_token	lowland_fog_type_token[];
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),

@@ -164,6 +164,13 @@ xr_token							qflares_token[] = {
 	{ 0,							0												}
 };
 
+//Тип низинного тумана
+u32 ps_lowland_fog_type = 0;
+xr_token lowland_fog_type_token[] = {
+	{ "st_gswr", 0 },
+	{ "st_screen_space_shaders", 1 },
+	{ 0, 0 }
+};
 
 //	“Off”
 //	“DX10.0 style [Standard]”
@@ -1204,6 +1211,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"ssfx_wpn_dof_2",				&ps_ssfx_wpn_dof_2,			0, 1);
 
 	CMD4(CCC_Integer,		"r__mt_textures_load",			&ps_mt_texture_load,		0, 1); //Многопоточная загрузка текстур
+	CMD3(CCC_Token,			"r3_lowland_fog_type",			&ps_lowland_fog_type,		lowland_fog_type_token); //Тип низинного тумана
 
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
