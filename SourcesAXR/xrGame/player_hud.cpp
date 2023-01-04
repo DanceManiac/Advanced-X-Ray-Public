@@ -202,10 +202,9 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 
 		auto Wpn = smart_cast<CWeapon*>(m_parent_hud_item);
 
-		if (Wpn) // && m_measures.useCopFirePoint)
+		if (Wpn)
 			Wpn->CorrectDirFromWorldToHud(fd.vLastFD);
 
-		VERIFY(_valid(fd.vLastFD));
 		VERIFY(_valid(fd.vLastFD));
 
 		fd.m_FireParticlesXForm.identity				();
@@ -223,7 +222,6 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 		m_item_transform.transform_tiny	(fd.vLastFP2);
 		fd.vLastFP2.add(Device.vCameraPosition);
 		VERIFY(_valid(fd.vLastFP2));
-		VERIFY(_valid(fd.vLastFP2));
 	}
 
 	if(m_measures.m_prop_flags.test(hud_item_measures::e_shell_point))
@@ -232,7 +230,6 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 		fire_mat.transform_tiny		(fd.vLastSP,m_measures.m_shell_point_offset);
 		m_item_transform.transform_tiny	(fd.vLastSP);
 		fd.vLastSP.add(Device.vCameraPosition);
-		VERIFY(_valid(fd.vLastSP));
 		VERIFY(_valid(fd.vLastSP));
 	}
 }

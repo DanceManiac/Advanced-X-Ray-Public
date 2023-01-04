@@ -367,3 +367,86 @@ void hud_adjust_mode_keyb(int dik)
 			hud_adj_item_idx = 1;
 	}
 }
+
+void player_hud::SaveCfg(const int idx) const
+{
+	const auto hi = m_attached_items[idx];
+	if (!hi)
+		return;
+
+	const char* sect_name = *hi->m_sect_name;
+	string_path fname;
+	FS.update_path(fname, "$game_data$", make_string("_hud\\%s.ltx", sect_name).c_str());
+
+	CInifile pHudCfg(fname, false, false, true);
+	//-----------------//
+	pHudCfg.w_string(sect_name,
+		"gl_hud_offset_pos_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[0][2].x,
+			hi->m_measures.m_hands_offset[0][2].y,
+			hi->m_measures.m_hands_offset[0][2].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"gl_hud_offset_rot_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][2].x,
+			hi->m_measures.m_hands_offset[1][2].y,
+			hi->m_measures.m_hands_offset[1][2].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_pos_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[0][1].x,
+			hi->m_measures.m_hands_offset[0][1].y,
+			hi->m_measures.m_hands_offset[0][1].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"aim_hud_offset_rot_16x9",
+		make_string("%f,%f,%f",
+			hi->m_measures.m_hands_offset[1][1].x,
+			hi->m_measures.m_hands_offset[1][1].y,
+			hi->m_measures.m_hands_offset[1][1].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"hands_position_16x9",
+		make_string(
+			"%f,%f,%f", hi->m_measures.m_hands_attach[0].x, hi->m_measures.m_hands_attach[0].y, hi->m_measures.m_hands_attach[0].z)
+		.c_str());
+	pHudCfg.w_string(sect_name,
+		"hands_orientation_16x9",
+		make_string(
+			"%f,%f,%f", hi->m_measures.m_hands_attach[1].x, hi->m_measures.m_hands_attach[1].y, hi->m_measures.m_hands_attach[1].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"item_position",
+		make_string("%f,%f,%f", hi->m_measures.m_item_attach[0].x, hi->m_measures.m_item_attach[0].y, hi->m_measures.m_item_attach[0].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"item_orientation",
+		make_string("%f,%f,%f", hi->m_measures.m_item_attach[1].x, hi->m_measures.m_item_attach[1].y, hi->m_measures.m_item_attach[1].z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"fire_point",
+		make_string("%f,%f,%f", hi->m_measures.m_fire_point_offset.x, hi->m_measures.m_fire_point_offset.y, hi->m_measures.m_fire_point_offset.z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"fire_point2",
+		make_string("%f,%f,%f", hi->m_measures.m_fire_point2_offset.x, hi->m_measures.m_fire_point2_offset.y, hi->m_measures.m_fire_point2_offset.z)
+		.c_str());
+
+	pHudCfg.w_string(sect_name,
+		"shell_point",
+		make_string("%f,%f,%f", hi->m_measures.m_shell_point_offset.x, hi->m_measures.m_shell_point_offset.y, hi->m_measures.m_shell_point_offset.z)
+		.c_str());
+
+	//-----------------//
+	Msg("[%s] HUD data saved to %s", __FUNCTION__, fname);
+	Sleep(250);
+}

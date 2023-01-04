@@ -259,6 +259,7 @@ struct attachable_hud_item
 //props
 	u32								m_upd_firedeps_frame;
 	void		tune				(Ivector values);
+	void		SaveCfg				(const int idx) const;
 	u32			anim_play			(const shared_str& anim_name, BOOL bMixIn, const CMotionDef*& md, u8& rnd);
 
 };

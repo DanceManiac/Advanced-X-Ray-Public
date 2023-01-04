@@ -54,8 +54,8 @@ void ShowMain()
 		show_weather_window ^= 1;
     if (ImGui::Button("Position Informer"))
         show_position_informer = !show_position_informer;
-	/*if (ImGui::Button("HUD Editor"))
-		show_hud_editor = !show_hud_editor;*/
+	if (ImGui::Button("HUD Editor"))
+		show_hud_editor = !show_hud_editor;
 	bool full = stage == EditorStage::Full;
 	if (ImGui::Checkbox("Active", &full))
 		stage = full ? EditorStage::Full : EditorStage::Light;
@@ -85,8 +85,8 @@ void ShowEditor()
         ShowWeatherEditor(show_weather_window);
     if (show_position_informer)
         ShowPositionInformer(show_position_informer);
-	/*if (show_hud_editor)
-		ShowHudEditor(show_hud_editor);*/
+	if (show_hud_editor)
+		ShowHudEditor(show_hud_editor);
     /*if (show_prop_window)
         ShowPropEditor(show_prop_window);
 	if (show_lua_binder)

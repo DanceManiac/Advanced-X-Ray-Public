@@ -296,6 +296,7 @@ public:
 
 	void			calc_transform		(u16 attach_slot_idx, const Fmatrix& offset, Fmatrix& result);
 	void			tune				(Ivector values);
+	void			SaveCfg				(const int idx) const;
 	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed);
 	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);
