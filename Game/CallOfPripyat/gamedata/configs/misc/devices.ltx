@@ -91,6 +91,10 @@ inv_grid_y		= 14
 max_charge_level		= 1.0 	;; Максимальный уровень заряда
 uncharge_speed			= 0.05  ;; Скорость разрядки
 
+light_enabled = true
+light_color = 0.156, 0.255, 0.255
+light_range = 0.25
+
 cost			= 500
 default_to_ruck		= false
 
@@ -163,19 +167,15 @@ gl_hud_offset_rot			= 0,0,0
 lean_hud_offset_pos		= 0,0,0
 lean_hud_offset_rot		= 0,0,0
 
-
-
 [detector_simple_hud]:detector_base_hud
-
-
 item_position				= -0.072424,0.030392,-0.012213
 item_orientation			= 324.640503,-189.627350,-183.009415
 
 item_visual                   	= dynamics\devices\dev_detector_1\dev_detector_1_hud
 
 fire_point			= 0,0,-0.05
-fire_bone      	      		= light_bone_2
-fire_point2			= 0,0,0
+fire_bone      	    = light_bone_2
+fire_point2         = -0.010000, 0.050000, -0.040000
 fire_bone2			= light_bone_1
 
 anm_show			= dev_detector_1_draw
@@ -194,8 +194,8 @@ anm_idle_16x9			= dev_detector_1_idle_ws, dev_detector_1_idle
 anm_idle_moving_16x9		= dev_detector_1_idle_moving_ws, dev_detector_1_idle_moving
 anm_idle_sprint_16x9		= dev_detector_1_idle_moving_ws, dev_detector_1_idle_moving
 
-flash_light_range		= 0.1
-onoff_light_range		= 0.1
+flash_light_range		= 0.0
+onoff_light_range		= 0.0
 
 [detector_advanced]:detector_simple
 $spawn 			= "devices\detector_advanced"
@@ -215,6 +215,10 @@ inv_grid_y		= 7
 ;Заряд
 max_charge_level		= 1.0 	;; Максимальный уровень заряда
 uncharge_speed			= 0.05  ;; Скорость разрядки
+
+light_enabled = true
+light_color = 0.057, 0.125, 0.049
+light_range = 0.25
 
 cost			= 1000
 hud			= detector_advanced_hud
@@ -249,9 +253,13 @@ af_freq_18		= 0.05, 2
 
 
 [detector_advanced_hud]:detector_base_hud
-
 item_position				= -0.078949,0.039172,-0.019197
 item_orientation			= 320.606964,-194.089020,-186.572464
+
+fire_point			= 0,0,-0.05
+fire_bone      	    = screen_bone
+fire_point2         = -0.150000, 0.050000, 0.020000
+fire_bone2			= light_bone_1
 
 item_visual                   	= dynamics\devices\dev_detector_2\dev_detector_2_hud
 
@@ -288,6 +296,11 @@ inv_grid_y		= 14
 ;Заряд
 max_charge_level		= 1.0 	;; Максимальный уровень заряда
 uncharge_speed			= 0.04  ;; Скорость разрядки
+
+light_enabled = true
+light_always = true
+light_color = 0.012, 0.089, 0.078
+light_range = 0.35
 
 cost			= 2000
 
@@ -331,6 +344,11 @@ af_freq_26		= 0.05, 2
 item_position				= -0.071685,0.036188,-0.009934
 item_orientation			= 314.589233,-186.420761,-189.323669
 
+fire_point			= 0,0,-0.05
+fire_bone      	    = cover
+fire_point2         = -0.100000, 0.000000, 0.000000
+fire_bone2			= cover
+
 item_visual                   	= dynamics\devices\dev_detector_3\dev_detector_3_hud
 
 anm_show			= dev_detector_3_draw
@@ -368,6 +386,11 @@ inv_grid_y		= 21
 ;Заряд
 max_charge_level		= 1.0 	;; Максимальный уровень заряда
 uncharge_speed			= 0.035  ;; Скорость разрядки
+
+light_enabled = true
+light_always = true
+light_color = 0.012, 0.089, 0.078
+light_range = 0.35
 
 cost			= 12500
 
@@ -465,6 +488,11 @@ zone_freq_33		= 0.05, 2
 [detector_scientific_hud]:detector_base_hud
 item_position				= -0.071685,0.036188,-0.009934
 item_orientation			= 314.589233,-186.420761,-189.323669
+
+fire_point			= 0,0,-0.05
+fire_bone      	    = cover
+fire_point2         = -0.140000, -0.060000, 0.000000
+fire_bone2			= cover
 
 item_visual                   	= dynamics\devices\dev_detector_4\dev_detector_4_hud
 

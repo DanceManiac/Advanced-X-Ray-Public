@@ -11,6 +11,7 @@
 
 class CCustomZone;
 class CInventoryOwner;
+class CLAItem;
 
 struct ITEM_TYPE
 {
@@ -165,6 +166,29 @@ public:
 			float	m_fMaxChargeLevel;
 			float	m_fCurrentChargeLevel;
 			float	m_fUnchargeSpeed;
+
+			//Light
+			bool		m_bLightsEnabled;
+			bool		m_bLightsAlways;
+			bool		m_bGlowEnabled;
+			bool		m_bVolumetricLights;
+			float		m_fVolumetricQuality;
+			float		m_fVolumetricDistance;
+			float		m_fVolumetricIntensity;
+			float		fBrightness{ 0.25f };
+			int			m_iLightType;
+			ref_light	detector_light;
+			ref_glow	detector_glow;
+			CLAItem*	light_lanim;
+
+	virtual void processing_deactivate() override
+	{
+		UpdateLights();
+		inherited::processing_deactivate();
+	}
+
+			void	UpdateLights		();
+
 protected:
 			bool	CheckCompatibilityInt		(CHudItem* itm, u16* slot_to_activate);
 			void 	TurnDetectorInternal		(bool b);

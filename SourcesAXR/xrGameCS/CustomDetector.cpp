@@ -11,6 +11,7 @@
 #include "player_hud.h"
 #include "weapon.h"
 #include "AdvancedXrayGameConstants.h"
+#include "../xrEngine/LightAnimLibrary.h"
 #include "Battery.h"
 
 ITEM_INFO::ITEM_INFO()
@@ -165,6 +166,8 @@ CCustomDetector::~CCustomDetector()
 	m_artefacts.destroy		();
 	TurnDetectorInternal	(false);
 	xr_delete				(m_ui);
+	detector_light.destroy	();
+	detector_glow.destroy	();
 }
 
 BOOL CCustomDetector::net_Spawn(CSE_Abstract* DC) 
@@ -191,6 +194,53 @@ void CCustomDetector::Load(LPCSTR section)
 	{
 		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
 		m_fCurrentChargeLevel = rnd_charge;
+	}
+
+	m_bLightsEnabled = READ_IF_EXISTS(pSettings, r_string, section, "light_enabled", false);
+
+	if (!detector_light && m_bLightsEnabled)
+	{
+		m_bLightsAlways = READ_IF_EXISTS(pSettings, r_string, section, "light_always", false);
+
+		detector_light = ::Render->light_create();
+		detector_light->set_shadow(READ_IF_EXISTS(pSettings, r_string, section, "light_shadow", false));
+
+		m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+		m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+		m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+		m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
+		m_iLightType = READ_IF_EXISTS(pSettings, r_u8, section, "light_type", 1);
+		light_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, section, "color_animator", ""));
+
+		const Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, section, "light_color", (Fcolor{ 1.0f, 0.0f, 0.0f, 1.0f }));
+
+		fBrightness = clr.intensity();
+		detector_light->set_color(clr);
+
+		const float range = READ_IF_EXISTS(pSettings, r_float, section, "light_range", 1.f);
+
+		detector_light->set_range(range);
+		detector_light->set_hud_mode(true);
+		detector_light->set_type((IRender_Light::LT)m_iLightType);
+		detector_light->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, section, "light_spot_angle", 1.f)));
+		detector_light->set_texture(READ_IF_EXISTS(pSettings, r_string, section, "spot_texture", nullptr));
+
+		detector_light->set_volumetric(m_bVolumetricLights);
+		detector_light->set_volumetric_quality(m_fVolumetricQuality);
+		detector_light->set_volumetric_distance(m_fVolumetricDistance);
+		detector_light->set_volumetric_intensity(m_fVolumetricIntensity);
+
+		//Glow
+		m_bGlowEnabled = READ_IF_EXISTS(pSettings, r_string, section, "glow_enabled", false);
+
+		if (!detector_glow && m_bGlowEnabled)
+		{
+			detector_glow = ::Render->glow_create();
+			detector_glow->set_texture(READ_IF_EXISTS(pSettings, r_string, section, "glow_texture", nullptr));
+			detector_glow->set_color(clr);
+			detector_glow->set_radius(READ_IF_EXISTS(pSettings, r_float, section, "glow_radius", 0.3f));
+		}
 	}
 }
 
@@ -221,10 +271,52 @@ void CCustomDetector::UpfateWork()
 	m_ui->update			();
 }
 
+void CCustomDetector::UpdateLights()
+{
+	if (detector_light)
+	{
+		if (!detector_light->get_active() && m_fCurrentChargeLevel > 0 && IsWorking() && (m_artefacts.m_ItemInfos.size() > 0 || m_bLightsAlways))
+		{
+			detector_light->set_active(true);
+
+			if (detector_glow && !detector_glow->get_active() && m_bGlowEnabled)
+				detector_glow->set_active(true);
+		}
+		else if (detector_light->get_active() && (m_fCurrentChargeLevel <= 0 || !IsWorking() || (m_artefacts.m_ItemInfos.size() == 0) && !m_bLightsAlways))
+		{
+			detector_light->set_active(false);
+
+			if (detector_glow && detector_glow->get_active() && m_bGlowEnabled)
+				detector_glow->set_active(false);
+		}
+
+		if (detector_light->get_active() && HudItemData())
+		{
+			if (GetHUDmode())
+			{
+				firedeps fd;
+				HudItemData()->setup_firedeps(fd);
+				detector_light->set_position(fd.vLastFP2);
+
+				if (detector_glow && detector_glow->get_active())
+					detector_glow->set_position(fd.vLastFP2);
+			}
+
+			// calc color animator
+			if (light_lanim)
+			{
+				int frame{};
+				u32 clr = light_lanim->CalculateRGB(Device.fTimeGlobal, frame);
+				Fcolor fclr;
+				fclr.set(clr);
+				detector_light->set_color(fclr);
+			}
+		}
+	}
+}
+
 void CCustomDetector::UpdateVisibility()
 {
-
-
 	//check visibility
 	attachable_hud_item* i0		= g_player_hud->attached_item(0);
 	if(i0 && HudItemData())
@@ -264,6 +356,7 @@ void CCustomDetector::UpdateVisibility()
 void CCustomDetector::UpdateCL() 
 {
 	inherited::UpdateCL();
+	UpdateLights();
 
 	if (GameConstants::GetArtDetectorUseBattery())
 		UpdateChargeLevel();
