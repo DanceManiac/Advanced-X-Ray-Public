@@ -10,6 +10,7 @@
 
 class CInventoryOwner;
 class CPda;
+class CLAItem;
 
 DEF_VECTOR(PDA_LIST, CPda*);
 
@@ -92,6 +93,27 @@ protected:
 	bool hasEnoughBatteryPower(){ return (!IsUsingCondition() || (IsUsingCondition() && GetCondition() > m_fLowestBatteryCharge)); }
 	static void _BCL JoystickCallback(CBoneInstance* B);
 	bool m_bNoticedEmptyBattery;
+
+	//Light
+	bool		m_bLightsEnabled;
+	bool		m_bGlowEnabled;
+	bool		m_bVolumetricLights;
+	float		m_fVolumetricQuality;
+	float		m_fVolumetricDistance;
+	float		m_fVolumetricIntensity;
+	float		fBrightness{ 0.25f };
+	int			m_iLightType;
+	ref_light	pda_light;
+	ref_glow	pda_glow;
+	CLAItem*	light_lanim;
+
+	virtual void processing_deactivate() override
+	{
+		UpdateLights();
+		inherited::processing_deactivate();
+	}
+
+	void	UpdateLights();
 public:
 	virtual void OnStateSwitch(u32 S);
 	virtual void OnAnimationEnd(u32 state);

@@ -19,6 +19,7 @@
 #include "Inventory.h"
 #include "../xrEngine/x_ray.h"
 #include "AdvancedXrayGameConstants.h"
+#include "../xrEngine/LightAnimLibrary.h"
 
 bool SSFX_PDA_DoF_active = false;
 
@@ -37,7 +38,11 @@ CPda::CPda(void)
 	m_bNoticedEmptyBattery = false;
 }
 
-CPda::~CPda() {}
+CPda::~CPda()
+{
+	pda_light.destroy();
+	pda_glow.destroy();
+}
 
 BOOL CPda::net_Spawn(CSE_Abstract* DC)
 {
@@ -79,6 +84,51 @@ void CPda::Load(LPCSTR section)
 	m_screen_off_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_off_delay", 0.f);
 	m_thumb_rot[0] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_x", 0.f);
 	m_thumb_rot[1] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_y", 0.f);
+
+	m_bLightsEnabled = READ_IF_EXISTS(pSettings, r_string, section, "light_enabled", false);
+
+	if (!pda_light && m_bLightsEnabled && psActorFlags.test(AF_3D_PDA))
+	{
+		pda_light = ::Render->light_create();
+		pda_light->set_shadow(READ_IF_EXISTS(pSettings, r_string, section, "light_shadow", false));
+
+		m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+		m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+		m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+		m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
+		m_iLightType = READ_IF_EXISTS(pSettings, r_u8, section, "light_type", 1);
+		light_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, section, "color_animator", ""));
+
+		const Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, section, "light_color", (Fcolor{ 1.0f, 0.0f, 0.0f, 1.0f }));
+
+		fBrightness = clr.intensity();
+		pda_light->set_color(clr);
+
+		const float range = READ_IF_EXISTS(pSettings, r_float, section, "light_range", 1.f);
+
+		pda_light->set_range(range);
+		pda_light->set_hud_mode(true);
+		pda_light->set_type((IRender_Light::LT)m_iLightType);
+		pda_light->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, section, "light_spot_angle", 1.f)));
+		pda_light->set_texture(READ_IF_EXISTS(pSettings, r_string, section, "spot_texture", nullptr));
+
+		pda_light->set_volumetric(m_bVolumetricLights);
+		pda_light->set_volumetric_quality(m_fVolumetricQuality);
+		pda_light->set_volumetric_distance(m_fVolumetricDistance);
+		pda_light->set_volumetric_intensity(m_fVolumetricIntensity);
+
+		//Glow
+		m_bGlowEnabled = READ_IF_EXISTS(pSettings, r_string, section, "glow_enabled", false);
+
+		if (!pda_glow && m_bGlowEnabled)
+		{
+			pda_glow = ::Render->glow_create();
+			pda_glow->set_texture(READ_IF_EXISTS(pSettings, r_string, section, "glow_texture", nullptr));
+			pda_glow->set_color(clr);
+			pda_glow->set_radius(READ_IF_EXISTS(pSettings, r_float, section, "glow_radius", 0.3f));
+		}
+	}
 }
 
 void CPda::OnStateSwitch(u32 S)
@@ -261,6 +311,8 @@ void CPda::UpdateCL()
 	if (!ParentIsActor())
 		return;
 
+	UpdateLights();
+
 	const u32 state = GetState();
 	const bool enoughBatteryPower = hasEnoughBatteryPower();
 	const bool b_main_menu_is_active = (g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive());
@@ -394,6 +446,52 @@ void CPda::shedule_Update(u32 dt)
 
 		feel_touch_update(Position(), m_fRadius);
 		UpdateActiveContacts();
+	}
+}
+
+void CPda::UpdateLights()
+{
+	if (pda_light && psActorFlags.test(AF_3D_PDA))
+	{
+		const u32 state = GetState();
+
+		if (!pda_light->get_active() && (state == eShowing || state == eIdle))
+		{
+			pda_light->set_active(true);
+
+			if (pda_glow && !pda_glow->get_active() && m_bGlowEnabled)
+				pda_glow->set_active(true);
+		}
+		else if (pda_light->get_active() && (state == eHiding || state == eHidden))
+		{
+			pda_light->set_active(false);
+
+			if (pda_glow && pda_glow->get_active() && m_bGlowEnabled)
+				pda_glow->set_active(false);
+		}
+
+		if (pda_light->get_active() && HudItemData())
+		{
+			if (GetHUDmode())
+			{
+				firedeps fd;
+				HudItemData()->setup_firedeps(fd);
+				pda_light->set_position(fd.vLastFP2);
+
+				if (pda_glow && pda_glow->get_active())
+					pda_glow->set_position(fd.vLastFP2);
+			}
+
+			// calc color animator
+			if (light_lanim)
+			{
+				int frame{};
+				u32 clr = light_lanim->CalculateRGB(Device.fTimeGlobal, frame);
+				Fcolor fclr;
+				fclr.set(clr);
+				pda_light->set_color(fclr);
+			}
+		}
 	}
 }
 
