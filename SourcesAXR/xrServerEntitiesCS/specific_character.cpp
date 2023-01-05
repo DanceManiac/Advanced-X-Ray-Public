@@ -133,8 +133,17 @@ void CSpecificCharacter::load_shared	(LPCSTR)
 
 #endif
 
-	data()->m_sVisual		= pXML->Read("visual", 0, "");
-	
+	data()->first_visual = pXML->ReadAttribInt("visual", 0, "first_visual", -1);
+	data()->last_visual = pXML->ReadAttribInt("visual", 0, "last_visual", -1);
+	int rnd_vis{};
+
+	data()->m_sVisual = pXML->Read("visual", 0, "");
+
+	if (data()->first_visual != -1 && data()->last_visual != -1)
+	{
+		data()->first_visual = _min(data()->first_visual, data()->last_visual);
+		data()->last_visual = _max(data()->last_visual, data()->first_visual);
+	}
 
 #ifdef  XRGAME_EXPORTS
 	data()->m_sSupplySpawn	= pXML->Read("supplies", 0, "");
@@ -288,5 +297,20 @@ CHARACTER_REPUTATION_VALUE CSpecificCharacter::Reputation	() const
 
 LPCSTR CSpecificCharacter::Visual		() const 
 {
+	string_path visual_randomized{};
+	xr_string visual_name = data()->m_sVisual.c_str();
+	int rnd_vis{};
+
+	if (visual_name.back() == '_' && data()->first_visual != -1 && data()->last_visual != -1)
+	{
+		if (data()->last_visual != data()->first_visual)
+			rnd_vis = ::Random.randI(data()->first_visual, data()->last_visual);
+		else
+			rnd_vis = data()->last_visual;
+
+		strconcat(sizeof(visual_randomized), visual_randomized, visual_name.c_str(), std::to_string(rnd_vis).c_str());
+		return visual_randomized;
+	}
+
 	return data()->m_sVisual.c_str();
 }

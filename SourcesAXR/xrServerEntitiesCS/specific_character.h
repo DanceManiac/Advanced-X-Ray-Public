@@ -89,6 +89,7 @@ struct SSpecificCharacterData : CSharedResource
 	};
 	SMoneyDef			money_def;
 #endif
+	int first_visual, last_visual;
 };
 
 class CInventoryOwner;
