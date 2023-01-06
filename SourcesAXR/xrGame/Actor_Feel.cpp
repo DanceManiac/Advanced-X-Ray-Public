@@ -17,6 +17,7 @@
 #include "Level.h"
 #include "clsid_game.h"
 #include "hudmanager.h"
+#include "ui\UIPdaWnd.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -121,8 +122,11 @@ BOOL CActor::CanPickItem(const CFrustum& frustum, const Fvector& from, CObject* 
 
 void CActor::PickupModeUpdate()
 {
+	CUIPdaWnd* pda = &CurrentGameUI()->PdaMenu();
+
 	if(!m_bPickupMode)				return; // kUSE key pressed
 	if(!IsGameTypeSingle())			return;
+	if (pda->IsShown())				return;
 
 	//подбирание объекта
 	if(	m_pObjectWeLookingAt									&& 
@@ -147,7 +151,7 @@ void CActor::PickupModeUpdate()
 
 	for(xr_vector<CObject*>::iterator it = feel_touch.begin(); it != feel_touch.end(); it++)
 	{
-		if (CanPickItem(frustum, Device.vCameraPosition, *it)) 
+		if (CanPickItem(frustum, Device.vCameraPosition, *it) && m_fPickupInfoRadius > 0)
 			PickupInfoDraw(*it);
 	}
 }

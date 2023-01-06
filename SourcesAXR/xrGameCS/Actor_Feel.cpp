@@ -16,6 +16,8 @@
 #include "game_cl_base.h"
 #include "Level.h"
 #include "clsid_game.h"
+#include "UIGameCustom.h"
+#include "ui\UIPdaWnd.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
 //AAAAAA
@@ -121,8 +123,11 @@ BOOL CActor::CanPickItem(const CFrustum& frustum, const Fvector& from, CObject* 
 
 void CActor::PickupModeUpdate()
 {
+	const auto pda = &HUD().GetUI()->UIGame()->PdaMenu();
+
 	if(!m_bPickupMode) return;
 	if (GameID() != eGameIDSingle) return;
+	if (pda->IsShown()) return;
 
 	//подбирание объекта
 	if(	m_pObjectWeLookingAt									&& 
@@ -147,7 +152,8 @@ void CActor::PickupModeUpdate()
 	frustum.CreateFromMatrix(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
 	//. slow (ray-query test)
 	for(xr_vector<CObject*>::iterator it = feel_touch.begin(); it != feel_touch.end(); it++)
-		if (CanPickItem(frustum,Device.vCameraPosition,*it)) PickupInfoDraw(*it);
+		if (CanPickItem(frustum,Device.vCameraPosition,*it) && m_fPickupInfoRadius > 0)
+			PickupInfoDraw(*it);
 }
 
 #include "../xrEngine/CameraBase.h"
