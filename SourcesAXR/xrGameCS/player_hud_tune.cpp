@@ -376,7 +376,7 @@ void player_hud::SaveCfg(const int idx) const
 
 	const char* sect_name = *hi->m_sect_name;
 	string_path fname;
-	FS.update_path(fname, "$game_data$", make_string("_hud\\%s.ltx", sect_name).c_str());
+	FS.update_path(fname, "$app_data_root$", make_string("HudEditor\\%s.ltx", sect_name).c_str());
 
 	CInifile pHudCfg(fname, false, false, true);
 	//-----------------//
