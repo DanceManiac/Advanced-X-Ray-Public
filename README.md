@@ -19,7 +19,7 @@ Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer
 ### Build status
 |Platform|Configurations|
 |---|---|
-|Windows|Debug / Mixed / Release (x86)|
+|Windows|Debug / Mixed / Release (x64)|
 
 How to Build
 ------------
@@ -47,12 +47,16 @@ Thanks to
 - [ggGhosTt](https://gitlab.com/ggGhosTt)
 - [Mortan](https://github.com/mortany)
 - [RedProjects](https://github.com/RedPandaProjects)
-- [i-love-kfc](https://github.com/i-love-kfc)
+- [xrLil Batya](https://github.com/xrLil-Batya)
 - [Anomaly](https://github.com/Roman-n/xray-monolith)
-- ValeroK
+- [Hrust](https://github.com/Hrusteckiy)
+- [ValeroK](https://github.com/VaIeroK)
 - DWM Team
 - CorryZeron
-- xrOxygen
+- Oxygen Engine
 - Lex Addon
+- Hozar2002
+- exDeMODER
+- Screen Space Shaders
 
 Sorry if I forgot someone. Write to VK and I'll add it.
