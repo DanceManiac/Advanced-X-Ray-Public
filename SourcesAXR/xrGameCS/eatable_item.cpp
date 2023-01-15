@@ -16,7 +16,6 @@
 #include "InventoryOwner.h"
 #include "Actor.h"
 #include "Inventory.h"
-#include "Level.h"
 #include "game_object_space.h"
 #include "ai_object_location.h"
 #include "Weapon.h"
