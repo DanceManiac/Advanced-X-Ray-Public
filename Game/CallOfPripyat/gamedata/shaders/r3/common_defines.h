@@ -21,4 +21,10 @@
 #define parallax float2(PARALLAX_H, -PARALLAX_H/2)
 //////////////////////////////////////////////////////////////////////////////////////////
 
+#if defined(SM_5) || defined(SM_4_1)
+    #define TEXTURE2DMS(a, b) Texture2DMS<a>
+#else
+    #define TEXTURE2DMS(a, b) Texture2DMS<a, b>
+#endif
+
 #endif	//	common_defines_h_included
