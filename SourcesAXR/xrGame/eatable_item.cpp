@@ -59,7 +59,8 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_iPortionsNum = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iConstPortions = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iPortionsNum = m_iConstPortions;
 	m_bHasAnimation = READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
 	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
 	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
@@ -249,4 +250,24 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 	}
 
 	return true;
+}
+
+u32 CEatableItem::Cost() const
+{
+	u32 res = inherited::Cost();
+	int percent = (m_iPortionsNum * 100) / m_iConstPortions;
+
+	res = (res * percent) / 100;
+
+	return res;
+}
+
+float CEatableItem::Weight() const
+{
+	float res = inherited::Weight();
+	int percent = (m_iPortionsNum * 100) / m_iConstPortions;
+
+	res = (res * percent) / 100;
+
+	return res;
 }

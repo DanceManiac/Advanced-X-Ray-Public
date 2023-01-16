@@ -29,6 +29,8 @@ public:
 	virtual void			save						(NET_Packet &output_packet);
 	virtual void			load						(IReader &input_packet);
 	virtual	bool			Empty						()						{return PortionsNum()==0;};
+	virtual	u32				Cost						()	const;
+	virtual float			Weight						()	const;
 			int				PortionsNum					()	const				{return m_iPortionsNum;}
 
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
@@ -68,6 +70,7 @@ public:
 
 	//количество порций еды, 
 	//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)
+	u32						m_iConstPortions;
 	u32						m_iPortionsNum;
 };
 

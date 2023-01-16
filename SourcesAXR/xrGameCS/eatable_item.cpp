@@ -84,7 +84,9 @@ void CEatableItem::Load(LPCSTR section)
 	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
 	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
 	
-	m_iPortionsNum = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iConstPortions			= READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iPortionsNum				= m_iConstPortions;
+
 	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
 	VERIFY						(m_iPortionsNum<10000);
 
@@ -268,4 +270,24 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 		else
 			m_iPortionsNum = 0;
 	}
+}
+
+u32 CEatableItem::Cost() const
+{
+	u32 res = inherited::Cost();
+	int percent = (m_iPortionsNum * 100) / m_iConstPortions;
+
+	res = (res * percent) / 100;
+
+	return res;
+}
+
+float CEatableItem::Weight() const
+{
+	float res = inherited::Weight();
+	int percent = (m_iPortionsNum * 100) / m_iConstPortions;
+
+	res = (res * percent) / 100;
+
+	return res;
 }
