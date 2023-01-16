@@ -180,10 +180,11 @@ void CEatableItem::UpdateUseAnim()
 {
 	if (!m_bHasAnimation) return;
 
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
-	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT)
+	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && pDet->IsHidden())
 		StartAnimation();
 
 	if (m_bActivated)
