@@ -546,6 +546,13 @@ bool    ImGui_ImplDX11_Init(void* hwnd, ID3D11Device* device, ID3D11DeviceContex
 	io.KeyMap[ImGuiKey_Y] = DIK_Y;
 	io.KeyMap[ImGuiKey_Z] = DIK_Z;
 
+    string_path fName;
+    FS.update_path(fName, "$app_data_root$", io.IniFilename);
+    io.IniFilename = xr_strdup(fName);
+
+    FS.update_path(fName, "$logs$", io.LogFilename);
+    io.LogFilename = xr_strdup(fName);
+
 	io.RenderDrawListsFn = ImGui_ImplDX11_RenderDrawLists;  // Alternatively you can set this to NULL and call ImGui::GetDrawData() after ImGui::Render() to get the same ImDrawData pointer.
 
     io.ImeWindowHandle = g_hWnd;
@@ -568,6 +575,10 @@ void ImGui_ImplDX11_Shutdown()
     g_pd3dDevice = NULL;
     g_pd3dDeviceContext = NULL;
     g_hWnd = (HWND)0;
+
+    ImGuiIO& io = ImGui::GetIO();
+    xr_free(io.IniFilename);
+    xr_free(io.LogFilename);
 }
 
 /*void ImGui_ImplDX11_NewFrame()
