@@ -276,11 +276,12 @@ static void ImGui_ImplDX10_CreateFontsTexture()
 {
     ImGuiIO& io = ImGui::GetIO();
 
-	ImFontConfig font_config;
-	font_config.OversampleH = 1; //or 2 is the same
-	font_config.OversampleV = 1;
-	font_config.PixelSnapH = 1;
-	io.Fonts->AddFontFromFileTTF("extras/Anonymous Pro.ttf", 13.0f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+    //ImFontConfig font_config;
+    //font_config.OversampleH = 1; //or 2 is the same
+    //font_config.OversampleV = 1;
+    //font_config.PixelSnapH = 1;
+    //io.Fonts->AddFontFromFileTTF("extras/Anonymous Pro.ttf", 13.0f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+    io.Fonts->AddFontDefault();
 
     // Build
     unsigned char* pixels;
