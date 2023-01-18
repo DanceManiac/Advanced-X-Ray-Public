@@ -37,7 +37,8 @@ enum EItemPlace
 	EItemPlaceUndefined,
 	EItemPlaceSlot,
 	EItemPlaceBelt,
-	EItemPlaceRuck
+	EItemPlaceRuck,
+	EItemPlaceFloor
 };
 
 extern u32	INV_STATE_LADDER;

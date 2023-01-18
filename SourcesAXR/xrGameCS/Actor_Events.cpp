@@ -57,15 +57,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			{
 				Obj->H_SetParent		(smart_cast<CObject*>(this));
 				
-#ifdef MP_LOGGING
-				string64 act;
-				strcpy_s( act, (type == GE_TRADE_BUY)? "buys" : "takes" );
-				Msg("--- Actor [%d][%s]  %s  [%d][%s]", ID(), Name(), act, _GO->ID(), _GO->cNameSect().c_str());
-#endif // MP_LOGGING
-				
-				inventory().Take	(_GO, false, true);
-			
-				SelectBestWeapon(Obj);
+				inventory().Take(_GO, false, true);
 			}
 			else
 			{

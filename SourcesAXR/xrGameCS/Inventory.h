@@ -36,6 +36,7 @@ public:
 							CInventory			();
 	virtual					~CInventory			();
 
+	void					ReloadInv			();
 	float 					TotalWeight			() const;
 	float 					CalcTotalWeight		();
 

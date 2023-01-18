@@ -61,15 +61,14 @@ CInventory::CInventory()
 	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
 //m_iMaxBelt									= pSettings->r_s32		("inventory","max_belt");
 	
-	u32 sz										= pSettings->r_s32		("inventory","slots_count");
-	m_slots.resize								(sz);
+	ReloadInv();
 	
 	m_iActiveSlot								= NO_ACTIVE_SLOT;
 	m_iNextActiveSlot							= NO_ACTIVE_SLOT;
 	m_iPrevActiveSlot							= NO_ACTIVE_SLOT;
 	//m_iLoadActiveSlot							= NO_ACTIVE_SLOT;
 
-	string256 temp;
+	/*string256 temp;
 	for(u32 i=0; i<m_slots.size(); ++i ) 
 	{
 		sprintf_s(temp, "slot_persistent_%d", i+1);
@@ -77,7 +76,7 @@ CInventory::CInventory()
 
 		sprintf_s			(temp, "slot_active_%d", i+1);
 		m_slots[i].m_bAct	= !!pSettings->r_bool("inventory",temp);
-	};
+	};*/
 
 	m_bSlotsUseful								= true;
 	m_bBeltUseful								= false;
@@ -88,6 +87,24 @@ CInventory::CInventory()
 	//m_iLoadActiveSlotFrame						= u32(-1);
 }
 
+
+void CInventory::ReloadInv()
+{
+	m_slots.clear();
+
+	u32 sz = pSettings->r_s32("inventory", "slots_count");
+	m_slots.resize(sz);
+
+	string256 temp;
+	for (u32 i = 0; i < m_slots.size(); ++i)
+	{
+		sprintf_s(temp, "slot_persistent_%d", i + 1);
+		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory", temp);
+
+		sprintf_s(temp, "slot_active_%d", i + 1);
+		m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
+	};
+}
 
 CInventory::~CInventory() 
 {
@@ -107,6 +124,7 @@ void CInventory::Clear()
 
 	m_pOwner							= NULL;
 
+	ReloadInv							();
 	CalcTotalWeight						();
 	InvalidateState						();
 }
@@ -314,6 +332,8 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 		}
 	}
 
+	if (ItemFromSlot(pIItem->GetSlot()) && pIItem->m_eItemCurrPlace == EItemPlaceSlot && pIItem->m_eItemCurrPlace == pIItem->GetSlot())
+		return false;
 
 //.	Msg("To Slot %s[%d]", *pIItem->object().cName(), pIItem->object().ID());
 

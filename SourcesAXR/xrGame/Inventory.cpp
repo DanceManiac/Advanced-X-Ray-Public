@@ -53,14 +53,13 @@ CInventory::CInventory()
 {
 	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
 	
-	u32 sz										= pSettings->r_s32		("inventory","slots_count");
-	m_slots.resize								(sz+1); //first is [1]
+	ReloadInv();
 	
 	m_iActiveSlot								= NO_ACTIVE_SLOT;
 	m_iNextActiveSlot							= NO_ACTIVE_SLOT;
 	m_iPrevActiveSlot							= NO_ACTIVE_SLOT;
 
-	string256 temp;
+	/*string256 temp;
 	for(u16 i=FirstSlot(); i<=LastSlot(); ++i ) 
 	{
 		xr_sprintf(temp, "slot_persistent_%d", i);
@@ -68,7 +67,7 @@ CInventory::CInventory()
 
 		xr_sprintf			(temp, "slot_active_%d", i);
 		m_slots[i].m_bAct	= !!pSettings->r_bool("inventory",temp);
-	};
+	};*/
 
 	m_bSlotsUseful								= true;
 	m_bBeltUseful								= false;
@@ -86,6 +85,23 @@ CInventory::CInventory()
 	}
 }
 
+void CInventory::ReloadInv()
+{
+	m_slots.clear();
+
+	u32 sz = pSettings->r_s32("inventory", "slots_count");
+	m_slots.resize(sz + 1); //first is [1]
+
+	string256 temp;
+	for (u16 i = FirstSlot(); i <= LastSlot(); ++i)
+	{
+		xr_sprintf(temp, "slot_persistent_%d", i);
+		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory", temp);
+
+		xr_sprintf(temp, "slot_active_%d", i);
+		m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
+	};
+}
 
 CInventory::~CInventory() 
 {
@@ -102,6 +118,7 @@ void CInventory::Clear()
 
 	m_pOwner							= NULL;
 
+	ReloadInv							();
 	CalcTotalWeight						();
 	InvalidateState						();
 }
@@ -303,17 +320,8 @@ bool CInventory::Slot(u16 slot_id, PIItem pIItem, bool bNotActivate, bool strict
 	if(ItemFromSlot(slot_id) == pIItem)
 		return false;
 
-	if (!IsGameTypeSingle())
-	{
-		u16 real_parent = pIItem->object().H_Parent() ? pIItem->object().H_Parent()->ID() : u16(-1);
-		if (GetOwner()->object_id() != real_parent)
-		{
-			Msg("! WARNING: CL: actor [%d] tries to place to slot not own item [%d], that has parent [%d]",
-				GetOwner()->object_id(), pIItem->object_id(), real_parent);
-			return false;
-		}
-	}
-
+	if (ItemFromSlot(slot_id) && pIItem->CurrPlace() == eItemPlaceSlot && pIItem->CurrSlot() == slot_id)
+		return false;
 
 //.	Msg("To Slot %s[%d]", *pIItem->object().cName(), pIItem->object().ID());
 
