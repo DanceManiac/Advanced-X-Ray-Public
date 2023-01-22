@@ -165,6 +165,10 @@ bool CInventoryItem::install_upgrade_impl( LPCSTR section, bool test )
 	bool result = process_if_exists( section, "cost",   &CInifile::r_u32,   m_cost,   test );
 	result |= process_if_exists( section, "inv_weight", &CInifile::r_float, m_weight, test );
 
+	result |= process_if_exists_set(section, "inv_name", &CInifile::r_string_wb, m_name, test);
+	result |= process_if_exists_set(section, "inv_name_short", &CInifile::r_string_wb, m_nameShort, test);
+	result |= process_if_exists_set(section, "description", &CInifile::r_string_wb, m_Description, test);
+
 	bool result2 = false;
 	if ( BaseSlot() != NO_ACTIVE_SLOT )
 	{
