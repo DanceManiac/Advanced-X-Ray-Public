@@ -386,7 +386,7 @@
 				<color_less color="pda_red"  />
 				<color_more color="pda_green"/>
 			</progress_bar>
-			<static_filter_value x="175" y="0" width="32" height="18" magnitude="10">
+			<static_filter_value x="175" y="0" width="32" height="18">
 				<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 			</static_filter_value>
 		</antigas_filter>
