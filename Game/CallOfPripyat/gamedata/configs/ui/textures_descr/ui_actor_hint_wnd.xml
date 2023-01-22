@@ -128,29 +128,29 @@
 	    <texture id="ui_inGame2_circle_intoxication_yellow" 		x="71" y="38" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_intoxication_orange" 		x="71" y="76" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_intoxication_red" 			x="71" y="114" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_sleepeness_green" 			x="107" y="0" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_sleepeness_yellow" 			x="107" y="38" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_sleepeness_orange" 			x="107" y="76" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_sleepeness_red" 				x="107" y="114" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_alcoholism_green" 			x="143" y="0" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_alcoholism_yellow" 			x="143" y="38" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_alcoholism_orange" 			x="143" y="76" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_alcoholism_red" 				x="143" y="114" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_hangover_green" 				x="179" y="0" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_hangover_yellow" 			x="179" y="38" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_hangover_orange" 			x="179" y="76" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_hangover_red" 				x="179" y="114" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_narcotism_green" 			x="215" y="0" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_narcotism_yellow" 			x="215" y="38" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_narcotism_orange" 			x="215" y="76" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_narcotism_red" 				x="215" y="114" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_withdrawal_green" 			x="251" y="0" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_withdrawal_yellow" 			x="251" y="38" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_withdrawal_orange" 			x="251" y="76" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_withdrawal_red" 				x="251" y="114" width="33" height="35" />
-		<texture id="ui_inGame2_circle_filter_green" 				x="287" y="0" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_filter_yellow" 				x="287" y="38" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_filter_orange" 				x="287" y="76" width="33" height="35" />
-	    <texture id="ui_inGame2_circle_filter_red" 					x="287" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_sleepeness_green" 			x="106" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_sleepeness_yellow" 			x="106" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_sleepeness_orange" 			x="106" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_sleepeness_red" 				x="106" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_alcoholism_green" 			x="141" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_alcoholism_yellow" 			x="141" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_alcoholism_orange" 			x="141" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_alcoholism_red" 				x="141" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_green" 				x="176" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_yellow" 			x="176" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_orange" 			x="176" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_hangover_red" 				x="176" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_narcotism_green" 			x="211" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_narcotism_yellow" 			x="211" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_narcotism_orange" 			x="211" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_narcotism_red" 				x="211" y="114" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_green" 			x="246" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_yellow" 			x="246" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_orange" 			x="246" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_withdrawal_red" 				x="246" y="114" width="33" height="35" />
+		<texture id="ui_inGame2_circle_filter_green" 				x="281" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_filter_yellow" 				x="281" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_filter_orange" 				x="281" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_filter_red" 					x="281" y="114" width="33" height="35" />
 	</file>
 </w>
