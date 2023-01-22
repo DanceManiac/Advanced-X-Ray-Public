@@ -954,6 +954,8 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	{
 		float condition = outfit->GetCondition();
 		float filter_cond = outfit->GetFilterCondition();
+		bool use_filter = outfit->m_bUseFilter;
+
 		if(condition<0.75f)
 		{
 			m_ind_outfit_broken->Show(true);
@@ -965,7 +967,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 				m_ind_outfit_broken->InitTexture("ui_inGame2_circle_Armorbroken_red");
 		}
 
-		if (filter_cond < 0.75f)
+		if (filter_cond < 0.75f && use_filter)
 		{
 			m_ind_filter_dirty->Show(true);
 			if (filter_cond > 0.5f)
@@ -979,10 +981,13 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 // Helmet broken icon
 	CHelmet* helmet = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
 	m_ind_helmet_broken->Show(false);
+
 	if(helmet)
 	{
 		float condition = helmet->GetCondition();
 		float filter_cond = helmet->GetFilterCondition();
+		bool use_filter = helmet->m_bUseFilter;
+
 		if(condition<0.75f)
 		{
 			m_ind_helmet_broken->Show(true);
@@ -994,7 +999,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_red");
 		}
 
-		if (filter_cond < 0.75f)
+		if (filter_cond < 0.75f && use_filter)
 		{
 			m_ind_filter_dirty->Show(true);
 			if (filter_cond > 0.5f)
