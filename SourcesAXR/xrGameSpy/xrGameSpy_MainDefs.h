@@ -17,7 +17,7 @@
 	#define	GAMESPY_GAMENAME				"stalkercoppc"
 	#define GAMESPY_GAMEID					2760
 	#define GAMESPY_PRODUCTID				11994
-	#define GAME_VERSION					"1.8.73"
+	#define GAME_VERSION					"1.8.76"
 	#define REGISTRY_PATH					"Software\\GSC Game World\\STALKER-COP\\"
 #endif
 
