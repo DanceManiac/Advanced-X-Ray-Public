@@ -153,6 +153,7 @@ public:
 
 	virtual bool				CheckCompatibility		(CHudItem*)			{return true;}
 	virtual BOOL				ParentIsActor			();
+			void				ReplaceHudSection		(LPCSTR hud_section);
 protected:
 
 	IC		void				SetPending			(BOOL H)			{ m_huditem_flags.set(fl_pending, H);}

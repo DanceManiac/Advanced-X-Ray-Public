@@ -183,6 +183,11 @@ bool CInventoryItem::install_upgrade_impl( LPCSTR section, bool test )
 	{
 		CHitImmunity::LoadImmunities( str, pSettings );
 	}
+
+	result2 = process_if_exists_set(section, "visual", &CInifile::r_string, str, test);
+	if (result2 && !test)
+		this->object().cNameVisual_set(str);
+
 	return result;
 }
 

@@ -540,7 +540,13 @@ bool CCustomDetector::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "af_vis_radius",		&CInifile::r_float, m_fAfVisRadius,		test);
 	result |= process_if_exists(section, "max_charge_level",	&CInifile::r_float, m_fMaxChargeLevel,	test);
 	result |= process_if_exists(section, "uncharge_speed",		&CInifile::r_float, m_fUnchargeSpeed,	test);
-	result |= process_if_exists(section, "inv_weight",			&CInifile::r_float, m_weight,			test);
+
+	LPCSTR str;
+
+	// name of the ltx-section of hud
+	bool result2 = process_if_exists_set(section, "hud", &CInifile::r_string, str, test);
+	if (result2 && !test)
+		this->ReplaceHudSection(str);
 
 	return result;
 }

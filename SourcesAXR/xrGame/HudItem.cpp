@@ -532,3 +532,9 @@ BOOL CHudItem::ParentIsActor()
 
 	return !!EA->cast_actor();
 }
+
+void CHudItem::ReplaceHudSection(LPCSTR hud_section)
+{
+	if (hud_section != hud_sect)
+		hud_sect = hud_section;
+}

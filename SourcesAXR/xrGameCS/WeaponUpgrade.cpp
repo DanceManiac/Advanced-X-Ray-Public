@@ -30,6 +30,7 @@ bool CWeapon::install_upgrade_impl( LPCSTR section, bool test )
 	result |= install_upgrade_disp      ( section, test );
 	result |= install_upgrade_hit       ( section, test );
 	result |= install_upgrade_addon     ( section, test );
+	result |= install_upgrade_other		( section, test );
 	return result;
 }
 
@@ -289,5 +290,17 @@ bool CWeapon::install_upgrade_addon(LPCSTR section, bool test)
 		}
 	}
 	result |= result2;
+	return result;
+}
+
+bool CWeapon::install_upgrade_other(LPCSTR section, bool test)
+{
+	LPCSTR str;
+
+	// name of the ltx-section of hud
+	bool result = process_if_exists_set(section, "hud", &CInifile::r_string, str, test);
+	if (result && !test)
+		this->ReplaceHudSection(str);
+
 	return result;
 }
