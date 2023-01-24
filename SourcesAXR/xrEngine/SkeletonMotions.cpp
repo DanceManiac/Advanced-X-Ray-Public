@@ -46,7 +46,7 @@ void CPartition::load(IKinematics* V, LPCSTR model_name)
 		CInifile::SectCIt it_e	= S.Data.end();
 		if(S.Data.size())
 		{
-			P[i].bones.clear();
+			P[i].bones.clear_not_free();
 		}
 		for(;it!=it_e; ++it)
 		{
@@ -149,11 +149,11 @@ BOOL motions_value::load		(LPCSTR N, IReader *data, vecBones* bones)
 //.             m_mdefs.push_back	(D);
 				
 				if (dwFlags&esmFX)	
-					m_fx.insert		(std::make_pair(nm,mot_i));
+					m_fx.insert		(mk_pair(nm,mot_i));
 				else				
-					m_cycle.insert	(std::make_pair(nm,mot_i));
+					m_cycle.insert	(mk_pair(nm,mot_i));
 
-                m_motion_map.insert	(std::make_pair(nm,mot_i));
+                m_motion_map.insert	(mk_pair(nm,mot_i));
 			}
 		}
 		MP->close();
@@ -307,7 +307,7 @@ motions_value* motions_container::dock(shared_str key, IReader *data, vecBones* 
 		result->m_dwReference	= 0;
 		BOOL bres				= result->load	(key.c_str(),data,bones);
 		if (bres)
-        	container.insert(std::make_pair(key,result));
+        	container.insert(mk_pair(key,result));
 		else
         	xr_delete		(result);
 	}

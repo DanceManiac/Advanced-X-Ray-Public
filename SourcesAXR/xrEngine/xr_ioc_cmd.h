@@ -39,7 +39,7 @@ public		:
 	  bEmptyArgsHandled	(FALSE)
 	  {
 		  m_LRU.reserve(LRU_MAX_COUNT + 1);
-		  m_LRU.clear();
+		  m_LRU.clear_not_free();
 	  }
 	virtual ~IConsole_Command()
 	{

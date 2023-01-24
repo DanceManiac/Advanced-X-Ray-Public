@@ -101,7 +101,7 @@ namespace Feel {
 		Frustum.CreateFromMatrix				(mFull,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
 
 		// Traverse object database
-		r_spatial.clear();
+		r_spatial.clear_not_free				();
 		g_SpatialSpace->q_frustum
 			(
 			r_spatial,
@@ -111,7 +111,7 @@ namespace Feel {
 			);
 
 		// Determine visibility for dynamic part of scene
-		seen.clear();
+		seen.clear_and_reserve					()	;
 		for (u32 o_it=0; o_it<r_spatial.size(); o_it++)
 		{
 			ISpatial*	spatial								= r_spatial					[o_it];
@@ -256,7 +256,7 @@ namespace Feel {
 
 				if (CallOfPripyatMode)
 				{
-					r_spatial.clear();
+					r_spatial.clear_not_free();
 					g_SpatialSpace->q_ray(r_spatial, 0, STYPE_VISIBLEFORAI, P, D, f);
 
 					RD.flags = CDB::OPT_ONLYFIRST;

@@ -1179,7 +1179,7 @@ LPCSTR _GetFontTexName (LPCSTR section)
 	else 			idx = 2;
 #else
 	u32 h = Device.dwHeight;
-
+	
 	if		(h<=600)	idx = 0;
 	else if (h<1024)	idx = 1;
 	else if (h<1200)	idx = 2;
@@ -1817,11 +1817,9 @@ void doBenchmark(LPCSTR name)
 		ini.r_line			( "benchmark", i, &test_name, &t);
 		xr_strcpy				(g_sBenchmarkName, test_name);
 		
-		test_command = ini.r_string_wb("benchmark", test_name);
-		u32 cmdSize = test_command.size() + 1;
-		Core.Params = (char*)xr_realloc(Core.Params, cmdSize);
-		xr_strcpy(Core.Params, cmdSize, test_command.c_str());
-		xr_strlwr(Core.Params);
+		test_command		= ini.r_string_wb("benchmark",test_name);
+		xr_strcpy			(Core.Params,*test_command);
+		_strlwr_s				(Core.Params);
 		
 		InitInput					();
 		if(i){
