@@ -281,8 +281,10 @@ void	ISpatial_DB::q_ray	(xr_vector<ISpatial*>& R, u32 _o, u32 _mask_and, const F
 {
 	cs.Enter						();
 	q_result						= &R;
-	q_result->clear		();
-	if (CPU::ID.feature&_CPU_FEATURE_SSE)	{
+	q_result->clear_not_free		();
+
+	if (CPU::Info.hasFeature(CPUFeature::SSE2))
+	{
 		if (_o & O_ONLYFIRST)
 		{
 			if (_o & O_ONLYNEAREST)		{ walker<true,true,true>	W(this,_mask_and,_start,_dir,_range);	W.walk(m_root,m_center,m_bounds); } 

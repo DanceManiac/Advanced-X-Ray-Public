@@ -728,7 +728,7 @@ void CPda::OnHiddenItem()
 
 void CPda::UpdateActiveContacts()
 {
-	m_active_contacts.clear();
+	m_active_contacts.clear_not_free();
 	xr_vector<CObject*>::iterator it = feel_touch.begin();
 	for (; it != feel_touch.end(); ++it)
 	{
@@ -838,7 +838,7 @@ CInventoryOwner* CPda::GetOriginalOwner()
 
 void CPda::ActivePDAContacts(xr_vector<CPda*>& res)
 {
-	res.clear();
+	res.clear_not_free();
 	xr_vector<CObject*>::iterator it = m_active_contacts.begin();
 	xr_vector<CObject*>::iterator it_e = m_active_contacts.end();
 

@@ -947,10 +947,10 @@ void CBulletManager::Render	()
 		}
 
 		if (m_bullet_points.size() > 32768)
-			m_bullet_points.clear();
+			m_bullet_points.clear_not_free	();
 	}
 	else
-		m_bullet_points.clear();
+		m_bullet_points.clear_not_free	();
 
 	//0-рикошет
 	//1-застрявание пули в материале
@@ -1066,7 +1066,7 @@ void CBulletManager::CommitEvents			()	// @ the start of frame
 			}break;
 		}		
 	}
-	m_Events.clear();
+	m_Events.clear_and_reserve	()	;
 }
 
 void CBulletManager::RegisterEvent			(EventType Type, BOOL _dynamic, SBullet* bullet, const Fvector& end_point, collide::rq_result& R, u16 tgt_material)

@@ -1,419 +1,248 @@
+#ifndef _FIXEDMAP_H
+#define _FIXEDMAP_H
 #pragma once
-#include "xalloc.h"
-template <class K, class T>
-struct xr_fixed_map_node
-{
-    K first;
-    T second;
 
-    xr_fixed_map_node<K, T>* left, * right;
-
-    xr_fixed_map_node()
-        : first(), second(),
-        left(nullptr),
-        right(nullptr) {}
-
-    ~xr_fixed_map_node()
-    {
-        left = nullptr;
-        right = nullptr;
-    }
-
-    xr_fixed_map_node(const xr_fixed_map_node& other) noexcept
-    {
-        first = other.first;
-        second = other.second;
-        left = other.left;
-        right = other.right;
-    }
-
-    xr_fixed_map_node& operator=(const xr_fixed_map_node& other) noexcept
-    {
-        first = other.first;
-        second = other.second;
-        left = other.left;
-        right = other.right;
-        return *this;
-    }
-};
-
-namespace std
-{
-    template <class K, class T>
-    void swap(const xr_fixed_map_node<K, T>& left, const xr_fixed_map_node<K, T>& right)
-    {
-        std::swap(left.first, right.first);
-        std::swap(left.second, right.second);
-        std::swap(left.left, right.left);
-        std::swap(left.right, right.right);
-    }
-} // namespace std
-
-template <class K, class T, size_t TGrowMultiplier = 2, class allocator = xr_allocator<xr_fixed_map_node<K, T>>>
-class xr_fixed_map
-{
-    static constexpr size_t SG_REALLOC_ADVANCE = 64;
-
+template<class K, class T, class allocator = xr_allocator>
+class FixedMAP {
+	enum	{
+		SG_REALLOC_ADVANCE	= 64
+	};
 public:
-    using key_type = K;
-    using mapped_type = T;
-    using value_type = xr_fixed_map_node<K, T>;
-
-    using callback = void __fastcall(const value_type&);
-    using callback_cmp = bool __fastcall(const value_type& N1, const value_type& N2);
-
-    static_assert(TGrowMultiplier >= 1, "Grow multiplier can't be less than 1");
-    static_assert(std::is_same_v<value_type, typename allocator::value_type>,
-        "xr_fixed_map<K, T, allocator> allocator mismatch");
+	struct TNode {
+		K		key;
+		T		val;
+		TNode	*left,*right;
+	};
+	typedef void __fastcall callback	(TNode*);
+	typedef bool __fastcall callback_cmp(TNode& N1, TNode& N2);
 
 private:
-    value_type* nodes;
-    size_t pool;
-    size_t limit;
+	TNode*		nodes;
+	u32			pool;
+	u32			limit;
 
-    void resize()
-    {
-        size_t newLimit;
+	IC u32	Size(u32 Count)
+	{	return Count*sizeof(TNode);	}
 
-        if constexpr (TGrowMultiplier > 1)
-        {
-            if (limit == 0) // first allocation
-                newLimit = SG_REALLOC_ADVANCE;
-            else
-                newLimit = limit * TGrowMultiplier;
-        }
-        else
-        {
-            newLimit = limit + SG_REALLOC_ADVANCE;
-            VERIFY(newLimit % SG_REALLOC_ADVANCE == 0);
-        }
+	void		Realloc()
+	{
+		u32	newLimit = limit + SG_REALLOC_ADVANCE;
+		VERIFY(newLimit%SG_REALLOC_ADVANCE == 0);
+		TNode*	newNodes = (TNode*)allocator::alloc(sizeof(TNode)*newLimit);
+		VERIFY(newNodes);
 
-        value_type* newNodes = allocator::allocate(newLimit);
-        R_ASSERT(newNodes);
+		ZeroMemory(newNodes, Size(newLimit));
+		if (limit) CopyMemory	(newNodes, nodes, Size(limit));
 
-        if constexpr (std::is_pod<T>::value)
-        {
-            ZeroMemory(newNodes, sizeof(value_type) * newLimit);
-            if (pool)
-                CopyMemory(newNodes, nodes, allocated_memory());
-        }
-        else
-        {
-            for (value_type* cur = newNodes; cur != newNodes + newLimit; ++cur)
-                allocator::construct(cur);
-            if (pool)
-                std::copy(first(), last(), newNodes);
-        }
+		for (u32 I=0; I<pool; I++)
+		{
+			VERIFY	(nodes);
+			TNode*	Nold	= nodes	+ I;
+			TNode*	Nnew	= newNodes + I;
 
-        for (size_t i = 0; i < pool; ++i)
-        {
-            VERIFY(nodes);
-            value_type* nodeOld = nodes + i;
-            value_type* nodeNew = newNodes + i;
+			if (Nold->left) {
+				size_t	Lid		= Nold->left  - nodes;
+				Nnew->left		= newNodes + Lid;
+			}
+			if (Nold->right) {
+				size_t	Rid		= Nold->right - nodes;
+				Nnew->right		= newNodes + Rid;
+			}
+		}
+		if (nodes) allocator::dealloc(nodes);
 
-            if (nodeOld->left)
-            {
-                size_t leftId = nodeOld->left - nodes;
-                nodeNew->left = newNodes + leftId;
-            }
-            if (nodeOld->right)
-            {
-                size_t rightId = nodeOld->right - nodes;
-                nodeNew->right = newNodes + rightId;
-            }
-        }
+		nodes = newNodes;
+		limit = newLimit;
+	}
 
-        if (nodes)
-            allocator::deallocate(nodes, limit);
+	IC TNode*	Alloc		(const K& key)
+	{
+		if (pool==limit) Realloc();
+		TNode *node = nodes + pool;
+		node->key	= key;
+		node->right = node->left = 0;
+		pool++		;
+		return node	;
+	}
+	IC TNode*	CreateChild	(TNode* &parent, const K& key)
+	{
+		size_t	PID	= size_t(parent-nodes);
+		TNode*	N	= Alloc	(key);
+		parent		= nodes+PID;
+		return	N;
+	}
 
-        nodes = newNodes;
-        limit = newLimit;
-    }
-
-    value_type* add(const K& key)
-    {
-        if (pool == limit)
-            resize();
-
-        value_type* node = nodes + pool;
-        node->first = key;
-        node->left = nullptr;
-        node->right = nullptr;
-        ++pool;
-
-        return node;
-    }
-
-    value_type* create_child(value_type*& parent, const K& key)
-    {
-        ptrdiff_t PID = ptrdiff_t(parent - nodes);
-        value_type* N = add(key);
-        parent = nodes + PID;
-        return N;
-    }
-
-    void recurse_left_right(value_type* N, callback CB)
-    {
-        if (N->left)
-            recurse_left_right(N->left, CB);
-        CB(*N);
-        if (N->right)
-            recurse_left_right(N->right, CB);
-    }
-
-    void recurse_right_left(value_type* N, callback CB)
-    {
-        if (N->right)
-            recurse_right_left(N->right, CB);
-        CB(*N);
-        if (N->left)
-            recurse_right_left(N->left, CB);
-    }
-
-    void get_left_right(value_type* N, xr_vector<T, xr_allocator<T>>& D)
-    {
-        if (N->left)
-            get_left_right(N->left, D);
-        D.push_back(N->second);
-        if (N->right)
-            get_left_right(N->right, D);
-    }
-
-    void get_right_left(value_type* N, xr_vector<T, xr_allocator<T>>& D)
-    {
-        if (N->right)
-            get_right_left(N->right, D);
-        D.push_back(N->second);
-        if (N->left)
-            get_right_left(N->left, D);
-    }
-
-    void get_left_right_p(value_type* N, xr_vector<value_type*, xr_allocator<value_type*>>& D)
-    {
-        if (N->left)
-            get_left_right_p(N->left, D);
-        D.push_back(N);
-        if (N->right)
-            get_left_right_p(N->right, D);
-    }
-
-    void get_right_left_p(value_type* N, xr_vector<value_type*, xr_allocator<value_type*>>& D)
-    {
-        if (N->right)
-            get_right_left_p(N->right, D);
-        D.push_back(N);
-        if (N->left)
-            get_right_left_p(N->left, D);
-    }
-
+	IC void		recurseLR	(TNode* N, callback CB)
+	{
+		if (N->left)	recurseLR(N->left,CB);
+		CB(N);
+		if (N->right)	recurseLR(N->right,CB);
+	}
+	IC void		recurseRL	(TNode* N, callback CB)
+	{
+		if (N->right)	recurseRL(N->right,CB);
+		CB(N);
+		if (N->left)	recurseRL(N->left,CB);
+	}
+	IC void		getLR(TNode* N, xr_vector<T, typename allocator::template helper<T>::result>&	D)
+	{
+		if (N->left)	getLR(N->left, D);
+		D.push_back(N->val);
+		if (N->right)	getLR(N->right, D);
+	}
+	IC void		getRL(TNode* N, xr_vector<T, typename allocator::template helper<T>::result>&	D)
+	{
+		if (N->right)	getRL(N->right, D);
+		D.push_back(N->val);
+		if (N->left)	getRL(N->left, D);
+	}
+	IC void		getLR_P(TNode* N, xr_vector<TNode*, typename allocator::template helper<TNode*>::result>& D)
+	{
+		if (N->left)	getLR_P(N->left, D);
+		D.push_back(N);
+		if (N->right)	getLR_P(N->right, D);
+	}
+	IC void		getRL_P(TNode* N, xr_vector<TNode*, typename allocator::template helper<TNode*>::result>& D)
+	{
+		if (N->right)	getRL_P(N->right, D);
+		D.push_back(N);
+		if (N->left)	getRL_P(N->left, D);
+	}
 public:
-    xr_fixed_map()
-    {
-        pool = 0;
-        limit = 0;
-        nodes = nullptr;
-    }
+	FixedMAP() {
+		pool	= 0;
+		limit	= 0;
+		nodes	= 0; 
+	}
+	~FixedMAP() {
+		destroy	();
+	}
+	void		destroy()
+	{
+		if (nodes) {
+			for (TNode* cur = begin(); cur!=last(); cur++)
+				cur->~TNode();
+			allocator::dealloc(nodes);
+		}
+	}
+	IC TNode*	insert(const K& k) {
+		if (pool) {
+			TNode*	node = nodes;
 
-    ~xr_fixed_map()
-    {
-        destroy();
-    }
+			once_more:
+			if (k < node->key) {
+				if (node->left) {
+					node = node->left;
+					goto once_more;
+				} else {
+					TNode* N = CreateChild(node,k);
+					node->left = N;
+					return N;
+				}
+			} else if (k > node->key) {
+				if (node->right) {
+					node = node->right;
+					goto once_more;
+				} else {
+					TNode* N = CreateChild(node,k);
+					node->right = N;
+					return N;
+				}
+			} else return node;
+			
+		} else {
+			return Alloc(k);
+		}
+	}
+	IC TNode*	insertInAnyWay(const K& k) {
+		if (pool) {
+			TNode*	node = nodes;
 
-    void destroy()
-    {
-        if (nodes)
-        {
-            for (value_type* cur = begin(); cur != last(); ++cur)
-                cur->~value_type();
-            allocator::deallocate(nodes, limit);
-        }
-        nodes = 0;
-        pool = 0;
-        limit = 0;
-    }
+			once_more:
+			if (k <= node->key) {
+				if (node->left) {
+					node = node->left;
+					goto once_more;
+				} else {
+					TNode* N = CreateChild(node,k);
+					node->left = N;
+					return N;
+				}
+			} else {
+				if (node->right) {
+					node = node->right;
+					goto once_more;
+				} else {
+					TNode* N = CreateChild(node,k);
+					node->right = N;
+					return N;
+				}
+			}
+		} else {
+			return Alloc(k);
+		}
+	}
+	IC TNode*	insert		(const K& k, const T& v)
+	{
+		TNode*	N	= insert(k);
+		N->val		= v;
+		return	N;
+	}
+	IC TNode*	insertInAnyWay(const K& k, const T& v)
+	{
+		TNode*	N	= insertInAnyWay(k);
+		N->val		= v;
+		return	N;
+	}
+	IC void		discard()	{ if (nodes) allocator::dealloc(nodes); nodes = 0; pool=0; limit=0;	}
+	IC u32		allocated()	{ return this->limit;				}
+	IC void		clear()		{ pool=0;				}
+	IC TNode*	begin()		{ return nodes;			}
+	IC TNode*	end()		{ return nodes+pool;	}
+	IC TNode*	last()		{ return nodes+limit;	}	// for setup only
+	IC u32		size()		{ return pool;			}
+	IC TNode&	operator[] (int v) { return nodes[v]; }
 
-    value_type* insert(const K& key)
-    {
-        if (!pool)
-            return add(key);
+	IC void		traverseLR	(callback CB) 
+	{ if (pool) recurseLR(nodes,CB);  }
+	IC void		traverseRL	(callback CB) 
+	{ if (pool) recurseRL(nodes,CB);  }
+	IC void		traverseANY	(callback CB) {
+		TNode*	_end = end();
+		for (TNode* cur = begin(); cur!=_end; cur++)
+			CB(cur);
+	}
 
-        value_type* node = nodes;
-
-    once_more:
-        if (key < node->first)
-        {
-            if (node->left)
-            {
-                node = node->left;
-                goto once_more;
-            }
-            else
-            {
-                value_type* N = create_child(node, key);
-                node->left = N;
-                return N;
-            }
-        }
-        else if (key > node->first)
-        {
-            if (node->right)
-            {
-                node = node->right;
-                goto once_more;
-            }
-            else
-            {
-                value_type* N = create_child(node, key);
-                node->right = N;
-                return N;
-            }
-        }
-        else
-            return node;
-    }
-
-    value_type* insert_anyway(const K& key)
-    {
-        if (!pool)
-            return add(key);
-
-        value_type* node = nodes;
-
-    once_more:
-        if (key <= node->first)
-        {
-            if (node->left)
-            {
-                node = node->left;
-                goto once_more;
-            }
-            else
-            {
-                value_type* N = create_child(node, key);
-                node->left = N;
-                return N;
-            }
-        }
-        else
-        {
-            if (node->right)
-            {
-                node = node->right;
-                goto once_more;
-            }
-            else
-            {
-                value_type* N = create_child(node, key);
-                node->right = N;
-                return N;
-            }
-        }
-    }
-
-    value_type* insert(const K& key, const T& value)
-    {
-        value_type* N = insert(key);
-        N->second = value;
-        return N;
-    }
-
-    value_type* insert_anyway(const K& key, const T& value)
-    {
-        value_type* N = insert_anyway(key);
-        N->second = value;
-        return N;
-    }
-
-    value_type* insert(K&& key, T&& value)
-    {
-        value_type* N = insert(key);
-        N->second = value;
-        return N;
-    }
-
-    value_type* insert_anyway(K&& key, T&& value)
-    {
-        value_type* N = insert_anyway(key);
-        N->second = value;
-        return N;
-    }
-
-    size_t allocated() const { return limit; }
-    size_t allocated_memory() const { return limit * sizeof(value_type); }
-
-    [[nodiscard]] bool empty() const { return pool == 0; }
-    void clear() { pool = 0; }
-
-    value_type* begin() { return nodes; }
-    value_type* end() { return nodes + pool; }
-
-    value_type* first() { return nodes; }
-    value_type* last() { return nodes + limit; } // for setup only
-
-    [[nodiscard]] size_t size() const { return pool; }
-
-    value_type& at_index(size_t v) { return nodes[v]; }
-
-    mapped_type& at(const key_type& key) { return insert(key)->second; }
-    mapped_type& operator[](const key_type& key) { return insert(key)->second; }
-
-    void traverse_left_right(callback CB)
-    {
-        if (pool)
-            recurse_left_right(nodes, CB);
-    }
-
-    void traverse_right_left(callback CB)
-    {
-        if (pool)
-            recurse_right_left(nodes, CB);
-    }
-
-    void traverse_any(callback CB)
-    {
-        value_type* _end = end();
-        for (value_type* cur = begin(); cur != _end; ++cur)
-            CB(*cur);
-    }
-
-    void get_left_right(xr_vector<T, xr_allocator<T>>& D)
-    {
-        if (pool)
-            get_left_right(nodes, D);
-    }
-
-    void get_left_right_p(xr_vector<value_type*, xr_allocator<value_type*>>& D)
-    {
-        if (pool)
-            get_left_right_p(nodes, D);
-    }
-
-    void get_right_left(xr_vector<T, xr_allocator<T>>& D)
-    {
-        if (pool)
-            get_right_left(nodes, D);
-    }
-
-    void get_right_left_p(xr_vector<value_type*, xr_allocator<value_type*>>& D)
-    {
-        if (pool)
-            get_right_left_p(nodes, D);
-    }
-
-    void get_any_p(xr_vector<value_type*, xr_allocator<value_type*>>& D)
-    {
-        if (empty())
-            return;
-        D.resize(size());
-        value_type** _it = &D.front();
-        value_type* _end = end();
-        for (value_type* cur = begin(); cur != _end; ++cur, ++_it)
-            *_it = cur;
-    }
-
-    void setup(callback CB)
-    {
-        for (size_t i = 0; i < limit; i++)
-            CB(*(nodes + i));
-    }
+	IC void		getLR(xr_vector<T, typename allocator::template helper<T>::result>&	D)
+	{ if (pool)	getLR(nodes, D); }
+	IC void		getLR_P(xr_vector<TNode*, typename allocator::template helper<TNode*>::result>&	D)
+	{ if (pool)	getLR_P(nodes, D); }
+	IC void		getRL(xr_vector<T, typename allocator::template helper<T>::result>&	D)
+	{ if (pool)	getRL(nodes, D); }
+	IC void		getRL_P(xr_vector<TNode*, typename allocator::template helper<TNode*>::result>&	D)
+	{ if (pool)	getRL_P(nodes, D); }
+	IC void		getANY(xr_vector<T, typename allocator::template helper<T>::result>&	D)
+	{
+		TNode*	_end = end();
+		for (TNode* cur = begin(); cur != _end; cur++) D.push_back(cur->val);
+	}
+	IC void		getANY_P(xr_vector<TNode*, typename allocator::template helper<TNode*>::result>&	D)
+	{
+		D.resize(size());
+		TNode** _it = &*D.begin();
+		TNode*	_end = end();
+		for (TNode* cur = begin(); cur != _end; cur++, _it++) *_it = cur;
+	}
+	IC void		getANY_P(xr_vector<void*, typename allocator::template helper<void*>::result>&	D)
+	{
+		D.resize(size());
+		void** _it = &*D.begin();
+		TNode*	_end = end();
+		for (TNode* cur = begin(); cur != _end; cur++, _it++) *_it = cur;
+	}
+	IC void		setup(callback CB) {
+		for (int i=0; i<limit; i++)
+			CB(nodes+i);
+	}
 };
+#endif

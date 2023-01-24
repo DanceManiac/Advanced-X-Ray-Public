@@ -318,9 +318,9 @@ void CRender::Render		()
 		stats.l_total		= stats.l_shadowed + stats.l_unshadowed;
 
 		// perform tests
-		count				= std::max	((size_t)count,LP.v_point.size());
-		count				= std::max	((size_t)count,LP.v_spot.size());
-		count				= std::max	((size_t)count,LP.v_shadowed.size());
+		count				= _max	(count,LP.v_point.size());
+		count				= _max	(count,LP.v_spot.size());
+		count				= _max	(count,LP.v_shadowed.size());
 		for (u32 it=0; it<count; it++)	{
 			if (it<LP.v_point.size())		{
 				light*	L			= LP.v_point	[it];

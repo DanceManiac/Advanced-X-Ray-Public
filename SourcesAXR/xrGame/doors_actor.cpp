@@ -59,7 +59,7 @@ void actor::revert_states			( doors_type& doors, door_state const state )
 #endif // #ifdef DEBUG
 	}
 
-	doors.clear();
+	doors.clear_not_free			( );
 }
 
 Fvector const& actor::get_position	( ) const

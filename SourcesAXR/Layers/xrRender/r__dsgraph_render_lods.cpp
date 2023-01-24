@@ -15,8 +15,8 @@ extern float	r_ssaLOD_B;
 ICF		bool	pred_dot		(const std::pair<float,u32>& _1, const std::pair<float,u32>& _2)	{ return _1.first < _2.first; }
 void R_dsgraph_structure::r_dsgraph_render_lods	(bool _setup_zb, bool _clear)
 {
-	if (_setup_zb)	mapLOD.get_left_right(lstLODs);	// front-to-back
-	else			mapLOD.get_right_left(lstLODs);	// back-to-front
+	if (_setup_zb)	mapLOD.getLR	(lstLODs)	;	// front-to-back
+	else			mapLOD.getRL	(lstLODs)	;	// back-to-front
 	if (lstLODs.empty())			return		;
  
 	// *** Fill VB and generate groups
@@ -36,7 +36,7 @@ void R_dsgraph_structure::r_dsgraph_render_lods	(bool _setup_zb, bool _clear)
 
 	for (u32 i=0; i<lstLODs.size(); i++)
 	{
-		const u32	iBatchSize = std::min(lstLODs.size() - i, (size_t)uiImpostersFit);
+		const u32	iBatchSize	= _min( lstLODs.size()-i, uiImpostersFit);
 		int			cur_count	= 0;
 		u32			vOffset;
 		FLOD::_hw*	V			= (FLOD::_hw*)RCache.Vertex.Lock	(iBatchSize*uiVertexPerImposter,firstV->geom->vb_stride, vOffset);
@@ -67,7 +67,7 @@ void R_dsgraph_structure::r_dsgraph_render_lods	(bool _setup_zb, bool _clear)
 			// gen geometry
 			FLOD::_face*					facets		= lodV->facets;
 			svector<std::pair<float,u32>,8>	selector	;
-			for (u32 s=0; s<8; s++)			selector.push_back	(std::make_pair(Ldir.dotproduct(facets[s].N),s));
+			for (u32 s=0; s<8; s++)			selector.push_back	(mk_pair(Ldir.dotproduct(facets[s].N),s));
 			std::sort						(selector.begin(),selector.end(),pred_dot);
 
 			float							dot_best	= selector	[selector.size()-1].first	;

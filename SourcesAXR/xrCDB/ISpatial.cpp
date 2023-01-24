@@ -147,9 +147,6 @@ ISpatial_DB::ISpatial_DB()
 	:cs(MUTEX_PROFILE_ID(ISpatial_DB))
 #endif // PROFILE_CRITICAL_SECTIONS
 {
-	rt_insert_object		= NULL;
-	m_bounds				= NULL;
-	q_result				= NULL;
 	m_root					= NULL;
 	stat_nodes				= 0;
 	stat_objects			= 0;
@@ -264,7 +261,7 @@ void			ISpatial_DB::insert		(ISpatial* S)
 	if (!bValid)	
 	{
 		CObject*	O	= dynamic_cast<CObject*>(S);
-		if	(O)			Debug.fatal(DEBUG_INFO,"Invalid OBJECT position or radius (%s)",O->cName().c_str());
+		if (O)			Debug.fatal(DEBUG_INFO, "Invalid OBJECT position or radius (%s)", O->cName().c_str());
 		else			{
 			CPS_Instance* P = dynamic_cast<CPS_Instance*>(S);
 			if (P)		Debug.fatal(DEBUG_INFO,"Invalid PS spatial position{%3.2f,%3.2f,%3.2f} or radius{%3.2f}",VPUSH(S->spatial.sphere.P),S->spatial.sphere.R);

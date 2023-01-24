@@ -536,15 +536,15 @@ void	CRenderTarget::phase_combine	()
 			std::sort(m_miltaka_lfx_color.begin(), m_miltaka_lfx_color.end(), sort_function);
 			std::sort(m_miltaka_lfx_coords.begin(), m_miltaka_lfx_coords.end(), sort_function);
 
-			for (u32 i = 0; i < std::max((size_t)3, m_miltaka_lfx_coords.size()); ++i)
+			for (u32 i = 0; i < _min((u32)3, m_miltaka_lfx_coords.size()); ++i)
 			{
 				phase_lfx(i);
 			}
 		}
 	}
 
-	m_miltaka_lfx_color.clear();
-	m_miltaka_lfx_coords.clear();
+	m_miltaka_lfx_color.clear_not_free();
+	m_miltaka_lfx_coords.clear_not_free();
 
 	//	PP-if required
 	if (PP_Complex)		

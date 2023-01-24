@@ -85,7 +85,7 @@ void dx10SamplerStateCache::ClearStateArray()
 		_RELEASE(m_StateArray[i].m_pState);
 	}
 
-	m_StateArray.clear();
+	m_StateArray.clear_not_free();
 }
 
 void dx10SamplerStateCache::PrepareSamplerStates(

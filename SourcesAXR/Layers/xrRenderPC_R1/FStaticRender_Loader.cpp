@@ -122,10 +122,10 @@ void CRender::level_Unload		()
 
 	// 2.
 	for (I=0; I<Sectors.size(); I++)	xr_delete(Sectors[I]);
-	Sectors.clear();
+	Sectors.clear_and_free		();
 	// 3.
 	for (I=0; I<Portals.size(); I++)	xr_delete(Portals[I]);
-	Portals.clear();
+	Portals.clear_and_free		();
 
 	//*** Lights
 	L_Glows->Unload				();
@@ -136,7 +136,7 @@ void CRender::level_Unload		()
 		Visuals[I]->Release();
 		xr_delete(Visuals[I]);
 	}
-	Visuals.clear();
+	Visuals.clear_and_free		();
 
 	//*** SWI
 	for (I=0; I<SWIs.size();I++)xr_free	(SWIs[I].sw);
@@ -145,9 +145,9 @@ void CRender::level_Unload		()
 	//*** VB/IB
 	for (I=0; I<VB.size(); I++)	_RELEASE(VB[I]);
 	for (I=0; I<IB.size(); I++)	_RELEASE(IB[I]);
-	DCL.clear();
-	VB.clear();
-	IB.clear();
+	DCL.clear_and_free			();
+	VB.clear_and_free			();
+	IB.clear_and_free			();
 
 	//*** Components
 	xr_delete					(Details);
@@ -158,7 +158,7 @@ void CRender::level_Unload		()
 	xr_delete					(L_Shadows);
 
 	//*** Shaders
-	Shaders.clear				();
+	Shaders.clear_and_free		();
 
 	//. dbg
 #ifdef DEBUG
@@ -336,7 +336,7 @@ void CRender::LoadSectors(IReader* fs)
 
 		// build portal model
 		rmPortals = xr_new	<CDB::MODEL> ();
-		rmPortals->build(CL.getV(), int(CL.getVS()), CL.getT(), int(CL.getTS()));
+		rmPortals->build(CL.getV(), int(CL.getVS()), CL.getT(), int(CL.getTS()), nullptr, nullptr, false);
 	} else {
 		rmPortals = 0;
 	}
@@ -361,7 +361,7 @@ void CRender::LoadSWIs(CStreamReader* base_fs)
 		for(;it!=it_e;++it)
 			xr_free( (*it).sw );
 
-		SWIs.clear();
+		SWIs.clear_not_free();
 
 		SWIs.resize			(item_count);
 		for (u32 c=0; c<item_count; c++){

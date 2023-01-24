@@ -542,7 +542,7 @@ PIItem CInventory::GetNextItemInActiveSlot( bool first_call )
 		}
 	}
 	
-	m_activ_last_items.clear();
+	m_activ_last_items.clear_not_free();
 
 	if ( first_call && found )
 	{

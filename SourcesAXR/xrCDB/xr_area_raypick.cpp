@@ -140,7 +140,7 @@ BOOL CObjectSpace::_RayPick	( const Fvector &start, const Fvector &dir, float ra
 				if (bDebug()){
 					Fsphere	S;		S.P = spatial->spatial.sphere.P; S.R = spatial->spatial.sphere.R;
 					(*m_pRender)->dbgAddSphere(S,C);
-					//dbg_S.push_back	(std::make_pair(S,C));
+					//dbg_S.push_back	(mk_pair(S,C));
 				}
 #endif
 			}
@@ -156,7 +156,7 @@ BOOL CObjectSpace::RayQuery		(collide::rq_results& dest, const collide::ray_defs
 {
 	Lock.Enter					();
 	BOOL						_res = _RayQuery2(dest,R,CB,user_data,tb,ignore_object);
-	r_spatial.clear	();
+	r_spatial.clear_not_free	();
 	Lock.Leave					();
 	return						(_res);
 }

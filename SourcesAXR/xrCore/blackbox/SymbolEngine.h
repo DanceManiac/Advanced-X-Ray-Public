@@ -74,7 +74,7 @@ public      :
     // To use this class, call the SymInitialize member function to
     // initialize the symbol engine and then use the other member
     // functions in place of their corresponding DBGHELP.DLL functions.
-    CSymbolEngine ( void ) : m_hProcess(NULL)
+    CSymbolEngine ( void )
     {
     }
 
@@ -158,13 +158,13 @@ public      :
         }
 
         // Got the version size, now get the version information.
-        TCHAR* lpData = new TCHAR[dwVerSize];
+        LPVOID lpData = (LPVOID)new TCHAR [ dwVerSize ] ;
         if ( FALSE == GetFileVersionInfo ( szImageHlp       ,
                                            dwVerInfoHandle  ,
                                            dwVerSize        ,
                                            lpData            ) )
         {
-            delete[] lpData;
+            delete [] lpData ;
             return ( FALSE ) ;
         }
 
@@ -290,7 +290,7 @@ public      :
     }
 
     BOOL SymGetSymFromAddr ( IN  DWORD               dwAddr          ,
-                             OUT PDWORD_PTR          pdwDisplacement ,
+                             OUT PDWORD              pdwDisplacement ,
                              OUT PIMAGEHLP_SYMBOL    Symbol           )
     {
         return ( ::SymGetSymFromAddr ( m_hProcess       ,
@@ -426,12 +426,7 @@ public      :
     {
         return ( ::SymRegisterCallback ( m_hProcess         ,
                                          CallbackFunction   ,
-#ifdef _M_X64
-										 (ULONG64)UserContext
-#else
-										UserContext
-#endif
-		));
+                                         UserContext         ) ) ;
     }
 
 

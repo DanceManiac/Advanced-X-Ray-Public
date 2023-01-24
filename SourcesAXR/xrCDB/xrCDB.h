@@ -29,22 +29,76 @@ namespace Opcode {
 #pragma pack(push,8)
 namespace CDB
 {
+
+#ifdef _M_X64
+	struct TRI_DEPRECATED
+	{
+	public:
+		u32				verts[3];		// 3*4 = 12b
+		union
+		{
+			u32			dummy;				// 4b
+			struct {
+				u32		material : 14;		// 
+				u32		suppress_shadows : 1;	// 
+				u32		suppress_wm : 1;		// 
+				u32		sector : 16;			// 
+			};
+		};
+	public:
+		IC u32			IDvert(u32 ID) { return verts[ID]; }
+	};
+#endif
+
 	// Triangle
 	class XRCDB_API TRI						//*** 16 bytes total (was 32 :)
 	{
 	public:
 		u32				verts	[3];		// 3*4 = 12b
 		union	{
-			u32			dummy;				// 4b
+			size_t			dummy;				// 4b
 			struct {
-				u32		material:14;		// 
-				u32		suppress_shadows:1;	// 
-				u32		suppress_wm:1;		// 
-				u32		sector:16;			// 
+				size_t material:14;		// 
+				size_t suppress_shadows:1;	// 
+				size_t suppress_wm:1;		// 
+				size_t sector:16;			// 
+
+#if defined(_M_X64)
+				size_t dumb : 32;
+#endif
 			};
 		};
 	public:
 		IC u32			IDvert	(u32 ID)		{ return verts[ID];	}
+
+#if defined(_M_X64)
+		TRI(TRI_DEPRECATED& oldTri)
+		{
+			verts[0] = oldTri.verts[0];
+			verts[1] = oldTri.verts[1];
+			verts[2] = oldTri.verts[2];
+			dummy = oldTri.dummy;
+			dumb = 0;
+		}
+
+		TRI()
+		{
+			verts[0] = 0;
+			verts[1] = 0;
+			verts[2] = 0;
+			dummy = 0;
+		}
+
+		TRI& operator= (const TRI_DEPRECATED& oldTri)
+		{
+			verts[0] = oldTri.verts[0];
+			verts[1] = oldTri.verts[1];
+			verts[2] = oldTri.verts[2];
+			dummy = oldTri.dummy;
+			dumb = 0;
+			return *this;
+		}
+#endif
 	};
 
 	// Build callback
@@ -93,8 +147,8 @@ namespace CDB
 		}
 
 		static	void			build_thread	(void*);
-		void					build_internal	(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc=NULL, void* bcp=NULL);
-		void					build			(Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc=NULL, void* bcp=NULL);
+		void build_internal (Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc=nullptr, void* bcp=nullptr, bool rebuildTrisRequired = true);
+		void build (Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc=nullptr, void* bcp=nullptr, bool rebuildTrisRequired = true);
 		u32						memory			();
 	};
 
@@ -103,12 +157,15 @@ namespace CDB
 	{
 		Fvector			verts	[3];
 		union	{
-			u32			dummy;				// 4b
+			size_t			dummy;				// 4b
 			struct {
-				u32		material:14;		// 
-				u32		suppress_shadows:1;	// 
-				u32		suppress_wm:1;		// 
-				u32		sector:16;			// 
+				size_t		material:14;		// 
+				size_t		suppress_shadows:1;	// 
+				size_t		suppress_wm:1;		// 
+				size_t		sector:16;			// 
+#if defined(_M_X64)
+				u64			dumb : 32;
+#endif
 			};
 		};
 		int				id;
@@ -152,8 +209,8 @@ namespace CDB
 		RESULT&			r_add			()	;
 		void			r_free			()	;
 		ICF int			r_count			()	{	return rd.size();			};
-		ICF void		r_clear			()	{	rd.clear();		};
-		ICF void		r_clear_compact	()	{	rd.clear();		};
+		ICF void		r_clear			()	{	rd.clear_not_free();		};
+		ICF void		r_clear_compact	()	{	rd.clear_and_free();		};
 	};
 
 	//
@@ -165,9 +222,9 @@ namespace CDB
 		u32				VPack				( const Fvector& V, float eps);
 	public:
 		void			add_face			( const Fvector& v0, const Fvector& v1, const Fvector& v2, u16 material, u16 sector	);
-		void			add_face_D			( const Fvector& v0, const Fvector& v1, const Fvector& v2, u32 dummy );
+		void			add_face_D			( const Fvector& v0, const Fvector& v1, const Fvector& v2, size_t dummy );
 		void			add_face_packed		( const Fvector& v0, const Fvector& v1, const Fvector& v2, u16 material, u16 sector, float eps = EPS );
-		void			add_face_packed_D	( const Fvector& v0, const Fvector& v1, const Fvector& v2, u32 dummy, float eps = EPS );
+		void			add_face_packed_D	( const Fvector& v0, const Fvector& v1, const Fvector& v2, size_t dummy, float eps = EPS );
         void			remove_duplicate_T	( );
 		void			calc_adjacency		( xr_vector<u32>& dest		);
 
@@ -210,7 +267,7 @@ namespace CDB
 		//		}
 
 		void				add_face	( const Fvector& v0, const Fvector& v1, const Fvector& v2, u16 material, u16 sector, u32 flags );
-		void				add_face_D	( const Fvector& v0, const Fvector& v1, const Fvector& v2, u32 dummy , u32 flags );
+		void				add_face_D	( const Fvector& v0, const Fvector& v1, const Fvector& v2, size_t dummy , u32 flags );
 
 		xr_vector<Fvector>& getV_Vec()			{ return verts;				}
 		Fvector*			getV()				{ return &*verts.begin();	}

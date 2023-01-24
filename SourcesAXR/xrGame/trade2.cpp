@@ -18,7 +18,7 @@ bool CTrade::CanTrade()
 {
 	CEntity *pEntity;
 
-	m_nearest.clear();
+	m_nearest.clear_not_free		();
 	Level().ObjectSpace.GetNearest	(m_nearest,pThis.base->Position(),2.f, NULL);
 	if (!m_nearest.empty()) 
 	{

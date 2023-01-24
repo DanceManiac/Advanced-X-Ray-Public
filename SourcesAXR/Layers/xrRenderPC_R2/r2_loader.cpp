@@ -195,7 +195,7 @@ void CRender::level_Unload()
 	xr_delete					(Wallmarks);
 
 	//*** Shaders
-	Shaders.clear				();
+	Shaders.clear_and_free		();
 	b_loaded					= FALSE;
 /*	
 	Models->ClearPool( true );
@@ -394,7 +394,7 @@ void CRender::LoadSWIs(CStreamReader* base_fs)
 		for(;it!=it_e;++it)
 			xr_free( (*it).sw );
 
-		SWIs.clear();
+		SWIs.clear_not_free();
 
 		SWIs.resize			(item_count);
 		for (u32 c=0; c<item_count; c++){
