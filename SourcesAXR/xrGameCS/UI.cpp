@@ -11,6 +11,7 @@
 #include "ui/UIMessagesWindow.h"
 #include "ui/UIPdaWnd.h"
 #include "PDA.h"
+#include "AdvancedXrayGameConstants.h"
 
 CUI::CUI(CHUDManager* p)
 {
@@ -100,7 +101,7 @@ bool CUI::Render()
 
 		if (pda)
 		{
-			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed && !GameConstants::GetHideHudOnMaster())
 			{
 				UIMainIngameWnd->Draw();
 				m_pMessagesWnd->Draw();
@@ -124,7 +125,7 @@ bool CUI::Render()
 		}
 		else
 		{
-			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())
 			{
 				UIMainIngameWnd->Draw();
 				m_pMessagesWnd->Draw();

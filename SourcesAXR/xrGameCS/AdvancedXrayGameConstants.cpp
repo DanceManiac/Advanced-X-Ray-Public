@@ -1,6 +1,7 @@
 ﻿#include "StdAfx.h"
 #include "AdvancedXrayGameConstants.h"
 #include "GamePersistent.h"
+#include "game_cl_single.h"
 
 bool	m_bDistantSoundsEnabled = true;
 bool	m_bKnifeSlotEnabled = false;
@@ -28,6 +29,7 @@ bool	m_bReloadIfSprint = true;
 bool	m_bColorizeValues = false;
 bool	m_bArtefactsRanks = false;
 bool	m_bUseFilters = false;
+bool	m_bHideHudOnMaster = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -70,6 +72,7 @@ namespace GameConstants
 		m_bReloadIfSprint = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_reload_if_sprint", true);
 		m_bArtefactsRanks = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_artefacts_ranks", false);
 		m_bUseFilters = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_antigas_filters", false);
+		m_bHideHudOnMaster = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_hud_on_master", false);
 		m_iArtefactsCount = READ_IF_EXISTS(pAdvancedSettings, r_u32, "inventory", "artefacts_count", 5);
 		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
 		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
@@ -214,6 +217,11 @@ namespace GameConstants
 	bool GetOutfitUseFilters()
 	{
 		return m_bUseFilters;
+	}
+
+	bool GetHideHudOnMaster()
+	{
+		return m_bHideHudOnMaster && g_SingleGameDifficulty == egdMaster;
 	}
 
 	int GetArtefactsCount()

@@ -18,6 +18,7 @@
 
 #include "../xrEngine/x_ray.h"
 #include "PDA.h"
+#include "AdvancedXrayGameConstants.h"
 
 EGameIDs ParseStringToGameType(LPCSTR str);
 
@@ -124,12 +125,12 @@ void CUIGameCustom::Render()
 
 		if (pda)
 		{
-			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed)
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed && !GameConstants::GetHideHudOnMaster())
 				UIMainIngameWnd->Draw();
 		}
 		else
 		{
-			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT))
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())
 				UIMainIngameWnd->Draw();
 		}
 	}

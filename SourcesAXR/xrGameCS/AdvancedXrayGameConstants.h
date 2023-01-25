@@ -30,6 +30,7 @@ namespace GameConstants
 	bool GetColorizeValues();
 	bool GetAfRanks();
 	bool GetOutfitUseFilters();
+	bool GetHideHudOnMaster();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

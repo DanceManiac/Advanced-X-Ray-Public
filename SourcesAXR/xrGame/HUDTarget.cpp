@@ -25,6 +25,7 @@
 #include "Weapon.h"
 #include "PDA.h"
 
+#include "AdvancedXrayGameConstants.h"
 
 u32 C_ON_ENEMY		D3DCOLOR_RGBA(0xff,0,0,0x80);
 u32 C_ON_NEUTRAL	D3DCOLOR_RGBA(0xff,0xff,0x80,0x80);
@@ -308,7 +309,7 @@ void CHUDTarget::Render()
 	if (Wpn && Wpn->IsLaserOn())
 		return;
 
-	if (smart_cast<CPda*>(Actor->inventory().ActiveItem()))
+	if (smart_cast<CPda*>(Actor->inventory().ActiveItem()) || GameConstants::GetHideHudOnMaster())
 		return;
 
 	//отрендерить кружочек или крестик
