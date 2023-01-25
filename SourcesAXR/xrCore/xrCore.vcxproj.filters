@@ -261,7 +261,6 @@
     <ClCompile Include="os_clipboard.cpp">
       <Filter>OS</Filter>
     </ClCompile>
-    <ClCompile Include="xrSyncronize.cpp" />
     <ClCompile Include="blackbox\BlackBoxUI.cpp">
       <Filter>Debug core\BlackBox</Filter>
     </ClCompile>
