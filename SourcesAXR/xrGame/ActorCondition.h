@@ -200,6 +200,19 @@ public:
 	float m_fWithdrawalCritical;
 	float m_fDrugs;
 	float m_fV_Drugs;
+
+	//Skills System
+	float m_fV_SatietySkill;
+	float m_fV_HealthSkill;
+	float m_fV_BleedingSkill;
+	float m_fV_RadiationSkill;
+	float m_fV_PowerSkill;
+	float m_fV_ThirstSkill;
+	float m_fV_IntoxicationSkill;
+	float m_fV_SleepenessSkill;
+	float m_fMaxWeightSkill;
+	float m_fJumpSpeedSkill;
+	float m_fWalkAccelSkill;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

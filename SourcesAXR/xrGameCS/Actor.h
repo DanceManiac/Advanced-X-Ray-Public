@@ -18,6 +18,7 @@
 #include "step_manager.h"
 #include "script_export_space.h"
 #include "xr_level_controller.h"
+#include "ActorSkills.h"
 
 using namespace ACTOR_DEFS;
 
@@ -208,6 +209,7 @@ public:
 			float		GetProtection_ArtefactsOnBelt(ALife::EHitType hit_type);
 			void		UpdateArtefactsOnBelt();
 			void		UpdateArtefactsInRuck();
+			void		UpdateSkills();
 
 	const xr_vector<const CArtefact*>& ArtefactsOnBelt() {return m_ArtefactsOnBelt;}
 protected:
@@ -794,6 +796,7 @@ public:
 	// Real Wolf. End. 14.10.2014
 
 	bool					m_bEatAnimActive;
+	CActorSkills*			ActorSkills;
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;

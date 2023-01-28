@@ -19,6 +19,8 @@
 #include "script_export_space.h"
 #include "xr_level_controller.h"
 
+#include "ActorSkills.h"
+
 using namespace ACTOR_DEFS;
 
 class CInfoPortion;
@@ -203,6 +205,7 @@ public:
 	virtual void		UpdateInventoryItems();
 			void		UpdateArtefactsOnBelt();
 			void		UpdateArtefactsInRuck();
+			void		UpdateSkills();
 
 protected:
 	//звук тяжелого дыхания
@@ -791,6 +794,7 @@ public:
 	// Real Wolf. End. 14.10.2014
 
 	bool					m_bEatAnimActive;
+	CActorSkills*			ActorSkills;
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;

@@ -217,6 +217,8 @@ CActor::CActor() : CEntityAlive()
 	m_bNightVisionOn = false;
 
 	m_bEatAnimActive = false;
+
+	ActorSkills = nullptr;
 }
 
 
@@ -246,6 +248,7 @@ CActor::~CActor()
 	xr_delete				(m_vehicle_anims);
 
 	xr_delete				(m_night_vision);
+	xr_delete				(ActorSkills);
 }
 
 void CActor::reinit	()
@@ -440,6 +443,9 @@ if(!g_dedicated_server)
 	m_sInventoryBoxUseAction		= "inventory_box_use";
 	//---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
+
+	if (!ActorSkills && GameConstants::GetActorSkillsEnabled())
+		ActorSkills = xr_new<CActorSkills>();
 }
 
 void CActor::PHHit(SHit &H)
@@ -1358,6 +1364,9 @@ void CActor::shedule_Update	(u32 DT)
 		DynamicHudGlass::UpdateDynamicHudGlass();
 
 	UpdateInventoryItems();
+
+	if (GameConstants::GetActorSkillsEnabled())
+		UpdateSkills();
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()
@@ -1860,6 +1869,35 @@ void CActor::UpdateInventoryItems()
 		{
 			current_eatable->UpdateInRuck();
 		}
+	}
+}
+
+void CActor::UpdateSkills()
+{
+	static float update_time = 0;
+	float f_update_time = 0;
+
+	f_update_time += conditions().fdelta_time();
+
+	if (ActorSkills)
+	{
+		float BleedingRestoreSkill = conditions().m_fV_BleedingSkill * ActorSkills->survivalSkillLevel;
+		float HealthRestoreSkill = conditions().m_fV_HealthSkill * ActorSkills->survivalSkillLevel;
+		float PowerRestoreSkill = conditions().m_fV_PowerSkill * ActorSkills->survivalSkillLevel;
+		float SatietyRestoreSkill = conditions().m_fV_SatietySkill * ActorSkills->survivalSkillLevel;
+		float ThirstRestoreSkill = conditions().m_fV_ThirstSkill * ActorSkills->survivalSkillLevel;
+		float IntoxicationRestoreSkill = conditions().m_fV_IntoxicationSkill * ActorSkills->survivalSkillLevel;
+		float SleepenessRestoreSkill = conditions().m_fV_SleepenessSkill * ActorSkills->survivalSkillLevel;
+		float RadiationRestoreSkill = conditions().m_fV_RadiationSkill * ActorSkills->survivalSkillLevel;
+
+		conditions().ChangeBleeding(BleedingRestoreSkill * f_update_time);
+		conditions().ChangeHealth(HealthRestoreSkill * f_update_time);
+		conditions().ChangePower(PowerRestoreSkill * f_update_time);
+		conditions().ChangeSatiety(SatietyRestoreSkill * f_update_time);
+		conditions().ChangeThirst(ThirstRestoreSkill * f_update_time);
+		conditions().ChangeIntoxication(IntoxicationRestoreSkill * f_update_time);
+		conditions().ChangeSleepeness(SleepenessRestoreSkill * f_update_time);
+		conditions().ChangeRadiation(RadiationRestoreSkill * f_update_time);
 	}
 }
 

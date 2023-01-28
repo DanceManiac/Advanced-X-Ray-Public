@@ -776,6 +776,7 @@
     <ClInclude Include="ActorEffector.h" />
     <ClInclude Include="ActorFollowers.h" />
     <ClInclude Include="ActorNightVision.h" />
+    <ClInclude Include="ActorSkills.h" />
     <ClInclude Include="actor_anim_defs.h" />
     <ClInclude Include="actor_defs.h" />
     <ClInclude Include="Actor_Flags.h" />
@@ -3149,6 +3150,7 @@
     <ClCompile Include="ActorInput.cpp" />
     <ClCompile Include="ActorMountedWeapon.cpp" />
     <ClCompile Include="ActorNightVision.cpp" />
+    <ClCompile Include="ActorSkills.cpp" />
     <ClCompile Include="ActorVehicle.cpp" />
     <ClCompile Include="actor_communication.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>

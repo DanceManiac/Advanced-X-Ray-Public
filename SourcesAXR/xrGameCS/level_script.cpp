@@ -740,6 +740,111 @@ void unblock_player_action(EGameActions dik)
 	Actor()->unblock_action(dik);
 }
 
+void set_skills_points(int num)
+{
+	Actor()->ActorSkills->set_skills_points(num);
+}
+
+void inc_skills_points(int num)
+{
+	Actor()->ActorSkills->inc_skills_points(num);
+}
+
+void dec_skills_points(int num)
+{
+	Actor()->ActorSkills->dec_skills_points(num);
+}
+
+int get_skills_points()
+{
+	return Actor()->ActorSkills->get_skills_points();
+}
+
+void set_survival_skill(int num)
+{
+	Actor()->ActorSkills->set_survival_skill(num);
+}
+
+void inc_survival_skill(int num)
+{
+	Actor()->ActorSkills->inc_survival_skill(num);
+}
+
+void dec_survival_skill(int num)
+{
+	Actor()->ActorSkills->dec_survival_skill(num);
+}
+
+int get_survival_skill()
+{
+	return Actor()->ActorSkills->get_survival_skill();
+}
+
+void set_power_skill(int num)
+{
+	Actor()->ActorSkills->set_power_skill(num);
+}
+
+void inc_power_skill(int num)
+{
+	Actor()->ActorSkills->inc_power_skill(num);
+}
+
+void dec_power_skill(int num)
+{
+	Actor()->ActorSkills->dec_power_skill(num);
+}
+
+int get_power_skill()
+{
+	return Actor()->ActorSkills->get_power_skill();
+}
+
+void set_repair_skill(int num)
+{
+	Actor()->ActorSkills->set_repair_skill(num);
+}
+
+void inc_repair_skill(int num)
+{
+	Actor()->ActorSkills->inc_repair_skill(num);
+}
+
+void dec_repair_skill(int num)
+{
+	Actor()->ActorSkills->dec_repair_skill(num);
+}
+
+int get_repair_skill()
+{
+	return Actor()->ActorSkills->get_repair_skill();
+}
+
+void set_endurance_skill(int num)
+{
+	Actor()->ActorSkills->set_endurance_skill(num);
+}
+
+void inc_endurance_skill(int num)
+{
+	Actor()->ActorSkills->inc_endurance_skill(num);
+}
+
+void dec_endurance_skill(int num)
+{
+	Actor()->ActorSkills->dec_endurance_skill(num);
+}
+
+int get_endurance_skill()
+{
+	return Actor()->ActorSkills->get_endurance_skill();
+}
+
+void buy_skill(int num)
+{
+	return Actor()->ActorSkills->BuySkill(num);
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -861,7 +966,28 @@ void CLevel::script_register(lua_State *L)
 		def("get_points",						&get_actor_points),
 		def("add_to_ranking",					&add_human_to_top_list),
 		def("remove_from_ranking",				&remove_human_from_top_list),
-		def("get_actor_ranking",				&get_actor_ranking)
+		def("get_actor_ranking",				&get_actor_ranking),
+		def("set_skills_points",				&set_skills_points),
+		def("inc_skills_points",				&inc_skills_points),
+		def("dec_skills_points",				&dec_skills_points),
+		def("get_skills_points",				&get_skills_points),
+		def("set_survival_skill",				&set_survival_skill),
+		def("get_survival_skill",				&get_survival_skill),
+		def("inc_survival_skill",				&inc_survival_skill),
+		def("dec_survival_skill",				&dec_survival_skill),
+		def("set_power_skill",					&set_power_skill),
+		def("get_power_skill",					&get_power_skill),
+		def("inc_power_skill",					&inc_power_skill),
+		def("dec_power_skill",					&dec_power_skill),
+		def("set_repair_skill",					&set_repair_skill),
+		def("get_repair_skill",					&get_repair_skill),
+		def("inc_repair_skill",					&inc_repair_skill),
+		def("dec_repair_skill",					&dec_repair_skill),
+		def("set_endurance_skill",				&set_endurance_skill),
+		def("get_endurance_skill",				&get_endurance_skill),
+		def("inc_endurance_skill",				&inc_endurance_skill),
+		def("dec_endurance_skill",				&dec_endurance_skill),
+		def("buy_skill",						&buy_skill)
 	];
 
 	module(L)
