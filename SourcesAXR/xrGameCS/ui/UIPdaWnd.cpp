@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "UIPdaWnd.h"
 #include "../Pda.h"
 
@@ -39,12 +40,14 @@
 #include "player_hud.h"
 #include "HUDManager.h"
 #include "UIGameCustom.h"
+#include "../xrServerEntitiesCS/script_engine.h"
 
 constexpr const char* PDA_XML = "pda.xml";
 
 u32 g_pda_info_state = 0;
 
 void RearrangeTabButtons(CUITabControl* pTab);
+CDialogHolder* CurrentDialogHolder();
 
 CUIPdaWnd::CUIPdaWnd()
 {
@@ -270,6 +273,17 @@ void CUIPdaWnd::SetActiveSubdialog(const shared_str& section)
 	else if (section == "eptLogs")
 	{
 		m_pActiveDialog = pUILogsWnd;
+	}
+
+	luabind::functor<CUIDialogWndEx*> functor;
+	if (ai().script_engine().functor("pda.set_active_subdialog", functor))
+	{
+		CUIDialogWndEx* scriptWnd = functor(section.c_str());
+		if (scriptWnd)
+		{
+			scriptWnd->SetHolder(CurrentDialogHolder());
+			m_pActiveDialog = scriptWnd;
+		}
 	}
 
 	R_ASSERT(m_pActiveDialog);
