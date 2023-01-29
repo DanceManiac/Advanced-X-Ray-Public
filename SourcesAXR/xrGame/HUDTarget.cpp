@@ -297,8 +297,6 @@ void CHUDTarget::Render()
 
 	float w_2 = scr_size.x / 2.0f;
 	float h_2 = scr_size.y / 2.0f;
-
-	UIRender->StartPrimitive(6, IUIRender::ptTriList, UI().m_currentPointType);
 		
 	// Convert to screen coords
 	float cx = (pt.x + 1) * w_2;
