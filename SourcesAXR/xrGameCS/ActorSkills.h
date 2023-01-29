@@ -22,8 +22,8 @@ public:
 	int repairSkillLevel;
 	int enduranceSkillLevel;
 
-	virtual void save(NET_Packet& output_packet);
-	virtual void load(IReader& input_packet);
+	void save(NET_Packet& output_packet);
+	void load(IReader& input_packet);
 
 	void set_skills_points(int num);
 	void inc_skills_points(int num);
