@@ -150,16 +150,12 @@ int CActorSkills::get_endurance_skill()
 void CActorSkills::BuySkill(int skill)
 {
 	int current_skill_cost = skill_cost;
-	//int current_skill_cost = skill_cost * survivalSkillLevel;
-
-	//if (skills_points < current_skill_cost)
-	//	return;
 
 	switch (skill)
 	{
 		case 1:
 		{
-			current_skill_cost *= survivalSkillLevel;
+			current_skill_cost *= (survivalSkillLevel + 1);
 
 			if (skills_points < current_skill_cost)
 				return;
@@ -169,7 +165,7 @@ void CActorSkills::BuySkill(int skill)
 		} break;
 		case 2:
 		{
-			current_skill_cost *= powerSkillLevel;
+			current_skill_cost *= (powerSkillLevel + 1);
 
 			if (skills_points < current_skill_cost)
 				return;
@@ -181,7 +177,7 @@ void CActorSkills::BuySkill(int skill)
 		} break;
 		case 3:
 		{
-			current_skill_cost *= repairSkillLevel;
+			current_skill_cost *= (repairSkillLevel + 1);
 
 			if (skills_points < current_skill_cost)
 				return;
@@ -191,7 +187,7 @@ void CActorSkills::BuySkill(int skill)
 		} break;
 		case 4:
 		{
-			current_skill_cost *= enduranceSkillLevel;
+			current_skill_cost *= (enduranceSkillLevel + 1);
 
 			if (skills_points < current_skill_cost)
 				return;
