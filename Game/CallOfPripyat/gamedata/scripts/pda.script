@@ -365,6 +365,31 @@ function change_anomalies_names()
 	end
 end
 
+-- PDA Tabs 
+-- It's now possible to add new button tabs to pda*.xml.
+-- You can use ActorMenu.get_pda_menu():GetActiveSection() to find out active pda tab
+-- UI returned must be CUIScriptWnd
+function set_active_subdialog(section)
+	--printf("set_active_subdialog | section=%s",section)
+	
+	-- For NPCs PDA
+	local obj = db.actor:item_in_slot(8)
+	local sec = obj and obj:section()
+	--if item_device.device_npc_pda[sec] then
+	--	return ui_pda_npc_tab.get_ui( se_load_var(obj:id(), obj:name(), "info") )
+	--end
+	
+	-- For Actor PDA
+	if (section == "eptTasks") then 
+	
+	elseif (section == "eptRanking") then 
+	
+	elseif (section == "eptLogs") then 
+	
+	elseif (section == "eptSkills") and mfs_functions.ReadSkillsSystemEnabled() then 
+		return ui_pda_skills_tab.get_ui()
+	end
+end 
 
 function pda_use() -- from engine
 	return true

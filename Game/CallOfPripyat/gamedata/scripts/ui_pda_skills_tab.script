@@ -1,0 +1,123 @@
+------------------------------------------------
+-- Dance Maniac
+-- 28.01.2023
+-- PDA Skills Tab
+------------------------------------------------
+
+
+local clr_w,clr_gr
+
+local SINGLETON = nil
+function get_ui()
+	SINGLETON = SINGLETON or pda_skills_tab()
+	SINGLETON:Reset()
+	return SINGLETON
+end
+
+-- Constructor.
+class "pda_skills_tab" (CUIScriptWnd)
+function pda_skills_tab:__init() super()
+	self:InitControls()
+end
+
+function pda_skills_tab:__finalize()
+end
+
+function pda_skills_tab:InitControls()
+	self:SetWndRect(Frect():set(0, 0, 1024, 768))
+	
+	-- Main frame.
+	self.xml = CScriptXmlInit()
+	
+	local xml = self.xml
+	xml:ParseFile("pda_skills.xml")
+	xml:InitFrame("frame1", self)
+	xml:InitFrame("frame2", self)
+	
+	self.pda_skills = xml:InitStatic("pda_skills",self)
+	self.skills_points = xml:InitStatic("skills_points", self)
+	
+	self.skill_survival = xml:InitStatic("skill_survival", self.pda_skills)
+	self.skill_survival_name = xml:InitStatic("skill_survival_name", self.pda_skills)
+	self.skill_survival_lvl = xml:InitStatic("skill_survival_lvl", self)
+	
+	self.skill_power = xml:InitStatic("skill_power", self.pda_skills)
+	self.skill_power_name = xml:InitStatic("skill_power_name", self.pda_skills)
+	self.skill_power_lvl = xml:InitStatic("skill_power_lvl", self)
+	
+	self.skill_repair = xml:InitStatic("skill_repair", self.pda_skills)
+	self.skill_repair_name = xml:InitStatic("skill_repair_name", self.pda_skills)
+	self.skill_repair_lvl = xml:InitStatic("skill_repair_lvl", self)
+	
+	self.skill_endurance = xml:InitStatic("skill_endurance", self.pda_skills)
+	self.skill_endurance_name = xml:InitStatic("skill_endurance_name", self.pda_skills)
+	self.skill_endurance_lvl = xml:InitStatic("skill_endurance_lvl", self)
+	
+	self.skill_survival_name:TextControl():SetText("Выживание")
+	self.skill_power_name:TextControl():SetText("Сила")
+	self.skill_repair_name:TextControl():SetText("Ремонт")
+	self.skill_endurance_name:TextControl():SetText("Выносливость")
+	
+	self.scroll = xml:InitScrollView("scrollbar", self)
+	
+	self.buy_survival_skill = xml:Init3tButton("buy_survival_skill", self)
+	self:Register(self.buy_survival_skill, "buy_survival_skill")
+	self.buy_power_skill = xml:Init3tButton("buy_power_skill", self)
+	self:Register(self.buy_power_skill, "buy_power_skill")
+	self.buy_repair_skill = xml:Init3tButton("buy_repair_skill", self)
+	self:Register(self.buy_repair_skill, "buy_repair_skill")
+	self.buy_endurance_skill = xml:Init3tButton("buy_endurance_skill", self)
+	self:Register(self.buy_endurance_skill, "buy_endurance_skill")
+	
+--------------------------------------------------------------------------------
+	self:AddCallback("buy_survival_skill", ui_events.BUTTON_CLICKED, self.OnButtonSurvivalSkill, self)
+	self:AddCallback("buy_power_skill", ui_events.BUTTON_CLICKED, self.OnButtonPowerSkill, self)
+	self:AddCallback("buy_repair_skill", ui_events.BUTTON_CLICKED, self.OnButtonRepairSkill, self)
+	self:AddCallback("buy_endurance_skill", ui_events.BUTTON_CLICKED, self.OnButtonEnduranceSkill, self)
+end
+
+function pda_skills_tab:Reset()
+	local xml = self.xml
+end
+
+function pda_skills_tab:Update()
+	CUIScriptWnd.Update(self)
+	
+	self.skills_points:TextControl():SetText("Очки навыков: " .. actor_stats.get_skills_points())
+	self.skill_survival_lvl:TextControl():SetText("Выживание: " .. actor_stats.get_survival_skill())
+	self.skill_power_lvl:TextControl():SetText("Сила: " .. actor_stats.get_power_skill())
+	self.skill_repair_lvl:TextControl():SetText("Ремонт: " .. actor_stats.get_repair_skill())
+	self.skill_endurance_lvl:TextControl():SetText("Выносливость: " .. actor_stats.get_endurance_skill())
+end
+
+function pda_skills_tab:OnButtonSurvivalSkill()
+	local need_points = actor_stats.get_skills_points() * actor_stats.get_survival_skill()
+
+	if actor_stats.get_skills_points() >= need_points then
+		actor_stats.buy_skill(1)
+	end
+end
+
+function pda_skills_tab:OnButtonPowerSkill()
+	local need_points = actor_stats.get_skills_points() * actor_stats.get_power_skill()
+
+	if actor_stats.get_skills_points() >= need_points then
+		actor_stats.buy_skill(2)
+	end
+end
+
+function pda_skills_tab:OnButtonRepairSkill()
+	local need_points = actor_stats.get_skills_points() * actor_stats.get_repair_skill()
+
+	if actor_stats.get_skills_points() >= need_points then
+		actor_stats.buy_skill(3)
+	end
+end
+
+function pda_skills_tab:OnButtonEnduranceSkill()
+	local need_points = actor_stats.get_skills_points() * actor_stats.get_endurance_skill()
+
+	if actor_stats.get_skills_points() >= need_points then
+		actor_stats.buy_skill(4)
+	end
+end

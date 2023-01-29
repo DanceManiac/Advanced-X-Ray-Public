@@ -1,7 +1,7 @@
 -- 'Проверка включен ли режим зимы.
 function ReadWinterMode()
    --local ltx = system_ini()
-   local ltx = ini_file("mfs_team\\mfs_weather_params.ign")
+   local ltx = ini_file("mfs_team\\mfs_weather_params.ltx")
    if ltx:line_exist("environment","winter_mode") then
       return ltx:r_bool("environment","winter_mode")
    else
@@ -11,9 +11,19 @@ end
 
 -- 'Проверка включена ли старая версия смерти полтергейста.
 function ReadPolterDieMode()
-   local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ign")
+   local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
    if ltx:line_exist("gameplay","poltergeist_visible_corpse") then
       return ltx:r_bool("gameplay","poltergeist_visible_corpse")
+   else
+      return false
+   end
+end
+
+-- 'Проверка включена ли система навыков героя.
+function ReadSkillsSystemEnabled()
+   local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+   if ltx:line_exist("gameplay","actor_skills_enabled") then
+      return ltx:r_bool("gameplay","actor_skills_enabled")
    else
       return false
    end

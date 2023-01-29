@@ -91,7 +91,8 @@
 			</text_color>
 		</button>
 		
-		<button x="90" y="0" width="50" height="27" id="eptLogs" hint="pda_btn_logs_hint" frame_mode="1">
+		<!--Конпка навыков. Раскомментировать, если нужно.-->
+		<!--button x="90" y="0" width="50" height="27" id="eptLogs" hint="pda_btn_logs_hint" frame_mode="1">
 			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_logs</text>
 			<texture_t>ui_nav_bt_t</texture_t>
 			<texture_e>ui_nav_bt_e</texture_e>
@@ -103,7 +104,7 @@
 				<e color="ui_9"/>
 				<h color="ui_1"/>
 			</text_color>
-		</button>
+		</button-->
 	</tab>
   
 </w>

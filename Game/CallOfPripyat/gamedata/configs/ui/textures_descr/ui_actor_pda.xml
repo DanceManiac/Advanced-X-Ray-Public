@@ -279,4 +279,11 @@
 		<texture id="ui_inGame2_pda_battery_bar" x="0" y="133" width="132" height="59" />
 		<texture id="ui_inGame2_pda_battery_bar_background" x="0" y="0" width="256" height="123" />
 	</file>
+	
+	<file name="mfs_team\ui\ui_mfs_skills_icons">
+		<texture id="ui_mfs_skill_survival" 	x="0" y="0" width="128" height="128" />
+		<texture id="ui_mfs_skill_power" 		x="128" y="0" width="128" height="128" />
+		<texture id="ui_mfs_skill_repair" 		x="256" y="0" width="128" height="128" />
+		<texture id="ui_mfs_skill_endurance" 	x="384" y="0" width="128" height="128" />
+	</file>
 </w>
