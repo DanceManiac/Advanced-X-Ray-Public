@@ -208,7 +208,10 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float max_jump_speed = 10.0f;
 			float hangover = conditions().GetHangover();
 			float withdrawal = conditions().GetWithdrawal();
-			float jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
+			float jumpSkill = 0.0f;
+
+			if (ActorSkills)
+				float jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
 
 			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real&mcJump)
 				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal)) - (cur_weight / 25);
@@ -291,7 +294,10 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float	scale			= vControlAccel.magnitude();
 			float hangover			= conditions().GetHangover();
 			float withdrawal		= conditions().GetWithdrawal();
-			float walkAccelSkill	= conditions().m_fWalkAccelSkill * ActorSkills->enduranceSkillLevel;
+			float walkAccelSkill	= 0.0f;
+				
+			if (ActorSkills)
+				walkAccelSkill = conditions().m_fWalkAccelSkill * ActorSkills->enduranceSkillLevel;
 
 			if(scale>EPS)	
 			{
