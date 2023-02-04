@@ -46,7 +46,7 @@
 
 #define		r2_jitter			"$user$jitter_"			// --- dither
 #define		r2_jitter_mipped	"$user$jitter_mipped"			// --- dither
-#define		r2_sunmask			"sunmask"
+#define		r2_sunmask			"shaders\\sunmask"
 
 #define		r2_RT_secondVP		"$user$viewport2"		// --#SM+#-- +SecondVP+  
 #define		r2_RT_ui			"$user$ui"
