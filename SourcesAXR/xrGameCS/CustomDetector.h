@@ -176,15 +176,19 @@ public:
 			bool		m_bLightsEnabled;
 			bool		m_bLightsAlways;
 			bool		m_bGlowEnabled;
+			bool		m_bUseFlashLight;
 			bool		m_bVolumetricLights;
 			float		m_fVolumetricQuality;
 			float		m_fVolumetricDistance;
 			float		m_fVolumetricIntensity;
 			float		fBrightness{ 0.25f };
 			int			m_iLightType;
+			shared_str	flash_light_bone;
+			u16			m_flash_bone_id;
+			u32			m_turn_off_flash_time;
 			ref_light	detector_light;
 			ref_glow	detector_glow;
-			CLAItem* light_lanim;
+			CLAItem*	light_lanim;
 
 			virtual void processing_deactivate() override
 			{
@@ -193,6 +197,7 @@ public:
 			}
 
 			void	UpdateLights();
+			void	Flash(bool bOn, float fRelPower);
 
 protected:
 			bool	CheckCompatibilityInt		(CHudItem*);

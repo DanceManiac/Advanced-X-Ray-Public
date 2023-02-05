@@ -188,9 +188,13 @@ CCustomDetector::CCustomDetector()
 	m_bFastAnimMode		= false;
 	m_bNeedActivation	= false;
 
-	m_fMaxChargeLevel = 0.0f;
+	m_fMaxChargeLevel	= 0.0f;
 	m_fCurrentChargeLevel = 1.0f;
-	m_fUnchargeSpeed = 0.0f;
+	m_fUnchargeSpeed	= 0.0f;
+
+	flash_light_bone	= "light_bone_1";
+	m_flash_bone_id		= BI_NONE;
+	Flash(false, 0.0f);
 }
 
 CCustomDetector::~CCustomDetector() 
@@ -233,6 +237,9 @@ void CCustomDetector::Load(LPCSTR section)
 	if (!detector_light && m_bLightsEnabled)
 	{
 		m_bLightsAlways = READ_IF_EXISTS(pSettings, r_string, section, "light_always", false);
+		m_bUseFlashLight = READ_IF_EXISTS(pSettings, r_bool, section, "light_flash_mode", false);
+
+		flash_light_bone = READ_IF_EXISTS(pSettings, r_string, section, "flash_bone", "light_bone_2");
 
 		detector_light = ::Render->light_create();
 		detector_light->set_shadow(READ_IF_EXISTS(pSettings, r_string, section, "light_shadow", false));
@@ -310,7 +317,8 @@ void CCustomDetector::UpdateLights()
 	{
 		if (!detector_light->get_active() && m_fCurrentChargeLevel > 0 && IsWorking() && (m_artefacts.m_ItemInfos.size() > 0 || m_bLightsAlways))
 		{
-			detector_light->set_active(true);
+			if (!m_bUseFlashLight)
+				detector_light->set_active(true);
 
 			if (detector_glow && !detector_glow->get_active() && m_bGlowEnabled)
 				detector_glow->set_active(true);
@@ -346,6 +354,40 @@ void CCustomDetector::UpdateLights()
 			}
 		}
 	}
+}
+
+void CCustomDetector::Flash(bool bOn, float fRelPower)
+{
+	if (!HudItemData() || !m_bUseFlashLight || !m_bLightsEnabled) return;
+
+	IKinematics* K = HudItemData()->m_model;
+
+	if (m_bUseFlashLight)
+	{
+		if (m_flash_bone_id == BI_NONE)
+		{
+			R_ASSERT(K);
+
+			R_ASSERT(m_flash_bone_id == BI_NONE);
+
+			m_flash_bone_id = K->LL_BoneID(flash_light_bone);
+
+			K->LL_SetBoneVisible(m_flash_bone_id, FALSE, TRUE);
+		}
+	}
+
+	if (bOn)
+	{
+		K->LL_SetBoneVisible(m_flash_bone_id, TRUE, TRUE);
+		m_turn_off_flash_time = Device.dwTimeGlobal + iFloor(fRelPower * 1000.0f);
+	}
+	else
+	{
+		K->LL_SetBoneVisible(m_flash_bone_id, FALSE, TRUE);
+		m_turn_off_flash_time = 0;
+	}
+	if (bOn != detector_light->get_active())
+		detector_light->set_active(bOn);
 }
 
 void CCustomDetector::UpdateVisibility()

@@ -4,6 +4,8 @@
 #include "../Include/xrRender/Kinematics.h"
 #include "../xrEngine/LightAnimLibrary.h"
 #include "player_hud.h"
+#include "Actor.h"
+#include "Inventory.h"
 
 CSimpleDetector::CSimpleDetector(void)
 {
@@ -77,7 +79,9 @@ void CSimpleDetector::UpdateAf()
 	{
 		af_info.snd_time		= 0;
 		HUD_SOUND_ITEM::PlaySound	(item_type->detect_snds, Fvector().set(0,0,0), this, true, false);
-		ui().Flash					(true, fRelPow);
+
+		Flash(true, fRelPow);
+
 		if(item_type->detect_snds.m_activeSnd)
 			item_type->detect_snds.m_activeSnd->snd.set_frequency(snd_freq);
 	} 
@@ -95,7 +99,9 @@ void CUIArtefactDetectorSimple::construct(CSimpleDetector* p)
 
 CUIArtefactDetectorSimple::~CUIArtefactDetectorSimple()
 {
-	m_flash_light.destroy();
+	if (m_flash_light)
+		m_flash_light.destroy();
+
 	m_on_off_light.destroy();
 }
 
@@ -115,18 +121,22 @@ void CUIArtefactDetectorSimple::Flash(bool bOn, float fRelPower)
 		K->LL_SetBoneVisible(m_flash_bone, FALSE, TRUE);
 		m_turn_off_flash_time	= 0;
 	}
-	if(bOn!=m_flash_light->get_active())
+	if(m_flash_light && bOn!=m_flash_light->get_active())
 		m_flash_light->set_active(bOn);
 }
 
 void CUIArtefactDetectorSimple::setup_internals()
 {
-	R_ASSERT						(!m_flash_light);
-	m_flash_light					= ::Render->light_create();
-	m_flash_light->set_shadow		(false);
-	m_flash_light->set_type			(IRender_Light::POINT);
-	m_flash_light->set_range		(pSettings->r_float(m_parent->HudItemData()->m_sect_name,"flash_light_range"));
-	m_flash_light->set_hud_mode		(true);
+
+	if (pSettings->line_exist(m_parent->HudItemData()->m_sect_name, "flash_light_range"))
+	{
+		R_ASSERT(!m_flash_light);
+		m_flash_light = ::Render->light_create();
+		m_flash_light->set_shadow(false);
+		m_flash_light->set_type(IRender_Light::POINT);
+		m_flash_light->set_range(pSettings->r_float(m_parent->HudItemData()->m_sect_name, "flash_light_range"));
+		m_flash_light->set_hud_mode(true);
+	}
 	
 	R_ASSERT						(!m_on_off_light);
 	m_on_off_light					= ::Render->light_create();
@@ -160,12 +170,18 @@ void CUIArtefactDetectorSimple::update()
 		if(m_flash_bone==BI_NONE)
 			setup_internals();
 
-		if(m_turn_off_flash_time && m_turn_off_flash_time<Device.dwTimeGlobal)
-			Flash (false, 0.0f);
+		CCustomDetector* pCustomDetector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+		if (pCustomDetector)
+		{
+			if (pCustomDetector->m_turn_off_flash_time && pCustomDetector->m_turn_off_flash_time < Device.dwTimeGlobal)
+				pCustomDetector->Flash(false, 0.0f);
+		}
 
 		firedeps		fd;
 		m_parent->HudItemData()->setup_firedeps(fd);
-		if(m_flash_light->get_active())
+
+		if (m_flash_light && m_flash_light->get_active())
 			m_flash_light->set_position(fd.vLastFP);
 
 		m_on_off_light->set_position(fd.vLastFP2);
