@@ -339,6 +339,13 @@ void CCustomDetector::UpdateLights()
 				HudItemData()->setup_firedeps(fd);
 				detector_light->set_position(fd.vLastFP2);
 
+				Fmatrix lightXForm;
+				lightXForm.identity();
+				lightXForm.k.set(fd.vLastFD);
+				Fvector::generate_orthonormal_basis_normalized(lightXForm.k, lightXForm.j, lightXForm.i);
+
+				detector_light->set_rotation(lightXForm.k, lightXForm.i);
+
 				if (detector_glow && detector_glow->get_active())
 					detector_glow->set_position(fd.vLastFP2);
 			}
