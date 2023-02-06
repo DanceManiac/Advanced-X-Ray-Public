@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="pda_btn_skills">
+		<text>Навыки</text>
+	</string>
+	<string id="st_skills_points">
+		<text>Очки навыков: </text>
+	</string>
+	<string id="st_survival_name">
+		<text>Выживание</text>
+	</string>
+	<string id="st_survival_descr">
+		<text>Навык выживания влияет на скорость выведения радиации, восстановления здоровья, заживление ран, аппетит, жажду и интоксикацию.</text>
+	</string>
+	<string id="st_survival_lvl">
+		<text>Выживание: </text>
+	</string>
+	<string id="st_power_name">
+		<text>Сила</text>
+	</string>
+	<string id="st_power_descr">
+		<text>Сила даёт прибавку к переносимому весу и урону от холодного оружия, а также увеличивает высоту прыжка и скорость передвижения.</text>
+	</string>
+	<string id="st_power_lvl">
+		<text>Сила: </text>
+	</string>
+	<string id="st_repair_name">
+		<text>Ремонт</text>
+	</string>
+	<string id="st_repair_descr">
+		<text>Навык ремонта позволяет самостоятельно ремонтировать своё снаряжение. С каждым уровнем навыка качество ремонта увеличивается.</text>
+	</string>
+	<string id="st_repair_lvl">
+		<text>Ремонт: </text>
+	</string>
+	<string id="st_endurance_name">
+		<text>Выносливость</text>
+	</string>
+	<string id="st_endurance_descr">
+		<text>Навык выносливости помогает меньше уставать и влияет на сонливость.</text>
+	</string>
+	<string id="st_endurance_lvl">
+		<text>Выносливость: </text>
+	</string>
+	<string id="st_buy">
+		<text>Изучить</text>
+	</string>
+	<string id="st_buy_survival_descr">
+		<text>Изучить новый уровень навыка "Выживание".</text>
+	</string>
+	<string id="st_buy_power_descr">
+		<text>Изучить новый уровень навыка "Сила".</text>
+	</string>
+	<string id="st_buy_repair_descr">
+		<text>Изучить новый уровень навыка "Ремонт".</text>
+	</string>
+	<string id="st_buy_endurance_descr">
+		<text>Изучить новый уровень навыка "Выносливость".</text>
+	</string>
+</string_table>
