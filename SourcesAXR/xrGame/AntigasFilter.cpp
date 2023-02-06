@@ -53,9 +53,9 @@ bool CAntigasFilter::Useful() const
 
 	if (outfit || helmet)
 	{
-		if (outfit && outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f)
+		if (outfit && outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->m_SuitableFilter == this->cNameSect().c_str())
 			return true;
-		else if (helmet && helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f)
+		else if (helmet && helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f && helmet->m_SuitableFilter == this->cNameSect().c_str())
 			return true;
 		else
 			return false;

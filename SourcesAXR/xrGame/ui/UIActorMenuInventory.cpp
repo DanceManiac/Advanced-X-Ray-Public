@@ -1257,9 +1257,9 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	bool helmet_use_filter = false;
 
 	if (outfit)
-		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f;
+		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->m_SuitableFilter == pFilter->cNameSect().c_str();
 	if (helmet)
-		helmet_use_filter = helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f;
+		helmet_use_filter = helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f && helmet->m_SuitableFilter == pFilter->cNameSect().c_str();
 
 	LPCSTR act_str = NULL;
 

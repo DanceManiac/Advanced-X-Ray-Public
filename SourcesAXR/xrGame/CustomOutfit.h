@@ -72,6 +72,7 @@ public:
 
 	shared_str				m_BonesProtectionSect;
 	shared_str				m_NightVisionSect;
+	shared_str				m_SuitableFilter;
 
 	bool					bIsHelmetAvaliable;
 	bool					m_b_HasGlass;

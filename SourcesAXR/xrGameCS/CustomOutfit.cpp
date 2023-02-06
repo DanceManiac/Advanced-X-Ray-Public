@@ -26,7 +26,8 @@ CCustomOutfit::CCustomOutfit()
 
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_artefact_count = 0;
-	m_BonesProtectionSect = NULL;
+	m_BonesProtectionSect = nullptr;
+	m_SuitableFilter = nullptr;
 	m_bUseFilter = false;
 	m_b_HasGlass = false;
 	m_NightVisionType = 0;
@@ -131,6 +132,7 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_b_HasGlass				= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter				= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
+	m_SuitableFilter			= READ_IF_EXISTS(pSettings, r_string, section, "suitable_filter", "antigas_filter");
 	m_NightVisionType			= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
 
 	if (pSettings->line_exist(section, "nightvision_sect"))
