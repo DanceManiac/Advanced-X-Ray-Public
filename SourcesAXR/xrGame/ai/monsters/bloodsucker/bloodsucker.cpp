@@ -253,6 +253,8 @@ void CAI_Bloodsucker::Load(LPCSTR section)
 	m_visibility_state						=	unset;
 	m_visibility_state_last_changed_time	=	0;
 
+	m_bHitIfInvisible				= READ_IF_EXISTS(pSettings, r_bool, section, "hit_if_invisible_mode", true);
+
 	PostLoad							(section);
 }
 
@@ -771,7 +773,12 @@ bool CAI_Bloodsucker::in_solid_state ()
 
 void CAI_Bloodsucker::Hit(SHit* pHDS)
 {
-	if ( !collision_hit_off )
+	if (state_invisible && !m_bHitIfInvisible)
+	{
+		return;
+	}
+
+	if (!collision_hit_off)
 	{
 		inherited::Hit(pHDS);
 	}

@@ -239,6 +239,7 @@ void CAI_Bloodsucker::Load(LPCSTR section)
 	m_invisibility_activate_delay        = READ_IF_EXISTS(pSettings, r_u32, section, "invisibility_activate_delay",  
 										   default_invisibility_activate_delay);
 	
+	m_bHitIfInvisible					 = READ_IF_EXISTS(pSettings, r_bool, section, "hit_if_invisible_mode", true);
 }
 
 void CAI_Bloodsucker::reinit()
@@ -676,11 +677,12 @@ bool CAI_Bloodsucker::in_solid_state ()
 
 void CAI_Bloodsucker::Hit(SHit* pHDS)
 {
-	if ( state_invisible )
+	if (state_invisible && !m_bHitIfInvisible)
 	{
 		return;
 	}
-	if ( !collision_hit_off )
+
+	if (!collision_hit_off)
 	{
 		inherited::Hit(pHDS);
 	}

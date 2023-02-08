@@ -130,6 +130,7 @@ public:
 	shared_str				m_visual_default;
 	LPCSTR					m_visual_predator;
 	bool					m_predator;
+	bool					m_bHitIfInvisible;
 	CEntityAlive			*m_cob;
 	LPCSTR					m_str_cel;
 	Fvector					j_position;
