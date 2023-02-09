@@ -59,6 +59,7 @@ function register(object_factory)
 	
 	cs_register	(object_factory, "CBattery",  		"se_item.se_item",			"S_BATTE",	"obj_battery_s")
 	cs_register	(object_factory, "CAntigasFilter",  "se_item.se_item",			"S_FILTE",	"obj_filter_s")
+	cs_register	(object_factory, "CRepairKit",  	"se_item.se_item",			"S_REKIT",	"obj_remkit_s")
 
 	cs_register	(object_factory, "CWeaponAK74",		"se_item.se_weapon_magazined_w_gl",		"WP_AK74",	"wpn_ak74_s")
 	cs_register	(object_factory, "CWeaponLR300",	"se_item.se_weapon_magazined",		"WP_LR300",	"wpn_lr300_s")

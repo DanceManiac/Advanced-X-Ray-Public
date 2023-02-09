@@ -42,6 +42,7 @@ protected:
 	UIBoosterInfoItem* m_booster_items[eBoostExplImmunity];
 	UIBoosterInfoItem* m_portions;
 	UIBoosterInfoItem* m_filter;
+	UIBoosterInfoItem* m_repair_kit_condition;
 
 	CUIStatic* m_Prop_line;
 

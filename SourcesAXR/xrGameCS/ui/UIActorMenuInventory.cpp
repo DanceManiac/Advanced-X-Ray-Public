@@ -26,6 +26,7 @@
 #include "../CustomOutfit.h"
 #include "../Battery.h"
 #include "../AntigasFilter.h"
+#include "../RepairKit.h"
 #include "../UICursor.h"
 #include "../MPPlayersBag.h"
 #include "../HUDManager.h"
@@ -764,8 +765,9 @@ bool CUIActorMenu::TryUseItem( CUICellItem* cell_itm )
 	CEatableItem*	pEatableItem	= smart_cast<CEatableItem*>	(item);
 	CBattery*		pBattery		= smart_cast<CBattery*>		(item);
 	CAntigasFilter* pFilter			= smart_cast<CAntigasFilter*>(item);
+	CRepairKit*		pRepairKit		= smart_cast<CRepairKit*>	(item);
 
-	if ( !(pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery || pFilter) )
+	if ( !(pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery || pFilter || pRepairKit) )
 	{
 		return false;
 	}
@@ -1013,19 +1015,40 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CBottleItem*	pBottleItem		= smart_cast<CBottleItem*>	(item);
 	CBattery*		pBattery		= smart_cast<CBattery*>		(item);
 	CAntigasFilter* pFilter			= smart_cast<CAntigasFilter*>(item);
+	CRepairKit*		pRepairKit		= smart_cast<CRepairKit*>	(item);
 
 	CInventory*	inv = &m_pActorInvOwner->inventory();
 	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
 	PIItem	item_in_art_detector_slot = inv->ItemFromSlot(DETECTOR_SLOT);
 	PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
 	PIItem	item_in_outfit_slot = inv->ItemFromSlot(OUTFIT_SLOT);
+	PIItem	item_in_knife_slot = inv->ItemFromSlot(KNIFE_SLOT);
+	PIItem	item_in_wpn1_slot = inv->ItemFromSlot(PISTOL_SLOT);
+	PIItem	item_in_wpn2_slot = inv->ItemFromSlot(RIFLE_SLOT);
 
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+	CWeapon* knife = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(KNIFE_SLOT));
+	CWeapon* wpn1 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(PISTOL_SLOT));
+	CWeapon* wpn2 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(RIFLE_SLOT));
 
 	bool outfit_use_filter = false;
 
-	if (outfit)
+	bool can_repair_outfit = false;
+	bool can_repair_knife = false;
+	bool can_repair_wpn1 = false;
+	bool can_repair_wpn2 = false;
+
+	if (outfit && pFilter)
 		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->m_SuitableFilter == pFilter->cNameSect().c_str();
+
+	if (outfit && pRepairKit)
+		can_repair_outfit = outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
+	if (knife && pRepairKit)
+		can_repair_knife = knife->GetCondition() < 0.9f && knife->GetCondition() >= 0.4f && knife->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
+	if (wpn1 && pRepairKit)
+		can_repair_wpn1 = wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
+	if (wpn2 && pRepairKit)
+		can_repair_wpn2 = wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
 
 	LPCSTR act_str = NULL;
 
@@ -1070,6 +1093,41 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			shared_str str = CStringTable().translate("st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, FILTER_CHANGE_OUTFIT);
+			b_show = true;
+		}
+		return;
+	}
+	else if (pRepairKit)
+	{
+		if (item_in_outfit_slot && can_repair_outfit)
+		{
+			shared_str str = CStringTable().translate("st_repair");
+			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT);
+			b_show = true;
+		}
+
+		if (item_in_knife_slot && can_repair_knife)
+		{
+			shared_str str = CStringTable().translate("st_repair");
+			str.printf("%s %s", str.c_str(), item_in_knife_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_knife_slot, REPAIR_KIT_KNIFE);
+			b_show = true;
+		}
+
+		if (item_in_wpn1_slot && can_repair_wpn1)
+		{
+			shared_str str = CStringTable().translate("st_repair");
+			str.printf("%s %s", str.c_str(), item_in_wpn1_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn1_slot, REPAIR_KIT_WPN1);
+			b_show = true;
+		}
+
+		if (item_in_wpn2_slot && can_repair_wpn2)
+		{
+			shared_str str = CStringTable().translate("st_repair");
+			str.printf("%s %s", str.c_str(), item_in_wpn2_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn2_slot, REPAIR_KIT_WPN2);
 			b_show = true;
 		}
 		return;
@@ -1231,6 +1289,42 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
 			if (!filter)
 				break;
+			TryUseItem(cell_item);
+			break;
+		}
+	case REPAIR_KIT_OUTFIT:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 1;
+			TryUseItem(cell_item);
+			break;
+		}
+	case REPAIR_KIT_KNIFE:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 4;
+			TryUseItem(cell_item);
+			break;
+		}
+	case REPAIR_KIT_WPN1:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 5;
+			TryUseItem(cell_item);
+			break;
+		}
+	case REPAIR_KIT_WPN2:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 6;
 			TryUseItem(cell_item);
 			break;
 		}

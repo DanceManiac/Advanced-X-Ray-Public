@@ -516,6 +516,7 @@ public:
 
 	LPCSTR					GetCurrentAmmo_ShortName	();
 
+	shared_str				m_SuitableRepairKit;
 protected:
 	u32						m_ef_main_weapon_type;
 	u32						m_ef_weapon_type;

@@ -1,0 +1,176 @@
+﻿////////////////////////////////////////////////////////////////////////////
+//	Module 		: RepairKit.cpp
+//	Created 	: 08.02.2023
+//  Modified 	: 08.02.2023
+//	Author		: Dance Maniac (M.F.S. Team)
+//	Description : Repair kit
+////////////////////////////////////////////////////////////////////////////
+
+#include "stdafx.h"
+#include "RepairKit.h"
+#include "Actor.h"
+#include "inventory.h"
+#include "CustomOutfit.h"
+#include "Weapon.h"
+#include "WeaponKnife.h"
+
+CRepairKit::CRepairKit()
+{
+	m_iPortionsNum = -1;
+	m_iUseFor = 0;
+	m_fRestoreCondition = 0.0f;
+	m_physic_item = 0;
+}
+
+CRepairKit::~CRepairKit()
+{
+}
+
+void CRepairKit::Load(LPCSTR section)
+{
+	inherited::Load(section);
+
+	m_iPortionsNum = pSettings->r_s32(section, "eat_portions_num");
+	m_fRestoreCondition = READ_IF_EXISTS(pSettings, r_float, section, "restore_condition", 0.5f);
+	VERIFY(m_iPortionsNum < 10000);
+}
+
+BOOL CRepairKit::net_Spawn(CSE_Abstract* DC)
+{
+	if (!inherited::net_Spawn(DC)) return FALSE;
+
+	return TRUE;
+};
+
+bool CRepairKit::Useful() const
+{
+	if (!inherited::Useful()) return false;
+
+	//проверить не все ли еще съедено
+	if (m_iPortionsNum == 0) return false;
+
+	if (Actor()->ActorSkills && Actor()->ActorSkills->repairSkillLevel < 1) return false;
+
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+	CWeapon* knife = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(KNIFE_SLOT));
+	CWeapon* wpn1 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(PISTOL_SLOT));
+	CWeapon* wpn2 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(RIFLE_SLOT));
+
+	if (outfit || knife || wpn1 || wpn2 )
+	{
+		if (outfit && outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->m_SuitableRepairKit == this->cNameSect().c_str())
+			return true;
+		else if (knife && knife->GetCondition() < 0.9f && knife->GetCondition() >= 0.4f && knife->m_SuitableRepairKit == this->cNameSect().c_str())
+			return true;
+		else if (wpn1 && wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->m_SuitableRepairKit == this->cNameSect().c_str())
+			return true;
+		else if (wpn2 && wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->m_SuitableRepairKit == this->cNameSect().c_str())
+			return true;
+		else
+			return false;
+	}
+	else
+		return false;
+}
+
+void CRepairKit::UseBy(CEntityAlive* entity_alive)
+{
+	if (m_iUseFor == 1)
+		ChangeInOutfit();
+	else if (m_iUseFor == 2)
+		ChangeInKnife();
+	else if (m_iUseFor == 3)
+		ChangeInWpn1();
+	else if (m_iUseFor == 4)
+		ChangeInWpn2();
+
+	if (m_iPortionsNum > 0)
+		--m_iPortionsNum;
+	else
+		m_iPortionsNum = 0;
+
+	m_iUseFor = 0;
+}
+
+void CRepairKit::ChangeInOutfit()
+{
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+	float rnd_cond = ::Random.randF(0.1f, m_fRestoreCondition);
+	int repair_skill_level_inverted = 5;
+
+	if (Actor()->ActorSkills)
+		repair_skill_level_inverted -= Actor()->ActorSkills->repairSkillLevel;
+	else
+		repair_skill_level_inverted = 1;
+
+	if (repair_skill_level_inverted)
+		rnd_cond /= repair_skill_level_inverted;
+
+	if (outfit)
+		outfit->ChangeCondition(rnd_cond);
+}
+
+void CRepairKit::ChangeInKnife()
+{
+	CWeapon* knife = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(KNIFE_SLOT));
+	float rnd_cond = ::Random.randF(0.1f, m_fRestoreCondition);
+	int repair_skill_level_inverted = 5;
+
+	if (Actor()->ActorSkills)
+		repair_skill_level_inverted -= Actor()->ActorSkills->repairSkillLevel;
+	else
+		repair_skill_level_inverted = 1;
+
+	if (repair_skill_level_inverted)
+		rnd_cond /= repair_skill_level_inverted;
+
+	if (knife)
+		knife->ChangeCondition(rnd_cond);
+}
+
+void CRepairKit::ChangeInWpn1()
+{
+	CWeapon* wpn = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(PISTOL_SLOT));
+	float rnd_cond = ::Random.randF(0.1f, m_fRestoreCondition);
+	int repair_skill_level_inverted = 5;
+
+	if (Actor()->ActorSkills)
+		repair_skill_level_inverted -= Actor()->ActorSkills->repairSkillLevel;
+	else
+		repair_skill_level_inverted = 1;
+
+	if (repair_skill_level_inverted)
+		rnd_cond /= repair_skill_level_inverted;
+
+	if (wpn)
+		wpn->ChangeCondition(rnd_cond);
+}
+
+void CRepairKit::ChangeInWpn2()
+{
+	CWeapon* wpn = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(RIFLE_SLOT));
+	float rnd_cond = ::Random.randF(0.1f, m_fRestoreCondition);
+	int repair_skill_level_inverted = 5;
+
+	if (Actor()->ActorSkills)
+		repair_skill_level_inverted -= Actor()->ActorSkills->repairSkillLevel;
+	else
+		repair_skill_level_inverted = 1;
+
+	if (repair_skill_level_inverted)
+		rnd_cond /= repair_skill_level_inverted;
+
+	if (wpn)
+		wpn->ChangeCondition(rnd_cond);
+}
+
+void CRepairKit::ChangeRepairKitCondition(float val)
+{
+	m_fRestoreCondition += val;
+	clamp(m_fRestoreCondition, 0.f, 1.f);
+}
+
+float CRepairKit::GetRepairKitCondition() const
+{
+	return m_fRestoreCondition;
+}

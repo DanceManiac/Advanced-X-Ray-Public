@@ -7519,6 +7519,9 @@
     <ClInclude Include="ActorSkills.h">
       <Filter>Core\Client\Objects\actor\base</Filter>
     </ClInclude>
+    <ClInclude Include="RepairKit.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11208,6 +11211,9 @@
     </ClCompile>
     <ClCompile Include="ActorSkills.cpp">
       <Filter>Core\Client\Objects\actor\base</Filter>
+    </ClCompile>
+    <ClCompile Include="RepairKit.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

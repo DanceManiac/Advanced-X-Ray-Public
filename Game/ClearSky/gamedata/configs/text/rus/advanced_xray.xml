@@ -348,4 +348,13 @@
 	<string id="st_screen_space_shaders">
 		<text>Screen Space Shaders</text>
 	</string>
+	<string id="st_repair">
+		<text>Отремонтировать:</text>
+	</string>
+	<string id="st_repair_kit">
+		<text>Ремнабор</text>
+	</string>
+	<string id="st_repair_kit_descr">
+		<text>Обычный ремонтный набор. Позволяет отремонтировать снаряжение, если руки из нужного места растут.</text>
+	</string>
 </string_table>

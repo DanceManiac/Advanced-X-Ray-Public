@@ -29,6 +29,7 @@ CCustomOutfit::CCustomOutfit()
 	m_artefact_count = 0;
 	m_BonesProtectionSect = nullptr;
 	m_SuitableFilter = nullptr;
+	m_SuitableRepairKit = nullptr;
 
 	m_b_HasGlass = false;
 	m_bUseFilter = false;
@@ -192,6 +193,7 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_b_HasGlass			= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter			= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
 	m_SuitableFilter		= READ_IF_EXISTS(pSettings, r_string, section, "suitable_filter", "antigas_filter");
+	m_SuitableRepairKit		= READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kit", "repair_kit");
 	m_NightVisionType		= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
 
 	if (GameConstants::GetOutfitUseFilters())

@@ -147,6 +147,16 @@
 		</value>
 	</boost_filter_condition>
 	
+	<boost_repair_kit_condition x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_item_repair_kit_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="100" show_sign="0" unit_str="%">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_repair_kit_condition>
+	
 	<item_portions x="0" y="0" width="214" height="20" >
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_mfs_item_effectiveness</texture>

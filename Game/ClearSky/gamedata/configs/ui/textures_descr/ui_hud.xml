@@ -187,5 +187,6 @@
 		<texture id="ui_inv_icon_withdrawal_restore_speed" x="260" y="0" width="18" height="18" />
 		<texture id="ui_inv_af_rank" x="280" y="0" width="18" height="18" />
 		<texture id="ui_item_filter_icon" x="300" y="0" width="18" height="18" />
+		<texture id="ui_item_repair_kit_icon" x="320" y="0" width="18" height="18" />
 	</file>
 </w>

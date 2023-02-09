@@ -19,6 +19,7 @@ public:
 	shared_str				m_BonesProtectionSect;
 	shared_str				m_NightVisionSect;
 	shared_str				m_SuitableFilter;
+	shared_str				m_SuitableRepairKit;
 
 	virtual void			OnMoveToSlot			(const SInvItemPlace& previous_place);
 	virtual void			OnMoveToRuck			(const SInvItemPlace& previous_place);

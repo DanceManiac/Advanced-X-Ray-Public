@@ -11,19 +11,21 @@
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
 #include "../AntigasFilter.h"
+#include "../RepairKit.h"
 #include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
 {
 	for(u32 i = 0; i < eBoostExplImmunity; ++i)
 	{
-		m_booster_items[i] = NULL;
+		m_booster_items[i] = nullptr;
 	}
 
-	m_booster_anabiotic = NULL;
-	m_portions = NULL;
-	m_filter = NULL;
-	m_booster_time = NULL;
+	m_booster_anabiotic = nullptr;
+	m_portions = nullptr;
+	m_filter = nullptr;
+	m_repair_kit_condition = nullptr;
+	m_booster_time = nullptr;
 }
 
 CUIBoosterInfo::~CUIBoosterInfo()
@@ -32,6 +34,7 @@ CUIBoosterInfo::~CUIBoosterInfo()
 	xr_delete(m_booster_anabiotic);
 	xr_delete(m_portions);
 	xr_delete(m_filter);
+	xr_delete(m_repair_kit_condition);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
 }
@@ -151,6 +154,14 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_filter->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
+	//Repair Kit
+	m_repair_kit_condition = xr_new<UIBoosterInfoItem>();
+	m_repair_kit_condition->Init(xml, "boost_repair_kit_condition");
+	m_repair_kit_condition->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_repair_kit_condition").c_str();
+	m_repair_kit_condition->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	m_booster_time = xr_new<UIBoosterInfoItem>();
 	m_booster_time->Init(xml, "boost_time");
 	m_booster_time->SetAutoDelete(false);
@@ -174,6 +185,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 	const shared_str& section = pInvItem.object().cNameSect();
 	CEatableItem* eatable = pInvItem.cast_eatable_item();
 	CAntigasFilter* pFilter = pInvItem.cast_filter();
+	CRepairKit* pRepairKit = pInvItem.cast_repair_kit();
 	CEntityCondition::BOOSTER_MAP boosters = actor->conditions().GetCurBoosterInfluences();
 
 	float val = 0.0f, max_val = 1.0f, max_value = 0.0f;
@@ -275,6 +287,20 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 		h += m_filter->GetWndSize().y;
 		AttachChild(m_filter);
+	}
+
+	//Repair Kit
+	if (pRepairKit)
+	{
+		val = pRepairKit->m_fRestoreCondition;
+
+		m_repair_kit_condition->SetValue(val);
+		pos.set(m_repair_kit_condition->GetWndPos());
+		pos.y = h;
+		m_repair_kit_condition->SetWndPos(pos);
+
+		h += m_repair_kit_condition->GetWndSize().y;
+		AttachChild(m_repair_kit_condition);
 	}
 
 	if(pSettings->line_exist(section.c_str(), "boost_time"))

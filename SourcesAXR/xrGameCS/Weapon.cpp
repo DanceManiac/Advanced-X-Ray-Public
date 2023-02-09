@@ -101,6 +101,8 @@ CWeapon::CWeapon()
 
 	bHasBulletsToHide	= false;
 	bullet_cnt			= 0;
+
+	m_SuitableRepairKit = nullptr;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -738,6 +740,8 @@ void CWeapon::Load(LPCSTR section)
 	}
 
 	hud_recalc_koef = READ_IF_EXISTS(pSettings, r_float, hud_sect, "hud_recalc_koef", 1.35f); //Ќа калаше при 1.35 вроде норм смотритс€, другим стволам возможно придетс€ подбирать другие значени€.
+
+	m_SuitableRepairKit = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kit", "repair_kit");
 }
 
 void CWeapon::LoadFireParams		(LPCSTR section)
