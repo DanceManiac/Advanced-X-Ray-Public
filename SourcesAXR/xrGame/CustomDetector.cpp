@@ -248,8 +248,11 @@ void CCustomDetector::Load(LPCSTR section)
 
 		m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
 		m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
-		m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
-		m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+		m_fConstVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+		m_fConstVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
+		m_fVolumetricDistance = m_fConstVolumetricDistance;
+		m_fVolumetricIntensity = m_fConstVolumetricIntensity;
 
 		m_iLightType = READ_IF_EXISTS(pSettings, r_u8, section, "light_type", 1);
 		light_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, section, "color_animator", ""));
@@ -259,9 +262,10 @@ void CCustomDetector::Load(LPCSTR section)
 		fBrightness = clr.intensity();
 		detector_light->set_color(clr);
 
-		const float range = READ_IF_EXISTS(pSettings, r_float, section, "light_range", 1.f);
+		m_fConstLightRange = READ_IF_EXISTS(pSettings, r_float, section, "light_range", 1.f);
+		m_fLightRange = m_fConstLightRange;
 
-		detector_light->set_range(range);
+		detector_light->set_range(m_fLightRange);
 		detector_light->set_hud_mode(true);
 		detector_light->set_type((IRender_Light::LT)m_iLightType);
 		detector_light->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, section, "light_spot_angle", 1.f)));
@@ -361,6 +365,37 @@ void CCustomDetector::UpdateLights()
 				fclr.set(clr);
 				detector_light->set_color(fclr);
 			}
+		}
+
+		CCustomDetector* detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+		float percent = 100.f;
+
+		if (detector)
+			percent = detector->m_fCurrentChargeLevel * 100;
+
+		//The effect of charge on light
+		if (m_bLightsEnabled)
+		{
+			if (m_fLightRange >= 0.0f)
+				m_fLightRange = (m_fConstLightRange / 100) * percent;
+			else
+				m_bLightsEnabled = false;
+
+			detector_light->set_range(m_fLightRange);
+		}
+
+		//The effect of charge on volumetric lights
+		if (m_bVolumetricLights)
+		{
+			if (m_fVolumetricDistance >= 0.0f)
+				m_fVolumetricDistance = (m_fConstVolumetricDistance / 100) * percent;
+			else if (m_fVolumetricIntensity >= 0.0f)
+				m_fVolumetricIntensity = (m_fConstVolumetricIntensity / 100) * percent;
+			else
+				m_bVolumetricLights = false;
+
+			detector_light->set_volumetric_distance(m_fVolumetricDistance);
+			detector_light->set_volumetric_intensity(m_fVolumetricIntensity);
 		}
 	}
 }

@@ -176,7 +176,11 @@ public:
 			float		m_fVolumetricQuality;
 			float		m_fVolumetricDistance;
 			float		m_fVolumetricIntensity;
+			float		m_fConstVolumetricDistance;
+			float		m_fConstVolumetricIntensity;
 			float		fBrightness{ 0.25f };
+			float		m_fConstLightRange;
+			float		m_fLightRange;
 			int			m_iLightType;
 			shared_str	flash_light_bone;
 			shared_str	m_SuitableBattery;
