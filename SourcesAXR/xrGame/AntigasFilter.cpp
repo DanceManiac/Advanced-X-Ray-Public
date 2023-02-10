@@ -50,12 +50,15 @@ bool CAntigasFilter::Useful() const
 
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-	if (outfit || helmet)
+	if (outfit || helmet || helmet2)
 	{
 		if (outfit && outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->m_SuitableFilter == this->cNameSect().c_str())
 			return true;
 		else if (helmet && helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f && helmet->m_SuitableFilter == this->cNameSect().c_str())
+			return true;
+		else if (helmet2 && helmet2->m_bUseFilter && helmet2->m_fFilterCondition <= 0.99f && helmet2->m_SuitableFilter == this->cNameSect().c_str())
 			return true;
 		else
 			return false;
