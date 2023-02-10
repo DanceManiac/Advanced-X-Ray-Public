@@ -980,6 +980,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	}
 // Helmet broken icon
 	CHelmet* helmet = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* helmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 	m_ind_helmet_broken->Show(false);
 
 	if(helmet)
@@ -994,6 +995,36 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			if(condition>0.5f)
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_green");
 			else if(condition>0.25f)
+				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_yellow");
+			else
+				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_red");
+		}
+
+		if (filter_cond < 0.75f && use_filter)
+		{
+			m_ind_filter_dirty->Show(true);
+			if (filter_cond > 0.5f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_green");
+			else if (filter_cond > 0.25f)
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_yellow");
+			else
+				m_ind_filter_dirty->InitTexture("ui_inGame2_circle_filter_red");
+		}
+	}
+
+	// Second helmet broken icon
+	if (helmet2)
+	{
+		float condition = helmet2->GetCondition();
+		float filter_cond = helmet2->GetFilterCondition();
+		bool use_filter = helmet2->m_bUseFilter;
+
+		if (condition < 0.75f)
+		{
+			m_ind_helmet_broken->Show(true);
+			if (condition > 0.5f)
+				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_green");
+			else if (condition > 0.25f)
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_yellow");
 			else
 				m_ind_helmet_broken->InitTexture("ui_inGame2_circle_Helmetbroken_red");
