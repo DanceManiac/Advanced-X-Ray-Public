@@ -293,8 +293,6 @@ void CTorch::UpdateChargeLevel(void)
 		light_render->set_range(range);
 		m_delta_h = PI_DIV_2 - atan((range*0.5f) / _abs(TORCH_OFFSET.x));
 
-		//Msg("Torch Charge is: %f", m_fCurrentChargeLevel); //Для тестов
-
 		if (m_fCurrentChargeLevel < 0.0)
 		{
 			m_fCurrentChargeLevel = 0.0;
@@ -495,7 +493,6 @@ bool  CTorch::can_be_attached		() const
 	const CActor *pA = smart_cast<const CActor *>(H_Parent());
 	if (pA)
 	{
-		//return pA->inventory().InSlot(this);
 		return (this == smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT)));
 	}
 	return true;
@@ -550,8 +547,6 @@ void CTorch::Recharge(float val)
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	SetCondition(m_fCurrentChargeLevel);
-
-	//Msg("Battery Charge in Recharge is: %f", val); //Для тестов
 }
 
 float CTorch::get_range() const 
@@ -561,7 +556,6 @@ float CTorch::get_range() const
 
 bool CTorch::install_upgrade_impl(LPCSTR section, bool test)
 {
-	//Msg("Torch Upgrade");
 	bool result = inherited::install_upgrade_impl(section, test);
 
 	result |= process_if_exists(section, "uncharge_speed",	&CInifile::r_float, m_fUnchargeSpeed, test);
