@@ -79,6 +79,7 @@ public:
 			float	m_fUnchargeSpeed;
 			float	m_fMaxRange;
 			float	m_fCurveRange;
+		shared_str	m_SuitableBattery;
 
 protected:
 	HUD_SOUND_COLLECTION	m_sounds;

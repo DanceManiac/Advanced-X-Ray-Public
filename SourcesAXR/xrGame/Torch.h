@@ -76,6 +76,7 @@ public:
 	float			m_fUnchargeSpeed;
 	float			m_fMaxRange;
 	float			m_fCurveRange;
+	shared_str		m_SuitableBattery;
 
 	virtual CTorch* cast_torch				() { return this; }
  

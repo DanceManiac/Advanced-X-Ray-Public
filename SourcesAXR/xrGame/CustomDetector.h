@@ -179,6 +179,7 @@ public:
 			float		fBrightness{ 0.25f };
 			int			m_iLightType;
 			shared_str	flash_light_bone;
+			shared_str	m_SuitableBattery;
 			u16			m_flash_bone_id;
 			u32			m_turn_off_flash_time;
 			ref_light	detector_light;

@@ -73,6 +73,7 @@ public:
 			float	m_fMaxChargeLevel;
 			float	m_fCurrentChargeLevel;
 			float	m_fUnchargeSpeed;
+	shared_str		m_SuitableBattery;
 
 protected:
 	void StopAllSounds				();

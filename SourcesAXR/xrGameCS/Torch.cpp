@@ -59,6 +59,8 @@ CTorch::CTorch(void)
 	m_fUnchargeSpeed			= 0.0f;
 	m_fMaxRange					= 20.f;
 	m_fCurveRange				= 20.f;
+
+	m_SuitableBattery			= nullptr;
 }
 
 CTorch::~CTorch(void) 
@@ -105,6 +107,8 @@ void CTorch::Load(LPCSTR section)
 	m_light_section = READ_IF_EXISTS(pSettings, r_string, section, "light_section", "torch_definition");
 	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
 	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+
+	m_SuitableBattery = READ_IF_EXISTS(pSettings, r_string, section, "suitable_battery", "torch_battery");
 
 	if (pSettings->line_exist(section, "snd_turn_on"))
 		m_sounds.LoadSound(section, "snd_turn_on", "sndTurnOn", SOUND_TYPE_ITEM_USING);

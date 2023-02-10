@@ -31,6 +31,7 @@ CDetectorAnomaly::CDetectorAnomaly(void)
 	m_fMaxChargeLevel			= 0.0f;
 	m_fCurrentChargeLevel		= 1.0f;
 	m_fUnchargeSpeed			= 0.0f;
+	m_SuitableBattery			= nullptr;
 }
 
 CDetectorAnomaly::~CDetectorAnomaly(void)
@@ -97,6 +98,7 @@ void CDetectorAnomaly::Load(LPCSTR section)
 
 	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
 	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+	m_SuitableBattery = READ_IF_EXISTS(pSettings, r_string, section, "suitable_battery", "torch_battery");
 
 	if (GameConstants::GetAnoDetectorUseBattery())
 	{

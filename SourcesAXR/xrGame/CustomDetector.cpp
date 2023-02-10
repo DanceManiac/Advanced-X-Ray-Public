@@ -191,6 +191,7 @@ CCustomDetector::CCustomDetector()
 	m_fMaxChargeLevel	= 0.0f;
 	m_fCurrentChargeLevel = 1.0f;
 	m_fUnchargeSpeed	= 0.0f;
+	m_SuitableBattery	= nullptr;
 
 	flash_light_bone	= "light_bone_1";
 	m_flash_bone_id		= BI_NONE;
@@ -225,6 +226,7 @@ void CCustomDetector::Load(LPCSTR section)
 
 	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
 	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+	m_SuitableBattery = READ_IF_EXISTS(pSettings, r_string, section, "suitable_battery", "torch_battery");
 
 	if (GameConstants::GetArtDetectorUseBattery())
 	{

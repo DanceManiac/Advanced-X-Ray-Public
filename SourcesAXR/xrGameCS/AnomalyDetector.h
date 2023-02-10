@@ -70,9 +70,10 @@ public:
 			float GetUnchargeSpeed	(void) const;
 			void Recharge			(float val);
 
-			float m_fMaxChargeLevel;
-			float m_fCurrentChargeLevel;
-			float m_fUnchargeSpeed;
+			float	m_fMaxChargeLevel;
+			float	m_fCurrentChargeLevel;
+			float	m_fUnchargeSpeed;
+	shared_str		m_SuitableBattery;
 
 protected:
 	void StopAllSounds				();
