@@ -255,8 +255,8 @@ public:
 			return;
 		}
 
-		Fvector pos = Actor()->Position();
-		pos.y += 3.0f;
+		collide::rq_result RQ = Level().GetPickResult(Device.vCameraPosition, Device.vCameraDirection, 1000.0f, Level().CurrentControlEntity());
+		Fvector pos = Fvector(Device.vCameraPosition).add(Fvector(Device.vCameraDirection).mul(RQ.range));
 
 		if (auto tpGame = smart_cast<game_sv_Single*>(Level().Server->game))
 		{

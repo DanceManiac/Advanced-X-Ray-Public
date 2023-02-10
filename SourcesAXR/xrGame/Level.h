@@ -191,6 +191,8 @@ public:
 	CZoneList*					hud_zones_list;
 	CZoneList*					create_hud_zones_list();
 
+	collide::rq_result			GetPickResult(Fvector pos, Fvector dir, float range, CObject* ignore);
+
 private:
 	// preload sounds registry
 	DEFINE_MAP					(shared_str,ref_sound,SoundRegistryMap,SoundRegistryMapIt);

@@ -50,6 +50,9 @@
 #include "demoinfo.h"
 #include "CustomDetector.h"
 
+#include "../xrEngine/GameMtlLib.h"
+#include "../xrEngine/IGame_Persistent.h"
+
 #include "UIGameCustom.h"
 #include "ui/UIPdaWnd.h"
 #include "UICursor.h"
@@ -1354,4 +1357,41 @@ CZoneList::~CZoneList()
 {
 	clear();
 	destroy();
+}
+
+ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
+{
+	collide::rq_result* RQ = (collide::rq_result*)params;
+	if (result.O)
+	{
+		if (Actor())
+		{
+			if (result.O == Actor())
+				return TRUE;
+			if (Actor()->Holder())
+			{
+				CCar* car = smart_cast<CCar*>(Actor()->Holder());
+				if (car && result.O == car)
+					return TRUE;
+			}
+		}
+	}
+	else
+	{
+		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+		SGameMtl* pMtl = GMLib.GetMaterialByIdx(T->material);
+		if (pMtl && (pMtl->Flags.is(SGameMtl::flPassable) || pMtl->Flags.is(SGameMtl::flActorObstacle)))
+			return TRUE;
+	}
+	*RQ = result;
+	return FALSE;
+}
+
+collide::rq_result CLevel::GetPickResult(Fvector pos, Fvector dir, float range, CObject* ignore)
+{
+	collide::rq_result        RQ; RQ.set(NULL, range, -1);
+	collide::rq_results        RQR;
+	collide::ray_defs    RD(pos, dir, RQ.range, CDB::OPT_FULL_TEST, collide::rqtBoth);
+	Level().ObjectSpace.RayQuery(RQR, RD, GetPickDist_Callback, &RQ, NULL, ignore);
+	return RQ;
 }
