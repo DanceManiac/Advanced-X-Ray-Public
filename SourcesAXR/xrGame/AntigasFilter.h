@@ -23,6 +23,7 @@ public:
 	float					m_fCondition;
 	void					ChangeInOutfit();
 	void					ChangeInHelmet();
+	void					ChangeInSecondHelmet();
 	void					ChangeFilterCondition(float val);
 	float					GetFilterCondition(void) const;
 protected:

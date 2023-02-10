@@ -1266,6 +1266,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 	bool outfit_use_filter = false;
 	bool helmet_use_filter = false;
+	bool helmet2_use_filter = false;
 
 	bool can_repair_outfit = false;
 	bool can_repair_helmet = false;
@@ -1278,6 +1279,8 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->m_SuitableFilter == pFilter->cNameSect().c_str();
 	if (helmet && pFilter)
 		helmet_use_filter = helmet->m_bUseFilter && helmet->m_fFilterCondition <= 0.99f && helmet->m_SuitableFilter == pFilter->cNameSect().c_str();
+	if (helmet2 && pFilter)
+		helmet2_use_filter = helmet2->m_bUseFilter && helmet2->m_fFilterCondition <= 0.99f && helmet2->m_SuitableFilter == pFilter->cNameSect().c_str();
 
 	if (outfit && pRepairKit)
 		can_repair_outfit = outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
@@ -1347,6 +1350,14 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			shared_str str = CStringTable().translate("st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, FILTER_CHANGE_HELMET);
+			b_show = true;
+		}
+
+		if (item_in_helmet2_slot && helmet2_use_filter)
+		{
+			shared_str str = CStringTable().translate("st_change_filter");
+			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, FILTER_CHANGE_HELMET);
 			b_show = true;
 		}
 		return;
@@ -1635,6 +1646,15 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			TryUseItem(cell_item);
 			break;
 		}
+	case FILTER_CHANGE_SECOND_HELMET:
+	{
+		CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
+		if (!filter)
+			break;
+		filter->m_iUseFor = 3;
+		TryUseItem(cell_item);
+		break;
+	}
 	case REPAIR_KIT_OUTFIT:
 		{
 			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);

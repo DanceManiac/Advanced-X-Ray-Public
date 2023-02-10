@@ -70,6 +70,7 @@ bool CAntigasFilter::UseBy(CEntityAlive* entity_alive)
 
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
 	if (m_iUseFor == 0)
 	{
@@ -95,8 +96,10 @@ bool CAntigasFilter::UseBy(CEntityAlive* entity_alive)
 	}
 	else if (m_iUseFor == 1)
 		ChangeInOutfit();
-	else
+	else if (m_iUseFor == 2)
 		ChangeInHelmet();
+	else
+		ChangeInSecondHelmet();
 
 	if (m_iPortionsNum > 0)
 		--m_iPortionsNum;
@@ -114,8 +117,6 @@ void CAntigasFilter::ChangeInOutfit()
 
 	if (outfit)
 		outfit->FilterReplace(m_fCondition);
-
-	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
 
 void CAntigasFilter::ChangeInHelmet()
@@ -124,8 +125,14 @@ void CAntigasFilter::ChangeInHelmet()
 
 	if (helmet)
 		helmet->FilterReplace(m_fCondition);
+}
 
-	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
+void CAntigasFilter::ChangeInSecondHelmet()
+{
+	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+	if (helmet2)
+		helmet2->FilterReplace(m_fCondition);
 }
 
 void CAntigasFilter::ChangeFilterCondition(float val)

@@ -82,8 +82,6 @@ void CAntigasFilter::ChangeInOutfit()
 
 	if (outfit)
 		outfit->FilterReplace(m_fCondition);
-
-	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
 
 void CAntigasFilter::ChangeFilterCondition(float val)
