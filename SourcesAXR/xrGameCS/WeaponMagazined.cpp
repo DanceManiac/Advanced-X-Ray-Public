@@ -45,7 +45,6 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_iQueueSize				= WEAPON_ININITE_QUEUE;
 	m_bLockType					= false;
 	m_bAutoreloadEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "autoreload_enabled", true);
-	m_bHasDistantShotSound		= false;
 	m_bNeedBulletInGun			= false;
 	m_bHasDifferentFireModes	= false;
 	m_opened					= false;
@@ -120,13 +119,6 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_pump_gun"))
 		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", m_eSoundReload);
-	
-	if (pSettings->line_exist(section, "snd_shoot_dist")) // distant sound
-	{
-		m_sounds.LoadSound(section, "snd_shoot_distant", "sndShotDist", m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_shoot_distant_far", "sndShotDistFar", m_eSoundShot);
-		m_bHasDistantShotSound = true;
-	}
 
 	//звуки и партиклы глушител€, еслит такой есть
 	if ( m_eSilencerStatus == ALife::eAddonAttachable || m_eSilencerStatus == ALife::eAddonPermanent )
@@ -770,23 +762,6 @@ void CWeaponMagazined::OnShot()
 	// ≈сли актор бежит - останавливаем его
 	if (ParentIsActor() && GameConstants::GetStopActorIfShoot())
 		Actor()->set_state_wishful(Actor()->get_state_wishful() & (~mcSprint));
-
-	// Sound
-	if (IsSilencerAttached() && SilencerAttachable()) //skyloader: dont touch SilencerAttachable(), it needs for pb, vss, val
-		PlaySound("sndSilencerShot", get_LastFP());
-	else
-	{
-		if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && Position().distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
-			PlaySound("sndShotDist", get_LastFP());
-		else if (m_bHasDistantShotSound && GameConstants::GetDistantSoundsEnabled() && Position().distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
-			PlaySound("sndShotDistFar", get_LastFP());
-		else
-			PlaySound("sndShot", get_LastFP());
-	}
-
-	// ѕроиграем звук помпы отдельно, если не будет работать то будем думать что делать и как быть
-	if (m_sounds.FindSoundItem("sndPumpGun", false))
-		PlaySound("sndPumpGun", get_LastFP());
 
 	// Camera	
 	AddShotEffector				();
@@ -1840,15 +1815,6 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 
 	result2 = process_if_exists_set(section, "snd_reflect", &CInifile::r_string, str, test);
 	if (result2 && !test) { m_sounds.LoadSound(section, "snd_reflect", "sndReflect"			, m_eSoundReflect); }
-	result |= result2;
-
-	result2 = process_if_exists_set(section, "snd_shoot_dist", &CInifile::r_string, str, test);
-	if (result2 && !test)
-	{
-		m_sounds.LoadSound(section, "snd_shoot_distant", "sndShotDist", m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_shoot_distant_far", "sndShotDistFar", m_eSoundShot);
-		m_bHasDistantShotSound = true;
-	}
 	result |= result2;
 
 	//snd_shoot1     = weapons\ak74u_shot_1 ??

@@ -2,7 +2,6 @@
 #include "weaponpistol.h"
 #include "ParticlesObject.h"
 #include "actor.h"
-#include "AdvancedXrayGameConstants.h"
 
 CWeaponPistol::CWeaponPistol()
 {

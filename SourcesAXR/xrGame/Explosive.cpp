@@ -35,7 +35,6 @@
 #include "profiler.h"
 
 #include "../Include/xrRender/Kinematics.h"
-#include "AdvancedXrayGameConstants.h"
 
 #define EFFECTOR_RADIUS 30.f
 const u16	TEST_RAYS_PER_OBJECT=5;
@@ -71,7 +70,6 @@ CExplosive::CExplosive(void)
 	m_fExplodeHideDurationMax = 0;
 	m_bDynamicParticles		= FALSE;
 	m_pExpParticle			= NULL;
-	m_bHasDistantSound		= false;
 }
 
 void CExplosive::LightCreate()
@@ -88,10 +86,6 @@ void CExplosive::LightDestroy()
 CExplosive::~CExplosive(void) 
 {
 	sndExplode.destroy();
-
-	if (m_bHasDistantSound)
-		sndDistantExplode.destroy();
-		sndDistantExplodeFar.destroy();
 }
 
 void CExplosive::Load(LPCSTR section) 
@@ -132,9 +126,8 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_fFragmentSpeed			= ini->r_float	(section,"fragment_speed"				);
 
 	m_layered_sounds.LoadSound(ini, section, "snd_explode", "sndExplode", false, m_eSoundExplode);
-	LPCSTR	snd_name		= ini->r_string(section,"snd_explode");
-	LPCSTR	snd_name2		= ini->r_string(section, "snd_explode");
 
+	LPCSTR	snd_name		= ini->r_string(section,"snd_explode");
 	sndExplode.create		(snd_name, st_Effect,m_eSoundExplode);
 
 	m_fExplodeDurationMax	= ini->r_float(section, "explode_duration");
@@ -160,16 +153,6 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_bDynamicParticles	 = FALSE;
 	if (ini->line_exist(section, "dynamic_explosion_particles"))
 		m_bDynamicParticles = ini->r_bool(section, "dynamic_explosion_particles");
-
-	if (ini->line_exist(section, "snd_distant_explode"))
-	{
-		snd_name = ini->r_string(section, "snd_explode_dist");
-		snd_name2 = ini->r_string(section, "snd_explode_dist_far");
-		sndDistantExplode.create(snd_name, st_Effect, m_eSoundExplode);
-		sndDistantExplodeFar.create(snd_name2, st_Effect, m_eSoundExplode);
-
-		m_bHasDistantSound = true;
-	}
 }
 
 void CExplosive::net_Destroy	()

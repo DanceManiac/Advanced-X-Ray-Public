@@ -4,7 +4,6 @@ namespace GameConstants
 {
 	void LoadConstants();
 
-	bool GetDistantSoundsEnabled();
 	bool GetKnifeSlotEnabled();
 	bool GetBinocularSlotEnabled();
 	bool GetTorchSlotEnabled();
@@ -37,8 +36,6 @@ namespace GameConstants
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();
-	float GetDistantSndDistance();
-	float GetDistantSndDistanceFar();
 	Fvector4 GetRedColor();
 	Fvector4 GetGreenColor();
 	Fvector4 GetNeutralColor();

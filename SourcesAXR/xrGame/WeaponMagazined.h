@@ -35,7 +35,6 @@ protected:
 	// General
 	//кадр момента пересчета UpdateSounds
 	u32				dwUpdateSounds_Frame;
-	bool			m_bHasDistantShotSound;
 
 	virtual void    CheckMagazine();
 

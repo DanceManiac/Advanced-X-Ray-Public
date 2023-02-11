@@ -140,11 +140,7 @@ protected:
 	
 	//звуки
 	ref_sound					sndExplode;
-	ref_sound					sndDistantExplode;
-	ref_sound					sndDistantExplodeFar;
 	ESoundTypes					m_eSoundExplode;
-
-	bool						m_bHasDistantSound;
 
 	//размер отметки на стенах
 	float						fWallmarkSize;

@@ -3,7 +3,6 @@
 #include "GamePersistent.h"
 #include "game_cl_single.h"
 
-bool	m_bDistantSoundsEnabled = true;
 bool	m_bKnifeSlotEnabled = false;
 bool	m_bBinocularSlotEnabled = false;
 bool	m_bTorchSlotEnabled = false;
@@ -36,8 +35,6 @@ bool	m_bActorSkills = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
-float	m_fDistantSndDistance = 150.f;
-float	m_fDistantSndDistanceFar = 250.f;
 Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
 Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 0, 255);
 Fvector4 m_FV4NeutralColor = Fvector4().set(170, 170, 170, 255);
@@ -50,7 +47,6 @@ namespace GameConstants
 {
 	void LoadConstants()
 	{
-		m_bDistantSoundsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "distant_sounds_enabled", true);
 		m_bTorchUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "torch_use_battery", false);
 		m_bArtefactDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "artefact_detector_use_battery", false);
 		m_bAnomalyDetectorUseBattery = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "anomaly_detector_use_battery", false);
@@ -82,8 +78,6 @@ namespace GameConstants
 		m_iArtefactsCount = READ_IF_EXISTS(pAdvancedSettings, r_u32, "inventory", "artefacts_count", 5);
 		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
 		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
-		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
-		m_fDistantSndDistanceFar = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance_far", 250.f);
 		m_bColorizeValues = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "colorize_values", false);
 		m_FV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_red", Fvector4().set(255, 0, 0, 255));
 		m_FV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_green", Fvector4().set(0, 255, 0, 255));
@@ -93,11 +87,6 @@ namespace GameConstants
 		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
-	}
-	
-	bool GetDistantSoundsEnabled()
-	{
-		return m_bDistantSoundsEnabled;
 	}
 
 	bool GetKnifeSlotEnabled()
@@ -258,16 +247,6 @@ namespace GameConstants
 	int GetBOOLScriptCMDCount()
 	{
 		return m_B_CMD_Count;
-	}
-
-	float GetDistantSndDistance()
-	{
-		return m_fDistantSndDistance;
-	}
-
-	float GetDistantSndDistanceFar()
-	{
-		return m_fDistantSndDistanceFar;
 	}
 
 	Fvector4 GetRedColor()

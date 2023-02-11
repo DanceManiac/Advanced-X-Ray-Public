@@ -50,7 +50,6 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_iQueueSize				= WEAPON_ININITE_QUEUE;
 	m_bLockType					= false;
 	m_bAutoreloadEnabled		= READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "autoreload_enabled", true);
-	m_bHasDistantShotSound		= false;
 	m_bNeedBulletInGun			= false;
 	m_bHasDifferentFireModes	= false;
 	m_opened					= false;
@@ -127,14 +126,6 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", true, m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_pump_gun"))
 		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", true, m_eSoundReload);
-
-	if (WeaponSoundExist(section, "snd_shoot_dist")) // distant sound
-	{
-		m_sounds.LoadSound(section, "snd_shoot_distant", "sndShotDist", false, m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_shoot_distant_far", "sndShotDistFar", false, m_eSoundShot);
-
-		m_bHasDistantShotSound = true;
-	}
 		
 	//звуки и партиклы глушителя, еслит такой есть
 	if ( m_eSilencerStatus == ALife::eAddonAttachable || m_eSilencerStatus == ALife::eAddonPermanent )
@@ -1915,15 +1906,6 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 
 	result2 = process_if_exists_set(section, "snd_reflect", &CInifile::r_string, str, test);
 	if (result2 && !test) { m_sounds.LoadSound(section, "snd_reflect", "sndReflect", false, m_eSoundReflect); }
-	result |= result2;
-
-	result2 = process_if_exists_set(section, "snd_shoot_dist", &CInifile::r_string, str, test);
-	if (result2 && !test)
-	{
-		m_sounds.LoadSound(section, "snd_shoot_distant", "sndShotDist", false, m_eSoundShot);
-		m_sounds.LoadSound(section, "snd_shoot_distant_far", "sndShotDistFar", false, m_eSoundShot);
-		m_bHasDistantShotSound = true;
-	}
 	result |= result2;
 
 	//snd_shoot1     = weapons\ak74u_shot_1 ??
