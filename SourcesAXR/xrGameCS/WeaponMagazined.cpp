@@ -51,6 +51,8 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_opened					= false;
 	m_bUseFiremodeChangeAnim	= true;
 	bHasBulletsToHide			= false;
+
+	m_sSndShotCurrent = nullptr;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -97,6 +99,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (WeaponSoundExist(section, "snd_shoot_actor"))
 		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", m_eSoundShot);
 	//-Alundaio
+
+	m_sSndShotCurrent = IsSilencerAttached() ? "sndSilencerShot" : "sndShot";
 
 	m_sounds.LoadSound(section,"snd_empty", "sndEmptyClick"	, m_eSoundEmptyClick	);
 	m_sounds.LoadSound(section,"snd_reload", "sndReload"		, m_eSoundReload		);
@@ -804,6 +808,23 @@ void CWeaponMagazined::OnShot()
 	ForceUpdateFireParticles	();
 	StartSmokeParticles			(get_LastFP(), vel);
 
+	// ѕроиграем звук помпы отдельно, если не будет работать то будем думать что делать и как быть
+	if (m_sounds.FindSoundItem("sndPumpGun", false))
+		PlaySound("sndPumpGun", get_LastFP());
+
+	if (ParentIsActor())
+	{
+		string128 sndName;
+		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor");
+		if (m_sounds.FindSoundItem(sndName, false))
+		{
+			m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+			return;
+		}
+	}
+
+	m_sounds.PlaySound(m_sSndShotCurrent.c_str(), get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+
 	// snd reflection
 	if (IsSilencerAttached() == false)
 	{
@@ -1376,6 +1397,7 @@ void CWeaponMagazined::InitAddons()
 	{
 		m_sFlameParticlesCurrent = m_sSilencerFlameParticles;
 		m_sSmokeParticlesCurrent = m_sSilencerSmokeParticles;
+		m_sSndShotCurrent = "sndSilencerShot";
 
 		//подсветка от выстрела
 		LoadLights(*cNameSect(), "silencer_");
@@ -1385,6 +1407,7 @@ void CWeaponMagazined::InitAddons()
 	{
 		m_sFlameParticlesCurrent = m_sFlameParticles;
 		m_sSmokeParticlesCurrent = m_sSmokeParticles;
+		m_sSndShotCurrent = "sndShot";
 
 		//подсветка от выстрела
 		LoadLights(*cNameSect(), "");

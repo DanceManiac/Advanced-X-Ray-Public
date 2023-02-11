@@ -17,6 +17,8 @@ class CWeaponMagazined: public CWeapon
 private:
 	typedef CWeapon inherited;
 protected:
+	//звук текущего выстрела
+	shared_str		m_sSndShotCurrent;
 
 	//дополнительная информация о глушителе
 	LPCSTR			m_sSilencerFlameParticles;
