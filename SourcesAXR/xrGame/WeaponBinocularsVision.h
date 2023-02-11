@@ -42,5 +42,5 @@ protected :
 	Fcolor						m_frame_color;
 	float						m_rotating_speed;
 	void	Load				(const shared_str& section);
-	HUD_SOUND_COLLECTION		m_sounds;
+	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 };

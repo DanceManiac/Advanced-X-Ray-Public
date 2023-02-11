@@ -12,6 +12,8 @@
 #include "DamageSource.h"
 #include "wallmark_manager.h"
 #include "ParticlesObject.h"
+#include "hudsound.h"
+
 class IRender_Light;
 DEFINE_VECTOR(CPhysicsShellHolder*,BLASTED_OBJECTS_V,BLASTED_OBJECTS_I);
 class CExplosive : 
@@ -63,7 +65,7 @@ public:
 			void				SetExplosionSize		(const Fvector &new_size);
 	virtual bool				Useful					() const;
 protected:
-			bool				IsSoundPlaying			(){return sndExplode._feedback() != nullptr || (m_bHasDistantSound && sndDistantExplode._feedback() != nullptr) || (m_bHasDistantSound && sndDistantExplodeFar._feedback() != nullptr);}
+			bool				IsSoundPlaying			() { return !!m_layered_sounds.FindSoundItem("sndExplode", true)->playing(); }
 			bool				IsExploded				(){return !!m_explosion_flags.test(flExploded);}
 public:
 			bool				IsExploding				(){return !!m_explosion_flags.test(flExploding);}
@@ -77,6 +79,7 @@ static		float				TestPassEffect			(const	Fvector	&source_p,	const	Fvector	&dir,f
 			void				LightCreate				();
 			void				LightDestroy			();
 protected:
+	HUD_SOUND_COLLECTION_LAYERED m_layered_sounds;
 
 	CWalmarkManager				m_wallmark_manager;
 	//ID персонажа который иницировал действие

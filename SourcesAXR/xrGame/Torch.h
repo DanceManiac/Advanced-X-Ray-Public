@@ -81,7 +81,7 @@ public:
 	virtual CTorch* cast_torch				() { return this; }
  
 protected:
-	HUD_SOUND_COLLECTION	m_sounds;
+	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 
 	enum EStats{
 		eTorchActive				= (1<<0),

@@ -168,7 +168,7 @@ protected:
 
 	u32							m_animation_slot;
 
-	HUD_SOUND_COLLECTION		m_sounds;
+	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 
 private:
 	CPhysicItem					*m_object;

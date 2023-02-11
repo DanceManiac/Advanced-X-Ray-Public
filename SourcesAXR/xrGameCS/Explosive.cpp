@@ -160,6 +160,8 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	if (ini->line_exist(section, "dynamic_explosion_particles"))
 		m_bDynamicParticles = ini->r_bool(section, "dynamic_explosion_particles");
 
+	m_layered_sounds.LoadSound(ini, section, "snd_explode", "sndExplode", false, m_eSoundExplode);
+
 	if (ini->line_exist(section, "snd_distant_explode"))
 	{
 		snd_name = ini->r_string(section, "snd_explode_dist");
@@ -359,12 +361,7 @@ void CExplosive::Explode()
 	if (Initiator() != ALife::_OBJECT_ID(-1))
 		who = Level().Objects.net_Find(Initiator());
 
-	if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && pos.distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
-		Sound->play_at_pos(sndDistantExplode, who, pos, false);
-	else if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
-		Sound->play_at_pos(sndDistantExplodeFar, who, pos, false);
-	else
-		Sound->play_at_pos(sndExplode, who, pos, false);
+	m_layered_sounds.PlaySound("sndExplode", pos, smart_cast<CObject*>(this), false, false, (u8)-1);
 	
 	//показываем эффекты
 

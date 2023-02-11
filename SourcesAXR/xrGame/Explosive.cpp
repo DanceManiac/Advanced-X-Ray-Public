@@ -131,6 +131,7 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	//трассы для разлета осколков
 	m_fFragmentSpeed			= ini->r_float	(section,"fragment_speed"				);
 
+	m_layered_sounds.LoadSound(ini, section, "snd_explode", "sndExplode", false, m_eSoundExplode);
 	LPCSTR	snd_name		= ini->r_string(section,"snd_explode");
 	LPCSTR	snd_name2		= ini->r_string(section, "snd_explode");
 
@@ -359,13 +360,7 @@ void CExplosive::Explode()
 	if (Initiator() != ALife::_OBJECT_ID(-1))
 		who = Level().Objects.net_Find(Initiator());
 
-	if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistance() && pos.distance_to(Device.vCameraPosition) < GameConstants::GetDistantSndDistanceFar())
-		Sound->play_at_pos(sndDistantExplode, who, pos, false);
-	else if (m_bHasDistantSound && GameConstants::GetDistantSoundsEnabled() && pos.distance_to(Device.vCameraPosition) > GameConstants::GetDistantSndDistanceFar())
-		Sound->play_at_pos(sndDistantExplodeFar, who, pos, false);
-	else
-		Sound->play_at_pos(sndExplode, who, pos, false);
-
+	m_layered_sounds.PlaySound("sndExplode", pos, smart_cast<CObject*>(this), false, false, (u8)-1);
 	
 	//показываем эффекты
 

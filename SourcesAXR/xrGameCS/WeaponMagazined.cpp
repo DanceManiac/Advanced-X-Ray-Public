@@ -91,7 +91,13 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	// Sounds
 	m_sounds.LoadSound(section,"snd_draw", "sndShow"		, m_eSoundShow		);
 	m_sounds.LoadSound(section,"snd_holster", "sndHide"		, m_eSoundHide		);
-	m_sounds.LoadSound(section,"snd_shoot", "sndShot"		, m_eSoundShot		);
+
+	//Alundaio: LAYERED_SND_SHOOT
+	m_sounds.LoadSound(section, "snd_shoot", "sndShot", m_eSoundShot);
+	if (WeaponSoundExist(section, "snd_shoot_actor"))
+		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", m_eSoundShot);
+	//-Alundaio
+
 	m_sounds.LoadSound(section,"snd_empty", "sndEmptyClick"	, m_eSoundEmptyClick	);
 	m_sounds.LoadSound(section,"snd_reload", "sndReload"		, m_eSoundReload		);
 	m_sounds.LoadSound(section, "snd_reflect", "sndReflect",  m_eSoundReflect);
