@@ -126,7 +126,7 @@ function options_dialog:UpdateDependControls()
 		j				(i, _current_id, _ssample_trb_val, _ssample_cb_val)
 	end
 
-	self:UpdateMSAA()
+	--self:UpdateMSAA()
 end
 
 function options_dialog:UpdateMSAA()
@@ -163,7 +163,7 @@ function options_dialog:InitCallBacks()
 	self:AddCallback("btn_cancel_download",	ui_events.BUTTON_CLICKED,	self.OnBtn_CancelDownload,	self)
 	self:AddCallback("trb_ssample",			ui_events.BUTTON_CLICKED,	self.UpdateDependControls,	self)
 	self:AddCallback("cb_ssample",			ui_events.LIST_ITEM_SELECT,	self.UpdateDependControls,	self)
-	self:AddCallback("check_r3_msaa_opt",	ui_events.BUTTON_CLICKED,	self.UpdateMSAA,			self)
+	--self:AddCallback("check_r3_msaa_opt",	ui_events.BUTTON_CLICKED,	self.UpdateMSAA,			self)
 	
 
 end

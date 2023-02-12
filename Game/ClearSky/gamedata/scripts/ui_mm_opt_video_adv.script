@@ -284,11 +284,11 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	handler.m_preconditions[ctl]				= only_3_and_more_mode
 	
 
-	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	--[[_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r3_msaa_alphatest",	_st)
 	ctl			= xml:InitComboBox				("video_adv:combo_r3_msaa_alphatest",_st)
 	handler.m_preconditions[ctl]				= only_r3_and_r3msaa_more_than_zero
-	handler.r3_msaa_alphatest					= ctl
+	handler.r3_msaa_alphatest					= ctl]]--
 	
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r3_msaa_opt",	_st)
