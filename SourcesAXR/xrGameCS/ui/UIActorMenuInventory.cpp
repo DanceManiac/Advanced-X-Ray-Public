@@ -1039,16 +1039,16 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	bool can_repair_wpn2 = false;
 
 	if (outfit && pFilter)
-		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->m_SuitableFilter == pFilter->cNameSect().c_str();
+		outfit_use_filter = outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->IsNecessaryItem(pFilter->cNameSect().c_str(), outfit->m_SuitableFilters);
 
 	if (outfit && pRepairKit)
-		can_repair_outfit = outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
+		can_repair_outfit = outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->IsNecessaryItem(pRepairKit->cNameSect().c_str(), outfit->m_SuitableRepairKits);
 	if (knife && pRepairKit)
-		can_repair_knife = knife->GetCondition() < 0.9f && knife->GetCondition() >= 0.4f && knife->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
+		can_repair_knife = knife->GetCondition() < 0.9f && knife->GetCondition() >= 0.4f && knife->IsNecessaryItem(pRepairKit->cNameSect().c_str(), knife->m_SuitableRepairKits);
 	if (wpn1 && pRepairKit)
-		can_repair_wpn1 = wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
+		can_repair_wpn1 = wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->IsNecessaryItem(pRepairKit->cNameSect().c_str(), wpn1->m_SuitableRepairKits);
 	if (wpn2 && pRepairKit)
-		can_repair_wpn2 = wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->m_SuitableRepairKit == pRepairKit->cNameSect().c_str();
+		can_repair_wpn2 = wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->IsNecessaryItem(pRepairKit->cNameSect().c_str(), wpn2->m_SuitableRepairKits);
 
 	LPCSTR act_str = NULL;
 

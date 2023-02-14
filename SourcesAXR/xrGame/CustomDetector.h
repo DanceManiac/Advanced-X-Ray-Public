@@ -162,6 +162,7 @@ public:
 			void	SetCurrentChargeLevel(float val);
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
+			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
 
 			float	m_fMaxChargeLevel;
 			float	m_fCurrentChargeLevel;
@@ -183,7 +184,7 @@ public:
 			float		m_fLightRange;
 			int			m_iLightType;
 			shared_str	flash_light_bone;
-			shared_str	m_SuitableBattery;
+			xr_vector<shared_str> m_SuitableBatteries;
 			u16			m_flash_bone_id;
 			u32			m_turn_off_flash_time;
 			ref_light	detector_light;

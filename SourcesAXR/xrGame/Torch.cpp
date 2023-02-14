@@ -59,8 +59,6 @@ CTorch::CTorch(void)
 	m_omni_offset				= OMNI_OFFSET;
 	m_torch_inertion_speed_max	= TORCH_INERTION_SPEED_MAX;
 	m_torch_inertion_speed_min	= TORCH_INERTION_SPEED_MIN;
-
-	m_SuitableBattery			= nullptr;
 }
 
 CTorch::~CTorch() 
@@ -108,12 +106,24 @@ void CTorch::Load(LPCSTR section)
 	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
 	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
 
-	m_SuitableBattery = READ_IF_EXISTS(pSettings, r_string, section, "suitable_battery", "torch_battery");
-
 	if (pSettings->line_exist(section, "snd_turn_on"))
 		m_sounds.LoadSound(section, "snd_turn_on", "sndTurnOn", false, SOUND_TYPE_ITEM_USING);
 	if (pSettings->line_exist(section, "snd_turn_off"))
 		m_sounds.LoadSound(section, "snd_turn_off", "sndTurnOff", false, SOUND_TYPE_ITEM_USING);
+
+	m_SuitableBatteries.clear();
+	LPCSTR batteries = READ_IF_EXISTS(pSettings, r_string, section, "suitable_batteries", "torch_battery");
+
+	if (batteries && batteries[0])
+	{
+		string128 battery_sect;
+		int count = _GetItemCount(batteries);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(batteries, it, battery_sect);
+			m_SuitableBatteries.push_back(battery_sect);
+		}
+	}
 
 	//Случайный начальный заряд батареек в фонарике, если включена опция ограниченного заряда батареек у фонарика
 	if (GameConstants::GetTorchHasBattery())
@@ -566,4 +576,9 @@ bool CTorch::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
 
 	return result;
+}
+
+bool CTorch::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+{
+	return (std::find(item.begin(), item.end(), item_sect) != item.end());
 }

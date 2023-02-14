@@ -18,8 +18,9 @@ public:
 
 	shared_str				m_BonesProtectionSect;
 	shared_str				m_NightVisionSect;
-	shared_str				m_SuitableFilter;
-	shared_str				m_SuitableRepairKit;
+
+	xr_vector<shared_str>	m_SuitableFilters;
+	xr_vector<shared_str>	m_SuitableRepairKits;
 
 	virtual void			OnMoveToSlot			(const SInvItemPlace& previous_place);
 	virtual void			OnMoveToRuck			(const SInvItemPlace& previous_place);
@@ -34,6 +35,7 @@ public:
 			void			SetFilterCondition		(float val);
 			float			GetDegradationSpeed		(void) const;
 			void			FilterReplace			(float val);
+			bool			IsNecessaryItem			(const shared_str& item_sect, xr_vector<shared_str> item);
 
 			IC int			GetHelmetNV_Type		() const { return m_NightVisionType; }
 

@@ -28,8 +28,6 @@ CCustomOutfit::CCustomOutfit()
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_artefact_count = 0;
 	m_BonesProtectionSect = nullptr;
-	m_SuitableFilter = nullptr;
-	m_SuitableRepairKit = nullptr;
 
 	m_b_HasGlass = false;
 	m_bUseFilter = false;
@@ -192,9 +190,34 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_b_HasGlass			= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter			= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
-	m_SuitableFilter		= READ_IF_EXISTS(pSettings, r_string, section, "suitable_filter", "antigas_filter");
-	m_SuitableRepairKit		= READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kit", "repair_kit");
 	m_NightVisionType		= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
+
+	m_SuitableFilters.clear();
+	m_SuitableRepairKits.clear();
+	LPCSTR filters = READ_IF_EXISTS(pSettings, r_string, section, "suitable_filters", "antigas_filter");
+	LPCSTR repair_kits = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kits", "repair_kit");
+
+	if (filters && filters[0])
+	{
+		string128 filter_sect;
+		int count = _GetItemCount(filters);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(filters, it, filter_sect);
+			m_SuitableFilters.push_back(filter_sect);
+		}
+	}
+
+	if (repair_kits && repair_kits[0])
+	{
+		string128 repair_kits_sect;
+		int count = _GetItemCount(repair_kits);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(repair_kits, it, repair_kits_sect);
+			m_SuitableRepairKits.push_back(repair_kits_sect);
+		}
+	}
 
 	if (GameConstants::GetOutfitUseFilters())
 	{
@@ -492,4 +515,9 @@ void CCustomOutfit::FilterReplace(float val)
 {
 	m_fFilterCondition += val;
 	clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+}
+
+bool CCustomOutfit::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+{
+	return (std::find(item.begin(), item.end(), item_sect) != item.end());
 }

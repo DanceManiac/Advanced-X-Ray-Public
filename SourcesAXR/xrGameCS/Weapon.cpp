@@ -101,8 +101,6 @@ CWeapon::CWeapon()
 
 	bHasBulletsToHide	= false;
 	bullet_cnt			= 0;
-
-	m_SuitableRepairKit = nullptr;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -741,7 +739,19 @@ void CWeapon::Load(LPCSTR section)
 
 	hud_recalc_koef = READ_IF_EXISTS(pSettings, r_float, hud_sect, "hud_recalc_koef", 1.35f); //Ќа калаше при 1.35 вроде норм смотритс€, другим стволам возможно придетс€ подбирать другие значени€.
 
-	m_SuitableRepairKit = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kit", "repair_kit");
+	m_SuitableRepairKits.clear();
+	LPCSTR repair_kits = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kits", "repair_kit");
+
+	if (repair_kits && repair_kits[0])
+	{
+		string128 repair_kits_sect;
+		int count = _GetItemCount(repair_kits);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(repair_kits, it, repair_kits_sect);
+			m_SuitableRepairKits.push_back(repair_kits_sect);
+		}
+	}
 }
 
 void CWeapon::LoadFireParams		(LPCSTR section)
@@ -2828,6 +2838,11 @@ u32	CWeapon::ef_weapon_type	() const
 bool CWeapon::IsNecessaryItem	    (const shared_str& item_sect)
 {
 	return (std::find(m_ammoTypes.begin(), m_ammoTypes.end(), item_sect) != m_ammoTypes.end() );
+}
+
+bool CWeapon::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+{
+	return (std::find(item.begin(), item.end(), item_sect) != item.end());
 }
 
 void CWeapon::modify_holder_params		(float &range, float &fov) const

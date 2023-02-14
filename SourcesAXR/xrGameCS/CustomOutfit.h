@@ -23,6 +23,7 @@ public:
 	void					SetFilterCondition	(float val);
 	float					GetDegradationSpeed	(void) const;
 	void					FilterReplace		(float val);
+	bool					IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
 
 	//коэффициенты на которые домножается хит
 	//при соответствующем типе воздействия
@@ -74,8 +75,9 @@ public:
 
 	shared_str				m_NightVisionSect;
 	shared_str				m_BonesProtectionSect;
-	shared_str				m_SuitableFilter;
-	shared_str				m_SuitableRepairKit;
+
+	xr_vector<shared_str>	m_SuitableFilters;
+	xr_vector<shared_str>	m_SuitableRepairKits;
 
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;

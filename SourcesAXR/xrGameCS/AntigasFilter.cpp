@@ -50,7 +50,7 @@ bool CAntigasFilter::Useful() const
 
 	if (outfit)
 	{
-		if (outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->m_SuitableFilter == this->cNameSect().c_str())
+		if (outfit->m_bUseFilter && outfit->m_fFilterCondition <= 0.99f && outfit->IsNecessaryItem(this->cNameSect().c_str(), outfit->m_SuitableFilters))
 			return true;
 		else
 			return false;

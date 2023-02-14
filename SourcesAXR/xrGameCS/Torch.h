@@ -66,6 +66,7 @@ public:
 			bool	IsSwitchedOn		(void) const;
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
+			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
 
 	virtual bool	can_be_attached		() const;
 
@@ -79,7 +80,7 @@ public:
 			float	m_fUnchargeSpeed;
 			float	m_fMaxRange;
 			float	m_fCurveRange;
-		shared_str	m_SuitableBattery;
+			xr_vector<shared_str> m_SuitableBatteries;
 
 protected:
 	HUD_SOUND_COLLECTION_LAYERED m_sounds;

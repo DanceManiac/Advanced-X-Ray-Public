@@ -479,6 +479,8 @@ public:
 	virtual	float			Get_PDM_Crouch		()	const	{ return m_pdm.m_fPDM_disp_crouch			; };
 	virtual	float			Get_PDM_Crouch_NA	()	const	{ return m_pdm.m_fPDM_disp_crouch_no_acc	; };
 	virtual	float			GetCrosshairInertion()	const	{ return m_crosshair_inertion; };
+	virtual bool			IsNecessaryItem		(const shared_str& item_sect);
+			bool			IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
 			float			GetFirstBulletDisp	()	const	{ return m_first_bullet_controller.get_fire_dispertion(); };
 protected:
 	int						iAmmoElapsed;		// ammo in magazine, currently
@@ -488,8 +490,6 @@ protected:
 	mutable int				iAmmoCurrent;
 	mutable u32				m_dwAmmoCurrentCalcFrame;	//кадр на котором просчитали кол-во патронов
 	bool					m_bAmmoWasSpawned;
-
-	virtual bool			IsNecessaryItem	    (const shared_str& item_sect);
 
 public:
 	xr_vector<shared_str>	m_ammoTypes;
@@ -516,7 +516,7 @@ public:
 
 	LPCSTR					GetCurrentAmmo_ShortName	();
 
-	shared_str				m_SuitableRepairKit;
+	xr_vector<shared_str>	m_SuitableRepairKits;
 protected:
 	u32						m_ef_main_weapon_type;
 	u32						m_ef_weapon_type;

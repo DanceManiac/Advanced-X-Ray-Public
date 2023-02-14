@@ -58,13 +58,13 @@ bool CRepairKit::Useful() const
 
 	if (outfit || knife || wpn1 || wpn2 )
 	{
-		if (outfit && outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->m_SuitableRepairKit == this->cNameSect().c_str())
+		if (outfit && outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->IsNecessaryItem(this->cNameSect().c_str(), outfit->m_SuitableRepairKits))
 			return true;
-		else if (knife && knife->GetCondition() < 0.9f && knife->GetCondition() >= 0.4f && knife->m_SuitableRepairKit == this->cNameSect().c_str())
+		else if (knife && knife->GetCondition() < 0.9f && knife->GetCondition() >= 0.4f && knife->IsNecessaryItem(this->cNameSect().c_str(), knife->m_SuitableRepairKits))
 			return true;
-		else if (wpn1 && wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->m_SuitableRepairKit == this->cNameSect().c_str())
+		else if (wpn1 && wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->IsNecessaryItem(this->cNameSect().c_str(), wpn1->m_SuitableRepairKits))
 			return true;
-		else if (wpn2 && wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->m_SuitableRepairKit == this->cNameSect().c_str())
+		else if (wpn2 && wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->IsNecessaryItem(this->cNameSect().c_str(), wpn2->m_SuitableRepairKits))
 			return true;
 		else
 			return false;
