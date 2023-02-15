@@ -138,12 +138,15 @@ void CUIArtefactDetectorSimple::setup_internals()
 		m_flash_light->set_hud_mode(true);
 	}
 	
-	R_ASSERT						(!m_on_off_light);
-	m_on_off_light					= ::Render->light_create();
-	m_on_off_light->set_shadow		(false);
-	m_on_off_light->set_type		(IRender_Light::POINT);
-	m_on_off_light->set_range		(pSettings->r_float(m_parent->HudItemData()->m_sect_name,"onoff_light_range"));
-	m_on_off_light->set_hud_mode	(true);
+	if (pSettings->line_exist(m_parent->HudItemData()->m_sect_name, "onoff_light_range"))
+	{
+		R_ASSERT(!m_on_off_light);
+		m_on_off_light = ::Render->light_create();
+		m_on_off_light->set_shadow(false);
+		m_on_off_light->set_type(IRender_Light::POINT);
+		m_on_off_light->set_range(pSettings->r_float(m_parent->HudItemData()->m_sect_name, "onoff_light_range"));
+		m_on_off_light->set_hud_mode(true);
+	}
 
 	IKinematics* K					= m_parent->HudItemData()->m_model;
 	R_ASSERT						(K);
