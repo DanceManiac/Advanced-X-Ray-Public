@@ -379,11 +379,15 @@ void CCustomDetector::UpdateLights()
 			}
 		}
 
-		CCustomDetector* detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 		float percent = 100.f;
 
-		if (detector)
-			percent = detector->m_fCurrentChargeLevel * 100;
+		if (Actor())
+		{
+			CCustomDetector* detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+			if (detector)
+				percent = detector->m_fCurrentChargeLevel * 100;
+		}
 
 		//The effect of charge on light
 		if (m_bLightsEnabled)
