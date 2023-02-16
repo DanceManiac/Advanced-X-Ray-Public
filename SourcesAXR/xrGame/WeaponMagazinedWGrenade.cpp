@@ -638,12 +638,10 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 
 	if (IsGrenadeLauncherAttached())
 	{
-		if (IsPartlyReloading())
-		{
-			PlayHUDMotionIfExists({ "anm_reload_w_gl", "anm_reload_gl_empty", "anm_reload_empty_w_gl" }, true, GetState());
-		}
-		else
+		if (iAmmoElapsed == 0)
 			PlayHUDMotionIfExists({ "anm_reload_gl_empty", "anm_reload_empty_w_gl", "anm_reload_w_gl" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anm_reload_w_gl", "anm_reload_gl_empty", "anm_reload_empty_w_gl" }, true, GetState());
 	}
 	else
 		inherited::PlayAnimReload();
