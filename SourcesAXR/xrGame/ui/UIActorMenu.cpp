@@ -663,12 +663,13 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(item);
 	CPda* pda = smart_cast<CPda*>(item);
 
-	if(weapon)
+	if (weapon && (!knife && !binoculars))
 	{
 		m_InvSlot2Highlight->Show(true);
 		m_InvSlot3Highlight->Show(true);
 		return;
 	}
+
 	if(helmet)
 	{
 		m_HelmetSlotHighlight->Show(true);
@@ -680,6 +681,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		}
 		return;
 	}
+
 	if(outfit)
 	{
 		m_OutfitSlotHighlight->Show(true);
@@ -691,11 +693,13 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		}
 		return;
 	}
+
 	if(detector)
 	{
 		m_DetectorSlotHighlight->Show(true);
 		return;
 	}
+
 	if(eatable)
 	{
 		if(cell_item->OwnerList() && GetListType(cell_item->OwnerList())==iQuickSlot)
@@ -705,6 +709,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 			m_QuickSlotsHighlight[i]->Show(true);
 		return;
 	}
+
 	if(artefact)
 	{
 		if(cell_item->OwnerList() && GetListType(cell_item->OwnerList())==iActorBelt)
