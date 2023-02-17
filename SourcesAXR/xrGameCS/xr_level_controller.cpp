@@ -457,7 +457,7 @@ public:
 	virtual void Save(IWriter* F) 
 	{
 		if(m_work_idx==0)
-			F->w_printf		("unbindall\r\n");
+			F->w_printf("default_controls\r\n");
 
 		for(int idx=0; idx<bindings_count;++idx)
 		{
