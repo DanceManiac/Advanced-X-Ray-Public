@@ -839,7 +839,10 @@ void CUIActorMenu::highlight_ammo_for_weapon( PIItem weapon_item, CUIDragDropLis
 	ammo_types.clear_not_free();
 
 	CWeapon* weapon = smart_cast<CWeapon*>(weapon_item);
-	if ( !weapon )
+	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(weapon_item);
+	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(weapon_item);
+
+	if ( !weapon || knife || binoculars)
 	{
 		return;
 	}
@@ -894,7 +897,9 @@ void CUIActorMenu::highlight_weapons_for_ammo( PIItem ammo_item, CUIDragDropList
 {
 	VERIFY( ammo_item );
 	VERIFY( ddlist );
+
 	CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(ammo_item);
+
 	if ( !ammo )
 	{
 		return;
@@ -911,8 +916,12 @@ void CUIActorMenu::highlight_weapons_for_ammo( PIItem ammo_item, CUIDragDropList
 		{
 			continue;
 		}
+
 		CWeapon* weapon = smart_cast<CWeapon*>(item);
-		if ( !weapon )
+		CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
+		CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
+
+		if ( !weapon || knife || binoculars)
 		{
 			continue;
 		}
