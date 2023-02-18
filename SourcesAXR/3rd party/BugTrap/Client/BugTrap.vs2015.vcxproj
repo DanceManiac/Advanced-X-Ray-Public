@@ -339,7 +339,7 @@
       <AdditionalDependencies>zlibS-x64.lib;ws2_32.lib;comctl32.lib;shlwapi.lib;version.lib;wininet.lib;nothrownew.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>
