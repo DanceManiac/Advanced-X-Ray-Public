@@ -115,7 +115,7 @@ void xrCore::_initialize	(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs,
         FS._initialize(flags, 0, fs_fname);
         Msg("'%s %s' build %d, ver. %s, M.F.S. Team %s\n", "Advanced X-Ray", GAME_PLATFORM, build_id, GAME_VERSION, build_date);
         Msg("M.F.S. Team VK: https://vk.com/mfs_studio");
-		Msg("M.F.S. Team Discord: https://discord.gg/EBxyge9AH6");
+		Msg("M.F.S. Team Discord: https://discord.gg/AFPqkfBfQs \n");
         EFS._initialize();
 #ifdef DEBUG
 #ifndef _EDITOR
