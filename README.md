@@ -1,7 +1,7 @@
 Advanced X-Ray 
 ![Advanced X-Ray](https://i.ibb.co/VJFnVk7/Untitled-1.png)
 ![VK](https://i.ibb.co/cknxjxD/24.png) [M.F.S. Team](https://vk.com/mfs_studio)
-![DS](https://i.ibb.co/wdQGG8k/discord-icon.png) [Discord Server](https://discord.gg/JvfDwPZ7jY)
+![DS](https://i.ibb.co/wdQGG8k/discord-icon.png) [Discord Server](https://discord.gg/AFPqkfBfQs)
 ==========================
 
 Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer games S.T.A.L.K.E.R. developed by GSC Game World.
@@ -51,6 +51,7 @@ Thanks to
 - [Anomaly](https://github.com/Roman-n/xray-monolith)
 - [Hrust](https://github.com/Hrusteckiy)
 - [ValeroK](https://github.com/VaIeroK)
+- [IX-Ray Team](https://github.com/ixray-team)
 - DWM Team
 - CorryZeron
 - Oxygen Engine
