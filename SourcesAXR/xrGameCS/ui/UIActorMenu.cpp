@@ -214,6 +214,8 @@ void CUIActorMenu::Show()
 
 		if (pDet)
 			pDet->HideDetector(true);
+
+		Actor()->block_action(kDETECTOR);
 	}
 }
 
@@ -229,6 +231,7 @@ void CUIActorMenu::Hide()
 	if (pActor && GameConstants::GetHideWeaponInInventory())
 	{
 		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+		Actor()->unblock_action(kDETECTOR);
 	}
 }
 
