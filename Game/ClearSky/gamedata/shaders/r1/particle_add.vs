@@ -16,12 +16,12 @@ struct vf
 
 vf main (vv v)
 {
-	vf 		o;
+	vf o;
 
-	o.hpos 		= mul	(m_WVP, v.P);		// xform, input in world coords
-	o.tc		= v.tc;				// copy tc
-	o.c		= v.c;				// copy color
-	o.fog 		= calc_fogging (v.P);		// fog, input in world coords
-    o.c.w *= o.fog;
+	o.hpos = mul(m_WVP, v.P); // xform, input in world coords
+	o.tc = v.tc; // copy tc
+	o.c = v.c; // copy color
+	o.fog = calc_fogging(v.P); // fog, input in world coords
+    o.c *= o.fog;
 	return o;
 }
