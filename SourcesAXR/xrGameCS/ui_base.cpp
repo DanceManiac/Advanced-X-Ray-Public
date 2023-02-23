@@ -265,6 +265,14 @@ bool ui_core::is_16_9_mode()
 	return (Device.dwWidth)/float(Device.dwHeight) > (UI_BASE_WIDTH/UI_BASE_HEIGHT +0.01f);
 }
 
+float ui_core::get_current_kx()
+{
+	float h = float(Device.dwHeight);
+	float w = float(Device.dwWidth);
+	float res = (h / w) / (UI_BASE_HEIGHT / UI_BASE_WIDTH);
+	return res;
+}
+
 shared_str	ui_core::get_xml_name(LPCSTR fn)
 {
 	string_path				str;

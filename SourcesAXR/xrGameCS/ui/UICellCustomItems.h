@@ -42,6 +42,7 @@ protected:
 	Fvector2					m_addon_offset				[eMaxAddon];
 	void						CreateIcon					(eAddonType);
 	void						DestroyIcon					(eAddonType);
+	void						RefreshOffset				();
 	CUIStatic*					GetIcon						(eAddonType);
 	void						InitAddon					(CUIStatic* s, LPCSTR section, Fvector2 offset, bool use_heading);
 	bool						is_scope					();
@@ -51,6 +52,7 @@ public:
 								CUIWeaponCellItem			(CWeapon* itm);
 				virtual			~CUIWeaponCellItem			();
 	virtual		void			Update						();
+	virtual		void			Draw						();
 	virtual		void			SetColor					(u32 color);
 
 				CWeapon*		object						() {return (CWeapon*)m_pData;}
