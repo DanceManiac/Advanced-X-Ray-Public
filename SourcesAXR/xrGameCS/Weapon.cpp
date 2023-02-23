@@ -27,6 +27,7 @@
 #include "Torch.h"
 #include "ActorNightVision.h"
 #include "../xrEngine/LightAnimLibrary.h"
+#include "../xrEngine/GameMtlLib.h"
 #include "../xrEngine/x_ray.h"
 #include "AdvancedXrayGameConstants.h"
 
@@ -2440,6 +2441,46 @@ float _lerp(const float& _val_a, const float& _val_b, const float& _factor)
 	return (_val_a * (1.0 - _factor)) + (_val_b * _factor);
 }
 
+static BOOL pick_trace_callback(collide::rq_result& result, LPVOID params)
+{
+	collide::rq_result* RQ = (collide::rq_result*)params;
+	if (!result.O)
+	{
+		// получить треугольник и узнать его материал
+		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+		if (T->material < GMLib.CountMaterial())
+		{
+			if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable) || GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flActorObstacle))
+				return TRUE;
+		}
+	}
+	*RQ = result;
+	return FALSE;
+}
+
+static float GetRayQueryDist()
+{
+	collide::rq_result RQ;
+	g_pGameLevel->ObjectSpace.RayPick(Device.vCameraPosition, Device.vCameraDirection, 3.0f, collide::rqtStatic, RQ, Actor());
+	if (!RQ.O)
+	{
+		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + RQ.element;
+		if (T->material < GMLib.CountMaterial())
+		{
+			collide::rq_result  RQ2;
+			collide::rq_results RQR;
+			RQ2.range = 3.0f;
+			collide::ray_defs RD(Device.vCameraPosition, Device.vCameraDirection, RQ2.range, CDB::OPT_CULL, collide::rqtStatic);
+			if (Level().ObjectSpace.RayQuery(RQR, RD, pick_trace_callback, &RQ2, NULL, Level().CurrentEntity()))
+			{
+				clamp(RQ2.range, RQ.range, RQ2.range);
+				return RQ2.range;
+			}
+		}
+	}
+	return RQ.range;
+}
+
 void CWeapon::UpdateHudAdditional(Fmatrix& trans)
 {
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
@@ -2488,8 +2529,7 @@ void CWeapon::UpdateHudAdditional(Fmatrix& trans)
 	//============= Коллизия оружия =============//
 	if (b_hud_collision)
 	{
-		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
-		float dist = RQ.range;
+		float dist = GetRayQueryDist();
 
 		Fvector curr_offs, curr_rot;
 		curr_offs = hi->m_measures.m_collision_offset[0];//pos,aim
