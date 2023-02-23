@@ -9,6 +9,13 @@
 CBlend	*PlayMotionByParts(IKinematicsAnimated* sa, MotionID motion_ID, BOOL bMixIn, PlayCallback Callback, LPVOID CallbackParam)
 {
 	CBlend	*ret = 0;
+	CMotionDef* md = sa->LL_GetMotionDef(motion_ID);
+
+	if (md->bone_or_part != BI_NONE)
+	{
+		return sa->LL_PlayCycle(md->bone_or_part, motion_ID, bMixIn, Callback, CallbackParam);
+	}
+
 	for (u16 i=0; i<MAX_PARTS; ++i) 
 	{
 
@@ -23,7 +30,10 @@ CBlend	*PlayMotionByParts(IKinematicsAnimated* sa, MotionID motion_ID, BOOL bMix
 CBlend*	anim_script_callback::play_cycle( IKinematicsAnimated* sa,const shared_str& anim )
 {
 
-	MotionID	m			=	sa->LL_MotionID		( *anim )			;
+	MotionID	m			=	sa->LL_MotionID( *anim );
+
+	R_ASSERT(m.valid());
+
 	if(sa->LL_GetMotionDef	( m )->StopAtEnd())
 	{
 		on_end		= false;
@@ -45,7 +55,8 @@ void	anim_script_callback::anim_callback		(CBlend*		B)
 	anim_script_callback* ths = ( ( anim_script_callback*) B->CallbackParam );
 	VERIFY( ths );
 	VERIFY( ths->is_set );
-	if( B->timeTotal - B->timeCurrent < B->timeCurrent )
+
+	if (B->timeTotal - B->timeCurrent - END_EPS < B->timeCurrent) //this cool expression sims to work for all cases!
 	{	
 		VERIFY( B->speed > 0.f );
 		ths->on_end = true;
