@@ -69,25 +69,25 @@
 	<string id="ui_mm_clr_drag_preset">
 		<text>Пресет Цветокоррекции</text>
 	</string>
-	<string id="Default_clr">
+	<string id="clr_default">
 		<text>Оригинальный</text>
 	</string>
-	<string id="Sepia">
+	<string id="clr_sepia">
 		<text>Сепия</text>
 	</string>
-	<string id="Gray_moss">
+	<string id="clr_gray_moss">
 		<text>Серый Мох</text>
 	</string>
-	<string id="Graphite_gray">
+	<string id="clr_graphite_gray">
 		<text>Графитовый Серый</text>
 	</string>
-	<string id="Zone">
+	<string id="clr_zone">
 		<text>Мрачная Зона</text>
 	</string>
-	<string id="Warm_tone">
+	<string id="clr_warm_tone">
 		<text>Тёплые Тона</text>
 	</string>
-	<string id="Blue">
+	<string id="clr_blue">
 		<text>Оттенок Синего</text>
 	</string>
 	<string id="ui_mm_clr_red">

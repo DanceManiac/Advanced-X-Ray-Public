@@ -144,17 +144,8 @@ xr_token							qminmax_sm_token					[ ]={
 };
 
 //M.F.S. Team Color Drag Preset
-u32			ps_clr_preset			=	0	;
-xr_token							qclrdrag_token						[ ]={
-	{ "Default_clr",				0											},
-	{ "Sepia",						1											},
-	{ "Gray_moss",					2											},
-	{ "Graphite_gray",				3											},
-	{ "Zone",						4											},
-	{ "Warm_tone",					5											},
-	{ "Blue",						6											},
-	{ 0,							0											}
-};
+u32 ps_clr_preset;
+xr_vector <xr_token> qclrdrag_token;
 
 u32			ps_r2_flares = 2;			//	=	0;
 xr_token							qflares_token[] = {
@@ -646,22 +637,17 @@ class	CCC_ps_clr_preset		: public CCC_Token
 public:
 	CCC_ps_clr_preset(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N,V,T)	{}	;
 
-	virtual void	Execute	(LPCSTR args)	{
+	virtual void	Execute	(LPCSTR args)
+	{
 		CCC_Token::Execute	(args);
-		string_path		_cfg;
+		string256		file_name;
+		string_path		_cfg = "mfs_team\\color_drag_settings\\";
 		string_path		cmd;
-		
-		switch	(*value)	{
-			case 0:		xr_strcpy(_cfg, "clr_default.ltx");			break;
-			case 1:		xr_strcpy(_cfg, "clr_sepia.ltx");			break;
-			case 2:		xr_strcpy(_cfg, "clr_gray_moss.ltx");		break;
-			case 3:		xr_strcpy(_cfg, "clr_graphite_gray.ltx");	break;
-			case 4:		xr_strcpy(_cfg, "clr_zone.ltx");			break;
-			case 5:		xr_strcpy(_cfg, "clr_misery.ltx");			break;
-			case 6:		xr_strcpy(_cfg, "clr_warm_tone.ltx");		break;
-			case 7:		xr_strcpy(_cfg, "clr_blue.ltx");			break;
-		}
-		FS.update_path			(_cfg,"$game_config$",_cfg);
+
+		strconcat(sizeof(file_name), file_name, args, ".ltx");
+		strconcat(sizeof(_cfg), _cfg, _cfg, file_name);
+
+		FS.update_path			(_cfg,"$game_config$", _cfg);
 		strconcat				(sizeof(cmd),cmd,"cfg_load", " ", _cfg);
 		Console->Execute		(cmd);
 	}
@@ -890,11 +876,24 @@ public:
 #endif	//	DEBUG
 #endif	//	(RENDER == R_R3) || (RENDER == R_R4)
 
+static void LoadTokensFromIni(xr_vector<xr_token>& tokens, LPCSTR section)
+{
+	tokens.clear();
+
+	for (auto& item : pAdvancedSettings->r_section(section).Data)
+	{
+		tokens.push_back({item.first.c_str(), atoi(item.second.c_str())});
+	}
+	tokens.push_back({nullptr, 0});
+}
+
 //-----------------------------------------------------------------------
 void		xrRender_initconsole	()
 {
 	CMD3(CCC_Preset,	"_preset",				&ps_Preset,	qpreset_token	);
-	CMD3(CCC_ps_clr_preset,	"r2_clr_preset",	&ps_clr_preset,	qclrdrag_token	);
+
+	LoadTokensFromIni(qclrdrag_token, "color_drag_presets");
+	CMD3(CCC_ps_clr_preset,	"r2_clr_preset", &ps_clr_preset, qclrdrag_token.data());
 
 	CMD4(CCC_Integer,	"rs_skeleton_update",	&psSkeletonUpdate,	2,		128	);
 #ifdef	DEBUG
