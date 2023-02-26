@@ -34,6 +34,7 @@ namespace GameConstants
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();
+	float GetDistantSndDistance();
 	Fvector4 GetRedColor();
 	Fvector4 GetGreenColor();
 	Fvector4 GetNeutralColor();

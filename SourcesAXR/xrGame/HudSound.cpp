@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "HudSound.h"
+#include "AdvancedXrayGameConstants.h"
 
 float psHUDSoundVolume			= 1.0f;
 float psHUDStepSoundVolume		= 1.0f;
@@ -298,7 +299,15 @@ void HUD_SOUND_COLLECTION_LAYERED::PlaySound(LPCSTR alias, const Fvector& positi
 	for (; it != it_e; ++it)
 	{
 		if (it->m_alias == alias)
-			it->PlaySound(alias, position, parent, hud_mode, looped, index);
+		{
+			if (!it->IsDistantSound)
+				it->PlaySound(alias, position, parent, hud_mode, looped, index);
+			else
+			{
+				if (position.distance_to(Device.vCameraPosition) >= GameConstants::GetDistantSndDistance())
+					it->PlaySound(alias, position, parent, hud_mode, looped, index);
+			}
+		}
 	}
 }
 
@@ -331,16 +340,30 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(LPCSTR section, LPCSTR line, LPCSTR
 
 	if (pSettings->section_exist(buf_str))
 	{
-		string256 sound_line;
+		string256 sound_line, sound_distant_line;
+
 		xr_strcpy(sound_line, "snd_1_layer");
-		int k = 1;
+		xr_strcpy(sound_distant_line, "snd_1_layer_dist");
+
+		int k = 1, k2 = 1;
 		while (pSettings->line_exist(buf_str, sound_line))
 		{
 			m_sound_items.resize(m_sound_items.size() + 1);
 			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
 			snd_item.LoadSound(buf_str, sound_line, alias, exclusive, type);
 			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = false;
 			xr_sprintf(sound_line, "snd_%d_layer", ++k);
+		}
+
+		while (pSettings->line_exist(buf_str, sound_distant_line))
+		{
+			m_sound_items.resize(m_sound_items.size() + 1);
+			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
+			snd_item.LoadSound(buf_str, sound_distant_line, alias, exclusive, type);
+			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = true;
+			xr_sprintf(sound_distant_line, "snd_%d_layer_dist", ++k2);
 		}
 	}
 	else //For compatibility with normal HUD_SOUND_COLLECTION sounds
@@ -368,16 +391,29 @@ void HUD_SOUND_COLLECTION_LAYERED::LoadSound(CInifile const* ini, LPCSTR section
 
 	if (ini->section_exist(buf_str))
 	{
-		string256 sound_line;
+		string256 sound_line, sound_distant_line;
 		xr_strcpy(sound_line, "snd_1_layer");
-		int k = 1;
+		xr_strcpy(sound_distant_line, "snd_1_layer_dist");
+
+		int k = 1, k2 = 1;
 		while (ini->line_exist(buf_str, sound_line))
 		{
 			m_sound_items.resize(m_sound_items.size() + 1);
 			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
 			snd_item.LoadSound(buf_str, sound_line, alias, exclusive, type);
 			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = false;
 			xr_sprintf(sound_line, "snd_%d_layer", ++k);
+		}
+
+		while (ini->line_exist(buf_str, sound_distant_line))
+		{
+			m_sound_items.resize(m_sound_items.size() + 1);
+			HUD_SOUND_COLLECTION& snd_item = m_sound_items.back();
+			snd_item.LoadSound(buf_str, sound_distant_line, alias, exclusive, type);
+			snd_item.m_alias = alias;
+			snd_item.IsDistantSound = true;
+			xr_sprintf(sound_distant_line, "snd_%d_layer_dist", ++k2);
 		}
 	}
 	else //For compatibility with normal HUD_SOUND_COLLECTION sounds

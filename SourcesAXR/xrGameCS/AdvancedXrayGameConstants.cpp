@@ -33,6 +33,7 @@ bool	m_bActorSkills = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
+float	m_fDistantSndDistance = 150.f;
 Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
 Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 255, 255);
 Fvector4 m_FV4NeutralColor = Fvector4().set(170, 170, 170, 255);
@@ -74,6 +75,7 @@ namespace GameConstants
 		m_iArtefactsCount = READ_IF_EXISTS(pAdvancedSettings, r_u32, "inventory", "artefacts_count", 5);
 		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
 		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
+		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_bColorizeValues = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "colorize_values", false);
 		m_FV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_red", Fvector4().set(255, 0, 0, 255));
 		m_FV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_green", Fvector4().set(0, 255, 0, 255));
@@ -233,6 +235,11 @@ namespace GameConstants
 	int GetBOOLScriptCMDCount()
 	{
 		return m_B_CMD_Count;
+	}
+
+	float GetDistantSndDistance()
+	{
+		return m_fDistantSndDistance;
 	}
 
 	Fvector4 GetRedColor()
