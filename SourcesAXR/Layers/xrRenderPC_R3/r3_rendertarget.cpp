@@ -298,6 +298,9 @@ CRenderTarget::CRenderTarget		()
 	param_noise_fps		= 25.f;
 	param_noise_scale	= 1.f;
 
+	RT_SecondVP = nullptr; //--#SM+# +SecondVP+
+	rt_ui_pda = nullptr;
+
 	im_noise_time		= 1/100.0f;
 	im_noise_shift_w	= 0;
 	im_noise_shift_h	= 0;
@@ -326,13 +329,13 @@ CRenderTarget::CRenderTarget		()
 	b_luminance				= xr_new<CBlender_luminance>			();
 	b_combine				= xr_new<CBlender_combine>				();
 	b_ssao					= xr_new<CBlender_SSAO_noMSAA>			();
-	b_sunshafts				= new CBlender_sunshafts				();
+	b_sunshafts				= xr_new<CBlender_sunshafts>();
     //FXAA
-    b_fxaa 					= new CBlender_FXAA						();
+    b_fxaa 					= xr_new<CBlender_FXAA>();
 	//SMAA
-	b_smaa					= new CBlender_SMAA						();
+	b_smaa					= xr_new<CBlender_SMAA>();
 	//Vignette
-	b_vignette				= new CBlender_Vignette					();
+	b_vignette				= xr_new<CBlender_Vignette>();
 	//HUD MASK
 	b_hud_mask				= xr_new<CBlender_hud_mask>				();
 	//HUD BLOOD
@@ -1114,6 +1117,8 @@ CRenderTarget::~CRenderTarget	()
 	accum_omnip_geom_destroy	();
 	accum_point_geom_destroy	();
 	accum_volumetric_geom_destroy();
+	RT_SecondVP.destroy(); //--#SM+#-- +SecondVP+
+	rt_ui_pda.destroy();
 
 	// Blenders
 	xr_delete					(b_combine				);

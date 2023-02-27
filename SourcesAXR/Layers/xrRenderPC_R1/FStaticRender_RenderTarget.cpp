@@ -26,7 +26,8 @@ CRenderTarget::CRenderTarget()
 	param_noise_fps		= 25.f;
 	param_noise_scale	= 1.f;
 
-	RT_SecondVP			= nullptr; //--#SM+# +SecondVP+
+	RT_SecondVP = nullptr; //--#SM+# +SecondVP+
+	rt_ui_pda = nullptr;
 	param_color_map_influence	=	0.0f;
 	param_color_map_interpolate	=	0.0f;
 
@@ -110,7 +111,8 @@ CRenderTarget::~CRenderTarget	()
 	RT_distort.destroy			();
 	RT_color_map.destroy		();
 	RT.destroy					();
-	RT_SecondVP.destroy			(); //--#SM+#-- +SecondVP+
+	RT_SecondVP.destroy(); //--#SM+#-- +SecondVP+
+	rt_ui_pda.destroy();
 }
 
 void	CRenderTarget::calc_tc_noise		(Fvector2& p0, Fvector2& p1)
