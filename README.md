@@ -1,28 +1,30 @@
-Advanced X-Ray 
+# Advanced X-Ray
+
 ![Advanced X-Ray](https://i.ibb.co/VJFnVk7/Untitled-1.png)
 ![VK](https://i.ibb.co/cknxjxD/24.png) [M.F.S. Team](https://vk.com/mfs_studio)
 ![DS](https://i.ibb.co/wdQGG8k/discord-icon.png) [Discord Server](https://discord.gg/AFPqkfBfQs)
-==========================
 
 Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer games S.T.A.L.K.E.R. developed by GSC Game World.
 
-### Supported games
+## Supported games
+
 |Call of Pripyat|Clear Sky|Shadow of Chernobyl|
 |---|---|---|
 |Yes|Yes|No|
 
-### Supported renders
+## Supported renders
+
 |DX9|DX10|DX11|
 |---|---|---|
 |Yes|Yes|Yes|
 
-### Build status
+## Build status
+
 |Platform|Configurations|
 |---|---|
 |Windows|Debug / Mixed / Release (x64)|
 
-How to Build
-------------
+## How to Build
 
 - Install Visual Studio 2019
 - Install DirectX SDK`s (March 2009 and June 2010)
@@ -30,13 +32,12 @@ How to Build
 - Open engine.sln
 - Build solution
 
-Binaries
---------
+## Binaries
 
 See [Release](https://github.com/ign-1997/Advanced-X-Ray/releases) section.
 
-Thanks to
-------------
+## Thanks to
+
 - [OpenXRay](https://github.com/OpenXRay/xray-16)
 - [OGSR Engine](https://github.com/OGSR/OGSR-Engine)
 - [ForserX](https://github.com/ForserX)
