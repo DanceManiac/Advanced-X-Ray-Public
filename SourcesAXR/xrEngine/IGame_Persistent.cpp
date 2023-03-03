@@ -163,6 +163,8 @@ IC bool IGame_Persistent::SceneRenderingBlocked()
 #ifndef _EDITOR
 void IGame_Persistent::Prefetch()
 {
+	prefetching_in_progress = true;
+
 	// prefetch game objects & models
 	float	p_time		=			1000.f*Device.GetTimerGlobal()->GetElapsed_sec();
 	u32	mem_0			=			Memory.mem_usage()	;
@@ -179,6 +181,8 @@ void IGame_Persistent::Prefetch()
 
 	Msg					("* [prefetch] time:    %d ms",	iFloor(p_time));
 	Msg					("* [prefetch] memory:  %dKb",	p_mem/1024);
+
+	prefetching_in_progress = false;
 }
 #endif
 

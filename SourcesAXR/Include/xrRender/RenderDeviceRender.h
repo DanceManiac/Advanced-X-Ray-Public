@@ -43,6 +43,7 @@ public:
 	virtual void	ResourcesDestroyNecessaryTextures() = 0;
 	virtual void	ResourcesStoreNecessaryTextures() = 0;
 	virtual void	ResourcesDumpMemoryUsage() = 0;
+	virtual void	RenderPrefetchUITextures() = 0;
 
 	//	HWSupport
 	virtual bool	HWSupportsShaderYUV2RGB() = 0;

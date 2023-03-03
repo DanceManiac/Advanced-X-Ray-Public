@@ -260,6 +260,11 @@ void dxRenderDeviceRender::ResourcesDumpMemoryUsage()
 	dxRenderDeviceRender::Instance().Resources->_DumpMemoryUsage();
 }
 
+void dxRenderDeviceRender::RenderPrefetchUITextures()
+{
+	Resources->RMPrefetchUITextures();
+}
+
 dxRenderDeviceRender::DeviceState dxRenderDeviceRender::GetDeviceState()
 {
 	HW.Validate		();

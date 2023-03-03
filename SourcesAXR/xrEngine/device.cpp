@@ -36,6 +36,7 @@
 
 ENGINE_API CRenderDevice Device;
 ENGINE_API CLoadScreenRenderer load_screen_renderer;
+ENGINE_API bool prefetching_in_progress = false;
 
 
 ENGINE_API BOOL g_bRendering = FALSE; 

@@ -310,6 +310,7 @@ private:
 };
 
 extern		ENGINE_API		CRenderDevice		Device;
+extern		ENGINE_API		bool				prefetching_in_progress;
 
 #ifndef	_EDITOR
 #define	RDEVICE	Device

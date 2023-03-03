@@ -13,6 +13,7 @@
 #include "uiabstract.h"
 #include "xrUIXmlParser.h"
 #include "../Include/xrRender/UIShader.h"
+#include "../MainMenu.h"
 
 xr_map<shared_str, TEX_INFO>	CUITextureMaster::m_textures;
 
@@ -76,8 +77,9 @@ void CUITextureMaster::InitTexture(const char* texture_name, IUISimpleTextureCon
 	tc->CreateShader(texture_name);
 }
 
-void CUITextureMaster::InitTexture(const char* texture_name, const char* shader_name, IUISimpleTextureControl* tc){
-
+void CUITextureMaster::InitTexture(const char* texture_name, const char* shader_name, IUISimpleTextureControl* tc)
+{
+	CTimer time; time.Start();
 	xr_map<shared_str, TEX_INFO>::iterator	it;
 
 	it = m_textures.find(texture_name);
@@ -89,6 +91,15 @@ void CUITextureMaster::InitTexture(const char* texture_name, const char* shader_
 		return;
 	}
 	tc->CreateShader(texture_name, shader_name);
+
+	if (time.GetElapsed_sec() * 1000.f > 10.0) //Determine if texture loading caused stutter and send its name to "SuggestPrefetching" pool
+	{
+		string256 str;
+		xr_sprintf(str, "%s, %s", texture_name, shader_name);
+		Msg("UI:Initing texture = %s, stutter time = %fms", str, time.GetElapsed_sec() * 1000.f);
+		shared_str str2 = str;
+		MainMenu()->SuggestedForPrefetching.push_back(str2);
+	}
 }
 
 float CUITextureMaster::GetTextureHeight(const char* texture_name){

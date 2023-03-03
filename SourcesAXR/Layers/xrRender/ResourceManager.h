@@ -220,6 +220,7 @@ public:
 	void			StoreNecessaryTextures	();
 	void			DestroyNecessaryTextures();
 	void			Dump					(bool bBrief);
+	void			RMPrefetchUITextures	();
 
 private:
 #ifdef USE_DX11

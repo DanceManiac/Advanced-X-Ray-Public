@@ -57,7 +57,7 @@ CMainMenu*	MainMenu()	{return (CMainMenu*)g_pGamePersistent->m_pMainMenu; };
 #define INIT_MSGBOX(_box, _template)	{ _box = xr_new<CUIMessageBoxEx>(); _box->InitMessageBox(_template);}
 //----------------------------------------------------------------------------------
 
-CMainMenu::CMainMenu	()
+CMainMenu::CMainMenu()
 {
 	m_Flags.zero					();
 	m_startDialog					= NULL;
@@ -100,10 +100,14 @@ CMainMenu::CMainMenu	()
 		m_pMB_ErrDlgs[DownloadMPMap]->AddCallback("button_copy", MESSAGE_BOX_COPY_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnDownloadMPMap_CopyURL));
 		m_pMB_ErrDlgs[DownloadMPMap]->AddCallback("button_yes", MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnDownloadMPMap));
 	}
+
+	Msg("*Start prefetching UI textures");
+	Device.m_pRender->RenderPrefetchUITextures();
 }
 
-CMainMenu::~CMainMenu	()
+CMainMenu::~CMainMenu()
 {
+	ReportTxrsForPrefetching();
 	xr_delete						(g_btnHint);
 	xr_delete						(m_startDialog);
 	g_pGamePersistent->m_pMainMenu	= NULL;
@@ -829,4 +833,15 @@ void CMainMenu::OnDownloadMPMap(CUIWindow* w, void* d)
 	LPCSTR params = NULL;
 	STRCONCAT(params, "/C start ", url);
 	ShellExecute(0, "open", "cmd.exe", params, NULL, SW_SHOW);
+}
+
+void CMainMenu::ReportTxrsForPrefetching()
+{
+	if (SuggestedForPrefetching.size() > 0)
+	{
+		Msg("---These UI textures are suggested to be prefetched since they caused stutterings when some UI window was loading");
+		Msg("---Add this list to section [prefetch_ui_textures]");
+		for (u32 i = 0; i < SuggestedForPrefetching.size(); i++)
+			Msg("%s", SuggestedForPrefetching[i].c_str());
+	}
 }

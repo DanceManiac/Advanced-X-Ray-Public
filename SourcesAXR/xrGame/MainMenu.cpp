@@ -127,10 +127,14 @@ CMainMenu::CMainMenu	()
 	}
 	
 	Device.seqFrame.Add		(this,REG_PRIORITY_LOW-1000);
+
+	Msg("*Start prefetching UI textures");
+	Device.m_pRender->RenderPrefetchUITextures();
 }
 
 CMainMenu::~CMainMenu	()
 {
+	ReportTxrsForPrefetching		();
 	Device.seqFrame.Remove			(this);
 	xr_delete						(g_btnHint);
 	xr_delete						(g_statHint);
@@ -878,4 +882,15 @@ demo_info const * CMainMenu::GetDemoInfo(LPCSTR file_name)
 		m_demo_info_loader = xr_new<demo_info_loader>();
 	}
 	return m_demo_info_loader->get_demofile_info(file_name);
+}
+
+void CMainMenu::ReportTxrsForPrefetching()
+{
+	if (SuggestedForPrefetching.size() > 0)
+	{
+		Msg("---These UI textures are suggested to be prefetched since they caused stutterings when some UI window was loading");
+		Msg("---Add this list to prefetch_ui_textures.ltx (wisely)");
+		for (u32 i = 0; i < SuggestedForPrefetching.size(); i++)
+			Msg("%s", SuggestedForPrefetching[i].c_str());
+	}
 }

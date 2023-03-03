@@ -150,6 +150,7 @@ void CResourceManager::_DeleteElement(const ShaderElement* S)
 
 Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
 {
+	CTimer time; time.Start();
 	CBlender_Compile	C;
 	Shader				S;
 
@@ -234,6 +235,9 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 	Shader*		N			=	xr_new<Shader>(S);
 	N->dwFlags				|=	xr_resource_flagged::RF_REGISTERED;
 	v_shaders.push_back		(N);
+
+	if (time.GetElapsed_sec() * 1000.f > 50.0 && g_loading_events.empty() && !prefetching_in_progress) Msg("---Loading of %s made a %fms stutter, should it be prefetched?!", s_textures, time.GetElapsed_sec() * 1000.f);
+
 	return N;
 }
 
@@ -463,3 +467,27 @@ BOOL	CResourceManager::_GetDetailTexture(LPCSTR Name,LPCSTR& T, R_constant_setup
 		return FALSE;
 	}
 }*/
+
+void CResourceManager::RMPrefetchUITextures()
+{
+	CTimer time; time.Start();
+	CInifile::Sect& sect = pAdvancedSettings->r_section("prefetch_ui_textures");
+	for (CInifile::SectCIt I = sect.Data.begin(); I != sect.Data.end(); I++)
+	{
+		const CInifile::Item& item = *I;
+		LPCSTR string = item.first.c_str();
+		if (string && string[0])
+		{
+			string128 texturename;
+			string128 shadername;
+
+			_GetItem(string, 0, texturename);
+			_GetItem(string, 1, shadername);
+			LPCSTR temptexturename = texturename;
+			LPCSTR tempshadername = shadername;
+			Msg("*Prefetching %s, %s", temptexturename, tempshadername);
+			Shader* temp = _cpp_Create(tempshadername, temptexturename);
+		}
+	}
+	Msg("*RMPrefetchUITextures %fms", time.GetElapsed_sec() * 1000.f);
+}
