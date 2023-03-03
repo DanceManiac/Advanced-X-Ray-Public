@@ -194,7 +194,7 @@ CRenderTarget::CRenderTarget		()
 	param_noise_fps		= 25.f;
 	param_noise_scale	= 1.f;
 
-	RT_SecondVP = nullptr; //--#SM+# +SecondVP+
+	rt_secondVP = nullptr; //--#SM+# +SecondVP+
 	rt_ui_pda = nullptr;
 
 	im_noise_time		= 1/100.0f;
@@ -679,7 +679,7 @@ CRenderTarget::~CRenderTarget	()
 	accum_omnip_geom_destroy	();
 	accum_point_geom_destroy	();
 	accum_volumetric_geom_destroy();
-	RT_SecondVP.destroy(); //--#SM+#-- +SecondVP+
+	rt_secondVP.destroy(); //--#SM+#-- +SecondVP+
 	rt_ui_pda.destroy();
 
 	// Blenders
