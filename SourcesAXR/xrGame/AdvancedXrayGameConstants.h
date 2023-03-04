@@ -12,6 +12,7 @@ namespace GameConstants
 	bool GetDosimeterSlotEnabled();
 	bool GetPantsSlotEnabled();
 	bool GetPdaSlotEnabled();
+	bool GetPistolSlotEnabled();
 	bool GetTorchHasBattery();
 	bool GetArtDetectorUseBattery();
 	bool GetAnoDetectorUseBattery();

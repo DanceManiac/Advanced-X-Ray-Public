@@ -109,6 +109,10 @@
 		<texture>ui_inGame2_detector_highlighter</texture>
 	</pda_slot_highlight>
 
+	<pistol_slot_highlight x="372" y="72" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</pistol_slot_highlight>
+	
 	<quick_slot1_text x="386" y="446" width="14" height="13">
 		<text align="c" font="letterica16">quick_use_str_1</text>
 	</quick_slot1_text>
@@ -182,6 +186,16 @@
 		<max_color r="107" g="207" b="119"/>
     </progess_bar_pants>
 
+	
+    <progess_bar_pistol x="387" y="75" width="47" height="5" horz="1" min="0" max="1" pos="0">
+        <progress stretch="1">
+            <texture r="142" g="149" b="149">ui_inGame2_inventory_status_bar</texture>
+        </progress>
+		<min_color r="196" g="18" b="18"/>
+		<middle_color r="255" g="255" b="118"/>
+		<max_color r="107" g="207" b="119"/>
+    </progess_bar_pistol>
+	
 	<actor_weight_caption x="750" y="736" width="57" height="16">
 		<text align="r" font="letterica16" color="ui_3">ui_total_weight</text>
 	</actor_weight_caption>
@@ -260,12 +274,12 @@
 		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
 		vc_horiz_align="c"/>
 
-	<dragdrop_pistol x="384" y="14" width="74" height="368"
+	<dragdrop_inv_slot1 x="384" y="14" width="74" height="368"
 		cell_width="33" cell_height="41" rows_num="6" cols_num="2"
 		custom_placement="0" vertical_placement="1" a="0"
 		virtual_cells="1" vc_vert_align="c" vc_horiz_align="c"/>
 
-	<dragdrop_automatic x="563" y="14" width="74" height="370"
+	<dragdrop_inv_slot2 x="563" y="14" width="74" height="370"
 		cell_width="33" cell_height="41" rows_num="6" cols_num="2"
 		custom_placement="0" vertical_placement="1" a="0"
 		virtual_cells="1" vc_vert_align="c" vc_horiz_align="c" />
@@ -330,6 +344,11 @@
 		vc_horiz_align="c" />
 		
 	<dragdrop_pda x="150" y="602" width="85" height="55"
+		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
+		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
+		vc_horiz_align="c"/>
+		
+	<dragdrop_pistol x="369" y="69" width="85" height="55"
 		cell_width="33" cell_height="41" rows_num="1" cols_num="2"
 		custom_placement="0" a="0" virtual_cells="1" vc_vert_align="c"
 		vc_horiz_align="c"/>

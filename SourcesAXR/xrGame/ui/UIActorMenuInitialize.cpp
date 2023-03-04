@@ -161,6 +161,12 @@ void CUIActorMenu::Construct()
 			m_PdaSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		if ((m_PistolNewSlotHighlight = UIHelper::CreateStatic(uiXml, "pistol_slot_highlight", this)))
+			m_PistolNewSlotHighlight->Show(false);
+	}
+
 	Fvector2 pos;
 	pos								= m_QuickSlotsHighlight[0]->GetWndPos();
 	float dx						= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
@@ -186,8 +192,8 @@ void CUIActorMenu::Construct()
 	m_pInventoryOutfitList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
 	m_pInventoryHelmetList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this);
 	m_pInventoryDetectorList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
-	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
-	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_automatic", this);
+	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this);
+	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this);
 	m_pTradeActorBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
 	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
 	m_pTradePartnerBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
@@ -236,6 +242,11 @@ void CUIActorMenu::Construct()
 		m_pInventoryPdaList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this);
 	}
 
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		m_pInventoryPistolNewList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pistol", this);
+	}
+
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
 	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
 	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
@@ -277,6 +288,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetPantsSlotEnabled())
 	{
 		m_Pants_progress = UIHelper::CreateProgressBar(uiXml, "progess_bar_pants", this);
+	}
+
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		m_Pistol_progress = UIHelper::CreateProgressBar(uiXml, "progess_bar_pistol", this);
 	}
 
 	m_trade_buy_button	= UIHelper::Create3tButton(uiXml, "trade_buy_button", this);
@@ -395,6 +411,11 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetPdaSlotEnabled())
 	{
 		BindDragDropListEvents(m_pInventoryPdaList);
+	}
+
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		BindDragDropListEvents(m_pInventoryPistolNewList);
 	}
 
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);

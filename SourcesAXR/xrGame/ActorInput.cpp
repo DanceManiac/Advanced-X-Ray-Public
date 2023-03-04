@@ -65,7 +65,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if( (mstate_wishful & mcLookout) && !IsGameTypeSingle() ) return;
 
 			u16 slot = inventory().GetActiveSlot();
-			if(inventory().ActiveItem() && (slot==INV_SLOT_3 || slot==INV_SLOT_2) )
+			if(inventory().ActiveItem() && (slot==INV_SLOT_3 || slot==INV_SLOT_2 || slot == PISTOL_SLOT) )
 				mstate_wishful &=~mcSprint;
 			//-----------------------------
 			if (OnServer())
@@ -517,6 +517,7 @@ static	u16 SlotsToCheck [] = {
 		GRENADE_SLOT	,		// 3
 		ARTEFACT_SLOT	,		// 10
 		PDA_SLOT		,
+		PISTOL_SLOT		,
 };
 
 void	CActor::OnNextWeaponSlot()

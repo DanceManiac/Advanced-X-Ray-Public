@@ -11,6 +11,7 @@ bool	m_bSecondHelmetSlotEnabled = false;
 bool	m_bDosimeterSlotEnabled = false;
 bool	m_bPantsSlotEnabled = false;
 bool	m_bPdaSlotEnabled = false;
+bool	m_bPistolSlotEnabled = false;
 bool	m_bTorchUseBattery = false;
 bool	m_bArtefactDetectorUseBattery = false;
 bool	m_bAnomalyDetectorUseBattery = false;
@@ -59,6 +60,7 @@ namespace GameConstants
 		m_bDosimeterSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_dosimeter_slot", false);
 		m_bPantsSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pants_slot", false);
 		m_bPdaSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pda_slot", false);
+		m_bPistolSlotEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "inventory", "enable_pistol_slot", false);
 		m_bLimitedBolts = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "limited_bolts", false);
 		m_bActorThirst = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_thirst_enabled", false);
 		m_bActorIntoxication = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_intoxication_enabled", false);
@@ -129,6 +131,11 @@ namespace GameConstants
 	bool GetPdaSlotEnabled()
 	{
 		return m_bPdaSlotEnabled;
+	}
+
+	bool GetPistolSlotEnabled()
+	{
+		return m_bPistolSlotEnabled;
 	}
 
 	bool GetTorchHasBattery()

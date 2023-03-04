@@ -1044,7 +1044,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 // Weapon broken icon
 	u16 slot = pActor->inventory().GetActiveSlot();
 	m_ind_weapon_broken->Show(false);
-	if(slot==INV_SLOT_2 || slot==INV_SLOT_3)
+	if(slot==INV_SLOT_2 || slot==INV_SLOT_3 || slot==PISTOL_SLOT)
 	{
 		CWeapon* weapon = smart_cast<CWeapon*>(pActor->inventory().ItemFromSlot(slot));
 		if(weapon)

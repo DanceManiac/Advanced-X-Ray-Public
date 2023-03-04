@@ -111,6 +111,7 @@ protected:
 	CUIDragDropListEx*			m_pInventoryDosimeterList;
 	CUIDragDropListEx*			m_pInventoryPantsList;
 	CUIDragDropListEx*			m_pInventoryPdaList;
+	CUIDragDropListEx*			m_pInventoryPistolNewList;
 
 	xr_vector<CUIStatic*>		m_belt_list_over;
 	CUIStatic*					m_HelmetOver;
@@ -130,6 +131,7 @@ protected:
 	CUIStatic*					m_DosimeterSlotHighlight;
 	CUIStatic*					m_PantsSlotHighlight;
 	CUIStatic*					m_PdaSlotHighlight;
+	CUIStatic*					m_PistolNewSlotHighlight;
 
 	CUIInventoryUpgradeWnd*		m_pUpgradeWnd;
 	
@@ -158,6 +160,7 @@ protected:
 	CUIProgressBar*				m_Knife_progress;
 	CUIProgressBar*				m_SecondHelmet_progress;
 	CUIProgressBar*				m_Pants_progress;
+	CUIProgressBar*				m_Pistol_progress;
 
 	// bottom ---------------------------------
 	CUIStatic*					m_ActorBottomInfo;

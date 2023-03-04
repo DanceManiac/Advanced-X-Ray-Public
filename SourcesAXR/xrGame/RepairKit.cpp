@@ -58,8 +58,9 @@ bool CRepairKit::Useful() const
 	CWeapon* knife = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(KNIFE_SLOT));
 	CWeapon* wpn1 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(INV_SLOT_2));
 	CWeapon* wpn2 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(INV_SLOT_3));
+	CWeapon* wpn3 = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(PISTOL_SLOT));
 
-	if (outfit || helmet || helmet2 || knife || wpn1 || wpn2 )
+	if (outfit || helmet || helmet2 || knife || wpn1 || wpn2 || wpn3 )
 	{
 		if (outfit && outfit->GetCondition() < 0.9f && outfit->GetCondition() >= 0.4f && outfit->IsNecessaryItem(this->cNameSect().c_str(), outfit->m_SuitableRepairKits))
 			return true;
@@ -72,6 +73,8 @@ bool CRepairKit::Useful() const
 		else if (wpn1 && wpn1->GetCondition() < 0.9f && wpn1->GetCondition() >= 0.4f && wpn1->IsNecessaryItem(this->cNameSect().c_str(), wpn1->m_SuitableRepairKits))
 			return true;
 		else if (wpn2 && wpn2->GetCondition() < 0.9f && wpn2->GetCondition() >= 0.4f && wpn2->IsNecessaryItem(this->cNameSect().c_str(), wpn2->m_SuitableRepairKits))
+			return true;
+		else if (wpn3 && wpn3->GetCondition() < 0.9f && wpn3->GetCondition() >= 0.4f && wpn3->IsNecessaryItem(this->cNameSect().c_str(), wpn3->m_SuitableRepairKits))
 			return true;
 		else
 			return false;
@@ -96,6 +99,8 @@ bool CRepairKit::UseBy(CEntityAlive* entity_alive)
 		ChangeInWpn1();
 	else if (m_iUseFor == 6)
 		ChangeInWpn2();
+	else if (m_iUseFor == 7)
+		ChangeInWpn3();
 	else
 		return false;
 
@@ -202,6 +207,24 @@ void CRepairKit::ChangeInWpn1()
 void CRepairKit::ChangeInWpn2()
 {
 	CWeapon* wpn = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(INV_SLOT_3));
+	float rnd_cond = ::Random.randF(0.1f, m_fRestoreCondition);
+	int repair_skill_level_inverted = 5;
+
+	if (Actor()->ActorSkills)
+		repair_skill_level_inverted -= Actor()->ActorSkills->repairSkillLevel;
+	else
+		repair_skill_level_inverted = 1;
+
+	if (repair_skill_level_inverted)
+		rnd_cond /= repair_skill_level_inverted;
+
+	if (wpn)
+		wpn->ChangeCondition(rnd_cond);
+}
+
+void CRepairKit::ChangeInWpn3()
+{
+	CWeapon* wpn = smart_cast<CWeapon*>(Actor()->inventory().ItemFromSlot(PISTOL_SLOT));
 	float rnd_cond = ::Random.randF(0.1f, m_fRestoreCondition);
 	int repair_skill_level_inverted = 5;
 

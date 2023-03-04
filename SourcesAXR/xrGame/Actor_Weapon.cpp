@@ -128,6 +128,7 @@ static	u16 BestWeaponSlots [] = {
 	INV_SLOT_2		,		// 1
 	GRENADE_SLOT	,		// 3
 	KNIFE_SLOT		,		// 0
+	PISTOL_SLOT		,		// 0
 };
 void CActor::SelectBestWeapon	(CObject* O)
 {
@@ -150,7 +151,7 @@ void CActor::SelectBestWeapon	(CObject* O)
 		NeedToSelectBestWeapon = true;
 		if ((GameID() == eGameIDArtefactHunt) || (GameID() == eGameIDCaptureTheArtefact)) //only for test...
 		{
-			if (pIItem->BaseSlot() == INV_SLOT_2 || pIItem->BaseSlot() == INV_SLOT_3)
+			if (pIItem->BaseSlot() == INV_SLOT_2 || pIItem->BaseSlot() == INV_SLOT_3 || pIItem->BaseSlot() == PISTOL_SLOT)
 			{
 				CInventoryItem* pIItemInSlot = inventory().ItemFromSlot(pIItem->BaseSlot());
 				if (pIItemInSlot != NULL && pIItemInSlot != pIItem)				

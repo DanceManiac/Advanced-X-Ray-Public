@@ -27,6 +27,7 @@ public:
 	void					ChangeInKnife();
 	void					ChangeInWpn1();
 	void					ChangeInWpn2();
+	void					ChangeInWpn3();
 	void					ChangeRepairKitCondition(float val);
 	float					GetRepairKitCondition(void) const;
 protected:

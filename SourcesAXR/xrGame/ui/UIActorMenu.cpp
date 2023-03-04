@@ -40,6 +40,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "WeaponKnife.h"
 #include "WeaponBinoculars.h"
+#include "WeaponPistol.h"
 #include "Torch.h"
 #include "Backpack.h"
 #include "AnomalyDetector.h"
@@ -406,6 +407,11 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 			return iActorSlot;
 	}
 
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		if (l == m_pInventoryPistolNewList) return iActorSlot;
+	}
+
 	R_ASSERT(0);
 	
 	return iInvalid;
@@ -617,6 +623,11 @@ void CUIActorMenu::clear_highlight_lists()
 			m_PdaSlotHighlight->Show(false);
 	}
 
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		m_PistolNewSlotHighlight->Show(false);
+	}
+
 	for(u8 i=0; i<4; i++)
 		m_QuickSlotsHighlight[i]->Show(false);
 	for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
@@ -665,11 +676,21 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CBackpack* backpack = smart_cast<CBackpack*>(item);
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(item);
 	CPda* pda = smart_cast<CPda*>(item);
+	CWeaponPistol* pistol = smart_cast<CWeaponPistol*>(item);
 
 	if (weapon && (!knife && !binoculars))
 	{
-		m_InvSlot2Highlight->Show(true);
-		m_InvSlot3Highlight->Show(true);
+		if (GameConstants::GetPistolSlotEnabled() && pistol)
+		{
+			if (m_PistolNewSlotHighlight)
+				m_PistolNewSlotHighlight->Show(true);
+		}
+		else
+		{
+			m_InvSlot2Highlight->Show(true);
+			m_InvSlot3Highlight->Show(true);
+		}
+
 		return;
 	}
 
@@ -1097,6 +1118,11 @@ void CUIActorMenu::ClearAllLists()
 	{
 		m_pInventoryPdaList->ClearAll(true);
 	}
+
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		m_pInventoryPistolNewList->ClearAll(true);
+	}
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )
@@ -1234,6 +1260,18 @@ void CUIActorMenu::UpdateConditionProgressBars()
 				m_Pants_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
 			else
 				m_Pants_progress->SetProgressPos(0);
+		}
+	}
+
+	if (GameConstants::GetPistolSlotEnabled())
+	{
+		if (m_Pistol_progress)
+		{
+			itm = m_pActorInvOwner->inventory().ItemFromSlot(PISTOL_SLOT);
+			if (itm)
+				m_Pistol_progress->SetProgressPos(iCeil(itm->GetCondition() * 15.0f) / 15.0f);
+			else
+				m_Pistol_progress->SetProgressPos(0);
 		}
 	}
 }

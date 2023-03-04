@@ -31,7 +31,7 @@ u16	INV_STATE_INV_WND		= INV_STATE_BLOCK_ALL;
 u16	INV_STATE_BUY_MENU		= INV_STATE_BLOCK_ALL;
 u16 INV_STATE_HIDE_WEAPON =
 (1 << KNIFE_SLOT | 1 << INV_SLOT_2 | 1 << INV_SLOT_3 | 1 << GRENADE_SLOT | 1 << BINOCULAR_SLOT |
-	1 << BOLT_SLOT | 1 << DETECTOR_SLOT);
+	1 << BOLT_SLOT | 1 << DETECTOR_SLOT | 1 << PISTOL_SLOT);
 
 CInventorySlot::CInventorySlot() 
 {
@@ -707,6 +707,21 @@ bool CInventory::Action(u16 cmd, u32 flags)
 			if ( flags & CMD_START )
 			{
 				ActiveWeapon( slot );
+			}
+		}break;
+	case kWPN_7:
+		{
+			b_send_event = true;
+			if (flags & CMD_START)
+			{
+				if (GetActiveSlot() == PISTOL_SLOT && ActiveItem())
+				{
+					Activate(NO_ACTIVE_SLOT);
+				}
+				else
+				{
+					Activate(PISTOL_SLOT);
+				}
 			}
 		}break;
 	case kARTEFACT:

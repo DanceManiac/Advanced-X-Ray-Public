@@ -336,4 +336,7 @@
 	<string id="st_repair_kit_descr">
 		<text>Обычный ремонтный набор. Позволяет отремонтировать снаряжение, если руки из нужного места растут.</text>
 	</string>
+	<string id="kb_weapon7">
+		<text>Оружие 7</text>
+	</string>
 </string_table>
