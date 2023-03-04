@@ -1341,7 +1341,7 @@ void CUIActorMenu::UpdateOutfit()
 		m_belt_list_over[i]->SetVisible( true );
 	}
 	u32 af_count = m_pActorInvOwner->inventory().BeltWidth();
-	VERIFY( 0 <= af_count && af_count <= 5 );
+	VERIFY( 0 <= af_count && af_count <= GameConstants::GetArtefactsCount());
 
 	VERIFY( m_pInventoryBeltList );
 	PIItem         ii_outfit = m_pActorInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;

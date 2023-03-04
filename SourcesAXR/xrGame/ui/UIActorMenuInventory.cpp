@@ -1789,7 +1789,7 @@ void CUIActorMenu::UpdateOutfit()
 	}
 
 	u32 af_count = m_pActorInvOwner->inventory().BeltWidth();
-	VERIFY( 0 <= af_count && af_count <= 5 );
+	VERIFY( 0 <= af_count && af_count <= GameConstants::GetArtefactsCount());
 
 	VERIFY( m_pInventoryBeltList );
 	CCustomOutfit* outfit    = m_pActorInvOwner->GetOutfit();

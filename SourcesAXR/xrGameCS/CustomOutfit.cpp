@@ -167,7 +167,7 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_full_icon_name	= pSettings->r_string( section, "full_icon_name" );
 	m_artefact_count 	= READ_IF_EXISTS( pSettings, r_u32, section, "artefact_count", 0 );
-	clamp( m_artefact_count, (u32)0, (u32)5 );
+	clamp( m_artefact_count, (u32)0, (u32)GameConstants::GetArtefactsCount());
 
 	if ( pSettings->line_exist( cNameSect(), "bones_koeff_protection") )
 	{
@@ -440,7 +440,7 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	clamp( m_fPowerLoss, 0.0f, 1.0f );
 
 	result |= process_if_exists( section, "artefact_count", &CInifile::r_u32, m_artefact_count, test );
-	clamp( m_artefact_count, (u32)0, (u32)5 );
+	clamp( m_artefact_count, (u32)0, (u32)GameConstants::GetArtefactsCount());
 
 	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
