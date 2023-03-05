@@ -1353,8 +1353,8 @@ void CUIActorMenu::UpdateOutfit()
 	}
 
 	Ivector2 afc;
-	afc.x = 1; // m_pInventoryBeltList->GetCellsCapacity().x;
-	afc.y = af_count;
+	afc.x = m_pInventoryBeltList->CellsCapacity().x;
+	afc.y = m_pInventoryBeltList->CellsCapacity().y;
 	
 	m_pInventoryBeltList->SetCellsCapacity( afc );
 	for ( u8 i = 0; i < af_count ; ++i )

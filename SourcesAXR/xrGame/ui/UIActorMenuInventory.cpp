@@ -1805,8 +1805,8 @@ void CUIActorMenu::UpdateOutfit()
 	}
 
 	Ivector2 afc;
-	afc.x = af_count;//1;
-	afc.y = 1;//af_count;
+	afc.x = m_pInventoryBeltList->CellsCapacity().x;
+	afc.y = m_pInventoryBeltList->CellsCapacity().y;
 
 	m_pInventoryBeltList->SetCellsCapacity( afc );
 
@@ -1814,7 +1814,6 @@ void CUIActorMenu::UpdateOutfit()
 	{
 		m_belt_list_over[i]->SetVisible( false );
 	}
-
 }
 
 void CUIActorMenu::MoveArtefactsToBag()

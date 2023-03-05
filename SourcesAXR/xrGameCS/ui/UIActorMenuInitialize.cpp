@@ -140,15 +140,36 @@ void CUIActorMenu::Construct()
 		m_pInventoryPdaList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this);
 	}
 
-	m_belt_list_over.push_back(UIHelper::CreateStatic(uiXml, "belt_list_over", this));
-	Fvector2 pos;
-	pos = m_belt_list_over[0]->GetWndPos();
-	float dy = uiXml.ReadAttribFlt("belt_list_over", 0, "dy", 10.0f);
-	for ( u8 i = 1; i < GameConstants::GetArtefactsCount(); ++i )
+	Fvector2 pos{};
+	float dx{}, dy{};
+	int cols = m_pInventoryBeltList->CellsCapacity().x;
+	int rows = m_pInventoryBeltList->CellsCapacity().y;
+	int counter = 1;
+
+	for (u8 i = 0; i < rows; ++i)
 	{
+		for (u8 j = 0; j < cols; ++j)
+		{
+			m_belt_list_over.push_back(UIHelper::CreateStatic(uiXml, "belt_list_over", this));
+
+			if (i == 0 && j == 0)
+			{
+				pos = m_belt_list_over[0]->GetWndPos();
+				dx = uiXml.ReadAttribFlt("belt_list_over", 0, "dx", 10.0f);
+				dy = uiXml.ReadAttribFlt("belt_list_over", 0, "dy", 10.0f);
+			}
+			else
+			{
+				if (j != 0)
+					pos.x += dx;
+
+				m_belt_list_over[counter]->SetWndPos(pos);
+				counter++;
+			}
+		}
+
+		pos.x = m_belt_list_over[0]->GetWndPos().x;
 		pos.y += dy;
-		m_belt_list_over.push_back(UIHelper::CreateStatic(uiXml, "belt_list_over", this));
-		m_belt_list_over[i]->SetWndPos( pos );
 	}
 
 	m_ActorMoney	= UIHelper::CreateStatic(uiXml, "actor_money_static", this);
