@@ -2149,6 +2149,7 @@
     <ClInclude Include="ui\UIListItemServer.h" />
     <ClInclude Include="ui\UIListWnd.h" />
     <ClInclude Include="ui\UIListWnd_inline.h" />
+    <ClInclude Include="ui\UILoadingScreen.h" />
     <ClInclude Include="ui\UILogsWnd.h" />
     <ClInclude Include="ui\UIMainIngameWnd.h" />
     <ClInclude Include="ui\UIMap.h" />
@@ -8697,6 +8698,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ui\UILoadingScreen.cpp" />
     <ClCompile Include="ui\UILogsWnd.cpp" />
     <ClCompile Include="ui\UIMainIngameWnd.cpp" />
     <ClCompile Include="ui\UIMap.cpp" />

@@ -301,8 +301,6 @@ enum
 //Rezy: cleanup flags
 extern Flags32 psDeviceFlags2;
 
-extern ECORE_API int ps_rs_loading_stages;
-
 extern void						xrRender_initconsole	();
 extern BOOL						xrRender_test_hw		();
 extern void						xrRender_apply_tf		();

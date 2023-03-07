@@ -29,6 +29,8 @@
 #include "AdvancedXrayGameConstants.h"
 #include "DynamicHudGlass.h"
 #include "CustomOutfit.h"
+#include "string_table.h"
+#include "ui/UILoadingScreen.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -109,6 +111,12 @@ CGamePersistent::~CGamePersistent(void)
 	Device.seqFrame.Remove		(this);
 	Engine.Event.Handler_Detach	(eDemoStart,this);
 	Engine.Event.Handler_Detach	(eQuickLoad,this);
+}
+
+void CGamePersistent::PreStart(LPCSTR op)
+{
+	pApp->SetLoadingScreen(new UILoadingScreen());
+	__super::PreStart(op);
 }
 
 void CGamePersistent::RegisterModel(IRenderVisual* V)
@@ -756,7 +764,6 @@ void CGamePersistent::OnRenderPPUI_PP()
 {
 	MainMenu()->OnRenderPPUI_PP();
 }
-#include "string_table.h"
 
 void CGamePersistent::SetLoadStageTitle(const char* ls_title)
 {

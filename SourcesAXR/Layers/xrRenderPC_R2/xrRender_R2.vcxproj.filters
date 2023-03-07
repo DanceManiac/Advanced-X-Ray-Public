@@ -549,12 +549,6 @@
     <ClInclude Include="..\..\Include\xrRender\FactoryPtr.h">
       <Filter>Interfase implementations\FactoryPtr</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Include\xrRender\ApplicationRender.h">
-      <Filter>Interfase implementations\ApplicationRender</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrRender\dxApplicationRender.h">
-      <Filter>Interfase implementations\ApplicationRender</Filter>
-    </ClInclude>
     <ClInclude Include="..\xrRender\dxRainRender.h">
       <Filter>Interfase implementations\RainRender</Filter>
     </ClInclude>
@@ -1138,9 +1132,6 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\dxLensFlareRender.cpp">
       <Filter>Interfase implementations\LensFlare</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrRender\dxApplicationRender.cpp">
-      <Filter>Interfase implementations\ApplicationRender</Filter>
     </ClCompile>
     <ClCompile Include="..\xrRender\dxRainRender.cpp">
       <Filter>Interfase implementations\RainRender</Filter>

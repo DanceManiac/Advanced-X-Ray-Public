@@ -683,6 +683,7 @@ extern Flags32		psEnvFlags;
 //extern float		r__dtex_range;
 
 extern int			g_ErrorLineCount;
+extern int			ps_rs_loading_stages;
 
 ENGINE_API int			ps_r__Supersample			= 1;
 ENGINE_API int			ps_r__WallmarksOnSkeleton	= 0;
@@ -740,8 +741,8 @@ void CCC_Register()
 	//Bloodmarks on Skeleton
 	CMD4(CCC_Integer,	"r__wallmarks_on_skeleton", &ps_r__WallmarksOnSkeleton,		0, 1	);
 	//Nightvision Type (PPE/Shader)
-	CMD4(CCC_Integer,	"r__shader_nvg",		&ps_r__ShaderNVG, 0, 1);
-
+	CMD4(CCC_Integer,	"r__shader_nvg",		&ps_r__ShaderNVG,			0, 1	);
+	CMD4(CCC_Integer,	"rs_loadingstages",		&ps_rs_loading_stages,		0, 1	);
 
 	CMD3(CCC_Mask,		"rs_v_sync",			&psDeviceFlags,		rsVSync				);
 //	CMD3(CCC_Mask,		"rs_disable_objects_as_crows",&psDeviceFlags,	rsDisableObjectsAsCrows	);

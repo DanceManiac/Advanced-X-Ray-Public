@@ -515,7 +515,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Include\xrRender\animation_blend.h" />
     <ClInclude Include="..\..\Include\xrRender\animation_motion.h" />
-    <ClInclude Include="..\..\Include\xrRender\ApplicationRender.h" />
     <ClInclude Include="..\..\Include\xrRender\ConsoleRender.h" />
     <ClInclude Include="..\..\Include\xrRender\DebugRender.h" />
     <ClInclude Include="..\..\Include\xrRender\DebugShader.h" />
@@ -567,7 +566,6 @@
     <ClInclude Include="..\xrRender\du_cylinder.h" />
     <ClInclude Include="..\xrRender\du_sphere.h" />
     <ClInclude Include="..\xrRender\du_sphere_part.h" />
-    <ClInclude Include="..\xrRender\dxApplicationRender.h" />
     <ClInclude Include="..\xrRender\dxConsoleRender.h" />
     <ClInclude Include="..\xrRender\dxDebugRender.h" />
     <ClInclude Include="..\xrRender\dxEnvironmentRender.h" />
@@ -738,7 +736,6 @@
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
-    <ClCompile Include="..\xrRender\dxApplicationRender.cpp" />
     <ClCompile Include="..\xrRender\dxConsoleRender.cpp" />
     <ClCompile Include="..\xrRender\dxDebugRender.cpp" />
     <ClCompile Include="..\xrRender\dxEnvironmentRender.cpp" />

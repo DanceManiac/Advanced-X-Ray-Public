@@ -4,8 +4,7 @@
 // refs
 class ENGINE_API CGameFont;
 
-#include "../Include/xrRender/FactoryPtr.h"
-#include "../Include/xrRender/ApplicationRender.h"
+class ILoadingScreen;
 
 // definition
 class ENGINE_API CApplication	:
@@ -13,8 +12,6 @@ class ENGINE_API CApplication	:
 	public IEventReceiver
 {
 public:
-	friend class dxApplicationRender;
-
 	// levels
 	struct					sLevelInfo
 	{
@@ -22,12 +19,8 @@ public:
 		char*				name;
 	};
 
-	string256				ls_title;
-	string2048				ls_header;
-	string2048				ls_tip_number;
-	string2048				ls_tip;
 private:
-	FactoryPtr<IApplicationRender>	m_pRender;
+	ILoadingScreen* loadingScreen;
 
 	int		max_load_stage;
 
@@ -62,6 +55,7 @@ public:
 	void					LoadStage			();
 	void					LoadSwitch			();
 	void					LoadDraw			();
+	void					LoadForceFinish		();
 	void					SetLoadStageTitle	(const char* ls_title);
 
 	virtual	void			OnEvent				(EVENT E, u64 P1, u64 P2);
@@ -72,7 +66,8 @@ public:
 
 	virtual void	_BCL	OnFrame				();
 			void			load_draw_internal	();
-			void			destroy_loading_shaders();
+			void			SetLoadingScreen	(ILoadingScreen* newScreen);
+			void			DestroyLoadingScreen();
 };
 
 extern ENGINE_API	CApplication*	pApp;
