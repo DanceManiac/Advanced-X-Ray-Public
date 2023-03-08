@@ -137,3 +137,8 @@ void CBattery::ChargeAnomalyDetector()
 
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
+
+float CBattery::GetCurrentChargeLevel() const
+{
+	return m_fBatteryChargeLevel;
+}
