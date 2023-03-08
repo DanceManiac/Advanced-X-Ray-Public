@@ -783,28 +783,32 @@ bool CUIActorMenu::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 	}	
 
-	/*if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
+	if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
 	{
 		CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(CurrentIItem());
 		{
 			if (DIK_NUMPAD7 == dik && CurrentIItem() && CurrentIItem()->IsUsingCondition() && !pFilter)
 			{
 				CurrentIItem()->ChangeCondition(-0.05f);
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 			else if (DIK_NUMPAD8 == dik && CurrentIItem() && CurrentIItem()->IsUsingCondition() && !pFilter)
 			{
 				CurrentIItem()->ChangeCondition(0.05f);
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 			else if (DIK_NUMPAD7 == dik && CurrentIItem() && pFilter)
 			{
 				pFilter->ChangeFilterCondition(-0.05f);
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 			else if (DIK_NUMPAD8 == dik && CurrentIItem() && pFilter)
 			{
 				pFilter->ChangeFilterCondition(0.05f);
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 		}
-	}*/
+	}
 	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
 
 	return false;

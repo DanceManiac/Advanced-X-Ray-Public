@@ -31,6 +31,7 @@ protected:
 
 	CUIDragDropListEx*		m_pParentList;
 	CUIProgressBar*			m_pConditionState;
+	CUIProgressBar*			m_pPortionsState;
 	Ivector2				m_grid_size;
 	ICustomDrawCellItem*	m_custom_draw;
 	int						m_accelerator;
@@ -64,7 +65,9 @@ public:
 
 	CUIDragDropListEx*		OwnerList				()						{return m_pParentList;}
 				void		SetOwnerList			(CUIDragDropListEx* p);
+				void		UpdateCellItemProgressBars();
 				void		UpdateConditionProgressBar();
+				void		UpdatePortionsProgressBar();
 				void		SetCustomDraw			(ICustomDrawCellItem* c);
 				void		Mark					(bool status);
 	CUIStatic&				get_ui_text				() const { return *m_text; }

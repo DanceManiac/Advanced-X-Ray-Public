@@ -93,6 +93,16 @@ bool CUIDragDropListEx::GetVerticalPlacement()
 	return !!m_flags.test(flVerticalPlacement);
 }
 
+void CUIDragDropListEx::SetVirtualCells(bool b)
+{
+	m_flags.set(flVirtualCells, b);
+}
+
+bool CUIDragDropListEx::GetVirtualCells()
+{
+	return !!m_flags.test(flVirtualCells);
+}
+
 void CUIDragDropListEx::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	CUIWndCallback::OnEvent(pWnd, msg, pData);
@@ -474,6 +484,36 @@ CUICellItem* CUIDragDropListEx::GetItemIdx(u32 idx)
 	return smart_cast<CUICellItem*>(*it);
 }
 
+void CUIDragDropListEx::SetCellsVertAlignment(xr_string alignment)
+{
+	if(strchr(alignment.c_str(), 't'))
+	{
+		m_virtual_cells_alignment.y = 0;
+		return;
+	}
+	if(strchr(alignment.c_str(), 'b'))
+	{
+		m_virtual_cells_alignment.y = 2;
+		return;
+	}
+	m_virtual_cells_alignment.y = 1;
+}
+
+void CUIDragDropListEx::SetCellsHorizAlignment(xr_string alignment)
+{
+	if(strchr(alignment.c_str(), 'l'))
+	{
+		m_virtual_cells_alignment.x = 0;
+		return;
+	}
+	if(strchr(alignment.c_str(), 'r'))
+	{
+		m_virtual_cells_alignment.x = 2;
+		return;
+	}
+	m_virtual_cells_alignment.x = 1;
+}
+
 CUICellContainer::CUICellContainer(CUIDragDropListEx* parent)
 {
 	m_pParentDragDropList		= parent;
@@ -533,9 +573,24 @@ void CUICellContainer::PlaceItemAtPos(CUICellItem* itm, Ivector2& cell_pos)
 			C.SetItem		(itm,(x==0&&y==0));
 		}
 	}
-	itm->SetWndPos			( Fvector2().set( ((m_cellSpacing.x+m_cellSize.x)*cell_pos.x), ((m_cellSpacing.y+m_cellSize.y)*cell_pos.y))	);
-
 	itm->SetWndSize			( Fvector2().set( (m_cellSize.x*cs.x),		(m_cellSize.y*cs.y)		 )	);
+	if(!m_pParentDragDropList->GetVirtualCells())
+		itm->SetWndPos			( Fvector2().set( ((m_cellSpacing.x+m_cellSize.x)*cell_pos.x), ((m_cellSpacing.y+m_cellSize.y)*cell_pos.y))	);
+	else
+	{
+		Ivector2 alignment_vec	= m_pParentDragDropList->GetVirtualCellsAlignment();
+		Fvector2 pos = Fvector2().set(0,0);
+		if(alignment_vec.x == 1)
+			pos.x = (m_pParentDragDropList->GetWndSize().x-cs.x*(m_cellSpacing.x+m_cellSize.x))/2;
+		else if(alignment_vec.x == 2)
+			pos.x = m_pParentDragDropList->GetWndSize().x-cs.x*(m_cellSpacing.x+m_cellSize.x);
+		
+		if(alignment_vec.y == 1)
+			pos.y = (m_pParentDragDropList->GetWndSize().y-cs.y*(m_cellSpacing.y+m_cellSize.y))/2;
+		else if(alignment_vec.y == 2)
+			pos.y = m_pParentDragDropList->GetWndSize().y-cs.y*(m_cellSpacing.y+m_cellSize.y);
+		itm->SetWndPos(pos);
+	}
 
 	AttachChild				(itm);
 	itm->OnAfterChild		(m_pParentDragDropList);

@@ -28,7 +28,6 @@ protected:
 	bool				m_bBackgroundPresent;
 	Fvector2			m_BackgroundOffset;
 	u32					m_last_render_frame;
-	void				UpdateProgressBar();
 	
 public:
 	bool				m_bUseColor;
@@ -47,6 +46,7 @@ public:
 
 			void		InitProgressBar				(Fvector2 pos, Fvector2 size, EOrientMode mode);
 
+	void				UpdateProgressBar			();
 	void				SetRange					(float _Min, float _Max)	{ m_MinPos = _Min;  m_MaxPos = _Max; UpdateProgressBar();}
 	float				GetRange_min				() 							{ return  m_MinPos; }
 	float				GetRange_max				() 							{ return  m_MaxPos; }

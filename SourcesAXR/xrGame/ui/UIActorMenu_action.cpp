@@ -364,25 +364,25 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 			{
 				CurrentIItem()->ChangeCondition(-0.05f);
 				UpdateConditionProgressBars();
-				m_pCurrentCellItem->UpdateConditionProgressBar();
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 			else if (DIK_NUMPAD8 == dik && CurrentIItem() && CurrentIItem()->IsUsingCondition() && !pFilter)
 			{
 				CurrentIItem()->ChangeCondition(0.05f);
 				UpdateConditionProgressBars();
-				m_pCurrentCellItem->UpdateConditionProgressBar();
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 			else if (DIK_NUMPAD7 == dik && CurrentIItem() && pFilter)
 			{
 				pFilter->ChangeFilterCondition(-0.05f);
 				UpdateConditionProgressBars();
-				m_pCurrentCellItem->UpdateConditionProgressBar();
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 			else if (DIK_NUMPAD8 == dik && CurrentIItem() && pFilter)
 			{
 				pFilter->ChangeFilterCondition(0.05f);
 				UpdateConditionProgressBars();
-				m_pCurrentCellItem->UpdateConditionProgressBar();
+				m_pCurrentCellItem->UpdateCellItemProgressBars();
 			}
 		}
 	}

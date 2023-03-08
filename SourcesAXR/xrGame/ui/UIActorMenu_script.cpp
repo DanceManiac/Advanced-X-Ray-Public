@@ -71,7 +71,7 @@ void CUIActorMenu::RepairEffect_CurItem()
 	SeparateUpgradeItem();
 	CUICellItem* itm = CurrentItem();
 	if(itm)
-		itm->UpdateConditionProgressBar();
+		itm->UpdateCellItemProgressBars();
 
 }
 

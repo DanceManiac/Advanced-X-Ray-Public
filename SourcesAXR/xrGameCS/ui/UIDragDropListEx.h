@@ -37,13 +37,17 @@ private:
 		flCustomPlacement	=	(1<<2),
 		flVerticalPlacement	=	(1<<3),
 		flAlwaysShowScroll	=	(1<<4),
+		flVirtualCells		=	(1<<5),
 	};
 	Flags8					m_flags;
-	CUICellItem*			m_selected_item;
 	Ivector2				m_orig_cell_capacity;
+	Ivector2				m_virtual_cells_alignment;
+
+	bool					m_bConditionProgBarVisible;
 
 protected:
-	
+
+	CUICellItem*			m_selected_item;
 	CUICellContainer*		m_container;
 	CUIScrollBar*			m_vScrollBar;
 
@@ -86,7 +90,10 @@ public:
 			void			SetCellSize			(const Ivector2 new_sz);
 	const	Ivector2&		CellsSpacing		();
 			void			SetCellsSpacing		(const Ivector2& new_sz);
-
+			void			SetCellsVertAlignment(xr_string alignment);
+			void			SetCellsHorizAlignment(xr_string alignment);
+			
+	const	Ivector2		GetVirtualCellsAlignment() {return m_virtual_cells_alignment;};
 			int				ScrollPos			();
 			void			ReinitScroll		();
 			void			GetClientArea		(Frect& r);
@@ -101,6 +108,10 @@ public:
 			void			SetVerticalPlacement(bool b);
 			bool			GetVerticalPlacement();
 			void			SetAlwaysShowScroll	(bool b);
+			bool			GetVirtualCells		();
+			void			SetVirtualCells		(bool b);
+			bool			GetConditionProgBarVisibility() { return m_bConditionProgBarVisible; };
+			void			SetConditionProgBarVisibility(bool b) { m_bConditionProgBarVisible = b; };
 public:
 			// items management
 			virtual void	SetItem				(CUICellItem* itm); //auto

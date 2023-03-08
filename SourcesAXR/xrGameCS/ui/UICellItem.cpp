@@ -8,6 +8,7 @@
 #include "../level.h"
 #include "object_broker.h"
 #include "UIXmlInit.h"
+#include "UIProgressBar.h"
 
 CUICellItem* CUICellItem::m_mouse_selected_item = NULL;
 
@@ -20,6 +21,8 @@ CUICellItem::CUICellItem()
 //-	m_mark				= NULL;
 	m_upgrade			= NULL;
 	m_drawn_frame		= 0;
+	m_pConditionState	= 0;
+	m_pPortionsState	= 0;
 	SetAccelerator		(0);
 	m_b_destroy_childs	= true;
 	m_selected			= false;
@@ -60,6 +63,24 @@ void CUICellItem::init()
 	CUIXmlInit::InitStatic	( uiXml, "cell_item_upgrade", 0, m_upgrade );
 	m_upgrade_pos			= m_upgrade->GetWndPos();
 	m_upgrade->Show			( false );
+
+	if (uiXml.NavigateToNode("condition_progess_bar", 0))
+	{
+		m_pConditionState = xr_new<CUIProgressBar>();
+		m_pConditionState->SetAutoDelete(true);
+		AttachChild(m_pConditionState);
+		CUIXmlInit::InitProgressBar(uiXml, "condition_progess_bar", 0, m_pConditionState);
+		m_pConditionState->Show(true);
+	}
+
+	if (uiXml.NavigateToNode("portions_progess_bar", 0))
+	{
+		m_pPortionsState = xr_new<CUIProgressBar>();
+		m_pPortionsState->SetAutoDelete(true);
+		AttachChild(m_pPortionsState);
+		CUIXmlInit::InitProgressBar(uiXml, "portions_progess_bar", 0, m_pPortionsState);
+		m_pPortionsState->Show(true);
+	}
 }
 
 void CUICellItem::Draw()
@@ -187,7 +208,82 @@ CUIDragItem* CUICellItem::CreateDragItem()
 
 void CUICellItem::SetOwnerList(CUIDragDropListEx* p)	
 {
-	m_pParentList=p;
+	m_pParentList = p;
+	UpdateCellItemProgressBars();
+}
+
+void CUICellItem::UpdateCellItemProgressBars()
+{
+	if (m_pConditionState)
+		UpdateConditionProgressBar();
+
+	if (m_pPortionsState)
+		UpdatePortionsProgressBar();
+}
+
+void CUICellItem::UpdateConditionProgressBar()
+{
+	if(m_pParentList && m_pParentList->GetConditionProgBarVisibility())
+	{
+		PIItem itm = (PIItem)m_pData;
+
+		if (itm->IsUsingCondition())
+		{
+			Ivector2 itm_grid_size = GetGridSize();
+
+			if(m_pParentList->GetVerticalPlacement())
+				std::swap(itm_grid_size.x, itm_grid_size.y);
+
+			Ivector2 cell_size = m_pParentList->CellSize();
+			Ivector2 cell_space = m_pParentList->CellsSpacing();
+			float x = 1.f;
+			float y = itm_grid_size.y * (cell_size.y + cell_space.y) - m_pConditionState->GetHeight() - 2.f;
+
+			m_pConditionState->SetWndPos(Fvector2().set(x, y));
+			m_pConditionState->SetProgressPos(iCeil(itm->GetCondition() * 13.0f) / 13.0f);
+
+			m_pConditionState->Show(true);
+
+			return;
+		}
+	}
+	m_pConditionState->Show(false);
+}
+
+void CUICellItem::UpdatePortionsProgressBar()
+{
+	if (m_pParentList && m_pParentList->GetConditionProgBarVisibility())
+	{
+		PIItem itm = (PIItem)m_pData;
+		CEatableItem* pEatable = smart_cast<CEatableItem*>(itm);
+
+		if (pEatable && pEatable->m_iConstPortions > 1)
+		{
+			Ivector2 itm_grid_size = GetGridSize();
+			if (m_pParentList->GetVerticalPlacement())
+				std::swap(itm_grid_size.x, itm_grid_size.y);
+
+			Ivector2 cell_size = m_pParentList->CellSize();
+			Ivector2 cell_space = m_pParentList->CellsSpacing();
+			float x = 1.f;
+			float y = itm_grid_size.y * (cell_size.y + cell_space.y) - m_pPortionsState->GetHeight() - 2.f;
+			Fvector2 size;
+
+			size.x = pEatable->m_iConstPortions*2;
+			size.y = m_pPortionsState->GetHeight();
+
+			m_pPortionsState->SetRange(0, pEatable->m_iConstPortions*2);
+			m_pPortionsState->SetWndPos(Fvector2().set(x, y));
+			m_pPortionsState->SetWndSize(size);
+			m_pPortionsState->SetProgressPos(iCeil((pEatable->GetPortionsNum()*2) * 13.0f) / 13.0f);
+
+			m_pPortionsState->Show(true);
+
+			return;
+		}
+	}
+
+	m_pPortionsState->Show(false);
 }
 
 bool CUICellItem::EqualTo(CUICellItem* itm)
