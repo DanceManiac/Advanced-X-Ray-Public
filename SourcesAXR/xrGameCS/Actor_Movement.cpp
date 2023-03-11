@@ -211,7 +211,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float jumpSkill = 0.0f;
 
 			if (ActorSkills)
-				float jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
+				jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
 
 			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real&mcJump)
 				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal)) - (cur_weight / 25);
