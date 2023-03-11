@@ -14,7 +14,7 @@ void CRenderTarget::RenderScreenQuad(u32 w, u32 h, ID3DRenderTargetView* rt, ref
     RCache.set_Stencil(FALSE);
 
     // Half-pixel offset (DX9 only)
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
     constexpr Fvector2 p0{0.0f, 0.0f}, p1{1.0f, 1.0f};
 #else
     Fvector2 p0, p1;

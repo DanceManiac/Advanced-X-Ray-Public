@@ -14,7 +14,9 @@
 #include "FSkinned.h"
 #include "SkeletonX.h"
 
+#ifdef USE_DX11
 #include "../xrRenderDX10/dx10BufferUtils.h"
+#endif
 
 #include "../../xrEngine/EnnumerateVertices.h"
 //////////////////////////////////////////////////////////////////////
@@ -383,9 +385,9 @@ void CSkeletonX_PM::Load(const char* N, IReader *data, u32 dwFlags)
 	void*	_verts_					= data->pointer	();
 	inherited1::Load				(N,data,dwFlags|VLOAD_NOVERTICES);
 	::Render->shader_option_skinning(-1);
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	_DuplicateIndices(N, data);
-#endif	//	USE_DX10
+#endif	//	USE_DX11
 	vBase							= 0;
 	_Load_hw						(*this,_verts_);
 }
@@ -395,14 +397,14 @@ void CSkeletonX_ST::Load(const char* N, IReader *data, u32 dwFlags)
 	void*	_verts_					= data->pointer	();
 	inherited1::Load				(N,data,dwFlags|VLOAD_NOVERTICES);
 	::Render->shader_option_skinning(-1);
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	_DuplicateIndices(N, data);
-#endif	//	USE_DX10
+#endif	//	USE_DX11
 	vBase							= 0;
 	_Load_hw						(*this,_verts_);
 }
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 
 void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 {
@@ -589,7 +591,7 @@ void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 	}
 }
 
-#else	//	USE_DX10
+#else	//	USE_DX11
 
 void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 {
@@ -690,7 +692,7 @@ void CSkeletonX_ext::_Load_hw	(Fvisual& V, void *	_verts_)
 		}break;
 	}
 }
-#endif	//	USE_DX10
+#endif
 
 //-----------------------------------------------------------------------------------------------------
 // Wallmarks
@@ -723,19 +725,19 @@ void CSkeletonX_ext::_CollectBoneFaces(Fvisual* V, u32 iBase, u32 iCount)
 {
 	u16* indices		= 0;
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	indices = *m_Indices;
-#else	//	USE_DX10
+#else	//	USE_DX11
 	R_CHK				(V->p_rm_Indices->Lock(0,V->dwPrimitives*3,(void**)&indices,D3DLOCK_READONLY));
-#endif	//	USE_DX10
+#endif
 
 	indices				+= iBase;
 
-#if !defined(USE_DX10) && !defined(USE_DX11)	//	Don't use hardware buffers in DX10 since we can't read them
+#ifndef USE_DX11	//	Don't use hardware buffers in DX10 since we can't read them
 	switch	(RenderMode)
 	{
 	case RM_SKINNING_SOFT:
-#endif	//	USE_DX10
+#endif	//	USE_DX11
 		{
 			if(*Vertices1W)
 			{
@@ -803,7 +805,7 @@ void CSkeletonX_ext::_CollectBoneFaces(Fvisual* V, u32 iBase, u32 iCount)
 			R_ASSERT2(0,"not implemented yet");
 		}
 
-#if !defined(USE_DX10) && !defined(USE_DX11)	//	Don't use hardware buffers in DX10 since we can't read them
+#ifndef USE_DX11	//	Don't use hardware buffers in DX10 since we can't read them
 		break;
 	case RM_SINGLE:
 	case RM_SKINNING_1B:	
@@ -871,7 +873,7 @@ void CSkeletonX_ext::_CollectBoneFaces(Fvisual* V, u32 iBase, u32 iCount)
 		}break;
 	}
 	R_CHK					(V->p_rm_Indices->Unlock());
-#endif	//USE_DX10	//	Don't use hardware buffers in DX10 since we can't read them
+#endif
 }
 
 void CSkeletonX_ST::AfterLoad(CKinematics* parent, u16 child_idx)
@@ -1018,15 +1020,15 @@ BOOL CSkeletonX_ext::_PickBone		(IKinematics::pick_result &r, float dist, const 
 	CBoneData::FacesVec*	faces	= &BD.child_faces[ChildIDX];
 	BOOL result			= FALSE;
 	u16* indices		= 0;
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	indices = *m_Indices;
-#else	//	USE_DX10
+#else	//	USE_DX11
 	CHK_DX				(V->p_rm_Indices->Lock(0,V->dwPrimitives*3,(void**)&indices,D3DLOCK_READONLY));
 	// fill vertices
 	switch	(RenderMode)
 	{
 case RM_SKINNING_SOFT:
-#endif	//	USE_DX10
+#endif
 
 	if		(*Vertices1W)		
 				result = _PickBoneSoft1W	(r,dist,start,dir,indices+iBase,*faces);
@@ -1039,7 +1041,7 @@ case RM_SKINNING_SOFT:
 				result = _PickBoneSoft4W	(r,dist,start,dir,indices+iBase,*faces);
 		}
 
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#ifndef USE_DX11
 	break;
 case RM_SINGLE:
 case RM_SKINNING_1B:	result = _PickBoneHW1W	(r,dist,start,dir,V,indices+iBase,*faces); break;
@@ -1049,7 +1051,7 @@ case RM_SKINNING_4B:	result = _PickBoneHW4W	(r,dist,start,dir,V,indices+iBase,*f
 default: NODEFAULT;
 	}
 	CHK_DX				(V->p_rm_Indices->Unlock());
-#endif	USE_DX10
+#endif	//USE_DX11
 
 	return result;
 }
@@ -1075,7 +1077,7 @@ void	CSkeletonX_PM::		EnumBoneVertices( SEnumVerticesCallback &C, u16 bone_id )
 	inherited2::_EnumBoneVertices( C, this, bone_id, iBase+SW.offset, SW.num_tris*3 );
 }
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 
 void CSkeletonX_ext::_FillVerticesHW1W(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
@@ -1096,7 +1098,7 @@ void CSkeletonX_ext::_FillVerticesHW4W(const Fmatrix& view, CSkeletonWallmark& w
 	R_ASSERT2(false, "Should use _FillVerticesSoft2W on R3!");
 }
 
-#else	//	USE_DX10
+#else	//	USE_DX11
 
 void CSkeletonX_ext::_FillVerticesHW1W(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16* indices, CBoneData::FacesVec& faces)
 {
@@ -1282,7 +1284,7 @@ void CSkeletonX_ext::_FillVerticesHW4W(const Fmatrix& view, CSkeletonWallmark& w
 	}
 	CHK_DX(V->p_rm_Vertices->Unlock());
 }
-#endif	//	USE_DX10
+#endif
 
 
 void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, Fvisual* V, u16 bone_id, u32 iBase, u32 iCount)
@@ -1291,15 +1293,15 @@ void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, c
 	CBoneData& BD = Parent->LL_GetData(bone_id);
 	CBoneData::FacesVec*    faces = &BD.child_faces[ChildIDX];
 	u16* indices = 0;
-#if    defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	indices = *m_Indices;
-#else    //    USE_DX10
+#else    //    USE_DX11
 	CHK_DX(V->p_rm_Indices->Lock(0, V->dwPrimitives * 3, (void**)&indices, D3DLOCK_READONLY));
 	// fill vertices
 	switch (RenderMode)
 	{
 	case RM_SKINNING_SOFT:
-#endif    //    USE_DX10
+#endif
 		if (*Vertices1W)            _FillVerticesSoft1W(view, wm, normal, size, indices + iBase, *faces);
 		else if (*Vertices2W)        _FillVerticesSoft2W(view, wm, normal, size, indices + iBase, *faces);
 		else if (*Vertices3W)        _FillVerticesSoft3W(view, wm, normal, size, indices + iBase, *faces);
@@ -1307,7 +1309,7 @@ void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, c
 			VERIFY(!!(*Vertices4W));
 			_FillVerticesSoft4W(view, wm, normal, size, indices + iBase, *faces);
 		}
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#ifndef USE_DX11
 		break;
 	case RM_SINGLE:
 	case RM_SKINNING_1B:            _FillVerticesHW1W(view, wm, normal, size, V, indices + iBase, *faces);        break;
@@ -1316,7 +1318,7 @@ void CSkeletonX_ext::_FillVertices(const Fmatrix& view, CSkeletonWallmark& wm, c
 	case RM_SKINNING_4B:            _FillVerticesHW4W(view, wm, normal, size, V, indices + iBase, *faces);        break;
 	}
 	CHK_DX(V->p_rm_Indices->Unlock());
-#endif    //    USE_DX10
+#endif
 }
 
 void CSkeletonX_ST::FillVertices	(const Fmatrix& view, CSkeletonWallmark& wm, const Fvector& normal, float size, u16 bone_id)
@@ -1406,10 +1408,10 @@ void	CSkeletonX_ext::_EnumBoneVertices	( SEnumVerticesCallback &C, Fvisual* V, u
 	u16* indices		= 0;
 	//.	R_CHK				(V->pIndices->Lock(iBase,iCount,		(void**)&indices,	D3DLOCK_READONLY));
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	VERIFY(*m_Indices);
 	indices = *m_Indices;
-#else	USE_DX10
+#else	//USE_DX11
 	CHK_DX				(V->p_rm_Indices->Lock(0,V->dwPrimitives*3,(void**)&indices,D3DLOCK_READONLY));
 	// fill vertices
 	void				*vertices	=0;
@@ -1418,7 +1420,7 @@ void	CSkeletonX_ext::_EnumBoneVertices	( SEnumVerticesCallback &C, Fvisual* V, u
 	switch	(RenderMode)
 	{
 		case RM_SKINNING_SOFT:
-#endif	//	USE_DX10
+#endif
 			if	(*Vertices1W) 
 				TEnumBoneVertices( Vertices1W, indices+iBase, *faces, C );
 			else if(*Vertices2W)
@@ -1429,7 +1431,7 @@ void	CSkeletonX_ext::_EnumBoneVertices	( SEnumVerticesCallback &C, Fvisual* V, u
 					VERIFY( !!(*Vertices4W) );
 					TEnumBoneVertices( Vertices4W, indices+iBase, *faces, C  );
 				 }
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#ifndef USE_DX11
 			break;
 		case RM_SINGLE:
 		case RM_SKINNING_1B: TEnumBoneVertices	( (vertHW_1W*)vertices, indices+iBase, *faces, C  );break;
@@ -1441,5 +1443,5 @@ void	CSkeletonX_ext::_EnumBoneVertices	( SEnumVerticesCallback &C, Fvisual* V, u
 	if( RenderMode!= RM_SKINNING_SOFT)
 		CHK_DX				(V->p_rm_Vertices->Unlock());
 	CHK_DX				(V->p_rm_Indices->Unlock());
-#endif	//	USE_DX10
+#endif	//	USE_DX11
 }

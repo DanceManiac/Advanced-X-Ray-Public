@@ -750,7 +750,7 @@
     <ClInclude Include="..\xrRender\blender_smaa.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrRenderPC_R3\blender_vignette.h">
+    <ClInclude Include="..\xrRenderPC_R4\blender_vignette.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
     <ClInclude Include="blender_hud_mask.h">
@@ -1421,7 +1421,7 @@
     <ClCompile Include="..\xrRender\RenderTargetPhaseVignette.cpp">
       <Filter>Core_Target</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrRenderPC_R3\blender_vignette.cpp">
+    <ClCompile Include="..\xrRenderPC_R4\blender_vignette.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
     <ClCompile Include="blender_hud_mask.cpp">

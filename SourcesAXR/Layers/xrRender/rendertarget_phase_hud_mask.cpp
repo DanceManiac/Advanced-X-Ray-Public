@@ -14,7 +14,7 @@ void CRenderTarget::phase_hud_mask()
 	float h = float(Device.dwHeight);
 
 	Fvector2 p0, p1;
-#if defined(USE_DX10) || defined(USE_DX11)	
+#ifdef USE_DX11
 	p0.set(0.0f, 0.0f);
 	p1.set(1.0f, 1.0f);
 #else
@@ -24,7 +24,7 @@ void CRenderTarget::phase_hud_mask()
 	
 	//////////////////////////////////////////////////////////////////////////
 	//Set MSAA/NonMSAA rendertarget
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	ref_rt& dest_rt = RImplementation.o.dx10_msaa ? rt_Generic : rt_Color;
 	u_setrt(dest_rt, nullptr, nullptr, nullptr);
 #else
@@ -48,7 +48,7 @@ void CRenderTarget::phase_hud_mask()
 	RCache.set_Geometry(g_combine);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
 #endif
 };

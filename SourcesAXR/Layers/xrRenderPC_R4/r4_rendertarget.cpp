@@ -17,7 +17,7 @@
 #include "../xrRenderDX10/DX10 Rain/dx10RainBlender.h"
 #include "blender_fxaa.h"
 #include "../xrRender/blender_smaa.h"
-#include "../xrRenderPC_R3/blender_vignette.h"
+#include "../xrRenderPC_R4/blender_vignette.h"
 #include "blender_hud_mask.h"
 #include "blender_hud_blood.h"
 #include "blender_hud_stamina.h"

@@ -547,8 +547,7 @@ public:
 		//	4 - r3
 		psDeviceFlags.set		(rsR1, renderer_value == 0);
 		psDeviceFlags.set		(rsR2, ((renderer_value>0) && renderer_value<4) );
-		psDeviceFlags.set		(rsR3, (renderer_value==4) );
-		psDeviceFlags.set		(rsR4, (renderer_value>=5) );
+		psDeviceFlags.set		(rsR4, (renderer_value>=4) );
 
 		r2_sun_static	= (renderer_value<2);
 

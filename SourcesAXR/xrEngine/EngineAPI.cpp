@@ -14,7 +14,6 @@ extern xr_vector<xr_token> vid_quality_token;
 
 constexpr const char* r1_name = "xrRender_R1";
 constexpr const char* r2_name = "xrRender_R2";
-constexpr const char* r3_name = "xrRender_R3";
 constexpr const char* r4_name = "xrRender_R4";
 
 //////////////////////////////////////////////////////////////////////
@@ -73,25 +72,10 @@ void CEngineAPI::InitializeRenderer()
 		{
 			// try to load R1
 			Msg			("! ...Failed - incompatible hardware/pre-Vista OS.");
-			psDeviceFlags.set(rsR3, true);
-		}
-		else
-			g_current_renderer = 4;
-	}
-
-	if (psDeviceFlags.test(rsR3))
-	{
-		// try to initialize R3
-		Log				("Loading DLL:",	r3_name);
-		hRender			= LoadLibrary		(r3_name);
-		if (0==hRender)	
-		{
-			// try to load R1
-			Msg			("! ...Failed - incompatible hardware/pre-Vista OS.");
 			psDeviceFlags.set(rsR2, true);
 		}
 		else
-			g_current_renderer	= 3;
+			g_current_renderer = 4;
 	}
 
 	if (psDeviceFlags.test(rsR2))	
@@ -230,21 +214,6 @@ void CEngineAPI::CreateRendererList()
 		SupportsAdvancedRendering *test_rendering = (SupportsAdvancedRendering*)GetProcAddress(hRender, "SupportsAdvancedRendering");
 		if (test_rendering && test_rendering())
 			modes.emplace_back(xr_token("renderer_r2.5", 3));
-		FreeLibrary(hRender);
-	}
-
-	// try to initialize R3
-	Log("Loading DLL:", r3_name);
-	//	Hide "d3d10 not found" message box for XP
-	SetErrorMode(SEM_FAILCRITICALERRORS);
-	hRender = LoadLibrary(r3_name);
-	//	Restore error handling
-	SetErrorMode(0);
-	if (hRender)
-	{
-		SupportsDX10Rendering *test_dx10_rendering = (SupportsDX10Rendering*)GetProcAddress(hRender, "SupportsDX10Rendering");
-		if (test_dx10_rendering && test_dx10_rendering())
-			modes.emplace_back(xr_token("renderer_r3", 4));
 		FreeLibrary(hRender);
 	}
 

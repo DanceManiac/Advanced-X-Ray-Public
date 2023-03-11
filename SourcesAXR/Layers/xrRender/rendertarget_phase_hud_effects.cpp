@@ -28,7 +28,7 @@ void CRenderTarget::phase_hud_blood()
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
 	// Set RT's
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	ref_rt dest_rt = RImplementation.o.dx10_msaa ? rt_Generic : rt_Color;
 	u_setrt(dest_rt, 0, 0, HW.pBaseZB);
 #else
@@ -52,7 +52,7 @@ void CRenderTarget::phase_hud_blood()
 	RCache.set_Geometry(g_aa_AA);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
 #endif
 }
@@ -85,7 +85,7 @@ void CRenderTarget::phase_hud_power()
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
 	// Set RT's
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	ref_rt dest_rt = RImplementation.o.dx10_msaa ? rt_Generic : rt_Color;
 	u_setrt(dest_rt, 0, 0, HW.pBaseZB);
 #else
@@ -109,7 +109,7 @@ void CRenderTarget::phase_hud_power()
 	RCache.set_Geometry(g_aa_AA);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
 #endif
 }
@@ -141,7 +141,7 @@ void CRenderTarget::phase_hud_bleeding()
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
 	// Set RT's
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	ref_rt dest_rt = RImplementation.o.dx10_msaa ? rt_Generic : rt_Color;
 	u_setrt(dest_rt, 0, 0, HW.pBaseZB);
 #else
@@ -165,7 +165,7 @@ void CRenderTarget::phase_hud_bleeding()
 	RCache.set_Geometry(g_aa_AA);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
 #endif
 }

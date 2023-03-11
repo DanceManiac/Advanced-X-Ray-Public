@@ -111,7 +111,7 @@ void CRenderTarget::PhaseRainDrops()
 	p1.set((_w + .5f) / _w, (_h + .5f) / _h);
 
 	// Set RT's
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	ref_rt dest_rt = RImplementation.o.dx10_msaa ? rt_Generic : rt_Color;
 	u_setrt(dest_rt, NULL, NULL, HW.pBaseZB);
 #else
@@ -135,7 +135,7 @@ void CRenderTarget::PhaseRainDrops()
 	RCache.set_Geometry(g_rain_drops);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#ifdef USE_DX11
 	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
 #endif
 }

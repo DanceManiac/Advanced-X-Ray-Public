@@ -9,7 +9,7 @@
 
 ENGINE_API extern int ps_r__ShaderNVG;
 
-bool br1_2 = (0 == psDeviceFlags.test(rsR3 | rsR4));
+bool br1_2 = (0 == psDeviceFlags.test(rsR4));
 bool render_ver_allowed = !br1_2;
 
 CNightVisionEffector::CNightVisionEffector(const shared_str& section)
