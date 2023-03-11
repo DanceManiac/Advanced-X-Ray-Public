@@ -87,9 +87,11 @@ void CRT::create	(LPCSTR Name, u32 w, u32 h,	D3DFORMAT f, u32 SampleCount )
 
 void CRT::destroy		()
 {
-	if (pTexture._get())	{
+	if (pTexture._get())
+	{
 		pTexture->surface_set	(0);
-		pTexture				= NULL;
+		pTexture.destroy();
+		pTexture = nullptr;
 	}
 	
 	_RELEASE	(pRT		);

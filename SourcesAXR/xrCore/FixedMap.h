@@ -119,7 +119,7 @@ public:
 	}
 	void		destroy()
 	{
-		if (nodes) {
+		if (nodes){
 			for (TNode* cur = begin(); cur!=last(); cur++)
 				cur->~TNode();
 			allocator::dealloc(nodes);
@@ -196,7 +196,7 @@ public:
 	}
 	IC void		discard()	{ if (nodes) allocator::dealloc(nodes); nodes = 0; pool=0; limit=0;	}
 	IC u32		allocated()	{ return this->limit;				}
-	IC void		clear()		{ pool=0;				}
+	IC void		clear()		{ destroy();			}
 	IC TNode*	begin()		{ return nodes;			}
 	IC TNode*	end()		{ return nodes+pool;	}
 	IC TNode*	last()		{ return nodes+limit;	}	// for setup only

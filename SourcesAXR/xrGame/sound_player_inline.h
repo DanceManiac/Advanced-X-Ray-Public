@@ -51,7 +51,7 @@ IC	ref_sound *CSoundPlayer::CSoundCollection::add	(ESoundTypes type, LPCSTR name
 	if (!temp->_p)
 	{
 		xr_delete(temp);
-		return				(0);
+		return nullptr;
 	}
 	return					(temp);
 }
