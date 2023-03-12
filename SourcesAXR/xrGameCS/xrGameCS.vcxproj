@@ -974,6 +974,7 @@
     <ClInclude Include="ai\Monsters\invisibility.h" />
     <ClInclude Include="ai\Monsters\melee_checker.h" />
     <ClInclude Include="ai\Monsters\melee_checker_inline.h" />
+    <ClInclude Include="ai\monsters\monster_aura.h" />
     <ClInclude Include="ai\Monsters\monster_corpse_manager.h" />
     <ClInclude Include="ai\Monsters\monster_corpse_memory.h" />
     <ClInclude Include="ai\Monsters\monster_cover_manager.h" />
@@ -3603,6 +3604,7 @@
     <ClCompile Include="ai\Monsters\Fracture\fracture_state_manager.cpp" />
     <ClCompile Include="ai\Monsters\invisibility.cpp" />
     <ClCompile Include="ai\Monsters\melee_checker.cpp" />
+    <ClCompile Include="ai\monsters\monster_aura.cpp" />
     <ClCompile Include="ai\Monsters\monster_corpse_manager.cpp" />
     <ClCompile Include="ai\Monsters\monster_corpse_memory.cpp" />
     <ClCompile Include="ai\Monsters\monster_cover_manager.cpp" />

@@ -7528,6 +7528,9 @@
     <ClInclude Include="ui\UILoadingScreen.h">
       <Filter>UI\Common\LoadingScreen</Filter>
     </ClInclude>
+    <ClInclude Include="ai\monsters\monster_aura.h">
+      <Filter>AI\AMonsters\common\components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11223,6 +11226,9 @@
     </ClCompile>
     <ClCompile Include="ui\UILoadingScreen.cpp">
       <Filter>UI\Common\LoadingScreen</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\monsters\monster_aura.cpp">
+      <Filter>AI\AMonsters\common\components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

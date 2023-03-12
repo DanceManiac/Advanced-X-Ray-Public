@@ -84,7 +84,7 @@ public:
 			float	xr_stdcall	GetHangover			()	{return m_fHangover;}
 			float	xr_stdcall	GetDrugs			()	{return m_fDrugs;}
 
-			void		AffectDamage_InjuriousMaterial();
+			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
 			
 			void		SetZoneDanger				(float danger, ALife::EInfluenceType type);

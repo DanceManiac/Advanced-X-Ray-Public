@@ -19,6 +19,8 @@
 
 #include "AdvancedXrayGameConstants.h"
 #include "CustomOutfit.h"
+#include "PDA.h"
+#include "ai/monsters/BaseMonster/base_monster.h"
 
 #define MAX_SATIETY					1.0f
 #define START_SATIETY				0.5f
@@ -364,7 +366,7 @@ void CActorCondition::UpdateCondition()
 			m_death_effector->Stop();
 	}
 
-	AffectDamage_InjuriousMaterial();
+	AffectDamage_InjuriousMaterialAndMonstersInfluence();
 
 	/*if(m_fDeltaTime > 0.0f)
 	{
@@ -385,42 +387,96 @@ void CActorCondition::UpdateCondition()
 	}*/
 }
 
-void CActorCondition::AffectDamage_InjuriousMaterial()
+void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 {
 	float one = 0.1f;
-	float tg  = Device.fTimeGlobal;
-
-	float damage = GetInjuriousMaterialDamage();
-	if ( damage < EPS )
-	{
-		m_f_time_affected = tg;
-		return;
-	}
-
-	if ( m_f_time_affected + one > tg )
+	float tg = Device.fTimeGlobal;
+	if (m_f_time_affected + one > tg)
 	{
 		return;
 	}
-	clamp( m_f_time_affected, tg - (one * 3), tg );
-	
-	damage *= one;
+
+	clamp(m_f_time_affected, tg - (one * 3), tg);
+
+	float psy_influence = 0;
+	float fire_influence = 0;
+	float radiation_influence = GetInjuriousMaterialDamage(); // Get Radiation from Material
+
+	// Add Radiation and Psy Level from Monsters
+	CPda* const pda = m_object->GetPDA();
+
+	if (pda)
+	{
+		typedef xr_vector<CObject*>				monsters;
+
+		for (monsters::const_iterator	it = pda->feel_touch.begin();
+			it != pda->feel_touch.end();
+			++it)
+		{
+			CBaseMonster* const	monster = smart_cast<CBaseMonster*>(*it);
+
+			if (!monster) continue;
+
+			if (monster->g_Alive())
+			{
+				psy_influence += monster->get_psy_influence();
+				radiation_influence += monster->get_radiation_influence();
+				fire_influence += monster->get_fire_influence();
+			}
+			else
+			{
+				if (monster->get_enable_psy_aura_after_die())
+					psy_influence += monster->get_psy_influence();
+
+				if (monster->get_enable_rad_aura_after_die())
+					radiation_influence += monster->get_radiation_influence();
+
+				if (monster->get_enable_fire_aura_after_die())
+					fire_influence += monster->get_fire_influence();
+			}
+		}
+	}
+
+	struct
+	{
+		ALife::EHitType	type;
+		float			value;
+
+	} hits[] = { { ALife::eHitTypeRadiation, radiation_influence * one },
+							{ ALife::eHitTypeTelepatic, psy_influence * one },
+							{ ALife::eHitTypeBurn,		fire_influence * one } };
 
 	NET_Packet	np;
 
-	while ( m_f_time_affected + one < tg )
+	while (m_f_time_affected + one < tg)
 	{
 		m_f_time_affected += one;
 
-		SHit HDS = SHit( damage, 0.0f, Fvector().set(0,1,0), NULL, BI_NONE, Fvector().set(0,0,0), 0.0f, ALife::eHitTypeRadiation );
-///		Msg( "_____ damage = %.4f     frame=%d", damage, Device.dwFrame );
+		for (int i = 0; i < sizeof(hits) / sizeof(hits[0]); ++i)
+		{
+			float			damage = hits[i].value;
+			ALife::EHitType	type = hits[i].type;
 
-		HDS.GenHeader(GE_HIT, m_object->ID());
+			if (damage > EPS)
+			{
+				SHit HDS = SHit(damage,
+					0.0f, 
+					Fvector().set(0, 1, 0),
+					NULL,
+					BI_NONE,
+					Fvector().set(0, 0, 0),
+					0.0f,
+					type,
+					0.0f,
+					false);
 
-		HDS.Write_Packet( np );
-		CGameObject::u_EventSend( np );
+				HDS.GenHeader(GE_HIT, m_object->ID());
+				HDS.Write_Packet(np);
+				CGameObject::u_EventSend(np);
+			}
 
-		m_object->Hit(&HDS);
-	
+		} // for
+
 	}//while
 }
 
