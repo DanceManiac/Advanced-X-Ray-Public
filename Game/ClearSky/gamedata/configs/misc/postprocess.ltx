@@ -1,5 +1,5 @@
 [postprocess_base]
-ppe_file		= radiation.ppe
+pp_eff_name		= radiation.ppe
 duality_h		= .015
 duality_v		= .015
 blur			= 1
@@ -9,7 +9,7 @@ noise_scale		= 1
 noise_color		= 255,255,255,70
 
 [postprocess_anomaly]
-ppe_file		= radiation.ppe
+pp_eff_name		= radiation.ppe
 duality_h		= 0
 duality_v		= 0
 blur			= 1
@@ -22,87 +22,111 @@ noise_color		= 155,155,155,70
 ; New zone postprocess
 ;-------------------------------------------------------------------------------
 [postprocess_acidic]
-ppe_file		= acidic.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= acidic.ppe
 radius_min		= 0.3
 radius_max		= 1.0
 
 [postprocess_acidic_mine]
-ppe_file		= acidic_mine.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= acidic_mine.ppe
 radius_min		= 1.0
 radius_max		= 2.0
 
 [postprocess_psychic]
-ppe_file		= psychic.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= psychic.ppe
 radius_min		= 0.3
 radius_max		= 1.0
 
 [postprocess_psychic_mine]
-ppe_file		= psychic_mine.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= psychic_mine.ppe
 radius_min		= 0.5
 radius_max		= 1.0
 
 [postprocess_thermal]
-ppe_file		= thermal.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= thermal.ppe
 radius_min		= 0.3
 radius_max		= 1.0
 
 [postprocess_thermal_mine]
-ppe_file		= thermal_mine.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= thermal_mine.ppe
 radius_min		= 0.5
 radius_max		= 1.0
 
 [postprocess_new]
-ppe_file		= radiation.ppe
+pp_eff_name		= radiation.ppe
 radius_min		= 0.5
 radius_max		= 1.1
 
 [postprocess_rad]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.3
 radius_max		= 1.0
 
 [postprocess_psi]
-ppe_file		= psi.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= psi.ppe
 radius_min		= 0.5
 radius_max		= 1.1
 
 [postprocess_death]
-ppe_file		= death.ppe
+pp_eff_name		= death.ppe
 radius_min		= 0.5
 radius_max		= 1.1
 
 [postprocess_flame]
-ppe_file		= flame.ppe
+pp_eff_name		= flame.ppe
 radius_min		= 0.5
 radius_max		= 0.8
 
 [postprocess_fuzz]
-ppe_file		= fuzz.ppe
+pp_eff_name		= fuzz.ppe
 radius_min		= 0.5
 radius_max		= 0.8
 
 [postprocess_gravi]
-ppe_file		= gravi.ppe
+pp_eff_name		= gravi.ppe
 radius_min		= 0.8
 radius_max		= 1.4
 
 [postprocess_gravi_mine]
-ppe_file		= gravi_mine.ppe
+pp_eff_name		= gravi_mine.ppe
 radius_min		= 0.5
 radius_max		= 1.0
 
 [postprocess_electra]
-ppe_file		= electra.ppe
+pp_eff_name		= electra.ppe
 radius_min		= 0.5
 radius_max		= 0.9
 
 [postprocess_electra_mine]
-ppe_file		= electra_mine.ppe
+pp_eff_name		= electra_mine.ppe
 radius_min		= 1.0
 radius_max		= 2.0
 
 [mosquito_bald]
-ppe_file		= mosquito_bald.ppe
+pp_eff_name		= mosquito_bald.ppe
 radius_min		= 0.2
 radius_max		= 2.7
 
@@ -110,7 +134,7 @@ radius_max		= 2.7
 ; Level postprocess effects
 ;-------------------------------------------------------------------------------
 [level_red_forest]
-ppe_file		= level_red_forest.ppe
+pp_eff_name		= level_red_forest.ppe
 radius_min		= 0.7
 radius_max		= 1.0
 ;-------------------------------------------------------------------------------
