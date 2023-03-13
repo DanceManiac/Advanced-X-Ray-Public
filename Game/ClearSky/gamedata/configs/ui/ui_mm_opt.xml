@@ -80,10 +80,10 @@
 	</main_dialog>
   <tab_size x="55" y="74" width="738" height="416"/>
   <tab_video>
-        <cap_renderer x="15" y="13" width="135" height="24">
+        <cap_renderer x="15" y="23" width="135" height="24">
 			<text font="letterica16" color="ui_6">ui_mm_renderer</text>			
 		</cap_renderer>
-        <list_renderer x="175" y="15" width="235" height="20" list_length="5" always_show_scroll="0">
+        <list_renderer x="175" y="25" width="235" height="20" list_length="5" always_show_scroll="0">
       <options_item entry="renderer" group="mm_opt_video" depend="restart"/>
       <text_color>
         <e r="216" g="186" b="140"/>
@@ -93,10 +93,10 @@
       <list_font	 r="216" g="186" b="140" font="letterica16"/>
     </list_renderer>
 
-    <cap_preset x="15" y="43" width="135" height="24">
+    <cap_preset x="15" y="53" width="135" height="24">
       <text font="letterica16" color="ui_6">ui_mm_quality_presets</text>
     </cap_preset>
-    <list_presets x="175" y="45" width="235" height="20" list_length="5"  always_show_scroll="0">
+    <list_presets x="175" y="55" width="235" height="20" list_length="5"  always_show_scroll="0">
 			<options_item entry="_preset" group="mm_opt_video_preset" depend="vid"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -106,10 +106,10 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_presets>
 
-        <cap_resolution x="15" y="73" width="135" height="24">
+        <cap_resolution x="15" y="83" width="135" height="24">
 			<text font="letterica16" color="ui_6">ui_mm_resolution</text>
 		</cap_resolution>
-        <list_resolution x="175" y="75" width="235" height="20" list_length="7" always_show_scroll="1">
+        <list_resolution x="175" y="85" width="235" height="20" list_length="7" always_show_scroll="1">
 			<options_item entry="vid_mode" group="mm_opt_video" depend="vid"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -119,10 +119,10 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_resolution>
 		
-        <cap_clr_drag_preset x="15" y="103" width="108" height="24">
+        <cap_clr_drag_preset x="15" y="113" width="108" height="24">
             <text font="letterica16" color="ui_6">ui_mm_clr_drag_preset</text>
         </cap_clr_drag_preset>
-        <combo_clr_drag_preset x="175" y="105" width="235" height="20" always_show_scroll="1">
+        <combo_clr_drag_preset x="175" y="115" width="235" height="20" always_show_scroll="1">
             <options_item entry="r2_clr_preset" group="mm_opt_video" depend="runtime"/>
             <list_font r="240" g="217" b="182" font="letterica16"/>
 		    <text_color>
@@ -131,31 +131,31 @@
 		    </text_color>
         </combo_clr_drag_preset>
 
-        <cap_gamma x="15" y="133" width="135" height="24">
+        <cap_gamma x="15" y="143" width="135" height="24">
 			<text font="letterica16" color="ui_6">ui_mm_gamma</text>
 		</cap_gamma>
-        <track_gamma x="175" y="137" width="235" height="16">
+        <track_gamma x="175" y="147" width="235" height="16">
 			<options_item entry="rs_c_gamma" group="mm_opt_video"/>
 		</track_gamma>
 
-        <cap_contrast x="15" y="163" width="135" height="24">
+        <cap_contrast x="15" y="173" width="135" height="24">
 			<text font="letterica16" color="ui_6">ui_mm_contrast</text>
 		</cap_contrast>
-        <track_contrast x="175" y="167" width="235" height="16">
+        <track_contrast x="175" y="177" width="235" height="16">
 			<options_item entry="rs_c_contrast" group="mm_opt_video"/>
 		</track_contrast>
 
-        <cap_brightness x="15" y="193" width="135" height="24">
+        <cap_brightness x="15" y="203" width="135" height="24">
 			<text font="letterica16" color="ui_6">ui_mm_brightness</text>
 		</cap_brightness>
-        <track_brightness x="175" y="190" width="235" height="16">
+        <track_brightness x="175" y="200" width="235" height="16">
 			<options_item entry="rs_c_brightness" group="mm_opt_video"/>
 		</track_brightness>
 
-        <cap_fullscreen x="15" y="223" width="135" height="24">
+        <cap_fullscreen x="15" y="233" width="135" height="24">
 			<text font="letterica16" color="ui_6">ui_mm_fullscreen</text>
 		</cap_fullscreen>
-        <check_fullscreen x="162" y="220" width="44" height="29">
+        <check_fullscreen x="162" y="230" width="44" height="29">
 			<options_item entry="rs_fullscreen" group="mm_opt_video" depend="vid"/>	
 		</check_fullscreen>
 		
@@ -987,7 +987,7 @@
   </tab_sound>
   
 	<tab_gameplay>
-        <scroll_g x="-75" y="10" width="564" height="313"
+        <scroll_g x="-75" y="5" width="564" height="313"
         right_ident="0" left_ident="0" top_indent="0" bottom_indent="0"
         vert_interval="0" always_show_scroll="0"/>
 

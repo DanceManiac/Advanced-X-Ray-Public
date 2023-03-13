@@ -11,13 +11,13 @@ function opt_gameplay:InitControls(x, y, xml, handler)
 	local ctl
 	local _st
 
-	self.scroll_g = xml:InitScrollView("tab_gameplay:scroll_g", self)
 
 	self:SetWndPos(vector2():set(x,y))
 	self:SetWndSize(vector2():set(738,416))
 	self:SetAutoDelete(true)
 	
-	--self.bk = xml:InitFrame("frame_gameplay", self)
+	self.bk = xml:InitFrame("frame_gameplay", self)
+	self.scroll_g = xml:InitScrollView("tab_gameplay:scroll_g", self)
 	
 	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
 	xml:InitStatic("tab_gameplay:cap_difficulty",			_st)
