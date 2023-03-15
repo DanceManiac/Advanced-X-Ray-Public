@@ -10,9 +10,6 @@
 #include "UIXmlInit.h"
 #include "UIProgressBar.h"
 
-#include "Weapon.h"
-#include "CustomOutfit.h"
-#include "ActorHelmet.h"
 #include "eatable_item.h"
 #include "AntigasFilter.h"
 #include "Artefact.h"
@@ -243,11 +240,8 @@ void CUICellItem::UpdateConditionProgressBar()
 	if(m_pParentList && m_pParentList->GetConditionProgBarVisibility())
 	{
 		PIItem itm = (PIItem)m_pData;
-		CWeapon* pWeapon = smart_cast<CWeapon*>(itm);
-		CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(itm);
-		CHelmet* pHelmet = smart_cast<CHelmet*>(itm);
 
-		if(pWeapon || pOutfit || pHelmet)
+		if (itm->IsUsingCondition())
 		{
 			Ivector2 itm_grid_size = GetGridSize();
 
@@ -277,8 +271,9 @@ void CUICellItem::UpdatePortionsProgressBar()
 		PIItem itm = (PIItem)m_pData;
 		CEatableItem* pEatable = smart_cast<CEatableItem*>(itm);
 
-		if (pEatable && pEatable->m_iConstPortions > 1)
+		if (pEatable && pEatable->m_iConstPortions > 1 && pEatable->m_iConstPortions <= 8)
 		{
+			int BasePortionsNum = pEatable->m_iConstPortions;
 			Ivector2 itm_grid_size = GetGridSize();
 			if (m_pParentList->GetVerticalPlacement())
 				std::swap(itm_grid_size.x, itm_grid_size.y);
@@ -288,14 +283,59 @@ void CUICellItem::UpdatePortionsProgressBar()
 			float x = 1.f;
 			float y = itm_grid_size.y * (cell_size.y + cell_space.y) - m_pPortionsState->GetHeight() - 2.f;
 			Fvector2 size;
+			float scaler = 1.f;
 
-			size.x = pEatable->m_iConstPortions*2;
+			// 8 portions is max value!!!
+			switch (BasePortionsNum)
+			{
+				case 2:
+				{
+					scaler = UI().is_widescreen() ? 3.95f : 3.88f;
+					break;
+				}
+				case 3:
+				{
+					scaler = UI().is_widescreen() ? 3.95f : 3.9f;
+					break;
+				}
+				case 4:
+				{
+					scaler = UI().is_widescreen() ? 3.98f : 3.9f;
+					break;
+				}
+				case 5:
+				{
+					scaler = UI().is_widescreen() ? 4 : 3.9f;
+					break;
+				}
+				case 6:
+				{
+					scaler = UI().is_widescreen() ? 4 : 3.9f;
+					break;
+				}
+				case 7:
+				{
+					scaler = UI().is_widescreen() ? 3.98f : 4;
+					break;
+				}
+				case 8:
+				{
+					scaler = UI().is_widescreen() ? 4 : 3.9f;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+
+			size.x = BasePortionsNum * scaler;
 			size.y = m_pPortionsState->GetHeight();
 
-			m_pPortionsState->SetRange(0, pEatable->m_iConstPortions*2);
+			m_pPortionsState->SetRange(0, BasePortionsNum * scaler);
 			m_pPortionsState->SetWndPos(Fvector2().set(x, y));
 			m_pPortionsState->SetWndSize(size);
-			m_pPortionsState->SetProgressPos(iCeil((pEatable->GetPortionsNum()*2) * 13.0f) / 13.0f);
+			m_pPortionsState->SetProgressPos(iCeil((pEatable->GetPortionsNum() * scaler) * 13.0f) / 13.0f);
 
 			m_pPortionsState->Show(true);
 
