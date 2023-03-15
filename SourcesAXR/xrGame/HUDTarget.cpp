@@ -191,41 +191,41 @@ void CHUDTarget::Render()
 
 			if (IsGameTypeSingle())
 			{
-				CInventoryOwner* our_inv_owner		= smart_cast<CInventoryOwner*>(pCurEnt);
+				const auto our_inv_owner = smart_cast<CInventoryOwner*>(pCurEnt);
+				const auto pda = Actor->GetPDA(); 
 				
-				if (E && E->g_Alive() && E->cast_base_monster())
+				if(!(pda && pda->m_bZoomed))
 				{
-					C				= C_ON_ENEMY;
-				}
-				else if (E && E->g_Alive() && !E->cast_base_monster())
-				{
-					CInventoryOwner* others_inv_owner	= smart_cast<CInventoryOwner*>(E);
+					if (E && E->g_Alive() && E->cast_base_monster())
+						C				= C_ON_ENEMY;
+					else if (E && E->g_Alive() && !E->cast_base_monster())
+					{
+						CInventoryOwner* others_inv_owner	= smart_cast<CInventoryOwner*>(E);
 
-					if(our_inv_owner && others_inv_owner){
+						if(our_inv_owner && others_inv_owner){
 
-						switch(RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
-						{
-						case ALife::eRelationTypeEnemy:
-							C = C_ON_ENEMY; break;
-						case ALife::eRelationTypeNeutral:
-							C = C_ON_NEUTRAL; break;
-						case ALife::eRelationTypeFriend:
-							C = C_ON_FRIEND; break;
+							switch(RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
+							{
+							case ALife::eRelationTypeEnemy:
+								C = C_ON_ENEMY; break;
+							case ALife::eRelationTypeNeutral:
+								C = C_ON_NEUTRAL; break;
+							case ALife::eRelationTypeFriend:
+								C = C_ON_FRIEND; break;
+							}
+
+							if (fuzzyShowInfo>0.5f)
+							{
+								CStringTable	strtbl		;
+								F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
+								F->OutNext	("%s", *strtbl.translate(others_inv_owner->Name()) );
+								F->OutNext	("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()) );
+							}
 						}
 
-						if (fuzzyShowInfo>0.5f)
-						{
-							CStringTable	strtbl		;
-							F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
-							F->OutNext	("%s", *strtbl.translate(others_inv_owner->Name()) );
-							F->OutNext	("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()) );
-						}
+						fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
 					}
-
-					fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
-				}
-				else 
-					if (l_pI && our_inv_owner && PP.RQ.range < 2.0f*2.0f)
+					else if (l_pI && our_inv_owner && PP.RQ.range < 2.0f*2.0f)
 					{
 						if (fuzzyShowInfo>0.5f && l_pI->NameItem())
 						{
@@ -234,6 +234,7 @@ void CHUDTarget::Render()
 						}
 						fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
 					}
+				}
 			}
 			else
 			{
@@ -307,7 +308,8 @@ void CHUDTarget::Render()
 	if (Wpn && Wpn->IsLaserOn())
 		return;
 
-	if (smart_cast<CPda*>(Actor->inventory().ActiveItem()) || GameConstants::GetHideHudOnMaster())
+	auto pda = smart_cast<CPda*>(Actor->inventory().ActiveItem());
+	if ((pda && pda->m_bZoomed) || GameConstants::GetHideHudOnMaster())
 		return;
 
 	//отрендерить кружочек или крестик

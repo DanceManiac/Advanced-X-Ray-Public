@@ -35,7 +35,13 @@ CUIButtonHint::~CUIButtonHint	()
 
 void CUIButtonHint::OnRender	()
 {
-	if(m_enabledOnFrame){
+    static u32 last_frame{};
+    if (last_frame == Device.dwFrame)
+        return;
+    last_frame = Device.dwFrame;
+
+	if(m_enabledOnFrame)
+	{
 		m_text->Update		();
 		m_border->Update	();
 		m_border->SetColor	(color_rgba(255,255,255,color_get_A(m_text->GetTextColor())));

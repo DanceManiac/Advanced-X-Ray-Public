@@ -780,16 +780,19 @@ extern	Flags32	dbg_net_Draw_Flags;
 
 extern void draw_wnds_rects();
 
+#include "ui/UIBtnHint.h"
 void CLevel::OnRender()
 {
 	// PDA
-	if (game && HUD().GetUI()->UIGame() && &HUD().GetUI()->UIGame()->PdaMenu())
+	if (game && HUD().GetUI()->UIGame())
 	{
 		const auto pda = &HUD().GetUI()->UIGame()->PdaMenu();
 		const auto pda_actor = Actor() ? Actor()->GetPDA() : nullptr;
-		if (psActorFlags.test(AF_3D_PDA) && pda && pda->IsShown())
+		if (psActorFlags.test(AF_3D_PDA) && pda->IsShown())
 		{
 			pda->Draw();
+			if (g_btnHint)
+				g_btnHint->OnRender();
 			CUICursor* cursor = UI()->GetUICursor();
 
 			if (cursor)
