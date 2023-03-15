@@ -2076,6 +2076,15 @@ public:
 	}
 };
 
+struct DumpTxrsForPrefetching : public IConsole_Command {
+	DumpTxrsForPrefetching(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
+
+	virtual void Execute(LPCSTR args)
+	{
+		MainMenu()->ReportTxrsForPrefetching();
+	}
+};
+
 extern BOOL UIRedraw;
 
 void CCC_RegisterCommands()
