@@ -162,6 +162,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_sleepeness		= UIHelper::CreateStatic(uiXml, "indicator_sleepeness", this);
 	m_ind_alcoholism		= UIHelper::CreateStatic(uiXml, "indicator_alcoholism", this);
 	m_ind_narcotism			= UIHelper::CreateStatic(uiXml, "indicator_narcotism", this);
+	m_ind_psy_health		= UIHelper::CreateStatic(uiXml, "indicator_psy_health", this);
 	m_ind_filter_dirty		= UIHelper::CreateStatic(uiXml, "indicator_filter", this);
 	m_ind_weapon_broken		= UIHelper::CreateStatic(uiXml, "indicator_weapon_broken", this);
 	m_ind_helmet_broken		= UIHelper::CreateStatic(uiXml, "indicator_helmet_broken", this);
@@ -942,6 +943,29 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 				m_ind_narcotism->InitTexture("ui_inGame2_circle_withdrawal_red");
 			else
 				m_ind_narcotism->InitTexture("ui_inGame2_circle_narcotism_red");
+		}
+	}
+
+	// M.F.S. Team Psy Health Icon
+	float psy_health = pActor->conditions().GetPsy();
+	if (psy_health < 0.5)
+	{
+		m_ind_psy_health->Show(false);
+	}
+	else
+	{
+		m_ind_psy_health->Show(true);
+		if (psy_health >= 0.5f && psy_health <= 0.75f)
+		{
+			m_ind_psy_health->InitTexture("ui_inGame2_circle_psy_health_green");
+		}
+		else if (psy_health >= 0.75f && psy_health <= 0.85f)
+		{
+			m_ind_psy_health->InitTexture("ui_inGame2_circle_psy_health_yellow");
+		}
+		else if (psy_health >= 0.85f)
+		{
+			m_ind_psy_health->InitTexture("ui_inGame2_circle_psy_health_red");
 		}
 	}
 

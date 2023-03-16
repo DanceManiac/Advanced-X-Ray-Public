@@ -18,6 +18,7 @@
 		<texture>ui_hud_icon_weapon</texture>
 	</weapon_jammed_static>
 
+    <indicator_psy_health x="980" y="30" width="26" height="35" stretch="1"/>
     <indicator_filter x="980" y="70" width="26" height="35" stretch="1"/>
     <indicator_narcotism x="980" y="110" width="26" height="35" stretch="1"/>
     <indicator_alcoholism x="980" y="150" width="26" height="35" stretch="1"/>

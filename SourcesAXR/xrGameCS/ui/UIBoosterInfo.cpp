@@ -45,6 +45,7 @@ LPCSTR ef_boosters_nodes_names[] =
 	//M.F.S Team additions
 	"boost_battery",
 	"boost_thirst",
+	"boost_psy_health",
 	"boost_intoxication",
 	"boost_sleepeness",
 
@@ -66,6 +67,7 @@ LPCSTR ef_boosters_section_names[] =
 	//M.F.S team additions
 	"charge_level",
 	"eat_thirst",
+	"eat_psy_health",
 	"eat_intoxication",
 	"eat_sleepeness",
 
@@ -87,6 +89,7 @@ LPCSTR boost_influence_caption[] =
 	//M.F.S Team additions
 	"ui_inv_battery",
 	"ui_inv_thirst",
+	"ui_inv_psy_health",
 	"ui_inv_intoxication",
 	"ui_inv_sleepeness",
 

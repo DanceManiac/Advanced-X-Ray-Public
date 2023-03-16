@@ -28,6 +28,7 @@ protected:
 		//M.F.S Team additions
 		_item_battery,
 		_item_thirst,
+		_item_psy_health,
 		_item_intoxication,
 		_item_sleepeness,
 

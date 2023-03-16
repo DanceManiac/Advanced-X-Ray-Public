@@ -154,6 +154,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	clamp(m_fSleepenessCritical, 0.0f, 1.0f);
 	m_fV_Sleepeness = pSettings->r_float(section, "sleepeness_v");
 	m_fV_SleepenessPower = pSettings->r_float(section, "sleepeness_power_v");
+	m_fV_SleepenessPsyHealth = pSettings->r_float(section, "sleepeness_psy_health_v");
 	m_fSleepeness_V_Sleep = pSettings->r_float(section, "sleepeness_v_sleep");
 
 	// M.F.S. Team Alcoholism (History Of Puhtinskyi)
@@ -293,35 +294,10 @@ void CActorCondition::UpdateCondition()
 			if (ceDrugs)
 				RemoveEffector(m_object, effDrugs);
 		}
-		
-		string512			pp_sect_name;
-		shared_str ln		= Level().name();
-		if(ln.size())
-		{
-			CEffectorPP* ppe	= object().Cameras().GetPPEffector((EEffectorPPType)effPsyHealth);
-			
-
-			strconcat			(sizeof(pp_sect_name),pp_sect_name, "effector_psy_health", "_", *ln);
-			if(!pSettings->section_exist(pp_sect_name))
-				strcpy_s			(pp_sect_name, "effector_psy_health");
-
-			if	( !fsimilar(GetPsyHealth(), 1.0f, 0.05f) )
-			{
-				if(!ppe)
-				{
-					AddEffector(m_object,effPsyHealth, pp_sect_name, GET_KOEFF_FUNC(this, &CActorCondition::GetPsy));
-				}
-			}else
-			{
-				if(ppe)
-					RemoveEffector(m_object,effPsyHealth);
-			}
-		}
-//-		if(fis_zero(GetPsyHealth()))
-//-			SetHealth( 0.0f );
 	};
 
-	UpdateSatiety				();
+	UpdateSatiety();
+	UpdatePsyHealth();
 
 	if (GameConstants::GetActorThirst())
 	{
@@ -615,7 +591,7 @@ void CActorCondition::UpdateIntoxication()
 //M.F.S. Team Sleepeness
 void CActorCondition::UpdateSleepeness()
 {
-	if (GetSleepeness() >= 0.85f)
+	if (GetSleepeness() >= 0.85f && !GameConstants::GetSleepInfluenceOnPsyHealth())
 	{
 		luabind::functor<void> funct;
 		if (ai().script_engine().functor("mfs_functions.generate_phantoms", funct))
@@ -632,7 +608,7 @@ void CActorCondition::UpdateSleepeness()
 	CEffectorCam* ce = Actor()->Cameras().GetCamEffector((ECamEffectorType)effSleepeness);
 	if (m_fSleepeness <= m_fSleepenessCritical)
 	{
-		if (!ce)
+		if (!ce && pSettings->section_exist("effector_sleepeness"))
 			AddEffector(m_object, effSleepeness, "effector_sleepeness", GET_KOEFF_FUNC(this, &CActorCondition::GetSleepeness));
 	}
 	else
@@ -654,7 +630,12 @@ void CActorCondition::UpdateSleepeness()
 	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
 	{
 		if (m_fSleepeness >= m_fSleepenessCritical)
+		{
 			m_fDeltaPower -= m_fV_SleepenessPower * m_fSleepeness * m_fDeltaTime;
+
+			if (GameConstants::GetSleepInfluenceOnPsyHealth())
+				m_fDeltaPsyHealth -= m_fV_SleepenessPsyHealth * m_fSleepeness * m_fDeltaTime;
+		}
 	}
 }
 
@@ -737,6 +718,30 @@ void CActorCondition::UpdateNarcotism()
 	{
 		m_fWithdrawal -= m_fV_Withdrawal * m_fDeltaTime;
 		clamp(m_fWithdrawal, 0.0f, 3.0f);
+	}
+}
+
+//M.F.S. Team Psy Health
+void CActorCondition::UpdatePsyHealth()
+{
+	if (GetPsy() > 0.85f)
+	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.generate_phantoms", funct))
+			funct();
+	}
+
+	CEffectorPP* ppePsyHealth = object().Cameras().GetPPEffector((EEffectorPPType)effPsyHealth);
+
+	if (!fsimilar(GetPsyHealth(), 1.0f, 0.05f))
+	{
+		if (!ppePsyHealth && pSettings->section_exist("effector_psy_health"))
+			AddEffector(m_object, effPsyHealth, "effector_psy_health", GET_KOEFF_FUNC(this, &CActorCondition::GetPsy));
+	}
+	else
+	{
+		if (ppePsyHealth)
+			RemoveEffector(m_object, effPsyHealth);
 	}
 }
 
@@ -919,6 +924,13 @@ void CActorCondition::ChangeWithdrawal(float value)
 void CActorCondition::ChangeDrugs(float value)
 {
 	m_fDrugs += value;
+}
+
+//M.F.S. Team Psy Health
+void CActorCondition::ChangePsyHealth(float value)
+{
+	m_fPsyHealth += value;
+	clamp(m_fPsyHealth, 0.0f, 1.0f);
 }
 
 void CActorCondition::UpdateTutorialThresholds()

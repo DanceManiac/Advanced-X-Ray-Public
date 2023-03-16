@@ -65,6 +65,7 @@ public:
 	float					m_fHangoverInfluence;
 	float					m_fNarcotismInfluence;
 	float					m_fWithdrawalInfluence;
+	float					m_fPsyHealthInfluence;
 	//заживление ран на кол-во процентов
 	float					m_fWoundsHealPerc;
 

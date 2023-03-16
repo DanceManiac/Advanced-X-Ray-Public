@@ -339,4 +339,7 @@
 	<string id="kb_weapon7">
 		<text>ќружие 7</text>
 	</string>
+	<string id="ui_inv_psy_health">
+		<text>ѕси-здоровье</text>
+	</string>
 </string_table>

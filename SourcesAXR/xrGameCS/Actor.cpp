@@ -1748,6 +1748,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeSleepeness	(outfit->m_fSleepenessRestoreSpeed * f_update_time);
 		conditions().ChangeAlcoholism	(outfit->m_fAlcoholismRestoreSpeed * f_update_time);
 		conditions().ChangeNarcotism	(outfit->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth	(outfit->m_fPsyHealthRestoreSpeed * f_update_time);
 	}
 	else
 	{
@@ -1807,6 +1808,7 @@ void CActor::UpdateArtefactsOnBelt()
 			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
 			conditions().ChangeAlcoholism	(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
 			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
+			conditions().ChangePsyHealth	(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -1850,6 +1852,7 @@ void CActor::UpdateArtefactsInRuck()
 			conditions().ChangeSleepeness	(artefact->m_fSleepenessRestoreSpeed * f_update_time);
 			conditions().ChangeAlcoholism	(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
 			conditions().ChangeNarcotism	(artefact->m_fNarcotismRestoreSpeed * f_update_time);
+			conditions().ChangePsyHealth	(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -2343,6 +2346,25 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fNarcotismRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::ePsyHealthRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fPsyHealthRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fPsyHealthRestoreSpeed;
 		}
 		break;
 	}

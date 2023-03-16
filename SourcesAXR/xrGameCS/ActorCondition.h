@@ -41,6 +41,7 @@ private:
 			void 		UpdateIntoxication			();
 			void 		UpdateAlcoholism			();
 			void 		UpdateNarcotism				();
+			void 		UpdatePsyHealth				();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
@@ -62,6 +63,7 @@ public:
 	virtual void 		ChangeNarcotism				(const float value);
 	virtual void 		ChangeWithdrawal			(const float value);
 	virtual void 		ChangeDrugs					(const float value);
+	virtual void 		ChangePsyHealth				(const float value);
 
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;
@@ -109,6 +111,7 @@ public:
 	IC		float const&	IntoxicationCritical	() { return m_fIntoxicationCritical; }
 	IC		float const&	V_Sleepeness			() { return m_fV_Sleepeness; }
 	IC		float const&	V_SleepenessPower		() { return m_fV_SleepenessPower; }
+	IC		float const&	V_SleepenessPsyHealth	() { return m_fV_SleepenessPsyHealth; }
 	IC		float const&	SleepenessCritical		() { return m_fSleepenessCritical; }
 	IC		float const&	Sleepeness_V_Sleep		() { return m_fSleepeness_V_Sleep; }
 	IC		float const&	V_Alcoholism			() { return m_fV_Alcoholism; }
@@ -141,6 +144,7 @@ public:
 	float m_fIntoxicationCritical;
 	float m_fV_Sleepeness;
 	float m_fV_SleepenessPower;
+	float m_fV_SleepenessPsyHealth;
 	float m_fSleepenessCritical;
 	float m_fSleepeness_V_Sleep;
 	float m_fV_Alcoholism;

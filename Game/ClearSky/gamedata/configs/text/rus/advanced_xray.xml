@@ -357,4 +357,7 @@
 	<string id="st_repair_kit_descr">
 		<text>ќбычный ремонтный набор. ѕозвол€ет отремонтировать снар€жение, если руки из нужного места растут.</text>
 	</string>
+	<string id="ui_inv_psy_health">
+		<text>ѕси-здоровье</text>
+	</string>
 </string_table>

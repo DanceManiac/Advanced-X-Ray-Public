@@ -55,6 +55,7 @@ static const LPCSTR ef_boosters_section_names[] =
 	//M.F.S team additions
 	"boost_battery",
 	"boost_thirst",
+	"boost_psy_health",
 	"boost_intoxication",
 	"boost_sleepeness",
 
@@ -88,6 +89,7 @@ struct SMedicineInfluenceValues{
 	float fNarcotism;
 	float fWithdrawal;
 	float fRadiation;
+	float fPsyHealth;
 	float fWoundsHeal;
 	float fMaxPowerUp;
 	float fAlcohol;

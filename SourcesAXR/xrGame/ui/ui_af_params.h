@@ -31,6 +31,7 @@ protected:
 	UIArtefactParamItem*	m_fIntoxicationRestoreSpeed;
 	UIArtefactParamItem*	m_fSleepenessRestoreSpeed;
 	UIArtefactParamItem*	m_fAlcoholismRestoreSpeed;
+	UIArtefactParamItem*	m_fPsyHealthRestoreSpeed;
 	UIArtefactParamItem*	m_fJumpSpeed;
 	UIArtefactParamItem*	m_fWalkAccel;
 	UIArtefactParamItem*	m_iArtefactRank;

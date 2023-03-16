@@ -152,5 +152,9 @@
 	    <texture id="ui_inGame2_circle_filter_yellow" 				x="281" y="38" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_filter_orange" 				x="281" y="76" width="33" height="35" />
 	    <texture id="ui_inGame2_circle_filter_red" 					x="281" y="114" width="33" height="35" />
+		<texture id="ui_inGame2_circle_psy_health_green" 			x="316" y="0" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_psy_health_yellow" 			x="316" y="38" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_psy_health_orange" 			x="316" y="76" width="33" height="35" />
+	    <texture id="ui_inGame2_circle_psy_health_red" 				x="316" y="114" width="33" height="35" />
 	</file>
 </w>
