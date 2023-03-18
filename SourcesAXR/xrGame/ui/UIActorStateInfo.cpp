@@ -58,6 +58,7 @@ LPCSTR ef_states_names[] =
 	"narcotism_state",
 	"withdrawal_state",
 	"psy_health_state",
+	"current_power_state",
 };
 
 ui_actor_state_wnd::ui_actor_state_wnd()
@@ -174,6 +175,10 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 	value = actor->conditions().GetPsyHealth();
 	m_state[stt_psy_health]->set_progress(value);
 	m_state[stt_psy_health]->set_value(value);
+
+	value = actor->conditions().GetPower();
+	m_state[stt_cur_power]->set_progress(value);
+	m_state[stt_cur_power]->set_value(value);
 
 	CCustomOutfit* outfit = actor->GetOutfit();
 	CCustomOutfit* pants = smart_cast<CCustomOutfit*>(actor->inventory().ItemFromSlot(PANTS_SLOT));

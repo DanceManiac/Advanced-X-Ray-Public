@@ -49,6 +49,7 @@ private:
 		stt_narcotism,
 		stt_withdrawal,
 		stt_psy_health,
+		stt_cur_power,
 		stt_count
 	};
 	ui_actor_state_item*	m_state[stt_count];
