@@ -4,75 +4,108 @@
 	    <texture id="ui_inGame2_panorama_window" x="0" y="273" width="601" height="128" />
 	    <texture id="ui_inGame2_message_box" x="0" y="0" width="677" height="267" />
 -->
-    	<texture id="ui_inGame2_panorama_window" x="0" y="273" width="601" height="122" />
-	<texture id="ui_inGame2_message_box" x="0" y="0" width="677" height="267" />
-	<texture id="ui_inGame2_sky_panorama" x="0" y="413" width="591" height="118" />
-	<texture id="ui_inGame2_marker" x="624" y="277" width="30" height="118" />
-
-	<texture id="ui_wp_prop_scope_1.5x" x="730" y="510" width="19" height="19" />
-	<texture id="ui_wp_prop_autolockscope" x="692" y="528" width="19" height="19" />
-	<texture id="ui_wp_prop_scope_6x" x="711" y="528" width="19" height="19" />
-	<texture id="ui_wp_prop_scope_5x" x="730" y="528" width="19" height="19" />
-	<texture id="ui_wp_prop_scope_attach" x="692" y="548" width="19" height="19" />
-	<texture id="ui_wp_prop_scope" x="711" y="548" width="19" height="19" />
-	<texture id="ui_wp_prop_contrast" x="730" y="547" width="19" height="19" />
-	<texture id="ui_wp_prop_nightvision" x="692" y="566" width="19" height="19" />
-	<texture id="ui_wp_prop_autofire" x="711" y="567" width="19" height="19" />
-	<texture id="ui_wp_prop_3xfire" x="730" y="567" width="19" height="19" />
-	<texture id="ui_wp_prop_skorostrelnost" x="673" y="433" width="19" height="19" />
-	<texture id="ui_wp_prop_otdacha" x="673" y="452" width="19" height="19" />
-	<texture id="ui_wp_prop_nadezhnost" x="673" y="471" width="19" height="19" />
-	<texture id="ui_wp_prop_ergonomics" x="673" y="490" width="19" height="19" />
-	<texture id="ui_wp_prop_nastilnost" x="673" y="509" width="19" height="19" />
-	<texture id="ui_wp_prop_tochnost" x="673" y="528" width="19" height="19" />
-	<texture id="ui_wp_prop_weight" x="673" y="547" width="19" height="19" />
-	<texture id="ui_wp_prop_optics" x="673" y="566" width="19" height="19" />
-	<texture id="ui_wp_prop_damage" x="654" y="566" width="19" height="19" />
-
-
-	<texture id="ui_am_prop_radio_restore" x="806" y="433" width="19" height="19" />
-	<texture id="ui_am_prop_chem" x="787" y="452" width="19" height="19" />
-	<texture id="ui_am_prop_restore_bleeding" x="749" y="452" width="19" height="19" />
-	<texture id="ui_am_prop_thermo" x="787" y="471" width="19" height="19" />
-	<texture id="ui_am_prop_autolock" x="787" y="490" width="19" height="19" />
-   	<texture id="ui_am_prop_sprint" x="787" y="509" width="19" height="19" />
-	<texture id="ui_am_prop_scanner" x="749" y="528" width="19" height="19" />
-	<texture id="ui_am_prop_night_vision" x="768" y="528" width="19" height="19" />
-   	<texture id="ui_am_prop_night_vision_2" x="787" y="528" width="19" height="19" />
-   	<texture id="ui_am_prop_night_vision_3" x="787" y="547" width="19" height="19" />
-   	<texture id="ui_am_prop_electro" x="749" y="547" width="19" height="19" />
-   	<texture id="ui_am_prop_artefact" x="768" y="547" width="19" height="19" />
-	<texture id="ui_am_prop_satiety_restore_speed" x="768" y="566" width="19" height="19" />
-   	<texture id="ui_am_prop_weightoutfit" x="787" y="566" width="19" height="19" />
-	<texture id="ui_am_prop_damage" x="806" y="566" width="19" height="19" />
-	
-	<texture id="ui_am_prop_time_period" x="825" y="433" width="19" height="19" />
-	<texture id="ui_am_prop_Vibros" x="806" y="547" width="19" height="19" />
-
-	
+    <texture id="ui_inGame2_panorama_window" x="0" y="273" width="601" height="122" />
+		<texture id="ui_inGame2_message_box" x="0" y="0" width="677" height="267" />
+		<texture id="ui_inGame2_sky_panorama" x="0" y="413" width="591" height="118" />
+		<texture id="ui_inGame2_marker" x="624" y="277" width="30" height="118" />
 
     <texture id="ui_save_load_back" x="692" y="0" width="288" height="428" />
    </file>
 
     <file name="mfs_team\ui\ui_mfs_new_items_params_icons">
-		<texture id="ui_item_battery_icon" x="0" y="0" width="19" height="19" />
-		<texture id="ui_item_battery_uncharge_icon" x="19" y="0" width="19" height="19" />
-		<texture id="ui_item_battery_max_icon" x="38" y="0" width="19" height="19" />
-		<texture id="ui_mfs_thirst_restore_speed" x="57" y="0" width="19" height="19" />
-		<texture id="ui_mfs_item_effectiveness" x="76" y="0" width="19" height="19" />
-		<texture id="ui_mfs_item_walk_accel" x="95" y="0" width="19" height="19" />
-		<texture id="ui_mfs_item_jump_speed" x="114" y="0" width="19" height="19" />
-		<texture id="ui_mfs_intoxication_restore_speed" x="133" y="0" width="19" height="19" />
-		<texture id="ui_mfs_sleepeness_restore_speed" x="152" y="0" width="19" height="19" />
-		<texture id="ui_item_af_radius" x="171" y="0" width="19" height="19" />
-		<texture id="ui_am_prop_exlp" x="190" y="0" width="19" height="19" />
-		<texture id="ui_am_prop_strike" x="209" y="0" width="19" height="19" />
-		<texture id="ui_mfs_alcoholism_restore_speed" x="228" y="0" width="19" height="19" />
-		<texture id="ui_mfs_hangover_restore_speed" x="247" y="0" width="19" height="19" />
-		<texture id="ui_mfs_narcotism_restore_speed" x="266" y="0" width="19" height="19" />
-		<texture id="ui_mfs_withdrawal_restore_speed" x="285" y="0" width="19" height="19" />
-		<texture id="ui_inv_af_rank" x="304" y="0" width="19" height="19" />
-		<texture id="ui_item_filter_icon" x="323" y="0" width="19" height="19" />
-		<texture id="ui_item_repair_kit_icon" x="342" y="0" width="19" height="19" />
+		<texture id="ui_item_battery_icon" 				x="0"	y="114"	width="19" height="19" />
+		<texture id="ui_item_battery_uncharge_icon" 	x="19"	y="114"	width="19" height="19" />
+		<texture id="ui_item_battery_max_icon" 			x="38"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_thirst_restore_speed" 		x="57"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_item_effectiveness" 		x="76"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_item_walk_accel" 			x="95"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_item_jump_speed" 			x="114"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_intoxication_restore_speed" x="133"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_sleepeness_restore_speed" 	x="152"	y="114"	width="19" height="19" />
+		<texture id="ui_item_af_radius" 				x="171"	y="114"	width="19" height="19" />
+		<texture id="ui_am_prop_exlp" 					x="190"	y="114"	width="19" height="19" />
+		<texture id="ui_am_prop_strike" 				x="209"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_alcoholism_restore_speed" 	x="228"	y="114"	width="19" height="19" />
+		<texture id="ui_mfs_hangover_restore_speed" 	x="0"	y="133"	width="19" height="19" />
+		<texture id="ui_mfs_narcotism_restore_speed" 	x="19"	y="133"	width="19" height="19" />
+		<texture id="ui_mfs_withdrawal_restore_speed" 	x="38"	y="133"	width="19" height="19" />
+		<texture id="ui_inv_af_rank" 					x="57"	y="133"	width="19" height="19" />
+		<texture id="ui_item_filter_icon" 				x="76"	y="133"	width="19" height="19" />
+		<texture id="ui_item_repair_kit_icon" 			x="95"	y="133"	width="19" height="19" />
+
+<!-- weapon - properties -->
+		<texture id="ui_wp_propery_01" 	x="0"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_02" 	x="19"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_03" 	x="38"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_04" 	x="57"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_05" 	x="76"	y="0"	width="19" height="19" />
+
+		<texture id="ui_wp_propery_06" 	x="95"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_07" 	x="114"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_08" 	x="133"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_09" 	x="152"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_10" 	x="171"	y="0"	width="19" height="19" />
+
+		<texture id="ui_wp_propery_11" 	x="190"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_12" 	x="209"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_13" 	x="228"	y="0"	width="19" height="19" />
+		<texture id="ui_wp_propery_14" 	x="0"	y="19"	width="19" height="19" />
+
+<!-- armor - properties -->
+		<texture id="ui_am_propery_01" 	x="0"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_02" 	x="19"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_03" 	x="38"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_04" 	x="57"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_05" 	x="76"	y="76"	width="19" height="19" />
+
+		<texture id="ui_am_propery_06" 	x="95"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_07" 	x="114"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_08" 	x="133"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_09" 	x="152"	y="76"	width="19" height="19" />
+		<texture id="ui_am_propery_10" 	x="171"	y="76"	width="19" height="19" />
+
+		<texture id="ui_am_propery_11" 	x="190"	y="76"	width="19" height="19" />
+		
+<!-- CoP - properties -->
+		<texture id="ui_wp_prop_scope_1.5x" 	x="19"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_autolockscope"	x="38"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_scope_6x" 		x="57"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_scope_5x"		x="76"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_scope_attach"	x="95"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_scope"			x="114"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_contrast"		x="133"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_nightvision"	x="152"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_autofire"		x="171"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_3xfire"			x="190"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_skorostrelnost" x="209"	y="19" width="19" height="19" />
+		<texture id="ui_wp_prop_otdacha"		x="228"	y="19" width="19" height="19" />
+
+		<texture id="ui_wp_prop_nadezhnost"		x="0"	y="38" width="19" height="19" />
+		<texture id="ui_wp_prop_ergonomics"		x="19"	y="38" width="19" height="19" />
+		<texture id="ui_wp_prop_nastilnost"		x="38"	y="38" width="19" height="19" />
+		<texture id="ui_wp_prop_tochnost"		x="57"	y="38" width="19" height="19" />
+		<texture id="ui_wp_prop_weight"			x="76"	y="38" width="19" height="19" />
+		<texture id="ui_wp_prop_optics"			x="95"	y="38" width="19" height="19" />
+		<texture id="ui_wp_prop_damage"			x="114"	y="38" width="19" height="19" />
+
+		<texture id="ui_am_prop_radio_restore"			x="133" y="38" width="19" height="19" />
+		<texture id="ui_am_prop_chem"					x="152" y="38" width="19" height="19" />
+		<texture id="ui_am_prop_restore_bleeding"		x="171" y="38" width="19" height="19" />
+		<texture id="ui_am_prop_thermo"					x="190" y="38" width="19" height="19" />
+		<texture id="ui_am_prop_autolock"				x="209" y="38" width="19" height="19" />
+   		<texture id="ui_am_prop_sprint"					x="228" y="38" width="19" height="19" />
+
+		<texture id="ui_am_prop_scanner"				x="0"	y="57" width="19" height="19" />
+		<texture id="ui_am_prop_night_vision"			x="19"	y="57" width="19" height="19" />
+   		<texture id="ui_am_prop_night_vision_2"			x="38"	y="57" width="19" height="19" />
+   		<texture id="ui_am_prop_night_vision_3"			x="57"	y="57" width="19" height="19" />
+   		<texture id="ui_am_prop_electro"				x="76"	y="57" width="19" height="19" />
+   		<texture id="ui_am_prop_artefact"				x="95"	y="57" width="19" height="19" />
+		<texture id="ui_am_prop_satiety_restore_speed"	x="114"	y="57" width="19" height="19" />
+   		<texture id="ui_am_prop_weightoutfit"			x="133"	y="57" width="19" height="19" />
+		<texture id="ui_am_prop_damage"					x="152"	y="57" width="19" height="19" />
+	
+		<texture id="ui_am_prop_time_period"			x="171" y="57" width="19" height="19" />
+		<texture id="ui_am_prop_Vibros"					x="190" y="57" width="19" height="19" />
    </file>
 </w>

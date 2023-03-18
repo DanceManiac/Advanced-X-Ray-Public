@@ -220,38 +220,6 @@
     <texture id="ui_am_upgrade_30" 	x="0" y="424" width="70" height="40" />
     <texture id="ui_am_upgrade_31" 	x="0" y="384" width="70" height="40" />
 
-<!-- weapon - properties -->
-    <texture id="ui_wp_propery_01" 	x="78" y="524" width="19" height="19" />
-    <texture id="ui_wp_propery_02" 	x="78" y="543" width="19" height="19" />
-    <texture id="ui_wp_propery_03" 	x="78" y="562" width="19" height="19" />
-    <texture id="ui_wp_propery_04" 	x="78" y="581" width="19" height="19" />
-    <texture id="ui_wp_propery_05" 	x="78" y="600" width="19" height="19" />
-
-    <texture id="ui_wp_propery_06" 	x="97" y="524" width="19" height="19" />
-    <texture id="ui_wp_propery_07" 	x="97" y="543" width="19" height="19" />
-    <texture id="ui_wp_propery_08" 	x="97" y="562" width="19" height="19" />
-    <texture id="ui_wp_propery_09" 	x="97" y="581" width="19" height="19" />
-    <texture id="ui_wp_propery_10" 	x="97" y="600" width="19" height="19" />
-
-    <texture id="ui_wp_propery_11" 	x="116" y="524" width="19" height="19" />
-    <texture id="ui_wp_propery_12" 	x="116" y="543" width="19" height="19" />
-    <texture id="ui_wp_propery_13" 	x="116" y="562" width="19" height="19" />
-    <texture id="ui_wp_propery_14" 	x="116" y="581" width="19" height="19" />
-
-<!-- armor - properties -->
-    <texture id="ui_am_propery_01" 	x="135" y="524" width="19" height="19" />
-    <texture id="ui_am_propery_02" 	x="135" y="543" width="19" height="19" />
-    <texture id="ui_am_propery_03" 	x="135" y="562" width="19" height="19" />
-    <texture id="ui_am_propery_04" 	x="135" y="581" width="19" height="19" />
-    <texture id="ui_am_propery_05" 	x="135" y="600" width="19" height="19" />
-
-    <texture id="ui_am_propery_06" 	x="154" y="524" width="19" height="19" />
-    <texture id="ui_am_propery_07" 	x="154" y="543" width="19" height="19" />
-    <texture id="ui_am_propery_08" 	x="154" y="562" width="19" height="19" />
-    <texture id="ui_am_propery_09" 	x="154" y="581" width="19" height="19" />
-    <texture id="ui_am_propery_10" 	x="154" y="600" width="19" height="19" />
-
-    <texture id="ui_am_propery_11" 	x="173" y="524" width="19" height="19" />
 
    </file>
 </w>
