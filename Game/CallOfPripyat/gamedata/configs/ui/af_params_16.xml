@@ -15,7 +15,7 @@
 
 	<radiation_restore_speed x="0" y="0" width="214" height="20">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
-			<texture>ui_am_propery_09</texture>
+			<texture use_color = "1" clr_dynamic = "1">ui_am_propery_09</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
 		</caption>
 		<texture_minus>ui_am_prop_radio_restore</texture_minus>

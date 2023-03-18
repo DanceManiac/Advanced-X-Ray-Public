@@ -257,8 +257,7 @@ UIBoosterInfoItem::UIBoosterInfoItem()
 
 	m_unit_str._set("");
 	m_unit_str_max._set("");
-	m_texture_minus._set("");
-	m_texture_plus._set("");
+	m_texture._set("");
 }
 
 UIBoosterInfoItem::~UIBoosterInfoItem()
@@ -281,15 +280,33 @@ void UIBoosterInfoItem::Init(CUIXml& xml, LPCSTR section)
 	LPCSTR unit_str_max = xml.ReadAttrib("value", 0, "unit_str_max", "");
 	m_unit_str_max._set(CStringTable().translate(unit_str_max));
 	
-	LPCSTR texture_minus = xml.Read( "texture_minus", 0, "" );
-	if ( texture_minus && xr_strlen(texture_minus) )
+	if (xml.NavigateToNode("caption:texture", 0))
 	{
-		m_texture_minus._set( texture_minus );
-		
-		LPCSTR texture_plus = xml.Read( "caption:texture", 0, "" );
-		m_texture_plus._set( texture_plus );
-		VERIFY( m_texture_plus.size() );
+		use_color = xml.ReadAttribInt("caption:texture", 0, "use_color", 0);
+		clr_invert = xml.ReadAttribInt("caption:texture", 0, "clr_invert", 0);
+		clr_dynamic = xml.ReadAttribInt("caption:texture", 0, "clr_dynamic", 0);
+		LPCSTR texture = xml.Read("caption:texture", 0, "");
+		m_texture._set(texture);
 	}
+
+	Fvector4 red = GameConstants::GetRedColor();
+	Fvector4 green = GameConstants::GetGreenColor();
+	Fvector4 neutral = GameConstants::GetNeutralColor();
+
+	if (xml.NavigateToNode("caption:min_color", 0))
+		m_negative_color = CUIXmlInit::GetColor(xml, "caption:min_color", 0, color_rgba(red.x, red.y, red.z, red.w));
+	else
+		m_negative_color = color_rgba(red.x, red.y, red.z, red.w);
+
+	if (xml.NavigateToNode("caption:middle_color", 0))
+		m_neutral_color = CUIXmlInit::GetColor(xml, "caption:middle_color", 0, color_rgba(neutral.x, neutral.y, neutral.z, neutral.w));
+	else
+		m_neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
+
+	if (xml.NavigateToNode("caption:max_color", 0))
+		m_positive_color = CUIXmlInit::GetColor(xml, "caption:max_color", 0, color_rgba(green.x, green.y, green.z, green.w));
+	else
+		m_positive_color = color_rgba(green.x, green.y, green.z, green.w);
 }
 
 void UIBoosterInfoItem::SetCaption(LPCSTR name)
@@ -322,38 +339,62 @@ void UIBoosterInfoItem::SetValue(float value, int vle, float max_val)
 
 	fis_zero(max_val) ? m_value->SetText(str) : m_value->SetText(comp_str);
 
-	bool positive = (value >= 0.0f);
-	Fvector4 red = GameConstants::GetRedColor();
-	Fvector4 green = GameConstants::GetGreenColor();
-	Fvector4 neutral = GameConstants::GetNeutralColor();
-	u32 red_color = color_rgba(red.x, red.y, red.z, red.w);
-	u32 green_color = color_rgba(green.x, green.y, green.z, green.w);
-	u32 neutral_color = color_rgba(neutral.x, neutral.y, neutral.z, neutral.w);
-	u32 color = (positive) ? green_color : red_color;
+	bool is_positive = (value >= 0.0f);
+	Fcolor current{}, negative{}, middle{}, positive{};
+
+	value /= m_magnitude;
+	clamp(value, 0.01f, 1.0f);
 
 	if (GameConstants::GetColorizeValues())
 	{
 		if (vle == 0)
 		{
-			m_value->SetTextColor(neutral_color);
+			m_value->SetTextColor(m_neutral_color);
 		}
 		else if (vle == 1)
 		{
-			positive?m_value->SetTextColor(red_color):m_value->SetTextColor(green_color);
+			if (is_positive)
+				current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+			else
+				current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
 		}
 		else if (vle == 2)
 		{
-			positive?m_value->SetTextColor(green_color):m_value->SetTextColor(red_color);
+			if (is_positive)
+				current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+			else
+				current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
 		}
+
+		m_value->SetTextColor(current.get());
 	}
 	else
 		m_value->SetTextColor(color_rgba(170, 170, 170, 255));
 
-	if (m_texture_minus.size())
+	m_caption->InitTexture(m_texture.c_str());
+
+	if (GameConstants::GetColorizeValues() || use_color)
 	{
-		if (vle > 2)
-			positive ? m_caption->InitTexture(m_texture_plus.c_str()) : m_caption->InitTexture(m_texture_minus.c_str());
+		if (clr_dynamic)
+		{
+			if (vle > 2 || !clr_invert)
+			{
+				if (is_positive)
+					current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+				else
+					current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+			}
+			else
+			{
+				if (is_positive)
+					current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+				else
+					current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+			}
+
+			m_caption->SetTextureColor(current.get());
+		}
 		else
-			positive ? m_caption->InitTexture(m_texture_minus.c_str()) : m_caption->InitTexture(m_texture_plus.c_str());
+			m_caption->SetTextureColor(m_neutral_color);
 	}
 }

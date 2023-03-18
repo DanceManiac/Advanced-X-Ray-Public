@@ -60,7 +60,14 @@ private:
 	bool		m_sign_inverse;
 	bool		m_show_sign;
 	shared_str	m_unit_str;
-	shared_str	m_texture_minus;
-	shared_str	m_texture_plus;
+	shared_str	m_texture;
+
+	//Color
+	u32			m_negative_color;
+	u32			m_neutral_color;
+	u32			m_positive_color;
+	bool		clr_invert;
+	bool		use_color;
+	bool		clr_dynamic;
 
 }; // class UIArtefactParamItem
