@@ -360,4 +360,7 @@
 	<string id="ui_inv_psy_health">
 		<text>Пси-здоровье</text>
 	</string>
+	<string id="ui_mm_reflections_distance">
+		<text>Дальность отражений</text>
+	</string>
 </string_table>

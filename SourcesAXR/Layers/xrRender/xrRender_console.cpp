@@ -382,6 +382,8 @@ int ps_r2_lfx = 1;
 //Многопоточная загрузка текстур
 int ps_mt_texture_load = 1;
 
+float ps_r2_reflections_distance = 300.0f;
+
 Flags32 psDeviceFlags2 = { 0 };
 
 //Static on R2+
@@ -1208,6 +1210,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"r__mt_textures_load",			&ps_mt_texture_load,		0, 1); //Многопоточная загрузка текстур
 	CMD3(CCC_Token,			"r3_lowland_fog_type",			&ps_lowland_fog_type,		lowland_fog_type_token); //Тип низинного тумана
 
+	CMD4(CCC_Float,			"r3_reflections_dist",			&ps_r2_reflections_distance, 100.f, 1000.f); //Дальность отражений
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

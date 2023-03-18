@@ -128,6 +128,9 @@ void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, ino
 {
 	// Note: Distance falloff on "rain_patch_normal.ps"
 	
+	if (P.z > reflections_distance.x)
+		return;
+	
 	// Material conditions ( MAT_FLORA and Terrain for now... )
 	bool m_terrain = abs(P.w - 0.95f) <= 0.02f;
 	bool m_flora = abs(P.w - MAT_FLORA) <= 0.02f;

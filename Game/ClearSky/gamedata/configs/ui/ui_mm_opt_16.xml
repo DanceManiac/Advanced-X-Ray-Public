@@ -925,6 +925,16 @@
       <list_font_s r="240" g="217" b="182"/>
       <list_font	 r="216" g="186" b="140" font="letterica16"/>
     </combo_r3_lowland_fog_type>
+	
+    <cap_reflections_distance x="77" y="0" width="119" height="21">
+      <text font="letterica16" color="ui_6">ui_mm_reflections_distance</text>
+    </cap_reflections_distance>
+    <track_reflections_distance x="200" y="0" width="200" height="21" min="100.0" max="1000.0">
+      <options_item entry="r3_reflections_dist" group="mm_opt_video_adv"/>
+		<output_wnd x="200" y="0" width="20" height="20" format="%.f">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+		</output_wnd>
+    </track_reflections_distance>
 
     <btn_to_simply x="265" y="325" width="111" height="29">
       <text align="c" font="letterica16" r="227" g="199" b="178">ui_mm_simply</text>

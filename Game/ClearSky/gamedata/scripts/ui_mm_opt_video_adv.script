@@ -251,6 +251,13 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	handler.combo_ssr_quality = ctl
 	handler.m_preconditions[ctl]		= only_3_and_more_mode
 	
+--Дальность отражений
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_reflections_distance", _st)
+	ctl = xml:InitTrackBar("video_adv:track_reflections_distance", _st)
+	handler.track_mblur = ctl
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+	
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_soft_water",			_st)
 	ctl				= xml:InitCheck				("video_adv:check_soft_water",			_st)

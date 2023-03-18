@@ -749,6 +749,16 @@
 		    </text_color>
         </combo_r3_lowland_fog_type>
 
+        <cap_reflections_distance x="65" y="3" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_reflections_distance</text>
+        </cap_reflections_distance>
+        <track_reflections_distance x="182" y="6" width="158" height="16" min="100.0" max="1000.0">
+            <options_item entry="r3_reflections_dist" group="mm_opt_video_adv"/>
+			<output_wnd x="160" y="0" width="20" height="20" format="%.f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_reflections_distance>
+
         <btn_to_simply x="270" y="322" width="86" height="24" stretch="1">
             <text align="c" font="letterica16">ui_mm_simply</text>
             <texture>ui_inGame2_button</texture>

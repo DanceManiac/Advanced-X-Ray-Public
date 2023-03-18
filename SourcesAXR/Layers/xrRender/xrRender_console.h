@@ -175,6 +175,8 @@ extern ECORE_API int			ps_mt_texture_load;
 extern ECORE_API	u32			ps_lowland_fog_type;
 extern ECORE_API	xr_token	lowland_fog_type_token[];
 
+extern ECORE_API float			ps_r2_reflections_distance;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),
