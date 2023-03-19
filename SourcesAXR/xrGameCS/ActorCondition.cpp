@@ -56,6 +56,9 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fNarcotism				= 0.0f;
 	m_fWithdrawal				= 0.0f;
 	m_fDrugs					= 0.f;
+	m_fV_PsyHealth_Health		= 0.0f;
+
+	m_bPsyHealthKillActor		= false;
 
 	VERIFY						(object);
 	m_object					= object;
@@ -172,6 +175,9 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_WithdrawalPower = pSettings->r_float(section, "withdrawal_power_v");
 	m_fV_WithdrawalHealth = pSettings->r_float(section, "withdrawal_health_v");
 	m_fV_Drugs = pSettings->r_float(section, "drugs_v");
+
+	m_bPsyHealthKillActor = READ_IF_EXISTS(pSettings, r_bool, section, "psy_health_kill_actor", false);
+	m_fV_PsyHealth_Health = READ_IF_EXISTS(pSettings, r_float, section, "psy_health_health_v", 0.0f);
 
 	// M.F.S. Team Skills System
 	m_fV_SatietySkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_satiety_restore", 0.0f);
@@ -729,6 +735,9 @@ void CActorCondition::UpdatePsyHealth()
 		luabind::functor<void> funct;
 		if (ai().script_engine().functor("mfs_functions.generate_phantoms", funct))
 			funct();
+
+		if (m_bPsyHealthKillActor)
+			m_fDeltaHealth -= m_fV_PsyHealth_Health * GetPsy() * m_fDeltaTime;
 	}
 
 	CEffectorPP* ppePsyHealth = object().Cameras().GetPPEffector((EEffectorPPType)effPsyHealth);

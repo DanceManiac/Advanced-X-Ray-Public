@@ -205,6 +205,9 @@ public:
 	float m_fDrugs;
 	float m_fV_Drugs;
 
+	float m_fV_PsyHealth_Health;
+	bool m_bPsyHealthKillActor;
+
 	//Skills System
 	float m_fV_SatietySkill;
 	float m_fV_HealthSkill;
