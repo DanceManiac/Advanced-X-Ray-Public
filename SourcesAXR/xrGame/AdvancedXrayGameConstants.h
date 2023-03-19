@@ -44,5 +44,6 @@ namespace GameConstants
 	Fvector4 GetNeutralColor();
 	Fvector4 GetSSFX_DefaultDoF();
 	Fvector4 GetSSFX_FocusDoF();
+	bool GetSSFX_EnableBoreDoF();
 	LPCSTR GetAfInfluenceMode();
 };

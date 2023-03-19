@@ -3057,7 +3057,7 @@ void CWeapon::OnStateSwitch	(u32 S)
 	{
 		CActor* current_actor = smart_cast<CActor*>(H_Parent());
 
-		if ((GetState() == eReload || GetState() == eUnMisfire || GetState() == eBore) && current_actor)
+		if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && GameConstants::GetSSFX_EnableBoreDoF())) && current_actor)
 		{
 			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
 			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;

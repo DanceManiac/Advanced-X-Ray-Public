@@ -45,6 +45,7 @@ LPCSTR	m_sAfInfluenceMode = "from_belt";
 //SSFX DoF
 Fvector4 m_FV4DefaultDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
 Fvector4 m_FV4FocusDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
+bool	m_bEnableBoreDoF = true;
 
 namespace GameConstants
 {
@@ -91,6 +92,7 @@ namespace GameConstants
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
+		m_bEnableBoreDoF = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ssfx_dof", "bore_dof_enabled", true);
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -293,6 +295,11 @@ namespace GameConstants
 	Fvector4 GetSSFX_FocusDoF()
 	{
 		return m_FV4FocusDoF;
+	}
+
+	bool GetSSFX_EnableBoreDoF()
+	{
+		return m_bEnableBoreDoF;
 	}
 
 	LPCSTR GetAfInfluenceMode()
