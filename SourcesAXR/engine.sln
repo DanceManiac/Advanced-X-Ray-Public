@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32126.315
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{89F6A7EE-3BBE-45D3-A8A8-5D9366CD987B}"
 EndProject
@@ -214,7 +214,6 @@ Global
 		{EA5932F3-02FE-4AD3-89E8-7072DC465D25}.Release|Win32.ActiveCfg = Release|Win32
 		{EA5932F3-02FE-4AD3-89E8-7072DC465D25}.Release|Win32.Build.0 = Release|Win32
 		{EA5932F3-02FE-4AD3-89E8-7072DC465D25}.Release|x64.ActiveCfg = Release|x64
-		{EA5932F3-02FE-4AD3-89E8-7072DC465D25}.Release|x64.Build.0 = Release|x64
 		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug|Win32.Build.0 = Debug|Win32
 		{EF76867B-6EB8-4DC0-A1D6-E964FAD6FC7B}.Debug|x64.ActiveCfg = Debug|Win32
@@ -271,7 +270,6 @@ Global
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|Win32.ActiveCfg = Release|Win32
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|Win32.Build.0 = Release|Win32
 		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|x64.ActiveCfg = Release|x64
-		{3AD26FD3-4F52-4E22-A4CF-AD4C49E74C61}.Release|x64.Build.0 = Release|x64
 		{A19B1DF2-82EC-4364-8BDF-85D13A1C89B5}.Debug|Win32.ActiveCfg = Debug|Win32
 		{A19B1DF2-82EC-4364-8BDF-85D13A1C89B5}.Debug|Win32.Build.0 = Debug|Win32
 		{A19B1DF2-82EC-4364-8BDF-85D13A1C89B5}.Debug|x64.ActiveCfg = Debug|x64
@@ -535,7 +533,6 @@ Global
 		{032A10AB-E44C-4751-A290-001EF99E664A}.Release|Win32.ActiveCfg = Release|Win32
 		{032A10AB-E44C-4751-A290-001EF99E664A}.Release|Win32.Build.0 = Release|Win32
 		{032A10AB-E44C-4751-A290-001EF99E664A}.Release|x64.ActiveCfg = Release|x64
-		{032A10AB-E44C-4751-A290-001EF99E664A}.Release|x64.Build.0 = Release|x64
 		{1924EF23-A05E-40E5-93F2-6CCD64BE1F8B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{1924EF23-A05E-40E5-93F2-6CCD64BE1F8B}.Debug|Win32.Build.0 = Debug|Win32
 		{1924EF23-A05E-40E5-93F2-6CCD64BE1F8B}.Debug|x64.ActiveCfg = Debug|Win32

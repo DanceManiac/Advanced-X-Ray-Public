@@ -94,30 +94,30 @@ enum FieldType {
 #       endif //IMGUIFIELDINFO_MAX_TOOLTIP_LENGTH
 
     public:
-        int type;                   // usually one of the ImGui::FieldTypes in imguihelper.h
-        void* pdata;                // ptr to a variable of type "type" (or to an array of "types")
-        char label[IMGUIFIELDINFO_MAX_LABEL_LENGTH];
-        char tooltip[IMGUIFIELDINFO_MAX_TOOLTIP_LENGTH];
+        int type{};                   // usually one of the ImGui::FieldTypes in imguihelper.h
+        void* pdata{};                // ptr to a variable of type "type" (or to an array of "types")
+        char label[IMGUIFIELDINFO_MAX_LABEL_LENGTH]{};
+        char tooltip[IMGUIFIELDINFO_MAX_TOOLTIP_LENGTH]{};
         // in case of FT_STRING max number of characters, in case of FT_FLOAT or FT_DOUBLE the number of decimals to be displayed (experiment for other types and see)
-        int precision;
+        int precision{};
         // used only for FT_INT, FT_UNSIGNED, FT_FLOAT, FT_DOUBLE
-        int numArrayElements;       // up to 4
-        double minValue,maxValue;
-        bool needsRadiansToDegs;    // optional for FT_FLOAT and FT_DOUBLE only
+        int numArrayElements{};       // up to 4
+        double minValue{}, maxValue{};
+        bool needsRadiansToDegs{};    // optional for FT_FLOAT and FT_DOUBLE only
         // used only for FT_ENUM (internally it uses FT_INT, pdata must point to an int):
-        int numEnumElements;
+        int numEnumElements{};
         typedef bool (*TextFromEnumDelegate)(void*, int, const char**); // userData is the first param
-        TextFromEnumDelegate  textFromEnumFunctionPointer;  // used only when type==FT_ENUM, otherwise set it to NULL. The method is used to convert an int to a char*.
-        void* userData;          // passed to textFromEnumFunctionPointer when type==FT_ENUM (useful if you want to share the same TextFromEnumDelegate for multiple enums). Otherwise set it to NULL or use it as you like.
+        TextFromEnumDelegate  textFromEnumFunctionPointer{};  // used only when type==FT_ENUM, otherwise set it to NULL. The method is used to convert an int to a char*.
+        void* userData{};          // passed to textFromEnumFunctionPointer when type==FT_ENUM (useful if you want to share the same TextFromEnumDelegate for multiple enums). Otherwise set it to NULL or use it as you like.
         typedef int (*GetNumEnumElementsDelegate)(void*); // userData is the first param
-        GetNumEnumElementsDelegate getNumEnumElementsFunctionPointer;  // used OPTIONALLY only when type==FT_ENUM, otherwise set it to NULL. The method overrides the value of 'numEnumElements'.
+        GetNumEnumElementsDelegate getNumEnumElementsFunctionPointer{};  // used OPTIONALLY only when type==FT_ENUM, otherwise set it to NULL. The method overrides the value of 'numEnumElements'.
         typedef void (*EditedFieldDelegate)(FieldInfo& field,int widgetIndex);  // widgetIndex is always zero
-        EditedFieldDelegate editedFieldDelegate;
+        EditedFieldDelegate editedFieldDelegate{};
         // used only for FT_CUSTOM
         typedef bool (*RenderFieldDelegate)(FieldInfo& field);
-        RenderFieldDelegate renderFieldDelegate;
+        RenderFieldDelegate renderFieldDelegate{};
         typedef bool (*CopyFieldDelegate)(FieldInfo& fdst,const FieldInfo& fsrc);
-        CopyFieldDelegate copyFieldDelegate;
+        CopyFieldDelegate copyFieldDelegate{};
 
 //-------------------------------------------------------------------------------
 #       if (defined(IMGUIHELPER_H_) && !defined(NO_IMGUIHELPER_SERIALIZATION))
@@ -262,8 +262,8 @@ class Node
 {
     public:
     virtual ~Node() {}
-    mutable void* user_ptr;
-    mutable int userID;
+    mutable void* user_ptr{};
+    mutable int userID{};
     inline const char* getName() const {return Name;}
     inline int getType() const {return typeID;}
     inline int getNumInputSlots() const {return InputsCount;}
@@ -279,7 +279,7 @@ class Node
         bool nodeEdited = false;
         for (int i=0,isz=fields.size();i<isz;i++)   {
             FieldInfo& f = fields[i];
-            nodeEdited|=f.render(nodeWidth);
+            nodeEdited|=f.render(static_cast<int>(nodeWidth));
         }
         return nodeEdited;
     }
@@ -312,14 +312,14 @@ class Node
     // ---------------
 
     ImVec2  Pos, Size;
-    char    Name[IMGUINODE_MAX_NAME_LENGTH];
-    int     InputsCount, OutputsCount;
-    char    InputNames[IMGUINODE_MAX_INPUT_SLOTS][IMGUINODE_MAX_SLOT_NAME_LENGTH];
-    char    OutputNames[IMGUINODE_MAX_OUTPUT_SLOTS][IMGUINODE_MAX_SLOT_NAME_LENGTH];
-    mutable float startEditingTime; // used for Node Editing Callbacks
-    mutable bool isOpen;
+    char    Name[IMGUINODE_MAX_NAME_LENGTH]{};
+    int     InputsCount{}, OutputsCount{};
+    char    InputNames[IMGUINODE_MAX_INPUT_SLOTS][IMGUINODE_MAX_SLOT_NAME_LENGTH]{};
+    char    OutputNames[IMGUINODE_MAX_OUTPUT_SLOTS][IMGUINODE_MAX_SLOT_NAME_LENGTH]{};
+    mutable float startEditingTime{}; // used for Node Editing Callbacks
+    mutable bool isOpen{};
     mutable bool isSelected;
-    int typeID;
+    int typeID{};
     float baseWidthOverride;
     bool mustOverrideName,mustOverrideInputSlots,mustOverrideOutputSlots;
     ImU32 overrideTitleTextColor,overrideTitleBgColor;  // 0 -> don't override
@@ -360,7 +360,7 @@ struct NodeLink
         OutputNode = output_node; OutputSlot = output_slot;
     }
 
-    friend struct NodeGraphEditor;
+    friend class NodeGraphEditor;
 };
 
 class NodeGraphEditor
@@ -634,7 +634,7 @@ class NodeGraphEditor
     }
     int getNumNodeInstances(int nodeType,int* pMaxNumAllowedInstancesForThisNodeType=NULL) const {
         const AvailableNodeInfo* ni = fetchAvailableNodeInfo(nodeType);
-        if (pMaxNumAllowedInstancesForThisNodeType) *pMaxNumAllowedInstancesForThisNodeType = ni ? ni->maxNumInstances : -1;
+        if (pMaxNumAllowedInstancesForThisNodeType) *pMaxNumAllowedInstancesForThisNodeType = ni->maxNumInstances;
         return ni->curNumInstances;
     }
     bool addLink(Node* inputNode, int input_slot, Node* outputNode, int output_slot,bool checkIfAlreadyPresent = false)	{
@@ -693,7 +693,7 @@ class NodeGraphEditor
     // It should be better not to add/delete node/links in the callbacks... (but all is untested here)
     void setNodeCallback(NodeCallback cb) {nodeCallback=cb;}
     void setLinkCallback(LinkCallback cb) {linkCallback=cb;}
-    void setNodeEditedCallbackTimeThreshold(int seconds) {nodeEditedTimeThreshold=seconds;}
+    void setNodeEditedCallbackTimeThreshold(int seconds) {nodeEditedTimeThreshold= static_cast<float>(seconds);}
 	void setLeftPaneCallback(LeftPaneCallback cb) { leftPaneCallback = cb; }
 	void setSaveCallback(SaveCallback cb) { saveCallback = cb; }
 

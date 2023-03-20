@@ -76,7 +76,7 @@ inline static void GetVerticalGradientTopAndBottomColors(ImU32 c,float fillColor
 
     // New code:
     //#define IM_COL32(R,G,B,A)    (((ImU32)(A)<<IM_COL32_A_SHIFT) | ((ImU32)(B)<<IM_COL32_B_SHIFT) | ((ImU32)(G)<<IM_COL32_G_SHIFT) | ((ImU32)(R)<<IM_COL32_R_SHIFT))
-    const int fcgi = fillColorGradientDeltaIn0_05*255.0f;
+    const int fcgi = static_cast<int>(fillColorGradientDeltaIn0_05*255.0f);
     const int R = (unsigned char) (c>>IM_COL32_R_SHIFT);    // The cast should reset upper bits (as far as I hope)
     const int G = (unsigned char) (c>>IM_COL32_G_SHIFT);
     const int B = (unsigned char) (c>>IM_COL32_B_SHIFT);
@@ -134,7 +134,7 @@ static void ImDrawListAddConvexPolyFilledWithVerticalGradient(ImDrawList *dl, co
             else if (h > maxy) maxy = h;
         }
     }
-    height = maxy-miny;
+    height = static_cast<int>(maxy-miny);
     const ImVec4 colTopf = ColorConvertU32ToFloat4(colTop);
     const ImVec4 colBotf = ColorConvertU32ToFloat4(colBot);
 
@@ -159,8 +159,11 @@ static void ImDrawListAddConvexPolyFilledWithVerticalGradient(ImDrawList *dl, co
             dl->_IdxWritePtr += 3;
         }
 
+#pragma warning(disable:6386)
         // Compute normals
-        ImVec2* temp_normals = (ImVec2*)alloca(points_count * sizeof(ImVec2));
+        ImVec2* temp_normals = (ImVec2*)_malloca(points_count * sizeof(ImVec2));
+        if (!temp_normals)
+            return;
         for (int i0 = points_count-1, i1 = 0; i1 < points_count; i0 = i1++)
         {
             const ImVec2& p0 = points[i0];
@@ -189,8 +192,8 @@ static void ImDrawListAddConvexPolyFilledWithVerticalGradient(ImDrawList *dl, co
             // Add vertices
             //_VtxWritePtr[0].pos = (points[i1] - dm); _VtxWritePtr[0].uv = uv; _VtxWritePtr[0].col = col;        // Inner
             //_VtxWritePtr[1].pos = (points[i1] + dm); _VtxWritePtr[1].uv = uv; _VtxWritePtr[1].col = col_trans;  // Outer
-            dl->_VtxWritePtr[0].pos = (points[i1] - dm); dl->_VtxWritePtr[0].uv = uv; dl->_VtxWritePtr[0].col = GetVerticalGradient(colTopf,colBotf,points[i1].y-miny,height);        // Inner
-            dl->_VtxWritePtr[1].pos = (points[i1] + dm); dl->_VtxWritePtr[1].uv = uv; dl->_VtxWritePtr[1].col = GetVerticalGradient(colTransTopf,colTransBotf,points[i1].y-miny,height);  // Outer
+            dl->_VtxWritePtr[0].pos = (points[i1] - dm); dl->_VtxWritePtr[0].uv = uv; dl->_VtxWritePtr[0].col = GetVerticalGradient(colTopf,colBotf,points[i1].y-miny,static_cast<float>(height));        // Inner
+            dl->_VtxWritePtr[1].pos = (points[i1] + dm); dl->_VtxWritePtr[1].uv = uv; dl->_VtxWritePtr[1].col = GetVerticalGradient(colTransTopf,colTransBotf,points[i1].y-miny,static_cast<float>(height));  // Outer
             dl->_VtxWritePtr += 2;
 
             // Add indexes for fringes
@@ -209,7 +212,7 @@ static void ImDrawListAddConvexPolyFilledWithVerticalGradient(ImDrawList *dl, co
         for (int i = 0; i < vtx_count; i++)
         {
             //_VtxWritePtr[0].pos = points[i]; _VtxWritePtr[0].uv = uv; _VtxWritePtr[0].col = col;
-            dl->_VtxWritePtr[0].pos = points[i]; dl->_VtxWritePtr[0].uv = uv; dl->_VtxWritePtr[0].col = GetVerticalGradient(colTopf,colBotf,points[i].y-miny,height);
+            dl->_VtxWritePtr[0].pos = points[i]; dl->_VtxWritePtr[0].uv = uv; dl->_VtxWritePtr[0].col = GetVerticalGradient(colTopf,colBotf,points[i].y-miny,static_cast<float>(height));
             dl->_VtxWritePtr++;
         }
         for (int i = 2; i < points_count; i++)
@@ -297,7 +300,7 @@ bool NodeGraphEditor::Style::Edit(NodeGraphEditor::Style& s) {
     changed|=EditColorImU32(    "color_link",s.color_link);
     changed|=ImGui::DragFloat(  "link_line_width",&s.link_line_width,dragSpeed,1.f,6.f,prec);
     changed|=ImGui::DragFloat(  "link_control_point_distance",&s.link_control_point_distance,dragSpeed,10.f,200.f,prec);
-    changed|=ImGui::DragInt(  "link_num_segments",&s.link_num_segments,dragSpeed,0,16.f);
+    changed|=ImGui::DragInt(  "link_num_segments",&s.link_num_segments,dragSpeed,0,16);
     ImGui::Spacing();
     changed|=ImGui::ColorEdit4( "color_node_title",&s.color_node_title.x);
     changed|=ImGui::EditColorImU32( "color_node_title_background",s.color_node_title_background);
@@ -543,7 +546,7 @@ void NodeGraphEditor::render()
                         menuNode=node;
                         open_context_menu=true;
                     }
-                    else if (io.MouseReleased[2] || ImGui::IsKeyPressed(io.KeyMap[ImGuiKey_Home]) || io.MouseDoubleClicked[0]) node_to_center_view_around = node;
+                    else if (io.MouseReleased[2] || ImGui::IsKeyPressed((ImGuiKey)io.KeyMap[ImGuiKey_Home]) || io.MouseDoubleClicked[0]) node_to_center_view_around = node;
                 }
                 ImGui::PopID();
             }
@@ -893,7 +896,7 @@ void NodeGraphEditor::render()
 
                 bool nodeInEditMode = false;
                 ImGui::BeginGroup(); // Lock horizontal position
-                ImGui::SetNextTreeNodeOpen(node->isOpen,ImGuiCond_Always);
+                ImGui::SetNextItemOpen(node->isOpen,ImGuiCond_Always);
 
                 ImU32 titleTextColorU32 = 0, titleBgColorU32 = 0;float titleBgGradient = -1.f;
                 node->getDefaultTitleBarColors(titleTextColorU32,titleBgColorU32,titleBgGradient);
@@ -952,8 +955,8 @@ void NodeGraphEditor::render()
                     ImGui::SameLine();
                     //== Actual code to draw buttons (same code is copied below) =====================
                     ImGui::PushStyleColor(ImGuiCol_Button,transparentColor);
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,ImVec4(0.75,0.75,0.75,0.5));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive,ImVec4(0.75,0.75,0.75,0.77));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,ImVec4(0.75f,0.75f,0.75f,0.5f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive,ImVec4(0.75f,0.75f,0.75f,0.77f));
                     ImGui::PushStyleColor(ImGuiCol_Text,titleTextColor);
                     ImGui::PushID("NodeButtons");
                     if (show_node_copy_paste_buttons)   {
@@ -1040,8 +1043,8 @@ void NodeGraphEditor::render()
                                     ,0);
                     //== Actual code to draw buttons (same code is copied below) =====================
                     ImGui::PushStyleColor(ImGuiCol_Button,transparentColor);
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,ImVec4(0.75,0.75,0.75,0.5));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive,ImVec4(0.75,0.75,0.75,0.77));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,ImVec4(0.75f,0.75f,0.75f,0.5f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive,ImVec4(0.75f,0.75f,0.75f,0.77f));
                     ImGui::PushStyleColor(ImGuiCol_Text,titleTextColor);
                     ImGui::PushID("NodeButtons");
                     if (show_node_copy_paste_buttons)   {
@@ -1440,7 +1443,7 @@ void NodeGraphEditor::render()
 
 
             // Open context menu
-            if (!open_context_menu && (node_hovered_in_scene || node_hovered_in_list) && ((ImGui::IsKeyReleased(io.KeyMap[ImGuiKey_Delete]) && !ImGui::GetIO().WantTextInput) || mustDeleteANodeSoon)) {
+            if (!open_context_menu && (node_hovered_in_scene || node_hovered_in_list) && ((ImGui::IsKeyReleased((ImGuiKey)io.KeyMap[ImGuiKey_Delete]) && !ImGui::GetIO().WantTextInput) || mustDeleteANodeSoon)) {
                 // Delete selected node directly:
                 menuNode = node_hovered_in_scene ? node_hovered_in_scene : node_hovered_in_list ? node_hovered_in_list : NULL;
                 if (menuNode==node_to_fire_edit_callback) node_to_fire_edit_callback = NULL;
@@ -2215,7 +2218,7 @@ FieldInfo &FieldInfoVector::addFieldCustom(FieldInfo::RenderFieldDelegate render
 }
 bool NodeGraphEditor::UseSlidersInsteadOfDragControls = false;
 template<typename T> inline static T GetRadiansToDegs() {
-    static T factor = T(180)/(3.1415926535897932384626433832795029);
+    static T factor = T(180)/T(3.1415926535897932384626433832795029);
     return factor;
 }
 template<typename T> inline static T GetDegsToRadians() {
@@ -2396,7 +2399,7 @@ bool FieldInfo::render(int nodeWidth)   {
         const float maxHeight =(float) (f.maxValue<0 ? 0 : f.maxValue);
         const bool multiline = f.needsRadiansToDegs;
         ImGui::Text("%s",label);
-        float width = nodeWidth;
+        float width = static_cast<float>(nodeWidth);
         if (flags<0) {
             //ImVec2 pos = ImGui::GetCursorScreenPos();
             const float startPos = ImGui::GetCursorPos().x + width;
@@ -2438,6 +2441,7 @@ bool FieldInfo::render(int nodeWidth)   {
         if (f.numArrayElements==3) changed|=ImGui::ColorEdit3(label,pColor);//,ImGuiColorEditFlags_NoAlpha);
         else changed|=ImGui::ColorEdit4(label,pColor);//,ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview);
     }
+    break;
     case FT_CUSTOM: {
         if (f.renderFieldDelegate) changed = f.renderFieldDelegate(f);
     }
@@ -2737,7 +2741,7 @@ class CombineNode : public Node {
     CombineNode() : Base() {}
     static const int TYPE = MNT_COMBINE_NODE;
 
-    float fraction;
+    float fraction{};
 
     virtual const char* getTooltip() const {return "CombineNode tooltip.";}
     virtual const char* getInfo() const {return "CombineNode info.\n\nThis is supposed to display some info about this node.";}
@@ -2781,11 +2785,11 @@ class CommentNode : public Node {
     static const int TYPE = MNT_COMMENT_NODE;
     static const int TextBufferSize = 128;
 
-    char comment[TextBufferSize];			    // field 1
-    char comment2[TextBufferSize];			    // field 2
-    char comment3[TextBufferSize];			    // field 3
-    char comment4[TextBufferSize];			    // field 4
-    bool flag;                                  // field 5
+    char comment[TextBufferSize]{};			    // field 1
+    char comment2[TextBufferSize]{};			    // field 2
+    char comment3[TextBufferSize]{};			    // field 3
+    char comment4[TextBufferSize]{};			    // field 4
+    bool flag{};                                  // field 5
 
     virtual const char* getTooltip() const {return "CommentNode tooltip.";}
     virtual const char* getInfo() const {return "CommentNode info.\n\nThis is supposed to display some info about this node.";}
@@ -2838,9 +2842,9 @@ class ComplexNode : public Node {
     ComplexNode() : Base() {}
     static const int TYPE = MNT_COMPLEX_NODE;
 
-    float Value[3];     // field 1
+    float Value[3]{};     // field 1
     ImVec4 Color;       // field 2
-    int enumIndex;      // field 3
+    int enumIndex{};      // field 3
 
     // Support static method for enumIndex (the signature is the same used by ImGui::Combo(...))
     static bool GetTextFromEnumIndex(void* ,int value,const char** pTxt) {

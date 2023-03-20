@@ -153,8 +153,7 @@ bool Editor_KeyPress(int key)
 	case DIK_NUMPAD6:
 	case DIK_NUMPAD7:
 	case DIK_NUMPAD8:
-	case DIK_NUMPAD9:
-		io.AddInputCharacter('0' + key - DIK_NUMPAD0);
+	case DIK_NUMPAD9: io.AddInputCharacter(unsigned int('0' + key - DIK_NUMPAD0));
 		break;
     default: 
         if (key < 512)

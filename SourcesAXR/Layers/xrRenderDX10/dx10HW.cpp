@@ -2,7 +2,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#pragma hdrstop
 
 #pragma warning(disable:4995)
 #include <d3dx9.h>
@@ -15,8 +14,8 @@
 #include "StateManager\dx10StateCache.h"
 
 #include <imgui.h>
-#include "imgui_impl_dx10.h"
-#include "imgui_impl_dx11.h"
+#include "backends\imgui_impl_dx11.h"
+#include "backends\imgui_impl_win32.h"
 
 #ifndef _EDITOR
 void	fill_vid_mode_list			(CHW* _hw);
@@ -403,16 +402,40 @@ void CHW::CreateDevice( HWND m_hWnd, bool move_window )
 	fill_vid_mode_list							(this);
 #endif
 
-	ImGui_ImplDX11_Init(m_hWnd, pDevice, pContext);
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::SetAllocatorFunctions(
+        [](size_t size, void* /*user_data*/)
+        {
+            return xr_malloc(size);
+        },
+        [](void* ptr, void* /*user_data*/)
+        {
+            xr_free(ptr);
+        }
+    );
+
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplDX11_Init(pDevice, pContext);
+    ImGui_ImplWin32_Init(m_hWnd);
 }
 
 void CHW::DestroyDevice()
 {
-#ifdef USE_DX11
-	ImGui_ImplDX11_Shutdown();
-#else
-	ImGui_ImplDX10_Shutdown();
-#endif
+    // Cleanup
+    ImGui_ImplDX11_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+
 	//	Destroy state managers
 	StateManager.Reset();
 	RSManager.ClearStateArray();

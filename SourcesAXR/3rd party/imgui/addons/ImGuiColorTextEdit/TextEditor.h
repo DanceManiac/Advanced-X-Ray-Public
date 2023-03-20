@@ -10,7 +10,7 @@
 #include <regex>
 #include "../../imgui.h"
 
-class IMGUI_API TextEditor
+class TextEditor
 {
 public:
 	enum class PaletteIndex
@@ -138,7 +138,7 @@ public:
 	typedef std::vector<Glyph> Line;
 	typedef std::vector<Line> Lines;
 
-	struct IMGUI_API LanguageDefinition
+	struct LanguageDefinition
 	{
 		typedef std::pair<std::string, PaletteIndex> TokenRegexString;
 		typedef std::vector<TokenRegexString> TokenRegexStrings;
@@ -151,7 +151,7 @@ public:
 
 		TokenRegexStrings mTokenRegexStrings;
 
-		bool mCaseSensitive;
+		bool mCaseSensitive{};
 
 		static LanguageDefinition CPlusPlus();
 		static LanguageDefinition HLSL();

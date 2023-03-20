@@ -2,7 +2,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#pragma hdrstop
 
 #pragma warning(disable:4995)
 #include <d3dx9.h>
@@ -10,7 +9,8 @@
 #include "HW.h"
 #include "../../xrEngine/XR_IOConsole.h"
 #include <imgui.h>
-#include "../xrRenderDX9/imgui_impl_dx9.h"
+#include "backends\imgui_impl_dx9.h"
+#include "backends\imgui_impl_win32.h"
 
 #ifndef _EDITOR
 	void	fill_vid_mode_list			(CHW* _hw);
@@ -166,6 +166,8 @@ D3DFORMAT CHW::selectDepthStencil	(D3DFORMAT fTarget)
 void	CHW::DestroyDevice	()
 {
 	ImGui_ImplDX9_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
 
 	_SHOW_REF				("refCount:pBaseZB",pBaseZB);
 	_RELEASE				(pBaseZB);
@@ -433,7 +435,31 @@ void		CHW::CreateDevice		(HWND m_hWnd, bool move_window)
 	fill_vid_mode_list							(this);
 #endif
 
-	ImGui_ImplDX9_Init(m_hWnd, pDevice);
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::SetAllocatorFunctions(
+        [](size_t size, void* /*user_data*/)
+        {
+            return xr_malloc(size);
+        },
+        [](void* ptr, void* /*user_data*/)
+        {
+            xr_free(ptr);
+        }
+    );
+
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+	ImGui_ImplDX9_Init(pDevice);
+    ImGui_ImplWin32_Init(m_hWnd);
 }
 
 u32	CHW::selectPresentInterval	()
