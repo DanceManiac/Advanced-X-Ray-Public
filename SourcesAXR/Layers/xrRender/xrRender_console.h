@@ -284,13 +284,6 @@ enum
 	R3_NO_RAM_TEXTURES = (1 << 0),
 };
 
-extern ECORE_API Flags32 ps_r3_pbr_flags;
-
-enum
-{
-	R_FLAG_PSEUDOPBR = (1 << 0),
-};
-
 extern ECORE_API Flags32 ps_r2_static_flags;
 
 enum

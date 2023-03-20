@@ -367,11 +367,6 @@ Fvector4 ps_dev_param_6 = { .0f, .0f, .0f, .0f };
 Fvector4 ps_dev_param_7 = { .0f, .0f, .0f, .0f };
 Fvector4 ps_dev_param_8 = { .0f, .0f, .0f, .0f };
 
-//Pseudopbr
-float ps_r3_pbr_intensity = 25.0f;
-float ps_r3_pbr_roughness = 0.5f;
-Flags32	ps_r3_pbr_flags = { 0 };
-
 //Geometry optimization from Anomaly
 int opt_static = 0;
 int opt_dynamic = 0;
@@ -1107,11 +1102,6 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r2_ss_sunshafts_length",		&ps_r2_ss_sunshafts_length, .2f, 1.5f);
 	CMD4(CCC_Float,		"r2_ss_sunshafts_radius",		&ps_r2_ss_sunshafts_radius, .5f, 2.f);
 	//end ogse sunshafts 
-
-	// PseudoPBR
-	//CMD4(CCC_Float,		"r3_pbr_intensity",				&ps_r3_pbr_intensity,		.5f, 25.f);
-	//CMD4(CCC_Float,		"r3_pbr_roughness",				&ps_r3_pbr_roughness,		.0f, 1.f);
-	//CMD3(CCC_Mask,		"r3_pbr",						&ps_r3_pbr_flags,			R_FLAG_PSEUDOPBR);
 	
 	CMD3(CCC_Mask,		"r2_volumetric_lights",			&ps_r2_ls_flags,			R2FLAG_VOLUMETRIC_LIGHTS);
 //	CMD3(CCC_Mask,		"r2_sun_shafts",				&ps_r2_ls_flags,			R2FLAG_SUN_SHAFTS);

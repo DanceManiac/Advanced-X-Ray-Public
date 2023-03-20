@@ -284,14 +284,6 @@
             <options_item entry="r__shader_nvg" group="mm_opt_video_adv" depend="vid"/>
         </check_shader_nvg>
 		
-        <cap_pbr x="70" y="3" width="135" height="24">
-            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_pbr</text>
-        </cap_pbr>
-        <check_pbr x="217" y="0" width="44" height="29">
-	        <texture>ui_inGame2_checkbox</texture>
-            <options_item entry="r3_pbr" group="mm_opt_video_adv" depend="restart"/>
-        </check_pbr>
-		
         <cap_mblur_enable x="70" y="3" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_mblur_enable</text>
         </cap_mblur_enable>

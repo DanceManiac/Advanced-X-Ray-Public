@@ -466,18 +466,6 @@ static class dev_param_8 : public R_constant_setup
 	}
 }    dev_param_8;
 
-// PseudoPBR
-extern float ps_r3_pbr_intensity;
-extern float ps_r3_pbr_roughness;
-
-static class cl_pseudopbr : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_r3_pbr_roughness, ps_r3_pbr_intensity, 0, 0);
-	}
-} cl_pseudopbr;
-
 static class cl_pda_params : public R_constant_setup
 {
 	u32 marker;
@@ -616,8 +604,6 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("shader_param_7",	&dev_param_7);
 	r_Constant				("shader_param_8",	&dev_param_8);
 
-	//PseudoPBR
-	r_Constant				("pbr_settings",	&cl_pseudopbr);
 	// PDA
 	r_Constant				("pda_params",		&binder_pda_params);
 	//SSS DoF

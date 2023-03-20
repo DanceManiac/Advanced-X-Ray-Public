@@ -246,9 +246,6 @@
 	<string id="ui_mm_shader_nvg">
 		<text>Шейдерный ПНВ</text>
 	</string>
-	<string id="ui_mm_pbr">
-		<text>Псевдо PBR</text>
-	</string>
 	<string id="ui_mm_3d_pda">
 		<text>3D КПК</text>
 	</string>
