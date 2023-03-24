@@ -7,8 +7,6 @@
 CUIButtonHint*		g_btnHint = NULL; 
 CUIButtonHint*		g_statHint = NULL;
 
-
-
 CUIButtonHint::CUIButtonHint	()
 :m_ownerWnd(NULL),m_enabledOnFrame(false)
 {

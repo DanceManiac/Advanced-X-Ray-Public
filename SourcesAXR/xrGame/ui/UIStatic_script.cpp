@@ -24,6 +24,7 @@ void CUIStatic::script_register(lua_State *L)
 		.def("TextControl",			&CUIStatic::TextItemControl)
 		.def("InitTexture",			&CUIStatic::InitTexture )
 		.def("SetTextureRect",		&CUIStatic::SetTextureRect_script)
+		.def("SetHint",				&CUIStatic::SetHint) //MNP
 		.def("SetStretchTexture",	&CUIStatic::SetStretchTexture)
 		.def("GetTextureRect",		&CUIStatic::GetTextureRect_script),
 

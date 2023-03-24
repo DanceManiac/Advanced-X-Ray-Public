@@ -88,7 +88,7 @@ public:
 	virtual void			ColorAnimationSetTextureColor	(u32 color, bool only_alpha);
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
 
-
+			void			SetHint					(LPCSTR hint_text); //MNP
 protected:
 	CUILines*		m_pTextControl;
 
