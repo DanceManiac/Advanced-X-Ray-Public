@@ -238,7 +238,7 @@ float3 SSFX_calc_sky(float3 dir)
 #ifndef SSFX_MODEXE
 	return saturate(L_hemi_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #else
-	return saturate(sky_color.bgr * 3.0f) * lerp(sky0, sky1, L_ambient.w);
+	return saturate(sky_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #endif
 }
 

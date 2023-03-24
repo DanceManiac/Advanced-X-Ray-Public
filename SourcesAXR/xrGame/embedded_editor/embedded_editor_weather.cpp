@@ -366,11 +366,9 @@ void ShowWeatherEditor(bool& show)
 
 	ImGui::Text(u8"Sky parameters");
 
-	Fvector temp;
-	temp = convert(cur->sky_color);
-	if (ImGui::ColorEdit3("sky_color", (float*)&temp))
+	if (ImGui::ColorEdit3("sky_color", (float*)&cur->sky_color))
 		changed = true;
-	cur->sky_color = convert(temp);
+
 	if (ImGui::SliderFloat("sky_rotation", &cur->sky_rotation, 0.0f, 6.28318f))
 		changed = true;
 	if (editTexture("sky_texture", cur->sky_texture_name)) {
