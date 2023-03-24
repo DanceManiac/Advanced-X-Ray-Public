@@ -224,6 +224,8 @@ bool CUIXmlInit::InitStatic(CUIXml& xml_doc, LPCSTR path,
 	bool bComplexMode = xml_doc.ReadAttribInt(path, index, "complex_mode",0)?true:false;
 	if(bComplexMode)
 		pWnd->SetTextComplexMode(bComplexMode);
+
+	pWnd->m_stat_hint_text = xml_doc.ReadAttrib(path, index, "hint", "");
 	
 	return true;
 }

@@ -11,12 +11,18 @@
 
 #include "../Include/xrRender/UIRender.h"
 
+#include "UIBtnHint.h"
+#include "UICursor.h"
+
 const char * const	clDefault	= "default";
 #define CREATE_LINES if (!m_pLines) {m_pLines = xr_new<CUILines>(); m_pLines->SetTextAlignment(CGameFont::alLeft);}
 #define LA_CYCLIC			(1<<0)
 #define LA_ONLYALPHA		(1<<1)
 #define LA_TEXTCOLOR		(1<<2)
 #define LA_TEXTURECOLOR		(1<<3)
+
+bool is_in2(const Frect & b1, const Frect & b2);
+
 //(1<<4) registered !!!
 void lanim_cont::set_defaults()
 {
@@ -157,14 +163,16 @@ void CUIStatic::DrawText()
 
 		if(IsHighlightText() && xr_strlen(m_pLines->GetText())>0 && m_bEnableTextHighlighting)
 			DrawHighlightedText();		
-		else{
+		else
+		{
 			Fvector2			p;
 			GetAbsolutePos		(p);
 			p.add				(m_TextOffset);
 			m_pLines->Draw		(p.x, p.y);
 		}
-
 	}
+	if (g_statHint->Owner() == this)
+		g_statHint->Draw_();
 }
 #include "../../Include/xrRender/UIShader.h"
 
@@ -277,6 +285,31 @@ void CUIStatic::Update()
 			EnableHeading_int	( !!m_lanim_xform.m_lanimFlags.test(1<<4) );
 			SetWndSize			(m_lanim_xform.m_origSize);
 		}
+	}
+
+	if(CursorOverWindow() && m_stat_hint_text.size() && !g_statHint->Owner() && Device.dwTimeGlobal>m_dwFocusReceiveTime+700)
+	{
+		g_statHint->SetHintText	(this, *m_stat_hint_text);
+
+		Fvector2 c_pos			= GetUICursor()->GetCursorPosition();
+		Frect vis_rect;
+		vis_rect.set			(0,0,UI_BASE_WIDTH, UI_BASE_HEIGHT);
+
+		//select appropriate position
+		Frect r;
+		r.set					(0.0f, 0.0f, g_statHint->GetWidth(), g_statHint->GetHeight());
+		r.add					(c_pos.x, c_pos.y);
+
+		r.sub					(0.0f,r.height());
+		if (false==is_in2(vis_rect,r))
+			r.sub				(r.width(),0.0f);
+		if (false==is_in2(vis_rect,r))
+			r.add				(0.0f,r.height());
+
+		if (false==is_in2(vis_rect,r))
+			r.add				(r.width(), 45.0f);
+
+		g_statHint->SetWndPos(r.lt);
 	}
 }
 
@@ -535,11 +568,15 @@ void CUIStatic::OnFocusReceive()
         GetMessageTarget()->SendMessage(this, STATIC_FOCUS_RECEIVED, NULL);
 }
 
-void CUIStatic::OnFocusLost(){
+void CUIStatic::OnFocusLost()
+{
 
 	inherited::OnFocusLost();
 	if (GetMessageTarget())
 		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, NULL);
+
+	if (g_statHint->Owner() == this)
+		g_statHint->Discard();
 }
 
 void CUIStatic::AdjustHeightToText(){

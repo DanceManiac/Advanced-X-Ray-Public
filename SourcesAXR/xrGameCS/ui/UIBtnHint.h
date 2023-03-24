@@ -22,3 +22,4 @@ public:
 };
 
 extern CUIButtonHint* g_btnHint; 
+extern CUIButtonHint* g_statHint;

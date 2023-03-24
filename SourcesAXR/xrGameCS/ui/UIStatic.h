@@ -154,7 +154,9 @@ public:
 
 	void SetTextColor(u32 color, E4States state);
 
-	CUILines*				m_pLines;
+	CUILines*		m_pLines;
+
+	shared_str		m_stat_hint_text;
 protected:
 	bool			m_bEnableTextHighlighting;
 		// ���� ���������
@@ -180,7 +182,6 @@ protected:
 	Fvector2		m_TextureOffset;
 
 	Frect	m_ClipRect;
-
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

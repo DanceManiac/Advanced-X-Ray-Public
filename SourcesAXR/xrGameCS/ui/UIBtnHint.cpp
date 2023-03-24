@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "UIBtnHint.h"
 #include "UIFrameLineWnd.h"
+#include "UIStatic.h"
 #include "UIXmlInit.h"
 
 CUIButtonHint*		g_btnHint = NULL; 
-
-
+CUIButtonHint*		g_statHint = NULL;
 
 CUIButtonHint::CUIButtonHint	()
 :m_ownerWnd(NULL),m_enabledOnFrame(false)

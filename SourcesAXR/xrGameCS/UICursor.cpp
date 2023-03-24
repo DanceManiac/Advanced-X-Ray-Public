@@ -4,6 +4,7 @@
 #include "../xrEngine/CustomHUD.h"
 #include "UI.h"
 #include "HUDManager.h"
+#include "ui/UIBtnHint.h"
 #include "ui/UIStatic.h"
 #include "../xrEngine/IGame_Persistent.h"
 
@@ -50,6 +51,9 @@ void CUICursor::InitInternal()
 u32 last_render_frame = 0;
 void CUICursor::OnRender	()
 {
+	//g_btnHint->OnRender();
+	//g_statHint->OnRender();
+
 	if( !IsVisible() ) return;
 #ifdef DEBUG
 	VERIFY(!g_pGamePersistent->IsMainMenuActive() || last_render_frame != Device.dwFrame);
