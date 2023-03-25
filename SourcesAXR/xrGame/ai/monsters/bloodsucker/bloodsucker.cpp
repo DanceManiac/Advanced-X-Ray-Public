@@ -768,7 +768,7 @@ void CAI_Bloodsucker::HitEntity(const CEntity *pEntity, float fDamage, float imp
 
 bool CAI_Bloodsucker::in_solid_state ()
 {
-	return true;
+	return m_bHitIfInvisible ? true : !state_invisible;
 }
 
 void CAI_Bloodsucker::Hit(SHit* pHDS)

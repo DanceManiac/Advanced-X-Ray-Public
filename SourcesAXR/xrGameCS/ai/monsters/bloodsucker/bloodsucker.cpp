@@ -239,7 +239,7 @@ void CAI_Bloodsucker::Load(LPCSTR section)
 	m_invisibility_activate_delay        = READ_IF_EXISTS(pSettings, r_u32, section, "invisibility_activate_delay",  
 										   default_invisibility_activate_delay);
 	
-	m_bHitIfInvisible					 = READ_IF_EXISTS(pSettings, r_bool, section, "hit_if_invisible_mode", true);
+	m_bHitIfInvisible					 = READ_IF_EXISTS(pSettings, r_bool, section, "hit_if_invisible_mode", false);
 }
 
 void CAI_Bloodsucker::reinit()
@@ -672,7 +672,7 @@ void CAI_Bloodsucker::HitEntity(const CEntity *pEntity, float fDamage, float imp
 
 bool CAI_Bloodsucker::in_solid_state ()
 {
-	return !state_invisible;
+	return m_bHitIfInvisible ? true : !state_invisible;
 }
 
 void CAI_Bloodsucker::Hit(SHit* pHDS)
