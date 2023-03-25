@@ -353,6 +353,16 @@ struct CSoundObjectPredicate {
 	}
 };
 
+void CSoundMemoryManager::remove(const MemorySpace::CSoundObject* sound_object)
+{
+	SOUNDS::iterator I = std::find_if(m_sounds->begin(), m_sounds->end(), [&](const MemorySpace::CSoundObject& object)
+		{
+			return sound_object == &object;
+		});
+	if (I != m_sounds->end())
+		m_sounds->erase(I);
+}
+
 void CSoundMemoryManager::remove_links	(CObject *object)
 {
 	VERIFY					(m_sounds);

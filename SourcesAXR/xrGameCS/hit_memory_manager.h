@@ -55,6 +55,7 @@ public:
 	virtual	void				reinit				();
 	virtual	void				reload				(LPCSTR section);
 	virtual void				update				();
+			void				remove				(const MemorySpace::CHitObject* hit_object);
 			void				remove_links		(CObject *object);
 
 public:

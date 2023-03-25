@@ -179,13 +179,13 @@ public:
 	EWeaponSubStates		GetReloadState		() const		{ return (EWeaponSubStates)m_sub_state;}
 protected:
 	bool					m_bTriStateReload;
-	u8						m_sub_state;
 	// a misfire happens, you'll need to rearm weapon
 	bool					bMisfire;				
 
 	BOOL					m_bAutoSpawnAmmo;
 	virtual bool			AllowBore		();
 public:
+			u8   m_sub_state;
 			bool IsGrenadeLauncherAttached	() const;
 			bool IsScopeAttached			() const;
 			bool IsSilencerAttached			() const;
@@ -475,11 +475,16 @@ protected:
 	//объект партиклов для стрельбы из 2-го ствола
 	CParticlesObject*		m_pFlameParticles2;
 
-protected:
-	int						GetAmmoCount_forType(shared_str const& ammo_type) const;
-	int						GetAmmoCount		(u8 ammo_type) const;
-
 public:
+	// Alundaio
+	int						GetAmmoCount_forType(shared_str const& ammo_type) const;
+	virtual void			set_ef_main_weapon_type(u32 type) { m_ef_main_weapon_type = type; };
+	virtual void			set_ef_weapon_type(u32 type) { m_ef_weapon_type = type; };
+	virtual void			SetAmmoType(u32 type) { m_ammoType = type; };
+	u8						GetAmmoType() { return m_ammoType; };
+	//-Alundaio
+
+	   int					GetAmmoCount		(u8 ammo_type) const;
 	IC int					GetAmmoElapsed		()	const		{	return /*int(m_magazine.size())*/iAmmoElapsed;}
 	IC int					GetAmmoMagSize		()	const		{	return iMagazineSize;						}
 	int						GetSuitableAmmoTotal(bool use_item_to_spawn = false) const;

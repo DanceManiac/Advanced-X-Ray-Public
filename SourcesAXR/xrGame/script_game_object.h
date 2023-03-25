@@ -789,6 +789,113 @@ public:
 
 			bool				addon_IsActorHideout					() const;		// проверка что актор под каким либо укрытием
 
+			// Alundaio
+			bool				IsOnBelt(CScriptGameObject* obj) const;
+			CScriptGameObject*	ItemOnBelt(u32 item_id) const;
+			u32					BeltSize() const;
+
+			u32					get_dest_level_vertex_id();
+			u32					get_dest_game_vertex_id();
+			void				inactualize_level_path();
+			void				inactualize_game_path();
+
+			void				SetHealthEx(float hp); //AVO
+
+			float				GetLuminocityHemi();
+			float				GetLuminocity();
+			bool				Use(CScriptGameObject* obj);
+			void				StartTrade(CScriptGameObject* obj);
+			void				StartUpgrade(CScriptGameObject* obj);
+			void				IterateFeelTouch(const luabind::functor<void>& functor);
+			u32					GetSpatialType();
+			void				SetSpatialType(u32 sptype);
+			u8					GetRestrictionType();
+			void				SetRestrictionType(u8 type);
+
+			void				RemoveDanger(const CDangerObject& dobject);
+
+			void				RemoveMemorySoundObject(const MemorySpace::CSoundObject& memory_object);
+			void				RemoveMemoryHitObject(const MemorySpace::CHitObject& memory_object);
+			void				RemoveMemoryVisibleObject(const MemorySpace::CVisibleObject& memory_object);
+
+			//Weapon
+			LPCSTR				Weapon_GetAmmoSection(u8 ammo_type);
+			void				Weapon_SetCurrentScope(u8 type);
+			u8					Weapon_GetCurrentScope();
+			void				Weapon_AddonAttach(CScriptGameObject* item);
+			void				Weapon_AddonDetach(pcstr item_section, bool b_spawn_item);
+			bool				HasAmmoType(u8 type);
+			int					GetAmmoCount(u8 type);
+			void				SetAmmoType(u8 type);
+			void				SetMainWeaponType(u32 type);
+			void				SetWeaponType(u32 type);
+			u32					GetMainWeaponType();
+			u32					GetWeaponType();
+			u8					GetWeaponSubstate();
+			u8					GetAmmoType();
+
+			//CWeaponAmmo
+			u16					AmmoGetCount();
+			void				AmmoSetCount(u16 count);
+			u16					AmmoBoxSize();
+
+			//Weapon & Outfit
+			bool				InstallUpgrade(pcstr upgrade);
+			bool				HasUpgrade(pcstr upgrade) const;
+			void				IterateInstalledUpgrades(const luabind::functor<void>& functor);
+			bool				WeaponInGrenadeMode();
+
+			//Car
+			CScriptGameObject*	GetAttachedVehicle();
+			void				AttachVehicle(CScriptGameObject* veh);
+			void				AttachVehicle(CScriptGameObject* veh, const bool bForce /*= false*/);
+			void				DetachVehicle();
+			void				DetachVehicle(const bool bForce /*= false*/);
+
+			//Any class that is derived from CHudItem
+			void				SwitchState(u32 state);
+			u32					GetState();
+
+			//Works for anything with visual
+			bool				IsBoneVisible(pcstr bone_name);
+			void				SetBoneVisible(pcstr bone_name, bool bVisibility);
+			void				SetBoneVisible(pcstr bone_name, bool bVisibility, bool bRecursive = true);
+
+			//CAI_Stalker
+			void				ResetBoneProtections(pcstr imm_sect, pcstr bone_sect);
+
+			//Anything with PPhysicShell (ie. car, actor, stalker, monster, heli)
+			void				ForceSetPosition(Fvector pos);
+			void				ForceSetPosition(Fvector pos, bool bActivate = false);
+
+			float				GetArtefactHealthRestoreSpeed();
+			float				GetArtefactRadiationRestoreSpeed();
+			float				GetArtefactSatietyRestoreSpeed();
+			float				GetArtefactPowerRestoreSpeed();
+			float				GetArtefactBleedingRestoreSpeed();
+
+			void				SetArtefactHealthRestoreSpeed(float value);
+			void				SetArtefactRadiationRestoreSpeed(float value);
+			void				SetArtefactSatietyRestoreSpeed(float value);
+			void				SetArtefactPowerRestoreSpeed(float value);
+			void				SetArtefactBleedingRestoreSpeed(float value);
+
+			//Phantom
+			void				PhantomSetEnemy(CScriptGameObject*);
+			//Actor
+			float				GetActorJumpSpeed() const;
+			void				SetActorJumpSpeed(float jump_speed);
+
+			float				GetActorSprintKoef() const;
+			void				SetActorSprintKoef(float sprint_koef);
+
+			float				GetActorRunCoef() const;
+			void				SetActorRunCoef(float run_coef);
+
+			float				GetActorRunBackCoef() const;
+			void				SetActorRunBackCoef(float run_back_coef);
+			//-Alundaio
+
 			/*added by Ray Twitty (aka Shadows) START*/
 			float				GetActorMaxWeight						() const;
 			void				SetActorMaxWeight						(float max_weight);
@@ -800,6 +907,7 @@ public:
 			void				SetAdditionalMaxWalkWeight				(float add_max_walk_weight);
 			float				GetTotalWeight							() const;
 			float				Weight									() const;
+			void				SetWeight								(float w);
 			/*added by Ray Twitty (aka Shadows) END*/
 
 	doors::door*				m_door;

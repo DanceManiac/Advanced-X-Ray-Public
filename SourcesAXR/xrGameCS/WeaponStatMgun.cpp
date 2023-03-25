@@ -71,6 +71,9 @@ void CWeaponStatMgun::Load(LPCSTR section)
 	camRelaxSpeed		= pSettings->r_float		(section,"cam_relax_speed"	); 
 	camRelaxSpeed		= _abs( deg2rad				(camRelaxSpeed) );
 
+	m_bEnterLocked = !!READ_IF_EXISTS(pSettings, r_bool, section, "lock_enter", false);
+	m_bExitLocked = !!READ_IF_EXISTS(pSettings, r_bool, section, "lock_exit", false);
+
 	VERIFY( !fis_zero(camMaxAngle) );
 	VERIFY( !fis_zero(camRelaxSpeed) );
 }

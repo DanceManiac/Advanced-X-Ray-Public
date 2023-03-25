@@ -52,6 +52,11 @@ namespace GameObject {
 		eInvBoxItemTake,
 		eWeaponNoAmmoAvailable,
 
+		// vehicle
+		eAttachVehicle,
+		eDetachVehicle,
+		eUseVehicle,
+
 		eDummy = u32(-1),
 	};
 };
