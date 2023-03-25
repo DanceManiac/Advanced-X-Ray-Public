@@ -944,6 +944,43 @@ void buy_skill(int num)
 	return Actor()->ActorSkills->BuySkill(num);
 }
 
+u32 g_get_target_element()
+{
+	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+	if (RQ.element)
+		return RQ.element;
+
+	return 0;
+}
+
+//can spawn entities like bolts, phantoms, ammo, etc. which normally crash when using alife():create()
+void spawn_section(pcstr sSection, Fvector3 vPosition, u32 LevelVertexID, u16 ParentID, bool bReturnItem = false)
+{
+	Level().spawn_item(sSection, vPosition, LevelVertexID, ParentID, bReturnItem);
+}
+
+u8 get_active_cam()
+{
+	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	if (actor)
+		return (u8)actor->active_cam();
+
+	return 255;
+}
+
+void set_active_cam(u8 mode)
+{
+	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	if (actor && mode <= eacMaxCam)
+		actor->cam_Set((EActorCameras)mode);
+}
+
+//ability to update level netpacket
+void g_send(NET_Packet& P, bool bReliable = false, bool bSequential = true, bool bHighPriority = false, bool bSendImmediately = false)
+{
+	Level().Send(P);
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -956,6 +993,16 @@ void CLevel::script_register(lua_State *L)
 
 	module(L,"level")
 	[
+		//Alundaio: Extend level namespace exports
+		def("send",								&g_send), //allow the ability to send netpacket to level
+		def("get_target_element",				&g_get_target_element), //Can get bone cursor is targeting
+		def("spawn_item",						&spawn_section),
+		def("get_active_cam",					&get_active_cam),
+		def("set_active_cam",					&set_active_cam),
+		def("get_start_time",					+[]() { return xrTime(Level().GetStartGameTime()); }),
+		def("valid_vertex",						+[](u32 level_vertex_id) { return ai().level_graph().valid_vertex_id(level_vertex_id); }),
+		//Alundaio: END
+
 		// obsolete\deprecated
 		def("get_target_obj",					g_get_target_obj), //intentionally named to what is in xray extensions
 		def("get_target_dist",					g_get_target_dist),
@@ -1160,7 +1207,8 @@ void CLevel::script_register(lua_State *L)
 	def("only_allow_movekeys",	block_all_except_movement),
 	def("only_movekeys_allowed",only_movement_allowed),
 	def("set_actor_allow_ladder", set_actor_allow_ladder),
-	def("actor_ladder_allowed", actor_allow_ladder)
-
+	def("actor_ladder_allowed", actor_allow_ladder),
+	def("active_tutorial_name", +[]() { return g_tutorial->GetTutorName(); }),
+	def("log_stack_trace",		&xrDebug::LogStackTrace)
 	];
 }

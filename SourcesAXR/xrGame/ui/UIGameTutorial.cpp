@@ -104,6 +104,9 @@ bool CUISequenceItem::Stop(bool bForce)
 
 CUISequencer::CUISequencer()
 {
+	m_UIWindow = nullptr;
+	m_pStoredInputReceiver = nullptr;
+	m_name = nullptr;
 	m_flags.zero();
 }
 
@@ -113,7 +116,7 @@ void CUISequencer::Start(LPCSTR tutor_name)
 	VERIFY						(m_sequencer_items.size()==0);
 	Device.seqFrame.Add			(this, REG_PRIORITY_LOW-10000);
 	
-	
+	m_name						= tutor_name;
 	m_UIWindow					= xr_new<CUIWindow>();
 
 	CUIXml uiXml;
@@ -234,6 +237,8 @@ extern CUISequencer * g_tutorial2;
 
 void CUISequencer::Destroy()
 {
+	m_name = nullptr;
+
 	if(m_stop_lua_function.size())
 		CallFunction(m_stop_lua_function);
 

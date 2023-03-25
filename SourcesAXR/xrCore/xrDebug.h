@@ -25,6 +25,7 @@ public:
 
 	LPCSTR			error2string		(long  code	);
 
+	static void		LogStackTrace		(LPCSTR header);
 	void			gather_info			(const char *expression, const char *description, const char *argument0, const char *argument1, const char *file, int line, const char *function, LPSTR assertion_info, unsigned int assertion_info_size);
 	template <int count>
 	inline void		gather_info			(const char *expression, const char *description, const char *argument0, const char *argument1, const char *file, int line, const char *function, char (&assertion_info)[count])

@@ -83,6 +83,9 @@ bool CUISequenceItem::Stop(bool bForce)
 
 CUISequencer::CUISequencer()
 {
+	m_UIWindow					= nullptr;
+	m_pStoredInputReceiver		= nullptr;
+	m_name						= nullptr;
 	m_bActive					= false;
 	m_bPlayEachItem				= false;
 }
@@ -93,6 +96,7 @@ void CUISequencer::Start(LPCSTR tutor_name)
 	Device.seqFrame.Add			(this, REG_PRIORITY_LOW-10000);
 	Device.seqRender.Add		(this, 3);
 	
+	m_name						= tutor_name;
 	m_UIWindow					= xr_new<CUIWindow>();
 
 	CUIXml uiXml;
@@ -144,6 +148,8 @@ void CUISequencer::Start(LPCSTR tutor_name)
 
 void CUISequencer::Destroy()
 {
+	m_name						= nullptr;
+
 	Device.seqFrame.Remove		(this);
 	Device.seqRender.Remove		(this);
 	delete_data					(m_items);

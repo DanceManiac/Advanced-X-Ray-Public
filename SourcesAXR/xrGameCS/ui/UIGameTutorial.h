@@ -12,6 +12,7 @@ class CUISequencer :public pureFrame, public pureRender,	public IInputReceiver
 protected:
 	CUIWindow*				m_UIWindow;
 	xr_deque<CUISequenceItem*>m_items;
+	pcstr					m_name;
 	bool					m_bActive;
 	bool					m_bPlayEachItem;
 	bool					GrabInput			();
@@ -43,6 +44,8 @@ public:
 
 	virtual void			IR_OnMouseWheel		(int direction)	;
 	virtual void			IR_OnActivate		(void);
+
+			pcstr			GetTutorName		() { return m_name; }
 
 	fastdelegate::FastDelegate0<>	m_on_destroy_event;
 

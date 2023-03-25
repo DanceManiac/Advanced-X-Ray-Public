@@ -185,7 +185,9 @@ void game_sv_GameState::script_register(lua_State *L)
 	def("only_allow_movekeys",	block_all_except_movement),
 	def("only_movekeys_allowed",only_movement_allowed),
 	def("set_actor_allow_ladder",set_actor_allow_ladder),
-	def("actor_ladder_allowed", actor_allow_ladder)
+	def("actor_ladder_allowed", actor_allow_ladder),
+	def("active_tutorial_name", +[]() { return g_tutorial->GetTutorName(); }),
+	def("log_stack_trace",		&xrDebug::LogStackTrace)
 
 	];
 
