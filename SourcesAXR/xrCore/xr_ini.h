@@ -73,7 +73,7 @@ public:
                                     );
 
 	virtual 	~CInifile		( );
-    bool		save_as         ( LPCSTR new_fname=0 );
+    bool		save_as         ( LPCSTR new_fname = nullptr );
 	void		save_as			(IWriter& writer, bool bcheck=false)const;
 	void		set_override_names(BOOL b){m_flags.set(eOverrideNames,b);}
 	void		save_at_end		(BOOL b){m_flags.set(eSaveAtEnd,b);}
@@ -156,6 +156,7 @@ public:
 	void		w_bool			( LPCSTR S, LPCSTR L, BOOL				V, LPCSTR comment=0 );
 
     void		remove_line		( LPCSTR S, LPCSTR L );
+	void		set_readonly	(bool b);
 };
 
 // Main configuration file

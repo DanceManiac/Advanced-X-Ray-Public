@@ -880,3 +880,7 @@ void	CInifile::remove_line	( LPCSTR S, LPCSTR L )
     }
 }
 
+void CInifile::set_readonly(bool b)
+{
+	m_flags.set(eReadOnly, b);
+}
