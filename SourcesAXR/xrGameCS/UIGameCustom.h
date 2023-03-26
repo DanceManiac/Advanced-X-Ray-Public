@@ -80,7 +80,7 @@ public:
 
 extern CMapListHelper	gMapListHelper;
 
-class CUIGameCustom :public DLL_Pure, public CDialogHolder
+class CUIGameCustom :public DLL_Pure, public ISheduled
 {
 	typedef ISheduled inherited;
 protected:

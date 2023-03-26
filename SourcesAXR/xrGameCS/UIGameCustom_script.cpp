@@ -23,7 +23,7 @@ void CUIGameCustom::script_register(lua_State *L)
 
 			class_< CUIGameCustom >("CUIGameCustom")
 			.def("MainInputReceiver",		&CUIGameCustom::MainInputReceiver)
-			.def("SetMainInputReceiver",	&CUIGameCustom::SetMainInputReceiver)
+			//.def("SetMainInputReceiver",	&CUIGameCustom::SetMainInputReceiver)
 			.def("AddDialogToRender",		&CUIGameCustom::AddDialogToRender)
 			.def("RemoveDialogToRender",	&CUIGameCustom::RemoveDialogToRender)
 			.def("AddCustomMessage",		(void(CUIGameCustom::*)(LPCSTR, float, float, float, CGameFont*, u16, u32/*, LPCSTR*/))&CUIGameCustom::AddCustomMessage)
