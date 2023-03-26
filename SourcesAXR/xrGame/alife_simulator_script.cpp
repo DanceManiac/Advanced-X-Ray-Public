@@ -19,6 +19,7 @@
 #include "alife_registry_container.h"
 #include "xrServer.h"
 #include "level.h"
+#include "Actor.h"
 
 using namespace luabind;
 
@@ -319,6 +320,15 @@ bool dont_has_info								(const CALifeSimulator *self, const ALife::_OBJECT_ID 
 //	THROW								(self);
 //}
 
+void set_start_position(Fvector& pos)
+{
+	g_start_position = pos;
+}
+void set_start_game_vertex_id(int id)
+{
+	g_start_game_vertex_id = id;
+}
+
 #pragma optimize("s",on)
 void CALifeSimulator::script_register			(lua_State *L)
 {
@@ -352,9 +362,11 @@ void CALifeSimulator::script_register			(lua_State *L)
 			.def("has_info",				&has_info)
 			.def("dont_has_info",			&dont_has_info)
 			.def("switch_distance",			&CALifeSimulator::switch_distance)
-			.def("switch_distance",			&CALifeSimulator::set_switch_distance)
+			.def("switch_distance",			&CALifeSimulator::set_switch_distance),
 
-		,def("alife",						&alife)
+			def("alife",					&alife),
+			def("set_start_position",		&set_start_position),
+			def("set_start_game_vertex_id", &set_start_game_vertex_id)
 	];
 
 	{
