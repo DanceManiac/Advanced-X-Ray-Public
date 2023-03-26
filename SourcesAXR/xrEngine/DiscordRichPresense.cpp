@@ -59,7 +59,7 @@ void xrDiscordPresense::SetStatus()
 		}
 	}
 
-	if (discord_app_id != "745606008499601438")
+	if (!strstr(discord_app_id, "745606008499601438"))
 	{
 		presenseInfo.smallImageKey = "advanced_xray";
 	}
