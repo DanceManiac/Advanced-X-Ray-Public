@@ -85,10 +85,6 @@ void xrDiscordPresense::SetStatus()
 	{
 		presenseInfo.smallImageText = "В Игре: Рендер R2 (DX9)";
 	}
-	else if (g_current_renderer == 3)
-	{
-		presenseInfo.smallImageText = "В Игре: Рендер R3 (DX10)";
-	}
 	else
 	{
 		presenseInfo.smallImageText = "В Игре: Рендер R4 (DX11)";
