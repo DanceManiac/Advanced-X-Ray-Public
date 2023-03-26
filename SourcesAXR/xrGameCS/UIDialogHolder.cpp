@@ -152,8 +152,6 @@ void CDialogHolder::RemoveDialogToRender(CUIWindow* pDialog)
 	}
 }
 
-
-
 void CDialogHolder::DoRenderDialogs()
 {
 	xr_vector<dlgItem>::iterator it = m_dialogsToRender.begin();

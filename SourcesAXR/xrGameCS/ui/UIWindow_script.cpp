@@ -115,6 +115,7 @@ void CUIWindow::script_register(lua_State *L)
 //		.def("",						&CUIWindow::)
 		
 		class_<CDialogHolder>("CDialogHolder")
+		.def("SetMainInputReceiver",	&CDialogHolder::SetMainInputReceiver)
 		.def("MainInputReceiver",		&CDialogHolder::MainInputReceiver)
 		.def("start_stop_menu",			&CDialogHolder::StartStopMenu)
 		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)

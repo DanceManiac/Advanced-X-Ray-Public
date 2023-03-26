@@ -8,6 +8,9 @@
 #include "inventory_space.h"
 #include "ui/KillMessageStruct.h"
 #include "gametype_chooser.h"
+#include "UIDialogHolder.h"
+#include "script_game_object.h"
+
 // refs
 class CUI;
 class CTeamBaseZone;
@@ -77,7 +80,7 @@ public:
 
 extern CMapListHelper	gMapListHelper;
 
-class CUIGameCustom :public DLL_Pure, public ISheduled
+class CUIGameCustom :public DLL_Pure, public CDialogHolder
 {
 	typedef ISheduled inherited;
 protected:
@@ -114,6 +117,8 @@ public:
 	IC CUIPdaWnd&		PdaMenu					() const { return *m_PdaMenu;   }
 			bool		ShowActorMenu			();
 			void		HideActorMenu			();
+			void		UpdateActorMenu			(); //Alundaio
+	CScriptGameObject*	CurrentItemAtCell		(); //Alundaio
 			bool		ShowPdaMenu				();
 			void		HidePdaMenu				();
 

@@ -89,6 +89,8 @@ void CUIWindow::script_register(lua_State *L)
 		.def("ResetPPMode",				&CUIWindow::ResetPPMode),
 
 		class_<CDialogHolder>("CDialogHolder")
+        .def("TopInputReceiver",		&CDialogHolder::TopInputReceiver)
+        .def("SetMainInputReceiver",	&CDialogHolder::SetMainInputReceiver)
 		.def("AddDialogToRender",		&CDialogHolder::AddDialogToRender)
 		.def("RemoveDialogToRender",	&CDialogHolder::RemoveDialogToRender),
 

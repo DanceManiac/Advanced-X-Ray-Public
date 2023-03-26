@@ -3,6 +3,8 @@
 #include "level.h"
 #include "hudmanager.h"
 #include "ui/uistatic.h"
+#include "UIDialogHolder.h"
+#include "ui/UIDialogWnd.h"
 
 using namespace luabind;
 
@@ -20,6 +22,8 @@ void CUIGameCustom::script_register(lua_State *L)
 			.def("wnd",					&SDrawStaticStruct::wnd),
 
 			class_< CUIGameCustom >("CUIGameCustom")
+			.def("MainInputReceiver",		&CUIGameCustom::MainInputReceiver)
+			.def("SetMainInputReceiver",	&CUIGameCustom::SetMainInputReceiver)
 			.def("AddDialogToRender",		&CUIGameCustom::AddDialogToRender)
 			.def("RemoveDialogToRender",	&CUIGameCustom::RemoveDialogToRender)
 			.def("AddCustomMessage",		(void(CUIGameCustom::*)(LPCSTR, float, float, float, CGameFont*, u16, u32/*, LPCSTR*/))&CUIGameCustom::AddCustomMessage)
@@ -29,6 +33,11 @@ void CUIGameCustom::script_register(lua_State *L)
 			.def("AddCustomStatic",			&CUIGameCustom::AddCustomStatic)
 			.def("RemoveCustomStatic",		&CUIGameCustom::RemoveCustomStatic)
 			.def("HideActorMenu",			&CUIGameCustom::HideActorMenu)
+			//Alundaio
+			.def("ShowActorMenu",			&CUIGameCustom::ShowActorMenu)
+			.def("UpdateActorMenu",			&CUIGameCustom::UpdateActorMenu)
+			.def("CurrentItemAtCell",		&CUIGameCustom::CurrentItemAtCell)
+			//-Alundaio
 			.def("HidePdaMenu",				&CUIGameCustom::HidePdaMenu)
 			.def("GetCustomStatic",			&CUIGameCustom::GetCustomStatic),
 			def("get_hud",					&get_hud)

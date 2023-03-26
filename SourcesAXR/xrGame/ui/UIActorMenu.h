@@ -271,10 +271,12 @@ protected:
 	void						CurModeToScript				();
 	void						RepairEffect_CurItem		();
 
+public:
 	void						SetCurrentItem				(CUICellItem* itm);
 	CUICellItem*				CurrentItem					();
 	PIItem						CurrentIItem				();
 
+protected:
 	void						InfoCurItem					(CUICellItem* cell_item); //on update item
 
 	void						ActivatePropertiesBox		();
@@ -364,6 +366,8 @@ public:
 	void		xr_stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
 	void						TakeAllFromInventoryBox		();
 	void						UpdateConditionProgressBars	();
+
+	void						RefreshCurrentItemCell		();
 
 	IC	UIHint*					get_hint_wnd				() { return m_hint_wnd; }
 

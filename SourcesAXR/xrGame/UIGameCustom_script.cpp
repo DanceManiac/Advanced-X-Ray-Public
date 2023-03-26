@@ -2,6 +2,8 @@
 #include "UIGameCustom.h"
 #include "level.h"
 #include "ui/uistatic.h"
+#include "UIDialogHolder.h"
+#include "ui/UIDialogWnd.h"
 
 using namespace luabind;
 
@@ -19,11 +21,18 @@ void CUIGameCustom::script_register(lua_State *L)
 			.def("wnd",					&SDrawStaticStruct::wnd),
 
 			class_< CUIGameCustom >("CUIGameCustom")
+			.def("TopInputReceiver",		&CUIGameCustom::TopInputReceiver)
+			.def("SetMainInputReceiver",	&CUIGameCustom::SetMainInputReceiver)
 			.def("AddDialogToRender",		&CUIGameCustom::AddDialogToRender)
 			.def("RemoveDialogToRender",	&CUIGameCustom::RemoveDialogToRender)
 			.def("AddCustomStatic",			&CUIGameCustom::AddCustomStatic)
 			.def("RemoveCustomStatic",		&CUIGameCustom::RemoveCustomStatic)
 			.def("HideActorMenu",			&CUIGameCustom::HideActorMenu)
+			//Alundaio
+			.def("ShowActorMenu",			&CUIGameCustom::ShowActorMenu)
+			.def("UpdateActorMenu",			&CUIGameCustom::UpdateActorMenu)
+			.def("CurrentItemAtCell",		&CUIGameCustom::CurrentItemAtCell)
+			//-Alundaio
 			.def("HidePdaMenu",				&CUIGameCustom::HidePdaMenu)
 			.def("show_messages",			&CUIGameCustom::ShowMessagesWindow)
 			.def("hide_messages",			&CUIGameCustom::HideMessagesWindow)
