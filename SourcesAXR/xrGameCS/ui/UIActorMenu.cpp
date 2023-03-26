@@ -924,3 +924,12 @@ void CUIActorMenu::UpdateActorMP()
 	m_ActorCharacterInfo->InitCharacterMP( Game().local_player->name, "ui_npc_u_nebo_1" );
 
 }
+
+CScriptGameObject* CUIActorMenu::GetCurrentItemAsGameObject()
+{
+	CGameObject* GO = smart_cast<CGameObject*>(CurrentIItem());
+	if (GO)
+		return GO->lua_game_object();
+
+	return nullptr;
+}

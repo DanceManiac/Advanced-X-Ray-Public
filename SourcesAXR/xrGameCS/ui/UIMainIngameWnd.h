@@ -32,8 +32,6 @@ public:
 	virtual void Update();
 
 			bool OnKeyboardPress(int dik);
-
-protected:
 	
 	CUIStatic			UIStaticDiskIO;
 //	CUIStatic			UIStaticHealth;
@@ -50,7 +48,6 @@ protected:
 	
 	CUIHudStatesWnd*	m_ui_hud_states;
 
-public:
 	IC	void			ShowZoneMap( bool status ) { UIZoneMap->visible = status; }
 		void			DrawZoneMap() { UIZoneMap->Render(); }
 		void			UpdateZoneMap() { UIZoneMap->Update(); }

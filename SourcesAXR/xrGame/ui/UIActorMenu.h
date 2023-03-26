@@ -4,6 +4,7 @@
 #include "UIWndCallback.h"
 #include "../../xrServerEntities/inventory_space.h"
 #include "UIHint.h"
+#include "script_game_object.h" //Alundaio
 
 class CUICharacterInfo;
 class CUIDragDropListEx;
@@ -367,8 +368,18 @@ public:
 	void						TakeAllFromInventoryBox		();
 	void						UpdateConditionProgressBars	();
 
+	CScriptGameObject*			GetCurrentItemAsGameObject	();
+	void						HighlightSectionInSlot		(pcstr section, EDDListType type, u16 slot_id = 0);
+	void						HighlightForEachInSlot		(const luabind::functor<bool>& functor, EDDListType type, u16 slot_id);
+
 	void						RefreshCurrentItemCell		();
 
 	IC	UIHint*					get_hint_wnd				() { return m_hint_wnd; }
 
+	DECLARE_SCRIPT_REGISTER_FUNCTION
+
 }; // class CUIActorMenu
+
+add_to_type_list(CUIActorMenu)
+#undef script_type_list
+#define script_type_list save_type_list(CUIActorMenu)

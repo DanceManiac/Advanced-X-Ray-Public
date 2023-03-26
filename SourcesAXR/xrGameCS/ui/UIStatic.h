@@ -183,6 +183,7 @@ protected:
 
 	Frect	m_ClipRect;
 public:
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 

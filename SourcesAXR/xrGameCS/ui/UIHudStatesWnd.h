@@ -20,6 +20,7 @@ private:
 	typedef CUIWindow						inherited;
 //-	typedef ALife::EInfluenceType	EIndicatorType;
 
+public:
 	CUIStatic*			m_back;
 	CUIStatic*			m_back_v;
 	CUIStatic*			m_back_over_arrow;
@@ -62,7 +63,6 @@ private:
 
 //	CZoneList*	m_zones_list; <----- in Level()
 
-public:
 					CUIHudStatesWnd		();
 	virtual			~CUIHudStatesWnd	();
 

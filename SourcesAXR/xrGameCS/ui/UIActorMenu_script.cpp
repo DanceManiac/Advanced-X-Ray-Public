@@ -7,11 +7,21 @@
 
 #include "pch_script.h"
 #include "UIActorMenu.h"
-
+#include "UIPdaWnd.h"
 #include "../actor.h"
 #include "../inventory_item.h"
 #include "../ai_space.h"
 #include "../../XrServerEntitiesCS/script_engine.h"
+
+#include "UITabControl.h"
+#include "UIMainIngameWnd.h"
+#include "UIActorMenu.h"
+#include "UIZoneMap.h"
+#include "UIMotionIcon.h"
+#include "UIHudStatesWnd.h"
+#include "UIGameCustom.h"
+#include "InventoryBox.h"
+#include "HUDManager.h"
 
 using namespace luabind;
 
@@ -92,3 +102,75 @@ void CUIActorMenu::CurModeToScript()
 	R_ASSERT( ai().script_engine().functor( "actor_menu.actor_menu_mode", funct ) );
 	funct( mode );
 }
+
+template<class T>
+class enum_dummy {};
+
+void CUIActorMenu::script_register(lua_State* L)
+{
+		module(L)
+		[
+			class_<enum_dummy<EDDListType>>("EDDListType")
+				.enum_("EDDListType")
+				[
+					value("iActorBag",				int(EDDListType::iActorBag)),
+					value("iActorBelt",				int(EDDListType::iActorBelt)),
+					value("iActorSlot",				int(EDDListType::iActorSlot)),
+					value("iActorTrade",			int(EDDListType::iActorTrade)),
+					value("iDeadBodyBag",			int(EDDListType::iDeadBodyBag)),
+					value("iInvalid",				int(EDDListType::iInvalid)),
+					value("iPartnerTrade",			int(EDDListType::iPartnerTrade)),
+					value("iPartnerTradeBag",		int(EDDListType::iPartnerTradeBag))
+				],
+
+			class_<CUIActorMenu, CUIDialogWnd>("CUIActorMenu")
+				.def(constructor<>())
+				.def("get_drag_item",				&CUIActorMenu::GetCurrentItemAsGameObject)
+				.def("refresh_current_cell_item",	&CUIActorMenu::RefreshCurrentItemCell)
+				.def("IsShown",						&CUIActorMenu::IsShown)
+				.def("ShowDialog",					&CUIActorMenu::ShowDialog)
+				.def("HideDialog",					&CUIActorMenu::HideDialog),
+
+ 			class_< CUIMainIngameWnd, CUIWindow>("CUIMainIngameWnd")
+				.def(constructor<>())
+				//.def_readonly("UIStaticDiskIO",		&CUIMainIngameWnd::UIStaticDiskIO)
+				//.def_readonly("UIStaticQuickHelp",	&CUIMainIngameWnd::UIStaticQuickHelp)
+				//.def_readonly("UIMotionIcon",		&CUIMainIngameWnd::UIMotionIcon)
+				.def_readonly("UIZoneMap",			&CUIMainIngameWnd::UIZoneMap)
+				.def_readonly("m_ui_hud_states",	&CUIMainIngameWnd::m_ui_hud_states),
+ 			class_< CUIZoneMap >("CUIZoneMap")
+				.def(constructor<>())
+				.def_readonly("visible",			&CUIZoneMap::visible)
+				.def("Background",					&CUIZoneMap::Background),
+ 			class_< CUIMotionIcon, CUIWindow>("CUIMotionIcon")
+				.def(constructor<>()),
+ 			class_< CUIHudStatesWnd, CUIWindow>("CUIHudStatesWnd")
+				.def(constructor<>())
+				.def_readonly("m_back",				&CUIHudStatesWnd::m_back)
+				.def_readonly("m_fire_mode",		&CUIHudStatesWnd::m_fire_mode)
+				.def_readonly("m_ui_weapon_icon",	&CUIHudStatesWnd::m_ui_weapon_icon)
+				.def_readonly("m_ui_health_bar",	&CUIHudStatesWnd::m_ui_health_bar)
+				.def_readonly("m_ui_stamina_bar",	&CUIHudStatesWnd::m_ui_stamina_bar)
+				.def_readonly("m_radia_damage",		&CUIHudStatesWnd::m_radia_damage)
+		];
+
+		module(L, "ActorMenu")
+		[
+			def("get_pda_menu",						+[]() { return &HUD().GetUI()->UIGame()->PdaMenu(); }),
+			def("get_actor_menu",					+[]() { return &HUD().GetUI()->UIGame()->ActorMenu(); }),
+			def("get_menu_mode",					+[]() { return HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode(); }),
+			def("get_maingame",						+[]() { return HUD().GetUI()->UIMainIngameWnd; })
+		];
+};
+
+void CUIPdaWnd::script_register(lua_State* L)
+{
+		module(L)
+		[
+			class_<CUIPdaWnd, CUIDialogWnd>("CUIPdaWnd")
+				.def(constructor<>())
+				.def("IsShown",						&CUIPdaWnd::IsShown)
+				.def("ShowDialog",					&CUIPdaWnd::ShowDialog)
+				.def("HideDialog",					&CUIPdaWnd::HideDialog)
+		];
+};

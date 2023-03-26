@@ -21,6 +21,7 @@ private:
 	typedef CUIWindow						inherited;
 //-	typedef ALife::EInfluenceType	EIndicatorType;
 
+public:
 	CUIStatic*			m_back;
 //	CUIStatic*			m_back_v;
 //	CUIStatic*			m_back_over_arrow;
@@ -76,7 +77,7 @@ private:
 	bool				m_fake_indicators_update;
 //	bool				m_cur_state_LA[it_max];
 	bool				m_b_force_update;
-public:
+
 					CUIHudStatesWnd		();
 	virtual			~CUIHudStatesWnd	();
 

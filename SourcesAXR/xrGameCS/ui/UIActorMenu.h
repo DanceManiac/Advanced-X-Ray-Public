@@ -4,6 +4,7 @@
 #include "UIWndCallback.h"
 #include "../../XrServerEntitiesCS/inventory_space.h"
 #include "UIHint.h"
+#include "script_game_object.h" //Alundaio
 
 class CUICharacterInfo;
 class CUIDragDropListEx;
@@ -303,8 +304,14 @@ public:
 	void		__stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
 	void						TakeAllFromInventoryBox		();
 
+	CScriptGameObject*			GetCurrentItemAsGameObject	();
 	void						RefreshCurrentItemCell		();
 
 	IC	UIHint*					get_hint_wnd				() { return m_hint_wnd; }
 
+	DECLARE_SCRIPT_REGISTER_FUNCTION
 }; // class CUIActorMenu
+
+add_to_type_list(CUIActorMenu)
+#undef script_type_list
+#define script_type_list save_type_list(CUIActorMenu)
