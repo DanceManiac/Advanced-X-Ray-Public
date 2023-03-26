@@ -126,6 +126,7 @@ public:
 	bool	PlayHitSound							(SHit* pHDS);
 	float	HitSlowmo								(SHit* pHDS);
 
+	void	WoundForEach							(const luabind::functor<bool>& funct);
 public:
 	float m_fAlcohol;
 	float m_fV_Alcohol;
@@ -208,7 +209,13 @@ public:
 
 	float m_fLimpingHealthBegin;
 	float m_fLimpingHealthEnd;
+
+	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
+
+add_to_type_list(CActorCondition)
+#undef script_type_list
+#define script_type_list save_type_list(CActorCondition)
 
 class CActorDeathEffector
 {

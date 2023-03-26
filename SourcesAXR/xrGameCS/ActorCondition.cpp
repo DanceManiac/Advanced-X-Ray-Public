@@ -1157,3 +1157,15 @@ void CActorDeathEffector::Stop()
 	enable_input			();
 	show_indicators			();
 }
+
+void CActorCondition::WoundForEach(const luabind::functor<bool>& funct)
+{
+	auto const& cur_wounds = wounds();
+	CEntityCondition::WOUND_VECTOR::const_iterator it = wounds().begin();
+	CEntityCondition::WOUND_VECTOR::const_iterator it_e = wounds().end();
+	for (; it != it_e; ++it)
+	{
+		if (funct(it) == true)
+			break;
+	}
+}

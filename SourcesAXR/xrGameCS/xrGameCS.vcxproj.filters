@@ -11230,6 +11230,9 @@
     <ClCompile Include="ai\monsters\monster_aura.cpp">
       <Filter>AI\AMonsters\common\components</Filter>
     </ClCompile>
+    <ClCompile Include="EntityCondition_script.cpp">
+      <Filter>Core\Client\Objects\base\EntityCondition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

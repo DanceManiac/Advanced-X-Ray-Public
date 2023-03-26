@@ -11120,6 +11120,9 @@
     <ClCompile Include="ui\UILoadingScreen.cpp">
       <Filter>UI\Common\LoadingScreen</Filter>
     </ClCompile>
+    <ClCompile Include="EntityCondition_script.cpp">
+      <Filter>Core\Client\Objects\base\EntityCondition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ai\monsters\chimera\chimera_attack_state.h">

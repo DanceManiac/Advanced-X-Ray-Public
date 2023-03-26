@@ -41,6 +41,7 @@ public:
 	virtual void			load					(IReader &input_packet);
 
 	IC float				GetPower				() const			{return m_fPower;}	
+	IC void					SetPower				(float value)		{m_fPower = value; clamp(m_fPower, 0.f, m_fPowerMax);}
 	IC float				GetRadiation			() const			{return m_fRadiation;}
 	IC float				GetPsyHealth			() const			{return m_fPsyHealth;}
 
@@ -209,4 +210,9 @@ public:
 	IC float&						wound_bone_scale	()			{return		(m_fWoundBoneScale);	}
 	IC SConditionChangeV&			change_v			()			{return		(m_change_v);			}
 
+	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
+
+add_to_type_list(CEntityCondition)
+#undef script_type_list
+#define script_type_list save_type_list(CEntityCondition)
