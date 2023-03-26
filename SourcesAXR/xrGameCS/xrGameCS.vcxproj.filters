@@ -11233,6 +11233,9 @@
     <ClCompile Include="EntityCondition_script.cpp">
       <Filter>Core\Client\Objects\base\EntityCondition</Filter>
     </ClCompile>
+    <ClCompile Include="CustomOutfit_script.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">
