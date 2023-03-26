@@ -37,7 +37,9 @@ void CSE_ALifeTraderAbstract::script_register(lua_State *L)
 #ifdef XRGAME_EXPORTS
 			.def("community",		&CommunityName)
 			.def("profile_name",	&profile_name_script)
+			.def("set_profile_name",+[](CSE_ALifeTraderAbstract* ta, const pcstr str) { ta->set_character_profile(str); })
 			.def("rank",			&Rank)
+			.def("set_rank",		&CSE_ALifeTraderAbstract::SetRank)
 			.def("reputation",		&Reputation)
 			.property("character_name", &character_name_script, &set_character_name_script)
 #endif // XRGAME_EXPORTS
