@@ -2227,10 +2227,10 @@
     <Filter Include="UI\Common\PDA\logs\News">
       <UniqueIdentifier>{0be79b04-5abf-46a3-8978-fd77bcf23e4a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\Common\ui-item-infos">
+    <Filter Include="UI\Common\UIItemInfo">
       <UniqueIdentifier>{0b39a888-0acb-4da1-a61e-4871a797c666}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\Common\ui-item-infos\CharacterInfo">
+    <Filter Include="UI\Common\UIItemInfo\CharacterInfo">
       <UniqueIdentifier>{c175aec8-8892-4cac-ac38-14949d9994a4}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\TALK">
@@ -6771,23 +6771,23 @@
     <ClInclude Include="ui\UINewsItemWnd.h">
       <Filter>UI\Common\PDA\logs\News</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_af_params.h">
-      <Filter>UI\Common\ui-item-infos</Filter>
+    <ClInclude Include="ui\UIArtefactParams.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIBoosterInfo.h">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIItemInfo.h">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIOutfitInfo.h">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIWpnParams.h">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICharacterInfo.h">
-      <Filter>UI\Common\ui-item-infos\CharacterInfo</Filter>
+      <Filter>UI\Common\UIItemInfo\CharacterInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UITalkDialogWnd.h">
       <Filter>UI\Common\TALK</Filter>
@@ -7405,7 +7405,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIInventoryItemParams.h">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_hud.h">
       <Filter>EmbeddedEditor</Filter>
@@ -10411,23 +10411,23 @@
     <ClCompile Include="ui\UINewsItemWnd.cpp">
       <Filter>UI\Common\PDA\logs\News</Filter>
     </ClCompile>
-    <ClCompile Include="ui\ui_af_params.cpp">
-      <Filter>UI\Common\ui-item-infos</Filter>
+    <ClCompile Include="ui\UIArtefactParams.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIBoosterInfo.cpp">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIItemInfo.cpp">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIOutfitInfo.cpp">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIWpnParams.cpp">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICharacterInfo.cpp">
-      <Filter>UI\Common\ui-item-infos\CharacterInfo</Filter>
+      <Filter>UI\Common\UIItemInfo\CharacterInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UITalkDialogWnd.cpp">
       <Filter>UI\Common\TALK</Filter>
@@ -11096,7 +11096,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIInventoryItemParams.cpp">
-      <Filter>UI\Common\ui-item-infos</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
       <Filter>EmbeddedEditor</Filter>

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ui_af_params.h"
+#include "UIArtefactParams.h"
 #include "UIStatic.h"
 
 #include "..\actor.h"
