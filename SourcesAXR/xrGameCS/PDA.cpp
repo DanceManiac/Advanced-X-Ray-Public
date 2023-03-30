@@ -175,6 +175,9 @@ void CPda::OnStateSwitch(u32 S)
 		m_fZoomfactor = 0.f;
 		CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
 
+		if (HUD().GetUI() && HUD().GetUI()->MainInputReceiver() == pda)
+			HUD().GetUI()->SetMainInputReceiver(nullptr, false);
+
 		if (pda->IsShown())
 		{
 			if (psActorFlags.test(AF_3D_PDA))
