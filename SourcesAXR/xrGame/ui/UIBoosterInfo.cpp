@@ -262,10 +262,10 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 	//Portions
 	if (eatable)
 	{
-		val = eatable->m_iPortionsNum;
-		max_value = pSettings->r_float(section, "eat_portions_num");
+		val = eatable->GetPortionsNum();
+		max_value = eatable->m_iConstPortions;
 
-		if (val > 1)
+		if (max_value > 1)
 		{
 			m_portions->SetValue(val, 0, max_value);
 			pos.set(m_portions->GetWndPos());
