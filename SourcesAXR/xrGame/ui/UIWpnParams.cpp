@@ -8,6 +8,9 @@
 #include "inventory_item_object.h"
 #include "UIInventoryUtilities.h"
 #include "Weapon.h"
+#include "WeaponBinoculars.h"
+#include "WeaponKnife.h"
+#include "Silencer.h"
 
 struct SLuaWpnParams
 {
@@ -72,7 +75,7 @@ CUIWpnParams::CUIWpnParams()
 	AttachChild(&m_stAmmoType1);
 	AttachChild(&m_stAmmoType2);
 	// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
-	// Инициализируем переменные для отображения ещё 4 типов патронов в свойствах оружия
+	// РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РµС‰С‘ 4 С‚РёРїРѕРІ РїР°С‚СЂРѕРЅРѕРІ РІ СЃРІРѕР№СЃС‚РІР°С… РѕСЂСѓР¶РёСЏ
 	/*AttachChild(&m_stAmmoType3);
 	AttachChild(&m_stAmmoType4);
 	AttachChild(&m_stAmmoType5);
@@ -115,7 +118,7 @@ void CUIWpnParams::InitFromXml(CUIXml& xml_doc)
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type1",	0, &m_stAmmoType1);
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type2",	0, &m_stAmmoType2);
 		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
-		// Читаем параметры отображения отображения ещё 4 типов патронов в свойствах оружия
+		// Р§РёС‚Р°РµРј РїР°СЂР°РјРµС‚СЂС‹ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РµС‰С‘ 4 С‚РёРїРѕРІ РїР°С‚СЂРѕРЅРѕРІ РІ СЃРІРѕР№СЃС‚РІР°С… РѕСЂСѓР¶РёСЏ
 		/*CUIXmlInit::InitStatic(xml_doc, "wpn_params:static_ammo_type3", 0, &m_stAmmoType3);
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type4",	0, &m_stAmmoType4);
 		CUIXmlInit::InitStatic			(xml_doc, "wpn_params:static_ammo_type5",	0, &m_stAmmoType5);
@@ -179,7 +182,7 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 	if(IsGameTypeSingle())
 	{
 		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
-		// Инициализируем переменную используемых оружием патронов
+		// РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїРµСЂРµРјРµРЅРЅСѓСЋ РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РѕСЂСѓР¶РёРµРј РїР°С‚СЂРѕРЅРѕРІ
 		xr_vector<shared_str> ammo_types;
 
 		CWeapon* weapon = cur_wpn.cast_weapon();
@@ -226,7 +229,7 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 		ammo_types = weapon->m_ammoTypes;
 		if(ammo_types.empty())
 			return;
-		// Получаем количчество видов используемых оружием патронов
+		// РџРѕР»СѓС‡Р°РµРј РєРѕР»РёС‡С‡РµСЃС‚РІРѕ РІРёРґРѕРІ РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РѕСЂСѓР¶РёРµРј РїР°С‚СЂРѕРЅРѕРІ
 		ammo_types_size = ammo_types.size();
 
 		xr_sprintf(str, sizeof(str), "%s", pSettings->r_string(ammo_types[0].c_str(), "inv_name_short"));
@@ -346,16 +349,20 @@ void CUIWpnParams::SetInfo( CInventoryItem* slot_wpn, CInventoryItem& cur_wpn )
 	}
 }
 
-bool CUIWpnParams::Check(const shared_str& wpn_section)
+bool CUIWpnParams::Check(CInventoryItem& wpn_section)
 {
-	if (pSettings->line_exist(wpn_section, "fire_dispersion_base"))
+	LPCSTR wpn_sect = wpn_section.object().cNameSect().c_str();
+	CWeapon* wpn = smart_cast<CWeapon*>(&wpn_section);
+	if (pSettings->line_exist(wpn_sect, "fire_dispersion_base"))
 	{
-        if (0==xr_strcmp(wpn_section, "wpn_addon_silencer"))
-            return false;
-        if (0==xr_strcmp(wpn_section, "wpn_binoc"))
-            return false;
-        if (0==xr_strcmp(wpn_section, "mp_wpn_binoc"))
-            return false;
+		if (smart_cast<CSilencer*>(&wpn_section))
+			return false;
+		if (smart_cast<CWeaponBinoculars*>(&wpn_section))
+			return false;
+		if (smart_cast<CWeaponKnife*>(&wpn_section))
+			return false;
+		if (!wpn->m_bShowWpnStats)
+			return false;
 
         return true;		
 	}

@@ -18,7 +18,7 @@ public:
 
 	void 					InitFromXml			(CUIXml& xml_doc);
 	void					SetInfo				(CInventoryItem* slot_wpn, CInventoryItem& cur_wpn);
-	bool 					Check				(const shared_str& wpn_section);
+	bool 					Check				(CInventoryItem& wpn_section);
 	int						ammo_types_size; //Lex Addon
 
 protected:
@@ -44,7 +44,7 @@ protected:
 	CUIStatic				m_stAmmoType1;
 	CUIStatic				m_stAmmoType2;
 	// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
-	// Вводим дополнительные переменные для отображения 3-го и 4-го типа патронов в свойствах оружия
+	// Р’РІРѕРґРёРј РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РїРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ 3-РіРѕ Рё 4-РіРѕ С‚РёРїР° РїР°С‚СЂРѕРЅРѕРІ РІ СЃРІРѕР№СЃС‚РІР°С… РѕСЂСѓР¶РёСЏ
 	/*CUIStatic				m_stAmmoType3;
 	CUIStatic				m_stAmmoType4;
 	CUIStatic				m_stAmmoType5;

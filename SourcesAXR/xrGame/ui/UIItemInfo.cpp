@@ -343,7 +343,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	}
 	if(UIItemImage)
 	{
-		// Загружаем картинку
+		// Р—Р°РіСЂСѓР¶Р°РµРј РєР°СЂС‚РёРЅРєСѓ
 		UIItemImage->SetShader				(InventoryUtilities::GetEquipmentIconsShader());
 
 		Irect item_grid_rect				= pInvItem->GetInvGridRect();
@@ -381,12 +381,10 @@ void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem*
 	CTorch* torch = smart_cast<CTorch*>(&pInvItem);
 	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
-	CWeapon*		weapon = smart_cast<CWeapon*>(&pInvItem);
-	CCustomOutfit*	outfit = smart_cast<CCustomOutfit*>(&pInvItem);
 
 	bool ShowCharge = GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery() || GameConstants::GetAnoDetectorUseBattery();
 
-	if (weapon || outfit)
+	if ( pInvItem.IsUsingCondition() )
 	{
 		//UIConditionWnd->SetInfo( pCompareItem, pInvItem );
 		//UIDesc->AddWindow( UIConditionWnd, false );
@@ -407,33 +405,33 @@ void CUIItemInfo::TryAddWpnInfo( CInventoryItem& pInvItem, CInventoryItem* pComp
 		UIDesc->AddWindow( UIWpnParams, false );
 
 		// Lex Addon (correct by Suhar_) 7.08.2018		(begin)
-		// Необходимо расширить окно для отображения дополнительных иконок патронов
-		// Получаем кол-во типов патронов, используемых оружием
+		// РќРµРѕР±С…РѕРґРёРјРѕ СЂР°СЃС€РёСЂРёС‚СЊ РѕРєРЅРѕ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹С… РёРєРѕРЅРѕРє РїР°С‚СЂРѕРЅРѕРІ
+		// РџРѕР»СѓС‡Р°РµРј РєРѕР»-РІРѕ С‚РёРїРѕРІ РїР°С‚СЂРѕРЅРѕРІ, РёСЃРїРѕР»СЊР·СѓРµРјС‹С… РѕСЂСѓР¶РёРµРј
 		/*CWeapon* weapon = smart_cast<CWeapon*>(&pInvItem);
 		xr_vector<shared_str> ammo_types;
 		ammo_types = weapon->m_ammoTypes;
 		int ammo_types_size = ammo_types.size();
-		// Проверяем переменную высоты окна свойств оружия
+		// РџСЂРѕРІРµСЂСЏРµРј РїРµСЂРµРјРµРЅРЅСѓСЋ РІС‹СЃРѕС‚С‹ РѕРєРЅР° СЃРІРѕР№СЃС‚РІ РѕСЂСѓР¶РёСЏ
 		if (WpnWndSiseY == NULL)
-			// Если переменная пуста, то необходимо считать её из xml и запомнить
+			// Р•СЃР»Рё РїРµСЂРµРјРµРЅРЅР°СЏ РїСѓСЃС‚Р°, С‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ СЃС‡РёС‚Р°С‚СЊ РµС‘ РёР· xml Рё Р·Р°РїРѕРјРЅРёС‚СЊ
 			WpnWndSiseY = UIWpnParams->GetWndSize().y;
-		// Вектор-переменная размера окна
+		// Р’РµРєС‚РѕСЂ-РїРµСЂРµРјРµРЅРЅР°СЏ СЂР°Р·РјРµСЂР° РѕРєРЅР°
 		Fvector2 new_size;
-		// Параметр ширины вектор-переменной остаётся неизменным
+		// РџР°СЂР°РјРµС‚СЂ С€РёСЂРёРЅС‹ РІРµРєС‚РѕСЂ-РїРµСЂРµРјРµРЅРЅРѕР№ РѕСЃС‚Р°С‘С‚СЃСЏ РЅРµРёР·РјРµРЅРЅС‹Рј
 		new_size.x = UIWpnParams->GetWndSize().x;
-		// Параметр высоты вектор-переменной меняется в зависимости от ammo_types_size
+		// РџР°СЂР°РјРµС‚СЂ РІС‹СЃРѕС‚С‹ РІРµРєС‚РѕСЂ-РїРµСЂРµРјРµРЅРЅРѕР№ РјРµРЅСЏРµС‚СЃСЏ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ ammo_types_size
 		new_size.y = WpnWndSiseY;
-		// Если ammo_types_size привысил 2, то необходим дополнительный ряд
+		// Р•СЃР»Рё ammo_types_size РїСЂРёРІС‹СЃРёР» 2, С‚Рѕ РЅРµРѕР±С…РѕРґРёРј РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ СЂСЏРґ
 		if (ammo_types_size >= 3)
-			// Увеличиваем высоту окна на 50 пикселей
+			// РЈРІРµР»РёС‡РёРІР°РµРј РІС‹СЃРѕС‚Сѓ РѕРєРЅР° РЅР° 50 РїРёРєСЃРµР»РµР№
 			new_size.y += 50.0f;
-		// Если ammo_types_size привысил 4, то необходим дополнительный ряд
+		// Р•СЃР»Рё ammo_types_size РїСЂРёРІС‹СЃРёР» 4, С‚Рѕ РЅРµРѕР±С…РѕРґРёРј РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ СЂСЏРґ
 		if (ammo_types_size >= 5)
-			// Увеличиваем высоту окна на 50 пикселей
+			// РЈРІРµР»РёС‡РёРІР°РµРј РІС‹СЃРѕС‚Сѓ РѕРєРЅР° РЅР° 50 РїРёРєСЃРµР»РµР№
 			new_size.y += 50.0f;
-		// Устанавливаем окну свойств оружия новые размеры
+		// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕРєРЅСѓ СЃРІРѕР№СЃС‚РІ РѕСЂСѓР¶РёСЏ РЅРѕРІС‹Рµ СЂР°Р·РјРµСЂС‹
 		UIWpnParams->SetWndSize(new_size);
-		// Корректируем размер фонового изображения
+		// РљРѕСЂСЂРµРєС‚РёСЂСѓРµРј СЂР°Р·РјРµСЂ С„РѕРЅРѕРІРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 		if (UIBackground)
 			UIBackground->SetWndSize(new_size);*/
 		// Lex Addon (correct by Suhar_) 7.08.2018		(end)

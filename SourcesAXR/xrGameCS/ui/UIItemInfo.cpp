@@ -290,7 +290,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem, CInventoryItem* pCompareIte
 	}
 	if(UIItemImage)
 	{
-		// Çàãðóæàåì êàðòèíêó
+		// Ð—Ð°Ð³Ñ€ÑƒÐ¶Ð°ÐµÐ¼ ÐºÐ°Ñ€Ñ‚Ð¸Ð½ÐºÑƒ
 		UIItemImage->SetShader				(InventoryUtilities::GetEquipmentIconsShader());
 
 		Irect item_grid_rect				= pInvItem->GetInvGridRect();
@@ -328,15 +328,13 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem, CInventoryItem* pCompareIte
 
 void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem* pCompareItem )
 {
-	CWeapon*		weapon = smart_cast<CWeapon*>( &pInvItem );
-	CCustomOutfit*	outfit = smart_cast<CCustomOutfit*>( &pInvItem );
 	CTorch*			torch = smart_cast<CTorch*>(&pInvItem);
 	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
 
 	bool ShowCharge = GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery() || GameConstants::GetAnoDetectorUseBattery();
 
-	if ( weapon || outfit)
+	if ( pInvItem.IsUsingCondition() )
 	{
 		UIConditionWnd->SetInfo( pCompareItem, pInvItem );
 		UIDesc->AddWindow( UIConditionWnd, false );
@@ -351,7 +349,7 @@ void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem*
 
 void CUIItemInfo::TryAddWpnInfo( CInventoryItem& pInvItem, CInventoryItem* pCompareItem )
 {
-	if (UIWpnParams->Check( pInvItem.object().cNameSect()) && GameConstants::GetShowWpnInfo())
+	if (UIWpnParams->Check( pInvItem) && GameConstants::GetShowWpnInfo())
 	{
 		UIWpnParams->SetInfo( pCompareItem, pInvItem );
 		UIDesc->AddWindow( UIWpnParams, false );

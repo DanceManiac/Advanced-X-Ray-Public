@@ -111,8 +111,11 @@ void CInventoryItem::Load(LPCSTR section)
 	m_flags.set(FCanTrade, m_can_trade);
 	m_flags.set(FIsQuestItem,	READ_IF_EXISTS(pSettings, r_bool, section, "quest_item",FALSE));
 
+	// Added by Axel, to enable optional condition use on any item
+	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", false));
 
-	//время убирания объекта с уровня
+
+	//РІСЂРµРјСЏ СѓР±РёСЂР°РЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ СѓСЂРѕРІРЅСЏ
 	m_dwItemRemoveTime			= READ_IF_EXISTS(pSettings, r_u32, section,"item_remove_time",	ITEM_REMOVE_TIME);
 
 	if ( m_slot != -1 )
@@ -136,7 +139,8 @@ void  CInventoryItem::ChangeCondition(float fDeltaCondition)
 
 void	CInventoryItem::Hit					(SHit* pHDS)
 {
-	if (IsUsingCondition() == false) return;
+	if (!IsUsingCondition())
+		return;
 
 	float hit_power = pHDS->damage();
 	hit_power *= m_HitTypeK[pHDS->hit_type];
@@ -285,9 +289,9 @@ void CInventoryItem::OnEvent (NET_Packet& P, u16 type)
 	}
 }
 
-//процесс отсоединения вещи заключается в спауне новой вещи 
-//в инвентаре и установке соответствующих флагов в родительском
-//объекте, поэтому функция должна быть переопределена
+//РїСЂРѕС†РµСЃСЃ РѕС‚СЃРѕРµРґРёРЅРµРЅРёСЏ РІРµС‰Рё Р·Р°РєР»СЋС‡Р°РµС‚СЃСЏ РІ СЃРїР°СѓРЅРµ РЅРѕРІРѕР№ РІРµС‰Рё 
+//РІ РёРЅРІРµРЅС‚Р°СЂРµ Рё СѓСЃС‚Р°РЅРѕРІРєРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… С„Р»Р°РіРѕРІ РІ СЂРѕРґРёС‚РµР»СЊСЃРєРѕРј
+//РѕР±СЉРµРєС‚Рµ, РїРѕСЌС‚РѕРјСѓ С„СѓРЅРєС†РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅР°
 bool CInventoryItem::Detach(const char* item_section_name, bool b_spawn_item) 
 {
 	if (OnClient()) return true;
@@ -376,7 +380,7 @@ void CInventoryItem::net_Destroy		()
 		VERIFY(std::find(m_pInventory->m_all.begin(), m_pInventory->m_all.end(), this)==m_pInventory->m_all.end() );
 	}
 
-	//инвентарь которому мы принадлежали
+	//РёРЅРІРµРЅС‚Р°СЂСЊ РєРѕС‚РѕСЂРѕРјСѓ РјС‹ РїСЂРёРЅР°РґР»РµР¶Р°Р»Рё
 //.	m_pInventory = NULL;
 }
 
@@ -968,7 +972,7 @@ void CInventoryItem::CalculateInterpolationParams()
 		for (u32 k=0; k<3; k++)
 		{
 			P0[k] = c*(c*(c*p->SCoeff[k][0]+p->SCoeff[k][1])+p->SCoeff[k][2])+p->SCoeff[k][3];
-			P1[k] = (c*c*p->SCoeff[k][0]*3+c*p->SCoeff[k][1]*2+p->SCoeff[k][2])/3; // сокрость из формулы в 3 раза превышает скорость при расчете коэффициентов !!!!
+			P1[k] = (c*c*p->SCoeff[k][0]*3+c*p->SCoeff[k][1]*2+p->SCoeff[k][2])/3; // СЃРѕРєСЂРѕСЃС‚СЊ РёР· С„РѕСЂРјСѓР»С‹ РІ 3 СЂР°Р·Р° РїСЂРµРІС‹С€Р°РµС‚ СЃРєРѕСЂРѕСЃС‚СЊ РїСЂРё СЂР°СЃС‡РµС‚Рµ РєРѕСЌС„С„РёС†РёРµРЅС‚РѕРІ !!!!
 		};
 		P0.set(p->IStartPos);
 		P1.add(p->IStartPos);

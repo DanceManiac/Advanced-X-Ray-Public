@@ -237,11 +237,11 @@ void CUICellItem::UpdateCellItemProgressBars()
 
 void CUICellItem::UpdateConditionProgressBar()
 {
-	if(m_pParentList && m_pParentList->GetConditionProgBarVisibility())
+	if (m_pParentList && m_pParentList->GetConditionProgBarVisibility())
 	{
 		PIItem itm = (PIItem)m_pData;
 
-		if (itm->IsUsingCondition())
+		if (itm && itm->IsUsingCondition())
 		{
 			Ivector2 itm_grid_size = GetGridSize();
 
