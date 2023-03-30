@@ -2,14 +2,14 @@
 
 #include "../inventory_item.h"
 #include "character_info_defs.h"
-
+#include "AdvancedXrayGameConstants.h"
 #include "ui_defs.h"
 
 class CUITextWnd;
 
 //размеры сетки в текстуре инвентаря
-#define INV_GRID_WIDTH			50.0f
-#define INV_GRID_HEIGHT			50.0f
+#define INV_GRID_WIDTH(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
+#define INV_GRID_HEIGHT(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
 
 //размеры сетки в текстуре иконок персонажей
 #define ICON_GRID_WIDTH			64.0f

@@ -173,7 +173,10 @@ int CWeapon::GetScopeX()
 	{
 		if (m_eScopeStatus != ALife::eAddonPermanent && IsScopeAttached())
 		{
-			return pSettings->r_s32(GetNameWithAttachment(), "scope_x");
+			if (GameConstants::GetUseHQ_Icons())
+				return pSettings->r_s32(GetNameWithAttachment(), "scope_x") * 2;
+			else
+				return pSettings->r_s32(GetNameWithAttachment(), "scope_x");
 		}
 		else
 		{
@@ -182,7 +185,10 @@ int CWeapon::GetScopeX()
 	}
 	else
 	{
-		return pSettings->r_s32(m_scopes[m_cur_scope], "scope_x");
+		if (GameConstants::GetUseHQ_Icons())
+			return pSettings->r_s32(m_scopes[m_cur_scope], "scope_x") * 2;
+		else
+			return pSettings->r_s32(m_scopes[m_cur_scope], "scope_x");
 	}
 }
 
@@ -192,7 +198,10 @@ int CWeapon::GetScopeY()
 	{
 		if (m_eScopeStatus != ALife::eAddonPermanent && IsScopeAttached())
 		{
-			return pSettings->r_s32(GetNameWithAttachment(), "scope_y");
+			if (GameConstants::GetUseHQ_Icons())
+				return pSettings->r_s32(GetNameWithAttachment(), "scope_y") * 2;
+			else
+				return pSettings->r_s32(GetNameWithAttachment(), "scope_y");
 		}
 		else
 		{
@@ -201,7 +210,10 @@ int CWeapon::GetScopeY()
 	}
 	else
 	{
-		return pSettings->r_s32(m_scopes[m_cur_scope], "scope_y");
+		if (GameConstants::GetUseHQ_Icons())
+			return pSettings->r_s32(m_scopes[m_cur_scope], "scope_y") * 2;
+		else
+			return pSettings->r_s32(m_scopes[m_cur_scope], "scope_y");
 	}
 }
 
@@ -570,16 +582,34 @@ void CWeapon::Load(LPCSTR section)
 	if ( m_eSilencerStatus == ALife::eAddonAttachable )
 	{
 		m_sSilencerName = pSettings->r_string(section,"silencer_name");
-		m_iSilencerX = pSettings->r_s32(section,"silencer_x");
-		m_iSilencerY = pSettings->r_s32(section,"silencer_y");
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			m_iSilencerX = pSettings->r_s32(section, "silencer_x") * 2;
+			m_iSilencerY = pSettings->r_s32(section, "silencer_y") * 2;
+		}
+		else
+		{
+			m_iSilencerX = pSettings->r_s32(section, "silencer_x");
+			m_iSilencerY = pSettings->r_s32(section, "silencer_y");
+		}
 	}
 
     
 	if ( m_eGrenadeLauncherStatus == ALife::eAddonAttachable )
 	{
 		m_sGrenadeLauncherName = pSettings->r_string(section,"grenade_launcher_name");
-		m_iGrenadeLauncherX = pSettings->r_s32(section,"grenade_launcher_x");
-		m_iGrenadeLauncherY = pSettings->r_s32(section,"grenade_launcher_y");
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x") * 2;
+			m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y") * 2;
+		}
+		else
+		{
+			m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x");
+			m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y");
+		}
 	}
 
 	UpdateAltScope();
