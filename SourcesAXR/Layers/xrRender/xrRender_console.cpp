@@ -377,6 +377,9 @@ int ps_r2_lfx = 1;
 //Многопоточная загрузка текстур
 int ps_mt_texture_load = 1;
 
+//AO Debug
+int ps_r2_ao_debug = 0;
+
 float ps_r2_reflections_distance = 300.0f;
 
 Flags32 psDeviceFlags2 = { 0 };
@@ -1153,6 +1156,9 @@ void		xrRender_initconsole	()
 		CMD4(CCC_Vector4,	"shader_param_6",				&ps_dev_param_6,			tw2_min, tw2_max);
 		CMD4(CCC_Vector4,	"shader_param_7",				&ps_dev_param_7,			tw2_min, tw2_max);
 		CMD4(CCC_Vector4,	"shader_param_8",				&ps_dev_param_8,			tw2_min, tw2_max);
+
+		//AO Debug
+		CMD4(CCC_Integer,	"r2_ao_gebug",					&ps_r2_ao_debug,			0, 1);
 	}
 
 	//	Igor: need restart

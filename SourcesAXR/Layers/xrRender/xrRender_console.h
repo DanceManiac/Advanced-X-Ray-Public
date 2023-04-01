@@ -177,6 +177,9 @@ extern ECORE_API	xr_token	lowland_fog_type_token[];
 
 extern ECORE_API float			ps_r2_reflections_distance;
 
+//AO Debug
+extern ECORE_API int			ps_r2_ao_debug;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),

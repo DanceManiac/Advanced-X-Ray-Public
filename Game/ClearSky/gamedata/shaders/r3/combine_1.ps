@@ -292,6 +292,9 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 		//color = gbd.N;
         _out        	o;
 		
+		if (ao_debug())
+			color = occ;
+		
 		tonemap        	(o.low, o.high, color, tm_scale )	;
         o.low.a         = skyblend;
 		o.high.a		= skyblend;

@@ -177,6 +177,10 @@ _out         main                ( _input I )
 //   color 		= float4(occ.xxx,1.0f); //show occlusion
 //	color		= occ;
         _out        	o;
+		
+		if (ao_debug())
+			color = occ;
+		
         tonemap        	(o.low, o.high, color, tm_scale )	;
                         o.low.a         = skyblend	;
 						o.high.a		= skyblend	;

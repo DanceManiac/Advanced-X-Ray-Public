@@ -65,6 +65,8 @@ uniform half4                J_spot                [6];
 uniform	half4				m_hud_params;	//
 uniform	half4				m_blender_mode;	// 
 
+uniform half4				debug; // x - ao debug, yzw - null
+
 half          calc_fogging               (half4 w_pos)      { return dot(w_pos,fog_plane);         }
 half2         calc_detail                (half3 w_pos)      {
         float                 dtl        = distance                (w_pos,eye_position)*dt_params.w;
@@ -321,6 +323,12 @@ half Contrast(half Input, half ContrastPower)
 inline bool isSecondVPActive()
 {
 	return (m_blender_mode.z == 1.f);
+}
+
+// Активен ли дебаггер АО
+inline bool ao_debug()
+{
+	return (debug.x == 1.f);
 }
 
 float rand(float n)

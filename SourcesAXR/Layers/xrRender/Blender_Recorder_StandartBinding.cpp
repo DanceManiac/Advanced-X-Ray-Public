@@ -521,6 +521,15 @@ static class cl_refl_dist : public R_constant_setup
 	}
 } cl_refl_dist;
 
+//AO Debug
+static class cl_debug : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_r2_ao_debug, 0, 0, 0);
+	}
+} binder_debug;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -611,6 +620,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_wpn_dof_2",	&ssfx_wpn_dof_2);
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
+	//AO Debug
+	r_Constant				("debug",			&binder_debug);
 
 	// detail
 	//if (bDetail	&& detail_scaler)
