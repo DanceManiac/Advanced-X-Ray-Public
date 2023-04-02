@@ -797,6 +797,7 @@
     <ClInclude Include="_color.h" />
     <ClInclude Include="_compressed_normal.h" />
     <ClInclude Include="_cylinder.h" />
+    <ClInclude Include="_detail_collision_point.h" />
     <ClInclude Include="_fbox.h" />
     <ClInclude Include="_fbox2.h" />
     <ClInclude Include="_flags.h" />

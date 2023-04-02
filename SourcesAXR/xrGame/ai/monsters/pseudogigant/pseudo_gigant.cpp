@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "pseudo_gigant.h"
 #include "pseudo_gigant_step_effector.h"
 #include "../../../actor.h"
@@ -17,6 +17,12 @@
 #include "../control_path_builder_base.h"
 #include "Inventory.h"
 #include "AdvancedXrayGameConstants.h"
+#include "../../xrCore/_detail_collision_point.h"
+
+ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
+ENGINE_API extern int ps_detail_enable_collision;
+ENGINE_API extern Fvector actor_position;
+ENGINE_API extern float ps_detail_collision_radius;
 
 CPseudoGigant::CPseudoGigant()
 {
@@ -245,9 +251,19 @@ void CPseudoGigant::on_activate_control(ControlCom::EControlType type)
 
 void CPseudoGigant::on_threaten_execute()
 {
-	// ���������� �������
+	Fvector& position = Position();
+
+	if (ps_detail_enable_collision)
+	{
+		//-- VlaGan: для псевдыча ID зеркальный, чтобы он не влиял на траву под ид точки удара
+		//-- для гранат и взрывного легче, ведь они по задумке не коллизируют и можно спокойно брать их ид
+		if (actor_position.distance_to(position) <= ps_detail_collision_radius)
+			level_detailcoll_points.push_back(DetailCollisionPoint(position, -ID(), 15.f, 0.3f, 1.5f, true));
+	}
+
+	// разбросить объекты
 	m_nearest.clear_not_free		();
-	Level().ObjectSpace.GetNearest	(m_nearest,Position(), 15.f, NULL); 
+	Level().ObjectSpace.GetNearest(m_nearest, position, 15.f, NULL);
 	for (u32 i=0;i<m_nearest.size();i++) 
 	{
 		CPhysicsShellHolder  *obj = smart_cast<CPhysicsShellHolder *>(m_nearest[i]);
@@ -260,18 +276,18 @@ void CPseudoGigant::on_threaten_execute()
 		Fvector pos;
 		pos.set(obj->Position());
 		pos.y += 2.f;
-		dir.sub(pos, Position());
+		dir.sub(pos, position);
 		dir.normalize();
 		obj->m_pPhysicsShell->applyImpulse(dir,20 * obj->m_pPhysicsShell->getMass());
 	}
 
-	// ������ ����
+	// играть звук
 	Fvector		pos;
-	pos.set		(Position());
+	pos.set		(position);
 	pos.y		+= 0.1f;
 	m_sound_threaten_hit.play_at_pos(this,pos);
 
-	// ������ ��������
+	// играть партиклы
 	PlayParticles(m_kick_particles, pos, Direction());
 	
 	CActor *pA = const_cast<CActor *>(smart_cast<const CActor *>(EnemyMan.get_enemy()));
@@ -280,16 +296,16 @@ void CPseudoGigant::on_threaten_execute()
 	if (pA->is_jump()) return;
 	//GC.
 
-	float dist_to_enemy = pA->Position().distance_to(Position());
+	float dist_to_enemy = pA->Position().distance_to(position);
 	float			hit_value;
 	hit_value		= m_kick_damage - m_kick_damage * dist_to_enemy / m_threaten_dist_max;
 	clamp			(hit_value,0.f,1.f);
 
-	// ��������� ��������
+	// запустить эффектор
 	Actor()->Cameras().AddCamEffector(xr_new<CMonsterEffectorHit>(m_threaten_effector.ce_time,m_threaten_effector.ce_amplitude * hit_value,m_threaten_effector.ce_period_number,m_threaten_effector.ce_power * hit_value));
 	Actor()->Cameras().AddPPEffector(xr_new<CMonsterEffector>(m_threaten_effector.ppi, m_threaten_effector.time, m_threaten_effector.time_attack, m_threaten_effector.time_release, hit_value));
 
-	// ���������� ������
+	// развернуть камеру
 	if (pA->cam_Active()) {
 		pA->cam_Active()->Move(Random.randI(2) ? kRIGHT : kLEFT, Random.randF(0.3f * hit_value)); 
 		pA->cam_Active()->Move(Random.randI(2) ? kUP	: kDOWN, Random.randF(0.3f * hit_value)); 
@@ -297,7 +313,7 @@ void CPseudoGigant::on_threaten_execute()
 
 	Actor()->lock_accel_for	(m_time_kick_actor_slow_down);
 	
-	// ������� ���
+	// Нанести хит
 	NET_Packet	l_P;
 	SHit		HS;
 

@@ -1,10 +1,17 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "mosquitobald.h"
 #include "hudmanager.h"
 #include "ParticlesObject.h"
 #include "level.h"
 #include "physicsshellholder.h"
 #include "..\XrEngine\xr_collide_form.h"
+#include "../../xrCore/_detail_collision_point.h"
+
+ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
+ENGINE_API extern int ps_detail_enable_collision;
+ENGINE_API extern Fvector actor_position;
+ENGINE_API extern float ps_detail_collision_radius;
+
 CMosquitoBald::CMosquitoBald(void) 
 {
 	m_fHitImpulseScale		= 1.f;
@@ -40,6 +47,16 @@ bool CMosquitoBald::BlowoutState()
 
 void CMosquitoBald::Affect(SZoneObjectInfo* O) 
 {
+	if (ps_detail_enable_collision)
+	{
+		if (actor_position.distance_to(Position()) <= ps_detail_collision_radius)
+		{
+			//-- это специфично для трамплина, т.к. он может бить очень часто и коллизия ломается
+			EraseDetailCollPointIfExists(ID());
+			level_detailcoll_points.push_back(DetailCollisionPoint(Position(), ID(), 2.5f, 0.3f, 1.f, true));
+		}
+	}
+
 	CPhysicsShellHolder *pGameObject = smart_cast<CPhysicsShellHolder*>(O->object);
 	if(!pGameObject) return;
 

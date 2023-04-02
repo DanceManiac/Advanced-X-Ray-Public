@@ -78,6 +78,7 @@
 #include "ActorNightVision.h"
 #include "AdvancedXrayGameConstants.h"
 #include "../xrphysics/actorcameracollision.h"
+#include "../../xrCore/_detail_collision_point.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -1151,6 +1152,7 @@ void CActor::UpdateCL	()
 }
 
 float	NET_Jump = 0;
+ENGINE_API extern Fvector actor_position;
 
 #include "ai\monsters\ai_monster_utils.h"
 
@@ -1478,6 +1480,8 @@ void CActor::shedule_Update	(u32 DT)
 
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();
+
+	actor_position.set(Position());
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()

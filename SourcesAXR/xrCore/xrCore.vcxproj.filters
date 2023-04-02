@@ -594,6 +594,9 @@
     <ClInclude Include="blackbox\WarningsOn.h">
       <Filter>Debug core\BlackBox</Filter>
     </ClInclude>
+    <ClInclude Include="_detail_collision_point.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrCore.rc">

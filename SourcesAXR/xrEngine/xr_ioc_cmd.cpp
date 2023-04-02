@@ -689,6 +689,15 @@ ENGINE_API int			ps_r__WallmarksOnSkeleton	= 0;
 
 ENGINE_API int			ps_r__ShaderNVG				= 0;
 
+ENGINE_API float		ps_detail_collision_dist	= 1.f;
+ENGINE_API float		ps_detail_collision_time	= 0.25f;
+ENGINE_API Fvector		ps_detail_collision_angle	= { 0, 50, 0 };
+ENGINE_API int			ps_detail_enable_collision	= 1;
+
+ENGINE_API float		ps_detail_collision_radius	= 40.f;
+ENGINE_API xr_vector<DetailCollisionPoint> level_detailcoll_points;
+ENGINE_API Fvector		actor_position{};
+
 void CCC_Register()
 {
 	// General
@@ -742,6 +751,12 @@ void CCC_Register()
 	//Nightvision Type (PPE/Shader)
 	CMD4(CCC_Integer,	"r__shader_nvg",		&ps_r__ShaderNVG,			0, 1	);
 	CMD4(CCC_Integer,	"rs_loadingstages",		&ps_rs_loading_stages,		0, 1	);
+
+	CMD4(CCC_Integer,	"r__detail_collision_enabled",			&ps_detail_enable_collision,	0, 1);
+	CMD4(CCC_Float,		"r__detail_collision_radius",			&ps_detail_collision_dist,		0.1f, 3.5f);
+	CMD4(CCC_Float,		"r__detail_collision_visible_radius",	&ps_detail_collision_radius,	5.f, 70.f);
+	CMD4(CCC_Float,		"r__detail_collision_time",				&ps_detail_collision_time,		0.1f, 3.f);
+	CMD4(CCC_Vector3,	"r__detail_collision_angles",			&ps_detail_collision_angle,		Fvector({ -90.f, -90.f, -90.f }), Fvector({ 90.f, 90.f, 90.f }));
 
 	CMD3(CCC_Mask,		"rs_v_sync",			&psDeviceFlags,		rsVSync				);
 //	CMD3(CCC_Mask,		"rs_disable_objects_as_crows",&psDeviceFlags,	rsDisableObjectsAsCrows	);

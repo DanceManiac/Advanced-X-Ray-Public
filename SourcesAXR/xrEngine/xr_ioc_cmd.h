@@ -1,4 +1,5 @@
 #pragma once
+#include "../../xrCore/_detail_collision_point.h"
 
 #define CMD0(cls)					{ static cls x##cls();				Console->AddCommand(&x##cls);}
 #define CMD1(cls,p1)				{ static cls x##cls(p1);			Console->AddCommand(&x##cls);}

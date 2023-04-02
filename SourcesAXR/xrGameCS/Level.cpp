@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "../xrEngine/fdemorecord.h"
 #include "../xrEngine/fdemoplay.h"
 #include "../xrEngine/environment.h"
@@ -67,8 +67,13 @@
 #endif
 
 #include "embedded_editor/embedded_editor_main.h"
+#include "../xrCore/_detail_collision_point.h"
 
 ENGINE_API bool g_dedicated_server;
+ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
+ENGINE_API extern int ps_detail_enable_collision;
+ENGINE_API extern Fvector actor_position;
+ENGINE_API extern float ps_detail_collision_radius;
 
 extern BOOL	g_bDebugDumpPhysicsStep;
 extern CUISequencer * g_tutorial;
@@ -733,7 +738,7 @@ void CLevel::OnFrame	()
 	m_ph_commander_scripts->update		();
 //	autosave_manager().update			();
 
-	//просчитать полет пуль
+	//РїСЂРѕСЃС‡РёС‚Р°С‚СЊ РїРѕР»РµС‚ РїСѓР»СЊ
 	Device.Statistic->TEST0.Begin		();
 	BulletManager().CommitRenderSet		();
 	Device.Statistic->TEST0.End			();
@@ -761,7 +766,35 @@ void CLevel::OnFrame	()
 		pStatGraphR->AppendItem(float(m_dwRPC)*fRPC_Mult, 0xffff0000, 1);
 		pStatGraphR->AppendItem(float(m_dwRPS)*fRPS_Mult, 0xff00ff00, 0);
 	};
+
 	ShowEditor();
+
+	//-- РћР±РЅРѕРІР»СЏРµРј С‚РѕС‡РєРё РєРѕР»РёР·РёРё
+	if (ps_detail_enable_collision)
+	{
+		//-- VlaGan: СѓРґР°Р»СЏРµРј С‚РѕР»СЊРєРѕ РїРѕР·РёС†РёРё СЃ is_explosion = false
+		xr_vector<DetailCollisionPoint> explosion_points;
+		for (const auto& point : level_detailcoll_points)
+		{
+			if (point.is_explosion)
+				explosion_points.push_back(point);
+		}
+
+		level_detailcoll_points.clear();
+
+		if (explosion_points.size())
+			level_detailcoll_points = explosion_points;
+
+		const xr_vector<CObject*>& active_objects = Objects.GetActiveObjects();
+
+		for (auto& obj : active_objects) //-- CEntityAlive Р±СѓРґРµС‚ Р»СѓС‡С€Рµ
+		{
+			auto gobj = smart_cast<CEntityAlive*>(obj);
+
+			if (gobj && actor_position.distance_to(gobj->Position()) <= ps_detail_collision_radius)
+				level_detailcoll_points.push_back(DetailCollisionPoint(gobj->Position(), gobj->ID()));
+		}
+	}
 }
 
 int		psLUA_GCSTEP					= 10			;
@@ -845,14 +878,14 @@ void CLevel::OnRender()
 		return;
 
 	Game().OnRender();
-	//отрисовать трассы пуль
+	//РѕС‚СЂРёСЃРѕРІР°С‚СЊ С‚СЂР°СЃСЃС‹ РїСѓР»СЊ
 	//Device.Statistic->TEST1.Begin();
 	BulletManager().Render();
 	//Device.Statistic->TEST1.End();
 
 	::Render->AfterWorldRender(); //--#SM+#-- +SecondVP+
 
-	//отрисовать интерфейc пользователя
+	//РѕС‚СЂРёСЃРѕРІР°С‚СЊ РёРЅС‚РµСЂС„РµР№c РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 	HUD().RenderUI();
 
 #ifdef DEBUG

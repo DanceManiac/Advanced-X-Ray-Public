@@ -216,6 +216,24 @@
 			</output_wnd>
         </track_detail_scale>
 		
+        <cap_detail_collision x="70" y="3" width="135" height="24" hint = "ui_mm_detail_collision_hint">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_detail_collision</text>
+        </cap_detail_collision>
+        <check_detail_collision x="217" y="0" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r__detail_collision_enabled" group="mm_opt_video_adv"/>
+        </check_detail_collision>
+		
+		<cap_detail_collision_radius x="70" y="3" width="135" height="24" hint = "ui_mm_detail_collision_radius_hint">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_detail_collision_radius</text>
+        </cap_detail_collision_radius>	
+		<track_detail_collision_radius x="220" y="6" width="200" height="16" min="5.0" max="70.0" step="1.0">
+        <options_item entry="r__detail_collision_visible_radius" group="mm_opt_video_adv"/>
+			<output_wnd x="210" y="0" width="20" height="20" format="%.f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_detail_collision_radius>
+		
         <cap_ssr_quality x="70" y="3" width="135" height="24" hint = "ui_mm_ssr_quality_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_ssr_quality</text>
         </cap_ssr_quality>
@@ -293,10 +311,10 @@
         </check_mblur_enable>
 		
 		<cap_mblur x="70" y="3" width="135" height="24" hint = "ui_mm_mblur_hint">
-        <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_mblur</text>
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_mblur</text>
         </cap_mblur>	
 		<track_mblur x="220" y="6" width="200" height="16" min="0.05" max="0.25" step="0.01">
-        <options_item entry="r2_blur" group="mm_opt_video_adv"/>
+        <options_item entry="r2_mblur" group="mm_opt_video_adv"/>
 			<output_wnd x="210" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>

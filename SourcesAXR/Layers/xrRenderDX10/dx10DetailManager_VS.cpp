@@ -1,10 +1,20 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "../xrRender/DetailManager.h"
 
 #include "../../xrEngine/igame_persistent.h"
 #include "../../xrEngine/environment.h"
 
 #include "../xrRenderDX10/dx10BufferUtils.h"
+#include "../../xrCore/_detail_collision_point.h"
+#include "../../build_config_defines.h"
+
+//-- Grass Collision
+ENGINE_API extern int		ps_detail_enable_collision;
+ENGINE_API extern float		ps_detail_collision_radius;
+ENGINE_API extern Fvector	ps_detail_collision_angle;
+ENGINE_API extern Fvector	actor_position;
+
+float test{};
 
 const int			quant	= 16384;
 const int			c_hdr	= 10;
@@ -100,6 +110,8 @@ void CDetailManager::hw_Render()
 	hw_Render_dump(consts, wave.div(PI_MUL_2), dir2, 0, 1);
 }
 
+static auto deg2radfactor = PI / 180.f; // = 0.017453292f;
+
 void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave, const Fvector4 &wind, u32 var_id, u32 lod_id)
 {
 	static shared_str strConsts("consts");
@@ -121,6 +133,16 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 	c_sun.set				(desc.sun_color.x,	desc.sun_color.y,	desc.sun_color.z);	c_sun.mul(.5f);
 	c_ambient.set			(desc.ambient.x,	desc.ambient.y,		desc.ambient.z);
 	c_hemi.set				(desc.hemi_color.x, desc.hemi_color.y,	desc.hemi_color.z);
+
+	float lost_parent_timeout = (ps_detail_collision_time * 1.5f);
+
+	//-- лучше вынести это сюда
+	Fvector ymp = ps_detail_collision_angle;
+	Fmatrix mGrassCollisionRot, M;
+
+#ifndef SIMPLE_DETAIL_COLLISION
+	DetailCollisionPoint* pPointParent = nullptr;
+#endif
 
 	// Iterate
 	for (u32 O=0; O<objects.size(); O++)
@@ -173,7 +195,151 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 
 						// Build matrix ( 3x4 matrix, last row - color )
 						float		scale		= Instance.scale_calculated;
-						Fmatrix&	M			= Instance.mRotY;
+						M = Instance.mRotY;
+
+						//-----------------------------------------------------------------------
+						//-- VlaGan: псевдоколизия травы ----------------------------------------
+						//-----------------------------------------------------------------------
+						if (ps_detail_enable_collision && M.c.distance_to(actor_position) < ps_detail_collision_radius)
+						{
+
+							//-- единственное отличие упрощённой колизии в том, что
+							//-- что трава не будет коллизировать с другими точками, пока не
+							//-- вернётся в исходное положение, это меньше цпу лоад
+#ifndef SIMPLE_DETAIL_COLLISION
+							//-- Если id точки колизии не существует, но есть трава с такой - сбрасываем ид
+							if (Instance.IsCollisionParent())
+							{
+								pPointParent = GetDetailCollisionPointById(Instance.collision_parent);
+								if (!pPointParent)
+									Instance.collision_parent = (u16)-1;
+							}
+
+							for (auto& point : level_detailcoll_points)
+							{
+								//-- Если у нас уже есть ид того, кто коллизирует
+								//-- с травой и он не равен текущему point.id
+								//-- + дальше чем его радиус коллизии - пропускаем
+								if (pPointParent)
+								{
+									if ((pPointParent->pos.distance_to(M.c) <= (pPointParent->radius + (pPointParent->radius * 0.3f))) && (point.id != Instance.collision_parent))
+										continue;
+
+									if (Instance.collision_parent != point.id && point.pos.distance_to(M.c) > point.radius)
+										continue;
+								}
+
+								if (point.pos.distance_to(M.c) <= point.radius && point.id == Instance.collision_parent)
+								{
+									Instance.m_fTimeCollision += Device.fTimeDelta / point.rot_time_in;
+								}
+								else
+								{
+									if (Instance.IsCollisionParent())
+									{
+										//-- Переопределяем владельца, если трава начала возвращаться в исходное
+										//-- положение от воздействия предыдущего, иначе, она просто бы не реагировала
+										//-- на другие точки колизии, что выглядит так себе
+
+										if (Instance.collision_parent != point.id && point.pos.distance_to(M.c) <= point.radius)
+										{
+											Instance.collision_parent = point.id;
+											break;
+										}
+
+										if (Instance.collision_parent == point.id)
+											Instance.m_fTimeCollision -= Device.fTimeDelta / point.rot_time_out;
+									}
+									else
+									{
+										//-- присваиванием id обьекта, что коллизирует с травой
+                                        //-- вообще, вся эта мутка с ид нужна для того, чтобы на данную траву не
+                                        //-- влияли все точки колизии
+                                        if (point.pos.distance_to(M.c) <= point.radius)
+                                        {
+                                            Instance.collision_parent = point.id;
+											Instance.m_fTimeCollision += Device.fTimeDelta / point.rot_time_in;
+										}
+
+										//-- имеем поворот, нокаким-то хером потеряли парента и не нашли нового - закостылим,
+										//-- чтобы все поинты моментально не опустили эту траву
+										if (Instance.m_fTimeCollision && !Instance.IsCollisionParent())
+											Instance.m_fTimeCollision -= Device.fTimeDelta / (lost_parent_timeout / level_detailcoll_points.size());
+									}
+								}
+								//-- Удаляем парента
+								if (!Instance.m_fTimeCollision)
+									Instance.collision_parent = (u16)-1;
+								//-- это для коллизии от разных воздействий, чтобы проверить
+								//-- что эта точка коллизирует хотя бы с одной травинкой
+								if (point.is_explosion)
+									if (Instance.collision_parent == point.id && !point.bNoExplCollision)
+										point.bNoExplCollision = true;
+							}
+#else
+							for (auto& point : level_detailcoll_points)
+							{
+								//-- Удаляем парента
+								//-- если удалять снизу, как сверху, то почему-то 
+								//-- трава не проминаеться от других коллизионеров, кроме того
+								//-- кто первый её примнул
+								if (!Instance.m_fTimeCollision)
+									Instance.collision_parent = (u16)-1;
+
+								//-- упрощённая колизия
+								if (!Instance.IsCollisionParent())
+								{
+									if (point.pos.distance_to(M.c) <= point.radius)
+										Instance.collision_parent = point.id;
+									else
+									{
+										if (Instance.m_fTimeCollision)
+											Instance.m_fTimeCollision -= Device.fTimeDelta / (lost_parent_timeout / level_detailcoll_points.size());
+										continue;
+									}
+								}
+								else
+								{
+									if (point.id != Instance.collision_parent)
+										continue;
+								}
+
+								//-- по идее, сюда попадает только точка в которой point.id == Instance.collision_parent
+								if (point.pos.distance_to(M.c) <= point.radius)
+									Instance.m_fTimeCollision += Device.fTimeDelta / point.rot_time_in;
+								else
+									Instance.m_fTimeCollision -= Device.fTimeDelta / point.rot_time_out;
+
+								//-- это для коллизии от разных воздействий, чтобы проверить
+								//-- что эта точка коллизирует хотя бы с одной травинкой
+								if (point.is_explosion)
+									if (Instance.collision_parent == point.id && !point.bNoExplCollision)
+										point.bNoExplCollision = true;
+							}
+#endif
+
+#pragma todo("VlaGan: попробовать научить траву крутиться от точки коллизии в разные стороны по её радису.")
+                            //CALC_OFFSETS : {
+                            //-- Нема смысла считать поворот для одной травы от каждой точки (- жпу лоад)
+                            //-- упростил сам вид вычислений поворота травы (ну и по памяти приятней будет)
+                            clamp(Instance.m_fTimeCollision, 0.f, 1.f);
+                            mGrassCollisionRot.identity();
+                            ymp.mul(deg2radfactor * Instance.m_fTimeCollision);
+                            mGrassCollisionRot.setHPB(ymp.x, ymp.y, ymp.z);
+                            ymp = ps_detail_collision_angle;
+                            M.mulB_43(mGrassCollisionRot);
+                            //}
+
+#ifndef SIMPLE_DETAIL_COLLISION
+                            pPointParent = nullptr;
+#endif
+                        }
+                        else
+                        {
+                            Instance.m_fTimeCollision = 0.f;
+                            Instance.collision_parent = (u16)-1;
+						}
+
 						c_storage[base+0].set	(M._11*scale,	M._21*scale,	M._31*scale,	M._41	);
 						c_storage[base+1].set	(M._12*scale,	M._22*scale,	M._32*scale,	M._42	);
 						c_storage[base+2].set	(M._13*scale,	M._23*scale,	M._33*scale,	M._43	);
@@ -232,4 +398,36 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 		vOffset		+=	hw_BatchSize * Object.number_vertices;
 		iOffset		+=	hw_BatchSize * Object.number_indices;
 	}
+
+	//-- VlaGan: тут фокус в том, что при каждом апдейте перемещаем
+	//-- колизии от взрыва и тп немного вниз, а когда видим, что с ней ничего
+	//-- не коллизирует - удаляем, но можно и сразу в ебеня, но тогда
+	//-- не будет плавного перехода
+	//-- перебрал дохера способов, но этот вроде +- оптимальный
+	if (ps_detail_enable_collision)
+		for (auto& point : level_detailcoll_points)
+			if (point.is_explosion)
+				if (!point.bNoExplCollision)
+					point.is_explosion = false;
+				else
+				{
+					if (point.fExplCollisionTimeIn >= point.rot_time_in)
+					{
+						//-- Плавный переход
+						//-- убираем предыдущее смещение
+						point.pos.y += point.radius * point.fExplCollisionTimeOut;
+
+						//-- считаем и добавляем новое
+						point.fExplCollisionTimeOut += Device.fTimeDelta / point.fExpPointLoweringTime;
+						point.pos.y -= point.radius * point.fExplCollisionTimeOut;
+
+
+						//-- Просто и понятно, но без плавного перехода до центра
+						//point.pos.y = -250.f;
+					}
+					else
+						point.fExplCollisionTimeIn += Device.fTimeDelta / point.rot_time_in;
+
+					point.bNoExplCollision = false;
+				}
 }
