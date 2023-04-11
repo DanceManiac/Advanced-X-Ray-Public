@@ -678,10 +678,21 @@ void g_set_community_relation( LPCSTR comm_from, LPCSTR comm_to, int value )
 	RELATION_REGISTRY().SetCommunityRelation( community_from.index(), community_to.index(), value );
 }
 
+#ifndef _WIN64
 u32 vertex_id	(Fvector position)
 {
 	return	(ai().level_graph().vertex_id(position));
 }
+#else
+u64 vertex_id(Fvector position)
+{
+	// Original Clear Sky's LuaJIT or luabind converts
+	// 4294967295 (which is u32(-1)) to 4294967296
+	// for some reason :(
+	const u32 id = ai().level_graph().vertex_id(position);
+	return id == u32(-1) ? id + 1 : id; // reproduce Clear Sky behaviour
+}
+#endif // _WIN64
 
 u32 render_get_dx_level()
 {
