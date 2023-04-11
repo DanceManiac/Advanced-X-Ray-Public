@@ -93,6 +93,7 @@ public:
 	CUIStatic*		m_num_text;
 	CUI3tButtonEx*	m_text;
 	shared_str		m_s_value;
+	float			m_fOffset;
 					CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path);
 	void			Init					(LPCSTR val, LPCSTR text);
 

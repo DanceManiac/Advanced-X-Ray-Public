@@ -178,12 +178,17 @@ void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number, bool b_
 	CUIQuestionItem* itm			= xr_new<CUIQuestionItem>(m_uiXml,"question_item");
 	itm->Init						(value, str);
 	++number; //zero-based index
-	if(number<=10)
+
+	string16 buff;
+	xr_sprintf(buff, "%d.", number);
+	itm->m_num_text->SetText(buff);
+	if (number > 9)
 	{
-		string16 buff;
-		xr_sprintf						(buff, "%d.", (number==10)?0:number);
-		itm->m_num_text->SetText		(buff);
-		itm->m_text->SetAccelerator		(DIK_ESCAPE+number, 0);
+		itm->m_text->SetTextX( itm->m_fOffset);
+	}
+	if (number < 10)
+	{
+		itm->m_text->SetAccelerator(DIK_ESCAPE + number, 0);
 	}
 	if(b_finalizer)
 	{
@@ -286,6 +291,7 @@ CUIQuestionItem::CUIQuestionItem(CUIXml* xml_doc, LPCSTR path)
 
 	strconcat						(sizeof(str),str,path,":content_text");
 	xml_init.Init3tButton			(*xml_doc, str, 0, m_text);
+	m_fOffset						= xml_doc->ReadAttribFlt(str, 0, "offset", 0);
 
 	Register						(m_text);
 	AddCallback						(m_text,BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIQuestionItem::OnTextClicked));

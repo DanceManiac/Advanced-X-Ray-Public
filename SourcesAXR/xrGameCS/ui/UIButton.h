@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UIStatic.h"
-#include "../../XrServerEntitiesCS/script_export_space.h"
+#include "../../xrServerEntitiesCS/script_export_space.h"
 
 
 class CUIButton : public CUIStatic
@@ -15,7 +15,7 @@ public:
 	virtual bool	OnMouse					(float x, float y, EUIMessages mouse_action);
 	virtual void	OnClick					();
 
-	//���������� ����
+	//прорисовка окна
 	virtual void	DrawTexture				();
 	virtual void	DrawText				();
 	virtual void	DrawHighlightedText		();
@@ -25,39 +25,39 @@ public:
 	virtual bool	OnKeyboard				(int dik, EUIMessages keyboard_action);
 	virtual void	OnFocusLost				();
 
-	//������ � ������� ����� �������� ������
-	typedef enum{NORMAL_PRESS, //������ ���������� ��� 
-							   //������� � ���������� �� ��� ����
-				 DOWN_PRESS    //����� ��� �������
+	//режимы в которых можно нажимать кнопку
+	typedef enum{NORMAL_PRESS, //кнопка нажимается при 
+							   //нажатии и отпускании на ней мыши
+				 DOWN_PRESS    //сразу при нажатии
 			} E_PRESS_MODE;
 
 
-	//������ ����������� ���������
+	//заново подготовить состояние
     virtual void	Reset					();
 
 
-	//��������� �� ����� �� ������
-	// �������������� ���������
+	//подсвечен ли текст на кнопке
+	// принудительная подсветка
 	virtual void	HighlightItem			(bool bHighlight)			{m_bCursorOverWindow = bHighlight; }
 
-	//��������� � ������� ��������� ������
-	typedef enum{BUTTON_NORMAL, //������ ����� �� �������������
-		BUTTON_PUSHED, //� ������� ��������
-		BUTTON_UP      //��� ������������ ������ ���� 
+	//состояния в которых находится кнопка
+	typedef enum{BUTTON_NORMAL, //кнопка никак не затрагивается
+		BUTTON_PUSHED, //в нажатом сотоянии
+		BUTTON_UP      //при удерживаемой кнопки мыши 
 	} E_BUTTON_STATE;
 
-	// ��������� ��������� ������: ��������, �� ��������
+	// Установка состояния кнопки: утоплена, не утоплена
 	void				SetButtonMode			(E_BUTTON_STATE eBtnState)	{ m_eButtonState = eBtnState; }
 	E_BUTTON_STATE		GetButtonsState			()							{ return m_eButtonState;}
 
-	// ��������� ������ ��� ������������� ����������� ���� ������ � ������ NORMAL_PRESS
+	// Поведение кнопки как переключателя реализовано пока только в режиме NORMAL_PRESS
 	void				SetButtonAsSwitch		(bool bAsSwitch)			{ m_bIsSwitch = bAsSwitch; }
 
-	// ������ � �������������
-	// ��� ������������ ������� �� ����� dinput.h, �� DirectX SDK.
-	// ��������: ������ A - ��� 0x1E(DIK_A)
-	void                SetAccelerator			(int iAccel, int idx);
-	const int			GetAccelerator			(int idx) const			{VERIFY(idx==0||idx==1); return m_uAccelerator[idx]; }
+	// Работа с акселератором
+	// Код акселератора берется из файла dinput.h, из DirectX SDK.
+	// Например: кнопка A - код 0x1E(DIK_A)
+	void				SetAccelerator			(int iAccel, int idx)	{VERIFY(idx>=0 && idx<4); m_uAccelerator[idx] = iAccel; }
+	const int			GetAccelerator			(int idx) const			{VERIFY(idx>=0 && idx<4); return m_uAccelerator[idx]; }
 	IC bool				IsAccelerator			(int iAccel) const		{return (m_uAccelerator[0]==iAccel)||(m_uAccelerator[1]==iAccel) ;}
 
 	void				SetPressMode			(E_PRESS_MODE ePressMode)	{m_ePressMode = ePressMode;}

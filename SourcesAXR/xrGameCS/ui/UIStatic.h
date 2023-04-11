@@ -69,6 +69,7 @@ public:
 			void		TextureOff					()							{ m_bTextureEnable = false; }
 
 
+
 	// own
 	virtual void		SetHighlightColor			(const u32 uColor)	{ m_HighlightColor = uColor; }
 			void		EnableTextHighlighting		(bool value)		{ m_bEnableTextHighlighting = value; }
