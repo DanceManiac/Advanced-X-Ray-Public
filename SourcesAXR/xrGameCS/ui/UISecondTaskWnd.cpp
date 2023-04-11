@@ -258,6 +258,17 @@ void UISecondTaskItem::update_view()
 
 	CGameTask* activ_task = Level().GameTaskManager().ActiveTask( eTaskTypeAdditional );
 
+	if (activ_task && (activ_task->m_map_object_id == u16(-1) || activ_task->m_map_location.size() == 0))
+	{
+		m_bt_view->Show(false);
+		m_bt_focus->Show(false);
+	}
+	else
+	{
+		m_bt_view->Show(true);
+		m_bt_focus->Show(true);
+	}
+
 	if ( m_task == activ_task )
 	{
 		m_name->SetTextColor( m_color_states[stt_activ] );

@@ -55,8 +55,12 @@ function CGeneralTask:__init(task_ini, id, type)
 	self.base_id		= id
 	self.id				= id
 	self.name			= utils.cfg_get_string(task_ini, id, "name", nil, false, "", tostring(id))
-	--self.icon			= utils.cfg_get_string(task_ini, id, "icon", nil, false, "", tostring(id))
-	self.icon			= "ui_pda2_mtask_overlay"
+	local suffix = "_icon"
+	if string.sub(utils.cfg_get_string(task_ini, id, "icon", nil, false, "", tostring(id)), -#suffix) ~= suffix then
+		self.icon		= "ui_pda2_mtask_overlay"
+	else
+		self.icon		= utils.cfg_get_string(task_ini, id, "icon", nil, false, "", tostring(id))
+	end
 
 	self.spot			= utils.cfg_get_string(task_ini, id, "spot", nil, false, "", nil)
 	self.faction_target = utils.cfg_get_string(task_ini, id, "faction", nil, false, "", nil)
@@ -1342,9 +1346,6 @@ function CStorylineTask:get_inited_task(obj, faction, entity_id)
 		local sid = tonumber(self.target_story_ids)
 		if(sid) then
 			self.target = id_by_sid(sid)
-			if not(self.target) then
-				abort("Target for storyline task doesnt exist. Story id [%s]", tostring(self.target_story_ids))
-			end
 		else
 			local gulag = nil
 			local param1, param2 = utils.parse_target(self.target_story_ids)
@@ -1353,10 +1354,8 @@ function CStorylineTask:get_inited_task(obj, faction, entity_id)
 			if(param2) then
 				gulag = xr_gulag.get_gulag_by_name(param2)
 			end
-			if(gulag~=nil) then
+			if(gulag~=nil and self.target ~=nil) then
 				self.target = gulag:idNPCOnJob(param1)
-			else
-				abort("Target job is nil.")
 			end
 		end
 --[[
@@ -1370,9 +1369,6 @@ function CStorylineTask:get_inited_task(obj, faction, entity_id)
 	end
 	self.target = self.target.id
 ]]
-	if self.target == nil then
-		abort("wrong target for storyline quest: %s", tostring(self.target_story_ids))
-	end
 	self.entity_id = entity_id
 	return self
 end

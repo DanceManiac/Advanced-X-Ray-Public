@@ -191,10 +191,20 @@ void CUITaskWnd::ReloadTaskInfo()
 	CGameTask* t					= Level().GameTaskManager().ActiveTask(eTaskTypeStoryline);
 	m_pStoryLineTaskItem->InitTask	(t);
 
+	if (t && (t->m_map_object_id == u16(-1) || t->m_map_location.size() == 0) || !t)
+		m_btn_focus->Show(false);
+	else
+		m_btn_focus->Show(true);
+
 	t								= Level().GameTaskManager().ActiveTask(eTaskTypeAdditional);
 	m_pSecondaryTaskItem->InitTask	(t);
 	m_actual_frame					= Level().GameTaskManager().ActualFrame();
 	
+	if (t && (t->m_map_object_id == u16(-1) || t->m_map_location.size() == 0) || !t)
+		m_btn_focus->Show(false);
+	else
+		m_btn_focus->Show(true);
+
 	u32 task2_count					= Level().GameTaskManager().GetTaskCount( eTaskStateInProgress, eTaskTypeAdditional );
 	
 	if ( task2_count )
@@ -402,7 +412,7 @@ void CUITaskItem::InitTask(CGameTask* task)
 	{
 		if ( task )
 		{
-			S->InitTexture			(task->m_icon_texture_name.c_str());
+			m_info["t_icon_over"]->InitTexture			(task->m_icon_texture_name.c_str());
 			S->SetStretchTexture	(true);
 			m_info["t_icon_over"]->Show(true);
 		}
