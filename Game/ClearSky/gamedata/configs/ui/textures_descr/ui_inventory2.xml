@@ -89,4 +89,7 @@
     <texture id="ui_scale_one_top" x="723" y="0" width="90" height="76" />
 -->
    </file>
+    <file name="ui\ui_inv2">
+    <texture id="ui_dlg_top_middle"	x="0" y="0" width="680" height="524" />
+   </file>
 </w>
