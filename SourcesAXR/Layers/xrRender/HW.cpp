@@ -103,14 +103,6 @@ void CHW::Reset		(HWND hwnd)
 
 void CHW::CreateD3D	()
 {
-//#ifndef DEDICATED_SERVER
-//	LPCSTR		_name			= "d3d9.dll";
-//#else
-//	LPCSTR		_name			= "xrd3d9-null.dll";
-//#endif
-
-	LPCSTR		_name			= "xrd3d9-null.dll";
-
 #ifndef _EDITOR
 	if (!g_dedicated_server)
 #endif    
