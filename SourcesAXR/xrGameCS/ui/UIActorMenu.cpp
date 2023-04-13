@@ -454,7 +454,7 @@ void CUIActorMenu::InfoCurItem( CUICellItem* cell_item )
 	
 	m_ItemInfo->InitItem	( current_item, compare_item );
 	float dx_pos = GetWndRect().left;
-	m_ItemInfo->AlignHintWndPos( Frect().set( 0.0f, 0.0f, 1024.0f - dx_pos, 768.0f ), 10.0f, dx_pos );
+	fit_in_rect(m_ItemInfo, Frect().set( 0.0f, 0.0f, UI_BASE_WIDTH - dx_pos, UI_BASE_HEIGHT ), 10.0f, dx_pos );
 }
 
 bool CUIActorMenu::OnItemStartDrag(CUICellItem* itm)
