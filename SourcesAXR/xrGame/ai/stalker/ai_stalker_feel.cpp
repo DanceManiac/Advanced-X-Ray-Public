@@ -15,6 +15,8 @@
 #include "../../stalker_movement_manager_smart_cover.h"
 #include "../../stalker_animation_manager.h"
 
+#include "CustomZone.h"
+
 #ifdef DEBUG
 #	include "../../ai_debug.h"
 	extern Flags32 psAI_Flags;
@@ -78,7 +80,7 @@ BOOL CAI_Stalker::feel_touch_on_contact	(CObject *O)
 {
 	VERIFY							(O != this);
 
-	if ((O->spatial.type | STYPE_VISIBLEFORAI) != O->spatial.type)
+	if ((O->spatial.type | STYPE_VISIBLEFORAI) != O->spatial.type && !smart_cast<CCustomZone*>(O))
 		return	(FALSE);
 
 	return		(inherited::feel_touch_on_contact(O));
