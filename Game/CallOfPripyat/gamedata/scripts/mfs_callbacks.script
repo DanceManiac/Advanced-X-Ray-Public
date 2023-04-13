@@ -1,0 +1,102 @@
+--Advanced X-ray
+--Скрипт сделал: Arkada (aka liner)
+--Модульная система
+
+--ВНИМАНИЕ!!! ВЫЗОВЫ КАЛЛБЭКОВ И НОВЫЕ КАЛЛБЭКИ НУЖНО РЕГИСТРИРОВАТЬ ЗАНОВО ПОСЛЕ КАЖДОГО net_spawn!!!
+--function on_game_load()
+-- mfs_callbacks.Register(name,func)
+--end
+
+local callbacks =
+{
+--Игрок
+	actor_net_destroy = {},			--Игрок загружает сейв (обычно в таком случае вызывается net_destroy)
+	actor_death = {},				--Игрок умер
+	actor_take_item = {},			--Игрок взял предмет
+	actor_take_item_from_box = {},	--Игрок взял предмет из ящика
+	actor_put_item_in_box = {},		--Игрок положил предмет в ящик
+	actor_update = {},				--Апдейт игрока каждую милисекунду
+	actor_first_update = {},		--Первый апдейт игрока после net_spawn
+	actor_sleep = {}, 				--Игрок заснул
+	actor_item_use = {}, 			--Игрок использовал предмет
+	actor_item_to_ruck = {},		--Игрок переместил предмет в рюкзак
+	actor_item_to_belt = {},		--Игрок переместил предмет на пояс
+	actor_item_to_slot = {},		--Игрок переместил предмет в слот
+	actor_hit = {},					--Игрок получил урон
+	actor_jump = {},				--Игрок прыгает
+	actor_land = {},				--Игрок лезет по лестнице
+	actor_on_leave_dialog = {},		--Игрок закрыл диалоговое окно либо оно закрылось принудительно, в общем диалог с НПС закончился
+--НПС
+	npc_net_spawn = {},
+}
+
+--функция-пример
+--Зарегестрировать вызов каллбэка в реестре
+--name - имя каллбэка
+--func - функция, которая будет вызываться при вызове каллбэка
+function Register(name,func)
+	--Проверяем, существует ли такой каллбэк
+	if callbacks[name] then
+		--Если по каким-то причинам func равен nil, то игра крашнется
+		callbacks[name][func] = true
+	else
+		--Не существует: пишем в лог
+		printf("! mfs_callbacks: callback [%s] doesn't exist!",name)
+		callstack()
+	end
+end
+
+--Отвязать вызов каллбэка из реестра
+function Unregister(name,func)
+	if not callbacks[name] then
+		printf("! mfs_callbacks: callback [%s] doesn't exist!",name)
+		callstack()
+		return
+	end
+	--Если по каким-то причинам func равен nil, то игра крашнется
+	callbacks[name][func] = nil
+end
+
+--Добавить новый каллбэк в реестр
+function Add(name)
+	if not callbacks[name] then
+		callbacks[name] = {}
+	else
+		printf("~ mfs_callbacks: callback [%s] already exists!",name) --предупреждение
+		callstack()
+	end
+end
+
+--Удалить каллбэк из реестра
+function Del(name)
+	callbacks[name] = nil
+end
+
+--Вызвать каллбэк
+--... (необязательный параметр) - любые аргументы, которые будут передаваться в func
+function Action(name,...)
+	if not callbacks[name] then
+		printf("! mfs_callbacks: callback [%s] doesn't exist!",name)
+		callstack()
+		return
+	end
+	for k,v in pairs(callbacks[name]) do
+		--если v это nil то итератор автоматически пропускает цикл, поэтому ненужно делать проверку на пустоту
+		k(...)
+	end
+end
+
+--Проверить, существует ли каллбэк
+function Exist(name)
+	return callbacks[name] ~= nil
+end
+
+--Проверить, зарегестрирован ли вызов каллбэка в реестре
+function Registered(name,func)
+	return callbacks[name] and callbacks[name][func] == true
+end
+
+--Получить таблицу каллбэка из реестра
+function Get(name)
+	return callbacks[name]
+end
