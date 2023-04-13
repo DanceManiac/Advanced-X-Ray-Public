@@ -323,6 +323,7 @@ void CUIActorMenu::Construct()
 	m_actor_trade						= NULL;
 	m_partner_trade						= NULL;
 	m_repair_mode						= false;
+	m_item_info_view					= false;
 
 	DeInitInventoryMode					();
 	DeInitTradeMode						();
