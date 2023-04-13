@@ -693,14 +693,14 @@ void CUIMapWnd::ShowHint( bool extra )
 	Frect vis_rect;
 	if ( extra )
 	{
-		vis_rect.set( Frect().set( 0.0f, 0.0f, 1024.0f, 768.0f ) );
+		vis_rect.set( Frect().set( 0.0f, 0.0f, UI_BASE_WIDTH, UI_BASE_HEIGHT ) );
 	} 
 	else
 	{
 		vis_rect = ActiveMapRect();
 	}
-
-	bool is_visible = m_map_location_hint->AlignHintWndPos( vis_rect );
+	
+	bool is_visible = fit_in_rect(m_map_location_hint, vis_rect );
 	if ( !is_visible )
 	{
 		HideCurHint();

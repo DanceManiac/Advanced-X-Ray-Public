@@ -619,6 +619,8 @@ bool CUIActorMenu::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 		bool result							= b_already || (!b_own_item || m_pActorInvOwner->inventory().Ruck(iitem) );
 		VERIFY								(result);
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
+		if (!i)
+			return false;
 		
 		if(b_use_cursor_pos)
 			new_owner->SetItem				(i,old_owner->GetDragItemPosition());
@@ -831,17 +833,14 @@ void CUIActorMenu::ActivatePropertiesBox()
 	m_UIPropertiesBox->RemoveAll();
 	bool b_show = false;
 
-	if ( m_currMenuMode == mmInventory )
+	if ( m_currMenuMode == mmInventory || m_currMenuMode == mmDeadBodySearch)
 	{
 		PropertiesBoxForSlots( item, b_show );
 		PropertiesBoxForWeapon( cell_item, item, b_show );
 		PropertiesBoxForAddon( item, b_show );
 		PropertiesBoxForUsing( item, b_show );
-		PropertiesBoxForDrop( cell_item, item, b_show );
-	}
-	else if ( m_currMenuMode == mmDeadBodySearch )
-	{
-		PropertiesBoxForUsing( item, b_show );
+		if ( m_currMenuMode == mmInventory )
+			PropertiesBoxForDrop( cell_item, item, b_show );
 	}
 	else if ( m_currMenuMode == mmUpgrade )
 	{

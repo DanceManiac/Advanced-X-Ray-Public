@@ -622,12 +622,12 @@ void CUIWindow::ShowChildren(bool show){
 			(*it)->Show(show);
 }
 
-bool CUIWindow::is_in( Frect const& a, Frect const& b ) //b in a
+static bool is_in( Frect const& a, Frect const& b ) //b in a
 {
 	return (a.x1 < b.x1) && (a.x2 > b.x2) && (a.y1 < b.y1) && (a.y2 > b.y2);
 }
 
-bool CUIWindow::AlignHintWndPos( Frect const& vis_rect, float border, float dx16pos ) //this = hint wnd
+bool fit_in_rect(CUIWindow* w, Frect const& vis_rect, float border, float dx16pos ) //this = hint wnd
 {
 	float const cursor_height = 43.0f;
 	Fvector2 cursor_pos	= GetUICursor()->GetCursorPosition();
@@ -642,7 +642,7 @@ bool CUIWindow::AlignHintWndPos( Frect const& vis_rect, float border, float dx16
 	}
 
 	Frect	rect;
-	rect.set( -border, -border, GetWidth() - 2.0f*border, GetHeight() - 2.0f*border );
+	rect.set( -border, -border, w->GetWidth() - 2.0f*border, w->GetHeight() - 2.0f*border );
 	rect.add( cursor_pos.x, cursor_pos.y );
 
 	rect.sub( 0.0f, rect.height() - border );
@@ -654,6 +654,6 @@ bool CUIWindow::AlignHintWndPos( Frect const& vis_rect, float border, float dx16
 	if ( !is_in( vis_rect, rect ) ) {	rect.sub( 0.0f                 , yn                     );	}
 	if ( !is_in( vis_rect, rect ) ) {	rect.sub( rect.width() - border, 0.0f                   );	}
 
-	SetWndPos( rect.lt );
+	w->SetWndPos( rect.lt );
 	return true;
 }

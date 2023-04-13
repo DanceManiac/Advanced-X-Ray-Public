@@ -153,6 +153,7 @@ protected:
 
 	u32							m_last_time;
 	bool						m_repair_mode;
+	bool						m_item_info_view;
 	u32							m_trade_partner_inventory_state;
 	bool						m_bNeedMoveAfsToBag;
 public:

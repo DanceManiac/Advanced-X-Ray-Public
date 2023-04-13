@@ -77,8 +77,8 @@ void UIHint::Draw()
 {
 	if ( m_visible )
 	{
-		AlignHintWndPos( m_rect, m_border );
-		inherited::Draw();
+		fit_in_rect		(this, m_rect, m_border );
+		inherited::Draw	();
 	}
 }
 

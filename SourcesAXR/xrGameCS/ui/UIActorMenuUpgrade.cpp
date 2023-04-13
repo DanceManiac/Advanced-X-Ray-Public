@@ -96,7 +96,7 @@ bool CUIActorMenu::SetInfoCurUpgrade( Upgrade_type* upgrade_type, CInventoryItem
 		return false;
 	}
 	
-	m_upgrade_info->AlignHintWndPos( Frect().set( 0.0f, 0.0f, 1024.0f, 768.0f ), 10.0f, GetWndRect().left );
+	fit_in_rect(m_upgrade_info, Frect().set( 0.0f, 0.0f, UI_BASE_WIDTH, UI_BASE_HEIGHT ), 0.0f, GetWndRect().left );
 	return res;
 }
 
