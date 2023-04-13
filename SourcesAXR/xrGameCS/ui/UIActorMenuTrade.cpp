@@ -259,6 +259,9 @@ bool CUIActorMenu::CanMoveToPartner(PIItem pItem)
 		return false;
 	}
 
+	if(pItem->GetCondition()<m_pPartnerInvOwner->trade_parameters().buy_item_condition_factor)
+		return false;
+
 	float r1				= CalcItemsWeight( m_pTradeActorList );		// actor
 	float r2				= CalcItemsWeight( m_pTradePartnerList );	// partner
 	float itmWeight			 = pItem->Weight();

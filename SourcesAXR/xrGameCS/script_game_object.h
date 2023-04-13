@@ -608,6 +608,8 @@ public:
 			void				buy_condition						(float friend_factor, float enemy_factor);
 			void				show_condition						(CScriptIniFile *ini_file, LPCSTR section);
 			void				buy_supplies						(CScriptIniFile *ini_file, LPCSTR section);
+			void				buy_item_condition_factor			(float factor);
+
 
 			LPCSTR				sound_prefix						() const;
 			void				sound_prefix						(LPCSTR sound_prefix);

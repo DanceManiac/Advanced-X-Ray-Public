@@ -956,6 +956,17 @@ void CScriptGameObject::buy_supplies			(CScriptIniFile *ini_file, LPCSTR section
 	);
 }
 
+void CScriptGameObject::buy_item_condition_factor(float factor)
+{
+	CInventoryOwner								*inventory_owner = smart_cast<CInventoryOwner*>(&object());
+	if (!inventory_owner) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member buy_item_condition_factor!");
+		return;
+	}
+
+	inventory_owner->trade_parameters().buy_item_condition_factor = factor;
+}
+
 void sell_condition								(CScriptIniFile *ini_file, LPCSTR section)
 {
 	default_trade_parameters().process	(CTradeParameters::action_sell(0),*ini_file,section);

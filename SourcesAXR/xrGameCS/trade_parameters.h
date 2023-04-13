@@ -23,6 +23,9 @@ public:
 	struct _show_parameters		{};
 	typedef _show_parameters*	action_show;
 
+public:
+	float						buy_item_condition_factor;
+
 private:
 	static CTradeParameters		*m_instance;
 
