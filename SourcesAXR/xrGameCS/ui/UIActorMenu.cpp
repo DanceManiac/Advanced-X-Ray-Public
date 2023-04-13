@@ -7,6 +7,8 @@
 #include "../inventory.h"
 #include "../inventory_item.h"
 #include "../InventoryBox.h"
+#include "../trade.h"
+#include "../trade_parameters.h"
 #include "object_broker.h"
 #include "../ai/monsters/BaseMonster/base_monster.h"
 #include "UIInventoryUtilities.h"
@@ -449,10 +451,55 @@ void CUIActorMenu::InfoCurItem( CUICellItem* cell_item )
 	u32    compare_slot = current_item->GetSlot();
 	if ( compare_slot != NO_ACTIVE_SLOT )
 	{
-		compare_item = m_pActorInvOwner->inventory().m_slots[compare_slot].m_pIItem;
+		compare_item = m_pActorInvOwner->inventory().ItemFromSlot(compare_slot);
 	}
-	
-	m_ItemInfo->InitItem	( current_item, compare_item );
+
+	if(m_currMenuMode ==mmTrade)
+	{
+		CInventoryOwner* item_owner = smart_cast<CInventoryOwner*>(current_item->m_pInventory->GetOwner());
+		u32 item_price = u32(-1);
+		if(item_owner && item_owner==m_pActorInvOwner)
+			item_price = m_partner_trade->GetItemPrice(current_item, true);
+		else
+			item_price = m_partner_trade->GetItemPrice(current_item, false);
+
+		//if(item_price>500)
+		//	item_price = iFloor(item_price/10+0.5f)*10;
+
+		CWeaponAmmo* ammo = smart_cast<CWeaponAmmo*>(current_item);
+		if(ammo)
+		{
+			for( u32 j = 0; j < cell_item->ChildsCount(); ++j )
+			{
+				u32 tmp_price	= 0;
+				PIItem jitem	= (PIItem)cell_item->Child(j)->m_pData;
+				CInventoryOwner* ammo_owner = smart_cast<CInventoryOwner*>(jitem->m_pInventory->GetOwner());
+				if(ammo_owner && ammo_owner==m_pActorInvOwner)
+					tmp_price = m_partner_trade->GetItemPrice(jitem, true);
+				else
+					tmp_price = m_partner_trade->GetItemPrice(jitem, false);
+
+				//if(tmp_price>500)
+				//	tmp_price = iFloor(tmp_price/10+0.5f)*10;
+
+				item_price		+= tmp_price;
+			}
+		}
+
+		if(	!current_item->CanTrade() || 
+			(!m_pPartnerInvOwner->trade_parameters().enabled(CTradeParameters::action_buy(0), 
+															current_item->object().cNameSect()) &&
+			item_owner && item_owner==m_pActorInvOwner)
+		)
+			m_ItemInfo->InitItem	( cell_item, compare_item, u32(-1), "st_no_trade_tip_1" );
+		else if(current_item->GetCondition()<m_pPartnerInvOwner->trade_parameters().buy_item_condition_factor)
+			m_ItemInfo->InitItem	( cell_item, compare_item, u32(-1), "st_no_trade_tip_2" );
+		else
+			m_ItemInfo->InitItem	( cell_item, compare_item, item_price );
+	}
+	else
+		m_ItemInfo->InitItem	( cell_item, compare_item, u32(-1));
+
 	float dx_pos = GetWndRect().left;
 	fit_in_rect(m_ItemInfo, Frect().set( 0.0f, 0.0f, UI_BASE_WIDTH - dx_pos, UI_BASE_HEIGHT ), 10.0f, dx_pos );
 }

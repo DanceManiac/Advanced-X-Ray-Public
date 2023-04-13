@@ -366,4 +366,10 @@
 	<string id="ui_mm_detail_collision_radius">
 		<text>Дальность коллизии травы</text>
 	</string>
+	<string id="st_no_trade_tip_1">
+		<text>Торговец не интересуется подобными предметами.</text>
+	</string>
+	<string id="st_no_trade_tip_2">
+		<text>Предмет в слишком плохом состоянии для продажи.</text>
+	</string>
 </string_table>
