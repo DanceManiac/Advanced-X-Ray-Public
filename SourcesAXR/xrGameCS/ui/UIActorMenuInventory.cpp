@@ -88,6 +88,8 @@ void CUIActorMenu::InitInventoryMode()
 
 	VERIFY( HUD().GetUI() && HUD().GetUI()->UIMainIngameWnd );
 	HUD().GetUI()->UIMainIngameWnd->ShowZoneMap(true);
+
+	m_bNeedMoveAfsToBag = false;
 }
 
 void CUIActorMenu::DeInitInventoryMode()
@@ -1340,16 +1342,27 @@ void CUIActorMenu::UpdateOutfit()
 	{
 		m_belt_list_over[i]->SetVisible( true );
 	}
+
 	u32 af_count = m_pActorInvOwner->inventory().BeltWidth();
 	VERIFY( 0 <= af_count && af_count <= GameConstants::GetArtefactsCount());
 
 	VERIFY( m_pInventoryBeltList );
 	PIItem         ii_outfit = m_pActorInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
 	CCustomOutfit* outfit    = smart_cast<CCustomOutfit*>( ii_outfit );
+
+	if (outfit && !m_bNeedMoveAfsToBag)
+		m_bNeedMoveAfsToBag = true;
+
 	if ( !ii_outfit || !outfit )
 	{
-		MoveArtefactsToBag();
-		return;
+		if (m_bNeedMoveAfsToBag)
+		{
+			MoveArtefactsToBag();
+			m_bNeedMoveAfsToBag = false;
+		}
+
+		if (!af_count)
+			return;
 	}
 
 	Ivector2 afc;
@@ -1357,6 +1370,7 @@ void CUIActorMenu::UpdateOutfit()
 	afc.y = m_pInventoryBeltList->CellsCapacity().y;
 	
 	m_pInventoryBeltList->SetCellsCapacity( afc );
+
 	for ( u8 i = 0; i < af_count ; ++i )
 	{
 		m_belt_list_over[i]->SetVisible( false );

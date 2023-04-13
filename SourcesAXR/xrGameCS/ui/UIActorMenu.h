@@ -154,6 +154,7 @@ protected:
 	u32							m_last_time;
 	bool						m_repair_mode;
 	u32							m_trade_partner_inventory_state;
+	bool						m_bNeedMoveAfsToBag;
 public:
 	void						SetMenuMode					(EMenuMode mode);
 	EMenuMode					GetMenuMode					() {return m_currMenuMode;};

@@ -198,6 +198,7 @@ protected:
 	bool						m_item_info_view;
 	bool						m_highlight_clear;
 	u32							m_trade_partner_inventory_state;
+	bool						m_bNeedMoveAfsToBag;
 public:
 	CUIDragDropReferenceList*	m_pQuickSlot;
 

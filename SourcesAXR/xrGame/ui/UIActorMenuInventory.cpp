@@ -106,6 +106,8 @@ void CUIActorMenu::InitInventoryMode()
 
 	VERIFY( CurrentGameUI() );
 	CurrentGameUI()->UIMainIngameWnd->ShowZoneMap(true);
+
+	m_bNeedMoveAfsToBag = false;
 //	m_clock_value->Show					(true);
 }
 
@@ -1789,6 +1791,7 @@ void CUIActorMenu::UpdateOutfit()
 	}
 
 	u32 af_count = m_pActorInvOwner->inventory().BeltWidth();
+
 	VERIFY( 0 <= af_count && af_count <= GameConstants::GetArtefactsCount());
 
 	VERIFY( m_pInventoryBeltList );
@@ -1798,10 +1801,19 @@ void CUIActorMenu::UpdateOutfit()
 	else
 		m_HelmetOver->Show(false);
 
+	if (outfit && !m_bNeedMoveAfsToBag)
+		m_bNeedMoveAfsToBag = true;
+
 	if ( !outfit )
 	{
-		MoveArtefactsToBag();
-		return;
+		if (m_bNeedMoveAfsToBag)
+		{
+			MoveArtefactsToBag();
+			m_bNeedMoveAfsToBag = false;
+		}
+
+		if (!af_count)
+			return;
 	}
 
 	Ivector2 afc;

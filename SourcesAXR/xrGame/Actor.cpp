@@ -224,6 +224,8 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_location_manager		= xr_new<CLocationManager>(this);
 	m_block_sprint_counter	= 0;
 
+	m_iBaseArtefactCount	= 0;
+
 	m_disabled_hitmarks		= false;
 	m_inventory_disabled	= false;
 
@@ -483,6 +485,8 @@ if(!g_dedicated_server)
 
 	if (!ActorSkills && GameConstants::GetActorSkillsEnabled())
 		ActorSkills = xr_new<CActorSkills>();
+
+	m_iBaseArtefactCount = READ_IF_EXISTS(pSettings, r_u32, section, "base_artefacts_count", 0);
 }
 
 void CActor::PHHit(SHit &H)

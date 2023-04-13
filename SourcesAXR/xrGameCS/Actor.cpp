@@ -210,6 +210,8 @@ CActor::CActor() : CEntityAlive()
 	m_location_manager		= xr_new<CLocationManager>(this);
 	m_block_sprint_counter	= 0;
 
+	m_iBaseArtefactCount	= 0;
+
 	// Alex ADD: for smooth crouch fix
 	CurrentHeight = -1.f;
 
@@ -447,6 +449,8 @@ if(!g_dedicated_server)
 
 	if (!ActorSkills && GameConstants::GetActorSkillsEnabled())
 		ActorSkills = xr_new<CActorSkills>();
+
+	m_iBaseArtefactCount = READ_IF_EXISTS(pSettings, r_u32, section, "base_artefacts_count", 0);
 }
 
 void CActor::PHHit(SHit &H)
