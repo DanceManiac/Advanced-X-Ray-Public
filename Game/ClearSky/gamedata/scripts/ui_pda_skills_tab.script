@@ -4,9 +4,6 @@
 -- PDA Skills Tab
 ------------------------------------------------
 
-
-local clr_w,clr_gr
-
 local SINGLETON = nil
 function get_ui()
 	SINGLETON = SINGLETON or pda_skills_tab()
@@ -20,8 +17,7 @@ function pda_skills_tab:__init() super()
 	self:InitControls()
 end
 
-function pda_skills_tab:__finalize()
-end
+local transl = game.translate_string
 
 function pda_skills_tab:InitControls()
 	self:SetWndRect(Frect():set(0, 0, 1024, 768))
@@ -53,10 +49,10 @@ function pda_skills_tab:InitControls()
 	self.skill_endurance_name = xml:InitStatic("skill_endurance_name", self.pda_skills)
 	self.skill_endurance_lvl = xml:InitStatic("skill_endurance_lvl", self)
 	
-	self.skill_survival_name:SetText("Выживание")
-	self.skill_power_name:SetText("Сила")
-	self.skill_repair_name:SetText("Ремонт")
-	self.skill_endurance_name:SetText("Выносливость")
+	self.skill_survival_name:TextControl():SetText(transl("st_survival_name"))
+	self.skill_power_name:TextControl():SetText(transl("st_power_name"))
+	self.skill_repair_name:TextControl():SetText(transl("st_repair_name"))
+	self.skill_endurance_name:TextControl():SetText(transl("st_endurance_name"))
 	
 	self.scroll = xml:InitScrollView("scrollbar", self)
 	
@@ -77,47 +73,57 @@ function pda_skills_tab:InitControls()
 end
 
 function pda_skills_tab:Reset()
-	local xml = self.xml
 end
+
+--Кэшируем
+local s1 = transl("st_skills_points")
+local s2 = transl("st_survival_lvl")
+local s3 = transl("st_power_lvl")
+local s4 = transl("st_repair_lvl")
+local s5 = transl("st_endurance_lvl")
 
 function pda_skills_tab:Update()
 	CUIScriptWnd.Update(self)
 	
-	self.skills_points:SetText("Очки навыков: " .. actor_stats.get_skills_points())
-	self.skill_survival_lvl:SetText("Выживание: " .. actor_stats.get_survival_skill())
-	self.skill_power_lvl:SetText("Сила: " .. actor_stats.get_power_skill())
-	self.skill_repair_lvl:SetText("Ремонт: " .. actor_stats.get_repair_skill())
-	self.skill_endurance_lvl:SetText("Выносливость: " .. actor_stats.get_endurance_skill())
+	self.skills_points:TextControl():SetText(s1..actor_stats.get_skills_points())
+	self.skill_survival_lvl:TextControl():SetText(s2..actor_stats.get_survival_skill())
+	self.skill_power_lvl:TextControl():SetText(s3..actor_stats.get_power_skill())
+	self.skill_repair_lvl:TextControl():SetText(s4..actor_stats.get_repair_skill())
+	self.skill_endurance_lvl:TextControl():SetText(s5..actor_stats.get_endurance_skill())
 end
 
 function pda_skills_tab:OnButtonSurvivalSkill()
-	local need_points = actor_stats.get_skills_points() * actor_stats.get_survival_skill()
+	local p = actor_stats.get_skills_points()
+	local need_points = p * actor_stats.get_survival_skill()
 
-	if actor_stats.get_skills_points() >= need_points then
+	if p >= need_points then
 		actor_stats.buy_skill(1)
 	end
 end
 
 function pda_skills_tab:OnButtonPowerSkill()
-	local need_points = actor_stats.get_skills_points() * actor_stats.get_power_skill()
+	local p = actor_stats.get_skills_points()
+	local need_points = p * actor_stats.get_power_skill()
 
-	if actor_stats.get_skills_points() >= need_points then
+	if p >= need_points then
 		actor_stats.buy_skill(2)
 	end
 end
 
 function pda_skills_tab:OnButtonRepairSkill()
-	local need_points = actor_stats.get_skills_points() * actor_stats.get_repair_skill()
+	local p = actor_stats.get_skills_points()
+	local need_points = p * actor_stats.get_repair_skill()
 
-	if actor_stats.get_skills_points() >= need_points then
+	if p >= need_points then
 		actor_stats.buy_skill(3)
 	end
 end
 
 function pda_skills_tab:OnButtonEnduranceSkill()
-	local need_points = actor_stats.get_skills_points() * actor_stats.get_endurance_skill()
+	local p = actor_stats.get_skills_points()
+	local need_points = p * actor_stats.get_endurance_skill()
 
-	if actor_stats.get_skills_points() >= need_points then
+	if p >= need_points then
 		actor_stats.buy_skill(4)
 	end
 end
