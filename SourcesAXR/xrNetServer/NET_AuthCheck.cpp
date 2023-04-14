@@ -31,7 +31,6 @@ void XRNETSERVER_API fill_auth_check_params(xr_auth_strings_t & ignore,
 	check.push_back			(shared_str(FS.update_path(config, "$game_textures$", "wpn\\wpn_crosshair_l85.dds")));
 	check.push_back			(shared_str(FS.update_path(config, "$game_textures$", "wpn\\wpn_crosshair_rpg.dds")));
 
-	check.push_back			(shared_str("xrd3d9-null.dll"));
 	check.push_back			(shared_str("ode.dll"));
 	check.push_back			(shared_str("xrcdb.dll"));
 	check.push_back			(shared_str("xrcore.dll"));
