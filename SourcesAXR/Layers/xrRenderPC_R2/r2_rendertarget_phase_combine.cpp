@@ -255,7 +255,7 @@ void	CRenderTarget::phase_combine	()
 		phase_dlaa();
 
 	// Vignette effect
-	if (ps_r2_vignette_flags.test(R_FLAG_VIGNETTE))
+	if (ps_r2_postscreen_flags.test(R_FLAG_VIGNETTE))
 	{
 		PhaseVignette();
 	}
@@ -264,14 +264,14 @@ void	CRenderTarget::phase_combine	()
 	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
+		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
 		{
 			phase_hud_blood();
 			phase_hud_power();
 			phase_hud_bleeding();
 		}
 
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
+		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 			phase_hud_mask();
 	}
 	
@@ -280,7 +280,7 @@ void	CRenderTarget::phase_combine	()
 	BOOL	PP_Complex		= u_need_PP	() | (BOOL)RImplementation.m_bMakeAsyncSS;
 	if (_menu_pp)			PP_Complex	= FALSE;
 
-	if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
+	if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
 		PhaseRainDrops();
 	
 	if(Puddles->m_bLoaded)
@@ -362,7 +362,7 @@ void	CRenderTarget::phase_combine	()
 
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
 
-	if (HudGlassEnabled && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
+	if (HudGlassEnabled && ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
 		g_pGamePersistent->Environment().RenderFlares();// lens-flares
 
 	//	Igor: screenshot will not have postprocess applied.

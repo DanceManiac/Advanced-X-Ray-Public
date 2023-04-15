@@ -388,14 +388,14 @@ void	CRenderTarget::phase_combine	()
 
 
 	// Vignette effect
-	if (ps_r2_vignette_flags.test(R_FLAG_VIGNETTE))
+	if (ps_r2_postscreen_flags.test(R_FLAG_VIGNETTE))
 	{
 		//PIX_EVENT(phase_vignette);
 		PhaseVignette();
 	}
 
 	// Chromatic Aberration
-	if (ps_r4_chrom_aberr_flags.test(R_FLAG_CHROMATIC_ABERRATION))
+	if (ps_r2_postscreen_flags.test(R_FLAG_CHROMATIC_ABERRATION))
 		phase_chrom_aberration();
 
 	//Hud Effects, Hud Mask, Nightvision
@@ -405,14 +405,14 @@ void	CRenderTarget::phase_combine	()
 		int NightVisionType = g_pGamePersistent->GetNightvisionType();
 		bool NightVisionEnabled = g_pGamePersistent->GetActorNightvision();
 
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
+		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)
 		{
 			phase_hud_blood();
 			phase_hud_power();
 			phase_hud_bleeding();
 		}
 
-		if (ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
+		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
 			phase_hud_mask();
 
 		if (IsActorAlive && NightVisionEnabled && NightVisionType > 0 && ps_r__ShaderNVG == 1)
@@ -433,7 +433,7 @@ void	CRenderTarget::phase_combine	()
 	BOOL	PP_Complex		= u_need_PP	() | (BOOL)RImplementation.m_bMakeAsyncSS;
 	if (_menu_pp)			PP_Complex	= FALSE;
 
-	if (ps_r2_rain_drops_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
+	if (ps_r2_postscreen_flags.test(R2FLAG_RAIN_DROPS) && !bWinterMode)
 		PhaseRainDrops();
 			
    // HOLGER - HACK
@@ -534,7 +534,7 @@ void	CRenderTarget::phase_combine	()
 
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
 
-	if (HudGlassEnabled && ps_r2_hud_mask_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
+	if (HudGlassEnabled && ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
 	{
 		g_pGamePersistent->Environment().RenderFlares();// lens-flares
 

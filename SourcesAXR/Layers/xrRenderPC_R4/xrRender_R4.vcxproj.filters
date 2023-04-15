@@ -1469,11 +1469,11 @@
     <ClCompile Include="blender_dof.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrRender\render_target_phase_chromatic_aberration.cpp">
-      <Filter>Core_Target</Filter>
-    </ClCompile>
     <ClCompile Include="blender_chromatic_aberration.cpp">
       <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\rendertarget_phase_chromatic_aberration.cpp">
+      <Filter>Core_Target</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

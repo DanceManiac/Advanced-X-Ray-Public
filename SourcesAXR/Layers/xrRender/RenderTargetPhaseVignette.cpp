@@ -11,10 +11,11 @@ void CRenderTarget::PhaseVignette()
 	const float h = float(Device.dwHeight);
 
 	// Half-pixel offset (DX9 only)
-#ifdef USE_DX11
-	constexpr Fvector2 p0{ 0.0f, 0.0f }, p1{ 1.0f, 1.0f };
-#else
 	Fvector2 p0, p1;
+#ifdef USE_DX11
+	p0.set(0.0f, 0.0f);
+	p1.set(1.0f, 1.0f);
+#else
 	p0.set(0.5f / w, 0.5f / h);
 	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
 #endif

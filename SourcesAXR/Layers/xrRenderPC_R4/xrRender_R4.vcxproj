@@ -837,6 +837,7 @@
     <ClCompile Include="..\xrRender\RenderScreenQuad.cpp" />
     <ClCompile Include="..\xrRender\RenderTargetPhaseVignette.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_blur.cpp" />
+    <ClCompile Include="..\xrRender\rendertarget_phase_chromatic_aberration.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_dlaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_dof.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects.cpp" />
@@ -845,7 +846,6 @@
     <ClCompile Include="..\xrRender\rendertarget_phase_pp_bloom.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_smaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_raindrops.cpp" />
-    <ClCompile Include="..\xrRender\render_target_phase_chromatic_aberration.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager_Loader.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager_Reset.cpp" />

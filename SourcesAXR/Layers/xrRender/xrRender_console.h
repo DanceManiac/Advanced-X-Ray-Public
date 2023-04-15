@@ -258,26 +258,15 @@ enum
 	RFLAG_ACTOR_SHADOW = (1 << 0),
 };
 
-extern ECORE_API Flags32 ps_r2_rain_drops_flags;
+extern ECORE_API Flags32 ps_r2_postscreen_flags;
 
 enum
 {
-	R2FLAG_RAIN_DROPS 			= (1 << 0),
-};
-
-extern ECORE_API Flags32 ps_r2_vignette_flags;
-
-enum
-{
-	R_FLAG_VIGNETTE = (1 << 0),
-};
-
-extern ECORE_API Flags32 ps_r2_hud_mask_flags;
-
-enum
-{
-	R_FLAG_HUD_MASK = (1 << 0),
-	R_FLAG_HUD_DYN_EFFECTS = (1 << 1),
+	R_FLAG_VIGNETTE				= (0<<0),
+	R_FLAG_HUD_MASK				= (1<<1),
+	R_FLAG_HUD_DYN_EFFECTS		= (1<<2),
+	R2FLAG_RAIN_DROPS			= (1<<3),
+	R_FLAG_CHROMATIC_ABERRATION = (0<<4),
 };
 
 extern ECORE_API Flags32 ps_r_textures_flags;
@@ -293,14 +282,6 @@ enum
 {
 	R2FLAG_USE_BUMP		= (1 << 0),
 	R2FLAG_STATIC_SUN	= (0 << 1),
-};
-
-//Chromatic Aberration
-extern ECORE_API Flags32 ps_r4_chrom_aberr_flags;
-
-enum
-{
-	R_FLAG_CHROMATIC_ABERRATION = (1 << 0),
 };
 
 //Rezy: cleanup flags

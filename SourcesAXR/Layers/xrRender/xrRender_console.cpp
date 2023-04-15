@@ -339,18 +339,14 @@ float 		ps_saturation = 0;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
-Flags32		ps_r2_rain_drops_flags = { R2FLAG_RAIN_DROPS };
-
-Flags32		ps_r2_vignette_flags = { 0 };
-
-Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
+Flags32		ps_r2_postscreen_flags = { R_FLAG_VIGNETTE
+	| R_FLAG_HUD_MASK
 	| R_FLAG_HUD_DYN_EFFECTS
-	};
+	| R2FLAG_RAIN_DROPS
+	| R_FLAG_CHROMATIC_ABERRATION
+};
 
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
-
-//Chromatic Aberration
-Flags32		ps_r4_chrom_aberr_flags = { 0 };
 
 int ps_force_enable_lens_flares = 0;
 
@@ -1006,16 +1002,18 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,		"r_color_b",			&ps_bcol,					0.0f,	2.55f	);
 	
 	CMD4(CCC_Float,		"r_saturation",			&ps_saturation,				-1.0f,	+1.0f	);
-	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_rain_drops_flags,	R2FLAG_RAIN_DROPS	);	
+	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_postscreen_flags,	R2FLAG_RAIN_DROPS	);
 	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
 	CMD4(CCC_Float,		"r2_rain_drops_speed",	&ps_r2_rain_drops_speed, 	0.8f,	5.f		);
 	// Vignette
-	CMD3(CCC_Mask,		"r2_vignette",			&ps_r2_vignette_flags,		R_FLAG_VIGNETTE);
+	CMD3(CCC_Mask,		"r2_vignette",			&ps_r2_postscreen_flags,	R_FLAG_VIGNETTE);
 	// No Ram Textures
 	CMD3(CCC_Mask,		"r3_no_ram_textures",	&ps_r_textures_flags,		R3_NO_RAM_TEXTURES);
 	// Hud Mask
-	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_hud_mask_flags,		R_FLAG_HUD_MASK);
-	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_hud_mask_flags,		R_FLAG_HUD_DYN_EFFECTS);
+	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_postscreen_flags,	R_FLAG_HUD_MASK);
+	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_postscreen_flags,	R_FLAG_HUD_DYN_EFFECTS);
+	//Chromatic Aberration
+	CMD3(CCC_Mask, "r4_chromatic_aberration",	&ps_r2_postscreen_flags,	R_FLAG_CHROMATIC_ABERRATION);
 
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	50.f	);
 	CMD4(CCC_Float,		"r2_gloss_min",			&ps_r2_gloss_min,			.001f,	1.0f	);
@@ -1211,8 +1209,6 @@ void		xrRender_initconsole	()
 
 	CMD4(CCC_Float,			"r3_reflections_dist",			&ps_r2_reflections_distance, 100.f, 1000.f); //Дальность отражений
 
-	//Chromatic Aberration
-	CMD3(CCC_Mask,			"r4_chromatic_aberration",		&ps_r4_chrom_aberr_flags,		R_FLAG_CHROMATIC_ABERRATION);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 
