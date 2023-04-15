@@ -181,6 +181,18 @@ struct translation_pair {
 	}
 };
 
+void CLevel::Load_GameSpecific_CFORM_Serialize(IWriter& writer)
+{
+	writer.w_u32(GMLib.GetFileAge());
+}
+
+bool CLevel::Load_GameSpecific_CFORM_Deserialize(IReader& reader)
+{
+	const auto materials_file_age = GMLib.GetFileAge();
+	const auto cached_materials_file_age = reader.r_u32();
+	return materials_file_age == cached_materials_file_age;
+}
+
 void CLevel::Load_GameSpecific_CFORM	( CDB::TRI* tris, u32 count )
 {
 	typedef xr_vector<translation_pair>	ID_INDEX_PAIRS;

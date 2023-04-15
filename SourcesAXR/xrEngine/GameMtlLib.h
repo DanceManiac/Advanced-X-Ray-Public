@@ -243,6 +243,9 @@ class MTL_EXPORT_API CGameMtlLibrary{
     u32					material_count;
     GameMtlPairVec		material_pairs_rt;
 #endif
+
+    u32                 m_file_age{};
+
 public:
 	CGameMtlLibrary		();
 	~CGameMtlLibrary	()
@@ -346,6 +349,9 @@ public:
 	// IO routines
 	void				Load				();
 	bool				Save				();
+
+    [[nodiscard]]
+    auto                GetFileAge          () const { return m_file_age; }
 };
 
 #define GET_RANDOM(a_vector)			(a_vector[Random.randI(a_vector.size())])

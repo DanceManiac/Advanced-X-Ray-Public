@@ -188,6 +188,84 @@ u32 MODEL::memory	()
 	return tree->GetUsedBytes()+V+T+sizeof(*this)+sizeof(*tree);
 }
 
+bool MODEL::serialize(pcstr fileName, serialize_callback callback /*= nullptr*/) const
+{
+	IWriter* wstream = FS.w_open(fileName);
+	if (!wstream)
+		return false;
+
+	CMemoryWriter memory;
+
+	// Write to buffer, to be able to calculate crc
+	memory.w_u32(version);
+
+	if (callback)
+		callback(memory);
+
+	memory.w_u32(verts_count);
+	memory.w(verts, sizeof(Fvector) * verts_count);
+	memory.w_u32(tris_count);
+	memory.w(tris, sizeof(TRI) * tris_count);
+
+	if (tree)
+		tree->Save(&memory);
+
+	// Actually write to file
+	const u32 crc = crc32(memory.pointer(), memory.size());
+	wstream->w_u32(crc);
+	wstream->w(memory.pointer(), memory.size());
+
+	FS.w_close(wstream);
+
+	return true;
+}
+
+bool MODEL::deserialize(pcstr fileName, bool checkCrc32 /*= true*/, deserialize_callback callback /*= nullptr*/)
+{
+	IReader* rstream = FS.r_open(fileName);
+	if (!rstream)
+		return false;
+
+	const u32 crc = rstream->r_u32();
+	const u32 actualCrc = checkCrc32 ? crc32(rstream->pointer(), rstream->elapsed()) : crc;
+
+	if (crc != actualCrc || version != rstream->r_u32())
+	{
+		FS.r_close(rstream);
+		return false;
+	}
+
+	if (callback && !callback(*rstream))
+	{
+		FS.r_close(rstream);
+		return false;
+	}
+
+	xr_free(verts);
+	xr_free(tris);
+	xr_free(tree);
+
+	verts_count = rstream->r_u32();
+	verts = xr_alloc<Fvector>(verts_count);
+	const u32 vertsSize = verts_count * sizeof(Fvector);
+	CopyMemory(verts, rstream->pointer(), vertsSize);
+	rstream->advance(vertsSize);
+
+	tris_count = rstream->r_u32();
+	tris = xr_alloc<TRI>(tris_count);
+	const u32 trisSize = tris_count * sizeof(TRI);
+	CopyMemory(tris, rstream->pointer(), trisSize);
+	rstream->advance(trisSize);
+
+	tree = xr_new<OPCODE_Model>();
+	tree->Load(rstream);
+	status = S_READY;
+
+	FS.r_close(rstream);
+
+	return true;
+}
+
 // This is the constructor of a class that has been exported.
 // see xrCDB.h for the class definition
 COLLIDER::COLLIDER()

@@ -116,7 +116,31 @@ void CHOM::Load			()
 
 	// Create AABB-tree
 	m_pModel			= xr_new<CDB::MODEL> ();
-	m_pModel->build		(CL.getV(),int(CL.getVS()),CL.getT(),int(CL.getTS()), nullptr, nullptr, false);
+
+	m_pModel->set_version(fs->get_age());
+	const bool bUseCache = !strstr(Core.Params, "-no_cdb_cache");
+	const bool checkCrc32 = !strstr(Core.Params, "-skip_cdb_cache_crc32_check");
+
+	strconcat(fName, "cdb_cache" "\\", FS.get_path("$level$")->m_Add, "hom.bin");
+	FS.update_path(fName, "$app_data_root$", fName);
+
+	if (bUseCache && FS.exist(fName) && m_pModel->deserialize(fName, checkCrc32))
+	{
+#ifndef MASTER_GOLD
+		Msg("* Loaded HOM cache (%s)...", fName);
+#endif
+	}
+	else
+	{
+#ifndef MASTER_GOLD
+		Msg("* HOM cache for '%s' was not loaded. Building the model from scratch..", fName);
+#endif
+		m_pModel->build(CL.getV(), int(CL.getVS()), CL.getT(), int(CL.getTS()));
+
+		if (bUseCache)
+			m_pModel->serialize(fName);
+	}
+
 	bEnabled			= TRUE;
 	S->close			();
 	FS.r_close			(fs);

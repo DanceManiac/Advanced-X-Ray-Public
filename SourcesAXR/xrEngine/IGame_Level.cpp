@@ -79,6 +79,16 @@ static void __stdcall	build_callback	(Fvector* V, int Vcnt, CDB::TRI* T, int Tcn
 	g_pGameLevel->Load_GameSpecific_CFORM( T, Tcnt );
 }
 
+static void serialize_callback(IWriter& writer)
+{
+	g_pGameLevel->Load_GameSpecific_CFORM_Serialize(writer);
+}
+
+static bool deserialize_callback(IReader& reader)
+{
+	return g_pGameLevel->Load_GameSpecific_CFORM_Deserialize(reader);
+}
+
 BOOL IGame_Level::Load			(u32 dwNum) 
 {
 	SECUROM_MARKER_PERFORMANCE_ON(10)
@@ -104,7 +114,7 @@ BOOL IGame_Level::Load			(u32 dwNum)
 	// CForms
 	g_pGamePersistent->SetLoadStageTitle("st_loading_cform");
 	g_pGamePersistent->LoadTitle	();
-	ObjectSpace.Load			( build_callback );
+	ObjectSpace.Load(build_callback, serialize_callback, deserialize_callback);
 	//Sound->set_geometry_occ		( &Static );
 	Sound->set_geometry_occ		(ObjectSpace.GetStaticModel	());
 	Sound->set_handler			( _sound_event );

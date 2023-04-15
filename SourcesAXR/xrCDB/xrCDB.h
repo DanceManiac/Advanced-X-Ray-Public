@@ -102,7 +102,9 @@ namespace CDB
 	};
 
 	// Build callback
-	typedef		void __stdcall	build_callback	(Fvector* V, int Vcnt, TRI* T, int Tcnt, void* params);
+	using build_callback = void(Fvector* V, int Vcnt, TRI* T, int Tcnt, void* params);
+	using serialize_callback = void(IWriter& writer);
+	using deserialize_callback = bool(IReader& reader);
 
 	// Model definition
 	class		XRCDB_API		MODEL
@@ -119,6 +121,7 @@ namespace CDB
 		xrCriticalSection		cs;
 		Opcode::OPCODE_Model*	tree;
 		u32						status;		// 0=ready, 1=init, 2=building
+		u32						version;
 
 		// tris
 		TRI*					tris;
@@ -150,6 +153,10 @@ namespace CDB
 		void build_internal (Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc=nullptr, void* bcp=nullptr, bool rebuildTrisRequired = true);
 		void build (Fvector* V, int Vcnt, TRI* T, int Tcnt, build_callback* bc=nullptr, void* bcp=nullptr, bool rebuildTrisRequired = true);
 		u32						memory			();
+
+		void set_version(u32 value) { version = value; }
+		bool serialize(pcstr fileName, serialize_callback callback = nullptr) const;
+		bool deserialize(pcstr fileName, bool checkCrc32 = true, deserialize_callback callback = nullptr);
 	};
 
 	// Collider result

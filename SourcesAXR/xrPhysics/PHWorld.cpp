@@ -66,7 +66,7 @@ CObjectSpace* __stdcall create_object_space()
 	CObjectSpace* os = xr_new<CObjectSpace>();
 	g_SpatialSpace				= xr_new<ISpatial_DB>	();
 	g_SpatialSpacePhysic		= xr_new<ISpatial_DB>	();
-	os->Load( fr, 0 );
+	os->Load(fr, nullptr, nullptr, nullptr);
 	//xr_delete(fr);
 	return os;
 }
@@ -75,7 +75,7 @@ CObjectSpace*	__stdcall	mesh_create_object_space(Fvector* verts, CDB::TRI* tris,
 	CObjectSpace* os = xr_new<CObjectSpace>();
 	g_SpatialSpace				= xr_new<ISpatial_DB>	();
 	g_SpatialSpacePhysic		= xr_new<ISpatial_DB>	();
-	os->Create( verts, tris, H, build_callback );
+	os->Create(verts, tris, H, build_callback, nullptr, nullptr);
 	return os;
 }
 void			__stdcall	set_mtl_lib(CGameMtlLibrary * l)

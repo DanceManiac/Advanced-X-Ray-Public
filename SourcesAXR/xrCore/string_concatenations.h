@@ -42,6 +42,13 @@ IC char*						strconcat				( int dest_sz,  char* dest, const char* S1, const cha
 
 #endif
 
+template <size_t Size, typename... Args>
+pstr strconcat(char(&outStr)[Size], const Args... args)
+{
+	strconcat(Size, &outStr[0], args...);
+	return &outStr[0];
+}
+
 // warning: do not comment this macro, as stack overflow check is very light
 // (consumes ~1% performance of STRCONCAT macro)
 #ifndef _EDITOR
