@@ -349,6 +349,9 @@ Flags32		ps_r2_hud_mask_flags = { R_FLAG_HUD_MASK
 
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
+//Chromatic Aberration
+Flags32		ps_r4_chrom_aberr_flags = { 0 };
+
 int ps_force_enable_lens_flares = 0;
 
 float ps_r2_gloss_factor = 10.0f;
@@ -1207,6 +1210,9 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Token,			"r3_lowland_fog_type",			&ps_lowland_fog_type,		lowland_fog_type_token); //Тип низинного тумана
 
 	CMD4(CCC_Float,			"r3_reflections_dist",			&ps_r2_reflections_distance, 100.f, 1000.f); //Дальность отражений
+
+	//Chromatic Aberration
+	CMD3(CCC_Mask,			"r4_chromatic_aberration",		&ps_r4_chrom_aberr_flags,		R_FLAG_CHROMATIC_ABERRATION);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

@@ -321,6 +321,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_vignette_effect", _st)
 	ctl = xml:InitCheck("video_adv:check_vignette_effect", _st)
 	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+	
+--Хроматическая аберрация	
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_chromatic_aberration", _st)
+	ctl = xml:InitCheck("video_adv:check_chromatic_aberration", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
 
 --Динамический hud масок	
 	_st = xml:InitStatic("video_adv:templ_item", nil)

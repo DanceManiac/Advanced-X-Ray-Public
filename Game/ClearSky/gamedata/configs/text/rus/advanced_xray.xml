@@ -372,4 +372,10 @@
 	<string id="st_no_trade_tip_2">
 		<text>Предмет в слишком плохом состоянии для продажи.</text>
 	</string>
+	<string id="ui_mm_chromatic_aberration">
+		<text>Хроматическая аберрация</text>
+	</string>
+	<string id="ui_mm_chromatic_aberration_hint">
+		<text>Эта опция включает эффект хроматической аберрации в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
 </string_table>

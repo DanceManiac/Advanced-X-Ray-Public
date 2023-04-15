@@ -27,6 +27,7 @@
 #include "blender_pp_bloom.h"
 #include "blender_lens_flares.h"
 #include "blender_dof.h"
+#include "blender_chromatic_aberration.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -356,6 +357,8 @@ CRenderTarget::CRenderTarget		()
 	b_lfx					= xr_new<CBlender_LFX>				();
 	//Anomaly DoF
 	b_dof					= xr_new<CBlender_dof>				();
+	//Chromatic Aberration
+	b_chromatic_aberration	= xr_new<CBlender_ChromaticAberration>();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -521,6 +524,8 @@ CRenderTarget::CRenderTarget		()
 	g_lfx.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 	//Anomaly DoF
 	s_dof.create(b_dof, "r3\\dof");
+	//Chromatic Aberration
+	s_chromatic_aberration.create(b_chromatic_aberration, "r3\\chromatic_aberration");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -1166,6 +1171,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_pp_bloom				); //PP Bloom (LVutner)
 	xr_delete					(b_lfx					); //SFZ Lens Flares
 	xr_delete					(b_dof					); //Anomaly DoF
+	xr_delete					(b_chromatic_aberration	); //Chromatic Aberration
 
    if( RImplementation.o.dx10_msaa )
    {

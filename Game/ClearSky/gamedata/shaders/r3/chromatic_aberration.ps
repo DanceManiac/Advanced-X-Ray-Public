@@ -1,0 +1,22 @@
+#include "common.h"
+
+uniform float4 chromatic_aberration_params; // x=intensity
+
+float4 main(p_screen I) : SV_Target
+{
+	float2	texcoord = I.tc0;
+
+	float3 offset = float3(0.005, 0.0, -0.005);
+
+	float4 color = s_image.Sample(smp_rtlinear, texcoord);
+
+	float4 r = s_image.Sample(smp_rtlinear, (texcoord + offset.xx) * chromatic_aberration_params.x);
+	float4 g = s_image.Sample(smp_rtlinear, (texcoord + offset.yy) * chromatic_aberration_params.x);
+	float4 b = s_image.Sample(smp_rtlinear, (texcoord + offset.zz) * chromatic_aberration_params.x);
+
+	color.r = r.r;
+	color.g = g.g;
+	color.b = b.b;
+
+	return color;
+}

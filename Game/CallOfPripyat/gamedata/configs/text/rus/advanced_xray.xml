@@ -582,4 +582,10 @@
 	<string id="ui_mm_detail_collision_radius_hint">
 		<text>Эта опция позволяет настраивать радиус обработки коллизии травы.\n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_chromatic_aberration">
+		<text>Хроматическая аберрация</text>
+	</string>
+	<string id="ui_mm_chromatic_aberration_hint">
+		<text>Эта опция включает эффект хроматической аберрации в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
 </string_table>

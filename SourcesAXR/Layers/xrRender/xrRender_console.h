@@ -295,6 +295,14 @@ enum
 	R2FLAG_STATIC_SUN	= (0 << 1),
 };
 
+//Chromatic Aberration
+extern ECORE_API Flags32 ps_r4_chrom_aberr_flags;
+
+enum
+{
+	R_FLAG_CHROMATIC_ABERRATION = (1 << 0),
+};
+
 //Rezy: cleanup flags
 extern Flags32 psDeviceFlags2;
 

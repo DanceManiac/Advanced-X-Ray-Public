@@ -670,6 +670,7 @@
     <ClInclude Include="..\xrRender\xr_effgamma.h" />
     <ClInclude Include="blender_bloom_build.h" />
     <ClInclude Include="blender_blur.h" />
+    <ClInclude Include="blender_chromatic_aberration.h" />
     <ClInclude Include="blender_combine.h" />
     <ClInclude Include="blender_deffer_aref.h" />
     <ClInclude Include="blender_deffer_flat.h" />
@@ -844,6 +845,7 @@
     <ClCompile Include="..\xrRender\rendertarget_phase_pp_bloom.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_smaa.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_raindrops.cpp" />
+    <ClCompile Include="..\xrRender\render_target_phase_chromatic_aberration.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager_Loader.cpp" />
     <ClCompile Include="..\xrRender\ResourceManager_Reset.cpp" />
@@ -884,6 +886,7 @@
     <ClCompile Include="..\xrRender\xr_effgamma.cpp" />
     <ClCompile Include="blender_bloom_build.cpp" />
     <ClCompile Include="blender_blur.cpp" />
+    <ClCompile Include="blender_chromatic_aberration.cpp" />
     <ClCompile Include="blender_combine.cpp" />
     <ClCompile Include="blender_deffer_aref.cpp" />
     <ClCompile Include="blender_deffer_flat.cpp" />
