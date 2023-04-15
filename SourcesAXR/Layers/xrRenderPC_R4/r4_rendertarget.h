@@ -62,6 +62,7 @@ public:
 	IBlender*					b_lfx;
 	IBlender*					b_dof;
 	IBlender* 					b_chromatic_aberration;
+	IBlender*					b_film_grain;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -173,6 +174,8 @@ private:
 	ref_shader					s_dof;
 	//Chromatic Aberration
 	ref_shader					s_chromatic_aberration;
+	//Film Grain
+	ref_shader					s_film_grain;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -337,6 +340,7 @@ public:
 	void						phase_lfx				(int i);
 	void						phase_dof				();
 	void						phase_chrom_aberration	();
+	void						phase_film_grain		();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

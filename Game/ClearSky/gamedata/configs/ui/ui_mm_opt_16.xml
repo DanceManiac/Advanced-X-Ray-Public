@@ -605,6 +605,13 @@
 			<options_item entry="r4_chromatic_aberration" group="mm_opt_video_adv"  depend="vid"/>
 		</check_chromatic_aberration>
 		
+		<cap_film_grain x="77" y="0" width="119" height="21">
+			<text font="letterica16" color="ui_6">ui_mm_film_grain</text>
+		</cap_film_grain>
+		<check_film_grain x="200" y="0" width="27" height="21">
+			<options_item entry="r4_film_grain" group="mm_opt_video_adv"  depend="vid"/>
+		</check_film_grain>
+		
         <cap_r2_aa_mode x="77" y="0" width="119" height="21">
             <text font="letterica16" color="ui_6">ui_mm_r2_aa_mode</text>
         </cap_r2_aa_mode>

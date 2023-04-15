@@ -356,6 +356,14 @@
             <options_item entry="r4_chromatic_aberration" group="mm_opt_video_adv"/>
         </check_chromatic_aberration>
 		
+        <cap_film_grain x="70" y="3" width="135" height="24" hint = "ui_mm_film_grain_hint">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_film_grain</text>
+        </cap_film_grain>
+        <check_film_grain x="217" y="0" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r4_film_grain" group="mm_opt_video_adv"/>
+        </check_film_grain>
+		
         <cap_sun_details x="70" y="3" width="135" height="24" hint = "ui_mm_sun_details_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_sun_details</text>
         </cap_sun_details>

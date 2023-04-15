@@ -588,4 +588,10 @@
 	<string id="ui_mm_chromatic_aberration_hint">
 		<text>Эта опция включает эффект хроматической аберрации в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_film_grain">
+		<text>Зернистость</text>
+	</string>
+	<string id="ui_mm_film_grain_hint">
+		<text>Эта опция включает эффект зернистости в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
 </string_table>

@@ -28,6 +28,7 @@
 #include "blender_lens_flares.h"
 #include "blender_dof.h"
 #include "blender_chromatic_aberration.h"
+#include "blender_film_grain.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -359,6 +360,8 @@ CRenderTarget::CRenderTarget		()
 	b_dof					= xr_new<CBlender_dof>				();
 	//Chromatic Aberration
 	b_chromatic_aberration	= xr_new<CBlender_ChromaticAberration>();
+	//Film Grain
+	b_film_grain			= xr_new<CBlender_FilmGrain>		();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -526,6 +529,8 @@ CRenderTarget::CRenderTarget		()
 	s_dof.create(b_dof, "r3\\dof");
 	//Chromatic Aberration
 	s_chromatic_aberration.create(b_chromatic_aberration, "r3\\chromatic_aberration");
+	//Film Grain
+	s_film_grain.create(b_film_grain, "r3\\film_grain");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -1172,6 +1177,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_lfx					); //SFZ Lens Flares
 	xr_delete					(b_dof					); //Anomaly DoF
 	xr_delete					(b_chromatic_aberration	); //Chromatic Aberration
+	xr_delete					(b_film_grain			); //Film Grain
 
    if( RImplementation.o.dx10_msaa )
    {

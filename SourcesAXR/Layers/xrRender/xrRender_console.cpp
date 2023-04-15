@@ -344,6 +344,7 @@ Flags32		ps_r2_postscreen_flags = { R_FLAG_VIGNETTE
 	| R_FLAG_HUD_DYN_EFFECTS
 	| R2FLAG_RAIN_DROPS
 	| R_FLAG_CHROMATIC_ABERRATION
+	| R_FLAG_FILM_GRAIN
 };
 
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
@@ -1013,7 +1014,9 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r2_hud_mask",			&ps_r2_postscreen_flags,	R_FLAG_HUD_MASK);
 	CMD3(CCC_Mask,		"r2_hud_dyn_effects",	&ps_r2_postscreen_flags,	R_FLAG_HUD_DYN_EFFECTS);
 	//Chromatic Aberration
-	CMD3(CCC_Mask, "r4_chromatic_aberration",	&ps_r2_postscreen_flags,	R_FLAG_CHROMATIC_ABERRATION);
+	CMD3(CCC_Mask,		"r4_chromatic_aberration", &ps_r2_postscreen_flags,	R_FLAG_CHROMATIC_ABERRATION);
+	//Film Grain
+	CMD3(CCC_Mask,		"r4_film_grain",		&ps_r2_postscreen_flags,	R_FLAG_FILM_GRAIN);
 
 	CMD4(CCC_Float,		"r2_gloss_factor",		&ps_r2_gloss_factor,		.0f,	50.f	);
 	CMD4(CCC_Float,		"r2_gloss_min",			&ps_r2_gloss_min,			.001f,	1.0f	);

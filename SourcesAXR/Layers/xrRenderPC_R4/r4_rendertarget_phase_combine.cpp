@@ -398,6 +398,10 @@ void	CRenderTarget::phase_combine	()
 	if (ps_r2_postscreen_flags.test(R_FLAG_CHROMATIC_ABERRATION))
 		phase_chrom_aberration();
 
+	// Film Grain
+	if (ps_r2_postscreen_flags.test(R_FLAG_FILM_GRAIN))
+		phase_film_grain();
+
 	//Hud Effects, Hud Mask, Nightvision
 	if (!_menu_pp && g_pGamePersistent->GetActor())
 	{

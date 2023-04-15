@@ -780,6 +780,9 @@
     <ClInclude Include="blender_chromatic_aberration.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_film_grain.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1474,6 +1477,12 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\rendertarget_phase_chromatic_aberration.cpp">
       <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\rendertarget_phase_film_grain.cpp">
+      <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_film_grain.cpp">
+      <Filter>Shading templates</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
