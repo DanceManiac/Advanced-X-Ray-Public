@@ -254,7 +254,8 @@ void CRender::Render		()
 	//*******
 	// Sync point
 	Device.Statistic->RenderDUMP_Wait_S.Begin	();
-	if (1)
+
+	if (currentViewPort == MAIN_VIEWPORT)
 	{
 		CTimer	T;							T.Start	();
 		BOOL	result						= FALSE;
@@ -310,7 +311,7 @@ void CRender::Render		()
 	{
 		// perform tests
 		u32	count			= 0;
-		light_Package&	LP	= Lights.package;
+		light_Package& LP	= Lights.ldbTargetViewPortBuffer->rawPackageDeffered_;
 
 		// stats
 		stats.l_shadowed	= LP.v_shadowed.size();
@@ -472,7 +473,7 @@ void CRender::BeforeWorldRender() {}
 //     - --#SM+#-- +SecondVP+
 void CRender::AfterWorldRender()
 {
-	if (Device.m_SecondViewport.IsSVPFrame())
+	if (currentViewPort == SECONDARY_WEAPON_SCOPE)
 	{
 		//    ( )  -  
 		IDirect3DSurface9* pBackBuffer = NULL;

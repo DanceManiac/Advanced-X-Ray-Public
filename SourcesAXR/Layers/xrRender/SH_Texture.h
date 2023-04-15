@@ -37,11 +37,20 @@ public:
 //	void								Apply			(u32 dwStage);
 
 	void								surface_set		(ID3DBaseTexture* surf );
+
+#if defined(USE_DX11)
+	void								SurfaceSetRT	(ID3DBaseTexture* surf, ID3DShaderResourceView* sh_res_view); // special for render target
+	void								surface_null	();
+	ID3DShaderResourceView*				CreateShaderRes	(ID3DBaseTexture* surf);
+#endif	//	USE_DX11
+
 	ID3DBaseTexture*					surface_get 	();
 
 	IC BOOL								isUser			()		{ return flags.bUser;					}
 	IC u32								get_Width		()		{ desc_enshure(); return desc.Width;	}
 	IC u32								get_Height		()		{ desc_enshure(); return desc.Height;	}
+
+	const D3D_TEXTURE2D_DESC&			Description		()		{ return desc; };
 
 	void								video_Sync		(u32 _time){m_play_time=_time;}
 	void								video_Play		(BOOL looped, u32 _time=0xFFFFFFFF);

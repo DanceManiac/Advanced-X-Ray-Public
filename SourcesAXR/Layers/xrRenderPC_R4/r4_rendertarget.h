@@ -63,6 +63,7 @@ public:
 	IBlender*					b_dof;
 	IBlender* 					b_chromatic_aberration;
 	IBlender*					b_film_grain;
+	IBlender*					b_cut;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -87,6 +88,9 @@ public:
 	ref_rt						rt_Position;		// 64bit,	fat	(x,y,z,?)				(eye-space)
 	ref_rt						rt_Normal;			// 64bit,	fat	(x,y,z,hemi)			(eye-space)
 	ref_rt						rt_Color;			// 64/32bit,fat	(r,g,b,specular-gloss)	(or decompressed MET-8-8-8-8)
+
+	ref_rt                      rt_temp;
+	ref_rt                      rt_temp_without_samples;
 	// 
 	ref_rt						rt_Accumulator;		// 64bit		(r,g,b,specular)
 	ref_rt						rt_Accumulator_temp;// only for HW which doesn't feature fp16 blend
@@ -176,6 +180,8 @@ private:
 	ref_shader					s_chromatic_aberration;
 	//Film Grain
 	ref_shader					s_film_grain;
+	//STCoP Engine
+	ref_shader					s_cut;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -341,6 +347,7 @@ public:
 	void						phase_dof				();
 	void						phase_chrom_aberration	();
 	void						phase_film_grain		();
+	void						phase_cut				();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();
@@ -360,6 +367,7 @@ public:
 	void						phase_vol_accumulator	();
 	void 						PhaseRainDrops			();
 	void						shadow_direct			(light* L, u32 dls_phase);
+	void						SwitchViewPort			(ViewPort vp);
 
 	//	Generates min/max sm
 	void						create_minmax_SM();

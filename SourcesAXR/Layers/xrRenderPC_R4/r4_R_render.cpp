@@ -200,12 +200,16 @@ void CRender::Render		()
 
 	Target->needClearAccumulator = true;
 
+	Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, HW.pBaseZB); // Set up HW base as RT and ZB
+
 	rmNormal();
 
 	bool	_menu_pp		= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
-	if (_menu_pp)			{
-		render_menu			()	;
-		return					;
+
+	if (currentViewPort == MAIN_VIEWPORT && _menu_pp)
+	{
+		render_menu();
+		return;
 	};
 
 	bool is_blocked = g_pGamePersistent ? g_pGamePersistent->SceneRenderingBlocked() : false;
@@ -269,10 +273,16 @@ void CRender::Render		()
 		Target->phase_scene_prepare					();
 	}
 
+	if (currentViewPort == SECONDARY_WEAPON_SCOPE)
+	{
+		Target->phase_cut();
+	}
+
 	//*******
 	// Sync point
 	Device.Statistic->RenderDUMP_Wait_S.Begin	();
-	if (1)
+
+	if (currentViewPort == MAIN_VIEWPORT)
 	{
 		CTimer	T;							T.Start	();
 		BOOL	result						= FALSE;
@@ -286,11 +296,10 @@ void CRender::Render		()
 				break;
 			}
 		}
+		q_sync_count = (q_sync_count + 1) % HW.Caps.iGPUNum;
+		CHK_DX(EndQuery(q_sync_point[q_sync_count]));
 	}
 	Device.Statistic->RenderDUMP_Wait_S.End		();
-	q_sync_count								= (q_sync_count+1)%HW.Caps.iGPUNum;
-	//CHK_DX										(q_sync_point[q_sync_count]->Issue(D3DISSUE_END));
-	CHK_DX										(EndQuery(q_sync_point[q_sync_count]));
 
 	//******* Main calc - DEFERRER RENDERER
 	// Main calc
@@ -533,16 +542,35 @@ void CRender::render_forward				()
 //     --#SM+#-- +SecondVP+
 void CRender::BeforeWorldRender() {}
 
+ENGINE_API extern BOOL debugSecondVP;
+
 //     - --#SM+#-- +SecondVP+
 void CRender::AfterWorldRender()
 {
-	if (Device.m_SecondViewport.IsSVPFrame())
+	if (currentViewPort == SECONDARY_WEAPON_SCOPE)
 	{
-		//    ( )  -  
-		ID3DTexture2D* pBuffer = NULL;
-		HW.m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)& pBuffer);
-		HW.pContext->CopyResource(Target->rt_secondVP->pSurface, pBuffer);
-		pBuffer->Release(); //      (    )
+		ID3DResource* res;
+		HW.pBaseRT->GetResource(&res);
+		HW.pContext->CopyResource(Target->rt_secondVP->pSurface, res); // rt sizes must match, to be able to copy
+
+	}
+
+	if (debugSecondVP && RImplementation.currentViewPort == MAIN_VIEWPORT) // Copy svp image into swapchain buffer((MAIN_VIEWPORT).baseRT) to draw it on screen
+	{
+		ID3DResource* res = Target->rt_secondVP->pSurface;
+		ID3DResource* res2;
+
+		HW.viewPortsRTZB.at(MAIN_VIEWPORT).baseRT->GetResource(&res2);
+
+		D3D11_BOX sourceRegion;
+		sourceRegion.left = 0;
+		sourceRegion.right = Device.m_SecondViewport.screenWidth;
+		sourceRegion.top = 0;
+		sourceRegion.bottom = Device.m_SecondViewport.screenHeight;
+		sourceRegion.front = 0;
+		sourceRegion.back = 1;
+
+		HW.pContext->CopySubresourceRegion(res2, 0, 0, 0, 0, res, 0, &sourceRegion);
 	}
 }
 

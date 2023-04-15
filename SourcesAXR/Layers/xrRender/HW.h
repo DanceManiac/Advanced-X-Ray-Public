@@ -12,6 +12,22 @@
 #include "stats_manager.h"
 #endif
 
+#if defined(USE_DX11)
+enum ViewPort;
+
+struct HWViewPortRTZB
+{
+	HWViewPortRTZB()
+	{
+		baseRT = nullptr;
+		baseZB = nullptr;
+	};
+
+	ID3D11RenderTargetView* baseRT;	//	combine with DX9 pBaseRT via typedef
+	ID3D11DepthStencilView* baseZB;
+};
+#endif	//
+
 class  CHW
 #ifdef USE_DX11
 	:	public pureAppActivate, 
@@ -30,6 +46,10 @@ public:
 	void					DestroyDevice			();
 
 	void					Reset					(HWND hw);
+
+#if defined(USE_DX11)
+	void					SwitchVP				(ViewPort vp);
+#endif	//	USE_DX10
 
 	void					selectResolution		(u32 &dwWidth, u32 &dwHeight, BOOL bWindowed);
 	D3DFORMAT				selectDepthStencil		(D3DFORMAT);
@@ -52,6 +72,9 @@ public:
 //	Variables section
 #ifdef USE_DX11
 public:
+	ViewPort				storedVP;
+	xr_map<ViewPort, HWViewPortRTZB> viewPortsRTZB;
+
 	IDXGIAdapter*			m_pAdapter;	//	pD3D equivalent
 	ID3D11Device*			pDevice;	//	combine with DX9 pDevice via typedef
 	ID3D11DeviceContext*    pContext;	//	combine with DX9 pDevice via typedef

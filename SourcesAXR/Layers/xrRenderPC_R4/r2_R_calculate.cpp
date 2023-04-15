@@ -66,6 +66,9 @@ void CRender::Calculate		()
 		// lightsource
 		light*			L				= (light*)	(spatial->dcast_Light());
 		VERIFY							(L);
+
+		L->frame_render = 0; // makes lights render in both viewports
+
 		Lights.add_light				(L);
 	}
 }

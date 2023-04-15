@@ -52,7 +52,7 @@ CTexture::~CTexture()
 	DEV->_DeleteTexture	(this);
 }
 
-void					CTexture::surface_set	(ID3DBaseTexture* surf )
+void CTexture::surface_set(ID3DBaseTexture* surf)
 {
 	if (surf)			surf->AddRef		();
 	_RELEASE			(pSurface);
@@ -60,12 +60,34 @@ void					CTexture::surface_set	(ID3DBaseTexture* surf )
 
 	pSurface			= surf;
 
-	if (pSurface)
+	desc_update();
+
+	m_pSRView = CreateShaderRes(pSurface);
+}
+
+void CTexture::SurfaceSetRT(ID3DBaseTexture* surf, ID3DShaderResourceView* sh_res_view)
+{
+	pSurface = surf;
+	m_pSRView = sh_res_view;
+}
+
+ID3DShaderResourceView* CTexture::CreateShaderRes(ID3DBaseTexture* surf)
+{
+	pSurface = surf;
+
+	desc_update();
+
+	if (surf)
 	{
-		desc_update();
+		//desc_update();
+
+		ID3DShaderResourceView* sh_res_view = nullptr;
 
 		D3D_RESOURCE_DIMENSION	type;
-		pSurface->GetType(&type);
+
+		//pSurface->GetType(&type);
+		surf->GetType(&type);
+
 		if (D3D_RESOURCE_DIMENSION_TEXTURE2D == type )
 		{
 			D3D_SHADER_RESOURCE_VIEW_DESC	ViewDesc;
@@ -104,16 +126,24 @@ void					CTexture::surface_set	(ID3DBaseTexture* surf )
 				break;
 			}
 
-         // this would be supported by DX10.1 but is not needed for stalker
-        // if( ViewDesc.Format != DXGI_FORMAT_R24_UNORM_X8_TYPELESS )
-				if( (desc.SampleDesc.Count <= 1) || (ViewDesc.Format != DXGI_FORMAT_R24_UNORM_X8_TYPELESS) )         
-					CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, &ViewDesc, &m_pSRView));
-        else
-           m_pSRView = 0;
+			if ((desc.SampleDesc.Count <= 1) || (ViewDesc.Format != DXGI_FORMAT_R24_UNORM_X8_TYPELESS))
+			{
+				R_CHK(HW.pDevice->CreateShaderResourceView(surf, &ViewDesc, &sh_res_view));
+				R_ASSERT(sh_res_view);
+			}
 		}
 		else
-			CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, NULL, &m_pSRView));
-	}	
+			R_CHK(HW.pDevice->CreateShaderResourceView(surf, nullptr, &sh_res_view));
+
+		return sh_res_view;
+	}
+	return nullptr;
+}
+
+void CTexture::surface_null()
+{
+	pSurface = nullptr;
+	m_pSRView = nullptr;
 }
 
 ID3DBaseTexture*	CTexture::surface_get	()

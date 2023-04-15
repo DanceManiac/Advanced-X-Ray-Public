@@ -18,8 +18,12 @@
 
 #define VIEWPORT_NEAR  0.2f
 #define HUD_VIEWPORT_NEAR 0.005f
+extern ENGINE_API int psSVPFrameDelay;
+
+enum ViewPort;
 
 #define DEVICE_RESET_PRECACHE_FRAME_COUNT 10
+
 
 #include "../Include/xrRender/FactoryPtr.h"
 #include "../Include/xrRender/RenderDeviceRender.h"
@@ -107,32 +111,40 @@ class	ENGINE_API CRenderDeviceBase :
 public:
 };
 
+class ENGINE_API CSecondVPParams //--#SM+#-- +SecondVP+
+{
+	bool isActive;	// Флаг активации рендера во второй вьюпорт
+	u8 frameDelay;  // На каком кадре с момента прошлого рендера во второй вьюпорт мы начнём новый
+					//(не может быть меньше 2 - каждый второй кадр, чем больше тем более низкий FPS во втором вьюпорте)
+
+	bool isActive; // Флаг активации рендера во второй вьюпорт
+	u8 frameDelay;  // На каком кадре с момента прошлого рендера во второй вьюпорт мы начнём новый
+					  //(не может быть меньше 2 - каждый второй кадр, чем больше тем более низкий FPS во втором вьюпорте)
+
+public:
+	bool isCamReady; // Флаг готовности камеры (FOV, позиция, и т.п) к рендеру второго вьюпорта
+
+	u32 screenWidth;
+	u32 screenHeight;
+
+	bool isR1;
+
+	IC bool IsSVPActive() { return isActive; }
+	IC void SetSVPActive(bool bState);
+	bool    IsSVPFrame();
+
+	IC u8 GetSVPFrameDelay() { return frameDelay; }
+	void  SetSVPFrameDelay(u8 iDelay)
+	{
+		frameDelay = iDelay;
+		clamp<u8>(frameDelay, 1, u8(-1));
+	}
+};
+
 #pragma pack(pop)
 // refs
-class ENGINE_API CRenderDevice: public CRenderDeviceBase
+class ENGINE_API CRenderDevice : public CRenderDeviceBase
 {
-public:
-	class ENGINE_API CSecondVPParams //--#SM+#-- +SecondVP+
-	{
-		bool isActive; //      
-		u8 frameDelay;  //             
-						  //(    2 -   ,      FPS   )
-
-	public:
-		bool isCamReady; //    (FOV, ,  .)    
-
-		IC bool IsSVPActive() { return isActive; }
-		IC void SetSVPActive(bool bState);
-		bool    IsSVPFrame();
-
-		IC u8 GetSVPFrameDelay() { return frameDelay; }
-		void  SetSVPFrameDelay(u8 iDelay)
-		{
-			frameDelay = iDelay;
-			clamp<u8>(frameDelay, 2, u8(-1));
-		}
-	};
-
 private:
     // Main objects used for creating and rendering the 3D scene
     u32										m_dwWindowStyle;
@@ -192,8 +204,14 @@ public:
 
 	// Dependent classes
 
-	CStats*									Statistic;
-	Fmatrix									mInvFullTransform;
+	CStats*	Statistic;
+	Fmatrix	mInvFullTransform;
+
+	// Saved main viewport params
+	Fvector mainVPCamPosSaved;
+	Fmatrix mainVPFullTrans;
+	Fmatrix mainVPViewSaved;
+	Fmatrix mainVPProjectSaved;
 	
 	CRenderDevice			()
 		:
@@ -217,8 +235,9 @@ public:
 		m_bNearer			= FALSE;
 		//--#SM+#-- +SecondVP+
 		m_SecondViewport.SetSVPActive(false);
-		m_SecondViewport.SetSVPFrameDelay(2);
+		m_SecondViewport.SetSVPFrameDelay(psSVPFrameDelay); // Change it to 2-3, if you want to save perfomance. Will cause skips in updating image in scope
 		m_SecondViewport.isCamReady = false;
+		m_SecondViewport.isR1 = false;
 	};
 
 	void	Pause							(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason);
@@ -230,6 +249,8 @@ public:
 	void Clear								();
 	void End								();
 	void FrameMove							();
+
+	bool bMainMenuActive					();
 	
 	void overdrawBegin						();
 	void overdrawEnd						();
@@ -337,5 +358,6 @@ public:
 	bool			b_need_user_input;
 };
 extern ENGINE_API CLoadScreenRenderer load_screen_renderer;
+extern ENGINE_API float fps_limit;
 
 #endif

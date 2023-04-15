@@ -42,7 +42,7 @@ void	CRenderTarget::phase_combine	()
 
 	//*** exposure-pipeline
 	u32			gpu_id	= Device.dwFrame%HW.Caps.iGPUNum;
-	if (Device.m_SecondViewport.IsSVPActive())	//--#SM+#-- +SecondVP+ Fix for screen flickering
+	if (RImplementation.currentViewPort == SECONDARY_WEAPON_SCOPE)	//--#SM+#-- +SecondVP+ Fix for screen flickering
 	{
 		// clang-format off
 		gpu_id = (Device.dwFrame - 1) % HW.Caps.iGPUNum;	//  "" tonemapping (HDR)    . 

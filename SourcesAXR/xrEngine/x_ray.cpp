@@ -32,6 +32,7 @@
 #include "securom_api.h"
 #include "Rain.h"
 #include "..\Layers\xrAPI\xrGameManager.h"
+#include "Render.h"
 
 #include "DiscordRichPresense.h"
 #include <atlimage.h>
@@ -1433,8 +1434,14 @@ void CApplication::DestroyLoadingScreen()
 PROTECT_API void CApplication::LoadDraw		()
 {
 	if(g_appLoaded)				return;
+
 	Device.dwFrame				+= 1;
 
+
+	Render->firstViewPort = MAIN_VIEWPORT;
+	Render->lastViewPort = MAIN_VIEWPORT;
+	Render->currentViewPort = MAIN_VIEWPORT;
+	Render->needPresenting = true;
 
 	if(!Device.Begin () )		return;
 

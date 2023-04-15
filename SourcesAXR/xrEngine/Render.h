@@ -152,6 +152,12 @@ public:
 	virtual ~IRender_Target()		{};
 };
 
+enum ViewPort
+{
+	MAIN_VIEWPORT = (1 << 1),
+	SECONDARY_WEAPON_SCOPE = (1 << 2),
+};
+
 //////////////////////////////////////////////////////////////////////////
 // definition (Renderer)
 class	ENGINE_API	IRender_interface
@@ -306,6 +312,15 @@ public:
 
 	virtual							u32 active_phase		()											= 0;
 	virtual void					RenderToTarget			(RRT target)								= 0;
+
+
+	ViewPort	currentViewPort;
+	ViewPort	firstViewPort;
+	ViewPort	lastViewPort;
+
+	xr_vector<ViewPort> viewPortsThisFrame;
+
+	bool		needPresenting;
 
 	// Constructor/destructor
 	virtual ~IRender_interface();
