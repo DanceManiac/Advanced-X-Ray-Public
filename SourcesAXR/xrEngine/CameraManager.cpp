@@ -16,6 +16,8 @@
 #include "gamefont.h"
 #include "render.h"
 
+#include <D3DX10Math.h>
+
 float	psCamInert		= 0.f;
 float	psCamSlideInert	= 0.25f;
 
@@ -439,6 +441,7 @@ void CCameraManager::ApplyDevice (float _viewport_near)
 {
 	g_pGameLevel->lastApplyCamera = fastdelegate::FastDelegate1<float>(this, &CCameraManager::ApplyDeviceInternal);
 	g_pGameLevel->lastApplyCameraVPNear = _viewport_near;
+	ApplyDeviceInternal(_viewport_near);
 }
 
 void CCameraManager::ApplyDeviceInternal(float _viewport_near)
@@ -473,6 +476,12 @@ void CCameraManager::ApplyDeviceInternal(float _viewport_near)
 
 	Device.mProject.build_projection(deg2rad(Device.fFOV), aspect, _viewport_near, m_cam_info.fFar);
 	//--#SM+# End--
+
+	if (Render->currentViewPort == MAIN_VIEWPORT)
+	{
+		Device.mFullTransform.mul(Device.mProject, Device.mView);
+		D3DXMatrixInverse((D3DXMATRIX*)&Device.mInvFullTransform, 0, (D3DXMATRIX*)&Device.mFullTransform);
+	}
 
 	if( g_pGamePersistent && g_pGamePersistent->m_pMainMenu->IsActive() )
 		ResetPP					();

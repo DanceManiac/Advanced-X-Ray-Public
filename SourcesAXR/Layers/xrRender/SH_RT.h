@@ -117,6 +117,8 @@ struct 		resptrcode_crt	: public resptr_base<CRT>
 		params.push_back(creation_params_2);
 		create(Name, params, f, SampleCount, useUAV);
 	};
+#else
+	void				create(LPCSTR Name, u32 w, u32 h, D3DFORMAT f, u32 SampleCount = 1);
 #endif //USE_DX11
 	void				destroy() { _set(NULL); }
 };

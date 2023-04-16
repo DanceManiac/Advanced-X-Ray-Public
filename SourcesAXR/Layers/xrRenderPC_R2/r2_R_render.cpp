@@ -311,7 +311,7 @@ void CRender::Render		()
 	{
 		// perform tests
 		u32	count			= 0;
-		light_Package& LP	= Lights.ldbTargetViewPortBuffer->rawPackageDeffered_;
+		light_Package& LP	= Lights.package[RImplementation.getVP()];
 
 		// stats
 		stats.l_shadowed	= LP.v_shadowed.size();

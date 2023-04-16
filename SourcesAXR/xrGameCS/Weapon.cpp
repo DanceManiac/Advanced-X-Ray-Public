@@ -811,12 +811,29 @@ void CWeapon::LoadFireParams		(LPCSTR section)
 	CShootingObject::LoadFireParams(section);
 };
 
+bool CWeapon::bReloadSectionScope(LPCSTR section)
+{
+	if (!pSettings->line_exist(section, "scopes"))
+		return false;
+
+	if (pSettings->r_string(section, "scopes") == NULL)
+		return false;
+
+	if (xr_strcmp(pSettings->r_string(section, "scopes"), "none") == 0)
+		return false;
+
+	return true;
+}
+
 bool CWeapon::bLoadAltScopesParams(LPCSTR section)
 {
 	if (!pSettings->line_exist(section, "scopes"))
 		return false;
 
-	if (!xr_strcmp(pSettings->r_string(section, "scopes"), "none"))
+	if (pSettings->r_string(section, "scopes") == NULL)
+		return false;
+
+	if (xr_strcmp(pSettings->r_string(section, "scopes"), "none") == 0)
 		return false;
 
 	if (m_eScopeStatus == ALife::eAddonAttachable)
@@ -1437,7 +1454,7 @@ void CWeapon::UpdateFlashlight()
 
 bool CWeapon::need_renderable()
 {
-	return !Device.m_SecondViewport.IsSVPFrame() && !(IsZoomed() && ZoomTexture() && !IsRotatingToZoom());
+	return Render->currentViewPort == MAIN_VIEWPORT && !(IsZoomed() && ZoomTexture() && !IsRotatingToZoom());
 }
 
 void CWeapon::renderable_Render		()
@@ -1860,18 +1877,9 @@ void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
 	if (!bHasBulletsToHide)
 		return;
 
-	/*if (m_pInventory->ModifyFrame() <= m_BriefInfo_CalcFrame)
-	{
-		return;
-	}*/
-
 	if (!GetHUDmode()) return;
 
-	//return;
-
 	bool hide = true;
-
-	Msg("Print %d bullets", last_hide_bullet);
 
 	if (last_hide_bullet == bullet_cnt || force) hide = false;
 
@@ -2194,7 +2202,7 @@ void CWeapon::OnZoomOut()
 		m_freelook_switch_back = false;
 	}
 
-	if (!bIsSecondVPZoomPresent())
+	if (!bIsSecondVPZoomPresent() || !psActorFlags.test(AF_3DSCOPE_ENABLE))
 		m_fRTZoomFactor = GetZoomFactor(); //  
 	m_zoom_params.m_bIsZoomModeNow = false;
 	SetZoomFactor(g_fov);
@@ -2218,7 +2226,7 @@ void CWeapon::OnZoomOut()
 
 CUIWindow* CWeapon::ZoomTexture()
 {
-	if (UseScopeTexture())
+	if (UseScopeTexture() && !bIsSecondVPZoomPresent())
 		return m_UIScope;
 	else
 		return NULL;
@@ -2328,6 +2336,8 @@ void CWeapon::reload			(LPCSTR section)
 		m_strap_bone1			= pSettings->r_string(section,"strap_bone1");
 	else
 		m_can_be_strapped		= false;
+
+	bUseAltScope = !!bReloadSectionScope(section);
 
 	if (m_eScopeStatus == ALife::eAddonAttachable)
 	{
@@ -3165,9 +3175,9 @@ bool CWeapon::IsHudModeNow()
 float CWeapon::GetSecondVPFov() const
 {
 	if (m_zoom_params.m_bUseDynamicZoom && bIsSecondVPZoomPresent())
-		return (m_fRTZoomFactor / 100.f) * 75.0f;//g_fov;
+		return (m_fRTZoomFactor / 100.f) * 75.f;//g_fov; 75.f
 
-	return GetSecondVPZoomFactor() * 75.0f;//g_fov;
+	return GetSecondVPZoomFactor() * 75.f;//g_fov; 75.f
 }
 
 //      +SecondVP+

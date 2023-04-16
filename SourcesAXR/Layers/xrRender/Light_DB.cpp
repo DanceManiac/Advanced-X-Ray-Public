@@ -220,7 +220,7 @@ void			CLight_DB::add_light		(light* L)
 	L->vp_render = RImplementation.currentViewPort;
 	if (RImplementation.o.noshadows)		L->flags.bShadow = FALSE;
 	if (L->flags.bStatic && !ps_r2_ls_flags.test(R2FLAG_R1LIGHTS))	return;
-	L->export_to							(package);
+	L->export_to							(package[RImplementation.getVP()]);
 }
 #endif // (RENDER==R_R2) || (RENDER==R_R4)
 
@@ -282,5 +282,5 @@ void			CLight_DB::Update			()
 	}
 
 	// Clear selection
-	package.clear	();
+	package[RImplementation.getVP()].clear();
 }

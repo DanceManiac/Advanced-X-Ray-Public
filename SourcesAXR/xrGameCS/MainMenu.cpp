@@ -372,6 +372,11 @@ void CMainMenu::OnRender	()
 	if(m_Flags.test(flGameSaveScreenshot))
 		return;
 
+	Render->firstViewPort = MAIN_VIEWPORT;
+	Render->lastViewPort = MAIN_VIEWPORT;
+	Render->currentViewPort = MAIN_VIEWPORT;
+	Render->needPresenting = true;
+
 	if(g_pGameLevel)
 		Render->Calculate			();
 

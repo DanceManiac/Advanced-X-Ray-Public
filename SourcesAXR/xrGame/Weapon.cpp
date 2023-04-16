@@ -65,6 +65,7 @@ CWeapon::CWeapon()
 	m_zoom_params.m_pVision						= NULL;
 	m_zoom_params.m_pNight_vision				= NULL;
 	m_zoom_params.m_fSecondVPFovFactor			= 0.0f;
+	m_zoom_params.m_f3dZoomFactor				= 0.0f;
 
 	m_pCurrentAmmo			= NULL;
 
@@ -817,12 +818,29 @@ void CWeapon::LoadFireParams		(LPCSTR section)
 	CShootingObject::LoadFireParams(section);
 };
 
+bool CWeapon::bReloadSectionScope(LPCSTR section)
+{
+	if (!pSettings->line_exist(section, "scopes"))
+		return false;
+
+	if (pSettings->r_string(section, "scopes") == NULL)
+		return false;
+
+	if (xr_strcmp(pSettings->r_string(section, "scopes"), "none") == 0)
+		return false;
+
+	return true;
+}
+
 bool CWeapon::bLoadAltScopesParams(LPCSTR section)
 {
 	if (!pSettings->line_exist(section, "scopes"))
 		return false;
 
-	if (!xr_strcmp(pSettings->r_string(section, "scopes"), "none"))
+	if (pSettings->r_string(section, "scopes") == NULL)
+		return false;
+
+	if (xr_strcmp(pSettings->r_string(section, "scopes"), "none") == 0)
 		return false;
 
 	if (m_eScopeStatus == ALife::eAddonAttachable)
@@ -943,9 +961,15 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 void CWeapon::Load3DScopeParams(LPCSTR section)
 {
 	if (psActorFlags.test(AF_3DSCOPE_ENABLE))
+	{
 		m_zoom_params.m_fSecondVPFovFactor = READ_IF_EXISTS(pSettings, r_float, section, "3d_fov", 0.0f);
+		m_zoom_params.m_f3dZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "3d_zoom_factor", 100.0f);
+	}
 	else
+	{
 		m_zoom_params.m_fSecondVPFovFactor = 0.0f;
+		m_zoom_params.m_f3dZoomFactor = 0.0f;
+	}
 
 }
 
@@ -1490,7 +1514,7 @@ void CWeapon::EnableActorNVisnAfterZoom()
 
 bool CWeapon::need_renderable()
 {
-	return !Device.m_SecondViewport.IsSVPFrame() && !(IsZoomed() && ZoomTexture() && !IsRotatingToZoom());
+	return Render->currentViewPort == MAIN_VIEWPORT && !(IsZoomed() && ZoomTexture() && !IsRotatingToZoom());
 }
 
 void CWeapon::renderable_Render		()
@@ -1863,18 +1887,9 @@ void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
 	if (!bHasBulletsToHide)
 		return;
 
-	/*if (m_pInventory->ModifyFrame() <= m_BriefInfo_CalcFrame)
-	{
-		return;
-	}*/
-
 	if (!GetHUDmode()) return;
 
-	//return;
-
 	bool hide = true;
-
-	Msg("Print %d bullets", last_hide_bullet);
 
 	if (last_hide_bullet == bullet_cnt || force) hide = false;
 
@@ -2103,7 +2118,14 @@ void CWeapon::InitAddons()
 
 float CWeapon::CurrentZoomFactor()
 {
-	return IsScopeAttached() ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
+	if (psActorFlags.test(AF_3DSCOPE_ENABLE) && IsScopeAttached())
+	{
+		return bIsSecondVPZoomPresent() ? m_zoom_params.m_f3dZoomFactor : m_zoom_params.m_fScopeZoomFactor;
+	}
+	else
+	{
+		return IsScopeAttached() ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
+	}
 };
 
 //      
@@ -2200,7 +2222,7 @@ void CWeapon::OnZoomOut()
 			m_freelook_switch_back = false;
 	}
 
-	if (!bIsSecondVPZoomPresent())
+	if (!bIsSecondVPZoomPresent() || !psActorFlags.test(AF_3DSCOPE_ENABLE))
 		m_fRTZoomFactor = GetZoomFactor(); //  
 	m_zoom_params.m_bIsZoomModeNow		= false;
 	SetZoomFactor(g_fov);
@@ -2224,7 +2246,7 @@ void CWeapon::OnZoomOut()
 
 CUIWindow* CWeapon::ZoomTexture()
 {
-	if (UseScopeTexture())
+	if (UseScopeTexture() && !bIsSecondVPZoomPresent())
 		return m_UIScope;
 	else
 		return NULL;
@@ -2286,6 +2308,8 @@ void CWeapon::reload			(LPCSTR section)
 		m_strap_bone1			= pSettings->r_string(section,"strap_bone1");
 	else
 		m_can_be_strapped		= false;
+
+	bUseAltScope = !!bReloadSectionScope(section);
 
 	if (m_eScopeStatus == ALife::eAddonAttachable) {
 		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings,r_float,GetScopeName(),"holder_range_modifier",m_holder_range_modifier);
@@ -3192,9 +3216,9 @@ u32 CWeapon::Cost() const
 float CWeapon::GetSecondVPFov() const
 {
 	if (m_zoom_params.m_bUseDynamicZoom && bIsSecondVPZoomPresent())
-		return (m_fRTZoomFactor / 100.f) * 75.0f;//g_fov;
+		return (m_fRTZoomFactor / 100.f) * 75.f;//g_fov; 75.f
 
-	return GetSecondVPZoomFactor() * 75.0f;//g_fov;
+	return GetSecondVPZoomFactor() * 75.f;//g_fov; 75.f
 }
 
 //      +SecondVP+

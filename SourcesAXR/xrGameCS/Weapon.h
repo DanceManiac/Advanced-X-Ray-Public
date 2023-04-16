@@ -46,6 +46,7 @@ public:
 	virtual	bool			bInZoomRightNow() const { return m_zoom_params.m_fZoomRotationFactor > 0.05; }
 	IC		bool			bIsSecondVPZoomPresent() const { return GetSecondVPZoomFactor() > 0.000f; }
 	bool					bLoadAltScopesParams(LPCSTR section);
+	bool					bReloadSectionScope(LPCSTR section);
 	bool					bChangeNVSecondVPStatus();
 	virtual	bool            bMarkCanShow() { return IsZoomed(); }
 
@@ -282,6 +283,7 @@ protected:
 
 		float			m_fZoomRotationFactor;
 		float           m_fSecondVPFovFactor;
+		float           m_f3dZoomFactor;        //коэффициент мирового зума при использовании второго вьюпорта
 		
 		Fvector			m_ZoomDof;
 		Fvector4		m_ReloadDof;

@@ -421,11 +421,12 @@ void CRenderDevice::on_idle		()
 		if (g_pGameLevel)
 			g_pGameLevel->ApplyCamera(); // Apply camera params of vp, so that we create a correct full transform matrix
 
-		// Matrices
-		mFullTransform.mul(mProject, mView);
 		m_pRender->SetCacheXform(mView, mProject);
-		//RCache.set_xform_view ( mView );
-		//RCache.set_xform_project ( mProject );
+
+		//// Matrices
+		//mFullTransform.mul(mProject, mView);
+		//m_pRender->SetCacheXform(mView, mProject);
+		//D3DXMatrixInverse((D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
 		D3DXMatrixInverse((D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
 
 		if (Render->currentViewPort == MAIN_VIEWPORT) // need to save main vp stuff for next frame
@@ -492,7 +493,7 @@ void CRenderDevice::on_idle		()
 	const u64 frameEndTime = TimerGlobal.GetElapsed_ms();
 	const u64 frameTime = frameEndTime - frameStartTime;
 
-	float fps_to_rate = 1000.f / fps_limit;
+	float fps_to_rate = (fps_limit == 900) ? 0 : (1000.f / fps_limit);
 
 	u32 updateDelta = 1; // 1 ms
 
@@ -503,8 +504,11 @@ void CRenderDevice::on_idle		()
 	else
 		updateDelta = fps_to_rate;
 
-	if (frameTime < updateDelta)
-		Sleep(updateDelta - frameTime);
+	if (fps_to_rate != 0)
+	{
+		if (frameTime < updateDelta)
+			Sleep(updateDelta - frameTime);
+	}
 
 #ifdef MOVE_CURRENT_FRAME_COUNTR
 	dwFrame += stored_cur_frame;

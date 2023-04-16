@@ -47,6 +47,7 @@ public:
 	virtual	bool			bInZoomRightNow() const { return m_zoom_params.m_fZoomRotationFactor > 0.05; }
 	IC		bool			bIsSecondVPZoomPresent() const { return GetSecondVPZoomFactor() > 0.000f; }
 			bool			bLoadAltScopesParams(LPCSTR section);
+			bool            bReloadSectionScope(LPCSTR section);
 			bool            bChangeNVSecondVPStatus();
 	virtual	bool            bMarkCanShow() { return IsZoomed(); }
 
@@ -284,6 +285,7 @@ protected:
 	
 		float			m_fIronSightZoomFactor;	//коэффициент увеличения прицеливания
 		float			m_fScopeZoomFactor;		//коэффициент увеличения прицела
+		float           m_f3dZoomFactor;        //коэффициент мирового зума при использовании второго вьюпорта
 
 		float			m_fZoomRotationFactor;
 		float           m_fSecondVPFovFactor;

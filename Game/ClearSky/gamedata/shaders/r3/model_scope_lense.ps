@@ -5,6 +5,8 @@
 // Pixel
 #include "pnv.h"
 
+uniform	float4		m_blender_mode;	
+
 Texture2D 	s_vp2;
 
 float resize(float input, float factor, float offset)
@@ -18,7 +20,11 @@ float4 main	(p_flat I, float4 pos2d : SV_Position): SV_Target
 	float4 t_base = s_base.Sample(smp_base, I.tcdh); // “екстура сетки
 	I.tcdh.x = resize(I.tcdh.x, screen_res.x / screen_res.y, 0);		
 	
-	float4 t_svp = s_vp2.Load( int3(pos2d.xy, 0) );
+	/*SVP texcoords*/
+	float2 svp_tc = pos2d.xy / screen_res.xy;
+	
+	/*SVP texture with new TC*/
+	float4 t_svp = s_vp2.Sample(smp_base, svp_tc);
 	
 	if (!isSecondVPActive()) {
 		t_svp.rgb /= 100; //KRodin: чтобы изображение во втором вьюпорте не застывало после его отключени€ - просто затемним его в 100 раз.

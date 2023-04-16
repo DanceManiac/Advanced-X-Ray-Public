@@ -783,6 +783,9 @@
     <ClInclude Include="blender_film_grain.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_cut.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1483,6 +1486,12 @@
     </ClCompile>
     <ClCompile Include="blender_film_grain.cpp">
       <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_cut.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="r4_rendertarget_phase_cut.cpp">
+      <Filter>Core_Target</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
