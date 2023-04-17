@@ -669,6 +669,10 @@ public		:
 ENGINE_API float psHUD_FOV_def = 0.45f;
 ENGINE_API float psHUD_FOV = psHUD_FOV_def;
 
+ENGINE_API float psSVPImageSizeK = 0.7f;
+ENGINE_API int psSVPFrameDelay = 1;
+ENGINE_API float fps_limit = 60.0f;
+
 //extern int			psSkeletonUpdate;
 extern int			rsDVB_Size;
 extern int			rsDIB_Size;
@@ -683,6 +687,8 @@ extern Flags32		psEnvFlags;
 
 extern int			g_ErrorLineCount;
 extern int			ps_rs_loading_stages;
+
+ENGINE_API BOOL		debugSecondVP = FALSE;
 
 ENGINE_API int			ps_r__Supersample			= 1;
 ENGINE_API int			ps_r__WallmarksOnSkeleton	= 0;
@@ -758,7 +764,11 @@ void CCC_Register()
 	CMD4(CCC_Float,		"r__detail_collision_time",				&ps_detail_collision_time,		0.1f, 3.f);
 	CMD4(CCC_Vector3,	"r__detail_collision_angles",			&ps_detail_collision_angle,		Fvector({ -90.f, -90.f, -90.f }), Fvector({ 90.f, 90.f, 90.f }));
 
-	CMD3(CCC_Mask,		"rs_v_sync",			&psDeviceFlags,		rsVSync				);
+	CMD4(CCC_Float,		"svp_image_size_k",		&psSVPImageSizeK,	0.1f,	2.f				);
+	CMD4(CCC_Integer,	"svp_frame_delay",		&psSVPFrameDelay,	1,		3				);
+	CMD4(CCC_Integer,	"rs_debug_second_vp",	&debugSecondVP,		FALSE,	TRUE			);
+
+	CMD3(CCC_Mask,		"rs_v_sync",			&psDeviceFlags,		rsVSync					);
 //	CMD3(CCC_Mask,		"rs_disable_objects_as_crows",&psDeviceFlags,	rsDisableObjectsAsCrows	);
 	CMD3(CCC_Mask,		"rs_fullscreen",		&psDeviceFlags,		rsFullscreen			);
 	CMD3(CCC_Mask,		"rs_refresh_60hz",		&psDeviceFlags,		rsRefresh60hz			);

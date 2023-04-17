@@ -73,6 +73,8 @@
 
 #include "embedded_editor/embedded_editor_main.h"
 #include "../xrCore/_detail_collision_point.h"
+#include "../xrEngine/CameraManager.h"
+#include "ActorEffector.h"
 
 ENGINE_API bool g_dedicated_server;
 ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
@@ -1345,6 +1347,19 @@ void CLevel::OnAlifeSimulatorLoaded()
 void CLevel::OnSessionTerminate		(LPCSTR reason)
 {
 	MainMenu()->OnSessionTerminate(reason);
+}
+
+void CLevel::ApplyCamera()
+{
+	inherited::ApplyCamera();
+
+	/*if (g_actor)
+	{
+		Actor()->Cameras().ApplyDevice(VIEWPORT_NEAR);
+	}*/
+
+	if (lastApplyCameraVPNear > -1.f)
+		lastApplyCamera(lastApplyCameraVPNear);
 }
 
 u32	GameID()

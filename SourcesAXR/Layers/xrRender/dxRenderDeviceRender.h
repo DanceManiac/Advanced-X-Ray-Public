@@ -14,6 +14,7 @@
 #include "xr_effgamma.h"
 
 class CResourceManager;
+enum ViewPort;
 
 class dxRenderDeviceRender : public IRenderDeviceRender
 {
@@ -66,6 +67,7 @@ public:
 	virtual void	Clear();
 	virtual void	End();
 	virtual void	ClearTarget();
+	virtual void	SwitchViewPortRTZB(ViewPort vp);
 	virtual void	SetCacheXform(Fmatrix &mView, Fmatrix &mProject);
 	virtual void	OnAssetsChanged();
 

@@ -15,6 +15,7 @@
 
 #include "x_ray.h"
 #include "render.h"
+#include "IGame_Level.h"
 
 // must be defined before include of FS_impl.h
 #define INCLUDE_FROM_ENGINE
@@ -38,12 +39,15 @@
 #include <imgui.h>
 //#include <addons/ImGuizmo/ImGuizmo.h>
 
+
 ENGINE_API CRenderDevice Device;
 ENGINE_API CLoadScreenRenderer load_screen_renderer;
 ENGINE_API bool prefetching_in_progress = false;
 extern ENGINE_API int g_current_renderer;
 
 ENGINE_API BOOL g_bRendering = FALSE; 
+
+extern BOOL debugSecondVP;
 
 BOOL		g_bLoaded = FALSE;
 ref_light	precache_light = 0;
@@ -314,6 +318,13 @@ ENGINE_API void GetMonitorResolution(u32& horizontal, u32& vertical)
 	}
 }
 
+//#define MOVE_CURRENT_FRAME_COUNTR // This is to determine, if the second vp bugs are happening because there were no frame step
+
+bool CRenderDevice::bMainMenuActive()
+{
+	return  g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive();
+}
+
 void CRenderDevice::on_idle		()
 {
 	if (!b_is_Ready) {
@@ -324,6 +335,8 @@ void CRenderDevice::on_idle		()
 #ifdef DEDICATED_SERVER
 	u32 FrameStartTime = TimerGlobal.GetElapsed_ms();
 #endif
+	const u64 frameStartTime = TimerGlobal.GetElapsed_ms();
+
 	if (psDeviceFlags.test(rsStatistic))	g_bEnableStatGather	= TRUE;
 	else									g_bEnableStatGather	= FALSE;
 	if(g_loading_events.size())
@@ -353,24 +366,27 @@ void CRenderDevice::on_idle		()
 		mView.build_camera_dir			(vCameraPosition,vCameraDirection,vCameraTop);
 	}
 
-	// Matrices
-	mFullTransform.mul			( mProject,mView	);
-	m_pRender->SetCacheXform(mView, mProject);
-	//RCache.set_xform_view		( mView				);
-	//RCache.set_xform_project	( mProject			);
-	D3DXMatrixInverse			( (D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
+	// Render Viewports
+	if (Device.m_SecondViewport.IsSVPActive() && Device.m_SecondViewport.IsSVPFrame())
+	{
+		Render->firstViewPort = MAIN_VIEWPORT;
+		Render->lastViewPort = SECONDARY_WEAPON_SCOPE;
+		Render->viewPortsThisFrame.push_back(MAIN_VIEWPORT);
+		Render->viewPortsThisFrame.push_back(SECONDARY_WEAPON_SCOPE);
+	}
+	else
+	{
+		Render->viewPortsThisFrame.push_back(MAIN_VIEWPORT);
+		Render->firstViewPort = MAIN_VIEWPORT;
+		Render->lastViewPort = MAIN_VIEWPORT;
+	}
 
-	vCameraPosition_saved	= vCameraPosition;
-	mFullTransform_saved	= mFullTransform;
-	mView_saved				= mView;
-	mProject_saved			= mProject;
+	Statistic->RenderTOTAL_Real.FrameStart();
+	Statistic->RenderTOTAL_Real.Begin();
 
-	// *** Resume threads
-	// Capture end point - thread must run only ONE cycle
-	// Release start point - allow thread to run
-	mt_csLeave.Enter			();
-	mt_csEnter.Leave			();
-	
+#ifdef MOVE_CURRENT_FRAME_COUNTR
+	u32 stored_cur_frame = dwFrame;
+#endif
 
 #ifdef ECO_RENDER // ECO_RENDER START
     static u32 time_frame = 0;
@@ -386,25 +402,118 @@ void CRenderDevice::on_idle		()
 	Sleep						(0);
 #endif // ECO_RENDER END
 
-#ifndef DEDICATED_SERVER
-	Statistic->RenderTOTAL_Real.FrameStart	();
-	Statistic->RenderTOTAL_Real.Begin		();
-	if (b_is_Active)							{
-		if (Begin())				{
+	u32 t_width = Device.dwWidth, t_height = Device.dwHeight;
 
-			seqRender.Process						(rp_Render);
-			if (psDeviceFlags.test(rsCameraPos) || psDeviceFlags.test(rsStatistic) || Statistic->errors.size())	
-				Statistic->Show						();
-			//	TEST!!!
-			//Statistic->RenderTOTAL_Real.End			();
-			//	Present goes here
-			End										();
+	for (size_t i = 0; i < Render->viewPortsThisFrame.size(); i++)
+	{
+#ifdef MOVE_CURRENT_FRAME_COUNTR
+		dwFrame += 1;
+#endif
+		Render->currentViewPort = Render->viewPortsThisFrame[i];
+		Render->needPresenting = (Render->currentViewPort == MAIN_VIEWPORT) ? true : false;
+
+		if (Render->currentViewPort == SECONDARY_WEAPON_SCOPE && psDeviceFlags.test(rsR4))
+		{
+			Device.dwWidth = m_SecondViewport.screenWidth;
+			Device.dwHeight = m_SecondViewport.screenHeight;
+		}
+
+		if (g_pGameLevel)
+			g_pGameLevel->ApplyCamera(); // Apply camera params of vp, so that we create a correct full transform matrix
+
+		m_pRender->SetCacheXform(mView, mProject);
+
+		//// Matrices
+		//mFullTransform.mul(mProject, mView);
+		//m_pRender->SetCacheXform(mView, mProject);
+		//D3DXMatrixInverse((D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
+		D3DXMatrixInverse((D3DXMATRIX*)&mInvFullTransform, 0, (D3DXMATRIX*)&mFullTransform);
+
+		if (Render->currentViewPort == MAIN_VIEWPORT) // need to save main vp stuff for next frame
+		{
+			mainVPCamPosSaved = vCameraPosition;
+			mainVPFullTrans = mFullTransform;
+			mainVPViewSaved = mView;
+			mainVPProjectSaved = mProject;
+		}
+
+		// Set "_saved" for this frame each vport
+		vCameraPosition_saved = vCameraPosition;
+		mFullTransform_saved = mFullTransform;
+		mView_saved = mView;
+		mProject_saved = mProject;
+
+		// *** Resume threads
+		// Capture end point - thread must run only ONE cycle
+		// Release start point - allow thread to run
+		if (Render->currentViewPort == MAIN_VIEWPORT)
+		{
+			mt_csLeave.Enter();
+			mt_csEnter.Leave();
+			Sleep(0);
+		}
+
+		if (b_is_Active)
+		{
+			if (Begin())
+			{
+
+				seqRender.Process(rp_Render);
+				if ((psDeviceFlags.test(rsCameraPos) || psDeviceFlags.test(rsStatistic) || Statistic->errors.size()) && (Render->currentViewPort == MAIN_VIEWPORT || debugSecondVP))
+					Statistic->Show();
+				// TEST!!!
+				//Statistic->RenderTOTAL_Real.End ();
+				// Present goes here
+				End();
+			}
+		}
+
+		if (psDeviceFlags.test(rsR4))
+		{
+			Device.dwWidth = t_width;
+			Device.dwHeight = t_height;
 		}
 	}
-	Statistic->RenderTOTAL_Real.End			();
-	Statistic->RenderTOTAL_Real.FrameEnd	();
-	Statistic->RenderTOTAL.accum	= Statistic->RenderTOTAL_Real.accum;
-#endif // #ifndef DEDICATED_SERVER
+
+	// Restore main vp saved stuff for the needs of new frame
+	vCameraPosition_saved = mainVPCamPosSaved;
+	mFullTransform_saved = mainVPFullTrans;
+	mView_saved = mainVPViewSaved;
+	mProject_saved = mainVPProjectSaved;
+
+	Statistic->RenderTOTAL_Real.End();
+	Statistic->RenderTOTAL_Real.FrameEnd();
+	Statistic->RenderTOTAL.accum = Statistic->RenderTOTAL_Real.accum;
+
+	Render->viewPortsThisFrame.clear();
+
+	if (g_pGameLevel) // reapply camera params as for the main vp, for next frame stuff(we dont want to use last vp camera in next frame possible usages)
+		g_pGameLevel->ApplyCamera();
+
+	const u64 frameEndTime = TimerGlobal.GetElapsed_ms();
+	const u64 frameTime = frameEndTime - frameStartTime;
+
+	float fps_to_rate = (fps_limit == 900) ? 0 : (1000.f / fps_limit);
+
+	u32 updateDelta = 1; // 1 ms
+
+	IMainMenu* pMainMenu = g_pGamePersistent ? g_pGamePersistent->m_pMainMenu : 0;
+
+	if (Device.Paused() || bMainMenuActive())
+		updateDelta = 16; // 16 ms, ~60 FPS max while paused
+	else
+		updateDelta = fps_to_rate;
+
+	if (fps_to_rate != 0)
+	{
+		if (frameTime < updateDelta)
+			Sleep(updateDelta - frameTime);
+	}
+
+#ifdef MOVE_CURRENT_FRAME_COUNTR
+	dwFrame += stored_cur_frame;
+#endif
+
 	// *** Suspend threads
 	// Capture startup point
 	// Release end point - allow thread to wait for startup point
@@ -421,58 +530,12 @@ void CRenderDevice::on_idle		()
 		seqFrameMT.Process					(rp_Frame);
 	}
 
-#ifdef DEDICATED_SERVER
-	u32 FrameEndTime = TimerGlobal.GetElapsed_ms();
-	u32 FrameTime = (FrameEndTime - FrameStartTime);
-	/*
-	string1024 FPS_str = "";
-	string64 tmp;
-	xr_strcat(FPS_str, "FPS Real - ");
-	if (dwTimeDelta != 0)
-		xr_strcat(FPS_str, ltoa(1000/dwTimeDelta, tmp, 10));
-	else
-		xr_strcat(FPS_str, "~~~");
-
-	xr_strcat(FPS_str, ", FPS Proj - ");
-	if (FrameTime != 0)
-		xr_strcat(FPS_str, ltoa(1000/FrameTime, tmp, 10));
-	else
-		xr_strcat(FPS_str, "~~~");
-	
-*/
-	u32 DSUpdateDelta = 1000/g_svDedicateServerUpdateReate;
-	if (FrameTime < DSUpdateDelta)
-	{
-		Sleep(DSUpdateDelta - FrameTime);
-//		Msg("sleep for %d", DSUpdateDelta - FrameTime);
-//		xr_strcat(FPS_str, ", sleeped for ");
-//		xr_strcat(FPS_str, ltoa(DSUpdateDelta - FrameTime, tmp, 10));
-	}
-//	Msg(FPS_str);
-#endif // #ifdef DEDICATED_SERVER
-
 	if (!b_is_Active)
 		Sleep		(1);
 }
 
-#ifdef INGAME_EDITOR
-void CRenderDevice::message_loop_editor	()
-{
-	m_editor->run			();
-	m_editor_finalize		(m_editor);
-	xr_delete				(m_engine);
-}
-#endif // #ifdef INGAME_EDITOR
-
 void CRenderDevice::message_loop()
 {
-#ifdef INGAME_EDITOR
-	if (editor()) {
-		message_loop_editor	();
-		return;
-	}
-#endif // #ifdef INGAME_EDITOR
-
 	MSG						msg;
     PeekMessage				(&msg, NULL, 0U, 0U, PM_NOREMOVE );
 	while (msg.message != WM_QUIT) {
@@ -610,9 +673,6 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
 	{
 		if(!Paused())						
 			bShowPauseString				= 
-#ifdef INGAME_EDITOR
-				editor() ? FALSE : 
-#endif // #ifdef INGAME_EDITOR
 #ifdef DEBUG
 				!xr_strcmp(reason, "li_pause_key_no_clip")?	FALSE:
 #endif // DEBUG
@@ -736,14 +796,14 @@ void CLoadScreenRenderer::OnRender()
 	pApp->load_draw_internal();
 }
 
-void CRenderDevice::CSecondVPParams::SetSVPActive(bool bState) //--#SM+#-- +SecondVP+
+void CSecondVPParams::SetSVPActive(bool bState) //--#SM+#-- +SecondVP+
 {
 	isActive = bState;
 	if (g_pGamePersistent != NULL)
 		g_pGamePersistent->m_pGShaderConstants->m_blender_mode.z = (isActive ? 1.0f : 0.0f);
 }
 
-bool CRenderDevice::CSecondVPParams::IsSVPFrame() //--#SM+#-- +SecondVP+
+bool CSecondVPParams::IsSVPFrame() //--#SM+#-- +SecondVP+
 {
-	return IsSVPActive() && Device.dwFrame % frameDelay == 0;
+	return (Device.dwFrame % GetSVPFrameDelay() == 0);
 }

@@ -47,10 +47,16 @@ void CBackend::OnFrameBegin	()
 		PGO					(Msg("PGO:*****frame[%d]*****",RDEVICE.dwFrame));
 #ifdef USE_DX11
 		Invalidate();
+
+		HW.SwitchVP(RImplementation.currentViewPort);
+		RImplementation.Target->SwitchViewPort(RImplementation.currentViewPort);
+		// Below are just in case
+		RImplementation.Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, HW.pBaseZB); // Set up HW base as RT and ZB
+
 		//	DX9 sets base rt nd base zb by default
 		RImplementation.rmNormal();
-		set_RT				(HW.pBaseRT);
-		set_ZB				(HW.pBaseZB);
+		//set_RT				(HW.pBaseRT);
+		//set_ZB				(HW.pBaseZB);
 #endif //USE_DX11
 		Memory.mem_fill		(&stat,0,sizeof(stat));
 		Vertex.Flush		();

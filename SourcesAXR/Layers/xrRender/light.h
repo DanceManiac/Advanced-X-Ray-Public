@@ -30,6 +30,7 @@ public:
 
 	vis_data		hom			;
 	u32				frame_render;
+	u8              vp_render	;
 
 	float			m_volumetric_quality;
 	float			m_volumetric_intensity;

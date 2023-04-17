@@ -11,7 +11,7 @@ private:
 public:
 	ref_light				sun_original;
 	ref_light				sun_adapted;
-	light_Package			package;
+	light_Package			package[2];
 public:
 	void					add_light			(light*		L	);
 

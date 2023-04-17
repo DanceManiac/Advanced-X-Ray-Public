@@ -16,6 +16,8 @@
 #include "gamefont.h"
 #include "render.h"
 
+#include <D3DX10Math.h>
+
 float	psCamInert		= 0.f;
 float	psCamSlideInert	= 0.25f;
 
@@ -316,7 +318,9 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
 	m_cam_info.style			= style;
 	m_cam_info.parent			= parent;
 
-	if (Device.m_SecondViewport.IsSVPActive())
+#pragma todo("Rafa: I guess this thingie needs to be moved to viewports loop or be done when we draw secondary vp. May be into ApplyCamera?")
+	/*
+	if (Render->currentViewPort == SECONDARY_WEAPON_SCOPE)
 	{
 		float fov = g_pGamePersistent->m_pGShaderConstants->hud_params.y;  //-V595
 
@@ -333,7 +337,9 @@ void CCameraManager::Update(const Fvector& P, const Fvector& D, const Fvector& N
 	else
 	{
 		fFovSecond = 0;
-	}
+	}*/
+
+	fFovSecond = 0;
 
 	UpdateCamEffectors			();
 
@@ -433,6 +439,13 @@ void CCameraManager::UpdatePPEffectors()
 
 void CCameraManager::ApplyDevice (float _viewport_near)
 {
+	g_pGameLevel->lastApplyCamera = fastdelegate::FastDelegate1<float>(this, &CCameraManager::ApplyDeviceInternal);
+	g_pGameLevel->lastApplyCameraVPNear = _viewport_near;
+	ApplyDeviceInternal(_viewport_near);
+}
+
+void CCameraManager::ApplyDeviceInternal(float _viewport_near)
+{
 	// Device params
 	Device.mView.build_camera_dir(m_cam_info.p, m_cam_info.d, m_cam_info.n);
 
@@ -444,14 +457,16 @@ void CCameraManager::ApplyDevice (float _viewport_near)
 	// projection
 	Device.fFOV					= m_cam_info.fFov;
 	Device.fASPECT				= m_cam_info.fAspect;
+	float aspect				= m_cam_info.fAspect;
 	//Device.mProject.build_projection(deg2rad(m_cam_info.fFov), m_cam_info.fAspect, _viewport_near, m_cam_info.fFar);
 
 	//--#SM+# Begin-- +SecondVP+
 	//  FOV    [Recalculate scene FOV for SecondVP frame]
-	if (Device.m_SecondViewport.IsSVPFrame())
+	if (Render->currentViewPort == SECONDARY_WEAPON_SCOPE)
 	{
 		//    FOV  
-		Device.fFOV = fFovSecond;
+		//Device.fFOV = fFovSecond;
+		Device.fFOV = g_pGamePersistent->m_pGShaderConstants->hud_params.y;
 
 		//      
 		Device.m_SecondViewport.isCamReady = true;
@@ -459,8 +474,14 @@ void CCameraManager::ApplyDevice (float _viewport_near)
 	else
 		Device.m_SecondViewport.isCamReady = false;
 
-	Device.mProject.build_projection(deg2rad(Device.fFOV), m_cam_info.fAspect, _viewport_near, m_cam_info.fFar);
+	Device.mProject.build_projection(deg2rad(Device.fFOV), aspect, _viewport_near, m_cam_info.fFar);
 	//--#SM+# End--
+
+	if (Render->currentViewPort == MAIN_VIEWPORT)
+	{
+		Device.mFullTransform.mul(Device.mProject, Device.mView);
+		D3DXMatrixInverse((D3DXMATRIX*)&Device.mInvFullTransform, 0, (D3DXMATRIX*)&Device.mFullTransform);
+	}
 
 	if( g_pGamePersistent && g_pGamePersistent->m_pMainMenu->IsActive() )
 		ResetPP					();

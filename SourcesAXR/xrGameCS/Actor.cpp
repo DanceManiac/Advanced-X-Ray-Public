@@ -962,7 +962,7 @@ void CActor::UpdateCL	()
 			fire_disp_full = m_fdisp_controller.GetCurrentDispertion();
 
 			//--#SM+#-- +SecondVP+        FOV (Sin!) [fix for crosshair shaking while SecondVP]
-			if (!Device.m_SecondViewport.IsSVPFrame())
+			if (!Device.m_SecondViewport.IsSVPActive())
 				HUD().SetCrosshairDisp(fire_disp_full, 0.02f);
 
 			HUD().ShowCrosshair(pWeapon->use_crosshair());

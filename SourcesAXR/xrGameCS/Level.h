@@ -269,6 +269,7 @@ public:
 	virtual void				OnEvent					( EVENT E, u64 P1, u64 P2 );
 	virtual void	_BCL		OnFrame					( void );
 	virtual void				OnRender				( );
+	virtual void				ApplyCamera				();
 	void						cl_Process_Event		(u16 dest, u16 type, NET_Packet& P);
 	void						cl_Process_Spawn		(NET_Packet& P);
 	void						ProcessGameEvents		( );
