@@ -84,9 +84,9 @@
     <texture id="ui_checker_t" x="115" y="239" width="30" height="23" />
     <texture id="ui_checker_e" x="115" y="262" width="30" height="23" />
     <texture id="ui_checker_d" x="115" y="285" width="30" height="23" />
-    <texture id="ui_radio_d" x="114" y="308" width="32" height="23" />
-    <texture id="ui_radio_e" x="114" y="331" width="32" height="23" />
-    <texture id="ui_radio_t" x="114" y="354" width="32" height="23" />
+    <texture id="ui_radio_d" x="115" y="308" width="30" height="23" />
+    <texture id="ui_radio_e" x="115" y="331" width="30" height="23" />
+    <texture id="ui_radio_t" x="115" y="354" width="30" height="23" />
     <texture id="ui_linetextSmall_e_b" x="114" y="377" width="9" height="21" />
     <texture id="ui_linetextSmall_e_back" x="123" y="377" width="33" height="21" />
     <texture id="ui_linetextSmall_e_e" x="155" y="377" width="9" height="21" />
@@ -122,7 +122,7 @@
     <texture id="ui_frame_error_sign_red" x="800" y="0" width="77" height="77" />
     <texture id="ui_frame_error_sign_info" x="877" y="0" width="77" height="77" />
     <texture id="ui_checker_h" x="214" y="206" width="30" height="23" />
-    <texture id="ui_radio_h" x="245" y="206" width="32" height="23" />
+    <texture id="ui_radio_h" x="246" y="206" width="30" height="23" />
     <texture id="ui_tablist_divider_b" x="0" y="56" width="36" height="30" />
     <texture id="ui_tablist_divider_back" x="0" y="56" width="36" height="30" />
     <texture id="ui_tablist_divider_e" x="0" y="56" width="36" height="30" />
