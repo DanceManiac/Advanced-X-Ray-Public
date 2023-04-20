@@ -1358,7 +1358,7 @@ void CLevel::ApplyCamera()
 		Actor()->Cameras().ApplyDevice(VIEWPORT_NEAR);
 	}*/
 
-	if (lastApplyCameraVPNear > -1.f)
+	if (g_actor && lastApplyCameraVPNear > -1.f)
 		lastApplyCamera(lastApplyCameraVPNear);
 }
 
