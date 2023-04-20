@@ -328,6 +328,34 @@ void CRender::LoadSectors(IReader* fs)
 	// load portals
 	if (count) 
 	{
+		bool do_rebuild = true;
+		const bool use_cache = !strstr(Core.Params, "-no_cdb_cache");
+		const bool checkCrc32 = !strstr(Core.Params, "-skip_cdb_cache_crc32_check");
+
+		string_path fName;
+		strconcat(fName, "cdb_cache" "\\", FS.get_path("$level$")->m_Add, "portals.bin");
+		FS.update_path(fName, "$app_data_root$", fName);
+
+		// build portal model
+		rmPortals = xr_new<CDB::MODEL>();
+
+		rmPortals->set_version(fs->get_age());
+
+		if (use_cache && FS.exist(fName) && rmPortals->deserialize(fName, checkCrc32))
+		{
+#ifndef MASTER_GOLD
+			Msg("* Loaded portals cache (%s)...", fName);
+#endif
+			do_rebuild = false;
+		}
+		else
+		{
+#ifndef MASTER_GOLD
+			Msg("* Portals cache for '%s' was not loaded. "
+				"Building the model from scratch..", fName);
+#endif
+		}
+
 		CDB::Collector	CL;
 		fs->find_chunk	(fsL_PORTALS);
 		for (i=0; i<count; i++)
@@ -338,25 +366,33 @@ void CRender::LoadSectors(IReader* fs)
 			__P->Setup	(P.vertices.begin(),P.vertices.size(),
 				(CSector*)getSector(P.sector_front),
 				(CSector*)getSector(P.sector_back));
-			for (u32 j=2; j<P.vertices.size(); j++)
-				CL.add_face_packed_D(
-				P.vertices[0],P.vertices[j-1],P.vertices[j],
-				u32(i)
-				);
-		}
-		if (CL.getTS()<2)
-		{
-			Fvector					v1,v2,v3;
-			v1.set					(-20000.f,-20000.f,-20000.f);
-			v2.set					(-20001.f,-20001.f,-20001.f);
-			v3.set					(-20002.f,-20002.f,-20002.f);
-			CL.add_face_packed_D	(v1,v2,v3,0);
+
+			if (do_rebuild)
+			{
+				for (u32 j = 2; j < P.vertices.size(); j++)
+					CL.add_face_packed_D(P.vertices[0], P.vertices[j - 1], P.vertices[j], u32(i));
+			}
 		}
 
-		// build portal model
-		rmPortals = xr_new<CDB::MODEL> ();
-		rmPortals->build(CL.getV(), int(CL.getVS()), CL.getT(), int(CL.getTS()), nullptr, nullptr, false);
-	} else {
+		if (do_rebuild)
+		{
+			if (CL.getTS() < 2)
+			{
+				Fvector v1, v2, v3;
+				v1.set(-20000.f, -20000.f, -20000.f);
+				v2.set(-20001.f, -20001.f, -20001.f);
+				v3.set(-20002.f, -20002.f, -20002.f);
+				CL.add_face_packed_D(v1, v2, v3, 0);
+			}
+
+			rmPortals->build(CL.getV(), int(CL.getVS()), CL.getT(), int(CL.getTS()), nullptr, nullptr, false);
+
+			if (use_cache)
+				rmPortals->serialize(fName);
+		}
+	}
+	else
+	{
 		rmPortals = 0;
 	}
 
