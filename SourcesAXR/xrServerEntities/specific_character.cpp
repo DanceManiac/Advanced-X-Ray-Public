@@ -5,6 +5,12 @@
 #include "PhraseDialog.h"
 #include "string_table.h"
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+
+#include <experimental/filesystem>
+
+namespace fs = std::experimental::filesystem;
+
 
 SSpecificCharacterData::SSpecificCharacterData()
 {
@@ -27,6 +33,9 @@ SSpecificCharacterData::SSpecificCharacterData()
 	m_fHitProbabilityFactor	= 1.f;
 	m_crouch_type			= 0;
 	m_upgrade_mechanic		= false;
+
+	first_visual			= -1;
+	last_visual				= -1;
 }
 
 SSpecificCharacterData::~SSpecificCharacterData()
@@ -133,17 +142,7 @@ void CSpecificCharacter::load_shared	(LPCSTR)
 
 #endif
 
-	data()->first_visual = pXML->ReadAttribInt("visual", 0, "first_visual", -1);
-	data()->last_visual = pXML->ReadAttribInt("visual", 0, "last_visual", -1);
-	int rnd_vis{};
-
 	data()->m_sVisual = pXML->Read("visual", 0, "");
-
-	if (data()->first_visual != -1 && data()->last_visual != -1)
-	{
-		data()->first_visual = _min(data()->first_visual, data()->last_visual);
-		data()->last_visual = _max(data()->last_visual, data()->first_visual);
-	}
 
 #ifdef  XRGAME_EXPORTS
 	data()->m_sSupplySpawn	= pXML->Read("supplies", 0, "");
@@ -295,15 +294,18 @@ CHARACTER_REPUTATION_VALUE CSpecificCharacter::Reputation	() const
 	return data()->m_Reputation;
 }
 
-LPCSTR CSpecificCharacter::Visual		() const 
+LPCSTR CSpecificCharacter::Visual()
 {
 	string_path visual_randomized{};
 	xr_string visual_name = data()->m_sVisual.c_str();
+
 	int rnd_vis{};
 
-	if (visual_name.back() == '_' && data()->first_visual != -1 && data()->last_visual != -1)
+	if (visual_name.back() == '_')
 	{
-		if (data()->last_visual != data()->first_visual)
+		SetRandomRange();
+
+		if ((data()->last_visual != data()->first_visual) && (data()->first_visual < data()->last_visual))
 			rnd_vis = ::Random.randI(data()->first_visual, data()->last_visual);
 		else
 			rnd_vis = data()->last_visual;
@@ -313,4 +315,38 @@ LPCSTR CSpecificCharacter::Visual		() const
 	}
 
 	return data()->m_sVisual.c_str();
+}
+
+void CSpecificCharacter::SetRandomRange()
+{
+	int min_num = 1000000;
+	int max_num = -1;
+
+	std::string visual_name = data()->m_sVisual.c_str();
+	std::string relative_path = RemoveSymbolsAfterSlash(visual_name);
+
+	std::string userDir = FS.get_path("$game_meshes$")->m_Path;
+	std::string path = userDir + relative_path;
+
+	visual_name = RemoveSymbolsBeforeSlash(visual_name);
+	
+	for (auto& p : fs::directory_iterator(path))
+	{
+		std::string name = p.path().filename().string();
+
+		if (name.find(visual_name) == 0)
+		{
+			int test = name.length();
+			int num = std::stoi(name.substr(visual_name.length()));
+
+			if (num < min_num)
+				min_num = num;
+
+			if (num > max_num)
+				max_num = num;
+		}
+	}
+
+	data()->first_visual = min_num;
+	data()->last_visual = max_num;
 }
