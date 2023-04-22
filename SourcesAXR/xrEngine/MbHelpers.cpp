@@ -148,3 +148,22 @@ ENGINE_API unsigned short int mbhMulti2Wide
 
 	return dpos;
 }
+
+std::string RemoveSymbolsAfterSlash(std::string path)
+{
+	int last_slash = path.find_last_of("\\");
+
+	if (last_slash == std::string::npos)
+		return path;
+
+	return path.substr(0, last_slash + 1);
+}
+
+std::string RemoveSymbolsBeforeSlash(std::string s)
+{
+	int index = s.find_last_of("\\");
+	if (index != std::string::npos)
+		return s.substr(index + 1);
+	else
+		return s;
+}
