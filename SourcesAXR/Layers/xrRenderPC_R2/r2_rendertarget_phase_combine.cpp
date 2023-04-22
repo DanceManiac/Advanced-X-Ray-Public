@@ -269,6 +269,7 @@ void	CRenderTarget::phase_combine	()
 			phase_hud_blood();
 			phase_hud_power();
 			phase_hud_bleeding();
+			phase_hud_intoxication();
 		}
 
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)

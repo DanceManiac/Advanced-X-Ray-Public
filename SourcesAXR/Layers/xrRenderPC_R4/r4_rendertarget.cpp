@@ -22,6 +22,7 @@
 #include "blender_hud_blood.h"
 #include "blender_hud_stamina.h"
 #include "blender_hud_bleeding.h"
+#include "blender_hud_intoxication.h"
 #include "blender_nightvision.h"
 #include "blender_blur.h"
 #include "blender_pp_bloom.h"
@@ -351,6 +352,8 @@ CRenderTarget::CRenderTarget		()
 	b_hud_power				= xr_new<CBlender_Hud_Stamina>		();
 	//HUD BLEEDING
 	b_hud_bleeding			= xr_new<CBlender_Hud_Bleeding>		();
+	//HUD INTOXICATION
+	b_hud_intoxication		= xr_new<CBlender_Hud_Intoxication>	();
 	//Nightvision
 	b_nightvision			= xr_new<CBlender_nightvision>		();
 	//Blur
@@ -527,6 +530,8 @@ CRenderTarget::CRenderTarget		()
 	s_hud_power.create(b_hud_power, "r3\\hud_power");
 	//Hud Bleeding
 	s_hud_bleeding.create(b_hud_bleeding, "r3\\hud_bleeding");
+	//Hud Intoxication
+	s_hud_intoxication.create(b_hud_intoxication, "r3\\hud_intoxication");
 	//Nightvision
 	s_nightvision.create(b_nightvision, "r2\\nightvision");
 	//Blur
@@ -1188,6 +1193,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_hud_blood			); //Hud Blood
 	xr_delete					(b_hud_power			); //Hud Stamina
 	xr_delete					(b_hud_bleeding			); //Hud Bleeding
+	xr_delete					(b_hud_intoxication		); //Hud Intoxication
 	xr_delete					(b_nightvision			); //Nightvision
 	xr_delete					(b_blur					); //Blur (LVutner)
 	xr_delete					(b_pp_bloom				); //PP Bloom (LVutner)
