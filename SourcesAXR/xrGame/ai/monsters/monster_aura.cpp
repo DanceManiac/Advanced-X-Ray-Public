@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "monster_aura.h"
 #include "basemonster/base_monster.h"
 #include "../../Actor.h"
@@ -73,6 +73,21 @@ float   monster_aura::calculate () const
 	float const power				=	linear_factor/distance + quadratic_factor/distance*distance;
 	
 	return								(power < max_power) ? power : max_power;
+}
+
+float   monster_aura::calculate(float distance) const
+{
+	float maxPower = m_max_power;		// максимальная сила эффекта
+	float minPower = 0.0f;				// минимальная сила эффекта
+	float maxDistance = 1.0f;			// максимальное расстояние, на котором эффект будет максимальным
+	float minDistance = m_max_distance;	// минимальное расстояние, на котором эффект будет минимальным
+	float effectorForce = maxPower;		// начальное значение силы эффекта
+
+	effectorForce = (minPower - maxPower) * (distance - maxDistance) / (minDistance - maxDistance) + maxPower;
+
+	clamp(effectorForce, minPower, maxPower);
+
+	return effectorForce * 10.f;
 }
 
 void   monster_aura::load_from_ini (CInifile const* ini, pcstr const section, bool enable_for_dead_default)
@@ -153,9 +168,10 @@ float   monster_aura::get_post_process_factor () const
 	float	pp_highest_at			=	override_if_debug(s_pp_highest_at_string, m_pp_highest_at);
 	VERIFY								(pp_highest_at != 0.f);
 
-	float 	factor					=	calculate() / m_pp_highest_at;
-	clamp								(factor, 0.f, 1.f);
-	return								factor;
+	float distance = m_object->Position().distance_to(Actor()->Position());
+	float factor = calculate(distance);
+
+	return factor;
 }
 
 void   monster_aura::play_detector_sound()
@@ -213,13 +229,12 @@ void   monster_aura::update_schedule ()
 		return;
 	}
 
-	if ( pp_factor > 0.01f )
+	if ( pp_factor > 0.0001f)
 	{
 		if ( !m_pp_index )
 		{
 			m_pp_index				=	Actor()->Cameras().RequestPPEffectorId();
-			AddEffector					(Actor(), m_pp_index, m_pp_effector_name, 
-										GET_KOEFF_FUNC(this, &monster_aura::get_post_process_factor));
+			AddEffector(Actor(), m_pp_index, m_pp_effector_name, GET_KOEFF_FUNC(this, &monster_aura::get_post_process_factor));
 		}
 	}
 	else if ( m_pp_index != 0 )

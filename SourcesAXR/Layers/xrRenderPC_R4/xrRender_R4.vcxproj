@@ -681,6 +681,7 @@
     <ClInclude Include="blender_fxaa.h" />
     <ClInclude Include="blender_hud_bleeding.h" />
     <ClInclude Include="blender_hud_blood.h" />
+    <ClInclude Include="blender_hud_intoxication.h" />
     <ClInclude Include="blender_hud_mask.h" />
     <ClInclude Include="blender_hud_stamina.h" />
     <ClInclude Include="blender_lens_flares.h" />
@@ -900,6 +901,7 @@
     <ClCompile Include="blender_fxaa.cpp" />
     <ClCompile Include="blender_hud_bleeding.cpp" />
     <ClCompile Include="blender_hud_blood.cpp" />
+    <ClCompile Include="blender_hud_intoxication.cpp" />
     <ClCompile Include="blender_hud_mask.cpp" />
     <ClCompile Include="blender_hud_stamina.cpp" />
     <ClCompile Include="blender_lens_flares.cpp" />

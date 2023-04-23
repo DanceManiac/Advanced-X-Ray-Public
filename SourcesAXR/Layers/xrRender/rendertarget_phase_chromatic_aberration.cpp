@@ -7,7 +7,8 @@ void CRenderTarget::phase_chrom_aberration()
 	float d_W = 1.0f;
 	u32	C = color_rgba(0, 0, 0, 255);
 
-	float EffectIntensity = 1.0f;
+	float EffectIntensity = g_pGamePersistent->GetActorIntoxication();
+	clamp(EffectIntensity, 0.0f, 1.0f);
 
 	const float w = float(Device.dwWidth);
 	const float h = float(Device.dwHeight);

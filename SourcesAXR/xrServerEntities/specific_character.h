@@ -121,7 +121,8 @@ protected:
 
 	//загрузка из XML файла
 	virtual void				load_shared				(LPCSTR);
-	static void					InitXmlIdToIndex		();
+	static	void				InitXmlIdToIndex		();
+			void				SetRandomRange			();
 
 	shared_str		m_OwnId;
 public:
@@ -135,7 +136,7 @@ public:
 
 	CHARACTER_RANK_VALUE		Rank					() const ;
 	CHARACTER_REPUTATION_VALUE	Reputation				() const ;
-	LPCSTR						Visual					() const ;
+	LPCSTR						Visual					();
 
 #ifdef  XRGAME_EXPORTS
 	LPCSTR						SupplySpawn				() const ;

@@ -1,0 +1,14 @@
+#include "common.h"
+
+uniform	sampler2D s_hud_intoxication;
+uniform float4 hud_intoxication_params; // x=intensity
+
+float4 main(p_screen I) : COLOR
+{
+	float2	texcoord 				= I.tc0;
+	float4	intoxication_texture 	= tex2D(s_hud_intoxication, I.tc0);
+	float3 	scene 					= tex2D(s_image, texcoord).xyz;
+	scene = lerp(scene, intoxication_texture.xyz, intoxication_texture.w * hud_intoxication_params.x);
+
+	return float4(scene, 1.0f);
+}

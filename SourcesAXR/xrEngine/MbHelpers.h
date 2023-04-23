@@ -72,5 +72,7 @@ __inline BOOL IsAlphaCharacter( wide_char wc )
 	);
 }
 
+ENGINE_API std::string RemoveSymbolsAfterSlash(std::string string);
+ENGINE_API std::string RemoveSymbolsBeforeSlash(std::string string);
 
 #endif // _MB_HELPERS_H_INCLUDED
