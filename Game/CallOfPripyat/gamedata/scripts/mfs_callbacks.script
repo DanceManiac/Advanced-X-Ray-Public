@@ -9,26 +9,128 @@
 
 local callbacks =
 {
+--($) значит ещё нереализовано
+--префикс se_ перед аргументом, это значит что объект серверный (в оффлайне)
+--[[
+	callback_name = {}, --[description]; <arguments>
+]]
 --Игрок
-	actor_net_destroy = {},			--Игрок загружает сейв (обычно в таком случае вызывается net_destroy)
-	actor_death = {},				--Игрок умер
-	actor_take_item = {},			--Игрок взял предмет
-	actor_take_item_from_box = {},	--Игрок взял предмет из ящика
-	actor_put_item_in_box = {},		--Игрок положил предмет в ящик
-	actor_update = {},				--Апдейт игрока каждую милисекунду
-	actor_first_update = {},		--Первый апдейт игрока после net_spawn
-	actor_sleep = {}, 				--Игрок заснул
-	actor_item_use = {}, 			--Игрок использовал предмет
-	actor_item_to_ruck = {},		--Игрок переместил предмет в рюкзак
-	actor_item_to_belt = {},		--Игрок переместил предмет на пояс
-	actor_item_to_slot = {},		--Игрок переместил предмет в слот
-	actor_hit = {},					--Игрок получил урон
-	actor_jump = {},				--Игрок прыгает
-	actor_land = {},				--Игрок лезет по лестнице
-	actor_on_leave_dialog = {},		--Игрок закрыл диалоговое окно либо оно закрылось принудительно, в общем диалог с НПС закончился
+	actor_on_net_destroy = {},		-- actor переходит в online; <actor_binder>
+	actor_on_death = {},			-- Игрок умер; <killer, actor_binder>
+	actor_drop_item = {},			-- Игрок выбросил предмет; <item>
+	actor_take_item = {},			-- Игрок взял предмет; <item>
+	actor_take_item_from_box = {},	-- Игрок взял предмет из ящика; <item, box>
+	actor_put_item_in_box = {},		--($) Игрок положил предмет в ящик
+	actor_on_update = {},			-- Апдейт игрока; <actor_binder, delta>
+	actor_on_first_update = {},		-- Первый апдейт игрока; <actor_binder, delta>
+	actor_on_sleep = {}, 			-- Игрок заснул;
+	actor_item_use = {}, 			-- Игрок использовал предмет; <used_item>
+	actor_item_to_ruck = {},		--($) Игрок переместил предмет в рюкзак
+	actor_item_to_belt = {},		--($) Игрок переместил предмет на пояс
+	actor_item_to_slot = {},		--($) Игрок переместил предмет в слот
+	actor_on_hit = {},				-- Игрок получил урон; <actor_binder, who_hit, amount, bone_index, local_direction>
+	actor_jump = {},				--($) Игрок прыгает
+	actor_land = {},				--($) Игрок лезет по лестнице
+	actor_on_leave_dialog = {},		--($) Игрок закрыл диалоговое окно либо оно закрылось принудительно, в общем диалог с НПС закончился
+	actor_on_item_sell = {},		-- Игрок продал предмет; <item, item_cost>
+	actor_on_item_buy = {},			-- Игрок купил предмет; <item, item_cost>
+	actor_on_footstep = {},			--($)
+	actor_hud_anim_play = {},		--($) Проигрывается HUD анимация
+	actor_hud_anim_end = {},		--($) HUD анимация проигралась
+	actor_hud_anim_mark = {},		--($)
+	actor_info_callback = {},		-- Игрок получил инфопоршень; <infoportion_name>
+	actor_wpn_zoom_in = {},			--($) Оружие: прицеливание
+	actor_wpn_zoom_out = {},		--($) Оружие: выход из прицеливания
+	actor_wpn_reload = {},			--($) Оружие: перезарядка
+	actor_wpn_jam = {},				--($) Оружие: устранение осечки
+	actor_wpn_fire = {},			--($) Оружие: огонь
+	actor_wpn_empty_click = {},		--($) Оружие: попытка выстрелить, но магазин пуст
 --НПС
-	npc_net_spawn = {},
+	npc_on_net_spawn = {},			-- НПС перешёл в online; <motivator_binder>
+	npc_on_net_destroy = {},		-- НПС перешёл в offline; <motivator_binder>
+	npc_take_item = {},				--($) НПС взял предмет
+	npc_drop_item = {},				--($) НПС выбросил предмет
+	npc_on_death = {},				-- НПС умер; <npc,killer>
+	npc_on_use = {},				-- Игрок нажимает клавишу использования, наведя курсор на НПС; <npc>
+	npc_on_hit = {},				-- НПС получил урон; <npc, who_hit, amount, bone_index, local_direction>
+	npc_on_update = {},				-- Апдейт НПС; <motivator_binder, delta>
+	npc_on_first_update = {},		-- Первый апдейт НПС; <motivator_binder, delta>
+	npc_on_weapon_strap = {},		--($) НПС вешает своё оружие на плечо
+	npc_on_weapon_unstrap = {},		--($) НПС снимает своё оружие с плеча
+	npc_item_use = {},				--($) НПС использует какой-то предмет
+	npc_on_danger = {},				-- НПС в опасности: где-то рядом появился враг; <evaulator_danger>
+--Монстры
+	monster_on_update = {},			-- Апдейт мутанта; <monster_binder, delta>
+	monster_on_first_update = {},	-- Первый апдейт мутанта; <monster_binder, delta>
+	monster_on_net_spawn = {},		-- Мутант перешёл в online; <monster_binder>
+	monster_on_net_destroy = {},	-- Мутант перешёл в offline; <monster_binder>
+	monster_on_hit = {},			-- Мутант получил урон; <monster, who_hit, amount, bone_index, local_direction>
+	monster_on_death = {},			-- Мутант умер; <monster, killer>
+	monster_on_use = {},			--($) Игрок нажимает на клавишу использования, наведя курсор мыши на мутанта
+--Другое
+	on_surge_begin = {},			-- Начался выброс; <surge_manager>
+	on_surge_finish = {},			-- Выброс закончился; <surge_manager>
+	on_surge_skip = {},				-- Выброс пропущен из-за того что игрок спит; <surge_manager>
+	pstor_save = {},				-- <object, net_packet>
+	pstor_load = {},				-- <object, net_packet>
+	fill_start_position = {},		-- Функция, которая заселяет всю зону НПС и сквадами.
+	smart_on_update = {},			-- Апдейт смарт-террейна; <se_smart_terrain>
+	smart_on_first_update = {},		-- Первый апдейт смарт-террейна; <se_smart_terrain>
+	npc_get_itm_from_corpse = {},	-- НПС лутает чей-то труп и собирает весь шмот из инвентаря; <npc, corpse, item>
+	on_achievement_gived = {},		-- Игрок получил достижение; <achievement_name>
+	on_level_changing = {},			--($)
+--Главное меню
+	mm_on_keyboard = {},			--($)
+	mm_on_init = {},				-- Игрок открыл главное меню; <main_menu>
+	mm_on_quit = {},				-- Игрок закрыл главного меню; <main_menu>
+	mm_on_screen_res_change = {},	--($) Игрок изменил разрешение экрана
+--Сквады
+	squad_on_add_npc = {},			-- В сквад добавился НПС; <squad, se_new_member, squad_section, spawn_pos, level_vertex_id, game_vertex_id>
+	squad_on_update = {},			-- Апдейт сквада; <squad>
+	squad_on_first_update = {},		-- Первый апдейт сквада; <squad>
+	squad_on_npc_death = {},		-- НПС из сквада умер; <se_squad, se_killed_member>
+	squad_on_leave_smart = {},		-- Сквад выходит из смарт-террейна; <se_squad, smart_id, sim_board>
+	squad_on_enter_smart = {},		-- Сквад заходит в смарт-террейн; <se_squad, smart_id, sim_board>
+	squad_on_npc_creation = {},		-- Сквад создаётся: добавляются НПС; <se_squad, se_obj, se_spawn_smart>
+--Сервер
+	se_entity_on_register = {},		-- Серверное существо добавилось в игру (alife_create); <se_object, string_id>
+	se_entity_on_unregister = {},	-- Серверное существо удалилось из игры (alife_release); <se_object, string_id>
+	se_stalker_on_spawn = {},		-- Серверный объект Сталкер заспаунился; <se_stalker>
+--Булеаны, попытки
+	actor_try_take_item = {},		--($) Игрок может взять предмет, если результат равен true
+	actor_try_take_item_from_box = {},--($) Игрок может взять предмет из ящика, если результат равен true
+	actor_try_put_item_in_box = {},	--($) Игрок может положить предмет в ящик, если результат равен true
 }
+
+function game_load(actor_binder)
+	local ignore = { 
+		["_G.script"] = true,
+		["class_registrator.script"] = true,
+		["game_registrator.script"] = true,
+		["ce_new_attachable_item.script"] = true,
+		["ce_new_game_dm.script"] = true,
+		["sim_faction_brain_human.script"] = true,
+		["sim_faction_brain_mutant.script"] = true,
+		["ce_switcher.script"] = true,
+		["lua_help.script"] = true,
+		["heli_snd.script"] = true,
+		["level_psy_antenna.script"] = true,
+	}
+	
+	local f	= getFS()
+	local flist = f:file_list_open_ex("$game_scripts$",bit_or(FS.FS_ListFiles,FS.FS_RootOnly),"*.script")
+	for	it=0, flist:Size()-1 do
+		local file = flist:GetAt(it)
+		local file_name = file:NameShort()
+		printf("%s size=%s",file_name,file:Size())
+		if (file:Size() > 0 and ignore[file_name] ~= true) then
+			file_name = file_name:sub(0,file_name:len()-7)
+			if (_G[file_name] and _G[file_name].on_game_load) then
+				_G[file_name].on_game_load(actor_binder)
+			end
+		end
+	end
+end
 
 --функция-пример
 --Зарегестрировать вызов каллбэка в реестре

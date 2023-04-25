@@ -84,9 +84,11 @@ function se_smart_cover:on_register()
 		registered_smartcovers_by_lv_id[level_id] = {}
 	end
 	registered_smartcovers_by_lv_id[level_id][self.m_level_vertex_id] = self
+	mfs_callbacks.Action("se_entity_on_register",self,"se_smart_cover")
 --	printf("smart_cover [%s] is registered lvlid [%s] lvid[%s]", self:name(), tostring(level_id), tostring(self.m_level_vertex_id))
 end
 function se_smart_cover:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_smart_cover")
 	unregister_story_object_by_id(self.id)
 	registered_smartcovers[self:name()] = nil
 	local level_id = game_graph():vertex(self.m_game_vertex_id):level_id()

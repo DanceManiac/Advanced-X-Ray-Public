@@ -282,12 +282,6 @@ end
 
 local transfer_to_npc = nil
 
-function get_item(npc, item)
-	if lootable_table[item:section()] == true then
-		npc:transfer_item(item, transfer_to_npc)
-	end
-end
-
 function get_all_from_corpse(npc)
 	printf("GET ALL FROM CORPSE")
 
@@ -299,6 +293,12 @@ function get_all_from_corpse(npc)
 	end
 
 	transfer_to_npc = npc
+	local function get_item(npc, item)
+		mfs_callbacks.Action("npc_get_itm_from_corpse",transfer_to_npc,corpse_npc,item)
+		if lootable_table[item:section()] == true then
+			npc:transfer_item(item, transfer_to_npc)
+		end
+	end
 	corpse_npc:iterate_inventory(get_item, corpse_npc)
 	
 	if math.random(100) > 20 then

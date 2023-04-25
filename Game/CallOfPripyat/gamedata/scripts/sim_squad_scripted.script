@@ -241,6 +241,11 @@ function sim_squad_scripted:update()
 		self:set_location_types()
 		self.need_to_reset_location_masks = false
 	end
+	mfs_callbacks.Action("squad_on_update",self)
+	if not self.first_update then
+		self.first_update = true
+		mfs_callbacks.Action("squad_on_first_update",self)
+	end
 end
 
 
@@ -392,14 +397,16 @@ end
 --' Удаление конкретного персонажа отряда
 function sim_squad_scripted:remove_npc(npc_id)
 	local npc = alife():object(npc_id)
-	self:on_npc_death(npc)
+	self:on_npc_death(npc,true)
 	--printf("releasing object ["..npc:name().."]")
 	alife():release(npc, true)
 end
 --' Убийство НПС
-function sim_squad_scripted:on_npc_death(npc)
+function sim_squad_scripted:on_npc_death(npc,from_remove)
 	printf("Squad %s. Killed member %s", tostring(self.id), npc.id)
-
+	if not real_death then
+		mfs_callbacks.Action("squad_on_npc_death",self,npc)
+	end
 	self.sound_manager:unregister_npc(npc.id)
 	self:unregister_member(npc.id)
 
@@ -484,16 +491,16 @@ function sim_squad_scripted:set_location_types(new_smart_name)
 	if alife():object(self.assigned_target_id):clsid() == clsid.smart_terrain then
 		self:set_location_types_section(default_location)
 		local old_smart_name = self.smart_id and alife():object(self.smart_id) and alife():object(self.smart_id):name()
-		--printf("old_smart_name = [%s]!", tostring(old_smart_name))
+		printf("old_smart_name = [%s]!", tostring(old_smart_name))
 		if old_smart_name then
 			self:set_location_types_section(old_smart_name)
 		end
-		--printf("new_smart_name = [%s]!", tostring(new_smart_name))
+		printf("new_smart_name = [%s]!", tostring(new_smart_name))
 		if new_smart_name then
 			self:set_location_types_section(new_smart_name)
 		end
 	else
-		--printf("target is squad or actor setting [squad_terrain]!")
+		printf("target is squad or actor setting [squad_terrain]!")
 		self:set_location_types_section("squad_terrain")
 		for k,v in pairs(simulation_objects.get_sim_obj_registry().objects) do
 			if alife():object(k):clsid() == clsid.smart_terrain then
@@ -526,7 +533,7 @@ function sim_squad_scripted:add_squad_member(spawn_section, spawn_position, lv_i
 	if simulation_objects.is_on_the_same_level(obj, alife():actor()) and position:distance_to_sqr(alife():actor().position) <= alife():switch_distance()^2 then
 		db.spawned_vertex_by_id[obj.id] = lv_id
 	end
-
+	mfs_callbacks.Action("squad_on_add_npc",self,obj,spawn_section,spawn_position,lv_id,gv_id)
 	return obj.id
 end
 
@@ -756,11 +763,13 @@ function sim_squad_scripted:on_register()
 	-- Проверяем кастомдату обьекта на наличие стори айди.
 	story_objects.check_spawn_ini_for_story_id(self)
 	simulation_objects.get_sim_obj_registry():register(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"sim_squad_scripted")
 end
 function sim_squad_scripted:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"sim_squad_scripted")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
-		--' Удалить отряд
+	--' Удалить отряд
 	self.board.squads[self.id] = nil
 	self.board:assign_squad_to_smart(self, nil)
 	cse_alife_online_offline_group.on_unregister( self )
@@ -830,15 +839,6 @@ function sim_squad_scripted:show()
 		return
 	end
 
-    if(level.map_has_object_spot(self:commander_id(), "ui_pda2_trader_location")~=0) or
-	(level.map_has_object_spot(self:commander_id(), "ui_pda2_mechanic_location")~=0) or
-	(level.map_has_object_spot(self:commander_id(), "ui_pda2_scout_location")~=0) or
-	(level.map_has_object_spot(self:commander_id(), "ui_pda2_quest_npc_location")~=0) or
-	(level.map_has_object_spot(self:commander_id(), "ui_pda2_medic_location")~=0) then
-		self.show_disabled = true
-		return
-	end
-
 	if self.current_spot_id ~= self:commander_id() then
 		self:hide()
 		self.current_spot_id = self:commander_id()
@@ -900,12 +900,6 @@ end
 
 function sim_squad_scripted:get_current_task()
 	if self.assigned_target_id ~= nil and alife():object(self.assigned_target_id) ~= nil then
-		local smart_terrain = alife():object(self.assigned_target_id)
-		if smart_terrain.arriving_npc ~= nil and smart_terrain.arriving_npc[self:commander_id()] == nil
-			and smart_terrain.npc_info and smart_terrain.npc_info[self:commander_id()]
-			and smart_terrain.npc_info[self:commander_id()].job_id and smart_terrain.job_data[smart_terrain.npc_info[self:commander_id()].job_id] then
-			return smart_terrain.job_data[smart_terrain.npc_info[self:commander_id()].job_id].alife_task
-		end
 		return alife():object(self.assigned_target_id):get_alife_task()
 	end
 	return self:get_alife_task()

@@ -17,8 +17,10 @@ function se_outfit:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_outfit")
 end
 function se_outfit:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_outfit")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_custom_outfit.on_unregister( self )
@@ -47,8 +49,10 @@ function se_helmet:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_helmet")
 end
 function se_helmet:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_helmet")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_helmet.on_unregister( self )
@@ -79,8 +83,10 @@ function se_weapon:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_weapon")
 end
 function se_weapon:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon.on_unregister( self )
@@ -108,8 +114,10 @@ function se_weapon_shotgun:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_shtg")
 end
 function se_weapon_shotgun:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_shtg")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_shotgun.on_unregister( self )
@@ -137,8 +145,10 @@ function se_weapon_automatic_shotgun:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_auto_shtg")
 end
 function se_weapon_automatic_shotgun:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_auto_shtg")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_auto_shotgun.on_unregister( self )
@@ -166,8 +176,10 @@ function se_weapon_magazined:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_magazined")
 end
 function se_weapon_magazined:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_magazined")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_magazined.on_unregister( self )
@@ -195,8 +207,10 @@ function se_weapon_magazined_w_gl:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_magazined_w_gl")
 end
 function se_weapon_magazined_w_gl:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_magazined_w_gl")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_magazined_w_gl.on_unregister( self )
@@ -225,8 +239,10 @@ function se_item:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_item")
 end
 function se_item:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_item")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item.on_unregister( self )
@@ -254,8 +270,10 @@ function se_item_torch:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_torch")
 end
 function se_item_torch:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_torch")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_torch.on_unregister( self )
@@ -278,8 +296,10 @@ function se_physic:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_phys")
 end
 function se_physic:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_phys")
 	unregister_story_object_by_id(self.id)
 	cse_alife_object_physic.on_unregister(self)
 end
@@ -303,8 +323,10 @@ function se_lamp:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_lamp")
 end
 function se_lamp:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_lamp")
 	unregister_story_object_by_id(self.id)
 	cse_alife_object_hanging_lamp.on_unregister(self)
 end
@@ -333,9 +355,11 @@ function se_ammo:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_ammo")
 end
 
 function se_ammo:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_ammo")
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_ammo.on_unregister(self)
 end
@@ -357,9 +381,11 @@ function se_grenade:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_grenade")
 end
 
 function se_grenade:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_grenade")
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_grenade.on_unregister(self)
 end
@@ -380,9 +406,11 @@ function se_eatable:on_register()
 	-- Проверяем кастомдату обьекта на наличие стори айди.
 	story_objects.check_spawn_ini_for_story_id(self)
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_eatable")
 end
 
 function se_eatable:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_eatable")
 	unregister_story_object_by_id(self.id)
 	cse_alife_item.on_unregister(self)
 end
@@ -405,9 +433,11 @@ function se_invbox:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_invbox")
 end
 
 function se_invbox:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_invbox")
 	unregister_story_object_by_id(self.id)
 	cse_alife_inventory_box.on_unregister(self)
 end
@@ -430,9 +460,11 @@ function se_explosive:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_explo")
 end
 
 function se_explosive:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_explo")
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_explosive.on_unregister(self)
 end
@@ -455,9 +487,11 @@ function se_pda:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_pda")
 end
 
 function se_pda:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_pda")
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_pda.on_unregister(self)
 end
@@ -484,8 +518,10 @@ function se_detector:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+	mfs_callbacks.Action("se_entity_on_register",self,"se_detector")
 end
 function se_detector:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_detector")
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_detector.on_unregister( self )

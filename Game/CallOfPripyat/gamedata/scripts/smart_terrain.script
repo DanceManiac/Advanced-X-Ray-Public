@@ -170,10 +170,12 @@ function se_smart_terrain:on_register()
 	self:register_delayed_npc()
 
 	self.check_time = time_global()
+	mfs_callbacks.Action("se_entity_on_register",self,"se_smart_terrain")
 end
 -- анрегистрация объекта в симуляторе.
 -- вызывается симулятором.
 function se_smart_terrain:on_unregister()
+	mfs_callbacks.Action("se_entity_on_unregister",self,"se_smart_terrain")
 	cse_alife_smart_zone.on_unregister(self)
 	self.board:unregister_smart(self)
 	smart_terrains_by_name[self:name()] = nil
@@ -1061,6 +1063,11 @@ function se_smart_terrain:update()
 	end
 	-- Апдейт доступности для симуляции.
 	simulation_objects.get_sim_obj_registry():update_avaliability(self)
+	mfs_callbacks.Action("smart_on_update",self)
+	if not self.first_update then
+		mfs_callbacks.Action("smart_on_first_update",self)
+		self.first_update = true
+	end
 end
 -- Переведение смарта в напряженное состояние
 function se_smart_terrain:set_alarm()

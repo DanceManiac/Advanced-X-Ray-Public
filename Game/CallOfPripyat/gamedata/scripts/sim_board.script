@@ -238,6 +238,7 @@ function sim_board:create_squad(spawn_smart, sq_id)
 	for k in squad:squad_members() do
 		local obj = k.object
 		squad.board:setup_squad_and_group(obj)
+		mfs_callbacks.Action("squad_on_npc_creation",squad,obj,spawn_smart)
 	end
 	return squad
 end
@@ -279,6 +280,7 @@ function sim_board:assign_squad_to_smart(squad, smart_id)
 	if old_smart_id ~= nil and self.smarts[old_smart_id] ~= nil then
 		self.smarts[old_smart_id].squads[squad.id] = nil
 		self.smarts[old_smart_id].smrt:refresh()
+		mfs_callbacks.Action("squad_on_enter_smart",squad,smart_id,self)
 	end
 
 	if smart_id == nil then
@@ -292,6 +294,8 @@ function sim_board:assign_squad_to_smart(squad, smart_id)
 	self.smarts[smart_id].squads[squad.id] = squad
 
 	self.smarts[smart_id].smrt:refresh()
+	
+	mfs_callbacks.Action("squad_on_enter_smart",squad,smart_id,self)
 end
 --' Отряд покидает смарт (уменьшаются ресурсы)
 function sim_board:exit_smart(squad, smart_id)
@@ -387,7 +391,6 @@ function sim_board:fill_start_position()
 	if self.start_position_filled == true then
 		return
 	end
-	--printf("FILL START POSITION [%s]", self.player_name)
 	self.start_position_filled = true
 	for level in game_graph():levels() do
 		local section_name = "start_position_" .. alife():level_name(level.id)
@@ -411,6 +414,7 @@ function sim_board:fill_start_position()
 			end
 		end
 	end
+	mfs_callbacks.Action("fill_start_position")
 end
 
 

@@ -107,6 +107,7 @@ end
 
 function sleep_dialog:OnButtonSleep()
 	self:HideDialog()
+	mfs_callbacks.Action("actor_on_sleep")
 	xr_effects.disable_ui(db.actor, nil)
 	level.add_cam_effector("camera_effects\\sleep.anm", 10, false, "ui_sleep_dialog.dream_callback")
 	level.add_pp_effector("sleep_fade.ppe", 11, false)

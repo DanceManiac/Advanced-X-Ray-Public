@@ -289,6 +289,7 @@ function pioneer_functor()
 				and has_alife_info("jup_b206_anomalous_grove_done") then
 			db.actor:give_info_portion("pioneer_achievement_gained")
 			news_manager.send_tip(db.actor, "st_ach_pioneer", nil, "pioneer", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","pioneer")
 		end
 	end
 	return has_alife_info("pioneer_achievement_gained")
@@ -301,6 +302,7 @@ function mutant_hunter_functor()
 				and has_alife_info("jup_b212_jupiter_chimera_hunt_done") then
 			db.actor:give_info_portion("mutant_hunter_achievement_gained")
 			news_manager.send_tip(db.actor, "st_ach_mutant_hunter", nil, "mutant_hunter", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","mutant_hunter")
 		end
 	end
 	return has_alife_info("mutant_hunter_achievement_gained")
@@ -311,6 +313,7 @@ function detective_functor()
 		if has_alife_info("zat_b22_barmen_gave_reward") then
 			db.actor:give_info_portion("detective_achievement_gained")
 			news_manager.send_tip(db.actor, "st_ach_detective", nil, "detective", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","detective")
 		end
 	end
 	return has_alife_info("detective_achievement_gained")
@@ -321,6 +324,7 @@ function one_of_the_lads_functor()
 		if has_alife_info("zat_b30_sultan_loose") and has_alife_info("zat_b7_actor_help_stalkers") then
 			db.actor:give_info_portion("one_of_the_lads_gained")
 			news_manager.send_tip(db.actor, "st_ach_one_of_the_lads", nil, "one_of_the_lads", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","one_of_the_lads")
 		end
 	end
 	return has_alife_info("one_of_the_lads_gained")
@@ -331,6 +335,7 @@ function kingpin_functor()
 		if has_alife_info("zat_b30_barmen_under_sultan") and has_alife_info("zat_b7_actor_help_bandits") then
 			db.actor:give_info_portion("kingpin_gained")
 			news_manager.send_tip(db.actor, "st_ach_kingpin", nil, "kingpin", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","kingpin")
 		end
 	end
 	return has_alife_info("kingpin_gained")
@@ -343,6 +348,7 @@ function herald_of_justice_functor()
 				or has_alife_info("zat_b106_found_soroka_done") then
 			db.actor:give_info_portion("herald_of_justice_achievement_gained")
 			news_manager.send_tip(db.actor, "st_ach_herald_of_justice", nil, "herald_of_justice", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","herald_of_justice")
 		end
 	end
 	return has_alife_info("herald_of_justice_achievement_gained")
@@ -361,6 +367,7 @@ function seeker_functor()
 	db.actor:give_info_portion("sim_bandit_attack_harder")
 	news_manager.send_tip(db.actor, "st_ach_seeker", nil, "seeker", nil, nil)
 	xr_effects.inc_faction_goodwill_to_actor(db.actor, nil, {"stalker", 200})
+	mfs_callbacks.Action("on_achievement_gived","seeker")
 	return true
 end
 
@@ -369,6 +376,7 @@ function battle_systems_master_functor()
 		if has_alife_info("zat_b3_all_instruments_brought") then
 			news_manager.send_tip(db.actor, "st_ach_battle_systems_master", nil, "battle_systems_master", nil, nil)
 			db.actor:give_info_portion("battle_systems_master_achievement_gained")
+			mfs_callbacks.Action("on_achievement_gived","battle_systems_master")
 		end
 	end
 	return has_alife_info("battle_systems_master_achievement_gained")
@@ -381,6 +389,7 @@ function high_tech_master_functor()
 				and has_alife_info("jup_b217_tech_instrument_3_brought") then
 			news_manager.send_tip(db.actor, "st_ach_high_tech_master", nil, "high_tech_master", nil, nil)
 			db.actor:give_info_portion("high_tech_master_achievement_gained")
+			mfs_callbacks.Action("on_achievement_gived","high_tech_master")
 		end
 	end
 	return has_alife_info("high_tech_master_achievement_gained")
@@ -391,6 +400,7 @@ function skilled_stalker_functor()
 		if has_alife_info("actor_was_in_many_bad_places") then
 			news_manager.send_tip(db.actor, "st_ach_skilled_stalker", nil, "skilled_stalker", nil, nil)
 			db.actor:give_info_portion("skilled_stalker_achievement_gained")
+			mfs_callbacks.Action("on_achievement_gived","skilled_stalker")
 		end
 	end
 	return has_alife_info("skilled_stalker_achievement_gained")
@@ -404,6 +414,7 @@ function leader_functor()
 				and has_alife_info("jup_b218_monolith_hired") then
 			news_manager.send_tip(db.actor, "st_ach_leader", nil, "leader", nil, nil)
 			db.actor:give_info_portion("leader_achievement_gained")
+			mfs_callbacks.Action("on_achievement_gived","leader")
 		end
 	end
 	return has_alife_info("leader_achievement_gained")
@@ -419,6 +430,7 @@ function diplomat_functor()
 			xr_effects.inc_faction_goodwill_to_actor(db.actor, nil, {"dolg", 200})
 			xr_effects.inc_faction_goodwill_to_actor(db.actor, nil, {"bandit", 200})
 			db.actor:give_info_portion("diplomat_achievement_gained")
+			mfs_callbacks.Action("on_achievement_gived","diplomat")
 		end
 	end
 	return has_alife_info("diplomat_achievement_gained")
@@ -446,6 +458,7 @@ function research_man_functor()
 		if count >= 4 then
 			db.actor:give_info_portion("research_man_gained")
 			news_manager.send_tip(db.actor, "st_ach_research_man", nil, "research_man", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","research_man")
 			return true
 		end
 	end
@@ -460,6 +473,7 @@ function friend_of_duty_functor()
 				and has_alife_info("jup_b25_flint_blame_done_to_duty") then
 			db.actor:give_info_portion("sim_duty_help_harder")
 			news_manager.send_tip(db.actor, "st_ach_friend_of_duty", nil, "friend_of_duty", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","friend_of_duty")
 		end
 	end
 	return has_alife_info("sim_duty_help_harder")
@@ -473,6 +487,7 @@ function friend_of_freedom_functor()
 				and has_alife_info("jup_b25_flint_blame_done_to_freedom") then
 			db.actor:give_info_portion("sim_freedom_help_harder")
 			news_manager.send_tip(db.actor, "st_ach_friend_of_freedom", nil, "friend_of_freedom", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","friend_of_freedom")
 		end
 	end
 	return has_alife_info("sim_freedom_help_harder")
@@ -480,11 +495,12 @@ end
 
 function balance_advocate_functor()
 	if not has_alife_info("balance_advocate_gained") then
-		if has_alife_info("jup_b46_duty_founder_pda_to_stalkers")
+		if has_alife_info("jup_b46_duty_founder_pda_to_owl")
 				and has_alife_info("jup_b207_dealers_pda_sold_owl")
 				and has_alife_info("zat_b106_found_soroka_done") then
 			db.actor:give_info_portion("balance_advocate_gained")
 			news_manager.send_tip(db.actor, "st_ach_balance_advocate", nil, "balance_advocate", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","balance_advocate")
 		end
 	end
 	return has_alife_info("balance_advocate_gained")
@@ -494,6 +510,7 @@ function wealthy_functor()
 	if db.actor:money() >= 100000 and not has_alife_info("actor_wealthy") then
 		db.actor:give_info_portion("actor_wealthy")
 		news_manager.send_tip(db.actor, "st_ach_wealthy", nil, "wealthy", nil, nil)
+		mfs_callbacks.Action("on_achievement_gived","wealthy")
 	end
 	return has_alife_info("actor_wealthy")
 end
@@ -504,6 +521,7 @@ function keeper_of_secrets_functor()
 		if has_alife_info("pri_b305_all_strelok_notes_given") then
 			db.actor:give_info_portion("keeper_of_secrets_achievement_gained")
 			news_manager.send_tip(db.actor, "st_ach_keeper_of_secrets", nil, "keeper_of_secrets", nil, nil)
+			mfs_callbacks.Action("on_achievement_gived","keeper_of_secrets")
 		end
 	end
 	return has_alife_info("keeper_of_secrets_achievement_gained")
@@ -518,6 +536,7 @@ function marked_by_zone_functor()
 	if cnt_value > 2 then
 		db.actor:give_info_portion("actor_marked_by_zone_3_times")
 		news_manager.send_tip(db.actor, "st_ach_marked_by_zone", nil, "marked_by_zone", nil, nil)
+		mfs_callbacks.Action("on_achievement_gived","marked_by_zone")
 		return true
 	end
 
@@ -555,7 +574,7 @@ function information_dealer_functor()
 		if count >= 10 then
 			news_manager.send_tip(db.actor, "st_ach_information_dealer", nil, "information_dealer", nil, nil)
 			db.actor:give_info_portion("actor_information_dealer")
-			return true
+			mfs_callbacks.Action("on_achievement_gived","information_dealer")
 		end
 	end
 	return has_alife_info("actor_information_dealer")
@@ -571,6 +590,7 @@ function friend_of_stalkers_functor()
 			db.actor:give_info_portion("sim_stalker_help_harder")
 			news_manager.send_tip(db.actor, "st_ach_friend_of_stalkers", nil, "friend_of_stalkers", nil, nil)
 			xr_effects.inc_faction_goodwill_to_actor(db.actor, nil, {"stalker", 100})
+			mfs_callbacks.Action("on_achievement_gived","friend_of_stalkers")
 		end
 	end
 	return has_alife_info("sim_stalker_help_harder")
