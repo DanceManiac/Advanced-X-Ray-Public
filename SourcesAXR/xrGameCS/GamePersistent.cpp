@@ -867,15 +867,15 @@ float CGamePersistent::GetActorBleeding()
 
 float CGamePersistent::GetActorIntoxication()
 {
-	return	(Actor()->conditions().GetIntoxication());
+	if (GameConstants::GetActorIntoxication())
+		return	(Actor()->conditions().GetIntoxication());
+
+	return 0.0f;
 }
 
 bool CGamePersistent::GetActorNightvision()
 {
-	if (GameConstants::GetActorIntoxication())
-		return	(Actor()->GetNightVisionStatus());
-
-	return 0.0f;
+	return	(Actor()->GetNightVisionStatus());
 }
 
 int CGamePersistent::GetNightvisionType()
