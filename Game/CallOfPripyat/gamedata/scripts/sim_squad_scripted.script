@@ -403,8 +403,8 @@ function sim_squad_scripted:remove_npc(npc_id)
 end
 --' Óבטיסעגמ ÍÏÑ
 function sim_squad_scripted:on_npc_death(npc,from_remove)
-	printf("Squad %s. Killed member %s", tostring(self.id), npc.id)
-	if not real_death then
+	if not from_remove then
+		printf("Squad %s. Killed member %s", tostring(self.id), npc.id)
 		mfs_callbacks.Action("squad_on_npc_death",self,npc)
 	end
 	self.sound_manager:unregister_npc(npc.id)

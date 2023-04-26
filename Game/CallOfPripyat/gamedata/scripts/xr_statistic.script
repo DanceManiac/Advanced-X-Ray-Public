@@ -575,9 +575,10 @@ function information_dealer_functor()
 			news_manager.send_tip(db.actor, "st_ach_information_dealer", nil, "information_dealer", nil, nil)
 			db.actor:give_info_portion("actor_information_dealer")
 			mfs_callbacks.Action("on_achievement_gived","information_dealer")
+			return true
 		end
 	end
-	return has_alife_info("actor_information_dealer")
+	return false
 end
 
 function friend_of_stalkers_functor()
