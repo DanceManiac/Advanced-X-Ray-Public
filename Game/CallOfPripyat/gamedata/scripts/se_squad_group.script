@@ -6,10 +6,10 @@ function se_squad:on_register()
 	-- Проверяем кастомдату обьекта на наличие стори айди.
 	story_objects.check_spawn_ini_for_story_id(self)
 	simulation_objects.get_sim_obj_registry():register(self)
-	mfs_callbacks.Action("se_entity_on_register",self,"se_squad")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_squad") end
 end
 function se_squad:on_unregister()
-	mfs_callbacks.Action("se_entity_on_unregister",self,"se_squad")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_squad") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_online_offline_group.on_unregister( self )

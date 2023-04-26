@@ -34,7 +34,7 @@ function se_zone_anom:on_register()
 	self.m_registred = true
 	self.artefact_spawn_idle = 60*60*1000*utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_idle", self, false, 24)
 	self.artefact_spawn_rnd = utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_rnd", self, false, 100)
-	mfs_callbacks.Action("se_entity_on_register",self,"se_zone_anom")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_zone_anom") end
 end
 function se_zone_anom:update()
 	cse_anomalous_zone.update(self)
@@ -101,7 +101,7 @@ function se_zone_torrid:on_register()
 	self.m_registred = true
 	self.artefact_spawn_idle = 60*60*1000*utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_idle", self, false, 24)
 	self.artefact_spawn_rnd = utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_rnd", self, false, 100)
-	mfs_callbacks.Action("se_entity_on_register",self,"se_zone_torrid")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_zone_torrid") end
 end
 function se_zone_torrid:update()
 	cse_torrid_zone.update(self)
@@ -167,7 +167,7 @@ function se_zone_visual:on_register()
 
 	self.artefact_spawn_idle = 60*60*1000*utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_idle", self, false, 24)
 	self.artefact_spawn_rnd = utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_rnd", self, false, 100)
-	mfs_callbacks.Action("se_entity_on_register",self,"se_zone_visual")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_zone_visual") end
 end
 function se_zone_visual:update()
 	cse_zone_visual.update(self)
@@ -229,7 +229,7 @@ function se_restrictor:on_register()
 	story_objects.check_spawn_ini_for_story_id(self)
 
 	treasure_manager.get_treasure_manager():register_restrictor(self)
-	mfs_callbacks.Action("se_entity_on_register",self,"se_restrictor")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_restrictor") end
 end
 
 function se_restrictor:keep_saved_data_anyway()

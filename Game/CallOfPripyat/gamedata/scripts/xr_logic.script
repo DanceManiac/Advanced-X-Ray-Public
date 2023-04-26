@@ -1313,7 +1313,7 @@ function pstor_save_all(obj, packet)
 			abort("xr_logic: pstor_save_all: not registered type '%s' encountered", tv)
 		end
 	end
-	mfs_callbacks.Action("pstor_save",obj,packet)
+	if mfs_callbacks then mfs_callbacks.Action("pstor_save",obj,packet) end
 end
 
 function pstor_load_all(obj, reader)
@@ -1339,7 +1339,7 @@ function pstor_load_all(obj, reader)
 		end
 		--printf("_bp: pstor_load_all: loaded [%s]='%s'", varname, utils.to_str(pstor[varname]))
 	end
-	mfs_callbacks.Action("pstor_load",obj,reader)
+	if mfs_callbacks then mfs_callbacks.Action("pstor_load",obj,reader) end
 end
 
 function save_obj(obj, packet)

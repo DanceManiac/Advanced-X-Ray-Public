@@ -310,7 +310,7 @@ function CSurgeManager:start(manual)
 		if not has_alife_info("pri_b305_fifth_cam_end") or has_alife_info("pri_a28_actor_in_zone_stay") then
 			xr_effects.scenario_autosave(nil,nil,{"st_save_uni_surge_start"})
 		end
-		mfs_callbacks.Action("on_surge_begin",self)
+		if mfs_callbacks then mfs_callbacks.Action("on_surge_begin",self) end
 	end
 end
 
@@ -339,7 +339,7 @@ function CSurgeManager:skip_surge()
 		news_manager.send_tip(db.actor, "st_surge_while_asleep", nil, "recent_surge", nil, nil)
 		self.skip_message = true
 	end
-	mfs_callbacks.Action("on_surge_skip",self)
+	if mfs_callbacks then mfs_callbacks.Action("on_surge_skip",self) end
 end
 
 function CSurgeManager:end_surge(manual)
@@ -384,7 +384,7 @@ function CSurgeManager:end_surge(manual)
 
 	self:respawn_artefacts_and_replace_anomaly_zone()
 	xr_statistic.inc_surges_counter()
-	mfs_callbacks.Action("on_surge_finish",self)
+	if mfs_callbacks then mfs_callbacks.Action("on_surge_finish",self) end
 end
 
 function CSurgeManager:respawn_artefacts_and_replace_anomaly_zone()

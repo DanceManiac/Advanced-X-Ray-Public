@@ -241,10 +241,10 @@ function sim_squad_scripted:update()
 		self:set_location_types()
 		self.need_to_reset_location_masks = false
 	end
-	mfs_callbacks.Action("squad_on_update",self)
+	if mfs_callbacks then mfs_callbacks.Action("squad_on_update",self) end
 	if not self.first_update then
 		self.first_update = true
-		mfs_callbacks.Action("squad_on_first_update",self)
+		if mfs_callbacks then mfs_callbacks.Action("squad_on_first_update",self) end
 	end
 end
 
@@ -405,7 +405,7 @@ end
 function sim_squad_scripted:on_npc_death(npc,from_remove)
 	if not from_remove then
 		printf("Squad %s. Killed member %s", tostring(self.id), npc.id)
-		mfs_callbacks.Action("squad_on_npc_death",self,npc)
+		if mfs_callbacks then mfs_callbacks.Action("squad_on_npc_death",self,npc) end
 	end
 	self.sound_manager:unregister_npc(npc.id)
 	self:unregister_member(npc.id)
@@ -533,7 +533,7 @@ function sim_squad_scripted:add_squad_member(spawn_section, spawn_position, lv_i
 	if simulation_objects.is_on_the_same_level(obj, alife():actor()) and position:distance_to_sqr(alife():actor().position) <= alife():switch_distance()^2 then
 		db.spawned_vertex_by_id[obj.id] = lv_id
 	end
-	mfs_callbacks.Action("squad_on_add_npc",self,obj,spawn_section,spawn_position,lv_id,gv_id)
+	if mfs_callbacks then mfs_callbacks.Action("squad_on_add_npc",self,obj,spawn_section,spawn_position,lv_id,gv_id) end
 	return obj.id
 end
 
@@ -763,10 +763,10 @@ function sim_squad_scripted:on_register()
 	-- Проверяем кастомдату обьекта на наличие стори айди.
 	story_objects.check_spawn_ini_for_story_id(self)
 	simulation_objects.get_sim_obj_registry():register(self)
-	mfs_callbacks.Action("se_entity_on_register",self,"sim_squad_scripted")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"sim_squad_scripted") end
 end
 function sim_squad_scripted:on_unregister()
-	mfs_callbacks.Action("se_entity_on_unregister",self,"sim_squad_scripted")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"sim_squad_scripted") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	--' Удалить отряд

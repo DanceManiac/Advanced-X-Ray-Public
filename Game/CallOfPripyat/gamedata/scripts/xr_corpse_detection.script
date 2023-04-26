@@ -294,7 +294,7 @@ function get_all_from_corpse(npc)
 
 	transfer_to_npc = npc
 	local function get_item(npc, item)
-		mfs_callbacks.Action("npc_get_itm_from_corpse",transfer_to_npc,corpse_npc,item)
+		if mfs_callbacks then mfs_callbacks.Action("npc_get_itm_from_corpse",transfer_to_npc,corpse_npc,item) end
 		if lootable_table[item:section()] == true then
 			npc:transfer_item(item, transfer_to_npc)
 		end

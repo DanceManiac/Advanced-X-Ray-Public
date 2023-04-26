@@ -174,7 +174,7 @@ function motivator_binder:net_spawn(sobject)
 
 
 	self.object:group_throw_time_interval(2000)
-	mfs_callbacks.Action("npc_on_net_spawn",self)
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_net_spawn",self) end
 	return true
 end
 
@@ -214,7 +214,7 @@ end
 		db.delete_enemy( self.e_index )
 	end
 	
-	mfs_callbacks.Action("npc_on_net_destroy",self)
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_net_destroy",self) end
 	object_binder.net_destroy(self)
 end
 
@@ -284,7 +284,7 @@ function motivator_binder:hit_callback(obj, amount, local_direction, who, bone_i
 		xr_wounded.hit_callback(obj:id())
 	end
 	
-	mfs_callbacks.Action("npc_on_hit",obj,who,amount,bone_index,local_direction)
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_hit",obj,who,amount,bone_index,local_direction) end
 end
 
 function motivator_binder:death_callback(victim, who)
@@ -340,7 +340,7 @@ function motivator_binder:death_callback(victim, who)
 
 	end
 	release_body_manager.get_release_body_manager():moving_dead_body(self.object)
-	mfs_callbacks.Action("npc_on_death",victim, who)
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_death",victim, who) end
 end
 
 function motivator_binder:use_callback(obj, who)
@@ -352,7 +352,7 @@ function motivator_binder:use_callback(obj, who)
 			xr_logic.issue_event(self.object, self.st[self.st.active_scheme], "use_callback", obj, who)
 		end
 	end
-	mfs_callbacks.Action("npc_on_use",self.object)
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_use",self.object) end
 end
 
 function motivator_binder:update(delta)
@@ -470,9 +470,9 @@ function motivator_binder:update(delta)
 		end
 		self.need_relation_update = false
 	end]]--
-	mfs_callbacks.Action("npc_on_update",self,delta)
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_update",self,delta) end
 	if not self.first_update then
-		mfs_callbacks.Action("npc_on_first_update",self,delta)
+		if mfs_callbacks then mfs_callbacks.Action("npc_on_first_update",self,delta) end
 		self.first_update = true
 	end
 end

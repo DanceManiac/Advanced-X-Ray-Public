@@ -102,7 +102,7 @@ function se_monster:on_register()
 
 	--' Отключаем старый метод выбора смарттеррейнов.
 	self:brain():can_choose_alife_tasks(false)
-	mfs_callbacks.Action("se_entity_on_register",self,"se_monster")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_monster") end
 	--' Выбор смарта
 	local obj_ini = self:spawn_ini()
 	local smart = utils.cfg_get_string(obj_ini, "logic", "smart_terrain", self, false, "", "")
@@ -114,7 +114,7 @@ function se_monster:on_register()
 end
 --------------------
 function se_monster:on_unregister()
-	mfs_callbacks.Action("se_entity_on_unregister",self,"se_monster")
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_monster") end
 	local strn_id = self:smart_terrain_id()
 	if strn_id ~= 65535 then
 		local smart = alife():object(strn_id)
