@@ -872,7 +872,10 @@ float CGamePersistent::GetActorIntoxication()
 
 bool CGamePersistent::GetActorNightvision()
 {
-	return	(Actor()->GetNightVisionStatus());
+	if (GameConstants::GetActorIntoxication())
+		return	(Actor()->GetNightVisionStatus());
+
+	return 0.0f;
 }
 
 int CGamePersistent::GetNightvisionType()
