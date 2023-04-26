@@ -115,6 +115,7 @@ function game_load(actor_binder)
 		["lua_help.script"] = true,
 		["heli_snd.script"] = true,
 		["level_psy_antenna.script"] = true,
+		["mfs_callbacks.script"] = true,
 	}
 	
 	local f	= getFS()
