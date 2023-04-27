@@ -69,10 +69,9 @@ local callbacks =
 --Другое
 	pstor_save = {},				--($) <object, net_packet>
 	pstor_load = {},				--($) <object, net_packet>
-	fill_start_position = {},		--($) Функция, которая заселяет всю зону НПС и сквадами.
+	faction_fill_start_pos = {},	--($) Функция, которая заселяет всю зону НПС и сквадами.
 	smart_on_update = {},			--($) Апдейт смарт-террейна
 	smart_on_first_update = {},		--($) Первый апдейт смарт-террейна
-	npc_get_itm_from_corpse = {},	--($) НПС лутает чей-то труп и собирает весь шмот из инвентаря
 	on_level_changing = {},			--($)
 --Главное меню
 	mm_on_keyboard = {},			--($)
