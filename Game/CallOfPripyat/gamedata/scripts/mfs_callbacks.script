@@ -15,7 +15,7 @@ local callbacks =
 	callback_name = {}, --[description]; <arguments>
 ]]
 --Игрок
-	actor_on_net_destroy = {},		-- actor переходит в online; <actor_binder>
+	actor_on_net_destroy = {},		-- actor переходит в offline; <actor_binder>
 	actor_on_death = {},			-- Игрок умер; <killer, actor_binder>
 	actor_drop_item = {},			-- Игрок выбросил предмет; <item>
 	actor_take_item = {},			-- Игрок взял предмет; <item>
