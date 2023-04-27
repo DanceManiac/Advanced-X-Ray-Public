@@ -46,26 +46,26 @@ local callbacks =
 	actor_wpn_fire = {},			--($) Оружие: огонь
 	actor_wpn_empty_click = {},		--($) Оружие: попытка выстрелить, но магазин пуст
 --НПС
-	npc_on_net_spawn = {},			--($) НПС перешёл в online
-	npc_on_net_destroy = {},		--($) НПС перешёл в offline
+	npc_on_net_spawn = {},			-- НПС перешёл в online; <motivator_binder>
+	npc_on_net_destroy = {},		-- НПС перешёл в offline; <motivator_binder>
 	npc_take_item = {},				--($) НПС взял предмет
 	npc_drop_item = {},				--($) НПС выбросил предмет
-	npc_on_death = {},				--($) НПС умер
-	npc_on_use = {},				--($) Игрок нажимает клавишу использования, наведя курсор на НПС
-	npc_on_hit = {},				--($) НПС получил урон
-	npc_on_update = {},				--($) Апдейт НПС
-	npc_on_first_update = {},		--($) Первый апдейт НПС
+	npc_on_death = {},				-- НПС умер; <npc,killer>
+	npc_on_use = {},				-- Игрок нажимает клавишу использования, наведя курсор на НПС; <npc>
+	npc_on_hit = {},				-- НПС получил урон; <npc, who_hit, amount, bone_index, local_direction>
+	npc_on_update = {},				-- Апдейт НПС; <motivator_binder, delta>
+	npc_on_first_update = {},		-- Первый апдейт НПС; <motivator_binder, delta>
 	npc_on_weapon_strap = {},		--($) НПС вешает своё оружие на плечо
 	npc_on_weapon_unstrap = {},		--($) НПС снимает своё оружие с плеча
 	npc_item_use = {},				--($) НПС использует какой-то предмет
 	npc_on_danger = {},				--($) НПС в опасности: где-то рядом появился враг
 --Монстры
-	monster_on_update = {},			--($) Апдейт мутанта
-	monster_on_first_update = {},	--($) Первый апдейт мутанта
-	monster_on_net_spawn = {},		--($) Мутант перешёл в online
-	monster_on_net_destroy = {},	--($) Мутант перешёл в offline
-	monster_on_hit = {},			--($) Мутант получил урон
-	monster_on_death = {},			--($) Мутант умер
+	monster_on_update = {},			-- Апдейт мутанта; <monster_binder, delta>
+	monster_on_first_update = {},	-- Первый апдейт мутанта; <monster_binder, delta>
+	monster_on_net_spawn = {},		-- Мутант перешёл в online; <monster_binder>
+	monster_on_net_destroy = {},	-- Мутант перешёл в offline; <monster_binder>
+	monster_on_hit = {},			-- Мутант получил урон; <monster, who_hit, amount, bone_index, local_direction>
+	monster_on_death = {},			-- Мутант умер; <monster, killer>
 	monster_on_use = {},			--($) Игрок нажимает на клавишу использования, наведя курсор мыши на мутанта
 --Другое
 	pstor_save = {},				--($) <object, net_packet>
@@ -76,17 +76,17 @@ local callbacks =
 	on_level_changing = {},			--($)
 --Главное меню
 	mm_on_keyboard = {},			--($)
-	mm_on_init = {},				--($) Игрок открыл главное меню
-	mm_on_quit = {},				--($) Игрок закрыл главного меню
+	mm_on_init = {},				-- Игрок открыл главное меню; <main_menu>
+	mm_on_quit = {},				-- Игрок закрыл главного меню; <main_menu>
 	mm_on_screen_res_change = {},	--($) Игрок изменил разрешение экрана
 --Сквады
-	squad_on_add_npc = {},			--($) В сквад добавился НПС
-	squad_on_update = {},			--($) Апдейт сквада
-	squad_on_first_update = {},		--($) Первый апдейт сквада
-	squad_on_npc_death = {},		--($) НПС из сквада умер
-	squad_on_leave_smart = {},		--($) Сквад выходит из смарт-террейна
-	squad_on_enter_smart = {},		--($) Сквад заходит в смарт-террейн
-	squad_on_npc_creation = {},		--($) Сквад создаётся: добавляются НПС
+	squad_on_add_npc = {},			-- В сквад добавился НПС; <squad, se_new_member, squad_section, spawn_pos, level_vertex_id, game_vertex_id>
+	squad_on_update = {},			-- Апдейт сквада; <squad>
+	squad_on_first_update = {},		-- Первый апдейт сквада; <squad>
+	squad_on_npc_death = {},		-- НПС из сквада умер; <se_squad, se_killed_member>
+	squad_on_leave_smart = {},		-- Сквад выходит из смарт-террейна; <se_squad, smart_id, sim_board>
+	squad_on_enter_smart = {},		-- Сквад заходит в смарт-террейн; <se_squad, smart_id, sim_board>
+	squad_on_npc_creation = {},		-- Сквад создаётся: добавляются НПС; <se_squad, se_obj, se_spawn_smart>
 --Сервер
 	se_entity_on_register = {},		--($) Серверное существо добавилось в игру (alife_create)
 	se_entity_on_unregister = {},	--($) Серверное существо удалилось из игры (alife_release)

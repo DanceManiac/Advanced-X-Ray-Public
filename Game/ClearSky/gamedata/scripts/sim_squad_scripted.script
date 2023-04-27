@@ -77,6 +77,7 @@ function sim_squad_scripted:create_npc(spawn_smart)
 		end
 		self.npc_count = self.npc_count + 1
 		self.squad_power = self.squad_power + 5*obj:rank()/1000
+		if mfs_callbacks then mfs_callbacks.Action("squad_on_add_npc",self,obj,v,position,base_lvi,base_gvi) end
 	end
 	self.smart_id = spawn_smart.id
 	self:refresh()
@@ -254,6 +255,11 @@ function sim_squad_scripted:update()
 		end
 		--' Если у нас нет текущей цели - просим выдать нам задание.
 		self:get_next_action()
+	end
+	if mfs_callbacks then mfs_callbacks.Action("squad_on_update",self) end
+	if not self.first_update then
+		self.first_update = true
+		if mfs_callbacks then mfs_callbacks.Action("squad_on_first_update",self) end
 	end
 end
 function sim_squad_scripted:save(packet)

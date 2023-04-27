@@ -12,10 +12,12 @@ function main_menu:__init() super()
 	self.mbox_mode = 0
     self:InitControls()
     self:InitCallBacks()
+	if mfs_callbacks then mfs_callbacks.Action("mm_on_init",self) end
     xr_s.on_main_menu_on()     						 --' Distemper 03.2008 --
 end
 
 function main_menu:__finalize()
+	if mfs_callbacks then mfs_callbacks.Action("mm_on_quit",self) end
 end
 
 function main_menu:InitControls()

@@ -168,7 +168,7 @@ function motivator_binder:net_spawn(sobject)
 		printf("strelok_health [true]")
 		stc_strelok_health_manager.cs_strelok_health(self.object)
 	end
-
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_net_spawn",self) end
 	return true
 end
 
@@ -194,6 +194,7 @@ function motivator_binder:net_destroy()
 	if self.object:profile_name() == "stc_strelok" then
 		stc_strelok_health_manager.remove_health_bar()
 	end
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_net_destroy",self) end
 	object_binder.net_destroy(self)
 end
 
@@ -229,6 +230,7 @@ function motivator_binder:hit_callback(obj, amount, local_direction, who, bone_i
 		xr_wounded.hit_callback(self.object:id())
      	sim_combat.hit_callback(self.object:id(),who:id())
 	end
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_hit",obj,who,amount,bone_index,local_direction) end
 end
 
 function motivator_binder:death_callback(victim, who)
@@ -290,6 +292,7 @@ function motivator_binder:death_callback(victim, who)
 
 	end
 	release_body_manager.get_release_body_manager():moving_dead_body(self.object) --' Distemper 11.02.2008
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_death",victim, who) end
 end
 
 function motivator_binder:use_callback(obj, who)
@@ -307,6 +310,7 @@ function motivator_binder:use_callback(obj, who)
 			self.treasure_processed = true
 		end
 	end
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_use",self.object) end
 end
 
 function motivator_binder:update(delta)
@@ -451,7 +455,12 @@ function motivator_binder:update(delta)
 	else
 		object:set_tip_text_default()
 	end
-]]	
+]]
+	if mfs_callbacks then mfs_callbacks.Action("npc_on_update",self,delta) end
+	if not self.first_update then
+		if mfs_callbacks then mfs_callbacks.Action("npc_on_first_update",self,delta) end
+		self.first_update = true
+	end
 end
 
 function motivator_binder:reload(section)
