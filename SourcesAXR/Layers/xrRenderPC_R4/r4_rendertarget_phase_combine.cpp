@@ -525,8 +525,22 @@ void	CRenderTarget::phase_combine	()
 		RCache.set_c				("m_current",	m_current);
 		RCache.set_c				("m_previous",	m_previous);
 		RCache.set_c				("m_blur",		m_blur_scale.x,m_blur_scale.y, 0,0);
-		RCache.set_c				("r_color_drag",ps_rcol, ps_gcol, ps_bcol, ps_saturation);
-		//RCache.set_c				("saturation",	ps_saturation, 0, 0, 0);
+
+		float red_color = ps_rcol;
+		float green_color = ps_gcol;
+		float blue_color = ps_bcol;
+		float saturation = ps_saturation;
+
+		if (bWeatherColorDragging)
+		{
+			red_color += g_pGamePersistent->Environment().CurrentEnv->clr_drag_red;
+			green_color += g_pGamePersistent->Environment().CurrentEnv->clr_drag_green;
+			blue_color += g_pGamePersistent->Environment().CurrentEnv->clr_drag_blue;
+			saturation += g_pGamePersistent->Environment().CurrentEnv->clr_drag_saturation;
+		}
+
+		RCache.set_c				("r_color_drag", red_color, green_color, blue_color, saturation);
+
 		Fvector3					dof;
 		g_pGamePersistent->GetCurrentDof(dof);
 		RCache.set_c				("dof_params", dof.x, dof.y, dof.z, dof_sky);

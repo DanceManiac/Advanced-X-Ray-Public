@@ -62,6 +62,7 @@ ENGINE_API bool bDeveloperMode = false;
 ENGINE_API bool bWinterMode = false;
 ENGINE_API bool bDofWeather = false;
 ENGINE_API bool bLowlandFogWeather = false;
+ENGINE_API bool bWeatherColorDragging = false;
 ENGINE_API Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
 ENGINE_API float ps_ssfx_wpn_dof_2 = 1.0f;
 ENGINE_API int ps_rs_loading_stages = 0;
@@ -266,6 +267,7 @@ PROTECT_API void InitSettings()
 	bWinterMode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "winter_mode", false);
 	bDofWeather = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "weather_dof", false);
 	bLowlandFogWeather = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "lowland_fog_from_weather", false);
+	bWeatherColorDragging = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "weather_color_dragging", false);
 
 	Msg("# Engine Mode: %s", EngineMode);
 	Msg("# Developer Mode: %d", bDeveloperMode);

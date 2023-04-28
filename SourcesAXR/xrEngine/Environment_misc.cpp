@@ -23,6 +23,12 @@ void CEnvModifier::load	(IReader* fs, u32 version)
 	fog_density		= fs->r_float	();
 	lowland_fog_height		= fs->r_float	();
 	lowland_fog_density		= fs->r_float	();
+
+	clr_drag_red = fs->r_float();
+	clr_drag_green = fs->r_float();
+	clr_drag_blue = fs->r_float();
+	clr_drag_saturation = fs->r_float();
+
 	fs->r_fvector3	(ambient);
 	fs->r_fvector3	(sky_color);
 	fs->r_fvector3	(hemi_color);
@@ -231,6 +237,11 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) :
 	lowland_fog_height	= 0.0f;
 	lowland_fog_density = 0.0f;
 
+	clr_drag_red		= 0.0f;
+	clr_drag_green		= 0.0f;
+	clr_drag_blue		= 0.0f;
+	clr_drag_saturation = 0.0f;
+
 	rain_density		= 0.0f;
 	rain_color.set		(0,0,0);
 
@@ -336,6 +347,18 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 
 	if (config.line_exist(m_identifier.c_str(), "lowland_fog_density"))
 		lowland_fog_density = config.r_float(m_identifier.c_str(), "lowland_fog_density");
+
+	if (config.line_exist(m_identifier.c_str(), "clr_drag_red"))
+		clr_drag_red = config.r_float(m_identifier.c_str(), "clr_drag_red");
+
+	if (config.line_exist(m_identifier.c_str(), "clr_drag_green"))
+		clr_drag_green = config.r_float(m_identifier.c_str(), "clr_drag_green");
+
+	if (config.line_exist(m_identifier.c_str(), "clr_drag_blue"))
+		clr_drag_blue = config.r_float(m_identifier.c_str(), "clr_drag_blue");
+
+	if (config.line_exist(m_identifier.c_str(), "clr_drag_saturation"))
+		clr_drag_saturation = config.r_float(m_identifier.c_str(), "clr_drag_saturation");
 
 	// swing desc
 	// normal
@@ -503,6 +526,11 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 
 	lowland_fog_height	= fi*A.lowland_fog_height + f * B.lowland_fog_height;
 	lowland_fog_density = fi * A.lowland_fog_density + f * B.lowland_fog_density;
+
+	clr_drag_red = fi * A.clr_drag_red + f * B.clr_drag_red;
+	clr_drag_green = fi * A.clr_drag_green + f * B.clr_drag_green;
+	clr_drag_blue = fi * A.clr_drag_blue + f * B.clr_drag_blue;
+	clr_drag_saturation = fi * A.clr_drag_saturation + f * B.clr_drag_saturation;
 
 	// colors
 //.	sky_color.lerp			(A.sky_color,B.sky_color,f).add(Mdf.sky_color).mul(modif_power);
