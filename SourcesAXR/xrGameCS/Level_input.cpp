@@ -174,7 +174,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 			//Arkada
 			if(Device.Paused())
 			{
-				Device.Pause(FALSE, TRUE, TRUE, "bug_fix");
+				Device.Pause(FALSE, TRUE, FALSE, "bug_fix");
 				return;
 			}
 				if(HUD().GetUI()->MainInputReceiver()->IR_OnKeyboardPress(key))	return;//special case for mp and main_menu
