@@ -133,6 +133,7 @@ function evaluator_danger:evaluate()
 		local passed_time = time_global() - self.danger_time
 		if check_danger_inertion_time(self.object, best_danger, passed_time) == true then
 			printf("DANGER [%s]: [%s] [TRUE] inertion time [%s]", self.object:name(), passed_time, bd_type)
+			if mfs_callbacks then mfs_callbacks.Action("npc_on_danger",self) end
 			return true
 		else
 			printf("DANGER [%s]: [%s] [FALSE] expiration time [%s]", self.object:name(), passed_time, bd_type)
@@ -173,12 +174,14 @@ function evaluator_danger:evaluate()
 		if best_danger:type() == danger_object.grenade then
 			printf("DANGER [%s]->[%s] [TRUE] camper, type [%s]", self.object:name(), best_danger_name, tostring(bd_type))
 			self.danger_time = best_danger:time()
+			if mfs_callbacks then mfs_callbacks.Action("npc_on_danger",self) end
 			return true
 		end
 		return false
 	else
 		printf("DANGER [%s]->[%s] [TRUE] general, type [%s]", self.object:name(), best_danger_name, tostring(bd_type))
 		self.danger_time = best_danger:time()
+		if mfs_callbacks then mfs_callbacks.Action("npc_on_danger",self) end
 		return true
 	end
 

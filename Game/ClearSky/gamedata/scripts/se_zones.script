@@ -30,7 +30,8 @@ function se_zone_anom:on_register()
 	cse_anomalous_zone.on_register(self)
 	self.m_registred = true
 	self.artefact_spawn_idle = 60*60*1000*utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_idle", self, false, 24)
-	self.artefact_spawn_rnd = utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_rnd", self, false, 100)	
+	self.artefact_spawn_rnd = utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_rnd", self, false, 100)
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_zone_anom") end
 end
 function se_zone_anom:update()
 	cse_anomalous_zone.update(self)
@@ -93,7 +94,8 @@ function se_zone_visual:on_register()
 	cse_zone_visual.on_register(self)
 	
 	self.artefact_spawn_idle = 60*60*1000*utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_idle", self, false, 24)
-	self.artefact_spawn_rnd = utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_rnd", self, false, 100)	
+	self.artefact_spawn_rnd = utils.cfg_get_number(system_ini(), self:section_name(), "artefact_spawn_rnd", self, false, 100)
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_zone_visual") end
 end
 function se_zone_visual:update()
 	cse_zone_visual.update(self)

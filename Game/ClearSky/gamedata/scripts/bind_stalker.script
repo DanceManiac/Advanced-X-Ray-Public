@@ -545,6 +545,7 @@ function actor_binder:save(packet)
 			packet:w_stringZ(v)
 		end
 --		minigames_manager.get_minigames_manager():save(packet)
+		if mfs_callbacks then mfs_callbacks.Action("actor_on_save",packet,self) end
 				set_save_marker(packet, "save", true, "actor_binder")
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -598,6 +599,7 @@ function actor_binder:load(reader)
 			db.script_ids[reader:r_u16()] = reader:r_stringZ()
 		end
 --		minigames_manager.get_minigames_manager():load(reader)
+		if mfs_callbacks then mfs_callbacks.Action("actor_on_load",reader,self) end
 				set_save_marker(reader, "load", true, "actor_binder")
 end
 ----------------------------------------------------------------------------------------------------------------------

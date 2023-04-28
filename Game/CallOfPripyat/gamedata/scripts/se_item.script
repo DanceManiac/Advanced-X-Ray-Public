@@ -49,10 +49,10 @@ function se_helmet:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_helmet") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_helm") end
 end
 function se_helmet:on_unregister()
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_helmet") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_helm") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_helmet.on_unregister( self )
@@ -83,10 +83,10 @@ function se_weapon:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_weapon") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_wpn") end
 end
 function se_weapon:on_unregister()
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_wpn") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon.on_unregister( self )
@@ -114,10 +114,10 @@ function se_weapon_shotgun:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_shtg") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_wpn_shtg") end
 end
 function se_weapon_shotgun:on_unregister()
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_shtg") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_wpn_shtg") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_shotgun.on_unregister( self )
@@ -145,10 +145,10 @@ function se_weapon_automatic_shotgun:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_auto_shtg") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_wpn_auto_shtg") end
 end
 function se_weapon_automatic_shotgun:on_unregister()
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_auto_shtg") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_wpn_auto_shtg") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_auto_shotgun.on_unregister( self )
@@ -176,10 +176,10 @@ function se_weapon_magazined:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_magazined") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_wpn_mag") end
 end
 function se_weapon_magazined:on_unregister()
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_magazined") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_wpn_mag") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_magazined.on_unregister( self )
@@ -207,10 +207,10 @@ function se_weapon_magazined_w_gl:on_register()
 	end
 
 	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_weapon_magazined_w_gl") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_wpn_mag_w_gl") end
 end
 function se_weapon_magazined_w_gl:on_unregister()
-	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_weapon_magazined_w_gl") end
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_wpn_mag_w_gl") end
 	--' Отрегистрация в таскменеджере
 	unregister_story_object_by_id(self.id)
 	cse_alife_item_weapon_magazined_w_gl.on_unregister( self )

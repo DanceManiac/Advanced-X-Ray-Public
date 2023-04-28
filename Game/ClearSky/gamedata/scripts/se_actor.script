@@ -6,6 +6,7 @@ end
 function se_actor:on_register()
 	cse_alife_creature_actor.on_register(self)
 	self.m_registred = true
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_actor") end
 end
 --------------------
 function se_actor:STATE_Write(packet)

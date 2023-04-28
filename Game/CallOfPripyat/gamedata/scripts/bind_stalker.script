@@ -452,6 +452,7 @@ function actor_binder:save(packet)
 		packet:w_bool(true)
 		utils.w_CTime(packet, self.last_mutant_hunter_achievement_spawn_time)
 	end
+	if mfs_callbacks then mfs_callbacks.Action("actor_on_save",packet,self) end
 	set_save_marker(packet, "save", true, "actor_binder")
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -508,6 +509,7 @@ function actor_binder:load(reader)
 	if stored_achievement_time == true then
 		self.last_mutant_hunter_achievement_spawn_time = utils.r_CTime(reader)
 	end
+	if mfs_callbacks then mfs_callbacks.Action("actor_on_load",reader,self) end
 	set_save_marker(reader, "load", true, "actor_binder")
 end
 

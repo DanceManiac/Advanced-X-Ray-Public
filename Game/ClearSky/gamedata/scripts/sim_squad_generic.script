@@ -275,17 +275,20 @@ end
 --' Удаление конкретного персонажа отряда
 function sim_squad_generic:remove_npc(npc_id)
 	local npc = alife():object(npc_id)
-	self:on_npc_death(npc)
+	self:on_npc_death(npc,true)
 	--printf("releasing object ["..npc:name().."]")
 	alife():release(npc, true)
 end
 --' Убийство НПС
-function sim_squad_generic:on_npc_death(npc)
+function sim_squad_generic:on_npc_death(npc,from_remove)
+	if not from_remove then
+		printf("Squad %s. Killed member %s", tostring(self.squad_id), npc.id)
+		if mfs_callbacks then mfs_callbacks.Action("squad_on_npc_death",self,npc) end
+	end
     self.squad_npc[npc.id] = nil
 	self.npc_count = self.npc_count - 1
 	self.squad_power = self.squad_power - 5*npc:rank()/1000
 
-	printf("Squad %s. Killed member %s", tostring(self.squad_id), npc.id)
 	--print_table(self.squad_npc)
 
 	if self.online_object[npc.id] ~= nil then

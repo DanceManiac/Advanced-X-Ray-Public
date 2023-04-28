@@ -68,7 +68,7 @@ function se_sim_faction:on_register()
 		-- Нужно зарегить отряд в sim_board
 		sim_board.get_sim_board().squads[squad.squad_id] = squad
 	end
-
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_register",self,"se_sim_faction") end
 	self:fill_start_position()
 end
 -- Вычитка парамтеров из кастом даты
@@ -146,6 +146,7 @@ function se_sim_faction:read_params()
 	end	
 end
 function se_sim_faction:on_unregister()
+	if mfs_callbacks then mfs_callbacks.Action("se_entity_on_unregister",self,"se_sim_faction") end
 	cse_alife_smart_zone.on_unregister(self)
 end
 --' Заполнение стартового расположения
