@@ -5,6 +5,7 @@
 #include "../../xrEngine/IGame_Level.h"
 #include "../../xrEngine/thunderbolt.h"
 #include "../../xrEngine/xr_efflensflare.h"
+#include "../../xrEngine/x_ray.h"
 #include "../GamePersistent.h"
 #include "../Level.h"
 #include "../ai_space.h"
@@ -473,25 +474,31 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("swing_fast_speed", &cur->m_cSwingDesc[1].speed, 0.0f, 10.0f))
 		changed = true;
 
-	ImGui::Text(u8"Color Drag Parameters");
+	if (bWeatherColorDragging)
+	{
+		ImGui::Text(u8"Color Drag Parameters");
 
-	if (ImGui::SliderFloat("clr_drag_red", &cur->clr_drag_red, 0.0f, 2.55f))
-		changed = true;
-	if (ImGui::SliderFloat("clr_drag_green", &cur->clr_drag_green, 0.0f, 2.55f))
-		changed = true;
-	if (ImGui::SliderFloat("clr_drag_blue", &cur->clr_drag_blue, 0.0f, 2.55f))
-		changed = true;
-	if (ImGui::SliderFloat("clr_drag_saturation", &cur->clr_drag_saturation, -1.0f, 1.0f))
-		changed = true;
+		if (ImGui::SliderFloat("clr_drag_red", &cur->clr_drag_red, 0.0f, 2.55f))
+			changed = true;
+		if (ImGui::SliderFloat("clr_drag_green", &cur->clr_drag_green, 0.0f, 2.55f))
+			changed = true;
+		if (ImGui::SliderFloat("clr_drag_blue", &cur->clr_drag_blue, 0.0f, 2.55f))
+			changed = true;
+		if (ImGui::SliderFloat("clr_drag_saturation", &cur->clr_drag_saturation, -1.0f, 1.0f))
+			changed = true;
+	}
 
-	ImGui::Text(u8"DoF parameters");
+	if (bDofWeather)
+	{
+		ImGui::Text(u8"DoF parameters");
 
-	if (ImGui::InputFloat3("dof", (float*)&cur->dof_value), 3)
-		changed = true;
-	if (ImGui::SliderFloat("dof_kernel", &cur->dof_kernel, 0.0f, 10.0f))
-		changed = true;
-	if (ImGui::SliderFloat("dof_sky", &cur->dof_sky, -10000.0f, 10000.0f))
-		changed = true;
+		if (ImGui::InputFloat3("dof", (float*)&cur->dof_value), 3)
+			changed = true;
+		if (ImGui::SliderFloat("dof_kernel", &cur->dof_kernel, 0.0f, 10.0f))
+			changed = true;
+		if (ImGui::SliderFloat("dof_sky", &cur->dof_sky, -10000.0f, 10000.0f))
+			changed = true;
+	}
 
 	if (changed)
 		modifiedWeathers.insert(env.CurrentWeatherName);
