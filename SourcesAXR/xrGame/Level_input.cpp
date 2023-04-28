@@ -168,6 +168,12 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		{
 			if(b_ui_exist && CurrentGameUI()->TopInputReceiver() )
 			{
+				//Arkada
+				if(Device.Paused())
+				{
+					Device.Pause(FALSE, TRUE, TRUE, "bug_fix");
+					return;
+				}
 					if(CurrentGameUI()->IR_UIOnKeyboardPress(key))	return;//special case for mp and main_menu
 					CurrentGameUI()->TopInputReceiver()->HideDialog();
 			}else

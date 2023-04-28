@@ -171,6 +171,12 @@ void CLevel::IR_OnKeyboardPress	(int key)
 	case kQUIT: {
 		if(b_ui_exist && HUD().GetUI()->MainInputReceiver() )
 		{
+			//Arkada
+			if(Device.Paused())
+			{
+				Device.Pause(FALSE, TRUE, TRUE, "bug_fix");
+				return;
+			}
 				if(HUD().GetUI()->MainInputReceiver()->IR_OnKeyboardPress(key))	return;//special case for mp and main_menu
 				HUD().GetUI()->StartStopMenu( HUD().GetUI()->MainInputReceiver(), true);
 		}else
