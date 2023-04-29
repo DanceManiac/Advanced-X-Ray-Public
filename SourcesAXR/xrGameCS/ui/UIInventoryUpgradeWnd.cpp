@@ -100,6 +100,7 @@ void CUIInventoryUpgradeWnd::Init()
 void CUIInventoryUpgradeWnd::InitInventory( CInventoryItem* item, bool can_upgrade )
 {
 	m_inv_item = item;
+	m_item_info->InitItemUpgrade(item);
 	
 	m_scheme_wnd->DetachAll();
 	m_scheme_wnd->Show( false );

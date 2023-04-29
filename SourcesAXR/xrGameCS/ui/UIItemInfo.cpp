@@ -376,6 +376,47 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	}
 }
 
+void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem)
+{
+
+	if (UIItemImage)
+	{
+		// Загружаем картинку
+		UIItemImage->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+
+		Irect item_grid_rect = pInvItem->GetInvGridRect();
+		UIItemImage->GetUIStaticItem().SetOriginalRect(float(item_grid_rect.x1 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), float(item_grid_rect.y1 * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
+			float(item_grid_rect.x2 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), float(item_grid_rect.y2 * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
+		UIItemImage->TextureOn();
+		UIItemImage->ClipperOn();
+		UIItemImage->SetStretchTexture(true);
+		Frect v_r{};
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			v_r = { 0.0f,
+				0.0f,
+				float(item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons()) / 2),
+				float(item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons()) / 2) };
+		}
+		else
+		{
+			v_r = { 0.0f,
+			0.0f,
+			float(item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons())),
+			float(item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons())) };
+		}
+		if (UI()->is_16_9_mode())
+			v_r.x2 /= 1.2f;
+
+		UIItemImage->GetUIStaticItem().SetRect(v_r);
+		//		UIItemImage->SetWidth					(_min(v_r.width(),	UIItemImageSize.x));
+		//		UIItemImage->SetHeight					(_min(v_r.height(),	UIItemImageSize.y));
+		UIItemImage->SetWidth(v_r.width());
+		UIItemImage->SetHeight(v_r.height());
+	}
+}
+
 void CUIItemInfo::TryAddConditionInfo( CInventoryItem& pInvItem, CInventoryItem* pCompareItem )
 {
 	CTorch*			torch = smart_cast<CTorch*>(&pInvItem);
