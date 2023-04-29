@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "actorcondition.h"
 #include "actor.h"
 #include "actorEffector.h"
@@ -100,7 +100,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fAccelK					= pSettings->r_float(section,"accel_k");
 	m_fSprintK					= pSettings->r_float(section,"sprint_k");
 
-	//порог силы и здоровья меньше которого актер начинает хромать
+	//РїРѕСЂРѕРі СЃРёР»С‹ Рё Р·РґРѕСЂРѕРІСЊСЏ РјРµРЅСЊС€Рµ РєРѕС‚РѕСЂРѕРіРѕ Р°РєС‚РµСЂ РЅР°С‡РёРЅР°РµС‚ С…СЂРѕРјР°С‚СЊ
 	m_fLimpingHealthBegin		= pSettings->r_float(section,	"limping_health_begin");
 	m_fLimpingHealthEnd			= pSettings->r_float(section,	"limping_health_end");
 	R_ASSERT					(m_fLimpingHealthBegin<=m_fLimpingHealthEnd);
@@ -121,7 +121,8 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	
 	m_fV_Alcohol				= pSettings->r_float(section,"alcohol_v");
 
-//. ???	m_fSatietyCritical			= pSettings->r_float(section,"satiety_critical");
+	m_fSatietyCritical			= pSettings->r_float(section, "satiety_critical");
+	clamp						(m_fSatietyCritical, 0.0f, 1.0f);
 	m_fV_Satiety				= pSettings->r_float(section,"satiety_v");		
 	m_fV_SatietyPower			= pSettings->r_float(section,"satiety_power_v");
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
@@ -229,7 +230,7 @@ float CActorCondition::GetZoneMaxPower( ALife::EHitType hit_type ) const
 }
 
 
-//вычисление параметров с ходом времени
+//РІС‹С‡РёСЃР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ СЃ С…РѕРґРѕРј РІСЂРµРјРµРЅРё
 #include "UI.h"
 #include "HUDManager.h"
 
@@ -501,35 +502,24 @@ void CActorCondition::UpdateRadiation()
 
 void CActorCondition::UpdateSatiety()
 {
-	if (!IsGameTypeSingle()) return;
-
-	float k = 1.0f;
-	if(m_fSatiety>0)
+	if (!IsGameTypeSingle())
 	{
-		m_fSatiety -=	m_fV_Satiety*
-						k*
-						m_fDeltaTime;
-	
-		clamp			(m_fSatiety,		0.0f,		1.0f);
-
-	}
-		
-	//сытость увеличивает здоровье только если нет открытых ран
-	if(!m_bIsBleeding)
-	{
-		m_fDeltaHealth += CanBeHarmed() ? 
-					(m_fV_SatietyHealth*(m_fSatiety>0.0f?1.f:-1.f)*m_fDeltaTime)
-					: 0;
+		m_fDeltaPower += m_fV_SatietyPower * m_fDeltaTime;
+		return;
 	}
 
-	//коэффициенты уменьшения восстановления силы от сытоти и радиации
-	float radiation_power_k		= 1.f;
-	float satiety_power_k		= 1.f;
-			
-	m_fDeltaPower += m_fV_SatietyPower*
-				radiation_power_k*
-				satiety_power_k*
-				m_fDeltaTime;
+	if (m_fSatiety > 0)
+	{
+		m_fSatiety -= m_fV_Satiety * m_fDeltaTime;
+		clamp(m_fSatiety, 0.0f, 1.0f);
+	}
+
+	float satiety_health_koef = (m_fSatiety - m_fSatietyCritical) / (m_fSatiety >= m_fSatietyCritical ? 1 - m_fSatietyCritical : m_fSatietyCritical);
+	if (CanBeHarmed() && !psActorFlags.test(AF_GODMODE_RT))
+	{
+		m_fDeltaHealth += m_fV_SatietyHealth * satiety_health_koef * m_fDeltaTime;
+		m_fDeltaPower += m_fV_SatietyPower * m_fSatiety * m_fDeltaTime;
+	}
 }
 
 //M.F.S. Team Thirst
@@ -548,7 +538,7 @@ void CActorCondition::UpdateThirst()
 
 	}
 
-	//жажда увеличивает здоровье только если нет открытых ран
+	//Р¶Р°Р¶РґР° СѓРІРµР»РёС‡РёРІР°РµС‚ Р·РґРѕСЂРѕРІСЊРµ С‚РѕР»СЊРєРѕ РµСЃР»Рё РЅРµС‚ РѕС‚РєСЂС‹С‚С‹С… СЂР°РЅ
 	if (!m_bIsBleeding)
 	{
 		m_fDeltaHealth += CanBeHarmed() ?
@@ -556,7 +546,7 @@ void CActorCondition::UpdateThirst()
 			: 0;
 	}
 
-	//коэффициенты уменьшения восстановления силы от жажды
+	//РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ СѓРјРµРЅСЊС€РµРЅРёСЏ РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ СЃРёР»С‹ РѕС‚ Р¶Р°Р¶РґС‹
 	float thirst_power_k = 1.f;
 
 	m_fDeltaPower += m_fV_ThirstPower *
@@ -760,7 +750,7 @@ CWound* CActorCondition::ConditionHit(SHit* pHDS)
 	return inherited::ConditionHit(pHDS);
 }
 
-//weight - "удельный" вес от 0..1
+//weight - "СѓРґРµР»СЊРЅС‹Р№" РІРµСЃ РѕС‚ 0..1
 void CActorCondition::ConditionJump(float weight)
 {
 	float power			=	m_fJumpPower;

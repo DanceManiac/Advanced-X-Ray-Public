@@ -1,4 +1,4 @@
-#ifndef	UI_MAIN_INGAME_WND_H_INCLUDED
+﻿#ifndef	UI_MAIN_INGAME_WND_H_INCLUDED
 #define UI_MAIN_INGAME_WND_H_INCLUDED
 
 #include "UIProgressBar.h"
@@ -66,7 +66,7 @@ protected:
 	CUIStatic			UIWeaponJammedIcon;
 //	CUIStatic			UIRadiaitionIcon;
 //	CUIStatic			UIWoundIcon;
-//	CUIStatic			UIStarvationIcon;
+	CUIStatic			UIStarvationIcon;
 //	CUIStatic			UIPsyHealthIcon;
 	CUIStatic			UIInvincibleIcon;
 //	CUIStatic			UISleepIcon;
@@ -85,7 +85,7 @@ public:
 		ewiWeaponJammed,
 //		ewiRadiation,
 //		ewiWound,
-//		ewiStarvation,
+		ewiStarvation,
 //		ewiPsyHealth,
 //		ewiSleep,
 		ewiInvincible,

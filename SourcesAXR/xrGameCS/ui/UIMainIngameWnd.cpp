@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 
 #include "UIMainIngameWnd.h"
 #include "UIMessagesWindow.h"
@@ -147,7 +147,7 @@ void CUIMainIngameWnd::Init()
 	AttachChild					(m_UIIcons);
 
 	// ��������� ������ 
-/*	if ( IsGameTypeSingle() )
+	if ( IsGameTypeSingle() )
 	{
 		xml_init.InitStatic		(uiXml, "starvation_static", 0, &UIStarvationIcon);
 		UIStarvationIcon.Show	(false);
@@ -155,7 +155,6 @@ void CUIMainIngameWnd::Init()
 //		xml_init.InitStatic		(uiXml, "psy_health_static", 0, &UIPsyHealthIcon);
 //		UIPsyHealthIcon.Show	(false);
 	}
-*/
 	xml_init.InitStatic			(uiXml, "weapon_jammed_static", 0, &UIWeaponJammedIcon);
 	UIWeaponJammedIcon.Show		(false);
 
@@ -188,7 +187,7 @@ void CUIMainIngameWnd::Init()
 	};
 
 	// ��������� ��������� �������� ��� �����������
-	EWarningIcons j = ewiWeaponJammed;
+	EWarningIcons j = ewiStarvation;
 	while (j < ewiInvincible)
 	{
 		// ������ ������ ������� ��� ������� ����������
@@ -327,14 +326,9 @@ void CUIMainIngameWnd::Update()
 	{
 		SetWarningIconColor( ewiInvincible, 0x00ffffff );
 	}
-	
-	if ( IsGameTypeSingle() )
-	{
-		return;
-	}
 
 	// ewiArtefact
-	if ( GameID() == eGameIDArtefactHunt )
+	if ( GameID() == eGameIDArtefactHunt && !IsGameTypeSingle())
 	{
 		bool b_Artefact = !!( m_pActor->inventory().ItemFromSlot(ARTEFACT_SLOT) );
 		if ( b_Artefact )
@@ -346,7 +340,7 @@ void CUIMainIngameWnd::Update()
 			SetWarningIconColor( ewiArtefact, 0x00ffffff );
 		}
 	}
-	else if ( GameID() == eGameIDCaptureTheArtefact )
+	else if ( GameID() == eGameIDCaptureTheArtefact && !IsGameTypeSingle())
 	{
 		//this is a bad style... It left for backward compatibility
 		//need to move this logic into UIGameCTA class
@@ -372,8 +366,8 @@ void CUIMainIngameWnd::Update()
 
 	//	UpdateActiveItemInfo();
 
-	EWarningIcons i	= ewiWeaponJammed;
-	while ( i <= ewiWeaponJammed ) // ewiInvincible
+	EWarningIcons i	= ewiStarvation;
+	while ( i <= ewiStarvation) // ewiInvincible
 	{
 		float value = 0;
 		switch (i)
@@ -399,10 +393,9 @@ void CUIMainIngameWnd::Update()
 				}
 				break;
 			}
-		/*case ewiStarvation:
+		case ewiStarvation:
 			value =  _max( 0.0f, 1.0f - m_pActor->conditions().GetSatiety() );
 			break;
-		*/
 		/*case ewiPsyHealth:
 			value = 1 - m_pActor->conditions().GetPsyHealth();
 			break;
@@ -561,15 +554,14 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 		if (bMagicFlag) break;
 	case ewiWound:
 		SetWarningIconColorUI	(&UIWoundIcon, cl);
-		if (bMagicFlag) break;
+		if (bMagicFlag) break;*/
 
 	case ewiStarvation:
 		SetWarningIconColorUI	(&UIStarvationIcon, cl);
 		if (bMagicFlag) break;	
-	case ewiPsyHealth:
+	/*case ewiPsyHealth:
 		SetWarningIconColorUI	(&UIPsyHealthIcon, cl);
-		if (bMagicFlag) break;
-*/
+		if (bMagicFlag) break;*/
 	case ewiInvincible:
 		SetWarningIconColorUI	(&UIInvincibleIcon, cl);
 		if (bMagicFlag) break;

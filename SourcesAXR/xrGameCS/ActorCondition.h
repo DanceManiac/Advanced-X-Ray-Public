@@ -1,4 +1,4 @@
-// ActorCondition.h: класс состояния игрока
+п»ї// ActorCondition.h: РєР»Р°СЃСЃ СЃРѕСЃС‚РѕСЏРЅРёСЏ РёРіСЂРѕРєР°
 //
 
 #pragma once
@@ -65,7 +65,7 @@ public:
 	virtual void 		ChangeDrugs					(const float value);
 	virtual void 		ChangePsyHealth				(const float value);
 
-	// хромание при потере сил и здоровья
+	// С…СЂРѕРјР°РЅРёРµ РїСЂРё РїРѕС‚РµСЂРµ СЃРёР» Рё Р·РґРѕСЂРѕРІСЊСЏ
 	virtual	bool		IsLimping					() const;
 	virtual bool		IsCantWalk					() const;
 	virtual bool		IsCantWalkWeight			();
@@ -78,6 +78,7 @@ public:
 			
 			float	xr_stdcall	GetAlcohol			()	{return m_fAlcohol;}
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
+			float	xr_stdcall	GetSatietyPower		() const { return m_fV_SatietyPower * m_fSatiety; };
 			float	xr_stdcall	GetIntoxication		()	{return m_fIntoxication;}
 			float	xr_stdcall	GetSleepeness		()	{return m_fSleepeness;}
 			float	xr_stdcall	GetAlcoholism		()	{return m_fAlcoholism;}
@@ -103,6 +104,7 @@ public:
 	IC		float const&	V_Satiety				()	{ return m_fV_Satiety; }
 	IC		float const&	V_SatietyPower			()	{ return m_fV_SatietyPower; }
 	IC		float const&	V_SatietyHealth			()	{ return m_fV_SatietyHealth; }
+	IC		float const&	SatietyCritical			()	{ return m_fSatietyCritical; }
 	IC		float const&	V_Thirst				()  { return m_fV_Thirst; }
 	IC		float const&	V_ThirstPower			()  { return m_fV_ThirstPower; }
 	IC		float const&	V_ThirstHealth			()  { return m_fV_ThirstHealth; }
@@ -134,6 +136,7 @@ public:
 	float m_fV_Satiety;
 	float m_fV_SatietyPower;
 	float m_fV_SatietyHealth;
+	float m_fSatietyCritical;
 //--
 
 //--M.F.S. Team
@@ -198,7 +201,7 @@ public:
 	mutable bool m_bCantWalk;
 	mutable bool m_bCantSprint;
 
-	//порог силы и здоровья меньше которого актер начинает хромать
+	//РїРѕСЂРѕРі СЃРёР»С‹ Рё Р·РґРѕСЂРѕРІСЊСЏ РјРµРЅСЊС€Рµ РєРѕС‚РѕСЂРѕРіРѕ Р°РєС‚РµСЂ РЅР°С‡РёРЅР°РµС‚ С…СЂРѕРјР°С‚СЊ
 	float m_fLimpingPowerBegin;
 	float m_fLimpingPowerEnd;
 	float m_fCantWalkPowerBegin;

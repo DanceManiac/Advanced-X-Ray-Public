@@ -1,4 +1,4 @@
-#include "pch_script.h"
+п»ї#include "pch_script.h"
 #include "Actor_Flags.h"
 #include "hudmanager.h"
 #ifdef DEBUG
@@ -135,7 +135,7 @@ CActor::CActor() : CEntityAlive()
 	fCurAVelocity			= 0.0f;
 	fFPCamYawMagnitude		= 0.0f; //--#SM+#--
 	fFPCamPitchMagnitude	= 0.0f; //--#SM+#--
-	// эффекторы
+	// СЌС„С„РµРєС‚РѕСЂС‹
 	pCamBobbing				= 0;
 
 	r_torso.yaw				= 0;
@@ -170,7 +170,7 @@ CActor::CActor() : CEntityAlive()
 	Device.seqRender.Add	(this,REG_PRIORITY_LOW);
 #endif
 
-	//разрешить использование пояса в inventory
+	//СЂР°Р·СЂРµС€РёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РїРѕСЏСЃР° РІ inventory
 	inventory().SetBeltUseful(true);
 
 	m_pPersonWeLookingAt	= NULL;
@@ -370,7 +370,7 @@ void CActor::Load	(LPCSTR section )
 	
 	character_physics_support()->in_Load		(section);
 	
-	//загрузить параметры смещения firepoint
+	//Р·Р°РіСЂСѓР·РёС‚СЊ РїР°СЂР°РјРµС‚СЂС‹ СЃРјРµС‰РµРЅРёСЏ firepoint
 	m_vMissileOffset			= pSettings->r_fvector3(section,"missile_throw_offset");
 
 
@@ -416,7 +416,7 @@ if(!g_dedicated_server)
 	// sheduler
 	shedule.t_min				= shedule.t_max = 1;
 
-	// настройки дисперсии стрельбы
+	// РЅР°СЃС‚СЂРѕР№РєРё РґРёСЃРїРµСЂСЃРёРё СЃС‚СЂРµР»СЊР±С‹
 	m_fDispBase					= pSettings->r_float		(section,"disp_base"		 );
 	m_fDispBase					= deg2rad(m_fDispBase);
 
@@ -499,12 +499,12 @@ void	CActor::Hit							(SHit* pHDS)
 			if (Device.dwFrame != last_hit_frame &&
 				HDS.bone() != BI_NONE)
 			{		
-				// вычислить позицию и направленность партикла
+				// РІС‹С‡РёСЃР»РёС‚СЊ РїРѕР·РёС†РёСЋ Рё РЅР°РїСЂР°РІР»РµРЅРЅРѕСЃС‚СЊ РїР°СЂС‚РёРєР»Р°
 				Fmatrix pos; 
 
 				CParticlesPlayer::MakeXFORM(this,HDS.bone(),HDS.dir,HDS.p_in_bone_space,pos);
 
-				// установить particles
+				// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ particles
 				CParticlesObject* ps = NULL;
 
 				if (eacFirstEye == cam_active && this == Level().CurrentEntity())
@@ -761,7 +761,7 @@ void CActor::Die	(CObject* who)
 		};
 
 
-		///!!! чистка пояса
+		///!!! С‡РёСЃС‚РєР° РїРѕСЏСЃР°
 		TIItemContainer &l_blist = inventory().m_belt;
 		while (!l_blist.empty())	
 			inventory().Ruck(l_blist.front());
@@ -1217,7 +1217,7 @@ void CActor::shedule_Update	(u32 DT)
 
 	inherited::shedule_Update	(DT);
 
-	//эффектор включаемый при ходьбе
+	//СЌС„С„РµРєС‚РѕСЂ РІРєР»СЋС‡Р°РµРјС‹Р№ РїСЂРё С…РѕРґСЊР±Рµ
 	if (!pCamBobbing)
 	{
 		pCamBobbing = xr_new<CEffectorBobbing>	();
@@ -1225,7 +1225,7 @@ void CActor::shedule_Update	(u32 DT)
 	}
 	pCamBobbing->SetState						(mstate_real, conditions().IsLimping(), IsZoomAimingMode());
 
-	//звук тяжелого дыхания при уталости и хромании
+	//Р·РІСѓРє С‚СЏР¶РµР»РѕРіРѕ РґС‹С…Р°РЅРёСЏ РїСЂРё СѓС‚Р°Р»РѕСЃС‚Рё Рё С…СЂРѕРјР°РЅРёРё
 	if(this==Level().CurrentControlEntity() && !g_dedicated_server )
 	{
 		if(conditions().IsLimping() && g_Alive()){
@@ -1285,11 +1285,11 @@ void CActor::shedule_Update	(u32 DT)
 			m_DangerSnd.stop();
 	}
 	
-	//если в режиме HUD, то сама модель актера не рисуется
+	//РµСЃР»Рё РІ СЂРµР¶РёРјРµ HUD, С‚Рѕ СЃР°РјР° РјРѕРґРµР»СЊ Р°РєС‚РµСЂР° РЅРµ СЂРёСЃСѓРµС‚СЃСЏ
 	if(!character_physics_support()->IsRemoved())
 		setVisible(!HUDview());
 
-	//что актер видит перед собой
+	//С‡С‚Рѕ Р°РєС‚РµСЂ РІРёРґРёС‚ РїРµСЂРµРґ СЃРѕР±РѕР№
 	collide::rq_result& RQ				= HUD().GetCurrentRayQuery();
 	
 
@@ -1361,7 +1361,7 @@ void CActor::shedule_Update	(u32 DT)
 
 //	UpdateSleep									();
 
-	//для свойст артефактов, находящихся на поясе
+	//РґР»СЏ СЃРІРѕР№СЃС‚ Р°СЂС‚РµС„Р°РєС‚РѕРІ, РЅР°С…РѕРґСЏС‰РёС…СЃСЏ РЅР° РїРѕСЏСЃРµ
 	UpdateArtefactsOnBeltAndOutfit				();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
@@ -1705,7 +1705,7 @@ void CActor::MoveArtefactBelt(const CArtefact* artefact, bool on_belt)
 {
 	VERIFY(artefact);
 
-	//повесить артефакт на пояс
+	//РїРѕРІРµСЃРёС‚СЊ Р°СЂС‚РµС„Р°РєС‚ РЅР° РїРѕСЏСЃ
 	if(on_belt)
 	{
 		VERIFY(m_ArtefactsOnBelt.end() == std::find(m_ArtefactsOnBelt.begin(), m_ArtefactsOnBelt.end(), artefact));
@@ -2095,11 +2095,11 @@ bool CActor::can_attach			(const CInventoryItem *inventory_item) const
 	if (!item || /*!item->enabled() ||*/ !item->can_be_attached())
 		return			(false);
 
-	//можно ли присоединять объекты такого типа
+	//РјРѕР¶РЅРѕ Р»Рё РїСЂРёСЃРѕРµРґРёРЅСЏС‚СЊ РѕР±СЉРµРєС‚С‹ С‚Р°РєРѕРіРѕ С‚РёРїР°
 	if( m_attach_item_sections.end() == std::find(m_attach_item_sections.begin(),m_attach_item_sections.end(),inventory_item->object().cNameSect()) )
 		return false;
 
-	//если уже есть присоединненый объет такого типа 
+	//РµСЃР»Рё СѓР¶Рµ РµСЃС‚СЊ РїСЂРёСЃРѕРµРґРёРЅРЅРµРЅС‹Р№ РѕР±СЉРµС‚ С‚Р°РєРѕРіРѕ С‚РёРїР° 
 	if(attached(inventory_item->object().cNameSect()))
 		return false;
 
@@ -2220,7 +2220,7 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 	}
 	case ALife::ePowerRestoreSpeed:
 	{
-		res = conditions().V_SatietyPower();
+		res = conditions().GetSatietyPower();
 
 		TIItemContainer::iterator itb = inventory().m_belt.begin();
 		TIItemContainer::iterator ite = inventory().m_belt.end();
