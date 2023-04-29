@@ -236,7 +236,11 @@ public:
 		m_SecondViewport.isR1 = false;
 	};
 
-	void	Pause							(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason);
+	void	Pause							(BOOL bOn, BOOL bTimer, BOOL bSound
+#ifdef DEBUG
+	, LPCSTR reason
+#endif
+	);
 	BOOL	Paused							();
 
 	// Scene control

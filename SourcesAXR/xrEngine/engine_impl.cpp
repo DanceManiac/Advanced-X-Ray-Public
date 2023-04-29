@@ -61,7 +61,7 @@ void engine_impl::pause			(bool const &value)
 	if (value == !!Device.Paused())
 		return;
 
-	Device.Pause						(value ? TRUE : FALSE, TRUE, TRUE, "editor query");
+	GAME_PAUSE(value ? TRUE : FALSE, TRUE, TRUE, "editor query");
 }
 
 void engine_impl::capture_input	(bool const &value)

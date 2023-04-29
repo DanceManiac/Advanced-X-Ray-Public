@@ -189,7 +189,7 @@ void CMainMenu::Activate	(bool bActivate)
 	if(bActivate)
 	{
 		b_shniaganeed_pp			= true;
-		Device.Pause				(TRUE, FALSE, TRUE, "mm_activate1");
+		GAME_PAUSE				(TRUE, FALSE, TRUE, "mm_activate1");
 		m_Flags.set					(flActive|flNeedChangeCapture,TRUE);
 
 		m_Flags.set					(flRestoreCursor,GetUICursor().IsVisible());
@@ -208,7 +208,7 @@ void CMainMenu::Activate	(bool bActivate)
 			m_Flags.set					(flRestorePauseStr, bShowPauseString);
 			bShowPauseString			= FALSE;
 			if(!m_Flags.test(flRestorePause))
-				Device.Pause			(TRUE, TRUE, FALSE, "mm_activate2");
+				GAME_PAUSE			(TRUE, TRUE, FALSE, "mm_activate2");
 		}
 
 		if(g_pGameLevel)
@@ -263,7 +263,7 @@ void CMainMenu::Activate	(bool bActivate)
 		if(b_is_single)
 		{
 			if(!m_Flags.test(flRestorePause))
-				Device.Pause			(FALSE, TRUE, FALSE, "mm_deactivate1");
+				GAME_PAUSE			(FALSE, TRUE, FALSE, "mm_deactivate1");
 
 			bShowPauseString			= m_Flags.test(flRestorePauseStr);
 		}	
@@ -271,7 +271,7 @@ void CMainMenu::Activate	(bool bActivate)
 		if(m_Flags.test(flRestoreCursor))
 			GetUICursor().Show			();
 
-		Device.Pause					(FALSE, TRUE, TRUE, "mm_deactivate2");
+		GAME_PAUSE					(FALSE, TRUE, TRUE, "mm_deactivate2");
 
 		if(m_Flags.test(flNeedVidRestart))
 		{

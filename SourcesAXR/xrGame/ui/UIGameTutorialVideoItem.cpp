@@ -171,15 +171,15 @@ void CUISequenceVideoItem::Start()
 
 	if(m_flags.test(etiNeedPauseOn) && !m_flags.test(etiStoredPauseState))
 	{
-		Device.Pause			(TRUE, TRUE, TRUE, "videoitem_start");
+		GAME_PAUSE			(TRUE, TRUE, TRUE, "videoitem_start");
 		bShowPauseString		= FALSE;
 	}
 
 	if(m_flags.test(etiNeedPauseOff) && m_flags.test(etiStoredPauseState))
-		Device.Pause			(FALSE, TRUE, TRUE, "videoitem_start");
+		GAME_PAUSE			(FALSE, TRUE, TRUE, "videoitem_start");
 
 	if(m_flags.test(etiNeedPauseSound))
-		Device.Pause			(TRUE, FALSE, TRUE, "videoitem_start");
+		GAME_PAUSE			(TRUE, FALSE, TRUE, "videoitem_start");
 
 	m_flags.set					(etiPlaying,TRUE);
 	m_flags.set					(etiNeedStart,TRUE);
@@ -212,13 +212,13 @@ bool CUISequenceVideoItem::Stop	(bool bForce)
 	m_texture->ResetTexture		();
 
 	if(m_flags.test(etiNeedPauseOn) && !m_flags.test(etiStoredPauseState))
-		Device.Pause			(FALSE, TRUE, TRUE, "videoitem_stop");
+		GAME_PAUSE			(FALSE, TRUE, TRUE, "videoitem_stop");
 
 	if(m_flags.test(etiNeedPauseOff) && m_flags.test(etiStoredPauseState))
-		Device.Pause			(TRUE, TRUE, TRUE, "videoitem_stop");
+		GAME_PAUSE			(TRUE, TRUE, TRUE, "videoitem_stop");
 
 	if(m_flags.test(etiNeedPauseSound))
-		Device.Pause			(FALSE, FALSE, TRUE, "videoitem_stop");
+		GAME_PAUSE			(FALSE, FALSE, TRUE, "videoitem_stop");
 
 	inherited::Stop				();
 	return true;

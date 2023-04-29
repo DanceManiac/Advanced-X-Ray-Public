@@ -138,12 +138,12 @@ void CUISequencer::Start(LPCSTR tutor_name)
 
 	if (m_flags.test(etsNeedPauseOn) && !m_flags.test(etsStoredPauseState))
 	{
-		Device.Pause(TRUE, TRUE, TRUE, "tutorial_start");
+		GAME_PAUSE(TRUE, TRUE, TRUE, "tutorial_start");
 		bShowPauseString = FALSE;
 	}
 
 	if (m_flags.test(etsNeedPauseOff) && m_flags.test(etsStoredPauseState))
-		Device.Pause(FALSE, TRUE, FALSE, "tutorial_start");
+		GAME_PAUSE(FALSE, TRUE, FALSE, "tutorial_start");
 }
 
 void CUISequencer::Destroy()
@@ -179,10 +179,10 @@ void CUISequencer::Stop()
 	}
 
 	if (m_flags.test(etsNeedPauseOn) && !m_flags.test(etsStoredPauseState))
-		Device.Pause(FALSE, TRUE, TRUE, "tutorial_stop");
+		GAME_PAUSE(FALSE, TRUE, TRUE, "tutorial_stop");
 
 	if (m_flags.test(etsNeedPauseOff) && m_flags.test(etsStoredPauseState))
-		Device.Pause(TRUE, TRUE, FALSE, "tutorial_stop");
+		GAME_PAUSE(TRUE, TRUE, FALSE, "tutorial_stop");
 
 	Destroy			();
 }

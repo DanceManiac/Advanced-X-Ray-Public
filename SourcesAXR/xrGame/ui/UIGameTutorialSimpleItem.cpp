@@ -229,15 +229,15 @@ void CUISequenceSimpleItem::Start()
 	
 	if(m_flags.test(etiNeedPauseOn) && !m_flags.test(etiStoredPauseState))
 	{
-		Device.Pause			(TRUE, TRUE, FALSE, "simpleitem_start");
+		GAME_PAUSE			(TRUE, TRUE, FALSE, "simpleitem_start");
 		bShowPauseString		= FALSE;
 	}
 
 	if(m_flags.test(etiNeedPauseOff) && m_flags.test(etiStoredPauseState))
-		Device.Pause			(FALSE, TRUE, FALSE, "simpleitem_start");
+		GAME_PAUSE			(FALSE, TRUE, FALSE, "simpleitem_start");
 
 	if(m_flags.test(etiNeedPauseSound))
-		Device.Pause			(TRUE, FALSE, TRUE, "simpleitem_start");
+		GAME_PAUSE			(TRUE, FALSE, TRUE, "simpleitem_start");
 
 	if(m_desired_cursor_pos.x && m_desired_cursor_pos.y)
 		GetUICursor().SetUICursorPosition(m_desired_cursor_pos);
@@ -281,13 +281,13 @@ bool CUISequenceSimpleItem::Stop			(bool bForce)
 	m_sound.stop				();
 
 	if(m_flags.test(etiNeedPauseOn) && !m_flags.test(etiStoredPauseState))
-		Device.Pause			(FALSE, TRUE, FALSE, "simpleitem_stop");
+		GAME_PAUSE			(FALSE, TRUE, FALSE, "simpleitem_stop");
 
 	if(m_flags.test(etiNeedPauseOff) && m_flags.test(etiStoredPauseState))
-		Device.Pause			(TRUE, TRUE, FALSE, "simpleitem_stop");
+		GAME_PAUSE			(TRUE, TRUE, FALSE, "simpleitem_stop");
 
 	if(m_flags.test(etiNeedPauseSound))
-		Device.Pause			(FALSE, FALSE, TRUE, "simpleitem_stop");
+		GAME_PAUSE			(FALSE, FALSE, TRUE, "simpleitem_stop");
 
 	if ( g_pGameLevel )
 	{

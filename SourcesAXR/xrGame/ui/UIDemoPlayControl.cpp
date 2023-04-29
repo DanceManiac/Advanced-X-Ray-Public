@@ -182,11 +182,11 @@ void CUIDemoPlayControl::OnPlayPause(CUIWindow* w, void* d)
 	if (Device.Paused())
 	{
 		//m_play_pause_btn->SetText("Pause");
-		Device.Pause(FALSE, TRUE, TRUE, "mpdemoplay ctrl unpause");
+		GAME_PAUSE(FALSE, TRUE, TRUE, "mpdemoplay ctrl unpause");
 		return;	
 	}
 	//m_play_pause_btn->SetText("Play");
-	Device.Pause(TRUE, TRUE, TRUE, "mpdemoplay ctrl pause");
+	GAME_PAUSE(TRUE, TRUE, TRUE, "mpdemoplay ctrl pause");
 }
 
 void CUIDemoPlayControl::OnRestart(CUIWindow* w, void* d)

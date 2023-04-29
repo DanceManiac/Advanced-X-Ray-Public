@@ -419,7 +419,7 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 	}
 
 	if	(dik == DIK_PAUSE)		
-		Device.Pause(!Device.Paused(), TRUE, TRUE, "demo_record");
+		GAME_PAUSE(!Device.Paused(), TRUE, TRUE, "demo_record");
 }
 
 static void update_whith_timescale( Fvector &v, const Fvector &v_delta )

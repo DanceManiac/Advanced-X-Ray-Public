@@ -157,7 +157,11 @@ void CRenderDevice::End		(void)
 				WINDOWINFO	wi;
 				GetWindowInfo(m_hWnd,&wi);
 				if(wi.dwWindowStatus!=WS_ACTIVECAPTION)
-					Pause(TRUE,TRUE,TRUE,"application start");
+					Pause(TRUE,TRUE,TRUE
+#ifdef DEBUG
+				,"application start"
+#endif
+				);
 			}
 		}
 	}
@@ -656,7 +660,11 @@ void ProcessLoading				(RP_FUNC *f)
 ENGINE_API BOOL bShowPauseString = TRUE;
 #include "IGame_Persistent.h"
 
-void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound, LPCSTR reason)
+void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
+#ifdef DEBUG
+, LPCSTR reason
+#endif
+)
 {
 	static int snd_emitters_ = -1;
 

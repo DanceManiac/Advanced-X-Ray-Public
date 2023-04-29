@@ -668,7 +668,7 @@ void CGamePersistent::OnEvent(EVENT E, u64 P1, u64 P2)
 	if(E==eQuickLoad)
 	{
 		if (Device.Paused())
-			Device.Pause		(FALSE, TRUE, TRUE, "eQuickLoad");
+			GAME_PAUSE		(FALSE, TRUE, TRUE, "eQuickLoad");
 		
 		if(HUD().GetUI())
 			HUD().GetUI()->UIGame()->HideShownDialogs();
@@ -717,10 +717,10 @@ void CGamePersistent::OnAppActivate		()
 
 	if( !bIsMP )
 	{
-		Device.Pause			(FALSE, !bRestorePause, TRUE, "CGP::OnAppActivate");
+		GAME_PAUSE			(FALSE, !bRestorePause, TRUE, "CGP::OnAppActivate");
 	}else
 	{
-		Device.Pause			(FALSE, TRUE, TRUE, "CGP::OnAppActivate MP");
+		GAME_PAUSE			(FALSE, TRUE, TRUE, "CGP::OnAppActivate MP");
 	}
 
 	bEntryFlag = TRUE;
@@ -737,10 +737,10 @@ void CGamePersistent::OnAppDeactivate	()
 	if ( !bIsMP )
 	{
 		bRestorePause			= Device.Paused();
-		Device.Pause			(TRUE, TRUE, TRUE, "CGP::OnAppDeactivate");
+		GAME_PAUSE			(TRUE, TRUE, TRUE, "CGP::OnAppDeactivate");
 	}else
 	{
-		Device.Pause			(TRUE, FALSE, TRUE, "CGP::OnAppDeactivate MP");
+		GAME_PAUSE			(TRUE, FALSE, TRUE, "CGP::OnAppDeactivate MP");
 	}
 	bEntryFlag = FALSE;
 }

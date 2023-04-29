@@ -310,13 +310,13 @@ void CChangeLevelWnd::Show()
 	
 
 	g_block_pause							= true;
-	Device.Pause							(TRUE, TRUE, TRUE, "CChangeLevelWnd_show");
+	GAME_PAUSE							(TRUE, TRUE, TRUE, "CChangeLevelWnd_show");
 	bShowPauseString						= FALSE;
 }
 
 void CChangeLevelWnd::Hide()
 {
 	g_block_pause							= false;
-	Device.Pause							(FALSE, TRUE, TRUE, "CChangeLevelWnd_hide");
+	GAME_PAUSE							(FALSE, TRUE, TRUE, "CChangeLevelWnd_hide");
 }
 

@@ -208,7 +208,7 @@ void message_filter::dbg_print_msg(NET_Packet & packet, msg_type_subtype_t const
 
 void 	message_filter::on_round_start_pause_impl(u32 message, u32 subtype, NET_Packet const & packet)
 {
-	Device.Pause(!Device.Paused(), TRUE, TRUE, "game event reached");
+	GAME_PAUSE(!Device.Paused(), TRUE, TRUE, "game event reached");
 }
 
 void 	message_filter::on_kill_pause_impl(u32 message, u32 subtype, NET_Packet const & packet)

@@ -823,7 +823,7 @@ public:
 		CSavedGameWrapper			wrapper(args);
 		if (wrapper.level_id() == ai().level_graph().level_id()) {
 			if (Device.Paused())
-				Device.Pause		(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
+				GAME_PAUSE		(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
 
 			Level().remove_objects	();
 
@@ -838,7 +838,7 @@ public:
 			MainMenu()->Activate(false);
 
 		if (Device.Paused())
-			Device.Pause			(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
+			GAME_PAUSE(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
 
 		NET_Packet					net_packet;
 		net_packet.w_begin			(M_LOAD_GAME);

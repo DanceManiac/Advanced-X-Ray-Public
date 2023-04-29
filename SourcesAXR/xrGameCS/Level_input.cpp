@@ -147,7 +147,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		#endif // INGAME_EDITOR
 
 		if (!g_block_pause && (IsGameTypeSingle() || IsDemoPlay()))
-			Device.Pause(!Device.Paused(), TRUE, TRUE, "li_pause_key");
+			GAME_PAUSE(!Device.Paused(), TRUE, TRUE, "li_pause_key");
 		return;
 	}
 
@@ -174,7 +174,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 			//Arkada
 			if(Device.Paused())
 			{
-				Device.Pause(FALSE, TRUE, FALSE, "bug_fix");
+				GAME_PAUSE(FALSE, TRUE, FALSE, "bug_fix");
 				return;
 			}
 				if(HUD().GetUI()->MainInputReceiver()->IR_OnKeyboardPress(key))	return;//special case for mp and main_menu
