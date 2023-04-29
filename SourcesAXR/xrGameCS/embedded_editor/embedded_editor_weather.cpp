@@ -119,10 +119,7 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot1", el->m_cSwingDesc[1].rot1);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot2", el->m_cSwingDesc[1].rot2);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_speed", el->m_cSwingDesc[1].speed);
-		f.w_float(el->m_identifier.c_str(), "clr_drag_red", el->clr_drag_red);
-		f.w_float(el->m_identifier.c_str(), "clr_drag_green", el->clr_drag_green);
-		f.w_float(el->m_identifier.c_str(), "clr_drag_blue", el->clr_drag_blue);
-		f.w_float(el->m_identifier.c_str(), "clr_drag_saturation", el->clr_drag_saturation);
+		f.w_fvector4(el->m_identifier.c_str(), "clr_drag_saturation", el->color_dragging);
 		f.w_fvector3(el->m_identifier.c_str(), "dof", el->dof_value);
 		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
@@ -476,15 +473,9 @@ void ShowWeatherEditor(bool& show)
 
 	if (bWeatherColorDragging)
 	{
-		ImGui::Text(u8"Color Drag Parameters");
+		ImGui::Text(u8"Color Dragging Parameters");
 
-		if (ImGui::SliderFloat("clr_drag_red", &cur->clr_drag_red, 0.0f, 2.55f))
-			changed = true;
-		if (ImGui::SliderFloat("clr_drag_green", &cur->clr_drag_green, 0.0f, 2.55f))
-			changed = true;
-		if (ImGui::SliderFloat("clr_drag_blue", &cur->clr_drag_blue, 0.0f, 2.55f))
-			changed = true;
-		if (ImGui::SliderFloat("clr_drag_saturation", &cur->clr_drag_saturation, -1.0f, 1.0f))
+		if (ImGui::ColorEdit4("color_dragging", (float*)&cur->color_dragging))
 			changed = true;
 	}
 

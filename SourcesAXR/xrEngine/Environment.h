@@ -44,10 +44,7 @@ public:
 	float				lowland_fog_height;
 	float				lowland_fog_density;
 
-	float				clr_drag_red;
-	float				clr_drag_green;
-	float				clr_drag_blue;
-	float				clr_drag_saturation;
+	Fvector4			color_dragging;
 
 	Fvector3			ambient;
 	Fvector3			sky_color;		
@@ -156,10 +153,7 @@ public:
 	float				lowland_fog_height;
 	float				lowland_fog_density;
 
-	float				clr_drag_red;
-	float				clr_drag_green;
-	float				clr_drag_blue;
-	float				clr_drag_saturation;
+	Fvector4			color_dragging;
 
 	float				rain_density;
 	Fvector3			rain_color;
