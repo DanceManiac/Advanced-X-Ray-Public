@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 class CWound;
 class NET_Packet;

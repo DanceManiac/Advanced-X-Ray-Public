@@ -105,7 +105,7 @@ public:
 	}}
 }	vtune	;
 
-// Обработка нажатия клавиш
+// РћР±СЂР°Р±РѕС‚РєР° РЅР°Р¶Р°С‚РёСЏ РєР»Р°РІРёС€
 extern bool g_block_pause;
 extern bool g_block_all_except_movement;
 

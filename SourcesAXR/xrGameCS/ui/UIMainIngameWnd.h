@@ -43,7 +43,7 @@ public:
 	CUIMotionIcon		UIMotionIcon;
 	CUIZoneMap*			UIZoneMap;
 
-	//������, ������������ ���������� �������� PDA
+	//иконка, показывающая количество активных PDA
 //	CUIStatic			UIPdaOnline;
 	
 	CUIHudStatesWnd*	m_ui_hud_states;
@@ -57,12 +57,12 @@ public:
 
 protected:
 
-	// 5 �������� ��� ����������� ������:
-	// - ���������� ������
-	// - ��������
-	// - �������
-	// - ������
-	// - ���������
+	// 5 статиков для отображения иконок:
+	// - сломанного оружия
+	// - радиации
+	// - ранения
+	// - голода
+	// - усталости
 	CUIStatic			UIWeaponJammedIcon;
 //	CUIStatic			UIRadiaitionIcon;
 //	CUIStatic			UIWoundIcon;
@@ -78,7 +78,7 @@ protected:
 
 public:
 	
-	// ����� �������������� ��������������� ������� 
+	// Енумы соответсвующие предупреждающим иконкам 
 	enum EWarningIcons
 	{
 		ewiAll				= 0,
@@ -94,16 +94,16 @@ public:
 
 	void				SetMPChatLog					(CUIWindow* pChat, CUIWindow* pLog);
 
-	// ������ ���� ��������������� ������
+	// Задаем цвет соответствующей иконке
 	void				SetWarningIconColor				(EWarningIcons icon, const u32 cl);
 	void				TurnOffWarningIcon				(EWarningIcons icon);
 
-	// ������ ��������� ����� �����������, ����������� �� system.ltx
+	// Пороги изменения цвета индикаторов, загружаемые из system.ltx
 	typedef				xr_map<EWarningIcons, xr_vector<float> >	Thresholds;
 	typedef				Thresholds::iterator						Thresholds_it;
 	Thresholds			m_Thresholds;
 
-	// ���� ������������ ��������� �������� ������
+	// Енум перечисления возможных мигающих иконок
 	enum EFlashingIcons
 	{
 		efiPdaTask	= 0,
@@ -124,17 +124,18 @@ protected:
 	void				UpdateFlashingIcons				();
 //	void				UpdateActiveItemInfo			();
 
-//	void				SetAmmoIcon						(const shared_str& se�t_name);
+//	void				SetAmmoIcon						(const shared_str& sect_name);
 
-	// first - ������, second - ��������
+	// first - иконка, second - анимация
 	DEF_MAP				(FlashingIcons, EFlashingIcons, CUIStatic*);
+
 	FlashingIcons		m_FlashingIcons;
 
 //	CWeapon*			m_pWeapon;
 	CMissile*			m_pGrenade;
 	CInventoryItem*		m_pItem;
 
-	// ����������� ��������� ��� ��������� ������� �� ������
+	// Отображение подсказок при наведении прицела на объект
 	void				RenderQuickInfos();
 
 public:

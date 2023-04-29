@@ -486,7 +486,7 @@ void CGamePersistent::game_loaded()
 			load_screen_renderer.b_need_user_input &&
 			m_game_params.m_e_game_type == eGameIDSingle)
 		{
-			g_pGamePersistent->SetLoadStageTitle("st_press_any_key"); //¿‚ÚÓÔ‡ÛÁ‡
+			g_pGamePersistent->SetLoadStageTitle("st_press_any_key"); //–ê–≤—Ç–æ–ø–∞—É–∑–∞
 			VERIFY(NULL == m_intro);
 			m_intro = xr_new<CUISequencer>();
 			m_intro->Start("game_loaded");

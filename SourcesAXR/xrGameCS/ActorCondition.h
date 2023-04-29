@@ -1,4 +1,4 @@
-﻿// ActorCondition.h: класс состояния игрока
+// ActorCondition.h: класс состояния игрока
 //
 
 #pragma once
