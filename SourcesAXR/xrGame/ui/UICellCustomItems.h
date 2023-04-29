@@ -44,7 +44,7 @@ protected:
 	void						DestroyIcon					(eAddonType);
 	void						RefreshOffset				();
 	CUIStatic*					GetIcon						(eAddonType);
-	void						InitAddon					(CUIStatic* s, LPCSTR section, Fvector2 offset, bool use_heading);
+	void						InitAddon					(CUIStatic* s, LPCSTR section, Fvector2 offset, bool use_heading, bool is_dragging = false, bool is_scope = false, bool is_silencer = false, bool is_gl = false);
 	bool						is_scope					();
 	bool						is_silencer					();
 	bool						is_launcher					();
