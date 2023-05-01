@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 //	Module 		: ai_trader.cpp
 //	Created 	: 13.05.2002
 //  Modified 	: 13.05.2002
@@ -336,13 +336,13 @@ void CAI_Trader::load (IReader &input_packet)
 }
 
 
-//��������� ������ ���������� � �������
-u32 CAI_Trader::ArtefactPrice (CArtefact* pArtefact)
+//проверяет список артефактов в заказах
+u32 CAI_Trader::ArtefactPrice(CArtefact* pArtefact)
 {
 	return pArtefact->Cost();
 }
 
-//������� ���������, � ����������� ���������� ������ ������� (true - ���� �������� ��� � ������)
+//продажа артефакта, с последуещим изменением списка заказов (true - если артефакт был в списке)
 bool CAI_Trader::BuyArtefact (CArtefact* pArtefact)
 {
 	VERIFY(pArtefact);
