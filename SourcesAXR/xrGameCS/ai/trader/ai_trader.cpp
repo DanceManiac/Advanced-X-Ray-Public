@@ -121,7 +121,7 @@ BOOL CAI_Trader::net_Spawn			(CSE_Abstract* DC)
 	CSE_ALifeTrader			*l_tpTrader = smart_cast<CSE_ALifeTrader*>(e);
 	R_ASSERT				(l_tpTrader);
 
-	//����������� PDA � InventoryOwner
+	//проспавнить PDA у InventoryOwner
 	if (!CInventoryOwner::net_Spawn(DC))
 		return				(FALSE);
 
@@ -133,7 +133,7 @@ BOOL CAI_Trader::net_Spawn			(CSE_Abstract* DC)
 
 	set_money				( l_tpTrader->m_dwMoney, false );
 
-	// ��������� callback �� �����
+	// Установка callback на кости
 	CBoneInstance			*bone_head =	&smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(smart_cast<IKinematics*>(Visual())->LL_BoneID("bip01_head"));
 	bone_head->set_callback	(bctCustom,BoneCallback,this);
 

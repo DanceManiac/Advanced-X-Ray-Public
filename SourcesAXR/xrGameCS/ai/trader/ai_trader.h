@@ -91,7 +91,7 @@ public:
 	void			OnStartTrade			();
 	void			OnStopTrade				();
 
-	//������� ��� 
+	//игровое имя 
 	virtual LPCSTR			Name					() const {return CInventoryOwner::Name();}
 
 	virtual	bool			can_attach				(const CInventoryItem *inventory_item) const;
@@ -104,11 +104,11 @@ public:
 	virtual	ALife::ERelationType tfGetRelationType	(const CEntityAlive *tpEntityAlive) const;
 
 	//////////////////////////////////////////////////////////////////////////
-	//������������ �������
+	//генерируемые задания
 public:
-	//��������� ������ ���������� � �������
+	//проверяет список артефактов в заказах
 	virtual	u32				ArtefactPrice			(CArtefact* pArtefact);
-	//������� ���������, � ����������� ���������� ������ �������  (true - ���� �������� ��� � ������)
+	//продажа артефакта, с последуещим изменением списка заказов  (true - если артефакт был в списке)
 	virtual	bool			BuyArtefact				(CArtefact* pArtefact);
 
 public:
