@@ -11859,8 +11859,10 @@ End of list of the classes exported to LUA
 List of the namespaces exported to LUA
 
  
-namespace  {
+[inline] namespace  {
     function game_ini();
+	function bit_left(number, number);
+	function bit_right(number, number);
     function bit_and(number, number);
     function GetFontGraffiti32Russian();
     function device();

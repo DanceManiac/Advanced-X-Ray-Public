@@ -93,6 +93,16 @@ int bit_not(int i)
 	return			(~i);
 }
 
+int bit_left(int i, int j)
+{
+	return (i << j);
+}
+
+int bit_right(int i, int j)
+{
+	return (i >> j);
+}
+
 LPCSTR user_name()
 {
 	return			(Core.UserName);
@@ -213,6 +223,8 @@ void CScriptEngine::script_register(lua_State *L)
 	function	(L,	"bit_or",						bit_or);
 	function	(L,	"bit_xor",						bit_xor);
 	function	(L,	"bit_not",						bit_not);
+	function	(L,	"bit_left",						bit_left);
+	function	(L,	"bit_right",					bit_right);
 	function	(L, "user_name",					user_name);
 	function	(L, "time_global",					script_time_global);
 #ifdef XRGAME_EXPORTS
