@@ -14,6 +14,8 @@ function get_guider(target_level)
 	return nil
 end
 
+local task_difficult = nil
+
 local valid_values = {
 	complete 	= true,
 	fail 		= true,
@@ -69,7 +71,8 @@ function CGeneralTask:__init(task_ini, id)
 	self.icon			= utils.cfg_get_string(task_ini, id, "icon", nil, false, "", "ui_pda2_mtask_overlay")
 	self.prior			= utils.cfg_get_number(task_ini, id, "prior", nil, false, 0)
 	self.storyline		= utils.cfg_get_bool(task_ini, id, "storyline", nil, false, true)
-
+	task_difficult		= utils.cfg_get_string(task_ini, id, "task_difficult", nil, false, "", nil)
+	
 	--' Условия выполнения и провала квеста
 	local i = 0
 	self.condlist = {}
@@ -116,6 +119,23 @@ function CGeneralTask:__init(task_ini, id)
 	self.current_target = task_functor[self.target_functor](self.id, "target", self.target)
 	self.dont_send_update_news = utils.cfg_get_bool(task_ini, id, "dont_send_update_news", nil, false, false)
 end
+
+function CGeneralTask.get_task_difficult_icon()
+	local icon_name = nil
+	
+	if task_difficult == "easy" then
+		icon_name = "task_icon_easy"
+	elseif task_difficult == "normal" then
+		icon_name = "task_icon_normal"
+	elseif task_difficult == "hard" then
+		icon_name = "task_icon_hard"
+	else
+		icon_name = "none"
+	end
+		
+	return icon_name
+end
+
 --' Выдача квеста
 function CGeneralTask:give_task(community)
 	local t = CGameTask()
@@ -129,6 +149,11 @@ function CGeneralTask:give_task(community)
 	t:set_description(self.current_descr)
 	t:set_priority(self.prior)
 	t:set_icon_name(self.icon)
+	
+	if task_difficult ~= nil then
+		t:set_difficult_icon_name(CGeneralTask.get_task_difficult_icon())
+	end
+	
 	t:add_complete_func("task_manager.task_complete")
 	t:add_fail_func("task_manager.task_fail")
 

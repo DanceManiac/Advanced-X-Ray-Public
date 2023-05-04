@@ -39,6 +39,7 @@ private:
 	SScriptTaskHelper						m_pScriptHelper;
 public:
 	shared_str								m_icon_texture_name;
+	shared_str								m_difficulty_icon_name;
 	// map
 	shared_str								m_map_hint;
 	shared_str								m_map_location;
@@ -110,6 +111,7 @@ public:
 	void					SetDescription_script	(LPCSTR _desc)				{m_Description = _desc;}
 	void					SetIconName_script		(LPCSTR _tex)				{m_icon_texture_name = _tex;}
 	LPCSTR					GetIconName_script		()							{return m_icon_texture_name.c_str();}
+	void					SetDiffIconName_script	(LPCSTR _tex)				{m_difficulty_icon_name = _tex;}
 	void					SetMapHint_script		(LPCSTR _hint)				{m_map_hint = _hint;}
 
 	void					SetMapLocation_script	(LPCSTR _mls)				{m_map_location = _mls;}

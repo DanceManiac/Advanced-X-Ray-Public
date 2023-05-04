@@ -121,12 +121,19 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 				sm->m_static->SetTextST		(t1->m_Title.c_str());
 				SDrawStaticStruct* sm2		= AddCustomStatic("secondary_task", true);
 				sm2->m_static->SetTextST	(t2->m_Title.c_str());
-			}else
-			if(t1 || t2)
+
+				if (t1->m_difficulty_icon_name.c_str())
+					sm->m_static->InitTexture(t1->m_difficulty_icon_name.c_str());
+			}
+			else if(t1 || t2)
 			{
 				CGameTask* t				= (t1)?t1:t2;
 				sm->m_static->SetTextST		(t->m_Title.c_str());
-			}else
+
+				if (t->m_difficulty_icon_name.c_str())
+					sm->m_static->InitTexture(t->m_difficulty_icon_name.c_str());
+			}
+			else
 				sm->m_static->SetTextST	("st_no_active_task");
 
 		}break;

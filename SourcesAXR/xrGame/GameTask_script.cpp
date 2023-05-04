@@ -35,6 +35,7 @@ void CGameTask::script_register(lua_State *L)
 //				.def("get_type",							&CGameTask::GetType_script						)
 				.def("set_icon_name",						&CGameTask::SetIconName_script					)
 				.def("get_icon_name",						&CGameTask::GetIconName_script					)
+				.def("set_difficult_icon_name",				&CGameTask::SetDiffIconName_script				)
 				.def("set_description",						&CGameTask::SetDescription_script				)
 				
 				.def("set_map_hint",						&CGameTask::SetMapHint_script					)

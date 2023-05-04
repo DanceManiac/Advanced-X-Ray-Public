@@ -224,6 +224,7 @@ void CGameTask::save_task(IWriter &stream)
 	save_data				(m_map_location,	stream);
 	save_data				(m_map_object_id,	stream);
 	save_data				(m_priority,		stream);
+	save_data				(m_difficulty_icon_name,	stream);
 }
 
 void CGameTask::load_task(IReader &stream)
@@ -243,6 +244,7 @@ void CGameTask::load_task(IReader &stream)
 	load_data				(m_map_location,	stream);
 	load_data				(m_map_object_id,	stream);
 	load_data				(m_priority,		stream);
+	load_data				(m_difficulty_icon_name,	stream);
 	CommitScriptHelperContents();
 	CreateMapLocation		(true);
 }
