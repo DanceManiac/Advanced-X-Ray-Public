@@ -1118,11 +1118,6 @@
 			<text font="letterica16" color="ui_6">ui_st_walk_inertion</text>
 		</check_walk_inertion>
 		
-		<check_fp_death x="75" y="12" width="30" height="21">
-			<options_item entry="g_fp_death" group="mm_opt_gameplay"/>
-			<text font="letterica16" color="ui_6">ui_mm_fp_death</text>
-		</check_fp_death>
-		
 		<check_loading_stages x="75" y="12" width="30" height="21">
 			<options_item entry="rs_loadingstages" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_loading_stages</text>

@@ -995,14 +995,6 @@
 			<options_item entry="actor_walk_inertion" group="mm_opt_gameplay"/>
 		  </check_walk_inertion>
 		  
-		  <cap_fp_death x="65" y="3" width="135" height="24">
-			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_fp_death</text>
-		  </cap_fp_death>
-		  <check_fp_death x="212" y="1" width="44" height="29">
-			<texture>ui_inGame2_checkbox</texture>
-			<options_item entry="g_fp_death" group="mm_opt_gameplay"/>
-		  </check_fp_death>
-		  
 		  <cap_loading_stages x="65" y="3" width="135" height="24" hint = "ui_mm_loading_stages_hint">
 			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_loading_stages</text>
 		  </cap_loading_stages>

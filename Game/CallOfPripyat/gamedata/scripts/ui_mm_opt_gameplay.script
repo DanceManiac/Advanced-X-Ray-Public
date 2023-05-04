@@ -94,11 +94,6 @@ function opt_gameplay:InitControls(x, y, xml, handler)
 	self.scroll_g:AddWindow(_st, true)
 	
 	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
-	xml:InitStatic("tab_gameplay:cap_fp_death",				_st)
-	xml:InitCheck("tab_gameplay:check_fp_death",			_st)
-	self.scroll_g:AddWindow(_st, true)
-	
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
 	xml:InitStatic("tab_gameplay:cap_loading_stages",		_st)
 	xml:InitCheck("tab_gameplay:check_loading_stages",		_st)
 	self.scroll_g:AddWindow(_st, true)
