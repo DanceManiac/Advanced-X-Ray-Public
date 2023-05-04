@@ -344,7 +344,7 @@ void CActor::cam_Update(float dt, float fFOV)
 	// calc point
 	xform.transform_tiny			(point);
 	
-	if(!g_Alive() && psActorFlags.test(AF_FP_DEATH) && eacFirstEye == cam_active && !Level().Cameras().GetCamEffector(cefDemo)) //Arkada: First Person Death
+	if(!g_Alive() && eacFirstEye == cam_active && !Level().Cameras().GetCamEffector(cefDemo)) //Arkada: First Person Death
 	{
 		IKinematics* k = Visual()->dcast_PKinematics();
 		if(eyeID == NULL)

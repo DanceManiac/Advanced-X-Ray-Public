@@ -17,7 +17,6 @@ enum{
 		AF_SIMPLE_PDA		=(1<<14),
 		AF_3D_PDA			=(1<<15),
 		AF_CROUCH_TOGGLE	=(1<<16),
-		AF_FP_DEATH			=(1<<17),
 };
 
 extern Flags32 psActorFlags;
