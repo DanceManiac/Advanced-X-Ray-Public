@@ -198,6 +198,9 @@
 	<string id="ui_fp_death">
 		<text>РЎРјРµСЂС‚СЊ РѕС‚ РїРµСЂРІРѕРіРѕ Р»РёС†Р°</text>
 	</string>
+	<string id="ui_fp_death">
+		<text>Смерть от первого лица</text>
+	</string>
 	<string id="ui_inv_thirst">
 		<text>РЈС‚РѕР»РµРЅРёРµ Р¶Р°Р¶РґС‹</text>
 	</string>
