@@ -185,7 +185,7 @@ void CEatableItem::UpdateUseAnim()
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
-	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && pDet->IsHidden())
+	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()))
 		StartAnimation();
 
 	if (m_bActivated)
