@@ -19,7 +19,7 @@
 #include "../../level_debug.h"
 #endif
 
-#include "../../xrGame/trajectories.h"
+#include "../../trajectories.h"
 #include "../../PHWorld.h"
 #include "../../PHCharacter.h"
 #include "../../../xrCore/_vector3d_ext.h"

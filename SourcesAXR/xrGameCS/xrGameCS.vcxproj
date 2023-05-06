@@ -2036,6 +2036,7 @@
     <ClInclude Include="trade_factor_parameters_inline.h" />
     <ClInclude Include="trade_parameters.h" />
     <ClInclude Include="trade_parameters_inline.h" />
+    <ClInclude Include="trajectories.h" />
     <ClInclude Include="tri-colliderknoopc\dcTriangle.h" />
     <ClInclude Include="tri-colliderKNoOPC\dcTriListCollider.h" />
     <ClInclude Include="tri-colliderknoopc\dSortTriPrimitive.h" />
@@ -8064,6 +8065,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="trade_parameters.cpp" />
+    <ClCompile Include="trajectories.cpp" />
     <ClCompile Include="tri-colliderknoopc\dcTriListCollider.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
