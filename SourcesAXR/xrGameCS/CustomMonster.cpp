@@ -51,7 +51,7 @@
 #include "../xrEngine/IGame_Level.h"
 #include "../xrCore/_vector3d_ext.h"
 #include "debug_text_tree.h"
-#include "PHWorld.h"
+#include "../xrPhysics/IPHWorld.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
