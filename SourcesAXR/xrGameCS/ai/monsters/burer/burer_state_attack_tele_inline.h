@@ -193,13 +193,8 @@ void CStateBurerAttackTeleAbstract::FindObjects	()
 	
 
 	// оставить уникальные объекты
-	tele_objects.erase				(
-		std::unique(
-			tele_objects.begin(),
-			tele_objects.end()
-		),
-		tele_objects.end()
-	);
+	std::sort						(tele_objects.begin(), tele_objects.end());
+	tele_objects.erase				(std::unique(tele_objects.begin(),tele_objects.end()),tele_objects.end());
 }
 
 TEMPLATE_SPECIALIZATION
@@ -220,17 +215,16 @@ void CStateBurerAttackTeleAbstract::ExecuteTeleContinue()
 	bool object_found = false;
 	CTelekineticObject tele_object;
 
-	u32 i=0;
-	while (i < object->CTelekinesis::get_objects_count()) {
+	for (u32 i = 0; i < this->object->CTelekinesis::get_objects_total_count(); ++i)
+	{
 		tele_object = object->CTelekinesis::get_object_by_index(i);
 
-		if ((tele_object.get_state() == TS_Keep) && (tele_object.time_keep_started + 1500 < Device.dwTimeGlobal)) {
-
+		if ((tele_object.get_state() == TS_Keep) && (tele_object.time_keep_started + 1500 < Device.dwTimeGlobal))
+		{
 			object_found = true;
 			break;
 
-		} else i++;
-
+		};
 	}
 
 	if (object_found) {
@@ -335,10 +329,16 @@ public:
 TEMPLATE_SPECIALIZATION
 void CStateBurerAttackTeleAbstract::SelectObjects()
 {
+	const u32 max = std::min(tele_objects.size(), (u32)this->object->m_tele_max_handled_objects);
+
+	if (this->object->CTelekinesis::get_objects_count() > max)
+		return;
+
 	std::sort(tele_objects.begin(),tele_objects.end(),best_object_predicate2(object->Position(), object->EnemyMan.get_enemy()->Position()));
 
 	// выбрать объект
-	for (u32 i=0; i<tele_objects.size(); i++) {
+	for (u32 i = 0; i < max; ++i)
+	{
 		CPhysicsShellHolder *obj = tele_objects[i];
 
 		// применить телекинез на объект
@@ -350,13 +350,9 @@ void CStateBurerAttackTeleAbstract::SelectObjects()
 		tele_obj->set_sound		(object->sound_tele_hold,object->sound_tele_throw);
 
 		object->StartTeleObjectParticle		(obj);
-
-		// удалить из списка
-		tele_objects[i] = tele_objects[tele_objects.size()-1];
-		tele_objects.pop_back();
-
-		if (object->CTelekinesis::get_objects_count() >= object->m_tele_max_handled_objects) break;
 	}
+
+	tele_objects.erase(tele_objects.begin(), tele_objects.begin() + max);
 }
 
 
