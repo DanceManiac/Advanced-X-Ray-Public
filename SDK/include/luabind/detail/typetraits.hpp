@@ -27,25 +27,36 @@
 
 #include <type_traits>
 
-namespace luabind { namespace detail 
-{
-	template<typename T>
-	struct is_const_reference : public std::integral_constant<bool, std::is_reference_v<T> && std::is_const_v<std::remove_reference_t<T>>>
+namespace luabind { 
+	namespace detail
 	{
-	};
+		template<typename T>
+		struct is_const_reference : public std::integral_constant<bool, std::is_reference_v<T> && std::is_const_v<std::remove_reference_t<T>>>
+		{
+		};
 
-    template<typename T>
-    struct is_nonconst_reference : public std::integral_constant<bool, std::is_reference_v<T> && !std::is_const_v<std::remove_reference_t<T>>>
-    {
-    };
+		template<typename T>
+		struct is_nonconst_reference : public std::integral_constant<bool, std::is_reference_v<T> && !std::is_const_v<std::remove_reference_t<T>>>
+		{
+		};
+
+		template<typename T>
+		struct is_const_pointer : public std::integral_constant<bool, std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>>
+		{
+		};
+
+
+		template<typename T>
+		struct is_nonconst_pointer : public std::integral_constant<bool, std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>>
+		{
+		};
+	}
+
+	struct null_type {};
 
 	template<typename T>
-	struct is_const_pointer : public std::integral_constant<bool, std::is_pointer_v<T> && std::is_const_v<std::remove_pointer_t<T>>>
-	{
-	};
+	struct is_null_type : public std::false_type {};
 
-    template<typename T>
-    struct is_nonconst_pointer : public std::integral_constant<bool, std::is_pointer_v<T> && !std::is_const_v<std::remove_pointer_t<T>>>
-    {
-    };
-}}
+	template< >
+	struct is_null_type< null_type > : public std::true_type {};
+}

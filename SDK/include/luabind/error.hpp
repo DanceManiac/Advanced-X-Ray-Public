@@ -24,6 +24,7 @@
 
 #include <luabind/prefix.hpp>
 #include <luabind/config.hpp>
+#include <luabind/typeid.hpp>
 
 #ifndef LUABIND_NO_EXCEPTIONS
 #    include <exception>
@@ -63,13 +64,13 @@ namespace luabind
 	class cast_failed : public std::exception
 	{
 	public:
-		cast_failed(lua_State* L, LUABIND_TYPE_INFO i): m_L(L), m_info(i) {}
+		cast_failed(lua_State* L, type_id i): m_L(L), m_info(i) {}
 		lua_State* state() const throw() { return m_L; }
-		LUABIND_TYPE_INFO info() const throw() { return m_info; }
+		type_id info() const throw() { return m_info; }
 		virtual const char* what() const throw() { return "unable to make cast"; }
 	private:
 		lua_State* m_L;
-		LUABIND_TYPE_INFO m_info;
+		type_id m_info;
 	};
 
 #else

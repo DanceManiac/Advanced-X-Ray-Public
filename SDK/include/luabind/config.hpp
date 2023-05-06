@@ -84,7 +84,11 @@
 // Luabind requires that no function called directly or indirectly
 // by luabind throws an exception (throwing exceptions through
 // C code has undefined behavior, lua is written in C).
-// #define LUABIND_NO_EXCEPTIONS
+
+#ifndef DEBUG
+#	define LUABIND_NO_EXCEPTIONS
+#endif
+
 
 // If you're building luabind as a dll on windows with devstudio
 // you can set LUABIND_EXPORT to __declspec(dllexport)
