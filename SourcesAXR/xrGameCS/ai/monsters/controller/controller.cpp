@@ -311,12 +311,12 @@ BOOL CController::net_Spawn(CSE_Abstract *DC)
 
 void CController::UpdateControlled()
 {
-	// если есть враг, проверить может ли быть враг взят под контроль
+	// ���� ���� ����, ��������� ����� �� ���� ���� ���� ��� ��������
 	if (EnemyMan.get_enemy()) {
 		CControlledEntityBase *entity = smart_cast<CControlledEntityBase *>(const_cast<CEntityAlive *>(EnemyMan.get_enemy()));
 		if (entity) {
 			if (!entity->is_under_control() && (m_controlled_objects.size() < m_max_controlled_number)) {
-				// взять под контроль
+				// ����� ��� ��������
 				entity->set_under_control	(this);
 				entity->set_task_follow		(this);
 				m_controlled_objects.push_back(const_cast<CEntityAlive *>(EnemyMan.get_enemy()));
@@ -531,7 +531,7 @@ void CController::draw_fire_particles()
 	CEntityAlive *enemy	= const_cast<CEntityAlive*>(EnemyMan.get_enemy());
 	if (!EnemyMan.see_enemy_now()) return;
 
-	// вычислить позицию и направленность партикла
+	// ��������� ������� � �������������� ��������
 	Fvector my_head_pos;
 	my_head_pos.set	(get_head_position(this));
 	

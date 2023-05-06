@@ -11,8 +11,6 @@
 #include "../xrEngine/feel_touch.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "associative_vector.h"
-#include "../../xrGame/trajectories.h"
-
 
 namespace MonsterSpace {
 	struct SBoneRotation;
@@ -123,7 +121,7 @@ public:
 	// stream executors
 	virtual void		Exec_Action				( float dt );
 	virtual void		Exec_Look				( float dt );
-	void	__stdcall	Exec_Visibility			( );
+	void	xr_stdcall	Exec_Visibility			( );
 	virtual void		eye_pp_s0				( );
 	void				eye_pp_s1				( );
 	void				eye_pp_s2				( );
@@ -155,8 +153,6 @@ public:
 	virtual void		net_Relcase				(CObject*	 O);
 
 	virtual void		SelectAnimation			( const Fvector& _view, const Fvector& _move, float speed ) = 0;
-
-	virtual bool		is_base_monster_with_enemy	() { return false; }
 
 	// debug
 #ifdef DEBUG
@@ -256,10 +252,8 @@ public:
 	virtual	void					update_range_fov		(float &new_range, float &new_fov, float start_range, float start_fov);
 
 public:
-			void __stdcall			update_sound_player		();
+			void 	xr_stdcall		update_sound_player		();
 	virtual	void					on_restrictions_change	();
-
-	virtual bool					should_wait_to_use_corspe_visual () { return true; }
 	virtual	LPCSTR					visual_name				(CSE_Abstract *server_entity);
 
 private:
@@ -267,7 +261,7 @@ private:
 
 public:
 	IC		const bool				&already_dead			() const {return (m_already_dead);};
-	virtual	bool					use_simplified_visual	() const {return false;} //(already_dead());};
+	virtual	bool					use_simplified_visual	() const {return (already_dead());};
 	virtual void					on_enemy_change			(const CEntityAlive *enemy);
 	virtual	CVisualMemoryManager	*visual_memory			() const;
 
@@ -330,17 +324,8 @@ private:
 	bool	m_movement_enabled_before_animation_controller;
 
 public:
-	virtual	void					create_anim_mov_ctrl	( CBlend *b, Fmatrix *start_pose, bool local_animation  );
-	virtual	void					destroy_anim_mov_ctrl	( );
-	virtual void					ForceTransform			( Fmatrix const& m );
-	
-public:
-	virtual	Fvector					spatial_sector_point	( );
-
-#ifdef DEBUG
-	xr_vector<trajectory_pick>			m_jump_picks;
-	xr_vector<Fvector>				m_jump_collide_tris;
-#endif // #ifdef DEBUG
+	virtual	void					create_anim_mov_ctrl						( CBlend *b, Fmatrix *start_pose, bool local_animation  );
+	virtual	void					destroy_anim_mov_ctrl						();
 };
 
 #include "custommonster_inline.h"

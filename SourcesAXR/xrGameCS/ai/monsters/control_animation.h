@@ -6,6 +6,7 @@
 #include "../../../Include/xrRender/KinematicsAnimated.h"
 
 struct SAnimationPart {
+	MotionID		motion;
 	CBlend			*blend;
 	bool			actual;
 	u32				time_started;
@@ -16,12 +17,6 @@ struct SAnimationPart {
 		actual				= true;
 		time_started		= 0;
 	}
-
-	void			set_motion (MotionID const& m);
-	MotionID const&	get_motion () const { return motion; }
-
-private:
-	MotionID		motion;
 };
 
 struct SControlAnimationData : public ControlCom::IComData {

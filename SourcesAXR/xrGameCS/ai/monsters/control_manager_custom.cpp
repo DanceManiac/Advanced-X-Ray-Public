@@ -262,8 +262,7 @@ void CControlManagerCustom::jump(CObject *obj, const SControlJumpData &ta)
 	if (!m_man->check_start_conditions(ControlCom::eControlJump)) 
 		return;
 
-	if (m_object->GetScriptControl()) 
-		return;
+	if (m_object->GetScriptControl()) return;
 
 	m_man->capture		(this, ControlCom::eControlJump);
 
@@ -329,18 +328,14 @@ void CControlManagerCustom::load_jump_data(LPCSTR s1, LPCSTR s2, LPCSTR s3, LPCS
 	m_jump->setup_data().force_factor = -1.f;
 }
 
-bool CControlManagerCustom::is_jumping ()
-{
-	return m_jump && m_jump->is_active();
-}
 
-bool CControlManagerCustom::jump(const SControlJumpData &ta)
+
+void CControlManagerCustom::jump(const SControlJumpData &ta)
 {
 	if (!m_man->check_start_conditions(ControlCom::eControlJump)) 
-		return	false;
+		return;
 
-	if (m_object->GetScriptControl()) 
-		return	false;
+	if (m_object->GetScriptControl()) return;
 
 	m_man->capture		(this, ControlCom::eControlJump);
 
@@ -359,7 +354,6 @@ bool CControlManagerCustom::jump(const SControlJumpData &ta)
 	ctrl_data->force_factor							= -1.f;
 
 	m_man->activate		(ControlCom::eControlJump);
-	return												true;
 }
 
 void CControlManagerCustom::jump(const Fvector &position)
@@ -422,47 +416,11 @@ void CControlManagerCustom::check_attack_jump()
 	if (m_man->check_start_conditions(ControlCom::eControlJump)) {
 
 		m_jump->setup_data().flags.set			(SControlJumpData::ePrepareSkip, false);
-		m_jump->setup_data().flags.set			(SControlJumpData::eUseTargetPosition, false);
-		m_jump->setup_data().flags.set			(SControlJumpData::eUseAutoAim, true);
 		m_jump->setup_data().target_object		= target;
 		m_jump->setup_data().target_position	= target->Position();
 
 		jump(m_jump->setup_data());
 	}
-}
-
-bool CControlManagerCustom::check_if_jump_possible (Fvector const& target, bool const full_check)
-{
-	if (!m_object->check_start_conditions(ControlCom::eControlJump)) return false;
-	if ( full_check && !m_jump->can_jump(target, false)) return false;
-
-	return	m_man->check_start_conditions(ControlCom::eControlJump);
-}
-
-bool CControlManagerCustom::jump_if_possible (Fvector const&		target, 
-											  CEntityAlive* const	target_object,
-											  bool const			use_direction_to_target,
-											  bool const			use_velocity_bounce,
-											  bool const			check_possibility)
-{
-	if ( !m_object->check_start_conditions(ControlCom::eControlJump) ) 
-		return	false;
-	
-	bool const	aggressive_jump	= target_object ? m_object->can_use_agressive_jump(target_object) : NULL;
-	if ( check_possibility && !m_jump->can_jump(target, aggressive_jump) )
-		return	false;
-
-	if ( !m_man->check_start_conditions(ControlCom::eControlJump) )
-		return	false;
-
-	m_jump->setup_data().flags.set	(SControlJumpData::eUseAutoAim, use_direction_to_target);
-	m_jump->setup_data().flags.set	(SControlJumpData::eUseTargetPosition, true);
-	m_jump->setup_data().flags.set	(SControlJumpData::eDontUseVelocityBounce, !use_velocity_bounce);
-	m_jump->setup_data().flags.set	(SControlJumpData::ePrepareSkip, true);
-	m_jump->setup_data().target_object		= target_object;
-	m_jump->setup_data().target_position	= target;
-
-	return			jump(m_jump->setup_data());
 }
 
 #define MAX_DIST_SUM	6.f
@@ -666,10 +624,5 @@ void CControlManagerCustom::critical_wound(LPCSTR anim)
 }
 //////////////////////////////////////////////////////////////////////////
 
-void CControlManagerCustom::remove_links (CObject * object)
-{
-	if ( m_jump )
-		m_jump->remove_links(object);
-}
 
 

@@ -12,7 +12,6 @@ class CControlRotationJump;
 class CControlRunAttack;
 class CControlThreaten;
 class CControlCriticalWound;
-class CEntityAlive;
 
 class CControlManagerCustom : public CControl_ComBase {
 	typedef					CControl_ComBase	inherited;
@@ -69,18 +68,9 @@ public:
 	//-------------------------------------------------------------------------------
 	// Jump
 	void		jump					(CObject *obj, const SControlJumpData &ta);
-	bool		jump					(const SControlJumpData &ta);
+	void		jump					(const SControlJumpData &ta);
 	void		jump					(const Fvector &position);
 	void		load_jump_data			(LPCSTR s1, LPCSTR s2, LPCSTR s3, LPCSTR s4, u32 vel_mask_prepare, u32 vel_mask_ground, u32 flags);
-	bool		is_jumping				();
-
-	bool		check_if_jump_possible	(Fvector const&		target, bool full_check);
-	bool		jump_if_possible		(Fvector const&		target, 
-										 CEntityAlive*		target_object,
-										 bool 				use_target_direction,
-										 bool				use_velocity_bounce	=	true,
-										 bool				check_possibility	=	true);
-
 	
 	void		script_jump				(const Fvector &position, float factor);
 	void		script_capture			(ControlCom::EControlType type);
@@ -96,9 +86,6 @@ public:
 
 	void		critical_wound			(LPCSTR anim);
 
-	void		remove_links			(CObject * object);
-
-	CControlJump*	get_jump_control	() { return m_jump; }
 private:
 
 	void		check_attack_jump		();

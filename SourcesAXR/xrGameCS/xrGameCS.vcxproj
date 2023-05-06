@@ -829,7 +829,6 @@
     <ClInclude Include="ai\Monsters\ai_monster_utils.h" />
     <ClInclude Include="ai\Monsters\anim_triple.h" />
     <ClInclude Include="ai\Monsters\anomaly_detector.h" />
-    <ClInclude Include="ai\monsters\anti_aim_ability.h" />
     <ClInclude Include="ai\Monsters\BaseMonster\base_monster.h" />
     <ClInclude Include="ai\Monsters\BaseMonster\base_monster_inline.h" />
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker.h" />
@@ -3328,7 +3327,6 @@
     <ClCompile Include="ai\Monsters\ai_monster_utils.cpp" />
     <ClCompile Include="ai\Monsters\anim_triple.cpp" />
     <ClCompile Include="ai\Monsters\anomaly_detector.cpp" />
-    <ClCompile Include="ai\monsters\anti_aim_ability.cpp" />
     <ClCompile Include="ai\Monsters\BaseMonster\base_monster.cpp" />
     <ClCompile Include="ai\Monsters\BaseMonster\base_monster_anim.cpp" />
     <ClCompile Include="ai\Monsters\BaseMonster\base_monster_debug.cpp">
