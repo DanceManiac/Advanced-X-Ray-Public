@@ -54,7 +54,9 @@ class squad_grouping_behaviour;
 namespace debug { class text_tree; }
 #endif
 
-class CBaseMonster : public CCustomMonster, public CStepManager, public CInventoryOwner 
+class anti_aim_ability;
+
+class CBaseMonster : public CCustomMonster, public CStepManager
 {
 	typedef	CCustomMonster								inherited;
 	
@@ -75,7 +77,6 @@ public:
 	virtual CScriptEntity*				cast_script_entity			()	{return this;}
 	virtual CBaseMonster*				cast_base_monster			()	{return this;}
 
-	virtual CInventoryOwner				*cast_inventory_owner		() {return this;}
 	virtual CGameObject*				cast_game_object			() {return this;}
 
 public:
@@ -88,6 +89,10 @@ public:
 	virtual void			SelectAnimation					(const Fvector& _view, const Fvector& _move, float speed );
 
 	virtual void			Load							(LPCSTR section);
+
+	// must be called at the end of most derived's Load
+	virtual void			PostLoad						(LPCSTR section);
+
 	virtual DLL_Pure		*_construct						();
 
 	virtual BOOL			net_Spawn						(CSE_Abstract* DC);
@@ -143,7 +148,13 @@ public:
 
 	virtual bool			IsTalkEnabled					() {return false;}
 
-	virtual void			HitEntity						(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir);
+	virtual void			HitEntity						(const CEntity *	pEntity, 
+															 float 				fDamage, 
+															 float 				impulse, 
+															 Fvector &			dir, 
+															 ALife::EHitType	hit_type = ALife::eHitTypeWound,
+															 bool				draw_hit_marks = true);
+
 	virtual	void			HitEntityInJump					(const CEntity *pEntity) {}
 
 	virtual	void			on_before_sell					(CInventoryItem *item);
@@ -153,6 +164,7 @@ public:
 	// Process scripts
 	// ---------------------------------------------------------------------------------
 	virtual	bool			bfAssignMovement				(CScriptEntityAction	*tpEntityAction);
+			bool			AssignGamePathIfNeeded			(Fvector target_pos, u32 level_vertex);
 	virtual	bool			bfAssignObject					(CScriptEntityAction	*tpEntityAction);
 	virtual	bool			bfAssignWatch					(CScriptEntityAction	*tpEntityAction);
 	virtual bool			bfAssignAnimation				(CScriptEntityAction  *tpEntityAction);
@@ -233,6 +245,9 @@ protected:
 
 // members
 public:
+	void			set_force_anti_aim	(bool force_anti_aim) { m_force_anti_aim = force_anti_aim; }
+	bool 			get_force_anti_aim	() const { return m_force_anti_aim; }
+
 	// --------------------------------------------------------------------------------------
 	// Monster Settings 
 	ref_smem<SMonsterSettings>	m_base_settings;
@@ -267,6 +282,7 @@ public:
 	const CEntityAlive		*EatedCorpse;
 	// Lain: added
 	bool                    check_eated_corpse_draggable();
+	virtual bool			is_base_monster_with_enemy	() { return EnemyMan.get_enemy() != NULL; }
 
 
 
@@ -304,6 +320,7 @@ public:
 	// Anomaly Detector
 private:
 	CAnomalyDetector		*m_anomaly_detector;
+	bool					m_force_anti_aim;
 
 public:
 	CAnomalyDetector		&anomaly_detector	() {return (*m_anomaly_detector);}
@@ -362,8 +379,6 @@ public:
 
 	void						set_aggressive				(bool val = true) {m_bAggressive = val;}
 
-	//---------------------------------------------------------------------------------------
-
 	ref_light					m_pTrailLight;
 	Fcolor						m_TrailLightColor;
 	float						m_fTrailLightRange;
@@ -373,11 +388,11 @@ public:
 	float						m_fVolumetricQuality;
 	float						m_fVolumetricDistance;
 	float						m_fVolumetricIntensity;
-	bool						m_bDropItemAfterSuperAttack;
-	int							m_iSuperAttackDropItemPer;
 	bool						m_bEnablePsyAuraAfterDie;
 	bool						m_bEnableRadAuraAfterDie;
 	bool						m_bEnableFireAuraAfterDie;
+	bool						m_bDropItemAfterSuperAttack;
+	int							m_iSuperAttackDropItemPer;
 
 	shared_str					light_bone;
 	shared_str					particles_bone;
@@ -387,6 +402,9 @@ public:
 	virtual void				StopLights();
 	virtual void				UpdateLights();
 	void						SwitchMonsterParticles(bool bOn);
+
+	//---------------------------------------------------------------------------------------
+
 
 	u32						m_prev_sound_type;
 	virtual u32				get_attack_rebuild_time	();
@@ -408,30 +426,12 @@ IC	void					wake_up				(){m_bSleep = false;}
 
 private:
 	bool					ignore_collision_hit;	
-	shared_str				m_section;
 	
 public:
 	IC	void				set_ignore_collision_hit (bool value) {ignore_collision_hit = value;}
 	// -----------------------------------------------------------------------------
 	//////////////////////////////////////////////////////////////////////////
 
-//-------------------------------------------------------------------
-// CBaseMonster's  Auras
-//-------------------------------------------------------------------
-public:
-	float							get_psy_influence();
-	float							get_radiation_influence();
-	float							get_fire_influence();
-	bool							get_enable_psy_aura_after_die();
-	bool							get_enable_rad_aura_after_die();
-	bool							get_enable_fire_aura_after_die();
-	void							play_detector_sound();
-
-private:
-	monster_aura					m_psy_aura;
-	monster_aura					m_radiation_aura;
-	monster_aura					m_fire_aura;
-	monster_aura					m_base_aura;
 
 public:
 	CControl_Manager		&control() {return (*m_control_manager);}
@@ -480,15 +480,17 @@ protected:
 	LPCSTR					m_critical_wound_anim_legs;
 
 	//////////////////////////////////////////////////////////////////////////
-	
+public:
 
-public:	
-	shared_str						get_section()	const { return m_section; }
-
+	virtual	char*			get_monster_class_name () = 0;
 
 //////////////////////////////////////////////////////////////////////////
 // DEBUG stuff
 #ifdef DEBUG
+
+	template <class Type>
+	bool					get_debug_var (pcstr var_name, OUT Type& result);
+
 public:
 	struct SDebugInfo {
 		bool	active;
@@ -515,11 +517,23 @@ public:
 #endif
 //////////////////////////////////////////////////////////////////////////
 
+public:
 
-// Lain: added
+	bool							is_jumping		();
+	virtual bool					can_be_seen		() const { return true; }
+
+#ifdef DEBUG
+	bool							is_paused		() const;
+#endif
+
+//-------------------------------------------------------------------
+// CBaseMonster's      Steering Behaviour
+//-------------------------------------------------------------------
+public:
 	steering_behaviour::manager*    get_steer_manager ();
 
 	float get_feel_enemy_who_just_hit_max_distance () { return m_feel_enemy_who_just_hit_max_distance; }
+	float get_feel_enemy_who_made_sound_max_distance () { return m_feel_enemy_who_made_sound_max_distance; }
 	float get_feel_enemy_max_distance			   () { return m_feel_enemy_max_distance; }
 	virtual bool  can_use_agressive_jump (const CObject*) { return false; }
 
@@ -527,14 +541,142 @@ private:
 	steering_behaviour::manager*    m_steer_manager;
 	squad_grouping_behaviour*       m_grouping_behaviour; // freed by manager
 
+	void							update_enemy_accessible_and_at_home_info ();
 	// updates position by applying little "pushing" force
 	// so that monsters rarely intersect
-	void update_pos_by_grouping_behaviour (); 
-	TTime m_last_grouping_behaviour_update_tick;
+	void							update_pos_by_grouping_behaviour (); 
+	TTime 							m_last_grouping_behaviour_update_tick;
 
-	float m_feel_enemy_who_just_hit_max_distance;
-	float m_feel_enemy_max_distance;
+	float							m_feel_enemy_who_made_sound_max_distance;
+	float 							m_feel_enemy_who_just_hit_max_distance;
+	float 							m_feel_enemy_max_distance;
 
+//-------------------------------------------------------------------
+// CBaseMonster's  Atack on Move Parameters
+//-------------------------------------------------------------------
+public:
+	struct attack_on_move_params_t
+	{
+		bool						enabled;
+		float						max_go_close_time;
+		float						far_radius;
+		float						prepare_radius;
+		float						prepare_time;
+		float						attack_radius;
+		float						update_side_period;
+		float						prediction_factor;
+	};
+
+	bool							can_attack_on_move();
+	float							get_attack_on_move_max_go_close_time();
+	float							get_attack_on_move_far_radius();
+	float							get_attack_on_move_attack_radius();
+	float							get_attack_on_move_update_side_period();
+	float							get_attack_on_move_prediction_factor();
+	float							get_attack_on_move_prepare_radius();
+	float							get_attack_on_move_prepare_time();
+
+	bool							enemy_accessible ();
+	bool							at_home ();
+
+protected:
+	attack_on_move_params_t			m_attack_on_move_params;
+
+public:
+	template <class Type>
+	Type							override_if_debug (pcstr var_name, Type value);
+
+//-------------------------------------------------------------------
+// CBaseMonster's  Auras
+//-------------------------------------------------------------------
+public:
+	float							get_psy_influence				();
+	float							get_radiation_influence			();
+	float							get_fire_influence				();
+	bool							get_enable_psy_aura_after_die	();
+	bool							get_enable_rad_aura_after_die	();
+	bool							get_enable_fire_aura_after_die	();
+	void							play_detector_sound				();
+
+private:
+	monster_aura					m_psy_aura;
+	monster_aura					m_radiation_aura;
+	monster_aura					m_fire_aura;
+	monster_aura					m_base_aura;
+
+protected:
+//-------------------------------------------------------------------
+// CBaseMonster's  Anti-Aim Ability
+//-------------------------------------------------------------------
+	anti_aim_ability*				m_anti_aim;
+
+//-------------------------------------------------------------------
+// CBaseMonster's  protections
+//-------------------------------------------------------------------
+	float							m_fSkinArmor;
+	float							m_fHitFracMonster;
+
+private:
+	pcstr							m_head_bone_name;
+	pcstr							m_left_eye_bone_name;
+	pcstr							m_right_eye_bone_name;
+	shared_str						m_section;
+
+public:
+	pcstr							get_head_bone_name	()	const { return m_head_bone_name; }
+	shared_str						get_section			()	const { return m_section; }
+
+	anti_aim_ability*				get_anti_aim		() { return m_anti_aim; }
+	virtual void					on_attack_on_run_hit () {}
+
+private:
+	void							update_eyes_visibility ();
+	float							get_screen_space_coverage_diagonal ();
+
+	void							GenerateNewOffsetFromLeader ();
+	u32								m_offset_from_leader_chosen_tick;
+	Fvector							m_offset_from_leader;
+
+	// very special copies, used when pos is not on ai-map
+	// in that situation m_action_target_node is close node
+	Fvector							m_action_target_pos;
+	u32								m_action_target_node;
+
+	TTime							m_first_tick_enemy_inaccessible;
+	TTime							m_last_tick_enemy_inaccessible;
+	TTime							m_first_tick_object_not_at_home;
+
+public:
+	virtual bool					run_home_point_when_enemy_inaccessible () const { return true; }
+	virtual bool					need_shotmark () const { return true; }
 };
+
+
+//-------------------------------------------------------------------
+// CBaseMonster's  debug template functions
+//-------------------------------------------------------------------
+
+#include "../../xrGame/ai_debug_variables.h"
+
+#ifdef DEBUG
+template <class Type>
+bool   CBaseMonster::get_debug_var (pcstr var_name, OUT Type& result)
+{
+	char*					full_var_name;
+	STRCONCAT				(full_var_name, get_monster_class_name(), "_", var_name);
+	return ai_dbg::get_var	(full_var_name, result);
+}
+#endif // DEBUG
+
+template <class Type>
+Type   CBaseMonster::override_if_debug (pcstr var_name, Type value)
+{
+	#ifdef DEBUG
+		Type		debug_value;	
+		return		get_debug_var(var_name, debug_value) ? debug_value : value;
+	#else // DEBUG
+		return		value;
+	#endif // DEBUG
+}
 
 #include "base_monster_inline.h"

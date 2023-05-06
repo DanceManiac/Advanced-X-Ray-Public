@@ -20,23 +20,36 @@
 #include "../monster_home.h"
 #include "../../../ai_object_location.h"
 #include "../../../level.h"
-#include "../../../../XrServerEntitiesCS/xrserver_objects_alife_monsters.h"
+#include "../../../../xrServerEntities/xrserver_objects_alife_monsters.h"
 #include "../../../alife_simulator.h"
 #include "../../../alife_object_registry.h"
 #include "../../../xrServer.h"
 #include "../../../inventory_item.h"
-#include "../../../../XrServerEntitiesCS/xrServer_objects_ALife.h"
+#include "../../../../xrServerEntities/xrServer_objects_ALife.h"
 #include "../../../phMovementControl.h"
 #include "../ai_monster_squad.h"
-#include "PHWorld.h"
+#include "../control_movement_base.h"
+#include "../control_animation_base.h"
+#include "../monster_velocity_space.h"
+#include "../anti_aim_ability.h"
+#include "../../../PHWorld.h"
 
 namespace detail
 {
 
 namespace base_monster
 {
-	const float feel_enemy_who_just_hit_max_distance = 20;
-	const float feel_enemy_max_distance = 3;
+	const float feel_enemy_who_just_hit_max_distance	=	20;
+	const float feel_enemy_max_distance					=	3;
+	const float feel_enemy_who_made_sound_max_distance	=	49;
+
+	const float aom_far_radius							=	9;
+	const float aom_prepare_radius						=	7;
+	const float aom_prepare_time						=	0;
+	const float aom_attack_radius						=	0.6f;
+	const float aom_update_side_period					=	4000;
+	const float aom_prediction_factor					=	1.3f;
+
 
 } // namespace base_monster
 
@@ -47,6 +60,10 @@ void CBaseMonster::Load(LPCSTR section)
 	m_section						= section;
 	// load parameters from ".ltx" file
 	inherited::Load					(section);
+
+	m_head_bone_name				= READ_IF_EXISTS(pSettings,r_string,section, "bone_head", "bip01_head");
+	m_left_eye_bone_name			= READ_IF_EXISTS(pSettings,r_string,section, "bone_eye_left", 0);
+	m_right_eye_bone_name			= READ_IF_EXISTS(pSettings,r_string,section, "bone_eye_right", 0);
 
 	m_corpse_cover_evaluator		= xr_new<CMonsterCorpseCoverEvaluator>	(&movement().restrictions());
 	m_enemy_cover_evaluator			= xr_new<CCoverEvaluatorFarFromEnemy>	(&movement().restrictions());
@@ -78,14 +95,39 @@ void CBaseMonster::Load(LPCSTR section)
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= !!READ_IF_EXISTS(pSettings,r_bool,section,"berserk_always", false);
 
-	m_feel_enemy_who_just_hit_max_distance = READ_IF_EXISTS(pSettings, r_float, section, 
-		                                        "feel_enemy_who_just_hit_max_distance", 
+	m_feel_enemy_who_just_hit_max_distance	=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"feel_enemy_who_just_hit_max_distance", 
 												detail::base_monster::feel_enemy_who_just_hit_max_distance);
 
-	m_feel_enemy_max_distance			   = READ_IF_EXISTS(pSettings, r_float, section, 
-		                                        "feel_enemy_max_distance", 
+	m_feel_enemy_max_distance				=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"feel_enemy_max_distance", 
 												detail::base_monster::feel_enemy_max_distance);
+
+	m_feel_enemy_who_made_sound_max_distance =	READ_IF_EXISTS(pSettings, r_float, section, 
+												"feel_enemy_who_made_sound_max_distance", 
+												detail::base_monster::feel_enemy_who_made_sound_max_distance);
 	
+	//------------------------------------
+	// Steering Behaviour 
+	//------------------------------------
+	float    separate_factor				=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"separate_factor", 0.f);
+	float    separate_range					=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"separate_range" , 0.f);
+	
+	if ( (separate_factor > 0.0001f) && (separate_range > 0.01f) )
+	{
+		m_steer_manager						=	xr_new<steering_behaviour::manager>();
+
+		m_grouping_behaviour				=	xr_new<squad_grouping_behaviour>
+												(this, 
+												 Fvector3().set(0.f, 0.f, 0.f), 
+												 Fvector3().set(0.f, separate_factor, 0.f), 
+												 separate_range);
+
+		get_steer_manager()->add				( xr_new<steering_behaviour::grouping>(m_grouping_behaviour) );
+	}
+
 	//------------------------------------
 	// Auras
 	//------------------------------------
@@ -96,20 +138,18 @@ void CBaseMonster::Load(LPCSTR section)
 	m_base_aura.load_from_ini					(pSettings, section);
 
 	//------------------------------------
-	// Lain: added: separation behaviour 
+	// Protections
 	//------------------------------------
-	float    separate_factor        = READ_IF_EXISTS(pSettings, r_float, section, "separate_factor", 0.f);
-	float    separate_range         = READ_IF_EXISTS(pSettings, r_float, section, "separate_range" , 0.f);
-	
-	if ( (separate_factor > 0.0001f) && (separate_range > 0.01f) )
+	m_fSkinArmor = 0.f;
+	m_fHitFracMonster = 0.1f;
+	if(pSettings->line_exist(section, "protections_sect"))
 	{
-		m_steer_manager = xr_new<steering_behaviour::manager>();
-
-		m_grouping_behaviour = xr_new<squad_grouping_behaviour>
-			(this, Fvector3().set(0.f, 0.f, 0.f), Fvector3().set(0.f, separate_factor, 0.f), separate_range);
-
-		get_steer_manager()->add( xr_new<steering_behaviour::grouping>(m_grouping_behaviour) );
+		LPCSTR protections_sect = pSettings->r_string(section, "protections_sect");
+		m_fSkinArmor = READ_IF_EXISTS(pSettings,r_float,protections_sect,"skin_armor", 0.f);
+		m_fHitFracMonster = READ_IF_EXISTS(pSettings,r_float,protections_sect,"hit_fraction_monster", 0.1f);
 	}
+
+	m_force_anti_aim						=	false;
 
 	m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
 	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
@@ -130,12 +170,70 @@ void CBaseMonster::Load(LPCSTR section)
 	m_bParticlesEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "particles_enabled", false);
 	m_sParticlesIdleName = READ_IF_EXISTS(pSettings, r_string, section, "particles_idle", NULL);
 
-	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
-	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
-
 	m_bEnablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
 	m_bEnableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
 	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
+	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
+	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
+}
+
+void CBaseMonster::PostLoad (LPCSTR section)
+{
+	//------------------------------------
+	// Atack On Move (AOM) Parameters
+	//------------------------------------
+	attack_on_move_params_t& aom			=	m_attack_on_move_params;
+
+	aom.enabled								=	(READ_IF_EXISTS(pSettings, r_bool, section, 
+												"aom_enabled", FALSE)) != 0;
+	aom.far_radius							=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"aom_far_radius", detail::base_monster::aom_far_radius);
+	aom.attack_radius						=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"aom_attack_radius", detail::base_monster::aom_attack_radius);
+	aom.update_side_period					=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"aom_update_side_period", 
+												detail::base_monster::aom_update_side_period);
+	aom.prediction_factor					=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"aom_prediction_factor", 
+												detail::base_monster::aom_prediction_factor);
+	aom.prepare_time						=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"aom_prepare_time", 
+												detail::base_monster::aom_prepare_time);
+	aom.prepare_radius						=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"aom_prepare_radius", 
+												detail::base_monster::aom_prepare_radius);
+	aom.max_go_close_time					=	READ_IF_EXISTS(pSettings, r_float, section, 
+												"aom_max_go_close_time", 8.f);
+
+	if ( aom.enabled )
+	{
+		SVelocityParam&	velocity_run		=	move().get_velocity(MonsterMovement::eVelocityParameterRunNormal);
+
+		pcstr	attack_on_move_anim_l		=	READ_IF_EXISTS(pSettings, r_string, section, 
+																"aom_animation_left", "stand_attack_run_");
+		anim().AddAnim (eAnimAttackOnRunLeft, attack_on_move_anim_l, -1, &velocity_run, PS_STAND);
+		pcstr	attack_on_move_anim_r		=	READ_IF_EXISTS(pSettings, r_string, section, 
+																"aom_animation_right", "stand_attack_run_");
+		anim().AddAnim (eAnimAttackOnRunRight, attack_on_move_anim_r, -1, &velocity_run, PS_STAND);
+	}
+
+	//------------------------------------
+	// Anti-Aim ability
+	//------------------------------------
+	if ( pSettings->line_exist(section, "anti_aim_effectors") )
+	{
+		SVelocityParam&	velocity_stand		=	move().get_velocity(MonsterMovement::eVelocityParameterStand);
+
+		m_anti_aim							=	xr_new<anti_aim_ability>(this);
+		control().add							(m_anti_aim,  ControlCom::eAntiAim);
+
+		pcstr	anti_aim_animation			=	READ_IF_EXISTS(pSettings, r_string, section, 
+												"anti_aim_animation", "stand_attack_");
+		anim().AddAnim							(eAnimAntiAimAbility, anti_aim_animation, -1, 
+												&velocity_stand, PS_STAND);
+		m_anti_aim->load_from_ini				(pSettings, section);
+	}
+
 }
 
 steering_behaviour::manager*   CBaseMonster::get_steer_manager ()
@@ -147,7 +245,7 @@ steering_behaviour::manager*   CBaseMonster::get_steer_manager ()
 // if sound is absent just do not load that one
 #define LOAD_SOUND(sound_name,_type,_prior,_mask,_int_type)		\
 	if (pSettings->line_exist(section,sound_name))						\
-		sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,"bip01_head");
+		sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,m_head_bone_name);
 
 void CBaseMonster::reload	(LPCSTR section)
 {
@@ -156,7 +254,6 @@ void CBaseMonster::reload	(LPCSTR section)
 	if (!CCustomMonster::use_simplified_visual())
 		CStepManager::reload	(section);
 
-	CInventoryOwner::reload		(section);
 	movement().reload	(section);
 
 	// load base sounds
@@ -194,7 +291,6 @@ void CBaseMonster::reload	(LPCSTR section)
 void CBaseMonster::reinit()
 {
 	inherited::reinit					();
-	CInventoryOwner::reinit				();
 
 	EnemyMemory.clear					();
 	SoundMemory.clear					();
@@ -239,9 +335,18 @@ void CBaseMonster::reinit()
 #ifdef DEBUG
 	m_show_debug_info				= 0;
 #endif 
-	
-}
 
+	m_offset_from_leader_chosen_tick	= 0;
+	m_offset_from_leader				= Fvector().set(0.f, 0.f, 0.f);	
+
+	m_action_target_node			= u32(-1);
+
+	m_first_tick_enemy_inaccessible		= 0;
+	m_last_tick_enemy_inaccessible		= 0;
+	m_first_tick_object_not_at_home		= 0;
+
+	anim().clear_override_animation	();
+}
 
 BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC) 
 {
@@ -253,9 +358,6 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 	monster_squad().register_member			((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(), this);
 	settings_overrides						();
 
-	CHARACTER_COMMUNITY						community;
-	community.set							("monster");
-	CInventoryOwner::SetCommunity			(community.index());
 
 	if (GetScriptControl()) {
 		m_control_manager->animation().reset_data	();
@@ -267,6 +369,7 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 	control().update_schedule();
 
 	StartLights();
+
 	SwitchMonsterParticles(true);
 
 	// spawn inventory item
@@ -303,14 +406,12 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 
 void CBaseMonster::net_Destroy()
 {
-	// ������� ������� ���� ������� ����� inherited
+	// функция должена быть вызвана перед inherited
 	if (m_controlled) m_controlled->on_destroy	();
 	if (StateMan) StateMan->critical_finalize	();
 
 	inherited::net_Destroy				();
 	
-	CInventoryOwner::net_Destroy		();
-
 	m_pPhysics_support->in_NetDestroy	();
 
 	monster_squad().remove_member		((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(),this);
@@ -328,7 +429,7 @@ void CBaseMonster::net_Destroy()
 	else if (ltx->line_exist(section,name)) var = ltx->method(section,name);\
 }
 
-void CBaseMonster::settings_read(CInifile const *ini, LPCSTR section, SMonsterSettings &data)
+void CBaseMonster::settings_read(CInifile const * ini, LPCSTR section, SMonsterSettings &data)
 {
 	READ_SETTINGS(data.m_fSoundThreshold, "SoundThreshold", r_float, ini, section);
 

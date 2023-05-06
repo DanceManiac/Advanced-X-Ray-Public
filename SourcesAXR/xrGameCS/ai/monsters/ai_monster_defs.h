@@ -5,7 +5,7 @@
 
 typedef u32 TTime;
 
-#define COLOR		color_xrgb
+#define COLOR		D3DCOLOR_XRGB
 #define COLOR_RED	COLOR(255,0,0)	
 #define COLOR_GREEN	COLOR(0,255,0)	
 #define COLOR_BLUE	COLOR(0,0,255)	
@@ -152,6 +152,7 @@ enum EMotionAnim {
 
 	eAnimEat,
 	eAnimSleep,
+	eAnimSleepStanding,
 	eAnimDie,
 
 	eAnimDragCorpse,
@@ -161,6 +162,7 @@ enum EMotionAnim {
 
 	eAnimLookAround,
 
+	eAnimPrepareAttack,
 	eAnimJump,
 	eAnimSteal,
 
@@ -199,6 +201,10 @@ enum EMotionAnim {
 	eAnimTeleFire,
 	eAnimGraviPrepare,
 	eAnimGraviFire,
+	eAnimShieldStart,
+	eAnimShieldContinue,
+
+	eAnimTelekinesis,
 
 	//mob home animations
 	/*eAnimHomeIdleDigGround,
@@ -213,6 +219,13 @@ enum EMotionAnim {
 	
 	
 	//end mob home animations
+
+	eAnimAttackOnRunLeft,
+	eAnimAttackOnRunRight,
+
+	eAnimAntiAimAbility,
+	eAnimFastStandTurnLeft,
+	eAnimFastStandTurnRight,
 
 	eAnimCount,
 	eAnimUndefined			= u32(-1)
@@ -353,7 +366,6 @@ DEFINE_VECTOR(SAAParam, AA_VECTOR, AA_VECTOR_IT);
 struct SCurrentAnimationInfo {
 	shared_str		name;
 
-	EMotionAnim	motion;
 	u8			index;
 
 	TTime		time_started;
@@ -370,6 +382,12 @@ struct SCurrentAnimationInfo {
 
 	float			speed_change_vel;
 	CBlend			*blend;
+
+	void		set_motion (EMotionAnim	new_motion);
+	EMotionAnim	get_motion () const { return motion; }
+
+private:
+	EMotionAnim	motion;
 };
 
 

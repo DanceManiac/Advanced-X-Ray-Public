@@ -5,9 +5,9 @@
 #include "../../ai_space.h"
 #include "../../level_graph.h"
 #include "../../../Include/xrRender/Kinematics.h"
-
-// ïðîâåðèòü, íàõîäèòñÿ ëè îáúåêò entity íà íîäå
-// âîçâðàùàåò ïîçèöèþ îáúåêòà, åñëè îí íàõîäèòñÿ íà íîäå, èëè öåíòð åãî íîäû
+#include "basemonster/base_monster.h"
+// Ð¿Ñ€Ð¾Ð²ÐµÑ€Ð¸Ñ‚ÑŒ, Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑÑ Ð»Ð¸ Ð¾Ð±ÑŠÐµÐºÑ‚ entity Ð½Ð° Ð½Ð¾Ð´Ðµ
+// Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÑŽ Ð¾Ð±ÑŠÐµÐºÑ‚Ð°, ÐµÑÐ»Ð¸ Ð¾Ð½ Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑÑ Ð½Ð° Ð½Ð¾Ð´Ðµ, Ð¸Ð»Ð¸ Ñ†ÐµÐ½Ñ‚Ñ€ ÐµÐ³Ð¾ Ð½Ð¾Ð´Ñ‹
 Fvector get_valid_position(const CEntity *entity, const Fvector &actual_position) 
 {
 	if (
@@ -20,7 +20,7 @@ Fvector get_valid_position(const CEntity *entity, const Fvector &actual_position
 		return			(ai().level_graph().vertex_position(entity->ai_location().level_vertex()));
 }
 
-// âîçâðàùàåò true, åñëè îáúåêò entity íàõîäèòñÿ íà íîäå
+// Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ true, ÐµÑÐ»Ð¸ Ð¾Ð±ÑŠÐµÐºÑ‚ entity Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑÑ Ð½Ð° Ð½Ð¾Ð´Ðµ
 bool object_position_valid(const CEntity *entity)
 {
 	return				(
@@ -39,4 +39,15 @@ Fvector get_bone_position	(CObject *object, LPCSTR bone_name)
 	global_transform.mul	(object->XFORM(),bone.mTransform);
 
 	return	(global_transform.c);
+}
+
+Fvector get_head_position(CObject *object) 
+{
+	pcstr bone_name		=	"bip01_head";
+	if ( CBaseMonster* monster = smart_cast<CBaseMonster*>(object) )
+	{
+		bone_name		=	monster->get_head_bone_name();
+	}
+
+	return get_bone_position(object, bone_name);
 }

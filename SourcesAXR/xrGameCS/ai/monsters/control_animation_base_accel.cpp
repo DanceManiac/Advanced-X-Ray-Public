@@ -115,7 +115,7 @@ bool CControlAnimationBase::accel_chain_test()
 			float from	=	anim_from->velocity.velocity.linear * anim_from->velocity.max_factor;
 			float to	=	anim_to->velocity.velocity.linear * anim_to->velocity.min_factor;
 
-			sprintf_s(error_msg,"Incompatible speed ranges. Monster[%s] From animation  [%s] To animation [%s]",*m_object->cName(),*anim_from->target_name, *anim_to->target_name);
+			xr_sprintf(error_msg,"Incompatible speed ranges. Monster[%s] From animation  [%s] To animation [%s]",*m_object->cName(),*anim_from->target_name, *anim_to->target_name);
  			VERIFY2(to < from, error_msg);
 
 			anim_from = anim_to;
