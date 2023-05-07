@@ -119,7 +119,7 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot1", el->m_cSwingDesc[1].rot1);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot2", el->m_cSwingDesc[1].rot2);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_speed", el->m_cSwingDesc[1].speed);
-		f.w_fvector4(el->m_identifier.c_str(), "clr_drag_saturation", el->color_dragging);
+		f.w_fvector4(el->m_identifier.c_str(), "color_dragging", el->color_dragging);
 		f.w_fvector3(el->m_identifier.c_str(), "dof", el->dof_value);
 		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
