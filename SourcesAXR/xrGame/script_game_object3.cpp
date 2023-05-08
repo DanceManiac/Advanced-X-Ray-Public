@@ -38,7 +38,7 @@
 #include "sound_player.h"
 #include "stalker_decision_space.h"
 #include "space_restriction_manager.h"
-
+#include "eatable_item.h"
 //Alundaio
 #include "level_path_manager.h"
 #include "game_path_manager.h"
@@ -879,6 +879,130 @@ void CScriptGameObject::SetAnomalyPower(float p)
 	zone->SetMaxPower(p);
 }
 
+float CScriptGameObject::GetArtefactHealthRestoreSpeed()
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	return artefact->GetHealthPower();
+}
+
+float CScriptGameObject::GetArtefactRadiationRestoreSpeed()
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	return artefact->GetRadiationPower();
+}
+
+float CScriptGameObject::GetArtefactSatietyRestoreSpeed()
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	return artefact->GetSatietyPower();
+}
+
+float CScriptGameObject::GetArtefactPowerRestoreSpeed()
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	return artefact->GetPowerPower();
+}
+
+float CScriptGameObject::GetArtefactBleedingRestoreSpeed()
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	return artefact->GetBleedingPower();
+}
+
+float CScriptGameObject::GetArtefactImmunity(ALife::EHitType hit_type)
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	return artefact->GetImmunity(hit_type);
+}
+
+void CScriptGameObject::SetArtefactHealthRestoreSpeed(float value)
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	artefact->SetHealthPower(value);
+}
+
+void CScriptGameObject::SetArtefactRadiationRestoreSpeed(float value)
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	artefact->SetRadiationPower(value);
+}
+
+void CScriptGameObject::SetArtefactSatietyRestoreSpeed(float value)
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	artefact->SetSatietyPower(value);
+}
+
+void CScriptGameObject::SetArtefactPowerRestoreSpeed(float value)
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	artefact->SetPowerPower(value);
+}
+
+void CScriptGameObject::SetArtefactBleedingRestoreSpeed(float value)
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	artefact->SetBleedingPower(value);
+}
+
+void CScriptGameObject::SetArtefactImmunity(ALife::EHitType hit_type, float value)
+{
+	CArtefact* artefact = smart_cast<CArtefact*>(&object());
+	THROW(artefact);
+
+	return artefact->SetImmunity(hit_type, value);
+}
+
+void CScriptGameObject::ChangeAnomalyIdlePart(LPCSTR name, bool bIdleLight)
+{
+	CCustomZone* zone = smart_cast<CCustomZone*>(&object());
+	THROW(zone);
+	zone->ChangeIdleParticles(name, bIdleLight);
+}
+
+float CScriptGameObject::GetAnomalyRadius()
+{
+	CCustomZone* zone = smart_cast<CCustomZone*>(&object());
+	THROW(zone);
+	return zone->GetEffectiveRadius();
+}
+
+void CScriptGameObject::SetAnomalyRadius(float p)
+{
+	CCustomZone* zone = smart_cast<CCustomZone*>(&object());
+	THROW(zone);
+	zone->SetEffectiveRadius(p);
+}
+
+void CScriptGameObject::MoveAnomaly(Fvector pos)
+{
+	CCustomZone* zone = smart_cast<CCustomZone*>(&object());
+	THROW(zone);
+	zone->MoveScript(pos);
+}
+
 bool CScriptGameObject::weapon_strapped	() const
 {
 	CAI_Stalker		*stalker = smart_cast<CAI_Stalker*>(&object());
@@ -1178,86 +1302,6 @@ u16 CScriptGameObject::AmmoBoxSize()
 	return ammo->m_boxSize;
 }
 
-float CScriptGameObject::GetArtefactHealthRestoreSpeed()
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	return artefact->GetHealthPower();
-}
-
-float CScriptGameObject::GetArtefactRadiationRestoreSpeed()
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	return artefact->GetRadiationPower();
-}
-
-float CScriptGameObject::GetArtefactSatietyRestoreSpeed()
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	return artefact->GetSatietyPower();
-}
-
-float CScriptGameObject::GetArtefactPowerRestoreSpeed()
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	return artefact->GetPowerPower();
-}
-
-float CScriptGameObject::GetArtefactBleedingRestoreSpeed()
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	return artefact->GetBleedingPower();
-}
-
-void CScriptGameObject::SetArtefactHealthRestoreSpeed(float value)
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	artefact->SetHealthPower(value);
-}
-
-void CScriptGameObject::SetArtefactRadiationRestoreSpeed(float value)
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	artefact->SetRadiationPower(value);
-}
-
-void CScriptGameObject::SetArtefactSatietyRestoreSpeed(float value)
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	artefact->SetSatietyPower(value);
-}
-
-void CScriptGameObject::SetArtefactPowerRestoreSpeed(float value)
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	artefact->SetPowerPower(value);
-}
-
-void CScriptGameObject::SetArtefactBleedingRestoreSpeed(float value)
-{
-	CArtefact* artefact = smart_cast<CArtefact*>(&object());
-	THROW(artefact);
-
-	artefact->SetBleedingPower(value);
-}
-
 void CScriptGameObject::AttachVehicle(CScriptGameObject* veh) { AttachVehicle(veh, false); }
 void CScriptGameObject::AttachVehicle(CScriptGameObject* veh, const bool bForce)
 {
@@ -1457,4 +1501,47 @@ void CScriptGameObject::RemoveDanger(const CDangerObject& dobject)
 	stalker->memory().danger().remove(dobject);
 }
 
+void CScriptGameObject::SetRemainingUses(u8 value)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CEatableItem* eItm = IItm->cast_eatable_item();
+	if (!eItm)
+		return;
+
+	eItm->SetRemainingUses(value);
+}
+
+u8 CScriptGameObject::GetRemainingUses()
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CEatableItem* eItm = IItm->cast_eatable_item();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetPortionsNum();
+}
+
+u8 CScriptGameObject::GetMaxUses()
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CEatableItem* eItm = IItm->cast_eatable_item();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetMaxUses();
+}
+
+void CScriptGameObject::DestroyObject()
+{
+	object().DestroyObject();
+}
 //-Alundaio

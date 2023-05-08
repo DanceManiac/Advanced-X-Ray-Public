@@ -31,14 +31,14 @@ public:
 			void			UpdateUseAnim				();
 			void			HideWeapon					();
 			void			StartAnimation				();
+			void SetRemainingUses(u8 value) { if (value > m_iConstPortions) return; m_iPortionsNum = value; };
+			u8 GetMaxUses() const { return m_iConstPortions; };
 	virtual	bool			UseBy						(CEntityAlive* npc);
-	virtual	bool			Empty						()						{return PortionsNum()==0;};
+	virtual	bool			Empty						()						{return m_iPortionsNum==0;};
 	virtual	u32				Cost						()	const;
 	virtual float			Weight						()	const;
-			int				PortionsNum					()	const				{return m_iPortionsNum;}
 
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
-			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
 			u32				m_iConstPortions;
 			u32				m_iPortionsNum;
 			bool			m_bHasAnimation;

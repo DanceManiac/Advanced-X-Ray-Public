@@ -140,7 +140,7 @@ IC		CIKLimbsController				*ik_controller					( )	{ return m_ik_controller; }
 		void 							in_Hit							( SHit &H, bool is_killing=false );
 		void							in_NetSave						( NET_Packet& P )																									;
 		void							in_ChangeVisual					( );
-		void							in_Die							( );
+		void							in_Die							(bool hit = true);
 		void							on_create_anim_mov_ctrl			( );
 		void							on_destroy_anim_mov_ctrl		( );
 		void							PHGetLinearVell					( Fvector& velocity );

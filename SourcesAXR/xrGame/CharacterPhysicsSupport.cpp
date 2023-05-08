@@ -1433,7 +1433,7 @@ bool	CCharacterPhysicsSupport::	can_drop_active_weapon	( )
 	return !interactive_motion() && m_flags.test(fl_death_anim_on);
 };
 
-void		CCharacterPhysicsSupport::in_Die( )
+void		CCharacterPhysicsSupport::in_Die(bool hit)
 {
 	if( m_hit_valide_time < Device.dwTimeGlobal || !m_sv_hit.is_valide() )
 	{
@@ -1450,7 +1450,8 @@ void		CCharacterPhysicsSupport::in_Die( )
 		m_PhysicMovementControl->DestroyCharacter( );
 		return;
 	}
-	in_Hit( m_sv_hit, true );
+	if(hit)
+		in_Hit( m_sv_hit, true );
 }
 
 u16	CCharacterPhysicsSupport::PHGetSyncItemsNumber( )

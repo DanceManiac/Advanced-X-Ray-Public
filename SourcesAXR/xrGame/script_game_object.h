@@ -317,7 +317,7 @@ public:
 			bool				inv_box_can_take		(bool status);
 			bool				inv_box_can_take_status	();
 
-	//передача порции информации InventoryOwner
+	//РїРµСЂРµРґР°С‡Р° РїРѕСЂС†РёРё РёРЅС„РѕСЂРјР°С†РёРё InventoryOwner
 			bool				GiveInfoPortion		(LPCSTR info_id);
 			bool				DisableInfoPortion	(LPCSTR info_id);
 			void				GiveGameNews		(LPCSTR caption, LPCSTR news, LPCSTR texture_name, int delay, int show_time);
@@ -325,10 +325,10 @@ public:
 
 			void				AddIconedTalkMessage_old(LPCSTR text, LPCSTR texture_name, LPCSTR templ_name) {};
 			void				AddIconedTalkMessage(LPCSTR caption, LPCSTR text, LPCSTR texture_name, LPCSTR templ_name);
-	//предикаты наличия/отсутствия порции информации у персонажа
+	//РїСЂРµРґРёРєР°С‚С‹ РЅР°Р»РёС‡РёСЏ/РѕС‚СЃСѓС‚СЃС‚РІРёСЏ РїРѕСЂС†РёРё РёРЅС„РѕСЂРјР°С†РёРё Сѓ РїРµСЂСЃРѕРЅР°Р¶Р°
 			bool				HasInfo				(LPCSTR info_id);
 			bool				DontHasInfo			(LPCSTR info_id);
-	//работа с заданиями
+	//СЂР°Р±РѕС‚Р° СЃ Р·Р°РґР°РЅРёСЏРјРё
 			ETaskState			GetGameTaskState	(LPCSTR task_id);
 			void				SetGameTaskState	(ETaskState state, LPCSTR task_id);
 			void				GiveTaskToActor		(CGameTask* t, u32 dt, bool bCheckExisting, u32 t_timer);
@@ -355,7 +355,14 @@ public:
 			void				ActorLookAtPoint	(Fvector point);
 			void				IterateInventory	(luabind::functor<void> functor, luabind::object object);
 			void				IterateInventoryBox	(luabind::functor<void> functor, luabind::object object);
+			void 				IterateRuck			(luabind::functor<bool> functor, luabind::object object);
+			void 				IterateBelt			(luabind::functor<bool> functor, luabind::object object);
+			void 				MoveItemToRuck		(CScriptGameObject* pItem);
+			void 				MoveItemToSlot		(CScriptGameObject* pItem, u16 slot_id);
+			void 				MoveItemToBelt		(CScriptGameObject* pItem);
 			void				MarkItemDropped		(CScriptGameObject *item);
+			void 				ItemAllowTrade		(CScriptGameObject* pItem);
+			void 				ItemDenyTrade		(CScriptGameObject* pItem);
 			bool				MarkedDropped		(CScriptGameObject *item);
 			void				UnloadMagazine		();
 
@@ -367,6 +374,7 @@ public:
 			void				GiveMoney			(int money);
 			u32					Money				();
 			void				MakeItemActive		(CScriptGameObject* pItem);
+			void 				TakeItem			(CScriptGameObject* pItem);
 			
 			void				SetRelation			(ALife::ERelationType relation, CScriptGameObject* pWhoToSet);
 			
@@ -461,8 +469,6 @@ public:
 			CScriptGameObject	*GetBestEnemy		();
 			const CDangerObject	*GetBestDanger		();
 			CScriptGameObject	*GetBestItem		();
-			void				SetPortionsNum		(u32 num);
-			u32					GetPortionsNum		() const;
 
 	_DECLARE_FUNCTION10			(GetActionCount,u32);
 	
@@ -609,6 +615,24 @@ public:
 			void				DisableAnomaly			();
 			float				GetAnomalyPower			();
 			void				SetAnomalyPower			(float p);
+			void				ChangeAnomalyIdlePart(LPCSTR name, bool bIdleLight);
+			float 				GetAnomalyRadius();
+			void 				SetAnomalyRadius(float p);
+			void 				MoveAnomaly(Fvector pos);
+			
+			float 				GetArtefactHealthRestoreSpeed();
+			float 				GetArtefactRadiationRestoreSpeed();
+			float 				GetArtefactSatietyRestoreSpeed();
+			float 				GetArtefactPowerRestoreSpeed();
+			float 				GetArtefactBleedingRestoreSpeed();
+			float 				GetArtefactImmunity(ALife::EHitType hit_type);
+
+			void 				SetArtefactHealthRestoreSpeed(float value);
+			void 				SetArtefactRadiationRestoreSpeed(float value);
+			void 				SetArtefactSatietyRestoreSpeed(float value);
+			void 				SetArtefactPowerRestoreSpeed(float value);
+			void 				SetArtefactBleedingRestoreSpeed(float value);
+			void 				SetArtefactImmunity(ALife::EHitType hit_type, float value);
 			
 	
 			// HELICOPTER
@@ -623,7 +647,9 @@ public:
 			void				start_particles			(LPCSTR pname, LPCSTR bone);
 			void				stop_particles			(LPCSTR pname, LPCSTR bone);
 
-			Fvector				bone_position			(LPCSTR bone_name) const;
+			Fvector 			bone_position			(LPCSTR bone_name, bool bHud = false) const;
+			Fvector 			bone_direction			(LPCSTR bone_name, bool bHud = false) const;
+			LPCSTR 				bone_name				(u16 id, bool bHud = false);
 			bool				is_body_turning			() const;
 	cphysics_shell_scripted*	get_physics_shell		() const;
 			u16					get_bone_id				(LPCSTR bone_name) const;					
@@ -689,7 +715,7 @@ public:
 			bool				invulnerable						() const;
 			void				invulnerable						(bool invulnerable);
 			LPCSTR				get_smart_cover_description			() const;
-			void				set_visual_name						(LPCSTR visual);
+			void 				set_visual_name						(LPCSTR visual, bool bForce);
 			LPCSTR				get_visual_name						() const;
 
 			bool				can_throw_grenades					() const;
@@ -787,7 +813,7 @@ public:
 			bool				is_door_blocked_by_npc					() const;
 			bool				is_weapon_going_to_be_strapped			( CScriptGameObject const* object ) const;
 
-			bool				addon_IsActorHideout					() const;		// проверка что актор под каким либо укрытием
+			bool				addon_IsActorHideout					() const;		// РїСЂРѕРІРµСЂРєР° С‡С‚Рѕ Р°РєС‚РѕСЂ РїРѕРґ РєР°РєРёРј Р»РёР±Рѕ СѓРєСЂС‹С‚РёРµРј
 
 			// Alundaio
 			bool				IsOnBelt(CScriptGameObject* obj) const;
@@ -868,18 +894,6 @@ public:
 			void				ForceSetPosition(Fvector pos);
 			void				ForceSetPosition(Fvector pos, bool bActivate = false);
 
-			float				GetArtefactHealthRestoreSpeed();
-			float				GetArtefactRadiationRestoreSpeed();
-			float				GetArtefactSatietyRestoreSpeed();
-			float				GetArtefactPowerRestoreSpeed();
-			float				GetArtefactBleedingRestoreSpeed();
-
-			void				SetArtefactHealthRestoreSpeed(float value);
-			void				SetArtefactRadiationRestoreSpeed(float value);
-			void				SetArtefactSatietyRestoreSpeed(float value);
-			void				SetArtefactPowerRestoreSpeed(float value);
-			void				SetArtefactBleedingRestoreSpeed(float value);
-
 			//Phantom
 			void				PhantomSetEnemy(CScriptGameObject*);
 			//Actor
@@ -894,6 +908,14 @@ public:
 
 			float				GetActorRunBackCoef() const;
 			void				SetActorRunBackCoef(float run_back_coef);
+			
+			float				GetActorClimbCoef() const;
+			void				SetActorClimbCoef(float);
+			
+			void 				SetRemainingUses(u8 value);
+			void 				DestroyObject();
+			u8 					GetRemainingUses();
+			u8 					GetMaxUses();
 			//-Alundaio
 
 			/*added by Ray Twitty (aka Shadows) START*/

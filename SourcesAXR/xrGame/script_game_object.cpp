@@ -44,6 +44,8 @@
 #include "UIGameCustom.h"
 #include "ui/UIActorMenu.h"
 #include "InventoryBox.h"
+#include "player_hud.h"
+#include "ai/stalker/ai_stalker.h"
 
 class CScriptBinderObject;
 
@@ -335,17 +337,71 @@ u32 CScriptGameObject::get_current_patrol_point_index()
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-Fvector	CScriptGameObject::bone_position	(LPCSTR bone_name) const
+Fvector CScriptGameObject::bone_position(LPCSTR bone_name, bool bHud) const
 {
-	u16					bone_id;
-	if (xr_strlen(bone_name))
-		bone_id			= smart_cast<IKinematics*>(object().Visual())->LL_BoneID(bone_name);
-	else
-		bone_id			= smart_cast<IKinematics*>(object().Visual())->LL_GetBoneRoot();
+	IKinematics* k = nullptr;
 
-	Fmatrix				matrix;
-	matrix.mul_43		(object().XFORM(),smart_cast<IKinematics*>(object().Visual())->LL_GetBoneInstance(bone_id).mTransform);
-	return				(matrix.c);
+	CHudItem* itm = smart_cast<CHudItem*>(&object());
+	if (bHud && itm && itm->HudItemData())
+		k = itm->HudItemData()->m_model;
+	else
+		k = object().Visual()->dcast_PKinematics();
+
+	u16 bone_id;
+	if (xr_strlen(bone_name))
+	{
+		bone_id = k->LL_BoneID(bone_name);
+		if (bone_id == BI_NONE)
+			bone_id = k->LL_GetBoneRoot();
+	}
+	else
+		bone_id = k->LL_GetBoneRoot();
+
+	Fmatrix matrix;
+	matrix.mul_43((bHud && itm && itm->HudItemData()) ? itm->HudItemData()->m_item_transform : object().XFORM(),
+	              k->LL_GetBoneInstance(bone_id).mTransform);
+	return (matrix.c);
+}
+
+Fvector CScriptGameObject::bone_direction(LPCSTR bone_name, bool bHud) const
+{
+    IKinematics* k = nullptr;
+
+    CHudItem* itm = smart_cast<CHudItem*>(&object());
+    if (bHud && itm)
+        k = itm->HudItemData()->m_model;
+    else
+        k = object().Visual()->dcast_PKinematics();
+
+    u16 bone_id;
+    if (xr_strlen(bone_name))
+    {
+        bone_id = k->LL_BoneID(bone_name);
+        if (bone_id == BI_NONE)
+            bone_id = k->LL_GetBoneRoot();
+    }
+    else
+        bone_id = k->LL_GetBoneRoot();
+
+    Fmatrix matrix;
+    Fvector res;
+    matrix.mul_43((bHud && itm) ? itm->HudItemData()->m_item_transform : object().XFORM(),
+                  k->LL_GetTransform(bone_id));
+    matrix.getHPB(res);
+    return (res);
+}
+
+LPCSTR CScriptGameObject::bone_name(u16 id, bool bHud)
+{
+	IKinematics* k = nullptr;
+
+	CHudItem* itm = smart_cast<CHudItem*>(&object());
+	if (bHud && itm && itm->HudItemData())
+		k = itm->HudItemData()->m_model;
+	else
+		k = object().Visual()->dcast_PKinematics();
+
+	return (k->LL_BoneName_dbg(id));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -451,35 +507,6 @@ u32 CScriptGameObject::GetSuitableAmmoTotal() const
 	if (!weapon)
 		return		(0);
 	return			(weapon->GetSuitableAmmoTotal(true));
-}
-
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-#include "eatable_item.h"
-
-void CScriptGameObject::SetPortionsNum(u32 num)
-{
-	CEatableItem	*item = smart_cast<CEatableItem*>(&object());
-	if (!item)
-	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CEatableItem : cannot access class member SetPortionsNum!");
-		return;
-	}
-
-	item->SetPortionsNum(num);
-}
-
-u32 CScriptGameObject::GetPortionsNum() const
-{
-	const CEatableItem	*item = smart_cast<const CEatableItem*>(&object());
-	if (!item)
-	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CEatableItem : cannot access class member GetPortionsNum!");
-		return 0;
-	}
-
-	return			(item->GetPortionsNum());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -719,10 +746,55 @@ LPCSTR CScriptGameObject::get_smart_cover_description	() const {
 	return smart_cover_object->cover().description()->table_id().c_str();
 }
 
-void CScriptGameObject::set_visual_name						(LPCSTR visual)
+#include "stalker_animation_manager.h"
+#include "CharacterPhysicsSupport.h"
+#include "PhysicsShellHolder.h"
+
+void CScriptGameObject::set_visual_name(LPCSTR visual, bool bForce)
 {
+	if (strcmp(visual, object().cNameVisual().c_str()) == 0)
+		return;
+
+	NET_Packet P;
+	object().u_EventGen(P, GE_CHANGE_VISUAL, object().ID());
+	P.w_stringZ(visual);
+	object().u_EventSend(P);
+
+	CActor* actor = smart_cast<CActor*>(&object());
+	if (actor)
+	{
+		actor->ChangeVisual(visual);
+		return;
+	}
+
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+	if (stalker)
+	{
+		stalker->ChangeVisual(visual);
+
+		IKinematicsAnimated* V = smart_cast<IKinematicsAnimated*>(stalker->Visual());
+		if (V)
+		{
+			if (!stalker->g_Alive())
+				stalker->m_pPhysics_support->in_Die(false);
+			else
+				stalker->CStepManager::reload(stalker->cNameSect().c_str());
+
+			stalker->CDamageManager::reload(*stalker->cNameSect(), "damage", pSettings);
+			stalker->ResetBoneProtections(NULL, NULL);
+			stalker->reattach_items();
+			stalker->m_pPhysics_support->in_ChangeVisual();
+			stalker->animation().reload();
+		}
+
+		return;
+	}
+
 	object().cNameVisual_set(visual);
+	object().Visual()->dcast_PKinematics()->CalculateBones_Invalidate();
+	object().Visual()->dcast_PKinematics()->CalculateBones(TRUE);
 }
+
 LPCSTR CScriptGameObject::get_visual_name				() const {
 	return object().cNameVisual().c_str();
 }

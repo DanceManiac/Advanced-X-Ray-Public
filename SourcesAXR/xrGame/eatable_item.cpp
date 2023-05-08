@@ -59,14 +59,12 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_iConstPortions = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
-	m_iPortionsNum = m_iConstPortions;
+	m_iPortionsNum = m_iConstPortions = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
 	m_bHasAnimation = READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
 	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
 	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
 	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
 	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
-	VERIFY						(m_iPortionsNum<10000);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)

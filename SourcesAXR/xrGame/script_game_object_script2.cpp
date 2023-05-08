@@ -264,10 +264,6 @@ class_<CScriptGameObject> script_register_game_object1(class_<CScriptGameObject>
 		.def("path_type",					&CScriptGameObject::path_type				)
 		.def("detail_path_type",			&CScriptGameObject::detail_path_type		)
 
-		// eatable items
-		.def("get_portions_num",			&CScriptGameObject::GetPortionsNum			)
-		.def("set_portions_num",			&CScriptGameObject::SetPortionsNum			)
-
 		// PDA Psy Factor
 		.def("psy_factor",					&CScriptGameObject::GetPsyFactor			)
 		.def("set_psy_factor",				&CScriptGameObject::SetPsyFactor			)

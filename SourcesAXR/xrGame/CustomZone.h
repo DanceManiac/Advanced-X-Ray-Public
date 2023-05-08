@@ -63,6 +63,8 @@ public:
 	virtual		BOOL	feel_touch_on_contact			(CObject* O);
 				
 				float	effective_radius				(float nearest_shape_radius);
+	float GetEffectiveRadius() { return m_fEffectiveRadius; }
+	void SetEffectiveRadius(float p) { m_fEffectiveRadius = p; }
 	virtual		void	net_Relcase						(CObject* O);
 	virtual		void	OnEvent							(NET_Packet& P, u16 type);
 
@@ -171,6 +173,8 @@ public:
 				bool		IsEnabled					()	{return m_eZoneState != eZoneStateDisabled; };
 				void		ZoneEnable					();	
 				void		ZoneDisable					();
+				void 		ChangeIdleParticles			(LPCSTR name, bool bIdleLight);
+				void 		MoveScript(Fvector pos);
 	EZoneState				ZoneState					() {return m_eZoneState;}
 protected:
 

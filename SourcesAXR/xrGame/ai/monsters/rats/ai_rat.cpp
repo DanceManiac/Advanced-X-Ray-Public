@@ -34,10 +34,6 @@
 #include "../../../patrol_path.h"
 #include "../../../Actor.h"
 
-
-#ifdef DEBUG
-#endif
-
 using namespace RatSpace;
 
 // #include "../../../steering_behaviour_manager.h"
