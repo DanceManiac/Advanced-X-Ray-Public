@@ -1221,6 +1221,7 @@
     <ClInclude Include="AntigasFilter.h" />
     <ClInclude Include="antirad.h" />
     <ClInclude Include="Artefact.h" />
+    <ClInclude Include="ArtefactContainer.h" />
     <ClInclude Include="artefact_activation.h" />
     <ClInclude Include="attachable_item.h" />
     <ClInclude Include="attachable_item_inline.h" />
@@ -4317,6 +4318,7 @@
     <ClCompile Include="AntigasFilter.cpp" />
     <ClCompile Include="antirad.cpp" />
     <ClCompile Include="Artefact.cpp" />
+    <ClCompile Include="ArtefactContainer.cpp" />
     <ClCompile Include="artefact_activation.cpp" />
     <ClCompile Include="artefact_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>

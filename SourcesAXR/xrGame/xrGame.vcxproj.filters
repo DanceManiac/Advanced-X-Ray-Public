@@ -2497,6 +2497,9 @@
     <Filter Include="UI\Common\LoadingScreen">
       <UniqueIdentifier>{f4d88e99-ef9b-4ae8-bb9b-7fa1dafeb254}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer">
+      <UniqueIdentifier>{6d7a608a-de29-4a07-8c93-097892207606}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7430,6 +7433,9 @@
     <ClInclude Include="ui\UILoadingScreen.h">
       <Filter>UI\Common\LoadingScreen</Filter>
     </ClInclude>
+    <ClInclude Include="ArtefactContainer.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11125,6 +11131,9 @@
     </ClCompile>
     <ClCompile Include="CustomOutfit_script.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtefactContainer.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

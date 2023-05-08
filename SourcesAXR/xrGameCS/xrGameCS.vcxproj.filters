@@ -2587,6 +2587,9 @@
     <Filter Include="UI\Common\LoadingScreen">
       <UniqueIdentifier>{8409490a-682a-433f-9333-ba5d7c2be070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer">
+      <UniqueIdentifier>{b0b72c42-4627-4849-be34-0cedf965de5d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7531,6 +7534,9 @@
     <ClInclude Include="ai\monsters\monster_aura.h">
       <Filter>AI\AMonsters\common\components</Filter>
     </ClInclude>
+    <ClInclude Include="ArtefactContainer.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11235,6 +11241,9 @@
     </ClCompile>
     <ClCompile Include="CustomOutfit_script.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtefactContainer.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
