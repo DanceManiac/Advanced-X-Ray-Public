@@ -606,7 +606,7 @@ void CRenderDevice::FrameMove()
 
 	Core.dwFrame = dwFrame;
 
-	if(!(Paused() && !bMainMenuActive()))
+	if(!(Paused() && !bMainMenuActive()) || load_screen_renderer.IsActive())
 		dwTimeContinual	= TimerMM.GetElapsed_ms();
 
 	if (psDeviceFlags.test(rsConstantFPS))	{
