@@ -74,6 +74,7 @@ public:
 
 	shared_str				m_BonesProtectionSect;
 	shared_str				m_NightVisionSect;
+	shared_str				m_PlayerHudSection;
 
 	xr_vector<shared_str>	m_SuitableFilters;
 	xr_vector<shared_str>	m_SuitableRepairKits;

@@ -144,6 +144,8 @@ void CCustomOutfit::Load(LPCSTR section)
 	LPCSTR filters = READ_IF_EXISTS(pSettings, r_string, section, "suitable_filters", "antigas_filter");
 	LPCSTR repair_kits = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kits", "repair_kit");
 
+	m_PlayerHudSection = READ_IF_EXISTS(pSettings, r_string, section, "player_hud_section", "actor_hud");
+
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
 
@@ -347,7 +349,7 @@ void CCustomOutfit::ApplySkinModel(CActor* pActor, bool bDress, bool bHUDOnly)
 
 
 		if (pActor == Level().CurrentViewEntity())	
-			g_player_hud->load(pSettings->r_string(cNameSect(),"player_hud_section"));
+			g_player_hud->load(m_PlayerHudSection);
 	}else
 	{
 		if (!bHUDOnly && m_ActorVisual.size())
@@ -424,6 +426,16 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	{
 		m_NightVisionSect._set( str );
 	}
+
+	result2 = process_if_exists_set(section, "player_hud_section", &CInifile::r_string, str, test);
+	if (result2 && !test)
+	{
+		m_PlayerHudSection = str;
+
+		if (this == smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT)))
+			ApplySkinModel(Actor(), true, false);
+	}
+
 	result |= result2;
 	
 	result |= process_if_exists( section, "additional_inventory_weight",  &CInifile::r_float,  m_additional_weight,  test );
