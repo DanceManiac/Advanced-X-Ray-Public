@@ -143,7 +143,9 @@ void CParticleManager::Update(int effect_id, int alist_id, float dt)
 	for(PAVecIt it=pa->begin(); it!=pa->end(); it++)
 	{
 		VERIFY((*it));
-    	(*it)->Execute	(pe, dt, kill_old_time);
+
+		if (*it)
+    		(*it)->Execute	(pe, dt, kill_old_time);
 	}
 	pa->unlock();
 }
