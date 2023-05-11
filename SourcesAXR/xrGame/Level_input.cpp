@@ -171,7 +171,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 				//Arkada
 				if(Device.Paused())
 				{
-					GAME_PAUSE(FALSE, TRUE, FALSE, "bug_fix");
+					GAME_PAUSE(FALSE, TRUE, TRUE, "bug_fix");
 					return;
 				}
 					if(CurrentGameUI()->IR_UIOnKeyboardPress(key))	return;//special case for mp and main_menu

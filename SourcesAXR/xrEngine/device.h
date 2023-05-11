@@ -150,7 +150,7 @@ private:
 	//u32										Timer_MM_Delta;
 	//CTimer_paused							Timer;
 	//CTimer_paused							TimerGlobal;
-	CTimer									TimerMM;
+	CTimer_paused_ex						TimerMM;
 
 	void									_Create		(LPCSTR shName);
 	void									_Destroy	(BOOL	bKeepTextures);
