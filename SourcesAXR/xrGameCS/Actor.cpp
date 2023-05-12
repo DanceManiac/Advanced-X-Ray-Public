@@ -220,6 +220,7 @@ CActor::CActor() : CEntityAlive()
 	m_bNightVisionOn = false;
 
 	m_bEatAnimActive = false;
+	m_disabled_hitmarks		= false;
 
 	ActorSkills = nullptr;
 }
@@ -565,7 +566,7 @@ void	CActor::Hit							(SHit* pHDS)
 	{
 		mstate_wishful	&=~mcSprint;
 	};
-	if(!g_dedicated_server)
+	if(!g_dedicated_server && !m_disabled_hitmarks)
 	{
 		HitMark			(HDS.damage(), HDS.dir, HDS.who, HDS.bone(), HDS.p_in_bone_space, HDS.impulse, HDS.hit_type);
 	}

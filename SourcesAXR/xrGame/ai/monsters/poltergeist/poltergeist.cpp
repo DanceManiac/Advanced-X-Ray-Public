@@ -253,7 +253,6 @@ void CPoltergeist::reinit()
 	Energy::set_auto_activate();
 	Energy::set_auto_deactivate();
 	Energy::enable();
-	m_actor_ignore		= false;
 
 	// start hidden
 	state_invisible						= true;	

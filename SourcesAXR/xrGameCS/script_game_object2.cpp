@@ -329,6 +329,22 @@ void CScriptGameObject::SetActorPosition			(Fvector pos)
 
 }
 
+void CScriptGameObject::SetNpcPosition			(Fvector pos)
+{
+	CCustomMonster* obj = smart_cast<CCustomMonster*>(&object());
+	if(obj){
+		Fmatrix F = obj->XFORM();
+		F.c = pos;
+		obj->movement().detail().make_inactual();
+		if (obj->animation_movement_controlled())
+			obj->destroy_anim_mov_ctrl();
+		obj->ForceTransform(F);
+		//		actor->XFORM().c = pos;
+	}else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorPosition method for non-CCustomMonster object");
+
+}
+
 void CScriptGameObject::SetActorDirection		(float dir)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
@@ -347,6 +363,27 @@ CHolderCustom* CScriptGameObject::get_current_holder()
 		return actor->Holder();
 	else
 		return NULL;
+}
+
+void CScriptGameObject::DisableHitMarks			(bool disable)
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if(actor)
+		actor->DisableHitMarks(disable);
+	else
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call DisableHitMarks method for non-actor object");
+}
+
+bool CScriptGameObject::DisableHitMarks			()	const
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+	if(actor)
+		return actor->DisableHitMarks();
+	else
+	{
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call DisableHitMarks method for non-actor object");
+		return false;
+	}
 }
 
 void CScriptGameObject::set_ignore_monster_threshold	(float ignore_monster_threshold)
@@ -448,6 +485,16 @@ u32 CScriptGameObject::location_on_path				(float distance, Fvector *location)
 
 	VERIFY									(location);
 	return									(monster->movement().detail().location_on_path(monster,distance,*location));
+}
+
+bool CScriptGameObject::is_there_items_to_pickup	() const
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker){
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member is_there_items_to_pickup!");
+		return	false;
+	}
+	return (!!stalker->memory().item().selected());
 }
 
 void CScriptGameObject::RemoveMemorySoundObject(const MemorySpace::CSoundObject& memory_object)

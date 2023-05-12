@@ -253,6 +253,21 @@ void xrServer::Process_event	(NET_Packet& P, ClientID sender)
 			}
 			iitem->add_upgrade		( upgrade_id );
 		}break;
+		
+	case GE_INV_OWNER_STATUS:
+		{
+			u8 can_take, closed;
+			P.r_u8	( can_take );
+			P.r_u8	( closed );
+
+			CSE_ALifeTraderAbstract* iowner = smart_cast<CSE_ALifeTraderAbstract*>( receiver );
+			if ( !iowner )
+			{
+				break;
+			}
+			iowner->m_deadbody_can_take = (can_take == 1);
+			iowner->m_deadbody_closed   = (closed == 1);
+		}break;
 
 	case GEG_PLAYER_DISABLE_SPRINT:
 	case GEG_PLAYER_WEAPON_HIDE_STATE:

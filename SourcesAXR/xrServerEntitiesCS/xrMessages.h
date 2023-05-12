@@ -116,7 +116,7 @@ enum {
 	
 	GE_GRENADE_EXPLODE,
 	GE_INV_ACTION,				//a action beign taken on inventory
-
+	GE_INV_OWNER_STATUS,
 	GE_ZONE_STATE_CHANGE,
 
 	GE_MOVE_ACTOR,				//move actor to desired position instantly
@@ -152,7 +152,7 @@ enum {
 	//-------------------------------------
 	GE_KILL_SOMEONE,
 
-	GE_FREEZE_OBJECT = 50,
+	GE_FREEZE_OBJECT,
 	GE_LAUNCH_ROCKET,
 
 	GE_FORCEDWORD				= u32(-1)

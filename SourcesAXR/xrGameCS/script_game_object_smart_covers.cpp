@@ -416,3 +416,23 @@ bool CScriptGameObject::movement_target_reached					()
 
 	return								(stalker->movement().current_params().equal_to_target(stalker->movement().target_params()));
 }
+
+LPCSTR CScriptGameObject::get_dest_smart_cover_name		()
+{
+	CAI_Stalker*						stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker) {
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member get_dest_smart_cover!");
+		return							(0);
+	}
+
+	return								(stalker->movement().target_params().cover_id().c_str());
+}
+
+LPCSTR CScriptGameObject::get_smart_cover_description	() const {
+	smart_cover::object		*smart_cover_object = smart_cast<smart_cover::object*>(&object());
+	if (!smart_cover_object) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"smart_cover::object : cannot access class member get_smart_cover_description!");
+		return (0);
+	}
+	return smart_cover_object->cover().description()->table_id().c_str();
+}

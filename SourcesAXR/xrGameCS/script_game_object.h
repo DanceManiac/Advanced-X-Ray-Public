@@ -199,6 +199,7 @@ public:
 	_DECLARE_FUNCTION11	(SetPower,			void, float);
 	_DECLARE_FUNCTION11	(SetSatiety,		void, float);
 	_DECLARE_FUNCTION11	(SetRadiation,		void, float);
+	_DECLARE_FUNCTION11	(SetBleeding,		void, float);
 	_DECLARE_FUNCTION11	(SetCircumspection,	void, float);
 	_DECLARE_FUNCTION11	(SetMorale,			void, float);
 	_DECLARE_FUNCTION11 (ChangeThirst,		void, float);
@@ -229,6 +230,9 @@ public:
 	// Actor only
 			void				SetActorPosition	(Fvector pos);
 			void				SetActorDirection	(float dir);
+			void				SetNpcPosition		(Fvector pos);
+			void				DisableHitMarks		(bool disable);
+			bool				DisableHitMarks		() const;
 	// CCustomMonster
 			bool				CheckObjectVisibility(const CScriptGameObject *tpLuaGameObject);
 			bool				CheckTypeVisibility	(const char *section_name);
@@ -236,14 +240,18 @@ public:
 			LPCSTR				WhoHitSectionName	();
 
 			void				ChangeTeam			(u8 team, u8 squad, u8 group);
+			void				SetVisualMemoryEnabled	(bool enabled);
 
 	// CAI_Stalker
 			CScriptGameObject	*GetCurrentWeapon	() const;
 			CScriptGameObject	*GetFood			() const;
 			CScriptGameObject	*GetMedikit			() const;
+			
+			void				SetPlayShHdRldSounds(bool val);
 
 	// CAI_Bloodsucker
-	
+			void				poltergeist_set_actor_ignore(bool ignore);
+			bool				poltergeist_get_actor_ignore();
 			void				set_invisible			(bool val);
 			bool				get_invisible			();
 			void				set_manual_invisibility (bool val);
@@ -295,6 +303,8 @@ public:
 			ETaskState			GetGameTaskState	(LPCSTR task_id);
 			void				SetGameTaskState	(ETaskState state, LPCSTR task_id);
 			void				GiveTaskToActor		(CGameTask* t, u32 dt, bool bCheckExisting, u32 t_timer);
+			void				SetActiveTask		(CGameTask* t);
+			bool				IsActiveTask		(CGameTask* t);
 			CGameTask*			GetTask				(LPCSTR id, bool only_inprocess);
 
 			
@@ -316,7 +326,14 @@ public:
 			void				ActorLookAtPoint	(Fvector point);
 			void				IterateInventory	(luabind::functor<void> functor, luabind::object object);
 			void				IterateInventoryBox	(luabind::functor<void> functor, luabind::object object);
+			void 				IterateRuck			(luabind::functor<bool> functor, luabind::object object);
+			void 				IterateBelt			(luabind::functor<bool> functor, luabind::object object);
+			void 				MoveItemToRuck		(CScriptGameObject* pItem);
+			void 				MoveItemToSlot		(CScriptGameObject* pItem, u16 slot_id);
+			void 				MoveItemToBelt		(CScriptGameObject* pItem);
 			void				MarkItemDropped		(CScriptGameObject *item);
+			void 				ItemAllowTrade		(CScriptGameObject* pItem);
+			void 				ItemDenyTrade		(CScriptGameObject* pItem);
 			bool				MarkedDropped		(CScriptGameObject *item);
 			void				UnloadMagazine		();
 
@@ -328,6 +345,7 @@ public:
 			void				GiveMoney			(int money);
 			u32					Money				();
 			void				MakeItemActive		(CScriptGameObject* pItem);
+			void 				TakeItem			(CScriptGameObject* pItem);
 			
 			void				SetRelation			(ALife::ERelationType relation, CScriptGameObject* pWhoToSet);
 			
@@ -449,6 +467,14 @@ public:
 			CScriptGameObject		*GetCurrentOutfit() const;
 			float					GetCurrentOutfitProtection(int hit_type);
 			
+			void					deadbody_closed			(bool status);
+			bool					deadbody_closed_status	();
+			void					deadbody_can_take		(bool status);
+			bool					deadbody_can_take_status();
+
+			void					can_select_weapon		(bool status);
+			bool					can_select_weapon		() const;
+			
 
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
@@ -546,11 +572,34 @@ public:
 			//////////////////////////////////////////////////////////////////////////
 			void				enable_attachable_item	(bool value);
 			bool				attachable_item_enabled	() const;
+			void				enable_night_vision		(bool value);
+			void				night_vision_allowed	(bool value);
+			bool				night_vision_enabled	() const;
+			void				enable_torch			(bool value);
+			bool				torch_enabled			() const;
 			// CustomZone
 			void				EnableAnomaly			();
 			void				DisableAnomaly			();
 			float				GetAnomalyPower			();
 			void				SetAnomalyPower			(float p);
+			void				ChangeAnomalyIdlePart(LPCSTR name, bool bIdleLight);
+			float 				GetAnomalyRadius();
+			void 				SetAnomalyRadius(float p);
+			void 				MoveAnomaly(Fvector pos);
+			
+			float 				GetArtefactHealthRestoreSpeed();
+			float 				GetArtefactRadiationRestoreSpeed();
+			float 				GetArtefactSatietyRestoreSpeed();
+			float 				GetArtefactPowerRestoreSpeed();
+			float 				GetArtefactBleedingRestoreSpeed();
+			float 				GetArtefactImmunity(ALife::EHitType hit_type);
+
+			void 				SetArtefactHealthRestoreSpeed(float value);
+			void 				SetArtefactRadiationRestoreSpeed(float value);
+			void 				SetArtefactSatietyRestoreSpeed(float value);
+			void 				SetArtefactPowerRestoreSpeed(float value);
+			void 				SetArtefactBleedingRestoreSpeed(float value);
+			void 				SetArtefactImmunity(ALife::EHitType hit_type, float value);
 			
 	
 			// HELICOPTER
@@ -565,7 +614,10 @@ public:
 			void				start_particles			(LPCSTR pname, LPCSTR bone);
 			void				stop_particles			(LPCSTR pname, LPCSTR bone);
 
-			Fvector				bone_position			(LPCSTR bone_name) const;
+			Fvector 			bone_position			(LPCSTR bone_name, bool bHud = false) const;
+			Fvector 			bone_direction			(LPCSTR bone_name, bool bHud = false) const;
+			LPCSTR 				bone_name				(u16 id, bool bHud = false);
+			u16					get_bone_id				(LPCSTR bone_name) const;
 			bool				is_body_turning			() const;
 			CPhysicsShell*		get_physics_shell		() const;
 			bool				weapon_strapped			() const;
@@ -593,6 +645,7 @@ public:
 			void				make_object_visible_somewhen		(CScriptGameObject *object);
 
 			CScriptGameObject	*item_in_slot						(u32 slot_id) const;
+			CScriptGameObject	*active_detector					() const;
 			u32					active_slot							();
 			void				activate_slot						(u32 slot_id);
 			void				enable_level_changer				(bool b);
@@ -615,6 +668,7 @@ public:
 			void				sound_prefix						(LPCSTR sound_prefix);
 
 			u32					location_on_path					(float distance, Fvector *location);
+			bool				is_there_items_to_pickup			() const;
 
 			bool				wounded								() const;
 			void				wounded								(bool value);
@@ -628,6 +682,10 @@ public:
 
 			bool				invulnerable						() const;
 			void				invulnerable						(bool invulnerable);
+			
+			LPCSTR				get_smart_cover_description			() const;
+			void 				set_visual_name						(LPCSTR visual, bool bForce);
+			LPCSTR				get_visual_name						() const;
 
 			bool				can_throw_grenades					() const;
 			void				can_throw_grenades					(bool can_throw_grenades);
@@ -669,6 +727,7 @@ public:
 			void				set_dest_smart_cover					(LPCSTR cover_id);
 			void				set_dest_smart_cover					();
 			CCoverPoint const*	get_dest_smart_cover					();
+			LPCSTR				get_dest_smart_cover_name				();
 
 			void				set_dest_loophole						(LPCSTR loophole_id);
 			void				set_dest_loophole						();
@@ -792,18 +851,6 @@ public:
 			void				ForceSetPosition(Fvector pos);
 			void				ForceSetPosition(Fvector pos, bool bActivate = false);
 
-			float				GetArtefactHealthRestoreSpeed();
-			float				GetArtefactRadiationRestoreSpeed();
-			float				GetArtefactSatietyRestoreSpeed();
-			float				GetArtefactPowerRestoreSpeed();
-			float				GetArtefactBleedingRestoreSpeed();
-
-			void				SetArtefactHealthRestoreSpeed(float value);
-			void				SetArtefactRadiationRestoreSpeed(float value);
-			void				SetArtefactSatietyRestoreSpeed(float value);
-			void				SetArtefactPowerRestoreSpeed(float value);
-			void				SetArtefactBleedingRestoreSpeed(float value);
-
 			//Phantom
 			void				PhantomSetEnemy(CScriptGameObject*);
 			//Actor
@@ -819,6 +866,14 @@ public:
 			float				GetActorRunBackCoef() const;
 			void				SetActorRunBackCoef(float run_back_coef);
 			//-Alundaio
+			
+			float				GetActorClimbCoef() const;
+			void				SetActorClimbCoef(float);
+			
+			void 				SetRemainingUses(u8 value);
+			void 				DestroyObject();
+			u8 					GetRemainingUses();
+			u8 					GetMaxUses();
 
 			/*added by Ray Twitty (aka Shadows) START*/
 			float				GetActorMaxWeight						() const;

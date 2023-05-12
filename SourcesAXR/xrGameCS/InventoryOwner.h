@@ -28,7 +28,7 @@ class CPurchaseList;
 class CWeapon;
 class CCustomOutfit;
 
-class CInventoryOwner : public CAttachmentOwner {							
+class CInventoryOwner : public CAttachmentOwner {
 public:
 					CInventoryOwner				();
 	virtual			~CInventoryOwner			();
@@ -113,7 +113,7 @@ protected:
 	bool				m_bAllowTalk;
 	bool				m_bAllowTrade;
 	bool				m_bAllowInvUpgrade;
-
+	bool				m_play_show_hide_reload_sounds;
 	u32					m_tmp_active_slot_num;
 	//////////////////////////////////////////////////////////////////////////
 	// сюжетная информация
@@ -146,6 +146,9 @@ public:
 	virtual float MaxCarryWeight			() const;
 
 	virtual CCustomOutfit*			GetOutfit()	const {return NULL;};
+	
+	bool CanPlayShHdRldSounds				() const {return m_play_show_hide_reload_sounds;};
+	void SetPlayShHdRldSounds				(bool play) {m_play_show_hide_reload_sounds = play;};
 
 	//////////////////////////////////////////////////////////////////////////
 	//игровые характеристики персонажа
@@ -223,6 +226,9 @@ private:
 	CTradeParameters			*m_trade_parameters;
 	CPurchaseList				*m_purchase_list;
 	BOOL						m_need_osoznanie_mode;
+	bool						m_deadbody_can_take;
+	bool						m_deadbody_closed;
+	bool is_alive();
 
 public:
 	IC		CTradeParameters	&trade_parameters		() const;
@@ -237,6 +243,10 @@ public:
 	virtual	float				missile_throw_force		(); 
 	virtual	bool				use_throw_randomness	();
 	virtual bool				NeedOsoznanieMode		() {return m_need_osoznanie_mode!=FALSE;}
+			void				deadbody_can_take		(bool status);
+	IC		bool				deadbody_can_take_status() const { return m_deadbody_can_take; }
+			void				deadbody_closed			(bool status);
+	IC		bool				deadbody_closed_status	() const { return m_deadbody_closed; }
 };
 
 #include "inventory_owner_inline.h"

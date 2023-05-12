@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 //	Module 		: ai_stalker.cpp
 //	Created 	: 25.02.2003
 //  Modified 	: 25.02.2003
@@ -280,6 +280,8 @@ void CAI_Stalker::reload			(LPCSTR section)
 	m_max_queue_interval_close		= pSettings->r_u32(*cNameSect(),"weapon_max_queue_interval_close");	// 500;
 
 	m_power_fx_factor				= pSettings->r_float(section,"power_fx_factor");
+	
+	m_can_select_weapon				= true;
 }
 
 void CAI_Stalker::Die				(CObject* who)
@@ -1188,3 +1190,17 @@ void CAI_Stalker::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)
 		}
 	}
 }
+
+void CAI_Stalker::ChangeVisual(shared_str NewVisual)
+{
+	if (!NewVisual.size()) return;
+	if (cNameVisual().size())
+	{
+		if (cNameVisual() == NewVisual) return;
+	}
+
+	cNameVisual_set(NewVisual);
+
+	Visual()->dcast_PKinematics()->CalculateBones_Invalidate();
+	Visual()->dcast_PKinematics()->CalculateBones(TRUE);
+};

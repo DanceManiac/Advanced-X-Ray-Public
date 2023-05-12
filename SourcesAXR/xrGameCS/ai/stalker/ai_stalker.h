@@ -213,6 +213,7 @@ public:
 	virtual	void						PHHit								(SHit &H);
 	virtual BOOL						feel_vision_isRelevant				(CObject* who);
 	virtual float						Radius								() const;
+	virtual void 						ChangeVisual						(shared_str NewVisual);
 #ifdef DEBUG
 	virtual void						OnHUDDraw							(CCustomHUD* hud);
 	virtual void						OnRender							();
@@ -285,6 +286,7 @@ public:
 private:
 	bool				m_can_kill_member;
 	bool				m_can_kill_enemy;
+	bool				m_can_select_weapon;
 	float				m_pick_distance;
 	u32					m_pick_frame_id;
 	collide::rq_results	rq_storage;
@@ -297,6 +299,8 @@ private:
 public:
 			bool						can_kill_member			();
 			bool						can_kill_enemy			();
+	bool								can_select_weapon				() {return m_can_select_weapon;};
+	void								can_select_weapon				(bool can) {m_can_select_weapon = can;};
 			float						pick_distance			();
 	IC		float						start_pick_distance		() const;
 			bool						fire_make_sense			();

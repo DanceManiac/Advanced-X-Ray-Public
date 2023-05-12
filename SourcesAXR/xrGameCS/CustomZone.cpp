@@ -1491,3 +1491,16 @@ void CCustomZone::o_switch_2_slow				()
 	}
 	processing_deactivate		();
 }
+
+void CCustomZone::ChangeIdleParticles(LPCSTR name, bool bIdleLight)
+{
+	StopIdleParticles(true);
+	m_sIdleParticles = name;
+	PlayIdleParticles(bIdleLight);
+}
+
+void CCustomZone::MoveScript(Fvector pos)
+{
+	XFORM().translate_over(pos);
+	OnMove();
+}

@@ -24,6 +24,7 @@ class CPoltergeist :	public CBaseMonster ,
 	bool					m_disable_hide;
 	bool					m_dead_always_visible;
 	bool					m_bPolterVisibleDie;
+	bool					m_actor_ignore;
 
 	SMotionVel				invisible_vel;
 
@@ -46,6 +47,9 @@ public:
 
 	virtual void	UpdateCL			();
 	virtual	void	shedule_Update		(u32 dt);
+	
+			void	set_actor_ignore	(bool const actor_ignore) { m_actor_ignore = actor_ignore; }
+			bool	get_actor_ignore	() const { return m_actor_ignore; }
 
 	virtual void	Die					(CObject* who);
 

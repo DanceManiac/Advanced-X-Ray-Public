@@ -17,8 +17,7 @@ public:
 	virtual BOOL			net_Spawn(CSE_Abstract* DC);
 
 	virtual	void			UseBy(CEntityAlive* npc);
-	virtual	bool			Empty() { return PortionsNum() == 0; };
-	int						PortionsNum()	const { return m_iPortionsNum; }
+	virtual	bool			Empty() { return m_iPortionsNum == 0; };
 	int						m_iUseFor;
 	float					m_fRestoreCondition;
 	void					ChangeInOutfit();

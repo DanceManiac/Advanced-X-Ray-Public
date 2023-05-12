@@ -65,6 +65,8 @@ public:
 
 				float	GetMaxPower						()							{return m_fMaxPower;}
 				void	SetMaxPower						(float p)					{m_fMaxPower = p;}
+	float GetEffectiveRadius() { return m_fEffectiveRadius; }
+	void SetEffectiveRadius(float p) { m_fEffectiveRadius = p; }
 
 	//вычисление силы хита в зависимости от расстояния до центра зоны
 	//относительный размер силы (от 0 до 1)
@@ -163,6 +165,8 @@ public:
 				bool		IsEnabled					()	{return m_eZoneState != eZoneStateDisabled; };
 				void		ZoneEnable					();	
 				void		ZoneDisable					();
+				void 		ChangeIdleParticles			(LPCSTR name, bool bIdleLight);
+				void 		MoveScript(Fvector pos);
 	EZoneState				ZoneState					() {return m_eZoneState;}
 protected:
 

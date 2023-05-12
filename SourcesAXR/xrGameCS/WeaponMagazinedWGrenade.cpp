@@ -1031,12 +1031,15 @@ void CWeaponMagazinedWGrenade::switch2_Unmis()
 
 	if (GrenadeLauncherAttachable() && IsGrenadeLauncherAttached())
 	{
-		if (m_sounds.FindSoundItem("sndReloadMisfire", false) && psWpnAnimsFlag.test(ANM_MISFIRE_GL))
-			PlaySound("sndReloadMisfire", get_LastFP());
-		else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
-			PlaySound("sndReloadEmpty", get_LastFP());
-		else
-			PlaySound("sndReload", get_LastFP());
+		if (m_sounds_enabled)
+		{
+			if (m_sounds.FindSoundItem("sndReloadMisfire", false) && psWpnAnimsFlag.test(ANM_MISFIRE_GL))
+				PlaySound("sndReloadMisfire", get_LastFP());
+			else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
+				PlaySound("sndReloadEmpty", get_LastFP());
+			else
+				PlaySound("sndReload", get_LastFP());
+		}
 
 		if (psWpnAnimsFlag.test(ANM_MISFIRE_GL))
 		{

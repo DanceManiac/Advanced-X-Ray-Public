@@ -130,6 +130,9 @@ CSE_ALifeTraderAbstract::CSE_ALifeTraderAbstract(LPCSTR caSection)
 	m_reputation				= NO_REPUTATION;
 #endif
 
+	m_deadbody_can_take			= true;
+	m_deadbody_closed			= false;
+
 	m_trader_flags.zero			();
 	m_trader_flags.set			(eTraderFlagInfiniteAmmo,FALSE);
 }
@@ -172,6 +175,9 @@ void CSE_ALifeTraderAbstract::STATE_Write	(NET_Packet &tNetPacket)
 	tNetPacket.w_s32			(NO_REPUTATION);
 #endif
 	save_data					(m_character_name, tNetPacket);
+	
+	tNetPacket.w_u8				( (m_deadbody_can_take)? 1 : 0 );
+	tNetPacket.w_u8				( (m_deadbody_closed)? 1 : 0 );
 }
 
 void CSE_ALifeTraderAbstract::STATE_Read	(NET_Packet &tNetPacket, u16 size)
@@ -239,6 +245,12 @@ void CSE_ALifeTraderAbstract::STATE_Read	(NET_Packet &tNetPacket, u16 size)
 	specific_character			();
 #endif
 
+	if ( m_wVersion > 124 )
+	{
+		u8 temp;
+		tNetPacket.r_u8	( temp );		m_deadbody_can_take = (temp == 1);
+		tNetPacket.r_u8	( temp );		m_deadbody_closed   = (temp == 1);
+	}
 }
 
 void CSE_ALifeTraderAbstract::OnChangeProfile(PropValue* sender)

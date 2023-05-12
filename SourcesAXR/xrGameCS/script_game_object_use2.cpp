@@ -6,6 +6,7 @@
 #include "script_sound_info.h"
 #include "script_monster_hit_info.h"
 #include "ai/monsters/monster_home.h"
+#include "ai/monsters/poltergeist/poltergeist.h"
 
 //////////////////////////////////////////////////////////////////////////
 //CAI_Bloodsucker
@@ -191,4 +192,26 @@ void CScriptGameObject::set_default_panic_threshold()
 	if (monster) monster->set_default_panic_threshold();
 }
 
+void   CScriptGameObject::poltergeist_set_actor_ignore (bool ignore)
+{
+	CPoltergeist *monster = smart_cast<CPoltergeist*>(&object());
+	if (!monster) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,
+			"object is not Poltergeist to call poltergeist_set_actor_ignore");
+		return;
+	}
 
+	monster->set_actor_ignore(ignore);
+}
+
+bool   CScriptGameObject::poltergeist_get_actor_ignore ()
+{
+	CPoltergeist *monster = smart_cast<CPoltergeist*>(&object());
+	if (!monster) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,
+			"object is not Poltergeist to call poltergeist_get_actor_ignore");
+		return false;
+	}
+
+	return	monster->get_actor_ignore();
+}

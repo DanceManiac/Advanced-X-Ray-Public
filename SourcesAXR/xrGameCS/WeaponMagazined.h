@@ -31,6 +31,7 @@ protected:
 	ESoundTypes		m_eSoundReload;
 	ESoundTypes		m_eSoundClose;
 	ESoundTypes		m_eSoundReflect;
+	bool			m_sounds_enabled;
 	// General
 	//кадр момента пересчета UpdateSounds
 	u32				dwUpdateSounds_Frame;

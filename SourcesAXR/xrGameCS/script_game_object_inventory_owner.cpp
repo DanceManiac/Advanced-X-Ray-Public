@@ -45,6 +45,7 @@
 #include "smart_cover_object.h"
 #include "smart_cover.h"
 #include "CustomOutfit.h"
+#include "Torch.h"
 
 //Alundaio
 #include "inventory_upgrade_manager.h"
@@ -273,6 +274,117 @@ void CScriptGameObject::IterateInventoryBox	(luabind::functor<void> functor, lua
 	}
 }
 
+void CScriptGameObject::IterateBelt(luabind::functor<bool> functor, luabind::object object)
+{
+	CInventoryOwner* inventory_owner = smart_cast<CInventoryOwner*>(&this->object());
+	if (!inventory_owner)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+		                                "CScriptGameObject::IterateBelt non-CInventoryOwner object !!!");
+		return;
+	}
+
+	TIItemContainer::iterator I = inventory_owner->inventory().m_belt.begin();
+	TIItemContainer::iterator E = inventory_owner->inventory().m_belt.end();
+	for (; I != E; ++I)
+		if (functor(object, (*I)->object().lua_game_object()) == true)
+			return;
+}
+
+void CScriptGameObject::IterateRuck(luabind::functor<bool> functor, luabind::object object)
+{
+	CInventoryOwner* inventory_owner = smart_cast<CInventoryOwner*>(&this->object());
+	if (!inventory_owner)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+		                                "CScriptGameObject::IterateRuck non-CInventoryOwner object !!!");
+		return;
+	}
+
+	TIItemContainer::iterator I = inventory_owner->inventory().m_ruck.begin();
+	TIItemContainer::iterator E = inventory_owner->inventory().m_ruck.end();
+	for (; I != E; ++I)
+		if (functor(object, (*I)->object().lua_game_object()) == true)
+			return;
+}
+
+void CScriptGameObject::MoveItemToRuck(CScriptGameObject* pItem)
+{
+	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
+	CInventoryItem* item = smart_cast<CInventoryItem*>(&pItem->object());
+	if (!owner)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CScriptGameObject::MoveItemToRuck non-CInventoryOwner object !!!");
+		return;
+	}
+	
+	if (!owner->inventory().CanPutInRuck(item))
+		return;
+	
+	NET_Packet P;
+	CGameObject::u_EventGen(P, GEG_PLAYER_ITEM2RUCK, owner->object_id());
+	P.w_u16(item->object().ID());
+	CGameObject::u_EventSend(P);
+}
+
+void CScriptGameObject::MoveItemToSlot(CScriptGameObject* pItem, u16 slot_id)
+{
+	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
+	CInventoryItem* item = smart_cast<CInventoryItem*>(&pItem->object());
+	if (!owner)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CScriptGameObject::MoveItemToSlot non-CInventoryOwner object !!!");
+		return;
+	}
+	
+	// Have a crash if you want
+	/*
+	if (!owner->inventory().CanPutInSlot(item, slot_id))
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CScriptGameObject::MoveItemToSlot can't put in slot !!!");
+		return;
+	}
+	*/
+	
+	CInventoryItem* item_in_slot = owner->inventory().ItemFromSlot(slot_id);
+
+	NET_Packet P;
+	if (item_in_slot)
+	{
+		CGameObject::u_EventGen(P, GEG_PLAYER_ITEM2RUCK, owner->object_id());
+		P.w_u16(item_in_slot->object().ID());
+		CGameObject::u_EventSend(P);
+	}
+	
+	CGameObject::u_EventGen(P, GEG_PLAYER_ITEM2SLOT, owner->object_id());
+	P.w_u16(item->object().ID());
+	P.w_u16(slot_id);
+	CGameObject::u_EventSend(P);
+}
+
+void CScriptGameObject::MoveItemToBelt(CScriptGameObject* pItem)
+{
+	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
+	CInventoryItem* item = smart_cast<CInventoryItem*>(&pItem->object());
+	if (!owner)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CScriptGameObject::MoveItemToBelt non-CInventoryOwner object !!!");
+		return;
+	}
+	
+	if (!owner->inventory().CanPutInBelt(item))
+		return;
+	
+	NET_Packet P;
+	CGameObject::u_EventGen(P, GEG_PLAYER_ITEM2BELT, owner->object_id());
+	P.w_u16(item->object().ID());
+	CGameObject::u_EventSend(P);
+}
+
 void CScriptGameObject::MarkItemDropped		(CScriptGameObject *item)
 {
 	CInventoryOwner			*inventory_owner = smart_cast<CInventoryOwner*>(&object());
@@ -370,7 +482,51 @@ void CScriptGameObject::MakeItemActive(CScriptGameObject* pItem)
 	CGameObject::u_EventGen			(P, GEG_PLAYER_ACTIVATE_SLOT, owner->object_id());
 	P.w_u32							(slot);
 	CGameObject::u_EventSend		(P);
+}
 
+void CScriptGameObject::TakeItem(CScriptGameObject* pItem)
+{
+	if (!pItem)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "!CScriptGameObject::TakeItem | cannot take NULL item");
+		return;
+	}
+
+	CInventoryItem* pIItem = smart_cast<CInventoryItem*>(&pItem->object());
+	if (!pIItem)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "!CScriptGameObject::TakeItem | Cannot take not CInventoryItem item");
+		return;
+	}
+
+	// In case of an existing parent, transfer item as usual
+	// probably doesn't work on NPC for now and needs fixing if needed in the future
+	if (pIItem->object().H_Parent())
+	{
+		const CInventoryOwner* inventory_owner = smart_cast<CInventoryOwner*>(pIItem->object().H_Parent());
+		const CInventoryBox* inventory_box = smart_cast<CInventoryBox*>(pIItem->object().H_Parent());
+		const CGameObject* parentGO = smart_cast<CGameObject*>(pIItem->object().H_Parent());
+		if ((inventory_owner || inventory_box) && parentGO)
+		{
+			NET_Packet P;
+			CGameObject::u_EventGen(P, GE_TRADE_SELL, parentGO->ID());
+			P.w_u16(pIItem->object().ID());
+			CGameObject::u_EventSend(P);
+
+			CGameObject::u_EventGen(P, GE_TRADE_BUY, object().ID());
+			P.w_u16(pIItem->object().ID());
+			CGameObject::u_EventSend(P);
+		}
+		else
+		{
+			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "!CScriptGameObject::TakeItem | Unknown parent type found?");
+		}
+
+		return; // added return here just in case parent isn't identified as inventory owner or a box
+	}
+
+	// In case of no parent, do a take action
+	Game().SendPickUpEvent(object().ID(), pIItem->object().ID());
 }
 
 //передаче вещи из своего инвентаря в инвентарь партнера
@@ -949,6 +1105,59 @@ bool CScriptGameObject::attachable_item_enabled	() const
 	return									(attachable_item->enabled());
 }
 
+void CScriptGameObject::night_vision_allowed(bool value)
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member night_vision_allowed!");
+		return;
+	}
+	pActor->SetNightVisionAllowed(value);
+}
+
+void CScriptGameObject::enable_night_vision	(bool value)
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member enable_night_vision!");
+		return;
+	}
+	pActor->SwitchNightVision(value);
+}
+
+bool CScriptGameObject::night_vision_enabled	() const
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member night_vision_enabled!");
+		return								(false);
+	}
+	return									(pActor->GetNightVisionStatus());
+}
+
+void CScriptGameObject::enable_torch	(bool value)
+{
+	CTorch									*torch = smart_cast<CTorch*>(&object());
+	if (!torch) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CTorch : cannot access class member enable_torch!");
+		return;
+	}
+	torch->Switch							(value);
+}
+
+bool CScriptGameObject::torch_enabled			() const
+{
+	CTorch									*torch = smart_cast<CTorch*>(&object());
+	if (!torch) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CTorch : cannot access class member torch_enabled!");
+		return								(false);
+	}
+	return									(torch->torch_active());
+}
+
 void  CScriptGameObject::RestoreWeapon(int mode)
 {
 	switch (mode)
@@ -1071,9 +1280,38 @@ CScriptGameObject *CScriptGameObject::item_in_slot	(u32 slot_id) const
 	return			(result ? result->object().lua_game_object() : 0);
 }
 
+CScriptGameObject *CScriptGameObject::active_detector() const
+{
+	CInventoryOwner	*inventory_owner = smart_cast<CInventoryOwner*>(&object());
+	if (!inventory_owner) {
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member active_detector!");
+		return		(0);
+	}
+
+	CInventoryItem	*result = inventory_owner->inventory().ItemFromSlot(DETECTOR_SLOT);
+	if (result) {
+		CCustomDetector *detector = smart_cast<CCustomDetector*>(result);
+		VERIFY(detector);
+		return			(detector->IsWorking() ? result->object().lua_game_object() : 0);
+	}
+	return (0);
+}
+
 void CScriptGameObject::GiveTaskToActor(CGameTask* t, u32 dt, bool bCheckExisting, u32 t_timer)
 {
 	Level().GameTaskManager().GiveGameTaskToActor(t, dt, bCheckExisting, t_timer);
+}
+
+void CScriptGameObject::SetActiveTask(CGameTask* t)
+{
+	VERIFY(t);
+	Level().GameTaskManager().SetActiveTask(t);
+}
+
+bool CScriptGameObject::IsActiveTask(CGameTask* t)
+{
+	VERIFY(t);
+	return Level().GameTaskManager().ActiveTask(t->GetTaskType())==t;
 }
 
 CGameTask* CScriptGameObject::GetTask(LPCSTR id, bool only_inprocess)
@@ -1398,6 +1636,17 @@ bool CScriptGameObject::take_items_enabled						() const
 	}
 
 	return								( stalker->take_items_enabled() );
+}
+
+void CScriptGameObject::SetPlayShHdRldSounds(bool val)
+{
+	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
+	if (!owner) 
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member SetPlayShHdRldSounds!");
+		return;
+	}
+	owner->SetPlayShHdRldSounds(val);
 }
 
 /*added by Ray Twitty (aka Shadows) START*/
@@ -1767,3 +2016,53 @@ void CScriptGameObject::SetActorRunBackCoef(float run_back_coef)
 	pActor->m_fRunBackFactor = run_back_coef;
 }
 //-Alundaio
+
+void CScriptGameObject::ItemAllowTrade(CScriptGameObject* pItem)
+{
+	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
+	CInventoryItem* item = smart_cast<CInventoryItem*>(&pItem->object());
+	if (!owner || !item)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CScriptGameObject::ItemAllowTrade non-CInventoryOwner object !!!");
+		return;
+	}
+	item->AllowTrade();
+}
+
+void CScriptGameObject::ItemDenyTrade(CScriptGameObject* pItem)
+{
+	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
+	CInventoryItem* item = smart_cast<CInventoryItem*>(&pItem->object());
+	if (!owner || !item)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CScriptGameObject::ItemAllowTrade non-CInventoryOwner object !!!");
+		return;
+	}
+	item->DenyTrade();
+}
+
+//Arkada [begin]
+float CScriptGameObject::GetActorClimbCoef() const
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member GetActorClimbCoef!");
+		return false;
+	}
+	return pActor->m_fClimbFactor;
+}
+
+void CScriptGameObject::SetActorClimbCoef(float k)
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member SetActorClimbCoef!");
+		return;
+	}
+	pActor->m_fClimbFactor = k;
+}
+//Arkada [end]

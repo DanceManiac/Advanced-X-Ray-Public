@@ -34,6 +34,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_eSoundEmptyClick			= ESoundTypes(SOUND_TYPE_WEAPON_EMPTY_CLICKING | eSoundType);
 	m_eSoundReload				= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING | eSoundType);
 	m_eSoundClose				= ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING);
+	m_sounds_enabled			= true;
 
 	psWpnAnimsFlag = { 0 };
 	
@@ -539,6 +540,7 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 	HUD_VisualBulletUpdate();
 
 	inherited::OnStateSwitch(S);
+	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(this->H_Parent());
 	switch (S)
 	{
 	case eFiremodeNext:
@@ -558,8 +560,8 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 		switch2_Fire	();
 		break;
 	case eUnMisfire:
-		/*if (owner)
-			m_sounds_enabled = owner->CanPlayShHdRldSounds();*/
+		if (owner)
+			m_sounds_enabled = owner->CanPlayShHdRldSounds();
 		switch2_Unmis();
 		break;
 	case eMisfire:
@@ -570,12 +572,18 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 		switch2_Empty	();
 		break;
 	case eReload:
+		if(owner)
+			m_sounds_enabled = owner->CanPlayShHdRldSounds();
 		switch2_Reload	();
 		break;
 	case eShowing:
+		if(owner)
+			m_sounds_enabled = owner->CanPlayShHdRldSounds();
 		switch2_Showing	();
 		break;
 	case eHiding:
+		if(owner)
+			m_sounds_enabled = owner->CanPlayShHdRldSounds();
 		switch2_Hiding	();
 		break;
 	case eHidden:
@@ -977,6 +985,8 @@ void CWeaponMagazined::switch2_Empty()
 }
 void CWeaponMagazined::PlayReloadSound()
 {
+	if(!m_sounds_enabled)
+		return;
 	if (iAmmoElapsed == 0)
 		if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
 			PlaySound("sndReloadEmpty", get_LastFP());
@@ -998,11 +1008,14 @@ void CWeaponMagazined::switch2_Hiding()
 {
 	OnZoomOut();
 	CWeapon::FireEnd();
-	
-	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY) && WeaponSoundExist(m_section_id.c_str(), "snd_close"))
-		PlaySound("sndClose", get_LastFP());
-	else
-		PlaySound("sndHide", get_LastFP());
+
+	if(m_sounds_enabled)
+	{
+		if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY) && WeaponSoundExist(m_section_id.c_str(), "snd_close"))
+			PlaySound("sndClose", get_LastFP());
+		else
+			PlaySound("sndHide", get_LastFP());
+	}
 
 	PlayAnimHide		();
 	SetPending			(TRUE);
@@ -1012,14 +1025,17 @@ void CWeaponMagazined::switch2_Unmis()
 {
 	VERIFY(GetState() == eUnMisfire);
 
-	if (m_sounds.FindSoundItem("sndReloadMisfire", false) && psWpnAnimsFlag.test(ANM_MISFIRE))
-		PlaySound("sndReloadMisfire", get_LastFP());
-	else if (m_sounds.FindSoundItem("sndReloadJammed", false) && isHUDAnimationExist("anm_reload_jammed"))
-		PlaySound("sndReloadJammed", get_LastFP());
-	else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
-		PlaySound("sndReloadEmpty", get_LastFP());
-	else
-		PlayReloadSound();
+	if (m_sounds_enabled)
+	{
+		if (m_sounds.FindSoundItem("sndReloadMisfire", false) && psWpnAnimsFlag.test(ANM_MISFIRE))
+			PlaySound("sndReloadMisfire", get_LastFP());
+		else if (m_sounds.FindSoundItem("sndReloadJammed", false) && isHUDAnimationExist("anm_reload_jammed"))
+			PlaySound("sndReloadJammed", get_LastFP());
+		else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
+			PlaySound("sndReloadEmpty", get_LastFP());
+		else
+			PlayReloadSound();
+	}
 
 	if (psWpnAnimsFlag.test(ANM_MISFIRE) || isHUDAnimationExist("anm_reload_jammed"))
 	{
@@ -1047,7 +1063,8 @@ void CWeaponMagazined::switch2_Hidden()
 }
 void CWeaponMagazined::switch2_Showing()
 {
-	PlaySound			("sndShow",get_LastFP());
+	if(m_sounds_enabled)
+		PlaySound("sndShow",get_LastFP());
 
 	SetPending			(TRUE);
 	PlayAnimShow		();

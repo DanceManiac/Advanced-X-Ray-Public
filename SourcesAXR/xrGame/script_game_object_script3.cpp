@@ -497,6 +497,8 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("set_actor_run_coef",				&CScriptGameObject::SetActorRunCoef)
 		.def("get_actor_runback_coef",			&CScriptGameObject::GetActorRunBackCoef)
 		.def("set_actor_runback_coef",			&CScriptGameObject::SetActorRunBackCoef)
+		.def("get_actor_climb_coef",			&CScriptGameObject::GetActorClimbCoef)
+		.def("set_actor_climb_coef",			&CScriptGameObject::SetActorClimbCoef)
 		
 		.def("set_remaining_uses", 				&CScriptGameObject::SetRemainingUses)
 		.def("get_remaining_uses", 				&CScriptGameObject::GetRemainingUses)

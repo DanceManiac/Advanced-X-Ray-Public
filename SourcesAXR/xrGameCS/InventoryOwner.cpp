@@ -42,6 +42,10 @@ CInventoryOwner::CInventoryOwner			()
 	m_known_info_registry		= xr_new<CInfoPortionWrapper>();
 	m_tmp_active_slot_num		= NO_ACTIVE_SLOT;
 	m_need_osoznanie_mode		= FALSE;
+	
+	m_deadbody_can_take				= true;
+	m_deadbody_closed				= false;
+	m_play_show_hide_reload_sounds	= true;
 
 	m_trader_flags.zero();
 }
@@ -140,7 +144,8 @@ BOOL CInventoryOwner::net_Spawn		(CSE_Abstract* DC)
 			dialog_manager->SetDefaultStartDialog(CharacterInfo().StartDialog());
 		}
 		m_game_name			= pTrader->m_character_name;
-
+		m_deadbody_can_take = pTrader->m_deadbody_can_take;
+		m_deadbody_closed   = pTrader->m_deadbody_closed;
 		m_trader_flags.assign(pTrader->m_trader_flags.get());
 	}
 	else
@@ -656,4 +661,39 @@ void CInventoryOwner::AfterLoad()
 CInventoryItem* CInventoryOwner::GetCurrentTorch() const
 {
 	return inventory().ItemFromSlot(TORCH_SLOT);
+}
+
+bool CInventoryOwner::is_alive()
+{
+	CEntityAlive* pEntityAlive = smart_cast<CEntityAlive*>(this);
+	R_ASSERT( pEntityAlive );
+	return (!!pEntityAlive->g_Alive());
+}
+
+void CInventoryOwner::deadbody_closed( bool status )
+{
+	if (is_alive())
+		return;
+
+	m_deadbody_closed = status;
+
+	NET_Packet P;
+	CGameObject::u_EventGen( P, GE_INV_OWNER_STATUS, object_id() );
+	P.w_u8( (m_deadbody_can_take)? 1 : 0 );
+	P.w_u8( (m_deadbody_closed)? 1 : 0 );
+	CGameObject::u_EventSend( P );
+}
+
+void CInventoryOwner::deadbody_can_take( bool status )
+{
+	if ( is_alive() )
+		return;
+
+	m_deadbody_can_take = status;
+
+	NET_Packet P;
+	CGameObject::u_EventGen( P, GE_INV_OWNER_STATUS, object_id() );
+	P.w_u8( (m_deadbody_can_take)? 1 : 0 );
+	P.w_u8( (m_deadbody_closed)? 1 : 0 );
+	CGameObject::u_EventSend( P );
 }

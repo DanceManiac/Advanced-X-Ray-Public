@@ -28,10 +28,11 @@ public:
 	virtual	void			UseBy						(CEntityAlive* npc);
 	virtual void			save						(NET_Packet &output_packet);
 	virtual void			load						(IReader &input_packet);
-	virtual	bool			Empty						()						{return PortionsNum()==0;};
+	virtual	bool			Empty						()						{return m_iPortionsNum==0;};
 	virtual	u32				Cost						()	const;
 	virtual float			Weight						()	const;
-			int				PortionsNum					()	const				{return m_iPortionsNum;}
+			void SetRemainingUses(u8 value) { if (value > m_iConstPortions) return; m_iPortionsNum = value; };
+			u8 GetMaxUses() const { return m_iConstPortions; };
 
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}

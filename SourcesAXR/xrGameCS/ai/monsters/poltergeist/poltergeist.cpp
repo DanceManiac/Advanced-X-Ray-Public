@@ -30,6 +30,7 @@ CPoltergeist::CPoltergeist()
 	
 	m_flame						= 0;
 	m_tele						= 0;
+	m_actor_ignore				= false;
 }
 
 CPoltergeist::~CPoltergeist()
@@ -140,6 +141,7 @@ void CPoltergeist::reinit()
 	
 	m_height							= 0.3f;
 	time_height_updated					= 0;
+	m_actor_ignore		= false;
 	
 	EnableHide							();
 }
