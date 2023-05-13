@@ -335,12 +335,10 @@ float		ps_r2_rain_drops_speed = 1.25f;
 
 Flags32		ps_actor_shadow_flags = { 0 };
 
-Flags32		ps_r2_postscreen_flags = { R_FLAG_VIGNETTE
-	| R_FLAG_HUD_MASK
+Flags32		ps_r2_postscreen_flags = { R_FLAG_HUD_MASK
 	| R_FLAG_HUD_DYN_EFFECTS
 	| R2FLAG_RAIN_DROPS
 	| R_FLAG_CHROMATIC_ABERRATION
-	| R_FLAG_FILM_GRAIN
 };
 
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
@@ -381,9 +379,7 @@ float ps_r2_reflections_distance = 300.0f;
 Flags32 psDeviceFlags2 = { 0 };
 
 //Static on R2+
-Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP
-	| R2FLAG_STATIC_SUN
-	};
+Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 
 //Screen Space Shaders Stuff
 //Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
