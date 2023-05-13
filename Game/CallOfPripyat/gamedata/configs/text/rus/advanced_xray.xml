@@ -597,4 +597,19 @@
 	<string id="ui_mm_film_grain_hint">
 		<text>Эта опция включает эффект зернистости в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_death_cam_mode">
+		<text>Камера при смерти</text>
+	</string>
+	<string id="freelook">
+		<text>Оригинальная</text>
+	</string>
+	<string id="fixedlook">
+		<text>С фиксацией к телу</text>
+	</string>
+	<string id="firsteye">
+		<text>От первого лица</text>
+	</string>
+	<string id="ui_mm_death_cam_mode_hint">
+		<text>Данная опция позволяет настроить поведение камеры во время смерти героя.</text>
+	</string>
 </string_table>

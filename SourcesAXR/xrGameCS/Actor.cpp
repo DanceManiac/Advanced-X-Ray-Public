@@ -85,17 +85,15 @@ static float ICoincidenced = 0;
 //if we are not current control entity we use this value
 const float	CActor::cam_inert_value = 0.7f;
 
-
 //skeleton
-
-
-
 static Fbox		bbStandBox;
 static Fbox		bbCrouchBox;
 static Fvector	vFootCenter;
 static Fvector	vFootExt;
 
 Flags32			psActorFlags={/*AF_DYNAMIC_MUSIC|*/AF_GODMODE_RT};
+
+u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);;
 
 ENGINE_API extern int ps_r__ShaderNVG;
 
@@ -792,13 +790,11 @@ void CActor::Die	(CObject* who)
 		};
 	};
 
-	pcstr m_sDeathCamera = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "death_camera_mode", "freelook");
-
-	if (xr_strcmp("freelook", m_sDeathCamera) == 0)
+	if (death_camera_mode == 1)
 		cam_Set(eacFreeLook);
-	else if (xr_strcmp("fixedlook", m_sDeathCamera) == 0)
+	else if (death_camera_mode == 2)
 		cam_Set(eacLookAt);
-	else if (xr_strcmp("firsteye", m_sDeathCamera) == 0)
+	else if (death_camera_mode == 3)
 		cam_Set(eacFirstEye);
 
 	mstate_wishful	&=		~mcAnyMove;
