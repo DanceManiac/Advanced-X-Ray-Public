@@ -114,7 +114,7 @@ void	game_cl_GameState::net_import_state	(NET_Packet& P)
 				OnPlayerVoted(IP);
 			//***********************************************
 
-			players_new.insert(mk_pair(ID,IP));
+			players_new.insert(std::make_pair(ID,IP));
 			players.erase(I);
 		}else{
 			IP = createPlayerState();
@@ -122,7 +122,7 @@ void	game_cl_GameState::net_import_state	(NET_Packet& P)
 
 			if (Type() != eGameIDSingle) OnPlayerFlagsChanged(IP);
 
-			players_new.insert(mk_pair(ID,IP));
+			players_new.insert(std::make_pair(ID,IP));
 		}
 		if (IP->testFlag(GAME_PLAYER_FLAG_LOCAL) ) local_player = IP;
 	}
@@ -210,7 +210,7 @@ void game_cl_GameState::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			P.r_stringZ(PlayerName);
 			if (Type() != eGameIDSingle)
 			{
-				players.insert(mk_pair(newClientId, PS));
+				players.insert(std::make_pair(newClientId, PS));
 				OnNewPlayerConnected(newClientId);
 			}
 			sprintf_s(Text, "%s%s %s%s",Color_Teams[0],PlayerName,Color_Main,*st.translate("mp_connected"));

@@ -988,8 +988,8 @@ void CHW::UpdateViews()
 	//R = m_pSwapChain->GetBuffer( 0, __uuidof( ID3DTexture2D ), (LPVOID*)&pBuffer );
 	//R_CHK(R);
 
-	viewPortsRTZB.insert(mk_pair(MAIN_VIEWPORT, HWViewPortRTZB()));
-	viewPortsRTZB.insert(mk_pair(SECONDARY_WEAPON_SCOPE, HWViewPortRTZB()));
+	viewPortsRTZB.insert(std::make_pair(MAIN_VIEWPORT, HWViewPortRTZB()));
+	viewPortsRTZB.insert(std::make_pair(SECONDARY_WEAPON_SCOPE, HWViewPortRTZB()));
 
 	ID3DTexture2D* temp1;
 	ID3DTexture2D* temp2;

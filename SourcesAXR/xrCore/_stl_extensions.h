@@ -207,7 +207,7 @@ template	<typename K, class V, class _Traits = std::equal_to<K>, typename alloca
 
 #endif
 
-template	<class _Ty1, class _Ty2> inline	std::pair<_Ty1, _Ty2>		mk_pair		(_Ty1 _Val1, _Ty2 _Val2)	{	return (std::pair<_Ty1, _Ty2>(_Val1, _Val2));	}
+template	<class _Ty1, class _Ty2> inline	std::pair<_Ty1, _Ty2>		mk_pair(_Ty1 _Val1, _Ty2 _Val2)	{	return (std::pair<_Ty1, _Ty2>(_Val1, _Val2));	}
 
 struct pred_str
 {	
