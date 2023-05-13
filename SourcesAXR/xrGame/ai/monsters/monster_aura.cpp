@@ -83,6 +83,9 @@ float   monster_aura::calculate(float distance) const
 	float minDistance = m_max_distance;	// минимальное расстояние, на котором эффект будет минимальным
 	float effectorForce = maxPower;		// начальное значение силы эффекта
 
+	if (distance > minDistance)
+		return 0;
+
 	effectorForce = (minPower - maxPower) * (distance - maxDistance) / (minDistance - maxDistance) + maxPower;
 
 	clamp(effectorForce, minPower, maxPower);
