@@ -2,7 +2,7 @@
 #include "physics_shell_animated.h"
 
 #include	"physicsshell.h"
-
+#include	"PhysicsShellHolder.h" // need it to properly do cast to IPhysicsShellHolder, otherwise it cast to whatever on its mind
 #include	"../Include/xrRender/Kinematics.h"
 
 physics_shell_animated::physics_shell_animated( CGameObject* O, bool _update_velocity ): 
