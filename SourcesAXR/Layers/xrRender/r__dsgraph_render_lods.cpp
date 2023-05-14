@@ -15,8 +15,8 @@ extern float	r_ssaLOD_B;
 ICF		bool	pred_dot		(const std::pair<float,u32>& _1, const std::pair<float,u32>& _2)	{ return _1.first < _2.first; }
 void R_dsgraph_structure::r_dsgraph_render_lods	(bool _setup_zb, bool _clear)
 {
-	if (_setup_zb)	mapLOD.getLR	(lstLODs)	;	// front-to-back
-	else			mapLOD.getRL	(lstLODs)	;	// back-to-front
+	if (_setup_zb)	mapLOD.get_left_right(lstLODs)	;	// front-to-back
+	else			mapLOD.get_right_left(lstLODs)	;	// back-to-front
 	if (lstLODs.empty())			return		;
  
 	// *** Fill VB and generate groups
@@ -36,7 +36,7 @@ void R_dsgraph_structure::r_dsgraph_render_lods	(bool _setup_zb, bool _clear)
 
 	for (u32 i=0; i<lstLODs.size(); i++)
 	{
-		const u32	iBatchSize	= _min( lstLODs.size()-i, uiImpostersFit);
+		const u32	iBatchSize = _min(lstLODs.size() - i, uiImpostersFit);
 		int			cur_count	= 0;
 		u32			vOffset;
 		FLOD::_hw*	V			= (FLOD::_hw*)RCache.Vertex.Lock	(iBatchSize*uiVertexPerImposter,firstV->geom->vb_stride, vOffset);

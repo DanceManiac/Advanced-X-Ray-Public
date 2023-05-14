@@ -34,7 +34,7 @@ void	CResourceManager::OnDeviceDestroy(BOOL )
 	m_blenders.clear	();
 
 	// destroy TD
-	for (map_TDIt _t=m_td.begin(); _t!=m_td.end(); _t++)
+	for (auto _t = m_td.begin(); _t != m_td.end(); _t++)
 	{
 		xr_free		((char*&)_t->first);
 		xr_free		((char*&)_t->second.T);

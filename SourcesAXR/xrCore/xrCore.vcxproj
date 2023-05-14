@@ -774,6 +774,7 @@
     <ClInclude Include="string_concatenations_inline.h" />
     <ClInclude Include="SubAlloc.hpp" />
     <ClInclude Include="vector.h" />
+    <ClInclude Include="xalloc.h" />
     <ClInclude Include="xrCore.h" />
     <ClInclude Include="xrCore_platform.h" />
     <ClInclude Include="xrDebug.h" />
@@ -790,6 +791,7 @@
     <ClInclude Include="xrstring.h" />
     <ClInclude Include="xrSyncronize.h" />
     <ClInclude Include="xr_ini.h" />
+    <ClInclude Include="xr_map.h" />
     <ClInclude Include="xr_resource.h" />
     <ClInclude Include="xr_shared.h" />
     <ClInclude Include="xr_trims.h" />
