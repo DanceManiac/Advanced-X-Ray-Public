@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "uidialogwnd.h"
+#include "UIBtnHint.h"
 
 CUIDialogWnd:: CUIDialogWnd()
 {
@@ -54,6 +55,9 @@ void CUIDialogWnd::ShowDialog(bool bDoHideIndicators)
 
 void CUIDialogWnd::HideDialog()
 {
+	if (g_statHint->IsShown())
+		g_statHint->Discard();
+
 	if (IsShown() && GetHolder())
 		GetHolder()->StopDialog	(this);
 }
