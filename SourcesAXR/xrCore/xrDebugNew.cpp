@@ -32,6 +32,7 @@ static BOOL bException = FALSE;
 #include <Shellapi.h>
 
 #define USE_OWN_ERROR_MESSAGE_WINDOW
+#define USE_OWN_MINI_DUMP
 
 XRCORE_API	xrDebug		Debug;
 
@@ -195,19 +196,26 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 				MB_CANCELTRYCONTINUE|MB_ICONERROR|MB_SYSTEMMODAL
 			);
 
-		switch (result) {
-			case IDCANCEL : {
-#		ifdef USE_BUG_TRAP
+		switch (result)
+		{
+			case IDCANCEL :
+			{
+#ifdef USE_BUG_TRAP
 				BT_SetUserMessage	(assertion_info);
-#		endif // USE_BUG_TRAP
+#endif // USE_BUG_TRAP
+				if (strstr(GetCommandLine(), "-show_log"))
+					ShellExecute(nullptr, "open", logFullName(), nullptr, nullptr, SW_SHOWNORMAL);
+
 				DEBUG_INVOKE;
 				break;
 			}
-			case IDTRYAGAIN : {
+			case IDTRYAGAIN :
+			{
 				error_after_dialog	= false;
 				break;
 			}
-			case IDCONTINUE : {
+			case IDCONTINUE :
+			{
 				error_after_dialog	= false;
 				ignore_always	= true;
 				break;
@@ -220,6 +228,7 @@ void xrDebug::backend	(const char *expression, const char *description, const ch
 #		endif // USE_BUG_TRAP
 			if (strstr(GetCommandLine(), "-show_log"))
 				ShellExecute(nullptr, "open", logFullName(), nullptr, nullptr, SW_SHOWNORMAL);
+
 		DEBUG_INVOKE;
 #	endif // USE_OWN_ERROR_MESSAGE_WINDOW
 #endif
@@ -457,102 +466,102 @@ extern "C" BOOL __stdcall SetCrashHandlerFilter ( PFNCHFILTFN pFn );
 static UnhandledExceptionFilterType	*previous_filter = 0;
 
 #ifdef USE_OWN_MINI_DUMP
-typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
-										 CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
-										 CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
-										 CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam
-										 );
+typedef BOOL(WINAPI* MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
+	CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
+	CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
+	CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam
+	);
 
-void save_mini_dump			(_EXCEPTION_POINTERS *pExceptionInfo)
+void save_mini_dump(_EXCEPTION_POINTERS* pExceptionInfo)
 {
 	// firstly see if dbghelp.dll is around and has the function we need
 	// look next to the EXE first, as the one in System32 might be old 
 	// (e.g. Windows 2000)
-	HMODULE hDll	= NULL;
+	HMODULE hDll = NULL;
 	string_path		szDbgHelpPath;
 
-	if (GetModuleFileName( NULL, szDbgHelpPath, _MAX_PATH ))
+	if (GetModuleFileName(NULL, szDbgHelpPath, _MAX_PATH))
 	{
-		char *pSlash = strchr( szDbgHelpPath, '\\' );
+		char* pSlash = strchr(szDbgHelpPath, '\\');
 		if (pSlash)
 		{
-			xr_strcpy	(pSlash+1, sizeof(szDbgHelpPath)-(pSlash - szDbgHelpPath), "DBGHELP.DLL" );
-			hDll = ::LoadLibrary( szDbgHelpPath );
+			xr_strcpy(pSlash + 1, sizeof(szDbgHelpPath) - (pSlash - szDbgHelpPath), "DBGHELP.DLL");
+			hDll = ::LoadLibrary(szDbgHelpPath);
 		}
 	}
 
-	if (hDll==NULL)
+	if (hDll == NULL)
 	{
 		// load any version we can
-		hDll = ::LoadLibrary( "DBGHELP.DLL" );
+		hDll = ::LoadLibrary("DBGHELP.DLL");
 	}
 
 	LPCTSTR szResult = NULL;
 
 	if (hDll)
 	{
-		MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress( hDll, "MiniDumpWriteDump" );
+		MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDll, "MiniDumpWriteDump");
 		if (pDump)
 		{
 			string_path	szDumpPath;
 			string_path	szScratch;
 			string64	t_stemp;
 
-			timestamp	(t_stemp);
-			xr_strcpy		( szDumpPath, Core.ApplicationName);
-			xr_strcat		( szDumpPath, "_"					);
-			xr_strcat		( szDumpPath, Core.UserName			);
-			xr_strcat		( szDumpPath, "_"					);
-			xr_strcat		( szDumpPath, t_stemp				);
-			xr_strcat		( szDumpPath, ".mdmp"				);
+			timestamp(t_stemp);
+			xr_strcpy(szDumpPath, Core.ApplicationName);
+			xr_strcat(szDumpPath, "_");
+			xr_strcat(szDumpPath, Core.UserName);
+			xr_strcat(szDumpPath, "_");
+			xr_strcat(szDumpPath, t_stemp);
+			xr_strcat(szDumpPath, ".mdmp");
 
 			__try {
 				if (FS.path_exist("$logs$"))
-					FS.update_path	(szDumpPath,"$logs$",szDumpPath);
+					FS.update_path(szDumpPath, "$logs$", szDumpPath);
 			}
-            __except( EXCEPTION_EXECUTE_HANDLER ) {
+			__except (EXCEPTION_EXECUTE_HANDLER) {
 				string_path	temp;
-				xr_strcpy		(temp,szDumpPath);
-				xr_strcpy		(szDumpPath,"logs/");
-				xr_strcat		(szDumpPath,temp);
-            }
+				xr_strcpy(temp, szDumpPath);
+				xr_strcpy(szDumpPath, "logs/");
+				xr_strcat(szDumpPath, temp);
+			}
 
 			// create the file
-			HANDLE hFile = ::CreateFile( szDumpPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
-			if (INVALID_HANDLE_VALUE==hFile)	
+			HANDLE hFile = ::CreateFile(szDumpPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+			if (INVALID_HANDLE_VALUE == hFile)
 			{
 				// try to place into current directory
-				MoveMemory	(szDumpPath,szDumpPath+5,strlen(szDumpPath));
-				hFile		= ::CreateFile( szDumpPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+				MoveMemory(szDumpPath, szDumpPath + 5, strlen(szDumpPath));
+				hFile = ::CreateFile(szDumpPath, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 			}
-			if (hFile!=INVALID_HANDLE_VALUE)
+			if (hFile != INVALID_HANDLE_VALUE)
 			{
 				_MINIDUMP_EXCEPTION_INFORMATION ExInfo;
 
-				ExInfo.ThreadId				= ::GetCurrentThreadId();
-				ExInfo.ExceptionPointers	= pExceptionInfo;
-				ExInfo.ClientPointers		= NULL;
+				ExInfo.ThreadId = ::GetCurrentThreadId();
+				ExInfo.ExceptionPointers = pExceptionInfo;
+				ExInfo.ClientPointers = NULL;
 
 				// write the dump
-				MINIDUMP_TYPE	dump_flags	= MINIDUMP_TYPE(MiniDumpNormal | MiniDumpFilterMemory | MiniDumpScanMemory );
+				MINIDUMP_TYPE	dump_flags = MINIDUMP_TYPE(MiniDumpNormal | MiniDumpFilterMemory | MiniDumpScanMemory);
 
-				BOOL bOK = pDump( GetCurrentProcess(), GetCurrentProcessId(), hFile, dump_flags, &ExInfo, NULL, NULL );
+				BOOL bOK = pDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, dump_flags, &ExInfo, NULL, NULL);
 				if (bOK)
 				{
-					xr_sprintf( szScratch, "Saved dump file to '%s'", szDumpPath );
+					xr_sprintf(szScratch, "Saved dump file to '%s'", szDumpPath);
 					szResult = szScratch;
-//					retval = EXCEPTION_EXECUTE_HANDLER;
+					//					retval = EXCEPTION_EXECUTE_HANDLER;
 				}
 				else
 				{
-					xr_sprintf( szScratch, "Failed to save dump file to '%s' (error %d)", szDumpPath, GetLastError() );
+					xr_sprintf(szScratch, "Failed to save dump file to '%s' (error %d)", szDumpPath, GetLastError());
 					szResult = szScratch;
 				}
 				::CloseHandle(hFile);
 			}
 			else
 			{
-				xr_sprintf( szScratch, "Failed to create dump file '%s' (error %d)", szDumpPath, GetLastError() );
+				xr_sprintf(szScratch, "Failed to create dump file '%s' (error %d)", szDumpPath, GetLastError());
 				szResult = szScratch;
 			}
 		}
@@ -650,6 +659,10 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 	if (!error_after_dialog) {
 		if (Debug.get_on_dialog())
 			Debug.get_on_dialog()	(true);
+
+#	ifdef USE_OWN_MINI_DUMP
+		save_mini_dump(pExceptionInfo);
+#	endif // USE_OWN_MINI_DUMP
 
 		MessageBox			(NULL,"Fatal error occured\n\nPress OK to abort program execution","Fatal error",MB_OK|MB_ICONERROR|MB_SYSTEMMODAL);
 	}
