@@ -149,11 +149,8 @@ CGameObject &CScriptGameObject::object	() const
 
 void CScriptGameObject::ResetActionQueue()
 {
-	CScriptEntity		*l_tpScriptMonster = smart_cast<CScriptEntity*>(&object());
-	if (!l_tpScriptMonster)
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CSciptEntity : cannot access class member ResetActionQueue!");
-	else
-		l_tpScriptMonster->ClearActionQueue();
+	MakeObj(CScriptEntity,monster);
+	monster->ClearActionQueue();
 }
 
 CScriptEntityAction	*CScriptGameObject::GetCurrentAction	() const

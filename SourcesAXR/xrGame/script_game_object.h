@@ -16,6 +16,31 @@
 #include "game_graph_space.h"
 #include "game_location_selector.h"
 
+//На релизе не крашим игру, кричим об ошибке в лог
+#ifdef MASTER_GOLD
+	#define cast_msg(class,var,f) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "] !")
+	#define cast_msg2(class,var,f,rval) Msg("Function " f " cannot cast object ["#var"] to [" #class "] ! Returned "#rval)
+	#define CAST_ERR(class,var) cast_msg(class,var,__FUNCTION__)
+	#define RCAST_ERR(class,var,rval) cast_msg2(class,var,__FUNCTION__,rval)
+	#define vmake(class,var,f) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var); return;}
+	#define rvmake(class,var,f,rval) class* var = smart_cast<class*>(&object()); if(!var){RCAST_ERR(class,var,rval); return rval;}
+	#define vmake2(class,var,f,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR(class,var); return;}
+	#define rvmake2(class,var,f,rval,obj) class* var = smart_cast<class*>(obj); if(!var){RCAST_ERR(class,var,rval); return rval;}
+	#define MakeObj(a,b) vmake(a,b,__FUNCTION__)
+	#define RMakeObj(a,b,rv) rvmake(a,b,__FUNCTION__,rv)
+	#define MakeObj2(a,b,obj) vmake2(a,b,__FUNCTION__,obj)
+	#define RMakeObj2(a,b,rv,obj) rvmake2(a,b,__FUNCTION__,rv,obj)
+#else
+//На дебаг или миксед крашим
+	#define CAST_ERR(class,var) Debug.fatal(DEBUG_INFO,"Cannot cast object ["#var"] to [" #class "] !")
+	#define RCAST_ERR(class,var,rval) CAST_ERR(class,var)
+	#define MakeObj(class,var) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var);}
+	#define RMakeObj(a,b,rv) MakeObj(a,b)
+	#define MakeObj2(class,var,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR(class,var);}
+	#define RMakeObj2(a,b,rv,obj) MakeObj2(a,b,obj)
+#endif
+
+
 enum EPdaMsg;
 enum ESoundTypes;
 enum ETaskState;
