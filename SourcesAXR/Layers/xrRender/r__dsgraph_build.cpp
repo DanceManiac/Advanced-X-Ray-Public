@@ -32,11 +32,11 @@ ICF	float	CalcSSA				(float& distSQ, Fvector& C, float R)
 	return	R/distSQ;
 }
 
-ICF float	CalcHudSSA			(float& distSQ, Fvector& C, dxRender_Visual* V)
+ICF    float    CalcHudSSA(float& distSQ, Fvector& C, dxRender_Visual* V)
 {
 	float R = V->vis.sphere.R + 0;
 	distSQ = Fvector().set(0.f, 0.f, 0.f).distance_to_sqr(C) + EPS;
-	return  R / distSQ;
+	return    R / distSQ;
 }
 
 void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fvector& Center)
@@ -52,8 +52,8 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 #endif
 
 	float distSQ			;
-
 	float SSA;
+
 	if (!RI.val_bHUD)
 		SSA = CalcSSA(distSQ, Center, pVisual);
 	else
@@ -67,12 +67,12 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 	VERIFY						(pVisual->shader._get());
 	ShaderElement*		sh_d	= &*pVisual->shader->E[4];
 	if (RImplementation.o.distortion && sh_d && sh_d->flags.bDistort && pmask[sh_d->flags.iPriority/2]) {
-		mapSorted_Node* N		= mapDistort.insertInAnyWay	(distSQ);
-		N->val.ssa				= SSA;
-		N->val.pObject			= RI.val_pObject;
-		N->val.pVisual			= pVisual;
-		N->val.Matrix			= *RI.val_pTransform;
-		N->val.se				= sh_d;		// 4=L_special
+		mapSorted_Node* N			= mapDistort.insert_anyway	(distSQ);
+		N->second.ssa				= SSA;
+		N->second.pObject			= RI.val_pObject;
+		N->second.pVisual			= pVisual;
+		N->second.Matrix			= *RI.val_pTransform;
+		N->second.se				= sh_d;		// 4=L_special
 	}
 
 	// Select shader
@@ -83,58 +83,39 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 	// Create common node
 	// NOTE: Invisible elements exist only in R1
 	_MatrixItem		item	= {SSA,RI.val_pObject,pVisual,*RI.val_pTransform};
-
 	// HUD rendering
 	if (RI.val_bHUD)			
 	{
 		if (sh->flags.bStrictB2F)	
 		{
-#if RENDER==R_R1
-			mapSorted_Node* N = mapSorted.insertInAnyWay(distSQ);
-			N->val.ssa = SSA;
-			N->val.pObject = RI.val_pObject;
-			N->val.pVisual = pVisual;
-			N->val.Matrix = *RI.val_pTransform;
-			N->val.se = sh;
-#else
-			if (sh->flags.bEmissive) {
-				mapSorted_Node* N = mapHUDEmissive.insertInAnyWay(distSQ);
-				N->val.ssa = SSA;
-				N->val.pObject = RI.val_pObject;
-				N->val.pVisual = pVisual;
-				N->val.Matrix = *RI.val_pTransform;
-				N->val.se = &*pVisual->shader->E[4];		// 4=L_special
-			}
-			mapSorted_Node* N = mapHUDSorted.insertInAnyWay(distSQ);
-			N->val.ssa = SSA;
-			N->val.pObject = RI.val_pObject;
-			N->val.pVisual = pVisual;
-			N->val.Matrix = *RI.val_pTransform;
-			N->val.se = sh;
-#endif
-			return;
+			mapSorted_Node* N = mapHUDSorted.insert_anyway(distSQ);
+			N->second.ssa = SSA;
+			N->second.pObject = RI.val_pObject;
+			N->second.pVisual = pVisual;
+			N->second.Matrix = *RI.val_pTransform;
+			N->second.se = sh;
 		} 
 		else 
 		{
-			mapHUD_Node* N			= mapHUD.insertInAnyWay		(distSQ);
-			N->val.ssa				= SSA;
-			N->val.pObject			= RI.val_pObject;
-			N->val.pVisual			= pVisual;
-			N->val.Matrix			= *RI.val_pTransform;
-			N->val.se				= sh;
-#if RENDER!=R_R1
-			if (sh->flags.bEmissive) 
-			{
-				mapSorted_Node* N		= mapHUDEmissive.insertInAnyWay	(distSQ);
-				N->val.ssa				= SSA;
-				N->val.pObject			= RI.val_pObject;
-				N->val.pVisual			= pVisual;
-				N->val.Matrix			= *RI.val_pTransform;
-				N->val.se				= &*pVisual->shader->E[4];		// 4=L_special
-			}
-#endif	//	RENDER!=R_R1
-			return;
+			mapHUD_Node* N			= mapHUD.insert_anyway(distSQ);
+			N->second.ssa				= SSA;
+			N->second.pObject			= RI.val_pObject;
+			N->second.pVisual			= pVisual;
+			N->second.Matrix			= *RI.val_pTransform;
+			N->second.se				= sh;
 		}
+#if RENDER!=R_R1
+		if (sh->flags.bEmissive) 
+		{
+			mapSorted_Node* N = mapHUDEmissive.insert_anyway(distSQ);
+			N->second.ssa = SSA;
+			N->second.pObject = RI.val_pObject;
+			N->second.pVisual = pVisual;
+			N->second.Matrix = *RI.val_pTransform;
+			N->second.se = sh_d;		// 4=L_special
+		}
+#endif // RENDER!=R_R1
+		return;
 	}
 
 	// Shadows registering
@@ -145,12 +126,12 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 
 	// strict-sorting selection
 	if (sh->flags.bStrictB2F)	{
-		mapSorted_Node* N		= mapSorted.insertInAnyWay	(distSQ);
-		N->val.ssa				= SSA;
-		N->val.pObject			= RI.val_pObject;
-		N->val.pVisual			= pVisual;
-		N->val.Matrix			= *RI.val_pTransform;
-		N->val.se				= sh;
+		mapSorted_Node* N		= mapSorted.insert_anyway(distSQ);
+		N->second.ssa				= SSA;
+		N->second.pObject			= RI.val_pObject;
+		N->second.pVisual			= pVisual;
+		N->second.Matrix			= *RI.val_pTransform;
+		N->second.se				= sh;
 		return;
 	}
 
@@ -161,20 +142,20 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 	// c) Should not cast shadows
 	// d) Should be rendered to accumulation buffer in the second pass
 	if (sh->flags.bEmissive) {
-		mapSorted_Node* N		= mapEmissive.insertInAnyWay	(distSQ);
-		N->val.ssa				= SSA;
-		N->val.pObject			= RI.val_pObject;
-		N->val.pVisual			= pVisual;
-		N->val.Matrix			= *RI.val_pTransform;
-		N->val.se				= &*pVisual->shader->E[4];		// 4=L_special
+		mapSorted_Node* N		= mapEmissive.insert_anyway(distSQ);
+		N->second.ssa				= SSA;
+		N->second.pObject			= RI.val_pObject;
+		N->second.pVisual			= pVisual;
+		N->second.Matrix			= *RI.val_pTransform;
+		N->second.se				= &*pVisual->shader->E[4];		// 4=L_special
 	}
 	if (sh->flags.bWmark	&& pmask_wmark)	{
-		mapSorted_Node* N		= mapWmark.insertInAnyWay		(distSQ);
-		N->val.ssa				= SSA;
-		N->val.pObject			= RI.val_pObject;
-		N->val.pVisual			= pVisual;
-		N->val.Matrix			= *RI.val_pTransform;
-		N->val.se				= sh;							
+		mapSorted_Node* N		= mapWmark.insert_anyway(distSQ);
+		N->second.ssa				= SSA;
+		N->second.pObject			= RI.val_pObject;
+		N->second.pVisual			= pVisual;
+		N->second.Matrix			= *RI.val_pTransform;
+		N->second.se				= sh;
 		return					;
 	}
 #endif
@@ -189,57 +170,57 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 		
 
 #ifdef USE_RESOURCE_DEBUGGER
-	#ifdef USE_DX11
-		mapMatrixVS::TNode*			Nvs		= map.insert		(pass.vs);
-		mapMatrixGS::TNode*			Ngs		= Nvs->val.insert	(pass.gs);
-		mapMatrixPS::TNode*			Nps		= Ngs->val.insert	(pass.ps);
+	#if defined(USE_DX11)
+		mapMatrixVS::value_type*			Nvs		= map.insert		(pass.vs);
+		mapMatrixGS::value_type*			Ngs		= Nvs->second.insert	(pass.gs);
+		mapMatrixPS::value_type*			Nps		= Ngs->second.insert	(pass.ps);
 	#else	//	USE_DX11
-		mapMatrixVS::TNode*			Nvs		= map.insert		(pass.vs);
-		mapMatrixPS::TNode*			Nps		= Nvs->val.insert	(pass.ps);
+		mapMatrixVS::value_type*			Nvs		= map.insert		(pass.vs);
+		mapMatrixPS::value_type*			Nps		= Nvs->second.insert	(pass.ps);
 	#endif	//	USE_DX11
 #else
-	#ifdef USE_DX11
-		mapMatrixVS::TNode*			Nvs		= map.insert		(&*pass.vs);
-		mapMatrixGS::TNode*			Ngs		= Nvs->val.insert	(pass.gs->gs);
-		mapMatrixPS::TNode*			Nps		= Ngs->val.insert	(pass.ps->ps);
+	#if defined(USE_DX11)
+		mapMatrixVS::value_type*			Nvs		= map.insert		(&*pass.vs);
+		mapMatrixGS::value_type*			Ngs		= Nvs->second.insert	(pass.gs->gs);
+		mapMatrixPS::value_type*			Nps		= Ngs->second.insert	(pass.ps->ps);
 	#else	//	USE_DX11
-		mapMatrixVS::TNode*			Nvs		= map.insert		(pass.vs->vs);
-		mapMatrixPS::TNode*			Nps		= Nvs->val.insert	(pass.ps->ps);
+		mapMatrixVS::value_type*			Nvs		= map.insert		(pass.vs->vs);
+		mapMatrixPS::value_type*			Nps		= Nvs->second.insert	(pass.ps->ps);
 	#endif	//	USE_DX11
 #endif
 
 #ifdef USE_DX11
 #	ifdef USE_RESOURCE_DEBUGGER
-		Nps->val.hs = pass.hs;
-		Nps->val.ds = pass.ds;
-		mapMatrixCS::TNode*			Ncs		= Nps->val.mapCS.insert	(pass.constants._get());
+		Nps->second.hs = pass.hs;
+		Nps->second.ds = pass.ds;
+		mapMatrixCS::value_type*			Ncs		= Nps->second.mapCS.insert	(pass.constants._get());
 #	else
-		Nps->val.hs = pass.hs->sh;
-		Nps->val.ds = pass.ds->sh;
-		mapMatrixCS::TNode*			Ncs		= Nps->val.mapCS.insert	(pass.constants._get());
+		Nps->second.hs = pass.hs->sh;
+		Nps->second.ds = pass.ds->sh;
+		mapMatrixCS::value_type*			Ncs		= Nps->second.mapCS.insert	(pass.constants._get());
 #	endif
 #else
-		mapMatrixCS::TNode*			Ncs		= Nps->val.insert	(pass.constants._get());
+		mapMatrixCS::value_type*			Ncs		= Nps->second.insert	(pass.constants._get());
 #endif
-		mapMatrixStates::TNode*		Nstate	= Ncs->val.insert	(pass.state->state);
-		mapMatrixTextures::TNode*	Ntex	= Nstate->val.insert(pass.T._get());
-		mapMatrixItems&				items	= Ntex->val;
+		mapMatrixStates::value_type*		Nstate	= Ncs->second.insert	(pass.state->state);
+		mapMatrixTextures::value_type*	Ntex	= Nstate->second.insert(pass.T._get());
+		mapMatrixItems&				items	= Ntex->second;
 		items.push_back						(item);
 
 		// Need to sort for HZB efficient use
-		if (SSA>Ntex->val.ssa)		{ Ntex->val.ssa = SSA;
-		if (SSA>Nstate->val.ssa)	{ Nstate->val.ssa = SSA;
-		if (SSA>Ncs->val.ssa)		{ Ncs->val.ssa = SSA;
+		if (SSA>Ntex->second.ssa)		{ Ntex->second.ssa = SSA;
+		if (SSA>Nstate->second.ssa)	{ Nstate->second.ssa = SSA;
+		if (SSA>Ncs->second.ssa)		{ Ncs->second.ssa = SSA;
 #ifdef USE_DX11
-		if (SSA>Nps->val.mapCS.ssa)		{ Nps->val.mapCS.ssa = SSA;
+		if (SSA>Nps->second.mapCS.ssa)		{ Nps->second.mapCS.ssa = SSA;
 #else
-		if (SSA>Nps->val.ssa)		{ Nps->val.ssa = SSA;
+		if (SSA>Nps->second.ssa)		{ Nps->second.ssa = SSA;
 #endif
-#ifdef USE_DX11
-		if (SSA>Ngs->val.ssa)		{ Ngs->val.ssa = SSA;
+#if defined(USE_DX11)
+		if (SSA>Ngs->second.ssa)		{ Ngs->second.ssa = SSA;
 #endif	//	USE_DX11
-		if (SSA>Nvs->val.ssa)		{ Nvs->val.ssa = SSA;
-#ifdef USE_DX11
+		if (SSA>Nvs->second.ssa)		{ Nvs->second.ssa = SSA;
+#if defined(USE_DX11)
 		} } } } } }
 #else	//	USE_DX11
 		} } } } }
@@ -278,12 +259,12 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 	VERIFY						(pVisual->shader._get());
 	ShaderElement*		sh_d	= &*pVisual->shader->E[4];
 	if (RImplementation.o.distortion && sh_d && sh_d->flags.bDistort && pmask[sh_d->flags.iPriority/2]) {
-		mapSorted_Node* N		= mapDistort.insertInAnyWay		(distSQ);
-		N->val.ssa				= SSA;
-		N->val.pObject			= NULL;
-		N->val.pVisual			= pVisual;
-		N->val.Matrix			= Fidentity;
-		N->val.se				= &*pVisual->shader->E[4];		// 4=L_special
+		mapSorted_Node* N		= mapDistort.insert_anyway(distSQ);
+		N->second.ssa				= SSA;
+		N->second.pObject			= NULL;
+		N->second.pVisual			= pVisual;
+		N->second.Matrix			= Fidentity;
+		N->second.se				= &*pVisual->shader->E[4];		// 4=L_special
 	}
 
 	// Select shader
@@ -293,11 +274,11 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 
 	// strict-sorting selection
 	if (sh->flags.bStrictB2F) {
-		mapSorted_Node* N			= mapSorted.insertInAnyWay(distSQ);
-		N->val.pObject				= NULL;
-		N->val.pVisual				= pVisual;
-		N->val.Matrix				= Fidentity;
-		N->val.se					= sh;
+		mapSorted_Node* N			= mapSorted.insert_anyway(distSQ);
+		N->second.pObject				= NULL;
+		N->second.pVisual				= pVisual;
+		N->second.Matrix				= Fidentity;
+		N->second.se					= sh;
 		return;
 	}
 
@@ -308,20 +289,20 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 	// c) Should not cast shadows
 	// d) Should be rendered to accumulation buffer in the second pass
 	if (sh->flags.bEmissive) {
-		mapSorted_Node* N		= mapEmissive.insertInAnyWay	(distSQ);
-		N->val.ssa				= SSA;
-		N->val.pObject			= NULL;
-		N->val.pVisual			= pVisual;
-		N->val.Matrix			= Fidentity;
-		N->val.se				= &*pVisual->shader->E[4];		// 4=L_special
+		mapSorted_Node* N		= mapEmissive.insert_anyway(distSQ);
+		N->second.ssa				= SSA;
+		N->second.pObject			= NULL;
+		N->second.pVisual			= pVisual;
+		N->second.Matrix			= Fidentity;
+		N->second.se				= &*pVisual->shader->E[4];		// 4=L_special
 	}
 	if (sh->flags.bWmark	&& pmask_wmark)	{
-		mapSorted_Node* N		= mapWmark.insertInAnyWay		(distSQ);
-		N->val.ssa				= SSA;
-		N->val.pObject			= NULL;
-		N->val.pVisual			= pVisual;
-		N->val.Matrix			= Fidentity;
-		N->val.se				= sh;							
+		mapSorted_Node* N		= mapWmark.insert_anyway(distSQ);
+		N->second.ssa				= SSA;
+		N->second.pObject			= NULL;
+		N->second.pVisual			= pVisual;
+		N->second.Matrix			= Fidentity;
+		N->second.se				= sh;
 		return					;
 	}
 #endif
@@ -337,73 +318,60 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 		SPass&						pass	= *sh->passes[iPass];
 		mapNormal_T&				map		= mapNormalPasses[sh->flags.iPriority/2][iPass];
 
-//#ifdef USE_RESOURCE_DEBUGGER
-//	mapNormalVS::TNode*			Nvs		= map.insert		(pass.vs);
-//	mapNormalPS::TNode*			Nps		= Nvs->val.insert	(pass.ps);
-//#else
-//	#ifdef USE_DX11
-//	mapNormalVS::TNode*			Nvs		= map.insert		(&*pass.vs);
-//#else	//	USE_DX11
-//	mapNormalVS::TNode*			Nvs		= map.insert		(pass.vs->vs);
-//#endif	//	USE_DX11
-//	mapNormalPS::TNode*			Nps		= Nvs->val.insert	(pass.ps->ps);
-//#endif
-
 #ifdef USE_RESOURCE_DEBUGGER
-#	ifdef USE_DX11
-		mapNormalVS::TNode*			Nvs		= map.insert		(pass.vs);
-		mapNormalGS::TNode*			Ngs		= Nvs->val.insert	(pass.gs);
-		mapNormalPS::TNode*			Nps		= Ngs->val.insert	(pass.ps);
+#	if defined(USE_DX11)
+		mapNormalVS::value_type*			Nvs		= map.insert		(pass.vs);
+		mapNormalGS::value_type*			Ngs		= Nvs->second.insert	(pass.gs);
+		mapNormalPS::value_type*			Nps		= Ngs->second.insert	(pass.ps);
 #	else	//	USE_DX11
-		mapNormalVS::TNode*			Nvs		= map.insert		(pass.vs);
-		mapNormalPS::TNode*			Nps		= Nvs->val.insert	(pass.ps);
+		mapNormalVS::value_type*			Nvs		= map.insert		(pass.vs);
+		mapNormalPS::value_type*			Nps		= Nvs->second.insert	(pass.ps);
 #	endif	//	USE_DX11
 #else // USE_RESOURCE_DEBUGGER
-#	ifdef USE_DX11
-		mapNormalVS::TNode*			Nvs		= map.insert		(&*pass.vs);
-		mapNormalGS::TNode*			Ngs		= Nvs->val.insert	(pass.gs->gs);
-		mapNormalPS::TNode*			Nps		= Ngs->val.insert	(pass.ps->ps);
+#	if defined(USE_DX11)
+		mapNormalVS::value_type*			Nvs		= map.insert		(&*pass.vs);
+		mapNormalGS::value_type*			Ngs		= Nvs->second.insert	(pass.gs->gs);
+		mapNormalPS::value_type*			Nps		= Ngs->second.insert	(pass.ps->ps);
 #	else	//	USE_DX11
-		mapNormalVS::TNode*			Nvs		= map.insert		(pass.vs->vs);
-		mapNormalPS::TNode*			Nps		= Nvs->val.insert	(pass.ps->ps);
+		mapNormalVS::value_type*			Nvs		= map.insert		(pass.vs->vs);
+		mapNormalPS::value_type*			Nps		= Nvs->second.insert	(pass.ps->ps);
 #	endif	//	USE_DX11
 #endif // USE_RESOURCE_DEBUGGER
 
 #ifdef USE_DX11
 #	ifdef USE_RESOURCE_DEBUGGER
-		Nps->val.hs = pass.hs;
-		Nps->val.ds = pass.ds;
-		mapNormalCS::TNode*			Ncs		= Nps->val.mapCS.insert	(pass.constants._get());
+		Nps->second.hs = pass.hs;
+		Nps->second.ds = pass.ds;
+		mapNormalCS::value_type*			Ncs		= Nps->second.mapCS.insert	(pass.constants._get());
 #	else
-		Nps->val.hs = pass.hs->sh;
-		Nps->val.ds = pass.ds->sh;
-		mapNormalCS::TNode*			Ncs		= Nps->val.mapCS.insert	(pass.constants._get());
+		Nps->second.hs = pass.hs->sh;
+		Nps->second.ds = pass.ds->sh;
+		mapNormalCS::value_type*			Ncs		= Nps->second.mapCS.insert	(pass.constants._get());
 #	endif
 #else
-		mapNormalCS::TNode*			Ncs		= Nps->val.insert	(pass.constants._get());
+		mapNormalCS::value_type*			Ncs		= Nps->second.insert	(pass.constants._get());
 #endif
-		mapNormalStates::TNode*		Nstate	= Ncs->val.insert	(pass.state->state);
-		mapNormalTextures::TNode*	Ntex	= Nstate->val.insert(pass.T._get());
-		mapNormalItems&				items	= Ntex->val;
+		mapNormalStates::value_type*		Nstate	= Ncs->second.insert	(pass.state->state);
+		mapNormalTextures::value_type*	Ntex	= Nstate->second.insert(pass.T._get());
+		mapNormalItems&				items	= Ntex->second;
 		_NormalItem					item	= {SSA,pVisual};
 		items.push_back						(item);
 
 		// Need to sort for HZB efficient use
-		if (SSA>Ntex->val.ssa)		{ Ntex->val.ssa = SSA;
-		if (SSA>Nstate->val.ssa)	{ Nstate->val.ssa = SSA;
-		if (SSA>Ncs->val.ssa)		{ Ncs->val.ssa = SSA;
+		if (SSA>Ntex->second.ssa)		{ Ntex->second.ssa = SSA;
+		if (SSA>Nstate->second.ssa)	{ Nstate->second.ssa = SSA;
+		if (SSA>Ncs->second.ssa)		{ Ncs->second.ssa = SSA;
 #ifdef USE_DX11
-		if (SSA>Nps->val.mapCS.ssa)		{ Nps->val.mapCS.ssa = SSA;
+		if (SSA>Nps->second.mapCS.ssa)		{ Nps->second.mapCS.ssa = SSA;
 #else
-		if (SSA>Nps->val.ssa)		{ Nps->val.ssa = SSA;
+		if (SSA>Nps->second.ssa)		{ Nps->second.ssa = SSA;
 #endif
-//	if (SSA>Nvs->val.ssa)		{ Nvs->val.ssa = SSA;
-//	} } } } }
-#ifdef USE_DX11
-		if (SSA>Ngs->val.ssa)		{ Ngs->val.ssa = SSA;
+
+#if defined(USE_DX11)
+		if (SSA>Ngs->second.ssa)		{ Ngs->second.ssa = SSA;
 #endif	//	USE_DX11
-		if (SSA>Nvs->val.ssa)		{ Nvs->val.ssa = SSA;
-#ifdef USE_DX11
+		if (SSA>Nvs->second.ssa)		{ Nvs->second.ssa = SSA;
+#if defined(USE_DX11)
 		} } } } } }
 #else	//	USE_DX11
 		} } } } }
@@ -492,23 +460,23 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 #define O_D_L3_S_ULT    4000.f
 #define O_D_L3_D_ULT    110.f
 
-Fvector4 o_optimize_static_l1_dist = {O_S_L1_D_LOW, O_S_L1_D_MED, O_S_L1_D_HII, O_S_L1_D_ULT};
-Fvector4 o_optimize_static_l1_size = {O_S_L1_S_LOW, O_S_L1_S_MED, O_S_L1_S_HII, O_S_L1_S_ULT};
-Fvector4 o_optimize_static_l2_dist = {O_S_L2_D_LOW, O_S_L2_D_MED, O_S_L2_D_HII, O_S_L2_D_ULT};
-Fvector4 o_optimize_static_l2_size = {O_S_L2_S_LOW, O_S_L2_S_MED, O_S_L2_S_HII, O_S_L2_S_ULT};
-Fvector4 o_optimize_static_l3_dist = {O_S_L3_D_LOW, O_S_L3_D_MED, O_S_L3_D_HII, O_S_L3_D_ULT};
-Fvector4 o_optimize_static_l3_size = {O_S_L3_S_LOW, O_S_L3_S_MED, O_S_L3_S_HII, O_S_L3_S_ULT};
-Fvector4 o_optimize_static_l4_dist = {O_S_L4_D_LOW, O_S_L4_D_MED, O_S_L4_D_HII, O_S_L4_D_ULT};
-Fvector4 o_optimize_static_l4_size = {O_S_L4_S_LOW, O_S_L4_S_MED, O_S_L4_S_HII, O_S_L4_S_ULT};
-Fvector4 o_optimize_static_l5_dist = {O_S_L5_D_LOW, O_S_L5_D_MED, O_S_L5_D_HII, O_S_L5_D_ULT};
-Fvector4 o_optimize_static_l5_size = {O_S_L5_S_LOW, O_S_L5_S_MED, O_S_L5_S_HII, O_S_L5_S_ULT};
+Fvector4 o_optimize_static_l1_dist = { O_S_L1_D_LOW, O_S_L1_D_MED, O_S_L1_D_HII, O_S_L1_D_ULT };
+Fvector4 o_optimize_static_l1_size = { O_S_L1_S_LOW, O_S_L1_S_MED, O_S_L1_S_HII, O_S_L1_S_ULT };
+Fvector4 o_optimize_static_l2_dist = { O_S_L2_D_LOW, O_S_L2_D_MED, O_S_L2_D_HII, O_S_L2_D_ULT };
+Fvector4 o_optimize_static_l2_size = { O_S_L2_S_LOW, O_S_L2_S_MED, O_S_L2_S_HII, O_S_L2_S_ULT };
+Fvector4 o_optimize_static_l3_dist = { O_S_L3_D_LOW, O_S_L3_D_MED, O_S_L3_D_HII, O_S_L3_D_ULT };
+Fvector4 o_optimize_static_l3_size = { O_S_L3_S_LOW, O_S_L3_S_MED, O_S_L3_S_HII, O_S_L3_S_ULT };
+Fvector4 o_optimize_static_l4_dist = { O_S_L4_D_LOW, O_S_L4_D_MED, O_S_L4_D_HII, O_S_L4_D_ULT };
+Fvector4 o_optimize_static_l4_size = { O_S_L4_S_LOW, O_S_L4_S_MED, O_S_L4_S_HII, O_S_L4_S_ULT };
+Fvector4 o_optimize_static_l5_dist = { O_S_L5_D_LOW, O_S_L5_D_MED, O_S_L5_D_HII, O_S_L5_D_ULT };
+Fvector4 o_optimize_static_l5_size = { O_S_L5_S_LOW, O_S_L5_S_MED, O_S_L5_S_HII, O_S_L5_S_ULT };
 
-Fvector4 o_optimize_dynamic_l1_dist = {O_D_L1_D_LOW, O_D_L1_D_MED, O_D_L1_D_HII, O_D_L1_D_ULT};
-Fvector4 o_optimize_dynamic_l1_size = {O_D_L1_S_LOW, O_D_L1_S_MED, O_D_L1_S_HII, O_D_L1_S_ULT};
-Fvector4 o_optimize_dynamic_l2_dist = {O_D_L2_D_LOW, O_D_L2_D_MED, O_D_L2_D_HII, O_D_L2_D_ULT};
-Fvector4 o_optimize_dynamic_l2_size = {O_D_L2_S_LOW, O_D_L2_S_MED, O_D_L2_S_HII, O_D_L2_S_ULT};
-Fvector4 o_optimize_dynamic_l3_dist = {O_D_L3_D_LOW, O_D_L3_D_MED, O_D_L3_D_HII, O_D_L3_D_ULT};
-Fvector4 o_optimize_dynamic_l3_size = {O_D_L3_S_LOW, O_D_L3_S_MED, O_D_L3_S_HII, O_D_L3_S_ULT};
+Fvector4 o_optimize_dynamic_l1_dist = { O_D_L1_D_LOW, O_D_L1_D_MED, O_D_L1_D_HII, O_D_L1_D_ULT };
+Fvector4 o_optimize_dynamic_l1_size = { O_D_L1_S_LOW, O_D_L1_S_MED, O_D_L1_S_HII, O_D_L1_S_ULT };
+Fvector4 o_optimize_dynamic_l2_dist = { O_D_L2_D_LOW, O_D_L2_D_MED, O_D_L2_D_HII, O_D_L2_D_ULT };
+Fvector4 o_optimize_dynamic_l2_size = { O_D_L2_S_LOW, O_D_L2_S_MED, O_D_L2_S_HII, O_D_L2_S_ULT };
+Fvector4 o_optimize_dynamic_l3_dist = { O_D_L3_D_LOW, O_D_L3_D_MED, O_D_L3_D_HII, O_D_L3_D_ULT };
+Fvector4 o_optimize_dynamic_l3_size = { O_D_L3_S_LOW, O_D_L3_S_MED, O_D_L3_S_HII, O_D_L3_S_ULT };
 
 #define BASE_FOV 67.f
 
@@ -685,9 +653,6 @@ IC bool IsValuableToRender(dxRender_Visual* pVisual, bool isStatic, bool sm, Fma
 	return true;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
 void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 {
 	if (!pVisual)				return;
@@ -695,19 +660,22 @@ void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 	if (!IsValuableToRender(pVisual, false, phase == 1, *val_pTransform, ignore))
 		return;
 
-	// Visual is 100% visible - simply add it
 	xr_vector<dxRender_Visual*>::iterator I,E;	// it may be useful for 'hierrarhy' visual
 
 	switch (pVisual->Type) {
 	case MT_PARTICLE_GROUP:
 		{
+#if RENDER!=R_R1
+			if (phase == PHASE_SMAP)
+				return;
+#endif
 			// Add all children, doesn't perform any tests
 			PS::CParticleGroup* pG	= (PS::CParticleGroup*)pVisual;
-			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); i_it++)	{
+			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); ++i_it)	{
 				PS::CParticleGroup::SItem&			I		= *i_it;
-				if (I._effect)		add_leafs_Dynamic		(I._effect);
-				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+				if (I._effect)		add_leafs_Dynamic(I._effect);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin(); pit != I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin(); pit != I._children_free.end(); pit++)	add_leafs_Dynamic(*pit);
 			}
 		}
 		return;
@@ -717,7 +685,7 @@ void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 			FHierrarhyVisual* pV = (FHierrarhyVisual*)pVisual;
 			I = pV->children.begin	();
 			E = pV->children.end	();
-			for (; I!=E; I++)	add_leafs_Dynamic	(*I);
+			for (; I!=E; ++I)	add_leafs_Dynamic	(*I);
 		}
 		return;
 	case MT_SKELETON_ANIM:
@@ -741,7 +709,7 @@ void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 				pV->CalculateWallmarks		();		//. bug?
 				I = pV->children.begin		();
 				E = pV->children.end		();
-				for (; I!=E; I++)	add_leafs_Dynamic	(*I);
+				for (; I!=E; ++I)	add_leafs_Dynamic	(*I);
 			}
 		}
 		return;
@@ -757,8 +725,21 @@ void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 {
+
+	// Check frustum visibility and calculate distance to visual's center
+	EFC_Visible	VIS;
+	vis_data& vis = pVisual->vis;
+
+	u32 planes_v = View->getMask();
+
+	VIS = View->testSAABB(vis.sphere.P, vis.sphere.R, vis.box.data(), planes_v);
+
+	if (VIS == fcvNone)
+		return;
+
 	if (!HOM.visible(pVisual->vis))		return;
 
 	if (!pVisual->_ignore_optimization && !IsValuableToRender(pVisual, true, phase == 1, *val_pTransform))
@@ -772,11 +753,11 @@ void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 		{
 			// Add all children, doesn't perform any tests
 			PS::CParticleGroup* pG = (PS::CParticleGroup*)pVisual;
-			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); i_it++){
+			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); ++i_it){
 				PS::CParticleGroup::SItem&			I		= *i_it;
 				if (I._effect)		add_leafs_Dynamic		(I._effect);
-				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); ++pit)	add_leafs_Dynamic(*pit);
+				for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	++pit)	add_leafs_Dynamic(*pit);
 			}
 		}
 		return;
@@ -786,7 +767,7 @@ void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 			FHierrarhyVisual* pV	= (FHierrarhyVisual*)pVisual;
 			I = pV->children.begin	();
 			E = pV->children.end	();
-			for (; I!=E; I++)		add_leafs_Static (*I);
+			for (; I!=E; ++I)		add_leafs_Static (*I);
 		}
 		return;
 	case MT_SKELETON_ANIM:
@@ -797,7 +778,7 @@ void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 			pV->CalculateBones		(TRUE);
 			I = pV->children.begin	();
 			E = pV->children.end	();
-			for (; I!=E; I++)		add_leafs_Static	(*I);
+			for (; I!=E; ++I)		add_leafs_Static	(*I);
 		}
 		return;
 	case MT_LOD:
@@ -809,9 +790,9 @@ void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 			if (ssa<r_ssaLOD_A)
 			{
 				if (ssa<r_ssaDISCARD)	return;
-				mapLOD_Node*	N	=	mapLOD.insertInAnyWay(D);
-				N->val.ssa			=	ssa;
-				N->val.pVisual		=	pVisual;
+				mapLOD_Node*	N	=	mapLOD.insert_anyway(D);
+				N->second.ssa			=	ssa;
+				N->second.pVisual		=	pVisual;
 			}
 #if RENDER!=R_R1
 			if (ssa>r_ssaLOD_B || phase==PHASE_SMAP)
@@ -822,7 +803,7 @@ void CRender::add_leafs_Static(dxRender_Visual *pVisual)
 				// Add all children, doesn't perform any tests
 				I = pV->children.begin	();
 				E = pV->children.end	();
-				for (; I!=E; I++)	add_leafs_Static (*I);
+				for (; I!=E; ++I)	add_leafs_Static (*I);
 			}
 		}
 		return;
@@ -866,19 +847,19 @@ BOOL CRender::add_Dynamic(dxRender_Visual *pVisual, u32 planes)
 		{
 			// Add all children, doesn't perform any tests
 			PS::CParticleGroup* pG = (PS::CParticleGroup*)pVisual;
-			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); i_it++)
+			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); ++i_it)
 			{
 				PS::CParticleGroup::SItem&			I		= *i_it;
 				if (fcvPartial==VIS) 
 				{
 					if (I._effect)		add_Dynamic				(I._effect,planes);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_Dynamic(*pit,planes);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); ++pit)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	++pit)	add_Dynamic(*pit,planes);
 				} else 
 				{
 					if (I._effect)		add_leafs_Dynamic		(I._effect);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); ++pit)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	++pit)	add_leafs_Dynamic(*pit);
 				}
 			}
 		}
@@ -891,9 +872,9 @@ BOOL CRender::add_Dynamic(dxRender_Visual *pVisual, u32 planes)
 			E = pV->children.end	();
 			if (fcvPartial==VIS) 
 			{
-				for (; I!=E; I++)	add_Dynamic			(*I,planes);
+				for (; I!=E; ++I)	add_Dynamic			(*I,planes);
 			} else {
-				for (; I!=E; I++)	add_leafs_Dynamic	(*I);
+				for (; I!=E; ++I)	add_leafs_Dynamic	(*I);
 			}
 		}
 		break;
@@ -919,7 +900,7 @@ BOOL CRender::add_Dynamic(dxRender_Visual *pVisual, u32 planes)
 				pV->CalculateWallmarks		();		//. bug?
 				I = pV->children.begin		();
 				E = pV->children.end		();
-				for (; I!=E; I++)	add_leafs_Dynamic	(*I);
+				for (; I!=E; ++I)	add_leafs_Dynamic	(*I);
 			}
 			/*
 			I = pV->children.begin		();
@@ -965,16 +946,16 @@ void CRender::add_Static(dxRender_Visual *pVisual, u32 planes)
 		{
 			// Add all children, doesn't perform any tests
 			PS::CParticleGroup* pG = (PS::CParticleGroup*)pVisual;
-			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); i_it++){
+			for (PS::CParticleGroup::SItemVecIt i_it=pG->items.begin(); i_it!=pG->items.end(); ++i_it){
 				PS::CParticleGroup::SItem&			I		= *i_it;
 				if (fcvPartial==VIS) {
 					if (I._effect)		add_Dynamic				(I._effect,planes);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_Dynamic(*pit,planes);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); ++pit)	add_Dynamic(*pit,planes);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	++pit)	add_Dynamic(*pit,planes);
 				} else {
 					if (I._effect)		add_leafs_Dynamic		(I._effect);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); pit++)	add_leafs_Dynamic(*pit);
-					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	pit++)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_related.begin();	pit!=I._children_related.end(); ++pit)	add_leafs_Dynamic(*pit);
+					for (xr_vector<dxRender_Visual*>::iterator pit = I._children_free.begin();		pit!=I._children_free.end();	++pit)	add_leafs_Dynamic(*pit);
 				}
 			}
 		}
@@ -986,9 +967,9 @@ void CRender::add_Static(dxRender_Visual *pVisual, u32 planes)
 			I = pV->children.begin	();
 			E = pV->children.end		();
 			if (fcvPartial==VIS) {
-				for (; I!=E; I++)	add_Static			(*I,planes);
+				for (; I!=E; ++I)	add_Static			(*I,planes);
 			} else {
-				for (; I!=E; I++)	add_leafs_Static	(*I);
+				for (; I!=E; ++I)	add_leafs_Static	(*I);
 			}
 		}
 		break;
@@ -1001,9 +982,9 @@ void CRender::add_Static(dxRender_Visual *pVisual, u32 planes)
 			I = pV->children.begin	();
 			E = pV->children.end	();
 			if (fcvPartial==VIS) {
-				for (; I!=E; I++)	add_Static			(*I,planes);
+				for (; I!=E; ++I)	add_Static			(*I,planes);
 			} else {
-				for (; I!=E; I++)	add_leafs_Static	(*I);
+				for (; I!=E; ++I)	add_leafs_Static	(*I);
 			}
 		}
 		break;
@@ -1016,9 +997,9 @@ void CRender::add_Static(dxRender_Visual *pVisual, u32 planes)
 			if (ssa<r_ssaLOD_A)	
 			{
 				if (ssa<r_ssaDISCARD)	return;
-				mapLOD_Node*	N		= mapLOD.insertInAnyWay(D);
-				N->val.ssa				= ssa;
-				N->val.pVisual			= pVisual;
+				mapLOD_Node*	N		= mapLOD.insert_anyway(D);
+				N->second.ssa				= ssa;
+				N->second.pVisual			= pVisual;
 			}
 #if RENDER!=R_R1
 			if (ssa>r_ssaLOD_B || phase==PHASE_SMAP)
@@ -1029,7 +1010,7 @@ void CRender::add_Static(dxRender_Visual *pVisual, u32 planes)
 				// Add all children, perform tests
 				I = pV->children.begin	();
 				E = pV->children.end	();
-				for (; I!=E; I++)	add_leafs_Static	(*I);
+				for (; I!=E; ++I)	add_leafs_Static	(*I);
 			}
 		}
 		break;

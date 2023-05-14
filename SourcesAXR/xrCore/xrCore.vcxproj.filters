@@ -597,6 +597,12 @@
     <ClInclude Include="_detail_collision_point.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="xalloc.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="xr_map.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="xrCore.rc">
