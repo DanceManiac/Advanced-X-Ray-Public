@@ -42,7 +42,9 @@ public:
 	virtual void	ResourcesGetMemoryUsage(u32& m_base, u32& c_base, u32& m_lmaps, u32& c_lmaps) = 0;
 	virtual void	ResourcesDestroyNecessaryTextures() = 0;
 	virtual void	ResourcesStoreNecessaryTextures() = 0;
+#ifdef DEBUG
 	virtual void	ResourcesDumpMemoryUsage() = 0;
+#endif
 	virtual void	RenderPrefetchUITextures() = 0;
 
 	//	HWSupport

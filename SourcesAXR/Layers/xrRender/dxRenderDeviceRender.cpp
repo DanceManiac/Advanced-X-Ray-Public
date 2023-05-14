@@ -268,10 +268,12 @@ void dxRenderDeviceRender::ResourcesStoreNecessaryTextures()
 	dxRenderDeviceRender::Instance().Resources->StoreNecessaryTextures();
 }
 
+#ifdef DEBUG
 void dxRenderDeviceRender::ResourcesDumpMemoryUsage()
 {
 	dxRenderDeviceRender::Instance().Resources->_DumpMemoryUsage();
 }
+#endif
 
 void dxRenderDeviceRender::RenderPrefetchUITextures()
 {

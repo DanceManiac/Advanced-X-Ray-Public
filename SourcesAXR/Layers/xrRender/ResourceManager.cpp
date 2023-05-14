@@ -421,6 +421,8 @@ void	CResourceManager::_GetMemoryUsage(u32& m_base, u32& c_base, u32& m_lmaps, u
 		}
 	}
 }
+
+#ifdef DEBUG
 void	CResourceManager::_DumpMemoryUsage		()
 {
 	xr_multimap<u32,std::pair<u32,shared_str> >		mtex	;
@@ -445,6 +447,7 @@ void	CResourceManager::_DumpMemoryUsage		()
 			Msg			("* %4.1f : [%4d] %s",float(I->first)/1024.f, I->second.first, I->second.second.c_str());
 	}
 }
+#endif
 
 void	CResourceManager::Evict()
 {
