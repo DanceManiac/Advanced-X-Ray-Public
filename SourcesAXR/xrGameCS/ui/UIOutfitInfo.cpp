@@ -241,8 +241,8 @@ void CUIOutfitInfo::UpdateInfo( CCustomOutfit* cur_outfit, CCustomOutfit* slot_o
 		VERIFY( ikv );
 		u16 spine_bone = ikv->LL_BoneID( "bip01_spine" );
 
-		float cur = cur_outfit->GetBoneArmor( spine_bone );
-		float slot = (slot_outfit)? slot_outfit->GetBoneArmor( spine_bone ) : cur;
+		float cur = cur_outfit->GetBoneArmor( spine_bone ) * cur_outfit->GetCondition();
+		float slot = (slot_outfit)? slot_outfit->GetBoneArmor( spine_bone ) * slot_outfit->GetCondition() : cur;
 		
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue( cur, slot );
 	}

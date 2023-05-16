@@ -95,7 +95,7 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		IKinematics* ikv = smart_cast<IKinematics*>( actor->Visual() );
 		VERIFY( ikv );
 		u16 spine_bone = ikv->LL_BoneID( "bip01_spine" );
-		value = outfit->GetBoneArmor( spine_bone );					m_state[stt_armor]->set_text( value );
+		value *= outfit->GetBoneArmor( spine_bone );					m_state[stt_armor]->set_text( value );
 	}
 
 	if (pants)
@@ -105,7 +105,7 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
 		VERIFY(ikv);
 		u16 spine_bone = ikv->LL_BoneID("bip01_spine");
-		value = pants->GetBoneArmor(spine_bone);					m_state[stt_armor]->set_text(value);
+		value *= pants->GetBoneArmor(spine_bone);					m_state[stt_armor]->set_text(value);
 	}
 
 	if (!outfit && !pants)
