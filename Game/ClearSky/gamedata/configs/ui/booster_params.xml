@@ -1,5 +1,5 @@
 <booster_params x="0" y="0" width="260" height="20">
-    <prop_line x="0" y="25" width="208" height="9" stretch="1">
+    <prop_line x="0" y="5" width="208" height="4" stretch="1">
     </prop_line>
 	
 	<descr_list x="13" y="63" width="288" height="131" always_show_scroll="0" right_ident="10" left_ident="20" fit_to_height="1">
