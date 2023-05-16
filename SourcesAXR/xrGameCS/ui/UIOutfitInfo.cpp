@@ -15,8 +15,8 @@
 LPCSTR immunity_names[]=
 {
 	"burn_immunity",
-	"strike_immunity",
 	"shock_immunity",
+	"strike_immunity",
 	"wound_immunity",		
 	"radiation_immunity",
 	"telepatic_immunity",
@@ -28,8 +28,8 @@ LPCSTR immunity_names[]=
 LPCSTR immunity_st_names[]=
 {
 	"ui_inv_outfit_burn_protection",
-	"ui_inv_outfit_strike_protection",
 	"ui_inv_outfit_shock_protection",
+	"ui_inv_outfit_strike_protection",
 	"ui_inv_outfit_wound_protection",
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",
