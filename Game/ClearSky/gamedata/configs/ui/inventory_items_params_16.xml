@@ -7,7 +7,7 @@
 			<texture>ui_item_af_radius</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
 		</caption>
-		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="ì">
+		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="st_m">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</af_radius>
@@ -17,7 +17,7 @@
 			<texture>ui_item_af_radius</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
 		</caption>
-		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="ì">
+		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="st_m">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</af_vis_radius>

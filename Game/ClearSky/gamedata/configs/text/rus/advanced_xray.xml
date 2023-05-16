@@ -402,4 +402,7 @@
 	<string id="ui_mm_death_cam_mode_hint">
 		<text>Данная опция позволяет настроить поведение камеры во время смерти героя.</text>
 	</string>
+	<string id="st_m">
+		<text>м</text>
+	</string>
 </string_table>
