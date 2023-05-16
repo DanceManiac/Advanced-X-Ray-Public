@@ -378,20 +378,86 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 
 void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem)
 {
+	m_pInvItem				= pInvItem;
+	Enable					(NULL != m_pInvItem);
+	if(!m_pInvItem)			return;
 
-	if (UIItemImage)
+	Fvector2				pos;	pos.set( 0.0f, 0.0f );
+	string256				str;
+	if ( UIName )
+	{
+		UIName->SetText		(pInvItem->NameItem());
+		UIName->AdjustHeightToText();
+	}
+	if ( UIWeight )
+	{
+		LPCSTR  kg_str = CStringTable().translate( "st_kg" ).c_str();
+		float	weight = pInvItem->Weight();
+
+		xr_sprintf			(str, "%3.2f %s", weight, kg_str );
+		UIWeight->SetText	(str);
+	}
+	if ( UICost && IsGameTypeSingle() )
+	{
+		xr_sprintf(str, "%d RU", pInvItem->Cost());// will be owerwritten in multiplayer
+		UICost->SetText(str);
+		UICost->Show(true);
+	
+	}
+	
+	if ( UIDesc )
+	{
+
+		pos.x					= UIDesc->GetWndPos().x;
+		UIDesc->SetWndPos		(pos);
+		UIDesc->Clear			();
+		VERIFY					(0==UIDesc->GetSize());
+		if(m_desc_info.bShowDescrText)
+		{
+			CUIStatic* pItem					= xr_new<CUIStatic>();
+			pItem->SetTextColor					(m_desc_info.uDescClr);
+			pItem->SetFont						(m_desc_info.pDescFont);
+			pItem->SetWidth						(UIDesc->GetDesiredChildWidth());
+			pItem->SetTextComplexMode			(true);
+			pItem->SetText						(*pInvItem->ItemDescription());
+			pItem->AdjustHeightToText			();
+			UIDesc->AddWindow					(pItem, true);
+		}
+		TryAddConditionInfo					(*pInvItem, NULL);
+		TryAddWpnInfo						(*pInvItem, NULL);
+		TryAddArtefactInfo					(*pInvItem);
+		TryAddOutfitInfo					(*pInvItem, NULL);
+		TryAddUpgradeInfo					(*pInvItem);
+		TryAddBoosterInfo					(*pInvItem);
+
+		if(m_b_FitToHeight)
+		{
+			UIDesc->SetWndSize				(Fvector2().set(UIDesc->GetWndSize().x, UIDesc->GetPadSize().y) );
+			Fvector2 new_size;
+			new_size.x						= GetWndSize().x;
+			new_size.y						= UIDesc->GetWndPos().y+UIDesc->GetWndSize().y+20.0f;
+			new_size.x						= _max(105.0f, new_size.x);
+			new_size.y						= _max(105.0f, new_size.y);
+			SetWndSize						(new_size);
+			if(UIBackground)
+				UIBackground->InitFrameWindow(UIBackground->GetWndPos(), new_size);
+		}
+
+		UIDesc->ScrollToBegin				();
+	}
+	if(UIItemImage)
 	{
 		// Загружаем картинку
-		UIItemImage->SetShader(InventoryUtilities::GetEquipmentIconsShader());
+		UIItemImage->SetShader				(InventoryUtilities::GetEquipmentIconsShader());
 
-		Irect item_grid_rect = pInvItem->GetInvGridRect();
-		UIItemImage->GetUIStaticItem().SetOriginalRect(float(item_grid_rect.x1 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), float(item_grid_rect.y1 * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
-			float(item_grid_rect.x2 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), float(item_grid_rect.y2 * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
-		UIItemImage->TextureOn();
-		UIItemImage->ClipperOn();
-		UIItemImage->SetStretchTexture(true);
+		Irect item_grid_rect				= pInvItem->GetInvGridRect();
+		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(item_grid_rect.x1*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), float(item_grid_rect.y1*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
+														float(item_grid_rect.x2*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),	float(item_grid_rect.y2*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
+		UIItemImage->TextureOn				();
+		UIItemImage->ClipperOn				();
+		UIItemImage->SetStretchTexture		(true);
 		Frect v_r{};
-
+			
 		if (GameConstants::GetUseHQ_Icons())
 		{
 			v_r = { 0.0f,
@@ -401,19 +467,19 @@ void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem)
 		}
 		else
 		{
-			v_r = { 0.0f,
-			0.0f,
-			float(item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons())),
-			float(item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons())) };
+				v_r = { 0.0f,
+				0.0f,
+				float(item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons())),
+				float(item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons())) };
 		}
-		if (UI()->is_16_9_mode())
+		if(UI()->is_16_9_mode())
 			v_r.x2 /= 1.2f;
 
-		UIItemImage->GetUIStaticItem().SetRect(v_r);
-		//		UIItemImage->SetWidth					(_min(v_r.width(),	UIItemImageSize.x));
-		//		UIItemImage->SetHeight					(_min(v_r.height(),	UIItemImageSize.y));
-		UIItemImage->SetWidth(v_r.width());
-		UIItemImage->SetHeight(v_r.height());
+		UIItemImage->GetUIStaticItem().SetRect	(v_r);
+//		UIItemImage->SetWidth					(_min(v_r.width(),	UIItemImageSize.x));
+//		UIItemImage->SetHeight					(_min(v_r.height(),	UIItemImageSize.y));
+		UIItemImage->SetWidth					( v_r.width()  );
+		UIItemImage->SetHeight					( v_r.height() );
 	}
 }
 
