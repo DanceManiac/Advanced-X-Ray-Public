@@ -5,6 +5,7 @@
 #include "embedded_editor_pos_informer.h"
 #include "embedded_editor_helper.h"
 #include <imgui.h>
+#include "imgui_internal.h"
 #include <fstream>
 
 string256 section_name = "section";
@@ -49,4 +50,28 @@ void ShowPositionInformer(bool& show)
 	{
 		SavePosition(section_name);
 	}
+}
+
+bool PositionInformer_MouseWheel(float wheel)
+{
+	ImGui::Begin("Position Informer");
+
+	if (!ImGui::IsWindowFocused())
+	{
+		ImGui::End();
+		return false;
+	}
+
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+	if (wheel != 0.0f)
+	{
+		float scroll{};
+		scroll -= wheel * 35;
+		ImGui::SetScrollY(window, window->Scroll.y - scroll);
+	}
+
+	ImGui::End();
+
+	return true;
 }

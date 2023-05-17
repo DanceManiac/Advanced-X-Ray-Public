@@ -11,6 +11,7 @@
 #include <addons/imguinodegrapheditor/imguinodegrapheditor.h>
 #include <dinput.h>
 #include <imgui.h>
+#include "imgui_internal.h"
 
 bool bShowWindow = true;
 bool show_test_window = true;
@@ -42,6 +43,7 @@ bool IsEditor() { return stage != EditorStage::None; }
 void ShowMain()
 {
 	ImguiWnd wnd("Main");
+
 	if (wnd.Collapsed)
 		return;
 
@@ -246,6 +248,41 @@ bool Editor_MouseWheel(int direction)
         return false;
 
     ImGuiIO& io = ImGui::GetIO();
-    io.MouseWheel += direction > 0 ? +1.0f : -1.0f;
+    io.MouseWheel += direction > 0 ? -1.0f : +1.0f;
+
+    ImGui::Begin("Main");
+
+    bool IsEditorInput = false;
+
+    if (show_weather_window)
+        !IsEditorInput ? (IsEditorInput = WeatherEditor_MouseWheel(io.MouseWheel)) : WeatherEditor_MouseWheel(io.MouseWheel);
+    if (show_position_informer)
+        !IsEditorInput ? (IsEditorInput = PositionInformer_MouseWheel(io.MouseWheel)) : PositionInformer_MouseWheel(io.MouseWheel);
+    if (show_hud_editor)
+        !IsEditorInput ? (IsEditorInput = HudEditor_MouseWheel(io.MouseWheel)) : HudEditor_MouseWheel(io.MouseWheel);
+
+    if (IsEditorInput)
+    {
+        ImGui::End();
+        return true;
+    }
+
+    if (!ImGui::IsWindowFocused())
+    {
+        ImGui::End();
+        return false;
+    }
+
+    ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+    if (direction != 0)
+    {
+        float scroll{};
+        scroll -= io.MouseWheel * 35;
+        ImGui::SetScrollY(window, window->Scroll.y - scroll);
+    }
+
+    ImGui::End();
+
     return true;
 } 

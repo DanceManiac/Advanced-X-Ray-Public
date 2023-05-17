@@ -11,6 +11,7 @@
 #include "../ai_space.h"
 #include "../xrServerEntities/script_engine.h"
 #include <imgui.h>
+#include "imgui_internal.h"
 
 float editor_longitude = 0.0;
 float editor_altitude = 0.0;
@@ -499,3 +500,27 @@ void ShowWeatherEditor(bool& show)
 	}
     ImGui::End();
 } 
+
+bool WeatherEditor_MouseWheel(float wheel)
+{
+	ImGui::Begin(modifiedWeathers.empty() ? "Weather###Weather" : "Weather*###Weather");
+
+	if (!ImGui::IsWindowFocused())
+	{
+		ImGui::End();
+		return false;
+	}
+
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+	if (wheel != 0.0f)
+	{
+		float scroll{};
+		scroll -= wheel * 35;
+		ImGui::SetScrollY(window, window->Scroll.y - scroll);
+	}
+
+	ImGui::End();
+
+	return true;
+}

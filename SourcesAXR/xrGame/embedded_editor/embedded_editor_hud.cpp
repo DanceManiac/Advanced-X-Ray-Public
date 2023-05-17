@@ -3,7 +3,8 @@
 #include "../../xrEngine/device.h"
 #include "../player_hud.h"
 #include "embedded_editor_helper.h"
-#include <addons/ImGuizmo/ImGuizmo.h>
+//#include <addons/ImGuizmo/ImGuizmo.h>
+#include "imgui_internal.h"
 
 void ShowHudEditor(bool& show)
 {
@@ -83,4 +84,28 @@ void ShowHudEditor(bool& show)
 		g_player_hud->SaveCfg(0);
 		g_player_hud->SaveCfg(1);
 	}
+}
+
+bool HudEditor_MouseWheel(float wheel)
+{
+	ImGui::Begin("HUD Editor");
+
+	if (!ImGui::IsWindowFocused())
+	{
+		ImGui::End();
+		return false;
+	}
+
+	ImGuiWindow* window = ImGui::GetCurrentWindow();
+
+	if (wheel != 0.0f)
+	{
+		float scroll{};
+		scroll -= wheel * 35;
+		ImGui::SetScrollY(window, window->Scroll.y - scroll);
+	}
+
+	ImGui::End();
+
+	return true;
 }
