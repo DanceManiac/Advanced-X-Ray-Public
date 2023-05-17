@@ -139,8 +139,7 @@ CSightParams CScriptGameObject::sight_params	()
 {
 	CAI_Stalker						*stalker = smart_cast<CAI_Stalker*>(&object());
 	if (!stalker) {
-		Msg("! CAI_Stalker : cannot access class member sight_params!");
-
+		CAST_ERR(CAI_Stalker,stalker);
 		CSightParams				result;
 		result.m_object				= 0;
 		result.m_vector				= Fvector().set(flt_max,flt_max,flt_max);

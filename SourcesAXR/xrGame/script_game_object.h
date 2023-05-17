@@ -19,7 +19,7 @@
 //На релизе не крашим игру, кричим об ошибке в лог
 #ifdef MASTER_GOLD
 	#define cast_msg(class,var,f) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "] !")
-	#define cast_msg2(class,var,f,rval) Msg("Function " f " cannot cast object ["#var"] to [" #class "] ! Returned "#rval)
+	#define cast_msg2(class,var,f,rval) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "] ! Returned "#rval)
 	#define CAST_ERR(class,var) cast_msg(class,var,__FUNCTION__)
 	#define RCAST_ERR(class,var,rval) cast_msg2(class,var,__FUNCTION__,rval)
 	#define vmake(class,var,f) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var); return;}

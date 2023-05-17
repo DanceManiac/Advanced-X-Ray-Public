@@ -880,16 +880,11 @@ void CScriptGameObject::sound_prefix			(LPCSTR sound_prefix)
 bool CScriptGameObject::is_weapon_going_to_be_strapped	( CScriptGameObject const* object ) const
 {
 	if ( !object ) {
-		Msg("! CGameObject : cannot access class member is_weapon_going_to_be_strapped (object passed is null)!");
+		RCAST_ERR(CScriptGameObject,object,false);
 		return								false;
 	}
 
-	CAI_Stalker const *stalker				= smart_cast<CAI_Stalker const*>( &this->object() );
-	if (!stalker) {
-		Msg("! CGameObject : cannot access class member is_weapon_going_to_be_strapped!");
-		return								false;
-	}
-
+	RMakeObj2(CAI_Stalker,stalker,false,&this->object());
 	return									stalker->is_weapon_going_to_be_strapped	( &object->object() );
 }
 
