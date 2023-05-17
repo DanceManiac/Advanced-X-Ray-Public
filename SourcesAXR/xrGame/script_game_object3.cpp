@@ -867,14 +867,14 @@ void show_condition								(CScriptIniFile *ini_file, LPCSTR section)
 
 LPCSTR CScriptGameObject::sound_prefix			() const
 {
-	RMakeObj(CCustomMonster,custom_monster,0);
-	return									(*custom_monster->sound().sound_prefix());
+	RMakeObj(CCustomMonster,monster,0);
+	return									(*monster->sound().sound_prefix());
 }
 
 void CScriptGameObject::sound_prefix			(LPCSTR sound_prefix)
 {
-	MakeObj(CCustomMonster,custom_monster);
-	custom_monster->sound().sound_prefix	(sound_prefix);
+	MakeObj(CCustomMonster,monster);
+	monster->sound().sound_prefix	(sound_prefix);
 }
 
 bool CScriptGameObject::is_weapon_going_to_be_strapped	( CScriptGameObject const* object ) const
