@@ -109,10 +109,10 @@
 #		else
 #			define NODEFAULT __assume(0)
 #		endif
-#		define VERIFY(expr)				do {} while (0)
-#		define VERIFY2(expr, e2)		do {} while (0)
-#		define VERIFY3(expr, e2, e3)	do {} while (0)
-#		define VERIFY4(expr, e2, e3, e4)do {} while (0)
+#		define VERIFY(expr)
+#		define VERIFY2(expr, e2)
+#		define VERIFY3(expr, e2, e3)
+#		define VERIFY4(expr, e2, e3, e4)
 #		define CHK_DX(a) a
 #		define GAME_PAUSE(a,b,c,msg) Device.Pause(a,b,c)
 #	endif // DEBUG
