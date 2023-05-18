@@ -3,7 +3,7 @@
 #include "../../xrEngine/device.h"
 #include "../player_hud.h"
 #include "embedded_editor_helper.h"
-#include <addons/ImGuizmo/ImGuizmo.h>
+//#include <addons/ImGuizmo/ImGuizmo.h>
 #include "imgui_internal.h"
 
 void ShowHudEditor(bool& show)
