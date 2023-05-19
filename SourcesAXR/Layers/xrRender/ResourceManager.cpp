@@ -150,7 +150,9 @@ void CResourceManager::_DeleteElement(const ShaderElement* S)
 
 Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
 {
+#ifndef MASTER_GOLD
 	CTimer time; time.Start();
+#endif
 	CBlender_Compile	C;
 	Shader				S;
 
@@ -236,8 +238,9 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 	N->dwFlags				|=	xr_resource_flagged::RF_REGISTERED;
 	v_shaders.push_back		(N);
 
+#ifndef MASTER_GOLD
 	if (time.GetElapsed_sec() * 1000.f > 50.0 && g_loading_events.empty() && !prefetching_in_progress) Msg("---Loading of %s made a %fms stutter, should it be prefetched?!", s_textures, time.GetElapsed_sec() * 1000.f);
-
+#endif
 	return N;
 }
 
@@ -363,16 +366,19 @@ void CResourceManager::DeferredUpload()
 {
 	if (!RDEVICE.b_is_Ready) return;
 
+#ifdef DEBUG
 	Msg("CResourceManager::DeferredUpload [%s] -> START, size = [%u]", ps_mt_texture_load ? "MT" : "NO MT", m_textures.size());
+#endif
 
-	// Теперь многопоточная загрузка текстур даёт очень существенный прирост скорости, проверено.
+	// вЂњРµРїРµСЂСЊ РјРЅРѕРіРѕРїРѕС‚РѕС‡РЅР°В¤ Р·Р°РіСЂСѓР·РєР° С‚РµРєСЃС‚СѓСЂ РґР°Р„С‚ РѕС‡РµРЅСЊ СЃСѓС‰РµСЃС‚РІРµРЅРЅС‹Р№ РїСЂРёСЂРѕСЃС‚ СЃРєРѕСЂРѕСЃС‚Рё, РїСЂРѕРІРµСЂРµРЅРѕ.
 	if (ps_mt_texture_load)
 		std::for_each(std::execution::par_unseq, m_textures.begin(), m_textures.end(), [](auto& pair) { pair.second->Load(); });
 	else
 		for (auto& pair : m_textures)
 			pair.second->Load();
-
+#ifdef DEBUG
 	Msg("CResourceManager::DeferredUpload -> END");
+#endif
 }
 /*
 void	CResourceManager::DeferredUnload	()
@@ -473,7 +479,9 @@ BOOL	CResourceManager::_GetDetailTexture(LPCSTR Name,LPCSTR& T, R_constant_setup
 
 void CResourceManager::RMPrefetchUITextures()
 {
+#ifndef MASTER_GOLD
 	CTimer time; time.Start();
+#endif
 	CInifile::Sect& sect = pAdvancedSettings->r_section("prefetch_ui_textures");
 	for (CInifile::SectCIt I = sect.Data.begin(); I != sect.Data.end(); I++)
 	{
@@ -492,5 +500,7 @@ void CResourceManager::RMPrefetchUITextures()
 			Shader* temp = _cpp_Create(tempshadername, temptexturename);
 		}
 	}
+#ifndef MASTER_GOLD
 	Msg("*RMPrefetchUITextures %fms", time.GetElapsed_sec() * 1000.f);
+#endif
 }

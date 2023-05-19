@@ -127,8 +127,9 @@ CMainMenu::CMainMenu	()
 	}
 	
 	Device.seqFrame.Add		(this,REG_PRIORITY_LOW-1000);
-
+#ifndef MASTER_GOLD
 	Msg("*Start prefetching UI textures");
+#endif
 	Device.m_pRender->RenderPrefetchUITextures();
 }
 

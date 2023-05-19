@@ -51,7 +51,9 @@ void CDetailManager::hw_Load_Geom()
 	// Analyze batch-size
 	hw_BatchSize	= (u32(HW.Caps.geometry.dwRegisters)-c_hdr)/c_size;
 	clamp			(hw_BatchSize,(u32)0,(u32)64);
+#ifdef DEBUG
 	Msg				("* [DETAILS] VertexConsts(%d), Batch(%d)",u32(HW.Caps.geometry.dwRegisters),hw_BatchSize);
+#endif
 
 	// Pre-process objects
 	u32			dwVerts		= 0;
@@ -63,7 +65,9 @@ void CDetailManager::hw_Load_Geom()
 		dwIndices	+=	D.number_indices*hw_BatchSize;
 	}
 	u32			vSize		= sizeof(vertHW);
+#ifdef DEBUG
 	Msg("* [DETAILS] %d v(%d), %d p",dwVerts,vSize,dwIndices/3);
+#endif
 
 #ifndef USE_DX11
 	// Determine POOL & USAGE
@@ -76,7 +80,9 @@ void CDetailManager::hw_Load_Geom()
 	HW.stats_manager.increment_stats_ib				(hw_IB);
 
 #endif	//	USE_DX11
+#ifdef DEBUG
 	Msg("* [DETAILS] Batch(%d), VB(%dK), IB(%dK)",hw_BatchSize,(dwVerts*vSize)/1024, (dwIndices*2)/1024);
+#endif
 
 	// Fill VB
 	{

@@ -452,7 +452,7 @@ void CGamePersistent::start_logo_intro		()
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("intro_logo");
-			Msg					("intro_start intro_logo");
+			Msg					("Intro started %s",__FUNCTION__);
 			Console->Hide		();
 		}
 	}
@@ -490,7 +490,7 @@ void CGamePersistent::game_loaded()
 			VERIFY(NULL == m_intro);
 			m_intro = xr_new<CUISequencer>();
 			m_intro->Start("game_loaded");
-			Msg("intro_start game_loaded");
+			Msg("Intro started %s",__FUNCTION__);
 			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
 		}
 		m_intro_event = 0;
@@ -505,7 +505,7 @@ void CGamePersistent::game_loaded()
 void CGamePersistent::update_game_loaded()
 {
 	xr_delete(m_intro);
-	Msg("intro_delete ::update_game_loaded");
+	Msg("Intro finished %s",__FUNCTION__);
 	load_screen_renderer.stop();
 	start_game_intro();
 }
@@ -524,7 +524,7 @@ void CGamePersistent::start_game_intro		()
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("intro_game");
-			Msg("intro_start intro_game");
+			Msg("Intro started %s",__FUNCTION__);
 		}
 	}
 }
@@ -532,7 +532,7 @@ void CGamePersistent::update_game_intro()
 {
 	if (m_intro && (false == m_intro->IsActive())) {
 		xr_delete(m_intro);
-		Msg("intro_delete ::update_game_intro");
+		Msg("Intro finished %s",__FUNCTION__);
 		m_intro_event = 0;
 	}
 	else if (!m_intro)

@@ -65,8 +65,6 @@ void ALDeviceList::Enumerate()
 	// grab function pointers for 1.0-API functions, and if successful proceed to enumerate all devices
 	if (alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT")) 
 	{
-		Msg("SOUND: OpenAL: EnumerationExtension Present");
-
 		devices				= (char *)alcGetString(NULL, ALC_DEVICE_SPECIFIER);
 		Msg					("devices %s",devices);
 		xr_strcpy(			m_defaultDeviceName, (char *)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER));
@@ -114,8 +112,7 @@ void ALDeviceList::Enumerate()
 
 			devices		+= xr_strlen(devices) + 1;
 		}
-	}else
-		Msg("SOUND: OpenAL: EnumerationExtension NOT Present");
+	}
 
 //make token
 	u32 _cnt								= GetNumDevices();

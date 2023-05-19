@@ -1407,8 +1407,10 @@ void CApplication::LoadEnd		()
 {
 	ll_dwReference--;
 	if (0==ll_dwReference)		{
+#ifndef MASTER_GOLD
 		Msg						("* phase time: %d ms",phase_timer.GetElapsed_ms());
 		Msg						("* phase cmem: %d K", Memory.mem_usage()/1024);
+#endif
 		Console->Execute		("stat_memory");
 		g_appLoaded				= TRUE;
 //		DUMP_PHASE;
