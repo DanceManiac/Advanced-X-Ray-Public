@@ -72,15 +72,14 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 	LPSTR				buffer = assertion_info;
 	int assertion_size	= (int)assertion_info_size;
 	LPCSTR				endline = "\n";
-	LPCSTR				prefix = "[error]";
 	bool				extended_description = (description && !argument0 && strchr(description,'\n'));
 	for (int i=0; i<2; ++i) {
 		if (!i)
 			buffer		+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sFATAL ERROR%s%s",endline,endline,endline);
-		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sExpression    : %s%s",prefix,expression,endline);
-		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sFunction      : %s%s",prefix,function,endline);
-		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sFile          : %s%s",prefix,file,endline);
-		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sLine          : %d%s",prefix,line,endline);
+		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"Expression    : %s%s",expression,endline);
+		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"Function      : %s%s",function,endline);
+		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"File          : %s%s",file,endline);
+		buffer			+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"Line          : %d%s",line,endline);
 		
 		if (extended_description) {
 			buffer		+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%s%s%s",endline,description,endline);
@@ -94,14 +93,14 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 			}
 		}
 		else {
-			buffer		+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sDescription   : %s%s",prefix,description,endline);
+			buffer		+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"Description   : %s%s",description,endline);
 			if (argument0) {
 				if (argument1) {
-					buffer	+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sArgument 0    : %s%s",prefix,argument0,endline);
-					buffer	+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sArgument 1    : %s%s",prefix,argument1,endline);
+					buffer	+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"Argument 0    : %s%s",argument0,endline);
+					buffer	+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"Argument 1    : %s%s",argument1,endline);
 				}
 				else
-					buffer	+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"%sArguments     : %s%s",prefix,argument0,endline);
+					buffer	+= xr_sprintf(buffer,assertion_size - u32(buffer - buffer_base),"Arguments     : %s%s",argument0,endline);
 			}
 		}
 
@@ -113,7 +112,6 @@ void xrDebug::gather_info		(const char *expression, const char *description, con
 			}
 			buffer		= assertion_info;
 			endline		= "\r\n";
-			prefix		= "";
 		}
 	}
 
