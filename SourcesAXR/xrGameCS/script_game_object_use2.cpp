@@ -66,23 +66,29 @@ CScriptSoundInfo CScriptGameObject::GetSoundInfo()
 {
 	CScriptSoundInfo	ret_val;
 	RMakeObj(CBaseMonster,monster,ret_val);
-	if (monster->SoundMemory.IsRememberSound()) {
+	if (monster->SoundMemory.IsRememberSound())
+	{
 		SoundElem se; 
 		bool bDangerous;
 		monster->SoundMemory.GetSound(se, bDangerous);
 		const CGameObject *pO = smart_cast<const CGameObject *>(se.who);
 		ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : NULL, bDangerous, se.position, se.power, int(se.time));
 	}
+
+	return (ret_val);
 }
 
 CScriptMonsterHitInfo CScriptGameObject::GetMonsterHitInfo()
 {
 	CScriptMonsterHitInfo	ret_val;
 	RMakeObj(CBaseMonster,monster,ret_val);
-	if (monster->HitMemory.is_hit()) {
+	if (monster->HitMemory.is_hit())
+	{
 		CGameObject *pO = smart_cast<CGameObject *>(monster->HitMemory.get_last_hit_object());
 		ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : NULL, monster->HitMemory.get_last_hit_dir(), monster->HitMemory.get_last_hit_time());
 	}
+
+	return (ret_val);
 }
 
 //////////////////////////////////////////////////////////////////////////
