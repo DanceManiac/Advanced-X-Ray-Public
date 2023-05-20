@@ -531,7 +531,7 @@ void CSE_ALifeItemWeapon::UPDATE_Read(NET_Packet	&tNetPacket)
 	tNetPacket.r_u8				(wpn_state);
 	tNetPacket.r_u8				(m_bZoom);
 
-	if (m_wVersion > 128)
+	if (m_wVersion > 124)
 		tNetPacket.r_u8(cur_scope);
 }
 
