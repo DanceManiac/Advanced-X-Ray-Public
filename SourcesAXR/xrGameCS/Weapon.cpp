@@ -281,7 +281,7 @@ void CWeapon::UpdateXForm	()
 		m_strap_bone1_id = V->LL_BoneID(m_strap_bone1);
 	}
 
-	if (parent->inventory().GetActiveSlot() != RIFLE_SLOT && m_can_be_strapped_rifle && parent->inventory().InSlot(this))
+	if (parent->inventory().GetActiveSlot() != RIFLE_SLOT && m_can_be_strapped_rifle /* && parent->inventory().InSlot(this)*/)
 	{
 		boneR = m_strap_bone0_id;
 		boneR2 = m_strap_bone1_id;
