@@ -1006,6 +1006,10 @@ void CPHMovementControl::PHReleaseObject()
 
 void	CPHMovementControl::DestroyCharacter()
 {
+	// Remove Grass bender if PHCharacter is not NULL
+	if (m_character->PhysicsRefObject() != NULL)
+		g_pGamePersistent->GrassBendersRemoveById(m_character->PhysicsRefObject()->ID());
+
 	m_character->Destroy();
 	xr_delete(m_capture);
 	//xr_delete<CPHSimpleCharacter>(m_character);

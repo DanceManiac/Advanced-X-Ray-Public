@@ -77,6 +77,9 @@ class CLevelPathBuilder;
 class CDetailPathBuilder;
 
 class CMovementManager {
+public:
+	u8		grassbender_id;
+	u32		grassbender_frame;
 private:
 	friend class CLevelPathBuilder;
 	friend class CDetailPathBuilder;

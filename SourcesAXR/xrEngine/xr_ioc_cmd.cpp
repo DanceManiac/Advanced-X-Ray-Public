@@ -705,6 +705,11 @@ ENGINE_API float		ps_detail_collision_radius	= 40.f;
 ENGINE_API xr_vector<DetailCollisionPoint> level_detailcoll_points;
 ENGINE_API Fvector		actor_position{};
 
+//Screen Space Shaders Stuff
+ENGINE_API Fvector4		ps_ssfx_grass_interactive = Fvector4().set(.0f, .0f, 2000.0f, 1.0f);
+ENGINE_API Fvector4		ps_ssfx_int_grass_params_1 = Fvector4().set(1.0f, 1.0f, 1.0f, 1.0f);
+ENGINE_API Fvector4		ps_ssfx_int_grass_params_2 = Fvector4().set(1.0f, 5.0f, 1.0f, 1.0f);
+
 void CCC_Register()
 {
 	// General
@@ -764,6 +769,10 @@ void CCC_Register()
 	CMD4(CCC_Float,		"r__detail_collision_visible_radius",	&ps_detail_collision_radius,	5.f, 70.f);
 	CMD4(CCC_Float,		"r__detail_collision_time",				&ps_detail_collision_time,		0.1f, 3.f);
 	CMD4(CCC_Vector3,	"r__detail_collision_angles",			&ps_detail_collision_angle,		Fvector({ -90.f, -90.f, -90.f }), Fvector({ 90.f, 90.f, 90.f }));
+
+	CMD4(CCC_Vector4,	"ssfx_grass_interactive",				&ps_ssfx_grass_interactive, Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 15, 5000, 1));
+	CMD4(CCC_Vector4,	"ssfx_int_grass_params_1",				&ps_ssfx_int_grass_params_1, Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 5, 5, 5));
+	CMD4(CCC_Vector4,	"ssfx_int_grass_params_2",				&ps_ssfx_int_grass_params_2, Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 20, 1, 5));
 
 	CMD4(CCC_Float,		"svp_image_size_k",		&psSVPImageSizeK,	0.1f,	2.f				);
 	CMD4(CCC_Integer,	"svp_frame_delay",		&psSVPFrameDelay,	1,		3				);

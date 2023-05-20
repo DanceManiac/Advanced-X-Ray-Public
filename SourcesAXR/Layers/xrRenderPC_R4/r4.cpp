@@ -15,7 +15,9 @@
 #include "../../xrEngine/x_ray.h"
 #include "D3DX10Core.h"
 
-CRender										RImplementation;
+CRender RImplementation;
+
+ENGINE_API extern Fvector4 ps_ssfx_grass_interactive;
 
 //////////////////////////////////////////////////////////////////////////
 class CGlow				: public IRender_Glow
@@ -524,6 +526,9 @@ void CRender::OnFrame()
 		Device.seqParallel.insert	(Device.seqParallel.begin(),
 			fastdelegate::FastDelegate0<>(&HOM,&CHOM::MT_RENDER));
 	}
+
+	if (Details)
+		g_pGamePersistent->GrassBendersUpdateExplosions();
 }
 
 
@@ -955,6 +960,8 @@ HRESULT	CRender::shader_compile			(
 	char							c_aa			[32];
 	//For lowland fog type
 	char							c_low_fog_type	[32];
+	// Screen Space Shaders
+	char							c_inter_grass	[32];
 
 	char	sh_name[MAX_PATH] = "";
 	
@@ -1372,6 +1379,21 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = c_low_fog_type;
 		def_it++;
 		sh_name[len] = '0' + char(ps_lowland_fog_type); ++len;
+	}
+
+	if (ps_ssfx_grass_interactive.y > 0)
+	{
+		xr_sprintf(c_inter_grass, "%d", u8(ps_ssfx_grass_interactive.y));
+		defines[def_it].Name = "SSFX_INT_GRASS";
+		defines[def_it].Definition = c_inter_grass;
+		def_it++;
+		xr_strcat(sh_name, c_inter_grass);
+		len += xr_strlen(c_inter_grass);
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
 	}
 
 	//Be carefull!!!!! this should be at the end to correctly generate

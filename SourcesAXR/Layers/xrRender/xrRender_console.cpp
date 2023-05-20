@@ -382,7 +382,9 @@ Flags32 psDeviceFlags2 = { 0 };
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 
 //Screen Space Shaders Stuff
-//Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
+Fvector3 ps_ssfx_shadow_cascades = Fvector3().set(20, 40, 160);
+Fvector4 ps_ssfx_grass_shadows = Fvector4().set(.0f, .35f, 30.0f, .0f);
+//Fvector4 ps_ssfx_wpn_dof_1 = Fvector4().set(.0f, .0f, .0f, .0f);
 //extern float ps_ssfx_wpn_dof_2 = 1.0f;
 
 #ifndef _EDITOR
@@ -394,6 +396,33 @@ Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 #endif	//	USE_DX11
 
 //-----------------------------------------------------------------------
+
+class CCC_ssfx_cascades : public CCC_Vector3
+{
+public:
+	void apply()
+	{
+#if defined(USE_DX11)
+		RImplementation.init_cacades();
+#endif
+	}
+
+	CCC_ssfx_cascades(LPCSTR N, Fvector3 * V, const Fvector3 _min, const Fvector3 _max) : CCC_Vector3(N, V, _min, _max)
+	{
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		CCC_Vector3::Execute(args);
+		apply();
+	}
+
+	virtual void Status(TStatus & S)
+	{
+		CCC_Vector3::Status(S);
+		apply();
+	}
+};
 
 class CCC_detail_radius : public CCC_Integer
 {
@@ -1202,6 +1231,8 @@ void		xrRender_initconsole	()
 	// Screen Space Shaders
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
 	CMD4(CCC_Float,			"ssfx_wpn_dof_2",				&ps_ssfx_wpn_dof_2,			0.0f, 1.0f);
+	CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
+	CMD4(CCC_ssfx_cascades, "ssfx_shadow_cascades",			&ps_ssfx_shadow_cascades,	Fvector3().set(1.0f, 1.0f, 1.0f), Fvector3().set(300, 300, 300));
 
 	CMD4(CCC_Integer,		"r__mt_textures_load",			&ps_mt_texture_load,		0, 1); //Многопоточная загрузка текстур
 	CMD3(CCC_Token,			"r3_lowland_fog_type",			&ps_lowland_fog_type,		lowland_fog_type_token); //Тип низинного тумана
