@@ -50,6 +50,7 @@ CWeapon::CWeapon()
 
 	m_Offset.identity		();
 	m_StrapOffset.identity	();
+	m_StrapOffset_alt.identity();
 
 	m_iAmmoCurrentTotal		= 0;
 	m_BriefInfo_CalcFrame	= 0;
@@ -77,8 +78,13 @@ CWeapon::CWeapon()
 
 	m_strap_bone0			= 0;
 	m_strap_bone1			= 0;
+	m_strap_bone0_id = -1;
+	m_strap_bone1_id = -1;
 	m_StrapOffset.identity	();
+	m_StrapOffset_alt.identity();
 	m_strapped_mode			= false;
+	m_strapped_mode_rifle = false;
+	m_can_be_strapped_rifle = false;
 	m_can_be_strapped		= false;
 	m_ef_main_weapon_type	= u32(-1);
 	m_ef_weapon_type		= u32(-1);
@@ -252,18 +258,21 @@ void CWeapon::UpdateXForm	()
 	CEntityAlive*			E = smart_cast<CEntityAlive*>(H_Parent());
 	
 	if (!E) {
-		if (!IsGameTypeSingle())
+		if (!IsGameTypeSingle()) {
 			UpdatePosition	(H_Parent()->XFORM());
-
+			UpdatePosition_alt(H_Parent()->XFORM());
+		}
 		return;
 	}
 
 	const CInventoryOwner	*parent = smart_cast<const CInventoryOwner*>(E);
-	if (parent && parent->use_simplified_visual())
+	if (!parent || (parent && parent->use_simplified_visual()))
 		return;
 
-	if (parent->attached(this))
-		return;
+	if (!m_can_be_strapped_rifle) {
+		if (parent->attached(this))
+			return;
+	}
 
 	IKinematics*			V = smart_cast<IKinematics*>	(E->Visual());
 	VERIFY					(V);
@@ -272,7 +281,26 @@ void CWeapon::UpdateXForm	()
 	int						boneL = -1, boneR = -1, boneR2 = -1;
 
 	// this ugly case is possible in case of a CustomMonster, not a Stalker, nor an Actor
-	E->g_WeaponBones		(boneL,boneR,boneR2);
+	if ((m_strap_bone0_id == -1 || m_strap_bone1_id == -1) && m_can_be_strapped_rifle) {
+		m_strap_bone0_id = V->LL_BoneID(m_strap_bone0);
+		m_strap_bone1_id = V->LL_BoneID(m_strap_bone1);
+	}
+
+	if (parent->inventory().GetActiveSlot() != CurrSlot() && m_can_be_strapped_rifle &&
+		parent->inventory().InSlot(this)) {
+		boneR = m_strap_bone0_id;
+		boneR2 = m_strap_bone1_id;
+		boneL = boneR;
+
+		if (!m_strapped_mode_rifle)
+			m_strapped_mode_rifle = true;
+	}
+	else {
+		E->g_WeaponBones(boneL, boneR, boneR2);
+
+		if (m_strapped_mode_rifle)
+			m_strapped_mode_rifle = false;
+	}
 
 	if (boneR == -1)		return;
 
@@ -303,7 +331,10 @@ void CWeapon::UpdateXForm	()
 		mRes.mulA_43		(E->XFORM());
 	}
 
-	UpdatePosition			(mRes);
+	if (CurrSlot() == INV_SLOT_3)
+		UpdatePosition(mRes);
+	else if (CurrSlot() == INV_SLOT_2)
+		UpdatePosition_alt(mRes);
 }
 
 void CWeapon::UpdateFireDependencies_internal()
@@ -1195,6 +1226,7 @@ void CWeapon::OnH_B_Independent	(bool just_before_destroy)
 	SwitchState					(eHidden);
 
 	m_strapped_mode				= false;
+	m_strapped_mode_rifle = false;
 	m_zoom_params.m_bIsZoomModeNow	= false;
 	UpdateXForm					();
 
@@ -1559,8 +1591,22 @@ void CWeapon::SetDefaults()
 void CWeapon::UpdatePosition(const Fmatrix& trans)
 {
 	Position().set		(trans.c);
-	XFORM().mul			(trans,m_strapped_mode ? m_StrapOffset : m_Offset);
+	if (m_strapped_mode || m_strapped_mode_rifle)
+		XFORM().mul(trans, m_StrapOffset);
+	else
+		XFORM().mul(trans, m_Offset);
+
 	VERIFY				(!fis_zero(DET(renderable.xform)));
+}
+
+void CWeapon::UpdatePosition_alt(const Fmatrix& trans) {
+	Position().set(trans.c);
+	if (m_strapped_mode || m_strapped_mode_rifle)
+		XFORM().mul(trans, m_StrapOffset_alt);
+	else
+		XFORM().mul(trans, m_Offset);
+
+	VERIFY(!fis_zero(DET(renderable.xform)));
 }
 
 
@@ -2297,17 +2343,9 @@ void CWeapon::reload			(LPCSTR section)
 	CHudItemObject::reload			(section);
 	
 	m_can_be_strapped			= true;
+	m_can_be_strapped_rifle = BaseSlot() == INV_SLOT_3;
 	m_strapped_mode				= false;
-	
-	if (pSettings->line_exist(section,"strap_bone0"))
-		m_strap_bone0			= pSettings->r_string(section,"strap_bone0");
-	else
-		m_can_be_strapped		= false;
-	
-	if (pSettings->line_exist(section,"strap_bone1"))
-		m_strap_bone1			= pSettings->r_string(section,"strap_bone1");
-	else
-		m_can_be_strapped		= false;
+	m_strapped_mode_rifle = false;
 
 	bUseAltScope = !!bReloadSectionScope(section);
 
@@ -2331,18 +2369,56 @@ void CWeapon::reload			(LPCSTR section)
 		m_Offset.translate_over	(pos);
 	}
 
-	m_StrapOffset			= m_Offset;
-	if (pSettings->line_exist(section,"strap_position") && pSettings->line_exist(section,"strap_orientation")) {
+	if (BaseSlot() == INV_SLOT_3) {
+		// Strap bones:
+		if (pSettings->line_exist(section, "strap_bone0"))
+			m_strap_bone0 = pSettings->r_string(section, "strap_bone0");
+		else {
+			m_strap_bone0 = "bip01_spine2";
+		}
+		if (pSettings->line_exist(section, "strap_bone1"))
+			m_strap_bone1 = pSettings->r_string(section, "strap_bone1");
+		else {
+			m_strap_bone1 = "bip01_spine1";
+		}
+
+		// Right shoulder strap coordinates:
+		m_StrapOffset = m_Offset;
 		Fvector				pos,ypr;
-		pos					= pSettings->r_fvector3		(section,"strap_position");
-		ypr					= pSettings->r_fvector3		(section,"strap_orientation");
+		if (pSettings->line_exist(section, "strap_position") &&
+			pSettings->line_exist(section, "strap_orientation")) {
+			pos = pSettings->r_fvector3(section, "strap_position");
+			ypr = pSettings->r_fvector3(section, "strap_orientation");
+		}
+		else {
+			pos = Fvector().set(-0.34f, -0.20f, 0.15f);
+			ypr = Fvector().set(-0.0f, 0.0f, 84.0f);
+		}
 		ypr.mul				(PI/180.f);
 
 		m_StrapOffset.setHPB			(ypr.x,ypr.y,ypr.z);
 		m_StrapOffset.translate_over	(pos);
+
+		// Left shoulder strap coordinates:
+		m_StrapOffset_alt = m_Offset;
+		Fvector pos_alt, ypr_alt;
+		if (pSettings->line_exist(section, "strap_position_alt") &&
+			pSettings->line_exist(section, "strap_orientation_alt")) {
+			pos_alt = pSettings->r_fvector3(section, "strap_position_alt");
+			ypr_alt = pSettings->r_fvector3(section, "strap_orientation_alt");
+		}
+		else {
+			pos_alt = Fvector().set(-0.34f, 0.20f, 0.15f);
+			ypr_alt = Fvector().set(0.0f, 0.0f, 94.0f);
+		}
+		ypr_alt.mul(PI / 180.f);
+		m_StrapOffset_alt.setHPB(ypr_alt.x, ypr_alt.y, ypr_alt.z);
+		m_StrapOffset_alt.translate_over(pos_alt);
 	}
-	else
-		m_can_be_strapped	= false;
+	else {
+		m_can_be_strapped = false;
+		m_can_be_strapped_rifle = false;
+	}
 
 	m_ef_main_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_main_weapon_type",u32(-1));
 	m_ef_weapon_type		= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));
