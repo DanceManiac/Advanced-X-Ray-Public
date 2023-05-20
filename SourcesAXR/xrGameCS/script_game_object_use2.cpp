@@ -12,51 +12,28 @@
 //CAI_Bloodsucker
 void CScriptGameObject::set_invisible(bool val)
 {
-	CAI_Bloodsucker		*monster = smart_cast<CAI_Bloodsucker*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Bloodsucker : cannot access class member set_invisible!");
-		return;
-	}
-
+	MakeObj(CAI_Bloodsucker,monster);
 	val ? monster->manual_activate() : monster->manual_deactivate();
 }
 
 void CScriptGameObject::set_manual_invisibility(bool val)
 {
-	CAI_Bloodsucker		*monster = smart_cast<CAI_Bloodsucker*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Bloodsucker : cannot access class member set_manual_invisible!");
-		return;
-	}
+	MakeObj(CAI_Bloodsucker,monster);
 	val ? monster->set_manual_control(true) : monster->set_manual_control(false);
 	
 }
 
 void CScriptGameObject::bloodsucker_drag_jump(CScriptGameObject* e, LPCSTR e_str, const Fvector &position, float factor)
 {
-
-	CAI_Bloodsucker	*monster = smart_cast<CAI_Bloodsucker*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot process drag, anim, jump for CAI_Bloodsucker!");
-		return;
-	}
-
-		
+	MakeObj(CAI_Bloodsucker,monster);
 	CGameObject *game_object = &e->object();
 	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(game_object);
-
-	
 	monster->set_drag_jump(entity_alive, e_str, position, factor);
 }
 
 void CScriptGameObject::set_enemy(CScriptGameObject* e)
 {
-
-	CAI_Bloodsucker		*monster = smart_cast<CAI_Bloodsucker*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Bloodsucker : cannot access class member set_enemy!");
-		return;
-	}
+	MakeObj(CAI_Bloodsucker,monster);
 	CGameObject *game_object = &e->object();
 	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(game_object);
 	monster->SetEnemy(entity_alive);
@@ -64,11 +41,7 @@ void CScriptGameObject::set_enemy(CScriptGameObject* e)
 
 void CScriptGameObject::set_vis_state(float val)
 {
-	CAI_Bloodsucker		*monster = smart_cast<CAI_Bloodsucker*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Bloodsucker : cannot access class member set_vis_state!");
-		return;
-	}
+	MakeObj(CAI_Bloodsucker,monster);
 	if(val==1){
 		monster->set_vis();
 	}
@@ -79,139 +52,95 @@ void CScriptGameObject::set_vis_state(float val)
 
 void CScriptGameObject::off_collision(bool val)
 {
-	CAI_Bloodsucker		*monster = smart_cast<CAI_Bloodsucker*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Bloodsucker : cannot access class member set_vis_state!");
-		return;
-	}
+	MakeObj(CAI_Bloodsucker,monster);
 	monster->set_collision_off(val);
 }
 
 void CScriptGameObject::set_alien_control(bool val)
 {
-	CAI_Bloodsucker		*monster = smart_cast<CAI_Bloodsucker*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Bloodsucker : cannot access class member alien_control_activate!");
-		return;
-	}
-
+	MakeObj(CAI_Bloodsucker,monster);
 	monster->set_alien_control(val);
 }
 
 CScriptSoundInfo CScriptGameObject::GetSoundInfo()
 {
 	CScriptSoundInfo	ret_val;
-
-	CBaseMonster *l_tpMonster = smart_cast<CBaseMonster *>(&object());
-	if (l_tpMonster) {
-		if (l_tpMonster->SoundMemory.IsRememberSound()) {
-			SoundElem se; 
-			bool bDangerous;
-			l_tpMonster->SoundMemory.GetSound(se, bDangerous);
-
-			const CGameObject *pO = smart_cast<const CGameObject *>(se.who);
-			ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : 0, bDangerous, se.position, se.power, int(se.time));
-		}
-	} else {
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member GetSoundInfo!");
+	RMakeObj(CBaseMonster,monster,ret_val);
+	if (monster->SoundMemory.IsRememberSound()) {
+		SoundElem se; 
+		bool bDangerous;
+		monster->SoundMemory.GetSound(se, bDangerous);
+		const CGameObject *pO = smart_cast<const CGameObject *>(se.who);
+		ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : NULL, bDangerous, se.position, se.power, int(se.time));
 	}
-	return			(ret_val);
 }
 
 CScriptMonsterHitInfo CScriptGameObject::GetMonsterHitInfo()
 {
 	CScriptMonsterHitInfo	ret_val;
-
-	CBaseMonster *l_tpMonster = smart_cast<CBaseMonster *>(&object());
-	if (l_tpMonster) {
-		if (l_tpMonster->HitMemory.is_hit()) {
-			CGameObject *pO = smart_cast<CGameObject *>(l_tpMonster->HitMemory.get_last_hit_object());
-			ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : 0, l_tpMonster->HitMemory.get_last_hit_dir(), l_tpMonster->HitMemory.get_last_hit_time());
-		}
-	} else {
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member GetMonsterHitInfo!");
+	RMakeObj(CBaseMonster,monster,ret_val);
+	if (monster->HitMemory.is_hit()) {
+		CGameObject *pO = smart_cast<CGameObject *>(monster->HitMemory.get_last_hit_object());
+		ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : NULL, monster->HitMemory.get_last_hit_dir(), monster->HitMemory.get_last_hit_time());
 	}
-	return			(ret_val);
 }
 
 //////////////////////////////////////////////////////////////////////////
 // CBaseMonster
 void CScriptGameObject::skip_transfer_enemy(bool val)
 {
-	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
-	if (monster) monster->skip_transfer_enemy(val);
+	MakeObj(CBaseMonster,monster);
+	monster->skip_transfer_enemy(val);
 }
 
 void CScriptGameObject::set_home(LPCSTR name, float r_min, float r_max, bool aggressive, float r_mid)
 {
-	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
-	if (monster) monster->Home->setup(name,r_min,r_max,aggressive, r_mid);
+	MakeObj(CBaseMonster,monster);
+	monster->Home->setup(name,r_min,r_max,aggressive, r_mid);
 }
 void CScriptGameObject::remove_home()
 {
-	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
-	if (monster) monster->Home->remove_home();
+	MakeObj(CBaseMonster,monster);
+	monster->Home->remove_home();
 }
 
 bool CScriptGameObject::fake_death_fall_down()
 {
-	CZombie	*monster = smart_cast<CZombie*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CZombie : cannot access class member fake_death_fall_down!");
-		return false;
-	}
-
+	RMakeObj(CZombie,monster,false);
 	return monster->fake_death_fall_down();
 }
 void CScriptGameObject::fake_death_stand_up()
 {
-	CZombie	*monster = smart_cast<CZombie*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CZombie : cannot access class member fake_death_fall_down!");
-		return;
-	}
-
+	MakeObj(CZombie,monster);
 	monster->fake_death_stand_up();
 }
 
 void CScriptGameObject::berserk()
 {
-	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
-	if (monster) monster->set_berserk();
+	MakeObj(CBaseMonster,monster);
+	monster->set_berserk();
 }
 
 void CScriptGameObject::set_custom_panic_threshold(float value)
 {
-	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
-	if (monster) monster->set_custom_panic_threshold(value);
+	MakeObj(CBaseMonster,monster);
+	monster->set_custom_panic_threshold(value);
 }
 
 void CScriptGameObject::set_default_panic_threshold()
 {
-	CBaseMonster *monster = smart_cast<CBaseMonster *>(&object());
-	if (monster) monster->set_default_panic_threshold();
+	MakeObj(CBaseMonster,monster);
+	monster->set_default_panic_threshold();
 }
 
 void   CScriptGameObject::poltergeist_set_actor_ignore (bool ignore)
 {
-	CPoltergeist *monster = smart_cast<CPoltergeist*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,
-			"object is not Poltergeist to call poltergeist_set_actor_ignore");
-		return;
-	}
-
+	MakeObj(CPoltergeist,monster);
 	monster->set_actor_ignore(ignore);
 }
 
 bool   CScriptGameObject::poltergeist_get_actor_ignore ()
 {
-	CPoltergeist *monster = smart_cast<CPoltergeist*>(&object());
-	if (!monster) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,
-			"object is not Poltergeist to call poltergeist_get_actor_ignore");
-		return false;
-	}
-
+	RMakeObj(CPoltergeist,monster,false);
 	return	monster->get_actor_ignore();
 }
