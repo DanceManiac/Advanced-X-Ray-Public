@@ -494,7 +494,7 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 
 	if ((torch || artefact_detector || anomaly_detector) && UIInventoryItem)
 	{
-		UIInventoryItem->SetInfo(pInvItem.object().cNameSect());
+		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);
 	}
 }

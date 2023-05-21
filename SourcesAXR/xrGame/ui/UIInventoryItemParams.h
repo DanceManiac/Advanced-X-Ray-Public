@@ -15,7 +15,7 @@ public:
 	CUIInventoryItem();
 	virtual				~CUIInventoryItem();
 	void				InitFromXml(CUIXml& xml);
-	void				SetInfo(const shared_str& section);
+	void				SetInfo(CInventoryItem& pInvItem);
 
 protected:
 	CUIInventoryItemInfo*	m_af_radius;
@@ -23,8 +23,7 @@ protected:
 	CUIInventoryItemInfo*	m_charge_level;
 	CUIInventoryItemInfo*	m_max_charge;
 	CUIInventoryItemInfo*	m_uncharge_speed;
-
-	CUIStatic*			m_Prop_line;
+	CUIStatic*				m_Prop_line;
 
 }; // class CUIInventoryItem
 

@@ -150,7 +150,6 @@ public:
 	void			ToggleDetector		(bool bFastMode);
 	void			HideDetector		(bool bFastMode);
 	void			ShowDetector		(bool bFastMode);
-	float			m_fAfDetectRadius;
 	virtual bool	CheckCompatibility	(CHudItem* itm);
 
 	virtual u32		ef_detector_type	() const	{return 1;};
@@ -160,6 +159,8 @@ public:
 	virtual void	load				(IReader &input_packet);
 			float	GetCurrentChargeLevel(void) const;
 			void	SetCurrentChargeLevel(float val);
+			float	GetAfDetectRadius	() { return m_fAfDetectRadius;};
+			float	GetAfVisRadius		() { return m_fAfVisRadius;};
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
 			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
@@ -212,6 +213,7 @@ protected:
 
 	bool			m_bWorking;
 	float			m_fAfVisRadius;
+	float			m_fAfDetectRadius;
 
 	CAfList			m_artefacts;
 

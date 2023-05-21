@@ -549,7 +549,7 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 
 	if ((item || hud_item) && UIInventoryItem)
 	{
-		UIInventoryItem->SetInfo(pInvItem.object().cNameSect());
+		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);
 	}
 }

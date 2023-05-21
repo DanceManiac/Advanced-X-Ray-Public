@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: UIInventoryItemParams.cpp
 //	Created 	: 08.04.2021
-//  Modified 	: 19.04.2021
+//  Modified 	: 21.05.2021
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Inventory Item Window Class
 ////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,9 @@
 #include "UIXmlInit.h"
 #include "UIHelper.h"
 #include "../string_table.h"
+#include "../inventory_item.h"
+#include "clsid_game.h"
+#include "UIActorMenu.h"
 
 #include "../Torch.h"
 #include "../CustomDetector.h"
@@ -95,12 +98,13 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 	xml.SetLocalRoot(base_node);
 }
 
-void CUIInventoryItem::SetInfo(shared_str const& section)
+void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 {
 	DetachAll();
 	AttachChild(m_Prop_line);
-
 	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	shared_str section = pInvItem.object().cNameSect();
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
 	if (!actor)
 	{
 		return;
@@ -114,7 +118,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 
 	if (pSettings->line_exist(section.c_str(), "af_radius"))
 	{
-		val = pSettings->r_float(section, "af_radius");
+		val = pDet->GetAfDetectRadius();
 		if (!fis_zero(val))
 		{
 			m_af_radius->SetValue(val);
@@ -129,7 +133,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 
 	if (pSettings->line_exist(section.c_str(), "af_vis_radius"))
 	{
-		val = pSettings->r_float(section, "af_vis_radius");
+		val = pDet->GetAfVisRadius();
 		if (!fis_zero(val))
 		{
 			m_af_vis_radius->SetValue(val);
@@ -198,7 +202,7 @@ void CUIInventoryItemInfo::Init(CUIXml& xml, LPCSTR section)
 	xml.SetLocalRoot(xml.NavigateToNode(section));
 
 	m_caption = UIHelper::CreateStatic(xml, "caption", this);
-	m_value = UIHelper::CreateTextWnd(xml, "value", this);
+	m_value	= UIHelper::CreateTextWnd(xml, "value", this);
 	m_magnitude = xml.ReadAttribFlt("value", 0, "magnitude", 1.0f);
 	m_show_sign = (xml.ReadAttribInt("value", 0, "show_sign", 1) == 1);
 

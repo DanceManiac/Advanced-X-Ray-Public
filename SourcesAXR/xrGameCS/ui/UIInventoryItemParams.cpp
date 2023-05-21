@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: UIInventoryItemParams.cpp
 //	Created 	: 08.04.2021
-//  Modified 	: 20.04.2021
+//  Modified 	: 21.05.2021
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Inventory Item Window Class
 ////////////////////////////////////////////////////////////////////////////
@@ -98,12 +98,13 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 	xml.SetLocalRoot(base_node);
 }
 
-void CUIInventoryItem::SetInfo(shared_str const& section)
+void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 {
 	DetachAll();
 	AttachChild(m_Prop_line);
-
 	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	shared_str section = pInvItem.object().cNameSect();
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
 	if (!actor)
 	{
 		return;
@@ -117,7 +118,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 
 	if (pSettings->line_exist(section.c_str(), "af_radius"))
 	{
-		val = pSettings->r_float(section, "af_radius");
+		val = pDet->GetAfDetectRadius();
 		if (!fis_zero(val))
 		{
 			m_af_radius->SetValue(val);
@@ -132,7 +133,7 @@ void CUIInventoryItem::SetInfo(shared_str const& section)
 
 	if (pSettings->line_exist(section.c_str(), "af_vis_radius"))
 	{
-		val = pSettings->r_float(section, "af_vis_radius");
+		val = pDet->GetAfVisRadius();
 		if (!fis_zero(val))
 		{
 			m_af_vis_radius->SetValue(val);
@@ -336,6 +337,7 @@ CUIItemConditionParams::~CUIItemConditionParams()
 void CUIItemConditionParams::InitFromXml(CUIXml& xml_doc)
 {
 	if (!xml_doc.NavigateToNode("inventory_items_info", 0))	return;
+	CUIXmlInit::InitStatic(xml_doc, "static_current_charge_level", 0, &m_icon_charge);
 	CUIXmlInit::InitStatic(xml_doc, "cap_current_charge_level", 0, &m_textCharge);
 	m_ProgressCurCharge.InitFromXml(xml_doc, "progress_current_charge_level");
 }

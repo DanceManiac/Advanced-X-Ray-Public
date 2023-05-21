@@ -15,7 +15,7 @@ public:
 	CUIInventoryItem();
 	virtual				~CUIInventoryItem();
 	void				InitFromXml(CUIXml& xml);
-	void				SetInfo(const shared_str& section);
+	void				SetInfo(CInventoryItem& pInvItem);
 
 protected:
 	CUIInventoryItemInfo*	m_af_radius;
