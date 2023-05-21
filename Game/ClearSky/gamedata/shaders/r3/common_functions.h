@@ -479,6 +479,10 @@ uint alpha_to_coverage ( float alpha, float2 pos2d )
 #endif
 #endif
 
-
+float3 vibrance( float3 img, half val )
+{
+    float luminance = dot( float3( img.rgb ), LUMINANCE_VECTOR );
+    return float3( lerp( luminance, float3( img.rgb ), val ));
+}
 
 #endif	//	common_functions_h_included
