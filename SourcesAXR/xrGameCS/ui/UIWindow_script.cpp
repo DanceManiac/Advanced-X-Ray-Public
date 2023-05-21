@@ -199,6 +199,7 @@ void CUIWindow::script_register(lua_State *L)
 				value("DRAG_DROP_ITEM_DROP ",			int(DRAG_DROP_ITEM_DROP )),
 				value("DRAG_DROP_ITEM_DB_CLICK",		int(DRAG_DROP_ITEM_DB_CLICK)),
 				value("DRAG_DROP_ITEM_RBUTTON_CLICK",	int(DRAG_DROP_ITEM_RBUTTON_CLICK)),
+				value("DRAG_DROP_ITEM_CBUTTON_CLICK",	int(DRAG_DROP_ITEM_CBUTTON_CLICK)),
 
 	// CUIScrollBox
 				value("SCROLLBOX_MOVE",					int(SCROLLBOX_MOVE)),

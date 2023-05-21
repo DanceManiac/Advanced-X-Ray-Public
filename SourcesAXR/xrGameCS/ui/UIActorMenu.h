@@ -194,6 +194,7 @@ protected:
 	bool		__stdcall		OnItemDbClick				(CUICellItem* itm);
 	bool		__stdcall		OnItemSelected				(CUICellItem* itm);
 	bool		__stdcall		OnItemRButtonClick			(CUICellItem* itm);
+	bool		__stdcall		OnItemMButtonClick			(CUICellItem* itm);
 	bool		__stdcall		OnItemFocusReceive			(CUICellItem* itm);
 	bool		__stdcall		OnItemFocusLost				(CUICellItem* itm);
 	bool		__stdcall		OnItemFocusedUpdate			(CUICellItem* itm);

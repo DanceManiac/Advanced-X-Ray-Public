@@ -261,6 +261,13 @@ bool CUIActorMenu::OnItemRButtonClick(CUICellItem* itm)
 	return false;
 }
 
+bool CUIActorMenu::OnItemMButtonClick(CUICellItem* itm)
+{
+	InfoCurItem(NULL);
+	m_item_info_view = false;
+	return false;
+}
+
 bool CUIActorMenu::OnItemFocusReceive(CUICellItem* itm)
 {
 	InfoCurItem( NULL );

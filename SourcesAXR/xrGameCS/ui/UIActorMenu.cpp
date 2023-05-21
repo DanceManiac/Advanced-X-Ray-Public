@@ -514,6 +514,7 @@ bool CUIActorMenu::OnItemSelected(CUICellItem* itm)
 {
 	SetCurrentItem		(itm);
 	InfoCurItem			(NULL);
+	m_item_info_view	= false;
 	return				false;
 }
 
@@ -691,6 +692,13 @@ bool CUIActorMenu::OnItemRButtonClick(CUICellItem* itm)
 	SetCurrentItem( itm );
 	InfoCurItem( NULL );
 	ActivatePropertiesBox();
+	m_item_info_view = false;
+	return false;
+}
+
+bool CUIActorMenu::OnItemMButtonClick(CUICellItem* itm)
+{
+	InfoCurItem(NULL);
 	m_item_info_view = false;
 	return false;
 }

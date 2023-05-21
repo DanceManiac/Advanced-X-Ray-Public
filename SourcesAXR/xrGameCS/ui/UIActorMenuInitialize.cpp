@@ -338,6 +338,7 @@ void CUIActorMenu::BindDragDropListEvents(CUIDragDropListEx* lst)
 	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIActorMenu::OnItemDbClick);
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIActorMenu::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIActorMenu::OnItemRButtonClick);
+	lst->m_f_item_mbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIActorMenu::OnItemMButtonClick);
 	lst->m_f_item_focus_received	= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIActorMenu::OnItemFocusReceive);
 	lst->m_f_item_focus_lost		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIActorMenu::OnItemFocusLost);
 	lst->m_f_item_focused_update	= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIActorMenu::OnItemFocusedUpdate);

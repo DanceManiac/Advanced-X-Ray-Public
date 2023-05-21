@@ -57,6 +57,7 @@ protected:
 	void	__stdcall		OnItemSelected			(CUIWindow* w, void* pData);
 	void	__stdcall		OnItemLButtonClick		(CUIWindow* w, void* pData);
 	void	__stdcall		OnItemRButtonClick		(CUIWindow* w, void* pData);
+	void	__stdcall		OnItemMButtonClick		(CUIWindow* w, void* pData);
 	void	__stdcall		OnItemDBClick			(CUIWindow* w, void* pData);
 	void	__stdcall		OnItemFocusReceived		(CUIWindow* w, void* pData);
 	void	__stdcall		OnItemFocusLost			(CUIWindow* w, void* pData);
@@ -76,6 +77,7 @@ public:
 	DRAG_DROP_EVENT			m_f_item_selected;
 	DRAG_DROP_EVENT			m_f_item_lbutton_click;
 	DRAG_DROP_EVENT			m_f_item_rbutton_click;
+	DRAG_DROP_EVENT			m_f_item_mbutton_click;
 	DRAG_DROP_EVENT			m_f_item_focus_received;
 	DRAG_DROP_EVENT			m_f_item_focus_lost;
 	DRAG_DROP_EVENT			m_f_item_focused_update;
