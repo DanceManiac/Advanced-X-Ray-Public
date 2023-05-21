@@ -10749,6 +10749,9 @@
     <ClCompile Include="ui\UIActorMenu.cpp">
       <Filter>UI\Common\Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIActorMenu_action.cpp">
+      <Filter>UI\Common\Inventory</Filter>
+    </ClCompile>
     <ClCompile Include="ui\UIActorMenu_script.cpp">
       <Filter>UI\Common\Inventory</Filter>
     </ClCompile>

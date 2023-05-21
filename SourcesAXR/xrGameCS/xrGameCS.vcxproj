@@ -8248,6 +8248,7 @@
     <ClCompile Include="ui\UI3tButton.cpp" />
     <ClCompile Include="ui\UIActorInfo.cpp" />
     <ClCompile Include="ui\UIActorMenu.cpp" />
+    <ClCompile Include="ui\UIActorMenu_action.cpp" />
     <ClCompile Include="ui\UIActorMenuDeadBodySearch.cpp" />
     <ClCompile Include="ui\UIActorMenuInitialize.cpp" />
     <ClCompile Include="ui\UIActorMenuInventory.cpp" />
