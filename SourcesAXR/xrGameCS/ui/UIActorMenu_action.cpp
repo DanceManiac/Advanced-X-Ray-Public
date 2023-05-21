@@ -421,3 +421,4 @@ void CUIActorMenu::OnMesBoxYes( CUIWindow*, void* )
 	}
 	UpdateItemsPlace();
 }
+
