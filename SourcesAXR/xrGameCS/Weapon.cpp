@@ -2163,7 +2163,7 @@ void CWeapon::OnZoomIn()
 {
 	//Alun: Force switch to first-person for zooming
 	CActor *pA = smart_cast<CActor *>(H_Parent());
-	if (pA->active_cam() == eacLookAt)
+	if (pA && pA->active_cam() == eacLookAt)
 	{
 		pA->cam_Set(eacFirstEye);
 		m_freelook_switch_back = true;
