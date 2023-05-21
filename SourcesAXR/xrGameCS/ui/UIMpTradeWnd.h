@@ -284,7 +284,7 @@ u8		GetItemAddonsState_ext		(SBuyItemInfo* item);
 void	SetItemAddonsState_ext		(SBuyItemInfo* item, u8 addons);
 
 #include "UICellItem.h"
-class CUICellItemTradeMenuDraw :public ICustomDrawCell
+class CUICellItemTradeMenuDraw :public ICustomDrawCellItem
 {
 	CUIMpTradeWnd*			m_trade_wnd;
 	SBuyItemInfo*			m_info_item;

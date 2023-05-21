@@ -69,7 +69,8 @@ public:
 	virtual					~CUIDragDropListEx	();
 				void		InitDragDropList		(Fvector2 pos, Fvector2 size);
 
-	typedef					fastdelegate::FastDelegate1<CUICellItem*, bool>		DRAG_DROP_EVENT;
+	typedef					fastdelegate::FastDelegate1<CUICellItem*, bool>			DRAG_DROP_EVENT;
+	typedef					fastdelegate::FastDelegate2<CUIDragItem*, bool, void>	DRAG_ITEM_EVENT;
 
 	DRAG_DROP_EVENT			m_f_item_drop;
 	DRAG_DROP_EVENT			m_f_item_start_drag;
@@ -81,6 +82,7 @@ public:
 	DRAG_DROP_EVENT			m_f_item_focus_received;
 	DRAG_DROP_EVENT			m_f_item_focus_lost;
 	DRAG_DROP_EVENT			m_f_item_focused_update;
+	DRAG_ITEM_EVENT			m_f_drag_event;
 
 	u32						back_color;
 
@@ -136,6 +138,8 @@ public:
 	virtual		void		Update				();
 	virtual		bool		OnMouse				(float x, float y, EUIMessages mouse_action);
 	virtual		void		SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
+
+				void		OnDragEvent			(CUIDragItem* drag_item, bool b_receive);
 
 };
 

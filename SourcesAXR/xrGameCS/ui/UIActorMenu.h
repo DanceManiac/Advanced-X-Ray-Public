@@ -9,6 +9,7 @@
 class CUICharacterInfo;
 class CUIDragDropListEx;
 class CUICellItem;
+class CUIDragItem;
 class ui_actor_state_wnd;
 class CUIItemInfo;
 class CUIFrameLineWnd;
@@ -37,6 +38,7 @@ enum EDDListType{
 		iPartnerTradeBag,
 		iPartnerTrade,
 		iDeadBodyBag,
+		iTrashSlot,
 		iListTypeMax
 };
 
@@ -96,6 +98,7 @@ protected:
 	CUIDragDropListEx*			m_pTradePartnerBagList;
 	CUIDragDropListEx*			m_pTradePartnerList;
 	CUIDragDropListEx*			m_pDeadBodyBagList;
+	CUIDragDropListEx*			m_pTrashList;
 	CUIDragDropListEx*			m_pInventoryKnifeList;
 	CUIDragDropListEx*			m_pInventoryBinocularList;
 	CUIDragDropListEx*			m_pInventoryTorchList;
@@ -198,6 +201,7 @@ protected:
 	bool		__stdcall		OnItemFocusReceive			(CUICellItem* itm);
 	bool		__stdcall		OnItemFocusLost				(CUICellItem* itm);
 	bool		__stdcall		OnItemFocusedUpdate			(CUICellItem* itm);
+	void		__stdcall		OnDragItemOnTrash			(CUIDragItem* item, bool b_receive);
 	bool						OnItemDropped				(PIItem itm, CUIDragDropListEx* new_owner, CUIDragDropListEx* old_owner);
 
 	void						ResetMode					();

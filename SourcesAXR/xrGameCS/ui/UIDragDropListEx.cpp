@@ -156,6 +156,13 @@ Fvector2 CUIDragDropListEx::GetDragItemPosition()
 	return m_drag_item->GetPosition();
 }
 
+
+void CUIDragDropListEx::OnDragEvent(CUIDragItem* drag_item, bool b_receive)
+{
+	if(m_f_drag_event)
+		m_f_drag_event(drag_item, b_receive);
+}
+
 void CUIDragDropListEx::OnItemStartDragging(CUIWindow* w, void* pData)
 {
 	OnItemSelected						(w, pData);

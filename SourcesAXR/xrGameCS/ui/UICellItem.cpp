@@ -198,7 +198,7 @@ CUIDragItem* CUICellItem::CreateDragItem()
 	{
 		float t1,t2;
 		t1				= r.width();
-		t2				= r.height();
+		t2				= r.height()*UI()->get_current_kx();
 
 		Fvector2 cp = GetUICursor()->GetCursorPosition();
 
@@ -418,7 +418,7 @@ void CUICellItem::Mark( bool status )
 	*/
 }
 
-void CUICellItem::SetCustomDraw			(ICustomDrawCell* c){
+void CUICellItem::SetCustomDraw			(ICustomDrawCellItem* c){
 	if (m_custom_draw)
 		xr_delete(m_custom_draw);
 	m_custom_draw = c;
@@ -428,6 +428,7 @@ void CUICellItem::SetCustomDraw			(ICustomDrawCell* c){
 
 CUIDragItem::CUIDragItem(CUICellItem* parent)
 {
+	m_custom_draw					= NULL;
 	m_back_list						= NULL;
 	m_pParent						= parent;
 	AttachChild						(&m_static);
@@ -438,6 +439,7 @@ CUIDragItem::CUIDragItem(CUICellItem* parent)
 
 CUIDragItem::~CUIDragItem()
 {
+	delete_data						(m_custom_draw);
 	Device.seqRender.Remove			(this);
 	Device.seqFrame.Remove			(this);
 }
@@ -450,7 +452,7 @@ void CUIDragItem::Init(const ui_shader& sh, const Frect& rect, const Frect& text
 	m_static.SetWndPos				(Fvector2().set(0.0f,0.0f));
 	m_static.SetWndSize				(GetWndSize());
 	m_static.TextureOn				();
-	m_static.SetColor				(color_rgba(255,255,255,170));
+	m_static.SetTextureColor		(color_rgba(255,255,255,170));
 	m_static.SetStretchTexture		(true);
 	m_pos_offset.sub				(rect.lt, GetUICursor()->GetCursorPosition());
 }
@@ -485,15 +487,26 @@ void CUIDragItem::Draw()
 	UI()->PushScissor		(UI()->ScreenRect(),true);
 
 	inherited::Draw();
-
-	UI()->PopScissor();
+	if(m_custom_draw) 
+		m_custom_draw->OnDraw(this);
 }
 
-void CUIDragItem::SetBackList(CUIDragDropListEx*l)
+void CUIDragItem::SetCustomDraw(ICustomDrawDragItem* c)
 {
-	if(m_back_list!=l){
-		m_back_list=l;
-	}
+	if (m_custom_draw)
+		xr_delete(m_custom_draw);
+	m_custom_draw = c;
+}
+
+void CUIDragItem::SetBackList(CUIDragDropListEx* l)
+{
+	if(m_back_list)
+		m_back_list->OnDragEvent(this, false);
+
+	m_back_list					= l;
+
+	if(m_back_list)
+		l->OnDragEvent			(this, true);
 }
 
 Fvector2 CUIDragItem::GetPosition()

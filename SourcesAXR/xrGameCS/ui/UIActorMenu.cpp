@@ -347,6 +347,7 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pTradePartnerBagList)		return iPartnerTradeBag;
 	if(l==m_pTradePartnerList)			return iPartnerTrade;
 	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
+	if(l==m_pTrashList)					return iTrashSlot;
 
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
@@ -538,6 +539,14 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 	}
 	switch(t_new)
 	{
+	case iTrashSlot:
+		{
+			if(CurrentIItem()->IsQuestItem())
+				return true;
+
+			SendEvent_Item_Drop		(CurrentIItem(), m_pActorInvOwner->object_id());
+			SetCurrentItem			(NULL);
+		}break;
 		case iActorSlot:
 		{
 			if(GetSlotList(CurrentIItem()->GetSlot())==new_owner)
@@ -902,6 +911,39 @@ bool  CUIActorMenu::AllowItemDrops(EDDListType from, EDDListType to)
 	xr_vector<EDDListType>::iterator it = std::find(v.begin(), v.end(), from);
 	
 	return(it!=v.end());
+}
+class CUITrashIcon :public ICustomDrawDragItem
+{
+	CUIStatic			m_icon;
+public:
+	CUITrashIcon		()
+	{
+		m_icon.SetWndSize		(Fvector2().set(29.0f*UI()->get_current_kx(), 36.0f));
+		m_icon.SetStretchTexture(true);
+//		m_icon.SetAlignment		(waCenter);
+		m_icon.InitTexture		("ui_inGame2_inv_trash");
+	}
+	virtual void		OnDraw		(CUIDragItem* drag_item)
+	{
+		Fvector2 pos			= drag_item->GetWndPos();
+		Fvector2 icon_sz		= m_icon.GetWndSize();
+		Fvector2 drag_sz		= drag_item->GetWndSize();
+
+		pos.x			-= icon_sz.x;
+		pos.y			+= drag_sz.y;
+
+		m_icon.SetWndPos(pos);
+//		m_icon.SetWndSize(sz);
+		m_icon.Draw		();
+	}
+
+};
+void CUIActorMenu::OnDragItemOnTrash(CUIDragItem* item, bool b_receive)
+{
+	if(b_receive && !CurrentIItem()->IsQuestItem())
+		item->SetCustomDraw(xr_new<CUITrashIcon>());
+	else
+		item->SetCustomDraw(NULL);
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )

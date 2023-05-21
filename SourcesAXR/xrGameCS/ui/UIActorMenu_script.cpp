@@ -120,7 +120,8 @@ void CUIActorMenu::script_register(lua_State* L)
 					value("iDeadBodyBag",			int(EDDListType::iDeadBodyBag)),
 					value("iInvalid",				int(EDDListType::iInvalid)),
 					value("iPartnerTrade",			int(EDDListType::iPartnerTrade)),
-					value("iPartnerTradeBag",		int(EDDListType::iPartnerTradeBag))
+					value("iPartnerTradeBag",		int(EDDListType::iPartnerTradeBag)),
+					value("iTrashSlot",				int(EDDListType::iTrashSlot))
 				],
 
 			class_<CUIActorMenu, CUIDialogWnd>("CUIActorMenu")

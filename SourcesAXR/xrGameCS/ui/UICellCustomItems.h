@@ -62,7 +62,7 @@ public:
 	CUIStatic*					get_addon_static			(u32 idx)				{return m_addons[idx];}
 };
 
-class CBuyItemCustomDrawCell :public ICustomDrawCell
+class CBuyItemCustomDrawCell :public ICustomDrawCellItem
 {
 	CGameFont*			m_pFont;
 	string16			m_string;

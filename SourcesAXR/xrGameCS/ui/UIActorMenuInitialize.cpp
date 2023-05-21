@@ -140,6 +140,10 @@ void CUIActorMenu::Construct()
 		m_pInventoryPdaList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this);
 	}
 
+	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
+	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_DROP_EVENT	(this,&CUIActorMenu::OnItemDrop);
+	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
+
 	Fvector2 pos{};
 	float dx{}, dy{};
 	int cols = m_pInventoryBeltList->CellsCapacity().x;
@@ -283,6 +287,10 @@ void CUIActorMenu::Construct()
 	{
 		BindDragDropListEvents(m_pInventoryPdaList);
 	}
+
+	m_allowed_drops[iTrashSlot].push_back(iActorBag);
+	m_allowed_drops[iTrashSlot].push_back(iActorSlot);
+	m_allowed_drops[iTrashSlot].push_back(iActorBelt);
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);
 	m_allowed_drops[iActorSlot].push_back(iActorTrade);
