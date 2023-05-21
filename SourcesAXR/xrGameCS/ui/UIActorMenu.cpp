@@ -21,6 +21,7 @@
 #include "UIDragDropListEx.h"
 #include "UIInventoryUpgradeWnd.h"
 #include "UI3tButton.h"
+#include "UIBtnHint.h"
 #include "UIMessageBoxEx.h"
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
@@ -311,6 +312,7 @@ void CUIActorMenu::CheckDistance()
 		if ( ( pActorGO->Position().distance_to( pPartnerGO->Position() ) > 3.0f ) &&
 			!m_pPartnerInvOwner->NeedOsoznanieMode() )
 		{
+			g_btnHint->Discard();
 			GetHolder()->StartStopMenu( this, true ); // hide actor menu
 		}
 	}
@@ -323,6 +325,7 @@ void CUIActorMenu::CheckDistance()
 		VERIFY( pBoxGO );
 		if ( pActorGO->Position().distance_to( pBoxGO->Position() ) > 3.0f )
 		{
+			g_btnHint->Discard();
 			GetHolder()->StartStopMenu( this, true ); // hide actor menu
 		}
 	}

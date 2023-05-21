@@ -325,8 +325,9 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	InfoCurItem( NULL );
 	if ( is_binded(kDROP, dik) )
 	{
-		if ( WINDOW_KEY_PRESSED == keyboard_action && CurrentIItem() && !CurrentIItem()->IsQuestItem()
-			&& CurrentIItem()->parent_id()==m_pActorInvOwner->object_id() )
+		bool isDroppableItem = WINDOW_KEY_PRESSED == keyboard_action && CurrentIItem() && !CurrentIItem()->IsQuestItem()
+			&& CurrentIItem()->parent_id() == m_pActorInvOwner->object_id();
+		if (isDroppableItem)
 		{
 
 			SendEvent_Item_Drop		(CurrentIItem(), m_pActorInvOwner->object_id());
@@ -344,17 +345,7 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		return true;
 	}	
 
-	if ( is_binded(kUSE, dik) || is_binded(kINVENTORY, dik) )
-	{
-		if ( WINDOW_KEY_PRESSED == keyboard_action )
-		{
-			g_btnHint->Discard();
-			HideDialog();
-		}
-		return true;
-	}	
-
-	if ( is_binded(kQUIT, dik) )
+	if ( is_binded(kUSE, dik) || is_binded(kINVENTORY, dik) || is_binded(kQUIT, dik)  )
 	{
 		if ( WINDOW_KEY_PRESSED == keyboard_action )
 		{
@@ -363,6 +354,7 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		}
 		return true;
 	}
+
 	if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
 	{
 		CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(CurrentIItem());

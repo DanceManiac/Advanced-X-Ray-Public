@@ -256,6 +256,8 @@ void CUIPdaWnd::SetActiveSubdialog(const shared_str& section)
 	{
 		UIMainPdaFrame->DetachChild(m_pActiveDialog);
 		m_pActiveDialog->Show(false);
+		g_btnHint->Discard();
+		g_statHint->Discard();
 	}
 
 	if (section == "eptTasks")

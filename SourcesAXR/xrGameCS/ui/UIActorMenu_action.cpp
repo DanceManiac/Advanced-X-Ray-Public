@@ -11,6 +11,7 @@
 #include "../HUDManager.h"
 #include "game_cl_base.h"
 
+#include "UIBtnHint.h"
 #include "UICellItem.h"
 #include "UIDragDropListEx.h"
 #include "UIItemInfo.h"
@@ -326,14 +327,15 @@ bool CUIActorMenu::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 	}	
 	
-	if ( is_binded(kUSE, dik) )
+	if ( is_binded(kUSE, dik) || is_binded(kINVENTORY, dik) || is_binded(kQUIT, dik)  )
 	{
 		if ( WINDOW_KEY_PRESSED == keyboard_action )
 		{
+			g_btnHint->Discard();
 			GetHolder()->StartStopMenu( this, true );
 		}
 		return true;
-	}	
+	}
 
 	if (WINDOW_KEY_PRESSED == keyboard_action && bDeveloperMode)
 	{
@@ -389,6 +391,7 @@ void CUIActorMenu::OnPressUserKey()
 
 void CUIActorMenu::OnBtnExitClicked(CUIWindow* w, void* d)
 {
+	g_btnHint->Discard();
 	GetHolder()->StartStopMenu			(this,true);
 }
 
