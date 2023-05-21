@@ -283,7 +283,8 @@ void CUIInventoryItemInfo::SetValue(float value, int vle)
 				current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
 		}
 
-		m_value->SetTextColor(current.get());
+		if (vle == 1 || vle == 2)
+			m_value->SetTextColor(current.get());
 	}
 	else
 		m_value->SetTextColor(color_rgba(170, 170, 170, 255));
