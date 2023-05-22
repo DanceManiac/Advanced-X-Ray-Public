@@ -146,30 +146,34 @@ void CScriptGameObject::set_alien_control(bool val)
 CScriptSoundInfo CScriptGameObject::GetSoundInfo()
 {
 	CScriptSoundInfo	ret_val;
-	RMakeObj(CBaseMonster,monster,ret_val);
-	if (monster->SoundMemory.IsRememberSound())
-	{
-		SoundElem se; 
-		bool bDangerous;
-		monster->SoundMemory.GetSound(se, bDangerous);
-		const CGameObject *pO = smart_cast<const CGameObject *>(se.who);
-		ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : NULL, bDangerous, se.position, se.power, int(se.time));
-	}
 
-	return (ret_val);
+	CBaseMonster *l_tpMonster = smart_cast<CBaseMonster *>(&object());
+	if (l_tpMonster) {
+		if (l_tpMonster->SoundMemory.IsRememberSound()) {
+			SoundElem se; 
+			bool bDangerous;
+			l_tpMonster->SoundMemory.GetSound(se, bDangerous);
+
+			const CGameObject *pO = smart_cast<const CGameObject *>(se.who);
+			ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : 0, bDangerous, se.position, se.power, int(se.time));
+		}
+	} else
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member GetSoundInfo!");
+	return			(ret_val);
 }
 
 CScriptMonsterHitInfo CScriptGameObject::GetMonsterHitInfo()
 {
 	CScriptMonsterHitInfo	ret_val;
-	RMakeObj(CBaseMonster,monster,ret_val);
-	if (monster->HitMemory.is_hit())
-	{
-		CGameObject *pO = smart_cast<CGameObject *>(monster->HitMemory.get_last_hit_object());
-		ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : NULL, monster->HitMemory.get_last_hit_dir(), monster->HitMemory.get_last_hit_time());
-	}
-
-	return (ret_val);
+	CBaseMonster *l_tpMonster = smart_cast<CBaseMonster *>(&object());
+	if (l_tpMonster) {
+		if (l_tpMonster->HitMemory.is_hit()) {
+			CGameObject *pO = smart_cast<CGameObject *>(l_tpMonster->HitMemory.get_last_hit_object());
+			ret_val.set((pO && !pO->getDestroy()) ?  pO->lua_game_object() : 0, l_tpMonster->HitMemory.get_last_hit_dir(), l_tpMonster->HitMemory.get_last_hit_time());
+		}
+	} else
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member GetMonsterHitInfo!");
+	return			(ret_val);
 }
 
 //////////////////////////////////////////////////////////////////////////
