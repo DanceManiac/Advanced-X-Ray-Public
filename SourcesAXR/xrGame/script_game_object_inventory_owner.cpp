@@ -450,7 +450,7 @@ LPCSTR CScriptGameObject::CharacterName			()
 LPCSTR CScriptGameObject::CharacterIcon()
 {
 	RMakeObj(CInventoryOwner,owner,NULL);
-	return owner->IconName();
+	return owner->IconName().c_str();
 }
 
 int CScriptGameObject::CharacterRank			()

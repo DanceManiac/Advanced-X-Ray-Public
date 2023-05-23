@@ -98,7 +98,7 @@ public:
 
 	//игровое имя 
 	virtual LPCSTR	Name        () const;
-	LPCSTR				IconName		() const;
+	shared_str			IconName		() const;
 	u32					get_money		() const				{return m_money;}
 	void				set_money		(u32 amount, bool bSendEvent);
 protected:
@@ -166,10 +166,7 @@ public:
 
 	virtual void			SetName			(LPCSTR name);
 
-	virtual void SetIcon(const shared_str& icon)
-	{
-		CharacterInfo().m_SpecificCharacter.data()->m_icon_name = icon;
-	};
+	virtual void			SetIcon			(const shared_str& icon) { m_character_icon = icon; }
 
 	//для работы с relation system
 	u16								object_id	() const;
@@ -181,6 +178,7 @@ public:
 protected:
 	CCharacterInfo*			m_pCharacterInfo;
 	xr_string				m_game_name;
+	shared_str				m_character_icon;
 
 public:
 	virtual void			renderable_Render		();

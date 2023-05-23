@@ -11,6 +11,7 @@ class CUIStatic;
 class CCharacterInfo;
 class CUIXml;
 class CUIScrollView;
+class CInventoryOwner;
 class CUICharacterInfo: public CUIWindow
 {
 private:
@@ -25,7 +26,8 @@ protected:
 	CUIScrollView*		pUIBio;
 	bool				m_bForceUpdate;
 	u16					m_ownerID;
-
+	CInventoryOwner*	m_pOurInvOwner;
+	CInventoryOwner*	m_pOthersInvOwner;
 
 	enum UIItemType
 	{
