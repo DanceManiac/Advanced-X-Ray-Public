@@ -130,7 +130,9 @@ bool  CScriptGameObject::DontHasInfo			(LPCSTR info_id)
 
 bool CScriptGameObject::IsTalking()
 {
-	RMakeObj(CInventoryOwner,owner,false);
+    CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
+    if (!owner)
+        return false;
 	return			owner->IsTalking();
 }
 
