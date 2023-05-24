@@ -329,12 +329,12 @@ void CInventoryOwner::renderable_Render		()
 		inventory().ActiveItem()->renderable_Render();
 
 	auto rWeapon = inventory().ItemFromSlot(INV_SLOT_3);
-	bool rValid = rWeapon ? rWeapon->BaseSlot() == INV_SLOT_3 : true;
+	bool rValid = rWeapon ? rWeapon->BaseSlot() == INV_SLOT_3 : false;
 	if (rWeapon && rValid && rWeapon != inventory().ActiveItem())
 		rWeapon->renderable_Render();
 
 	auto lWeapon = inventory().ItemFromSlot(INV_SLOT_2);
-	bool lValid = lWeapon ? lWeapon->BaseSlot() == INV_SLOT_3 : true;
+	bool lValid = lWeapon ? lWeapon->BaseSlot() == INV_SLOT_3 : false;
 	if (lWeapon && lValid && lWeapon != inventory().ActiveItem())
 		lWeapon->renderable_Render();
 
