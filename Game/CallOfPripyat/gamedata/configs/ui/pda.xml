@@ -83,7 +83,7 @@
 	</button>
 	
 		<!--Конпка навыков. Раскомментировать, если нужно.-->
-		<!--button x="413" y="0" width="89" height="27" id="eptSkills" frame_mode="0">
+		<!--button x="413" y="0" width="89" height="27" id="eptSkills" hint="pda_btn_skills_hint" frame_mode="0">
 			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_skills</text>
 			<texture>ui_inGame2_pda_button</texture>
 			<text_color>

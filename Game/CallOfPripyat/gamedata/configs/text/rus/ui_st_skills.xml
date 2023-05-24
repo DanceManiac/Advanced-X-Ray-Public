@@ -3,6 +3,9 @@
 	<string id="pda_btn_skills">
 		<text>Навыки</text>
 	</string>
+	<string id="pda_btn_skills_hint">
+		<text>Открыть меню навыков</text>
+	</string>
 	<string id="st_skills_points">
 		<text>Очки навыков: </text>
 	</string>
