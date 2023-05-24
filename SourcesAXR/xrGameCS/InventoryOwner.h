@@ -97,8 +97,8 @@ public:
 	virtual void	 LostPdaContact		(CInventoryOwner*);
 
 	//игровое имя 
-	virtual LPCSTR	Name        () const;
-	shared_str			IconName		() const;
+	virtual LPCSTR		Name			() const;
+	LPCSTR				IconName		() const;
 	u32					get_money		() const				{return m_money;}
 	void				set_money		(u32 amount, bool bSendEvent);
 protected:
@@ -166,7 +166,7 @@ public:
 
 	virtual void			SetName			(LPCSTR name);
 
-	virtual void			SetIcon			(const shared_str& icon) { m_character_icon = icon; }
+	virtual void			SetIcon			(LPCSTR icon) { m_character_icon = icon; }
 
 	//для работы с relation system
 	u16								object_id	() const;

@@ -198,7 +198,7 @@ void CUICharacterInfo::InitCharacter(u16 id)
 	bool bActor = (Actor()->ID() == m_ownerID);
 	auto owner = bActor ? m_pOurInvOwner->IconName() : m_pOthersInvOwner->IconName();
 
-	m_texture_name				= (bActor && m_pOurInvOwner->IconName().size()) ? owner : chInfo.IconName();
+	m_texture_name				= (bActor) ? owner : chInfo.IconName();
 	if ( m_icons[eIcon            ] ) { m_icons[eIcon            ]->InitTexture( m_texture_name.c_str()     ); }
 //	if ( m_icons[eRankIcon        ] ) { m_icons[eRankIcon        ]->InitTexture( chInfo.Rank().id().c_str() ); }
 	

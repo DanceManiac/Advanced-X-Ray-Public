@@ -234,7 +234,7 @@ void CUITalkDialogWnd::AddAnswer(LPCSTR SpeakerName, LPCSTR str, bool bActor)
 
 	auto owner = bActor ? m_pOurInvOwner->IconName() : m_pOthersInvOwner->IconName();
 
-	news_data.texture_name			= (bActor && m_pOurInvOwner->IconName().size()) ? owner : ci.IconName();
+	news_data.texture_name			= (bActor) ? owner : ci.IconName();
 	news_data.receive_time			= Level().GetGameTime();
 
 	Actor()->game_news_registry->registry().objects().push_back(news_data);

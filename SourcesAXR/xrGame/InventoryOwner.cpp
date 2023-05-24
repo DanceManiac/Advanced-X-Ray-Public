@@ -417,9 +417,9 @@ LPCSTR	CInventoryOwner::Name () const
 	return m_game_name.c_str();
 }
 
-shared_str	CInventoryOwner::IconName () const
+LPCSTR	CInventoryOwner::IconName () const
 {
-	return m_character_icon;
+	return m_character_icon.c_str();
 }
 
 
