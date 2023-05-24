@@ -111,6 +111,12 @@ void CUITalkDialogWnd::Show()
 	ResetAll();
 }
 
+void CUITalkDialogWnd::Show(bool status) // Hrust: made different func for disabling drawing without "ui_talk_hide" message
+{
+	inherited::Show(status);
+	inherited::Enable(status);
+}
+
 void CUITalkDialogWnd::Hide()
 {
 	InventoryUtilities::SendInfoToActor				("ui_talk_hide");

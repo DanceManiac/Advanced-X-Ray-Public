@@ -30,6 +30,7 @@ public:
 	
 	virtual void SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 
+	virtual void Show(bool status);
 	virtual void Show();
 	virtual void Hide();
 	CUITalkWnd*	m_pParent;
