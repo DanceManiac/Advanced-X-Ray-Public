@@ -18,8 +18,8 @@
 
 //На релизе не крашим игру, кричим об ошибке в лог
 #ifdef MASTER_GOLD
-	#define cast_msg(class,var,f) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "] !")
-	#define cast_msg2(class,var,f,rval) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "] ! Returned "#rval)
+	#define cast_msg(class,var,f) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "]")
+	#define cast_msg2(class,var,f,rval) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "], returned "#rval)
 	#define CAST_ERR(class,var) cast_msg(class,var,__FUNCTION__)
 	#define RCAST_ERR(class,var,rval) cast_msg2(class,var,__FUNCTION__,rval)
 	#define MakeObj(class,var) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var); return;}
@@ -28,7 +28,7 @@
 	#define RMakeObj2(class,var,rval,obj) class* var = smart_cast<class*>(obj); if(!var){RCAST_ERR(class,var,rval); return rval;}
 #else
 //На дебаг или миксед крашим
-	#define CAST_ERR(class,var) do {static bool ignore_always = false; if (!ignore_always) Debug.fail("Cannot cast object ["#var"] to [" #class "] !",DEBUG_INFO,ignore_always);} while(0) //Debug.fatal(DEBUG_INFO,"Cannot cast object ["#var"] to [" #class "] !")
+	#define CAST_ERR(class,var) do {static bool ignore_always = false; if (!ignore_always) Debug.fail("Cannot cast object ["#var"] to [" #class "]",DEBUG_INFO,ignore_always);} while(0) //Debug.fatal(DEBUG_INFO,"Cannot cast object ["#var"] to [" #class "] !")
 	#define RCAST_ERR(class,var,rval) CAST_ERR(class,var)
 	#define MakeObj(class,var) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var);}
 	#define RMakeObj(a,b,rv) MakeObj(a,b)

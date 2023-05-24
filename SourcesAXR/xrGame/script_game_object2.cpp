@@ -42,7 +42,7 @@ void CScriptGameObject::explode	(u32 level_time)
 {
 	if (object().H_Parent())
 	{
-		Msg("! CExplosive : cannot explode object wiht parent!");
+		Msg("! CExplosive: cannot explode object wiht parent");
 		return;
 	}
 	
@@ -115,7 +115,7 @@ void CScriptGameObject::play_cycle(LPCSTR anim, bool mix_in)
 	if (m)
 		sa->PlayCycle(m,(BOOL)mix_in);
 	else 
-		Msg("! CGameObject : has not cycle %s",anim);
+		Msg("! CGameObject: has not cycle %s",anim);
 }
 
 void CScriptGameObject::play_cycle(LPCSTR anim)
@@ -378,7 +378,7 @@ void CScriptGameObject::debug_planner				(const script_planner *planner)
 u32 CScriptGameObject::location_on_path				(float distance, Fvector *location)
 {
 	if (!location) {
-		Msg("! CAI_Stalker : location_on_path -> specify destination location!");
+		Msg("! CAI_Stalker: location_on_path -> specify destination location");
 		return								(u32(-1));
 	}
 

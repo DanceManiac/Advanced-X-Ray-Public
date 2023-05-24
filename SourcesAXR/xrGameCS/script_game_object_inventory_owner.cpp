@@ -804,7 +804,7 @@ u32	 CScriptGameObject::accessible_nearest	(const Fvector &position, Fvector &re
 {
 	RMakeObj(CCustomMonster,monster,u32(-1));
 	if (monster->movement().restrictions().accessible(position)) {
-		Msg("! CRestrictedObject : you use accessible_nearest when position is already accessible!");
+		Msg("! CRestrictedObject: you use accessible_nearest when position is already accessible");
 		return								(u32(-1));
 	}
 	return									(monster->movement().restrictions().accessible_nearest(position,result));
@@ -919,7 +919,7 @@ CScriptGameObject *CScriptGameObject::item_in_slot	(u32 slot_id) const
 {
 	RMakeObj(CInventoryOwner,owner,nullptr);
 	if (owner->inventory().m_slots.size() <= slot_id) {
-		Msg("! CInventoryOwner : invalid slot id for class member item_in_slot : %d!",slot_id);
+		Msg("! CInventoryOwner: invalid slot id for class member item_in_slot : %d",slot_id);
 		return nullptr;
 	}
 
@@ -1103,7 +1103,7 @@ CCoverPoint const* CScriptGameObject::find_best_cover			(Fvector position_to_cov
 bool CScriptGameObject::suitable_smart_cover					(CScriptGameObject* object)
 {
 	if (!object) {
-		Msg("! CAI_Stalker::suitable_smart_cover null smart cover specified!");
+		Msg("! CAI_Stalker::suitable_smart_cover null smart cover specified");
 		return							(false);
 	}
 
@@ -1222,7 +1222,7 @@ void CScriptGameObject::Weapon_AddonAttach(CScriptGameObject* item)
 	CInventoryItem* pItm = item->object().cast_inventory_item();
 	if (!pItm)
 	{
-		Msg("! CWeaponMagazined : trying to attach non-CInventoryItem!");
+		Msg("! CWeaponMagazined: trying to attach non-CInventoryItem");
 		return;
 	}
 
@@ -1291,7 +1291,7 @@ CScriptGameObject* CScriptGameObject::ItemOnBelt(u32 item_id) const
 	TIItemContainer* belt = &owner->inventory().m_belt;
 	if (belt->size() < item_id)
 	{
-		Msg("! item_on_belt: item id outside belt!");
+		Msg("! item_on_belt: item id outside belt");
 		return nullptr;
 	}
 

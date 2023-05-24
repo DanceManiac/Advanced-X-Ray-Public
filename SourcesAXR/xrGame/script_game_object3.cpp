@@ -230,12 +230,12 @@ void CScriptGameObject::add_animation			(LPCSTR animation, bool hand_usage, bool
 {
 	MakeObj(CAI_Stalker,stalker);
 	if (stalker->movement().current_params().cover()) {
-		Msg("! Cannot add animation [%s]: object [%s] is in smart_cover!", animation, stalker->cName().c_str());
+		Msg("! Cannot add animation [%s]: object [%s] is in smart_cover", animation, stalker->cName().c_str());
 	}
 
 	if (stalker->animation().global_selector()) {
 		Msg(
-			"! Cannot add animation [%s]: global selector is set for object [%s], in_smart_cover returned [%s]!",
+			"! Cannot add animation [%s]: global selector is set for object [%s], in_smart_cover returned [%s]",
 			animation,
 			stalker->cName().c_str(),
 			in_smart_cover() ? "true" : "false"
@@ -251,12 +251,12 @@ void CScriptGameObject::add_animation			(LPCSTR animation, bool hand_usage, Fvec
 	MakeObj(CAI_Stalker,stalker);
 	
 	if (stalker->movement().current_params().cover()) {
-		Msg("! Cannot add animation [%s]: object [%s] is in smart_cover!", animation, stalker->cName().c_str());
+		Msg("! Cannot add animation [%s]: object [%s] is in smart_cover", animation, stalker->cName().c_str());
 	}
 
 	if (stalker->animation().global_selector()) {
 		Msg(
-			"! Cannot add animation [%s]: global selector is set for object [%s], in_smart_cover returned [%s]!",
+			"! Cannot add animation [%s]: global selector is set for object [%s], in_smart_cover returned [%s]",
 			animation,
 			stalker->cName().c_str(),
 			in_smart_cover() ? "true" : "false"
@@ -395,9 +395,9 @@ void  CScriptGameObject::set_desired_direction	(const Fvector *desired_direction
 {
 	MakeObj(CAI_Stalker,stalker);
 	if (fsimilar(desired_direction->magnitude(), 0.f))
-		Msg("! CAI_Stalker : [%s] set_desired_direction - you passed zero direction!", stalker->cName().c_str());
+		Msg("! CAI_Stalker: [%s] set_desired_direction - you passed zero direction", stalker->cName().c_str());
 	else if (!fsimilar(desired_direction->magnitude(), 1.f))
-		Msg("! CAI_Stalker : [%s] set_desired_direction - you passed non-normalized direction!", stalker->cName().c_str());
+		Msg("! CAI_Stalker: [%s] set_desired_direction - you passed non-normalized direction", stalker->cName().c_str());
 
 	Fvector											direction = *desired_direction;
 	direction.normalize_safe						();
