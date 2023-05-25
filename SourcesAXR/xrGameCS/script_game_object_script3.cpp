@@ -241,6 +241,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("character_community",			&CScriptGameObject::CharacterCommunity)
 		.def("set_character_community",		&CScriptGameObject::SetCharacterCommunity)
 		.def("set_character_name",			&CScriptGameObject::SetCharacterName)
+		.def("set_character_icon",			&CScriptGameObject::SetCharacterIcon)
 
 		.def("get_actor_relation_flags",	&CScriptGameObject::get_actor_relation_flags)
 		.def("set_actor_relation_flags",	&CScriptGameObject::set_actor_relation_flags)

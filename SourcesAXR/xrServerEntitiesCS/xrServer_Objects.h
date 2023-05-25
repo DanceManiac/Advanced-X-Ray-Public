@@ -160,8 +160,10 @@
 // 123 - CSE_ALifeInventoryItem			added functions has_upgrade & add_upgrade, xr_vector<shared_str> m_upgrades;
 // 124   CSE_ALifeItemWeapon            added cur_scope for alternative installed scopes
 // 125   CSE_ALifeTraderAbstract		added property m_deadbody_can_take, m_deadbody_closed
+// 126   CSE_ALifeItemWeapon            added cur_scope for alternative installed scopes
+// 127   CSE_AlifeTraderAbstract		added m_character_icon
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(126)
+#define SPAWN_VERSION	u16(127)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:

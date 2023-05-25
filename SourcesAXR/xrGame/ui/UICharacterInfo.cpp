@@ -36,11 +36,14 @@ CSE_ALifeTraderAbstract* ch_info_get_from_id (u16 id)
 
 CUICharacterInfo::CUICharacterInfo()
 	: m_ownerID(u16(-1)),
-	pUIBio(NULL)
+	pUIBio(nullptr)
 {
 	ZeroMemory			(m_icons,sizeof(m_icons));
 	m_bForceUpdate		= false;
-	m_texture_name		= NULL;
+	m_texture_name		= nullptr;
+
+	m_pOurInvOwner		= nullptr;
+	m_pOthersInvOwner	= nullptr;
 }
 
 CUICharacterInfo::~CUICharacterInfo()
@@ -189,7 +192,13 @@ void CUICharacterInfo::InitCharacter(u16 id)
 		}
 	}
 
-	m_texture_name				= chInfo.IconName();
+	m_pOurInvOwner = smart_cast<CInventoryOwner*>(Actor());
+	m_pOthersInvOwner = Actor()->GetTalkPartner();
+
+	bool bActor = (Actor()->ID() == m_ownerID);
+	auto owner = bActor ? m_pOurInvOwner->IconName() : m_pOthersInvOwner->IconName();
+
+	m_texture_name				= (bActor) ? owner : chInfo.IconName();
 	if ( m_icons[eIcon            ] ) { m_icons[eIcon            ]->InitTexture( m_texture_name.c_str()     ); }
 //	if ( m_icons[eRankIcon        ] ) { m_icons[eRankIcon        ]->InitTexture( chInfo.Rank().id().c_str() ); }
 	
