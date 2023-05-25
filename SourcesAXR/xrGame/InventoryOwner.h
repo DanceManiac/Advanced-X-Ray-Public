@@ -98,7 +98,7 @@ public:
 	virtual void	 LostPdaContact		(CInventoryOwner*);
 
 	//игровое имя 
-	virtual LPCSTR		Name			() const;
+	virtual LPCSTR	Name        () const;
 	LPCSTR				IconName		() const;
 	u32					get_money		() const				{return m_money;}
 	void				set_money		(u32 amount, bool bSendEvent);
@@ -170,8 +170,6 @@ public:
 
 	virtual void			SetName			(LPCSTR name);
 
-	virtual void			SetIcon			(const shared_str& icon) { m_character_icon = icon; }
-
 	//для работы с relation system
 	u16								object_id	() const;
 	CHARACTER_COMMUNITY_INDEX		Community	() const {return CharacterInfo().Community().index();};
@@ -182,7 +180,6 @@ public:
 protected:
 	CCharacterInfo*			m_pCharacterInfo;
 	xr_string				m_game_name;
-	shared_str				m_character_icon;
 
 public:
 	virtual void			renderable_Render		();

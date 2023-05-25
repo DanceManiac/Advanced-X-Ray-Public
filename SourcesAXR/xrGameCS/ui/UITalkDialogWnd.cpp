@@ -13,12 +13,10 @@
 #define				TALK_XML				"talk.xml"
 
 CUITalkDialogWnd::CUITalkDialogWnd()
-	:	m_pNameTextFont		(nullptr)
+	:	m_pNameTextFont		(NULL)
 {
 	m_ClickedQuestionID = "";
 	mechanic_mode = false;
-	m_pOurInvOwner = nullptr;
-	m_pOthersInvOwner = nullptr;
 }
 CUITalkDialogWnd::~CUITalkDialogWnd()
 {
@@ -229,12 +227,7 @@ void CUITalkDialogWnd::AddAnswer(LPCSTR SpeakerName, LPCSTR str, bool bActor)
 	news_data.m_type				= GAME_NEWS_DATA::eTalk;
 	CUICharacterInfo& ci			= bActor ? UICharacterInfoLeft : UICharacterInfoRight; 
 
-	m_pOurInvOwner = smart_cast<CInventoryOwner*>(Actor());
-	m_pOthersInvOwner = Actor()->GetTalkPartner();
-
-	auto owner = bActor ? m_pOurInvOwner->IconName() : m_pOthersInvOwner->IconName();
-
-	news_data.texture_name			= (bActor) ? owner : ci.IconName();
+	news_data.texture_name			= ci.IconName();
 	news_data.receive_time			= Level().GetGameTime();
 
 	Actor()->game_news_registry->registry().objects().push_back(news_data);

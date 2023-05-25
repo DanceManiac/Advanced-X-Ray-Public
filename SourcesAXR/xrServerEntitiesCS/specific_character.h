@@ -148,7 +148,7 @@ public:
 	bool						upgrade_mechanic		() const ;
 	LPCSTR						critical_wound_weights	() const ;
 
-	LPCSTR						IconName				() const	{return data()->m_icon_name.c_str();}
+	const shared_str&			IconName				() const	{return data()->m_icon_name;};
 #endif
 	shared_str					terrain_sect			() const;
 };
