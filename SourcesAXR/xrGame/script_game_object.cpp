@@ -157,11 +157,11 @@ CScriptEntityAction	*CScriptGameObject::GetCurrentAction	() const
 {
 	CScriptEntity		*monster = smart_cast<CScriptEntity*>(&object());
 	if (!monster)
-		RCAST_ERR(CScriptEntity,monster,NULL);
+		RCAST_ERR(CScriptEntity,monster,nullptr);
 	else
 		if (monster->GetCurrentAction())
 			return		(xr_new<CScriptEntityAction>(monster->GetCurrentAction()));
-	return				(0);
+	return nullptr;
 }
 
 void CScriptGameObject::AddAction	(const CScriptEntityAction *tpEntityAction, bool bHighPriority)
@@ -172,7 +172,7 @@ void CScriptGameObject::AddAction	(const CScriptEntityAction *tpEntityAction, bo
 
 const CScriptEntityAction *CScriptGameObject::GetActionByIndex(u32 action_index)
 {
-	RMakeObj(CScriptEntity,monster,0);
+	RMakeObj(CScriptEntity,monster,NULL);
 	return			(monster->GetActionByIndex(action_index));
 }
 

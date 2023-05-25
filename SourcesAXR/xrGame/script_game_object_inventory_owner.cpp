@@ -1117,7 +1117,7 @@ void CScriptGameObject::unregister_in_combat					()
 
 CCoverPoint const* CScriptGameObject::find_best_cover			(Fvector position_to_cover_from)
 {
-	RMakeObj(CAI_Stalker,stalker,0);
+	RMakeObj(CAI_Stalker,stalker,NULL);
 	return								(stalker->find_best_cover(position_to_cover_from));
 }
 

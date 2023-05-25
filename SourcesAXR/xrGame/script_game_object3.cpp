@@ -59,7 +59,7 @@ namespace MemorySpace {
 
 const CCoverPoint *CScriptGameObject::best_cover	(const Fvector &position, const Fvector &enemy_position, float radius, float min_enemy_distance, float max_enemy_distance)
 {
-	RMakeObj(CAI_Stalker,stalker,0);
+	RMakeObj(CAI_Stalker,stalker,NULL);
 	stalker->m_ce_best->setup(enemy_position,min_enemy_distance,max_enemy_distance,0.f);
 	const CCoverPoint	*point = ai().cover_manager().best_cover(position,radius,*stalker->m_ce_best);
 	return			(point);
@@ -67,7 +67,7 @@ const CCoverPoint *CScriptGameObject::best_cover	(const Fvector &position, const
 
 const CCoverPoint *CScriptGameObject::safe_cover	(const Fvector &position, float radius, float min_distance)
 {
-	RMakeObj(CAI_Stalker,stalker,0);
+	RMakeObj(CAI_Stalker,stalker,NULL);
 	stalker->m_ce_safe->setup(min_distance);
 	const CCoverPoint	*point = ai().cover_manager().best_cover(position,radius,*stalker->m_ce_safe);
 	return			(point);
@@ -333,7 +333,7 @@ void CScriptGameObject::set_dest_level_vertex_id(u32 level_vertex_id)
 	MakeObj(CAI_Stalker,stalker);
 	if (!ai().level_graph().valid_vertex_id(level_vertex_id)) {
 #ifdef DEBUG
-		ai().script_engine().script_log				(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : invalid vertex id being setup by action %s!",stalker->brain().CStalkerPlanner::current_action().m_action_name);
+		ai().script_engine().script_log				(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker: invalid vertex id being setup by action %s",stalker->brain().CStalkerPlanner::current_action().m_action_name);
 #endif
 		return;
 	}
@@ -354,7 +354,7 @@ void CScriptGameObject::set_dest_game_vertex_id( GameGraph::_GRAPH_ID game_verte
 	MakeObj(CAI_Stalker,stalker);
 	if (!ai().game_graph().valid_vertex_id(game_vertex_id)) {
 #ifdef DEBUG
-		ai().script_engine().script_log				(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : invalid vertex id being setup by action %s!",stalker->brain().CStalkerPlanner::current_action().m_action_name);
+		ai().script_engine().script_log				(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker: invalid vertex id being setup by action %s",stalker->brain().CStalkerPlanner::current_action().m_action_name);
 #endif
 		return;
 	}
@@ -867,7 +867,7 @@ void show_condition								(CScriptIniFile *ini_file, LPCSTR section)
 
 LPCSTR CScriptGameObject::sound_prefix			() const
 {
-	RMakeObj(CCustomMonster,monster,0);
+	RMakeObj(CCustomMonster,monster,NULL);
 	return									(*monster->sound().sound_prefix());
 }
 
