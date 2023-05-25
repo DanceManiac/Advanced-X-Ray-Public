@@ -1010,6 +1010,7 @@
     <None Include="My Amplifier Results\r002cc\r002cc.ampl">
       <Filter>My Amplifier Results</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ClientServer.txt" />

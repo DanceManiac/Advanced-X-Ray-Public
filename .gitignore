@@ -104,3 +104,5 @@ SourcesAXR/xrEngine/xrEngine.vcxproj.user
 *.ipch
 *.db-wal
 *.db-shm
+
+packages/

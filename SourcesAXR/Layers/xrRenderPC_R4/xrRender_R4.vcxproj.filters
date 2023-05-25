@@ -1500,4 +1500,7 @@
       <Filter>Shading templates</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
