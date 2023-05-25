@@ -121,6 +121,8 @@ public:
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
 
+	virtual void		EditorOnFrame			();
+
 	xr_vector<fastdelegate::FastDelegate0<>>    GameLoadedCallback;
 };
 

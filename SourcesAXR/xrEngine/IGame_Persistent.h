@@ -131,6 +131,7 @@ public:
 	virtual bool					GetActorNightvision	() { return 0; };
 	virtual int						GetNightvisionType	() { return 0; };
 
+	virtual void					EditorOnFrame		() {};
 	virtual void					RegisterModel		(IRenderVisual* V)
 #ifndef _EDITOR
      = 0;

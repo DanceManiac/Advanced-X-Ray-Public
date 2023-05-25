@@ -296,6 +296,9 @@ void ImGui_NewFrame()
 	else
 		ImGui_ImplDX9_NewFrame();
 	ImGui_ImplWin32_NewFrame();
+
+	g_pGamePersistent->EditorOnFrame();
+
 	ImGui::NewFrame();
 	//ImGuizmo::BeginFrame(); //For HUD Editor
 }

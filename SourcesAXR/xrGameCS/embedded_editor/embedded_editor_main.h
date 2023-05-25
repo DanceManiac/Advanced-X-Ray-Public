@@ -6,4 +6,5 @@ bool Editor_KeyPress(int key);
 bool Editor_KeyRelease(int key);
 bool Editor_KeyHold(int key);
 bool Editor_MouseMove(int dx, int dy);
-bool Editor_MouseWheel(int direction); 
+bool Editor_MouseWheel(int direction);
+void Editor_OnFrame();

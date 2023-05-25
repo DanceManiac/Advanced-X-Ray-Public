@@ -38,6 +38,7 @@
 #include "string_table.h"
 #include "../xrEngine/x_ray.h"
 #include "ui/UILoadingScreen.h"
+#include "embedded_editor/embedded_editor_main.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -957,6 +958,12 @@ bool CGamePersistent::GetActorAliveStatus()
 bool CGamePersistent::GetActor()
 {
 	return	(Actor());
+}
+
+void CGamePersistent::EditorOnFrame()
+{
+	extern void Editor_OnFrame();
+	Editor_OnFrame();
 }
 
 void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
