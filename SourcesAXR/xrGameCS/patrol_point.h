@@ -17,15 +17,15 @@ class CGameGraph;
 #include "game_graph_space.h"
 
 class CPatrolPoint : public IPureSerializeObject<IReader,IWriter> {
-protected:
+public:
 	shared_str							m_name;
 	Fvector								m_position;
-	u32									m_flags;
+	u32									m_flags = 0x0;
 	u32									m_level_vertex_id;
 	GameGraph::_GRAPH_ID				m_game_vertex_id;
 
-protected:
 #ifdef DEBUG
+protected:
 	bool								m_initialized;
 	const CPatrolPath					*m_path;
 #endif
@@ -47,6 +47,7 @@ public:
 	IC		const GameGraph::_GRAPH_ID	&game_vertex_id		(const CLevelGraph *level_graph, const CGameLevelCrossTable *cross, const CGameGraph *game_graph) const;
 	IC		const u32					&flags				() const;
 	IC		const shared_str			&name				() const;
+	CPatrolPoint &position( Fvector position );
 
 public:
 #ifdef XRGAME_EXPORTS

@@ -449,6 +449,15 @@ void remove_calls_for_object(const luabind::object &lua_object)
 	Level().ph_commander_scripts().remove_calls(&c);
 }
 
+#include "patrol_path.h"
+void patrol_path_add( LPCSTR patrol_path, CPatrolPath* path ) {
+  ai().patrol_paths_raw().add_path( shared_str( patrol_path ), path );
+}
+
+void patrol_path_remove( LPCSTR patrol_path ) {
+  ai().patrol_paths_raw().remove_path( shared_str( patrol_path ) );
+}
+
 cphysics_world_scripted* physics_world_scripted()
 {
 	return	get_script_wrapper<cphysics_world_scripted>(*physics_world());
@@ -1051,7 +1060,8 @@ void CLevel::script_register(lua_State *L)
 		def("vertex_position",					vertex_position),
 		def("name",								get_name),
 		def("prefetch_sound",					prefetch_sound),
-
+		def( "patrol_path_add", &patrol_path_add ),
+		def( "patrol_path_remove", &patrol_path_remove ),
 		def("client_spawn_manager",				get_client_spawn_manager),
 
 		def("map_add_object_spot_ser",			map_add_object_spot_ser),
