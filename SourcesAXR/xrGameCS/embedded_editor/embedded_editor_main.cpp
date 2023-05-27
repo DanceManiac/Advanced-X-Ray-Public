@@ -40,6 +40,9 @@ bool IsEditorActive() { return stage == EditorStage::Full || (stage == EditorSta
 
 bool IsEditor() { return stage != EditorStage::None; }
 
+bool isRenderAiMap = false;
+bool isRenderSpawnElement = false;
+
 void ShowMain()
 {
 	ImguiWnd wnd("Main");
@@ -57,6 +60,16 @@ void ShowMain()
         show_position_informer = !show_position_informer;
 	if (ImGui::Button("HUD Editor"))
 		show_hud_editor = !show_hud_editor;
+
+    if (psDeviceFlags.test(rsR1))
+    {
+        ImGui::Separator();
+        ImGui::Text(u8"Level");
+        ImGui::Checkbox("Draw AI Map", &isRenderAiMap);
+        ImGui::Checkbox("Draw Spawn Element", &isRenderSpawnElement);
+        ImGui::Separator();
+    }
+
 	bool full = stage == EditorStage::Full;
 	if (ImGui::Checkbox("Active", &full))
 		stage = full ? EditorStage::Full : EditorStage::Light;

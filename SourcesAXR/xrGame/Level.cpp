@@ -72,6 +72,8 @@
 #endif
 
 #include "embedded_editor/embedded_editor_main.h"
+#include "embedded_editor/editor_render.h"
+
 #include "../xrCore/_detail_collision_point.h"
 #include "../xrEngine/CameraManager.h"
 #include "ActorEffector.h"
@@ -906,6 +908,8 @@ void CLevel::OnRender()
 	draw_wnds_rects();
 	physics_world()->OnRender	();
 #endif // DEBUG
+
+	embedded_editor_render();
 
 #ifdef DEBUG
 	if (ai().get_level_graph())

@@ -67,6 +67,8 @@
 #endif
 
 #include "embedded_editor/embedded_editor_main.h"
+#include "embedded_editor/editor_render.h"
+
 #include "../xrCore/_detail_collision_point.h"
 #include "../xrEngine/CameraManager.h"
 #include "ActorEffector.h"
@@ -898,6 +900,8 @@ void CLevel::OnRender()
 #ifdef DEBUG
 	if (ai().get_level_graph())
 		ai().level_graph().render();
+
+	embedded_editor_render();
 
 #ifdef DEBUG_PRECISE_PATH
 	test_precise_path		();
