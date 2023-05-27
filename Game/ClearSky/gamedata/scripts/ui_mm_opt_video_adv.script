@@ -310,12 +310,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	handler.m_preconditions[ctl]				= only_r3_and_r3msaa_more_than_zero
 	handler.r3_msaa_alphatest					= ctl]]--
 	
-	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	--[[_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r3_msaa_opt",	_st)
 	ctl			= xml:InitCheck					("video_adv:check_r3_msaa_opt",_st)
 	handler.m_preconditions[ctl]				= dx_level_ge_655361
 	handler.chk_r3_msaa_opt						= ctl
-	handler:Register							(ctl, "check_r3_msaa_opt")	
+	handler:Register							(ctl, "check_r3_msaa_opt")	]]--
 
 
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
