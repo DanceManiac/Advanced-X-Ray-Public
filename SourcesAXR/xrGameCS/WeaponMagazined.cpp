@@ -96,7 +96,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 	//Alundaio: LAYERED_SND_SHOOT
 	m_sounds.LoadSound(section, "snd_shoot", "sndShot", m_eSoundShot);
-	if (WeaponSoundExist(section, "snd_shoot_actor"))
+	if (WeaponSoundExist(section, "snd_shoot_actor", true))
 		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", m_eSoundShot);
 	//-Alundaio
 
@@ -106,19 +106,19 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_reload", "sndReload"		, m_eSoundReload		);
 	m_sounds.LoadSound(section, "snd_reflect", "sndReflect",  m_eSoundReflect);
 
-	if (WeaponSoundExist(section, "snd_changefiremode"))
+	if (WeaponSoundExist(section, "snd_changefiremode", true))
 		m_sounds.LoadSound(section, "snd_changefiremode", "sndFireModes", m_eSoundEmptyClick);
 
-	if (WeaponSoundExist(section, "snd_close"))
+	if (WeaponSoundExist(section, "snd_close", true))
 		m_sounds.LoadSound(section, "snd_close", "sndClose", m_eSoundClose);
 
-	if (WeaponSoundExist(section, "snd_reload_empty"))
+	if (WeaponSoundExist(section, "snd_reload_empty", true))
 		m_sounds.LoadSound(section, "snd_reload_empty", "sndReloadEmpty", m_eSoundReload);
-	if (WeaponSoundExist(section, "snd_reload_misfire"))
+	if (WeaponSoundExist(section, "snd_reload_misfire", true))
 		m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", m_eSoundReload);
-	if (WeaponSoundExist(section, "snd_reload_jammed"))
+	if (WeaponSoundExist(section, "snd_reload_jammed", true))
 		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", m_eSoundReload);
-	if (WeaponSoundExist(section, "snd_pump_gun"))
+	if (WeaponSoundExist(section, "snd_pump_gun", true))
 		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", m_eSoundReload);
 
 	//звуки и партиклы глушителя, еслит такой есть
@@ -1842,7 +1842,7 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 	{
 		result |= process_if_exists_set( section, "silencer_flame_particles", &CInifile::r_string, m_sSilencerFlameParticles, test );
 		result |= process_if_exists_set( section, "silencer_smoke_particles", &CInifile::r_string, m_sSilencerSmokeParticles, test );
-
+		
 		result2 = process_if_exists_set( section, "snd_silncer_shot", &CInifile::r_string, str, test );
 		if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_silncer_shot"	, "sndSilencerShot", m_eSoundShot	);	}
 		result |= result2;
@@ -1870,14 +1870,15 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 }
 
 // AVO: for custom added sounds check if sound exists
-bool CWeaponMagazined::WeaponSoundExist(LPCSTR section, LPCSTR sound_name) const
+bool CWeaponMagazined::WeaponSoundExist(LPCSTR section, LPCSTR sound_name, bool log) const
 {
 	pcstr str;
 	bool sec_exist = process_if_exists_set(section, sound_name, &CInifile::r_string, str, true);
 	if (sec_exist)
 		return true;
 #ifdef DEBUG
-	Msg("~ [WARNING] ------ Sound [%s] does not exist in [%s]", sound_name, section);
+	if (log)
+		Msg("~ [WARNING] ------ Sound [%s] does not exist in [%s]", sound_name, section);
 #endif
 	return false;
 }

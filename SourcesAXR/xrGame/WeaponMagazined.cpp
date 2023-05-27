@@ -101,7 +101,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 	//Alundaio: LAYERED_SND_SHOOT
 	m_sounds.LoadSound(section, "snd_shoot", "sndShot", false, m_eSoundShot);
-	if (WeaponSoundExist(section, "snd_shoot_actor"))
+	if (WeaponSoundExist(section, "snd_shoot_actor", true))
 		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", false, m_eSoundShot);
 	//-Alundaio
 
@@ -111,20 +111,20 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	m_sounds.LoadSound(section,"snd_reload",		"sndReload",		true,	m_eSoundReload		);
 	m_sounds.LoadSound(section, "snd_reflect",		"sndReflect",		true,	m_eSoundReflect		);
 
-	if (WeaponSoundExist(section, "snd_changefiremode"))
+	if (WeaponSoundExist(section, "snd_changefiremode", true))
 		m_sounds.LoadSound(section, "snd_changefiremode", "sndFireModes", false, m_eSoundEmptyClick	);
 
 	// Звуки из класса пистолета
-	if (WeaponSoundExist(section, "snd_close"))
+	if (WeaponSoundExist(section, "snd_close", true))
 		m_sounds.LoadSound(section, "snd_close", "sndClose", false, m_eSoundClose);
 
-	if (WeaponSoundExist(section, "snd_reload_empty"))
+	if (WeaponSoundExist(section, "snd_reload_empty", true))
 		m_sounds.LoadSound(section, "snd_reload_empty", "sndReloadEmpty", true, m_eSoundReload);
-	if (WeaponSoundExist(section, "snd_reload_misfire"))
+	if (WeaponSoundExist(section, "snd_reload_misfire", true))
 		m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", true, m_eSoundReload);
-	if (WeaponSoundExist(section, "snd_reload_jammed"))
+	if (WeaponSoundExist(section, "snd_reload_jammed", true))
 		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", true, m_eSoundReload);
-	if (WeaponSoundExist(section, "snd_pump_gun"))
+	if (WeaponSoundExist(section, "snd_pump_gun", true))
 		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", true, m_eSoundReload);
 		
 	//звуки и партиклы глушителя, еслит такой есть
@@ -1976,14 +1976,15 @@ void CWeaponMagazined::FireBullet(	const Fvector& pos,
 }
 
 // AVO: for custom added sounds check if sound exists
-bool CWeaponMagazined::WeaponSoundExist(LPCSTR section, LPCSTR sound_name) const
+bool CWeaponMagazined::WeaponSoundExist(LPCSTR section, LPCSTR sound_name, bool log) const
 {
 	pcstr str;
 	bool sec_exist = process_if_exists_set(section, sound_name, &CInifile::r_string, str, true);
 	if (sec_exist)
 		return true;
 #ifdef DEBUG
-	Msg("~ [WARNING] ------ Sound [%s] does not exist in [%s]", sound_name, section);
+	if (log)
+		Msg("~ [WARNING] ------ Sound [%s] does not exist in [%s]", sound_name, section);
 #endif
 	return false;
 }
