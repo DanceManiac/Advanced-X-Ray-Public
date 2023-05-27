@@ -58,7 +58,7 @@ CActor*		g_actor						= NULL;
 
 CActor*			Actor()	
 {	
-	R_ASSERT2	(GameID() == eGameIDSingle, "Actor() method invokation must be only in Single Player game!");
+	R_ASSERT2	(IsGameTypeSingle(), "Actor() method invokation must be only in Single Player game!");
 	//VERIFY		(g_actor);
 	/*if (GameID() != eGameIDSingle) 
 		VERIFY	(g_actor == Level().CurrentControlEntity());*/
