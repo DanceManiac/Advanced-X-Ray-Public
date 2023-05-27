@@ -127,21 +127,28 @@ void CKinematics::CLBone( const CBoneData* bd, CBoneInstance &bi, const Fmatrix 
 	
 	u16							SelfID				= bd->GetSelfID();
 
-	if ( LL_GetBoneVisible(SelfID) ){
-		if ( bi.callback_overwrite() ){
+	if ( LL_GetBoneVisible(SelfID) )
+	{
+		if ( bi.callback_overwrite() )
+		{
 			if ( bi.callback() )	bi.callback()( &bi );
-		} else {
-
+		}
+		else
+		{
+			Fmatrix XFORM = bi.mTransform;
 			BuildBoneMatrix( bd, bi, parent, channel_mask );
-#ifndef MASTER_GOLD
-			R_ASSERT2( _valid( bi.mTransform ), "anim kils bone matrix" ); 
-#endif // #ifndef MASTER_GOLD
+			if (!_valid(bi.mTransform))
+			{
+				bi.mTransform = XFORM;
+				bi.mTransform.mul_43(*parent, bd->bind_transform);
+			}
+
 			if (bi.callback())
 			{
 				bi.callback()(&bi);
-#ifndef MASTER_GOLD
-				R_ASSERT2( _valid( bi.mTransform ), make_string( "callback kils bone matrix bone: %s " , bd->name.c_str() ) ); 
-#endif // #ifndef MASTER_GOLD
+
+				if (!_valid(bi.mTransform))
+					return;
 			}
 		}
 		bi.mRenderTransform.mul_43(bi.mTransform,bd->m2b_transform);
