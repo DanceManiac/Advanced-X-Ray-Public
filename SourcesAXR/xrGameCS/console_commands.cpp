@@ -59,6 +59,7 @@
 #	include "game_graph.h"
 #endif // DEBUG
 
+#include "clsid_game.h"
 #include "HUDManager.h"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "AdvancedXrayGameConstants.h"
@@ -253,7 +254,7 @@ public:
 
 		if (count > 50)
 		{
-			Msg("! [g_spawn]: Cancel the command. Maximum value of the second argument: 50. Cound is: %d", count);
+			Msg("! [g_spawn]: Cancel the command. Maximum value of the second argument: 50. Count is: %d", count);
 			return;
 		}
 
@@ -289,7 +290,9 @@ public:
 	{
 		for (auto sect : pSettings->sections())
 		{
-			if (sect->line_exist("class") && sect->line_exist("inv_weight") || sect->line_exist("class") && sect->line_exist("$spawn") && sect->line_exist("Spawn_Inventory_Item_Section"))
+			if (sect->line_exist("class") && sect->line_exist("inv_weight") 
+				|| sect->line_exist("class") && sect->line_exist("$spawn") && sect->line_exist("Spawn_Inventory_Item_Section") 
+				|| sect->line_exist("class") && (pSettings->r_clsid(sect->Name.c_str(), "class") == CLSID_CAR))
 				tips.push_back(sect->Name.c_str());
 		}
 	}
