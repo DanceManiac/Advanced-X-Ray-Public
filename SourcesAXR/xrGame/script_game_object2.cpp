@@ -308,7 +308,7 @@ Fvector CScriptGameObject::GetMovementSpeed		()	const
 	CActor* actor = smart_cast<CActor*>(&object());
 	if(!actor)
 	{
-		CAST_ERR(CCustomMonster,monster);
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "ScriptGameObject : attempt to call GetMovementSpeed method for non-actor object");
 		NODEFAULT;
 	}
 	return actor->GetMovementSpeed();

@@ -27,13 +27,14 @@
 	#define MakeObj2(class,var,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR(class,var); return;}
 	#define RMakeObj2(class,var,rval,obj) class* var = smart_cast<class*>(obj); if(!var){RCAST_ERR(class,var,rval); return rval;}
 #else
-//На дебаг или миксед крашим
-	#define CAST_ERR(class,var) do {static bool ignore_always = false; if (!ignore_always) Debug.fail("Cannot cast object ["#var"] to [" #class "]",DEBUG_INFO,ignore_always);} while(0) //Debug.fatal(DEBUG_INFO,"Cannot cast object ["#var"] to [" #class "] !")
+//На дебаг или миксед предупреждение
+	//#define CAST_ERR(class,var) do {static bool ignore_always = false; if (!ignore_always) Debug.fail("Cannot cast object ["#var"] to [" #class "]",DEBUG_INFO,ignore_always);} while(0) //Debug.fatal(DEBUG_INFO,"Cannot cast object ["#var"] to [" #class "] !")
+	#define CAST_ERR(class,var) R_ASSERT2(var, "Cannot cast object ["#var"] to [" #class "]")
 	#define RCAST_ERR(class,var,rval) CAST_ERR(class,var)
-	#define MakeObj(class,var) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var);}
-	#define RMakeObj(a,b,rv) MakeObj(a,b)
-	#define MakeObj2(class,var,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR(class,var);}
-	#define RMakeObj2(a,b,rv,obj) MakeObj2(a,b,obj)
+	#define MakeObj(class,var) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var); return;}
+	#define RMakeObj(class,var,rval) class* var = smart_cast<class*>(&object()); if(!var){RCAST_ERR(class,var,rval); return rval;}
+	#define MakeObj2(class,var,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR(class,var); return;}
+	#define RMakeObj2(class,var,rval,obj) class* var = smart_cast<class*>(obj); if(!var){RCAST_ERR(class,var,rval); return rval;}
 #endif
 
 
