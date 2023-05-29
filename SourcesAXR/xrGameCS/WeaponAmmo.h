@@ -67,7 +67,7 @@ public:
 	virtual void					renderable_Render	();
 
 	virtual bool					Useful				() const;
-	virtual float					Weight				();
+	virtual float					Weight				() const;
 
 	bool							Get					(CCartridge &cartridge);
 

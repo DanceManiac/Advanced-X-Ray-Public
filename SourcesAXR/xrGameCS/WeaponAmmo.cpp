@@ -228,7 +228,7 @@ CInventoryItem *CWeaponAmmo::can_make_killing	(const CInventory *inventory) cons
 	return					(0);
 }
 
-float CWeaponAmmo::Weight()
+float CWeaponAmmo::Weight() const
 {
 	if (m_boxSize > 0)
 	{
