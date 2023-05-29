@@ -450,7 +450,8 @@ function reset_generic_schemes_on_scheme_switch(npc, scheme, section)
 	elseif st.stype == modules.stype_mobile then
 		--printf("_bp: disabling talk")
 		--npc:disable_talk() -- теперь делается в dialog_manager_reset
-		xr_meet.dialog_manager_reset(npc, st.stype)
+--Arkada fix
+--		xr_meet.dialog_manager_reset(npc, st.stype)
 		mob_release(npc)
 		if get_clsid(npc) == clsid.bloodsucker_s then
 			if scheme == "nil" then

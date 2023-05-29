@@ -137,7 +137,7 @@ function dialog_wnd_showed()
 		local npc = v.object
 		if npc ~= nil then
 			local npc_id = npc:id()
-			if npc:is_talking() and npc_id ~= db.actor:id() then
+			if npc_id ~= 0 and IsStalker(npc) and npc:is_talking() then
 				local sound_theme = xr_sound.sound_table[npc_id]
 				if sound_theme and sound_theme.reset then
 					sound_theme:reset(npc_id)
