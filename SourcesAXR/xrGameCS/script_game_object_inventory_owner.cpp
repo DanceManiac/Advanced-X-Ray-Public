@@ -137,10 +137,7 @@ xrTime CScriptGameObject::GetInfoTime			(LPCSTR info_id)
 
 bool CScriptGameObject::IsTalking()
 {
-	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(&object());
-	if (!owner)
-		return false;
-
+	RMakeObj(CInventoryOwner,owner,false);
 	return			owner->IsTalking();
 }
 
