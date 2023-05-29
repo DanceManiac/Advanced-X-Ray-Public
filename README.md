@@ -16,7 +16,7 @@ Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer
 
 |DX9|DX10|DX11|
 |---|---|---|
-|Yes|Yes|Yes|
+|Yes|No|Yes|
 
 ## Build status
 
@@ -27,8 +27,6 @@ Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer
 ## How to Build
 
 - Install Visual Studio 2019
-- Install DirectX SDK`s (March 2009 and June 2010)
-- Set environment variable DXSDK to DirectX SDK path
 - Open engine.sln
 - Build solution
 
@@ -53,11 +51,15 @@ See [Release](https://github.com/ign-1997/Advanced-X-Ray/releases) section.
 - [Hrust](https://github.com/Hrusteckiy)
 - [ValeroK](https://github.com/VaIeroK)
 - [IX-Ray Team](https://github.com/ixray-team)
+- [Sergii T](https://github.com/joye-ramone)
+- [Graff46](https://github.com/Graff46)
+- [CoC-Xray](https://github.com/revolucas/CoC-Xray)
+- [v2v3v4](https://github.com/v2v3v4)
+- [Hozar2002](https://github.com/Hozar2002)
 - DWM Team
 - CorryZeron
 - Oxygen Engine
 - Lex Addon
-- Hozar2002
 - exDeMODER
 - Screen Space Shaders
 
