@@ -625,12 +625,6 @@ void CScriptGameObject::SetCharacterName(LPCSTR name)
 	pOurOwner->SetName(name);
 }
 
-void CScriptGameObject::SetCharacterIcon(LPCSTR icon)
-{
-	MakeObj(CInventoryOwner,pOurOwner);
-	return pOurOwner->SetIcon(icon);
-}
-
 LPCSTR CScriptGameObject::sound_voice_prefix () const
 {
 	RMakeObj(CInventoryOwner,owner,NULL);

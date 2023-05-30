@@ -145,7 +145,6 @@ BOOL CInventoryOwner::net_Spawn		(CSE_Abstract* DC)
 			dialog_manager->SetDefaultStartDialog(CharacterInfo().StartDialog());
 		}
 		m_game_name			= pTrader->m_character_name;
-		m_character_icon	= pTrader->m_character_icon;
 		
 		m_deadbody_can_take = pTrader->m_deadbody_can_take;
 		m_deadbody_closed   = pTrader->m_deadbody_closed;
@@ -185,7 +184,6 @@ void	CInventoryOwner::save	(NET_Packet &output_packet)
 
 	CharacterInfo().save(output_packet);
 	save_data	(m_game_name, output_packet);
-	save_data	(m_character_icon, output_packet);
 	save_data	(m_money,	output_packet);
 }
 void	CInventoryOwner::load	(IReader &input_packet)
@@ -200,7 +198,6 @@ void	CInventoryOwner::load	(IReader &input_packet)
 
 	CharacterInfo().load(input_packet);
 	load_data		(m_game_name, input_packet);
-	load_data		(m_character_icon, input_packet);
 	load_data		(m_money,	input_packet);
 }
 
@@ -419,7 +416,7 @@ LPCSTR	CInventoryOwner::Name () const
 
 LPCSTR	CInventoryOwner::IconName () const
 {
-	return m_character_icon.c_str();
+	return CharacterInfo().IconName().c_str();
 }
 
 
