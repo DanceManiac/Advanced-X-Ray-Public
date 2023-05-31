@@ -384,7 +384,7 @@ void CALifeUpdateManager::teleport_object	(ALife::_OBJECT_ID id, GameGraph::_GRA
 
 #ifdef DEBUG
 	if (psAI_Flags.test(aiALife)) {
-		Msg									("[LSS] teleporting object [%s][%s][%d] from level [%s], position [%f][%f][%f] to level [%s], position [%f][%f][%f]",
+		Msg									("teleporting object [%s][%s][%d] from level [%s], position [%f][%f][%f] to level [%s], position [%f][%f][%f]",
 			object->name_replace(),
 			*object->s_name,
 			object->ID,

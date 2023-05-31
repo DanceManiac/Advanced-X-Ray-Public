@@ -96,13 +96,13 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 #ifdef MP_LOGGING
 			string64 act;
 			strcpy_s( act, (type == GE_TRADE_SELL)? "sells" : "rejects" );
-			Msg("--- Actor [%d][%s]  %s  [%d][%s]", ID(), Name(), act, GO->ID(), GO->cNameSect().c_str());
+			Msg("Actor [%d][%s] %s [%d][%s]", ID(), Name(), act, GO->ID(), GO->cNameSect().c_str());
 #endif // MP_LOGGING
 			
 			VERIFY( GO->H_Parent() );
 			if ( !GO->H_Parent() )
 			{
-				Msg("! ERROR: Actor [%d][%s] tries to reject item [%d][%s] that has no parent", 
+				Msg("! Actor [%d][%s] tries to reject item [%d][%s] that has no parent", 
 					ID(), Name(), GO->ID(), GO->cNameSect().c_str());
 				break;
 			}
@@ -114,7 +114,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			if ( GO->H_Parent()->ID() != ID() )
 			{
 				CActor* real_parent = smart_cast<CActor*>(GO->H_Parent());
-				Msg("! ERROR: Actor [%d][%s] tries to drop not own item [%d][%s], his parent is [%d][%s]",
+				Msg("! Actor [%d][%s] tries to drop not own item [%d][%s], his parent is [%d][%s]",
 					ID(), Name(), GO->ID(), GO->cNameSect().c_str(), real_parent->ID(), real_parent->Name());
 				break;
 			}

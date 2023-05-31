@@ -79,7 +79,9 @@ public:
 		if (_it<objects_active.size())	return objects_active	[_it];
 		else							return objects_sleeping	[_it-objects_active.size()];
 	}
+#ifdef DEBUG
 	bool						dump_all_objects	();
+#endif
 
 public:
 			void				register_object_to_destroy	(CObject *object_to_destroy);
@@ -97,7 +99,9 @@ private:
 	}
 
 	static	void				clear_crow_vec		(Objects& o);
+#ifdef DEBUG
 	static	void				dump_list			(Objects& v, LPCSTR reason);
+#endif
 };
 
 #endif //__XR_OBJECT_LIST_H__

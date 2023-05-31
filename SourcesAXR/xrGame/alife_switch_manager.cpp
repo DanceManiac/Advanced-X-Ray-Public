@@ -65,7 +65,7 @@ void CALifeSwitchManager::add_online(CSE_ALifeDynamicObject *object, bool update
 
 #ifdef DEBUG
 	if (psAI_Flags.test(aiALife))
-		Msg							("[LSS] Spawning object [%s][%s][%d]",object->name_replace(),*object->s_name,object->ID);
+		Msg							("Spawning object [%s][%s][%d]",object->name_replace(),*object->s_name,object->ID);
 #endif
 
 	object->add_online				(update_registries);
@@ -98,7 +98,7 @@ void CALifeSwitchManager::remove_online(CSE_ALifeDynamicObject *object, bool upd
 
 #ifdef DEBUG
 	if (psAI_Flags.test(aiALife))
-		Msg						("[LSS] Destroying object [%s][%s][%d]",object->name_replace(),*object->s_name,object->ID);
+		Msg						("Destroying object [%s][%s][%d]",object->name_replace(),*object->s_name,object->ID);
 #endif
 
 	object->add_offline			(m_saved_chidren,update_registries);
@@ -110,7 +110,7 @@ void CALifeSwitchManager::switch_online(CSE_ALifeDynamicObject *object)
 	START_PROFILE("ALife/switch/switch_online")
 #ifdef DEBUG
 //	if (psAI_Flags.test(aiALife))
-		Msg						("[LSS][%d] Going online [%d][%s][%d] ([%f][%f][%f] : [%f][%f][%f]), on '%s'",Device.dwFrame,Device.dwTimeGlobal,object->name_replace(), object->ID,VPUSH(graph().actor()->o_Position),VPUSH(object->o_Position), "*SERVER*");
+		Msg						("[%d] Going online [%d][%s][%d] ([%f][%f][%f] : [%f][%f][%f]), on '%s'",Device.dwFrame,Device.dwTimeGlobal,object->name_replace(), object->ID,VPUSH(graph().actor()->o_Position),VPUSH(object->o_Position), "*SERVER*");
 #endif
 	object->switch_online		();
 	STOP_PROFILE
@@ -121,7 +121,7 @@ void CALifeSwitchManager::switch_offline(CSE_ALifeDynamicObject *object)
 	START_PROFILE("ALife/switch/switch_offline")
 #ifdef DEBUG
 //	if (psAI_Flags.test(aiALife))
-		Msg							("[LSS][%d] Going offline [%d][%s][%d] ([%f][%f][%f] : [%f][%f][%f]), on '%s'",Device.dwFrame,Device.dwTimeGlobal,object->name_replace(), object->ID,VPUSH(graph().actor()->o_Position),VPUSH(object->o_Position), "*SERVER*");
+		Msg							("[%d] Going offline [%d][%s][%d] ([%f][%f][%f] : [%f][%f][%f]), on '%s'",Device.dwFrame,Device.dwTimeGlobal,object->name_replace(), object->ID,VPUSH(graph().actor()->o_Position),VPUSH(object->o_Position), "*SERVER*");
 #endif
 	object->switch_offline			();
 	STOP_PROFILE
@@ -187,8 +187,11 @@ void CALifeSwitchManager::try_switch_online	(CSE_ALifeDynamicObject	*I)
 			!=
 			ai().level_graph().level_id()
 		) ||
-		!Level().Objects.net_Find(I->ID) ||
-		Level().Objects.dump_all_objects(),
+		!Level().Objects.net_Find(I->ID)
+#ifdef DEBUG
+		|| Level().Objects.dump_all_objects()
+#endif
+		,
 		make_string("frame [%d] time [%d] object [%s] with id [%d] is offline, but is on the level",Device.dwFrame,Device.dwTimeGlobal,I->name_replace(),I->ID)
 	);
 

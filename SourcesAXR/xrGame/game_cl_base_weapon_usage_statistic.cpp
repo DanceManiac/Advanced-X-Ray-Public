@@ -178,7 +178,7 @@ bool victims_table::add_name(shared_str const & player_name)
 {
 	if (m_data.size() > 254)
 	{
-		Msg("! WARNING: victims table in statistics exceeds limit count");
+		Msg("! victims table in statistics exceeds limit count");
 		return false;
 	}
 	victims_table_t::const_iterator tmp_iter = std::find(

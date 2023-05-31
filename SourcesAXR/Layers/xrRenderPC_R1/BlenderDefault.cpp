@@ -64,7 +64,7 @@ void	CBlender_default::Compile(CBlender_Compile& C)
 	{
 		if (C.L_textures.size()<3)
 		{
-			Msg("! xrRender_R1: WARNING! Not enought textures for shader, base tex: %s", *C.L_textures[0]);
+			Msg("! xrRender_R1: Not enought textures for shader, base tex: %s", *C.L_textures[0]);
 			//Debrovski: using VERY noticeable placeholder-texture
 			C.L_textures.emplace_back("$shadertest");
 			C.L_textures.emplace_back("$shadertest");

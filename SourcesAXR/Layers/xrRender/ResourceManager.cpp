@@ -145,7 +145,7 @@ void CResourceManager::_DeleteElement(const ShaderElement* S)
 {
 	if (0==(S->dwFlags&xr_resource_flagged::RF_REGISTERED))	return;
 	if (reclaim(v_elements,S))						return;
-	Msg	("! ERROR: Failed to find compiled 'shader-element'");
+	Msg	("! Failed to find compiled 'shader-element'");
 }
 
 Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
@@ -239,7 +239,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 	v_shaders.push_back		(N);
 
 #ifndef MASTER_GOLD
-	if (time.GetElapsed_sec() * 1000.f > 50.0 && g_loading_events.empty() && !prefetching_in_progress) Msg("---Loading of %s made a %fms stutter, should it be prefetched?!", s_textures, time.GetElapsed_sec() * 1000.f);
+	if (time.GetElapsed_sec() * 1000.f > 50.0 && g_loading_events.empty() && !prefetching_in_progress) Msg("* Loading of %s made a %fms stutter, should it be prefetched?!", s_textures, time.GetElapsed_sec() * 1000.f);
 #endif
 	return N;
 }
@@ -339,7 +339,7 @@ void CResourceManager::Delete(const Shader* S)
 {
 	if (0==(S->dwFlags&xr_resource_flagged::RF_REGISTERED))	return;
 	if (reclaim(v_shaders,S))						return;
-	Msg	("! ERROR: Failed to find complete shader");
+	Msg	("! Failed to find complete shader");
 }
 
 xr_vector<CTexture*> tex_to_load;

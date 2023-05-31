@@ -230,7 +230,7 @@ bool CUIInventoryUpgradeWnd::install_item( CInventoryItem& inv_item, bool can_up
 	if ( !can_upgrade )
 	{
 #ifdef DEBUG
-		Msg( "Inventory item <%s> cannot upgrade - Mechanic say.", inv_item.m_section_id.c_str() );
+		Msg( "Inventory item [%s] cannot upgrade - Mechanic say", inv_item.m_section_id.c_str() );
 #endif // DEBUG
 		m_current_scheme = NULL;
 		return false;
@@ -240,7 +240,7 @@ bool CUIInventoryUpgradeWnd::install_item( CInventoryItem& inv_item, bool can_up
 	if ( !scheme_name )
 	{
 #ifdef DEBUG
-		Msg( "Inventory item <%s> does not contain upgrade scheme.", inv_item.m_section_id.c_str() );
+		Msg( "Inventory item [%s] doesn't contain upgrade scheme", inv_item.m_section_id.c_str() );
 #endif // DEBUG
 		m_current_scheme = NULL;
 		return false;

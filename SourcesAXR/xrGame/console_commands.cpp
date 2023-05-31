@@ -1969,8 +1969,6 @@ public:
 	}
 }; // CCC_InvDropAllItems
 
-#endif // DEBUG
-
 class CCC_DumpObjects : public IConsole_Command {
 public:
 	CCC_DumpObjects(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1979,6 +1977,8 @@ public:
 		Level().Objects.dump_all_objects();
 	}
 };
+
+#endif // DEBUG
 
 class CCC_GSCheckForUpdates : public IConsole_Command {
 public:

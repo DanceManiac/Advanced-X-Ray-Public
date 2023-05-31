@@ -46,7 +46,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			CGameObject* _GO		= smart_cast<CGameObject*>(Obj);
 			if (!IsGameTypeSingle() && !g_Alive())
 			{
-				Msg("! WARNING: dead player [%d][%s] can't take items [%d][%s]",
+				Msg("! dead player [%d][%s] can't take items [%d][%s]",
 					ID(), Name(), _GO->ID(), _GO->cNameSect().c_str());
 				break;
 			}
@@ -94,7 +94,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 #ifdef MP_LOGGING
 			string64 act;
 			xr_strcpy( act, (type == GE_TRADE_SELL)? "sells" : "rejects" );
-			Msg("--- Actor [%d][%s]  %s  [%d][%s]", ID(), Name(), act, GO->ID(), GO->cNameSect().c_str());
+			Msg("Actor [%d][%s] %s [%d][%s]", ID(), Name(), act, GO->ID(), GO->cNameSect().c_str());
 #endif // MP_LOGGING
 			
 			VERIFY( GO->H_Parent() );
@@ -154,7 +154,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			s32 ShotRndSeed = P.r_s32();
 			if (!IsGameTypeSingle() && !g_Alive())
 			{
-//				Msg("! WARNING: dead player tries to rize inventory action");
+//				Msg("! dead player tries to rize inventory action");
 				break;
 			}
 									
@@ -195,7 +195,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 
 			if (!IsGameTypeSingle() && !g_Alive())
 			{
-				Msg("! WARNING: dead player [%d][%s] can't use items [%d][%s]",
+				Msg("! dead player [%d][%s] can't use items [%d][%s]",
 					ID(), Name(), Obj->ID(), Obj->cNameSect().c_str());
 				break;
 			}

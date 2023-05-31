@@ -720,7 +720,7 @@ void start_tutorial(LPCSTR name);
 void CActor::Die	(CObject* who)
 {
 #ifdef DEBUG
-	Msg("--- Actor [%s] dies !", this->Name());
+	Msg("Actor dies");
 #endif // #ifdef DEBUG
 	inherited::Die		(who);
 

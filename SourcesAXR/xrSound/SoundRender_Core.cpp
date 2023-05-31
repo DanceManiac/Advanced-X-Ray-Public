@@ -175,7 +175,7 @@ bool CSoundRender_Core::EFXTestSupport()
 	err = alGetError();
 	if (err != AL_NO_ERROR)
 	{
-		Msg("[OpenAL] EFX error: %s", alGetString(err));
+		Msg("OpenAL EFX error: %s", alGetString(err));
 		FATAL("Error during EFX initialization");
 	}
 
@@ -518,7 +518,7 @@ bool CSoundRender_Core::i_efx_commit_setting()
 	ALenum err = alGetError();
 	if (err != AL_NO_ERROR)
 	{
-		Msg("[OpenAL] EFX error: %s", alGetString(err));
+		Msg("OpenAL EFX error: %s", alGetString(err));
 		return false;
 	}
 	return true;

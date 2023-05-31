@@ -412,7 +412,7 @@ dxRender_Visual* CModelPool::CreatePG	(PS::CPGDef* source)
 
 void CModelPool::dump()
 {
-	Log	("--- model pool --- begin:");
+	Log	("# model pool begin");
 	u32 sz					= 0;
 	u32 k					= 0;
 	for (xr_vector<ModelDef>::iterator I=Models.begin(); I!=Models.end(); I++) {
@@ -423,7 +423,7 @@ void CModelPool::dump()
 			Msg("#%3d: [%3d/%5d Kb] - %s",k++,I->refs,cur/1024,I->name.c_str());
 		}
 	}
-	Msg ("--- models: %d, mem usage: %d Kb ",k,sz/1024);
+	Msg ("# models %d, mem usage: %d Kb",k,sz/1024);
 	sz						= 0;
 	k						= 0;
 	int free_cnt			= 0;
@@ -439,8 +439,8 @@ void CModelPool::dump()
 			Msg("#%3d: [%s] [%5d Kb] - %s",k++, (b_free)?"free":"used", cur/1024,it->second.c_str());
 		}
 	}
-	Msg ("--- instances: %d, free %d, mem usage: %d Kb ",k, free_cnt, sz/1024);
-	Log	("--- model pool --- end.");
+	Msg ("# instances: %d, free %d, mem usage: %d Kb",k, free_cnt, sz/1024);
+	Log	("# model pool end");
 }
 
 void CModelPool::memory_stats		( u32& vb_mem_video, u32& vb_mem_system, u32& ib_mem_video, u32& ib_mem_system )

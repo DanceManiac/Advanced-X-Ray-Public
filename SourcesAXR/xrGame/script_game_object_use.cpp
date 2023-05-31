@@ -165,7 +165,7 @@ void CScriptGameObject::set_const_force(const Fvector &dir,float value,u32 time_
 	//if( !shell->isEnabled() )
 	//	shell->set_LinearVel( Fvector().set(0,0,0) );
 	if(!physics_world())	{
-		Msg("! set_const_force: ph_world do not exist");
+		Msg("! set_const_force: ph_world don't exist");
 		return;
 	}
 	CPhysicsShell	*shell=object().cast_physics_shell_holder()->PPhysicsShell();

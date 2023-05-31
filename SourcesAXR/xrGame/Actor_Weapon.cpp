@@ -171,15 +171,14 @@ void CActor::SelectBestWeapon	(CObject* O)
 				if (best_item && best_item->can_kill())
 				{
 #ifdef DEBUG
-					Msg("--- Selecting best weapon [%d], Frame[%d]", BestWeaponSlots[i], Device.dwFrame);
+					Msg("Selecting best weapon [%d] frame [%d]", BestWeaponSlots[i], Device.dwFrame);
 #endif // #ifdef DEBUG
 					inventory().Activate(BestWeaponSlots[i]);
-				} else
-				{
+				} 
 #ifdef DEBUG
-					Msg("--- Weapon is not best...");
-#endif // #ifdef DEBUG
-				}
+				else
+					Msg("# Weapon is not best");
+#endif
 			}
 			return;
 		};

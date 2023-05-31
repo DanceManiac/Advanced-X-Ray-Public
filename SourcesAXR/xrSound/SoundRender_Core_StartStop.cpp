@@ -30,7 +30,7 @@ void	CSoundRender_Core::i_start		(CSoundRender_Emitter* E)
 		if (T->get_emitter())
 		{
 #ifdef DEBUG
-			Msg("[xrSound] : increasing max_targets to %u", s_targets.size() + 1);
+			Msg("[xrSound] increasing max_targets to %u", s_targets.size() + 1);
 #endif
 			CSoundRender_Target* T2 = xr_new<CSoundRender_TargetA>();
 			if (T2->_initialize())
@@ -41,7 +41,7 @@ void	CSoundRender_Core::i_start		(CSoundRender_Emitter* E)
 			else
 			{
 #ifdef DEBUG
-				Msg("[xrSound] : can't increase max_targets from %u", s_targets.size());
+				Msg("[xrSound] can't increase max_targets from %u", s_targets.size());
 #endif
 				T2->_destroy();
 				xr_delete(T2);

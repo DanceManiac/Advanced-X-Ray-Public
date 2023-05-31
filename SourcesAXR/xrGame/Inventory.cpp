@@ -283,13 +283,13 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy, bool dont
 					if (just_before_destroy)
 					{
 #ifdef DEBUG
-						Msg("---DropItem activating slot [-1], forced, Frame[%d]", Device.dwFrame);
+						Msg("forced DropItem activating slot [-1] frame [%d]", Device.dwFrame);
 #endif // #ifdef DEBUG
 						Activate		(NO_ACTIVE_SLOT, true);
 					} else 
 					{
 #ifdef DEBUG
-						Msg("---DropItem activating slot [-1], Frame[%d]", Device.dwFrame);
+						Msg("DropItem activating slot [-1] frame [%d]", Device.dwFrame);
 #endif // #ifdef DEBUG
 						Activate		(NO_ACTIVE_SLOT);
 					}
@@ -381,7 +381,7 @@ bool CInventory::Slot(u16 slot_id, PIItem pIItem, bool bNotActivate, bool strict
 			);
 		}
 #ifdef MP_LOGGING
-		Msg("--- Actor [%d] places to slot item [%d]", GetOwner()->object_id(), pIItem->object_id());
+		Msg("Actor [%d] places to slot item [%d]", GetOwner()->object_id(), pIItem->object_id());
 #endif //#ifdef MP_LOGGING
 	} else
 	{
@@ -403,7 +403,7 @@ bool CInventory::Slot(u16 slot_id, PIItem pIItem, bool bNotActivate, bool strict
 	if (((m_iActiveSlot==slot_id) ||(m_iActiveSlot==NO_ACTIVE_SLOT) && m_iNextActiveSlot==NO_ACTIVE_SLOT) && (!bNotActivate))
 	{
 #ifdef DEBUG
-		Msg("---To Slot: activating slot [%d], Frame[%d]", slot_id, Device.dwFrame);
+		Msg("To Slot: activating slot [%d] frame [%d]", slot_id, Device.dwFrame);
 #endif // #ifdef DEBUG
 		Activate				(slot_id);
 	}
@@ -466,7 +466,7 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 		u16 real_parent = pIItem->object().H_Parent() ? pIItem->object().H_Parent()->ID() : u16(-1);
 		if (GetOwner()->object_id() != real_parent)
 		{
-			Msg("! WARNING: CL: actor [%d] tries to place to ruck not own item [%d], that has parent [%d]",
+			Msg("! CL: actor [%d] tries to place to ruck not own item [%d], that has parent [%d]",
 				GetOwner()->object_id(), pIItem->object_id(), real_parent);
 			return false;
 		}
@@ -496,7 +496,7 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 				inventory_owner_id, pIItem->object_id(), item_parent_id).c_str()
 			);
 #ifdef MP_LOGGING
-			Msg("--- Actor [%d] place to ruck item [%d]", inventory_owner_id, pIItem->object_id());
+			Msg("Actor [%d] place to ruck item [%d]", inventory_owner_id, pIItem->object_id());
 #endif
 		}
 	}
@@ -551,9 +551,6 @@ void CInventory::Activate(u16 slot, bool bForce)
 //			Msg				( "[%6d][%s] CInventory::Activate changing next active slot to %d", Device.dwTimeGlobal, name, slot );
 //		}
 		m_iNextActiveSlot=slot;
-#ifdef DEBUG
-//		Msg("--- There's no need to activate slot [%d], next active slot is [%d]", slot, m_iNextActiveSlot);
-#endif
 		return;
 	}
 
@@ -561,10 +558,6 @@ void CInventory::Activate(u16 slot, bool bForce)
 
 	if (slot != NO_ACTIVE_SLOT && !m_slots[slot].CanBeActivated()) 
 		return;
-
-#ifdef DEBUG
-//	Msg("--- Activating slot [%d], inventory owner: [%s], Frame[%d]", slot, m_pOwner->Name(), Device.dwFrame);
-#endif // #ifdef DEBUG
 	
 	//активный слот не выбран
 	if (GetActiveSlot() == NO_ACTIVE_SLOT)
@@ -599,9 +592,6 @@ void CInventory::Activate(u16 slot, bool bForce)
 			R_ASSERT2(tempItem, active_item->object().cNameSect().c_str());
 			
 			tempItem->SendDeactivateItem();
-#ifdef DEBUG
-//			Msg("--- Inventory owner [%s]: send deactivate item [%s]", m_pOwner->Name(), active_item->NameItem());
-#endif // #ifdef DEBUG
 		} else //in case where weapon is going to destroy
 		{
 			if (tmp_item)
@@ -1127,7 +1117,7 @@ bool CInventory::Eat(PIItem pIItem)
 		return false;
 
 #ifdef MP_LOGGING
-	Msg( "--- Actor [%d] use or eat [%d][%s]", entity_alive->ID(), pItemToEat->object().ID(), pItemToEat->object().cNameSect().c_str() );
+	Msg( "Actor [%d] use or eat [%d][%s]", entity_alive->ID(), pItemToEat->object().ID(), pItemToEat->object().cNameSect().c_str() );
 #endif // MP_LOGGING
 
 	if(IsGameTypeSingle() && Actor()->m_inventory == this)

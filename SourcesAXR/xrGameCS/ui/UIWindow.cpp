@@ -9,8 +9,7 @@
 #include "../Include/xrRender/DebugRender.h"
 #include "../Include/xrRender/UIRender.h"
 
-//#define LOG_ALL_WNDS
-#ifdef LOG_ALL_WNDS
+#ifdef UI_LOG_ALL_WNDS
 	int ListWndCount = 0;
 	struct DBGList{
 		int				num;
@@ -24,8 +23,6 @@
 			if(!(*_it).closed)
 				Msg("--leak detected ---- wnd = %d",(*_it).num);
 	}
-#else
-	void dump_list_wnd(){}
 #endif
 
 xr_vector<Frect> g_wnds_rects;
@@ -111,7 +108,7 @@ CUIWindow::CUIWindow()
 	m_bPP					= false;
 	m_dwFocusReceiveTime	= 0;
 	m_bCustomDraw			= false;
-#ifdef LOG_ALL_WNDS
+#ifdef UI_LOG_ALL_WNDS
 	ListWndCount++;
 	m_dbg_id = ListWndCount;
 	dbg_list_wnds.push_back(DBGList());
@@ -134,7 +131,7 @@ CUIWindow::~CUIWindow()
 	if(	GetPPMode() )
 		MainMenu()->UnregisterPPDraw	(this);
 
-#ifdef LOG_ALL_WNDS
+#ifdef UI_LOG_ALL_WNDS
 	xr_vector<DBGList>::iterator _it = dbg_list_wnds.begin();
 	bool bOK = false;
 	for(;_it!=dbg_list_wnds.end();++_it){

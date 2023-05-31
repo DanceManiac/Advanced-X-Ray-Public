@@ -418,10 +418,9 @@ void CObject::setDestroy			(BOOL _destroy)
 #ifdef DEBUG
 		extern BOOL debug_destroy;
 		if(debug_destroy)
-			Msg("cl setDestroy [%d][%d]",ID(),Device.dwFrame);
-#endif
-#ifdef MP_LOGGING
-		Msg("cl setDestroy [%d][%d]",ID(),Device.dwFrame);
+			Msg("cl setDestroy ID [%d] frame [%d]",ID(),Device.dwFrame);
+#elif MP_LOGGING
+		Msg("cl setDestroy ID [%d] frame [%d]",ID(),Device.dwFrame);
 #endif //#ifdef MP_LOGGING
 	}else
 		VERIFY		(!g_pGameLevel->Objects.registered_object_to_destroy(this));

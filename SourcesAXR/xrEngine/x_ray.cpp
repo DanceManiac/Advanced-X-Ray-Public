@@ -1393,7 +1393,9 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 	}
 }
 
+#ifndef MASTER_GOLD
 static	CTimer	phase_timer		;
+#endif
 extern	ENGINE_API BOOL			g_appLoaded = FALSE;
 
 void CApplication::LoadBegin	()
@@ -1406,7 +1408,9 @@ void CApplication::LoadBegin	()
 #ifndef DEDICATED_SERVER
 		_InitializeFont		(pFontSystem,"ui_font_letterica18_russian",0);
 #endif
+#ifndef MASTER_GOLD
 		phase_timer.Start	();
+#endif
 		load_stage			= 0;
 
 		CheckCopyProtection	();
@@ -1488,8 +1492,10 @@ void CApplication::LoadTitleInt(LPCSTR str1, LPCSTR str2, LPCSTR str3)
 void CApplication::LoadStage()
 {
 	VERIFY						(ll_dwReference);
+#ifndef MASTER_GOLD
 	Msg							("* phase time: %d ms",phase_timer.GetElapsed_ms());	phase_timer.Start();
 	Msg							("* phase cmem: %d K", Memory.mem_usage()/1024);
+#endif
 	
 	if (g_pGamePersistent->GameType() == 1 && !xr_strcmp(g_pGamePersistent->m_game_params.m_alife, "alife"))
 		max_load_stage			= 17;

@@ -123,7 +123,7 @@ IC	void CTradeParameters::process							(_action_type type, CInifile &ini_file, 
 		}
 
 		string256			temp0, temp1;
-		THROW3				(_GetItemCount(*(*I).second) == 2,"Invalid parameters in section",*section);
+		THROW3				(_GetItemCount(*(*I).second) == 2,"Invalid parameters in ",*section);
 		_action.enable		(
 			(*I).first,
 			CTradeFactors	(

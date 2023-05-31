@@ -57,9 +57,9 @@ void CLevel::remove_objects	()
 			ProcessGameEvents		();
 			Objects.Update			(false);
 			#ifdef DEBUG
-			Msg						("Update objects list...");
-			#endif // #ifdef DEBUG
+			Msg						("* Update objects list");
 			Objects.dump_all_objects();
+			#endif
 		}
 
 		if(Objects.o_count()==0)

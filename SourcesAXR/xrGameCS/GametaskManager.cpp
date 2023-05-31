@@ -184,7 +184,7 @@ void CGameTaskManager::SetTaskState(CGameTask* t, ETaskState state)
 void CGameTaskManager::SetTaskState(const shared_str& id, ETaskState state)
 {
 	CGameTask* t				= HasGameTask(id, true);
-	if (NULL==t)				{Msg("actor does not has task [%s] or it is completed", *id);	return;}
+	if (NULL==t)				{Msg("actor doesn't has task [%s] or it is completed", *id);	return;}
 	SetTaskState				(t, state);
 }
 

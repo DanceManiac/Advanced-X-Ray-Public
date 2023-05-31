@@ -471,7 +471,7 @@ void client_site::on_message(NET_Packet* packet)
 				stop_receive_file(from_client);
 			} else
 			{
-				Msg("! WARNING: CL: server sent unknown abort receive message");
+				Msg("! CL: server sent unknown abort receive message");
 			}
 		}break;
 	case receive_rejected:
@@ -483,7 +483,7 @@ void client_site::on_message(NET_Packet* packet)
 				stop_transfer_file();
 			} else
 			{
-				Msg("! WARNING: CL: server sent unknown receive reject message"); 
+				Msg("! CL: server sent unknown receive reject message"); 
 			}
 		}break;
 	};

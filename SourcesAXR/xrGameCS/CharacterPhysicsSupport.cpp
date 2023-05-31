@@ -654,9 +654,8 @@ void CCharacterPhysicsSupport::CreateSkeleton(CPhysicsShell* &pShell)
 
 	pShell->Build();
 
-	
 #ifdef DEBUG	
-	Msg("shell for %s[%d] created in %f ms",*m_EntityAlife.cName(),m_EntityAlife.ID(),t.GetElapsed_sec()*1000.f);
+	Msg("shell for %s[%d] created in %f ms",*m_EntityAlife.cNameSect(),m_EntityAlife.ID(),t.GetElapsed_sec()*1000.f);
 #endif
 }
 

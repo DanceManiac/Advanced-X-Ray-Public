@@ -214,8 +214,8 @@ bool CALifeCombatManager::bfCheckForInteraction(CSE_ALifeSchedulable *tpALifeSch
 #ifdef DEBUG
 	if (psAI_Flags.test(aiALife)) {
 		GameGraph::_GRAPH_ID			l_tGraphID = l_tpALifeMonsterAbstract1 ? l_tpALifeMonsterAbstract1->m_tGraphID : l_tpALifeMonsterAbstract2->m_tGraphID;
-		print_time						("\n[LSS]",time_manager().game_time());
-		Msg								("[LSS] %s met %s on the graph point %d (level %s[%d][%d][%d][%d], [%f][%f][%f])",
+		print_time						("\n",time_manager().game_time());
+		Msg								("%s met %s on the graph point %d (level %s[%d][%d][%d][%d], [%f][%f][%f])",
 			tpALifeSchedulable1->base()->name_replace(),
 			tpALifeSchedulable2->base()->name_replace(),
 			l_tGraphID,
@@ -236,14 +236,14 @@ bool CALifeCombatManager::bfCheckForInteraction(CSE_ALifeSchedulable *tpALifeSch
 		iCombatGroupIndex			= 0;
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg						("[LSS] %s detected %s",tpALifeSchedulable1->base()->name_replace(),tpALifeSchedulable2->base()->name_replace());
+			Msg						("%s detected %s",tpALifeSchedulable1->base()->name_replace(),tpALifeSchedulable2->base()->name_replace());
 		}
 #endif
 	}
 	else {
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg						("[LSS] %s didn't detect %s",tpALifeSchedulable1->base()->name_replace(),tpALifeSchedulable2->base()->name_replace());
+			Msg						("%s didn't detect %s",tpALifeSchedulable1->base()->name_replace(),tpALifeSchedulable2->base()->name_replace());
 		}
 #endif
 	}
@@ -257,7 +257,7 @@ bool CALifeCombatManager::bfCheckForInteraction(CSE_ALifeSchedulable *tpALifeSch
 	if (bfCheckObjectDetection(tpALifeSchedulable2,tpALifeSchedulable1)) {
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg						("[LSS] %s detected %s",tpALifeSchedulable2->base()->name_replace(),tpALifeSchedulable1->base()->name_replace());
+			Msg						("%s detected %s",tpALifeSchedulable2->base()->name_replace(),tpALifeSchedulable1->base()->name_replace());
 		}
 #endif
 		if (!iCombatGroupIndex)
@@ -268,7 +268,7 @@ bool CALifeCombatManager::bfCheckForInteraction(CSE_ALifeSchedulable *tpALifeSch
 	else {
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg						("[LSS] %s didn't detect %s",tpALifeSchedulable2->base()->name_replace(),tpALifeSchedulable1->base()->name_replace());
+			Msg						("%s didn't detect %s",tpALifeSchedulable2->base()->name_replace(),tpALifeSchedulable1->base()->name_replace());
 		}
 #endif
 	}
@@ -282,7 +282,7 @@ bool CALifeCombatManager::bfCheckForInteraction(CSE_ALifeSchedulable *tpALifeSch
 	if (iCombatGroupIndex < 0) {
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg						("[LSS] There is no interaction");
+			Msg						("There is no interaction");
 		}
 #endif
 		return						(false);
@@ -323,7 +323,7 @@ void CALifeCombatManager::vfPerformAttackAction(int iCombatGroupIndex)
 		ai().ef_storage().alife().member() = *I;
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg				("[LSS] %s attacks with %s(%d ammo) %d times in a row",(*I)->base()->name_replace(),(*I)->m_tpCurrentBestWeapon ? (*I)->m_tpCurrentBestWeapon->name_replace() : "its natural weapon",(*I)->m_tpCurrentBestWeapon ? (*I)->m_tpCurrentBestWeapon->m_dwAmmoAvailable : 0,iFloor(ai().ef_storage().m_pfWeaponAttackTimes->ffGetValue() + .5f));
+			Msg				("%s attacks with %s(%d ammo) %d times in a row",(*I)->base()->name_replace(),(*I)->m_tpCurrentBestWeapon ? (*I)->m_tpCurrentBestWeapon->name_replace() : "its natural weapon",(*I)->m_tpCurrentBestWeapon ? (*I)->m_tpCurrentBestWeapon->m_dwAmmoAvailable : 0,iFloor(ai().ef_storage().m_pfWeaponAttackTimes->ffGetValue() + .5f));
 		}
 #endif
 		for (int i=0, n=iFloor(ai().ef_storage().m_pfWeaponAttackTimes->ffGetValue() + .5f); i<n; ++i) {
@@ -337,7 +337,7 @@ void CALifeCombatManager::vfPerformAttackAction(int iCombatGroupIndex)
 				l_tpALifeMonsterAbstract->fHealth -= l_tpALifeMonsterAbstract->m_fpImmunityFactors[l_tHitType]*l_fHit;
 #ifdef DEBUG
 				if (psAI_Flags.test(aiALife)) {
-					Msg						("[LSS] %s %s %s [power %5.2f][damage %5.2f][health %5.2f][creatures left %d]",(*I)->base()->name_replace(),l_tpALifeMonsterAbstract->fHealth <= 0 ? "killed" : "attacked",l_tpALifeMonsterAbstract->name_replace(),l_fHit,l_tpALifeMonsterAbstract->m_fpImmunityFactors[l_tHitType]*l_fHit,_max(l_tpALifeMonsterAbstract->fHealth,0.f),l_tpALifeMonsterAbstract->fHealth >= EPS_L ? m_tpaCombatGroups[iCombatGroupIndex ^ 1].size() : m_tpaCombatGroups[iCombatGroupIndex ^ 1].size() - 1);
+					Msg						("%s %s %s [power %5.2f][damage %5.2f][health %5.2f][creatures left %d]",(*I)->base()->name_replace(),l_tpALifeMonsterAbstract->fHealth <= 0 ? "killed" : "attacked",l_tpALifeMonsterAbstract->name_replace(),l_fHit,l_tpALifeMonsterAbstract->m_fpImmunityFactors[l_tHitType]*l_fHit,_max(l_tpALifeMonsterAbstract->fHealth,0.f),l_tpALifeMonsterAbstract->fHealth >= EPS_L ? m_tpaCombatGroups[iCombatGroupIndex ^ 1].size() : m_tpaCombatGroups[iCombatGroupIndex ^ 1].size() - 1);
 				}
 #endif
 				// check if victim became dead
@@ -350,7 +350,7 @@ void CALifeCombatManager::vfPerformAttackAction(int iCombatGroupIndex)
 			else {
 #ifdef DEBUG
 				if (psAI_Flags.test(aiALife)) {
-					Msg		("[LSS] %s missed",(*I)->base()->name_replace());
+					Msg		("%s missed",(*I)->base()->name_replace());
 				}
 #endif
 			}
@@ -404,7 +404,7 @@ void CALifeCombatManager::vfFinishCombat(ECombatResult tCombatResult)
 	if (m_temp_item_vector.empty() || (eCombatTypeMonsterMonster != combat_type())) {
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg							("[LSS] There is nothing to take");
+			Msg							("There is nothing to take");
 		}
 #endif
 		return;
@@ -430,7 +430,7 @@ void CALifeCombatManager::vfFinishCombat(ECombatResult tCombatResult)
 	if (l_iGroupIndex >= 0) {
 #ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg							("[LSS] Starting taking items [%s][%f]",m_tpaCombatObjects[l_iGroupIndex]->base()->name_replace(),smart_cast<CSE_ALifeMonsterAbstract*>(m_tpaCombatObjects[l_iGroupIndex])->fHealth);
+			Msg							("Starting taking items [%s][%f]",m_tpaCombatObjects[l_iGroupIndex]->base()->name_replace(),smart_cast<CSE_ALifeMonsterAbstract*>(m_tpaCombatObjects[l_iGroupIndex])->fHealth);
 		}
 #endif
 		m_tpaCombatObjects[l_iGroupIndex]->vfAttachItems();

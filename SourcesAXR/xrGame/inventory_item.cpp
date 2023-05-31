@@ -651,7 +651,7 @@ void CInventoryItem::net_Export			(NET_Packet& P)
 	if (!num_items.common)
 	{
 #ifdef DEBUG
-		Msg("--- Number of sync items of inv item object is 0");
+		Msg("~ Number of sync items of inv item object is 0");
 #endif // #ifdef DEBUG
 		return;
 	}
@@ -1492,7 +1492,7 @@ void CInventoryItem::SetDropManual(BOOL val)
 	{
 		if (!!m_name)
 		{
-			Msg("! WARNING: trying to set drop manual flag to item [%d][%s] to %d", object_id(), m_name.c_str(), val);
+			Msg("! trying to set drop manual flag to item [%d][%s] to %d", object_id(), m_name.c_str(), val);
 		}
 	}
 #endif // #ifdef DEBUG

@@ -52,7 +52,7 @@ void CScriptGameObject::set_smart_cover_target_idle		()
 {
 	MakeObj(CAI_Stalker,stalker);
 	if (!stalker->g_Alive()) {
-		Msg("! CAI_Stalker: do not call smart_cover_setup_idle_target when stalker is dead");
+		Msg("! CAI_Stalker: don't call smart_cover_setup_idle_target when stalker is dead");
 		return;
 	}
 
@@ -63,7 +63,7 @@ void CScriptGameObject::set_smart_cover_target_lookout	()
 {
 	MakeObj(CAI_Stalker,stalker);
 	if (!stalker->g_Alive()) {
-		Msg("! CAI_Stalker: do not call smart_cover_setup_lookout_target when stalker is dead");
+		Msg("! CAI_Stalker: don't call smart_cover_setup_lookout_target when stalker is dead");
 		return;
 	}
 
@@ -74,7 +74,7 @@ void CScriptGameObject::set_smart_cover_target_fire		()
 {
 	MakeObj(CAI_Stalker,stalker);
 	if (!stalker->g_Alive()) {
-		Msg("! CAI_Stalker: do not call smart_cover_setup_fire_target when stalker is dead");
+		Msg("! CAI_Stalker: don't call smart_cover_setup_fire_target when stalker is dead");
 		return;
 	}
 
@@ -85,7 +85,7 @@ void CScriptGameObject::set_smart_cover_target_fire_no_lookout()
 {
 	MakeObj(CAI_Stalker,stalker);
 	if (!stalker->g_Alive()) {
-		Msg("! CAI_Stalker: do not call set_smart_cover_target_fire_no_lookout when stalker is dead");
+		Msg("! CAI_Stalker: don't call set_smart_cover_target_fire_no_lookout when stalker is dead");
 		return;
 	}
 
@@ -96,7 +96,7 @@ void CScriptGameObject::set_smart_cover_target_default		(bool value)
 {
 	MakeObj(CAI_Stalker,stalker);
 	if (!stalker->g_Alive()) {
-		Msg("! CAI_Stalker: do not call set_smart_cover_target_default when stalker is dead");
+		Msg("! CAI_Stalker: don't call set_smart_cover_target_default when stalker is dead");
 		return;
 	}
 

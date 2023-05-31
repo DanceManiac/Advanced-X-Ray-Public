@@ -741,7 +741,7 @@ u32 player_hud::motion_length_script(LPCSTR section, LPCSTR anm_name, float spee
 {
 	if (!pSettings->section_exist(section))
 	{
-		Msg("!script motion section [%s] does not exist", section);
+		Msg("! script motion section [%s] doesn't exist", section);
 		return 0;
 	}
 
@@ -752,7 +752,7 @@ u32 player_hud::motion_length_script(LPCSTR section, LPCSTR anm_name, float spee
 	player_hud_motion* phm = pm->find_motion(anm_name);
 	if (!phm)
 	{
-		Msg("!script motion [%s] not found in section [%s]", anm_name, section);
+		Msg("! script motion [%s] not found in [%s]", anm_name, section);
 		return 0;
 	}
 
@@ -1056,7 +1056,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	if (!pSettings->section_exist(section))
 	{
-		Msg("!script motion section [%s] does not exist", section);
+		Msg("! script motion section [%s] doesn't exist", section);
 		m_bStopAtEndAnimIsRunning = true;
 		script_anim_end = Device.dwTimeGlobal;
 		return 0;
@@ -1067,7 +1067,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	if (!phm)
 	{
-		Msg("!script motion [%s] not found in section [%s]", anm_name, section);
+		Msg("! script motion [%s] not found in [%s]", anm_name, section);
 		m_bStopAtEndAnimIsRunning = true;
 		script_anim_end = Device.dwTimeGlobal;
 		return 0;

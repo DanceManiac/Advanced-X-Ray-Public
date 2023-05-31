@@ -504,12 +504,12 @@ u32 CHW::selectGPU ()
 				Msg( "* Using software skinning" );
 				break;
 			case 2 : 
-				Msg( "* WARNING: Using hardware skinning" );
+				Msg( "~ Using hardware skinning" );
 				Msg( "*   setting 'r1_software_skinning' to '1' may improve performance" );
 				break;
 	} else
 		if ( ps_r1_SoftwareSkinning == 1 ) {
-				Msg( "* WARNING: Using software skinning" );
+				Msg( "~ Using software skinning" );
 				Msg( "*   setting 'r1_software_skinning' to '0' should improve performance" );
 		}
 

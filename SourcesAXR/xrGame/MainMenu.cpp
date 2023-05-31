@@ -894,8 +894,8 @@ void CMainMenu::ReportTxrsForPrefetching()
 {
 	if (SuggestedForPrefetching.size() > 0)
 	{
-		Msg("---These UI textures are suggested to be prefetched since they caused stutterings when some UI window was loading");
-		Msg("---Add this list to prefetch_ui_textures.ltx (wisely)");
+		Msg("~ These UI textures are suggested to be prefetched since they caused stutterings when some UI window was loading");
+		Msg("~ Add this list to prefetch_ui_textures.ltx (wisely)");
 		for (u32 i = 0; i < SuggestedForPrefetching.size(); i++)
 			Msg("%s", SuggestedForPrefetching[i].c_str());
 	}
