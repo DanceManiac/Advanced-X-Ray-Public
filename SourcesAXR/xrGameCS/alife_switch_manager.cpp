@@ -181,19 +181,27 @@ void CALifeSwitchManager::try_switch_online	(CSE_ALifeDynamicObject	*I)
 		return;
 	}
 
+#ifdef DEBUG
 	VERIFY2						(
 		(
 			ai().game_graph().vertex(I->m_tGraphID)->level_id()
 			!=
 			ai().level_graph().level_id()
 		) ||
-		!Level().Objects.net_Find(I->ID)
-#ifdef DEBUG
-		|| Level().Objects.dump_all_objects()
-#endif
-		,
+		!Level().Objects.net_Find(I->ID) || Level().Objects.dump_all_objects(),
 		make_string("frame [%d] time [%d] object [%s] with id [%d] is offline, but is on the level",Device.dwFrame,Device.dwTimeGlobal,I->name_replace(),I->ID)
 	);
+#else
+	VERIFY2						(
+		(
+			ai().game_graph().vertex(I->m_tGraphID)->level_id()
+			!=
+			ai().level_graph().level_id()
+		) ||
+		!Level().Objects.net_Find(I->ID),
+		make_string("frame [%d] time [%d] object [%s] with id [%d] is offline, but is on the level",Device.dwFrame,Device.dwTimeGlobal,I->name_replace(),I->ID)
+	);
+#endif
 
 	I->try_switch_online		();
 
