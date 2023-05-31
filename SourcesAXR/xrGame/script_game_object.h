@@ -449,7 +449,6 @@ public:
 			void ChangeCharacterReputation	(int);
 			void SetCharacterCommunity		(LPCSTR,int,int);
 			void SetCharacterName			(LPCSTR name);
-			void SetCharacterIcon			(LPCSTR icon);
 		
 
 			u32					GetInventoryObjectCount() const;

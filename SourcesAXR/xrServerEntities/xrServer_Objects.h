@@ -163,9 +163,8 @@
 // 127	 CSE_ALifeObjectClimable		added material;
 // 128	 CSE_ALifeObjectClimable		added can_fire in smart covers;
 // 129   CSE_ALifeItemWeapon            added cur_scope for alternative installed scopes
-// 130   CSE_AlifeTraderAbstract		added m_character_icon
 //------------------------------------------------------------------------------
-#define SPAWN_VERSION	u16(130)
+#define SPAWN_VERSION	u16(129)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_Shape,ISE_Shape,CShapeData)
 public:
