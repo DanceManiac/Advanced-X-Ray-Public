@@ -102,9 +102,8 @@ CMainMenu::CMainMenu()
 		m_pMB_ErrDlgs[DownloadMPMap]->AddCallback("button_copy", MESSAGE_BOX_COPY_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnDownloadMPMap_CopyURL));
 		m_pMB_ErrDlgs[DownloadMPMap]->AddCallback("button_yes", MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnDownloadMPMap));
 	}
-#ifndef MASTER_GOLD
+
 	Msg("*Start prefetching UI textures");
-#endif
 	Device.m_pRender->RenderPrefetchUITextures();
 }
 

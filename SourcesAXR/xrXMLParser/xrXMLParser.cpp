@@ -85,7 +85,7 @@ void CXml::Load(LPCSTR path, LPCSTR  xml_filename)
 	if (m_Doc.Error())
 	{
 		string1024			str;
-		xr_sprintf				(str, "! XML file:%s value:%s errDescr:%s",m_xml_file_name,m_Doc.Value(), m_Doc.ErrorDesc());
+		xr_sprintf				(str, "XML file:%s value:%s errDescr:%s",m_xml_file_name,m_Doc.Value(), m_Doc.ErrorDesc());
 		if (xrGameManager::GetGame() == EGame::COP)
 		{
 			R_ASSERT2(false, str);

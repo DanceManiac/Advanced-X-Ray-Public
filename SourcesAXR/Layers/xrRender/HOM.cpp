@@ -71,7 +71,7 @@ void CHOM::Load			()
 	FS.update_path	(fName,"$level$","level.hom");
 	if (!FS.exist(fName))
 	{
-		Msg		("~ Occlusion map '%s' not found.",fName);
+		Msg		(" WARNING: Occlusion map '%s' not found.",fName);
 		return;
 	}
 	Msg	("* Loading HOM: %s",fName);

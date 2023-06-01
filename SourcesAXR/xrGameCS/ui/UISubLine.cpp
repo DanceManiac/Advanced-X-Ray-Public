@@ -11,8 +11,8 @@
 #include "uilinestd.h"
 #include "../ui_base.h"
 
-//#define UI_LOG_ALL_LINES
-#ifdef UI_LOG_ALL_LINES
+//#define LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 int ListSubLinesCount = 0;
 struct DBGList{
 	CUISubLine*		wnd;
@@ -25,6 +25,8 @@ void dump_list_sublines(){
 	for(;_it!=dbg_list_sublines.end();++_it)
 		Msg("--leak detected ---- SubLine = %d",(*_it).num);
 }
+#else
+void dump_list_sublines(){}
 #endif
 
 CUISubLine::CUISubLine(const CUISubLine& other){
@@ -32,7 +34,7 @@ CUISubLine::CUISubLine(const CUISubLine& other){
 	m_last_in_line = other.m_last_in_line;
 	m_text = other.m_text;
 	m_pTempLine = NULL;
-#ifdef UI_LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 	ListSubLinesCount++;
 	dbg_list_sublines.push_back(DBGList());
 	dbg_list_sublines.back().wnd = this;
@@ -52,7 +54,7 @@ CUISubLine::CUISubLine(){
 	m_color = 0;
 	m_pTempLine = NULL;
 	m_last_in_line = false;
-#ifdef UI_LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 	ListSubLinesCount++;
 	dbg_list_sublines.push_back(DBGList());
 	dbg_list_sublines.back().wnd = this;
@@ -64,7 +66,7 @@ CUISubLine::CUISubLine(){
 CUISubLine::~CUISubLine(){
 	xr_delete(m_pTempLine);
 	m_pTempLine = NULL;
-#ifdef UI_LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 	xr_vector<DBGList>::iterator _it = dbg_list_sublines.begin();
 	bool bOK = false;
 	for(;_it!=dbg_list_sublines.end();++_it){

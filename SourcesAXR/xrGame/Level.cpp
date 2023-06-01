@@ -421,14 +421,14 @@ void CLevel::cl_Process_Event				(u16 dest, u16 type, NET_Packet& P)
 	CObject*	 O	= Objects.net_Find	(dest);
 	if (0==O)		{
 #ifdef DEBUG
-		Msg("~ c_EVENT[%d] to [%d]: unknown dest",type,dest);
+		Msg("* WARNING: c_EVENT[%d] to [%d]: unknown dest",type,dest);
 #endif // DEBUG
 		return;
 	}
 	CGameObject* GO = smart_cast<CGameObject*>(O);
 	if (!GO)		{
 #ifndef MASTER_GOLD
-		Msg("! c_EVENT[%d] : non-game-object",dest);
+		Msg("! ERROR: c_EVENT[%d] : non-game-object",dest);
 #endif // #ifndef MASTER_GOLD
 		return;
 	}
@@ -622,7 +622,7 @@ void CLevel::OnFrame	()
 		if (OnClient() && GameID() != eGameIDSingle)
 		{
 #ifdef DEBUG
-			Msg("* I'm disconnected, so clear all objects");
+			Msg("--- I'm disconnected, so clear all objects...");
 #endif // #ifdef DEBUG
 			ClearAllObjects();
 		}

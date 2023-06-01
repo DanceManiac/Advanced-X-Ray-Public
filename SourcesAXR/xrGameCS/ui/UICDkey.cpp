@@ -189,6 +189,7 @@ void GetPlayerName_FromRegistry(char* name, u32 const name_size)
 	if (!ReadRegistry_StrValue(REGISTRY_VALUE_USERNAME, name))
 	{
 		name[0] = 0;
+		Msg( "! Player name registry key (%s) not found !", REGISTRY_VALUE_USERNAME );
 		return;
 	}
 	if ( xr_strlen(name) > 17 )

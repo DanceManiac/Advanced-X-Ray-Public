@@ -153,7 +153,7 @@ XRCORE_API void _dump_open_files(int mode)
 			if(_of._reader!=NULL)
 			{
 				if(!bShow)
-					Log("# opened files");
+					Log("----opened files");
 
 				bShow = true;
 				Msg("[%d] fname:%s", _of._used ,_of._fn.c_str());
@@ -161,7 +161,7 @@ XRCORE_API void _dump_open_files(int mode)
 		}
 	}else
 	{
-		Log("# unused");
+		Log("----un-used");
 		for(it = g_open_files.begin(); it!=it_e; ++it)
 		{
 			_open_file& _of = *it;
@@ -170,7 +170,7 @@ XRCORE_API void _dump_open_files(int mode)
 		}
 	}
 	if(bShow)
-		Log("# total count ",g_open_files.size());
+		Log("----total count=",g_open_files.size());
 }
 
 CLocatorAPI::CLocatorAPI()

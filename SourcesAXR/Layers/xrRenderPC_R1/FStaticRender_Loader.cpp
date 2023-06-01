@@ -201,9 +201,7 @@ void CRender::LoadBuffers	(CStreamReader *base_fs)
 			// count, size
 			u32 vCount			= fs->r_u32	();
 			u32 vSize			= D3DXGetDeclVertexSize	(dcl,0);
-#ifdef DEBUG
 			Msg	("* [Loading VB] %d verts, %d Kb",vCount,(vCount*vSize)/1024);
-#endif
 
 			// Create and fill
 			BYTE*	pData		= 0;
@@ -230,9 +228,7 @@ void CRender::LoadBuffers	(CStreamReader *base_fs)
 		for (u32 i=0; i<count; i++)
 		{
 			u32 iCount		= fs->r_u32	();
-#ifdef DEBUG
 			Msg("* [Loading IB] %d indices, %d Kb",iCount,(iCount*2)/1024);
-#endif
 
 			// Create and fill
 			BYTE*	pData		= 0;

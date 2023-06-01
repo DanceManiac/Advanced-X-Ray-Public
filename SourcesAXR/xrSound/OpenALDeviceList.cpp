@@ -56,7 +56,7 @@ void ALDeviceList::Enumerate()
 	int					major, minor, index;
 	LPCSTR				actualDeviceName;
 	
-	Msg("OpenAL: enumerate devices...");
+	Msg("SOUND: OpenAL: enumerate devices...");
 	// have a set of vectors storing the device list, selection status, spec version #, and XRAM support status
 	// -- empty all the lists and reserve space for 10 devices
 	m_devices.clear				();
@@ -65,10 +65,12 @@ void ALDeviceList::Enumerate()
 	// grab function pointers for 1.0-API functions, and if successful proceed to enumerate all devices
 	if (alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT")) 
 	{
+		Msg("SOUND: OpenAL: EnumerationExtension Present");
+
 		devices				= (char *)alcGetString(NULL, ALC_DEVICE_SPECIFIER);
 		Msg					("devices %s",devices);
 		xr_strcpy(			m_defaultDeviceName, (char *)alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER));
-		Msg("OpenAL: system default SndDevice name %s", m_defaultDeviceName);
+		Msg("SOUND: OpenAL: system  default SndDevice name is %s", m_defaultDeviceName);
 
 		index				= 0;
 		// go through device list (each device terminated with a single NULL, list terminated with double NULL)
@@ -93,7 +95,7 @@ void ALDeviceList::Enumerate()
 						m_devices.back().props.efx = alcIsExtensionPresent(alcGetContextsDevice(alcGetCurrentContext()), "ALC_EXT_EFX");
 						m_devices.back().props.xram = alcIsExtensionPresent(alcGetContextsDevice(alcGetCurrentContext()), "EAX_RAM");
 
-						Msg("OpenAL device: %s, EFX Support: %s", actualDeviceName, m_devices.back().props.efx ? "yes" : "no");
+						Msg("[OpenAL] device: %s, EFX Support: %s", actualDeviceName, m_devices.back().props.efx ? "yes" : "no");
 
 						m_devices.back().props.eax_unwanted	= ((0==xr_strcmp(actualDeviceName,AL_GENERIC_HARDWARE))||
 															(0==xr_strcmp(actualDeviceName,AL_GENERIC_SOFTWARE)));
@@ -102,17 +104,18 @@ void ALDeviceList::Enumerate()
 					alcDestroyContext(context);
 				}else
 				{
-					Msg("OpenAL: cant create context for %s",device);
+					Msg("SOUND: OpenAL: cant create context for %s",device);
 				}
 				alcCloseDevice(device);
 			}else
 			{
-				Msg("OpenAL: cant open device %s",devices);
+				Msg("SOUND: OpenAL: cant open device %s",devices);
 			}
 
 			devices		+= xr_strlen(devices) + 1;
 		}
-	}
+	}else
+		Msg("SOUND: OpenAL: EnumerationExtension NOT Present");
 
 //make token
 	u32 _cnt								= GetNumDevices();
@@ -127,7 +130,7 @@ void ALDeviceList::Enumerate()
 //--
 
 	if(0!=GetNumDevices())
-		Msg("OpenAL: All available devices:");
+		Msg("SOUND: OpenAL: All available devices:");
 
 
 	int majorVersion, minorVersion;
@@ -181,9 +184,9 @@ void ALDeviceList::SelectBestDevice()
 	if (GetNumDevices())
 	{
 		DeviceName = GetDeviceName(snd_device_id);
-		Msg("OpenAL: Selected device [%s]", DeviceName);
+		Msg("[SOUND]: Selected device is [%s]", DeviceName);
 	}
-	else Msg("OpenAL: Can't select device. List empty");
+	else Msg("[SOUND]: Can't select device. List empty");
 }
 
 /*

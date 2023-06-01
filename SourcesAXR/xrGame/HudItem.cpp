@@ -334,7 +334,7 @@ bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
 		if (g_player_hud->motion_length(anim_name, HudSection(), m_current_motion_def) > 100)
 			return true;
 #ifdef DEBUG
-	Msg("~ Animation [%s] doesn't exist in [%s]", anim_name, HudSection().c_str());
+	Msg("~ [WARNING] ------ Animation [%s] does not exist in [%s]", anim_name, HudSection().c_str());
 #endif
 	return false;
 }

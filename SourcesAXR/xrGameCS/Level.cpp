@@ -600,7 +600,7 @@ void CLevel::OnFrame	()
 		if (OnClient() && GameID() != eGameIDSingle)
 		{
 #ifdef DEBUG
-			Msg("I'm disconnected, so clear all objects");
+			Msg("--- I'm disconnected, so clear all objects...");
 #endif // #ifdef DEBUG
 			ClearAllObjects();
 		}

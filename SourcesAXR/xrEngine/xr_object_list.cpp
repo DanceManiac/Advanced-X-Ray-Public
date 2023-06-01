@@ -289,7 +289,7 @@ void CObjectList::Update		(bool bForce)
 //			Msg				("Object [%x]", O);
 #ifdef DEBUG
 			if( debug_destroy )
-				Msg			("Destroying object [%d][%s] frame[%d]", O->ID(),*O->cNameSect(), Device.dwFrame);
+				Msg			("Destroying object[%x][%x] [%d][%s] frame[%d]",dynamic_cast<void*>(O), O, O->ID(),*O->cName(), Device.dwFrame);
 #endif // DEBUG
 			O->net_Destroy	( );
 			Destroy			(O);
@@ -329,7 +329,7 @@ int	g_Dump_Export_Obj = 0;
 
 u32	CObjectList::net_Export			(NET_Packet* _Packet,	u32 start, u32 max_object_size	)
 {
-	if (g_Dump_Export_Obj) Msg("# net_Export begin");
+	if (g_Dump_Export_Obj) Msg("---- net_export --- ");
 
 	NET_Packet& Packet	= *_Packet;
 	u32			position;
@@ -360,7 +360,7 @@ u32	CObjectList::net_Export			(NET_Packet* _Packet,	u32 start, u32 max_object_si
 				break;
 		}
 	}
-	if (g_Dump_Export_Obj) Msg("# net_Export end");
+	if (g_Dump_Export_Obj) Msg("------------------- ");
 	return	start+1;
 }
 
@@ -368,7 +368,7 @@ int	g_Dump_Import_Obj = 0;
 
 void CObjectList::net_Import		(NET_Packet* Packet)
 {
-	if (g_Dump_Import_Obj) Msg("# net_Import begin");
+	if (g_Dump_Import_Obj) Msg("---- net_import --- ");
 
 	while (!Packet->r_eof())
 	{
@@ -388,7 +388,7 @@ void CObjectList::net_Import		(NET_Packet* Packet)
 		else		Packet->r_advance(size);
 	}
 
-	if (g_Dump_Import_Obj) Msg("# net_Import end");
+	if (g_Dump_Import_Obj) Msg("------------------- ");
 }
 
 /*
@@ -524,13 +524,13 @@ void CObjectList::relcase_unregister	(int* ID)
 	*m_relcase_callbacks.back().m_ID= *ID;
 	m_relcase_callbacks.pop_back	();
 }
-#ifdef DEBUG
+
 void CObjectList::dump_list(Objects& v, LPCSTR reason)
 {
 	Objects::iterator it = v.begin();
 	Objects::iterator it_e = v.end();
-
-	Msg("# dump_list [%s]",reason);
+#ifdef DEBUG
+	Msg("----------------dump_list [%s]",reason);
 	for(;it!=it_e;++it)
 		Msg("%x - name [%s] ID[%d] parent[%s] getDestroy()=[%s]", 
 			(*it),
@@ -538,6 +538,7 @@ void CObjectList::dump_list(Objects& v, LPCSTR reason)
 			(*it)->ID(), 
 			((*it)->H_Parent())?(*it)->H_Parent()->cName().c_str():"", 
 			((*it)->getDestroy())?"yes":"no" );
+#endif // #ifdef DEBUG
 }
 
 bool CObjectList::dump_all_objects()
@@ -549,7 +550,6 @@ bool CObjectList::dump_all_objects()
 	dump_list(m_crows[1],"m_crows[1]");
 	return false;
 }
-#endif
 
 void CObjectList::register_object_to_destroy(CObject *object_to_destroy)
 {

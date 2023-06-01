@@ -33,19 +33,6 @@ function load_scheme(filename, scheme, stype)
 	stypes[scheme] = stype
 end
 
-function string.explode(str, div)
-    local o = {}
-    while true do
-        local pos1,pos2 = str:find(div)
-        if not pos1 then
-            o[#o+1] = str
-            break
-        end
-        o[#o+1],str = str:sub(1,pos1-1),str:sub(pos2+1)
-    end
-    return o
-end
-
 ----------------------------------------------------------------------
 dev_debug = false
 sim_debug = false
@@ -53,11 +40,48 @@ mus_vol = 0
 amb_vol = 0
 b_discard_settings_shown = false
 ----------------------------------------------------------------------
-local muted_scripts = {}
---[[
-	["sim_board"] = true
-]]
+local scripts_to_print =	{
+							["stalker_generic"] = true,
+							["xr_smartcover"] = true,
+							["xr_logic"] = true,
+							["xr_conditions"] = true,
+							["xr_cover"] = true,
+							["xr_motivator"] = true,
+							["xr_walker"] = true,
+							["xr_camper"] = true,
+							["xr_kamp"] = true,
+							["restrictor_manager"] = true,
+							["sim_board"] = true,
+							["sim_faction"] = true,
+							["post_combat_idle"] = true,
+							["xr_death"] = true,
+							["xr_sound"] = true,
+							["utils"] = true,
+							["treasure_manager"] = true,
+							["object_collection"] = true,
+							["se_actor"] = true,
+							["smart_terrain"] = true,
+							["bind_physic_object"] = true,
+							["bind_heli"] = true,
+							["bind_anomaly_zone"] = true,
+							["bind_stalker"] = true,
+							["state_mgr_animation"] = true,
+							["se_stalker"] = true,
+							["db"] = true,
+							["sim_squad_generic"] = true,
+							["sim_squad_scripted"] = true,
+							["se_smart_cover"] = true,
+							["se_monster"] = true,
+							["dialog_manager"] = true,
+							["xr_combat_ignore"] = true,
+							["xr_remark"] = true,
+							["cover_manager"] = true,
+							["xr_danger"]	 = true,
+							["task_manager"] = true,
+							["task_objects"]	 = true
+							}
 function printf(fmt,...)
+
 	local is_g = 0
 	local result = fmt
 	if debug == nil then
@@ -66,12 +90,18 @@ function printf(fmt,...)
 	end
 	local info_table = debug.getinfo(2)
 	local script_name = string.gsub(info_table.short_src, "%.script", "")
-	local ex = string.explode(script_name,"\\")
-	script_name = ex[#ex]
+	script_name = string.gsub(script_name, "gamedata\\scripts\\", "")
 
-	if muted_scripts[script_name] == true then return end
-	result = script_name.." ("..info_table.currentline.."): "..fmt
+	if scripts_to_print[script_name] == false then return end
+
+	script_name,is_g = string.gsub(script_name, "_g", "")
+	if is_g == 0 then
+		result = script_name..":("..info_table.currentline.."):"..fmt
+	else
+		result = fmt
+	end
 	log(string.format(result,...))
+
 end
 
 ----------------------------------------------------------------------

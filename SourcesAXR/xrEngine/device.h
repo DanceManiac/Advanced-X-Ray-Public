@@ -190,9 +190,7 @@ public:
 		//RCache.set_xform_project			(mProject);
 	}
 
-#ifdef DEBUG
 	void									DumpResourcesMemoryUsage() { m_pRender->ResourcesDumpMemoryUsage();}
-#endif
 public:
 	// Registrators
 	CRegistrator	<pureFrame			>			seqFrameMT;

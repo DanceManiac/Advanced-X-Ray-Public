@@ -200,6 +200,7 @@ void					CRender::create					()
 			}
 			if (disable_nullrt)	o.nullrt=false;
 		};
+		if (o.nullrt)	Msg				("* ...and used");
 	};
 
 

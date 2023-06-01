@@ -750,7 +750,8 @@ public:
 		{
 			char	pBuf[256];
 			_snprintf( pBuf, sizeof(pBuf)/sizeof(pBuf[0]), "float value greater or equal to r2_dof_focus+0.1");
-			Msg("! Invalid syntax in call to %s\n\tValid arguments: %s",cName,pBuf);
+			Msg("~ Invalid syntax in call to '%s'",cName);
+			Msg("~ Valid arguments: %s", pBuf);
 			Console->Execute("r2_dof_focus");
 		}
 		else

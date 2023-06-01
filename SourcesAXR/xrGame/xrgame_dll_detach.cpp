@@ -33,13 +33,9 @@ extern STORY_PAIRS								spawn_story_ids;
 extern void show_smart_cast_stats					();
 extern void clear_smart_cast_stats					();
 extern void release_smart_cast_stats				();
-#ifdef UI_LOG_ALL_WNDS
 extern void dump_list_wnd							();
-#endif
-#ifdef UI_LOG_ALL_LINES
 extern void dump_list_lines							();
 extern void dump_list_sublines						();
-#endif
 extern void clean_wnd_rects							();
 extern void dump_list_xmls							();
 extern void CreateUIGeom							();
@@ -127,13 +123,10 @@ void clean_game_globals()
 #endif
 
 	RELATION_REGISTRY::clear_relation_registry		();
-#ifdef UI_LOG_ALL_WNDS
+
 	dump_list_wnd									();
-#endif
-#ifdef UI_LOG_ALL_LINES
 	dump_list_lines									();
 	dump_list_sublines								();
-#endif
 	clean_wnd_rects									();
 	xr_delete										(g_uiSpotXml);
 	dump_list_xmls									();

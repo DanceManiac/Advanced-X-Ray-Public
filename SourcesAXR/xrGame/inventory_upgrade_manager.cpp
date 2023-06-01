@@ -221,7 +221,7 @@ void Manager::load_all_properties()
 void Manager::log_hierarchy()
 {
 	{ // roots
-		Msg( "inventory upgrades roots: [%d]", m_roots.size() );
+		Msg( "# inventory upgrades roots: [%d] ", m_roots.size() );
 		Roots_type::iterator ib = m_roots.begin();
 		Roots_type::iterator ie = m_roots.end();
 		for ( ; ib != ie ; ++ib )
@@ -231,7 +231,7 @@ void Manager::log_hierarchy()
 	}
 
 	{ // groups
-		Msg( "inventory upgrades groups: [%d]", m_groups.size() );
+		Msg( "# inventory upgrades groups: [%d] ", m_groups.size() );
 		Groups_type::iterator ib = m_groups.begin();
 		Groups_type::iterator ie = m_groups.end();
 		for ( ; ib != ie ; ++ib )
@@ -241,7 +241,7 @@ void Manager::log_hierarchy()
 	}
 
 	{ // upgrades
-		Msg( "inventory upgrades: [%d]", m_upgrades.size() );
+		Msg( "# inventory upgrades: [%d] ", m_upgrades.size() );
 		Upgrades_type::iterator ib = m_upgrades.begin();
 		Upgrades_type::iterator ie = m_upgrades.end();
 		for ( ; ib != ie ; ++ib )
@@ -251,7 +251,7 @@ void Manager::log_hierarchy()
 	}
 
 	{ // properties
-		Msg( "inventory upgrade properties: [%d]", m_properties.size() );
+		Msg( "# inventory upgrade properties: [%d] ", m_properties.size() );
 		Properties_type::iterator ib = m_properties.begin();
 		Properties_type::iterator ie = m_properties.end();
 		for ( ; ib != ie ; ++ib )

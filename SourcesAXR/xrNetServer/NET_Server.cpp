@@ -278,6 +278,9 @@ IPureServer::EConnect IPureServer::Connect(LPCSTR options, GameDescriptionData &
 		dwMaxPlayers = atol(tmpStr);
 	}
 	if (dwMaxPlayers > 32 || dwMaxPlayers<1) dwMaxPlayers = 32;
+#ifdef DEBUG
+	Msg("MaxPlayers = %d", dwMaxPlayers);
+#endif // #ifdef DEBUG
 
 	//-------------------------------------------------------------------
 	BOOL bPortWasSet = FALSE;

@@ -30,12 +30,17 @@ class CWeapon;
 
 bool CScriptGameObject::is_body_turning		() const
 {
-	RMakeObj(CCustomMonster,monster,false);
+	CCustomMonster		*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member is_turning!");
+		return			(false);
+	}
 
 	CAI_Stalker			*stalker = smart_cast<CAI_Stalker*>(monster);
 	if (!stalker)
 		return			(!fsimilar(monster->movement().body_orientation().target.yaw,monster->movement().body_orientation().current.yaw));
-	return			(!fsimilar(stalker->movement().head_orientation().target.yaw,stalker->movement().head_orientation().current.yaw) || !fsimilar(monster->movement().body_orientation().target.yaw,monster->movement().body_orientation().current.yaw));
+	else
+		return			(!fsimilar(stalker->movement().head_orientation().target.yaw,stalker->movement().head_orientation().current.yaw) || !fsimilar(monster->movement().body_orientation().target.yaw,monster->movement().body_orientation().current.yaw));
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -44,8 +49,13 @@ bool CScriptGameObject::is_body_turning		() const
 
 u32	CScriptGameObject::add_sound		(LPCSTR prefix, u32 max_count, ESoundTypes type, u32 priority, u32 mask, u32 internal_type, LPCSTR bone_name)
 {
-	RMakeObj(CCustomMonster,monster,0);
-	return					(monster->sound().add(prefix,max_count,type,priority,mask,internal_type,bone_name));
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster) {
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member add!");
+		return					(0);
+	}
+	else
+		return					(monster->sound().add(prefix,max_count,type,priority,mask,internal_type,bone_name));
 }
 
 u32	CScriptGameObject::add_sound		(LPCSTR prefix, u32 max_count, ESoundTypes type, u32 priority, u32 mask, u32 internal_type)
@@ -55,59 +65,90 @@ u32	CScriptGameObject::add_sound		(LPCSTR prefix, u32 max_count, ESoundTypes typ
 
 void CScriptGameObject::remove_sound	(u32 internal_type)
 {
-	MakeObj(CCustomMonster,monster);
-	monster->sound().remove	(internal_type);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member add!");
+	else
+		monster->sound().remove	(internal_type);
 }
 
 void CScriptGameObject::set_sound_mask	(u32 sound_mask)
 {
-	MakeObj(CCustomMonster,monster);
-	CEntityAlive			*entity_alive = smart_cast<CEntityAlive*>(monster);
-	if (entity_alive)
-		VERIFY2				(entity_alive->g_Alive(),"Stalkers talk after death??? Say why??");
-	monster->sound().set_sound_mask(sound_mask);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member set_sound_mask!");
+	else {
+		CEntityAlive			*entity_alive = smart_cast<CEntityAlive*>(monster);
+		if (entity_alive) {
+			VERIFY2				(entity_alive->g_Alive(),"Stalkers talk after death??? Say why??");
+		}
+		monster->sound().set_sound_mask(sound_mask);
+	}
 }
 
 void CScriptGameObject::play_sound		(u32 internal_type)
 {
-	MakeObj(CCustomMonster,monster);
-	monster->sound().play		(internal_type);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+	else
+		monster->sound().play		(internal_type);
 }
 
 void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time)
 {
-	MakeObj(CCustomMonster,monster);
-	monster->sound().play		(internal_type,max_start_time);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+	else
+		monster->sound().play		(internal_type,max_start_time);
 }
 
 void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time)
 {
-	MakeObj(CCustomMonster,monster);
-	monster->sound().play		(internal_type,max_start_time,min_start_time);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+	else
+		monster->sound().play		(internal_type,max_start_time,min_start_time);
 }
 
 void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time)
 {
-	MakeObj(CCustomMonster,monster);
-	monster->sound().play		(internal_type,max_start_time,min_start_time,max_stop_time);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+	else
+		monster->sound().play		(internal_type,max_start_time,min_start_time,max_stop_time);
 }
 
 void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time)
 {
-	MakeObj(CCustomMonster,monster);
-	monster->sound().play		(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+	else
+		monster->sound().play		(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time);
 }
 
 void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
 {
-	MakeObj(CCustomMonster,monster);
-	monster->sound().play		(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time,id);
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+	else
+		monster->sound().play		(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time,id);
 }
 
 int  CScriptGameObject::active_sound_count		(bool only_playing)
 {
-	RMakeObj(CCustomMonster,monster,-1);
-	return								(monster->sound().active_sound_count(only_playing));
+	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	if (!monster) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member active_sound_count!");
+		return								(-1);
+	}
+	else
+		return								(monster->sound().active_sound_count(only_playing));
 }
 
 int CScriptGameObject::active_sound_count		()
@@ -117,13 +158,23 @@ int CScriptGameObject::active_sound_count		()
 
 bool CScriptGameObject::wounded					() const
 {
-	RMakeObj(CAI_Stalker,stalker,false);
+	const CAI_Stalker			*stalker = smart_cast<const CAI_Stalker *>(&object());
+	if (!stalker) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member wounded!");
+		return					(false);
+	}
+
 	return						(stalker->wounded());
 }
 
 void CScriptGameObject::wounded					(bool value)
 {
-	MakeObj(CAI_Stalker,stalker);
+	CAI_Stalker					*stalker = smart_cast<CAI_Stalker *>(&object());
+	if (!stalker) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member wounded!");
+		return;
+	}
+
 	stalker->wounded			(value);
 }
 
@@ -131,9 +182,10 @@ CSightParams CScriptGameObject::sight_params	()
 {
 	CAI_Stalker						*stalker = smart_cast<CAI_Stalker*>(&object());
 	if (!stalker) {
-		CAST_ERR(CAI_Stalker,stalker);
+		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member sight_params!");
+
 		CSightParams				result;
-		result.m_object				= NULL;
+		result.m_object				= 0;
 		result.m_vector				= Fvector().set(flt_max,flt_max,flt_max);
 		result.m_sight_type			= SightManager::eSightTypeDummy;
 		return						(result);
@@ -142,21 +194,29 @@ CSightParams CScriptGameObject::sight_params	()
 	const CSightControlAction		&action = stalker->sight().current_action();
 	CSightParams					result;
 	result.m_sight_type				= action.sight_type();
-	result.m_object					= action.object_to_look() ? action.object_to_look()->lua_game_object() : NULL;
+	result.m_object					= action.object_to_look() ? action.object_to_look()->lua_game_object() : 0;
 	result.m_vector					= action.vector3d();
 	return							(result);
 }
 
 bool CScriptGameObject::critically_wounded		()
 {
-	RMakeObj(CCustomMonster,monster,false);
-	return								(monster->critically_wounded());
+	CCustomMonster						*custom_monster = smart_cast<CCustomMonster*>(&object());
+	if (!custom_monster) {
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member critically_wounded!");
+		return							(false);
+	}
+
+	return								(custom_monster->critically_wounded());
 }
 
 bool CScriptGameObject::IsInvBoxEmpty()
 {
-	RMakeObj(CInventoryBox,ib,false);
-	return			ib->IsEmpty		();
+	CInventoryBox* ib = smart_cast<CInventoryBox*>(&object());
+	if(!ib) 
+		return			(false);
+	else
+		return			ib->IsEmpty		();
 }
 
 CZoneCampfire* CScriptGameObject::get_campfire()
@@ -176,24 +236,30 @@ CPhysicObject* CScriptGameObject::get_physics_object()
 #include "level_changer.h"
 void CScriptGameObject::enable_level_changer(bool b)
 {
-	MakeObj(CLevelChanger,lch);
-	lch->EnableLevelChanger(b);
+	CLevelChanger* lch = smart_cast<CLevelChanger*>(&object());
+	if(lch)
+		lch->EnableLevelChanger(b);
 }
 bool CScriptGameObject::is_level_changer_enabled()
 {
-	RMakeObj(CLevelChanger,lch,false);
-	return lch->IsLevelChangerEnabled();
+	CLevelChanger* lch = smart_cast<CLevelChanger*>(&object());
+	if(lch)
+		return lch->IsLevelChangerEnabled();
+	return false;
 }
 
 void CScriptGameObject::set_level_changer_invitation(LPCSTR str)
 {
-	MakeObj(CLevelChanger,lch);
-	lch->SetLEvelChangerInvitationStr(str);
+	CLevelChanger* lch = smart_cast<CLevelChanger*>(&object());
+	if(lch)
+		lch->SetLEvelChangerInvitationStr(str);
 }
 
 void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone)
 {
-	MakeObj(CParticlesPlayer,PP);
+	CParticlesPlayer* PP			= smart_cast<CParticlesPlayer*>(&object());
+	if(!PP)	return;
+
 	IKinematics* K					= smart_cast<IKinematics*>(object().Visual());
 	R_ASSERT						(K);
 
@@ -202,12 +268,14 @@ void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone)
 	if(K->LL_GetBoneVisible(play_bone))
 		PP->StartParticles				(pname, play_bone, Fvector().set(0,1,0), 9999);
 	else
-		Msg("! Cant start particles, bone [%s] is not visible now", bone);
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"Cant start particles, bone [%s] is not visible now", bone);
 }
 
 void CScriptGameObject::stop_particles(LPCSTR pname, LPCSTR bone)
 {
-	MakeObj(CParticlesPlayer,PP);
+	CParticlesPlayer* PP			= smart_cast<CParticlesPlayer*>(&object());
+	if(!PP)	return;
+
 	IKinematics* K					= smart_cast<IKinematics*>(object().Visual());
 	R_ASSERT						(K);
 
@@ -217,13 +285,14 @@ void CScriptGameObject::stop_particles(LPCSTR pname, LPCSTR bone)
 	if(K->LL_GetBoneVisible(play_bone))
 		PP->StopParticles				(9999, play_bone, true);
 	else
-		Msg("! Cant stop particles, bone [%s] is not visible now", bone);
+		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"Cant stop particles, bone [%s] is not visible now", bone);
 }
 
 //AVO: directly set entity health instead of going through normal health property which operates on delta
 void CScriptGameObject::SetHealthEx(float hp)
 {
-	MakeObj(CEntity,obj);
+	CEntity* obj = smart_cast<CEntity*>(&object());
+	if (!obj) return;
 	clamp(hp, -0.01f, 1.0f);
 	obj->SetfHealth(hp);
 }

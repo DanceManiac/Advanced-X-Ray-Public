@@ -33,6 +33,7 @@ function actor_binder:__init (obj) super(obj)
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:net_spawn(data)
+--	printf("actor net spawn")
 	level.show_indicators()
 	self.bCheckStart = true
 	self.weapon_hide = false -- спрятано или нет оружие при разговоре.
@@ -57,7 +58,6 @@ function actor_binder:net_spawn(data)
 	self.already_jumped = false
 	self.loaded = false
 	benchmark.main()							          --' Distemper 06.2008 --
-	if mfs_callbacks then mfs_callbacks.game_load(self) end
 	return true
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -84,8 +84,6 @@ function actor_binder:net_destroy()
 	self.object:set_callback(callback.level_border_exit, nil)
 	self.object:set_callback(callback.take_item_from_box, nil)
 	self.object:set_callback(callback.use_object, nil)
-	self.object:set_callback(callback.death, nil)
-	self.object:set_callback(callback.hit, nil)
 
 	log("--------->"..tostring(_G.amb_vol))
 	log("--------->"..tostring(_G.mus_vol))
@@ -103,7 +101,6 @@ function actor_binder:net_destroy()
 	end
 	xrs_dyn_music.finish_theme()
 	xr_s.on_actor_destroy()
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_net_destroy",self) end
 	object_binder.net_destroy(self)
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -121,35 +118,24 @@ function actor_binder:reinit()
 	self.object:set_callback(callback.task_state, self.task_callback, self)
 	self.object:set_callback(callback.take_item_from_box, self.take_item_from_box, self)
 	self.object:set_callback(callback.use_object, self.use_inventory_item, self)
-	self.object:set_callback(callback.death, self.death_callback,self)
-	self.object:set_callback(callback.hit, self.hit_callback,self)
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:take_item_from_box(box, item)
-	if mfs_callbacks then mfs_callbacks.Action("actor_take_item_from_box",item,box) end
+	local box_name = box:name()
 end
 
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:info_callback(npc, info_id)
 	printf("*INFO*: npc='%s' id='%s'", npc:name(), info_id)
-	if mfs_callbacks then mfs_callbacks.Action("actor_info_callback",info_id) end
+	--' Сюжет
+	-- Отметки на карте
 end
-
-function actor_binder:hit_callback(q, amount, local_direction, who, bone_index)
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_hit",self,who,amount,bone_index,local_direction) end
-end
-
-function actor_binder:death_callback(q, who)
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_death", who, self) end
-end
-
+----------------------------------------------------------------------------------------------------------------------
 function actor_binder:on_trade (item, sell_bye, money)
 	if sell_bye == true then
-		if mfs_callbacks then mfs_callbacks.Action("actor_on_item_sell",item,money) end
-		game_stats.money_trade_update (money)
+		 game_stats.money_trade_update (money)
 	else
-		if mfs_callbacks then mfs_callbacks.Action("actor_on_item_buy",item,money) end
-		game_stats.money_trade_update (-money)
+		 game_stats.money_trade_update (-money)
 	end
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -157,7 +143,6 @@ function actor_binder:article_callback(npc, group, name)
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:on_item_take (obj)
-	if mfs_callbacks then mfs_callbacks.Action("actor_take_item",obj) end
 	printf("on_item_take [%s]", obj:name())
 	if isArtefact(obj) then
 		local anomal_zone = bind_anomaly_zone.parent_zones_by_artefact_id[obj:id()]
@@ -181,13 +166,11 @@ function actor_binder:on_item_take (obj)
 	treasure_manager.get_treasure_manager():on_item_take(obj:id())
 end
 ----------------------------------------------------------------------------------------------------------------------
-function actor_binder:on_item_drop(obj)
-	if mfs_callbacks then mfs_callbacks.Action("actor_drop_item",obj) end
+function actor_binder:on_item_drop (obj)
 end
 
 function actor_binder:use_inventory_item(obj)
 	if(obj) then
-		if mfs_callbacks then mfs_callbacks.Action("actor_item_use",obj) end
 		local s_obj = alife():object(obj:id())
 		if(s_obj) and (s_obj:section_name()=="drug_anabiotic") then
 			xr_effects.disable_ui_only(db.actor, nil)
@@ -381,11 +364,6 @@ function actor_binder:update(delta)
 		primary_objects_filled = true
 	end
 	pda.fill_sleep_zones()
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_update",self,delta) end
-	if not self.first_update then
-		if mfs_callbacks then mfs_callbacks.Action("actor_on_first_update",self,delta) end
-		self.first_update = true
-	end
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:save(packet)
@@ -452,7 +430,6 @@ function actor_binder:save(packet)
 		packet:w_bool(true)
 		utils.w_CTime(packet, self.last_mutant_hunter_achievement_spawn_time)
 	end
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_save",packet,self) end
 	set_save_marker(packet, "save", true, "actor_binder")
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -509,7 +486,6 @@ function actor_binder:load(reader)
 	if stored_achievement_time == true then
 		self.last_mutant_hunter_achievement_spawn_time = utils.r_CTime(reader)
 	end
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_load",reader,self) end
 	set_save_marker(reader, "load", true, "actor_binder")
 end
 

@@ -73,7 +73,7 @@ function actor_binder:net_spawn(data)
 				self.spawn_frame = device().frame
 		self.already_jumped = false
 		benchmark.main()							          --' Distemper 06.2008 --
-	if mfs_callbacks then mfs_callbacks.game_load(self) end
+
 	return true
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -104,16 +104,12 @@ function actor_binder:net_destroy()
 				self.object:set_callback(callback.level_border_enter, nil)
 				self.object:set_callback(callback.level_border_exit, nil)
 				self.object:set_callback(callback.take_item_from_box, nil)
-				self.object:set_callback(callback.use_object, nil)
-				self.object:set_callback(callback.death, nil)
-				self.object:set_callback(callback.hit, nil)
 
 				if sr_psy_antenna.psy_antenna then
 								sr_psy_antenna.psy_antenna:destroy()
 								sr_psy_antenna.psy_antenna = false
 				end
 		xrs_dyn_music.stop_sound()
-		if mfs_callbacks then mfs_callbacks.Action("actor_on_net_destroy",self) end
 				object_binder.net_destroy(self)
 --		xr_sound.stop_all_sounds()
 				xr_s.on_actor_destroy()                                       --' Distemper 03.2008 --
@@ -142,13 +138,9 @@ function actor_binder:reinit()
 				self.object:set_callback(callback.level_border_enter, self.level_border_enter, self)
 				self.object:set_callback(callback.level_border_exit, self.level_border_exit, self)
 				self.object:set_callback(callback.take_item_from_box, self.take_item_from_box, self)
-				self.object:set_callback(callback.use_object, self.use_inventory_item, self)
-				self.object:set_callback(callback.death, self.death_callback,self)
-				self.object:set_callback(callback.hit, self.hit_callback,self)
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:take_item_from_box(box, item)
-	if mfs_callbacks then mfs_callbacks.Action("actor_take_item_from_box",item,box) end
 		local box_name = box:name()
 		treasure_manager.take_item_from_box(box, box_name, item)
 
@@ -172,16 +164,13 @@ function actor_binder:info_callback(npc, info_id)
 				level_tasks.proceed(self.object)
 				-- Отметки на карте
 				level_tasks.process_info_portion(info_id)
-	if mfs_callbacks then mfs_callbacks.Action("actor_info_callback",info_id) end
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:on_trade (item, sell_bye, money)
 		if sell_bye == true then
-			if mfs_callbacks then mfs_callbacks.Action("actor_on_item_sell",item,money) end
 			 game_stats.money_trade_update (money)
 		 xr_statistic.inc_recieved_money_counter(money)
 		else
-			if mfs_callbacks then mfs_callbacks.Action("actor_on_item_buy",item,money) end
 			 game_stats.money_trade_update (-money)
 		 xr_statistic.inc_spent_money_counter(money)
 		end
@@ -196,11 +185,9 @@ function actor_binder:article_callback(npc, group, name)
 				else
 								news_manager.send_encyclopedy("encyclopedy", group)
 				end
-				if mfs_callbacks then mfs_callbacks.Action("actor_on_new_article",name,group) end
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:on_item_take (obj)
-		if mfs_callbacks then mfs_callbacks.Action("actor_take_item",obj) end
 		level_tasks.proceed(self.object)
 		printf("on_item_take [%s]", obj:name())
 		if isArtefact(obj) then
@@ -220,7 +207,6 @@ function actor_binder:on_item_take (obj)
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:on_item_drop (obj)
-	if mfs_callbacks then mfs_callbacks.Action("actor_drop_item",obj) end
 		level_tasks.proceed(self.object)
 				for k,v in pairs(task_manager:get_task_manager().task_info) do
 								if(v.type=="bring_item" and v.state~="finished") then
@@ -230,21 +216,6 @@ function actor_binder:on_item_drop (obj)
 		--game_stats.update_drop_item (obj, self.object)
 end
 ----------------------------------------------------------------------------------------------------------------------
-
-function actor_binder:use_inventory_item(obj)
-	if not obj then
-		return
-	end
-	if mfs_callbacks then mfs_callbacks.Action("actor_item_use",obj) end
-end
-
-function actor_binder:hit_callback(q, amount, local_direction, who, bone_index)
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_hit",self,who,amount,bone_index,local_direction) end
-end
-
-function actor_binder:death_callback(q, who)
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_death", who, self) end
-end
 
 function actor_binder:task_callback(_task, _state)
 		if _state ~= task.fail then
@@ -478,11 +449,6 @@ function actor_binder:update(delta)
 	if guiders.teleported_to_another_level and not guiders.level_changed then
 		guiders.action_teleport_to_point()
 	end
-	if mfs_callbacks then mfs_callbacks.Action("actor_on_update",self,delta) end
-	if not self.first_update then
-		if mfs_callbacks then mfs_callbacks.Action("actor_on_first_update",self,delta) end
-		self.first_update = true
-	end
 end
 ----------------------------------------------------------------------------------------------------------------------
 function actor_binder:save(packet)
@@ -545,7 +511,6 @@ function actor_binder:save(packet)
 			packet:w_stringZ(v)
 		end
 --		minigames_manager.get_minigames_manager():save(packet)
-		if mfs_callbacks then mfs_callbacks.Action("actor_on_save",packet,self) end
 				set_save_marker(packet, "save", true, "actor_binder")
 end
 ----------------------------------------------------------------------------------------------------------------------
@@ -599,7 +564,6 @@ function actor_binder:load(reader)
 			db.script_ids[reader:r_u16()] = reader:r_stringZ()
 		end
 --		minigames_manager.get_minigames_manager():load(reader)
-		if mfs_callbacks then mfs_callbacks.Action("actor_on_load",reader,self) end
 				set_save_marker(reader, "load", true, "actor_binder")
 end
 ----------------------------------------------------------------------------------------------------------------------

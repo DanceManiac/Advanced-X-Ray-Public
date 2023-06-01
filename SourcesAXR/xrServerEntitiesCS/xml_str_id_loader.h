@@ -105,11 +105,9 @@ const typename ITEM_DATA* CSXML_IdToIndex::GetById (const shared_str& str_id, bo
 
 	if(m_pItemDataVector->end() == it)
 	{
-#ifdef DEBUG
 		int i=0;
 		for(T_VECTOR::iterator it = m_pItemDataVector->begin();	m_pItemDataVector->end() != it; it++,i++)
 			Msg("[%d]=[%s]",i,*(*it).id );
-#endif
 
 		R_ASSERT3(no_assert, "item not found, id", *str_id);
 		return NULL;

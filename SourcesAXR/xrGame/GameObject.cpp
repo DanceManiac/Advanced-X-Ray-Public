@@ -238,7 +238,7 @@ void CGameObject::OnEvent		(NET_Packet& P, u16 type)
 				break;
 			}
 #ifdef MP_LOGGING
-			Msg("GE_DESTROY of [%d][%s]", ID(), cNameSect().c_str());
+			Msg("--- Object: GE_DESTROY of [%d][%s]", ID(), cNameSect().c_str());
 #endif // MP_LOGGING
 
 			setDestroy		(TRUE);

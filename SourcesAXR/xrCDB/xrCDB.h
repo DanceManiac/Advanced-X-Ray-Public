@@ -142,7 +142,7 @@ namespace CDB
 		{
 			if (S_READY!=status)
 			{
-				Log						("! syncronized CDB::query");
+				Log						("! WARNING: syncronized CDB::query");
 				xrCriticalSection*	C	= (xrCriticalSection*) &cs;
 				C->Enter				();
 				C->Leave				();

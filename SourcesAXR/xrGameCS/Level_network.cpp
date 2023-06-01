@@ -53,9 +53,9 @@ void CLevel::remove_objects	()
 		ProcessGameEvents		();
 		Objects.Update			(false);
 #ifdef DEBUG
-		Msg						("* Update objects list");
+		Msg						("Update objects list...");
+#endif // #ifdef DEBUG
 		Objects.dump_all_objects();
-#endif
 	}
 
 	BulletManager().Clear		();

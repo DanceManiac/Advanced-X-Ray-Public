@@ -26,10 +26,10 @@ void CPurchaseList::process	(CInifile &ini_file, LPCSTR section, CInventoryOwner
 	CInifile::SectCIt		I = S.Data.begin();
 	CInifile::SectCIt		E = S.Data.end();
 	for ( ; I != E; ++I) {
-		VERIFY3				((*I).second.size(),"PurchaseList: cannot handle lines in section without values",section);
+		VERIFY3				((*I).second.size(),"PurchaseList : cannot handle lines in section without values",section);
 
 		string256			temp0, temp1;
-		THROW3				(_GetItemCount(*(*I).second) == 2,"Invalid parameters in ",section);
+		THROW3				(_GetItemCount(*(*I).second) == 2,"Invalid parameters in section",section);
 		process				(
 			game_object,
 			(*I).first,

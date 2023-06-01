@@ -8,7 +8,8 @@
 
 poolSS< _12b, 128>	ui_allocator;
 
-#ifdef UI_LOG_ALL_WNDS
+// #define LOG_ALL_WNDS
+#ifdef LOG_ALL_WNDS
 	int ListWndCount = 0;
 	struct DBGList{
 		int				num;
@@ -22,6 +23,8 @@ poolSS< _12b, 128>	ui_allocator;
 			if(!(*_it).closed)
 				Msg("--leak detected ---- wnd = %d",(*_it).num);
 	}
+#else
+	void dump_list_wnd(){}
 #endif
 
 xr_vector<Frect> g_wnds_rects;
@@ -104,7 +107,7 @@ m_bCustomDraw(false)
 {
 	Show					(true);
 	Enable					(true);
-#ifdef UI_LOG_ALL_WNDS
+#ifdef LOG_ALL_WNDS
 	ListWndCount++;
 	m_dbg_id = ListWndCount;
 	dbg_list_wnds.push_back(DBGList());
@@ -127,7 +130,7 @@ CUIWindow::~CUIWindow()
 	if(	GetPPMode() )
 		MainMenu()->UnregisterPPDraw	(this);
 
-#ifdef UI_LOG_ALL_WNDS
+#ifdef LOG_ALL_WNDS
 	xr_vector<DBGList>::iterator _it = dbg_list_wnds.begin();
 	bool bOK = false;
 	for(;_it!=dbg_list_wnds.end();++_it){

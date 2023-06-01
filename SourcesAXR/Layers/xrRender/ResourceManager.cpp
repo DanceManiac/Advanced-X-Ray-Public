@@ -145,14 +145,12 @@ void CResourceManager::_DeleteElement(const ShaderElement* S)
 {
 	if (0==(S->dwFlags&xr_resource_flagged::RF_REGISTERED))	return;
 	if (reclaim(v_elements,S))						return;
-	Msg	("! Failed to find compiled 'shader-element'");
+	Msg	("! ERROR: Failed to find compiled 'shader-element'");
 }
 
 Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_textures, LPCSTR s_constants, LPCSTR s_matrices)
 {
-#ifndef MASTER_GOLD
 	CTimer time; time.Start();
-#endif
 	CBlender_Compile	C;
 	Shader				S;
 
@@ -238,9 +236,8 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 	N->dwFlags				|=	xr_resource_flagged::RF_REGISTERED;
 	v_shaders.push_back		(N);
 
-#ifndef MASTER_GOLD
-	if (time.GetElapsed_sec() * 1000.f > 50.0 && g_loading_events.empty() && !prefetching_in_progress) Msg("* Loading of %s made a %fms stutter, should it be prefetched?!", s_textures, time.GetElapsed_sec() * 1000.f);
-#endif
+	if (time.GetElapsed_sec() * 1000.f > 50.0 && g_loading_events.empty() && !prefetching_in_progress) Msg("---Loading of %s made a %fms stutter, should it be prefetched?!", s_textures, time.GetElapsed_sec() * 1000.f);
+
 	return N;
 }
 
@@ -339,7 +336,7 @@ void CResourceManager::Delete(const Shader* S)
 {
 	if (0==(S->dwFlags&xr_resource_flagged::RF_REGISTERED))	return;
 	if (reclaim(v_shaders,S))						return;
-	Msg	("! Failed to find complete shader");
+	Msg	("! ERROR: Failed to find complete shader");
 }
 
 xr_vector<CTexture*> tex_to_load;
@@ -366,19 +363,16 @@ void CResourceManager::DeferredUpload()
 {
 	if (!RDEVICE.b_is_Ready) return;
 
-#ifdef DEBUG
 	Msg("CResourceManager::DeferredUpload [%s] -> START, size = [%u]", ps_mt_texture_load ? "MT" : "NO MT", m_textures.size());
-#endif
 
-	// вЂњРµРїРµСЂСЊ РјРЅРѕРіРѕРїРѕС‚РѕС‡РЅР°В¤ Р·Р°РіСЂСѓР·РєР° С‚РµРєСЃС‚СѓСЂ РґР°Р„С‚ РѕС‡РµРЅСЊ СЃСѓС‰РµСЃС‚РІРµРЅРЅС‹Р№ РїСЂРёСЂРѕСЃС‚ СЃРєРѕСЂРѕСЃС‚Рё, РїСЂРѕРІРµСЂРµРЅРѕ.
+	// Теперь многопоточная загрузка текстур даёт очень существенный прирост скорости, проверено.
 	if (ps_mt_texture_load)
 		std::for_each(std::execution::par_unseq, m_textures.begin(), m_textures.end(), [](auto& pair) { pair.second->Load(); });
 	else
 		for (auto& pair : m_textures)
 			pair.second->Load();
-#ifdef DEBUG
+
 	Msg("CResourceManager::DeferredUpload -> END");
-#endif
 }
 /*
 void	CResourceManager::DeferredUnload	()
@@ -427,8 +421,6 @@ void	CResourceManager::_GetMemoryUsage(u32& m_base, u32& c_base, u32& m_lmaps, u
 		}
 	}
 }
-
-#ifdef DEBUG
 void	CResourceManager::_DumpMemoryUsage		()
 {
 	xr_multimap<u32,std::pair<u32,shared_str> >		mtex	;
@@ -453,7 +445,6 @@ void	CResourceManager::_DumpMemoryUsage		()
 			Msg			("* %4.1f : [%4d] %s",float(I->first)/1024.f, I->second.first, I->second.second.c_str());
 	}
 }
-#endif
 
 void	CResourceManager::Evict()
 {
@@ -479,9 +470,7 @@ BOOL	CResourceManager::_GetDetailTexture(LPCSTR Name,LPCSTR& T, R_constant_setup
 
 void CResourceManager::RMPrefetchUITextures()
 {
-#ifndef MASTER_GOLD
 	CTimer time; time.Start();
-#endif
 	CInifile::Sect& sect = pAdvancedSettings->r_section("prefetch_ui_textures");
 	for (CInifile::SectCIt I = sect.Data.begin(); I != sect.Data.end(); I++)
 	{
@@ -500,7 +489,5 @@ void CResourceManager::RMPrefetchUITextures()
 			Shader* temp = _cpp_Create(tempshadername, temptexturename);
 		}
 	}
-#ifndef MASTER_GOLD
 	Msg("*RMPrefetchUITextures %fms", time.GetElapsed_sec() * 1000.f);
-#endif
 }

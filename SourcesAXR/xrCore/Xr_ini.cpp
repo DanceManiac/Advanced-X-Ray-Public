@@ -120,6 +120,9 @@ CInifile::CInifile(LPCSTR szFileName,
                     )
 
 {
+	if(szFileName && strstr(szFileName,"system"))
+		Msg("-----loading %s",szFileName);
+
 	m_file_name[0]	= 0;
 	m_flags.zero	();
 	if(szFileName)

@@ -103,7 +103,7 @@ void CALifeGraphRegistry::attach	(CSE_Abstract &object, CSE_ALifeInventoryItem *
 {
 #ifdef DEBUG
 	if (psAI_Flags.test(aiALife)) {
-		Msg						("Attaching item [%s][%d] to [%s][%d]",item->base()->name_replace(),item->base()->ID,object.name_replace(),object.ID);
+		Msg						("[LSS] Attaching item [%s][%d] to [%s][%d]",item->base()->name_replace(),item->base()->ID,object.name_replace(),object.ID);
 	}
 #endif
 	if (alife_query)
@@ -121,7 +121,7 @@ void CALifeGraphRegistry::detach	(CSE_Abstract &object, CSE_ALifeInventoryItem *
 {
 #ifdef DEBUG
 	if (psAI_Flags.test(aiALife)) {
-		Msg						("Detaching item [%s][%d] from [%s][%d]",item->base()->name_replace(),item->base()->ID,object.name_replace(),object.ID);
+		Msg						("[LSS] Detaching item [%s][%d] from [%s][%d]",item->base()->name_replace(),item->base()->ID,object.name_replace(),object.ID);
 	}
 #endif
 	if (alife_query)
@@ -156,7 +156,7 @@ void CALifeGraphRegistry::add	(CSE_ALifeDynamicObject *object, GameGraph::_GRAPH
 {
 #ifdef DEBUG
 	if (psAI_Flags.test(aiALife)) {
-		Msg						("adding object [%s][%d] to graph point %d",object->name_replace(),object->ID,game_vertex_id);
+		Msg						("[LSS] adding object [%s][%d] to graph point %d",object->name_replace(),object->ID,game_vertex_id);
 	}
 #endif
 	if (!object->m_bOnline && object->used_ai_locations() /**&& object->interactive()/**/) {
@@ -179,7 +179,7 @@ void CALifeGraphRegistry::remove	(CSE_ALifeDynamicObject *object, GameGraph::_GR
 	if (object->used_ai_locations() /**&& object->interactive()/**/) {
 	#ifdef DEBUG
 		if (psAI_Flags.test(aiALife)) {
-			Msg					("removing object [%s][%d] from graph point %d",object->name_replace(),object->ID,game_vertex_id);
+			Msg					("[LSS] removing object [%s][%d] from graph point %d",object->name_replace(),object->ID,game_vertex_id);
 		}
 	#endif
 		m_objects[game_vertex_id].objects().remove(object->ID);

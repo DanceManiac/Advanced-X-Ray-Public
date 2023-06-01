@@ -26,9 +26,8 @@ IGame_Level::IGame_Level	()
 	pCurrentEntity				= NULL;
 	pCurrentViewEntity			= NULL;
 	lastApplyCameraVPNear		= -1.f;
-#ifdef DEBUG
+
 	Device.DumpResourcesMemoryUsage();
-#endif
 }
 
 //#include "resourcemanager.h"
@@ -50,9 +49,7 @@ IGame_Level::~IGame_Level	()
 ///////////////////////////////////////////
 	Sound->set_geometry_occ		(NULL);
 	Sound->set_handler			(NULL);
-#ifdef DEBUG
 	Device.DumpResourcesMemoryUsage();
-#endif
 
 	u32		m_base=0,c_base=0,m_lmaps=0,c_lmaps=0;
 	if (Device.m_pRender) 

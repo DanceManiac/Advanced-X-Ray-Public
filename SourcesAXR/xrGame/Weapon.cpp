@@ -2305,8 +2305,8 @@ void CWeapon::SwitchState(u32 S)
 #ifndef MASTER_GOLD
 	if ( bDebug )
 	{
-		Msg("# Server is going to send GE_WPN_STATE_CHANGE to [%d] section [%s] parent[%s]",
-			S, cNameSect().c_str(), H_Parent() ? H_Parent()->cName().c_str() : "NULL");
+		Msg("---Server is going to send GE_WPN_STATE_CHANGE to [%d], weapon_section[%s], parent[%s]",
+			S, cNameSect().c_str(), H_Parent() ? H_Parent()->cName().c_str() : "NULL Parent");
 	}
 #endif // #ifndef MASTER_GOLD
 

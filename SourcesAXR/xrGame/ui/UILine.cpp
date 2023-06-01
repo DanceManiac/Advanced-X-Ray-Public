@@ -12,7 +12,8 @@
 #include "uilinestd.h"
 #include "ui_base.h"
 
-#ifdef UI_LOG_ALL_LINES
+//#define LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 	int ListLinesCount = 0;
 	struct DBGList{
 		CUILine*		wnd;
@@ -25,11 +26,13 @@
 		for(;_it!=dbg_list_lines.end();++_it)
 			Msg("--leak detected ---- Line = %d",(*_it).num);
 	}
+#else
+	void dump_list_lines(){}
 #endif
 
 CUILine::CUILine(){
 	m_tmpLine = NULL;
-#ifdef UI_LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 	ListLinesCount++;
 	dbg_list_lines.push_back(DBGList());
 	dbg_list_lines.back().wnd = this;
@@ -40,7 +43,7 @@ CUILine::CUILine(){
 CUILine::~CUILine(){
 	xr_delete(m_tmpLine);
 
-#ifdef UI_LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 	xr_vector<DBGList>::iterator _it = dbg_list_lines.begin();
 	bool bOK = false;
 	for(;_it!=dbg_list_lines.end();++_it){
@@ -58,7 +61,7 @@ CUILine::~CUILine(){
 CUILine::CUILine(const CUILine& other){
 	m_subLines = other.m_subLines;
 	m_tmpLine = NULL;
-#ifdef UI_LOG_ALL_LINES
+#ifdef LOG_ALL_LINES
 	ListLinesCount++;
 	dbg_list_lines.push_back(DBGList());
 	dbg_list_lines.back().wnd = this;

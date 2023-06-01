@@ -118,7 +118,6 @@ public:
 		VERIFY(0);
 	}
 };
-#ifdef DEBUG
 class CCC_TexturesStat : public IConsole_Command
 {
 public:
@@ -130,7 +129,7 @@ public:
 		//VERIFY(0);
 	}
 };
-#endif
+//-----------------------------------------------------------------------
 class CCC_E_Dump : public IConsole_Command
 {
 public:
