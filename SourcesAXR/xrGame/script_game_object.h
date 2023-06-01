@@ -18,13 +18,15 @@
 
 //На релизе не крашим игру, кричим об ошибке в лог
 #ifdef MASTER_GOLD
-	#define cast_msg(class,var,f) Msg("! Function " f " cannot cast object ["%s"] to [" #class "]", *object().cName())
-	#define cast_msg2(class,var,f,rval) Msg("! Function " f " cannot cast object ["%s"] to [" #class "], returned "#rval, *object().cName())
+	#define cast_msg_0(class,var,f) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "]")
+	#define cast_msg(class,var,f) Msg("! Function " f " cannot cast object [%s] to [" #class "]", *object().cName())
+	#define cast_msg2(class,var,f,rval) Msg("! %s", "Function " f " cannot cast object ["#var"] to [" #class "], returned "#rval)
 	#define CAST_ERR(class,var) cast_msg(class,var,__FUNCTION__)
+	#define CAST_ERR2(class,var) cast_msg_0(class,var,__FUNCTION__)
 	#define RCAST_ERR(class,var,rval) cast_msg2(class,var,__FUNCTION__,rval)
 	#define MakeObj(class,var) class* var = smart_cast<class*>(&object()); if(!var){CAST_ERR(class,var); return;}
 	#define RMakeObj(class,var,rval) class* var = smart_cast<class*>(&object()); if(!var){RCAST_ERR(class,var,rval); return rval;}
-	#define MakeObj2(class,var,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR(class,var); return;}
+	#define MakeObj2(class,var,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR2(class,var); return;}
 	#define RMakeObj2(class,var,rval,obj) class* var = smart_cast<class*>(obj); if(!var){RCAST_ERR(class,var,rval); return rval;}
 #else
 //На дебаг или миксед предупреждение
@@ -36,7 +38,6 @@
 	#define MakeObj2(class,var,obj) class* var = smart_cast<class*>(obj); if(!var){CAST_ERR(class,var); return;}
 	#define RMakeObj2(class,var,rval,obj) class* var = smart_cast<class*>(obj); if(!var){RCAST_ERR(class,var,rval); return rval;}
 #endif
-
 
 enum EPdaMsg;
 enum ESoundTypes;
