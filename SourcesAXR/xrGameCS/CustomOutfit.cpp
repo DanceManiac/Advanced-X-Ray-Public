@@ -369,14 +369,13 @@ void CCustomOutfit::ApplySkinModel(CActor* pActor, bool bDress, bool bHUDOnly)
 
 void	CCustomOutfit::OnMoveToRuck		(EItemPlace prev)
 {
-	if (m_pInventory)
+	if(m_pInventory && prev == EItemPlaceSlot)
 	{
-		CActor* pActor = smart_cast<CActor*> (m_pInventory->GetOwner());
-		if (pActor && prev == EItemPlaceSlot)
+		CActor* pActor = smart_cast<CActor*> (H_Parent());
+		if (pActor)
 		{
-			//if(!bIsHelmetAvaliable)
-				pActor->SwitchNightVision(false);
 			ApplySkinModel(pActor, false, false);
+				pActor->SwitchNightVision(false);
 		}
 	}
 };
