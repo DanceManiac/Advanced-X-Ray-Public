@@ -24,6 +24,7 @@ public:
 	void 	__stdcall	OnOKClicked			(CUIWindow*, void*);
 
 	virtual bool	IR_OnKeyboardPress	(int dik);
+	virtual bool	NeedCenterCursor	()const	 {return false;}
 
     CUIMessageBox*						m_pMessageBox;
 };

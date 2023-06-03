@@ -227,7 +227,10 @@ void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 		StopMenu(pDialog);
 	else
 	{
-		GetUICursor()->SetUICursorPosition	(Fvector2().set(512.0f,384.0f));
+		if (pDialog && pDialog->NeedCenterCursor())
+		{
+			GetUICursor()->SetUICursorPosition	(Fvector2().set(512.0f,384.0f));
+		}
 		StartMenu(pDialog, bDoHideIndicators);
 	}
 	
