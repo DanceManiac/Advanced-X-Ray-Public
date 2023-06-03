@@ -90,21 +90,20 @@ CInventory::CInventory()
 	//m_iLoadActiveSlotFrame						= u32(-1);
 }
 
-
 void CInventory::ReloadInv()
 {
 	m_slots.clear();
 
 	u32 sz = pSettings->r_s32("inventory", "slots_count");
-	m_slots.resize(sz);
+	m_slots.resize(sz + 1); //first is [1]
 
 	string256 temp;
-	for (u32 i = 0; i < m_slots.size(); ++i)
+	for (u16 i = FirstSlot() + 1; i <= LastSlot(); ++i)
 	{
-		sprintf_s(temp, "slot_persistent_%d", i + 1);
+		xr_sprintf(temp, "slot_persistent_%d", i);
 		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory", temp);
 
-		sprintf_s(temp, "slot_active_%d", i + 1);
+		xr_sprintf(temp, "slot_active_%d", i);
 		m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
 	};
 }

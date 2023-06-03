@@ -45,7 +45,8 @@ public:
 	bool					DropItem			(CGameObject *pObj, bool just_before_destroy);
 	void					Clear				();
 
-	
+	IC u16					FirstSlot			() const { return KNIFE_SLOT; }
+	IC u16					LastSlot			() const { return LAST_SLOT; } // not "end"
 	bool					Slot				(PIItem pIItem, bool bNotActivate = false, bool strict_placement=false);	
 	bool					Belt				(PIItem pIItem, bool strict_placement=false);
 	bool					Ruck				(PIItem pIItem, bool strict_placement=false);
