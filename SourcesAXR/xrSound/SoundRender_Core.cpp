@@ -269,12 +269,12 @@ void CSoundRender_Core::set_geometry_env(IReader* I)
 	ETOOLS::destroy_model	(geom_ENV);
 #else
 	xr_delete				(geom_ENV);
+	s_environment_ids.clear	();
 #endif
 	if (0==I)				return;
 	if (0==s_environment)	return;
 
 	// Assosiate names
-	xr_vector<u16>			ids;
 	IReader*				names	= I->open_chunk(0);
 	while (!names->eof())
 	{
@@ -282,7 +282,11 @@ void CSoundRender_Core::set_geometry_env(IReader* I)
 		names->r_stringZ	(n,sizeof(n));
 		int id				= s_environment->GetID(n);
 		R_ASSERT			(id>=0);
-		ids.push_back		(u16(id));
+		s_environment_ids.push_back(u16(id));
+
+#ifdef DEBUG
+		Msg("~ set_geometry_env name[%s]=id[%d]", n, id);
+#endif
 	}
 	names->close		();
 
@@ -479,10 +483,16 @@ CSoundRender_Environment*	CSoundRender_Core::get_environment			( const Fvector& 
 				Fvector tri_norm;
 				tri_norm.mknormal		(V[T->verts[0]],V[T->verts[1]],V[T->verts[2]]);
 				float	dot				= dir.dotproduct(tri_norm);
-				if (dot <= 0)
-					return s_environment->Get((u16)((T->dummy & 0x0000ffff) >> 0)); //OUTER
+				if (dot < 0)
+				{
+					u16 id_front = (u16)((((u32)T->dummy) & 0x0000ffff) >> 0); //	front face
+					return s_environment->Get(s_environment_ids[id_front]);
+				}
 				else
-					return s_environment->Get((u16)((T->dummy & 0xffff0000) >> 16)); //INNER
+				{
+					u16 id_back = (u16)((((u32)T->dummy) & 0xffff0000) >> 16); //	back face
+					return s_environment->Get(s_environment_ids[id_back]);
+				}
 			}
 			else
 			{

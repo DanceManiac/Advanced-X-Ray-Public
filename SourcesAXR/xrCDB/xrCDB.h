@@ -37,7 +37,7 @@ namespace CDB
 		u32				verts[3];		// 3*4 = 12b
 		union
 		{
-			u32			dummy;				// 4b
+			u32			dummy;
 			struct {
 				u32		material : 14;		// 
 				u32		suppress_shadows : 1;	// 
@@ -72,15 +72,6 @@ namespace CDB
 		IC u32			IDvert	(u32 ID)		{ return verts[ID];	}
 
 #if defined(_M_X64)
-		TRI(TRI_DEPRECATED& oldTri)
-		{
-			verts[0] = oldTri.verts[0];
-			verts[1] = oldTri.verts[1];
-			verts[2] = oldTri.verts[2];
-			dummy = oldTri.dummy;
-			dumb = 0;
-		}
-
 		TRI()
 		{
 			verts[0] = 0;

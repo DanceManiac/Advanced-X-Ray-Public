@@ -95,10 +95,20 @@ void CSoundRender_Core::update	( const Fvector& P, const Fvector& D, const Fvect
 	// update EFX
 	if (psSoundFlags.test(ss_EFX) && bEFX)
 	{
+		static shared_str curr_env;
+
         if (bListenerMoved)
 		{
 			bListenerMoved = false;
 			e_target = *get_environment(P);
+
+			if (!curr_env.size() || curr_env != e_target.name)
+			{
+				curr_env = e_target.name;
+#ifdef DEBUG
+				Msg("curr env [%s]", curr_env.c_str());
+#endif
+			}
 		}
 
         e_current.lerp				(e_current,e_target,dt_sec);

@@ -47,6 +47,7 @@ protected:
 	xr_vector<CSoundRender_Target*>		s_targets_defer;
 	u32									s_targets_pu;			// parameters update
 	SoundEnvironment_LIB*				s_environment;
+	xr_vector<u16>						s_environment_ids;
 	CSoundRender_Environment			s_user_environment;
 
 	int									m_iPauseCounter;
