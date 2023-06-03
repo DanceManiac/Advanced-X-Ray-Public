@@ -11,6 +11,8 @@ class CUIStatic;
 class CCharacterInfo;
 class CUIXml;
 class CUIScrollView;
+class CInventoryOwner;
+
 class CUICharacterInfo: public CUIWindow
 {
 private:
@@ -25,7 +27,6 @@ protected:
 	CUIScrollView*		pUIBio;
 	bool				m_bForceUpdate;
 	u16					m_ownerID;
-
 
 	enum UIItemType
 	{
@@ -65,7 +66,7 @@ public:
 	void				Init_StrInfoItem		(CUIXml& xml_doc, LPCSTR item_str, UIItemType type);
 	void				Init_IconInfoItem		(CUIXml& xml_doc, LPCSTR item_str, UIItemType type);
 
-	void				InitCharacter			(u16 id);
+	void				InitCharacter			(CInventoryOwner* owner);
 	void				ClearInfo				();
 	void				InitCharacterMP			(LPCSTR player_name, LPCSTR player_icon );
 

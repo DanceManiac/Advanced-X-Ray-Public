@@ -46,5 +46,5 @@ void CUIPdaListItem::InitPdaListItem(Fvector2 pos, Fvector2 size)
 void CUIPdaListItem::InitCharacter(CInventoryOwner* pInvOwner)
 {
 	VERIFY										(pInvOwner);
-	UIInfo->InitCharacter						(pInvOwner->object_id());
+	UIInfo->InitCharacter						(pInvOwner);
 }

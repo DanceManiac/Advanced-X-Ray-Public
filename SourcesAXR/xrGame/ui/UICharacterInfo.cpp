@@ -36,11 +36,11 @@ CSE_ALifeTraderAbstract* ch_info_get_from_id (u16 id)
 
 CUICharacterInfo::CUICharacterInfo()
 	: m_ownerID(u16(-1)),
-	pUIBio(NULL)
+	pUIBio(nullptr)
 {
 	ZeroMemory			(m_icons,sizeof(m_icons));
 	m_bForceUpdate		= false;
-	m_texture_name		= NULL;
+	m_texture_name		= nullptr;
 }
 
 CUICharacterInfo::~CUICharacterInfo()
@@ -142,9 +142,9 @@ void CUICharacterInfo::InitCharacterInfo(CUIXml* xml_doc, LPCSTR node_str)
 	xml_doc->SetLocalRoot		(stored_root);
 }
 
-void CUICharacterInfo::InitCharacter(u16 id)
+void CUICharacterInfo::InitCharacter(CInventoryOwner* owner)
 {
-	m_ownerID					= id;
+	m_ownerID					= owner->object_id();
 
 	CSE_ALifeTraderAbstract*	T = ch_info_get_from_id(m_ownerID);
 
@@ -189,7 +189,8 @@ void CUICharacterInfo::InitCharacter(u16 id)
 		}
 	}
 
-	m_texture_name				= chInfo.IconName();
+	m_texture_name._set(owner->IconName());
+
 	if ( m_icons[eIcon            ] ) { m_icons[eIcon            ]->InitTexture( m_texture_name.c_str()     ); }
 //	if ( m_icons[eRankIcon        ] ) { m_icons[eRankIcon        ]->InitTexture( chInfo.Rank().id().c_str() ); }
 	

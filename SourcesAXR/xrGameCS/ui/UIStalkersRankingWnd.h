@@ -33,7 +33,7 @@ protected:
 
 public:
 	CUIScrollView&			GetTopList			()			{return *UIList;}
-	void					ShowHumanInfo		(u16 id);
+	void					ShowHumanInfo		(CInventoryOwner* owner);
 	virtual void			Reset				();
 };
 
@@ -43,6 +43,7 @@ class CUIStalkerRankingInfoItem :public CUIWindow, public CUISelectable
 	u32						m_stored_alpha;
 public:
 	u16						m_humanID;
+	CInventoryOwner*		m_humanOwner;
 	CUIStatic*				m_text1;
 	CUIStatic*				m_text2;
 	CUIStatic*				m_text3;

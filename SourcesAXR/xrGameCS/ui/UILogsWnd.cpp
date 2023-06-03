@@ -54,7 +54,7 @@ void CUILogsWnd::Show( bool status )
 	if ( status )
 	{
 		ALife::_TIME_ID	current_period = m_selected_period;
-		m_actor_ch_info->InitCharacter( Actor()->object_id() );
+		m_actor_ch_info->InitCharacter(Actor());
 		m_selected_period = GetShiftPeriod( Level().GetGameTime(), 0 );
 		
 		if(current_period != m_selected_period)
