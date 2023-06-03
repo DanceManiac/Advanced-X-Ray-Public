@@ -19,7 +19,6 @@
 #define BACKPACK_SLOT		12
 #define DOSIMETER_SLOT		13
 #define PANTS_SLOT			14
-#define LAST_SLOT			PANTS_SLOT
 //.#define SLOTS_TOTAL			12
 
 
