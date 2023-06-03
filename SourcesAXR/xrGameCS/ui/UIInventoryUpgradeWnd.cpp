@@ -283,15 +283,12 @@ void CUIInventoryUpgradeWnd::OnMesBoxYes()
 	{
 //-		OnUpgradeItem();
 //-		UpdateAllUpgrades();
-		CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(m_inv_item);
 		VERIFY( m_pParentWnd );
 		CUIActorMenu* parent_wnd = smart_cast<CUIActorMenu*>( m_pParentWnd );
 		if ( parent_wnd )
 		{
 			parent_wnd->UpdateActor();
 			parent_wnd->SeparateUpgradeItem();
-			if (Actor()->GetOutfit()->ID() == pOutfit->ID() && pOutfit->m_NightVisionSect != 0 && Actor()->GetNightVisionStatus())
-				Actor()->SwitchNightVision(false);
 		}
 	}
 	UpdateAllUpgrades();
