@@ -77,6 +77,7 @@ ENGINE_API extern bool bWinterMode;
 ENGINE_API extern bool bDofWeather;
 ENGINE_API extern bool bLowlandFogWeather;
 ENGINE_API extern bool bWeatherColorDragging;
+ENGINE_API extern bool bWeatherWindSound;
 ENGINE_API extern Fvector4 ps_ssfx_wpn_dof_1;
 ENGINE_API extern float ps_ssfx_wpn_dof_2;
 
