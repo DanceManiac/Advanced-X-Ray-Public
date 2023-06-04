@@ -45,6 +45,7 @@ public:
 			bool			m_bUnlimited;
 			bool			m_bActivated;
 			bool			m_bItmStartAnim;
+			bool			m_bNeedDestroyNotUseful;
 			int				m_iAnimHandsCnt;
 			int				m_iAnimLength;
 			float			m_fEffectorIntensity;

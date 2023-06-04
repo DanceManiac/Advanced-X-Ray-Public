@@ -45,9 +45,10 @@ public:
 			bool			m_bHasAnimation;
 			bool			m_bActivated;
 			bool			m_bItmStartAnim;
+			bool			m_bUnlimited;
+			bool			m_bNeedDestroyNotUseful;
 			int				m_iAnimHandsCnt;
 			int				m_iAnimLength;
-			bool			m_bUnlimited;
 			float			m_fEffectorIntensity;
 			LPCSTR			anim_sect;
 			shared_str		use_cam_effector;

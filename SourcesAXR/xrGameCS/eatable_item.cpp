@@ -55,6 +55,7 @@ CEatableItem::CEatableItem()
 	m_iAnimLength = 0;
 	m_bActivated = false;
 	m_bItmStartAnim = false;
+	m_bNeedDestroyNotUseful = true;
 }
 
 CEatableItem::~CEatableItem()
@@ -97,6 +98,8 @@ void CEatableItem::Load(LPCSTR section)
 	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
 	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
 	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
+
+	m_bNeedDestroyNotUseful = READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -171,6 +174,9 @@ void CEatableItem::StartAnimation()
 
 void CEatableItem::OnH_A_Independent() 
 {
+
+	if (!m_bNeedDestroyNotUseful) return;
+
 	inherited::OnH_A_Independent();
 
 	if(!Useful() && this->m_bCanUse) 
@@ -182,7 +188,7 @@ void CEatableItem::OnH_A_Independent()
 
 void CEatableItem::OnH_B_Independent(bool just_before_destroy)
 {
-	if(!Useful()) 
+	if (m_bNeedDestroyNotUseful && !Useful())
 	{
 		object().setVisible(FALSE);
 		object().setEnabled(FALSE);
