@@ -1865,6 +1865,10 @@ void CWeapon::Reload()
 	OnZoomOut();
 }
 
+BOOL CWeapon::IsEmptyMagazine() const
+{
+	return (iAmmoElapsed == 0);
+}
 
 bool CWeapon::IsGrenadeLauncherAttached() const
 {
@@ -3250,4 +3254,9 @@ bool CWeapon::IsPartlyReloading()
 bool CWeapon::IsMisfireNow()
 {
 	return IsMisfire();
+}
+
+bool CWeapon::IsMagazineEmpty()
+{
+	return IsEmptyMagazine();
 }

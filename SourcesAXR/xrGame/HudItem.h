@@ -113,6 +113,7 @@ public:
 	bool						TryPlayAnimIdle		();
 	virtual bool				MovingAnimAllowedNow() { return true; }
 	virtual bool				IsMisfireNow		() { return false; }
+	virtual bool				IsMagazineEmpty		() { return false; }
 	virtual bool				NeedBlendAnm		();
 
 	virtual void				PlayAnimIdleMoving	();
