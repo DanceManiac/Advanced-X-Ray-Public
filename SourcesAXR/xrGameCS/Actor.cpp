@@ -878,7 +878,8 @@ void CActor::g_Physics			(Fvector& _accel, float jump, float dt)
 		}
 	}
 }
-float g_fov = 67.5f;
+
+float g_fov = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "Camera_FOV", 67.5f);
 
 float CActor::currentFOV()
 {

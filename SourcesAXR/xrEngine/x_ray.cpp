@@ -78,6 +78,9 @@ ENGINE_API Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
 ENGINE_API float ps_ssfx_wpn_dof_2 = 1.0f;
 ENGINE_API int ps_rs_loading_stages = 0;
 
+extern float psHUD_FOV_def;
+extern float psHUD_FOV;
+
 static LPSTR month_id[12] = {
 	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
 };
@@ -280,6 +283,9 @@ PROTECT_API void InitSettings()
 	bLowlandFogWeather = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "lowland_fog_from_weather", false);
 	bWeatherColorDragging = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "weather_color_dragging", false);
 	bWeatherWindSound = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "weather_wind_sound", true);
+
+	psHUD_FOV_def = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "HUD_FOV", 0.45f);
+	psHUD_FOV = psHUD_FOV_def;
 
 	Msg("# Engine Mode: %s", EngineMode);
 	Msg("# Developer Mode: %d", bDeveloperMode);
