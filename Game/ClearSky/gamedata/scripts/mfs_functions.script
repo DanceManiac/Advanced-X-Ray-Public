@@ -22,7 +22,7 @@ function put_the_actor_to_sleep()
 	level_weathers.get_weather_manager():forced_weather_change()
 	--surge_manager.get_surge_manager().time_forwarded = true
 
-	xr_effects.disable_ui_only(db.actor)
+	xr_effects.disable_ui(db.actor)
 	db.actor.sleepeness = -0.5
 	level.add_cam_effector("camera_effects\\surge_02.anm", 10, false, "mfs_functions.forced_actor_sleep")
 	level.add_pp_effector("surge_fade.ppe", 11, false)

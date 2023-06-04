@@ -5,6 +5,7 @@ class "WeatherManager"
 function WeatherManager:__init()
 	self.update_time = 0
 	self.update_level = ""
+	self.forced_weather_change_on_time_change = false
 	self.last_hour = 0
     self.state={}
 	self.graphs={}
@@ -36,6 +37,10 @@ function WeatherManager:reset()
 	end		
 	self:select_weather(true)
 	self.last_hour=level.get_time_hours()
+end
+
+function WeatherManager:forced_weather_change()
+	self.forced_weather_change_on_time_change = true
 end
 
 -- Обновляем погоду раз в час.
@@ -75,6 +80,12 @@ function WeatherManager:select_weather(now)
 	    --weather_section_name="dw_"..st.current_state.."_"..st.next_state.."_"..level.get_time_hours()
 	    weather_section_name="default_"..st.current_state
 	end
+	
+	if self.forced_weather_change_on_time_change then
+		now = true
+		self.forced_weather_change_on_time_change = false
+	end
+	
 	level.set_weather(weather_section_name,now);
 	printf("WEATHER: '%s' now '%s'", weather_section_name, tostring(now))
 	-- if xrs_news then
