@@ -1038,13 +1038,7 @@ void CWeaponMagazined::switch2_Unmis()
 	}
 
 	if (psWpnAnimsFlag.test(ANM_MISFIRE) || isHUDAnimationExist("anm_reload_jammed"))
-	{
 		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_reload_jammed", "anm_reload" }, true, GetState());
-		// Shell Drop
-		Fvector vel;
-		PHGetLinearVell(vel);
-		OnShellDrop(get_LastSP(), vel);
-	}
 	else if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
 		PlayHUDMotionIfExists({ "anm_reload_empty", "anm_reload" }, true, GetState());
 	else
