@@ -11,6 +11,9 @@
 #include "player_hud.h"
 #include "../xrEngine/SkeletonMotions.h"
 #include "ui_base.h"
+#include "HUDManager.h"
+
+ENGINE_API extern float psHUD_FOV_def;
 
 CHudItem::CHudItem()
 {
@@ -21,6 +24,7 @@ CHudItem::CHudItem()
 	m_bStopAtEndAnimIsRunning	= false;
 	m_current_motion_def		= NULL;
 	m_started_rnd_anim_idx		= u8(-1);
+	m_nearwall_last_hud_fov		= psHUD_FOV_def;
 }
 
 DLL_Pure *CHudItem::_construct	()
@@ -45,6 +49,13 @@ void CHudItem::Load(LPCSTR section)
 
 //	if(pSettings->line_exist(section,"snd_bore"))
 	m_sounds.LoadSound(section,"snd_bore","sndBore");
+
+	// HUD FOV
+	m_nearwall_enabled			= READ_IF_EXISTS(pSettings, r_bool,	 section, "nearwall_on", true);
+	m_nearwall_target_hud_fov	= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_hud_fov", 0.27f);
+	m_nearwall_dist_min			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
+	m_nearwall_dist_max			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
+	m_nearwall_speed_mod		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
 }
 
 
@@ -248,6 +259,8 @@ void CHudItem::OnH_A_Chield		()
 void CHudItem::OnH_B_Chield		()
 {
 	StopCurrentAnimWithoutCallback();
+
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 
 void CHudItem::OnH_B_Independent	(bool just_before_destroy)
@@ -255,6 +268,8 @@ void CHudItem::OnH_B_Independent	(bool just_before_destroy)
 	m_sounds.StopAllSounds	();
 	UpdateXForm				();
 	
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
+
 	// next code was commented 
 	/*
 	if(HudItemData() && !just_before_destroy)
@@ -552,4 +567,27 @@ void CHudItem::ReplaceHudSection(LPCSTR hud_section)
 {
 	if (hud_section != hud_sect)
 		hud_sect = hud_section;
+}
+
+float CHudItem::GetHudFov()
+{
+	if (m_nearwall_enabled && ParentIsActor() && Level().CurrentViewEntity() == object().H_Parent())
+	{
+		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+		float dist = RQ.range;
+
+		clamp(dist, m_nearwall_dist_min, m_nearwall_dist_max);
+		float fDistanceMod = ((dist - m_nearwall_dist_min) / (m_nearwall_dist_max - m_nearwall_dist_min)); // 0.f ... 1.f
+
+		float fBaseFov = psHUD_FOV_def;
+		clamp(fBaseFov, 0.0f, FLT_MAX);
+
+		float src = m_nearwall_speed_mod * Device.fTimeDelta;
+		clamp(src, 0.f, 1.f);
+
+		float fTrgFov = m_nearwall_target_hud_fov + fDistanceMod * (fBaseFov - m_nearwall_target_hud_fov);
+		m_nearwall_last_hud_fov = m_nearwall_last_hud_fov * (1 - src) + fTrgFov * src;
+	}
+
+	return m_nearwall_last_hud_fov;
 }

@@ -208,20 +208,11 @@ public:
 	//инициализация свойств присоединенных аддонов
 	virtual void InitAddons();
 
-	float m_hud_fov_add_mod;
-	float m_nearwall_last_hud_fov;
-	float m_nearwall_dist_max = 0.f;
-	float m_nearwall_dist_min = 0.f;
-	float m_nearwall_target_hud_fov = 0.f;
-	float m_nearwall_speed_mod = 0.f;
-
 	float		m_fLR_MovingFactor; // Фактор бокового наклона худа при ходьбе [-1; +1]
 	float		m_fLR_CameraFactor; // Фактор бокового наклона худа при движении камеры [-1; +1]
 	float		m_fLR_InertiaFactor; // Фактор горизонтальной инерции худа при движении камеры [-1; +1]
 	float		m_fUD_InertiaFactor; // Фактор вертикальной инерции худа при движении камеры [-1; +1]
 	Fvector		m_strafe_offset[4][2]; //pos,rot,data1,data2/ normal,aim-GL --#SM+#--
-
-	float GetHudFov();
 
 	//для отоброажения иконок апгрейдов в интерфейсе
 	int GetScopeX();

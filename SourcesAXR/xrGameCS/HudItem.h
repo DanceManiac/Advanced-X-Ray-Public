@@ -185,5 +185,15 @@ public:
 	virtual void				debug_draw_firedeps		() {};
 
 	virtual CHudItem*			cast_hud_item			()				{ return this; }
+
+	float						GetHudFov				();
+
+	bool  m_nearwall_enabled;
+	float m_hud_fov_add_mod;
+	float m_nearwall_last_hud_fov;
+	float m_nearwall_dist_max		= 0.f;
+	float m_nearwall_dist_min		= 0.f;
+	float m_nearwall_target_hud_fov = 0.f;
+	float m_nearwall_speed_mod		= 0.f;
 };
 
