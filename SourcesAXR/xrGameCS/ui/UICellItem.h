@@ -88,6 +88,7 @@ public:
 				u32			m_drawn_frame;
 				bool		m_b_destroy_childs;
 				bool		m_selected;
+				bool		m_select_armament;
 				bool		m_cur_mark;
 				bool		m_has_upgrade;
 };

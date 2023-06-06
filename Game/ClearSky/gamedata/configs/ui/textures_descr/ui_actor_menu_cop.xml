@@ -34,4 +34,14 @@
 	    <texture id="ui_inGame2_helmet_blocker_cop" x="564" y="778" width="109" height="114" />
 		<texture id="ui_inGame2_GameSpy_logo_cop" x="1" y="993" width="130" height="30" />
 	</file>
+
+	<file name="ui\ui_actor_sleep_screen">
+	    <texture id="ui_inGame2_weapon_highlighter" x="220" y="549" width="82" height="353" />
+		<texture id="ui_inGame2_helmet_highlighter" x="306" y="549" width="96" height="98" />
+		<texture id="ui_inGame2_armor_highlighter" x="307" y="653" width="96" height="161" />
+		<texture id="ui_inGame2_detector_highlighter" x="307" y="820" width="96" height="48" />
+		<texture id="ui_inGame2_quick_item_highlighter" x="410" y="549" width="66" height="59" />
+		<texture id="ui_inGame2_artefakt_highlighter" x="410" y="614" width="52" height="52" />
+
+   </file>
 </w>

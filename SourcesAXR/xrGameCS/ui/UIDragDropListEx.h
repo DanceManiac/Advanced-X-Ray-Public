@@ -127,6 +127,7 @@ public:
 			CUICellItem*	GetItemIdx			(u32 idx);
 	virtual CUICellItem*	RemoveItem			(CUICellItem* itm, bool force_root);
 			void			CreateDragItem		(CUICellItem* itm);
+			void			clear_select_armament();
 
 			void			DestroyDragItem		();
 			void			ClearAll			(bool bDestroy);	
@@ -194,4 +195,5 @@ protected:
 				void			Grow				();
 				void			Shrink				();
 				void			ClearAll			(bool bDestroy);
+				void			clear_select_armament();
 };

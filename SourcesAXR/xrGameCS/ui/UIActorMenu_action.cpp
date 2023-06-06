@@ -250,6 +250,7 @@ bool CUIActorMenu::OnItemMButtonClick(CUICellItem* itm)
 bool CUIActorMenu::OnItemFocusReceive(CUICellItem* itm)
 {
 	InfoCurItem( NULL );
+	set_highlight_item(itm);
 	m_item_info_view = true;
 
 	itm->m_selected = true;
@@ -263,6 +264,7 @@ bool CUIActorMenu::OnItemFocusLost(CUICellItem* itm)
 		itm->m_selected = false;
 	}
 	InfoCurItem( NULL );
+	clear_highlight_lists();
 	return true;
 }
 
@@ -271,6 +273,10 @@ bool CUIActorMenu::OnItemFocusedUpdate(CUICellItem* itm)
 	if ( itm )
 	{
 		itm->m_selected = true;
+		if ( m_highlight_clear )
+		{
+			set_highlight_item( itm );
+		}
 	}
 	VERIFY( m_ItemInfo );
 	if ( Device.dwTimeGlobal < itm->FocusReceiveTime() + m_ItemInfo->delay )

@@ -38,6 +38,7 @@ CUIActorMenu::~CUIActorMenu()
 	xr_delete			(m_ItemInfo);
 
 	m_belt_list_over.clear();
+	m_ArtefactSlotsHighlight.clear();
 
 	ClearAllLists		();
 }
@@ -94,6 +95,57 @@ void CUIActorMenu::Construct()
 	m_PartnerBottomInfo->AdjustWidthToText();
 	m_PartnerWeight_end_x = m_PartnerWeight->GetWndPos().x;
 
+	m_PistolSlotHighlight		= UIHelper::CreateStatic(uiXml, "pistol_slot_highlight", this);
+	m_PistolSlotHighlight		->Show(false);
+	m_RiffleSlotHighlight		= UIHelper::CreateStatic(uiXml, "riffle_slot_highlight", this);
+	m_RiffleSlotHighlight		->Show(false);
+	m_OutfitSlotHighlight		= UIHelper::CreateStatic(uiXml, "outfit_slot_highlight", this);
+	m_OutfitSlotHighlight		->Show(false);
+	m_DetectorSlotHighlight		= UIHelper::CreateStatic(uiXml, "detector_slot_highlight", this);
+	m_DetectorSlotHighlight		->Show(false);
+
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		if ((m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this)))
+			m_KnifeSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		if ((m_BinocularSlotHighlight = UIHelper::CreateStatic(uiXml, "binocular_slot_highlight", this)))
+			m_BinocularSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		if ((m_TorchSlotHighlight = UIHelper::CreateStatic(uiXml, "torch_slot_highlight", this)))
+			m_TorchSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		if ((m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this)))
+			m_BackpackSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		if ((m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this)))
+			m_DosimeterSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		if ((m_PantsSlotHighlight = UIHelper::CreateStatic(uiXml, "pants_slot_highlight", this)))
+			m_PantsSlotHighlight->Show(false);
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		if ((m_PdaSlotHighlight = UIHelper::CreateStatic(uiXml, "pda_slot_highlight", this)))
+			m_PdaSlotHighlight->Show(false);
+	}
+
 	m_pInventoryBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bag", this);
 	m_pInventoryBeltList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
 	m_pInventoryOutfitList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
@@ -146,9 +198,40 @@ void CUIActorMenu::Construct()
 
 	Fvector2 pos{};
 	float dx{}, dy{};
+
 	int cols = m_pInventoryBeltList->CellsCapacity().x;
 	int rows = m_pInventoryBeltList->CellsCapacity().y;
 	int counter = 1;
+
+	for (u8 i = 0; i < rows; ++i)
+	{
+		for (u8 j = 0; j < cols; ++j)
+		{
+			m_ArtefactSlotsHighlight.push_back(UIHelper::CreateStatic(uiXml, "artefact_slot_highlight", this));
+
+			if (i == 0 && j == 0)
+			{
+				pos = m_ArtefactSlotsHighlight[0]->GetWndPos();
+				m_ArtefactSlotsHighlight[0]->Show(false);
+				dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
+				dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
+			}
+			else
+			{
+				if (j != 0)
+					pos.x += dx;
+
+				m_ArtefactSlotsHighlight[counter]->SetWndPos(pos);
+				m_ArtefactSlotsHighlight[i]->Show(false);
+				counter++;
+			}
+		}
+
+		pos.x = m_ArtefactSlotsHighlight[0]->GetWndPos().x;
+		pos.y += dy;
+	}
+
+	counter = 1;
 
 	for (u8 i = 0; i < rows; ++i)
 	{
@@ -331,6 +414,7 @@ void CUIActorMenu::Construct()
 	m_actor_trade						= NULL;
 	m_partner_trade						= NULL;
 	m_repair_mode						= false;
+	m_highlight_clear					= false;
 	m_item_info_view					= false;
 
 	DeInitInventoryMode					();

@@ -108,6 +108,19 @@ protected:
 	CUIDragDropListEx*			m_pInventoryPdaList;
 
 	xr_vector<CUIStatic*>		m_belt_list_over;
+	
+	CUIStatic*					m_PistolSlotHighlight;
+	CUIStatic*					m_RiffleSlotHighlight;
+	CUIStatic*					m_OutfitSlotHighlight;
+	CUIStatic*					m_DetectorSlotHighlight;
+	xr_vector<CUIStatic*>		m_ArtefactSlotsHighlight;
+	CUIStatic*					m_KnifeSlotHighlight;
+	CUIStatic*					m_BinocularSlotHighlight;
+	CUIStatic*					m_TorchSlotHighlight;
+	CUIStatic*					m_BackpackSlotHighlight;
+	CUIStatic*					m_DosimeterSlotHighlight;
+	CUIStatic*					m_PantsSlotHighlight;
+	CUIStatic*					m_PdaSlotHighlight;
 
 	CUIInventoryUpgradeWnd*		m_pUpgradeWnd;
 	
@@ -156,6 +169,7 @@ protected:
 
 	u32							m_last_time;
 	bool						m_repair_mode;
+	bool						m_highlight_clear;
 	bool						m_item_info_view;
 	u32							m_trade_partner_inventory_state;
 	bool						m_bNeedMoveAfsToBag;
@@ -175,6 +189,16 @@ private:
 	void						PropertiesBoxForUsing		(PIItem item, bool& b_show);
 	void						PropertiesBoxForDrop		(CUICellItem* cell_item, PIItem item, bool& b_show);
 	void						PropertiesBoxForRepair		(PIItem item, bool& b_show);
+
+private:
+	void						clear_highlight_lists		();
+	void						set_highlight_item			(CUICellItem* cell_item);
+	void						highlight_item_slot			(CUICellItem* cell_item);
+	void						highlight_armament			(PIItem item, CUIDragDropListEx* ddlist);
+	void						highlight_ammo_for_weapon	(PIItem weapon_item, CUIDragDropListEx* ddlist);
+	void						highlight_weapons_for_ammo	(PIItem ammo_item, CUIDragDropListEx* ddlist);
+	bool						highlight_addons_for_weapon	(PIItem weapon_item, CUICellItem* ci);
+	void						highlight_weapons_for_addon	(PIItem addon_item, CUIDragDropListEx* ddlist);
 
 protected:			
 	void						Construct					();

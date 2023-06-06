@@ -26,6 +26,7 @@ CUICellItem::CUICellItem()
 	SetAccelerator		(0);
 	m_b_destroy_childs	= true;
 	m_selected			= false;
+	m_select_armament	= false;
 	m_cur_mark			= false;
 	m_has_upgrade		= false;
 	

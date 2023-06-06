@@ -135,7 +135,8 @@ void CUIActorMenu::SendEvent_Item2Slot(PIItem pItem, u16 recipient, u16 slot_id)
 	P.w_u16							(pItem->object().ID());
 	P.w_u16							(slot_id);
 	CGameObject::u_EventSend		(P);
-
+	
+	clear_highlight_lists			();
 	PlaySnd							(eItemToSlot);
 };
 
@@ -148,7 +149,8 @@ void CUIActorMenu::SendEvent_Item2Belt(PIItem pItem, u16 recipient)
 	CGameObject::u_EventGen			(P, GEG_PLAYER_ITEM2BELT, pItem->object().H_Parent()->ID());
 	P.w_u16							(pItem->object().ID());
 	CGameObject::u_EventSend		(P);
-
+	
+	clear_highlight_lists			();
 	PlaySnd							(eItemToBelt);
 };
 
@@ -161,7 +163,8 @@ void CUIActorMenu::SendEvent_Item2Ruck(PIItem pItem, u16 recipient)
 	CGameObject::u_EventGen			(P, GEG_PLAYER_ITEM2RUCK, pItem->object().H_Parent()->ID());
 	P.w_u16							(pItem->object().ID());
 	CGameObject::u_EventSend		(P);
-
+	
+	clear_highlight_lists			();
 	PlaySnd							(eItemToRuck);
 };
 
@@ -186,6 +189,8 @@ void CUIActorMenu::SendEvent_Item_Drop(PIItem pItem, u16 recipient)
 	pItem->object().u_EventGen	(P,GE_OWNERSHIP_REJECT,pItem->parent_id());
 	P.w_u16						(pItem->object().ID());
 	pItem->object().u_EventSend	(P);
+
+	clear_highlight_lists		();
 	PlaySnd						(eDropItem);
 }
 
