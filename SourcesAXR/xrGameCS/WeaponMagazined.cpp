@@ -1053,7 +1053,11 @@ void CWeaponMagazined::switch2_Hidden()
 
 	signal_HideComplete		();
 	RemoveShotEffector		();
-	m_nearwall_last_hud_fov = psHUD_FOV_def;
+
+	if (pSettings->line_exist(item_sect, "hud_fov"))
+		m_nearwall_last_hud_fov = m_base_fov;
+	else
+		m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 void CWeaponMagazined::switch2_Showing()
 {

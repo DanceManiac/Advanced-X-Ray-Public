@@ -159,6 +159,7 @@ protected:
 
 	IC		void				SetPending			(BOOL H)			{ m_huditem_flags.set(fl_pending, H);}
 	shared_str					hud_sect;
+	shared_str					item_sect;
 
 	//кадры момента пересчета XFORM и FirePos
 	u32							dwFP_Frame;
@@ -195,5 +196,6 @@ public:
 	float m_nearwall_dist_min		= 0.f;
 	float m_nearwall_target_hud_fov = 0.f;
 	float m_nearwall_speed_mod		= 0.f;
+	float m_base_fov				= 0.f;
 };
 

@@ -23,7 +23,6 @@ CHudItem::CHudItem()
 	m_bStopAtEndAnimIsRunning	= false;
 	m_current_motion_def		= NULL;
 	m_started_rnd_anim_idx		= u8(-1);
-	m_nearwall_last_hud_fov		= psHUD_FOV_def;
 }
 
 DLL_Pure *CHudItem::_construct	()
@@ -44,6 +43,7 @@ CHudItem::~CHudItem()
 void CHudItem::Load(LPCSTR section)
 {
 	hud_sect				= pSettings->r_string		(section,"hud");
+	item_sect				= section;
 	m_animation_slot		= pSettings->r_u32			(section,"animation_slot");
 
 	m_sounds.LoadSound(section, "snd_bore", "sndBore", true);
@@ -54,6 +54,9 @@ void CHudItem::Load(LPCSTR section)
 	m_nearwall_dist_min			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
 	m_nearwall_dist_max			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
 	m_nearwall_speed_mod		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
+
+	m_base_fov					= READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", psHUD_FOV_def);
+	m_nearwall_last_hud_fov		= m_base_fov;
 }
 
 
@@ -245,7 +248,10 @@ void CHudItem::OnH_B_Chield		()
 {
 	StopCurrentAnimWithoutCallback();
 
-	m_nearwall_last_hud_fov = psHUD_FOV_def;
+	if (pSettings->line_exist(item_sect, "hud_fov"))
+		m_nearwall_last_hud_fov = m_base_fov;
+	else
+		m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 
 void CHudItem::OnH_B_Independent	(bool just_before_destroy)
@@ -253,7 +259,10 @@ void CHudItem::OnH_B_Independent	(bool just_before_destroy)
 	m_sounds.StopAllSounds	();
 	UpdateXForm				();
 	
-	m_nearwall_last_hud_fov = psHUD_FOV_def;
+	if (pSettings->line_exist(item_sect, "hud_fov"))
+		m_nearwall_last_hud_fov = m_base_fov;
+	else
+		m_nearwall_last_hud_fov = psHUD_FOV_def;
 
 	// next code was commented 
 	/*
@@ -570,7 +579,11 @@ float CHudItem::GetHudFov()
 		clamp(dist, m_nearwall_dist_min, m_nearwall_dist_max);
 		float fDistanceMod = ((dist - m_nearwall_dist_min) / (m_nearwall_dist_max - m_nearwall_dist_min)); // 0.f ... 1.f
 
-		float fBaseFov = psHUD_FOV_def;
+		float fBaseFov{ psHUD_FOV_def };
+
+		if (pSettings->line_exist(item_sect, "hud_fov"))
+			fBaseFov = m_base_fov;
+
 		clamp(fBaseFov, 0.0f, FLT_MAX);
 
 		float src = m_nearwall_speed_mod * Device.fTimeDelta;
