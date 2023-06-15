@@ -1603,16 +1603,14 @@ void CWeaponMagazined::PlayAnimShoot()
 	VERIFY(GetState()==eFire);
 
 	string_path guns_shoot_anm{};
-	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, "anm_shoot", (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() ? "_aim_scope" : "_aim") : "", IsSilencerAttached() ? "_sil" : "");
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (iAmmoElapsed == 1) ? "_last" : "", (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() ? "_aim_scope" : "_aim") : "", IsSilencerAttached() ? "_sil" : "");
 
 	//HUD_VisualBulletUpdate();
 
-	if (IsZoomed() && psWpnAnimsFlag.test(ANM_SHOT_AIM) && IsScopeAttached())
-		PlayHUDMotion("anm_shots_when_aim", FALSE, this, GetState());
-	else if (iAmmoElapsed == 1 && psWpnAnimsFlag.test(ANM_SHOT_EMPTY))
-		PlayHUDMotion("anm_shot_l", FALSE, this, GetState());
+	if (iAmmoElapsed == 1)
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shot_l", "anm_shots_w_gl" }, false, GetState());
 	else
-		PlayHUDMotionIfExists({ "anm_shoot", "anm_shots" }, false, GetState());
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots" }, false, GetState());
 }
 
 void CWeaponMagazined::OnZoomIn			()
