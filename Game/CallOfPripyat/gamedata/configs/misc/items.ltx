@@ -678,14 +678,16 @@ light_enabled = true
 light_color = 0.075, 0.085, 0.085
 light_range = 0.25
 
+hud_fov						   = 0.6
+
 [pda_hud]:hud_base
 inertion_offset_LRUD                               = 0.02,  0.02,  0.02, 0.02
 inertion_offset_LRUD_aim 							= 0.009, 0.009, 0.009, 0.009
 
 attach_place_idx                                   = 0
 item_visual                                        = dynamics\devices\dev_pda\dev_pda_hud.ogf
-hands_position                                     = 0.000,-0.110,0.200
-hands_position_16x9                                = 0.000,-0.090,0.150
+hands_position                                     = 0,0,0
+hands_position_16x9                                = 0,0,0
 hands_orientation                                  = 0,0,0
 hands_orientation_16x9                             = 0,0,0
 
@@ -694,13 +696,13 @@ fire_bone      	    								= joystick
 fire_point2         								= 0,0,0
 fire_bone2											= joystick
 
-aim_hud_offset_pos		                           = 0.001,-0.110,-0.19
-aim_hud_offset_rot		                           = -0.4,0,0.01
+aim_hud_offset_pos		                           = 0,-0.055,-0.12
+aim_hud_offset_rot		                           = -0.4,0,0
 gl_hud_offset_pos			                       = 0,0,0
 gl_hud_offset_rot			                       = 0,0,0
 
-aim_hud_offset_pos_16x9		                       = 0.001,-0.110,-0.19
-aim_hud_offset_rot_16x9		                       = -0.4,0,0.01
+aim_hud_offset_pos_16x9		                       = 0,-0.055,-0.12
+aim_hud_offset_rot_16x9		                       = -0.4,0,0
 gl_hud_offset_pos_16x9		                       = 0,0,0
 gl_hud_offset_rot_16x9			                   = 0,0,0
 
@@ -711,15 +713,15 @@ pitch_offset_forward					           = 0
 item_position                                      = 0,0,0
 item_orientation                                   = 0,0,0
 
-anm_show                                 		   = hands_draw
-anm_show_empty						   = hands_draw_empty
-anm_idle                                 		   = hands_idle
-anm_hide                                 		   = hands_holster
-anm_hide_empty                           		   = hands_holster_empty
-anm_idle_aim                             		   = hands_idle_aim
-anm_idle_moving                          		   = hands_walk_new
-anm_idle_sprint                          		   = hands_run_new
-anm_empty						   = hands_dead
+anm_show                                 		= kyky_smoke_pda_draw
+anm_show_empty						= kyky_smoke_pda_draw_empty
+anm_idle                                 		= kyky_smoke_pda_idle
+anm_hide                                 		= kyky_smoke_pda_holster
+anm_hide_empty                           		= kyky_smoke_pda_holster_empty
+anm_idle_aim                             		= kyky_smoke_pda_idle_aim
+anm_idle_moving                          		= kyky_smoke_pda_walk_new
+anm_idle_sprint                          		= kyky_smoke_pda_run_new
+anm_empty						= kyky_smoke_pda_dead
 
 [dev_flash_1]:identity_immunities
 GroupControlSection	= spawn_group
