@@ -115,7 +115,7 @@
 		<text>Пояс</text>
 	</string>
 	<string id="ui_inv_bleeding">
-		<text>Кровотечение</text>
+		<text>Заживление ран</text>
 	</string>
 	<string id="ui_inv_cancel">
 		<text>Отмена</text>
