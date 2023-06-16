@@ -177,7 +177,10 @@ bool CUIPdaWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	case WINDOW_RBUTTON_DOWN:
 		if (auto pda = Actor()->GetPDA()) {
 			pda->m_bZoomed = false;
-			CurrentGameUI()->SetMainInputReceiver(nullptr, false);
+
+			if (psActorFlags.test(AF_3D_PDA))
+				CurrentGameUI()->SetMainInputReceiver(nullptr, false);
+
 			return true;
 		}
 		break;

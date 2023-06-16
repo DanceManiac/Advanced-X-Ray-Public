@@ -179,7 +179,10 @@ bool CUIPdaWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 		if (auto pda = Actor()->GetPDA())
 		{
 			pda->m_bZoomed = false;
-			HUD().GetUI()->SetMainInputReceiver(nullptr, false);
+
+			if (psActorFlags.test(AF_3D_PDA))
+				HUD().GetUI()->SetMainInputReceiver(nullptr, false);
+
 			return true;
 		}
 		break;
