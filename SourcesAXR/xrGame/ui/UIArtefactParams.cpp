@@ -627,9 +627,9 @@ void UIArtefactParamItem::SetValue(float value, int vle )
 		else if (vle == 2)
 		{
 			if (is_positive)
-				current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+				current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), 0.25f);
 			else
-				current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+				current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), 0.25f);
 		}
 
 		if (vle == 1 || vle == 2)
@@ -644,19 +644,19 @@ void UIArtefactParamItem::SetValue(float value, int vle )
 	{
 		if (clr_dynamic)
 		{
-			if (vle > 2 || !clr_invert)
+			if (vle >= 2 || !clr_invert)
 			{
 				if (is_positive)
-					current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+					current.lerp(negative.set(m_negative_color), positive.set(m_positive_color), value);
 				else
-					current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+					current.lerp(negative.set(m_positive_color), positive.set(m_negative_color), value);
 			}
 			else
 			{
 				if (is_positive)
-					current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+					current.lerp(negative.set(m_positive_color), positive.set(m_negative_color), value);
 				else
-					current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+					current.lerp(negative.set(m_negative_color), positive.set(m_positive_color), value);
 			}
 
 			m_caption->SetTextureColor(current.get());
