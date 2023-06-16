@@ -347,33 +347,33 @@ void CArtefact::UpdateDegradation(void)
 
 				if (artefact->m_fHealthRestoreSpeed > 0.0f && m_fConstHealthRestoreSpeed > 0.0f)
 					artefact->m_fHealthRestoreSpeed = (m_fConstHealthRestoreSpeed / 100) * percent;
-				else if (artefact->m_fRadiationRestoreSpeed < 0.0f && m_fConstRadiationRestoreSpeed < 0.0f)
+				if (artefact->m_fRadiationRestoreSpeed < 0.0f && m_fConstRadiationRestoreSpeed < 0.0f)
 					artefact->m_fRadiationRestoreSpeed = (m_fConstRadiationRestoreSpeed / 100) * percent;
-				else if (artefact->m_fSatietyRestoreSpeed > 0.0f && m_fConstSatietyRestoreSpeed > 0.0f)
+				if (artefact->m_fSatietyRestoreSpeed > 0.0f && m_fConstSatietyRestoreSpeed > 0.0f)
 					artefact->m_fSatietyRestoreSpeed = (m_fConstSatietyRestoreSpeed / 100) * percent;
-				else if (artefact->m_fPowerRestoreSpeed > 0.0f && m_fConstPowerRestoreSpeed > 0.0f)
+				if (artefact->m_fPowerRestoreSpeed > 0.0f && m_fConstPowerRestoreSpeed > 0.0f)
 					artefact->m_fPowerRestoreSpeed = (m_fConstPowerRestoreSpeed / 100) * percent;
-				else if (artefact->m_fBleedingRestoreSpeed > 0.0f && m_fConstBleedingRestoreSpeed > 0.0f)
+				if (artefact->m_fBleedingRestoreSpeed > 0.0f && m_fConstBleedingRestoreSpeed > 0.0f)
 					artefact->m_fBleedingRestoreSpeed = (m_fConstBleedingRestoreSpeed / 100) * percent;
-				else if (artefact->m_fThirstRestoreSpeed > 0.0f && m_fConstThirstRestoreSpeed > 0.0f)
+				if (artefact->m_fThirstRestoreSpeed > 0.0f && m_fConstThirstRestoreSpeed > 0.0f)
 					artefact->m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100) * percent;
-				else if (artefact->m_fIntoxicationRestoreSpeed > 0.0f && m_fConstIntoxicationRestoreSpeed > 0.0f)
+				if (artefact->m_fIntoxicationRestoreSpeed > 0.0f && m_fConstIntoxicationRestoreSpeed > 0.0f)
 					artefact->m_fIntoxicationRestoreSpeed = (m_fConstIntoxicationRestoreSpeed / 100) * percent;
-				else if (artefact->m_fSleepenessRestoreSpeed > 0.0f && m_fConstSleepenessRestoreSpeed > 0.0f)
+				if (artefact->m_fSleepenessRestoreSpeed > 0.0f && m_fConstSleepenessRestoreSpeed > 0.0f)
 					artefact->m_fSleepenessRestoreSpeed = (m_fConstSleepenessRestoreSpeed / 100) * percent;
-				else if (artefact->m_fAlcoholismRestoreSpeed > 0.0f && m_fConstAlcoholismRestoreSpeed > 0.0f)
+				if (artefact->m_fAlcoholismRestoreSpeed > 0.0f && m_fConstAlcoholismRestoreSpeed > 0.0f)
 					artefact->m_fAlcoholismRestoreSpeed = (m_fConstAlcoholismRestoreSpeed / 100) * percent;
-				else if (artefact->m_fNarcotismRestoreSpeed > 0.0f && m_fConstNarcotismRestoreSpeed > 0.0f)
+				if (artefact->m_fNarcotismRestoreSpeed > 0.0f && m_fConstNarcotismRestoreSpeed > 0.0f)
 					artefact->m_fNarcotismRestoreSpeed = (m_fConstNarcotismRestoreSpeed / 100) * percent;
-				else if (artefact->m_fPsyHealthRestoreSpeed > 0.0f && m_fConstPsyHealthRestoreSpeed > 0.0f)
+				if (artefact->m_fPsyHealthRestoreSpeed > 0.0f && m_fConstPsyHealthRestoreSpeed > 0.0f)
 					artefact->m_fPsyHealthRestoreSpeed = (m_fConstPsyHealthRestoreSpeed / 100) * percent;
-				else if (artefact->m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
+				if (artefact->m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
 					artefact->m_additional_weight = (m_fConstAdditionalWeight / 100) * percent;
-				else if (artefact->m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)
+				if (artefact->m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)
 					artefact->m_fJumpSpeed = (m_fConstJumpSpeed / 100) * percent;
-				else if (artefact->m_fWalkAccel > 1.f && m_fConstWalkAccel > 1.f)
+				if (artefact->m_fWalkAccel > 1.f && m_fConstWalkAccel > 1.f)
 					artefact->m_fWalkAccel = (m_fConstWalkAccel / 100) * percent;
-				else if (m_fChargeLevel <= 0.0f)
+				if (m_fChargeLevel <= 0.0f)
 					artefact->m_iAfRank = 0;
 
 				for (size_t i = 0; i < ALife::infl_max_count; ++i)
