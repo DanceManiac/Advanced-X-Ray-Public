@@ -1,3 +1,11 @@
+//////////////////////////////////////////////////////////////////////////
+//-' CryRay Engine x64 Shaders
+//-' Shaders are based on the Call of Pripyat version 1.6.02
+//-' To contact the developers and get additional information
+//-' Follow this link: https://discord.gg/Ry8snVzgu7
+//-' OldSerpskiStalker, CryRay Team 2022 - 2023
+//////////////////////////////////////////////////////////////////////////
+
 /**
  * Copyright (C) 2013 Jorge Jimenez (jorge@iryoku.com)
  * Copyright (C) 2013 Jose I. Echevarria (joseignacioechevarria@gmail.com)
@@ -50,7 +58,7 @@
  *
  * The shader has three passes, chained together as follows:
  *
- *                           |input|------------------·
+ *                           |input|------------------Â·
  *                              v                     |
  *                    [ SMAA*EdgeDetection ]          |
  *                              v                     |
@@ -60,7 +68,7 @@
  *                              v                     |
  *                          |blendTex|                |
  *                              v                     |
- *                [ SMAANeighborhoodBlending ] <------·
+ *                [ SMAANeighborhoodBlending ] <------Â·
  *                              v
  *                           |output|
  *
@@ -622,7 +630,8 @@ float2 SMAACalculatePredicatedThreshold(float2 texcoord,
     return SMAA_PREDICATION_SCALE * SMAA_THRESHOLD * (1.0 - SMAA_PREDICATION_STRENGTH * edges);
 }
 
-/*Conditional move:
+/**
+ * Conditional move:
  */
 void SMAAMovc(bool2 cond, inout float2 variable, float2 value) {
     SMAA_FLATTEN if (cond.x) variable.x = value.x;

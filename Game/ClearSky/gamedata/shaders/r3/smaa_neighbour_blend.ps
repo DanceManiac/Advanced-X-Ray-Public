@@ -1,35 +1,40 @@
+//////////////////////////////////////////////////////////////////////////
+//-' CryRay Engine x64 Shaders
+//-' Shaders are based on the Call of Pripyat version 1.6.02
+//-' To contact the developers and get additional information
+//-' Follow this link: https://discord.gg/Ry8snVzgu7
+//-' OldSerpskiStalker, CryRay Team 2022 - 2023
+//////////////////////////////////////////////////////////////////////////
+
+/*
+------------------------------------------------------------------
+SMAA neighbour blend pass
+------------------------------------------------------------------
+References:
+https://github.com/iryoku/smaa
+------------------------------------------------------------------
+Back to the Roots
+*/
+
 #include "common.h"
 
-#if defined(SM_4_1) || defined(SM_5)
-	#define SMAA_HLSL_4_1
-#else
-	#define SMAA_HLSL_4
-#endif
-#define SMAA_RT_METRICS screen_res.zwxy
+#define SMAA_HLSL_4_1
 
-/*#if !defined(PP_AA_QUALITY) || (PP_AA_QUALITY <= 1) || (PP_AA_QUALITY > 4)
-	#define	SMAA_PRESET_LOW
-#elif PP_AA_QUALITY == 2
-	#define	SMAA_PRESET_MEDIUM
-#elif PP_AA_QUALITY == 3
-	#define	SMAA_PRESET_HIGH
-#elif PP_AA_QUALITY == 4*/
-	#define	SMAA_PRESET_ULTRA
-//#endif
+#define SMAA_RT_METRICS screen_res.zwxy
+#define	SMAA_PRESET_ULTRA
 
 #include "smaa.h"
 
 Texture2D s_blendtex;
 
-struct _in
+struct p_smaa
 {
-	float4  pos : SV_Position;
-	float2	tc0 : TEXCOORD0;
+	float4 hpos			: SV_Position;
+	float2 tc0			: TEXCOORD0;        // Texture coordinates         (for sampling maps)
+	float4 offset		: TEXCOORD2;
 };
 
-float4 main(_in I) : SV_Target
+float4 main(p_smaa I) : SV_Target
 {
-	// RainbowZerg: offset calculation can be moved to VS or CPU...
-	float4 offset = mad(SMAA_RT_METRICS.xyxy, float4(1.0f, 0.0f, 0.0f, 1.0f), I.tc0.xyxy);
-	return SMAANeighborhoodBlendingPS(I.tc0, offset, s_image, s_blendtex);
-};
+	return SMAANeighborhoodBlendingPS(I.tc0, I.offset, s_image, s_blendtex);
+}

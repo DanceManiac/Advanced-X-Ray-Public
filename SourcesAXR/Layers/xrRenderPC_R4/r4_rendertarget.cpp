@@ -472,13 +472,14 @@ CRenderTarget::CRenderTarget		()
 		rt_secondVP.create		(r2_RT_secondVP, vp_params_main_secondary, D3DFMT_A8R8G8B8, 1	); //--#SM+#-- +SecondVP+
 		rt_ui_pda.create		(r2_RT_ui, vp_params_main_secondary, D3DFMT_A8R8G8B8			);
 
+		//SMAA
+		rt_smaa_edgetex.create	(r2_RT_smaa_edgetex, vp_params_main_secondary, D3DFMT_A8R8G8B8	);
+		rt_smaa_blendtex.create	(r2_RT_smaa_blendtex, vp_params_main_secondary, D3DFMT_A8R8G8B8	);
+
 		if( RImplementation.o.dx10_msaa )
 		{
 			rt_Generic_0_r.create			(r2_RT_generic0_r, vp_params_main_secondary,D3DFMT_A8R8G8B8, SampleCount	);
 			rt_Generic_1_r.create			(r2_RT_generic1_r, vp_params_main_secondary,D3DFMT_A8R8G8B8, SampleCount		);
-
-			rt_smaa_edgetex.create(r2_RT_smaa_edgetex, vp_params_main_secondary, D3DFMT_A8R8G8B8);
-			rt_smaa_blendtex.create(r2_RT_smaa_blendtex, vp_params_main_secondary, D3DFMT_A8R8G8B8);
 		}
 
 		// RT - KD
@@ -518,7 +519,7 @@ CRenderTarget::CRenderTarget		()
 	//DLAA
 	s_dlaa.create("effects_dlaa");
 	// SMAA
-	s_smaa.create(b_smaa, "r3\\smaa");
+	s_smaa.create(b_smaa);
 
 	//Vignette
 	s_vignette.create(b_vignette, "r3\\vignette");
