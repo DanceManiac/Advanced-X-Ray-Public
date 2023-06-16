@@ -1664,7 +1664,13 @@ void CActor::OnItemDrop(CInventoryItem *inventory_item)
 		outfit->ApplySkinModel	(this, false, false);
 	}
 
-	
+	CWeapon* weapon = smart_cast<CWeapon*>(inventory_item);
+	if (weapon && inventory_item->m_eItemCurrPlace == EItemPlaceSlot)
+	{
+		weapon->OnZoomOut();
+		if (weapon->GetRememberActorNVisnStatus())
+			weapon->EnableActorNVisnAfterZoom();
+	}
 }
 
 

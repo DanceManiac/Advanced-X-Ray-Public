@@ -21,6 +21,7 @@
 #include "debug_renderer.h"
 #include "static_cast_checked.hpp"
 #include "clsid_game.h"
+#include "weaponBinocularsVision.h"
 #include "ui/UIWindow.h"
 #include "ui/UIXmlInit.h"
 #include "Torch.h"
@@ -60,6 +61,9 @@ CWeapon::CWeapon()
 
 	m_zoom_params.m_fCurrentZoomFactor			= g_fov;
 	m_zoom_params.m_fZoomRotationFactor			= 0.f;
+	m_zoom_params.m_fZoomRotationFactor			= 0.f;
+	m_zoom_params.m_pVision						= nullptr;
+	m_zoom_params.m_pNight_vision				= nullptr;
 	m_zoom_params.m_fSecondVPFovFactor			= 0.0f;
 
 	m_pAmmo					= NULL;
@@ -86,6 +90,7 @@ CWeapon::CWeapon()
 	m_set_next_ammoType_on_reload = u32(-1);
 	m_crosshair_inertion	= 0.f;
 	m_cur_scope				= NULL;
+	m_bRememberActorNVisnStatus = false;
 	m_freelook_switch_back	= false;
 	m_fLR_MovingFactor = 0.f;
 	m_fLR_CameraFactor = 0.f;
@@ -1308,6 +1313,30 @@ void CWeapon::UpdateCL		()
 			}
 		}
 	}
+
+	if (m_zoom_params.m_pNight_vision && !need_renderable())
+	{
+		if (!m_zoom_params.m_pNight_vision->IsActive())
+		{
+			CActor* pA = smart_cast<CActor*>(H_Parent());
+			R_ASSERT(pA);
+			if (pA->GetNightVisionStatus())
+			{
+				m_bRememberActorNVisnStatus = pA->GetNightVisionStatus();
+				pA->SwitchNightVision(false, false, false);
+			}
+			m_zoom_params.m_pNight_vision->StartForScope(m_zoom_params.m_sUseZoomPostprocess, pA, false);
+		}
+
+	}
+	else if (m_bRememberActorNVisnStatus)
+	{
+		m_bRememberActorNVisnStatus = false;
+		EnableActorNVisnAfterZoom();
+	}
+
+	if (m_zoom_params.m_pVision)
+		m_zoom_params.m_pVision->Update();
 }
 
 void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset)
@@ -1461,6 +1490,19 @@ void CWeapon::UpdateFlashlight()
 				flashlight_glow->set_color(fclr);
 			}
 		}
+	}
+}
+
+void CWeapon::EnableActorNVisnAfterZoom()
+{
+	CActor* pA = smart_cast<CActor*>(H_Parent());
+	if (IsGameTypeSingle() && !pA)
+		pA = g_actor;
+
+	if (pA)
+	{
+		pA->SwitchNightVision(true, false, false);
+		pA->GetNightVision()->PlaySounds(CNightVisionEffector::eIdleSound);
 	}
 }
 
@@ -2188,8 +2230,8 @@ void CWeapon::OnZoomIn()
 	if (GetHUDmode())
 		GamePersistent().SetPickableEffectorDOF(true);
 
-	/*if (m_zoom_params.m_sUseBinocularVision.size() && IsScopeAttached() && NULL == m_zoom_params.m_pVision)
-		m_zoom_params.m_pVision = xr_new<CBinocularsVision>(m_zoom_params.m_sUseBinocularVision);*/
+	if (m_zoom_params.m_sUseBinocularVision.size() && IsScopeAttached() && NULL == m_zoom_params.m_pVision)
+		m_zoom_params.m_pVision = xr_new<CBinocularsVision>(m_zoom_params.m_sUseBinocularVision);
 
 	if (pA && IsScopeAttached())
 	{
@@ -2200,13 +2242,13 @@ void CWeapon::OnZoomIn()
 				OnZoomOut();
 			}
 		}
-		/*else if (m_zoom_params.m_sUseZoomPostprocess.size())
+		else if (m_zoom_params.m_sUseZoomPostprocess.size())
 		{
 			if (NULL == m_zoom_params.m_pNight_vision)
 			{
 				m_zoom_params.m_pNight_vision = xr_new<CNightVisionEffector>(m_zoom_params.m_sUseZoomPostprocess);
 			}
-		}*/
+		}
 	}
 	g_player_hud->updateMovementLayerState();
 }
@@ -2235,12 +2277,13 @@ void CWeapon::OnZoomOut()
 
 	ResetSubStateTime();
 
-	/*xr_delete(m_zoom_params.m_pVision);
+	xr_delete(m_zoom_params.m_pVision);
+
 	if (m_zoom_params.m_pNight_vision)
 	{
-		m_zoom_params.m_pNight_vision->Stop(100000.0f, false);
+		m_zoom_params.m_pNight_vision->StopForScope(100000.0f, false);
 		xr_delete(m_zoom_params.m_pNight_vision);
-	}*/
+	}
 	g_player_hud->updateMovementLayerState();
 }
 
@@ -2976,6 +3019,9 @@ bool CWeapon::render_item_ui_query()
 
 void CWeapon::render_item_ui()
 {
+	if (m_zoom_params.m_pVision)
+		m_zoom_params.m_pVision->Draw();
+
 	ZoomTexture()->Update	();
 	ZoomTexture()->Draw		();
 }

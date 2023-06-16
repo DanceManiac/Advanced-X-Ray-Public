@@ -21,6 +21,8 @@ class CSE_ALifeItemWeaponAmmo;
 class CWeaponMagazined;
 class CParticlesObject;
 class CUIWindow;
+class CBinocularsVision;
+class CNightVisionEffector;
 class CLAItem;
 
 #define WEAPON_INDOOR_HEMI_FACTOR 0.01f
@@ -282,6 +284,8 @@ protected:
 		shared_str		m_sUseBinocularVision;
 		BOOL			m_bUseDynamicZoom;
 		shared_str		m_sUseZoomPostprocess;
+		CBinocularsVision*		m_pVision;
+		CNightVisionEffector*	m_pNight_vision;
 
 	} m_zoom_params;
 	
@@ -555,13 +559,15 @@ protected:
 
 private:
 	float					m_hit_probability[egdCount];
-
+	bool					m_bRememberActorNVisnStatus;
 public:
 	const float				&hit_probability			() const;
 	
 	virtual void				DumpActiveParams			(shared_str const & section_name, CInifile & dst_ini) const;
 	virtual shared_str const	GetAnticheatSectionName		() const { return cNameSect(); };
 	virtual void				OnBulletHit();
+			bool				GetRememberActorNVisnStatus	() { return m_bRememberActorNVisnStatus; };
+	virtual void				EnableActorNVisnAfterZoom	();
 
 	virtual void processing_deactivate() override
 	{
