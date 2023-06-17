@@ -13,7 +13,9 @@ void CWeaponBM16::Load	(LPCSTR section)
 
 void CWeaponBM16::PlayReloadSound()
 {
-	if(m_magazine.size()==1)	
+	bool b_both = HaveCartridgeInInventory(2);
+
+	if (m_magazine.size() == 1 || !b_both)
 		PlaySound	("sndReload1",get_LastFP());
 	else						
 		PlaySound	("sndReload",get_LastFP());
