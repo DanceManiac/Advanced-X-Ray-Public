@@ -225,7 +225,7 @@ CUIDragItem* CUICellItem::CreateDragItem()
 		r.y2			= r.y1 + t1;
 	}
 
-	if (Heading())
+	if (Heading() && UI()->is_16_9_mode())
 	{
 		r.y2 /= UI()->get_current_kx() * 1.26f;
 		r.x2 /= UI()->get_current_kx() * 1.3f;
