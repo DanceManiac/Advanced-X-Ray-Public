@@ -39,6 +39,8 @@ protected:
 	CUIStatic*				m_text; 
 	CUIStatic*				m_upgrade;
 	Fvector2				m_upgrade_pos;
+	CUIStatic*				m_qmark;
+	Fvector2				m_qmark_pos;
 
 	virtual void			UpdateItemText			();
 			void			init					();
@@ -87,6 +89,7 @@ public:
 				bool		m_select_armament;
 				bool		m_cur_mark;
 				bool		m_has_upgrade;
+				bool		m_is_quest;
 };
 
 class CUIDragItem: public CUIWindow, public pureRender, public pureFrame

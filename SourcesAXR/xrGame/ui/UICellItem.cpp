@@ -27,7 +27,7 @@ CUICellItem::CUICellItem()
 	m_pData				= nullptr;
 	m_custom_draw		= nullptr;
 	m_text				= nullptr;
-//-	m_mark				= NULL;
+	m_qmark				= nullptr;
 	m_upgrade			= nullptr;
 	m_pConditionState	= nullptr;
 	m_pPortionsState	= nullptr;
@@ -39,6 +39,7 @@ CUICellItem::CUICellItem()
 	m_select_armament	= false;
 	m_cur_mark			= false;
 	m_has_upgrade		= false;
+	m_is_quest			= false;
 	
 	init();
 }
@@ -62,11 +63,12 @@ void CUICellItem::init()
 	CUIXmlInit::InitStatic	( uiXml, "cell_item_text", 0, m_text );
 	m_text->Show			( false );
 
-/*	m_mark					= xr_new<CUIStatic>();
-	m_mark->SetAutoDelete	( true );
-	AttachChild				( m_mark );
-	CUIXmlInit::InitStatic	( uiXml, "cell_item_mark", 0, m_mark );
-	m_mark->Show			( false );*/
+	m_qmark					= xr_new<CUIStatic>();
+	m_qmark->SetAutoDelete	( true );
+	AttachChild				( m_qmark );
+	CUIXmlInit::InitStatic	( uiXml, "cell_item_quest_mark", 0, m_qmark );
+	m_qmark_pos				= m_qmark->GetWndPos();
+	m_qmark->Show			( false );
 
 	m_upgrade				= xr_new<CUIStatic>();
 	m_upgrade->SetAutoDelete( true );
@@ -133,20 +135,34 @@ void CUICellItem::Update()
 	PIItem item = (PIItem)m_pData;
 	if ( item )
 	{
-		m_has_upgrade = item->has_any_upgrades();
+		m_has_upgrade	= item->has_any_upgrades();
+		m_is_quest		= item->IsQuestItem();
 
 //		Fvector2 size      = GetWndSize();
 //		Fvector2 up_size = m_upgrade->GetWndSize();
 //		pos.x = size.x - up_size.x - 4.0f;
 		Fvector2 pos;
-		pos.set( m_upgrade_pos );
-		if ( ChildsCount() )
+		if (m_has_upgrade)
 		{
-			pos.x += m_text->GetWndSize().x + 2.0f;
+			pos.set(m_upgrade_pos);
+			if (ChildsCount())
+			{
+				pos.x				+= m_text->GetWndSize().x + 2.0f;
+			}
+			m_upgrade->SetWndPos	(pos);
 		}
-		m_upgrade->SetWndPos( pos );
+		if (m_is_quest)
+		{
+			pos.set(m_qmark_pos);
+			Fvector2 size		= GetWndSize();
+			Fvector2 up_size	= m_qmark->GetWndSize();
+			pos.x				= size.x - up_size.x - 4.0f;// making pos at right-end of cell
+			pos.y				= size.y - up_size.y - 4.0f;// making pos at bottom-end of cell
+			m_qmark->SetWndPos	(pos);
+		}
 	}
-	m_upgrade->Show( m_has_upgrade );
+	m_upgrade->Show		(m_has_upgrade);
+	m_qmark->Show		(m_is_quest);
 }
 
 bool CUICellItem::OnMouseAction(float x, float y, EUIMessages mouse_action)

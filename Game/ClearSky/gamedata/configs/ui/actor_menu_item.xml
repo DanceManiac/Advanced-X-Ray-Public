@@ -132,9 +132,10 @@
 		<text x="0" y="0" width="29" height="16" font="letterica16" color="ui_2" align="c" vert_align="c"/>
 	</cell_item_text>
 
-	<cell_item_mark x="1" y="1" width="15" height="15">
-		<texture a="130">ui_icons_newPDA_perssign_h</texture>
-	</cell_item_mark>
+	<cell_item_quest_mark x="0" y="0" width="11" height="11" stretch="1">
+		<texture>ui_item_mark_quest</texture>
+		<texture_offset x="2" y="2"/>
+	</cell_item_quest_mark>
 
 	<cell_item_upgrade x="1" y="1" width="16" height="16">
 		<texture a="180">ui_upgrade_arrow2</texture>
