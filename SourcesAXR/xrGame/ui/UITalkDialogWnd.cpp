@@ -226,7 +226,7 @@ void CUITalkDialogWnd::AddAnswer(LPCSTR SpeakerName, LPCSTR str, bool bActor)
 	m_pOurInvOwner = smart_cast<CInventoryOwner*>(Actor());
 	m_pOthersInvOwner = Actor()->GetTalkPartner();
 
-	auto owner = bActor ? m_pOurInvOwner->IconName() : m_pOthersInvOwner->IconName();
+	auto owner = bActor ? m_pOurInvOwner->IconName() : (m_pOthersInvOwner ? m_pOthersInvOwner->IconName() : m_pOurInvOwner->IconName());
 
 	news_data.texture_name			= (bActor) ? owner : ci.IconName();
 	news_data.receive_time			= Level().GetGameTime();
