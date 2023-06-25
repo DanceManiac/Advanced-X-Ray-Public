@@ -21,6 +21,7 @@
 #include "WeaponMagazinedWGrenade.h"
 #include "Actor.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 
 bool CInventoryItem::has_upgrade_group( const shared_str& upgrade_group_id )
 {
@@ -246,6 +247,14 @@ void CInventoryItem::pre_install_upgrade()
 		return;
 	}
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(this);
-	if (Actor()->GetOutfit() && Actor()->GetOutfit()->ID() == pOutfit->ID() && pOutfit->m_NightVisionSect != 0 && Actor()->GetNightVisionStatus())
+	CHelmet* pHelmet = smart_cast<CHelmet*>(this);
+
+	if (!pHelmet && pOutfit && Actor()->GetOutfit() && Actor()->GetOutfit()->ID() == pOutfit->ID() && pOutfit->m_NightVisionSect != 0 && Actor()->GetNightVisionStatus())
+	{
+		Actor()->SwitchNightVision(false);
+		return;
+	}
+
+	if (!pOutfit && pHelmet && Actor()->GetHelmet() && Actor()->GetHelmet()->ID() == pHelmet->ID() && pHelmet->m_NightVisionSect != 0 && Actor()->GetNightVisionStatus())
 		Actor()->SwitchNightVision(false);
 }
