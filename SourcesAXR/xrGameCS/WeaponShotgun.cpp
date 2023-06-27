@@ -172,26 +172,30 @@ void CWeaponShotgun::PlayAnimCloseWeapon()
 	PlayHUDMotionIfExists({ "anm_close_weapon", "anm_close" }, false, GetState());
 }
 
-bool CWeaponShotgun::HaveCartridgeInInventory(u8 cnt)
+bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 {
-	if (unlimited_ammo())	return true;
-	if (!m_pInventory)		return false;
-
-	u32 ac = GetAmmoCount(m_ammoType);
-	if (ac < cnt)
+	if (unlimited_ammo()) return true;
+	m_pAmmo = NULL;
+	if(m_pInventory) 
 	{
-		for (u8 i = 0; i < u8(m_ammoTypes.size()); ++i)
+		//попытатьс€ найти в инвентаре патроны текущего типа 
+		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[m_ammoType]));
+		
+		if(!m_pAmmo )
 		{
-			if (m_ammoType == i) continue;
-			ac += GetAmmoCount(i);
-			if (ac >= cnt)
+			for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 			{
-				m_ammoType = i;
-				break;
+				//проверить патроны всех подход€щих типов
+				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[i]));
+				if(m_pAmmo) 
+				{ 
+					m_ammoType = i; 
+					break; 
+				}
 			}
 		}
 	}
-	return ac >= cnt;
+	return (m_pAmmo!=NULL)&&(m_pAmmo->m_boxCurr>=cnt) ;
 }
 
 u8 CWeaponShotgun::AddCartridge		(u8 cnt)
