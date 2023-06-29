@@ -77,6 +77,15 @@ ENGINE_API Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
 ENGINE_API float ps_ssfx_wpn_dof_2 = 1.0f;
 ENGINE_API int ps_rs_loading_stages = 0;
 
+//Rain
+ENGINE_API int	rain_max_desired_items = 2500;
+ENGINE_API float rain_source_radius = 12.5f;
+ENGINE_API float rain_source_offset = 40.0f;
+ENGINE_API float rain_max_distance_koef = 1.25f;
+ENGINE_API float rain_particles_time = 0.3f;
+ENGINE_API int	rain_max_particles = 1000;
+ENGINE_API int	rain_particles_cache = 400;
+
 extern float psHUD_FOV_def;
 extern float psHUD_FOV;
 
@@ -284,6 +293,15 @@ PROTECT_API void InitSettings()
 
 	psHUD_FOV_def = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "HUD_FOV", 0.45f);
 	psHUD_FOV = psHUD_FOV_def;
+
+	//Rain
+	rain_max_desired_items	= READ_IF_EXISTS(pAdvancedSettings, r_u32,		"precipitation_params", "max_desired_items",	2500);
+	rain_source_radius		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "source_radius",		12.5f);
+	rain_source_offset		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "source_offset",		40.0f);
+	rain_max_distance_koef	= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "max_distance_koef",	1.25f);
+	rain_particles_time		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "particles_time",		0.3f);
+	rain_max_particles		= READ_IF_EXISTS(pAdvancedSettings, r_u32,		"precipitation_params", "max_particles",		1000);
+	rain_particles_cache	= READ_IF_EXISTS(pAdvancedSettings, r_u32,		"precipitation_params", "particles_cache",		400);
 
 	Msg("# Engine Mode: %s", EngineMode);
 	Msg("# Developer Mode: %d", bDeveloperMode);

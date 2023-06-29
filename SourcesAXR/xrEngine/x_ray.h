@@ -81,4 +81,13 @@ ENGINE_API extern float fHUDFov;
 ENGINE_API extern Fvector4 ps_ssfx_wpn_dof_1;
 ENGINE_API extern float ps_ssfx_wpn_dof_2;
 
+//Rain
+ENGINE_API extern int	rain_max_desired_items;
+ENGINE_API extern float rain_source_radius;
+ENGINE_API extern float rain_source_offset;
+ENGINE_API extern float rain_max_distance_koef;
+ENGINE_API extern float rain_particles_time;
+ENGINE_API extern int	rain_max_particles;
+ENGINE_API extern int	rain_particles_cache;
+
 #endif //__XR_BASE_H__

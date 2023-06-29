@@ -16,15 +16,15 @@
 #endif
 
 //	Warning: duplicated in dxRainRender
-static const int	max_desired_items	= 2500;
-static const float	source_radius		= 12.5f;
-static const float	source_offset		= 40.f;
-static const float	max_distance		= source_offset*1.25f;
+static const int	max_desired_items	= rain_max_desired_items;
+static const float	source_radius		= rain_source_radius;
+static const float	source_offset		= rain_source_offset;
+static const float	max_distance		= source_offset * rain_max_distance_koef;
 static const float	sink_offset			= -(max_distance-source_offset);
 
-const int	max_particles		= 1000;
-const int	particles_cache		= 400;
-const float particles_time		= .3f;
+const int	max_particles		= rain_max_particles;
+const int	particles_cache		= rain_particles_cache;
+const float particles_time		= rain_particles_time;
  
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
