@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "UIDialogWnd.h"
 #include "UIWndCallback.h"
@@ -187,6 +187,7 @@ private:
 	void						PropertiesBoxForWeapon		(CUICellItem* cell_item, PIItem item, bool& b_show);
 	void						PropertiesBoxForAddon		(PIItem item, bool& b_show);
 	void						PropertiesBoxForUsing		(PIItem item, bool& b_show);
+	void						PropertiesBoxForPlaying		(PIItem item, bool& b_show);
 	void						PropertiesBoxForDrop		(CUICellItem* cell_item, PIItem item, bool& b_show);
 	void						PropertiesBoxForRepair		(PIItem item, bool& b_show);
 

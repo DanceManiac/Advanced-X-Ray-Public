@@ -31,6 +31,7 @@
 #include "../MPPlayersBag.h"
 #include "../HUDManager.h"
 #include "../player_hud.h"
+#include "../PDA.h"
 #include "../Actor.h"
 #include "AdvancedXrayGameConstants.h"
 
@@ -875,7 +876,7 @@ void CUIActorMenu::PropertiesBoxForSlots( PIItem item, bool& b_show )
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>( item );
 	CInventory*  inv = &m_pActorInvOwner->inventory();
 
-	// Флаг-признак для невлючения пункта контекстного меню: Dreess Outfit, если костюм уже надет
+	// Р¤Р»Р°Рі-РїСЂРёР·РЅР°Рє РґР»СЏ РЅРµРІР»СЋС‡РµРЅРёСЏ РїСѓРЅРєС‚Р° РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ: Dreess Outfit, РµСЃР»Рё РєРѕСЃС‚СЋРј СѓР¶Рµ РЅР°РґРµС‚
 	bool bAlreadyDressed = false;
 	u32 const cur_slot = item->GetSlot();
 
@@ -914,7 +915,7 @@ void CUIActorMenu::PropertiesBoxForSlots( PIItem item, bool& b_show )
 
 void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, bool& b_show )
 {
-	//отсоединение аддонов от вещи
+	//РѕС‚СЃРѕРµРґРёРЅРµРЅРёРµ Р°РґРґРѕРЅРѕРІ РѕС‚ РІРµС‰Рё
 	CWeapon*	pWeapon = smart_cast<CWeapon*>( item );
 	if ( !pWeapon )
 	{
@@ -961,7 +962,7 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 
 void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 {
-	//присоединение аддонов к активному слоту (2 или 3)
+	//РїСЂРёСЃРѕРµРґРёРЅРµРЅРёРµ Р°РґРґРѕРЅРѕРІ Рє Р°РєС‚РёРІРЅРѕРјСѓ СЃР»РѕС‚Сѓ (2 РёР»Рё 3)
 
 	CScope*				pScope				= smart_cast<CScope*>			(item);
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(item);
@@ -1158,6 +1159,17 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	}
 }
 
+void CUIActorMenu::PropertiesBoxForPlaying(PIItem item, bool& b_show)
+{
+	CPda* pPda = smart_cast<CPda*>(item);
+	if(!pPda || !pPda->CanPlayScriptFunction())
+		return;
+
+	LPCSTR act_str = "st_play";
+	m_UIPropertiesBox->AddItem(act_str,  NULL, INVENTORY_PLAY_ACTION);
+	b_show = true;
+}
+
 void CUIActorMenu::PropertiesBoxForDrop( CUICellItem* cell_item, PIItem item, bool& b_show )
 {
 	if ( !item->IsQuestItem() )
@@ -1263,6 +1275,14 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 		{
 			TryRepairItem(this,0);
 			return;
+			break;
+		}
+	case INVENTORY_PLAY_ACTION:
+		{
+			CPda* pPda = smart_cast<CPda*>(item);
+			if(!pPda)
+				break;
+			pPda->PlayScriptFunction();
 			break;
 		}
 	case BATTERY_CHARGE_TORCH:
