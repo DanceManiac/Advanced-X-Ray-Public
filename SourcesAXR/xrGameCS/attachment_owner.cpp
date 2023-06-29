@@ -59,7 +59,7 @@ void CAttachmentOwner::renderable_Render		()
 		(*I)->renderable_Render();
 }
 
-void  AttachmentCallback(IKinematics *tpKinematics)
+void _BCL AttachmentCallback(IKinematics *tpKinematics)
 {
 	CGameObject				*game_object = smart_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->GetUpdateCallbackParam()));
 	VERIFY					(game_object);
@@ -71,9 +71,12 @@ void  AttachmentCallback(IKinematics *tpKinematics)
 
 	xr_vector<CAttachableItem*>::const_iterator	I = attachment_owner->attached_objects().begin();
 	xr_vector<CAttachableItem*>::const_iterator	E = attachment_owner->attached_objects().end();
-	for ( ; I != E; ++I) {
-		(*I)->item().object().XFORM().mul_43	(kinematics->LL_GetBoneInstance((*I)->bone_id()).mTransform,(*I)->offset());
-		(*I)->item().object().XFORM().mulA_43	(game_object->XFORM());
+	for (; I != E; ++I) 
+	{
+        Fmatrix bone_mtx;
+        kinematics->Bone_GetAnimPos(bone_mtx, (*I)->bone_id(), u8(-1), false);
+        (*I)->item().object().XFORM().mul_43(bone_mtx, (*I)->offset());
+        (*I)->item().object().XFORM().mulA_43(game_object->XFORM());
 	}
 }
 
