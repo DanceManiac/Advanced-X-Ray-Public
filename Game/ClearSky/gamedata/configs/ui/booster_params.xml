@@ -11,7 +11,7 @@
 			<texture>ui_inv_icon_health_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
 		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="10000">
+		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</boost_health_restore>
@@ -22,7 +22,7 @@
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
 		</caption>
 <!--		<texture_minus>ui_am_prop_radio_restore</texture_minus> -->
-		<value x="140" y="0" width="30" height="20" magnitude="1000">
+		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</boost_radiation_restore>
@@ -42,7 +42,7 @@
 			<texture>ui_inv_icon_power_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
 		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="2000">
+		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</boost_power_restore>
@@ -52,7 +52,7 @@
 			<texture>ui_inv_icon_bleeding_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
 		</caption>
-		<value x="140" y="0" width="30" height="20" magnitude="1000">
+		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</boost_bleeding_restore>
