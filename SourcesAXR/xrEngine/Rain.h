@@ -72,6 +72,7 @@ private:
 	ref_sound						snd_RainOnMask;
 	
 	bool							m_bWindWorking;
+	float							m_fWindVolumeKoef;
 
 	// Utilities
 	void							p_create		();

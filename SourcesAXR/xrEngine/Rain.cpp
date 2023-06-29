@@ -37,6 +37,8 @@ CEffect_Rain::CEffect_Rain()
 	snd_Wind.create("mfs_team\\ambient\\weather\\wind", st_Effect, sg_Undefined);
 	m_bWindWorking = false;
 	
+	m_fWindVolumeKoef = READ_IF_EXISTS(pAdvancedSettings, r_float, "environment", "wind_volume_koef", 0.0f);
+
 	if (!bWinterMode)
 	{
 		snd_Ambient.create("mfs_team\\ambient\\weather\\rain", st_Effect, sg_Undefined);
@@ -141,7 +143,7 @@ void	CEffect_Rain::OnFrame	()
 
 	// Parse states
 	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
-	float	wind_volume			= g_pGamePersistent->Environment().CurrentEnv->wind_velocity/6;
+	float	wind_volume			= (g_pGamePersistent->Environment().CurrentEnv->wind_velocity/100) * m_fWindVolumeKoef;
 	bool	wind_enabled		= (wind_volume >= EPS_L);
 	static float hemi_factor	= 0.f;
 #ifndef _EDITOR
