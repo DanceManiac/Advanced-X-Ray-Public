@@ -141,6 +141,18 @@ void CUIActorMenu::DeInitDeadBodySearchMode()
 
 bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)
 {
+	if ( m_pPartnerInvOwner )
+	{
+		if ( !m_pPartnerInvOwner->deadbody_can_take_status() )
+		{
+			return false;
+		}
+	}
+
+	PIItem quest_item					= (PIItem)itm->m_pData;
+	if(quest_item->IsQuestItem())
+		return false;
+
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= NULL;
 
@@ -159,7 +171,7 @@ bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)
 		new_owner->SetItem				(i);
 
 	PIItem iitem						= (PIItem)i->m_pData;
-	
+
 	if ( m_pPartnerInvOwner )
 	{
 		move_item_from_to				(m_pActorInvOwner->object_id(), m_pPartnerInvOwner->object_id(), iitem->object_id());
@@ -170,7 +182,7 @@ bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)
 	}
 	else if (m_pCar) //car trunk
 	{
-		move_item_from_to(m_pActorInvOwner->object_id(), m_pCar->ID(), iitem->object_id());
+		move_item_from_to				(m_pActorInvOwner->object_id(), m_pCar->ID(), iitem->object_id());
 	}
 	
 	UpdateDeadBodyBag();
