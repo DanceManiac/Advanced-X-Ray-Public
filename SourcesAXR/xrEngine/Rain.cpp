@@ -34,9 +34,7 @@ CEffect_Rain::CEffect_Rain()
 {
 	state							= stIdle;
 	
-	if (bWeatherWindSound)
-		snd_Wind.create("mfs_team\\ambient\\weather\\wind", st_Effect, sg_Undefined);
-
+	snd_Wind.create("mfs_team\\ambient\\weather\\wind", st_Effect, sg_Undefined);
 	m_bWindWorking = false;
 	
 	if (!bWinterMode)
@@ -73,9 +71,7 @@ CEffect_Rain::~CEffect_Rain()
 		snd_Ambient.destroy();
 		snd_RainOnMask.destroy();
 	}
-
-	if (bWeatherWindSound)
-		snd_Wind.destroy();
+	snd_Wind.destroy();
 
 	// Cleanup
 	p_destroy						();
@@ -167,34 +163,31 @@ void	CEffect_Rain::OnFrame	()
 	}
 #endif
 
-	if (bWeatherWindSound)
+	if (!m_bWindWorking)
 	{
-		if (!m_bWindWorking)
+		if (wind_enabled)
 		{
-			if (wind_enabled)
+			snd_Wind.play		(0,sm_Looped);
+			snd_Wind.set_position(Fvector().set(0,0,0));
+			snd_Wind.set_range	(source_offset,source_offset*2.f);	
+			
+			m_bWindWorking = true;
+		}
+	}
+	else
+	{
+		if (wind_enabled)
+		{
+			//Wind Sound
+			if (snd_Wind._feedback())
 			{
-				snd_Wind.play(0, sm_Looped);
-				snd_Wind.set_position(Fvector().set(0, 0, 0));
-				snd_Wind.set_range(source_offset, source_offset * 2.f);
-
-				m_bWindWorking = true;
-			}
+				snd_Wind.set_volume(_max(0.1f, wind_volume) * hemi_factor);
+			}	
 		}
 		else
 		{
-			if (wind_enabled)
-			{
-				//Wind Sound
-				if (snd_Wind._feedback())
-				{
-					snd_Wind.set_volume(_max(0.1f, wind_volume) * hemi_factor);
-				}
-			}
-			else
-			{
-				snd_Wind.stop();
-				m_bWindWorking = false;
-			}
+			snd_Wind.stop();
+			m_bWindWorking = false;
 		}
 	}
 	
