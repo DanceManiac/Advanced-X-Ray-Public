@@ -183,10 +183,7 @@ protected:
 	virtual void	PlayAnimIdleMoving	();
 	virtual void	PlayAnimFireMode	();
 
-private:
-	string64 guns_aim_anm;
 protected:
-	const	char*	GetAnimAimName		();
 
 	virtual void    SetAnimFlag(u32 flag, LPCSTR anim_name);
 

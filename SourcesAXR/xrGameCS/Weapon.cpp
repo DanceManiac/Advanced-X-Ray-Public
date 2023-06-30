@@ -3250,6 +3250,56 @@ void CWeapon::UpdateSecondVP(bool bInGrenade)
 	Device.m_SecondViewport.SetSVPActive(bCond_1 && bCond_2 && bCond_3);
 }
 
+const char* CWeapon::GetAnimAimName()
+{
+	auto pActor = smart_cast<const CActor*>(H_Parent());
+	if (pActor)
+	{
+		const u32 state = pActor->get_state();
+
+		if (state && state & mcAnyMove)
+		{
+			if (IsScopeAttached())
+				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_scope_moving", (IsMisfire()) ? "_jummed" : (IsMagazineEmpty()) ? "_empty" : "");
+			else
+				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+		}
+	}
+	return nullptr;
+}
+
+const char* CWeapon::GenerateAimAnimName(string64 base_anim)
+{
+	auto pActor = smart_cast<const CActor*>(H_Parent());
+	if (pActor)
+	{
+		const u32 state = pActor->get_state();
+
+		string64 buff;
+
+		if (state & mcAnyMove)
+		{
+			if (!(state & mcCrouch))
+			{
+				if (state & mcAccel) //Ходьба медленная (SHIFT)
+					return strconcat(sizeof(buff), buff, base_anim, "_slow");
+				else
+					return base_anim;
+			}
+			else if (state & mcAccel) //Ходьба в присяде (CTRL+SHIFT)
+			{
+				return strconcat(sizeof(buff), buff, base_anim, "_crouch_slow");
+			}
+			else
+			{
+				return strconcat(sizeof(buff), buff, base_anim, "_crouch");
+			}
+		}
+	}
+
+	return base_anim;
+}
+
 void CWeapon::OnBulletHit() 
 {
 	if (!fis_zero(conditionDecreasePerShotOnHit))

@@ -172,6 +172,30 @@ void CWeaponShotgun::PlayAnimCloseWeapon()
 	PlayHUDMotionIfExists({ "anm_close_weapon", "anm_close" }, false, GetState());
 }
 
+void CWeaponShotgun::PlayAnimAim()
+{
+	if (IsRotatingToZoom())
+	{
+		if (isHUDAnimationExist("anm_idle_aim_start"))
+		{
+			PlayHUDMotionNew("anm_idle_aim_start", true, GetState());
+			return;
+		}
+	}
+
+	if (const char* guns_aim_anm = GetAnimAimName())
+	{
+		if (isHUDAnimationExist(guns_aim_anm))
+		{
+			PlayHUDMotionNew(guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+
+	if (isHUDAnimationExist("anm_idle_aim"))
+		PlayHUDMotion("anm_idle_aim", TRUE, NULL, GetState());
+}
+
 bool CWeaponShotgun::HaveCartridgeInInventory(u8 cnt)
 {
 	if (unlimited_ammo())	return true;

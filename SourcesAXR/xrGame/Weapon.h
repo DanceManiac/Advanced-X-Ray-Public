@@ -383,6 +383,8 @@ public:
 	virtual void			ForceUpdateFireParticles();
 	virtual void			debug_draw_firedeps		();
 
+private:
+	string64 guns_aim_anm;
 protected:
 	virtual void			SetDefaults				();
 	
@@ -391,6 +393,9 @@ protected:
 	virtual bool			IsMagazineEmpty			();
 	virtual void			OnStateSwitch			(u32 S);
 	virtual void			OnAnimationEnd			(u32 state);
+
+	const char*				GetAnimAimName			();
+	const char*				GenerateAimAnimName		(string64 base_anim);
 
 	//трассирование полета пули
 	virtual	void			FireTrace(const Fvector& P, const Fvector& D);

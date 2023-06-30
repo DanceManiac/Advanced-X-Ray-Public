@@ -24,6 +24,7 @@ public:
 
 	virtual void	PlayAnimOpenWeapon	();
 	virtual void	PlayAnimAddOneCartridgeWeapon();
+	virtual void	PlayAnimAim			();
 	void			PlayAnimCloseWeapon	();
 
 	virtual bool	Action(u16 cmd, u32 flags);

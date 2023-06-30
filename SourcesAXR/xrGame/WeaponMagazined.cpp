@@ -1523,27 +1523,6 @@ void CWeaponMagazined::PlayAnimReload()
 		PlayHUDMotion("anm_reload", TRUE, this, GetState());
 }
 
-const char* CWeaponMagazined::GetAnimAimName()
-{
-	auto pActor = smart_cast<const CActor*>(H_Parent());
-	if (pActor)
-	{
-		const u32 state = pActor->get_state();
-
-		if (state && state & mcAnyMove) 
-		{
-			if (IsScopeAttached()) 
-			{
-				strcpy_s(guns_aim_anm, "anm_idle_aim_scope_moving");
-				return guns_aim_anm;
-			}
-			else
-				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_moving", (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""));
-		}
-	}
-	return nullptr;
-}
-
 void CWeaponMagazined::PlayAnimAim()
 {
 	if (IsRotatingToZoom()) 
