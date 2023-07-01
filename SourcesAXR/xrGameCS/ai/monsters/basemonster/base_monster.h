@@ -368,6 +368,7 @@ public:
 	Fcolor						m_TrailLightColor;
 	float						m_fTrailLightRange;
 	bool						m_bLightsEnabled;
+	bool						m_bDisableDieLights;
 	bool						m_bVolumetricLights;
 	bool						m_bParticlesEnabled;
 	float						m_fVolumetricQuality;

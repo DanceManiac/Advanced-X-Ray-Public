@@ -107,6 +107,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	light_bone = "bip01_head";
 	particles_bone = "bip01_head";
 
+	m_bDisableDieLights				= true;
 	m_bDropItemAfterSuperAttack		= false;
 	m_iSuperAttackDropItemPer		= 50;
 
@@ -295,6 +296,9 @@ void CBaseMonster::Die(CObject* who)
 	if (m_controlled)			m_controlled->on_die();
 
 	SwitchMonsterParticles(false);
+
+	if (m_bDisableDieLights)
+		StopLights();
 }
 
 
