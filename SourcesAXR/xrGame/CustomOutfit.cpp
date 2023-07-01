@@ -87,12 +87,11 @@ void CCustomOutfit::OnH_A_Chield()
 void CCustomOutfit::UpdateFilterCondition(void)
 {
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
-	CUIHudStatesWnd* wnd = CurrentGameUI()->UIMainIngameWnd->get_hud_states();
 
 	if (outfit && m_bUseFilter)
 	{
-		float m_radia_hit = wnd->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
-		float m_chemical_hit = wnd->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
+		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
+		float m_chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
 		float uncharge_coef = ((m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
 
 		m_fFilterCondition -= uncharge_coef;

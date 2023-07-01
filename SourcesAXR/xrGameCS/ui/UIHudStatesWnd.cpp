@@ -7,6 +7,7 @@
 #include "../inventory.h"
 #include "../RadioactiveZone.h"
 
+#include "UIActorMenu.h"
 #include "UIStatic.h"
 #include "UIProgressBar.h"
 #include "UIProgressShape.h"
@@ -15,29 +16,14 @@
 #include "ui_arrow.h"
 #include "UIInventoryUtilities.h"
 #include "../HUDManager.h"
+#include "../UIGameCustom.h"
+#include "../UIGameSP.h"
 #include "AdvancedXrayGameConstants.h"
 
 CUIHudStatesWnd::CUIHudStatesWnd()
 {
 	m_last_time = Device.dwTimeGlobal;
-	m_radia_self         = 0.0f;
-	m_radia_hit          = 0.0f;
 	m_lanim_name         = NULL;
-//	m_actor_radia_factor = 0.0f;
-
-	for ( int i = 0; i < ALife::infl_max_count; ++i )
-	{
-		m_zone_cur_power[i] = 0.0f;
-//--		m_zone_max_power[i] = 1.0f;
-		m_zone_feel_radius[i] = 1.0f;
-	}
-	m_zone_hit_type[ALife::infl_rad ] = ALife::eHitTypeRadiation;
-	m_zone_hit_type[ALife::infl_fire] = ALife::eHitTypeBurn;
-	m_zone_hit_type[ALife::infl_acid] = ALife::eHitTypeChemicalBurn;
-	m_zone_hit_type[ALife::infl_psi ] = ALife::eHitTypeTelepatic;
-	m_zone_hit_type[ALife::infl_electra] = ALife::eHitTypeShock;
-
-	m_zone_feel_radius_max = 0.0f;
 	
 //-	Load_section();
 }
@@ -52,30 +38,6 @@ void CUIHudStatesWnd::reset_ui()
 	{
 		Level().hud_zones_list->clear();
 	}
-}
-
-ALife::EInfluenceType CUIHudStatesWnd::get_indik_type( ALife::EHitType hit_type )
-{
-	ALife::EInfluenceType iz_type = ALife::infl_max_count;
-	switch( hit_type )
-	{
-	case ALife::eHitTypeRadiation:		iz_type = ALife::infl_rad;		break;
-	case ALife::eHitTypeBurn:			iz_type = ALife::infl_fire;		break;
-	case ALife::eHitTypeChemicalBurn:	iz_type = ALife::infl_acid;		break;
-	case ALife::eHitTypeTelepatic:		iz_type = ALife::infl_psi;		break;
-	case ALife::eHitTypeShock:			iz_type = ALife::infl_electra;	break;// it hasnt CStatic
-
-	case ALife::eHitTypeStrike:
-	case ALife::eHitTypeWound:
-	case ALife::eHitTypeExplosion:
-	case ALife::eHitTypeFireWound:
-	case ALife::eHitTypeWound_2:
-	case ALife::eHitTypePhysicStrike:
-		return ALife::infl_max_count;
-	default:
-		NODEFAULT;
-	}
-	return iz_type;
 }
 
 void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
@@ -174,16 +136,19 @@ void CUIHudStatesWnd::Load_section_type( ALife::EInfluenceType type, LPCSTR sect
 	{
 		m_zone_max_power[type] = 1.0f;
 	}*/
-	m_zone_feel_radius[type] = pSettings->r_float( section, "zone_radius" );
-	if ( m_zone_feel_radius[type] <= 0.0f )
+	HUD().GetUI()->UIGame()->m_zone_feel_radius[type] = pSettings->r_float( section, "zone_radius" );
+
+	if (HUD().GetUI()->UIGame()->m_zone_feel_radius[type] <= 0.0f )
 	{
-		m_zone_feel_radius[type] = 1.0f;
+		HUD().GetUI()->UIGame()->m_zone_feel_radius[type] = 1.0f;
 	}
-	if ( m_zone_feel_radius_max < m_zone_feel_radius[type] )
+
+	if (HUD().GetUI()->UIGame()->m_zone_feel_radius_max < HUD().GetUI()->UIGame()->m_zone_feel_radius[type] )
 	{
-		m_zone_feel_radius_max = m_zone_feel_radius[type];
+		HUD().GetUI()->UIGame()->m_zone_feel_radius_max = HUD().GetUI()->UIGame()->m_zone_feel_radius[type];
 	}
-	m_zone_threshold[type] = pSettings->r_float( section, "threshold" );
+
+	HUD().GetUI()->UIGame()->m_zone_threshold[type] = pSettings->r_float( section, "threshold" );
 }
 
 void CUIHudStatesWnd::Update()
@@ -201,8 +166,6 @@ void CUIHudStatesWnd::Update()
 	UpdateHealth( actor );
 	UpdateActiveItemInfo( actor );
 	UpdateIndicators( actor );
-	
-	UpdateZones();
 
 	inherited::Update();
 }
@@ -233,7 +196,7 @@ void CUIHudStatesWnd::UpdateHealth( CActor* actor )
 	{
 		m_bleeding->Show( false );
 	}
-	m_progress_self->SetPos( m_radia_self );
+	m_progress_self->SetPos(HUD().GetUI()->UIGame()->m_radia_self);
 }
 
 void CUIHudStatesWnd::UpdateActiveItemInfo( CActor* actor )
@@ -349,136 +312,6 @@ void CUIHudStatesWnd::SetAmmoIcon( const shared_str& sect_name )
 
 // ------------------------------------------------------------------------------------------------
 
-void CUIHudStatesWnd::UpdateZones()
-{
-	//float actor_radia = m_actor->conditions().GetRadiation() * m_actor_radia_factor;
-	//m_radia_hit = _max( m_zone_cur_power[it_rad], actor_radia );
-
-	CActor* actor = smart_cast<CActor*>( Level().CurrentViewEntity() );
-	if ( !actor )
-	{
-		return;
-	}
-
-	m_radia_self = actor->conditions().GetRadiation();
-	
-	float zone_max_power = actor->conditions().GetZoneMaxPower(ALife::infl_rad);
-	float power          = actor->conditions().GetInjuriousMaterialDamage();
-	power = power / zone_max_power;
-	clamp( power, 0.0f, 1.1f );
-	if ( m_zone_cur_power[ALife::infl_rad] < power )
-	{
-		m_zone_cur_power[ALife::infl_rad] = power;
-	}
-	m_radia_hit = m_zone_cur_power[ALife::infl_rad];
-
-/*	if ( Device.dwFrame % 20 == 0 )
-	{
-		Msg(" self = %.2f   hit = %.2f", m_radia_self, m_radia_hit );
-	}*/
-
-	m_arrow->SetNewValue( m_radia_hit );
-	m_arrow_shadow->SetPos( m_arrow->GetPos() );
-
-	power = actor->conditions().GetPsy();
-	clamp( power, 0.0f, 1.1f );
-	if ( m_zone_cur_power[ALife::infl_psi] < power )
-	{
-		m_zone_cur_power[ALife::infl_psi] = power;
-	}
-
-	if ( !Level().hud_zones_list )
-	{
-		return;
-	}
-
-	for ( int i = 0; i < ALife::infl_max_count; ++i )
-	{
-		if ( Device.fTimeDelta < 1.0f )
-		{
-			m_zone_cur_power[i] *= 0.9f * (1.0f - Device.fTimeDelta);
-		}
-		if ( m_zone_cur_power[i] < 0.01f )
-		{
-			m_zone_cur_power[i] = 0.0f;
-		}
-	}
-
-	Fvector posf; 
-	posf.set(Level().CurrentControlEntity()->Position());
-	Level().hud_zones_list->feel_touch_update( posf, m_zone_feel_radius_max );
-	
-	if ( Level().hud_zones_list->m_ItemInfos.size() == 0 )
-	{
-		return;
-	}
-
-	CZoneList::ItemsMapIt itb	= Level().hud_zones_list->m_ItemInfos.begin();
-	CZoneList::ItemsMapIt ite	= Level().hud_zones_list->m_ItemInfos.end();
-	for ( ; itb != ite; ++itb ) 
-	{
-		CCustomZone*		pZone = itb->first;
-		ITEM_INFO&			zone_info = itb->second;
-		ITEM_TYPE*			zone_type = zone_info.curr_ref;
-		
-		ALife::EHitType			hit_type = pZone->GetHitType();
-		ALife::EInfluenceType	z_type = get_indik_type( hit_type );
-/*		if ( z_type == indik_type_max )
-		{
-			continue;
-		}
-*/
-
-		Fvector P = Level().CurrentControlEntity()->Position();
-		P.y					-= 0.5f;
-		float dist_to_zone	= 0.0f;
-		float rad_zone		= 0.0f;
-		pZone->CalcDistanceTo( P, dist_to_zone, rad_zone );
-		clamp( dist_to_zone, 0.0f, flt_max * 0.5f );
-		
-		float fRelPow = ( dist_to_zone / (rad_zone + (z_type==ALife::infl_max_count)? 5.0f : m_zone_feel_radius[z_type] + 0.1f) ) - 0.1f;
-
-		zone_max_power = actor->conditions().GetZoneMaxPower(z_type);
-		power = pZone->Power( dist_to_zone );
-		power = power / zone_max_power;
-		clamp( power, 0.0f, 1.1f );
-
-		if ( (z_type!=ALife::infl_max_count) && (m_zone_cur_power[z_type] < power) ) //max
-		{
-			m_zone_cur_power[z_type] = power;
-		}
-
-		if ( dist_to_zone < rad_zone + 0.9f * ((z_type==ALife::infl_max_count)?5.0f:m_zone_feel_radius[z_type]) )
-		{
-			fRelPow *= 0.6f;
-			if ( dist_to_zone < rad_zone )
-			{
-				fRelPow *= 0.3f;
-				fRelPow *= ( 2.5f - 2.0f * power ); // звук зависит от силы зоны
-			}
-		}
-		clamp( fRelPow, 0.0f, 1.0f );
-
-		//определить текущую частоту срабатывания сигнала
-		zone_info.cur_period = zone_type->freq.x + (zone_type->freq.y - zone_type->freq.x) * (fRelPow * fRelPow);
-		
-		//string256	buff_z;
-		//sprintf_s( buff_z, "zone %2.2f\n", zone_info.cur_period );
-		//strcat( buff, buff_z );
-		if( zone_info.snd_time > zone_info.cur_period )
-		{
-			zone_info.snd_time = 0.0f;
-
-			if (!GameConstants::GetDosimeterSlotEnabled())
-				HUD_SOUND_ITEM::PlaySound( zone_type->detect_snds, Fvector().set(0,0,0), NULL, true, false );
-		} 
-		else
-		{
-			zone_info.snd_time += Device.fTimeDelta;
-		}
-	} // for itb
-}
-
 void CUIHudStatesWnd::UpdateIndicators( CActor* actor )
 {
 	for ( int i = 0; i < it_max ; ++i ) // it_max = ALife::infl_max_count-1
@@ -500,8 +333,11 @@ void CUIHudStatesWnd::UpdateIndicatorType( CActor* actor, ALife::EInfluenceType 
 	u32 c_yellow = color_rgba( 255, 255, 0, 255 );
 	u32 c_red    = color_rgba( 255, 0, 0, 255 );
 
-	float           hit_power = m_zone_cur_power[type];
-	ALife::EHitType hit_type  = m_zone_hit_type[type];
+	float           hit_power = HUD().GetUI()->UIGame()->m_zone_cur_power[type];
+	ALife::EHitType hit_type = HUD().GetUI()->UIGame()->m_zone_hit_type[type];
+#pragma todo("it crashes in mp, please fix it")
+	if (!IsGameTypeSingle())
+		return;
 	
 	CCustomOutfit* outfit = actor->GetOutfit();
 	float protect = (outfit) ? outfit->GetDefHitTypeProtection( hit_type ) : 0.0f;
@@ -524,7 +360,7 @@ void CUIHudStatesWnd::UpdateIndicatorType( CActor* actor, ALife::EInfluenceType 
 		actor->conditions().SetZoneDanger( 0.0f, type );
 		return;
 	}
-	if ( hit_power - protect < m_zone_threshold[type] )
+	if ( hit_power - protect < HUD().GetUI()->UIGame()->m_zone_threshold[type] )
 	{
 		m_indik[type]->SetColor( c_yellow );
 		SwitchLA( false, type );
@@ -555,14 +391,4 @@ void CUIHudStatesWnd::SwitchLA( bool state, ALife::EInfluenceType type )
 		m_cur_state_LA[type] = false;
 //-		Msg( "__LA = 0    type = %d", type );
 	}
-}
-
-float CUIHudStatesWnd::get_zone_cur_power( ALife::EHitType hit_type )
-{
-	ALife::EInfluenceType iz_type = get_indik_type( hit_type );
-	if ( iz_type == ALife::infl_max_count )
-	{
-		return 0.0f;
-	}
-	return m_zone_cur_power[iz_type];
 }

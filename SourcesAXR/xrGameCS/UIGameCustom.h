@@ -11,6 +11,9 @@
 #include "UIDialogHolder.h"
 #include "script_game_object.h"
 
+#include "..\xrServerEntities\alife_space.h"
+#include "actor_defs.h"
+
 // refs
 class CUI;
 class CTeamBaseZone;
@@ -97,7 +100,20 @@ protected:
 	CUIActorMenu*		m_ActorMenu;
 	CUIPdaWnd*			m_PdaMenu;
 
+	static ALife::EInfluenceType get_indik_type(ALife::EHitType hit_type);
+
 public:
+	float				m_radia_hit;
+	float				get_zone_cur_power		( ALife::EHitType hit_type );
+	float				get_main_sensor_value	()	{ return m_radia_hit; }
+	float				m_zone_cur_power		[ALife::infl_max_count];
+	ALife::EHitType		m_zone_hit_type			[ALife::infl_max_count];
+//--	float				m_zone_max_power[hud_it_max];//<-- CActorCondition
+	float				m_zone_feel_radius		[ALife::infl_max_count ];
+	float				m_zone_threshold		[ALife::infl_max_count ];
+	float				m_zone_feel_radius_max;
+	float				m_radia_self;
+
 	virtual void		SetClGame				(game_cl_GameState* g){};
 	virtual void		OnInventoryAction		(PIItem item, u16 action_type);
 
@@ -112,6 +128,8 @@ public:
 	virtual void		Render					();
 	virtual void		OnFrame					();
 	virtual	void		reset_ui				();
+
+	void				UpdateZones				();
 	
 	IC CUIActorMenu&	ActorMenu				() const { return *m_ActorMenu; }
 	IC CUIPdaWnd&		PdaMenu					() const { return *m_PdaMenu;   }

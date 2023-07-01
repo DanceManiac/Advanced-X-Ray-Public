@@ -377,13 +377,6 @@ void ui_actor_state_wnd::update_round_states( CActor* actor, ALife::EHitType hit
 
 void ui_actor_state_wnd::UpdateHitZone()
 {
-	CUIHudStatesWnd* wnd = CurrentGameUI()->UIMainIngameWnd->get_hud_states(); //некрасиво слишком
-	VERIFY( wnd );
-	if ( !wnd )
-	{
-		return;
-	}
-	wnd->UpdateZones();
 }
 
 void ui_actor_state_wnd::Draw()

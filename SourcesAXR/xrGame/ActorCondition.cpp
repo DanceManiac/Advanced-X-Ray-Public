@@ -244,7 +244,7 @@ float CActorCondition::GetZoneMaxPower( ALife::EHitType hit_type ) const
 	case ALife::eHitTypeWound:
 		return m_max_wound_protection;
 	default:
-		NODEFAULT;
+		break;
 	}
 	
 	return GetZoneMaxPower( iz_type );

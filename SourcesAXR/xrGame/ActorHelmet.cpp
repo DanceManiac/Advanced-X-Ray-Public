@@ -170,12 +170,11 @@ void CHelmet::UpdateFilterCondition(void)
 {
 	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
 	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
-	CUIHudStatesWnd* wnd = CurrentGameUI()->UIMainIngameWnd->get_hud_states();
 
 	if ((helmet && helmet->m_bUseFilter) || (helmet2 && helmet2->m_bUseFilter))
 	{
-		float m_radia_hit = wnd->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
-		float m_chemical_hit = wnd->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
+		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
+		float m_chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
 
 		if (helmet)
 		{

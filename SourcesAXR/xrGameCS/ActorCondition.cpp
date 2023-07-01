@@ -223,7 +223,7 @@ float CActorCondition::GetZoneMaxPower( ALife::EHitType hit_type ) const
 	case ALife::eHitTypePhysicStrike:
 		return 1.0f;
 	default:
-		NODEFAULT;
+		break;
 	}
 	
 	return GetZoneMaxPower( iz_type );

@@ -23,6 +23,7 @@
 #include "../location_manager.h"
 #include "../player_hud.h"
 #include "../hudmanager.h"
+#include "../UIGameCustom.h"
 #include "UIMainIngameWnd.h"
 
 #include "../Actor.h"
@@ -140,15 +141,6 @@ void ui_actor_state_wnd::update_round_states( CActor* actor, ALife::EHitType hit
 
 void ui_actor_state_wnd::UpdateHitZone()
 {
-	CUIHudStatesWnd* wnd = HUD().GetUI()->UIMainIngameWnd->get_hud_states(); //некрасиво слишком
-	VERIFY( wnd );
-	if ( !wnd )
-	{
-		return;
-	}
-	wnd->UpdateZones();
-	m_state[stt_main]->set_arrow(  wnd->get_main_sensor_value() );
-
 /*	m_state[stt_fire]->set_arrow(  wnd->get_zone_cur_power( ALife::eHitTypeBurn ) );
 	m_state[stt_radia]->set_arrow( wnd->get_zone_cur_power( ALife::eHitTypeRadiation ) );
 	m_state[stt_acid]->set_arrow(  wnd->get_zone_cur_power( ALife::eHitTypeChemicalBurn ) );

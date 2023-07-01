@@ -8,6 +8,9 @@
 #include "../xrEngine/CustomHUD.h"
 #include "script_game_object.h"
 
+#include "..\xrServerEntities\alife_space.h"
+#include "actor_defs.h"
+
 // refs
 class CUI;
 class CTeamBaseZone;
@@ -92,9 +95,22 @@ protected:
 
 	bool				m_bShowGameIndicators;
 
+	static ALife::EInfluenceType get_indik_type(ALife::EHitType hit_type);
+
 public:
 	CUIMainIngameWnd*	UIMainIngameWnd;
 	CUIMessagesWindow*	m_pMessagesWnd;
+
+	float				m_radia_hit;
+	float				get_zone_cur_power		( ALife::EHitType hit_type );
+	float				get_main_sensor_value	()	{ return m_radia_hit; }
+	float				m_zone_cur_power		[ALife::infl_max_count];
+	ALife::EHitType		m_zone_hit_type			[ALife::infl_max_count];
+//--	float				m_zone_max_power[hud_it_max];//<-- CActorCondition
+	float				m_zone_feel_radius		[ALife::infl_max_count ];
+	float				m_zone_threshold		[ALife::infl_max_count ];
+	float				m_zone_feel_radius_max;
+	float				m_radia_self;
 
 	virtual void		SetClGame				(game_cl_GameState* g);
 	virtual void		OnInventoryAction		(PIItem item, u16 action_type);
@@ -145,6 +161,9 @@ public:
 	void				UpdatePda				();
 	void				update_fake_indicators	(u8 type, float power);
 	void				enable_fake_indicators	(bool enable);
+
+	void				UpdateZones				();
+
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 }; // class CUIGameCustom
