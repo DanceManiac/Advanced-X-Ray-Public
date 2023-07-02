@@ -143,7 +143,6 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 	float					cam_eff_factor = 0.0f;
 	mstate_old				= mstate_real;
 	vControlAccel.set		(0,0,0);
-	float cur_weight = inventory().TotalWeight();
 
 	if (!(mstate_real&mcFall) && (character_physics_support()->movement()->Environment()==CPHMovementControl::peInAir)) 
 	{
@@ -213,8 +212,8 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			if (ActorSkills)
 				jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
 
-			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real&mcJump)
-				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal)) - (cur_weight / 25);
+			if (!psActorFlags.test(AF_GODMODE|AF_GODMODE_RT) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25 && mstate_real&mcJump)
+				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal)) - ((inventory().TotalWeight() / MaxCarryWeight()) * 4);
 			else
 				jump_k = m_fJumpSpeed + jumpSkill - (hangover + withdrawal);
 
@@ -303,9 +302,9 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			{
 				float accel_k = m_fWalkAccel + walkAccelSkill - (hangover + withdrawal);
 
-				if (cur_weight >= 25 && GameConstants::GetJumpSpeedWeightCalc())
+				if (!psActorFlags.test(AF_GODMODE|AF_GODMODE_RT) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25)
 				{
-					accel_k -= cur_weight / 6;
+					accel_k -= ((inventory().TotalWeight() / MaxCarryWeight()) * 8);
 				}
 
 				TIItemContainer::iterator it = inventory().m_belt.begin();
