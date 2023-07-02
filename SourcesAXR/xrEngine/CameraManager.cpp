@@ -447,35 +447,54 @@ void CCameraManager::ApplyDevice (float _viewport_near)
 void CCameraManager::ApplyDeviceInternal(float _viewport_near)
 {
 	// Device params
-	Device.mView.build_camera_dir(m_cam_info.p, m_cam_info.d, m_cam_info.n);
-
-	Device.vCameraPosition.set	( m_cam_info.p );
-	Device.vCameraDirection.set	( m_cam_info.d );
-	Device.vCameraTop.set		( m_cam_info.n );
-	Device.vCameraRight.set		( m_cam_info.r );
-
-	// projection
-	Device.fFOV					= m_cam_info.fFov;
-	Device.fASPECT				= m_cam_info.fAspect;
-	float aspect				= m_cam_info.fAspect;
-	//Device.mProject.build_projection(deg2rad(m_cam_info.fFov), m_cam_info.fAspect, _viewport_near, m_cam_info.fFar);
-
-	//--#SM+# Begin-- +SecondVP+
-	//  FOV    [Recalculate scene FOV for SecondVP frame]
-	if (Render->currentViewPort == SECONDARY_WEAPON_SCOPE)
+	if (Device.m_bMakeLevelMap)
 	{
-		//    FOV  
-		//Device.fFOV = fFovSecond;
-		Device.fFOV = g_pGamePersistent->m_pGShaderConstants->hud_params.y;
+		// build camera matrix
+		Fbox bb = Device.curr_lm_fbox;
+		bb.getcenter(Device.vCameraPosition);
 
-		//      
-		Device.m_SecondViewport.isCamReady = true;
+		Device.vCameraDirection.set(0.f, -1.f, 0.f);
+		Device.vCameraTop.set(0.f, 0.f, 1.f);
+		Device.vCameraRight.set(1.f, 0.f, 0.f);
+		Device.mView.build_camera_dir(Device.vCameraPosition, Device.vCameraDirection, Device.vCameraTop);
+
+		bb.xform(Device.mView);
+		// build project matrix
+		Device.mProject.build_projection_ortho(bb.max.x - bb.min.x, bb.max.y - bb.min.y, bb.min.z, bb.max.z);
 	}
 	else
-		Device.m_SecondViewport.isCamReady = false;
+	{
+		Device.mView.build_camera_dir(m_cam_info.p, m_cam_info.d, m_cam_info.n);
 
-	Device.mProject.build_projection(deg2rad(Device.fFOV), aspect, _viewport_near, m_cam_info.fFar);
-	//--#SM+# End--
+		Device.vCameraPosition.set(m_cam_info.p);
+		Device.vCameraDirection.set(m_cam_info.d);
+		Device.vCameraTop.set(m_cam_info.n);
+		Device.vCameraRight.set(m_cam_info.r);
+
+		// projection
+		Device.fFOV = m_cam_info.fFov;
+		Device.fASPECT = m_cam_info.fAspect;
+		float aspect = m_cam_info.fAspect;
+
+		//Device.mProject.build_projection(deg2rad(m_cam_info.fFov), m_cam_info.fAspect, _viewport_near, m_cam_info.fFar);
+
+		//--#SM+# Begin-- +SecondVP+
+		//  FOV    [Recalculate scene FOV for SecondVP frame]
+		if (Render->currentViewPort == SECONDARY_WEAPON_SCOPE)
+		{
+			//    FOV  
+			//Device.fFOV = fFovSecond;
+			Device.fFOV = g_pGamePersistent->m_pGShaderConstants->hud_params.y;
+
+			//      
+			Device.m_SecondViewport.isCamReady = true;
+		}
+		else
+			Device.m_SecondViewport.isCamReady = false;
+
+		Device.mProject.build_projection(deg2rad(Device.fFOV), aspect, _viewport_near, m_cam_info.fFar);
+		//--#SM+# End--
+	}
 
 	if (Render->currentViewPort == MAIN_VIEWPORT)
 	{

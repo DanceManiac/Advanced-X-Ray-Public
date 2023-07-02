@@ -203,6 +203,9 @@ public:
 	CStats*	Statistic;
 	Fmatrix	mInvFullTransform;
 
+	bool m_bMakeLevelMap = false;
+	Fbox curr_lm_fbox;
+
 	// Saved main viewport params
 	Fvector mainVPCamPosSaved;
 	Fmatrix mainVPFullTrans;

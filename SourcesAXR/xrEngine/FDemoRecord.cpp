@@ -42,6 +42,9 @@ void setup_lm_screenshot_matrices()
 											bb.max.y-bb.min.y,
 											bb.min.z,
 											bb.max.z);
+
+	Device.m_bMakeLevelMap = true;
+	Device.curr_lm_fbox = curr_lm_fbox;
 }
 
 Fbox get_level_screenshot_bound()
@@ -231,6 +234,7 @@ void CDemoRecord::MakeLevelMapProcess()
 				psDeviceFlags				= s_dev_flags;
 				if (bDevReset)				Device.Reset();
 				m_bMakeLevelMap				= FALSE;
+				Device.m_bMakeLevelMap		= FALSE;
 				m_iLMScreenshotFragment		= -1;
 			}
 		}break;
