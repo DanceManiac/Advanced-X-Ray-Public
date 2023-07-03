@@ -3295,7 +3295,7 @@ const char* CWeapon::GetAnimAimName()
 		if (state && state & mcAnyMove)
 		{
 			if (IsScopeAttached())
-				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_scope_moving", (IsMisfire()) ? "_jummed" : (IsMagazineEmpty()) ? "_empty" : "");
+				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jummed" : (IsMagazineEmpty()) ? "_empty" : "");
 			else
 				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 		}
