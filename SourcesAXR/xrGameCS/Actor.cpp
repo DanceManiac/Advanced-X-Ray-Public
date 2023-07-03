@@ -2407,6 +2407,18 @@ void CActor::On_LostEntity()
 
 void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 {
+	CWeapon* wpn1{}, *wpn2{};
+
+	if (inventory().ItemFromSlot(PISTOL_SLOT))
+		wpn1 = smart_cast<CWeapon*>(inventory().ItemFromSlot(PISTOL_SLOT));
+	if (inventory().ItemFromSlot(RIFLE_SLOT))
+		wpn2 = smart_cast<CWeapon*>(inventory().ItemFromSlot(RIFLE_SLOT));
+
+	if (wpn1 && wpn1->IsZoomed())
+		return;
+	if (wpn2 && wpn2->IsZoomed())
+		return;
+
 	m_bNightVisionOn = vision_on;
 
 	if (!m_night_vision)

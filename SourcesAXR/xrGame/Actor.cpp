@@ -2497,6 +2497,22 @@ bool CActor::unlimited_ammo()
 
 void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 {
+	CWeapon* wpn1{}, *wpn2{}, *wpn3{};
+
+	if (inventory().ItemFromSlot(PISTOL_SLOT))
+		wpn1 = smart_cast<CWeapon*>(inventory().ItemFromSlot(PISTOL_SLOT));
+	if (inventory().ItemFromSlot(INV_SLOT_2))
+		wpn2 = smart_cast<CWeapon*>(inventory().ItemFromSlot(INV_SLOT_2));
+	if (inventory().ItemFromSlot(INV_SLOT_3))
+		wpn3 = smart_cast<CWeapon*>(inventory().ItemFromSlot(INV_SLOT_3));
+
+	if (wpn1 && wpn1->IsZoomed())
+		return;
+	if (wpn2 && wpn2->IsZoomed())
+		return;
+	if (wpn3 && wpn3->IsZoomed())
+		return;
+
 	m_bNightVisionOn = vision_on;
 
 	if (!m_night_vision)
