@@ -25,6 +25,7 @@
 #include "WeaponMagazined.h"
 #include "WeaponKnife.h"
 #include "CustomOutfit.h"
+#include "PDA.h"
 
 #include "actor_anim_defs.h"
 
@@ -2002,6 +2003,12 @@ bool				CActor::InventoryAllowSprint			()
 	{
 		return false;
 	}
+
+	CPda* pPda = Actor()->GetPDA();
+
+	if (pPda && pPda->m_bZoomed)
+		return false;
+
 	return true;
 };
 
