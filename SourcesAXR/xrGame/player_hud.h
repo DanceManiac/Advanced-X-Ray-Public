@@ -20,6 +20,7 @@ struct player_hud_motion
 	shared_str				m_alias_name;
 	shared_str				m_base_name;
 	shared_str				m_additional_name;
+	float					m_anim_speed;
 	xr_vector<motion_descr>	m_animations;
 };
 
@@ -258,7 +259,7 @@ struct attachable_hud_item
 //props
 	u32								m_upd_firedeps_frame;
 	void		tune				(Ivector values);
-	u32			anim_play			(const shared_str& anim_name, BOOL bMixIn, const CMotionDef*& md, u8& rnd);
+	u32			anim_play			(const shared_str& anim_name, BOOL bMixIn, const CMotionDef*& md, u8& rnd, float speed = 1.f);
 
 };
 

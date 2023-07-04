@@ -307,9 +307,9 @@ void CHudItem::on_a_hud_attach()
 	}
 }
 
-u32 CHudItem::PlayHUDMotion(const shared_str& M, BOOL bMixIn, CHudItem*  W, u32 state)
+u32 CHudItem::PlayHUDMotion(const shared_str& M, BOOL bMixIn, CHudItem*  W, u32 state, float speed)
 {
-	u32 anim_time = PlayHUDMotion_noCB(M, bMixIn);
+	u32 anim_time = PlayHUDMotion_noCB(M, bMixIn, speed);
 	if (anim_time > 0)
 	{
 		m_bStopAtEndAnimIsRunning = true;
@@ -324,10 +324,10 @@ u32 CHudItem::PlayHUDMotion(const shared_str& M, BOOL bMixIn, CHudItem*  W, u32 
 	return anim_time;
 }
 
-u32 CHudItem::PlayHUDMotionNew(const shared_str& M, const bool bMixIn, const u32 state, const bool randomAnim)
+u32 CHudItem::PlayHUDMotionNew(const shared_str& M, const bool bMixIn, const u32 state, const bool randomAnim, float speed)
 {
 	//Msg("~~[%s] Playing motion [%s] for [%s]", __FUNCTION__, M.c_str(), HudSection().c_str());
-	u32 anim_time					= PlayHUDMotion_noCB(M, bMixIn);
+	u32 anim_time					= PlayHUDMotion_noCB(M, bMixIn, speed);
 	if (anim_time>0)
 	{
 		m_bStopAtEndAnimIsRunning	= true;
@@ -363,11 +363,11 @@ bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
 	return false;
 }
 
-u32 CHudItem::PlayHUDMotionIfExists(std::initializer_list<const char*> Ms, const bool bMixIn, const u32 state, const bool randomAnim)
+u32 CHudItem::PlayHUDMotionIfExists(std::initializer_list<const char*> Ms, const bool bMixIn, const u32 state, const bool randomAnim, float speed)
 {
 	for (const auto* M : Ms)
 		if (isHUDAnimationExist(M))
-			return PlayHUDMotionNew(M, bMixIn, state, randomAnim);
+			return PlayHUDMotionNew(M, bMixIn, state, randomAnim, speed);
 
 	std::string dbg_anim_name;
 	for (const auto* M : Ms) 
@@ -380,7 +380,7 @@ u32 CHudItem::PlayHUDMotionIfExists(std::initializer_list<const char*> Ms, const
 	return 0;
 }
 
-u32 CHudItem::PlayHUDMotion_noCB(const shared_str& motion_name, const bool bMixIn, const bool randomAnim)
+u32 CHudItem::PlayHUDMotion_noCB(const shared_str& motion_name, const bool bMixIn, const bool randomAnim, float speed)
 {
 	m_current_motion					= motion_name;
 
@@ -395,11 +395,12 @@ u32 CHudItem::PlayHUDMotion_noCB(const shared_str& motion_name, const bool bMixI
 	}
 	if( HudItemData() )
 	{
-		return HudItemData()->anim_play		(motion_name, bMixIn, m_current_motion_def, m_started_rnd_anim_idx);
-	}else
+		return HudItemData()->anim_play		(motion_name, bMixIn, m_current_motion_def, m_started_rnd_anim_idx, speed);
+	}
+	else
 	{
 		m_started_rnd_anim_idx				= 0;
-		return g_player_hud->motion_length	(motion_name, HudSection(), m_current_motion_def );
+		return g_player_hud->motion_length	(motion_name, HudSection(), m_current_motion_def);
 	}
 }
 
