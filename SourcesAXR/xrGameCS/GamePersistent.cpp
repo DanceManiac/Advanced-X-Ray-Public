@@ -889,6 +889,11 @@ bool CGamePersistent::GetActorAliveStatus()
 	return	(Actor()->g_Alive());
 }
 
+bool CGamePersistent::IsCamFirstEye()
+{
+	return	(Actor()->active_cam() == eacFirstEye);
+}
+
 bool CGamePersistent::GetActor()
 {
 	return	(Actor());

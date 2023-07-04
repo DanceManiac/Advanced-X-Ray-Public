@@ -130,6 +130,7 @@ public:
 	virtual bool					GetActor			() { return 0; };
 	virtual bool					GetActorNightvision	() { return 0; };
 	virtual int						GetNightvisionType	() { return 0; };
+	virtual bool					IsCamFirstEye		() { return 0; };
 
 	virtual void					EditorOnFrame		() {};
 	virtual void					RegisterModel		(IRenderVisual* V)

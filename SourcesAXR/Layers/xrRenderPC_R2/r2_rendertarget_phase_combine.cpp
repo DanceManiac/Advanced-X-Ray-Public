@@ -261,7 +261,7 @@ void	CRenderTarget::phase_combine	()
 	}
 
 	//Hud Effects & Hud Mask
-	if (!_menu_pp && g_pGamePersistent->GetActor())
+	if (!_menu_pp && g_pGamePersistent->GetActor() && g_pGamePersistent->IsCamFirstEye())
 	{
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_DYN_EFFECTS) && IsActorAlive)

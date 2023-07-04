@@ -403,7 +403,7 @@ void	CRenderTarget::phase_combine	()
 		phase_film_grain();
 
 	//Hud Effects, Hud Mask, Nightvision
-	if (!_menu_pp && g_pGamePersistent->GetActor())
+	if (!_menu_pp && g_pGamePersistent->GetActor() && g_pGamePersistent->IsCamFirstEye())
 	{
 		bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 		int NightVisionType = g_pGamePersistent->GetNightvisionType();

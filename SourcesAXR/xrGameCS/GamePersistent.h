@@ -117,6 +117,7 @@ public:
 			float		GetActorIntoxication	() override;
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
+			bool		IsCamFirstEye			();
 
 	virtual void		EditorOnFrame			();
 
