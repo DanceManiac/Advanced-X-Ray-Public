@@ -612,4 +612,7 @@
 	<string id="ui_mm_death_cam_mode_hint">
 		<text>Данная опция позволяет настроить поведение камеры во время смерти героя.</text>
 	</string>
+	<string id="ui_mm_r1_detail_textures_hint">
+		<text>Эта опция способствует улучшению графики игры, что делает ее более реалистичной и красивой.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
 </string_table>
