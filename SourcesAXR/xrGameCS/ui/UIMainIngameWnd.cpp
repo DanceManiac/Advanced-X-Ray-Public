@@ -129,8 +129,6 @@ void CUIMainIngameWnd::Init()
 
 	m_iPickUpItemIconWidth		= UIPickUpItemIcon.GetWidth();
 	m_iPickUpItemIconHeight		= UIPickUpItemIcon.GetHeight();
-	m_iPickUpItemIconX			= UIPickUpItemIcon.GetWndRect().left;
-	m_iPickUpItemIconY			= UIPickUpItemIcon.GetWndRect().top;
 	//---------------------------------------------------------
 
 	//индикаторы 
@@ -726,8 +724,7 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 	UIPickUpItemIcon.SetWidth(m_iGridWidth*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * scale);
 	UIPickUpItemIcon.SetHeight(m_iGridHeight*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) * scale);
 
-	UIPickUpItemIcon.SetWndPos(Fvector2().set(	m_iPickUpItemIconX+(m_iPickUpItemIconWidth-UIPickUpItemIcon.GetWidth())/2.0f,
-												m_iPickUpItemIconY+(m_iPickUpItemIconHeight-UIPickUpItemIcon.GetHeight())/2.0f) );
+	UIPickUpItemIcon.SetAlignment(waCenter);
 
 	UIPickUpItemIcon.SetColor(color_rgba(255,255,255,192));
 	UIPickUpItemIcon.Show(true);

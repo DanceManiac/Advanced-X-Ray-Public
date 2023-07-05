@@ -188,8 +188,6 @@ protected:
 	CInventoryItem*		m_pPickUpItem;
 	CUIStatic*			UIPickUpItemIcon;
 
-	float				m_iPickUpItemIconX;
-	float				m_iPickUpItemIconY;
 	float				m_iPickUpItemIconWidth;
 	float				m_iPickUpItemIconHeight;
 
