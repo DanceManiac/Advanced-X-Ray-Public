@@ -23,7 +23,7 @@ void xrDiscordPresense::Initialize()
     bGameRPCInfoInit = true;
     rpc_settings.Default();
     presenseInfo.largeImageText = rpc_settings.LargeImageText;
-    presenseInfo.smallImageKey =  rpc_settings.LargeImageKey;
+    presenseInfo.smallImageKey =  rpc_settings.SmallImageKey;
     presenseInfo.smallImageText = rpc_settings.SmallImageText;
     presenseInfo.largeImageKey    = rpc_settings.LargeImageKey;
 
