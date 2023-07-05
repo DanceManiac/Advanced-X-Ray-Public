@@ -187,6 +187,7 @@ public:
 	xr_deque<CSE_Abstract*>		game_spawn_queue;
 	xrServer*					Server;
 	GlobalFeelTouch				m_feel_deny;
+	std::vector<std::uint16_t>	m_just_destroyed;
 	
 	CZoneList*					hud_zones_list;
 	CZoneList*					create_hud_zones_list();
@@ -379,9 +380,14 @@ protected:
 public:
 	virtual	u32				GetRealPing					() { return m_dwRealPing; };
 
+private:
+	bool	m_is_removing_objects;
+
 public:
+			bool			is_removing_objects			() { return m_is_removing_objects; }
 			void			remove_objects				();
 			virtual void	OnSessionTerminate		(LPCSTR reason);
+			void			OnDestroyObject			(std::uint16_t id) override;
 			
 			file_transfer::client_site*					m_file_transfer;
 			

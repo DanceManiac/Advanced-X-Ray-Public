@@ -344,10 +344,10 @@ struct CSoundObjectPredicate {
 	bool		operator()			(const MemorySpace::CSoundObject &sound_object) const
 	{
 		if (!m_object)
-			return			(!sound_object.m_object);
+			return false;
 
 		if (!sound_object.m_object)
-			return			(false);
+			return false;
 
 		return				(m_object->ID() == sound_object.m_object->ID());
 	}

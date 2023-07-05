@@ -256,7 +256,12 @@ void CObjectList::Update		(bool bForce)
 			Device.Statistic->UpdateClient.End		();
 		}
 	}
+	// Destroy
+	ProcessDestroyQueue();
+}
 
+void CObjectList::ProcessDestroyQueue()
+{
 	// Destroy
 	if (!destroy_queue.empty()) 
 	{

@@ -31,6 +31,16 @@ void CLevel::cl_Process_Spawn(NET_Packet& P)
 		E->s_flags.set(M_SPAWN_OBJECT_LOCAL, TRUE);
 	};
 
+	if (std::find(m_just_destroyed.begin(), m_just_destroyed.end(), E->ID) !=
+		m_just_destroyed.end()) {
+		Msg("* [%s]: skip just destroyed [%s] ID: [%u] ID_Parent: [%u]", __FUNCTION__,
+			E->name_replace(), E->ID, E->ID_Parent);
+		m_just_destroyed.erase(std::remove(m_just_destroyed.begin(), m_just_destroyed.end(), E->ID),
+			m_just_destroyed.end());
+		F_entity_Destroy(E);
+		return;
+	}
+
 	/*
 	game_spawn_queue.push_back(E);
 	if (g_bDebugEvents)		ProcessGameSpawns();
@@ -93,8 +103,19 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 #endif
 
 	// Optimization for single-player only	- minimize traffic between client and server
-	if	(GameID()	== eGameIDSingle)		psNET_Flags.set	(NETFLAG_MINIMIZEUPDATES,TRUE);
-	else								psNET_Flags.set	(NETFLAG_MINIMIZEUPDATES,FALSE);
+	if	(GameID()	== eGameIDSingle)
+		psNET_Flags.set	(NETFLAG_MINIMIZEUPDATES,TRUE);
+	else
+		psNET_Flags.set	(NETFLAG_MINIMIZEUPDATES,FALSE);
+
+	auto obj = Objects.net_Find(E->ID);
+
+	if (obj && obj->getDestroy()) 
+	{
+		Msg("[%s]: %s[%u] already net_Spawn'ed, ProcessDestroyQueue()", __FUNCTION__,
+			obj->cName().c_str(), obj->ID());
+		Objects.ProcessDestroyQueue();
+	}
 
 	// Client spawn
 //	T.Start		();

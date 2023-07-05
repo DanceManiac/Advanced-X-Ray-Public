@@ -39,10 +39,10 @@ struct CHitObjectPredicate {
 	bool		operator()					(const MemorySpace::CHitObject &hit_object) const
 	{
 		if (!m_object)
-			return			(!hit_object.m_object);
+			return false;
 
 		if (!hit_object.m_object)
-			return			(false);
+			return false;
 
 		return				(m_object->ID() == hit_object.m_object->ID());
 	}

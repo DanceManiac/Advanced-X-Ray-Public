@@ -287,6 +287,7 @@ public:
 	virtual	LPCSTR			visual_name			(CSE_Abstract *server_entity);
 
 	virtual	void			On_B_NotCurrentEntity () {};
+	CSE_ALifeDynamicObject* alife_object		() const; // returns the server instance for this object
 
 	// for moving objects
 private:

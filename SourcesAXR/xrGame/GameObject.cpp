@@ -32,6 +32,9 @@
 #include "magic_box3.h"
 #include "animation_movement_controller.h"
 #include "../xrengine/xr_collide_form.h"
+#include "alife_simulator.h"
+#include "alife_object_registry.h"
+
 extern MagicBox3 MagicMinBox (int iQuantity, const Fvector* akPoint);
 
 #pragma warning(push)
@@ -72,6 +75,15 @@ CGameObject::~CGameObject		()
 	xr_delete					(m_callbacks);
 	xr_delete					(m_ai_obstacle);
 }
+
+CSE_ALifeDynamicObject* CGameObject::alife_object() const
+{
+	const CALifeSimulator* sim = ai().get_alife();
+	if (sim)
+		return sim->objects().object(ID(), true);
+	return NULL;
+}
+
 
 void CGameObject::init			()
 {
@@ -379,6 +391,21 @@ BOOL CGameObject::net_Spawn		(CSE_Abstract*	DC)
 
 			if (l_tpALifeObject && ai().game_graph().valid_vertex_id(l_tpALifeObject->m_tGraphID))
 				ai_location().game_vertex		(l_tpALifeObject->m_tGraphID);
+
+			if (!_valid(Position()))
+			{
+				Fvector vertex_pos = ai().level_graph().vertex_position(ai_location().level_vertex_id());
+
+				Msg("! [%s]: %s has invalid Position[%f,%f,%f] level_vertex_id[%u][%f,%f,%f]",
+					__FUNCTION__, cName().c_str(), Position().x, Position().y, Position().z,
+					ai_location().level_vertex_id(), vertex_pos.x, vertex_pos.y, vertex_pos.z);
+				Position().set(vertex_pos);
+
+				auto se_obj = alife_object();
+
+				if (se_obj)
+					se_obj->o_Position.set(Position());
+			}
 
 			validate_ai_locations				(false);
 

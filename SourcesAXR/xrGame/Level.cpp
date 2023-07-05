@@ -201,6 +201,7 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	m_msg_filter = NULL;
 	m_demoplay_control = NULL;
 	m_demo_info	= NULL;
+	m_is_removing_objects = false;
 
 	R_ASSERT				(NULL==g_player_hud);
 	g_player_hud			= xr_new<player_hud>();
@@ -490,6 +491,8 @@ void CLevel::ProcessGameEvents		()
 		if (!game_events->queue.empty())	
 			Msg("- d[%d],ts[%d] -- E[svT=%d],[evT=%d]",Device.dwTimeGlobal,timeServer(),svT,game_events->queue.begin()->timestamp);
 		*/
+
+		m_just_destroyed.clear();
 
 		while	(game_events->available(svT))
 		{
@@ -1346,6 +1349,11 @@ void CLevel::OnAlifeSimulatorLoaded()
 {
 	MapManager().ResetStorage();
 	GameTaskManager().ResetStorage();
+}
+
+void CLevel::OnDestroyObject(std::uint16_t id)
+{ 
+	m_just_destroyed.push_back(id);
 }
 
 void CLevel::OnSessionTerminate		(LPCSTR reason)

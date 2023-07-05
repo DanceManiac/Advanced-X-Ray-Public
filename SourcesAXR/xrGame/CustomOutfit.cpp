@@ -406,7 +406,7 @@ void CCustomOutfit::ApplySkinModel(CActor* pActor, bool bDress, bool bHUDOnly)
 
 void	CCustomOutfit::OnMoveToRuck		(const SInvItemPlace& prev)
 {
-	if(m_pInventory && prev.type==eItemPlaceSlot)
+	if(m_pInventory && prev.type==eItemPlaceSlot && !Level().is_removing_objects())
 	{
 		CActor* pActor = smart_cast<CActor*> (H_Parent());
 		if (pActor)

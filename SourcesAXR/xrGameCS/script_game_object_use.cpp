@@ -136,12 +136,15 @@ ALife::ERelationType CScriptGameObject::GetRelationType	(CScriptGameObject* who)
 template <typename T>
 IC	T	*CScriptGameObject::action_planner()
 {
-	CAI_Stalker							*manager = smart_cast<CAI_Stalker*>(&object());
-	if (!manager) {
-		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member action_planner!");
-		return							(0);
+	auto manager = smart_cast<CAI_Stalker*>(&object());
+	if (!manager)
+	{
+		Msg("!!CAI_Stalker : cannot access class member action_planner! Object: [%s]",
+			object().Name());
+		return nullptr;
 	}
-	return								(&manager->brain());
+
+	return &manager->brain();
 }
 
 CScriptActionPlanner		*script_action_planner(CScriptGameObject *obj)

@@ -660,10 +660,6 @@ void game_sv_GameState::Update		()
 	}
 }
 
-void game_sv_GameState::OnDestroyObject(u16 eid_who)
-{
-}
-
 game_sv_GameState::game_sv_GameState()
 {
 	VERIFY(g_pGameLevel);
