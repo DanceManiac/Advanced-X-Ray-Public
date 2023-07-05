@@ -53,6 +53,8 @@
 #include "game_cl_capture_the_artefact.h"
 #include "UIHudStatesWnd.h"
 #include "UIActorMenu.h"
+#include "UICellItem.h"
+#include "UICellItemFactory.h"
 
 #include "Torch.h"
 #include "CustomDetector.h"
@@ -81,13 +83,17 @@ const u32	g_clWhite					= 0xffffffff;
 #define				MAININGAME_XML				"maingame.xml"
 
 CUIMainIngameWnd::CUIMainIngameWnd()
-	:/*m_pGrenade(NULL),m_pItem(NULL),*/m_pPickUpItem(NULL), m_pMPChatWnd(NULL), UIArtefactIcon(NULL), m_pMPLogWnd(NULL)
 {
-	UIZoneMap = xr_new<CUIZoneMap>();
-	m_UIIcons = nullptr;
-
-	UIMotionIcon = nullptr;
-	m_ui_hud_states = nullptr;
+	UIZoneMap					= xr_new<CUIZoneMap>();
+	m_UIIcons					= nullptr;
+	m_pPickUpItem				= nullptr;
+	m_pMPChatWnd				= nullptr;
+	m_pMPLogWnd					= nullptr;
+	UIMotionIcon				= nullptr;
+	m_ui_hud_states				= nullptr;
+	uiPickUpItemIconNew_		= nullptr;
+	UIArtefactIcon				= nullptr;
+	fuzzyShowInfo_				= 0.f;
 }
 
 #include "UIProgressShape.h"
@@ -128,11 +134,9 @@ void CUIMainIngameWnd::Init()
 	UIWeaponIcon.SetShader		(GetEquipmentIconsShader());
 	UIWeaponIcon_rect			= UIWeaponIcon.GetWndRect();
 */	//---------------------------------------------------------
-	UIPickUpItemIcon			= UIHelper::CreateStatic		(uiXml, "pick_up_item", this);
-	UIPickUpItemIcon->SetShader	(GetEquipmentIconsShader());
-
-	m_iPickUpItemIconWidth		= UIPickUpItemIcon->GetWidth();
-	m_iPickUpItemIconHeight		= UIPickUpItemIcon->GetHeight();
+	m_iPickUpItemIconX		= uiXml.ReadAttribFlt("pick_up_item", 0, "x", 512.f);
+	m_iPickUpItemIconY		= uiXml.ReadAttribFlt("pick_up_item", 0, "y", 550.f);
+	m_iPickUpItemIconScale	= uiXml.ReadAttribFlt("pick_up_item", 0, "scale", 1.0f);
 	//---------------------------------------------------------
 
 	//индикаторы 
@@ -368,7 +372,10 @@ void CUIMainIngameWnd::Draw()
 	CUIWindow::Draw();
 	UIMotionIcon->Show(tmp);
 
-	RenderQuickInfos();		
+	RenderQuickInfos();;
+
+	if (uiPickUpItemIconNew_)
+		uiPickUpItemIconNew_->Draw();
 }
 
 
@@ -396,7 +403,12 @@ void CUIMainIngameWnd::Update()
 //	UIHealthBar.SetProgressPos	(m_pActor->GetfHealth()*100.0f);
 //	UIMotionIcon->SetPower		(m_pActor->conditions().GetPower()*100.0f);
 	
-	UpdatePickUpItem			();
+	fuzzyShowInfo_ += SHOW_INFO_SPEED * Device.fTimeDelta;
+
+	if (uiPickUpItemIconNew_ && fuzzyShowInfo_ > 0.f)
+	{
+		uiPickUpItemIconNew_->Update();
+	}
 
 	if( Device.dwFrame % 10 )
 		return;
@@ -641,64 +653,26 @@ void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 
 void CUIMainIngameWnd::SetPickUpItem	(CInventoryItem* PickUpItem)
 {
-	m_pPickUpItem = PickUpItem;
-};
+	if (m_pPickUpItem != PickUpItem)
+		xr_delete(uiPickUpItemIconNew_);
 
-void CUIMainIngameWnd::UpdatePickUpItem	()
-{
-	if (!m_pPickUpItem || !Level().CurrentViewEntity() || !smart_cast<CActor*>(Level().CurrentViewEntity())) 
-	{
-		UIPickUpItemIcon->Show(false);
+	if (m_pPickUpItem == PickUpItem)
 		return;
-	};
 
+	m_pPickUpItem = PickUpItem;
 
-	shared_str sect_name	= m_pPickUpItem->object().cNameSect();
+	if (!m_pPickUpItem)
+		return;
 
-	//properties used by inventory menu
-	int m_iGridWidth	= pSettings->r_u32(sect_name, "inv_grid_width");
-	int m_iGridHeight	= pSettings->r_u32(sect_name, "inv_grid_height");
+	uiPickUpItemIconNew_ = create_cell_item(m_pPickUpItem); // use inventory cell item class
 
-	int m_iXPos			= pSettings->r_u32(sect_name, "inv_grid_x");
-	int m_iYPos			= pSettings->r_u32(sect_name, "inv_grid_y");
-
-	float scale_x = m_iPickUpItemIconWidth /
-		float(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-	float scale_y = m_iPickUpItemIconHeight /
-		float(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-
-	scale_x = (scale_x > 1) ? 1.0f : scale_x;
-	scale_y = (scale_y > 1) ? 1.0f : scale_y;
-
-	if (GameConstants::GetUseHQ_Icons())
-	{
-		scale_x = m_iPickUpItemIconWidth /
-			(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2);
-		scale_y = m_iPickUpItemIconHeight /
-			(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2);
-
-		scale_x = (scale_x > 1) ? 0.5f : scale_x / 2;
-		scale_y = (scale_y > 1) ? 0.5f : scale_y / 2;
-	}
-
-	float scale = scale_x<scale_y?scale_x:scale_y;
-
-	Frect					texture_rect;
-	texture_rect.lt.set		(m_iXPos*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()), m_iYPos*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-	texture_rect.rb.set		(m_iGridWidth*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()), m_iGridHeight*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-	texture_rect.rb.add		(texture_rect.lt);
-	UIPickUpItemIcon->GetStaticItem()->SetTextureRect(texture_rect);
-	UIPickUpItemIcon->SetStretchTexture(true);
-
-
-	UIPickUpItemIcon->SetWidth(m_iGridWidth*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * scale*UI().get_current_kx());
-	UIPickUpItemIcon->SetHeight(m_iGridHeight*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) * scale);
-
-	UIPickUpItemIcon->SetAlignment(waCenter);
-
-	UIPickUpItemIcon->SetTextureColor(color_rgba(255,255,255,192));
-	UIPickUpItemIcon->Show(true);
-};
+	float x_size = m_pPickUpItem->GetInvGridRect().x2 * (UI().is_widescreen() ? 30.f : 40.f);
+	float y_size = m_pPickUpItem->GetInvGridRect().y2 * 40.f;
+	uiPickUpItemIconNew_->SetAlignment(waCenter);
+	uiPickUpItemIconNew_->SetWndPos(Fvector2().set(m_iPickUpItemIconX, m_iPickUpItemIconY));
+	uiPickUpItemIconNew_->SetWndSize(Fvector2().set(x_size * m_iPickUpItemIconScale, y_size * m_iPickUpItemIconScale));
+	fuzzyShowInfo_ = 0.f;
+}
 
 void CUIMainIngameWnd::OnConnected()
 {

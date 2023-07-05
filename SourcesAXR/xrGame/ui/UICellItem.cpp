@@ -81,7 +81,7 @@ void CUICellItem::init()
 	m_pConditionState->SetAutoDelete(true);
 	AttachChild(m_pConditionState);
 	CUIXmlInit::InitProgressBar(uiXml, "condition_progess_bar", 0, m_pConditionState);
-	m_pConditionState->Show(true);
+	m_pConditionState->Show(false);
 
 	if (uiXml.NavigateToNode("portions_progess_bar", 0))
 	{
@@ -89,7 +89,7 @@ void CUICellItem::init()
 		m_pPortionsState->SetAutoDelete(true);
 		AttachChild(m_pPortionsState);
 		CUIXmlInit::InitProgressBar(uiXml, "portions_progess_bar", 0, m_pPortionsState);
-		m_pPortionsState->Show(true);
+		m_pPortionsState->Show(false);
 	}
 
 	if (uiXml.NavigateToNode("charge_level_progess_bar", 0))
@@ -98,7 +98,7 @@ void CUICellItem::init()
 		m_pChargeState->SetAutoDelete(true);
 		AttachChild(m_pChargeState);
 		CUIXmlInit::InitProgressBar(uiXml, "charge_level_progess_bar", 0, m_pChargeState);
-		m_pChargeState->Show(true);
+		m_pChargeState->Show(false);
 	}
 }
 
@@ -113,7 +113,8 @@ void CUICellItem::Draw()
 
 void CUICellItem::Update()
 {
-	EnableHeading(m_pParentList->GetVerticalPlacement());
+	if (m_pParentList)
+		EnableHeading(m_pParentList->GetVerticalPlacement() && m_pParentList);
 	if(Heading())
 	{
 		SetHeading			( 90.0f * (PI/180.0f) );
@@ -123,7 +124,7 @@ void CUICellItem::Update()
 
 	inherited::Update();
 	
-	if ( CursorOverWindow() )
+	if ( CursorOverWindow() && m_pParentList)
 	{
 		Frect clientArea;
 		m_pParentList->GetClientArea(clientArea);

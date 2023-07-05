@@ -14,6 +14,7 @@ class	CMissile;
 class	CInventoryItem;
 class	CUIHudStatesWnd;
 class	CUIMotionIcon;
+class	CUICellItem;
 
 class CUIMainIngameWnd: public CUIWindow  
 {
@@ -188,10 +189,11 @@ protected:
 	CInventoryItem*		m_pPickUpItem;
 	CUIStatic*			UIPickUpItemIcon;
 
-	float				m_iPickUpItemIconWidth;
-	float				m_iPickUpItemIconHeight;
-
-	void				UpdatePickUpItem();
+	float				fuzzyShowInfo_;
+	CUICellItem*		uiPickUpItemIconNew_;
+	float				m_iPickUpItemIconX;
+	float				m_iPickUpItemIconY;
+	float				m_iPickUpItemIconScale;
 public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
 #ifdef DEBUG
