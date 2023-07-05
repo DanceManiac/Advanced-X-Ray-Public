@@ -28,9 +28,8 @@
 
 #include "AdvancedXrayGameConstants.h"
 
-u32 C_ON_ENEMY	=	color_rgba(0xff,0,0,0x80);
-u32 C_ON_NEUTRAL=	color_rgba(0xff,0xff,0x80,0x80);
-u32 C_ON_FRIEND	=	color_rgba(0,0xff,0,0x80);
+#include "ui/UIMainIngameWnd.h"
+
 
 u32	crosshair_type = 1;
 
@@ -178,9 +177,31 @@ void CHUDTarget::Render()
 	//float				di_size = C_SIZE/powf(PT.p.w,.2f);
 	float				di_size = C_SIZE/powf(pt.w,.2f);
 
+	float hud_info_x	= HUD().GetUI()->UIMainIngameWnd->hud_info_x * 0.025f;
+	float hud_info_y	= HUD().GetUI()->UIMainIngameWnd->hud_info_y * 0.025f;
+
+	int hud_info_r_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_e;
+	int hud_info_g_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_e;
+	int hud_info_b_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_e;
+	int hud_info_a_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_e;
+
+	int hud_info_r_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_n;
+	int hud_info_g_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_n;
+	int hud_info_b_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_n;
+	int hud_info_a_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_n;
+
+	int hud_info_r_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_f;
+	int hud_info_g_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_f;
+	int hud_info_b_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_f;
+	int hud_info_a_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_f;
+
+	u32 C_ON_ENEMY		= color_rgba(hud_info_r_e, hud_info_g_e, hud_info_b_e, hud_info_a_e);
+	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);
+	u32 C_ON_FRIEND		= color_rgba(hud_info_r_f, hud_info_g_f, hud_info_b_f, hud_info_a_f);
+
 	CGameFont* F		= HUD().Font().pFontGraffiti19Russian;
 	F->SetAligment		(CGameFont::alCenter);
-	F->OutSetI			(0.f,0.05f);
+	F->OutSetI			(0.f + hud_info_x, 0.05f + hud_info_y);
 
 	if (psHUD_Flags.test(HUD_CROSSHAIR_DIST))
 		F->OutSkip		();
@@ -230,7 +251,18 @@ void CHUDTarget::Render()
 					{
 						if (fuzzyShowInfo>0.5f && l_pI->NameItem())
 						{
+							float hud_info_item_x  = HUD().GetUI()->UIMainIngameWnd->hud_info_item_x;
+							float hud_info_item_y1 = HUD().GetUI()->UIMainIngameWnd->hud_info_item_y1;
+							float hud_info_item_y2 = HUD().GetUI()->UIMainIngameWnd->hud_info_item_y2;
+							float hud_info_item_y3 = HUD().GetUI()->UIMainIngameWnd->hud_info_item_y3;
+							int height = l_pI->GetInvGridRect().y2;
+							float pos = hud_info_item_y1;
 							F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
+							if (height == 2)
+								pos = hud_info_item_y2;
+							else if (height == 3)
+								pos = hud_info_item_y3; // Hrust: 4 cells by height is not normal)
+							F->OutSetI(0.f + hud_info_x + hud_info_item_x, 0.05f + hud_info_y + pos);
 							F->OutNext	("%s",l_pI->NameItem());
 						}
 						fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
