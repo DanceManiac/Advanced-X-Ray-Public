@@ -29,6 +29,9 @@ void CWeaponAutomaticShotgun::Load(LPCSTR section)
 
 		m_sounds.LoadSound(section, "snd_add_cartridge", "sndAddCartridge", false, m_eSoundAddCartridge);
 
+		if (WeaponSoundExist(section, "snd_add_cartridge_empty", true))
+			m_sounds.LoadSound(section, "snd_add_cartridge_empty", "sndAddCartridgeEmpty", false, m_eSoundAddCartridge);
+
 		m_sounds.LoadSound(section, "snd_close_weapon", "sndClose_2", false, m_eSoundClose_2);
 	};
 
@@ -131,7 +134,11 @@ void CWeaponAutomaticShotgun::switch2_StartReload()
 
 void CWeaponAutomaticShotgun::switch2_AddCartgidge	()
 {
-	PlaySound	("sndAddCartridge",get_LastFP());
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_add_cartridge_empty") && iAmmoElapsed == 0)
+		PlaySound	("sndAddCartridgeEmpty", get_LastFP());
+	else
+		PlaySound	("sndAddCartridge", get_LastFP());
+
 	PlayAnimAddOneCartridgeWeapon();
 	SetPending			(TRUE);
 }
@@ -151,12 +158,15 @@ void CWeaponAutomaticShotgun::PlayAnimOpenWeapon()
 void CWeaponAutomaticShotgun::PlayAnimAddOneCartridgeWeapon()
 {
 	VERIFY(GetState()==eReload);
-	PlayHUDMotion("anm_add_cartridge",FALSE,this,GetState());
+
+	if (iAmmoElapsed == 0)
+		PlayHUDMotionIfExists({ "anm_add_cartridge_empty", "anm_add_cartridge" }, true, GetState());
+	else
+		PlayHUDMotion("anm_add_cartridge",FALSE,this,GetState());
 }
 void CWeaponAutomaticShotgun::PlayAnimCloseWeapon()
 {
 	VERIFY(GetState()==eReload);
-
 	PlayHUDMotion("anm_close",FALSE,this,GetState());
 }
 
