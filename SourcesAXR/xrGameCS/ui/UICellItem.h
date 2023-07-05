@@ -55,6 +55,8 @@ public:
 	virtual		void		Draw					();
 	virtual		void		Update					();
 	virtual		void		SetOriginalRect			(const Frect& r);
+
+				void		UpdateIndicators();
 				
 	virtual		void		OnAfterChild			(CUIDragDropListEx* parent_list)						{};
 

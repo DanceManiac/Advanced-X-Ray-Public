@@ -131,7 +131,11 @@ void CUICellItem::Update()
 		if(clientArea.in(cp))
 			GetMessageTarget()->SendMessage(this, DRAG_DROP_ITEM_FOCUSED_UPDATE, NULL);
 	}
-	
+	UpdateIndicators();
+}
+
+void CUICellItem::UpdateIndicators()
+{
 	PIItem item = (PIItem)m_pData;
 	if ( item )
 	{

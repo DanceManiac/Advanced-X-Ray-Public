@@ -68,6 +68,7 @@ public:
 
 	CUIDragDropListEx*		OwnerList				()						{return m_pParentList;}
 				void		SetOwnerList			(CUIDragDropListEx* p);
+				void		UpdateIndicators();
 				void		UpdateCellItemProgressBars();
 				void		UpdateConditionProgressBar();
 				void		UpdatePortionsProgressBar();
