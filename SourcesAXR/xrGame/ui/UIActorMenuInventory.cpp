@@ -949,10 +949,11 @@ bool CUIActorMenu::TryUseItem( CUICellItem* cell_itm )
 	{
 		return false;
 	}
-	if ( !item->Useful() )
+	if ( !item->Useful() || (pFilter && !pFilter->UseAllowed()) || (pRepairKit && !pRepairKit->UseAllowed()) )
 	{
 		return false;
 	}
+
 	u16 recipient = m_pActorInvOwner->object_id();
 	if ( item->parent_id() != recipient )
 	{
@@ -1348,7 +1349,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 	LPCSTR act_str = NULL;
 
-	if (!item->Useful())
+	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()) || (pRepairKit && !pRepairKit->UseAllowed()))
 		return;
 
 	if ( pMedkit || pAntirad )

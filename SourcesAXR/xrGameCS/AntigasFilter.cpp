@@ -46,6 +46,11 @@ bool CAntigasFilter::Useful() const
 	//проверить не все ли еще съедено
 	if (m_iPortionsNum == 0) return false;
 
+	return true;
+}
+
+bool CAntigasFilter::UseAllowed()
+{
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 
 	if (outfit)

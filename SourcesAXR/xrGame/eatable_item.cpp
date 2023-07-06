@@ -88,8 +88,6 @@ bool CEatableItem::Useful() const
 
 void CEatableItem::OnH_A_Independent() 
 {
-	if (!m_bNeedDestroyNotUseful) return;
-
 	inherited::OnH_A_Independent();
 
 	if (!Useful() && this->m_bCanUse)
@@ -101,7 +99,7 @@ void CEatableItem::OnH_A_Independent()
 
 void CEatableItem::OnH_B_Independent(bool just_before_destroy)
 {
-	if (m_bNeedDestroyNotUseful && !Useful())
+	if (!Useful())
 	{
 		object().setVisible(FALSE);
 		object().setEnabled(FALSE);

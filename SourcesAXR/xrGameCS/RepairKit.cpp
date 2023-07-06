@@ -49,6 +49,11 @@ bool CRepairKit::Useful() const
 	//проверить не все ли еще съедено
 	if (m_iPortionsNum == 0) return false;
 
+	return true;
+}
+
+bool CRepairKit::UseAllowed()
+{
 	if (Actor()->ActorSkills && Actor()->ActorSkills->repairSkillLevel < 1) return false;
 
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));

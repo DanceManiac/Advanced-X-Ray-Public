@@ -29,6 +29,7 @@ public:
 	void					ChangeInWpn3();
 	void					ChangeRepairKitCondition(float val);
 	float					GetRepairKitCondition(void) const;
+	bool					UseAllowed();
 protected:
 	int						m_iPortionsNum;
 };

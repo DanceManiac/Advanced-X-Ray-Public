@@ -22,6 +22,7 @@ public:
 	void					ChangeInOutfit();
 	void					ChangeFilterCondition(float val);
 	float					GetFilterCondition(void) const;
+	bool					UseAllowed();
 protected:
 	int						m_iPortionsNum;
 };
