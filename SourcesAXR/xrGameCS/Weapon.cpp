@@ -795,6 +795,7 @@ void CWeapon::Load(LPCSTR section)
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
 	m_bShowWpnStats = READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
+	m_bEnableBoreDof = READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_dof", true);
 
 	if (repair_kits && repair_kits[0])
 	{
@@ -3175,7 +3176,7 @@ void CWeapon::OnStateSwitch	(u32 S)
 	{
 		CActor* current_actor = smart_cast<CActor*>(H_Parent());
 
-		if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && GameConstants::GetSSFX_EnableBoreDoF())) && current_actor)
+		if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor)
 		{
 			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
 			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
