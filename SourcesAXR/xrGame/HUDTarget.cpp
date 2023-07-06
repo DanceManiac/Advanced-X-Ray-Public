@@ -160,7 +160,12 @@ void CHUDTarget::Render()
 
 
 	if (auto Wpn = smart_cast<CHudItem*>(Actor->inventory().ActiveItem()))
-		Actor->g_fireParams(Wpn, p1, dir);
+	{	
+		bool AllowedForThis = (Wpn != smart_cast<CHudItem*>(Actor->inventory().ItemFromSlot(BOLT_SLOT)) && Wpn != smart_cast<CHudItem*>(Actor->inventory().ItemFromSlot(GRENADE_SLOT)) && Wpn != smart_cast<CHudItem*>(Actor->inventory().ItemFromSlot(BINOCULAR_SLOT)));
+		
+		if (AllowedForThis)
+			Actor->g_fireParams(Wpn, p1, dir);
+	}
 	
 	// Render cursor
 	u32 C				= C_DEFAULT;
