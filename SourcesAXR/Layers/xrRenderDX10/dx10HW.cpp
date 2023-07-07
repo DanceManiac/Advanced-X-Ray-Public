@@ -527,9 +527,6 @@ void CHW::Reset (HWND hwnd)
 	//_RELEASE(pBaseZB);
 	//_RELEASE(pBaseRT);
 
-	_RELEASE(pBaseZB);
-	_RELEASE(pBaseRT);
-
 	CHK_DX(m_pSwapChain->ResizeBuffers(
 		cd.BufferCount,
 		desc.Width,
