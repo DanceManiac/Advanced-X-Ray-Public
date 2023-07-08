@@ -226,6 +226,9 @@ void CEatableItem::UpdateUseAnim()
 	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()))
 		StartAnimation();
 
+	if (!IsActorAlive)
+		m_using_sound.stop();
+
 	if (m_bActivated)
 	{
 		if (m_iAnimLength <= Device.dwTimeGlobal || !IsActorAlive)
