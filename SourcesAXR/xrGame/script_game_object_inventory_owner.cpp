@@ -1237,8 +1237,15 @@ void  CScriptGameObject::HideWeapon(int mode)
 	switch (mode)
 	{
 		case 1:
+		{
+			auto activeSlot = Actor()->inventory().GetActiveSlot();
+			std::set<unsigned int> allowedSlots = { DETECTOR_SLOT, BOLT_SLOT, BINOCULAR_SLOT, PDA_SLOT, NO_ACTIVE_SLOT };
+
+			if (allowedSlots.find(activeSlot) == allowedSlots.end())
+				Actor()->inventory().Activate(NO_ACTIVE_SLOT);
+
 			Actor()->SetWeaponHideState(INV_STATE_HIDE_WEAPON, true);
-			break;
+		}break;
 		default:
 			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 	}
