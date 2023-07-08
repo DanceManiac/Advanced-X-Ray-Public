@@ -524,8 +524,8 @@ void CHW::Reset (HWND hwnd)
 	//_SHOW_REF				("refCount:pBaseZB",pBaseZB);
 	//_SHOW_REF				("refCount:pBaseRT",pBaseRT);
 
-	_RELEASE(pBaseZB);
-	_RELEASE(pBaseRT);
+	//_RELEASE(pBaseZB);
+	//_RELEASE(pBaseRT);
 
 	CHK_DX(m_pSwapChain->ResizeBuffers(
 		cd.BufferCount,
