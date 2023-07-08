@@ -85,6 +85,9 @@
     <Filter Include="Debug core\BlackBox">
       <UniqueIdentifier>{bd406db5-1606-4b04-9eb1-d79071f92562}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Threading">
+      <UniqueIdentifier>{f77aa1f5-5e2e-432e-80e9-83f208dabae9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FTimer.cpp">
@@ -287,6 +290,9 @@
     </ClCompile>
     <ClCompile Include="blackbox\TLHELPProcessInfo.cpp">
       <Filter>Debug core\BlackBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Threading\Event.cpp">
+      <Filter>Threading</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -602,6 +608,9 @@
     </ClInclude>
     <ClInclude Include="xr_map.h">
       <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Threading\Event.hpp">
+      <Filter>Threading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

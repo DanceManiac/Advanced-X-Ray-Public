@@ -27,6 +27,7 @@ enum ViewPort;
 
 #include "../Include/xrRender/FactoryPtr.h"
 #include "../Include/xrRender/RenderDeviceRender.h"
+#include "../xrCore/Threading/Event.hpp"
 
 #ifdef INGAME_EDITOR
 #	include "../Include/editor/interfaces.hpp"
@@ -246,6 +247,9 @@ public:
 	);
 	BOOL	Paused							();
 
+private:
+	static void SecondaryThreadProc			(void* context);
+public:
 	// Scene control
 	void PreCache							(u32 amount, bool b_draw_loadscreen, bool b_wait_user_input);
 	BOOL Begin								();
@@ -287,9 +291,9 @@ public:
 		return					(Timer.time_factor());
 	}
 
-	// Multi-threading
-	xrCriticalSection	mt_csEnter;
-	xrCriticalSection	mt_csLeave;
+private:
+	Event syncProcessFrame, syncFrameDone, syncThreadExit;
+public:
 	volatile BOOL		mt_bMustExit;
 
 	ICF		void			remove_from_seq_parallel	(const fastdelegate::FastDelegate0<> &delegate)
