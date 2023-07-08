@@ -1009,6 +1009,9 @@ void CActor::UpdateCL	()
 
 	UpdateInventoryOwner			(Device.dwTimeDelta);
 
+	if (load_screen_renderer.IsActive() && inventory().GetActiveSlot() == PDA_SLOT)
+		inventory().Activate(NO_ACTIVE_SLOT);
+
 	if(m_feel_touch_characters>0)
 	{
 		for(xr_vector<CObject*>::iterator it = feel_touch.begin(); it != feel_touch.end(); it++)
