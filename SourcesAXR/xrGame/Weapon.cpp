@@ -21,8 +21,10 @@
 #include "static_cast_checked.hpp"
 #include "clsid_game.h"
 #include "weaponBinocularsVision.h"
+#include "UIGameCustom.h"
 #include "ui/UIWindow.h"
 #include "ui/UIXmlInit.h"
+#include "ui\UIActorMenu.h"
 #include "Torch.h"
 #include "ActorNightVision.h"
 #include "../xrEngine/x_ray.h"
@@ -3138,15 +3140,18 @@ void CWeapon::OnStateSwitch	(u32 S)
 	{
 		CActor* current_actor = smart_cast<CActor*>(H_Parent());
 
-		if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor)
+		if (&CurrentGameUI()->ActorMenu() && CurrentGameUI()->ActorMenu().GetMenuMode() == mmUndefined)
 		{
-			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
-			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
-		}
-		else
-		{
-			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+			if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor)
+			{
+				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+			}
+			else
+			{
+				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+			}
 		}
 	}
 }
