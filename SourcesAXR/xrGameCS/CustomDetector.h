@@ -207,7 +207,7 @@ public:
 			void	Flash(bool bOn, float fRelPower);
 
 protected:
-			bool	CheckCompatibilityInt		(CHudItem*);
+			bool	CheckCompatibilityInt		(CHudItem* itm, u16* slot_to_activate);
 			void 	TurnDetectorInternal		(bool b);
 	void 			UpdateNightVisionMode		(bool b_off);
 	void			UpdateVisibility			();

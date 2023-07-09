@@ -26,23 +26,48 @@ ITEM_INFO::~ITEM_INFO()
 		CParticlesObject::Destroy(pParticle);
 }
 
-bool  CCustomDetector::CheckCompatibilityInt(CHudItem* itm)
+bool CCustomDetector::CheckCompatibilityInt(CHudItem* itm, u16* slot_to_activate)
 {
-	if(itm==NULL)
+	if (itm == NULL)
 		return true;
 
-	CInventoryItem iitm				= itm->item();
-	u32 slot						= iitm.GetSlot();
-	bool bres = (slot==PISTOL_SLOT || slot==KNIFE_SLOT || slot==BOLT_SLOT);
+	CInventoryItem& iitm = itm->item();
+	u32 slot = iitm.GetSlot();
+	bool bres = (slot == PISTOL_SLOT || slot == KNIFE_SLOT || slot == BOLT_SLOT);
+	if (!bres && slot_to_activate)
+	{
+		*slot_to_activate = u8(-1);
+		if (m_pInventory->ItemFromSlot(BOLT_SLOT))
+			*slot_to_activate = BOLT_SLOT;
 
-	if(itm->GetState()!=CHUDState::eShowing)
+		if (m_pInventory->ItemFromSlot(KNIFE_SLOT))
+			*slot_to_activate = KNIFE_SLOT;
+
+		if (m_pInventory->ItemFromSlot(PISTOL_SLOT))
+			*slot_to_activate = PISTOL_SLOT;
+
+		if (m_pInventory->ItemFromSlot(RIFLE_SLOT) && m_pInventory->ItemFromSlot(RIFLE_SLOT)->GetSlot() != RIFLE_SLOT)
+			*slot_to_activate = RIFLE_SLOT;
+
+		if (m_pInventory->ItemFromSlot(PISTOL_SLOT) && m_pInventory->ItemFromSlot(PISTOL_SLOT)->GetSlot() != PISTOL_SLOT)
+			*slot_to_activate = PISTOL_SLOT;
+
+		if (*slot_to_activate != u8(-1))
+			bres = true;
+	}
+
+	if (itm->GetState() != CHUDState::eShowing)
 		bres = bres && !itm->IsPending();
 
-	if(bres)
+	if (bres)
 	{
 		CWeapon* W = smart_cast<CWeapon*>(itm);
-		if(W)
-			bres = bres && (W->GetState()!=CHUDState::eBore) && !W->IsZoomed();
+		if (W)
+			bres = bres &&
+			(W->GetState() != CHUDState::eBore) &&
+			(W->GetState() != CWeapon::eReload) &&
+			(W->GetState() != CWeapon::eSwitch) &&
+			!W->IsZoomed();
 	}
 	return bres;
 }
@@ -52,7 +77,7 @@ bool  CCustomDetector::CheckCompatibility(CHudItem* itm)
 	if(!inherited::CheckCompatibility(itm) )	
 		return false;
 
-	if(!CheckCompatibilityInt(itm))
+	if(!CheckCompatibilityInt(itm, NULL))
 	{
 		HideDetector	(true);
 		return			false;
@@ -74,21 +99,32 @@ void CCustomDetector::ShowDetector(bool bFastMode)
 
 void CCustomDetector::ToggleDetector(bool bFastMode)
 {
+	m_bNeedActivation = false;
 	m_bFastAnimMode = bFastMode;
-	if(GetState()==eHidden)
+
+	if (GetState() == eHidden)
 	{
 		PIItem iitem = m_pInventory->ActiveItem();
-		CHudItem* itm = (iitem)?iitem->cast_hud_item():NULL;
-		if(CheckCompatibilityInt(itm))
-		{
-			SwitchState				(eShowing);
-			TurnDetectorInternal	(true);
-		}
-	}else
-	if(GetState()==eIdle)
-		SwitchState					(eHiding);
+		CHudItem* itm = (iitem) ? iitem->cast_hud_item() : NULL;
+		u16 slot_to_activate = u8(-1);
 
-	m_bNeedActivation = false;
+		if (CheckCompatibilityInt(itm, &slot_to_activate))
+		{
+			if (slot_to_activate != u8(-1))
+			{
+				m_pInventory->Activate(slot_to_activate);
+				m_bNeedActivation = true;
+			}
+			else
+			{
+				SwitchState(eShowing);
+				TurnDetectorInternal(true);
+			}
+		}
+	}
+	else
+		if (GetState() == eIdle)
+			SwitchState(eHiding);
 }
 
 void CCustomDetector::OnStateSwitch(u32 S)
@@ -420,37 +456,40 @@ void CCustomDetector::Flash(bool bOn, float fRelPower)
 void CCustomDetector::UpdateVisibility()
 {
 	//check visibility
-	attachable_hud_item* i0		= g_player_hud->attached_item(0);
-	if(i0 && HudItemData())
+	attachable_hud_item* i0 = g_player_hud->attached_item(0);
+	if (i0 && HudItemData())
 	{
-		CWeapon* wpn			= smart_cast<CWeapon*>(i0->m_parent_hud_item);
-		if(wpn)
+		bool bClimb = ((Actor()->MovingState() & mcClimb) != 0);
+		if (bClimb)
 		{
-			u32 state			= wpn->GetState();
-			bool bClimb			= ( (Actor()->MovingState()&mcClimb) != 0 );
-			if(bClimb || wpn->IsZoomed() || state==CWeapon::eReload || state==CWeapon::eSwitch)
+			HideDetector(true);
+			m_bNeedActivation = true;
+		}
+		else
+		{
+			CWeapon* wpn = smart_cast<CWeapon*>(i0->m_parent_hud_item);
+			if (wpn)
 			{
-				HideDetector		(true);
-				m_bNeedActivation	= true;
+				u32 state = wpn->GetState();
+				if (wpn->IsZoomed() || state == CWeapon::eReload || state == CWeapon::eSwitch)
+				{
+					HideDetector(true);
+					m_bNeedActivation = true;
+				}
 			}
 		}
-	}else
-	if(m_bNeedActivation)
+	}
+	else if (m_bNeedActivation)
 	{
-		attachable_hud_item* i0		= g_player_hud->attached_item(0);
-		bool bClimb					= ( (Actor()->MovingState()&mcClimb) != 0 );
-		if(!bClimb)
+		attachable_hud_item* i0 = g_player_hud->attached_item(0);
+		bool bClimb = ((Actor()->MovingState() & mcClimb) != 0);
+		if (!bClimb)
 		{
-			CWeapon* wpn			= (i0)?smart_cast<CWeapon*>(i0->m_parent_hud_item) : NULL;
-			if(	!wpn || 
-				(	!wpn->IsZoomed() && 
-					wpn->GetState()!=CWeapon::eReload && 
-					wpn->GetState()!=CWeapon::eSwitch
-				)
-			)
-			{
-				ShowDetector		(true);
-			}
+			CHudItem* huditem = (i0) ? i0->m_parent_hud_item : NULL;
+			bool bChecked = !huditem || CheckCompatibilityInt(huditem, 0);
+
+			if (bChecked)
+				ShowDetector(true);
 		}
 	}
 }
