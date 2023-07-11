@@ -8,6 +8,7 @@
 #include "../xrcdb/xrxrc.h"
 
 #include "securom_api.h"
+#include <imgui.h>
 
 extern XRCDB_API BOOL *cdb_bDebug;
 extern ENGINE_API float psSVPImageSizeK;
@@ -105,6 +106,24 @@ cdb_bDebug		= &bDebug;
 	_Create				(fname);
 
 	PreCache			(0, false, false);
+
+	std::string userDir = FS.get_path("$app_data_root$")->m_Path, fileToWrite = "\\imgui.ini";
+	std::size_t lastSlashPos = userDir.find_last_of("/\\");
+
+	if (lastSlashPos != std::string::npos)
+	{
+		std::size_t secondLastSlashPos = userDir.find_last_of("/\\", lastSlashPos - 1);
+
+		if (secondLastSlashPos != std::string::npos)
+		{
+			std::string secondLastFolder = userDir.substr(secondLastSlashPos + 1, lastSlashPos - secondLastSlashPos - 1);
+			userDir = secondLastFolder;
+		}
+	}
+
+	std::string path = userDir + fileToWrite;
+
+	ImGui::GetIO().IniFilename = xr_strdup(path.c_str());//path.c_str();
 
 	SECUROM_MARKER_SECURITY_OFF(4)
 }

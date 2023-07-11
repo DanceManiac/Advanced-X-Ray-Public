@@ -4,6 +4,7 @@
 #include "render.h"
 #include "IGame_Persistent.h"
 #include "xr_IOConsole.h"
+#include <imgui.h>
 
 extern ENGINE_API float psSVPImageSizeK;
 
@@ -31,6 +32,8 @@ void CRenderDevice::Destroy	(void) {
 	m_pRender->ValidateHW();
 
 	_Destroy					(FALSE);
+
+	xr_free(ImGui::GetIO().IniFilename);
 
 	// real destroy
 	m_pRender->DestroyHW();
