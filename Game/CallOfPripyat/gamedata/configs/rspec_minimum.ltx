@@ -23,6 +23,9 @@ r3_dynamic_wet_surfaces off
 r3_volumetric_smoke off
 r3_msaa st_opt_off
 r4_ssr_samples dtssr_lowest
+r4_chromatic_aberration off
+r4_film_grain off
+r3_reflections_dist 100.
 r__shader_nvg 0
 g_3d_pda off
 r2_static_sun on
@@ -30,6 +33,8 @@ r2_use_bump off
 r__actor_shadow off
 r__detail_density 0.3
 r__detail_radius 49
+r__detail_collision_enabled 0
+r__detail_collision_visible_radius 20.
 r__wallmarks_on_skeleton 0
 r__geometry_lod 0.5
 r__supersample 1
@@ -37,7 +42,7 @@ r__tf_aniso 1
 r__wallmark_ttl 20
 r__optimize_dynamic_geom 4
 r__optimize_shadow_geom on
-r__optimize_static_geom 4
+r__optimize_static_geom 0
 rs_skeleton_update 32
 rs_vis_distance 0.5
 snd_cache_size 16
