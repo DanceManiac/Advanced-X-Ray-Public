@@ -208,9 +208,41 @@ void CWeaponBM16::PlayAnimIdle()
 		{
 			string64 guns_aim_anm_full;
 			strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_aim_anm, "_", std::to_string(m_magazine.size()).c_str());
-			if (isHUDAnimationExist(guns_aim_anm_full)) {
+
+			if (isHUDAnimationExist(guns_aim_anm_full))
+			{
 				PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
 				return;
+			}
+			else if (strstr(guns_aim_anm_full, "_jammed"))
+			{
+				char* jammed_position = strstr(guns_aim_anm_full, "_jammed");
+				int jammed_length = strlen("_jammed");
+
+				char new_guns_aim_anm[100];
+				strncpy(new_guns_aim_anm, guns_aim_anm_full, jammed_position - guns_aim_anm_full);
+				strcpy(new_guns_aim_anm + (jammed_position - guns_aim_anm_full), guns_aim_anm_full + (jammed_position - guns_aim_anm_full) + jammed_length);
+
+				if (isHUDAnimationExist(new_guns_aim_anm))
+				{
+					PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+					return;
+				}
+			}
+			else if (strstr(guns_aim_anm_full, "_empty"))
+			{
+				char* empty_position = strstr(guns_aim_anm_full, "_empty");
+				int empty_length = strlen("_empty");
+
+				char new_guns_aim_anm[100];
+				strncpy(new_guns_aim_anm, guns_aim_anm_full, empty_position - guns_aim_anm_full);
+				strcpy(new_guns_aim_anm + (empty_position - guns_aim_anm_full), guns_aim_anm_full + (empty_position - guns_aim_anm_full) + empty_length);
+
+				if (isHUDAnimationExist(new_guns_aim_anm))
+				{
+					PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+					return;
+				}
 			}
 		}
 		switch (m_magazine.size())

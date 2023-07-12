@@ -1534,12 +1534,36 @@ void CWeaponMagazined::PlayAnimAim()
 		}
 	}
 
-	if (const char* guns_aim_anm = GetAnimAimName()) 
+	if (const char* guns_aim_anm = GetAnimAimName())
 	{
 		if (isHUDAnimationExist(guns_aim_anm))
 		{
 			PlayHUDMotionNew(guns_aim_anm, true, GetState());
 			return;
+		}
+		else if (strstr(guns_aim_anm, "_jammed"))
+		{
+			char new_guns_aim_anm[256];
+			strcpy(new_guns_aim_anm, guns_aim_anm);
+			new_guns_aim_anm[strlen(guns_aim_anm) - strlen("_jammed")] = '\0';
+
+			if (isHUDAnimationExist(new_guns_aim_anm))
+			{
+				PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+				return;
+			}
+		}
+		else if (strstr(guns_aim_anm, "_empty"))
+		{
+			char new_guns_aim_anm[256];
+			strcpy(new_guns_aim_anm, guns_aim_anm);
+			new_guns_aim_anm[strlen(guns_aim_anm) - strlen("_empty")] = '\0';
+
+			if (isHUDAnimationExist(new_guns_aim_anm))
+			{
+				PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+				return;
+			}
 		}
 	}
 
