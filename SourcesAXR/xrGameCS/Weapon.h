@@ -345,6 +345,7 @@ protected:
 	// 0-используется без участия рук, 1-одна рука, 2-две руки
 	EHandDependence			eHandDependence;
 	bool					m_bIsSingleHanded;
+	bool					m_bUseAimAnmDirDependency;
 
 public:
 	//загружаемые параметры
