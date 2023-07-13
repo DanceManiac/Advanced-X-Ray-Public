@@ -87,6 +87,16 @@ void CUILogsWnd::Update()
 		ReLoadNews();
 	}
 
+	if(!m_items_ready.empty())
+	{
+		WINDOW_LIST::iterator it		= m_items_ready.begin();
+		WINDOW_LIST::iterator it_e		= m_items_ready.end();
+
+		for(; it!=it_e; ++it)
+			m_list->AddWindow			(*it, true);
+		
+		m_items_ready.clear();
+	}
 }
 
 void CUILogsWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
@@ -221,7 +231,7 @@ void CUILogsWnd::PerformWork()
 {
 	if(!m_news_in_queue.empty())
 	{
-		u32 count = _min(30, m_news_in_queue.size());
+		u32 count = _min(20, m_news_in_queue.size());
 //.		u32 count = m_news_in_queue.size();
 		for(u32 i=0; i<count;++i)
 		{
@@ -276,12 +286,11 @@ CUIWindow* CUILogsWnd::ItemFromCache()
 
 void CUILogsWnd::AddNewsItem( GAME_NEWS_DATA& news_data, CUIWindow* exist_item )
 {
-	CUIWindow*	news_itm_w		= (exist_item)?exist_item:ItemFromCache();
+	CUIWindow* news_itm_w		= ItemFromCache();
 	CUINewsItemWnd*	news_itm	= smart_cast<CUINewsItemWnd*>(news_itm_w);
-	news_itm->Setup				( news_data );
+	news_itm->Setup				(news_data);
 	
-	if(exist_item==NULL)
-		m_list->AddWindow		( news_itm, true );
+	m_items_ready.push_back		(news_itm);
 }
 
 void CUILogsWnd::UpdateChecks( CUIWindow* w, void* d )
