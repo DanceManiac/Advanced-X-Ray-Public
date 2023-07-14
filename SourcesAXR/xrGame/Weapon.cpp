@@ -111,6 +111,7 @@ CWeapon::CWeapon()
 	bullet_cnt				= 0;
 
 	m_bUseAimAnmDirDependency = true;
+	m_bUseScopeAimMoveAnims = true;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -811,6 +812,7 @@ void CWeapon::Load		(LPCSTR section)
 	m_bShowWpnStats = READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
 	m_bEnableBoreDof = READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_dof", true);
 	m_bUseAimAnmDirDependency = READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", true);
+	m_bUseScopeAimMoveAnims = READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
 
 	if (repair_kits && repair_kits[0])
 	{
@@ -3304,7 +3306,7 @@ const char* CWeapon::GetAnimAimName()
 
 		if (state && state & mcAnyMove)
 		{
-			if (IsScopeAttached())
+			if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
 				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "");
 			else
 			{ 

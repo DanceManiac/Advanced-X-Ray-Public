@@ -346,6 +346,7 @@ protected:
 	EHandDependence			eHandDependence;
 	bool					m_bIsSingleHanded;
 	bool					m_bUseAimAnmDirDependency;
+	bool					m_bUseScopeAimMoveAnims;
 
 public:
 	//загружаемые параметры
