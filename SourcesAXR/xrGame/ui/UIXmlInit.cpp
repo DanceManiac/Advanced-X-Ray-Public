@@ -26,7 +26,7 @@
 
 extern int keyname_to_dik(LPCSTR);
 
-#define ARIAL_FONT_NAME			"arial"
+#define ARIAL_FONT_NAME			"arial_14"
 
 #define MEDIUM_FONT_NAME		"medium"
 #define SMALL_FONT_NAME			"small"
@@ -747,7 +747,7 @@ bool CUIXmlInit::InitFont(CUIXml &xml_doc, LPCSTR path, int index, u32 &color, C
 		{
 			pFnt = UI().Font().pFontGraffiti50Russian;
 		}
-		else if(!xr_strcmp(font_name, "arial_14"))
+		else if(!xr_strcmp(font_name, ARIAL_FONT_NAME))
 		{
 			pFnt = UI().Font().pFontArial14;
 		}
