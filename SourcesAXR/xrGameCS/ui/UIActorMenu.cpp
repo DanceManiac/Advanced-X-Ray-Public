@@ -42,7 +42,6 @@
 #include "../PDA.h"
 #include "../CustomOutfit.h"
 #include "../CustomDetector.h"
-#include "../eatable_item.h"
 
 bool SSFX_UI_DoF_active = false;
 
@@ -639,7 +638,6 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CWeapon* weapon = smart_cast<CWeapon*>(item);
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(item);
 	CCustomDetector* detector = smart_cast<CCustomDetector*>(item);
-	CEatableItem* eatable = smart_cast<CEatableItem*>(item);
 	CArtefact* artefact = smart_cast<CArtefact*>(item);
 	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
