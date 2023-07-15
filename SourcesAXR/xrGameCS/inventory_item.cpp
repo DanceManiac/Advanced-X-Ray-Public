@@ -117,6 +117,7 @@ void CInventoryItem::Load(LPCSTR section)
 
 	//время убирания объекта с уровня
 	m_dwItemRemoveTime			= READ_IF_EXISTS(pSettings, r_u32, section,"item_remove_time",	ITEM_REMOVE_TIME);
+	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text",	"");
 
 	if ( m_slot != -1 )
 	{

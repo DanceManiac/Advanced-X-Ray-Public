@@ -36,7 +36,9 @@ protected:
 	Ivector2				m_grid_size;
 	ICustomDrawCellItem*	m_custom_draw;
 	int						m_accelerator;
-	CUIStatic*				m_text; 
+	CUIStatic*				m_text;
+	CUIStatic*				m_custom_text;
+	Fvector2				m_custom_text_pos;
 	CUIStatic*				m_upgrade;
 	Fvector2				m_upgrade_pos;
 	CUIStatic*				m_qmark;
@@ -89,6 +91,7 @@ public:
 				bool		m_selected;
 				bool		m_select_armament;
 				bool		m_cur_mark;
+				bool		m_with_custom_text;
 				bool		m_has_upgrade;
 				bool		m_is_quest;
 };

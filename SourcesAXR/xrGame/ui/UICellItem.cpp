@@ -27,6 +27,7 @@ CUICellItem::CUICellItem()
 	m_pData				= nullptr;
 	m_custom_draw		= nullptr;
 	m_text				= nullptr;
+	m_custom_text		= nullptr;
 	m_qmark				= nullptr;
 	m_upgrade			= nullptr;
 	m_pConditionState	= nullptr;
@@ -62,6 +63,16 @@ void CUICellItem::init()
 	AttachChild				( m_text );
 	CUIXmlInit::InitStatic	( uiXml, "cell_item_text", 0, m_text );
 	m_text->Show			( false );
+
+	if (uiXml.NavigateToNode("cell_item_custom_text", 0))
+	{
+		m_custom_text = xr_new<CUIStatic>();
+		m_custom_text->SetAutoDelete(true);
+		AttachChild(m_custom_text);
+		CUIXmlInit::InitStatic(uiXml, "cell_item_custom_text", 0, m_custom_text);
+		m_custom_text_pos = m_custom_text->GetWndPos();
+		m_custom_text->Show(false);
+	}
 
 	m_qmark					= xr_new<CUIStatic>();
 	m_qmark->SetAutoDelete	( true );
@@ -142,6 +153,7 @@ void CUICellItem::UpdateIndicators()
 	{
 		m_has_upgrade	= item->has_any_upgrades();
 		m_is_quest		= item->IsQuestItem();
+		m_with_custom_text = item->m_custom_text!=nullptr;
 
 //		Fvector2 size      = GetWndSize();
 //		Fvector2 up_size = m_upgrade->GetWndSize();
@@ -165,9 +177,21 @@ void CUICellItem::UpdateIndicators()
 			pos.y				= size.y - up_size.y - 4.0f;// making pos at bottom-end of cell
 			m_qmark->SetWndPos	(pos);
 		}
+		if (m_custom_text && m_with_custom_text)
+		{
+			pos.set(m_custom_text_pos);
+			Fvector2 size		= GetWndSize();
+			Fvector2 up_size	= m_custom_text->GetWndSize();
+			pos.x				= size.x - up_size.x - 4.0f;// making pos at right-end of cell
+			pos.y				= size.y - up_size.y - 4.0f;// making pos at bottom-end of cell
+			m_custom_text->SetWndPos	(pos);
+			m_custom_text->TextItemControl()->SetTextST	(*item->m_custom_text);
+		}
 	}
-	m_upgrade->Show		(m_has_upgrade);
-	m_qmark->Show		(m_is_quest);
+	m_upgrade->Show				(m_has_upgrade);
+	m_qmark->Show				(m_is_quest);
+	if (m_custom_text)
+		m_custom_text->Show		(m_with_custom_text);
 }
 
 bool CUICellItem::OnMouseAction(float x, float y, EUIMessages mouse_action)
