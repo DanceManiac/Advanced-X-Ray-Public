@@ -345,6 +345,12 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 		}
 	}
 
+	if (ItemFromSlot(pIItem->GetSlot()) && pIItem->m_eItemCurrPlace == EItemPlaceSlot)
+	{
+		pIItem->m_eItemCurrPlace = EItemPlaceRuck;
+		return false;
+	}
+
 	if (ItemFromSlot(pIItem->GetSlot()) && pIItem->m_eItemCurrPlace == EItemPlaceSlot && pIItem->m_eItemCurrPlace == pIItem->GetSlot())
 		return false;
 
