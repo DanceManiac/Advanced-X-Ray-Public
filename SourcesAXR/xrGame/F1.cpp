@@ -7,6 +7,10 @@
 #include "BottleItem.h"
 #include "ExplosiveItem.h"
 #include "InventoryBox.h"
+#include "Battery.h"
+#include "AnomalyDetector.h"
+#include "RepairKit.h"
+#include "AntigasFilter.h"
 
 CF1::CF1(void) {
 }
@@ -36,7 +40,15 @@ void CF1::script_register	(lua_State *L)
 			.def(constructor<>()),
 		class_<CInventoryBox,CGameObject>("CInventoryBox")
 			.def(constructor<>()),
-		class_<CExplosiveItem,CGameObject>("CExplosiveItem")
+		class_<CExplosiveItem, CGameObject>("CExplosiveItem")
+			.def(constructor<>()),
+		class_<CBattery, CGameObject>("CBattery")
+			.def(constructor<>()),
+		class_<CAntigasFilter, CGameObject>("CAntigasFilter")
+			.def(constructor<>()),
+		class_<CRepairKit, CGameObject>("CRepairKit")
+			.def(constructor<>()),
+		class_<CDetectorAnomaly, CGameObject>("CDetectorAnomaly")
 			.def(constructor<>())
 	];
 }

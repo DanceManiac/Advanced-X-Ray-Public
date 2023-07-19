@@ -63,7 +63,7 @@ function register(object_factory)
 	cs_register	(object_factory, "CScope",						"se_item.se_item",						"WP_SCOPE",			"wpn_scope_s")
 	cs_register	(object_factory, "CSilencer",	  				"se_item.se_item",						"WP_SILEN",			"wpn_silencer_s")
 	cs_register	(object_factory, "CGrenadeLauncher",			"se_item.se_item",						"WP_GLAUN",			"wpn_grenade_launcher_s")
-	cs_register	(object_factory, "CDetectorAnomaly",          	"se_item.se_detector",					"D_ANODET",			"device_detector_anomaly_s")
+	cs_register	(object_factory, "CDetectorAnomaly",          	"se_item.se_detector",					"DET_ANOM",			"device_detector_anomaly_s")
 
 	-- OUTFITS ----------------------------------------------------------------------------------------------------------------------------
 
@@ -124,7 +124,7 @@ function register(object_factory)
 	cs_register (object_factory, "CBottleItem",					"se_item.se_eatable",					"S_BOTTL",			"obj_bottle_s")
 	cs_register	(object_factory, "CBattery",  					"se_item.se_item",						"S_BATTE",			"obj_battery_s")
 	cs_register	(object_factory, "CAntigasFilter",  			"se_item.se_item",						"S_FILTE",			"obj_filter_s")
-	cs_register	(object_factory, "CRepairKit",  				"se_item.se_item",						"S_REKIT",			"obj_remkit_s")
+	cs_register	(object_factory, "CRepairKit",  				"se_item.se_item",						"S_REPKI",			"obj_remkit_s")
 	-- INVENTORY BOX ---------------------------------------------------------------------------------------------------------------------
 
 	cs_register (object_factory, "CInventoryBox",				"se_item.se_invbox",					"S_INVBOX",			"inventory_box_s")

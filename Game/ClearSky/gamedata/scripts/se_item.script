@@ -157,6 +157,35 @@ function se_physic:keep_saved_data_anyway()
 	return true
 end
 
+--' Детекторы
+class "se_detector" (cse_alife_item_detector)
+function se_detector:__init (section) super (section)
+	self.secret_item = false
+end
+function se_detector:on_register()
+	cse_alife_item_detector.on_register( self )
+	-- Проверяем кастомдату обьекта на наличие стори айди.
+	story_objects.check_spawn_ini_for_story_id(self)
+	-- Собираем статистику по предметам.
+	if registred_items[self:section_name()] == nil then
+		registred_items[self:section_name()] = 1
+	else
+		registred_items[self:section_name()] = registred_items[self:section_name()] + 1
+	end
+
+	self.secret_item = treasure_manager.get_treasure_manager():register_item(self)
+end
+function se_detector:on_unregister()
+	--' Отрегистрация в таскменеджере
+	unregister_story_object_by_id(self.id)
+	cse_alife_item_detector.on_unregister( self )
+end
+function se_detector:can_switch_online()
+	if(self.secret_item) then
+		return false
+	end
+	return cse_alife_item_detector.can_switch_online(self)
+end
 
 function stats()
 	printf("*** SIM ITEMS STATISTIC ***")
