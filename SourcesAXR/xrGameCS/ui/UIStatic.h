@@ -144,6 +144,8 @@ public:
 	void	SetConstHeading					(bool b)				{m_bConstHeading = b;};
 	bool	GetConstHeading					()						{return m_bConstHeading;}
 
+	void	SetHint							(LPCSTR hint_text); //MNP
+
 	// will be need by CUI3tButton
 	// Don't change order!!!!!
 	typedef enum {

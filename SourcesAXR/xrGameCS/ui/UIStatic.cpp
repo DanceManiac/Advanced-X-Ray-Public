@@ -562,6 +562,12 @@ void CUIStatic::SetClipRect(Frect r)
 	m_ClipRect = r;
 }
 
+//MNP
+void CUIStatic::SetHint(LPCSTR hint_text)
+{
+	m_stat_hint_text = hint_text;
+}
+
 void CUIStatic::OnFocusReceive()
 {
 	inherited::OnFocusReceive();

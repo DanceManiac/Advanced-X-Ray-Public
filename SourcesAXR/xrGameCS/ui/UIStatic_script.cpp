@@ -15,10 +15,10 @@ void CUIStatic::script_register(lua_State *L)
 		.def("SetTextST",			(void (CUIStatic::*)(LPCSTR)) (&CUIStatic::SetTextST) )
 		.def("GetText",				&CUIStatic::GetText)
 
-		.def("SetTextX",				&CUIStatic::SetTextX)
-		.def("SetTextY",				&CUIStatic::SetTextY)
-		.def("GetTextX",				&CUIStatic::GetTextX)
-		.def("GetTextY",				&CUIStatic::GetTextY)
+		.def("SetTextX",			&CUIStatic::SetTextX)
+		.def("SetTextY",			&CUIStatic::SetTextY)
+		.def("GetTextX",			&CUIStatic::GetTextX)
+		.def("GetTextY",			&CUIStatic::GetTextY)
 		
 		.def("SetColor",			&CUIStatic::SetColor)
 		.def("GetColor",			&CUIStatic::GetColor)
@@ -26,11 +26,12 @@ void CUIStatic::script_register(lua_State *L)
 		.def("InitTexture",			&CUIStatic::InitTexture )
 		.def("SetTextureOffset",	&CUIStatic::SetTextureOffset )
 
-
 		.def("SetOriginalRect",		&CUIStatic::SetOriginalRect_script)
 		.def("GetOriginalRect",		&CUIStatic::GetOriginalRect_script)
 		.def("SetStretchTexture",	&CUIStatic::SetStretchTexture)
 		.def("GetStretchTexture",	&CUIStatic::GetStretchTexture)
+
+		.def("SetHint",				&CUIStatic::SetHint) //MNP
 
 		.def("SetTextAlign",		&CUIStatic::SetTextAlign_script)
 		.def("GetTextAlign",		&CUIStatic::GetTextAlign_script)
