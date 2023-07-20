@@ -53,7 +53,7 @@ void CUIButtonHint::OnRender	()
 void CUIButtonHint::SetHintText	(CUIWindow* w, LPCSTR text)
 {
 	m_ownerWnd					= w;
-	m_text->SetText				(text);
+	m_text->SetTextST			(text);
 	m_text->AdjustWidthToText	();
 	m_text->ResetClrAnimation		();
 	float hh =					_max(m_text->GetWidth()+30.0f, 80.0f);
