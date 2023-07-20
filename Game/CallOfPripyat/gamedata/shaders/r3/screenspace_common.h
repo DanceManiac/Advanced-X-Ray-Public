@@ -14,6 +14,7 @@
 #define SKY_EPS float(0.001)
 
 #include "common.h"
+#include "lmodel.h"
 #include "hmodel.h"
 
 #include "screenspace_common_noise.h"
@@ -79,8 +80,8 @@ float SSFX_calc_SSR_fade(float2 tc, float start, float end)
 
 float3 SSFX_yaw_vector(float3 Vec, float Rot)
 {
-	float s = sin(Rot);
-	float c = cos(Rot);
+	float s, c;
+	sincos(Rot, s, c);
 	
 	// y-axis rotation matrix
 	float3x3 rot_mat = 
@@ -295,4 +296,25 @@ float SSFX_calc_fresnel(float3 V, float3 N, float ior)
 	float Rp = ((etai * cosi) - (etat * cost)) / ((etai * cosi) + (etat * cost));
 
 	return (Rs * Rs + Rp * Rp) / 2;
+}
+
+static const float2x2 pp_rotation_matrix = { -0.666276f, 0.745705f, -0.745705f, -0.666276f };
+
+float4 SSFX_Blur(float2 uv, float radius)
+{
+	float3 blur = 0;
+	radius *= SSFX_gradient_noise_IGN(uv / 2.0 * screen_res.xy) * 6.28f;
+	
+	float2 offset = float2(radius, radius);
+	float r = 0.9f;
+	
+	for (int i = 0; i < 16; i++) 
+	{
+		r += 1.0f / r; 
+		offset = mul(offset, pp_rotation_matrix);
+		blur += s_image.SampleLevel(smp_rtlinear, uv + (offset * (r - 1.0f) * ssfx_pixel_size), 0).rgb;
+	}
+	float3 image = blur / 16;
+	
+	return float4(image, 1.0f);
 }
