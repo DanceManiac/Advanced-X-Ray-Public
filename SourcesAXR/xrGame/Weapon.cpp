@@ -110,7 +110,7 @@ CWeapon::CWeapon()
 	bHasBulletsToHide		= false;
 	bullet_cnt				= 0;
 
-	m_bUseAimAnmDirDependency = true;
+	m_bUseAimAnmDirDependency = false;
 	m_bUseScopeAimMoveAnims = true;
 }
 
@@ -811,7 +811,7 @@ void CWeapon::Load		(LPCSTR section)
 
 	m_bShowWpnStats = READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
 	m_bEnableBoreDof = READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_dof", true);
-	m_bUseAimAnmDirDependency = READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", true);
+	m_bUseAimAnmDirDependency = READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
 	m_bUseScopeAimMoveAnims = READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
 
 	if (repair_kits && repair_kits[0])
