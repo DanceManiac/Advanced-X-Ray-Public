@@ -173,7 +173,7 @@
     <file name="mfs_team\ui\mfs_new_items_icons_cs">
 		<texture id="ui_item_battery_max_icon" x="0" y="0" width="18" height="18" />
 		<texture id="ui_item_battery_uncharge_icon" x="20" y="0" width="18" height="18" />
-		<texture id="ui_item_battery_max_icon" x="40" y="0" width="18" height="18" />
+		<texture id="ui_item_battery_icon" x="40" y="0" width="18" height="18" />
 		<texture id="ui_inv_icon_thirst_restore_speed" x="60" y="0" width="18" height="18" />
 		<texture id="ui_mfs_item_effectiveness" x="80" y="0" width="18" height="18" />
 		<texture id="ui_mfs_item_walk_accel" x="100" y="0" width="18" height="18" />
