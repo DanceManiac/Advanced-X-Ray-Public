@@ -20,7 +20,11 @@ float SSFX_HEIGHT_FOG(float3 P, float World_Py, inout float3 color)
 	float fog = saturate(length(P) * fog_params.w + fog_params.x);
 
 	// Height Fog
+#ifdef G_USE_PARAMS_FROM_WEATHER
+	float fogheight = smoothstep(lowland_fog_params.x, -lowland_fog_params.x, World_Py) * lowland_fog_params.y;
+#else
 	float fogheight = smoothstep(G_FOG_HEIGHT, -G_FOG_HEIGHT, World_Py) * G_FOG_HEIGHT_INTENSITY;
+#endif
 
 	// Add the height fog to the distance fog
 	float fogresult = saturate(fog + fogheight * (fog * G_FOG_HEIGHT_DENSITY));
@@ -41,7 +45,11 @@ float SSFX_HEIGHT_FOG(float3 P, float World_Py, inout float3 color)
 float SSFX_FOGGING(float Fog, float World_Py)
 {
 	// Height fog
+#ifdef G_USE_PARAMS_FROM_WEATHER
+	float fog_height = smoothstep(lowland_fog_params.x, -lowland_fog_params.x, World_Py) * G_FOG_HEIGHT_INTENSITY;
+#else
 	float fog_height = smoothstep(G_FOG_HEIGHT, -G_FOG_HEIGHT, World_Py) * G_FOG_HEIGHT_INTENSITY;
+#endif
 
 	// Add height fog to default distance fog.
 	float fog_extra = saturate(Fog + fog_height * (Fog * G_FOG_HEIGHT_DENSITY));

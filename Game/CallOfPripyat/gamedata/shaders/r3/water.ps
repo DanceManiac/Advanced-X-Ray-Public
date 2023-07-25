@@ -208,12 +208,13 @@ float4 main( vf I ) : SV_Target
 #endif
 
 	// Fogging
-#ifdef SSFX_FOG
+#if LOWLAND_FOG_TYPE == 1
 	float fogging = SSFX_FOGGING(1.0 - I.fog, w_s.y);
 #else
 	float fogging = I.fog;
-#endif
 	acc = lerp(fog_color, acc, fogging);
+	acc = lerp(acc, fog_color, compute_height_fog(_P.xyz));
+#endif
 	
 	// Soft border
 	float border_alpha = smoothstep( 0.0 , G_SSR_WATER_SOFTBORDER, waterDepth);

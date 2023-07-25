@@ -6,8 +6,6 @@
 
 #define ISAMPLE 0
 
-uniform float3x4	m_v2w;
-
 struct	_input
 {
 	float4	tc0		: TEXCOORD0;	// tc.xy, tc.w = tonemap scale

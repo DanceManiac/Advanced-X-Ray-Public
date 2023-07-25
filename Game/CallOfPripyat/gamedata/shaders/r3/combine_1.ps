@@ -15,7 +15,7 @@
 	#include "screenspace_reflections.h"
 #endif
 
-#ifdef SSFX_FOG
+#if LOWLAND_FOG_TYPE == 1
 	#include "screenspace_fog.h"
 #endif
 
@@ -31,8 +31,6 @@ Texture2D<float> s_occ;
 #endif // SM_5
 
 #if SSAO_QUALITY <=3
-#include "ssdo.ps"
-
 #else
 #ifndef USE_HDAO
 #define USE_HDAO
@@ -57,6 +55,9 @@ Texture2D<float> s_occ;
 #ifdef	USE_HBAO
 #include "ssao_hbao.ps"
 #endif	//	USE_HBAO
+#ifdef	USE_SSDO
+#include "ssao_ssdo.ps"
+#endif	//	USE_SSDO
 #endif // USE_HDAO
 
 
@@ -137,8 +138,11 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 #ifdef USE_HBAO
 	 occ = calc_hbao( P.z, N, I.tc0, I.pos2d );
 #else // USE_HBAO
-	occ = calc_ssdo(P, N, I.tc0, I.pos2d, ISAMPLE);
+	 occ = calc_ssao( CS_P(P, N, I.tc0, I.tcJ, I.pos2d, ISAMPLE ) );
 #endif
+#ifdef USE_SSDO
+    occ = calc_ssdo(P, N, I.tc0);
+#endif //USE SSDO
 #endif // USE_HDAO
 
 #ifdef SSAO_QUALITY
@@ -167,7 +171,7 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 
 	// SSR Implementation
 #ifdef SSFX_SSR
-	SSFX_ScreenSpaceReflections(I.tc0, P, N, D.a, color, ISAMPLE);	
+	SSFX_ScreenSpaceReflections(I.tc0, P, N, rain_params.y / 5.0f, color, ISAMPLE);	
 #endif
 
 #ifdef SSFX_BEEFS_NVG
@@ -185,13 +189,15 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 ////////////////////////////////////////////////////////////////////////////////
 
 	// here should be distance fog
-#ifdef SSFX_FOG
-	float3 		WorldP			= mul(m_inv_V, float4(P.xyz, 1));
-	float		fog				= SSFX_HEIGHT_FOG(P.xyz, WorldP.y, color);
+#if LOWLAND_FOG_TYPE == 1
+		float3 		WorldP			= mul(m_inv_V, float4(P.xyz, 1));
+		float		fog				= SSFX_HEIGHT_FOG(P.xyz, WorldP.y, color);
 #else
-	float		distance		= length		(P.xyz);
-	float		fog				= saturate		(distance*fog_params.w + fog_params.x);
-				color			= lerp			(color,fog_color,fog);
+        float3        	pos        		= P.xyz;
+        float         	distance		= length		(pos);
+        float         	fog				= saturate		(distance*fog_params.w + fog_params.x); //
+		                color			= lerp     		(color, fog_color, fog);        		//
+						color 			= lerp			(color, fog_color, compute_height_fog(P.xyz));
 #endif
 
 	float		skyblend		= saturate		(fog*fog);
@@ -200,6 +206,9 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 
 	_out		o;
 	
+	if (ao_debug())
+		color = occ;
+			
 #ifndef SSFX_BEEFS_NVG
 
 	tonemap(o.low, o.high, color, tm_scale);

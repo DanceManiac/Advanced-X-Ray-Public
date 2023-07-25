@@ -372,6 +372,39 @@ uint alpha_to_coverage ( float alpha, float2 pos2d )
 #endif
 #endif
 
+float compute_height_fog(float3 P_view)
+{
+    //Settings
+    float height = lowland_fog_params.x;    //Fog height    
+    float density = lowland_fog_params.y;    //Fog density (keep it low, it's exponential fog without any distance attenuation)
+	float base_height = lowland_fog_params.z; //Fog base height (base height of lowland fog, for current level)
+    
+    //Transform view space position into world space
+    float3 P_world = mul(m_v2w, float4(P_view, 1.f)).xyz;
+    
+    //Calculate height factor
+    float height_factor = base_height + height - P_world.y;    
+    
+    //Get length of view space position
+    float P_dist = length(P_view.xyz) * height_factor;
+    
+    //Calculate exponential fog
+    float fog = 1.0 - exp(-P_dist * density);
 
+    //Output
+    return saturate(fog);
+}
+
+// Активен-ли двойной рендер --#SM+#--
+inline bool isSecondVPActive()
+{
+	return (m_blender_mode.z == 1.f);
+}
+
+// Активен ли дебаггер АО
+inline bool ao_debug()
+{
+	return (debug.x == 1.f);
+}
 
 #endif	//	common_functions_h_included

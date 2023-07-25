@@ -83,7 +83,8 @@ c2_out main( v2p_aa_AA I )
 
 	float4 bloom = s_bloom.Sample(smp_rtlinear,center);
 
-	img = mblur( center, ( gbd ).P, img.rgb);
+	if (!isSecondVPActive())
+		img = mblur( center, ( gbd ).P, img.rgb);
 
 	// Indirect light - SCREEN SPACE SHADERS - UPDATE 14
 #ifdef SSFX_INDIRECT_LIGHT
@@ -126,5 +127,8 @@ c2_out main( v2p_aa_AA I )
 	res.Depth = ptp.w==0?1:ptp.z/ptp.w;
 #endif
 	
+	float oluma = dot(res.Color.xyz, LUMINANCE_VECTOR);
+	res.Color.xyz = lerp(res.Color.xyz, oluma, -r_color_drag.w) * r_color_drag.xyz;
+		
 	return res;
 }

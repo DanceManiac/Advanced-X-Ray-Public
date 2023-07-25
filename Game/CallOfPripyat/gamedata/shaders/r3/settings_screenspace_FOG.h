@@ -1,5 +1,6 @@
 // [ SETTINGS ] [ FOG ]
 
+//#define G_USE_PARAMS_FROM_WEATHER				// Use ground fog intensity and height from weather configs
 #define G_FOG_HEIGHT					8.0f	// Height of the ground fog.
 #define G_FOG_HEIGHT_INTENSITY			1.0f	// Intensity of the ground fog.
 #define G_FOG_HEIGHT_DENSITY			1.3f	// Density of the ground fog.

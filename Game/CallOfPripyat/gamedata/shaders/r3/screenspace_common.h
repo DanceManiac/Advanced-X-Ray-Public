@@ -38,8 +38,6 @@ static const float3 ssfx_hemisphere[32] =
 	Texture2D s_rimage;
 #endif
 
-uniform float4 sky_color;
-
 TextureCube sky_s0;
 TextureCube sky_s1;
 
@@ -259,7 +257,7 @@ float3 SSFX_calc_sky(float3 dir)
 #ifndef SSFX_MODEXE
 	return saturate(L_hemi_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #else
-	return saturate(sky_color.bgr * 3.0f) * lerp(sky0, sky1, L_ambient.w);
+	return saturate(sky_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #endif
 }
 

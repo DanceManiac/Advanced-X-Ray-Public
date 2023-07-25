@@ -1,0 +1,15 @@
+#include "common.h"
+
+Texture2D s_hud_blood;
+uniform float4 hud_blood_params; // x=intensity
+
+float4 main(p_screen I) : SV_Target
+{
+	float2	texcoord 				= I.tc0;
+	//texcoord = (texcoord - 0.5) * hud_blood_params.x + 0.5; // Dynamic Texture Size
+	float4	blood_texture 			= s_hud_blood.Sample(smp_rtlinear, texcoord);
+	float3 	scene 					= s_image.Sample(smp_rtlinear, I.tc0).xyz;
+	scene = lerp(scene, blood_texture.xyz, blood_texture.w * hud_blood_params.x);
+
+	return float4(scene, 1.0f);
+}
