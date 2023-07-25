@@ -280,7 +280,7 @@ public:
 			Fvector					predict_position			(const float &time_delta, const Fvector &position, u32 &current_travel_point, const float &prediction_speed) const;
 			Fvector					predict_position			(const float &time_delta) const;
 			Fvector					target_position				() const;
-			u8						grassbender_id;
+			u8						grassbender_id{};
 			u32						grassbender_frame;
 };
 
