@@ -1,7 +1,7 @@
 /**
- * @ Version: SCREEN SPACE SHADERS - UPDATE 13
+ * @ Version: SCREEN SPACE SHADERS - UPDATE 14
  * @ Description: Water implementation
- * @ Modified time: 2022-12-28 02:17
+ * @ Modified time: 2023-01-18 17:54
  * @ Author: https://www.moddb.com/members/ascii1457
  * @ Mod: https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders
  */
@@ -9,11 +9,15 @@
 #include "common.h"
 #include "anomaly_shaders.h"
 #include "reflections.h"
+#include "lmodel.h"
 
 // Screen space functions
 #include "check_screenspace.h"
 #include "screenspace_water.h"
-#include "screenspace_fog.h"
+
+#ifdef SSFX_FOG
+	#include "screenspace_fog.h"
+#endif
 
 struct vf
 {
@@ -34,43 +38,19 @@ Texture2D	s_nmap;
 Texture2D	s_bluenoise;
 Texture2D	s_rainsplash;
 Texture2D	s_watercaustics;
-Texture2D	s_leaves;
 
-float compute_height_fog(float3 P_view)
-{
-	//Settings
-	float height = lowland_fog_params.x; //Fog height
-	float density = lowland_fog_params.y; //Fog density (keep it low, it's exponential fog without any distance attenuation)
-	float base_height = lowland_fog_params.z; //Fog base height (base height of lowland fog, for current level)
-
-    float3 P_world = mul(float4(P_view, 1), m_V).xyz + eye_position;
-	
-	//Calculate height factor
-	float height_factor = base_height + height - P_world.y;
-
-	//Get length of view space position
-	float P_dist = length(P_view.xyz) * height_factor;
-
-	//Calculate exponential fog
-	float fog = 1.0 - exp(-P_dist * density);
-
-	//Output
-	return saturate(fog);
-}
+//float3	water_intensity; // Unused?
 
 float4 main( vf I ) : SV_Target
 {
 	// 3d view space pos reconstruction math
 	float3 Pv = float3(I.tctexgen.z * (I.hpos.xy * pos_decompression_params.zw - pos_decompression_params.xy), I.tctexgen.z);
-	
+
 	// Normal Textures
-	float3 n0 = s_nmap.Sample(smp_base, I.tnorm0.xy * (2.5f / 1.5f) + float2( timers.x * 0.01f, 0.0f) );
-	float3 n1 = s_nmap.Sample(smp_base, I.tnorm0.zw * (1.5f / 1.5f) + float2(-timers.x * 0.01f, 0.2f) );
-	
+	float3	n0	= s_nmap.Sample(smp_base, I.tnorm0.xy);
+	float3	n1	= s_nmap.Sample(smp_base, I.tnorm0.zw);
 	float3	basenormal	= (((n0 * 2 - 1) + (n1 * 2 - 1)) / 2.0f);
 	basenormal += float3(0.1f, 0.1f, 0.1f); // Offset the normal to "center" the textures again
-	
-	float lmap = pow(saturate(I.c0.x * 4), 25);
 	
 	// Load Data
 	float2 PosTc = I.tctexgen.xy / I.tctexgen.z;
@@ -89,7 +69,6 @@ float4 main( vf I ) : SV_Target
 	// Water wave intensity
 	float3 Navg = normalize(float3(basenormal.x * G_SSR_WATER_WAVES, basenormal.y * G_SSR_WATER_WAVES, basenormal.z));
 		
-	// Shadow normal
 	// Refractions normal ( Used by shadows and refraction )
 	float2 N_Scr = normalize(float3(basenormal.x * G_SSR_WATER_REFRACTION, basenormal.y * G_SSR_WATER_REFRACTION, basenormal.z));
 	
@@ -98,22 +77,12 @@ float4 main( vf I ) : SV_Target
 
 	// Screen UV + Discard
 	float2 Refraction_UV = N_Scr * Refraction_Discard;
-	
+
 	// Shadows to do some tricks
 #ifndef USE_MSAA
 	float water_shadows = saturate(s_accumulator.Sample(smp_nofilter, PosTc + Refraction_UV).r * 2000);
 #else
 	float water_shadows = saturate(s_accumulator.Load(int3((PosTc + Refraction_UV) * screen_res.xy, 0), 0).r * 2000);
-#endif
-
-#ifdef NEED_SPLASHES
-    if (rain_params.x > 0)
-    {
-        float3 splashes = calc_rain_splashes(I.tbase * 0.5f);
-        float clearing_pos = smoothstep(5.h, 20.h, length(_P.xyz));
-        float fade = (1.h - saturate(clearing_pos * clearing_pos));
-        Navg += splashes * fade * lmap * 1.75f * rain_params.x;
-    }
 #endif
 
 	float3	Nw	= mul (float3x3(I.M1, I.M2, I.M3), Navg);
@@ -124,21 +93,18 @@ float4 main( vf I ) : SV_Target
 
 	float3 eyedir = normalize(Pv);
 	float3 Nv = normalize(mul(m_V, Nw));
-	
+
 	// Some vars to put our reflection
 	float3 refl_ray, refl_skybox;
 	float3 reflection;
 	float3 ssr_hit_uv = 0.0f;
-	
-	// Get current Skybox
-	refl_skybox = SSFX_calc_sky(vreflect) * G_SSR_WATER_SKY_REFLECTION;
 		
-#if((G_SSR_QUALITY>0))
+#ifdef NEED_REFLECTIONS
 	
 	// Blue Noise & Normal for noise
 	float3 NN = normalize(float3(basenormal.x * 0.15f, basenormal.y * 0.15f, basenormal.z));
 	float blue_noise = s_bluenoise.Sample(smp_linear, I.tbase * float2(0.05f, 0.05f) + NN).b * 1.5f;
-
+	
 	// Compute reflection bounce
 	float3 wreflect = reflect(eyedir, Nv);
 
@@ -149,11 +115,14 @@ float4 main( vf I ) : SV_Target
 	if (edgeFade > 0.02f)
 		ssr_hit_uv = SSFX_ssr_water_ray(Pv, wreflect, blue_noise, 0);
 
-	if (all(ssr_hit_uv.xy) && _P.z < reflections_distance.x)
+	// Get current Skybox
+	refl_skybox = SSFX_calc_sky(vreflect) * G_SSR_WATER_SKY_REFLECTION;
+
+	if (all(ssr_hit_uv.xy))
 	{
 		// Get reflection pixel from scene screen
 		refl_ray = SSFX_get_image(ssr_hit_uv.xy, 0);
-		
+
 		// Adjust reflection intensity using ssr_hit_uv.y and edgeFade
 		float ray_fade = ssr_hit_uv.y * 5.0f;
 		
@@ -172,7 +141,7 @@ float4 main( vf I ) : SV_Target
 	}
 
 #else
-	reflection = refl_skybox;
+	reflection = L_hemi_color.rgb;
 #endif
 
 	// Fresnel
@@ -201,13 +170,12 @@ float4 main( vf I ) : SV_Target
 
 	// Caustics offset anim
 	float4 CausticsT = float4( timers.x * 0.1f, 0.0f, -timers.x * 0.07f, 0.2f );
-	
+
 	// Fake Caustics
 	float3 Ca0 = saturate(s_watercaustics.Sample(smp_base, w_b.xz * (0.19f / G_SSR_WATER_CAUSTICS_SCALE) + CausticsT.xy + N_Scr ) - 0.1f );
 	float3 Ca1 = saturate(s_watercaustics.Sample(smp_base, w_b.xz * (0.11f / G_SSR_WATER_CAUSTICS_SCALE) + CausticsT.zw + N_Scr ) - 0.1f );
-	float sun_intensity = saturate((L_sun_color.r + L_sun_color.g + L_sun_color.b)/12);
-	float3 CA = min(Ca0, Ca1) * water_shadows * sun_intensity; // Caustics if light hit the water
-	
+	float3 CA = min(Ca0, Ca1) * water_shadows * G_SSR_WATER_CAUSTICS; // Caustics if light hit the water
+
 	// Water Depth
 	float waterDepth = w_s.y - w_b.y + eye_position.y;
 
@@ -240,13 +208,12 @@ float4 main( vf I ) : SV_Target
 #endif
 
 	// Fogging
-#if LOWLAND_FOG_TYPE == 1
+#ifdef SSFX_FOG
 	float fogging = SSFX_FOGGING(1.0 - I.fog, w_s.y);
 #else
 	float fogging = I.fog;
-	acc = lerp(fog_color, acc, fogging);
-	acc = lerp(acc, fog_color, compute_height_fog(_P.xyz));
 #endif
+	acc = lerp(fog_color, acc, fogging);
 	
 	// Soft border
 	float border_alpha = smoothstep( 0.0 , G_SSR_WATER_SOFTBORDER, waterDepth);

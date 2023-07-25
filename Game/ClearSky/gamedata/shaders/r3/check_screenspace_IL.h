@@ -1,1 +1,1 @@
-//#define SSFX_INDIRECT_LIGHT
+#define SSFX_INDIRECT_LIGHT

@@ -1,136 +1,118 @@
 #include "common.h"
 
-/*
-	Basic volumetric lighting for directional light sources
+#undef ULTRA_SHADOWS_ON
+#undef USE_ULTRA_SHADOWS
 
-    Author:
-        @LVutner
+#define RAY_PATH 2.0h
+#define JITTER_TEXTURE_SIZE	64.0f
 
-	Credits:
-		@iryoku - IGN
-		@MJP - Cheap PCF filter for shadowmaps
-
-    Info:
-        Name is self explanatory.
-*/
-
-//Quality tokens
-#ifdef SUN_SHAFTS_QUALITY
+#ifdef	SUN_SHAFTS_QUALITY
 	#if SUN_SHAFTS_QUALITY==1
-		#define VL_SAMPLES 16
+		#define	FILTER_LOW
+		#define RAY_SAMPLES	15
 	#elif SUN_SHAFTS_QUALITY==2
-		#define VL_SAMPLES 24
+		#define RAY_SAMPLES	25
 	#elif SUN_SHAFTS_QUALITY==3
-		#define VL_SAMPLES 32
+		#define RAY_SAMPLES	30
 	#endif
+#endif
+
+#ifndef	FILTER_LOW
+#ifdef USE_MINMAX_SM
+#define SM_MINMAX
+#endif
 #endif
 
 #include "shadow.h"
 
-float4 sun_shafts_intensity; //Sun shafts intensity from weather configs and commands
-
-//http://the-witness.net/news/2013/09/shadow-mapping-summary-part-1/
-//https://github.com/TheRealMJP
-float sample_vl_shadows(float3 tc)
-{
-	tc.z -= 0.00035; 
-    float2 shadow_res = float2(SMAP_size, 1.0 / SMAP_size);
-
-	float2 uv = tc.xy * shadow_res.x;
-
-    float2 base_uv = floor(uv.xy + 0.5);
-    float2 st = (uv.xy + 0.5 - base_uv.xy);
-
-    base_uv -= float2(0.5, 0.5);
-    base_uv *= shadow_res.y;
-	
-	//1st weight
-	float2 u_weight = float2(3.0 - 2.0 * st.x, 1.0 + 2.0 * st.x);
-	float2 u_coord = float2((2.0 - st.x) / u_weight.x - 1.0, st.x / u_weight.y + 1.0);
-
-	//2nd weight
-	float2 v_weight = float2(3.0 - 2.0 * st.y, 1.0 + 2.0 * st.y);
-	float2 v_coord = float2((2.0 - st.y) / v_weight.x - 1.0, st.y / v_weight.y + 1.0);
-
-	float sum = 0.0;
-	sum += u_weight.x * v_weight.x * s_smap.SampleCmpLevelZero(smp_smap, shadow_res.y * float2(u_coord.x, v_coord.x) + base_uv, tc.z).x;
-	sum += u_weight.y * v_weight.x * s_smap.SampleCmpLevelZero(smp_smap, shadow_res.y * float2(u_coord.y, v_coord.x) + base_uv, tc.z).x;
-	sum += u_weight.x * v_weight.y * s_smap.SampleCmpLevelZero(smp_smap, shadow_res.y * float2(u_coord.x, v_coord.y) + base_uv, tc.z).x;
-	sum += u_weight.y * v_weight.y * s_smap.SampleCmpLevelZero(smp_smap, shadow_res.y * float2(u_coord.y, v_coord.y) + base_uv, tc.z).x;
-
-	return sum * 0.0625; //16
-}
+float4 volume_range; //	x - near plane, y - far plane
+float4 sun_shafts_intensity;
 
 #ifdef MSAA_OPTIMIZATION
-float4 main (v2p_volume I, uint iSample : SV_SAMPLEINDEX) : SV_Target
+float4 	main (v2p_volume  I, uint iSample : SV_SAMPLEINDEX  ) : SV_Target
 #else
-float4 main (v2p_volume I) : SV_Target
+float4 	main (v2p_volume  I) : SV_Target
 #endif
 {
 #ifndef	SUN_SHAFTS_QUALITY
-	return float4(0.0, 0.0, 0.0, 0.0);
-#else
+	return float4(0,0,0,0);
+#else	//	SUN_SHAFTS_QUALITY
 
-	//Sample depth buffer
-#ifndef USE_MSAA
-	float depth = s_position.Load(int3(I.hpos.xy, 0)).z;
-#else
-	float depth = s_position.Load(int3(I.hpos.xy, 0), ISAMPLE).z;
+	float2	tc  = I.tc.xy / I.tc.w;
+	float4	pos2d = I.hpos;
+	
+	gbuffer_data gbd = gbuffer_load_data( GLD_P(tc, pos2d, ISAMPLE) );
+	float3	P = gbd.P;
+
+	// Variable ray length, variable step dencity, use jittering
+	float4	J0 	= jitter0.Sample( smp_jitter, tc*screen_res.x*1.0/JITTER_TEXTURE_SIZE );
+	float	coeff = (RAY_SAMPLES - 1*J0.x)/(RAY_SAMPLES*RAY_SAMPLES);		
+	float3	direction = P*coeff;
+
+	float	depth = P.z;
+	float	deltaDepth = direction.z;
+	
+	float4	current	= mul (m_shadow,float4(P,1.0));
+	float4	delta 	= mul (m_shadow, float4(direction,0.0));
+
+	float	res = 0.0;
+	float	max_density = sun_shafts_intensity;
+	float	density = max_density/RAY_SAMPLES;
+
+	// SUN VOLUMETRIC FIXES - SSS Update 14.7
+	// - Added weapon fade
+	// - Discard out of bound shadow map sampling
+	// - Fade volumetric edge
+	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
+
+	// Volumetric offset when used with SSS extended shadows.
+#ifdef SSFX_MODEXE
+	current.z += 0.001f;
 #endif
 
-	//We don't know depth of the sky, so we have to output some constant
-	if(depth < 0.0001)
-		return sun_shafts_intensity * Ldynamic_color;
+	// Fade Weapon
+	density *= saturate(depth * 0.8f);
 
-	//Reconstruct view space position
-	float3 view_position = depth * float3((I.hpos.xy * pos_decompression_params.zw - pos_decompression_params.xy), 1.0);
+	if (depth < 0.0001)
+		res = max_density;
 
-    //rcp(sample count)
-    float rcp_samples = 1.0 / float(VL_SAMPLES);
-
-    //Start and end positions, shadow projection space
-    float4 start_position = mul(m_shadow, float4(0.0, 0.0, 0.0, 1.0));
-	start_position.xyz *= 1.0 / start_position.w; //Perspective
-
-    float4 end_position = mul(m_shadow, float4(view_position, 1.0));
-	end_position.xyz *= 1.0 / end_position.w; //Perspective
-
-	//Dither - IGN by @iryoku (Remap it a tiny bit)
-	float dither = frac(52.9829189 * frac(0.06711056 * float(I.hpos.x) + 0.00583715 * float(I.hpos.y))) * 0.5 + 0.5;
-
-    //Ray increment
-    float3 ray_increment = rcp_samples * (end_position - start_position);
-
-	//Initial ray position. The first ray is dithered to counteract banding artifacts
-    float3 ray_position = start_position.xyz + ray_increment.xyz * dither;
-
-	//Exposure compensation
-	float exp_comp = sun_shafts_intensity * rcp_samples;
-
-	//Accumulated samples
-    float accum_smap = 0.0;
-
-	//Raymarch
-    for(int i = 0; i < VL_SAMPLES; i++)
+	[unroll (RAY_SAMPLES)]
+	for ( int i=0; i<RAY_SAMPLES; ++i )
 	{
-		//Accumulate shadowmap
-		accum_smap += sample_vl_shadows(ray_position);
+		// Don't sample out of bounds
+		if (current.x >= 0 && current.x <= 1 && current.y >= 0 && current.y <= 1)
+		{
+			if (depth > 0.1f)
+				res += density*sample_hw_pcf(current, float4(0.0,0.0,0.0,0.0));
+		}
 
-		//March the ray
-		ray_position += ray_increment;
+		depth -= deltaDepth;
+		current -= delta;
 	}
 
-	//Scale it with sun_intensity uniform
-	accum_smap *= exp_comp;
-
-	//GSC stuff start
 	float fSturation = -Ldynamic_dir.z;
-	fSturation = 0.5 * fSturation + 0.5;
-	fSturation = 0.80 * fSturation + 0.20;
-	accum_smap *= fSturation; //Seems like its sort of attenuation lmao
-	//GSC stuff end
-	
-	//Multiply by sun color and output
-	return accum_smap * Ldynamic_color;
-#endif //OnOff
+
+	//	Normalize dot product to
+	fSturation = 0.5*fSturation+0.5;
+	//	Map saturation to 0.2..1
+	fSturation = 0.80*fSturation+0.20;
+
+	res *= fSturation;
+
+	// Use fog near/far to fade the sun rays
+	float fog = saturate(length(P) * fog_params.w + fog_params.x);
+
+#ifdef USE_STRICT_GAMMA_CORRECTION
+	res = SRGBToLinear(res);
+	float3 SunColor = SRGBToLinear(Ldynamic_color.rgb);
+#else
+	float3 SunColor = Ldynamic_color.rgb;
+#endif
+
+	// Fade from "res" to "max_density" using squared fog to get a nice curve
+	float3 result = lerp(SunColor * max_density * fSturation, SunColor * res, 1.0f - fog * fog);
+
+	return float4(result, 1);
+#endif	//	SUN_SHAFTS_QUALITY
 }
+

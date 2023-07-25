@@ -1,10 +1,8 @@
-#if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
-#define DEFFER_TERRAIN
-#endif
-#include "common.h"
-#include "sload.h"
 #include "settings_screenspace_PUDDLES.h"
 #include "settings_screenspace_SSR.h"
+
+#include "common.h"
+#include "sload.h"
 
 #include "screenspace_common_ripples.h"
 
@@ -17,18 +15,6 @@ Texture2D s_rainsplash;
 
 #if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
 #	define	USE_4_BUMP
-float2 UpdateTerrainTC(in p_bumped I, in Texture2D s_dp)
-{
-	float3	 eye = mul (float3x3(I.M1.x, I.M2.x, I.M3.x,
-								 I.M1.y, I.M2.y, I.M3.y,
-								 I.M1.z, I.M2.z, I.M3.z), -I.position.xyz);
-								 
-	float	height	= s_dp.Sample( smp_base, I.tcdbump).w;	//
-			height	= height*(parallax.x) + (parallax.y);	//
-	float2	new_tc  = I.tcdbump + height * normalize(eye);	//
-
-	return new_tc;
-}
 #endif
 
 #ifdef USE_4_BUMP
@@ -41,48 +27,39 @@ f_deffer 	main	( p_flat I 		)
 
  	// diffuse
 	float4 D		= tbase		(I.tcdh);			// IN:  rgb.a
-//	float4 L 	= tex2D		(s_lmap, I.tcdh);
 	float4 L 	= s_lmap.Sample( smp_base, I.tcdh);
+	float G 	= 0.001;
 
-	float G 	= def_gloss;
-
-# ifdef	USE_TDETAIL
- # ifdef USE_4_DETAIL
-//	float4	mask= tex2D		(s_mask, I.tcdh);
+#ifdef	USE_TDETAIL
+ #ifdef USE_4_DETAIL
 	float4	mask= s_mask.Sample ( smp_base, I.tcdh);
-	
-	float2 tc_r = UpdateTerrainTC(I, s_dp_r);
-	float2 tc_g = UpdateTerrainTC(I, s_dp_g);
-	float2 tc_b = UpdateTerrainTC(I, s_dp_b);
-	float2 tc_a = UpdateTerrainTC(I, s_dp_a);
-	
 	float 	mag	= dot 		(mask,1);
 			mask= mask/mag	;
 
-	float3	d_R	= s_dt_r.Sample ( smp_base, tc_r)*mask.r;
-	float3	d_G	= s_dt_g.Sample ( smp_base, tc_g)*mask.g;
-	float3	d_B	= s_dt_b.Sample ( smp_base, tc_b)*mask.b;
-	float3	d_A	= s_dt_a.Sample ( smp_base, tc_a)*mask.a;
-	float3	dt	= d_R+d_G+d_B+d_A;
-		D.rgb	= 2*D.rgb*dt	 ;
-
-  # ifdef USE_4_BUMP
-
- 	 float4	n_Rt = s_dn_r.Sample ( smp_linear, tc_r).wzyx;
-	 float4	n_Gt = s_dn_g.Sample ( smp_linear, tc_g).wzyx;
-	 float4	n_Bt = s_dn_b.Sample ( smp_linear, tc_b).wzyx;
-	 float4	n_At = s_dn_a.Sample ( smp_linear, tc_a).wzyx;
+  #ifdef USE_4_BUMP
+ 	 float4	n_Rt = s_dn_r.Sample ( smp_base, I.tcdbump).wzyx;
+	 float4	n_Gt = s_dn_g.Sample ( smp_base, I.tcdbump).wzyx;
+	 float4	n_Bt = s_dn_b.Sample ( smp_base, I.tcdbump).wzyx;
+	 float4	n_At = s_dn_a.Sample ( smp_base, I.tcdbump).wzyx;
 	 
- 	 float3	n_R = (n_Rt-0.5)*mask.r; float g_R=n_Rt.w*mask.r;
-	 float3	n_G = (n_Gt-0.5)*mask.g; float g_G=n_Gt.w*mask.g;
-	 float3	n_B = (n_Bt-0.5)*mask.b; float g_B=n_Bt.w*mask.b;
-	 float3	n_A = (n_At-0.5)*mask.a; float g_A=n_At.w*mask.a;
+ 	 float3	n_R = (n_Rt-0.5)*mask.r; 
+	 float g_R=n_Rt.w*mask.r;
+	 
+	 float3	n_G = (n_Gt-0.5)*mask.g; 
+	 float g_G=n_Gt.w*mask.g;
+	 
+	 float3	n_B = (n_Bt-0.5)*mask.b; 
+	 float g_B=n_Bt.w*mask.b;
+	 
+	 float3	n_A = (n_At-0.5)*mask.a; 
+	 float g_A=n_At.w*mask.a;
 
 	 float3	mix		= 	n_R+n_G+n_B+n_A;
-			mix.z	*=	0.5;		//. make bump twice as contrast (fake, remove me if possible)
+			mix	*=	float3(G_SSR_TERRAIN_BUMP_INTENSITY, G_SSR_TERRAIN_BUMP_INTENSITY, 1); // Adjust bump strength
+
 	 float3	N		= 	mul     	(float3x3(I.M1, I.M2, I.M3), mix.xyz);
 
-	// Puddles Implementation - SSS Update 12
+	// Puddles Implementation - SSS Update 14.6
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
 
 	// Wetness factor
@@ -97,7 +74,7 @@ f_deffer 	main	( p_flat I 		)
 	float puddles_f = wetness_f;
 
 	// Size factor. Convert 0 ~ 1 to 1 ~ -0.1f
-	float size_f = (1.0f - (rain_params.y-0.1) * 1.1f);
+	float size_f = (1.0f - G_PUDDLES_SIZE * 1.1f);
 
 	// Texture mask
 	float puddles_mask = 1.0f - s_puddles_mask.Sample(smp_base, I.tcdh).r;
@@ -157,19 +134,19 @@ f_deffer 	main	( p_flat I 		)
 	N = lerp(N, MirrorUp, puddles);
 
 	// Refraction Normal
-	//float3 N_refra = ripplesNormal;
+	float3 N_refra = ripplesNormal;
 
 	// Adjust refraction intensity based on wetness and puddle perlin
-	//N_refra.xy *= 0.15f * smoothstep( 0.6f, 0.8f, wetness_f * puddles ) * G_PUDDLES_REFRACTION_INTENSITY;
+	N_refra.xy *= 0.15f * smoothstep( 0.6f, 0.8f, wetness_f * puddles ) * G_PUDDLES_REFRACTION_INTENSITY;
 
 	// Detail textures + refraction when needed
-	//float2 detail_tc = I.tcdbump + N_refra;
-	/*float3 d_R = s_dt_r.Sample ( smp_base, tc_r) * mask.r;
-	float3 d_G = s_dt_g.Sample ( smp_base, tc_g) * mask.g;
-	float3 d_B = s_dt_b.Sample ( smp_base, tc_b) * mask.b;
-	float3 d_A = s_dt_a.Sample ( smp_base, tc_a) * mask.a;
+	float2 detail_tc = I.tcdbump + N_refra;
+	float3 d_R = s_dt_r.Sample ( smp_base, detail_tc) * mask.r;
+	float3 d_G = s_dt_g.Sample ( smp_base, detail_tc) * mask.g;
+	float3 d_B = s_dt_b.Sample ( smp_base, detail_tc) * mask.b;
+	float3 d_A = s_dt_a.Sample ( smp_base, detail_tc) * mask.a;
 	float3 dt = d_R + d_G + d_B + d_A;
-	D.rgb = 2 * D.rgb * dt;*/
+	D.rgb = 2 * D.rgb * dt;
 
 	// Apply tint
 	D.rgb = lerp( D.rgb, D.rgb * G_PUDDLES_TINT, puddles);
@@ -178,33 +155,33 @@ f_deffer 	main	( p_flat I 		)
 	puddles = clamp(puddles, 0, G_PUDDLES_REFLECTIVITY);
 
 	// Add at the end the extra wetness. Full intensity at 50% of wetness ( rain_params.y )
-	puddles = puddles + saturate(wetness_f * 2.0f) * G_PUDDLES_TERRAIN_EXTRA_WETNESS;
+	puddles = puddles + saturate(rain_params.y * 2.0f) * G_PUDDLES_TERRAIN_EXTRA_WETNESS;
 
 	// Add gloss and puddles to the final gloss result
 	G = max(g_R + g_G + g_B + g_A, puddles);
 
-  # else
+  #else
 	float3	N 	= I.N.xyz	;
-  # endif
+  #endif
 
- # else
+ #else
 	D.rgb	= 2*D.rgb*s_detail.Sample( smp_base, I.tcdbump).rgb;
- # endif
-# else
+ #endif
+#else
 	float3	N 	= I.N.xyz	;
-# endif
+#endif
 
 	// hemi, sun, material
 	float 	ms	= xmaterial	;
-# ifdef USE_R2_STATIC_SUN
+#ifdef USE_R2_STATIC_SUN
 		 	ms 	= L.w		;
-# endif
+#endif
 
   // 2. Standart output
   float4     Ne = float4	(normalize(N), 									D.w			);
   O				= pack_gbuffer( 
 								Ne,	// hemi
-								float4 	(I.position.xyz + Ne.xyz*def_virtualh/2.h, 	ms			),	//
+								float4 	(I.position.xyz + Ne.xyz*def_virtualh/2.h, 	0.95f			),	//
 								float4	(D.x,	D.y,	D.z,						G			) );	// OUT: rgb.gloss
 
   return O;

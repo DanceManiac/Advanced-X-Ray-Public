@@ -7,11 +7,6 @@
  */
 
 #define SSFX_READY
-#define SSFX_MODEXE
-
-//For Screen Space Shaders 12.4
-#define MAT_FLORA 6.0
-#define SKY_EPS float(0.001)
 
 #include "common.h"
 #include "lmodel.h"
@@ -42,6 +37,11 @@ static const float3 ssfx_hemisphere[32] =
 #else
 	Texture2D s_rimage;
 #endif
+
+uniform float4 sky_color;
+
+TextureCube sky_s0;
+TextureCube sky_s1;
 
 static const float2 ssfx_pixel_size = 1.0f / screen_res.xy;
 static const float ssfx_PI = 3.14159265f;
@@ -82,7 +82,7 @@ float3 SSFX_yaw_vector(float3 Vec, float Rot)
 {
 	float s, c;
 	sincos(Rot, s, c);
-	
+
 	// y-axis rotation matrix
 	float3x3 rot_mat = 
 	{
@@ -167,10 +167,8 @@ float4 SSFX_get_fast_scenelighting(float2 tc, uint iSample : SV_SAMPLEINDEX)
 	
 	#ifdef SSFX_ENHANCED_SHADERS // We have Enhanced Shaders installed
 		
-		float3 hdiffuse = C.rgb + L_ambient.rgb;
-		
 		/*float3 hdiffuse = C.rgb + L_ambient.rgb;
-				
+		
 		rL.rgb += rL.a * SRGBToLinear(C.rgb);
 		
 		return float4(LinearTosRGB((rL.rgb + hdiffuse) * saturate(rL.rrr * 100)), C.w);*/
@@ -179,7 +177,7 @@ float4 SSFX_get_fast_scenelighting(float2 tc, uint iSample : SV_SAMPLEINDEX)
 		result *= env_color.rgb;
 		
 		return float4(result, C.w);
-		
+
 	#else
 		
 		float3 hdiffuse = C.rgb + L_ambient.rgb;
@@ -261,7 +259,7 @@ float3 SSFX_calc_sky(float3 dir)
 #ifndef SSFX_MODEXE
 	return saturate(L_hemi_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #else
-	return saturate(sky_color.rgb * 3.0f) * lerp(sky0, sky1, L_ambient.w);
+	return saturate(sky_color.bgr * 3.0f) * lerp(sky0, sky1, L_ambient.w);
 #endif
 }
 

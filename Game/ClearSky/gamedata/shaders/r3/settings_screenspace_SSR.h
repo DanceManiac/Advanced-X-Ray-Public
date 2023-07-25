@@ -1,4 +1,7 @@
 // [ SETTINGS ] [ SCREEN SPACE REFLECTIONS ]
+
+#define G_SSR_QUALITY					0		// Quality of the SSR. ( 0 = Very low | 1 = Low | 2 = Medium | 3 = High | 4 = Very High | 5 = Ultra )
+
 #define G_SSR_VERTICAL_SCREENFADE		4.0f	// Vertical fade. ( higher values = sharp gradient )
 
 #define G_SSR_INTENSITY					1.3f	// Global reflection intensity ( 1.0f = 100% ~ 0.0f = 0% )

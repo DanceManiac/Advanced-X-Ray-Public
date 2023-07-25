@@ -1,12 +1,12 @@
 local tex_base                = "water\\water_water"
-local tex_nmap                = "water\\pure_waters_3"
+local tex_nmap                = "shaders\\water_normal"
 local tex_dist                = "water\\water_dudv"
-local tex_leaves              = "water\\water_foam"
+local tex_sky0                = "$user$sky0"         -- "sky\\sky_8_cube"
+local tex_sky1                = "$user$sky1"         -- "sky\\sky_8_cube"
+
 local tex_bluenoise           = "shaders\\blue_noise"
 local tex_rainsplash          = "shaders\\water_sbumpvolume"
 local tex_caustics 	     	  = "shaders\\water_caustics"
-local tex_sky0                = "$user$sky0"
-local tex_sky1                = "$user$sky1"
 
 function normal                (shader, t_base, t_second, t_detail)
 	shader	:begin		("water_regular","water_regular")
@@ -21,14 +21,14 @@ function normal                (shader, t_base, t_second, t_detail)
 	shader:dx10texture	("sky_s0",		tex_sky0)
 	shader:dx10texture	("sky_s1",		tex_sky1)
 	shader:dx10texture	("s_position",	"$user$position")
-	shader:dx10texture  ("s_rimage", 	"$user$generic_temp")
-	shader:dx10texture  ("s_diffuse", 	"$user$albedo")
-	shader:dx10texture  ("s_accumulator", "$user$accum")
 
-	shader:dx10texture  ("s_bluenoise", tex_bluenoise)
-	shader:dx10texture  ("s_rainsplash", tex_rainsplash)
-	shader:dx10texture  ("s_watercaustics", tex_caustics)
-	shader:dx10texture	("s_leaves",	tex_leaves)
+shader:dx10texture  ("s_rimage", "$user$generic_temp")
+shader:dx10texture  ("s_diffuse", "$user$albedo")
+shader:dx10texture  ("s_accumulator", "$user$accum")
+
+shader:dx10texture  ("s_bluenoise", tex_bluenoise)
+shader:dx10texture  ("s_rainsplash", tex_rainsplash)
+shader:dx10texture  ("s_watercaustics", tex_caustics)
 
 	shader:dx10sampler	("smp_base")
 	shader:dx10sampler	("smp_linear")

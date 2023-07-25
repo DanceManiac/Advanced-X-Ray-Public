@@ -18,7 +18,6 @@ struct v2p
 #endif	//	USE_SOFT_PARTICLES
 
 	float4 hpos	: SV_Position;
-    float fog : FOG;
 };
 
 uniform float4x4 	mVPTexgen;
@@ -38,6 +37,5 @@ v2p main (vv v)
 	o.tctexgen.z	= o.hpos.z;
 #endif	//	USE_SOFT_PARTICLES
 
-    o.fog = saturate(calc_fogging(v.P)); // fog, input in world coords
 	return o;
 }

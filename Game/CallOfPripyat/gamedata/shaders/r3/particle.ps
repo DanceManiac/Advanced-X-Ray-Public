@@ -11,7 +11,6 @@ struct v2p
 #endif	//	USE_SOFT_PARTICLES
 
 	float4 hpos	: SV_Position;
-    float fog : FOG;
 };
 
 
@@ -47,6 +46,6 @@ float4 main( v2p I ) : SV_Target
 
 	clip(result.a-(0.01f/255.0f));
 	//clip(result.a-0.5);
-    result.w *= I.fog;
+
 	return	result;
 }

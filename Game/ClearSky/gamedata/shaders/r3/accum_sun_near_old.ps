@@ -82,7 +82,6 @@ float4 main ( float2 tc : TEXCOORD0, float2 tcJ : TEXCOORD1 ) : SV_Target
 # ifndef USE_R2_STATIC_SUN
 			m 	= _P.w;
 # endif
-
 	float4	light	= plight_infinity ( m, _P, _N, Ldynamic_dir );
 
 	// ----- shadow
