@@ -23,6 +23,7 @@ ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
 ENGINE_API extern int ps_detail_enable_collision;
 ENGINE_API extern Fvector actor_position;
 ENGINE_API extern float ps_detail_collision_radius;
+extern ENGINE_API Fvector4 ps_ssfx_grass_interactive;
 
 CPseudoGigant::CPseudoGigant()
 {
@@ -279,7 +280,6 @@ void CPseudoGigant::on_threaten_execute()
 	m_sound_threaten_hit.play_at_pos(this,pos);
 
 	// Interactive Grass FX
-	ENGINE_API extern Fvector4 ps_ssfx_grass_interactive;
 	g_pGamePersistent->GrassBendersAddExplosion(ID(), pos, Fvector().set(0, -99, 0), 1.33f, 5.0f, ps_ssfx_grass_interactive.w, 20);
 
 	// играть партиклы

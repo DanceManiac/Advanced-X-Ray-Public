@@ -100,7 +100,6 @@ public:
 	ref_rt						rt_Generic_0;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 	ref_rt						rt_Generic_1;		// 32bit		(r,g,b,a)				// post-process, intermidiate results, etc.
 
-	resptr_core<CRT, resptrcode_crt> rt_Generic_temp;
 	//  Second viewport
 	ref_rt						rt_secondVP;		// 32bit		(r,g,b,a) --//#SM+#-- +SecondVP+
 	ref_rt						rt_dof;
@@ -139,6 +138,9 @@ public:
 	ref_texture					t_noise				[TEX_jitter_count];
 	ID3DTexture2D*			t_noise_surf_mipped;
 	ref_texture					t_noise_mipped;
+
+	// Anomaly
+	resptr_core<CRT, resptrcode_crt> rt_Generic_temp;
 private:
 	// OCCq
 

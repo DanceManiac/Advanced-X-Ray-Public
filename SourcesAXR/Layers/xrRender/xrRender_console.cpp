@@ -382,9 +382,26 @@ Flags32 psDeviceFlags2 = { 0 };
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 
 //Screen Space Shaders Stuff
-Fvector3 ps_ssfx_shadow_cascades = Fvector3().set(20, 40, 160);
-Fvector4 ps_ssfx_grass_shadows = Fvector4().set(.0f, .35f, 30.0f, .0f);
-//Fvector4 ps_ssfx_wpn_dof_1 = Fvector4().set(.0f, .0f, .0f, .0f);
+
+// Anomaly
+extern ENGINE_API float ps_r2_img_exposure;		// r2-only
+extern ENGINE_API float ps_r2_img_gamma;		// r2-only
+extern ENGINE_API float ps_r2_img_saturation;	// r2-only
+extern ENGINE_API Fvector ps_r2_img_cg;			// r2-only
+
+// Ascii1457's Screen Space Shaders
+extern ENGINE_API Fvector3 ps_ssfx_shadow_cascades;
+extern ENGINE_API Fvector4 ps_ssfx_grass_shadows;
+extern ENGINE_API Fvector4 ps_ssfx_grass_interactive;
+extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_1;
+extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
+
+int ps_screen_space_shaders = 0;
+
+//extern ENGINE_API Fvector4 ps_ssfx_wpn_dof_1;
+//extern ENGINE_API float ps_ssfx_wpn_dof_2;
+
+//Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
 //extern float ps_ssfx_wpn_dof_2 = 1.0f;
 
 #ifndef _EDITOR
@@ -402,12 +419,13 @@ class CCC_ssfx_cascades : public CCC_Vector3
 public:
 	void apply()
 	{
+		// TODO: Crash here when quitting game
 #if defined(USE_DX11)
-		RImplementation.init_cacades();
+		RImplementation.init_cascades();
 #endif
 	}
 
-	CCC_ssfx_cascades(LPCSTR N, Fvector3 * V, const Fvector3 _min, const Fvector3 _max) : CCC_Vector3(N, V, _min, _max)
+	CCC_ssfx_cascades(LPCSTR N, Fvector3* V, const Fvector3 _min, const Fvector3 _max) : CCC_Vector3(N, V, _min, _max)
 	{
 	};
 
@@ -417,7 +435,7 @@ public:
 		apply();
 	}
 
-	virtual void Status(TStatus & S)
+	virtual void GetStatus(TStatus& S)
 	{
 		CCC_Vector3::Status(S);
 		apply();
@@ -1028,6 +1046,11 @@ void		xrRender_initconsole	()
 	Fvector4 clr_drag_max = { 2.55f, 2.55f, 2.55f, 1.f };
 	CMD4(CCC_Vector4,	"r_color_drag",			&ps_color_dragging,			clr_drag_min, clr_drag_max);
 
+	tw_min.set(0, 0, 0);
+	tw_max.set(1, 1, 1);
+
+	CMD4(CCC_Vector3,	"r__color_grading",		&ps_r2_img_cg,				tw_min, tw_max);
+
 	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_postscreen_flags,	R2FLAG_RAIN_DROPS	);
 	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
 	CMD4(CCC_Float,		"r2_rain_drops_speed",	&ps_r2_rain_drops_speed, 	0.8f,	5.f		);
@@ -1231,13 +1254,24 @@ void		xrRender_initconsole	()
 	// Screen Space Shaders
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
 	CMD4(CCC_Float,			"ssfx_wpn_dof_2",				&ps_ssfx_wpn_dof_2,			0.0f, 1.0f);
-	CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
-	CMD4(CCC_ssfx_cascades, "ssfx_shadow_cascades",			&ps_ssfx_shadow_cascades,	Fvector3().set(1.0f, 1.0f, 1.0f), Fvector3().set(300, 300, 300));
 
 	CMD4(CCC_Integer,		"r__mt_textures_load",			&ps_mt_texture_load,		0, 1); //Многопоточная загрузка текстур
 	CMD3(CCC_Token,			"r3_lowland_fog_type",			&ps_lowland_fog_type,		lowland_fog_type_token); //Тип низинного тумана
 
 	CMD4(CCC_Float,			"r3_reflections_dist",			&ps_r2_reflections_distance, 100.f, 1000.f); //Дальность отражений
+
+	// Anomaly
+	CMD4(CCC_Float, "r__exposure", &ps_r2_img_exposure, 0.5f, 4.0f);
+	CMD4(CCC_Float, "r__gamma", &ps_r2_img_gamma, 0.5f, 2.2f);
+	CMD4(CCC_Float, "r__saturation", &ps_r2_img_saturation, 0.0f, 2.0f);
+
+    // Screen Space Shaders
+    CMD4(CCC_Integer,		"r__screen_space_shaders",		&ps_screen_space_shaders,	0, 1);
+    CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
+    CMD4(CCC_ssfx_cascades, "ssfx_shadow_cascades",			&ps_ssfx_shadow_cascades,	Fvector3().set(1.0f, 1.0f, 1.0f), Fvector3().set(300, 300, 300));
+    CMD4(CCC_Vector4,		"ssfx_grass_interactive",		&ps_ssfx_grass_interactive, Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 15, 5000, 1));
+    CMD4(CCC_Vector4,		"ssfx_int_grass_params_1",		&ps_ssfx_int_grass_params_1, Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 5, 5, 60));
+    CMD4(CCC_Vector4,		"ssfx_int_grass_params_2",		&ps_ssfx_int_grass_params_2, Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 20, 1, 5));
 
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }

@@ -12,6 +12,19 @@
 
 #include "xrSASH.h"
 
+// Anomaly
+extern ENGINE_API float ps_r2_img_exposure;
+extern ENGINE_API float ps_r2_img_gamma;
+extern ENGINE_API float ps_r2_img_saturation;
+extern ENGINE_API Fvector ps_r2_img_cg;
+
+// Ascii's Shaders
+extern ENGINE_API Fvector4 ps_ssfx_grass_shadows;
+extern ENGINE_API Fvector3 ps_ssfx_shadow_cascades;
+extern ENGINE_API Fvector4 ps_ssfx_grass_interactive;
+extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_1;
+extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
+
 class ENGINE_API	IConsole_Command
 {
 public		:

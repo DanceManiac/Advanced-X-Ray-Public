@@ -493,6 +493,11 @@ CRenderTarget::CRenderTarget		()
 		if (RImplementation.o.advancedpp)
 			rt_Generic_2.create(r2_RT_generic2, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount);
 
+		if (RImplementation.o.dx10_msaa)
+			rt_Generic_temp.create("$user$generic_temp", vp_params_main_secondary, D3DFMT_A8R8G8B8, SampleCount);
+		else
+			rt_Generic_temp.create("$user$generic_temp", vp_params_main_secondary, D3DFMT_A8R8G8B8, 1);
+
 		// RT Blur
 		rt_blur_h_2.create(r2_RT_blur_h_2, RtCreationParams(u32(w / 2), u32(h / 2), MAIN_VIEWPORT), D3DFMT_A8R8G8B8);
 		rt_blur_2.create(r2_RT_blur_2, RtCreationParams(u32(w / 2), u32(h / 2), MAIN_VIEWPORT), D3DFMT_A8R8G8B8);

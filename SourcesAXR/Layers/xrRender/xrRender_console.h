@@ -293,8 +293,4 @@ extern ECORE_API float			droplets_power_debug;
 extern ECORE_API	u32			ps_r2_flares;
 extern ECORE_API	xr_token	qflares_token[];
 
-// Screen Space Shaders
-extern ECORE_API Fvector4 ps_ssfx_grass_shadows;
-extern ECORE_API Fvector3 ps_ssfx_shadow_cascades;
-
 #endif

@@ -1001,18 +1001,6 @@ void CRender::init_cacades				( )
 	u32 cascade_count = 3;
 	m_sun_cascades.resize(cascade_count);
 
-	float fBias = -0.0000025f;
-	//	float size = MAP_SIZE_START;
-	m_sun_cascades[0].reset_chain = true;
-	m_sun_cascades[0].size = ps_ssfx_shadow_cascades.x; //20
-	m_sun_cascades[0].bias = m_sun_cascades[0].size*fBias;
-
-	m_sun_cascades[1].size = ps_ssfx_shadow_cascades.y; //40
-	m_sun_cascades[1].bias = m_sun_cascades[1].size*fBias;
-
-	m_sun_cascades[2].size = ps_ssfx_shadow_cascades.z; //160
- 	m_sun_cascades[2].bias = m_sun_cascades[2].size*fBias;
-
 // 	for( u32 i = 0; i < cascade_count; ++i )
 // 	{
 // 		m_sun_cascades[i].size = size;
@@ -1285,7 +1273,7 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 
 			if (ps_r2_ls_flags.test(R2FLAG_SUN_DETAILS) && cascade_ind <= ps_ssfx_grass_shadows.x)
 			{
-				Details->fade_distance = dm_fade * dm_fade * ps_ssfx_grass_shadows.y;
+				RImplementation.Details->fade_distance = dm_fade * dm_fade * ps_ssfx_grass_shadows.y;
 				Details->Render();
 			}
 
@@ -1328,4 +1316,21 @@ void CRender::render_sun_cascade ( u32 cascade_ind )
 	RCache.set_xform_world		(Fidentity			);
 	RCache.set_xform_view		(Device.mView		);
 	RCache.set_xform_project	(Device.mProject	);
+}
+
+void CRender::init_cascades()
+{
+	u32 cascade_count = 3;
+
+	float fBias = -0.0000025f;
+
+	m_sun_cascades[0].reset_chain = true;
+	m_sun_cascades[0].size = ps_ssfx_shadow_cascades.x; //20
+	m_sun_cascades[0].bias = m_sun_cascades[0].size * fBias;
+
+	m_sun_cascades[1].size = ps_ssfx_shadow_cascades.y; //40
+	m_sun_cascades[1].bias = m_sun_cascades[1].size * fBias;
+
+	m_sun_cascades[2].size = ps_ssfx_shadow_cascades.z; //160
+	m_sun_cascades[2].bias = m_sun_cascades[2].size * fBias;
 }

@@ -300,7 +300,9 @@ void CDetailManager::UpdateVisibleM()
 				continue;
 			}
 			u32 mask			= 0xff;
-			u32 res				= View.testSphere(MS.vis.sphere.P, MS.vis.sphere.R, mask);
+
+			u32 res = View.testSphere(MS.vis.sphere.P, MS.vis.sphere.R, mask);
+
 			if (fcvNone==res)
 			{
 				continue;	// invisible-view frustum
@@ -325,7 +327,9 @@ void CDetailManager::UpdateVisibleM()
 				// if upper test = fcvPartial - test inner slots
 				if (fcvPartial==res){
 					u32 _mask	= mask;
-					u32 _res	= View.testSphere(S.vis.sphere.P, S.vis.sphere.R, _mask);
+
+					u32 _res = View.testSphere(S.vis.sphere.P, S.vis.sphere.R, _mask);
+
 					if (fcvNone==_res)
 					{
 						continue;	// invisible-view frustum
@@ -479,18 +483,18 @@ void CDetailManager::details_clear()
 	if (ps_ssfx_grass_shadows.x <= 0)
 		return;
 
-		for (u32 x = 0; x < 3; x++)
-		{
-		vis_list & list = m_visibles[x];
+	for (u32 x = 0; x < 3; x++)
+	{
+		vis_list& list = m_visibles[x];
 
-			for (u32 O = 0; O < objects.size(); O++)
-			{
-			CDetail & Object = *objects[O];
-			xr_vector<SlotItemVec*>&vis = list[O];
+		for (u32 O = 0; O < objects.size(); O++)
+		{
+			CDetail& Object = *objects[O];
+			xr_vector<SlotItemVec*>& vis = list[O];
 			if (!vis.empty())
-				{
-				vis.clear_not_free();
-				}
+			{
+				vis.erase(vis.begin(), vis.end());
 			}
 		}
+	}
 }

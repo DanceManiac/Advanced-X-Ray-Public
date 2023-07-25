@@ -7,13 +7,13 @@ IC		bool	pred_area		(light* _1, light* _2)
 	return	a0>a1;	// reverse -> descending
 }
 
-bool check_grass_shadow(light * L, CFrustum VB)
+bool check_grass_shadow(light* L, CFrustum VB)
 {
 	// Grass shadows are allowed?
 	if (ps_ssfx_grass_shadows.x < 3 || !ps_r2_ls_flags.test(R2FLAG_SUN_DETAILS))
 		return false;
 
-	//Inside the range?
+	// Inside the range?
 	if (L->vis.distance > ps_ssfx_grass_shadows.z)
 		return false;
 
@@ -132,14 +132,11 @@ void	CRender::render_lights	(light_Package& LP)
 				RCache.set_xform_project			(L->X.S.project);
 				r_dsgraph_render_graph				(0);
 
-				if (Details)
+				if (check_grass_shadow(L, ViewBase))
 				{
-					if (check_grass_shadow(L, ViewBase))
-					{
-						Details->fade_distance = -1; // Use light position to calc "fade"
-						Details->light_position.set(L->position);
-						Details->Render();
-					}
+					Details->fade_distance = -1; // Use light position to calc "fade"
+					Details->light_position.set(L->position);
+					Details->Render();
 				}
 
 				L->X.S.transluent					= FALSE;

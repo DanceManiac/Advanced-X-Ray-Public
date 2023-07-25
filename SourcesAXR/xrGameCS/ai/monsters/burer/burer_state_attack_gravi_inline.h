@@ -139,6 +139,8 @@ void CStateBurerAttackGraviAbstract::ExecuteGraviContinue()
 	}
 }
 
+extern ENGINE_API Fvector4 ps_ssfx_grass_interactive;
+
 TEMPLATE_SPECIALIZATION
 void CStateBurerAttackGraviAbstract::ExecuteGraviFire()
 {
@@ -156,8 +158,7 @@ void CStateBurerAttackGraviAbstract::ExecuteGraviFire()
 	object->DeactivateShield	();
 
 	// Interactive Grass FX
-	ENGINE_API extern Fvector4 ps_ssfx_grass_interactive;
-	g_pGamePersistent->GrassBendersAddExplosion(object->ID(), from_pos, object->Direction(), 1.33f, 3.0f, ps_ssfx_grass_interactive.w, 13.0f);
+	g_pGamePersistent->GrassBendersAddExplosion(this->object->ID(), from_pos, this->object->Direction(), 1.33f, 3.0f, ps_ssfx_grass_interactive.w, 13.0f);
 }
 
 #undef TEMPLATE_SPECIALIZATION

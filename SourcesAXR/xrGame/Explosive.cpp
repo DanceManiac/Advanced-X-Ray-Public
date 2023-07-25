@@ -46,6 +46,7 @@ ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
 ENGINE_API extern int ps_detail_enable_collision;
 ENGINE_API extern Fvector actor_position;
 ENGINE_API extern float ps_detail_collision_radius;
+extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
 
 CExplosive::CExplosive(void) 
 {
@@ -320,6 +321,7 @@ float CExplosive::TestPassEffect(const	Fvector	&source_p,	const	Fvector	&dir,flo
 	else return dist_factor;
 	return shoot_factor*dist_factor;
 }
+
 void CExplosive::Explode()
 {
 	VERIFY(0xffff != Initiator());
@@ -339,6 +341,9 @@ void CExplosive::Explode()
 			level_detailcoll_points.push_back(DetailCollisionPoint(pos, m_iCurrentParentID != g_actor->ID() ? -m_iCurrentParentID : (u16)-2, m_fBlastRadius, 0.3f, 1.5f, true));
 	}
 
+	// Interactive Grass FX
+	g_pGamePersistent->GrassBendersAddExplosion(cast_game_object()->ID(), pos, Fvector().set(0, -99, 0), 1.33f, ps_ssfx_int_grass_params_2.y, ps_ssfx_int_grass_params_2.x, m_fBlastRadius * 2.0f);
+
 #ifdef DEBUG
 	if(ph_dbg_draw_mask.test(phDbgDrawExplosions))
 	{
@@ -346,11 +351,6 @@ void CExplosive::Explode()
 		DBG_DrawPoint(pos,0.3f,D3DCOLOR_XRGB(255,0,0));
 	}
 #endif
-
-	// Interactive Grass FX
-	ENGINE_API extern Fvector4 ps_ssfx_int_grass_params_2;
-	g_pGamePersistent->GrassBendersAddExplosion(cast_game_object()->ID(), pos, Fvector().set(0, -99, 0), 1.33f, ps_ssfx_int_grass_params_2.y, ps_ssfx_int_grass_params_2.x, m_fBlastRadius * 2.0f);
-
 //	Msg("---------CExplosive Explode [%d] frame[%d]",cast_game_object()->ID(), Device.dwFrame);
 	OnBeforeExplosion();
 	//играем звук взрыва

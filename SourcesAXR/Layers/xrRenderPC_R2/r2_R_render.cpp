@@ -441,6 +441,7 @@ void CRender::Render		()
 
 	// Postprocess
 	Target->phase_combine					();
+
 	VERIFY	(0==mapDistort.size());
 }
 

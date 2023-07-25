@@ -50,10 +50,10 @@ extern float	ps_current_detail_density;
 class ECORE_API CDetailManager
 {
 public:
-	float fade_distance = 99999;
-	Fvector light_position;
 
-	void details_clear();
+    float fade_distance = 99999;
+    Fvector light_position;
+    void details_clear();
 
 	struct	SlotItem	{								// один кустик
 		float						scale;
@@ -68,7 +68,7 @@ public:
 		float						c_hemi;
 		float						c_sun;
 		float						distance;
-		Fvector						position;
+        Fvector						position;
 #if RENDER==R_R1
 		Fvector						c_rgb;
 #endif
