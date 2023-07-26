@@ -44,7 +44,7 @@ public:
 	float				lowland_fog_height;
 	float				lowland_fog_density;
 
-	Fvector4			color_dragging;
+	Fvector4			color_grading;
 
 	Fvector3			ambient;
 	Fvector3			sky_color;		
@@ -153,7 +153,7 @@ public:
 	float				lowland_fog_height;
 	float				lowland_fog_density;
 
-	Fvector4			color_dragging;
+	Fvector4			color_grading;
 
 	float				rain_density;
 	Fvector3			rain_color;

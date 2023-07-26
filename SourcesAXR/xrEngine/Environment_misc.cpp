@@ -24,7 +24,7 @@ void CEnvModifier::load	(IReader* fs, u32 version)
 	lowland_fog_height		= fs->r_float	();
 	lowland_fog_density		= fs->r_float	();
 
-	fs->r_fvector4	(color_dragging);
+	fs->r_fvector4	(color_grading);
 
 	fs->r_fvector3	(ambient);
 	fs->r_fvector3	(sky_color);
@@ -234,7 +234,7 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) :
 	lowland_fog_height	= 0.0f;
 	lowland_fog_density = 0.0f;
 
-	color_dragging.set	(0.0f, 0.0f, 0.0f, 0.0f);
+	color_grading.set	(0.0f, 0.0f, 0.0f, 0.0f);
 
 	rain_density		= 0.0f;
 	rain_color.set		(0,0,0);
@@ -342,8 +342,8 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 	if (config.line_exist(m_identifier.c_str(), "lowland_fog_density"))
 		lowland_fog_density = config.r_float(m_identifier.c_str(), "lowland_fog_density");
 
-	if (config.line_exist(m_identifier.c_str(), "color_dragging"))
-		color_dragging = config.r_fvector4(m_identifier.c_str(), "color_dragging");
+	if (config.line_exist(m_identifier.c_str(), "color_grading"))
+		color_grading = config.r_fvector4(m_identifier.c_str(), "color_grading");
 
 	// swing desc
 	// normal
@@ -366,7 +366,7 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 	C_CHECK					(ambient	);
 	C_CHECK					(hemi_color	);
 	C_CHECK					(sun_color	);
-	C_CHECK					(color_dragging);
+	C_CHECK					(color_grading);
 	on_device_create		();
 }
 
@@ -513,7 +513,7 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	lowland_fog_height	= fi*A.lowland_fog_height + f * B.lowland_fog_height;
 	lowland_fog_density = fi * A.lowland_fog_density + f * B.lowland_fog_density;
 
-	color_dragging.lerp(A.color_dragging, B.color_dragging, f);
+	color_grading.lerp(A.color_grading, B.color_grading, f);
 
 	// colors
 //.	sky_color.lerp			(A.sky_color,B.sky_color,f).add(Mdf.sky_color).mul(modif_power);

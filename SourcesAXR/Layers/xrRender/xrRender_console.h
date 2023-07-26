@@ -154,7 +154,7 @@ extern ECORE_API float			ps_r2_ss_sunshafts_length;
 extern ECORE_API float			ps_r2_ss_sunshafts_radius;
 extern u32						ps_sunshafts_mode;
 
-extern ECORE_API Fvector4		ps_color_dragging;
+extern ECORE_API Fvector4		ps_color_grading;
 
 extern ECORE_API float			ps_r2_rain_drops_intensity;
 extern ECORE_API float			ps_r2_rain_drops_speed;

@@ -464,7 +464,7 @@ void CEnvironment::lerp		(float& current_weight)
 	EM.lowland_fog_height	= 0;
 	EM.lowland_fog_density	= 0;
 
-	EM.color_dragging.set	(0.0f, 0.0f, 0.0f, 0.0f);
+	EM.color_grading.set	(0.0f, 0.0f, 0.0f, 0.0f);
 
 	EM.ambient.set			( 0,0,0 );
 	EM.sky_color.set		( 0,0,0 );

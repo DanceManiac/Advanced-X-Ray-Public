@@ -328,7 +328,7 @@ float		ps_r2_ss_sunshafts_length = 1.f;
 float		ps_r2_ss_sunshafts_radius = 1.f;
 float		droplets_power_debug = 0.f;
 
-Fvector4	ps_color_dragging = { 1.0f, 1.0f, 1.0f, 0.0f };
+Fvector4	ps_color_grading = { 1.0f, 1.0f, 1.0f, 0.0f };
 
 float		ps_r2_rain_drops_intensity = 0.00025f;
 float		ps_r2_rain_drops_speed = 1.25f;
@@ -1037,14 +1037,14 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,		"r__actor_shadow",		&ps_actor_shadow_flags,		RFLAG_ACTOR_SHADOW);  //Swartz
     CMD3(CCC_Token, 	"r2_smap_size", 		&ps_r2_smapsize, 			qsmapsize_token	);
 	
-	CMD4(CCC_Float,		"r_color_r",			&ps_color_dragging.x,		0.0f,	2.55f	);
-	CMD4(CCC_Float,		"r_color_g",			&ps_color_dragging.y,		0.0f,	2.55f	);
-	CMD4(CCC_Float,		"r_color_b",			&ps_color_dragging.z,		0.0f,	2.55f	);	
-	CMD4(CCC_Float,		"r_saturation",			&ps_color_dragging.w,		-1.0f,	+1.0f	);
+	CMD4(CCC_Float,		"r_color_r",			&ps_color_grading.x,		0.0f,	2.55f	);
+	CMD4(CCC_Float,		"r_color_g",			&ps_color_grading.y,		0.0f,	2.55f	);
+	CMD4(CCC_Float,		"r_color_b",			&ps_color_grading.z,		0.0f,	2.55f	);
+	CMD4(CCC_Float,		"r_saturation",			&ps_color_grading.w,		-1.0f,	+1.0f	);
 
 	Fvector4 clr_drag_min = { 0.f, 0.f, 0.f, -1.0f };
 	Fvector4 clr_drag_max = { 2.55f, 2.55f, 2.55f, 1.f };
-	CMD4(CCC_Vector4,	"r_color_drag",			&ps_color_dragging,			clr_drag_min, clr_drag_max);
+	CMD4(CCC_Vector4,	"r_color_grading",			&ps_color_grading,			clr_drag_min, clr_drag_max);
 
 	tw_min.set(0, 0, 0);
 	tw_max.set(1, 1, 1);

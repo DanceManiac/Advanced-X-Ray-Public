@@ -120,7 +120,7 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot1", el->m_cSwingDesc[1].rot1);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_rot2", el->m_cSwingDesc[1].rot2);
 		f.w_float(el->m_identifier.c_str(), "swing_fast_speed", el->m_cSwingDesc[1].speed);
-		f.w_fvector4(el->m_identifier.c_str(), "color_dragging", el->color_dragging);
+		f.w_fvector4(el->m_identifier.c_str(), "color_grading", el->color_grading);
 		f.w_fvector3(el->m_identifier.c_str(), "dof", el->dof_value);
 		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
@@ -471,11 +471,11 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("swing_fast_speed", &cur->m_cSwingDesc[1].speed, 0.0f, 10.0f))
 		changed = true;
 
-	if (bWeatherColorDragging)
+	if (bWeatherColorGrading)
 	{
-		ImGui::Text(u8"Color Dragging Parameters");
+		ImGui::Text(u8"Color Grading Parameters");
 
-		if (ImGui::ColorEdit4("color_dragging", (float*)&cur->color_dragging))
+		if (ImGui::ColorEdit4("color_grading", (float*)&cur->color_grading))
 			changed = true;
 	}
 
