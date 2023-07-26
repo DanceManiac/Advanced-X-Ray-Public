@@ -90,6 +90,18 @@ blowout_wind_power			= 0.5								;сила поднимаего ветра (от 0 до 1), в момент b
 shape_transp_color		= 255, 0, 0, 60
 shape_edge_color		= 32, 32, 32, 255
 
+bend_grass_idle_anim = 2
+bend_grass_idle_radius = 4.0
+bend_grass_idle_speed = 1.3
+
+bend_grass_whenactive_anim = 3
+bend_grass_whenactive_str = 3.5
+bend_grass_whenactive_speed = 4.5
+
+bend_grass_blowout = true
+bend_grass_blowout_duration = 5500
+bend_grass_blowout_speed = 5.0
+bend_grass_blowout_radius = 20.0
 
 [zone_mine_gravitational_average]:zone_base
 GroupControlSection	= spawn_group_zone
@@ -185,6 +197,18 @@ blowout_wind_power			= 0.5			;сила поднимаего ветра (от 0 до 1), в момент blowou
 shape_transp_color		= 255, 0, 0, 60
 shape_edge_color		= 32, 32, 32, 255
 
+bend_grass_idle_anim = 3
+bend_grass_idle_radius = 4.0
+bend_grass_idle_str = 2.0
+bend_grass_idle_speed = 1.5
+
+bend_grass_whenactive_str = 3.0
+bend_grass_whenactive_speed = 3.0
+
+bend_grass_blowout = true
+bend_grass_blowout_duration = 2500
+bend_grass_blowout_speed = 6.0
+bend_grass_blowout_radius = 20.0
 
 [zone_mine_gravitational_weak]:zone_base
 GroupControlSection	= spawn_group_zone
@@ -262,11 +286,31 @@ blowout_wind_power			= 0.5			;сила поднимаего ветра (от 0 до 1), в момент blowou
 shape_transp_color		= 255, 0, 0, 60
 shape_edge_color		= 32, 32, 32, 255
 
+bend_grass_idle_anim = 2
+bend_grass_idle_radius = 3.0
+bend_grass_idle_speed = 1.2
+
+bend_grass_blowout = true
+bend_grass_blowout_speed = 5.0
+bend_grass_blowout_radius = 10.0
+
 
 [zone_mine_gravitational_big]:zone_mine_gravitational_strong
 $spawn 			= "zones\scenes\mine_gravitational_big"
 $def_sphere = 8
 
+bend_grass_idle_anim = 2
+bend_grass_idle_radius = 4.0
+bend_grass_idle_speed = 1.3
+
+bend_grass_whenactive_anim = 3
+bend_grass_whenactive_str = 3.0
+bend_grass_whenactive_speed = 4.0
+
+bend_grass_blowout = true
+bend_grass_blowout_duration = 5500
+bend_grass_blowout_speed = 5.0
+bend_grass_blowout_radius = 20.0
 
 [zone_gravi_zone]:zone_mine_gravitational_average
 $spawn 			= "zones\mp\gravi_zone"
