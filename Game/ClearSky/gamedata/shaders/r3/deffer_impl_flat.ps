@@ -74,7 +74,7 @@ f_deffer 	main	( p_flat I 		)
 	float puddles_f = wetness_f;
 
 	// Size factor. Convert 0 ~ 1 to 1 ~ -0.1f
-	float size_f = (1.0f - G_PUDDLES_SIZE * 1.1f);
+	float size_f = (1.0f - (rain_params.y-0.1) * 1.1f);
 
 	// Texture mask
 	float puddles_mask = 1.0f - s_puddles_mask.Sample(smp_base, I.tcdh).r;
@@ -158,7 +158,7 @@ f_deffer 	main	( p_flat I 		)
 	puddles = puddles + saturate(rain_params.y * 2.0f) * G_PUDDLES_TERRAIN_EXTRA_WETNESS;
 
 	// Add gloss and puddles to the final gloss result
-	G = max(g_R + g_G + g_B + g_A, puddles);
+	G = max(g_R + g_G + g_B + g_A, 0.0f);
 
   #else
 	float3	N 	= I.N.xyz	;

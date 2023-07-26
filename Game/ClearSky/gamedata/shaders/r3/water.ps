@@ -118,7 +118,7 @@ float4 main( vf I ) : SV_Target
 	// Get current Skybox
 	refl_skybox = SSFX_calc_sky(vreflect) * G_SSR_WATER_SKY_REFLECTION;
 
-	if (all(ssr_hit_uv.xy))
+	if (all(ssr_hit_uv.xy) && _P.z < reflections_distance.x)
 	{
 		// Get reflection pixel from scene screen
 		refl_ray = SSFX_get_image(ssr_hit_uv.xy, 0);
