@@ -384,10 +384,10 @@ Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 //Screen Space Shaders Stuff
 
 // Anomaly
-extern ENGINE_API float ps_r2_img_exposure;		// r2-only
-extern ENGINE_API float ps_r2_img_gamma;		// r2-only
-extern ENGINE_API float ps_r2_img_saturation;	// r2-only
-extern ENGINE_API Fvector ps_r2_img_cg;			// r2-only
+float ps_r2_img_exposure = 1.0f;
+float ps_r2_img_gamma = 1.0f;
+float ps_r2_img_saturation = 1.0f;
+Fvector ps_r2_img_cg = READ_IF_EXISTS(pAdvancedSettings, r_fvector3, "start_settings", "color_grading_es", Fvector3().set(0.5f, 0.5f, 0.5f));
 
 // Ascii1457's Screen Space Shaders
 extern ENGINE_API Fvector3 ps_ssfx_shadow_cascades;
@@ -1044,12 +1044,12 @@ void		xrRender_initconsole	()
 
 	Fvector4 clr_drag_min = { 0.f, 0.f, 0.f, -1.0f };
 	Fvector4 clr_drag_max = { 2.55f, 2.55f, 2.55f, 1.f };
-	CMD4(CCC_Vector4,	"r_color_grading",			&ps_color_grading,			clr_drag_min, clr_drag_max);
+	CMD4(CCC_Vector4,	"r_color_grading",		&ps_color_grading,			clr_drag_min, clr_drag_max);
 
-	tw_min.set(0, 0, 0);
-	tw_max.set(1, 1, 1);
+	//tw_min.set(0, 0, 0);
+	//tw_max.set(1, 1, 1);
 
-	CMD4(CCC_Vector3,	"r__color_grading",		&ps_r2_img_cg,				tw_min, tw_max);
+	//CMD4(CCC_Vector3,	"r_color_grading_es",	&ps_r2_img_cg,				tw_min, tw_max);
 
 	CMD3(CCC_Mask,		"r2_raindrops",			&ps_r2_postscreen_flags,	R2FLAG_RAIN_DROPS	);
 	CMD4(CCC_Float,		"r2_rain_drops_intensity",	&ps_r2_rain_drops_intensity, 0.f,	1.f	);
@@ -1261,9 +1261,14 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"r3_reflections_dist",			&ps_r2_reflections_distance, 100.f, 1000.f); //Дальность отражений
 
 	// Anomaly
-	CMD4(CCC_Float, "r__exposure", &ps_r2_img_exposure, 0.5f, 4.0f);
-	CMD4(CCC_Float, "r__gamma", &ps_r2_img_gamma, 0.5f, 2.2f);
-	CMD4(CCC_Float, "r__saturation", &ps_r2_img_saturation, 0.0f, 2.0f);
+	CMD4(CCC_Float,			"r__exposure",					&ps_r2_img_exposure,		0.5f, 4.0f);
+	CMD4(CCC_Float,			"r__gamma",						&ps_r2_img_gamma,			0.5f, 2.2f);
+	//CMD4(CCC_Float,			"r__saturation",				&ps_r2_img_saturation,		0.0f, 2.0f);
+
+	//tw_min.set(0, 0, 0);
+	//tw_max.set(1, 1, 1);
+
+	//CMD4(CCC_Vector3,	"r_color_grading_es",	&ps_r2_img_cg,				tw_min, tw_max);
 
     // Screen Space Shaders
     CMD4(CCC_Integer,		"r__screen_space_shaders",		&ps_screen_space_shaders,	0, 1);

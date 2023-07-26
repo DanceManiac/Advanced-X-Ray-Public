@@ -176,6 +176,12 @@ extern ECORE_API float			ps_r2_reflections_distance;
 //AO Debug
 extern ECORE_API int			ps_r2_ao_debug;
 
+//Anomaly
+extern ECORE_API float			ps_r2_img_exposure;
+extern ECORE_API float			ps_r2_img_gamma;
+extern ECORE_API float			ps_r2_img_saturation;
+extern ECORE_API Fvector		ps_r2_img_cg;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),
