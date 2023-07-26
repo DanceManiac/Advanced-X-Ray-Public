@@ -224,7 +224,8 @@
         </cap_detail_collision>
         <check_detail_collision x="183" y="0" width="35" stretch="1" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
-            <options_item entry="r__detail_collision_enabled" group="mm_opt_video_adv"/>
+			<!--options_item entry="r__detail_collision_enabled" group="mm_opt_video_adv"/-->
+			<options_item entry="r4_ss_grass_collision" group="mm_opt_video_adv"/>
         </check_detail_collision>
 		
         <cap_detail_collision_radius x="65" y="3" width="108" height="24" hint = "ui_mm_detail_collision_radius_hint">

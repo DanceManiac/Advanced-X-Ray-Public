@@ -488,7 +488,8 @@
 			<text font="letterica16" color="ui_6">ui_mm_detail_collision</text>
 		</cap_detail_collision>
 		<check_detail_collision x="200" y="0" width="27" height="21">
-			<options_item entry="r__detail_collision_enabled" group="mm_opt_video_adv"/>
+			<!--options_item entry="r__detail_collision_enabled" group="mm_opt_video_adv"/-->
+			<options_item entry="r4_ss_grass_collision" group="mm_opt_video_adv"/>
 		</check_detail_collision>
 		
 		<cap_detail_collision_radius x="77" y="0" width="119" height="21" hint = "ui_mm_detail_collision_radius_hint">

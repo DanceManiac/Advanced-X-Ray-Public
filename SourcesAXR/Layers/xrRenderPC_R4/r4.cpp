@@ -1379,6 +1379,14 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len] = '0' + char(ps_lowland_fog_type); ++len;
 	}
 
+	if (ps_ssfx_grass_interactive)
+	{
+		defines[def_it].Name = "SSFX_INTER_GRASS";
+		defines[def_it].Definition = "1";
+		def_it++;
+	}
+	sh_name[len] = '0' + char(ps_r4_ss_grass_collision); ++len;
+
 	if (ps_ssfx_grass_interactive.y > 0)
 	{
 		sprintf_s(c_inter_grass, "%d", ps_ssfx_grass_interactive);

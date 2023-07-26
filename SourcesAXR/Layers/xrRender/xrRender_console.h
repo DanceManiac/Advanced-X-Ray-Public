@@ -188,6 +188,7 @@ extern ECORE_API float			r2_tonemap_low_lum_modifier;	// r2-only
 extern ECORE_API float			r2_sun_lumscale_modifier;		// r2-only
 extern ECORE_API float			r2_sun_lumscale_amb_modifier;	// r2-only
 
+extern ECORE_API int			ps_r4_ss_grass_collision;
 enum
 {
 	R2FLAG_SUN					= (1<<0),

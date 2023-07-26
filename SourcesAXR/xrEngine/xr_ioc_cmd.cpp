@@ -705,7 +705,7 @@ ENGINE_API int			ps_r__ShaderNVG				= 0;
 ENGINE_API float		ps_detail_collision_dist	= 1.f;
 ENGINE_API float		ps_detail_collision_time	= 0.25f;
 ENGINE_API Fvector		ps_detail_collision_angle	= { 0, 50, 0 };
-ENGINE_API int			ps_detail_enable_collision	= 1;
+ENGINE_API int			ps_detail_enable_collision	= 0;
 
 ENGINE_API float		ps_detail_collision_radius	= 40.f;
 ENGINE_API xr_vector<DetailCollisionPoint> level_detailcoll_points;
