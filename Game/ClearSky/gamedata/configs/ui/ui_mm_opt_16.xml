@@ -959,6 +959,16 @@
 			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 		</output_wnd>
     </track_reflections_distance>
+	
+    <cap_dynamic_wet_surfaces_far x="77" y="0" width="119" height="21" hint = "ui_mm_dynamic_wet_surfaces_far_hint">
+      <text font="letterica16" color="ui_6">ui_mm_dynamic_wet_surfaces_far</text>
+    </cap_dynamic_wet_surfaces_far>
+    <track_dynamic_wet_surfaces_far x="200" y="0" width="200" height="21" min="30.0" max="100.0">
+      <options_item entry="r3_dynamic_wet_surfaces_far" group="mm_opt_video_adv"/>
+		<output_wnd x="200" y="0" width="20" height="20" format="%.f">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+		</output_wnd>
+    </track_dynamic_wet_surfaces_far>
 
     <btn_to_simply x="265" y="325" width="111" height="29">
       <text align="c" font="letterica16" r="227" g="199" b="178">ui_mm_simply</text>
