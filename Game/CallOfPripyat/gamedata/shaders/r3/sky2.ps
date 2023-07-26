@@ -28,12 +28,18 @@ _out main(v2p I )
 	float3			sky = lerp (s0,s1,I.factor.w);
 	
 	//srgb tint (matches hmodel)
+	
+#ifdef ES_PSEUDO_PBR
 	float3 SkyTint = I.factor.bgr;
 	float TintPow = 1.0;
 	
 	sky = pow(sky, TintPow); 
 	sky *= SkyTint;
 	sky = pow(sky, 1/TintPow); 
+#else
+	sky = LinearTosRGB(sky);
+	sky *= I.factor.rgb;
+#endif
 
 	// final tone-mapping
 	float tm_scale = I.tc0.w;

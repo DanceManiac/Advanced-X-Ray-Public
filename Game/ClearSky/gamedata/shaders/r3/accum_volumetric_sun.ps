@@ -110,9 +110,15 @@ float4 	main (v2p_volume  I) : SV_Target
 #endif
 
 	// Fade from "res" to "max_density" using squared fog to get a nice curve
-	float3 result = lerp(SunColor * max_density * fSturation, SunColor * res, 1.0f - fog * fog);
+	
+#ifdef ES_PSEUDO_PBR
+		float3 result = lerp(SunColor * max_density * fSturation, SunColor * res, 1.0f - fog * fog);
+		return float4(result, 1);		
+#else
+		float3 result = lerp(SunColor * max_density * fSturation, SunColor * res.rrr, 1.0f - fog * fog);
+		return float4(result, 0);
+#endif	
 
-	return float4(result, 1);
 #endif	//	SUN_SHAFTS_QUALITY
 }
 

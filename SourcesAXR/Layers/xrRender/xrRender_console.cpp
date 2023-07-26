@@ -402,8 +402,8 @@ extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_1;
 extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
 
 int ps_screen_space_shaders = 0;
-
 int ps_r4_ss_grass_collision = 1;
+int ps_r4_pseudo_pbr = 0;
 
 //extern ENGINE_API Fvector4 ps_ssfx_wpn_dof_1;
 //extern ENGINE_API float ps_ssfx_wpn_dof_2;
@@ -1286,6 +1286,7 @@ void		xrRender_initconsole	()
     CMD4(CCC_Vector4,		"ssfx_int_grass_params_2",		&ps_ssfx_int_grass_params_2, Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 20, 1, 5));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
+	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

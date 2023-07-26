@@ -525,6 +525,14 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="r2_static_sun" group="mm_opt_video" depend="restart"/>
         </check_r2_static_sun>
+		
+        <cap_es_pseudo_pbr x="65" y="3" width="108" height="24" hint = "ui_mm_r4_es_pseudo_pbr_hint">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_r4_es_pseudo_pbr</text>
+        </cap_es_pseudo_pbr>
+        <check_es_pseudo_pbr x="183" y="0" width="35" stretch="1" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r4_es_pseudo_pbr" group="mm_opt_video" depend="restart"/>
+        </check_es_pseudo_pbr>
 
         <cap_r1_detail_textures x="65" y="3" width="108" height="24" hint = "ui_mm_r1_detail_textures_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_r1_detail_textures</text>

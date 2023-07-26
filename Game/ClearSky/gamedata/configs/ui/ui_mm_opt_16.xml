@@ -753,6 +753,13 @@
     <check_r2_static_sun x="200" y="0" width="27" height="21" stretch="1">
       <options_item entry="r2_static_sun" group="mm_opt_video" depend="restart"/>
     </check_r2_static_sun>
+	
+    <cap_es_pseudo_pbr x="77" y="0" width="119" height="21" hint = "ui_mm_r4_es_pseudo_pbr_hint">
+      <text font="letterica16" color="ui_6">ui_mm_r4_es_pseudo_pbr</text>
+    </cap_es_pseudo_pbr>
+    <check_es_pseudo_pbr x="200" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r4_es_pseudo_pbr" group="mm_opt_video" depend="restart"/>
+    </check_es_pseudo_pbr>
 
     <cap_r1_no_detail_textures x="77" y="0" width="119" height="21" hint = "ui_mm_r1_detail_textures_hint">
       <text font="letterica16" color="ui_6">ui_mm_r1_no_detail_textures</text>

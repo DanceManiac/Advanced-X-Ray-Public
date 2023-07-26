@@ -624,4 +624,10 @@
 	<string id="ui_mm_dynamic_wet_surfaces_far_hint">
 		<text>Эта опция позволяет регулировать радиус эффекта намокания поверхностей во время дождя.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
 	</string>
+	<string id="ui_mm_r4_es_pseudo_pbr">
+		<text>Псевдо PBR</text>
+	</string>
+	<string id="ui_mm_r4_es_pseudo_pbr_hint">
+		<text>Эта опция включает реализацию псевдо PBR. Позволяет добиться красивых бликов на текстурах, но не всегда выглядит хорошо.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
 </string_table>

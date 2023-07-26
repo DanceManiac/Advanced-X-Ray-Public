@@ -1379,7 +1379,7 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len] = '0' + char(ps_lowland_fog_type); ++len;
 	}
 
-	if (ps_ssfx_grass_interactive)
+	if (ps_r4_ss_grass_collision)
 	{
 		defines[def_it].Name = "SSFX_INTER_GRASS";
 		defines[def_it].Definition = "1";
@@ -1395,6 +1395,14 @@ HRESULT	CRender::shader_compile			(
 		def_it++;
 	}
 	sh_name[len] = '0' + char(ps_ssfx_grass_interactive.y); ++len;
+
+	if (ps_r4_pseudo_pbr)
+	{
+		defines[def_it].Name = "ES_PSEUDO_PBR";
+		defines[def_it].Definition = "1";
+		def_it++;
+	}
+	sh_name[len] = '0' + char(ps_r4_pseudo_pbr); ++len;
 
 	//Be carefull!!!!! this should be at the end to correctly generate
 	//compiled shader name;

@@ -7,7 +7,10 @@ f_deffer main( p_flat I )
 
   // diffuse
   float3 D	= tbase		(I.tcdh);	// IN:  rgb.a
-  float3 Ne		= normalize((float3)I.N.xyz);
+  
+#ifdef ES_PSEUDO_PBR
+	float3 Ne		= normalize((float3)I.N.xyz);
+#endif
 
 #ifdef	USE_TDETAIL
 //	D.rgb	= 2*D.rgb*tex2D	(s_detail, I.tcdbump).rgb;
@@ -43,10 +46,13 @@ f_deffer main( p_flat I )
 #endif
 
   // 2. Standart output
-  O				= pack_gbuffer(
-								float4	(Ne										, h ),
-								float4( I.position.xyz + Ne.xyz*def_virtualh/2.h, ms ),
-								float4( D.rgb, def_gloss ) );	// OUT: rgb.gloss
+  
+#ifdef ES_PSEUDO_PBR
+  O = pack_gbuffer(float4	(Ne, h), float4( I.position.xyz + Ne.xyz*def_virtualh/2.h, ms ), float4( D.rgb, def_gloss ) );	// OUT: rgb.gloss
+#else
+  float4 Ne		= float4( normalize((float3)I.N.xyz), h );
+  O = pack_gbuffer(Ne, float4( I.position.xyz + Ne.xyz*def_virtualh/2.h, ms ), float4( D.rgb, def_gloss ) );	// OUT: rgb.gloss
+#endif
 
   return O;
 }

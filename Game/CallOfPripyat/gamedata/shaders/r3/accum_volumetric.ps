@@ -66,12 +66,33 @@ float4 main ( v2p I, uint iSample : SV_SAMPLEINDEX ) : SV_Target
 	att = max(0, att);
 	lightmap = max(0, lightmap);
 	t_noise = max(0, t_noise);
-	
-	// matches vanilla?
-	float maxIntens = I.fDensity;
-	float3	result = maxIntens * s * att;
-	result *= lightmap;
-	result *= Ldynamic_color * t_noise;
-	return  float4( result, 0); //srgb
-	//return  float4( SRGBToLinear(result), 0);
+
+#ifdef ES_PSEUDO_PBR
+#ifdef USE_STRICT_GAMMA_CORRECTION
+		// everything is gamma corrected
+		float maxIntens = I.fDensity;
+		float3	result = SRGBToLinear(maxIntens * s).rrr;
+		result *= SRGBToLinear(att).rrr;
+		result *= SRGBToLinear(lightmap.rgb);
+		result *= SRGBToLinear(t_noise.rgb);
+		result *= SRGBToLinear(Ldynamic_color.rgb);
+		return  float4( result, 0);
+#else
+		// matches vanilla?
+		float maxIntens = I.fDensity;
+		float3	result = maxIntens * s * att;
+		result *= lightmap;
+		result *= Ldynamic_color * t_noise;
+		return  float4( result, 1); //srgb
+		//return  float4( SRGBToLinear(result), 1);
+#endif
+#else // NOT ES_PSEUDO_PBR
+		// matches vanilla?
+		float maxIntens = I.fDensity;
+		float3	result = maxIntens * s * att;
+		result *= lightmap;
+		result *= Ldynamic_color * t_noise;
+		return  float4( result, 0); //srgb
+		//return  float4( SRGBToLinear(result), 0);		
+#endif // ES_PSEUDO_PBR
 }
