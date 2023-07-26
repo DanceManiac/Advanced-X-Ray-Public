@@ -271,7 +271,12 @@ void			CLight_DB::Update			()
 		sun_original->set_range		(600.f);
 		sun_adapted->set_rotation	(AD, _sun_adapted->right	);
 		sun_adapted->set_position	(AP		);
+	
+#if (RENDER==R_R4)
 		sun_adapted->set_color		(E.sun_color.x*ps_r2_sun_lumscale,E.sun_color.y*ps_r2_sun_lumscale,E.sun_color.z*ps_r2_sun_lumscale);
+#else
+		sun_adapted->set_color		(E.sun_color.x*(ps_r2_sun_lumscale - r2_sun_lumscale_modifier),E.sun_color.y*(ps_r2_sun_lumscale - r2_sun_lumscale_modifier),E.sun_color.z*(ps_r2_sun_lumscale - r2_sun_lumscale_modifier));
+#endif
 		sun_adapted->set_range		(600.f	);
 		
 		if (!::Render->is_sun_static())

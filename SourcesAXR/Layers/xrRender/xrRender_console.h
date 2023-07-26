@@ -182,6 +182,12 @@ extern ECORE_API float			ps_r2_img_gamma;
 extern ECORE_API float			ps_r2_img_saturation;
 extern ECORE_API Fvector		ps_r2_img_cg;
 
+//Commands modifiers for DX9
+extern ECORE_API float			r2_tonemap_middlegray_modifier;	// r2-only
+extern ECORE_API float			r2_tonemap_low_lum_modifier;	// r2-only
+extern ECORE_API float			r2_sun_lumscale_modifier;		// r2-only
+extern ECORE_API float			r2_sun_lumscale_amb_modifier;	// r2-only
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),

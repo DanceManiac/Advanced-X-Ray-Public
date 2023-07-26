@@ -260,6 +260,11 @@ float		ps_r2_ls_bloom_speed		= READ_IF_EXISTS(pAdvancedSettings, r_float, "start
 float		ps_r2_ls_bloom_kernel_scale = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_kernel_scale", 0.7f);
 float		ps_r2_ls_bloom_threshold	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_threshold", 0.00001f);
 
+float		r2_tonemap_middlegray_modifier	= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_tonemap_middlegray",	0.0f);
+float		r2_tonemap_low_lum_modifier		= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_tonemap_low_lum",		0.0f);
+float		r2_sun_lumscale_modifier		= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_sun_lumscale",			0.0f);
+float		r2_sun_lumscale_amb_modifier	= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_sun_lumscale_amb",		0.0f);
+
 float		ps_r2_ls_dsm_kernel			= .7f;				// r2-only
 float		ps_r2_ls_psm_kernel			= .7f;				// r2-only
 float		ps_r2_ls_ssm_kernel			= .7f;				// r2-only
@@ -345,8 +350,8 @@ Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
 int ps_force_enable_lens_flares = 0;
 
-float ps_r2_gloss_factor = 10.0f;
-float ps_r2_gloss_min = 0.0f;
+float ps_r2_gloss_factor = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_factor", 10.0f);
+float ps_r2_gloss_min = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_min", 0.0f);
 
 Fvector4 ps_pp_bloom_thresh = { .7, .8f, .9f, .0f };
 Fvector4 ps_pp_bloom_weight = { .33f, .33f, .33f, .0f };
