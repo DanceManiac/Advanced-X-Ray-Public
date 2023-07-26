@@ -224,11 +224,6 @@ void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, ino
 	// Apply SSR fade to reflection.
 	refl_power *= ray_fade;
 
-	// 'Beefs Shader Based NVGs' optional intensity adjustment
-#ifdef G_SSR_BEEFS_NVGs_ADJUSTMENT
-	refl_power *= saturate(1.0f - (1.0f - G_SSR_BEEFS_NVGs_ADJUSTMENT) * (shader_param_8.x > 0.0f));
-#endif
-
 	// Add the reflection to the scene.
 	color = lerp(color, reflection, refl_power);
 }

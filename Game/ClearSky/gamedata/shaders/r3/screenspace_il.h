@@ -75,12 +75,6 @@ void ssfx_il(float2 tc, float2 pos2d, float3 P, float3 N, inout float3 color, ui
 	if (P.z <= SKY_EPS)
 		return;
 
-	// Discard IL when using NV
-#ifdef SSFX_BEEFS_NVG
-	if (shader_param_8.x > 0)
-		return;
-#endif
-
 	// Var to accumulate the IL
 	float3 il = 0;
 
