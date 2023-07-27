@@ -4,6 +4,7 @@
 
 class CPhysicItem;
 class CEntityAlive;
+class CActor;
 
 class CEatableItem : public CInventoryItem {
 private:
@@ -27,8 +28,8 @@ public:
 	virtual void			OnH_A_Independent			();
 	virtual void			save						(NET_Packet &output_packet);
 	virtual void			load						(IReader &input_packet);
-			void			UpdateInRuck				();
-			void			UpdateUseAnim				();
+			void			UpdateInRuck				(CActor* actor);
+			void			UpdateUseAnim				(CActor* actor);
 			void			HideWeapon					();
 			void			StartAnimation				();
 			void SetRemainingUses(u8 value) { if (value > m_iConstPortions) return; m_iPortionsNum = value; };

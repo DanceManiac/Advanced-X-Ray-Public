@@ -4,6 +4,7 @@
 
 class CPhysicItem;
 class CEntityAlive;
+class CActor;
 
 class CEatableItem : public CInventoryItem {
 private:
@@ -37,8 +38,8 @@ public:
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
 
-			void			UpdateInRuck				();
-			void			UpdateUseAnim				();
+			void			UpdateInRuck				(CActor* actor);
+			void			UpdateUseAnim				(CActor* actor);
 			void			StartAnimation				();
 			void			HideWeapon					();
 

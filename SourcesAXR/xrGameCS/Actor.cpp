@@ -1884,7 +1884,7 @@ void CActor::UpdateInventoryItems()
 		CEatableItem* current_eatable = smart_cast<CEatableItem*>(*it);
 		if (current_eatable)
 		{
-			current_eatable->UpdateInRuck();
+			current_eatable->UpdateInRuck(this);
 		}
 	}
 }

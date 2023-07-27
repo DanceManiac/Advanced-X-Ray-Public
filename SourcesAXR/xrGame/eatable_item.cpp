@@ -122,9 +122,9 @@ void CEatableItem::load(IReader &packet)
 	load_data(m_iPortionsNum, packet);
 }
 
-void CEatableItem::UpdateInRuck(void)
+void CEatableItem::UpdateInRuck(CActor* actor)
 {
-	UpdateUseAnim();
+	UpdateUseAnim(actor);
 }
 
 void CEatableItem::HideWeapon()
@@ -178,15 +178,15 @@ void CEatableItem::StartAnimation()
 	}
 }
 
-void CEatableItem::UpdateUseAnim()
+void CEatableItem::UpdateUseAnim(CActor* actor)
 {
 	if (!m_bHasAnimation) return;
 
-	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
-	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+	CEffectorCam* effector = actor->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
-	if (m_bItmStartAnim && Actor()->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()))
+	if (m_bItmStartAnim && actor->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()))
 		StartAnimation();
 
 	if (!IsActorAlive)
@@ -196,7 +196,7 @@ void CEatableItem::UpdateUseAnim()
 	{
 		if (m_iAnimLength <= Device.dwTimeGlobal || !IsActorAlive)
 		{
-			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+			actor->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
 			m_iAnimLength = Device.dwTimeGlobal;
 			m_bActivated = false;
@@ -204,13 +204,13 @@ void CEatableItem::UpdateUseAnim()
 			g_actor_allow_ladder = true;
 
 			if (effector)
-				RemoveEffector(Actor(), effUseItem);
+				RemoveEffector(actor, effUseItem);
 
 			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
 			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 
 			if (IsActorAlive)
-				Actor()->inventory().Eat(this);
+				actor->inventory().Eat(this);
 		}
 	}
 }
