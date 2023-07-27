@@ -209,7 +209,7 @@
 		<cap_detail_scale x="70" y="3" width="135" height="24" hint = "ui_mm_detail_scale_hint">
         <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_detail_scale</text>
         </cap_detail_scale>	
-		<track_detail_scale x="220" y="6" width="200" height="16" min="0.2" max="3.0" step="0.1">
+		<track_detail_scale x="220" y="6" width="200" height="16" min="0.2" max="1.6" step="0.1">
         <options_item entry="r__detail_scale" group="mm_opt_video_adv" depend="vid"/>
 			<output_wnd x="210" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
