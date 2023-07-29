@@ -791,7 +791,7 @@ bool CRelationMapLocation::Update()
 				}
 				if (helm2)
 				{
-					distance = std::max(distance, helm1->m_fShowNearestEnemiesDistance);
+					distance = std::max(distance, helm2->m_fShowNearestEnemiesDistance);
 				}
 				if (distance > 0.0f)
 				{
