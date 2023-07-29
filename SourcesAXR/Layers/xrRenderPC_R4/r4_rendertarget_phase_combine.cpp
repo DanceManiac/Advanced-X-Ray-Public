@@ -394,10 +394,6 @@ void	CRenderTarget::phase_combine	()
 		PhaseVignette();
 	}
 
-	// Chromatic Aberration
-	if (ps_r2_postscreen_flags.test(R_FLAG_CHROMATIC_ABERRATION))
-		phase_chrom_aberration();
-
 	// Film Grain
 	if (ps_r2_postscreen_flags.test(R_FLAG_FILM_GRAIN))
 		phase_film_grain();
@@ -415,6 +411,10 @@ void	CRenderTarget::phase_combine	()
 			phase_hud_power();
 			phase_hud_bleeding();
 			phase_hud_intoxication();
+
+			// Chromatic Aberration
+			if (ps_r2_postscreen_flags.test(R_FLAG_CHROMATIC_ABERRATION))
+				phase_chrom_aberration();
 		}
 
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
