@@ -27,6 +27,9 @@ function opt_video:InitControls(x, y, xml, handler)
 	xml:InitStatic					("tab_video:cap_gamma",				self)
 	xml:InitTrackBar				("tab_video:track_gamma",			self)
 
+	xml:InitStatic					("tab_video:cap_fps_limit",			self)
+	xml:InitTrackBar				("tab_video:track_fps_limit",			self)
+
 	xml:InitStatic					("tab_video:cap_resolution",		self)
 	xml:InitComboBox				("tab_video:list_resolution",		self)
 

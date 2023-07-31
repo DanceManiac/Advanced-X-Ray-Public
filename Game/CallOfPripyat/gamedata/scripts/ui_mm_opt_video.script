@@ -31,6 +31,9 @@ function opt_video:InitControls(x, y, xml, handler)
 	xml:InitStatic					("tab_video:cap_gamma",				self)
 	xml:InitTrackBar				("tab_video:track_gamma",			self)
 
+	xml:InitStatic					("tab_video:cap_fps_limit",			self)
+	xml:InitTrackBar				("tab_video:track_fps_limit",			self)
+
 	xml:InitStatic					("tab_video:cap_resolution",		self)
 	xml:InitComboBox				("tab_video:list_resolution",		self)
 
@@ -42,7 +45,7 @@ function opt_video:InitControls(x, y, xml, handler)
 	handler.combo_renderer			= xml:InitComboBox("tab_video:list_renderer",		self)
 	handler:Register				(handler.combo_renderer, "combo_renderer")
 
---Пресет цветокоррекция
+--Пресет цветокоррекции
 	xml:InitStatic					("tab_video:cap_clr_drag_preset",			self)
 	xml:InitComboBox("tab_video:combo_clr_drag_preset",	self)
 	--table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})	

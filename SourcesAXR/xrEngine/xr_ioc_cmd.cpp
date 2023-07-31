@@ -678,7 +678,7 @@ ENGINE_API float psHUD_FOV = psHUD_FOV_def;
 
 ENGINE_API float psSVPImageSizeK = 0.7f;
 ENGINE_API int psSVPFrameDelay = 1;
-ENGINE_API float fps_limit = 60.0f;
+ENGINE_API float fps_limit = 120.0f;
 
 //extern int			psSkeletonUpdate;
 extern int			rsDVB_Size;
@@ -793,6 +793,8 @@ void CCC_Register()
 	CMD2(CCC_Gamma,		"rs_c_brightness"		,&ps_brightness		);
 	CMD2(CCC_Gamma,		"rs_c_contrast"			,&ps_contrast		);
 	CMD3(CCC_Mask,		"rs_draw_fps",			&psDeviceFlags,		rsDrawFPS				);
+	CMD4(CCC_Float,		"rs_fps_limit",			&fps_limit,			10.f, 900.f				);
+	CMD4(CCC_Integer,	"svp_frame_delay",		&psSVPFrameDelay,	1, 3					);
 //	CMD4(CCC_Integer,	"rs_vb_size",			&rsDVB_Size,		32,		4096);
 //	CMD4(CCC_Integer,	"rs_ib_size",			&rsDIB_Size,		32,		4096);
 

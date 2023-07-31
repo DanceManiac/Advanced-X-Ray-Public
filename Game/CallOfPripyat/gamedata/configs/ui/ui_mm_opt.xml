@@ -140,11 +140,21 @@
           <track_brightness x="175" y="180" width="235" height="16">
             <options_item entry="rs_c_brightness" group="mm_opt_video" depend="runtime"/>
         </track_brightness>
+		
+        <cap_fps_limit x="15" y="213" width="135" height="24" hint="ui_mm_fps_limit_hint">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_fps_limit</text>
+        </cap_fps_limit>
+        <track_fps_limit x="175" y="210" width="235" height="16" min="10.0" max="900.0" step="10.0">
+            <options_item entry="rs_fps_limit" group="mm_opt_video"/>
+				<output_wnd x="240" y="0" width="20" height="20" format="%.0f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
+        </track_fps_limit>
 
-        <cap_fullscreen x="15" y="213" width="135" height="24">
+        <cap_fullscreen x="15" y="243" width="135" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_fullscreen</text>
         </cap_fullscreen>
-        <check_fullscreen x="162" y="210" width="44" height="29">
+        <check_fullscreen x="162" y="240" width="44" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="rs_fullscreen" group="mm_opt_video" depend="vid"/>
         </check_fullscreen>
