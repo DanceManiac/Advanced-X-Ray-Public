@@ -805,3 +805,9 @@ bool CBaseMonster::get_enable_fire_aura_after_die()
 {
 	return m_bEnableFireAuraAfterDie;
 }
+
+void CBaseMonster::ReloadDamageAndAnimations()
+{
+	CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
+	control().animation().restart();
+}

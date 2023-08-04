@@ -1078,6 +1078,12 @@ float CBaseMonster::get_screen_space_coverage_diagonal()
 	return				average_diagonal;
 }
 
+void CBaseMonster::ReloadDamageAndAnimations()
+{
+	CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
+	control().animation().restart();
+}
+
 #ifdef DEBUG
 
 bool   CBaseMonster::is_paused () const

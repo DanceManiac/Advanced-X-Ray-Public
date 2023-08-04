@@ -509,6 +509,8 @@ public:
 	virtual void            add_debug_info      (debug::text_tree& root_s);
 
 	void					debug_fsm			();
+
+	void					ReloadDamageAndAnimations();
 #endif
 
 #ifdef _DEBUG

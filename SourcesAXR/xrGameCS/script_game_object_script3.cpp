@@ -309,6 +309,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("is_inv_box_empty",			&CScriptGameObject::IsInvBoxEmpty)
 		// monster jumper
 		.def("jump",						&CScriptGameObject::jump)
+		.def("reload_damage_and_animations",&CScriptGameObject::ReloadDamageAndAnimations)
 
 		.def("make_object_visible_somewhen",&CScriptGameObject::make_object_visible_somewhen)
 
