@@ -82,6 +82,7 @@ class_<CScriptGameObject> script_register_game_object1(class_<CScriptGameObject>
 		.property("intoxication",			&CScriptGameObject::GetIntoxication,	&CScriptGameObject::ChangeIntoxication)
 		.property("sleepeness",				&CScriptGameObject::GetSleepeness,		&CScriptGameObject::ChangeSleepeness)
 		.property("alcoholism",				&CScriptGameObject::GetAlcoholism,		&CScriptGameObject::ChangeAlcoholism)
+		.property("alcohol",				&CScriptGameObject::GetAlcohol,			&CScriptGameObject::ChangeAlcohol)
 		.property("hangover",				&CScriptGameObject::GetHangover,		&CScriptGameObject::ChangeHangover)
 		.property("narcotism",				&CScriptGameObject::GetNarcotism,		&CScriptGameObject::ChangeNarcotism)
 		.property("withdrawal",				&CScriptGameObject::GetWithdrawal,		&CScriptGameObject::ChangeWithdrawal)

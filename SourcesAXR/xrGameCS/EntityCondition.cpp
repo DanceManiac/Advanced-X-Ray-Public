@@ -78,6 +78,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fIntoxication			= 0.0f;
 	m_fSleepeness			= 0.0f;
 	m_fAlcoholism			= 0.0f;
+	m_fAlcohol				= 0.0f;
 	m_fHangover				= 0.0f;
 	m_fNarcotism			= 0.0f;
 	m_fWithdrawal			= 0.0f;

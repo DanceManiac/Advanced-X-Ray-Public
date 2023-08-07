@@ -74,6 +74,7 @@ public:
 	IC float				GetIntoxication			() const			{return m_fIntoxication;}
 	IC float				GetSleepeness			() const			{return m_fSleepeness;}
 	IC float				GetAlcoholism			() const			{return m_fAlcoholism;}
+	IC float				GetAlcohol				() const			{return m_fAlcohol;}
 	IC float				GetHangover				() const			{return m_fHangover;}
 	IC float				GetNarcotism			() const			{return m_fNarcotism;}
 	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
@@ -136,6 +137,7 @@ protected:
 	float m_fIntoxication;			//Интоксикация
 	float m_fSleepeness;			//Потребность во сне
 	float m_fAlcoholism;			//Алкоголизм
+	float m_fAlcohol;				//Алкоголь
 	float m_fHangover;				//Похмелье
 	float m_fNarcotism;				//Наркомания
 	float m_fWithdrawal;			//Ломки
