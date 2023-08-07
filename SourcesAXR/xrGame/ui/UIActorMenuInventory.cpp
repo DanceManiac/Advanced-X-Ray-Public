@@ -963,6 +963,7 @@ bool CUIActorMenu::TryUseItem( CUICellItem* cell_itm )
 
 	SendEvent_Item_Eat		( item, recipient );
 	PlaySnd					( eItemUse );
+	cell_itm->Update		();
 	SetCurrentItem			( NULL );
 	return true;
 }

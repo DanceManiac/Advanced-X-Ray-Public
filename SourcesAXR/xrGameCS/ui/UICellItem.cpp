@@ -128,6 +128,7 @@ void CUICellItem::Update()
 			GetMessageTarget()->SendMessage(this, DRAG_DROP_ITEM_FOCUSED_UPDATE, NULL);
 	}
 	UpdateIndicators();
+	UpdateCellItemProgressBars();
 }
 
 void CUICellItem::UpdateIndicators()
