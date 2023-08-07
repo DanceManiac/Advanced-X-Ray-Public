@@ -800,6 +800,10 @@ void CWeaponMagazined::OnShot()
 
 	if (ParentIsActor())
 	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.on_actor_shoot", funct))
+			funct();
+
 		string128 sndName;
 		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor");
 		if (m_sounds.FindSoundItem(sndName, false))
