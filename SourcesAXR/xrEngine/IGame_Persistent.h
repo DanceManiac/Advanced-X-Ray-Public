@@ -95,6 +95,10 @@ public:
 		float speed[16];
 	} grass_shader_data;
 
+	u32 m_last_ray_pick_time;
+	bool m_isInHideout;
+	bool IsActorInHideout();
+
 			void					destroy_particles	(const bool &all_particles);
 
 
