@@ -432,6 +432,9 @@ public:
 	bool					is_jump					();
 	u32						MovingState				() const {return mstate_real;}
 
+	float					m_dropsIntensity{};
+	float					m_dropsAnimIncrementor{};
+
 	u32						mstate_wishful;
 	u32						mstate_old;
 	u32						mstate_real;

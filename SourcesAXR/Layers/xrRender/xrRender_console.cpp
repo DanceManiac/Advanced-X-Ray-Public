@@ -400,6 +400,12 @@ extern ENGINE_API Fvector4 ps_ssfx_grass_shadows;
 extern ENGINE_API Fvector4 ps_ssfx_grass_interactive;
 extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_1;
 extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
+extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;
+extern ENGINE_API Fvector4 ps_ssfx_hud_drops_2;
+extern ENGINE_API Fvector4 ps_ssfx_blood_decals;
+extern ENGINE_API Fvector4 ps_ssfx_rain_1;
+extern ENGINE_API Fvector4 ps_ssfx_rain_2;
+extern ENGINE_API Fvector4 ps_ssfx_rain_3;
 
 int ps_r4_ss_grass_collision = 1;
 int ps_r4_pseudo_pbr = 0;
@@ -1283,6 +1289,12 @@ void		xrRender_initconsole	()
     CMD4(CCC_Vector4,		"ssfx_grass_interactive",		&ps_ssfx_grass_interactive, Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 15, 5000, 1));
     CMD4(CCC_Vector4,		"ssfx_int_grass_params_1",		&ps_ssfx_int_grass_params_1, Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 5, 5, 60));
     CMD4(CCC_Vector4,		"ssfx_int_grass_params_2",		&ps_ssfx_int_grass_params_2, Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 20, 1, 5));
+	CMD4(CCC_Vector4,		"ssfx_hud_drops_1",				&ps_ssfx_hud_drops_1,		Fvector4().set(0, 0, 0, 0), Fvector4().set(100000, 100, 100, 100));
+    CMD4(CCC_Vector4,		"ssfx_hud_drops_2",				&ps_ssfx_hud_drops_2,		Fvector4().set(0, 0, 0, 0), tw2_max);
+    CMD4(CCC_Vector4,		"ssfx_blood_decals",			&ps_ssfx_blood_decals,		Fvector4().set(0, 0, 0, 0), Fvector4().set(5, 5, 0, 0));
+    CMD4(CCC_Vector4,		"ssfx_rain_1",					&ps_ssfx_rain_1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(10, 5, 5, 2));
+    CMD4(CCC_Vector4,		"ssfx_rain_2",					&ps_ssfx_rain_2,			Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 10, 10, 10));
+    CMD4(CCC_Vector4,		"ssfx_rain_3",					&ps_ssfx_rain_3,			Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 10, 10, 10));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR

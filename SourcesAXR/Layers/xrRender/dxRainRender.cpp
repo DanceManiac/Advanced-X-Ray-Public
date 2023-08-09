@@ -29,6 +29,11 @@ dxRainRender::dxRainRender()
 		hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
 		hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
 
+#if defined(USE_DX11)
+		if (RImplementation.o.ssfx_rain)
+			SH_Splash.create("effects\\rain_splash", "fx\\fx_rain");
+#endif
+
 		FS.r_close(F);
 	}
 	else
@@ -62,7 +67,25 @@ void dxRainRender::Copy(IRainRender &_in)
 void dxRainRender::Render(CEffect_Rain &owner)
 {
 	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
+
 	if (factor<EPS_L)			return;
+
+	float _drop_len = owner.drop_length;
+	float _drop_width = owner.drop_width;
+	float _drop_speed = 1.0f;
+	ref_shader& _splash_SH = DM_Drop->shader;
+	static shared_str s_shader_setup = "ssfx_rain_setup";
+
+	// SSS Rain shader is available
+#if defined(USE_DX11)
+	if (RImplementation.o.ssfx_rain)
+	{
+		_drop_len = ps_ssfx_rain_1.x;
+		_drop_width = ps_ssfx_rain_1.y;
+		_drop_speed = ps_ssfx_rain_1.z;
+		_splash_SH = SH_Splash;
+	}
+#endif
 
   	u32 desired_items			= iFloor	(0.5f*(1.f+factor)*float(max_desired_items));
 	// visual
@@ -76,7 +99,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		// owner.items.reserve		(desired_items);
 		while (owner.items.size()<desired_items)	{
 			CEffect_Rain::Item				one;
-			owner.Born				(one,source_radius);
+			owner.Born					(one, source_radius, _drop_speed);
 			owner.items.push_back		(one);
 		}
 	}
@@ -97,7 +120,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		CEffect_Rain::Item&	one		=	owner.items[I];
 
 		if (one.dwTime_Hit<Device.dwTimeGlobal)		owner.Hit (one.Phit);
-		if (one.dwTime_Life<Device.dwTimeGlobal)	owner.Born(one,source_radius);
+		if (one.dwTime_Life<Device.dwTimeGlobal)	owner.Born(one, source_radius, _drop_speed);
 
 		// последн€€ дельта ??
 		//.		float xdt		= float(one.dwTime_Hit-Device.dwTimeGlobal)/1000.f;
@@ -150,11 +173,17 @@ void dxRainRender::Render(CEffect_Rain &owner)
 
 		if (!bWinterMode)
 		{
-			pos_trail.mad(pos_head, one.D, -owner.drop_length*factor_visual);
+			if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+				pos_trail.mad(pos_head, one.D, -_drop_len * factor_visual);
+			else
+				pos_trail.mad(pos_head, one.D, -owner.drop_length * factor_visual);
 		}
 		else
 		{
-			pos_trail.mad(pos_head, one.D, -owner.drop_length*5.5f);
+			if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+				pos_trail.mad(pos_head, one.D, -_drop_len * 5.5f);
+			else
+				pos_trail.mad(pos_head, one.D, -owner.drop_length * 5.5f);
 		}
 
 		// Culling
@@ -176,7 +205,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		camDir.sub			(sC,vEye);
 		camDir.normalize	();
 		lineTop.crossproduct(camDir,lineD);
-		float w = owner.drop_width;
+		float w = ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT) ? _drop_width : owner.drop_width;
 		u32 s	= one.uv_set;
 		P.mad(pos_trail,lineTop,-w);	verts->set(P,u_rain_color,UV[s][0].x,UV[s][0].y);	verts++;
 		P.mad(pos_trail,lineTop,w);		verts->set(P,u_rain_color,UV[s][1].x,UV[s][1].y);	verts++;
@@ -196,6 +225,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		RCache.Render				(D3DPT_TRIANGLELIST,vOffset,0,vCount,0,vCount/2);
 		//HW.pDevice->SetRenderState	(D3DRS_CULLMODE,D3DCULL_CCW);
 		RCache.set_CullMode(CULL_CCW);
+		RCache.set_c(s_shader_setup, ps_ssfx_rain_2); // Alpha, Brigthness, Refraction, Reflection
 	}
 
 	// Particles
@@ -205,7 +235,16 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	{
 		float	dt				= Device.fTimeDelta;
 		_IndexStream& _IS		= RCache.Index;
-		RCache.set_Shader		(DM_Drop->shader);
+
+		if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+		{
+			RCache.set_Shader(_splash_SH);
+			RCache.set_c(s_shader_setup, ps_ssfx_rain_3); // Alpha, Refraction
+		}
+		else
+		{
+			RCache.set_Shader(DM_Drop->shader);
+		}
 
 		Fmatrix					mXform,mScale;
 		int						pcount  = 0;

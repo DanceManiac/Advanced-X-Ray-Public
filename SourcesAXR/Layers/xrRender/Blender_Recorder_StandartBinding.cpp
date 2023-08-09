@@ -512,6 +512,11 @@ static class cl_inv_v : public R_constant_setup
 	}
 } binder_inv_v;
 
+// Ascii1457's Screen Space Shaders
+extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;
+extern ENGINE_API Fvector4 ps_ssfx_hud_drops_2;
+extern ENGINE_API Fvector4 ps_ssfx_blood_decals;
+
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
@@ -552,6 +557,33 @@ static class cl_spv_screen_res : public R_constant_setup //--#SM+#--
 {
 	virtual void setup(R_constant* C) { RCache.set_c(C, (float)Device.m_SecondViewport.screenWidth, (float)Device.m_SecondViewport.screenHeight, 0, 0); }
 } binder_spv_screen_res;
+
+class ssfx_blood_decals : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_blood_decals);
+	}
+};
+static ssfx_blood_decals binder_ssfx_blood_decals;
+
+class ssfx_hud_drops_1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_hud_drops_1);
+	}
+};
+static ssfx_hud_drops_1 binder_ssfx_hud_drops_1;
+
+class ssfx_hud_drops_2 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_hud_drops_2);
+	}
+};
+static ssfx_hud_drops_2 binder_ssfx_hud_drops_2;
 
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
@@ -643,9 +675,12 @@ void	CBlender_Compile::SetMapping	()
 
 	// PDA
 	r_Constant				("pda_params",		&binder_pda_params);
-	//SSS DoF
-	r_Constant				("ssfx_wpn_dof_1",	&ssfx_wpn_dof_1);
-	r_Constant				("ssfx_wpn_dof_2",	&ssfx_wpn_dof_2);
+	//Screen Space Shaders
+	r_Constant				("ssfx_wpn_dof_1",		&ssfx_wpn_dof_1);
+	r_Constant				("ssfx_wpn_dof_2",		&ssfx_wpn_dof_2);
+	r_Constant				("ssfx_blood_decals",	&binder_ssfx_blood_decals);
+    r_Constant				("ssfx_hud_drops_1",	&binder_ssfx_hud_drops_1);
+    r_Constant				("ssfx_hud_drops_2",	&binder_ssfx_hud_drops_2);
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug
