@@ -1324,13 +1324,28 @@ void CRender::init_cascades()
 
 	float fBias = -0.0000025f;
 
-	m_sun_cascades[0].reset_chain = true;
-	m_sun_cascades[0].size = ps_ssfx_shadow_cascades.x; //20
-	m_sun_cascades[0].bias = m_sun_cascades[0].size * fBias;
+	if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+	{
+		m_sun_cascades[0].reset_chain = true;
+		m_sun_cascades[0].size = ps_ssfx_shadow_cascades.x; //20
+		m_sun_cascades[0].bias = m_sun_cascades[0].size * fBias;
 
-	m_sun_cascades[1].size = ps_ssfx_shadow_cascades.y; //40
-	m_sun_cascades[1].bias = m_sun_cascades[1].size * fBias;
+		m_sun_cascades[1].size = ps_ssfx_shadow_cascades.y; //40
+		m_sun_cascades[1].bias = m_sun_cascades[1].size * fBias;
 
-	m_sun_cascades[2].size = ps_ssfx_shadow_cascades.z; //160
-	m_sun_cascades[2].bias = m_sun_cascades[2].size * fBias;
+		m_sun_cascades[2].size = ps_ssfx_shadow_cascades.z; //160
+		m_sun_cascades[2].bias = m_sun_cascades[2].size * fBias;
+	}
+	else
+	{
+		m_sun_cascades[0].reset_chain = true;
+		m_sun_cascades[0].size = 20;
+		m_sun_cascades[0].bias = m_sun_cascades[0].size * fBias;
+
+		m_sun_cascades[1].size = 40;
+		m_sun_cascades[1].bias = m_sun_cascades[1].size * fBias;
+
+		m_sun_cascades[2].size = 160;
+		m_sun_cascades[2].bias = m_sun_cascades[2].size * fBias;
+	}
 }

@@ -424,14 +424,17 @@ void	CRenderTarget::phase_combine	()
 			phase_nightvision();
 	}
 
-	//Compute blur textures
-	phase_blur();
+	if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+	{
+		//Compute blur textures
+		phase_blur();
 
-	//Compute bloom (new)
-	//phase_pp_bloom();
+		//Compute bloom (new)
+		//phase_pp_bloom();
 
-	if (ps_r2_ls_flags.test(R2FLAG_DOF))
-		phase_dof();
+		if (ps_r2_ls_flags.test(R2FLAG_DOF))
+			phase_dof();
+	}
 
 	// PP enabled ?
 	//	Render to RT texture to be able to copy RT even in windowed mode.

@@ -401,7 +401,6 @@ extern ENGINE_API Fvector4 ps_ssfx_grass_interactive;
 extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_1;
 extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
 
-int ps_screen_space_shaders = 0;
 int ps_r4_ss_grass_collision = 1;
 int ps_r4_pseudo_pbr = 0;
 
@@ -1278,7 +1277,7 @@ void		xrRender_initconsole	()
 	//CMD4(CCC_Vector3,	"r_color_grading_es",	&ps_r2_img_cg,				tw_min, tw_max);
 
     // Screen Space Shaders
-    CMD4(CCC_Integer,		"r__screen_space_shaders",		&ps_screen_space_shaders,	0, 1);
+    CMD3(CCC_Mask,			"r4_new_shader_support",		&ps_r2_ls_flags_ext,		R4FLAGEXT_NEW_SHADER_SUPPORT);
     CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
     CMD4(CCC_ssfx_cascades, "ssfx_shadow_cascades",			&ps_ssfx_shadow_cascades,	Fvector3().set(1.0f, 1.0f, 1.0f), Fvector3().set(300, 300, 300));
     CMD4(CCC_Vector4,		"ssfx_grass_interactive",		&ps_ssfx_grass_interactive, Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 15, 5000, 1));
