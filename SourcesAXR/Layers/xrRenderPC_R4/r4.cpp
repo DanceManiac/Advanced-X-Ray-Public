@@ -1402,15 +1402,6 @@ HRESULT	CRender::shader_compile			(
 	}
 	sh_name[len] = '0' + char(ps_r4_ss_grass_collision); ++len;
 
-	if (ps_ssfx_grass_interactive.y > 0)
-	{
-		sprintf_s(c_inter_grass, "%d", ps_ssfx_grass_interactive);
-		defines[def_it].Name = "SSFX_INT_GRASS";
-		defines[def_it].Definition = "1";
-		def_it++;
-	}
-	sh_name[len] = '0' + char(ps_ssfx_grass_interactive.y); ++len;
-
 	if (ps_r4_pseudo_pbr)
 	{
 		defines[def_it].Name = "ES_PSEUDO_PBR";

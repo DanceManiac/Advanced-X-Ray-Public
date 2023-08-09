@@ -243,6 +243,7 @@ Flags32		ps_r2_ls_flags				= { R2FLAG_SUN
 Flags32		ps_r2_ls_flags_ext			= {
 		/*R2FLAGEXT_SSAO_OPT_DATA |*/ R2FLAGEXT_SSAO_HALF_DATA
 		|R2FLAGEXT_ENABLE_TESSELLATION
+		|R4FLAGEXT_NEW_SHADER_SUPPORT
 	};
 
 int			ps_no_scale_on_fade			= 0;

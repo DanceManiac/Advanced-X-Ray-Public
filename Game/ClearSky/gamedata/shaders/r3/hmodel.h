@@ -136,7 +136,7 @@ void hmodel
 	float metalness = ceil(m-0.75);
 	
 	//rain
-	spec = (spec+(rain_params.x*0.25))*(rain_params.x*2);
+	//spec = (spec+(rain_params.x*0.25))*(rain_params.x*2);
 	//hspecular	= env_s*light.w*(s+(rain_params.x*0.25))*luminance*15*(rain_params.x*2);
 	
 	//gamma
