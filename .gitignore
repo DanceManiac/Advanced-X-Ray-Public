@@ -106,3 +106,5 @@ SourcesAXR/xrEngine/xrEngine.vcxproj.user
 *.db-shm
 
 packages/
+*.sqlite
+.vs/ProjectSettings.json
