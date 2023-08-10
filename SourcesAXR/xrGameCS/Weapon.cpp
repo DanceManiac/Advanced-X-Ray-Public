@@ -303,6 +303,30 @@ void CWeapon::UpdateXForm	()
 
 	if (boneR == -1)		return;
 
+	static std::unordered_set<std::string> loggedVisuals;
+	std::string visualStr = E->cNameVisual().c_str();
+
+	if (m_strap_bone0_id == BI_NONE)
+	{
+		if (loggedVisuals.find(visualStr) == loggedVisuals.end())
+		{
+			loggedVisuals.insert(visualStr);
+			Msg("! Bone [%s] not found in entity [%s](%s) with visual [%s]!", m_strap_bone0, E->cNameSect().c_str(), E->Name(), E->cNameVisual().c_str());
+		}
+
+		return;
+	}
+	else if (m_strap_bone1_id == BI_NONE)
+	{
+		if (loggedVisuals.find(visualStr) == loggedVisuals.end())
+		{
+			loggedVisuals.insert(visualStr);
+			Msg("! Bone [%s] not found in entity [%s]([%s]) with visual [%s]!", m_strap_bone1, E->cNameSect().c_str(), E->Name(), E->cNameVisual().c_str());
+		}
+
+		return;
+	}
+
 	if ((HandDependence() == hd1Hand) || (GetState() == eReload) || (!E->g_Alive()))
 		boneL				= boneR2;
 
