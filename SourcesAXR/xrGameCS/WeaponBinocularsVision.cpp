@@ -98,9 +98,6 @@ void SBinocVisibleObj::Update()
 	mn.y		= (1.f - mn.y)/2.f * UI_BASE_HEIGHT;
 	mx.y		= (1.f - mx.y)/2.f * UI_BASE_HEIGHT;
 
-	float hud_info_x	= HUD().GetUI()->UIMainIngameWnd->hud_info_x * 0.025f;
-	float hud_info_y	= HUD().GetUI()->UIMainIngameWnd->hud_info_y * 0.025f;
-
 	int hud_info_r_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_e;
 	int hud_info_g_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_e;
 	int hud_info_b_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_e;
