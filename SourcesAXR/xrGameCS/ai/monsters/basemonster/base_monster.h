@@ -486,7 +486,7 @@ protected:
 public:	
 	shared_str						get_section()	const { return m_section; }
 
-
+	void							ReloadDamageAndAnimations();
 //////////////////////////////////////////////////////////////////////////
 // DEBUG stuff
 #ifdef DEBUG
@@ -509,8 +509,6 @@ public:
 	virtual void            add_debug_info      (debug::text_tree& root_s);
 
 	void					debug_fsm			();
-
-	void					ReloadDamageAndAnimations();
 #endif
 
 #ifdef _DEBUG
