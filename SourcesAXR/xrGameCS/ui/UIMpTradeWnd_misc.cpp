@@ -196,13 +196,13 @@ int	CUIMpTradeWnd::GetItemPrice(CInventoryItem* itm)
 
 void CUIMpTradeWnd::BindDragDropListEvents(CUIDragDropListEx* lst, bool bDrag)
 {
-	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemDrop);
-	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemDbClick);
-	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemSelected);
-	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemRButtonClick);
-	lst->m_f_item_lbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemLButtonClick);
+	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemDrop);
+	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemDbClick);
+	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemSelected);
+	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemRButtonClick);
+	lst->m_f_item_lbutton_click		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemLButtonClick);
 	if(bDrag)
-		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIMpTradeWnd::OnItemStartDrag);
+		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIMpTradeWnd::OnItemStartDrag);
 
 }
 

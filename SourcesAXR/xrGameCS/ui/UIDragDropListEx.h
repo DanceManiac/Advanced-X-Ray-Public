@@ -42,26 +42,23 @@ private:
 	Flags8					m_flags;
 	Ivector2				m_orig_cell_capacity;
 	Ivector2				m_virtual_cells_alignment;
-
 	bool					m_bConditionProgBarVisible;
-
 protected:
-
 	CUICellItem*			m_selected_item;
 	CUICellContainer*		m_container;
 	CUIScrollBar*			m_vScrollBar;
 
-	void	__stdcall		OnScrollV				(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemStartDragging		(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemDrop				(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemSelected			(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemLButtonClick		(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemRButtonClick		(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemMButtonClick		(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemDBClick			(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemFocusReceived		(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemFocusLost			(CUIWindow* w, void* pData);
-	void	__stdcall		OnItemFocusedUpdate		(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnScrollV				(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemStartDragging		(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemDrop				(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemSelected			(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemLButtonClick		(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemRButtonClick		(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemMButtonClick		(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemDBClick			(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemFocusReceived		(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemFocusLost			(CUIWindow* w, void* pData);
+	virtual void	__stdcall		OnItemFocusedUpdate		(CUIWindow* w, void* pData);
 	
 public:
 	static CUIDragItem*		m_drag_item;
@@ -69,19 +66,19 @@ public:
 	virtual					~CUIDragDropListEx	();
 				void		InitDragDropList		(Fvector2 pos, Fvector2 size);
 
-	typedef					fastdelegate::FastDelegate1<CUICellItem*, bool>			DRAG_DROP_EVENT;
+	typedef					fastdelegate::FastDelegate1<CUICellItem*, bool>			DRAG_CELL_EVENT;
 	typedef					fastdelegate::FastDelegate2<CUIDragItem*, bool, void>	DRAG_ITEM_EVENT;
 
-	DRAG_DROP_EVENT			m_f_item_drop;
-	DRAG_DROP_EVENT			m_f_item_start_drag;
-	DRAG_DROP_EVENT			m_f_item_db_click;
-	DRAG_DROP_EVENT			m_f_item_selected;
-	DRAG_DROP_EVENT			m_f_item_lbutton_click;
-	DRAG_DROP_EVENT			m_f_item_rbutton_click;
-	DRAG_DROP_EVENT			m_f_item_mbutton_click;
-	DRAG_DROP_EVENT			m_f_item_focus_received;
-	DRAG_DROP_EVENT			m_f_item_focus_lost;
-	DRAG_DROP_EVENT			m_f_item_focused_update;
+	DRAG_CELL_EVENT			m_f_item_drop;
+	DRAG_CELL_EVENT			m_f_item_start_drag;
+	DRAG_CELL_EVENT			m_f_item_db_click;
+	DRAG_CELL_EVENT			m_f_item_selected;
+	DRAG_CELL_EVENT			m_f_item_lbutton_click;
+	DRAG_CELL_EVENT			m_f_item_rbutton_click;
+	DRAG_CELL_EVENT			m_f_item_mbutton_click;
+	DRAG_CELL_EVENT			m_f_item_focus_received;
+	DRAG_CELL_EVENT			m_f_item_focus_lost;
+	DRAG_CELL_EVENT			m_f_item_focused_update;
 	DRAG_ITEM_EVENT			m_f_drag_event;
 
 	u32						back_color;
@@ -96,8 +93,9 @@ public:
 			void			SetCellsSpacing		(const Ivector2& new_sz);
 			void			SetCellsVertAlignment(xr_string alignment);
 			void			SetCellsHorizAlignment(xr_string alignment);
-			
+
 	const	Ivector2		GetVirtualCellsAlignment() {return m_virtual_cells_alignment;};
+
 			int				ScrollPos			();
 			void			ReinitScroll		();
 			void			GetClientArea		(Frect& r);
@@ -114,25 +112,29 @@ public:
 			void			SetAlwaysShowScroll	(bool b);
 			bool			GetVirtualCells		();
 			void			SetVirtualCells		(bool b);
-			bool			GetConditionProgBarVisibility() { return m_bConditionProgBarVisible; };
-			void			SetConditionProgBarVisibility(bool b) { m_bConditionProgBarVisible = b; };
+
+			bool			GetConditionProgBarVisibility() {return m_bConditionProgBarVisible;};
+			void			SetConditionProgBarVisibility(bool b) {m_bConditionProgBarVisible = b;};
 public:
 			// items management
 			virtual void	SetItem				(CUICellItem* itm); //auto
 			virtual void	SetItem				(CUICellItem* itm, Fvector2 abs_pos);  // start at cursor pos
 			virtual void	SetItem				(CUICellItem* itm, Ivector2 cell_pos); // start at cell
 					bool	CanSetItem			(CUICellItem* itm);
-
+			
 			u32				ItemsCount			();
 			CUICellItem*	GetItemIdx			(u32 idx);
 	virtual CUICellItem*	RemoveItem			(CUICellItem* itm, bool force_root);
 			void			CreateDragItem		(CUICellItem* itm);
-			void			clear_select_armament();
 
 			void			DestroyDragItem		();
 			void			ClearAll			(bool bDestroy);	
 			void			Compact				();
 			bool			IsOwner				(CUICellItem* itm);
+			void			clear_select_armament();
+			Ivector2		PickCell			(const Fvector2& abs_pos);
+			CUICell&		GetCellAt			(const Ivector2& pos);
+
 public:
 	//UIWindow overriding
 	virtual		void		Draw				();
@@ -141,7 +143,6 @@ public:
 	virtual		void		SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 
 				void		OnDragEvent			(CUIDragItem* drag_item, bool b_receive);
-
 };
 
 class CUICellContainer :public CUIWindow
@@ -196,4 +197,6 @@ protected:
 				void			Shrink				();
 				void			ClearAll			(bool bDestroy);
 				void			clear_select_armament();
+
+
 };

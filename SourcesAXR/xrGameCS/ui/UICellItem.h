@@ -30,6 +30,9 @@ protected:
 	xr_vector<CUICellItem*> m_childs;
 
 	CUIDragDropListEx*		m_pParentList;
+	CUIProgressBar*			m_pConditionState;
+	CUIProgressBar*			m_pPortionsState;
+	CUIProgressBar*			m_pChargeState;
 	Ivector2				m_grid_size;
 	ICustomDrawCellItem*	m_custom_draw;
 	int						m_accelerator;
@@ -42,11 +45,6 @@ protected:
 	Fvector2				m_qmark_pos;
 
 	virtual void			UpdateItemText			();
-
-	CUIProgressBar*			m_pConditionState;
-	CUIProgressBar*			m_pPortionsState;
-
-
 			void			init					();
 public:
 							CUICellItem				();
@@ -56,10 +54,6 @@ public:
 	virtual		bool		OnMouse					(float x, float y, EUIMessages mouse_action);
 	virtual		void		Draw					();
 	virtual		void		Update					();
-	virtual		void		SetOriginalRect			(const Frect& r);
-
-				void		UpdateIndicators();
-				
 	virtual		void		OnAfterChild			(CUIDragDropListEx* parent_list)						{};
 
 				u32			ChildsCount				();
@@ -76,9 +70,11 @@ public:
 
 	CUIDragDropListEx*		OwnerList				()						{return m_pParentList;}
 				void		SetOwnerList			(CUIDragDropListEx* p);
+				void		UpdateIndicators();
 				void		UpdateCellItemProgressBars();
 				void		UpdateConditionProgressBar();
 				void		UpdatePortionsProgressBar();
+				void		UpdateChargeLevelProgressBar();
 				void		SetCustomDraw			(ICustomDrawCellItem* c);
 				void		Mark					(bool status);
 	CUIStatic&				get_ui_text				() const { return *m_text; }
@@ -95,9 +91,9 @@ public:
 				bool		m_selected;
 				bool		m_select_armament;
 				bool		m_cur_mark;
+				bool		m_with_custom_text;
 				bool		m_has_upgrade;
 				bool		m_is_quest;
-				bool		m_with_custom_text;
 };
 
 class CUIDragItem: public CUIWindow, public pureRender, public pureFrame
@@ -113,11 +109,14 @@ public:
 	virtual		void		Init(const ui_shader& sh, const Frect& rect, const Frect& text_rect);
 	virtual					~CUIDragItem();
 				void		SetCustomDraw			(ICustomDrawDragItem* c);
+
 			CUIStatic*		wnd						() {return &m_static;}
 	virtual		bool		OnMouse					(float x, float y, EUIMessages mouse_action);
 	virtual		void		Draw					();
-	virtual		void		OnRender				();
-	virtual		void		_BCL	OnFrame			();
+
+	virtual		void			OnRender				();
+	virtual		void	_BCL	OnFrame					();
+
 		CUICellItem*		ParentItem				()							{return m_pParent;}
 				void		SetBackList				(CUIDragDropListEx*l);
 	CUIDragDropListEx*		BackList				()							{return m_back_list;}

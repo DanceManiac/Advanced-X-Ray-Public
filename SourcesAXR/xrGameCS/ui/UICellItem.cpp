@@ -1,29 +1,39 @@
 #include "stdafx.h"
 #include "UICellItem.h"
+#include "uicursor.h"
 #include "../inventory_item.h"
 #include "UIDragDropListEx.h"
 #include "../xr_level_controller.h"
 #include "../../xrEngine/xr_input.h"
-#include "../HUDManager.h"
 #include "../level.h"
 #include "object_broker.h"
 #include "UIXmlInit.h"
 #include "UIProgressBar.h"
 
+#include "eatable_item.h"
+#include "AntigasFilter.h"
+#include "Artefact.h"
+#include "CustomDetector.h"
+#include "Torch.h"
+#include "AnomalyDetector.h"
+
+#include "AdvancedXrayGameConstants.h"
+
 CUICellItem* CUICellItem::m_mouse_selected_item = NULL;
 
 CUICellItem::CUICellItem()
 {
-	m_pParentList		= NULL;
-	m_pData				= NULL;
-	m_custom_draw		= NULL;
-	m_text				= NULL;
-	m_custom_text		= NULL;
-	m_qmark				= NULL;
-	m_upgrade			= NULL;
+	m_pParentList		= nullptr;
+	m_pData				= nullptr;
+	m_custom_draw		= nullptr;
+	m_text				= nullptr;
+	m_custom_text		= nullptr;
+	m_qmark				= nullptr;
+	m_upgrade			= nullptr;
+	m_pConditionState	= nullptr;
+	m_pPortionsState	= nullptr;
+	m_pChargeState		= nullptr;
 	m_drawn_frame		= 0;
-	m_pConditionState	= 0;
-	m_pPortionsState	= 0;
 	SetAccelerator		(0);
 	m_b_destroy_childs	= true;
 	m_selected			= false;
@@ -78,14 +88,11 @@ void CUICellItem::init()
 	m_upgrade_pos			= m_upgrade->GetWndPos();
 	m_upgrade->Show			( false );
 
-	if (uiXml.NavigateToNode("condition_progess_bar", 0))
-	{
-		m_pConditionState = xr_new<CUIProgressBar>();
-		m_pConditionState->SetAutoDelete(true);
-		AttachChild(m_pConditionState);
-		CUIXmlInit::InitProgressBar(uiXml, "condition_progess_bar", 0, m_pConditionState);
-		m_pConditionState->Show(false);
-	}
+	m_pConditionState = xr_new<CUIProgressBar>();
+	m_pConditionState->SetAutoDelete(true);
+	AttachChild(m_pConditionState);
+	CUIXmlInit::InitProgressBar(uiXml, "condition_progess_bar", 0, m_pConditionState);
+	m_pConditionState->Show(false);
 
 	if (uiXml.NavigateToNode("portions_progess_bar", 0))
 	{
@@ -94,6 +101,15 @@ void CUICellItem::init()
 		AttachChild(m_pPortionsState);
 		CUIXmlInit::InitProgressBar(uiXml, "portions_progess_bar", 0, m_pPortionsState);
 		m_pPortionsState->Show(false);
+	}
+
+	if (uiXml.NavigateToNode("charge_level_progess_bar", 0))
+	{
+		m_pChargeState = xr_new<CUIProgressBar>();
+		m_pChargeState->SetAutoDelete(true);
+		AttachChild(m_pChargeState);
+		CUIXmlInit::InitProgressBar(uiXml, "charge_level_progess_bar", 0, m_pChargeState);
+		m_pChargeState->Show(false);
 	}
 }
 
@@ -179,11 +195,6 @@ void CUICellItem::UpdateIndicators()
 		m_custom_text->Show		(m_with_custom_text);
 }
 
-void CUICellItem::SetOriginalRect(const Frect& r)
-{
-	inherited::SetOriginalRect(r);
-}
-
 bool CUICellItem::OnMouse(float x, float y, EUIMessages mouse_action)
 {
 	if ( mouse_action == WINDOW_LBUTTON_DOWN )
@@ -211,9 +222,9 @@ bool CUICellItem::OnMouse(float x, float y, EUIMessages mouse_action)
 		GetMessageTarget()->SendMessage( this, DRAG_DROP_ITEM_RBUTTON_CLICK, NULL );
 		return true;
 	}
-	else if (mouse_action == WINDOW_CBUTTON_DOWN)
+	else if ( mouse_action == WINDOW_CBUTTON_DOWN )
 	{
-		GetMessageTarget()->SendMessage(this, DRAG_DROP_ITEM_CBUTTON_CLICK, NULL);
+		GetMessageTarget()->SendMessage( this, DRAG_DROP_ITEM_CBUTTON_CLICK, NULL );
 		return true;
 	}
 	
@@ -273,11 +284,13 @@ void CUICellItem::SetOwnerList(CUIDragDropListEx* p)
 
 void CUICellItem::UpdateCellItemProgressBars()
 {
-	if (m_pConditionState)
-		UpdateConditionProgressBar();
+	UpdateConditionProgressBar();
 
 	if (m_pPortionsState)
 		UpdatePortionsProgressBar();
+
+	if (m_pChargeState)
+		UpdateChargeLevelProgressBar();
 }
 
 void CUICellItem::UpdateConditionProgressBar()
@@ -391,6 +404,59 @@ void CUICellItem::UpdatePortionsProgressBar()
 	m_pPortionsState->Show(false);
 }
 
+void CUICellItem::UpdateChargeLevelProgressBar()
+{
+	if (m_pParentList && m_pParentList->GetConditionProgBarVisibility())
+	{
+		PIItem itm = (PIItem)m_pData;
+		CTorch* torch = smart_cast<CTorch*>(itm);
+		CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(itm);
+		CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(itm);
+		CArtefact* artefact = smart_cast<CArtefact*>(itm);
+
+		if (torch || artefact_detector || anomaly_detector || artefact)
+		{
+			Ivector2 itm_grid_size = GetGridSize();
+
+			if (m_pParentList->GetVerticalPlacement())
+				std::swap(itm_grid_size.x, itm_grid_size.y);
+
+			Ivector2 cell_size = m_pParentList->CellSize();
+			Ivector2 cell_space = m_pParentList->CellsSpacing();
+			float x = 1.f;
+			float y = itm_grid_size.y * (cell_size.y + cell_space.y) - m_pChargeState->GetHeight() - 2.f;
+
+			m_pChargeState->SetWndPos(Fvector2().set(x, y));
+
+			if (torch && GameConstants::GetTorchHasBattery())
+			{
+				m_pChargeState->SetProgressPos(iCeil(torch->GetCurrentChargeLevel() * 13.0f) / 13.0f);
+				m_pChargeState->Show(true);
+			}
+			else if (artefact_detector && GameConstants::GetArtDetectorUseBattery())
+			{
+				m_pChargeState->SetProgressPos(iCeil(artefact_detector->GetCurrentChargeLevel() * 13.0f) / 13.0f);
+				m_pChargeState->Show(true);
+			}
+			else if (anomaly_detector && GameConstants::GetAnoDetectorUseBattery())
+			{
+				m_pChargeState->SetProgressPos(iCeil(anomaly_detector->GetCurrentChargeLevel() * 13.0f) / 13.0f);
+				m_pChargeState->Show(true);
+			}
+			else if (artefact && GameConstants::GetArtefactsDegradation())
+			{
+				m_pChargeState->SetProgressPos(iCeil(artefact->GetCurrentChargeLevel() * 13.0f) / 13.0f);
+				m_pChargeState->Show(true);
+			}
+			else
+				m_pChargeState->Show(false);
+
+			return;
+		}
+	}
+	m_pChargeState->Show(false);
+}
+
 bool CUICellItem::EqualTo(CUICellItem* itm)
 {
 	return (m_grid_size.x==itm->GetGridSize().x) && (m_grid_size.y==itm->GetGridSize().y);
@@ -438,7 +504,7 @@ void CUICellItem::UpdateItemText()
 	if ( ChildsCount() )
 	{
 		string32	str;
-		sprintf_s( str, "x%d", ChildsCount()+1 );
+		xr_sprintf( str, "x%d", ChildsCount()+1 );
 		m_text->SetText( str );
 		m_text->Show( true );
 	}
@@ -454,7 +520,8 @@ void CUICellItem::Mark( bool status )
 	m_cur_mark = status;
 }
 
-void CUICellItem::SetCustomDraw			(ICustomDrawCellItem* c){
+void CUICellItem::SetCustomDraw(ICustomDrawCellItem* c)
+{
 	if (m_custom_draw)
 		xr_delete(m_custom_draw);
 	m_custom_draw = c;
@@ -475,20 +542,27 @@ CUIDragItem::CUIDragItem(CUICellItem* parent)
 
 CUIDragItem::~CUIDragItem()
 {
-	delete_data						(m_custom_draw);
 	Device.seqRender.Remove			(this);
 	Device.seqFrame.Remove			(this);
+	delete_data						(m_custom_draw);
+}
+
+void CUIDragItem::SetCustomDraw(ICustomDrawDragItem* c)
+{
+	if (m_custom_draw)
+		xr_delete(m_custom_draw);
+	m_custom_draw = c;
 }
 
 void CUIDragItem::Init(const ui_shader& sh, const Frect& rect, const Frect& text_rect)
 {
 	SetWndRect						(rect);
 	m_static.SetShader				(sh);
-	m_static.SetOriginalRect		(text_rect);
+	m_static.SetOriginalRect			(text_rect);
 	m_static.SetWndPos				(Fvector2().set(0.0f,0.0f));
 	m_static.SetWndSize				(GetWndSize());
 	m_static.TextureOn				();
-	m_static.SetTextureColor		(color_rgba(255,255,255,170));
+	m_static.SetColor				(color_rgba(255,255,255,170));
 	m_static.SetStretchTexture		(true);
 	m_pos_offset.sub				(rect.lt, GetUICursor()->GetCursorPosition());
 }
@@ -520,18 +594,9 @@ void CUIDragItem::Draw()
 	tmp.sub					(m_pos_offset);
 	tmp.mul					(-1.0f);
 	MoveWndDelta			(tmp);
-	UI()->PushScissor		(UI()->ScreenRect(),true);
-
-	inherited::Draw();
+	inherited::Draw			();
 	if(m_custom_draw) 
 		m_custom_draw->OnDraw(this);
-}
-
-void CUIDragItem::SetCustomDraw(ICustomDrawDragItem* c)
-{
-	if (m_custom_draw)
-		xr_delete(m_custom_draw);
-	m_custom_draw = c;
 }
 
 void CUIDragItem::SetBackList(CUIDragDropListEx* l)

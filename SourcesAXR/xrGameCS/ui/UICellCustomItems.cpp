@@ -3,6 +3,7 @@
 #include "UIInventoryUtilities.h"
 #include "../Weapon.h"
 #include "UIDragDropListEx.h"
+#include "UIProgressBar.h"
 #include "../eatable_item.h"
 #include "../Artefact.h"
 #include "../CustomOutfit.h"
@@ -158,14 +159,14 @@ void CUIInventoryCellItem::UpdateItemText()
 
 	if ( count > 1 || helper_count )
 	{
-		sprintf_s						( str, "x%d", count );
-		m_text->SetText					( str );
+		xr_sprintf						( str, "x%d", count );
+		m_text->SetText	( str );
 		m_text->Show					( true );
 	}
 	else
 	{
-		sprintf_s						( str, "");
-		m_text->SetText					( str );
+		xr_sprintf						( str, "");
+		m_text->SetText	( str );
 		m_text->Show					( false );
 	}
 }
@@ -215,14 +216,10 @@ void CUIAmmoCellItem::UpdateItemText()
 	{
 		const u32 total = CalculateAmmoCount();
 		
-		string32	str;
-		sprintf_s( str, "%d", total );
-		m_text->SetText( str );
-		m_text->Show( true );
-	}
-	else
-	{
-		SetText( "" );
+		string32			str;
+		xr_sprintf			(str, "%d", total);
+		m_text->SetText(str);
+		m_text->Show		(true);
 	}
 }
 
@@ -285,34 +282,25 @@ CUIStatic* CUIWeaponCellItem::GetIcon(eAddonType t)
 {
 	return m_addons[t];
 }
-
 void CUIWeaponCellItem::RefreshOffset()
 {
-	if (object()->SilencerAttachable())
-	{
+	if(object()->SilencerAttachable())
 		m_addon_offset[eSilencer].set(object()->GetSilencerX(), object()->GetSilencerY());
-	}
 
-	if (object()->ScopeAttachable())
-	{
+	if(object()->ScopeAttachable())
 		m_addon_offset[eScope].set(object()->GetScopeX(), object()->GetScopeY());
-	}
 
-	if (object()->GrenadeLauncherAttachable())
-	{
+	if(object()->GrenadeLauncherAttachable())
 		m_addon_offset[eLauncher].set(object()->GetGrenadeLauncherX(), object()->GetGrenadeLauncherY());
-	}
 }
 
 void CUIWeaponCellItem::Draw()
-{
+{	
 	inherited::Draw();
 
-	if (m_upgrade && m_upgrade->IsShown())
-	{
+	if(m_upgrade && m_upgrade->IsShown())
 		m_upgrade->Draw();
-	}
-}
+};
 
 void CUIWeaponCellItem::Update()
 {
@@ -420,11 +408,11 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 			base_scale.y			= GetHeight()/(INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * m_grid_size.y);
 		}
 		Fvector2				cell_size;
-		cell_size.x				= pSettings->r_u32(section, "inv_grid_width") * INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
-		cell_size.y				= pSettings->r_u32(section, "inv_grid_height") * INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
+		cell_size.x				= pSettings->r_u32(section, "inv_grid_width")*INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
+		cell_size.y				= pSettings->r_u32(section, "inv_grid_height")*INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
 
-		tex_rect.x1				= pSettings->r_u32(section, "inv_grid_x") * INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
-		tex_rect.y1				= pSettings->r_u32(section, "inv_grid_y") * INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
+		tex_rect.x1				= pSettings->r_u32(section, "inv_grid_x")*INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
+		tex_rect.y1				= pSettings->r_u32(section, "inv_grid_y")*INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
 
 		tex_rect.rb.add			(tex_rect.lt,cell_size);
 
@@ -436,10 +424,12 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 			{
 				addon_offset.y *= UI()->get_current_kx();
 			}
+
 			if (is_silencer)
 			{
 				addon_offset.y *= UI()->get_current_kx() * 1.8f;
 			}
+
 			if (is_gl)
 			{
 				addon_offset.y *= UI()->get_current_kx() * 1.5f;
@@ -544,6 +534,13 @@ bool CUIWeaponCellItem::EqualTo(CUICellItem* itm)
 	{
 		return false;
 	}
+	if(this->is_scope() && ci->is_scope())
+	{
+		if ( object()->GetScopeName() != ci->object()->GetScopeName() )
+		{
+			return false;
+		}
+	}
 //	bool b_place					= ( (object()->m_eItemCurrPlace == ci->object()->m_eItemCurrPlace) );
 
 	return true;
@@ -553,7 +550,7 @@ CBuyItemCustomDrawCell::CBuyItemCustomDrawCell	(LPCSTR str, CGameFont* pFont)
 {
 	m_pFont		= pFont;
 	VERIFY		(xr_strlen(str)<16);
-	strcpy_s		(m_string,str);
+	xr_strcpy		(m_string,str);
 }
 
 void CBuyItemCustomDrawCell::OnDraw(CUICellItem* cell)
