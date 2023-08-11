@@ -22,6 +22,7 @@
 #include "actorEffector.h"
 #include "HudManager.h"
 #include "UIGameCustom.h"
+#include "ui\UIActorMenu.h"
 #include "player_hud.h"
 #include "CustomDetector.h"
 #include "../xrEngine/x_ray.h"
@@ -282,6 +283,8 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 		else
 			m_iPortionsNum = 0;
 	}
+
+	HUD().GetUI()->UIGame()->ActorMenu().RefreshConsumableCells();
 }
 
 u32 CEatableItem::Cost() const

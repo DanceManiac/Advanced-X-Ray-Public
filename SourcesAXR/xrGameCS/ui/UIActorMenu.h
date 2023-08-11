@@ -79,6 +79,7 @@ protected:
 	CUICellItem*				m_InfoCellItem;
 	u32							m_InfoCellItem_timer;
 	CUICellItem*				m_pCurrentCellItem;
+	CUICellItem*				m_pCurrentConsumable;
 	CUICellItem*				m_upgrade_selected;
 	CUIPropertiesBox*			m_UIPropertiesBox;
 
@@ -330,6 +331,10 @@ public:
 	void						UpdateActor					();
 	void						UpdatePartnerBag			();
 	void						UpdateDeadBodyBag			();
+
+	CUICellItem*				GetCurrentConsumable		() { return m_pCurrentConsumable; };
+	void						SetCurrentConsumable		(CUICellItem* ci) { m_pCurrentConsumable = ci; };
+	void						RefreshConsumableCells		();
 
 	void		__stdcall		OnBtnPerformTrade			(CUIWindow* w, void* d);
 	void		__stdcall		OnBtnExitClicked			(CUIWindow* w, void* d);

@@ -13,6 +13,9 @@
 #include "UIPropertiesBox.h"
 #include "UIListBoxItem.h"
 #include "UIMainIngameWnd.h"
+#include "UIGameCustom.h"
+#include "ui\UIActorMenu.h"
+#include "HUDManager.h"
 
 #include "../silencer.h"
 #include "../scope.h"
@@ -1212,7 +1215,12 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 	case INVENTORY_TO_SLOT_ACTION:	ToSlot( cell_item, true  );		break;
 	case INVENTORY_TO_BELT_ACTION:	ToBelt( cell_item, false );		break;
 	case INVENTORY_TO_BAG_ACTION:	ToBag ( cell_item, false );		break;
-	case INVENTORY_EAT_ACTION:		TryUseItem( cell_item );		break;
+	case INVENTORY_EAT_ACTION:
+		{
+			HUD().GetUI()->UIGame()->ActorMenu().SetCurrentConsumable(cell_item);
+			TryUseItem(cell_item);
+			break;
+		}
 	case INVENTORY_DROP_ACTION:
 		{
 			void* d = m_UIPropertiesBox->GetClickedItem()->GetData();
@@ -1437,5 +1445,35 @@ void CUIActorMenu::RefreshCurrentItemCell()
 
 			invlist->SetItem(parent, GetUICursor()->GetCursorPosition());
 		}
+	}
+}
+
+void CUIActorMenu::RefreshConsumableCells()
+{
+	CUICellItem* ci = GetCurrentConsumable();
+	if (ci)
+	{
+		CEatableItem* eitm = smart_cast<CEatableItem*>((CEatableItem*)ci->m_pData);
+		if (eitm)
+		{
+			Fvector2 cp = GetUICursor()->GetCursorPosition(); // XXX: This is unused
+			CUIDragDropListEx* invlist = GetListByType(iActorBag);
+
+			CUICellItem* parent = invlist->RemoveItem(ci, true);
+			const u32 c = parent->ChildsCount();
+			if (c > 0)
+			{
+				while (parent->ChildsCount())
+				{
+					CUICellItem* child = parent->PopChild(nullptr);
+					invlist->SetItem(child);
+				}
+
+				invlist->SetItem(parent);
+			}
+			else
+				invlist->SetItem(parent);
+		}
+		SetCurrentConsumable(nullptr);
 	}
 }

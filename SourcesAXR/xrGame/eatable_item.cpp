@@ -22,6 +22,7 @@
 #include "actorEffector.h"
 #include "HudManager.h"
 #include "UIGameCustom.h"
+#include "ui\UIActorMenu.h"
 #include "player_hud.h"
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
@@ -252,6 +253,8 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 		else
 			m_iPortionsNum = 0;
 	}
+
+	CurrentGameUI()->ActorMenu().RefreshConsumableCells();
 
 	return true;
 }
