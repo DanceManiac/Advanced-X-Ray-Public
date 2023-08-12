@@ -13,9 +13,6 @@
 #include <imgui.h>
 #include "imgui_internal.h"
 
-float editor_longitude = 0.0;
-float editor_altitude = 0.0;
-
 Fvector convert(const Fvector& v)
 {
     Fvector result;
@@ -274,6 +271,9 @@ bool editTexture(const char* label, shared_str& texName)
 	return changed;
 }
 
+float editor_altitude = 0.f;
+float editor_longitude = 0.f;
+
 void ShowWeatherEditor(bool& show)
 {
 	if (!ImGui::Begin(modifiedWeathers.empty() ? "Weather###Weather" : "Weather*###Weather", &show)) {
@@ -399,16 +399,14 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("sun_altitude", &editor_altitude, -360.0f, 360.0f))
 	{
 		changed = true;
-		if (changed)
-			cur->sun_dir.setHP(deg2rad(editor_longitude), deg2rad(editor_altitude));
-		else
-			editor_altitude = cur->sun_dir.getH();
+
+		cur->sun_dir.setHP(deg2rad(editor_longitude), deg2rad(editor_altitude));
 	}
 	if (ImGui::SliderFloat("sun_longitude", &editor_longitude, -360.0f, 360.0f))
 	{
 		changed = true;
-		if (changed)
-			cur->sun_dir.setHP(deg2rad(editor_longitude), deg2rad(editor_altitude));
+
+		cur->sun_dir.setHP(deg2rad(editor_longitude), deg2rad(editor_altitude));
 	}
 	if (ImGui::SliderFloat("sun_shafts_intensity", &cur->m_fSunShaftsIntensity, 0.0f, 2.0f))
 		changed = true;
