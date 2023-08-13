@@ -398,6 +398,18 @@ void	CRenderTarget::phase_combine	()
 	if (ps_r2_postscreen_flags.test(R_FLAG_FILM_GRAIN))
 		phase_film_grain();
 
+	if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+	{
+		//Compute blur textures
+		phase_blur();
+
+		//Compute bloom (new)
+		//phase_pp_bloom();
+
+		if (ps_r2_ls_flags.test(R2FLAG_DOF))
+			phase_dof();
+	}
+
 	//Hud Effects, Hud Mask, Nightvision
 	if (!_menu_pp && g_pGamePersistent->GetActor() && g_pGamePersistent->IsCamFirstEye())
 	{
@@ -422,18 +434,6 @@ void	CRenderTarget::phase_combine	()
 
 		if (IsActorAlive && NightVisionEnabled && NightVisionType > 0 && ps_r__ShaderNVG == 1)
 			phase_nightvision();
-	}
-
-	if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
-	{
-		//Compute blur textures
-		phase_blur();
-
-		//Compute bloom (new)
-		//phase_pp_bloom();
-
-		if (ps_r2_ls_flags.test(R2FLAG_DOF))
-			phase_dof();
 	}
 
 	// PP enabled ?
