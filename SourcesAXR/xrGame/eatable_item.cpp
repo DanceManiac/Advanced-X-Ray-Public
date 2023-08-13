@@ -254,7 +254,8 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 			m_iPortionsNum = 0;
 	}
 
-	CurrentGameUI()->ActorMenu().RefreshConsumableCells();
+	if (CurrentGameUI()->ActorMenu().IsShown())
+		CurrentGameUI()->ActorMenu().RefreshConsumableCells();
 
 	return true;
 }

@@ -284,7 +284,8 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 			m_iPortionsNum = 0;
 	}
 
-	HUD().GetUI()->UIGame()->ActorMenu().RefreshConsumableCells();
+	if (HUD().GetUI()->UIGame()->ActorMenu().IsShown())
+		HUD().GetUI()->UIGame()->ActorMenu().RefreshConsumableCells();
 }
 
 u32 CEatableItem::Cost() const
