@@ -56,11 +56,13 @@ See [Release](https://github.com/ign-1997/Advanced-X-Ray/releases) section.
 - [CoC-Xray](https://github.com/revolucas/CoC-Xray)
 - [v2v3v4](https://github.com/v2v3v4)
 - [Hozar2002](https://github.com/Hozar2002)
+- [yohjimane](https://github.com/yohjimane)
 - DWM Team
 - CorryZeron
 - Oxygen Engine
 - Lex Addon
 - exDeMODER
 - Screen Space Shaders
+- Enchanted Shaders and Color Grading
 
 Sorry if I forgot someone. Write to VK and I'll add it.

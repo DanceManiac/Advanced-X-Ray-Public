@@ -42,8 +42,8 @@ IDB_BITMAP1             BITMAP                  "advanced_xray_splash.bmp"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,2,3,3
- PRODUCTVERSION 2,2,3,3
+ FILEVERSION 2,2,7,4
+ PRODUCTVERSION 2,2,7,4
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -60,12 +60,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "M.F.S. Team"
             VALUE "FileDescription", "Advanced X-Ray"
-            VALUE "FileVersion", "2.2.33"
+            VALUE "FileVersion", "2.2.74"
             VALUE "InternalName", "xrEngine"
             VALUE "LegalCopyright", "Copyright © 2023"
             VALUE "OriginalFilename", "xrEngine.exe"
             VALUE "ProductName", "S.T.A.L.K.E.R.: Call Of Pripyat"
-            VALUE "ProductVersion", "2.2.33"
+            VALUE "ProductVersion", "2.2.74"
         END
     END
     BLOCK "VarFileInfo"
