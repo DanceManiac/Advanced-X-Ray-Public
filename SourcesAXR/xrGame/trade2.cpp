@@ -166,8 +166,8 @@ u32	CTrade::GetItemPrice(PIItem pItem, bool b_buying)
 	
 	// computing relation factor
 	float					relation_factor;
-	
-	CHARACTER_GOODWILL		attitude = RELATION_REGISTRY().GetAttitude(pThis.inv_owner, pPartner.inv_owner);
+
+	CHARACTER_GOODWILL		attitude = RELATION_REGISTRY().GetAttitude(pPartner.inv_owner, pThis.inv_owner);
 
 	if (NO_GOODWILL == attitude)
 		relation_factor		= 0.f;
