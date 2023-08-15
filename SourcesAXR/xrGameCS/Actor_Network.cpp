@@ -1344,6 +1344,9 @@ void CActor::save(NET_Packet &output_packet)
 	if (ActorSkills)
 		ActorSkills->save(output_packet);
 
+	if (TimerManager)
+		TimerManager->save(output_packet);
+
 	cam_Active()->save(output_packet);
 
 	output_packet.w_u8(cam_active);
@@ -1357,6 +1360,9 @@ void CActor::load(IReader &input_packet)
 
 	if (ActorSkills)
 		ActorSkills->load(input_packet);
+
+	if (TimerManager)
+		TimerManager->load(input_packet);
 
 	cam_Active()->load(input_packet);
 

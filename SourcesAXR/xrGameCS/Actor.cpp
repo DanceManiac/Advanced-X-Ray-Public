@@ -213,16 +213,17 @@ CActor::CActor() : CEntityAlive()
 	m_iBaseArtefactCount	= 0;
 
 	// Alex ADD: for smooth crouch fix
-	CurrentHeight = -1.f;
+	CurrentHeight			= -1.f;
 
-	m_night_vision = NULL;
-	m_bNightVisionAllow = true;
-	m_bNightVisionOn = false;
+	m_night_vision			= NULL;
+	m_bNightVisionAllow		= true;
+	m_bNightVisionOn		= false;
 
-	m_bEatAnimActive = false;
+	m_bEatAnimActive		= false;
 	m_disabled_hitmarks		= false;
 
-	ActorSkills = nullptr;
+	ActorSkills				= nullptr;
+	TimerManager			= nullptr;
 }
 
 
@@ -253,6 +254,7 @@ CActor::~CActor()
 
 	xr_delete				(m_night_vision);
 	xr_delete				(ActorSkills);
+	xr_delete				(TimerManager);
 }
 
 void CActor::reinit	()
@@ -450,6 +452,9 @@ if(!g_dedicated_server)
 
 	if (!ActorSkills && GameConstants::GetActorSkillsEnabled())
 		ActorSkills = xr_new<CActorSkills>();
+
+	if (!TimerManager)
+		TimerManager = xr_new<CTimerManager>();
 
 	m_iBaseArtefactCount = READ_IF_EXISTS(pSettings, r_u32, section, "base_artefacts_count", 0);
 }
@@ -1431,6 +1436,15 @@ void CActor::shedule_Update	(u32 DT)
 
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();
+
+	if (TimerManager)
+	{
+		TimerManager->Update();
+
+		/*TimerManager->SetOnTimerStopCallback([](std::string name)	// Does not work after restarting the game
+		{
+		});*/
+	}
 
 	actor_position.set(Position());
 };

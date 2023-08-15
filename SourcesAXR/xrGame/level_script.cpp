@@ -41,6 +41,8 @@
 #include "../xrPhysics/ElevatorState.h"
 #include "../xrEngine/Rain.h"
 
+#include "CustomTimer.h"
+
 using namespace luabind;
 bool g_block_all_except_movement;
 
@@ -1022,6 +1024,72 @@ void g_send(NET_Packet& P, bool bReliable = false, bool bSequential = true, bool
 	Level().Send(P);
 }
 
+void create_custom_timer(LPCSTR name, int start_value, int mode = 0)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->CreateTimer(name, start_value, mode);
+}
+
+void start_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->StartTimer(name);
+}
+
+void stop_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->StopTimer(name);
+}
+
+void reset_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->ResetTimer(name);
+}
+
+void delete_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->DeleteTimer(name);
+}
+
+int get_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return 0;
+	}
+
+	Actor()->TimerManager->GetTimerValue(name);
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -1145,7 +1213,14 @@ void CLevel::script_register(lua_State *L)
 		
 		def("vertex_id",						&vertex_id),
 
-		def("game_id",							&GameID)
+		def("game_id",							&GameID),
+
+		def("create_custom_timer",				&create_custom_timer),
+		def("start_custom_timer",				&start_custom_timer),
+		def("stop_custom_timer",				&stop_custom_timer),
+		def("reset_custom_timer",				&reset_custom_timer),
+		def("delete_custom_timer",				&delete_custom_timer),
+		def("get_custom_timer",					&get_custom_timer)
 	],
 	
 	module(L,"actor_stats")

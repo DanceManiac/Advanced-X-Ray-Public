@@ -19,6 +19,7 @@
 #include "script_export_space.h"
 #include "xr_level_controller.h"
 #include "ActorSkills.h"
+#include "CustomTimer.h"
 
 using namespace ACTOR_DEFS;
 
@@ -806,6 +807,7 @@ public:
 
 	bool					m_bEatAnimActive;
 	CActorSkills*			ActorSkills;
+	CTimerManager*			TimerManager;
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;

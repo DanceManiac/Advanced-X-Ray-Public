@@ -7546,6 +7546,7 @@
     <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="CustomTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11266,6 +11267,7 @@
     <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
+    <ClCompile Include="CustomTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

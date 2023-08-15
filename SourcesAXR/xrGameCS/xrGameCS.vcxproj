@@ -1292,6 +1292,7 @@
     <ClInclude Include="CustomMonster_inline.h" />
     <ClInclude Include="CustomOutfit.h" />
     <ClInclude Include="CustomRocket.h" />
+    <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="CustomZone.h" />
     <ClInclude Include="CycleConstStorage.h" />
     <ClInclude Include="DamagableItem.h" />
@@ -4533,6 +4534,7 @@
     <ClCompile Include="CustomOutfit.cpp" />
     <ClCompile Include="CustomOutfit_script.cpp" />
     <ClCompile Include="CustomRocket.cpp" />
+    <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="CustomZone.cpp" />
     <ClCompile Include="DamagableItem.cpp" />
     <ClCompile Include="damage_manager.cpp" />
