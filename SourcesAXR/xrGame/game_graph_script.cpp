@@ -32,6 +32,11 @@ void get_accessible2					(const CGameGraph *self, const u32 &vertex_id, bool val
 	self->accessible	(vertex_id,value);
 }
 
+u32 vertex_count(const CGameGraph* self)
+{
+	return self->header().vertex_count();
+}
+
 Fvector CVertex__level_point			(const CGameGraph::CVertex *vertex)
 {
 	THROW				(vertex);
@@ -48,6 +53,11 @@ GameGraph::LEVEL_MAP const& get_levels	( CGameGraph const* graph )
 {
 	THROW				(graph);
 	return				graph->header().levels();
+}
+
+const CGameLevelCrossTable* get_cross_table()
+{
+	return &ai().cross_table();
 }
 
 #pragma optimize("s",on)
@@ -67,12 +77,21 @@ void CGameGraph::script_register		(lua_State *L)
 			.def("valid_vertex_id",	&CGameGraph::valid_vertex_id)
 			.def("vertex",			&CGameGraph::vertex)
 			.def("vertex_id",		&CGameGraph::vertex_id)
+			.def("vertex_count",	&vertex_count)
 			.def("levels",			&get_levels, return_stl_iterator),
 
 		class_<CVertex>("GameGraph__CVertex")
 			.def("level_point",		&CVertex__level_point)
 			.def("game_point",		&CVertex__game_point)
 			.def("level_id",		&CVertex::level_id)
-			.def("level_vertex_id",	&CVertex::level_vertex_id)
+			.def("level_vertex_id",	&CVertex::level_vertex_id),
+
+			def("cross_table",		&get_cross_table),
+
+		class_<CGameLevelCrossTable>("CGameLevelCrossTable")
+			.def("vertex",			&CGameLevelCrossTable::vertex),
+
+		class_<CGameLevelCrossTable::CCell>("CGameLevelCrossTable__CCell")
+			.def("game_vertex_id",	&CGameLevelCrossTable::CCell::game_vertex_id)
 	];
 }
