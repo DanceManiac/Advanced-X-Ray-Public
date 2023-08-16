@@ -732,6 +732,16 @@ u32 nearest_vertex_id(const Fvector& vec)
 	return ai().level_graph().vertex_id(vec);
 }
 
+bool valid_vertex_id(u32 level_vertex_id)
+{
+	return ai().level_graph().valid_vertex_id(level_vertex_id);
+}
+
+u32 vertex_count()
+{
+	return ai().level_graph().header().vertex_count();
+}
+
 u32 render_get_dx_level()
 {
 	return ::Render->get_dx_level();
@@ -1165,8 +1175,8 @@ void CLevel::script_register(lua_State *L)
 		def("vertex_position",					vertex_position),
 		def("name",								get_name),
 		def("prefetch_sound",					prefetch_sound),
-		def( "patrol_path_add", &patrol_path_add ),
-		def( "patrol_path_remove", &patrol_path_remove ),
+		def("patrol_path_add",					&patrol_path_add),
+		def("patrol_path_remove",				&patrol_path_remove),
 		def("client_spawn_manager",				get_client_spawn_manager),
 
 		def("rain_wetness",						rain_wetness),
@@ -1218,6 +1228,8 @@ void CLevel::script_register(lua_State *L)
 		
 		def("vertex_id",						&vertex_id),
 		def("nearest_vertex_id",				&nearest_vertex_id),
+		def("valid_vertex_id",					valid_vertex_id),
+		def("vertex_count",						vertex_count),
 
 		def("game_id",							&GameID),
 
