@@ -727,6 +727,11 @@ u32 vertex_id	(Fvector position)
 	return	(ai().level_graph().vertex_id(position));
 }
 
+u32 nearest_vertex_id(const Fvector& vec)
+{
+	return ai().level_graph().vertex_id(vec);
+}
+
 u32 render_get_dx_level()
 {
 	return ::Render->get_dx_level();
@@ -1212,6 +1217,7 @@ void CLevel::script_register(lua_State *L)
 		def("remove_complex_effector",			&remove_complex_effector),
 		
 		def("vertex_id",						&vertex_id),
+		def("nearest_vertex_id",				&nearest_vertex_id),
 
 		def("game_id",							&GameID),
 
