@@ -220,6 +220,7 @@ CActor::CActor() : CEntityAlive()
 	m_bNightVisionOn		= false;
 
 	m_bEatAnimActive		= false;
+	m_bActionAnimInProcess	= false;
 	m_disabled_hitmarks		= false;
 
 	ActorSkills				= nullptr;

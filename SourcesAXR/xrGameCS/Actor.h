@@ -806,6 +806,7 @@ public:
 	// Real Wolf. End. 14.10.2014
 
 	bool					m_bEatAnimActive;
+	bool					m_bActionAnimInProcess;
 	CActorSkills*			ActorSkills;
 	CTimerManager*			TimerManager;
 protected:

@@ -156,6 +156,7 @@ void CEatableItem::StartAnimation()
 	m_bItmStartAnim = false;
 	g_block_all_except_movement = true;
 	g_actor_allow_ladder = false;
+	Actor()->m_bActionAnimInProcess = true;
 
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
@@ -203,6 +204,7 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 			m_bActivated = false;
 			g_block_all_except_movement = false;
 			g_actor_allow_ladder = true;
+			actor->m_bActionAnimInProcess = false;
 
 			if (effector)
 				RemoveEffector(actor, effUseItem);

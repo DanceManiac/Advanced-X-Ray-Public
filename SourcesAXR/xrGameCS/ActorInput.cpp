@@ -594,6 +594,7 @@ void CActor::SwitchNightVision()
 void CActor::SwitchTorch()
 { 
 	CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
-	if (pTorch)
+
+	if (pTorch && !Actor()->m_bActionAnimInProcess)
 		pTorch->Switch();
 }

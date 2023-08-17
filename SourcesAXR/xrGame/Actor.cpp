@@ -241,6 +241,7 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_bNightVisionOn		= false;
 
 	m_bEatAnimActive		= false;
+	m_bActionAnimInProcess	= false;
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
