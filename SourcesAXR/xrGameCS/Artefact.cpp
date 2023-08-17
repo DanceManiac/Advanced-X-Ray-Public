@@ -732,19 +732,25 @@ void SArtefactDetectorsSupport::SetVisible(bool b)
 	else
 		m_parent->StopLights	();
 
-	LPCSTR curr				= pSettings->r_string(m_parent->cNameSect().c_str(), (b)?"det_show_particles":"det_hide_particles");
+	LPCSTR curr = nullptr;
 
-	IKinematics* K			= smart_cast<IKinematics*>(m_parent->Visual());
-	R_ASSERT2				(K, m_parent->cNameSect().c_str());
-	LPCSTR bone				= pSettings->r_string(m_parent->cNameSect().c_str(), "particles_bone");
-	u16 bone_id				= K->LL_BoneID(bone);
-	R_ASSERT2				(bone_id!=BI_NONE, bone);
+	if (pSettings->line_exist(m_parent->cNameSect().c_str(), (b) ? "det_show_particles" : "det_hide_particles"))
+		curr = pSettings->r_string(m_parent->cNameSect().c_str(), (b) ? "det_show_particles" : "det_hide_particles");
 
-	m_parent->CParticlesPlayer::StartParticles(curr,bone_id,Fvector().set(0,1,0),m_parent->ID());
+	if (curr)
+	{
+		IKinematics* K = smart_cast<IKinematics*>(m_parent->Visual());
+		R_ASSERT2(K, m_parent->cNameSect().c_str());
+		LPCSTR bone = pSettings->r_string(m_parent->cNameSect().c_str(), "particles_bone");
+		u16 bone_id = K->LL_BoneID(bone);
+		R_ASSERT2(bone_id != BI_NONE, bone);
 
-	curr					= pSettings->r_string(m_parent->cNameSect().c_str(), (b)?"det_show_snd":"det_hide_snd");
-	m_sound.create			(curr, st_Effect, sg_SourceType);
-	m_sound.play_at_pos		(0, m_parent->Position(), 0);
+		m_parent->CParticlesPlayer::StartParticles(curr, bone_id, Fvector().set(0, 1, 0), m_parent->ID());
+
+		curr = pSettings->r_string(m_parent->cNameSect().c_str(), (b) ? "det_show_snd" : "det_hide_snd");
+		m_sound.create(curr, st_Effect, sg_SourceType);
+		m_sound.play_at_pos(0, m_parent->Position(), 0);
+	}
 	
 	m_parent->setVisible	(b);
 	m_parent->SwitchAfParticles(b);
@@ -752,7 +758,13 @@ void SArtefactDetectorsSupport::SetVisible(bool b)
 
 void SArtefactDetectorsSupport::Blink()
 {
-	LPCSTR curr				= pSettings->r_string(m_parent->cNameSect().c_str(), "det_show_particles");
+	LPCSTR curr = nullptr;
+
+	if (pSettings->line_exist(m_parent->cNameSect().c_str(), "det_show_particles"))
+		curr = pSettings->r_string(m_parent->cNameSect().c_str(), "det_show_particles");
+
+	if (!curr)
+		return;
 
 	IKinematics* K			= smart_cast<IKinematics*>(m_parent->Visual());
 	R_ASSERT2				(K, m_parent->cNameSect().c_str());
