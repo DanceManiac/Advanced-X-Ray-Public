@@ -621,7 +621,7 @@ void CCustomDetector::Recharge(float val)
 	//Msg("Переданый в детектор заряд: %f", val); //Для Тестов
 }
 
-BOOL CAfList::feel_touch_contact	(CObject* O)
+BOOL CAfList<CObject>::feel_touch_contact	(CObject* O)
 {
 	TypesMapIt it				= m_TypesMap.find(O->cNameSect());
 
@@ -630,7 +630,7 @@ BOOL CAfList::feel_touch_contact	(CObject* O)
 	{
 		CArtefact*	pAf				= smart_cast<CArtefact*>(O);
 		
-		if(pAf->GetAfRank()>m_af_rank)
+		if(pAf && pAf->GetAfRank()>m_af_rank)
 			res = false;
 	}
 	return						res;

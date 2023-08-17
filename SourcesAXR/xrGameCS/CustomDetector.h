@@ -110,7 +110,9 @@ protected:
 	virtual BOOL 	feel_touch_contact	(CObject* O);
 };
 */
-class CAfList  :public CDetectList<CArtefact>
+
+template <typename T>
+class CAfList :public CDetectList<T>
 {
 protected:
 	virtual BOOL 	feel_touch_contact	(CObject* O);
@@ -219,7 +221,7 @@ protected:
 	float			m_fAfDetectRadius;
 	float			m_fAfVisRadius;
 
-	CAfList			m_artefacts;
+	CAfList<CObject>m_artefacts;
 
 	virtual bool	install_upgrade_impl		(LPCSTR section, bool test);
 };

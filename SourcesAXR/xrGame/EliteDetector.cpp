@@ -35,20 +35,23 @@ void CEliteDetector::UpdateAf()
 	ui().Clear							();
 	if(m_artefacts.m_ItemInfos.size()==0)	return;
 
-	CAfList::ItemsMapIt it_b	= m_artefacts.m_ItemInfos.begin();
-	CAfList::ItemsMapIt it_e	= m_artefacts.m_ItemInfos.end();
-	CAfList::ItemsMapIt it		= it_b;
+	CAfList<CObject>::ItemsMapIt it_b	= m_artefacts.m_ItemInfos.begin();
+	CAfList<CObject>::ItemsMapIt it_e	= m_artefacts.m_ItemInfos.end();
+	CAfList<CObject>::ItemsMapIt it		= it_b;
 
 	Fvector						detector_pos = Position();
+
 	for(;it_b!=it_e;++it_b)
 	{
-		CArtefact *pAf			= it_b->first;
-		if(pAf->H_Parent())		
+		CArtefact*	pAf		= smart_cast<CArtefact*>(it_b->first);
+		CObject*	pObj	= it_b->first;
+
+		if ((pAf && pAf->H_Parent()) || (pObj && pObj->H_Parent()))
 			continue;
 
-		ui().RegisterItemToDraw			(pAf->Position(),"af_sign");
+		ui().RegisterItemToDraw			(pAf ? pAf->Position() : pObj->Position(), "af_sign");
 
-		if(pAf->CanBeInvisible())
+		if(pAf && pAf->CanBeInvisible())
 		{
 			float d = detector_pos.distance_to(pAf->Position());
 			if(d<m_fAfVisRadius)
@@ -248,19 +251,21 @@ void CScientificDetector::UpfateWork()
 {
 	ui().Clear							();
 
-	CAfList::ItemsMapIt ait_b	= m_artefacts.m_ItemInfos.begin();
-	CAfList::ItemsMapIt ait_e	= m_artefacts.m_ItemInfos.end();
-	CAfList::ItemsMapIt ait		= ait_b;
+	CAfList<CObject>::ItemsMapIt ait_b	= m_artefacts.m_ItemInfos.begin();
+	CAfList<CObject>::ItemsMapIt ait_e	= m_artefacts.m_ItemInfos.end();
+	CAfList<CObject>::ItemsMapIt ait		= ait_b;
 	Fvector						detector_pos = Position();
 	for(;ait_b!=ait_e;++ait_b)
 	{
-		CArtefact *pAf			= ait_b->first;
-		if(pAf->H_Parent())		
+		CArtefact* pAf = smart_cast<CArtefact*>(ait_b->first);
+		CObject* pObj = ait_b->first;
+
+		if((pAf && pAf->H_Parent()) || (pObj && pObj->H_Parent()))
 			continue;
 
-		ui().RegisterItemToDraw	(pAf->Position(), pAf->cNameSect());
+		ui().RegisterItemToDraw	(pAf ? pAf->Position() : pObj->Position(), pAf ? pAf->cNameSect() : pObj->cNameSect());
 
-		if(pAf->CanBeInvisible())
+		if(pAf && pAf->CanBeInvisible())
 		{
 			float d = detector_pos.distance_to(pAf->Position());
 			if(d<m_fAfVisRadius)

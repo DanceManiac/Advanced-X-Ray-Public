@@ -32,20 +32,23 @@ void CEliteDetector::UpdateAf()
 	ui().Clear							();
 	if(m_artefacts.m_ItemInfos.size()==0)	return;
 
-	CAfList::ItemsMapIt it_b	= m_artefacts.m_ItemInfos.begin();
-	CAfList::ItemsMapIt it_e	= m_artefacts.m_ItemInfos.end();
-	CAfList::ItemsMapIt it		= it_b;
+	CAfList<CObject>::ItemsMapIt it_b	= m_artefacts.m_ItemInfos.begin();
+	CAfList<CObject>::ItemsMapIt it_e	= m_artefacts.m_ItemInfos.end();
+	CAfList<CObject>::ItemsMapIt it		= it_b;
 
 	Fvector						detector_pos = Position();
+
 	for(;it_b!=it_e;++it_b)//only nearest
 	{
-		CArtefact *pAf			= it_b->first;
-		if(pAf->H_Parent())		
+		CArtefact*	pAf		= smart_cast<CArtefact*>(it_b->first);
+		CObject*	pObj	= it_b->first;
+
+		if ((pAf && pAf->H_Parent()) || (pObj && pObj->H_Parent()))
 			continue;
 
-		ui().RegisterAf			(pAf->Position());
+		ui().RegisterAf			(pAf ? pAf->Position() : pObj->Position());
 
-		if(pAf->CanBeInvisible())
+		if (pAf && pAf->CanBeInvisible())
 		{
 			float d = detector_pos.distance_to(pAf->Position());
 			if(d<m_fAfVisRadius)

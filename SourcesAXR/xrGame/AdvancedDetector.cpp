@@ -31,26 +31,31 @@ void CAdvancedDetector::UpdateAf()
 	ui().SetValue				(0.0f,Fvector().set(0,0,0));
 	if(m_artefacts.m_ItemInfos.size()==0)	return;
 
-	CAfList::ItemsMapIt it_b	= m_artefacts.m_ItemInfos.begin();
-	CAfList::ItemsMapIt it_e	= m_artefacts.m_ItemInfos.end();
-	CAfList::ItemsMapIt it		= it_b;
+	CAfList<CObject>::ItemsMapIt it_b	= m_artefacts.m_ItemInfos.begin();
+	CAfList<CObject>::ItemsMapIt it_e	= m_artefacts.m_ItemInfos.end();
+	CAfList<CObject>::ItemsMapIt it		= it_b;
+
 	float min_dist				= flt_max;
 
 	Fvector						detector_pos = Position();
+
+	CArtefact*	pAf		= smart_cast<CArtefact*>(it_b->first);
+	CObject*	pObj	= it_b->first;
+
 	for(;it_b!=it_e;++it_b)//only nearest
 	{
-		CArtefact *pAf			= it_b->first;
-		if(pAf->H_Parent())		
+		if ((pAf && pAf->H_Parent()) || (pObj && pObj->H_Parent()))
 			continue;
 
-		float d					= detector_pos.distance_to(pAf->Position());
+		float d = detector_pos.distance_to(pAf ? pAf->Position() : pObj->Position());
+
 		if( d < min_dist)
 		{
 			min_dist	= d;
 			it			= it_b;
 		}
 		
-		if(pAf->CanBeInvisible())
+		if(pAf && pAf->CanBeInvisible())
 		{
 			if(d<m_fAfVisRadius)
 				pAf->SwitchVisibility(true);
@@ -59,7 +64,6 @@ void CAdvancedDetector::UpdateAf()
 		
 	ITEM_INFO& af_info		= it->second;
 	ITEM_TYPE* item_type	= af_info.curr_ref;
-	CArtefact *pCurrentAf	= it->first;
 
 	float dist				= min_dist;
 	float fRelPow			= (dist/m_fAfDetectRadius);
@@ -67,7 +71,7 @@ void CAdvancedDetector::UpdateAf()
 
 	//direction
 	Fvector					dir_to_artefact;
-	dir_to_artefact.sub		(pCurrentAf->Position(), Device.vCameraPosition);
+	dir_to_artefact.sub		(pAf ? pAf->Position() : pObj->Position(), Device.vCameraPosition);
 	dir_to_artefact.normalize();
 	float _ang_af			= dir_to_artefact.getH();
 	float _ang_cam			= Device.vCameraDirection.getH();
