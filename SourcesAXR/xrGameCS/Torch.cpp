@@ -172,27 +172,24 @@ void CTorch::Switch()
 
 	m_bActivated = true;
 
-	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
-
-	int m_iAnimHandsCnt = 1, anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
-
-	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
-		m_iAnimHandsCnt = pSettings->r_u32(anim_sect, "single_handed_anim");
+	int anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
 
 	g_block_all_except_movement = true;
 	g_actor_allow_ladder = false;
 
+	LPCSTR use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
+	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
+	float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
+
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
-		g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", false, 1.0f);
-		m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", 1.0f);
+		g_player_hud->script_anim_play(!Actor()->inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed);
+
+		if (use_cam_effector)
+			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+
+		m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
 	}
-
-	shared_str use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
-	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
-
-	if (!effector && use_cam_effector != nullptr)
-		AddEffector(Actor(), effUseItem, use_cam_effector, effector_intensity);
 
 	if (pSettings->line_exist(anim_sect, "snd_using"))
 	{
@@ -218,8 +215,6 @@ void CTorch::UpdateUseAnim()
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 	bool bActive = !m_switched_on;
 
-	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
-
 	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bSwitched) && IsActorAlive)
 	{
 		m_iActionTiming = Device.dwTimeGlobal;
@@ -238,9 +233,6 @@ void CTorch::UpdateUseAnim()
 			g_actor_allow_ladder = true;
 			Actor()->m_bActionAnimInProcess = false;
 			m_bActivated = false;
-
-			if (effector)
-				RemoveEffector(Actor(), effUseItem);
 		}
 	}
 }
