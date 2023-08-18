@@ -243,6 +243,9 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 
 	m_bEatAnimActive		= false;
 	m_bActionAnimInProcess	= false;
+	m_bNVGSwitched			= false;
+	m_iNVGAnimLength		= 0;
+	m_iActionTiming			= 0;
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
@@ -2576,7 +2579,7 @@ bool CActor::unlimited_ammo()
 
 void CActor::CheckNVGAnimation()
 {
-	CWeapon* Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
@@ -2599,6 +2602,8 @@ void CActor::CheckNVGAnimation()
 
 	m_bNVGActivated = true;
 
+	CEffectorCam* effector = Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+
 	int m_iAnimHandsCnt = 1, anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
 
 	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
@@ -2609,9 +2614,15 @@ void CActor::CheckNVGAnimation()
 
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
-		g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", false, 1.0f);
-		m_iNVGAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", 1.0f);
+		g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", false, 1.0f);
+		m_iNVGAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", 1.0f);
 	}
+
+	shared_str use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
+	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
+
+	if (!effector && use_cam_effector != nullptr)
+		AddEffector(this, effUseItem, use_cam_effector, effector_intensity);
 
 	if (pSettings->line_exist(anim_sect, "snd_using"))
 	{
@@ -2626,14 +2637,14 @@ void CActor::CheckNVGAnimation()
 	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
 
 	m_bNVGSwitched = false;
-	Actor()->m_bActionAnimInProcess = true;
+	m_bActionAnimInProcess = true;
 }
 
 void CActor::UpdateUseAnim()
 {
-	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 
-	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bNVGSwitched) && IsActorAlive)
+	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bNVGSwitched) && g_Alive())
 	{
 		m_iActionTiming = Device.dwTimeGlobal;
 		SwitchNightVision(!m_bNightVisionOn);
@@ -2642,15 +2653,18 @@ void CActor::UpdateUseAnim()
 
 	if (m_bNVGActivated)
 	{
-		if ((m_iNVGAnimLength <= Device.dwTimeGlobal) || !IsActorAlive)
+		if ((m_iNVGAnimLength <= Device.dwTimeGlobal) || !g_Alive())
 		{
 			m_iNVGAnimLength = Device.dwTimeGlobal;
 			m_iActionTiming = Device.dwTimeGlobal;
 			m_action_anim_sound.stop();
 			g_block_all_except_movement = false;
 			g_actor_allow_ladder = true;
-			Actor()->m_bActionAnimInProcess = false;
+			m_bActionAnimInProcess = false;
 			m_bNVGActivated = false;
+
+			if (effector)
+				RemoveEffector(Actor(), effUseItem);
 		}
 	}
 }
