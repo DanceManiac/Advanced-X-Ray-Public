@@ -207,7 +207,8 @@ public:
 			void		UpdateArtefactsOnBelt();
 			void		UpdateArtefactsInRuck();
 			void		UpdateSkills();
-			void		UpdateUseAnim();
+			void		UpdateNVGUseAnim();
+			void		UpdateMaskUseAnim();
 
 protected:
 	//звук тяжелого дыхания
@@ -703,6 +704,7 @@ public:
 			void				CheckNVGAnimation				();
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
+			void				CleanMask						();
 #ifdef DEBUG
 			void				NoClipFly						(int cmd);
 #endif //DEBUG
@@ -803,6 +805,8 @@ public:
 	void					unblock_action(EGameActions cmd);
 	// Real Wolf. End. 14.10.2014
 
+	bool					MaskClearInProcess() { return m_bMaskClear; }
+
 	bool					m_bEatAnimActive;
 	bool					m_bActionAnimInProcess;
 	CActorSkills*			ActorSkills;
@@ -812,8 +816,11 @@ protected:
 	bool					m_bNightVisionAllow;
 	bool					m_bNVGActivated;
 	bool					m_bNVGSwitched;
+	bool					m_bMaskAnimActivated;
+	bool					m_bMaskClear;
 	int						m_iNVGAnimLength;
 	int						m_iActionTiming;
+	int						m_iMaskAnimLength;
 
 	ref_sound				m_action_anim_sound;
 

@@ -875,6 +875,11 @@ float CGamePersistent::GetActorIntoxication()
 	return 0.0f;
 }
 
+bool CGamePersistent::GetClearMaskProcess()
+{
+	return Actor()->MaskClearInProcess();
+}
+
 bool CGamePersistent::GetActorNightvision()
 {
 	return	(Actor()->GetNightVisionStatus());

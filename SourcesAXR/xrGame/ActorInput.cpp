@@ -126,6 +126,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			SwitchTorch();
 			break;
 		}
+	case kCLEAN_MASK:
+		{
+			CleanMask();
+			break;
+		}
 
 	case kDETECTOR:
 		{

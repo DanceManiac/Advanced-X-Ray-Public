@@ -27,6 +27,7 @@ enum	EGameActions
 						
 	kTORCH,
 	kNIGHT_VISION,
+	kCLEAN_MASK,
 	kDETECTOR,
 	kTURN_ENGINE,
 	kSWITCH_HORN,

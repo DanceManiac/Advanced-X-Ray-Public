@@ -231,4 +231,7 @@
 	<string id="kb_flashlight_on">
 		<text>Тактический фонарик</text>
 	</string>
+	<string id="kb_clean_mask">
+		<text>Протереть маску</text>
+	</string>
 </string_table>

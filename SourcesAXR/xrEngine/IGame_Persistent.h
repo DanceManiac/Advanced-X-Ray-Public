@@ -145,6 +145,9 @@ public:
 	virtual float					GetActorPower		() { return 0; };
 	virtual float					GetActorBleeding	() { return 0; };
 	virtual float					GetActorIntoxication() { return 0; };
+	virtual float					GetRainDropsFactor	() { return 0; };
+	virtual void					SetRainDropsFactor	(float factor) {};
+	virtual bool					GetClearMaskProcess	() { return 0; };
 	virtual bool					GetActorAliveStatus () { return 0; };
 	virtual bool					GetActor			() { return 0; };
 	virtual bool					GetActorNightvision	() { return 0; };

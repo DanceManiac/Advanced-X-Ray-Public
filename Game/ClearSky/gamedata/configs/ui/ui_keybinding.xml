@@ -41,14 +41,15 @@
 		<command id="kb_switch_horn"					exe="switch_horn"/>	
 	</group>
 	<group name="kb_grp_inventory">
-		<command id="kb_inventory"				exe="inventory"/>
-		<command id="kb_active_jobs"			exe="active_jobs"/>
+		<command id="kb_inventory"					exe="inventory"/>
+		<command id="kb_active_jobs"				exe="active_jobs"/>
 		<command id="kb_torch"						exe="torch"/>
-    <command id="kb_detector"					exe="show_detector"/>
-    <command id="kb_night_vision"			exe="night_vision"/>
-		<command id="kb_use_bandage"			exe="use_bandage"/>
-		<command id="kb_use_medkit"				exe="use_medkit"/>
-		<command id="kb_drop"						  exe="drop"/>		
+		<command id="kb_detector"					exe="show_detector"/>
+		<command id="kb_night_vision"				exe="night_vision"/>
+		<command id="kb_clean_mask"					exe="clean_mask"/>
+		<command id="kb_use_bandage"				exe="use_bandage"/>
+		<command id="kb_use_medkit"					exe="use_medkit"/>
+		<command id="kb_drop"						exe="drop"/>		
 	</group>
 	<group name="kb_grp_common">
 		<command id="kb_alife_command"	  exe="alife_command"/>			

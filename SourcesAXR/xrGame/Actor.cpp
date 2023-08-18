@@ -244,8 +244,10 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_bEatAnimActive		= false;
 	m_bActionAnimInProcess	= false;
 	m_bNVGSwitched			= false;
+	m_bMaskClear			= false;
 	m_iNVGAnimLength		= 0;
 	m_iActionTiming			= 0;
+	m_iMaskAnimLength		= 0;
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
@@ -1559,7 +1561,10 @@ void CActor::shedule_Update	(u32 DT)
 	if (Actor()->m_bActionAnimInProcess)
 	{
 		if (m_bNVGActivated)
-			UpdateUseAnim();
+			UpdateNVGUseAnim();
+
+		if (m_bMaskAnimActivated)
+			UpdateMaskUseAnim();
 
 		if (inventory().m_bTakeItemActivated)
 			inventory().UpdateUseAnim(this);
@@ -2643,7 +2648,7 @@ void CActor::CheckNVGAnimation()
 	m_bActionAnimInProcess = true;
 }
 
-void CActor::UpdateUseAnim()
+void CActor::UpdateNVGUseAnim()
 {
 	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bNVGSwitched) && g_Alive())
 	{
@@ -2663,6 +2668,84 @@ void CActor::UpdateUseAnim()
 			g_actor_allow_ladder = true;
 			m_bActionAnimInProcess = false;
 			m_bNVGActivated = false;
+		}
+	}
+}
+
+void CActor::CleanMask()
+{
+	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "clean_mask_section", nullptr);
+
+	if (!anim_sect)
+		return;
+
+	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+	if (!(pHelmet && pHelmet->m_b_HasGlass) && !(pOutfit && pOutfit->m_b_HasGlass))
+		return;
+
+	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
+		return;
+
+	m_bMaskAnimActivated = true;
+
+	int anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
+
+	g_block_all_except_movement = true;
+	g_actor_allow_ladder = false;
+
+	LPCSTR use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
+	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
+	float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
+
+	if (pSettings->line_exist(anim_sect, "anm_use"))
+	{
+		g_player_hud->script_anim_play(!inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed);
+
+		if (use_cam_effector)
+			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+
+		m_iMaskAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
+	}
+
+	if (pSettings->line_exist(anim_sect, "snd_using"))
+	{
+		if (m_action_anim_sound._feedback())
+			m_action_anim_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(anim_sect, "snd_using");
+		m_action_anim_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_action_anim_sound.play(NULL, sm_2D);
+	}
+
+	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
+
+	m_bMaskClear = false;
+	m_bActionAnimInProcess = true;
+}
+
+void CActor::UpdateMaskUseAnim()
+{
+	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bMaskClear) && g_Alive())
+	{
+		m_iActionTiming = Device.dwTimeGlobal;
+		m_bMaskClear = true;
+	}
+
+	if (m_bMaskAnimActivated)
+	{
+		if ((m_iMaskAnimLength <= Device.dwTimeGlobal) || !g_Alive())
+		{
+			m_iMaskAnimLength = Device.dwTimeGlobal;
+			m_iActionTiming = Device.dwTimeGlobal;
+			m_action_anim_sound.stop();
+			g_block_all_except_movement = false;
+			g_actor_allow_ladder = true;
+			m_bActionAnimInProcess = false;
+			m_bMaskAnimActivated = false;
+			m_bMaskClear = false;
 		}
 	}
 }
