@@ -401,7 +401,7 @@ void CTorch::UpdateCL()
 {
 	inherited::UpdateCL			();
 
-	if (Actor()->m_bActionAnimInProcess)
+	if (Actor()->m_bActionAnimInProcess && m_bActivated)
 		UpdateUseAnim();
 
 	if (!m_switched_on)			return;

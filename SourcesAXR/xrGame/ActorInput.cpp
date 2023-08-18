@@ -638,7 +638,8 @@ void CActor::set_input_external_handler(CActorInputHandler *handler)
 
 void CActor::SwitchNightVision()
 {
-	SwitchNightVision(!m_bNightVisionOn);
+	if (!Actor()->m_bActionAnimInProcess)
+		CheckNVGAnimation();
 }
 
 void CActor::SwitchTorch()

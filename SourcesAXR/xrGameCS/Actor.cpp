@@ -99,6 +99,9 @@ u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "de
 ENGINE_API extern int ps_r__ShaderNVG;
 extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;
 
+extern bool g_block_all_except_movement;
+extern bool g_actor_allow_ladder;
+
 CActor::CActor() : CEntityAlive()
 {
 	encyclopedia_registry	= xr_new<CEncyclopediaRegistryWrapper	>();
@@ -1438,6 +1441,9 @@ void CActor::shedule_Update	(u32 DT)
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();
 
+	if (Actor()->m_bActionAnimInProcess && m_bNVGActivated)
+		UpdateUseAnim();
+
 	if (TimerManager)
 	{
 		TimerManager->Update();
@@ -2480,20 +2486,88 @@ void CActor::On_LostEntity()
 	psCamInert = prev_cam_inert_value;
 }
 
+void CActor::CheckNVGAnimation()
+{
+	CWeapon* Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+	if (Wpn && Wpn->IsZoomed())
+		return;
+
+	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "switch_nightvision_section", nullptr);
+
+	if (!anim_sect)
+	{
+		SwitchNightVision(!m_bNightVisionOn);
+		return;
+	}
+
+	if (!(pOutfit && pOutfit->m_NightVisionSect.size()))
+		return;
+
+	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
+		return;
+
+	m_bNVGActivated = true;
+
+	int m_iAnimHandsCnt = 1, anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
+
+	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
+		m_iAnimHandsCnt = pSettings->r_u32(anim_sect, "single_handed_anim");
+
+	g_block_all_except_movement = true;
+	g_actor_allow_ladder = false;
+
+	if (pSettings->line_exist(anim_sect, "anm_use"))
+	{
+		g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", false, 1.0f);
+		m_iNVGAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", 1.0f);
+	}
+
+	if (pSettings->line_exist(anim_sect, "snd_using"))
+	{
+		if (m_action_anim_sound._feedback())
+			m_action_anim_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(anim_sect, "snd_using");
+		m_action_anim_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_action_anim_sound.play(NULL, sm_2D);
+	}
+
+	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
+
+	m_bNVGSwitched = false;
+	Actor()->m_bActionAnimInProcess = true;
+}
+
+void CActor::UpdateUseAnim()
+{
+	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+
+	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bNVGSwitched) && IsActorAlive)
+	{
+		m_iActionTiming = Device.dwTimeGlobal;
+		SwitchNightVision(!m_bNightVisionOn);
+		m_bNVGSwitched = true;
+	}
+
+	if (m_bNVGActivated)
+	{
+		if ((m_iNVGAnimLength <= Device.dwTimeGlobal) || !IsActorAlive)
+		{
+			m_iNVGAnimLength = Device.dwTimeGlobal;
+			m_iActionTiming = Device.dwTimeGlobal;
+			m_action_anim_sound.stop();
+			g_block_all_except_movement = false;
+			g_actor_allow_ladder = true;
+			Actor()->m_bActionAnimInProcess = false;
+			m_bNVGActivated = false;
+		}
+	}
+}
+
 void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 {
-	CWeapon* wpn1{}, *wpn2{};
-
-	if (inventory().ItemFromSlot(PISTOL_SLOT))
-		wpn1 = smart_cast<CWeapon*>(inventory().ItemFromSlot(PISTOL_SLOT));
-	if (inventory().ItemFromSlot(RIFLE_SLOT))
-		wpn2 = smart_cast<CWeapon*>(inventory().ItemFromSlot(RIFLE_SLOT));
-
-	if (wpn1 && wpn1->IsZoomed())
-		return;
-	if (wpn2 && wpn2->IsZoomed())
-		return;
-
 	m_bNightVisionOn = vision_on;
 
 	if (!m_night_vision)
