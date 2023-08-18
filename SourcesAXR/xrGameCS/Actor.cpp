@@ -1444,8 +1444,14 @@ void CActor::shedule_Update	(u32 DT)
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();
 
-	if (Actor()->m_bActionAnimInProcess && m_bNVGActivated)
-		UpdateUseAnim();
+	if (Actor()->m_bActionAnimInProcess)
+	{
+		if (m_bNVGActivated)
+			UpdateUseAnim();
+
+		if (inventory().m_bTakeItemActivated)
+			inventory().UpdateUseAnim(this);
+	}
 
 	if (TimerManager)
 	{

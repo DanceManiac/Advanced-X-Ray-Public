@@ -55,9 +55,10 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			
 			if( inventory().CanTakeItem(smart_cast<CInventoryItem*>(_GO)) )
 			{
-				Obj->H_SetParent		(smart_cast<CObject*>(this));
-				
-				inventory().Take(_GO, false, true);
+				const bool use_pickup_anim = (type == GE_OWNERSHIP_TAKE) && (Position().distance_to(_GO->Position()) > 0.2f);
+
+				if (!Actor()->m_bActionAnimInProcess)
+					inventory().TakeItemAnimCheck(_GO, Obj, use_pickup_anim);
 			}
 			else
 			{

@@ -72,6 +72,7 @@ public:
 	bool					Action				(s32 cmd, u32 flags);
 	void					ActiveWeapon		(u32 slot);
 	void					Update				();
+	void					UpdateUseAnim		(CActor* actor);
 	// Ищет на поясе аналогичный IItem
 	PIItem					Same				(const PIItem pIItem, bool bSearchRuck) const;
 	// Ищет на поясе IItem для указанного слота
@@ -114,11 +115,21 @@ public:
 	void					SetSlotsBlocked		(u16 mask, bool bBlock);
 
 	void					ChooseItmAnimOrNot	(PIItem pIItem);
+	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TIItemContainer			m_activ_last_items;
 	TISlotArr				m_slots;
+
+	bool					m_bTakeItemActivated;
+	bool					m_bItemTaked;
+	int						m_iTakeAnimLength;
+	int						m_iActionTiming;
+
+	CGameObject*			Object;
+
+	ref_sound				m_action_anim_sound;
 
 	//возвращает все кроме PDA в слоте и болта
 	void				AddAvailableItems			(TIItemContainer& items_container, bool for_trade) const;
