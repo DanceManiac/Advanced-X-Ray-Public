@@ -1030,13 +1030,24 @@ void player_hud::update_script_item()
 
 	if (script_anim_item_model)
 	{
-		script_anim_item_model->UpdateTracks();
-		script_anim_item_model->dcast_PKinematics()->CalculateBones_Invalidate();
-		script_anim_item_model->dcast_PKinematics()->CalculateBones(TRUE);
+		if (script_anim_item_model->dcast_PKinematicsAnimated())
+			script_anim_item_model->dcast_PKinematicsAnimated()->UpdateTracks();
+
+		script_anim_item_model->CalculateBones_Invalidate();
+		script_anim_item_model->CalculateBones(TRUE);
 	}
 }
 
-u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool bMixIn, float speed)
+void player_hud::SetScriptItemVisible(bool visible)
+{
+	if (script_anim_item_model)
+	{
+		u16 root_id = script_anim_item_model->LL_GetBoneRoot();
+		script_anim_item_model->LL_SetBoneVisible(root_id, visible, TRUE);
+	}
+}
+
+u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool bMixIn, float speed, LPCSTR attach_visual)
 {
 	xr_string pos = "hands_position";
 	xr_string rot = "hands_orientation";
@@ -1052,11 +1063,22 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 	Fvector rrot = READ_IF_EXISTS(pSettings, r_fvector3, section, rot.c_str(), def);
 
 	if (pSettings->line_exist(section, "item_visual"))
+		attach_visual = pSettings->r_string(section, "item_visual");
+
+	if (attach_visual)
 	{
-		script_anim_item_model = ::Render->model_Create(pSettings->r_string(section, "item_visual"))->dcast_PKinematicsAnimated();
+		script_anim_item_model = ::Render->model_Create(attach_visual)->dcast_PKinematics();
 		item_pos[0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "item_position", def);
 		item_pos[1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "item_orientation", def);
 		script_anim_item_attached = READ_IF_EXISTS(pSettings, r_bool, section, "item_attached", true);
+		script_anim_item_visible = READ_IF_EXISTS(pSettings, r_bool, section, "item_visible", true);
+
+		if (script_anim_item_model)
+		{
+			u16 root_id = script_anim_item_model->LL_GetBoneRoot();
+			script_anim_item_model->LL_SetBoneVisible(root_id, script_anim_item_visible, TRUE);
+		}
+
 		m_attach_idx = READ_IF_EXISTS(pSettings, r_u8, section, "attach_place_idx", 0);
 
 		if (!script_anim_item_attached)
@@ -1095,7 +1117,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	const motion_descr& M = phm->m_animations[Random.randI(phm->m_animations.size())];
 
-	if (script_anim_item_model)
+	if (script_anim_item_model && script_anim_item_model->dcast_PKinematicsAnimated())
 	{
 		shared_str item_anm_name;
 		if (phm->m_base_name != phm->m_additional_name)
@@ -1103,26 +1125,26 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 		else
 			item_anm_name = M.name;
 
-		MotionID M2 = script_anim_item_model->ID_Cycle_Safe(item_anm_name);
+		MotionID M2 = script_anim_item_model->dcast_PKinematicsAnimated()->ID_Cycle_Safe(item_anm_name);
 		if (!M2.valid())
-			M2 = script_anim_item_model->ID_Cycle_Safe("idle");
+			M2 = script_anim_item_model->dcast_PKinematicsAnimated()->ID_Cycle_Safe("idle");
 
 		R_ASSERT3(M2.valid(), "model %s has no motion [idle] ", pSettings->r_string(m_sect_name, "item_visual"));
 
-		u16 root_id = script_anim_item_model->dcast_PKinematics()->LL_GetBoneRoot();
-		CBoneInstance& root_binst = script_anim_item_model->dcast_PKinematics()->LL_GetBoneInstance(root_id);
+		u16 root_id = script_anim_item_model->LL_GetBoneRoot();
+		CBoneInstance& root_binst = script_anim_item_model->LL_GetBoneInstance(root_id);
 		root_binst.set_callback_overwrite(TRUE);
 		root_binst.mTransform.identity();
 
-		u16 pc = script_anim_item_model->partitions().count();
+		u16 pc = script_anim_item_model->dcast_PKinematicsAnimated()->partitions().count();
 		for (u16 pid = 0; pid < pc; ++pid)
 		{
-			CBlend* B = script_anim_item_model->PlayCycle(pid, M2, bMixIn);
+			CBlend* B = script_anim_item_model->dcast_PKinematicsAnimated()->PlayCycle(pid, M2, bMixIn);
 			R_ASSERT(B);
 			B->speed *= speed;
 		}
 
-		script_anim_item_model->dcast_PKinematics()->CalculateBones_Invalidate();
+		script_anim_item_model->CalculateBones_Invalidate();
 	}
 
 	if (hand == 0) // right hand

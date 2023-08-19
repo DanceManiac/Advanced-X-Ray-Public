@@ -281,7 +281,7 @@ public:
 	void			render_item_ui		();
 	bool			render_item_ui_query();
 	u32				anim_play			(u16 part, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed, u16 override_part = u16(-1));
-	u32				script_anim_play	(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f);
+	u32				script_anim_play	(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f, LPCSTR attach_visual = nullptr);
 	const shared_str& section_name		() const {return m_sect_name;}
 
 	attachable_hud_item* create_hud_item(const shared_str& sect);
@@ -302,6 +302,7 @@ public:
 	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);
 	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)	;
+	void			SetScriptItemVisible(bool visible);
 private:
 	void			update_inertion		(Fmatrix& trans);
 	void			update_additional	(Fmatrix& trans);
@@ -330,7 +331,8 @@ private:
 	float								script_anim_offset_factor;
 	bool								m_bStopAtEndAnimIsRunning;
 	bool								script_anim_item_attached;
-	IKinematicsAnimated*				script_anim_item_model;
+	bool								script_anim_item_visible;
+	IKinematics*						script_anim_item_model;
 	Fvector								item_pos[2];
 	Fmatrix								m_item_pos;
 	u8									m_attach_idx;

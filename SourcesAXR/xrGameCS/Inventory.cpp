@@ -171,7 +171,7 @@ void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_
 
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
-		g_player_hud->script_anim_play(!GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed);
+		g_player_hud->script_anim_play(!GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed, GameObj->cNameVisual().c_str());
 
 		if (use_cam_effector)
 			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
@@ -202,6 +202,10 @@ void CInventory::UpdateUseAnim(CActor* actor)
 	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bItemTaked) && IsActorAlive)
 	{
 		m_iActionTiming = Device.dwTimeGlobal;
+
+		bool vis_status = READ_IF_EXISTS(pSettings, r_bool, Object->cNameSect(), "visible_with_take_anim", true);
+
+		g_player_hud->SetScriptItemVisible(vis_status);
 
 		Object->H_SetParent(smart_cast<CObject*>(actor));
 		Take(Object, false, true);

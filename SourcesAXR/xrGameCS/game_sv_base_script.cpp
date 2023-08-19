@@ -47,9 +47,9 @@ bool has_active_tutotial()
 	return (g_tutorial!=NULL);
 }
 
-u32 PlayHudMotion(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f)
+u32 PlayHudMotion(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f, LPCSTR attach_visual = nullptr)
 {
-	return g_player_hud->script_anim_play(hand, itm_name, anm_name, bMixIn, speed);
+	return g_player_hud->script_anim_play(hand, itm_name, anm_name, bMixIn, speed, attach_visual);
 }
 
 void StopHudMotion()
