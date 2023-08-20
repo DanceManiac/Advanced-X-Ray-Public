@@ -23,10 +23,14 @@
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
 #include "../xrPhysics/ElevatorState.h"
+#include "CustomDetector.h"
 
 using namespace InventoryUtilities;
 
 extern bool g_block_all_except_movement;
+
+std::atomic<bool> isHidingInProgressInv(false);
+std::atomic<bool> TakeItemAnimNeeded(false);
 
 // what to block
 u16	INV_STATE_BLOCK_ALL		= 0xffff;
@@ -134,6 +138,37 @@ void CInventory::Clear()
 
 void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim)
 {
+	GameObject = GameObj;
+	Object = Obj;
+	m_bUsePickupAnim = use_pickup_anim;
+
+	if (isHidingInProgressInv.load())
+		return;
+
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!pDet || pDet->IsHidden())
+	{
+		TakeItemAnim(GameObj, Obj, use_pickup_anim);
+		return;
+	}
+
+	isHidingInProgressInv.store(true);
+
+	std::thread hidingThread([&, pDet]
+		{
+			while (pDet && !pDet->IsHidden())
+				pDet->HideDetector(true);
+
+			isHidingInProgressInv.store(false);
+			TakeItemAnimNeeded.store(true);
+		});
+
+	hidingThread.detach();
+}
+
+void CInventory::TakeItemAnim(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim)
+{
 	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "take_item_section", nullptr);
 
 	if (!anim_sect || !use_pickup_anim)
@@ -189,6 +224,18 @@ void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_
 
 void CInventory::UpdateUseAnim(CActor* actor)
 {
+	if (TakeItemAnimNeeded.load())
+	{
+		TakeItemAnim(GameObject, Object, m_bUsePickupAnim);
+		TakeItemAnimNeeded.store(false);
+	}
+
+	if (!m_bTakeItemActivated)
+		return;
+
+	if (!Actor()->m_bActionAnimInProcess)
+		return;
+
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
 	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bItemTaked) && IsActorAlive)
@@ -200,7 +247,7 @@ void CInventory::UpdateUseAnim(CActor* actor)
 		g_player_hud->SetScriptItemVisible(vis_status);
 
 		Object->H_SetParent(smart_cast<CObject*>(actor));
-		Take(Object, false, true);
+		Take(GameObject, false, true);
 
 		m_bItemTaked = true;
 	}

@@ -53,6 +53,7 @@ public:
 	virtual void	UpdateCL				();
 
 			void	Switch					();
+			void	ProcessSwitch			();
 			void	Switch					(bool light_on);
 			bool	torch_active			() const;
 			void	UpdateChargeLevel		(void);

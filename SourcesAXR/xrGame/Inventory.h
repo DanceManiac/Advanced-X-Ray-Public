@@ -129,6 +129,7 @@ public:
 
 	void					ChooseItmAnimOrNot	(PIItem pIItem);
 	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
+	void					TakeItemAnim		(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
@@ -137,10 +138,13 @@ public:
 
 	bool					m_bTakeItemActivated;
 	bool					m_bItemTaked;
+	bool					m_bUsePickupAnim;
 	int						m_iTakeAnimLength;
 	int						m_iActionTiming;
 
-	CGameObject*			Object;
+	CGameObject*			GameObject;
+	CObject*				Object;
+
 
 	ref_sound				m_action_anim_sound;
 

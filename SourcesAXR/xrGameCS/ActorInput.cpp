@@ -120,7 +120,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}
 	case kCLEAN_MASK:
 		{
-			CleanMask();
+			CleanMaskAnimCheckDetector();
 			break;
 		}
 
@@ -594,7 +594,7 @@ void CActor::set_input_external_handler(CActorInputHandler *handler)
 void CActor::SwitchNightVision()
 {
 	if (!Actor()->m_bActionAnimInProcess)
-		CheckNVGAnimation();
+		NVGAnimCheckDetector();
 }
 
 void CActor::SwitchTorch()

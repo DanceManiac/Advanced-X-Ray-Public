@@ -24,6 +24,10 @@
 #include "ActorEffector.h"
 #include "AdvancedXrayGameConstants.h"
 #include "Battery.h"
+#include "CustomDetector.h"
+
+std::atomic<bool> isHidingInProgressTorch(false);
+std::atomic<bool> processSwitchNeeded(false);
 
 static const float		TORCH_INERTION_CLAMP		= PI_DIV_6;
 static const float		TORCH_INERTION_SPEED_MAX	= 7.5f;
@@ -158,6 +162,36 @@ void CTorch::Load(LPCSTR section)
 }
 
 void CTorch::Switch()
+{
+	if (OnClient())
+		return;
+
+	if (isHidingInProgressTorch.load())
+		return;
+
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!pDet || pDet->IsHidden())
+	{
+		ProcessSwitch();
+		return;
+	}
+
+	isHidingInProgressTorch.store(true);
+
+	std::thread hidingThread([&, pDet]
+	{
+		while (pDet && !pDet->IsHidden())
+			pDet->HideDetector(true);
+
+		isHidingInProgressTorch.store(false);
+		processSwitchNeeded.store(true);
+	});
+
+	hidingThread.detach();
+}
+
+void CTorch::ProcessSwitch()
 {
 	if (OnClient())
 		return;
@@ -411,6 +445,12 @@ void CTorch::UpdateChargeLevel(void)
 void CTorch::UpdateCL() 
 {
 	inherited::UpdateCL			();
+
+	if (processSwitchNeeded.load())
+	{
+		ProcessSwitch();
+		processSwitchNeeded.store(false);
+	}
 
 	if (Actor()->m_bActionAnimInProcess && m_bActivated)
 		UpdateUseAnim();

@@ -81,6 +81,7 @@
 #include "../../xrCore/_detail_collision_point.h"
 #include "../xrEngine/Rain.h"
 #include "../xrPhysics/ElevatorState.h"
+#include "CustomDetector.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -114,6 +115,10 @@ int				psActorSleepTime = 1;
 
 ENGINE_API extern int ps_r__ShaderNVG;
 extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;
+
+std::atomic<bool> isHidingInProgress(false);
+std::atomic<bool> CheckNVGAnimNeeded(false);
+std::atomic<bool> CleanMaskAnimNeeded(false);
 
 CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 {
@@ -1558,17 +1563,28 @@ void CActor::shedule_Update	(u32 DT)
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();
 
-	if (Actor()->m_bActionAnimInProcess)
+	if (CheckNVGAnimNeeded.load())
+	{
+		StartNVGAnimation();
+		CheckNVGAnimNeeded.store(false);
+	}
+
+	if (CleanMaskAnimNeeded.load())
+	{
+		CleanMask();
+		CleanMaskAnimNeeded.store(false);
+	}
+
+	if (m_bActionAnimInProcess)
 	{
 		if (m_bNVGActivated)
 			UpdateNVGUseAnim();
 
 		if (m_bMaskAnimActivated)
 			UpdateMaskUseAnim();
-
-		if (inventory().m_bTakeItemActivated)
-			inventory().UpdateUseAnim(this);
 	}
+
+	inventory().UpdateUseAnim(this);
 
 	if (TimerManager)
 	{
@@ -2588,7 +2604,34 @@ bool CActor::unlimited_ammo()
 	return !!psActorFlags.test(AF_UNLIMITEDAMMO);
 }
 
-void CActor::CheckNVGAnimation()
+void CActor::NVGAnimCheckDetector()
+{
+	if (isHidingInProgress.load())
+		return;
+
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!pDet || pDet->IsHidden())
+	{
+		StartNVGAnimation();
+		return;
+	}
+
+	isHidingInProgress.store(true);
+
+	std::thread hidingThread([&, pDet]
+		{
+			while (pDet && !pDet->IsHidden())
+				pDet->HideDetector(true);
+
+			isHidingInProgress.store(false);
+			CheckNVGAnimNeeded.store(true);
+		});
+
+	hidingThread.detach();
+}
+
+void CActor::StartNVGAnimation()
 {
 	CWeapon* Wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
@@ -2670,6 +2713,33 @@ void CActor::UpdateNVGUseAnim()
 			m_bNVGActivated = false;
 		}
 	}
+}
+
+void CActor::CleanMaskAnimCheckDetector()
+{
+	if (isHidingInProgress.load())
+		return;
+
+	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!pDet || pDet->IsHidden())
+	{
+		CleanMask();
+		return;
+	}
+
+	isHidingInProgress.store(true);
+
+	std::thread hidingThread([&, pDet]
+		{
+			while (pDet && !pDet->IsHidden())
+				pDet->HideDetector(true);
+
+			isHidingInProgress.store(false);
+			CleanMaskAnimNeeded.store(true);
+		});
+
+	hidingThread.detach();
 }
 
 void CActor::CleanMask()

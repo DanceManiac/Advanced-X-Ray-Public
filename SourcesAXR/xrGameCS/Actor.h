@@ -714,7 +714,9 @@ public:
 	virtual	bool				InventoryAllowSprint			();
 	virtual void				OnNextWeaponSlot				();
 	virtual void				OnPrevWeaponSlot				();
-			void				CheckNVGAnimation				();
+			void				NVGAnimCheckDetector			();
+			void				CleanMaskAnimCheckDetector		();
+			void				StartNVGAnimation				();
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
 			void				CleanMask						();
