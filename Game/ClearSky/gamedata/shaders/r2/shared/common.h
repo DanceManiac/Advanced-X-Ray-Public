@@ -52,4 +52,14 @@ float2 	calc_xz_wave 	(float2 dir2D, float frac)		{
 	return  lerp	(ctrl_A, ctrl_B, frac);			//!This calculates tree wave. No changes made
 }
 
+float4 convert_to_screen_space(float4 proj)
+{
+	float4 screen;
+	screen.x = (proj.x + proj.w)*0.5;
+	screen.y = (proj.w - proj.y)*0.5;
+	screen.z = proj.z;
+	screen.w = proj.w;
+	return screen;
+}
+
 #endif
