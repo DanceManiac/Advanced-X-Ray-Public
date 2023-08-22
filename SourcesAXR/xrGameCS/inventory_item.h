@@ -148,6 +148,9 @@ public:
 	shared_str					m_nameShort;
 	shared_str					m_nameComplex;
 	shared_str					m_custom_text;
+	CGameFont*					m_custom_text_font;
+	u32							m_custom_text_clr_inv;
+	u32							m_custom_text_clr_hud;
 
 	EItemPlace					m_eItemCurrPlace;
 

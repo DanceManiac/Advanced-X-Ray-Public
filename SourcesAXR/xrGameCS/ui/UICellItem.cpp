@@ -6,7 +6,9 @@
 #include "../xr_level_controller.h"
 #include "../../xrEngine/xr_input.h"
 #include "../level.h"
+#include "../UIGameSP.h"
 #include "object_broker.h"
+#include "UIActorMenu.h"
 #include "UIXmlInit.h"
 #include "UIProgressBar.h"
 #include "UIGameCustom.h"
@@ -190,6 +192,26 @@ void CUICellItem::UpdateIndicators()
 			pos.y				= size.y - up_size.y - 4.0f;// making pos at bottom-end of cell
 			m_custom_text->SetWndPos	(pos);
 			m_custom_text->SetTextST	(*item->m_custom_text);
+			
+			if (item->m_custom_text_clr_inv != NULL)
+			{
+				CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+				if (pGameSP && pGameSP->ActorMenu().IsShown())// Hrust: that's bad, but check with GetPickUpItem() makes a bug with item text colorizing in inventory when the same item is targeted
+				{
+					m_custom_text->SetTextColor(item->m_custom_text_clr_inv);
+				}
+				else
+				{
+					if (item->m_custom_text_clr_hud != NULL)
+						m_custom_text->SetTextColor(item->m_custom_text_clr_hud);
+					else
+						m_custom_text->SetTextColor(item->m_custom_text_clr_inv);
+				}
+			}
+			if (item->m_custom_text_font != nullptr)
+			{
+				m_custom_text->SetFont(item->m_custom_text_font);
+			}
 		}
 	}
 	m_upgrade->Show				(m_has_upgrade);
