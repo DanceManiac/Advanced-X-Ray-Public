@@ -39,6 +39,7 @@
 #include "AdvancedXrayGameConstants.h"
 
 extern int hud_adj_mode;
+extern bool g_block_actor_movement;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
@@ -81,7 +82,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}break;
 	}
 
-	if (!g_Alive()) return;
+	if (!g_Alive() || g_block_actor_movement) return;
 
 	if(m_holder && kUSE != cmd)
 	{
@@ -279,7 +280,7 @@ void CActor::IR_OnKeyboardHold(int cmd)
 
 	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
 
-	if (Remote() || !g_Alive())					return;
+	if (Remote() || !g_Alive() || g_block_actor_movement) return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
 	if (IsTalking())							return;
 

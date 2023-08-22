@@ -45,6 +45,7 @@
 
 using namespace luabind;
 bool g_block_all_except_movement;
+bool g_block_actor_movement;
 
 LPCSTR command_line	()
 {
@@ -887,6 +888,16 @@ bool only_movement_allowed()
 	return g_block_all_except_movement;
 }
 
+void block_actor_movement(bool b)
+{
+	g_block_actor_movement = b;
+}
+
+bool is_actor_movement_blocked()
+{
+	return g_block_actor_movement;
+}
+
 void set_actor_allow_ladder(bool b)
 {
 	g_actor_allow_ladder = b;
@@ -1344,6 +1355,8 @@ void CLevel::script_register(lua_State *L)
 	def("set_hud_anm_time",		SetBlendAnmTime),
 	def("only_allow_movekeys",	block_all_except_movement),
 	def("only_movekeys_allowed",only_movement_allowed),
+	def("block_actor_movement", block_actor_movement),
+	def("is_actor_movement_blocked", is_actor_movement_blocked),
 	def("set_actor_allow_ladder", set_actor_allow_ladder),
 	def("actor_ladder_allowed", actor_allow_ladder),
 	def("active_tutorial_name", +[]() { return g_tutorial->GetTutorName(); }),
