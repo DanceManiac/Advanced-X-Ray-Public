@@ -18,7 +18,7 @@
 
 using namespace luabind;
 bool g_block_all_except_movement;
-bool g_block_actor_movement;
+extern bool g_block_actor_movement;
 extern bool g_actor_allow_ladder;
 
 CUISequencer* g_tutorial = NULL;
