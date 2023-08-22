@@ -19,7 +19,7 @@
 
 #include "Artefact.h"
 #include "CustomOutfit.h"
-#include "Backpack.h"
+#include "CustomBackpack.h"
 #include "AdvancedXrayGameConstants.h"
 #include "ActorSkills.h"
 
@@ -232,7 +232,8 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			if (outfit)
 				jump_k *= outfit->m_fJumpSpeed;
 
-			CBackpack* backpack = smart_cast<CBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+
 			if (backpack)
 				jump_k *= backpack->m_fJumpSpeed;
 
@@ -326,7 +327,8 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 						accel_k *= outfit->m_fOverweightWalkK;
 				}
 
-				CBackpack* backpack = smart_cast<CBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+				CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+
 				if (backpack)
 				{
 					accel_k *= backpack->m_fWalkAccel;
@@ -753,7 +755,6 @@ float CActor::MaxWalkWeight() const
 }
 
 #include "artefact.h"
-#include "Backpack.h"
 
 float CActor::get_additional_weight() const
 {
@@ -772,10 +773,10 @@ float CActor::get_additional_weight() const
 			res			+= artefact->AdditionalInventoryWeight();
 	}
 
-	CBackpack* backpack = smart_cast<CBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
 	if (backpack)
 	{
-		res += backpack->AdditionalInventoryWeight();
+		res += backpack->m_additional_weight;
 	}
 
 	CCustomOutfit* pants = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(PANTS_SLOT));

@@ -36,7 +36,7 @@
 #include "../WeaponAmmo.h"
 #include "../Silencer.h"
 #include "../Scope.h"
-#include "../Backpack.h"
+#include "../CustomBackpack.h"
 #include "../GrenadeLauncher.h"
 #include "../Torch.h"
 #include "../PDA.h"
@@ -642,7 +642,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
 	CTorch* torch = smart_cast<CTorch*>(item);
-	CBackpack* backpack = smart_cast<CBackpack*>(item);
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(item);
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(item);
 	CPda* pda = smart_cast<CPda*>(item);
 	CWeaponPistol* pistol = smart_cast<CWeaponPistol*>(item);

@@ -29,6 +29,7 @@
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
 #include "Antigasfilter.h"
+#include "CustomBackpack.h"
 #include "../xrEngine/x_ray.h"
 #include <dinput.h>
 
@@ -349,8 +350,20 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	{
 		if ( WINDOW_KEY_PRESSED == keyboard_action )
 		{
-			g_btnHint->Discard();
-			HideDialog();
+			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
+
+			if (backpack)
+			{
+				if (Actor()->inventory().GetActiveSlot() == BACKPACK_SLOT && Actor()->inventory().ActiveItem())
+				{
+					Actor()->inventory().Activate(NO_ACTIVE_SLOT);
+				}
+			}
+			else
+			{
+				g_btnHint->Discard();
+				HideDialog();
+			}
 		}
 		return true;
 	}

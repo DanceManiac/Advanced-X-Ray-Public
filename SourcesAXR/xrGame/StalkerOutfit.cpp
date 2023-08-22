@@ -1,7 +1,6 @@
 #include "pch_script.h"
 #include "StalkerOutfit.h"
 #include "ActorHelmet.h"
-#include "Backpack.h"
 
 CStalkerOutfit::CStalkerOutfit()
 {
@@ -22,9 +21,6 @@ void CStalkerOutfit::script_register	(lua_State *L)
 			.def(constructor<>()),
 
 		class_<CHelmet,CGameObject>("CHelmet")
-			.def(constructor<>()),
-
-		class_<CBackpack, CGameObject>("CBackpack")
 			.def(constructor<>())
 	];
 }

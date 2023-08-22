@@ -2500,6 +2500,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer">
       <UniqueIdentifier>{6d7a608a-de29-4a07-8c93-097892207606}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\Backpack">
+      <UniqueIdentifier>{31c265cd-318f-4792-988a-c029e1c7b189}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7401,9 +7404,6 @@
     <ClInclude Include="AdvancedXrayGameConstants.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Backpack.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
-    </ClInclude>
     <ClInclude Include="AnomalyDetector.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClInclude>
@@ -7449,6 +7449,9 @@
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="CustomTimer.h" />
+    <ClInclude Include="CustomBackpack.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11105,9 +11108,6 @@
     <ClCompile Include="AdvancedXrayGameConstants.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="Backpack.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
-    </ClCompile>
     <ClCompile Include="AnomalyDetector.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClCompile>
@@ -11158,6 +11158,9 @@
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="CustomTimer.cpp" />
+    <ClCompile Include="CustomBackpack.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ai\monsters\chimera\chimera_attack_state.h">

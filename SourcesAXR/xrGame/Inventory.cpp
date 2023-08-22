@@ -24,6 +24,7 @@
 #include "weaponmagazined.h"
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
+#include "CustomBackpack.h"
 
 using namespace InventoryUtilities;
 
@@ -909,6 +910,23 @@ bool CInventory::Action(u16 cmd, u32 flags)
 				else
 				{
 					Activate(PDA_SLOT);
+				}
+			}
+		}break;
+	case kINVENTORY:
+		{
+			b_send_event = true;
+			if (flags & CMD_START)
+			{
+				if (!smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT))) return false;
+
+				if (GetActiveSlot() == BACKPACK_SLOT && ActiveItem())
+				{
+					Activate(NO_ACTIVE_SLOT);
+				}
+				else
+				{
+					Activate(BACKPACK_SLOT);
 				}
 			}
 		}break;

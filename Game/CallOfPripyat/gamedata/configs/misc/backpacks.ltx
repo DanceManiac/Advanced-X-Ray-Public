@@ -1,93 +1,66 @@
-[backpack_base]
+[backpack_base]:identity_immunities
 GroupControlSection	= spawn_group
-discovery_dependency =
-$spawn 			= "outfit\novice_outfit"
+$spawn 			= "devices\detector_simple"
 $prefetch 		= 32
-class		= E_BKPK
-cform           = skeleton
-visual          = dynamics\outfit\novice_outfit
-actor_visual	= actors\stalker_hero\stalker_hero_novice_1.ogf
-player_hud_section	= actor_hud_01
+class			= E_BKPK
+cform			= skeleton
+visual			= dynamics\outfit\novice_outfit.ogf
 
-ef_equipment_type	= 3
+hud			= backpack_base_hud
+animation_slot		= 3
 
-upgr_icon_x			= 636
-upgr_icon_y			= 0
-upgr_icon_width		= 303
-upgr_icon_height   	= 162
+inv_name		= st_backpack_base
+inv_name_short		= st_backpack_base
+description		= st_backpack_base_descr
 
-full_icon_name		= npc_icon_novice_outfit
+slot			= 12
 
-additional_inventory_weight		= 0		; +max_walk_weight
-additional_inventory_weight2	= 0		;	+40 kg
-full_icon_name					= npc_icon_without_outfit
+inv_weight		= 0.0
 
-default_to_ruck     = false
-sprint_allowed      = true
-control_inertion_factor = 1
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x		= 9
+inv_grid_y		= 14
 
-full_scale_icon		= 0,11		;иконка сталкера в костюме в полный рост
+cost			= 0
+can_trade		= false
+default_to_ruck		= false
 
-immunities_sect			= sect_backpack_immunities
-power_loss				= 0.65
+attach_angle_offset	= -1.303,-1.493,-1.202
+attach_position_offset	= 0.110,-0.019,0.000
 
-; NO RESISTANCE
-burn_protection 				= 0.0
-shock_protection 				= 0.0
-radiation_protection 			= 0.0
-chemical_burn_protection 		= 0.0
-telepatic_protection 			= 0.0
-strike_protection 				= 0.
-explosion_protection 			= 0.
-wound_protection				= 0.
+attach_bone_name	= bip01_l_hand
+auto_attach		= false
 
-hit_fraction_actor				= 0.0
-bones_koeff_protection  		= actor_armor_suit
-artefact_count          = 0
+snd_draw                = mfs_team\item_use\inv_backpack_open
+snd_holster             = mfs_team\item_use\inv_backpack_close
 
-upgrades                = up_gr_firstab_novice_outfit, up_gr_seconab_novice_outfit, up_gr_thirdab_novice_outfit
-installed_upgrades      =
-upgrade_scheme          = upgrade_scheme_novice_outfit
+[backpack_base_hud]:hud_base
+item_visual             = dynamics\devices\dev_backpack\dev_backpack_hud.ogf
 
-[sect_backpack_immunities]
-burn_immunity				= 0.05			;коэффициенты иммунитета самого костюма
-strike_immunity				= 0.0
-shock_immunity				= 0.05
-wound_immunity				= 0.05
-radiation_immunity			= 0.0
-telepatic_immunity			= 0.0
-chemical_burn_immunity		= 0.05
-explosion_immunity			= 0.05
-fire_wound_immunity			= 0.02
+hands_position          = 0,0,0
+hands_position_16x9     = 0,0,0
 
-[sect_backpack_immunities_add]
-burn_immunity				= -0.01			;коэффициенты иммунитета самого костюма
-strike_immunity				= 0.0
-shock_immunity				= -0.01
-wound_immunity				= -0.01
-radiation_immunity			= 0.0
-telepatic_immunity			= 0.0
-chemical_burn_immunity		= -0.01
-explosion_immunity			= -0.01
-fire_wound_immunity			= -0.005
+hands_orientation	= -0.500000,1.000000,1.149999
+hands_orientation_16x9	= 2.349998,2.749999,2.849998
 
-;Тестовый рюкзак
+item_position		= 0,0,0
+item_orientation	= 0,0,0
 
-[backpack_test]:backpack_base
-additional_inventory_weight = +5
-additional_inventory_weight2	= +5
-slot = 12
+aim_hud_offset_pos	= 0,0,0
+aim_hud_offset_rot	= 0,0,0
 
-visual          = dynamics\outfit\novice_outfit
+gl_hud_offset_pos	= 0,0,0
+gl_hud_offset_rot	= 0,0,0
 
-inv_name			= "Тестовый рюкзак"
-inv_name_short		= "Тестовый рюкзак"
-description			= "Тестовый рюкзак"
-inv_weight			= 0.3
+lean_hud_offset_pos	= 0,0,0
+lean_hud_offset_rot	= 0,0,0
 
-inv_grid_width		= 2
-inv_grid_height 	= 2
-inv_grid_x			= 39
-inv_grid_y			= 35
+attach_place_idx	= 0
 
-cost				= 650
+anm_show                = open_b_backpack, open_b_backpack_itm
+anm_show_16x9           = open_b_backpack, open_b_backpack_itm
+anm_idle                = idle_b_backpack, idle_b_backpack_itm
+anm_idle_16x9           = idle_b_backpack, idle_b_backpack_itm
+anm_hide                = close_b_backpack, close_b_backpack_itm
+anm_hide_16x9           = close_b_backpack, close_b_backpack_itm

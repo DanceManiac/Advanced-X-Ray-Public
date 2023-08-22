@@ -2,6 +2,9 @@
 #include "AdvancedXrayGameConstants.h"
 #include "GamePersistent.h"
 #include "game_cl_single.h"
+#include "Actor.h"
+#include "Inventory.h"
+#include "CustomBackpack.h"
 
 bool	m_bKnifeSlotEnabled = false;
 bool	m_bBinocularSlotEnabled = false;
@@ -190,7 +193,8 @@ namespace GameConstants
 
 	bool GetHideWeaponInInventory()
 	{
-		return m_bHideWeaponInInventory;
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
+		return m_bHideWeaponInInventory && (Actor()->inventory().ActiveItem() != backpack);
 	}
 
 	bool GetStopActorIfShoot()

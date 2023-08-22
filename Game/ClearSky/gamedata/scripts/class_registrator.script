@@ -53,8 +53,8 @@ function register(object_factory)
 
 	cs_register	(object_factory, "CTorch",          "se_item.se_item_torch",	"TORCH_S",  "device_torch_s")
 	cs_register	(object_factory, "CStalkerOutfit",  "se_item.se_outfit",		"E_STLK",	"equ_stalker_s")
-	cs_register	(object_factory, "CScope",			"se_item.se_item",			"WP_SCOPE",	"wpn_scope_s")
-	cs_register	(object_factory, "CBackpack",  		"se_item.se_item",			"E_BKPK",	"equ_backpack_s")
+	cs_register	(object_factory, "CScope",		"se_item.se_item",			"WP_SCOPE",	"wpn_scope_s")
+	cs_register	(object_factory, "CCustomBackpack", "se_item.se_item",		"E_BKPK",	"equ_backpack_s")
 	cs_register	(object_factory, "CDetectorAnomaly","se_item.se_detector",		"DET_ANOM",	"device_detector_anomaly_s")
 	
 	cs_register	(object_factory, "CBattery",  		"se_item.se_item",			"S_BATTE",	"obj_battery_s")

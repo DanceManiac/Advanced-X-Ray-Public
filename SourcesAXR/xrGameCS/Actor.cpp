@@ -76,6 +76,7 @@
 #include "../../xrCore/_detail_collision_point.h"
 #include "../xrEngine/Rain.h"
 #include "CustomDetector.h"
+#include "CustomBackpack.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -1879,6 +1880,22 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		{
 		} */
 	}
+
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+	if (backpack)
+	{
+		conditions().ChangeBleeding		(backpack->m_fBleedingRestoreSpeed		* f_update_time);
+		conditions().ChangeHealth		(backpack->m_fHealthRestoreSpeed		* f_update_time);
+		conditions().ChangePower		(backpack->m_fPowerRestoreSpeed			* f_update_time);
+		conditions().ChangeSatiety		(backpack->m_fSatietyRestoreSpeed		* f_update_time);
+		conditions().ChangeThirst		(backpack->m_fThirstRestoreSpeed		* f_update_time);
+		conditions().ChangeRadiation	(backpack->m_fRadiationRestoreSpeed		* f_update_time);
+		conditions().ChangeIntoxication	(backpack->m_fIntoxicationRestoreSpeed	* f_update_time);
+		conditions().ChangeSleepeness	(backpack->m_fSleepenessRestoreSpeed	* f_update_time);
+		conditions().ChangeAlcoholism	(backpack->m_fAlcoholismRestoreSpeed	* f_update_time);
+		conditions().ChangeNarcotism	(backpack->m_fNarcotismRestoreSpeed		* f_update_time);
+		conditions().ChangePsyHealth	(backpack->m_fPsyHealthRestoreSpeed		* f_update_time);
+	}
 }
 
 void CActor::UpdateArtefactsOnBelt()
@@ -2291,6 +2308,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		{
 			res += outfit->m_fHealthRestoreSpeed;
 		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fHealthRestoreSpeed;
+		}
 		break;
 	}
 	case ALife::eRadiationRestoreSpeed:
@@ -2309,6 +2332,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if ( outfit )
 		{
 			res += outfit->m_fRadiationRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fRadiationRestoreSpeed;
 		}
 		break;
 	}
@@ -2331,6 +2360,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		{
 			res += outfit->m_fSatietyRestoreSpeed;
 		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fSatietyRestoreSpeed;
+		}
 		break;
 	}
 	case ALife::ePowerRestoreSpeed:
@@ -2351,6 +2386,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if ( outfit )
 		{
 			res += outfit->m_fPowerRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fPowerRestoreSpeed;
 		}
 		break;
 	}
@@ -2373,6 +2414,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		{
 			res += outfit->m_fBleedingRestoreSpeed;
 		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fBleedingRestoreSpeed;
+		}
 		break;
 	}
 	case ALife::eThirstRestoreSpeed:
@@ -2394,6 +2441,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		{
 			res += outfit->m_fThirstRestoreSpeed;
 		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fThirstRestoreSpeed;
+		}
 		break;
 	}
 	case ALife::eIntoxicationRestoreSpeed:
@@ -2412,6 +2465,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fIntoxicationRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fIntoxicationRestoreSpeed;
 		}
 		break;
 	}
@@ -2432,6 +2491,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		{
 			res += outfit->m_fSleepenessRestoreSpeed;
 		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fSleepenessRestoreSpeed;
+		}
 		break;
 	}
 	case ALife::eAlcoholismRestoreSpeed:
@@ -2450,6 +2515,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fAlcoholismRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fAlcoholismRestoreSpeed;
 		}
 		break;
 	}
@@ -2470,6 +2541,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		{
 			res += outfit->m_fNarcotismRestoreSpeed;
 		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fNarcotismRestoreSpeed;
+		}
 		break;
 	}
 	case ALife::ePsyHealthRestoreSpeed:
@@ -2488,6 +2565,12 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (outfit)
 		{
 			res += outfit->m_fPsyHealthRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fPsyHealthRestoreSpeed;
 		}
 		break;
 	}

@@ -22,6 +22,7 @@
 #include "static_cast_checked.hpp"
 #include "player_hud.h"
 #include "CustomDetector.h"
+#include "CustomBackpack.h"
 
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
@@ -993,6 +994,23 @@ bool CInventory::Action(s32 cmd, u32 flags)
 				else
 				{
 					Activate(PDA_SLOT);
+				}
+			}
+		}break;
+	case kINVENTORY:
+		{
+			b_send_event = true;
+			if (flags & CMD_START)
+			{
+				if (!smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT))) return false;
+
+				if (GetActiveSlot() == BACKPACK_SLOT && ActiveItem())
+				{
+					Activate(NO_ACTIVE_SLOT);
+				}
+				else
+				{
+					Activate(BACKPACK_SLOT);
 				}
 			}
 		}break;

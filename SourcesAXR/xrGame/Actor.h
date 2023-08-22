@@ -209,6 +209,8 @@ public:
 			void		UpdateSkills();
 			void		UpdateNVGUseAnim();
 			void		UpdateMaskUseAnim();
+			float		GetCamHeightFactor() { return m_fCamHeightFactor; }
+			void		SetCamHeightFactor(float height) { m_fCamHeightFactor = height; }
 
 protected:
 	//звук тяжелого дыхания

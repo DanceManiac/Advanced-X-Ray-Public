@@ -534,6 +534,7 @@ static	u16 SlotsToCheck [] = {
 		ARTEFACT_SLOT	,		// 10
 		PDA_SLOT		,
 		PISTOL_SLOT		,
+		BACKPACK_SLOT	,
 };
 
 void	CActor::OnNextWeaponSlot()
@@ -567,6 +568,10 @@ void	CActor::OnNextWeaponSlot()
 			else if (SlotsToCheck[i] == PDA_SLOT)
 			{
 				IR_OnKeyboardPress(kACTIVE_JOBS);
+			}
+			else if (SlotsToCheck[i] == BACKPACK_SLOT)
+			{
+				IR_OnKeyboardPress(kINVENTORY);
 			}
 			else
 				IR_OnKeyboardPress(kWPN_1 + i);

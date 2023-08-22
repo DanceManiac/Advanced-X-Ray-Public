@@ -24,6 +24,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "Inventory.h"
 #include "PDA.h"
+#include "CustomBackpack.h"
 
 CUIGameSP::CUIGameSP()
 :m_game(NULL),m_game_objective(NULL)
@@ -132,7 +133,10 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 				if (psActorFlags.test(AF_3D_PDA) && CurrentGameUI()->PdaMenu().IsShown())
 					pActor->inventory().Activate(NO_ACTIVE_SLOT);
 
-				ShowActorMenu();
+				CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
+
+				if (!backpack)
+					ShowActorMenu();
 			}
 			break;
 		}
