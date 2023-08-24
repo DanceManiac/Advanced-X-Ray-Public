@@ -46,6 +46,7 @@ Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
 Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 0, 255);
 Fvector4 m_FV4NeutralColor = Fvector4().set(170, 170, 170, 255);
 LPCSTR	m_sAfInfluenceMode = "from_belt";
+LPCSTR	m_sMoonPhasesMode = "off";
 //SSFX DoF
 Fvector4 m_FV4DefaultDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
 Fvector4 m_FV4FocusDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
@@ -98,6 +99,7 @@ namespace GameConstants
 		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_bEnableBoreDoF = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ssfx_dof", "bore_dof_enabled", true);
+		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -316,5 +318,10 @@ namespace GameConstants
 	LPCSTR GetAfInfluenceMode()
 	{
 		return m_sAfInfluenceMode;
+	}
+
+	LPCSTR GetMoonPhasesMode()
+	{
+		return m_sMoonPhasesMode;
 	}
 }

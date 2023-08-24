@@ -154,6 +154,9 @@ public:
 
 	CObject*					CurrentControlEntity	( void ) const		{ return pCurrentControlEntity; }
 	void						SetControlEntity		( CObject* O  )		{ pCurrentControlEntity=O; }
+
+	std::string					GetMoonPhase			();
+	u32							GetTimeHours			();
 private:
 	
 	void						make_NetCorrectionPrediction	();

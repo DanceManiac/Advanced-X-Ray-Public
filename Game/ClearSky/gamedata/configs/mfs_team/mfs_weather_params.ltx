@@ -1,10 +1,11 @@
-[environment] ;Различные настройки для погоды
-dynamic_sun_dir = true ;Движение солнца по погодным конфигам
-winter_mode = false ;Зимний режим (влияет на циклы и эффекты)
-weather_dof = false ;Использовать параметры DoF из погоды
-lowland_fog_from_weather = false ;Использовать параметры низинного тумана из погоды
-weather_color_grading = false ;Влияние погоды на цветокоррекцию
-wind_volume_koef = 16.5 ;Коэффицент общей громкости звука ветра
+[environment] ;;Различные настройки для погоды
+dynamic_sun_dir = true			;;Движение солнца по погодным конфигам
+winter_mode = false			;;Зимний режим (влияет на циклы и эффекты)
+weather_dof = false			;;Использовать параметры DoF из погоды
+lowland_fog_from_weather = false	;;Использовать параметры низинного тумана из погоды
+weather_color_grading = false		;;Влияние погоды на цветокоррекцию
+wind_volume_koef = 16.5			;;Коэффицент общей громкости звука ветра
+moon_phases_mode = off			;; Режим лунных фаз (off|8days|28days)
 
 [precipitation_params] ;Общие параметры осадков
 max_desired_items = 2500
@@ -44,6 +45,10 @@ swing_fast_amp2	= 0.300000
 swing_fast_rot1	= 5.500000
 swing_fast_rot2	= 0.600000
 swing_fast_speed = 0.600000
+
+[moon_phases_clr_settings] ;Настройки освещения для лунных фаз
+;секция_светила_sun_color = <Fvector3>
+;секция_светила_sun_shafts_intensity = <float>
 
 [lowland_fog_params] ;Базовые высоты тумана в низинах для каждого уровня
 ;Зов Припяти

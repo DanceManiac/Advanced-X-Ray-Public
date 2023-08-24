@@ -1116,6 +1116,11 @@ int get_custom_timer(LPCSTR name)
 	Actor()->TimerManager->GetTimerValue(name);
 }
 
+std::string get_moon_phase()
+{
+	return Level().GetMoonPhase().c_str();
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -1164,6 +1169,7 @@ void CLevel::script_register(lua_State *L)
 		def("is_wfx_playing",					is_wfx_playing),
 		def("get_wfx_time",						get_wfx_time),
 		def("stop_weather_fx",					stop_weather_fx),
+		def("get_moon_phase",					get_moon_phase),
 
 		def("environment",						environment),
 		

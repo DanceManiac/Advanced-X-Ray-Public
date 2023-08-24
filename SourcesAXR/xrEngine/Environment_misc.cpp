@@ -7,6 +7,7 @@
 #include "rain.h"
 
 #include "IGame_Level.h"
+#include "IGame_Persistent.h"
 #include "../xrServerEntities/object_broker.h"
 #include "../xrServerEntities/LevelGameDef.h"
 
@@ -316,6 +317,7 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 	VERIFY2					(sun_dir.y < 0, "Invalid sun direction settings while loading");
 
 	lens_flare_id			= environment.eff_LensFlare->AppendDef(environment, environment.m_suns_config, config.r_string(m_identifier.c_str(),"sun"));
+	lens_flare_id_phased	= lens_flare_id;
 	tb_id					= environment.eff_Thunderbolt->AppendDef(environment, environment.m_thunderbolt_collections_config, environment.m_thunderbolts_config, config.r_string(m_identifier.c_str(),"thunderbolt_collection"));
 	bolt_period				= (tb_id.size())?config.r_float	(m_identifier.c_str(),"thunderbolt_period"):0.f;
 	bolt_duration			= (tb_id.size())?config.r_float	(m_identifier.c_str(),"thunderbolt_duration"):0.f;
@@ -552,7 +554,51 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	sun_dir.lerp			(A.sun_dir,B.sun_dir,f).normalize();
 	R_ASSERT				( _valid(sun_dir) );
 
-	VERIFY2					(sun_dir.y<0,"Invalid sun direction settings while lerp");}
+	VERIFY2					(sun_dir.y<0,"Invalid sun direction settings while lerp");
+
+	SetMoonPhase(A, B);
+}
+
+void CEnvDescriptorMixer::SetMoonPhase(CEnvDescriptor& A, CEnvDescriptor& B)
+{
+	if (!(g_pGamePersistent->GetTimeHours() >= 22) && !(g_pGamePersistent->GetTimeHours() <= 4))
+		return;
+
+	if ((std::string(A.lens_flare_id.c_str(), 0, 4) != "moon") || (std::string(B.lens_flare_id.c_str(), 0, 4) != "moon"))
+		return;
+
+	if (B.lens_flare_id.size() && B.lens_flare_id_phased.size() && g_pGamePersistent->GetMoonPhase() != "-1")
+	{
+		CEnvironment& env = g_pGamePersistent->Environment();
+
+		const auto append_definition = [&env](const char* prefix, const auto& config)
+		{
+			string128 phase_name{};
+			strconcat(sizeof(phase_name), phase_name, prefix, "_", g_pGamePersistent->GetMoonPhase().size() ? g_pGamePersistent->GetMoonPhase().c_str() : "");
+			return env.eff_LensFlare->AppendDef(env, config, phase_name);
+		};
+
+		const auto configure_setting = [](const char* prefix, auto& value)
+		{
+			string128 sun_color_value{}, sunshafts_intensity_value{};
+			std::string phase = (g_pGamePersistent->GetMoonPhase().size() ? g_pGamePersistent->GetMoonPhase().c_str() : "");
+			strconcat(sizeof(sun_color_value), sun_color_value, prefix, "_", phase.c_str(), "_sun_color");
+			strconcat(sizeof(sunshafts_intensity_value), sunshafts_intensity_value, prefix, "_", phase.c_str(), "_sun_shafts_intensity");
+
+			if (pAdvancedSettings->line_exist("moon_phases_clr_settings", sun_color_value))
+				value.sun_color = pAdvancedSettings->r_fvector3("moon_phases_clr_settings", sun_color_value);
+
+			if (pAdvancedSettings->line_exist("moon_phases_clr_settings", sunshafts_intensity_value))
+				value.m_fSunShaftsIntensity = pAdvancedSettings->r_float("moon_phases_clr_settings", sunshafts_intensity_value);
+		};
+
+		A.lens_flare_id = append_definition(A.lens_flare_id_phased.c_str(), env.m_suns_config);
+		B.lens_flare_id = append_definition(B.lens_flare_id_phased.c_str(), env.m_suns_config);
+
+		configure_setting(A.lens_flare_id_phased.c_str(), A);
+		configure_setting(B.lens_flare_id_phased.c_str(), B);
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Environment IO

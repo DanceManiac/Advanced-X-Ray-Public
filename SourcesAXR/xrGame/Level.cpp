@@ -74,9 +74,14 @@
 #include "embedded_editor/embedded_editor_main.h"
 #include "embedded_editor/editor_render.h"
 
+#include "alife_simulator.h"
+#include "alife_time_manager.h"
+
 #include "../xrCore/_detail_collision_point.h"
 #include "../xrEngine/CameraManager.h"
 #include "ActorEffector.h"
+
+#include "AdvancedXrayGameConstants.h"
 
 ENGINE_API bool g_dedicated_server;
 ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
@@ -1454,4 +1459,47 @@ collide::rq_result CLevel::GetPickResult(Fvector pos, Fvector dir, float range, 
 	collide::ray_defs    RD(pos, dir, RQ.range, CDB::OPT_FULL_TEST, collide::rqtBoth);
 	Level().ObjectSpace.RayQuery(RQR, RD, GetPickDist_Callback, &RQ, NULL, ignore);
 	return RQ;
+}
+
+u32 CLevel::GetTimeHours()
+{
+	u32 year = 0, month = 0, day = 0, hours = 0, mins = 0, secs = 0, milisecs = 0;
+	split_time((g_pGameLevel && Level().game) ? Level().GetGameTime() : ai().alife().time_manager().game_time(), year, month, day, hours, mins, secs, milisecs);
+	return hours;
+}
+
+std::string CLevel::GetMoonPhase()
+{
+	if (this && GameConstants::GetMoonPhasesMode() != "off")
+	{
+		std::vector<int> months = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+		auto g_time = get_time_struct();
+		u32 Y, M, D, h, m, s, ms;
+
+		g_time.get(Y, M, D, h, m, s, ms);
+
+		u32 start_year;
+		sscanf(pSettings->r_string("alife", "start_date"), "%*d.%*d.%d", &start_year);
+
+		int day = 365 * (Y - (start_year - 2)) + D;
+
+		for (int mm = 0; mm < M - 1; ++mm)
+			day += months[mm];
+
+		if (h >= 12)
+			day += 1;
+
+		int phase = -1;
+		std::string opt_moon_phase = GameConstants::GetMoonPhasesMode();
+
+		if (opt_moon_phase == "28days")
+			phase = static_cast<int>(std::fmod(day, 28) / 3.5);
+		else if (opt_moon_phase == "8days")
+			phase = day % 8;
+
+		return std::to_string(phase);
+	}
+
+	return std::to_string(-1);
 }

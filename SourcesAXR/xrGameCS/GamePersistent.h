@@ -119,6 +119,8 @@ public:
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
 			bool		IsCamFirstEye			();
+			std::string	GetMoonPhase			() override;
+			u32			GetTimeHours			() override;
 
 	virtual void		EditorOnFrame			();
 

@@ -183,6 +183,7 @@ public:
 //	int					lens_flare_id;
 //	int					tb_id;
 	shared_str			lens_flare_id;
+	shared_str			lens_flare_id_phased;
 	shared_str			tb_id;
 
 	//: swing values
@@ -235,6 +236,8 @@ public:
 	INGAME_EDITOR_VIRTUAL void lerp			(CEnvironment* parent, CEnvDescriptor& A, CEnvDescriptor& B, float f, CEnvModifier& M, float m_power);
 	void				clear				();
 	void				destroy				();
+
+	INGAME_EDITOR_VIRTUAL void SetMoonPhase	(CEnvDescriptor& A, CEnvDescriptor& B);
 };
 
 class ENGINE_API	CEnvironment

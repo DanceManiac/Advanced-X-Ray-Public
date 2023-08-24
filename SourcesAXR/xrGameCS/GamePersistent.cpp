@@ -973,3 +973,13 @@ void CGamePersistent::OnAssetsChanged()
 	IGame_Persistent::OnAssetsChanged	();
 	CStringTable().rescan				();
 }
+
+std::string CGamePersistent::GetMoonPhase()
+{
+	return Level().GetMoonPhase();
+}
+
+u32 CGamePersistent::GetTimeHours()
+{
+	return Level().GetTimeHours();
+}
