@@ -5,6 +5,7 @@
 #include "xr_efflensflare.h"
 #include "thunderbolt.h"
 #include "rain.h"
+#include "x_ray.h"
 
 #include "IGame_Level.h"
 #include "IGame_Persistent.h"
@@ -45,6 +46,31 @@ void CEnvDescriptor::EnvSwingValue::lerp(const EnvSwingValue& A, const EnvSwingV
 	rot1 = fi * A.rot1 + f * B.rot1;
 	rot2 = fi * A.rot2 + f * B.rot2;
 	speed = fi * A.speed + f * B.speed;
+}
+
+void CEnvDescriptor::EnvSwingValue::lerp_with_wind(const EnvSwingValue& v1, const EnvSwingValue& v2, CEnvDescriptor& A, CEnvDescriptor& B, float f)
+{
+	float fi = 1.f - f;
+
+	auto getWindInfluencedAmplitudeIntensity = [](float amplitude, float windVelocity, float koef)
+	{
+		return amplitude * (windVelocity / koef);//(koef / windVelocity) * 0.5;//amplitude * (windVelocity / koef);
+	};
+
+	amp1 = (fi * getWindInfluencedAmplitudeIntensity(v1.amp1, A.wind_velocity, bWeatherWindInfluenceKoef / 6.66f)) +
+		(f * getWindInfluencedAmplitudeIntensity(v2.amp1, B.wind_velocity, bWeatherWindInfluenceKoef / 6.66f));
+	amp2 = (fi * getWindInfluencedAmplitudeIntensity(v1.amp2, A.wind_velocity, bWeatherWindInfluenceKoef / 6.66f)) +
+		(f * getWindInfluencedAmplitudeIntensity(v2.amp2, B.wind_velocity, bWeatherWindInfluenceKoef / 6.66f));
+
+	rot1 = fi * v1.rot1 + f * v2.rot1;
+	rot2 = fi * v1.rot2 + f * v2.rot2;
+
+	speed = (fi * getWindInfluencedAmplitudeIntensity(v1.speed, A.wind_velocity, bWeatherWindInfluenceKoef * 3.33f)) +
+		(f * getWindInfluencedAmplitudeIntensity(v2.speed, B.wind_velocity, bWeatherWindInfluenceKoef * 3.33f));
+
+	clamp(amp1, 0.01f, 0.5f);
+	clamp(amp2, 0.006f, 0.5f);
+	clamp(speed, 2.0f, 4.0f);
 }
 
 float	CEnvModifier::sum	(CEnvModifier& M, Fvector3& view)
@@ -509,7 +535,20 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	m_fWaterIntensity		=	fi*A.m_fWaterIntensity + f*B.m_fWaterIntensity;
 
 #ifdef TREE_WIND_EFFECT
-	m_fTreeAmplitudeIntensity = fi * A.m_fTreeAmplitudeIntensity + f * B.m_fTreeAmplitudeIntensity;
+	if (!bWeatherWindInfluenceKoef)
+		m_fTreeAmplitudeIntensity = (fi * A.m_fTreeAmplitudeIntensity) + (f * B.m_fTreeAmplitudeIntensity);
+	else
+	{
+		auto getWindInfluencedAmplitudeIntensity = [](float amplitude, float windVelocity, float koef)
+		{
+			return amplitude * (windVelocity / koef);
+		};
+
+		m_fTreeAmplitudeIntensity = (fi * getWindInfluencedAmplitudeIntensity(A.m_fTreeAmplitudeIntensity, A.wind_velocity, bWeatherWindInfluenceKoef)) +
+			(f * getWindInfluencedAmplitudeIntensity(B.m_fTreeAmplitudeIntensity, B.wind_velocity, bWeatherWindInfluenceKoef));
+	}
+
+	clamp(m_fTreeAmplitudeIntensity, 0.01f, 0.15f);
 #endif
 
 	lowland_fog_height	= fi*A.lowland_fog_height + f * B.lowland_fog_height;
@@ -530,8 +569,16 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 
 	hemi_color.lerp			(A.hemi_color,B.hemi_color,f);
 
-	m_cSwingDesc[0].lerp(A.m_cSwingDesc[0], B.m_cSwingDesc[0], f);
-	m_cSwingDesc[1].lerp(A.m_cSwingDesc[1], B.m_cSwingDesc[1], f);
+	if (bWeatherWindInfluenceKoef)
+	{
+		m_cSwingDesc[0].lerp_with_wind(A.m_cSwingDesc[0], B.m_cSwingDesc[0], A, B, f);
+		m_cSwingDesc[1].lerp_with_wind(A.m_cSwingDesc[1], B.m_cSwingDesc[1], A, B, f);
+	}
+	else
+	{
+		m_cSwingDesc[0].lerp(A.m_cSwingDesc[0], B.m_cSwingDesc[0], f);
+		m_cSwingDesc[1].lerp(A.m_cSwingDesc[1], B.m_cSwingDesc[1], f);
+	}
 
 	dof_value.lerp(A.dof_value, B.dof_value, f);
 	dof_kernel = fi * A.dof_kernel + f * B.dof_kernel;

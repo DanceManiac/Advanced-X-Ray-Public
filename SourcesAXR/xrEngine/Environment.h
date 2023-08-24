@@ -195,6 +195,7 @@ public:
 		float						amp2;
 		float						speed;
 		void						lerp(const EnvSwingValue& v1, const EnvSwingValue& v2, float factor);
+		void						lerp_with_wind(const EnvSwingValue& v1, const EnvSwingValue& v2, CEnvDescriptor& A, CEnvDescriptor& B, float factor);
 	};
 	EnvSwingValue						m_cSwingDesc[2];
     
