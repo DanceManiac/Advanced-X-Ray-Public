@@ -22,6 +22,9 @@
 #include "PHDebug.h"
 #endif
 
+#include "UIGameCustom.h"
+#include "ui\UIActorMenu.h"
+
 void CActor::OnEvent(NET_Packet& P, u16 type)
 {
 	inherited::OnEvent			(P,type);
@@ -53,10 +56,10 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			
 			if( inventory().CanTakeItem(smart_cast<CInventoryItem*>(_GO)) )
 			{
-				const bool use_pickup_anim = (type == GE_OWNERSHIP_TAKE) && (Position().distance_to(_GO->Position()) > 0.2f);
+				auto CurMenuMode = CurrentGameUI()->ActorMenu().GetMenuMode();
+				const bool use_pickup_anim = (type == GE_OWNERSHIP_TAKE) && (Position().distance_to(_GO->Position()) > 0.2f) && CurMenuMode != mmDeadBodySearch && CurMenuMode != mmCarTrunk && !Actor()->m_bActionAnimInProcess;
 
-				if (!Actor()->m_bActionAnimInProcess)
-					inventory().TakeItemAnimCheck(_GO, Obj, use_pickup_anim);
+				inventory().TakeItemAnimCheck(_GO, Obj, use_pickup_anim);
 			}
 			else
 			{

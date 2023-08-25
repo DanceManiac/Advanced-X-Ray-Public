@@ -228,6 +228,8 @@ CActor::CActor() : CEntityAlive()
 	m_bNightVisionAllow		= true;
 	m_bNightVisionOn		= false;
 
+	m_bMaskAnimActivated	= false;
+	m_bNVGActivated			= false;
 	m_bEatAnimActive		= false;
 	m_bActionAnimInProcess	= false;
 	m_disabled_hitmarks		= false;

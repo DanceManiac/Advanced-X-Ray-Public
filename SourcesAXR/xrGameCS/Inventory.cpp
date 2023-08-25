@@ -147,6 +147,9 @@ void CInventory::Clear()
 
 void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim)
 {
+	if (Actor()->m_bActionAnimInProcess)
+		return;
+
 	GameObject = GameObj;
 	Object = Obj;
 	m_bUsePickupAnim = use_pickup_anim;
@@ -160,6 +163,11 @@ void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_
 	{
 		TakeItemAnim(GameObj, Obj, use_pickup_anim);
 		return;
+	}
+	else
+	{
+		if (!use_pickup_anim)
+			TakeItemAnim(GameObj, Obj, use_pickup_anim);
 	}
 
 	isHidingInProgressInv.store(true);

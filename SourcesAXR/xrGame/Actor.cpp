@@ -247,6 +247,8 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_bNightVisionAllow		= true;
 	m_bNightVisionOn		= false;
 
+	m_bMaskAnimActivated	= false;
+	m_bNVGActivated			= false;
 	m_bEatAnimActive		= false;
 	m_bActionAnimInProcess	= false;
 	m_bNVGSwitched			= false;
