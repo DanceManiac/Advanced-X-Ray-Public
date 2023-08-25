@@ -44,6 +44,8 @@ const ui_shader&	GetMPCharIconsShader();
 const ui_shader& GetOutfitUpgradeIconsShader();
 //get shader for weapon icons in upgrade menu
 const ui_shader& GetWeaponUpgradeIconsShader();
+//get shader for device icons in upgrade menu
+const ui_shader& GetDeviceUpgradeIconsShader();
 //удаляем все шейдеры
 void DestroyShaders();
 void CreateShaders();

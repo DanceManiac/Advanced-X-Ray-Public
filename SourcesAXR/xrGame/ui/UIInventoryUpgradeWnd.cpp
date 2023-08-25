@@ -117,10 +117,15 @@ void CUIInventoryUpgradeWnd::InitInventory( CInventoryItem* item, bool can_upgra
 		if(smart_cast<CWeaponRPG7*>(item))
 			m_item->SetShader(InventoryUtilities::GetOutfitUpgradeIconsShader());
 	}
-	else if(smart_cast<CCustomOutfit*>(item) || smart_cast<CHelmet*>(item) || smart_cast<CCustomDetector*>(item) || smart_cast<CTorch*>(item) || smart_cast<CCustomBackpack*>(item))
+	else if(smart_cast<CCustomOutfit*>(item) || smart_cast<CHelmet*>(item))
 	{
 		is_shader = true;
 		m_item->SetShader(InventoryUtilities::GetOutfitUpgradeIconsShader());
+	}
+	else if (smart_cast<CCustomDetector*>(item) || smart_cast<CTorch*>(item) || smart_cast<CCustomBackpack*>(item))
+	{
+		is_shader = true;
+		m_item->SetShader(InventoryUtilities::GetDeviceUpgradeIconsShader());
 	}
 
 	if(m_item && is_shader)
