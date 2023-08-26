@@ -645,6 +645,7 @@ bool CCustomDetector::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "af_vis_radius",		&CInifile::r_float, m_fAfVisRadius,		test);
 	result |= process_if_exists(section, "max_charge_level",	&CInifile::r_float, m_fMaxChargeLevel,	test);
 	result |= process_if_exists(section, "uncharge_speed",		&CInifile::r_float, m_fUnchargeSpeed,	test);
+	result |= process_if_exists(section, "light_range",			&CInifile::r_float, m_fConstLightRange,	test);
 
 	LPCSTR str;
 
