@@ -69,6 +69,7 @@ public:
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
 			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
+			void	ReloadLights		();
 
 	virtual bool	can_be_attached		() const;
 

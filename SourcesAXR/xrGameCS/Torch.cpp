@@ -714,10 +714,63 @@ bool CTorch::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "uncharge_speed", &CInifile::r_float, m_fUnchargeSpeed, test);
 	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
 
+	LPCSTR str;
+
+	// name of the ltx-section
+	bool result2 = process_if_exists_set(section, "light_section", &CInifile::r_string, str, test);
+
+	if (result2 && !test)
+	{
+		m_light_section._set(str);
+		ReloadLights();
+	}
+
 	return result;
 }
 
 bool CTorch::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
 {
 	return (std::find(item.begin(), item.end(), item_sect) != item.end());
+}
+
+void CTorch::ReloadLights()
+{
+	bool b_r2 = !!psDeviceFlags.test(rsR2);
+	b_r2 |= !!psDeviceFlags.test(rsR4);
+
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	CInifile* pUserData = K->LL_UserData();
+
+	R_ASSERT2(pUserData->section_exist(m_light_section), "Section not found in torch user data! Check 'light_section' field in config");
+
+	Fcolor clr = pUserData->r_fcolor(m_light_section, (b_r2) ? "color_r2" : "color");
+	fBrightness = clr.intensity();
+
+	m_fMaxRange = pUserData->r_float(m_light_section, (b_r2) ? "max_range_r2" : "max_range");
+	m_fCurveRange = pUserData->r_float(m_light_section, "curve_range");
+
+	float range = pUserData->r_float(m_light_section, (b_r2) ? "range_r2" : "range");
+	light_render->set_color(clr);
+	light_render->set_range(m_fMaxRange);
+
+	Fcolor clr_o = pUserData->r_fcolor(m_light_section, (b_r2) ? "omni_color_r2" : "omni_color");
+	float range_o = pUserData->r_float(m_light_section, (b_r2) ? "omni_range_r2" : "omni_range");
+
+	light_omni->set_color(clr_o);
+	light_omni->set_range(range_o);
+
+	light_render->set_cone(deg2rad(pUserData->r_float(m_light_section, "spot_angle")));
+	light_render->set_texture(READ_IF_EXISTS(pUserData, r_string, m_light_section, "spot_texture", (0)));
+
+	glow_render->set_texture(pUserData->r_string(m_light_section, "glow_texture"));
+	glow_render->set_color(clr);
+	glow_render->set_radius(pUserData->r_float(m_light_section, "glow_radius"));
+
+	light_render->set_volumetric(!!READ_IF_EXISTS(pUserData, r_bool, m_light_section, "volumetric", 0));
+	light_render->set_volumetric_quality(READ_IF_EXISTS(pUserData, r_float, m_light_section, "volumetric_quality", 1.f));
+	light_render->set_volumetric_intensity(READ_IF_EXISTS(pUserData, r_float, m_light_section, "volumetric_intensity", 1.f));
+	light_render->set_volumetric_distance(READ_IF_EXISTS(pUserData, r_float, m_light_section, "volumetric_distance", 1.f));
+
+	light_render->set_type((IRender_Light::LT)(READ_IF_EXISTS(pUserData, r_u8, m_light_section, "type", 2)));
+	light_omni->set_type((IRender_Light::LT)(READ_IF_EXISTS(pUserData, r_u8, m_light_section, "omni_type", 1)));
 }
