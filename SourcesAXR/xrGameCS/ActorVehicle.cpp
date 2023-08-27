@@ -14,7 +14,7 @@
 #include "PHDestroyable.h"
 #include "Car.h"
 #include "../Include/xrRender/Kinematics.h"
-#include "PHShellSplitter.h"
+//#include "PHShellSplitter.h"
 
 #include "actor_anim_defs.h"
 #include "game_object_space.h"
@@ -69,20 +69,14 @@ void CActor::detach_Vehicle()
 	u16	head_bone = pKinematics->LL_BoneID("bip01_head");
 	pKinematics->LL_SetBoneVisible(head_bone, true, true);
 
-	CPHShellSplitterHolder*sh= car->PPhysicsShell()->SplitterHolder();
-
-	if(sh)
-		sh->Deactivate();
+	car->PPhysicsShell()->SplitterHolderDeactivate();
 
 	if(!character_physics_support()->movement()->ActivateBoxDynamic(0))
 	{
-		if(sh)sh->Activate();
+		car->PPhysicsShell()->SplitterHolderActivate();
 		return;
 	}
-
-	if(sh)
-		sh->Activate();
-
+	car->PPhysicsShell()->SplitterHolderActivate();
 	m_holder->detach_Actor();
 
 	character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());

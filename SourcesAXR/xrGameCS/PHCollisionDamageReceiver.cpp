@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "phcollisiondamagereceiver.h"
-#include "PhysicsShellHolder.h"
+#include "../xrphysics/IPhysicsShellHolder.h"
 #include "../xrcore/xr_ini.h"
 #include "../Include/xrRender/Kinematics.h"
-#include "geometry.h"
-#include "PhysicsShell.h"
-#include "../xrEngine/gamemtllib.h"
-#include "Physics.h"
+#include "../xrphysics/geometry.h"
+#include "../xrphysics/PhysicsShell.h"
+//#include "../xrEngine/gamemtllib.h"
+//#include "Physics.h"
 #include "xrMessages.h"
 #include "CharacterPhysicsSupport.h"
 void CPHCollisionDamageReceiver::BoneInsert(u16 id,float k)
@@ -30,7 +30,8 @@ void CPHCollisionDamageReceiver::Init()
 			BoneInsert(index,float(atof(*item.second)));
 			CODEGeom* og= sh->PPhysicsShell()->get_GeomByID(index);
 			//R_ASSERT3(og, "collision damage bone has no physics collision", *item.first);
-			if(og)og->add_obj_contact_cb(CollisionCallback);
+			if(og)
+				og->add_obj_contact_cb(DamageReceiverCollisionCallback);
 		}
 		
 	}
@@ -39,42 +40,9 @@ void CPHCollisionDamageReceiver::Init()
 
 
 
-void CPHCollisionDamageReceiver::CollisionCallback(bool& do_colide,bool bo1,dContact& c,SGameMtl* material_1,SGameMtl* material_2)
-{
-	if(material_1->Flags.test(SGameMtl::flPassable)||material_2->Flags.test(SGameMtl::flPassable))return;
-	dBodyID						b1					=	dGeomGetBody(c.geom.g1)	;
-	dBodyID						b2					=	dGeomGetBody(c.geom.g2) ;
-	dxGeomUserData				*ud_self			=	bo1 ? retrieveGeomUserData(c.geom.g1):retrieveGeomUserData(c.geom.g2);
-	dxGeomUserData				*ud_damager			=	bo1 ? retrieveGeomUserData(c.geom.g2):retrieveGeomUserData(c.geom.g1);
-	
-	SGameMtl					*material_self		=	bo1 ? material_1:material_2;
-	SGameMtl					*material_damager	=	bo1 ? material_2:material_1;
-	VERIFY						(ud_self);
-	CPhysicsShellHolder			*o_self			=	ud_self->ph_ref_object;
-	CPhysicsShellHolder			*o_damager		=	NULL;if(ud_damager)o_damager=ud_damager->ph_ref_object;
-	u16							source_id		=	o_damager ? o_damager->ID():u16(-1);
-	CPHCollisionDamageReceiver	*dr	=o_self->PHCollisionDamageReceiver();
-	VERIFY2(dr,"wrong callback");
-	
-	float damager_material_factor=material_damager->fBounceDamageFactor;
-
-	if(ud_damager&&ud_damager->ph_object&&ud_damager->ph_object->CastType()==CPHObject::tpCharacter)
-	{
-		CCharacterPhysicsSupport* phs=o_damager->character_physics_support();
-		if(phs->IsSpecificDamager())damager_material_factor=phs->BonceDamageFactor();
-	}
-
-	float dfs=(material_self->fBounceDamageFactor+damager_material_factor);
-	if(fis_zero(dfs)) return;
-	Fvector dir;dir.set(*(Fvector*)c.geom.normal);
-	Fvector pos;
-	pos.sub(*(Fvector*)c.geom.pos,*(Fvector*)dGeomGetPosition(bo1 ? c.geom.g1:c.geom.g2));//it is not true pos in bone space
-	dr->Hit(source_id,ud_self->bone_id,E_NL(b1,b2,c.geom.normal)*damager_material_factor/dfs,dir,pos);
-	
-}
 
 const static float hit_threthhold=5.f;
-void CPHCollisionDamageReceiver::Hit(u16 source_id,u16 bone_id,float power,const Fvector& dir,Fvector &pos )
+void CPHCollisionDamageReceiver::CollisionHit(u16 source_id,u16 bone_id,float power,const Fvector& dir,Fvector &pos )
 {
 
 	DAMAGE_BONES_I i=FindBone(bone_id);
@@ -102,7 +70,7 @@ void CPHCollisionDamageReceiver::Hit(u16 source_id,u16 bone_id,float power,const
 
 void CPHCollisionDamageReceiver::Clear()
 {
-	//CPhysicsShellHolder *sh	=PPhysicsShellHolder	();
+	//IPhysicsShellHolder *sh	=PPhysicsShellHolder	();
 	//xr_map<u16,float>::iterator i=m_controled_bones.begin(),e=m_controled_bones.end();
 	//for(;e!=i;++i)
 	//{

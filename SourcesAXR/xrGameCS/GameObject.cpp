@@ -2,12 +2,12 @@
 #include "GameObject.h"
 //#include "../Include/xrRender/RenderVisual.h"
 #include "../Include/xrRender/RenderVisual.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "ai_space.h"
 #include "CustomMonster.h" 
 #include "physicobject.h"
 #include "HangingLamp.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "game_sv_single.h"
 #include "level_graph.h"
 #include "ph_shell_interface.h"
@@ -23,13 +23,13 @@
 #include "../xrEngine/igame_level.h"
 #include "level.h"
 #include "script_callback_ex.h"
-#include "MathUtils.h"
+#include "../xrphysics/MathUtils.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 #include "game_level_cross_table.h"
 #include "ai_obstacle.h"
 #include "magic_box3.h"
 #include "animation_movement_controller.h"
-#include "..\XrEngine\xr_collide_form.h"
+#include "../xrengine/xr_collide_form.h"
 #include "alife_simulator.h"
 #include "alife_object_registry.h"
 
@@ -827,7 +827,7 @@ void CGameObject::DestroyObject()
 
 void CGameObject::shedule_Update	(u32 dt)
 {
-	//уничтожить
+	//СѓРЅРёС‡С‚РѕР¶РёС‚СЊ
 	if(NeedToDestroyObject())
 	{
 #ifndef MASTER_GOLD
@@ -848,7 +848,7 @@ BOOL CGameObject::net_SaveRelevant	()
 	return	(CScriptBinder::net_SaveRelevant());
 }
 
-//игровое имя объекта
+//РёРіСЂРѕРІРѕРµ РёРјСЏ РѕР±СЉРµРєС‚Р°
 LPCSTR CGameObject::Name () const
 {
 	return	(*cName());

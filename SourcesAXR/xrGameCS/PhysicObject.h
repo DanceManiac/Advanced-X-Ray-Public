@@ -53,7 +53,7 @@ class CPhysicObject :
 	typedef CPhysicsShellHolder inherited;
 	EPOType					m_type					;
 	float					m_mass					;
-	SCollisionHitCallback	*m_collision_hit_callback;
+	ICollisionHitCallback	*m_collision_hit_callback;
 	CBlend					*m_anim_blend			;
 	moving_bones_snd_player *bones_snd_player		;
 	anim_script_callback	m_anim_script_callback	;
@@ -71,6 +71,10 @@ private:
 			float						anim_time_get					();
 			void						anim_time_set					( float time );
 			void						create_collision_model			( );
+			void						set_door_ignore_dynamics		( );
+			void						unset_door_ignore_dynamics		( );
+public:
+			bool						get_door_vectors				( Fvector& closed, Fvector& open ) const;
 public:
 			CPhysicObject(void);
 	virtual ~CPhysicObject(void);
@@ -87,8 +91,8 @@ public:
 	virtual void						net_Save						(NET_Packet& P)																	;
 	virtual	BOOL						net_SaveRelevant				()																				;
 	virtual BOOL						UsedAI_Locations				()																				;
-	virtual SCollisionHitCallback		*get_collision_hit_callback		()																				;
-	virtual bool						set_collision_hit_callback		(SCollisionHitCallback *cc)														;
+	virtual ICollisionHitCallback		*get_collision_hit_callback		()																				;
+	virtual void						set_collision_hit_callback		(ICollisionHitCallback *cc)														;
 	virtual	bool						is_ai_obstacle					() const;
 
 	virtual void						net_Export						(NET_Packet& P);

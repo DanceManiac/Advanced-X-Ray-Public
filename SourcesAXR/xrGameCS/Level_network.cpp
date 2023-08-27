@@ -18,6 +18,7 @@
 #include "string_table.h"
 #include "file_transfer.h"
 
+#include "../xrphysics/physicscommon.h"
 ENGINE_API bool g_dedicated_server;
 
 const int max_objects_size			= 2*1024;
@@ -261,7 +262,7 @@ void CLevel::ClientSave	()
 	}
 }
 
-extern		float		phTimefactor;
+//extern	XRPHYSICS_API	float		phTimefactor;
 extern		BOOL		g_SV_Disable_Auth_Check;
 
 #pragma todo("remove next deadlock checking after testing...")

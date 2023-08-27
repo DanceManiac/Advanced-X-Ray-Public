@@ -10,7 +10,8 @@
 
 #include "ActorEffector.h"
 
-#include "PHWorld.h"
+#include "../xrphysics/iPHWorld.h"
+#include "../xrphysics/actorcameracollision.h"
 #include "level.h"
 #include "xr_level_controller.h"
 #include "game_cl_base.h"
@@ -44,11 +45,10 @@
 #include "game_cl_base_weapon_usage_statistic.h"
 #include "Artefact.h"
 
-#include "..\XrEngine\xr_collide_form.h"
-
+#include "../xrengine/xr_collide_form.h"
 #ifdef DEBUG
 #	include "debug_renderer.h"
-#	include "Physics.h"
+#	include "../xrPhysics/phvalide.h"
 #endif
 
 int			g_cl_InterpolationType		= 0;
@@ -480,7 +480,7 @@ void		CActor::net_Import_Physic			( NET_Packet& P)
 			}
 			else
 			{
-				VERIFY(valid_pos(N_A.State.position,phBoundaries));
+				VERIFY(valid_pos(N_A.State.position));
 				NET_A.push_back			(N_A);
 				if (NET_A.size()>5) NET_A.pop_front();
 			};
@@ -535,7 +535,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	m_current_torso.invalidate	();
 	m_current_head.invalidate	();
 	//-------------------------------------
-	// èíèöèàëèçàöèÿ ðååñòðîâ, èñïîëüçóåìûõ àêòåðîì
+	// Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ñ€ÐµÐµÑÑ‚Ñ€Ð¾Ð², Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÐ¼Ñ‹Ñ… Ð°ÐºÑ‚ÐµÑ€Ð¾Ð¼
 	encyclopedia_registry->registry().init(ID());
 	game_news_registry->registry().init(ID());
 
@@ -546,7 +546,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	CSE_ALifeTraderAbstract	 *pTA	= smart_cast<CSE_ALifeTraderAbstract*>(e);
 	set_money				(pTA->m_dwMoney, false);
 
-	//óáðàòü âñå àðòåôàêòû ñ ïîÿñà
+	//ÑƒÐ±Ñ€Ð°Ñ‚ÑŒ Ð²ÑÐµ Ð°Ñ€Ñ‚ÐµÑ„Ð°ÐºÑ‚Ñ‹ Ñ Ð¿Ð¾ÑÑÐ°
 	m_ArtefactsOnBelt.clear();
 //.	if(	TRUE == E->s_flags.test(M_SPAWN_OBJECT_LOCAL) && TRUE == E->s_flags.is(M_SPAWN_OBJECT_ASPLAYER))
 //.		HUD().GetUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);
@@ -657,7 +657,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 		K->PlayCycle("death_init");
 
 		
-		//îñòàíîâèòü çâóê òÿæåëîãî äûõàíèÿ
+		//Ð¾ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ Ð·Ð²ÑƒÐº Ñ‚ÑÐ¶ÐµÐ»Ð¾Ð³Ð¾ Ð´Ñ‹Ñ…Ð°Ð½Ð¸Ñ
 		m_HeavyBreathSnd.stop();
 	}
 	
@@ -751,12 +751,12 @@ void CActor::net_Destroy	()
 
 	Engine.Sheduler.Unregister	(this);
 
-	if(	CActor::actor_camera_shell && 
-		CActor::actor_camera_shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() 
+	if(	actor_camera_shell && 
+		actor_camera_shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() 
 			== 
 		this
 		) 
-		destroy_physics_shell( CActor::actor_camera_shell );
+		destroy_physics_shell( actor_camera_shell );
 }
 
 void CActor::net_Relcase	(CObject* O)
@@ -915,7 +915,7 @@ void CActor::PH_B_CrPr		()	// actions & operations before physic correction-pred
 	//just set last update data for now
 //	if (!m_bHasUpdate) return;	
 	if (CrPr_IsActivated()) return;
-	if (CrPr_GetActivationStep() > ph_world->m_steps_num) return;
+	if (CrPr_GetActivationStep() > physics_world()->StepsNum()) return;
 
 	if (g_Alive())
 	{
@@ -1086,10 +1086,10 @@ void	CActor::CalculateInterpolationParams()
 		for (u32 k=0; k<3; k++)
 		{
 			SP0[k] = c*(c*(c*SCoeff[k][0]+SCoeff[k][1])+SCoeff[k][2])+SCoeff[k][3];
-			SP1[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; // ñîêðîñòü èç ôîðìóëû â 3 ðàçà ïðåâûøàåò ñêîðîñòü ïðè ðàñ÷åòå êîýôôèöèåíòîâ !!!!
+			SP1[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; // ÑÐ¾ÐºÑ€Ð¾ÑÑ‚ÑŒ Ð¸Ð· Ñ„Ð¾Ñ€Ð¼ÑƒÐ»Ñ‹ Ð² 3 Ñ€Ð°Ð·Ð° Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐ°ÐµÑ‚ ÑÐºÐ¾Ñ€Ð¾ÑÑ‚ÑŒ Ð¿Ñ€Ð¸ Ñ€Ð°ÑÑ‡ÐµÑ‚Ðµ ÐºÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚Ð¾Ð² !!!!
 
 			HP0[k] = c*(c*(c*HCoeff[k][0]+HCoeff[k][1])+HCoeff[k][2])+HCoeff[k][3];
-			HP1[k] = (c*c*HCoeff[k][0]*3+c*HCoeff[k][1]*2+HCoeff[k][2]); // ñîêðîñòü èç ôîðìóëû â 3 ðàçà ïðåâûøàåò ñêîðîñòü ïðè ðàñ÷åòå êîýôôèöèåíòîâ !!!!
+			HP1[k] = (c*c*HCoeff[k][0]*3+c*HCoeff[k][1]*2+HCoeff[k][2]); // ÑÐ¾ÐºÑ€Ð¾ÑÑ‚ÑŒ Ð¸Ð· Ñ„Ð¾Ñ€Ð¼ÑƒÐ»Ñ‹ Ð² 3 Ñ€Ð°Ð·Ð° Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐ°ÐµÑ‚ ÑÐºÐ¾Ñ€Ð¾ÑÑ‚ÑŒ Ð¿Ñ€Ð¸ Ñ€Ð°ÑÑ‡ÐµÑ‚Ðµ ÐºÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚Ð¾Ð² !!!!
 		};
 
 		SP1.add(SP0);
@@ -1138,7 +1138,7 @@ void	CActor::CalculateInterpolationParams()
 	float lV0 = State0.linear_vel.magnitude();
 	float lV1 = State1.linear_vel.magnitude();
 
-	u32		ConstTime = u32((fixed_step - ph_world->m_frame_time)*1000)+ Level().GetInterpolationSteps()*u32(fixed_step*1000);
+	u32		ConstTime = u32((fixed_step - physics_world()->FrameTime())*1000)+ Level().GetInterpolationSteps()*u32(fixed_step*1000);
 
 	m_dwIStartTime = m_dwILastUpdateTime;
 	
@@ -1261,7 +1261,7 @@ void CActor::make_Interpolation	()
 			case 1: 
 				{
 					for (int k=0; k<3; k++)
-						SpeedVector[k] = (factor*factor*SCoeff[k][0]*3+factor*SCoeff[k][1]*2+SCoeff[k][2])/3; // ñîêðîñòü èç ôîðìóëû â 3 ðàçà ïðåâûøàåò ñêîðîñòü ïðè ðàñ÷åòå êîýôôèöèåíòîâ !!!!
+						SpeedVector[k] = (factor*factor*SCoeff[k][0]*3+factor*SCoeff[k][1]*2+SCoeff[k][2])/3; // ÑÐ¾ÐºÑ€Ð¾ÑÑ‚ÑŒ Ð¸Ð· Ñ„Ð¾Ñ€Ð¼ÑƒÐ»Ñ‹ Ð² 3 Ñ€Ð°Ð·Ð° Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐ°ÐµÑ‚ ÑÐºÐ¾Ñ€Ð¾ÑÑ‚ÑŒ Ð¿Ñ€Ð¸ Ñ€Ð°ÑÑ‡ÐµÑ‚Ðµ ÐºÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚Ð¾Ð² !!!!
 					
 					ResPosition.set(IPosS); 
 				}break;
@@ -1307,20 +1307,20 @@ void		CActor::UpdatePosStack	( u32 Time0, u32 Time1 )
 	SPHNetState		State;
 	pSyncObj->get_State(State);
 
-	if (!SMemoryPosStack.empty() && SMemoryPosStack.back().u64WorldStep >= ph_world->m_steps_num)
+	if (!SMemoryPosStack.empty() && SMemoryPosStack.back().u64WorldStep >= physics_world()->m_steps_num)
 	{
 		xr_deque<SMemoryPos>::iterator B = SMemoryPosStack.begin();
 		xr_deque<SMemoryPos>::iterator E = SMemoryPosStack.end();
-		xr_deque<SMemoryPos>::iterator I = std::lower_bound(B,E,u64(ph_world->m_steps_num-1));
+		xr_deque<SMemoryPos>::iterator I = std::lower_bound(B,E,u64(physics_world()->m_steps_num-1));
 		if (I != E) 
 		{
 			I->SState = State;
-			I->u64WorldStep = ph_world->m_steps_num;
+			I->u64WorldStep = physics_world()->m_steps_num;
 		};
 	}
 	else		
 	{
-		SMemoryPosStack.push_back(SMemoryPos(Time0, Time1, ph_world->m_steps_num, State));
+		SMemoryPosStack.push_back(SMemoryPos(Time0, Time1, physics_world()->m_steps_num, State));
 		if (SMemoryPosStack.front().dwTime0 < (Level().timeServer() - 2000)) SMemoryPosStack.pop_front();
 	};
 };
@@ -1572,7 +1572,7 @@ void	CActor::OnRender_Network()
 				point1S[k] = c*(c*(c*SCoeff[k][0]+SCoeff[k][1])+SCoeff[k][2])+SCoeff[k][3];
 				point1H[k] = c*(c*(c*HCoeff[k][0]+HCoeff[k][1])+HCoeff[k][2])+HCoeff[k][3];
 
-				tS[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; // ñîêðîñòü èç ôîðìóëû â 3 ðàçà ïðåâûøàåò ñêîðîñòü ïðè ðàñ÷åòå êîýôôèöèåíòîâ !!!!
+				tS[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; // ÑÐ¾ÐºÑ€Ð¾ÑÑ‚ÑŒ Ð¸Ð· Ñ„Ð¾Ñ€Ð¼ÑƒÐ»Ñ‹ Ð² 3 Ñ€Ð°Ð·Ð° Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐ°ÐµÑ‚ ÑÐºÐ¾Ñ€Ð¾ÑÑ‚ÑŒ Ð¿Ñ€Ð¸ Ñ€Ð°ÑÑ‡ÐµÑ‚Ðµ ÐºÐ¾ÑÑ„Ñ„Ð¸Ñ†Ð¸ÐµÐ½Ñ‚Ð¾Ð² !!!!
 				tH[k] = (c*c*HCoeff[k][0]*3+c*HCoeff[k][1]*2+HCoeff[k][2]); 
 			};
 
@@ -1948,7 +1948,7 @@ void				CActor::OnPlayHeadShotParticle (NET_Packet P)
 	if (!m_sHeadShotParticle.size()) return;
 	Fmatrix pos; 	
 	CParticlesPlayer::MakeXFORM(this,element,HitDir,HitPos,pos);
-	// óñòàíîâèòü particles
+	// ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ particles
 	CParticlesObject* ps = NULL;
 	
 	ps = CParticlesObject::Create(m_sHeadShotParticle.c_str(),TRUE);

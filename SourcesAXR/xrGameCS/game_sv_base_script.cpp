@@ -16,11 +16,11 @@
 #include "object_broker.h"
 #include "player_hud.h"
 #include "Actor.h"
+#include "../xrPhysics/ElevatorState.h"
 
 using namespace luabind;
 bool g_block_all_except_movement;
 extern bool g_block_actor_movement;
-extern bool g_actor_allow_ladder;
 
 CUISequencer* g_tutorial = NULL;
 CUISequencer* g_tutorial2 = NULL;

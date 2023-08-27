@@ -9,7 +9,7 @@
 #include "fire_disp_controller.h"
 #include "entity_alive.h"
 #include "PHMovementControl.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "InventoryOwner.h"
 #include "../xrEngine/StatGraph.h"
 #include "PhraseDialogManager.h"
@@ -353,6 +353,7 @@ protected:
 	CCameraBase*			cameras[eacMaxCam];
 	EActorCameras			cam_active;
 	float					fPrevCamPos;
+	float					current_ik_cam_shift;
 	Fvector					vPrevCamDir;
 	float					fCurAVelocity;
 	CEffectorBobbing*		pCamBobbing;
@@ -804,7 +805,7 @@ public:
 	virtual void			On_SetEntity();
 	virtual void			On_LostEntity();
 
-static CPhysicsShell		*actor_camera_shell;
+//static CPhysicsShell		*actor_camera_shell;
 
 public:
 	void					SwitchNightVision(bool light_on, bool use_sounds = true, bool send_event = true);

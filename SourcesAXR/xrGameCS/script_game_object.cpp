@@ -35,6 +35,7 @@
 #include "actor.h"
 #include "actor_memory.h"
 #include "visual_memory_manager.h"
+#include "physics_shell_scripted.h"
 #include "PDA.h"
 #include "ai/phantom/phantom.h"
 #include "UIGameSP.h"
@@ -190,11 +191,14 @@ const CScriptEntityAction *CScriptGameObject::GetActionByIndex(u32 action_index)
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-CPhysicsShell* CScriptGameObject::get_physics_shell() const
+cphysics_shell_scripted* CScriptGameObject::get_physics_shell() const
 {
 	CPhysicsShellHolder* ph_shell_holder =smart_cast<CPhysicsShellHolder*>(&object());
-	if(! ph_shell_holder) return NULL;
-	return ph_shell_holder->PPhysicsShell();
+	if(! ph_shell_holder) 
+		return NULL;
+	if(! ph_shell_holder->PPhysicsShell() ) 
+		return NULL;
+	return get_script_wrapper<cphysics_shell_scripted>(*ph_shell_holder->PPhysicsShell());
 }
 
 //////////////////////////////////////////////////////////////////////////

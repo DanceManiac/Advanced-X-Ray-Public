@@ -4,7 +4,7 @@
 #include "limb.h"
 #include "ikfoot.h"
 
-#include "../../Include/xrRender/KinematicsAnimated.h"
+#include "../../include/xrrender/KinematicsAnimated.h"
 #include "../ik_anim_state.h"
 #include "../ik_calculate_data.h"
 #include "../ik_limb_state.h"
@@ -78,9 +78,9 @@ IC		static	void		get_start			( Fmatrix &start, SCalculateData &D, u16 bone );
 				void		DBGDrawSetNewGoal	( SCalculateData& cd, const SIKCollideData &cld );
 #endif	
 private:
-		static	void 	_BCL	BonesCallback0		( CBoneInstance* B );
-		static	void 	_BCL	BonesCallback1		( CBoneInstance* B );
-		static	void 	_BCL	BonesCallback2		( CBoneInstance* B );
+		static	void _BCL		BonesCallback0		( CBoneInstance* B );
+		static	void _BCL		BonesCallback1		( CBoneInstance* B );
+		static	void _BCL		BonesCallback2		( CBoneInstance* B );
 
 private:
 	

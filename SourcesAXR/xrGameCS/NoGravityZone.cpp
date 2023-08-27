@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "nogravityzone.h"
-#include "physicsshell.h"
+#include "../xrphysics/physicsshell.h"
 #include "entity_alive.h"
 #include "PHMovementControl.h"
-#include "PhWorld.h"
+//#include "PhWorld.h"
 #include "CharacterPhysicsSupport.h"
-extern CPHWorld	*ph_world;
+//extern CPHWorld	*ph_world;
+#include "../xrphysics/IPHWorld.h"
 void CNoGravityZone::enter_Zone(SZoneObjectInfo& io)
 {
 	inherited::enter_Zone(io);
@@ -36,7 +37,7 @@ void CNoGravityZone::switchGravity(SZoneObjectInfo& io, bool val)
 		{
 			CPhysicsElement* e=shell->get_ElementByStoreOrder(u16(Random.randI(0,shell->get_ElementsNumber())));
 			if(e->isActive()){
-				e->applyImpulseTrace(Fvector().random_point(e->getRadius()),Fvector().random_dir(),shell->getMass()*ph_world->Gravity()*fixed_step,e->m_SelfID);
+				e->applyImpulseTrace(Fvector().random_point(e->getRadius()),Fvector().random_dir(),shell->getMass()*physics_world()->Gravity()*fixed_step,e->m_SelfID);
 
 			}
 
@@ -55,7 +56,7 @@ void CNoGravityZone::switchGravity(SZoneObjectInfo& io, bool val)
 		{
 			Fvector gn;
 			mc->GroundNormal(gn);
-			mc->ApplyImpulse(gn,mc->GetMass()*ph_world->Gravity()*fixed_step);
+			mc->ApplyImpulse(gn,mc->GetMass()*physics_world()->Gravity()*fixed_step);
 			
 		}
 	}

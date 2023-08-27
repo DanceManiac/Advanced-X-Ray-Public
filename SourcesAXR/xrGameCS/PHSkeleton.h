@@ -1,7 +1,7 @@
 #ifndef PH_SKELETON_H
 #define PH_SKELETON_H
 
-#include "PHDefs.h"
+#include "../xrphysics/PHDefs.h"
 #include "PHDestroyableNotificate.h"
 class CPhysicsShellHolder;
 class CSE_ALifePHSkeletonObject;

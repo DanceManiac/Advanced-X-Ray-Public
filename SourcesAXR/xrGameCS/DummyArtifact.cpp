@@ -1,11 +1,11 @@
 ///////////////////////////////////////////////////////////////
 // DummyArtifact.cpp
-// DummyArtefact - артефакт пустышка
+// DummyArtefact - Р°СЂС‚РµС„Р°РєС‚ РїСѓСЃС‚С‹С€РєР°
 ///////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "DummyArtifact.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 
 
 CDummyArtefact::CDummyArtefact(void) 

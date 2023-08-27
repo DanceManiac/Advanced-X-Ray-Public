@@ -26,11 +26,10 @@
 
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
-
+#include "../xrPhysics/ElevatorState.h"
 using namespace InventoryUtilities;
 
 extern bool g_block_all_except_movement;
-extern bool g_actor_allow_ladder;
 
 std::atomic<bool> isHidingInProgressInv(false);
 std::atomic<bool> TakeItemAnimNeeded(false);

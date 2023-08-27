@@ -21,7 +21,7 @@
 #include "script_monster_hit_info.h"
 #include "script_entity_action.h"
 #include "action_planner.h"
-#include "PhysicsShell.h"
+#include "physics_shell_scripted.h"
 #include "helicopter.h"
 #include "HangingLamp.h"
 #include "holder_custom.h"
@@ -383,7 +383,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("start_particles",				&CScriptGameObject::start_particles)
 		.def("stop_particles",				&CScriptGameObject::stop_particles)
 
-		.def("is_ActorHide",				&CScriptGameObject::addon_IsActorHideout)			// проверка что актор под  каким либо укрытием
+		.def("is_ActorHide",				&CScriptGameObject::addon_IsActorHideout)			// РїСЂРѕРІРµСЂРєР° С‡С‚Рѕ Р°РєС‚РѕСЂ РїРѕРґ  РєР°РєРёРј Р»РёР±Рѕ СѓРєСЂС‹С‚РёРµРј
 
 		/*added by Ray Twitty (aka Shadows) START*/
 		.def("get_actor_max_weight",			&CScriptGameObject::GetActorMaxWeight)

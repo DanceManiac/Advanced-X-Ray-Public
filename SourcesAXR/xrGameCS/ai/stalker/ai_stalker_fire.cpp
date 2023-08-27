@@ -42,7 +42,7 @@
 #include "../../restricted_object.h"
 #include "../../ai_object_location.h"
 #include "../../missile.h"
-#include "../../phworld.h"
+#include "../../../xrphysics/iphworld.h"
 #include "../../stalker_animation_names.h"
 #include "../../agent_corpse_manager.h"
 #include "../../CharacterPhysicsSupport.h"
@@ -50,6 +50,8 @@
 #include "../../stalker_decision_space.h"
 #include "../../script_game_object.h"
 #include "../../inventory.h"
+
+#include "../../trajectories.h"
 
 using namespace StalkerSpace;
 
@@ -67,7 +69,7 @@ float CAI_Stalker::GetWeaponAccuracy	() const
 {
 	float				base = PI/180.f;
 	
-	//âëèÿíèå ðàíãà íà ìåòêîñòü
+	//Ð²Ð»Ð¸ÑÐ½Ð¸Ðµ Ñ€Ð°Ð½Ð³Ð° Ð½Ð° Ð¼ÐµÑ‚ÐºÐ¾ÑÑ‚ÑŒ
 	base				*= m_fRankDisperison;
 
 	if (!movement().path_completed()) {
@@ -209,7 +211,7 @@ void CAI_Stalker::g_WeaponBones	(int &L, int &R1, int &R2)
 
 void CAI_Stalker::Hit			(SHit* pHDS)
 {
-	//õèò ìîæåò ìåíÿòüñÿ â çàâèñèìîñòè îò ðàíãà (íîâè÷êè ïîëó÷àþò áîëüøå õèòà, ÷åì âåòåðàíû)
+	//Ñ…Ð¸Ñ‚ Ð¼Ð¾Ð¶ÐµÑ‚ Ð¼ÐµÐ½ÑÑ‚ÑŒÑÑ Ð² Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑ‚Ð¸ Ð¾Ñ‚ Ñ€Ð°Ð½Ð³Ð° (Ð½Ð¾Ð²Ð¸Ñ‡ÐºÐ¸ Ð¿Ð¾Ð»ÑƒÑ‡Ð°ÑŽÑ‚ Ð±Ð¾Ð»ÑŒÑˆÐµ Ñ…Ð¸Ñ‚Ð°, Ñ‡ÐµÐ¼ Ð²ÐµÑ‚ÐµÑ€Ð°Ð½Ñ‹)
 	SHit		HDS = *pHDS;
 	HDS.add_wound   = true;
 	
@@ -237,7 +239,7 @@ void CAI_Stalker::Hit			(SHit* pHDS)
 			HDS.add_wound = false;
 		}// if >=
 
-		if ( wounded() ) //óæå ëåæèò => äîáèâàíèå
+		if ( wounded() ) //ÑƒÐ¶Ðµ Ð»ÐµÐ¶Ð¸Ñ‚ => Ð´Ð¾Ð±Ð¸Ð²Ð°Ð½Ð¸Ðµ
 		{
 			hit_power = 1000.f;
 		}
@@ -1044,7 +1046,7 @@ void CAI_Stalker::check_throw_trajectory	(const float &throw_time)
 	m_throw_picks.front()	= m_throw_position;
 #endif // DEBUG
 
-	const Fvector			gravity = Fvector().set(0.f, -ph_world->Gravity(), 0.f);
+	const Fvector			gravity = Fvector().set(0.f, -physics_world()->Gravity(), 0.f);
 	const float				epsilon = .1f;
 
 	float					low = 0.f;
@@ -1118,8 +1120,8 @@ void CAI_Stalker::update_throw_params		()
 		return;
 	}
 
-	float					time = ThrowMinVelTime(m_throw_velocity,ph_world->Gravity());
-	TransferenceToThrowVel	(m_throw_velocity,time,ph_world->Gravity());
+	float					time = ThrowMinVelTime(m_throw_velocity,physics_world()->Gravity());
+	TransferenceToThrowVel	(m_throw_velocity,time,physics_world()->Gravity());
 
 	check_throw_trajectory	(time);
 }

@@ -2,14 +2,15 @@
 
 #include "imotion_position.h"
 
-#include "physicsshell.h"
-#include "MathUtils.h"
+#include "../xrphysics/physicsshell.h"
+#include "../xrphysics/MathUtils.h"
+#include "../xrphysics/extendedgeom.h"
 
 #include "../Include/xrRender/Kinematics.h"
 #include <boost/noncopyable.hpp>
 ///////////////////////////////////////////////////////////////////////////////////////
 #include "physicsshellholder.h"
-#include "extendedgeom.h"
+
 #include "game_object_space.h"
 #include "animation_utils.h"
 #ifdef	DEBUG
@@ -30,6 +31,16 @@ static const float end_delta = 0.5f * max_collide_timedelta;
 static const float collide_adwance_delta = 2.f*max_collide_timedelta;
 static const float depth_resolve = 0.01f;
 
+imotion_position::imotion_position(): 
+interactive_motion(), 
+time_to_end(0.f), 
+saved_visual_callback( 0 ), 
+blend(0), 
+shell_motion_has_history( false )
+{
+
+};
+
 static void interactive_motion_diag( LPCSTR message, const CBlend &b, CPhysicsShell *s, float time_left )
 {
 #ifdef	DEBUG
@@ -40,7 +51,7 @@ static void interactive_motion_diag( LPCSTR message, const CBlend &b, CPhysicsSh
 	VERIFY( s );
 	IKinematicsAnimated* KA = smart_cast<IKinematicsAnimated*>( s->PKinematics( ) );
 	VERIFY( KA );
-	CPhysicsShellHolder* O = s->get_ElementByStoreOrder( 0 )->PhysicsRefObject();
+	CPhysicsShellHolder* O = smart_cast<CPhysicsShellHolder*>(s->get_ElementByStoreOrder( 0 )->PhysicsRefObject());
 	VERIFY( O );
 	LPCSTR motion_name = KA->LL_MotionDefName_dbg( m ).first;
 	Msg( "death anims - interactive_motion:- %s, motion: %s, blend time %f , total blend time %f , time left: %f , obj: %s, model:  %s ", message, motion_name, b.timeCurrent, b.timeTotal, time_left, O->cName().c_str(), O->cNameVisual().c_str());
@@ -68,11 +79,11 @@ static void  get_depth( bool& do_colide, bool bo1, dContact& c, SGameMtl * /*mat
 		return;
 	dxGeomUserData* ud = 0;
 	if( bo1 )
-		ud = retrieveGeomUserData( c.geom.g2 );
+		ud = PHRetrieveGeomUserData( c.geom.g2 );
 	else
-		ud = retrieveGeomUserData( c.geom.g1 );
+		ud = PHRetrieveGeomUserData( c.geom.g1 );
 	if(ud)
-		collide_obj = ud->ph_ref_object;
+		collide_obj = static_cast<CPhysicsShellHolder*>(ud->ph_ref_object);
 	else
 		collide_obj = 0;
 #endif
@@ -164,7 +175,7 @@ void imotion_position::state_start( )
 	
 	if( !is_enabled( ) )
 				return;
-	CPhysicsShellHolder *obj= shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject();
+	CPhysicsShellHolder *obj= static_cast<CPhysicsShellHolder*>( shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
 	VERIFY( obj );
 	obj->processing_activate();
 	shell->Disable( );
@@ -183,7 +194,12 @@ void imotion_position::state_start( )
 		interactive_motion_diagnostic("stoped immediately");
 		switch_to_free	( );
 		flags.set(fl_not_played,TRUE);
+		return;
 	}
+	move( float( Device.dwTimeDelta )/1000, *KA );
+	if(flags.test(fl_switch_dm_toragdoll))
+			switch_to_free	( );
+	//K->CalculateBones_Invalidate();
 }
 
 #ifdef DEBUG
@@ -243,7 +259,7 @@ void	imotion_position::state_end( )
 	VERIFY( shell );
 	inherited::state_end( );
 	
-	CPhysicsShellHolder *obj= shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject();
+	CPhysicsShellHolder *obj= static_cast<CPhysicsShellHolder*>( shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
 	VERIFY( obj );
 	obj->processing_deactivate();
 	shell->Enable();
@@ -283,6 +299,19 @@ void	imotion_position::state_end( )
 
 #endif
 
+	u16 root = K->LL_GetBoneRoot();
+	if( root!=0 )
+	{
+		K->LL_GetTransform( 0 ).set( Fidentity );
+		K->LL_SetBoneVisible( 0, FALSE, FALSE );
+		u16 bip01 = K->LL_BoneID( "bip01" );
+		if( bip01 != BI_NONE && bip01 != root )
+		{
+			K->LL_GetTransform( bip01 ).set( Fidentity );
+			K->LL_SetBoneVisible( bip01, FALSE, FALSE );
+		}
+	}
+
 	K->CalculateBones_Invalidate();
 	K->CalculateBones( true );
 
@@ -313,6 +342,7 @@ void imotion_position::move_update( )
 	VERIFY( K );
 
 	disable_update( false );
+	K->CalculateBones_Invalidate( );
 	K->CalculateBones(  );
 	disable_update( true );
 	VERIFY( shell );
@@ -339,7 +369,7 @@ void imotion_position::move_update( )
 float imotion_position::advance_animation( float dt, IKinematicsAnimated& KA )
 {
 	time_to_end -=dt;
-	KA.LL_UpdateTracks( dt, true, false );
+	KA.LL_UpdateTracks( dt, true, true );
 
 	force_calculate_bones( KA );
 
@@ -363,7 +393,7 @@ void collide_anim_dbg_draw( CPhysicsShell	*shell, float dt )
 	if( dbg_imotion_draw_skeleton )
 	{
 		DBG_OpenCashedDraw();
-		CPhysicsShellHolder * sh = shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject();
+		CPhysicsShellHolder * sh = static_cast<CPhysicsShellHolder*>( shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
 		DBG_PhysBones( *sh );
 		DBG_ClosedCashedDraw( 50000 );
 	}
@@ -377,7 +407,7 @@ float imotion_position::collide_animation	( float dt, IKinematicsAnimated& k )
 #ifdef	DEBUG
 	collide_anim_dbg_draw ( shell, dt );
 #endif
-	shell->ToAnimBonesPositions( );
+	shell->ToAnimBonesPositions( shell_motion_has_history ? mh_not_clear : mh_unspecified );
 	depth = 0;
 #ifdef DEBUG
 	if( dbg_imotion_collide_debug )
@@ -503,7 +533,8 @@ float imotion_position::move( float dt, IKinematicsAnimated& KA )
 			time_to_end -= ad;
 			force_calculate_bones( KA );
 			//advance_time += advance_animation( -( end_delta ), KA );//+ ad
-			shell->ToAnimBonesPositions( );
+			shell->ToAnimBonesPositions( shell_motion_has_history ? mh_not_clear : mh_unspecified );
+			shell_motion_has_history = true;
 
 #ifdef DEBUG
 		if( dbg_imotion_collide_debug )
@@ -595,7 +626,7 @@ float imotion_position::motion_collide( float dt, IKinematicsAnimated& KA )
 		time_to_end += (dt-advance_time);
 		advance_time += (dt-advance_time);
 		force_calculate_bones( KA );
-		shell->ToAnimBonesPositions( );
+		shell->ToAnimBonesPositions( shell_motion_has_history ? mh_clear : mh_unspecified );
 
 #ifdef DEBUG
 		if( dbg_imotion_collide_debug )

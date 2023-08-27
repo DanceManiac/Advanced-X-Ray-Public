@@ -74,7 +74,7 @@ class CScriptMonsterHitInfo;
 class CScriptBinderObject;
 class CCoverPoint;
 class CScriptIniFile;
-class CPhysicsShell;
+class cphysics_shell_scripted;
 class CHelicopter;
 class CHangingLamp;
 class CHolderCustom;
@@ -135,6 +135,8 @@ namespace luabind {
 
 class CScriptGameObject {
 	mutable CGameObject		*m_game_object;
+							CScriptGameObject		(CScriptGameObject const& game_object);
+
 public:
 
 							CScriptGameObject		(CGameObject *tpGameObject);
@@ -289,7 +291,7 @@ public:
 	// CProjector
 			Fvector				GetCurrentDirection		();
 			bool				IsInvBoxEmpty			();
-	//передача порции информации InventoryOwner
+	//РїРµСЂРµРґР°С‡Р° РїРѕСЂС†РёРё РёРЅС„РѕСЂРјР°С†РёРё InventoryOwner
 			bool				GiveInfoPortion		(LPCSTR info_id);
 			bool				DisableInfoPortion	(LPCSTR info_id);
 			void				GiveGameNews		(LPCSTR caption, LPCSTR news, LPCSTR texture_name, int delay, int show_time);
@@ -297,11 +299,11 @@ public:
 
 			void				AddIconedTalkMessage_old(LPCSTR text, LPCSTR texture_name, LPCSTR templ_name) {};
 			void				AddIconedTalkMessage(LPCSTR caption, LPCSTR text, LPCSTR texture_name, LPCSTR templ_name);
-	//предикаты наличия/отсутствия порции информации у персонажа
+	//РїСЂРµРґРёРєР°С‚С‹ РЅР°Р»РёС‡РёСЏ/РѕС‚СЃСѓС‚СЃС‚РІРёСЏ РїРѕСЂС†РёРё РёРЅС„РѕСЂРјР°С†РёРё Сѓ РїРµСЂСЃРѕРЅР°Р¶Р°
 			bool				HasInfo				(LPCSTR info_id);
 			bool				DontHasInfo			(LPCSTR info_id);
 			xrTime				GetInfoTime			(LPCSTR info_id);
-	//работа с заданиями
+	//СЂР°Р±РѕС‚Р° СЃ Р·Р°РґР°РЅРёСЏРјРё
 			ETaskState			GetGameTaskState	(LPCSTR task_id);
 			void				SetGameTaskState	(ETaskState state, LPCSTR task_id);
 			void				GiveTaskToActor		(CGameTask* t, u32 dt, bool bCheckExisting, u32 t_timer);
@@ -623,9 +625,9 @@ public:
 			Fvector 			bone_position			(LPCSTR bone_name, bool bHud = false) const;
 			Fvector 			bone_direction			(LPCSTR bone_name, bool bHud = false) const;
 			LPCSTR 				bone_name				(u16 id, bool bHud = false);
-			u16					get_bone_id				(LPCSTR bone_name) const;
 			bool				is_body_turning			() const;
-			CPhysicsShell*		get_physics_shell		() const;
+	cphysics_shell_scripted*	get_physics_shell		() const;
+			u16					get_bone_id				(LPCSTR bone_name) const;					
 			bool				weapon_strapped			() const;
 			bool				weapon_unstrapped		() const;
 			bool				weapon_shooting			() const;
@@ -777,7 +779,7 @@ public:
 			void				take_items_enabled						(bool value);
 			bool				take_items_enabled						() const;
 
-			bool				addon_IsActorHideout					() const;		// проверка что актор под каким либо укрытием
+			bool				addon_IsActorHideout					() const;		// РїСЂРѕРІРµСЂРєР° С‡С‚Рѕ Р°РєС‚РѕСЂ РїРѕРґ РєР°РєРёРј Р»РёР±Рѕ СѓРєСЂС‹С‚РёРµРј
 
 			// Alundaio
 			bool				IsOnBelt(CScriptGameObject* obj) const;

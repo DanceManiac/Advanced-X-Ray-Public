@@ -3,6 +3,7 @@
 #ifdef DEBUG
 struct dContact;
 #include "../xrEngine/StatGraph.h"
+#include "../xrphysics/debug_output.h"
 #define DRAW_CONTACTS
 
 
@@ -31,69 +32,8 @@ extern	CObject			*trace_object							;
 //extern CONTACT_VECTOR Contacts1;
 #endif
 ///ph_dbg_draw_mask 
-enum
-{
-	phDbgDrawContacts			=		1<<0,
-	phDbgDrawEnabledAABBS		=		1<<1,
-	phDBgDrawIntersectedTries	=		1<<2,
-	phDbgDrawSavedTries			=		1<<3,
-	phDbgDrawTriTrace			=		1<<4,
-	phDBgDrawNegativeTries		=		1<<5,
-	phDBgDrawPositiveTries		=		1<<6,
-	phDbgDrawTriTestAABB		=		1<<7,
-	phDBgDrawTriesChangesSign	=		1<<8,
-	phDbgDrawTriPoint			=		1<<9,
-	phDbgDrawExplosionPos		=		1<<10,
-	phDbgDrawObjectStatistics	=		1<<11,
-	phDbgDrawMassCenters		=		1<<12,
-	phDbgDrawDeathActivationBox =		1<<14,
-	phHitApplicationPoints		=		1<<15,
-	phDbgDrawCashedTriesStat	=		1<<16,
-	phDbgDrawCarDynamics		=		1<<17,
-	phDbgDrawCarPlots			=		1<<18,
-	phDbgLadder					=		1<<19,
-	phDbgDrawExplosions			=		1<<20,
-	phDbgDrawCarAllTrnsm		=		1<<21,
-	phDbgDrawZDisable			=		1<<22,
-	phDbgAlwaysUseAiPhMove		=		1<<23,
-	phDbgNeverUseAiPhMove		=		1<<24,
-	phDbgDispObjCollisionDammage=		1<<25,
-	phDbgIK						=		1<<26,
-	phDbgDrawIKGoal				=		1<<27,
-	phDbgIKLimits				=		1<<28,
-	phDbgCharacterControl		=		1<<29,
-	phDbgDrawRayMotions			=		1<<30,
-	phDbgTrackObject			=		1<<31
 
-};
-///ph_dbg_draw_mask1 ne pereputat by blin!
-enum
-{
-	ph_m1_DbgTrackObject		=		1<<0,
-	ph_m1_DbgActorRestriction	=		1<<1,
-	phDbgIKOff					=		1<<2,
-	phDbgHitAnims				=		1<<3,
-	phDbgDrawIKLimits			=		1<<4,
-	phDbgDrawIKPredict			=		1<<5,
-	phDbgDrawIKSHiftObject		=		1<<6,
-	phDbgDrawIKCollision		=		1<<7,
-	phDbgDrawIKBlending			=		1<<8
-};
 
-enum 
-{
-	dbg_track_obj_blends_bp_0			= 1<< 0,
-	dbg_track_obj_blends_bp_1			= 1<< 1,
-	dbg_track_obj_blends_bp_2			= 1<< 2,
-	dbg_track_obj_blends_bp_3			= 1<< 3,
-	dbg_track_obj_blends_motion_name	= 1<< 4,
-	dbg_track_obj_blends_time			= 1<< 5,
-	dbg_track_obj_blends_ammount		= 1<< 6,
-	dbg_track_obj_blends_mix_params		= 1<< 7,
-	dbg_track_obj_blends_flags			= 1<< 8,
-	dbg_track_obj_blends_state			= 1<< 9,
-	dbg_track_obj_blends_dump			= 1<< 10
-};
 //DEFINE_VECTOR( SPHObjDBGDraw, PHOBJ_DBG_V, PHOBJ_DBG_I );
 //extern PHOBJ_DBG_V	dbg_draw_objects0;
 //extern PHOBJ_DBG_V	dbg_draw_objects1;
@@ -136,6 +76,7 @@ void DBG_DrawFrameStart( );
 void PH_DBG_Render( );
 void PH_DBG_Clear( );
 LPCSTR PH_DBG_ObjectTrackName( );
+////////////////////////////////////////////////
 
 /////////////////////////////////////////////////
 void DBG_PH_NetRelcase( CObject* obj );
@@ -156,7 +97,7 @@ public:
 
 	CFunctionGraph						( )																																								;
 	~CFunctionGraph						( )																																								;
-	void	Init						( type_function fun, float x0, float x1, int l, int t, int w, int h, int points_num=500, u32 color=color_xrgb( 0, 255, 0 ), u32 bk_color= color_xrgb( 255, 255, 255 ) )	;
+	void	Init						( type_function fun, float x0, float x1, int l, int t, int w, int h, int points_num=500, u32 color=D3DCOLOR_XRGB( 0, 255, 0 ), u32 bk_color=D3DCOLOR_XRGB( 255, 255, 255 ) )	;
 	void	Clear						( )																																								;
 	bool	IsActive					( )																																								;
 	void	AddMarker					( CStatGraph::EStyle Style, float pos, u32 Color )																												;

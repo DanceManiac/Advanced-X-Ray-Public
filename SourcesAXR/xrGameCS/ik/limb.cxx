@@ -35,7 +35,7 @@
 //#include <string.h>
 #include "stdafx.h"
 #include "limb.h"
-#include "../ode_include.h"
+//#include "../ode_include.h"
 enum { SolvePosOnly = 1, SolvePosAndOrientation = 2 }; 
 
 //
@@ -798,10 +798,11 @@ int Limb::try_singularities(int solves, float &swivel_angle, float x[])
 //
 // Assumes that either SetGoal or SetGoalPos has been called first
 //
+extern XRPHYSICS_API	const float	phInfinity;
 int Limb::Solve(float x[], float *new_swivel, float *new_pos)
 {
     int success; 
-    float swivel_angle=-dInfinity; 
+    float swivel_angle=-phInfinity; 
 
     x[3] = x3;
 
@@ -842,7 +843,7 @@ int Limb::Solve(float x[], float *new_swivel, float *new_pos)
 	swivel_angle = 0.0f;
 	success = SolveByAngle(swivel_angle, x);
     }
-	VERIFY(swivel_angle!=-dInfinity);
+	VERIFY(swivel_angle!=-phInfinity);
     if (new_swivel)
 	*new_swivel = swivel_angle;
     if (new_pos)
@@ -992,9 +993,9 @@ void dump_file(char *file, int euler_type, float min[], float max[],
     fprintf(fp, "%f %f %f \n", max[2], max[1], max[0]);
     for (int i = 0; i < 4; i++)
 	fprintf(fp, "%f %f %f %f\n", c[i][0],c[i][1],c[i][2],c[i][3]);
-    for (int i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++)
 	fprintf(fp, "%f %f %f %f\n", s[i][0],s[i][1],s[i][2],s[i][3]);
-    for (int i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++)
 	    fprintf(fp, "%f %f %f %f\n", o[i][0],o[i][1],o[i][2],o[i][3]);
    
     fclose(fp);

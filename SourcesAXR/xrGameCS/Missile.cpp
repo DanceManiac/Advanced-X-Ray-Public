@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "missile.h"
 //.#include "WeaponHUD.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "actor.h"
 #include "../xrEngine/CameraBase.h"
 #include "xrserver_objects_alife.h"
@@ -10,8 +10,8 @@
 #include "xr_level_controller.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "ai_object_location.h"
-#include "ExtendedGeom.h"
-#include "MathUtils.h"
+#include "../xrphysics/ExtendedGeom.h"
+#include "../xrphysics/MathUtils.h"
 #include "characterphysicssupport.h"
 #include "inventory.h"
 #include "../xrEngine/IGame_Persistent.h"
@@ -726,13 +726,13 @@ void	 CMissile::ExitContactCallback(bool& do_colide,bool bo1,dContact& c,SGameMt
 	dxGeomUserData	*gd1=NULL,	*gd2=NULL;
 	if(bo1)
 	{
-		gd1 =retrieveGeomUserData(c.geom.g1);
-		gd2 =retrieveGeomUserData(c.geom.g2);
+		gd1 =PHRetrieveGeomUserData(c.geom.g1);
+		gd2 =PHRetrieveGeomUserData(c.geom.g2);
 	}
 	else
 	{
-		gd2 =retrieveGeomUserData(c.geom.g1);
-		gd1 =retrieveGeomUserData(c.geom.g2);
+		gd2 =PHRetrieveGeomUserData(c.geom.g1);
+		gd1 =PHRetrieveGeomUserData(c.geom.g2);
 	}
 	if(gd1&&gd2&&(CPhysicsShellHolder*)gd1->callback_data==gd2->ph_ref_object)	
 																				do_colide=false;

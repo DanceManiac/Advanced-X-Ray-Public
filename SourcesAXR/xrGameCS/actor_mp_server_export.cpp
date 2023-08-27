@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "actor_mp_server.h"
-#include "Physics.h"
-#include "mathutils.h"
+//#include "Physics.h"
+//#include "mathutils.h"
+#include "../xrphysics/phvalide.h"
 
 
 void CSE_ActorMP::fill_state	(actor_mp_state &state)
@@ -41,6 +42,6 @@ void CSE_ActorMP::UPDATE_Write	(NET_Packet &packet)
 		m_state_holder.relevant		(state);
 	}
 	//Msg("--- Client 0x%08x UPDATE_Write, health is: %2.04f", this->ID, m_state_holder.state().health);
-	R_ASSERT2(valid_pos(m_state_holder.state().position,phBoundaries), "trying to write bad position");
+	R_ASSERT2(valid_pos(m_state_holder.state().position), "trying to write bad position");
 	m_state_holder.write			(packet);
 }

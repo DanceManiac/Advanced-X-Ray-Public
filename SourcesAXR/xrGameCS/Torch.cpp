@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "actor.h"
 #include "../xrEngine/LightAnimLibrary.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "xrserver_objects_alife_items.h"
 #include "ai_sounds.h"
 
@@ -11,13 +11,13 @@
 #include "level.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "../xrEngine/camerabase.h"
+#include "../xrengine/xr_collide_form.h"
 #include "inventory.h"
 #include "game_base_space.h"
 
 #include "UIGameCustom.h"
 #include "CustomOutfit.h"
-#include "..\XrEngine\xr_collide_form.h"
-
+#include "../xrPhysics/ElevatorState.h"
 #include "player_hud.h"
 #include "Weapon.h"
 #include "ActorEffector.h"
@@ -39,7 +39,6 @@ static const float		OPTIMIZATION_DISTANCE		= 100.f;
 static bool stalker_use_dynamic_lights	= false;
 
 extern bool g_block_all_except_movement;
-extern bool g_actor_allow_ladder;
 
 CTorch::CTorch(void) 
 {
@@ -138,7 +137,7 @@ void CTorch::Load(LPCSTR section)
 		}
 	}
 
-	//Ñëó÷àéíûé íà÷àëüíûé çàðÿä áàòàðååê â ôîíàðèêå, åñëè âêëþ÷åíà îïöèÿ îãðàíè÷åííîãî çàðÿäà áàòàðååê ó ôîíàðèêà
+	//Ð¡Ð»ÑƒÑ‡Ð°Ð¹Ð½Ñ‹Ð¹ Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ð·Ð°Ñ€ÑÐ´ Ð±Ð°Ñ‚Ð°Ñ€ÐµÐµÐº Ð² Ñ„Ð¾Ð½Ð°Ñ€Ð¸ÐºÐµ, ÐµÑÐ»Ð¸ Ð²ÐºÐ»ÑŽÑ‡ÐµÐ½Ð° Ð¾Ð¿Ñ†Ð¸Ñ Ð¾Ð³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð½Ð¾Ð³Ð¾ Ð·Ð°Ñ€ÑÐ´Ð° Ð±Ð°Ñ‚Ð°Ñ€ÐµÐµÐº Ñƒ Ñ„Ð¾Ð½Ð°Ñ€Ð¸ÐºÐ°
 	if (GameConstants::GetTorchHasBattery())
 	{
 		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
@@ -375,7 +374,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	light_render->set_type((IRender_Light::LT)(READ_IF_EXISTS(pUserData, r_u8, m_light_section, "type", 2)));
 	light_omni->set_type((IRender_Light::LT)(READ_IF_EXISTS(pUserData, r_u8, m_light_section, "omni_type", 1)));
 
-	//âêëþ÷èòü/âûêëþ÷èòü ôîíàðèê
+	//Ð²ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ/Ð²Ñ‹ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ñ„Ð¾Ð½Ð°Ñ€Ð¸Ðº
 	Switch					(torch->m_active);
 	VERIFY					(!torch->m_active || (torch->ID_Parent != 0xffff));
 
@@ -563,7 +562,7 @@ void CTorch::UpdateCL()
 	if (!lanim)							return;
 
 	int						frame;
-	// âîçâðàùàåò â ôîðìàòå BGR
+	// Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð² Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚Ðµ BGR
 	u32 clr					= lanim->CalculateBGR(Device.fTimeGlobal,frame); 
 
 	Fcolor					fclr;

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "artefact.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "PhysicsShellHolder.h"
 #include "game_cl_base.h"
 
@@ -11,7 +11,7 @@
 #include "level.h"
 #include "ai_object_location.h"
 #include "xrServer_Objects_ALife_Monsters.h"
-#include "phworld.h"
+#include "../xrphysics/iphworld.h"
 #include "restriction_space.h"
 #include "../xrEngine/IGame_Persistent.h"
 
@@ -81,7 +81,7 @@ void CArtefact::Load(LPCSTR section)
 		m_fConstTrailLightRange = pSettings->r_float(section, "trail_light_range");
 	}
 
-	//Ñëó÷àéíûé íà÷àëüíûé ðàíã àðòåôàêòà
+	//Ð¡Ð»ÑƒÑ‡Ð°Ð¹Ð½Ñ‹Ð¹ Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ñ€Ð°Ð½Ð³ Ð°Ñ€Ñ‚ÐµÑ„Ð°ÐºÑ‚Ð°
 	if (GameConstants::GetAfRanks())
 	{
 		int rnd_rank = ::Random.randI(1, 100);
@@ -240,7 +240,7 @@ void CArtefact::OnH_A_Chield()
 
 void CArtefact::OnH_B_Independent(bool just_before_destroy) 
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	inherited::OnH_B_Independent(just_before_destroy);
 
 	StartLights();
@@ -414,7 +414,7 @@ void CArtefact::UpdateDegradation()
 void CArtefact::UpdateWorkload		(u32 dt) 
 {
 
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	// particles - velocity
 	Fvector vel = {0, 0, 0};
 	if (H_Parent()) 
@@ -433,6 +433,7 @@ void CArtefact::UpdateWorkload		(u32 dt)
 	}
 
 	// custom-logic
+	if(!CAttachableItem::enabled())
 	UpdateCLChild					();
 }
 
@@ -467,7 +468,7 @@ void CArtefact::create_physic_shell	()
 
 void CArtefact::StartLights()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if(!m_bLightsEnabled)		return;
 
 	VERIFY							(m_pTrailLight == NULL);
@@ -489,7 +490,7 @@ void CArtefact::StartLights()
 
 void CArtefact::StopLights()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if(!m_bLightsEnabled || !m_pTrailLight) 
 		return;
 
@@ -499,7 +500,7 @@ void CArtefact::StopLights()
 
 void CArtefact::UpdateLights()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if(!m_bLightsEnabled || !m_pTrailLight ||!m_pTrailLight->get_active()) return;
 	m_pTrailLight->set_position(Position());
 }
@@ -515,7 +516,7 @@ void CArtefact::ActivateArtefact	()
 
 }
 
-void CArtefact::PhDataUpdate	(dReal step)
+void CArtefact::PhDataUpdate	(float step)
 {
 	if(m_activationObj && m_activationObj->IsInProgress())
 		m_activationObj->PhDataUpdate			(step);
@@ -576,6 +577,8 @@ void CArtefact::UpdateXForm()
 		VERIFY				(E);
 		IKinematics*		V		= smart_cast<IKinematics*>	(E->Visual());
 		VERIFY				(V);
+		if(CAttachableItem::enabled())
+			return;
 
 		// Get matrices
 		int					boneL = -1, boneR = -1, boneR2 = -1;

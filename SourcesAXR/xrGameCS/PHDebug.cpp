@@ -1,11 +1,17 @@
 #include "stdafx.h"
 #ifdef DEBUG
-#include "physics.h"
-#include "MathUtils.h"
+//#include "physics.h"
+//#include "MathUtils.h"
 #include "../xrEngine/StatGraph.h"
 #include "PHDebug.h"
-#include "PHObject.h"
-#include "ExtendedGeom.h"
+//#include "physics.h"
+#include "../xrphysics/MathUtils.h"
+//#include "PHObject.h"
+#include "../xrphysics/ExtendedGeom.h"
+#include "../xrphysics/iphworld.h"
+#include "../xrphysics/physicsshell.h"
+
+
 #include "Level.h"
 #include "Hudmanager.h"
 
@@ -16,7 +22,7 @@
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "../xrEngine/bone.h"
 #include "../xrEngine/iphdebug.h"
-#include "phelement.h"
+//#include "phelement.h"
 
 Flags32		ph_dbg_draw_mask						;
 Flags32		ph_dbg_draw_mask1						;
@@ -77,29 +83,33 @@ void DBG_DrawPHObject(const CPHObject* obj)
 }
 struct SPHContactDBGDraw :public SPHDBGDrawAbsract
 {
-	int geomClass;
+	//int geomClass;
+	bool is_cyl;
 	Fvector norm;
 	Fvector pos;
 	float depth;
 	SPHContactDBGDraw(const dContact& c)
 	{
 		
-		if(dGeomGetBody(c.geom.g1))
-		{
-			geomClass =dGeomGetClass(retrieveGeom(c.geom.g1));
-		}
-		else
-		{
-			geomClass=dGeomGetClass(retrieveGeom(c.geom.g2));
-		}
+		//if(dGeomGetBody(c.geom.g1))
+		//{
+		//	geomClass =dGeomGetClass(retrieveGeom(c.geom.g1));
+		//}
+		//else
+		//{
+		//	geomClass=dGeomGetClass(retrieveGeom(c.geom.g2));
+		//}
+
+		//is_cyl= (geomClass==dCylinderClassUser);
+		is_cyl = IsCyliderContact(c);
 		norm.set(cast_fv(c.geom.normal));
 		pos.set(cast_fv(c.geom.pos));
 		depth=c.geom.depth;
 	}
 	void render		( )
 	{
-			bool is_cyl= (geomClass==dCylinderClassUser);
-			Level().debug_renderer().draw_aabb			(pos,.01f,.01f,.01f,color_xrgb(255*is_cyl,0,255*!is_cyl));
+			//bool is_cyl= (geomClass==dCylinderClassUser);
+			Level().debug_renderer().draw_aabb			(pos,.01f,.01f,.01f,D3DCOLOR_XRGB(255*is_cyl,0,255*!is_cyl));
 			Fvector dir;
 			dir.set(norm);
 			dir.mul(depth*100.f);
@@ -414,11 +424,11 @@ void DBG_DrawPHAbstruct(SPHDBGDrawAbsract* a)
 {
 	if( dbg_ph_draw_mode!=dmCashed && dbg_ph_draw_mode!=dmCashedSecondary )
 	{
-		if(ph_world->Processing()) dbg_ph_draw_mode = dmSecondaryThread;
+		if(physics_world()->Processing()) dbg_ph_draw_mode = dmSecondaryThread;
 		else					   dbg_ph_draw_mode = dmSimple;
 	} else
 	{
-		if(ph_world->Processing()) dbg_ph_draw_mode = dmCashedSecondary;
+		if(physics_world()->Processing()) dbg_ph_draw_mode = dmCashedSecondary;
 		else					   dbg_ph_draw_mode = dmCashed;
 	}
 	switch (dbg_ph_draw_mode)
@@ -575,8 +585,8 @@ void DBG_DrawStatBeforeFrameStep()
 	{
 		static float obj_count=0.f;
 		static float update_obj_count=0.f;
-		obj_count=obj_count*0.9f + float(ph_world->ObjectsNumber())*0.1f;
-		update_obj_count=update_obj_count*0.9f + float(ph_world->UpdateObjectsNumber())*0.1f;
+		obj_count=obj_count*0.9f + float(physics_world()->ObjectsNumber())*0.1f;
+		update_obj_count=update_obj_count*0.9f + float(physics_world()->UpdateObjectsNumber())*0.1f;
 		DBG_OutText("Active Phys Objects %3.0f",obj_count);
 		DBG_OutText("Active Phys Update Objects %3.0f",update_obj_count);
 	}
@@ -649,7 +659,7 @@ void CFunctionGraph::Init(type_function fun,float x0,float x1,int l, int t, int 
 	s=(x_max-x_min)/points_num;
 	R_ASSERT(s>0.f);
 	m_stat_graph->SetRect(l,t,w,h,bk_color,bk_color);
-	float min=dInfinity;float max=-dInfinity;
+	float min=phInfinity;float max=-phInfinity;
 	for(float x=x_min;x<x_max;x+=s)
 	{
 		float val=m_function(x);
@@ -657,7 +667,7 @@ void CFunctionGraph::Init(type_function fun,float x0,float x1,int l, int t, int 
 		save_min(min,val);save_max(max,val);
 	}
 
-	R_ASSERT(min<dInfinity&&max>-dInfinity && min<=max);
+	R_ASSERT(min<phInfinity&&max>-phInfinity && min<=max);
 	m_stat_graph->SetMinMax(min,max,points_num);
 
 	for(float x=x_min;x<x_max;x+=s)
@@ -810,7 +820,10 @@ void DBG_AnimState( IKinematicsAnimated &ka )
 static void DBG_DrawTarckObj()
 {
 	if(!ph_dbg_draw_mask1.test(ph_m1_DbgTrackObject))
+	{
+		trace_object = 0;
 		return;
+	}
 	DBG_TextOutSet		(450,150);
 	DBG_OutText( "obj name: %s", PH_DBG_ObjectTrackName() );
 	
@@ -888,7 +901,7 @@ void	DBG_PhysBones( CObject &O )
 		CPhysicsElement		*e	=  shell->get_ElementByStoreOrder(i);
 
 		DBG_DrawMatrix( e->XFORM(), 0.1f );//Fmatrix().mul_43( O.XFORM(),e->XFORM())
-		CPHElement* pE = smart_cast<CPHElement*>( e )->parent_element();
+		CPhysicsElement* pE = ( e )->parent_element();
 		if( pE )
 			DBG_DrawLine( e->XFORM().c, pE->XFORM().c, color_xrgb( 255, 100, 0 ) );
 		
@@ -957,7 +970,7 @@ void DBG_PH_NetRelcase( CObject* obj )
 
 bool is_trace_obj( CPHObject *obj )
 {
-	return trace_object && static_cast<CObject*>(obj->ref_object()) == trace_object;
+	return trace_object && smart_cast<CObject*>(obj->ref_object()) == trace_object;
 }
 
 
@@ -986,12 +999,12 @@ void DBG_ObjBeforeStep			( CPHObject *obj )
 	if( is_trace_obj(obj) )
 	{
 		DBG_OpenCashedDraw();
-		//dbg_draw_velocity	( 0.1f, color_xrgb( 255, 0, 0 ) ); 
-		if(obj->ref_object()->PPhysicsShell())
+		//dbg_draw_velocity	( 0.1f, D3DCOLOR_XRGB( 255, 0, 0 ) ); 
+		if(obj->ref_object()->ObjectPPhysicsShell())
 		{
-			obj->ref_object()->PPhysicsShell()->dbg_draw_force		( 0.1f, color_xrgb( 0, 0, 255 ) ); 
+			obj->ref_object()->ObjectPPhysicsShell()->dbg_draw_force		( 0.1f, D3DCOLOR_XRGB( 0, 0, 255 ) ); 
 			Fmatrix form = Fidentity;
-			obj->ref_object()->PPhysicsShell()->GetGlobalTransformDynamic( &form );
+			obj->ref_object()->ObjectPPhysicsShell()->GetGlobalTransformDynamic( &form );
 			dbg_trace_prev_pos.set( form.c );
 		}
 		
@@ -1003,11 +1016,11 @@ void DBG_ObjAfterStep			( CPHObject *obj )
 	if( is_trace_obj(obj) )
 	{
 		
-		if(obj->ref_object()->PPhysicsShell())
+		if(obj->ref_object()->ObjectPPhysicsShell())
 		{
-			obj->ref_object()->PPhysicsShell()->dbg_draw_velocity	( 0.1f, color_xrgb( 255, 0, 0 ) );
+			obj->ref_object()->ObjectPPhysicsShell()->dbg_draw_velocity	( 0.1f, D3DCOLOR_XRGB( 255, 0, 0 ) );
 		}
-		//dbg_draw_force		( 0.1f, color_xrgb( 0, 0, 255 ) ); 
+		//dbg_draw_force		( 0.1f, D3DCOLOR_XRGB( 0, 0, 255 ) ); 
 		
 	}
 }
@@ -1020,13 +1033,229 @@ void DBG_ObjAfterPhDataUpdate	( CPHObject *obj )
 {
 		if(!is_trace_obj(obj))
 			return;
-			if( obj->ref_object()->PPhysicsShell())
+			if( obj->ref_object()->ObjectPPhysicsShell())
 		{
 			Fmatrix form = Fidentity;
-			obj->ref_object()->PPhysicsShell()->GetGlobalTransformDynamic( &form );
-			DBG_DrawLine( dbg_trace_prev_pos, form.c,  color_xrgb( 255, 0, 0 )  );
+			obj->ref_object()->ObjectPPhysicsShell()->GetGlobalTransformDynamic( &form );
+			DBG_DrawLine( dbg_trace_prev_pos, form.c,  D3DCOLOR_XRGB( 255, 0, 0 )  );
 		}
 		DBG_ClosedCashedDraw( 50000 );
 	
 }
+
+
+class CPHDebugOutput:
+	public IDebugOutput
+{
+	
+virtual	const	Flags32		&ph_dbg_draw_mask()const
+{
+	return ::ph_dbg_draw_mask;
+}
+virtual	const	Flags32		&ph_dbg_draw_mask1()const
+{
+	return ::ph_dbg_draw_mask1;
+}
+
+virtual	void DBG_DrawStatBeforeFrameStep( )
+{
+	::DBG_DrawStatBeforeFrameStep();
+}
+virtual	void DBG_DrawStatAfterFrameStep( )
+{
+	::DBG_DrawStatAfterFrameStep( );
+}
+//virtual	void DBG_RenderUpdate( )												=0; 
+virtual	void DBG_OpenCashedDraw( )
+{
+	::DBG_OpenCashedDraw( );
+}
+virtual	void DBG_ClosedCashedDraw( u32 remove_time )
+{
+	::DBG_ClosedCashedDraw( remove_time );
+}
+//virtual	void DBG_DrawPHAbstruct( SPHDBGDrawAbsract*	a )							=0;
+virtual	void DBG_DrawPHObject( const CPHObject *obj )
+{
+	::DBG_DrawPHObject( obj );
+}
+virtual	void DBG_DrawContact ( const dContact &c )
+{
+	::DBG_DrawContact( c );
+}
+virtual	void DBG_DrawTri( CDB::RESULT *T, u32 c )
+{
+	::DBG_DrawTri( T, c );
+}
+virtual	void DBG_DrawTri(CDB::TRI *T, const Fvector *V_verts, u32 c )
+{
+	::DBG_DrawTri( T, V_verts, c );
+}
+virtual	void DBG_DrawLine( const Fvector &p0, const Fvector &p1, u32 c )
+{
+	::DBG_DrawLine( p0, p1, c );
+}
+virtual	void DBG_DrawAABB( const Fvector &center, const Fvector& AABB, u32 c )
+{
+	::DBG_DrawAABB( center, AABB, c );
+}
+virtual	void DBG_DrawOBB( const Fmatrix &m, const Fvector h, u32 c )
+{
+	::DBG_DrawOBB( m, h, c );
+}
+virtual	void DBG_DrawPoint( const Fvector& p, float size, u32 c )
+{
+	::DBG_DrawPoint( p, size, c );
+}
+virtual	void DBG_DrawMatrix( const Fmatrix &m, float size, u8 a=255 )
+{	
+	::DBG_DrawMatrix( m, size, a );
+}
+//virtual	void DBG_DrawRotationX( const Fmatrix &m, float ang0, float ang1, float size, u32 ac, bool solid = false, u32 tessel = 7 ) = 0;
+//virtual	void DBG_DrawRotationY( const Fmatrix &m, float ang0, float ang1, float size, u32 ac, bool solid = false, u32 tessel = 7 ) = 0;
+//virtual	void DBG_DrawRotationZ( const Fmatrix &m, float ang0, float ang1, float size, u32 ac, bool solid = false, u32 tessel = 7 ) = 0;
+virtual	void _cdecl DBG_OutText( LPCSTR s,... )
+{
+	string1024 t;
+	va_list   marker;
+	va_start  (marker,s);
+	vsprintf(t,s,marker);
+	va_end    (marker);
+	DBG_DrawPHAbstruct(xr_new<SPHDBGOutText>(t));
+}
+//virtual	void DBG_TextOutSet( float x, float y )									=0;
+//virtual	void DBG_TextSetColor( u32 color )										=0;
+//virtual	void DBG_DrawBind( CObject &O )											=0;
+//virtual	void DBG_PhysBones( CObject &O )										=0;
+//virtual	void DBG_DrawBones( CObject &O )										=0;
+virtual	void DBG_DrawFrameStart( )
+{
+	::DBG_DrawFrameStart( );
+}
+virtual	void PH_DBG_Render( )
+{
+	::PH_DBG_Render( );
+}
+virtual	void PH_DBG_Clear( )
+{
+	::PH_DBG_Clear( );
+}
+virtual	LPCSTR PH_DBG_ObjectTrackName( )
+{
+	return ::PH_DBG_ObjectTrackName( );
+}
+
+//virtual	bool			draw_frame								()=0;
+virtual	u32				&dbg_tries_num							()
+{
+	return ::dbg_tries_num;
+//	make_string( "%s, _14_=%f \n", dump_string( make_string( "%s.i, ", name ).c_str(), form.i ).c_str( ) , form._14_ )	+ 
+//	make_string( "%s, _24_=%f \n", dump_string( make_string( "%s.j, ", name ).c_str(), form.j ).c_str( ) , form._24_ )	+  
+//	make_string( "%s, _34_=%f \n", dump_string( make_string( "%s.k, ", name ).c_str(), form.k ).c_str( ) , form._34_  ) +  
+//	make_string( "%s, _44_=%f \n", dump_string( make_string( "%s.c, ", name ).c_str(), form.c ).c_str( ) , form._44_ );  
+}
+virtual	u32				&dbg_saved_tries_for_active_objects		()
+{
+	return ::dbg_saved_tries_for_active_objects;
+}
+virtual	u32				&dbg_total_saved_tries					()
+{
+		return ::dbg_total_saved_tries;
+}
+virtual	u32 			&dbg_reused_queries_per_step			()
+{
+	return ::dbg_reused_queries_per_step;
+}
+virtual	u32 			&dbg_new_queries_per_step				()
+{
+	return ::dbg_new_queries_per_step;
+}
+virtual	u32 			&dbg_bodies_num							()
+{
+	return ::dbg_bodies_num;
+}
+virtual	u32 			&dbg_joints_num							()
+{
+	return ::dbg_joints_num;
+}
+virtual	u32 			&dbg_islands_num						()
+{
+	return ::dbg_islands_num;
+}
+virtual	u32 			&dbg_contacts_num						()
+{
+	return ::dbg_contacts_num;
+}
+
+virtual		float		dbg_vel_collid_damage_to_display()
+{
+	return ::dbg_vel_collid_damage_to_display;
+	//Msg( "%s, _14_=%f ", dump_string( make_string( "%s.i, ", name ).c_str(), form.i ).c_str( ) , form._14_ );  
+	//Msg( "%s, _24_=%f ", dump_string( make_string( "%s.j, ", name ).c_str(), form.j ).c_str( ) , form._24_ );  
+	//Msg( "%s, _34_=%f ", dump_string( make_string( "%s.k, ", name ).c_str(), form.k ).c_str( ) , form._34_  );  
+	//Msg( "%s, _44_=%f ", dump_string( make_string( "%s.c, ", name ).c_str(), form.c ).c_str( ) , form._44_ );  
+}
+
+virtual		void DBG_ObjAfterPhDataUpdate	( CPHObject *obj )
+{
+	::DBG_ObjAfterPhDataUpdate( obj );
+}
+virtual		void DBG_ObjBeforePhDataUpdate	( CPHObject *obj )
+{
+	::DBG_ObjBeforePhDataUpdate( obj );
+}
+virtual		void DBG_ObjAfterStep			( CPHObject *obj )
+{
+	::DBG_ObjAfterStep( obj );
+}
+virtual		void DBG_ObjBeforeStep			( CPHObject *obj )
+{
+	::DBG_ObjBeforeStep( obj );
+}
+virtual		void DBG_ObjeAfterPhTune		( CPHObject *obj )
+{
+	::DBG_ObjeAfterPhTune( obj );
+}
+virtual		void DBG_ObjBeforePhTune		( CPHObject *obj )
+{
+	::DBG_ObjBeforePhTune( obj );
+}
+virtual		void DBG_ObjAfterCollision		( CPHObject *obj )
+{
+	::DBG_ObjAfterCollision( obj );
+}
+virtual		void DBG_ObjBeforeCollision		( CPHObject *obj )
+{
+	::DBG_ObjBeforeCollision( obj );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+public:
+	CPHDebugOutput()
+	{
+		ph_debug_output = this;
+	}
+
+} ph_debug_output_impl;
+
+
+
+
 #endif

@@ -11,6 +11,8 @@
 #include "../xrEngine/feel_touch.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "associative_vector.h"
+#include "trajectories.h"
+
 
 namespace MonsterSpace {
 	struct SBoneRotation;

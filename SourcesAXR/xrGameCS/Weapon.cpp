@@ -13,7 +13,7 @@
 #include "game_cl_base.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "ai_object_location.h"
-#include "mathutils.h"
+#include "../xrphysics/mathutils.h"
 #include "object_broker.h"
 #include "player_hud.h"
 #include "gamepersistent.h"
@@ -28,9 +28,9 @@
 #include "ui\UIActorMenu.h"
 #include "Torch.h"
 #include "ActorNightVision.h"
+#include "../xrEngine/x_ray.h"
 #include "../xrEngine/LightAnimLibrary.h"
 #include "../xrEngine/GameMtlLib.h"
-#include "../xrEngine/x_ray.h"
 #include "AdvancedXrayGameConstants.h"
 
 #define WEAPON_REMOVE_TIME		60000
@@ -2616,57 +2616,6 @@ CUIWindow* CWeapon::ZoomTexture()
 		return NULL;
 }
 
-void CWeapon::ZoomDynamicMod(bool bIncrement, bool bForceLimit)
-{
-	if (!IsScopeAttached())
-		return;
-
-	if (!m_zoom_params.m_bUseDynamicZoom)
-		return;
-
-	float delta, min_zoom_factor, max_zoom_factor;
-
-	max_zoom_factor = (bIsSecondVPZoomPresent() ? GetSecondVPZoomFactor() * 100.0f : m_zoom_params.m_fScopeZoomFactor);
-
-	GetZoomData(max_zoom_factor, delta, min_zoom_factor);
-
-	if (bForceLimit)
-	{
-		m_fRTZoomFactor = (bIncrement ? max_zoom_factor : min_zoom_factor);
-	}
-	else
-	{
-		float f = (bIsSecondVPZoomPresent() ? m_fRTZoomFactor : GetZoomFactor());
-
-		f -= delta * (bIncrement ? 1.f : -1.f);
-
-		clamp(f, max_zoom_factor, min_zoom_factor);
-
-
-		if (bIsSecondVPZoomPresent())
-			m_fRTZoomFactor = f;
-		else
-			SetZoomFactor(f);
-
-		// Lex Addon (correct by Suhar_) 24.10.2018		(begin)  
-		LastZoomFactor = f;
-		// Lex Addon (correct by Suhar_) 24.10.2018		(end)
-	}
-
-	if (m_sounds.FindSoundItem("sndChangeZoom", false) && LastZoomFactor != min_zoom_factor && LastZoomFactor != max_zoom_factor)
-		PlaySound("sndChangeZoom", get_LastFP());
-}
-
-void CWeapon::ZoomInc()
-{
-	ZoomDynamicMod(true, false);
-}
-
-void CWeapon::ZoomDec()
-{
-	ZoomDynamicMod(false, false);
-}
-
 void CWeapon::SwitchState(u32 S)
 {
 	if (OnClient()) return;
@@ -3369,41 +3318,6 @@ LPCSTR	CWeapon::GetCurrentAmmo_ShortName	()
 	return *(l_cartridge.m_InvShortName);
 }
 
-u32 CWeapon::Cost() const
-{
-	u32 res = CInventoryItem::Cost();
-	if (IsGrenadeLauncherAttached() && GetGrenadeLauncherName().size()) 
-	{
-		res += pSettings->r_u32(GetGrenadeLauncherName(), "cost");
-	}
-	if (IsScopeAttached() && m_scopes.size()) 
-	{
-		res += pSettings->r_u32(GetScopeName(), "cost");
-	}
-	if (IsSilencerAttached() && GetSilencerName().size()) 
-	{
-		res += pSettings->r_u32(GetSilencerName(), "cost");
-	}
-	if (IsLaserAttached() && GetLaserName().size())
-	{
-		res += pSettings->r_u32(GetLaserName(), "cost");
-	}
-	if (IsTacticalTorchAttached() && GetTacticalTorchName().size())
-	{
-		res += pSettings->r_u32(GetTacticalTorchName(), "cost");
-	}
-
-	if (iAmmoElapsed)
-	{
-		float w = pSettings->r_float(m_ammoTypes[m_ammoType].c_str(), "cost");
-		float bs = pSettings->r_float(m_ammoTypes[m_ammoType].c_str(), "box_size");
-
-		res += iFloor(w * (iAmmoElapsed / bs));
-	}
-	return res;
-
-}
-
 float CWeapon::GetMagazineWeight(const decltype(CWeapon::m_magazine)& mag) const
 {
 	float res = 0;
@@ -3569,6 +3483,78 @@ bool CWeapon::MovingAnimAllowedNow()
 bool CWeapon::IsHudModeNow()
 {
 	return (HudItemData()!=NULL);
+}
+
+void CWeapon::ZoomDynamicMod(bool bIncrement, bool bForceLimit)
+{
+	if (!IsScopeAttached())
+		return;
+
+	if (!m_zoom_params.m_bUseDynamicZoom)
+		return;
+
+	float delta, min_zoom_factor, max_zoom_factor;
+
+	max_zoom_factor = (bIsSecondVPZoomPresent() ? GetSecondVPZoomFactor() * 100.0f : m_zoom_params.m_fScopeZoomFactor);
+
+	GetZoomData(max_zoom_factor, delta, min_zoom_factor);
+
+	if (bForceLimit)
+	{
+		m_fRTZoomFactor = (bIncrement ? max_zoom_factor : min_zoom_factor);
+	}
+	else
+	{
+		float f = (bIsSecondVPZoomPresent() ? m_fRTZoomFactor : GetZoomFactor());
+
+		f -= delta * (bIncrement ? 1.f : -1.f);
+
+		clamp(f, max_zoom_factor, min_zoom_factor);
+
+
+		if (bIsSecondVPZoomPresent())
+			m_fRTZoomFactor = f;
+		else
+			SetZoomFactor(f);
+
+		// Lex Addon (correct by Suhar_) 24.10.2018		(begin)  
+		LastZoomFactor = f;
+		// Lex Addon (correct by Suhar_) 24.10.2018		(end)
+	}
+}
+
+void CWeapon::ZoomInc()
+{
+	ZoomDynamicMod(true, false);
+}
+
+void CWeapon::ZoomDec()
+{
+	ZoomDynamicMod(false, false);
+}
+ 
+u32 CWeapon::Cost() const
+{
+	u32 res = CInventoryItem::Cost();
+	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size()){
+		res += pSettings->r_u32(GetGrenadeLauncherName(),"cost");
+	}
+	if(IsScopeAttached()&&m_scopes.size()){
+		res += pSettings->r_u32(GetScopeName(),"cost");
+	}
+	if(IsSilencerAttached()&&GetSilencerName().size()){
+		res += pSettings->r_u32(GetSilencerName(),"cost");
+	}
+	
+	if(iAmmoElapsed)
+	{
+		float w		= pSettings->r_float(m_ammoTypes[m_ammoType].c_str(),"cost");
+		float bs	= pSettings->r_float(m_ammoTypes[m_ammoType].c_str(),"box_size");
+
+		res			+= iFloor(w*(iAmmoElapsed/bs));
+	}
+	return res;
+
 }
 
 //  FOV       

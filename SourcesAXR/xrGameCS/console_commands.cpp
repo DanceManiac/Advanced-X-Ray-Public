@@ -24,8 +24,9 @@
 #include "script_process.h"
 #include "xrServer_Objects.h"
 #include "ui/UIMainIngameWnd.h"
-#include "PhysicsGamePars.h"
-#include "phworld.h"
+//#include "../xrphysics/PhysicsGamePars.h"
+#include "../xrphysics/Physics.h"
+#include "../xrphysics/iphworld.h"
 #include "string_table.h"
 #include "autosave_manager.h"
 #include "ai_space.h"
@@ -49,6 +50,8 @@
 #include "GameSpy/GameSpy_Full.h"
 #include "GameSpy/GameSpy_Patching.h"
 
+//#include "ai_debug_variables.h"
+#include "../xrphysics/console_vars.h"
 #include "../build_config_defines.h"
 #include "ai_object_location.h"
 #include "GametaskManager.h"
@@ -117,7 +120,7 @@ extern	int		g_dwInputUpdateDelta	;
 extern	BOOL	g_ShowAnimationInfo		;
 #endif // DEBUG
 extern	BOOL	g_bShowHitSectors		;
-extern	BOOL	g_bDebugDumpPhysicsStep	;
+//extern	BOOL	g_bDebugDumpPhysicsStep	;
 extern	ESingleGameDifficulty g_SingleGameDifficulty;
 extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
@@ -1353,7 +1356,9 @@ public:
 	  virtual void	Execute	(LPCSTR args)
 	  {
 		  CCC_Integer::Execute	(args);
-		  dWorldSetQuickStepNumIterations(NULL,phIterations);
+		 // dWorldSetQuickStepNumIterations(NULL,phIterations);
+		  if( physics_world() )
+				 physics_world()->StepNumIterations( phIterations );
 	  }
 };
 
@@ -1365,7 +1370,7 @@ public:
 		{};
 	  virtual void	Execute	(LPCSTR args)
 	  {
-		  if(!ph_world)	return;
+		  if(!physics_world())	return;
 #ifndef DEBUG
 		  if (g_pGameLevel && Level().game && GameID() != eGameIDSingle)
 		  {
@@ -1373,12 +1378,12 @@ public:
 			  return;
 		  }
 #endif
-		  ph_world->SetGravity(float(atof(args)));
+		  physics_world()->SetGravity(float(atof(args)));
 	  }
 	  virtual void	Status	(TStatus& S)
 	{	
-		if(ph_world)
-			sprintf_s	(S,"%3.5f",ph_world->Gravity());
+		if(physics_world())
+			sprintf_s	(S,"%3.5f",physics_world()->Gravity());
 		else
 			sprintf_s	(S,"%3.5f",default_world_gravity);
 		while	(xr_strlen(S) && ('0'==S[xr_strlen(S)-1]))	S[xr_strlen(S)-1] = 0;
@@ -1398,11 +1403,15 @@ public:
 #ifndef		DEBUG
 		  clamp				(step_count,50.f,200.f);
 #endif
-		  CPHWorld::SetStep(1.f/step_count);
+		  //IPHWorld::SetStep(1.f/step_count);
+		  ph_console::ph_step_time = 1.f/step_count;
+		  //physics_world()->SetStep(1.f/step_count);
+		  if(physics_world())
+			 physics_world()->SetStep(ph_console::ph_step_time);
 	  }
 	  virtual void	Status	(TStatus& S)
 	  {	
-		 	sprintf_s	(S,"%3.5f",1.f/fixed_step);	  
+		 	xr_sprintf	(S,"%3.5f",1.f/ph_console::ph_step_time);	  
 	  }
 
 };
@@ -2196,10 +2205,10 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 #ifdef DEBUG
 	CMD1(CCC_PHGravity,			"ph_gravity"																					);
 	CMD4(CCC_FloatBlock,		"ph_timefactor",				&phTimefactor				,			0.000001f	,1000.f			);
-	CMD4(CCC_FloatBlock,		"ph_break_common_factor",		&phBreakCommonFactor		,			0.f		,1000000000.f	);
-	CMD4(CCC_FloatBlock,		"ph_rigid_break_weapon_factor",	&phRigidBreakWeaponFactor	,			0.f		,1000000000.f	);
-	CMD4(CCC_Integer,			"ph_tri_clear_disable_count",	&ph_tri_clear_disable_count	,			0,		255				);
-	CMD4(CCC_FloatBlock,		"ph_tri_query_ex_aabb_rate",	&ph_tri_query_ex_aabb_rate	,			1.01f	,3.f			);
+	CMD4(CCC_FloatBlock,		"ph_break_common_factor",		&ph_console::phBreakCommonFactor		,			0.f		,1000000000.f	);
+	CMD4(CCC_FloatBlock,		"ph_rigid_break_weapon_factor",	&ph_console::phRigidBreakWeaponFactor	,			0.f		,1000000000.f	);
+	CMD4(CCC_Integer,			"ph_tri_clear_disable_count",	&ph_console::ph_tri_clear_disable_count	,			0,		255				);
+	CMD4(CCC_FloatBlock,		"ph_tri_query_ex_aabb_rate",	&ph_console::ph_tri_query_ex_aabb_rate	,			1.01f	,3.f			);
 #endif // DEBUG
 
 #ifndef MASTER_GOLD
@@ -2321,7 +2330,7 @@ extern BOOL debug_step_info_load;
 	CMD4(CCC_Integer,	"debug_step_info_load"	,&debug_step_info_load,	FALSE,	TRUE );
 extern BOOL debug_character_material_load;
 	CMD4(CCC_Integer,	"debug_character_material_load"	,&debug_character_material_load,	FALSE,	TRUE );
-extern BOOL dbg_draw_camera_collision;
+extern XRPHYSICS_API BOOL dbg_draw_camera_collision;
 	CMD4(CCC_Integer,	"dbg_draw_camera_collision"	,&dbg_draw_camera_collision,	FALSE,	TRUE );
 extern BOOL	dbg_draw_animation_movement_controller;
 	CMD4(CCC_Integer,	"dbg_draw_animation_movement_controller"	,&dbg_draw_animation_movement_controller,	FALSE,	TRUE );
@@ -2405,7 +2414,7 @@ CMD4(CCC_FloatBlock,		"dbg_text_height_scale",	&dbg_text_height_scale	,			0.2f	,
 
 	CMD4(CCC_Integer,	"show_wnd_rect_all",		&g_show_wnd_rect2, 0, 1);
 	CMD4(CCC_Integer,	"dbg_show_ani_info",		&g_ShowAnimationInfo,	0, 1)	;
-	CMD4(CCC_Integer,	"dbg_dump_physics_step",	&g_bDebugDumpPhysicsStep, 0, 1);
+	CMD4(CCC_Integer,	"dbg_dump_physics_step",	&ph_console::g_bDebugDumpPhysicsStep, 0, 1);
 	CMD1(CCC_InvUpgradesHierarchy,	"inv_upgrades_hierarchy");
 	CMD1(CCC_InvUpgradesCurItem,	"inv_upgrades_cur_item");
 	CMD4(CCC_Integer,	"inv_upgrades_log",	&g_upgrades_log, 0, 1);

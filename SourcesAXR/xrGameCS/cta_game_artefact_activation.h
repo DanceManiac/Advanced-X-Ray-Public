@@ -24,7 +24,7 @@ public:
 	virtual		void		ChangeEffects			();
 	virtual		void		UpdateEffects			();
 	virtual		void		SpawnAnomaly			();
-	virtual		void		PhDataUpdate			(dReal step);
+	virtual		void		PhDataUpdate			(float step);
 private:
 	typedef		SArtefactActivation		inherited;
 }; // class CtaArtefactActivation

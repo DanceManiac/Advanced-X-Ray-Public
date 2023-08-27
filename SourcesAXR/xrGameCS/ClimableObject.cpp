@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "climableobject.h "
-#include "PHStaticGeomShell.h"
+#include "../xrphysics/IPHStaticGeomShell.h"
 #include "xrServer_Objects_ALife.h"
-#include "PHCharacter.h"
-#include "MathUtils.h"
-
+#include "../xrphysics/PHCharacter.h"
+#include "../xrphysics/MathUtils.h"
+#include "../xrphysics/extendedgeom.h"
+#include "../xrEngine/gamemtllib.h"
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #	include "level.h"
@@ -46,33 +47,14 @@ IC void OrientToNorm(const Fvector& normal,Fmatrix& form,Fobb& box)
 	}
 }
 
-class CPHLeaderGeomShell: public CPHStaticGeomShell
-{
-CClimableObject		*m_pClimable;
-public:
-						CPHLeaderGeomShell		(CClimableObject* climable);
-void					near_callback			(CPHObject* obj);
-};
-
-CPHLeaderGeomShell::CPHLeaderGeomShell(CClimableObject* climable)
-{
-	m_pClimable=climable;
-}
-void CPHLeaderGeomShell::near_callback	(CPHObject* obj)
-{
-	if(obj && obj->CastType()==CPHObject::tpCharacter)
-	{
-		CPHCharacter* ch=static_cast<CPHCharacter*>(obj);
-		ch->SetElevator(m_pClimable);
-	}
-}
 
 
-	CClimableObject::CClimableObject		()
+CClimableObject::CClimableObject		():  m_pStaticShell ( NULL ), m_material(u16(-1))
 {
-	m_pStaticShell=NULL;
+	
 }
-	CClimableObject::~CClimableObject	()
+
+CClimableObject::~CClimableObject	()
 {
 
 }
@@ -90,6 +72,9 @@ BOOL CClimableObject::	net_Spawn			( CSE_Abstract* DC)
 
 	//m_box.m_halfsize.set(1.f,1.f,1.f);
 	BOOL ret	= inherited::net_Spawn(DC);
+
+	spatial.type					&= ~STYPE_VISIBLEFORAI;
+
 	const float f_min_width=0.2f;
 	Fvector shift;shift.set(0.f,0.f,0.f);
 	SORT(b._11,m_axis.set(XFORM().i);m_axis.mul(m_box.m_halfsize.x),m_side.set(XFORM().i);m_side.mul(m_box.m_halfsize.x),m_norm.set(XFORM().i);if(m_box.m_halfsize.x<f_min_width){m_box.m_halfsize.x=f_min_width;shift.set(1.f,0.f,0.f);};m_norm.mul(m_box.m_halfsize.x),
@@ -101,9 +86,11 @@ BOOL CClimableObject::	net_Spawn			( CSE_Abstract* DC)
 	XFORM().transform_dir(shift);
 	CObject::Position().sub(shift);
 	m_box.xform_set(Fidentity);
-	m_pStaticShell=xr_new<CPHLeaderGeomShell>(this);
-	P_BuildStaticGeomShell(smart_cast<CPHStaticGeomShell*>(m_pStaticShell),smart_cast<CGameObject*>(this),0,m_box);
-	m_pStaticShell->SetMaterial("materials\\fake_ladders");
+	
+	m_pStaticShell = P_BuildLeaderGeomShell(this, ObjectContactCallback, m_box );
+
+
+	
 	
 	if(m_axis.y<0.f)
 	{
@@ -113,14 +100,16 @@ BOOL CClimableObject::	net_Spawn			( CSE_Abstract* DC)
 	}
 //	shedule_unregister();
 	processing_deactivate();
-	m_pStaticShell->set_ObjectContactCallback(ObjectContactCallback);
+	//m_pStaticShell->set_ObjectContactCallback(ObjectContactCallback);
 	return ret;
 }
 void CClimableObject::	net_Destroy			()
 {
 	inherited::net_Destroy();
-	m_pStaticShell->Deactivate();
-	xr_delete(m_pStaticShell);
+	DestroyStaticGeomShell( m_pStaticShell );
+
+	//m_pStaticShell->Deactivate();
+	//xr_delete(m_pStaticShell);
 }
 void CClimableObject::	shedule_Update		( u32 dt)							// Called by shedule
 {
@@ -318,8 +307,8 @@ BOOL CClimableObject::UsedAI_Locations()
 
 void CClimableObject::ObjectContactCallback(bool&	do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
 {
-	dxGeomUserData* usr_data_1= retrieveGeomUserData(c.geom.g1);
-	dxGeomUserData* usr_data_2=retrieveGeomUserData(c.geom.g2);
+	dxGeomUserData* usr_data_1= PHRetrieveGeomUserData(c.geom.g1);
+	dxGeomUserData* usr_data_2=PHRetrieveGeomUserData(c.geom.g2);
 	dxGeomUserData* usr_data_ch=NULL;
 	dxGeomUserData* usr_data_lad=NULL;
 	CClimableObject* this_object=NULL;
@@ -358,22 +347,22 @@ void CClimableObject ::OnRender()
 
 	Fmatrix form;m_box.xform_get(form);
 	//form.mulA(XFORM());
-	Level().debug_renderer().draw_obb(XFORM(),m_box.m_halfsize,color_xrgb(0,0,255));
+	Level().debug_renderer().draw_obb(XFORM(),m_box.m_halfsize,D3DCOLOR_XRGB(0,0,255));
 	Fvector p1,p2,d;
 	d.set(m_axis);
 	p1.add(XFORM().c,d);
 	p2.sub(XFORM().c,d);
-	Level().debug_renderer().draw_line(Fidentity,p1,p2,color_xrgb(255,0,0));
+	Level().debug_renderer().draw_line(Fidentity,p1,p2,D3DCOLOR_XRGB(255,0,0));
 
 	d.set(m_side);
 	p1.add(XFORM().c,d);
 	p2.sub(XFORM().c,d);
-	Level().debug_renderer().draw_line(Fidentity,p1,p2,color_xrgb(255,0,0));
+	Level().debug_renderer().draw_line(Fidentity,p1,p2,D3DCOLOR_XRGB(255,0,0));
 
 	d.set(m_norm);
 	d.mul(10.f);
 	p1.add(XFORM().c,d);
 	p2.set(XFORM().c);
-	Level().debug_renderer().draw_line(Fidentity,p1,p2,color_xrgb(0,255,0));
+	Level().debug_renderer().draw_line(Fidentity,p1,p2,D3DCOLOR_XRGB(0,255,0));
 }
 #endif

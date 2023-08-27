@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "..\XrEngine\xr_collide_form.h"
 #include "level_changer.h"
 #include "hit.h"
 #include "actor.h"
@@ -20,7 +19,7 @@
 
 #include "HudManager.h"
 #include "UIGameSP.h"
-
+#include "../xrengine/xr_collide_form.h"
 xr_vector<CLevelChanger*>	g_lchangers;
 
 CLevelChanger::~CLevelChanger	()

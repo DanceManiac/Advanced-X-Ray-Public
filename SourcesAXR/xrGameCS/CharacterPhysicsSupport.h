@@ -67,7 +67,7 @@ private:
 	CPHMovementControl					*m_PhysicMovementControl																															;
 	CPHSoundPlayer						m_ph_sound_player																																	;
 	CIKLimbsController					*m_ik_controller																																	;
-	SCollisionHitCallback				*m_collision_hit_callback;
+	ICollisionHitCallback				*m_collision_hit_callback;
 	character_hit_animation_controller	m_hit_animations;
 	death_anims							m_death_anims;
 	float								m_BonceDamageFactor;
@@ -122,6 +122,7 @@ IC		CIKLimbsController				*ik_controller					( )	{ return m_ik_controller; }
 		bool							IsSpecificDamager				( )																{return !!m_flags.test(fl_specific_bonce_demager)	; }
 		float							BonceDamageFactor				( ){ return m_BonceDamageFactor; }
 		void							set_movement_position			( const Fvector &pos);
+		void							ForceTransform					( const Fmatrix &m);
 		void							set_use_hit_anims				( bool v ){ m_flags.set( fl_use_hit_anims, (BOOL)v );}
 //////////////////base hierarchi methods///////////////////////////////////////////////////
 		void							CreateCharacterSafe				( );
@@ -132,6 +133,7 @@ IC		CIKLimbsController				*ik_controller					( )	{ return m_ik_controller; }
 		void 							in_shedule_Update				( u32 DT )																											;
 		void 							in_NetSpawn						( CSE_Abstract* e )																									;
 		void 							in_NetDestroy					( )																													;
+		void							destroy_imotion					( );
 		void							in_NetRelcase					( CObject* O )																										;
 		void 							in_Init							( )																													;
 		void 							in_Load							( LPCSTR section )																									;
@@ -142,8 +144,8 @@ IC		CIKLimbsController				*ik_controller					( )	{ return m_ik_controller; }
 		void							on_create_anim_mov_ctrl			( );
 		void							on_destroy_anim_mov_ctrl		( );
 		void							PHGetLinearVell					( Fvector& velocity );
-		SCollisionHitCallback*			get_collision_hit_callback		( );
-		bool							set_collision_hit_callback		( SCollisionHitCallback* cc );
+		ICollisionHitCallback*			get_collision_hit_callback		( );
+		void							set_collision_hit_callback		( ICollisionHitCallback* cc );
 		void							run_interactive					( CBlend* B );
 		void							update_interactive_anims		( );
 IC		physics_shell_animated			*animation_collision			( ){ return m_physics_shell_animated; }

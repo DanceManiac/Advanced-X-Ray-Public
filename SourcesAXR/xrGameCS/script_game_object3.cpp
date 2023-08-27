@@ -1418,7 +1418,7 @@ void CScriptGameObject::ForceSetPosition(Fvector pos, bool bActivate)
 		if (bActivate)
 			sh->activate_physic_shell();
 		if (sh->PPhysicsShell())
-			sh->PPhysicsShell()->SetTransform(M);
+			sh->PPhysicsShell()->SetTransform(M, mh_unspecified);
 	}
 }
 

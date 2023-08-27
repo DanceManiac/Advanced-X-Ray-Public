@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "bolt.h"
 #include "ParticlesObject.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "xr_level_controller.h"
 #include "actor.h"
 #include "inventory.h"
@@ -96,7 +96,7 @@ void CBolt::PutNextToSlot()
 	if (OnClient()) return;
 
 	VERIFY(!getDestroy());
-	//выкинуть болт из инвентаря
+	//РІС‹РєРёРЅСѓС‚СЊ Р±РѕР»С‚ РёР· РёРЅРІРµРЅС‚Р°СЂСЏ
 	NET_Packet						P;
 	if (m_pInventory)
 	{

@@ -1,8 +1,5 @@
 #include "stdafx.h"
 #ifdef DEBUG
-
-#include "ode_include.h"
-#include "../xrEngine/StatGraph.h"
 #include "PHDebug.h"
 #include "alife_space.h"
 #include "hit.h"

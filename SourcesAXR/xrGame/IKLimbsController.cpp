@@ -90,7 +90,11 @@ void	y_shift_bones( IKinematics* K, float shift )
 }
 float	CIKLimbsController::LegLengthShiftLimit			( float current_shift, const SCalculateData cd[max_size] )
 {
-	float shift_down = -phInfinity;
+#ifdef _M_X64
+	float shift_down = -std::numeric_limits<float>::max();
+#else
+	float shift_down = -std::numeric_limits<float>::infinity();
+#endif
 	const u16 sz =(u16)_bone_chains.size();
 	for(u16 j = 0; sz > j; ++j )
 		if( cd[j].state.foot_step )

@@ -41,14 +41,14 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'" Label="Configuration">
@@ -215,8 +215,8 @@
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>
-      </AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 
+/ignore:4075 %(AdditionalOptions)</AdditionalOptions>
       <ShowProgress>NotSet</ShowProgress>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\sdk\libraries;..\..\OutputDirectory\Libraries\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -225,6 +225,8 @@
       <MapFileName />
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -274,7 +276,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>
-      </AdditionalOptions>
+/ignore:4075 %(AdditionalOptions)</AdditionalOptions>
       <ShowProgress>NotSet</ShowProgress>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\sdk\libraries;..\..\OutputDirectory\Libraries\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -284,6 +286,9 @@
       </MapFileName>
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -343,6 +348,9 @@
       </MapFileName>
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -401,6 +409,9 @@
       </MapFileName>
       <MapExports>false</MapExports>
       <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -456,6 +467,8 @@
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -513,6 +526,9 @@
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <LargeAddressAware>true</LargeAddressAware>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -576,6 +592,9 @@
       <LargeAddressAware>true</LargeAddressAware>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration />
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention />
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -642,6 +661,11 @@
       <LargeAddressAware>true</LargeAddressAware>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -693,7 +717,6 @@
     <ClInclude Include="..\xrServerEntitiesCS\object_type_traits.h" />
     <ClInclude Include="..\xrServerEntitiesCS\pch_script.h" />
     <ClInclude Include="..\xrServerEntitiesCS\PHNetState.h" />
-    <ClInclude Include="..\xrServerEntitiesCS\PHSynchronize.h" />
     <ClInclude Include="..\xrServerEntitiesCS\PropertiesListTypes.h" />
     <ClInclude Include="..\xrServerEntitiesCS\restriction_space.h" />
     <ClInclude Include="..\xrServerEntitiesCS\script_callStack.h" />
@@ -1239,14 +1262,12 @@
     <ClInclude Include="battleye_system.h" />
     <ClInclude Include="BlackDrops.h" />
     <ClInclude Include="BlackGraviArtifact.h" />
-    <ClInclude Include="BlockAllocator.h" />
     <ClInclude Include="Bolt.h" />
     <ClInclude Include="BoneProtections.h" />
     <ClInclude Include="BottleItem.h" />
     <ClInclude Include="BreakableObject.h" />
     <ClInclude Include="builder_allocator_constructor.h" />
     <ClInclude Include="builder_allocator_constructor_inline.h" />
-    <ClInclude Include="CalculateTriangle.h" />
     <ClInclude Include="callback_info.h" />
     <ClInclude Include="CameraEffector.h" />
     <ClInclude Include="CameraFirstEye.h" />
@@ -1294,7 +1315,6 @@
     <ClInclude Include="CustomRocket.h" />
     <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="CustomZone.h" />
-    <ClInclude Include="CycleConstStorage.h" />
     <ClInclude Include="DamagableItem.h" />
     <ClInclude Include="DamageSource.h" />
     <ClInclude Include="damage_manager.h" />
@@ -1321,7 +1341,6 @@
     <ClInclude Include="data_storage_single_linked_list.h" />
     <ClInclude Include="data_storage_single_linked_list_inline.h" />
     <ClInclude Include="date_time.h" />
-    <ClInclude Include="dCylinder\dCylinder.h" />
     <ClInclude Include="death_anims.h" />
     <ClInclude Include="debug_renderer.h" />
     <ClInclude Include="debug_renderer_inline.h" />
@@ -1335,8 +1354,6 @@
     <ClInclude Include="detail_path_manager_space.h" />
     <ClInclude Include="dijkstra.h" />
     <ClInclude Include="dijkstra_inline.h" />
-    <ClInclude Include="DisablingParams.h" />
-    <CustomBuild Include="dRayMotions.h" />
     <ClInclude Include="DummyArtifact.h" />
     <ClInclude Include="DynamicHeightMap.h" />
     <ClInclude Include="DynamicHudGlass.h" />
@@ -1357,15 +1374,14 @@
     <ClInclude Include="ef_storage.h" />
     <ClInclude Include="ef_storage_inline.h" />
     <ClInclude Include="ElectricBall.h" />
-    <ClInclude Include="ElevatorState.h" />
     <ClInclude Include="EliteDetector.h" />
     <ClInclude Include="embedded_editor\editor_render.h" />
     <ClInclude Include="embedded_editor\editor_render_ai_map.h" />
     <ClInclude Include="embedded_editor\editor_render_spawn_element.h" />
     <ClInclude Include="embedded_editor\embedded_editor_helper.h" />
     <ClInclude Include="embedded_editor\embedded_editor_hud.h" />
-    <ClInclude Include="embedded_editor\embedded_editor_main.h" />
     <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_main.h" />
     <ClInclude Include="embedded_editor\embedded_editor_weather.h" />
     <ClInclude Include="encyclopedia_article.h" />
     <ClInclude Include="encyclopedia_article_defs.h" />
@@ -1382,7 +1398,6 @@
     </CustomBuild>
     <ClInclude Include="ExplosiveItem.h" />
     <ClInclude Include="ExplosiveRocket.h" />
-    <ClInclude Include="ExtendedGeom.h" />
     <ClInclude Include="F1.h" />
     <ClInclude Include="FadedBall.h" />
     <ClInclude Include="file_transfer.h" />
@@ -1454,8 +1469,6 @@
     <ClInclude Include="game_sv_mp_vote_flags.h" />
     <ClInclude Include="game_sv_single.h" />
     <ClInclude Include="game_sv_teamdeathmatch.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="GeometryBits.h" />
     <ClInclude Include="GlobalFeelTouch.hpp" />
     <CustomBuild Include="graph_abstract.h" />
     <CustomBuild Include="graph_abstract_inline.h" />
@@ -1488,7 +1501,6 @@
     <ClInclude Include="HudSound.h" />
     <ClInclude Include="HUDTarget.h" />
     <ClInclude Include="hud_item_object.h" />
-    <ClInclude Include="IColisiondamageInfo.h" />
     <ClInclude Include="id_generator.h" />
     <ClInclude Include="IKFoot.h" />
     <ClInclude Include="IKFoot_inl.h" />
@@ -1577,8 +1589,6 @@
     <ClInclude Include="map_spot.h" />
     <ClInclude Include="material_manager.h" />
     <ClInclude Include="material_manager_inline.h" />
-    <ClInclude Include="MathUtils.h" />
-    <ClInclude Include="matrix_utils.h" />
     <ClInclude Include="medkit.h" />
     <ClInclude Include="member_corpse.h" />
     <ClInclude Include="member_corpse_inline.h" />
@@ -1613,7 +1623,6 @@
     <ClInclude Include="Needles.h" />
     <ClInclude Include="NET_Queue.h" />
     <ClInclude Include="NoGravityZone.h" />
-    <ClInclude Include="ObjectDump.h" />
     <ClInclude Include="object_actions.h" />
     <ClInclude Include="object_actions_inline.h" />
     <ClInclude Include="object_handler.h" />
@@ -1628,8 +1637,6 @@
     <ClInclude Include="object_property_evaluators_inline.h" />
     <ClInclude Include="obstacles_query.h" />
     <ClInclude Include="obstacles_query_inline.h" />
-    <ClInclude Include="ode_include.h" />
-    <ClInclude Include="ode_redefine.h" />
     <ClInclude Include="operator_abstract.h" />
     <ClInclude Include="operator_abstract_inline.h" />
     <ClInclude Include="operator_condition.h" />
@@ -1677,36 +1684,12 @@
     <ClInclude Include="PDA.h" />
     <ClInclude Include="PdaMsg.h" />
     <ClInclude Include="pda_space.h" />
-    <ClInclude Include="PHActivationShape.h" />
-    <ClInclude Include="PHActorCharacter.h" />
-    <ClInclude Include="PHActorCharacterInline.h" />
-    <ClInclude Include="PHAICharacter.h" />
-    <ClInclude Include="PHBaseBodyEffector.h" />
-    <ClInclude Include="PHCapture.h" />
-    <ClInclude Include="PHCharacter.h" />
-    <ClInclude Include="PHCollideValidator.h" />
     <ClInclude Include="PHCollisionDamageReceiver.h" />
     <ClInclude Include="PHCommander.h" />
-    <ClInclude Include="PHContactBodyEffector.h" />
     <ClInclude Include="PHDebug.h" />
-    <ClInclude Include="PHDefs.h" />
     <ClInclude Include="PHDestroyable.h" />
     <ClInclude Include="PHDestroyableNotificate.h" />
-    <ClInclude Include="PHDisabling.h" />
-    <ClInclude Include="PHDynamicData.h" />
-    <ClInclude Include="PHElement.h" />
-    <ClInclude Include="PHElementInline.h" />
-    <ClInclude Include="PHFracture.h" />
-    <ClInclude Include="PHGeometryOwner.h" />
-    <ClInclude Include="PHImpact.h" />
-    <ClInclude Include="PHInterpolation.h" />
-    <ClInclude Include="PHIsland.h" />
-    <ClInclude Include="PHItemList.h" />
-    <ClInclude Include="PHJoint.h" />
-    <ClInclude Include="PHJointDestroyInfo.h" />
     <ClInclude Include="PHMovementControl.h" />
-    <ClInclude Include="PHMoveStorage.h" />
-    <ClInclude Include="PHObject.h" />
     <ClInclude Include="Phrase.h" />
     <ClInclude Include="PhraseDialog.h" />
     <ClInclude Include="PhraseDialogDefs.h" />
@@ -1715,32 +1698,22 @@
     <ClInclude Include="PhraseScript.h" />
     <ClInclude Include="PHReqComparer.h" />
     <ClInclude Include="PHScriptCall.h" />
-    <ClInclude Include="PHShell.h" />
     <ClInclude Include="PHShellCreator.h" />
-    <ClInclude Include="PHShellSplitter.h" />
     <ClInclude Include="PHSimpleCalls.h" />
-    <ClInclude Include="PHSimpleCharacter.h" />
-    <ClInclude Include="PHSimpleCharacterInline.h" />
     <ClInclude Include="PHSkeleton.h" />
     <ClInclude Include="PHSoundPlayer.h" />
-    <ClInclude Include="PHSplitedShell.h" />
-    <ClInclude Include="PHStaticGeomShell.h" />
-    <ClInclude Include="phvalide.h" />
-    <ClInclude Include="PHValideValues.h" />
-    <ClInclude Include="PHWorld.h" />
     <ClInclude Include="PhysicObject.h" />
-    <ClInclude Include="Physics.h" />
-    <ClInclude Include="PhysicsCommon.h" />
     <ClInclude Include="PhysicsGamePars.h" />
-    <ClInclude Include="PhysicsShell.h" />
-    <ClInclude Include="PhysicsShellAnimator.h" />
-    <ClInclude Include="PhysicsShellAnimatorBoneData.h" />
     <ClInclude Include="PhysicsShellHolder.h" />
     <ClInclude Include="PhysicsSkeletonObject.h" />
+    <ClInclude Include="physics_element_scripted.h" />
+    <ClInclude Include="physics_game.h" />
+    <ClInclude Include="physics_joint_scripted.h" />
     <ClInclude Include="physics_shell_animated.h" />
+    <ClInclude Include="physics_shell_scripted.h" />
+    <ClInclude Include="physics_world_scripted.h" />
     <ClInclude Include="physic_item.h" />
     <ClInclude Include="physic_item_inline.h" />
-    <ClInclude Include="ph_shell_interface.h" />
     <ClInclude Include="player_hud.h" />
     <ClInclude Include="player_name_modifyer.h" />
     <ClInclude Include="poses_blending.h" />
@@ -1915,7 +1888,6 @@
     <ClInclude Include="sound_player.h" />
     <ClInclude Include="sound_player_inline.h" />
     <ClInclude Include="sound_user_data_visitor.h" />
-    <ClInclude Include="SpaceUtils.h" />
     <ClInclude Include="space_restriction.h" />
     <ClInclude Include="space_restriction_abstract.h" />
     <ClInclude Include="space_restriction_abstract_inline.h" />
@@ -2042,19 +2014,7 @@
     <ClInclude Include="trade_factor_parameters_inline.h" />
     <ClInclude Include="trade_parameters.h" />
     <ClInclude Include="trade_parameters_inline.h" />
-    <ClInclude Include="tri-colliderknoopc\dcTriangle.h" />
-    <ClInclude Include="tri-colliderKNoOPC\dcTriListCollider.h" />
-    <ClInclude Include="tri-colliderknoopc\dSortTriPrimitive.h" />
-    <ClInclude Include="tri-colliderknoopc\dTriBox.h" />
-    <ClInclude Include="tri-colliderKNoOPC\dTriCollideK.h" />
-    <ClInclude Include="tri-colliderknoopc\dTriColliderCommon.h" />
-    <ClInclude Include="tri-colliderknoopc\dTriColliderMath.h" />
-    <ClInclude Include="tri-colliderknoopc\dTriCylinder.h" />
-    <ClInclude Include="tri-colliderKNoOPC\dTriList.h" />
-    <ClInclude Include="tri-colliderknoopc\dTriSphere.h" />
-    <ClInclude Include="tri-colliderKNoOPC\dxTriList.h" />
-    <ClInclude Include="tri-colliderknoopc\TriPrimitiveCollideClassDef.h" />
-    <ClInclude Include="tri-colliderKNoOPC\__aabb_tri.h" />
+    <ClInclude Include="trajectories.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UICursor.h" />
     <ClInclude Include="UICustomItem.h" />
@@ -2471,7 +2431,6 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="..\xrServerEntitiesCS\PHNetState.cpp" />
-    <ClCompile Include="..\xrServerEntitiesCS\PHSynchronize.cpp" />
     <ClCompile Include="..\xrServerEntitiesCS\script_callStack.cpp" />
     <ClCompile Include="..\xrServerEntitiesCS\script_debugger.cpp" />
     <ClCompile Include="..\xrServerEntitiesCS\script_debugger_threads.cpp" />
@@ -3120,7 +3079,6 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="ActorAnimation.cpp" />
-    <ClCompile Include="ActorCameraCollision.cpp" />
     <ClCompile Include="ActorCameras.cpp" />
     <ClCompile Include="ActorCondition.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -4569,16 +4527,6 @@
     <ClCompile Include="date_time.cpp" />
     <ClCompile Include="DBG_Car.cpp" />
     <ClCompile Include="dbg_draw_frustum.cpp" />
-    <ClCompile Include="dCylinder\dCylinder.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
     <ClCompile Include="death_anims.cpp" />
     <ClCompile Include="death_anims_predicates.cpp" />
     <ClCompile Include="debug_renderer.cpp" />
@@ -4604,8 +4552,6 @@
     </ClCompile>
     <ClCompile Include="detail_path_manager.cpp" />
     <ClCompile Include="detail_path_manager_smooth.cpp" />
-    <ClCompile Include="DisablingParams.cpp" />
-    <ClCompile Include="dRayMotions.cpp" />
     <ClCompile Include="DummyArtifact.cpp" />
     <ClCompile Include="DynamicHeightMap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -4648,7 +4594,6 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="ElectricBall.cpp" />
-    <ClCompile Include="ElevatorState.cpp" />
     <ClCompile Include="EliteDetector.cpp" />
     <ClCompile Include="embedded_editor\editor_render.cpp" />
     <ClCompile Include="embedded_editor\editor_render_ai_map.cpp" />
@@ -5136,8 +5081,6 @@
     <ClCompile Include="game_sv_single.cpp" />
     <ClCompile Include="game_sv_teamdeathmatch.cpp" />
     <ClCompile Include="game_sv_teamdeathmatch_process_event.cpp" />
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="GeometryBits.cpp" />
     <ClCompile Include="GlobalFeelTouch.cpp" />
     <ClCompile Include="GraviArtifact.cpp" />
     <ClCompile Include="GraviZone.cpp" />
@@ -5761,7 +5704,6 @@
     </ClCompile>
     <ClCompile Include="map_spot.cpp" />
     <ClCompile Include="material_manager.cpp" />
-    <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="medkit.cpp" />
     <ClCompile Include="memory_manager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -5910,7 +5852,6 @@
     <ClCompile Include="mp_config_sections.cpp" />
     <ClCompile Include="Needles.cpp" />
     <ClCompile Include="NoGravityZone.cpp" />
-    <ClCompile Include="ObjectDump.cpp" />
     <ClCompile Include="object_actions.cpp" />
     <ClCompile Include="object_handler.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -6014,33 +5955,42 @@
     <ClCompile Include="patrol_path_storage.cpp" />
     <ClCompile Include="patrol_point.cpp" />
     <ClCompile Include="PDA.cpp" />
-    <ClCompile Include="PHActivationShape.cpp" />
-    <ClCompile Include="PHActorCharacter.cpp" />
-    <ClCompile Include="PHAICharacter.cpp" />
-    <ClCompile Include="PHCapture.cpp" />
-    <ClCompile Include="PHCaptureInit.cpp" />
-    <ClCompile Include="PHCharacter.cpp" />
-    <ClCompile Include="PHCollideValidator.cpp" />
     <ClCompile Include="PHCollisionDamageReceiver.cpp" />
     <ClCompile Include="PHCommander.cpp" />
-    <ClCompile Include="PHContactBodyEffector.cpp" />
-    <ClCompile Include="PHDebug.cpp" />
+    <ClCompile Include="PHDebug.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="PHDestroyable.cpp" />
     <ClCompile Include="PHDestroyableNotificate.cpp" />
-    <ClCompile Include="PHDisabling.cpp" />
-    <ClCompile Include="PHDynamicData.cpp" />
-    <ClCompile Include="PHElement.cpp" />
-    <ClCompile Include="PHElementNetState.cpp" />
-    <ClCompile Include="PHFracture.cpp" />
-    <ClCompile Include="PHGeometryOwner.cpp" />
-    <ClCompile Include="PHInterpolation.cpp" />
-    <ClCompile Include="PHIsland.cpp" />
-    <ClCompile Include="PHJoint.cpp" />
-    <ClCompile Include="PHJointDestroyInfo.cpp" />
     <ClCompile Include="PHMovementControl.cpp" />
     <ClCompile Include="PHMovementDynamicActivate.cpp" />
-    <ClCompile Include="PHMoveStorage.cpp" />
-    <ClCompile Include="PHObject.cpp" />
     <ClCompile Include="Phrase.cpp" />
     <ClCompile Include="PhraseDialog.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -6115,11 +6065,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="PHShell.cpp" />
-    <ClCompile Include="PHShellActivate.cpp" />
     <ClCompile Include="PHShellCreator.cpp" />
-    <ClCompile Include="PHShellNetState.cpp" />
-    <ClCompile Include="PHShellSplitter.cpp" />
     <ClCompile Include="PHSimpleCalls.cpp" />
     <ClCompile Include="PHSimpleCallsScript.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -6139,31 +6085,8 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="PHSimpleCharacter.cpp" />
     <ClCompile Include="PHSkeleton.cpp" />
     <ClCompile Include="PHSoundPlayer.cpp" />
-    <ClCompile Include="PHSplitedShell.cpp" />
-    <ClCompile Include="PHStaticGeomShell.cpp" />
-    <ClCompile Include="phvalide.cpp" />
-    <ClCompile Include="PHWorld.cpp" />
-    <ClCompile Include="PHWorldScript.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-    </ClCompile>
     <ClCompile Include="PhysicObject.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
@@ -6200,10 +6123,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PhysicsGamePars.cpp" />
-    <ClCompile Include="PhysicsShell.cpp" />
-    <ClCompile Include="PhysicsShellAnimator.cpp" />
     <ClCompile Include="PhysicsShellHolder.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
@@ -6222,7 +6142,8 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="PhysicsShellScript.cpp">
+    <ClCompile Include="PhysicsSkeletonObject.cpp" />
+    <ClCompile Include="physics_element_scripted.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -6240,9 +6161,62 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="PhysicsSkeletonObject.cpp" />
     <ClCompile Include="physics_game.cpp" />
+    <ClCompile Include="physics_joint_scripted.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="physics_shell_animated.cpp" />
+    <ClCompile Include="physics_shell_scripted.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
+    <ClCompile Include="physics_world_scripted.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="physic_item.cpp" />
     <ClCompile Include="player_hud.cpp" />
     <ClCompile Include="player_hud_tune.cpp" />
@@ -7231,7 +7205,6 @@
     <ClCompile Include="secure_messaging.cpp" />
     <ClCompile Include="seniority_hierarchy_holder.cpp" />
     <ClCompile Include="server_entity_wrapper.cpp" />
-    <ClCompile Include="ShellHit.cpp" />
     <ClCompile Include="ShootingObject.cpp" />
     <ClCompile Include="shootingObject_dump_impl.cpp" />
     <ClCompile Include="sight_action.cpp" />
@@ -8130,67 +8103,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="trade_parameters.cpp" />
-    <ClCompile Include="tri-colliderknoopc\dcTriListCollider.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dSortTriPrimitive.cpp" />
-    <ClCompile Include="tri-colliderknoopc\dTriBox.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <ClCompile Include="tri-colliderKNoOPC\dTriCallideK.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dTriCylinder.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <ClCompile Include="tri-colliderKNoOPC\dTriList.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dTriSphere.cpp">
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4002;4390;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
+    <ClCompile Include="trajectories.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="UICursor.cpp" />
     <ClCompile Include="UICustomItem.cpp">
@@ -8260,24 +8173,6 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="UIGameTDM.cpp" />
-    <ClCompile Include="UIGame_custom_script.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
-    </ClCompile>
     <ClCompile Include="UIPanelsClassFactory.cpp" />
     <ClCompile Include="UIPlayerItem.cpp" />
     <ClCompile Include="UIStaticItem.cpp" />
@@ -8286,8 +8181,7 @@
     <ClCompile Include="UITeamState.cpp" />
     <ClCompile Include="UIZoneMap.cpp" />
     <ClCompile Include="ui\ArtefactDetectorUI.cpp" />
-    <ClCompile Include="ui\CExtraContentFilter.cpp" />
-    <ClCompile Include="ui\FactionState.cpp">
+    <ClCompile Include="UIGame_custom_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -8312,9 +8206,26 @@
     <ClCompile Include="ui\ServerList_GameSpy_func.cpp" />
     <ClCompile Include="ui\TeamInfo.cpp" />
     <ClCompile Include="ui\UI3tButton.cpp" />
-    <ClCompile Include="ui\UIActorInfo.cpp" />
+    <ClCompile Include="ui\CExtraContentFilter.cpp" />
+    <ClCompile Include="ui\FactionState.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="ui\UIActorMenu.cpp" />
-    <ClCompile Include="ui\UIActorMenu_action.cpp" />
     <ClCompile Include="ui\UIActorMenuDeadBodySearch.cpp" />
     <ClCompile Include="ui\UIActorMenuInitialize.cpp" />
     <ClCompile Include="ui\UIActorMenuInventory.cpp" />
@@ -8355,6 +8266,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ui\UIActorMenu_action.cpp" />
     <ClCompile Include="ui\UIActorStateInfo.cpp" />
     <ClCompile Include="ui\UIAnimatedStatic.cpp" />
     <ClCompile Include="ui\UIArtefactPanel.cpp" />
@@ -9769,6 +9681,10 @@
     </ProjectReference>
     <ProjectReference Include="..\xrEngine\xrEngine.vcxproj">
       <Project>{2578c6d8-660d-48ae-9322-7422f8664f06}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\xrPhysics\xrPhysics.vcxproj">
+      <Project>{98d24a3d-7666-4c11-9d6e-b10393ce8cba}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\xrScripts\xrScripts.vcxproj">

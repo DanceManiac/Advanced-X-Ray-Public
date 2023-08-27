@@ -227,7 +227,6 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <EnableUAC>true</EnableUAC>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\OutputDirectory\Libraries\Debug\crypto.dll $(OutDir)</Command>
@@ -293,7 +292,6 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <EnableUAC>true</EnableUAC>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\OutputDirectory\Libraries\Debug\crypto.dll $(OutDir)</Command>
@@ -359,7 +357,6 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <EnableUAC>true</EnableUAC>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\OutputDirectory\Libraries\Mixed\crypto.dll $(OutDir)</Command>
@@ -424,7 +421,6 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>..\..\OutputDirectory\Libraries\$(Configuration)\$(ProjectName).lib</ImportLibrary>
-      <EnableUAC>true</EnableUAC>
     </Link>
     <PostBuildEvent>
       <Command>copy ..\..\OutputDirectory\Libraries\Mixed\crypto.dll $(OutDir)</Command>
@@ -474,7 +470,8 @@
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\sdk\libraries;..\..\OutputDirectory\Libraries\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -520,7 +517,7 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4237;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -594,7 +591,8 @@
       <Culture>0x0419</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386  %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>
+      </AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\sdk\libraries;..\..\OutputDirectory\Libraries\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -649,7 +647,7 @@
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>
       </BrowseInformation>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4237;%(DisableSpecificWarnings)</DisableSpecificWarnings>

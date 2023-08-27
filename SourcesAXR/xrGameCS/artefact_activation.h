@@ -54,7 +54,7 @@ public:
 	virtual		void			ChangeEffects					();
 	virtual		void			UpdateEffects					();
 	virtual		void			SpawnAnomaly					();
-	virtual		void			PhDataUpdate					(dReal step);
+	virtual		void			PhDataUpdate					(float step);
 				bool			IsInProgress					();
 private:
 	bool						m_in_process;

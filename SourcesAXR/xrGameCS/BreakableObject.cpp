@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "BreakableObject.h"
 #include "xrserver_objects_alife.h"
-#include "PHStaticGeomShell.h"
-#include "PhysicsShell.h"
-#include "Physics.h"
+#include "../xrphysics/IPHStaticGeomShell.h"
+#include "../xrphysics/PhysicsShell.h"
+//#include "../xrphysics/extendedgeom.h"
+//#include "../xrphysics/mathutilsode.h"
+//#include "Physics.h"
 #include "../xrEngine/xr_collide_form.h"
 #include "../Include/xrRender/Kinematics.h"
 
@@ -113,13 +115,14 @@ BOOL CBreakableObject::UsedAI_Locations()
 
 void CBreakableObject::CreateUnbroken()
 {
-	m_pUnbrokenObject=P_BuildStaticGeomShell(smart_cast<CGameObject*>(this),ObjectContactCallback);
+	m_pUnbrokenObject=P_BuildStaticGeomShell((this),BreakableObjectCollisionCallback);
 }
 void CBreakableObject::DestroyUnbroken()
 {
-	if(!m_pUnbrokenObject) return;
-	m_pUnbrokenObject->Deactivate();
-	xr_delete(m_pUnbrokenObject);
+	//if(!m_pUnbrokenObject) return;
+	//m_pUnbrokenObject->Deactivate();
+	//xr_delete(m_pUnbrokenObject);
+	DestroyStaticGeomShell( m_pUnbrokenObject );
 }
 
 //void CBreakableObject::CreateBroken()
@@ -159,9 +162,11 @@ void CBreakableObject::CreateBroken()
 	m_Shell->set_PhysicsRefObject(this);
 	m_Shell->Build();
 	m_Shell->setMass(m_Shell->getMass()*0.1f*100.f);
-	dMass m;
-	dMassSetBox(&m,m_Shell->getMass()/100.f,1.f,1.f,1.f);
-	m_Shell->addEquelInertiaToEls(m);
+
+	//dMass m;
+	//dMassSetBox(&m,m_Shell->getMass()/100.f,1.f,1.f,1.f);
+	//m_Shell->addEquelInertiaToEls(m);
+	m_Shell->MassAddBox( m_Shell->getMass()/100.f, Fvector().set(1,1,1) );
 	m_Shell->SmoothElementsInertia(0.3f);
 	Fobb b;
 	Visual()->getVisData().box.getradius(b.m_halfsize);
@@ -241,51 +246,22 @@ void CBreakableObject::SendDestroy()
 	bRemoved=true;
 }
 
-void CBreakableObject::ObjectContactCallback(bool&/**do_colide/**/,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
+
+void CBreakableObject::CollisionHit( u16 source_id, u16 bone_id, float c_damage, const Fvector &dir, Fvector &pos )
 {
-	dxGeomUserData* usr_data_1= retrieveGeomUserData(c.geom.g1);
-	dxGeomUserData* usr_data_2=retrieveGeomUserData(c.geom.g2);
-	CBreakableObject* this_object;
-	CBreakableObject* this_object1;
-	CBreakableObject* this_object2;
-	dBodyID	body;
-	float norm_sign;
+	VERIFY(source_id == u16(-1) );
+	VERIFY(bone_id == u16(-1) );
+	VERIFY( m_pUnbrokenObject );
 
-	this_object1 = smart_cast<CBreakableObject*>( usr_data_1->ph_ref_object );
-	this_object2 = smart_cast<CBreakableObject*>( usr_data_2->ph_ref_object );
-	if(
-		usr_data_1&&
-		usr_data_1->ph_ref_object&&
-		this_object1
-		)
-	{
-			body=dGeomGetBody(c.geom.g2);
-			if(!body) return;
-			this_object = this_object1;
-			norm_sign=-1.f;
-	}
-	else if(
-		usr_data_2&&
-		usr_data_2->ph_ref_object&&
-		this_object2
-		)
-	{
-			body=dGeomGetBody(c.geom.g1);
-			if(!body) return;
-			this_object = this_object2;
-			norm_sign=1.f;
-	}
-	else return;
-
-	if(!this_object->m_pUnbrokenObject) return;
-	float c_damage=E_NlS(body,c.geom.normal,norm_sign);
-	if(this_object->m_damage_threshold<c_damage&&
-		this_object->m_max_frame_damage<c_damage
+	if(m_damage_threshold<c_damage&&
+		m_max_frame_damage<c_damage
 		){
-			this_object->b_resived_damage=true;
-			this_object->m_max_frame_damage=c_damage;
-			this_object->m_contact_damage_pos.set(c.geom.pos[0],c.geom.pos[1],c.geom.pos[2]);
-			this_object->m_contact_damage_dir.set(-c.geom.normal[0]*norm_sign,-c.geom.normal[1]*norm_sign,-c.geom.normal[2]*norm_sign);
+			b_resived_damage=true;
+			m_max_frame_damage=c_damage;
+			//this_object->m_contact_damage_pos.set(c.geom.pos[0],c.geom.pos[1],c.geom.pos[2]);
+			m_contact_damage_pos.set( pos );
+			//this_object->m_contact_damage_dir.set(-c.geom.normal[0]*norm_sign,-c.geom.normal[1]*norm_sign,-c.geom.normal[2]*norm_sign);
+			m_contact_damage_dir.set( dir );
 		}
 }
 

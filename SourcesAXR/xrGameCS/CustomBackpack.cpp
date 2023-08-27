@@ -15,10 +15,10 @@
 #include "UIGameCustom.h"
 #include "HudManager.h"
 #include "UI\UIActorMenu.h"
+#include "../xrPhysics/ElevatorState.h"
 #include "../xrEngine/CameraBase.h"
 
 extern bool g_block_actor_movement;
-extern bool g_actor_allow_ladder;
 
 CCustomBackpack::CCustomBackpack()
 {

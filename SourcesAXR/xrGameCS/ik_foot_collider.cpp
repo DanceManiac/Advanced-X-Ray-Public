@@ -3,14 +3,14 @@
 
 #include "../xrEngine/gamemtllib.h"
 #include "../xrEngine/cl_intersect.h"
-#include "../Include/xrRender/Kinematics.h"
+#include "../include/xrrender/Kinematics.h"
 
 #include "Level.h"
 #include "GameObject.h"
 #include "entity_alive.h"
 
-#include "ode_include.h"
-#include "MathUtils.h"
+//#include "ode_include.h"
+#include "../xrphysics/MathUtils.h"
 
 #include "ik_collide_data.h"
 

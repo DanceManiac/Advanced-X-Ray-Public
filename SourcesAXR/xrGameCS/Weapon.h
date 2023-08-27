@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "weaponammo.h"
 #include "PHShellCreator.h"
 
@@ -27,9 +27,8 @@ class CNightVisionEffector;
 class CLAItem;
 class WeaponAttach;
 
-#define WEAPON_INDOOR_HEMI_FACTOR 0.01f
-#define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f
-
+#define WEAPON_INDOOR_HEMI_FACTOR 0.01f         // Сила освещённости персонжаей солнечным светом, ниже которой считается что персонаж в помещении 
+#define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f   // Коэфицент на который домножается громкость звука эха от выстрела, если он был сделат от 1-го лица
 
 class CWeapon : public CHudItemObject,
 				public CShootingObject
@@ -315,17 +314,17 @@ protected:
 	
 		float			m_fIronSightZoomFactor;	//коэффициент увеличения прицеливания
 		float			m_fScopeZoomFactor;		//коэффициент увеличения прицела
+		float           m_f3dZoomFactor;        //коэффициент мирового зума при использовании второго вьюпорта
 
 		float			m_fZoomRotationFactor;
 		float           m_fSecondVPFovFactor;
-		float           m_f3dZoomFactor;        //коэффициент мирового зума при использовании второго вьюпорта
 		
 		Fvector			m_ZoomDof;
 		Fvector4		m_ReloadDof;
 		Fvector4		m_ReloadEmptyDof;
-		shared_str		m_sUseBinocularVision;
 		BOOL			m_bUseDynamicZoom;
 		shared_str		m_sUseZoomPostprocess;
+		shared_str		m_sUseBinocularVision;
 		CBinocularsVision*		m_pVision;
 		CNightVisionEffector*	m_pNight_vision;
 
@@ -358,9 +357,8 @@ public:
 
 	virtual	u8				GetCurrentHudOffsetIdx ();
 
-	virtual	u32					Cost			() const;
 	virtual float				Weight			() const;		
-
+	virtual	u32					Cost			() const;
 public:
     virtual EHandDependence		HandDependence		()	const		{	return eHandDependence;}
 			bool				IsSingleHanded		()	const		{	return m_bIsSingleHanded; }
@@ -512,13 +510,13 @@ protected:
 public:
 	// Alundaio
 	int						GetAmmoCount_forType	(shared_str const& ammo_type) const;
-	int						GetAmmoCount			(u8 ammo_type) const;
 	virtual void			set_ef_main_weapon_type(u32 type) { m_ef_main_weapon_type = type; };
 	virtual void			set_ef_weapon_type		(u32 type) { m_ef_weapon_type = type; };
 	virtual void			SetAmmoType				(u32 type) { m_ammoType = type; };
 	u8						GetAmmoType				() { return m_ammoType; };
 	//-Alundaio
 
+	   int					GetAmmoCount		(u8 ammo_type) const;
 	IC int					GetAmmoElapsed		()	const		{	return /*int(m_magazine.size())*/iAmmoElapsed;}
 	IC int					GetAmmoMagSize		()	const		{	return iMagazineSize;						}
 	int						GetSuitableAmmoTotal		(bool use_item_to_spawn = false)  const;

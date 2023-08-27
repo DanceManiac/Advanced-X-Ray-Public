@@ -2,7 +2,7 @@
 
 #include "gravizone.h"
 
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "entity_alive.h"
 #include "phmovementcontrol.h"
 #include "xrmessages.h"
@@ -127,7 +127,7 @@ void CBaseGraviZone ::Affect(SZoneObjectInfo* O)
 
 
 	//////////////////////////////////////////////////////////////////////////
-	//	затягиваем объет по направлению к центру зоны
+	//	Р·Р°С‚СЏРіРёРІР°РµРј РѕР±СЉРµС‚ РїРѕ РЅР°РїСЂР°РІР»РµРЅРёСЋ Рє С†РµРЅС‚СЂСѓ Р·РѕРЅС‹
 
 	Fvector					throw_in_dir;
 	Fvector					zone_center;
@@ -153,9 +153,9 @@ void CBaseGraviZone ::Affect(SZoneObjectInfo* O)
 	else
 	{
 		//////////////////////////////////////////////////////////////////////////
-		// выброс аномалии
+		// РІС‹Р±СЂРѕСЃ Р°РЅРѕРјР°Р»РёРё
 		
-		//если время выброса еще не пришло
+		//РµСЃР»Рё РІСЂРµРјСЏ РІС‹Р±СЂРѕСЃР° РµС‰Рµ РЅРµ РїСЂРёС€Р»Рѕ
 		if(m_dwBlowoutExplosionTime<(u32)m_iPreviousStateTime ||
 			m_dwBlowoutExplosionTime>=(u32)m_iStateTime)
 		{
@@ -226,7 +226,7 @@ void CBaseGraviZone::PlayTeleParticles(CGameObject* pObject)
 
 	shared_str particle_str = NULL;
 
-	//разные партиклы для объектов разного размера
+	//СЂР°Р·РЅС‹Рµ РїР°СЂС‚РёРєР»С‹ РґР»СЏ РѕР±СЉРµРєС‚РѕРІ СЂР°Р·РЅРѕРіРѕ СЂР°Р·РјРµСЂР°
 	if(pObject->Radius()<SMALL_OBJECT_RADIUS)
 	{
 		if(!m_sTeleParticlesSmall) return;
@@ -247,7 +247,7 @@ void CBaseGraviZone::StopTeleParticles(CGameObject* pObject)
 	if(!PP) return;
 	shared_str particle_str = NULL;
 
-	//разные партиклы для объектов разного размера
+	//СЂР°Р·РЅС‹Рµ РїР°СЂС‚РёРєР»С‹ РґР»СЏ РѕР±СЉРµРєС‚РѕРІ СЂР°Р·РЅРѕРіРѕ СЂР°Р·РјРµСЂР°
 	if(pObject->Radius()<SMALL_OBJECT_RADIUS)
 	{
 		if(!m_sTeleParticlesSmall) return;
@@ -259,7 +259,7 @@ void CBaseGraviZone::StopTeleParticles(CGameObject* pObject)
 		particle_str = m_sTeleParticlesBig;
 	}
 
-	//остановить партиклы
+	//РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РїР°СЂС‚РёРєР»С‹
 	PP->StopParticles	(particle_str, BI_NONE, true);
 }
 

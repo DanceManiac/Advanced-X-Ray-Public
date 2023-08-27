@@ -2,16 +2,16 @@
 
 #include	"interactive_animation.h"
 
-#include	"physicsshell.h"
-#include	"ExtendedGeom.h"
-#include	"mathutils.h"
-#include	"phobject.h"
+#include	"../xrphysics/physicsshell.h"
+#include	"../xrphysics/ExtendedGeom.h"
+#include	"../xrphysics/mathutils.h"
+//#include	"phobject.h"
 
 #include	"../Include/xrRender/KinematicsAnimated.h"
 
 
 
-interactive_animation::interactive_animation(  CGameObject* O, CBlend* b ) :
+interactive_animation::interactive_animation(  CPhysicsShellHolder* O, CBlend* b ) :
 	physics_shell_animated( O, false ), blend( b )
 {
 	
@@ -65,7 +65,7 @@ void	interactive_animation::contact_callback(bool& do_colide,bool bo1,dContact& 
 	//																			do_colide=false;
 }
 
-void interactive_animation::create_shell(  CGameObject* O  )
+void interactive_animation::create_shell(  CPhysicsShellHolder* O  )
 {
 	inherited::create_shell( O )	;
 	physics_shell	->add_ObjectContactCallback( contact_callback );

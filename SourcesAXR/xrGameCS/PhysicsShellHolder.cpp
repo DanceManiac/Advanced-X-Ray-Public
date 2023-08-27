@@ -1,6 +1,6 @@
 #include "pch_script.h"
 #include "PhysicsShellHolder.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "xrMessages.h"
 #include "ph_shell_interface.h"
 #include "../Include/xrRender/Kinematics.h"
@@ -10,20 +10,31 @@
 #include "PHScriptCall.h"
 #include "CustomRocket.h"
 #include "Grenade.h"
-#include "phworld.h"
-#include "phactivationshape.h"
-#include "phvalide.h"
+
+//#include "phactivationshape.h"
+#include "../xrphysics/iphworld.h"
+#include "../xrphysics/iActivationShape.h"
+//#include "../xrphysics/phvalide.h"
 #include "characterphysicssupport.h"
 #include "phmovementcontrol.h"
 #include "physics_shell_animated.h"
-
+#include "phcollisiondamagereceiver.h"
 #include "../xrEngine/iphysicsshell.h"
-
+#ifdef	DEBUG
+#include "../xrengine/objectdump.h"
+#endif
 CPhysicsShellHolder::CPhysicsShellHolder()
 {
 	init();
 }
-
+CPhysicsShellHolder::	~CPhysicsShellHolder						()
+{
+	VERIFY ( !m_pPhysicsShell );
+//#ifndef MASTER_GOLD
+	//R_ASSERT( !m_pPhysicsShell );
+//#endif
+	destroy_physics_shell( m_pPhysicsShell );
+}
 const IObjectPhysicsCollision*CPhysicsShellHolder::physics_collision	()
 {
 	CCharacterPhysicsSupport	*char_support = character_physics_support();
@@ -59,10 +70,14 @@ void CPhysicsShellHolder::net_Destroy()
 	//remove calls
 	CPHSriptReqGObjComparer cmpr(this);
 	Level().ph_commander_scripts().remove_calls(&cmpr);
-	//удалить партиклы из ParticlePlayer
+	//СѓРґР°Р»РёС‚СЊ РїР°СЂС‚РёРєР»С‹ РёР· ParticlePlayer
 	CParticlesPlayer::net_DestroyParticles		();
+	CCharacterPhysicsSupport	*char_support = character_physics_support();
+	if( char_support )
+		char_support->destroy_imotion();
 	inherited::net_Destroy						();
 	b_sheduled									=	false;
+
 	deactivate_physics_shell						();
 	xr_delete									(m_pPhysicsShell);
 }
@@ -92,6 +107,8 @@ BOOL CPhysicsShellHolder::net_Spawn				(CSE_Abstract*	DC)
 		case stNotDefitnite	:								;break;
 		}
 		ApplySpawnIniToPhysicShell(pSettings,PPhysicsShell(),false);
+
+
 		st_enable_state=(u8)stNotDefitnite;
 	}
 	return ret;
@@ -99,7 +116,7 @@ BOOL CPhysicsShellHolder::net_Spawn				(CSE_Abstract*	DC)
 
 void	CPhysicsShellHolder::PHHit( SHit &H )
 {
-	if(H.phys_impulse() >0)
+	if ( H.phys_impulse() >0 )
 		if(m_pPhysicsShell) m_pPhysicsShell->applyHit(H.bone_space_position(),H.direction(),H.phys_impulse(),H.bone(),H.type());
 }
 
@@ -107,7 +124,12 @@ void	CPhysicsShellHolder::PHHit( SHit &H )
 //						 Fvector p_in_object_space, float impulse, ALife::EHitType hit_type)
 void	CPhysicsShellHolder::Hit					(SHit* pHDS)
 {
-	PHHit(*pHDS);
+	bool const is_special_burn_hit_2_self	=	(pHDS->who == this) && (pHDS->boneID == BI_NONE) && 
+												( (pHDS->hit_type == ALife::eHitTypeBurn)/*||(pHDS->hit_type == ALife::eHitTypeLightBurn)*/ );
+	if ( !is_special_burn_hit_2_self )
+	{
+		PHHit(*pHDS);
+	}
 }
 
 void CPhysicsShellHolder::create_physic_shell	()
@@ -136,6 +158,8 @@ void	CPhysicsShellHolder::on_child_shell_activate ( CPhysicsShellHolder* obj )
 		character_physics_support()->on_child_shell_activate ( obj );
 
 }
+
+
 void CPhysicsShellHolder::correct_spawn_pos()
 {
 	VERIFY								(PPhysicsShell());
@@ -154,12 +178,11 @@ void CPhysicsShellHolder::correct_spawn_pos()
 	R_ASSERT2( _valid( c ), make_string( "object: %s model: %s ", cName().c_str(), cNameVisual().c_str() ) );
 	R_ASSERT2( _valid( size ), make_string( "object: %s model: %s ", cName().c_str(), cNameVisual().c_str() ) );
 	R_ASSERT2( _valid( XFORM() ), make_string( "object: %s model: %s ", cName().c_str(), cNameVisual().c_str() ) );
-
-	CPHActivationShape					activation_shape;
-	activation_shape.Create				(c,size,this);
-	activation_shape.set_rotation		(XFORM());
 	PPhysicsShell()->DisableCollision	();
-	activation_shape.Activate			(size,1,1.f,M_PI/8.f);
+
+	Fvector								ap = Fvector().set(0,0,0);
+	ActivateShapePhysShellHolder		( this, XFORM(), size, c, ap );
+
 ////	VERIFY								(valid_pos(activation_shape.Position(),phBoundaries));
 //	if (!valid_pos(activation_shape.Position(),phBoundaries)) {
 //		CPHActivationShape				activation_shape;
@@ -171,24 +194,16 @@ void CPhysicsShellHolder::correct_spawn_pos()
 	
 	PPhysicsShell()->EnableCollision	();
 
-	Fvector								ap = activation_shape.Position();
-#ifdef DEBUG
-	if (!valid_pos(ap,phBoundaries)) {
-		Msg("not valid position	%f,%f,%f",ap.x,ap.y,ap.z);
-		Msg("size	%f,%f,%f",size.x,size.y,size.z);
-		Msg("Object: %s",Name());
-		Msg("Visual: %s",*(cNameVisual()));
-		Msg("Object	pos	%f,%f,%f",Position().x,Position().y,Position().z);
-	}
-#endif // DEBUG
-	VERIFY								(valid_pos(activation_shape.Position(),phBoundaries));
+	
+
+
 	
 	Fmatrix								trans;
 	trans.identity						();
 	trans.c.sub							(ap,c);
-	PPhysicsShell()->TransformPosition	(trans);
+	PPhysicsShell()->TransformPosition	(trans, mh_clear );
 	PPhysicsShell()->GetGlobalTransformDynamic(&XFORM());
-	activation_shape.Destroy			();
+
 }
 
 void CPhysicsShellHolder::activate_physic_shell()
@@ -222,7 +237,15 @@ void CPhysicsShellHolder::activate_physic_shell()
 //	XFORM().set					(l_p1);
 	correct_spawn_pos();
 
-	m_pPhysicsShell->set_LinearVel(l_fw);
+	Fvector overriden_vel;
+	if ( ActivationSpeedOverriden (overriden_vel, true) )
+	{
+		m_pPhysicsShell->set_LinearVel(overriden_vel);
+	}
+	else
+	{
+		m_pPhysicsShell->set_LinearVel(l_fw);
+	}
 	m_pPhysicsShell->GetGlobalTransformDynamic(&XFORM());
 
 	if(H_Parent()&&H_Parent()->Visual())
@@ -242,8 +265,11 @@ void CPhysicsShellHolder::setup_physic_shell	()
 	m_pPhysicsShell->Activate	(XFORM(),0,XFORM());
 	smart_cast<IKinematics*>(Visual())->CalculateBones_Invalidate	();
 	smart_cast<IKinematics*>(Visual())->CalculateBones(TRUE);
+		
+	ApplySpawnIniToPhysicShell(spawn_ini(),PPhysicsShell(),false);
 	correct_spawn_pos();
 	m_pPhysicsShell->GetGlobalTransformDynamic(&XFORM());
+
 }
 
 void CPhysicsShellHolder::deactivate_physics_shell()
@@ -313,8 +339,14 @@ void	CPhysicsShellHolder::PHFreeze()
 void CPhysicsShellHolder::OnChangeVisual()
 {
 	inherited::OnChangeVisual();
+
 	if (0==renderable.visual) 
 	{
+		CCharacterPhysicsSupport	*char_support = character_physics_support();
+		if( char_support )
+			char_support->destroy_imotion();
+		
+		VERIFY( !character_physics_support() || !character_physics_support()->interactive_motion());
 		if(m_pPhysicsShell)m_pPhysicsShell->Deactivate();
 		xr_delete(m_pPhysicsShell);
 		VERIFY(0==m_pPhysicsShell);
@@ -324,12 +356,12 @@ void CPhysicsShellHolder::OnChangeVisual()
 void CPhysicsShellHolder::UpdateCL	()
 {
 	inherited::UpdateCL	();
-	//обновить присоединенные партиклы
+	//РѕР±РЅРѕРІРёС‚СЊ РїСЂРёСЃРѕРµРґРёРЅРµРЅРЅС‹Рµ РїР°СЂС‚РёРєР»С‹
 	UpdateParticles		();
 }
 float CPhysicsShellHolder::EffectiveGravity()
 {
-	return ph_world->Gravity();
+	return physics_world()->Gravity();
 }
 
 void		CPhysicsShellHolder::	save				(NET_Packet &output_packet)
@@ -448,3 +480,144 @@ void CPhysicsShellHolder::on_physics_disable()
 	u_EventGen			(net_packet,GE_FREEZE_OBJECT,ID());
 	Level().Send		(net_packet,net_flags(TRUE,TRUE));*/
 }
+
+
+Fmatrix& CPhysicsShellHolder::ObjectXFORM()
+{
+	return XFORM();
+}
+Fvector& CPhysicsShellHolder::ObjectPosition()
+{
+	return Position();
+}
+LPCSTR CPhysicsShellHolder::ObjectName()const
+{
+	return cName().c_str();
+}
+LPCSTR CPhysicsShellHolder::ObjectNameVisual()const
+{
+	return cNameVisual().c_str();
+}
+LPCSTR CPhysicsShellHolder::ObjectNameSect()const
+{
+	return cNameSect().c_str();
+}
+bool CPhysicsShellHolder::ObjectGetDestroy()const
+{
+	return !!getDestroy();
+}
+ICollisionHitCallback* CPhysicsShellHolder::ObjectGetCollisionHitCallback()
+{
+	return get_collision_hit_callback ();
+}
+u16	CPhysicsShellHolder::ObjectID()const
+{
+	return ID();
+}
+ICollisionForm* CPhysicsShellHolder::ObjectCollisionModel()
+{
+	return collidable.model;
+}
+
+IKinematics	*CPhysicsShellHolder::ObjectKinematics()
+{
+	VERIFY(Visual());
+	return Visual()->dcast_PKinematics();
+}
+IDamageSource* CPhysicsShellHolder::ObjectCastIDamageSource()
+{
+	return cast_IDamageSource();
+}
+void CPhysicsShellHolder::ObjectProcessingDeactivate()
+{
+	processing_deactivate();
+}
+void CPhysicsShellHolder::ObjectProcessingActivate()
+{
+	processing_activate();
+}
+void CPhysicsShellHolder::ObjectSpatialMove()
+{
+	spatial_move();
+}
+CPhysicsShell*& CPhysicsShellHolder::ObjectPPhysicsShell()
+{
+	return PPhysicsShell();
+}
+//void CPhysicsShellHolder::enable_notificate()
+//{
+//	
+//}
+bool CPhysicsShellHolder::has_parent_object()
+{
+	return !!H_Parent();
+}
+//void CPhysicsShellHolder::on_physics_disable()
+//{
+//
+//}
+IPHCapture*	CPhysicsShellHolder::PHCapture()
+{
+	CCharacterPhysicsSupport* ph_sup = character_physics_support();
+	if( !ph_sup )
+		return 0;
+	CPHMovementControl	*mov = ph_sup->movement();
+	if( !mov )
+		return 0;
+	return mov->PHCapture();
+}
+bool CPhysicsShellHolder::IsInventoryItem()
+{
+	return !!cast_inventory_item();
+}
+bool CPhysicsShellHolder::IsActor()
+{
+	return !!cast_actor();
+}
+bool CPhysicsShellHolder::IsStalker()	
+{
+	return !!cast_stalker();
+}
+//void						SetWeaponHideState( u16 State, bool bSet )
+void CPhysicsShellHolder::HideAllWeapons( bool v )	
+{
+
+}
+
+void	CPhysicsShellHolder::MovementCollisionEnable				( bool enable )
+{
+ 	VERIFY( character_physics_support() );
+	VERIFY( character_physics_support()->movement() );
+	character_physics_support()->movement()->CollisionEnable( enable );
+}
+
+ICollisionDamageReceiver* CPhysicsShellHolder::ObjectPhCollisionDamageReceiver()						
+{
+	return PHCollisionDamageReceiver();
+}
+
+void	CPhysicsShellHolder::BonceDamagerCallback(float &damage_factor)	
+{
+		//CCharacterPhysicsSupport* phs=static_cast<CPhysicsShellHolder*>(o_damager)->character_physics_support();
+		//if(phs->IsSpecificDamager())damager_material_factor=phs->BonceDamageFactor();
+		CCharacterPhysicsSupport* phs=character_physics_support();
+		if(phs->IsSpecificDamager())
+			damage_factor=phs->BonceDamageFactor();
+}
+
+#ifdef	DEBUG
+std::string	CPhysicsShellHolder::dump(EDumpType type) const
+{
+	switch(type)
+	{
+	case	base:				return dbg_object_base_dump_string( this );						break;   
+	case	poses:				return dbg_object_poses_dump_string( this );					break;
+	case	vis_geom:			return dbg_object_visual_geom_dump_string( this );				break;
+	case	props:				return dbg_object_props_dump_string( this );					break;
+	case	full:				return dbg_object_full_dump_string( this);						break;
+	case	full_capped:		return dbg_object_full_capped_dump_string( this );				break;
+	default: NODEFAULT;			return std::string("fail!");
+	}
+
+}
+#endif

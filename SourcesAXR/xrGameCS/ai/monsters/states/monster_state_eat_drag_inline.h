@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../../PHCharacter.h"
-#include "../../../PHCapture.h"
+//#include "../../../PHCharacter.h"
+#include "../../../../xrphysics/IPHCapture.h"
 
 #define TEMPLATE_SPECIALIZATION template <\
 	typename _Object\
@@ -28,7 +28,7 @@ void CStateMonsterDragAbstract::initialize()
 	
 	m_failed = false;
 	
-	CPHCapture *capture = object->character_physics_support()->movement()->PHCapture();
+	IPHCapture *capture = object->character_physics_support()->movement()->PHCapture();
 	if (capture && !capture->Failed()) {
 		
 		const CCoverPoint *point = object->CoverMan->find_cover(object->Position(), 10.f, 30.f);
@@ -51,7 +51,7 @@ void CStateMonsterDragAbstract::execute()
 {
 	if (m_failed) return;
 	
-	// Óñòàíîâèòü ïàðàìåòðû äâèæåíèÿ
+	// Ð£ÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ñ‹ Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ñ
 	object->set_action				(ACT_DRAG);
 	object->anim().SetSpecParams	(ASP_MOVE_BKWD);
 
@@ -71,7 +71,7 @@ void CStateMonsterDragAbstract::finalize()
 {
 	inherited::finalize();	
 
-	// áðîñèòü òðóï
+	// Ð±Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ñ‚Ñ€ÑƒÐ¿
 	if (object->character_physics_support()->movement()->PHCapture())
 		object->character_physics_support()->movement()->PHReleaseObject();
 }
@@ -81,7 +81,7 @@ void CStateMonsterDragAbstract::critical_finalize()
 {
 	inherited::critical_finalize();
 
-	// áðîñèòü òðóï
+	// Ð±Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ñ‚Ñ€ÑƒÐ¿
 	if (object->character_physics_support()->movement()->PHCapture())
 		object->character_physics_support()->movement()->PHReleaseObject();
 

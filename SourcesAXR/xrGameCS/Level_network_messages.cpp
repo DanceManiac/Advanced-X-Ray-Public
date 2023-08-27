@@ -5,7 +5,7 @@
 #include "xrmessages.h"
 #include "game_cl_base.h"
 #include "net_queue.h"
-#include "Physics.h"
+//#include "Physics.h"
 #include "xrServer.h"
 #include "Actor.h"
 #include "Artefact.h"
@@ -15,6 +15,7 @@
 #include "level_graph.h"
 #include "file_transfer.h"
 #include "message_filter.h"
+#include "../xrphysics/iphworld.h"
 
 extern LPCSTR map_ver_string;
 LPSTR remove_version_option(LPCSTR opt_str, LPSTR new_opt_str, u32 new_opt_str_size)
@@ -125,8 +126,8 @@ void CLevel::ClientReceive()
 				//-------------------------------------------
 				if (OnServer()) break;
 				//-------------------------------------------
-			};	// íè â êîåì ñëó÷àå íåëüçÿ çäåñü ñòàâèòü break, ò.ê. â ñëó÷àå åñëè âñå îáúåêòû íå âëàçÿò â ïàêåò M_UPDATE,
-				// îíè äîñûëàþòñÿ ÷åðåç M_UPDATE_OBJECTS
+			};	// Ð½Ð¸ Ð² ÐºÐ¾ÐµÐ¼ ÑÐ»ÑƒÑ‡Ð°Ðµ Ð½ÐµÐ»ÑŒÐ·Ñ Ð·Ð´ÐµÑÑŒ ÑÑ‚Ð°Ð²Ð¸Ñ‚ÑŒ break, Ñ‚.Ðº. Ð² ÑÐ»ÑƒÑ‡Ð°Ðµ ÐµÑÐ»Ð¸ Ð²ÑÐµ Ð¾Ð±ÑŠÐµÐºÑ‚Ñ‹ Ð½Ðµ Ð²Ð»Ð°Ð·ÑÑ‚ Ð² Ð¿Ð°ÐºÐµÑ‚ M_UPDATE,
+				// Ð¾Ð½Ð¸ Ð´Ð¾ÑÑ‹Ð»Ð°ÑŽÑ‚ÑÑ Ñ‡ÐµÑ€ÐµÐ· M_UPDATE_OBJECTS
 		case M_UPDATE_OBJECTS:
 			{
 				/*if (!game_configured)
@@ -147,7 +148,7 @@ void CLevel::ClientReceive()
 				else
 					dTime = Level().timeServer() - P->timeReceive + pStat.getPing();
 
-				u32 NumSteps = ph_world->CalcNumSteps(dTime);
+				u32 NumSteps = physics_world()->CalcNumSteps(dTime);
 				SetNumCrSteps(NumSteps);
 			}break;
 //		case M_UPDATE_OBJECTS:
@@ -185,10 +186,10 @@ void CLevel::ClientReceive()
 				}
 				else					
 					dTime = Level().timeServer() - P->timeReceive + Ping;
-				u32 NumSteps = ph_world->CalcNumSteps(dTime);
+				u32 NumSteps = physics_world()->CalcNumSteps(dTime);
 				SetNumCrSteps(NumSteps);
 
-				O->CrPr_SetActivationStep(u32(ph_world->m_steps_num) - NumSteps);
+				O->CrPr_SetActivationStep(u32(physics_world()->StepsNum()) - NumSteps);
 				AddActor_To_Actors4CrPr(O);
 
 			}break;

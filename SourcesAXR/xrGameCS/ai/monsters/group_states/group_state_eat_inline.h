@@ -4,7 +4,7 @@
 #include "../states/state_move_to_point.h"
 #include "../states/state_hide_from_point.h"
 #include "../states/state_custom_action.h"
-#include "../../../PhysicsShell.h"
+#include "../../xrPhysics/PhysicsShell.h"
 #include "../../../PHMovementControl.h"
 #include "../../../CharacterPhysicsSupport.h"
 #include "group_state_eat_drag.h"
@@ -207,7 +207,7 @@ void CStateGroupEatAbstract::setup_substates()
 
 	if (current_substate == eStateEat_CorpseApproachRun) {
 
-		// Îïðåäåëèòü ïîçèöèþ áëèæàéøåé áîíû ó òðóïà
+		// ÐžÐ¿Ñ€ÐµÐ´ÐµÐ»Ð¸Ñ‚ÑŒ Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÑŽ Ð±Ð»Ð¸Ð¶Ð°Ð¹ÑˆÐµÐ¹ Ð±Ð¾Ð½Ñ‹ Ñƒ Ñ‚Ñ€ÑƒÐ¿Ð°
 		Fvector nearest_bone_pos;
 		const CEntityAlive *corpse = object->EatedCorpse;
 		if ((corpse->m_pPhysicsShell == NULL) || (!corpse->m_pPhysicsShell->isActive())) {
@@ -277,7 +277,7 @@ void CStateGroupEatAbstract::setup_substates()
 
 	if (current_substate == eStateEat_CorpseApproachWalk) {
 
-		// Îïðåäåëèòü ïîçèöèþ áëèæàéøåé áîíû ó òðóïà
+		// ÐžÐ¿Ñ€ÐµÐ´ÐµÐ»Ð¸Ñ‚ÑŒ Ð¿Ð¾Ð·Ð¸Ñ†Ð¸ÑŽ Ð±Ð»Ð¸Ð¶Ð°Ð¹ÑˆÐµÐ¹ Ð±Ð¾Ð½Ñ‹ Ñƒ Ñ‚Ñ€ÑƒÐ¿Ð°
 		Fvector nearest_bone_pos;
 		const CEntityAlive *corpse = object->EatedCorpse;
 

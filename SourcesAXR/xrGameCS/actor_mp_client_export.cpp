@@ -2,7 +2,7 @@
 #include "actor_mp_client.h"
 #include "CharacterPhysicsSupport.h"
 #include "inventory.h"
-#include "Physics.h"
+#include "../xrphysics/phvalide.h"
 
 ///	DONE (111 bytes cut from 138 bytes = 27 bytes, total 511.11% or 19.56%)
 // 3     health is form 0.f to 1.f, so use only 8 bits for it, the rest one we will use for mask
@@ -122,6 +122,6 @@ void CActorMP::net_Export	(NET_Packet &packet)
 		//R_ASSERT						(g_Alive());
 		//R_ASSERT						(PHGetSyncItemsNumber() == 1);
 	}
-	R_ASSERT2(valid_pos(m_state_holder.state().position,phBoundaries), "trying to export bad position");
+	R_ASSERT2(valid_pos(m_state_holder.state().position), "trying to export bad position");
 	m_state_holder.write			(packet);
 }

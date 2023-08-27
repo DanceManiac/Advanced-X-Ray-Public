@@ -28,7 +28,7 @@
 #include "../../../../XrServerEntitiesCS/xrServer_objects_ALife.h"
 #include "../../../phMovementControl.h"
 #include "../ai_monster_squad.h"
-#include "PHWorld.h"
+#include "../../xrPhysics/PHWorld.h"
 
 namespace detail
 {
@@ -467,7 +467,7 @@ void CBaseMonster::fill_bones_body_parts	(LPCSTR body_part, CriticalWoundType wo
 
 void CBaseMonster::StartLights()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if (!m_bLightsEnabled)		return;
 
 	VERIFY(m_pTrailLight == NULL);
@@ -494,7 +494,7 @@ void CBaseMonster::StartLights()
 
 void CBaseMonster::StopLights()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if (!m_bLightsEnabled || !m_pTrailLight)
 		return;
 
@@ -504,7 +504,7 @@ void CBaseMonster::StopLights()
 
 void CBaseMonster::UpdateLights()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if (!m_bLightsEnabled || !m_pTrailLight || !m_pTrailLight->get_active()) return;
 
 	IKinematics*          model = Visual()->dcast_PKinematics();
@@ -518,7 +518,7 @@ void CBaseMonster::UpdateLights()
 
 void CBaseMonster::SwitchMonsterParticles(bool bOn)
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if (!m_bParticlesEnabled) return;
 
 	IKinematics*          model = Visual()->dcast_PKinematics();

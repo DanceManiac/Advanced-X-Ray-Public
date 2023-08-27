@@ -19,6 +19,9 @@ IC						void				set_step					(u64 step)									{m_step=step;}
 						void				set_time_interval			(float time)								;
 						void				set_global_time				(float time)								;
 						void				set_global_time				(u32 time)									;
+#ifdef DEBUG
+						u64					step						()const			{ return m_step; }
+#endif
 private:				
 IC						bool				time_out					()				const						;
 DECLARE_SCRIPT_REGISTER_FUNCTION
@@ -66,6 +69,9 @@ public:
 
 	virtual				bool				compare					(const CPHReqComparerV	* v)		const		{return v->compare(this);}
 	virtual				bool				compare					(const	CPhysicsShell	* shl)		const		{return CPHShellBasedAction::compare(shl);}
+#ifdef	DEBUG
+		const			Fvector				&force					()const  { return	m_force;	}
+#endif
 DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list( CPHConstForceAction)

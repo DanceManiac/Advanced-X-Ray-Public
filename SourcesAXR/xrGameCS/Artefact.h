@@ -2,7 +2,7 @@
 
 #include "hud_item_object.h"
 #include "hit_immunity.h"
-#include "PHObject.h"
+#include "../xrphysics/PHUpdateObject.h"
 #include "script_export_space.h"
 #include "patrol_path.h"
 
@@ -86,8 +86,8 @@ public:
 	virtual void					StartLights();
 	virtual void					StopLights();
 
-	virtual void					PhDataUpdate					(dReal step);
-	virtual void					PhTune							(dReal step)	{};
+	virtual void					PhDataUpdate					(float step);
+	virtual void					PhTune							(float step)	{};
 
 	float							m_additional_weight;
 	float							AdditionalInventoryWeight		() const {return m_additional_weight;}

@@ -2,8 +2,11 @@
 #ifndef CPHMOVEMENT_CONTROL_H
 #define CPHMOVEMENT_CONTROL_H
 
-#include "PHCharacter.h"
-#include "MathUtils.h"
+//#include "../xrphysics/PHCharacter.h"
+//#include "../xrphysics/MathUtils.h"
+#include "../xrphysics/physicsexternalcommon.h"
+#include "../xrphysics/mathutils.h"
+#include "../xrphysics/movementboxdynamicactivate.h"
 namespace ALife {
 	enum EHitType;
 };
@@ -14,12 +17,22 @@ namespace DetailPathManager {
 
 class CPHAICharacter;
 class CPHSimpleCharacter;
-class CPHCapture;
+//class CPHCapture;
 class CPHSynchronize;
 class ICollisionDamageInfo;
-class CElevatorState;
+class IElevatorState;
 struct CPHCaptureBoneCallback;
-class CPHMovementControl 
+class CPhysicsShellHolder;
+class IPhysicsShellHolder;
+class CPHCapture;
+class IPHCapture;
+class CPHCharacter;
+class IPhysicsElement;
+
+
+
+class CPHMovementControl :
+	public IPHMovementControl
 {
 	collide::rq_results		storage;
 
@@ -27,11 +40,11 @@ static const int path_few_point=10;
 
 public:
 CObject					*ParentObject		(){ return pObject; }
-CElevatorState			*ElevatorState		();
+IElevatorState			*ElevatorState		();
 void 					in_shedule_Update	( u32 DT );
 void					PHCaptureObject 	( CPhysicsShellHolder* object, CPHCaptureBoneCallback* cb =0 );
 void					PHCaptureObject 	( CPhysicsShellHolder* object, u16 element );
-CPHCapture*				PHCapture			( ){ return m_capture; }
+IPHCapture*				PHCapture			( );
 CPHCharacter*			PHCharacter			( ){ return m_character; }
 const CPHCharacter*		PHCharacter			( )const{ return m_character; }
 const IPhysicsElement*	IElement			( )const;
@@ -40,11 +53,11 @@ Fvector					PHCaptureGetNearestElemPos( const CPhysicsShellHolder* object );
 Fmatrix					PHCaptureGetNearestElemTransform( CPhysicsShellHolder* object );
 void					SetMaterial( u16 material );
 void					SetAirControlParam( float param ){ fAirControlParam=param; }
-void					SetActorRestrictorRadius( CPHCharacter::ERestrictionType rt, float r );
-void					SetRestrictionType( CPHCharacter::ERestrictionType rt){ if( m_character ) m_character->SetRestrictionType( rt ); }
-void					SetActorMovable( bool v ){ if( m_character ) m_character->SetActorMovable( v ); }
-void					SetForcedPhysicsControl( bool v ){ if( m_character ) m_character->SetForcedPhysicsControl( v ); }
-bool					ForcedPhysicsControl( ){return m_character && m_character->ForcedPhysicsControl( ); }
+void					SetActorRestrictorRadius( ERestrictionType rt, float r );
+void					SetRestrictionType( ERestrictionType rt);
+void					SetActorMovable( bool v );
+void					SetForcedPhysicsControl( bool v );
+bool					ForcedPhysicsControl( );
 void					UpdateObjectBox( CPHCharacter *ach );
 void					VirtualMoveTo		( const Fvector	&in_pos, Fvector &out_pos );
 void					BlockDamageSet		( u64 steps_num );
@@ -58,9 +71,9 @@ void					JumpV( const Fvector &jump_velocity );
 void					Jump( const Fvector &start_point, const Fvector &end_point, float time );
 void					Jump( const Fvector &end_point, float time );
 float					Jump( const Fvector &end_point );
-bool					JumpState( ){ return ( m_character&&m_character->b_exist && m_character->IsEnabled( ) && m_character->JumpState( ) ); };
+bool					JumpState( );
 ///
-bool					PhyssicsOnlyMode( ){ return m_character&& m_character->b_exist&&m_character->IsEnabled()&&( m_character->JumpState( ) || m_character->ForcedPhysicsControl( ) ); }
+bool					PhysicsOnlyMode( );
 void					GetJumpMinVelParam( Fvector &min_vel, float &time, JumpType &type, const Fvector &end_point );	//returns vector of velocity of jump with minimal start speed
 																													//in min_vel and correspondent jump time in time
 float					JumpMinVelTime( const Fvector &end_point ); // return time of jump with min start speed
@@ -89,7 +102,7 @@ private:
 
 	CharacterType		eCharacterType;
 	CPHCharacter*		m_character;
-	CPHCapture  *		m_capture;
+	IPHCapture  *		m_capture;
 
 	float				m_fGroundDelayFactor;
 	BOOL				bIsAffectedByGravity;
@@ -135,9 +148,9 @@ public:
 	bool				bExernalImpulse;
 	BOOL				bSleep;
 	bool				bNonInteractiveMode;
-	BOOL				gcontact_Was;			// Ïðèçåìëåíèå
-	float				gcontact_Power;			// Íàñêîëüêî ñèëüíî óäàðèëèñü
-	float				gcontact_HealthLost;	// Ñêîêî çäîðîâüÿ ïîòåðÿëè
+	BOOL				gcontact_Was;			// ÐŸÑ€Ð¸Ð·ÐµÐ¼Ð»ÐµÐ½Ð¸Ðµ
+	float				gcontact_Power;			// ÐÐ°ÑÐºÐ¾Ð»ÑŒÐºÐ¾ ÑÐ¸Ð»ÑŒÐ½Ð¾ ÑƒÐ´Ð°Ñ€Ð¸Ð»Ð¸ÑÑŒ
+	float				gcontact_HealthLost;	// Ð¡ÐºÐ¾ÐºÐ¾ Ð·Ð´Ð¾Ñ€Ð¾Ð²ÑŒÑ Ð¿Ð¾Ñ‚ÐµÑ€ÑÐ»Ð¸
 
 public:
 	void				AllocateCharacterObject			(CharacterType type)									;
@@ -146,20 +159,17 @@ public:
 	void				DestroyCharacter				()														;
 	void				Load							(LPCSTR section)										;
 #ifdef DEBUG
-	void				dbg_Draw(){
-		if(m_character)
-			m_character->OnRender();
-	};
+	void				dbg_Draw						();
 #endif
 
-	void				SetPLastMaterialIDX	(u16* p){VERIFY(m_character);m_character->SetPLastMaterialIDX(p);}
-	dBodyID				GetBody						( )		{if(m_character) return m_character->get_body(); else return NULL;}
+	void				SetPLastMaterialIDX			(u16* p);
+//	dBodyID				GetBody						( )		;
 	const Fvector&		GetVelocity					( )		{ return vVelocity;	}
 	const Fvector&		GetPathDir					( )		{ return _vPathDir;	}
 	void				SetPathDir					( const Fvector& v);
 
 
-	void				GetCharacterVelocity		(Fvector& velocity )		{if(m_character)m_character->GetVelocity(velocity); else velocity.set(0.f,0.f,0.f);}
+	void				GetCharacterVelocity		(Fvector& velocity )		;
 	float				GetVelocityMagnitude		()		{ return vVelocity.magnitude();	}
 	float				GetVelocityActual			()		{ return fActualVelocity;	}
 	float				GetXZVelocityActual			()		{ return dXZMag(vVelocity);}
@@ -169,7 +179,7 @@ public:
 															float r= dXZDot(GetPathDir(),vVelocity);
 															return r>EPS_L ? r : 0.f;
 														}
-	void				GetSmoothedVelocity			(Fvector& v){if(m_character)m_character->GetSmothedVelocity(v);else v.set(0,0,0);}
+	void				GetSmoothedVelocity			(Fvector& v);
 	float				GetContactSpeed				()		{ return fContactSpeed; }
 	void				GroundNormal				(Fvector &norm)					;
 	CPHSynchronize*		GetSyncItem					()								;
@@ -177,8 +187,9 @@ public:
 	void				UnFreeze					()								;
 	void				SetVelocity					(float x, float y, float z)	{SetVelocity(Fvector().set(x,y,z));}
 	void				SetVelocity					(const Fvector& v)	{vVelocity.set(v);SetCharacterVelocity(v);}
-	void				SetCharacterVelocity		(const Fvector& v)	{if(m_character)m_character->SetVelocity(v);}										
-	void				SetPhysicsRefObject			(CPhysicsShellHolder* ref_object){ VERIFY(m_character); m_character->SetPhysicsRefObject(ref_object);};
+	void				SetCharacterVelocity		(const Fvector& v)					;									
+	void				SetPhysicsRefObject			(CPhysicsShellHolder* ref_object)	;
+	IPhysicsShellHolder*PhysicsRefObject			();
 	void				SetNonInteractive			(bool v);
 	void				CalcMaximumVelocity			(Fvector& /**dest/**/, Fvector& /**accel/**/, float /**friction/**/){};
 	void				CalcMaximumVelocity			(float& /**dest/**/, float /**accel/**/, float /**friction/**/){};
@@ -190,31 +201,21 @@ public:
 	const Fbox&			Box							( )			{ return aabb; }
 	DWORD				BoxID						( )const	{ return m_dwCurBox;}
 	const Fbox*			Boxes						( )			{return boxes;}
-	float				FootRadius					( )			{if(m_character)return m_character->FootRadius(); else return 0.f;};
-	void				CollisionEnable 			(BOOL enable){if( m_character && m_character->b_exist ) if(enable)m_character->collision_enable();else m_character->collision_disable();}
+	float				FootRadius					( )			;
+	void				CollisionEnable 			(BOOL enable);
 	void				SetBox						(DWORD id, const Fbox &BB)	{ boxes[id].set(BB); aabb.set(BB); }
-	void				SetMass						(float M)	
-	{ 
-		fMass = M;
-		if(m_character)
-			m_character->SetMas(fMass);
-	}
-	float				GetMass						()			{ return fMass;	}
-	void				SetCrashSpeeds	(float min, float max)
-	{	fMinCrashSpeed	= min; 	fMaxCrashSpeed	= max; 	}
+	void				SetMass						(float M);	
 
-	void				SetPosition		(const Fvector &P);
-	void				GetPosition		(Fvector &P);
-	void				GetCharacterPosition(Fvector &P)
-	{ m_character->GetPosition(P);}
-	void				InterpolatePosition(Fvector	&P)
-	{
-		VERIFY(m_character&&m_character->b_exist);
-		m_character->IPosition(P);
-	}
+	float				GetMass					()						{ return fMass;	}
+	void				SetCrashSpeeds			(float min, float max)  {	fMinCrashSpeed	= min; 	fMaxCrashSpeed	= max; 	}
+
+	void				SetPosition				(const Fvector &P);
+	void				GetPosition				(Fvector &P);
+	void				GetCharacterPosition	(Fvector &P);
+	void				InterpolatePosition		(Fvector	&P);
 	bool				TryPosition				(Fvector& pos);
-	bool				IsCharacterEnabled		()																		{return m_character->IsEnabled()||bExernalImpulse||bNonInteractiveMode;}
-	void				DisableCharacter		(){m_character->Disable();}
+	bool				IsCharacterEnabled		();
+	void				DisableCharacter		();
 	void				Calculate				(Fvector& vAccel,const Fvector& camDir, float ang_speed, float jump, float dt, bool bLight);
 	void				Calculate				(const xr_vector<DetailPathManager::STravelPathPoint>& path, //in path
 												float speed,						 //in speed
@@ -257,36 +258,38 @@ public:
 	void				CorrectPathDir			(const Fvector &real_path_dir,const xr_vector<DetailPathManager::STravelPathPoint> & path,int index,Fvector &corrected_path_dir);
 
 	//	void				Move					(Fvector& Dest, Fvector& Motion, BOOL bDynamic=FALSE){};
-	void				SetApplyGravity			(BOOL flag)																{ bIsAffectedByGravity=flag;if(m_character&&m_character->b_exist)m_character->SetApplyGravity(flag); }
-	void				GetDeathPosition		(Fvector& pos)															{ m_character->DeathPosition(pos);}
+	void				SetApplyGravity			(BOOL flag)																;
+	void				GetDeathPosition		(Fvector& pos)															;
 	void				SetEnvironment			( int enviroment,int old_enviroment);
 	void				SetFrictionFactor		(float f);
 	float				GetFrictionFactor		();
 	void				MulFrictionFactor		(float f);
-	void				ApplyImpulse			(const Fvector& dir,const dReal P)										;
-	void				ApplyHit				(const Fvector& dir,const dReal P,ALife::EHitType hit_type)				;
-	void				SetJumpUpVelocity		(float velocity)														{m_character->SetJupmUpVelocity(velocity);}
-	void				EnableCharacter			()																		{if(m_character&&m_character->b_exist)m_character->Enable();}
-	void				SetOjectContactCallback (ObjectContactCallbackFun* callback){if(m_character)m_character->SetObjectContactCallback(callback);}
-	void				SetFootCallBack			(ObjectContactCallbackFun* callback){VERIFY(m_character);m_character->SetWheelContactCallback(callback);}
+	void				ApplyImpulse			(const Fvector& dir,const float P)										;
+	void				ApplyHit				(const Fvector& dir,const float P,ALife::EHitType hit_type)				;
+	void				SetJumpUpVelocity		(float velocity)														;
+	void				EnableCharacter			()																		;
+	void				SetOjectContactCallback (ObjectContactCallbackFun* callback)									;
+	void				SetFootCallBack			(ObjectContactCallbackFun* callback)									;
 	static BOOL CPHMovementControl::BorderTraceCallback(collide::rq_result& result, LPVOID params);
-	ObjectContactCallbackFun* ObjectContactCallback(){if(m_character)return m_character->ObjectContactCallBack();else return NULL; }
-	u16					ContactBone				(){return m_character->ContactBone();}
-	const ICollisionDamageInfo	*CollisionDamageInfo ()const {VERIFY(m_character);return m_character->CollisionDamageInfo ();}
-	void				GetDesiredPos			(Fvector& dpos)
-	{	
-		m_character->GetDesiredPosition(dpos);
-	}
-	bool				CharacterExist() const		
-	{
-		return (m_character && m_character->b_exist);
-	}
-	void				update_last_material	(){ VERIFY(m_character); m_character->update_last_material	();  };
-	u16					injurious_material_idx	(){ VERIFY(m_character);return m_character->InjuriousMaterialIDX(); }
+	ObjectContactCallbackFun* ObjectContactCallback()			;
+	u16					ContactBone				()				;
+	const ICollisionDamageInfo	*CollisionDamageInfo ()const	;
+		ICollisionDamageInfo	*CollisionDamageInfo ();
+	void				GetDesiredPos			(Fvector& dpos)	;
+	bool				CharacterExist			() const		;	
+	void				update_last_material	()				;
+	u16					injurious_material_idx	()				;
 	CPHMovementControl(CObject* parent);
 	~CPHMovementControl(void);
+
+	CPHCharacter		*character				()	{		return m_character; };
+	void				NetRelcase				( CObject* O );
 private:
+	void				actor_calculate			(Fvector& vAccel,const Fvector& camDir, float ang_speed, float jump, float dt, bool bLight);
 	void				UpdateCollisionDamage	( );
+	bool				MakeJumpPath			(xr_vector<DetailPathManager::STravelPathPoint> & out_path, 
+												 u32 & travel_point,
+												 Fvector & dist_to_enemy);
 };
 
 #endif

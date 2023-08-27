@@ -57,7 +57,7 @@ void CStateManagerBloodsucker::drag_object()
 		object->character_physics_support()->movement()->PHCaptureObject(ph_obj, drag_bone);
 	}
 
-	CPHCapture* const capture = object->character_physics_support()->movement()->PHCapture();
+	IPHCapture* const capture = object->character_physics_support()->movement()->PHCapture();
 
 	if ( capture && !capture->Failed() && object->is_animated() ) 
 	{
@@ -125,7 +125,7 @@ void CStateManagerBloodsucker::execute ()
 
 		select_state(state_id); 
 
-		// âûïîëíèòü òåêóùåå ñîñòîÿíèå
+		// Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚ÑŒ Ñ‚ĞµĞºÑƒÑ‰ĞµĞµ ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ğµ
 		get_state_current()->execute();
 
 		prev_substate = current_substate;
@@ -138,7 +138,7 @@ void CStateManagerBloodsucker::execute ()
 		{
 			select_state(state_id); 
 
-			// âûïîëíèòü òåêóùåå ñîñòîÿíèå
+			// Ğ²Ñ‹Ğ¿Ğ¾Ğ»Ğ½Ğ¸Ñ‚ÑŒ Ñ‚ĞµĞºÑƒÑ‰ĞµĞµ ÑĞ¾ÑÑ‚Ğ¾ÑĞ½Ğ¸Ğµ
 			get_state_current()->execute();
 
 			prev_substate = current_substate;

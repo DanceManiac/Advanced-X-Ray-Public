@@ -2,8 +2,7 @@
 #include "Actor_Flags.h"
 #include "hudmanager.h"
 #ifdef DEBUG
-#	include "ode_include.h"
-#	include "../xrEngine/StatGraph.h"
+
 #	include "PHDebug.h"
 #endif // DEBUG
 #include "alife_space.h"
@@ -23,7 +22,7 @@
 #include "actorcondition.h"
 #include "UIGameCustom.h"
 #include "ui/UIArtefactPanel.h"
-#include "matrix_utils.h"
+#include "../xrphysics/matrix_utils.h"
 #include "clsid_game.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 #include "Grenade.h"
@@ -40,7 +39,7 @@
 #include "ai_space.h"
 #include "trade.h"
 #include "inventory.h"
-#include "Physics.h"
+//#include "Physics.h"
 #include "level.h"
 #include "GamePersistent.h"
 #include "game_cl_base.h"
@@ -49,13 +48,13 @@
 #include "string_table.h"
 #include "usablescriptobject.h"
 #include "../xrEngine/cl_intersect.h"
-#include "ExtendedGeom.h"
+//#include "ExtendedGeom.h"
 #include "alife_registry_wrappers.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "artefact.h"
 #include "CharacterPhysicsSupport.h"
 #include "material_manager.h"
-#include "IColisiondamageInfo.h"
+#include "../xrphysics/IColisiondamageInfo.h"
 #include "ui/UIMainIngameWnd.h"
 #include "map_manager.h"
 #include "GameTaskManager.h"
@@ -74,7 +73,10 @@
 #include "DynamicHudGlass.h"
 #include "ActorNightVision.h"
 #include "AdvancedXrayGameConstants.h"
+#include "../xrphysics/actorcameracollision.h"
+#include "../../xrCore/_detail_collision_point.h"
 #include "../xrEngine/Rain.h"
+#include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomBackpack.h"
 
@@ -102,13 +104,12 @@ ENGINE_API extern int ps_r__ShaderNVG;
 extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;
 
 extern bool g_block_all_except_movement;
-extern bool g_actor_allow_ladder;
 
 std::atomic<bool> isHidingInProgress(false);
 std::atomic<bool> CheckNVGAnimNeeded(false);
 std::atomic<bool> CleanMaskAnimNeeded(false);
 
-CActor::CActor() : CEntityAlive()
+CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 {
 	encyclopedia_registry	= xr_new<CEncyclopediaRegistryWrapper	>();
 	game_news_registry		= xr_new<CGameNewsRegistryWrapper		>();
@@ -363,11 +364,11 @@ void CActor::Load	(LPCSTR section )
 	character_physics_support()->movement()->SetCrashSpeeds	(cs_min,cs_max);
 	character_physics_support()->movement()->SetMass		(mass);
 	if(pSettings->line_exist(section,"stalker_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(CPHCharacter::rtStalker,pSettings->r_float(section,"stalker_restrictor_radius"));
+		character_physics_support()->movement()->SetActorRestrictorRadius(rtStalker,pSettings->r_float(section,"stalker_restrictor_radius"));
 	if(pSettings->line_exist(section,"stalker_small_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(CPHCharacter::rtStalkerSmall,pSettings->r_float(section,"stalker_small_restrictor_radius"));
+		character_physics_support()->movement()->SetActorRestrictorRadius(rtStalkerSmall,pSettings->r_float(section,"stalker_small_restrictor_radius"));
 	if(pSettings->line_exist(section,"medium_monster_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(CPHCharacter::rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
+		character_physics_support()->movement()->SetActorRestrictorRadius(rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
 	character_physics_support()->movement()->Load(section);
 
 	

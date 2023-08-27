@@ -10,7 +10,7 @@
 
 #include "smart_cover_detail.h"
 #include <boost/noncopyable.hpp>
-#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../include/xrRender/KinematicsAnimated.h"
 #include "smart_cover_animation_planner.h"
 
 class CAI_Stalker;

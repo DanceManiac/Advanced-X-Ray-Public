@@ -88,7 +88,7 @@ protected:
 
 	CPHCommander				*m_ph_commander;
 	CPHCommander				*m_ph_commander_scripts;
-	
+	CPHCommander				*m_ph_commander_physics_worldstep;
 	// Local events
 	EVENT						eChangeRP;
 	EVENT						eDemoPlay;
@@ -320,12 +320,13 @@ public:
 
 	IC CPHCommander					&ph_commander				();
 	IC CPHCommander					&ph_commander_scripts		();
+	IC CPHCommander					&ph_commander_physics_worldstep();
 
 	// C/D
 	CLevel();
 	virtual ~CLevel();
 
-	//íàçâàíèÿå òåêóùåãî óðîâíÿ
+	//Ð½Ð°Ð·Ð²Ð°Ð½Ð¸ÑÐµ Ñ‚ÐµÐºÑƒÑ‰ÐµÐ³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ
 	virtual shared_str			name					() const;
 			shared_str			version					() const { return map_data.m_map_version.c_str(); } //this method can be used ONLY from CCC_ChangeGameType
 
@@ -333,12 +334,12 @@ public:
 
 	//gets the time from the game simulation
 	
-	//âîçâðàùàåò âðåìÿ â ìèëèñåêóíäàõ îòíîñèòåëüíî íà÷àëà èãðû
+	//Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð²Ñ€ÐµÐ¼Ñ Ð² Ð¼Ð¸Ð»Ð¸ÑÐµÐºÑƒÐ½Ð´Ð°Ñ… Ð¾Ñ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ Ð½Ð°Ñ‡Ð°Ð»Ð° Ð¸Ð³Ñ€Ñ‹
 	ALife::_TIME_ID		GetStartGameTime		();
 	ALife::_TIME_ID		GetGameTime				();
-	//âîçâðàùàåò âðåìÿ äëÿ ýíâàéðîíìåíòà â ìèëèñåêóíäàõ îòíîñèòåëüíî íà÷àëà èãðû
+	//Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð²Ñ€ÐµÐ¼Ñ Ð´Ð»Ñ ÑÐ½Ð²Ð°Ð¹Ñ€Ð¾Ð½Ð¼ÐµÐ½Ñ‚Ð° Ð² Ð¼Ð¸Ð»Ð¸ÑÐµÐºÑƒÐ½Ð´Ð°Ñ… Ð¾Ñ‚Ð½Ð¾ÑÐ¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ Ð½Ð°Ñ‡Ð°Ð»Ð° Ð¸Ð³Ñ€Ñ‹
 	ALife::_TIME_ID		GetEnvironmentGameTime	();
-	//èãðîâîå âðåìÿ â îòôîðìàòèðîâàííîì âèäå
+	//Ð¸Ð³Ñ€Ð¾Ð²Ð¾Ðµ Ð²Ñ€ÐµÐ¼Ñ Ð² Ð¾Ñ‚Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ð¼ Ð²Ð¸Ð´Ðµ
 	void				GetGameDateTime			(u32& year, u32& month, u32& day, u32& hours, u32& mins, u32& secs, u32& milisecs);
 
 	float				GetGameTimeFactor		();
@@ -367,7 +368,7 @@ public:
 	CGameTaskManager&		GameTaskManager				() const	{return *m_game_task_manager;}
 	void					OnAlifeSimulatorLoaded		();
 	void					OnAlifeSimulatorUnLoaded	();
-	//ðàáîòà ñ ïóëÿìè
+	//Ñ€Ð°Ð±Ð¾Ñ‚Ð° Ñ Ð¿ÑƒÐ»ÑÐ¼Ð¸
 protected:	
 	CBulletManager*		m_pBulletManager;
 public:
@@ -461,13 +462,18 @@ IC CPHCommander & CLevel::ph_commander_scripts()
 	VERIFY(m_ph_commander_scripts);
 	return *m_ph_commander_scripts;
 }
+IC CPHCommander & CLevel::ph_commander_physics_worldstep()
+{
+	VERIFY(m_ph_commander_scripts);
+	return *m_ph_commander_physics_worldstep;
+}
 //by Mad Max 
 IC bool		OnServer()			{ return Level().IsServer();}
 IC bool		OnClient()			{ return Level().IsClient();}
 IC bool		IsGameTypeSingle()	{ return (g_pGamePersistent->GameType() == eGameIDSingle);};
 
-class  CPHWorld;
-extern CPHWorld*				ph_world;
+//class  CPHWorld;
+//extern CPHWorld*				ph_world;
 extern BOOL						g_bDebugEvents;
 
 // -------------------------------------------------------------------------------------------------

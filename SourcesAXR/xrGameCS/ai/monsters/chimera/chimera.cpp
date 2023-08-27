@@ -5,7 +5,7 @@
 #include "../../../detail_path_manager.h"
 #include "../monster_velocity_space.h"
 #include "../../../level.h"
-#include "../../../PhysicsShell.h"
+#include "../../xrPhysics/PhysicsShell.h"
 #include "../../../sound_player.h"
 #include "../control_animation_base.h"
 #include "../control_movement_base.h"

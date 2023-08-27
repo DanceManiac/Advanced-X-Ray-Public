@@ -1,19 +1,22 @@
 //////////////////////////////////////////////////////////////////////
-// CustomRocket.cpp:	ракета, которой стреляет RocketLauncher 
-//						(умеет лететь, светиться и отыгрывать партиклы)
+// CustomRocket.cpp:	СЂР°РєРµС‚Р°, РєРѕС‚РѕСЂРѕР№ СЃС‚СЂРµР»СЏРµС‚ RocketLauncher 
+//						(СѓРјРµРµС‚ Р»РµС‚РµС‚СЊ, СЃРІРµС‚РёС‚СЊСЃСЏ Рё РѕС‚С‹РіСЂС‹РІР°С‚СЊ РїР°СЂС‚РёРєР»С‹)
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "customrocket.h"
 #include "ParticlesObject.h"
-#include "PhysicsShell.h"
-#include "extendedgeom.h"
+#include "../xrphysics/PhysicsShell.h"
+#include "../xrphysics/extendedgeom.h"
+#include "../xrphysics/calculatetriangle.h"
+#include "../xrphysics/tri-colliderknoopc/dctriangle.h"
+
 #include "level.h"
 #include "xrMessages.h"
 #include "../xrEngine/gamemtllib.h"
-#include "tri-colliderknoopc/dTriList.h"
+//#include "tri-colliderknoopc/dTriList.h"
 #include "../Include/xrRender/RenderVisual.h"
-#include "CalculateTriangle.h"
+//#include "CalculateTriangle.h"
 #include "actor.h"
 #ifdef DEBUG
 #include "PHDebug.h"
@@ -187,8 +190,8 @@ void CCustomRocket::ObjectContactCallback(bool& do_colide,bool bo1,dContact& c ,
 
 	dxGeomUserData *l_pUD1 = NULL;
 	dxGeomUserData *l_pUD2 = NULL;
-	l_pUD1 = retrieveGeomUserData(c.geom.g1);
-	l_pUD2 = retrieveGeomUserData(c.geom.g2);
+	l_pUD1 = PHRetrieveGeomUserData(c.geom.g1);
+	l_pUD2 = PHRetrieveGeomUserData(c.geom.g2);
 
 	SGameMtl* material=0;
 	CCustomRocket *l_this = l_pUD1 ? smart_cast<CCustomRocket*>(l_pUD1->ph_ref_object) : NULL;
@@ -225,6 +228,10 @@ void CCustomRocket::ObjectContactCallback(bool& do_colide,bool bo1,dContact& c ,
 		if(l_this->m_pOwner) 
 		{
 			Fvector l_pos; l_pos.set(l_this->Position());
+			dxGeomUserData *l_pMYU = bo1 ? l_pUD1 :  l_pUD2;
+			VERIFY( l_pMYU );
+			if( l_pMYU->last_pos[0]!=-dInfinity )
+					l_pos = cast_fv(l_pMYU->last_pos);
 #ifdef DEBUG
 			bool corrected_pos=false;
 #endif
@@ -242,7 +249,7 @@ void CCustomRocket::ObjectContactCallback(bool& do_colide,bool bo1,dContact& c ,
 					{	//. desync?
 						velocity.normalize();
 						Triangle neg_tri;
-						CalculateTriangle(l_pUD->neg_tri,g,neg_tri);
+						CalculateTriangle(l_pUD->neg_tri,g,neg_tri,Level().ObjectSpace.GetStaticVerts());
 						float cosinus=velocity.dotproduct(*((Fvector*)neg_tri.norm));
 						VERIFY(_valid(neg_tri.dist));
 						float dist=neg_tri.dist/cosinus;
@@ -252,7 +259,7 @@ void CCustomRocket::ObjectContactCallback(bool& do_colide,bool bo1,dContact& c ,
 						corrected_pos=true;
 //.	DBG_OpenCashedDraw();
 //.	const Fvector*	 V_array	= Level().ObjectSpace.GetStaticVerts();
-//.	DBG_DrawTri(neg_tri.T, V_array, color_xrgb(255,255,0));
+//.	DBG_DrawTri(neg_tri.T, V_array, D3DCOLOR_XRGB(255,255,0));
 //.	DBG_ClosedCashedDraw(50000);
 #endif
 					}
@@ -260,7 +267,7 @@ void CCustomRocket::ObjectContactCallback(bool& do_colide,bool bo1,dContact& c ,
 			}
 #ifdef DEBUG
 			if(ph_dbg_draw_mask.test(phDbgDrawExplosionPos))
-				DBG_DrawPoint(l_pos,0.05f,color_xrgb(255,255,(!corrected_pos)*255));
+				DBG_DrawPoint(l_pos,0.05f,D3DCOLOR_XRGB(255,255,(!corrected_pos)*255));
 #endif
 			
 			l_this->Contact(l_pos, vUp);
@@ -337,7 +344,7 @@ void CCustomRocket::PlayContact()
 
 	m_eState = eCollide;
 
-	//дективировать физическую оболочку,чтоб ракета не летела дальше
+	//РґРµРєС‚РёРІРёСЂРѕРІР°С‚СЊ С„РёР·РёС‡РµСЃРєСѓСЋ РѕР±РѕР»РѕС‡РєСѓ,С‡С‚РѕР± СЂР°РєРµС‚Р° РЅРµ Р»РµС‚РµР»Р° РґР°Р»СЊС€Рµ
 	if(m_pPhysicsShell)
 	{
 		m_pPhysicsShell->set_LinearVel(zero_vel);
@@ -397,9 +404,9 @@ void CCustomRocket::UpdateCL()
 	{
 	case eInactive:
 		break;
-	//состояния eEngine и eFlying отличаются, тем
-	//что вызывается UpdateEngine у eEngine, остальные
-	//функции общие
+	//СЃРѕСЃС‚РѕСЏРЅРёСЏ eEngine Рё eFlying РѕС‚Р»РёС‡Р°СЋС‚СЃСЏ, С‚РµРј
+	//С‡С‚Рѕ РІС‹Р·С‹РІР°РµС‚СЃСЏ UpdateEngine Сѓ eEngine, РѕСЃС‚Р°Р»СЊРЅС‹Рµ
+	//С„СѓРЅРєС†РёРё РѕР±С‰РёРµ
 	case eEngine:
 		UpdateEngine();
 	case eFlying:
@@ -506,7 +513,7 @@ void CCustomRocket::StartLights()
 {
 	if(!m_bLightsEnabled) return;
 
-	//включить световую подсветку от двигателя
+	//РІРєР»СЋС‡РёС‚СЊ СЃРІРµС‚РѕРІСѓСЋ РїРѕРґСЃРІРµС‚РєСѓ РѕС‚ РґРІРёРіР°С‚РµР»СЏ
 	m_pTrailLight->set_color(m_TrailLightColor.r, 
 							 m_TrailLightColor.g, 
 							 m_TrailLightColor.b);

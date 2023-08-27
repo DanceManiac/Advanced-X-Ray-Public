@@ -1,11 +1,11 @@
 ///////////////////////////////////////////////////////////////
 // ZudaArtifact.cpp
-// ZudaArtefact - артефакт "зуда"
+// ZudaArtefact - Р°СЂС‚РµС„Р°РєС‚ "Р·СѓРґР°"
 ///////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "ZudaArtifact.h"
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 
 
 CZudaArtefact::CZudaArtefact(void) 

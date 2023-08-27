@@ -8,7 +8,7 @@
 #include "stdafx.h"
 #include "artefact_activation.h"
 
-#include "PhysicsShell.h"
+#include "../xrphysics/PhysicsShell.h"
 #include "PhysicsShellHolder.h"
 #include "game_cl_base.h"
 
@@ -19,7 +19,7 @@
 #include "level.h"
 #include "ai_object_location.h"
 #include "xrServer_Objects_ALife_Monsters.h"
-#include "phworld.h"
+#include "../xrphysics/iphworld.h"
 #include "restriction_space.h"
 #include "../xrEngine/IGame_Persistent.h"
 
@@ -55,7 +55,7 @@ void SArtefactActivation::Load()
 
 void SArtefactActivation::Start()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	m_af->StopLights				();
 	m_cur_activation_state			= eStarting;
 	m_cur_state_time				= 0.0f;
@@ -86,7 +86,7 @@ void SArtefactActivation::UpdateActivation()
 	if (!m_in_process)
 		return;
 
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	m_cur_state_time				+=	Device.fTimeDelta;
 	if(m_cur_state_time				>=	m_activation_states[int(m_cur_activation_state)].m_time){
 		m_cur_activation_state		=	(EActivationStates)(int)(m_cur_activation_state+1);
@@ -110,7 +110,7 @@ void SArtefactActivation::UpdateActivation()
 	UpdateEffects				();
 }
 
-void SArtefactActivation::PhDataUpdate(dReal step)
+void SArtefactActivation::PhDataUpdate(float step)
 {
 	R_ASSERT( m_af );
 	
@@ -120,7 +120,7 @@ void SArtefactActivation::PhDataUpdate(dReal step)
 	if (m_cur_activation_state==eFlying) {
 		Fvector dir	= {0, -1.f, 0};
 		if(Level().ObjectSpace.RayTest(m_af->Position(), dir, 1.0f, collide::rqtBoth,NULL,m_af) ){
-			dir.y = ph_world->Gravity()*1.1f; 
+			dir.y = physics_world()->Gravity()*1.1f; 
 			m_af->m_pPhysicsShell->applyGravityAccel(dir);
 		}
 	}
@@ -128,7 +128,7 @@ void SArtefactActivation::PhDataUpdate(dReal step)
 }
 void SArtefactActivation::ChangeEffects()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	SStateDef& state_def = m_activation_states[(int)m_cur_activation_state];
 	
 	if(m_snd._feedback())
@@ -162,7 +162,7 @@ void SArtefactActivation::ChangeEffects()
 
 void SArtefactActivation::UpdateEffects()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	if(m_snd._feedback())
 		m_snd.set_position( m_af->Position() );
 	
@@ -171,7 +171,7 @@ void SArtefactActivation::UpdateEffects()
 
 void SArtefactActivation::SpawnAnomaly()
 {
-	VERIFY(!ph_world->Processing());
+	VERIFY(!physics_world()->Processing());
 	string128 tmp;
 	LPCSTR str			= pSettings->r_string("artefact_spawn_zones",*m_af->cNameSect());
 	VERIFY3(3==_GetItemCount(str),"Bad record format in artefact_spawn_zones",str);
@@ -212,7 +212,7 @@ shared_str clear_brackets(LPCSTR src)
 	if( NULL == strchr(src,'"') )	return	shared_str(src);
 
 	string512						_original;	
-	strcpy_s						(_original,src);
+	xr_strcpy						(_original,src);
 	u32			_len				= xr_strlen(_original);
 	if	(0==_len)					return	shared_str("");
 	if	('"'==_original[_len-1])	_original[_len-1]=0;					// skip end

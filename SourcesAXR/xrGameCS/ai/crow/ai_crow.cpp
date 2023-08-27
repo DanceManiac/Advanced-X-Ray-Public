@@ -7,7 +7,8 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "pch_script.h"
-#include "../../physicsshell.h"
+#include "../../../xrphysics/physicsshell.h"
+#include "../../../xrphysics/phvalide.h"
 #include "ai_crow.h"
 #include "../../hudmanager.h"
 #include "../../level.h"
@@ -20,7 +21,7 @@
 #include "script_game_object.h"
 #include "hit.h"
 #ifdef	DEBUG
-#include "phvalide.h"
+//#include "../xrphysics/phvalide.h"
 #endif
 
 void CAI_Crow::SAnim::Load	(IKinematicsAnimated* visual, LPCSTR prefix)
@@ -268,6 +269,9 @@ void CAI_Crow::state_DeathFall()
 		m_pPhysicsShell->get_LinearVel(velocity);
 		if(velocity.y>-0.001f) st_target = eDeathDead;
 	}
+	else
+		st_target = eDeathDead;
+
 	if (bPlayDeathIdle){
 		smart_cast<IKinematicsAnimated*>(Visual())->PlayCycle	(m_Anims.m_death_idle.GetRandom());
 		bPlayDeathIdle		= false;
