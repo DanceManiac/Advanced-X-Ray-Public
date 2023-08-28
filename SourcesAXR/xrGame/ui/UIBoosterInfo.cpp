@@ -21,23 +21,99 @@ CUIBoosterInfo::CUIBoosterInfo()
 		m_booster_items[i] = nullptr;
 	}
 
+	for (u32 i = 0; i < eQuickItemLast; ++i)
+	{
+		m_quick_items[i] = nullptr;
+	}
+
 	m_booster_anabiotic = nullptr;
 	m_portions = nullptr;
-	m_filter = nullptr;
-	m_repair_kit_condition = nullptr;
 	m_booster_time = nullptr;
 }
 
 CUIBoosterInfo::~CUIBoosterInfo()
 {
 	delete_data(m_booster_items);
+	delete_data(m_quick_items);
 	xr_delete(m_booster_anabiotic);
 	xr_delete(m_portions);
-	xr_delete(m_filter);
-	xr_delete(m_repair_kit_condition);
 	xr_delete(m_booster_time);
 	xr_delete(m_Prop_line);
 }
+
+LPCSTR ef_quick_eat_values_names[] =
+{
+	"eat_health",
+	"eat_power",
+	"wounds_heal_perc",
+	"eat_satiety",
+	"eat_thirst",
+	"eat_psy_health",
+
+	"charge_level",
+	"filter_condition",
+	"restore_condition",
+
+	"eat_intoxication",
+	"eat_radiation",
+	"eat_sleepeness",
+
+	//HoP
+	"eat_alcoholism",
+	"eat_hangover",
+	"eat_narcotism",
+	"eat_withdrawal"
+};
+
+LPCSTR quick_eat_influence_caption[] =
+{
+	"ui_inv_health",
+	"ui_inv_power",
+	"ui_inv_bleeding",
+	"ui_inv_satiety",
+	"ui_inv_thirst",
+	"ui_inv_psy_health",
+
+	//M.F.S Team additions
+	"ui_inv_battery",
+	"ui_inv_filter_condition",
+	"ui_inv_repair_kit_condition",
+
+	"ui_inv_intoxication",
+	"ui_inv_radiation",
+	"ui_inv_sleepeness",
+
+	//HoP
+	"ui_inv_alcoholism",
+	"ui_inv_hangover",
+	"ui_inv_narcotism",
+	"ui_inv_withdrawal"
+};
+
+LPCSTR ef_quick_eat_nodes_names[] =
+{
+	"quick_eat_health",
+	"quick_eat_power",
+	"quick_eat_bleeding",
+	"quick_eat_satiety",
+	"quick_eat_thirst",
+	"quick_eat_psy_health",
+
+	//M.F.S Team additions
+	"quick_eat_battery",
+	"quick_eat_filter_condition",
+	"quick_eat_repair_kit_condition",
+
+	"quick_eat_intoxication",
+	"quick_eat_radiation",
+	"quick_eat_sleepeness",
+
+	//HoP
+	"quick_eat_alcoholism",
+	"quick_eat_hangover",
+	"quick_eat_narcotism",
+	"quick_eat_withdrawal"
+};
 
 LPCSTR ef_boosters_values_names[] =
 {
@@ -49,7 +125,7 @@ LPCSTR ef_boosters_values_names[] =
 	"boost_radiation_protection",
 	"boost_telepat_protection",
 	"boost_chemburn_protection",
-	/*"boost_burn_immunity",
+	"boost_burn_immunity",
 	"boost_shock_immunity",
 	"boost_radiation_immunity",
 	"boost_telepat_immunity",
@@ -57,21 +133,7 @@ LPCSTR ef_boosters_values_names[] =
 	"boost_explosion_immunity",
 	"boost_strike_immunity",
 	"boost_fire_wound_immunity",
-	"boost_wound_immunity",*/
-	"eat_satiety",
-
-	//M.F.S team additions
-	"charge_level",
-	"eat_thirst",
-	"eat_psy_health",
-	"eat_intoxication",
-	"eat_sleepeness",
-
-	//HoP
-	"eat_alcoholism",
-	"eat_hangover",
-	"eat_narcotism",
-	"eat_withdrawal",
+	"boost_wound_immunity"
 };
 
 LPCSTR boost_influence_caption[] =
@@ -84,25 +146,15 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",
 	"ui_inv_outfit_chemical_burn_protection",
-	/*"ui_inv_outfit_burn_immunity",
+	"ui_inv_outfit_burn_immunity",
 	"ui_inv_outfit_shock_immunity",
 	"ui_inv_outfit_radiation_immunity",
 	"ui_inv_outfit_telepatic_immunity",
-	"ui_inv_outfit_chemical_burn_immunity"*/
-	"ui_inv_satiety",
-
-	//M.F.S Team additions
-	"ui_inv_battery",
-	"ui_inv_thirst",
-	"ui_inv_psy_health",
-	"ui_inv_intoxication",
-	"ui_inv_sleepeness",
-
-	//HoP
-	"ui_inv_alcoholism",
-	"ui_inv_hangover",
-	"ui_inv_narcotism",
-	"ui_inv_withdrawal",
+	"ui_inv_outfit_chemical_burn_immunity",
+	"ui_inv_explosion_immunity",
+	"ui_inv_strike_immunity",
+	"ui_inv_fire_wound_immunity",
+	"ui_inv_wound_immunity"
 };
 
 void CUIBoosterInfo::InitFromXml(CUIXml& xml)
@@ -133,6 +185,18 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 		xml.SetLocalRoot(base_node);
 	}
 
+	for (u32 i = 0; i < eQuickItemLast; ++i)
+	{
+		m_quick_items[i] = xr_new<UIBoosterInfoItem>();
+		m_quick_items[i]->Init(xml, ef_quick_eat_nodes_names[i]);
+		m_quick_items[i]->SetAutoDelete(false);
+
+		LPCSTR name = CStringTable().translate(quick_eat_influence_caption[i]).c_str();
+		m_quick_items[i]->SetCaption(name);
+
+		xml.SetLocalRoot(base_node);
+	}
+
 	m_booster_anabiotic = xr_new<UIBoosterInfoItem>();
 	m_booster_anabiotic->Init(xml, "boost_anabiotic");
 	m_booster_anabiotic->SetAutoDelete(false);
@@ -146,22 +210,6 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_portions->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_portions").c_str();
 	m_portions->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//Filter
-	m_filter = xr_new<UIBoosterInfoItem>();
-	m_filter->Init(xml, "boost_filter_condition");
-	m_filter->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_filter_condition").c_str();
-	m_filter->SetCaption(name);
-	xml.SetLocalRoot(base_node);
-
-	//Repair Kit
-	m_repair_kit_condition = xr_new<UIBoosterInfoItem>();
-	m_repair_kit_condition->Init(xml, "boost_repair_kit_condition");
-	m_repair_kit_condition->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_repair_kit_condition").c_str();
-	m_repair_kit_condition->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_booster_time = xr_new<UIBoosterInfoItem>();
@@ -236,7 +284,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			val /= max_val;
 			int vle = 2;
 			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
-			if (i == _item_boost_radiation_restore || i >= _item_intoxication)
+			if (i == _item_boost_radiation_restore)
 				vle = 1; 
 			m_booster_items[i]->SetValue(val, vle);
 
@@ -246,6 +294,28 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_booster_items[i]->GetWndSize().y;
 			AttachChild(m_booster_items[i]);
+		}
+	}
+
+	for (u32 i = 0; i < eQuickItemLast; ++i)
+	{
+		if (pSettings->line_exist(section.c_str(), ef_quick_eat_values_names[i]))
+		{
+			val = pSettings->r_float(section, ef_quick_eat_values_names[i]);
+			if (fis_zero(val))
+				continue;
+
+			int vle = 2;
+			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
+			if (i >= _item_quick_intoxication)
+				vle = 1;
+
+			m_quick_items[i]->SetValue(val, vle);
+			pos.set(m_quick_items[i]->GetWndPos());
+			pos.y = h;
+			m_quick_items[i]->SetWndPos(pos);
+			h += m_quick_items[i]->GetWndSize().y;
+			AttachChild(m_quick_items[i]);
 		}
 	}
 
@@ -275,34 +345,6 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			h += m_portions->GetWndSize().y;
 			AttachChild(m_portions);
 		}
-	}
-
-	//Filter
-	if (pFilter)
-	{
-		val = pFilter->m_fCondition;
-
-		m_filter->SetValue(val);
-		pos.set(m_filter->GetWndPos());
-		pos.y = h;
-		m_filter->SetWndPos(pos);
-
-		h += m_filter->GetWndSize().y;
-		AttachChild(m_filter);
-	}
-
-	//Repair Kit
-	if (pRepairKit)
-	{
-		val = pRepairKit->m_fRestoreCondition;
-
-		m_repair_kit_condition->SetValue(val);
-		pos.set(m_repair_kit_condition->GetWndPos());
-		pos.y = h;
-		m_repair_kit_condition->SetWndPos(pos);
-
-		h += m_repair_kit_condition->GetWndSize().y;
-		AttachChild(m_repair_kit_condition);
 	}
 
 	if(pSettings->line_exist(section.c_str(), "boost_time"))

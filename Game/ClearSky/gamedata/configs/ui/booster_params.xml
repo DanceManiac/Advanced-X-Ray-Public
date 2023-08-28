@@ -6,7 +6,7 @@
 		<font font="letterica16"  color="ui_6"/>
 	</descr_list>
 
-	<boost_health_restore x="0" y="0" width="257" height="20">
+	<quick_eat_health x="0" y="0" width="257" height="20">
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_health_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -14,9 +14,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_health_restore>
+	</quick_eat_health>
 
-	<boost_radiation_restore x="0" y="0" width="257" height="20">
+	<quick_eat_radiation x="0" y="0" width="257" height="20">
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_radiation_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -25,9 +25,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_radiation_restore>
+	</quick_eat_radiation>
 
-	<boost_satiety x="0" y="0" width="257" height="20" >
+	<quick_eat_satiety x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_satiety_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -35,9 +35,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_satiety>
+	</quick_eat_satiety>
 
-	<boost_power_restore x="0" y="0" width="257" height="20" >
+	<quick_eat_power x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_power_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -45,9 +45,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_power_restore>
+	</quick_eat_power>
 
-	<boost_bleeding_restore x="0" y="0" width="257" height="20" >
+	<quick_eat_bleeding x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_bleeding_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -55,9 +55,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="100">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_bleeding_restore>
+	</quick_eat_bleeding>
 	
-	<boost_battery x="0" y="0" width="257" height="20" >
+	<quick_eat_battery x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_item_battery_icon</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -65,9 +65,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10" unit_str="%">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_battery>
+	</quick_eat_battery>
 	
-	<boost_thirst x="0" y="0" width="257" height="20" >
+	<quick_eat_thirst x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_thirst_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -75,9 +75,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_thirst>
+	</quick_eat_thirst>
 	
-	<boost_intoxication x="0" y="0" width="257" height="20" >
+	<quick_eat_intoxication x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_intoxication_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -85,9 +85,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_intoxication>
+	</quick_eat_intoxication>
 	
-	<boost_sleepeness x="0" y="0" width="257" height="20" >
+	<quick_eat_sleepeness x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_sleepeness_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -95,9 +95,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_sleepeness>
+	</quick_eat_sleepeness>
 	
-	<boost_alcoholism x="0" y="0" width="257" height="20" >
+	<quick_eat_alcoholism x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_alcoholism_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -105,9 +105,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_alcoholism>
+	</quick_eat_alcoholism>
 	
-	<boost_hangover x="0" y="0" width="257" height="20" >
+	<quick_eat_hangover x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_hangover_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -115,9 +115,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_hangover>
+	</quick_eat_hangover>
 	
-	<boost_narcotism x="0" y="0" width="257" height="20" >
+	<quick_eat_narcotism x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_narcotism_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -125,9 +125,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_narcotism>
+	</quick_eat_narcotism>
 	
-	<boost_withdrawal x="0" y="0" width="257" height="20" >
+	<quick_eat_withdrawal x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_withdrawal_restore_speed</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -135,9 +135,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_withdrawal>
+	</quick_eat_withdrawal>
 	
-	<boost_filter_condition x="0" y="0" width="257" height="20" >
+	<quick_eat_filter_condition x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_item_filter_icon</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -145,9 +145,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10" show_sign="0" unit_str="%">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_filter_condition>
+	</quick_eat_filter_condition>
 	
-	<boost_repair_kit_condition x="0" y="0" width="257" height="20" >
+	<quick_eat_repair_kit_condition x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_item_repair_kit_icon</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -155,9 +155,9 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10" show_sign="1" unit_str="%">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_repair_kit_condition>
+	</quick_eat_repair_kit_condition>
 	
-	<boost_psy_health x="0" y="0" width="257" height="20" >
+	<quick_eat_psy_health x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">
 			<texture>ui_inv_icon_telepatic_immunity</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
@@ -165,7 +165,7 @@
 		<value x="140" y="0" width="30" height="20" magnitude="10" show_sign="0" unit_str="%">
 			<text font="letterica16" vert_align="c"/>
 		</value>
-	</boost_psy_health>
+	</quick_eat_psy_health>
 	
 	<item_portions x="0" y="0" width="257" height="20" >
 		<caption x="0" y="0" width="257" height="20" complex_mode="0">

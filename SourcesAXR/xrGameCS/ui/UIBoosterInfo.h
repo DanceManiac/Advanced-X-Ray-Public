@@ -17,33 +17,37 @@ public:
 	void	SetInfo(CInventoryItem& pInvItem);
 
 protected:
-	enum {
-		_item_start = 0,
-		_item_satiety_restore_speed = _item_start,
-		_item_health_restore_speed,
-		_item_radiation_restore_speed,
-		_item_power_restore_speed,
-		_item_bleeding_restore_speed,
+	enum
+	{
+		_item_quick_start = 0,
+		_item_quick_health = _item_quick_start,
+		_item_quick_power,
+		_item_quick_bleeding,
+
+		_item_quick_satiety,
 
 		//M.F.S Team additions
-		_item_battery,
-		_item_thirst,
-		_item_psy_health,
-		_item_intoxication,
-		_item_sleepeness,
+		_item_quick_thirst,
+		_item_quick_psy_health,
+
+		_item_quick_battery,
+		_item_quick_filter,
+		_item_quick_repair_condition,
+
+		_item_quick_intoxication,
+		_item_quick_radiation,
+		_item_quick_sleepeness,
 
 		//HoP
-		_item_alcoholism,
-		_item_hangover,
-		_item_narcotism,
-		_item_withdrawal,
+		_item_quick_alcoholism,
+		_item_quick_hangover,
+		_item_quick_narcotism,
+		_item_quick_withdrawal,
 
-		eBoostExplImmunity
+		eQuickItemLast
 	};
-	UIBoosterInfoItem* m_booster_items[eBoostExplImmunity];
+	UIBoosterInfoItem* m_quick_items[eQuickItemLast];
 	UIBoosterInfoItem* m_portions;
-	UIBoosterInfoItem* m_filter;
-	UIBoosterInfoItem* m_repair_kit_condition;
 
 	CUIStatic* m_Prop_line;
 

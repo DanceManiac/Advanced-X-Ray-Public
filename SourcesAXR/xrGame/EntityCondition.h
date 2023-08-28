@@ -26,7 +26,6 @@ enum EBoostParams{
 	eBoostStrikeImmunity,
 	eBoostFireWoundImmunity,
 	eBoostWoundImmunity,
-	eBoostSatiety,
 	eBoostTimeFactor,
 	eBoostMaxCount,
 };
@@ -41,7 +40,7 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_radiation_protection",
 	"boost_telepat_protection",
 	"boost_chemburn_protection",
-	/*"boost_burn_immunity",
+	"boost_burn_immunity",
 	"boost_shock_immunity",
 	"boost_radiation_immunity",
 	"boost_telepat_immunity",
@@ -49,23 +48,7 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_explosion_immunity",
 	"boost_strike_immunity",
 	"boost_fire_wound_immunity",
-	"boost_wound_immunity",*/
-	"boost_satiety",
-
-	//M.F.S team additions
-	"boost_battery",
-	"boost_thirst",
-	"boost_psy_health",
-	"boost_intoxication",
-	"boost_sleepeness",
-
-	//HoP
-	"boost_alcoholism",
-	"boost_hangover",
-	"boost_narcotism",
-	"boost_withdrawal",
-
-	"boost_filter_condition",
+	"boost_wound_immunity",
 	"boost_time_factor"
 };
 

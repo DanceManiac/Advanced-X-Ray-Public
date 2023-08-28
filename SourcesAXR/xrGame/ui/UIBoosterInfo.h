@@ -29,7 +29,7 @@ protected:
 		_item_boost_radiation_protection,
 		_item_boost_telepat_protection,
 		_item_boost_chemburn_protection,
-		/*_item_boost_burn_immunity,
+		_item_boost_burn_immunity,
 		_item_boost_shock_immunity,
 		_item_boost_radiation_immunity,
 		_item_boost_telepat_immunity,
@@ -37,28 +37,44 @@ protected:
 		_item_boost_explosion_immunity,
 		_item_boost_strike_immunity,
 		_item_boost_fire_wound_immunity,
-		_item_boost_wound_immunity,*/
-		_item_satiety,
-
-		//M.F.S Team additions
-		_item_battery,
-		_item_thirst,
-		_item_psy_health,
-		_item_intoxication,
-		_item_sleepeness,
-
-		//HoP
-		_item_alcoholism,
-		_item_hangover,
-		_item_narcotism,
-		_item_withdrawal,
+		_item_boost_wound_immunity,
 
 		eBoostExplImmunity
 	};
+
+	enum
+	{
+		_item_quick_start = 0,
+		_item_quick_health = _item_quick_start,
+		_item_quick_power,
+		_item_quick_bleeding,
+
+		_item_quick_satiety,
+
+		//M.F.S Team additions
+		_item_quick_thirst,
+		_item_quick_psy_health,
+
+		_item_quick_battery,
+		_item_quick_filter,
+		_item_quick_repair_condition,
+
+		_item_quick_intoxication,
+		_item_quick_radiation,
+		_item_quick_sleepeness,
+
+		//HoP
+		_item_quick_alcoholism,
+		_item_quick_hangover,
+		_item_quick_narcotism,
+		_item_quick_withdrawal,
+
+		eQuickItemLast
+	};
+
 	UIBoosterInfoItem* m_booster_items[eBoostExplImmunity];
+	UIBoosterInfoItem* m_quick_items[eQuickItemLast];
 	UIBoosterInfoItem* m_portions;
-	UIBoosterInfoItem* m_filter;
-	UIBoosterInfoItem* m_repair_kit_condition;
 	UIBoosterInfoItem* m_booster_anabiotic;
 	UIBoosterInfoItem* m_booster_time;
 
