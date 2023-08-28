@@ -73,7 +73,7 @@ CTorch::CTorch(void)
 	m_bSwitched					= false;
 }
 
-CTorch::~CTorch(void) 
+CTorch::~CTorch() 
 {
 	light_render.destroy	();
 	light_omni.destroy		();
@@ -119,9 +119,9 @@ void CTorch::Load(LPCSTR section)
 	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
 
 	if (pSettings->line_exist(section, "snd_turn_on"))
-		m_sounds.LoadSound(section, "snd_turn_on", "sndTurnOn", SOUND_TYPE_ITEM_USING);
+		m_sounds.LoadSound(section, "snd_turn_on", "sndTurnOn", false, SOUND_TYPE_ITEM_USING);
 	if (pSettings->line_exist(section, "snd_turn_off"))
-		m_sounds.LoadSound(section, "snd_turn_off", "sndTurnOff", SOUND_TYPE_ITEM_USING);
+		m_sounds.LoadSound(section, "snd_turn_off", "sndTurnOff", false, SOUND_TYPE_ITEM_USING);
 
 	m_SuitableBatteries.clear();
 	LPCSTR batteries = READ_IF_EXISTS(pSettings, r_string, section, "suitable_batteries", "torch_battery");

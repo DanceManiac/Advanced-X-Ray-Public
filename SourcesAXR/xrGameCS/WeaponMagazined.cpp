@@ -93,13 +93,14 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	SetAnimFlag(ANM_SHOT_AIM,		"anm_shots_when_aim");
 		
 	// Sounds
-	m_sounds.LoadSound(section,"snd_draw", "sndShow"		, m_eSoundShow		);
-	m_sounds.LoadSound(section,"snd_holster", "sndHide"		, m_eSoundHide		);
+	m_sounds.LoadSound(section,"snd_draw",			"sndShow",			false,	m_eSoundShow		);
+	m_sounds.LoadSound(section,"snd_holster",		"sndHide",			false,	m_eSoundHide		);
 
 	//Alundaio: LAYERED_SND_SHOOT
-	m_sounds.LoadSound(section, "snd_shoot", "sndShot", m_eSoundShot);
+	m_sounds.LoadSound(section, "snd_shoot", "sndShot", false, m_eSoundShot);
+
 	if (WeaponSoundExist(section, "snd_shoot_actor", true))
-		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", m_eSoundShot);
+		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", false, m_eSoundShot);
 	//-Alundaio
 
 	if (WeaponSoundExist(section, "snd_shoot_last", true))
@@ -110,12 +111,12 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 	m_sSndShotCurrent = IsSilencerAttached() ? "sndSilencerShot" : "sndShot";
 
-	m_sounds.LoadSound(section,"snd_empty", "sndEmptyClick"	, m_eSoundEmptyClick	);
-	m_sounds.LoadSound(section,"snd_reload", "sndReload"		, m_eSoundReload		);
-	m_sounds.LoadSound(section, "snd_reflect", "sndReflect",  m_eSoundReflect);
+	m_sounds.LoadSound(section,"snd_empty",			"sndEmptyClick",	false,	m_eSoundEmptyClick	);
+	m_sounds.LoadSound(section,"snd_reload",		"sndReload",		true,	m_eSoundReload		);
+	m_sounds.LoadSound(section, "snd_reflect",		"sndReflect",		true,	m_eSoundReflect		);
 
 	if (WeaponSoundExist(section, "snd_changefiremode", true))
-		m_sounds.LoadSound(section, "snd_changefiremode", "sndFireModes", m_eSoundEmptyClick);
+		m_sounds.LoadSound(section, "snd_changefiremode", "sndFireModes", false, m_eSoundEmptyClick	);
 
 	if (WeaponSoundExist(section, "snd_laser_on", true))
 		m_sounds.LoadSound(section, "snd_laser_on", "sndLaserOn", m_eSoundEmptyClick);
@@ -129,18 +130,19 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (WeaponSoundExist(section, "snd_change_zoom", true))
 		m_sounds.LoadSound(section, "snd_change_zoom", "sndChangeZoom", m_eSoundEmptyClick);
 
+	// Звуки из класса пистолета
 	if (WeaponSoundExist(section, "snd_close", true))
-		m_sounds.LoadSound(section, "snd_close", "sndClose", m_eSoundClose);
+		m_sounds.LoadSound(section, "snd_close", "sndClose", false, m_eSoundClose);
 
 	if (WeaponSoundExist(section, "snd_reload_empty", true))
-		m_sounds.LoadSound(section, "snd_reload_empty", "sndReloadEmpty", m_eSoundReload);
+		m_sounds.LoadSound(section, "snd_reload_empty", "sndReloadEmpty", true, m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_reload_misfire", true))
-		m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", m_eSoundReload);
+		m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", true, m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_reload_jammed", true))
-		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", m_eSoundReload);
+		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", true, m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_pump_gun", true))
-		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", m_eSoundReload);
-
+		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", true, m_eSoundReload);
+		
 	//звуки и партиклы глушителя, еслит такой есть
 	if ( m_eSilencerStatus == ALife::eAddonAttachable || m_eSilencerStatus == ALife::eAddonPermanent )
 	{
@@ -149,7 +151,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		if(pSettings->line_exist(section, "silencer_smoke_particles"))
 			m_sSilencerSmokeParticles = pSettings->r_string(section, "silencer_smoke_particles");
 		
-		m_sounds.LoadSound(section,"snd_silncer_shot", "sndSilencerShot", m_eSoundShot);
+		m_sounds.LoadSound(section,"snd_silncer_shot", "sndSilencerShot", false, m_eSoundShot);
 	}
 
 	if (pSettings->line_exist(section, "dispersion_start"))
@@ -2110,27 +2112,27 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 
 	// sounds (name of the sound, volume (0.0 - 1.0), delay (sec))
 	result2 = process_if_exists_set( section, "snd_draw", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_draw"	    , "sndShow"		, m_eSoundShow		);	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_draw"	    , "sndShow"		, false, m_eSoundShow		);	}
 	result |= result2;
 
 	result2 = process_if_exists_set( section, "snd_holster", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_holster"	, "sndHide"		, m_eSoundHide		);	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_holster"	, "sndHide"		, false, m_eSoundHide		);	}
 	result |= result2;
 
 	result2 = process_if_exists_set( section, "snd_shoot", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_shoot"	, "sndShot"		, m_eSoundShot		);	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_shoot"	, "sndShot"		, false, m_eSoundShot		);	}
 	result |= result2;
 
 	result2 = process_if_exists_set( section, "snd_empty", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_empty"	, "sndEmptyClick"	, m_eSoundEmptyClick);	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_empty"	, "sndEmptyClick"	, false, m_eSoundEmptyClick);	}
 	result |= result2;
 
 	result2 = process_if_exists_set( section, "snd_reload", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_reload"	, "sndReload"		, m_eSoundReload	);	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_reload"	, "sndReload"		, true, m_eSoundReload	);	}
 	result |= result2;
 
 	result2 = process_if_exists_set(section, "snd_reflect", &CInifile::r_string, str, test);
-	if (result2 && !test) { m_sounds.LoadSound(section, "snd_reflect", "sndReflect"			, m_eSoundReflect); }
+	if (result2 && !test) { m_sounds.LoadSound(section, "snd_reflect", "sndReflect", false, m_eSoundReflect); }
 	result |= result2;
 
 	//snd_shoot1     = weapons\ak74u_shot_1 ??
@@ -2143,7 +2145,7 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 		result |= process_if_exists_set( section, "silencer_smoke_particles", &CInifile::r_string, m_sSilencerSmokeParticles, test );
 		
 		result2 = process_if_exists_set( section, "snd_silncer_shot", &CInifile::r_string, str, test );
-		if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_silncer_shot"	, "sndSilencerShot", m_eSoundShot	);	}
+		if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_silncer_shot"	, "sndSilencerShot", false, m_eSoundShot	);	}
 		result |= result2;
 	}
 

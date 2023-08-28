@@ -71,20 +71,20 @@ CActor*			Actor()
 //--------------------------------------------------------------------
 void	CActor::ConvState(u32 mstate_rl, string128 *buf)
 {
-	strcpy_s(*buf,"");
-	if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))		strcat(*buf,"Accel ");
-	if (mstate_rl&mcCrouch)		strcat(*buf,"Crouch ");
-	if (mstate_rl&mcFwd)		strcat(*buf,"Fwd ");
-	if (mstate_rl&mcBack)		strcat(*buf,"Back ");
-	if (mstate_rl&mcLStrafe)	strcat(*buf,"LStrafe ");
-	if (mstate_rl&mcRStrafe)	strcat(*buf,"RStrafe ");
-	if (mstate_rl&mcJump)		strcat(*buf,"Jump ");
-	if (mstate_rl&mcFall)		strcat(*buf,"Fall ");
-	if (mstate_rl&mcTurn)		strcat(*buf,"Turn ");
-	if (mstate_rl&mcLanding)	strcat(*buf,"Landing ");
-	if (mstate_rl&mcLLookout)	strcat(*buf,"LLookout ");
-	if (mstate_rl&mcRLookout)	strcat(*buf,"RLookout ");
-	if (m_bJumpKeyPressed)		strcat(*buf,"+Jumping ");
+	xr_strcpy(*buf,"");
+	if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))		xr_strcat(*buf,"Accel ");
+	if (mstate_rl&mcCrouch)		xr_strcat(*buf,"Crouch ");
+	if (mstate_rl&mcFwd)		xr_strcat(*buf,"Fwd ");
+	if (mstate_rl&mcBack)		xr_strcat(*buf,"Back ");
+	if (mstate_rl&mcLStrafe)	xr_strcat(*buf,"LStrafe ");
+	if (mstate_rl&mcRStrafe)	xr_strcat(*buf,"RStrafe ");
+	if (mstate_rl&mcJump)		xr_strcat(*buf,"Jump ");
+	if (mstate_rl&mcFall)		xr_strcat(*buf,"Fall ");
+	if (mstate_rl&mcTurn)		xr_strcat(*buf,"Turn ");
+	if (mstate_rl&mcLanding)	xr_strcat(*buf,"Landing ");
+	if (mstate_rl&mcLLookout)	xr_strcat(*buf,"LLookout ");
+	if (mstate_rl&mcRLookout)	xr_strcat(*buf,"RLookout ");
+	if (m_bJumpKeyPressed)		xr_strcat(*buf,"+Jumping ");
 };
 //--------------------------------------------------------------------
 void CActor::net_Export	(NET_Packet& P)					// export to server
@@ -322,7 +322,10 @@ void		CActor::net_Import_Base				( NET_Packet& P)
 	P.r_float /*r_angle8*/			(N.o_model		);
 	P.r_float /*r_angle8*/			(N.o_torso.yaw	); 
 	P.r_float /*r_angle8*/			(N.o_torso.pitch);
-	P.r_float /*r_angle8*/			(N.o_torso.roll	); if (N.o_torso.roll > PI) N.o_torso.roll -= PI_MUL_2;
+	P.r_float /*r_angle8*/			(N.o_torso.roll	); 
+	
+	if (N.o_torso.roll > PI) N.o_torso.roll -= PI_MUL_2;
+
 	id_Team				= P.r_u8();
 	id_Squad			= P.r_u8();
 	id_Group			= P.r_u8();
@@ -369,7 +372,7 @@ void		CActor::net_Import_Base				( NET_Packet& P)
 	if (OnClient())
 	//------------------------------------------------
 	{
-		if (ActiveSlot == 0xff) inventory().SetActiveSlot(NO_ACTIVE_SLOT);
+		if (ActiveSlot == NO_ACTIVE_SLOT) inventory().SetActiveSlot(NO_ACTIVE_SLOT);
 		else 
 		{
 			if (inventory().GetActiveSlot() != u32(ActiveSlot))
@@ -480,7 +483,7 @@ void		CActor::net_Import_Physic			( NET_Packet& P)
 			}
 			else
 			{
-				VERIFY(valid_pos(N_A.State.position));
+				VERIFY(valid_pos(N_A.State.position,ph_boundaries()));
 				NET_A.push_back			(N_A);
 				if (NET_A.size()>5) NET_A.pop_front();
 			};
@@ -554,8 +557,15 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 
 	ROS()->force_mode	(IRender_ObjectSpecific::TRACE_ALL);
 
+	//mstate_wishful = E->mstate;
+	mstate_wishful=0;
+	mstate_wishful = E->mstate&(mcCrouch|mcAccel);
+	mstate_old=mstate_real = mstate_wishful;	 
+	set_state_box( mstate_real );
 	m_pPhysics_support->in_NetSpawn	(e);
-	character_physics_support()->movement()->ActivateBox	(0);
+
+	//set_state_box( mstate_real );
+	//character_physics_support()->movement()->ActivateBox	(0);
 	if(E->m_holderID!=u16(-1))
 	{ 
 		character_physics_support()->movement()->DestroyCharacter();
@@ -580,11 +590,13 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	cam_Active()->Set(-E->o_torso.yaw, (cam_active != eacFirstEye) ? E->o_torso.pitch : cameras[eacFirstEye]->pitch, 0);//E->o_Angle.z);
 
 	// *** movement state - respawn
-	mstate_wishful			= 0;
-	mstate_real				= 0;
-	mstate_old				= 0;
+	//mstate_wishful			= 0;
+	//mstate_real				= 0;
+	//mstate_old				= 0;
 	m_bJumpKeyPressed		= FALSE;
-
+//
+//	m_bJumpKeyPressed = ((mstate_wishful&mcJump)!=0);
+//		
 	NET_SavedAccel.set		(0,0,0);
 	NET_WasInterpolating	= TRUE;
 
@@ -1307,20 +1319,20 @@ void		CActor::UpdatePosStack	( u32 Time0, u32 Time1 )
 	SPHNetState		State;
 	pSyncObj->get_State(State);
 
-	if (!SMemoryPosStack.empty() && SMemoryPosStack.back().u64WorldStep >= physics_world()->m_steps_num)
+	if (!SMemoryPosStack.empty() && SMemoryPosStack.back().u64WorldStep >= ph_world->m_steps_num)
 	{
 		xr_deque<SMemoryPos>::iterator B = SMemoryPosStack.begin();
 		xr_deque<SMemoryPos>::iterator E = SMemoryPosStack.end();
-		xr_deque<SMemoryPos>::iterator I = std::lower_bound(B,E,u64(physics_world()->m_steps_num-1));
+		xr_deque<SMemoryPos>::iterator I = std::lower_bound(B,E,u64(ph_world->m_steps_num-1));
 		if (I != E) 
 		{
 			I->SState = State;
-			I->u64WorldStep = physics_world()->m_steps_num;
+			I->u64WorldStep = ph_world->m_steps_num;
 		};
 	}
 	else		
 	{
-		SMemoryPosStack.push_back(SMemoryPos(Time0, Time1, physics_world()->m_steps_num, State));
+		SMemoryPosStack.push_back(SMemoryPos(Time0, Time1, ph_world->m_steps_num, State));
 		if (SMemoryPosStack.front().dwTime0 < (Level().timeServer() - 2000)) SMemoryPosStack.pop_front();
 	};
 };

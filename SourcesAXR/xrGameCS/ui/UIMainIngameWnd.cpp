@@ -301,7 +301,7 @@ void CUIMainIngameWnd::Init()
 	AttachChild								(m_ui_hud_states);
 	m_ui_hud_states->InitFromXml			(uiXml, "hud_states");
 
-	HUD_SOUND_ITEM::LoadSound					("maingame_ui", "snd_new_contact", m_contactSnd, SOUND_TYPE_IDLE);
+	HUD_SOUND_ITEM::LoadSound				("maingame_ui", "snd_new_contact", m_contactSnd, SOUND_TYPE_IDLE);
 }
 
 float UIStaticDiskIO_start_time = 0.0f;

@@ -212,15 +212,15 @@ void CAI_Stalker::g_WeaponBones	(int &L, int &R1, int &R2)
 void CAI_Stalker::Hit			(SHit* pHDS)
 {
 	//хит может меняться в зависимости от ранга (новички получают больше хита, чем ветераны)
-	SHit		HDS = *pHDS;
-	HDS.add_wound   = true;
+	SHit HDS = *pHDS;
+	HDS.add_wound = true;
 	
 	float hit_power = HDS.power * m_fRankImmunity;
 
-	if ( m_boneHitProtection && HDS.hit_type == ALife::eHitTypeFireWound )
+	if(m_boneHitProtection && HDS.hit_type == ALife::eHitTypeFireWound)
 	{
-		float BoneArmor = m_boneHitProtection->getBoneArmor( HDS.bone() );
-		float ap        = HDS.armor_piercing;
+		float BoneArmor = m_boneHitProtection->getBoneArmor(HDS.bone());
+		float ap = HDS.armor_piercing;
 
 		if( ap > EPS && ap > BoneArmor )
 		{
@@ -310,7 +310,7 @@ void CAI_Stalker::Hit			(SHit* pHDS)
 				if (!already_critically_wounded && became_critically_wounded) {
 					if (HDS.who) {
 						CAI_Stalker		*stalker = smart_cast<CAI_Stalker*>(HDS.who);
-						if (stalker)
+						if ( stalker && stalker->g_Alive() )
 							stalker->on_critical_wound_initiator	(this);
 					}
 				}
@@ -318,19 +318,15 @@ void CAI_Stalker::Hit			(SHit* pHDS)
 		}
 	}
 
-	if ( invulnerable() )
-	{
-		return;
-	}
-
 	if ( g_Alive() && ( !m_hit_callback || m_hit_callback( &HDS ) ) )
 	{
-		memory().hit().add( 100.f * HDS.damage(), HDS.direction(), HDS.who, HDS.boneID );
+		float const damage_factor	= invulnerable() ? 0.f : 100.f;
+		memory().hit().add			( damage_factor*HDS.damage(), HDS.direction(), HDS.who, HDS.boneID );
 	}
 
 	//conditions().health()			= 1.f;
 
-	inherited::Hit( &HDS );
+	inherited::Hit					( &HDS );
 }
 
 void CAI_Stalker::HitSignal				(float amount, Fvector& vLocalDir, CObject* who, s16 element)

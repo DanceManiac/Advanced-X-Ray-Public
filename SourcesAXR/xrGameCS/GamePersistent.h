@@ -52,6 +52,7 @@ class CGamePersistent:
 	void xr_stdcall		game_loaded				();
 	void xr_stdcall		update_game_loaded		();
 
+
 #ifdef DEBUG
 	u32					m_frame_counter;
 	u32					m_last_stats_frame;

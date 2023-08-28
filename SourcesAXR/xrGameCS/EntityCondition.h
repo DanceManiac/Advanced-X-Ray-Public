@@ -135,6 +135,7 @@ public:
 	virtual					~CEntityCondition		(void);
 
 	virtual void			LoadCondition			(LPCSTR section);
+	virtual void			LoadTwoHitsDeathParams	(LPCSTR section);
 	virtual void			remove_links			(const CObject *object);
 
 	virtual void			save					(NET_Packet &output_packet);
@@ -305,7 +306,10 @@ protected:
 	//потеря здоровья от последнего хита
 	float				m_fHealthLost;
 
-
+	float				m_fKillHitTreshold;
+	float				m_fLastChanceHealth;
+	float				m_fInvulnerableTime;
+	float				m_fInvulnerableTimeDelta;
 	//для отслеживания времени 
 	u64					m_iLastTimeCalled;
 	float				m_fDeltaTime;

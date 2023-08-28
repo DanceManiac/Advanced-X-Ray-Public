@@ -16,6 +16,7 @@
 #include "CharacterPhysicsSupport.h"
 #include "actoreffector.h"
 #include "static_cast_checked.hpp"
+#include "player_hud.h"
 
 #include "Artefact.h"
 #include "CustomOutfit.h"
@@ -26,10 +27,10 @@
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
-static const float	s_fLandingTime1		= 0.1f;// через сколько снять флаг Landing1 (т.е. включить следующую анимацию)
-static const float	s_fLandingTime2		= 0.3f;// через сколько снять флаг Landing2 (т.е. включить следующую анимацию)
+static const float	s_fLandingTime1		= 0.1f;// С‡РµСЂРµР· СЃРєРѕР»СЊРєРѕ СЃРЅСЏС‚СЊ С„Р»Р°Рі Landing1 (С‚.Рµ. РІРєР»СЋС‡РёС‚СЊ СЃР»РµРґСѓСЋС‰СѓСЋ Р°РЅРёРјР°С†РёСЋ)
+static const float	s_fLandingTime2		= 0.3f;// С‡РµСЂРµР· СЃРєРѕР»СЊРєРѕ СЃРЅСЏС‚СЊ С„Р»Р°Рі Landing2 (С‚.Рµ. РІРєР»СЋС‡РёС‚СЊ СЃР»РµРґСѓСЋС‰СѓСЋ Р°РЅРёРјР°С†РёСЋ)
 static const float	s_fJumpTime			= 0.3f;
-static const float	s_fJumpGroundTime	= 0.1f;	// для снятия флажка Jump если на земле
+static const float	s_fJumpGroundTime	= 0.1f;	// РґР»СЏ СЃРЅСЏС‚РёСЏ С„Р»Р°Р¶РєР° Jump РµСЃР»Рё РЅР° Р·РµРјР»Рµ
 	   const float	s_fFallTime			= 0.2f;
 
 BOOL	m_b_actor_walk_inertion = false;
@@ -52,7 +53,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 	if (mstate_real&(mcJump|mcFall|mcLanding|mcLanding2))
 		mstate_real		&= ~mcLookout;
 
-	// закончить приземление
+	// Р·Р°РєРѕРЅС‡РёС‚СЊ РїСЂРёР·РµРјР»РµРЅРёРµ
 	if (mstate_real&(mcLanding|mcLanding2)){
 		m_fLandingTime		-= dt;
 		if (m_fLandingTime<=0.f){
@@ -60,7 +61,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 			mstate_real		&=~	(mcFall|mcJump);
 		}
 	}
-	// закончить падение
+	// Р·Р°РєРѕРЅС‡РёС‚СЊ РїР°РґРµРЅРёРµ
 	if (character_physics_support()->movement()->gcontact_Was){
 		if (mstate_real&mcFall){
 			if (character_physics_support()->movement()->GetContactSpeed()>4.f){
@@ -80,14 +81,15 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 	if ((mstate_wf&mcJump)==0)	
 		m_bJumpKeyPressed	=	FALSE;
 
-	// Зажало-ли меня/уперся - не двигаюсь
+	// Р—Р°Р¶Р°Р»Рѕ-Р»Рё РјРµРЅСЏ/СѓРїРµСЂСЃСЏ - РЅРµ РґРІРёРіР°СЋСЃСЊ
 	if (((character_physics_support()->movement()->GetVelocityActual()<0.2f)&&(!(mstate_real&(mcFall|mcJump)))) || character_physics_support()->movement()->bSleep) 
 	{
-		mstate_real				&=~ mcAnyMove;
+		//KRodin: СЌС‚РѕС‚ РєРѕРґ СЂР°Р±РѕС‚Р°РµС‚ РЅРµРєРѕСЂСЂРµРєС‚РЅРѕ, СѓСЃР»РѕРІРёРµ СЃСЂР°Р±Р°С‚С‹РІР°РµС‚ РїСЂРё РІС…РѕРґРµ-РІС‹С…РѕРґРµ РёР· РїСЂРёСЃСЏРґР°. РР·-Р·Р° СЌС‚РѕРіРѕ РїСЂРѕРёСЃС…РѕРґРёС‚ 'РґРµСЂРіР°РЅРёРµ' Р°РЅРёРјР°С†РёР№ РѕСЂСѓР¶РёСЏ. РљРѕРґ СЌС‚РѕС‚ РЅРµ СЃРёР»СЊРЅРѕ РІР°Р¶РµРЅ, СЏ РґСѓРјР°СЋ РµСЃР»Рё Р°РєС‚РѕСЂ Р·Р°СЃС‚СЂСЏРЅРµС‚ - РѕРЅ РІСЃРµ СЂР°РІРЅРѕ РЅРµ Р±СѓРґРµС‚ РґРІРёРіР°С‚СЊСЃСЏ.
+		//mstate_real &=~ mcAnyMove;
 	}
 	if (character_physics_support()->movement()->Environment()==CPHMovementControl::peOnGround || character_physics_support()->movement()->Environment()==CPHMovementControl::peAtWall)
 	{
-		// если на земле гарантированно снимать флажок Jump
+		// РµСЃР»Рё РЅР° Р·РµРјР»Рµ РіР°СЂР°РЅС‚РёСЂРѕРІР°РЅРЅРѕ СЃРЅРёРјР°С‚СЊ С„Р»Р°Р¶РѕРє Jump
 		if (((s_fJumpTime-m_fJumpTime)>s_fJumpGroundTime)&&(mstate_real&mcJump))
 		{
 			mstate_real			&=~	mcJump;
@@ -240,7 +242,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			character_physics_support()->movement()->SetJumpUpVelocity(jump_k);
 
-			//уменьшить силу игрока из-за выполненого прыжка
+			//СѓРјРµРЅСЊС€РёС‚СЊ СЃРёР»Сѓ РёРіСЂРѕРєР° РёР·-Р·Р° РІС‹РїРѕР»РЅРµРЅРѕРіРѕ РїСЂС‹Р¶РєР°
 			if (!GodMode())
 				conditions().ConditionJump(inventory().TotalWeight() / MaxCarryWeight());
 		}
@@ -397,7 +399,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			if(NULL==ec)
 			{
 				string_path			eff_name;
-				sprintf_s			(eff_name, sizeof(eff_name), "%s.anm", state_anm);
+				xr_sprintf			(eff_name, sizeof(eff_name), "%s.anm", state_anm);
 				string_path			ce_path;
 				string_path			anm_name;
 				strconcat			(sizeof(anm_name), anm_name, "camera_effects\\actor_move\\", eff_name);
@@ -569,12 +571,13 @@ void CActor::g_cl_Orientate	(u32 mstate_rl, float dt)
 		r_torso.pitch	=	unaffected_r_torso.pitch + dangle.x;
 	}
 	
-	// если есть движение - выровнять модель по камере
+	// РµСЃР»Рё РµСЃС‚СЊ РґРІРёР¶РµРЅРёРµ - РІС‹СЂРѕРІРЅСЏС‚СЊ РјРѕРґРµР»СЊ РїРѕ РєР°РјРµСЂРµ
 	if (mstate_rl&mcAnyMove)	
 	{
 		r_model_yaw		= angle_normalize(r_torso.yaw);
 		mstate_real		&=~mcTurn;
-	} else 
+	} 
+	else 
 	{
 		if (eacFirstEye != cam_active)
 		{
@@ -721,6 +724,11 @@ void CActor::StopAnyMove()
 {
 	mstate_wishful	&=		~mcAnyMove;
 	mstate_real		&=		~mcAnyMove;
+
+	if (this == Level().CurrentViewEntity())
+	{
+		g_player_hud->OnMovementChanged((EMoveCommand)0);
+	}
 }
 
 
@@ -729,7 +737,7 @@ bool CActor::is_jump()
 	return ((mstate_real & (mcJump|mcFall|mcLanding|mcLanding2)) != 0);
 }
 
-//максимальный переносимы вес
+//РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ РїРµСЂРµРЅРѕСЃРёРјС‹ РІРµСЃ
 float CActor::MaxCarryWeight () const
 {
 	float res = inventory().GetMaxWeight();

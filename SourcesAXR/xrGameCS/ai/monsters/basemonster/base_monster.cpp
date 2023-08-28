@@ -220,7 +220,7 @@ void CBaseMonster::UpdateCL()
 	
 	if (g_Alive()) 
 	{
-		CStepManager::update();
+		CStepManager::update(false);
 
 		update_pos_by_grouping_behaviour();
 	}

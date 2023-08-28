@@ -3,7 +3,7 @@
 
 struct HUD_SOUND_ITEM
 {
-	HUD_SOUND_ITEM():m_activeSnd(NULL)		{}
+	HUD_SOUND_ITEM():m_activeSnd(NULL),m_b_exclusive(false)		{}
 
 	static void		LoadSound		(	LPCSTR section, LPCSTR line,
 										ref_sound& hud_snd,
@@ -68,6 +68,7 @@ struct HUD_SOUND_ITEM
 	};
 	shared_str		m_alias;
 	SSnd*			m_activeSnd;
+	bool			m_b_exclusive;
 	xr_vector<SSnd> sounds;
 
 	bool operator == (LPCSTR alias) const{return 0==stricmp(m_alias.c_str(),alias);}
@@ -78,8 +79,8 @@ class HUD_SOUND_COLLECTION
 public:
 								~HUD_SOUND_COLLECTION();
 
-	shared_str					m_alias; //Alundaio: For use when it's part of a layered Collection
-	bool						IsDistantSound; //Distant Sound Control
+								shared_str m_alias; //Alundaio: For use when it's part of a layered Collection
+								bool IsDistantSound; //Distant Sound Control
 	xr_vector<HUD_SOUND_ITEM>	m_sound_items;
 
 	void						PlaySound		(	LPCSTR alias, 
@@ -95,7 +96,8 @@ public:
 
 	void						LoadSound		(	LPCSTR section, 
 													LPCSTR line,
-													LPCSTR alias,													
+													LPCSTR alias,
+													bool exclusive = false,
 													int type = sg_SourceType);
 
 	void						SetPosition		(	LPCSTR alias, 	const Fvector& pos);

@@ -93,8 +93,6 @@ disp_crouch_factor           = -0.5         ;уменьшение если актер сидит
 disp_crouch_no_acc_factor    = -0.8         ;уменьшение если актер сидит + no acceleration
 disp_jump_factor             = 2.0
 
-missile_throw_offset = 0.3, 0.5, 0.5
-
 body_remove_time = 60000        ;врем€ уничтожени€ трупа (с учетом TimeFactor)
 
 sleep_time_factor                        = 1000        ;400                ;во сколько раз врем€ идет быстрее, когда актер спит
@@ -261,6 +259,27 @@ fire_zone_max_power		= 0.166
 acid_zone_max_power		= 0.166
 psi_zone_max_power		= 0.166
 electra_zone_max_power	= 0.166
+
+
+[actor_thd_gd_novice]				; —екци€ настроек неодноударного убийства дл€ сложности novice
+killing_hit_treshold		= 0.2	; ≈сли наноситс€ потенциально смертельный хит, и у игрока хитов больше, чем killing_hit_treshold,
+last_chance_health			= 0.1	; его хиты уменьшаютс€ до last_chance_health (должно быть меньше, чем killing_hit_treshold) и
+invulnerable_time			= 500	; включаетс€ бессмертие на врем€ invulnerable_time (в миллисекундах)
+
+[actor_thd_gd_stalker]				; —екци€ настроек неодноударного убийства дл€ сложности stalker
+killing_hit_treshold		= 0.2
+last_chance_health			= 0.1
+invulnerable_time			= 500
+
+[actor_thd_gd_veteran]				; —екци€ настроек неодноударного убийства дл€ сложности veteran
+killing_hit_treshold		= 0.0
+last_chance_health			= 0.0
+invulnerable_time			= 0.0
+
+[actor_thd_gd_master]				; —екци€ настроек неодноударного убийства дл€ сложности master
+killing_hit_treshold		= 0.0
+last_chance_health			= 0.0
+invulnerable_time			= 0.0
 
 [skills_influence];; ¬ли€ние на параметры геро€ с каждым уровнем навыков.
 skills_cost = 50 							; Ѕазова€ цена навыка. — каждым новым уровнем навыка умножаетс€ на текущий уровень (skills_cost * текущий_уровень_навыка)

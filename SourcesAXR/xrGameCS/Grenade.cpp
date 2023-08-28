@@ -29,7 +29,7 @@ void CGrenade::Load(LPCSTR section)
 	inherited::Load(section);
 	CExplosive::Load(section);
 
-	m_sounds.LoadSound(section,"snd_checkout","sndCheckout",m_eSoundCheckout);
+	m_sounds.LoadSound(section,"snd_checkout", "sndCheckout", false, m_eSoundCheckout);
 
 	//////////////////////////////////////
 	//время убирания оружия с уровня

@@ -74,8 +74,6 @@ void CMissile::Load(LPCSTR section)
 	
 	m_vThrowPoint		= pSettings->r_fvector3(section,"throw_point");
 	m_vThrowDir			= pSettings->r_fvector3(section,"throw_dir");
-	m_vHudThrowPoint	= pSettings->r_fvector3(*hud_sect,"throw_point");
-	m_vHudThrowDir		= pSettings->r_fvector3(*hud_sect,"throw_dir");
 
 	m_ef_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));
 }
@@ -274,8 +272,11 @@ void CMissile::State(u32 state)
 		} break;
 	case eHiding:
 		{
-			SetPending			(TRUE);
-			PlayHUDMotion("anm_hide", TRUE, this, GetState());
+			if(H_Parent())
+			{
+				SetPending			(TRUE);
+				PlayHUDMotion		("anm_hide", TRUE, this, GetState());
+			}
 		} break;
 	case eHidden:
 		{
@@ -545,9 +546,11 @@ bool CMissile::Action(s32 cmd, u32 flags)
 			m_constpower = true;			
 			if(flags&CMD_START) 
 			{
-				m_throw = true;
 				if(GetState()==eIdle) 
+				{
+					m_throw = true;
 					SwitchState(eThrowStart);
+				}
 			} 
 			return true;
 		}break;

@@ -6,11 +6,10 @@
 #include "xrMessages.h"
 #include "Level.h"
 #include "../xrphysics/mathutils.h"
-SHit::SHit(float powerA, float power_criticalA, Fvector &dirA, CObject *whoA, u16 elementA, Fvector p_in_bone_spaceA,\
+SHit::SHit(float powerA, Fvector &dirA, CObject *whoA, u16 elementA, Fvector p_in_bone_spaceA,\
 		   float impulseA, ALife::EHitType hit_typeA, float armor_piercingA, bool AimBullet)
 {
 		power					= powerA								;
-		power_critical			= power_criticalA						;
 		dir						.set(dirA)								;
 		who						= whoA									;
 		if (whoA)
@@ -89,7 +88,6 @@ void SHit::Read_Packet_Cont		(NET_Packet	Packet)
 	Packet.r_u16			(weaponID);
 	Packet.r_dir			(dir);
 	Packet.r_float			(power);
-	Packet.r_float			(power_critical);
 	Packet.r_u16			(boneID);
 	Packet.r_vec3			(p_in_bone_space);
 	Packet.r_float			(impulse);
@@ -116,7 +114,6 @@ void SHit::Write_Packet_Cont		(NET_Packet	&Packet)
 	Packet.w_u16		(weaponID);
 	Packet.w_dir		(dir);
 	Packet.w_float		(power);
-	Packet.w_float		(power_critical);
 	Packet.w_u16		(boneID);
 	Packet.w_vec3		(p_in_bone_space);
 	Packet.w_float		(impulse);
@@ -148,7 +145,6 @@ void SHit::_dump()
 {
 	Msg("SHit::_dump()---begin");
 	Log("power=",power);
-	Log("power_critical=",power_critical);
 	Log("impulse=",impulse);
 	Log("dir=",dir);
 	Log("whoID=",whoID);

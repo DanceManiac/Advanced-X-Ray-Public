@@ -1588,7 +1588,7 @@ void CWeapon::UpdateCL		()
 		m_zoom_params.m_pVision->Update();
 }
 
-void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset) 
+void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset)
 {
 	const u16 bone_id = HudItemData()->m_model->LL_BoneID(bone_name);
 	//ASSERT_FMT(bone_id != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", __FUNCTION__, bone_name.c_str(), cNameSect().c_str());
@@ -1600,7 +1600,7 @@ void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos
 	HudItemData()->m_item_transform.transform_dir(dest_dir);
 }
 
-void CWeapon::CorrectDirFromWorldToHud(Fvector& dir) 
+void CWeapon::CorrectDirFromWorldToHud(Fvector& dir)
 {
 	const auto& CamDir = Device.vCameraDirection;
 	const float Fov = Device.fFOV;
@@ -1618,30 +1618,30 @@ void CWeapon::UpdateLaser()
 	if (laser_light_render)
 	{
 		auto io = smart_cast<CInventoryOwner*>(H_Parent());
-		if (!laser_light_render->get_active() && IsLaserOn() && (!H_Parent() || (io && this == io->inventory().ActiveItem()))) 
+		if (!laser_light_render->get_active() && IsLaserOn() && (!H_Parent() || (io && this == io->inventory().ActiveItem())))
 		{
 			laser_light_render->set_active(true);
 			UpdateAddonsVisibility();
 		}
-		else if (laser_light_render->get_active() && (!IsLaserOn() || !(!H_Parent() || (io && this == io->inventory().ActiveItem())))) 
+		else if (laser_light_render->get_active() && (!IsLaserOn() || !(!H_Parent() || (io && this == io->inventory().ActiveItem()))))
 		{
 			laser_light_render->set_active(false);
 			UpdateAddonsVisibility();
 		}
 
-		if (laser_light_render->get_active()) 
+		if (laser_light_render->get_active())
 		{
 			Fvector laser_pos = get_LastFP(), laser_dir = get_LastFD();
 
-			if (GetHUDmode()) 
+			if (GetHUDmode())
 			{
-				if (laserdot_attach_bone.size()) 
+				if (laserdot_attach_bone.size())
 				{
 					GetBoneOffsetPosDir(laserdot_attach_bone, laser_pos, laser_dir, laserdot_attach_offset);
 					CorrectDirFromWorldToHud(laser_dir);
 				}
 			}
-			else 
+			else
 			{
 				XFORM().transform_tiny(laser_pos, laserdot_world_attach_offset);
 			}
@@ -1673,14 +1673,14 @@ void CWeapon::UpdateFlashlight()
 	if (flashlight_render)
 	{
 		auto io = smart_cast<CInventoryOwner*>(H_Parent());
-		if (!flashlight_render->get_active() && IsFlashlightOn() && (!H_Parent() || (io && this == io->inventory().ActiveItem()))) 
+		if (!flashlight_render->get_active() && IsFlashlightOn() && (!H_Parent() || (io && this == io->inventory().ActiveItem())))
 		{
 			flashlight_render->set_active(true);
 			flashlight_omni->set_active(true);
 			flashlight_glow->set_active(true);
 			UpdateAddonsVisibility();
 		}
-		else if (flashlight_render->get_active() && (!IsFlashlightOn() || !(!H_Parent() || (io && this == io->inventory().ActiveItem())))) 
+		else if (flashlight_render->get_active() && (!IsFlashlightOn() || !(!H_Parent() || (io && this == io->inventory().ActiveItem()))))
 		{
 			flashlight_render->set_active(false);
 			flashlight_omni->set_active(false);
@@ -1688,11 +1688,11 @@ void CWeapon::UpdateFlashlight()
 			UpdateAddonsVisibility();
 		}
 
-		if (flashlight_render->get_active()) 
+		if (flashlight_render->get_active())
 		{
 			Fvector flashlight_pos, flashlight_pos_omni, flashlight_dir, flashlight_dir_omni;
 
-			if (GetHUDmode()) 
+			if (GetHUDmode())
 			{
 				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos, flashlight_dir, flashlight_attach_offset);
 				CorrectDirFromWorldToHud(flashlight_dir);
@@ -1700,7 +1700,7 @@ void CWeapon::UpdateFlashlight()
 				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos_omni, flashlight_dir_omni, flashlight_omni_attach_offset);
 				CorrectDirFromWorldToHud(flashlight_dir_omni);
 			}
-			else 
+			else
 			{
 				flashlight_dir = get_LastFD();
 				XFORM().transform_tiny(flashlight_pos, flashlight_world_attach_offset);
@@ -1744,11 +1744,11 @@ void CWeapon::UpdateFlashlight()
 
 void CWeapon::EnableActorNVisnAfterZoom()
 {
-	CActor *pA = smart_cast<CActor *>(H_Parent());
-	if(IsGameTypeSingle() && !pA)
+	CActor* pA = smart_cast<CActor*>(H_Parent());
+	if (IsGameTypeSingle() && !pA)
 		pA = g_actor;
 
-	if(pA)
+	if (pA)
 	{
 		pA->SwitchNightVision(true, false, false);
 		pA->GetNightVision()->PlaySounds(CNightVisionEffector::eIdleSound);
@@ -1904,10 +1904,13 @@ bool CWeapon::Action(u16 cmd, u32 flags)
 bool CWeapon::SwitchAmmoType( u32 flags ) 
 {
 	if ( IsPending() || OnClient() )
+	{
 		return false;
-
+	}
 	if ( !(flags & CMD_START) )
+	{
 		return false;
+	}
 
 	u8 l_newType = m_ammoType;
 	bool b1, b2;
@@ -2437,7 +2440,7 @@ void CWeapon::UpdateAddonsVisibility()
 	{
 		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_ray_bone);
 
-		if (bone_id != BI_NONE) 
+		if (bone_id != BI_NONE)
 		{
 			const bool laser_on = IsLaserOn();
 			if (pWeaponVisual->LL_GetBoneVisible(bone_id) && !laser_on)
@@ -2453,7 +2456,7 @@ void CWeapon::UpdateAddonsVisibility()
 	{
 		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_flashlight_cone_bone);
 
-		if (bone_id != BI_NONE) 
+		if (bone_id != BI_NONE)
 		{
 			const bool flashlight_on = IsFlashlightOn();
 			if (pWeaponVisual->LL_GetBoneVisible(bone_id) && !flashlight_on)
@@ -2518,15 +2521,15 @@ void CWeapon::OnZoomIn()
 		m_freelook_switch_back = true;
 	}
 
-	m_zoom_params.m_bIsZoomModeNow		= true;
+	m_zoom_params.m_bIsZoomModeNow = true;
 	if (bIsSecondVPZoomPresent() && m_zoom_params.m_bUseDynamicZoom && IsScopeAttached())
-	{     
+	{
 		if (LastZoomFactor)
 			m_fRTZoomFactor = LastZoomFactor;
 		else
 			m_fRTZoomFactor = CurrentZoomFactor();
 		float delta, min_zoom_factor;
-		GetZoomData(m_zoom_params.m_fScopeZoomFactor, delta, min_zoom_factor);    
+		GetZoomData(m_zoom_params.m_fScopeZoomFactor, delta, min_zoom_factor);
 		clamp(m_fRTZoomFactor, m_zoom_params.m_fScopeZoomFactor, min_zoom_factor);
 
 		SetZoomFactor(m_fRTZoomFactor);
@@ -2539,15 +2542,15 @@ void CWeapon::OnZoomIn()
 
 	//EnableHudInertion					(FALSE);
 
-	
+
 	//if(m_zoom_params.m_bZoomDofEnabled && !IsScopeAttached())
 	//	GamePersistent().SetEffectorDOF	(m_zoom_params.m_ZoomDof);
 
-	if(GetHUDmode())
+	if (GetHUDmode())
 		GamePersistent().SetPickableEffectorDOF(true);
 
-	if(m_zoom_params.m_sUseBinocularVision.size() && IsScopeAttached() && NULL==m_zoom_params.m_pVision) 
-		m_zoom_params.m_pVision	= xr_new<CBinocularsVision>(m_zoom_params.m_sUseBinocularVision/*"wpn_binoc"*/);
+	if (m_zoom_params.m_sUseBinocularVision.size() && IsScopeAttached() && NULL == m_zoom_params.m_pVision)
+		m_zoom_params.m_pVision = xr_new<CBinocularsVision>(m_zoom_params.m_sUseBinocularVision);
 
 	if (pA && IsScopeAttached())
 	{
@@ -2562,7 +2565,7 @@ void CWeapon::OnZoomIn()
 		{
 			if (NULL == m_zoom_params.m_pNight_vision)
 			{
-				m_zoom_params.m_pNight_vision = xr_new<CNightVisionEffector>(m_zoom_params.m_sUseZoomPostprocess/*"device_torch"*/);
+				m_zoom_params.m_pNight_vision = xr_new<CNightVisionEffector>(m_zoom_params.m_sUseZoomPostprocess);
 			}
 		}
 	}
@@ -2577,18 +2580,18 @@ void CWeapon::OnZoomOut()
 		CActor *pA = smart_cast<CActor *>(H_Parent());
 		if (pA)
 			pA->cam_Set(eacLookAt);
-			m_freelook_switch_back = false;
+		m_freelook_switch_back = false;
 	}
 
 	if (!bIsSecondVPZoomPresent() || !psActorFlags.test(AF_3DSCOPE_ENABLE))
 		m_fRTZoomFactor = GetZoomFactor(); //  
-	m_zoom_params.m_bIsZoomModeNow		= false;
+	m_zoom_params.m_bIsZoomModeNow = false;
 	SetZoomFactor(g_fov);
 	//EnableHudInertion					(TRUE);
 
 // 	GamePersistent().RestoreEffectorDOF	();
 
-	if(GetHUDmode())
+	if (GetHUDmode())
 		GamePersistent().SetPickableEffectorDOF(false);
 
 	ResetSubStateTime					();
@@ -2665,7 +2668,8 @@ void CWeapon::reload			(LPCSTR section)
 		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings,r_float,GetScopeName(),"holder_range_modifier",m_holder_range_modifier);
 		m_addon_holder_fov_modifier		= READ_IF_EXISTS(pSettings,r_float,GetScopeName(),"holder_fov_modifier",m_holder_fov_modifier);
 	}
-	else {
+	else
+	{
 		m_addon_holder_range_modifier	= m_holder_range_modifier;
 		m_addon_holder_fov_modifier		= m_holder_fov_modifier;
 	}

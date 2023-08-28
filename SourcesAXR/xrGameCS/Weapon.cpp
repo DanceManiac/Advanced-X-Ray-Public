@@ -1201,6 +1201,7 @@ void CWeapon::Load3DScopeParams(LPCSTR section)
 
 BOOL CWeapon::net_Spawn		(CSE_Abstract* DC)
 {
+	m_fRTZoomFactor					= m_zoom_params.m_fScopeZoomFactor;
 	BOOL bResult					= inherited::net_Spawn(DC);
 	CSE_Abstract					*e	= (CSE_Abstract*)(DC);
 	CSE_ALifeItemWeapon			    *E	= smart_cast<CSE_ALifeItemWeapon*>(e);
@@ -1334,28 +1335,29 @@ void CWeapon::save(NET_Packet &output_packet)
 {
 	inherited::save	(output_packet);
 	save_data		(iAmmoElapsed,					output_packet);
+	save_data		(m_cur_scope, 					output_packet);
 	save_data		(m_flagsAddOnState, 			output_packet);
 	save_data		(m_ammoType,					output_packet);
 	save_data		(m_zoom_params.m_bIsZoomModeNow,output_packet);
 	save_data		(bNVsecondVPstatus,				output_packet);
-	save_data		(m_cur_scope,					output_packet);
 }
 
 void CWeapon::load(IReader &input_packet)
 {
 	inherited::load	(input_packet);
 	load_data		(iAmmoElapsed,					input_packet);
+	load_data		(m_cur_scope,					input_packet);
 	load_data		(m_flagsAddOnState,				input_packet);
 	UpdateAddonsVisibility			();
 	load_data		(m_ammoType,					input_packet);
 	load_data		(m_zoom_params.m_bIsZoomModeNow,input_packet);
-	load_data		(bNVsecondVPstatus,				input_packet);
-	load_data		(m_cur_scope,					input_packet);
 
 	if (m_zoom_params.m_bIsZoomModeNow)	
 			OnZoomIn();
 		else			
 			OnZoomOut();
+
+	load_data		(bNVsecondVPstatus,				input_packet);
 }
 
 
@@ -1465,10 +1467,7 @@ void CWeapon::OnHiddenItem ()
 	else
 		SwitchState(eHidden);
 	OnZoomOut();
-//-
 	inherited::OnHiddenItem		();
-//.	SetState					(eHidden);
-//.	SetNextState				(eHidden);
 
 	m_set_next_ammoType_on_reload = u32(-1);
 }
@@ -1501,6 +1500,10 @@ void CWeapon::OnH_B_Chield		()
 }
 
 extern int hud_adj_mode;
+bool CWeapon::AllowBore()
+{
+	return true;
+}
 
 void CWeapon::UpdateCL		()
 {
@@ -1529,17 +1532,19 @@ void CWeapon::UpdateCL		()
 				!IsZoomed()&&
 				g_player_hud->attached_item(1)==NULL)
 			{
-				SwitchState			(eBore);
+				if(AllowBore())
+					SwitchState		(eBore);
+
 				ResetSubStateTime	();
 			}
 		}
 	}
 
-	if (m_zoom_params.m_pNight_vision && !need_renderable())
+	if(m_zoom_params.m_pNight_vision && !need_renderable())
 	{
-		if (!m_zoom_params.m_pNight_vision->IsActive())
+		if(!m_zoom_params.m_pNight_vision->IsActive())
 		{
-			CActor* pA = smart_cast<CActor*>(H_Parent());
+			CActor *pA = smart_cast<CActor *>(H_Parent());
 			R_ASSERT(pA);
 			if (pA->GetNightVisionStatus())
 			{
@@ -1550,13 +1555,13 @@ void CWeapon::UpdateCL		()
 		}
 
 	}
-	else if (m_bRememberActorNVisnStatus)
+	else if(m_bRememberActorNVisnStatus)
 	{
 		m_bRememberActorNVisnStatus = false;
 		EnableActorNVisnAfterZoom();
 	}
 
-	if (m_zoom_params.m_pVision)
+	if(m_zoom_params.m_pVision)
 		m_zoom_params.m_pVision->Update();
 }
 
@@ -2596,11 +2601,10 @@ void CWeapon::OnZoomOut()
 	if (GetHUDmode())
 		GamePersistent().SetPickableEffectorDOF(false);
 
-	ResetSubStateTime();
+	ResetSubStateTime					();
 
-	xr_delete(m_zoom_params.m_pVision);
-
-	if (m_zoom_params.m_pNight_vision)
+	xr_delete							(m_zoom_params.m_pVision);
+	if(m_zoom_params.m_pNight_vision)
 	{
 		m_zoom_params.m_pNight_vision->StopForScope(100000.0f, false);
 		xr_delete(m_zoom_params.m_pNight_vision);
@@ -2686,7 +2690,7 @@ void CWeapon::reload			(LPCSTR section)
 		m_addon_holder_range_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_range_modifier", m_holder_range_modifier);
 		m_addon_holder_fov_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_fov_modifier", m_holder_fov_modifier);
 	}
-	else 
+	else
 	{
 		m_addon_holder_range_modifier	= m_holder_range_modifier;
 		m_addon_holder_fov_modifier		= m_holder_fov_modifier;

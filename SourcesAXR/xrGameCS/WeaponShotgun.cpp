@@ -30,9 +30,9 @@ void CWeaponShotgun::Load	(LPCSTR section)
 		m_bTriStateReload = !!pSettings->r_bool(section, "tri_state_reload");
 	};
 	if(m_bTriStateReload){
-		m_sounds.LoadSound(section, "snd_open_weapon", "sndOpen", m_eSoundOpen);
+		m_sounds.LoadSound(section, "snd_open_weapon", "sndOpen", false, m_eSoundOpen);
 
-		m_sounds.LoadSound(section, "snd_add_cartridge", "sndAddCartridge", m_eSoundAddCartridge);
+		m_sounds.LoadSound(section, "snd_add_cartridge", "sndAddCartridge", false, m_eSoundAddCartridge);
 
 		if (WeaponSoundExist(section, "snd_add_cartridge_empty", true))
 			m_sounds.LoadSound(section, "snd_add_cartridge_empty", "sndAddCartridgeEmpty", false, m_eSoundAddCartridge);
@@ -40,7 +40,7 @@ void CWeaponShotgun::Load	(LPCSTR section)
 		if (WeaponSoundExist(section, "snd_reload_misfire", true))
 			m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", false, m_eSoundOpen);
 
-		m_sounds.LoadSound(section, "snd_close_weapon", "sndClose_2", m_eSoundClose_2);
+		m_sounds.LoadSound(section, "snd_close_weapon", "sndClose_2", false, m_eSoundClose_2);
 	};
 
 }

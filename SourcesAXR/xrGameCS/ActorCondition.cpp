@@ -448,16 +448,16 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 
 			if (damage > EPS)
 			{
-				SHit HDS = SHit(damage,
-					0.0f, 
-					Fvector().set(0, 1, 0),
-					NULL,
-					BI_NONE,
-					Fvector().set(0, 0, 0),
-					0.0f,
-					type,
-					0.0f,
-					false);
+				SHit HDS = SHit(damage, 
+//.								0.0f, 
+								Fvector().set(0,1,0), 
+								NULL, 
+								BI_NONE, 
+								Fvector().set(0,0,0), 
+								0.0f, 
+								type, 
+								0.0f, 
+								false);
 
 				HDS.GenHeader(GE_HIT, m_object->ID());
 				HDS.Write_Packet(np);
@@ -1332,25 +1332,25 @@ void CActorCondition::UpdateTutorialThresholds()
 	if(b && !m_condition_flags.test(eCriticalPowerReached) && GetPower()<_cPowerThr){
 		m_condition_flags.set			(eCriticalPowerReached, TRUE);
 		b=false;
-		strcpy_s(cb_name,"_G.on_actor_critical_power");
+		xr_strcpy(cb_name,"_G.on_actor_critical_power");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalMaxPowerReached) && GetMaxPower()<_cPowerMaxThr){
 		m_condition_flags.set			(eCriticalMaxPowerReached, TRUE);
 		b=false;
-		strcpy_s(cb_name,"_G.on_actor_critical_max_power");
+		xr_strcpy(cb_name,"_G.on_actor_critical_max_power");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalBleedingSpeed) && BleedingSpeed()>_cBleeding){
 		m_condition_flags.set			(eCriticalBleedingSpeed, TRUE);
 		b=false;
-		strcpy_s(cb_name,"_G.on_actor_bleeding");
+		xr_strcpy(cb_name,"_G.on_actor_bleeding");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalSatietyReached) && GetSatiety()<_cSatiety){
 		m_condition_flags.set			(eCriticalSatietyReached, TRUE);
 		b=false;
-		strcpy_s(cb_name,"_G.on_actor_satiety");
+		xr_strcpy(cb_name,"_G.on_actor_satiety");
 	}
 
 	if (b && !m_condition_flags.test(eCriticalThirstReached) && GetThirst()<_cThirst)
@@ -1399,19 +1399,19 @@ void CActorCondition::UpdateTutorialThresholds()
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){
 		m_condition_flags.set			(eCriticalRadiationReached, TRUE);
 		b=false;
-		strcpy_s(cb_name,"_G.on_actor_radiation");
+		xr_strcpy(cb_name,"_G.on_actor_radiation");
 	}
 
 	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()<_cPsyHealthThr){
 //.		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
 		b=false;
-		strcpy_s(cb_name,"_G.on_actor_psy");
+		xr_strcpy(cb_name,"_G.on_actor_psy");
 	}
 
 	if(b && !m_condition_flags.test(eCantWalkWeight)){
 //.		m_condition_flags.set			(eCantWalkWeight, TRUE);
 		b=false;
-		strcpy_s(cb_name,"_G.on_actor_cant_walk_weight");
+		xr_strcpy(cb_name,"_G.on_actor_cant_walk_weight");
 	}
 
 	if(b && !m_condition_flags.test(eWeaponJammedReached)&&m_object->inventory().GetActiveSlot()!=NO_ACTIVE_SLOT){
@@ -1419,7 +1419,7 @@ void CActorCondition::UpdateTutorialThresholds()
 		CWeapon* pWeapon					= smart_cast<CWeapon*>(item); 
 		if(pWeapon&&pWeapon->GetCondition()<_cWpnCondition){
 			m_condition_flags.set			(eWeaponJammedReached, TRUE);b=false;
-			strcpy_s(cb_name,"_G.on_actor_weapon_jammed");
+			xr_strcpy(cb_name,"_G.on_actor_weapon_jammed");
 		}
 	}
 	

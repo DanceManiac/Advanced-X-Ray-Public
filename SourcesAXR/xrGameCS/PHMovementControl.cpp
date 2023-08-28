@@ -277,6 +277,10 @@ bool CPHMovementControl::MakeJumpPath(xr_vector<DetailPathManager::STravelPathPo
 	if ( !monster )
 		return					false;
 
+	/*CControlJump * jump_control	=	monster->com_man().get_jump_control();
+	if ( !jump_control || !jump_control->in_auto_aim() )
+		return					false;*/
+
 	CEntityAlive const * const enemy	=	monster->EnemyMan.get_enemy();
 	if ( !enemy )
 		return					false;
@@ -299,7 +303,7 @@ bool CPHMovementControl::MakeJumpPath(xr_vector<DetailPathManager::STravelPathPo
 	Fvector const self_vel_normalized	=	normalize(self_vel);
 	Fvector const self_to_enemy_projection_on_self_vel	=	self_vel_normalized * dotproduct(self_to_enemy, self_vel_normalized);
 	Fvector const deviation	=	self_to_enemy - self_to_enemy_projection_on_self_vel;
-	
+
 	float const factor		=	1.f; //jump_control->relative_time();
 
 	out_deviation			=	deviation * 8.f * factor;

@@ -25,10 +25,21 @@ void CWeaponRPG7::Load	(LPCSTR section)
 	m_sRocketSection					= pSettings->r_string	(section,"rocket_class");
 }
 
+bool CWeaponRPG7::AllowBore()
+{
+	return inherited::AllowBore() && 0!=iAmmoElapsed;
+}
+
 void CWeaponRPG7::FireTrace(const Fvector& P, const Fvector& D)
 {
 	inherited::FireTrace	(P, D);
 	UpdateMissileVisibility	();
+}
+
+void CWeaponRPG7::on_a_hud_attach()
+{
+	inherited::on_a_hud_attach		();
+	UpdateMissileVisibility			();
 }
 
 void CWeaponRPG7::UpdateMissileVisibility()
@@ -44,7 +55,7 @@ void CWeaponRPG7::UpdateMissileVisibility()
 
 	IKinematics* pWeaponVisual	= smart_cast<IKinematics*>(Visual()); 
 	VERIFY						(pWeaponVisual);
-	pWeaponVisual->LL_SetBoneVisible(pWeaponVisual->LL_BoneID("grenade"),vis_weap,TRUE);
+	pWeaponVisual->LL_SetBoneVisible(pWeaponVisual->LL_BoneID("grenade"), vis_weap, TRUE);
 }
 
 BOOL CWeaponRPG7::net_Spawn(CSE_Abstract* DC) 
@@ -147,6 +158,12 @@ void CWeaponRPG7::switch2_Fire()
 			u_EventSend						(P);
 		}
 	}
+}
+
+void CWeaponRPG7::PlayAnimReload()
+{
+	VERIFY(GetState()==eReload);
+	PlayHUDMotion("anm_reload", FALSE, this, GetState());
 }
 
 void CWeaponRPG7::OnEvent(NET_Packet& P, u16 type) 

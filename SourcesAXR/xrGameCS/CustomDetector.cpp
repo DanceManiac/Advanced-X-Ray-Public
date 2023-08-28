@@ -500,8 +500,9 @@ void CCustomDetector::UpdateCL()
 	if (GameConstants::GetArtDetectorUseBattery())
 		UpdateChargeLevel();
 
-	UpdateVisibility		();
+	if(H_Parent()!=Level().CurrentEntity() )			return;
 
+	UpdateVisibility		();
 	if( !IsWorking() )		return;
 	UpfateWork				();
 }

@@ -48,7 +48,6 @@ CExplosive::CExplosive(void)
 	m_iFragsNum				= 20;
 	m_fFragsRadius			= 30.0f;
 	m_fFragHit				= 50.0f;
-	m_fFragHitCritical		= 0.0f;
 	m_fUpThrowFactor		= 0.f;
 
 
@@ -106,7 +105,6 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_iFragsNum			*= 2;
 	m_fFragsRadius		= ini->r_float(section,"frags_r");
 	m_fFragHit			= ini->r_float(section,"frag_hit");
-	m_fFragHitCritical	= ini->r_float(section,"frag_hit_critical");
 	m_fFragHitImpulse	= ini->r_float(section,"frag_hit_impulse");
 
 	m_eHitTypeBlast		= ALife::g_tfString2HitType(ini->r_string(section, "hit_type_blast"));
@@ -127,6 +125,7 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	//трассы для разлета осколков
 	m_fFragmentSpeed			= ini->r_float	(section,"fragment_speed"				);
 
+	m_layered_sounds.LoadSound(ini, section, "snd_explode", "sndExplode", false, m_eSoundExplode);
 	m_fExplodeDurationMax	= ini->r_float(section, "explode_duration");
 
 	effector.effect_sect_name= ini->r_string("explode_effector","effect_sect_name");
@@ -150,8 +149,6 @@ void CExplosive::Load(CInifile const *ini,LPCSTR section)
 	m_bDynamicParticles	 = FALSE;
 	if (ini->line_exist(section, "dynamic_explosion_particles"))
 		m_bDynamicParticles = ini->r_bool(section, "dynamic_explosion_particles");
-
-	m_layered_sounds.LoadSound(ini, section, "snd_explode", "sndExplode", false, m_eSoundExplode);
 }
 
 void CExplosive::net_Destroy	()
@@ -390,7 +387,7 @@ void CExplosive::Explode()
 		CCartridge cartridge;
 		cartridge.param_s.kDist				= 1.f;
 		cartridge.param_s.kHit				= 1.f;
-		cartridge.param_s.kCritical			= 1.f;
+//.		cartridge.param_s.kCritical			= 1.f;
 		cartridge.param_s.kImpulse			= 1.f;
 		cartridge.param_s.kAP				= 1.f;
 		cartridge.param_s.fWallmarkSize		= fWallmarkSize;
@@ -398,9 +395,9 @@ void CExplosive::Explode()
 		cartridge.m_flags.set				(CCartridge::cfTracer,FALSE);
 
 		Level().BulletManager().AddBullet(	pos, frag_dir, m_fFragmentSpeed,
-											m_fFragHit, m_fFragHitCritical, m_fFragHitImpulse, Initiator(),
+											m_fFragHit, m_fFragHitImpulse, Initiator(),
 											cast_game_object()->ID(), m_eHitTypeFrag, m_fFragsRadius, 
-											cartridge, SendHits );
+											cartridge, 1.f, SendHits );
 	}	
 
 	if (cast_game_object()->Remote()) return;

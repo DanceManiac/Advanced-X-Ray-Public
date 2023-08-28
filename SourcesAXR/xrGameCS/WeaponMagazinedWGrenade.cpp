@@ -39,9 +39,10 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	SetAnimFlag(ANM_MISFIRE_GL,			"anm_reload_misfire_w_gl");
 	
 	//// Sounds
-	m_sounds.LoadSound(section,"snd_shoot_grenade"	, "sndShotG"		, m_eSoundShot);
-	m_sounds.LoadSound(section,"snd_reload_grenade"	, "sndReloadG"	, m_eSoundReload);
-	m_sounds.LoadSound(section,"snd_switch"			, "sndSwitch"		, m_eSoundReload);
+	m_sounds.LoadSound(section,"snd_shoot_grenade", "sndShotG", false, m_eSoundShot);
+	m_sounds.LoadSound(section,"snd_reload_grenade"	, "sndReloadG"	, true, m_eSoundReload);
+	m_sounds.LoadSound(section,"snd_switch"			, "sndSwitch"		, true, m_eSoundReload);
+	
 
 	m_sFlameParticles2 = pSettings->r_string(section, "grenade_flame_particles");
 
@@ -1245,15 +1246,15 @@ bool CWeaponMagazinedWGrenade::install_upgrade_impl( LPCSTR section, bool test )
 	result |= process_if_exists( section, "launch_speed", &CInifile::r_float, m_fLaunchSpeed, test );
 
 	result2 = process_if_exists_set( section, "snd_shoot_grenade", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_shoot_grenade", "sndShotG", m_eSoundShot );	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_shoot_grenade", "sndShotG", false, m_eSoundShot );	}
 	result |= result2;
 
 	result2 = process_if_exists_set( section, "snd_reload_grenade", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_reload_grenade", "sndReloadG", m_eSoundReload );	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_reload_grenade", "sndReloadG", true, m_eSoundReload );	}
 	result |= result2;
 
 	result2 = process_if_exists_set( section, "snd_switch", &CInifile::r_string, str, test );
-	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_switch", "sndSwitch", m_eSoundReload );	}
+	if ( result2 && !test ) { m_sounds.LoadSound( section, "snd_switch", "sndSwitch", true, m_eSoundReload );	}
 	result |= result2;
 
 	return result;

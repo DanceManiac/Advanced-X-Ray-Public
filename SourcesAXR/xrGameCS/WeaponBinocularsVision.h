@@ -1,5 +1,7 @@
 #pragma once
 #include "ui\uistatic.h"
+#include "HudSound.h"
+
 class CObject;
 
 
@@ -40,5 +42,5 @@ protected :
 	Fcolor						m_frame_color;
 	float						m_rotating_speed;
 	void	Load				(const shared_str& section);
-	ref_sound					m_snd_found;
+	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 };

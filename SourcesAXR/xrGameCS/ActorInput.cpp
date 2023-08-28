@@ -90,6 +90,14 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	}else
 		if(inventory().Action(cmd, CMD_START))					return;
 
+#ifdef DEBUG
+	if(psActorFlags.test(AF_NO_CLIP))
+	{
+		NoClipFly(cmd);
+		return;
+	}
+#endif //DEBUG
+
 	switch(cmd)
 	{
 	case kJUMP:		
@@ -310,6 +318,14 @@ void CActor::IR_OnKeyboardHold(int cmd)
 		return;
 	}
 
+#ifdef DEBUG
+	if(psActorFlags.test(AF_NO_CLIP) && (cmd==kFWD || cmd==kBACK || cmd==kL_STRAFE || cmd==kR_STRAFE 
+		|| cmd==kJUMP || cmd==kCROUCH))
+	{
+		NoClipFly(cmd);
+		return;
+	}
+#endif //DEBUG
 	float LookFactor = GetLookFactor();
 	switch(cmd)
 	{
@@ -651,3 +667,73 @@ void CActor::SwitchTorch()
 	if (pTorch && !Actor()->m_bActionAnimInProcess)
 		pTorch->Switch();
 }
+
+#ifdef DEBUG
+void CActor::NoClipFly(int cmd)
+{
+	Fvector cur_pos;// = Position();
+	cur_pos.set(0,0,0);
+	float scale = 1.0f;
+	if(pInput->iGetAsyncKeyState(DIK_LSHIFT))
+		scale = 0.25f;
+	else if(pInput->iGetAsyncKeyState(DIK_LMENU))
+		scale = 4.0f;
+
+	switch(cmd)
+	{
+	case kJUMP:		
+		cur_pos.y += 0.1f;
+		break;
+	case kCROUCH:	
+		cur_pos.y -= 0.1f;
+		break;
+	case kFWD:	
+		cur_pos.z += 0.1f;
+		break;
+	case kBACK:
+		cur_pos.z -= 0.1f;
+		break;
+	case kL_STRAFE:
+		cur_pos.x -= 0.1f;
+		break;
+	case kR_STRAFE:
+		cur_pos.x += 0.1f;
+		break;
+	case kCAM_1:	
+		cam_Set(eacFirstEye);				
+		break;
+	case kCAM_2:	
+		cam_Set(eacLookAt);				
+		break;
+	case kCAM_3:	
+		cam_Set(eacFreeLook);
+		break;
+	case kNIGHT_VISION:
+		SwitchNightVision();
+		break;
+	case kTORCH:
+		SwitchTorch();
+		break;
+	case kDETECTOR:
+		{
+			PIItem det_active = inventory().ItemFromSlot(DETECTOR_SLOT);
+			if(det_active)
+			{
+				CCustomDetector* det = smart_cast<CCustomDetector*>(det_active);
+				det->ToggleDetector(g_player_hud->attached_item(0)!=NULL);
+				return;
+			}
+		}
+		break;
+	case kUSE:
+		ActorUse();
+		break;
+	}
+	cur_pos.mul(scale);
+	Fmatrix	mOrient;
+	mOrient.rotateY(-(cam_Active()->GetWorldYaw()));
+	mOrient.transform_dir(cur_pos);
+	Position().add(cur_pos);
+	character_physics_support()->movement()->SetPosition(Position());
+}
+#endif //DEBUG

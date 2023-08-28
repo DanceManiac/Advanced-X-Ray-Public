@@ -31,10 +31,10 @@ struct FindVisObjByObject{
 void SBinocVisibleObj::create_default(u32 color)
 {
 	Frect r = {0,0,RECT_SIZE,RECT_SIZE};
-	m_lt.InitTexture			("ui\\ui_enemy_frame");m_lt.SetWndRect(r);
-	m_lb.InitTexture			("ui\\ui_enemy_frame");m_lb.SetWndRect(r);
-	m_rt.InitTexture			("ui\\ui_enemy_frame");m_rt.SetWndRect(r);
-	m_rb.InitTexture			("ui\\ui_enemy_frame");m_rb.SetWndRect(r);
+	m_lt.InitTexture			("ui\\ui_enemy_frame");m_lt.SetWndRect(r);m_lt.SetAlignment(waCenter);
+	m_lb.InitTexture			("ui\\ui_enemy_frame");m_lb.SetWndRect(r);m_lb.SetAlignment(waCenter);
+	m_rt.InitTexture			("ui\\ui_enemy_frame");m_rt.SetWndRect(r);m_rt.SetAlignment(waCenter);
+	m_rb.InitTexture			("ui\\ui_enemy_frame");m_rb.SetWndRect(r);m_rb.SetAlignment(waCenter);
 
 	m_lt.SetOriginalRect		(Frect().set(0,				0,				RECT_SIZE,		RECT_SIZE)	);
 	m_lb.SetOriginalRect		(Frect().set(0,				32-RECT_SIZE,	RECT_SIZE,		32)			);
@@ -48,9 +48,9 @@ void SBinocVisibleObj::create_default(u32 color)
 	m_rt.SetColor	(clr);
 	m_rb.SetColor	(clr);
 
-	cur_rect.set	(0,0, UI_BASE_WIDTH,UI_BASE_HEIGHT);
+	cur_rect.set			(0,0, UI_BASE_WIDTH,UI_BASE_HEIGHT);
 
-	m_flags.zero	();
+	m_flags.zero			();
 }
 
 void SBinocVisibleObj::Draw()
@@ -67,6 +67,7 @@ void SBinocVisibleObj::Update()
 {
 	m_flags.set		(	flVisObjNotValid,TRUE);
 
+	if(!m_object->Visual())			return;
 
 	Fbox		b		= m_object->Visual()->getVisData().box;
 
@@ -189,10 +190,10 @@ void SBinocVisibleObj::Update()
 		}
 	}
 
-	m_lt.SetWndPos		( Fvector2().set((cur_rect.lt.x)+2,	(cur_rect.lt.y)+2) );
-	m_lb.SetWndPos		( Fvector2().set((cur_rect.lt.x)+2,	(cur_rect.rb.y)-14) );
-	m_rt.SetWndPos		( Fvector2().set((cur_rect.rb.x)-14,	(cur_rect.lt.y)+2) );
-	m_rb.SetWndPos		( Fvector2().set((cur_rect.rb.x)-14,	(cur_rect.rb.y)-14) );
+	m_lt.SetWndPos		( Fvector2().set((cur_rect.lt.x),	(cur_rect.lt.y)) );
+	m_lb.SetWndPos		( Fvector2().set((cur_rect.lt.x),	(cur_rect.rb.y)) );
+	m_rt.SetWndPos		( Fvector2().set((cur_rect.rb.x),	(cur_rect.lt.y)) );
+	m_rb.SetWndPos		( Fvector2().set((cur_rect.rb.x),	(cur_rect.rb.y)) );
 
 	m_flags.set			(flVisObjNotValid, FALSE);
 }
@@ -205,7 +206,6 @@ CBinocularsVision::CBinocularsVision(const shared_str& sect)
 
 CBinocularsVision::~CBinocularsVision()
 {
-	m_snd_found.destroy	();
 	delete_data			(m_active_objects);
 }
 
@@ -258,9 +258,9 @@ void CBinocularsVision::Update()
 			new_vis_obj->m_flags.set			(flVisObjNotValid,FALSE);
 			new_vis_obj->m_object			= object_;
 			new_vis_obj->create_default		(m_frame_color.get());
-			new_vis_obj->m_upd_speed			= m_rotating_speed;
-			if(NULL==m_snd_found._feedback())
-				m_snd_found.play_at_pos			(0,Fvector().set(0,0,0),sm_2D);
+			new_vis_obj->m_upd_speed		= m_rotating_speed;
+			
+			m_sounds.PlaySound	("found_snd", Fvector().set(0,0,0), NULL, true);
 		}
 	}
 	std::sort								(m_active_objects.begin(), m_active_objects.end());
@@ -272,7 +272,16 @@ void CBinocularsVision::Update()
 
 	it = m_active_objects.begin();
 	for(;it!=m_active_objects.end();++it)
+	{
+		SBinocVisibleObj* visObj			= (*it);
+		
+		BOOL bLocked = visObj->m_flags.test(flTargetLocked);
+		
 		(*it)->Update						();
+		
+		if(bLocked != visObj->m_flags.test(flTargetLocked))
+			m_sounds.PlaySound	("catch_snd", Fvector().set(0,0,0), NULL, true);
+	}
 
 }
 
@@ -287,7 +296,8 @@ void CBinocularsVision::Load(const shared_str& section)
 {
 	m_rotating_speed	= pSettings->r_float(section,"vis_frame_speed");
 	m_frame_color		= pSettings->r_fcolor(section,"vis_frame_color");
-	m_snd_found.create	(pSettings->r_string(section,"found_snd"),st_Effect,sg_SourceType);
+	m_sounds.LoadSound	(section.c_str(),"found_snd", "found_snd", false, SOUND_TYPE_NO_SOUND);
+	m_sounds.LoadSound	(section.c_str(),"catch_snd", "catch_snd", false, SOUND_TYPE_NO_SOUND);
 }
 
 void CBinocularsVision::remove_links(CObject *object)

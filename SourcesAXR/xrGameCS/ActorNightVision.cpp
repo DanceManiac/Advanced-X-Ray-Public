@@ -11,10 +11,10 @@ ENGINE_API extern int ps_r__ShaderNVG;
 
 CNightVisionEffector::CNightVisionEffector(const shared_str& section)
 {
-	m_sounds.LoadSound(section.c_str(), "snd_night_vision_on", "NightVisionOnSnd", SOUND_TYPE_ITEM_USING);
-	m_sounds.LoadSound(section.c_str(), "snd_night_vision_off", "NightVisionOffSnd", SOUND_TYPE_ITEM_USING);
-	m_sounds.LoadSound(section.c_str(), "snd_night_vision_idle", "NightVisionIdleSnd", SOUND_TYPE_ITEM_USING);
-	m_sounds.LoadSound(section.c_str(), "snd_night_vision_broken", "NightVisionBrokenSnd", SOUND_TYPE_ITEM_USING);
+	m_sounds.LoadSound(section.c_str(), "snd_night_vision_on", "NightVisionOnSnd", false, SOUND_TYPE_ITEM_USING);
+	m_sounds.LoadSound(section.c_str(), "snd_night_vision_off", "NightVisionOffSnd", false, SOUND_TYPE_ITEM_USING);
+	m_sounds.LoadSound(section.c_str(), "snd_night_vision_idle", "NightVisionIdleSnd", true, SOUND_TYPE_ITEM_USING);
+	m_sounds.LoadSound(section.c_str(), "snd_night_vision_broken", "NightVisionBrokenSnd", false, SOUND_TYPE_ITEM_USING);
 }
 
 void CNightVisionEffector::Start(const shared_str& sect, CActor* pA, bool play_sound)

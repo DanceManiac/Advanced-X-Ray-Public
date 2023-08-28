@@ -2,14 +2,13 @@
 
 struct SHit
 {
-	SHit(float powerA, float power_criticalA, Fvector &dirA, CObject *whoA, u16 elementA, Fvector p_in_bone_spaceA,\
-		float impulseA, ALife::EHitType hit_typeA, float armor_piercingA=0.0f, bool AimBullet=false);
+	SHit(float powerA, Fvector &dirA, CObject *whoA, u16 elementA, Fvector p_in_bone_spaceA,\
+		float impulseA, ALife::EHitType hit_typeA, float armor_piercingA/*=0.0f*/, bool AimBullet/*=false*/);
 
 	SHit										();	
 	bool				is_valide				()		const	;	
 	void				invalidate				()				;
 IC	float				damage					()		const	{VERIFY(is_valide());return power;}
-IC	float				critical_power			()		const	{VERIFY(is_valide());return power_critical;}
 IC	const Fvector		&direction				()		const	{VERIFY(is_valide());return dir;}
 IC	const CObject		*initiator				()		const	{VERIFY(is_valide());return who;}
 IC			u16			bone					()		const	{VERIFY(is_valide());return boneID;}
@@ -29,7 +28,6 @@ IC	ALife::EHitType		type					()		const	{VERIFY(is_valide());return hit_type;}
 	u16					DestID;
 	
 	float				power;
-	float				power_critical;
 	Fvector				dir;
 	CObject				*who;
 	u16					whoID;

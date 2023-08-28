@@ -20,6 +20,7 @@ public:
 	virtual void Load			(LPCSTR section);
 	virtual void switch2_Fire	();
 	virtual	void FireTrace		(const Fvector& P, const Fvector& D);
+	virtual void on_a_hud_attach();
 
 	virtual void FireStart		();
 	virtual void SwitchState	(u32 S);
@@ -29,6 +30,9 @@ public:
 
 	virtual void net_Import			( NET_Packet& P);				// import from server
 protected:
+	virtual bool	AllowBore		();
+	virtual void	PlayAnimReload	();
+
 	shared_str	m_sRocketSection;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

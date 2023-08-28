@@ -717,7 +717,7 @@ void CAI_Stalker::UpdateCL()
 		STOP_PROFILE
 
 		START_PROFILE("stalker/client_update/step_manager")
-		CStepManager::update		();
+		CStepManager::update		(false);
 		STOP_PROFILE
 
 		START_PROFILE("stalker/client_update/weapon_shot_effector")

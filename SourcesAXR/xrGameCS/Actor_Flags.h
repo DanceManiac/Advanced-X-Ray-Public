@@ -2,7 +2,7 @@
 
 enum{
 		AF_GODMODE			=(1<<0),
-		AF_INVISIBLE		=(1<<1),
+		AF_NO_CLIP			=(1<<1),
 		AF_ALWAYSRUN		=(1<<2),
 		AF_UNLIMITEDAMMO	=(1<<3),
 		AF_RUN_BACKWARD		=(1<<4),

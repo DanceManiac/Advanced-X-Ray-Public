@@ -197,15 +197,7 @@ void	CActor::PickupModeUpdate_COD	()
 		if (0 == pIItem) continue;
 		if (pIItem->object().H_Parent() != NULL) continue;
 		if (!pIItem->CanTake()) continue;
-		//. if (pIItem->object().CLS_ID == CLSID_OBJECT_G_RPG7 || pIItem->object().CLS_ID == CLSID_OBJECT_G_FAKE)
-		if ( smart_cast<CExplosiveRocket*>( &pIItem->object() ) )
-		{
-			continue;
-		}
-		/*if ( smart_cast<CWeaponRPG7*>( &pIItem->object() ) || smart_cast<CExplosiveRocket*>( &pIItem->object() ) )
-		{
-			continue;
-		}*/
+		if ( smart_cast<CExplosiveRocket*>( &pIItem->object() ) )	continue;
 
 		CGrenade*	pGrenade	= smart_cast<CGrenade*> (spatial->dcast_CObject        ());
 		if (pGrenade && !pGrenade->Useful()) continue;
@@ -258,6 +250,10 @@ void	CActor::PickupModeUpdate_COD	()
 
 			return;
 		}
+		
+		CUsableScriptObject*	pUsableObject = smart_cast<CUsableScriptObject*>(pNearestItem);
+		if(pUsableObject && (!m_pUsableObject))
+			pUsableObject->use(this);
 
 		//подбирание объекта
 		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
@@ -271,8 +267,6 @@ void CActor::PickupInfoDraw(CObject* object)
 	LPCSTR draw_str = NULL;
 	
 	CInventoryItem* item = smart_cast<CInventoryItem*>(object);
-//.	CInventoryOwner* inventory_owner = smart_cast<CInventoryOwner*>(object);
-//.	VERIFY(item || inventory_owner);
 	if(!item)		return;
 
 	Fmatrix			res;

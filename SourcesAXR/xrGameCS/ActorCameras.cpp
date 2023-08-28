@@ -258,8 +258,7 @@ void	CActor::cam_Lookout	( const Fmatrix &xform, float camera_height )
 					da			= PI/1000.f;
 					if (!fis_zero(r_torso.roll))
 						da		*= r_torso.roll/_abs(r_torso.roll);
-					float angle = 0.f;
-					for (; _abs(angle)<_abs(alpha); angle+=da)
+					for (float angle=0.f; _abs(angle)<_abs(alpha); angle+=da)
 					{
 						Fvector				pt;
 						calc_gl_point( pt, xform, radius, angle );
@@ -407,8 +406,9 @@ void CActor::cam_Update(float dt, float fFOV)
 		cameras[eacFirstEye]->f_fov		= fFOV;
 	} 
 	if (Level().CurrentEntity() == this)
+	{
 		collide_camera( *cameras[eacFirstEye], _viewport_near, this );
-
+	}
 	//Alundaio -psp always
 	//if( psActorFlags.test(AF_PSP) )
 	//{
@@ -447,7 +447,8 @@ void CActor::cam_Update(float dt, float fFOV)
 	if (Level().CurrentEntity() == this)
 	{
 		Level().Cameras().UpdateFromCamera	(C);
-		if(eacFirstEye == cam_active && !Level().Cameras().GetCamEffector(cefDemo)){
+		if(eacFirstEye == cam_active && !Level().Cameras().GetCamEffector(cefDemo))
+		{
 			Cameras().ApplyDevice	(_viewport_near);
 		}
 	}

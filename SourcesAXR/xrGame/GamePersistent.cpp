@@ -29,7 +29,6 @@
 #include "xrserver_objects_alife_monsters.h"
 #include "../xrServerEntities/xrServer_Object_Base.h"
 #include "UI/UIGameTutorial.h"
-#include "ActorHelmet.h"
 #include "ActorCondition.h"
 #include "AdvancedXrayGameConstants.h"
 #include "DynamicHudGlass.h"
@@ -464,7 +463,7 @@ bool allow_intro ()
 
 void CGamePersistent::start_logo_intro()
 {
-	if(Device.dwPrecacheFrame==0)
+	if (Device.dwPrecacheFrame==0)
 	{
 		m_intro_event.bind		(this, &CGamePersistent::update_logo_intro);
 		if (!g_dedicated_server && 0==xr_strlen(m_game_params.m_game_or_spawn) && NULL==g_pGameLevel)
@@ -486,19 +485,19 @@ void CGamePersistent::update_logo_intro()
 		xr_delete				(m_intro);
 		Msg("intro_delete ::update_logo_intro");
 		Console->Execute		("main_menu on");
-	}else
-	if(!m_intro)
+	}
+	else if (!m_intro)
 	{
-		m_intro_event			= 0;
+		m_intro_event = 0;
 	}
 }
 
 extern int g_keypress_on_start;
 void CGamePersistent::game_loaded()
 {
-	if(Device.dwPrecacheFrame<=2)
+	if (Device.dwPrecacheFrame <= 2)
 	{
-		if(	g_pGameLevel							&&
+		if (g_pGameLevel							&&
 			g_pGameLevel->bReady					&&
 			(allow_intro() && g_keypress_on_start)	&&
 			load_screen_renderer.b_need_user_input	&& 
@@ -528,7 +527,7 @@ void CGamePersistent::update_game_loaded()
 
 void CGamePersistent::start_game_intro		()
 {
-	if(!allow_intro())
+	if (!allow_intro())
 	{
 		m_intro_event			= 0;
 		return;
@@ -555,8 +554,7 @@ void CGamePersistent::update_game_intro()
 		Msg("intro_delete ::update_game_intro");
 		m_intro_event			= 0;
 	}
-	else
-	if(!m_intro)
+	else if (!m_intro)
 	{
 		m_intro_event			= 0;
 	}
@@ -567,7 +565,7 @@ extern CUISequencer * g_tutorial2;
 
 void CGamePersistent::OnFrame	()
 {
-	if(Device.dwPrecacheFrame==5 && m_intro_event.empty())
+	if (Device.dwPrecacheFrame==5 && m_intro_event.empty())
 	{
 		SetLoadStageTitle();
 		m_intro_event.bind			(this,&CGamePersistent::game_loaded);
@@ -589,9 +587,10 @@ void CGamePersistent::OnFrame	()
 #ifdef DEBUG
 	++m_frame_counter;
 #endif
-	if (!g_dedicated_server && !m_intro_event.empty())	m_intro_event();
-	
-	if(!g_dedicated_server && Device.dwPrecacheFrame==0 && !m_intro && m_intro_event.empty())
+	if (!g_dedicated_server && !m_intro_event.empty())
+		m_intro_event();
+
+	if (!g_dedicated_server && Device.dwPrecacheFrame == 0 && !m_intro && m_intro_event.empty())
 		load_screen_renderer.stop();
 
 	if( !m_pMainMenu->IsActive() )
@@ -848,7 +847,7 @@ void CGamePersistent::SetLoadStageTitle(const char* ls_title)
 void CGamePersistent::LoadTitle(bool change_tip, shared_str map_name)
 {
 	pApp->LoadStage();
-	if(ls_tips_enabled && change_tip)
+	if (ls_tips_enabled && change_tip)
 	{
 		string512				buff;
 		u8						tip_num;

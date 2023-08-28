@@ -80,6 +80,10 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 
 	m_WoundVector.clear		();
 
+	m_fKillHitTreshold		= 0;
+	m_fLastChanceHealth		= 0;
+	m_fInvulnerableTime		= 0;
+	m_fInvulnerableTimeDelta= 0;
 
 	m_fHitBoneScale			= 1.f;
 	m_fWoundBoneScale		= 1.f;
@@ -124,6 +128,17 @@ void CEntityCondition::LoadCondition(LPCSTR entity_section)
 
 	m_use_limping_state		= !!(READ_IF_EXISTS(pSettings,r_bool,section,"use_limping_state",FALSE));
 	m_limping_threshold		= READ_IF_EXISTS(pSettings,r_float,section,"limping_threshold",.5f);
+
+	m_fKillHitTreshold		= READ_IF_EXISTS(pSettings,r_float,section,"killing_hit_treshold",0.0f);
+	m_fLastChanceHealth		= READ_IF_EXISTS(pSettings,r_float,section,"last_chance_health",0.0f);
+	m_fInvulnerableTimeDelta= READ_IF_EXISTS(pSettings,r_float,section,"invulnerable_time",0.0f)/1000.f;
+}
+
+void CEntityCondition::LoadTwoHitsDeathParams(LPCSTR section)
+{
+	m_fKillHitTreshold		= READ_IF_EXISTS(pSettings,r_float,section,"killing_hit_treshold",0.0f);
+	m_fLastChanceHealth		= READ_IF_EXISTS(pSettings,r_float,section,"last_chance_health",0.0f);
+	m_fInvulnerableTimeDelta= READ_IF_EXISTS(pSettings,r_float,section,"invulnerable_time",0.0f)/1000.f;
 }
 
 void CEntityCondition::reinit	()
@@ -290,8 +305,18 @@ void CEntityCondition::UpdateCondition()
 
 	UpdateEntityMorale			();
 
-	//health()					+= m_fDeltaHealth;
-	SetHealth					( GetHealth() + m_fDeltaHealth );
+	if(Device.fTimeGlobal>m_fInvulnerableTime)
+	{
+		float curr_health			= GetHealth();
+		if(curr_health>m_fKillHitTreshold && curr_health+m_fDeltaHealth<0)
+		{
+			SetHealth(m_fLastChanceHealth);
+			m_fInvulnerableTime = Device.fTimeGlobal + m_fInvulnerableTimeDelta;
+		}
+		else
+			SetHealth				( curr_health + m_fDeltaHealth );
+	}
+
 	m_fPower					+= m_fDeltaPower;
 	m_fPsyHealth				+= m_fDeltaPsyHealth;
 	m_fEntityMorale				+= m_fDeltaEntityMorale;

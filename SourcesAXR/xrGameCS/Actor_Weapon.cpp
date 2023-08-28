@@ -69,7 +69,7 @@ void CActor::g_fireParams(CHudItem* pHudItem, Fvector &fire_pos, Fvector &fire_d
 	if (pMissile)
 	{
 		Fvector offset;
-		XFORM().transform_dir(offset, m_vMissileOffset);
+		XFORM().transform_dir(offset, pMissile->throw_point_offset());
 		//KRodin: TODO: В ЗП здесь код отличается. В ТЧ юзается m_vMissileOffset, в ЗП - pMissile->throw_point_offset().
 		//XFORM().transform_dir(offset, pMissile->throw_point_offset());
 		fire_pos.add(offset);
@@ -203,9 +203,7 @@ void	CActor::HitSector(CObject* who, CObject* weapon)
 			if (pWeapon->IsSilencerAttached())
 			{
 				bShowHitSector = false;
-				if (pWeapon->IsGrenadeLauncherAttached())
-				{
-				}
+
 			}
 		}
 	}

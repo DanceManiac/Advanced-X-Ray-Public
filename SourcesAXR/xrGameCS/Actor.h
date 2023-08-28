@@ -127,6 +127,7 @@ public:
 	virtual void	 LostPdaContact		(CInventoryOwner*);
 	void			DisableHitMarks(bool disable)		{m_disabled_hitmarks = disable;};
 	bool			DisableHitMarks()					{return m_disabled_hitmarks;};
+			void	set_state_box(u32	mstate);
 
 #ifdef DEBUG
 	void			 DumpTasks();
@@ -388,6 +389,7 @@ protected:
 	shared_str				m_sCharacterUseAction;
 	shared_str				m_sDeadCharacterUseAction;
 	shared_str				m_sDeadCharacterUseOrDragAction;
+	shared_str				m_sDeadCharacterDontUseAction;
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
 	shared_str				m_sInventoryBoxUseAction;
@@ -507,12 +509,6 @@ protected:
 	float								m_fDispCrouchFactor;
 	//crouch+no acceleration
 	float								m_fDispCrouchNoAccelFactor;
-	//смещение firepoint относительно default firepoint дл¤ бросани¤ болтов и гранат
-	Fvector								m_vMissileOffset;
-public:
-	// ѕолучение, и запись смещени¤ дл¤ гранат
-	Fvector								GetMissileOffset	() const;
-	void								SetMissileOffset	(const Fvector &vNewOffset);
 
 protected:
 	//косточки используемые при стрельбе
@@ -726,6 +722,9 @@ public:
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
 			void				CleanMask						();
+#ifdef DEBUG
+			void				NoClipFly						(int cmd);
+#endif //DEBUG
 
 			bool				IsReloadingWeapon				();
 

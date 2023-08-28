@@ -542,7 +542,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	m_current_torso.invalidate	();
 	m_current_head.invalidate	();
 	//-------------------------------------
-	//  ,  
+	// инициализация реестров, используемых актером
 	game_news_registry->registry().init(ID());
 
 
@@ -673,7 +673,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 		K->PlayCycle("death_init");
 
 		
-		//   
+		//остановить звук тяжелого дыхания
 		m_HeavyBreathSnd.stop();
 	}
 	
@@ -1103,10 +1103,10 @@ void	CActor::CalculateInterpolationParams()
 		for (u32 k=0; k<3; k++)
 		{
 			SP0[k] = c*(c*(c*SCoeff[k][0]+SCoeff[k][1])+SCoeff[k][2])+SCoeff[k][3];
-			SP1[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; //     3       !!!!
+			SP1[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; // сокрость из формулы в 3 раза превышает скорость при расчете коэффициентов !!!!
 
 			HP0[k] = c*(c*(c*HCoeff[k][0]+HCoeff[k][1])+HCoeff[k][2])+HCoeff[k][3];
-			HP1[k] = (c*c*HCoeff[k][0]*3+c*HCoeff[k][1]*2+HCoeff[k][2])/3; //     3       !!!!
+			HP1[k] = (c*c*HCoeff[k][0]*3+c*HCoeff[k][1]*2+HCoeff[k][2]); // сокрость из формулы в 3 раза превышает скорость при расчете коэффициентов !!!!
 		};
 
 		SP1.add(SP0);
@@ -1278,7 +1278,7 @@ void CActor::make_Interpolation	()
 			case 1: 
 				{
 					for (int k=0; k<3; k++)
-						SpeedVector[k] = (factor*factor*SCoeff[k][0]*3+factor*SCoeff[k][1]*2+SCoeff[k][2])/3; //     3       !!!!
+						SpeedVector[k] = (factor*factor*SCoeff[k][0]*3+factor*SCoeff[k][1]*2+SCoeff[k][2])/3; // сокрость из формулы в 3 раза превышает скорость при расчете коэффициентов !!!!
 					
 					ResPosition.set(IPosS); 
 				}break;
@@ -1611,7 +1611,7 @@ void	CActor::OnRender_Network()
 				point1S[k] = c*(c*(c*SCoeff[k][0]+SCoeff[k][1])+SCoeff[k][2])+SCoeff[k][3];
 				point1H[k] = c*(c*(c*HCoeff[k][0]+HCoeff[k][1])+HCoeff[k][2])+HCoeff[k][3];
 
-				tS[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; //     3       !!!!
+				tS[k] = (c*c*SCoeff[k][0]*3+c*SCoeff[k][1]*2+SCoeff[k][2])/3; // сокрость из формулы в 3 раза превышает скорость при расчете коэффициентов !!!!
 				tH[k] = (c*c*HCoeff[k][0]*3+c*HCoeff[k][1]*2+HCoeff[k][2]); 
 			};
 
@@ -1940,7 +1940,7 @@ void				CActor::OnPlayHeadShotParticle (NET_Packet P)
 	if (!m_sHeadShotParticle.size()) return;
 	Fmatrix pos; 	
 	CParticlesPlayer::MakeXFORM(this,element,HitDir,HitPos,pos);
-	//  particles
+	// установить particles
 	CParticlesObject* ps = NULL;
 	
 	ps = CParticlesObject::Create(m_sHeadShotParticle.c_str(),TRUE);
@@ -2005,11 +2005,15 @@ bool CActor::InventoryAllowSprint()
 {
 	PIItem pActiveItem = inventory().ActiveItem();
 	if (pActiveItem && !pActiveItem->IsSprintAllowed())
+	{
 		return false;
+	};
 
 	CCustomOutfit* pOutfitItem = GetOutfit();
 	if (pOutfitItem && !pOutfitItem->IsSprintAllowed())
+	{
 		return false;
+	}
 
 	CPda* pPda = Actor()->GetPDA();
 

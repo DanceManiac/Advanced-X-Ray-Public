@@ -49,8 +49,7 @@ void CHudItem::Load(LPCSTR section)
 	item_sect				= section;
 	m_animation_slot		= pSettings->r_u32			(section,"animation_slot");
 
-//	if(pSettings->line_exist(section,"snd_bore"))
-	m_sounds.LoadSound(section,"snd_bore","sndBore");
+	m_sounds.LoadSound(section, "snd_bore", "sndBore", true);
 
 	// HUD FOV
 	m_nearwall_enabled			= READ_IF_EXISTS(pSettings, r_bool,	 section, "nearwall_on", true);

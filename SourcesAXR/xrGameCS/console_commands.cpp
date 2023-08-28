@@ -2209,6 +2209,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD4(CCC_FloatBlock,		"ph_rigid_break_weapon_factor",	&ph_console::phRigidBreakWeaponFactor	,			0.f		,1000000000.f	);
 	CMD4(CCC_Integer,			"ph_tri_clear_disable_count",	&ph_console::ph_tri_clear_disable_count	,			0,		255				);
 	CMD4(CCC_FloatBlock,		"ph_tri_query_ex_aabb_rate",	&ph_console::ph_tri_query_ex_aabb_rate	,			1.01f	,3.f			);
+	CMD3(CCC_Mask,				"g_no_clip",					&psActorFlags,	AF_NO_CLIP	);
 #endif // DEBUG
 
 #ifndef MASTER_GOLD
@@ -2432,6 +2433,12 @@ extern BOOL dbg_moving_bones_snd_player;
 #ifdef DEBUG
 	CMD4(CCC_Float,		"ai_smart_cover_animation_speed_factor",	&g_smart_cover_animation_speed_factor,	.1f, 10.f);
 	CMD4(CCC_Float,		"air_resistance_epsilon",	&air_resistance_epsilon,	.0f, 1.f);
+
+	//extern BOOL g_use_new_ballistics;
+	//CMD4(CCC_Integer,	"use_new_ballistics",	&g_use_new_ballistics, 0, 1);
+	extern float g_bullet_time_factor;
+	CMD4(CCC_Float, "g_bullet_time_factor", &g_bullet_time_factor, 0.f, 10.f);
+
 #endif // #ifdef DEBUG
 	
 	
