@@ -197,7 +197,7 @@ namespace GameConstants
 	{
 		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
 
-		return m_bHideWeaponInInventory && (backpack) ? (Actor()->inventory().ActiveItem() != backpack) : true;
+		return (backpack) ? ((Actor()->inventory().ActiveItem() != backpack) && m_bHideWeaponInInventory) : m_bHideWeaponInInventory;
 	}
 
 	bool GetStopActorIfShoot()
