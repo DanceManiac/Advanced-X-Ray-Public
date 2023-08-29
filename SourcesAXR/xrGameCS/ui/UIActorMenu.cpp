@@ -256,6 +256,7 @@ void CUIActorMenu::Draw()
 {
 	inherited::Draw();
 	HUD().GetUI()->UIMainIngameWnd->DrawZoneMap();
+	HUD().GetUI()->UIMainIngameWnd->DrawMainIndicatorsForInventory();
 	m_ItemInfo->Draw();
 	m_hint_wnd->Draw();
 }

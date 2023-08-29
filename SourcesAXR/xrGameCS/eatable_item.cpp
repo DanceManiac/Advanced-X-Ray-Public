@@ -257,23 +257,25 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 
 void CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
+	SMedicineInfluenceValues	V;
+	V.Load(m_physic_item->cNameSect());
+
 	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
 	R_ASSERT		(IO);
 	R_ASSERT		(m_pInventory==IO->m_inventory);
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
-	entity_alive->conditions().ChangeHealth		(m_fHealthInfluence);
-	entity_alive->conditions().ChangePower		(m_fPowerInfluence);
-	entity_alive->conditions().ChangeSatiety	(m_fSatietyInfluence);
-	entity_alive->conditions().ChangeRadiation	(m_fRadiationInfluence);
-	entity_alive->conditions().ChangeBleeding	(m_fWoundsHealPerc);
-	entity_alive->conditions().ChangeThirst		(m_fThirstInfluence);
-	entity_alive->conditions().ChangeIntoxication	(m_fIntoxicationInfluence);
-	entity_alive->conditions().ChangeSleepeness	(m_fSleepenessInfluence);
-	entity_alive->conditions().ChangeAlcoholism (m_fAlcoholismInfluence);
-	entity_alive->conditions().ChangeHangover	(m_fHangoverInfluence);
-	entity_alive->conditions().ChangeNarcotism	(m_fNarcotismInfluence);
-	entity_alive->conditions().ChangeWithdrawal	(m_fWithdrawalInfluence);
-	entity_alive->conditions().ChangePsyHealth	(m_fPsyHealthInfluence);
+
+	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect());
+
+	for (u8 i = 0; i < (u8)eBoostMaxCount; i++)
+	{
+		if (pSettings->line_exist(m_physic_item->cNameSect().c_str(), ef_boosters_section_names[i]))
+		{
+			SBooster B;
+			B.Load(m_physic_item->cNameSect(), (EBoostParams)i);
+			entity_alive->conditions().ApplyBooster(B, m_physic_item->cNameSect());
+		}
+	}
 
 	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	

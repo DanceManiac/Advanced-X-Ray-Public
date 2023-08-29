@@ -52,6 +52,7 @@ public:
 
 	virtual CWound*		ConditionHit				(SHit* pHDS);
 	virtual void		UpdateCondition				();
+			void		UpdateBoosters				();
 
 	virtual void 		ChangeAlcohol				(float value);
 	virtual void 		ChangeSatiety				(float value);
@@ -64,6 +65,43 @@ public:
 	virtual void 		ChangeWithdrawal			(const float value);
 	virtual void 		ChangeDrugs					(const float value);
 	virtual void 		ChangePsyHealth				(const float value);
+
+	void 				BoostParameters				(const SBooster& B, bool need_change_tf = true);
+	void 				DisableBoostParameters		(const SBooster& B);
+	void				WoundForEach				(const luabind::functor<bool>& funct);
+	void				BoosterForEach				(const luabind::functor<bool>& funct);
+	bool				ApplyBooster_script			(const SBooster& B, LPCSTR sect);
+	void				ClearAllBoosters			();
+	void				BoostMaxWeight				(const float value);
+	void				BoostHpRestore				(const float value);
+	void				BoostPowerRestore			(const float value);
+	void				BoostRadiationRestore		(const float value);
+	void				BoostBleedingRestore		(const float value);
+	void				BoostBurnImmunity			(const float value);
+	void				BoostShockImmunity			(const float value);
+	void				BoostRadiationImmunity		(const float value);
+	void				BoostTelepaticImmunity		(const float value);
+	void				BoostChemicalBurnImmunity	(const float value);
+	void				BoostExplImmunity			(const float value);
+	void				BoostStrikeImmunity			(const float value);
+	void				BoostFireWoundImmunity		(const float value);
+	void				BoostWoundImmunity			(const float value);
+	void				BoostRadiationProtection	(const float value);
+	void				BoostTelepaticProtection	(const float value);
+	void				BoostChemicalBurnProtection	(const float value);
+	void				BoostTimeFactor				(const float value);
+	void				BoostSatietyRestore			(const float value);
+	void				BoostThirstRestore			(const float value);
+	void				BoostPsyHealthRestore		(const float value);
+	void				BoostIntoxicationRestore	(const float value);
+	void				BoostSleepenessRestore		(const float value);
+	void				BoostAlcoholRestore			(const float value);
+	void				BoostAlcoholismRestore		(const float value);
+	void				BoostHangoverRestore		(const float value);
+	void				BoostDrugsRestore			(const float value);
+	void				BoostNarcotismRestore		(const float value);
+	void				BoostWithdrawalRestore		(const float value);
+	BOOSTER_MAP			GetCurBoosterInfluences		() {return m_booster_influences;};
 
 	// хромание при потере сил и здоровья
 	virtual	bool		IsLimping					() const;
@@ -128,8 +166,14 @@ public:
 	bool	PlayHitSound							(SHit* pHDS);
 	float	HitSlowmo								(SHit* pHDS);
 
-	void	WoundForEach							(const luabind::functor<bool>& funct);
+	virtual bool ApplyInfluence						(const SMedicineInfluenceValues& V, const shared_str& sect);
+	virtual bool ApplyBooster						(const SBooster& B, const shared_str& sect);
+	float	GetMaxPowerRestoreSpeed					() {return m_max_power_restore_speed;};
+	float	GetMaxWoundProtection					() {return m_max_wound_protection;};
+	float	GetMaxFireWoundProtection				() {return m_max_fire_wound_protection;};
 public:
+	SMedicineInfluenceValues						m_curr_medicine_influence;
+
 	float m_fAlcohol;
 	float m_fV_Alcohol;
 //--
@@ -196,6 +240,9 @@ public:
 	float	m_zone_max_power[ALife::infl_max_count];
 	float	m_zone_danger[ALife::infl_max_count];
 	float	m_f_time_affected;
+	float	m_max_power_restore_speed;
+	float	m_max_wound_protection;
+	float	m_max_fire_wound_protection;
 
 	mutable bool m_bLimping;
 	mutable bool m_bCantWalk;
@@ -212,6 +259,8 @@ public:
 
 	float m_fLimpingHealthBegin;
 	float m_fLimpingHealthEnd;
+
+	ref_sound m_use_sound;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

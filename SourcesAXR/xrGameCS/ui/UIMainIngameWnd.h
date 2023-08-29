@@ -9,6 +9,7 @@
 
 #include "../hudsound.h"
 #include "../../XrServerEntitiesCS/alife_space.h"
+#include "../EntityCondition.h"
 
 class	CUIPdaMsgListItem;
 class	CLAItem;
@@ -44,6 +45,24 @@ public:
 	CUIMotionIcon		UIMotionIcon;
 	CUIZoneMap*			UIZoneMap;
 
+	CUIStatic*			m_ind_boost_psy;
+	CUIStatic*			m_ind_boost_radia;
+	CUIStatic*			m_ind_boost_chem;
+	CUIStatic*			m_ind_boost_wound;
+	CUIStatic*			m_ind_boost_weight;
+	CUIStatic*			m_ind_boost_health;
+	CUIStatic*			m_ind_boost_power;
+	CUIStatic*			m_ind_boost_rad;
+	CUIStatic*			m_ind_boost_satiety;
+	CUIStatic*			m_ind_boost_thirst;
+	CUIStatic*			m_ind_boost_psy_health;
+	CUIStatic*			m_ind_boost_intoxication;
+	CUIStatic*			m_ind_boost_sleepeness;
+	CUIStatic*			m_ind_boost_alcoholism;
+	CUIStatic*			m_ind_boost_hangover;
+	CUIStatic*			m_ind_boost_narcotism;
+	CUIStatic*			m_ind_boost_withdrawal;
+
 	//иконка, показывающая количество активных PDA
 //	CUIStatic			UIPdaOnline;
 	
@@ -52,6 +71,7 @@ public:
 	IC	void			ShowZoneMap( bool status ) { UIZoneMap->visible = status; }
 		void			DrawZoneMap() { UIZoneMap->Render(); }
 		void			UpdateZoneMap() { UIZoneMap->Update(); }
+		void			DrawMainIndicatorsForInventory();
 	
 	CUIHudStatesWnd*	get_hud_states() { return m_ui_hud_states; } //temp
 	void				OnSectorChanged			(int sector);
@@ -139,6 +159,7 @@ public:
 	HUD_SOUND_ITEM		m_contactSnd;
 
 	void				ReceiveNews						(GAME_NEWS_DATA* news);
+	void				UpdateBoosterIndicators			(const xr_map<EBoostParams, SBooster> influences);
 	
 protected:
 	void				SetWarningIconColorUI			(CUIStatic* s, const u32 cl);

@@ -74,6 +74,7 @@ public:
 	virtual void		SetHighlightColor			(const u32 uColor)	{ m_HighlightColor = uColor; }
 			void		EnableTextHighlighting		(bool value)		{ m_bEnableTextHighlighting = value; }
 			void		SetClrLightAnim				(LPCSTR lanim, bool bCyclic, bool bOnlyAlpha, bool bTextColor, bool bTextureColor);
+			void		SetClrLightAnim				(LPCSTR lanim, u8 const& flags, float delay = 0.0f);
 			void		SetXformLightAnim			(LPCSTR lanim, bool bCyclic);
 			void		ResetClrAnimation			();
 			void		ResetXformAnimation			();

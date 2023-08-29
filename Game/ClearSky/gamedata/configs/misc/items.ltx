@@ -1,6 +1,80 @@
 #include "items_animations.ltx"
 
-[base_quest_item]:identity_immunities
+[booster]:identity_immunities
+GroupControlSection	= spawn_group
+discovery_dependency =
+;$spawn 				= "food and drugs\booster"
+$prefetch 			= 8
+class				= II_FOOD
+cform				= skeleton
+visual				= dynamics\devices\dev_aptechka\dev_aptechka_low.ogf
+description			= default
+inv_name			= default
+inv_name_short		= default
+inv_weight			= 0.01
+
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x			= 3
+inv_grid_y			= 18
+cost				= 1
+
+; eatable item
+eat_health			= 0
+eat_satiety			= 0
+eat_power			= 0
+eat_max_power		= 0
+eat_radiation		= 0
+eat_alcohol			= 0
+wounds_heal_perc	= 0
+eat_portions_num	= 1
+eat_thirst			= 0
+eat_intoxication	= 0
+eat_sleepeness		= 0
+eat_alcoholism		= 0
+eat_hangover		= 0
+eat_narcotism		= 0
+eat_withdrawal		= 0
+eat_drugs		= 0
+eat_psy_health		= 0
+
+boost_time				= 0.0
+boost_max_weight		= 0.0
+boost_health_restore	= 0.0
+boost_power_restore		= 0.0
+boost_radiation_restore	= 0.0
+boost_bleeding_restore	= 0.0
+
+boost_radiation_protection	= 0.0
+boost_telepat_protection 	= 0.0
+boost_chemburn_protection 	= 0.0
+
+boost_burn_immunity			= 0.0
+boost_shock_immunity		= 0.0
+boost_radiation_immunity	= 0.0
+boost_telepat_immunity		= 0.0
+boost_chemburn_immunity 	= 0.0
+boost_strike_immunity		= 0.0
+boost_wound_immunity		= 0.0
+boost_explosion_immunity	= 0.0
+boost_fire_wound_immunity	= 0.0
+
+boost_satiety_restore		= 0.0
+boost_thirst_restore		= 0.0
+boost_psy_health_restore	= 0.0
+boost_intoxication_restore	= 0.0
+boost_sleepeness_restore	= 0.0
+boost_alcohol_restore		= 0.0
+boost_alcoholism_restore	= 0.0
+boost_hangover_restore		= 0.0
+boost_drugs_restore		= 0.0
+boost_narcotism_restore		= 0.0
+boost_withdrawal_restore	= 0.0
+boost_time_factor 		= 0.0
+
+;use_sound			= characters_voice\multiplayer\team_1\voice_roger_3
+
+[base_quest_item]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\bread"
@@ -59,7 +133,7 @@ hud = wpn_vodka_hud
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	FOOD
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-[bread]:identity_immunities
+[bread]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\bread"
@@ -92,18 +166,6 @@ angle_offset			 = 1.570790,1.570790,3.92699
 ; eatable item
 eat_health = 0.05
 eat_satiety = 0.2
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 0
-eat_radiation = 0
-eat_psy_health = 0
-wounds_heal_perc = 0
 eat_portions_num = 1
 
 ; food item
@@ -114,7 +176,7 @@ animation_slot		= 4
 hud = wpn_vodka_hud
 
 
-[kolbasa]:identity_immunities
+[kolbasa]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\kolbasa"
@@ -147,18 +209,6 @@ angle_offset			 = 1.570790,1.570790,3.92699
 ; eatable item
 eat_health = 0.05
 eat_satiety = 0.3
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 0
-eat_radiation = 0
-eat_psy_health = 0
-wounds_heal_perc = 0
 eat_portions_num = 1
 
 ; food item
@@ -168,7 +218,7 @@ animation_slot		= 4
 ;hud item
 hud = wpn_vodka_hud
 
-[conserva]:identity_immunities
+[conserva]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\conserva"
@@ -191,18 +241,6 @@ cost				= 100
 ; eatable item
 eat_health = 0.1
 eat_satiety = 0.4
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 0
-eat_radiation = 0
-eat_psy_health = 0
-wounds_heal_perc = 0
 eat_portions_num = 1
 
 ; food item
@@ -222,7 +260,7 @@ bone_name				= bip01_r_hand
 position_offset			 = 0.0,0.0,0.0
 angle_offset			 = 1.570790,1.570790,3.92699
 
-[vodka]:identity_immunities
+[vodka]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\vodka"
@@ -257,19 +295,8 @@ angle_offset			 = 1.570790,1.570790,3.92699
 ; eatable item
 eat_health		= 0.01
 eat_satiety		= 0.01
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power		= 0
 eat_radiation	= -0.3
-eat_psy_health = 0
 eat_alcohol		= 0.1
-wounds_heal_perc = 0
 eat_portions_num = 1
 
 ; food item
@@ -327,7 +354,7 @@ auto_attach				= false
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;	MEDICAL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-[antirad]:identity_immunities
+[antirad]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 			= "food and drugs\antirad"
@@ -348,20 +375,7 @@ inv_grid_y			= 12
 cost				= 300
 
 ; eatable item
-eat_health = 0
-eat_satiety = 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 0
 eat_radiation = -0.5
-eat_psy_health = 0
-wounds_heal_perc = 0
 eat_portions_num = 1
 
 ; food item
@@ -371,7 +385,7 @@ animation_slot		= 4
 hud = wpn_vodka_hud
 
 
-[medkit]:identity_immunities
+[medkit]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\medkit"
@@ -392,18 +406,7 @@ cost				= 300
 
 ; eatable item
 eat_health			= 0.5
-eat_satiety			= 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power			= 0.0
 eat_radiation		= -0.05
-eat_psy_health = 0
 wounds_heal_perc	= 0.3
 eat_portions_num	= 1
 eat_max_power		= 0.1
@@ -414,7 +417,7 @@ animation_slot		= 4
 ;hud item
 hud = wpn_vodka_hud
 
-[medkit_army]:identity_immunities
+[medkit_army]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\medkit_army"
@@ -435,18 +438,7 @@ cost				= 500
 
 ; eatable item
 eat_health			= 0.75
-eat_satiety			= 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power			= 0.0
 eat_radiation		= -0.1
-eat_psy_health = 0
 wounds_heal_perc	= 0.5
 eat_portions_num	= 1
 eat_max_power		= 0.1
@@ -457,7 +449,7 @@ animation_slot		= 4
 ;hud item
 hud = wpn_vodka_hud
 
-[medkit_scientic]:identity_immunities
+[medkit_scientic]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\medkit_scientic"
@@ -478,18 +470,7 @@ cost				= 1000
 
 ; eatable item
 eat_health			= 1.0
-eat_satiety			= 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power			= 0.0
 eat_radiation		= -1.0
-eat_psy_health = 0
 wounds_heal_perc	= 1.0
 eat_portions_num	= 1
 eat_max_power		= 0.1
@@ -501,7 +482,7 @@ animation_slot		= 4
 hud = wpn_vodka_hud
 
 
-[energy_drink]:vodka
+[energy_drink]:booster
 $spawn 				= "food and drugs\energy_drink"
 inv_name			= st_energy_drink
 inv_name_short		= st_energy_drink
@@ -515,21 +496,7 @@ inv_grid_x			= 11 ;19 ;11
 inv_grid_y			= 0 ;7  ;0
 inv_weight			= 0.2
 
-eat_health			= 0
-eat_satiety			= 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
 eat_power			= 0.5
-eat_alcohol			= 0
-eat_radiation		= 0
-eat_psy_health = 0
-wounds_heal_perc	= 0
 eat_portions_num	= 1
 eat_max_power		= 0.2
 
@@ -539,7 +506,7 @@ attach_bone_name		= bip01_r_hand
 auto_attach				= false
 
 
-[bandage]:identity_immunities
+[bandage]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\bandage"
@@ -560,19 +527,6 @@ inv_grid_x			= 3
 inv_grid_y			= 18
 
 ; eatable item
-eat_health = 	0.0
-eat_satiety = 	0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 	0.0
-eat_radiation = 0.0
-eat_psy_health = 0
 wounds_heal_perc = 0.5
 eat_portions_num = 1	;100
 
@@ -812,7 +766,7 @@ anim_eat			= vodka_3
 ;;;;;;M.F.S. Team;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-[torch_battery]:identity_immunities
+[torch_battery]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\kolbasa"
@@ -844,20 +798,6 @@ position_offset			 = 0.0,0.0,0.0
 angle_offset			 = 1.570790,1.570790,3.92699
 
 ; eatable item
-eat_health = 0
-eat_satiety = 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 0
-eat_radiation = 0
-eat_psy_health = 0
-wounds_heal_perc = 0
 eat_portions_num = 1
 charge_level = 1.0
 
@@ -868,7 +808,7 @@ animation_slot		= 4
 ;hud item
 hud = wpn_vodka_hud
 
-[antigas_filter]:identity_immunities
+[antigas_filter]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\kolbasa"
@@ -900,20 +840,6 @@ position_offset			 = 0.0,0.0,0.0
 angle_offset			 = 1.570790,1.570790,3.92699
 
 ; eatable item
-eat_health = 0
-eat_satiety = 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 0
-eat_radiation = 0
-eat_psy_health = 0
-wounds_heal_perc = 0
 eat_portions_num = 1
 filter_condition = 1.0
 
@@ -924,7 +850,7 @@ animation_slot		= 4
 ;hud item
 hud = wpn_vodka_hud
 
-[repair_kit]:identity_immunities
+[repair_kit]:booster
 GroupControlSection	= spawn_group
 discovery_dependency =
 $spawn 				= "food and drugs\kolbasa"
@@ -956,20 +882,6 @@ position_offset			 = 0.0,0.0,0.0
 angle_offset			 = 1.570790,1.570790,3.92699
 
 ; eatable item
-eat_health = 0
-eat_satiety = 0
-eat_thirst = 0
-eat_intoxication = 0
-eat_sleepeness = 0
-eat_alcoholism = 0
-eat_hangover = 0
-eat_narcotism = 0
-eat_withdrawal = 0
-eat_drugs = 0
-eat_power = 0
-eat_radiation = 0
-eat_psy_health = 0
-wounds_heal_perc = 0
 eat_portions_num = 1
 restore_condition = 0.5
 

@@ -93,6 +93,20 @@ void CUIStatic::SetClrLightAnim(LPCSTR lanim, bool bCyclic, bool bOnlyAlpha, boo
 	m_lanim_clr.m_lanimFlags.set		(LA_TEXTURECOLOR,	bTextureColor);
 }
 
+void CUIStatic::SetClrLightAnim(LPCSTR lanim, u8 const& flags, float delay)
+{
+	if (lanim && lanim[0] != 0)
+		m_lanim_clr.m_lanim = LALib.FindItem(lanim);
+	else
+	{
+		m_lanim_clr.m_lanim = NULL;
+		return;
+	}
+
+	m_lanim_clr.m_lanim_delay_time = delay;
+	m_lanim_clr.m_lanimFlags.assign(flags);
+	R_ASSERT((m_lanim_clr.m_lanim == NULL) || m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR | LA_TEXTURECOLOR));
+}
 
 void CUIStatic::InitTexture(LPCSTR texture){
 	InitTextureEx(texture);

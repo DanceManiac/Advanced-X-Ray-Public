@@ -669,4 +669,10 @@
 	<string id="ui_inv_drugs">
 		<text>Нарк. опьянение</text>
 	</string>
+	<string id="ui_inv_effect_time">
+		<text>Время действия</text>
+	</string>
+	<string id="ui_inv_seconds_short">
+		<text>сек.</text>
+	</string>
 </string_table>

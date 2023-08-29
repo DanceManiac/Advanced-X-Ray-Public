@@ -346,6 +346,28 @@ void CUIHudStatesWnd::UpdateIndicatorType( CActor* actor, ALife::EInfluenceType 
 	float max_power = actor->conditions().GetZoneMaxPower( hit_type );
 	protect = protect / max_power; // = 0..1
 
+	CEntityCondition::BOOSTER_MAP cur_booster_influences = actor->conditions().GetCurBoosterInfluences();
+	CEntityCondition::BOOSTER_MAP::const_iterator it;
+
+	if (hit_type == ALife::eHitTypeChemicalBurn)
+	{
+		it = cur_booster_influences.find(eBoostChemicalBurnProtection);
+		if (it != cur_booster_influences.end())
+			protect += it->second.fBoostValue;
+	}
+	else if (hit_type == ALife::eHitTypeRadiation)
+	{
+		it = cur_booster_influences.find(eBoostRadiationProtection);
+		if (it != cur_booster_influences.end())
+			protect += it->second.fBoostValue;
+	}
+	else if (hit_type == ALife::eHitTypeTelepatic)
+	{
+		it = cur_booster_influences.find(eBoostTelepaticProtection);
+		if (it != cur_booster_influences.end())
+			protect += it->second.fBoostValue;
+	}
+
 	if ( hit_power < EPS )
 	{
 		m_indik[type]->SetColor( c_white );

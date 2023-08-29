@@ -19,6 +19,41 @@ public:
 protected:
 	enum
 	{
+		_item_start = 0,
+		_item_boost_health_restore = _item_start,
+		_item_boost_power_restore,
+		_item_boost_radiation_restore,
+		_item_boost_bleeding_restore,
+		_item_boost_satiety_restore,
+		_item_boost_thirst_restore,
+		_item_boost_psy_health_restore,
+		_item_boost_intoxication_restore,
+		_item_boost_sleepeness_restore,
+		_item_boost_alcohol_restore,
+		_item_boost_alcoholism_restore,
+		_item_boost_hangover_restore,
+		_item_boost_drugs_restore,
+		_item_boost_narcotism_restore,
+		_item_boost_withdrawal_restore,
+		_item_boost_max_weight,
+		_item_boost_radiation_protection,
+		_item_boost_telepat_protection,
+		_item_boost_chemburn_protection,
+		_item_boost_burn_immunity,
+		_item_boost_shock_immunity,
+		_item_boost_radiation_immunity,
+		_item_boost_telepat_immunity,
+		_item_boost_chemburn_immunity,
+		_item_boost_explosion_immunity,
+		_item_boost_strike_immunity,
+		_item_boost_fire_wound_immunity,
+		_item_boost_wound_immunity,
+
+		eBoostExplImmunity
+	};
+
+	enum
+	{
 		_item_quick_start = 0,
 		_item_quick_health = _item_quick_start,
 		_item_quick_power,
@@ -48,8 +83,10 @@ protected:
 
 		eQuickItemLast
 	};
+	UIBoosterInfoItem* m_booster_items[eBoostExplImmunity];
 	UIBoosterInfoItem* m_quick_items[eQuickItemLast];
 	UIBoosterInfoItem* m_portions;
+	UIBoosterInfoItem* m_booster_time;
 
 	CUIStatic* m_Prop_line;
 
