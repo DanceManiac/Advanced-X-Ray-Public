@@ -193,6 +193,96 @@
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</boost_max_weight>
+	
+	<boost_satiety_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_am_prop_satiety_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_satiety_restore>
+	
+	<boost_thirst_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_thirst_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_thirst_restore>
+	
+	<boost_intoxication_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_intoxication_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_intoxication_restore>
+	
+	<boost_sleepeness_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_sleepeness_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_sleepeness_restore>
+	
+	<boost_alcoholism_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_alcoholism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_alcoholism_restore>
+	
+	<boost_hangover_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_hangover_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_hangover_restore>
+	
+	<boost_narcotism_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_narcotism_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_narcotism_restore>
+	
+	<boost_withdrawal_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_mfs_withdrawal_restore_speed</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_withdrawal_restore>
+	
+	<boost_psy_health_restore x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_am_propery_11</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1000">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</boost_psy_health_restore>
 
 	<boost_time x="0" y="0" width="214" height="20" >
 		<caption x="0" y="0" width="15" height="20" stretch="1">
@@ -359,7 +449,7 @@
 			<texture>ui_am_propery_11</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
 		</caption>
-		<value x="117" y="0" width="30" height="20" magnitude="10" show_sign="0" unit_str="%">
+		<value x="117" y="0" width="30" height="20" magnitude="10">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</quick_eat_psy_health>

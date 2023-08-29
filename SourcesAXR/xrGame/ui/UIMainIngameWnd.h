@@ -56,6 +56,16 @@ public:
 	CUIStatic*			m_ind_boost_health;
 	CUIStatic*			m_ind_boost_power;
 	CUIStatic*			m_ind_boost_rad;
+	CUIStatic*			m_ind_boost_satiety;
+	CUIStatic*			m_ind_boost_thirst;
+	CUIStatic*			m_ind_boost_psy_health;
+	CUIStatic*			m_ind_boost_intoxication;
+	CUIStatic*			m_ind_boost_sleepeness;
+	CUIStatic*			m_ind_boost_alcoholism;
+	CUIStatic*			m_ind_boost_hangover;
+	CUIStatic*			m_ind_boost_narcotism;
+	CUIStatic*			m_ind_boost_withdrawal;
+
 	CUIStatic*			m_ind_battery;
 
 public:

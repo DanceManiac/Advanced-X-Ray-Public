@@ -50,7 +50,18 @@ void CEntityCondition::script_register(lua_State* L)
                 value("eBoostExplImmunity",             int(EBoostParams::eBoostExplImmunity)),
                 value("eBoostStrikeImmunity",           int(EBoostParams::eBoostStrikeImmunity)),
                 value("eBoostFireWoundImmunity",        int(EBoostParams::eBoostFireWoundImmunity)),
-                value("eBoostWoundImmunity",            int(EBoostParams::eBoostWoundImmunity))
+                value("eBoostWoundImmunity",            int(EBoostParams::eBoostWoundImmunity)),
+
+                value("eBoostSatietyRestore",           int(EBoostParams::eBoostSatietyRestore)),
+                value("eBoostThirstRestore",            int(EBoostParams::eBoostThirstRestore)),
+                value("eBoostPsyHealthRestore",         int(EBoostParams::eBoostPsyHealthRestore)),
+                value("eBoostIntoxicationRestore",      int(EBoostParams::eBoostIntoxicationRestore)),
+                value("eBoostSleepenessRestore",        int(EBoostParams::eBoostSleepenessRestore)),
+                value("eBoostAlcoholismRestore",        int(EBoostParams::eBoostAlcoholismRestore)),
+                value("eBoostHangoverRestore",          int(EBoostParams::eBoostHangoverRestore)),
+                value("eBoostNarcotismRestore",         int(EBoostParams::eBoostNarcotismRestore)),
+                value("eBoostWithdrawalRestore",        int(EBoostParams::eBoostWithdrawalRestore)),
+                value("eBoostTimeFactor",               int(EBoostParams::eBoostTimeFactor))
             ]
     ];
 };
@@ -103,6 +114,15 @@ void CActorCondition::script_register(lua_State* L)
             .def("BoostRadiationProtection",    &CActorCondition::BoostRadiationProtection)
             .def("BoostTelepaticProtection",    &CActorCondition::BoostTelepaticProtection)
             .def("BoostChemicalBurnProtection", &CActorCondition::BoostChemicalBurnProtection)
+            .def("BoostSatietyRestore",         &CActorCondition::BoostSatietyRestore)
+            .def("BoostThirstRestore",          &CActorCondition::BoostThirstRestore)
+            .def("BoostPsyHealthRestore",       &CActorCondition::BoostPsyHealthRestore)
+            .def("BoostIntoxicationRestore",    &CActorCondition::BoostIntoxicationRestore)
+            .def("BoostSleepenessRestore",      &CActorCondition::BoostSleepenessRestore)
+            .def("BoostAlcoholismRestore",      &CActorCondition::BoostAlcoholismRestore)
+            .def("BoostHangoverRestore",        &CActorCondition::BoostHangoverRestore)
+            .def("BoostNarcotismRestore",       &CActorCondition::BoostNarcotismRestore)
+            .def("BoostWithdrawalRestore",      &CActorCondition::BoostWithdrawalRestore)
             .def("BoostTimeFactor",             &CActorCondition::BoostTimeFactor)
             .def("IsLimping",                   &CActorCondition::IsLimping)
             .def("IsCantWalk",                  &CActorCondition::IsCantWalk)

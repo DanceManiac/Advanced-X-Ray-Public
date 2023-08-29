@@ -720,6 +720,15 @@ void SBooster::Load(const shared_str& sect, EBoostParams type)
 		case eBoostRadiationProtection: fBoostValue = pSettings->r_float(sect.c_str(), "boost_radiation_protection"); break;
 		case eBoostTelepaticProtection: fBoostValue = pSettings->r_float(sect.c_str(), "boost_telepat_protection"); break;
 		case eBoostChemicalBurnProtection: fBoostValue = pSettings->r_float(sect.c_str(), "boost_chemburn_protection"); break;
+		case eBoostSatietyRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_satiety_restore"); break;
+		case eBoostThirstRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_thirst_restore"); break;
+		case eBoostPsyHealthRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_psy_health_restore"); break;
+		case eBoostIntoxicationRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_intoxication_restore"); break;
+		case eBoostSleepenessRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_sleepeness_restore"); break;
+		case eBoostAlcoholismRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_alcoholism_restore"); break;
+		case eBoostHangoverRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_hangover_restore"); break;
+		case eBoostNarcotismRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_narcotism_restore"); break;
+		case eBoostWithdrawalRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_withdrawal_restore"); break;
 		case eBoostTimeFactor: fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor"); break;
 		default: NODEFAULT;	
 	}

@@ -121,6 +121,15 @@ LPCSTR ef_boosters_values_names[] =
 	"boost_power_restore",
 	"boost_radiation_restore",
 	"boost_bleeding_restore",
+	"boost_satiety_restore",
+	"boost_thirst_restore",
+	"boost_psy_health_restore",
+	"boost_intoxication_restore",
+	"boost_sleepeness_restore",
+	"boost_alcoholism_restore",
+	"boost_hangover_restore",
+	"boost_narcotism_restore",
+	"boost_withdrawal_restore",
 	"boost_max_weight",
 	"boost_radiation_protection",
 	"boost_telepat_protection",
@@ -142,6 +151,15 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_power",
 	"ui_inv_radiation",
 	"ui_inv_bleeding",
+	"ui_inv_satiety",
+	"ui_inv_thirst",
+	"ui_inv_psy_health",
+	"ui_inv_intoxication",
+	"ui_inv_sleepeness",
+	"ui_inv_alcoholism",
+	"ui_inv_hangover",
+	"ui_inv_narcotism",
+	"ui_inv_withdrawal",
 	"ui_inv_outfit_additional_weight",
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",
@@ -256,9 +274,18 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 				case eBoostHpRestore: 
 				case eBoostPowerRestore: 
 				case eBoostBleedingRestore: 
+				case eBoostPsyHealthRestore:
+				case eBoostIntoxicationRestore:
+				case eBoostSleepenessRestore:
+				case eBoostAlcoholismRestore:
+				case eBoostHangoverRestore:
+				case eBoostNarcotismRestore:
+				case eBoostWithdrawalRestore:
 				case eBoostMaxWeight: 
 					max_val = 1.0f;
 					break;
+				case eBoostSatietyRestore:
+				case eBoostThirstRestore:
 				case eBoostRadiationRestore: 
 					max_val = -1.0f;
 					break;
@@ -284,14 +311,13 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			val /= max_val;
 			int vle = 2;
 			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
-			if (i == _item_boost_radiation_restore)
-				vle = 1; 
-			m_booster_items[i]->SetValue(val, vle);
+			if (i == _item_boost_radiation_restore || (i >= _item_boost_intoxication_restore && i < _item_boost_max_weight))
+				vle = 1;
 
+			m_booster_items[i]->SetValue(val, vle);
 			pos.set(m_booster_items[i]->GetWndPos());
 			pos.y = h;
 			m_booster_items[i]->SetWndPos(pos);
-
 			h += m_booster_items[i]->GetWndSize().y;
 			AttachChild(m_booster_items[i]);
 		}

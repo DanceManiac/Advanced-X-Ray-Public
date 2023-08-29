@@ -60,7 +60,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fHangover					= 0.0f;
 	m_fNarcotism				= 0.0f;
 	m_fWithdrawal				= 0.0f;
-	m_fDrugs					= 0.f;
+	m_fDrugs					= 0.0f;
 	m_fV_PsyHealth_Health		= 0.0f;
 
 	m_bPsyHealthKillActor		= false;
@@ -1073,6 +1073,15 @@ void CActorCondition::BoostParameters(const SBooster& B, bool need_change_tf)
 			case eBoostRadiationProtection: BoostRadiationProtection(B.fBoostValue); break;
 			case eBoostTelepaticProtection: BoostTelepaticProtection(B.fBoostValue); break;
 			case eBoostChemicalBurnProtection: BoostChemicalBurnProtection(B.fBoostValue); break;
+			case eBoostSatietyRestore: BoostSatietyRestore(B.fBoostValue); break;
+			case eBoostThirstRestore: BoostThirstRestore(B.fBoostValue); break;
+			case eBoostPsyHealthRestore: BoostPsyHealthRestore(B.fBoostValue); break;
+			case eBoostIntoxicationRestore: BoostIntoxicationRestore(B.fBoostValue); break;
+			case eBoostSleepenessRestore: BoostSleepenessRestore(B.fBoostValue); break;
+			case eBoostAlcoholismRestore: BoostAlcoholismRestore(B.fBoostValue); break;
+			case eBoostHangoverRestore: BoostHangoverRestore(B.fBoostValue); break;
+			case eBoostNarcotismRestore: BoostNarcotismRestore(B.fBoostValue); break;
+			case eBoostWithdrawalRestore: BoostWithdrawalRestore(B.fBoostValue); break;
 			case eBoostTimeFactor: need_change_tf ? BoostTimeFactor(B.fBoostValue) : BoostTimeFactor(0.0f); break;
 			default: NODEFAULT;	
 		}
@@ -1102,6 +1111,15 @@ void CActorCondition::DisableBoostParameters(const SBooster& B)
 		case eBoostRadiationProtection: BoostRadiationProtection(-B.fBoostValue); break;
 		case eBoostTelepaticProtection: BoostTelepaticProtection(-B.fBoostValue); break;
 		case eBoostChemicalBurnProtection: BoostChemicalBurnProtection(-B.fBoostValue); break;
+		case eBoostSatietyRestore: BoostSatietyRestore(-B.fBoostValue); break;
+		case eBoostThirstRestore: BoostThirstRestore(-B.fBoostValue); break;
+		case eBoostPsyHealthRestore: BoostPsyHealthRestore(-B.fBoostValue); break;
+		case eBoostIntoxicationRestore: BoostIntoxicationRestore(-B.fBoostValue); break;
+		case eBoostSleepenessRestore: BoostSleepenessRestore(-B.fBoostValue); break;
+		case eBoostAlcoholismRestore: BoostAlcoholismRestore(-B.fBoostValue); break;
+		case eBoostHangoverRestore: BoostHangoverRestore(-B.fBoostValue); break;
+		case eBoostNarcotismRestore: BoostNarcotismRestore(-B.fBoostValue); break;
+		case eBoostWithdrawalRestore: BoostWithdrawalRestore(-B.fBoostValue); break;
 		case eBoostTimeFactor: BoostTimeFactor(-B.fBoostValue); break;
 		default: NODEFAULT;	
 	}
@@ -1226,6 +1244,43 @@ void CActorCondition::BoostTimeFactor(const float value)
 
 	Device.time_factor(m_fBoostTimeFactor);
 	psSpeedOfSound = m_fBoostTimeFactor;
+}
+
+void CActorCondition::BoostSatietyRestore(const float value)
+{
+	m_fV_Satiety += value;
+}
+void CActorCondition::BoostThirstRestore(const float value)
+{
+	m_fV_Thirst += value;
+}
+void CActorCondition::BoostPsyHealthRestore(const float value)
+{
+	m_change_v.m_fV_PsyHealth += value;
+}
+void CActorCondition::BoostIntoxicationRestore(const float value)
+{
+	m_fV_Intoxication += value;
+}
+void CActorCondition::BoostSleepenessRestore(const float value)
+{
+	m_fV_Sleepeness += value;
+}
+void CActorCondition::BoostAlcoholismRestore(const float value)
+{
+	m_fV_Alcoholism += value;
+}
+void CActorCondition::BoostHangoverRestore(const float value)
+{
+	m_fV_Hangover += value;
+}
+void CActorCondition::BoostNarcotismRestore(const float value)
+{
+	m_fV_Narcotism += value;
+}
+void CActorCondition::BoostWithdrawalRestore(const float value)
+{
+	m_fV_Withdrawal += value;
 }
 
 void CActorCondition::UpdateTutorialThresholds()

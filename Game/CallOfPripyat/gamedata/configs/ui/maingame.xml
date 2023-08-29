@@ -54,6 +54,34 @@
     <indicator_booster_rad x="314" y="660" width="31" height="41">
 		<texture>ui_inGame2_shield_radiation_cleanup</texture>
 	</indicator_booster_rad>
+	
+	<indicator_booster_satiety x="20" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Satiety</texture>
+	</indicator_booster_satiety>
+	<indicator_booster_thirst x="62" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Thirst</texture>
+	</indicator_booster_thirst>
+	<indicator_booster_psy_health x="104" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Psy_Health</texture>
+	</indicator_booster_psy_health>
+	<indicator_booster_intoxication x="146" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Intoxication</texture>
+	</indicator_booster_intoxication>
+	<indicator_booster_sleepeness x="188" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Sleepeness</texture>
+	</indicator_booster_sleepeness>
+	<indicator_booster_alcoholism x="230" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Alcoholism</texture>
+	</indicator_booster_alcoholism>
+	<indicator_booster_hangover x="272" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Hangover</texture>
+	</indicator_booster_hangover>
+	<indicator_booster_narcotism x="314" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Narcotism</texture>
+	</indicator_booster_narcotism>
+	<indicator_booster_withdrawal x="356" y="610" width="24" height="41">
+		<texture>ui_inGame2_shield_Withdrawal</texture>
+	</indicator_booster_withdrawal>
 <!--
 	<radiation_static x="0" y="0" width="64" height="64">
 		<texture>ui_hud_icon_radiation</texture>

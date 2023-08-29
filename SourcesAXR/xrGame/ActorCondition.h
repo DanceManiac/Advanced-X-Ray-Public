@@ -94,6 +94,15 @@ public:
 	void				BoostTelepaticProtection	(const float value);
 	void				BoostChemicalBurnProtection	(const float value);
 	void				BoostTimeFactor				(const float value);
+	void				BoostSatietyRestore			(const float value);
+	void				BoostThirstRestore			(const float value);
+	void				BoostPsyHealthRestore		(const float value);
+	void				BoostIntoxicationRestore	(const float value);
+	void				BoostSleepenessRestore		(const float value);
+	void				BoostAlcoholismRestore		(const float value);
+	void				BoostHangoverRestore		(const float value);
+	void				BoostNarcotismRestore		(const float value);
+	void				BoostWithdrawalRestore		(const float value);
 	BOOSTER_MAP			GetCurBoosterInfluences		() {return m_booster_influences;};
 
 	// хромание при потере сил и здоровья
