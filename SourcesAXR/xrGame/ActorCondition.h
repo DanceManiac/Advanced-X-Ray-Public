@@ -99,8 +99,10 @@ public:
 	void				BoostPsyHealthRestore		(const float value);
 	void				BoostIntoxicationRestore	(const float value);
 	void				BoostSleepenessRestore		(const float value);
+	void				BoostAlcoholRestore			(const float value);
 	void				BoostAlcoholismRestore		(const float value);
 	void				BoostHangoverRestore		(const float value);
+	void				BoostDrugsRestore			(const float value);
 	void				BoostNarcotismRestore		(const float value);
 	void				BoostWithdrawalRestore		(const float value);
 	BOOSTER_MAP			GetCurBoosterInfluences		() {return m_booster_influences;};

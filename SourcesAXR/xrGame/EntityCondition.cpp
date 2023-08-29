@@ -725,8 +725,10 @@ void SBooster::Load(const shared_str& sect, EBoostParams type)
 		case eBoostPsyHealthRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_psy_health_restore"); break;
 		case eBoostIntoxicationRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_intoxication_restore"); break;
 		case eBoostSleepenessRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_sleepeness_restore"); break;
+		case eBoostAlcoholRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_alcohol_restore"); break;
 		case eBoostAlcoholismRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_alcoholism_restore"); break;
 		case eBoostHangoverRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_hangover_restore"); break;
+		case eBoostDrugsRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_drugs_restore"); break;
 		case eBoostNarcotismRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_narcotism_restore"); break;
 		case eBoostWithdrawalRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_withdrawal_restore"); break;
 		case eBoostTimeFactor: fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor"); break;

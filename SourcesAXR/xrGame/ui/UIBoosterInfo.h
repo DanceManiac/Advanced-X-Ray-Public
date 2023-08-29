@@ -30,8 +30,10 @@ protected:
 		_item_boost_psy_health_restore,
 		_item_boost_intoxication_restore,
 		_item_boost_sleepeness_restore,
+		_item_boost_alcohol_restore,
 		_item_boost_alcoholism_restore,
 		_item_boost_hangover_restore,
+		_item_boost_drugs_restore,
 		_item_boost_narcotism_restore,
 		_item_boost_withdrawal_restore,
 		_item_boost_max_weight,
@@ -73,8 +75,10 @@ protected:
 		_item_quick_sleepeness,
 
 		//HoP
+		_item_quick_alcohol,
 		_item_quick_alcoholism,
 		_item_quick_hangover,
+		_item_quick_drugs,
 		_item_quick_narcotism,
 		_item_quick_withdrawal,
 

@@ -49,8 +49,10 @@ LPCSTR ef_quick_eat_values_names[] =
 	"eat_sleepeness",
 
 	//HoP
+	"eat_alcohol",
 	"eat_alcoholism",
 	"eat_hangover",
+	"eat_drugs",
 	"eat_narcotism",
 	"eat_withdrawal"
 };
@@ -74,8 +76,10 @@ LPCSTR quick_eat_influence_caption[] =
 	"ui_inv_sleepeness",
 
 	//HoP
+	"ui_inv_alcohol",
 	"ui_inv_alcoholism",
 	"ui_inv_hangover",
+	"ui_inv_drugs",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal"
 };
@@ -99,8 +103,10 @@ LPCSTR ef_quick_eat_nodes_names[] =
 	"quick_eat_sleepeness",
 
 	//HoP
+	"quick_eat_alcohol",
 	"quick_eat_alcoholism",
 	"quick_eat_hangover",
+	"quick_eat_drugs",
 	"quick_eat_narcotism",
 	"quick_eat_withdrawal"
 };

@@ -1078,8 +1078,10 @@ void CActorCondition::BoostParameters(const SBooster& B, bool need_change_tf)
 			case eBoostPsyHealthRestore: BoostPsyHealthRestore(B.fBoostValue); break;
 			case eBoostIntoxicationRestore: BoostIntoxicationRestore(B.fBoostValue); break;
 			case eBoostSleepenessRestore: BoostSleepenessRestore(B.fBoostValue); break;
+			case eBoostAlcoholRestore: BoostAlcoholRestore(B.fBoostValue); break;
 			case eBoostAlcoholismRestore: BoostAlcoholismRestore(B.fBoostValue); break;
 			case eBoostHangoverRestore: BoostHangoverRestore(B.fBoostValue); break;
+			case eBoostDrugsRestore: BoostDrugsRestore(B.fBoostValue); break;
 			case eBoostNarcotismRestore: BoostNarcotismRestore(B.fBoostValue); break;
 			case eBoostWithdrawalRestore: BoostWithdrawalRestore(B.fBoostValue); break;
 			case eBoostTimeFactor: need_change_tf ? BoostTimeFactor(B.fBoostValue) : BoostTimeFactor(0.0f); break;
@@ -1116,8 +1118,10 @@ void CActorCondition::DisableBoostParameters(const SBooster& B)
 		case eBoostPsyHealthRestore: BoostPsyHealthRestore(-B.fBoostValue); break;
 		case eBoostIntoxicationRestore: BoostIntoxicationRestore(-B.fBoostValue); break;
 		case eBoostSleepenessRestore: BoostSleepenessRestore(-B.fBoostValue); break;
+		case eBoostAlcoholRestore: BoostAlcoholRestore(-B.fBoostValue); break;
 		case eBoostAlcoholismRestore: BoostAlcoholismRestore(-B.fBoostValue); break;
 		case eBoostHangoverRestore: BoostHangoverRestore(-B.fBoostValue); break;
+		case eBoostDrugsRestore: BoostDrugsRestore(-B.fBoostValue); break;
 		case eBoostNarcotismRestore: BoostNarcotismRestore(-B.fBoostValue); break;
 		case eBoostWithdrawalRestore: BoostWithdrawalRestore(-B.fBoostValue); break;
 		case eBoostTimeFactor: BoostTimeFactor(-B.fBoostValue); break;
@@ -1266,6 +1270,10 @@ void CActorCondition::BoostSleepenessRestore(const float value)
 {
 	m_fV_Sleepeness += value;
 }
+void CActorCondition::BoostAlcoholRestore(const float value)
+{
+	m_fV_Alcohol += value;
+}
 void CActorCondition::BoostAlcoholismRestore(const float value)
 {
 	m_fV_Alcoholism += value;
@@ -1273,6 +1281,10 @@ void CActorCondition::BoostAlcoholismRestore(const float value)
 void CActorCondition::BoostHangoverRestore(const float value)
 {
 	m_fV_Hangover += value;
+}
+void CActorCondition::BoostDrugsRestore(const float value)
+{
+	m_fV_Drugs += value;
 }
 void CActorCondition::BoostNarcotismRestore(const float value)
 {

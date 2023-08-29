@@ -59,8 +59,10 @@ LPCSTR ef_quick_eat_values_names[] =
 	"eat_sleepeness",
 
 	//HoP
+	"eat_alcohol",
 	"eat_alcoholism",
 	"eat_hangover",
+	"eat_drugs",
 	"eat_narcotism",
 	"eat_withdrawal"
 };
@@ -84,8 +86,10 @@ LPCSTR quick_eat_influence_caption[] =
 	"ui_inv_sleepeness",
 
 	//HoP
+	"ui_inv_alcohol",
 	"ui_inv_alcoholism",
 	"ui_inv_hangover",
+	"ui_inv_drugs",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal"
 };
@@ -109,8 +113,10 @@ LPCSTR ef_quick_eat_nodes_names[] =
 	"quick_eat_sleepeness",
 
 	//HoP
+	"quick_eat_alcohol",
 	"quick_eat_alcoholism",
 	"quick_eat_hangover",
+	"quick_eat_drugs",
 	"quick_eat_narcotism",
 	"quick_eat_withdrawal"
 };
@@ -126,8 +132,10 @@ LPCSTR ef_boosters_values_names[] =
 	"boost_psy_health_restore",
 	"boost_intoxication_restore",
 	"boost_sleepeness_restore",
+	"boost_alcohol_restore",
 	"boost_alcoholism_restore",
 	"boost_hangover_restore",
+	"boost_drugs_restore",
 	"boost_narcotism_restore",
 	"boost_withdrawal_restore",
 	"boost_max_weight",
@@ -156,8 +164,10 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_psy_health",
 	"ui_inv_intoxication",
 	"ui_inv_sleepeness",
+	"ui_inv_alcohol",
 	"ui_inv_alcoholism",
 	"ui_inv_hangover",
+	"ui_inv_drugs",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
 	"ui_inv_outfit_additional_weight",
@@ -277,8 +287,10 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 				case eBoostPsyHealthRestore:
 				case eBoostIntoxicationRestore:
 				case eBoostSleepenessRestore:
+				case eBoostAlcoholRestore:
 				case eBoostAlcoholismRestore:
 				case eBoostHangoverRestore:
+				case eBoostDrugsRestore:
 				case eBoostNarcotismRestore:
 				case eBoostWithdrawalRestore:
 				case eBoostMaxWeight: 

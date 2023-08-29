@@ -57,8 +57,10 @@ void CEntityCondition::script_register(lua_State* L)
                 value("eBoostPsyHealthRestore",         int(EBoostParams::eBoostPsyHealthRestore)),
                 value("eBoostIntoxicationRestore",      int(EBoostParams::eBoostIntoxicationRestore)),
                 value("eBoostSleepenessRestore",        int(EBoostParams::eBoostSleepenessRestore)),
+                value("eBoostAlcoholRestore",           int(EBoostParams::eBoostAlcoholRestore)),
                 value("eBoostAlcoholismRestore",        int(EBoostParams::eBoostAlcoholismRestore)),
                 value("eBoostHangoverRestore",          int(EBoostParams::eBoostHangoverRestore)),
+                value("eBoostDrugsRestore",             int(EBoostParams::eBoostDrugsRestore)),
                 value("eBoostNarcotismRestore",         int(EBoostParams::eBoostNarcotismRestore)),
                 value("eBoostWithdrawalRestore",        int(EBoostParams::eBoostWithdrawalRestore)),
                 value("eBoostTimeFactor",               int(EBoostParams::eBoostTimeFactor))
@@ -119,8 +121,10 @@ void CActorCondition::script_register(lua_State* L)
             .def("BoostPsyHealthRestore",       &CActorCondition::BoostPsyHealthRestore)
             .def("BoostIntoxicationRestore",    &CActorCondition::BoostIntoxicationRestore)
             .def("BoostSleepenessRestore",      &CActorCondition::BoostSleepenessRestore)
+            .def("BoostAlcoholRestore",         &CActorCondition::BoostAlcoholRestore)
             .def("BoostAlcoholismRestore",      &CActorCondition::BoostAlcoholismRestore)
             .def("BoostHangoverRestore",        &CActorCondition::BoostHangoverRestore)
+            .def("BoostDrugsRestore",           &CActorCondition::BoostDrugsRestore)
             .def("BoostNarcotismRestore",       &CActorCondition::BoostNarcotismRestore)
             .def("BoostWithdrawalRestore",      &CActorCondition::BoostWithdrawalRestore)
             .def("BoostTimeFactor",             &CActorCondition::BoostTimeFactor)
