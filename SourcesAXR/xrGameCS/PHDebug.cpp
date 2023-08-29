@@ -342,7 +342,7 @@ string1024 s;
 bool	 rendered;
 	SPHDBGOutText(LPCSTR t)
 	{
-		strcpy_s(s,t);
+		xr_strcpy(s,t);
 		rendered=false;
 	}
 	virtual void render()
@@ -353,7 +353,7 @@ bool	 rendered;
 			HUD().Font().pFontStat->SetHeight(HUD().Font().pFontStat->GetHeight() * dbg_text_height_scale/dbg_text_current_height_scale );
 			dbg_text_current_height_scale = dbg_text_height_scale;
 		}
-		HUD().Font().pFontStat->OutNext(s);
+		HUD().Font().pFontStat->OutNext("%s",s);
 		rendered=true;
 	}
 };

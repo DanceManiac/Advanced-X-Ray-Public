@@ -87,7 +87,11 @@
 #	include "key_binding_registrator.h"
 #	include "fs_registrator.h"
 #	include "console_registrator.h"
-#	include	"../xrPhysics/PhysicsShell.h"
+#	include	"physics_shell_scripted.h"
+#	include	"physics_joint_scripted.h"
+#	include	"physics_element_scripted.h"
+#	include	"physics_world_scripted.h"
+
 #	include	"HangingLamp.h"
 #	include "holder_custom.h"
 #	include "GameTask.h"

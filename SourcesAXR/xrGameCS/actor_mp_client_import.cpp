@@ -61,21 +61,6 @@ void CActorMP::net_Import	( NET_Packet &P)
 #endif // #ifdef DEBUG
 		inventory().SetActiveSlot(ActiveSlot);
 	}
-/*
-	//if (OnClient())
-	//{
-	// we can comparte the pointers... but it's dangerous...
-	if ( !( Level().CurrentControlEntity() &&
-		(Level().CurrentControlEntity()->ID() == object_id()) ) )
-	{
-		if (ActiveSlot >= inventory().m_slots.size())
-			ActiveSlot = static_cast<u32>(NO_ACTIVE_SLOT);
-	
-		if (inventory().GetActiveSlot() != ActiveSlot)
-				inventory().Activate(ActiveSlot);
-	}
-	//}
-*/
 
 	N.mstate			= m_state_holder.state().body_state_flags;
 

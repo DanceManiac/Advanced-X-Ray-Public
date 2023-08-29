@@ -63,7 +63,7 @@ void CDbgLuaHelper::errormessageLuaBind(lua_State* l)
 	L = l;
 
 	char err_msg[8192];
-	sprintf_s(err_msg,"%s",lua_tostring(L,-1));
+	xr_sprintf(err_msg,"%s",lua_tostring(L,-1));
 	m_pThis->debugger()->Write(err_msg);
 	m_pThis->debugger()->Write("\n");
 	m_pThis->debugger()->ErrorBreak();
@@ -101,7 +101,7 @@ int CDbgLuaHelper::errormessageLua(lua_State* l)
 			continue;
 		}
 
-		sprintf_s(buff, "%4d-  ", level-1);
+		xr_sprintf(buff, "%4d-  ", level-1);
 		lua_pushstring(L, buff);
 		lua_getinfo(L, "Snl", &ar);
 		lua_pushfstring(L, "%s:", ar.short_src);
@@ -258,27 +258,27 @@ void CDbgLuaHelper::DrawStackTrace()
 		{
 			szDesc[0] = '\0';
 /*			if ( ar.name )
-				strcat(szDesc, ar.name);
-			strcat(szDesc, ",");
+				xr_strcat(szDesc, ar.name);
+			xr_strcat(szDesc, ",");
 			if ( ar.namewhat )
-				strcat(szDesc, ar.namewhat);
-			strcat(szDesc, ",");
+				xr_strcat(szDesc, ar.namewhat);
+			xr_strcat(szDesc, ",");
 			if ( ar.what )
-				strcat(szDesc, ar.what);
-			strcat(szDesc, ",");
+				xr_strcat(szDesc, ar.what);
+			xr_strcat(szDesc, ",");
 */
 			if ( ar.name ){
-				strcat(szDesc, ar.name);
-				strcat(szDesc, " ");
+				xr_strcat(szDesc, ar.name);
+				xr_strcat(szDesc, " ");
 			}
 
 			char szTmp[6];
 
-			strcat(szDesc, itoa(ar.currentline,szTmp,10));
-			strcat(szDesc, " ");
+			xr_strcat(szDesc, itoa(ar.currentline,szTmp,10));
+			xr_strcat(szDesc, " ");
 
 			if ( ar.short_src )
-				strcat(szDesc, ar.short_src);
+				xr_strcat(szDesc, ar.short_src);
 
 			debugger()->AddStackTrace(szDesc, ar.source+1, ar.currentline);
 		}
@@ -316,7 +316,7 @@ void CDbgLuaHelper::DrawGlobalVariables()
 	while (lua_next(L, -2))
 	{
 //!!!!	TRACE2("%s - %s\n",	lua_typename(L, lua_type(L, -2)), lua_typename(L, lua_type(L, -1)));
-//		sprintf_s(var, "%s-%s",	lua_typename(L, lua_type(L, -2)), lua_typename(L, lua_type(L, -1)) );
+//		xr_sprintf(var, "%s-%s",	lua_typename(L, lua_type(L, -2)), lua_typename(L, lua_type(L, -1)) );
 //		CScriptDebugger::GetDebugger()->AddLocalVariable(var, "global", "_g_");
 		lua_pop(L, 1); // pop value, keep key for next iteration;
 	}
@@ -336,7 +336,7 @@ bool CDbgLuaHelper::GetCalltip(const char *szWord, char *szCalltip, int sz_callt
 			{
 				char szRet[64];
 				Describe(szRet, -1, sizeof(szRet));
-				sprintf_s(szCalltip, sz_calltip, "local %s : %s ", name, szRet);
+				xr_sprintf(szCalltip, sz_calltip, "local %s : %s ", name, szRet);
 				lua_pop(L, 1);  /* remove variable value */
 				return true;
 			}
@@ -355,7 +355,7 @@ bool CDbgLuaHelper::GetCalltip(const char *szWord, char *szCalltip, int sz_callt
 		{
 			char szRet[64];
 			Describe(szRet, -1, sizeof(szRet));
-			sprintf_s(szCalltip, sz_calltip, "global %s : %s ", name, szRet);
+			xr_sprintf(szCalltip, sz_calltip, "global %s : %s ", name, szRet);
 
 			lua_pop(L, 3);  /* remove table, key, value */
 
@@ -377,7 +377,7 @@ bool CDbgLuaHelper::Eval(const char *szCode, char* szRet,int szret_size)
 	int top = lua_gettop(L);	
 	int status = luaL_loadbuffer(L, szCode, xr_strlen(szCode), szCode);
 	if ( status )
-		sprintf_s(szRet, szret_size, "%s", luaL_checkstring(L, -1));
+		xr_sprintf(szRet, szret_size, "%s", luaL_checkstring(L, -1));
 	else
 	{
 		status = lua_pcall(L, 0, LUA_MULTRET, 0);  /* call main */
@@ -385,7 +385,7 @@ bool CDbgLuaHelper::Eval(const char *szCode, char* szRet,int szret_size)
 		{
 			const char* szErr = luaL_checkstring(L, -1);
 			const char* szErr2 = strstr(szErr, ": ");
-			sprintf_s(szRet, szret_size, "%s", szErr2?(szErr2+2):szErr);
+			xr_sprintf(szRet, szret_size, "%s", szErr2?(szErr2+2):szErr);
 		}
 		else
 			Describe(szRet, -1, szret_size);
@@ -407,19 +407,19 @@ void CDbgLuaHelper::Describe(char *szRet, int nIndex, int szRet_size)
 	switch(ntype)
 	{
 	case LUA_TNUMBER:
-		sprintf_s(value, "%f", lua_tonumber(L, nIndex));
+		xr_sprintf(value, "%f", lua_tonumber(L, nIndex));
 		break;
 	case LUA_TSTRING:
-		sprintf_s(value, "%.63s", lua_tostring(L, nIndex));
+		xr_sprintf(value, "%.63s", lua_tostring(L, nIndex));
 		break;
 	case LUA_TBOOLEAN:
-		sprintf_s(value, "%s", lua_toboolean(L, nIndex) ? "true" : "false");
+		xr_sprintf(value, "%s", lua_toboolean(L, nIndex) ? "true" : "false");
 		break;
 	default:
 		value[0] = '\0';
 		break;
 	}
-	sprintf_s(szRet, szRet_size, "%s : %.64s", type, value);
+	xr_sprintf(szRet, szRet_size, "%s : %.64s", type, value);
 }
 
 void CDbgLuaHelper::CoverGlobals()
@@ -468,30 +468,30 @@ void CDbgLuaHelper::RestoreGlobals()
 void CDbgLuaHelper::DrawVariable(lua_State * l, const char* name, bool bOpenTable)
 {
 	Variable var;
-	strcpy_s(var.szName, name );
+	xr_strcpy(var.szName, name );
 
 	const char * type;
 	int ntype = lua_type(l, -1);
 	type = lua_typename(l, ntype);
-	strcpy_s(var.szType, type);
+	xr_strcpy(var.szType, type);
 
 	char value[64];
 
 	switch(ntype)
 	{
 	case LUA_TNUMBER:
-		sprintf_s(value, "%f", lua_tonumber(l, -1));
-		strcpy_s(var.szValue, value );
+		xr_sprintf(value, "%f", lua_tonumber(l, -1));
+		xr_strcpy(var.szValue, value );
 		break;
 
 	case LUA_TBOOLEAN:
-		sprintf_s(value, "%s", lua_toboolean(L, -1) ? "true" : "false");
-		strcpy_s(var.szValue, value );
+		xr_sprintf(value, "%s", lua_toboolean(L, -1) ? "true" : "false");
+		xr_strcpy(var.szValue, value );
 		break;
 
 	case LUA_TSTRING:
-		sprintf_s(value, "%.63s", lua_tostring(l, -1));
-		strcpy_s(var.szValue, value );
+		xr_sprintf(value, "%.63s", lua_tostring(l, -1));
+		xr_strcpy(var.szValue, value );
 		break;
 
 
@@ -535,9 +535,9 @@ void CDbgLuaHelper::DrawTable(lua_State *l, LPCSTR S, bool bRecursive)
 		char stype[256];
 		char sname[256];
 		char sFullName[256];
-		sprintf_s(stype,"%s",lua_typename(l, lua_type(l, -1)));
-		sprintf_s(sname,"%s",lua_tostring(l, -2));
-		sprintf_s(sFullName,"%s.%s",S,sname);
+		xr_sprintf(stype,"%s",lua_typename(l, lua_type(l, -1)));
+		xr_sprintf(sname,"%s",lua_tostring(l, -2));
+		xr_sprintf(sFullName,"%s.%s",S,sname);
 		DrawVariable(l, sFullName, false);
 
 		lua_pop		(l, 1);  /* removes `value'; keeps `key' for next iteration */

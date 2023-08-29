@@ -65,7 +65,7 @@ LPCSTR	file_header = 0;
 #endif // PURE_ALLOC
 
 #ifndef USE_DL_ALLOCATOR
-static void *lua_alloc_xr	(void *ud, void *ptr, size_t osize, size_t nsize) {
+static void *lua_alloc		(void *ud, void *ptr, size_t osize, size_t nsize) {
   (void)ud;
   (void)osize;
   if (nsize == 0) {
@@ -352,15 +352,15 @@ int CScriptStorage::vscript_log		(ScriptStorage::ELuaMessageType tLuaMessageType
 		default : NODEFAULT;
 	}
 	
-	strcpy_s	(S2,S);
+	xr_strcpy	(S2,S);
 	S1		= S2 + xr_strlen(S);
 	int		l_iResult = vsprintf(S1,caFormat,marker);
 	Msg		("%s",S2);
 	
-	strcpy_s	(S2,SS);
+	xr_strcpy	(S2,SS);
 	S1		= S2 + xr_strlen(SS);
 	vsprintf(S1,caFormat,marker);
-	strcat	(S2,"\r\n");
+	xr_strcat	(S2,"\r\n");
 
 #ifdef DEBUG
 #	ifndef ENGINE_BUILD
@@ -419,16 +419,16 @@ int __cdecl CScriptStorage::script_log	(ScriptStorage::ELuaMessageType tLuaMessa
 	return			(result);
 }
 
-bool CScriptStorage::parse_namespace(LPCSTR caNamespaceName, LPSTR b, LPSTR c)
+bool CScriptStorage::parse_namespace(LPCSTR caNamespaceName, LPSTR b, u32 const b_size, LPSTR c, u32 const c_size)
 {
-	strcpy			(b,"");
-	strcpy			(c,"");
-	LPSTR			S2	= xr_strdup(caNamespaceName);
+	*b				= 0;
+	*c				= 0;
+	LPSTR			S2;
+	STRCONCAT		(S2,caNamespaceName);
 	LPSTR			S	= S2;
 	for (int i=0;;++i) {
 		if (!xr_strlen(S)) {
 			script_log	(ScriptStorage::eLuaMessageTypeError,"the namespace name %s is incorrect!",caNamespaceName);
-			xr_free		(S2);
 			return		(false);
 		}
 		LPSTR			S1 = strchr(S,'.');
@@ -436,17 +436,17 @@ bool CScriptStorage::parse_namespace(LPCSTR caNamespaceName, LPSTR b, LPSTR c)
 			*S1				= 0;
 
 		if (i)
-			strcat		(b,"{");
-		strcat			(b,S);
-		strcat			(b,"=");
+			xr_strcat		(b,b_size,"{");
+		xr_strcat			(b,b_size,S);
+		xr_strcat			(b,b_size,"=");
 		if (i)
-			strcat		(c,"}");
+			xr_strcat		(c,c_size,"}");
 		if (S1)
 			S			= ++S1;
 		else
 			break;
 	}
-	xr_free			(S2);
+
 	return			(true);
 }
 
@@ -458,21 +458,45 @@ bool CScriptStorage::load_buffer	(lua_State *L, LPCSTR caBuffer, size_t tSize, L
 
 		LPCSTR			header = file_header;
 
-		if (!parse_namespace(caNameSpaceName,a,b))
+		if (!parse_namespace(caNameSpaceName,a,sizeof(a),b,sizeof(b)))
 			return		(false);
 
-		sprintf_s		(insert,header,caNameSpaceName,a,b);
+		xr_sprintf		(insert,header,caNameSpaceName,a,b);
 		u32				str_len = xr_strlen(insert);
-		LPSTR			script = xr_alloc<char>(str_len + tSize);
-		strcpy_s		(script, str_len + tSize, insert);
-		CopyMemory		(script + str_len,caBuffer,u32(tSize));
-//		try 
-		{
-			l_iErrorCode= luaL_loadbuffer(L,script,tSize + str_len,caScriptName);
+		u32 const total_size = str_len + tSize;
+		LPSTR			script = 0;
+		bool dynamic_allocation	= false;
+
+		__try {
+			if (total_size < 768*1024)
+				script					= (LPSTR)_alloca(total_size);
+			else {
+#ifdef DEBUG
+				script					= (LPSTR)Memory.mem_alloc(total_size, "lua script file");
+#else //#ifdef DEBUG
+				script					= (LPSTR)Memory.mem_alloc(total_size);
+#endif //#ifdef DEBUG
+				dynamic_allocation		= true;
+			}
 		}
-//		catch(...) {
-//			l_iErrorCode= LUA_ERRSYNTAX;
-//		}
+		__except(GetExceptionCode() == STATUS_STACK_OVERFLOW)
+		{
+			int							errcode = _resetstkoflw();
+			R_ASSERT2					(errcode, "Could not reset the stack after \"Stack overflow\" exception!");
+#ifdef DEBUG
+			script					= (LPSTR)Memory.mem_alloc(total_size, "lua script file (after exception)");
+#else //#ifdef DEBUG
+			script					= (LPSTR)Memory.mem_alloc(total_size);
+#endif //#ifdef DEBUG			
+			dynamic_allocation			= true;
+		};
+
+		xr_strcpy		(script, total_size, insert);
+		CopyMemory		(script + str_len,caBuffer,u32(tSize));
+
+			l_iErrorCode= luaL_loadbuffer(L,script,tSize + str_len,caScriptName);
+
+		if ( dynamic_allocation )
 		xr_free			(script);
 	}
 	else {
@@ -569,7 +593,7 @@ bool CScriptStorage::namespace_loaded(LPCSTR N, bool remove_from_stack)
 	lua_pushstring 			(lua(),"_G"); 
 	lua_rawget 				(lua(),LUA_GLOBALSINDEX); 
 	string256				S2;
-	strcpy_s					(S2,N);
+	xr_strcpy					(S2,N);
 	LPSTR					S = S2;
 	for (;;) { 
 		if (!xr_strlen(S)) {
@@ -651,7 +675,7 @@ bool CScriptStorage::object	(LPCSTR namespace_name, LPCSTR identifier, int type)
 luabind::object CScriptStorage::name_space(LPCSTR namespace_name)
 {
 	string256			S1;
-	strcpy_s				(S1,namespace_name);
+	xr_strcpy				(S1,namespace_name);
 	LPSTR				S = S1;
 	luabind::object		lua_namespace = luabind::get_globals(lua());
 	for (;;) {

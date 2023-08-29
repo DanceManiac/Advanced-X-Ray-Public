@@ -17,6 +17,14 @@
 using namespace luabind;
 
 #pragma optimize("s",on)
+
+
+void set_yaw (CSE_ALifeObjectPhysic *obj, const float yaw)
+{
+	obj->o_Angle.y = yaw;
+}
+
+
 void CSE_ALifeObjectHangingLamp::script_register(lua_State *L)
 {
 	module(L)[
@@ -37,6 +45,7 @@ void CSE_ALifeObjectPhysic::script_register(lua_State *L)
 			CSE_ALifeDynamicObjectVisual,
 			CSE_PHSkeleton
 		)
+		.def("set_yaw",				&set_yaw)
 	];
 }
 

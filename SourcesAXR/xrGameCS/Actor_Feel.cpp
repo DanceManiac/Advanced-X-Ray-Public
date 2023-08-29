@@ -136,8 +136,9 @@ void CActor::PickupModeUpdate()
 	if(	m_pObjectWeLookingAt									&& 
 		m_pObjectWeLookingAt->cast_inventory_item()				&& 
 		m_pObjectWeLookingAt->cast_inventory_item()->Useful()	&&
-		m_pUsableObject && m_pUsableObject->nonscript_usable()	&&
-		!Level().m_feel_deny.is_object_denied(m_pObjectWeLookingAt) )
+		m_pUsableObject											&& 
+		m_pUsableObject->nonscript_usable()						&& 
+		!Level().m_feel_deny.is_object_denied(m_pObjectWeLookingAt))
 	{
 		CInventoryItem* inv_item = smart_cast<CInventoryItem*>(m_pUsableObject);
 		if (GameConstants::GetLimitedInventory() && !inv_item->IsQuestItem() && MaxCarryInvCapacity() < (GetInventoryFullness() + inv_item->GetOccupiedInvSpace()))
@@ -185,34 +186,35 @@ void	CActor::PickupModeUpdate_COD	()
 
 	//---------------------------------------------------------------------------
 	ISpatialResult.clear_not_free	();
-	g_SpatialSpace->q_frustum(ISpatialResult, 0, STYPE_COLLIDEABLE, frustum);
-	//---------------------------------------------------------------------------
+	g_SpatialSpace->q_frustum		(ISpatialResult, 0, STYPE_COLLIDEABLE, frustum);
 
-	float maxlen = 1000.0f;
-	CInventoryItem* pNearestItem = NULL;
+	float maxlen					= 1000.0f;
+	CInventoryItem* pNearestItem	= NULL;
+
 	for (u32 o_it=0; o_it<ISpatialResult.size(); o_it++)
 	{
 		ISpatial*		spatial	= ISpatialResult[o_it];
 		CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (spatial->dcast_CObject        ());
-		if (0 == pIItem) continue;
-		if (pIItem->object().H_Parent() != NULL) continue;
-		if (!pIItem->CanTake()) continue;
+
+		if (0 == pIItem)											continue;
+		if (pIItem->object().H_Parent() != NULL)					continue;
+		if (!pIItem->CanTake())										continue;
 		if ( smart_cast<CExplosiveRocket*>( &pIItem->object() ) )	continue;
 
 		CGrenade*	pGrenade	= smart_cast<CGrenade*> (spatial->dcast_CObject        ());
-		if (pGrenade && !pGrenade->Useful()) continue;
+		if (pGrenade && !pGrenade->Useful())						continue;
 
 		CMissile*	pMissile	= smart_cast<CMissile*> (spatial->dcast_CObject        ());
-		if (pMissile && !pMissile->Useful()) continue;
+		if (pMissile && !pMissile->Useful())						continue;
 		
 		Fvector A, B, tmp; 
 		pIItem->object().Center			(A);
-		if (A.distance_to_sqr(Position())>4) continue;
+		if (A.distance_to_sqr(Position())>4)						continue;
 
 		tmp.sub(A, cam_Active()->vPosition);
 		B.mad(cam_Active()->vPosition, cam_Active()->vDirection, tmp.dotproduct(cam_Active()->vDirection));
 		float len = B.distance_to_sqr(A);
-		if (len > 1) continue;
+		if (len > 1)												continue;
 
 		if (maxlen>len && !pIItem->object().getDestroy())
 		{
@@ -225,7 +227,7 @@ void	CActor::PickupModeUpdate_COD	()
 	{
 		CFrustum					frustum;
 		frustum.CreateFromMatrix	(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
-		if (!CanPickItem(frustum,Device.vCameraPosition,&pNearestItem->object()))
+		if (!CanPickItem(frustum, Device.vCameraPosition, &pNearestItem->object()))
 			pNearestItem = NULL;
 	}
 	if (pNearestItem && pNearestItem->cast_game_object())

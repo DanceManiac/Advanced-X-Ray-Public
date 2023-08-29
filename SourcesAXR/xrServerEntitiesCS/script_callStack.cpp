@@ -46,7 +46,7 @@ void CScriptCallStack::Add(const char *szDesc, const char *szFile, int nLine)
 	SPath	sp;
 	sp.path[0] = 0;
 	m_files.push_back(sp);
-	strcat(m_files.back().path, szFile );
+	xr_strcat(m_files.back().path, szFile );
 }
 
 void CScriptCallStack::SetStackTraceLevel(int nLevel)

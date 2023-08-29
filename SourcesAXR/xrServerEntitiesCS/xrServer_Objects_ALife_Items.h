@@ -190,13 +190,14 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	u8								m_bZoom;
 	u32								m_ef_main_weapon_type;
 	u32								m_ef_weapon_type;
-	virtual	bool					keep_saved_data_anyway() const { return true; };
 
 									CSE_ALifeItemWeapon	(LPCSTR caSection);
 	virtual							~CSE_ALifeItemWeapon();
 	virtual void					OnEvent				(NET_Packet& P, u16 type, u32 time, ClientID sender );
 	virtual u32						ef_main_weapon_type	() const;
 	virtual u32						ef_weapon_type		() const;
+	virtual	bool					keep_saved_data_anyway() const { return true; };
+
 	u8								get_slot			();
 	u16								get_ammo_limit		();
 	u16								get_ammo_total		();

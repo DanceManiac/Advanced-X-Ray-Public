@@ -23,7 +23,7 @@ CScriptProcess *CScriptEngine::script_process	(const EScriptProcessors &process_
 	return									(0);
 }
 
-IC	void CScriptEngine::parse_script_namespace(LPCSTR function_to_call, LPSTR name_space, LPSTR function)
+IC	void CScriptEngine::parse_script_namespace(LPCSTR function_to_call, LPSTR name_space, u32 const namespace_size, LPSTR function, u32 const function_size )
 {
 	LPCSTR					I = function_to_call, J = 0;
 	for ( ; ; J=I,++I) {
@@ -31,13 +31,13 @@ IC	void CScriptEngine::parse_script_namespace(LPCSTR function_to_call, LPSTR nam
 		if (!I)
 			break;
 	}
-	strcpy					(name_space,"_G");
+	xr_strcpy				(name_space,namespace_size,"_G");
 	if (!J)
-		strcpy				(function,function_to_call);
+		xr_strcpy			(function,function_size,function_to_call);
 	else {
 		CopyMemory		(name_space,function_to_call, u32(J - function_to_call)*sizeof(char));
 		name_space[u32(J - function_to_call)] = 0;
-		strcpy				(function,J + 1);
+		xr_strcpy			(function,function_size,J + 1);
 	}
 }
 

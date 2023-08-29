@@ -266,7 +266,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 {
 	bool is_16x9 = UI()->is_16_9_mode();
 	string64	_prefix;
-	sprintf_s	(_prefix,"%s",is_16x9?"_16x9":"");
+	xr_sprintf	(_prefix,"%s",is_16x9?"_16x9":"");
 	string128	val_name;
 
 	strconcat					(sizeof(val_name),val_name,"hands_position",_prefix);

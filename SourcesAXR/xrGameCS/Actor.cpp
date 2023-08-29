@@ -86,6 +86,7 @@ const float		respawn_auto	= 7.f;
 
 static float IReceived = 0;
 static float ICoincidenced = 0;
+extern float cammera_into_collision_shift ;
 
 //if we are not current control entity we use this value
 const float	CActor::cam_inert_value = 0.7f;
@@ -311,7 +312,19 @@ void CActor::reload	(LPCSTR section)
 		memory().reload			(section);
 	m_location_manager->reload	(section);
 }
-
+void set_box(LPCSTR section, CPHMovementControl &mc, u32 box_num )
+{
+	Fbox	bb;Fvector	vBOX_center,vBOX_size;
+	// m_PhysicMovementControl: BOX
+	string64 buff, buff1;
+	strconcat( sizeof(buff), buff, "ph_box",itoa( box_num, buff1, 10 ),"_center" );
+	vBOX_center= pSettings->r_fvector3	(section, buff	);
+	strconcat( sizeof(buff), buff, "ph_box",itoa( box_num, buff1, 10 ),"_size" );
+	vBOX_size	= pSettings->r_fvector3	(section, buff);
+	vBOX_size.y += cammera_into_collision_shift/2.f;
+	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
+	mc.SetBox		(box_num,bb);
+}
 void CActor::Load	(LPCSTR section )
 {
 	// Msg						("Loading actor: %s",section);
@@ -332,6 +345,9 @@ void CActor::Load	(LPCSTR section )
 
 	// m_PhysicMovementControl: General
 	//m_PhysicMovementControl->SetParent		(this);
+
+
+	/*
 	Fbox	bb;Fvector	vBOX_center,vBOX_size;
 	// m_PhysicMovementControl: BOX
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box2_center"	);
@@ -350,7 +366,14 @@ void CActor::Load	(LPCSTR section )
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box0_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
 	character_physics_support()->movement()->SetBox		(0,bb);
+	*/
+	
 
+
+	
+	
+	
+	
 	//// m_PhysicMovementControl: Foots
 	//Fvector	vFOOT_center= pSettings->r_fvector3	(section,"ph_foot_center"	);
 	//Fvector	vFOOT_size	= pSettings->r_fvector3	(section,"ph_foot_size"		);
@@ -371,7 +394,9 @@ void CActor::Load	(LPCSTR section )
 		character_physics_support()->movement()->SetActorRestrictorRadius(rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
 	character_physics_support()->movement()->Load(section);
 
-	
+	set_box( section, *character_physics_support()->movement(), 2 );
+	set_box( section, *character_physics_support()->movement(), 1 );
+	set_box( section, *character_physics_support()->movement(), 0 );
 
 	m_fWalkAccel				= pSettings->r_float(section,"walk_accel");	
 	m_fJumpSpeed				= pSettings->r_float(section,"jump_speed");
@@ -398,7 +423,7 @@ void CActor::Load	(LPCSTR section )
 	m_fFeelGrenadeTime			*= 1000.0f;
 	
 	character_physics_support()->in_Load		(section);
-
+	
 
 if(!g_dedicated_server)
 {
@@ -602,7 +627,7 @@ void	CActor::Hit							(SHit* pHDS)
 													((pHDS->hit_type==ALife::eHitTypeBurn)/*||(pHDS->hit_type==ALife::eHitTypeLightBurn)*/);
 		if ( !is_special_burn_hit_2_self )
 		{
-		mstate_wishful	&=~mcSprint;
+			mstate_wishful	&=~mcSprint;
 		}
 	}
 	if(!g_dedicated_server && !m_disabled_hitmarks)
@@ -611,7 +636,7 @@ void	CActor::Hit							(SHit* pHDS)
 		b_initiated		 = b_initiated && (pHDS->hit_type==ALife::eHitTypeStrike);
 	
 		if(b_fireWound || b_initiated)
-		HitMark			(HDS.damage(), HDS.dir, HDS.who, HDS.bone(), HDS.p_in_bone_space, HDS.impulse, HDS.hit_type);
+			HitMark			(HDS.damage(), HDS.dir, HDS.who, HDS.bone(), HDS.p_in_bone_space, HDS.impulse, HDS.hit_type);
 	}
 
 	if(IsGameTypeSingle())	

@@ -39,8 +39,8 @@ u32 CDbgScriptThreads::FillFrom(CScriptProcess* sp)
 		th.lua			= (*It)->lua();
 		th.scriptID		= (*It)->thread_reference();
 		th.active		= (*It)->active();
-		strcat			(th.name, *(*It)->script_name());
-		strcat			(th.process, *sp->name());
+		xr_strcat			(th.name, *(*It)->script_name());
+		xr_strcat			(th.process, *sp->name());
 		m_threads.push_back(th);
 	}
 	return m_threads.size();

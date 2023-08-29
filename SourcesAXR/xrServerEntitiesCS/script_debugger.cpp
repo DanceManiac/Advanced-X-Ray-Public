@@ -167,7 +167,7 @@ void CScriptDebugger::Connect(LPCSTR mslot_name)
 		msg.w_int(DMSG_GET_BREAKPOINTS);
 		SendMessageToIde(msg);
 		WaitForReply(false);
-		strcat(m_curr_connected_mslot,mslot_name);
+		xr_strcat(m_curr_connected_mslot,mslot_name);
 	}
 }
 
@@ -302,8 +302,8 @@ void CScriptDebugger::ClearStackTrace()
 void CScriptDebugger::AddStackTrace(const char* szDesc, const char* szFile, int nLine)
 {
 	StackTrace st;
-	strcat(st.szDesc, szDesc);
-	strcat(st.szFile, szFile);
+	xr_strcat(st.szDesc, szDesc);
+	xr_strcat(st.szFile, szFile);
 	st.nLine = nLine;
 	_SendMessage(DMSG_ADD_STACKTRACE, (WPARAM)&st, 0);
 }
@@ -341,9 +341,9 @@ void CScriptDebugger::ClearGlobalVariables()
 void CScriptDebugger::AddGlobalVariable(const char *name, const char *type, const char *value)
 {
 	Variable var;
-	strcat(var.szName, name );
-	strcat(var.szType, type );
-	strcat(var.szValue, value );
+	xr_strcat(var.szName, name );
+	xr_strcat(var.szType, type );
+	xr_strcat(var.szValue, value );
 	_SendMessage(DMSG_ADD_GLOBALVARIABLE, (WPARAM)&var, 0);
 }
 

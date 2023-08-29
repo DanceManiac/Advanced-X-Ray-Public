@@ -35,6 +35,10 @@ void LuaLog(LPCSTR caMessage)
 void ErrorLog(LPCSTR caMessage)
 {
 	ai().script_engine().error_log("%s",caMessage);
+#ifdef PRINT_CALL_STACK
+	ai().script_engine().print_stack();
+#endif // #ifdef PRINT_CALL_STACK
+	
 #ifdef USE_DEBUGGER
 #	ifndef USE_LUA_STUDIO
 		if( ai().script_engine().debugger() ){
@@ -42,6 +46,12 @@ void ErrorLog(LPCSTR caMessage)
 		}
 #	endif // #ifndef USE_LUA_STUDIO
 #endif // #ifdef USE_DEBUGGER
+
+#ifdef DEBUG
+		bool lua_studio_connected = !!ai().script_engine().debugger();
+		if (!lua_studio_connected)
+#endif //#ifdef DEBUG
+	R_ASSERT2(0, caMessage);
 }
 
 void FlushLogs()

@@ -3,6 +3,7 @@
 #include "CharacterPhysicsSupport.h"
 #include "inventory.h"
 #include "../xrphysics/phvalide.h"
+//#include "Physics.h"
 
 ///	DONE (111 bytes cut from 138 bytes = 27 bytes, total 511.11% or 19.56%)
 // 3     health is form 0.f to 1.f, so use only 8 bits for it, the rest one we will use for mask

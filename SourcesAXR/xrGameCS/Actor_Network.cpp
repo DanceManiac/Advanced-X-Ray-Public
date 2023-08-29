@@ -587,7 +587,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	else
 		cam_Set					(eacFirstEye);*/
 
-	cam_Active()->Set(-E->o_torso.yaw, (cam_active != eacFirstEye) ? E->o_torso.pitch : cameras[eacFirstEye]->pitch, 0);//E->o_Angle.z);
+	cam_Active()->Set		(-E->o_torso.yaw, (cam_active != eacFirstEye) ? E->o_torso.pitch : cameras[eacFirstEye]->pitch, 0);//E->o_Angle.z);
 
 	// *** movement state - respawn
 	//mstate_wishful			= 0;
@@ -1249,7 +1249,7 @@ void CActor::make_Interpolation	()
 			
 			VERIFY2								(_valid(renderable.xform),*cName());
 
-//			r_model_yaw		= angle_lerp	(IStart.o_model,IEnd.o_model,		factor);			
+//			r_model_yaw		= angle_lerp	(IStart.o_model,IEnd.o_model,		factor);	
 			unaffected_r_torso.yaw		= angle_lerp	(IStart.o_torso.yaw,IEnd.o_torso.yaw,factor);
 			unaffected_r_torso.pitch	= angle_lerp	(IStart.o_torso.pitch,IEnd.o_torso.pitch,factor);
 			unaffected_r_torso.roll		= angle_lerp	(IStart.o_torso.roll,IEnd.o_torso.roll,factor);
@@ -2042,21 +2042,21 @@ bool				CActor::InventoryAllowSprint			()
 	return true;
 };
 
-BOOL				CActor::BonePassBullet					(int boneID)
+BOOL CActor::BonePassBullet(int boneID)
 {
 	if (GameID() == eGameIDSingle) return inherited::BonePassBullet(boneID);
 
 	CCustomOutfit* pOutfit			= (CCustomOutfit*)inventory().m_slots[OUTFIT_SLOT].m_pIItem;
 	if(!pOutfit)
 	{
-		IKinematics* V		= smart_cast<IKinematics*>(Visual()); VERIFY(V);
+		IKinematics* V			= smart_cast<IKinematics*>(Visual()); VERIFY(V);
 		CBoneInstance			&bone_instance = V->LL_GetBoneInstance(u16(boneID));
 		return (bone_instance.get_param(3)> 0.5f);
 	}
 	return pOutfit->BonePassBullet(boneID);
 }
 
-void			CActor::On_B_NotCurrentEntity		()
+void CActor::On_B_NotCurrentEntity()
 {
 #ifndef MASTER_GOLD
 	Msg("CActor::On_B_NotCurrentEntity");

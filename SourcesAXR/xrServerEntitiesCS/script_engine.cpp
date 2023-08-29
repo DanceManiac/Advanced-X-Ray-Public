@@ -11,7 +11,6 @@
 #include "ai_space.h"
 #include "object_factory.h"
 #include "script_process.h"
-#include "script_engine.h"
 
 #ifdef USE_DEBUGGER
 #	ifndef USE_LUA_STUDIO
@@ -67,16 +66,16 @@ static void initialize_lua_studio	( lua_State* state, cs::lua_studio::world*& wo
 	s_create_world					= (create_world_function_type)
 		GetProcAddress(
 			s_script_debugger_handle,
-			"_cs_script_debugger_create_world@4"
+			"_cs_lua_studio_backend_create_world@12"
 		);
-	R_ASSERT2						(s_create_world, "can't find function \"create_world\"");
+	R_ASSERT2						(s_create_world, "can't find function \"cs_lua_studio_backend_create_world\"");
 
 	s_destroy_world					= (destroy_world_function_type)
 		GetProcAddress(
 			s_script_debugger_handle,
-			"_cs_script_debugger_destroy_world@4"
+			"_cs_lua_studio_backend_destroy_world@4"
 		);
-	R_ASSERT2						(s_destroy_world, "can't find function \"destroy_world\" in the library");
+	R_ASSERT2						(s_destroy_world, "can't find function \"cs_lua_studio_backend_destroy_world\" in the library");
 
 	engine							= xr_new<lua_studio_engine>();
 	world = s_create_world(*engine, false, false);
@@ -357,8 +356,9 @@ void CScriptEngine::load_common_scripts()
 		string256		I;
 		for (u32 i=0; i<n; ++i) {
 			process_file(_GetItem(caScriptString,i,I));
-			if (object("_G",strcat(I,"_initialize"),LUA_TFUNCTION)) {
-//				lua_dostring			(lua(),strcat(I,"()"));
+			xr_strcat	(I,"_initialize");
+			if (object("_G",I,LUA_TFUNCTION)) {
+//				lua_dostring			(lua(),xr_strcat(I,"()"));
 				luabind::functor<void>	f;
 				R_ASSERT				(functor(I,f));
 				f						();
@@ -450,7 +450,7 @@ bool CScriptEngine::function_object(LPCSTR function_to_call, luabind::object &ob
 
 	string256				name_space, function;
 
-	parse_script_namespace	(function_to_call,name_space,function);
+	parse_script_namespace	(function_to_call,name_space,sizeof(name_space),function,sizeof(function));
 	if (xr_strcmp(name_space,"_G")) {
 		LPSTR				file_name = strchr(name_space,'.');
 		if (!file_name)

@@ -36,8 +36,8 @@ struct SScriptThread{
 		active			= other.active;
 		name[0]			=0;
 		process[0]	=0;
-		strcat(name,other.name);
-		strcat(process,other.process);
+		xr_strcat(name,other.name);
+		xr_strcat(process,other.process);
 
 		return *this;
 	}

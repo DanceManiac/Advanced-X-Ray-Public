@@ -12,6 +12,10 @@ void CActorInputHandler::reinit()
 void CActorInputHandler::install()
 {
 	m_actor = smart_cast<CActor*>	(Level().CurrentEntity());
+	if ( !m_actor )
+	{
+		m_actor					=	Actor();
+	}
 	VERIFY(m_actor);
 
 	m_actor->set_input_external_handler(this);
