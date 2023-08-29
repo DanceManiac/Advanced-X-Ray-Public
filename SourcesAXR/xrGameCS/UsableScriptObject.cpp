@@ -4,6 +4,8 @@
 #include "script_game_object.h"
 #include "script_callback_ex.h"
 #include "game_object_space.h"
+#include "doors_door.h"
+#include "doors.h"
 
 using namespace luabind;
 
@@ -22,6 +24,9 @@ bool CUsableScriptObject::use(CGameObject* who_use)
 	VERIFY(who_use);
 	CGameObject* pThis = smart_cast<CGameObject*>(this); VERIFY(pThis);
 	
+	if ( pThis->lua_game_object() && pThis->lua_game_object()->m_door && (pThis->lua_game_object()->m_door->is_blocked(doors::door_state_open) || pThis->lua_game_object()->m_door->is_blocked(doors::door_state_closed)) )
+		return false;
+
 	pThis->callback(GameObject::eUseObject)(pThis->lua_game_object(),who_use->lua_game_object());
 
 	return true;

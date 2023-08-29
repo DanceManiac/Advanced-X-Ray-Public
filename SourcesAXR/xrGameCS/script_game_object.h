@@ -26,6 +26,7 @@ namespace MovementManager { enum EPathType; }
 namespace DetailPathManager { enum EDetailPathType; }
 namespace SightManager { enum ESightType; }
 namespace smart_cover { class object; }
+namespace doors { class door; }
 
 class NET_Packet;
 class CGameTask;
@@ -779,6 +780,15 @@ public:
 			void				take_items_enabled						(bool value);
 			bool				take_items_enabled						() const;
 
+			void				register_door							();
+			void				unregister_door							();
+			void				on_door_is_open							();
+			void				on_door_is_closed						();
+			bool				is_door_locked_for_npc					() const;
+			void				lock_door_for_npc						();
+			void				unlock_door_for_npc						();
+			bool				is_door_blocked_by_npc					() const;
+
 			bool				addon_IsActorHideout					() const;		// проверка что актор под каким либо укрытием
 
 			// Alundaio
@@ -936,6 +946,8 @@ public:
 			float				Weight									() const;
 			void				SetWeight								(float w);
 			/*added by Ray Twitty (aka Shadows) END*/
+
+	doors::door*				m_door;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

@@ -13,6 +13,10 @@
 #include "static_obstacles_avoider.h"
 #include "dynamic_obstacles_avoider.h"
 
+namespace doors {
+	class actor;
+} // namespace doors
+
 class CRestrictedObjectObstacle;
 
 class stalker_movement_manager_obstacles : public stalker_movement_manager_base {
@@ -21,8 +25,12 @@ private:
 
 public:
 						stalker_movement_manager_obstacles	(CAI_Stalker *object);
+	virtual				~stalker_movement_manager_obstacles	();
 	virtual	void				move_along_path				(CPHMovementControl *movement_control, Fvector &dest_position, float time_delta);
 	virtual	void				remove_links				(CObject *object);
+	virtual	void				Load						( LPCSTR section );
+			float				is_going_through			( Fmatrix const& matrix, Fvector const& vector, float max_distance ) const;
+			void				on_death					( );
 
 private:
 	using CMovementManager::move_along_path;
@@ -60,6 +68,9 @@ private:
 public:
 	virtual	void				build_level_path			();
 	virtual	const float			&prediction_speed			() const;
+#ifdef DEBUG
+	inline	doors::actor const&	get_doors_actor				() const { return *m_doors_actor; }
+#endif // #ifdef DEBUG
 
 #ifdef DEBUG
 private:
@@ -78,6 +89,7 @@ private:
 	u32							m_detail_last_patrol_point;
 	obstacles_query				m_saved_current_iteration;
 	const CGameObject*			m_last_query_object;
+	doors::actor*				m_doors_actor;
 
 private:
 	CRestrictedObjectObstacle	*m_restricted_object;

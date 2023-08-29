@@ -25,6 +25,13 @@ namespace LevelGraph {
 	class	CVertex;
 	struct	SSegment;
 	struct	SContour;
+
+	enum ELineIntersections {
+		eLineIntersectionNone		= u32(0),
+		eLineIntersectionCollinear	= u32(0),
+		eLineIntersectionIntersect	= u32(1),
+		eLineIntersectionEqual		= u32(2)
+	};
 };
 
 class CCoverPoint;
@@ -34,19 +41,12 @@ private:
 	friend class CRenumbererConverter;
 
 public:
-	typedef LevelGraph::CPosition	CPosition;
-	typedef LevelGraph::CHeader		CHeader;
-	typedef LevelGraph::CVertex		CVertex;
-	typedef LevelGraph::SSegment	SSegment;
-	typedef LevelGraph::SContour	SContour;
-
-private:
-	enum ELineIntersections {
-		eLineIntersectionNone		= u32(0),
-		eLineIntersectionCollinear	= u32(0),
-		eLineIntersectionIntersect	= u32(1),
-		eLineIntersectionEqual		= u32(2)
-	};
+	typedef LevelGraph::CPosition			CPosition;
+	typedef LevelGraph::CHeader				CHeader;
+	typedef LevelGraph::CVertex				CVertex;
+	typedef LevelGraph::SSegment			SSegment;
+	typedef LevelGraph::SContour			SContour;
+	typedef LevelGraph::ELineIntersections	ELineIntersections;
 
 private:
 	IReader					*m_reader;		// level graph virtual storage
@@ -223,6 +223,9 @@ public:
 	IC		Fvector2 v2d						(const Fvector &vector3d) const;
 	IC		bool	valid_vertex_position		(const Fvector &position) const;
 			bool	neighbour_in_direction		(const Fvector &direction, u32 start_vertex_id) const;
+
+	IC		CVertex* vertices					() { return m_nodes; }
+
 
 #ifdef DEBUG
 #	ifndef AI_COMPILER

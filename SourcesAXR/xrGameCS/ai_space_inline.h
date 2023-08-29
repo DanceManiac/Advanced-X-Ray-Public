@@ -77,6 +77,12 @@ IC	moving_objects &CAI_Space::moving_objects						() const
 	return					(*m_moving_objects);
 }
 
+IC	doors::manager& CAI_Space::doors								() const
+{
+	VERIFY					(m_doors_manager);
+	return					(*m_doors_manager);
+}
+
 IC	CAI_Space &ai													()
 {
 	if (!g_ai_space) {

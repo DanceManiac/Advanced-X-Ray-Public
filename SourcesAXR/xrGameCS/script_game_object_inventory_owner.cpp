@@ -44,8 +44,12 @@
 #include "ai/stalker/ai_stalker_impl.h"
 #include "smart_cover_object.h"
 #include "smart_cover.h"
-#include "CustomOutfit.h"
+#include "customdetector.h"
+#include "doors_manager.h"
+#include "doors_door.h"
 #include "Torch.h"
+#include "physicobject.h"
+#include "CustomOutfit.h"
 
 //Alundaio
 #include "inventory_upgrade_manager.h"
@@ -1687,6 +1691,57 @@ bool CScriptGameObject::take_items_enabled						() const
 	}
 
 	return								( stalker->take_items_enabled() );
+}
+
+void CScriptGameObject::register_door							()
+{
+	VERIFY2								( !m_door, make_string("object %s has been registered as a door already", m_game_object->cName().c_str()) );
+	m_door								= ai().doors().register_door( *smart_cast<CPhysicObject*>(m_game_object) );
+//	Msg									( "registering door 0x%-08x", m_door );
+}
+
+void CScriptGameObject::unregister_door							()
+{
+	VERIFY2								( m_door, make_string("object %s is not a door", m_game_object->cName().c_str()) );
+//	Msg									( "UNregistering door 0x%-08x", m_door );
+	ai().doors().unregister_door		( m_door );
+	m_door								= 0;
+}
+
+void CScriptGameObject::on_door_is_open							()
+{
+	VERIFY2								( m_door, make_string("object %s hasn't been registered as a door already", m_game_object->cName().c_str()) );
+	ai().doors().on_door_is_open		( m_door );
+}
+
+void CScriptGameObject::on_door_is_closed						()
+{
+	VERIFY2								( m_door, make_string("object %s hasn't been registered as a door already", m_game_object->cName().c_str()) );
+	ai().doors().on_door_is_closed		( m_door );
+}
+
+bool CScriptGameObject::is_door_locked_for_npc					() const
+{
+	VERIFY2								( m_door, make_string("object %s hasn't been registered as a door already", m_game_object->cName().c_str()) );
+	return								ai().doors().is_door_locked( m_door );
+}
+
+void CScriptGameObject::lock_door_for_npc						()
+{
+	VERIFY2								( m_door, make_string("object %s hasn't been registered as a door already", m_game_object->cName().c_str()) );
+	ai().doors().lock_door				( m_door );
+}
+
+void CScriptGameObject::unlock_door_for_npc						()
+{
+	VERIFY2								( m_door, make_string("object %s hasn't been registered as a door already", m_game_object->cName().c_str()) );
+	ai().doors().unlock_door			( m_door );
+}
+
+bool CScriptGameObject::is_door_blocked_by_npc					() const
+{
+	VERIFY2								( m_door, make_string("object %s hasn't been registered as a door already", m_game_object->cName().c_str()) );
+	return								ai().doors().is_door_blocked( m_door );
 }
 
 void CScriptGameObject::SetPlayShHdRldSounds(bool val)

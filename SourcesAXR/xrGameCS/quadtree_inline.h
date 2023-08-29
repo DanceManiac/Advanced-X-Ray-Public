@@ -53,6 +53,12 @@ IC	size_t CSQuadTree::size	() const
 }
 
 TEMPLATE_SPECIALIZATION
+IC	bool CSQuadTree::empty	() const
+{
+	return				( !size() );
+}
+
+TEMPLATE_SPECIALIZATION
 IC	u32	CSQuadTree::neighbour_index	(const Fvector &position, Fvector &center, float distance) const
 {
 	if (position.x <= center.x)
@@ -109,7 +115,7 @@ IC	void CSQuadTree::insert		(_object_type *object)
 }
 
 TEMPLATE_SPECIALIZATION
-IC	_object_type *CSQuadTree::find	(const Fvector &position)
+IC	_object_type *CSQuadTree::find	(const Fvector &position) const
 {
 	Fvector				center = m_center;
 	float				distance = m_radius;
@@ -132,7 +138,6 @@ IC	_object_type *CSQuadTree::find	(const Fvector &position)
 
 		node			= node->m_neighbours[index];
 	}
-	NODEFAULT;
 }
 
 TEMPLATE_SPECIALIZATION
@@ -283,7 +288,7 @@ IC	void CSQuadTree::all		(xr_vector<_object_type*> &objects, CQuadNode *node, in
 }
 
 TEMPLATE_SPECIALIZATION
-IC	void CSQuadTree::all(xr_vector<_object_type*>& objects, bool clear = true) const
+IC	void CSQuadTree::all		(xr_vector<_object_type*> &objects, bool clear = true) const
 {
 	if (clear)
 		objects.clear			();

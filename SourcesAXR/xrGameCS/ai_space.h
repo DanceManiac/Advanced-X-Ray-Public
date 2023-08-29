@@ -19,6 +19,10 @@ class CScriptEngine;
 class CPatrolPathStorage;
 class moving_objects;
 
+namespace doors {
+	class manager;
+} // namespace doors
+
 class CAI_Space {
 private:
 	friend class CALifeSimulator;
@@ -37,6 +41,7 @@ private:
 	CScriptEngine						*m_script_engine;
 	CPatrolPathStorage					*m_patrol_path_storage;
 	moving_objects						*m_moving_objects;
+	doors::manager						*m_doors_manager;
 
 private:
 			void						load					(LPCSTR level_name);
@@ -65,6 +70,8 @@ public:
 	IC		const CCoverManager			&cover_manager			() const;
 	IC		CScriptEngine				&script_engine			() const;
 	IC		moving_objects				&moving_objects			() const;
+	IC		doors::manager&				doors					() const;
+
 #ifdef DEBUG
 			void						validate				(const u32			level_id) const;
 #endif

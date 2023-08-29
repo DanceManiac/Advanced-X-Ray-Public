@@ -371,10 +371,19 @@ class_<CScriptGameObject> script_register_game_object1(class_<CScriptGameObject>
 		.def("apply_loophole_direction_distance",	(void (CScriptGameObject::*)	(float))&CScriptGameObject::apply_loophole_direction_distance)
 		.def("apply_loophole_direction_distance",	(float (CScriptGameObject::*)	() const)&CScriptGameObject::apply_loophole_direction_distance)
 
-		.def("movement_target_reached",		&CScriptGameObject::movement_target_reached)
-		.def("suitable_smart_cover",		&CScriptGameObject::suitable_smart_cover)
+		.def("movement_target_reached",			&CScriptGameObject::movement_target_reached)
+		.def("suitable_smart_cover",			&CScriptGameObject::suitable_smart_cover)
 
-		.def("take_items_enabled",			(void (CScriptGameObject::*)	(bool))&CScriptGameObject::take_items_enabled)
-		.def("take_items_enabled",			(bool (CScriptGameObject::*)	() const)&CScriptGameObject::take_items_enabled)
+		.def("take_items_enabled",				(void (CScriptGameObject::*)	(bool))&CScriptGameObject::take_items_enabled)
+		.def("take_items_enabled",				(bool (CScriptGameObject::*)	() const)&CScriptGameObject::take_items_enabled)
+
+		.def("register_door_for_npc",			&CScriptGameObject::register_door)
+		.def("unregister_door_for_npc",			&CScriptGameObject::unregister_door)
+		.def("on_door_is_open",					&CScriptGameObject::on_door_is_open)
+		.def("on_door_is_closed",				&CScriptGameObject::on_door_is_closed)
+		.def("lock_door_for_npc",				&CScriptGameObject::lock_door_for_npc)
+		.def("unlock_door_for_npc",				&CScriptGameObject::unlock_door_for_npc)
+		.def("is_door_locked_for_npc",			&CScriptGameObject::is_door_locked_for_npc)
+		.def("is_door_blocked_by_npc",			&CScriptGameObject::is_door_blocked_by_npc)
 			;
 }

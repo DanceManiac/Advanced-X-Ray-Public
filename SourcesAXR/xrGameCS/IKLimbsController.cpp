@@ -154,24 +154,24 @@ bool	CIKLimbsController::PredictObjectShift			(  const SCalculateData cd[max_siz
 		{
 			float time = cd[j].m_limb->time_to_footstep();
 
-				float lshift = cd[j].m_limb->footstep_shift();
-				if( lshift < 0.f )
-				{
+			float lshift = cd[j].m_limb->footstep_shift();
+			if( lshift < 0.f  )
+			{
 				if( time < predict_time_shift_down )
 				{
 					predict_time_shift_down	= time;
 					predict_shift_down	= lshift;
 					shift_down = true;
 				}
-			}
+			} 
 			else if( current_shift < -doun_shift_to_correct && time < predict_time_shift_up )
-	{
+			{
 				predict_time_shift_up	= time;
 				
 				shift_up = true;
 			}
 			
-	}
+		} 
 	float	predict_shift = 0;
 	float	predict_time_shift = FLT_MAX;
 
@@ -328,7 +328,7 @@ void CIKLimbsController::Destroy(CGameObject* O)
 	_bone_chains.clear();
 }
 
-void  CIKLimbsController:: IKVisualCallback( IKinematics* K )
+void _stdcall CIKLimbsController:: IKVisualCallback( IKinematics* K )
 {
 	//if (Device.Paused())
 	//	return;

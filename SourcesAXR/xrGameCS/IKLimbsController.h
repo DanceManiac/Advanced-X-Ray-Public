@@ -35,7 +35,7 @@ private:
 			void	LimbSetup					( );
 
 private:
-	static	void  	IKVisualCallback	( IKinematics* K );
+	static	void __stdcall 	IKVisualCallback	( IKinematics* K );
 
 private:
 	CBlend					*m_legs_blend;

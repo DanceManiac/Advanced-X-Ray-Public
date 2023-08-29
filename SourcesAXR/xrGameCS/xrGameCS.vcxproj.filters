@@ -241,6 +241,18 @@
     <Filter Include="AI\AComponents\moving_objects\obstacles_query">
       <UniqueIdentifier>{ae93060a-af78-4fb9-8714-6ff531c6df61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\AComponents\doors_manager">
+      <UniqueIdentifier>{6c4f311b-9cfa-44ad-bd98-a617d68e41d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AComponents\doors_manager\door">
+      <UniqueIdentifier>{3a90f3d1-9244-4220-9fb7-44e85adba115}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AComponents\doors_manager\actor">
+      <UniqueIdentifier>{75c92dd7-0ef4-463c-ad2f-8015c89499f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AComponents\doors_manager\manager">
+      <UniqueIdentifier>{60a17bb1-1ea8-4dbb-bfa4-fa618a540677}</UniqueIdentifier>
+    </Filter>
     <Filter Include="AI\ACover">
       <UniqueIdentifier>{4471609c-770f-4cd4-870f-44e8a851b62f}</UniqueIdentifier>
     </Filter>
@@ -2989,6 +3001,18 @@
     </ClInclude>
     <ClInclude Include="obstacles_query_inline.h">
       <Filter>AI\AComponents\moving_objects\obstacles_query</Filter>
+    </ClInclude>
+    <ClInclude Include="doors.h">
+      <Filter>AI\AComponents\doors_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="doors_door.h">
+      <Filter>AI\AComponents\doors_manager\door</Filter>
+    </ClInclude>
+    <ClInclude Include="doors_actor.h">
+      <Filter>AI\AComponents\doors_manager\actor</Filter>
+    </ClInclude>
+    <ClInclude Include="doors_manager.h">
+      <Filter>AI\AComponents\doors_manager\manager</Filter>
     </ClInclude>
     <ClInclude Include="cover_manager.h">
       <Filter>AI\ACover</Filter>
@@ -7297,6 +7321,17 @@
     </ClInclude>
     <ClInclude Include="WeaponAttaches.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    <ClInclude Include="..\xrGame\doors.h">
+      <Filter>AI\AComponents\doors_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrGame\doors_door.h">
+      <Filter>AI\AComponents\doors_manager\door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrGame\doors_actor.h">
+      <Filter>AI\AComponents\doors_manager\actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrGame\doors_manager.h">
+      <Filter>AI\AComponents\doors_manager\manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -7482,6 +7517,15 @@
     </ClCompile>
     <ClCompile Include="obstacles_query.cpp">
       <Filter>AI\AComponents\moving_objects\obstacles_query</Filter>
+    </ClCompile>
+    <ClCompile Include="doors_door.cpp">
+      <Filter>AI\AComponents\doors_manager\door</Filter>
+    </ClCompile>
+    <ClCompile Include="doors_actor.cpp">
+      <Filter>AI\AComponents\doors_manager\actor</Filter>
+    </ClCompile>
+    <ClCompile Include="doors_manager.cpp">
+      <Filter>AI\AComponents\doors_manager\manager</Filter>
     </ClCompile>
     <ClCompile Include="cover_manager.cpp">
       <Filter>AI\ACover</Filter>
