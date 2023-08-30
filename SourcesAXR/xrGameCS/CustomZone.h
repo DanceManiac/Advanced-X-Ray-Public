@@ -49,6 +49,9 @@ public:
 	virtual		void	Load							(LPCSTR section);
 	virtual		void	net_Destroy						();
 	
+	virtual		void	save							(NET_Packet &output_packet);
+	virtual		void	load							(IReader &input_packet);
+	
 	virtual		void	UpdateCL						();
 	virtual		void	UpdateWorkload					(u32 dt);
 	virtual		void	shedule_Update					(u32 dt);
@@ -60,13 +63,13 @@ public:
 	virtual		BOOL	feel_touch_on_contact			(CObject* O);
 				
 				float	effective_radius				();
+	float GetEffectiveRadius() { return m_fEffectiveRadius; }
+	void SetEffectiveRadius(float p) { m_fEffectiveRadius = p; }
 	virtual		void	net_Relcase						(CObject* O);
 	virtual		void	OnEvent							(NET_Packet& P, u16 type);
 
 				float	GetMaxPower						()							{return m_fMaxPower;}
 				void	SetMaxPower						(float p)					{m_fMaxPower = p;}
-	float GetEffectiveRadius() { return m_fEffectiveRadius; }
-	void SetEffectiveRadius(float p) { m_fEffectiveRadius = p; }
 
 	//вычисление силы хита в зависимости от расстояния до центра зоны
 	//относительный размер силы (от 0 до 1)
@@ -273,7 +276,6 @@ protected:
 															u16 id_from, 
 															const Fvector& hit_dir, 
 															float hit_power, 
-															float hit_power_critical, 
 															s16 bone_id, 
 															const Fvector& pos_in_bone, 
 															float hit_impulse, 
@@ -305,8 +307,6 @@ protected:
 	Fvector					m_vPrevPos;
 	u32						m_dwLastTimeMoved;
 
-protected:
-	virtual BOOL		AlwaysTheCrow		();
 
 	//расстояние от зоны до текущего актера
 	float					m_fDistanceToCurEntity;
@@ -321,6 +321,7 @@ public:
 
 	// optimization FAST/SLOW mode
 public:	
+	virtual BOOL			AlwaysTheCrow				();
 	void					o_switch_2_fast				();
 	void					o_switch_2_slow				();
 

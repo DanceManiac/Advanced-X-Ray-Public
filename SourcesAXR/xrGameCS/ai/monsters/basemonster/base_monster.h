@@ -143,7 +143,13 @@ public:
 
 	virtual bool			IsTalkEnabled					() {return false;}
 
-	virtual void			HitEntity						(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir);
+	virtual void			HitEntity						(const CEntity *	pEntity, 
+															 float 				fDamage, 
+															 float 				impulse, 
+															 Fvector &			dir, 
+															 ALife::EHitType	hit_type = ALife::eHitTypeWound,
+															 bool				draw_hit_marks = true);
+
 	virtual	void			HitEntityInJump					(const CEntity *pEntity) {}
 
 	virtual	void			on_before_sell					(CInventoryItem *item);
@@ -536,6 +542,11 @@ private:
 	float m_feel_enemy_who_just_hit_max_distance;
 	float m_feel_enemy_max_distance;
 
+//-------------------------------------------------------------------
+// CBaseMonster's  protections
+//-------------------------------------------------------------------
+	float							m_fSkinArmor;
+	float							m_fHitFracMonster;
 };
 
 #include "base_monster_inline.h"

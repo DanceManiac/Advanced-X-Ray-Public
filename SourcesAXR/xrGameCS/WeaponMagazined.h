@@ -126,8 +126,12 @@ protected:
 	int				m_iQueueSize;
 	//количество реально выстреляных патронов
 	int				m_iShotNum;
-	//после какого патрона, при непрерывной стрельбе, начинается отдача (сделано из-зи Абакана)
+	//после какого патрона, при непрерывной стрельбе, начинается отдача (сделано из-за Абакана)
 	int				m_iShootEffectorStart;
+	//скорость вылета патронов, на которые не влияет отдача (сделано из-за Абакана)
+	float			m_fBaseDispersionedBulletsSpeed;
+	//скорость вылета остальных патронов
+	float			m_fOldBulletSpeed;
 	Fvector			m_vStartPos, m_vStartDir;
 	//флаг того, что мы остановились после того как выстреляли
 	//ровно столько патронов, сколько было задано в m_iQueueSize
@@ -180,10 +184,11 @@ protected:
 	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
 
-	virtual void    SetAnimFlag(u32 flag, LPCSTR anim_name);
-
 protected:
 
+	virtual void    SetAnimFlag(u32 flag, LPCSTR anim_name);
+
+	// Флаги наличия анимаций, будем их искать заранее, так будет намного проще мейби
 	enum {
 		ANM_SHOW_EMPTY = (1 << 0),
 		ANM_HIDE_EMPTY = (1 << 1),
@@ -207,5 +212,14 @@ protected:
 
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();
+
+
+	virtual void	FireBullet			(const Fvector& pos, 
+        								 const Fvector& dir, 
+										 float fire_disp,
+										 const CCartridge& cartridge,
+										 u16 parent_id,
+										 u16 weapon_id,
+										 bool send_hit);
 
 };

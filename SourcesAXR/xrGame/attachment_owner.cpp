@@ -59,7 +59,7 @@ void CAttachmentOwner::renderable_Render		()
 		(*I)->renderable_Render();
 }
 
-void __stdcall AttachmentCallback(IKinematics *tpKinematics)
+void _BCL AttachmentCallback(IKinematics *tpKinematics)
 {
 	CGameObject				*game_object = smart_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->GetUpdateCallbackParam()));
 	VERIFY					(game_object);
@@ -71,9 +71,12 @@ void __stdcall AttachmentCallback(IKinematics *tpKinematics)
 
 	xr_vector<CAttachableItem*>::const_iterator	I = attachment_owner->attached_objects().begin();
 	xr_vector<CAttachableItem*>::const_iterator	E = attachment_owner->attached_objects().end();
-	for ( ; I != E; ++I) {
-		(*I)->item().object().XFORM().mul_43	(kinematics->LL_GetBoneInstance((*I)->bone_id()).mTransform,(*I)->offset());
-		(*I)->item().object().XFORM().mulA_43	(game_object->XFORM());
+	for (; I != E; ++I) 
+	{
+        Fmatrix bone_mtx;
+        kinematics->Bone_GetAnimPos(bone_mtx, (*I)->bone_id(), u8(-1), false);
+        (*I)->item().object().XFORM().mul_43(bone_mtx, (*I)->offset());
+        (*I)->item().object().XFORM().mulA_43(game_object->XFORM());
 	}
 }
 
@@ -81,7 +84,8 @@ void CAttachmentOwner::attach(CInventoryItem *inventory_item)
 {
 	xr_vector<CAttachableItem*>::const_iterator	I = m_attached_objects.begin();
 	xr_vector<CAttachableItem*>::const_iterator	E = m_attached_objects.end();
-	for ( ; I != E; ++I) {
+	for ( ; I != E; ++I)
+	{
 		if( (*I)->item().object().ID() == inventory_item->object().ID() )
 			return; //already attached, fake, I'll repair It
 //		VERIFY								((*I)->ID() != inventory_item->object().ID());
@@ -106,14 +110,13 @@ void CAttachmentOwner::detach(CInventoryItem *inventory_item)
 {
 	xr_vector<CAttachableItem*>::iterator	I = m_attached_objects.begin();
 	xr_vector<CAttachableItem*>::iterator	E = m_attached_objects.end();
-	for ( ; I != E; ++I) 
+	for ( ; I != E; ++I)
 	{
-		if ((*I)->item().object().ID() == inventory_item->object().ID()) 
+		if ((*I)->item().object().ID() == inventory_item->object().ID())
 		{
-			CAttachableItem* ai			= *I;
 			m_attached_objects.erase	(I);
-			ai->afterDetach();
-			if (m_attached_objects.empty()) 
+			(*I)->afterDetach();
+			if (m_attached_objects.empty())
 			{
 				CGameObject					*game_object = smart_cast<CGameObject*>(this);
 				VERIFY						(game_object && game_object->Visual());

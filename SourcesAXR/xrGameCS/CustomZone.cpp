@@ -1315,7 +1315,6 @@ void CCustomZone::CreateHit	(	u16 id_to,
 								u16 id_from, 
 								const Fvector& hit_dir, 
 								float hit_power, 
-								float hit_power_critical, 
 								s16 bone_id, 
 								const Fvector& pos_in_bone, 
 								float hit_impulse, 
@@ -1567,6 +1566,24 @@ void CCustomZone::o_switch_2_slow				()
 		StopIdleLight();
 	}
 	processing_deactivate		();
+}
+
+void CCustomZone::save							(NET_Packet &output_packet)
+{
+	inherited::save			(output_packet);
+	output_packet.w_u8		(static_cast<u8>(m_eZoneState));
+}
+
+void CCustomZone::load							(IReader &input_packet)
+{
+	inherited::load			(input_packet);	
+
+	CCustomZone::EZoneState temp = static_cast<CCustomZone::EZoneState>(input_packet.r_u8());
+
+	if (temp == eZoneStateDisabled)
+		m_eZoneState = eZoneStateDisabled;
+	else
+		m_eZoneState = eZoneStateIdle;
 }
 
 void CCustomZone::ChangeIdleParticles(LPCSTR name, bool bIdleLight)

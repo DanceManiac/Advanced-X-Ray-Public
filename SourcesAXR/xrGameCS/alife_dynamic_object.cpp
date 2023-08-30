@@ -32,8 +32,8 @@ void CSE_ALifeDynamicObject::on_register			()
 		VERIFY			(object);
 	}
 
-	if (!alife().graph().level().object(object->ID,true) && !keep_saved_data_anyway())
-		client_data.clear					();
+	if (!alife().graph().level().object(object->ID,true))
+		clear_client_data();
 }
 
 void CSE_ALifeDynamicObject::on_before_register		()
@@ -60,12 +60,8 @@ void CSE_ALifeDynamicObject::switch_offline			()
 	R_ASSERT					(m_bOnline);
 	m_bOnline					= false;
 	alife().remove_online		(this);
-#ifdef DEBUG
-	if (!client_data.empty())
-		Msg						("CSE_ALifeDynamicObject::switch_offline: client_data is cleared for [%d][%s]",ID,name_replace());
-#endif // DEBUG
-	if (!keep_saved_data_anyway())
-		client_data.clear		();
+
+	clear_client_data();
 }
 
 void CSE_ALifeDynamicObject::add_online				(const bool &update_registries)
@@ -133,12 +129,7 @@ void CSE_ALifeDynamicObject::try_switch_online		()
 	}
 
 	if (!can_switch_online()) {
-#ifdef DEBUG
-		if (!client_data.empty())
-			Msg					("CSE_ALifeDynamicObject::try_switch_online: client_data is cleared for [%d][%s]",ID,name_replace());
-#endif // DEBUG
-		if (!keep_saved_data_anyway())
-			client_data.clear	();
+		on_failed_switch_online();
 		return;
 	}
 	
@@ -148,12 +139,7 @@ void CSE_ALifeDynamicObject::try_switch_online		()
 	}
 
 	if (alife().graph().actor()->o_Position.distance_to(o_Position) > alife().online_distance()) {
-#ifdef DEBUG
-		if (!client_data.empty())
-			Msg					("CSE_ALifeDynamicObject::try_switch_online2: client_data is cleared for [%d][%s]",ID,name_replace());
-#endif // DEBUG
-		if (!keep_saved_data_anyway())
-			client_data.clear	();
+		on_failed_switch_online();
 		return;
 	}
 
@@ -259,13 +245,7 @@ void CSE_InventoryBox::add_offline	(const xr_vector<ALife::_OBJECT_ID> &saved_ch
 			--n;
 			continue;
 		}
-
-#ifdef DEBUG
-		if (!client_data.empty())
-			Msg							("CSE_InventoryBox::add_offline: client_data is cleared for [%d][%s]",ID,name_replace());
-#endif // DEBUG
-		if (!child->keep_saved_data_anyway())
-			child->client_data.clear		();
+		child->clear_client_data();
 		object->alife().graph().add		(child,child->m_tGraphID,false);
 //		object->alife().graph().attach	(*object,inventory_item,child->m_tGraphID,true);
 		alife().graph().remove			(child,child->m_tGraphID);
@@ -275,6 +255,21 @@ void CSE_InventoryBox::add_offline	(const xr_vector<ALife::_OBJECT_ID> &saved_ch
 
 
 	CSE_ALifeDynamicObjectVisual::add_offline(saved_children, update_registries);
+}
+
+void CSE_ALifeDynamicObject::clear_client_data()
+{
+#ifdef DEBUG
+	if (!client_data.empty())
+		Msg						("CSE_ALifeDynamicObject::switch_offline: client_data is cleared for [%d][%s]",ID,name_replace());
+#endif // DEBUG
+	if (!keep_saved_data_anyway())
+		client_data.clear		();
+}
+
+void CSE_ALifeDynamicObject::on_failed_switch_online()
+{
+	clear_client_data();
 }
 
 /// ---------------------------- CSE_ALifeCar ---------------------------------------------

@@ -300,8 +300,8 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 
 	switch (action_type)
 	{
-		case GE_TRADE_BUY :
-		case GE_OWNERSHIP_TAKE : 
+	case GE_TRADE_BUY:
+	case GE_OWNERSHIP_TAKE:
 			{
 				bool b_already	= false;
 
@@ -321,6 +321,13 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 					lst_to_add						= GetListByType(iActorBag);
 				else if(pl==EItemPlaceBelt)
 					lst_to_add						= GetListByType(iActorBelt);
+		else /* if(pl.type==eItemPlaceRuck)*/
+		{
+			if (pItem->parent_id() == m_pActorInvOwner->object_id())
+				lst_to_add = GetListByType(iActorBag);
+			else
+				lst_to_add = GetListByType(iDeadBodyBag);
+		}
 
 		for (auto& curr : all_lists)
 		{
@@ -404,17 +411,25 @@ void CUIActorMenu::AttachAddon(PIItem item_to_upgrade)
 	SetCurrentItem								(NULL);
 }
 
-void CUIActorMenu::DetachAddon(LPCSTR addon_name)
+void CUIActorMenu::DetachAddon(LPCSTR addon_name, PIItem itm)
 {
 	PlaySnd										(eDetachAddon);
 	if (OnClient())
 	{
 		NET_Packet								P;
-		CGameObject::u_EventGen					(P, GE_ADDON_DETACH, CurrentIItem()->object().ID());
+		if(itm==NULL)
+			CGameObject::u_EventGen				(P, GE_ADDON_DETACH, CurrentIItem()->object().ID());
+		else
+			CGameObject::u_EventGen				(P, GE_ADDON_DETACH, itm->object().ID());
+
 		P.w_stringZ								(addon_name);
 		CGameObject::u_EventSend				(P);
-	};
-	CurrentIItem()->Detach						(addon_name, true);
+		return;
+	}
+	if(itm==NULL)
+		CurrentIItem()->Detach					(addon_name, true);
+	else
+		itm->Detach								(addon_name, true);
 }
 
 void CUIActorMenu::InitCellForSlot( u32 slot_idx ) 
@@ -514,7 +529,7 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 			continue;
 		}
 		CUICellItem* itm = create_cell_item( *itb );
-		curr_list->SetItem( itm );
+		curr_list->SetItem(itm);
 		if ( m_currMenuMode == mmTrade && m_pPartnerInvOwner )
 		{
 			ColorizeItem( itm, !CanMoveToPartner( *itb ) );
@@ -1318,24 +1333,60 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			break;
 		}
 	case INVENTORY_ATTACH_ADDON:
-		AttachAddon( (PIItem)(m_UIPropertiesBox->GetClickedItem()->GetData()) );
+		{
+			PIItem item = CurrentIItem(); // temporary storing because of AttachAddon is setting curiitem to NULL
+			AttachAddon((PIItem)(m_UIPropertiesBox->GetClickedItem()->GetData()));
+			if(m_currMenuMode==mmDeadBodySearch)
+				RemoveItemFromList(m_pDeadBodyBagList, item);
+			
 		break;
+		}
 	case INVENTORY_DETACH_SCOPE_ADDON:
 		if ( weapon )
 		{
 			DetachAddon( weapon->GetScopeName().c_str() );
+			for ( u32 i = 0; i < cell_item->ChildsCount(); ++i )
+			{
+				CUICellItem*	child_itm	= cell_item->Child(i);
+				PIItem			child_iitm	= (PIItem)(child_itm->m_pData);
+				CWeapon* wpn = smart_cast<CWeapon*>( child_iitm );
+				if ( child_iitm && wpn )
+				{
+					DetachAddon(wpn->GetScopeName().c_str(), child_iitm);
+				}
+			}
 		}
 		break;
 	case INVENTORY_DETACH_SILENCER_ADDON:
 		if ( weapon )
 		{
 			DetachAddon( weapon->GetSilencerName().c_str() );
+			for ( u32 i = 0; i < cell_item->ChildsCount(); ++i )
+			{
+				CUICellItem*	child_itm	= cell_item->Child(i);
+				PIItem			child_iitm	= (PIItem)(child_itm->m_pData);
+				CWeapon* wpn = smart_cast<CWeapon*>( child_iitm );
+				if ( child_iitm && wpn )
+				{
+					DetachAddon(wpn->GetSilencerName().c_str(), child_iitm);
+				}
+			}
 		}
 		break;
 	case INVENTORY_DETACH_GRENADE_LAUNCHER_ADDON:
 		if ( weapon )
 		{
 			DetachAddon( weapon->GetGrenadeLauncherName().c_str() );
+			for ( u32 i = 0; i < cell_item->ChildsCount(); ++i )
+			{
+				CUICellItem*	child_itm	= cell_item->Child(i);
+				PIItem			child_iitm	= (PIItem)(child_itm->m_pData);
+				CWeapon* wpn = smart_cast<CWeapon*>( child_iitm );
+				if ( child_iitm && wpn )
+				{
+					DetachAddon(wpn->GetGrenadeLauncherName().c_str(), child_iitm);
+				}
+			}
 		}
 		break;
 	case INVENTORY_DETACH_LASER_ADDON:

@@ -20,9 +20,10 @@ public:
 
 private:
 	CCustomMonster		*m_object;
+	CAI_Stalker			*m_stalker;
 
 public:
-	IC					CItemManager	(CCustomMonster *object);
+						CItemManager	(CCustomMonster *object);
 	virtual bool		useful			(const CGameObject *object) const;
 	virtual bool		is_useful		(const CGameObject *object) const;
 	virtual	float		evaluate		(const CGameObject *object) const;
@@ -31,5 +32,3 @@ public:
 			void		remove_links	(CObject *object);
 	virtual	void		on_restrictions_change	();
 };
-
-#include "item_manager_inline.h"

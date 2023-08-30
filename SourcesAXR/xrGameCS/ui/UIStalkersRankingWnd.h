@@ -3,6 +3,7 @@
 
 class CUIFrameWindow;
 class CUIFrameLineWnd;
+class CInventoryOwner;
 class CUIAnimatedStatic;
 class CUIStatic;
 class CUICharacterInfo;

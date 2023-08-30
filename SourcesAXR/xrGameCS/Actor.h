@@ -125,9 +125,6 @@ public:
 
 	virtual void	 NewPdaContact		(CInventoryOwner*);
 	virtual void	 LostPdaContact		(CInventoryOwner*);
-	void			DisableHitMarks(bool disable)		{m_disabled_hitmarks = disable;};
-	bool			DisableHitMarks()					{return m_disabled_hitmarks;};
-			void	set_state_box(u32	mstate);
 
 #ifdef DEBUG
 	void			 DumpTasks();
@@ -216,8 +213,8 @@ public:
 			void		UpdateSkills();
 			void		UpdateNVGUseAnim();
 			void		UpdateMaskUseAnim();
-			float		GetCamHeightFactor	() { return m_fCamHeightFactor; }
-			void		SetCamHeightFactor	(float height) { m_fCamHeightFactor = height; }
+			float		GetCamHeightFactor() { return m_fCamHeightFactor; }
+			void		SetCamHeightFactor(float height) { m_fCamHeightFactor = height; }
 
 	const xr_vector<const CArtefact*>& ArtefactsOnBelt() {return m_ArtefactsOnBelt;}
 protected:
@@ -465,6 +462,8 @@ public:
 
 	// For activating sprint when reloading
 	u8						m_iTrySprintCounter;
+public:
+	Fvector					GetMovementSpeed		() {return NET_SavedAccel;};
 	//////////////////////////////////////////////////////////////////////////
 	// User input/output
 	//////////////////////////////////////////////////////////////////////////
@@ -634,7 +633,7 @@ public:
 		return				(true);
 	}
 
-	virtual	shared_str		GetDefaultVisualOutfit		() const { return m_DefaultVisualOutfit; };
+	virtual	shared_str		GetDefaultVisualOutfit	() const {return m_DefaultVisualOutfit;};
 	virtual	void			SetDefaultVisualOutfit	(shared_str DefaultOutfit) {m_DefaultVisualOutfit = DefaultOutfit;};
 	virtual void			UpdateAnimation			() 	{ g_SetAnimation(mstate_real); };
 
@@ -656,7 +655,7 @@ public:
 private:	
 	CActorInputHandler		*m_input_external_handler;
 	u32						m_time_lock_accel;
-	bool					m_disabled_hitmarks;
+
 	/////////////////////////////////////////
 	// DEBUG INFO
 protected:
@@ -678,6 +677,11 @@ protected:
 		void							SelectBestWeapon				(CObject* O);
 public:
 		void							SetWeaponHideState				(u32 State, bool bSet);
+private://IPhysicsShellHolder
+
+virtual	 void	_BCL	HideAllWeapons					( bool v ){ SetWeaponHideState(INV_STATE_BLOCK_ALL,v); }	
+
+public:
 		void							SetCantRunState					(bool bSet);
 		virtual CCustomOutfit*			GetOutfit() const;
 		virtual CCustomOutfit*			GetPants() const;
@@ -797,21 +801,28 @@ public:
 				mstate_wishful = state;
 			}
 
-private:
-	static const float		cam_inert_value;
-	float					prev_cam_inert_value;
 public:
 	virtual void			On_SetEntity();
-	virtual void			On_LostEntity();
+	virtual void			On_LostEntity() {};
 
+			void			DisableHitMarks(bool disable)		{m_disabled_hitmarks = disable;};
+			bool			DisableHitMarks()					{return m_disabled_hitmarks;};
+
+			void			set_inventory_disabled (bool is_disabled) { m_inventory_disabled = is_disabled; }
+			bool			inventory_disabled () const { return m_inventory_disabled; }
+private:
+			void			set_state_box(u32	mstate);
+private:
+	bool					m_disabled_hitmarks;
+	bool					m_inventory_disabled;
 //static CPhysicsShell		*actor_camera_shell;
 
 public:
 	void					SwitchNightVision(bool light_on, bool use_sounds = true, bool send_event = true);
 
-	bool					GetNightVisionStatus() { return m_bNightVisionOn; }
-	void					SetNightVisionAllowed(bool bAllow) { m_bNightVisionAllow = bAllow; }
-	CNightVisionEffector*	GetNightVision() { return m_night_vision; }
+	bool					GetNightVisionStatus() {return m_bNightVisionOn;}
+	void					SetNightVisionAllowed(bool bAllow) {m_bNightVisionAllow = bAllow;}
+	CNightVisionEffector*	GetNightVision() {return m_night_vision;}
 
 	// Real Wolf. Start. 14.10.2014
 	void					block_action(EGameActions cmd);

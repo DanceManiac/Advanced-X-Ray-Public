@@ -57,12 +57,47 @@ void CSightManager::reload			(LPCSTR section)
 
 void CSightManager::vfValidateAngleDependency(float x1, float &x2, float x3)
 {
-	float	_x2	= angle_normalize_signed(x2 - x1);
-	float	_x3	= angle_normalize_signed(x3 - x1);
-	if ((_x2*_x3 <= 0.f) && (_abs(_x2) + _abs(_x3) > PI - EPS_L))
+	float const _x2				= angle_normalize_signed(x2 - x1);
+	float const _x3				= angle_normalize_signed(x3 - x1);
+	if (_x2*_x3 >= 0.f)
+		return;
+	
+	if ( _abs(_x2) + _abs(_x3) <= PI )
+		return;
+
 		x2  = x3;
 }
 
+#ifdef DEBUG
+BOOL g_ai_dbg_sight = 0;
+#endif // #ifdef DEBUG
+
+float g_ai_aim_min_speed = PI_DIV_8/2.f;
+float g_ai_aim_min_angle = PI_DIV_8/2.f;
+float g_ai_aim_max_angle = PI_DIV_4;
+BOOL  g_ai_aim_use_smooth_aim = 1;
+
+static inline float	select_speed	( float const distance, float const speed, float const min_speed, float const min_distance, float const max_distance )
+{
+	VERIFY				( max_distance > min_distance );
+
+#ifdef DEBUG
+	if ( !g_ai_aim_use_smooth_aim )
+		return speed;
+#endif// #ifdef DEBUG
+
+	if ( speed <= min_speed )
+		return			speed;
+
+	if ( distance < min_distance )
+		return			min_speed;
+
+	if ( distance >= max_distance )
+		return			speed;
+
+	float const factor	= (distance - min_distance)/(max_distance - min_distance);
+	return				min_speed + factor*(speed - min_speed);
+}
 void CSightManager::Exec_Look		(float time_delta)
 {
 	START_PROFILE("Sight Manager")
@@ -100,13 +135,39 @@ void CSightManager::Exec_Look		(float time_delta)
 	}
 #endif // #ifdef SIGHT_DEBUG
 
+	//static CStatGraph* s_stats_graph	= 0;
+	//if ( !s_stats_graph ) {
+	//	s_stats_graph					= xr_new<CStatGraph>();
+	//	s_stats_graph->SetRect			(0, 1024-68, 1280, 68, 0xff000000, 0xff000000);
+	//	s_stats_graph->SetMinMax		(-PI, PI, 1000);
+	//	s_stats_graph->SetStyle			(CStatGraph::stBarLine);
+	//	s_stats_graph->AppendSubGraph	(CStatGraph::stCurve);
+	//	s_stats_graph->AppendSubGraph	(CStatGraph::stCurve);
+	//}
+
+	//s_stats_graph->AppendItem			( angle_normalize_signed(head.current.yaw),   0xff00ff00, 0 );
+	//s_stats_graph->AppendItem			( angle_normalize_signed(head.current.pitch), 0xffff0000, 1 );
+
+#ifdef DEBUG
+	if ( g_ai_dbg_sight )
+		Msg							( "%6d [%s] before body[%f]->[%f], head[%f]->[%f]", Device.dwTimeGlobal, object().cName().c_str(), body.current.yaw, body.target.yaw, head.current.yaw, head.target.yaw );
+#endif // #ifdef DEBUG
 	vfValidateAngleDependency		(body.current.yaw,body.target.yaw,head.current.yaw);
+#ifdef DEBUG
+	if ( g_ai_dbg_sight )
+		Msg							( "%6d [%s] after  body[%f]->[%f], head[%f]->[%f]", Device.dwTimeGlobal, object().cName().c_str(), body.current.yaw, body.target.yaw, head.current.yaw, head.target.yaw );
+#endif // #ifdef DEBUG
 
-	m_object->angle_lerp_bounds		(body.current.yaw,body.target.yaw,body_speed,time_delta);
-	m_object->angle_lerp_bounds		(body.current.pitch,body.target.pitch,body_speed,time_delta);
+	m_object->angle_lerp_bounds		(body.current.yaw, body.target.yaw, select_speed( angle_difference(body.current.yaw, body.target.yaw), body_speed, g_ai_aim_min_speed, g_ai_aim_min_angle, g_ai_aim_max_angle ), time_delta);
+	m_object->angle_lerp_bounds		(body.current.pitch, body.target.pitch, select_speed( angle_difference(body.current.pitch, body.target.pitch), body_speed, g_ai_aim_min_speed, g_ai_aim_min_angle, g_ai_aim_max_angle ), time_delta);
 
-	m_object->angle_lerp_bounds		(head.current.yaw,head.target.yaw,head_speed,time_delta);
-	m_object->angle_lerp_bounds		(head.current.pitch,head.target.pitch,head_speed,time_delta);
+	m_object->angle_lerp_bounds		(head.current.yaw, head.target.yaw, select_speed( angle_difference(head.current.yaw, head.target.yaw), head_speed, g_ai_aim_min_speed, g_ai_aim_min_angle, g_ai_aim_max_angle ), time_delta);
+	m_object->angle_lerp_bounds		(head.current.pitch, head.target.pitch, select_speed( angle_difference(head.current.pitch, head.target.pitch), head_speed, g_ai_aim_min_speed, g_ai_aim_min_angle, g_ai_aim_max_angle ), time_delta);
+
+#ifdef DEBUG
+	if ( g_ai_dbg_sight )
+		Msg							( "%6d [%s] after2 body[%f]->[%f], head[%f]->[%f]", Device.dwTimeGlobal, object().cName().c_str(), body.current.yaw, body.target.yaw, head.current.yaw, head.target.yaw );
+#endif // #ifdef DEBUG
 
 #ifdef SIGHT_DEBUG
 	// normalizing torso angles
@@ -127,6 +188,11 @@ void CSightManager::Exec_Look		(float time_delta)
 		compute_aiming				(time_delta, head_speed);
 		current_action().on_frame	();
 	}
+
+#ifdef DEBUG
+	if ( g_ai_dbg_sight )
+		Msg							( "%6d [%s] after3 body[%f]->[%f], head[%f]->[%f]", Device.dwTimeGlobal, object().cName().c_str(), body.current.yaw, body.target.yaw, head.current.yaw, head.target.yaw );
+#endif // #ifdef DEBUG
 
 	if (object().animation_movement_controlled())
 		return;
@@ -222,8 +288,8 @@ Fvector CSightManager::object_position				() const
 	return				(target);
 }
 
-#include "actor.h"
-CActor*			Actor()	;
+//#include "actor.h"
+//CActor*			Actor()	;
 
 Fvector	CSightManager::aiming_position				() const
 {
@@ -349,7 +415,7 @@ Fvector	CSightManager::aiming_position				() const
 		case eSightTypeFireObject : {
 			switch (current_action().state_fire_object()) {
 				case 0 : {
-					result		= object_position();
+					result		= current_action().vector3d();//object_position();
 					VERIFY2	(
 						result.magnitude() < 100000.f,
 						make_string(
@@ -683,7 +749,10 @@ void CSightManager::compute_aiming					(float const time_delta, float const angu
 
 			if (!forward_blend_callbacks && !backward_blend_callbacks) {
 				if (!fis_zero(time_delta)) {
-					VERIFY					(m_object->animation_movement());
+#ifdef DEBUG
+					Msg						( "!animation movement controller wasn't created" );
+#endif // #ifdef DEBUG
+					if (m_object->animation_movement())
 					slerp_rotations			(time_delta, m_object->animation_movement()->IsBlending() ? .1f : angular_speed);
 				}
 

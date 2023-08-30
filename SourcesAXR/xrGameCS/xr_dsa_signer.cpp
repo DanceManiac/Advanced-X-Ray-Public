@@ -50,7 +50,7 @@ char const * current_time(string64 & dest_time)
 	_time64			(&tmp_curr_time);
 	tm* tmp_tm		= _localtime64(&tmp_curr_time);
 
-	sprintf_s(dest_time, sizeof(dest_time),
+	xr_sprintf(dest_time, sizeof(dest_time),
 		"%02d.%02d.%d_%02d:%02d:%02d",
 		tmp_tm->tm_mday, 
 		tmp_tm->tm_mon+1, 

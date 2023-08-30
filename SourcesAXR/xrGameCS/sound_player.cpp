@@ -76,6 +76,7 @@ u32 CSoundPlayer::add				(LPCSTR prefix, u32 max_count, ESoundTypes type, u32 pr
 	sound_params.m_sound_player_prefix	= m_sound_prefix;
 	sound_params.m_max_count			= max_count;
 	sound_params.m_type					= type;
+	sound_params.m_data					= data;
 
 	typedef CSoundCollectionStorage::SOUND_COLLECTION_PAIR	SOUND_COLLECTION_PAIR;
 	const SOUND_COLLECTION_PAIR			&pair = sound_collection_storage().object(sound_params);
@@ -183,6 +184,7 @@ void CSoundPlayer::play				(u32 internal_type, u32 max_start_time, u32 min_start
 	CSoundSingle				sound_single;
 	(CSoundParams&)sound_single	= (CSoundParams&)sound;
 	sound_single.m_bone_id		= smart_cast<IKinematics*>(m_object->Visual())->LL_BoneID(sound.m_bone_name);
+	R_ASSERT					  (sound_single.m_bone_id != BI_NONE);
 
 	sound_single.m_sound		= xr_new<ref_sound>();
 	/**
@@ -255,7 +257,7 @@ CSoundPlayer::CSoundCollection::CSoundCollection	(const CSoundCollectionParams &
 		}
 		for (u32 i=0; i<params.m_max_count; ++i){
 			string256					name;
-			sprintf_s						(name,"%s%d",S,i);
+			xr_sprintf						(name,"%s%d",S,i);
 			if (FS.exist(fn,"$game_sounds$",name,".ogg")) {
 				ref_sound				*temp = add(params.m_type,name);
 				if (temp)

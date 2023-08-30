@@ -64,13 +64,13 @@ void CUIActorMenu::Construct()
 	m_pUpgradeWnd->Init					();
 
 	m_ActorCharacterInfo = xr_new<CUICharacterInfo>();
-	m_ActorCharacterInfo->SetAutoDelete( true );
-	AttachChild( m_ActorCharacterInfo );
-	m_ActorCharacterInfo->InitCharacterInfo( &uiXml, "actor_ch_info" );
+	m_ActorCharacterInfo->SetAutoDelete	(true);
+	AttachChild							(m_ActorCharacterInfo);
+	m_ActorCharacterInfo->InitCharacterInfo(&uiXml, "actor_ch_info");
 
 	m_PartnerCharacterInfo = xr_new<CUICharacterInfo>();
-	m_PartnerCharacterInfo->SetAutoDelete( true );
-	AttachChild( m_PartnerCharacterInfo );
+	m_PartnerCharacterInfo->SetAutoDelete(true);
+	AttachChild							(m_PartnerCharacterInfo);
 	m_PartnerCharacterInfo->InitCharacterInfo( &uiXml, "partner_ch_info" );
 	
 	m_RightDelimiter		= UIHelper::CreateStatic(uiXml, "right_delimiter", this);
@@ -164,6 +164,40 @@ void CUIActorMenu::Construct()
 	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
 	m_pTradePartnerBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
 	m_pTradePartnerList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
+	m_pDeadBodyBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
+
+	Fvector2 pos;
+
+	int cols = m_pInventoryBeltList->CellsCapacity().x;
+	int rows = m_pInventoryBeltList->CellsCapacity().y;
+	int counter = 1;
+	float dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
+	float dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
+	for (u8 i = 0; i < rows; ++i)
+	{
+		for (u8 j = 0; j < cols; ++j)
+		{
+			m_ArtefactSlotsHighlight.push_back(UIHelper::CreateStatic(uiXml, "artefact_slot_highlight", this));
+			if (i == 0 && j == 0)
+			{
+				pos = m_ArtefactSlotsHighlight[0]->GetWndPos();
+				m_ArtefactSlotsHighlight[0]->Show(false);
+				dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
+				dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
+			}
+			else
+			{
+				if (j != 0)
+					pos.x += dx;
+				m_ArtefactSlotsHighlight[counter]->SetWndPos(pos);
+				m_ArtefactSlotsHighlight[i]->Show(false);
+				counter++;
+			}
+		}
+
+		pos.x = m_ArtefactSlotsHighlight[0]->GetWndPos().x;
+		pos.y += dy;
+	}
 
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
@@ -204,41 +238,6 @@ void CUIActorMenu::Construct()
 	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIActorMenu::OnItemDrop);
 	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
 
-	Fvector2 pos{};
-	float dx{}, dy{};
-
-	int cols = m_pInventoryBeltList->CellsCapacity().x;
-	int rows = m_pInventoryBeltList->CellsCapacity().y;
-	int counter = 1;
-
-	for (u8 i = 0; i < rows; ++i)
-	{
-		for (u8 j = 0; j < cols; ++j)
-		{
-			m_ArtefactSlotsHighlight.push_back(UIHelper::CreateStatic(uiXml, "artefact_slot_highlight", this));
-
-			if (i == 0 && j == 0)
-			{
-				pos = m_ArtefactSlotsHighlight[0]->GetWndPos();
-				m_ArtefactSlotsHighlight[0]->Show(false);
-				dx = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dx", 24.0f);
-				dy = uiXml.ReadAttribFlt("artefact_slot_highlight", 0, "dy", 24.0f);
-			}
-			else
-			{
-				if (j != 0)
-					pos.x += dx;
-
-				m_ArtefactSlotsHighlight[counter]->SetWndPos(pos);
-				m_ArtefactSlotsHighlight[i]->Show(false);
-				counter++;
-			}
-		}
-
-		pos.x = m_ArtefactSlotsHighlight[0]->GetWndPos().x;
-		pos.y += dy;
-	}
-
 	counter = 1;
 
 	for (u8 i = 0; i < rows; ++i)
@@ -276,11 +275,12 @@ void CUIActorMenu::Construct()
 
 	m_clock_value						= UIHelper::CreateStatic(uiXml, "clock_value", this);
 
+/*
 	m_pDeadBodyBagList					= xr_new<CUIDragDropListEx>(); 
 	AttachChild							(m_pDeadBodyBagList);
 	m_pDeadBodyBagList->SetAutoDelete	(true);
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_deadbody_bag", 0, m_pDeadBodyBagList);
-
+*/
 	m_ActorStateInfo					= xr_new<ui_actor_state_wnd>();
 	m_ActorStateInfo->init_from_xml		(uiXml, "actor_state_info");
 	m_ActorStateInfo->SetAutoDelete		(true);
@@ -325,8 +325,8 @@ void CUIActorMenu::Construct()
 	m_message_box_ok->SetText			( "" );
 
 	m_UIPropertiesBox					= xr_new<CUIPropertiesBox>();
-	AttachChild							(m_UIPropertiesBox);
 	m_UIPropertiesBox->InitPropertiesBox(Fvector2().set(0,0),Fvector2().set(300,300));
+	AttachChild							(m_UIPropertiesBox);
 	m_UIPropertiesBox->Hide				();
 	m_UIPropertiesBox->SetWindowName	( "property_box" );
 
@@ -384,6 +384,7 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iTrashSlot].push_back(iActorBelt);
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);
+	m_allowed_drops[iActorSlot].push_back(iActorSlot);
 	m_allowed_drops[iActorSlot].push_back(iActorTrade);
 	m_allowed_drops[iActorSlot].push_back(iDeadBodyBag);
 
@@ -422,8 +423,8 @@ void CUIActorMenu::Construct()
 	m_actor_trade						= NULL;
 	m_partner_trade						= NULL;
 	m_repair_mode						= false;
-	m_highlight_clear					= false;
 	m_item_info_view					= false;
+	m_highlight_clear				= true;
 
 	DeInitInventoryMode					();
 	DeInitTradeMode						();
@@ -446,12 +447,12 @@ void CUIActorMenu::BindDragDropListEvents(CUIDragDropListEx* lst)
 
 void CUIActorMenu::InitCallbacks()
 {
-	Register( m_trade_button );
-	Register( m_takeall_button );
-	Register( m_exit_button );
-	Register( m_UIPropertiesBox );
-	VERIFY( m_pUpgradeWnd );
-	Register( m_pUpgradeWnd->m_btn_repair );
+	Register						(m_trade_button );
+	Register						(m_takeall_button);
+	Register						(m_exit_button);
+	Register						(m_UIPropertiesBox);
+	VERIFY							(m_pUpgradeWnd);
+	Register						(m_pUpgradeWnd->m_btn_repair);
 
 	AddCallback( m_trade_button->WindowName(),    BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::OnBtnPerformTrade ) );
 	AddCallback( m_takeall_button->WindowName(),  BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::TakeAllFromPartner ) );
@@ -474,9 +475,4 @@ void CUIActorMenu::UpdateButtonsLayout()
 	}
 	
 	m_exit_button->SetWndPos(btn_exit_pos);
-}
-
-void CUIActorMenu::SetSimpleHintText(LPCSTR text)
-{
-//m_hint_wnd;
 }

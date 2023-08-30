@@ -153,7 +153,6 @@ void CEntityCondition::reinit	()
 
 	m_fEntityMorale			=  m_fEntityMoraleMax = 1.f;
 
-	//health()				= MAX_HEALTH;
 	SetHealth				( MAX_HEALTH );
 	m_fPower				= MAX_POWER;
 	m_fRadiation			= 0;
@@ -341,38 +340,26 @@ void CEntityCondition::UpdateCondition()
 
 float CEntityCondition::HitOutfitEffect( float hit_power, ALife::EHitType hit_type, s16 element, float ap, bool& add_wound )
 {
-    CInventoryOwner* pInvOwner		= smart_cast<CInventoryOwner*>(m_object);
-	if(!pInvOwner)					return hit_power;
+    CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(m_object);
+	if(!pInvOwner)
+		return hit_power;
 
-	CCustomOutfit* pOutfit			= (CCustomOutfit*)pInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
-	if(!pOutfit)					return hit_power;
+	CCustomOutfit* pOutfit = (CCustomOutfit*)pInvOwner->inventory().ItemFromSlot(OUTFIT_SLOT);
+	//CHelmet* pHelmet = (CHelmet*)pInvOwner->inventory().ItemFromSlot(HELMET_SLOT);
+	if(!pOutfit/* && !pHelmet*/)
+		return hit_power;
 
-	//VERIFY( m_object != (CEntityAlive*)Actor() );
+	float new_hit_power = hit_power;
+	if(pOutfit)
+		new_hit_power = pOutfit->HitThroughArmor(hit_power, element, ap, add_wound, hit_type);
 
-	float new_hit_power				= hit_power;
+	/*if(pHelmet)
+		new_hit_power = pHelmet->HitThroughArmor(new_hit_power, element, ap, add_wound, hit_type);*/
 
-	if ( hit_type == ALife::eHitTypeFireWound )
-	{
-		new_hit_power				= pOutfit->HitThroughArmor( hit_power, element, ap, add_wound );
-	}
-	else
-	{
-		float one					= 0.1f;	// == void CRadioactiveZone::Affect(SZoneObjectInfo* O)
-		if ( hit_type == ALife::eHitTypeWound || hit_type == ALife::eHitTypeWound_2 || hit_type == ALife::eHitTypeExplosion )
-		{
-			one = 1.0f;
-		}
+	if(bDebug)	
+		Msg("new_hit_power = %.3f  hit_type = %s  ap = %.3f", new_hit_power, ALife::g_cafHitType2String(hit_type), ap);
 
-		float protect				= pOutfit->GetHitTypeProtection(hit_type,element);
-		new_hit_power				-= protect * one;
-		if( new_hit_power < 0.0f ) { new_hit_power = 0.0f; }
-		
-		//увеличить изношенность костюма
-		pOutfit->Hit				(new_hit_power, hit_type);
-	}
-	if( bDebug )	Msg( "new_hit_power = %.3f  hit_type = %s  ap = %.3f", new_hit_power, ALife::g_cafHitType2String(hit_type), ap );
-
-	return							new_hit_power;
+	return new_hit_power;
 }
 
 float CEntityCondition::HitPowerEffect(float power_loss)
@@ -426,6 +413,8 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 	//кто нанес последний хит
 	m_pWho = pHDS->who;
 	m_iWhoID = (NULL != pHDS->who) ? pHDS->who->ID() : 0;
+
+	bool const is_special_hit_2_self		=	(pHDS->who == m_object) && (pHDS->boneID == BI_NONE);
 
 	bool bAddWound = pHDS->add_wound;
 	
@@ -499,7 +488,11 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 		}break;
 	}
 
-	if (bDebug) Msg("%s hitted in %s with %f[%f]", m_object->Name(), smart_cast<IKinematics*>(m_object->Visual())->LL_BoneName_dbg(pHDS->boneID), m_fHealthLost*100.0f, hit_power_org);
+	if (bDebug && !is_special_hit_2_self ) 
+	{
+		Msg("%s hitted in %s with %f[%f]", m_object->Name(), 
+			smart_cast<IKinematics*>(m_object->Visual())->LL_BoneName_dbg(pHDS->boneID), m_fHealthLost*100.0f, hit_power_org);
+	}
 	//раны добавл€ютс€ только живому
 	if( bAddWound && GetHealth()>0 )
 	{

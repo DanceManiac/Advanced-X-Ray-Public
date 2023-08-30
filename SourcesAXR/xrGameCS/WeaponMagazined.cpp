@@ -44,6 +44,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 
 	m_bFireSingleShot			= false;
 	m_iShotNum					= 0;
+	m_fOldBulletSpeed			= 0;
 	bullet_cnt					= 0;
 	m_iQueueSize				= WEAPON_ININITE_QUEUE;
 	m_bLockType					= false;
@@ -80,6 +81,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
 
+	// ѕровер€ем наличие анимаций
 	SetAnimFlag(ANM_SHOW_EMPTY,		"anm_show_empty");
 	SetAnimFlag(ANM_HIDE_EMPTY,		"anm_hide_empty");
 	SetAnimFlag(ANM_IDLE_EMPTY,		"anm_idle_empty");
@@ -877,7 +879,7 @@ void CWeaponMagazined::OnShot()
 	else
 		m_sounds.PlaySound(m_sSndShotCurrent.c_str(), get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 
-	// snd reflection
+	// Ёхо выстрела
 	if (IsSilencerAttached() == false)
 	{
 		bool bIndoor = false;
@@ -1185,15 +1187,16 @@ void CWeaponMagazined::switch2_Empty()
 }
 void CWeaponMagazined::PlayReloadSound()
 {
-	if(!m_sounds_enabled)
-		return;
-	if (iAmmoElapsed == 0)
-		if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
-			PlaySound("sndReloadEmpty", get_LastFP());
+	if (m_sounds_enabled)
+	{
+		if (iAmmoElapsed == 0)
+			if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
+				PlaySound("sndReloadEmpty", get_LastFP());
+			else
+				PlaySound("sndReload", get_LastFP());
 		else
 			PlaySound("sndReload", get_LastFP());
-	else
-		PlaySound("sndReload", get_LastFP());
+	}
 }
 
 void CWeaponMagazined::switch2_Reload()
@@ -1503,6 +1506,31 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		return inherited::Attach(pIItem, b_send_event);
 }
 
+bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_item)
+{
+	bool detached = false;
+	SCOPES_VECTOR_IT it = m_scopes.begin();
+	shared_str iter_scope_name = "none";
+	for(; it!=m_scopes.end(); it++)
+	{
+		if (bUseAltScope)
+		{
+			iter_scope_name = (*it);
+		}
+		else
+		{
+			iter_scope_name = pSettings->r_string((*it), "scope_name");
+		}
+		if(!xr_strcmp(iter_scope_name, item_section_name))
+		{
+			m_cur_scope = NULL;
+			m_cur_scope_bone = NULL;
+			detached = true;
+		}
+	}
+	return detached;
+}
+
 bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 {
 	if(		m_eScopeStatus == ALife::eAddonAttachable &&
@@ -1580,32 +1608,6 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 	else
 		return inherited::Detach(item_section_name, b_spawn_item);;
 }
-
-bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_item)
-{
-	bool detached = false;
-	SCOPES_VECTOR_IT it = m_scopes.begin();
-	shared_str iter_scope_name = "none";
-	for (; it != m_scopes.end(); it++)
-	{
-		if (bUseAltScope)
-		{
-			iter_scope_name = (*it);
-		}
-		else
-		{
-			iter_scope_name = pSettings->r_string((*it), "scope_name");
-		}
-		if (!xr_strcmp(iter_scope_name, item_section_name))
-		{
-			m_cur_scope = NULL;
-			m_cur_scope_bone = NULL;
-			detached = true;
-		}
-	}
-	return detached;
-}
-
 /*
 void CWeaponMagazined::LoadAddons()
 {
@@ -1863,7 +1865,7 @@ void CWeaponMagazined::PlayAnimAim()
 
 void CWeaponMagazined::PlayAnimIdle()
 {
-	VERIFY(GetState()==eIdle);
+	if(GetState()!=eIdle)	return;
 
 	if (TryPlayAnimIdle()) return;
 
@@ -2168,6 +2170,28 @@ bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )
 	}
 
 	return result;
+}
+void CWeaponMagazined::FireBullet(	const Fvector& pos, 
+									const Fvector& shot_dir, 
+									float fire_disp,
+									const CCartridge& cartridge,
+									u16 parent_id,
+									u16 weapon_id,
+									bool send_hit)
+{
+	if(m_iShootEffectorStart)
+	{
+		if(m_iShotNum <= 1)
+		{
+			m_fOldBulletSpeed = GetBulletSpeed();
+			SetBulletSpeed(m_iShootEffectorStart);
+		}
+		else if(m_iShotNum > m_iShootEffectorStart)
+		{
+			SetBulletSpeed(m_fOldBulletSpeed);
+		}
+	}
+	inherited::FireBullet(pos, shot_dir, fire_disp, cartridge, parent_id, weapon_id, send_hit);
 }
 
 // AVO: for custom added sounds check if sound exists

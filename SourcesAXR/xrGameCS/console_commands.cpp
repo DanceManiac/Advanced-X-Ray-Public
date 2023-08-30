@@ -293,9 +293,7 @@ public:
 	{
 		for (auto sect : pSettings->sections())
 		{
-			if (sect->line_exist("class") && sect->line_exist("inv_weight") 
-				|| sect->line_exist("class") && sect->line_exist("$spawn") && sect->line_exist("Spawn_Inventory_Item_Section") 
-				|| sect->line_exist("class") && (pSettings->r_clsid(sect->Name.c_str(), "class") == CLSID_CAR))
+			if (sect->line_exist("class") && sect->line_exist("$spawn") && sect->line_exist("visual"))
 				tips.push_back(sect->Name.c_str());
 		}
 	}

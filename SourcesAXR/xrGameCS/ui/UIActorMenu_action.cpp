@@ -137,7 +137,7 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 
 	OnItemDropped			(CurrentIItem(), new_owner, old_owner);
 	
-	UpdateItemsPlace();
+	UpdateItemsPlace			();
 
 	return true;
 }
@@ -222,6 +222,7 @@ bool CUIActorMenu::OnItemDbClick(CUICellItem* itm)
 	}; //switch 
 
 	UpdateItemsPlace();
+
 	return true;
 }
 
@@ -252,10 +253,10 @@ bool CUIActorMenu::OnItemMButtonClick(CUICellItem* itm)
 bool CUIActorMenu::OnItemFocusReceive(CUICellItem* itm)
 {
 	InfoCurItem( NULL );
-	set_highlight_item(itm);
 	m_item_info_view = true;
 
 	itm->m_selected = true;
+	set_highlight_item( itm );
 	return true;
 }
 
@@ -308,10 +309,6 @@ void CUIActorMenu::OnMouseMove()
 
 bool CUIActorMenu::OnKeyboard(int dik, EUIMessages keyboard_action)
 {
-/*
-	if (UIPropertiesBox.GetVisible())
-	{	UIPropertiesBox.OnKeyboard(dik, keyboard_action); }
-*/
 	InfoCurItem( NULL );
 	if ( is_binded(kDROP, dik) )
 	{

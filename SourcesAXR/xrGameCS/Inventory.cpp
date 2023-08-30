@@ -6,6 +6,7 @@
 #include "weapon.h"
 
 #include "ui/UIInventoryUtilities.h"
+#include "ui/UIActorMenu.h"
 
 #include "eatable_item.h"
 #include "script_engine.h"
@@ -21,12 +22,12 @@
 #include "clsid_game.h"
 #include "static_cast_checked.hpp"
 #include "player_hud.h"
-#include "CustomDetector.h"
-#include "CustomBackpack.h"
-
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
 #include "../xrPhysics/ElevatorState.h"
+#include "CustomDetector.h"
+#include "CustomBackpack.h"
+
 using namespace InventoryUtilities;
 
 extern bool g_block_all_except_movement;
@@ -67,14 +68,12 @@ bool CInventorySlot::IsBlocked() const
 CInventory::CInventory() 
 {
 	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
-//m_iMaxBelt									= pSettings->r_s32		("inventory","max_belt");
 	
 	ReloadInv();
 	
 	m_iActiveSlot								= NO_ACTIVE_SLOT;
 	m_iNextActiveSlot							= NO_ACTIVE_SLOT;
 	m_iPrevActiveSlot							= NO_ACTIVE_SLOT;
-	//m_iLoadActiveSlot							= NO_ACTIVE_SLOT;
 
 	/*string256 temp;
 	for(u32 i=0; i<m_slots.size(); ++i ) 
@@ -301,15 +300,16 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	//for unknown reason net_Import arrived for object that has a parent, so correction prediction schema will crash
 	Level().RemoveObject_From_4CrPr		(pObj);
 
-	u16 actor_id = Level().CurrentEntity()->ID();
-
-	if (GetOwner()->object_id() == actor_id && this->m_pOwner->object_id() == actor_id)		//actors inventory
-	{
-		CWeaponMagazined* pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
-		if (pWeapon && pWeapon->strapped_mode())
+	if (Level().CurrentEntity()) {
+		std::uint16_t actor_id = Level().CurrentEntity()->ID();
+		if (GetOwner()->object_id() == actor_id &&
+			this->m_pOwner->object_id() == actor_id) // actors inventory
 		{
-			pWeapon->strapped_mode(false);
-			Ruck(pWeapon);
+			CWeaponMagazined* pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
+			if (pWeapon && pWeapon->strapped_mode()) {
+				pWeapon->strapped_mode(false);
+				Ruck(pWeapon);
+			}
 		}
 	}
 
@@ -390,9 +390,14 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		if (Level().CurrentViewEntity() == pActor_owner)
 		{
 			ui->UIGame()->OnInventoryAction(pIItem, GE_OWNERSHIP_TAKE);
-
+			
 			if (pIItem->m_eItemCurrPlace == EItemPlaceRuck)
 				Actor()->ChangeInventoryFullness(pIItem->GetOccupiedInvSpace());
+		}
+		else if(ui->UIGame()->ActorMenu().GetMenuMode()==mmDeadBodySearch)
+		{
+			if(m_pOwner==ui->UIGame()->ActorMenu().GetPartner())
+				ui->UIGame()->OnInventoryAction(pIItem, GE_OWNERSHIP_TAKE);
 		}
 	};
 }

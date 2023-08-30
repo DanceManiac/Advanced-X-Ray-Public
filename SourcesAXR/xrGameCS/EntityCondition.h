@@ -132,7 +132,7 @@ private:
 
 public:
 							CEntityCondition		(CEntityAlive *object);
-	virtual					~CEntityCondition		(void);
+	virtual					~CEntityCondition		();
 
 	virtual void			LoadCondition			(LPCSTR section);
 	virtual void			LoadTwoHitsDeathParams	(LPCSTR section);
@@ -145,6 +145,15 @@ public:
 	IC void					SetPower				(float value)		{m_fPower = value; clamp(m_fPower, 0.f, m_fPowerMax);}
 	IC float				GetRadiation			() const			{return m_fRadiation;}
 	IC float				GetPsyHealth			() const			{return m_fPsyHealth;}
+	IC float				GetSatiety				() const			{return m_fSatiety;}
+	IC float				GetThirst				() const			{return m_fThirst;}
+	IC float				GetIntoxication			() const			{return m_fIntoxication;}
+	IC float				GetSleepeness			() const			{return m_fSleepeness;}
+	IC float				GetAlcoholism			() const			{return m_fAlcoholism;}
+	IC float				GetAlcohol				() const			{return m_fAlcohol;}
+	IC float				GetHangover				() const			{return m_fHangover;}
+	IC float				GetNarcotism			() const			{return m_fNarcotism;}
+	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -170,15 +179,6 @@ public:
 	IC void					MaxPower				()					{m_fPower = m_fPowerMax;};
 	IC void					SetMaxPower				(float val)			{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
 	IC float				GetMaxPower				() const			{return m_fPowerMax;};
-	IC float				GetSatiety				() const			{return m_fSatiety;}
-	IC float				GetThirst				() const			{return m_fThirst;}
-	IC float				GetIntoxication			() const			{return m_fIntoxication;}
-	IC float				GetSleepeness			() const			{return m_fSleepeness;}
-	IC float				GetAlcoholism			() const			{return m_fAlcoholism;}
-	IC float				GetAlcohol				() const			{return m_fAlcohol;}
-	IC float				GetHangover				() const			{return m_fHangover;}
-	IC float				GetNarcotism			() const			{return m_fNarcotism;}
-	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
 
 	void 					ChangeBleeding			(float percent);
 

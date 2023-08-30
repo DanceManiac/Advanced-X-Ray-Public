@@ -8,14 +8,29 @@ class CCustomOutfit: public CInventoryItemObject {
 private:
     typedef	CInventoryItemObject inherited;
 public:
-							CCustomOutfit		(void);
-	virtual					~CCustomOutfit		(void);
+							CCustomOutfit		();
+	virtual					~CCustomOutfit		();
 
 	virtual void			Load				(LPCSTR section);
 	
 	//уменьшенная версия хита, для вызова, когда костюм надет на персонажа
 	virtual void			Hit					(float P, ALife::EHitType hit_type);
 	virtual void			UpdateCL			();
+	//коэффициенты на которые домножается хит
+	//при соответствующем типе воздействия
+	//если на персонаже надет костюм
+	float					GetHitTypeProtection		(ALife::EHitType hit_type, s16 element);
+	float					GetDefHitTypeProtection		(ALife::EHitType hit_type);
+	float					GetBoneArmor				(s16 element);
+
+	float					HitThroughArmor		(float hit_power, s16 element, float ap, bool& add_wound, ALife::EHitType hit_type);
+	//коэффициент на который домножается потеря силы
+	//если на персонаже надет костюм
+	float					GetPowerLoss		();
+
+	virtual void			OnMoveToSlot		();
+	virtual void			OnMoveToRuck		(EItemPlace prev);
+	virtual void			OnH_A_Chield		();
 	virtual void			save				(NET_Packet& output_packet);
 	virtual void			load				(IReader& input_packet);
 	void					UpdateFilterCondition(void);
@@ -24,22 +39,6 @@ public:
 	float					GetDegradationSpeed	(void) const;
 	void					FilterReplace		(float val);
 	bool					IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
-
-	//коэффициенты на которые домножается хит
-	//при соответствующем типе воздействия
-	//если на персонаже надет костюм
-	float					GetHitTypeProtection(ALife::EHitType hit_type, s16 element);
-	float					GetDefHitTypeProtection(ALife::EHitType hit_type);
-	float					GetBoneArmor(s16 element);
-
-	float					HitThroughArmor		(float hit_power, s16 element, float ap, bool& add_wound );
-	//коэффициент на который домножается потеря силы
-	//если на персонаже надет костюм
-	float					GetPowerLoss		();
-
-
-	virtual void			OnMoveToSlot		();
-	virtual void			OnMoveToRuck		(EItemPlace prev);
 
 protected:
 	float							m_fPowerLoss;
@@ -76,8 +75,8 @@ public:
 
 	int						m_iInventoryCapacity;
 
-	shared_str				m_NightVisionSect;
 	shared_str				m_BonesProtectionSect;
+	shared_str				m_NightVisionSect;
 	shared_str				m_PlayerHudSection;
 
 	xr_vector<shared_str>	m_SuitableFilters;
@@ -99,9 +98,9 @@ public:
 	virtual void			net_Export				(NET_Packet& P);
 	virtual void			net_Import				(NET_Packet& P);
 			void			ApplySkinModel			(CActor* pActor, bool bDress, bool bHUDOnly);
-			void			ReloadBonesProtection	(CActor* pActor);
+			void			ReloadBonesProtection	();
 
-			IC int			GetOutfitNV_Type		() const {return m_NightVisionType;}
+			IC int			GetOutfitNV_Type		() const { return m_NightVisionType; }
 
 	HitImmunity::HitTypeSVec m_ConstHitTypeProtection;
 	HitImmunity::HitTypeSVec m_HitTypeProtection;

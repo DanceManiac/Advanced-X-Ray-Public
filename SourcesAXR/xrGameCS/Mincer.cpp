@@ -120,7 +120,6 @@ void CMincer::NotificateDestroy			(CPHDestroyableNotificate *dn)
 {
 	Fvector dir;
 	float power = 0.0f; // can change
-	float power_critical = 0.0f; //
 	float impulse;
 	//if(!m_telekinetics.has_impacts()) return;
 
@@ -137,20 +136,19 @@ void CMincer::NotificateDestroy			(CPHDestroyableNotificate *dn)
 	Fvector position_in_bone_space, throw_in_dir;
 	position_in_bone_space.set		(0.0f, 0.0f, 0.0f);
 	throw_in_dir.set				(1.0f, 0.0f, 1.0f);
-	CreateHit(obj->ID(),ID(),throw_in_dir,power,power_critical,0,position_in_bone_space,impulse,ALife::eHitTypeExplosion);
+	CreateHit(obj->ID(),ID(),throw_in_dir,power,0,position_in_bone_space,impulse,ALife::eHitTypeExplosion);
 }
 
 void CMincer::AffectPullAlife(CEntityAlive* EA,const Fvector& throw_in_dir,float dist)
 {
 	float power = Power(dist);
-	float power_critical = 0.0f; // Power_critical(dist);??
 	//Fvector dir;
 	//dir.random_dir(throw_in_dir,2.f*M_PI);
 	if(!smart_cast<CActor*>(EA))
 	{
 		Fvector pos_in_bone_space;
 		pos_in_bone_space.set(0,0,0);
-		CreateHit(EA->ID(),ID(),throw_in_dir,power,power_critical,0,pos_in_bone_space,0.0f,m_eHitTypeBlowout);
+		CreateHit(EA->ID(),ID(),throw_in_dir,power,0,pos_in_bone_space,0.0f,m_eHitTypeBlowout);
 	}
 	inherited::AffectPullAlife(EA,throw_in_dir,dist);
 

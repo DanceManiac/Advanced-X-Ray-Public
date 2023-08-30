@@ -27,7 +27,7 @@ public:
 	virtual						~CExplosive(void);
 
 	virtual void 				Load(LPCSTR section);
-	virtual void				Load(CInifile const * ini, LPCSTR section);
+	virtual void				Load(CInifile const * ini,LPCSTR section);
 
 	virtual void 				net_Destroy		();
 	virtual void				net_Relcase		(CObject* O);
@@ -98,7 +98,6 @@ protected:
 	//параметры и количество осколков
 	float 						m_fFragsRadius; 
 	float 						m_fFragHit;
-	float 						m_fFragHitCritical;
 	float 						m_fFragHitImpulse;
 	int	  						m_iFragsNum;
 

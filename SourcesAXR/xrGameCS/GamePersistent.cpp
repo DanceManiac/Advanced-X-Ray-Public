@@ -445,7 +445,20 @@ void CGamePersistent::WeathersUpdate()
 	}
 }
 
-void CGamePersistent::start_logo_intro		()
+bool allow_intro ()
+{
+#ifdef MASTER_GOLD
+	if (g_SASH.IsRunning())
+#else	// #ifdef MASTER_GOLD
+	if ((0!=strstr(Core.Params, "-nointro")) || g_SASH.IsRunning())
+#endif	// #ifdef MASTER_GOLD
+	{
+		return false;
+	}else
+		return true;
+}
+
+void CGamePersistent::start_logo_intro()
 {
 	if (Device.dwPrecacheFrame==0)
 	{
@@ -460,23 +473,20 @@ void CGamePersistent::start_logo_intro		()
 		}
 	}
 }
-void CGamePersistent::update_logo_intro			()
+
+void CGamePersistent::update_logo_intro()
 {
 	if(m_intro && (false==m_intro->IsActive()))
 	{
 		m_intro_event			= 0;
 		xr_delete				(m_intro);
+		Msg("intro_delete ::update_logo_intro");
 		Console->Execute		("main_menu on");
 	}
 	else if (!m_intro)
 	{
 		m_intro_event = 0;
 	}
-}
-
-bool allow_intro()
-{
-	return 0 == strstr(Core.Params, "-nointro");
 }
 
 extern int g_keypress_on_start;
@@ -490,7 +500,6 @@ void CGamePersistent::game_loaded()
 			load_screen_renderer.b_need_user_input	&& 
 			m_game_params.m_e_game_type == eGameIDSingle)
 		{
-			g_pGamePersistent->SetLoadStageTitle("st_press_any_key"); //Автопауза
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("game_loaded");
@@ -510,7 +519,6 @@ void CGamePersistent::update_game_loaded()
 {
 	xr_delete				(m_intro);
 	Msg("intro_delete ::update_game_loaded");
-	load_screen_renderer.stop();
 	start_game_intro		();
 }
 
@@ -660,6 +668,7 @@ void CGamePersistent::OnFrame	()
 
 			Actor()->Cameras().UpdateFromCamera			(C);
 			Actor()->Cameras().ApplyDevice				(VIEWPORT_NEAR);
+
 		}
 #endif // MASTER_GOLD
 	}
@@ -669,8 +678,8 @@ void CGamePersistent::OnFrame	()
 		Engine.Sheduler.Update		();
 
 	// update weathers ambient
-//	if(!Device.Paused())
-//		WeathersUpdate				();
+	if(!Device.Paused())
+		WeathersUpdate				();
 
 	if	(0!=pDemoFile)
 	{
@@ -838,27 +847,27 @@ void CGamePersistent::LoadTitle(bool change_tip, shared_str map_name)
 		string512				buff;
 		u8						tip_num;
 		luabind::functor<u8>	m_functor;
-		bool is_single = !xr_strcmp(m_game_params.m_game_type, "single");
-		if (is_single)
+		bool is_single = !xr_strcmp(m_game_params.m_game_type,"single");
+		if(is_single)
 		{
-			R_ASSERT(ai().script_engine().functor("loadscreen.get_tip_number", m_functor));
+			R_ASSERT( ai().script_engine().functor( "loadscreen.get_tip_number", m_functor ) );
 			tip_num = m_functor(map_name.c_str());
 		}
 		else
 		{
-			R_ASSERT(ai().script_engine().functor("loadscreen.get_mp_tip_number", m_functor));
+			R_ASSERT( ai().script_engine().functor( "loadscreen.get_mp_tip_number", m_functor ) );
 			tip_num = m_functor(map_name.c_str());
 		}
-		//		tip_num = 83;
-		xr_sprintf(buff, "%s%d:", CStringTable().translate("ls_tip_number").c_str(), tip_num);
+//		tip_num = 83;
+		xr_sprintf				(buff, "%s%d:", CStringTable().translate("ls_tip_number").c_str(), tip_num);
 		shared_str				tmp = buff;
 
-		if (is_single)
-			xr_sprintf(buff, "ls_tip_%d", tip_num);
+		if(is_single)
+			xr_sprintf			(buff, "ls_tip_%d", tip_num);
 		else
-			xr_sprintf(buff, "ls_mp_tip_%d", tip_num);
+			xr_sprintf			(buff, "ls_mp_tip_%d", tip_num);
 
-		pApp->LoadTitleInt(CStringTable().translate("ls_header").c_str(), tmp.c_str(), CStringTable().translate(buff).c_str());
+		pApp->LoadTitleInt		(CStringTable().translate("ls_header").c_str(), tmp.c_str(), CStringTable().translate(buff).c_str());
 	}
 }
 

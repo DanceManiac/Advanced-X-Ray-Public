@@ -19,6 +19,7 @@
 #include "../../../patrol_path_manager.h"
 #include "../../../patrol_path_manager_space.h"
 
+#include "../../../level_graph.h"
 
 using namespace MonsterSpace;
 using namespace MonsterSound;
@@ -50,15 +51,18 @@ bool CBaseMonster::bfAssignMovement (CScriptEntityAction *tpEntityAction)
 
 	// translate script.action into anim().action
 	switch (l_tMovementAction.m_tMoveAction) {
-		case eMA_WalkFwd:	anim().m_tAction = ACT_WALK_FWD;	break;
 		case eMA_WalkBkwd:	anim().m_tAction = ACT_WALK_BKWD;	break;
-		case eMA_Run:		anim().m_tAction = ACT_RUN;			break;
 		case eMA_Drag:		anim().m_tAction = ACT_DRAG;		break;
 		case eMA_Steal:		anim().m_tAction = ACT_STEAL;		break;
+		case eMA_WalkFwd:	anim().m_tAction = ACT_WALK_FWD;	break;
+		case eMA_Run:		anim().m_tAction = ACT_RUN;			break;
 //		case eMA_Jump:		anim().m_tAction = ACT_JUMP;		break;
 	}
 
 	m_force_real_speed = (l_tMovementAction.m_tSpeedParam == eSP_ForceSpeed);
+
+	u32 invalid_vertex_id;
+	ai().level_graph().set_invalid_vertex(invalid_vertex_id);
 
 	switch (l_tMovementAction.m_tGoalType) {
 		
@@ -305,10 +309,11 @@ void CBaseMonster::ProcessScripts()
 
 CEntity *CBaseMonster::GetCurrentEnemy()
 {
+	VERIFY		(g_Alive());
 	CEntity *enemy = 0;
 	
 	if (EnemyMan.get_enemy()) 
-		enemy = const_cast<CEntity *>(smart_cast<const CEntity*>(EnemyMan.get_enemy()));
+		enemy = const_cast<CEntity*>(static_cast<CEntity const*>(EnemyMan.get_enemy()));
 
 	if (!enemy || enemy->getDestroy() || !enemy->g_Alive()) enemy = 0;
 
@@ -338,7 +343,11 @@ void CBaseMonster::SetScriptControl(const bool bScriptControl, shared_str caScri
 	if ( !m_bScriptControl && bScriptControl )
 	{
 		control().path_builder().patrol().make_inactual();
-		control().path_builder().detail().make_inactual();
+
+		if ( control().path_builder().path_type() != MovementManager::ePathTypeGamePath )
+		{
+			control().path_builder().detail().make_inactual();
+		}
 	}	
 
 	CScriptEntity::SetScriptControl(bScriptControl, caScriptName);

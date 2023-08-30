@@ -289,41 +289,6 @@ void CUIGameDM::SetVoteTimeResultMsg			(LPCSTR str)
 		m_voteStatusWnd->SetVoteTimeResultMsg(str);
 }
 
-bool		CUIGameDM::IR_OnKeyboardPress		(int dik)
-{
-	if(inherited::IR_OnKeyboardPress(dik)) return true;
-
-	EGameActions cmd  = get_binded_action(dik);
-	switch ( cmd )
-	{
-	case kINVENTORY: 
-	case kBUY:
-	case kSKIN:
-	case kTEAM:
-	case kMAP:
-	
-	case kSPEECH_MENU_0:
-	case kSPEECH_MENU_1:
-	case kSPEECH_MENU_2:
-	case kSPEECH_MENU_3:
-	case kSPEECH_MENU_4:
-	case kSPEECH_MENU_5:
-	case kSPEECH_MENU_6:
-	case kSPEECH_MENU_7:
-	case kSPEECH_MENU_8:
-	case kSPEECH_MENU_9:
-		{
-			return Game().OnKeyboardPress( cmd );
-		}break;
-	}
-	return false;
-}
-
-bool CUIGameDM::IR_OnKeyboardRelease	(int dik)
-{
-	return false;
-};
-
 void CUIGameDM::OnFrame()
 {
 	inherited::OnFrame				();

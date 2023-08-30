@@ -9,7 +9,7 @@
 #ifndef SMART_CAST_H
 #define SMART_CAST_H
 
-#if 0//def DEBUG
+#ifdef DEBUG
 #	define PURE_DYNAMIC_CAST
 #endif // DEBUG
 

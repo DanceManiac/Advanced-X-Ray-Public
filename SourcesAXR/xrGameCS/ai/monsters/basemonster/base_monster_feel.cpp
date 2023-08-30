@@ -72,7 +72,7 @@ void CBaseMonster::feel_sound_new(CObject* who, int eType, CSound_UserDataPtr us
 }
 #define MAX_LOCK_TIME 2.f
 
-void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir)
+void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir, ALife::EHitType hit_type, bool draw_hit_marks)
 {
 	if (!g_Alive()) return;
 	if (!pEntity || pEntity->getDestroy()) return;
@@ -101,11 +101,11 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 		HS.boneID			= (smart_cast<IKinematics*>(pEntityNC->Visual())->LL_GetBoneRoot());//		l_P.w_s16	(smart_cast<IKinematics*>(pEntityNC->Visual())->LL_GetBoneRoot());
 		HS.p_in_bone_space	= (position_in_bone_space);											//		l_P.w_vec3	(position_in_bone_space);
 		HS.impulse			= (impulse);														//		l_P.w_float	(impulse);
-		HS.hit_type			= (ALife::eHitTypeWound);											//		l_P.w_u16	( u16(ALife::eHitTypeWound) );
+		HS.hit_type			= hit_type;															//		l_P.w_u16	( u16(ALife::eHitTypeWound) );
 		HS.Write_Packet(l_P);
 		u_EventSend	(l_P);
 		
-		if (pEntityNC == Actor()) {
+		if (pEntityNC == Actor() && draw_hit_marks) {
 			START_PROFILE("BaseMonster/Animation/HitEntity");
 			SDrawStaticStruct* s = HUD().GetUI()->UIGame()->AddCustomStatic("monster_claws", false);
 			s->m_endTime = Device.fTimeGlobal+3.0f;// 3sec
@@ -114,8 +114,8 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 			Device.vCameraDirection.getHP	(h1,p1);
 
 			Fvector hd = hit_dir;
-			hd.mul(-1);
-			float d = -h1 + hd.getH();
+			hd.mul					(-1);
+			float d = -h1 + hd.getH	();
 			s->wnd()->SetHeading	(d);
 			s->wnd()->SetHeadingPivot(Fvector2().set(256,512), Fvector2().set(0,0), false);
 			STOP_PROFILE;
@@ -177,7 +177,7 @@ void CBaseMonster::HitEntity(const CEntity *pEntity, float fDamage, float impuls
 					
 					string64				sect_name;
 
-					sprintf_s					(sect_name,"%s_%d",eff_sect.c_str(), id);
+					xr_sprintf					(sect_name,"%s_%d",eff_sect.c_str(), id);
 					AddEffector				(Actor(), effBigMonsterHit, sect_name, fDamage);
 				}
 			}

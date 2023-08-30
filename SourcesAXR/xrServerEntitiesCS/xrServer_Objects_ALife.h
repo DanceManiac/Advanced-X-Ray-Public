@@ -286,6 +286,8 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeDynamicObject,CSE_ALifeObject)
 	virtual	bool					redundant				() const;
 			void					attach					(CSE_ALifeInventoryItem *tpALifeInventoryItem,	bool		bALifeRequest,	bool bAddChildren = true);
 			void					detach					(CSE_ALifeInventoryItem *tpALifeInventoryItem,	ALife::OBJECT_IT	*I = 0,	bool bALifeRequest = true,	bool bRemoveChildren = true);
+	virtual void					clear_client_data		();
+	virtual void					on_failed_switch_online	();
 #endif
 	virtual CSE_ALifeDynamicObject	*cast_alife_dynamic_object	() {return this;}
 SERVER_ENTITY_DECLARE_END
@@ -594,6 +596,7 @@ add_to_type_list(CSE_ALifeObjectBreakable)
 
 SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeObjectClimable,CSE_Shape,CSE_ALifeDynamicObject)
 CSE_ALifeObjectClimable	(LPCSTR caSection);
+shared_str						material;
 virtual							~CSE_ALifeObjectClimable	();
 virtual bool					used_ai_locations	() const;
 virtual bool					can_switch_offline	() const;

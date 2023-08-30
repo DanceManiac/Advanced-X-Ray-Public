@@ -10,7 +10,7 @@
 
 #ifndef PURE_DYNAMIC_CAST
 #	ifdef XRGAME_EXPORTS
-#		include "../Include/xrRender/rendervisual.h"
+#		include "../include/xrRender/rendervisual.h"
 #		include "alife_space.h"
 #		include "hit.h"
 #		include "actor.h"

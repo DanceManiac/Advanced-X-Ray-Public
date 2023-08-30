@@ -759,7 +759,7 @@ void CLevel::OnFrame	()
 	m_ph_commander_scripts->update		();
 //	autosave_manager().update			();
 
-	//  
+	//просчитать полет пуль
 	Device.Statistic->TEST0.Begin		();
 	BulletManager().CommitRenderSet		();
 	Device.Statistic->TEST0.End			();
@@ -869,13 +869,14 @@ void CLevel::OnRender()
 		return;
 
 	Game().OnRender();
-	//  
+	//отрисовать трассы пуль
 	//Device.Statistic->TEST1.Begin();
 	BulletManager().Render();
 	//Device.Statistic->TEST1.End();
 
 	::Render->AfterWorldRender(); //--#SM+#-- +SecondVP+
 
+	//отрисовать интерфейc пользователя
 	HUD().RenderUI();
 
 #ifdef DEBUG
@@ -883,11 +884,11 @@ void CLevel::OnRender()
 	physics_world()->OnRender	();
 #endif // DEBUG
 
-	embedded_editor_render();
-
 #ifdef DEBUG
 	if (ai().get_level_graph())
 		ai().level_graph().render();
+
+	embedded_editor_render();
 
 #ifdef DEBUG_PRECISE_PATH
 	test_precise_path		();

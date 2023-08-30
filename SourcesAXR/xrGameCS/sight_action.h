@@ -49,6 +49,9 @@ protected:
 	bool				m_already_switched;
 	bool				m_initialized;
 
+private:
+			void		predict_object_position		(bool use_exact_position);
+
 protected:
 			void		execute_current_direction	();
 			void		execute_path_direction		();

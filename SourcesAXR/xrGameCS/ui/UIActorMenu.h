@@ -174,8 +174,8 @@ protected:
 
 	u32							m_last_time;
 	bool						m_repair_mode;
-	bool						m_highlight_clear;
 	bool						m_item_info_view;
+	bool						m_highlight_clear;
 	u32							m_trade_partner_inventory_state;
 	bool						m_bNeedMoveAfsToBag;
 public:
@@ -183,7 +183,9 @@ public:
 	EMenuMode					GetMenuMode					() {return m_currMenuMode;};
 	void						SetActor					(CInventoryOwner* io);
 	void						SetPartner					(CInventoryOwner* io);
+	CInventoryOwner*			GetPartner					() {return m_pPartnerInvOwner;};
 	void						SetInvBox					(CInventoryBox* box);
+	CInventoryBox*				GetInvBox					() {return m_pInvBox;};
 	void						SetCarTrunk					(CCar* pCar);
 	void						SetSimpleHintText			(LPCSTR text);
 
@@ -206,7 +208,7 @@ private:
 	bool						highlight_addons_for_weapon	(PIItem weapon_item, CUICellItem* ci);
 	void						highlight_weapons_for_addon	(PIItem addon_item, CUIDragDropListEx* ddlist);
 
-protected:			
+public:
 	void						Construct					();
 	void						InitCallbacks				();
 
@@ -286,7 +288,7 @@ protected:
 	bool						ToDeadBodyBag				(CUICellItem* itm, bool b_use_cursor_pos);
 
 	void						AttachAddon					(PIItem item_to_upgrade);
-	void						DetachAddon					(LPCSTR addon_name);
+	void						DetachAddon					(LPCSTR addon_name, PIItem itm = NULL);
 
 	void						SendEvent_Item2Slot			(PIItem	pItem, u16 parent);
 	void						SendEvent_Item2Belt			(PIItem	pItem, u16 parent);
@@ -336,16 +338,16 @@ public:
 	void						UpdatePartnerBag			();
 	void						UpdateDeadBodyBag			();
 
+	void		xr_stdcall		OnBtnPerformTrade			(CUIWindow* w, void* d);
+	void		xr_stdcall		OnBtnExitClicked			(CUIWindow* w, void* d);
+	void		xr_stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
+	void						TakeAllFromInventoryBox		();
 	CUICellItem*				GetCurrentConsumable		() { return m_pCurrentConsumable; };
 	void						SetCurrentConsumable		(CUICellItem* ci) { m_pCurrentConsumable = ci; };
 	void						RefreshConsumableCells		();
 
-	void		__stdcall		OnBtnPerformTrade			(CUIWindow* w, void* d);
-	void		__stdcall		OnBtnExitClicked			(CUIWindow* w, void* d);
-	void		__stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
-	void						TakeAllFromInventoryBox		();
-
 	CScriptGameObject*			GetCurrentItemAsGameObject	();
+
 	void						RefreshCurrentItemCell		();
 
 	IC	UIHint*					get_hint_wnd				() { return m_hint_wnd; }

@@ -2,7 +2,7 @@
 #include "phmovementcontrol.h"
 
 #include "../xrEngine/cl_intersect.h"
-#include "../xrserverentities/alife_space.h"
+#include "../xrServerEntitiesCS/alife_space.h"
 
 //#include "entity.h"
 //#include "PHDynamicData.h"
@@ -20,7 +20,7 @@
 #include "../xrphysics/phvalide.h"
 #include "../xrphysics/physicsshell.h"
 #include "../xrphysics/iphworld.h"
-//#include "../xrserverentities/ai_space.h"
+//#include "../xrServerEntitiesCS/ai_space.h"
 #include "detail_path_manager.h"
 #include "../xrEngine/gamemtllib.h"
 #include "../xrEngine/xr_object.h"
@@ -1271,14 +1271,14 @@ void CPHMovementControl::ApplyHit(const Fvector& dir,const float P,ALife::EHitTy
 			case ALife::eHitTypeShock :												;//stop
 			case ALife::eHitTypeStrike:												;//stop
 			case ALife::eHitTypeWound:			SetVelocity(Fvector().set(0,0,0))	; break; // stop							;
-			case ALife::eHitTypeLightBurn  :										;//not stop
+//			case ALife::eHitTypeLightBurn  :										;//not stop
 			case ALife::eHitTypeRadiation:											;//not stop
 			case ALife::eHitTypeTelepatic:											;//not stop
 			case ALife::eHitTypeChemicalBurn:										;break;//not stop
 			case ALife::eHitTypeExplosion:											;//stop
 			case ALife::eHitTypeFireWound:											;//stop
 			case ALife::eHitTypeWound_2:											;break;//stop		//knife's alternative fire
-//			case ALife::eHitTypePhysicStrike:	SetVelocity(Fvector().set(0,0,0))	;break;//stop
+			case ALife::eHitTypePhysicStrike:	SetVelocity(Fvector().set(0,0,0))	;break;//stop
 			default:																NODEFAULT	;
 		}
 	}

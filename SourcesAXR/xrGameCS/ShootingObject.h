@@ -30,6 +30,11 @@ protected:
 
 	Fvector		m_vCurrentShootDir;
 	Fvector		m_vCurrentShootPos;
+
+private:
+	float		m_air_resistance_factor;
+
+protected:
 	//ID персонажа который иницировал действие
 	u16			m_iCurrentParentID;
 
@@ -47,6 +52,8 @@ protected:
 												u16 parent_id,
 												u16 weapon_id,
 												bool send_hit);
+	void					SetBulletSpeed(float new_speed) {m_fStartBulletSpeed = new_speed;}
+	float					GetBulletSpeed()				{return m_fStartBulletSpeed;}
 
 	virtual void			FireStart			();
 	virtual void			FireEnd				();
@@ -170,7 +177,6 @@ protected:
 public:
 	Fvector					vLoadedShellPoint;
 	float					m_fPredBulletTime;
-	float					m_air_resistance_factor;
 	float					m_fTimeToAim;
 	BOOL					m_bUseAimBullet;
 protected:
@@ -188,5 +194,5 @@ protected:
 	//имя партиклов следа от пули
 	shared_str				m_sShotParticles;
 public:
-	virtual void			DumpActiveParams(shared_str const & section_name, CInifile & dst_ini) const;
+	virtual void				DumpActiveParams		(shared_str const & section_name, CInifile & dst_ini) const;
 };

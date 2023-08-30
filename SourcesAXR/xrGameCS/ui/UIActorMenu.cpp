@@ -44,6 +44,7 @@
 #include "../PDA.h"
 #include "../CustomOutfit.h"
 #include "../CustomDetector.h"
+#include "../../xrServerEntitiesCS/script_engine.h"
 
 bool SSFX_UI_DoF_active = false;
 
@@ -218,12 +219,10 @@ void CUIActorMenu::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 void CUIActorMenu::Show()
 {
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+	inherited::Show							();
 
 	SetMenuMode							(m_currMenuMode);
-	inherited::Show						();
 	PlaySnd								(eSndOpen);
-	m_ActorStateInfo->Show				(true);
-	clear_highlight_lists				();
 	m_ActorStateInfo->UpdateActorInfo	(m_pActorInvOwner);
 
 	if (Actor() && GameConstants::GetHideWeaponInInventory())
@@ -235,6 +234,7 @@ void CUIActorMenu::Show()
 
 		Actor()->block_action(kDETECTOR);
 	}
+	m_ActorStateInfo->Show					(true);
 }
 
 void CUIActorMenu::Hide()
@@ -242,20 +242,21 @@ void CUIActorMenu::Hide()
 	inherited::Hide						();
 	PlaySnd								(eSndClose);
 	SetMenuMode							(mmUndefined);
-	m_ActorStateInfo->Show				(false);
 
 	if (Actor() && GameConstants::GetHideWeaponInInventory())
 	{
 		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 		Actor()->unblock_action(kDETECTOR);
 	}
+	m_ActorStateInfo->Show					(false);
 }
 
 void CUIActorMenu::Draw()
 {
-	inherited::Draw();
 	HUD().GetUI()->UIMainIngameWnd->DrawZoneMap();
 	HUD().GetUI()->UIMainIngameWnd->DrawMainIndicatorsForInventory();
+
+	inherited::Draw	();
 	m_ItemInfo->Draw();
 	m_hint_wnd->Draw();
 }
@@ -419,6 +420,14 @@ CUIDragDropListEx* CUIActorMenu::GetListByType(EDDListType t)
 					return m_pTradeActorBagList;
 				else
 					return m_pInventoryBagList;
+			}break;
+		case iDeadBodyBag:
+			{
+				return m_pDeadBodyBagList;
+			}break;
+		case iActorBelt:
+			{
+				return m_pInventoryBeltList;
 			}break;
 		default:
 			{
@@ -1112,7 +1121,7 @@ void CUIActorMenu::ResetMode()
 
 void CUIActorMenu::UpdateActorMP()
 {
-	if ( !Level().game || !Game().local_player || !m_pActorInvOwner || IsGameTypeSingle() )
+	if ( !&Level() || !Level().game || !Game().local_player || !m_pActorInvOwner || IsGameTypeSingle() )
 	{
 		m_ActorCharacterInfo->ClearInfo();
 		m_ActorMoney->SetText( "" );
@@ -1122,7 +1131,7 @@ void CUIActorMenu::UpdateActorMP()
 	int money = Game().local_player->money_for_round;
 
 	string64 buf;
-	sprintf_s( buf, "%d RU", money );
+	xr_sprintf( buf, "%d RU", money );
 	m_ActorMoney->SetText( buf );
 
 	m_ActorCharacterInfo->InitCharacterMP( Game().local_player->name, "ui_npc_u_nebo_1" );

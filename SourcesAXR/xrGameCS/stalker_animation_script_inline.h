@@ -70,3 +70,8 @@ IC	Fmatrix const& CStalkerAnimationScript::transform				(CObject const& object) 
 
 	return						(object.XFORM());
 }
+
+IC	bool CStalkerAnimationScript::has_transform						() const
+{
+	return						( !!m_transform_ptr );
+}

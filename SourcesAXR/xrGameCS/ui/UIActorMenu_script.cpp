@@ -10,6 +10,7 @@
 #include "UIPdaWnd.h"
 #include "../actor.h"
 #include "../inventory_item.h"
+#include "UICellItem.h"
 #include "../ai_space.h"
 #include "../../XrServerEntitiesCS/script_engine.h"
 
@@ -53,11 +54,11 @@ void CUIActorMenu::TryRepairItem(CUIWindow* w, void* d)
 		);
 	LPCSTR question = funct2( item_name, item->GetCondition(), can_repair, partner );
 
-	m_repair_mode = true;
-	if ( can_repair )
+	if(can_repair)
 	{
+		m_repair_mode = true;
 		CallMessageBoxYesNo( question );
-	} 
+	}
 	else
 	{
 		CallMessageBoxOK( question );
@@ -78,6 +79,11 @@ void CUIActorMenu::RepairEffect_CurItem()
 	funct( item_name, item->GetCondition() );
 
 	item->SetCondition( 1.0f );
+	SeparateUpgradeItem();
+	CUICellItem* itm = CurrentItem();
+	if(itm)
+		itm->UpdateCellItemProgressBars();
+
 }
 
 bool CUIActorMenu::CanUpgradeItem( PIItem item )

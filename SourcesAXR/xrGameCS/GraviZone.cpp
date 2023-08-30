@@ -207,13 +207,12 @@ void CBaseGraviZone::AffectThrow(SZoneObjectInfo* O, CPhysicsShellHolder* GO,con
 	Fvector position_in_bone_space;
 
 	float power = Power(dist); //Power(GO->Position().distance_to(zone_center));
-	float power_critical = 0.0f; //Power(dist); or //Power_critical(dist); ??
 	float impulse = m_fHitImpulseScale*power*GO->GetMass();
 
 	if(power > 0.01f) 
 	{
 		position_in_bone_space.set(0.f,0.f,0.f);
-		CreateHit(GO->ID(),ID(),throw_in_dir,power,power_critical,0,position_in_bone_space,impulse,m_eHitTypeBlowout);
+		CreateHit(GO->ID(),ID(),throw_in_dir,power,0,position_in_bone_space,impulse,m_eHitTypeBlowout);
 		PlayHitParticles(GO);
 	}
 }

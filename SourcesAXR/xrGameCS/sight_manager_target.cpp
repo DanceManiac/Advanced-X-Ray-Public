@@ -34,6 +34,9 @@ void CSightManager::SetPointLookAngles(const Fvector &tPosition, float &yaw, flo
 	pitch						*= -1;
 }
 
+#include "actor.h"
+void aim_target	(shared_str const& aim_bone_id, Fvector &result, const CGameObject *object);
+
 bool CSightManager::aim_target	(Fvector &my_position, Fvector &aim_target, const CGameObject *object) const
 {
 	if (!object)
@@ -42,6 +45,20 @@ bool CSightManager::aim_target	(Fvector &my_position, Fvector &aim_target, const
 	if (m_object->aim_bone_id().size()) {
 		m_object->aim_target	(aim_target, object);
 		return					(true);
+	}
+
+	extern CActor*	g_actor;
+
+	if ( g_actor == object ) {
+		::aim_target			( "bip01_head", aim_target, object);
+		return					(true);
+	}
+
+	if ( CAI_Stalker const* stalker = smart_cast<CAI_Stalker const*>(object) ) {
+		if ( stalker->g_Alive() ) {
+			::aim_target		( "bip01_head", aim_target, object);
+			return				(true);
+		}
 	}
 
 	if (!object->use_center_to_aim())

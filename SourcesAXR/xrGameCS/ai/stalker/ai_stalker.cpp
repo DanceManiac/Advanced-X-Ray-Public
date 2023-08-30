@@ -1134,20 +1134,25 @@ shared_str const &CAI_Stalker::aim_bone_id		() const
 	return					(m_aim_bone_id);
 }
 
-void CAI_Stalker::aim_target					(Fvector &result, const CGameObject *object)
+void aim_target							(shared_str const& aim_bone_id, Fvector &result, const CGameObject *object)
 {
-	VERIFY					(m_aim_bone_id.size());
-
 	IKinematics				*kinematics = smart_cast<IKinematics*>(object->Visual());
 	VERIFY					(kinematics);
 
-	u16						bone_id = kinematics->LL_BoneID(m_aim_bone_id);
+	u16						bone_id = kinematics->LL_BoneID(aim_bone_id);
 	VERIFY2					(bone_id != BI_NONE, make_string("Cannot find bone %s",bone_id));
 
 	Fmatrix const			&bone_matrix = kinematics->LL_GetTransform(bone_id);
 	Fmatrix					final;
 	final.mul_43			(object->XFORM(), bone_matrix);
 	result					= final.c;
+}
+
+void CAI_Stalker::aim_target					(Fvector &result, const CGameObject *object)
+{
+	VERIFY					(m_aim_bone_id.size());
+
+	::aim_target			( m_aim_bone_id, result, object );
 }
 
 void CAI_Stalker::eye_pp_s0						()

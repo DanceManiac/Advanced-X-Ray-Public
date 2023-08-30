@@ -204,6 +204,10 @@ void CGameObject::OnEvent		(NET_Packet& P, u16 type)
 			CObject*	Hitter = Level().Objects.net_Find(HDS.whoID);
 			CObject*	Weapon = Level().Objects.net_Find(HDS.weaponID);
 			HDS.who		= Hitter;
+			if (!HDS.who)
+			{
+				Msg("! ERROR: hitter object [%d] is NULL on client.", HDS.whoID);
+			}
 			//-------------------------------------------------------
 			switch (HDS.PACKET_TYPE)
 			{
@@ -220,7 +224,12 @@ void CGameObject::OnEvent		(NET_Packet& P, u16 type)
 			Hit				(&HDS);
 			//---------------------------------------------------------------------------
 			if (GameID() != eGameIDSingle)
+			{
 				Game().m_WeaponUsageStatistic->OnBullet_Check_Result(false);
+				/*game_cl_mp*	mp_game = smart_cast<game_cl_mp*>(&Game());
+				if (mp_game->get_reward_generator())
+					mp_game->get_reward_generator()->OnBullet_Hit(Hitter, this, Weapon, HDS.boneID);*/
+			}
 			//---------------------------------------------------------------------------
 		}
 		break;
@@ -384,6 +393,21 @@ BOOL CGameObject::net_Spawn		(CSE_Abstract*	DC)
 
 			if (l_tpALifeObject && ai().game_graph().valid_vertex_id(l_tpALifeObject->m_tGraphID))
 				ai_location().game_vertex		(l_tpALifeObject->m_tGraphID);
+
+			if (!_valid(Position()))
+			{
+				Fvector vertex_pos = ai().level_graph().vertex_position(ai_location().level_vertex_id());
+
+				Msg("! [%s]: %s has invalid Position[%f,%f,%f] level_vertex_id[%u][%f,%f,%f]",
+					__FUNCTION__, cName().c_str(), Position().x, Position().y, Position().z,
+					ai_location().level_vertex_id(), vertex_pos.x, vertex_pos.y, vertex_pos.z);
+				Position().set(vertex_pos);
+
+				auto se_obj = alife_object();
+
+				if (se_obj)
+					se_obj->o_Position.set(Position());
+			}
 
 			validate_ai_locations				(false);
 
@@ -579,8 +603,15 @@ void CGameObject::setup_parent_ai_locations(bool assign_position)
 	VERIFY					(l_tpGameObject);
 
 	// get parent's position
-	if (assign_position && use_parent_ai_locations())
+	if ( assign_position && use_parent_ai_locations() )
 		Position().set		(l_tpGameObject->Position());
+
+	//if ( assign_position && 
+	//		( use_parent_ai_locations() &&
+	//		!( cast_attachable_item() && cast_attachable_item()->enabled() )
+	//		 ) 
+	//	)
+	//	Position().set		(l_tpGameObject->Position());
 
 	// setup its ai locations
 	if (!UsedAI_Locations())
@@ -694,6 +725,7 @@ void CGameObject::renderable_Render	()
 	inherited::renderable_Render();
 	::Render->set_Transform		(&XFORM());
 	::Render->add_Visual		(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
 }
 
 /*

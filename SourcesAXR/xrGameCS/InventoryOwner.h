@@ -67,6 +67,7 @@ public:
 
 	virtual bool	AllowItemToTrade 	(CInventoryItem const * item, EItemPlace place) const;
 	virtual void	OnFollowerCmd		(int cmd)		{};//redefine for CAI_Stalkker
+			bool	bDisableBreakDialog;
 	//инициализация объекта торговли
 	CTrade* GetTrade();
 
@@ -101,6 +102,8 @@ public:
 	LPCSTR				IconName		() const;
 	u32					get_money		() const				{return m_money;}
 	void				set_money		(u32 amount, bool bSendEvent);
+	bool				is_alive		();
+
 protected:
 	u32					m_money;
 	Flags32				m_trader_flags;
@@ -113,8 +116,10 @@ protected:
 	bool				m_bAllowTalk;
 	bool				m_bAllowTrade;
 	bool				m_bAllowInvUpgrade;
-	bool				m_play_show_hide_reload_sounds;
+
 	u32					m_tmp_active_slot_num;
+	
+	bool				m_play_show_hide_reload_sounds;
 	//////////////////////////////////////////////////////////////////////////
 	// сюжетная информация
 public:
@@ -149,8 +154,7 @@ public:
 	
 	bool CanPlayShHdRldSounds				() const {return m_play_show_hide_reload_sounds;};
 	void SetPlayShHdRldSounds				(bool play) {m_play_show_hide_reload_sounds = play;};
-
-	//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 	//игровые характеристики персонажа
 public:
 	CCharacterInfo&						CharacterInfo		() const {VERIFY(m_pCharacterInfo); return *m_pCharacterInfo;}
@@ -217,7 +221,6 @@ public:
 public:
 	virtual	bool				use_simplified_visual	() const {return (false);};
 
-	void xr_stdcall				AfterLoad				();
 
 private:
 	CTradeParameters			*m_trade_parameters;
@@ -225,7 +228,6 @@ private:
 	BOOL						m_need_osoznanie_mode;
 	bool						m_deadbody_can_take;
 	bool						m_deadbody_closed;
-	bool is_alive();
 
 public:
 	IC		CTradeParameters	&trade_parameters		() const;
@@ -244,6 +246,7 @@ public:
 	IC		bool				deadbody_can_take_status() const { return m_deadbody_can_take; }
 			void				deadbody_closed			(bool status);
 	IC		bool				deadbody_closed_status	() const { return m_deadbody_closed; }
+			void xr_stdcall		AfterLoad				();
 };
 
 #include "inventory_owner_inline.h"

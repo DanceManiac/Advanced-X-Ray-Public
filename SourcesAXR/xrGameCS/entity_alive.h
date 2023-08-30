@@ -190,6 +190,23 @@ public:
 	IC		void				is_agresive					(bool const &value);
 	IC		bool const			&is_start_attack			() const;
 	IC		void				is_start_attack				(bool const &value);
+
+
+public:
+	virtual	Fvector				get_new_local_point_on_mesh	( u16& bone_id ) const;
+	virtual	Fvector				get_last_local_point_on_mesh( Fvector const& last_point, u16 bone_id ) const;
+	virtual void				OnChangeVisual				( );
+
+private:
+			void				fill_hit_bone_surface_areas	( ) const;
+
+private:
+	typedef xr_vector< std::pair<u16,float> >	hit_bone_surface_areas_type;
+
+private:
+	mutable hit_bone_surface_areas_type	m_hit_bone_surface_areas;
+	mutable CRandom						m_hit_bones_random;
+	mutable bool						m_hit_bone_surface_areas_actual;
 };
 
 #include "entity_alive_inline.h"

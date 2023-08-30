@@ -88,9 +88,6 @@ static float IReceived = 0;
 static float ICoincidenced = 0;
 extern float cammera_into_collision_shift ;
 
-//if we are not current control entity we use this value
-const float	CActor::cam_inert_value = 0.7f;
-
 //skeleton
 static Fbox		bbStandBox;
 static Fbox		bbCrouchBox;
@@ -2698,21 +2695,11 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 
 void CActor::On_SetEntity()
 {
-	prev_cam_inert_value = psCamInert;
-	if (this != Level().CurrentControlEntity())
-	{
-		psCamInert = cam_inert_value;
-	}
 	CCustomOutfit* pOutfit = GetOutfit();
-	if( !pOutfit )
+	if (!pOutfit)
 		g_player_hud->load_default();
 	else
 		pOutfit->ApplySkinModel(this, true, true);
-}
-
-void CActor::On_LostEntity()
-{
-	psCamInert = prev_cam_inert_value;
 }
 
 void CActor::NVGAnimCheckDetector()

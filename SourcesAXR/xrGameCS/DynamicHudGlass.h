@@ -7,6 +7,6 @@ namespace DynamicHudGlass
 	extern int	HudGlassElement;
 	extern int	NightVisionType;
 	IC int	GetHudGlassElement() { return HudGlassElement; }
-	IC int	GetNightvisionType() { return NightVisionType; }
 	IC bool	GetHudGlassEnabled() { return DynamicHudGlassEnabled; }
+	IC int	GetNightvisionType() { return NightVisionType; }
 }

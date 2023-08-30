@@ -13,7 +13,7 @@
 #include "profiler.h"
 #include "../xrScripts/xrScripts.h"
 
-#pragma comment(lib,"ode.lib")
+//#pragma comment(lib,"ode.lib")
 #pragma comment(lib,"AdvancedXRay.lib")
 
 extern "C" {

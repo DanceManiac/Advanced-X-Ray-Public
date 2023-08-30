@@ -2,6 +2,8 @@
 #include "GlobalFeelTouch.hpp"
 #include <functional>
 
+using namespace std::placeholders;
+
 GlobalFeelTouch::GlobalFeelTouch()
 {
 }

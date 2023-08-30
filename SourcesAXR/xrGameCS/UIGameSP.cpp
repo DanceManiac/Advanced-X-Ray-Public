@@ -27,9 +27,8 @@
 #include "CustomBackpack.h"
 
 CUIGameSP::CUIGameSP()
+:m_game(NULL)
 {
-	m_game			= NULL;
-	
 	TalkMenu		= xr_new<CUITalkWnd>		();
 	UIChangeLevelWnd= xr_new<CChangeLevelWnd>	();
 }
@@ -57,9 +56,6 @@ void CUIGameSP::HideShownDialogs()
 	{
 		mir->GetHolder()->StartStopMenu( mir, true );
 	}
-
-	HideActorMenu();
-	HidePdaMenu();
 }
 
 void CUIGameSP::SetClGame (game_cl_GameState* g)
@@ -82,6 +78,11 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	if (!EA || !EA->g_Alive() )	return false;
 
 	CActor *pActor = smart_cast<CActor*>(pInvOwner);
+	if( !pActor ) 
+		return false;
+
+	if( !pActor->g_Alive() )	
+		return false;
 
 	switch ( get_binded_action(dik) )
 	{
@@ -167,7 +168,7 @@ void  CUIGameSP::StartTrade(CInventoryOwner* pActorInv, CInventoryOwner* pOtherO
 	m_ActorMenu->SetPartner		(pOtherOwner);
 
 	m_ActorMenu->SetMenuMode	(mmTrade);
-	m_game->StartStopMenu		(m_ActorMenu,true);
+	m_ActorMenu->ShowDialog		(true);
 }
 
 void  CUIGameSP::StartUpgrade(CInventoryOwner* pActorInv, CInventoryOwner* pMech)
@@ -178,13 +179,13 @@ void  CUIGameSP::StartUpgrade(CInventoryOwner* pActorInv, CInventoryOwner* pMech
 	m_ActorMenu->SetPartner		(pMech);
 
 	m_ActorMenu->SetMenuMode	(mmUpgrade);
-	m_game->StartStopMenu		(m_ActorMenu,true);
+	m_ActorMenu->ShowDialog		(true);
 }
 
 void CUIGameSP::StartTalk(bool disable_break)
 {
 	TalkMenu->b_disable_break = disable_break;
-	m_game->StartStopMenu(TalkMenu, true);
+	TalkMenu->ShowDialog		(true);
 }
 
 
@@ -196,7 +197,7 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryOwner* pOther
 	m_ActorMenu->SetPartner		(pOtherOwner);
 
 	m_ActorMenu->SetMenuMode	(mmDeadBodySearch);
-	m_game->StartStopMenu		(m_ActorMenu,true);
+	m_ActorMenu->ShowDialog		(true);
 }
 
 void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryBox* pBox) //Deadbody search
@@ -208,7 +209,7 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CInventoryBox* pBox) //
 	VERIFY( pBox );
 
 	m_ActorMenu->SetMenuMode	(mmDeadBodySearch);
-	m_game->StartStopMenu		(m_ActorMenu,true);
+	m_ActorMenu->ShowDialog		(true);
 }
 
 void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CCar* pCar) //Car trunk search
@@ -220,7 +221,7 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CCar* pCar) //Car trunk
 	VERIFY(pCar);
 
 	m_ActorMenu->SetMenuMode(mmDeadBodySearch);
-	m_game->StartStopMenu(m_ActorMenu, true);
+	m_ActorMenu->ShowDialog(true);
 }
 
 extern ENGINE_API BOOL bShowPauseString;

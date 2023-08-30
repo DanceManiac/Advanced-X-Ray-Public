@@ -13,8 +13,6 @@ class CUIMessageBox;
 class CInventoryBox;
 class CInventoryOwner;
 class CCar;
-//-class CUIActorMenu;
-//-class CUIPdaWnd;			
 
 class CUIGameSP : public CUIGameCustom
 {

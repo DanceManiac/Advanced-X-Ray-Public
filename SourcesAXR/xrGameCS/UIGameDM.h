@@ -97,10 +97,6 @@ public:
 
 			void					UpdateTeamPanels				();
 
-	virtual bool		IR_OnKeyboardPress		(int dik);
-	virtual bool		IR_OnKeyboardRelease	(int dik);
-
-
 			void					ShowFragList			(bool bShow);
 			void					ShowPlayersList			(bool bShow);
 			void					ShowStatistic			(bool bShow);

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "base_monster.h"
-#include "../xrphysics/PhysicsShell.h"
+#include "../../../../xrphysics/PhysicsShell.h"
 #include "../../../hit.h"
 #include "../../../PHDestroyable.h"
 #include "../../../CharacterPhysicsSupport.h"
@@ -73,7 +73,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	EnemyMan.init_external			(this);
 	CorpseMan.init_external			(this);
 
-	// ������������� ���������� ��������	
+	// Инициализация параметров анимации	
 
 	StateMan						= 0;
 
@@ -118,6 +118,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 
 CBaseMonster::~CBaseMonster()
 {
+	xr_delete(m_steer_manager);
 	xr_delete(m_pPhysics_support);
 	xr_delete(m_corpse_cover_evaluator);
 	xr_delete(m_enemy_cover_evaluator);
@@ -133,8 +134,6 @@ CBaseMonster::~CBaseMonster()
 	xr_delete(m_anomaly_detector);
 	xr_delete(CoverMan);
 	xr_delete(Home);
-
-	xr_delete(m_steer_manager);
 }
 
 void CBaseMonster::update_pos_by_grouping_behaviour ()
@@ -302,21 +301,39 @@ void CBaseMonster::Die(CObject* who)
 }
 
 
-//void CBaseMonster::Hit(float P,Fvector &dir,CObject*who,s16 element,Fvector p_in_object_space,float impulse, ALife::EHitType hit_type)
-void	CBaseMonster::Hit							(SHit* pHDS)
+void CBaseMonster::Hit(SHit* pHDS)
 {
-	if (ignore_collision_hit && (pHDS->hit_type == ALife::eHitTypeStrike)) return;
+	if(ignore_collision_hit && (pHDS->hit_type == ALife::eHitTypeStrike)) 
+		return;
 	
-	if (invulnerable())
+	if(invulnerable())
 		return;
 
-	if (g_Alive())
-		if (!critically_wounded()) 
+	if(g_Alive())
+		if(!critically_wounded()) 
 			update_critical_wounded(pHDS->boneID,pHDS->power);
 	
+	if(pHDS->hit_type == ALife::eHitTypeFireWound)
+	{
+		float &hit_power = pHDS->power;
+		float ap = pHDS->armor_piercing;
+		// пуля пробила шкуру
+		if(!fis_zero(m_fSkinArmor, EPS) && ap > m_fSkinArmor)
+		{
+			float d_hit_power = (ap - m_fSkinArmor) / ap;
+			if(d_hit_power < m_fHitFracMonster)
+				d_hit_power = m_fHitFracMonster;
 
-
-//	inherited::Hit(P,dir,who,element,p_in_object_space,impulse,hit_type);
+			hit_power *= d_hit_power;
+			VERIFY(hit_power>=0.0f);
+		}
+		// пуля НЕ пробила шкуру
+		else
+		{
+			hit_power *= m_fHitFracMonster;
+			pHDS->add_wound = false; 	//раны нет
+		}
+	}
 	inherited::Hit(pHDS);
 }
 
@@ -555,13 +572,13 @@ void CBaseMonster::on_kill_enemy(const CEntity *obj)
 {
 	const CEntityAlive *entity	= smart_cast<const CEntityAlive *>(obj);
 	
-	// �������� � ������ ������	
+	// добавить в список трупов	
 	CorpseMemory.add_corpse		(entity);
 	
-	// ������� ��� ���������� � �����
+	// удалить всю информацию о хитах
 	HitMemory.remove_hit_info	(entity);
 
-	// ������� ��� ���������� � ������
+	// удалить всю информацию о звуках
 	SoundMemory.clear			();
 }
 
@@ -635,7 +652,7 @@ CParticlesObject* CBaseMonster::PlayParticles(const shared_str& name, const Fvec
 {
 	CParticlesObject* ps = CParticlesObject::Create(name.c_str(),auto_remove);
 	
-	// ��������� ������� � �������������� ��������
+	// вычислить позицию и направленность партикла
 	Fmatrix	matrix; 
 
 	matrix.identity			();

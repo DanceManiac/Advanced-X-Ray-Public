@@ -25,6 +25,7 @@ public:
 	IC	const bool&			use_movement_controller	() const;
 	IC	const bool&			local_animation			() const;
 	IC	Fmatrix const&		transform				(CObject const& object) const;
+	IC	bool				has_transform			() const;
 };
 
 #include "stalker_animation_script_inline.h"

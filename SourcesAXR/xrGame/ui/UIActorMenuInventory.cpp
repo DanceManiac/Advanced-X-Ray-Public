@@ -468,15 +468,9 @@ void CUIActorMenu::InitCellForSlot( u16 slot_idx )
 	CUICellItem* cell_item			= create_cell_item( item );
 	curr_list->SetItem( cell_item );
 	if ( m_currMenuMode == mmTrade && m_pPartnerInvOwner )
+	{
 		ColorizeItem( cell_item, !CanMoveToPartner( item ) );
-
-	//CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(item);
-	//if(outfit)
-	//	outfit->ReloadBonesProtection();
-
-	//CHelmet* helmet = smart_cast<CHelmet*>(item);
-	//if(helmet)
-	//	helmet->ReloadBonesProtection();
+	}
 }
 
 void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
@@ -548,7 +542,9 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 		CUICellItem* itm		= create_cell_item(*itb);
 		curr_list->SetItem		(itm);
 		if ( m_currMenuMode == mmTrade && m_pPartnerInvOwner )
+		{
 			ColorizeItem( itm, !CanMoveToPartner( *itb ) );
+		}
 	}
 
 	TIItemContainer				ruck_list;
@@ -563,20 +559,15 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	{
 		CMPPlayersBag* bag = smart_cast<CMPPlayersBag*>( &(*itb)->object() );
 		if ( bag )
+		{
 			continue;
-
+		}
 		CUICellItem* itm = create_cell_item( *itb );
 		curr_list->SetItem(itm);
 		if ( m_currMenuMode == mmTrade && m_pPartnerInvOwner )
+		{
 			ColorizeItem( itm, !CanMoveToPartner( *itb ) );
-
-		//CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(*itb);
-		//if(outfit)
-		//	outfit->ReloadBonesProtection();
-
-		//CHelmet* helmet = smart_cast<CHelmet*>(*itb);
-		//if(helmet)
-		//	helmet->ReloadBonesProtection();
+		}
 	}
 	m_pQuickSlot->ReloadReferences(m_pActorInvOwner);
 }
@@ -753,7 +744,7 @@ bool CUIActorMenu::ToBag(CUICellItem* itm, bool b_use_cursor_pos)
 		bool result							= b_already || (!b_own_item || m_pActorInvOwner->inventory().Ruck(iitem) );
 		VERIFY								(result);
 		CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
-		if(!i)
+		if (!i)
 			return false;
 
 		if(b_use_cursor_pos)

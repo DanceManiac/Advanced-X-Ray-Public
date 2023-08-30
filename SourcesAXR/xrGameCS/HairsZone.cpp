@@ -62,14 +62,13 @@ void CHairsZone::Affect(SZoneObjectInfo* O)
 	P.y = pGameObject->Position().y;
 
 	float power				= Power(pGameObject->Position().distance_to(P));
-	float power_critical	= 0.0f;
 	float impulse			= m_fHitImpulseScale*power*pGameObject->GetMass();
 
 	if(power > 0.01f) 
 	{
 		position_in_bone_space.set(0.f,0.f,0.f);
 
-		CreateHit(pGameObject->ID(),ID(),hit_dir,power,power_critical,0,position_in_bone_space,impulse,m_eHitTypeBlowout);
+		CreateHit(pGameObject->ID(),ID(),hit_dir,power,0,position_in_bone_space,impulse,m_eHitTypeBlowout);
 
 		PlayHitParticles(pGameObject);
 	}

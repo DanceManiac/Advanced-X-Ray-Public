@@ -484,24 +484,20 @@ void CShootingObject::FireBullet(const Fvector& pos,
 	m_fPredBulletTime = Device.fTimeGlobal;
 
 	float l_fHitPower = 0.0f;
-	float l_fHitPowerCritical = 0.0f;
 	if (ParentIsActor())//если из оружия стреляет актёр(игрок)
 	{
 		if (GameID() == eGameIDSingle)
 		{
 			l_fHitPower			= fvHitPower[g_SingleGameDifficulty];
-			l_fHitPowerCritical = fvHitPowerCritical[g_SingleGameDifficulty];
 		}
 		else
 		{
 			l_fHitPower			= fvHitPower[egdMaster];
-			l_fHitPowerCritical = fvHitPowerCritical[egdMaster];
 		}
 	}
 	else
 	{
 		l_fHitPower			= fvHitPower[egdMaster];
-		l_fHitPowerCritical = fvHitPowerCritical[egdMaster];
 	}
 	
 	Level().BulletManager().AddBullet( pos, 

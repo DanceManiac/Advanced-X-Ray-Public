@@ -25,6 +25,10 @@
 #include "stalker_movement_manager_smart_cover.h"
 #include "sound_player.h"
 #include "ai/stalker/ai_stalker_space.h"
+#include "radioactivezone.h"
+#include "alife_simulator.h"
+#include "alife_object_registry.h"
+#include "../xrServerEntitiesCS/xrServer_Objects_ALife_Monsters.h"
 
 using namespace StalkerSpace;
 using namespace StalkerDecisionSpace;
@@ -86,12 +90,30 @@ void CStalkerActionGetOutOfAnomaly::execute	()
 	m_temp0.clear						();
 	m_temp1.clear						();
 
+	CSE_ALifeDynamicObject const* const base_alife_object = ai().alife().objects().object(object().ID(), true);
+	if ( !base_alife_object )
+		return;
+
+	CSE_ALifeHumanAbstract const* const alife_object = smart_cast<CSE_ALifeHumanAbstract const*>( base_alife_object );
+	if ( !alife_object )
+		return;
+
+	typedef xr_vector<ALife::_OBJECT_ID>	ids_type;
+	ids_type const& restrictions		= alife_object->m_dynamic_in_restrictions;
+
 	xr_vector<CObject*>::const_iterator	I = object().feel_touch.begin();
 	xr_vector<CObject*>::const_iterator	E = object().feel_touch.end();
 	for ( ; I != E; ++I) {
 		CCustomZone						*zone = smart_cast<CCustomZone*>(*I);
-		if (zone)
+		if ( zone && (zone->restrictor_type() != RestrictionSpace::eRestrictorTypeNone) ) {
+			if (smart_cast<CRadioactiveZone*>(zone))
+				continue;
+
+			if ( std::find( restrictions.begin(), restrictions.end(), zone->ID() ) != restrictions.end() )
+				continue;
+
 			m_temp0.push_back			(zone->ID());
+	}
 	}
 	
 	object().movement().restrictions().add_restrictions	(m_temp1,m_temp0);

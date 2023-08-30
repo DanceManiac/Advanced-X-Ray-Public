@@ -317,11 +317,50 @@ void CSightAction::on_frame						()
 	}
 }
 
+void CSightAction::predict_object_position		( bool use_exact_position )
+{
+	m_object->feel_vision_get	(objects);
+	if (std::find(objects.begin(),objects.end(),m_object_to_look) == objects.end()) {
+		m_vector3d				= m_object->sight().object_position();
+		return;
+	}
+
+	if ( use_exact_position )
+		m_vector3d			= m_object->feel_vision_get_vispoint(const_cast<CGameObject*>(m_object_to_look));
+	else
+		m_vector3d			= m_object->sight().object_position();
+
+	u32 const count			= m_object_to_look->ps_Size();
+	if ( count > 1 ) {
+		CObject::SavedPosition const current_position = m_object_to_look->ps_Element( count - 1 );
+		VERIFY					( Device.dwTimeGlobal >= current_position.dwTime );
+
+		CObject::SavedPosition previous_position = m_object_to_look->ps_Element( count - 2 );
+		for (int i=3; (current_position.dwTime == previous_position.dwTime) && (i<=(int)count); ++i)
+			previous_position	= m_object_to_look->ps_Element( count - i );
+
+		if ( Device.dwTimeGlobal - previous_position.dwTime < 300 ) {
+			if ( current_position.dwTime > previous_position.dwTime ) {
+				Fvector offset				= Fvector().sub( current_position.vPosition, previous_position.vPosition );
+				offset.y					= 0.f;
+				Fvector const velocity		= Fvector(offset).div( float(current_position.dwTime - previous_position.dwTime)/1000.f );
+				float g_aim_predict_time = 0.44f;
+				float const predict_time	= g_aim_predict_time;//*Device.fTimeDelta;
+				m_vector3d.mad				( velocity, predict_time );
+			}
+		}
+	}
+
+	VERIFY					( _valid(m_vector3d) );
+	execute_position		(m_object->eye_matrix.c);
+}
+
 void CSightAction::execute_fire_object			()
 {
 	switch (m_state_fire_object) {
 		case 0 : {
-			execute_object		();
+//			execute_object				();
+			predict_object_position		( false );
 
 			if (!target_reached())
 				break;
@@ -340,10 +379,12 @@ void CSightAction::execute_fire_object			()
 			m_state_fire_switch_time	= Device.dwTimeGlobal;
 			m_object_start_position		= m_object_to_look->Position();
 			m_holder_start_position		= m_object->Position();
-			m_vector3d					= m_object->sight().object_position();
+//			m_vector3d					= m_object->sight().object_position();
 			break;
 		}
 		case 1 : {
+
+			if ( Device.dwTimeGlobal >= m_state_fire_switch_time + 1500 ) {
 			if (m_object_to_look->Position().distance_to_sqr(m_object->Position()) > _sqr(5.f)) {
 				if (!m_holder_start_position.similar(m_object->Position(),.05f)) {
 					m_vector3d			= m_object->sight().object_position();
@@ -362,23 +403,17 @@ void CSightAction::execute_fire_object			()
 				}
 			}
 
-			if ( Device.dwTimeGlobal >= m_state_fire_switch_time + 1500 && !m_already_switched) {
+				if ( !m_already_switched) {
 				m_vector3d				= m_object->sight().object_position();
 //				Msg						("%6d switch to mode 0 (reson: time interval)", Device.dwTimeGlobal);
 				m_already_switched		= true;
 				m_state_fire_object		= 0;
 				break;
 			}
-
-			m_object->feel_vision_get	(objects);
-			if (std::find(objects.begin(),objects.end(),m_object_to_look) != objects.end()) {
-				m_vector3d				= m_object->feel_vision_get_vispoint(const_cast<CGameObject*>(m_object_to_look));
-				VERIFY				( _valid(m_vector3d) );
-				execute_position		(m_object->eye_matrix.c);
-				break;
 			}
-			else
-				m_vector3d				= m_object->sight().object_position();
+
+			predict_object_position		( true );
+
 			break;
 		}
 		default : NODEFAULT;
@@ -387,5 +422,14 @@ void CSightAction::execute_fire_object			()
 
 void CSightAction::execute_animation_direction	()
 {
-	object().movement().m_head.target	= object().movement().m_body.current;
+	if ( object().animation_movement_controlled() ) {
+		float										h,p,b;
+		object().XFORM().getHPB						( h, p, b );
+		object().movement().m_body.current.yaw		= -h;
+		object().movement().m_body.current.pitch	=  p;
+		object().movement().m_body.current.roll		=  b;
+		object().movement().m_body.target			= object().movement().m_body.current;
+	}
+
+	object().movement().m_head.target				= object().movement().m_body.current;
 }

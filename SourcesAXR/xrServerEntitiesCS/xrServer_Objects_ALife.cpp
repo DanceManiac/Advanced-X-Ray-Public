@@ -2419,6 +2419,7 @@ CSE_ALifeObjectClimable::CSE_ALifeObjectClimable	(LPCSTR caSection) : CSE_Shape(
 	//m_health					= 100.f;
 	//m_flags.set					(flUseSwitches,FALSE);
 	//m_flags.set					(flSwitchOffline,FALSE);
+	material  = "materials\\fake_ladders";
 }
 
 CSE_ALifeObjectClimable::~CSE_ALifeObjectClimable	()
@@ -2438,6 +2439,8 @@ void CSE_ALifeObjectClimable::STATE_Read		(NET_Packet	&tNetPacket, u16 size)
 	if(m_wVersion>99)
 		inherited2::STATE_Read		(tNetPacket,size);
 	cform_read(tNetPacket);
+	if(m_wVersion>126)
+		tNetPacket.r_stringZ( material );
 }
 
 void CSE_ALifeObjectClimable::STATE_Write	(NET_Packet	&tNetPacket)
@@ -2445,6 +2448,7 @@ void CSE_ALifeObjectClimable::STATE_Write	(NET_Packet	&tNetPacket)
 	//inherited1::STATE_Write		(tNetPacket);
 	inherited2::STATE_Write		(tNetPacket);
 	cform_write(tNetPacket);
+	tNetPacket.w_stringZ( material );
 }
 
 void CSE_ALifeObjectClimable::UPDATE_Read	(NET_Packet	&tNetPacket)

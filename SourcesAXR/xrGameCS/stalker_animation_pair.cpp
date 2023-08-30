@@ -71,8 +71,9 @@ void CStalkerAnimationPair::play_global_animation	(IKinematicsAnimated *skeleton
 			if (blend && !m_blend)
 				m_blend	= blend;
 
-			if ( use_animation_movement_control || this->use_animation_movement_control(skeleton_animated, animation()))
+			if ( use_animation_movement_control || this->use_animation_movement_control(skeleton_animated, animation())) {
 				m_object->create_anim_mov_ctrl( blend, m_target_matrix, local_animation);
+			}
 			else {
 				if (m_object->animation_movement() && m_global_animation)
 					m_object->animation_movement()->stop	();
@@ -260,6 +261,7 @@ MotionID CStalkerAnimationPair::select	(const ANIM_VECTOR &array, const ANIMATIO
 void CStalkerAnimationPair::on_animation_end	()
 {
 	make_inactual				();
+	m_blend						= 0;
 
 	if (m_callbacks.empty())
 		return;

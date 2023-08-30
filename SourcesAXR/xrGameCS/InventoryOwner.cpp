@@ -213,9 +213,7 @@ void CInventoryOwner::UpdateInventoryOwner(u32 deltaT)
 	if ( IsTrading() )
 	{
 		//если мы умерли, то нет "trade"
-		CEntityAlive* pOurEntityAlive = smart_cast<CEntityAlive*>(this);
-		R_ASSERT(pOurEntityAlive);
-		if ( !pOurEntityAlive->g_Alive() )
+		if ( !is_alive() )
 		{
 			StopTrading();
 		}
@@ -231,9 +229,7 @@ void CInventoryOwner::UpdateInventoryOwner(u32 deltaT)
 		}
 
 		//если мы умерли, то тоже не говорить
-		CEntityAlive* pOurEntityAlive = smart_cast<CEntityAlive*>(this);
-		R_ASSERT(pOurEntityAlive);
-		if ( !pOurEntityAlive->g_Alive() )
+		if ( !is_alive() )
 		{
 			StopTalk();
 		}
@@ -264,16 +260,13 @@ bool CInventoryOwner::OfferTalk(CInventoryOwner* talk_partner)
 	if(!IsTalkEnabled()) return false;
 
 	//проверить отношение к собеседнику
-	CEntityAlive* pOurEntityAlive = smart_cast<CEntityAlive*>(this);
-	R_ASSERT(pOurEntityAlive);
-
 	CEntityAlive* pPartnerEntityAlive = smart_cast<CEntityAlive*>(talk_partner);
 	R_ASSERT(pPartnerEntityAlive);
 	
 //	ALife::ERelationType relation = RELATION_REGISTRY().GetRelationType(this, talk_partner);
 //	if(relation == ALife::eRelationTypeEnemy) return false;
 
-	if(!pOurEntityAlive->g_Alive() || !pPartnerEntityAlive->g_Alive()) return false;
+	if(!is_alive() || !pPartnerEntityAlive->g_Alive()) return false;
 
 	StartTalk(talk_partner);
 
@@ -286,9 +279,6 @@ void CInventoryOwner::StartTalk(CInventoryOwner* talk_partner, bool start_trade)
 	m_bTalking = true;
 	m_pTalkPartner = talk_partner;
 
-	//тут же включаем торговлю
-//old		if(start_trade)
-//old			GetTrade()->StartTradeEx(talk_partner);
 }
 #include "UIGameSP.h"
 #include "HUDmanager.h"
@@ -399,6 +389,9 @@ void CInventoryOwner::spawn_supplies		()
 		R_ASSERT(bolt);
 		bolt->m_can_save = false;
 	}
+
+	/*else if (use_bolts() && !smart_cast<CActor*>(this))
+		GamePersistent().GameLoadedCallback.push_back(fastdelegate::FastDelegate0<>(this, &CInventoryOwner::AfterLoad));*/
 
 	if (!ai().get_alife() && IsGameTypeSingle() ) 
 	{
@@ -589,6 +582,11 @@ void CInventoryOwner::sell_useless_items		()
 		{
 			continue;
 		}
+		CInventoryItem* item = smart_cast<CInventoryItem*>( *I );
+		if (item->GetSlot() && item->cast_weapon() && item->m_eItemCurrPlace == EItemPlaceSlot)
+		{
+			continue;
+		}
 
 		CPda* pda = smart_cast<CPda*>( *I );
 		if ( pda )
@@ -649,6 +647,43 @@ bool CInventoryOwner::use_throw_randomness		()
 	return						(true);
 }
 
+bool CInventoryOwner::is_alive()
+{
+	CEntityAlive* pEntityAlive = smart_cast<CEntityAlive*>(this);
+	R_ASSERT( pEntityAlive );
+	return (!!pEntityAlive->g_Alive());
+}
+
+void CInventoryOwner::deadbody_can_take( bool status )
+{
+	if ( is_alive() )
+	{
+		return;
+	}
+	m_deadbody_can_take = status;
+
+	NET_Packet P;
+	CGameObject::u_EventGen( P, GE_INV_OWNER_STATUS, object_id() );
+	P.w_u8( (m_deadbody_can_take)? 1 : 0 );
+	P.w_u8( (m_deadbody_closed)? 1 : 0 );
+	CGameObject::u_EventSend( P );
+}
+
+void CInventoryOwner::deadbody_closed( bool status )
+{
+	if ( is_alive() )
+	{
+		return;
+	}
+	m_deadbody_closed = status;
+
+	NET_Packet P;
+	CGameObject::u_EventGen( P, GE_INV_OWNER_STATUS, object_id() );
+	P.w_u8( (m_deadbody_can_take)? 1 : 0 );
+	P.w_u8( (m_deadbody_closed)? 1 : 0 );
+	CGameObject::u_EventSend( P );
+}
+
 void CInventoryOwner::AfterLoad()
 {
 	if (&inventory() != nullptr)
@@ -673,39 +708,4 @@ void CInventoryOwner::AfterLoad()
 CInventoryItem* CInventoryOwner::GetCurrentTorch() const
 {
 	return inventory().ItemFromSlot(TORCH_SLOT);
-}
-
-bool CInventoryOwner::is_alive()
-{
-	CEntityAlive* pEntityAlive = smart_cast<CEntityAlive*>(this);
-	R_ASSERT( pEntityAlive );
-	return (!!pEntityAlive->g_Alive());
-}
-
-void CInventoryOwner::deadbody_closed( bool status )
-{
-	if (is_alive())
-		return;
-
-	m_deadbody_closed = status;
-
-	NET_Packet P;
-	CGameObject::u_EventGen( P, GE_INV_OWNER_STATUS, object_id() );
-	P.w_u8( (m_deadbody_can_take)? 1 : 0 );
-	P.w_u8( (m_deadbody_closed)? 1 : 0 );
-	CGameObject::u_EventSend( P );
-}
-
-void CInventoryOwner::deadbody_can_take( bool status )
-{
-	if ( is_alive() )
-		return;
-
-	m_deadbody_can_take = status;
-
-	NET_Packet P;
-	CGameObject::u_EventGen( P, GE_INV_OWNER_STATUS, object_id() );
-	P.w_u8( (m_deadbody_can_take)? 1 : 0 );
-	P.w_u8( (m_deadbody_closed)? 1 : 0 );
-	CGameObject::u_EventSend( P );
 }

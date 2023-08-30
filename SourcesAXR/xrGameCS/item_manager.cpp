@@ -16,6 +16,17 @@
 #include "movement_manager.h"
 #include "ai_space.h"
 #include "profiler.h"
+#include "ai/stalker/ai_stalker.h"
+#include "stalker_movement_manager_smart_cover.h"
+#include "restricted_object.h"
+
+CItemManager::CItemManager			(CCustomMonster *object)
+{
+	VERIFY					(object);
+	m_object				= object;
+
+	m_stalker				= smart_cast<CAI_Stalker*>( m_object );
+}
 
 bool CItemManager::is_useful		(const CGameObject *object) const
 {
@@ -47,7 +58,16 @@ bool CItemManager::useful			(const CGameObject *object) const
 	if (inventory_item && !inventory_item->useful_for_NPC())
 		return				(false);
 
-	if (!ai().get_level_graph() || !ai().level_graph().valid_vertex_id(object->ai_location().level_vertex_id()))
+	if ( m_stalker && (!m_stalker->can_take(inventory_item) || !m_stalker->movement().restrictions().accessible(inventory_item->object().Position())) )
+		return				(false);
+
+	if ( !ai().get_level_graph() )
+		return				(false);
+
+	if ( !ai().level_graph().valid_vertex_id(object->ai_location().level_vertex_id()) )
+		return				(false);
+
+	if ( !ai().level_graph().inside( object->ai_location().level_vertex_id(), inventory_item->object().Position()) )
 		return				(false);
 
 	return					(true);

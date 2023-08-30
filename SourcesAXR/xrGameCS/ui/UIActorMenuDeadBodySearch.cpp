@@ -76,7 +76,7 @@ void CUIActorMenu::InitDeadBodySearchMode()
 		m_pPartnerInvOwner->inventory().AddAvailableItems( items_list, false ); //true
 		UpdatePartnerBag();
 	}
-	else if (m_pInvBox)
+	else if(m_pInvBox)
 	{
 		//VERIFY( m_pInvBox );
 		m_pInvBox->m_in_use = true;
@@ -112,7 +112,7 @@ void CUIActorMenu::InitDeadBodySearchMode()
 			NET_Packet					P;
 			CGameObject::u_EventGen		(P,GE_INFO_TRANSFER, m_pActorInvOwner->object_id());
 			P.w_u16						(0);
-			P.w_stringZ					((*it).info_id);
+			//P.w_stringZ					(*it);
 			P.w_u8						(1);
 			CGameObject::u_EventSend	(P);
 		}
@@ -195,7 +195,7 @@ void CUIActorMenu::UpdateDeadBodyBag()
 
 	LPCSTR kg_str = CStringTable().translate( "st_kg" ).c_str();
 	float total	= CalcItemsWeight( m_pDeadBodyBagList );
-	sprintf_s( buf, "%.1f %s", total, kg_str );
+	xr_sprintf( buf, "%.1f %s", total, kg_str );
 	m_PartnerWeight->SetText( buf );
 	m_PartnerWeight->AdjustWidthToText();
 

@@ -19,6 +19,7 @@
 #include "ui/UIInventoryUtilities.h"
 #include "file_transfer.h"
 #include "screenshot_server.h"
+#include <functional>
 
 #pragma warning(push)
 #pragma warning(disable:4995)

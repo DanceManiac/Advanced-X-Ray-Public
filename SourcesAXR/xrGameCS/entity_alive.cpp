@@ -51,7 +51,8 @@ STR_VECTOR* CEntityAlive::m_pFireParticlesVector = NULL;
 /////////////////////////////////////////////
 // CEntityAlive
 /////////////////////////////////////////////
-CEntityAlive::CEntityAlive()
+CEntityAlive::CEntityAlive() :
+	m_hit_bone_surface_areas_actual	( false )
 {
 	
 	monster_community		= xr_new<MONSTER_COMMUNITY>	();
@@ -107,15 +108,6 @@ void CEntityAlive::LoadBloodyWallmarks (LPCSTR section)
 	
 	int cnt		=_GetItemCount(wallmarks_name);
 	
-	/*
-	ref_shader	s;
-	for (int k=0; k<cnt; ++k)
-	{
-		s.create ("effects\\wallmark",_GetItem(wallmarks_name,k,tmp));
-		m_pBloodMarksVector->push_back	(s);
-	}
-	*/
-
 	for (int k=0; k<cnt; ++k)	
 		(*m_pBloodMarksVector)->AppendMark(_GetItem(wallmarks_name,k,tmp));
 
@@ -272,8 +264,7 @@ void CEntityAlive::HitImpulse	(float /**amount/**/, Fvector& /**vWorldDir/**/, F
 	//	m_PhysicMovementControl->vExternalImpulse.mad	(vWorldDir,Q);
 }
 
-//void CEntityAlive::Hit(float P, Fvector &dir,CObject* who, s16 element,Fvector position_in_object_space, float impulse, ALife::EHitType hit_type, float AP)
-void	CEntityAlive::Hit							(SHit* pHDS)
+void	CEntityAlive::Hit(SHit* pHDS)
 {
 	SHit HDS = *pHDS;
 	//-------------------------------------------------------------------
@@ -286,7 +277,7 @@ void	CEntityAlive::Hit							(SHit* pHDS)
 	CWound* pWound = conditions().ConditionHit(&HDS);
 
 	if(pWound){
-		if(ALife::eHitTypeBurn == HDS.hit_type)
+		if(ALife::eHitTypeBurn == HDS.hit_type/* || ALife::eHitTypeLightBurn == HDS.hit_type*/)
 			StartFireParticles(pWound);
 		else if(ALife::eHitTypeWound == HDS.hit_type || ALife::eHitTypeFireWound == HDS.hit_type)
 			StartBloodDrops(pWound);
@@ -779,4 +770,204 @@ void	CEntityAlive::	destroy_anim_mov_ctrl( )
 	 CCharacterPhysicsSupport *cs =character_physics_support( );
 	 if( cs )
 		cs->on_destroy_anim_mov_ctrl( );
+}
+
+#include "../xrEngine/xr_collide_form.h"
+
+struct element_predicate {
+	inline bool	operator( )							(CCF_Skeleton::SElement const& element, u16 element_id ) const
+	{
+		return							element.elem_id < element_id;
+	}
+}; // struct element_predicate
+
+struct sort_surface_area_predicate {
+	inline bool operator( )							( std::pair<u16,float> const& left, std::pair<u16,float> const& right ) const
+	{
+		return							left.second > right.second;
+	}
+}; // struct sort_surface_area_predicate
+
+void CEntityAlive::OnChangeVisual					( )
+{
+	inherited::OnChangeVisual			( );
+
+	m_hit_bone_surface_areas_actual		= false;
+}
+
+void CEntityAlive::fill_hit_bone_surface_areas		( ) const
+{
+	VERIFY								( !m_hit_bone_surface_areas_actual );
+	m_hit_bone_surface_areas_actual		= true;
+
+	IKinematics* const kinematics		= smart_cast<IKinematics*>( Visual() );
+	VERIFY								( kinematics );
+	VERIFY								( kinematics->LL_BoneCount() );
+
+	m_hit_bone_surface_areas.clear_not_free	( );
+
+	for (u16 i=0, n=kinematics->LL_BoneCount(); i < n; ++i ) {
+		SBoneShape const& shape			= kinematics->LL_GetData(i).shape;
+		if ( SBoneShape::stNone == shape.type )
+			continue;
+
+		if ( shape.flags.is(SBoneShape::sfNoPickable) )
+			continue;
+
+		float surface_area				= flt_max;
+		switch ( shape.type ) {
+			case SBoneShape::stBox : {
+				Fvector const& half_size= shape.box.m_halfsize;
+				surface_area			= 2.f * ( half_size.x*(half_size.y + half_size.z) + half_size.y*half_size.z );
+				break;
+			}
+			case SBoneShape::stSphere : {
+				surface_area			= 4.f * PI * _sqr(shape.sphere.R);
+				break;
+			}
+			case SBoneShape::stCylinder : {
+				surface_area			= 2.f * PI * shape.cylinder.m_radius*( shape.cylinder.m_radius + shape.cylinder.m_height );
+				break;
+			}
+			default :					NODEFAULT;
+		}
+
+		m_hit_bone_surface_areas.push_back	( std::make_pair(i, surface_area) );
+	}
+
+	std::sort							( m_hit_bone_surface_areas.begin(), m_hit_bone_surface_areas.end(), sort_surface_area_predicate() );
+}
+
+BOOL g_ai_use_old_vision				= 0;
+
+Fvector	CEntityAlive::get_new_local_point_on_mesh	( u16& bone_id ) const
+{
+	if ( g_ai_use_old_vision )
+		return							inherited::get_new_local_point_on_mesh( bone_id );
+
+	IKinematics* const kinematics		= smart_cast<IKinematics*>( Visual() );
+	if ( !kinematics )
+		return							inherited::get_new_local_point_on_mesh( bone_id );
+
+	if ( !kinematics->LL_BoneCount() )
+		return							inherited::get_new_local_point_on_mesh( bone_id );
+
+	if ( !m_hit_bone_surface_areas_actual )
+		fill_hit_bone_surface_areas		( );
+
+	if ( m_hit_bone_surface_areas.empty() )
+		return							inherited::get_new_local_point_on_mesh( bone_id );
+
+	float hit_bones_surface_area		= 0.f;
+	hit_bone_surface_areas_type::const_iterator i		= m_hit_bone_surface_areas.begin( );
+	hit_bone_surface_areas_type::const_iterator const e	= m_hit_bone_surface_areas.end( );
+	for ( ; i != e; ++i ) {
+		if ( !kinematics->LL_GetBoneVisible((*i).first) )
+			continue;
+
+		SBoneShape const& shape			= kinematics->LL_GetData((*i).first).shape;
+		VERIFY							( shape.type != SBoneShape::stNone );
+		VERIFY							( !shape.flags.is(SBoneShape::sfNoPickable) );
+
+		hit_bones_surface_area			+= (*i).second;
+	}
+
+	VERIFY2								( hit_bones_surface_area > 0.f, make_string("m_hit_bone_surface_areas[%d]", m_hit_bone_surface_areas.size()) );
+	float const selected_area			= m_hit_bones_random.randF( hit_bones_surface_area );
+
+	i									= m_hit_bone_surface_areas.begin( );
+	for (float accumulator = 0.f; i != e; ++i ) {
+		if ( !kinematics->LL_GetBoneVisible((*i).first) )
+			continue;
+
+		SBoneShape const& shape			= kinematics->LL_GetData((*i).first).shape;
+		VERIFY							( shape.type != SBoneShape::stNone );
+		VERIFY							( !shape.flags.is(SBoneShape::sfNoPickable) );
+
+		accumulator						+= (*i).second;
+		if ( accumulator >= selected_area )
+			break;
+	}
+
+	VERIFY2								( i != e, make_string("m_hit_bone_surface_areas[%d]", m_hit_bone_surface_areas.size()) );
+	SBoneShape const& shape				= kinematics->LL_GetData((*i).first).shape;
+	bone_id								= (*i).first;
+	Fvector result						= Fvector().set( flt_max, flt_max, flt_max );
+	switch ( shape.type ) {
+		case SBoneShape::stBox : {
+			Fmatrix	transform;
+			shape.box.xform_full		( transform );
+
+			Fvector	direction;
+			u32 random_value			= ::Random.randI(6);
+			Fvector random				= { (random_value & 1) ? -1.f : 1.f, ::Random.randF(2.f) - 1.f, ::Random.randF(2.f) - 1.f };
+			random.normalize			( );
+			if ( random_value < 2 )
+				direction				= Fvector().set( random.x, random.y, random.z );
+			else if ( random_value < 4 )
+				direction				= Fvector().set( random.z, random.x, random.y );
+			else
+				direction				= Fvector().set( random.y, random.z, random.x );
+
+			transform.transform_tiny	( result, direction );
+			break;
+		}
+		case SBoneShape::stSphere : {
+			result.random_dir().mul(shape.sphere.R).add(shape.sphere.P);
+			break;
+		}
+		case SBoneShape::stCylinder : {
+			float const total_square	= (shape.cylinder.m_height + shape.cylinder.m_radius); // *2*PI*c_cylinder.m_radius
+			float const random_value	= ::Random.randF(total_square);
+			float const angle			= ::Random.randF(2.f*PI);
+
+			float const x				= shape.cylinder.m_direction.x;
+			float const y				= shape.cylinder.m_direction.y;
+			float const z				= shape.cylinder.m_direction.z;
+			Fvector normal				= Fvector().set( y-z, z-x, x-y );
+
+			Fmatrix rotation			= Fmatrix().rotation( shape.cylinder.m_direction, normal );
+			Fmatrix rotation_y			= Fmatrix().rotateY( angle );
+			Fmatrix const transform		= Fmatrix().mul_43( rotation, rotation_y );
+			transform.transform_dir		( normal, Fvector().set(0.f, 0.f, 1.f) );
+
+			float height, radius;
+			if ( random_value < shape.cylinder.m_height ) {
+				height					= random_value - shape.cylinder.m_height/2.f;
+				radius					= shape.cylinder.m_radius;
+			}
+			else {
+				float const normalized_value = random_value - shape.cylinder.m_height;
+				height					= shape.cylinder.m_height/2.f*((normalized_value < shape.cylinder.m_radius/2.f) ? -1.f : 1.f);
+				radius					= height > 0.f ? normalized_value - shape.cylinder.m_radius/2.f : normalized_value;
+			}
+
+			normal.mul					( radius );
+			result.mul					( shape.cylinder.m_direction, height );
+			result.add					( normal );
+			result.add					( shape.cylinder.m_center );
+			break;
+		}
+		default :						NODEFAULT;
+	}
+
+	return								result;
+}
+
+Fvector CEntityAlive::get_last_local_point_on_mesh	( Fvector const& last_point, u16 bone_id ) const
+{
+	if ( bone_id == u16(-1) )
+		return							inherited::get_last_local_point_on_mesh( last_point, bone_id );
+
+	IKinematics* const kinematics		= smart_cast<IKinematics*>( Visual() );
+	VERIFY								( kinematics );
+
+	Fmatrix transform;
+	kinematics->Bone_GetAnimPos			( transform, bone_id, u8(-1), false );
+
+	Fvector result;
+	transform.transform_tiny			( result, last_point );
+
+	XFORM().transform_tiny				( result, Fvector(result) );
+	return								result;
 }
