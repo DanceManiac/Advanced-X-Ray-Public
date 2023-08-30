@@ -269,7 +269,14 @@ void CLevel::IR_OnKeyboardPress	(int key)
 			break;
 
 		SetGameTimeFactor			(g_fTimeFactor);
+
+#ifdef DEBUG
+		if(!m_bEnvPaused)
+			SetEnvironmentGameTimeFactor(GetEnvironmentGameTime(), g_fTimeFactor);
+#else //DEBUG
 		SetEnvironmentGameTimeFactor(GetEnvironmentGameTime(), g_fTimeFactor);
+#endif //DEBUG
+		
 		break;	
 	}
 	case DIK_MULTIPLY: {
@@ -277,9 +284,27 @@ void CLevel::IR_OnKeyboardPress	(int key)
 			break;
 
 		SetGameTimeFactor			(1000.f);
+#ifdef DEBUG
+		if(!m_bEnvPaused)
+			SetEnvironmentGameTimeFactor(GetEnvironmentGameTime(), 1000.f);
+#else //DEBUG
 		SetEnvironmentGameTimeFactor(GetEnvironmentGameTime(), 1000.f);
+#endif //DEBUG
 		break;
 	}
+#ifdef DEBUG
+	case DIK_SUBTRACT:{
+		if (!Server)
+			break;
+		if(m_bEnvPaused)
+			SetEnvironmentGameTimeFactor(GetEnvironmentGameTime(), g_fTimeFactor);
+		else
+			SetEnvironmentGameTimeFactor(GetEnvironmentGameTime(), 0.00001f);
+
+		m_bEnvPaused = !m_bEnvPaused;
+		break;
+	}
+#endif //DEBUG
 	case DIK_NUMPAD5: 
 		{
 			if (GameID()!=eGameIDSingle) 
@@ -495,12 +520,12 @@ void CLevel::IR_OnKeyboardRelease(int key)
 
 	if (!bReady || g_bDisableAllInput	) return;
 	if ( b_ui_exist && HUD().GetUI()->IR_OnKeyboardRelease(key)) return;
+	if (game && game->OnKeyboardRelease(get_binded_action(key)) )		return;
 	if (Device.Paused() 
 #ifdef DEBUG
 		&& !psActorFlags.test(AF_NO_CLIP)
 #endif //DEBUG
 		)				return;
-	if (game && Game().OnKeyboardRelease(get_binded_action(key)) ) return;
 
 	if (CURRENT_ENTITY())		
 	{

@@ -84,9 +84,9 @@ FOR RUSSIAN ONLY !!!
   </intro_logo>
   
 <intro_game>
-    <pause_state>on</pause_state>
     <play_each_item>1</play_each_item>
     <global_wnd x="0" y="0" width="1024" height="768">
+    <pause_state>on</pause_state>
       <_auto_static x="0" y="0" width="1024" height="768" stretch="1">
         <window_name>back</window_name>       
         <texture>intro\intro_back</texture>       
@@ -94,7 +94,6 @@ FOR RUSSIAN ONLY !!!
     </global_wnd>   
     <item type="video">
           <sound>characters_voice\scenario\video\intro</sound>
-          <pause_state>on</pause_state>
           <function_on_stop>xr_effects.start_marsh_intro</function_on_stop>
           <video_wnd x="0" y="0" width="1024" height="768" stretch="1">
             <texture x="1" y="1" width="628" height="358">intro\intro_half</texture>
@@ -103,16 +102,6 @@ FOR RUSSIAN ONLY !!!
           <background x="0" y="0" width="1024" height="768" stretch="1">
             <texture>intro\intro_back</texture>
           </background>
-        </item>
-    <item type="image">
-        <length_sec>5</length_sec>
-      <pause_state>off</pause_state>
-      <main_wnd>
-        <auto_static start_time="0" length_sec="5"  x="0" y="0" width="1230" height="768" light_anim="intro_1" light_anim_cyclic="0" la_alpha="1" la_texture="1" stretch="1">
-          <window_name>w1</window_name>
-          <texture>intro\intro_back</texture>
-        </auto_static>
-      </main_wnd>
     </item>
 </intro_game>
 

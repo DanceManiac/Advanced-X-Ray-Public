@@ -1802,6 +1802,7 @@ end
 
 function start_marsh_intro()
 	db.actor:give_info_portion("mar_intro_start")
+	level.add_pp_effector("peace_unfade.ppe", 1974, false)
 end
 
 function relocate_money_to(actor, npc, p)

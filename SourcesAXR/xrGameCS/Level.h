@@ -67,6 +67,7 @@ class CLevel					: public IGame_Level, public IPureClient
 private:
 #ifdef DEBUG
 	bool						m_bSynchronization;
+	bool						m_bEnvPaused;
 #endif
 protected:
 	typedef IGame_Level			inherited;
@@ -349,7 +350,6 @@ public:
 	virtual float		GetEnvironmentTimeFactor() const; // override;
 	virtual void		SetEnvironmentTimeFactor(const float fTimeFactor); // override;
 	virtual u64			GetEnvironmentGameTime	() const; // override
-//	void				SetGameTime				(ALife::_TIME_ID GameTime);
 
 	// gets current daytime [0..23]
 	u8					GetDayTime				();

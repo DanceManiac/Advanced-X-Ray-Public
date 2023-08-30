@@ -11,11 +11,15 @@ class CUISequencer :public pureFrame, public pureRender,	public IInputReceiver
 {
 protected:
 	CUIWindow*				m_UIWindow;
-	xr_deque<CUISequenceItem*>m_items;
+	ref_sound				m_global_sound;
+	xr_deque<CUISequenceItem*> m_sequencer_items;
 	pcstr					m_name;
-	bool					m_bActive;
-	bool					m_bPlayEachItem;
+
 	bool					GrabInput			();
+	CUISequenceItem*		GetNextItem			();
+	shared_str				m_start_lua_function;
+	shared_str				m_stop_lua_function;
+
 public:
 	IInputReceiver*			m_pStoredInputReceiver;
 							CUISequencer		();
@@ -28,7 +32,7 @@ public:
 	virtual void	_BCL	OnFrame				();
 	virtual void			OnRender			();
 	CUIWindow*				MainWnd				()				{return m_UIWindow;}
-	bool					IsActive			()				{return m_bActive;}
+	bool					IsActive			()				{return !!m_flags.test(etsActive);}
 
 
 	//IInputReceiver
@@ -44,19 +48,19 @@ public:
 
 	virtual void			IR_OnMouseWheel		(int direction)	;
 	virtual void			IR_OnActivate		(void);
-
+			bool			Persistent			() {return !!m_flags.test(etsPersistent);}
 			pcstr			GetTutorName		() { return m_name; }
 
 	fastdelegate::FastDelegate0<>	m_on_destroy_event;
-
-	enum {
-		etsNeedPauseOn = (1 << 0),
-		etsNeedPauseOff = (1 << 1),
-		etsStoredPauseState = (1 << 2),
-		etsPersistent = (1 << 3),
-		etsPlayEachItem = (1 << 4),
-		etsActive = (1 << 5),
-		etsOverMainMenu = (1 << 6),
+	
+	enum {	
+		etsNeedPauseOn		= (1<<0),
+		etsNeedPauseOff		= (1<<1),
+		etsStoredPauseState	= (1<<2),
+		etsPersistent		= (1<<3),
+		etsPlayEachItem		= (1<<4),
+		etsActive			= (1<<5),
+		etsOverMainMenu		= (1<<6),
 	};
 	Flags32					m_flags;
 };
@@ -76,27 +80,34 @@ protected:
 		etiSkipSceneRendering=(1<<7),
 		eti_last = 8,
 	};
-	xr_vector<shared_str>		m_start_lua_functions;
-	xr_vector<shared_str>		m_stop_lua_functions;
+	xr_vector<shared_str>	m_start_lua_functions;
+	xr_vector<shared_str>	m_stop_lua_functions;
+	luabind::functor<void>	m_onframe_functor;
 
 	Flags32					m_flags;
 	CUISequencer*			m_owner;
+
+	virtual float			current_factor		(){return 1;}
 public:
 							CUISequenceItem		(CUISequencer* owner):m_owner(owner){m_flags.zero();}
 	virtual					~CUISequenceItem	(){}
 	virtual void			Load				(CUIXml* xml, int idx)=0;
 
-	virtual void			Start				()=0;
+	virtual void			Start				();
 	virtual bool			Stop				(bool bForce=false)=0;
 
-	virtual void			Update				()=0;
+	virtual void			Update				();
 	virtual void			OnRender			()=0;
 	virtual void			OnKeyboardPress		(int dik)=0;
+	virtual void			OnMousePress		(int btn)=0;
 
 	virtual bool			IsPlaying			()=0;
 
 	bool					AllowKey			(int dik);
 	bool					GrabInput			(){return !!m_flags.test(etiGrabInput);}
+
+	shared_str				m_check_lua_function;
+	shared_str				m_onframe_lua_function;
 };
 
 class CUISequenceSimpleItem: public CUISequenceItem
@@ -136,17 +147,19 @@ public:
 	virtual bool			Stop				(bool bForce=false);
 
 	virtual void			Update				();
-	virtual void			OnRender			(){}
+	virtual void			OnRender			();
 	virtual void			OnKeyboardPress		(int dik);
+	virtual void			OnMousePress		(int btn);
 
 	virtual bool			IsPlaying			();
+protected:
+	virtual float			current_factor		();
 };
 
 class CUISequenceVideoItem: public CUISequenceItem
 {
 	typedef CUISequenceItem	inherited;
 	ref_sound				m_sound;
-	// Igor CTexture*				m_texture;
 	FactoryPtr<IUISequenceVideoItem>	m_texture;
 	enum {	
 		etiPlaying			= (1<<(eti_last+0)),
@@ -170,6 +183,7 @@ public:
 	virtual void			Update				();
 	virtual void			OnRender			();
 	virtual void			OnKeyboardPress		(int dik){}
+	virtual void			OnMousePress		(int btn){};
 
 	virtual bool			IsPlaying			();
 };

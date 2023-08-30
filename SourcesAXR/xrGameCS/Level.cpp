@@ -152,6 +152,7 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	#ifdef DEBUG
 		m_debug_renderer			= xr_new<CDebugRenderer>();
 		m_level_debug				= xr_new<CLevelDebug>();
+		m_bEnvPaused				= false;
 	#endif
 
 	}else
@@ -170,6 +171,7 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	
 	m_ph_commander				= xr_new<CPHCommander>();
 	m_ph_commander_scripts		= xr_new<CPHCommander>();
+	//m_ph_commander_physics_worldstep	= xr_new<CPHCommander>();
 
 #ifdef DEBUG
 	m_bSynchronization			= false;
@@ -366,7 +368,7 @@ void CLevel::PrefetchSound		(LPCSTR name)
 {
 	// preprocess sound name
 	string_path					tmp;
-	strcpy_s					(tmp,name);
+	xr_strcpy					(tmp,name);
 	xr_strlwr					(tmp);
 	if (strext(tmp))			*strext(tmp)=0;
 	shared_str	snd_name		= tmp;
@@ -676,7 +678,7 @@ void CLevel::OnFrame	()
 					void operator()(IClient* C)
 					{
 						m_server->UpdateClientStatistic(C);
-						F->OutNext("%10s: P(%d), BPS(%2.1fK), MRR(%2d), MSR(%2d), Retried(%2d), Blocked(%2d)",
+						F->OutNext("0x%08x: P(%d), BPS(%2.1fK), MRR(%2d), MSR(%2d), Retried(%2d), Blocked(%2d)",
 							//Server->game->get_option_s(*C->Name,"name",*C->Name),
 							C->name.c_str(),
 							C->stats.getPing(),
@@ -740,8 +742,9 @@ void CLevel::OnFrame	()
 			xr_delete(pStatGraphR);
 #endif
 	}
-	
-//	g_pGamePersistent->Environment().SetGameTime	(GetGameDayTimeSec(),GetGameTimeFactor());
+#ifdef DEBUG
+	g_pGamePersistent->Environment().m_paused		= m_bEnvPaused;
+#endif
 	g_pGamePersistent->Environment().SetGameTime	(GetEnvironmentGameDayTimeSec(),game->GetEnvironmentGameTimeFactor());
 
 	//Device.Statistic->cripting.Begin	();
@@ -902,6 +905,10 @@ void CLevel::OnRender()
 			if (stalker)
 				stalker->OnRender	();
 
+			CCustomMonster*		monster = smart_cast<CCustomMonster*>(_O);
+			if (monster)
+				monster->OnRender	();
+
 			CPhysicObject		*physic_object = smart_cast<CPhysicObject*>(_O);
 			if (physic_object)
 				physic_object->OnRender();
@@ -999,8 +1006,8 @@ void CLevel::OnEvent(EVENT E, u64 P1, u64 /**P2/**/)
 	} else if (E==eDemoPlay && P1) {
 		char* name = (char*)P1;
 		string_path RealName;
-		strcpy_s		(RealName,name);
-		strcat			(RealName,".xrdemo");
+		xr_strcpy		(RealName,name);
+		xr_strcat			(RealName,".xrdemo");
 		Cameras().AddCamEffector(xr_new<CDemoPlay> (RealName,1.3f,0));
 	} else if (E==eChangeTrack && P1) {
 		// int id = atoi((char*)P1);
@@ -1200,13 +1207,11 @@ ALife::_TIME_ID CLevel::GetStartGameTime()
 ALife::_TIME_ID CLevel::GetGameTime()
 {
 	return			(game->GetGameTime());
-//	return			(Server->game->GetGameTime());
 }
 
 ALife::_TIME_ID CLevel::GetEnvironmentGameTime()
 {
 	return			(game->GetEnvironmentGameTime());
-//	return			(Server->game->GetGameTime());
 }
 
 u8 CLevel::GetDayTime() 
@@ -1255,7 +1260,6 @@ void CLevel::SetEnvironmentTimeFactor(const float fTimeFactor)
 float CLevel::GetGameTimeFactor()
 {
 	return			(game->GetGameTimeFactor());
-//	return			(Server->game->GetGameTimeFactor());
 }
 
 u64 CLevel::GetEnvironmentGameTime() const
@@ -1268,13 +1272,11 @@ u64 CLevel::GetEnvironmentGameTime() const
 void CLevel::SetGameTimeFactor(const float fTimeFactor)
 {
 	game->SetGameTimeFactor(fTimeFactor);
-//	Server->game->SetGameTimeFactor(fTimeFactor);
 }
 
 void CLevel::SetGameTimeFactor(ALife::_TIME_ID GameTime, const float fTimeFactor)
 {
 	game->SetGameTimeFactor(GameTime, fTimeFactor);
-//	Server->game->SetGameTimeFactor(fTimeFactor);
 }
 
 void CLevel::SetEnvironmentGameTimeFactor(u64 const& GameTime, float const& fTimeFactor)
@@ -1283,17 +1285,10 @@ void CLevel::SetEnvironmentGameTimeFactor(u64 const& GameTime, float const& fTim
 		return;
 
 	game->SetEnvironmentGameTimeFactor(GameTime, fTimeFactor);
-//	Server->game->SetGameTimeFactor(fTimeFactor);
-}/*
-void CLevel::SetGameTime(ALife::_TIME_ID GameTime)
-{
-	game->SetGameTime(GameTime);
-//	Server->game->SetGameTime(GameTime);
 }
-*/
+
 bool CLevel::IsServer ()
 {
-//	return (!!Server);
 	if (!Server || IsDemoPlayStarted()) return false;
 	//return (Server->GetClientsCount() != 0);
 	return true;
@@ -1301,7 +1296,6 @@ bool CLevel::IsServer ()
 
 bool CLevel::IsClient ()
 {
-//	return (!Server);
 	if (IsDemoPlayStarted())
 		return true;
 	
