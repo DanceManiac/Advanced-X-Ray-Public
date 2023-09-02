@@ -266,7 +266,7 @@ void CUISequenceSimpleItem::Start()
 			if ( ( !ui_game_sp->PdaMenu().IsShown() &&  bShowPda ) || 
 				(   ui_game_sp->PdaMenu().IsShown() && !bShowPda ) )
 			{
-				ui_game_sp->PdaMenu().HideDialog();
+				HUD().GetUI()->StartStopMenu( &ui_game_sp->PdaMenu(), true );
 			}
 		}
 	}
@@ -296,7 +296,7 @@ bool CUISequenceSimpleItem::Stop			(bool bForce)
 		CUIGameSP* ui_game_sp	= smart_cast<CUIGameSP*>( HUD().GetUI()->UIGame() );
 		if ( ui_game_sp && ui_game_sp->PdaMenu().IsShown() )
 		{
-			ui_game_sp->PdaMenu().HideDialog();
+			HUD().GetUI()->StartStopMenu( &ui_game_sp->PdaMenu(), true );
 		}
 	}
 	inherited::Stop				();

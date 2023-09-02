@@ -458,7 +458,7 @@ bool CUIPdaWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 
 			if (action == kQUIT || action == kINVENTORY || action == kACTIVE_JOBS)
 			{
-				HideDialog();
+				HUD().GetUI()->StartStopMenu(this, true);
 				return true;
 			}
 		}
@@ -473,7 +473,7 @@ bool CUIPdaWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 				{
 					if (pda->GetState() == CPda::eHiding || pda->GetState() == CPda::eHidden)
 					{
-						HideDialog();
+						HUD().GetUI()->StartStopMenu(this, true);
 						Console->Execute("main_menu");
 					}
 					else if (pda->m_bZoomed)

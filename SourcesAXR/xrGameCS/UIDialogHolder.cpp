@@ -55,11 +55,11 @@ void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
 	R_ASSERT						( !pDialog->IsShown() );
 
-	if (IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
+	if (psActorFlags.test(AF_3D_PDA) && IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
 	{
 		if (const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem()))
 		{
-			HUD().GetUI()->UIGame()->PdaMenu().HideDialog();
+			HUD().GetUI()->StartStopMenu(smart_cast<CUIPdaWnd*>(pDialog),false);
 			Actor()->inventory().Action(kACTIVE_JOBS, CMD_START);
 		}
 	}
@@ -234,20 +234,6 @@ void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 		StartMenu(pDialog, bDoHideIndicators);
 	}
 	
-}
-
-void CDialogHolder::StartDialog(CUIDialogWnd* pDialog, bool bDoHideIndicators)
-{
-	if (pDialog && pDialog->NeedCenterCursor())
-	{
-		GetUICursor()->SetUICursorPosition(Fvector2().set(512.0f, 384.0f));
-	}
-	StartMenu(pDialog, bDoHideIndicators);
-}
-
-void CDialogHolder::StopDialog(CUIDialogWnd* pDialog)
-{
-	StopMenu(pDialog);
 }
 
 void CDialogHolder::OnFrame	()

@@ -134,9 +134,9 @@ void CUIActorMenu::script_register(lua_State* L)
 				.def(constructor<>())
 				.def("get_drag_item",				&CUIActorMenu::GetCurrentItemAsGameObject)
 				.def("refresh_current_cell_item",	&CUIActorMenu::RefreshCurrentItemCell)
-				.def("IsShown",						&CUIActorMenu::IsShown)
-				.def("ShowDialog",					&CUIActorMenu::ShowDialog)
-				.def("HideDialog",					&CUIActorMenu::HideDialog),
+				.def("IsShown",						&CUIActorMenu::IsShown),
+				//.def("ShowDialog",					&CUIActorMenu::ShowDialog)
+				//.def("HideDialog",					&CUIActorMenu::HideDialog),
 
  			class_< CUIMainIngameWnd, CUIWindow>("CUIMainIngameWnd")
 				.def(constructor<>())
@@ -194,7 +194,7 @@ void CUIPdaWnd::script_register(lua_State* L)
 			class_<CUIPdaWnd, CUIDialogWnd>("CUIPdaWnd")
 				.def(constructor<>())
 				.def("IsShown",						&CUIPdaWnd::IsShown)
-				.def("ShowDialog",					&CUIPdaWnd::ShowDialog)
-				.def("HideDialog",					&CUIPdaWnd::HideDialog)
+				//.def("ShowDialog",					&CUIPdaWnd::ShowDialog)
+				//.def("HideDialog",					&CUIPdaWnd::HideDialog)
 		];
 };

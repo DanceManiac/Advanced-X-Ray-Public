@@ -191,6 +191,8 @@ bool CUIPdaWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 
 void CUIPdaWnd::MouseMovement(float x, float y)
 {
+	if (!Actor())
+		return;
 	CPda* pda = Actor()->GetPDA();
 	if (!pda) return;
 

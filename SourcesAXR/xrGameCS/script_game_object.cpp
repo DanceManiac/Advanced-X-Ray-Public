@@ -813,7 +813,7 @@ bool CScriptGameObject::Use(CScriptGameObject* obj)
 		ActorMenu.SetInvBox(pBox);
 
 		ActorMenu.SetMenuMode(mmDeadBodySearch);
-		ActorMenu.ShowDialog(true);
+		HUD().GetUI()->StartStopMenu(&ActorMenu, true);
 
 		return true;
 	}
@@ -836,7 +836,7 @@ bool CScriptGameObject::Use(CScriptGameObject* obj)
 		ActorMenu.SetPartner(pOtherOwner);
 
 		ActorMenu.SetMenuMode(mmDeadBodySearch);
-		ActorMenu.ShowDialog(true);
+		HUD().GetUI()->StartStopMenu(&ActorMenu, true);
 
 		return true;
 	}
@@ -864,7 +864,7 @@ void CScriptGameObject::StartTrade(CScriptGameObject* obj)
 	ActorMenu.SetPartner(pOtherOwner);
 
 	ActorMenu.SetMenuMode(mmTrade);
-	ActorMenu.ShowDialog(true);
+	HUD().GetUI()->StartStopMenu(&ActorMenu, true);
 }
 
 void CScriptGameObject::StartUpgrade(CScriptGameObject* obj)
@@ -887,7 +887,7 @@ void CScriptGameObject::StartUpgrade(CScriptGameObject* obj)
 	ActorMenu.SetPartner(pOtherOwner);
 
 	ActorMenu.SetMenuMode(mmUpgrade);
-	ActorMenu.ShowDialog(true);
+	HUD().GetUI()->StartStopMenu(&ActorMenu, true);
 }
 
 #include "stalker_animation_manager.h"

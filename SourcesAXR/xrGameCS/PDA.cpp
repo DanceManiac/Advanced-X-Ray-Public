@@ -186,7 +186,7 @@ void CPda::OnStateSwitch(u32 S)
 			if (psActorFlags.test(AF_3D_PDA))
 				pda->Enable(true);
 			else
-				pda->HideDialog();
+				HUD().GetUI()->StartStopMenu(pda, false);
 		}
 
 		g_player_hud->reset_thumb(true);
@@ -343,7 +343,7 @@ void CPda::UpdateCL()
 		if (!enoughBatteryPower || state == eHidden)
 		{
 			HUD().GetUI()->SetMainInputReceiver(nullptr, false);
-			pda->HideDialog();
+			HUD().GetUI()->StartStopMenu(pda, false);
 			m_bZoomed = false;
 
 			if (state == eIdle)
@@ -381,7 +381,7 @@ void CPda::UpdateCL()
 		// Show PDA UI if possible
 		if (!b_main_menu_is_active && state != eHiding && state != eHidden && enoughBatteryPower)
 		{
-			pda->ShowDialog(false); // Don't hide indicators
+			HUD().GetUI()->StartStopMenu(pda, false);
 			HUD().GetUI()->SetMainInputReceiver(nullptr, false);
 			m_bNoticedEmptyBattery = false;
 
@@ -524,7 +524,7 @@ void CPda::OnMoveToRuck(EItemPlace prev)
 		g_player_hud->detach_item(this);
 	}
 	CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
-	if (pda->IsShown()) pda->HideDialog();
+	HUD().GetUI()->StartStopMenu(pda, false);
 	StopCurrentAnimWithoutCallback();
 	SetPending(false);
 }
@@ -829,7 +829,7 @@ void CPda::OnH_B_Independent(bool just_before_destroy)
 	m_fZoomfactor = 0.f;
 
 	CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
-	if (pda->IsShown()) pda->HideDialog();
+	HUD().GetUI()->StartStopMenu(pda, false);
 	g_player_hud->reset_thumb(true);
 	pda->ResetJoystick(true);
 
