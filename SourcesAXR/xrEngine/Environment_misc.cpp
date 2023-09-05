@@ -271,6 +271,9 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) :
 
     wind_velocity		= 0.0f;
     wind_direction		= 0.0f;
+
+	clouds_velocity_0	= 0.0f;
+	clouds_velocity_1	= 0.0f;
     
 	ambient.set			(0,0,0);
 	hemi_color.set		(1,1,1,1);
@@ -372,6 +375,9 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 
 	if (config.line_exist(m_identifier.c_str(), "color_grading"))
 		color_grading = config.r_fvector4(m_identifier.c_str(), "color_grading");
+
+	clouds_velocity_0 = pSettings->line_exist(m_identifier.c_str(), "clouds_velocity_0") ? pSettings->r_float(m_identifier.c_str(), "clouds_velocity_0") : 0.001f;
+	clouds_velocity_1 = pSettings->line_exist(m_identifier.c_str(), "clouds_velocity_1") ? pSettings->r_float(m_identifier.c_str(), "clouds_velocity_1") : 0.0005f;
 
 	// swing desc
 	// normal
@@ -531,6 +537,28 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	wind_velocity			=	fi*A.wind_velocity + f*B.wind_velocity;
 	wind_direction			=	fi*A.wind_direction + f*B.wind_direction;
 
+	if (!bWeatherWindInfluenceKoef)
+	{
+		clouds_velocity_0 = fi * A.clouds_velocity_0 + f * B.clouds_velocity_0;
+		clouds_velocity_1 = fi * A.clouds_velocity_1 + f * B.clouds_velocity_1;
+	}
+	else
+	{
+		auto getWindInfluencedCloudsVelocity = [](float amplitude, float windVelocity, float koef)
+		{
+			return amplitude * (windVelocity / koef);
+		};
+
+		clouds_velocity_0 = (fi * getWindInfluencedCloudsVelocity(A.clouds_velocity_0, A.wind_velocity, bWeatherWindInfluenceKoef / 2.3f)) +
+			(f * getWindInfluencedCloudsVelocity(B.clouds_velocity_0, B.wind_velocity, bWeatherWindInfluenceKoef / 2.3f));
+
+		clouds_velocity_1 = (fi * getWindInfluencedCloudsVelocity(A.clouds_velocity_1, A.wind_velocity, bWeatherWindInfluenceKoef / 2.3f)) +
+			(f * getWindInfluencedCloudsVelocity(B.clouds_velocity_1, B.wind_velocity, bWeatherWindInfluenceKoef / 2.3f));
+
+		clamp(clouds_velocity_0, 0.001f, 0.1f);
+		clamp(clouds_velocity_1, 0.0005f, 0.05f);
+	}
+
 	m_fSunShaftsIntensity	= fi * A.m_fSunShaftsIntensity + f * B.m_fSunShaftsIntensity;
 	m_fWaterIntensity		=	fi*A.m_fWaterIntensity + f*B.m_fWaterIntensity;
 
@@ -546,9 +574,9 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 
 		m_fTreeAmplitudeIntensity = (fi * getWindInfluencedAmplitudeIntensity(A.m_fTreeAmplitudeIntensity, A.wind_velocity, bWeatherWindInfluenceKoef)) +
 			(f * getWindInfluencedAmplitudeIntensity(B.m_fTreeAmplitudeIntensity, B.wind_velocity, bWeatherWindInfluenceKoef));
-	}
 
-	clamp(m_fTreeAmplitudeIntensity, 0.01f, 0.075f);
+		clamp(m_fTreeAmplitudeIntensity, 0.01f, 0.075f);
+	}
 #endif
 
 	lowland_fog_height	= fi*A.lowland_fog_height + f * B.lowland_fog_height;

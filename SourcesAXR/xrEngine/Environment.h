@@ -162,7 +162,10 @@ public:
 	float				bolt_duration;
 
     float				wind_velocity;
-    float				wind_direction;  
+    float				wind_direction;
+
+	float				clouds_velocity_0; //skyloader: speed of clouds
+	float				clouds_velocity_1; //skyloader: speed of second clouds
     
 	Fvector3			ambient		;
 	Fvector4			hemi_color	;	// w = R2 correction

@@ -83,6 +83,8 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_fvector3(el->m_identifier.c_str(), "ambient_color", el->ambient);
 		f.w_fvector4(el->m_identifier.c_str(), "clouds_color", el->clouds_color);
 		f.w_string(el->m_identifier.c_str(), "clouds_texture", el->clouds_texture_name.c_str());
+		f.w_float(el->m_identifier.c_str(), "clouds_velocity_0", el->clouds_velocity_0);
+		f.w_float(el->m_identifier.c_str(), "clouds_velocity_1", el->clouds_velocity_1);
 		f.w_float(el->m_identifier.c_str(), "far_plane", el->far_plane);
 		f.w_float(el->m_identifier.c_str(), "fog_distance", el->fog_distance);
 		f.w_float(el->m_identifier.c_str(), "fog_density", el->fog_density);
@@ -338,6 +340,15 @@ void ShowWeatherEditor(bool& show)
 	{
 		cur->on_device_create();
 		changed = true;
+	}
+
+	if (!bWeatherWindInfluenceKoef)
+	{
+		if (ImGui::SliderFloat("clouds_velocity_0", &cur->clouds_velocity_0, 0.0f, 0.1f))
+			changed = true;
+
+		if (ImGui::SliderFloat("clouds_velocity_1", &cur->clouds_velocity_1, 0.0f, 0.5f))
+			changed = true;
 	}
 
 	ImGui::Text(u8"Fog parameters");
