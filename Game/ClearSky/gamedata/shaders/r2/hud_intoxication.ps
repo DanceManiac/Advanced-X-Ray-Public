@@ -8,7 +8,11 @@ float4 main(p_screen I) : COLOR
 	float2	texcoord 				= I.tc0;
 	float4	intoxication_texture 	= tex2D(s_hud_intoxication, I.tc0);
 	float3 	scene 					= tex2D(s_image, texcoord).xyz;
-	scene = lerp(scene, intoxication_texture.xyz, intoxication_texture.w * hud_intoxication_params.x);
+	
+	// Calculate the interpolated intensity
+    float intensity = smoothstep(0.5, 1.0, hud_intoxication_params.x);
+	
+	scene = lerp(scene, intoxication_texture.xyz, intoxication_texture.w * intensity);
 
 	return float4(scene, 1.0f);
 }

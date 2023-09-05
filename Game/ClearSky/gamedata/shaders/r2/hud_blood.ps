@@ -9,7 +9,11 @@ float4 main(p_screen I) : COLOR
 	//texcoord = (texcoord - 0.5) * hud_blood_params.x + 0.5; // Dynamic Texture Size
 	float4	blood_texture 			= tex2D(s_hud_blood, I.tc0);
 	float3 	scene 					= tex2D(s_image, texcoord).xyz;
-	scene = lerp(scene, blood_texture.xyz, blood_texture.w * hud_blood_params.x);
+	
+	// Calculate the interpolated intensity
+    float intensity = smoothstep(0.5, 1.0, hud_blood_params.x);
+	
+	scene = lerp(scene, blood_texture.xyz, blood_texture.w * intensity);
 
 	return float4(scene, 1.0f);
 }
