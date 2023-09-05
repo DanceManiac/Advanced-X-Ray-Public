@@ -442,33 +442,36 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("wind_direction", &cur->wind_direction, 0.0f, 360.0f))
 		changed = true;
 
-	ImGui::Text(u8"Trees parameters");
+	if (!bWeatherWindInfluenceKoef)
+	{
+		ImGui::Text(u8"Trees parameters");
 
-	if (ImGui::SliderFloat("trees_amplitude_intensity", &cur->m_fTreeAmplitudeIntensity, 0.01f, 0.250f))
-		changed = true;
+		if (ImGui::SliderFloat("trees_amplitude_intensity", &cur->m_fTreeAmplitudeIntensity, 0.01f, 0.250f))
+			changed = true;
 
-	ImGui::Text(u8"Grass swing parameters");
+		ImGui::Text(u8"Grass swing parameters");
 
-	if (ImGui::SliderFloat("swing_normal_amp1", &cur->m_cSwingDesc[0].amp1, 0.0f, 10.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_normal_amp2", &cur->m_cSwingDesc[0].amp2, 0.0f, 10.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_normal_rot1", &cur->m_cSwingDesc[0].rot1, 0.0f, 300.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_normal_rot2", &cur->m_cSwingDesc[0].rot2, 0.0f, 300.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_normal_speed", &cur->m_cSwingDesc[0].speed, 0.0f, 10.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_fast_amp1", &cur->m_cSwingDesc[1].amp1, 0.0f, 10.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_fast_amp2", &cur->m_cSwingDesc[1].amp2, 0.0f, 10.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_fast_rot1", &cur->m_cSwingDesc[1].rot1, 0.0f, 300.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_fast_rot2", &cur->m_cSwingDesc[1].rot2, 0.0f, 300.0f))
-		changed = true;
-	if (ImGui::SliderFloat("swing_fast_speed", &cur->m_cSwingDesc[1].speed, 0.0f, 10.0f))
-		changed = true;
+		if (ImGui::SliderFloat("swing_normal_amp1", &cur->m_cSwingDesc[0].amp1, 0.0f, 10.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_normal_amp2", &cur->m_cSwingDesc[0].amp2, 0.0f, 10.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_normal_rot1", &cur->m_cSwingDesc[0].rot1, 0.0f, 300.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_normal_rot2", &cur->m_cSwingDesc[0].rot2, 0.0f, 300.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_normal_speed", &cur->m_cSwingDesc[0].speed, 0.0f, 10.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_fast_amp1", &cur->m_cSwingDesc[1].amp1, 0.0f, 10.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_fast_amp2", &cur->m_cSwingDesc[1].amp2, 0.0f, 10.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_fast_rot1", &cur->m_cSwingDesc[1].rot1, 0.0f, 300.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_fast_rot2", &cur->m_cSwingDesc[1].rot2, 0.0f, 300.0f))
+			changed = true;
+		if (ImGui::SliderFloat("swing_fast_speed", &cur->m_cSwingDesc[1].speed, 0.0f, 10.0f))
+			changed = true;
+	}
 
 	if (bWeatherColorGrading)
 	{
