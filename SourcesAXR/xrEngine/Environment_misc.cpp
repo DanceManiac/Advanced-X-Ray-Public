@@ -548,7 +548,7 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 			(f * getWindInfluencedAmplitudeIntensity(B.m_fTreeAmplitudeIntensity, B.wind_velocity, bWeatherWindInfluenceKoef));
 	}
 
-	clamp(m_fTreeAmplitudeIntensity, 0.01f, 0.15f);
+	clamp(m_fTreeAmplitudeIntensity, 0.01f, 0.075f);
 #endif
 
 	lowland_fog_height	= fi*A.lowland_fog_height + f * B.lowland_fog_height;
