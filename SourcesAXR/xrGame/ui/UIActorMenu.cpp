@@ -210,7 +210,6 @@ void CUIActorMenu::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 
 void CUIActorMenu::Show(bool status)
 {
-	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 	inherited::Show							(status);
 
@@ -220,7 +219,7 @@ void CUIActorMenu::Show(bool status)
 		PlaySnd								(eSndOpen);
 		m_ActorStateInfo->UpdateActorInfo	(m_pActorInvOwner);
 
-		if (pActor && GameConstants::GetHideWeaponInInventory())
+		if (Actor() && GameConstants::GetHideWeaponInInventory())
 		{
 			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 
@@ -235,7 +234,7 @@ void CUIActorMenu::Show(bool status)
 		PlaySnd								(eSndClose);
 		SetMenuMode							(mmUndefined);
 
-		if (pActor && GameConstants::GetHideWeaponInInventory())
+		if (Actor() && GameConstants::GetHideWeaponInInventory())
 		{
 			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 			Actor()->unblock_action(kDETECTOR);

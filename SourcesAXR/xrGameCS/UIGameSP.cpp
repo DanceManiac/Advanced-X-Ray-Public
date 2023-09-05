@@ -103,7 +103,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 		if (psActorFlags.test(AF_3D_PDA) && HUD().GetUI()->UIGame()->PdaMenu().IsShown())
 			pActor->inventory().Activate(NO_ACTIVE_SLOT);
 
-			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
+			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(pActor->inventory().ItemFromSlot(BACKPACK_SLOT));
 
 			if (!backpack)
 				ShowActorMenu();

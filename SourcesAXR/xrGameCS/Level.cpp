@@ -1482,9 +1482,9 @@ std::string CLevel::GetMoonPhase()
 		g_time.get(Y, M, D, h, m, s, ms);
 
 		u32 start_year;
-		sscanf(pSettings->r_string("alife", "start_time"), "%*d.%*d.%d", &start_year);
+		sscanf(pSettings->r_string("alife", "start_date"), "%*d.%*d.%d", &start_year);
 
-		int day = 365 * (Y - start_year) + D;
+		int day = 365 * (Y - (start_year - 2)) + D;
 
 		for (int mm = 0; mm < M - 1; ++mm)
 			day += months[mm];

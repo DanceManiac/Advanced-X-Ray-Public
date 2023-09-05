@@ -998,7 +998,7 @@ void CActorCondition::ChangeNarcotism(float value)
 
 void CActorCondition::ChangeWithdrawal(float value)
 {
-	m_fHangover += value;
+	m_fWithdrawal += value;
 	clamp(m_fWithdrawal, 0.0f, 3.0f);
 }
 
@@ -1402,7 +1402,7 @@ void CActorCondition::UpdateTutorialThresholds()
 		strcpy_s(cb_name,"_G.on_actor_radiation");
 	}
 
-	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()>_cPsyHealthThr){
+	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()<_cPsyHealthThr){
 //.		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_psy");

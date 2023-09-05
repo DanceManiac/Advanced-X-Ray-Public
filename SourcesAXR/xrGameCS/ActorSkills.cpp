@@ -5,7 +5,7 @@
 CActorSkills::CActorSkills()
 {
 	skills_points = 0;
-	skill_cost = 10;
+	skill_cost = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_cost", 50);
 	survivalSkillLevel = 0;
 	powerSkillLevel = 0;
 	repairSkillLevel = 0;

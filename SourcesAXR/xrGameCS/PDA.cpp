@@ -151,6 +151,9 @@ void CPda::OnStateSwitch(u32 S)
 		m_sounds.PlaySound(hasEnoughBatteryPower() ? "sndShow" : "sndShowEmpty", Position(), H_Root(), !!GetHUDmode(), false);
 		PlayHUDMotion(!m_bNoticedEmptyBattery ? "anm_show" : "anm_show_empty", false, this, GetState());
 		
+		if (auto pda = HUD().GetUI() && &HUD().GetUI()->UIGame()->PdaMenu() ? &HUD().GetUI()->UIGame()->PdaMenu() : nullptr)
+			pda->ResetJoystick(true);
+
 		SetPending(true);
 		target_screen_switch = Device.fTimeGlobal + m_screen_on_delay;
 	}

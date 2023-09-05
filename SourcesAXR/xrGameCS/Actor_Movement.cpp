@@ -292,7 +292,6 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float	scale			= vControlAccel.magnitude();
 			float hangover = conditions().GetHangover();
 			float withdrawal = conditions().GetWithdrawal();
-			ActorSkills->enduranceSkillLevel;
 			float walkAccelSkill = 0.0f;
 
 			if (ActorSkills)

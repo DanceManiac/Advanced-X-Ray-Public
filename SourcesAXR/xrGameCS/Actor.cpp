@@ -1009,7 +1009,7 @@ void CActor::UpdateCL	()
 
 			//      [Update SecondVP with weapon data]
 			pWeapon->UpdateSecondVP(); //--#SM+#-- +SecondVP+
-			bool bUseMark = !!pWeapon->IsZoomed();
+			bool bUseMark = !!pWeapon->bMarkCanShow();
 			bool bNVEnbl = !!pWeapon->bNVsecondVPstatus;
 
 			//      

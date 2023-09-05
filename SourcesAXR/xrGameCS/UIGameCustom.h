@@ -11,7 +11,7 @@
 #include "UIDialogHolder.h"
 #include "script_game_object.h"
 
-#include "..\xrServerEntities\alife_space.h"
+#include "..\xrServerEntitiesCS\alife_space.h"
 #include "actor_defs.h"
 
 // refs
