@@ -25,6 +25,9 @@ IC	CAgentManager &CAI_Stalker::agent_manager	() const
 
 IC	Fvector CAI_Stalker::weapon_shot_effector_direction	(const Fvector &current) const
 {
+#if 1
+	return			current;
+#else // #if 1
 	VERIFY			(weapon_shot_effector().IsActive());
 	Fvector			result;
 	weapon_shot_effector().GetDeltaAngle(result);
@@ -35,4 +38,5 @@ IC	Fvector CAI_Stalker::weapon_shot_effector_direction	(const Fvector &current) 
 	result.setHP	(-result.y + y, -result.x + p);
 
 	return			(result);
+#endif // #if 1
 }

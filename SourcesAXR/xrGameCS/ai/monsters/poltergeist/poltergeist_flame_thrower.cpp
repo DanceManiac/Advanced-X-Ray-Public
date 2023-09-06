@@ -157,11 +157,11 @@ void CPolterFlame::update_schedule()
 					// start here
 					m_state_scanning = true;
 
-					// ������ ����
+					// играть звук
 					//m_scan_sound.play_at_pos(m_object, get_head_position(Actor()),sm_2D);
 					::Sound->play_at_pos(m_scan_sound, 0, Actor()->Position());
 
-					// �����������
+					// постпроцесс
 					Actor()->Cameras().AddPPEffector(xr_new<CMonsterEffector>(m_scan_effector_info, m_scan_effector_time, m_scan_effector_time_attack, m_scan_effector_time_release));
 				}
 				
@@ -233,7 +233,7 @@ void CPolterFlame::update_schedule()
 
 	// remove all flames in state stop
 	
-	// ������� ��� ��������, ���������� ������� ���������
+	// удалить все элементы, выполнение которых закончено
 	m_flames.erase	(
 		std::remove_if(
 			m_flames.begin(),
@@ -265,7 +265,7 @@ void CPolterFlame::on_destroy()
 	FLAME_ELEMS_IT I = m_flames.begin();
 	FLAME_ELEMS_IT E = m_flames.end();
 
-	// ������ �� ���� �������� � ��������� �� ��� �����
+	// Пройти по всем объектам и проверить на хит врага
 	for ( ;I != E; ++I) {
 		if ((*I)->sound._feedback()) (*I)->sound.stop();
 		if ((*I)->particles_object) CParticlesObject::Destroy((*I)->particles_object);

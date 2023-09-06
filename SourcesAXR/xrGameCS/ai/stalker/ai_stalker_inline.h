@@ -168,7 +168,7 @@ IC	void CAI_Stalker::throw_time_interval						(const u32 &value)
 
 IC	const Fvector &CAI_Stalker::throw_target					() const
 {
-	return					(m_throw_target);
+	return					(m_throw_target_position);
 }
 
 IC	void CAI_Stalker::sniper_update_rate						(bool value)

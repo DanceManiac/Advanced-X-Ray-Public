@@ -108,6 +108,9 @@ public:
 	virtual bool		IsCantWalk					() const;
 	virtual bool		IsCantWalkWeight			();
 	virtual bool		IsCantSprint				() const;
+	
+			void		PowerHit					(float power, bool apply_outfit);
+			float		GetPower					() const { return m_fPower; }
 
 			void		ConditionJump				(float weight);
 			void		ConditionWalk				(float weight, bool accel, bool sprint);

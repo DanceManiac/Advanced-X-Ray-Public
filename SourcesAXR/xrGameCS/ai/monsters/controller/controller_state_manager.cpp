@@ -105,10 +105,10 @@ void CStateManagerController::execute()
 
 	} else if (object->HitMemory.is_hit()) {
 		state_id = eStateHitted;
-	} else if (object->hear_dangerous_sound) {
-		state_id = eStateHearDangerousSound;
 	} else if (object->hear_interesting_sound) {
 		state_id = eStateHearInterestingSound;
+	} else if (object->hear_dangerous_sound) {
+		state_id = eStateHearDangerousSound;
 	} else {
 		if (can_eat())	state_id = eStateEat;
 		else			state_id = eStateRest;

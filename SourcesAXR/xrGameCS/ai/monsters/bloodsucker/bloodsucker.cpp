@@ -645,29 +645,16 @@ void CAI_Bloodsucker::move_actor_cam (float angle)
 	}
 }
 
-void CAI_Bloodsucker::HitEntity(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir)
+void CAI_Bloodsucker::HitEntity(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir, ALife::EHitType hit_type, bool draw_hit_marks)
 {
 	bool is_critical = rand()/(float)RAND_MAX <= m_critical_hit_chance;
 
 	if ( is_critical )
 	{
 		impulse *= 10.f;
-
-		if ( pEntity == Actor() )
-		{
-			m_last_critical_hit_tick          = 
-			m_camera_effector_start_move_tick = 
-			m_camera_effector_last_move_tick  = time();
-
-			m_camera_effector_move_time_milis = 
-				(u32)(1000 * (m_critical_hit_camera_effector_angle / m_camera_effector_move_angular_speed));
-
-			m_camera_effector_hor_angle = (rand()%2 ? 1 : -1) * m_critical_hit_camera_effector_angle;
-			m_camera_effector_ver_angle = (rand()%2 ? 1 : -1) * m_critical_hit_camera_effector_angle;
-		}
 	}
 
-	inherited::HitEntity(pEntity, fDamage, impulse, dir);
+	inherited::HitEntity(pEntity, fDamage, impulse, dir, hit_type, draw_hit_marks);
 }
 
 bool CAI_Bloodsucker::in_solid_state ()
@@ -718,7 +705,7 @@ CBaseMonster::SDebugInfo CAI_Bloodsucker::show_debug_info()
 	if (!info.active) return CBaseMonster::SDebugInfo();
 
 	string128 text;
-	sprintf_s(text, "Vampire Want Value = [%f] Speed = [%f]", m_vampire_want_value, m_vampire_want_speed);
+	xr_sprintf(text, "Vampire Want Value = [%f] Speed = [%f]", m_vampire_want_value, m_vampire_want_speed);
 	DBG().text(this).add_item(text, info.x, info.y+=info.delta_y, info.color);
 	DBG().text(this).add_item("---------------------------------------", info.x, info.y+=info.delta_y, info.delimiter_color);
 

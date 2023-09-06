@@ -4,6 +4,7 @@
 #include "../controlled_entity.h"
 #include "../../../actor.h"
 #include "../../../ActorEffector.h"
+#include "../../../ActorCondition.h"
 #include "../ai_monster_effector.h"
 #include "../../../hudmanager.h"
 #include "../../../ui.h"
@@ -33,6 +34,7 @@
 #include "../../../level_graph.h"
 #include "../../../ai_object_location.h"
 
+#include "../../../Inventory.h"
 #include "../../../monster_community.h"
 #include "../../../character_community.h"
 #include "../../../InventoryOwner.h"
@@ -55,9 +57,10 @@ namespace detail
 	namespace controller 
 	{
 		// default settings for tube fire:
-		const float default_tube_condition_see_duration = 1000;
-		const float default_tube_condition_min_delay    = 10000;
+		const u32	default_tube_condition_see_duration =	50;
+		const u32	default_tube_condition_min_delay    =	10000;
 		const float default_tube_condition_min_distance = 10;
+		const float default_stamina_hit					=	0.2f;
 
 	} // namespace controller
 } // namespace detail
@@ -266,6 +269,9 @@ void CController::Load(LPCSTR section)
 	                             	pSettings->r_float(section, tube_condition_min_distance_line) :
 									default_tube_condition_min_distance;
 
+	m_stamina_hit				  = READ_IF_EXISTS(pSettings, r_float, section, "stamina_hit",
+									default_stamina_hit);
+									
 	m_aura->load(section);
 }
 
@@ -311,12 +317,12 @@ BOOL CController::net_Spawn(CSE_Abstract *DC)
 
 void CController::UpdateControlled()
 {
-	// ���� ���� ����, ��������� ����� �� ���� ���� ���� ��� ��������
+	// если есть враг, проверить может ли быть враг взят под контроль
 	if (EnemyMan.get_enemy()) {
 		CControlledEntityBase *entity = smart_cast<CControlledEntityBase *>(const_cast<CEntityAlive *>(EnemyMan.get_enemy()));
 		if (entity) {
 			if (!entity->is_under_control() && (m_controlled_objects.size() < m_max_controlled_number)) {
-				// ����� ��� ��������
+				// взять под контроль
 				entity->set_under_control	(this);
 				entity->set_task_follow		(this);
 				m_controlled_objects.push_back(const_cast<CEntityAlive *>(EnemyMan.get_enemy()));
@@ -398,8 +404,6 @@ void CController::reinit()
 
 	m_sndShockEffector		 = 0;
 	active_control_fx		 = false;
-
-	m_time_last_tube		= 0;
 }
 
 void CController::control_hit()
@@ -531,7 +535,7 @@ void CController::draw_fire_particles()
 	CEntityAlive *enemy	= const_cast<CEntityAlive*>(EnemyMan.get_enemy());
 	if (!EnemyMan.see_enemy_now()) return;
 
-	// ��������� ������� � �������������� ��������
+	// вычислить позицию и направленность партикла
 	Fvector my_head_pos;
 	my_head_pos.set	(get_head_position(this));
 	
@@ -617,8 +621,6 @@ void CController::set_psy_fire_delay_default()
 
 void CController::tube_fire()
 {
-	m_time_last_tube = time();
-
 	control().activate(ControlCom::eComCustom1);
 }
 
@@ -637,29 +639,16 @@ bool CController::can_tube_fire()
 	}
 
 	if ( !EnemyMan.get_enemy() )
-	{
 		return false;
-	}
-
-	if ( m_time_last_tube + m_tube_condition_min_delay > time() )
-	{
-		return false;
-	}
-
+	
 	if ( EnemyMan.see_enemy_duration() < m_tube_condition_see_duration ) 
-	{
 		return false;
-	}
 
 	if ( !m_psy_hit->check_start_conditions() )
-	{
 		return false;
-	}
 
 	if ( EnemyMan.get_enemy()->Position().distance_to(Position()) < m_tube_condition_min_distance ) 
-	{
 		return false;
-	}
 
 	return true;
 }
@@ -734,6 +723,27 @@ void CController::set_mental_state(EMentalState state)
 	m_custom_anim_base->on_switch_controller	();
 }
 
+void   CController::HitEntity (const CEntity *pEntity, float fDamage, float impulse, Fvector &dir, ALife::EHitType hit_type, bool draw_hit_marks)
+{
+	if ( pEntity == Actor() && !GodMode() )
+	{
+		Actor()->conditions().PowerHit(m_stamina_hit, false);
+		if ( Actor()->conditions().GetPower() < m_stamina_hit )
+		{
+			if ( !Actor()->inventory().Action((u16)kDROP, CMD_STOP) )
+			{
+				Actor()->g_PerformDrop();
+			}
+		}
+	}
+
+	inherited::HitEntity(pEntity, fDamage, impulse, dir, hit_type, draw_hit_marks);
+}
+
+bool    CController::tube_ready () const
+{
+	return m_psy_hit && m_psy_hit->tube_ready();
+}
 
 #ifdef DEBUG
 CBaseMonster::SDebugInfo CController::show_debug_info()

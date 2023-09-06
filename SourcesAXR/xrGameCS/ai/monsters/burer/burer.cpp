@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "burer.h"
-#include "../../xrPhysics/PhysicsShell.h"
+#include "../../../../xrphysics/PhysicsShell.h"
 #include "../../../characterphysicssupport.h"
 #include "../../../actor.h"
 #include "burer_state_manager.h"
@@ -23,14 +23,14 @@ CBurer::CBurer()
 	TScanner::init_external(this);
 
 	m_fast_gravi		= xr_new<CBurerFastGravi>();
-	control().add		(m_fast_gravi,  ControlCom::eComCustom1);
 
+ 	control().add				(m_fast_gravi,  ControlCom::eComCustom1);
 }
 
 CBurer::~CBurer()
 {
-	xr_delete(StateMan);
-	xr_delete(m_fast_gravi);
+	xr_delete					(StateMan);
+	xr_delete					(m_fast_gravi);
 }
 
 
@@ -226,7 +226,7 @@ void CBurer::UpdateGraviObject()
 				impulse_dir.set(0.0f,0.0f,1.0f);
 				impulse_dir.normalize();
 
-				HitEntity(m_gravi_object.enemy, m_gravi_hit_power, m_gravi_impulse_to_enemy, impulse_dir);
+				HitEntity(m_gravi_object.enemy, m_gravi_hit_power, m_gravi_impulse_to_enemy, impulse_dir, ALife::eHitTypeStrike, false);
 				m_gravi_object.deactivate();
 				return;
 			}
@@ -295,48 +295,54 @@ void CBurer::StartGraviPrepare()
 	CActor *pA = const_cast<CActor *>(smart_cast<const CActor*>(enemy));
 	if (!pA) return;
 
-	pA->CParticlesPlayer::StartParticles(particle_gravi_prepare,Fvector().set(0.0f,0.1f,0.0f),pA->ID());
+	pA->CParticlesPlayer::StartParticles			(particle_gravi_prepare,
+													 Fvector().set(0.0f, 0.1f, 0.0f),
+													 pA->ID());
 }
 void CBurer::StopGraviPrepare() 
 {
-	CActor *pA = smart_cast<CActor*>(Level().CurrentEntity());
-	if (!pA) return;
-
-	pA->CParticlesPlayer::StopParticles(particle_gravi_prepare, BI_NONE, true);
+	CActor *pA = Actor();
+	if ( !pA ) return;
+	pA->CParticlesPlayer::StopParticles				(particle_gravi_prepare, BI_NONE, true);
 }
 
 void CBurer::StartTeleObjectParticle(CGameObject *pO) 
 {
 	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(pO);
 	if(!PP) return;
-	PP->StartParticles(particle_tele_object,Fvector().set(0.0f,0.1f,0.0f),pO->ID());
+	PP->StartParticles								(particle_tele_object,
+													 Fvector().set(0.0f, 0.1f, 0.0f),
+													 pO->ID());
 }
 void CBurer::StopTeleObjectParticle(CGameObject *pO) 
 {
 	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(pO);
 	if(!PP) return;
-	PP->StopParticles(particle_tele_object, BI_NONE, true);
+	PP->StopParticles								(particle_tele_object, BI_NONE, true);
 }
 
-//void CBurer::Hit(float P,Fvector &dir,CObject*who,s16 element,Fvector p_in_object_space,float impulse, ALife::EHitType hit_type)
 void	CBurer::Hit								(SHit* pHDS)
 {
-	if (m_shield_active && (pHDS->hit_type == ALife::eHitTypeFireWound) && (Device.dwFrame != last_hit_frame)) {
-
+	if ( m_shield_active							&& 
+		 pHDS->hit_type == ALife::eHitTypeFireWound	&& 
+		 Device.dwFrame != last_hit_frame				) 
+	{
 		// вычислить позицию и направленность партикла
 		Fmatrix pos; 
 		//CParticlesPlayer::MakeXFORM(this,element,Fvector().set(0.f,0.f,1.f),p_in_object_space,pos);
-		CParticlesPlayer::MakeXFORM(this,pHDS->bone(),pHDS->dir,pHDS->p_in_bone_space,pos);
+		CParticlesPlayer::MakeXFORM					(this,pHDS->bone(),pHDS->dir,pHDS->p_in_bone_space,pos);
 
 		// установить particles
 		CParticlesObject* ps = CParticlesObject::Create(particle_fire_shield,TRUE);
 		
-		ps->UpdateParent(pos,Fvector().set(0.f,0.f,0.f));
-		GamePersistent().ps_needtoplay.push_back(ps);
+		ps->UpdateParent							(pos,Fvector().set(0.f,0.f,0.f));
+		GamePersistent().ps_needtoplay.push_back	(ps);
 
-	} else if (!m_shield_active)
-//				inherited::Hit(P,dir,who,element,p_in_object_space,impulse,hit_type);
-				inherited::Hit(pHDS);
+	} 
+	else if ( !m_shield_active )
+	{
+		inherited::Hit								(pHDS);
+	}
 
 	last_hit_frame = Device.dwFrame;
 }
@@ -347,7 +353,10 @@ void CBurer::Die(CObject* who)
 	inherited::Die(who);
 	TScanner::on_destroy();
 
-	if (com_man().ta_is_active()) com_man().ta_deactivate();
+	if ( com_man().ta_is_active() )
+	{
+		com_man().ta_deactivate();
+	}
 	CTelekinesis::Deactivate();
 }
 

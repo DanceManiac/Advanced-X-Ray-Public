@@ -505,7 +505,7 @@ private:
 	Fvector								m_computed_object_position;
 	Fvector								m_computed_object_direction;
 	// target parameters
-	Fvector								m_throw_target;
+	Fvector								m_throw_target_position;
 	CObject								*m_throw_ignore_object;
 	// computed
 	Fvector								m_throw_position;
@@ -518,7 +518,8 @@ private:
 	u32									m_throw_time_interval;
 
 #ifdef DEBUG
-	xr_vector<Fvector>					m_throw_picks;
+	xr_vector<trajectory_pick>			m_throw_picks;
+	xr_vector<Fvector>					m_throw_collide_tris;
 #endif // DEBUG
 
 public:
@@ -540,12 +541,15 @@ private:
 											const Fvector &gravity
 										);
 			void						check_throw_trajectory				(const float &throw_time);
+			void						throw_target_impl					(const Fvector &position, CObject *throw_ignore_object );
+			void						compute_throw_miss					( u32 const vertex_id );
 
 public:
 	virtual	bool						use_default_throw_force				();
 	virtual	float						missile_throw_force					(); 
 	virtual	bool						use_throw_randomness				();
-			void						throw_target						(const Fvector &position, CObject *throw_ignore_object); 
+			void						throw_target						(const Fvector &position, CObject *throw_ignore_object );
+			void						throw_target						(const Fvector &position, u32 const vertex_id, CObject *throw_ignore_object );
 	IC		const Fvector				&throw_target						() const;
 			void						update_throw_params					(); 
 			void						on_throw_completed					();

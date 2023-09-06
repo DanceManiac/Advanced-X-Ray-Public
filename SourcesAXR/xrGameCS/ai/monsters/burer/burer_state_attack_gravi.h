@@ -4,16 +4,6 @@
 template<typename _Object>
 class CStateBurerAttackGravi : public CState<_Object> {
 	typedef CState<_Object> inherited;	
-	
-	enum {
-		ACTION_GRAVI_STARTED,
-		ACTION_GRAVI_CONTINUE,
-		ACTION_GRAVI_FIRE,
-		ACTION_WAIT_TRIPLE_END,
-		ACTION_COMPLETED,
-	} m_action;
-
-	u32			time_gravi_started;
 
 public:
 							CStateBurerAttackGravi	(_Object *obj);
@@ -33,6 +23,17 @@ private:
 				void		ExecuteGraviContinue	();
 				void		ExecuteGraviFire		();
 
+private:
+	enum 
+	{
+		ACTION_GRAVI_STARTED,
+		ACTION_GRAVI_CONTINUE,
+		ACTION_GRAVI_FIRE,
+		ACTION_WAIT_TRIPLE_END,
+		ACTION_COMPLETED,
+	} m_action;
+
+	u32			time_gravi_started;
 };
 
 #include "burer_state_attack_gravi_inline.h"

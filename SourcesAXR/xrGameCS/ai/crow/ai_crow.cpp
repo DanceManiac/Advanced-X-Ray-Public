@@ -30,7 +30,7 @@ void CAI_Crow::SAnim::Load	(IKinematicsAnimated* visual, LPCSTR prefix)
 	if (M)				m_Animations.push_back(M);
 	for (int i=0; (i<MAX_ANIM_COUNT)&&(m_Animations.size()<MAX_ANIM_COUNT); ++i){
 		string128		sh_anim;
-		sprintf_s			(sh_anim,"%s_%d",prefix,i);
+		xr_sprintf			(sh_anim,"%s_%d",prefix,i);
 		const MotionID	&M = visual->ID_Cycle_Safe(sh_anim);
 		if (M)			m_Animations.push_back(M);
 	}
@@ -46,7 +46,7 @@ void CAI_Crow::SSound::Load	(LPCSTR prefix)
 	}
 	for (int i=0; (i<MAX_SND_COUNT)&&(m_Sounds.size()<MAX_SND_COUNT); ++i){
 		string64		name;
-		sprintf_s			(name,"%s_%d",prefix,i);
+		xr_sprintf			(name,"%s_%d",prefix,i);
 		if (FS.exist(fn,"$game_sounds$",name,".ogg")){
 			m_Sounds.push_back(ref_sound());
 			::Sound->create(m_Sounds.back(),name,st_Effect,sg_SourceType);

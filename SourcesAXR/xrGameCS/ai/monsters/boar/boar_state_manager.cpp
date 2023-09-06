@@ -16,7 +16,6 @@
 #include "../states/monster_state_hitted.h"
 #include "../states/monster_state_controlled.h"
 #include "../states/monster_state_help_sound.h"
-#include "../group_states/group_state_home_point_attack.h"
 
 CStateManagerBoar::CStateManagerBoar(CAI_Boar *monster) : inherited(monster)
 {
@@ -24,11 +23,9 @@ CStateManagerBoar::CStateManagerBoar(CAI_Boar *monster) : inherited(monster)
 	add_state(eStatePanic,					xr_new<CStateMonsterPanic<CAI_Boar> >				(monster));
 
  	CStateMonsterAttackMoveToHomePoint<CAI_Boar>* move2home = 
- 		xr_new<CStateMonsterAttackMoveToHomePoint<CAI_Boar> >(monster, true);
+ 		xr_new<CStateMonsterAttackMoveToHomePoint<CAI_Boar> >(monster);
  
  	add_state(eStateAttack,					xr_new<CStateMonsterAttack<CAI_Boar> >				(monster, move2home));
-//	add_state(eStateAttack,					xr_new<CStateMonsterAttack<CAI_Boar> >				(monster));
-
 	add_state(eStateEat,					xr_new<CStateMonsterEat<CAI_Boar> >					(monster));
 	add_state(eStateHearInterestingSound,	xr_new<CStateMonsterHearInterestingSound<CAI_Boar> >(monster));
 	add_state(eStateHearDangerousSound,		xr_new<CStateMonsterHearDangerousSound<CAI_Boar> >	(monster));

@@ -13,8 +13,8 @@ class CController : public CBaseMonster {
 	typedef		CBaseMonster	inherited;
 
 	u8					m_max_controlled_number;
-	ref_sound			control_start_sound;		// ����, ������� �������� � ������ � ������
-	ref_sound			control_hit_sound;			// ����, ������� �������� � ������ � ������
+	ref_sound			control_start_sound;		// звук, который играется в голове у актера
+	ref_sound			control_hit_sound;			// звук, который играется в голове у актера
 
 	ref_sound			m_sound_hit_fx;
 	SndShockEffector*	m_sndShockEffector;					
@@ -116,7 +116,7 @@ public:
 			void	TakeUnderControl	(CEntity *);
 			void	UpdateControlled	();
 			void	FreeFromControl		();
-			void	OnFreedFromControl	(const CEntity *);  // ���� ������ ��� ���� ��������� (destroyed || die)
+			void	OnFreedFromControl	(const CEntity *);  // если монстр сам себя освободил (destroyed || die)
 
 			void	set_controlled_task (u32 task);
 
@@ -135,14 +135,15 @@ public:
 			
 			float	m_psy_hit_damage;
 			float	m_tube_damage;
-			float   m_tube_condition_see_duration ;
-			float   m_tube_condition_min_delay    ;
+			u32		m_tube_condition_see_duration ;
+			u32		m_tube_condition_min_delay    ;
 			float   m_tube_condition_min_distance ;
-
-			u32		m_time_last_tube;
 
 			void	set_psy_fire_delay_zero		();
 			void	set_psy_fire_delay_default	();
+
+			float	get_tube_min_distance		() const { return m_tube_condition_min_distance; }
+			bool	tube_ready					() const;
 
 	//-------------------------------------------------------------------
 
@@ -162,12 +163,15 @@ public:
 	} m_mental_state;
 
 	void				set_mental_state			(EMentalState state);
+	virtual void		HitEntity					(const CEntity *pEntity, float fDamage, 
+													 float impulse, Fvector &dir, ALife::EHitType hit_type, bool draw_hit_marks);
 
 public:
 	virtual bool		use_center_to_aim			() const {return true;}
 
 	SAnimationTripleData anim_triple_control;
-
+private:
+	float				m_stamina_hit;
 #ifdef DEBUG
 	virtual CBaseMonster::SDebugInfo show_debug_info();
 

@@ -13,7 +13,7 @@
 #include "../control_animation_base.h"
 #include "../control_movement_base.h"
 #include "../control_path_builder_base.h"
-#include "../../xrPhysics/PhysicsShell.h"
+#include "../../../../xrphysics/PhysicsShell.h"
 
 #define HEIGHT_CHANGE_VELOCITY	0.5f
 #define HEIGHT_CHANGE_MIN_TIME	3000
@@ -235,9 +235,9 @@ void CPoltergeist::Die(CObject* who)
 			if (PPhysicsShell())
 			{
 				Fmatrix M;
-				M.set(XFORM());
-				M.translate_over(m_current_position);
-				PPhysicsShell()->SetTransform(M, mh_unspecified);
+ 				M.set							(XFORM());
+ 				M.translate_over				(m_current_position);
+ 				PPhysicsShell()->SetTransform	(M, mh_unspecified);
 			}
 			else
 				Position() = m_current_position;
@@ -314,7 +314,7 @@ CBaseMonster::SDebugInfo CPoltergeist::show_debug_info()
 	if (!info.active) return CBaseMonster::SDebugInfo();
 
 	string128 text;
-	sprintf_s(text, "Invisibility Value = [%f]", Energy::get_value());
+	xr_sprintf(text, "Invisibility Value = [%f]", Energy::get_value());
 	DBG().text(this).add_item(text, info.x, info.y+=info.delta_y, info.color);
 	DBG().text(this).add_item("---------------------------------------", info.x, info.y+=info.delta_y, info.delimiter_color);
 

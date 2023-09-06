@@ -166,7 +166,7 @@ void CAI_Stalker::reinit			()
 	m_computed_object_position		= Fvector().set(flt_max,flt_max,flt_max);
 	m_computed_object_direction		= Fvector().set(flt_max,flt_max,flt_max);
 
-	m_throw_target					= Fvector().set(flt_max,flt_max,flt_max);
+	m_throw_target_position			= Fvector().set(flt_max,flt_max,flt_max);
 	m_throw_ignore_object			= 0;
 
 	m_throw_position				= Fvector().set(flt_max,flt_max,flt_max);

@@ -13,7 +13,7 @@ public:
 
 	TTime			m_time_became_angry;
 
-	TTime			time_growling;			// ����� ���������� � ��������� �������
+	TTime			time_growling;			// время нахождения в состоянии пугания
 
 	enum {
 		eAdditionalSounds		= MonsterSound::eMonsterSoundCustom,
