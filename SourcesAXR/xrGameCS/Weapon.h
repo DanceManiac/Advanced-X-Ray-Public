@@ -394,7 +394,7 @@ protected:
 	virtual	void			FireTrace(const Fvector& P, const Fvector& D);
 	virtual float			GetWeaponDeterioration();
 
-	virtual void			FireStart() { CShootingObject::FireStart(); }
+	virtual void			FireStart();
 	virtual void			FireEnd();
 
 	virtual void			Reload();

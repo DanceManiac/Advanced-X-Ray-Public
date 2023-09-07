@@ -34,6 +34,7 @@ namespace GameObject {
 		eActionTypeSound,
 		eActionTypeParticle,
 		eActionTypeObject,
+		eActionTypeWeaponFire,
 
 		eActorSleep,
 

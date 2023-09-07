@@ -15,6 +15,10 @@
 
 #include "level_bullet_manager.h"
 
+#include "pch_script.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+
 #define FLAME_TIME 0.05f
 
 extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
@@ -135,12 +139,24 @@ void CWeapon::StopShooting()
 	bWorking = false;
 }
 
+void CWeapon::FireStart()
+{
+	if (H_Parent())
+	{
+		CGameObject* game_object = smart_cast<CGameObject*>(H_Parent());
+
+		if (game_object)
+			game_object->callback(GameObject::eActionTypeWeaponFire)(game_object->lua_game_object(), lua_game_object());
+	}
+
+	CShootingObject::FireStart();
+}
+
 void CWeapon::FireEnd() 
 {
 	CShootingObject::FireEnd();
 	StopShotEffector();
 }
-
 
 void CWeapon::StartFlameParticles2	()
 {

@@ -5,6 +5,10 @@
 #include "../Include/xrRender/Kinematics.h"
 #include "Level.h"
 
+#include "pch_script.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+
 void  
 CHelicopter::BoneMGunCallbackX(CBoneInstance *B)
 {
@@ -173,6 +177,8 @@ void CHelicopter::MGunFireStart()
 		}else
 			m_enemy.fire_trail_length_curr	= m_enemy.fire_trail_length_des;
 	}
+
+	callback(GameObject::eActionTypeWeaponFire)(lua_game_object(), lua_game_object());
 
 	CShootingObject::FireStart	();
 }
