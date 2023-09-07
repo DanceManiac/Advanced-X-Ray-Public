@@ -141,6 +141,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("attachable_item_load_attach", &CScriptGameObject::attachable_item_load_attach)
 		.def("weapon_strapped",				&CScriptGameObject::weapon_strapped)
 		.def("weapon_unstrapped",			&CScriptGameObject::weapon_unstrapped)
+		.def("is_weapon_shooting",			&CScriptGameObject::weapon_shooting)
 
 		//////////////////////////////////////////////////////////////////////////
 		//inventory owner

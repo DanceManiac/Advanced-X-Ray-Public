@@ -624,6 +624,7 @@ public:
 			CPhysicsShell*		get_physics_shell		() const;
 			bool				weapon_strapped			() const;
 			bool				weapon_unstrapped		() const;
+			bool				weapon_shooting			() const;
 			void				eat						(CScriptGameObject *item);
 			bool				inside					(const Fvector &position, float epsilon) const;
 			bool				inside					(const Fvector &position) const;

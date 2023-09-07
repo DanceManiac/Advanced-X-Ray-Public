@@ -190,6 +190,16 @@ bool CObjectHandler::weapon_strapped	() const
 	return						(weapon_strapped(weapon));
 }
 
+bool CObjectHandler::weapon_shooting() const
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	if (!weapon)
+		return					(false);
+
+	return (weapon->GetState() == CWeapon::eFire);
+}
+
 void CObjectHandler::actualize_strap_mode	(CWeapon *weapon) const
 {
 	VERIFY						(weapon);

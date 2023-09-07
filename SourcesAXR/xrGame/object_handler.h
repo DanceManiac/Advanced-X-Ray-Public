@@ -76,6 +76,7 @@ public:
 			bool					weapon_strapped			(CWeapon *weapon) const;
 			bool					weapon_unstrapped		() const;
 			bool					weapon_unstrapped		(CWeapon *weapon) const;
+			bool					weapon_shooting			() const;
 			bool			is_weapon_going_to_be_strapped	( CGameObject const* object ) const;
 
 private:

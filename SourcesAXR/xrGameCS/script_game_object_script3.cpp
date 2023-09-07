@@ -139,6 +139,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("torch_enabled",				&CScriptGameObject::torch_enabled)
 		.def("weapon_strapped",				&CScriptGameObject::weapon_strapped)
 		.def("weapon_unstrapped",			&CScriptGameObject::weapon_unstrapped)
+		.def("is_weapon_shooting",			&CScriptGameObject::weapon_shooting)
 
 		//////////////////////////////////////////////////////////////////////////
 		//inventory owner

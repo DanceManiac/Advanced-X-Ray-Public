@@ -991,6 +991,21 @@ bool CScriptGameObject::weapon_unstrapped	() const
 	return			(stalker->weapon_unstrapped());
 }
 
+bool CScriptGameObject::weapon_shooting() const
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		return false;
+	}
+
+	bool const result = stalker->weapon_shooting();
+
+	return result;
+}
+
 bool CScriptGameObject::path_completed	() const
 {
 	CCustomMonster	*monster = smart_cast<CCustomMonster*>(&object());
