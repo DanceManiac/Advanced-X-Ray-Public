@@ -269,6 +269,8 @@ private:
 
 	void					calculate_dynamic_sun_dir();
 public:
+	void					SetEnvDesc		(LPCSTR weather_section, CEnvDescriptor*& e);
+
 	static bool sort_env_pred	(const CEnvDescriptor* x, const CEnvDescriptor* y)
 	{	return x->exec_time < y->exec_time;	}
 	static bool sort_env_etl_pred	(const CEnvDescriptor* x, const CEnvDescriptor* y)
