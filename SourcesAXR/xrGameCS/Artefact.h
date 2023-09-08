@@ -130,7 +130,9 @@ public:
 	float							m_fChargeLevel;
 	float							m_fCurrentChargeLevel;
 	float							m_fDegradationSpeed;
+	void							SetChargeLevel(float charge_level);
 	float							GetCurrentChargeLevel(void) const;
+	void							SetRank(int rank);
 	int								GetCurrentAfRank(void) const;
 
 	bool							m_bVolumetricLights;

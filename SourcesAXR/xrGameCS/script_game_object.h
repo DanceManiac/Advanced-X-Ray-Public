@@ -907,6 +907,11 @@ public:
 			u8 					GetRemainingUses();
 			u8 					GetMaxUses();
 
+			void				SetArtefactChargeLevel(float charge_level);
+			float				GetArtefactChargeLevel() const;
+			void				SetArtefactRank(int rank);
+			int					GetArtefactRank() const;
+
 			/*added by Ray Twitty (aka Shadows) START*/
 			float				GetActorMaxWeight						() const;
 			void				SetActorMaxWeight						(float max_weight);

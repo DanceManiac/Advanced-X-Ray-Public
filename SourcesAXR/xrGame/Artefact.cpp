@@ -856,9 +856,19 @@ void CArtefact::OnHiddenItem ()
 	SetNextState				(eHidden);
 }
 
+void CArtefact::SetChargeLevel(float charge_level)
+{
+	m_fChargeLevel = charge_level;
+}
+
 float CArtefact::GetCurrentChargeLevel() const
 {
 	return m_fChargeLevel;
+}
+
+void CArtefact::SetRank(int rank)
+{
+	m_iAfRank = rank;
 }
 
 int CArtefact::GetCurrentAfRank() const

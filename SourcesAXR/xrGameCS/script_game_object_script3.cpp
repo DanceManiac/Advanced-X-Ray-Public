@@ -497,6 +497,11 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("get_remaining_uses", 				&CScriptGameObject::GetRemainingUses)
 		.def("get_max_uses", 					&CScriptGameObject::GetMaxUses)
 		.def("destroy_object", 					&CScriptGameObject::DestroyObject)
+
+		.def("set_artefact_charge_level",		&CScriptGameObject::SetArtefactChargeLevel)
+		.def("get_artefact_charge_level",		&CScriptGameObject::GetArtefactChargeLevel)
+		.def("set_artefact_rank",				&CScriptGameObject::SetArtefactRank)
+		.def("get_artefact_rank",				&CScriptGameObject::GetArtefactRank)
 		//-AVO
 
 		.def("is_entity_alive",					&CScriptGameObject::IsEntityAlive)

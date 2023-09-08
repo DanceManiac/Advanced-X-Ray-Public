@@ -1567,6 +1567,58 @@ u8 CScriptGameObject::GetMaxUses()
 	return eItm->GetMaxUses();
 }
 
+void CScriptGameObject::SetArtefactChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CArtefact* eArtefact = IItm->cast_artefact();
+	if (!eArtefact)
+		return;
+
+	eArtefact->SetChargeLevel(charge_level);
+}
+
+float CScriptGameObject::GetArtefactChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CArtefact* eItm = IItm->cast_artefact();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetCurrentChargeLevel();
+}
+
+void CScriptGameObject::SetArtefactRank(int rank)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CArtefact* eArtefact = IItm->cast_artefact();
+	if (!eArtefact)
+		return;
+
+	eArtefact->SetRank(rank);
+}
+
+int CScriptGameObject::GetArtefactRank() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CArtefact* eItm = IItm->cast_artefact();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetCurrentAfRank();
+}
+
 void CScriptGameObject::DestroyObject()
 {
 	object().DestroyObject();
