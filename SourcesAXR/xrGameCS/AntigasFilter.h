@@ -21,6 +21,7 @@ public:
 	float					m_fCondition;
 	void					ChangeInOutfit();
 	void					ChangeFilterCondition(float val);
+	void					SetFilterCondition(float val);
 	float					GetFilterCondition(void) const;
 	bool					UseAllowed();
 protected:

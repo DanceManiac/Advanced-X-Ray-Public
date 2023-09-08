@@ -50,6 +50,7 @@
 #include "Actor.h"
 #include "WeaponAmmo.h"
 #include "WeaponMagazinedWGrenade.h"
+#include "AntigasFilter.h"
 
 namespace MemorySpace {
 	struct CVisibleObject;
@@ -1564,6 +1565,32 @@ int CScriptGameObject::GetArtefactRank() const
 		return 0;
 
 	return eItm->GetCurrentAfRank();
+}
+
+void CScriptGameObject::SetFilterChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CAntigasFilter *eFilter = IItm->cast_filter();
+	if (!eFilter)
+		return;
+
+	eFilter->SetFilterCondition(charge_level);
+}
+
+float CScriptGameObject::GetFilterChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CAntigasFilter* eItm = IItm->cast_filter();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetFilterCondition();
 }
 
 void CScriptGameObject::DestroyObject()

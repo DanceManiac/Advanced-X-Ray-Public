@@ -24,6 +24,7 @@ public:
 	void					ChangeInHelmet();
 	void					ChangeInSecondHelmet();
 	void					ChangeFilterCondition(float val);
+	void					SetFilterCondition(float val);
 	float					GetFilterCondition(void) const;
 	bool					UseAllowed();
 protected:

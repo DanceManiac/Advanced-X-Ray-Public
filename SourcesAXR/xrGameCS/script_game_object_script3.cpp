@@ -502,6 +502,9 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("get_artefact_charge_level",		&CScriptGameObject::GetArtefactChargeLevel)
 		.def("set_artefact_rank",				&CScriptGameObject::SetArtefactRank)
 		.def("get_artefact_rank",				&CScriptGameObject::GetArtefactRank)
+
+		.def("set_filter_condition",			&CScriptGameObject::SetFilterChargeLevel)
+		.def("get_filter_condition",			&CScriptGameObject::GetFilterChargeLevel)
 		//-AVO
 
 		.def("is_entity_alive",					&CScriptGameObject::IsEntityAlive)

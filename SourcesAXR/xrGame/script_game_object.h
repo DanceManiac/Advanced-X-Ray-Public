@@ -955,6 +955,9 @@ public:
 			void				SetArtefactRank(int rank);
 			int					GetArtefactRank() const;
 
+			void				SetFilterChargeLevel(float charge_level);
+			float				GetFilterChargeLevel() const;
+
 			/*added by Ray Twitty (aka Shadows) START*/
 			float				GetActorMaxWeight						() const;
 			void				SetActorMaxWeight						(float max_weight);
