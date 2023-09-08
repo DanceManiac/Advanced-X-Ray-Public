@@ -170,9 +170,28 @@ function keep_item(npc, item)
 		return
 	end
 
-	if isArtefact(item) then
+	if (item:is_artefact() and mfs_functions.ReadArtefactsDegradationEnabled()) then
+		set_af_charge_level(item)
 		return
 	end
+	
+	if (item:is_antigas_filter() and mfs_functions.ReadOutfitFiltersEnabled()) then
+		set_charge_level(item)
+		return
+	end
+	
+	if ((item:is_detector() and mfs_functions.ReadDetectorsUseBatteryEnabled()) 
+	or (item:is_anomaly_detector() and mfs_functions.ReadAnomalyDetectorsUseBatteryEnabled()) 
+	or (item:is_torch() and mfs_functions.ReadTorchUseBatteryEnabled())) then
+		set_charge_level(item)
+		return
+	end
+	
+	if item:is_food() then
+		set_food_portions(item)
+		return
+	end
+	
 --	printf("keep_item:item ["..item:name().."] npc_name ["..npc:name().."]")
 	if section == "bolt" then
 		return
@@ -223,6 +242,30 @@ function set_weapon_drop_condition(item)
 	local condition  = (math.random(40)+40)/100
 	--printf("condition [%s]", tostring(condition))
 	item:set_condition(condition)	
+end
+
+function set_food_portions(item)
+	local dec_portions = math.random(item:get_max_uses())
+	
+	if (item:get_remaining_uses() > dec_portions) then
+		--printf("portions [%s]", tostring(dec_portions))
+
+		item:set_remaining_uses(dec_portions)	
+	end
+end
+
+function set_charge_level(item)
+	local condition = (math.random(40)+40)/100
+	
+	--printf("condition [%s]", tostring(condition))
+	item:set_condition(condition)	
+end
+
+function set_af_charge_level(item)
+	local condition = (math.random(40)+40)/100
+	
+	--printf("condition [%s]", tostring(condition))
+	item:set_artefact_charge_level(condition)	
 end
 
 --' Функция спавнит необходимое число предметов

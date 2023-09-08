@@ -16,6 +16,36 @@ function ReadSkillsSystemEnabled()
 	return ltx and ltx:line_exist("gameplay","actor_skills_enabled") and ltx:r_bool("gameplay","actor_skills_enabled")
 end
 
+-- 'Проверка включен ли ограниченный заряд батареи детекторов артефактов.
+function ReadDetectorsUseBatteryEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","artefact_detector_use_battery") and ltx:r_bool("gameplay","artefact_detector_use_battery")
+end
+
+-- 'Проверка включен ли ограниченный заряд батареи детекторов аномалий.
+function ReadAnomalyDetectorsUseBatteryEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","anomaly_detector_use_battery") and ltx:r_bool("gameplay","anomaly_detector_use_battery")
+end
+
+-- 'Проверка включен ли ограниченный заряд батареи фонарей.
+function ReadTorchUseBatteryEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","torch_use_battery") and ltx:r_bool("gameplay","torch_use_battery")
+end
+
+-- 'Проверка включена ли деградация артефактов.
+function ReadArtefactsDegradationEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","artefacts_degradation") and ltx:r_bool("gameplay","artefacts_degradation")
+end
+
+-- 'Проверка включено ли использование фильтров брони и шлемов.
+function ReadOutfitFiltersEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","enable_antigas_filters") and ltx:r_bool("gameplay","enable_antigas_filters")
+end
+
 -- 'Уложить героя спать на 5 часов, если он слишком давно не спал
 function put_the_actor_to_sleep()
 	level.change_game_time(0,5,0)
