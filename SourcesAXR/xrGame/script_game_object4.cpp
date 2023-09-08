@@ -21,8 +21,40 @@
 #include "inventoryBox.h"
 #include "ZoneCampfire.h"
 #include "physicobject.h"
-#include "artefact.h"
 #include "stalker_sound_data.h"
+
+#include "Actor.h"
+#include "Car.h"
+#include "helicopter.h"
+#include "InventoryOwner.h"
+#include "inventoryBox.h"
+#include "CustomZone.h"
+#include "TorridZone.h"
+#include "MosquitoBald.h"
+#include "ZoneCampfire.h"
+#include "CustomOutfit.h"
+#include "ActorHelmet.h"
+#include "Artefact.h"
+#include "Weapon.h"
+#include "WeaponAmmo.h"
+#include "WeaponMagazined.h"
+#include "WeaponMagazinedWGrenade.h"
+#include "ai\monsters\basemonster\base_monster.h"
+#include "scope.h"
+#include "silencer.h"
+#include "torch.h"
+#include "GrenadeLauncher.h"
+#include "searchlight.h"
+#include "eatable_item.h"
+#include "FoodItem.h"
+#include "medkit.h"
+#include "antirad.h"
+#include "BottleItem.h"
+#include "eatable_item.h"
+#include "CustomDetector.h"
+#include "AnomalyDetector.h"
+#include "Torch.h"
+#include "AntigasFilter.h"
 
 class CWeapon;
 
@@ -364,3 +396,43 @@ void CScriptGameObject::SetHealthEx(float hp)
 	obj->SetfHealth(hp);
 }
 //-AVO
+
+// AVO: Credits: KD
+// functions for testing object class 
+#define TEST_OBJECT_CLASS(A,B)\
+bool A () const\
+{\
+    B				*l_tpEntity = smart_cast<B*>(&object());\
+    if (!l_tpEntity)\
+        return false;\
+                else\
+        return true;\
+};
+
+TEST_OBJECT_CLASS(CScriptGameObject::IsEntityAlive,		CEntityAlive)
+TEST_OBJECT_CLASS(CScriptGameObject::IsInventoryItem,	CInventoryItem)
+TEST_OBJECT_CLASS(CScriptGameObject::IsInventoryOwner,	CInventoryOwner)
+TEST_OBJECT_CLASS(CScriptGameObject::IsActor,			CActor)
+TEST_OBJECT_CLASS(CScriptGameObject::IsCustomMonster,	CCustomMonster)
+TEST_OBJECT_CLASS(CScriptGameObject::IsWeapon,			CWeapon)
+TEST_OBJECT_CLASS(CScriptGameObject::IsCustomOutfit,	CCustomOutfit)
+TEST_OBJECT_CLASS(CScriptGameObject::IsHelmet,			CHelmet)
+TEST_OBJECT_CLASS(CScriptGameObject::IsScope,			CScope)
+TEST_OBJECT_CLASS(CScriptGameObject::IsSilencer,		CSilencer)
+TEST_OBJECT_CLASS(CScriptGameObject::IsGrenadeLauncher, CGrenadeLauncher)
+TEST_OBJECT_CLASS(CScriptGameObject::IsWeaponMagazined, CWeaponMagazined)
+TEST_OBJECT_CLASS(CScriptGameObject::IsSpaceRestrictor, CSpaceRestrictor)
+TEST_OBJECT_CLASS(CScriptGameObject::IsStalker,			CAI_Stalker)
+TEST_OBJECT_CLASS(CScriptGameObject::IsAnomaly,			CCustomZone)
+TEST_OBJECT_CLASS(CScriptGameObject::IsMonster,			CBaseMonster)
+TEST_OBJECT_CLASS(CScriptGameObject::IsTrader,			CAI_Trader)
+TEST_OBJECT_CLASS(CScriptGameObject::IsHudItem,			CHudItem)
+TEST_OBJECT_CLASS(CScriptGameObject::IsArtefact,		CArtefact)
+TEST_OBJECT_CLASS(CScriptGameObject::IsAmmo,			CWeaponAmmo)
+TEST_OBJECT_CLASS(CScriptGameObject::IsWeaponGL,		CWeaponMagazinedWGrenade)
+TEST_OBJECT_CLASS(CScriptGameObject::IsInventoryBox,	CInventoryBox)
+TEST_OBJECT_CLASS(CScriptGameObject::IsEatableItem,		CEatableItem)
+TEST_OBJECT_CLASS(CScriptGameObject::IsDetector,		CCustomDetector)
+TEST_OBJECT_CLASS(CScriptGameObject::IsDetectorAnomaly, CDetectorAnomaly)
+TEST_OBJECT_CLASS(CScriptGameObject::IsTorch,			CTorch)
+TEST_OBJECT_CLASS(CScriptGameObject::IsAntigasFilter,	CAntigasFilter)
