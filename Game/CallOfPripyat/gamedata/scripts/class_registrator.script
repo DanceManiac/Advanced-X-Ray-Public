@@ -28,6 +28,7 @@ function register(object_factory)
 	cs_register	(object_factory, "smart_cover_object",			"se_smart_cover.se_smart_cover",		"SMRT_C_S", 		"smartcover_s")
 	cs_register	(object_factory, "CDestroyablePhysicsObject", 	"se_item.se_physic", 					"O_DSTR_S", 		"destrphys_s")
 	cs_register	(object_factory, "hanging_lamp", 				"se_item.se_lamp", 						"SO_HLAMP", 		"hlamp_s")
+	cs_register (object_factory, "CCar", 						"se_car.se_car", 						"SCRPTCAR", 		"car_s")
 
 	-- ARTEFACTS --------------------------------------------------------------------------------------------------------------------------
 
