@@ -68,7 +68,7 @@ public:
 	void					UpdateAltScope();
 
 	// Up
-// Magazine system & etc
+	// Magazine system & etc
 	xr_vector<shared_str>	bullets_bones;
 	int						bullet_cnt;
 	int						last_hide_bullet;
@@ -154,7 +154,8 @@ public:
 	void					signal_HideComplete	();
 	virtual bool			Action(s32 cmd, u32 flags);
 
-	enum EWeaponStates {
+	enum EWeaponStates 
+	{
 		eFire		= eLastBaseState+1,
 		eFire2,
 		eReload,
@@ -352,8 +353,8 @@ public:
 
 	virtual	float			CurrentZoomFactor	();
 	//показывает, что оружие находится в соостоянии поворота для приближенного прицеливания
-			bool			IsRotatingToZoom	() const		{return (m_zoom_params.m_fZoomRotationFactor<1.f);}
-			bool			IsRotatingFromZoom	() const		{return (m_zoom_params.m_fZoomRotationFactor>0.f);}
+			bool			IsRotatingToZoom	() const		{	return (m_zoom_params.m_fZoomRotationFactor<1.f);}
+			bool			IsRotatingFromZoom	() const		{	return (m_zoom_params.m_fZoomRotationFactor>0.f);}
 
 	virtual	u8				GetCurrentHudOffsetIdx ();
 
@@ -364,21 +365,23 @@ public:
 			bool				IsSingleHanded		()	const		{	return m_bIsSingleHanded; }
 
 public:
+	int m_strap_bone0_id;
+	int m_strap_bone1_id;
+	bool m_strapped_mode_rifle;
+	bool m_can_be_strapped_rifle;
 	IC		LPCSTR			strap_bone0			() const {return m_strap_bone0;}
 	IC		LPCSTR			strap_bone1			() const {return m_strap_bone1;}
 	IC		void			strapped_mode		(bool value) {m_strapped_mode = value;}
 	IC		bool			strapped_mode		() const {return m_strapped_mode;}
 
 protected:
-	int						m_strap_bone0_id;
-	int						m_strap_bone1_id;
-	bool					m_strapped_mode_rifle;
 	LPCSTR					m_strap_bone0;
 	LPCSTR					m_strap_bone1;
 	Fmatrix					m_StrapOffset;
+	Fmatrix                 m_StrapOffset_alt;
+
 	bool					m_strapped_mode;
 	bool					m_can_be_strapped;
-	bool					m_can_be_strapped_rifle;
 	bool					m_freelook_switch_back;
 
 	Fmatrix					m_Offset;
@@ -400,7 +403,7 @@ private:
 
 protected:
 	virtual void			UpdateFireDependencies_internal	();
-	virtual void			UpdatePosition			(const Fmatrix& transform);	//.
+	virtual void            UpdatePosition          (const Fmatrix& transform);
 	virtual void			UpdateXForm				();
 	virtual void			UpdateHudAdditional		(Fmatrix&);
 	IC		void			UpdateFireDependencies	()			{ if (dwFP_Frame==Device.dwFrame) return; UpdateFireDependencies_internal(); };
@@ -451,10 +454,11 @@ protected:
 	virtual	void			StopShotEffector();
 
 public:
-	float					GetFireDispersion	(bool with_cartridge)			;
-	float					GetFireDispersion	(float cartridge_k)				;
-	virtual	int				ShotsFired			() { return 0; }
-	virtual	int				GetCurrentFireMode	() { return 1; }
+	float					GetBaseDispersion(float cartridge_k);
+	float					GetFireDispersion(bool with_cartridge, bool for_crosshair = false);
+	virtual float			GetFireDispersion(float cartridge_k, bool for_crosshair = false);
+	virtual	int				ShotsFired() { return 0; }
+	virtual	int				GetCurrentFireMode() { return 1; }
 
 	//параметы оружия в зависимоти от его состояния исправности
 	float					GetConditionDispersionFactor	() const;
@@ -470,12 +474,23 @@ protected:
 	//(на сколько процентов увеличится дисперсия)
 	float					fireDispersionConditionFactor;
 	//вероятность осечки при максимальной изношености
-	float					misfireProbability;
-	float					misfireConditionK;
-	//увеличение изношености при выстреле
-	float					conditionDecreasePerShot;
+
+// modified by Peacemaker [17.10.08]
+//	float					misfireProbability;
+//	float					misfireConditionK;
+	float misfireStartCondition;			//изношенность, при которой появляется шанс осечки
+	float misfireEndCondition;				//изношеность при которой шанс осечки становится константным
+	float misfireStartProbability;			//шанс осечки при изношености больше чем misfireStartCondition
+	float misfireEndProbability;			//шанс осечки при изношености больше чем misfireEndCondition
+	float conditionDecreasePerQueueShot;	//увеличение изношености при выстреле очередью
+	float conditionDecreasePerShot;			//увеличение изношености при одиночном выстреле
 	float					conditionDecreasePerShotOnHit;
 	
+public:
+	float GetMisfireStartCondition	() const {return misfireStartCondition;};
+	float GetMisfireEndCondition	() const {return misfireEndCondition;};
+
+protected:
 	struct SPDM
 	{
 		float					m_fPDM_disp_base			;
@@ -500,7 +515,7 @@ protected:
 protected:	
 	//для второго ствола
 			void			StartFlameParticles2();
-			void			StopFlameParticles2	();
+	void			StopFlameParticles2();
 			void			UpdateFlameParticles2();
 protected:
 	shared_str				m_sFlameParticles2;
@@ -509,11 +524,11 @@ protected:
 
 public:
 	// Alundaio
-	int						GetAmmoCount_forType	(shared_str const& ammo_type) const;
+	int						GetAmmoCount_forType(shared_str const& ammo_type) const;
 	virtual void			set_ef_main_weapon_type(u32 type) { m_ef_main_weapon_type = type; };
-	virtual void			set_ef_weapon_type		(u32 type) { m_ef_weapon_type = type; };
-	virtual void			SetAmmoType				(u32 type) { m_ammoType = type; };
-	u8						GetAmmoType				() { return m_ammoType; };
+	virtual void			set_ef_weapon_type(u32 type) { m_ef_weapon_type = type; };
+	virtual void			SetAmmoType(u32 type) { m_ammoType = type; };
+	u8						GetAmmoType() { return m_ammoType; };
 	//-Alundaio
 
 	   int					GetAmmoCount		(u8 ammo_type) const;
@@ -613,15 +628,23 @@ protected:
 
 private:
 	float					m_hit_probability[egdCount];
-	bool					m_bRememberActorNVisnStatus;
+
 public:
 	const float				&hit_probability			() const;
 	
+private:
+	Fvector					m_overriden_activation_speed;
+	bool					m_activation_speed_is_overriden;
+	virtual bool			ActivationSpeedOverriden	(Fvector& dest, bool clear_override);
+
+	bool					m_bRememberActorNVisnStatus;
+public:
+	virtual void			SetActivationSpeedOverride	(Fvector const& speed);
+			bool			GetRememberActorNVisnStatus	() {return m_bRememberActorNVisnStatus;};
+	virtual void			EnableActorNVisnAfterZoom	();
 	virtual void				DumpActiveParams			(shared_str const & section_name, CInifile & dst_ini) const;
 	virtual shared_str const	GetAnticheatSectionName		() const { return cNameSect(); };
 	virtual void				OnBulletHit();
-			bool				GetRememberActorNVisnStatus	() { return m_bRememberActorNVisnStatus; };
-	virtual void				EnableActorNVisnAfterZoom	();
 
 	virtual void processing_deactivate() override
 	{
@@ -631,6 +654,7 @@ public:
 	}
 
 	void GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset);
+	//Функция из ганслингера для приблизительной коррекции разности фовов худа и мира. Так себе на самом деле, но более годных способов я не нашел.
 	void CorrectDirFromWorldToHud(Fvector& dir);
 
 private:

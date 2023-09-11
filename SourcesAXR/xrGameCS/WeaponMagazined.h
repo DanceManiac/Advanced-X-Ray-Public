@@ -7,8 +7,8 @@
 
 class ENGINE_API CMotionDef;
 
-//размер очереди считается бесконечность
-//заканчиваем стрельбу, только, если кончились патроны
+//СЂР°Р·РјРµСЂ РѕС‡РµСЂРµРґРё СЃС‡РёС‚Р°РµС‚СЃСЏ Р±РµСЃРєРѕРЅРµС‡РЅРѕСЃС‚СЊ
+//Р·Р°РєР°РЅС‡РёРІР°РµРј СЃС‚СЂРµР»СЊР±Сѓ, С‚РѕР»СЊРєРѕ, РµСЃР»Рё РєРѕРЅС‡РёР»РёСЃСЊ РїР°С‚СЂРѕРЅС‹
 #define WEAPON_ININITE_QUEUE -1
 
 
@@ -17,10 +17,10 @@ class CWeaponMagazined: public CWeapon
 private:
 	typedef CWeapon inherited;
 protected:
-	//звук текущего выстрела
+	//Р·РІСѓРє С‚РµРєСѓС‰РµРіРѕ РІС‹СЃС‚СЂРµР»Р°
 	shared_str		m_sSndShotCurrent;
 
-	//дополнительная информация о глушителе
+	//РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РіР»СѓС€РёС‚РµР»Рµ
 	LPCSTR			m_sSilencerFlameParticles;
 	LPCSTR			m_sSilencerSmokeParticles;
 
@@ -33,7 +33,7 @@ protected:
 	ESoundTypes		m_eSoundReflect;
 	bool			m_sounds_enabled;
 	// General
-	//кадр момента пересчета UpdateSounds
+	//РєР°РґСЂ РјРѕРјРµРЅС‚Р° РїРµСЂРµСЃС‡РµС‚Р° UpdateSounds
 	u32				dwUpdateSounds_Frame;
 
 	virtual void    CheckMagazine();
@@ -97,13 +97,13 @@ public:
 
 	virtual void	OnH_A_Chield		();
 
-	virtual bool	Attach(PIItem pIItem, bool b_send_event);
-	virtual bool	Detach(const char* item_section_name, bool b_spawn_item);
-			bool	DetachScope(const char* item_section_name, bool b_spawn_item);
-	virtual bool	CanAttach(PIItem pIItem);
-	virtual bool	CanDetach(const char* item_section_name);
+	virtual bool	Attach			(PIItem pIItem, bool b_send_event);
+	virtual bool	Detach			(const char* item_section_name, bool b_spawn_item);
+			bool	DetachScope		(const char* item_section_name, bool b_spawn_item);
+	virtual bool	CanAttach		(PIItem pIItem);
+	virtual bool	CanDetach		(const char* item_section_name);
 
-	virtual void	InitAddons();
+	virtual void	InitAddons		();
 
 	virtual bool	Action			(s32 cmd, u32 flags);
 	bool			IsAmmoAvailable	();
@@ -120,33 +120,34 @@ public:
 	IC		int		GetQueueSize			() const	{return m_iQueueSize;};
 	virtual bool	StopedAfterQueueFired	()			{return m_bStopedAfterQueueFired; }
 	virtual void	StopedAfterQueueFired	(bool value){m_bStopedAfterQueueFired = value; }
+	virtual float	GetFireDispersion		(float cartridge_k, bool for_crosshair = false);
 
 protected:
-	//максимальный размер очереди, которой можно стрельнуть
+	//РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ СЂР°Р·РјРµСЂ РѕС‡РµСЂРµРґРё, РєРѕС‚РѕСЂРѕР№ РјРѕР¶РЅРѕ СЃС‚СЂРµР»СЊРЅСѓС‚СЊ
 	int				m_iQueueSize;
-	//количество реально выстреляных патронов
+	//РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР°Р»СЊРЅРѕ РІС‹СЃС‚СЂРµР»СЏРЅС‹С… РїР°С‚СЂРѕРЅРѕРІ
 	int				m_iShotNum;
-	//после какого патрона, при непрерывной стрельбе, начинается отдача (сделано из-за Абакана)
-	int				m_iShootEffectorStart;
-	//скорость вылета патронов, на которые не влияет отдача (сделано из-за Абакана)
+	//РїРѕСЃР»Рµ РєР°РєРѕРіРѕ РїР°С‚СЂРѕРЅР°, РїСЂРё РЅРµРїСЂРµСЂС‹РІРЅРѕР№ СЃС‚СЂРµР»СЊР±Рµ, РЅР°С‡РёРЅР°РµС‚СЃСЏ РѕС‚РґР°С‡Р° (СЃРґРµР»Р°РЅРѕ РёР·-Р·Р° РђР±Р°РєР°РЅР°)
+	int				m_iBaseDispersionedBulletsCount;
+	//СЃРєРѕСЂРѕСЃС‚СЊ РІС‹Р»РµС‚Р° РїР°С‚СЂРѕРЅРѕРІ, РЅР° РєРѕС‚РѕСЂС‹Рµ РЅРµ РІР»РёСЏРµС‚ РѕС‚РґР°С‡Р° (СЃРґРµР»Р°РЅРѕ РёР·-Р·Р° РђР±Р°РєР°РЅР°)
 	float			m_fBaseDispersionedBulletsSpeed;
-	//скорость вылета остальных патронов
+	//СЃРєРѕСЂРѕСЃС‚СЊ РІС‹Р»РµС‚Р° РѕСЃС‚Р°Р»СЊРЅС‹С… РїР°С‚СЂРѕРЅРѕРІ
 	float			m_fOldBulletSpeed;
 	Fvector			m_vStartPos, m_vStartDir;
-	//флаг того, что мы остановились после того как выстреляли
-	//ровно столько патронов, сколько было задано в m_iQueueSize
+	//С„Р»Р°Рі С‚РѕРіРѕ, С‡С‚Рѕ РјС‹ РѕСЃС‚Р°РЅРѕРІРёР»РёСЃСЊ РїРѕСЃР»Рµ С‚РѕРіРѕ РєР°Рє РІС‹СЃС‚СЂРµР»СЏР»Рё
+	//СЂРѕРІРЅРѕ СЃС‚РѕР»СЊРєРѕ РїР°С‚СЂРѕРЅРѕРІ, СЃРєРѕР»СЊРєРѕ Р±С‹Р»Рѕ Р·Р°РґР°РЅРѕ РІ m_iQueueSize
 	bool			m_bStopedAfterQueueFired;
-	//флаг того, что хотя бы один выстрел мы должны сделать
-	//(даже если очень быстро нажали на курок и вызвалось FireEnd)
+	//С„Р»Р°Рі С‚РѕРіРѕ, С‡С‚Рѕ С…РѕС‚СЏ Р±С‹ РѕРґРёРЅ РІС‹СЃС‚СЂРµР» РјС‹ РґРѕР»Р¶РЅС‹ СЃРґРµР»Р°С‚СЊ
+	//(РґР°Р¶Рµ РµСЃР»Рё РѕС‡РµРЅСЊ Р±С‹СЃС‚СЂРѕ РЅР°Р¶Р°Р»Рё РЅР° РєСѓСЂРѕРє Рё РІС‹Р·РІР°Р»РѕСЃСЊ FireEnd)
 	bool			m_bFireSingleShot;
-	//режимы стрельбы
+	//СЂРµР¶РёРјС‹ СЃС‚СЂРµР»СЊР±С‹
 	bool			m_bHasDifferentFireModes;
 	xr_vector<s8>	m_aFireModes;
 	int				m_iCurFireMode;
 	int				m_iPrefferedFireMode;
 
-	//переменная блокирует использование
-	//только разных типов патронов
+	//РїРµСЂРµРјРµРЅРЅР°СЏ Р±Р»РѕРєРёСЂСѓРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ
+	//С‚РѕР»СЊРєРѕ СЂР°Р·РЅС‹С… С‚РёРїРѕРІ РїР°С‚СЂРѕРЅРѕРІ
 	bool m_bLockType;
 	bool m_bAutoreloadEnabled;
 	bool m_opened;
@@ -169,7 +170,7 @@ protected:
 protected:
 	virtual bool	AllowFireWhileWorking() {return false;}
 
-	//виртуальные функции для проигрывания анимации HUD
+	//РІРёСЂС‚СѓР°Р»СЊРЅС‹Рµ С„СѓРЅРєС†РёРё РґР»СЏ РїСЂРѕРёРіСЂС‹РІР°РЅРёСЏ Р°РЅРёРјР°С†РёРё HUD
 	virtual void	PlayAnimShow		();
 	virtual void	PlayAnimHide		();
 	virtual void	PlayAnimReload		();
@@ -188,22 +189,22 @@ protected:
 
 	virtual void    SetAnimFlag(u32 flag, LPCSTR anim_name);
 
-	// Флаги наличия анимаций, будем их искать заранее, так будет намного проще мейби
+	// Р¤Р»Р°РіРё РЅР°Р»РёС‡РёСЏ Р°РЅРёРјР°С†РёР№, Р±СѓРґРµРј РёС… РёСЃРєР°С‚СЊ Р·Р°СЂР°РЅРµРµ, С‚Р°Рє Р±СѓРґРµС‚ РЅР°РјРЅРѕРіРѕ РїСЂРѕС‰Рµ РјРµР№Р±Рё
 	enum {
-		ANM_SHOW_EMPTY = (1 << 0),
-		ANM_HIDE_EMPTY = (1 << 1),
-		ANM_AIM_EMPTY = (1 << 2),
-		ANM_BORE_EMPTY = (1 << 3),
-		ANM_SHOT_EMPTY = (1 << 4),
-		ANM_SPRINT_EMPTY = (1 << 5),
-		ANM_MOVING_EMPTY = (1 << 6),
-		ANM_RELOAD_EMPTY = (1 << 7),
-		ANM_RELOAD_EMPTY_GL = (1 << 8),
-		ANM_SHOT_AIM = (1 << 9),
-		ANM_SHOT_AIM_GL = (1 << 10),
-		ANM_MISFIRE = (1 << 11),
-		ANM_MISFIRE_GL = (1 << 12),
-		ANM_IDLE_EMPTY = (1 << 13),
+		ANM_SHOW_EMPTY = (1<<0),
+		ANM_HIDE_EMPTY = (1<<1),
+		ANM_AIM_EMPTY =	 (1<<2),
+		ANM_BORE_EMPTY = (1<<3),
+		ANM_SHOT_EMPTY = (1<<4),
+		ANM_SPRINT_EMPTY = (1<<5),
+		ANM_MOVING_EMPTY = (1<<6),
+		ANM_RELOAD_EMPTY = (1<<7),
+		ANM_RELOAD_EMPTY_GL = (1<<8),
+		ANM_SHOT_AIM = (1<<9),
+		ANM_SHOT_AIM_GL = (1<<10),
+		ANM_MISFIRE = (1<<11),
+		ANM_MISFIRE_GL = (1<<12),
+		ANM_IDLE_EMPTY = (1<<13),
 	};
 
 	Flags32 psWpnAnimsFlag;

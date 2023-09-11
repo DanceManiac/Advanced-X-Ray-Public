@@ -345,7 +345,7 @@ void  CWeaponMagazinedWGrenade::LaunchGrenade()
 
 		launch_matrix.c.set				(p1);
 
-		if(IsGameTypeSingle() && IsZoomed() && smart_cast<CActor*>(H_Parent()))
+		if(IsZoomed() && smart_cast<CActor*>(H_Parent()))
 		{
 			H_Parent()->setEnabled		(FALSE);
 			setEnabled					(FALSE);

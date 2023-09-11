@@ -100,8 +100,19 @@ cam_max_angle_horz			= 10.0
 cam_step_angle_horz			= 1.5
 
 fire_dispersion_condition_factor = 5
-misfire_probability 		= 0.0001
-condition_shot_dec 			= 0.00003
+misfire_probability        = 0.0001 ;вероятность осечки при максимальном износе  !!!old - now not working
+;изношенность, при которой появляется шанс осечки
+misfire_start_condition		= 0.6
+;изношеность при которой шанс осечки становится константным
+misfire_end_condition		= 0.1
+;шанс осечки при изношености больше чем misfireStartCondition
+misfire_start_prob	     	= 0.001
+;шанс осечки при изношености больше чем misfireEndCondition
+misfire_end_prob	     	= 0.02
+;увеличение изношености при одиночном выстреле
+condition_shot_dec      	= 0.00001
+;увеличение изношености при выстреле очередью
+condition_queue_shot_dec	= 0.00002
 
 PDM_disp_base           = 1.0
 PDM_disp_vel_factor     = 1.0

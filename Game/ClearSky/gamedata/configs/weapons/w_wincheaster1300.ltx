@@ -29,6 +29,20 @@ holder_fov_modifier		= 0.7              ; во сколько раз увеличивается eye_fov
 tri_state_reload			= on
 
 cost					 	= 1250
+
+misfire_probability        = 0.005 ;вероятность осечки при максимальном износе  !!!old - now not working
+;изношенность, при которой появляется шанс осечки
+misfire_start_condition		= 0.6
+;изношеность при которой шанс осечки становится константным
+misfire_end_condition		= 0.1
+;шанс осечки при изношености больше чем misfireStartCondition
+misfire_start_prob	     	= 0
+;шанс осечки при изношености больше чем misfireEndCondition
+misfire_end_prob	     	= 0
+;увеличение изношености при одиночном выстреле
+condition_shot_dec      	= 0.003
+;увеличение изношености при выстреле очередью
+condition_queue_shot_dec	= 0.0035
 weapon_class			 	= shotgun
 
 
@@ -65,9 +79,6 @@ zoom_cam_max_angle_horz		= 10.0
 zoom_cam_step_angle_horz	= 3.0
 
 fire_dispersion_condition_factor = 10	;увеличение дисперсии в процентах при максимальном износе
-misfire_probability 		= 0.0	    ;вероятность осечки при максимальном износе
-misfire_condition_k			= 0.0
-condition_shot_dec 			= 0.0005	;увеличение износа при каждом выстреле
 ;-------------------------------------------------------------------------------
 
 position                 	= -0.024, -0.097, 0.

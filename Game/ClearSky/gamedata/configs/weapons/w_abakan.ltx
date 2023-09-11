@@ -36,8 +36,23 @@ cost				= 6000            ; the price of the item
 weapon_class        = assault_rifle      ; the type of the box that will be used in buy-menu in multiplayer mode
 
 ammo_limit			= 210          ; obsolete
+base_dispersioned_bullets_count	= 2           	;количество пуль, выстреленных с базовой дисперсией без отдачи
+base_dispersioned_bullets_speed	= 600          ;начальная скорость пуль, выстреленных с базовой дисперсией без отдачи
 ammo_elapsed        = 30           ; obsolete
-ammo_elapsed       	= 30
+
+misfire_probability        = 0.005 ;вероятность осечки при максимальном износе  !!!old - now not working
+;изношенность, при которой появляется шанс осечки
+misfire_start_condition		= 0.6
+;изношеность при которой шанс осечки становится константным
+misfire_end_condition		= 0.1
+;шанс осечки при изношености больше чем misfireStartCondition
+misfire_start_prob	     	= 0.0037
+;шанс осечки при изношености больше чем misfireEndCondition
+misfire_end_prob	     	= 0.05
+;увеличение изношености при одиночном выстреле
+condition_shot_dec      	= 0.0012
+;увеличение изношености при выстреле очередью
+condition_queue_shot_dec	= 0.0013
 
 ammo_mag_size        = 30           ; clip (magazine) size
 fire_modes           = 1, 2, -1
@@ -90,8 +105,6 @@ zoom_cam_max_angle_horz      = 5.0
 zoom_cam_step_angle_horz     = 0.5
 
 fire_dispersion_condition_factor = 15        ;увеличение дисперсии в процентах при максимальном износе
-misfire_probability        = 0.005 ;вероятность осечки при максимальном износе
-condition_shot_dec         = 0.0002 ;увеличение износа при каждом вvстреле
 ;-------------------------------------------------------------------------------
 
 

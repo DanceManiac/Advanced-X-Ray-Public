@@ -570,18 +570,6 @@ protected:
 
 public:
 	xr_vector<shared_str>	m_ammoTypes;
-/*
-	struct SScopes
-	{
-		shared_str			m_sScopeName;
-		int					m_iScopeX;
-		int					m_iScopeY;
-	};
-	DEFINE_VECTOR(SScopes*, SCOPES_VECTOR, SCOPES_VECTOR_IT);
-	SCOPES_VECTOR			m_scopes;
-
-	u8						cur_scope;
-*/
 
 	DEFINE_VECTOR(shared_str, SCOPES_VECTOR, SCOPES_VECTOR_IT);
 	SCOPES_VECTOR			m_scopes;

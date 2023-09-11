@@ -37,6 +37,20 @@ ammo_limit		 	= 60
 ammo_current		= 10
 ammo_elapsed		= 0
 
+misfire_probability        = 0.005 ;вероятность осечки при максимальном износе  !!!old - now not working
+;изношенность, при которой появляется шанс осечки
+misfire_start_condition		= 0.6
+;изношеность при которой шанс осечки становится константным
+misfire_end_condition		= 0.1
+;шанс осечки при изношености больше чем misfireStartCondition
+misfire_start_prob	     	= 0
+;шанс осечки при изношености больше чем misfireEndCondition
+misfire_end_prob	     	= 0
+;увеличение изношености при одиночном выстреле
+condition_shot_dec      	= 0.003
+;увеличение изношености при выстреле очередью
+condition_queue_shot_dec	= 0.0035
+
 ammo_mag_size       = 8
 ammo_class		 	= ammo_12x70_buck, ammo_12x76_zhekan, ammo_12x76_dart
 
@@ -66,9 +80,6 @@ zoom_cam_step_angle_horz	= 5.0
 
 
 fire_dispersion_condition_factor = 10	;увеличение дисперсии в процентах при максимальном износе
-misfire_probability 		= 0.0	    ;вероятность осечки при максимальном износе
-misfire_condition_k			= 0.0
-condition_shot_dec         = 0.0003 ;увеличение износа при каждом выстреле
 ;-------------------------------------------------------------------------------
 
 position                   = -0.024, -0.081, 0.

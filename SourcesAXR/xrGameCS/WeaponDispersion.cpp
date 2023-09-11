@@ -1,4 +1,4 @@
-// WeaponDispersion.cpp: разбос при стрельбе
+// WeaponDispersion.cpp: СЂР°Р·Р±РѕСЃ РїСЂРё СЃС‚СЂРµР»СЊР±Рµ
 // 
 //////////////////////////////////////////////////////////////////////
 
@@ -14,38 +14,44 @@
 #include "EffectorShotX.h"
 
 
-//возвращает 1, если оружие в отличном состоянии и >1 если повреждено
+//РІРѕР·РІСЂР°С‰Р°РµС‚ 1, РµСЃР»Рё РѕСЂСѓР¶РёРµ РІ РѕС‚Р»РёС‡РЅРѕРј СЃРѕСЃС‚РѕСЏРЅРёРё Рё >1 РµСЃР»Рё РїРѕРІСЂРµР¶РґРµРЅРѕ
 float CWeapon::GetConditionDispersionFactor() const
 {
 	return (1.f + fireDispersionConditionFactor*(1.f-GetCondition()));
 }
 
-float CWeapon::GetFireDispersion	(bool with_cartridge) 
+float CWeapon::GetFireDispersion	(bool with_cartridge, bool for_crosshair) 
 {
-	if (!with_cartridge) return GetFireDispersion(1.0f);
+	if (!with_cartridge) return GetFireDispersion(1.0f, for_crosshair);
 	if (!m_magazine.empty()) m_fCurrentCartirdgeDisp = m_magazine.back().param_s.kDisp;
-	return GetFireDispersion	(m_fCurrentCartirdgeDisp);
+	return GetFireDispersion	(m_fCurrentCartirdgeDisp, for_crosshair);
+}
+float CWeapon::GetBaseDispersion(float cartridge_k)
+{
+	return fireDispersionBase * cur_silencer_koef.fire_dispersion * cartridge_k * GetConditionDispersionFactor();
 }
 
-//текущая дисперсия (в радианах) оружия с учетом используемого патрона
-float CWeapon::GetFireDispersion	(float cartridge_k) 
+//С‚РµРєСѓС‰Р°СЏ РґРёСЃРїРµСЂСЃРёСЏ (РІ СЂР°РґРёР°РЅР°С…) РѕСЂСѓР¶РёСЏ СЃ СѓС‡РµС‚РѕРј РёСЃРїРѕР»СЊР·СѓРµРјРѕРіРѕ РїР°С‚СЂРѕРЅР°
+float CWeapon::GetFireDispersion	(float cartridge_k, bool for_crosshair) 
 {
-	//учет базовой дисперсии, состояние оружия и влияение патрона
-	float fire_disp = fireDispersionBase * cur_silencer_koef.fire_dispersion * cartridge_k * GetConditionDispersionFactor();
+	//СѓС‡РµС‚ Р±Р°Р·РѕРІРѕР№ РґРёСЃРїРµСЂСЃРёРё, СЃРѕСЃС‚РѕСЏРЅРёРµ РѕСЂСѓР¶РёСЏ Рё РІР»РёСЏРµРЅРёРµ РїР°С‚СЂРѕРЅР°
+	float fire_disp = GetBaseDispersion(cartridge_k);
 	
-	//вычислить дисперсию, вносимую самим стрелком
+	//РІС‹С‡РёСЃР»РёС‚СЊ РґРёСЃРїРµСЂСЃРёСЋ, РІРЅРѕСЃРёРјСѓСЋ СЃР°РјРёРј СЃС‚СЂРµР»РєРѕРј
+	if(H_Parent())
+	{
 	const CInventoryOwner* pOwner	=	smart_cast<const CInventoryOwner*>(H_Parent());
-	VERIFY (pOwner);
 
 	float parent_disp = pOwner->GetWeaponAccuracy();
 	fire_disp += parent_disp;
+	}
 
 	return fire_disp;
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-// Для эффекта отдачи оружия
+// Р”Р»СЏ СЌС„С„РµРєС‚Р° РѕС‚РґР°С‡Рё РѕСЂСѓР¶РёСЏ
 void CWeapon::AddShotEffector		()
 {
 	inventory_owner().on_weapon_shot_start	(this);

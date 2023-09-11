@@ -39,6 +39,20 @@ hand_dependence		 	= 1
 single_handed			= 1
 
 slot 			 		= 1
+misfire_probability        = 0.005 ;вероятность осечки при максимальном износе  !!!old - now not working
+;изношенность, при которой появляется шанс осечки
+misfire_start_condition		= 0.6
+;изношеность при которой шанс осечки становится константным
+misfire_end_condition		= 0.1
+;шанс осечки при изношености больше чем misfireStartCondition
+misfire_start_prob	     	= 0.0085
+;шанс осечки при изношености больше чем misfireEndCondition
+misfire_end_prob	     	= 0.085
+;увеличение изношености при одиночном выстреле
+condition_shot_dec      	= 0.0041
+;увеличение изношености при выстреле очередью
+condition_queue_shot_dec	= 0.0041
+
 animation_slot			= 1									; type of the animation that will be used
 default_to_ruck			= false
 sprint_allowed			= true
@@ -73,8 +87,6 @@ cam_max_angle_horz		= 5.0			;(degree) maximum shot horizontal degree
 cam_step_angle_horz		= 0.6				;(degree) size of step camera moved in horizontal position while shooting
 
 fire_dispersion_condition_factor = 5		;увеличение дисперсии в процентах при максимальном износе
-misfire_probability 		= 0.005	    	;вероятность осечки при максимальном износе
-condition_shot_dec 			= 0.0005		;увеличение износа при каждом выстреле
 
 ;-------------------------------------------------------------------------------
 ; ttc

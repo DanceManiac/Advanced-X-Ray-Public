@@ -63,10 +63,10 @@ CWeapon::CWeapon()
 
 	m_zoom_params.m_fCurrentZoomFactor			= g_fov;
 	m_zoom_params.m_fZoomRotationFactor			= 0.f;
-	m_zoom_params.m_fZoomRotationFactor			= 0.f;
-	m_zoom_params.m_pVision						= nullptr;
-	m_zoom_params.m_pNight_vision				= nullptr;
+	m_zoom_params.m_pVision						= NULL;
+	m_zoom_params.m_pNight_vision				= NULL;
 	m_zoom_params.m_fSecondVPFovFactor			= 0.0f;
+	m_zoom_params.m_f3dZoomFactor				= 0.0f;
 
 	m_pAmmo					= NULL;
 
@@ -265,8 +265,9 @@ void CWeapon::UpdateXForm	()
 	
 	if (!E) {
 		if (!IsGameTypeSingle())
+		{
 			UpdatePosition	(H_Parent()->XFORM());
-
+		}
 		return;
 	}
 
@@ -298,12 +299,14 @@ void CWeapon::UpdateXForm	()
 		boneR2 = m_strap_bone1_id;
 		boneL = boneR;
 
-		if (!m_strapped_mode_rifle) m_strapped_mode_rifle = true;
+		if (!m_strapped_mode_rifle)
+			m_strapped_mode_rifle = true;
 	}
 	else {
 		E->g_WeaponBones(boneL, boneR, boneR2);
 
-		if (m_strapped_mode_rifle) m_strapped_mode_rifle = false;
+		if (m_strapped_mode_rifle)
+			m_strapped_mode_rifle = false;
 	}
 
 	if (boneR == -1)		return;
@@ -333,6 +336,7 @@ void CWeapon::UpdateXForm	()
 			Msg("! Bone [%s] not found in entity [%s]([%s]) with visual [%s]!", m_strap_bone1, E->cNameSect().c_str(), E->Name(), E->cNameVisual().c_str());
 		}
 #endif
+
 		return;
 	}
 
@@ -602,9 +606,16 @@ void CWeapon::Load(LPCSTR section)
 	m_strafe_offset[3][0].set(fStrafeCamLFactor, fStrafeMinAngle, NULL); // normal
 	m_strafe_offset[3][1].set(fStrafeCamLFactor_aim, fStrafeMinAngle_aim, NULL); // aim-GL
 
-	misfireProbability			  = pSettings->r_float(section,"misfire_probability"); 
-	misfireConditionK			  = READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
+
+// modified by Peacemaker [17.10.08]
+//	misfireProbability			  = pSettings->r_float(section,"misfire_probability"); 
+//	misfireConditionK			  = READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
+	misfireStartCondition			= pSettings->r_float(section, "misfire_start_condition");
+	misfireEndCondition				= READ_IF_EXISTS(pSettings, r_float, section, "misfire_end_condition", 0.f);
+	misfireStartProbability			= READ_IF_EXISTS(pSettings, r_float, section, "misfire_start_prob", 0.f);
+	misfireEndProbability			= pSettings->r_float(section, "misfire_end_prob");
 	conditionDecreasePerShot	  = pSettings->r_float(section,"condition_shot_dec");
+	conditionDecreasePerQueueShot	= READ_IF_EXISTS(pSettings, r_float, section, "condition_queue_shot_dec", conditionDecreasePerShot); 
 	conditionDecreasePerShotOnHit = READ_IF_EXISTS(pSettings, r_float, section, "condition_shot_dec_on_hit", 0.f);
 		
 	vLoadedFirePoint	= pSettings->r_fvector3		(section,"fire_point"		);
@@ -663,14 +674,16 @@ void CWeapon::Load(LPCSTR section)
 
 	Fvector			def_dof;
 	def_dof.set		(-1,-1,-1);
-	m_zoom_params.m_ZoomDof		= READ_IF_EXISTS(pSettings, r_fvector3, section, "zoom_dof", Fvector().set(-1,-1,-1));
-	m_zoom_params.m_bZoomDofEnabled	= !def_dof.similar(m_zoom_params.m_ZoomDof);
+//	m_zoom_params.m_ZoomDof		= READ_IF_EXISTS(pSettings, r_fvector3, section, "zoom_dof", Fvector().set(-1,-1,-1));
+//	m_zoom_params.m_bZoomDofEnabled	= !def_dof.similar(m_zoom_params.m_ZoomDof);
 
-	m_zoom_params.m_ReloadDof	= READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_dof", Fvector4().set(-1,-1,-1,-1));
+	m_zoom_params.m_ReloadDof = READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_dof", Fvector4().set(-1, -1, -1, -1));
+
 	m_zoom_params.m_ReloadEmptyDof = READ_IF_EXISTS(pSettings, r_fvector4, section, "reload_empty_dof", Fvector4().set(-1, -1, -1, -1));
 
 
-	m_bHasTracers			= READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
+
+	m_bHasTracers			= !!READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
 	m_u8TracerColorID		= READ_IF_EXISTS(pSettings, r_u8, section, "tracers_color_ID", u8(-1));
 
 	string256						temp;
@@ -1194,9 +1207,16 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 void CWeapon::Load3DScopeParams(LPCSTR section)
 {
 	if (psActorFlags.test(AF_3DSCOPE_ENABLE))
+	{
 		m_zoom_params.m_fSecondVPFovFactor = READ_IF_EXISTS(pSettings, r_float, section, "3d_fov", 0.0f);
+		m_zoom_params.m_f3dZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "3d_zoom_factor", 100.0f);
+	}
 	else
+	{
 		m_zoom_params.m_fSecondVPFovFactor = 0.0f;
+		m_zoom_params.m_f3dZoomFactor = 0.0f;
+	}
+
 }
 
 BOOL CWeapon::net_Spawn		(CSE_Abstract* DC)
@@ -1299,7 +1319,7 @@ void CWeapon::net_Import(NET_Packet& P)
 	P.r_u8					((u8)Zoom);
 
 	u8 scope;
-	P.r_u8					(scope);
+	P.r_u8(scope);
 
 	m_cur_scope = scope;
 
@@ -1339,6 +1359,7 @@ void CWeapon::save(NET_Packet &output_packet)
 	save_data		(m_flagsAddOnState, 			output_packet);
 	save_data		(m_ammoType,					output_packet);
 	save_data		(m_zoom_params.m_bIsZoomModeNow,output_packet);
+	save_data		(m_bRememberActorNVisnStatus,	output_packet);
 	save_data		(bNVsecondVPstatus,				output_packet);
 }
 
@@ -1357,6 +1378,7 @@ void CWeapon::load(IReader &input_packet)
 		else			
 			OnZoomOut();
 
+	load_data		(m_bRememberActorNVisnStatus,	input_packet);
 	load_data		(bNVsecondVPstatus,				input_packet);
 }
 
@@ -2083,9 +2105,21 @@ int CWeapon::GetAmmoCount_forType(shared_str const& ammo_type) const
 
 float CWeapon::GetConditionMisfireProbability() const
 {
-	if( GetCondition()>0.95f ) return 0.0f;
-
-	float mis = misfireProbability+powf(1.f-GetCondition(), 3.f)*misfireConditionK;
+// modified by Peacemaker [17.10.08]
+//	if(GetCondition() > 0.95f) 
+//		return 0.0f;
+	if(GetCondition() > misfireStartCondition) 
+		return 0.0f;
+	if(GetCondition() < misfireEndCondition) 
+		return misfireEndProbability;
+//	float mis = misfireProbability+powf(1.f-GetCondition(), 3.f)*misfireConditionK;
+	float mis = misfireStartProbability + (
+		(misfireStartCondition - GetCondition()) *				// condition goes from 1.f to 0.f
+		(misfireEndProbability - misfireStartProbability) /		// probability goes from 0.f to 1.f
+		((misfireStartCondition == misfireEndCondition) ?		// !!!say "No" to devision by zero
+			misfireStartCondition : 
+			(misfireStartCondition - misfireEndCondition))
+										  );
 	clamp(mis,0.0f,0.99f);
 	return mis;
 }
@@ -2493,7 +2527,14 @@ void CWeapon::InitAddons()
 
 float CWeapon::CurrentZoomFactor()
 {
-	return (IsScopeAttached() && !m_bAltZoomActive) ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
+	if (psActorFlags.test(AF_3DSCOPE_ENABLE) && IsScopeAttached())
+	{
+		return bIsSecondVPZoomPresent() ? m_zoom_params.m_f3dZoomFactor : m_zoom_params.m_fScopeZoomFactor;
+	}
+	else
+	{
+		return IsScopeAttached() ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
+	}
 };
 
 //      
@@ -2729,6 +2770,28 @@ void CWeapon::reload			(LPCSTR section)
 void CWeapon::create_physic_shell()
 {
 	CPhysicsShellHolder::create_physic_shell();
+}
+
+bool CWeapon::ActivationSpeedOverriden (Fvector& dest, bool clear_override)
+{
+	if ( m_activation_speed_is_overriden )
+	{
+		if ( clear_override )
+		{
+			m_activation_speed_is_overriden	=	false;
+		}
+
+		dest						=	m_overriden_activation_speed;
+		return							true;
+	}
+	
+	return								false;
+}
+
+void CWeapon::SetActivationSpeedOverride	(Fvector const& speed)
+{
+	m_overriden_activation_speed	=	speed;
+	m_activation_speed_is_overriden	=	true;
 }
 
 void CWeapon::activate_physic_shell()

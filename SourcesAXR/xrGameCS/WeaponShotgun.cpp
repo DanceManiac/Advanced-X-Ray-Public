@@ -58,7 +58,7 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 
 	if(	m_bTriStateReload && GetState()==eReload && !IsMisfire() &&
 		cmd==kWPN_FIRE && flags&CMD_START &&
-		m_sub_state==eSubstateReloadInProcess		)//остановить перезагрузку
+		m_sub_state==eSubstateReloadInProcess		)//РѕСЃС‚Р°РЅРѕРІРёС‚СЊ РїРµСЂРµР·Р°РіСЂСѓР·РєСѓ
 	{
 		AddCartridge(1);
 		m_sub_state = eSubstateReloadEnd;
@@ -108,6 +108,9 @@ void CWeaponShotgun::Reload()
 
 void CWeaponShotgun::TriStateReload()
 {
+	if (m_magazine.size() == (u32)iMagazineSize)
+		return;
+
 	if (HaveCartridgeInInventory(1) || IsMisfire())
 	{
 		m_sub_state = eSubstateReloadBegin;
@@ -134,7 +137,7 @@ void CWeaponShotgun::OnStateSwitch	(u32 S)
 	switch (m_sub_state)
 	{
 	case eSubstateReloadBegin:
-		if (HaveCartridgeInInventory(1) || IsMisfire())
+		if(HaveCartridgeInInventory(1) || IsMisfire())
 			switch2_StartReload	();
 		break;
 	case eSubstateReloadInProcess:
@@ -182,7 +185,7 @@ void CWeaponShotgun::switch2_EndReload	()
 	{
 		bMisfire = false;
 
-		if (GetAmmoElapsed() > 0) //xrKrodin: хз, надо ли удалять заклинивший патрон в данном случае. Надо подумать над этим.
+		if (GetAmmoElapsed() > 0) //xrKrodin: С…Р·, РЅР°РґРѕ Р»Рё СѓРґР°Р»СЏС‚СЊ Р·Р°РєР»РёРЅРёРІС€РёР№ РїР°С‚СЂРѕРЅ РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ. РќР°РґРѕ РїРѕРґСѓРјР°С‚СЊ РЅР°Рґ СЌС‚РёРј.
 			SetAmmoElapsed(GetAmmoElapsed() - 1);
 
 		SwitchState(eIdle);
@@ -270,14 +273,14 @@ bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)
 	m_pAmmo = NULL;
 	if(m_pInventory) 
 	{
-		//попытаться найти в инвентаре патроны текущего типа 
+		//РїРѕРїС‹С‚Р°С‚СЊСЃСЏ РЅР°Р№С‚Рё РІ РёРЅРІРµРЅС‚Р°СЂРµ РїР°С‚СЂРѕРЅС‹ С‚РµРєСѓС‰РµРіРѕ С‚РёРїР° 
 		m_pAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[m_ammoType]));
 		
 		if(!m_pAmmo )
 		{
 			for(u32 i = 0; i < m_ammoTypes.size(); ++i) 
 			{
-				//проверить патроны всех подходящих типов
+				//РїСЂРѕРІРµСЂРёС‚СЊ РїР°С‚СЂРѕРЅС‹ РІСЃРµС… РїРѕРґС…РѕРґСЏС‰РёС… С‚РёРїРѕРІ
 				m_pAmmo = smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(*m_ammoTypes[i]));
 				if(m_pAmmo) 
 				{ 
@@ -325,7 +328,7 @@ u8 CWeaponShotgun::AddCartridge		(u8 cnt)
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
 
-	//выкинуть коробку патронов, если она пустая
+	//РІС‹РєРёРЅСѓС‚СЊ РєРѕСЂРѕР±РєСѓ РїР°С‚СЂРѕРЅРѕРІ, РµСЃР»Рё РѕРЅР° РїСѓСЃС‚Р°СЏ
 	if(m_pAmmo && !m_pAmmo->m_boxCurr && OnServer()) 
 		m_pAmmo->SetDropManual(TRUE);
 

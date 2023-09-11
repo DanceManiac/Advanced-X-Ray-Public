@@ -177,6 +177,8 @@ bool CWeaponMagazinedWGrenade::SwitchMode()
 	if(!IsGrenadeLauncherAttached()) 
 		return false;
 
+	OnZoomOut();
+
 	SetPending				(TRUE);
 
 	PerformSwitchGL			();
@@ -784,12 +786,12 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				{
 					if (!(State & mcCrouch))
 					{
-						if (State & mcAccel)
+						if (State & mcAccel) //Ходьба медленная (SHIFT)
 							act_state = 5;
 						else
 							act_state = 2;
 					}
-					else if (State & mcAccel)
+					else if (State & mcAccel) //Ходьба в присяде (CTRL+SHIFT)
 						act_state = 4;
 					else
 						act_state = 3;
@@ -912,7 +914,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 
 void CWeaponMagazinedWGrenade::PlayAnimShoot()
 {
-	if(m_bGrenadeMode)
+	if (m_bGrenadeMode)
 	{
 		string_path guns_shoot_anm{};
 		strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, "anm_shoot", (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim" : "", "_g");
@@ -923,7 +925,7 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 	{
 		//HUD_VisualBulletUpdate();
 
-		VERIFY(GetState()==eFire);
+		VERIFY(GetState() == eFire);
 
 		if (IsGrenadeLauncherAttached())
 		{
@@ -1110,6 +1112,7 @@ void CWeaponMagazinedWGrenade::UpdateSounds	()
 {
 	inherited::UpdateSounds			();
 	Fvector P						= get_LastFP();
+	m_sounds.SetPosition("sndShotG", P);
 	m_sounds.SetPosition("sndReloadG", P);
 	m_sounds.SetPosition("sndSwitch", P);
 }
