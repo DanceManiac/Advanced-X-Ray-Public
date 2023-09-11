@@ -646,7 +646,7 @@
     <rank>250</rank>
     <reputation>0</reputation>
     
-    <money min="1000" max="2750" infinitive="1"/>
+    <money min="1000000" max="1000000" infinitive="1"/>
 
     <visual>actors\stalker_bandit\stalker_bandit_1</visual>
     <snd_config>characters_voice\human_02\bandit\</snd_config>
