@@ -175,7 +175,8 @@ bool CUIPdaWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		break;
 	}
 	case WINDOW_RBUTTON_DOWN:
-		if (auto pda = Actor()->GetPDA()) {
+		if (auto pda = Actor()->GetPDA())
+		{
 			pda->m_bZoomed = false;
 
 			if (psActorFlags.test(AF_3D_PDA))
@@ -497,7 +498,8 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 						HideDialog();
 						Console->Execute("main_menu");
 					}
-					else if (pda->m_bZoomed) {
+					else if (pda->m_bZoomed)
+					{
 						pda->m_bZoomed = false;
 						CurrentGameUI()->SetMainInputReceiver(nullptr, false);
 					}
@@ -554,22 +556,6 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 						pda->m_bZoomed = !pda->m_bZoomed;
 						return true;
 					}
-
-					/*
-					Че за кал вообще
-					if (action == kWPN_FUNC || (!IsEnabled() && action == kWPN_FIRE))
-					{
-						if (IsEnabled())
-						{
-							pda->m_bZoomed = false;
-							Enable(false);
-						}
-						else
-						{
-							Actor()->StopSprint();
-						}
-						return true;
-					}*/
 				}
 			}
 		}

@@ -467,7 +467,8 @@ if(!g_dedicated_server)
 
 	if (this == Level().CurrentEntity()) //--#SM+#--      [reset some render flags]
 	{
-		g_pGamePersistent->m_pGShaderConstants->m_blender_mode.set(0.f, 0.f, 0.f, 0.f);
+		if (g_pGamePersistent && g_pGamePersistent->m_pGShaderConstants)
+			g_pGamePersistent->m_pGShaderConstants->m_blender_mode.set(0.f, 0.f, 0.f, 0.f);
 	}
 }
 //Alundaio -psp always
@@ -1122,16 +1123,16 @@ void CActor::UpdateCL	()
 			//      [Update SecondVP with weapon data]
 			pWeapon->UpdateSecondVP(); //--#SM+#-- +SecondVP+
 			bool bUseMark = !!pWeapon->bMarkCanShow();
-
-			//float fVPRotFactor = pWeapon->bNVsecondVPstatus ? pWeapon->GetZRotatingFactor() : 0.0f;
-
 			bool bNVEnbl = !!pWeapon->bNVsecondVPstatus;
 
-			//      
-			g_pGamePersistent->m_pGShaderConstants->hud_params.x = pWeapon->GetZRotatingFactor();  //--#SM+#--
-			g_pGamePersistent->m_pGShaderConstants->hud_params.y = pWeapon->GetSecondVPFov(); //--#SM+#--
-			g_pGamePersistent->m_pGShaderConstants->hud_params.z = bUseMark; //--#SM+#--
-			g_pGamePersistent->m_pGShaderConstants->m_blender_mode.x = bNVEnbl;  //--#SM+#--
+			//
+			if (g_pGamePersistent && g_pGamePersistent->m_pGShaderConstants)
+			{
+				g_pGamePersistent->m_pGShaderConstants->hud_params.x = pWeapon->GetZRotatingFactor();  //--#SM+#--
+				g_pGamePersistent->m_pGShaderConstants->hud_params.y = pWeapon->GetSecondVPFov(); //--#SM+#--
+				g_pGamePersistent->m_pGShaderConstants->hud_params.z = bUseMark; //--#SM+#--
+				g_pGamePersistent->m_pGShaderConstants->m_blender_mode.x = bNVEnbl;  //--#SM+#--
+			}
 		}
 
 	}
@@ -1142,9 +1143,12 @@ void CActor::UpdateCL	()
 			HUD().SetCrosshairDisp(0.f);
 			HUD().ShowCrosshair(false);
 
-			//      
-			g_pGamePersistent->m_pGShaderConstants->hud_params.set(0.f, 0.f, 0.f, 0.f); //--#SM+#--
-			g_pGamePersistent->m_pGShaderConstants->m_blender_mode.set(0.f, 0.f, 0.f, 0.f); //--#SM+#--
+			//
+			if (g_pGamePersistent && g_pGamePersistent->m_pGShaderConstants)
+			{
+				g_pGamePersistent->m_pGShaderConstants->hud_params.set(0.f, 0.f, 0.f, 0.f); //--#SM+#--
+				g_pGamePersistent->m_pGShaderConstants->m_blender_mode.set(0.f, 0.f, 0.f, 0.f); //--#SM+#--
+			}
 
 			//    [Turn off SecondVP]
 			//CWeapon::UpdateSecondVP();

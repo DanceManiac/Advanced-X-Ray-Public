@@ -193,6 +193,8 @@ bool CUIPdaWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 
 void CUIPdaWnd::MouseMovement(float x, float y)
 {
+	if (!Actor())
+		return;
 	CPda* pda = Actor()->GetPDA();
 	if (!pda) return;
 
@@ -239,14 +241,21 @@ void CUIPdaWnd::Show()
 void CUIPdaWnd::Hide()
 {
 	inherited::Hide();
+	InventoryUtilities::SendInfoToActor("ui_pda_hide");
+	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
 	if (m_pActiveDialog)
+	{
 		m_pActiveDialog->Update();
+	}
+	g_btnHint->Discard();
+	g_statHint->Discard();
 }
 
 void CUIPdaWnd::Update()
 {
 	inherited::Update();
-	m_pActiveDialog->Update();
+	if (m_pActiveDialog)
+		m_pActiveDialog->Update();
 
 	pUILogsWnd->PerformWork();
 }
