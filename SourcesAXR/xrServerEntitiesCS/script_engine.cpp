@@ -78,7 +78,7 @@ static void initialize_lua_studio	( lua_State* state, cs::lua_studio::world*& wo
 	R_ASSERT2						(s_destroy_world, "can't find function \"cs_lua_studio_backend_destroy_world\" in the library");
 
 	engine							= xr_new<lua_studio_engine>();
-	world = s_create_world(*engine, false, false);
+	world							= s_create_world( *engine, false, false );
 	VERIFY							(world);
 
 	s_old_log_callback				= SetLogCB(&log_callback);

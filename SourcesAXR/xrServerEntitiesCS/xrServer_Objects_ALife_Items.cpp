@@ -713,7 +713,39 @@ void CSE_ALifeItemWeaponShotGun::FillProps			(LPCSTR pref, PropItemVec& items)
 	inherited::FillProps			(pref, items);
 }
 #endif // #ifndef XRGAME_EXPORTS
+////////////////////////////////////////////////////////////////////////////
+// CSE_ALifeItemWeaponAutoShotGun
+////////////////////////////////////////////////////////////////////////////
+CSE_ALifeItemWeaponAutoShotGun::CSE_ALifeItemWeaponAutoShotGun	(LPCSTR caSection) : CSE_ALifeItemWeaponShotGun(caSection)
+{
+}
 
+CSE_ALifeItemWeaponAutoShotGun::~CSE_ALifeItemWeaponAutoShotGun	()
+{
+}
+
+void CSE_ALifeItemWeaponAutoShotGun::UPDATE_Read	(NET_Packet& P)
+{
+	inherited::UPDATE_Read(P);
+}
+void CSE_ALifeItemWeaponAutoShotGun::UPDATE_Write	(NET_Packet& P)
+{
+	inherited::UPDATE_Write(P);
+}
+void CSE_ALifeItemWeaponAutoShotGun::STATE_Read		(NET_Packet& P, u16 size)
+{
+	inherited::STATE_Read(P, size);
+}
+void CSE_ALifeItemWeaponAutoShotGun::STATE_Write	(NET_Packet& P)
+{
+	inherited::STATE_Write(P);
+}
+#ifndef XRGAME_EXPORTS
+void CSE_ALifeItemWeaponAutoShotGun::FillProps		(LPCSTR pref, PropItemVec& items)
+{
+	inherited::FillProps(pref, items);
+}
+#endif // #ifndef XRGAME_EXPORTS
 ////////////////////////////////////////////////////////////////////////////
 // CSE_ALifeItemWeaponMagazined
 ////////////////////////////////////////////////////////////////////////////

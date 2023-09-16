@@ -18,6 +18,7 @@ IC	void CScriptTokenList::add		(LPCSTR name, int id)
 {
 	VERIFY					((token(name) == m_token_list.end()) && (token(id) == m_token_list.end()));
 	xr_token				temp;
+	//! memory leak is here
 	temp.name				= xr_strdup(name);
 	temp.id					= id;
 	m_token_list.pop_back	();

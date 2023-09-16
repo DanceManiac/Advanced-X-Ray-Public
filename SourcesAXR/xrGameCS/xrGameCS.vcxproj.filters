@@ -1807,6 +1807,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\BM-16">
       <UniqueIdentifier>{16f45829-6f11-46d5-a45f-1724398d46f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun">
+      <UniqueIdentifier>{aef6e1ac-cb20-4b18-9c90-1c38cef0dfbe}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\StationaryMgun">
       <UniqueIdentifier>{920ee3bb-cfbe-49e4-96e4-2c18e509dfa0}</UniqueIdentifier>
     </Filter>
@@ -5849,6 +5852,9 @@
     <ClInclude Include="weaponBM16.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\BM-16</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponAutomaticShotgun.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun</Filter>
+    </ClInclude>
     <ClInclude Include="WeaponStatMgun.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\StationaryMgun</Filter>
     </ClInclude>
@@ -9344,6 +9350,9 @@
     </ClCompile>
     <ClCompile Include="weaponBM16_script.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\BM-16</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAutomaticShotgun.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun</Filter>
     </ClCompile>
     <ClCompile Include="WeaponStatMgun.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\StationaryMgun</Filter>
