@@ -248,7 +248,7 @@ CUIWeaponCellItem::CUIWeaponCellItem(CWeapon* itm)
 		m_addon_offset[eTorch].set(object()->GetTacticalTorchX(), object()->GetTacticalTorchY());
 }
 
-#include "../XrServerEntitiesCS/object_broker.h"
+#include "../xrServerEntitiesCS/object_broker.h"
 CUIWeaponCellItem::~CUIWeaponCellItem()
 {
 }

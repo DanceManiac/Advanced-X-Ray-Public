@@ -21,12 +21,6 @@ public:
 	bool					m_bAct;
 	int						m_blockCounter;
 };
-/*
-enum EActivationReason{
-	eGeneral,
-	eKeyAction,
-	eImportUpdate,
-};*/
 
 typedef xr_vector<CInventorySlot> TISlotArr;
 
@@ -162,9 +156,6 @@ protected:
 	u32 				m_iActiveSlot;
 	u32 				m_iNextActiveSlot;
 	u32 				m_iPrevActiveSlot;
-	//u32 				m_iLoadActiveSlot;
-	//u32 				m_iLoadActiveSlotFrame;
-	//EActivationReason	m_ActivationSlotReason;
 
 	CInventoryOwner*	m_pOwner;
 
@@ -177,10 +168,6 @@ protected:
 	float				m_fMaxWeight;
 	// текущий вес в инвентаре
 	float				m_fTotalWeight;
-
-	// Максимальное кол-во объектов
-	//на поясе
-///	u32					m_iMaxBelt;	= outfit->get_artefact_count();
 
 	//кадр на котором произошло последнее изменение в инвенторе
 	u32					m_dwModifyFrame;

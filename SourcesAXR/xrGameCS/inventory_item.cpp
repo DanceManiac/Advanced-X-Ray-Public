@@ -65,8 +65,8 @@ CInventoryItem::CInventoryItem()
 	m_eItemCurrPlace	= EItemPlaceUndefined;
 	m_Description		= "";
 	m_section_id		= 0;
-	m_is_helper			= false;
 	m_bCanUse			= true;
+	m_flags.set						(FIsHelperItem,FALSE);
 	
 	m_custom_text		= nullptr;
 	m_custom_text_font	= nullptr;
@@ -119,9 +119,9 @@ void CInventoryItem::Load(LPCSTR section)
 	m_Description = CStringTable().translate( pSettings->r_string(section, "description") );
 
 	m_flags.set(Fbelt,			READ_IF_EXISTS(pSettings, r_bool, section, "belt",		FALSE));
-	m_flags.set(FCanTake,		READ_IF_EXISTS(pSettings, r_bool, section, "can_take",	TRUE));
-	m_can_trade = READ_IF_EXISTS(pSettings, r_bool, section, "can_trade",	TRUE);
-	m_flags.set(FCanTrade, m_can_trade);
+	m_can_trade = READ_IF_EXISTS(pSettings, r_bool, section, "can_take",	TRUE);
+	m_flags.set(FCanTake,		m_can_trade);
+	m_flags.set(FCanTrade,		READ_IF_EXISTS(pSettings, r_bool, section, "can_trade",	TRUE));
 	m_flags.set(FIsQuestItem,	READ_IF_EXISTS(pSettings, r_bool, section, "quest_item",FALSE));
 
 	// Added by Axel, to enable optional condition use on any item
@@ -262,12 +262,12 @@ LPCSTR CInventoryItem::NameComplex()
 
 	if( m_flags.test(FUsingCondition) ){
 		string32		cond;
-		if(GetCondition()<0.33)		strcpy_s		(cond,	"[poor]");
-		else if(GetCondition()<0.66)strcpy_s		(cond,	"[bad]"	);
-		else						strcpy_s		(cond,	"[good]");
+		if(GetCondition()<0.33)		xr_strcpy		(cond,	"[poor]");
+		else if(GetCondition()<0.66)xr_strcpy		(cond,	"[bad]"	);
+		else						xr_strcpy		(cond,	"[good]");
 		string256		temp;
 		strconcat		(temp,*m_nameComplex," ",cond)	;
-		// sprintf			(temp,"%s %s",*m_nameComplex,cond);
+		// xr_sprintf			(temp,"%s %s",*m_nameComplex,cond);
 		m_nameComplex	= temp;
 	}
 

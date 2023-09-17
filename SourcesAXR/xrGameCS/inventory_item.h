@@ -82,6 +82,7 @@ protected:
 								FInInterpolation	=(1<<9),
 								FInInterpolate		=(1<<10),
 								FIsQuestItem		=(1<<11),
+								FIsHelperItem		=(1<<12),
 	};
 
 	Flags16						m_flags;
@@ -102,7 +103,7 @@ public:
 	virtual void				OnEvent				(NET_Packet& P, u16 type);
 	
 	virtual bool				Useful				() const;									// !!! Переопределить. (см. в Inventory.cpp)
-	virtual bool				IsUsingCondition	() const {return (m_flags.test(FUsingCondition)>0);};
+	virtual bool				IsUsingCondition	() const { return m_flags.test(FUsingCondition); };
 	virtual bool				Attach				(PIItem pIItem, bool b_send_event) {return false;}
 	virtual bool				Detach				(PIItem pIItem) {return false;}
 	//при детаче спаунится новая вещь при заданно названии секции
@@ -337,10 +338,9 @@ protected:
 	bool								m_just_after_spawn;
 	bool								m_activated;
 
-	bool    m_is_helper;
 public:
-	bool	is_helper_item				()				 { return m_is_helper; }
-	void	set_is_helper				(bool is_helper) { m_is_helper = is_helper; }
+	IC bool	is_helper_item				()				 { return !!m_flags.test(FIsHelperItem); }
+	IC void	set_is_helper				(bool is_helper) { m_flags.set(FIsHelperItem,is_helper); }
 }; // class CInventoryItem
 
 #include "inventory_item_inline.h"

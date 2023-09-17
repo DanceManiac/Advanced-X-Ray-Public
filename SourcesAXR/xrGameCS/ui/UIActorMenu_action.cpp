@@ -9,6 +9,10 @@
 #include "UIActorMenu.h"
 #include "../actor.h"
 #include "../HUDManager.h"
+#include "UIDialogHolder.h"
+#include "../Inventory.h"
+#include "../inventory_item.h"
+#include "../InventoryOwner.h"
 #include "game_cl_base.h"
 
 #include "UIBtnHint.h"
@@ -23,10 +27,6 @@
 #include "AdvancedXrayGameConstants.h"
 #include "Antigasfilter.h"
 #include "CustomBackpack.h"
-#include "UIDialogHolder.h"
-#include "../Inventory.h"
-#include "../inventory_item.h"
-#include "../InventoryOwner.h"
 #include "../xrEngine/x_ray.h"
 
 #include <dinput.h>
@@ -442,3 +442,24 @@ void CUIActorMenu::OnMesBoxYes( CUIWindow*, void* )
 	UpdateItemsPlace();
 }
 
+void CUIActorMenu::OnMesBoxNo(CUIWindow*, void*)
+{
+	switch(m_currMenuMode)
+	{
+	case mmUndefined:
+		break;
+	case mmInventory:
+		break;
+	case mmTrade:
+		break;
+	case mmUpgrade:
+		m_repair_mode = false;
+		break;
+	case mmDeadBodySearch:
+		break;
+	default:
+		R_ASSERT(0);
+		break;
+	}
+	UpdateItemsPlace();
+}

@@ -653,7 +653,8 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 			Activate(NO_ACTIVE_SLOT);
 
 		m_slots[pIItem->CurrSlot()].m_pIItem = NULL;
-	}else
+	}
+	else
 	{
 		//вещь была на поясе или вообще только поднята с земли
 		TIItemContainer::iterator it = std::find(m_belt.begin(), m_belt.end(), pIItem); 
@@ -1516,7 +1517,8 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 	}
 	
 	CAI_Stalker* pOwner = smart_cast<CAI_Stalker*>(m_pOwner);
-	if (pOwner && !pOwner->g_Alive()) {
+	if (pOwner && !pOwner->g_Alive())
+	{
 		std::uint16_t I = FirstSlot();
 		std::uint16_t E = LastSlot();
 		for (; I <= E; ++I) {

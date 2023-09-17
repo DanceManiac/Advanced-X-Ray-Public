@@ -78,10 +78,10 @@ CInventory::CInventory()
 	/*string256 temp;
 	for(u32 i=0; i<m_slots.size(); ++i ) 
 	{
-		sprintf_s(temp, "slot_persistent_%d", i+1);
+		xr_sprintf(temp, "slot_persistent_%d", i);
 		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory",temp);
 
-		sprintf_s			(temp, "slot_active_%d", i+1);
+		xr_sprintf			(temp, "slot_active_%d", i);
 		m_slots[i].m_bAct	= !!pSettings->r_bool("inventory",temp);
 	};*/
 
@@ -185,7 +185,7 @@ void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_
 	hidingThread.detach();
 }
 
-void CInventory::TakeItemAnim(CGameObject * GameObj, CObject * Obj, bool use_pickup_anim)
+void CInventory::TakeItemAnim(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim)
 {
 	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "take_item_section", nullptr);
 
@@ -620,8 +620,8 @@ bool CInventory::Belt(PIItem pIItem, bool strict_placement)
 		if(m_ruck.end() != it) m_ruck.erase(it);
 	}
 
-	CalcTotalWeight();
-	InvalidateState();
+	CalcTotalWeight					();
+	InvalidateState					();
 
 	EItemPlace prev_place = pIItem->m_eItemCurrPlace;
 	pIItem->m_eItemCurrPlace = EItemPlaceBelt;
@@ -1098,37 +1098,6 @@ void CInventory::ActiveWeapon( u32 slot )
 
 void CInventory::Update() 
 {
-/*
-	CObject*	curControl	= Level().CurrentControlEntity();
-	CObject*	parentObj	= m_pOwner ? m_pOwner->cast_game_object() : NULL;
-*/
-/*	if ((m_iNextActiveSlot == NO_ACTIVE_SLOT) || 
-		(m_iNextActiveSlot == m_iActiveSlot))
-*/
-/*
-	if (m_iNextActiveSlot==m_iActiveSlot)
-	{
-		UpdateDropTasks();
-		return;
-	} 
-*/
-/*	
-	if (curControl && parentObj)
-	{
-		CHudItem* activeItem = NULL;
-		if ((m_iActiveSlot != NO_ACTIVE_SLOT) &&
-			(m_slots[m_iActiveSlot].m_pIItem))
-		{
-			activeItem = m_slots[m_iActiveSlot].m_pIItem->cast_hud_item();
-		}
-		
-		if ((curControl->ID() == parentObj->ID()) && activeItem && 	!activeItem->IsHidden())
-		{
-			UpdateDropTasks();
-			return;
-		}
-	}
-*/
 	if( OnServer() )
 	{
 		if(m_iActiveSlot!=m_iNextActiveSlot)

@@ -48,7 +48,7 @@ void CStoreHierarchy::LoadLevel(CUIXml& xml, int index, item* _item, int depth_l
 	
 	string1024			buff;
 	buff[0] = 0;
-	for(int c = 0; c<depth_level; ++c) strcat(buff,"-");
+	for(int c = 0; c<depth_level; ++c) xr_strcat(buff,"-");
 #ifndef MASTER_GOLD
 	Msg("%s%s",buff,_item->m_name.c_str());
 #endif // #ifndef MASTER_GOLD

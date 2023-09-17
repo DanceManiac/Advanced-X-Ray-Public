@@ -100,7 +100,7 @@ void CUIMpTradeWnd::UpdateMoneyIndicator()
 
 	if( !(Device.dwFrame%30) )
 	{
-		u32 _cost;
+		u32 _cost						= 0;
 		string128							buff;
 		StorePreset							(_preset_idx_temp, true, false, false);
 		_cost								= GetPresetCost(_preset_idx_temp);

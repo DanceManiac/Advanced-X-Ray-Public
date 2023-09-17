@@ -869,6 +869,7 @@ void CUIActorMenu::ActivatePropertiesBox()
 		PropertiesBoxForWeapon( cell_item, item, b_show );
 		PropertiesBoxForAddon( item, b_show );
 		PropertiesBoxForUsing( item, b_show );
+		PropertiesBoxForPlaying(item, b_show);
 		if ( m_currMenuMode == mmInventory )
 			PropertiesBoxForDrop( cell_item, item, b_show );
 	}

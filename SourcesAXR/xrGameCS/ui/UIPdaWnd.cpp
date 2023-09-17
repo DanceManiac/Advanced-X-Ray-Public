@@ -142,8 +142,15 @@ void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	{
 		if (pWnd == m_btn_close)
 		{
-			if (Actor()->inventory().GetActiveSlot() == PDA_SLOT)
-				Actor()->inventory().Activate(NO_ACTIVE_SLOT);
+			if (psActorFlags.test(AF_3D_PDA))
+			{
+				if (Actor()->inventory().GetActiveSlot() == PDA_SLOT)
+					Actor()->inventory().Activate(NO_ACTIVE_SLOT);
+			}
+			else
+			{
+				HUD().GetUI()->StartStopMenu(this, true);
+			}
 		}
 		break;
 	}

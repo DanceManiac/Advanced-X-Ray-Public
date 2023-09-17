@@ -1,7 +1,7 @@
 #pragma once
 
 
- #define _new_buy_wnd
+#define _new_buy_wnd
 
 #ifdef _new_buy_wnd
 	class		CUIMpTradeWnd;

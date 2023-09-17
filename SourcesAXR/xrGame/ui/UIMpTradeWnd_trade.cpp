@@ -122,7 +122,7 @@ bool CUIMpTradeWnd::TryToBuyItem(SBuyItemInfo* buy_itm, u32 buy_flags, SBuyItemI
 	if(!b_can_buy)
 		return				false;
 	
-	if(0==(bf_ignore_team&buy_flags))
+	if (0==(bf_ignore_team&buy_flags))
 	{
 	if (GameID() == eGameIDCaptureTheArtefact)
 	{

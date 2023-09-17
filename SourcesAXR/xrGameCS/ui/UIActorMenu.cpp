@@ -7,13 +7,23 @@
 #include "../inventory.h"
 #include "../inventory_item.h"
 #include "../InventoryBox.h"
-#include "../trade.h"
-#include "../trade_parameters.h"
 #include "object_broker.h"
 #include "../ai/monsters/BaseMonster/base_monster.h"
 #include "UIInventoryUtilities.h"
 #include "game_cl_base.h"
 
+#include "../Weapon.h"
+#include "../WeaponMagazinedWGrenade.h"
+#include "../WeaponAmmo.h"
+#include "../Silencer.h"
+#include "../Scope.h"
+#include "../CustomBackpack.h"
+#include "../GrenadeLauncher.h"
+#include "../LaserDesignator.h"
+#include "../TacticalTorch.h"
+#include "../trade_parameters.h"
+#include "../CustomOutfit.h"
+#include "../CustomDetector.h"
 #include "UICursor.h"
 #include "UICellItem.h"
 #include "UICharacterInfo.h"
@@ -25,25 +35,16 @@
 #include "UIMessageBoxEx.h"
 #include "UIPropertiesBox.h"
 #include "UIMainIngameWnd.h"
-#include "../xrEngine/x_ray.h"
-
-#include "../Weapon.h"
-#include "../WeaponPistol.h"
+#include "../Trade.h"
 #include "../WeaponKnife.h"
 #include "../WeaponBinoculars.h"
-#include "../AnomalyDetector.h"
-#include "../WeaponMagazinedWGrenade.h"
-#include "../WeaponAmmo.h"
-#include "../Silencer.h"
-#include "../Scope.h"
-#include "../GrenadeLauncher.h"
-#include "../LaserDesignator.h"
-#include "../TacticalTorch.h"
+
 #include "../CustomBackpack.h"
+#include "../WeaponPistol.h"
 #include "../Torch.h"
+#include "../AnomalyDetector.h"
 #include "../PDA.h"
-#include "../CustomOutfit.h"
-#include "../CustomDetector.h"
+#include "../xrEngine/x_ray.h"
 #include "../../xrServerEntitiesCS/script_engine.h"
 
 bool SSFX_UI_DoF_active = false;
@@ -464,8 +465,6 @@ void CUIActorMenu::SetCurrentItem(CUICellItem* itm)
 	}
 }
 
-// ================================================================
-
 void CUIActorMenu::InfoCurItem( CUICellItem* cell_item )
 {
 	if ( !cell_item )
@@ -482,7 +481,7 @@ void CUIActorMenu::InfoCurItem( CUICellItem* cell_item )
 		compare_item = m_pActorInvOwner->inventory().ItemFromSlot(compare_slot);
 	}
 
-	if(m_currMenuMode ==mmTrade)
+	if(GetMenuMode()==mmTrade)
 	{
 		CInventoryOwner* item_owner = smart_cast<CInventoryOwner*>(current_item->m_pInventory->GetOwner());
 		u32 item_price = u32(-1);

@@ -224,16 +224,16 @@ public:
 	xr_vector<EDDListType>		m_allowed_drops				[iListTypeMax];
 	bool						AllowItemDrops				(EDDListType from, EDDListType to);
 
-	bool		__stdcall		OnItemDrop					(CUICellItem* itm);
-	bool		__stdcall		OnItemStartDrag				(CUICellItem* itm);
-	bool		__stdcall		OnItemDbClick				(CUICellItem* itm);
-	bool		__stdcall		OnItemSelected				(CUICellItem* itm);
-	bool		__stdcall		OnItemRButtonClick			(CUICellItem* itm);
-	bool		__stdcall		OnItemMButtonClick			(CUICellItem* itm);
-	bool		__stdcall		OnItemFocusReceive			(CUICellItem* itm);
-	bool		__stdcall		OnItemFocusLost				(CUICellItem* itm);
-	bool		__stdcall		OnItemFocusedUpdate			(CUICellItem* itm);
-	void		__stdcall		OnDragItemOnTrash			(CUIDragItem* item, bool b_receive);
+	bool		xr_stdcall		OnItemDrop					(CUICellItem* itm);
+	bool		xr_stdcall		OnItemStartDrag				(CUICellItem* itm);
+	bool		xr_stdcall		OnItemDbClick				(CUICellItem* itm);
+	bool		xr_stdcall		OnItemSelected				(CUICellItem* itm);
+	bool		xr_stdcall		OnItemRButtonClick			(CUICellItem* itm);
+	bool		xr_stdcall		OnItemMButtonClick			(CUICellItem* itm);
+	bool		xr_stdcall		OnItemFocusReceive			(CUICellItem* itm);
+	bool		xr_stdcall		OnItemFocusLost				(CUICellItem* itm);
+	bool		xr_stdcall		OnItemFocusedUpdate			(CUICellItem* itm);
+	void		xr_stdcall		OnDragItemOnTrash			(CUIDragItem* item, bool b_receive);
 	bool						OnItemDropped				(PIItem itm, CUIDragDropListEx* new_owner, CUIDragDropListEx* old_owner);
 
 	void						ResetMode					();
@@ -259,7 +259,7 @@ protected:
 
 	void						ActivatePropertiesBox		();
 	void						TryHidePropertiesBox		();
-	void		__stdcall		ProcessPropertiesBoxClicked	(CUIWindow* w, void* d);
+	void		xr_stdcall		ProcessPropertiesBoxClicked	(CUIWindow* w, void* d);
 	
 	void						CheckDistance				();
 	void						UpdateItemsPlace			();
@@ -279,7 +279,7 @@ protected:
 	void						UpdateOutfit				();
 	void						MoveArtefactsToBag			();
 	bool						TryActiveSlot				(CUICellItem* itm);
-	void		__stdcall		TryRepairItem				(CUIWindow* w, void* d);
+	void		xr_stdcall		TryRepairItem				(CUIWindow* w, void* d);
 	bool						CanUpgradeItem				(PIItem item);
 
 	bool						ToActorTrade				(CUICellItem* itm, bool b_use_cursor_pos);
@@ -325,7 +325,8 @@ public:
 
 	void						CallMessageBoxYesNo			(LPCSTR text);
 	void						CallMessageBoxOK			(LPCSTR text);
-	void		__stdcall		OnMesBoxYes					(CUIWindow*, void*);
+	void		xr_stdcall		OnMesBoxYes					(CUIWindow*, void*);
+	void		xr_stdcall		OnMesBoxNo					(CUIWindow*, void*);
 
 	void						OnInventoryAction			(PIItem pItem, u16 action_type);
 	void						ShowRepairButton			(bool status);

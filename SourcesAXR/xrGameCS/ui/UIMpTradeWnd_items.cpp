@@ -565,7 +565,7 @@ void CUIMpTradeWnd::StorePreset(ETradePreset idx, bool bSilent, bool check_allow
 	if(!bSilent)
 	{
 		string512						buff;
-		sprintf_s							(buff,	"%s [%d]",
+		xr_sprintf							(buff,	"%s [%d]",
 												CStringTable().translate("ui_st_preset_stored_to").c_str(), idx);
 		SetInfoString					(buff);
 	}
@@ -900,7 +900,7 @@ void CUICellItemTradeMenuDraw::OnDraw(CUICellItem* cell)
 			acc = 1;
 		string64							buff;
 
-		sprintf_s							(buff," %d", acc - DIK_ESCAPE);
+		xr_sprintf							(buff," %d", acc - DIK_ESCAPE);
 		CGameFont* pFont					= UI()->Font()->pFontLetterica16Russian;
 		pFont->SetAligment					(CGameFont::alCenter);
 		pFont->SetColor						(color_rgba(135,123,116,255));

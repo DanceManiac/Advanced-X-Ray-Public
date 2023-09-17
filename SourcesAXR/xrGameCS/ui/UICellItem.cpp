@@ -8,7 +8,6 @@
 #include "../level.h"
 #include "../UIGameSP.h"
 #include "object_broker.h"
-#include "UIActorMenu.h"
 #include "UIXmlInit.h"
 #include "UIProgressBar.h"
 #include "UIGameCustom.h"

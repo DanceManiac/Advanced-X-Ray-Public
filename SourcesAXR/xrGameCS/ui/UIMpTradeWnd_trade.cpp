@@ -171,6 +171,7 @@ bool CUIMpTradeWnd::TryToBuyItem(SBuyItemInfo* buy_itm, u32 buy_flags, SBuyItemI
 
 	R_ASSERT(cell_itm->OwnerList()==NULL);
 
+	cell_itm->SetColor				(m_item_color_normal);
 	bool b_addon					= TryToAttachItemAsAddon(iinfo, itm_parent);
 	if(!b_addon)
 	{
@@ -211,7 +212,7 @@ bool CUIMpTradeWnd::CheckBuyPossibility(const shared_str& sect_name, u32 buy_fla
 		if( GetMoneyAmount() < _item_cost)
 		{
 			if(!b_silent)
-				sprintf_s					(	info_buffer,
+				xr_sprintf					(	info_buffer,
 											"%s. %s. %s[%d] %s[%d]",
 											CStringTable().translate("ui_inv_cant_buy_item").c_str(),
 											CStringTable().translate("ui_inv_not_enought_money").c_str(),
@@ -226,7 +227,7 @@ bool CUIMpTradeWnd::CheckBuyPossibility(const shared_str& sect_name, u32 buy_fla
 	if(b_can_buy && (buy_flags&bf_check_rank_restr) && !g_mp_restrictions.IsAvailable(sect_name))
 	{
 		if(!b_silent)
-			sprintf_s					(	info_buffer,
+			xr_sprintf					(	info_buffer,
 										"%s. %s. %s[%s] %s[%s] ", 
 										CStringTable().translate("ui_inv_cant_buy_item").c_str(),
 										CStringTable().translate("ui_inv_rank_restr").c_str(),
@@ -249,7 +250,7 @@ bool CUIMpTradeWnd::CheckBuyPossibility(const shared_str& sect_name, u32 buy_fla
 		if(cnt_have>=cnt_restr)
 		{
 			if(!b_silent)
-				sprintf_s				(	info_buffer,
+				xr_sprintf				(	info_buffer,
 										"%s. %s. %s [%d]", 
 										CStringTable().translate("ui_inv_cant_buy_item").c_str(),
 										CStringTable().translate("ui_inv_count_restr").c_str(),
