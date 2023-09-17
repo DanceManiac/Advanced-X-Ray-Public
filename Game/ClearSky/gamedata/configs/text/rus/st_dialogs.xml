@@ -564,6 +564,9 @@
 	<string id="treasure_dialog_2">
 		<text>Да не, ничё нет интересного.</text>
 	</string>
+	<string id="treasure_dialog_2_scientist">
+		<text>Нет, ничего интересного.</text>
+	</string>
 	<string id="actor_break_dialog_1">
 		<text>Ладно, бывай.</text>
 	</string>

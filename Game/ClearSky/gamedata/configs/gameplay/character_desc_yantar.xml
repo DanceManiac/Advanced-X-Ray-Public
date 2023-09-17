@@ -119,7 +119,7 @@
     <actor_dialog>yan_scientist_about_stalkers</actor_dialog>
     <actor_dialog>yan_scientist_about_zombie</actor_dialog>
     <actor_dialog>yan_scientist_bring_documents</actor_dialog>
-    <actor_dialog>treasure_dialog</actor_dialog>
+    <actor_dialog>treasure_dialog_scientist</actor_dialog>
   </specific_character>
   
   <specific_character id="yan_stalker_levsha" team_default = "1">

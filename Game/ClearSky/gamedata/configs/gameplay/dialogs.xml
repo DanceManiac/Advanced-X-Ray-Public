@@ -344,6 +344,91 @@
             </phrase>
         </phrase_list>
     </dialog>
+    <dialog id="treasure_dialog_scientist">
+<!--        <precondition>dialog_manager.precondition_is_phrase_disabled</precondition> -->
+        <phrase_list>
+            <phrase id="131">
+                <text>treasure_dialog_131</text>
+            </phrase>
+            <phrase id="2">
+                <text>treasure_dialog_2_scientist</text>
+                <precondition>treasure_manager.is_not_dialog_treasure</precondition>
+            </phrase>
+            <phrase id="12">
+                <text>treasure_dialog_12</text>
+                <next>121</next>
+            </phrase>
+            <phrase id="11">
+                <text>treasure_dialog_11</text>
+                <next>111</next>
+            </phrase>
+            <phrase id="111">
+                <text />
+                <script_text>treasure_manager.get_treasure_cost</script_text>
+                <next>1111</next>
+                <next>1112</next>
+                <next>1113</next>
+                <next>1114</next>
+            </phrase>
+            <phrase id="11111">
+                <text>treasure_dialog_11111</text>
+                <action>treasure_manager.give_treasure_from_dialog</action>
+            </phrase>
+            <phrase id="11121">
+                <text>treasure_dialog_11121</text>
+            </phrase>
+            <phrase id="121">
+                <text>treasure_dialog_121</text>
+            </phrase>
+            <phrase id="1112">
+                <text>treasure_dialog_1112</text>
+                <precondition>treasure_manager.have_money</precondition>
+                <next>11111</next>
+            </phrase>
+            <phrase id="1114">
+                <text>treasure_dialog_1114</text>
+                <next>121</next>
+            </phrase>
+            <phrase id="1113">
+                <text>treasure_dialog_1113</text>
+                <precondition>treasure_manager.have_no_money</precondition>
+                <next>11121</next>
+            </phrase>
+            <phrase id="1111">
+                <text>treasure_dialog_1111</text>
+                <next>11131</next>
+                <next>11132</next>
+            </phrase>
+            <phrase id="11131">
+                <text>treasure_dialog_11131</text>
+                <precondition>treasure_manager.is_not_item_name</precondition>
+                <next>1112</next>
+                <next>1113</next>
+                <next>1114</next>
+            </phrase>
+            <phrase id="11132">
+                <text />
+                <script_text>treasure_manager.get_item_name</script_text>
+                <precondition>treasure_manager.is_item_name</precondition>
+                <next>1114</next>
+                <next>1112</next>
+                <next>1113</next>
+            </phrase>
+            <phrase id="1">
+                <text />
+                <script_text>treasure_manager.get_treasure_desc</script_text>
+                <precondition>treasure_manager.is_dialog_treasure</precondition>
+                <next>11</next>
+                <next>12</next>
+            </phrase>
+            <phrase id="0">
+<!--                <action>dialog_manager.action_disable_phrase</action> -->
+                <text>treasure_dialog_0</text>
+                <next>1</next>
+                <next>2</next>
+            </phrase>
+        </phrase_list>
+    </dialog>
     <dialog id="tm_faction_task">
         <phrase_list>
             <phrase id="11">
