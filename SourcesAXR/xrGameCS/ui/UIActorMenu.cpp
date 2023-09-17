@@ -1095,6 +1095,7 @@ void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )
 {
 	m_message_box_yes_no->SetText( text );
 	m_message_box_yes_no->func_on_ok = CUIWndCallback::void_function( this, &CUIActorMenu::OnMesBoxYes );
+	m_message_box_yes_no->func_on_no = CUIWndCallback::void_function(this, &CUIActorMenu::OnMesBoxNo);
 	HUD().GetUI()->StartStopMenu( m_message_box_yes_no, false );
 }
 

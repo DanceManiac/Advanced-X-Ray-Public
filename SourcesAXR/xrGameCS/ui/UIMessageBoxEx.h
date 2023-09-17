@@ -21,7 +21,9 @@ public:
 	LPCSTR			GetTextEditURL		();
 
 	CUIWndCallback::void_function		func_on_ok;
-	void 	__stdcall	OnOKClicked			(CUIWindow*, void*);
+	CUIWndCallback::void_function		func_on_no;
+	void xr_stdcall	OnOKClicked			(CUIWindow*, void*);
+	void xr_stdcall	OnNOClicked			(CUIWindow*, void*);
 
 	virtual bool	IR_OnKeyboardPress	(int dik);
 	virtual bool	NeedCenterCursor	()const	 {return false;}

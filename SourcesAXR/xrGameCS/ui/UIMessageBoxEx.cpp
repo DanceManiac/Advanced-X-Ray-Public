@@ -26,6 +26,9 @@ void CUIMessageBoxEx::InitMessageBox(LPCSTR xml_template)
 	m_pMessageBox->SetWndPos( Fvector2().set(0,0) );
 
 	AddCallback( m_pMessageBox->WindowName(), MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function( this, &CUIMessageBoxEx::OnOKClicked ) );
+	CUIMessageBox::E_MESSAGEBOX_STYLE style = m_pMessageBox->GetBoxStyle();
+	if(style==CUIMessageBox::MESSAGEBOX_YES_NO || style==CUIMessageBox::MESSAGEBOX_QUIT_WINDOWS || style==CUIMessageBox::MESSAGEBOX_QUIT_GAME)
+		AddCallback( m_pMessageBox->WindowName(), MESSAGE_BOX_NO_CLICKED, CUIWndCallback::void_function( this, &CUIMessageBoxEx::OnNOClicked ) );
 	
 }
 
@@ -37,6 +40,13 @@ void CUIMessageBoxEx::OnOKClicked( CUIWindow* w, void* d )
 	}
 }
 
+void CUIMessageBoxEx::OnNOClicked( CUIWindow* w, void* d )
+{
+	if ( !func_on_no.empty() )
+	{
+		func_on_no( w, d );
+	}
+}
 void CUIMessageBoxEx::SetText(LPCSTR text){
 	m_pMessageBox->SetText(text);
 
@@ -47,7 +57,8 @@ LPCSTR CUIMessageBoxEx::GetText ()
 	return m_pMessageBox->GetText();
 }
 
-void CUIMessageBoxEx::SendMessage(CUIWindow* pWnd, s16 msg, void* pData /* = NULL */){
+void CUIMessageBoxEx::SendMessage(CUIWindow* pWnd, s16 msg, void* pData /* = NULL */)
+{
 	CUIWndCallback::OnEvent(pWnd, msg, pData);
 	if (pWnd == m_pMessageBox)
 	{
@@ -69,11 +80,13 @@ void CUIMessageBoxEx::SendMessage(CUIWindow* pWnd, s16 msg, void* pData /* = NUL
 	
 }
 
-LPCSTR CUIMessageBoxEx::GetHost(){
+LPCSTR CUIMessageBoxEx::GetHost()
+{
 	return m_pMessageBox->GetHost();
 }
 
-LPCSTR CUIMessageBoxEx::GetPassword(){
+LPCSTR CUIMessageBoxEx::GetPassword()
+{
 	return m_pMessageBox->GetPassword();
 }
 
@@ -84,9 +97,11 @@ bool CUIMessageBoxEx::IR_OnKeyboardPress( int dik )
 		m_pMessageBox->OnYesOk();
 		return true;
 	}else
-	if ( dik == DIK_ESCAPE)
+	if ( dik == DIK_ESCAPE )
 	{
-		GetHolder()->StartStopMenu(this, true);
+		CUIMessageBox::E_MESSAGEBOX_STYLE style = m_pMessageBox->GetBoxStyle();
+		if(style != CUIMessageBox::MESSAGEBOX_INFO)
+			GetHolder()->StartStopMenu(this, true);
 		return true;
 	}else
 		return CUIDialogWnd::IR_OnKeyboardPress(dik);

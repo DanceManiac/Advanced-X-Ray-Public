@@ -3,7 +3,6 @@
 #include "UIXmlInit.h"
 #include "UI3tButton.h"
 #include "UIEditBox.h"
-#include "../string_table.h"
 
 CUIMessageBox::CUIMessageBox()
 {
@@ -63,7 +62,8 @@ void CUIMessageBox::InitMessageBox(LPCSTR box_template)
 
 	strconcat								(sizeof(str),str,box_template,":picture");
 	if (uiXml.NavigateToNode(str,0)){
-		m_UIStaticPicture						= xr_new<CUIStatic>();AttachChild(m_UIStaticPicture);
+		m_UIStaticPicture						= xr_new<CUIStatic>();
+		AttachChild(m_UIStaticPicture);
 		xml_init.InitStatic						(uiXml, str, 0, m_UIStaticPicture);
 	}
 
