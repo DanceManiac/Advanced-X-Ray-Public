@@ -805,3 +805,23 @@ anm_idle_moving_16x9									= tactical_torch_moving, idle_tactical_torch
 anm_idle_sprint_16x9									= tactical_torch_sprint, idle_tactical_torch
 
 onoff_light_range		= 0.0
+
+[artefact_container_base]:identity_immunities
+GroupControlSection		= spawn_group
+discovery_dependency 		=
+$spawn 				= "devices\artefact_container_base"
+class				= D_AFCONT
+cform           		= skeleton
+visual				= dynamics\devices\dev_af_container\dev_af_container_open.ogf
+description			= st_af_container_descr
+$prefetch 			= 32
+inv_name			= st_af_container
+inv_name_short			= st_af_container
+inv_weight			= 1.5
+inv_grid_width			= 1
+inv_grid_height			= 2
+inv_grid_x			= 19
+inv_grid_y			= 4
+cost				= 750
+container_size			= 1
+use_sound			= interface\inv_attach_addon

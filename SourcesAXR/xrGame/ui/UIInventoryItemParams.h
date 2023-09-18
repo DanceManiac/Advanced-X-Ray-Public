@@ -23,7 +23,16 @@ protected:
 	CUIInventoryItemInfo*	m_charge_level;
 	CUIInventoryItemInfo*	m_max_charge;
 	CUIInventoryItemInfo*	m_uncharge_speed;
+	CUIInventoryItemInfo*	m_artefacts_count;
+
+	xr_vector<CUITextWnd*>	m_textArtefacts;
+	xr_vector<CUIStatic*>	m_stArtefacts;
+
 	CUIStatic*				m_Prop_line;
+
+	int						m_iMaxAfCount;
+	int						m_iIncWndHeight;
+	float					m_stArtefactsScale;
 
 }; // class CUIInventoryItem
 

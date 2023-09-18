@@ -26,6 +26,7 @@
 #include "object_broker.h"
 #include "../xrEngine/igame_persistent.h"
 
+#include "Artefact.h"
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -476,6 +477,14 @@ void CInventoryItem::save(NET_Packet &packet)
 
 	if (object().H_Parent()) {
 		packet.w_u8			(0);
+		return;
+	}
+
+	CArtefact* artefact = smart_cast<CArtefact*>(this);
+
+	if (artefact && artefact->IsInContainer())
+	{
+		packet.w_u8(0);
 		return;
 	}
 

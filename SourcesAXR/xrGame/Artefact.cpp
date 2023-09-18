@@ -21,6 +21,7 @@
 #include "patrol_path.h"
 #include "patrol_path_storage.h"
 #include "Actor.h"
+#include "ArtefactContainer.h"
 #include "AdvancedXrayGameConstants.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
@@ -32,6 +33,10 @@
 	else\
 		if(y>z){inst_y;}\
 		else{inst_z;}
+
+extern float af_from_container_charge_level;
+extern int af_from_container_rank;
+extern CArtefactContainer* m_LastAfContainer;
 
 CArtefact::CArtefact() 
 {
@@ -53,7 +58,9 @@ CArtefact::CArtefact()
 	m_iAfRank					= 1;
 
 	//For Degradation
-	m_fConstAdditionalWeight = 0.0f;
+	m_fConstAdditionalWeight	= 0.0f;
+
+	m_bInContainer				= false;
 }
 
 
@@ -221,6 +228,14 @@ void CArtefact::OnH_A_Chield()
 	{
 		m_detectorObj->m_currPatrolPath = NULL;
 		m_detectorObj->m_currPatrolVertex = NULL;
+	}
+
+	if (m_LastAfContainer) //Костыль для контейнеров, потом надо нормально как-то сделать
+	{
+		SetChargeLevel(af_from_container_charge_level);
+		SetRank(af_from_container_rank);
+
+		m_LastAfContainer = nullptr;
 	}
 }
 
@@ -890,4 +905,9 @@ u32 CArtefact::Cost() const
 	}
 
 	return res;
+}
+
+bool CArtefact::IsInContainer()
+{
+	return m_bInContainer;
 }

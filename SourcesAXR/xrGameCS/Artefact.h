@@ -141,6 +141,7 @@ public:
 	float							m_fVolumetricIntensity;
 
 	int								m_iAfRank;
+	bool							m_bInContainer;
 public:
 	enum EAFHudStates {
 		eActivating = eLastBaseState+1,
@@ -162,6 +163,8 @@ public:
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
 
 	void							UpdateDegradation(void);
+
+	bool							IsInContainer		();
 
 	// optimization FAST/SLOW mode
 	u32						o_render_frame				;

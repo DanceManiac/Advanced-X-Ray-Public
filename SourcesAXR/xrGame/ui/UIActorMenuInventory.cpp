@@ -36,6 +36,7 @@
 #include "../Battery.h"
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
+#include "../ArtefactContainer.h"
 
 #include "../actor_defs.h"
 #include "../Actor.h"
@@ -949,6 +950,7 @@ bool CUIActorMenu::TryUseItem( CUICellItem* cell_itm )
 	{
 		return false;
 	}
+
 	if ( !item->Useful() || (pFilter && !pFilter->UseAllowed()) || (pRepairKit && !pRepairKit->UseAllowed()) )
 	{
 		return false;
@@ -1293,6 +1295,8 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CBattery*		pBattery		= smart_cast<CBattery*>		(item);
 	CAntigasFilter* pFilter			= smart_cast<CAntigasFilter*>(item);
 	CRepairKit*		pRepairKit		= smart_cast<CRepairKit*>	(item);
+	CArtefactContainer*	pAfContainer	= smart_cast<CArtefactContainer*>(item);
+	CArtefact*		pArtefact		= smart_cast<CArtefact*>	(item);
 
 	CInventory*	inv	= &m_pActorInvOwner->inventory();
 	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
@@ -1473,6 +1477,39 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			b_show = true;
 		}
 		return;
+	}
+	else if (pArtefact)
+	{
+		TIItemContainer::iterator it = inv->m_ruck.begin();
+		TIItemContainer::iterator ite = inv->m_ruck.end();
+
+		for (it; ite != it; ++it)
+		{
+			CArtefactContainer* container = smart_cast<CArtefactContainer*>(*it);
+
+			if (container && !container->IsFull())
+			{
+				shared_str str = CStringTable().translate("st_put_to");
+				str.printf("%s %s", str.c_str(), container->m_name.c_str());
+				m_UIPropertiesBox->AddItem(str.c_str(), (void*)container, ARTEFACT_TO_CONTAINER);
+				b_show = true;
+			}
+		}
+	}
+	else if (pAfContainer && pAfContainer->GetArtefactsInside().size())
+	{
+		for (auto af_in_container : pAfContainer->GetArtefactsInside())
+		{
+			CArtefact* af_in_container_casted = smart_cast<CArtefact*>(af_in_container);
+
+			if (af_in_container_casted)
+			{
+				shared_str str = CStringTable().translate("st_take_from");
+				str.printf("%s %s", str.c_str(), af_in_container_casted->m_name.c_str());
+				m_UIPropertiesBox->AddItem(str.c_str(), (void*)af_in_container_casted, ARTEFACT_FROM_CONTAINER);
+				b_show = true;
+			}
+		}
 	}
 	else if ( pEatableItem )
 	{
@@ -1782,6 +1819,34 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 				break;
 			repair_kit->m_iUseFor = 7;
 			TryUseItem(cell_item);
+			break;
+		}
+	case ARTEFACT_TO_CONTAINER:
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(item);
+			CArtefactContainer* af_container = smart_cast<CArtefactContainer*>((PIItem)m_UIPropertiesBox->GetClickedItem()->GetData());
+
+			if (!artefact || !af_container)
+				break;
+
+			af_container->PutArtefactToContainer(*artefact);
+
+			artefact->DestroyObject();
+
+			break;
+		}
+	case ARTEFACT_FROM_CONTAINER:
+		{
+			CArtefactContainer* af_container = smart_cast<CArtefactContainer*>(item);
+			CArtefact* artefact = smart_cast<CArtefact*>((PIItem)m_UIPropertiesBox->GetClickedItem()->GetData());
+
+			if (!af_container)
+				break;
+
+			af_container->TakeArtefactFromContainer(artefact);
+
+			m_ItemInfo->ResetInventoryItem();
+
 			break;
 		}
 	}//switch

@@ -2,22 +2,33 @@
 
 #include "inventory_item_object.h"
 
-class ArtefactContainer : public CInventoryItemObject
+class CArtefactContainer : public CInventoryItemObject
 {
-	using inherited = CInventoryItemObject;
+	typedef CInventoryItemObject inherited;
 
-	ArtefactContainer();
-	virtual ~ArtefactContainer();
-
+protected:
 	size_t					m_iContainerSize;
-	xr_vector<shared_str>	m_sArtefactsInside;
+	xr_vector<CArtefact*>	m_sArtefactsInside;
 
 public:
-	virtual void		Load(LPCSTR section);
-	virtual BOOL		net_Spawn(CSE_Abstract* DC);
 
-	size_t				GetContainerSize() const {return m_iContainerSize;}
-	void				SetContainerSize(size_t new_size) { m_iContainerSize = new_size; }
-	void				PutArtefactToContainer(shared_str artefact);
-	void				TakeArtefactFromContainer(shared_str artefact);
+	CArtefactContainer(void);
+	virtual ~CArtefactContainer(void);
+
+	virtual void			Load						(LPCSTR section);
+	virtual BOOL			net_Spawn					(CSE_Abstract* DC);
+
+	virtual void			save						(NET_Packet& output_packet);
+	virtual void			load						(IReader& input_packet);
+
+	virtual	u32				Cost						() const;
+	virtual float			Weight						() const;
+
+	size_t					GetContainerSize			() const { return m_iContainerSize; }
+	void					SetContainerSize			(size_t new_size) { m_iContainerSize = new_size; }
+	xr_vector<CArtefact*>	GetArtefactsInside			() { return m_sArtefactsInside; }
+	bool					IsFull						() const { return m_sArtefactsInside.size() >= m_iContainerSize; }
+
+	void					PutArtefactToContainer		(const CArtefact& artefact);
+	void					TakeArtefactFromContainer	(CArtefact* artefact);
 };

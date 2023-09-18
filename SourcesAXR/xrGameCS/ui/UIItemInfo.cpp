@@ -28,6 +28,7 @@
 #include "../Torch.h"
 #include "../CustomDetector.h"
 #include "../AnomalyDetector.h"
+#include "../ArtefactContainer.h"
 #include "UIBoosterInfo.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
@@ -542,12 +543,19 @@ void CUIItemInfo::TryAddUpgradeInfo( CInventoryItem& pInvItem )
 	}
 }
 
+void CUIItemInfo::ResetInventoryItem()
+{
+	if (UIInventoryItem)
+		UIInventoryItem->SetHeight(0);
+}
+
 void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 {
 	CInventoryItemObject* item = smart_cast<CInventoryItemObject*>(&pInvItem);
 	CHudItemObject* hud_item = smart_cast<CHudItemObject*>(&pInvItem);
+	CArtefactContainer* af_container = smart_cast<CArtefactContainer*>(&pInvItem);
 
-	if ((item || hud_item) && UIInventoryItem)
+	if ((item || hud_item || af_container) && UIInventoryItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);
