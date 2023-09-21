@@ -120,6 +120,7 @@ namespace DynamicHudGlass
 		else
 		{
 			HudGlassElement = 0;
+			NightVisionType = 0;
 			DynamicHudGlassEnabled = false;
 		}
 	}
