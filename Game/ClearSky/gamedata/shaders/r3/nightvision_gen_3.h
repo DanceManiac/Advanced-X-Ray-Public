@@ -1,15 +1,14 @@
-#include "night_vision.h"
 #include "common.h"
 
-//Night Vision Type 1 Shader
+//Night Vision Type 3 Shader
 //Ported from ShaderToy by Dance Maniac for Advanced X-Ray and G.S.W.R.
 //https://www.shadertoy.com/view/XlsGzs#
 //https://www.shadertoy.com/view/Xsf3RN
 
-#define NVG_WARP_LINE_PERIOD 0.5
-#define NVG_WARP_LINE_INTENSITY 10.0
-	
-float4 main(p_screen I) : SV_Target
+#define NVG_WARP_LINE_PERIOD_NVG_3 0.1
+#define NVG_WARP_LINE_INTENSITY_NVG_3 0.0
+
+float4 process_night_vision_3(p_screen I) : SV_Target
 {
 	float4 jitter = float4(
 		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 12345.0),
@@ -36,9 +35,9 @@ float4 main(p_screen I) : SV_Target
 	//float4 mask = mask_blend(mask_a, mask_b);
 	
 	float greenness = 0.4;
-	float4 coloring = float4(0.5, 2.0, 0.5, 1.0);
+	float4 coloring = float4(0.7, 2.0, 1.5, 1.0);
 	
-	float warpLine = frac(+timers.x * NVG_WARP_LINE_PERIOD);
+	float warpLine = frac(+timers.x * NVG_WARP_LINE_PERIOD_NVG_3);
 	
 	/** debug
 	if(abs(uv.y - warpLine) < 0.003)
@@ -50,7 +49,7 @@ float4 main(p_screen I) : SV_Target
 	
 	float warpLen = 0.1;
 	float warpArg01 = remap(clamp((position.y - warpLine) - warpLen * 0.5, 0.0, warpLen), 0.0, warpLen, 0.0, 1.0);
-	float offset = sin(warpArg01 * NVG_WARP_LINE_INTENSITY)  * f1(warpArg01);
+	float offset = sin(warpArg01 * NVG_WARP_LINE_INTENSITY_NVG_3)  * f1(warpArg01);
 	
 	
 	float4 lineNoise = float4(1.0, 1.0, 1.0, 1.0);
@@ -62,11 +61,11 @@ float4 main(p_screen I) : SV_Target
 	float3 color = s_image.Sample(smp_base, I.tc0 + float2(offset * 0.02, 0.0)).xyz;
 	
 	// APPLY NOISE
-	color += jitter.y * (0.1); // Add the noise to the image
+	color += jitter.y * (0.05); // Add the noise to the image
 	
 	    // vignetting
     color *=  vignetteAmount*0.75;
 
-	return float4(color * 1.5 * coloring * lineNoise, 1.0);
+	return float4(color * 2.5 * coloring * lineNoise, 1.0);
 
 }

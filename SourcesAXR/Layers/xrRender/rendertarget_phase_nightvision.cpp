@@ -44,7 +44,8 @@ void CRenderTarget::phase_nightvision()
 	RCache.Vertex.Unlock(4, g_combine->vb_stride);
 
 	//Set pass
-	RCache.set_Element(s_nightvision->E[NightVisionType]);
+	RCache.set_Element(s_nightvision->E[NightVisionType ? 1 : 0]);
+	RCache.set_c("night_vision_type", NightVisionType, 0, 0, 0);
 
 	//Set geometry
 	RCache.set_Geometry(g_combine);

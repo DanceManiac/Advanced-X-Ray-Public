@@ -1,4 +1,3 @@
-#include "night_vision.h"
 #include "common.h"
 
 //Night Vision Type 2 Shader
@@ -6,10 +5,10 @@
 //https://www.shadertoy.com/view/XlsGzs#
 //https://www.shadertoy.com/view/Xsf3RN
 
-#define NVG_WARP_LINE_PERIOD 0.1
-#define NVG_WARP_LINE_INTENSITY 5.0
+#define NVG_WARP_LINE_PERIOD_NVG_2 0.1
+#define NVG_WARP_LINE_INTENSITY_NVG_2 5.0
 
-float4 main(p_screen I) : SV_Target
+float4 process_night_vision_2(p_screen I) : SV_Target
 {
 	float4 jitter = float4(
 		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 12345.0),
@@ -38,7 +37,7 @@ float4 main(p_screen I) : SV_Target
 	float greenness = 0.4;
 	float4 coloring = float4(1.0, 2.0, 1.3, 1.0);
 	
-	float warpLine = frac(+timers.x * NVG_WARP_LINE_PERIOD);
+	float warpLine = frac(+timers.x * NVG_WARP_LINE_PERIOD_NVG_2);
 	
 	/** debug
 	if(abs(uv.y - warpLine) < 0.003)
@@ -50,7 +49,7 @@ float4 main(p_screen I) : SV_Target
 	
 	float warpLen = 0.1;
 	float warpArg01 = remap(clamp((position.y - warpLine) - warpLen * 0.5, 0.0, warpLen), 0.0, warpLen, 0.0, 1.0);
-	float offset = sin(warpArg01 * NVG_WARP_LINE_INTENSITY)  * f1(warpArg01);
+	float offset = sin(warpArg01 * NVG_WARP_LINE_INTENSITY_NVG_2)  * f1(warpArg01);
 	
 	
 	float4 lineNoise = float4(1.0, 1.0, 1.0, 1.0);
