@@ -47,5 +47,6 @@ namespace GameConstants
 	Fvector4 GetSSFX_FocusDoF();
 	bool GetSSFX_EnableBoreDoF();
 	LPCSTR GetAfInfluenceMode();
+	LPCSTR GetArtefactDegradationMode();
 	LPCSTR GetMoonPhasesMode();
 };

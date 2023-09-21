@@ -43,6 +43,7 @@ Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
 Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 0, 255);
 Fvector4 m_FV4NeutralColor = Fvector4().set(170, 170, 170, 255);
 LPCSTR	m_sAfInfluenceMode = "from_belt";
+LPCSTR	m_sArtefactsDegradationMode = "from_belt";
 LPCSTR	m_sMoonPhasesMode = "off";
 //SSFX DoF
 Fvector4 m_FV4DefaultDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
@@ -90,6 +91,7 @@ namespace GameConstants
 		m_FV4NeutralColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_neutral", Fvector4().set(170, 170, 170, 255));
 		m_bUseHQ_Icons = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "hq_icons", false);
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
+		m_sArtefactsDegradationMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_degradation_mode", "from_belt"); //from_belt|from_ruck
 		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
 		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
@@ -298,6 +300,11 @@ namespace GameConstants
 	LPCSTR GetAfInfluenceMode()
 	{
 		return m_sAfInfluenceMode;
+	}
+
+	LPCSTR GetArtefactDegradationMode()
+	{
+		return m_sArtefactsDegradationMode;
 	}
 
 	LPCSTR GetMoonPhasesMode()

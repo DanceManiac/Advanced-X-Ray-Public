@@ -2021,6 +2021,17 @@ void CActor::UpdateArtefactsOnBelt()
 	TIItemContainer::iterator itR = inventory().m_ruck.begin();
 	TIItemContainer::iterator iteR = inventory().m_ruck.end();
 
+	if (GameConstants::GetArtefactsDegradation() && xr_strcmp("from_ruck", GameConstants::GetArtefactDegradationMode()) == 0)
+	{
+		for (itR; iteR != itR; ++itR)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itR);
+			
+			if (artefact)
+				artefact->UpdateDegradation();
+		}
+	}
+
 	if (xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
 	{
 		for (itR; iteR != itR; ++itR)
@@ -2036,6 +2047,9 @@ void CActor::UpdateArtefactsOnBelt()
 				}
 				else
 					conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time);
+
+				if (GameConstants::GetArtefactsDegradation() && (xr_strcmp("from_ruck", GameConstants::GetArtefactDegradationMode()) == 0))
+					artefact->UpdateDegradation();
 			}
 		}
 	}
