@@ -76,6 +76,7 @@ private:
 public:
 						target_fire_no_lookout			(animation_planner *object, LPCSTR name, StalkerDecisionSpace::EWorldProperties const &world_property, u32 const &loophole_value);
 	virtual	void		initialize						();
+	virtual ~target_fire_no_lookout() {}
 
 private:
 	StalkerDecisionSpace::EWorldProperties m_world_property;

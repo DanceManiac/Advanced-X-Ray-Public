@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "UIGameCTA.h"
 
-//. #include "UITDMPlayerList.h"
-//.#include "UITDMFragList.h"
 #include <dinput.h>
 
 #include "UITeamPanels.h"
@@ -61,11 +59,10 @@
 
 CUIGameCTA::CUIGameCTA()
 {
-	teamPanels			= xr_new<UITeamPanels>();
 	m_pUITeamSelectWnd	= xr_new<CUISpawnWnd>();
+	teamPanels					= xr_new<UITeamPanels>();
+	teamPanels->Init			(TEAM_PANELS_XML_NAME, "team_panels_wnd");
 
-//-	m_pActorMenu		= xr_new<CUIActorMenu>();
-//-	m_pPdaMenu			= xr_new<CUIPdaWnd>	();
 	
 	CUIXml							uiXml;
 	uiXml.Load						(CONFIG_PATH, UI_PATH, CTA_GAME_WND_XML);
@@ -206,11 +203,6 @@ void CUIGameCTA::SetClGame(game_cl_GameState* g)
 	
 	m_game->SetGameUI(this);
 	m_pBuySpawnMsgBox->func_on_ok = CUIWndCallback::void_function(m_game, &game_cl_CaptureTheArtefact::OnBuySpawn);
-}
-
-void CUIGameCTA::Init()
-{
-	teamPanels->Init(TEAM_PANELS_XML_NAME, "team_panels_wnd");
 }
 
 void CUIGameCTA::AddPlayer(ClientID const & clientId)

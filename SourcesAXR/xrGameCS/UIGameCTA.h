@@ -8,8 +8,6 @@
 
 class UITeamPanels;
 
-//-class CUIActorMenu;
-//-class CUIPdaWnd;
 class CUIMapDesc;
 class CUIMoneyIndicator;
 class CUIRankIndicator;
@@ -36,8 +34,6 @@ private:
 	CUIStatic*			m_pFragLimitIndicator;
 	game_cl_CaptureTheArtefact*			m_game;
 
-//-	CUIActorMenu*					m_pActorMenu;
-//-	CUIPdaWnd*						m_pPdaMenu;
 	CUIMapDesc*						m_pMapDesc;
 	CUIMoneyIndicator*				m_pMoneyIndicator;
 	CUIRankIndicator*				m_pRankIndicator;
@@ -114,7 +110,7 @@ public:
 	virtual void		ReInitShownUI			();
 	virtual	void		reset_ui				();
 	virtual void		SetClGame				(game_cl_GameState* g);
-	virtual	void		Init					();
+//	virtual	void		Init					();
 	virtual void		OnFrame					();
 	virtual void		Render					();
 	

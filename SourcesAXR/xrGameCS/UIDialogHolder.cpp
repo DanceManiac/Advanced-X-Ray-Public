@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "UIDialogHolder.h"
 #include "ui/UIPdaWnd.h"
+#include "UIGameCustom.h"
 #include "UICursor.h"
 #include "level.h"
 #include "actor.h"
 #include "xr_level_controller.h"
 #include "pda.h"
 #include "inventory.h"
-#include "UIGameCustom.h"
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -260,6 +260,15 @@ void CDialogHolder::OnFrame	()
 	}
 }
 
+void CDialogHolder::CleanInternals()
+{
+	while( !m_input_receivers.empty() )
+		m_input_receivers.pop_back();
+
+	m_dialogsToRender.clear	();
+	GetUICursor()->Hide		();
+}
+
 void CDialogHolder::shedule_Update(u32 dt)
 {
 	ISheduled::shedule_Update(dt);
@@ -276,13 +285,4 @@ void CDialogHolder::shedule_Update(u32 dt)
 float CDialogHolder::shedule_Scale()
 {
 	return 0.5f;
-}
-
-void CDialogHolder::CleanInternals()
-{
-	while( !m_input_receivers.empty() )
-		m_input_receivers.pop_back();
-
-	m_dialogsToRender.clear	();
-	GetUICursor()->Hide		();
 }

@@ -36,6 +36,8 @@ private:
 			void	add_actions		();
 
 public:
+	target_selector() {}
+	virtual ~target_selector() {}
 	virtual	void	setup			(animation_planner *object, CPropertyStorage *storage);
 	virtual void	update			();
 	virtual LPCSTR	object_name		() const;

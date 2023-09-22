@@ -264,7 +264,8 @@ void CWeapon::UpdateXForm	()
 	CEntityAlive*			E = smart_cast<CEntityAlive*>(H_Parent());
 	
 	if (!E) {
-		if (!IsGameTypeSingle()) {
+		if (!IsGameTypeSingle())
+		{
 			UpdatePosition	(H_Parent()->XFORM());
 			UpdatePosition_alt(H_Parent()->XFORM());
 		}
@@ -3333,7 +3334,7 @@ bool CWeapon::render_item_ui_query()
 
 void CWeapon::render_item_ui()
 {
-	if(m_zoom_params.m_pVision)
+	if (m_zoom_params.m_pVision)
 		m_zoom_params.m_pVision->Draw();
 
 	ZoomTexture()->Update	();
@@ -3377,10 +3378,12 @@ float CWeapon::GetMagazineWeight(const decltype(CWeapon::m_magazine)& mag) const
 float CWeapon::Weight() const
 {
 	float res = CInventoryItemObject::Weight();
-	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size()){
+	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size())
+	{
 		res += pSettings->r_float(GetGrenadeLauncherName(),"inv_weight");
 	}
-	if(IsScopeAttached()&&m_scopes.size()){
+	if(IsScopeAttached()&&m_scopes.size())
+	{
 		res += pSettings->r_float(GetScopeName(),"inv_weight");
 	}
 	if(IsSilencerAttached()&&GetSilencerName().size()){

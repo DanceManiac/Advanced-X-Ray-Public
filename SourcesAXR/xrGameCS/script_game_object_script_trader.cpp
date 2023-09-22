@@ -18,6 +18,5 @@ class_<CScriptGameObject> script_register_game_object_trader(class_<CScriptGameO
 		.def("set_trader_head_anim",	&CScriptGameObject::set_trader_head_anim)
 		.def("set_trader_sound",		&CScriptGameObject::set_trader_sound)
 		.def("external_sound_start",	&CScriptGameObject::external_sound_start)
-		.def("external_sound_stop",		&CScriptGameObject::external_sound_stop)
-		;
+		.def("external_sound_stop",		&CScriptGameObject::external_sound_stop);
 }

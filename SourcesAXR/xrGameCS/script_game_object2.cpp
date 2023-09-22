@@ -355,16 +355,6 @@ void CScriptGameObject::SetActorDirection		(float dir)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call SetActorDirection method for non-actor object");
 }
 
-CHolderCustom* CScriptGameObject::get_current_holder()
-{
-	CActor* actor = smart_cast<CActor*>(&object());
-
-	if(actor)
-		return actor->Holder();
-	else
-		return NULL;
-}
-
 void CScriptGameObject::DisableHitMarks			(bool disable)
 {
 	CActor* actor = smart_cast<CActor*>(&object());
@@ -384,6 +374,16 @@ bool CScriptGameObject::DisableHitMarks			()	const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"ScriptGameObject : attempt to call DisableHitMarks method for non-actor object");
 		return false;
 	}
+}
+
+CHolderCustom* CScriptGameObject::get_current_holder()
+{
+	CActor* actor = smart_cast<CActor*>(&object());
+
+	if(actor)
+		return actor->Holder();
+	else
+		return NULL;
 }
 
 void CScriptGameObject::set_ignore_monster_threshold	(float ignore_monster_threshold)

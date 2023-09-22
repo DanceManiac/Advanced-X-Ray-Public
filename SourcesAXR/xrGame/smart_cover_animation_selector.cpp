@@ -174,7 +174,6 @@ MotionID animation_selector::select_animation		(bool &animation_movement_control
 		return			(result);
 	}
 
-//	Msg					( "%d on_mark", Device.dwTimeGlobal );
 	current_operator()->on_mark	();
 	return				(result);
 }

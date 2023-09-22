@@ -461,7 +461,7 @@ void loophole_fire::on_mark				()
 	if (!best_weapon)
 		return;
 
-	u32 magazine_size			= best_weapon->GetAmmoMagSize();
+	u32 const magazine_size		= best_weapon->GetAmmoMagSize();
 	object().set_goal			(eObjectActionFireNoReload,object().best_weapon(), magazine_size, magazine_size);
 }
 

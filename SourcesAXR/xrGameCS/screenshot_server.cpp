@@ -43,7 +43,7 @@ void clientdata_proxy::make_screenshot(ClientID const & admin_id, ClientID const
 		return;
 	}
 	m_cheater_digest = tmp_cheater->m_cdkey_digest;
-	m_cheater_name	= tmp_cheater->ps ? tmp_cheater->ps->name : "unknown";
+	m_cheater_name	= tmp_cheater->ps ? tmp_cheater->ps->getName() : "unknown";
 	NET_Packet ssr_packet;
 	ssr_packet.w_begin		(M_GAMEMESSAGE); 
 	ssr_packet.w_u32		(GAME_EVENT_MAKE_DATA);
@@ -82,7 +82,7 @@ void clientdata_proxy::make_config_dump(ClientID const & admin_id, ClientID cons
 		return;
 	}
 	m_cheater_digest = tmp_cheater->m_cdkey_digest;
-	m_cheater_name	= tmp_cheater->ps ? tmp_cheater->ps->name : "unknown";
+	m_cheater_name	= tmp_cheater->ps ? tmp_cheater->ps->getName() : "unknown";
 	NET_Packet ssr_packet;
 	ssr_packet.w_begin		(M_GAMEMESSAGE); 
 	ssr_packet.w_u32		(GAME_EVENT_MAKE_DATA);

@@ -68,7 +68,7 @@ CWeapon::CWeapon()
 	m_zoom_params.m_fSecondVPFovFactor			= 0.0f;
 	m_zoom_params.m_f3dZoomFactor				= 0.0f;
 
-	m_pAmmo					= NULL;
+	m_pCurrentAmmo					= NULL;
 
 
 	m_pFlameParticles2		= NULL;
@@ -232,7 +232,7 @@ int CWeapon::GetScopeY()
 CWeapon::~CWeapon		()
 {
 	xr_delete	(m_UIScope);
-	delete_data	(m_scopes);
+	delete_data				( m_scopes );
 
 	laser_light_render.destroy();
 	flashlight_render.destroy();
@@ -429,7 +429,7 @@ LPCSTR wpn_launcher_def_bone = "wpn_launcher";
 LPCSTR wpn_laser_def_bone = "wpn_laser";
 LPCSTR wpn_torch_def_bone = "wpn_torch";
 
-void CWeapon::Load(LPCSTR section)
+void CWeapon::Load		(LPCSTR section)
 {
 	inherited::Load					(section);
 	CShootingObject::Load			(section);
@@ -1483,7 +1483,6 @@ void CWeapon::OnActiveItem ()
 void CWeapon::OnHiddenItem ()
 {
 	m_dwAmmoCurrentCalcFrame = 0;
-//. Hide
 	if(IsGameTypeSingle())
 		SwitchState(eHiding);
 	else
@@ -1809,6 +1808,16 @@ void CWeapon::UpdatePosition(const Fmatrix& trans)
 	VERIFY				(!fis_zero(DET(renderable.xform)));
 }
 
+/*void CWeapon::UpdatePosition_alt(const Fmatrix& trans) {
+	Position().set(trans.c);
+	if (m_strapped_mode || m_strapped_mode_rifle)
+		XFORM().mul(trans, m_StrapOffset_alt);
+	else
+		XFORM().mul(trans, m_Offset);
+
+	VERIFY(!fis_zero(DET(renderable.xform)));
+}*/
+
 
 bool CWeapon::Action(s32 cmd, u32 flags) 
 {
@@ -2081,10 +2090,10 @@ int CWeapon::GetAmmoCount_forType(shared_str const& ammo_type) const
 
 	TIItemContainer::iterator itb = m_pInventory->m_belt.begin();
 	TIItemContainer::iterator ite = m_pInventory->m_belt.end();
-	for (; itb != ite; ++itb)
+	for ( ; itb != ite; ++itb ) 
 	{
-		CWeaponAmmo* pAmmo = smart_cast<CWeaponAmmo*>(*itb);
-		if (pAmmo && (pAmmo->cNameSect() == ammo_type))
+		CWeaponAmmo*	pAmmo = smart_cast<CWeaponAmmo*>( *itb );
+		if ( pAmmo && (pAmmo->cNameSect() == ammo_type) )
 		{
 			res += pAmmo->m_boxCurr;
 		}
@@ -2092,10 +2101,10 @@ int CWeapon::GetAmmoCount_forType(shared_str const& ammo_type) const
 
 	itb = m_pInventory->m_ruck.begin();
 	ite = m_pInventory->m_ruck.end();
-	for (; itb != ite; ++itb)
+	for ( ; itb != ite; ++itb ) 
 	{
-		CWeaponAmmo* pAmmo = smart_cast<CWeaponAmmo*>(*itb);
-		if (pAmmo && (pAmmo->cNameSect() == ammo_type))
+		CWeaponAmmo*	pAmmo = smart_cast<CWeaponAmmo*>( *itb );
+		if ( pAmmo && (pAmmo->cNameSect() == ammo_type) )
 		{
 			res += pAmmo->m_boxCurr;
 		}
@@ -3453,8 +3462,14 @@ BOOL CWeapon::ParentMayHaveAimBullet	()
 
 BOOL CWeapon::ParentIsActor	()
 {
-	CObject* O=H_Parent();
-	CEntityAlive* EA=smart_cast<CEntityAlive*>(O);
+	CObject* O			= H_Parent();
+	if (!O)
+		return FALSE;
+
+	CEntityAlive* EA	= smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return FALSE;
+
 	return EA->cast_actor()!=0;
 }
 
@@ -3637,19 +3652,20 @@ float CWeapon::GetSecondVPFov() const
 //      
 void CWeapon::UpdateSecondVP(bool bInGrenade)
 {
-	// + CActor::UpdateCL();
 	bool b_is_active_item = (m_pInventory != NULL) && (m_pInventory->ActiveItem() == this);
-	R_ASSERT(
-		ParentIsActor() && b_is_active_item); //           
+	R_ASSERT(ParentIsActor() && b_is_active_item); //           
 
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 
-	bool bCond_1 = m_zoom_params.m_fZoomRotationFactor > 0.05f; //   
-	bool bCond_2 = bIsSecondVPZoomPresent(); //          (scope_lense_factor
-											//   0)
-	bool bCond_3 = pActor->cam_Active() == pActor->cam_FirstEye(); //     1-
+	bool bCond_1 = bInZoomRightNow();		// Мы должны целиться  
 
-	Device.m_SecondViewport.SetSVPActive(bCond_1 && bCond_2 && bCond_3);
+	bool bCond_2 = bIsSecondVPZoomPresent();						// В конфиге должен быть прописан фактор зума для линзы (scope_lense_factor
+																	// больше чем 0)
+	bool bCond_3 = pActor->cam_Active() == pActor->cam_FirstEye();	// Мы должны быть от 1-го лица	
+
+
+
+	Device.m_SecondViewport.SetSVPActive(bCond_1 && bCond_2 && bCond_3 /*&& !bInGrenade*/);
 }
 
 const char* CWeapon::GetAnimAimName()
@@ -3669,7 +3685,7 @@ const char* CWeapon::GetAnimAimName()
 					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 				else
 					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
-			};
+			}
 		}
 	}
 	return nullptr;

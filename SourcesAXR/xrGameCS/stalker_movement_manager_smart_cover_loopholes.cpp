@@ -228,12 +228,12 @@ stalker_movement_manager_smart_cover::transition_action const &stalker_movement_
 	VERIFY2					(
 		result,
 		make_string(
-			"cover[%s][%s], loophole[%s], body_state[%d] [%f][%f][%f]",
+			"cover[%s][%s], loophole[%s -> %s], body_state[%s] [%f][%f][%f]",
 			cover.id().c_str(),
 			cover.description()->table_id().c_str(),
 			loophole_id0.c_str(),
 			loophole_id1.c_str(),
-			target_body_state ? *target_body_state : -1,
+			!target_body_state ? "" : (*target_body_state == eBodyStateStand ? "stand" : (*target_body_state == eBodyStateCrouch ? "crouch" : "invalid!")),
 			VPUSH(position)
 		)
 	);

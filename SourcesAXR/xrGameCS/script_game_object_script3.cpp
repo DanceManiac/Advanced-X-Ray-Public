@@ -139,6 +139,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("night_vision_enabled",		&CScriptGameObject::night_vision_enabled)
 		.def("enable_torch",				&CScriptGameObject::enable_torch)
 		.def("torch_enabled",				&CScriptGameObject::torch_enabled)
+		.def("attachable_item_load_attach", &CScriptGameObject::attachable_item_load_attach)
 		.def("weapon_strapped",				&CScriptGameObject::weapon_strapped)
 		.def("weapon_unstrapped",			&CScriptGameObject::weapon_unstrapped)
 		.def("is_weapon_shooting",			&CScriptGameObject::weapon_shooting)

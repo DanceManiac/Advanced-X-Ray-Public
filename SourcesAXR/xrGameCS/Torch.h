@@ -1,7 +1,6 @@
 #pragma once
 
 #include "inventory_item_object.h"
-//#include "night_vision_effector.h"
 #include "hudsound.h"
 #include "script_export_space.h"
 #include "Battery.h"
@@ -37,8 +36,8 @@ private:
 	inline	bool	can_use_dynamic_lights	();
 
 public:
-					CTorch				(void);
-	virtual			~CTorch				(void);
+					CTorch					();
+	virtual			~CTorch					();
 
 	virtual void	Load				(LPCSTR section);
 	virtual BOOL	net_Spawn			(CSE_Abstract* DC);
@@ -63,8 +62,8 @@ public:
 			void	UpdateUseAnim		();
 	virtual void	save				(NET_Packet &output_packet);
 	virtual void	load				(IReader &input_packet);
-			float	GetCurrentChargeLevel(void) const;
-			void	SetCurrentChargeLevel(float val);
+			float	GetCurrentChargeLevel	(void) const;
+			void	SetCurrentChargeLevel	(float val);
 			bool	IsSwitchedOn		(void) const;
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
@@ -87,6 +86,8 @@ public:
 			bool	m_bActivated;
 			bool	m_bSwitched;
 
+	virtual CTorch* cast_torch				() { return this; }
+ 
 protected:
 	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 	ref_sound		m_action_anim_sound;

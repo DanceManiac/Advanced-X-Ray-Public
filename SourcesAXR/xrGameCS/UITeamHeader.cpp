@@ -27,7 +27,7 @@ void UITeamHeader::Update()
 		STRING_VALUE temp_text = m_translated_strings[i->first];
 		buffer_vector<char>::size_type new_size = temp_text.size() + 16;	//i hope STRING_VALUE has size() method :)
 		buffer_vector<char> new_string(_alloca(new_size), new_size);
-		sprintf(new_string.begin(), "%s: %d", temp_text.c_str(), temp_value);
+		xr_sprintf(new_string.begin(), new_size, "%s: %d", temp_text.c_str(), temp_value);
 		fieldStatic->SetText(new_string.begin());
 	}
 }

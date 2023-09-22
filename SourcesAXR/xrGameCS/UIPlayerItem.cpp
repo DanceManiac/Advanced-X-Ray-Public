@@ -130,27 +130,27 @@ void UIPlayerItem::GetTextParamValue(game_PlayerState const * ps,
 	VERIFY(ps);
 	if (param_name.equal("mp_name"))
 	{
-		strcpy_s(dest.begin(), dest.size(), ps->name);
+		xr_strcpy(dest.begin(), dest.size(), ps->name);
 	} else if (param_name.equal("mp_frags"))
 	{
-		sprintf_s(dest.begin(), dest.size(), "%d", ps->m_iRivalKills - ps->m_iSelfKills);
+		xr_sprintf(dest.begin(), dest.size(), "%d", ps->m_iRivalKills - ps->m_iSelfKills);
 	} else if (param_name.equal("mp_deaths"))
 	{
-		sprintf_s(dest.begin(), dest.size(), "%d", ps->m_iDeaths);
+		xr_sprintf(dest.begin(), dest.size(), "%d", ps->m_iDeaths);
 	} else if (param_name.equal("mp_artefacts"))
 	{
-		sprintf_s(dest.begin(), dest.size(), "%d", ps->af_count);
+		xr_sprintf(dest.begin(), dest.size(), "%d", ps->af_count);
 	} else if (param_name.equal("mp_spots"))
 	{
-		sprintf_s(dest.begin(), dest.size(), "%d", m_checkPoints);
+		xr_sprintf(dest.begin(), dest.size(), "%d", m_checkPoints);
 	}else if (param_name.equal("mp_status"))
 	{
 		CStringTable st;
 		if (ps->testFlag(GAME_PLAYER_FLAG_READY))
-			strcpy_s(dest.begin(), dest.size(), st.translate("st_mp_ready").c_str());
+			xr_strcpy(dest.begin(), dest.size(), st.translate("st_mp_ready").c_str());
 	} else if (param_name.equal("mp_ping"))
 	{
-		sprintf_s(dest.begin(), dest.size(), "%d", ps->ping);
+		xr_sprintf(dest.begin(), dest.size(), "%d", ps->ping);
 	}
 }
 
@@ -165,16 +165,16 @@ void UIPlayerItem::GetIconParamValue(game_PlayerState const * ps,
 	{
 		if (ETeam(cl_game->ModifyTeam(ps->team)) == etGreenTeam)
 		{
-			sprintf_s(dest.begin(), dest.size(), "ui_hud_status_green_0%d", ps->rank + 1);
+			xr_sprintf(dest.begin(), dest.size(), "ui_hud_status_green_0%d", ps->rank + 1);
 		} else if (ETeam(cl_game->ModifyTeam(ps->team)) == etBlueTeam)
 		{
-			sprintf_s(dest.begin(), dest.size(), "ui_hud_status_blue_0%d", ps->rank + 1);
+			xr_sprintf(dest.begin(), dest.size(), "ui_hud_status_blue_0%d", ps->rank + 1);
 		}
 	} else if (param_name.equal("death_atf"))
 	{
 		if (ps->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD))
 		{
-			strcpy_s(dest.begin(), dest.size(), "death");
+			xr_strcpy(dest.begin(), dest.size(), "death");
 			return;
 		}
 		if (cl_game->Type() == eGameIDCaptureTheArtefact)
@@ -184,7 +184,7 @@ void UIPlayerItem::GetIconParamValue(game_PlayerState const * ps,
 			if (ps->GameID == cta_cl_game->GetGreenArtefactOwnerID() ||
 				ps->GameID == cta_cl_game->GetBlueArtefactOwnerID())
 			{
-				strcpy_s(dest.begin(), dest.size(), "artefact");
+				xr_strcpy(dest.begin(), dest.size(), "artefact");
 			}
 		} else if (cl_game->Type() == eGameIDArtefactHunt)
 		{
@@ -192,7 +192,7 @@ void UIPlayerItem::GetIconParamValue(game_PlayerState const * ps,
 			R_ASSERT(ahunt_cl_game);
 			if (ps->GameID == ahunt_cl_game->artefactBearerID)
 			{
-				strcpy_s(dest.begin(), dest.size(), "artefact");
+				xr_strcpy(dest.begin(), dest.size(), "artefact");
 			}
 		}
 	} else

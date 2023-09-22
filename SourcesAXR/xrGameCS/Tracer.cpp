@@ -21,7 +21,7 @@ CTracer::CTracer()
 
 	for (u8 i=0; i<255; i++)
 	{
-		sprintf_s						(LineName, "color_%d", i);
+		xr_sprintf						(LineName, "color_%d", i);
 		if (!pSettings->line_exist("tracers_color_table", LineName)) 
 			break;
 		u32 clr = pSettings->r_color	("tracers_color_table", LineName);

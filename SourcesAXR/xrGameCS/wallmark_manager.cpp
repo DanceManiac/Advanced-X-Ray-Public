@@ -198,19 +198,9 @@ void CWalmarkManager::StartWorkflow()
 	DBG_ClosedCashedDraw	(10000);
 */
 }
-/*
-void CWalmarkManager::PlaceWallmarks(const Fvector& start_pos,CObject* ignore_obj)
-{
-	if(m_wallmarks)
-			PlaceWallmarks(start_pos,m_trace_dist,m_wallmark_size,*m_wallmarks,ignore_obj);
-}
-*/
 
 void CWalmarkManager::Load (LPCSTR section)
 {
-//.	m_trace_dist	= pSettings->r_float(section,"dist");
-//.	m_wallmark_size	= pSettings->r_float(section,"size");
-	
 	//кровавые отметки на стенах
 	string256	tmp;
 	LPCSTR wallmarks_name = pSettings->r_string(section, "wallmarks"); 
@@ -220,15 +210,6 @@ void CWalmarkManager::Load (LPCSTR section)
 
 	for (int k=0; k<cnt; ++k)
 		m_wallmarks->AppendMark(_GetItem(wallmarks_name,k,tmp));
-
-	/*
-	ref_shader	s;
-	for (int k=0; k<cnt; ++k)
-	{
-		s.create ("effects\\wallmark",_GetItem(wallmarks_name,k,tmp));
-		m_wallmarks.push_back	(s);
-	}
-	*/
 }
 
 

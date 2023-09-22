@@ -109,20 +109,20 @@ bool CTrade::SetPartner(CEntity *p)
 //	string64	s;
 //	switch (pPartner.type) 
 //	{
-//		case TT_TRADER: strcpy_s(s, "trader"); break;
+//		case TT_TRADER: xr_strcpy(s, "trader"); break;
 //		case TT_STALKER: 
-//		case TT_ACTOR: strcpy_s(s, "stalker"); break;
+//		case TT_ACTOR: xr_strcpy(s, "stalker"); break;
 //	}
 //	
 //	
 //	switch (pPartner.inv_owner->m_tRank) 
 //	{
-//		case ALife::eStalkerRankNone: strcpy_s(s,"NO_RANK"); break;
-//		case ALife::eStalkerRankNovice: strcpy_s(s,"NOVICE"); break;
-//		case ALife::eStalkerRankExperienced: strcpy_s(s,"EXPERIENCED"); break;
-//		case ALife::eStalkerRankVeteran: strcpy_s(s,"VETERAN"); break;
-//		case ALife::eStalkerRankMaster: strcpy_s(s,"MASTER"); break;
-//		case ALife::eStalkerRankDummy: strcpy_s(s,"DUMMY"); break;
+//		case ALife::eStalkerRankNone: xr_strcpy(s,"NO_RANK"); break;
+//		case ALife::eStalkerRankNovice: xr_strcpy(s,"NOVICE"); break;
+//		case ALife::eStalkerRankExperienced: xr_strcpy(s,"EXPERIENCED"); break;
+//		case ALife::eStalkerRankVeteran: xr_strcpy(s,"VETERAN"); break;
+//		case ALife::eStalkerRankMaster: xr_strcpy(s,"MASTER"); break;
+//		case ALife::eStalkerRankDummy: xr_strcpy(s,"DUMMY"); break;
 //	}
 //
 //	return true;

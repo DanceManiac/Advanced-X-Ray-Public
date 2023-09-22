@@ -125,7 +125,6 @@ public:
 
 	virtual	void			Hit					(SHit* pHDS);
 
-	//void					UpdateSecondVP();
 
 	virtual void			reinit				();
 	virtual void			reload				(LPCSTR section);

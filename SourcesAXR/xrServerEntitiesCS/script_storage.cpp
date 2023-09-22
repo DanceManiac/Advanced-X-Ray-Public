@@ -10,7 +10,7 @@
 #include "script_storage.h"
 #include "script_thread.h"
 #include <stdarg.h>
-#include "../xrCore/doug_lea_allocator.h"
+#include "doug_lea_memory_allocator.h"
 
 #ifndef DEBUG
 #	include "opt.lua.h"

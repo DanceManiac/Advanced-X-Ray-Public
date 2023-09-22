@@ -23,12 +23,13 @@
 //    * script
 
 CStalkerAnimationManager::CStalkerAnimationManager	(CAI_Stalker *object) :
-	m_object					(object),
-	m_global					(object),
-	m_head						(object),
-	m_torso						(object),
-	m_legs						(object),
-	m_script					(object)
+	m_object					( object ),
+	m_global					( object ),
+	m_head						( object ),
+	m_torso						( object ),
+	m_legs						( object ),
+	m_script					( object ),
+	m_start_new_script_animation( false )
 {
 }
 

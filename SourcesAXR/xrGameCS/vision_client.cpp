@@ -18,8 +18,8 @@ IC	const CEntity &vision_client::object		() const
 }
 
 vision_client::vision_client					(CEntity *object, const u32 &update_interval) :
-	Feel::Vision(object),
-	m_object(object)
+	Feel::Vision				(object),
+	m_object					(object)
 {
 	VERIFY						(m_object);
 
@@ -101,7 +101,7 @@ void vision_client::shedule_Update				(u32 dt)
 shared_str vision_client::shedule_Name			() const
 {
 	string256					temp;
-	sprintf_s						(temp,"vision_client[%s]",*object().cName());
+	xr_sprintf					(temp,"vision_client[%s]",*object().cName());
 	return						(temp);
 }
 

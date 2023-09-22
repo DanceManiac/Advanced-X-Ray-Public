@@ -49,7 +49,7 @@ private:
 private:
 			void		add_evaluators				();
 			void		add_actions					();
-			bool  _BCL	hit_callback			(SHit const *hit);
+			bool xr_stdcall hit_callback			(SHit const *hit);
 
 public:
 						animation_planner			(CAI_Stalker *object, LPCSTR action_name);

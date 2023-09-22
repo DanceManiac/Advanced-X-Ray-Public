@@ -43,6 +43,7 @@ void CStalkerAnimationManager::script_play_callback(CBlend *blend)
 		animation_manager.pop_script_animation();
 
 	animation_manager.m_call_script_callback	= true;
+	animation_manager.m_start_new_script_animation	= true;
 
 	pair.on_animation_end		();
 }

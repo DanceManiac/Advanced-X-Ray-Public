@@ -36,7 +36,7 @@ void CStringTable::Init		()
 //---
 	FS_FileSet fset;
 	string_path			files_mask;
-	sprintf				(files_mask, "text\\%s\\*.xml",pData->m_sLanguage.c_str());
+	xr_sprintf				(files_mask, "text\\%s\\*.xml",pData->m_sLanguage.c_str());
 	FS.file_list		(fset, "$game_config$", FS_ListFiles, files_mask);
 	FS_FileSetIt fit	= fset.begin();
 	FS_FileSetIt fit_e	= fset.end();
@@ -45,7 +45,7 @@ void CStringTable::Init		()
 	{
     	string_path		fn, ext;
         _splitpath		((*fit).name.c_str(), 0, 0, fn, ext);
-		strcat			(fn, ext);
+		xr_strcat			(fn, ext);
 
 		Load			(fn);
 	}
@@ -53,8 +53,9 @@ void CStringTable::Init		()
 	Msg("StringTable: loaded %d files", fset.size());
 #endif // #ifdef DEBUG
 //---
+	ReparseKeyBindings();
 
-	LPCSTR window_name = translate("st_game_window_name").c_str();
+	LPCSTR window_name = translate( "st_game_window_name" ).c_str();
 	SetWindowText(Device.m_hWnd, window_name);
 }
 
@@ -125,7 +126,7 @@ STRING_VALUE CStringTable::ParseLine(LPCSTR str, LPCSTR skey, bool bFirst)
 
 		int len				= (int)(e-b-LEN);
 
-		strncpy				(srcbuff,b+LEN, len);
+		strncpy_s				(srcbuff,b+LEN, len);
 		srcbuff[len]		= 0;
 		if (action_name_to_ptr(srcbuff)) // if exist, get bindings
 		{
@@ -159,13 +160,8 @@ STRING_VALUE CStringTable::translate (const STRING_ID& str_id) const
 {
 	VERIFY					(pData);
 
-	STRING_VALUE res =  pData->m_StringTable[str_id];
-
-	if(!res)
-	{
-		if(m_bWriteErrorsToLog && *str_id != NULL && xr_strlen(*str_id)>0)
-			Msg("[string table] '%s' has no entry", *str_id);
+	if(pData->m_StringTable.find(str_id)!=pData->m_StringTable.end())
+		return  pData->m_StringTable[str_id];
+	else
 		return str_id;
-	}
-	return					pData->m_StringTable[str_id];
 }

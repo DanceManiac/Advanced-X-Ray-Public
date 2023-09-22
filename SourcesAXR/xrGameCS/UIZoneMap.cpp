@@ -90,7 +90,7 @@ void CUIZoneMap::Update()
 	if ( !( Device.dwFrame % 20 ) && IsGameTypeSingle() )
 	{
 		string16	text_str;
-		strcpy_s( text_str, sizeof(text_str), "" );
+		xr_strcpy( text_str, sizeof(text_str), "" );
 
 		CPda* pda = pActor->GetPDA();
 		if ( pda )
@@ -98,7 +98,7 @@ void CUIZoneMap::Update()
 			u32 cn = pda->ActiveContactsNum();
 			if ( cn > 0 )
 			{
-				sprintf_s( text_str, sizeof(text_str), "%d", cn );
+				xr_sprintf( text_str, sizeof(text_str), "%d", cn );
 			}
 		}
 		m_Counter_text.SetText( text_str );
@@ -175,7 +175,7 @@ void CUIZoneMap::OnSectorChanged(int sector)
 		return;
 	u8			map_idx = u8(-1);
 	string64	s_sector;
-	sprintf_s	(s_sector, "%d", sector);
+	xr_sprintf	(s_sector, "%d", sector);
 	
 	if(!g_pGameLevel->pLevel->line_exist("sub_level_map", s_sector) )
 		return;
@@ -187,10 +187,10 @@ void CUIZoneMap::OnSectorChanged(int sector)
 	m_current_map_idx = map_idx;
 
 	string_path sub_texture;
-	sprintf_s(sub_texture,"%s#%d", m_activeMap->m_texture.c_str(), m_current_map_idx);
+	xr_sprintf(sub_texture,"%s#%d", m_activeMap->m_texture.c_str(), m_current_map_idx);
 	
 	if(map_idx==u8(-1))
-		sprintf_s(sub_texture,"%s", m_activeMap->m_texture.c_str());
+		xr_sprintf(sub_texture,"%s", m_activeMap->m_texture.c_str());
 
 	m_activeMap->InitTextureEx(sub_texture, m_activeMap->m_shader_name.c_str());
 }

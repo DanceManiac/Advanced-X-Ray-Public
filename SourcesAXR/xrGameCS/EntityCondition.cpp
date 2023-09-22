@@ -675,18 +675,18 @@ void SMedicineInfluenceValues::Load(const shared_str& sect)
 	fRadiation = pSettings->r_float(sect.c_str(), "eat_radiation");
 	fPsyHealth = pSettings->r_float(sect.c_str(), "eat_psy_health");
 	fWoundsHeal = pSettings->r_float(sect.c_str(), "wounds_heal_perc");
-	clamp(fWoundsHeal, 0.f, 1.f);
-	fMaxPowerUp = READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_max_power", 0.0f);
-	fAlcohol = READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_alcohol", 0.0f);
-	fDrugs = READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "eat_drugs", 0.0f);
-	fTimeTotal = READ_IF_EXISTS(pSettings, r_float, sect.c_str(), "apply_time_sec", -1.0f);
+	clamp			(fWoundsHeal, 0.f, 1.f);
+	fMaxPowerUp		= READ_IF_EXISTS	(pSettings,r_float,sect.c_str(),	"eat_max_power",0.0f);
+	fAlcohol		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_alcohol", 0.0f);
+	fDrugs			= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"eat_drugs", 0.0f);
+	fTimeTotal		= READ_IF_EXISTS	(pSettings, r_float, sect.c_str(),	"apply_time_sec", -1.0f);
 }
 
 void SBooster::Load(const shared_str& sect, EBoostParams type)
 {
 	fBoostTime = pSettings->r_float(sect.c_str(), "boost_time");
 	m_type = type;
-	switch (type)
+	switch(type)
 	{
 	case eBoostHpRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_health_restore"); break;
 	case eBoostPowerRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_power_restore"); break;
@@ -720,3 +720,4 @@ void SBooster::Load(const shared_str& sect, EBoostParams type)
 	default: NODEFAULT;
 	}
 }
+

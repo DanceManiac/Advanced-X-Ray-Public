@@ -586,6 +586,8 @@ public:
 			bool				night_vision_enabled	() const;
 			void				enable_torch			(bool value);
 			bool				torch_enabled			() const;
+			
+			void				attachable_item_load_attach(LPCSTR section);
 			// CustomZone
 			void				EnableAnomaly			();
 			void				DisableAnomaly			();

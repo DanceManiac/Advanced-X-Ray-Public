@@ -55,6 +55,7 @@ public:
 	virtual void		finalize					();
 	virtual void		select_animation			(shared_str &result);
 	virtual	void		on_animation_end			();
+	virtual				~change_loophole() {};
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -74,6 +75,7 @@ public:
 	virtual bool		is_animated_action			();
 	virtual void		select_animation			(shared_str &result);
 	virtual	void		on_animation_end			();
+	virtual				~non_animated_change_loophole() {};
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -93,6 +95,7 @@ public:
 	virtual bool		is_animated_action			();
 	virtual void		select_animation			(shared_str &result);
 	virtual	void		on_animation_end			();
+	virtual				~exit() {};
 };
 
 } // namespace smart_cover

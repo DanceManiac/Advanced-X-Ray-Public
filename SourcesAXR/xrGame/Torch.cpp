@@ -318,7 +318,8 @@ void CTorch::Switch(bool light_on)
 		pVisual->CalculateBones				(TRUE);
 	}
 }
-bool CTorch::torch_active					() const
+
+bool CTorch::torch_active() const
 {
 	return (m_switched_on);
 }
@@ -406,8 +407,7 @@ void CTorch::OnH_A_Chield()
 
 void CTorch::OnH_B_Independent(bool just_before_destroy) 
 {
-	inherited::OnH_B_Independent(just_before_destroy);
-
+	inherited::OnH_B_Independent	(just_before_destroy);
 	Switch						(false);
 }
 

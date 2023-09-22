@@ -38,6 +38,8 @@ static const float		OPTIMIZATION_DISTANCE		= 100.f;
 
 static bool stalker_use_dynamic_lights	= false;
 
+ENGINE_API int g_current_renderer;
+
 extern bool g_block_all_except_movement;
 
 CTorch::CTorch(void) 
@@ -111,8 +113,8 @@ inline bool CTorch::can_use_dynamic_lights	()
 
 void CTorch::Load(LPCSTR section)
 {
-	inherited::Load(section);
-	light_trace_bone = pSettings->r_string(section, "light_trace_bone");
+	inherited::Load			(section);
+	light_trace_bone		= pSettings->r_string(section,"light_trace_bone");
 
 	m_light_section = READ_IF_EXISTS(pSettings, r_string, section, "light_section", "torch_definition");
 	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
@@ -148,6 +150,14 @@ void CTorch::Load(LPCSTR section)
 	m_omni_offset = READ_IF_EXISTS(pSettings, r_fvector3, section, "omni_offset", OMNI_OFFSET);
 	m_torch_inertion_speed_max = READ_IF_EXISTS(pSettings, r_float, section, "torch_inertion_speed_max", TORCH_INERTION_SPEED_MAX);
 	m_torch_inertion_speed_min = READ_IF_EXISTS(pSettings, r_float, section, "torch_inertion_speed_min", TORCH_INERTION_SPEED_MIN);
+
+	// Disabling shift by x and z axes for 1st render, 
+	// because we don't have dynamic lighting in it. 
+	if (g_current_renderer == 1)
+	{
+		m_torch_offset.x = 0;
+		m_torch_offset.z = 0;
+	}
 }
 
 void CTorch::Switch()
@@ -267,7 +277,7 @@ void CTorch::UpdateUseAnim()
 	}
 }
 
-void CTorch::Switch	(bool light_on)
+void CTorch::Switch(bool light_on)
 {
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 	if (pActor)
@@ -306,7 +316,6 @@ void CTorch::Switch	(bool light_on)
 
 		pVisual->LL_SetBoneVisible			(bi,	light_on,	TRUE);
 		pVisual->CalculateBones				(TRUE);
-//.		pVisual->LL_SetBoneVisible			(bi,	light_on,	TRUE); //hack
 	}
 }
 
@@ -396,7 +405,7 @@ void CTorch::OnH_A_Chield()
 	m_focus.set						(Position());
 }
 
-void CTorch::OnH_B_Independent	(bool just_before_destroy) 
+void CTorch::OnH_B_Independent(bool just_before_destroy) 
 {
 	inherited::OnH_B_Independent	(just_before_destroy);
 	time2hide						= TIME_2_HIDE;
@@ -537,15 +546,6 @@ void CTorch::UpdateCL()
 		{
 			M.mul						(XFORM(),BI.mTransform);
 
-			//. what should we do in case when 
-			// light_render is not active at this moment,
-			// but m_switched_on is true?
-//			light_render->set_rotation	(M.k,M.i);
-//			light_render->set_position	(M.c);
-//			glow_render->set_position	(M.c);
-//			glow_render->set_direction	(M.k);
-//
-//			time2hide					-= Device.fTimeDelta;
 //			if (time2hide<0)
 			{
 				m_switched_on			= false;
@@ -636,7 +636,6 @@ bool  CTorch::can_be_attached		() const
 	const CActor *pA = smart_cast<const CActor *>(H_Parent());
 	if (pA)
 	{
-		//return pA->inventory().InSlot(this);
 		return (this == smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT)));
 	}
 	return true;

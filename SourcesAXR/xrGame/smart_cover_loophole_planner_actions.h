@@ -84,6 +84,7 @@ public:
 	virtual void		initialize					();
 	virtual void		execute						();
 	virtual void		finalize					();
+	virtual ~loophole_lookout() {}
 };
 
 class loophole_fire final : public loophole_action
@@ -104,6 +105,7 @@ public:
 	virtual	void		on_animation_end			();
 	virtual	void		on_mark						();
 	virtual	void		on_no_mark					();
+	virtual ~loophole_fire() {}
 };
 
 class loophole_reload final : public loophole_action_no_sight
@@ -114,6 +116,7 @@ private:
 public:
 						loophole_reload				(CAI_Stalker *object, LPCSTR action_name);
 	virtual void		select_animation			(shared_str &result);
+	virtual ~loophole_reload() {}
 };
 
 class transition : public loophole_action_base {

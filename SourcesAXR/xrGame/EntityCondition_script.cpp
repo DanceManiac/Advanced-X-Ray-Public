@@ -1,4 +1,5 @@
 ﻿#include "stdafx.h"
+#include "pch_script.h"
 #include "ActorCondition.h"
 #include "Wound.h"
 

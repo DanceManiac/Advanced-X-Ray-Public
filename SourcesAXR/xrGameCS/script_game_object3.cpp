@@ -176,17 +176,6 @@ CScriptGameObject *CScriptGameObject::GetCurrentWeapon() const
 	return			(current_weapon ? current_weapon->lua_game_object() : 0);
 }
 
-CScriptGameObject *CScriptGameObject::GetCurrentOutfit() const
-{
-	CInventoryOwner		*inventoryOwner = smart_cast<CInventoryOwner*>(&object());
-	if (!inventoryOwner) {
-		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member GetCurrentOutfit!");
-		return		(0);
-	}
-	CGameObject		*current_equipment = inventoryOwner->GetCurrentOutfit() ? &inventoryOwner->GetCurrentOutfit()->object() : 0;
-	return			(current_equipment ? current_equipment->lua_game_object() : 0);
-}
-
 void CScriptGameObject::deadbody_closed(bool status)
 {
 	CInventoryOwner		*inventoryOwner = smart_cast<CInventoryOwner*>(&object());
@@ -251,6 +240,17 @@ bool CScriptGameObject::deadbody_can_take_status()
 
 #include "CustomOutfit.h"
 
+
+CScriptGameObject *CScriptGameObject::GetCurrentOutfit() const
+{
+	CInventoryOwner		*inventoryOwner = smart_cast<CInventoryOwner*>(&object());
+	if (!inventoryOwner) {
+		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member GetCurrentOutfit!");
+		return		(0);
+	}
+	CGameObject		*current_equipment = inventoryOwner->GetCurrentOutfit() ? &inventoryOwner->GetCurrentOutfit()->object() : 0;
+	return			(current_equipment ? current_equipment->lua_game_object() : 0);
+}
 float CScriptGameObject::GetCurrentOutfitProtection(int hit_type)
 {
 	CInventoryOwner		*inventoryOwner = smart_cast<CInventoryOwner*>(&object());
@@ -428,24 +428,6 @@ u32 CScriptGameObject::get_dest_game_vertex_id()
 	return u32(-1);
 }
 
-void CScriptGameObject::set_dest_game_vertex_id(GameGraph::_GRAPH_ID game_vertex_id)
-{
-	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
-	if (!stalker)
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CAI_Stalker : cannot access class member set_dest_game_vertex_id!");
-	else {
-
-		if (!ai().game_graph().valid_vertex_id(game_vertex_id)) {
-#ifdef DEBUG
-			ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CAI_Stalker : invalid vertex id being setup by action %s!", stalker->brain().CStalkerPlanner::current_action().m_action_name);
-#endif
-			return;
-		}
-		stalker->movement().set_game_dest_vertex(game_vertex_id);
-
-	}
-}
-
 u32 CScriptGameObject::get_dest_level_vertex_id()
 {
 	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
@@ -484,6 +466,23 @@ void CScriptGameObject::set_dest_level_vertex_id(u32 level_vertex_id)
 	}
 }
 
+void CScriptGameObject::set_dest_game_vertex_id( GameGraph::_GRAPH_ID game_vertex_id)
+{
+	CAI_Stalker					*stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker)
+		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member set_dest_game_vertex_id!");
+	else {
+
+		if (!ai().game_graph().valid_vertex_id(game_vertex_id)) {
+#ifdef DEBUG
+			ai().script_engine().script_log				(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : invalid vertex id being setup by action %s!",stalker->brain().CStalkerPlanner::current_action().m_action_name);
+#endif
+			return;
+		}
+		stalker->movement().set_game_dest_vertex(game_vertex_id);
+
+	}
+}
 CHARACTER_RANK_VALUE CScriptGameObject::GetRank		()
 {
 	CAI_Stalker					*stalker = smart_cast<CAI_Stalker*>(&object());

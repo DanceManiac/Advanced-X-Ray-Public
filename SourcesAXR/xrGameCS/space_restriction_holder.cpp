@@ -155,8 +155,8 @@ bool try_remove_string				(shared_str &search_string, const shared_str &string_t
 	for (int i=0, j=0, n=_GetItemCount(*search_string); i<n; ++i, ++j) {
 		if (xr_strcmp(string_to_search,_GetItem(*search_string,i,temp))) {
 			if (j)
-				strcat		(temp1,",");
-			strcat			(temp1,temp);
+				xr_strcat		(temp1,",");
+			xr_strcat			(temp1,temp);
 			continue;
 		}
 

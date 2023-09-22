@@ -9,7 +9,8 @@ class CEatableItem;
 #include "hit_immunity.h"
 #include "Hit.h"
 #include "Level.h"
-enum EBoostParams{
+enum EBoostParams
+{
 	eBoostHpRestore = 0,
 	eBoostPowerRestore,
 	eBoostRadiationRestore,
@@ -75,7 +76,8 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_time_factor"
 };
 
-struct SBooster{
+struct SBooster
+{
 	float fBoostTime;
 	float fBoostValue;
 	EBoostParams m_type;
@@ -83,7 +85,8 @@ struct SBooster{
 	void Load(const shared_str& sect, EBoostParams type);
 };
 
-struct SMedicineInfluenceValues{
+struct SMedicineInfluenceValues
+{
 	float fHealth;
 	float fPower;
 	float fSatiety;
@@ -141,7 +144,7 @@ public:
 	virtual void			load					(IReader &input_packet);
 
 	IC float				GetPower				() const			{return m_fPower;}	
-	IC void					SetPower				(float value)		{ m_fPower = value; clamp(m_fPower, 0.f, m_fPowerMax); }
+	IC void					SetPower				(float value)		{m_fPower = value; clamp(m_fPower, 0.f, m_fPowerMax);}
 	IC float				GetRadiation			() const			{return m_fRadiation;}
 	IC float				GetPsyHealth			() const			{return m_fPsyHealth;}
 	IC float				GetSatiety				() const			{return m_fSatiety;}
@@ -204,7 +207,7 @@ public:
 	IC bool					CanBeHarmed				() const					{return OnServer() && m_bCanBeHarmed;};
 	virtual bool			ApplyInfluence			(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable);
 	virtual bool			ApplyBooster			(const SBooster& B, const shared_str& sect);
-	void					ClearWounds();
+	void					ClearWounds				();
 
 	IC float				GetBoostRadiationImmunity() const {return m_fBoostRadiationImmunity;};
 

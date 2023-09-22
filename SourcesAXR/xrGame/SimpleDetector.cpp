@@ -186,7 +186,7 @@ void CUIArtefactDetectorSimple::update()
 		firedeps		fd;
 		m_parent->HudItemData()->setup_firedeps(fd);
 
-		if(m_flash_light && m_flash_light->get_active())
+		if (m_flash_light && m_flash_light->get_active())
 			m_flash_light->set_position(fd.vLastFP);
 
 		m_on_off_light->set_position(fd.vLastFP2);

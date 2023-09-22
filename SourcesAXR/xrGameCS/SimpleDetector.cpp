@@ -49,7 +49,7 @@ void CSimpleDetector::UpdateAf()
 
 		float d = detector_pos.distance_to(pAf ? pAf->Position() : pObj->Position());
 
-		if(d < min_dist)
+		if (d < min_dist)
 		{
 			min_dist	= d;
 			it			= it_b;
@@ -57,7 +57,7 @@ void CSimpleDetector::UpdateAf()
 
 		if (pAf && pAf->CanBeInvisible())
 		{
-			if(d < m_fAfVisRadius)
+			if (d < m_fAfVisRadius)
 				pAf->SwitchVisibility(true);
 		}
 	}

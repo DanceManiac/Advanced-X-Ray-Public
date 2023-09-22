@@ -321,9 +321,7 @@ public:
 	{
 		for (auto sect : pSettings->sections())
 		{
-			if (sect->line_exist("class") && sect->line_exist("inv_weight")
-				|| sect->line_exist("class") && sect->line_exist("$spawn") && sect->line_exist("Spawn_Inventory_Item_Section")
-				|| sect->line_exist("class") && (pSettings->r_clsid(sect->Name.c_str(), "class") == CLSID_CAR))
+			if (sect->line_exist("class") && sect->line_exist("$spawn"))
 				tips.push_back(sect->Name.c_str());
 		}
 	}
@@ -1516,25 +1514,6 @@ struct CCC_ClearSmartCastStats : public IConsole_Command {
 		clear_smart_cast_stats();
 	}
 };
-/*
-struct CCC_NoClip : public CCC_Mask 
-{
-public:
-	CCC_NoClip(LPCSTR N, Flags32* V, u32 M):CCC_Mask(N,V,M){};
-	virtual	void Execute(LPCSTR args)
-	{
-		CCC_Mask::Execute(args);
-		if (EQ(args,"on") || EQ(args,"1"))
-		{
-			if(g_pGameLevel && Level().CurrentViewEntity())
-			{
-				CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
-				actor->character_physics_support()->SetRemoved();
-			}
-		}
-	};
-};
-*/
 #endif
 
 #	include "game_graph.h"

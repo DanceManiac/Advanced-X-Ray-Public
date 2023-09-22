@@ -14,6 +14,8 @@
 #include "ai_space.h"
 #include "game_graph.h"
 #include "alife_simulator_header.h"
+#include "alife_simulator.h"
+#include "alife_spawn_registry.h"
 
 extern LPCSTR alife_section;
 
@@ -124,7 +126,15 @@ CSavedGameWrapper::CSavedGameWrapper			(LPCSTR saved_game_name)
 			return;
 		}
 
-		IReader* spawn			= FS.r_open(file_name);
+		IReader* spawn			= NULL;
+		bool b_destroy_spawn = true;
+		if(ai().get_alife() && ai().alife().spawns().get_spawn_name()==spawn_file_name)
+		{
+			spawn				= ai().alife().spawns().get_spawn_file();
+			b_destroy_spawn		= false;
+		}else
+			spawn				= FS.r_open(file_name);
+
 		if (!spawn) {
 			F_entity_Destroy	(object);
 			m_level_id			= _LEVEL_ID(-1);
@@ -135,6 +145,7 @@ CSavedGameWrapper::CSavedGameWrapper			(LPCSTR saved_game_name)
 		chunk					= spawn->open_chunk(4);
 		if (!chunk) {
 			F_entity_Destroy	(object);
+			if(b_destroy_spawn)
 			FS.r_close			(spawn);
 			m_level_id			= _LEVEL_ID(-1);
 			m_level_name		= "";
@@ -148,6 +159,7 @@ CSavedGameWrapper::CSavedGameWrapper			(LPCSTR saved_game_name)
 		}
 
 		chunk->close			();
+		if(b_destroy_spawn)
 		FS.r_close				(spawn);
 		F_entity_Destroy		(object);
 	}

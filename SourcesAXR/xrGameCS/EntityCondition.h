@@ -10,7 +10,8 @@ class CEatableItem;
 #include "Hit.h"
 #include "Level.h"
 
-enum EBoostParams {
+enum EBoostParams
+{
 	eBoostHpRestore = 0,
 	eBoostPowerRestore,
 	eBoostRadiationRestore,
@@ -76,15 +77,17 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_time_factor"
 };
 
-struct SBooster {
+struct SBooster
+{
 	float fBoostTime;
 	float fBoostValue;
 	EBoostParams m_type;
-	SBooster() :fBoostTime(-1.0f) {};
+	SBooster():fBoostTime(-1.0f){};
 	void Load(const shared_str& sect, EBoostParams type);
 };
 
-struct SMedicineInfluenceValues {
+struct SMedicineInfluenceValues
+{
 	float fHealth;
 	float fPower;
 	float fSatiety;
@@ -104,8 +107,8 @@ struct SMedicineInfluenceValues {
 	float fTimeTotal;
 	float fTimeCurrent;
 
-	SMedicineInfluenceValues() :fTimeCurrent(-1.0f) {}
-	bool InProcess() { return fTimeCurrent > 0.0f; }
+	SMedicineInfluenceValues():fTimeCurrent(-1.0f){}
+	bool InProcess (){return fTimeCurrent>0.0f;}
 	void Load(const shared_str& sect);
 };
 
@@ -162,19 +165,19 @@ public:
 	virtual bool 			IsLimping				() const;
 
 	virtual void			ChangeSatiety			(float value)		{};
+	virtual void 			ChangeThirst			(float value)		{};
+	virtual void			ChangeIntoxication		(const float value)	{};
+	virtual void			ChangeSleepeness		(const float value)	{};
+	virtual void			ChangeAlcoholism		(const float value)	{};
+	virtual void			ChangeHangover			(const float value)	{};
+	virtual void			ChangeNarcotism			(const float value)	{};
+	virtual void			ChangeWithdrawal		(const float value)	{};
+	virtual void 			ChangeDrugs				(float value)		{};
 	void 					ChangeHealth			(float value);
 	void 					ChangePower				(float value);
 	void 					ChangeRadiation			(float value);
 	void 					ChangePsyHealth			(float value);
 	virtual void 			ChangeAlcohol			(float value){};
-	virtual void 			ChangeThirst			(float value){};
-	virtual void			ChangeIntoxication		(const float value){};
-	virtual void			ChangeSleepeness		(const float value){};
-	virtual void			ChangeAlcoholism		(const float value){};
-	virtual void			ChangeHangover			(const float value){};
-	virtual void			ChangeNarcotism			(const float value){};
-	virtual void			ChangeWithdrawal		(const float value){};
-	virtual void 			ChangeDrugs				(float value){};
 
 	IC void					MaxPower				()					{m_fPower = m_fPowerMax;};
 	IC void					SetMaxPower				(float val)			{m_fPowerMax = val; clamp(m_fPowerMax,0.1f,1.0f);};
@@ -208,7 +211,7 @@ public:
 	virtual bool			ApplyBooster			(const SBooster& B, const shared_str& sect);
 	void					ClearWounds				();
 
-	IC float				GetBoostRadiationImmunity() const { return m_fBoostRadiationImmunity; };
+	IC float				GetBoostRadiationImmunity() const {return m_fBoostRadiationImmunity;};
 
 	typedef					xr_map<EBoostParams, SBooster> BOOSTER_MAP;
 
@@ -240,15 +243,15 @@ protected:
 	float m_fRadiation;				//доза радиактивного облучения
 	float m_fPsyHealth;				//здоровье
 	float m_fEntityMorale;			//мораль
-	float m_fSatiety;				//голод
-	float m_fThirst;				//жажда
+	float m_fSatiety;				//Сытость
+	float m_fThirst;				//Жажда
 	float m_fIntoxication;			//Интоксикация
-	float m_fSleepeness;			//Потребность во сне
+	float m_fSleepeness;			//Сонливость
 	float m_fAlcoholism;			//Алкоголизм
 	float m_fAlcohol;				//Алкоголь
 	float m_fHangover;				//Похмелье
 	float m_fNarcotism;				//Наркомания
-	float m_fWithdrawal;			//Ломки
+	float m_fWithdrawal;			//Ломка
 
 	//максимальные величины
 	//	float m_fSatietyMax;

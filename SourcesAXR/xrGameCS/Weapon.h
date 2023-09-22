@@ -125,6 +125,7 @@ public:
 
 	virtual	void			Hit					(SHit* pHDS);
 
+
 	virtual void			reinit				();
 	virtual void			reload				(LPCSTR section);
 	virtual void			create_physic_shell	();
@@ -570,7 +571,7 @@ public:
 	SCOPES_VECTOR			m_scopes;
 	u8						m_cur_scope;
 
-	CWeaponAmmo*			m_pAmmo;
+	CWeaponAmmo*			m_pCurrentAmmo;
 	u32						m_ammoType;
 	shared_str				m_ammoName;
 	BOOL					m_bHasTracers;
