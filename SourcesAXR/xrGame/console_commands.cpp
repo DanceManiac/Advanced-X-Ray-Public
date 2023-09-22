@@ -456,6 +456,77 @@ public:
 	}
 };
 
+// kill
+class CCC_KillEntity : public IConsole_Command {
+public:
+	CCC_KillEntity(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
+	virtual void Execute(LPCSTR args)
+	{
+		if (!g_pGameLevel) return;
+
+		char story_id_to_kill[128];
+		story_id_to_kill[0] = 0;
+
+		sscanf(args, "%s", story_id_to_kill);
+
+		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+
+		if (story_id_to_kill[0] != 0)
+		{
+			u16 id_to_kill{};
+
+			luabind::functor<u16> m_functor;
+			if (ai().script_engine().functor("mfs_functions.get_id_by_sid", m_functor));
+				id_to_kill = m_functor(story_id_to_kill);
+
+			if (!id_to_kill)
+			{
+				Msg("! [kill] : Invalid story_id or NPC offline! story_id: %s", story_id_to_kill);
+				return;
+			}
+
+			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(Level().Objects.net_Find(id_to_kill));
+
+			if (entity_to_kill)
+			{
+				if (!entity_to_kill->g_Alive())
+				{
+					Msg("! [kill] : This entity is already dead!");
+					return;
+				}
+
+				entity_to_kill->KillEntity(entity_to_kill->ID());
+			}
+			else
+				Msg("! [kill] : Entity with id [%s] not found!", story_id_to_kill);
+		}
+		else if (RQ.O && story_id_to_kill[0] == 0)
+		{
+			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(RQ.O);
+
+			if (entity_to_kill)
+			{
+				if (!entity_to_kill->g_Alive())
+				{
+					Msg("! [kill] : This entity is already dead!");
+					return;
+				}
+
+				entity_to_kill->KillEntity(entity_to_kill->ID());
+			}
+			else
+				Msg("! [kill] : Is not EntityAlive!");
+		}
+		else
+			Msg("! [kill] : Empty entity to kill or is not EntityAlive!");
+	}
+
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+};
+
 struct DumpTxrsForPrefetching : public IConsole_Command {
 	DumpTxrsForPrefetching(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
 
@@ -2300,6 +2371,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD1(CCC_Disinfo,		"d_info");
 		CMD1(CCC_GiveTask,		"g_task");
 		CMD1(CCC_GiveMoney,		"g_money");
+		CMD1(CCC_KillEntity,	"kill");
 		CMD1(DumpTxrsForPrefetching, "ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
 		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);

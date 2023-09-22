@@ -123,3 +123,12 @@ end
 function g_task_script(task)
 	task_manager.get_task_manager():give_task(task)
 end
+
+-- 'Для команды kill. Не трогать!
+function get_id_by_sid(story_id_to_kill)
+	local npc = get_story_object(story_id_to_kill)
+
+	if npc then
+		return npc:id()
+	end
+end
