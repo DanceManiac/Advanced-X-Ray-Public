@@ -1376,8 +1376,9 @@ void CActor::shedule_Update	(u32 DT)
 		mstate_wishful &=~mcRLookout;
 		mstate_wishful &=~mcFwd;
 		mstate_wishful &=~mcBack;
-		if( !psActorFlags.test(AF_CROUCH_TOGGLE) )
-			mstate_wishful &=~mcCrouch;
+
+		if (!psActorFlags.test(AF_CROUCH_TOGGLE))
+			mstate_wishful &= ~mcCrouch;
 		}
 	}
 	else 
@@ -1514,7 +1515,7 @@ void CActor::shedule_Update	(u32 DT)
 		m_pVehicleWeLookingAt			= smart_cast<CHolderCustom*>(game_object);
 		CEntityAlive* pEntityAlive		= smart_cast<CEntityAlive*>(game_object);
 		
-		if ( GameID() == eGameIDSingle )
+		if (GameID() == eGameIDSingle )
 		{
 			if (m_pUsableObject && m_pUsableObject->tip_text())
 			{
@@ -1526,7 +1527,7 @@ void CActor::shedule_Update	(u32 DT)
 				{
 					m_sDefaultObjAction = m_sCharacterUseAction;
 				}
-				else if ( pEntityAlive && !pEntityAlive->g_Alive() )
+				else if (pEntityAlive && !pEntityAlive->g_Alive())
 				{
 					if ( m_pPersonWeLookingAt && m_pPersonWeLookingAt->deadbody_closed_status() )
 					{
@@ -1534,8 +1535,8 @@ void CActor::shedule_Update	(u32 DT)
 					}
 					else
 					{
-						bool b_allow_drag = !!pSettings->line_exist("ph_capture_visuals",pEntityAlive->cNameVisual());
-						if ( b_allow_drag )
+						bool b_allow_drag = !!pSettings->line_exist("ph_capture_visuals",pEntityAlive->cNameVisual());				
+					if (b_allow_drag)
 						{
 							m_sDefaultObjAction = m_sDeadCharacterUseOrDragAction;
 						}
@@ -1915,7 +1916,7 @@ void CActor::OnItemDrop(CInventoryItem *inventory_item, bool just_before_destroy
 	if(weapon && inventory_item->m_ItemCurrPlace.type==eItemPlaceSlot)
 	{
 		weapon->OnZoomOut();
-		if(weapon->GetRememberActorNVisnStatus())
+		if (weapon->GetRememberActorNVisnStatus())
 			weapon->EnableActorNVisnAfterZoom();
 	}
 
@@ -2769,7 +2770,7 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 void CActor::On_SetEntity()
 {
 	CCustomOutfit* pOutfit = GetOutfit();
-	if( !pOutfit )
+	if (!pOutfit)
 		g_player_hud->load_default();
 	else
 		pOutfit->ApplySkinModel(this, true, true);

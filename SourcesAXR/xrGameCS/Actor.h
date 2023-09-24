@@ -18,6 +18,7 @@
 #include "step_manager.h"
 #include "script_export_space.h"
 #include "xr_level_controller.h"
+
 #include "ActorSkills.h"
 #include "CustomTimer.h"
 
@@ -683,8 +684,6 @@ virtual	 void	_BCL	HideAllWeapons					( bool v ){ SetWeaponHideState(INV_STATE_B
 
 public:
 		void							SetCantRunState					(bool bSet);
-		virtual CCustomOutfit*			GetOutfit() const;
-		virtual CCustomOutfit*			GetPants() const;
 private:
 	CActorCondition				*m_entity_condition;
 
@@ -720,17 +719,17 @@ public:
 	virtual	bool				InventoryAllowSprint			();
 	virtual void				OnNextWeaponSlot				();
 	virtual void				OnPrevWeaponSlot				();
+
 			void				NVGAnimCheckDetector			();
 			void				CleanMaskAnimCheckDetector		();
 			void				StartNVGAnimation				();
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
 			void				CleanMask						();
+			bool				IsReloadingWeapon				();
 #ifdef DEBUG
 			void				NoClipFly						(int cmd);
 #endif //DEBUG
-
-			bool				IsReloadingWeapon				();
 
 public:
 	

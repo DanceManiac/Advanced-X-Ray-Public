@@ -10,8 +10,7 @@
 
 #include "Weapon.h"
 #include "Inventory.h"
-#include "../Include/xrRender/RenderVisual.h"
-#include "../Include/xrRender/Kinematics.h"
+
 #include "SleepEffector.h"
 #include "ActorEffector.h"
 #include "level.h"
@@ -486,9 +485,14 @@ void CActor::update_camera (CCameraShotEffector* effector)
 #ifdef DEBUG
 void dbg_draw_frustum (float FOV, float _FAR, float A, Fvector &P, Fvector &D, Fvector &U);
 extern	Flags32	dbg_net_Draw_Flags;
+extern	BOOL g_bDrawBulletHit;
 
 void CActor::OnRender	()
 {
+#ifdef DEBUG
+	if (inventory().ActiveItem())
+		inventory().ActiveItem()->OnRender();
+#endif
 	if (!bDebug)				return;
 
 	if ((dbg_net_Draw_Flags.is_any(dbg_draw_actor_phys)))

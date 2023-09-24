@@ -5,12 +5,6 @@
 #include "level.h"
 #include "physicsshellholder.h"
 #include "../xrengine/xr_collide_form.h"
-#include "../../xrCore/_detail_collision_point.h"
-
-ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
-ENGINE_API extern int ps_detail_enable_collision;
-ENGINE_API extern Fvector actor_position;
-ENGINE_API extern float ps_detail_collision_radius;
 
 CMosquitoBald::CMosquitoBald(void) 
 {

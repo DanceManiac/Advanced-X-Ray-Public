@@ -80,10 +80,6 @@
 #include "AdvancedXrayGameConstants.h"
 
 ENGINE_API bool g_dedicated_server;
-ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
-ENGINE_API extern int ps_detail_enable_collision;
-ENGINE_API extern Fvector actor_position;
-ENGINE_API extern float ps_detail_collision_radius;
 
 //extern BOOL	g_bDebugDumpPhysicsStep;
 extern CUISequencer * g_tutorial;

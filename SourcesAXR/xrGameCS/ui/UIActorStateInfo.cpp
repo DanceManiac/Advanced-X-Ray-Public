@@ -29,6 +29,7 @@
 #include "../Actor.h"
 #include "../ActorCondition.h"
 #include "../CustomOutfit.h"
+#include "../Inventory.h"
 #include "../string_table.h"
 
 ui_actor_state_wnd::ui_actor_state_wnd()
@@ -87,7 +88,7 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 	value = actor->conditions().BleedingSpeed();					m_state[stt_health]->show_static( (value > 0.01f) );
 
 	CCustomOutfit* outfit = actor->GetOutfit();
-	CCustomOutfit* pants = actor->GetPants();
+	CCustomOutfit* pants =  smart_cast<CCustomOutfit*>(actor->inventory().ItemFromSlot(PANTS_SLOT));
 
 	if (outfit)
 	{

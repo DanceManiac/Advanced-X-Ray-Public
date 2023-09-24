@@ -1362,12 +1362,6 @@ void CActorCondition::UpdateTutorialThresholds()
 		xr_strcpy(cb_name, "_G.on_actor_alcoholism");
 	}
 
-	if (b && !m_condition_flags.test(eCriticalHangoverReached) && GetHangover() > _cHangover) {
-		m_condition_flags.set(eCriticalHangoverReached, TRUE);
-		b = false;
-		xr_strcpy(cb_name, "_G.on_actor_hangover");
-	}
-
 	if (b && !m_condition_flags.test(eCriticalNarcotismReached) && GetNarcotism() > _cNarcotism) {
 		m_condition_flags.set(eCriticalNarcotismReached, TRUE);
 		b = false;
@@ -1378,6 +1372,12 @@ void CActorCondition::UpdateTutorialThresholds()
 		m_condition_flags.set(eCriticalWithdrawalReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_withdrawal");
+	}
+
+	if (b && !m_condition_flags.test(eCriticalHangoverReached) && GetHangover() > _cHangover) {
+		m_condition_flags.set(eCriticalHangoverReached, TRUE);
+		b = false;
+		xr_strcpy(cb_name, "_G.on_actor_hangover");
 	}
 
 	if(b && !m_condition_flags.test(eCriticalRadiationReached) && GetRadiation()>_cRadiation){

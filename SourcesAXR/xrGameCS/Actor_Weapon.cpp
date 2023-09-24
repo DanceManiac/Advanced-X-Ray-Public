@@ -141,6 +141,10 @@ void CActor::SelectBestWeapon	(CObject* O)
 	CArtefact* pArtefact = smart_cast<CArtefact*>(O);
 	CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (O);
 	bool NeedToSelectBestWeapon = false;
+
+	if (pArtefact && pArtefact->H_Parent()) //just take an artefact
+		return;
+	
 	if ((pWeapon || pGrenade || pArtefact) && pIItem)
 	{
 		NeedToSelectBestWeapon = true;
@@ -158,7 +162,7 @@ void CActor::SelectBestWeapon	(CObject* O)
 	//-------------------------------------------------
 	for (int i=0; i<4; i++)
 	{
-		if (inventory().m_slots[BestWeaponSlots[i]].m_pIItem)
+		if (inventory().ItemFromSlot(BestWeaponSlots[i]) )
 		{
 			if (inventory().GetActiveSlot() != BestWeaponSlots[i])
 			{

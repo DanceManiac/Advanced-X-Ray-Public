@@ -675,36 +675,44 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 
 
 #ifdef _DEBUG
-	if(bDebug){
+	if(bDebug)
+	{
 		HUD().Font().pFontStat->OutSetI	(0,0);
 		HUD().Font().pFontStat->OutNext("[%s]",mov_state[moving_idx]);
+		IKinematicsAnimated* KA = smart_cast<IKinematicsAnimated*>(Visual());
+		if(M_torso)
+			HUD().Font().pFontStat->OutNext("torso [%s]",KA->LL_MotionDefName_dbg(M_torso).first);
+		if(M_head)
+			HUD().Font().pFontStat->OutNext("head [%s]",KA->LL_MotionDefName_dbg(M_head).first);
+		if(M_legs)
+			HUD().Font().pFontStat->OutNext("legs [%s]",KA->LL_MotionDefName_dbg(M_legs).first);
 	}
 #endif
 
-#ifdef _DEBUG
+#ifdef DEBUG
 	if ((Level().CurrentControlEntity() == this) && g_ShowAnimationInfo) {
 		string128 buf;
-		strcpy_s(buf,"");
-		if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))		strcat(buf,"Accel ");
-		if (mstate_rl&mcCrouch)		strcat(buf,"Crouch ");
-		if (mstate_rl&mcFwd)		strcat(buf,"Fwd ");
-		if (mstate_rl&mcBack)		strcat(buf,"Back ");
-		if (mstate_rl&mcLStrafe)	strcat(buf,"LStrafe ");
-		if (mstate_rl&mcRStrafe)	strcat(buf,"RStrafe ");
-		if (mstate_rl&mcJump)		strcat(buf,"Jump ");
-		if (mstate_rl&mcFall)		strcat(buf,"Fall ");
-		if (mstate_rl&mcTurn)		strcat(buf,"Turn ");
-		if (mstate_rl&mcLanding)	strcat(buf,"Landing ");
-		if (mstate_rl&mcLLookout)	strcat(buf,"LLookout ");
-		if (mstate_rl&mcRLookout)	strcat(buf,"RLookout ");
-		if (m_bJumpKeyPressed)		strcat(buf,"+Jumping ");
+		xr_strcpy(buf,"");
+		if (isActorAccelerated(mstate_rl, IsZoomAimingMode()))		xr_strcat(buf,"Accel ");
+		if (mstate_rl&mcCrouch)		xr_strcat(buf,"Crouch ");
+		if (mstate_rl&mcFwd)		xr_strcat(buf,"Fwd ");
+		if (mstate_rl&mcBack)		xr_strcat(buf,"Back ");
+		if (mstate_rl&mcLStrafe)	xr_strcat(buf,"LStrafe ");
+		if (mstate_rl&mcRStrafe)	xr_strcat(buf,"RStrafe ");
+		if (mstate_rl&mcJump)		xr_strcat(buf,"Jump ");
+		if (mstate_rl&mcFall)		xr_strcat(buf,"Fall ");
+		if (mstate_rl&mcTurn)		xr_strcat(buf,"Turn ");
+		if (mstate_rl&mcLanding)	xr_strcat(buf,"Landing ");
+		if (mstate_rl&mcLLookout)	xr_strcat(buf,"LLookout ");
+		if (mstate_rl&mcRLookout)	xr_strcat(buf,"RLookout ");
+		if (m_bJumpKeyPressed)		xr_strcat(buf,"+Jumping ");
 		HUD().Font().pFontStat->OutNext	("MSTATE:     [%s]",buf);
 /*
 		switch (m_PhysicMovementControl->Environment())
 		{
-		case CPHMovementControl::peOnGround:	strcpy_s(buf,"ground");			break;
-		case CPHMovementControl::peInAir:		strcpy_s(buf,"air");				break;
-		case CPHMovementControl::peAtWall:		strcpy_s(buf,"wall");				break;
+		case CPHMovementControl::peOnGround:	xr_strcpy(buf,"ground");			break;
+		case CPHMovementControl::peInAir:		xr_strcpy(buf,"air");				break;
+		case CPHMovementControl::peAtWall:		xr_strcpy(buf,"wall");				break;
 		}
 		HUD().Font().pFontStat->OutNext	(buf);
 		HUD().Font().pFontStat->OutNext	("Accel     [%3.2f, %3.2f, %3.2f]",VPUSH(NET_SavedAccel));

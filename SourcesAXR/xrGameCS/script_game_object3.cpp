@@ -248,7 +248,7 @@ CScriptGameObject *CScriptGameObject::GetCurrentOutfit() const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member GetCurrentOutfit!");
 		return		(0);
 	}
-	CGameObject		*current_equipment = inventoryOwner->GetCurrentOutfit() ? &inventoryOwner->GetCurrentOutfit()->object() : 0;
+	CGameObject		*current_equipment = inventoryOwner->GetOutfit();
 	return			(current_equipment ? current_equipment->lua_game_object() : 0);
 }
 float CScriptGameObject::GetCurrentOutfitProtection(int hit_type)
@@ -258,7 +258,7 @@ float CScriptGameObject::GetCurrentOutfitProtection(int hit_type)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CInventoryOwner : cannot access class member GetCurrentOutfitProtection!");
 		return		(0);
 	}
-	CGameObject		*current_equipment = &inventoryOwner->GetCurrentOutfit()->object();
+	CGameObject		*current_equipment = inventoryOwner->GetOutfit();
 	CCustomOutfit* o = smart_cast<CCustomOutfit*>(current_equipment);
 	if(!o)				return 0.0f;
 

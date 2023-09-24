@@ -617,7 +617,8 @@ bool CInventory::Belt(PIItem pIItem, bool strict_placement)
 	if(!in_slot)
 	{
 		TIItemContainer::iterator it = std::find(m_ruck.begin(), m_ruck.end(), pIItem); 
-		if(m_ruck.end() != it) m_ruck.erase(it);
+		if(m_ruck.end() != it) 
+			m_ruck.erase(it);
 	}
 
 	CalcTotalWeight					();
@@ -665,7 +666,8 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 	{
 		//вещь была на поясе или вообще только поднята с земли
 		TIItemContainer::iterator it = std::find(m_belt.begin(), m_belt.end(), pIItem); 
-		if(m_belt.end() != it) m_belt.erase(it);
+		if(m_belt.end() != it) 
+			m_belt.erase(it);
 
 		if (!IsGameTypeSingle())
 		{

@@ -98,7 +98,7 @@ public:
 	virtual void			net_Export				(NET_Packet& P);
 	virtual void			net_Import				(NET_Packet& P);
 			void			ApplySkinModel			(CActor* pActor, bool bDress, bool bHUDOnly);
-			void			ReloadBonesProtection	();
+			void			ReloadBonesProtection	(CActor* pActor);
 
 			IC int			GetOutfitNV_Type		() const { return m_NightVisionType; }
 

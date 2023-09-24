@@ -359,6 +359,7 @@ protected:
 public:
 	float					fFPCamYawMagnitude;			//--#SM+#--
 	float					fFPCamPitchMagnitude;		//--#SM+#--
+
 public:
 	virtual void			feel_touch_new				(CObject* O);
 	virtual void			feel_touch_delete			(CObject* O);
@@ -686,6 +687,7 @@ public:
 	virtual bool				natural_weapon				() const {return false;}
 	virtual bool				natural_detector			() const {return false;}
 	virtual bool				use_center_to_aim			() const;
+
 protected:
 	u16							m_iLastHitterID;
 	u16							m_iLastHittingWeaponID;
@@ -715,7 +717,6 @@ public:
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
 			void				CleanMask						();
-
 			bool				IsReloadingWeapon				();
 #ifdef DEBUG
 			void				NoClipFly						(int cmd);

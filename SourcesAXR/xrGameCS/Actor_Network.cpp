@@ -551,6 +551,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 
 	//убрать все артефакты с пояса
 	m_ArtefactsOnBelt.clear();
+
 //.	if(	TRUE == E->s_flags.test(M_SPAWN_OBJECT_LOCAL) && TRUE == E->s_flags.is(M_SPAWN_OBJECT_ASPLAYER))
 //.		HUD().GetUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);
 		
@@ -751,6 +752,7 @@ void CActor::net_Destroy	()
 	m_holder=NULL;
 	m_holderID=u16(-1);
 	
+	//убрать все артефакты с пояса
 	m_ArtefactsOnBelt.clear();
 
 	if (Level().CurrentViewEntity() == this && HUD().GetUI()->UIMainIngameWnd->UIArtefactsPanel)
@@ -839,7 +841,6 @@ void	CActor::ResetCallbacks()
 
 void	CActor::OnChangeVisual()
 {
-///	inherited::OnChangeVisual();
 	{
 		CPhysicsShell* tmp_shell=PPhysicsShell();
 		PPhysicsShell()=NULL;
@@ -2021,14 +2022,15 @@ bool				CActor::Check_for_BackStab_Bone			(u16 element)
 	return false;
 }
 
-bool				CActor::InventoryAllowSprint			()
+bool CActor::InventoryAllowSprint()
 {
 	PIItem pActiveItem = inventory().ActiveItem();
 	if (pActiveItem && !pActiveItem->IsSprintAllowed())
 	{
 		return false;
 	};
-	PIItem pOutfitItem = inventory().ItemFromSlot(OUTFIT_SLOT);
+
+	CCustomOutfit* pOutfitItem = GetOutfit();
 	if (pOutfitItem && !pOutfitItem->IsSprintAllowed())
 	{
 		return false;
@@ -2046,7 +2048,7 @@ BOOL CActor::BonePassBullet(int boneID)
 {
 	if (GameID() == eGameIDSingle) return inherited::BonePassBullet(boneID);
 
-	CCustomOutfit* pOutfit			= (CCustomOutfit*)inventory().m_slots[OUTFIT_SLOT].m_pIItem;
+	CCustomOutfit* pOutfit			= GetOutfit();
 	if(!pOutfit)
 	{
 		IKinematics* V			= smart_cast<IKinematics*>(Visual()); VERIFY(V);

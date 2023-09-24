@@ -56,7 +56,7 @@ CActorCondition::CActorCondition(CActor *object) :
 	m_fHangover					= 0.0f;
 	m_fNarcotism				= 0.0f;
 	m_fWithdrawal				= 0.0f;
-	m_fDrugs					= 0.f;
+	m_fDrugs					= 0.0f;
 	m_fV_PsyHealth_Health		= 0.0f;
 
 	m_bPsyHealthKillActor		= false;
@@ -337,7 +337,9 @@ void CActorCondition::UpdateCondition()
 		UpdateNarcotism();
 	}
 
-	inherited::UpdateCondition	();
+	UpdatePsyHealth();
+
+	inherited::UpdateCondition();
 
 	if( IsGameTypeSingle() )
 		UpdateTutorialThresholds();
@@ -356,24 +358,26 @@ void CActorCondition::UpdateCondition()
 	}
 
 	AffectDamage_InjuriousMaterialAndMonstersInfluence();
+}
 
-	/*if(m_fDeltaTime > 0.0f)
+void CActorCondition::UpdateBoosters()
+{
+	for (u8 i = 0; i < eBoostMaxCount; i++)
 	{
-		float inj_material_damage = GetInjuriousMaterialDamage();
-		if(inj_material_damage>0)
+		BOOSTER_MAP::iterator it = m_booster_influences.find((EBoostParams)i);
+		if (it != m_booster_influences.end())
 		{
-			inj_material_damage	*= (m_fDeltaTime / Level().GetGameTimeFactor());
-			SHit	HDS = SHit(inj_material_damage,0.0f,Fvector().set(0,1,0),NULL,BI_NONE,Fvector().set(0,0,0), 0.f, ALife::eHitTypeRadiation);
-
-			HDS.GenHeader(GE_HIT, m_object->ID());
-
-			NET_Packet			np;
-			HDS.Write_Packet	(np);
-			
-			CGameObject::u_EventSend(np);
-			m_object->Hit(&HDS);
+			it->second.fBoostTime -= m_fDeltaTime / (IsGameTypeSingle() ? Level().GetGameTimeFactor() : 1.0f);
+			if (it->second.fBoostTime <= 0.0f)
+			{
+				DisableBoostParameters(it->second);
+				m_booster_influences.erase(it);
+			}
 		}
-	}*/
+	}
+
+	if (m_object == Level().CurrentViewEntity())
+		HUD().GetUI()->UIMainIngameWnd->UpdateBoosterIndicators(m_booster_influences);
 }
 
 void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
@@ -467,26 +471,6 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 		} // for
 
 	}//while
-}
-
-void CActorCondition::UpdateBoosters()
-{
-	for (u8 i = 0; i < eBoostMaxCount; i++)
-	{
-		BOOSTER_MAP::iterator it = m_booster_influences.find((EBoostParams)i);
-		if (it != m_booster_influences.end())
-		{
-			it->second.fBoostTime -= m_fDeltaTime / (IsGameTypeSingle() ? Level().GetGameTimeFactor() : 1.0f);
-			if (it->second.fBoostTime <= 0.0f)
-			{
-				DisableBoostParameters(it->second);
-				m_booster_influences.erase(it);
-			}
-		}
-	}
-
-	if (m_object == Level().CurrentViewEntity())
-		HUD().GetUI()->UIMainIngameWnd->UpdateBoosterIndicators(m_booster_influences);
 }
 
 #include "characterphysicssupport.h"
@@ -1323,11 +1307,11 @@ void CActorCondition::UpdateTutorialThresholds()
 	static float _cPowerMaxThr		= pSettings->r_float("tutorial_conditions_thresholds","max_power");
 	static float _cBleeding			= pSettings->r_float("tutorial_conditions_thresholds","bleeding");
 	static float _cSatiety			= pSettings->r_float("tutorial_conditions_thresholds","satiety");
-	static float _cThirst			= pSettings->r_float("tutorial_conditions_thresholds","thirst");
+	static float _cThirst			= pSettings->r_float("tutorial_conditions_thresholds", "thirst");
+	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
 	static float _cRadiation		= pSettings->r_float("tutorial_conditions_thresholds","radiation");
 	static float _cWpnCondition		= pSettings->r_float("tutorial_conditions_thresholds","weapon_jammed");
 	static float _cPsyHealthThr		= pSettings->r_float("tutorial_conditions_thresholds","psy_health");
-	static float _cIntoxication		= pSettings->r_float("tutorial_conditions_thresholds", "intoxication");
 	static float _cSleepeness		= pSettings->r_float("tutorial_conditions_thresholds", "sleepeness");
 	static float _cAlcoholism		= pSettings->r_float("tutorial_conditions_thresholds", "alcoholism");
 	static float _cHangover			= pSettings->r_float("tutorial_conditions_thresholds", "hangover");

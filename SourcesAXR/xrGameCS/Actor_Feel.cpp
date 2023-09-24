@@ -3,27 +3,26 @@
 #include "weapon.h"
 #include "mercuryball.h"
 #include "inventory.h"
-#include "hudmanager.h"
 #include "character_info.h"
 #include "xr_level_controller.h"
 #include "UsableScriptObject.h"
 #include "customzone.h"
 #include "../xrEngine/gamemtllib.h"
 #include "ui/UIMainIngameWnd.h"
+#include "UIGameCustom.h"
 #include "Grenade.h"
 #include "WeaponRPG7.h"
 #include "ExplosiveRocket.h"
 #include "game_cl_base.h"
 #include "Level.h"
 #include "clsid_game.h"
-#include "UIGameCustom.h"
+#include "hudmanager.h"
 #include "ui\UIPdaWnd.h"
 #include "ui\UIStatic.h"
 #include "string_table.h"
 #include "AdvancedXrayGameConstants.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
-//AAAAAA
 
 void CActor::feel_touch_new				(CObject* O)
 {
@@ -181,10 +180,9 @@ void	CActor::PickupModeUpdate_COD	()
 		return;
 	};
 	
-	CFrustum frustum;
-	frustum.CreateFromMatrix(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
+	CFrustum						frustum;
+	frustum.CreateFromMatrix		(Device.mFullTransform, FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
 
-	//---------------------------------------------------------------------------
 	ISpatialResult.clear_not_free	();
 	g_SpatialSpace->q_frustum		(ISpatialResult, 0, STYPE_COLLIDEABLE, frustum);
 
@@ -295,7 +293,7 @@ void CActor::PickupInfoDraw(CObject* object)
 void CActor::feel_sound_new(CObject* who, int type, CSound_UserDataPtr user_data, const Fvector& Position, float power)
 {
 	if(who == this)
-		m_snd_noise = _max(m_snd_noise,power);
+		m_snd_noise = _max(m_snd_noise, power);
 }
 
 void CActor::Feel_Grenade_Update( float rad )

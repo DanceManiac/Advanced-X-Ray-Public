@@ -28,8 +28,9 @@ CCustomOutfit::CCustomOutfit()
 	m_boneProtection = xr_new<SBoneProtections>();
 	m_artefact_count = 0;
 	m_BonesProtectionSect = nullptr;
-	m_bUseFilter = false;
+
 	m_b_HasGlass = false;
+	m_bUseFilter = false;
 	m_bHasLSS = false;
 	m_NightVisionType = 0;
 	m_fFilterDegradation = 0.0f;
@@ -44,9 +45,6 @@ CCustomOutfit::~CCustomOutfit()
 
 BOOL CCustomOutfit::net_Spawn(CSE_Abstract* DC)
 {
-	if(IsGameTypeSingle())
-		ReloadBonesProtection();
-
 	BOOL res = inherited::net_Spawn(DC);
 	return					(res);
 }
@@ -81,8 +79,6 @@ void CCustomOutfit::load(IReader& input_packet)
 void CCustomOutfit::OnH_A_Chield()
 {
 	inherited::OnH_A_Chield();
-	if (!IsGameTypeSingle())
-		ReloadBonesProtection();
 }
 
 void CCustomOutfit::UpdateFilterCondition(void)
@@ -249,9 +245,11 @@ void CCustomOutfit::Load(LPCSTR section)
 		}
 	}
 
-	m_full_icon_name	= pSettings->r_string( section, "full_icon_name" );
-	m_artefact_count 	= READ_IF_EXISTS( pSettings, r_u32, section, "artefact_count", 0 );
-	clamp( m_artefact_count, (u32)0, (u32)GameConstants::GetArtefactsCount());
+	if (GameConstants::GetOutfitUseFilters())
+	{
+		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
+		m_fFilterCondition = rnd_cond;
+	}
 
 	if ( pSettings->line_exist( cNameSect(), "bones_koeff_protection") )
 	{
@@ -259,22 +257,15 @@ void CCustomOutfit::Load(LPCSTR section)
 	}
 	CActor* pActor = smart_cast<CActor*>( Level().CurrentViewEntity() );
 	ReloadBonesProtection( pActor );
-
-	if (GameConstants::GetOutfitUseFilters())
-	{
-		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
-		m_fFilterCondition = rnd_cond;
-	}
 }
 
-void CCustomOutfit::ReloadBonesProtection()
+void CCustomOutfit::ReloadBonesProtection( CActor* pActor )
 {
-	CObject* parent = H_Parent();
-	if(IsGameTypeSingle())
-		parent = smart_cast<CObject*>(Level().CurrentViewEntity());
-
-	if(parent && parent->Visual() && m_BonesProtectionSect.size())
-		m_boneProtection->reload( m_BonesProtectionSect, smart_cast<IKinematics*>(parent->Visual()));
+	if ( !pActor || !pActor->Visual() || m_BonesProtectionSect.size() == 0 )
+	{
+		return;
+	}
+	m_boneProtection->reload( m_BonesProtectionSect, smart_cast<IKinematics*>( pActor->Visual() ) );
 }
 
 void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)
@@ -366,6 +357,7 @@ void	CCustomOutfit::OnMoveToSlot		()
 		CActor* pActor = smart_cast<CActor*>( H_Parent() );
 		if ( pActor )
 		{
+			ReloadBonesProtection( pActor );
 			ApplySkinModel(pActor, true, false);
 		}
 	}
@@ -472,7 +464,8 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	if ( result2 && !test )
 	{
 		m_BonesProtectionSect	= str;
-		ReloadBonesProtection	();
+		CActor* pActor = smart_cast<CActor*>( Level().CurrentViewEntity() );
+		ReloadBonesProtection( pActor );
 	}
 	result2 = process_if_exists_set(section, "player_hud_section", &CInifile::r_string, str, test);
 	if (result2 && !test)

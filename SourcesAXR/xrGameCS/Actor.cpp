@@ -74,7 +74,6 @@
 #include "ActorNightVision.h"
 #include "AdvancedXrayGameConstants.h"
 #include "../xrphysics/actorcameracollision.h"
-#include "../../xrCore/_detail_collision_point.h"
 #include "../xrEngine/Rain.h"
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
@@ -88,7 +87,12 @@ static float IReceived = 0;
 static float ICoincidenced = 0;
 extern float cammera_into_collision_shift ;
 
+u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);;
+
 //skeleton
+
+extern bool g_block_all_except_movement;
+
 static Fbox		bbStandBox;
 static Fbox		bbCrouchBox;
 static Fvector	vFootCenter;
@@ -96,18 +100,16 @@ static Fvector	vFootExt;
 
 Flags32			psActorFlags={/*AF_DYNAMIC_MUSIC|*/AF_GODMODE_RT};
 
-u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);;
+int				psActorSleepTime = 1;
 
 ENGINE_API extern int ps_r__ShaderNVG;
 extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;
-
-extern bool g_block_all_except_movement;
 
 std::atomic<bool> isHidingInProgress(false);
 std::atomic<bool> CheckNVGAnimNeeded(false);
 std::atomic<bool> CleanMaskAnimNeeded(false);
 
-CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
+CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 {
 	encyclopedia_registry	= xr_new<CEncyclopediaRegistryWrapper	>();
 	game_news_registry		= xr_new<CGameNewsRegistryWrapper		>();
@@ -130,7 +132,7 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 	//}
 	//else
 	//{
-	//	cameras[eacLookAt]		= xr_new<CCameraLook>				(this);
+	//    cameras[eacLookAt] = xr_new<CCameraLook>(this);
 	//	cameras[eacLookAt]->Load("actor_look_cam");
 	//}
 	//-Alundaio
@@ -143,8 +145,10 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 	fCurAVelocity			= 0.0f;
 	fFPCamYawMagnitude		= 0.0f; //--#SM+#--
 	fFPCamPitchMagnitude	= 0.0f; //--#SM+#--
+
 	// эффекторы
 	pCamBobbing				= 0;
+
 
 	r_torso.yaw				= 0;
 	r_torso.pitch			= 0;
@@ -220,6 +224,7 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 
 	m_iBaseArtefactCount	= 0;
 
+	m_disabled_hitmarks		= false;
 	// Alex ADD: for smooth crouch fix
 	CurrentHeight			= -1.f;
 
@@ -231,7 +236,6 @@ CActor::CActor() : CEntityAlive(), current_ik_cam_shift(0)
 	m_bNVGActivated			= false;
 	m_bEatAnimActive		= false;
 	m_bActionAnimInProcess	= false;
-	m_disabled_hitmarks		= false;
 	m_bNVGSwitched			= false;
 	m_bMaskClear			= false;
 	m_iNVGAnimLength		= 0;
@@ -520,7 +524,7 @@ struct playing_pred
 	}
 };
 
-void	CActor::Hit							(SHit* pHDS)
+void	CActor::Hit(SHit* pHDS)
 {
 	bool b_initiated = pHDS->aim_bullet; // physics strike by poltergeist
 
@@ -868,7 +872,7 @@ void CActor::Die	(CObject* who)
 		m_DangerSnd.stop		();		
 	}
 
-	if(IsGameTypeSingle())
+	if	(IsGameTypeSingle())
 	{
 		if (death_camera_mode == 1)
 			cam_Set				(eacFreeLook);
@@ -880,6 +884,10 @@ void CActor::Die	(CObject* who)
 		HUD().GetUI()->UIGame()->HideShownDialogs();
 		start_tutorial		("game_over");
 	}
+	
+	mstate_wishful	&=		~mcAnyMove;
+	mstate_real		&=		~mcAnyMove;
+
 	xr_delete				(m_sndShockEffector);
 }
 
@@ -1488,8 +1496,7 @@ void CActor::shedule_Update	(u32 DT)
 					else
 					{
 					bool b_allow_drag = !!pSettings->line_exist("ph_capture_visuals",pEntityAlive->cNameVisual());
-				
-					if(b_allow_drag)
+					if (b_allow_drag)
 						{
 						m_sDefaultObjAction = m_sDeadCharacterUseOrDragAction;
 						}
@@ -1855,10 +1862,6 @@ void CActor::OnItemDrop(CInventoryItem *inventory_item)
 {
 	CInventoryOwner::OnItemDrop(inventory_item);
 
-	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
-	if(artefact && artefact->m_eItemCurrPlace == EItemPlaceBelt)
-		MoveArtefactBelt(artefact, false);
-
 	CCustomOutfit* outfit		= smart_cast<CCustomOutfit*>(inventory_item);
 	if(outfit && inventory_item->m_eItemCurrPlace==EItemPlaceSlot)
 	{
@@ -1896,6 +1899,7 @@ void CActor::OnItemRuck		(CInventoryItem *inventory_item, EItemPlace previous_pl
 	if(artefact && previous_place == EItemPlaceBelt)
 		MoveArtefactBelt(artefact, false);
 }
+
 void CActor::OnItemBelt		(CInventoryItem *inventory_item, EItemPlace previous_place)
 {
 	CInventoryOwner::OnItemBelt(inventory_item, previous_place);
@@ -2384,18 +2388,6 @@ float		CActor::GetMass				()
 bool CActor::is_on_ground()
 {
 	return (character_physics_support()->movement()->Environment() != CPHMovementControl::peInAir);
-}
-
-CCustomOutfit* CActor::GetOutfit() const
-{
-	PIItem _of	= inventory().m_slots[OUTFIT_SLOT].m_pIItem;
-	return _of?smart_cast<CCustomOutfit*>(_of):NULL;
-}
-
-CCustomOutfit* CActor::GetPants() const
-{
-	PIItem _of = inventory().m_slots[PANTS_SLOT].m_pIItem;
-	return _of ? smart_cast<CCustomOutfit*>(_of) : NULL;
 }
 
 bool CActor::is_ai_obstacle				() const
