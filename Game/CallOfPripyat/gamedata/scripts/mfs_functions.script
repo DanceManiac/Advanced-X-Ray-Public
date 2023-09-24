@@ -104,6 +104,22 @@ function on_actor_drugs()
 
 end
 
+function devices_check_surge()
+	if surge_manager.is_started() then
+	
+		local m = surge_manager.get_surge_manager()
+		
+		if m.blowout_sound then
+			game.set_devices_psy_factor(game.get_devices_psy_factor() + 0.00075)
+		end
+		
+		return true
+	else
+		game.set_devices_psy_factor(game.get_devices_psy_factor() - 0.0025)
+		return false
+	end
+end
+
 -- 'Для команды g_task. Не трогать!
 function g_task_script(task)
 	task_manager.get_task_manager():give_task(task)

@@ -1,5 +1,7 @@
 #include "common.h"
 
+float4 nightvision_params;
+
 //utility
 float remap(float value, float inputMin, float inputMax, float outputMin, float outputMax)
 {

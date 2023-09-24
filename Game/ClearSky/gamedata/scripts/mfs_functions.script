@@ -119,6 +119,19 @@ function on_actor_drugs()
 
 end
 
+function devices_check_surge()
+	if xr_surge_hide.surge_activated then
+		if (xr_surge_hide.phase > 1) then
+			game.set_devices_psy_factor(game.get_devices_psy_factor() + 0.00075)
+		end
+		
+		return true
+	else
+		game.set_devices_psy_factor(game.get_devices_psy_factor() - 0.0025)
+		return false
+	end
+end
+
 -- 'Для команды g_task. Не трогать!
 function g_task_script(task)
 	task_manager.get_task_manager():give_task(task)

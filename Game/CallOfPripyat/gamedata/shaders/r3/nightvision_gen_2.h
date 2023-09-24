@@ -37,7 +37,7 @@ float4 process_night_vision_2(p_screen I) : SV_Target
 	float greenness = 0.4;
 	float4 coloring = float4(1.0, 2.0, 1.3, 1.0);
 	
-	float warpLine = frac(+timers.x * NVG_WARP_LINE_PERIOD_NVG_2);
+	float warpLine = frac(+timers.x * (NVG_WARP_LINE_PERIOD_NVG_2 + (nightvision_params.x * 10)));
 	
 	/** debug
 	if(abs(uv.y - warpLine) < 0.003)
@@ -49,11 +49,12 @@ float4 process_night_vision_2(p_screen I) : SV_Target
 	
 	float warpLen = 0.1;
 	float warpArg01 = remap(clamp((position.y - warpLine) - warpLen * 0.5, 0.0, warpLen), 0.0, warpLen, 0.0, 1.0);
-	float offset = sin(warpArg01 * NVG_WARP_LINE_INTENSITY_NVG_2)  * f1(warpArg01);
+	float offset = sin(warpArg01 * (NVG_WARP_LINE_INTENSITY_NVG_2 + (nightvision_params.x * 10)))  * f1(warpArg01);
 	
 	
 	float4 lineNoise = float4(1.0, 1.0, 1.0, 1.0);
-	if(abs(uv.y - frac(+timers.x * 19.0)) < 0.0005)
+	
+	if(abs(uv.y - frac(+timers.x * (19.0 + (nightvision_params.x * 100)))) < 0.0005 + (nightvision_params.x / 250.0))
 	{
 		lineNoise = float4(0.5, 0.5, 0.5, 3.0);
 	}
@@ -61,7 +62,7 @@ float4 process_night_vision_2(p_screen I) : SV_Target
 	float3 color = s_image.Sample(smp_base, I.tc0 + float2(offset * 0.02, 0.0)).xyz;
 	
 	// APPLY NOISE
-	color += jitter.y * (0.075); // Add the noise to the image
+	color += jitter.y * (0.075 + (nightvision_params.x / 3.0)); // Add the noise to the image
 	
 	    // vignetting
     color *=  vignetteAmount*0.75;

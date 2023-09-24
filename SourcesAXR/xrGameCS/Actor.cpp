@@ -241,6 +241,8 @@ CActor::CActor() : CEntityAlive()
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
+
+	m_fDevicesPsyFactor		= 0.0f;
 }
 
 
@@ -1141,6 +1143,13 @@ void CActor::UpdateCL	()
 		ps_ssfx_hud_drops_1.x = m_dropsAnimIncrementor;
 		ps_ssfx_hud_drops_1.y = m_dropsIntensity;
 	}
+
+	g_pGamePersistent->devices_shader_data.nightvision_psy_influence = m_fDevicesPsyFactor;
+
+	luabind::functor<bool> m_functor;
+
+	if (ai().script_engine().functor("mfs_functions.devices_check_surge", m_functor))
+		m_functor();
 }
 
 float	NET_Jump = 0;

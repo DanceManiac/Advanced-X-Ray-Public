@@ -815,6 +815,9 @@ public:
 
 	bool					MaskClearInProcess() { return m_bMaskClear; }
 
+	float					GetDevicesPsyFactor() { return m_fDevicesPsyFactor; }
+	void					SetDevicesPsyFactor(float psy_factor) { m_fDevicesPsyFactor = psy_factor; }
+
 	bool					m_bEatAnimActive;
 	bool					m_bActionAnimInProcess;
 	CActorSkills*			ActorSkills;
@@ -829,6 +832,8 @@ protected:
 	int						m_iNVGAnimLength;
 	int						m_iActionTiming;
 	int						m_iMaskAnimLength;
+
+	float					m_fDevicesPsyFactor;
 
 	ref_sound				m_action_anim_sound;
 

@@ -1063,6 +1063,28 @@ u32 g_get_target_element()
 	return 0;
 }
 
+float get_devices_psy_factor()
+{
+	if (Actor())
+		return Actor()->GetDevicesPsyFactor();
+
+	Msg("![get_devices_psy_factor]: Actor not found!");
+	return 0;
+}
+
+void set_devices_psy_factor(float psy_factor)
+{
+	clamp(psy_factor, 0.0f, 1.0f);
+
+	if (Actor())
+	{
+		Actor()->SetDevicesPsyFactor(psy_factor);
+		return;
+	}
+
+	Msg("![set_devices_psy_factor]: Actor not found!");
+}
+
 //can spawn entities like bolts, phantoms, ammo, etc. which normally crash when using alife():create()
 void spawn_section(pcstr sSection, Fvector3 vPosition, u32 LevelVertexID, u16 ParentID, bool bReturnItem = false)
 {
@@ -1395,25 +1417,27 @@ void CLevel::script_register(lua_State *L)
 //		def("get_surge_time",	Game::get_surge_time),
 //		def("get_object_by_name",Game::get_object_by_name),
 	
-	def("start_tutorial",		&start_tutorial),
-	def("stop_tutorial",		&stop_tutorial),
-	def("has_active_tutorial",	&has_active_tutotial),
-	def("translate_string",		&translate_string),
-	def("play_hud_motion",		PlayHudMotion), 
-	def("stop_hud_motion",		StopHudMotion), 
-	def("get_motion_length",	MotionLength),
-	def("hud_motion_allowed",	AllowHudMotion),
-	def("play_hud_anm",			PlayBlendAnm), 
-	def("stop_hud_anm",			StopBlendAnm), 
-	def("stop_all_hud_anms",	StopAllBlendAnms),
-	def("set_hud_anm_time",		SetBlendAnmTime),
-	def("only_allow_movekeys",	block_all_except_movement),
-	def("only_movekeys_allowed",only_movement_allowed),
-	def("block_actor_movement", block_actor_movement),
-	def("is_actor_movement_blocked", is_actor_movement_blocked),
-	def("set_actor_allow_ladder", set_actor_allow_ladder),
-	def("actor_ladder_allowed", actor_allow_ladder),
-	def("active_tutorial_name", +[]() { return g_tutorial->GetTutorName(); }),
-	def("log_stack_trace",		&xrDebug::LogStackTrace)
+		def("start_tutorial",		&start_tutorial),
+		def("stop_tutorial",		&stop_tutorial),
+		def("has_active_tutorial",	&has_active_tutotial),
+		def("translate_string",		&translate_string),
+		def("play_hud_motion",		PlayHudMotion), 
+		def("stop_hud_motion",		StopHudMotion), 
+		def("get_motion_length",	MotionLength),
+		def("hud_motion_allowed",	AllowHudMotion),
+		def("play_hud_anm",			PlayBlendAnm), 
+		def("stop_hud_anm",			StopBlendAnm), 
+		def("stop_all_hud_anms",	StopAllBlendAnms),
+		def("set_hud_anm_time",		SetBlendAnmTime),
+		def("only_allow_movekeys",	block_all_except_movement),
+		def("only_movekeys_allowed",only_movement_allowed),
+		def("block_actor_movement", block_actor_movement),
+		def("is_actor_movement_blocked", is_actor_movement_blocked),
+		def("set_actor_allow_ladder", set_actor_allow_ladder),
+		def("actor_ladder_allowed", actor_allow_ladder),
+		def("active_tutorial_name", +[]() { return g_tutorial->GetTutorName(); }),
+		def("log_stack_trace",		&xrDebug::LogStackTrace),
+		def("get_devices_psy_factor", &get_devices_psy_factor),
+		def("set_devices_psy_factor", &set_devices_psy_factor)
 	];
 }

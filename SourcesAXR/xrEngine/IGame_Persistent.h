@@ -193,6 +193,7 @@ public:
 		float pda_display_factor;
 		float pda_psy_influence;
 		float pda_displaybrightness;
+		float nightvision_psy_influence;
 	} devices_shader_data;
 };
 
