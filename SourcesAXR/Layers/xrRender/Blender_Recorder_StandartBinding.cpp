@@ -491,9 +491,9 @@ static class cl_pda_params : public R_constant_setup
 
 	virtual void setup(R_constant* C)
 	{
-		float pda_factor = g_pGamePersistent->pda_shader_data.pda_display_factor;
-		float pda_psy_factor = g_pGamePersistent->pda_shader_data.pda_psy_influence;
-		float pda_display_brightness = g_pGamePersistent->pda_shader_data.pda_displaybrightness;
+		float pda_factor = g_pGamePersistent->devices_shader_data.pda_display_factor;
+		float pda_psy_factor = g_pGamePersistent->devices_shader_data.pda_psy_influence;
+		float pda_display_brightness = g_pGamePersistent->devices_shader_data.pda_displaybrightness;
 		RCache.set_c(C, pda_factor, pda_psy_factor, pda_display_brightness, 0.0f);
 	}
 

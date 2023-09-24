@@ -146,7 +146,7 @@ void CPda::OnStateSwitch(u32 S)
 	case eShowing:
 	{
 		g_player_hud->attach_item(this);
-		g_pGamePersistent->pda_shader_data.pda_display_factor = 0.f;
+		g_pGamePersistent->devices_shader_data.pda_display_factor = 0.f;
 
 		m_sounds.PlaySound(hasEnoughBatteryPower() ? "sndShow" : "sndShowEmpty", Position(), H_Root(), !!GetHUDmode(), false);
 		PlayHUDMotion(!m_bNoticedEmptyBattery ? "anm_show" : "anm_show_empty", false, this, GetState());
@@ -395,29 +395,29 @@ void CPda::UpdateCL()
 		// Adjust screen brightness (smooth)
 		if (m_bPowerSaving)
 		{
-			if (g_pGamePersistent->pda_shader_data.pda_displaybrightness > m_fDisplayBrightnessPowerSaving)
-				g_pGamePersistent->pda_shader_data.pda_displaybrightness -= Device.fTimeDelta / .25f;
+			if (g_pGamePersistent->devices_shader_data.pda_displaybrightness > m_fDisplayBrightnessPowerSaving)
+				g_pGamePersistent->devices_shader_data.pda_displaybrightness -= Device.fTimeDelta / .25f;
 		}
 		else
-			g_pGamePersistent->pda_shader_data.pda_displaybrightness = 1.f;
+			g_pGamePersistent->devices_shader_data.pda_displaybrightness = 1.f;
 
-		clamp(g_pGamePersistent->pda_shader_data.pda_displaybrightness, m_fDisplayBrightnessPowerSaving, 1.f);
+		clamp(g_pGamePersistent->devices_shader_data.pda_displaybrightness, m_fDisplayBrightnessPowerSaving, 1.f);
 
 		// Screen "Glitch" factor
-		g_pGamePersistent->pda_shader_data.pda_psy_influence = m_psy_factor;
+		g_pGamePersistent->devices_shader_data.pda_psy_influence = m_psy_factor;
 
 		// Update Display Visibility (turn on/off)
 		if (target_screen_switch < Device.fTimeGlobal)
 		{
 			if (!enoughBatteryPower || state == eHiding)
 				// Change screen transparency (towards 0 = not visible).
-				g_pGamePersistent->pda_shader_data.pda_display_factor -= Device.fTimeDelta / .25f;
+				g_pGamePersistent->devices_shader_data.pda_display_factor -= Device.fTimeDelta / .25f;
 			else
 				// Change screen transparency (towards 1 = fully visible).
-				g_pGamePersistent->pda_shader_data.pda_display_factor += Device.fTimeDelta / .75f;
+				g_pGamePersistent->devices_shader_data.pda_display_factor += Device.fTimeDelta / .75f;
 		}
 
-		clamp(g_pGamePersistent->pda_shader_data.pda_display_factor, 0.f, 1.f);
+		clamp(g_pGamePersistent->devices_shader_data.pda_display_factor, 0.f, 1.f);
 	}
 
 	if (m_bZoomed)

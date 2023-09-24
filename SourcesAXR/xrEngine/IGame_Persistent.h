@@ -188,12 +188,12 @@ public:
 			bool					render_scene;
 		 IC bool					SceneRenderingBlocked();
 
-	struct pda_data
+	struct devices_data
 	{
 		float pda_display_factor;
 		float pda_psy_influence;
 		float pda_displaybrightness;
-	} pda_shader_data;
+	} devices_shader_data;
 };
 
 class IMainMenu
