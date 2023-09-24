@@ -985,6 +985,11 @@ void CAI_Stalker::net_Relcase				(CObject*	 O)
 	m_pPhysics_support->in_NetRelcase	(O);
 }
 
+void CAI_Stalker::ForceTransform(const Fmatrix& m)
+{
+	character_physics_support()->ForceTransform( m );
+}
+
 CMovementManager *CAI_Stalker::create_movement_manager	()
 {
 	return	(m_movement_manager = xr_new<stalker_movement_manager_smart_cover>(this));
