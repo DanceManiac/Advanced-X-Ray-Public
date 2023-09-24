@@ -29,7 +29,7 @@ float4 pda_params;
 
 float3 glitch(float3 screen, float2 tc)
 {
-    if ((tc.x - rand(timers.x*SCREEN_RAND_TIME) * noise(tc) ) < clamp(SCREEN_GLITCH_LIMIT.x,sin(4.*noise(tc)),SCREEN_GLITCH_LIMIT.y)) 
+    if ((tc.x - rand(timers.x*SCREEN_RAND_TIME) * generic_noise(tc) ) < clamp(SCREEN_GLITCH_LIMIT.x,sin(4.* generic_noise(tc)),SCREEN_GLITCH_LIMIT.y)) 
     {
         float randori_first = rand(sin(timers.x*SCREEN_RGB_RAND.x));
         screen.x *= s_pdascreen.Sample(smp_base, float2(tc.x-SCREEN_RGB_TCX.x, tc.y+SCREEN_RGB_TCY.x)).z*randori_first;
@@ -48,7 +48,17 @@ float3 glitch(float3 screen, float2 tc)
 
 float4 main( v2p I ): SV_Target
 {
+	float4 jitter = float4(
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 12345.0),
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 67890.0),
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 78372.0),
+		frac(sin(dot(I.tc0, float2(12.0, 78.0) + (timers.x) )) * 37857.0));
+		
 	float4 col = s_pdascreen.Sample(smp_base, I.tc0);
+	
+	// APPLY NOISE
+	col += jitter.y * pda_params.y; // Add the noise to the image
+	
 	//col.xyz = lerp(col.xyz, glitch(col.xyz, I.tc0), pda_params.y);
 	return float4(col.r, col.g, col.b, pda_params.x)*pda_params.z;
 }

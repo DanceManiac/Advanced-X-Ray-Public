@@ -429,6 +429,11 @@ void CPda::UpdateCL()
 			SSFX_PDA_DoF_active = false;
 		}
 	}
+
+	luabind::functor<bool> m_functor;
+
+	if (ai().script_engine().functor("pda.check_surge", m_functor))
+		m_functor();
 }
 
 void CPda::shedule_Update(u32 dt)

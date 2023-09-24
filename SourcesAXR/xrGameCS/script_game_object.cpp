@@ -605,6 +605,8 @@ void CScriptGameObject::SetPsyFactor(float val)
 		return;
 	}
 	pda->m_psy_factor = val;
+
+	clamp(pda->m_psy_factor, 0.0f, 1.0f);
 }
 
 void CScriptGameObject::eat				(CScriptGameObject *item)

@@ -414,3 +414,22 @@ end
 function on_low_battery() -- from engine
 
 end
+
+function check_surge() -- from engine
+	local pda = db.actor:item_in_slot(7)
+	
+	if not pda then
+		return false
+	end
+	
+	if xr_surge_hide.surge_activated then	
+		if (xr_surge_hide.phase > 1) then
+			pda:set_psy_factor(pda:psy_factor() + 0.00075)
+		end
+		
+		return true
+	else
+		pda:set_psy_factor(pda:psy_factor() - 0.0025)
+		return false
+	end
+end

@@ -398,3 +398,25 @@ end
 function on_low_battery() -- from engine
 
 end
+
+function check_surge() -- from engine
+	local pda = db.actor:item_in_slot(8)
+	
+	if not pda then
+		return false
+	end
+	
+	if surge_manager.is_started() then
+	
+		local m = surge_manager.get_surge_manager()
+		
+		if m.blowout_sound then
+			pda:set_psy_factor(pda:psy_factor() + 0.00075)
+		end
+		
+		return true
+	else
+		pda:set_psy_factor(pda:psy_factor() - 0.0025)
+		return false
+	end
+end
