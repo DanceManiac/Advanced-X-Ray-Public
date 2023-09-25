@@ -491,7 +491,7 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
 
-	result |= process_if_exists(section, "night_vision_type", &CInifile::r_u32, m_NightVisionType, test);
+	result |= process_if_exists_set(section, "night_vision_type", &CInifile::r_u32, m_NightVisionType, test);
 
 	m_fJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);

@@ -342,6 +342,8 @@ bool CHelmet::install_upgrade_impl( LPCSTR section, bool test )
 
 	result |= process_if_exists( section, "nearest_enemies_show_dist",  &CInifile::r_float, m_fShowNearestEnemiesDistance,  test );
 
+	result |= process_if_exists_set(section, "night_vision_type", &CInifile::r_u32, m_NightVisionType, test);
+
 	result2 = process_if_exists_set( section, "bones_koeff_protection", &CInifile::r_string, str, test );
 	if ( result2 && !test )
 	{
@@ -351,8 +353,6 @@ bool CHelmet::install_upgrade_impl( LPCSTR section, bool test )
 	result2 = process_if_exists_set( section, "bones_koeff_protection_add", &CInifile::r_string, str, test );
 	if ( result2 && !test )
 		AddBonesProtection	(str);
-
-	result |= process_if_exists(section, "night_vision_type", &CInifile::r_u32, m_NightVisionType, test);
 
 	return result;
 }
