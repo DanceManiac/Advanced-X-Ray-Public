@@ -26,6 +26,7 @@ struct 	v2p
 
 Texture2D s_pdascreen;
 float4 pda_params;
+float4 device_influence;
 
 float3 glitch(float3 screen, float2 tc)
 {
@@ -56,9 +57,17 @@ float4 main( v2p I ): SV_Target
 		
 	float4 col = s_pdascreen.Sample(smp_base, I.tc0);
 	
+	// Calc psy and radiation zones influence
+	float psy_zone_intensity = smoothstep(0.25, 1.0, device_influence.y);
+	float rad_zone_intensity = smoothstep(0.5, 0.9, device_influence.z);
+	
 	// APPLY NOISE
-	col += jitter.y * pda_params.y; // Add the noise to the image
+	col += jitter.y * (pda_params.y + rad_zone_intensity + psy_zone_intensity); // Add the noise to the image
 	
 	//col.xyz = lerp(col.xyz, glitch(col.xyz, I.tc0), pda_params.y);
+	
+	if (pda_params.y >= 1.0)
+		return 0;
+	
 	return float4(col.r, col.g, col.b, pda_params.x)*pda_params.z;
 }

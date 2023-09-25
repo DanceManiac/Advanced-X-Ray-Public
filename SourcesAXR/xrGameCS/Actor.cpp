@@ -1144,7 +1144,9 @@ void CActor::UpdateCL	()
 		ps_ssfx_hud_drops_1.y = m_dropsIntensity;
 	}
 
-	g_pGamePersistent->devices_shader_data.nightvision_psy_influence = m_fDevicesPsyFactor;
+	g_pGamePersistent->devices_shader_data.device_global_psy_influence = m_fDevicesPsyFactor;
+	g_pGamePersistent->devices_shader_data.device_psy_zone_influence = HUD().GetUI()->UIGame()->get_zone_cur_power(ALife::eHitTypeTelepatic) * 2;
+	g_pGamePersistent->devices_shader_data.device_radiation_zone_influence = HUD().GetUI()->UIGame()->get_zone_cur_power(ALife::eHitTypeRadiation) * 2;
 
 	luabind::functor<bool> m_functor;
 

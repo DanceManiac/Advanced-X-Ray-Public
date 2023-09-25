@@ -1,6 +1,6 @@
 #include "common.h"
 
-float4 nightvision_params;
+float4 device_influence; //x - device global psy factor, y - device psy-zone factor, z - device radiation-zone factor, w - 0
 
 //utility
 float remap(float value, float inputMin, float inputMax, float outputMin, float outputMax)

@@ -499,18 +499,20 @@ static class cl_pda_params : public R_constant_setup
 
 } binder_pda_params;
 
-static class cl_nvg_params : public R_constant_setup
+static class cl_device_params : public R_constant_setup
 {
 	u32 marker;
 	Fvector4 result;
 
 	virtual void setup(R_constant* C)
 	{
-		float nvg_psy_factor = g_pGamePersistent->devices_shader_data.nightvision_psy_influence;
-		RCache.set_c(C, nvg_psy_factor, 0.0f, 0.0f, 0.0f);
+		float device_global_psy_factor = g_pGamePersistent->devices_shader_data.device_global_psy_influence;
+		float device_psy_zone_factor = g_pGamePersistent->devices_shader_data.device_psy_zone_influence;
+		float device_rad_zone_factor = g_pGamePersistent->devices_shader_data.device_radiation_zone_influence;
+		RCache.set_c(C, device_global_psy_factor, device_psy_zone_factor, device_rad_zone_factor, 0.0f);
 	}
 
-} binder_nvg_params;
+} binder_device_params;
 
 static class cl_inv_v : public R_constant_setup
 {
@@ -689,7 +691,7 @@ void	CBlender_Compile::SetMapping	()
 	// PDA
 	r_Constant				("pda_params",		&binder_pda_params);
 	// Nightvision
-	r_Constant				("nightvision_params",	&binder_nvg_params);
+	r_Constant				("device_influence",	&binder_device_params);
 	//Screen Space Shaders
 	r_Constant				("ssfx_wpn_dof_1",		&ssfx_wpn_dof_1);
 	r_Constant				("ssfx_wpn_dof_2",		&ssfx_wpn_dof_2);
