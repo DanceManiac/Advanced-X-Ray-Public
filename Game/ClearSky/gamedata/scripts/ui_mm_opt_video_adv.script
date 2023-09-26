@@ -154,13 +154,6 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl			= xml:InitCheck					("video_adv:check_detail_collision",	_st)
 	handler.m_preconditions[ctl]		= only_3_and_more_mode
 	
---Дальность видимости эффекта коллизии травы
-	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
-	xml:InitStatic("video_adv:cap_detail_collision_radius", _st)
-	xml:InitTrackBar("video_adv:track_detail_collision_radius", _st)
-	handler.track_detail_collision_radius = ctl
-	handler.m_preconditions[ctl]		= only_3_and_more_mode
-	
 --Статическое солнце
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r2_static_sun",			_st)

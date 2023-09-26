@@ -579,12 +579,6 @@
 	<string id="ui_mm_detail_collision_hint">
 		<text>Эта опция включает применание травы героем и персонажами.\n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
-	<string id="ui_mm_detail_collision_radius">
-		<text>Дальность коллизии травы</text>
-	</string>
-	<string id="ui_mm_detail_collision_radius_hint">
-		<text>Эта опция позволяет настраивать радиус обработки коллизии травы.\n \n %c[pda_green] • Нагрузка: Низкая</text>
-	</string>
 	<string id="ui_mm_chromatic_aberration">
 		<text>Хроматическая аберрация</text>
 	</string>

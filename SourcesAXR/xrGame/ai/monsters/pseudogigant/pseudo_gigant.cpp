@@ -17,12 +17,7 @@
 #include "../control_path_builder_base.h"
 #include "Inventory.h"
 #include "AdvancedXrayGameConstants.h"
-#include "../../xrCore/_detail_collision_point.h"
 
-ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
-ENGINE_API extern int ps_detail_enable_collision;
-ENGINE_API extern Fvector actor_position;
-ENGINE_API extern float ps_detail_collision_radius;
 extern ENGINE_API Fvector4 ps_ssfx_grass_interactive;
 
 CPseudoGigant::CPseudoGigant()
@@ -253,14 +248,6 @@ void CPseudoGigant::on_activate_control(ControlCom::EControlType type)
 void CPseudoGigant::on_threaten_execute()
 {
 	Fvector& position = Position();
-
-	if (ps_detail_enable_collision)
-	{
-		//-- VlaGan: для псевдыча ID зеркальный, чтобы он не влиял на траву под ид точки удара
-		//-- для гранат и взрывного легче, ведь они по задумке не коллизируют и можно спокойно брать их ид
-		if (actor_position.distance_to(position) <= ps_detail_collision_radius)
-			level_detailcoll_points.push_back(DetailCollisionPoint(position, -ID(), 15.f, 0.3f, 1.5f, true));
-	}
 
 	// разбросить объекты
 	m_nearest.clear_not_free		();

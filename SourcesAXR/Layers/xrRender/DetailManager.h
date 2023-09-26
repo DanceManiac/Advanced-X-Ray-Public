@@ -59,11 +59,6 @@ public:
 		float						scale;
 		float						scale_calculated;
 		Fmatrix						mRotY;
-		float						m_fTimeCollision{};
-        //Fvector					dir;
-        //float						fYAngle;
-        u16							collision_parent = (u16)-1;
-        IC bool						IsCollisionParent() { return collision_parent != (u16)-1; }
 		u32							vis_ID;				// индекс в visibility списке он же тип [не качается, качается1, качается2]
 		float						c_hemi;
 		float						c_sun;

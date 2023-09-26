@@ -72,17 +72,10 @@
 #include "embedded_editor/embedded_editor_main.h"
 #include "embedded_editor/editor_render.h"
 
-#include "../xrCore/_detail_collision_point.h"
 #include "../xrEngine/CameraManager.h"
 #include "ActorEffector.h"
 
 #include "AdvancedXrayGameConstants.h"
-
-ENGINE_API bool g_dedicated_server;
-ENGINE_API extern xr_vector<DetailCollisionPoint> level_detailcoll_points;
-ENGINE_API extern int ps_detail_enable_collision;
-ENGINE_API extern Fvector actor_position;
-ENGINE_API extern float ps_detail_collision_radius;
 
 extern BOOL	g_bDebugDumpPhysicsStep;
 extern CUISequencer * g_tutorial;
@@ -780,33 +773,6 @@ void CLevel::OnFrame	()
 	};
 
 	ShowEditor();
-
-	//-- Обновляем точки колизии
-	if (ps_detail_enable_collision)
-	{
-		//-- VlaGan: удаляем только позиции с is_explosion = false
-		xr_vector<DetailCollisionPoint> explosion_points;
-		for (const auto& point : level_detailcoll_points)
-		{
-			if (point.is_explosion)
-				explosion_points.push_back(point);
-		}
-
-		level_detailcoll_points.clear();
-
-		if (explosion_points.size())
-			level_detailcoll_points = explosion_points;
-
-		const xr_vector<CObject*>& active_objects = Objects.GetActiveObjects();
-
-		for (auto& obj : active_objects) //-- CEntityAlive будет лучше
-		{
-			auto gobj = smart_cast<CEntityAlive*>(obj);
-
-			if (gobj && actor_position.distance_to(gobj->Position()) <= ps_detail_collision_radius)
-				level_detailcoll_points.push_back(DetailCollisionPoint(gobj->Position(), gobj->ID()));
-		}
-	}
 }
 
 int		psLUA_GCSTEP					= 10			;
