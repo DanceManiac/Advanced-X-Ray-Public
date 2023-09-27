@@ -10,26 +10,20 @@
 #include "UIActorStateInfo.h"
 #include "../actor.h"
 #include "../uigamesp.h"
-#include "../inventory.h"
+#include "../Inventory.h"
 #include "../inventory_item.h"
-#include "../InventoryBox.h"
-#include "object_broker.h"
-#include "UIInventoryUtilities.h"
 #include "game_cl_base.h"
 
-#include "UICursor.h"
+#include "UIBtnHint.h"
 #include "UICellItem.h"
-#include "UICharacterInfo.h"
 #include "UIItemInfo.h"
 #include "UIDragDropListEx.h"
 #include "UIInventoryUpgradeWnd.h"
-#include "UI3tButton.h"
-#include "UIBtnHint.h"
 #include "UIMessageBoxEx.h"
 #include "UIPropertiesBox.h"
-#include "UIMainIngameWnd.h"
 #include "Antigasfilter.h"
 #include "CustomBackpack.h"
+#include "WeaponMagazined.h"
 #include "../xrEngine/x_ray.h"
 #include <dinput.h>
 
@@ -81,6 +75,15 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
 	if ( old_owner==new_owner || !old_owner || !new_owner )
 	{
+		CUICellItem* cell_item = new_owner->GetCellItemUnderCursor();
+		PIItem item_in_cell = cell_item ? (PIItem)cell_item->m_pData : NULL;
+
+		if (old_owner == new_owner && item_in_cell && item_in_cell->CanAttach(CurrentIItem()))
+		{
+			AttachAddon(item_in_cell);
+			UpdateItemsPlace();
+			return true;
+		}
 		return false;
 	}
 	EDDListType t_new		= GetListType(new_owner);
