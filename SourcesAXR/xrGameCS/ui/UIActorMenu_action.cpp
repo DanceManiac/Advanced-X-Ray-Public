@@ -12,6 +12,8 @@
 #include "UIDialogHolder.h"
 #include "../Inventory.h"
 #include "../inventory_item.h"
+#include "../Artefact.h"
+#include "../ArtefactContainer.h"
 #include "game_cl_base.h"
 
 #include "UIBtnHint.h"
@@ -22,8 +24,6 @@
 #include "UIMessageBoxEx.h"
 #include "UIPropertiesBox.h"
 #include "UIDialogWnd.h"
-
-#include "AdvancedXrayGameConstants.h"
 #include "Antigasfilter.h"
 #include "CustomBackpack.h"
 #include "WeaponMagazined.h"
@@ -79,14 +79,26 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
 	if ( old_owner==new_owner || !old_owner || !new_owner )
 	{
-		CUICellItem* cell_item = new_owner->GetCellItemUnderCursor();
-		PIItem item_in_cell = cell_item ? (PIItem)cell_item->m_pData : NULL;
+		CUICellItem* cell_item				= new_owner->GetCellItemUnderCursor();
+		PIItem item_in_cell					= cell_item ? (PIItem)cell_item->m_pData : NULL;
+		CArtefactContainer* pAfContainer	= smart_cast<CArtefactContainer*>(item_in_cell);
+		CArtefact*	pArtefact				= smart_cast<CArtefact*>	(CurrentIItem());
 
 		if (old_owner == new_owner && item_in_cell && item_in_cell->CanAttach(CurrentIItem()))
 		{
 			AttachAddon(item_in_cell);
 			UpdateItemsPlace();
 			return true;
+		}
+		if (old_owner == new_owner && pArtefact)
+		{
+			if (pAfContainer && !pAfContainer->IsFull())
+			{
+				pAfContainer->PutArtefactToContainer(*pArtefact);
+
+				pArtefact->DestroyObject();
+				return true;	
+			}
 		}
 		return false;
 	}
