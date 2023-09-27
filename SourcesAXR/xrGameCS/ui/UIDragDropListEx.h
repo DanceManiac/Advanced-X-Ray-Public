@@ -127,6 +127,8 @@ public:
 	virtual CUICellItem*	RemoveItem			(CUICellItem* itm, bool force_root);
 			void			CreateDragItem		(CUICellItem* itm);
 
+			CUICellItem*	GetCellItemUnderCursor();
+
 			void			DestroyDragItem		();
 			void			ClearAll			(bool bDestroy);	
 			void			Compact				();
@@ -180,6 +182,7 @@ protected:
 				void			SetCellsSpacing		(const Ivector2& new_sz);
 				Ivector2		TopVisibleCell		();
 				CUICell&		GetCellAt			(const Ivector2& pos);
+				CUICell*		GetCellAtP			(const Ivector2& pos);
 				Ivector2		PickCell			(const Fvector2& abs_pos);
 				Ivector2		GetItemPos			(CUICellItem* itm);
 				Ivector2		FindFreeCell		(const Ivector2& size);

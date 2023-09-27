@@ -473,6 +473,17 @@ CUICellItem* CUIDragDropListEx::RemoveItem(CUICellItem* itm, bool force_root)
 	return						i;
 }
 
+CUICellItem* CUIDragDropListEx::GetCellItemUnderCursor()
+{
+	Ivector2 pt = m_container->PickCell(GetUICursor().GetCursorPosition());
+	auto cell = m_container->GetCellAtP(pt);
+
+	if (!cell)
+		return nullptr;
+
+	return cell->m_item;
+}
+
 u32 CUIDragDropListEx::ItemsCount()
 {
 	return m_container->GetChildWndList().size();
@@ -762,6 +773,18 @@ CUICell& CUICellContainer::GetCellAt(const Ivector2& pos)
 	R_ASSERT			(ValidCell(pos));
 	CUICell&	c		= m_cells[m_cellsCapacity.x*pos.y+pos.x];
 	return				c;
+}
+
+CUICell* CUICellContainer::GetCellAtP(const Ivector2 & pos)
+{
+	if (pos.x >= 0 && pos.y >= 0 && pos.x < m_cellsCapacity.x && pos.y < m_cellsCapacity.y)
+	{
+		CUICell* c = &m_cells[m_cellsCapacity.x*pos.y + pos.x];
+
+		return c;
+	}
+
+	return nullptr;
 }
 
 Ivector2 CUICellContainer::GetItemPos(CUICellItem* itm)
