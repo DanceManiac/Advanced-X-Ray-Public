@@ -34,6 +34,8 @@
 #include "Weapon.h"
 #include "WeaponMagazined.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 extern int hud_adj_mode;
 bool g_block_actor_movement;
 
@@ -179,11 +181,15 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				if(itm)
 				{
 					inventory().ChooseItmAnimOrNot(itm);
-					SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
-					_s->m_endTime				= Device.fTimeGlobal+3.0f;
-					string1024					str;
-					strconcat					(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->NameItem());
-					_s->wnd()->SetText			(str);
+
+					if (GameConstants::GetHUD_UsedItemTextEnabled())
+					{
+						SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
+						_s->m_endTime = Device.fTimeGlobal + 3.0f;
+						string1024					str;
+						strconcat(sizeof(str), str, *CStringTable().translate("st_item_used"), ": ", itm->NameItem());
+						_s->wnd()->SetText(str);
+					}
 				}
 			}
 		}break;

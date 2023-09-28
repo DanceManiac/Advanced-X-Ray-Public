@@ -37,6 +37,7 @@ namespace GameConstants
 	bool GetSleepInfluenceOnPsyHealth();
 	bool GetUseHQ_Icons();
 	bool GetArtefactPanelEnabled();
+	bool GetHUD_UsedItemTextEnabled();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

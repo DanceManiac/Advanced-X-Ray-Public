@@ -39,6 +39,7 @@ bool	m_bActorSkills = false;
 bool	m_bSleepInfluenceOnPsyHealth = false;
 bool	m_bUseHQ_Icons = false;
 bool	m_bAfPanelEnabled = false;
+bool	m_bHUD_UsedItemText = true;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -98,6 +99,7 @@ namespace GameConstants
 		m_FV4NeutralColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_neutral", Fvector4().set(170, 170, 170, 255));
 		m_bUseHQ_Icons = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "hq_icons", false);
 		m_bAfPanelEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_artefact_panel", false);
+		m_bHUD_UsedItemText = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_hud_used_item_text", true);
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 		m_sArtefactsDegradationMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_degradation_mode", "from_belt"); //from_belt|from_ruck
 		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
@@ -273,6 +275,11 @@ namespace GameConstants
 	bool GetArtefactPanelEnabled()
 	{
 		return m_bAfPanelEnabled;
+	}
+
+	bool GetHUD_UsedItemTextEnabled()
+	{
+		return m_bHUD_UsedItemText;
 	}
 
 	int GetArtefactsCount()
