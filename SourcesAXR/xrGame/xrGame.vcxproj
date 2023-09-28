@@ -4823,7 +4823,24 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="event_conditions_collection.cpp" />
-    <ClCompile Include="ExoOutfit.cpp" />
+    <ClCompile Include="ExoOutfit.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="Explosive.cpp" />
     <ClCompile Include="ExplosiveItem.cpp" />
     <ClCompile Include="ExplosiveRocket.cpp" />
@@ -5805,7 +5822,24 @@
     </ClCompile>
     <ClCompile Include="MercuryBall.cpp" />
     <ClCompile Include="Message_Filter.cpp" />
-    <ClCompile Include="MilitaryOutfit.cpp" />
+    <ClCompile Include="MilitaryOutfit.cpp">
+    <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="Mincer.cpp" />
     <ClCompile Include="mincer_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -6423,7 +6457,24 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="ScientificOutfit.cpp" />
+    <ClCompile Include="ScientificOutfit.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
+    </ClCompile>
     <ClCompile Include="Scope.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
