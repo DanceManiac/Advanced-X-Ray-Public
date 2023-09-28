@@ -144,7 +144,9 @@ void CUIWindow::script_register(lua_State *L)
 		.def("GetText",						&CUILabel::GetText),
 */
 		class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
-		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier),
+		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier)
+		.def("SetPage",						&CUIMMShniaga::SetPage)
+		.def("ShowPage",					&CUIMMShniaga::ShowPage),
 
 		class_<CUIScrollView, CUIWindow>("CUIScrollView")
 		.def(							constructor<>())

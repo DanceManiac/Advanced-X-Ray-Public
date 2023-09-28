@@ -21,7 +21,7 @@ public:
 	virtual void 	Undo					();
 	virtual void	Draw					();
 	virtual void	Update					();
-	virtual bool	OnMouse					(float x, float y, EUIMessages mouse_action);
+	virtual bool	OnMouseAction					(float x, float y, EUIMessages mouse_action);
 	virtual	void 	OnMessage				(LPCSTR message);
 	// CUIWindow
 			void	InitTrackBar			(Fvector2 pos, Fvector2 size);

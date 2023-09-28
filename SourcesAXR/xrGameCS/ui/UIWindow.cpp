@@ -9,7 +9,9 @@
 #include "../Include/xrRender/DebugRender.h"
 #include "../Include/xrRender/UIRender.h"
 
-//#define LOG_ALL_WNDS
+poolSS< _12b, 128>	ui_allocator;
+
+// #define LOG_ALL_WNDS
 #ifdef LOG_ALL_WNDS
 	int ListWndCount = 0;
 	struct DBGList{
@@ -261,7 +263,7 @@ void CUIWindow::GetAbsoluteRect(Frect& r)
 
 #define DOUBLE_CLICK_TIME 250
 
-bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {	
 	Frect	wndRect = GetWndRect();
 
@@ -297,7 +299,7 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 	//сообщение направляем ему сразу
 	if(m_pMouseCapturer)
 	{
-		m_pMouseCapturer->OnMouse(cursor_pos.x - m_pMouseCapturer->GetWndRect().left, 
+		m_pMouseCapturer->OnMouseAction(cursor_pos.x - m_pMouseCapturer->GetWndRect().left, 
 								  cursor_pos.y - m_pMouseCapturer->GetWndRect().top, 
 								  mouse_action);
 		return true;
@@ -336,13 +338,13 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 		{
 			if(w->IsEnabled())
 			{
-				if( w->OnMouse(cursor_pos.x -w->GetWndRect().left, 
+				if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
 							   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 			}
 		}
 		else if (w->IsEnabled() && w->CursorOverWindow())
 		{
-			if( w->OnMouse(cursor_pos.x -w->GetWndRect().left, 
+			if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
 						   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 		}
 	}
@@ -427,7 +429,7 @@ void CUIWindow::SetCapture(CUIWindow *pChildWindow, bool capture_status)
 
 
 //реакция на клавиатуру
-bool CUIWindow::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIWindow::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	bool result;
 
@@ -435,7 +437,7 @@ bool CUIWindow::OnKeyboard(int dik, EUIMessages keyboard_action)
 	//сообщение направляем ему сразу
 	if(NULL!=m_pKeyboardCapturer)
 	{
-		result = m_pKeyboardCapturer->OnKeyboard(dik, keyboard_action);
+		result = m_pKeyboardCapturer->OnKeyboardAction(dik, keyboard_action);
 		
 		if(result) return true;
 	}
@@ -446,7 +448,7 @@ bool CUIWindow::OnKeyboard(int dik, EUIMessages keyboard_action)
 	{
 		if((*it)->IsEnabled())
 		{
-			result = (*it)->OnKeyboard(dik, keyboard_action);
+			result = (*it)->OnKeyboardAction(dik, keyboard_action);
 			
 			if(result)	return true;
 		}
@@ -521,7 +523,7 @@ CUIWindow* CUIWindow::GetChildMouseHandler(){
 	{
 		Frect wndRect = (*it)->GetWndRect();
 		// very strange code.... i can't understand difference between
-		// first and second condition. I Got It from OnMouse() method;
+		// first and second condition. I Got It from OnMouseAction() method;
 		if (wndRect.in(cursor_pos) )
 		{
 			if((*it)->IsEnabled())

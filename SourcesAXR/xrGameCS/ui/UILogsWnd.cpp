@@ -330,7 +330,7 @@ ALife::_TIME_ID CUILogsWnd::GetShiftPeriod( ALife::_TIME_ID datetime, int shift_
 	return datetime;
 }
 
-bool CUILogsWnd::OnKeyboard( int dik, EUIMessages keyboard_action )
+bool CUILogsWnd::OnKeyboardAction( int dik, EUIMessages keyboard_action )
 {
 	if ( keyboard_action == WINDOW_KEY_PRESSED )
 	{
@@ -353,7 +353,7 @@ bool CUILogsWnd::OnKeyboard( int dik, EUIMessages keyboard_action )
 		}
 	}
 	m_ctrl_press = false;
-	return inherited::OnKeyboard( dik, keyboard_action );
+	return inherited::OnKeyboardAction( dik, keyboard_action );
 }
 
 bool CUILogsWnd::OnKeyboardHold( int dik )

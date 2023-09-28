@@ -102,9 +102,9 @@ void FactionState::update_info()
 	CActor* pActor = smart_cast<CActor*>( Level().CurrentEntity() );
 	if ( pActor )
 	{
-		CHARACTER_COMMUNITY		char_�omm;
-		char_�omm.set( m_id );
-		m_actor_goodwill = RELATION_REGISTRY().GetCommunityGoodwill( char_�omm.index(), pActor->object_id() );
+		CHARACTER_COMMUNITY		char_comm;
+		char_comm.set( m_id );
+		m_actor_goodwill = RELATION_REGISTRY().GetCommunityGoodwill(char_comm.index(), pActor->object_id() );
 	}
 	ResetStates();
 

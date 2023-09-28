@@ -115,7 +115,7 @@ void CUIInventoryWnd::Init()
 	AttachChild							(&UIOutfitInfo);
 	UIOutfitInfo.InitFromXml			(uiXml);
 
-	//�������� ��������������� ����������
+	//Элементы автоматического добавления
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
 
 
@@ -212,12 +212,12 @@ CUIInventoryWnd::~CUIInventoryWnd()
 	ClearAllLists						();
 }
 
-bool CUIInventoryWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIInventoryWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	if(m_b_need_reinit)
 		return true;
 
-	//����� ��������������� ���� �� ������ ������
+	//вызов дополнительного меню по правой кнопке
 	if(mouse_action == WINDOW_RBUTTON_DOWN)
 	{
 		if(UIPropertiesBox.IsShown())
@@ -227,7 +227,7 @@ bool CUIInventoryWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 		}
 	}
 
-	CUIWindow::OnMouse					(x, y, mouse_action);
+	CUIWindow::OnMouseAction					(x, y, mouse_action);
 
 	return true; // always returns true, because ::StopAnyMove() == true;
 }
@@ -334,7 +334,7 @@ void CUIInventoryWnd::Hide()
 	SendInfoToActor						("ui_inventory_hide");
 	ClearAllLists						();
 
-	//������� ���� � �������� ����
+	//достать вещь в активный слот
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && m_iCurrentActiveSlot != NO_ACTIVE_SLOT && 
 		pActor->inventory().m_slots[m_iCurrentActiveSlot].m_pIItem)
@@ -367,7 +367,7 @@ void CUIInventoryWnd::AttachAddon(PIItem item_to_upgrade)
 	item_to_upgrade->Attach						(CurrentIItem(), true);
 
 
-	//�������� ���� �� ��������� ����� � ��������� �� ����� ������ �������
+	//спрятать вещь из активного слота в инвентарь на время вызова менюшки
 	CActor *pActor								= smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && item_to_upgrade == pActor->inventory().ActiveItem())
 	{
@@ -389,7 +389,7 @@ void CUIInventoryWnd::DetachAddon(const char* addon_name)
 	};
 	CurrentIItem()->Detach						(addon_name, true);
 
-	//�������� ���� �� ��������� ����� � ��������� �� ����� ������ �������
+	//спрятать вещь из активного слота в инвентарь на время вызова менюшки
 	CActor *pActor								= smart_cast<CActor*>(Level().CurrentEntity());
 	if(pActor && CurrentIItem() == pActor->inventory().ActiveItem())
 	{
@@ -463,13 +463,13 @@ void CUIInventoryWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 #include "../xr_level_controller.h"
 #include <dinput.h>
 
-bool CUIInventoryWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if(m_b_need_reinit)
 		return true;
 
 	if (UIPropertiesBox.GetVisible())
-		UIPropertiesBox.OnKeyboard(dik, keyboard_action);
+		UIPropertiesBox.OnKeyboardAction(dik, keyboard_action);
 
 	if ( is_binded(kDROP, dik) )
 	{
@@ -493,7 +493,7 @@ bool CUIInventoryWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 		}
 #endif
 	}
-	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
+	if( inherited::OnKeyboardAction(dik,keyboard_action) )return true;
 
 	return false;
 }

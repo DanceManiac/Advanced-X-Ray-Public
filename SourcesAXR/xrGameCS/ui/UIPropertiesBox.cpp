@@ -116,7 +116,7 @@ void CUIPropertiesBox::Hide()
 		GetParent()->SetCapture(this, false);
 }
 
-bool CUIPropertiesBox::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIPropertiesBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	bool cursor_on_box;
 
@@ -137,7 +137,7 @@ bool CUIPropertiesBox::OnMouse(float x, float y, EUIMessages mouse_action)
 		Hide();
 	}
 
-	return inherited::OnMouse(x, y, mouse_action);
+	return inherited::OnMouseAction(x, y, mouse_action);
 }
 
 void CUIPropertiesBox::AutoUpdateSize()
@@ -169,7 +169,8 @@ void CUIPropertiesBox::Draw()
 	inherited::Draw();
 }
 
-bool CUIPropertiesBox::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIPropertiesBox::OnKeyboardAction(int dik, EUIMessages keyboard_action)
+{
 	Hide();
 	return true;
 }

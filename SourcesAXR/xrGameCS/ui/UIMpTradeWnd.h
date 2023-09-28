@@ -85,8 +85,7 @@ public:
 	
 	//
 	virtual void				Update						();				
-	virtual bool 				OnKeyboard					(int dik, EUIMessages keyboard_action);
-	virtual bool 				OnMouse						(float x, float y, EUIMessages mouse_action);
+	virtual bool 				OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 
 public:
 	virtual void 				Init						(const shared_str& sectionName, const shared_str& sectionPrice);

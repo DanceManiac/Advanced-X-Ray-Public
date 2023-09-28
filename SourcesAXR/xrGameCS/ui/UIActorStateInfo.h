@@ -84,8 +84,7 @@ public:
 //	virtual	void	Show					( bool status );
 //	virtual	void	OnFocusReceive			();
 //	virtual void	OnFocusLost				();
-//	virtual void 	OnMouseMove				();
-	virtual bool	OnMouse					( float x, float y, EUIMessages mouse_action );
+	virtual bool	OnMouseAction					( float x, float y, EUIMessages mouse_action );
 // 	virtual void	OnClick					();
 			
 			void	set_text				( float value ); // 0..1

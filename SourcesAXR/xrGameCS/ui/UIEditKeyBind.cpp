@@ -105,10 +105,10 @@ bool CUIEditKeyBind::OnMouseDown(int mouse_btn)
 	return CUIStatic::OnMouseDown(mouse_btn);
 }
 
-bool CUIEditKeyBind::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIEditKeyBind::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	if (dik == MOUSE_1 || dik == MOUSE_2 || dik == MOUSE_3)
 		return false;
-	if (CUIStatic::OnKeyboard(dik, keyboard_action))
+	if (CUIStatic::OnKeyboardAction(dik, keyboard_action))
 		return true;
 
 	string64 message;

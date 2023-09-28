@@ -41,5 +41,5 @@ public:
 			void	Activate				();
 			void	DeActivate				();
 	virtual bool	NeedCursor				() const {return false;}
-	virtual bool OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 };

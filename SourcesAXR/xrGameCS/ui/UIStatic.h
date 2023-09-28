@@ -163,7 +163,7 @@ public:
 	shared_str		m_stat_hint_text;
 protected:
 	bool			m_bEnableTextHighlighting;
-		// ���� ���������
+		// Цвет подсветки
 	u32				m_HighlightColor;
 
 	// this array of color will be useful in CUI3tButton class

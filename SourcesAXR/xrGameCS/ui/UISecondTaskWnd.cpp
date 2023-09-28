@@ -68,9 +68,9 @@ void UISecondTaskWnd::init_from_xml( CUIXml& xml, LPCSTR path )
 	xml.SetLocalRoot( stored_root );
 }
 
-bool UISecondTaskWnd::OnMouse( float x, float y, EUIMessages mouse_action )
+bool UISecondTaskWnd::OnMouseAction( float x, float y, EUIMessages mouse_action )
 {
-	if ( inherited::OnMouse( x, y, mouse_action ) )
+	if ( inherited::OnMouseAction( x, y, mouse_action ) )
 	{
 		return true;
 	}
@@ -322,9 +322,9 @@ void UISecondTaskItem::SendMessage( CUIWindow* pWnd, s16 msg, void* pData )
 	inherited::SendMessage( pWnd, msg, pData );
 }
 
-bool UISecondTaskItem::OnMouse( float x, float y, EUIMessages mouse_action )
+bool UISecondTaskItem::OnMouseAction( float x, float y, EUIMessages mouse_action )
 {
-	if ( inherited::OnMouse( x, y, mouse_action ) )
+	if ( inherited::OnMouseAction( x, y, mouse_action ) )
 	{
 		//return true;
 	}

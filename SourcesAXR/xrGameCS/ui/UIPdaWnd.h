@@ -68,10 +68,10 @@ public:
 	virtual void 			Update();
 	virtual void 			Show();
 	virtual void 			Hide();
-	virtual bool			OnMouse(float x, float y, EUIMessages mouse_action);
+	virtual bool			OnMouseAction(float x, float y, EUIMessages mouse_action);
 			void			MouseMovement(float x, float y);
 	virtual void			Enable(bool status);
-	virtual bool			OnKeyboard(int dik, EUIMessages keyboard_action);
+	virtual bool			OnKeyboardAction(int dik, EUIMessages keyboard_action);
 
 	UIHint* get_hint_wnd() const { return m_hint_wnd; }
 	void			DrawHint();

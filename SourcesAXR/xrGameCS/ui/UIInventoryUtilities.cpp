@@ -129,9 +129,9 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 	for(xr_vector<PIItem>::iterator it = item_list.begin(); (item_list.end() != it) && found_place; ++it) 
 	{
 		PIItem pItem = *it;
-		Ivector2 iWH = pItem->GetInvGridRect().rb; 
-		//��������� ����� �� ���������� �������,
-		//��������� ��������������� ������ ��������
+		Ivector2 iWH = pItem->GetInvGridRect().rb;
+		//проверить можно ли разместить элемент,
+		//проверяем последовательно каждую клеточку
 		found_place = false;
 	
 		for(i=0; (i<height - iWH.y +1) && !found_place; ++i)
@@ -159,7 +159,7 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 			}
 		}
 
-		//���������� ������� �� ��������� �����
+		//разместить элемент на найденном месте
 		if(found_place)
 		{
 			for(k=0; k<iWH.y; ++k)
@@ -505,8 +505,8 @@ LPCSTR InventoryUtilities::GetGoodwillAsText(CHARACTER_GOODWILL goodwill)
 
 
 //////////////////////////////////////////////////////////////////////////
-// ����������� ������� ��� �������� info_portions ��� ������� ������ UI 
-// (��� tutorial)
+// специальная функция для передачи info_portions при нажатии кнопок UI 
+// (для tutorial)
 void InventoryUtilities::SendInfoToActor(LPCSTR info_id)
 {
 	if (GameID() != eGameIDSingle) return;

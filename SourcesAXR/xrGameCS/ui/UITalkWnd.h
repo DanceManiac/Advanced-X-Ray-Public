@@ -4,7 +4,7 @@
 #include "UIStatic.h"
 #include "UIButton.h"
 #include "UIEditBox.h"
-#include "UIListWnd.h"
+//#include "UIListWnd.h"
 #include "UIFrameWindow.h"
 
 
@@ -39,33 +39,32 @@ public:
 	virtual bool		StopAnyMove				(){return true;}
 	virtual void		SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 
-	virtual void		Draw();
-	virtual void		Update();
+	virtual void		Draw					();
+	virtual void		Update					();
 		
-	virtual void		Show();
-	virtual void		Hide();
+	virtual void		Show					();
+	virtual void		Hide					();
 	
-	void				Stop();					//deffered
-	void				StopTalk();
+	void				Stop					();					//deffered
+	void				StopTalk				();
 
-	void				UpdateQuestions();
-	void				NeedUpdateQuestions();
-	//инициализации начального диалога собеседника
-	void				InitOthersStartDialog();
-	virtual bool		IR_OnKeyboardPress(int dik);
-	virtual bool		OnKeyboard(int dik, EUIMessages keyboard_action);
-	void				SwitchToTrade();
-	void				SwitchToUpgrade();
-	void				AddIconedMessage(LPCSTR caption, LPCSTR text, LPCSTR texture_name, LPCSTR templ_name);
+	void				UpdateQuestions			();
+	void				NeedUpdateQuestions		();
+	//РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РЅР°С‡Р°Р»СЊРЅРѕРіРѕ РґРёР°Р»РѕРіР° СЃРѕР±РµСЃРµРґРЅРёРєР°
+	void				InitOthersStartDialog	();
+	virtual bool		OnKeyboardAction				(int dik, EUIMessages keyboard_action);
+	void				SwitchToTrade			();
+	void				SwitchToUpgrade			();
+	void				AddIconedMessage		(LPCSTR caption, LPCSTR text, LPCSTR texture_name, LPCSTR templ_name);
 
 protected:
-	//диалог
+	//РґРёР°Р»РѕРі
 	void				InitTalkDialog			();
 	void				AskQuestion				();
 
 	void				SayPhrase				(const shared_str& phrase_id);
 
-	// Функции добавления строк в листы вопросов и ответов
+	// Р¤СѓРЅРєС†РёРё РґРѕР±Р°РІР»РµРЅРёСЏ СЃС‚СЂРѕРє РІ Р»РёСЃС‚С‹ РІРѕРїСЂРѕСЃРѕРІ Рё РѕС‚РІРµС‚РѕРІ
 public:
 	void                AddQuestion				(const shared_str& text, const shared_str& id, int number, bool b_finalizer);
 	void				AddAnswer				(const shared_str& text, LPCSTR SpeakerName);
@@ -82,7 +81,7 @@ protected:
 
 	bool				m_bNeedToUpdateQuestions;
 
-	//текущий диалог, если NULL, то переходим в режим выбора темы
+	//С‚РµРєСѓС‰РёР№ РґРёР°Р»РѕРі, РµСЃР»Рё NULL, С‚Рѕ РїРµСЂРµС…РѕРґРёРј РІ СЂРµР¶РёРј РІС‹Р±РѕСЂР° С‚РµРјС‹
 	DIALOG_SHARED_PTR	m_pCurrentDialog;
 	bool				TopicMode				();
 	void				ToTopicMode				();

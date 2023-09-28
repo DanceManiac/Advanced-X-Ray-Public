@@ -171,7 +171,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 	if(	g_bDisableAllInput )	return;
 
 	if (auto pda = b_ui_exist ? &HUD().GetUI()->UIGame()->PdaMenu() : nullptr) // Fix PDA hotkey input for disabled state
-		if (pda->IsShown() && pda->OnKeyboard(key, WINDOW_KEY_PRESSED)) return;
+		if (pda->IsShown() && pda->OnKeyboardAction(key, WINDOW_KEY_PRESSED)) return;
 
 	switch ( _curr ) 
 	{
@@ -185,7 +185,8 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		return;
 		break;
 
-	case kQUIT: {
+	case kQUIT:
+	{
 		if(b_ui_exist && HUD().GetUI()->MainInputReceiver() )
 		{
 			//Arkada

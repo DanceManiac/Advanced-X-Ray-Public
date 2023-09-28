@@ -50,8 +50,8 @@ public:
 							CUICellItem				();
 	virtual					~CUICellItem			();
 
-	virtual		bool		OnKeyboard				(int dik, EUIMessages keyboard_action);
-	virtual		bool		OnMouse					(float x, float y, EUIMessages mouse_action);
+	virtual		bool		OnKeyboardAction				(int dik, EUIMessages keyboard_action);
+	virtual		bool		OnMouseAction					(float x, float y, EUIMessages mouse_action);
 	virtual		void		Draw					();
 	virtual		void		Update					();
 	virtual		void		OnAfterChild			(CUIDragDropListEx* parent_list)						{};
@@ -111,7 +111,7 @@ public:
 				void		SetCustomDraw			(ICustomDrawDragItem* c);
 
 			CUIStatic*		wnd						() {return &m_static;}
-	virtual		bool		OnMouse					(float x, float y, EUIMessages mouse_action);
+	virtual		bool		OnMouseAction					(float x, float y, EUIMessages mouse_action);
 	virtual		void		Draw					();
 
 	virtual		void			OnRender				();

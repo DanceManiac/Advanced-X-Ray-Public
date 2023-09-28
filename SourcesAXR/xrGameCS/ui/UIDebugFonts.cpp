@@ -32,7 +32,7 @@ void CUIDebugFonts::InitDebugFonts(Frect r)
 	m_background.InitTexture	("ui\\ui_debug_font");
 }
 
-bool CUIDebugFonts::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIDebugFonts::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	if (DIK_ESCAPE == dik)
 		this->GetHolder()->StartStopMenu(this, true);
 

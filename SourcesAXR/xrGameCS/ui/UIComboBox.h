@@ -44,7 +44,7 @@ public:
 			void		enable_id				(int id);
 protected:
 	virtual void		SetState				(UIState state);	
-	virtual bool		OnMouse					(float x, float y, EUIMessages mouse_action);
+	virtual bool		OnMouseAction					(float x, float y, EUIMessages mouse_action);
 	virtual void		OnBtnClicked			();
 			void		ShowList				(bool bShow);
 			void		OnListItemSelect		();

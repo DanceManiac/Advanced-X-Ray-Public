@@ -20,11 +20,20 @@ public:
 	virtual void 		Update					();
 	virtual void 		Draw					();
 
-	virtual bool 		OnMouse					(float x, float y, EUIMessages mouse_action);
-	virtual bool 		OnKeyboard				(int dik, EUIMessages keyboard_action);
+	virtual bool 		OnMouseAction					(float x, float y, EUIMessages mouse_action);
+	virtual bool 		OnKeyboardAction				(int dik, EUIMessages keyboard_action);
 	virtual void 		SendMessage				(CUIWindow* pWnd, s16 msg, void* pData = 0);
 			void 		SetVisibleMagnifier		(bool f);
 	virtual void		OnDeviceReset			();
+	enum	enum_page_id
+	{
+		epi_main		= 0x00,
+		epi_new_game,
+		epi_new_network_game,
+		epi_none
+	};//enum	enum_page_id
+			void		SetPage					(enum_page_id page_id, LPCSTR xml_file, LPCSTR xml_path);
+			void		ShowPage				(enum_page_id page_id);
 protected:
 	typedef enum {
 		E_Begin = 0,
@@ -62,7 +71,7 @@ protected:
 	xr_vector<CUIStatic*>	m_buttons;
 	xr_vector<CUIStatic*>	m_buttons_new;
 	int						m_selected_btn;
-	int						m_page;
+	enum_page_id			m_page;
     CUIWindow*				m_selected;
 	CMMSound*				m_sound;
 //	Fvector2				m_wheel_size[2];

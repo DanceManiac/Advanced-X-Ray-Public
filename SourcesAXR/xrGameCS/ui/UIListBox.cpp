@@ -22,9 +22,9 @@ void CUIListBox::SetSelectionTexture(LPCSTR texture){
 	m_selection_texture = texture;
 }
 
-bool CUIListBox::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIListBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	if(CUIWindow::OnMouse(x,y,mouse_action)) return true;
+	if(CUIWindow::OnMouseAction(x,y,mouse_action)) return true;
 
 	switch (mouse_action){
 		case WINDOW_MOUSE_WHEEL_UP:

@@ -15,7 +15,7 @@
 
 #include "UICellCustomItems.h"
 
-bool CUIMpTradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIMpTradeWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 #ifdef DEBUG
 	//for debug only
@@ -32,7 +32,7 @@ bool CUIMpTradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 
 	if(!m_store_hierarchy->CurrentIsRoot())
 	{
-		if (m_shop_wnd->OnKeyboard(dik, keyboard_action) )
+		if (m_shop_wnd->OnKeyboardAction(dik, keyboard_action) )
 			return true;
 
 		m_root_tab_control->SetAcceleratorsMode		(false);
@@ -59,16 +59,11 @@ bool CUIMpTradeWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 	}
 
-	bool res =  inherited::OnKeyboard(dik, keyboard_action);
+	bool res =  inherited::OnKeyboardAction(dik, keyboard_action);
 
 	m_root_tab_control->SetAcceleratorsMode		(true);
 
 	return			res;
-}
-
-bool CUIMpTradeWnd::OnMouse( float x, float y, EUIMessages mouse_action )
-{
-	return inherited::OnMouse( x, y, mouse_action );
 }
 
 void CUIMpTradeWnd::Update()

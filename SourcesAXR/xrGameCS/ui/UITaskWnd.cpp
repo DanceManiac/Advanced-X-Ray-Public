@@ -482,21 +482,11 @@ void CUITaskItem::Update()
 
 void CUITaskItem::OnMouseScroll( float iDirection )
 {
-	/*if ( iDirection == WINDOW_MOUSE_WHEEL_UP )
-	{
-		GetMessageTarget()->SendMessage(this, WINDOW_MOUSE_WHEEL_UP, NULL);
-		show_hint     = false;
-	}
-	else if ( iDirection == WINDOW_MOUSE_WHEEL_DOWN )
-	{
-		GetMessageTarget()->SendMessage(this, WINDOW_MOUSE_WHEEL_DOWN, NULL);
-		show_hint     = false;
-	}*/
 }
 
-bool CUITaskItem::OnMouse( float x, float y, EUIMessages mouse_action )
+bool CUITaskItem::OnMouseAction( float x, float y, EUIMessages mouse_action )
 {
-	if ( inherited::OnMouse( x, y, mouse_action ) )
+	if ( inherited::OnMouseAction( x, y, mouse_action ) )
 	{
 		//return true;
 	}
@@ -516,13 +506,5 @@ bool CUITaskItem::OnMouse( float x, float y, EUIMessages mouse_action )
 
 void CUITaskItem::SendMessage( CUIWindow* pWnd, s16 msg, void* pData )
 {
-	/*if ( pWnd == btn_focus )
-	{
-		if ( msg == BUTTON_DOWN )
-		{
-			GetMessageTarget()->SendMessage( this, PDA_TASK_SET_TARGET_MAP, (void*)m_owner );
-			return;
-		}
-	}*/
 	inherited::SendMessage( pWnd, msg, pData );
 }

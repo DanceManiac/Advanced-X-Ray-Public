@@ -472,7 +472,7 @@ int CUIListWnd::FindItemWithValue(int iValue)
 }
 
 
-bool CUIListWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIListWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	switch(mouse_action){
 	case WINDOW_LBUTTON_DB_CLICK:
@@ -487,12 +487,12 @@ bool CUIListWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 			break;
 	}
 
-	return inherited::OnMouse(x, y, mouse_action);
+	return inherited::OnMouseAction(x, y, mouse_action);
 }
 
-bool CUIListWnd::OnKeyboard	(int dik, EUIMessages keyboard_action)
+bool CUIListWnd::OnKeyboardAction	(int dik, EUIMessages keyboard_action)
 {
-	return inherited::OnKeyboard(dik, keyboard_action);
+	return inherited::OnKeyboardAction(dik, keyboard_action);
 }
 //////////////////////////////////////////////////////////////////////////
 
@@ -563,7 +563,7 @@ void CUIListWnd::Update()
 {
 	if(m_bUpdateMouseMove)
 	{
-		OnMouse(cursor_pos.x, cursor_pos.y, WINDOW_MOUSE_MOVE);
+		OnMouseAction(cursor_pos.x, cursor_pos.y, WINDOW_MOUSE_MOVE);
 		m_bUpdateMouseMove = false;
 	}
 

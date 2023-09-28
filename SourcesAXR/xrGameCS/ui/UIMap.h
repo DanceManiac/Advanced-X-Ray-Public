@@ -74,7 +74,7 @@ public:
 	IC float		GetMaxZoom				(){return m_max_zoom;}
 	IC void			SetMaxZoom				(float zoom){m_max_zoom = zoom;}
 
-	virtual bool	OnMouse					(float x, float y, EUIMessages mouse_action);
+	virtual bool	OnMouseAction					(float x, float y, EUIMessages mouse_action);
 
 	CUIMapWnd*		MapWnd					() {return m_mapWnd;}
 	void			MoveWndDelta			(const Fvector2& d);
@@ -104,7 +104,7 @@ public:
 	virtual void				Draw				();
 	virtual void				Show				(bool status);
 	virtual void				Update				();
-	virtual bool				OnMouse				(float x, float y, EUIMessages mouse_action);
+	virtual bool				OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual void				SendMessage			(CUIWindow* pWnd, s16 msg, void* pData);
 	
 	Frect						CalcWndRectOnGlobal	();

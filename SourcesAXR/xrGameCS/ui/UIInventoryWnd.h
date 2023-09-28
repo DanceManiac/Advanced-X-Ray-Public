@@ -43,8 +43,8 @@ public:
 	virtual bool			StopAnyMove					()					{return false;}
 
 	virtual void			SendMessage					(CUIWindow *pWnd, s16 msg, void *pData);
-	virtual bool			OnMouse						(float x, float y, EUIMessages mouse_action);
-	virtual bool			OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool			OnMouseAction						(float x, float y, EUIMessages mouse_action);
+	virtual bool			OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 
 
 	IC CInventory*			GetInventory				()					{return m_pInv;}
@@ -118,7 +118,7 @@ protected:
 
 	CUIPropertiesBox			UIPropertiesBox;
 	
-	//���������� � ���������
+	//информация о персонаже
 	CUIOutfitInfo2				UIOutfitInfo;
 	CUIItemInfo					UIItemInfo;
 

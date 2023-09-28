@@ -162,7 +162,7 @@ void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	};
 }
 
-bool CUIPdaWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIPdaWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	switch (mouse_action)
 	{
@@ -194,7 +194,7 @@ bool CUIPdaWnd::OnMouse(float x, float y, EUIMessages mouse_action)
 		}
 		break;
 	}
-	CUIDialogWnd::OnMouse(x, y, mouse_action);
+	CUIDialogWnd::OnMouseAction(x, y, mouse_action);
 	return true; //always true because StopAnyMove() == false
 }
 
@@ -464,7 +464,7 @@ void CUIPdaWnd::Enable(bool status)
 	inherited::Enable(status);
 }
 
-bool CUIPdaWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_PRESSED == keyboard_action && IsShown())
 	{
@@ -555,5 +555,5 @@ bool CUIPdaWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 			}
 		}
 	}
-	return inherited::OnKeyboard(dik, keyboard_action);
+	return inherited::OnKeyboardAction(dik, keyboard_action);
 }

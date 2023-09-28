@@ -37,7 +37,7 @@ public:
 
 	void					DisableAll					();
 	void					EnableAll					();
-	virtual bool			OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool			OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 
 	void					UpdateLists_delayed			();
 
@@ -60,7 +60,7 @@ protected:
 	CUIStatic*				m_pUIOurBagWnd;
 	CUIStatic*				m_pUIOthersBagWnd;
 
-	//���������� � ���������� 
+	//информация о персонажах
 	CUIStatic*				m_pUIOurIcon;
 	CUIStatic*				m_pUIOthersIcon;
 	CUICharacterInfo*		m_pUICharacterInfoLeft;
@@ -82,7 +82,7 @@ protected:
 	CUICellItem*			CurrentItem					();
 	PIItem					CurrentIItem				();
 
-	// ����� ���
+	// Взять все
 	void					TakeAll						();
 
 

@@ -32,7 +32,7 @@ export_class script_register_ui_window2(export_class &&instance)
 		.def("GetTabControl",	(CUITabControl* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUITabControl>)
 		.def("GetListWnd",		(CUIListWnd* (BaseType::*)(LPCSTR)) &BaseType::GetControl<CUIListWnd>)
 
-		.def("OnKeyboard",		&BaseType::OnKeyboard, &WrapType::OnKeyboard_static)
+		.def("OnKeyboard",		&BaseType::OnKeyboardAction, &WrapType::OnKeyboard_static)
 		.def("Update",			&BaseType::Update, &WrapType::Update_static)
 		.def("Dispatch",		&BaseType::Dispatch, &WrapType::Dispatch_static)
 

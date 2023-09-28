@@ -118,8 +118,8 @@ void CUIScrollView::RecalcSize			()
 
 	if(m_sort_function)
 	{
-		m_pad->GetChildWndList().sort(m_sort_function);
-		//std::sort(m_pad->GetChildWndList().begin(), m_pad->GetChildWndList().end(), m_sort_function);
+		//. m_pad->GetChildWndList().sort(m_sort_function);
+		std::sort(m_pad->GetChildWndList().begin(), m_pad->GetChildWndList().end(), m_sort_function);
 	}
 
 	if(GetVertFlip()){
@@ -239,9 +239,9 @@ void CUIScrollView::OnScrollV			(CUIWindow*, void*)
 	m_visible_rgn.set			(-1,-1);
 }
 
-bool CUIScrollView::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIScrollView::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	if(inherited::OnMouse(x,y,mouse_action)) return true;
+	if(inherited::OnMouseAction(x,y,mouse_action)) return true;
 	bool res = false;
 	int prev_pos	= m_VScrollBar->GetScrollPos();
 	switch (mouse_action){
@@ -289,6 +289,9 @@ int CUIScrollView::GetCurrentScrollPos()
 
 void CUIScrollView::SetScrollPos(int value)
 {
+	if(m_flags.test	(eNeedRecalc) )
+		RecalcSize			();
+
 	clamp(value,GetMinScrollPos(),GetMaxScrollPos());
 	m_VScrollBar->SetScrollPos(value);
 	OnScrollV(NULL,NULL);
@@ -366,7 +369,8 @@ float CUIScrollView::GetVertIndent(){
 
 void CUIScrollView::SetSelected			(CUIWindow* w)
 {
-	if(!m_flags.test(eItemsSelectabe)) return;
+	if(!m_flags.test(eItemsSelectabe)) 
+		return;
 
 	for(WINDOW_LIST_it it = m_pad->GetChildWndList().begin(); m_pad->GetChildWndList().end()!=it; ++it)
 	{

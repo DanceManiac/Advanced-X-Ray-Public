@@ -222,12 +222,12 @@ void CUISkinSelectorWnd::OnBtnOK(){
 	game->OnSkinMenu_Ok();
 }
 
-bool CUISkinSelectorWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUISkinSelectorWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	return CUIWindow::OnMouse(x,y,mouse_action);	
+	return CUIWindow::OnMouseAction(x,y,mouse_action);	
 }
 
-bool CUISkinSelectorWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUISkinSelectorWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_PRESSED != keyboard_action)
 	{

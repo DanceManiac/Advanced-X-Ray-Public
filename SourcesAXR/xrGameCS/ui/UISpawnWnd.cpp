@@ -112,7 +112,7 @@ void CUISpawnWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-bool CUISpawnWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUISpawnWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_PRESSED != keyboard_action)
 	{
@@ -170,7 +170,7 @@ bool CUISpawnWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 		return true;
 	}
 
-	return inherited::OnKeyboard(dik, keyboard_action);
+	return inherited::OnKeyboardAction(dik, keyboard_action);
 }
 
 void CUISpawnWnd::SetVisibleForBtn(ETEAMMENU_BTN btn, bool state){

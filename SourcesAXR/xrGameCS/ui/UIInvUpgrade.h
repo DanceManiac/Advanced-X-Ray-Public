@@ -111,7 +111,7 @@ public:
 			void		update_mask();
 			void		update_item( CInventoryItem* inv_item );
 
-	virtual bool		OnMouse( float x, float y, EUIMessages mouse_action );
+	virtual bool		OnMouseAction( float x, float y, EUIMessages mouse_action );
 	virtual void		OnFocusReceive();
 	virtual void		OnFocusLost();
 	virtual void		OnClick();

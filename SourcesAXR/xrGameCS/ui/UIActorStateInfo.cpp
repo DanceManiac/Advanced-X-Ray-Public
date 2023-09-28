@@ -226,9 +226,9 @@ void ui_actor_state_item::init_from_xml( CUIXml& xml, LPCSTR path )
 	xml.SetLocalRoot( stored_root );
 }
 
-bool ui_actor_state_item::OnMouse( float x, float y, EUIMessages mouse_action )
+bool ui_actor_state_item::OnMouseAction( float x, float y, EUIMessages mouse_action )
 {
-	if( CUIWindow::OnMouse( x, y, mouse_action ) )
+	if( CUIWindow::OnMouseAction( x, y, mouse_action ) )
 	{
 		return true;
 	}

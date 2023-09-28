@@ -77,14 +77,14 @@ void CUIChangeMap::InitChangeMap(CUIXml& xml_doc)
 }
 
 #include <dinput.h>
-bool CUIChangeMap::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIChangeMap::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (dik == DIK_ESCAPE)
 	{
 		OnBtnCancel();
 		return true;
 	}
-	return CUIDialogWnd::OnKeyboard(dik, keyboard_action);
+	return CUIDialogWnd::OnKeyboardAction(dik, keyboard_action);
 }
 
 void CUIChangeMap::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)

@@ -21,12 +21,12 @@ public:
 	virtual void		SaveValue					();
 	virtual bool		IsChanged					();
 
-	virtual bool		OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 	virtual void		OnTabChange					(const shared_str& sCur, const shared_str& sPrev);
 	virtual void		OnStaticFocusReceive		(CUIWindow* pWnd);
 	virtual void		OnStaticFocusLost			(CUIWindow* pWnd);
 
-	// ���������� ������-�������� � ������ �������� ��������
+	// Добавление кнопки-закладки в список закладок контрола
 	bool				AddItem						(LPCSTR pItemName, LPCSTR pTexName, Fvector2 pos, Fvector2 size);
 	bool				AddItem						(CUITabButton *pButton);
 
@@ -42,7 +42,7 @@ public:
 			void		SetActiveTab_script			(LPCSTR sNewTab)				{SetActiveTab(sNewTab);};
 	const	u32			GetTabsCount				() const						{ return m_TabsArr.size(); }
 	
-	// ����� ������������� ������������� (���/����)
+	// Режим клавилатурных акселераторов (вкл/выкл)
 	IC bool				GetAcceleratorsMode			() const						{ return m_bAcceleratorsEnable; }
 	void				SetAcceleratorsMode			(bool bEnable)					{ m_bAcceleratorsEnable = bEnable; }
 
@@ -55,20 +55,20 @@ public:
 
 	void		ResetTab					();
 protected:
-	// ������ ������ - �������������� ��������
+	// Список кнопок - переключателей закладок
 	TABS_VECTOR			m_TabsArr;
 
 	shared_str			m_sPushedId;
 	shared_str			m_sPrevPushedId;
-// ������� ������� ������. -1 - �� ����, 0 - ������, 1 - ������, � �.�.
+// Текущая нажатая кнопка. -1 - ни одна, 0 - первая, 1 - вторая, и т.д.
 //.	int					m_iPushedIndex;
 //.	int					m_iPrevPushedIndex;
 
-	// ���� ���������� ���������
+	// Цвет неактивных элементов
 	u32					m_cGlobalTextColor;
 	u32					m_cGlobalButtonColor;
 
-	// ���� ������� �� �������� ��������
+	// Цвет надписи на активном элементе
 	u32					m_cActiveTextColor;
 	u32					m_cActiveButtonColor;
 

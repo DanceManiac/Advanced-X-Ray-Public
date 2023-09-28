@@ -66,14 +66,14 @@ void CUITalkWnd::InitTalkDialog()
 	m_pOurDialogManager = smart_cast<CPhraseDialogManager*>(m_pOurInvOwner);
 	m_pOthersDialogManager = smart_cast<CPhraseDialogManager*>(m_pOthersInvOwner);
 
-	//����� ������������
+	//имена собеседников
 	UITalkDialogWnd->UICharacterInfoLeft.InitCharacter		(m_pOurInvOwner);
 	UITalkDialogWnd->UICharacterInfoRight.InitCharacter		(m_pOthersInvOwner);
 
 //.	UITalkDialogWnd->UIDialogFrame.UITitleText.SetText		(m_pOthersInvOwner->Name());
 //.	UITalkDialogWnd->UIOurPhrasesFrame.UITitleText.SetText	(m_pOurInvOwner->Name());
-	
-	//�������� ��� ���������
+
+	//очистить лог сообщений
 	UITalkDialogWnd->ClearAll();
 
 	InitOthersStartDialog					();
@@ -93,13 +93,13 @@ void CUITalkWnd::InitOthersStartDialog()
 	{
 		m_pCurrentDialog = m_pOthersDialogManager->AvailableDialogs().front();
 		m_pOthersDialogManager->InitDialog(m_pOurDialogManager, m_pCurrentDialog);
-		
-		//������� �����
+
+		//сказать фразу
 		CStringTable stbl;
 		AddAnswer(m_pCurrentDialog->GetPhraseText("0"), m_pOthersInvOwner->Name());
 		m_pOthersDialogManager->SayPhrase(m_pCurrentDialog, "0");
 
-		//���� ������ ����������, ������� � ����� ������ ����
+		//если диалог завершился, перейти в режим выбора темы
 		if(!m_pCurrentDialog || m_pCurrentDialog->IsFinished()) ToTopicMode();
 	}
 }
@@ -113,8 +113,8 @@ void CUITalkWnd::UpdateQuestions()
 {
 	UITalkDialogWnd->ClearQuestions();
 
-	//���� ��� ��������� �������, ��
-	//������ ������ ����
+	//если нет активного диалога, то
+	//режима выбора темы
 	if(!m_pCurrentDialog)
 	{
 		m_pOurDialogManager->UpdateAvailableDialogs(m_pOthersDialogManager);
@@ -130,14 +130,14 @@ void CUITalkWnd::UpdateQuestions()
 	{
 		if(m_pCurrentDialog->IsWeSpeaking(m_pOurDialogManager))
 		{
-			//���� � ������ ���������� ���� ������ ���� ����� ��������, �� ������
-			//������� (����� ��� �� ���������� ������� ��������)
+			//если в списке допустимых фраз только одна фраза пустышка, то просто
+			//сказать (игрок сам не производит никаких действий)
 			if( !m_pCurrentDialog->PhraseList().empty() && m_pCurrentDialog->allIsDummy() ){
 				CPhrase* phrase = m_pCurrentDialog->PhraseList()[Random.randI(m_pCurrentDialog->PhraseList().size())];
 				SayPhrase(phrase->GetID());
 			};
 
-			//����� ��������� ���� �� ��������� �������
+			//выбор доступных фраз из активного диалога
 			if( m_pCurrentDialog && !m_pCurrentDialog->allIsDummy() )
 			{			
 				int number = 0;
@@ -202,7 +202,7 @@ void UpdateCameraDirection(CGameObject* pTo)
 
 void CUITalkWnd::Update()
 {
-	//���������� ��������, ���� �����
+	//остановить разговор, если нужно
 	if (g_actor && m_pActor && !m_pActor->IsTalking() )
 	{
 		StopTalk();
@@ -280,7 +280,7 @@ void CUITalkWnd::AskQuestion()
 	if(m_bNeedToUpdateQuestions) return;//quick dblclick:(
 	shared_str					phrase_id;
 
-	//����� ������ ���� ���������
+	//игрок выбрал тему разговора
 	if(TopicMode())
 	{
 		if ( (UITalkDialogWnd->m_ClickedQuestionID =="") ||
@@ -311,7 +311,7 @@ void CUITalkWnd::SayPhrase(const shared_str& phrase_id)
 
 	AddAnswer(m_pCurrentDialog->GetPhraseText(phrase_id), m_pOurInvOwner->Name());
 	m_pOurDialogManager->SayPhrase(m_pCurrentDialog, phrase_id);
-	//���� ������ ����������, ������� � ����� ������ ����
+	//если диалог завершился, перейти в режим выбора темы
 	if(m_pCurrentDialog->IsFinished()) ToTopicMode();
 }
 
@@ -325,7 +325,7 @@ void CUITalkWnd::AddQuestion(const shared_str& text, const shared_str& value, in
 
 void CUITalkWnd::AddAnswer(const shared_str& text, LPCSTR SpeakerName)
 {
-	//��� ������ ����� ������ ������ �� �������
+	//для пустой фразы вообще ничего не выводим
 	if(text.size() == 0)
 	{
 		return;
@@ -365,17 +365,19 @@ void CUITalkWnd::SwitchToUpgrade()
 	}
 }
 
-bool CUITalkWnd::IR_OnKeyboardPress(int dik)
+bool CUITalkWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
-//.	StopSnd						();
-	EGameActions cmd = get_binded_action(dik);
-	if ( cmd==kUSE || cmd==kQUIT)
+
+	if (keyboard_action==WINDOW_KEY_PRESSED)
 	{
-		if(!b_disable_break)
-			GetHolder()->StartStopMenu(this, true);
-		return true;
+		if(is_binded(kUSE, dik) || is_binded(kQUIT, dik))
+		{
+			if(!b_disable_break)
+				GetHolder()->StartStopMenu(this, true);
+			return true;
+		}
 	}
-	if ( cmd == kSPRINT_TOGGLE )
+	else if(is_binded(kSPRINT_TOGGLE, dik))
 	{
 		if (m_pOthersInvOwner&&m_pOthersInvOwner->NeedOsoznanieMode())
 		{
@@ -384,12 +386,8 @@ bool CUITalkWnd::IR_OnKeyboardPress(int dik)
 		UITalkDialogWnd->SetTradeMode();
 		return true;
 	}
-	return inherited::IR_OnKeyboardPress(dik);
-}
 
-bool CUITalkWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
-{
-	return inherited::OnKeyboard(dik,keyboard_action);
+	return inherited::OnKeyboardAction(dik,keyboard_action);
 }
 
 void CUITalkWnd::PlaySnd(LPCSTR text)

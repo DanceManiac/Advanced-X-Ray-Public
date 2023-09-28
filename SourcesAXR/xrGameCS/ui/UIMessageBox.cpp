@@ -46,9 +46,9 @@ void CUIMessageBox::Clear(){
 	xr_delete(m_UIStaticHost);
 }
 
-bool CUIMessageBox::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIMessageBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	return inherited::OnMouse(x, y, mouse_action);
+	return inherited::OnMouseAction(x, y, mouse_action);
 }
 
 void CUIMessageBox::InitMessageBox(LPCSTR box_template)

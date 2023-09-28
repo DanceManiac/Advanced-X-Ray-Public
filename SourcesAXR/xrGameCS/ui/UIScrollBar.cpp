@@ -189,7 +189,7 @@ bool CUIScrollBar::OnKeyboardHold(int dik)
 	return inherited::OnKeyboardHold(dik);
 }
 
-bool CUIScrollBar::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIScrollBar::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	switch ( mouse_action )
 	{
@@ -206,7 +206,7 @@ bool CUIScrollBar::OnMouse(float x, float y, EUIMessages mouse_action)
 			break;
 	};
 
-	return inherited::OnMouse(x, y, mouse_action);
+	return inherited::OnMouseAction(x, y, mouse_action);
 }
 
 bool CUIScrollBar::OnMouseDown( int mouse_btn )

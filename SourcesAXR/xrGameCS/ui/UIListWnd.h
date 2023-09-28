@@ -26,8 +26,8 @@ public:
 
 	void			InitListWnd				(Fvector2 pos, Fvector2 size, float item_height);
 
-	virtual bool	 OnMouse				(float x, float y, EUIMessages mouse_action);
-	virtual bool	 OnKeyboard				(int dik, EUIMessages keyboard_action);
+	virtual bool	 OnMouseAction				(float x, float y, EUIMessages mouse_action);
+	virtual bool	 OnKeyboardAction				(int dik, EUIMessages keyboard_action);
 
 	virtual void	 SendMessage			(CUIWindow *pWnd, s16 msg, void* pData);
 	virtual void	 Draw					();
@@ -35,7 +35,7 @@ public:
 	virtual void	 DetachChild			(CUIWindow* pChild);
 			void	SetScrollBarProfile		(LPCSTR profile)		{m_scrollbar_profile=profile;};
 
-	// ���������� ��������� � ��������
+	// Добавление элементов в листбокс
 	template <class Element>
 	bool			 AddItem				(const char*  str, const float shift = 0.0f, void* pData = NULL,
 											int value = 0, int insertBeforeIdx = -1);
@@ -47,11 +47,11 @@ public:
 	
 	void 			RemoveItem				(int index);
 	void 			RemoveAll				();
-	//������� ������ ������� � �������� pData, ����� -1
+	//находит первый элемент с заданной pData, иначе -1
 	int 			FindItem				(void* pData);
 	int 			FindItemWithValue		(int iValue);
 	CUIListItem*	GetItem					(int index);
-	// �������� ������ �������� �� ������. ���� -1 ���� ��� ������
+	// Получить индекс элемента по адресу. Либо -1 если нет такого
 	int				GetItemPos				(CUIListItem *pItem);
 
 	void			SetItemWidth			(float iItemWidth);
@@ -67,7 +67,7 @@ public:
 
 	int				GetItemsCount			()							{return m_ItemList.size();}
 
-	//����������� ��� �������� ������
+	//подготовить все элементы заново
 	void 			Reset					();
 
 	void 			EnableScrollBar			(bool enable);
@@ -86,14 +86,14 @@ public:
 	void			SetTextColor			(u32 color)						{m_dwFontColor = color;} 
 	u32				GetTextColor			()								{return m_dwFontColor;}
 
-	//������ ��������� (��� ������) �������� ������
+	//делает активными (как кнопки) элементы списка
 	void 			ActivateList			(bool activity);
 	bool 			IsListActive			()								{return m_bListActivity;}
 
 	void 			SetVertFlip				(bool vert_flip)				{m_bVertFlip = vert_flip;}
 	bool 			GetVertFlip				() {return m_bVertFlip;}
 
-	// �������������� ��������� ������
+	// Принудительная установка фокуса
 	void			SetFocusedItem			(int iNewFocusedItem);
 	int				GetFocusedItem			()								{ return m_iFocusedItem; }
 	int				GetSelectedItem			()								{ return m_iSelectedItem; }
@@ -111,24 +111,24 @@ protected:
 
 	CUIScrollBar*	m_ScrollBar;
 
-	//���������� ��������� ������, ���������
-	//���� ��������� ���������
+	//обновления елементов списка, вызвается
+	//если произошли изменения
 	void			UpdateList				();
 
-	//������ ��������� �����
+	//список элементов листа
 	LIST_ITEM_LIST	m_ItemList; 
 
-	//������� �������� ������
+	//размеры элемента списка
 	float		m_iItemHeight;
 	float		m_iItemWidth;
 
-	//���������� ����� ��� ���������
+	//количество рядов для элементов
 	int		m_iRowNum;
 	
-	//������ ������� ����������� ��������
+	//индекс первого показанного элемента
 	int		m_iFirstShownIndex;
 
-	//������� ��� ������� ������ � ������ ������ ��� -1, ���� ������ ���
+	//элемент над которым курсор в данный момент или -1, если такого нет
 	int		m_iFocusedItem;
 	int		m_iFocusedItemGroupID;
 	int     m_iSelectedItem;
@@ -138,23 +138,23 @@ protected:
 	bool	m_bAlwaysShowScroll_enable;
 	bool	m_bAlwaysShowScroll;
 	bool	m_bActiveBackground;
-	// ���� ����� ������������� ���������� �����, �� ������� ���� ����
+	// Если хотим принудительно выставлять фокус, то поднять этот флаг
 	bool	m_bForceFocusedItem;
 
-	//��������� ��������� ��������
+	//подсветка активного элемента
 	CUIFrameLineWnd*	m_ActiveBackgroundFrame;
 
-	//������� ���� ������
+	//текущий цвет текста
 	u32		m_dwFontColor;
 	bool	m_bListActivity;
 
-	//��������� ������ �� ���������
+	//переворот списка по вертикали
 	bool	m_bVertFlip;
 	
-	// ������� ����, ��� ���� ���������
+	// Признак того, что мышь подвинули
 	bool	m_bUpdateMouseMove;
 
-	// ������� ���������� �������������
+	// Текущий уникальный идентификатор
 	int		m_iLastUniqueID;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

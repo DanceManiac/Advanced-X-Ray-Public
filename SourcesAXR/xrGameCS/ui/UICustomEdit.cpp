@@ -114,7 +114,7 @@ void CUICustomEdit::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 //	}
 }
 
-bool CUICustomEdit::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUICustomEdit::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 //	if (m_bFocusByDbClick)
 	{
@@ -129,13 +129,12 @@ bool CUICustomEdit::OnMouse(float x, float y, EUIMessages mouse_action)
 	{
 		GetParent()->SetKeyboardCapture(this, true);
 		m_bInputFocus = true;
-//		m_lines.MoveCursorToEnd();
 	}
 	return false;
 }
 
 
-bool CUICustomEdit::OnKeyboard( int dik, EUIMessages keyboard_action )
+bool CUICustomEdit::OnKeyboardAction( int dik, EUIMessages keyboard_action )
 {	
 	if ( !m_bInputFocus )
 	{
@@ -174,10 +173,6 @@ void CUICustomEdit::Update()
 	if ( !ec().get_key_state( text_editor::ks_force ) )
 	{
 		m_last_key_state_time = Device.dwTimeGlobal;
-	}
-	else
-	{
-
 	}
 
 	inherited::Update();

@@ -41,9 +41,9 @@ CUITrackBar::CUITrackBar()
 	m_b_mouse_capturer				= false;
 }
 
-bool CUITrackBar::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUITrackBar::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	CUIWindow::OnMouse(x, y, mouse_action);
+	CUIWindow::OnMouseAction(x, y, mouse_action);
 
 	switch (mouse_action)
 	{
@@ -54,36 +54,6 @@ bool CUITrackBar::OnMouse(float x, float y, EUIMessages mouse_action)
 				if (pInput->iGetAsyncBtnState(0))
 					UpdatePosRelativeToMouse();
 			}
-		}break;
-	case WINDOW_MOUSE_WHEEL_UP:
-		{
-			if (m_b_is_float)
-			{
-				m_f_val += GetInvert() ? -m_f_step : m_f_step;
-				clamp(m_f_val, m_f_min, m_f_max);
-			}
-			else
-			{
-				m_i_val += GetInvert() ? -m_i_step : m_i_step;
-				clamp(m_i_val, m_i_min, m_i_max);
-			}
-
-			UpdatePos();
-		}break;
-	case WINDOW_MOUSE_WHEEL_DOWN:
-		{
-			if (m_b_is_float)
-			{
-				m_f_val -= GetInvert() ? -m_f_step : m_f_step;
-				clamp(m_f_val, m_f_min, m_f_max);
-			}
-			else
-			{
-				m_i_val -= GetInvert() ? -m_i_step : m_i_step;
-				clamp(m_i_val, m_i_min, m_i_max);
-			}
-
-			UpdatePos();
 		}break;
 	case WINDOW_LBUTTON_DOWN:
 		{
@@ -96,6 +66,40 @@ bool CUITrackBar::OnMouse(float x, float y, EUIMessages mouse_action)
 		{
 			m_b_mouse_capturer = false;
 		}
+		break;
+	case WINDOW_MOUSE_WHEEL_UP:
+		{
+			if(m_b_is_float)
+			{
+				m_f_val -= GetInvert()?-m_f_step:m_f_step;
+				clamp(m_f_val, m_f_min, m_f_max);
+			}
+			else
+			{
+				m_i_val -= GetInvert()?-m_i_step:m_i_step;
+				clamp(m_i_val, m_i_min, m_i_max);
+			}
+			GetMessageTarget()->SendMessage(this, BUTTON_CLICKED, NULL);
+			UpdatePos();
+		}
+		break;
+	case WINDOW_MOUSE_WHEEL_DOWN:
+		{
+			if(m_b_is_float)
+			{
+				m_f_val += GetInvert()?-m_f_step:m_f_step;
+				clamp(m_f_val, m_f_min, m_f_max);
+			}
+			else
+			{
+				m_i_val += GetInvert()?-m_i_step:m_i_step;
+				clamp(m_i_val, m_i_min, m_i_max);
+			}
+			GetMessageTarget()->SendMessage(this, BUTTON_CLICKED, NULL);
+
+			UpdatePos();
+		}
+		break;
 	};
 	return true;
 }

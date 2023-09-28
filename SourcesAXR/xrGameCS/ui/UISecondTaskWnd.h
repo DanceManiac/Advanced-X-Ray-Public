@@ -35,7 +35,7 @@ public:
 
 			void	init_from_xml		( CUIXml& xml, LPCSTR path );
 
-	virtual bool	OnMouse				( float x, float y, EUIMessages mouse_action );
+	virtual bool	OnMouseAction				( float x, float y, EUIMessages mouse_action );
 	virtual void	Show				( bool status );
 	virtual void 	OnFocusReceive		();
 	virtual void	OnFocusLost			();
@@ -83,7 +83,7 @@ public:
 	virtual void	OnFocusLost			();
 	virtual void	Update				();
 	virtual void	SendMessage			( CUIWindow* pWnd, s16 msg, void* pData );
-	virtual bool	OnMouse				( float x, float y, EUIMessages mouse_action );
+	virtual bool	OnMouseAction				( float x, float y, EUIMessages mouse_action );
 
 private:
 			void	hide_hint			();

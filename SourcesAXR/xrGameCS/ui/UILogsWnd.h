@@ -75,7 +75,7 @@ public:
 	virtual void		Update				();
 	virtual void		SendMessage			( CUIWindow* pWnd, s16 msg, void* pData );
 
-	virtual bool		OnKeyboard			(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction			(int dik, EUIMessages keyboard_action);
 	virtual bool		OnKeyboardHold		(int dik);
 
 	IC		void		UpdateNews			()	{ m_need_reload = true; }

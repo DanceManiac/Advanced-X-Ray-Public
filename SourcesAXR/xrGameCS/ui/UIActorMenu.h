@@ -319,9 +319,8 @@ public:
 	virtual void				Show						();
 	virtual void				Hide						();
 
-	virtual bool				OnKeyboard					(int dik, EUIMessages keyboard_action);
-	virtual bool				OnMouse						(float x, float y, EUIMessages mouse_action);
-	virtual void				OnMouseMove					();
+	virtual bool				OnKeyboardAction					(int dik, EUIMessages keyboard_action);
+	virtual bool				OnMouseAction						(float x, float y, EUIMessages mouse_action);
 
 	void						CallMessageBoxYesNo			(LPCSTR text);
 	void						CallMessageBoxOK			(LPCSTR text);
