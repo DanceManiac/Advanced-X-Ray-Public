@@ -82,6 +82,7 @@ public:
 	bool					bIsHelmetAvaliable;
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;
+	bool					m_bHasLSS;
 	u32						m_NightVisionType;
 
 	virtual u32				ef_equipment_type		() const;

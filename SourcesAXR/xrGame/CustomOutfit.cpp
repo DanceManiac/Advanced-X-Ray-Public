@@ -31,6 +31,7 @@ CCustomOutfit::CCustomOutfit()
 
 	m_b_HasGlass = false;
 	m_bUseFilter = false;
+	m_bHasLSS = false;
 	m_NightVisionType = 0;
 	m_fFilterDegradation = 0.0f;
 	m_fFilterCondition = 1.0f;
@@ -190,6 +191,7 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_b_HasGlass			= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter			= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
+	m_bHasLSS				= READ_IF_EXISTS(pSettings, r_bool, section, "has_ls_system", false);
 	m_NightVisionType		= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
 
 	m_SuitableFilters.clear();
