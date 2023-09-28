@@ -22,6 +22,7 @@ class	CMissile;
 class	CInventoryItem;
 class	CUIHudStatesWnd;
 class	CUICellItem;
+class	CUIArtefactPanel;
 
 class CUIMainIngameWnd: public CUIWindow  
 {
@@ -44,6 +45,7 @@ public:
 //	CUICarPanel			UICarPanel;
 	CUIMotionIcon		UIMotionIcon;
 	CUIZoneMap*			UIZoneMap;
+	CUIArtefactPanel*	UIArtefactsPanel;
 
 	CUIStatic*			m_ind_boost_psy;
 	CUIStatic*			m_ind_boost_radia;

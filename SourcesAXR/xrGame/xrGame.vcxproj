@@ -2142,6 +2142,7 @@
     <ClInclude Include="ui\UIActorMenu.h" />
     <ClInclude Include="ui\UIActorStateInfo.h" />
     <ClInclude Include="ui\UIAnimatedStatic.h" />
+    <ClInclude Include="ui\UIArtefactPanel.h" />
     <ClInclude Include="ui\UIBoosterInfo.h" />
     <ClInclude Include="ui\UIBtnHint.h" />
     <ClInclude Include="ui\UIButton.h" />
@@ -8371,6 +8372,7 @@
     </ClCompile>
     <ClCompile Include="ui\UIActorStateInfo.cpp" />
     <ClCompile Include="ui\UIAnimatedStatic.cpp" />
+    <ClCompile Include="ui\UIArtefactPanel.cpp" />
     <ClCompile Include="ui\UIBoosterInfo.cpp" />
     <ClCompile Include="ui\UIBtnHint.cpp" />
     <ClCompile Include="ui\UIButton.cpp" />

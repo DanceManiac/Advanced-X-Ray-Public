@@ -11,8 +11,11 @@
 #include "Car.h"
 #include "UIGameCustom.h"
 #include "UICursor.h"
+#include "ui\UIArtefactPanel.h"
 #include "string_table.h"
 #include "game_cl_base.h"
+#include "ui\UIMainIngameWnd.h"
+
 #ifdef	DEBUG
 #include "phdebug.h"
 #endif
@@ -131,7 +134,7 @@ void CFontManager::OnDeviceReset()
 
 //--------------------------------------------------------------------
 CHUDManager::CHUDManager() : pUIGame(NULL), m_pHUDTarget(xr_new<CHUDTarget>())
-{ 
+{
 }
 //--------------------------------------------------------------------
 CHUDManager::~CHUDManager()
@@ -361,6 +364,14 @@ void CHUDManager::OnScreenResolutionChanged()
 	pUIGame->Load						();
 
 	pUIGame->OnConnected				();
+
+	if (IsGameTypeSingle() && Level().CurrentViewEntity() && CurrentGameUI()->UIMainIngameWnd->UIArtefactsPanel)
+	{
+		CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+
+		if (actor)
+			CurrentGameUI()->UIMainIngameWnd->UIArtefactsPanel->InitIcons(actor->ArtefactsOnBelt());
+	}
 }
 
 void CHUDManager::OnDisconnected()

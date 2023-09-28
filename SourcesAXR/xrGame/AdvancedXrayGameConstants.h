@@ -36,6 +36,7 @@ namespace GameConstants
 	bool GetActorSkillsEnabled();
 	bool GetSleepInfluenceOnPsyHealth();
 	bool GetUseHQ_Icons();
+	bool GetArtefactPanelEnabled();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

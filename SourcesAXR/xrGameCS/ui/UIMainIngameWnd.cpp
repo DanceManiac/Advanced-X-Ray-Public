@@ -57,6 +57,7 @@
 #include "UICellItemFactory.h"
 #include "UIStatic.h"
 #include "UIHelper.h"
+#include "UIArtefactPanel.h"
 
 void test_draw	();
 void test_key	(int dik);
@@ -83,14 +84,16 @@ const u32	g_clWhite					= 0xffffffff;
 CUIMainIngameWnd::CUIMainIngameWnd()
 {
 //	m_pWeapon					= NULL;
-	m_pGrenade					= NULL;
-	m_pItem						= NULL;
+	m_pGrenade					= nullptr;
+	m_pItem						= nullptr;
 	UIZoneMap					= xr_new<CUIZoneMap>();
-	m_pPickUpItem				= NULL;
-	m_pMPChatWnd				= NULL;
-	m_pMPLogWnd					= NULL;	
-	uiPickUpItemIconNew_		= NULL;	
+	m_pPickUpItem				= nullptr;
+	m_pMPChatWnd				= nullptr;
+	m_pMPLogWnd					= nullptr;
+	uiPickUpItemIconNew_		= nullptr;
 	fuzzyShowInfo_				= 0.f;
+
+	UIArtefactsPanel			= nullptr;
 }
 
 #include "UIProgressShape.h"
@@ -102,6 +105,9 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 	xr_delete					(UIZoneMap);
 	HUD_SOUND_ITEM::DestroySound(m_contactSnd);
 	xr_delete					(g_MissileForceShape);
+
+	if (UIArtefactsPanel)
+		xr_delete				(UIArtefactsPanel);
 }
 
 void CUIMainIngameWnd::Init()
@@ -280,6 +286,13 @@ void CUIMainIngameWnd::Init()
 	AttachChild								(&UIMotionIcon);
 	UIMotionIcon.Init						();
 
+	if (GameConstants::GetArtefactPanelEnabled())
+	{
+		UIArtefactsPanel					= xr_new<CUIArtefactPanel>();
+		UIArtefactsPanel->InitFromXML		(uiXml, "artefact_panel", 0);
+		AttachChild							(UIArtefactsPanel);
+	}
+
 	AttachChild								(&UIStaticDiskIO);
 	xml_init.InitStatic						(uiXml, "disk_io", 0, &UIStaticDiskIO);
 
@@ -325,6 +338,9 @@ void CUIMainIngameWnd::Draw()
 	UIMotionIcon.SetNoise((s16)(0xffff&iFloor(m_pActor->m_snd_noise*100.0f)));
 
 	CUIWindow::Draw();
+
+	if (UIArtefactsPanel)
+		UIArtefactsPanel->Draw();
 
 	UIZoneMap->visible = true;
 	UIZoneMap->Render();
@@ -937,6 +953,9 @@ void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
 		m_ind_boost_withdrawal->Update();
 		m_ind_boost_withdrawal->Draw();
 	}
+
+	if (UIArtefactsPanel && UIArtefactsPanel->GetShowInInventory() && UIArtefactsPanel->IsShown())
+		UIArtefactsPanel->Draw();
 }
 
 void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBooster> influences)

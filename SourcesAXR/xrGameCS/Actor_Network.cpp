@@ -32,6 +32,7 @@
 #include "map_manager.h"
 #include "HUDManager.h"
 #include "ui/UIMainIngameWnd.h"
+#include "ui/UIArtefactPanel.h"
 #include "gamepersistent.h"
 #include "game_object_space.h"
 #include "GameTaskManager.h"
@@ -41,6 +42,7 @@
 #include "actor_statistic_mgr.h"
 #include "characterphysicssupport.h"
 #include "game_cl_base_weapon_usage_statistic.h"
+#include "Artefact.h"
 
 #include "..\XrEngine\xr_collide_form.h"
 
@@ -738,6 +740,9 @@ void CActor::net_Destroy	()
 	m_holderID=u16(-1);
 	
 	m_ArtefactsOnBelt.clear();
+
+	if (Level().CurrentViewEntity() == this && HUD().GetUI()->UIMainIngameWnd->UIArtefactsPanel)
+		HUD().GetUI()->UIMainIngameWnd->UIArtefactsPanel->InitIcons(m_ArtefactsOnBelt);
 
 	SetDefaultVisualOutfit(NULL);
 

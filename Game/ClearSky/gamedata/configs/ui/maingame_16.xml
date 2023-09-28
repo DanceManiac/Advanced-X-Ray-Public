@@ -131,6 +131,8 @@
 
 	<pick_up_item  x="512" y="478" scale="1"/>
 
+	<artefact_panel x="-25" y="710" width="200" height="50" cell_width="50" cell_height="50" scale="0.75"/>
+	
 	<new_contact_snd>detectors\contact_1</new_contact_snd>	
 
 	<hud_states x="802" y="647" width="222" height="121">

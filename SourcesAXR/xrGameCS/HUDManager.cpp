@@ -10,6 +10,8 @@
 #include "spectator.h"
 #include "Car.h"
 #include "UIGameCustom.h"
+#include "ui\UIArtefactPanel.h"
+
 #ifdef	DEBUG
 #include "phdebug.h"
 #endif
@@ -365,6 +367,14 @@ void CHUDManager::OnScreenResolutionChanged()
 	pUI->Load							(pUI->UIGame());
 	pUI->OnConnected					();
 	GetUICursor()->OnScreenResolutionChanged	();
+
+	if (IsGameTypeSingle() && Level().CurrentViewEntity() && pUI->UIMainIngameWnd->UIArtefactsPanel)
+	{
+		CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+
+		if (actor)
+			pUI->UIMainIngameWnd->UIArtefactsPanel->InitIcons(actor->ArtefactsOnBelt());
+	}
 }
 
 void CHUDManager::OnDisconnected()

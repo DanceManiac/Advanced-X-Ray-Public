@@ -220,7 +220,7 @@ public:
 
 	const xr_vector<const CArtefact*>& ArtefactsOnBelt() {return m_ArtefactsOnBelt;}
 protected:
-	//звук т¤желого дыхани¤
+	//звук тяжелого дыхания
 	ref_sound			m_HeavyBreathSnd;
 	ref_sound			m_BloodSnd;
 	ref_sound			m_DangerSnd;
@@ -248,13 +248,13 @@ protected:
 	BOOL					b_DropActivated;
 	float					f_DropPower;
 
-	//random seed дл¤ Zoom mode
+	//random seed для Zoom mode
 	s32						m_ZoomRndSeed;
-	//random seed дл¤ Weapon Effector Shot
+	//random seed для Weapon Effector Shot
 	s32						m_ShotRndSeed;
 
 	bool					m_bOutBorder;
-	//сохран¤ет счетчик объектов в feel_touch, дл¤ которых необходимо обновл¤ть размер колижена с актером 
+	//сохраняет счетчик объектов в feel_touch, для которых необходимо обновлять размер колижена с актером 
 	u32						m_feel_touch_characters;
 private:
 	void					SwitchOutBorder(bool new_border_state);
@@ -289,10 +289,10 @@ protected:
 	// Rotation
 	SRotation				r_torso;
 	float					r_torso_tgt_roll;
-	//положение торса без воздействи¤ эффекта отдачи оружи¤
+	//положение торса без воздействия эффекта отдачи оружия
 	SRotation				unaffected_r_torso;
 
-	//ориентаци¤ модели
+	//ориентация модели
 	float					r_model_yaw_dest;
 	float					r_model_yaw;			// orientation of model
 	float					r_model_yaw_delta;		// effect on multiple "strafe"+"something"
@@ -391,12 +391,12 @@ protected:
 	shared_str				m_sInventoryItemUseAction;
 	shared_str				m_sInventoryBoxUseAction;
 
-	//режим подбирани¤ предметов
+	//режим подбирания предметов
 	bool					m_bPickupMode;
-	//рассто¤ние (в метрах) на котором актер чувствует гранату (любую)
+	//расстояние (в метрах) на котором актер чувствует гранату (любую)
 	float					m_fFeelGrenadeRadius;
-	float					m_fFeelGrenadeTime; 	//врем¤ гранаты (сек) после которого актер чувствует гранату
-	//рассто¤ние подсветки предметов
+	float					m_fFeelGrenadeTime; 	//время гранаты (сек) после которого актер чувствует гранату
+	//расстояние подсветки предметов
 	float					m_fPickupInfoRadius;
 
 	void					PickupModeUpdate	();
@@ -410,7 +410,7 @@ public:
 
 
 	//////////////////////////////////////////////////////////////////////////
-	// Motions (передвижени¤ актрера)
+	// Motions (передвижения актрера)
 	//////////////////////////////////////////////////////////////////////////
 public:
 	void					g_cl_CheckControls		(u32 mstate_wf, Fvector &vControlAccel, float &Jump, float dt);
@@ -486,15 +486,15 @@ public:
 
 protected:
 	CFireDispertionController			m_fdisp_controller;
-	//если актер целитс¤ в прицел
+	//если актер целится в прицел
 	void								SetZoomAimingMode	(bool val)	{m_bZoomAimingMode = val;}
 	bool								m_bZoomAimingMode;
 
 	//настройки аккуратности стрельбы
-	//базова¤ дисперси¤ (когда игрок стоит на месте)
+	//базовая дисперсия (когда игрок стоит на месте)
 	float								m_fDispBase;
 	float								m_fDispAim;
-	//коэффициенты на сколько процентов увеличитс¤ базова¤ дисперси¤
+	//коэффициенты на сколько процентов увеличится базовая дисперсия
 	//учитывает скорость актера 
 	float								m_fDispVelFactor;
 	//если актер бежит
@@ -570,9 +570,9 @@ virtual	bool				can_validate_position_on_spawn	(){return false;}
 	//---------------------------------------------
 //	bool					m_bHasUpdate;	
 	/// spline coeff /////////////////////
-	float			SCoeff[3][4];			//коэффициэнты дл¤ сплайна Ѕизье
-	float			HCoeff[3][4];			//коэффициэнты дл¤ сплайна Ёрмита
-	Fvector			IPosS, IPosH, IPosL;	//положение актера после интерпол¤ции Ѕизье, Ёрмита, линейной
+	float			SCoeff[3][4];			//коэффициэнты для сплайна Бизье
+	float			HCoeff[3][4];			//коэффициэнты для сплайна Эрмита
+	Fvector			IPosS, IPosH, IPosL;	//положение актера после интерполяции Бизье, Эрмита, линейной
 
 #ifdef DEBUG
 	DEF_DEQUE		(VIS_POSITION, Fvector);

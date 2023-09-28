@@ -55,6 +55,7 @@
 #include "UIActorMenu.h"
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
+#include "UIArtefactPanel.h"
 
 #include "Torch.h"
 #include "CustomDetector.h"
@@ -94,6 +95,8 @@ CUIMainIngameWnd::CUIMainIngameWnd()
 	uiPickUpItemIconNew_		= nullptr;
 	UIArtefactIcon				= nullptr;
 	fuzzyShowInfo_				= 0.f;
+
+	UIArtefactsPanel			= nullptr;
 }
 
 #include "UIProgressShape.h"
@@ -108,6 +111,9 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 	xr_delete					(UIWeaponJammedIcon);
 	xr_delete					(UIInvincibleIcon);
 	xr_delete					(UIArtefactIcon);
+
+	if (UIArtefactsPanel)
+		xr_delete				(UIArtefactsPanel);
 }
 
 void CUIMainIngameWnd::Init()
@@ -309,6 +315,13 @@ void CUIMainIngameWnd::Init()
 	UIZoneMap->MapFrame().AttachChild		(UIMotionIcon);
 	UIMotionIcon->Init						(UIZoneMap->MapFrame().GetWndRect());
 
+	if (GameConstants::GetArtefactPanelEnabled())
+	{
+		UIArtefactsPanel					= xr_new<CUIArtefactPanel>();
+		UIArtefactsPanel->InitFromXML		(uiXml, "artefact_panel", 0);
+		AttachChild							(UIArtefactsPanel);
+	}
+
 	UIStaticDiskIO							= UIHelper::CreateStatic(uiXml, "disk_io", this);
 
 	if (m_ui_hud_states)
@@ -383,6 +396,8 @@ void CUIMainIngameWnd::Draw()
 
 	UIMotionIcon->Draw();
 
+	if (UIArtefactsPanel)
+		UIArtefactsPanel->Draw();
 
 	UIZoneMap->visible = true;
 	UIZoneMap->Render();
@@ -392,7 +407,7 @@ void CUIMainIngameWnd::Draw()
 	CUIWindow::Draw();
 	UIMotionIcon->Show(tmp);
 
-	RenderQuickInfos();;
+	RenderQuickInfos();
 
 	if (uiPickUpItemIconNew_)
 		uiPickUpItemIconNew_->Draw();
@@ -1362,6 +1377,9 @@ void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
 		m_ind_boost_withdrawal->Update();
 		m_ind_boost_withdrawal->Draw();
 	}
+
+	if (UIArtefactsPanel && UIArtefactsPanel->GetShowInInventory() && UIArtefactsPanel->IsShown())
+		UIArtefactsPanel->Draw();
 
 	m_ui_hud_states->DrawZoneIndicators();
 }

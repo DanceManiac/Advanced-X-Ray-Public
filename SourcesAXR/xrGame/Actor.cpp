@@ -21,6 +21,7 @@
 #include "CustomOutfit.h"
 #include "actorcondition.h"
 #include "UIGameCustom.h"
+#include "ui/UIArtefactPanel.h"
 #include "../xrphysics/matrix_utils.h"
 #include "clsid_game.h"
 #include "game_cl_base_weapon_usage_statistic.h"
@@ -1967,6 +1968,9 @@ void CActor::MoveArtefactBelt(const CArtefact* artefact, bool on_belt)
 		VERIFY(it != m_ArtefactsOnBelt.end());
 		m_ArtefactsOnBelt.erase(it);
 	}
+
+	if (Level().CurrentViewEntity() && Level().CurrentViewEntity() == this && CurrentGameUI()->UIMainIngameWnd->UIArtefactsPanel)
+		CurrentGameUI()->UIMainIngameWnd->UIArtefactsPanel->InitIcons(m_ArtefactsOnBelt);
 }
 
 #define ARTEFACTS_UPDATE_TIME 0.100f

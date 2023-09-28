@@ -15,6 +15,7 @@ class	CInventoryItem;
 class	CUIHudStatesWnd;
 class	CUIMotionIcon;
 class	CUICellItem;
+class	CUIArtefactPanel;
 
 class CUIMainIngameWnd: public CUIWindow  
 {
@@ -32,6 +33,7 @@ public:
 	CUIZoneMap*			UIZoneMap;
 
 	CUIHudStatesWnd*	m_ui_hud_states;
+	CUIArtefactPanel*	UIArtefactsPanel;
 
 	CUIStatic*			m_ind_bleeding;
 	CUIStatic*			m_ind_radiation;

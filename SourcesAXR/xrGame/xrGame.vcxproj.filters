@@ -7452,6 +7452,9 @@
     <ClInclude Include="CustomBackpack.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIArtefactPanel.h">
+      <Filter>UI\Common\MainIngame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11160,6 +11163,9 @@
     <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="CustomBackpack.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIArtefactPanel.cpp">
+      <Filter>UI\Common\MainIngame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

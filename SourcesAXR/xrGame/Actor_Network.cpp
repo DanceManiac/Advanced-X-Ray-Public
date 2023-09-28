@@ -37,6 +37,7 @@
 
 #include "map_manager.h"
 #include "ui/UIMainIngameWnd.h"
+#include "ui/UIArtefactPanel.h"
 #include "gamepersistent.h"
 #include "game_object_space.h"
 #include "GameTaskManager.h"
@@ -47,6 +48,8 @@
 #include "characterphysicssupport.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 #include "../xrengine/xr_collide_form.h"
+#include "Artefact.h"
+
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #	include "../xrPhysics/phvalide.h"
@@ -754,6 +757,9 @@ void CActor::net_Destroy	()
 	
 	//убрать все артефакты с пояса
 	m_ArtefactsOnBelt.clear();
+
+	if (Level().CurrentViewEntity() == this && CurrentGameUI()->UIMainIngameWnd->UIArtefactsPanel)
+		CurrentGameUI()->UIMainIngameWnd->UIArtefactsPanel->InitIcons(m_ArtefactsOnBelt);
 
 	SetDefaultVisualOutfit(NULL);
 
