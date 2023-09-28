@@ -23,7 +23,7 @@ public:
 	Fvector2		GetCursorPosition		();
 	void			SetUICursorPosition		(Fvector2 pos);
 	void			UpdateCursorPosition	();
-	void			OnScreenRatioChanged	();
+	void			OnScreenResolutionChanged	();
 
 	bool			IsVisible		() {return bVisible;}
 	void			Show			() {bVisible = true;}

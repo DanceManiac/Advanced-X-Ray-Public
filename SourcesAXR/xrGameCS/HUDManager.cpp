@@ -351,7 +351,7 @@ void CHUDManager::SetGrenadeMarkType( LPCSTR tex_name )
 #include "ui\UIMainInGameWnd.h"
 extern CUIXml*			pWpnScopeXml;
 
-void CHUDManager::OnScreenRatioChanged()
+void CHUDManager::OnScreenResolutionChanged()
 {
 	if(pUI->UIGame())
 		pUI->UIGame()->HideShownDialogs	();
@@ -364,7 +364,7 @@ void CHUDManager::OnScreenRatioChanged()
 	pUI->UnLoad							();
 	pUI->Load							(pUI->UIGame());
 	pUI->OnConnected					();
-	GetUICursor()->OnScreenRatioChanged	();
+	GetUICursor()->OnScreenResolutionChanged	();
 }
 
 void CHUDManager::OnDisconnected()
@@ -392,18 +392,6 @@ void CHUDManager::net_Relcase( CObject* obj )
 #ifdef	DEBUG
 	DBG_PH_NetRelcase( obj );
 #endif
-}
-
-void CHUDManager::OnScreenResolutionChanged()
-{
-//	pUI->HideShownDialogs();
-
-	xr_delete(pWpnScopeXml);
-
-	pUI->UnLoad();
-	pUI->Load(pUI->UIGame());
-
-	pUI->OnConnected();
 }
 
 CDialogHolder* CurrentDialogHolder()

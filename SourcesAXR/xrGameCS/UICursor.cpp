@@ -25,7 +25,7 @@ CUICursor::~CUICursor	()
 	Device.seqRender.Remove	(this);
 }
 
-void CUICursor::OnScreenRatioChanged()
+void CUICursor::OnScreenResolutionChanged()
 {
 	xr_delete					(m_static);
 	InitInternal				();
