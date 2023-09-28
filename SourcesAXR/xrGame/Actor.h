@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include "../xrEngine/feel_touch.h"
 #include "../xrEngine/feel_sound.h"
@@ -198,12 +198,12 @@ public:
 
 public:
 
-	//свойства артефактов
+	//СЃРІРѕР№СЃС‚РІР° Р°СЂС‚РµС„Р°РєС‚РѕРІ
 	virtual void		UpdateArtefactsOnBeltAndOutfit();
+	virtual void		UpdateInventoryItems();
+	virtual void		MoveArtefactBelt		(const CArtefact* artefact, bool on_belt);
 			float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 			float		GetProtection_ArtefactsOnBelt(ALife::EHitType hit_type);
-
-	virtual void		UpdateInventoryItems();
 			void		UpdateArtefactsOnBelt();
 			void		UpdateArtefactsInRuck();
 			void		UpdateSkills();
@@ -212,11 +212,14 @@ public:
 			float		GetCamHeightFactor() { return m_fCamHeightFactor; }
 			void		SetCamHeightFactor(float height) { m_fCamHeightFactor = height; }
 
+	const xr_vector<const CArtefact*>& ArtefactsOnBelt() {return m_ArtefactsOnBelt;}
 protected:
-	//звук тяжелого дыхания
+	//Р·РІСѓРє С‚СЏР¶РµР»РѕРіРѕ РґС‹С…Р°РЅРёСЏ
 	ref_sound			m_HeavyBreathSnd;
 	ref_sound			m_BloodSnd;
 	ref_sound			m_DangerSnd;
+
+	xr_vector<const CArtefact*> m_ArtefactsOnBelt;
 
 protected:
 	// Death
@@ -239,13 +242,13 @@ protected:
 	BOOL					b_DropActivated;
 	float					f_DropPower;
 
-	//random seed для Zoom mode
+	//random seed РґР»СЏ Zoom mode
 	s32						m_ZoomRndSeed;
-	//random seed для Weapon Effector Shot
+	//random seed РґР»СЏ Weapon Effector Shot
 	s32						m_ShotRndSeed;
 
 	bool					m_bOutBorder;
-	//сохраняет счетчик объектов в feel_touch, для которых необходимо обновлять размер колижена с актером 
+	//СЃРѕС…СЂР°РЅСЏРµС‚ СЃС‡РµС‚С‡РёРє РѕР±СЉРµРєС‚РѕРІ РІ feel_touch, РґР»СЏ РєРѕС‚РѕСЂС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РѕР±РЅРѕРІР»СЏС‚СЊ СЂР°Р·РјРµСЂ РєРѕР»РёР¶РµРЅР° СЃ Р°РєС‚РµСЂРѕРј 
 	u32						m_feel_touch_characters;
 private:
 	void					SwitchOutBorder(bool new_border_state);
@@ -280,10 +283,10 @@ protected:
 	// Rotation
 	SRotation				r_torso;
 	float					r_torso_tgt_roll;
-	//положение торса без воздействия эффекта отдачи оружия
+	//РїРѕР»РѕР¶РµРЅРёРµ С‚РѕСЂСЃР° Р±РµР· РІРѕР·РґРµР№СЃС‚РІРёСЏ СЌС„С„РµРєС‚Р° РѕС‚РґР°С‡Рё РѕСЂСѓР¶РёСЏ
 	SRotation				unaffected_r_torso;
 
-	//ориентация модели
+	//РѕСЂРёРµРЅС‚Р°С†РёСЏ РјРѕРґРµР»Рё
 	float					r_model_yaw_dest;
 	float					r_model_yaw;			// orientation of model
 	float					r_model_yaw_delta;		// effect on multiple "strafe"+"something"
@@ -300,7 +303,7 @@ public:
 	MotionID				m_current_torso;
 	MotionID				m_current_head;
 
-	// callback на анимации модели актера
+	// callback РЅР° Р°РЅРёРјР°С†РёРё РјРѕРґРµР»Рё Р°РєС‚РµСЂР°
 	void					SetCallbacks		();
 	void					ResetCallbacks		();
 	static void		_BCL	Spin0Callback		(CBoneInstance*);
@@ -350,7 +353,7 @@ protected:
 	CEffectorBobbing*		pCamBobbing;
 
 
-	//менеджер эффекторов, есть у каждого актрера
+	//РјРµРЅРµРґР¶РµСЂ СЌС„С„РµРєС‚РѕСЂРѕРІ, РµСЃС‚СЊ Сѓ РєР°Р¶РґРѕРіРѕ Р°РєС‚СЂРµСЂР°
 	CActorCameraManager*	m_pActorEffector;
 	static float			f_Ladder_cam_limit;
 public:
@@ -382,14 +385,13 @@ protected:
 	shared_str				m_sCarCharacterUseAction;
 	shared_str				m_sInventoryItemUseAction;
 	shared_str				m_sInventoryBoxUseAction;
-	
-//	shared_str				m_quick_use_slots[4];
-	//режим подбирания предметов
+
+	//СЂРµР¶РёРј РїРѕРґР±РёСЂР°РЅРёСЏ РїСЂРµРґРјРµС‚РѕРІ
 	bool					m_bPickupMode;
-	//расстояние (в метрах) на котором актер чувствует гранату (любую)
+	//СЂР°СЃСЃС‚РѕСЏРЅРёРµ (РІ РјРµС‚СЂР°С…) РЅР° РєРѕС‚РѕСЂРѕРј Р°РєС‚РµСЂ С‡СѓРІСЃС‚РІСѓРµС‚ РіСЂР°РЅР°С‚Сѓ (Р»СЋР±СѓСЋ)
 	float					m_fFeelGrenadeRadius;
-	float					m_fFeelGrenadeTime; 	//время гранаты (сек) после которого актер чувствует гранату
-	//расстояние подсветки предметов
+	float					m_fFeelGrenadeTime; 	//РІСЂРµРјСЏ РіСЂР°РЅР°С‚С‹ (СЃРµРє) РїРѕСЃР»Рµ РєРѕС‚РѕСЂРѕРіРѕ Р°РєС‚РµСЂ С‡СѓРІСЃС‚РІСѓРµС‚ РіСЂР°РЅР°С‚Сѓ
+	//СЂР°СЃСЃС‚РѕСЏРЅРёРµ РїРѕРґСЃРІРµС‚РєРё РїСЂРµРґРјРµС‚РѕРІ
 	float					m_fPickupInfoRadius;
 
 	void					PickupModeUpdate	();
@@ -397,7 +399,7 @@ protected:
 	void					PickupModeUpdate_COD ();
 
 	//////////////////////////////////////////////////////////////////////////
-	// Motions (передвижения актрера)
+	// Motions (РїРµСЂРµРґРІРёР¶РµРЅРёСЏ Р°РєС‚СЂРµСЂР°)
 	//////////////////////////////////////////////////////////////////////////
 public:
 	void					g_cl_CheckControls		(u32 mstate_wf, Fvector &vControlAccel, float &Jump, float dt);
@@ -476,26 +478,26 @@ public:
 
 protected:
 	CFireDispertionController			m_fdisp_controller;
-	//если актер целится в прицел
+	//РµСЃР»Рё Р°РєС‚РµСЂ С†РµР»РёС‚СЃСЏ РІ РїСЂРёС†РµР»
 	void								SetZoomAimingMode	(bool val)	{m_bZoomAimingMode = val;}
 	bool								m_bZoomAimingMode;
 
-	//настройки аккуратности стрельбы
-	//базовая дисперсия (когда игрок стоит на месте)
+	//РЅР°СЃС‚СЂРѕР№РєРё Р°РєРєСѓСЂР°С‚РЅРѕСЃС‚Рё СЃС‚СЂРµР»СЊР±С‹
+	//Р±Р°Р·РѕРІР°СЏ РґРёСЃРїРµСЂСЃРёСЏ (РєРѕРіРґР° РёРіСЂРѕРє СЃС‚РѕРёС‚ РЅР° РјРµСЃС‚Рµ)
 	float								m_fDispBase;
 	float								m_fDispAim;
-	//коэффициенты на сколько процентов увеличится базовая дисперсия
-	//учитывает скорость актера 
+	//РєРѕСЌС„С„РёС†РёРµРЅС‚С‹ РЅР° СЃРєРѕР»СЊРєРѕ РїСЂРѕС†РµРЅС‚РѕРІ СѓРІРµР»РёС‡РёС‚СЃСЏ Р±Р°Р·РѕРІР°СЏ РґРёСЃРїРµСЂСЃРёСЏ
+	//СѓС‡РёС‚С‹РІР°РµС‚ СЃРєРѕСЂРѕСЃС‚СЊ Р°РєС‚РµСЂР° 
 	float								m_fDispVelFactor;
-	//если актер бежит
+	//РµСЃР»Рё Р°РєС‚РµСЂ Р±РµР¶РёС‚
 	float								m_fDispAccelFactor;
-	//если актер сидит
+	//РµСЃР»Рё Р°РєС‚РµСЂ СЃРёРґРёС‚
 	float								m_fDispCrouchFactor;
 	//crouch+no acceleration
 	float								m_fDispCrouchNoAccelFactor;
 
 protected:
-	//косточки используемые при стрельбе
+	//РєРѕСЃС‚РѕС‡РєРё РёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РїСЂРё СЃС‚СЂРµР»СЊР±Рµ
 	int									m_r_hand;
 	int									m_l_finger1;
     int									m_r_finger2;
@@ -548,15 +550,15 @@ protected:
 ////////////////////////////////////////////////////////////////////////////
 virtual	bool				can_validate_position_on_spawn	(){return false;}
 	///////////////////////////////////////////////////////
-	// апдайт с данными физики
+	// Р°РїРґР°Р№С‚ СЃ РґР°РЅРЅС‹РјРё С„РёР·РёРєРё
 	xr_deque<net_update_A>	NET_A;
 	
 	//---------------------------------------------
 //	bool					m_bHasUpdate;	
 	/// spline coeff /////////////////////
-	float			SCoeff[3][4];			//коэффициэнты для сплайна Бизье
-	float			HCoeff[3][4];			//коэффициэнты для сплайна Эрмита
-	Fvector			IPosS, IPosH, IPosL;	//положение актера после интерполяции Бизье, Эрмита, линейной
+	float			SCoeff[3][4];			//РєРѕСЌС„С„РёС†РёСЌРЅС‚С‹ РґР»СЏ СЃРїР»Р°Р№РЅР° Р‘РёР·СЊРµ
+	float			HCoeff[3][4];			//РєРѕСЌС„С„РёС†РёСЌРЅС‚С‹ РґР»СЏ СЃРїР»Р°Р№РЅР° Р­СЂРјРёС‚Р°
+	Fvector			IPosS, IPosH, IPosL;	//РїРѕР»РѕР¶РµРЅРёРµ Р°РєС‚РµСЂР° РїРѕСЃР»Рµ РёРЅС‚РµСЂРїРѕР»СЏС†РёРё Р‘РёР·СЊРµ, Р­СЂРјРёС‚Р°, Р»РёРЅРµР№РЅРѕР№
 
 #ifdef DEBUG
 	DEF_DEQUE		(VIS_POSITION, Fvector);

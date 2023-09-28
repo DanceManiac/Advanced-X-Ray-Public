@@ -1,4 +1,4 @@
-#include "pch_script.h"
+﻿#include "pch_script.h"
 #include "actor.h"
 #include "hudmanager.h"
 #include "Actor_Flags.h"
@@ -549,6 +549,9 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 	CSE_ALifeTraderAbstract	 *pTA	= smart_cast<CSE_ALifeTraderAbstract*>(e);
 	set_money				(pTA->m_dwMoney, false);
 
+	//убрать все артефакты с пояса
+	m_ArtefactsOnBelt.clear();
+
 //.	if(	TRUE == E->s_flags.test(M_SPAWN_OBJECT_LOCAL) && TRUE == E->s_flags.is(M_SPAWN_OBJECT_ASPLAYER))
 //.		CurrentGameUI()->UIMainIngameWnd->m_artefactPanel->InitIcons(m_ArtefactsOnBelt);
 		
@@ -749,6 +752,9 @@ void CActor::net_Destroy	()
 	m_holder=NULL;
 	m_holderID=u16(-1);
 	
+	//убрать все артефакты с пояса
+	m_ArtefactsOnBelt.clear();
+
 	SetDefaultVisualOutfit(NULL);
 
 
