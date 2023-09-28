@@ -1043,7 +1043,7 @@ int get_custom_timer(LPCSTR name)
 		return 0;
 	}
 
-	Actor()->TimerManager->GetTimerValue(name);
+	return Actor()->TimerManager->GetTimerValue(name);
 }
 
 std::string get_moon_phase()
