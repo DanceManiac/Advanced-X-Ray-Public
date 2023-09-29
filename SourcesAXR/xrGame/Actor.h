@@ -821,6 +821,9 @@ public:
 	bool					m_bActionAnimInProcess;
 	CActorSkills*			ActorSkills;
 	CTimerManager*			TimerManager;
+
+	bool					HasItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
+	void					RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;
