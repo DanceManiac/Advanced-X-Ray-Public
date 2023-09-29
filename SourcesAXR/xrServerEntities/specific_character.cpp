@@ -123,10 +123,7 @@ void CSpecificCharacter::load_shared	(LPCSTR)
 	{
 		shared_str dialog_name = pXML->Read(pXML->GetLocalRoot(), "actor_dialog", i, "");
 		data()->m_ActorDialogs.push_back(dialog_name);
-	}
-
-	data()->m_icon_name		= pXML->Read("icon", 0, "ui_npc_u_barman");
-		
+	}		
 
 	//игровое имя персонажа
 	data()->m_sGameName		= pXML->Read("name", 0, "");
@@ -143,6 +140,11 @@ void CSpecificCharacter::load_shared	(LPCSTR)
 #endif
 
 	data()->m_sVisual = pXML->Read("visual", 0, "");
+
+	data()->m_bForceDisabledRandomIcons = pXML->ReadAttribInt("icon", 0, "force_disabled_random", 0) == 1;
+
+	if (data()->m_sVisual.back() != '_' || data()->m_bForceDisabledRandomIcons)
+		data()->m_icon_name = pXML->Read("icon", 0, "ui_npc_u_barman");
 
 #ifdef  XRGAME_EXPORTS
 	data()->m_sSupplySpawn	= pXML->Read("supplies", 0, "");
@@ -311,6 +313,19 @@ LPCSTR CSpecificCharacter::Visual()
 			rnd_vis = data()->last_visual;
 
 		strconcat(sizeof(visual_randomized), visual_randomized, visual_name.c_str(), std::to_string(rnd_vis).c_str());
+
+		//Icon
+		if (!data()->m_bForceDisabledRandomIcons)
+		{
+			string128 randomized_icon{};
+			size_t lastBackslashPos = std::string(visual_randomized).find_last_of('\\');
+
+			std::string result = std::string(visual_randomized).substr(std::string(visual_randomized).find_last_of('\\') + 1);
+			strconcat(sizeof(randomized_icon), randomized_icon, "ui_npc_", result.c_str());
+
+			data()->m_icon_name = randomized_icon;
+		}
+
 		return visual_randomized;
 	}
 
