@@ -55,6 +55,8 @@ CInventoryItem::CInventoryItem()
 	m_flags.set			(FCanTrade, m_can_trade);
 	m_flags.set			(FUsingCondition,FALSE);
 	m_fCondition		= 1.0f;
+	m_fCurrentChargeLevel = 1.0f;
+	m_fMaxChargeLevel	= 0.0f;
 
 	m_name = m_nameShort = NULL;
 
@@ -220,6 +222,11 @@ void  CInventoryItem::ChangeCondition(float fDeltaCondition)
 	clamp(m_fCondition, 0.f, 1.f);
 }
 
+void  CInventoryItem::ChangeChargeLevel(float val)
+{
+	m_fCurrentChargeLevel += val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+}
 
 void	CInventoryItem::Hit					(SHit* pHDS)
 {
@@ -459,6 +466,7 @@ void CInventoryItem::save(NET_Packet &packet)
 {
 	packet.w_u16			(m_ItemCurrPlace.value);
 	packet.w_float			(m_fCondition);
+	packet.w_float			(m_fCurrentChargeLevel);
 //--	save_data				(m_upgrades, packet);
 
 	if (object().H_Parent()) {
@@ -850,6 +858,7 @@ void CInventoryItem::load(IReader &packet)
 {
 	m_ItemCurrPlace.value	= packet.r_u16();
 	m_fCondition			= packet.r_float();
+	m_fCurrentChargeLevel	= packet.r_float();
 
 //--	load_data( m_upgrades, packet );
 //--	install_loaded_upgrades();

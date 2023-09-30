@@ -172,6 +172,11 @@ public:
 	IC		void				SetCondition		(float val)					{m_fCondition = val;}
 			void				ChangeCondition		(float fDeltaCondition);
 
+	IC		float				GetChargeLevel		() const					{return m_fCurrentChargeLevel;}
+	virtual	float				GetChargeToShow		() const					{return GetChargeLevel();}
+	IC		void				SetChargeLevel		(float charge_level)		{ m_fCurrentChargeLevel = charge_level;}
+			void				ChangeChargeLevel	(float val);
+
 			u16					BaseSlot			()  const					{return m_ItemCurrPlace.base_slot_id;}
 			u16					CurrSlot			()  const					{return m_ItemCurrPlace.slot_id;}
 			u16					CurrPlace			()  const					{return m_ItemCurrPlace.type;}
@@ -193,6 +198,8 @@ protected:
 	u32							m_cost;
 	float						m_weight;
 	float						m_fCondition;
+	float						m_fCurrentChargeLevel;
+	float						m_fMaxChargeLevel;
 	shared_str					m_Description;
 protected:
 	ALife::_TIME_ID				m_dwItemIndependencyTime;

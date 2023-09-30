@@ -64,8 +64,6 @@ CTorch::CTorch(void)
 	m_prev_hp.set				(0,0);
 	m_delta_h					= 0;
 
-	m_fMaxChargeLevel			= 0.0f;
-	m_fCurrentChargeLevel		= 1.0f;
 	m_fUnchargeSpeed			= 0.0f;
 	m_fMaxRange					= 20.f;
 	m_fCurveRange				= 20.f;
@@ -412,11 +410,7 @@ void CTorch::UpdateChargeLevel(void)
 	if (GameConstants::GetTorchHasBattery())
 	{
 		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
-
-		m_fCurrentChargeLevel -= uncharge_coef;
-
-		float condition = 1.f * m_fCurrentChargeLevel;
-		SetCondition(condition);
+		ChangeChargeLevel(-uncharge_coef);
 
 		float rangeCoef = atan(m_fCurveRange * m_fCurrentChargeLevel) / PI_DIV_2;
 		clamp(rangeCoef, 0.f, 1.f);
@@ -425,15 +419,14 @@ void CTorch::UpdateChargeLevel(void)
 		light_render->set_range(range);
 		m_delta_h = PI_DIV_2 - atan((range*0.5f) / _abs(TORCH_OFFSET.x));
 
-		if (m_fCurrentChargeLevel < 0.0)
+		if (m_fCurrentChargeLevel <= 0.0)
 		{
-			m_fCurrentChargeLevel = 0.0;
 			Switch(false);
 			return;
 		}
 	}
 	else
-		SetCondition(m_fCurrentChargeLevel);
+		SetChargeLevel(m_fCurrentChargeLevel);
 }
 
 void CTorch::UpdateCL() 
@@ -631,14 +624,12 @@ void CTorch::net_Import			(NET_Packet& P)
 void CTorch::save(NET_Packet &output_packet)
 {
 	inherited::save(output_packet);
-	save_data(m_fCurrentChargeLevel, output_packet);
 
 }
 
 void CTorch::load(IReader &input_packet)
 {
 	inherited::load(input_packet);
-	load_data(m_fCurrentChargeLevel, input_packet);
 }
 
 bool  CTorch::can_be_attached		() const
@@ -691,7 +682,7 @@ void CTorch::SetCurrentChargeLevel(float val)
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
-	SetCondition(condition);
+	SetChargeLevel(condition);
 }
 
 void CTorch::Recharge(float val)
@@ -699,7 +690,7 @@ void CTorch::Recharge(float val)
 	m_fCurrentChargeLevel += val;
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
-	SetCondition(m_fCurrentChargeLevel);
+	SetChargeLevel(m_fCurrentChargeLevel);
 }
 
 float CTorch::get_range() const 

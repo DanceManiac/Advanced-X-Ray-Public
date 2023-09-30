@@ -55,11 +55,11 @@ bool CBattery::Useful() const
 
 	if (flashlight || artifact_detector || anomaly_detector)
 	{
-		if (flashlight && flashlight->m_fCurrentChargeLevel <= 0.99f && flashlight->IsNecessaryItem(this->cNameSect().c_str(), flashlight->m_SuitableBatteries))
+		if (flashlight && flashlight->GetChargeLevel() <= 0.99f && flashlight->IsNecessaryItem(this->cNameSect().c_str(), flashlight->m_SuitableBatteries))
 			return true;
-		else if (artifact_detector && artifact_detector->m_fCurrentChargeLevel <= 0.99f && artifact_detector->IsNecessaryItem(this->cNameSect().c_str(), artifact_detector->m_SuitableBatteries))
+		else if (artifact_detector && artifact_detector->GetChargeLevel() <= 0.99f && artifact_detector->IsNecessaryItem(this->cNameSect().c_str(), artifact_detector->m_SuitableBatteries))
 			return true;
-		else if (anomaly_detector && anomaly_detector->m_fCurrentChargeLevel <= 0.99f && anomaly_detector->IsNecessaryItem(this->cNameSect().c_str(), anomaly_detector->m_SuitableBatteries))
+		else if (anomaly_detector && anomaly_detector->GetChargeLevel() <= 0.99f && anomaly_detector->IsNecessaryItem(this->cNameSect().c_str(), anomaly_detector->m_SuitableBatteries))
 			return true;
 		else
 			return false;
@@ -86,8 +86,8 @@ bool CBattery::UseBy(CEntityAlive* entity_alive)
 			ChargeAnomalyDetector();
 		else if (flashlight && artifact_detector) 
 		{
-			float torch_battery = flashlight->m_fCurrentChargeLevel;
-			float art_det_battery = artifact_detector->m_fCurrentChargeLevel;
+			float torch_battery = flashlight->GetChargeLevel();
+			float art_det_battery = artifact_detector->GetChargeLevel();
 			if (torch_battery < art_det_battery)
 				ChargeTorch();
 			else

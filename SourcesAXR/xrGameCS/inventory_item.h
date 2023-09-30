@@ -170,6 +170,11 @@ public:
 	IC		void				SetCondition		(float val)					{m_fCondition = val;}
 			void				ChangeCondition		(float fDeltaCondition);
 
+	IC		float				GetChargeLevel		() const					{return m_fCurrentChargeLevel;}
+	virtual	float				GetChargeToShow		() const					{return GetChargeLevel();}
+	IC		void				SetChargeLevel		(float charge_level)		{ m_fCurrentChargeLevel = charge_level;}
+			void				ChangeChargeLevel	(float val);
+
 			u32					GetSlot				()  const					{return m_slot;}
 
 			bool				Belt				()							{return !!m_flags.test(Fbelt);}
@@ -191,6 +196,8 @@ protected:
 	u32							m_cost;
 	float						m_weight;
 	float						m_fCondition;
+	float						m_fCurrentChargeLevel;
+	float						m_fMaxChargeLevel;
 	shared_str					m_Description;
 protected:
 

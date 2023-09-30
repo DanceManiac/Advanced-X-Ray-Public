@@ -1150,7 +1150,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	m_ind_battery->Show(false);
 	if (torch)
 	{
-		float condition = torch->m_fCurrentChargeLevel;
+		float condition = torch->GetChargeLevel();
 		if (condition <= 0.0f)
 		{
 			m_ind_battery->Show(true);
@@ -1160,7 +1160,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 
 	if (artefact_detector)
 	{
-		float condition = artefact_detector->m_fCurrentChargeLevel;
+		float condition = artefact_detector->GetChargeLevel();
 		if (condition <= 0.0f)
 		{
 			m_ind_battery->Show(true);
@@ -1170,7 +1170,7 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 	
 	if (anomaly_detector)
 	{
-		float condition = anomaly_detector->m_fCurrentChargeLevel;
+		float condition = anomaly_detector->GetChargeLevel();
 		if (condition <= 0.0f)
 		{
 			m_ind_battery->Show(true);

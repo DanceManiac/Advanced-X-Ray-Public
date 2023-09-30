@@ -75,8 +75,6 @@ public:
 	//CAttachableItem
 	virtual	void	enable					(bool value);
 
-	float			m_fMaxChargeLevel;
-	float			m_fCurrentChargeLevel;
 	float			m_fUnchargeSpeed;
 	float			m_fMaxRange;
 	float			m_fCurveRange;

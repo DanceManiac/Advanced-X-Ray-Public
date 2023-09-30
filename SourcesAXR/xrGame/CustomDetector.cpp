@@ -191,8 +191,6 @@ CCustomDetector::CCustomDetector()
 	m_bFastAnimMode		= false;
 	m_bNeedActivation	= false;
 
-	m_fMaxChargeLevel	= 0.0f;
-	m_fCurrentChargeLevel = 1.0f;
 	m_fUnchargeSpeed	= 0.0f;
 
 	flash_light_bone	= "light_bone_1";
@@ -562,14 +560,11 @@ void CCustomDetector::UpdateNightVisionMode(bool b_on)
 void CCustomDetector::save(NET_Packet &output_packet)
 {
 	inherited::save(output_packet);
-	save_data(m_fCurrentChargeLevel, output_packet);
-
 }
 
 void CCustomDetector::load(IReader &input_packet)
 {
 	inherited::load(input_packet);
-	load_data(m_fCurrentChargeLevel, input_packet);
 }
 
 void CCustomDetector::UpdateChargeLevel(void)
@@ -577,19 +572,8 @@ void CCustomDetector::UpdateChargeLevel(void)
 	if (IsWorking())
 	{
 		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
-
-		m_fCurrentChargeLevel -= uncharge_coef;
-
-		float condition = 1.f * m_fCurrentChargeLevel;
-		SetCondition(condition);
-
-		//Msg("Заряд детектора: %f", m_fCurrentChargeLevel); //Для тестов
-
-		clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
-		SetCondition(m_fCurrentChargeLevel);
+		ChangeChargeLevel(-uncharge_coef);
 	}
-	/*else
-		SetCondition(m_fCurrentChargeLevel);*/
 }
 
 float CCustomDetector::GetUnchargeSpeed() const
@@ -608,7 +592,7 @@ void CCustomDetector::SetCurrentChargeLevel(float val)
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
-	SetCondition(condition);
+	SetChargeLevel(condition);
 }
 
 void CCustomDetector::Recharge(float val)
@@ -616,7 +600,7 @@ void CCustomDetector::Recharge(float val)
 	m_fCurrentChargeLevel += val;
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
-	SetCondition(m_fCurrentChargeLevel);
+	SetChargeLevel(m_fCurrentChargeLevel);
 
 	//Msg("Переданый в детектор заряд: %f", val); //Для Тестов
 }
