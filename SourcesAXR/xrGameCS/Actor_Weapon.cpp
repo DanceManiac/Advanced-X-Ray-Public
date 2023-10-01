@@ -340,3 +340,12 @@ void	CActor::RemoveAmmoForWeapon	(CInventoryItem *pIItem)
 	//	u_EventGen			(P,GE_DESTROY,pAmmo->ID());
 	//	u_EventSend			(P);
 };
+
+bool CActor::IsReloadingWeapon()
+{
+	if (!inventory().ActiveItem())
+		return false;
+
+	CWeapon* wpn = inventory().ActiveItem()->cast_weapon();
+	return wpn && wpn->GetState() == CWeapon::eReload;
+}

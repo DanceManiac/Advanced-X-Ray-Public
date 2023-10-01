@@ -261,6 +261,8 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	TimerManager			= nullptr;
 
 	m_fDevicesPsyFactor		= 0.0f;
+
+	m_iTrySprintCounter		= 0;
 }
 
 

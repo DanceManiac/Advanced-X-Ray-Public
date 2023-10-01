@@ -243,6 +243,8 @@ CActor::CActor() : CEntityAlive()
 	TimerManager			= nullptr;
 
 	m_fDevicesPsyFactor		= 0.0f;
+
+	m_iTrySprintCounter		= 0;
 }
 
 

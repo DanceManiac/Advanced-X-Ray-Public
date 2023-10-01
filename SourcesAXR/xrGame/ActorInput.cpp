@@ -107,7 +107,28 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}break;
 	case kSPRINT_TOGGLE:	
 		{
-			mstate_wishful ^= mcSprint;
+			CWeapon* W = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+			if (IsReloadingWeapon() && !GameConstants::GetReloadIfSprint())
+			{
+				if (m_iTrySprintCounter == 0) // don't interrupt reloading on first key press and skip sprint request
+				{
+					m_iTrySprintCounter++;
+
+					return;
+				}
+				else if (m_iTrySprintCounter >= 1) // break reloading, if player insist(presses two or more times) and do sprint
+				{
+					W->StopAllSounds();
+					W->SwitchState(CHUDState::EHudStates::eIdle);
+				}
+			}
+
+			if (mstate_wishful & mcSprint && !GameConstants::GetReloadIfSprint())
+				mstate_wishful &= ~mcSprint;
+			else
+				mstate_wishful ^= mcSprint;
+
 		}break;
 	case kCROUCH:	
 		{

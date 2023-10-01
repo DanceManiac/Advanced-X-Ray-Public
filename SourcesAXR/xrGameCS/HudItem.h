@@ -81,6 +81,7 @@ public:
 	virtual void				OnH_A_Independent	();
 	
 	virtual void				PlaySound			(LPCSTR alias, const Fvector& position);
+			void				StopAllSounds		() { m_sounds.StopAllSounds(); }
 
 	virtual bool				Action				(s32 cmd, u32 flags)			{return false;}
 			void				OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)	;

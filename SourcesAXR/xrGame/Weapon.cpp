@@ -1935,6 +1935,12 @@ BOOL CWeapon::IsMisfire() const
 void CWeapon::Reload()
 {
 	OnZoomOut();
+
+	if (ParentIsActor() && !GameConstants::GetReloadIfSprint())
+	{
+		Actor()->StopSprint();
+		Actor()->m_iTrySprintCounter = 0;
+	}
 }
 
 BOOL CWeapon::IsEmptyMagazine() const

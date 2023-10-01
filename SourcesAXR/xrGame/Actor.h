@@ -449,6 +449,9 @@ public:
 
 	u32						m_iBaseArtefactCount;
 
+	// For activating sprint when reloading
+	u8						m_iTrySprintCounter;
+
 public:
 	Fvector					GetMovementSpeed		() {return NET_SavedAccel;};
 	//////////////////////////////////////////////////////////////////////////
@@ -712,6 +715,8 @@ public:
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
 			void				CleanMask						();
+
+			bool				IsReloadingWeapon				();
 #ifdef DEBUG
 			void				NoClipFly						(int cmd);
 #endif //DEBUG

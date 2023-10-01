@@ -459,6 +459,9 @@ public:
 	float					m_fRun_StrafeFactor;
 
 	u32						m_iBaseArtefactCount;
+
+	// For activating sprint when reloading
+	u8						m_iTrySprintCounter;
 	//////////////////////////////////////////////////////////////////////////
 	// User input/output
 	//////////////////////////////////////////////////////////////////////////
@@ -722,6 +725,8 @@ public:
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
 			void				CleanMask						();
+
+			bool				IsReloadingWeapon				();
 
 public:
 	
