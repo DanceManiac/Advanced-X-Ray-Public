@@ -18,6 +18,7 @@ CUIProgressBar::CUIProgressBar(void)
 	m_inertion				= 0.0f;
 	m_last_render_frame		= u32(-1);
 	m_orient_mode			= om_horz;
+	m_bUseMiddleColor 		= false;
 }
 
 CUIProgressBar::~CUIProgressBar(void)
@@ -56,7 +57,10 @@ void CUIProgressBar::UpdateProgressBar()
 	if(m_bUseColor)
 	{
 		Fcolor curr;
-		curr.lerp							(m_minColor,m_middleColor,m_maxColor,fCurrentLength);
+		if (m_bUseMiddleColor)
+			curr.lerp							(m_minColor,m_middleColor,m_maxColor,fCurrentLength);
+		else
+			curr.lerp							(m_minColor,m_maxColor,fCurrentLength);
 		m_UIProgressItem.SetTextureColor	(curr.get());
 	}
 }

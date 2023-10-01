@@ -9,48 +9,61 @@
 class CUIAnimatedStatic: public CUIStatic
 {
 	typedef CUIStatic inherited;
-	// Количекство кадров анимации
+	// РљРѕР»РёС‡РµРєСЃС‚РІРѕ РєР°РґСЂРѕРІ Р°РЅРёРјР°С†РёРё
 	u32		m_uFrameCount;
-	// Текущий фрейм
+	// РўРµРєСѓС‰РёР№ С„СЂРµР№Рј
 	u32		m_uCurFrame;
-	// Размеры текстуры с анимацией в кадрах
+	// Р Р°Р·РјРµСЂС‹ С‚РµРєСЃС‚СѓСЂС‹ СЃ Р°РЅРёРјР°С†РёРµР№ РІ РєР°РґСЂР°С…
 	u32		m_uAnimRows, m_uAnimCols;
-	// Размеры кадра на тектуре
-	u32		m_uFrameWidth, m_uFrameHeight;
-	// Время показа всей анимации в ms.
+	// Р Р°Р·РјРµСЂС‹ РєР°РґСЂР° РЅР° С‚РµРєС‚СѓСЂРµ
+	float	m_uFrameWidth, m_uFrameHeight;
+	// Р’СЂРµРјСЏ РїРѕРєР°Р·Р° РІСЃРµР№ Р°РЅРёРјР°С†РёРё РІ ms.
 	u32		m_uAnimationDuration;
-	// Время прошедшее с начала анимации
+	// Р’СЂРµРјСЏ РїСЂРѕС€РµРґС€РµРµ СЃ РЅР°С‡Р°Р»Р° Р°РЅРёРјР°С†РёРё
 	u32		m_uTimeElapsed;
-	// флаг-признак необходимости пересчета статичных параметров анимации
+	// С„Р»Р°Рі-РїСЂРёР·РЅР°Рє РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РїРµСЂРµСЃС‡РµС‚Р° СЃС‚Р°С‚РёС‡РЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ Р°РЅРёРјР°С†РёРё
 	bool	m_bParamsChanged;
-	// Признак проигрывания анимации
+	// РџСЂРёР·РЅР°Рє РїСЂРѕРёРіСЂС‹РІР°РЅРёСЏ Р°РЅРёРјР°С†РёРё
 	bool	m_bPlaying;
 
 	Fvector2 m_pos;
 
 	u32		m_prevTime;
 
-	// Инициализация первого кадра
-	// Params:	frameNum	- номер кадра: [0..m_uFrameCount)
+	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРµСЂРІРѕРіРѕ РєР°РґСЂР°
+	// Params:	frameNum	- РЅРѕРјРµСЂ РєР°РґСЂР°: [0..m_uFrameCount)
 	void SetFrame(const u32 frameNum);
 public:
 	CUIAnimatedStatic();
 	
-	// Устанавливаем параметры
+	// РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїР°СЂР°РјРµС‚СЂС‹
 	void SetOffset(float x, float y)					{m_pos.set(x,y);};
 	void SetFramesCount(u32 frameCnt)					{ m_uFrameCount = frameCnt; m_bParamsChanged = true; }
 	void SetAnimCols(u32 animCols)						{ m_uAnimCols = animCols; m_bParamsChanged = true; }
 	void SetAnimationDuration(u32 animDur)				{ m_uAnimationDuration = animDur; m_bParamsChanged = true; }
-	void SetFrameDimentions(u32 frameW, u32 frameH)		{ m_uFrameHeight = frameH; m_uFrameWidth = frameW; m_bParamsChanged = true; }
-	// Управление
+	void SetFrameDimentions(float frameW, float frameH)	{ m_uFrameHeight = frameH; m_uFrameWidth = frameW; m_bParamsChanged = true; }
+	// РЈРїСЂР°РІР»РµРЅРёРµ
 	void Play()											{ m_bPlaying = true; m_prevTime = Device.dwTimeContinual;}
 	void Stop()											{ m_bPlaying = false; }
 	void Rewind(u32 delta = 0)							{ m_uCurFrame = 0xffffffff; m_uTimeElapsed = delta; }
 	void SetAnimPos(float pos);
-	// Флаг-признак циклического проигрывания
+	// Р¤Р»Р°Рі-РїСЂРёР·РЅР°Рє С†РёРєР»РёС‡РµСЃРєРѕРіРѕ РїСЂРѕРёРіСЂС‹РІР°РЅРёСЏ
 	bool m_bCyclic;
 
 	virtual void Update();
 };
 
+class CUISleepStatic: public CUIStatic
+{
+private:
+	typedef			CUIStatic inherited;
+
+	int				m_cur_time;
+	CUIStaticItem	m_UIStaticItem2;
+public:
+					CUISleepStatic();
+	virtual	void	Draw				();
+	virtual	void	Update				();
+	virtual void	InitTextureEx		(LPCSTR tex_name, LPCSTR sh_name="hud\\default");
+};
 #endif	//UI_ANIMATED_STATIC_H_

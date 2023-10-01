@@ -3,7 +3,7 @@
 //	Created by Roman E. Marchenko, vortex@gsc-game.kiev.ua
 //	Copyright 2004. GSC Game World
 //	---------------------------------------------------------------------------
-//  Статик для отображения анимированной иконки
+//  РЎС‚Р°С‚РёРє РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ Р°РЅРёРјРёСЂРѕРІР°РЅРЅРѕР№ РёРєРѕРЅРєРё
 //=============================================================================
 
 #include "stdafx.h"
@@ -36,10 +36,10 @@ void CUIAnimatedStatic::Update()
 
 	static u32 oneFrameDuration = 0;
 
-	// Пересчитаем пааметры анимации
+	// РџРµСЂРµСЃС‡РёС‚Р°РµРј РїР°Р°РјРµС‚СЂС‹ Р°РЅРёРјР°С†РёРё
 	if (m_bParamsChanged && 0 != m_uFrameCount)
 	{
-		// Пересчитаем время одного кадра
+		// РџРµСЂРµСЃС‡РёС‚Р°РµРј РІСЂРµРјСЏ РѕРґРЅРѕРіРѕ РєР°РґСЂР°
 		oneFrameDuration = iCeil(m_uAnimationDuration / static_cast<float>(m_uFrameCount));
 
 		SetFrame(0);
@@ -47,11 +47,11 @@ void CUIAnimatedStatic::Update()
 		m_bParamsChanged = false;
 	}
 
-	// Прибавляем время кадра
+	// РџСЂРёР±Р°РІР»СЏРµРј РІСЂРµРјСЏ РєР°РґСЂР°
 	m_uTimeElapsed += Device.dwTimeContinual - m_prevTime;
 	m_prevTime = Device.dwTimeContinual;
 
-	// Если анимация закончилась
+	// Р•СЃР»Рё Р°РЅРёРјР°С†РёСЏ Р·Р°РєРѕРЅС‡РёР»Р°СЃСЊ
 	if (m_uTimeElapsed > m_uAnimationDuration)
 	{
 		Rewind(0);
@@ -59,7 +59,7 @@ void CUIAnimatedStatic::Update()
 			Stop();
 	}
 
-	// Теперь вычисляем кадры в зависимости от времени
+	// РўРµРїРµСЂСЊ РІС‹С‡РёСЃР»СЏРµРј РєР°РґСЂС‹ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РІСЂРµРјРµРЅРё
 	u32 curFrame = m_uTimeElapsed / oneFrameDuration;
 
 	if (curFrame != m_uCurFrame)
@@ -89,4 +89,69 @@ void CUIAnimatedStatic::SetAnimPos(float pos){
 		m_uCurFrame = curFrame;
 		SetFrame(m_uCurFrame);
 	}
+}
+//-----------------------------------------------------------------------------------------
+//Static for sleep control-----------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+#include "../Actor_Flags.h"
+#include "../Level.h"
+#include "../date_time.h"
+#include "UITextureMaster.h"
+CUISleepStatic::CUISleepStatic():m_cur_time(0) 
+{
+};
+
+void CUISleepStatic::Draw()
+{
+//	inherited::Draw();
+	m_UIStaticItem.Render();
+	m_UIStaticItem2.Render();
+}
+
+void CUISleepStatic::Update()
+{
+	u32 year = 0, month = 0, day = 0, hours = 0, mins = 0, secs = 0, milisecs = 0;
+	split_time(Level().GetGameTime(), year, month, day, hours, mins, secs, milisecs);
+
+	u32 start_pixel = 0, end_pixel = 0, start_pixel2 = 0, end_pixel2 = 0;
+	hours += psActorSleepTime-1;
+	if(hours>=24)
+		hours -= 24;
+
+	start_pixel = hours*85;
+	end_pixel = (hours+7)*85;
+	if(end_pixel>2048)
+	{
+		end_pixel2 = end_pixel - 2048;
+		end_pixel = 2048;
+	}
+	
+	Fvector2 parent_pos = GetParent()->GetWndPos();
+	Fvector2 pos = GetWndPos();
+	pos.x += parent_pos.x;
+	pos.y += parent_pos.y;
+
+	Frect r = Frect().set((float)start_pixel, 0.0f, (float)end_pixel, 128.0f);
+	m_UIStaticItem.SetOriginalRect(r);
+	m_UIStaticItem.SetRect(0, 0, iFloor((end_pixel - start_pixel) * UI()->get_current_kx()), 128);
+	m_UIStaticItem.SetPos(pos.x, pos.y);
+	if(end_pixel2>0)
+	{
+		r.set((float)start_pixel2, 0.0f, (float)end_pixel2, 128.0f);
+		m_UIStaticItem2.SetOriginalRect(r);
+		m_UIStaticItem.SetRect(0, 0, iFloor(end_pixel2*UI()->get_current_kx()), 128);
+		m_UIStaticItem2.SetPos(m_UIStaticItem.GetPosX()+m_UIStaticItem.GetRect().width(), m_UIStaticItem.GetPosY());
+	}
+	else
+		m_UIStaticItem2.SetRect(0,0,1,1);
+
+}
+
+void CUISleepStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
+{
+	LPCSTR res_shname = UIRender->UpdateShaderName(tex_name, sh_name);
+	CUITextureMaster::InitTexture	(tex_name, res_shname, &m_UIStaticItem);
+	
+	Fvector2 p						= GetWndPos();
+	m_UIStaticItem.SetPos			(p.x, p.y);
 }

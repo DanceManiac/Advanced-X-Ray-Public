@@ -2515,7 +2515,12 @@ extern BOOL dbg_moving_bones_snd_player;
 #ifdef DEBUG
 	CMD4(CCC_Float,		"ai_smart_cover_animation_speed_factor",	&g_smart_cover_animation_speed_factor,	.1f, 10.f);
 	CMD4(CCC_Float,		"air_resistance_epsilon",	&air_resistance_epsilon,	.0f, 1.f);
+#endif // #ifdef DEBUG
 
+	CMD4(CCC_Integer,	"g_sleep_time",			&psActorSleepTime,			1,		24		);
+
+
+#ifdef DEBUG
 	//extern BOOL g_use_new_ballistics;
 	//CMD4(CCC_Integer,	"use_new_ballistics",	&g_use_new_ballistics, 0, 1);
 	extern float g_bullet_time_factor;

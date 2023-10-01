@@ -578,8 +578,13 @@ bool CUIXmlInit::InitProgressBar(CUIXml& xml_doc, LPCSTR path,
 
 		strconcat(sizeof(buf),buf,path,":middle_color");
 	
+		if (xml_doc.NavigateToNode(buf, 0))
+        {
 		color = GetColor	(xml_doc, buf, index, 0xff);
 		pWnd->m_middleColor.set(color);
+            pWnd->m_bUseMiddleColor = true;
+        }
+		
 
 		strconcat(sizeof(buf),buf,path,":max_color");
 	

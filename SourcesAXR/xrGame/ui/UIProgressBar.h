@@ -31,6 +31,7 @@ protected:
 	
 public:
 	bool				m_bUseColor;
+	bool 				m_bUseMiddleColor; // Hrust: optional middle color for CS/SoC compatibility, without middle color it doesn't looks correctly
 	Fcolor				m_minColor;
 	Fcolor				m_middleColor;
 	Fcolor				m_maxColor;
