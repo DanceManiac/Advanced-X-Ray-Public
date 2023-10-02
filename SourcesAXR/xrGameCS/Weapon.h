@@ -519,6 +519,7 @@ public:
 	BOOL					m_bHasTracers;
 	bool					m_bShowWpnStats;
 	bool					m_bEnableBoreDof;
+	bool					m_bUseAimSilShotAnim;
 	u8						m_u8TracerColorID;
 	u32						m_set_next_ammoType_on_reload;
 	// Multitype ammo support

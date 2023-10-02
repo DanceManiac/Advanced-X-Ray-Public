@@ -835,6 +835,7 @@ void CWeapon::Load(LPCSTR section)
 	m_bEnableBoreDof = READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_dof", true);
 	m_bUseAimAnmDirDependency = READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
 	m_bUseScopeAimMoveAnims = READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
+	m_bUseAimSilShotAnim = READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_silencer_shoot_anm", false);
 
 	if (repair_kits && repair_kits[0])
 	{
