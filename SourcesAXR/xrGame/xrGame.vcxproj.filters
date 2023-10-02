@@ -2503,6 +2503,12 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\Backpack">
       <UniqueIdentifier>{31c265cd-318f-4792-988a-c029e1c7b189}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Laser">
+      <UniqueIdentifier>{14e9c671-3d0a-43d2-a845-eca985bc9fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch">
+      <UniqueIdentifier>{744898a7-b82e-421a-8382-cf378c1792cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7455,6 +7461,9 @@
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
+    <ClInclude Include="LaserDesignator.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Laser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11166,6 +11175,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIArtefactPanel.cpp">
       <Filter>UI\Common\MainIngame</Filter>
+    </ClCompile>
+    <ClCompile Include="LaserDesignator.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Laser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -40,6 +40,7 @@
 #include "Scope.h"
 #include "Silencer.h"
 #include "GrenadeLauncher.h"
+#include "LaserDesignator.h"
 #include "WeaponMagazined.h"
 #include "WeaponMagazinedWGrenade.h"
 #include "Actor.h"
@@ -208,10 +209,12 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("weapon_is_grenadelauncher",	&CScriptGameObject::Weapon_IsGrenadeLauncherAttached)
 		.def("weapon_is_scope",				&CScriptGameObject::Weapon_IsScopeAttached)
 		.def("weapon_is_silencer",			&CScriptGameObject::Weapon_IsSilencerAttached)
+		.def("weapon_is_laser_designator",	&CScriptGameObject::Weapon_IsLaserDesignatorAttached)
 
 		.def("weapon_grenadelauncher_status",	&CScriptGameObject::Weapon_GrenadeLauncher_Status)
 		.def("weapon_scope_status",				&CScriptGameObject::Weapon_Scope_Status)
 		.def("weapon_silencer_status",			&CScriptGameObject::Weapon_Silencer_Status)
+		.def("weapon_laser_designator_status",	&CScriptGameObject::Weapon_LaserDesignator_Status)
 
 		.def("allow_sprint",				&CScriptGameObject::AllowSprint)
 
@@ -466,6 +469,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("cast_Scope",						&objectCast<CScope>)
 		.def("cast_Silencer",					&objectCast<CSilencer>)
 		.def("cast_GrenadeLauncher",			&objectCast<CGrenadeLauncher>)
+		.def("cast_LaserDesignator",			&objectCast<CLaserDesignator>)
 		.def("cast_WeaponMagazined",			&objectCast<CWeaponMagazined>)
 		.def("cast_SpaceRestrictor",			&objectCast<CSpaceRestrictor>)
 		.def("cast_Stalker",					&objectCast<CAI_Stalker>)
@@ -527,6 +531,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("is_scope",						&CScriptGameObject::IsScope)
 		.def("is_silencer",						&CScriptGameObject::IsSilencer)
 		.def("is_grenade_launcher",				&CScriptGameObject::IsGrenadeLauncher)
+		.def("is_laser_designator",				&CScriptGameObject::IsLaserDesignator)
 		.def("is_weapon_magazined",				&CScriptGameObject::IsWeaponMagazined)
 		.def("is_space_restrictor",				&CScriptGameObject::IsSpaceRestrictor)
 		.def("is_stalker",						&CScriptGameObject::IsStalker)

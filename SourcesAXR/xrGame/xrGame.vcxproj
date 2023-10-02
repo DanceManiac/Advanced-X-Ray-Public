@@ -1613,6 +1613,7 @@
     <ClInclude Include="killer_victim_velocity_angle.h" />
     <ClInclude Include="kills_store.h" />
     <ClInclude Include="kills_store_inline.h" />
+    <ClInclude Include="LaserDesignator.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Level_Bullet_Manager.h" />
     <ClInclude Include="level_changer.h" />
@@ -5630,6 +5631,7 @@
     </ClCompile>
     <ClCompile Include="killer_victim_velocity_angle.cpp" />
     <ClCompile Include="kills_store.cpp" />
+    <ClCompile Include="LaserDesignator.cpp" />
     <ClCompile Include="Level.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
@@ -5823,7 +5825,7 @@
     <ClCompile Include="MercuryBall.cpp" />
     <ClCompile Include="Message_Filter.cpp" />
     <ClCompile Include="MilitaryOutfit.cpp">
-    <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">pch_script.h</PrecompiledHeaderFile>

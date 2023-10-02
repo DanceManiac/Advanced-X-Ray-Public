@@ -2131,6 +2131,29 @@ inv_grid_x			= 17
 inv_grid_y			= 3
 grenade_vel 		= 32 ;76
 
+[wpn_addon_red_laser]:identity_immunities,red_laser
+GroupControlSection	= spawn_group
+discovery_dependency =
+$spawn				= "weapons\addons\laser_designator" ; option for Level Editor
+class				= WP_LASER
+cform           	= skeleton
+visual          	= dynamics\weapons\wpn_upgrade\wpn_silencer.ogf
+description			= st_addon_laser_descr
+$prefetch 			= 32
+slot = -1
+cost				= 200
+inv_name			= st_addon_laser
+inv_name_short		= st_addon_laser
+inv_weight			= 0.1
+
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x			= 18
+inv_grid_y			= 1
+
+laserdot_attach_bone = wpn_silencer ;;Заменить на подходящую кость оружия
+laser_ray_bones = wpn_silencer ;;Заменить на подходящую кость оружия
+
 ;;;;;;;;;;;;;Advanced scope settings;;;;;;;;;;;;;;;;
 
 [scope_detector]

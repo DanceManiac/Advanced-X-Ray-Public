@@ -148,11 +148,14 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 
 		eWeaponAddonLaserOn = 1<<3,
 		eWeaponAddonFlashlightOn = 1<<4,
+
+		eWeaponAddonLaserDesignator = 1<<5,
 	};
 
 	EWeaponAddonStatus				m_scope_status;
 	EWeaponAddonStatus				m_silencer_status;				
 	EWeaponAddonStatus				m_grenade_launcher_status;
+	EWeaponAddonStatus				m_laser_designator_status;
 
 	u32								timestamp;
 	u8								wpn_flags;

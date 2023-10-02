@@ -187,14 +187,17 @@ public:
 			bool IsGrenadeLauncherAttached	() const;
 			bool IsScopeAttached			() const;
 			bool IsSilencerAttached			() const;
+			bool IsLaserAttached			() const;
 
 	virtual bool GrenadeLauncherAttachable();
 	virtual bool ScopeAttachable();
 	virtual bool SilencerAttachable();
+	virtual bool LaserAttachable();
 			
 	ALife::EWeaponAddonStatus	get_GrenadeLauncherStatus	() const { return m_eGrenadeLauncherStatus; }
 	ALife::EWeaponAddonStatus	get_ScopeStatus				() const { return m_eScopeStatus; }
 	ALife::EWeaponAddonStatus	get_SilencerStatus			() const { return m_eSilencerStatus; }
+	ALife::EWeaponAddonStatus	get_LaserDesignatorStatus	() const { return m_eLaserDesignatorStatus; }
 
 	virtual bool UseScopeTexture() {return true;};
 
@@ -217,10 +220,13 @@ public:
 	int	GetSilencerY() {return m_iSilencerY;}
 	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
 	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
+	int	GetLaserDesignatorX() {return m_iLaserX;}
+	int	GetLaserDesignatorY() {return m_iLaserY;}
 
 	const shared_str& GetGrenadeLauncherName	() const {return m_sGrenadeLauncherName;}
 	const shared_str GetScopeName				() const;
 	const shared_str& GetSilencerName			() const {return m_sSilencerName;}
+	const shared_str& GetLaserName				() const {return m_sLaserName;}
 
 	IC void	ForceUpdateAmmo						()		{ m_dwAmmoCurrentCalcFrame = 0; }
 
@@ -234,11 +240,13 @@ protected:
 	ALife::EWeaponAddonStatus	m_eScopeStatus;
 	ALife::EWeaponAddonStatus	m_eSilencerStatus;
 	ALife::EWeaponAddonStatus	m_eGrenadeLauncherStatus;
+	ALife::EWeaponAddonStatus	m_eLaserDesignatorStatus;
 
 	//названия секций подключаемых аддонов
 	shared_str		m_sScopeName;
 	shared_str		m_sSilencerName;
 	shared_str		m_sGrenadeLauncherName;
+	shared_str		m_sLaserName;
 
 	shared_str		m_sWpn_scope_bone;
 	shared_str		m_sWpn_silencer_bone;
@@ -255,6 +263,7 @@ protected:
 	int	m_iScopeX, m_iScopeY;
 	int	m_iSilencerX, m_iSilencerY;
 	int	m_iGrenadeLauncherX, m_iGrenadeLauncherY;
+	int m_iLaserX, m_iLaserY;
 
 	RStringVec		m_defShownBones;
 	RStringVec		m_defHiddenBones;
@@ -612,7 +621,7 @@ public:
 	}
 	inline bool IsLaserOn() const
 	{
-		return m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserOn && m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator);
 	}
 
 private:

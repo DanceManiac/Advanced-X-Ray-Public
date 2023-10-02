@@ -72,6 +72,7 @@ void CSE_ALifeObject::spawn_supplies		(LPCSTR ini_string)
                     bool bScope = false;
                     bool bSilencer = false;
                     bool bLauncher = false;
+                    bool bLaser = false;
                     float f_cond = 1.0f;
                     int i_ammo_type = 0, n = 0;
                     int cur_scope = 0;
@@ -95,6 +96,7 @@ void CSE_ALifeObject::spawn_supplies		(LPCSTR ini_string)
                         bScope = (NULL != strstr(V, "scope"));
                         bSilencer = (NULL != strstr(V, "silencer"));
                         bLauncher = (NULL != strstr(V, "launcher"));
+                        bLaser = (NULL != strstr(V, "laser"));
 
                         if (NULL != strstr(V, "ammo_type="))
                             i_ammo_type = atoi(strstr(V, "ammo_type=") + 10);
@@ -118,6 +120,8 @@ void CSE_ALifeObject::spawn_supplies		(LPCSTR ini_string)
                             W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonSilencer, bSilencer);
                         if (W->m_grenade_launcher_status == ALife::eAddonAttachable)
                             W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher, bLauncher);
+                        if (W->m_laser_designator_status == ALife::eAddonAttachable)
+                            W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
 
                         //spawn count box(es) of the correct ammo for weapon
                         if (pSettings->line_exist(itmSection, "ammo_class"))
@@ -169,6 +173,7 @@ void CSE_ALifeObject::spawn_supplies		(LPCSTR ini_string)
                 bool bScope = false;
                 bool bSilencer = false;
                 bool bLauncher = false;
+                bool bLaser = false;
                 int cur_scope = 0;
 
                 j = 1;
@@ -184,6 +189,8 @@ void CSE_ALifeObject::spawn_supplies		(LPCSTR ini_string)
                     bScope = nullptr != strstr(V, "scope");
                     bSilencer = nullptr != strstr(V, "silencer");
                     bLauncher = nullptr != strstr(V, "launcher");
+                    bLaser = nullptr != strstr(V, "laser");
+
                     // probability
                     if (nullptr != strstr(V, "prob="))
                         p = static_cast<float>(atof(strstr(V, "prob=") + 5));
@@ -212,6 +219,8 @@ void CSE_ALifeObject::spawn_supplies		(LPCSTR ini_string)
                                 W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonSilencer, bSilencer);
                             if (W->m_grenade_launcher_status == ALife::eAddonAttachable)
                                 W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher, bLauncher);
+                            if (W->m_laser_designator_status == ALife::eAddonAttachable)
+                                W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
                         }
                         CSE_ALifeInventoryItem* IItem = smart_cast<CSE_ALifeInventoryItem*>(E);
                         if (IItem)

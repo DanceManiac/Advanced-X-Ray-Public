@@ -1543,6 +1543,7 @@
     <ClInclude Include="item_manager.h" />
     <ClInclude Include="item_manager_inline.h" />
     <ClInclude Include="key_binding_registrator.h" />
+    <ClInclude Include="LaserDesignator.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Level_Bullet_Manager.h" />
     <ClInclude Include="level_changer.h" />
@@ -5607,6 +5608,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="LaserDesignator.cpp" />
     <ClCompile Include="Level.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>

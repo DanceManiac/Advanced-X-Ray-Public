@@ -2593,6 +2593,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Backpack">
       <UniqueIdentifier>{8caba069-1dbe-43a3-988b-86291895f099}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator">
+      <UniqueIdentifier>{a66a71b1-b439-4c98-a76e-3f88af554c10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7556,6 +7559,9 @@
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
+    <ClInclude Include="LaserDesignator.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11279,6 +11285,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIArtefactPanel.cpp">
       <Filter>UI\Common\MainIngame</Filter>
+    </ClCompile>
+    <ClCompile Include="LaserDesignator.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

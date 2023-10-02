@@ -1222,6 +1222,17 @@ int CScriptGameObject::Weapon_Silencer_Status()
 	return (int)weapon->get_SilencerStatus();
 }
 
+int CScriptGameObject::Weapon_LaserDesignator_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_LaserDesignator_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_LaserDesignatorStatus();
+}
+
 bool CScriptGameObject::Weapon_IsGrenadeLauncherAttached()
 {
 	CWeapon*	weapon = smart_cast<CWeapon*>( &object() );
@@ -1253,6 +1264,17 @@ bool CScriptGameObject::Weapon_IsSilencerAttached()
 		return								(false);
 	}
 	return weapon->IsSilencerAttached();
+}
+
+bool CScriptGameObject::Weapon_IsLaserDesignatorAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsLaserDesignatorAttached!");
+		return								(false);
+	}
+	return weapon->IsLaserAttached();
 }
 
 void  CScriptGameObject::AllowSprint(bool b)

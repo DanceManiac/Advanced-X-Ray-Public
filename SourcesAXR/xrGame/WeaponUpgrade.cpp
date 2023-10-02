@@ -319,6 +319,33 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 		}
 	}
 	result |= result2;
+
+	temp_int = (int)m_eLaserDesignatorStatus;
+	result2 = process_if_exists_set( section, "laser_designator_status", &CInifile::r_s32, temp_int, test );
+	if ( result2 && !test )
+	{
+		m_eLaserDesignatorStatus = (ALife::EWeaponAddonStatus)temp_int;
+		if ( m_eLaserDesignatorStatus == ALife::eAddonAttachable || m_eLaserDesignatorStatus == ALife::eAddonPermanent )
+		{
+			m_sLaserName	= pSettings->r_string( section, "laser_designator_name" );
+
+			if (GameConstants::GetUseHQ_Icons())
+			{
+				m_iLaserX = pSettings->r_s32(section, "laser_designator_x") * 2;
+				m_iLaserY = pSettings->r_s32(section, "laser_designator_y") * 2;
+			}
+			else
+			{
+				m_iLaserX = pSettings->r_s32(section, "laser_designator_x");
+				m_iLaserY = pSettings->r_s32(section, "laser_designator_y");
+			}
+
+			if(m_eLaserDesignatorStatus == ALife::eAddonPermanent)
+				InitAddons();
+		}
+	}
+	result |= result2;
+
 	return result;
 }
 

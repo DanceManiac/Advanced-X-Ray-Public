@@ -7,6 +7,7 @@
 #include "scope.h"
 #include "silencer.h"
 #include "GrenadeLauncher.h"
+#include "LaserDesignator.h"
 #include "inventory.h"
 #include "xrserver_objects_alife_items.h"
 #include "ActorEffector.h"
@@ -1143,6 +1144,7 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 	CScope*				pScope = smart_cast<CScope*>(pIItem);
 	CSilencer*			pSilencer = smart_cast<CSilencer*>(pIItem);
 	CGrenadeLauncher*	pGrenadeLauncher = smart_cast<CGrenadeLauncher*>(pIItem);
+	CLaserDesignator*	pLaser = smart_cast<CLaserDesignator*>(pIItem);
 
 	if (pScope &&
 		m_eScopeStatus == ALife::eAddonAttachable &&
@@ -1174,6 +1176,11 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 		m_eGrenadeLauncherStatus == ALife::eAddonAttachable &&
 		(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 &&
 		(m_sGrenadeLauncherName == pIItem->object().cNameSect()))
+		return true;
+	else if (pLaser &&
+		m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
+		(m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
+		(m_sLaserName == pIItem->object().cNameSect()))
 		return true;
 	else
 		return inherited::CanAttach(pIItem);
@@ -1210,6 +1217,10 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 		0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
 		(m_sGrenadeLauncherName == item_section_name))
 		return true;
+	else if (m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) &&
+		(m_sLaserName == item_section_name))
+		return true;
 	else
 		return inherited::CanDetach(item_section_name);
 }
@@ -1221,6 +1232,7 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 	CScope*				pScope = smart_cast<CScope*>(pIItem);
 	CSilencer*			pSilencer = smart_cast<CSilencer*>(pIItem);
 	CGrenadeLauncher*	pGrenadeLauncher = smart_cast<CGrenadeLauncher*>(pIItem);
+	CLaserDesignator*	pLaser = smart_cast<CLaserDesignator*>(pIItem);
 
 	if (pScope &&
 		m_eScopeStatus == ALife::eAddonAttachable &&
@@ -1258,6 +1270,14 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 		(m_sGrenadeLauncherName == pIItem->object().cNameSect()))
 	{
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
+		result = true;
+	}
+	else if (pLaser &&
+		m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
+		(m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
+		(m_sLaserName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
 		result = true;
 	}
 
@@ -1326,6 +1346,20 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 			return true;
 		}
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if(m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
+			(m_sLaserName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0)
+		{
+			Msg("ERROR: laser designator addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
 
 		UpdateAddonsVisibility();
 		InitAddons();
