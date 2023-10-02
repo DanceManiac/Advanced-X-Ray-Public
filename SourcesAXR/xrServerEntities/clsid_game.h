@@ -186,6 +186,7 @@
 #define CLSID_IITEM_AFILTER			MK_CLSID('D','_','F','I','L','T','E','R')
 #define CLSID_IITEM_DREPKIT			MK_CLSID('D','_','R','E','P','K','I','T')
 #define CLSID_IITEM_DAFCONT			MK_CLSID('D','_','A','F','C','O','N','T')
+#define CLSID_IITEM_DSLEBAG			MK_CLSID('D','_','S','L','E','B','A','G')
 
 // Info Document
 #define CLSID_IITEM_DOCUMENT		MK_CLSID('I','I','_','D','O','C',' ',' ')

@@ -120,6 +120,11 @@ function devices_check_surge()
 	end
 end
 
+function sleeping_bag_sleep()
+	ui_sleep_dialog.sleep()
+	give_info("sleep_active")
+end
+
 -- 'Для команды g_task. Не трогать!
 function g_task_script(task)
 	task_manager.get_task_manager():give_task(task)

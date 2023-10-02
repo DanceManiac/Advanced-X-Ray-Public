@@ -42,6 +42,10 @@
 		<texture id="ui_inGame2_detector_highlighter" x="307" y="820" width="96" height="48" />
 		<texture id="ui_inGame2_quick_item_highlighter" x="410" y="549" width="66" height="59" />
 		<texture id="ui_inGame2_artefakt_highlighter" x="410" y="614" width="52" height="52" />
+    	<texture id="ui_inGame2_panorama_window" x="0" y="273" width="601" height="122" />
+		<texture id="ui_inGame2_sky_panorama" x="0" y="413" width="591" height="118" />
+		<texture id="ui_inGame2_message_box" x="0" y="0" width="677" height="267" />
+		<texture id="ui_inGame2_marker" x="624" y="277" width="30" height="118" />
 
    </file>
 </w>

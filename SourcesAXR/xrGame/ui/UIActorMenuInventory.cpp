@@ -39,6 +39,7 @@
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
 #include "../ArtefactContainer.h"
+#include "../SleepingBag.h"
 
 #include "../actor_defs.h"
 #include "../Actor.h"
@@ -938,6 +939,18 @@ bool CUIActorMenu::TryUseItem( CUICellItem* cell_itm )
 	CBattery*		pBattery		= smart_cast<CBattery*>		(item);
 	CAntigasFilter* pFilter			= smart_cast<CAntigasFilter*>(item);
 	CRepairKit*		pRepairKit		= smart_cast<CRepairKit*>	(item);
+	CSleepingBag*	pSleepingBag	= smart_cast<CSleepingBag*>	(item);
+
+	if (pSleepingBag)
+	{
+		pSleepingBag->StartSleep();
+
+		PlaySnd(eItemUse);
+		cell_itm->Update();
+		SetCurrentItem(NULL);
+
+		return true;
+	}
 
 	if ( !(pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery || pFilter || pRepairKit) )
 	{
@@ -1366,6 +1379,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CRepairKit*		pRepairKit		= smart_cast<CRepairKit*>	(item);
 	CArtefactContainer*	pAfContainer	= smart_cast<CArtefactContainer*>(item);
 	CArtefact*		pArtefact		= smart_cast<CArtefact*>	(item);
+	CSleepingBag*	pSleepingBag	= smart_cast<CSleepingBag*>	(item);
 
 	CInventory*	inv	= &m_pActorInvOwner->inventory();
 	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
@@ -1579,6 +1593,11 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 				b_show = true;
 			}
 		}
+	}
+	else if (pSleepingBag)
+	{
+		m_UIPropertiesBox->AddItem("st_use", NULL, INVENTORY_SLEEP_ACTION);
+		b_show = true;
 	}
 	else if ( pEatableItem )
 	{
@@ -1947,6 +1966,17 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			af_container->TakeArtefactFromContainer(artefact);
 
 			m_ItemInfo->ResetInventoryItem();
+
+			break;
+		}
+	case INVENTORY_SLEEP_ACTION:
+		{
+			CSleepingBag* sleeping_bag = smart_cast<CSleepingBag*>(item);
+
+			if (!sleeping_bag)
+				break;
+
+			sleeping_bag->StartSleep();
 
 			break;
 		}

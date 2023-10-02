@@ -2532,6 +2532,9 @@
     <Filter Include="Physics\scripts">
       <UniqueIdentifier>{787994b2-a261-44e8-a09c-8c514815f75d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\SleepingBag">
+      <UniqueIdentifier>{07269ab8-75de-41e4-9c7c-4e139a20481a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7338,6 +7341,8 @@
     </ClInclude>
     <ClInclude Include="..\xrGame\doors_manager.h">
       <Filter>AI\AComponents\doors_manager\manager</Filter>
+    <ClInclude Include="SleepingBag.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -10941,6 +10946,8 @@
     </ClCompile>
     <ClCompile Include="WeaponAttaches.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    <ClCompile Include="SleepingBag.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

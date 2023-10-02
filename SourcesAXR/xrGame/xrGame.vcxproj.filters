@@ -2508,6 +2508,8 @@
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch">
       <UniqueIdentifier>{744898a7-b82e-421a-8382-cf378c1792cf}</UniqueIdentifier>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\SleepingBag">
+      <UniqueIdentifier>{70f86cf5-7b04-477e-87b5-b7b2aebd8ed3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -7469,6 +7471,8 @@
     </ClInclude>
     <ClInclude Include="WeaponAttaches.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    <ClInclude Include="SleepingBag.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -11190,6 +11194,8 @@
     </ClCompile>
     <ClCompile Include="WeaponAttaches.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    <ClCompile Include="SleepingBag.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

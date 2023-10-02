@@ -1942,6 +1942,7 @@
     <ClInclude Include="Silencer.h" />
     <ClInclude Include="silent_shots.h" />
     <ClInclude Include="SimpleDetector.h" />
+    <ClInclude Include="SleepingBag.h" />
     <ClInclude Include="smart_cover.h" />
     <ClInclude Include="smart_cover_action.h" />
     <ClInclude Include="smart_cover_action_inline.h" />
@@ -7337,6 +7338,7 @@
     <ClCompile Include="Silencer.cpp" />
     <ClCompile Include="silent_shots.cpp" />
     <ClCompile Include="SimpleDetector.cpp" />
+    <ClCompile Include="SleepingBag.cpp" />
     <ClCompile Include="smart_cover.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>

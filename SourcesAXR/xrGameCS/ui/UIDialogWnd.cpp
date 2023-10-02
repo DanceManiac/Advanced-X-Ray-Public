@@ -179,3 +179,18 @@ void CUIDialogWnd::Update()
 }
 
 CDialogHolder* CurrentDialogHolder();
+
+void CUIDialogWnd::ShowDialog1(bool bDoHideIndicators)
+{
+	if(!IsShown())
+		CurrentDialogHolder()->StartStopMenu(this,bDoHideIndicators);
+}
+
+void CUIDialogWnd::HideDialog1()
+{
+	if (g_statHint->IsShown())
+		g_statHint->Discard();
+
+	if (IsShown() && GetHolder())
+		GetHolder()->StartStopMenu(this, false);
+}

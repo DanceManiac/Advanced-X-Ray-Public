@@ -42,6 +42,10 @@ CGameFont* GetFontLetterica25()
 int GetARGB(u16 a, u16 r, u16 g, u16 b)
 {return color_argb(a,r,g,b);}
 
+const Fvector2* get_wnd_pos(CUIWindow* w)
+{
+	return &w->GetWndPos();
+}
 
 Frect	get_texture_rect(LPCSTR icon_name)
 {
@@ -95,6 +99,7 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetWndRect",				(void (CUIWindow::*)(Frect))	&CUIWindow::SetWndRect_script)
 		.def("SetWndPos",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndPos_script)
 		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
+		.def("GetWndPos",				&get_wnd_pos)
 		.def("GetWidth",				&CUIWindow::GetWidth)
 		.def("SetWidth",				&CUIWindow::SetWidth)
 		.def("GetHeight",				&CUIWindow::GetHeight)
@@ -122,6 +127,8 @@ void CUIWindow::script_register(lua_State *L)
 		.def("RemoveDialogToRender",	&CDialogHolder::RemoveDialogToRender),
 
 		class_<CUIDialogWnd, CUIWindow>("CUIDialogWnd")
+		.def("HideDialog",				&CUIDialogWnd::HideDialog1)
+		.def("ShowDialog",				&CUIDialogWnd::ShowDialog1)
 		.def("GetHolder",				&CUIDialogWnd::GetHolder)
 		.def("SetHolder",				&CUIDialogWnd::SetHolder),
 

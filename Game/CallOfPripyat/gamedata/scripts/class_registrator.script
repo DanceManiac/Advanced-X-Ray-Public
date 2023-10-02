@@ -129,6 +129,7 @@ function register(object_factory)
 	cs_register	(object_factory, "CAntigasFilter",  			"se_item.se_item",						"S_FILTE",			"obj_filter_s")
 	cs_register	(object_factory, "CRepairKit",  				"se_item.se_item",						"S_REPKI",			"obj_remkit_s")
 	cs_register	(object_factory, "CArtefactContainer",  		"se_item.se_item",						"S_AFCON",			"obj_af_container_s")
+	cs_register	(object_factory, "CSleepingBag",  				"se_item.se_item",						"S_SLBAG",			"obj_sleeping_bag_s")
 	-- INVENTORY BOX ---------------------------------------------------------------------------------------------------------------------
 
 	cs_register (object_factory, "CInventoryBox",				"se_item.se_invbox",					"S_INVBOX",			"inventory_box_s")

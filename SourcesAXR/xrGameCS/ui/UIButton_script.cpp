@@ -52,5 +52,8 @@ void CUIButton::script_register(lua_State *L)
 		.def("SetCheck",				&CUITrackBar::SetCheck)
 		.def("GetIValue",				&CUITrackBar::GetIValue)
 		.def("GetFValue",				&CUITrackBar::GetFValue)
+		.def("SetOptIBounds",			&CUITrackBar::SetOptIBounds)
+		.def("SetOptFBounds",			&CUITrackBar::SetOptFBounds)
+		.def("SetCurrentValue",			&CUITrackBar::SetCurrentValue)
 	];
 }

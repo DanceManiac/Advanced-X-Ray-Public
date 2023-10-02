@@ -732,4 +732,10 @@
 	<string id="st_alt_aim_switched_off">
 		<text>Режим прицеливания: Оптика</text>
 	</string>
+	<string id="st_sleep_hours">
+		<text>ч</text>
+	</string>
+	<string id="sleep_ok_button">
+		<text>Спать</text>
+	</string>
 </string_table>
