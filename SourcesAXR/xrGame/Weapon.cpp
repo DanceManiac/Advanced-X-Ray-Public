@@ -757,10 +757,15 @@ void CWeapon::Load		(LPCSTR section)
 	else
 		m_sWpn_launcher_bone = wpn_launcher_def_bone;
 
-	m_sWpn_laser_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_ray_bones", wpn_laser_def_bone);
-	m_sWpn_flashlight_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_cone_bones", wpn_torch_def_bone);
-	m_sHud_wpn_laser_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "laser_ray_bones", m_sWpn_laser_bone);
-	m_sHud_wpn_flashlight_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "torch_cone_bones", m_sWpn_flashlight_bone);
+	//Кости самих аддонов
+	m_sWpn_laser_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_attach_bone", wpn_laser_def_bone);
+	m_sWpn_flashlight_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_attach_bone", wpn_torch_def_bone);
+
+	//Кости для эффектов
+	m_sWpn_laser_ray_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_ray_bones", "");
+	m_sWpn_flashlight_cone_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_cone_bones", "");
+	m_sHud_wpn_laser_ray_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "laser_ray_bones", m_sWpn_laser_ray_bone);
+	m_sHud_wpn_flashlight_cone_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "torch_cone_bones", m_sWpn_flashlight_cone_bone);
 
 	auto LoadBoneNames = [](pcstr section, pcstr line, RStringVec& list)
 	{
@@ -2146,8 +2151,8 @@ void CWeapon::UpdateHUDAddonsVisibility()
 		if (m_eLaserDesignatorStatus == ALife::eAddonPermanent)
 			SetBoneVisible(m_sWpn_laser_bone, TRUE);
 
-	if (m_sHud_wpn_laser_bone.size() && has_laser)
-		SetBoneVisible(m_sHud_wpn_laser_bone, IsLaserOn());
+	if (m_sHud_wpn_laser_ray_bone.size() && has_laser)
+		SetBoneVisible(m_sHud_wpn_laser_ray_bone, IsLaserOn());
 
 	if (TacticalTorchAttachable())
 	{
@@ -2161,8 +2166,8 @@ void CWeapon::UpdateHUDAddonsVisibility()
 		if (m_eTacticalTorchStatus == ALife::eAddonPermanent)
 			SetBoneVisible(m_sWpn_laser_bone, TRUE);
 
-	if (m_sHud_wpn_flashlight_bone.size() && has_flashlight)
-		SetBoneVisible(m_sHud_wpn_flashlight_bone, IsFlashlightOn());
+	if (m_sHud_wpn_flashlight_cone_bone.size() && has_flashlight)
+		SetBoneVisible(m_sHud_wpn_flashlight_cone_bone, IsFlashlightOn());
 }
 
 void CWeapon::UpdateAddonsVisibility()
@@ -2259,6 +2264,7 @@ void CWeapon::UpdateAddonsVisibility()
 //		Log("gl", pWeaponVisual->LL_GetBoneVisible			(bone_id));
 	}
 
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_bone);
 	if (LaserAttachable())
 	{
 		if (IsLaserAttached())
@@ -2278,6 +2284,7 @@ void CWeapon::UpdateAddonsVisibility()
 		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
 	}
 
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_flashlight_bone);
 	if (TacticalTorchAttachable())
 	{
 		if (IsTacticalTorchAttached())
@@ -2297,9 +2304,9 @@ void CWeapon::UpdateAddonsVisibility()
 		//		Log("tactical torch", pWeaponVisual->LL_GetBoneVisible	(bone_id));
 	}
 
-	if (m_sWpn_laser_bone.size() && has_laser)
+	if (m_sWpn_laser_ray_bone.size() && has_laser)
 	{
-		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_bone);
+		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_ray_bone);
 
 		if (bone_id != BI_NONE) 
 		{
@@ -2313,9 +2320,9 @@ void CWeapon::UpdateAddonsVisibility()
 
 	///////////////////////////////////////////////////////////////////
 
-	if (m_sWpn_flashlight_bone.size() && has_flashlight)
+	if (m_sWpn_flashlight_cone_bone.size() && has_flashlight)
 	{
-		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_flashlight_bone);
+		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_flashlight_cone_bone);
 
 		if (bone_id != BI_NONE) 
 		{

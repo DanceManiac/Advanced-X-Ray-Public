@@ -261,8 +261,10 @@ protected:
 	shared_str		m_sWpn_launcher_bone;
 	shared_str		m_sWpn_laser_bone;
 	shared_str		m_sWpn_flashlight_bone;
-	shared_str		m_sHud_wpn_laser_bone;
-	shared_str		m_sHud_wpn_flashlight_bone;
+	shared_str		m_sWpn_laser_ray_bone;
+	shared_str		m_sWpn_flashlight_cone_bone;
+	shared_str		m_sHud_wpn_laser_ray_bone;
+	shared_str		m_sHud_wpn_flashlight_cone_bone;
 
 	xr_vector<shared_str> m_all_scope_bones;
 	shared_str		m_cur_scope_bone;
