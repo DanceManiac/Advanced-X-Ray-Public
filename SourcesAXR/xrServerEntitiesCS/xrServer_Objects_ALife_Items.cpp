@@ -500,6 +500,7 @@ CSE_ALifeItemWeapon::CSE_ALifeItemWeapon	(LPCSTR caSection) : CSE_ALifeItem(caSe
 	m_silencer_status			=	(EWeaponAddonStatus)pSettings->r_s32(s_name,"silencer_status");
 	m_grenade_launcher_status	=	(EWeaponAddonStatus)pSettings->r_s32(s_name,"grenade_launcher_status");
 	m_laser_designator_status	=	(EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "laser_designator_status", 0);
+	m_tactical_torch_status		=	(EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, s_name, "tactical_torch_status", 0);
 	m_ef_main_weapon_type		= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_main_weapon_type",u32(-1));
 	m_ef_weapon_type			= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_weapon_type",u32(-1));
 }
@@ -654,6 +655,9 @@ void CSE_ALifeItemWeapon::FillProps			(LPCSTR pref, PropItemVec& items)
 
 	if (m_laser_designator_status == ALife::eAddonAttachable)
 		PHelper().CreateFlag8	(items, PrepareKey(pref, *s_name, "Addons\\LaserDesignator"), &m_addon_flags, eWeaponAddonLaserDesignator);
+
+	if (m_tactical_torch_status == ALife::eAddonAttachable)
+		PHelper().CreateFlag8	(items, PrepareKey(pref, *s_name, "Addons\\TacticalTorch"), &m_addon_flags, eWeaponAddonTacticalTorch);
 }
 #endif // #ifndef XRGAME_EXPORTS
 

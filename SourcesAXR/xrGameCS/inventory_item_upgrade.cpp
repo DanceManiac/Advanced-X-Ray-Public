@@ -232,6 +232,10 @@ void CInventoryItem::pre_install_upgrade()
 		{
 			weapon->Detach(weapon->GetLaserName().c_str(), true);
 		}
+		if (weapon->TacticalTorchAttachable() && weapon->IsTacticalTorchAttached())
+		{
+			weapon->Detach(weapon->GetTacticalTorchName().c_str(), true);
+		}
 		return;
 	}
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(this);

@@ -699,4 +699,19 @@
 	<string id="st_attach_laser_to_rifle">
 		<text>Присоединить ЛЦУ к винтовке</text>
 	</string>
+	<string id="st_addon_tactical_torch">
+		<text>Тактический фонарик</text>
+	</string>
+	<string id="st_addon_tactical_torch_descr">
+		<text>Тактический фонарик.</text>
+	</string>
+	<string id="st_detach_tactical_torch">
+		<text>Отсоединить тактический фонарик</text>
+	</string>
+	<string id="st_attach_tactical_torch_to_pistol">
+		<text>Присоединить тактический фонарик к пистолету</text>
+	</string>
+	<string id="st_attach_tactical_torch_to_rifle">
+		<text>Присоединить тактический фонарик к винтовке</text>
+	</string>
 </string_table>

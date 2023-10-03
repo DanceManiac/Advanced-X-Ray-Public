@@ -18,6 +18,7 @@
 #include "../Scope.h"
 #include "../GrenadeLauncher.h"
 #include "../LaserDesignator.h"
+#include "../TacticalTorch.h"
 #include "../trade_parameters.h"
 #include "../ActorHelmet.h"
 #include "../CustomOutfit.h"
@@ -1016,6 +1017,13 @@ bool CUIActorMenu::highlight_addons_for_weapon( PIItem weapon_item, CUICellItem*
 		return true;
 	}
 
+	CTacticalTorch* pTacticalTorch = smart_cast<CTacticalTorch*>(item);
+	if (pTacticalTorch && weapon_item->CanAttach(pTacticalTorch))
+	{
+		ci->m_select_armament = true;
+		return true;
+	}
+
 	return false;
 }
 
@@ -1028,8 +1036,9 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(addon_item);
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(addon_item);
 	CLaserDesignator*	pLaser				= smart_cast<CLaserDesignator*>	(addon_item);
+	CTacticalTorch*		pTacticalTorch		= smart_cast<CTacticalTorch*>	(addon_item);
 
-	if ( !pScope && !pSilencer && !pGrenadeLauncher && !pLaser )
+	if (!pScope && !pSilencer && !pGrenadeLauncher && !pLaser && !pTacticalTorch)
 	{
 		return;
 	}
@@ -1065,6 +1074,11 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 			continue;
 		}
 		if ( pLaser && weapon->CanAttach(pLaser) )
+		{
+			ci->m_select_armament = true;
+			continue;
+		}
+		if (pTacticalTorch && weapon->CanAttach(pTacticalTorch))
 		{
 			ci->m_select_armament = true;
 			continue;

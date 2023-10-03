@@ -21,6 +21,7 @@
 #include "../scope.h"
 #include "../grenadelauncher.h"
 #include "../LaserDesignator.h"
+#include "../TacticalTorch.h"
 #include "../Artefact.h"
 #include "../eatable_item.h"
 #include "../BottleItem.h"
@@ -948,6 +949,11 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 		m_UIPropertiesBox->AddItem("st_detach_laser", NULL, INVENTORY_DETACH_LASER_ADDON);
 		b_show			= true;
 	}
+	if (pWeapon->TacticalTorchAttachable() && pWeapon->IsTacticalTorchAttached())
+	{
+		m_UIPropertiesBox->AddItem("st_detach_tactical_torch", NULL, INVENTORY_DETACH_TACTICAL_TORCH_ADDON);
+		b_show = true;
+	}
 
 	if ( smart_cast<CWeaponMagazined*>(pWeapon) && IsGameTypeSingle() )
 	{
@@ -980,6 +986,7 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(item);
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(item);
 	CLaserDesignator*	pLaser				= smart_cast<CLaserDesignator*>	(item);
+	CTacticalTorch*		pTacticalTorch		= smart_cast<CTacticalTorch*>	(item);
 	CInventory*			inv					= &m_pActorInvOwner->inventory();
 
 	if ( pScope )
@@ -1038,6 +1045,22 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		{
 			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
 			m_UIPropertiesBox->AddItem("st_attach_laser_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+	}
+
+	if (pTacticalTorch)
+	{
+		if (inv->m_slots[PISTOL_SLOT].m_pIItem && inv->m_slots[PISTOL_SLOT].m_pIItem->CanAttach(pTacticalTorch))
+		{
+			PIItem tgt = inv->m_slots[PISTOL_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("st_attach_tactical_torch_to_pistol", (void*)tgt, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (inv->m_slots[RIFLE_SLOT].m_pIItem && inv->m_slots[RIFLE_SLOT].m_pIItem->CanAttach(pTacticalTorch))
+		{
+			PIItem tgt = inv->m_slots[RIFLE_SLOT].m_pIItem;
+			m_UIPropertiesBox->AddItem("st_attach_tactical_torch_to_rifle", (void*)tgt, INVENTORY_ATTACH_ADDON);
 			b_show = true;
 		}
 	}
@@ -1319,6 +1342,12 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 		if (weapon)
 		{
 			DetachAddon(weapon->GetLaserName().c_str());
+		}
+		break;
+	case INVENTORY_DETACH_TACTICAL_TORCH_ADDON:
+		if (weapon)
+		{
+			DetachAddon(weapon->GetTacticalTorchName().c_str());
 		}
 		break;
 	case INVENTORY_RELOAD_MAGAZINE:

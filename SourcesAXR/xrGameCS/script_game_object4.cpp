@@ -43,6 +43,7 @@
 #include "torch.h"
 #include "GrenadeLauncher.h"
 #include "LaserDesignator.h"
+#include "TacticalTorch.h"
 #include "searchlight.h"
 #include "eatable_item.h"
 #include "FoodItem.h"
@@ -354,6 +355,7 @@ TEST_OBJECT_CLASS(CScriptGameObject::IsScope,			CScope)
 TEST_OBJECT_CLASS(CScriptGameObject::IsSilencer,		CSilencer)
 TEST_OBJECT_CLASS(CScriptGameObject::IsGrenadeLauncher, CGrenadeLauncher)
 TEST_OBJECT_CLASS(CScriptGameObject::IsLaserDesignator, CLaserDesignator)
+TEST_OBJECT_CLASS(CScriptGameObject::IsTacticalTorch,	CTacticalTorch)
 TEST_OBJECT_CLASS(CScriptGameObject::IsWeaponMagazined, CWeaponMagazined)
 TEST_OBJECT_CLASS(CScriptGameObject::IsSpaceRestrictor, CSpaceRestrictor)
 TEST_OBJECT_CLASS(CScriptGameObject::IsStalker,			CAI_Stalker)

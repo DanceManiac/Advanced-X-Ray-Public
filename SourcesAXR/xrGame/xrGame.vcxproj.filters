@@ -7464,6 +7464,9 @@
     <ClInclude Include="LaserDesignator.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Laser</Filter>
     </ClInclude>
+    <ClInclude Include="TacticalTorch.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11178,6 +11181,9 @@
     </ClCompile>
     <ClCompile Include="LaserDesignator.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="TacticalTorch.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

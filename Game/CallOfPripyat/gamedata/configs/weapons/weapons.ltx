@@ -2154,6 +2154,29 @@ inv_grid_y			= 1
 laserdot_attach_bone = wpn_silencer ;;Заменить на подходящую кость оружия
 laser_ray_bones = wpn_silencer ;;Заменить на подходящую кость оружия
 
+[wpn_addon_tactical_torch]:identity_immunities,tactical_torch
+GroupControlSection	= spawn_group
+discovery_dependency =
+$spawn				= "weapons\addons\wpn_addon_tactical_torch" ; option for Level Editor
+class				= WP_TORCH
+cform           	= skeleton
+visual          	= dynamics\weapons\wpn_upgrade\wpn_silencer.ogf
+description			= st_addon_tactical_torch_descr
+$prefetch 			= 32
+slot = -1
+cost				= 200
+inv_name			= st_addon_tactical_torch
+inv_name_short		= st_addon_tactical_torch
+inv_weight			= 0.1
+
+inv_grid_width		= 1
+inv_grid_height		= 1
+inv_grid_x			= 18
+inv_grid_y			= 1
+
+torch_cone_bones = wpn_silencer ;;Заменить на подходящую кость оружия
+torch_light_bone = wpn_silencer ;;Заменить на подходящую кость оружия
+
 ;;;;;;;;;;;;;Advanced scope settings;;;;;;;;;;;;;;;;
 
 [scope_detector]

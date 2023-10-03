@@ -7,6 +7,7 @@
 #include "silencer.h"
 #include "GrenadeLauncher.h"
 #include "LaserDesignator.h"
+#include "TacticalTorch.h"
 #include "inventory.h"
 #include "InventoryOwner.h"
 #include "xrserver_objects_alife_items.h"
@@ -1160,6 +1161,7 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>(pIItem);
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>(pIItem);
 	CLaserDesignator*	pLaser				= smart_cast<CLaserDesignator*>(pIItem);
+	CTacticalTorch*		pTacticalTorch		= smart_cast<CTacticalTorch*>(pIItem);
 
 	if(			pScope &&
 				 m_eScopeStatus == ALife::eAddonAttachable &&
@@ -1196,6 +1198,11 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 				m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
 				(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
 				(m_sLaserName  == pIItem->object().cNameSect()) )
+		return true;
+	else if (	pTacticalTorch &&
+				m_eTacticalTorchStatus == ALife::eAddonAttachable &&
+				(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0 &&
+				(m_sTacticalTorchName  == pIItem->object().cNameSect()) )
 		return true;
 	else
 		return inherited::CanAttach(pIItem);
@@ -1236,6 +1243,10 @@ bool CWeaponMagazined::CanDetach(const char* item_section_name)
 	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) &&
 	   (m_sLaserName == item_section_name))
        return true;
+	else if(m_eTacticalTorchStatus == ALife::eAddonAttachable &&
+	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) &&
+	   (m_sTacticalTorchName == item_section_name))
+       return true;
 	else
 		return inherited::CanDetach(item_section_name);
 }
@@ -1247,7 +1258,8 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 	CScope*				pScope					= smart_cast<CScope*>(pIItem);
 	CSilencer*			pSilencer				= smart_cast<CSilencer*>(pIItem);
 	CGrenadeLauncher*	pGrenadeLauncher		= smart_cast<CGrenadeLauncher*>(pIItem);
-	CLaserDesignator*	pLaser				= smart_cast<CLaserDesignator*>(pIItem);
+	CLaserDesignator*	pLaser					= smart_cast<CLaserDesignator*>(pIItem);
+	CTacticalTorch*		pTacticalTorch			= smart_cast<CTacticalTorch*>(pIItem);
 	
 	if(pScope &&
 	   m_eScopeStatus == ALife::eAddonAttachable &&
@@ -1293,6 +1305,14 @@ bool CWeaponMagazined::Attach(PIItem pIItem, bool b_send_event)
 	   (m_sLaserName == pIItem->object().cNameSect()))
 	{
 		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
+		result = true;
+	}
+	else if(pTacticalTorch &&
+	   m_eTacticalTorchStatus == ALife::eAddonAttachable &&
+	   (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0 &&
+	   (m_sTacticalTorchName == pIItem->object().cNameSect()))
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch;
 		result = true;
 	}
 
@@ -1400,6 +1420,20 @@ bool CWeaponMagazined::Detach(const char* item_section_name, bool b_spawn_item)
 			return true;
 		}
 		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator;
+
+		UpdateAddonsVisibility();
+		InitAddons();
+		return CInventoryItemObject::Detach(item_section_name, b_spawn_item);
+	}
+	else if(m_eTacticalTorchStatus == ALife::eAddonAttachable &&
+			(m_sTacticalTorchName == item_section_name))
+	{
+		if ((m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch) == 0)
+		{
+			Msg("ERROR: tactical torch addon already detached.");
+			return true;
+		}
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch;
 
 		UpdateAddonsVisibility();
 		InitAddons();

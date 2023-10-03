@@ -346,6 +346,32 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 	}
 	result |= result2;
 
+	temp_int = (int)m_eTacticalTorchStatus;
+	result2 = process_if_exists_set(section, "tactical_torch_status", &CInifile::r_s32, temp_int, test);
+	if (result2 && !test)
+	{
+		m_eTacticalTorchStatus = (ALife::EWeaponAddonStatus)temp_int;
+		if (m_eTacticalTorchStatus == ALife::eAddonAttachable || m_eTacticalTorchStatus == ALife::eAddonPermanent)
+		{
+			m_sTacticalTorchName = pSettings->r_string(section, "tactical_torch_name");
+
+			if (GameConstants::GetUseHQ_Icons())
+			{
+				m_iTacticalTorchX = pSettings->r_s32(section, "laser_designator_x") * 2;
+				m_iTacticalTorchY = pSettings->r_s32(section, "laser_designator_y") * 2;
+			}
+			else
+			{
+				m_iTacticalTorchX = pSettings->r_s32(section, "tactical_torch_x");
+				m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y");
+			}
+
+			if (m_eTacticalTorchStatus == ALife::eAddonPermanent)
+				InitAddons();
+		}
+	}
+	result |= result2;
+
 	return result;
 }
 

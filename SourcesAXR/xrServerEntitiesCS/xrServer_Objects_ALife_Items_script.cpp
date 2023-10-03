@@ -71,6 +71,7 @@ void CSE_ALifeItemWeapon::script_register(lua_State *L)
             value("eWeaponAddonScope", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonScope)),
             value("eWeaponAddonSilencer", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonSilencer)),
 			value("eWeaponAddonLaserDesignator", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonLaserDesignator)),
+			value("eWeaponAddonTacticalTorch", int(CSE_ALifeItemWeapon::EWeaponAddonState::eWeaponAddonTacticalTorch)),
             value("eAddonAttachable", int(CSE_ALifeItemWeapon::EWeaponAddonStatus::eAddonAttachable)),
             value("eAddonDisabled", int(CSE_ALifeItemWeapon::EWeaponAddonStatus::eAddonDisabled)),
             value("eAddonPermanent", int(CSE_ALifeItemWeapon::EWeaponAddonStatus::eAddonPermanent))

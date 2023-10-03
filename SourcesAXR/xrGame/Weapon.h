@@ -191,16 +191,19 @@ public:
 			bool IsScopeAttached			() const;
 			bool IsSilencerAttached			() const;
 			bool IsLaserAttached			() const;
+			bool IsTacticalTorchAttached	() const;
 
 	virtual bool GrenadeLauncherAttachable();
 	virtual bool ScopeAttachable();
 	virtual bool SilencerAttachable();
 	virtual bool LaserAttachable();
+	virtual bool TacticalTorchAttachable();
 
 	ALife::EWeaponAddonStatus	get_GrenadeLauncherStatus	() const { return m_eGrenadeLauncherStatus; }
 	ALife::EWeaponAddonStatus	get_ScopeStatus				() const { return m_eScopeStatus; }
 	ALife::EWeaponAddonStatus	get_SilencerStatus			() const { return m_eSilencerStatus; }
 	ALife::EWeaponAddonStatus	get_LaserDesignatorStatus	() const { return m_eLaserDesignatorStatus; }
+	ALife::EWeaponAddonStatus	get_TacticalTorchStatus		() const { return m_eTacticalTorchStatus; }
 
 	virtual bool UseScopeTexture() {return true;};
 
@@ -225,11 +228,14 @@ public:
 	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
 	int	GetLaserDesignatorX() { return m_iLaserX; }
 	int	GetLaserDesignatorY() { return m_iLaserY; }
+	int	GetTacticalTorchX() { return m_iTacticalTorchX; }
+	int	GetTacticalTorchY() { return m_iTacticalTorchY; }
 
 	const shared_str& GetGrenadeLauncherName	() const{return m_sGrenadeLauncherName;}
 	const shared_str GetScopeName				() const;
 	const shared_str& GetSilencerName			() const{return m_sSilencerName;}
 	const shared_str& GetLaserName				() const{return m_sLaserName;}
+	const shared_str& GetTacticalTorchName		() const{return m_sTacticalTorchName;}
 
 	IC void	ForceUpdateAmmo						()		{ m_BriefInfo_CalcFrame = 0; }
 
@@ -244,12 +250,14 @@ protected:
 	ALife::EWeaponAddonStatus	m_eSilencerStatus;
 	ALife::EWeaponAddonStatus	m_eGrenadeLauncherStatus;
 	ALife::EWeaponAddonStatus	m_eLaserDesignatorStatus;
+	ALife::EWeaponAddonStatus	m_eTacticalTorchStatus;
 
 	//названия секций подключаемых аддонов
 	shared_str		m_sScopeName;
 	shared_str		m_sSilencerName;
 	shared_str		m_sGrenadeLauncherName;
 	shared_str		m_sLaserName;
+	shared_str		m_sTacticalTorchName;
 
 	shared_str		m_sWpn_scope_bone;
 	shared_str		m_sWpn_silencer_bone;
@@ -267,6 +275,7 @@ protected:
 	int	m_iSilencerX, m_iSilencerY;
 	int	m_iGrenadeLauncherX, m_iGrenadeLauncherY;
 	int m_iLaserX, m_iLaserY;
+	int m_iTacticalTorchX, m_iTacticalTorchY;
 
 	RStringVec		m_defShownBones;
 	RStringVec		m_defHiddenBones;
@@ -686,6 +695,6 @@ public:
 	}
 	inline bool IsFlashlightOn() const 
 	{
-		return m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn && m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch);
 	}
 };

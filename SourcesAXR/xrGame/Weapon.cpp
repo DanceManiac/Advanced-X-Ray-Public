@@ -425,6 +425,7 @@ LPCSTR wpn_scope_def_bone = "wpn_scope";
 LPCSTR wpn_silencer_def_bone = "wpn_silencer";
 LPCSTR wpn_launcher_def_bone = "wpn_launcher";
 LPCSTR wpn_laser_def_bone = "wpn_laser";
+LPCSTR wpn_torch_def_bone = "wpn_torch";
 
 void CWeapon::Load		(LPCSTR section)
 {
@@ -633,6 +634,7 @@ void CWeapon::Load		(LPCSTR section)
 	m_eSilencerStatus		 = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"silencer_status");
 	m_eGrenadeLauncherStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"grenade_launcher_status");
 	m_eLaserDesignatorStatus = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "laser_designator_status", 0);
+	m_eTacticalTorchStatus	 = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "tactical_torch_status", 0);
 
 	m_zoom_params.m_bZoomEnabled		= !!pSettings->r_bool(section,"zoom_enabled");
 	m_zoom_params.m_fZoomRotateTime		= pSettings->r_float(section,"zoom_rotate_time");
@@ -691,6 +693,22 @@ void CWeapon::Load		(LPCSTR section)
 		}
 	}
 
+	if (m_eTacticalTorchStatus == ALife::eAddonAttachable)
+	{
+		m_sTacticalTorchName = pSettings->r_string(section, "tactical_torch_name");
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			m_iTacticalTorchX = pSettings->r_s32(section, "tactical_torch_x") * 2;
+			m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y") * 2;
+		}
+		else
+		{
+			m_iTacticalTorchX = pSettings->r_s32(section, "tactical_torch_x");
+			m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y");
+		}
+	}
+
 	UpdateAltScope();
 	InitAddons();
 	if(pSettings->line_exist(section,"weapon_remove_time"))
@@ -740,7 +758,7 @@ void CWeapon::Load		(LPCSTR section)
 		m_sWpn_launcher_bone = wpn_launcher_def_bone;
 
 	m_sWpn_laser_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_ray_bones", wpn_laser_def_bone);
-	m_sWpn_flashlight_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_cone_bones", "");
+	m_sWpn_flashlight_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_cone_bones", wpn_torch_def_bone);
 	m_sHud_wpn_laser_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "laser_ray_bones", m_sWpn_laser_bone);
 	m_sHud_wpn_flashlight_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "torch_cone_bones", m_sWpn_flashlight_bone);
 
@@ -806,19 +824,19 @@ void CWeapon::Load		(LPCSTR section)
 		laser_light_render->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "spot_texture", nullptr));
 	}
 
-	if (!flashlight_render && pSettings->line_exist(section, "flashlight_section"))
+	if (!flashlight_render && m_eTacticalTorchStatus)
 	{
 		has_flashlight = true;
 
-		flashlight_attach_bone = pSettings->r_string(section, "torch_light_bone");
-		flashlight_attach_offset = Fvector{ pSettings->r_float(section, "torch_attach_offset_x"), pSettings->r_float(section, "torch_attach_offset_y"), pSettings->r_float(section, "torch_attach_offset_z") };
-		flashlight_omni_attach_offset = Fvector{ pSettings->r_float(section, "torch_omni_attach_offset_x"), pSettings->r_float(section, "torch_omni_attach_offset_y"), pSettings->r_float(section, "torch_omni_attach_offset_z") };
-		flashlight_world_attach_offset = Fvector{ pSettings->r_float(section, "torch_world_attach_offset_x"), pSettings->r_float(section, "torch_world_attach_offset_y"), pSettings->r_float(section, "torch_world_attach_offset_z") };
-		flashlight_omni_world_attach_offset = Fvector{ pSettings->r_float(section, "torch_omni_world_attach_offset_x"), pSettings->r_float(section, "torch_omni_world_attach_offset_y"), pSettings->r_float(section, "torch_omni_world_attach_offset_z") };
+		flashlight_attach_bone = pSettings->r_string(m_sTacticalTorchName, "torch_light_bone");
+		flashlight_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_attach_offset_z") };
+		flashlight_omni_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_omni_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_attach_offset_z") };
+		flashlight_world_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_world_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_world_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_world_attach_offset_z") };
+		flashlight_omni_world_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_omni_world_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_world_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_world_attach_offset_z") };
 
 		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
 
-		const char* m_light_section = pSettings->r_string(section, "flashlight_section");
+		const char* m_light_section = pSettings->r_string(m_sTacticalTorchName, "flashlight_section");
 
 		flashlight_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, m_light_section, "color_animator", ""));
 
@@ -1996,6 +2014,13 @@ bool CWeapon::IsLaserAttached() const
 		ALife::eAddonPermanent == m_eLaserDesignatorStatus;
 }
 
+bool CWeapon::IsTacticalTorchAttached() const
+{
+	return (ALife::eAddonAttachable == m_eTacticalTorchStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch)) ||
+		ALife::eAddonPermanent == m_eTacticalTorchStatus;
+}
+
 bool CWeapon::GrenadeLauncherAttachable()
 {
 	return (ALife::eAddonAttachable == m_eGrenadeLauncherStatus);
@@ -2011,6 +2036,10 @@ bool CWeapon::SilencerAttachable()
 bool CWeapon::LaserAttachable()
 {
 	return (ALife::eAddonAttachable == m_eLaserDesignatorStatus);
+}
+bool CWeapon::TacticalTorchAttachable()
+{
+	return (ALife::eAddonAttachable == m_eTacticalTorchStatus);
 }
 
 void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
@@ -2119,6 +2148,18 @@ void CWeapon::UpdateHUDAddonsVisibility()
 
 	if (m_sHud_wpn_laser_bone.size() && has_laser)
 		SetBoneVisible(m_sHud_wpn_laser_bone, IsLaserOn());
+
+	if (TacticalTorchAttachable())
+	{
+		SetBoneVisible(m_sWpn_flashlight_bone, IsLaserAttached());
+	}
+	if (m_eTacticalTorchStatus == ALife::eAddonDisabled)
+	{
+		SetBoneVisible(m_sWpn_flashlight_bone, FALSE);
+	}
+	else
+		if (m_eTacticalTorchStatus == ALife::eAddonPermanent)
+			SetBoneVisible(m_sWpn_laser_bone, TRUE);
 
 	if (m_sHud_wpn_flashlight_bone.size() && has_flashlight)
 		SetBoneVisible(m_sHud_wpn_flashlight_bone, IsFlashlightOn());
@@ -2235,6 +2276,25 @@ void CWeapon::UpdateAddonsVisibility()
 	{
 		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
 		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
+	}
+
+	if (TacticalTorchAttachable())
+	{
+		if (IsTacticalTorchAttached())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if (m_eTacticalTorchStatus == ALife::eAddonDisabled && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("tactical torch", pWeaponVisual->LL_GetBoneVisible	(bone_id));
 	}
 
 	if (m_sWpn_laser_bone.size() && has_laser)
@@ -3188,6 +3248,9 @@ float CWeapon::Weight() const
 	if (IsLaserAttached() && GetLaserName().size()) {
 		res += pSettings->r_float(GetLaserName(), "inv_weight");
 	}
+	if (IsTacticalTorchAttached() && GetTacticalTorchName().size()) {
+		res += pSettings->r_float(GetTacticalTorchName(), "inv_weight");
+	}
 	
 	res += GetMagazineWeight(m_magazine);
 
@@ -3377,6 +3440,9 @@ u32 CWeapon::Cost() const
 	}
 	if (IsLaserAttached() && GetLaserName().size()) {
 		res += pSettings->r_u32(GetLaserName(), "cost");
+	}
+	if (IsTacticalTorchAttached() && GetTacticalTorchName().size()) {
+		res += pSettings->r_u32(GetTacticalTorchName(), "cost");
 	}
 	
 	if(iAmmoElapsed)

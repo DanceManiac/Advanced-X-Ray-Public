@@ -21,6 +21,7 @@
 #include "../scope.h"
 #include "../grenadelauncher.h"
 #include "../LaserDesignator.h"
+#include "../TacticalTorch.h"
 #include "../Artefact.h"
 #include "../eatable_item.h"
 #include "../BottleItem.h"
@@ -1173,6 +1174,17 @@ void CUIActorMenu::PropertiesBoxForWeapon( CUICellItem* cell_item, PIItem item, 
 		{
 		}
 	}
+	if (pWeapon->TacticalTorchAttachable())
+	{
+		if (pWeapon->IsTacticalTorchAttached())
+		{
+			m_UIPropertiesBox->AddItem("st_detach_tactical_torch", NULL, INVENTORY_DETACH_TACTICAL_TORCH_ADDON);
+			b_show = true;
+		}
+		else
+		{
+		}
+	}
 	if ( smart_cast<CWeaponMagazined*>(pWeapon) && IsGameTypeSingle() )
 	{
 		bool b = ( pWeapon->GetAmmoElapsed() !=0 );
@@ -1204,6 +1216,7 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 	CSilencer*			pSilencer			= smart_cast<CSilencer*>		(item);
 	CGrenadeLauncher*	pGrenadeLauncher	= smart_cast<CGrenadeLauncher*>	(item);
 	CLaserDesignator*	pLaser				= smart_cast<CLaserDesignator*>	(item);
+	CTacticalTorch*		pTacticalTorch		= smart_cast<CTacticalTorch*>	(item);
 	CInventory*			inv					= &m_pActorInvOwner->inventory();
 
 	PIItem	item_in_slot_2 = inv->ItemFromSlot(INV_SLOT_2);
@@ -1317,6 +1330,32 @@ void CUIActorMenu::PropertiesBoxForAddon( PIItem item, bool& b_show )
 		if (item_in_pistol_slot && item_in_pistol_slot->CanAttach(pLaser))
 		{
 			shared_str str = CStringTable().translate("st_attach_laser_to");
+			str.printf("%s %s", str.c_str(), item_in_pistol_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_pistol_slot, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		return;
+	}
+
+	if (pTacticalTorch)
+	{
+		if (item_in_slot_2 && item_in_slot_2->CanAttach(pTacticalTorch))
+		{
+			shared_str str = CStringTable().translate("st_attach_tactical_torch_to");
+			str.printf("%s %s", str.c_str(), item_in_slot_2->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_slot_2, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (item_in_slot_3 && item_in_slot_3->CanAttach(pTacticalTorch))
+		{
+			shared_str str = CStringTable().translate("st_attach_tactical_torch_to");
+			str.printf("%s %s", str.c_str(), item_in_slot_3->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_slot_3, INVENTORY_ATTACH_ADDON);
+			b_show = true;
+		}
+		if (item_in_pistol_slot && item_in_pistol_slot->CanAttach(pTacticalTorch))
+		{
+			shared_str str = CStringTable().translate("st_attach_tactical_torch_to");
 			str.printf("%s %s", str.c_str(), item_in_pistol_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_pistol_slot, INVENTORY_ATTACH_ADDON);
 			b_show = true;
@@ -1716,6 +1755,22 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 				if (child_iitm && wpn)
 				{
 					DetachAddon(wpn->GetLaserName().c_str(), child_iitm);
+				}
+			}
+		}
+		break;
+	case INVENTORY_DETACH_TACTICAL_TORCH_ADDON:
+		if (weapon)
+		{
+			DetachAddon(weapon->GetTacticalTorchName().c_str());
+			for (u32 i = 0; i < cell_item->ChildsCount(); ++i)
+			{
+				CUICellItem* child_itm = cell_item->Child(i);
+				PIItem			child_iitm = (PIItem)(child_itm->m_pData);
+				CWeapon* wpn = smart_cast<CWeapon*>(child_iitm);
+				if (child_iitm && wpn)
+				{
+					DetachAddon(wpn->GetTacticalTorchName().c_str(), child_iitm);
 				}
 			}
 		}

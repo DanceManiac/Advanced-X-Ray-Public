@@ -663,4 +663,16 @@
 	<string id="st_attach_laser_to">
 		<text>Присоединить ЛЦУ к</text>
 	</string>
+	<string id="st_addon_tactical_torch">
+		<text>Тактический фонарик</text>
+	</string>
+	<string id="st_addon_tactical_torch_descr">
+		<text>Тактический фонарик.</text>
+	</string>
+	<string id="st_detach_tactical_torch">
+		<text>Отсоединить тактический фонарик</text>
+	</string>
+	<string id="st_attach_tactical_torch_to">
+		<text>Присоединить тактический фонарик к</text>
+	</string>
 </string_table>

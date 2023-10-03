@@ -412,11 +412,13 @@ public:
 			bool				Weapon_IsScopeAttached			();
 			bool				Weapon_IsSilencerAttached		();
 			bool				Weapon_IsLaserDesignatorAttached();
+			bool				Weapon_IsTacticalTorchAttached	();
 
 			int					Weapon_GrenadeLauncher_Status	();
 			int					Weapon_Scope_Status				();
 			int					Weapon_Silencer_Status			();
 			int					Weapon_LaserDesignator_Status	();
+			int					Weapon_TacticalTorch_Status		();
 
 			LPCSTR				ProfileName			();
 			LPCSTR				CharacterName		();
@@ -845,6 +847,7 @@ public:
 			_DECLARE_FUNCTION10(IsSilencer, bool);
 			_DECLARE_FUNCTION10(IsGrenadeLauncher, bool);
 			_DECLARE_FUNCTION10(IsLaserDesignator, bool);
+			_DECLARE_FUNCTION10(IsTacticalTorch, bool);
 			_DECLARE_FUNCTION10(IsWeaponMagazined, bool);
 			_DECLARE_FUNCTION10(IsSpaceRestrictor, bool);
 			_DECLARE_FUNCTION10(IsStalker, bool);

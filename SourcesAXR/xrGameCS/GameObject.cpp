@@ -514,6 +514,7 @@ void CGameObject::spawn_supplies()
 	bool bSilencer			=	false;
 	bool bLauncher			=	false;
 	bool bLaser				=	false;
+	bool bTorch				=	false;
 
 	for (u32 k = 0, j; spawn_ini()->r_line("spawn",k,&N,&V); k++) {
 		VERIFY				(xr_strlen(N));
@@ -537,6 +538,7 @@ void CGameObject::spawn_supplies()
 			bSilencer		=	(NULL!=strstr(V,"silencer"));
 			bLauncher		=	(NULL!=strstr(V,"launcher"));
 			bLaser			=	(NULL!=strstr(V, "laser"));
+			bTorch			=	(NULL!=strstr(V, "torch"));
 
 		}
 		for (u32 i=0; i<j; ++i)
@@ -557,6 +559,8 @@ void CGameObject::spawn_supplies()
 						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher, bLauncher);
 					if (W->m_laser_designator_status == ALife::eAddonAttachable)
 						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator, bLaser);
+					if (W->m_tactical_torch_status == ALife::eAddonAttachable)
+						W->m_addon_flags.set(CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch, bTorch);
 				}
 
 				NET_Packet					P;
