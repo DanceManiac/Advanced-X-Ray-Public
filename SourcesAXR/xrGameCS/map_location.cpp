@@ -505,7 +505,7 @@ void CMapLocation::UpdateSpotPointer(CUICustomMap* map, CMapSpotPointer* sp )
 		Fvector ttt;
 		ttt.set		(tt.x, 0.0f, tt.y);
 
-		if (IsGameTypeSingle())
+		if (IsGameTypeSingle() && Level().CurrentEntity())
 		{
 			float dist_to_target = Level().CurrentEntity()->Position().distance_to(ttt);
 			CGameTask*	T = Level().GameTaskManager().HasGameTask(this, true);
