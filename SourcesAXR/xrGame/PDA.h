@@ -105,7 +105,7 @@ protected:
 	int			m_iLightType;
 	ref_light	pda_light;
 	ref_glow	pda_glow;
-	CLAItem* light_lanim;
+	CLAItem*	light_lanim;
 
 	virtual void processing_deactivate() override
 	{
@@ -125,13 +125,6 @@ public:
 	virtual void OnActiveItem();
 	virtual void OnHiddenItem();
 
-	enum eDeferredEnableState
-	{
-		eDefault,
-		eDisable,
-		eEnable,
-		eEnableZoomed
-	};
 
 	enum ePDAState
 	{
@@ -139,7 +132,6 @@ public:
 	};
 
 	bool m_bZoomed;
-	eDeferredEnableState m_eDeferredEnable;
 	bool m_bPowerSaving;
 	float m_psy_factor;
 	float m_thumb_rot[2];

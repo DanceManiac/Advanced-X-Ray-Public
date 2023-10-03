@@ -695,17 +695,17 @@ void CUIMapWnd::Reset()
 #include "../map_spot.h"
 #include "../gametask.h"
 
-void CUIMapWnd::SpotSelected( CUIWindow* w )
+void CUIMapWnd::SpotSelected(CUIWindow* w)
 {
 	CMapSpot* sp	= smart_cast<CMapSpot*>( w );
 	if ( !sp )
 	{
 		return;
 	}
-	
-	CGameTask* t	= Level().GameTaskManager().HasGameTask( sp->MapLocation(), true );
-	if ( t )
+
+	CGameTask* t = Level().GameTaskManager().HasGameTask(sp->MapLocation(), true);
+	if (t)
 	{
-		Level().GameTaskManager().SetActiveTask( t );
+		Level().GameTaskManager().SetActiveTask(t);
 	}
 }

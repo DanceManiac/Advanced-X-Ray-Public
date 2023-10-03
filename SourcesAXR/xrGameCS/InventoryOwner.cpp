@@ -33,17 +33,18 @@ CInventoryOwner::CInventoryOwner			()
 {
 	m_pTrade					= NULL;
 	m_trade_parameters			= 0;
-	
+
 	m_inventory					= xr_new<CInventory>();
 	m_pCharacterInfo			= xr_new<CCharacterInfo>();
 	
 	EnableTalk();
 	EnableTrade();
-	
+	bDisableBreakDialog			= false;
+
 	m_known_info_registry		= xr_new<CInfoPortionWrapper>();
 	m_tmp_active_slot_num		= NO_ACTIVE_SLOT;
 	m_need_osoznanie_mode		= FALSE;
-	
+
 	m_deadbody_can_take				= true;
 	m_deadbody_closed				= false;
 	m_play_show_hide_reload_sounds	= true;
@@ -146,6 +147,7 @@ BOOL CInventoryOwner::net_Spawn		(CSE_Abstract* DC)
 		}
 		m_game_name			= pTrader->m_character_name;
 		m_character_icon	= pTrader->m_character_icon;
+		
 		m_deadbody_can_take = pTrader->m_deadbody_can_take;
 		m_deadbody_closed   = pTrader->m_deadbody_closed;
 		m_trader_flags.assign(pTrader->m_trader_flags.get());
@@ -177,7 +179,7 @@ void CInventoryOwner::net_Destroy()
 void	CInventoryOwner::save	(NET_Packet &output_packet)
 {
 	if(inventory().GetActiveSlot() == NO_ACTIVE_SLOT)
-		output_packet.w_u8((u8)(-1));
+		output_packet.w_u8((u8)NO_ACTIVE_SLOT);
 	else
 		output_packet.w_u8((u8)inventory().GetActiveSlot());
 
@@ -189,9 +191,9 @@ void	CInventoryOwner::save	(NET_Packet &output_packet)
 void	CInventoryOwner::load	(IReader &input_packet)
 {
 	u8 active_slot = input_packet.r_u8();
-	if(active_slot == u8(-1))
+	if(active_slot == NO_ACTIVE_SLOT)
 		inventory().SetActiveSlot(NO_ACTIVE_SLOT);
-	else
+	//else
 		//inventory().Activate_deffered(active_slot, Device.dwFrame);
 
 	m_tmp_active_slot_num		 = active_slot;
@@ -365,7 +367,7 @@ float  CInventoryOwner::MaxCarryWeight () const
 
 	const CCustomOutfit* outfit	= GetOutfit();
 	const CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
-	
+
 	if(outfit)
 		ret += outfit->m_additional_weight2;
 

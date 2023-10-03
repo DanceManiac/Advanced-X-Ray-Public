@@ -3376,13 +3376,17 @@ void CWeapon::render_item_ui()
 }
 
 bool CWeapon::unlimited_ammo() 
-{ 
+{
 	if (IsGameTypeSingle())
-		return psActorFlags.test(AF_UNLIMITEDAMMO) && 
-				m_DefaultCartridge.m_flags.test(CCartridge::cfCanBeUnlimited); 
+	{
+		if(m_pInventory)
+		{
+			return psActorFlags.test(AF_UNLIMITEDAMMO) && m_DefaultCartridge.m_flags.test(CCartridge::cfCanBeUnlimited);
+		}else
+			return false;
+	}
 
-	return ((GameID() != eGameIDArtefactHunt) && 
-			(GameID() != eGameIDCaptureTheArtefact) &&
+	return ((GameID() == eGameIDDeathmatch) && 
 			m_DefaultCartridge.m_flags.test(CCartridge::cfCanBeUnlimited)); 
 			
 };

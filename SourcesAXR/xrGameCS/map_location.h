@@ -23,11 +23,11 @@ enum ELocationFlags
 	ePointerEnabled		= (1<<4),
 	eSpotEnabled		= (1<<5),
 	eCollidable			= (1<<6),
+	eHintEnabled		= (1<<7),
 };
 
 protected:
 	flags32					m_flags;
-	bool					m_hint_enable;
 	shared_str				m_hint;
 	CMapSpot*				m_level_spot;
 	CMapSpotPointer*		m_level_spot_pointer;
@@ -77,7 +77,7 @@ public:
 	virtual					~CMapLocation					();
 	virtual void			destroy							();
 
-			bool			get_hint_enable					()					{return m_hint_enable;}
+	IC		bool			HintEnabled						()					{return !!m_flags.test(eHintEnabled);}
 			LPCSTR			GetHint							();
 	void					SetHint							(const shared_str& hint);
 	CComplexMapSpot*		complex_spot					()					{return m_complex_spot;}

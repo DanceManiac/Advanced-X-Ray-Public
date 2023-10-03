@@ -31,7 +31,6 @@ CPda::CPda(void)
 	m_SpecificChracterOwner = nullptr;
 	TurnOff();
 	m_bZoomed = false;
-	m_eDeferredEnable = eDefault;
 	joystick = BI_NONE;
 	target_screen_switch = 0.f;
 	m_fLR_CameraFactor = 0.f;
@@ -150,7 +149,7 @@ void CPda::OnStateSwitch(u32 S)
 
 		m_sounds.PlaySound(hasEnoughBatteryPower() ? "sndShow" : "sndShowEmpty", Position(), H_Root(), !!GetHUDmode(), false);
 		PlayHUDMotion(!m_bNoticedEmptyBattery ? "anm_show" : "anm_show_empty", false, this, GetState());
-		
+
 		if (auto pda = HUD().GetUI() && &HUD().GetUI()->UIGame()->PdaMenu() ? &HUD().GetUI()->UIGame()->PdaMenu() : nullptr)
 			pda->ResetJoystick(true);
 
@@ -190,8 +189,7 @@ void CPda::OnStateSwitch(u32 S)
 		}
 
 		g_player_hud->reset_thumb(true);
-		pda->ResetJoystick(true);
-	SetPending(true);
+		SetPending(false);
 	}
 	break;
 	case eIdle:
@@ -537,28 +535,6 @@ void CPda::UpdateHudAdditional(Fmatrix& trans)
 
 	attachable_hud_item* hi = HudItemData();
 	R_ASSERT(hi);
-
-	//u8 idx = GetCurrentHudOffsetIdx();
-
-	/*if (g_player_hud->script_anim_part != u8(-1))
-	{
-		CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
-
-		if (pda->IsEnabled())
-		{
-			if (m_bZoomed)
-			{
-				m_bZoomed = false;
-				m_eDeferredEnable = eEnableZoomed;
-			}
-			else
-			{
-				m_eDeferredEnable = eEnable;
-			}
-
-			pda->Enable(false);
-		}
-	}*/
 
 	Fvector curr_offs, curr_rot;
 

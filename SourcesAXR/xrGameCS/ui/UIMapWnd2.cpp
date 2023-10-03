@@ -16,7 +16,7 @@ void CUIMapWnd::init_xml_nav( CUIXml& xml )
 	string64 buf;
 	for ( u8 i = 0; i < max_btn_nav; ++i )
 	{
-		sprintf( buf, "btn_nav_parent:btn_nav_%d", i );
+		xr_sprintf( buf, "btn_nav_parent:btn_nav_%d", i );
 
 		m_btn_nav[i] = UIHelper::Create3tButtonEx( xml, buf, m_btn_nav_parent );
 		Register( m_btn_nav[i] );

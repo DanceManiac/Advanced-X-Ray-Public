@@ -49,7 +49,7 @@ CMapLocation::CMapLocation(LPCSTR type, u16 object_id)
 	m_objectID				= object_id;
 	m_actual_time			= 0;
 	m_owner_se_object		= (ai().get_alife()) ? ai().alife().objects().object(m_objectID,true) : NULL;
-	m_hint_enable			= true;
+	m_flags.set				(eHintEnabled, TRUE);
 	LoadSpot				(type, false);
 	m_refCount				= 1;
 	
@@ -96,7 +96,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 
 	XML_NODE* node = NULL;
 	string512 path_base, path;
-	strcpy_s		(path_base,type);
+	xr_strcpy		(path_base,type);
 	R_ASSERT3		(g_uiSpotXml->NavigateToNode(path_base,0), "XML node not found in file map_spots.xml", path_base);
 	LPCSTR s		= g_uiSpotXml->ReadAttrib(path_base, 0, "hint", "no hint");
 	SetHint			(s);
@@ -253,9 +253,6 @@ void CMapLocation::CalcPosition()
 
 const Fvector2& CMapLocation::CalcDirection()
 {
-//.	if(m_cached.m_updatedFrame==Device.dwFrame) 
-//.		return m_cached.m_Direction;
-
 	if(Level().CurrentViewEntity()&&Level().CurrentViewEntity()->ID()==m_objectID )
 	{
 		m_cached.m_Direction.set(Device.vCameraDirection.x,Device.vCameraDirection.z);
@@ -413,10 +410,9 @@ void CMapLocation::UpdateSpot(CUICustomMap* map, CMapSpot* sp )
 		}
 
 
-		if( GetSpotPointer(sp) && map->NeedShowPointer(wnd_rect))
-		{
+		bool b_pointer =( GetSpotPointer(sp) && map->NeedShowPointer(wnd_rect));
+		if(b_pointer)
 			UpdateSpotPointer( map, GetSpotPointer(sp) );
-		}
 	}
 	else if ( Level().name() == map->MapName() && GetSpotPointer(sp) )
 	{
@@ -592,7 +588,7 @@ void CMapLocation::SetHint	(const shared_str& hint)
 {
 	if ( hint == "disable_hint" )
 	{
-		m_hint_enable = false;
+		m_flags.set(eHintEnabled, FALSE);
 		m_hint._set( "" );
 		return;
 	}
@@ -601,7 +597,7 @@ void CMapLocation::SetHint	(const shared_str& hint)
 
 LPCSTR CMapLocation::GetHint()
 {
-	if ( !m_hint_enable ) 
+	if ( !HintEnabled() ) 
 	{
 		return NULL;
 	}
@@ -735,7 +731,9 @@ bool CRelationMapLocation::Update()
 		CSE_ALifeCreatureAbstract*		pCreature = smart_cast<CSE_ALifeCreatureAbstract*>(m_owner_se_object);
 		if(pCreature) //maybe trader ?
 			bAlive = pCreature->g_Alive		();
-	}else{
+	}
+	else
+	{
 		CInventoryOwner*			pEnt = NULL;
 		CInventoryOwner*			pAct = NULL;
 
@@ -775,6 +773,7 @@ bool CRelationMapLocation::Update()
 		else
 			vis_res = false;
 	}
+
 	if(m_b_visible==false && vis_res==true)
 		m_minimap_spot->ResetXformAnimation();
 

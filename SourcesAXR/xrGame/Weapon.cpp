@@ -3342,7 +3342,7 @@ void CWeapon::render_item_ui()
 }
 
 bool CWeapon::unlimited_ammo() 
-{ 
+{
 	if (IsGameTypeSingle())
 	{
 		if(m_pInventory)

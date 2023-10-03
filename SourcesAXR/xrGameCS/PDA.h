@@ -114,6 +114,7 @@ protected:
 	}
 
 	void	UpdateLights();
+
 public:
 	virtual void OnStateSwitch(u32 S);
 	virtual void OnAnimationEnd(u32 state);
@@ -124,13 +125,6 @@ public:
 	virtual void OnActiveItem();
 	virtual void OnHiddenItem();
 
-	enum eDeferredEnableState
-	{
-		eDefault,
-		eDisable,
-		eEnable,
-		eEnableZoomed
-	};
 
 	enum ePDAState
 	{
@@ -138,7 +132,6 @@ public:
 	};
 
 	bool m_bZoomed;
-	eDeferredEnableState m_eDeferredEnable;
 	bool m_bPowerSaving;
 	float m_psy_factor;
 	float m_thumb_rot[2];

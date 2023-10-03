@@ -71,21 +71,21 @@ private:
 
 	void						UpdateNav				();
 
-	void 		__stdcall		OnBtnLegend_Push		(CUIWindow*, void*);
-	void 		__stdcall		OnBtnUp_Push			(CUIWindow*, void*);
-	void 		__stdcall		OnBtnZoomMore_Push		(CUIWindow*, void*);
+	void xr_stdcall				OnBtnLegend_Push		(CUIWindow*, void*);
+	void xr_stdcall				OnBtnUp_Push			(CUIWindow*, void*);
+	void xr_stdcall				OnBtnZoomMore_Push		(CUIWindow*, void*);
 
-	void 		__stdcall		OnBtnLeft_Push			(CUIWindow*, void*);
-	void 		__stdcall		OnBtnActor_Push			(CUIWindow*, void*);
-	void 		__stdcall		OnBtnRight_Push			(CUIWindow*, void*);
+	void xr_stdcall				OnBtnLeft_Push			(CUIWindow*, void*);
+	void xr_stdcall				OnBtnActor_Push			(CUIWindow*, void*);
+	void xr_stdcall				OnBtnRight_Push			(CUIWindow*, void*);
 
-	void 		__stdcall		OnBtnZoomLess_Push		(CUIWindow*, void*);
-	void 		__stdcall		OnBtnDown_Push			(CUIWindow*, void*);
-	void 		__stdcall		OnBtnZoomReset_Push		(CUIWindow*, void*);
+	void xr_stdcall				OnBtnZoomLess_Push		(CUIWindow*, void*);
+	void xr_stdcall				OnBtnDown_Push			(CUIWindow*, void*);
+	void xr_stdcall				OnBtnZoomReset_Push		(CUIWindow*, void*);
 
 private:
-	void 		__stdcall		OnScrollV				(CUIWindow*, void*);
-	void 		__stdcall		OnScrollH				(CUIWindow*, void*);
+	void xr_stdcall				OnScrollV				(CUIWindow*, void*);
+	void xr_stdcall				OnScrollH				(CUIWindow*, void*);
 	
 	void						OnToolNextMapClicked	(CUIWindow*, void*);
 	void						OnToolPrevMapClicked	(CUIWindow*, void*);

@@ -1,6 +1,6 @@
 ﻿#include "pch_script.h"
 #include "pda.h"
-#include "../xrphysics/PhysicsShell.h"
+//#include "../xrphysics/PhysicsShell.h"
 #include "Entity.h"
 #include "actor.h"
 
@@ -78,7 +78,7 @@ void CPda::Load(LPCSTR section)
 	m_sounds.LoadSound(section, "snd_draw_empty", "sndShowEmpty", true);
 	m_sounds.LoadSound(section, "snd_holster_empty", "sndHideEmpty", true);
 	m_sounds.LoadSound(section, "snd_btn_press", "sndButtonPress");
-	m_sounds.LoadSound(section, "snd_btn_release", "sndButtonRelease");
+	m_sounds.LoadSound(section, "snd_btn_release", "sndButtonRelease"); 
 	m_sounds.LoadSound(section, "snd_empty", "sndEmptyBattery", true);
 	m_screen_on_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_on_delay", 0.f);
 	m_screen_off_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_off_delay", 0.f);

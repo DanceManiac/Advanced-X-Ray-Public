@@ -807,7 +807,7 @@ void CLevel::OnRender()
 	{
 		const auto pda = &HUD().GetUI()->UIGame()->PdaMenu();
 		const auto pda_actor = Actor() ? Actor()->GetPDA() : nullptr;
-		if (psActorFlags.test(AF_3D_PDA) && pda->IsShown())
+		if (psActorFlags.test(AF_3D_PDA) && pda && pda->IsShown())
 		{
 			pda->Draw();
 			if (g_btnHint)

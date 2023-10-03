@@ -424,7 +424,7 @@ LPCSTR	CInventoryOwner::Name () const
 	return m_game_name.c_str();
 }
 
-LPCSTR	CInventoryOwner::IconName () const
+LPCSTR CInventoryOwner::IconName () const
 {
 	return m_character_icon.c_str();
 }
@@ -721,7 +721,7 @@ void CInventoryOwner::AfterLoad()
 		Msg("inventory == null!");
 }
 
-CInventoryItem* CInventoryOwner::GetCurrentTorch() const 
+CInventoryItem* CInventoryOwner::GetCurrentTorch() const
 {
 	return inventory().ItemFromSlot(TORCH_SLOT);
 }

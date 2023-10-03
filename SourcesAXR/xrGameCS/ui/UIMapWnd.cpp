@@ -123,15 +123,6 @@ void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 		AddCallback						("scroll_v",SCROLLBAR_VSCROLL,CUIWndCallback::void_function(this,&CUIMapWnd::OnScrollV));
 	}
 
-	/*strconcat						(sizeof(pth),pth,start_from,":map_header_frame_line");
-	if(uiXml.NavigateToNode(pth,0))
-	{
-		UIMainMapHeader				= xr_new<CUIFrameLineWnd>(); 
-		UIMainMapHeader->SetAutoDelete(true);
-		m_UIMainFrame->AttachChild	(UIMainMapHeader);
-		xml_init.InitFrameLine		(uiXml, pth, 0, UIMainMapHeader);
-	}*/
-
 	m_map_location_hint					= xr_new<CUIMapLocationHint>();
 	strconcat							(sizeof(pth),pth,start_from,":map_hint_item");
 	m_map_location_hint->Init			(uiXml, pth);
@@ -381,7 +372,7 @@ void CUIMapWnd::DrawHint()
 		CMapSpot* ms = smart_cast<CMapSpot*>(owner);
 		if ( ms )
 		{
-			if ( ms->MapLocation() && ms->MapLocation()->get_hint_enable() ) 
+			if ( ms->MapLocation() && ms->MapLocation()->HintEnabled() ) 
 			{
 				m_map_location_hint->Draw_();
 			}
@@ -553,7 +544,7 @@ void CUIMapWnd::OnScrollV(CUIWindow*, void*)
 {
 	if ( m_scroll_mode && GlobalMap())
 	{
-		MoveScrollV( -1.0f * (float)m_UIMainScrollV->GetScrollPos() );
+		MoveScrollV( -1.0f * float(m_UIMainScrollV->GetScrollPos()));
 	}
 }
 
@@ -561,7 +552,7 @@ void CUIMapWnd::OnScrollH(CUIWindow*, void*)
 {
 	if ( m_scroll_mode && GlobalMap())
 	{
-		MoveScrollH( -1.0f * (float)m_UIMainScrollH->GetScrollPos() );
+		MoveScrollH( -1.0f * float(m_UIMainScrollH->GetScrollPos()) );
 	}
 }
 
@@ -582,14 +573,6 @@ void CUIMapWnd::Update()
 	if(m_GlobalMap)m_GlobalMap->SetClipRect(ActiveMapRect());
 	inherited::Update			();
 	m_ActionPlanner->update		();
-/*	
-#ifdef DEBUG
-float gm_zoom				= m_GlobalMap->GetCurrentZoom();
-	string256					buff;
-	sprintf_s					(buff,sizeof(buff),"%5.1f", gm_zoom);
-	m_dbg_info->SetText			(buff);
-#endif // DEBUG /**/
-	
 	UpdateNav					();
 }
 
@@ -699,7 +682,7 @@ void CUIMapWnd::ShowHint( bool extra )
 	{
 		vis_rect = ActiveMapRect();
 	}
-	
+
 	bool is_visible = fit_in_rect(m_map_location_hint, vis_rect );
 	if ( !is_visible )
 	{
@@ -741,9 +724,10 @@ void CUIMapWnd::Reset()
 
 /*void CUIMapWnd::SpotSelected(CUIWindow* w)
 {
-	CMapSpot* sp		= smart_cast<CMapSpot*>(w);
-	if(NULL==sp)		return;
-	
+	CMapSpot* sp	= smart_cast<CMapSpot*>( w );
+	if ( !sp )
+		return;
+
 	CGameTask* t		= Level().GameTaskManager().HasGameTask(sp->MapLocation(), true);
 	if(t && t->GetTaskType()==eTaskTypeAdditional)
 	{
@@ -753,8 +737,8 @@ void CUIMapWnd::Reset()
 
 void CUIMapWnd::SpotSelected(CUIWindow* w)
 {
-	CMapSpot* sp = smart_cast<CMapSpot*>(w);
-	if (!sp)
+	CMapSpot* sp	= smart_cast<CMapSpot*>( w );
+	if ( !sp )
 	{
 		return;
 	}

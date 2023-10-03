@@ -741,7 +741,8 @@ bool CRelationMapLocation::Update()
 		CSE_ALifeCreatureAbstract*		pCreature = smart_cast<CSE_ALifeCreatureAbstract*>(m_owner_se_object);
 		if(pCreature) //maybe trader ?
 			bAlive = pCreature->g_Alive		();
-	}else
+	}
+	else
 	{
 		CInventoryOwner*			pEnt = NULL;
 		CInventoryOwner*			pAct = NULL;
@@ -775,8 +776,8 @@ bool CRelationMapLocation::Update()
 		if(_object_)
 		{
 			CEntityAlive* ea = smart_cast<CEntityAlive*>(_object_);
-			if(ea&&!ea->g_Alive()) 
-				vis_res =  true;	
+			if(ea&&!ea->g_Alive())
+				vis_res = true;
 			else
 			{
 				const CGameObject* pObj = smart_cast<const CGameObject*>(_object_);
@@ -823,7 +824,7 @@ bool CRelationMapLocation::Update()
 		else
 			vis_res = false;
 	}
-	
+
 	if(m_b_visible==false && vis_res==true)
 		m_minimap_spot->ResetXformAnimation();
 
