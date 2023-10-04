@@ -160,8 +160,8 @@ public:
 };
 
 // Main configuration file
-extern XRCORE_API CInifile const * pSettings;
+extern XRCORE_API CInifile *pSettings;
+extern XRCORE_API CInifile *pAdvancedSettings;
 extern XRCORE_API CInifile const * pSettingsAuth;
-extern XRCORE_API CInifile const * pAdvancedSettings;
 
 #endif //__XR_INI_H__

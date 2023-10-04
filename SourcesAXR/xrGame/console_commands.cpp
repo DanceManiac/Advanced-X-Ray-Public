@@ -2157,6 +2157,44 @@ public:
 	}
 };
 
+struct CCC_ReloadSystemLtx : public IConsole_Command
+{
+	CCC_ReloadSystemLtx(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = true;
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		string_path fname;
+		FS.update_path(fname, "$game_config$", "system.ltx");
+		CInifile::Destroy(pSettings);
+		pSettings = new CInifile(fname, TRUE);
+		CHECK_OR_EXIT(0 != pSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+		Msg("system.ltx was reloaded.");
+	}
+};
+
+struct CCC_ReloadAdvancedXRayCfg : public IConsole_Command
+{
+	CCC_ReloadAdvancedXRayCfg(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = true;
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		string_path fname;
+		FS.update_path(fname, "$game_config$", "AdvancedXRay.ltx");
+		CInifile::Destroy(pAdvancedSettings);
+		pAdvancedSettings = new CInifile(fname, TRUE);
+		CHECK_OR_EXIT(0 != pAdvancedSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+		GameConstants::LoadConstants();
+		Msg("AdvancedXRay.ltx was reloaded.");
+	}
+};
+
+
 extern BOOL UIRedraw;
 
 void CCC_RegisterCommands()
@@ -2372,6 +2410,8 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD1(CCC_GiveTask,		"g_task");
 		CMD1(CCC_GiveMoney,		"g_money");
 		CMD1(CCC_KillEntity,	"kill");
+		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
+		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
 		CMD1(DumpTxrsForPrefetching, "ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
 		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
