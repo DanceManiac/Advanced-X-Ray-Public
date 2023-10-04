@@ -7296,6 +7296,7 @@
     </ClInclude>
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xrPhysics\xrPhysics.h" />
     <ClInclude Include="physics_game.h" />
     <ClInclude Include="trajectories.h">
@@ -10908,6 +10909,7 @@
     </ClCompile>
     <ClCompile Include="ui\UIArtefactPanel.cpp">
       <Filter>UI\Common\MainIngame</Filter>
+    </ClCompile>
     <ClCompile Include="trajectories.cpp">
       <Filter>AI\AMonsters\common\trajectories</Filter>
     </ClCompile>
