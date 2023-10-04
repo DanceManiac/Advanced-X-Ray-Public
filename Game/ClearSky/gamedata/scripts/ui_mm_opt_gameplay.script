@@ -9,7 +9,6 @@ end
 
 function opt_gameplay:InitControls(x, y, xml, handler)
 	local ctl
-	local _st
 
 
 	self:SetWndPos(vector2():set(x,y))
@@ -19,74 +18,58 @@ function opt_gameplay:InitControls(x, y, xml, handler)
 	self.bk = xml:InitFrame("frame_gameplay", self)
 	self.scroll_g = xml:InitScrollView("tab_gameplay:scroll_g", self)
 	
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	local _st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitStatic("tab_gameplay:cap_difficulty",			_st)
 	xml:InitComboBox("tab_gameplay:list_difficulty",		_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitStatic("tab_gameplay:cap_crosshair_type",		_st)
 	xml:InitComboBox("tab_gameplay:list_crosshair_type",		_st)
-	self.scroll_g:AddWindow(_st, true)
 	
 --Режим поведения камеры во время смерти
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitStatic("tab_gameplay:cap_death_cam_mode",		_st)
 	xml:InitComboBox("tab_gameplay:list_death_cam_mode",		_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitStatic("tab_gameplay:cap_quick_saves_count",		_st)
 	xml:InitTrackBar("tab_gameplay:track_quick_saves_count",	_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_tips",			_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_crosshair",			_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_dyn_crosshair",		_st)
-	self.scroll_g:AddWindow(_st, true)	
 	
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_adv_crosshair",		_st)
-	self.scroll_g:AddWindow(_st, true)	
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_show_weapon",			_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_dist",			_st)
-	self.scroll_g:AddWindow(_st, true)
 	
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_crouch_toggle",	_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_hud_draw",			_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_hud_collision",		_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_corpse_collision",		_st)
-	self.scroll_g:AddWindow(_st, true)
 	
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_walk_inertion",		_st)
-	self.scroll_g:AddWindow(_st, true)
 
-	_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
+	_st = xml:InitStatic("tab_gameplay:templ_item", 		self.scroll_g)
 	xml:InitCheck("tab_gameplay:check_loading_stages",		_st)
-	self.scroll_g:AddWindow(_st, true)
 
 	--[[_st = xml:InitStatic("tab_gameplay:templ_item", 		nil)
 	xml:InitCheck("tab_gameplay:check_keypress_on_start",		_st)

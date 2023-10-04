@@ -95,7 +95,7 @@
 		<cap_renderer x="17" y="20" width="119" height="21" hint = "ui_mm_renderer_hint">
 			<text font="letterica16" color="ui_6">ui_mm_renderer</text>			
 		</cap_renderer>
-		<list_renderer x="132" y="20" width="218" height="21" list_length="5" always_show_scroll="0">
+		<list_renderer x="132" y="16" width="218" height="21" list_length="5" always_show_scroll="0">
 			<options_item entry="renderer" group="mm_opt_video" depend="restart"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -108,7 +108,7 @@
 		<cap_preset x="17" y="50" width="119" height="21" hint = "ui_mm_preset_hint">
 			<text font="letterica16" color="ui_6">ui_mm_quality_presets</text>			
 		</cap_preset>
-		<list_presets x="132" y="50" width="218" height="21" list_length="5"  always_show_scroll="0">
+		<list_presets x="132" y="46" width="218" height="21" list_length="5"  always_show_scroll="0">
 			<options_item entry="_preset" group="mm_opt_video_preset" depend="vid"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -121,7 +121,7 @@
 		<cap_resolution x="17" y="80" width="119" height="21" hint = "ui_mm_resolution_hint">
 			<text font="letterica16" color="ui_6">ui_mm_resolution</text>
 		</cap_resolution>
-		<list_resolution x="132" y="80" width="218" height="21" list_length="7" always_show_scroll="1">
+		<list_resolution x="132" y="76" width="218" height="21" list_length="7" always_show_scroll="1">
 			<options_item entry="vid_mode" group="mm_opt_video" depend="vid"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -134,7 +134,7 @@
 		<cap_clr_drag_preset x="17" y="110" width="119" height="21" hint = "ui_mm_clr_drag_preset_hint">
 			<text font="letterica16" color="ui_6">ui_mm_clr_drag_preset</text>
 		</cap_clr_drag_preset>
-		<combo_clr_drag_preset x="132" y="110" width="218" height="21" list_length="7" always_show_scroll="1">
+		<combo_clr_drag_preset x="132" y="106" width="218" height="21" list_length="7" always_show_scroll="1">
 			<options_item entry="r2_clr_preset" group="mm_opt_video" depend="runtime"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -147,28 +147,28 @@
 		<cap_gamma x="17" y="140" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_gamma</text>
 		</cap_gamma>
-		<track_gamma x="132" y="140" width="218" height="21">
+		<track_gamma x="132" y="136" width="218" height="21">
 			<options_item entry="rs_c_gamma" group="mm_opt_video"/>
 		</track_gamma>
 
 		<cap_contrast x="17" y="170" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_contrast</text>
 		</cap_contrast>
-		<track_contrast x="132" y="170" width="218" height="21">
+		<track_contrast x="132" y="166" width="218" height="21">
 			<options_item entry="rs_c_contrast" group="mm_opt_video"/>
 		</track_contrast>
 
 		<cap_brightness x="17" y="200" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_brightness</text>
 		</cap_brightness>
-		<track_brightness x="132" y="200" width="218" height="21">
+		<track_brightness x="132" y="196" width="218" height="21">
 			<options_item entry="rs_c_brightness" group="mm_opt_video"/>
 		</track_brightness>
 		
 		<cap_fps_limit x="17" y="230" width="119" height="21" hint="ui_mm_fps_limit_hint">
 			<text font="letterica16" color="ui_6">ui_mm_fps_limit</text>
 		</cap_fps_limit>
-		<track_fps_limit x="132" y="230" width="218" height="21" min="10.0" max="900.0" step="10.0">
+		<track_fps_limit x="132" y="226" width="218" height="21" min="10.0" max="900.0" step="10.0">
 			<options_item entry="rs_fps_limit" group="mm_opt_video"/>
 				<output_wnd x="215" y="0" width="20" height="20" format="%.0f">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
@@ -178,7 +178,7 @@
 		<cap_fullscreen x="17" y="260" width="119" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_fullscreen</text>
 		</cap_fullscreen>
-		<check_fullscreen x="132" y="260" width="27" height="21" stretch="1">
+		<check_fullscreen x="132" y="256" width="27" height="21" stretch="1">
 			<options_item entry="rs_fullscreen" group="mm_opt_video" depend="vid"/>	
 		</check_fullscreen>
 		
@@ -995,19 +995,19 @@
 			<text font="letterica16" color="ui_6">ui_mm_snd_targets</text>
 		</cap_snd_targets>
 		
-		<track_mastervolume x="122" y="20" width="217" height="21" min="0.0" max="1.0" step="0.1">
+		<track_mastervolume x="122" y="17" width="217" height="21" min="0.0" max="1.0" step="0.1">
 			<options_item entry="snd_volume_eff" group="mm_opt_sound"/>
 			<output_wnd x="215" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
 		</track_mastervolume>
-		<track_musicvolume x="122" y="50" width="217" height="21" min="0.0" max="1.0" step="0.1">
+		<track_musicvolume x="122" y="47" width="217" height="21" min="0.0" max="1.0" step="0.1">
 			<options_item entry="snd_volume_music" group="mm_opt_sound"/>
 			<output_wnd x="215" y="0" width="20" height="20" format="%.1f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
 		</track_musicvolume>
-		<track_snd_targets x="122" y="80" width="217" height="21" is_integer="1" min="4" max="256" step="1">
+		<track_snd_targets x="122" y="77" width="217" height="21" is_integer="1" min="4" max="256" step="1">
 			<options_item entry="snd_targets" group="mm_opt_sound"/>
 			<output_wnd x="215" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
@@ -1017,7 +1017,7 @@
 		<cap_snd_device x="17" y="110" width="119" height="21">
 		  <text font="letterica16" color="ui_6">ui_mm_snd_device</text>
 		</cap_snd_device>
-		<list_snd_device x="122" y="110" width="217" height="21" always_show_scroll="1">
+		<list_snd_device x="122" y="107" width="217" height="21" always_show_scroll="1">
 		  <options_item entry="snd_device" group="mm_opt_sound" depend="restart"/>
 		  <text_color>
 			<e r="216" g="186" b="140"/>
@@ -1049,30 +1049,30 @@
   </tab_sound>
 
   <tab_gameplay>
-        <scroll_g x="0" y="10" width="385" height="313"
-        right_ident="0" left_ident="0" top_indent="0" bottom_indent="0"
+        <scroll_g x="9" y="5" width="381" height="318"
+        right_ident="0" left_ident="0" top_indent="10" bottom_indent="0"
         vert_interval="0" always_show_scroll="0"/>
 
         <templ_item width="360" height="30"/>
 		
-		<cap_difficulty x="7" y="20" width="203" height="21">
+		<cap_difficulty x="7" y="5" width="203" height="21">
 			<text font="letterica16" color="ui_6">ui_mm_difficulty</text>			
 		</cap_difficulty>
-
-		<list_difficulty x="142" y="20" width="190" height="21" always_show_scroll="0">	
+		<list_difficulty x="142" y="0" width="190" height="21" always_show_scroll="1">
 			<options_item entry="g_game_difficulty" group="mm_opt_gameplay"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
+				<d color="ui_gray"/>
 			</text_color>
 			<list_font_s r="240" g="217" b="182"/>
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_difficulty>
 		
-		<cap_crosshair_type x="7" y="20" width="203" height="21" hint = "ui_mm_crosshair_type_hint">
+		<cap_crosshair_type x="7" y="5" width="203" height="21" hint = "ui_mm_crosshair_type_hint">
 			<text font="letterica16" color="ui_6">ui_mm_crosshair_type</text>			
 		</cap_crosshair_type>
 
-		<list_crosshair_type x="142" y="20" width="190" height="21" always_show_scroll="0">	
+		<list_crosshair_type x="142" y="0" width="190" height="21" always_show_scroll="0">	
 			<options_item entry="g_crosshair_type" group="mm_opt_gameplay"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -1081,11 +1081,11 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_crosshair_type>
 		
-		<cap_death_cam_mode x="7" y="20" width="203" height="21" hint = "ui_mm_death_cam_mode_hint">
+		<cap_death_cam_mode x="7" y="5" width="203" height="21" hint = "ui_mm_death_cam_mode_hint">
 			<text font="letterica16" color="ui_6">ui_mm_death_cam_mode</text>			
 		</cap_death_cam_mode>
 
-		<list_death_cam_mode x="142" y="20" width="190" height="21" always_show_scroll="0">	
+		<list_death_cam_mode x="142" y="0" width="190" height="21" always_show_scroll="0">	
 			<options_item entry="g_death_cam_mode" group="mm_opt_gameplay"/>
 			<text_color>
 				<e r="216" g="186" b="140"/>
@@ -1094,77 +1094,77 @@
 			<list_font	 r="216" g="186" b="140" font="letterica16"/>
 		</list_death_cam_mode>
 		
-		<cap_quick_saves_count x="7" y="20" width="203" height="21" hint = "ui_mm_quick_saves_count_hint">
+		<cap_quick_saves_count x="7" y="5" width="203" height="21" hint = "ui_mm_quick_saves_count_hint">
 			<text font="letterica16" color="ui_6">ui_mm_quick_saves_count</text>
 		</cap_quick_saves_count>
-		<track_quick_saves_count x="142" y="20" width="190" height="21" min="0" max="25" step="1" is_integer="1">
+		<track_quick_saves_count x="142" y="0" width="190" height="21" min="0" max="25" step="1" is_integer="1">
 			<options_item entry="quick_save_counter" group="mm_opt_gameplay"/>
 			<output_wnd x="190" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 			</output_wnd>
 		</track_quick_saves_count>
 		
-		<check_tips x="7" y="12" width="27" height="21" stretch="1">
+		<check_tips x="7" y="5" width="27" height="21" stretch="1">
 			<options_item entry="hud_info" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_tips</text>
 		</check_tips>
 
-		<check_crosshair x="7" y="12" width="27" height="21" stretch="1">
+		<check_crosshair x="7" y="5" width="27" height="21" stretch="1">
 			<options_item entry="hud_crosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_show_crosshair</text>
 		</check_crosshair>
 
-		<check_dyn_crosshair x="7" y="12" width="27" height="21" stretch="1" hint = "ui_mm_dyn_crosshair_hint">
+		<check_dyn_crosshair x="7" y="5" width="27" height="21" stretch="1" hint = "ui_mm_dyn_crosshair_hint">
 			<options_item entry="cl_dynamiccrosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_dyn_crosshair</text>
 		</check_dyn_crosshair>
 		
-		<check_adv_crosshair x="7" y="12" width="27" height="21" stretch="1" hint = "ui_mm_adv_crosshair_hint">
+		<check_adv_crosshair x="7" y="5" width="27" height="21" stretch="1" hint = "ui_mm_adv_crosshair_hint">
 			<options_item entry="g_advanced_crosshair" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_adv_crosshair</text>
 		</check_adv_crosshair>
 
-		<check_show_weapon x="7" y="12" width="27" height="21" stretch="1">
+		<check_show_weapon x="7" y="5" width="27" height="21" stretch="1">
 			<options_item entry="hud_weapon" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_show_weapon</text>
 		</check_show_weapon>
 
-		<check_dist x="7" y="12" width="27" height="21" stretch="1">
+		<check_dist x="7" y="5" width="27" height="21" stretch="1">
 			<options_item entry="hud_crosshair_dist" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_crosshair_distance</text>
 		</check_dist>
 		
-		<check_crouch_toggle x="7" y="12" width="27" height="21">
+		<check_crouch_toggle x="7" y="5" width="27" height="21">
 			<options_item entry="g_crouch_toggle" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_crouch_toggle</text>
 		</check_crouch_toggle>
 		
-		<check_hud_draw x="7" y="12" width="27" height="21">
+		<check_hud_draw x="7" y="5" width="27" height="21">
 			<options_item entry="hud_draw" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_mm_hud_draw</text>
 		</check_hud_draw>
 		
-		<check_hud_collision x="7" y="12" width="27" height="21" hint = "ui_mm_hud_collision_hint">
+		<check_hud_collision x="7" y="5" width="27" height="21" hint = "ui_mm_hud_collision_hint">
 			<options_item entry="hud_collision" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_hud_collision</text>
 		</check_hud_collision>
 		
-		<check_corpse_collision x="7" y="12" width="27" height="21">
+		<check_corpse_collision x="7" y="5" width="27" height="21">
 			<options_item entry="ph_corpse_collision" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_corpse_collision</text>
 		</check_corpse_collision>
 		
-		<check_walk_inertion x="7" y="12" width="27" height="21" hint = "ui_mm_walk_inertion_hint">
+		<check_walk_inertion x="7" y="5" width="27" height="21" hint = "ui_mm_walk_inertion_hint">
 			<options_item entry="actor_walk_inertion" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_walk_inertion</text>
 		</check_walk_inertion>
 		
-		<check_loading_stages x="7" y="12" width="27" height="21" hint = "ui_mm_loading_stages_hint">
+		<check_loading_stages x="7" y="5" width="27" height="21" hint = "ui_mm_loading_stages_hint">
 			<options_item entry="rs_loadingstages" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_loading_stages</text>
 		</check_loading_stages>
 		
-		<check_keypress_on_start x="7" y="12" width="27" height="21">
+		<check_keypress_on_start x="7" y="5" width="27" height="21">
 			<options_item entry="keypress_on_start" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_keypress_on_start</text>
 		</check_keypress_on_start>
