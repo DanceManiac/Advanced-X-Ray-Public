@@ -86,8 +86,7 @@ bool CRepairKit::UseAllowed()
 		else
 			return false;
 	}
-	else
-		return false;
+	return false;
 }
 
 void CRepairKit::UseBy(CEntityAlive* entity_alive)

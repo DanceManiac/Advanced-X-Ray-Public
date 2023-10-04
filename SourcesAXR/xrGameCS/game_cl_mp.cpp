@@ -45,7 +45,7 @@
 #define KILLEVENT_GRID_HEIGHT	64
 
 #include "game_cl_mp_snd_messages.h"
-#include "../3rd party/crypto/crypto.h""
+#include "../3rd party/crypto/crypto.h"
 #include "player_name_modifyer.h"
 
 BOOL g_draw_downloads = TRUE;
