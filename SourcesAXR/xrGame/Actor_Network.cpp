@@ -1,6 +1,5 @@
 ﻿#include "pch_script.h"
 #include "actor.h"
-#include "hudmanager.h"
 #include "Actor_Flags.h"
 #include "inventory.h"
 #include "xrserver_objects_alife_monsters.h"
@@ -36,6 +35,7 @@
 #include "ui/UITaskWnd.h"
 
 #include "map_manager.h"
+#include "HUDManager.h"
 #include "ui/UIMainIngameWnd.h"
 #include "ui/UIArtefactPanel.h"
 #include "gamepersistent.h"
@@ -47,9 +47,9 @@
 #include "actor_statistic_mgr.h"
 #include "characterphysicssupport.h"
 #include "game_cl_base_weapon_usage_statistic.h"
-#include "../xrengine/xr_collide_form.h"
 #include "Artefact.h"
 
+#include "../xrengine/xr_collide_form.h"
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #	include "../xrPhysics/phvalide.h"

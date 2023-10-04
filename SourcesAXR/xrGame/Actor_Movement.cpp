@@ -295,7 +295,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float hangover			= conditions().GetHangover();
 			float withdrawal		= conditions().GetWithdrawal();
 			float walkAccelSkill	= 0.0f;
-				
+
 			if (ActorSkills)
 				walkAccelSkill = conditions().m_fWalkAccelSkill * ActorSkills->enduranceSkillLevel;
 
@@ -387,10 +387,10 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 		state_anm					= "go_back";
 	else
 	if (mstate_real&mcJump && !(mstate_old&mcJump))
-		state_anm					= "jump";
+		state_anm = "jump";
 	else
 	if (mstate_real&mcFall && !(mstate_old&mcFall))
-		state_anm					= "down";
+		state_anm = "down";
 
 		if(state_anm)
 		{ //play moving cam effect
@@ -784,7 +784,7 @@ float CActor::get_additional_weight() const
 	{
 		res += pants->m_additional_weight;
 	}
-	
+
 	if (ActorSkills)
 		res += (ActorSkills->powerSkillLevel * conditions().m_fMaxWeightSkill);
 

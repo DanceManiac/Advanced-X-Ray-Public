@@ -8,7 +8,7 @@
 #include "../xrEngine/IGame_Persistent.h"
 
 
-#define C_DEFAULT	D3DCOLOR_XRGB(0xff,0xff,0xff)
+#define C_DEFAULT	color_xrgb(0xff,0xff,0xff)
 
 CUICursor::CUICursor()
 :m_static(NULL),m_b_use_win_cursor(false)

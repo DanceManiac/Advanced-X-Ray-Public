@@ -173,7 +173,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 	if (mstate_wf&mcRStrafe)	vControlAccel.x +=  1;
 
 	CPHMovementControl::EEnvironment curr_env = character_physics_support()->movement()->Environment();
-	if(curr_env==CPHMovementControl::peOnGround || curr_env==CPHMovementControl::peAtWall )
+	if(curr_env==CPHMovementControl::peOnGround || curr_env==CPHMovementControl::peAtWall)
 	{
 		// crouch
 		if ((0==(mstate_real&mcCrouch))&&(mstate_wf&mcCrouch))
@@ -292,9 +292,9 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			// normalize and analyze crouch and run
 			float	scale			= vControlAccel.magnitude();
-			float hangover = conditions().GetHangover();
-			float withdrawal = conditions().GetWithdrawal();
-			float walkAccelSkill = 0.0f;
+			float hangover			= conditions().GetHangover();
+			float withdrawal		= conditions().GetWithdrawal();
+			float walkAccelSkill	= 0.0f;
 
 			if (ActorSkills)
 				walkAccelSkill = conditions().m_fWalkAccelSkill * ActorSkills->enduranceSkillLevel;

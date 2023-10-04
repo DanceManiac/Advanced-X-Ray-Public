@@ -109,7 +109,7 @@ struct SPHContactDBGDraw :public SPHDBGDrawAbsract
 	void render		( )
 	{
 			//bool is_cyl= (geomClass==dCylinderClassUser);
-			Level().debug_renderer().draw_aabb			(pos,.01f,.01f,.01f,D3DCOLOR_XRGB(255*is_cyl,0,255*!is_cyl));
+			Level().debug_renderer().draw_aabb			(pos,.01f,.01f,.01f,color_xrgb(255*is_cyl,0,255*!is_cyl));
 			Fvector dir;
 			dir.set(norm);
 			dir.mul(depth*100.f);
@@ -999,10 +999,10 @@ void DBG_ObjBeforeStep			( CPHObject *obj )
 	if( is_trace_obj(obj) )
 	{
 		DBG_OpenCashedDraw();
-		//dbg_draw_velocity	( 0.1f, D3DCOLOR_XRGB( 255, 0, 0 ) ); 
+		//dbg_draw_velocity	( 0.1f, color_xrgb( 255, 0, 0 ) ); 
 		if(obj->ref_object()->ObjectPPhysicsShell())
 		{
-			obj->ref_object()->ObjectPPhysicsShell()->dbg_draw_force		( 0.1f, D3DCOLOR_XRGB( 0, 0, 255 ) ); 
+			obj->ref_object()->ObjectPPhysicsShell()->dbg_draw_force		( 0.1f, color_xrgb( 0, 0, 255 ) ); 
 			Fmatrix form = Fidentity;
 			obj->ref_object()->ObjectPPhysicsShell()->GetGlobalTransformDynamic( &form );
 			dbg_trace_prev_pos.set( form.c );
@@ -1018,9 +1018,9 @@ void DBG_ObjAfterStep			( CPHObject *obj )
 		
 		if(obj->ref_object()->ObjectPPhysicsShell())
 		{
-			obj->ref_object()->ObjectPPhysicsShell()->dbg_draw_velocity	( 0.1f, D3DCOLOR_XRGB( 255, 0, 0 ) );
+			obj->ref_object()->ObjectPPhysicsShell()->dbg_draw_velocity	( 0.1f, color_xrgb( 255, 0, 0 ) );
 		}
-		//dbg_draw_force		( 0.1f, D3DCOLOR_XRGB( 0, 0, 255 ) ); 
+		//dbg_draw_force		( 0.1f, color_xrgb( 0, 0, 255 ) ); 
 		
 	}
 }
@@ -1037,7 +1037,7 @@ void DBG_ObjAfterPhDataUpdate	( CPHObject *obj )
 		{
 			Fmatrix form = Fidentity;
 			obj->ref_object()->ObjectPPhysicsShell()->GetGlobalTransformDynamic( &form );
-			DBG_DrawLine( dbg_trace_prev_pos, form.c,  D3DCOLOR_XRGB( 255, 0, 0 )  );
+			DBG_DrawLine( dbg_trace_prev_pos, form.c,  color_xrgb( 255, 0, 0 )  );
 		}
 		DBG_ClosedCashedDraw( 50000 );
 	
