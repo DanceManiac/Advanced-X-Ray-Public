@@ -73,9 +73,13 @@
     <text font="graffiti32"  r="240" g="217" b="182" a="255" align="l"/>
   </cs_arena_kills>
 
-		<game_saved x="100" y="730" width="800" height="30" ttl="3">
-			<text font="graffiti22" r="240" g="217" b="182" a="255" align="c"/>
+		<game_saved x="540" y="27" width="800" height="30" ttl="6">
+			<text font="arial_14" r="240" g="217" b="182" a="255" align="c"/>
 		</game_saved>
+
+		<game_saved_icon x="1000" y="32" width="32" height="36" ttl="6" alignment="c" stretch="1">
+				<texture>mfs_team\ui\quicksave_icon\ui_quicksave_icon</texture>
+		</game_saved_icon>
 
         <autosave  x="100" y="730" width="800" height="30" ttl="3">
                 <text font="graffiti22"  r="240" g="217" b="182" a="255" align="c">st_autosave</text>

@@ -904,9 +904,8 @@ public:
 		Msg						("Game save overhead  : %f milliseconds",timer.GetElapsed_sec()*1000.f);
 #endif
 		SDrawStaticStruct* _s		= CurrentGameUI()->AddCustomStatic("game_saved", true);
-		LPSTR						save_name;
-		STRCONCAT					(save_name, CStringTable().translate("st_game_saved").c_str(), ": ", S);
-		_s->wnd()->TextItemControl()->SetText(save_name);
+		SDrawStaticStruct* _s2		= CurrentGameUI()->AddCustomStatic("game_saved_icon", true);
+		_s->wnd()->TextItemControl()->SetText(CStringTable().translate("st_game_saved").c_str());
 
 		xr_strcat				(S,".dds");
 		FS.update_path			(S1,"$game_saves$",S);
