@@ -547,7 +547,6 @@ HWND CreateSplashWindow(HINSTANCE hInst)
 
 HWND WINAPI ShowSplash(HINSTANCE hInstance, int nCmdShow)
 {
-	MSG msg;
 	HWND hWnd;
 
 	//image

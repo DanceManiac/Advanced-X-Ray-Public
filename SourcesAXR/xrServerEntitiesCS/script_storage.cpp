@@ -10,7 +10,7 @@
 #include "script_storage.h"
 #include "script_thread.h"
 #include <stdarg.h>
-#include "doug_lea_memory_allocator.h"
+#include "../xrCore/doug_lea_allocator.h"
 
 #ifndef DEBUG
 #	include "opt.lua.h"
@@ -59,9 +59,9 @@ LPCSTR	file_header = 0;
 #endif
 
 #ifndef PURE_ALLOC
-#	ifndef USE_MEMORY_MONITOR
+//#	ifndef USE_MEMORY_MONITOR
 #		define USE_DL_ALLOCATOR
-#	endif // USE_MEMORY_MONITOR
+//#	endif // USE_MEMORY_MONITOR
 #endif // PURE_ALLOC
 
 #ifndef USE_DL_ALLOCATOR
@@ -80,16 +80,53 @@ static void *lua_alloc		(void *ud, void *ptr, size_t osize, size_t nsize) {
 #endif // DEBUG_MEMORY_MANAGER
 }
 #else // USE_DL_ALLOCATOR
-static void *lua_alloc_dl	(void *ud, void *ptr, size_t osize, size_t nsize) {
-  (void)ud;
-  (void)osize;
-  if (nsize == 0)	{	dlfree			(ptr);	 return	NULL;  }
-  else				return dlrealloc	(ptr, nsize);
+
+#include "../xrCore/memory_allocator_options.h"
+
+#ifdef USE_ARENA_ALLOCATOR
+static const u32			s_arena_size = 96*1024*1024;
+static char					s_fake_array[s_arena_size];
+static doug_lea_allocator	s_allocator( s_fake_array, s_arena_size, "lua" );
+#else // #ifdef USE_ARENA_ALLOCATOR
+static doug_lea_allocator	s_allocator( 0, 0, "lua" );
+#endif // #ifdef USE_ARENA_ALLOCATOR
+
+static void *lua_alloc		(void *ud, void *ptr, size_t osize, size_t nsize) {
+#ifndef USE_MEMORY_MONITOR
+	(void)ud;
+	(void)osize;
+	if ( !nsize )	{
+		s_allocator.free_impl	(ptr);
+		return					0;
+	}
+
+	if ( !ptr )
+		return					s_allocator.malloc_impl((u32)nsize);
+
+	return						s_allocator.realloc_impl(ptr, (u32)nsize);
+#else // #ifndef USE_MEMORY_MONITOR
+	if ( !nsize )	{
+		memory_monitor::monitor_free(ptr);
+		s_allocator.free_impl		(ptr);
+		return						NULL;
+	}
+
+	if ( !ptr ) {
+		void* const result			= s_allocator.malloc_impl((u32)nsize);
+		memory_monitor::monitor_alloc (result,nsize,"LUA");
+		return						result;
+	}
+
+	memory_monitor::monitor_free	(ptr);
+	void* const result				= s_allocator.realloc_impl(ptr, (u32)nsize);
+	memory_monitor::monitor_alloc	(result,nsize,"LUA");
+	return							result;
+#endif // #ifndef USE_MEMORY_MONITOR
 }
 
 u32 game_lua_memory_usage	()
 {
-	return					((u32)dlmallinfo().uordblks);
+	return					(s_allocator.get_allocated_size());
 }
 #endif // USE_DL_ALLOCATOR
 
@@ -240,11 +277,7 @@ void CScriptStorage::reinit	()
 	if (m_virtual_machine)
 		lua_close			(m_virtual_machine);
 
-#ifndef USE_DL_ALLOCATOR
 	m_virtual_machine		= luaL_newstate();
-#else // USE_DL_ALLOCATOR
-	m_virtual_machine		= lua_newstate(lua_alloc_dl, NULL);
-#endif // USE_DL_ALLOCATOR
 
 	if (!m_virtual_machine) {
 		Msg					("! ERROR : Cannot initialize script virtual machine!");
@@ -494,10 +527,10 @@ bool CScriptStorage::load_buffer	(lua_State *L, LPCSTR caBuffer, size_t tSize, L
 		xr_strcpy		(script, total_size, insert);
 		CopyMemory		(script + str_len,caBuffer,u32(tSize));
 
-			l_iErrorCode= luaL_loadbuffer(L,script,tSize + str_len,caScriptName);
+		l_iErrorCode	= luaL_loadbuffer(L,script,tSize + str_len,caScriptName);
 
 		if ( dynamic_allocation )
-		xr_free			(script);
+			xr_free		(script);
 	}
 	else {
 //		try
@@ -690,15 +723,48 @@ luabind::object CScriptStorage::name_space(LPCSTR namespace_name)
 	}
 }
 
+#include <boost/noncopyable.hpp>
+
+struct raii_guard : private boost::noncopyable {
+	int m_error_code;
+	LPCSTR const& m_error_description;
+	raii_guard	(int error_code, LPCSTR const& m_description) : m_error_code(error_code), m_error_description(m_description) {}
+	~raii_guard	()
+	{
+#ifdef DEBUG
+		bool lua_studio_connected = !!ai().script_engine().debugger();
+		if (!lua_studio_connected)
+#endif //#ifdef DEBUG
+		{
+#ifdef DEBUG
+			static bool const break_on_assert	= !!strstr(Core.Params,"-break_on_assert");
+#else // #ifdef DEBUG
+			static bool const break_on_assert	= true;
+#endif // #ifdef DEBUG
+			if ( !m_error_code  )
+				return;
+
+			if ( break_on_assert )
+				R_ASSERT2		( !m_error_code, m_error_description );
+			else
+				Msg				( "! SCRIPT ERROR: %s", m_error_description );
+		}
+	}
+}; // struct raii_guard
+
 bool CScriptStorage::print_output(lua_State *L, LPCSTR caScriptFileName, int iErorCode)
-{
+{	
 	if (iErorCode)
 		print_error		(L,iErorCode);
 
-	if (!lua_isstring(L,-1))
-		return			(false);
+	LPCSTR				S = "see call_stack for details!";
 
-	LPCSTR				S = lua_tostring(L,-1);
+	raii_guard			guard(iErorCode, S);
+
+	if (!lua_isstring(L,-1))		
+		return				(false);
+	
+	S = lua_tostring(L,-1);
 	if (!xr_strcmp(S,"cannot resume dead coroutine")) {
 		VERIFY2	("Please do not return any values from main!!!",caScriptFileName);
 #ifdef USE_DEBUGGER
@@ -775,7 +841,7 @@ int CScriptStorage::error_log	(LPCSTR	format, ...)
 	LPCSTR			S = "! [LUA][ERROR] ";
 	LPSTR			S1;
 	string4096		S2;
-	strcpy_s		(S2,S);
+	xr_strcpy		(S2,S);
 	S1				= S2 + xr_strlen(S);
 
 	int				result = vsprintf(S1,format,marker);

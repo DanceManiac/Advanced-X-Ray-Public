@@ -625,7 +625,7 @@
     <Filter Include="AI\AMonsters\common\monster states\Dangerous Sound">
       <UniqueIdentifier>{53b22511-650c-466f-abd6-c8310e89882b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Camp">
+    <Filter Include="AI\AMonsters\common\monster states\Attack\Camp">
       <UniqueIdentifier>{0412aad9-b840-472c-99d3-af564c15a716}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Controlled">
@@ -3834,16 +3834,16 @@
       <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_attack_camp.h">
-      <Filter>AI\AMonsters\common\monster states\Camp</Filter>
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Camp</Filter>
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_stealout.h">
-      <Filter>AI\AMonsters\common\monster states\Camp</Filter>
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_stealout_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Camp</Filter>
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_controlled.h">
       <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
@@ -7427,7 +7427,9 @@
     <ClInclude Include="DynamicHudGlass.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
-    <ClInclude Include="ActorNightVision.h" />
+    <ClInclude Include="ActorNightVision.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\devices</Filter>
+    </ClInclude>
     <ClInclude Include="profile_data_types_script.h" />
     <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h">
       <Filter>EmbeddedEditor</Filter>
@@ -11145,7 +11147,9 @@
     <ClCompile Include="DynamicHudGlass.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
-    <ClCompile Include="ActorNightVision.cpp" />
+    <ClCompile Include="ActorNightVision.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\devices</Filter>
+    </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>

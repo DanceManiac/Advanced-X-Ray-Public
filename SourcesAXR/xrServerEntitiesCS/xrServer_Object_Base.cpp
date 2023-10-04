@@ -232,7 +232,7 @@ void CSE_Abstract::Spawn_Write				(NET_Packet	&tNetPacket, BOOL bLocal)
 	tNetPacket.w_seek			(position,&size,sizeof(u16));
 }
 
-static enum EGameTypes {
+enum EGameTypes {
 	GAME_ANY							= 0,
 	GAME_SINGLE							= 1,
 	GAME_DEATHMATCH						= 2,

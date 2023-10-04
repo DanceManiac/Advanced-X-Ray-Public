@@ -379,63 +379,6 @@
     <Filter Include="AI\ALife\interaction_manager\combat_manager">
       <UniqueIdentifier>{d45d8266-6cd5-4444-a022-a98a5d30bfb5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities">
-      <UniqueIdentifier>{99edb87c-20b0-44ca-9e56-e1a556b06388}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\anomalous_zone">
-      <UniqueIdentifier>{90f55b13-a7f0-4971-9fd0-a136580135f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\creature_abstract">
-      <UniqueIdentifier>{3eec1939-7751-4b89-90b1-a498df95bf3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\dynamic_object">
-      <UniqueIdentifier>{0c52731b-7868-4aa4-a0d6-e324dfb49051}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\human">
-      <UniqueIdentifier>{9439476b-450b-472b-b6e4-aafcccc55e1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\human\brain">
-      <UniqueIdentifier>{44f91766-bd63-4da6-8943-6f6e909df659}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\human\object_handler">
-      <UniqueIdentifier>{588d3e52-4177-48f2-8836-c62fb60c9606}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\group_abstract">
-      <UniqueIdentifier>{1c38364e-8f79-4e0f-910b-ff17ce4a9a4a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\monster_abstract">
-      <UniqueIdentifier>{c07deca4-8fd2-4158-b757-5686401ebf54}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\monster_abstract\brain">
-      <UniqueIdentifier>{544cbb15-67ae-4a15-942a-efe91c0f7567}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager">
-      <UniqueIdentifier>{08b048b8-2c38-4a3d-a7c2-d6353d95fda0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\detail_path_manager">
-      <UniqueIdentifier>{d0d493cb-7053-45f9-84a1-869a88d49df9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\patrol_path_manager">
-      <UniqueIdentifier>{04faf878-8d04-414e-887d-26964bd243e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\object">
-      <UniqueIdentifier>{d9382ca6-11e4-4920-b20f-f93da66e0206}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\online_offline_group">
-      <UniqueIdentifier>{4841d43f-eb68-45c1-b88e-f8bdab5b1ef2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\online_offline_group\brain">
-      <UniqueIdentifier>{3eab7ab8-903b-4375-aab3-f49b99e92627}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\smart_zone">
-      <UniqueIdentifier>{ab53e468-af5c-4999-b3e3-06197f48ec08}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\trader">
-      <UniqueIdentifier>{b2e66fae-c75c-4239-9114-42294bb9d61c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\interaction_manager\server_entities\trader_abstract">
-      <UniqueIdentifier>{92f21213-78b5-4e76-9593-80633c4276ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\ALife\simulator_base">
       <UniqueIdentifier>{3d1019a6-07a8-43fc-a60a-60b661f85e8c}</UniqueIdentifier>
     </Filter>
@@ -523,6 +466,63 @@
     <Filter Include="AI\ALife\inventory_upgrade\property">
       <UniqueIdentifier>{00189c59-9a7e-4223-b64e-2685a3247364}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\ALife\server_entities">
+      <UniqueIdentifier>{99edb87c-20b0-44ca-9e56-e1a556b06388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\anomalous_zone">
+      <UniqueIdentifier>{90f55b13-a7f0-4971-9fd0-a136580135f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\creature_abstract">
+      <UniqueIdentifier>{3eec1939-7751-4b89-90b1-a498df95bf3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\dynamic_object">
+      <UniqueIdentifier>{0c52731b-7868-4aa4-a0d6-e324dfb49051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\human">
+      <UniqueIdentifier>{9439476b-450b-472b-b6e4-aafcccc55e1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\human\brain">
+      <UniqueIdentifier>{44f91766-bd63-4da6-8943-6f6e909df659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\human\object_handler">
+      <UniqueIdentifier>{588d3e52-4177-48f2-8836-c62fb60c9606}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\group_abstract">
+      <UniqueIdentifier>{1c38364e-8f79-4e0f-910b-ff17ce4a9a4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract">
+      <UniqueIdentifier>{c07deca4-8fd2-4158-b757-5686401ebf54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\brain">
+      <UniqueIdentifier>{544cbb15-67ae-4a15-942a-efe91c0f7567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager">
+      <UniqueIdentifier>{08b048b8-2c38-4a3d-a7c2-d6353d95fda0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager">
+      <UniqueIdentifier>{d0d493cb-7053-45f9-84a1-869a88d49df9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager">
+      <UniqueIdentifier>{04faf878-8d04-414e-887d-26964bd243e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\object">
+      <UniqueIdentifier>{d9382ca6-11e4-4920-b20f-f93da66e0206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\online_offline_group">
+      <UniqueIdentifier>{4841d43f-eb68-45c1-b88e-f8bdab5b1ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\online_offline_group\brain">
+      <UniqueIdentifier>{3eab7ab8-903b-4375-aab3-f49b99e92627}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\smart_zone">
+      <UniqueIdentifier>{ab53e468-af5c-4999-b3e3-06197f48ec08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\trader">
+      <UniqueIdentifier>{b2e66fae-c75c-4239-9114-42294bb9d61c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\trader_abstract">
+      <UniqueIdentifier>{92f21213-78b5-4e76-9593-80633c4276ec}</UniqueIdentifier>
+    </Filter>
     <Filter Include="AI\AMonsters">
       <UniqueIdentifier>{6e6e9bce-ea05-4a02-90fb-0b25d73cd4c4}</UniqueIdentifier>
     </Filter>
@@ -559,17 +559,38 @@
     <Filter Include="AI\AMonsters\common\monster states\Panic">
       <UniqueIdentifier>{a8de43d8-5b15-4516-aaa1-90612ad36582}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Dangerous Sound">
-      <UniqueIdentifier>{3e4bcef9-9ca3-426a-ad77-ed6ec136c579}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Interesting Sound">
       <UniqueIdentifier>{9b358667-d12a-4923-96c5-91a2a5aa10c7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Squad">
-      <UniqueIdentifier>{d1a4da7a-cc8f-4875-b9fa-c91d5b50ebb2}</UniqueIdentifier>
+    <Filter Include="AI\AMonsters\common\monster states\Attack">
+      <UniqueIdentifier>{fd530cb1-d252-40e6-b3d0-714d445db055}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Squad\Rest">
+    <Filter Include="AI\AMonsters\common\monster states\Hitted">
+      <UniqueIdentifier>{64cd1685-542c-4e6e-a140-0841ed0340ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Steal">
+      <UniqueIdentifier>{8c6aa20b-b690-410a-a716-6d8bec5cc2a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Steal\Squad">
+      <UniqueIdentifier>{45c539ce-add1-4362-bfe5-e67c40eb4da5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Steal\Squad\Rest">
       <UniqueIdentifier>{5b67ea62-97fd-4add-ace2-a52f20f8d2a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Home Point">
+      <UniqueIdentifier>{8b4497bb-f65e-4b13-b73a-6e1067da4c8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Help Sound">
+      <UniqueIdentifier>{3a6ee368-6a4a-41cb-9e83-4794329b8b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\ALife">
+      <UniqueIdentifier>{e8b17075-1aa2-432a-aee1-05447bc7053a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Group Monsters Home">
+      <UniqueIdentifier>{2e3f58e2-d4ca-47c4-aed8-8d2f54191af5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Find Enemy">
+      <UniqueIdentifier>{83636817-07f1-45ac-b10b-735180042253}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Eat">
       <UniqueIdentifier>{52983e77-1912-4dfb-a90a-45199d1c5b7f}</UniqueIdentifier>
@@ -595,38 +616,14 @@
     <Filter Include="AI\AMonsters\common\monster states\General\Test">
       <UniqueIdentifier>{ac2141fa-779a-4a55-90b8-4923a893c314}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Attack">
-      <UniqueIdentifier>{fd530cb1-d252-40e6-b3d0-714d445db055}</UniqueIdentifier>
+    <Filter Include="AI\AMonsters\common\monster states\Dangerous Sound">
+      <UniqueIdentifier>{3e4bcef9-9ca3-426a-ad77-ed6ec136c579}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Attack\Camp">
       <UniqueIdentifier>{cfa94d33-0dea-4fe3-ae54-528dc660bca3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Hitted">
-      <UniqueIdentifier>{64cd1685-542c-4e6e-a140-0841ed0340ef}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Steal">
-      <UniqueIdentifier>{8c6aa20b-b690-410a-a716-6d8bec5cc2a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Hunt">
-      <UniqueIdentifier>{45c539ce-add1-4362-bfe5-e67c40eb4da5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Controlled">
       <UniqueIdentifier>{7fd15220-fa77-4a8f-8410-b5ac51812648}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Home Point">
-      <UniqueIdentifier>{8b4497bb-f65e-4b13-b73a-6e1067da4c8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Help Sound">
-      <UniqueIdentifier>{3a6ee368-6a4a-41cb-9e83-4794329b8b1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\ALife">
-      <UniqueIdentifier>{e8b17075-1aa2-432a-aee1-05447bc7053a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Group Monsters Home">
-      <UniqueIdentifier>{2e3f58e2-d4ca-47c4-aed8-8d2f54191af5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Find Enemy">
-      <UniqueIdentifier>{83636817-07f1-45ac-b10b-735180042253}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\components">
       <UniqueIdentifier>{2d04d12f-526e-4715-8ca1-acea8eb5212a}</UniqueIdentifier>
@@ -777,6 +774,9 @@
     </Filter>
     <Filter Include="AI\AMonsters\common\steering behaviours\manager">
       <UniqueIdentifier>{95916a63-374c-462f-ab5a-4046212394b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\trajectories">
+      <UniqueIdentifier>{fec2de6c-74b8-4027-bb86-d7f8f2b0fa2f}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\monsters">
       <UniqueIdentifier>{2d6fe6c8-41e0-45df-a443-0dfaa2ac2b71}</UniqueIdentifier>
@@ -1432,9 +1432,6 @@
     <Filter Include="AI\AScript\ScriptThread\ScriptStackTracker">
       <UniqueIdentifier>{eba716a7-6c50-4c70-a2d0-b1ce931e7df5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AScript\memory_allocator">
-      <UniqueIdentifier>{2bbbe4dd-734c-483c-899a-c83b9fd9a780}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AScript\lua_studio">
       <UniqueIdentifier>{9718ab15-792a-4e2b-93a3-96c699ef3760}</UniqueIdentifier>
     </Filter>
@@ -1644,6 +1641,9 @@
     </Filter>
     <Filter Include="Core\Client\Objects\tasks_info_dialogs\statistics">
       <UniqueIdentifier>{c97f0670-6132-4545-85de-d055b3196915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Objects\tasks_info_dialogs\map">
+      <UniqueIdentifier>{09af6244-6b12-44aa-b01f-1edc9ead6900}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Client\Objects\inventory">
       <UniqueIdentifier>{cf4914a2-1e41-47eb-ab20-fe621f3410cd}</UniqueIdentifier>
@@ -2038,8 +2038,11 @@
     <Filter Include="Core\Common\QuadTree">
       <UniqueIdentifier>{c11c44b1-f32d-45c6-a9da-e074ad50e6f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Common\Random32">
+    <Filter Include="Core\Common\Random">
       <UniqueIdentifier>{fe1fa63b-fed6-44fe-bd58-a2e147c388d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Common\Random\32bit">
+      <UniqueIdentifier>{0e24324c-f05c-4495-8d33-de3dc468d8d8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Common\Shared">
       <UniqueIdentifier>{caf19a4a-16b6-49c8-9f69-b94947367346}</UniqueIdentifier>
@@ -2176,41 +2179,14 @@
     <Filter Include="Core\Server\xrGameSpyServer">
       <UniqueIdentifier>{e0515ba9-bb96-4b7e-8159-ca1d16341e34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Server\filetransfer">
+      <UniqueIdentifier>{63c42f98-445c-4d1a-8bbe-7ae8ee1a137b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Server\ServerConnect">
+      <UniqueIdentifier>{cbaa1996-93bb-438f-b073-a00959ef123a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Server\BattlEye_Server">
       <UniqueIdentifier>{1fb7eecf-8cd9-450f-b482-e85788b69f3f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics">
-      <UniqueIdentifier>{007c79b8-5e32-4b95-883b-1e1b4ed0d5c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\CharacterSupport">
-      <UniqueIdentifier>{0b83cc26-8c88-47bc-b2f6-2031d7066345}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\CharacterSupport\interactive_motion">
-      <UniqueIdentifier>{996b481e-446a-4d14-95c3-284eac76740b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\CharacterSupport\death_anims">
-      <UniqueIdentifier>{d86bda93-46ed-4ffe-a4f4-ab9d0e7650d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\CharacterSupport\hit_anims">
-      <UniqueIdentifier>{70f34799-963e-49d2-a6e1-4344435530e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\CharacterSupport\interactive_anims">
-      <UniqueIdentifier>{875e206a-fd1a-487d-a484-5882aaab93df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\DamagableItem">
-      <UniqueIdentifier>{d52f4339-0d3d-41f9-acce-8a351547dd60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\PhysicsSoundPlayer">
-      <UniqueIdentifier>{41c326bd-513a-4a28-bbb7-8fc81a8dc581}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Hit">
-      <UniqueIdentifier>{f25bbbfd-8c42-4ef8-8d66-d55a53eee1c8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\IK">
-      <UniqueIdentifier>{cc8187fb-7a96-4b5c-ab57-467ce0f20502}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\animation_movement_controller">
-      <UniqueIdentifier>{fe059290-d61f-485f-8e67-0b6807fde3e6}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{c23b2a96-f9e9-4fb6-99a2-4a4991f66084}</UniqueIdentifier>
@@ -2287,10 +2263,10 @@
     <Filter Include="UI\Common\OptionsConsoleCommands">
       <UniqueIdentifier>{7cfe5010-d2ed-486a-ae08-2ac2848960a0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\Common\MM">
+    <Filter Include="UI\Common\MainMenu">
       <UniqueIdentifier>{8a694099-4639-4f4a-ba40-5c36df1a1269}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\Common\MM\KeyBinding">
+    <Filter Include="UI\Common\MainMenu\KeyBinding">
       <UniqueIdentifier>{8afecc13-b34b-4496-b5a1-e63f05cf06cf}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\InventoryUtilities">
@@ -2356,13 +2332,10 @@
     <Filter Include="UI\UIWindows\ScrollView">
       <UniqueIdentifier>{fdb53db5-4091-478c-a478-442806bc4cdd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\UIWindows\ScrollView\ListBox">
-      <UniqueIdentifier>{f2841506-41d9-4720-949e-1a8c96c8bb1a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI\UIWindows\Lines">
       <UniqueIdentifier>{95a1bcc6-5994-4304-81b3-866e2348485b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\UIWindows\DragDrop2">
+    <Filter Include="UI\UIWindows\DragDrop">
       <UniqueIdentifier>{fd8dc50d-f922-4c52-83d4-1db57addd891}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\UIWindows\Label">
@@ -2374,17 +2347,17 @@
     <Filter Include="UI\UIWindows\SpinBox">
       <UniqueIdentifier>{25e94e00-8379-4dfe-95f7-b76dd78a635b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\UIWindows\ListBox">
-      <UniqueIdentifier>{886c67c1-2ade-4799-8cf5-12c431bf24ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\UIWindows\ListBox\Ex">
-      <UniqueIdentifier>{82057596-c7e8-4c2f-86d1-8c40fec8b96e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI\UIWindows\arrow">
       <UniqueIdentifier>{683e5437-a7a0-4389-9f11-f58f108d18e2}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\UIWindows\Hint">
       <UniqueIdentifier>{8ca583d8-9597-4a49-a543-2961e9793736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\UIWindows\ListBox">
+      <UniqueIdentifier>{886c67c1-2ade-4799-8cf5-12c431bf24ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\UIWindows\ListBox\Ex">
+      <UniqueIdentifier>{82057596-c7e8-4c2f-86d1-8c40fec8b96e}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\HUD">
       <UniqueIdentifier>{5e4858bc-a45e-41d9-8253-6818d30857e6}</UniqueIdentifier>
@@ -2470,9 +2443,6 @@
     <Filter Include="UI\Multiplayer\BuyWeaponWnd\TAB">
       <UniqueIdentifier>{5d695d0a-038b-407f-a531-ac405c8fba72}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\Multiplayer\BuyWeaponWnd\buy_wnd">
-      <UniqueIdentifier>{0dd03ba5-da01-4478-a57d-c9a2dae86a16}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI\Multiplayer\team_skin_info">
       <UniqueIdentifier>{af75d74d-d5a7-4c65-986a-ea91e8e8551c}</UniqueIdentifier>
     </Filter>
@@ -2497,6 +2467,51 @@
     <Filter Include="UI\Tutorial">
       <UniqueIdentifier>{8a004816-5370-4fa7-8d4f-a9f909934d14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{007c79b8-5e32-4b95-883b-1e1b4ed0d5c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Debug">
+      <UniqueIdentifier>{08b90be8-01ef-4218-8aa6-6eafa5a2a6ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\CharacterSupport">
+      <UniqueIdentifier>{0b83cc26-8c88-47bc-b2f6-2031d7066345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\CharacterSupport\interactive_motion">
+      <UniqueIdentifier>{996b481e-446a-4d14-95c3-284eac76740b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\CharacterSupport\death_anims">
+      <UniqueIdentifier>{d86bda93-46ed-4ffe-a4f4-ab9d0e7650d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\CharacterSupport\hit_anims">
+      <UniqueIdentifier>{70f34799-963e-49d2-a6e1-4344435530e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\CharacterSupport\interactive_anims">
+      <UniqueIdentifier>{875e206a-fd1a-487d-a484-5882aaab93df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\PHCommander">
+      <UniqueIdentifier>{935facba-9db0-46b7-b5e1-83b9d36bc9c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\DamagableItem">
+      <UniqueIdentifier>{d52f4339-0d3d-41f9-acce-8a351547dd60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\PhysicsSoundPlayer">
+      <UniqueIdentifier>{41c326bd-513a-4a28-bbb7-8fc81a8dc581}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Hit">
+      <UniqueIdentifier>{f25bbbfd-8c42-4ef8-8d66-d55a53eee1c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\IK">
+      <UniqueIdentifier>{cc8187fb-7a96-4b5c-ab57-467ce0f20502}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\animation_movement_controller">
+      <UniqueIdentifier>{fe059290-d61f-485f-8e67-0b6807fde3e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\MovementControl">
+      <UniqueIdentifier>{fabed7af-c990-4c28-a8c9-dd04e3c95c7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\scripts">
+      <UniqueIdentifier>{787994b2-a261-44e8-a09c-8c514815f75d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="EmbeddedEditor">
       <UniqueIdentifier>{ce5a2bf0-cb8c-429e-a751-e9f672d23e9f}</UniqueIdentifier>
     </Filter>
@@ -2509,7 +2524,7 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer">
       <UniqueIdentifier>{b0b72c42-4627-4849-be34-0cedf965de5d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Client\Objects\items &amp; weapons\Backpack">
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\Backpack">
       <UniqueIdentifier>{8caba069-1dbe-43a3-988b-86291895f099}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\LaserDesignator">
@@ -3230,54 +3245,6 @@
     <ClInclude Include="alife_combat_manager_inline.h">
       <Filter>AI\ALife\interaction_manager\combat_manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\alife_human_brain.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\alife_human_brain_inline.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_human_brain_save.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_human_object_handler.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\object_handler</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_human_object_handler_inline.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\object_handler</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_human_object_handler_save.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\object_handler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\alife_monster_brain.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\alife_monster_brain_inline.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_movement_manager.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_movement_manager_inline.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_detail_path_manager.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_detail_path_manager_inline.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_patrol_path_manager.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_patrol_path_manager_inline.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_online_offline_group_brain.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\online_offline_group\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_online_offline_group_brain_inline.h">
-      <Filter>AI\ALife\interaction_manager\server_entities\online_offline_group\brain</Filter>
-    </ClInclude>
     <ClInclude Include="alife_simulator_base.h">
       <Filter>AI\ALife\simulator_base</Filter>
     </ClInclude>
@@ -3458,6 +3425,54 @@
     <ClInclude Include="inventory_upgrade_property_inline.h">
       <Filter>AI\ALife\inventory_upgrade\property</Filter>
     </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesCS\alife_human_brain.h">
+      <Filter>AI\ALife\server_entities\human\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesCS\alife_human_brain_inline.h">
+      <Filter>AI\ALife\server_entities\human\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_brain_save.h">
+      <Filter>AI\ALife\server_entities\human\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_object_handler.h">
+      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_object_handler_inline.h">
+      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_object_handler_save.h">
+      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesCS\alife_monster_brain.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesCS\alife_monster_brain_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_movement_manager.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_movement_manager_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_detail_path_manager.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_detail_path_manager_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_patrol_path_manager.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_patrol_path_manager_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_online_offline_group_brain.h">
+      <Filter>AI\ALife\server_entities\online_offline_group\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_online_offline_group_brain_inline.h">
+      <Filter>AI\ALife\server_entities\online_offline_group\brain</Filter>
+    </ClInclude>
     <ClInclude Include="CustomMonster.h">
       <Filter>AI\AMonsters\common\custom</Filter>
     </ClInclude>
@@ -3539,116 +3554,11 @@
     <ClInclude Include="ai\Monsters\States\monster_state_panic_run_inline.h">
       <Filter>AI\AMonsters\common\monster states\Panic</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound.h">
-      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
-    </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_hear_int_sound.h">
       <Filter>AI\AMonsters\common\monster states\Interesting Sound</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_hear_int_sound_inline.h">
       <Filter>AI\AMonsters\common\monster states\Interesting Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_eat.h">
-      <Filter>AI\AMonsters\common\monster states\Eat</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_eat_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Eat</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_eat_eat.h">
-      <Filter>AI\AMonsters\common\monster states\Eat\Eating</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_eat_eat_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Eat\Eating</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_eat_drag.h">
-      <Filter>AI\AMonsters\common\monster states\Eat\Drag</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_eat_drag_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Eat\Drag</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_data.h">
-      <Filter>AI\AMonsters\common\monster states\General</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_hide_from_point.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_hide_from_point_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_move_around_point.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_move_around_point_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_move_to_point.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_move_to_point_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_move_to_restrictor.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_move_to_restrictor_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_look_point.h">
-      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_look_point_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_look_unprotected_area.h">
-      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_look_unprotected_area_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_custom_action.h">
-      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_custom_action_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_custom_action_look.h">
-      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_custom_action_look_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_hit_object.h">
-      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_hit_object_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_test_look_actor.h">
-      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_test_look_actor_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_test_state.h">
-      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\state_test_state_inline.h">
-      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_attack.h">
       <Filter>AI\AMonsters\common\monster states\Attack</Filter>
@@ -3674,18 +3584,6 @@
     <ClInclude Include="ai\Monsters\States\monster_state_attack_run_inline.h">
       <Filter>AI\AMonsters\common\monster states\Attack</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp.h">
-      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_stealout.h">
-      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_stealout_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
-    </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_hitted.h">
       <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
     </ClInclude>
@@ -3710,23 +3608,17 @@
     <ClInclude Include="ai\Monsters\States\monster_state_steal_inline.h">
       <Filter>AI\AMonsters\common\monster states\Steal</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_controlled.h">
-      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest.h">
+      <Filter>AI\AMonsters\common\monster states\Steal\Squad\Rest</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_controlled_attack.h">
-      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow.h">
+      <Filter>AI\AMonsters\common\monster states\Steal\Squad\Rest</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_controlled_attack_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Steal\Squad\Rest</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_controlled_follow.h">
-      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_controlled_follow_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_controlled_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Steal\Squad\Rest</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_home_point_attack.h">
       <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
@@ -3875,6 +3767,129 @@
     <ClInclude Include="ai\Monsters\States\monster_state_find_enemy_walk_inline.h">
       <Filter>AI\AMonsters\common\monster states\Find Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_eat.h">
+      <Filter>AI\AMonsters\common\monster states\Eat</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_eat_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Eat</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_eat_eat.h">
+      <Filter>AI\AMonsters\common\monster states\Eat\Eating</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_eat_eat_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Eat\Eating</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_eat_drag.h">
+      <Filter>AI\AMonsters\common\monster states\Eat\Drag</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_eat_drag_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Eat\Drag</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_data.h">
+      <Filter>AI\AMonsters\common\monster states\General</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_hide_from_point.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_hide_from_point_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_move_around_point.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_move_around_point_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_move_to_point.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_move_to_point_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_move_to_restrictor.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_move_to_restrictor_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_look_point.h">
+      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_look_point_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_look_unprotected_area.h">
+      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_look_unprotected_area_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Look</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_custom_action.h">
+      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_custom_action_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_custom_action_look.h">
+      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_custom_action_look_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Custom Action</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_hit_object.h">
+      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_hit_object_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_test_look_actor.h">
+      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_test_look_actor_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_test_state.h">
+      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\state_test_state_inline.h">
+      <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound.h">
+      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp.h">
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_stealout.h">
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_stealout_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_controlled.h">
+      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_controlled_attack.h">
+      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_controlled_attack_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_controlled_follow.h">
+      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_controlled_follow_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_controlled_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
+    </ClInclude>
     <ClInclude Include="ai\Monsters\ai_monster_defs.h">
       <Filter>AI\AMonsters\common\components</Filter>
     </ClInclude>
@@ -3882,6 +3897,9 @@
       <Filter>AI\AMonsters\common\components</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\ai_monster_utils.h">
+      <Filter>AI\AMonsters\common\components</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\monsters\monster_aura.h">
       <Filter>AI\AMonsters\common\components</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\monster_corpse_manager.h">
@@ -4094,6 +4112,9 @@
     <ClInclude Include="steering_behaviour_manager.h">
       <Filter>AI\AMonsters\common\steering behaviours\manager</Filter>
     </ClInclude>
+    <ClInclude Include="trajectories.h">
+      <Filter>AI\AMonsters\common\trajectories</Filter>
+    </ClInclude>
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker.h">
       <Filter>AI\AMonsters\monsters\Bloodsucker</Filter>
     </ClInclude>
@@ -4172,11 +4193,11 @@
     <ClInclude Include="ai\Monsters\Burer\burer.h">
       <Filter>AI\AMonsters\monsters\Burer</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\Burer\burer_state_attack.h">
-      <Filter>AI\AMonsters\monsters\Burer</Filter>
-    </ClInclude>
     <ClInclude Include="ai\Monsters\Burer\burer_state_manager.h">
       <Filter>AI\AMonsters\monsters\Burer</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Burer\burer_state_attack.h">
+      <Filter>AI\AMonsters\monsters\Burer\Attack</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Burer\burer_state_attack_gravi.h">
       <Filter>AI\AMonsters\monsters\Burer\Attack</Filter>
@@ -5267,9 +5288,6 @@
     <ClInclude Include="..\xrServerEntitiesCS\script_stack_tracker_inline.h">
       <Filter>AI\AScript\ScriptThread\ScriptStackTracker</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\doug_lea_memory_allocator.h">
-      <Filter>AI\AScript\memory_allocator</Filter>
-    </ClInclude>
     <ClInclude Include="..\xrServerEntitiesCS\lua_studio.h">
       <Filter>AI\AScript\lua_studio</Filter>
     </ClInclude>
@@ -5611,6 +5629,15 @@
     </ClInclude>
     <ClInclude Include="actor_statistic_mgr.h">
       <Filter>Core\Client\Objects\tasks_info_dialogs\statistics</Filter>
+    </ClInclude>
+    <ClInclude Include="map_location.h">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
+    </ClInclude>
+    <ClInclude Include="map_location_defs.h">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
+    </ClInclude>
+    <ClInclude Include="map_manager.h">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Core\Client\Objects\inventory</Filter>
@@ -6059,15 +6086,6 @@
     <ClInclude Include="ZoneCampfire.h">
       <Filter>Core\Client\Objects\zones\campfire</Filter>
     </ClInclude>
-    <ClInclude Include="map_location.h">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClInclude>
-    <ClInclude Include="map_location_defs.h">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClInclude>
-    <ClInclude Include="map_manager.h">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClInclude>
     <ClInclude Include="Car.h">
       <Filter>Core\Client\Objects\vehicles\Car</Filter>
     </ClInclude>
@@ -6192,7 +6210,7 @@
       <Filter>Core\Common\QuadTree</Filter>
     </ClInclude>
     <ClInclude Include="random32.h">
-      <Filter>Core\Common\Random32</Filter>
+      <Filter>Core\Common\Random\32bit</Filter>
     </ClInclude>
     <ClInclude Include="..\xrServerEntitiesCS\shared_data.h">
       <Filter>Core\Common\Shared</Filter>
@@ -6232,9 +6250,6 @@
     </ClInclude>
     <ClInclude Include="static_cast_checked.hpp">
       <Filter>Core\Common\debug\static_cast_checked</Filter>
-    </ClInclude>
-    <ClInclude Include="file_transfer.h">
-      <Filter>Core\Server</Filter>
     </ClInclude>
     <ClInclude Include="screenshot_server.h">
       <Filter>Core\Server</Filter>
@@ -6485,6 +6500,9 @@
     <ClInclude Include="xrGameSpyServer_callbacks.h">
       <Filter>Core\Server\xrGameSpyServer</Filter>
     </ClInclude>
+    <ClInclude Include="file_transfer.h">
+      <Filter>Core\Server\filetransfer</Filter>
+    </ClInclude>
     <ClInclude Include="battleye.h">
       <Filter>Core\Server\BattlEye_Server</Filter>
     </ClInclude>
@@ -6494,151 +6512,7 @@
     <ClInclude Include="xr_Server_BattlEye.h">
       <Filter>Core\Server\BattlEye_Server</Filter>
     </ClInclude>
-    <ClInclude Include="CaptureBoneCallback.h">
-      <Filter>Physics\MovementControl</Filter>
-    </ClInclude>
-    <ClInclude Include="PHMovementControl.h">
-      <Filter>Physics\MovementControl</Filter>
-    </ClInclude>
-    <ClInclude Include="PHCommander.h">
-      <Filter>Physics\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHReqComparer.h">
-      <Filter>Physics\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHScriptCall.h">
-      <Filter>Physics\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSimpleCalls.h">
-      <Filter>Physics\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHDebug.h">
-      <Filter>Physics\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="ActivatingCharCollisionDelay.h">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClInclude>
-    <ClInclude Include="animation_utils.h">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClInclude>
-    <ClInclude Include="character_shell_control.h">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterPhysicsSupport.h">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClInclude>
-    <ClInclude Include="imotion_position.h">
-      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
-    </ClInclude>
-    <ClInclude Include="imotion_velocity.h">
-      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
-    </ClInclude>
-    <ClInclude Include="interactive_motion.h">
-      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
-    </ClInclude>
-    <ClInclude Include="death_anims.h">
-      <Filter>Physics\CharacterSupport\death_anims</Filter>
-    </ClInclude>
-    <ClInclude Include="character_hit_animations.h">
-      <Filter>Physics\CharacterSupport\hit_anims</Filter>
-    </ClInclude>
-    <ClInclude Include="character_hit_animations_params.h">
-      <Filter>Physics\CharacterSupport\hit_anims</Filter>
-    </ClInclude>
-    <ClInclude Include="interactive_animation.h">
-      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
-    </ClInclude>
-    <ClInclude Include="physics_shell_animated.h">
-      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
-    </ClInclude>
-    <ClInclude Include="DamagableItem.h">
-      <Filter>Physics\DamagableItem</Filter>
-    </ClInclude>
-    <ClInclude Include="moving_bones_snd_player.h">
-      <Filter>Physics\PhysicsSoundPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSoundPlayer.h">
-      <Filter>Physics\PhysicsSoundPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="Hit.h">
-      <Filter>Physics\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\aint.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\Dof7control.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\eqn.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\eulersolver.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_anim_state.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_calculate_data.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_calculate_state.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_collide_data.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_dbg_matrix.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_foot_collider.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_limb_state.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_limb_state_predict.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_object_shift.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="IKFoot.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="IKFoot_inl.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\IKLimb.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="IKLimbsController.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\jtlimits.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\limb.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\math3d.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\mathTrig.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="pose_extrapolation.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="animation_movement_controller.h">
-      <Filter>Physics\animation_movement_controller</Filter>
-    </ClInclude>
-    <ClInclude Include="poses_blending.h">
-      <Filter>Physics\animation_movement_controller</Filter>
-    </ClInclude>
     <ClInclude Include="ui\CExtraContentFilter.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="MainMenu.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="UI.h">
@@ -6770,6 +6644,9 @@
     <ClInclude Include="ui\UIArtefactParams.h">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIBoosterInfo.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
     <ClInclude Include="ui\UIItemInfo.h">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
@@ -6830,17 +6707,20 @@
     <ClInclude Include="ui\UIOptConCom.h">
       <Filter>UI\Common\OptionsConsoleCommands</Filter>
     </ClInclude>
+    <ClInclude Include="MainMenu.h">
+      <Filter>UI\Common\MainMenu</Filter>
+    </ClInclude>
     <ClInclude Include="ui\MMSound.h">
-      <Filter>UI\Common\MM</Filter>
+      <Filter>UI\Common\MainMenu</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMMShniaga.h">
-      <Filter>UI\Common\MM</Filter>
+      <Filter>UI\Common\MainMenu</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIEditKeyBind.h">
-      <Filter>UI\Common\MM\KeyBinding</Filter>
+      <Filter>UI\Common\MainMenu\KeyBinding</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIKeyBinding.h">
-      <Filter>UI\Common\MM\KeyBinding</Filter>
+      <Filter>UI\Common\MainMenu\KeyBinding</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIHelper.h">
       <Filter>UI\Common\InventoryUtilities</Filter>
@@ -6861,9 +6741,6 @@
       <Filter>UI\UIWindows</Filter>
     </ClInclude>
     <ClInclude Include="ui\uiabstract.h">
-      <Filter>UI\UIWindows</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIBtnHint.h">
       <Filter>UI\UIWindows</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMessages.h">
@@ -6956,6 +6833,9 @@
     <ClInclude Include="ui\UI3tButton.h">
       <Filter>UI\UIWindows\Buttons</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIBtnHint.h">
+      <Filter>UI\UIWindows\Buttons</Filter>
+    </ClInclude>
     <ClInclude Include="ui\UIButton.h">
       <Filter>UI\UIWindows\Buttons</Filter>
     </ClInclude>
@@ -6989,12 +6869,6 @@
     <ClInclude Include="ui\UIScrollView.h">
       <Filter>UI\UIWindows\ScrollView</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UIListBox.h">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIListBoxItem.h">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UILine.h">
       <Filter>UI\UIWindows\Lines</Filter>
     </ClInclude>
@@ -7008,16 +6882,16 @@
       <Filter>UI\UIWindows\Lines</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICellCustomItems.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICellItem.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICellItemFactory.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIDragDropListEx.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UILabel.h">
       <Filter>UI\UIWindows\Label</Filter>
@@ -7054,6 +6928,12 @@
     </ClInclude>
     <ClInclude Include="ui\UIHint.h">
       <Filter>UI\UIWindows\Hint</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListBox.h">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListBoxItem.h">
+      <Filter>UI\UIWindows\ListBox</Filter>
     </ClInclude>
     <ClInclude Include="HitMarker.h">
       <Filter>UI\HUD</Filter>
@@ -7229,13 +7109,178 @@
     <ClInclude Include="ui\UIGameTutorial.h">
       <Filter>UI\Tutorial</Filter>
     </ClInclude>
-    <ClInclude Include="embedded_editor\embedded_editor_helper.h">
-      <Filter>EmbeddedEditor</Filter>
+    <ClInclude Include="..\xrServerEntitiesCS\PHNetState.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PHShellCreator.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics_game.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsGamePars.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="PHDebug.h">
+      <Filter>Physics\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="ActivatingCharCollisionDelay.h">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="animation_utils.h">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="character_shell_control.h">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterPhysicsSupport.h">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="imotion_position.h">
+      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
+    </ClInclude>
+    <ClInclude Include="imotion_velocity.h">
+      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
+    </ClInclude>
+    <ClInclude Include="interactive_motion.h">
+      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
+    </ClInclude>
+    <ClInclude Include="death_anims.h">
+      <Filter>Physics\CharacterSupport\death_anims</Filter>
+    </ClInclude>
+    <ClInclude Include="character_hit_animations.h">
+      <Filter>Physics\CharacterSupport\hit_anims</Filter>
+    </ClInclude>
+    <ClInclude Include="character_hit_animations_params.h">
+      <Filter>Physics\CharacterSupport\hit_anims</Filter>
+    </ClInclude>
+    <ClInclude Include="interactive_animation.h">
+      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
+    </ClInclude>
+    <ClInclude Include="physics_shell_animated.h">
+      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
+    </ClInclude>
+    <ClInclude Include="PHCommander.h">
+      <Filter>Physics\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="PHReqComparer.h">
+      <Filter>Physics\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="PHScriptCall.h">
+      <Filter>Physics\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSimpleCalls.h">
+      <Filter>Physics\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="DamagableItem.h">
+      <Filter>Physics\DamagableItem</Filter>
+    </ClInclude>
+    <ClInclude Include="moving_bones_snd_player.h">
+      <Filter>Physics\PhysicsSoundPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSoundPlayer.h">
+      <Filter>Physics\PhysicsSoundPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Hit.h">
+      <Filter>Physics\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\aint.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\Dof7control.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\eqn.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\eulersolver.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_anim_state.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_calculate_data.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_calculate_state.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_collide_data.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_dbg_matrix.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_foot_collider.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_limb_state.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_limb_state_predict.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_object_shift.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="IKFoot.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="IKFoot_inl.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\IKLimb.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="IKLimbsController.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\jtlimits.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\limb.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\math3d.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\mathTrig.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="pose_extrapolation.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="animation_movement_controller.h">
+      <Filter>Physics\animation_movement_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="poses_blending.h">
+      <Filter>Physics\animation_movement_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureBoneCallback.h">
+      <Filter>Physics\MovementControl</Filter>
+    </ClInclude>
+    <ClInclude Include="PHMovementControl.h">
+      <Filter>Physics\MovementControl</Filter>
+    </ClInclude>
+    <ClInclude Include="physics_element_scripted.h">
+      <Filter>Physics\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="physics_joint_scripted.h">
+      <Filter>Physics\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="physics_shell_scripted.h">
+      <Filter>Physics\scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="physics_world_scripted.h">
+      <Filter>Physics\scripts</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_main.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_weather.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_helper.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="AdvancedXrayGameConstants.h">
@@ -7256,15 +7301,14 @@
     <ClInclude Include="DynamicHudGlass.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
-    <ClInclude Include="ActorNightVision.h" />
-    <ClInclude Include="AntigasFilter.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIBoosterInfo.h">
-      <Filter>UI\Common\UIItemInfo</Filter>
+    <ClInclude Include="ActorNightVision.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\devices</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h">
       <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="AntigasFilter.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClInclude>
     <ClInclude Include="ActorSkills.h">
       <Filter>Core\Client\Objects\actor\base</Filter>
@@ -7274,9 +7318,6 @@
     </ClInclude>
     <ClInclude Include="ui\UILoadingScreen.h">
       <Filter>UI\Common\LoadingScreen</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\monsters\monster_aura.h">
-      <Filter>AI\AMonsters\common\components</Filter>
     </ClInclude>
     <ClInclude Include="ArtefactContainer.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
@@ -7292,7 +7333,7 @@
     </ClInclude>
     <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="CustomBackpack.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
@@ -7653,78 +7694,6 @@
     <ClCompile Include="alife_combat_manager.cpp">
       <Filter>AI\ALife\interaction_manager\combat_manager</Filter>
     </ClCompile>
-    <ClCompile Include="alife_anomalous_zone.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\anomalous_zone</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_creature_abstract.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\creature_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_dynamic_object.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\dynamic_object</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_human_abstract.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\human</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesCS\alife_human_brain.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_human_brain_script.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_human_object_handler.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\human\object_handler</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_group_abstract.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\group_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_abstract.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_base.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesCS\alife_monster_brain.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_brain_script.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_movement_manager.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_movement_manager_script.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_detail_path_manager.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_detail_path_manager_script.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_patrol_path_manager.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_patrol_path_manager_script.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_object.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\object</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_online_offline_group.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\online_offline_group</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_online_offline_group_brain.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\online_offline_group\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_smart_zone.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\smart_zone</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_trader.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\trader</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_trader_abstract.cpp">
-      <Filter>AI\ALife\interaction_manager\server_entities\trader_abstract</Filter>
-    </ClCompile>
     <ClCompile Include="alife_simulator_base.cpp">
       <Filter>AI\ALife\simulator_base</Filter>
     </ClCompile>
@@ -7812,6 +7781,78 @@
     <ClCompile Include="inventory_upgrade_property.cpp">
       <Filter>AI\ALife\inventory_upgrade\property</Filter>
     </ClCompile>
+    <ClCompile Include="alife_anomalous_zone.cpp">
+      <Filter>AI\ALife\server_entities\anomalous_zone</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_creature_abstract.cpp">
+      <Filter>AI\ALife\server_entities\creature_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_dynamic_object.cpp">
+      <Filter>AI\ALife\server_entities\dynamic_object</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_human_abstract.cpp">
+      <Filter>AI\ALife\server_entities\human</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesCS\alife_human_brain.cpp">
+      <Filter>AI\ALife\server_entities\human\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_human_brain_script.cpp">
+      <Filter>AI\ALife\server_entities\human\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_human_object_handler.cpp">
+      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_group_abstract.cpp">
+      <Filter>AI\ALife\server_entities\group_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_abstract.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_base.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesCS\alife_monster_brain.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_brain_script.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_movement_manager.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_movement_manager_script.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_detail_path_manager.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_detail_path_manager_script.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_patrol_path_manager.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_patrol_path_manager_script.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_object.cpp">
+      <Filter>AI\ALife\server_entities\object</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_online_offline_group.cpp">
+      <Filter>AI\ALife\server_entities\online_offline_group</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_online_offline_group_brain.cpp">
+      <Filter>AI\ALife\server_entities\online_offline_group\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_smart_zone.cpp">
+      <Filter>AI\ALife\server_entities\smart_zone</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_trader.cpp">
+      <Filter>AI\ALife\server_entities\trader</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_trader_abstract.cpp">
+      <Filter>AI\ALife\server_entities\trader_abstract</Filter>
+    </ClCompile>
     <ClCompile Include="CustomMonster.cpp">
       <Filter>AI\AMonsters\common\custom</Filter>
     </ClCompile>
@@ -7861,6 +7902,9 @@
       <Filter>AI\AMonsters\common\base monster</Filter>
     </ClCompile>
     <ClCompile Include="ai\Monsters\ai_monster_utils.cpp">
+      <Filter>AI\AMonsters\common\components</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\monsters\monster_aura.cpp">
       <Filter>AI\AMonsters\common\components</Filter>
     </ClCompile>
     <ClCompile Include="ai\Monsters\monster_corpse_manager.cpp">
@@ -8015,6 +8059,9 @@
     </ClCompile>
     <ClCompile Include="steering_behaviour.cpp">
       <Filter>AI\AMonsters\common\steering behaviours</Filter>
+    </ClCompile>
+    <ClCompile Include="trajectories.cpp">
+      <Filter>AI\AMonsters\common\trajectories</Filter>
     </ClCompile>
     <ClCompile Include="ai\Monsters\Bloodsucker\bloodsucker.cpp">
       <Filter>AI\AMonsters\monsters\Bloodsucker</Filter>
@@ -8766,9 +8813,6 @@
     <ClCompile Include="..\xrServerEntitiesCS\script_stack_tracker.cpp">
       <Filter>AI\AScript\ScriptThread\ScriptStackTracker</Filter>
     </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesCS\doug_lea_memory_allocator.c">
-      <Filter>AI\AScript\memory_allocator</Filter>
-    </ClCompile>
     <ClCompile Include="..\xrServerEntitiesCS\lua_studio.cpp">
       <Filter>AI\AScript\lua_studio</Filter>
     </ClCompile>
@@ -9143,6 +9187,12 @@
     </ClCompile>
     <ClCompile Include="actor_statistic_mgr.cpp">
       <Filter>Core\Client\Objects\tasks_info_dialogs\statistics</Filter>
+    </ClCompile>
+    <ClCompile Include="map_location.cpp">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
+    </ClCompile>
+    <ClCompile Include="map_manager.cpp">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>Core\Client\Objects\inventory</Filter>
@@ -9597,12 +9647,6 @@
     <ClCompile Include="ZoneCampfire.cpp">
       <Filter>Core\Client\Objects\zones\campfire</Filter>
     </ClCompile>
-    <ClCompile Include="map_location.cpp">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClCompile>
-    <ClCompile Include="map_manager.cpp">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClCompile>
     <ClCompile Include="Car.cpp">
       <Filter>Core\Client\Objects\vehicles\Car</Filter>
     </ClCompile>
@@ -9709,7 +9753,7 @@
       <Filter>Core\Common\Profiler</Filter>
     </ClCompile>
     <ClCompile Include="random32.cpp">
-      <Filter>Core\Common\Random32</Filter>
+      <Filter>Core\Common\Random\32bit</Filter>
     </ClCompile>
     <ClCompile Include="..\xrServerEntitiesCS\smart_cast.cpp">
       <Filter>Core\Common\SmartCast</Filter>
@@ -9725,9 +9769,6 @@
     </ClCompile>
     <ClCompile Include="static_cast_checked_test.cpp">
       <Filter>Core\Common\debug\static_cast_checked</Filter>
-    </ClCompile>
-    <ClCompile Include="file_transfer.cpp">
-      <Filter>Core\Server</Filter>
     </ClCompile>
     <ClCompile Include="screenshot_server.cpp">
       <Filter>Core\Server</Filter>
@@ -9857,18 +9898,6 @@
     </ClCompile>
     <ClCompile Include="game_sv_single.cpp">
       <Filter>Core\Server\Games\server\single</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_CL_connect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_CL_disconnect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Connect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Disconnect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
     </ClCompile>
     <ClCompile Include="game_sv_teamdeathmatch.cpp">
       <Filter>Core\Server\Games\server\team_deathmatch</Filter>
@@ -10050,146 +10079,32 @@
     <ClCompile Include="xrGameSpyServer_callbacks.cpp">
       <Filter>Core\Server\xrGameSpyServer</Filter>
     </ClCompile>
+    <ClCompile Include="file_transfer.cpp">
+      <Filter>Core\Server\filetransfer</Filter>
+    </ClCompile>
     <ClCompile Include="battleye_system.cpp">
       <Filter>Core\Server\BattlEye_Server</Filter>
     </ClCompile>
     <ClCompile Include="xr_Server_BattlEye.cpp">
       <Filter>Core\Server\BattlEye_Server</Filter>
     </ClCompile>
-    <ClCompile Include="PHMovementControl.cpp">
-      <Filter>Physics\MovementControl</Filter>
-    </ClCompile>
-    <ClCompile Include="PHCommander.cpp">
-      <Filter>Physics\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHScriptCall.cpp">
-      <Filter>Physics\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSimpleCalls.cpp">
-      <Filter>Physics\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSimpleCallsScript.cpp">
-      <Filter>Physics\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHDebug.cpp">
-      <Filter>Physics\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="ActivatingCharCollisionDelay.cpp">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClCompile>
-    <ClCompile Include="animation_utils.cpp">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClCompile>
-    <ClCompile Include="character_shell_control.cpp">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterPhysicsSupport.cpp">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClCompile>
-    <ClCompile Include="imotion_position.cpp">
-      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
-    </ClCompile>
-    <ClCompile Include="imotion_velocity.cpp">
-      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
-    </ClCompile>
-    <ClCompile Include="interactive_motion.cpp">
-      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
-    </ClCompile>
-    <ClCompile Include="death_anims.cpp">
-      <Filter>Physics\CharacterSupport\death_anims</Filter>
-    </ClCompile>
-    <ClCompile Include="death_anims_predicates.cpp">
-      <Filter>Physics\CharacterSupport\death_anims</Filter>
-    </ClCompile>
-    <ClCompile Include="character_hit_animations.cpp">
-      <Filter>Physics\CharacterSupport\hit_anims</Filter>
-    </ClCompile>
-    <ClCompile Include="interactive_animation.cpp">
-      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
-    </ClCompile>
-    <ClCompile Include="physics_shell_animated.cpp">
-      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
-    </ClCompile>
-    <ClCompile Include="DamagableItem.cpp">
-      <Filter>Physics\DamagableItem</Filter>
-    </ClCompile>
-    <ClCompile Include="moving_bones_snd_player.cpp">
-      <Filter>Physics\PhysicsSoundPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSoundPlayer.cpp">
-      <Filter>Physics\PhysicsSoundPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="Hit.cpp">
-      <Filter>Physics\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\aint.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\Dof7control.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\eqn.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\eulersolver.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="ik_anim_state.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="ik_calculate_data.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="ik_dbg_matrix.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="ik_foot_collider.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="ik_limb_state.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="ik_object_shift.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="IKFoot.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\IKLimb.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="IKLimbsController.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\jtlimits.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\limb.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\math3d.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\mathTrig.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="pose_extrapolation.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="animation_movement_controller.cpp">
-      <Filter>Physics\animation_movement_controller</Filter>
-    </ClCompile>
-    <ClCompile Include="poses_blending.cpp">
-      <Filter>Physics\animation_movement_controller</Filter>
-    </ClCompile>
     <ClCompile Include="ui\CExtraContentFilter.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="MainMenu.cpp">
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_CL_connect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_CL_disconnect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_Connect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_Disconnect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
     </ClCompile>
     <ClCompile Include="ui_base.cpp">
       <Filter>UI</Filter>
@@ -10317,6 +10232,9 @@
     <ClCompile Include="ui\UIArtefactParams.cpp">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIBoosterInfo.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
     <ClCompile Include="ui\UIItemInfo.cpp">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
@@ -10377,17 +10295,20 @@
     <ClCompile Include="ui\UIOptConCom.cpp">
       <Filter>UI\Common\OptionsConsoleCommands</Filter>
     </ClCompile>
+    <ClCompile Include="MainMenu.cpp">
+      <Filter>UI\Common\MainMenu</Filter>
+    </ClCompile>
     <ClCompile Include="ui\MMSound.cpp">
-      <Filter>UI\Common\MM</Filter>
+      <Filter>UI\Common\MainMenu</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIMMShniaga.cpp">
-      <Filter>UI\Common\MM</Filter>
+      <Filter>UI\Common\MainMenu</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIEditKeyBind.cpp">
-      <Filter>UI\Common\MM\KeyBinding</Filter>
+      <Filter>UI\Common\MainMenu\KeyBinding</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIKeyBinding.cpp">
-      <Filter>UI\Common\MM\KeyBinding</Filter>
+      <Filter>UI\Common\MainMenu\KeyBinding</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIHelper.cpp">
       <Filter>UI\Common\InventoryUtilities</Filter>
@@ -10424,9 +10345,6 @@
     </ClCompile>
     <ClCompile Include="ui\UIDebugFonts.cpp">
       <Filter>UI\Common\_Debug Fonts</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIBtnHint.cpp">
-      <Filter>UI\UIWindows</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIWndCallback.cpp">
       <Filter>UI\UIWindows</Filter>
@@ -10539,6 +10457,9 @@
     <ClCompile Include="ui\UI3tButton.cpp">
       <Filter>UI\UIWindows\Buttons</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIBtnHint.cpp">
+      <Filter>UI\UIWindows\Buttons</Filter>
+    </ClCompile>
     <ClCompile Include="ui\UIButton.cpp">
       <Filter>UI\UIWindows\Buttons</Filter>
     </ClCompile>
@@ -10575,12 +10496,6 @@
     <ClCompile Include="ui\UIScrollView.cpp">
       <Filter>UI\UIWindows\ScrollView</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIListBox.cpp">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIListBoxItem.cpp">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UILine.cpp">
       <Filter>UI\UIWindows\Lines</Filter>
     </ClCompile>
@@ -10591,16 +10506,16 @@
       <Filter>UI\UIWindows\Lines</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICellCustomItems.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICellItem.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICellItemFactory.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIDragDropListEx.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UILabel.cpp">
       <Filter>UI\UIWindows\Label</Filter>
@@ -10626,9 +10541,6 @@
     <ClCompile Include="ui\UIListWnd.cpp">
       <Filter>UI\UIWindows\ListBox</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIListWnd_script.cpp">
-      <Filter>UI\UIWindows\ListBox</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UIListItemEx.cpp">
       <Filter>UI\UIWindows\ListBox\Ex</Filter>
     </ClCompile>
@@ -10637,6 +10549,15 @@
     </ClCompile>
     <ClCompile Include="ui\UIHint.cpp">
       <Filter>UI\UIWindows\Hint</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListBox.cpp">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListBoxItem.cpp">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListWnd_script.cpp">
+      <Filter>UI\UIWindows\ListBox</Filter>
     </ClCompile>
     <ClCompile Include="HitMarker.cpp">
       <Filter>UI\HUD</Filter>
@@ -10836,13 +10757,166 @@
     <ClCompile Include="ui\UIGameTutorialVideoItem.cpp">
       <Filter>UI\Tutorial</Filter>
     </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
-      <Filter>EmbeddedEditor</Filter>
+    <ClCompile Include="PHShellCreator.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_game.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsGamePars.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesCS\PHNetState.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PHDebug.cpp">
+      <Filter>Physics\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="ActivatingCharCollisionDelay.cpp">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="animation_utils.cpp">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="character_shell_control.cpp">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterPhysicsSupport.cpp">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="imotion_position.cpp">
+      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
+    </ClCompile>
+    <ClCompile Include="imotion_velocity.cpp">
+      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
+    </ClCompile>
+    <ClCompile Include="interactive_motion.cpp">
+      <Filter>Physics\CharacterSupport\interactive_motion</Filter>
+    </ClCompile>
+    <ClCompile Include="death_anims.cpp">
+      <Filter>Physics\CharacterSupport\death_anims</Filter>
+    </ClCompile>
+    <ClCompile Include="character_hit_animations.cpp">
+      <Filter>Physics\CharacterSupport\hit_anims</Filter>
+    </ClCompile>
+    <ClCompile Include="interactive_animation.cpp">
+      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_shell_animated.cpp">
+      <Filter>Physics\CharacterSupport\interactive_anims</Filter>
+    </ClCompile>
+    <ClCompile Include="PHCommander.cpp">
+      <Filter>Physics\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHScriptCall.cpp">
+      <Filter>Physics\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSimpleCalls.cpp">
+      <Filter>Physics\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSimpleCallsScript.cpp">
+      <Filter>Physics\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="DamagableItem.cpp">
+      <Filter>Physics\DamagableItem</Filter>
+    </ClCompile>
+    <ClCompile Include="moving_bones_snd_player.cpp">
+      <Filter>Physics\PhysicsSoundPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSoundPlayer.cpp">
+      <Filter>Physics\PhysicsSoundPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Hit.cpp">
+      <Filter>Physics\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\aint.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\Dof7control.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\eqn.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\eulersolver.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="ik_anim_state.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="ik_calculate_data.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="ik_dbg_matrix.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="ik_foot_collider.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="ik_limb_state.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="ik_object_shift.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="IKFoot.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\IKLimb.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="IKLimbsController.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\jtlimits.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\limb.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\math3d.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\mathTrig.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="pose_extrapolation.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="animation_movement_controller.cpp">
+      <Filter>Physics\animation_movement_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="poses_blending.cpp">
+      <Filter>Physics\animation_movement_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="PHMovementControl.cpp">
+      <Filter>Physics\MovementControl</Filter>
+    </ClCompile>
+    <ClCompile Include="PHMovementDynamicActivate.cpp">
+      <Filter>Physics\MovementControl</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_element_scripted.cpp">
+      <Filter>Physics\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_joint_scripted.cpp">
+      <Filter>Physics\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_shell_scripted.cpp">
+      <Filter>Physics\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_world_scripted.cpp">
+      <Filter>Physics\scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="death_anims_predicates.cpp">
+      <Filter>Physics\CharacterSupport\death_anims</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="AdvancedXrayGameConstants.cpp">
@@ -10863,15 +10937,14 @@
     <ClCompile Include="DynamicHudGlass.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
-    <ClCompile Include="ActorNightVision.cpp" />
-    <ClCompile Include="AntigasFilter.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIBoosterInfo.cpp">
-      <Filter>UI\Common\UIItemInfo</Filter>
+    <ClCompile Include="ActorNightVision.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\devices</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
       <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="AntigasFilter.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
     <ClCompile Include="ActorSkills.cpp">
       <Filter>Core\Client\Objects\actor\base</Filter>
@@ -10881,9 +10954,6 @@
     </ClCompile>
     <ClCompile Include="ui\UILoadingScreen.cpp">
       <Filter>UI\Common\LoadingScreen</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\monsters\monster_aura.cpp">
-      <Filter>AI\AMonsters\common\components</Filter>
     </ClCompile>
     <ClCompile Include="EntityCondition_script.cpp">
       <Filter>Core\Client\Objects\base\EntityCondition</Filter>
@@ -10905,7 +10975,7 @@
     </ClCompile>
     <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="CustomBackpack.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Backpack</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIArtefactPanel.cpp">
       <Filter>UI\Common\MainIngame</Filter>
