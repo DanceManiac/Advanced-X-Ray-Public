@@ -53,6 +53,26 @@
 		</value>
 	</container_size>
 	
+	<additional_weight x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_am_propery_08</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1" unit_str="st_kg">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</additional_weight>
+	
+	<inventory_capacity x="0" y="0" width="214" height="20" >
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_am_prop_artefact</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" magnitude="1" show_sign="0">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</inventory_capacity>
+	
 	<artefacts_inside x="0" y="0" width="257" height="20" max_af_count="5" complex_mode="0" scale="0.7" inc_height="5">
 		<cap_artefacts_stats_0 x="5" y="115" width="40" height="8">
 			<text font="arial_14" align="c" r="170" g="170" b="170"/>

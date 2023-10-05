@@ -830,6 +830,12 @@ public:
 
 	bool					HasItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
 	void					RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
+
+	int						GetInventoryCapacity() const { return m_iInventoryCapacity; }
+	int						GetInventoryFullness() const { return m_iInventoryFullness; }
+	int						MaxCarryInvCapacity() const;
+	void					ChangeInventoryFullness(int val);
+
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;
@@ -840,6 +846,9 @@ protected:
 	int						m_iNVGAnimLength;
 	int						m_iActionTiming;
 	int						m_iMaskAnimLength;
+	int						m_iInventoryCapacity;
+	int						m_iInventoryFullness;
+	int						m_iInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
 
 	float					m_fDevicesPsyFactor;
 

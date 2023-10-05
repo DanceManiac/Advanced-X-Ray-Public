@@ -29,6 +29,7 @@
 #include "../CustomDetector.h"
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
+#include "../CustomBackpack.h"
 #include "UIBoosterInfo.h"
 
 extern const LPCSTR g_inventory_upgrade_xml;
@@ -554,8 +555,9 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 	CInventoryItemObject* item = smart_cast<CInventoryItemObject*>(&pInvItem);
 	CHudItemObject* hud_item = smart_cast<CHudItemObject*>(&pInvItem);
 	CArtefactContainer* af_container = smart_cast<CArtefactContainer*>(&pInvItem);
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(&pInvItem);
 
-	if ((item || hud_item || af_container) && UIInventoryItem)
+	if ((item || hud_item || af_container || backpack) && UIInventoryItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);

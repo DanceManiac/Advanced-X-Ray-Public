@@ -714,4 +714,16 @@
 	<string id="st_attach_tactical_torch_to_rifle">
 		<text>Присоединить тактический фонарик к винтовке</text>
 	</string>
+	<string id="st_backpack_full">
+		<text>Рюкзак переполнен!</text>
+	</string>
+	<string id="ui_inv_inventory_capacity">
+		<text>Вместительность</text>
+	</string>
+	<string id="ui_inventory_capacity">
+		<text>Вместительность:</text>
+	</string>
+	<string id="st_liters">
+		<text>л</text>
+	</string>
 </string_table>

@@ -25,6 +25,7 @@
 #include "../CustomDetector.h"
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
+#include "../CustomBackpack.h"
 #include "../AdvancedXrayGameConstants.h"
 
 CUIInventoryItem::CUIInventoryItem()
@@ -35,6 +36,8 @@ CUIInventoryItem::CUIInventoryItem()
 	m_max_charge		= nullptr;
 	m_uncharge_speed	= nullptr;
 	m_artefacts_count	= nullptr;
+	m_additional_weight = nullptr;
+	m_inv_capacity		= nullptr;
 
 	m_iMaxAfCount		= 1;
 	m_stArtefactsScale	= 1.0f;
@@ -48,6 +51,8 @@ CUIInventoryItem::~CUIInventoryItem()
 	xr_delete(m_max_charge);
 	xr_delete(m_uncharge_speed);
 	xr_delete(m_artefacts_count);
+	xr_delete(m_additional_weight);
+	xr_delete(m_inv_capacity);
 	xr_delete(m_Prop_line);
 
 	m_textArtefacts.clear();
@@ -61,7 +66,9 @@ LPCSTR item_influence_caption[] =
 	"ui_inv_charge_level",
 	"ui_inv_max_charge",
 	"ui_inv_uncharge_speed",
-	"ui_inv_artefacts_count"
+	"ui_inv_artefacts_count",
+	"ui_inv_weight",
+	"ui_inv_inventory_capacity"
 };
 
 void CUIInventoryItem::InitFromXml(CUIXml& xml)
@@ -115,6 +122,20 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 	m_artefacts_count->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
+	m_additional_weight = xr_new<CUIInventoryItemInfo>();
+	m_additional_weight->Init(xml, "additional_weight");
+	m_additional_weight->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_weight").c_str();
+	m_additional_weight->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_inv_capacity = xr_new<CUIInventoryItemInfo>();
+	m_inv_capacity->Init(xml, "inventory_capacity");
+	m_inv_capacity->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_inventory_capacity").c_str();
+	m_inv_capacity->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	if (xml.NavigateToNode("artefacts_inside", 0))
 	{
 		m_iMaxAfCount = xml.ReadAttribInt("artefacts_inside", 0, "max_af_count", 1);
@@ -160,6 +181,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	shared_str section = pInvItem.object().cNameSect();
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
 	CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(&pInvItem);
+	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
 
 	if (!actor)
 	{
@@ -229,6 +251,41 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_uncharge_speed->GetWndSize().y;
 			AttachChild(m_uncharge_speed);
+		}
+	}
+
+	if (pBackpack)
+	{
+		if (pSettings->line_exist(section.c_str(), "additional_inventory_weight"))
+		{
+			val = pBackpack->m_additional_weight;
+			if (!fis_zero(val))
+			{
+				m_additional_weight->SetValue(val, 2);
+
+				pos.set(m_additional_weight->GetWndPos());
+				pos.y = h;
+				m_additional_weight->SetWndPos(pos);
+
+				h += m_additional_weight->GetWndSize().y;
+				AttachChild(m_additional_weight);
+			}
+		}
+
+		if (GameConstants::GetLimitedInventory() && pSettings->line_exist(section.c_str(), "inventory_capacity"))
+		{
+			val = pBackpack->GetInventoryCapacity();
+			if (!fis_zero(val))
+			{
+				m_inv_capacity->SetValue(val, 2);
+
+				pos.set(m_inv_capacity->GetWndPos());
+				pos.y = h;
+				m_inv_capacity->SetWndPos(pos);
+
+				h += m_inv_capacity->GetWndSize().y;
+				AttachChild(m_inv_capacity);
+			}
 		}
 	}
 

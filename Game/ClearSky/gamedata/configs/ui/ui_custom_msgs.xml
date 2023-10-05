@@ -107,6 +107,10 @@
         <not_enough_money_other  x="100" y="100" width="800" height="60">
                 <text font="graffiti32"  r="240" g="217" b="182" a="255" align="c">st_not_enough_money_npc</text>
         </not_enough_money_other>
+		
+		<backpack_full x="-350" y="680" width="800" height="30" ttl="3">
+			<text font="arial_14" r="240" g="0" b="0" a="255" align="c"/>
+		</backpack_full>
 
   <max_ping_warn_1 x="512" y="300" width="360" height="64" alignment="c" ttl="10">
     <texture x="0" y="0" width="360" height="64" a="30">ui\ui_cm_connection_error</texture>

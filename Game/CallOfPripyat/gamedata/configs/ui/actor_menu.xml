@@ -189,22 +189,32 @@
 		<max_color r="107" g="207" b="119"/>
     </progess_bar_pistol>
 
-	<actor_weight_caption x="810" y="736" width="71" height="16">
-		<text align="r" font="letterica16" color="ui_3">ui_total_weight</text>
+	<actor_weight_caption x="810" y="733" width="71" height="16">
+		<text align="r" font="arial_14" color="ui_3">ui_total_weight</text>
 	</actor_weight_caption>
-	<actor_weight x="881" y="736" width="44" height="16">
-		<text align="c" font="letterica16"/>
+	<actor_weight x="881" y="733" width="44" height="16">
+		<text align="c" font="arial_14"/>
 	</actor_weight>
-	<actor_weight_max x="925" y="736" width="85" height="16">
-		<text align="l" font="letterica16" color="ui_3"/>
+	<actor_weight_max x="925" y="733" width="85" height="16">
+		<text align="l" font="arial_14" color="ui_3"/>
 	</actor_weight_max>
 
-	<partner_weight_caption x="90" y="738" width="85" height="14">
-		<text align="r" font="letterica16" color="ui_3">ui_total_weight</text>
+	<partner_weight_caption x="90" y="735" width="85" height="14">
+		<text align="r" font="arial_14" color="ui_3">ui_total_weight</text>
 	</partner_weight_caption>
-	<partner_weight x="300" y="738" width="45" height="14">
-		<text align="l" font="letterica16" color="ui_7"/>
+	<partner_weight x="300" y="735" width="45" height="14">
+		<text align="l" font="arial_14" color="ui_7"/>
 	</partner_weight>
+	
+	<actor_inv_capacity_caption x="810" y="743" width="71" height="16">
+		<text align="r" font="arial_14" color="ui_3">ui_inventory_capacity</text>
+	</actor_inv_capacity_caption>
+	<actor_inv_fullness x="881" y="743" width="44" height="16">
+		<text align="c" font="arial_14"/>
+	</actor_inv_fullness>
+	<actor_inv_capacity x="925" y="743" width="85" height="16">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</actor_inv_capacity>
 
 	<!-- partner  ---------------------------------------------------------------- -->
 	<left_delimiter  x="0" y="226" width="341" height="163">

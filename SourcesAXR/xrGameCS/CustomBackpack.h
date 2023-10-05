@@ -31,6 +31,8 @@ public:
 	virtual void	OnAnimationEnd(u32 state);
 	virtual	void	UpdateXForm();
 
+	int				GetInventoryCapacity() const { return m_iInventoryCapacity; }
+
 	float			m_fPowerLoss;
 	float			m_additional_weight;
 	float			m_additional_weight2;
@@ -50,6 +52,8 @@ public:
 	float			m_fJumpSpeed;
 	float			m_fWalkAccel;
 	float			m_fOverweightWalkK;
+
+	int				m_iInventoryCapacity;
 
 protected:
 	virtual bool	install_upgrade_impl(LPCSTR section, bool test);

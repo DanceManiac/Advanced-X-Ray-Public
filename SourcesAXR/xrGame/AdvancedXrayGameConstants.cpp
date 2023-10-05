@@ -40,6 +40,7 @@ bool	m_bSleepInfluenceOnPsyHealth = false;
 bool	m_bUseHQ_Icons = false;
 bool	m_bAfPanelEnabled = false;
 bool	m_bHUD_UsedItemText = true;
+bool	m_bLimitedInventory = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -89,6 +90,7 @@ namespace GameConstants
 		m_bHideHudOnMaster = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "hide_hud_on_master", false);
 		m_bActorSkills = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_skills_enabled", false);
 		m_bSleepInfluenceOnPsyHealth = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "sleepeness_infl_on_psy_health", false);
+		m_bLimitedInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inventory", false);
 		m_iArtefactsCount = READ_IF_EXISTS(pAdvancedSettings, r_u32, "inventory", "artefacts_count", 5);
 		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
 		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
@@ -280,6 +282,11 @@ namespace GameConstants
 	bool GetHUD_UsedItemTextEnabled()
 	{
 		return m_bHUD_UsedItemText;
+	}
+
+	bool GetLimitedInventory()
+	{
+		return m_bLimitedInventory;
 	}
 
 	int GetArtefactsCount()

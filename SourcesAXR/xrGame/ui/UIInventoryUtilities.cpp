@@ -409,10 +409,31 @@ void InventoryUtilities::UpdateWeightStr(CUITextWnd &wnd, CUITextWnd &wnd_max, C
 	float max		= pInvOwner->MaxCarryWeight();
 
 	LPCSTR kg_str	= CStringTable().translate( "st_kg" ).c_str();
-	xr_sprintf		(buf, "%.1f %s", total, kg_str);
-	wnd.SetText	(buf);
+	xr_sprintf		(buf, "%.1f", total);
+	wnd.SetText		(buf);
 
-	xr_sprintf		(buf, "(max %.1f %s)", max, kg_str);
+	xr_sprintf		(buf, "%s %.1f %s", "/", max, kg_str);
+	wnd_max.SetText	(buf);
+}
+
+void InventoryUtilities::UpdateCapacityStr(CUITextWnd& wnd, CUITextWnd& wnd_max, CInventoryOwner* pInvOwner)
+{
+ 	R_ASSERT		(pInvOwner);
+	string128		buf;
+
+	CActor* Actor = smart_cast<CActor*>(pInvOwner);
+
+	if (!Actor)
+		return;
+
+	int total		= Actor->GetInventoryFullness();
+	int max			= Actor->MaxCarryInvCapacity();
+
+	LPCSTR lit_str = CStringTable().translate( "st_liters" ).c_str();
+	xr_sprintf		(buf, "%d", total);
+	wnd.SetText		(buf);
+
+	xr_sprintf		(buf, "%s %d %s", "/", max, lit_str);
 	wnd_max.SetText	(buf);
 }
 

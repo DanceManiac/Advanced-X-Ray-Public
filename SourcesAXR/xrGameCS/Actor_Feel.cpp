@@ -18,6 +18,9 @@
 #include "clsid_game.h"
 #include "UIGameCustom.h"
 #include "ui\UIPdaWnd.h"
+#include "ui\UIStatic.h"
+#include "string_table.h"
+#include "AdvancedXrayGameConstants.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
 //AAAAAA
@@ -136,6 +139,15 @@ void CActor::PickupModeUpdate()
 		m_pUsableObject && m_pUsableObject->nonscript_usable()	&&
 		!Level().m_feel_deny.is_object_denied(m_pObjectWeLookingAt) )
 	{
+		CInventoryItem* inv_item = smart_cast<CInventoryItem*>(m_pUsableObject);
+		if (GameConstants::GetLimitedInventory() && !inv_item->IsQuestItem() && MaxCarryInvCapacity() < (GetInventoryFullness() + inv_item->GetOccupiedInvSpace()))
+		{
+			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
+			_s->wnd()->SetText(CStringTable().translate("st_backpack_full").c_str());
+
+			return;
+		}
+
 		NET_Packet		P;
 		u_EventGen		(P,GE_OWNERSHIP_TAKE, ID());
 		P.w_u16			(m_pObjectWeLookingAt->ID());
@@ -239,6 +251,14 @@ void	CActor::PickupModeUpdate_COD	()
 
 	if (pNearestItem && m_bPickupMode)
 	{
+		if (GameConstants::GetLimitedInventory() && !pNearestItem->IsQuestItem() && MaxCarryInvCapacity() < (GetInventoryFullness() + pNearestItem->GetOccupiedInvSpace()))
+		{
+			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
+			_s->wnd()->SetText(CStringTable().translate("st_backpack_full").c_str());
+
+			return;
+		}
+
 		//подбирание объекта
 		Game().SendPickUpEvent(ID(), pNearestItem->object().ID());
 		

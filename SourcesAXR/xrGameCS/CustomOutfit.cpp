@@ -34,6 +34,7 @@ CCustomOutfit::CCustomOutfit()
 	m_NightVisionType = 0;
 	m_fFilterDegradation = 0.0f;
 	m_fFilterCondition = 1.0f;
+	m_iInventoryCapacity = 0;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -112,6 +113,8 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_additional_weight				= pSettings->r_float(section,"additional_inventory_weight");
 	m_additional_weight2			= pSettings->r_float(section,"additional_inventory_weight2");
+	
+	m_iInventoryCapacity		= READ_IF_EXISTS(pSettings, r_u32, section, "inventory_capacity", 0);
 
 	m_fHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",    0.0f );
 	m_fRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed", 0.0f );
@@ -481,6 +484,7 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
+	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_s32, m_iInventoryCapacity, test);
 
 	result |= process_if_exists_set(section, "night_vision_type", &CInifile::r_u32, m_NightVisionType, test);
 

@@ -389,7 +389,12 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		CObject* pActor_owner = smart_cast<CObject*>(m_pOwner);
 
 		if (Level().CurrentViewEntity() == pActor_owner)
+		{
 			ui->UIGame()->OnInventoryAction(pIItem, GE_OWNERSHIP_TAKE);
+
+			if (pIItem->m_eItemCurrPlace == EItemPlaceRuck)
+				Actor()->ChangeInventoryFullness(pIItem->GetOccupiedInvSpace());
+		}
 	};
 }
 
@@ -477,7 +482,12 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 		CObject* pActor_owner = smart_cast<CObject*>(m_pOwner);
 
 		if (Level().CurrentViewEntity() == pActor_owner)
+		{
 			ui->UIGame()->OnInventoryAction(pIItem, GE_OWNERSHIP_REJECT);
+
+			if (pIItem->m_eItemCurrPlace == EItemPlaceRuck)
+				Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
+		}
 	};
 	pObj->H_SetParent(0, just_before_destroy);
 	return							true;
@@ -574,8 +584,12 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 	}
 	
 	m_pOwner->OnItemSlot		(pIItem, pIItem->m_eItemCurrPlace);
+	EItemPlace prev_place		= pIItem->m_eItemCurrPlace;
 	pIItem->m_eItemCurrPlace	= EItemPlaceSlot;
 	pIItem->OnMoveToSlot		();
+
+	if (prev_place == EItemPlaceRuck)
+		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
 	
 	pIItem->object().processing_activate();
 
@@ -605,10 +619,13 @@ bool CInventory::Belt(PIItem pIItem, bool strict_placement)
 	CalcTotalWeight();
 	InvalidateState();
 
-	EItemPlace p = pIItem->m_eItemCurrPlace;
+	EItemPlace prev_place = pIItem->m_eItemCurrPlace;
 	pIItem->m_eItemCurrPlace = EItemPlaceBelt;
-	m_pOwner->OnItemBelt(pIItem, p);
+	m_pOwner->OnItemBelt(pIItem, prev_place);
 	pIItem->OnMoveToBelt();
+
+	if (prev_place == EItemPlaceRuck)
+		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();
@@ -669,6 +686,9 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 	EItemPlace prev_place							= pIItem->m_eItemCurrPlace;
 	pIItem->m_eItemCurrPlace						= EItemPlaceRuck;
 	pIItem->OnMoveToRuck							(prev_place);
+
+	if (prev_place == EItemPlaceSlot || prev_place == EItemPlaceBelt)
+		Actor()->ChangeInventoryFullness(pIItem->GetOccupiedInvSpace());
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();

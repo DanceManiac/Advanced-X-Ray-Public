@@ -350,6 +350,21 @@ void CUIActorMenu::UpdateActor()
 	m_ActorWeight->SetWndPos( pos );
 	pos.x = pos.x - m_ActorBottomInfo->GetWndSize().x - 5.0f;
 	m_ActorBottomInfo->SetWndPos( pos );
+
+	if (GameConstants::GetLimitedInventory())
+	{
+		InventoryUtilities::UpdateCapacityStr(*m_ActorInvFullness, *m_ActorInvCapacity, m_pActorInvOwner);
+
+		m_ActorInvFullness->AdjustWidthToText();
+		m_ActorInvCapacity->AdjustWidthToText();
+		m_ActorInvCapacityInfo->AdjustWidthToText();
+
+		pos = m_ActorInvFullness->GetWndPos();
+		pos.x = m_ActorInvCapacity->GetWndPos().x - m_ActorInvFullness->GetWndSize().x - 5.0f;
+		m_ActorInvFullness->SetWndPos(pos);
+		pos.x = pos.x - m_ActorInvCapacityInfo->GetWndSize().x - 5.0f;
+		m_ActorInvCapacityInfo->SetWndPos(pos);
+	}
 }
 
 void CUIActorMenu::UpdatePartnerBag()

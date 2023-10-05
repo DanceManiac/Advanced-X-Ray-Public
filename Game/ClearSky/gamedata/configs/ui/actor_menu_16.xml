@@ -111,22 +111,32 @@
 		<texture>ui_inGame2_detector_highlighter</texture>
 	</pda_slot_highlight>
 
-	<actor_weight_caption x="743" y="738" width="71" height="14">
-		<text align="l" font="letterica16" color="ui_3">ui_total_weight</text>
+	<actor_weight_caption x="743" y="735" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3">ui_total_weight</text>
 	</actor_weight_caption>
-    <actor_weight x="818" y="738" width="38" height="14">
-		<text align="l" font="letterica16" color="ui_7"/>
+    <actor_weight x="818" y="735" width="38" height="14">
+		<text align="l" font="arial_14" color="ui_7"/>
 	</actor_weight>
-	<actor_weight_max x="860" y="738" width="71" height="14">
-		<text align="l" font="letterica16" color="ui_3"/>
+	<actor_weight_max x="860" y="735" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
 	</actor_weight_max>
 
-	<partner_weight_caption x="160" y="738" width="71" height="14">
-        <text align="r" font="letterica16" color="ui_3">ui_total_weight</text>
+	<partner_weight_caption x="160" y="735" width="71" height="14">
+        <text align="r" font="arial_14" color="ui_3">ui_total_weight</text>
     </partner_weight_caption>
-   <partner_weight x="335" y="738" width="38" height="14">
-    <text align="l" font="letterica16" color="ui_7"/>
+   <partner_weight x="335" y="735" width="38" height="14">
+    <text align="l" font="arial_14" color="ui_7"/>
   </partner_weight>
+  
+	<actor_inv_capacity_caption x="743" y="745" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
+	</actor_inv_capacity_caption>
+    <actor_inv_fullness x="818" y="745" width="38" height="14">
+		<text align="l" font="arial_14" color="ui_7"/>
+	</actor_inv_fullness>
+	<actor_inv_capacity x="860" y="745" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</actor_inv_capacity>
 
   <left_delimiter_frl  x="-5" y="326" width="280" height="39" stretch="1">
     <texture>ui_inv_delimiter</texture>

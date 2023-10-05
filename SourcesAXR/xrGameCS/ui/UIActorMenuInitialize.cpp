@@ -95,6 +95,14 @@ void CUIActorMenu::Construct()
 	m_PartnerBottomInfo->AdjustWidthToText();
 	m_PartnerWeight_end_x = m_PartnerWeight->GetWndPos().x;
 
+	if (GameConstants::GetLimitedInventory())
+	{
+		m_ActorInvCapacityInfo	= UIHelper::CreateStatic(uiXml, "actor_inv_capacity_caption", this);
+		m_ActorInvFullness		= UIHelper::CreateStatic(uiXml, "actor_inv_fullness", this);
+		m_ActorInvCapacity		= UIHelper::CreateStatic(uiXml, "actor_inv_capacity", this);
+		m_ActorInvCapacityInfo->AdjustWidthToText();
+	}
+
 	m_PistolSlotHighlight		= UIHelper::CreateStatic(uiXml, "pistol_slot_highlight", this);
 	m_PistolSlotHighlight		->Show(false);
 	m_RiffleSlotHighlight		= UIHelper::CreateStatic(uiXml, "riffle_slot_highlight", this);

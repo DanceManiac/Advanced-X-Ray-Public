@@ -24,6 +24,8 @@ protected:
 	CUIInventoryItemInfo*	m_max_charge;
 	CUIInventoryItemInfo*	m_uncharge_speed;
 	CUIInventoryItemInfo*	m_artefacts_count;
+	CUIInventoryItemInfo*	m_additional_weight;
+	CUIInventoryItemInfo*	m_inv_capacity;
 
 	xr_vector<CUITextWnd*>	m_textArtefacts;
 	xr_vector<CUIStatic*>	m_stArtefacts;

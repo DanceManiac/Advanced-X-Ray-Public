@@ -72,6 +72,8 @@ CInventoryItem::CInventoryItem()
 	m_custom_text_font	= nullptr;
 	m_custom_text_clr_inv = 0;
 	m_custom_text_clr_hud = 0;
+
+	m_iOccupiedInvSpace = 1;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -141,7 +143,9 @@ void CInventoryItem::Load(LPCSTR section)
 	m_bCanUse					= READ_IF_EXISTS(pSettings, r_bool, section, "can_use", true);
 
 	
-	m_custom_text			= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text", nullptr);
+	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text", nullptr);
+
+	m_iOccupiedInvSpace			= READ_IF_EXISTS(pSettings, r_u32, section, "occupied_inv_space", 1);
 
 	if (pSettings->line_exist(section, "item_custom_text_font"))
 	{

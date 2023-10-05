@@ -149,6 +149,10 @@ protected:
 	float						m_PartnerWeight_end_x;
 //*	CUIStatic*					m_PartnerWeightMax;
 
+	CUIStatic*					m_ActorInvCapacityInfo;
+	CUIStatic*					m_ActorInvFullness;
+	CUIStatic*					m_ActorInvCapacity;
+
 	// delimiter ------------------------------
 	CUIStatic*					m_LeftDelimiter;
 	CUIStatic*					m_PartnerTradeCaption;

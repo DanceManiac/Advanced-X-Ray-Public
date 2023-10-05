@@ -263,6 +263,10 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_fDevicesPsyFactor		= 0.0f;
 
 	m_iTrySprintCounter		= 0;
+
+	m_iInventoryCapacity	= 50;
+	m_iInventoryFullness	= 0;
+	m_iInventoryFullnessCtrl = 0;
 }
 
 
@@ -515,6 +519,7 @@ if(!g_dedicated_server)
 		TimerManager = xr_new<CTimerManager>();
 
 	m_iBaseArtefactCount = READ_IF_EXISTS(pSettings, r_u32, section, "base_artefacts_count", 0);
+	m_iInventoryCapacity = READ_IF_EXISTS(pSettings, r_u32, section, "inventory_capacity", 50);
 }
 
 void CActor::PHHit(SHit &H)
@@ -2192,6 +2197,27 @@ void CActor::UpdateInventoryItems()
 		{
 			current_eatable->UpdateInRuck(this);
 		}
+
+		if (GameConstants::GetLimitedInventory())
+		{
+			CInventoryItem* item_to_drop = smart_cast<CInventoryItem*>(*it);
+
+			if (item_to_drop && item_to_drop->m_pInventory && !item_to_drop->IsQuestItem() && m_iInventoryFullness > MaxCarryInvCapacity())
+			{
+				if (m_iInventoryFullnessCtrl > MaxCarryInvCapacity())
+				{
+					NET_Packet P;
+					CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, ID());
+					P.w_u16(item_to_drop->object().ID());
+					CGameObject::u_EventSend(P);
+
+					m_iInventoryFullnessCtrl -= item_to_drop->GetOccupiedInvSpace();
+				}
+
+				SDrawStaticStruct* _s = CurrentGameUI()->AddCustomStatic("backpack_full", true);
+				_s->wnd()->TextItemControl()->SetText(CStringTable().translate("st_backpack_full").c_str());
+			}
+		}
 	}
 }
 
@@ -3241,4 +3267,35 @@ void CActor::RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item)
 				(*I)->object().DestroyObject();
 		}
 	}
+}
+
+void CActor::ChangeInventoryFullness(int val)
+{
+	m_iInventoryFullness += val;
+
+	if (m_iInventoryFullness < 0)
+		m_iInventoryFullness = 0;
+
+	if (val > 0)
+		m_iInventoryFullnessCtrl = m_iInventoryFullness;
+}
+
+//Максимальная вместительность инвентаря
+int CActor::MaxCarryInvCapacity() const
+{
+	int res = m_iInventoryCapacity;
+	
+	CCustomOutfit* outfit = GetOutfit();
+	if (outfit)
+		res += outfit->GetInventoryCapacity();
+
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+	if (backpack)
+		res += backpack->GetInventoryCapacity();
+
+	CCustomOutfit* pants = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(PANTS_SLOT));
+	if (pants)
+		res += pants->GetInventoryCapacity();
+
+	return res;
 }
