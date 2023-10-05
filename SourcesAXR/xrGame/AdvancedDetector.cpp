@@ -55,7 +55,7 @@ void CAdvancedDetector::UpdateAf()
 			it			= it_b;
 		}
 		
-		if(pAf && pAf->CanBeInvisible())
+		if (pAf && pAf->CanBeInvisible())
 		{
 			if(d<m_fAfVisRadius)
 				pAf->SwitchVisibility(true);

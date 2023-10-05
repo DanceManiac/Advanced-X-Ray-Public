@@ -190,7 +190,6 @@ void CUIArtefactDetectorSimple::update()
 			m_flash_light->set_position(fd.vLastFP);
 
 		m_on_off_light->set_position(fd.vLastFP2);
-
 		if(!m_on_off_light->get_active())
 			m_on_off_light->set_active(true);
 

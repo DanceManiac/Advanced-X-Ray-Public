@@ -41,7 +41,7 @@ void CEliteDetector::UpdateAf()
 
 	Fvector						detector_pos = Position();
 
-	for(;it_b!=it_e;++it_b)
+	for(;it_b!=it_e;++it_b)//only nearest
 	{
 		CArtefact*	pAf		= smart_cast<CArtefact*>(it_b->first);
 		CObject*	pObj	= it_b->first;
@@ -51,7 +51,7 @@ void CEliteDetector::UpdateAf()
 
 		ui().RegisterItemToDraw			(pAf ? pAf->Position() : pObj->Position(), "af_sign");
 
-		if(pAf && pAf->CanBeInvisible())
+		if (pAf && pAf->CanBeInvisible())
 		{
 			float d = detector_pos.distance_to(pAf->Position());
 			if(d<m_fAfVisRadius)

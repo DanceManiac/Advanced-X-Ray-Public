@@ -9,6 +9,7 @@
 #include "gameobject.h"
 #include "doors_door.h"
 #include "doors_actor.h"
+#include <quadtree.h>
 
 using doors::actor;
 using doors::manager;

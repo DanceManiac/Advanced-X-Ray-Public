@@ -78,10 +78,10 @@ void CArtefact::Load(LPCSTR section)
 	if(m_bLightsEnabled){
 		sscanf(pSettings->r_string(section,"trail_light_color"), "%f,%f,%f", 
 			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
-		m_fConstTrailLightRange = pSettings->r_float(section, "trail_light_range");
+		m_fConstTrailLightRange = pSettings->r_float(section,"trail_light_range");
 	}
 
-	//Ð¡Ð»ÑƒÑ‡Ð°Ð¹Ð½Ñ‹Ð¹ Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ñ€Ð°Ð½Ð³ Ð°Ñ€Ñ‚ÐµÑ„Ð°ÐºÑ‚Ð°
+	//Ñëó÷àéíûé íà÷àëüíûé ðàíã àðòåôàêòà
 	if (GameConstants::GetAfRanks())
 	{
 		int rnd_rank = ::Random.randI(1, 100);
@@ -330,7 +330,7 @@ void CArtefact::Interpolate()
 {
 	if (OnServer())
 		return;
-	
+
 	net_updateInvData* p = NetSync();
 	while (p->NET_IItem.size() > 1)	//in real no interpolation, just get latest state
 	{
@@ -434,7 +434,8 @@ void CArtefact::UpdateWorkload		(u32 dt)
 
 	// custom-logic
 	if(!CAttachableItem::enabled())
-	UpdateCLChild					();
+		UpdateCLChild					();
+
 }
 
 void CArtefact::shedule_Update		(u32 dt) 
@@ -475,7 +476,7 @@ void CArtefact::StartLights()
 	m_pTrailLight					= ::Render->light_create();
 	bool const b_light_shadow = !!pSettings->r_bool(cNameSect(), "idle_light_shadow");
 
-	m_pTrailLight->set_shadow		(b_light_shadow);
+	m_pTrailLight->set_shadow	(m_bLightsEnabled);
 
 	m_pTrailLight->set_color	(m_TrailLightColor); 
 	m_pTrailLight->set_range	(m_fTrailLightRange);
@@ -741,24 +742,27 @@ void SArtefactDetectorsSupport::SetVisible(bool b)
 	else
 		m_parent->StopLights	();
 
-	LPCSTR curr = nullptr;
-
-	if (pSettings->line_exist(m_parent->cNameSect().c_str(), (b) ? "det_show_particles" : "det_hide_particles"))
-		curr = pSettings->r_string(m_parent->cNameSect().c_str(), (b) ? "det_show_particles" : "det_hide_particles");
-
-	if (curr)
+	if(b)
 	{
-		IKinematics* K = smart_cast<IKinematics*>(m_parent->Visual());
-		R_ASSERT2(K, m_parent->cNameSect().c_str());
-		LPCSTR bone = pSettings->r_string(m_parent->cNameSect().c_str(), "particles_bone");
-		u16 bone_id = K->LL_BoneID(bone);
-		R_ASSERT2(bone_id != BI_NONE, bone);
+		LPCSTR curr = nullptr;
 
-		m_parent->CParticlesPlayer::StartParticles(curr, bone_id, Fvector().set(0, 1, 0), m_parent->ID());
+		if (pSettings->line_exist(m_parent->cNameSect().c_str(), (b) ? "det_show_particles" : "det_hide_particles"))
+			curr = pSettings->r_string(m_parent->cNameSect().c_str(), (b) ? "det_show_particles" : "det_hide_particles");
+		
+		if (curr)
+		{
+			IKinematics* K = smart_cast<IKinematics*>(m_parent->Visual());
+			R_ASSERT2(K, m_parent->cNameSect().c_str());
+			LPCSTR bone = pSettings->r_string(m_parent->cNameSect().c_str(), "particles_bone");
+			u16 bone_id = K->LL_BoneID(bone);
+			R_ASSERT2(bone_id != BI_NONE, bone);
 
-		curr = pSettings->r_string(m_parent->cNameSect().c_str(), (b) ? "det_show_snd" : "det_hide_snd");
-		m_sound.create(curr, st_Effect, sg_SourceType);
-		m_sound.play_at_pos(0, m_parent->Position(), 0);
+			m_parent->CParticlesPlayer::StartParticles(curr, bone_id, Fvector().set(0, 1, 0), m_parent->ID());
+
+			curr = pSettings->r_string(m_parent->cNameSect().c_str(), (b) ? "det_show_snd" : "det_hide_snd");
+			m_sound.create(curr, st_Effect, sg_SourceType);
+			m_sound.play_at_pos(0, m_parent->Position(), 0);
+		}
 	}
 	
 	m_parent->setVisible	(b);
@@ -880,7 +884,7 @@ int CArtefact::GetCurrentAfRank() const
 
 u32 CArtefact::Cost() const
 {
-	float percent = m_fChargeLevel*100;
+	float percent = m_fChargeLevel * 100;
 	u32 res = CInventoryItem::Cost() * m_iAfRank;
 
 	if (GameConstants::GetArtefactsDegradation())

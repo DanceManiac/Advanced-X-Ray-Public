@@ -17,6 +17,7 @@
 #include "ui\UIActorMenu.h"
 #include "HUDManager.h"
 
+#include "../CustomDetector.h"
 #include "../silencer.h"
 #include "../scope.h"
 #include "../grenadelauncher.h"

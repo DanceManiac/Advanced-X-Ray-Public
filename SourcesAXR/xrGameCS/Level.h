@@ -18,7 +18,6 @@
 #include "xrServer.h"
 #include "battleye_system.h"
 #include "GlobalFeelTouch.hpp"
-#include "customdetector.h"
 
 #include "Level_network_map_sync.h"
 #include "secure_messaging.h"
@@ -477,14 +476,5 @@ IC bool		IsGameTypeSingle()	{ return (g_pGamePersistent->GameType() == eGameIDSi
 extern BOOL						g_bDebugEvents;
 
 // -------------------------------------------------------------------------------------------------
-
-class CZoneList : public CDetectList<CCustomZone>
-{
-protected:
-	virtual BOOL	feel_touch_contact( CObject* O );
-public:
-					CZoneList();
-	virtual			~CZoneList();
-}; // class CZoneList
 
 #endif // !defined(AFX_LEVEL_H__38F63863_DB0C_494B_AFAB_C495876EC671__INCLUDED_)

@@ -5,7 +5,7 @@
 #include "customzone.h"
 #include "artefact.h"
 #include "ai_sounds.h"
-#include "ui/ArtefactDetectorUI.h"
+//#include "ui/ArtefactDetectorUI.h"
 
 #include "Battery.h"
 
@@ -40,20 +40,20 @@ template <typename K>
 class CDetectList : public Feel::Touch
 {
 protected:
-	typedef xr_map<CLASS_ID, ITEM_TYPE>	TypesMap;
-	typedef typename TypesMap::iterator	TypesMapIt;
-	TypesMap							m_TypesMap;
+	typedef xr_map<shared_str, ITEM_TYPE>	TypesMap;
+	typedef typename TypesMap::iterator		TypesMapIt;
+	TypesMap								m_TypesMap;
 public:
-	typedef xr_map<K*,ITEM_INFO>		ItemsMap;
-	typedef typename ItemsMap::iterator	ItemsMapIt;
-	ItemsMap							m_ItemInfos;
+	typedef xr_map<K*,ITEM_INFO>			ItemsMap;
+	typedef typename ItemsMap::iterator		ItemsMapIt;
+	ItemsMap								m_ItemInfos;
 
 protected:
 	virtual void 	feel_touch_new		(CObject* O)
 	{
 		K* pK							= smart_cast<K*>(O);
 		R_ASSERT						(pK);
-		TypesMapIt it					= m_TypesMap.find(O->CLS_ID);
+		TypesMapIt it					= m_TypesMap.find(O->cNameSect());
 		R_ASSERT						(it!=m_TypesMap.end());
 		m_ItemInfos[pK].snd_time		= 0.0f;
 		m_ItemInfos[pK].curr_ref		= &(it->second);
@@ -81,19 +81,18 @@ public:
 		u32 i					= 1;
 		string256				temp;
 		do{
-			sprintf_s			(temp, "%s_class_%d", prefix, i);
+			xr_sprintf			(temp, "%s_class_%d", prefix, i);
 			if(pSettings->line_exist(sect,temp))
 			{
-				LPCSTR z_Class			= pSettings->r_string(sect,temp);
-				CLASS_ID item_cls		= TEXT2CLSID(pSettings->r_string(z_Class,"class"));
+				shared_str item_sect	= pSettings->r_string(sect,temp);
 
-				m_TypesMap.insert		(std::make_pair(item_cls,ITEM_TYPE()));
-				ITEM_TYPE& item_type	= m_TypesMap[item_cls];
+				m_TypesMap.insert		(std::make_pair(item_sect, ITEM_TYPE()));
+				ITEM_TYPE& item_type	= m_TypesMap[item_sect];
 
-				sprintf_s				(temp, "%s_freq_%d", prefix, i);
+				xr_sprintf				(temp, "%s_freq_%d", prefix, i);
 				item_type.freq			= pSettings->r_fvector2(sect,temp);
 
-				sprintf_s				(temp, "%s_sound_%d_", prefix, i);
+				xr_sprintf				(temp, "%s_sound_%d_", prefix, i);
 				HUD_SOUND_ITEM::LoadSound	(sect, temp	,item_type.detect_snds		, SOUND_TYPE_ITEM);
 
 				++i;
@@ -103,16 +102,9 @@ public:
 		} while(true);
 	}
 };
-/*
-class CZoneList  :public CDetectList<CCustomZone>
-{
-protected:
-	virtual BOOL 	feel_touch_contact	(CObject* O);
-};
-*/
 
 template <typename T>
-class CAfList :public CDetectList<T>
+class CAfList  :public CDetectList<T>
 {
 protected:
 	virtual BOOL 	feel_touch_contact	(CObject* O);
@@ -120,6 +112,8 @@ public:
 					CAfList		():m_af_rank(0){}
 	int				m_af_rank;
 };
+
+class CUIArtefactDetectorBase;
 
 class CCustomDetector :		public CHudItemObject
 {
@@ -157,17 +151,17 @@ public:
 	void			ToggleDetector		(bool bFastMode);
 	void			HideDetector		(bool bFastMode);
 	void			ShowDetector		(bool bFastMode);
-	virtual bool	CheckCompatibility	(CHudItem*);
+	virtual bool	CheckCompatibility	(CHudItem* itm);
 
 	virtual u32		ef_detector_type	() const	{return 1;};
 
 			void	UpdateChargeLevel	(void);
 	virtual void	save				(NET_Packet &output_packet);
 	virtual void	load				(IReader &input_packet);
-			float	GetAfDetectRadius	() { return m_fAfDetectRadius;};
-			float	GetAfVisRadius		() { return m_fAfVisRadius;};
 			float	GetCurrentChargeLevel(void) const;
 			void	SetCurrentChargeLevel(float val);
+			float	GetAfDetectRadius	() { return m_fAfDetectRadius;};
+			float	GetAfVisRadius		() { return m_fAfVisRadius;};
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
 			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
@@ -197,6 +191,7 @@ public:
 			ref_glow	detector_glow;
 			CLAItem*	light_lanim;
 
+
 			virtual void processing_deactivate() override
 			{
 				UpdateLights();
@@ -216,10 +211,19 @@ protected:
 	virtual void 	CreateUI					()				{};
 
 	bool			m_bWorking;
-	float			m_fAfDetectRadius;
 	float			m_fAfVisRadius;
+	float			m_fAfDetectRadius;
 
 	CAfList<CObject>m_artefacts;
 
-	virtual bool	install_upgrade_impl		(LPCSTR section, bool test);
+	virtual bool			install_upgrade_impl(LPCSTR section, bool test);
 };
+
+class CZoneList : public CDetectList<CCustomZone>
+{
+protected:
+	virtual BOOL	feel_touch_contact( CObject* O );
+public:
+					CZoneList();
+	virtual			~CZoneList();
+}; // class CZoneList

@@ -12,6 +12,7 @@
 #include "entity_alive.h"
 #include "ai_space.h"
 #include "ai_debug.h"
+#include "CustomDetector.h"
 //#include "PHdynamicdata.h"
 //#include "Physics.h"
 #include "ShootingObject.h"
@@ -1369,8 +1370,7 @@ CZoneList* CLevel::create_hud_zones_list()
 
 BOOL CZoneList::feel_touch_contact( CObject* O )
 {
-	CLASS_ID clsid	= O->CLS_ID;
-	TypesMapIt it	= m_TypesMap.find(clsid);
+	TypesMapIt it	= m_TypesMap.find(O->cNameSect());
 	bool res		= ( it != m_TypesMap.end() );
 
 	CCustomZone *pZone = smart_cast<CCustomZone*>(O);

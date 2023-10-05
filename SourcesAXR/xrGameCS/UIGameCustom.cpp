@@ -8,6 +8,7 @@
 #include "object_broker.h"
 #include "string_table.h"
 #include "Actor.h"
+#include "CustomDetector.h"
 #include "ActorCondition.h"
 
 #include "InventoryOwner.h"

@@ -62,14 +62,14 @@ public:
 	virtual void OnMoveToSlot(const SInvItemPlace& prev);
 	virtual void OnMoveToRuck(const SInvItemPlace& prev);
 
-			void UpdateChargeLevel(void);
-	virtual void save(NET_Packet &output_packet);
-	virtual void load(IReader &input_packet);
+			void UpdateChargeLevel	(void);
+	virtual void save				(NET_Packet &output_packet);
+	virtual void load				(IReader &input_packet);
 			float GetCurrentChargeLevel(void) const;
 			void SetCurrentChargeLevel(float val);
-			float GetUnchargeSpeed(void) const;
-			void Recharge(float val);
-			bool IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item);
+			float GetUnchargeSpeed	(void) const;
+			void Recharge			(float val);
+			bool IsNecessaryItem	(const shared_str& item_sect, xr_vector<shared_str> item);
 
 			float	m_fUnchargeSpeed;
 			xr_vector<shared_str> m_SuitableBatteries;

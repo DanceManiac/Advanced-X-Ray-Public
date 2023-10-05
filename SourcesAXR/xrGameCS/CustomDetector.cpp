@@ -28,7 +28,7 @@ ITEM_INFO::~ITEM_INFO()
 
 bool CCustomDetector::CheckCompatibilityInt(CHudItem* itm, u16* slot_to_activate)
 {
-	if (itm == NULL)
+	if(itm==NULL)
 		return true;
 
 	CInventoryItem& iitm = itm->item();
@@ -99,8 +99,8 @@ void CCustomDetector::ShowDetector(bool bFastMode)
 
 void CCustomDetector::ToggleDetector(bool bFastMode)
 {
-	m_bNeedActivation = false;
-	m_bFastAnimMode = bFastMode;
+	m_bNeedActivation		= false;
+	m_bFastAnimMode			= bFastMode;
 
 	if (GetState() == eHidden)
 	{
@@ -117,14 +117,13 @@ void CCustomDetector::ToggleDetector(bool bFastMode)
 			}
 			else
 			{
-				SwitchState(eShowing);
-				TurnDetectorInternal(true);
+				SwitchState				(eShowing);
+				TurnDetectorInternal	(true);
 			}
 		}
 	}
-	else
-		if (GetState() == eIdle)
-			SwitchState(eHiding);
+	else if (GetState() == eIdle)
+		SwitchState(eHiding);
 }
 
 void CCustomDetector::OnStateSwitch(u32 S)
@@ -137,13 +136,13 @@ void CCustomDetector::OnStateSwitch(u32 S)
 		{
 			g_player_hud->attach_item	(this);
 			m_sounds.PlaySound			("sndShow", Fvector().set(0,0,0), this, true, false);
-			PlayHUDMotion				(m_bFastAnimMode?"anm_show_fast":"anm_show", FALSE, this, GetState());
+			PlayHUDMotion				(m_bFastAnimMode ? "anm_show_fast" : "anm_show", FALSE/*TRUE*/, this, GetState());
 			SetPending					(TRUE);
 		}break;
 	case eHiding:
 		{
 			m_sounds.PlaySound			("sndHide", Fvector().set(0,0,0), this, true, false);
-			PlayHUDMotion				(m_bFastAnimMode?"anm_hide_fast":"anm_hide", FALSE, this, GetState());
+			PlayHUDMotion				(m_bFastAnimMode ? "anm_hide_fast" : "anm_hide", FALSE/*TRUE*/, this, GetState());
 			SetPending					(TRUE);
 		}break;
 	case eIdle:
@@ -326,7 +325,8 @@ bool CCustomDetector::IsWorking()
 void CCustomDetector::UpfateWork()
 {
 	if (m_fCurrentChargeLevel > 0)
-	UpdateAf				();
+		UpdateAf();
+
 	m_ui->update			();
 }
 
@@ -460,8 +460,8 @@ void CCustomDetector::UpdateVisibility()
 		bool bClimb = ((Actor()->MovingState() & mcClimb) != 0);
 		if (bClimb)
 		{
-			HideDetector(true);
-			m_bNeedActivation = true;
+			HideDetector		(true);
+			m_bNeedActivation	= true;
 		}
 		else
 		{
@@ -471,23 +471,23 @@ void CCustomDetector::UpdateVisibility()
 				u32 state = wpn->GetState();
 				if (wpn->IsZoomed() || state == CWeapon::eReload || state == CWeapon::eSwitch)
 				{
-					HideDetector(true);
-					m_bNeedActivation = true;
+					HideDetector		(true);
+					m_bNeedActivation	= true;
 				}
 			}
 		}
 	}
 	else if (m_bNeedActivation)
 	{
-		attachable_hud_item* i0 = g_player_hud->attached_item(0);
-		bool bClimb = ((Actor()->MovingState() & mcClimb) != 0);
+		attachable_hud_item* i0		= g_player_hud->attached_item(0);
+		bool bClimb					= ((Actor()->MovingState()&mcClimb) != 0);
 		if (!bClimb)
 		{
-			CHudItem* huditem = (i0) ? i0->m_parent_hud_item : NULL;
-			bool bChecked = !huditem || CheckCompatibilityInt(huditem, 0);
-
+			CHudItem* huditem		= (i0) ? i0->m_parent_hud_item : NULL;
+			bool bChecked			= !huditem || CheckCompatibilityInt(huditem, 0);
+			
 			if (bChecked)
-				ShowDetector(true);
+				ShowDetector		(true);
 		}
 	}
 }
@@ -523,12 +523,13 @@ void CCustomDetector::OnH_B_Independent(bool just_before_destroy)
 void CCustomDetector::OnMoveToRuck(EItemPlace prev)
 {
 	inherited::OnMoveToRuck	(prev);
-	if(GetState()==eIdle)
+	if(prev == EItemPlaceSlot)
 	{
 		SwitchState					(eHidden);
 		g_player_hud->detach_item	(this);
 	}
-	TurnDetectorInternal	(false);
+	TurnDetectorInternal			(false);
+	StopCurrentAnimWithoutCallback	();
 }
 
 void CCustomDetector::OnMoveToSlot()
@@ -605,10 +606,9 @@ void CCustomDetector::Recharge(float val)
 	//Msg("Переданый в детектор заряд: %f", val); //Для Тестов
 }
 
-BOOL CAfList<CObject>::feel_touch_contact(CObject* O)
+BOOL CAfList<CObject>::feel_touch_contact	(CObject* O)
 {
-	CLASS_ID	clsid			= O->CLS_ID;
-	TypesMapIt it				= m_TypesMap.find(clsid);
+	TypesMapIt it				= m_TypesMap.find(O->cNameSect());
 
 	bool res					 = (it!=m_TypesMap.end());
 	if(res)
@@ -630,7 +630,7 @@ bool CCustomDetector::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "af_vis_radius",		&CInifile::r_float, m_fAfVisRadius,		test);
 	result |= process_if_exists(section, "max_charge_level",	&CInifile::r_float, m_fMaxChargeLevel,	test);
 	result |= process_if_exists(section, "uncharge_speed",		&CInifile::r_float, m_fUnchargeSpeed,	test);
-	result |= process_if_exists(section, "light_range",			&CInifile::r_float, m_fConstLightRange, test);
+	result |= process_if_exists(section, "light_range",			&CInifile::r_float, m_fConstLightRange,	test);
 
 	LPCSTR str;
 

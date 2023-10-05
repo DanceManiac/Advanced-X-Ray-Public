@@ -1,5 +1,6 @@
 #pragma once
 #include "CustomDetector.h"
+#include "level.h"
 
 class CUIArtefactDetectorElite;
 
@@ -11,29 +12,27 @@ public:
 	virtual			~CEliteDetector				();
 	virtual void	render_item_3d_ui			();
 	virtual bool	render_item_3d_ui_query		();
+	virtual LPCSTR	ui_xml_tag					() const {return "elite";}
 protected:
 	virtual void 	UpdateAf					();
 	virtual void 	CreateUI					();
 	CUIArtefactDetectorElite& ui				();
 };
 
-class CUIArtefactDetectorElite :public CUIArtefactDetectorBase, public CUIWindow
+
+
+class CScientificDetector :public CEliteDetector
 {
-	typedef CUIArtefactDetectorBase	inherited;
-
-	CUIWindow*			m_wrk_area;
-	CUIStatic*			m_af_sign;
-	xr_vector<Fvector>	m_af_to_draw;
-	CEliteDetector*		m_parent;
-	Fmatrix				m_map_attach_offset;
-
-	void				GetUILocatorMatrix			(Fmatrix& _m);
+	typedef CEliteDetector	inherited;
 public:
-
-	virtual void	update		();
-	virtual void	Draw		();
-
-	void		construct		(CEliteDetector* p);
-	void		Clear			();
-	void		RegisterAf		(const Fvector& p);
+					CScientificDetector			();
+	virtual			~CScientificDetector		();
+	virtual void 	Load						(LPCSTR section);
+	virtual void 	OnH_B_Independent			(bool just_before_destroy);
+	virtual void 	shedule_Update				(u32 dt);
+	virtual LPCSTR	ui_xml_tag					() const {return "scientific";}
+protected:
+	virtual void	UpfateWork					();
+	CZoneList		m_zones;
 };
+

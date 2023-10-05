@@ -165,7 +165,7 @@ public:
 
 			void					UpdateDegradation	(void);
 
-			bool					IsInContainer();
+	bool							IsInContainer		();
 
 	// optimization FAST/SLOW mode
 	u32						o_render_frame				;

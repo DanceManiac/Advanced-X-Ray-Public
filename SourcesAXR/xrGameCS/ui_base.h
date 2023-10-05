@@ -50,6 +50,8 @@ class ui_core: public CDeviceResetNotifier
 {
 	C2DFrustum		m_2DFrustum;
 	C2DFrustum		m_2DFrustumPP;
+	C2DFrustum		m_FrustumLIT;
+
 	bool			m_bPostprocess;
 
 	CFontManager*	m_pFontManager;
@@ -77,6 +79,7 @@ public:
 
 	Frect			ScreenRect						();
 	const C2DFrustum& ScreenFrustum					(){return (m_bPostprocess)?m_2DFrustumPP:m_2DFrustum;}
+	C2DFrustum&		ScreenFrustumLIT				()								{return m_FrustumLIT;}
 	void			PushScissor						(const Frect& r, bool overlapped=false);
 	void			PopScissor						();
 

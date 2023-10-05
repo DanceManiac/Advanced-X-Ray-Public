@@ -1,3 +1,7 @@
+// Level.h: interface for the CLevel class.
+//
+//////////////////////////////////////////////////////////////////////
+
 #if !defined(AFX_LEVEL_H__38F63863_DB0C_494B_AFAB_C495876EC671__INCLUDED_)
 #define AFX_LEVEL_H__38F63863_DB0C_494B_AFAB_C495876EC671__INCLUDED_
 #pragma once

@@ -377,7 +377,7 @@ void CActor::cam_Update(float dt, float fFOV)
 	}else{
 		fPrevCamPos			= flCurrentPlayerY;
 	}
-	
+
 	float _viewport_near			= VIEWPORT_NEAR;
 	// calc point
 	xform.transform_tiny			(point);
@@ -405,7 +405,6 @@ void CActor::cam_Update(float dt, float fFOV)
 		cameras[eacFirstEye]->Update	(point,dangle);
 		cameras[eacFirstEye]->f_fov		= fFOV;
 	}
-	
 	if (Level().CurrentEntity() == this)
 	{
 		collide_camera( *cameras[eacFirstEye], _viewport_near, this );
@@ -499,8 +498,6 @@ void CActor::OnRender	()
 
 	if ((dbg_net_Draw_Flags.is_any(dbg_draw_actor_phys)))
 		character_physics_support()->movement()->dbg_Draw	();
-
-	
 
 	OnRender_Network();
 

@@ -29,6 +29,7 @@
 #include "GameTaskdefs.h"
 #include "infoportion.h"
 #include "inventory.h"
+#include "CustomDetector.h"
 #include "ai/monsters/basemonster/base_monster.h"
 #include "ai/trader/ai_trader.h"
 

@@ -1294,7 +1294,6 @@
     <ClInclude Include="Bolt.h" />
     <ClInclude Include="BoneProtections.h" />
     <ClInclude Include="bone_groups.h" />
-    <ClInclude Include="bone_utils.h" />
     <ClInclude Include="BottleItem.h" />
     <ClInclude Include="BreakableObject.h" />
     <ClInclude Include="builder_allocator_constructor.h" />

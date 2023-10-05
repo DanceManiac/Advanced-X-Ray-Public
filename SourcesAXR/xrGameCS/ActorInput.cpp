@@ -104,11 +104,6 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		{
 			mstate_wishful |= mcJump;
 		}break;
-	case kCROUCH:
-	{
-		if (psActorFlags.test(AF_CROUCH_TOGGLE))
-			mstate_wishful ^= mcCrouch;
-	}break;
 	case kSPRINT_TOGGLE:	
 		{
 			CWeapon* W = smart_cast<CWeapon*>(inventory().ActiveItem());
@@ -131,7 +126,12 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (mstate_wishful & mcSprint && !GameConstants::GetReloadIfSprint())
 				mstate_wishful &= ~mcSprint;
 			else
-				mstate_wishful |= mcSprint;					
+				mstate_wishful |= mcSprint;
+		}break;
+	case kCROUCH:
+		{
+			if (psActorFlags.test(AF_CROUCH_TOGGLE))
+				mstate_wishful ^= mcCrouch;
 		}break;
 	case kCAM_1:	cam_Set			(eacFirstEye);				break;
 	case kCAM_2:	cam_Set			(eacLookAt);				break;
@@ -220,7 +220,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}break;
 	case kLASER_ON:
 		{
-			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+		auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 			if (wpn)
 				wpn->SwitchLaser(!wpn->IsLaserOn());
 		}break;
@@ -357,11 +357,11 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	case kFWD:		mstate_wishful |= mcFwd;									break;
 	case kBACK:		mstate_wishful |= mcBack;									break;
 	case kCROUCH:
-	{
-		if (!psActorFlags.test(AF_CROUCH_TOGGLE))
-			mstate_wishful |= mcCrouch;
-
-	}break;
+		{
+			if (!psActorFlags.test(AF_CROUCH_TOGGLE))
+				mstate_wishful |= mcCrouch;
+	
+		}break;
 	}
 }
 

@@ -16,6 +16,7 @@
 #include "ui_arrow.h"
 #include "UIInventoryUtilities.h"
 #include "../HUDManager.h"
+#include "CustomDetector.h"
 #include "../UIGameCustom.h"
 #include "../UIGameSP.h"
 #include "AdvancedXrayGameConstants.h"

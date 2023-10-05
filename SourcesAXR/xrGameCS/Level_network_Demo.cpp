@@ -4,6 +4,7 @@
 #include "UIGameDM.h"
 #include "xrServer.h"
 #include "game_sv_mp.h"
+#include "GameObject.h"
 #include "spectator.h"
 #include "actor.h"
 #include "game_cl_base.h"
@@ -275,4 +276,9 @@ void CLevel::SetDemoPlaySpeed(float const time_factor)
 		return;
 	}
 	Device.time_factor(time_factor);
+}
+
+CObject* CLevel::GetDemoSpectator()
+{
+	return m_current_spectator ? smart_cast<CGameObject*>(m_current_spectator) : NULL;
 }

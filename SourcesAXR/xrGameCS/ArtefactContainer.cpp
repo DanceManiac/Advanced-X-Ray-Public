@@ -18,7 +18,7 @@ CArtefactContainer* m_LastAfContainer = nullptr;
 
 CArtefactContainer::CArtefactContainer()
 {
-    m_iContainerSize = 1;
+	m_iContainerSize = 1;
     m_sArtefactsInside.clear();
 }
 
@@ -28,9 +28,9 @@ CArtefactContainer::~CArtefactContainer()
 
 void CArtefactContainer::Load(LPCSTR section)
 {
-    inherited::Load(section);
+	inherited::Load(section);
 
-    m_iContainerSize = pSettings->r_s32(section, "container_size");
+	m_iContainerSize = pSettings->r_s32(section, "container_size");
 }
 
 BOOL CArtefactContainer::net_Spawn(CSE_Abstract* DC)
@@ -40,7 +40,7 @@ BOOL CArtefactContainer::net_Spawn(CSE_Abstract* DC)
 
 void CArtefactContainer::save(NET_Packet& packet)
 {
-    inherited::save(packet);
+	inherited::save(packet);
 
     u32 numArtefacts = m_sArtefactsInside.size();
     save_data(numArtefacts, packet);
@@ -56,7 +56,7 @@ void CArtefactContainer::save(NET_Packet& packet)
 
 void CArtefactContainer::load(IReader& packet)
 {
-    inherited::load(packet);
+	inherited::load(packet);
 
     u32 numArtefacts;
     load_data(numArtefacts, packet);
@@ -84,7 +84,7 @@ void CArtefactContainer::PutArtefactToContainer(const CArtefact& artefact)
 
     af->m_bInContainer = true;
 
-    m_sArtefactsInside.push_back(af);
+	m_sArtefactsInside.push_back(af);
 }
 
 void CArtefactContainer::TakeArtefactFromContainer(CArtefact* artefact)

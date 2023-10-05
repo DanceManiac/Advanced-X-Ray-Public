@@ -17,23 +17,4 @@ protected:
 
 };
 
-class CUIArtefactDetectorAdv :public CUIArtefactDetectorBase
-{
-	typedef CUIArtefactDetectorBase	inherited;
-
-	CAdvancedDetector*		m_parent;
-	Fvector					m_target_dir;
-	float					m_cur_y_rot;
-	float					m_curr_ang_speed;
-	u16						m_bid;
-
-public:
-	virtual					~CUIArtefactDetectorAdv			();
-	virtual void			update							();
-	void					construct						(CAdvancedDetector* p);
-	void					SetValue						(const float v1, const Fvector& v2);
-	float					CurrentYRotation				()	const;
-	static void 	_BCL	BoneCallback					(CBoneInstance *B);
-	void					ResetBoneCallbacks				();
-	void					SetBoneCallbacks				();
-};
+//	static void _BCL		BoneCallback					(CBoneInstance *B);

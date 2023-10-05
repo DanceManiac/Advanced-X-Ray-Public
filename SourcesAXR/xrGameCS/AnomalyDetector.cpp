@@ -311,8 +311,6 @@ void CDetectorAnomaly::Recharge(float val)
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	SetChargeLevel(m_fCurrentChargeLevel);
-
-	//Msg("Charge Level In Recharge: %f", val); //For Test
 }
 
 bool CDetectorAnomaly::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)

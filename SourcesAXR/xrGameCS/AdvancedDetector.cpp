@@ -5,6 +5,7 @@
 #include "player_hud.h"
 #include "game_object_space.h"
 
+
 CAdvancedDetector::CAdvancedDetector()
 {
 	m_artefacts.m_af_rank = 2;
@@ -33,6 +34,7 @@ void CAdvancedDetector::UpdateAf()
 	CAfList<CObject>::ItemsMapIt it_b	= m_artefacts.m_ItemInfos.begin();
 	CAfList<CObject>::ItemsMapIt it_e	= m_artefacts.m_ItemInfos.end();
 	CAfList<CObject>::ItemsMapIt it		= it_b;
+
 	float min_dist				= flt_max;
 
 	Fvector						detector_pos = Position();
@@ -69,7 +71,7 @@ void CAdvancedDetector::UpdateAf()
 
 	//direction
 	Fvector					dir_to_artefact;
-	dir_to_artefact.sub(pAf ? pAf->Position() : pObj->Position(), Device.vCameraPosition);
+	dir_to_artefact.sub		(pAf ? pAf->Position() : pObj->Position(), Device.vCameraPosition);
 	dir_to_artefact.normalize();
 	float _ang_af			= dir_to_artefact.getH();
 	float _ang_cam			= Device.vCameraDirection.getH();
@@ -104,6 +106,7 @@ void CUIArtefactDetectorAdv::construct(CAdvancedDetector* p)
 	m_target_dir.set	(0,0,0);
 	m_curr_ang_speed	= 0.0f;
 	m_cur_y_rot			= 0.0f;
+	m_bid				= u16(-1);
 }
 
 CUIArtefactDetectorAdv::~CUIArtefactDetectorAdv()
@@ -117,7 +120,7 @@ void CUIArtefactDetectorAdv::SetValue(const float val1, const Fvector& val2)
 
 void CUIArtefactDetectorAdv::update()
 {
-	if(NULL==m_parent->HudItemData())	return;
+	if(NULL==m_parent->HudItemData() || m_bid == u16(-1))	return;
 	inherited::update();
 	attachable_hud_item* itm		= m_parent->HudItemData();
 	R_ASSERT						(itm);

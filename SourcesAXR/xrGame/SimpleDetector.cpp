@@ -51,8 +51,8 @@ void CSimpleDetector::UpdateAf()
 
 		if (d < min_dist)
 		{
-			min_dist = d;
-				it = it_b;
+			min_dist	= d;
+			it			= it_b;
 		}
 
 		if (pAf && pAf->CanBeInvisible())

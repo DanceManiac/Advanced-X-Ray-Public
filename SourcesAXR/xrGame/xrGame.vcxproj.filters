@@ -5279,9 +5279,6 @@
     <ClInclude Include="ai_space_inline.h">
       <Filter>AI\ASpace</Filter>
     </ClInclude>
-    <ClInclude Include="bone_utils.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="..\xrServerEntities\pch_script.h">
       <Filter>Core</Filter>
     </ClInclude>

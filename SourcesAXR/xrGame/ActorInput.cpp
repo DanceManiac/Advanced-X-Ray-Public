@@ -130,10 +130,10 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				mstate_wishful ^= mcSprint;
 
 		}break;
-	case kCROUCH:	
+	case kCROUCH:
 		{
-		if( psActorFlags.test(AF_CROUCH_TOGGLE) )
-			mstate_wishful ^= mcCrouch;
+			if (psActorFlags.test(AF_CROUCH_TOGGLE))
+				mstate_wishful ^= mcCrouch;
 		}break;
 	case kCAM_1:	cam_Set			(eacFirstEye);				break;
 	case kCAM_2:	cam_Set			(eacLookAt);				break;
@@ -240,7 +240,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}break;
 	case kFLASHLIGHT:
 		{
-		auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
 			if (wpn)
 				wpn->SwitchFlashlight(!wpn->IsFlashlightOn());
 		}break;
@@ -372,9 +372,9 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	case kBACK:		mstate_wishful |= mcBack;									break;
 	case kCROUCH:
 		{
-			if( !psActorFlags.test(AF_CROUCH_TOGGLE) )
-					mstate_wishful |= mcCrouch;
-
+			if (!psActorFlags.test(AF_CROUCH_TOGGLE))
+				mstate_wishful |= mcCrouch;
+	
 		}break;
 	}
 }
