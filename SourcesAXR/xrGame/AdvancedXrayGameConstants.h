@@ -39,6 +39,7 @@ namespace GameConstants
 	bool GetArtefactPanelEnabled();
 	bool GetHUD_UsedItemTextEnabled();
 	bool GetLimitedInventory();
+	bool GetBackpackAnimsEnabled();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

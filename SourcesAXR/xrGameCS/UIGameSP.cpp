@@ -105,7 +105,7 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 
 			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(pActor->inventory().ItemFromSlot(BACKPACK_SLOT));
 
-			if (!backpack)
+			if (!GameConstants::GetBackpackAnimsEnabled() || !backpack)
 				ShowActorMenu();
 
 		break;

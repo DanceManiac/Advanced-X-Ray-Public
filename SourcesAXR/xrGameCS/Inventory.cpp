@@ -1033,7 +1033,7 @@ bool CInventory::Action(s32 cmd, u32 flags)
 			b_send_event = true;
 			if (flags & CMD_START)
 			{
-				if (!smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT))) return false;
+				if (!GameConstants::GetBackpackAnimsEnabled() || !smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT))) return false;
 
 				if (GetActiveSlot() == BACKPACK_SLOT && ActiveItem())
 				{
