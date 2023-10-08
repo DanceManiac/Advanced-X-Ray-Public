@@ -726,4 +726,10 @@
 	<string id="st_liters">
 		<text>л</text>
 	</string>
+	<string id="st_alt_aim_switched_on">
+		<text>Режим прицеливания: Мушка</text>
+	</string>
+	<string id="st_alt_aim_switched_off">
+		<text>Режим прицеливания: Оптика</text>
+	</string>
 </string_table>

@@ -36,6 +36,7 @@
 		<command id="kb_firemode_prev"				exe="wpn_firemode_prev"/>
 		<command id="kb_laser_on"					exe="laser_on"/>
 		<command id="kb_flashlight_on"				exe="flashlight"/>
+		<command id="kb_wpn_alt_aim"				exe="wpn_alt_aim"/>
 	</group>
 	<group name="kb_grp_auto">
 		<command id="kb_turn_engine"				exe="turn_engine"/>

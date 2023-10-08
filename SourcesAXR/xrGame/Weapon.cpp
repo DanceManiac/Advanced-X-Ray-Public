@@ -112,6 +112,8 @@ CWeapon::CWeapon()
 
 	m_bUseAimAnmDirDependency = false;
 	m_bUseScopeAimMoveAnims = true;
+	m_bAltZoomEnabled		= false;
+	m_bAltZoomActive		= false;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -888,6 +890,7 @@ void CWeapon::Load		(LPCSTR section)
 	m_bUseAimAnmDirDependency = READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
 	m_bUseScopeAimMoveAnims = READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
 	m_bUseAimSilShotAnim = READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_silencer_shoot_anm", false);
+	m_bAltZoomEnabled = READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
 
 	if (repair_kits && repair_kits[0])
 	{
@@ -2353,7 +2356,7 @@ float CWeapon::CurrentZoomFactor()
 	}
 	else
 	{
-		return IsScopeAttached() ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
+		return (IsScopeAttached() && !m_bAltZoomActive) ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
 	}
 };
 
@@ -2475,7 +2478,7 @@ void CWeapon::OnZoomOut()
 
 CUIWindow* CWeapon::ZoomTexture()
 {
-	if (UseScopeTexture() && !bIsSecondVPZoomPresent())
+	if (UseScopeTexture() && !bIsSecondVPZoomPresent() && !m_bAltZoomActive)
 		return m_UIScope;
 	else
 		return NULL;
@@ -3365,9 +3368,14 @@ u8 CWeapon::GetCurrentHudOffsetIdx()
 							(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor>0.f));
 
 	if(!b_aiming)
-		return		0;
+		return 0;
 	else
-		return		1;
+	{
+		if (!m_bAltZoomActive)
+			return 1;
+		else
+			return 3;
+	}
 }
 
 void CWeapon::render_hud_mode()
@@ -3566,4 +3574,9 @@ bool CWeapon::IsMisfireNow()
 bool CWeapon::IsMagazineEmpty()
 {
 	return IsEmptyMagazine();
+}
+
+void CWeapon::SwitchZoomMode()
+{
+		!m_bAltZoomActive ? m_bAltZoomActive = true : m_bAltZoomActive = false;
 }

@@ -991,12 +991,16 @@ u8 CWeaponMagazinedWGrenade::GetCurrentHudOffsetIdx()
 							(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor>0.f));
 	
 	if(!b_aiming)
-		return		0;
+		return 0;
 	else
-	if(m_bGrenadeMode)
-		return		2;
-	else
-		return		1;
+	{
+		if (m_bGrenadeMode)
+			return 2;
+		else if (m_bAltZoomActive)
+			return 3;
+		else
+			return 1;
+	}
 }
 
 bool CWeaponMagazinedWGrenade::install_upgrade_ammo_class	( LPCSTR section, bool test )

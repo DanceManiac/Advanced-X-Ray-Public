@@ -48,8 +48,8 @@ _action  actions[]		= {
 	{ "wpn_4",				kWPN_4					,_both},	
 	{ "wpn_5",				kWPN_5					,_both},	
 	{ "wpn_6",				kWPN_6					,_both},
-	{ "laser_on",			kLASER_ON				,_both}, //DEF_ACTION("laser_on",			kLASER_ON)
-	{ "flashlight",			kFLASHLIGHT				,_both}, //DEF_ACTION("flashlight",		kFLASHLIGHT)
+	{ "laser_on",			kLASER_ON				,_both},
+	{ "flashlight",			kFLASHLIGHT				,_both},
 	{ "artefact",			kARTEFACT				,_both/*_mp*/},		
 	{ "wpn_next",			kWPN_NEXT				,_both},	
 	{ "wpn_fire",			kWPN_FIRE				,_both},	
@@ -59,7 +59,8 @@ _action  actions[]		= {
 	{ "wpn_reload",			kWPN_RELOAD				,_both},	
 	{ "wpn_func",			kWPN_FUNC				,_both},	
 	{ "wpn_firemode_prev",	kWPN_FIREMODE_PREV		,_both},	
-	{ "wpn_firemode_next",	kWPN_FIREMODE_NEXT		,_both},	
+	{ "wpn_firemode_next",	kWPN_FIREMODE_NEXT		,_both},
+	{ "wpn_alt_aim",		kWPN_ALT_AIM			,_both},
 															
 	{ "pause",				kPAUSE					,_both},	
 	{ "drop",				kDROP					,_both},	

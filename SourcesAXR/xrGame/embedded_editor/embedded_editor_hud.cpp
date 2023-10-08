@@ -35,6 +35,8 @@ void ShowHudEditor(bool& show)
 		ImGui::InputFloat3("aim_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][1]);
 		ImGui::InputFloat3("gl_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][2]);
 		ImGui::InputFloat3("gl_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][2]);
+		ImGui::InputFloat3("aim_alt_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][3]);
+		ImGui::InputFloat3("aim_alt_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][3]);
 		ImGui::InputFloat3("fire_point 0", (float*)&item->m_measures.m_fire_point_offset[0]);
 		ImGui::InputFloat3("fire_point2 0", (float*)&item->m_measures.m_fire_point2_offset[0]);
 		ImGui::InputFloat3("shell_point 0", (float*)&item->m_measures.m_shell_point_offset[0]);
