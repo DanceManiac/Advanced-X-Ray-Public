@@ -3128,6 +3128,9 @@ void CActor::RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item)
 
 void CActor::ChangeInventoryFullness(int val)
 {
+	if (!this)
+		return;
+
 	m_iInventoryFullness += val;
 
 	if (m_iInventoryFullness < 0)
