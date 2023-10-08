@@ -56,10 +56,27 @@ CCustomZone::CCustomZone(void)
 	m_zone_flags.set			(eBlowoutWindActive, FALSE);
 	m_zone_flags.set			(eFastMode, TRUE);
 
-	m_bVolumetricBlowout = true;
-	m_fVolumetricQuality = 1.0f;
-	m_fVolumetricDistance = 0.3f;
-	m_fVolumetricIntensity = 0.5f;
+	m_bVolumetricBlowout		= true;
+	m_fVolumetricQuality		= 1.0f;
+	m_fVolumetricDistance		= 0.3f;
+	m_fVolumetricIntensity		= 0.5f;
+
+	// -- Interactive Grass - IDLE
+	m_BendGrass_idle_anim		= -1;
+	m_BendGrass_idle_str		= 1.0f;
+	m_BendGrass_idle_radius		= 1.0f;
+	m_BendGrass_idle_speed		= 1.0f;
+
+	// -- Interactive Grass - ACTIVE
+	m_BendGrass_whenactive_anim = -1;
+	m_BendGrass_whenactive_speed = 0.0f;
+	m_BendGrass_whenactive_str	= 0.0f;
+
+	// -- Interactive Grass - BLOWOUT
+	m_BendGrass_Blowout_time	= -1;
+	m_BendGrass_Blowout			= false;
+	m_BendGrass_Blowout_speed	= 0.0f;
+	m_BendGrass_Blowout_radius	= 0.0f;
 }
 
 CCustomZone::~CCustomZone(void) 
@@ -102,56 +119,21 @@ void CCustomZone::Load(LPCSTR section)
 	LPCSTR sound_str = NULL;
 	
 	// -- Interactive Grass - IDLE
-	if (pSettings->line_exist(section, "bend_grass_idle_anim"))
-		m_BendGrass_idle_anim = pSettings->r_s8(section, "bend_grass_idle_anim");
-	else
-		m_BendGrass_idle_anim = -1;
-
-	if (pSettings->line_exist(section, "bend_grass_idle_str"))
-		m_BendGrass_idle_str = pSettings->r_float(section, "bend_grass_idle_str");
-	else
-		m_BendGrass_idle_str = 1.0f;
-
-	if (pSettings->line_exist(section, "bend_grass_idle_radius"))
-		m_BendGrass_idle_radius = pSettings->r_float(section, "bend_grass_idle_radius");
-	else
-		m_BendGrass_idle_radius = 1.0f;
-
-	if (pSettings->line_exist(section, "bend_grass_idle_speed"))
-		m_BendGrass_idle_speed = pSettings->r_float(section, "bend_grass_idle_speed");
-	else
-		m_BendGrass_idle_speed = 1.0f;
+	m_BendGrass_idle_anim		= READ_IF_EXISTS(pSettings, r_s8, section, "bend_grass_idle_anim", -1);
+	m_BendGrass_idle_str		= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_idle_str", 1.0f);
+	m_BendGrass_idle_radius		= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_idle_radius", 1.0f);
+	m_BendGrass_idle_speed		= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_idle_speed", 1.0f);
 
 	// -- Interactive Grass - ACTIVE
-	if (pSettings->line_exist(section, "bend_grass_whenactive_anim"))
-		m_BendGrass_whenactive_anim = pSettings->r_s8(section, "bend_grass_whenactive_anim");
-	else
-		m_BendGrass_whenactive_anim = -1;
-
-	if (pSettings->line_exist(section, "bend_grass_whenactive_speed"))
-		m_BendGrass_whenactive_speed = pSettings->r_float(section, "bend_grass_whenactive_speed");
-	else
-		m_BendGrass_whenactive_speed = -1;
-
-	if (pSettings->line_exist(section, "bend_grass_whenactive_str"))
-		m_BendGrass_whenactive_str = pSettings->r_float(section, "bend_grass_whenactive_str");
-	else
-		m_BendGrass_whenactive_str = -1;
+	m_BendGrass_whenactive_anim = READ_IF_EXISTS(pSettings, r_s8, section, "bend_grass_whenactive_anim", -1);
+	m_BendGrass_whenactive_speed = READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_whenactive_speed", 0.0f);
+	m_BendGrass_whenactive_str	= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_whenactive_str", 0.0f);
 
 	// -- Interactive Grass - BLOWOUT
-	if (pSettings->line_exist(section, "bend_grass_blowout_duration"))
-		m_BendGrass_Blowout_time = pSettings->r_u32(section, "bend_grass_blowout_duration");
-	else
-		m_BendGrass_Blowout_time = -1;
-
-	if (pSettings->line_exist(section, "bend_grass_blowout"))
-		m_BendGrass_Blowout = pSettings->r_bool(section, "bend_grass_blowout");
-
-	if (pSettings->line_exist(section, "bend_grass_blowout_speed"))
-		m_BendGrass_Blowout_speed = pSettings->r_float(section, "bend_grass_blowout_speed");
-
-	if (pSettings->line_exist(section, "bend_grass_blowout_radius"))
-		m_BendGrass_Blowout_radius = pSettings->r_float(section, "bend_grass_blowout_radius");
+	m_BendGrass_Blowout_time	= READ_IF_EXISTS(pSettings, r_u32, section, "bend_grass_blowout_duration", -1);
+	m_BendGrass_Blowout			= READ_IF_EXISTS(pSettings, r_bool, section, "bend_grass_blowout", false);
+	m_BendGrass_Blowout_speed	= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_blowout_speed", 0.0f);
+	m_BendGrass_Blowout_radius	= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_blowout_radius", 0.0f);
 
 	if(pSettings->line_exist(section,"idle_sound")) 
 	{
