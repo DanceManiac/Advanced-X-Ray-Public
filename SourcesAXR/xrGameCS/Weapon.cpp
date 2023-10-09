@@ -685,6 +685,8 @@ void CWeapon::Load(LPCSTR section)
 			m_iLaserY = pSettings->r_s32(section, "laser_designator_y");
 		}
 	}
+	else if (m_eLaserDesignatorStatus == ALife::eAddonPermanent)
+		m_sLaserName = pSettings->r_string(section, "laser_designator_name");
 
 	if (m_eTacticalTorchStatus == ALife::eAddonAttachable)
 	{
@@ -701,6 +703,8 @@ void CWeapon::Load(LPCSTR section)
 			m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y");
 		}
 	}
+	else if (m_eTacticalTorchStatus == ALife::eAddonPermanent)
+		m_sTacticalTorchName = pSettings->r_string(section, "tactical_torch_name");
 
 	UpdateAltScope();
 	InitAddons();
@@ -797,9 +801,9 @@ void CWeapon::Load(LPCSTR section)
 	{
 		has_laser = true;
 
-		laserdot_attach_bone = READ_IF_EXISTS(pSettings, r_string, m_sLaserName, "laserdot_attach_bone", "");
-		laserdot_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, m_sLaserName, "laserdot_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, m_sLaserName, "laserdot_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, m_sLaserName, "laserdot_attach_offset_z", 0.0f) };
-		laserdot_world_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, m_sLaserName, "laserdot_world_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, m_sLaserName, "laserdot_world_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, m_sLaserName, "laserdot_world_attach_offset_z", 0.0f) };
+		laserdot_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "laserdot_attach_bone", m_sWpn_laser_bone);
+		laserdot_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "laserdot_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_attach_offset_z", 0.0f) };
+		laserdot_world_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "laserdot_world_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_world_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_world_attach_offset_z", 0.0f) };
 
 		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
 
@@ -824,11 +828,11 @@ void CWeapon::Load(LPCSTR section)
 	{
 		has_flashlight = true;
 
-		flashlight_attach_bone = pSettings->r_string(m_sTacticalTorchName, "torch_light_bone");
-		flashlight_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_attach_offset_z") };
-		flashlight_omni_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_omni_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_attach_offset_z") };
-		flashlight_world_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_world_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_world_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_world_attach_offset_z") };
-		flashlight_omni_world_attach_offset = Fvector{ pSettings->r_float(m_sTacticalTorchName, "torch_omni_world_attach_offset_x"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_world_attach_offset_y"), pSettings->r_float(m_sTacticalTorchName, "torch_omni_world_attach_offset_z") };
+		flashlight_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_light_bone", m_sWpn_flashlight_bone);
+		flashlight_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_attach_offset_z", 0.0f) };
+		flashlight_omni_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_attach_offset_z", 0.0f) };
+		flashlight_world_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_world_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_world_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_world_attach_offset_z", 0.0f) };
+		flashlight_omni_world_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_world_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_world_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_world_attach_offset_z", 0.0f) };
 
 		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
 

@@ -633,7 +633,7 @@ public:
 
 	inline bool IsLaserOn() const
 	{
-		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserOn && m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator);
+		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserOn && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator || m_eLaserDesignatorStatus == ALife::eAddonPermanent));
 	}
 
 private:
@@ -652,6 +652,6 @@ public:
 
 	inline bool IsFlashlightOn() const
 	{
-		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn && m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch);
+		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch || m_eTacticalTorchStatus == ALife::eAddonPermanent));
 	}
 };
