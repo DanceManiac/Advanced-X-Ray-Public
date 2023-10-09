@@ -54,6 +54,8 @@ protected:
 	virtual void	switch2_Showing	();
 	virtual void    switch2_Unmis	();
 	virtual void	switch2_ChangeFireMode();
+	virtual void	switch2_LaserSwitch();
+	virtual void	switch2_FlashlightSwitch();
 	
 	virtual void	OnShot			();	
 	
@@ -182,6 +184,8 @@ protected:
 	virtual void	PlayAnimIdleSprint	();
 	virtual void	PlayAnimIdleMoving	();
 	virtual void	PlayAnimFireMode	();
+	virtual void	PlayAnimLaserSwitch	();
+	virtual void	PlayAnimFlashlightSwitch();
 
 protected:
 

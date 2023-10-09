@@ -156,6 +156,8 @@ public:
 		eUnMisfire,
 		eFiremodePrev,
 		eFiremodeNext,
+		eLaserSwitch,
+		eFlashlightSwitch,
 	};
 	enum EWeaponSubStates{
 		eSubstateReloadBegin		=0,
@@ -627,16 +629,8 @@ private:
 
 	void UpdateLaser();
 public:
-	void SwitchLaser(bool on)
-	{
-		if (!has_laser)
-			return;
+	void SwitchLaser(bool on);
 
-		if (on)
-			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
-		else
-			m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
-	}
 	inline bool IsLaserOn() const
 	{
 		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserOn && m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator);
@@ -654,16 +648,8 @@ private:
 
 	void UpdateFlashlight();
 public:
-	void SwitchFlashlight(bool on)
-	{
-		if (!has_flashlight)
-			return;
+	void SwitchFlashlight(bool on);
 
-		if (on)
-			m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
-		else
-			m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
-	}
 	inline bool IsFlashlightOn() const
 	{
 		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn && m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch);
