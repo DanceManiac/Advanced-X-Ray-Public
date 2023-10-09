@@ -14,7 +14,7 @@
 
 CUIPropertiesBox::CUIPropertiesBox()
 {
-	SetFont								(HUD().Font().pFontArial14);
+	SetFont								(UI().Font().pFontArial14);
 	m_UIListWnd.SetImmediateSelection	(true);
 }
 

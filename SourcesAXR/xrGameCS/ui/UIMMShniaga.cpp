@@ -124,7 +124,7 @@ void CUIMMShniaga::CreateList(xr_vector<CUIStatic*>& lst, CUIXml& xml_doc, LPCST
 			st->SetFont				(pF);
 
 		float font_height			= st->GetFont()->GetHeight();
-		UI()->ClientToScreenScaledHeight(font_height);
+		UI().ClientToScreenScaledHeight(font_height);
 
 		st->SetTextY				( (button_height-font_height)/2.0f );
 		st->SetTextColor			(color);
@@ -312,7 +312,7 @@ void CUIMMShniaga::Update()
 bool CUIMMShniaga::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	
-	Fvector2 pos = UI()->GetUICursor()->GetCursorPosition();
+	Fvector2 pos = UI().GetUICursor().GetCursorPosition();
     Frect r;
 	m_magnifier->GetAbsoluteRect(r);
 	if (WINDOW_LBUTTON_DOWN == mouse_action && r.in(pos.x, pos.y))

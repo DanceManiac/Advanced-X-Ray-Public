@@ -36,7 +36,7 @@ void CUIInventoryWnd::EatItem(PIItem itm)
 #include "../Antirad.h"
 void CUIInventoryWnd::ActivatePropertiesBox()
 {
-	// Ôëàã-ïðèçíàê äëÿ íåâëþ÷åíèÿ ïóíêòà êîíòåêñòíîãî ìåíþ: Dreess Outfit, åñëè êîñòþì óæå íàäåò
+	// Ð¤Ð»Ð°Ð³-Ð¿Ñ€Ð¸Ð·Ð½Ð°Ðº Ð´Ð»Ñ Ð½ÐµÐ²Ð»ÑŽÑ‡ÐµÐ½Ð¸Ñ Ð¿ÑƒÐ½ÐºÑ‚Ð° ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚Ð½Ð¾Ð³Ð¾ Ð¼ÐµÐ½ÑŽ: Dreess Outfit, ÐµÑÐ»Ð¸ ÐºÐ¾ÑÑ‚ÑŽÐ¼ ÑƒÐ¶Ðµ Ð½Ð°Ð´ÐµÑ‚
 	bool bAlreadyDressed = false; 
 
 		
@@ -82,7 +82,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		b_show			= true;
 	}
 	
-	//îòñîåäèíåíèå àääîíîâ îò âåùè
+	//Ð¾Ñ‚ÑÐ¾ÐµÐ´Ð¸Ð½ÐµÐ½Ð¸Ðµ Ð°Ð´Ð´Ð¾Ð½Ð¾Ð² Ð¾Ñ‚ Ð²ÐµÑ‰Ð¸
 	if(pWeapon)
 	{
 		if(pWeapon->GrenadeLauncherAttachable() && pWeapon->IsGrenadeLauncherAttached())
@@ -125,7 +125,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		}
 	}
 	
-	//ïðèñîåäèíåíèå àääîíîâ ê àêòèâíîìó ñëîòó (2 èëè 3)
+	//Ð¿Ñ€Ð¸ÑÐ¾ÐµÐ´Ð¸Ð½ÐµÐ½Ð¸Ðµ Ð°Ð´Ð´Ð¾Ð½Ð¾Ð² Ðº Ð°ÐºÑ‚Ð¸Ð²Ð½Ð¾Ð¼Ñƒ ÑÐ»Ð¾Ñ‚Ñƒ (2 Ð¸Ð»Ð¸ 3)
 	if(pScope)
 	{
 		if(m_pInv->m_slots[PISTOL_SLOT].m_pIItem != NULL &&
@@ -206,7 +206,7 @@ void CUIInventoryWnd::ActivatePropertiesBox()
 		Fvector2						cursor_pos;
 		Frect							vis_rect;
 		GetAbsoluteRect					(vis_rect);
-		GetUICursor()->GetPosition		(cursor_pos.x, cursor_pos.y);
+		GetUICursor().GetPosition		(cursor_pos.x, cursor_pos.y);
 		cursor_pos.sub					(vis_rect.lt);
 		UIPropertiesBox.Show			(vis_rect, cursor_pos);
 		PlaySnd							(eInvProperties);

@@ -11,7 +11,7 @@
 #include "UIScrollView.h"
 
 CFontManager& mngr(){
-	return *(UI()->Font());
+	return UI().Font();
 }
 
 // hud font
@@ -22,7 +22,7 @@ CGameFont* GetFontMedium()
 {return mngr().pFontMedium;}
 CGameFont* GetFontDI()
 {return mngr().pFontDI;}
-//шрифты для интерфейса
+//С€СЂРёС„С‚С‹ РґР»СЏ РёРЅС‚РµСЂС„РµР№СЃР°
 CGameFont* GetFontGraffiti19Russian()
 {return mngr().pFontGraffiti19Russian;}
 CGameFont* GetFontGraffiti22Russian()

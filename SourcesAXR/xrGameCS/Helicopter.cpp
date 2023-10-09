@@ -408,7 +408,7 @@ void CHelicopter::UpdateCL()
 
 #ifdef DEBUG
 	if(bDebug){
-		CGameFont* F		= UI()->Font()->pFontDI;
+		CGameFont* F		= UI().Font().pFontDI;
 		F->SetAligment		(CGameFont::alCenter);
 //		F->SetSizeI			(0.02f);
 		F->OutSetI			(0.f,-0.8f);

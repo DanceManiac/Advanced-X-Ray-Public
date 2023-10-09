@@ -153,47 +153,47 @@ void CInventoryItem::Load(LPCSTR section)
 		
 		if(!xr_strcmp(font_str, GRAFFITI19_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontGraffiti19Russian;
+			m_custom_text_font = UI().Font().pFontGraffiti19Russian;
 		}
 		else if(!xr_strcmp(font_str, GRAFFITI22_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontGraffiti22Russian;
+			m_custom_text_font = UI().Font().pFontGraffiti22Russian;
 		}
 		else if(!xr_strcmp(font_str, GRAFFITI32_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontGraffiti32Russian;
+			m_custom_text_font = UI().Font().pFontGraffiti32Russian;
 		}
 		else if(!xr_strcmp(font_str, GRAFFITI50_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontGraffiti50Russian;
+			m_custom_text_font = UI().Font().pFontGraffiti50Russian;
 		}
 		else if(!xr_strcmp(font_str, ARIAL_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontArial14;
+			m_custom_text_font = UI().Font().pFontArial14;
 		}
 		else if(!xr_strcmp(font_str, MEDIUM_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontMedium;
+			m_custom_text_font = UI().Font().pFontMedium;
 		}
 		else if(!xr_strcmp(font_str, SMALL_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontStat;
+			m_custom_text_font = UI().Font().pFontStat;
 		}
 		else if(!xr_strcmp(font_str, LETTERICA16_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontLetterica16Russian;
+			m_custom_text_font = UI().Font().pFontLetterica16Russian;
 		}
 		else if(!xr_strcmp(font_str, LETTERICA18_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontLetterica18Russian;
+			m_custom_text_font = UI().Font().pFontLetterica18Russian;
 		}
 		else if(!xr_strcmp(font_str, LETTERICA25_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontLetterica25;
+			m_custom_text_font = UI().Font().pFontLetterica25;
 		}
 		else if(!xr_strcmp(font_str, DI_FONT_NAME))
 		{
-			m_custom_text_font = UI()->Font()->pFontDI;
+			m_custom_text_font = UI().Font().pFontDI;
 		}
 		else
 		{
@@ -632,7 +632,7 @@ void CInventoryItem::net_Import_PH_Params(NET_Packet& P, net_update_IItem& N, ma
 	
 	//N.State.force.set			(0.f,0.f,0.f);
 	//N.State.torque.set			(0.f,0.f,0.f);
-	//HUD().Font().pFontStat->OutSet(100.0f,100.0f);
+	//UI().Font().pFontStat->OutSet(100.0f,100.0f);
 	P.r_vec3					(N.State.force);
 	//Msg("Import N.State.force.y:%4.6f",N.State.force.y);
 	P.r_vec3					(N.State.torque);
@@ -648,7 +648,7 @@ void CInventoryItem::net_Import_PH_Params(NET_Packet& P, net_update_IItem& N, ma
 
 
 	N.State.enabled				= num_items.mask & CSE_ALifeInventoryItem::inventory_item_state_enabled;
-	//HUD().Font().pFontStat->OutNext("Import N.State.enabled:%i",int(N.State.enabled));
+	//UI().Font().pFontStat->OutNext("Import N.State.enabled:%i",int(N.State.enabled));
 	if (!(num_items.mask & CSE_ALifeInventoryItem::inventory_item_angular_null)) {
 		N.State.angular_vel.x	= P.r_float();
 		N.State.angular_vel.y	= P.r_float();
@@ -672,11 +672,11 @@ void CInventoryItem::net_Import_PH_Params(NET_Packet& P, net_update_IItem& N, ma
 
 void CInventoryItem::net_Export_PH_Params(NET_Packet& P, SPHNetState& State, mask_inv_num_items&	num_items)
 {
-	//HUD().Font().pFontStat->OutSet(100.0f,100.0f);
+	//UI().Font().pFontStat->OutSet(100.0f,100.0f);
 	P.w_vec3				(State.force);
 	//Msg("Export State.force.y:%4.6f",State.force.y);
 	P.w_vec3				(State.torque);
-	//HUD().Font().pFontStat->OutNext("Export State.torque:%4.6f",State.torque.magnitude());
+	//UI().Font().pFontStat->OutNext("Export State.torque:%4.6f",State.torque.magnitude());
 	P.w_vec3				(State.position);
 	//Msg("Export State.position.y:%4.6f",State.position.y);
 	//Msg("Export State.enabled:%i",int(State.enabled));

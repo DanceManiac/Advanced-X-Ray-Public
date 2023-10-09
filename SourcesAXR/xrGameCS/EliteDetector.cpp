@@ -149,9 +149,9 @@ void CUIArtefactDetectorElite::Draw()
 	Fmatrix						LM;
 	GetUILocatorMatrix			(LM);
 
-	IUIRender::ePointType bk	= UI()->m_currentPointType;
+	IUIRender::ePointType bk	= UI().m_currentPointType;
 
-	UI()->m_currentPointType	= IUIRender::pttLIT;
+	UI().m_currentPointType	= IUIRender::pttLIT;
 
 	UIRender->CacheSetXformWorld(LM);
 	UIRender->CacheSetCullMode	(IUIRender::cmNONE);
@@ -169,7 +169,7 @@ void CUIArtefactDetectorElite::Draw()
 	Mc.c.set					(Device.vCameraPosition);
 	M.invert					(Mc);
 
-	UI()->ScreenFrustumLIT().CreateFromRect(Frect().set(	rp.x,
+	UI().ScreenFrustumLIT().CreateFromRect(Frect().set(	rp.x,
 													rp.y,
 													r.width(),
 													r.height() ));
@@ -199,7 +199,7 @@ void CUIArtefactDetectorElite::Draw()
 		}
 	}
 
-	UI()->m_currentPointType		= bk;
+	UI().m_currentPointType		= bk;
 }
 
 void CUIArtefactDetectorElite::GetUILocatorMatrix(Fmatrix& _m)

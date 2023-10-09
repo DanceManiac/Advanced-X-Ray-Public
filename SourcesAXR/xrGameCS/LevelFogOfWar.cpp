@@ -1,4 +1,4 @@
-// LevelFogOfWar.cpp:  для карты уровня в одиночном режиме игры
+// LevelFogOfWar.cpp:  РґР»СЏ РєР°СЂС‚С‹ СѓСЂРѕРІРЅСЏ РІ РѕРґРёРЅРѕС‡РЅРѕРј СЂРµР¶РёРјРµ РёРіСЂС‹
 // 
 //////////////////////////////////////////////////////////////////////
 
@@ -221,14 +221,14 @@ void CLevelFogOfWar::Draw	()
 	RCache.Vertex.Unlock		(u32(pv-start_pv),hGeom.stride());
 
 	// set scissor
-	UI()->PushScissor			(clip_rect);
+	UI().PushScissor			(clip_rect);
 	if (p_cnt!=0){
 		// draw
 		RCache.set_Shader		(hShader);
 		RCache.set_Geometry		(hGeom);
 		RCache.Render			(D3DPT_TRIANGLELIST,vOffset,u32(p_cnt));
 	}
-	UI()->PopScissor		 	();
+	UI().PopScissor		 	();
 }
 
 void CLevelFogOfWar::save	(IWriter &stream)

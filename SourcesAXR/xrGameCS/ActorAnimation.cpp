@@ -383,12 +383,12 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 		else
 			moving_idx				= STorsoWpn::eWalk;
 	}
-	// àíèìàöèè
+	// Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸Ð¸
 	MotionID 						M_legs;
 	MotionID 						M_torso;
 	MotionID 						M_head;
 
-	//åñëè ìû ïðîñòî ñòîèì íà ìåñòå
+	//ÐµÑÐ»Ð¸ Ð¼Ñ‹ Ð¿Ñ€Ð¾ÑÑ‚Ð¾ ÑÑ‚Ð¾Ð¸Ð¼ Ð½Ð° Ð¼ÐµÑÑ‚Ðµ
 	bool is_standing = false;
 
 	CInventoryItem* _i = inventory().ActiveItem();
@@ -629,7 +629,7 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 			M_torso = ST->m_torso_idle;
 	}
 	
-	// åñòü àíèìàöèÿ äëÿ âñåãî - çàïóñòèì / èíà÷å çàïóñòèì àíèìàöèþ ïî ÷àñòÿì
+	// ÐµÑÑ‚ÑŒ Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸Ñ Ð´Ð»Ñ Ð²ÑÐµÐ³Ð¾ - Ð·Ð°Ð¿ÑƒÑÑ‚Ð¸Ð¼ / Ð¸Ð½Ð°Ñ‡Ðµ Ð·Ð°Ð¿ÑƒÑÑ‚Ð¸Ð¼ Ð°Ð½Ð¸Ð¼Ð°Ñ†Ð¸ÑŽ Ð¿Ð¾ Ñ‡Ð°ÑÑ‚ÑÐ¼
 	if (m_current_torso!=M_torso)
 	{
 		if (m_bAnimTorsoPlayed)		
@@ -677,15 +677,15 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 #ifdef _DEBUG
 	if(bDebug)
 	{
-		HUD().Font().pFontStat->OutSetI	(0,0);
-		HUD().Font().pFontStat->OutNext("[%s]",mov_state[moving_idx]);
+		UI().Font().pFontStat->OutSetI	(0,0);
+		UI().Font().pFontStat->OutNext("[%s]",mov_state[moving_idx]);
 		IKinematicsAnimated* KA = smart_cast<IKinematicsAnimated*>(Visual());
 		if(M_torso)
-			HUD().Font().pFontStat->OutNext("torso [%s]",KA->LL_MotionDefName_dbg(M_torso).first);
+			UI().Font().pFontStat->OutNext("torso [%s]",KA->LL_MotionDefName_dbg(M_torso).first);
 		if(M_head)
-			HUD().Font().pFontStat->OutNext("head [%s]",KA->LL_MotionDefName_dbg(M_head).first);
+			UI().Font().pFontStat->OutNext("head [%s]",KA->LL_MotionDefName_dbg(M_head).first);
 		if(M_legs)
-			HUD().Font().pFontStat->OutNext("legs [%s]",KA->LL_MotionDefName_dbg(M_legs).first);
+			UI().Font().pFontStat->OutNext("legs [%s]",KA->LL_MotionDefName_dbg(M_legs).first);
 	}
 #endif
 
@@ -706,7 +706,7 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 		if (mstate_rl&mcLLookout)	xr_strcat(buf,"LLookout ");
 		if (mstate_rl&mcRLookout)	xr_strcat(buf,"RLookout ");
 		if (m_bJumpKeyPressed)		xr_strcat(buf,"+Jumping ");
-		HUD().Font().pFontStat->OutNext	("MSTATE:     [%s]",buf);
+		UI().Font().pFontStat->OutNext	("MSTATE:     [%s]",buf);
 /*
 		switch (m_PhysicMovementControl->Environment())
 		{
@@ -714,10 +714,10 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 		case CPHMovementControl::peInAir:		xr_strcpy(buf,"air");				break;
 		case CPHMovementControl::peAtWall:		xr_strcpy(buf,"wall");				break;
 		}
-		HUD().Font().pFontStat->OutNext	(buf);
-		HUD().Font().pFontStat->OutNext	("Accel     [%3.2f, %3.2f, %3.2f]",VPUSH(NET_SavedAccel));
-		HUD().Font().pFontStat->OutNext	("V         [%3.2f, %3.2f, %3.2f]",VPUSH(m_PhysicMovementControl->GetVelocity()));
-		HUD().Font().pFontStat->OutNext	("vertex ID   %d",ai_location().level_vertex_id());
+		UI().Font().pFontStat->OutNext	(buf);
+		UI().Font().pFontStat->OutNext	("Accel     [%3.2f, %3.2f, %3.2f]",VPUSH(NET_SavedAccel));
+		UI().Font().pFontStat->OutNext	("V         [%3.2f, %3.2f, %3.2f]",VPUSH(m_PhysicMovementControl->GetVelocity()));
+		UI().Font().pFontStat->OutNext	("vertex ID   %d",ai_location().level_vertex_id());
 		
 		Game().m_WeaponUsageStatistic->Draw();
 		*/

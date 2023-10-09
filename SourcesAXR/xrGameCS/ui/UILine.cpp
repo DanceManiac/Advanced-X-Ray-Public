@@ -129,7 +129,7 @@ void CUILine::Draw(CGameFont* pFont, float x, float y) const{
 	{
 		m_subLines[i].Draw(pFont, x+length, y);
 		float ll = pFont->SizeOf_(m_subLines[i].m_text.c_str()); //. all ok
-		UI()->ClientToScreenScaledWidth(ll);
+		UI().ClientToScreenScaledWidth(ll);
 		length	+= ll;
 	}
 }

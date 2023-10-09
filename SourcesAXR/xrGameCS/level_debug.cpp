@@ -164,7 +164,7 @@ void CLevelDebug::draw_object_info()
 	// handle all of the objects
 	for (OBJECT_INFO_MAP_IT it = m_objects_info.begin(); it != m_objects_info.end(); ++it) {
 
-		// åñëè îáúåêò íåâàëèäíûé - óäàëèòü èíôîðìàöèþ
+		// ÐµÑÐ»Ð¸ Ð¾Ð±ÑŠÐµÐºÑ‚ Ð½ÐµÐ²Ð°Ð»Ð¸Ð´Ð½Ñ‹Ð¹ - ÑƒÐ´Ð°Ð»Ð¸Ñ‚ÑŒ Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸ÑŽ
 		if (!it->first || it->first->getDestroy()) {
 			for (CLASS_INFO_MAP_IT it_class = it->second.begin(); it_class != it->second.end(); ++it_class){
 				xr_delete(it_class->second);
@@ -243,10 +243,10 @@ struct DrawInfoPredicate {
 	}
 
 	void operator() (const CLevelDebug::SInfoItem &s) {
-		HUD().Font().pFontMedium->SetAligment(CGameFont::alLeft);
-		HUD().Font().pFontMedium->SetColor	(s.color);
-		HUD().Font().pFontMedium->OutSet	(x, y-=delta_height);
-		HUD().Font().pFontMedium->OutNext	(*(s.text));
+		UI().Font().pFontMedium->SetAligment(CGameFont::alLeft);
+		UI().Font().pFontMedium->SetColor	(s.color);
+		UI().Font().pFontMedium->OutSet	(x, y-=delta_height);
+		UI().Font().pFontMedium->OutNext	(*(s.text));
 	}
 };
 
@@ -269,10 +269,10 @@ void CLevelDebug::CTextInfo::add_item	(LPCSTR text, float x, float y, u32 color,
 
 struct DrawTextPredicate {
 	void operator() (const CLevelDebug::STextItem &s) {
-		HUD().Font().pFontMedium->SetAligment(CGameFont::alLeft);
-		HUD().Font().pFontMedium->SetColor	(s.color);
-		HUD().Font().pFontMedium->OutSet	(s.x, s.y);
-		HUD().Font().pFontMedium->OutNext	(*(s.text));
+		UI().Font().pFontMedium->SetAligment(CGameFont::alLeft);
+		UI().Font().pFontMedium->SetColor	(s.color);
+		UI().Font().pFontMedium->OutSet	(s.x, s.y);
+		UI().Font().pFontMedium->OutNext	(*(s.text));
 	}
 };
 
@@ -331,7 +331,7 @@ void CLevelDebug::on_destroy_object(CObject *obj)
 {
 	// handle all of the objects
 	for (OBJECT_INFO_MAP_IT it = m_objects_info.begin(); it != m_objects_info.end(); ++it) {
-		// åñëè îáúåêò íåâàëèäíûé - óäàëèòü èíôîðìàöèþ
+		// ÐµÑÐ»Ð¸ Ð¾Ð±ÑŠÐµÐºÑ‚ Ð½ÐµÐ²Ð°Ð»Ð¸Ð´Ð½Ñ‹Ð¹ - ÑƒÐ´Ð°Ð»Ð¸Ñ‚ÑŒ Ð¸Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸ÑŽ
 		if (it->first == obj) {
 			for (CLASS_INFO_MAP_IT it_class = it->second.begin(); it_class != it->second.end(); ++it_class){
 				xr_delete(it_class->second);

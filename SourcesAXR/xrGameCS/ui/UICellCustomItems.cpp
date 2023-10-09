@@ -492,25 +492,25 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 
 		cell_size.mul			(base_scale);
 
-		if (is_dragging && Heading() && UI()->is_16_9_mode())
+		if (is_dragging && Heading() && UI().is_widescreen())
 		{
 			if (is_scope)
 			{
-				addon_offset.y *= UI()->get_current_kx();
+				addon_offset.y *= UI().get_current_kx();
 			}
 
 			if (is_silencer)
 			{
-				addon_offset.y *= UI()->get_current_kx() * 1.8f;
+				addon_offset.y *= UI().get_current_kx() * 1.8f;
 			}
 
 			if (is_gl)
 			{
-				addon_offset.y *= UI()->get_current_kx() * 1.5f;
+				addon_offset.y *= UI().get_current_kx() * 1.5f;
 			}
-			addon_offset.x *= UI()->get_current_kx() / 0.9f;
-			cell_size.x /= UI()->get_current_kx() * 1.6f;
-			cell_size.y *= UI()->get_current_kx() * 1.6f;
+			addon_offset.x *= UI().get_current_kx() / 0.9f;
+			cell_size.x /= UI().get_current_kx() * 1.6f;
+			cell_size.y *= UI().get_current_kx() * 1.6f;
 		}
 		if (!is_dragging)
 		{
@@ -521,7 +521,7 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 				new_offset.x = addon_offset.y * base_scale.x;
 				new_offset.y = GetHeight() - addon_offset.x * base_scale.x - cell_size.x;
 				addon_offset = new_offset;
-				addon_offset.x *= UI()->get_current_kx();
+				addon_offset.x *= UI().get_current_kx();
 			}
 			else
 			{
@@ -538,7 +538,7 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 				new_offset.x = addon_offset.y * base_scale.x;
 				new_offset.y = GetHeight() - addon_offset.x * base_scale.x - cell_size.x;
 				addon_offset = new_offset;
-				addon_offset.x *= UI()->get_current_kx();
+				addon_offset.x *= UI().get_current_kx();
 			}
 			else
 			{
@@ -650,7 +650,7 @@ void CBuyItemCustomDrawCell::OnDraw(CUICellItem* cell)
 {
 	Fvector2							pos;
 	cell->GetAbsolutePos				(pos);
-	UI()->ClientToScreenScaled			(pos, pos.x, pos.y);
+	UI().ClientToScreenScaled			(pos, pos.x, pos.y);
 	m_pFont->Out						(pos.x, pos.y, m_string);
 	m_pFont->OnRender					();
 }

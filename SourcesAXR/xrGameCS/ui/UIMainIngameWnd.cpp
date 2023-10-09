@@ -748,7 +748,7 @@ void CUIMainIngameWnd::SetPickUpItem	(CInventoryItem* PickUpItem)
 
 	uiPickUpItemIconNew_ = create_cell_item(m_pPickUpItem); // use inventory cell item class
 
-	float x_size = m_pPickUpItem->GetInvGridRect().x2 * (UI()->is_16_9_mode() ? 30.f : 40.f);
+	float x_size = m_pPickUpItem->GetInvGridRect().x2 * (UI().is_widescreen() ? 30.f : 40.f);
 	float y_size = m_pPickUpItem->GetInvGridRect().y2 * 40.f;
 	uiPickUpItemIconNew_->SetAlignment(waCenter);
 	uiPickUpItemIconNew_->SetWndPos(Fvector2().set(m_iPickUpItemIconX, m_iPickUpItemIconY));

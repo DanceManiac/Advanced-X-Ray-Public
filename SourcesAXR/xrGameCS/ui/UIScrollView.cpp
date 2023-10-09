@@ -187,7 +187,7 @@ void CUIScrollView::Draw				()
 	GetAbsoluteRect						(visible_rect);
 	visible_rect.top					+= m_upIndent;
 	visible_rect.bottom					-= m_downIndent;
-	UI()->PushScissor					(visible_rect);
+	UI().PushScissor					(visible_rect);
 
 	WINDOW_LIST_it it					= m_pad->GetChildWndList().begin();
 	WINDOW_LIST_it it_e					= m_pad->GetChildWndList().end();
@@ -221,7 +221,7 @@ void CUIScrollView::Draw				()
 			if(m_visible_rgn.x != -1)
 				break;
 	}
-	UI()->PopScissor					();
+	UI().PopScissor					();
 
 	if(NeedShowScrollBar())
 		m_VScrollBar->Draw				();
@@ -256,7 +256,7 @@ bool CUIScrollView::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		case WINDOW_MOUSE_MOVE:
 			if( pInput->iGetAsyncBtnState(0) ){
 				Fvector2	curr_pad_pos = m_pad->GetWndPos	();
-				curr_pad_pos.y				+= GetUICursor()->GetCursorPositionDelta().y;
+				curr_pad_pos.y				+= GetUICursor().GetCursorPositionDelta().y;
 				
 				float max_pos = m_pad->GetHeight() - GetHeight();
 				max_pos							= _max(0.0f,max_pos);

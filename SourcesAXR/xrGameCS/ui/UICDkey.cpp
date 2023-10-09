@@ -58,7 +58,7 @@ void CUICDkey::Draw()
 
 	Fvector2					pos;
 	pos.set						(rect.left+out.x, rect.top+out.y);
-	UI()->ClientToScreenScaled	(pos);
+	UI().ClientToScreenScaled	(pos);
 
 	string64 xx_str = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 	edt_size = xr_strlen( edt_str );
@@ -79,18 +79,18 @@ void CUICDkey::Draw()
 		m_pLines->m_pFont->Out	( pos.x, pos.y, "%s", CMainMenu::AddHyphens( res ) );
 		
 		float _h				= m_pLines->m_pFont->CurrentHeight_();
-		UI()->ClientToScreenScaledHeight(_h);
+		UI().ClientToScreenScaledHeight(_h);
 		
 		out.y					= rect.top + (m_wndSize.y - _h)/2.0f;
 		
 		float	w_tmp			= 0.0f;
 		int i					= (int)xr_strlen( res1 );
 		w_tmp					= m_pLines->m_pFont->SizeOf_( res1 );
-		UI()->ClientToScreenScaledWidth( w_tmp );
+		UI().ClientToScreenScaledWidth( w_tmp );
 		out.x					= rect.left + w_tmp;
 		
 		w_tmp					= m_pLines->m_pFont->SizeOf_("-");
-		UI()->ClientToScreenScaledWidth( w_tmp );
+		UI().ClientToScreenScaledWidth( w_tmp );
 		
 		if(i>3)
 			out.x	+= w_tmp;
@@ -99,7 +99,7 @@ void CUICDkey::Draw()
 		if(i>11)
 			out.x	+= w_tmp;
 
-		UI()->ClientToScreenScaled	(out);
+		UI().ClientToScreenScaled	(out);
 		m_pLines->m_pFont->Out		(out.x, out.y, "_");
 	}
 	else

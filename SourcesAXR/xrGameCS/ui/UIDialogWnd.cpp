@@ -1,5 +1,5 @@
-// UIDialogWnd.cpp: êëàññ ïðîñòîãî äèàëîãà, íóæåí äëÿ ñòàíäàðòíîãî çàïóñêà
-// ðàçíûì ìåíþøåê ïóòåì âûçîâà âèðòóàëüíûõ Show() È Hide()
+// UIDialogWnd.cpp: ÐºÐ»Ð°ÑÑ Ð¿Ñ€Ð¾ÑÑ‚Ð¾Ð³Ð¾ Ð´Ð¸Ð°Ð»Ð¾Ð³Ð°, Ð½ÑƒÐ¶ÐµÐ½ Ð´Ð»Ñ ÑÑ‚Ð°Ð½Ð´Ð°Ñ€Ñ‚Ð½Ð¾Ð³Ð¾ Ð·Ð°Ð¿ÑƒÑÐºÐ°
+// Ñ€Ð°Ð·Ð½Ñ‹Ð¼ Ð¼ÐµÐ½ÑŽÑˆÐµÐº Ð¿ÑƒÑ‚ÐµÐ¼ Ð²Ñ‹Ð·Ð¾Ð²Ð° Ð²Ð¸Ñ€Ñ‚ÑƒÐ°Ð»ÑŒÐ½Ñ‹Ñ… Show() Ð˜ Hide()
 //////////////////////////////////////////////////////////////////////
 
 
@@ -64,7 +64,7 @@ bool CUIDialogWnd::IR_OnKeyboardPress(int dik)
 	//mouse click
 	if(dik==MOUSE_1 || dik==MOUSE_2 || dik==MOUSE_3)
 	{
-		Fvector2 cp = GetUICursor()->GetCursorPosition();
+		Fvector2 cp = GetUICursor().GetCursorPosition();
 		EUIMessages action = (dik==MOUSE_1)?WINDOW_LBUTTON_DOWN :(dik==MOUSE_2)?WINDOW_RBUTTON_DOWN:WINDOW_CBUTTON_DOWN;
 		if (OnMouseAction(cp.x,cp.y, action))
             return true;
@@ -92,7 +92,7 @@ bool CUIDialogWnd::IR_OnKeyboardRelease(int dik)
 	//mouse click
 	if(dik==MOUSE_1 || dik==MOUSE_2 || dik==MOUSE_3)
 	{
-		Fvector2 cp = GetUICursor()->GetCursorPosition();
+		Fvector2 cp = GetUICursor().GetCursorPosition();
 		EUIMessages action = (dik==MOUSE_1)?WINDOW_LBUTTON_UP :(dik==MOUSE_2)?WINDOW_RBUTTON_UP:WINDOW_CBUTTON_UP;
 		if (OnMouseAction(cp.x, cp.y, action))
             return true;
@@ -116,7 +116,7 @@ bool CUIDialogWnd::IR_OnKeyboardRelease(int dik)
 bool CUIDialogWnd::IR_OnMouseWheel (int direction)
 {
 	if(!IR_process()) return false;
-	Fvector2 pos = GetUICursor()->GetCursorPosition();
+	Fvector2 pos = GetUICursor().GetCursorPosition();
 
 	if(direction>0)
 		OnMouseAction(pos.x,pos.y,WINDOW_MOUSE_WHEEL_UP);
@@ -130,11 +130,11 @@ bool CUIDialogWnd::IR_OnMouseMove(int dx, int dy)
 {
 	if(!IR_process()) return false;
 	
-	if (GetUICursor()->IsVisible())
+	if (GetUICursor().IsVisible())
 	{ 
-//		GetUICursor()->MoveDelta(float(dx), float(dy));
-		GetUICursor()->UpdateCursorPosition();
-		Fvector2 cPos = GetUICursor()->GetCursorPosition();
+//		GetUICursor().MoveDelta(float(dx), float(dy));
+		GetUICursor().UpdateCursorPosition();
+		Fvector2 cPos = GetUICursor().GetCursorPosition();
 		OnMouseAction(cPos.x, cPos.y , WINDOW_MOUSE_MOVE);
 	}
 	else if( !StopAnyMove() && g_pGameLevel ){

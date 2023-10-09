@@ -257,7 +257,7 @@ void   CHUDManager::RenderActiveItemUI()
 }
 
 extern ENGINE_API BOOL bShowPauseString;
-//îòðèñîâêà ýëåìåíòîâ èíòåðôåéñà
+//Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐ°
 #include "string_table.h"
 void  CHUDManager::RenderUI()
 {
@@ -273,7 +273,7 @@ void  CHUDManager::RenderUI()
 	{
 		HitMarker.Render			();
 		bAlready					= ! (pUI && !pUI->Render());
-		Font().Render();
+		UI().RenderFont				();
 	}
 
 	if (/* psHUD_Flags.is(HUD_CROSSHAIR|HUD_CROSSHAIR_RT|HUD_CROSSHAIR_RT2) &&*/ !bAlready)	
@@ -281,13 +281,13 @@ void  CHUDManager::RenderUI()
 
 
 	if( Device.Paused() && bShowPauseString){
-		CGameFont* pFont	= Font().pFontGraffiti50Russian;
+		CGameFont* pFont	= UI().Font().pFontGraffiti50Russian;
 		pFont->SetColor		(0x80FF0000	);
 		LPCSTR _str			= CStringTable().translate("st_game_paused").c_str();
 		
 		Fvector2			_pos;
 		_pos.set			(UI_BASE_WIDTH/2.0f, UI_BASE_HEIGHT/2.0f);
-		UI()->ClientToScreenScaled(_pos);
+		UI().ClientToScreenScaled(_pos);
 		pFont->SetAligment	(CGameFont::alCenter);
 		pFont->Out			(_pos.x, _pos.y, _str);
 		pFont->OnRender		();
@@ -366,7 +366,7 @@ void CHUDManager::OnScreenResolutionChanged()
 	pUI->UnLoad							();
 	pUI->Load							(pUI->UIGame());
 	pUI->OnConnected					();
-	GetUICursor()->OnScreenResolutionChanged	();
+	GetUICursor().OnScreenResolutionChanged	();
 
 	if (IsGameTypeSingle() && Level().CurrentViewEntity() && pUI->UIMainIngameWnd->UIArtefactsPanel)
 	{

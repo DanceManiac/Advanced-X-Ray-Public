@@ -78,12 +78,12 @@ void CUIProgressShape::Draw()
 
 	
 //.	UIRender->StartTriList(m_sectorCount*3);
-	UIRender->StartPrimitive		(m_sectorCount*3,IUIRender::ptTriList, UI()->m_currentPointType);
+	UIRender->StartPrimitive		(m_sectorCount*3,IUIRender::ptTriList, UI().m_currentPointType);
 
 	Frect pos_rect;
 	m_pTexture->GetAbsoluteRect		(pos_rect);
-	UI()->ClientToScreenScaled		(pos_rect.lt, pos_rect.x1, pos_rect.y1);
-	UI()->ClientToScreenScaled		(pos_rect.rb, pos_rect.x2, pos_rect.y2);
+	UI().ClientToScreenScaled		(pos_rect.lt, pos_rect.x1, pos_rect.y1);
+	UI().ClientToScreenScaled		(pos_rect.rb, pos_rect.x2, pos_rect.y2);
 
 	Fvector2						center_pos;
 	pos_rect.getcenter				(center_pos);

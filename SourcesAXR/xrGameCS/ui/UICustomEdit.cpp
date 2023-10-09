@@ -106,7 +106,7 @@ void CUICustomEdit::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
 //	if(pWnd == GetParent())
 //	{
-		//êòî-òî äðóãîé çàõâàòèë êëàâèàòóðó
+		//ÐºÑ‚Ð¾-Ñ‚Ð¾ Ð´Ñ€ÑƒÐ³Ð¾Ð¹ Ð·Ð°Ñ…Ð²Ð°Ñ‚Ð¸Ð» ÐºÐ»Ð°Ð²Ð¸Ð°Ñ‚ÑƒÑ€Ñƒ
 		if ( msg == WINDOW_KEYBOARD_CAPTURE_LOST )
 		{
 			m_bInputFocus = false;
@@ -195,14 +195,14 @@ void  CUICustomEdit::Draw()
 
 		LPCSTR istr = cursor_str;
 		float str_length = font->SizeOf_( istr );
-		UI()->ClientToScreenScaledWidth( str_length );
+		UI().ClientToScreenScaledWidth( str_length );
 
 		u32 ix = 0;
 		while ( (str_length > ui_width) && (ix < cursor_str_size) )
 		{
 			istr = cursor_str + ix;
 			str_length = font->SizeOf_( istr );
-			UI()->ClientToScreenScaledWidth( str_length );
+			UI().ClientToScreenScaledWidth( str_length );
 			++ix;
 		}
 		istr = cursor_str + ix;
@@ -213,12 +213,12 @@ void  CUICustomEdit::Draw()
 		strncpy_s( m_out_str, sizeof(m_out_str), astr, jx );
 
 		str_length = font->SizeOf_( m_out_str );
-		UI()->ClientToScreenScaledWidth( str_length );
+		UI().ClientToScreenScaledWidth( str_length );
 		while ( (str_length < ui_width) && (jx < str_size-ix) )
 		{
 			strncpy_s( m_out_str, sizeof(m_out_str), astr, jx );
 			str_length = font->SizeOf_( m_out_str );
-			UI()->ClientToScreenScaledWidth( str_length );
+			UI().ClientToScreenScaledWidth( str_length );
 			++jx;
 		}
 		strncpy_s( m_out_str, sizeof(m_out_str), astr, jx );
@@ -235,7 +235,7 @@ void  CUICustomEdit::Draw()
 	{
 		out.x = pos.x + 0.0f + GetTextX() + m_pLines->GetIndentByAlign();
 		out.y = pos.y + 2.0f + GetTextY() + m_pLines->GetVIndentByAlign();
-		UI()->ClientToScreenScaled( out );
+		UI().ClientToScreenScaled( out );
 
 		out.x += m_dx_cur; // cursor_str
 

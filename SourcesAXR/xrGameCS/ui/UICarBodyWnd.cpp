@@ -98,7 +98,7 @@ void CUICarBodyWnd::Init()
 	xml_init.InitDragDropListEx		(uiXml, "dragdrop_list_other", 0, m_pUIOthersBagList);
 
 
-	//информация о предмете
+	//РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїСЂРµРґРјРµС‚Рµ
 	m_pUIDescWnd					= xr_new<CUIFrameWindow>(); m_pUIDescWnd->SetAutoDelete(true);
 	AttachChild						(m_pUIDescWnd);
 	xml_init.InitFrameWindow		(uiXml, "frame_window", 0, m_pUIDescWnd);
@@ -195,8 +195,8 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 			NET_Packet		P;
 			CGameObject::u_EventGen		(P,GE_INFO_TRANSFER, our_id);
 			P.w_u16						(0);//not used
-			P.w_stringZ					((*it).info_id);			//сообщение
-			P.w_u8						(1);						//добавление сообщения
+			P.w_stringZ					((*it).info_id);			//СЃРѕРѕР±С‰РµРЅРёРµ
+			P.w_u8						(1);						//РґРѕР±Р°РІР»РµРЅРёРµ СЃРѕРѕР±С‰РµРЅРёСЏ
 			CGameObject::u_EventSend	(P);
 		}
 		known_info.clear	();
@@ -231,7 +231,7 @@ void CUICarBodyWnd::UpdateLists()
 	m_pOurObject->inventory().AddAvailableItems	(ruck_list, true);
 	std::sort									(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
 
-	//Наш рюкзак
+	//РќР°С€ СЂСЋРєР·Р°Рє
 	TIItemContainer::iterator it;
 	for(it =  ruck_list.begin(); ruck_list.end() != it; ++it) 
 	{
@@ -248,7 +248,7 @@ void CUICarBodyWnd::UpdateLists()
 
 	std::sort										(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
 
-	//Чужой рюкзак
+	//Р§СѓР¶РѕР№ СЂСЋРєР·Р°Рє
 	for(it =  ruck_list.begin(); ruck_list.end() != it; ++it) 
 	{
 		CUICellItem* itm							= create_cell_item(*it);
@@ -271,7 +271,7 @@ void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 		{
 			switch(m_pUIPropertiesBox->GetClickedItem()->GetTAG())
 			{
-			case INVENTORY_EAT_ACTION:	//съесть объект
+			case INVENTORY_EAT_ACTION:	//СЃСЉРµСЃС‚СЊ РѕР±СЉРµРєС‚
 				EatItem();
 				break;
 			case INVENTORY_UNLOAD_MAGAZINE:
@@ -441,7 +441,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		Frect							vis_rect;
 
 		GetAbsoluteRect					(vis_rect);
-		cursor_pos						= GetUICursor()->GetCursorPosition();
+		cursor_pos						= GetUICursor().GetCursorPosition();
 		cursor_pos.sub					(vis_rect.lt);
 		m_pUIPropertiesBox->Show		(vis_rect, cursor_pos);
 	}
@@ -566,7 +566,7 @@ void move_item (u16 from_id, u16 to_id, u16 what_id)
 	P.w_u16									(what_id);
 	CGameObject::u_EventSend				(P);
 
-	//другому инвентарю - взять вещь 
+	//РґСЂСѓРіРѕРјСѓ РёРЅРІРµРЅС‚Р°СЂСЋ - РІР·СЏС‚СЊ РІРµС‰СЊ 
 	CGameObject::u_EventGen					(	P,
 												GE_OWNERSHIP_TAKE,
 												to_id

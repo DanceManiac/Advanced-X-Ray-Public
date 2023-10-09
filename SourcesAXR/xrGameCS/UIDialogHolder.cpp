@@ -84,7 +84,7 @@ void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 	pDialog->Show					();
 
 	if( pDialog->NeedCursor() )
-		GetUICursor()->Show();
+		GetUICursor().Show();
 
 	if(g_pGameLevel)
 	{
@@ -128,7 +128,7 @@ void CDialogHolder::StopMenu (CUIDialogWnd* pDialog)
 	}
 
 	if(!MainInputReceiver() || !MainInputReceiver()->NeedCursor() )
-		GetUICursor()->Hide();
+		GetUICursor().Hide();
 }
 
 void CDialogHolder::AddDialogToRender(CUIWindow* pDialog)
@@ -229,7 +229,7 @@ void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 	{
 		if (pDialog && pDialog->NeedCenterCursor())
 		{
-			GetUICursor()->SetUICursorPosition	(Fvector2().set(512.0f,384.0f));
+			GetUICursor().SetUICursorPosition	(Fvector2().set(512.0f,384.0f));
 		}
 		StartMenu(pDialog, bDoHideIndicators);
 	}
@@ -266,7 +266,7 @@ void CDialogHolder::CleanInternals()
 		m_input_receivers.pop_back();
 
 	m_dialogsToRender.clear	();
-	GetUICursor()->Hide		();
+	GetUICursor().Hide		();
 }
 
 void CDialogHolder::shedule_Update(u32 dt)

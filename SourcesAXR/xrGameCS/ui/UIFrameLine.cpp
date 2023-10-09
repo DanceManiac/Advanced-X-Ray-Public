@@ -48,7 +48,7 @@ void CUIFrameLine::UpdateSize()
 	float s_width		= elements[flSecond].GetOriginalRect().width();
 	float s_height		= elements[flSecond].GetOriginalRect().height();
 	
-	if(bHorizontalOrientation && UI()->is_16_9_mode())
+	if(bHorizontalOrientation && UI().is_widescreen())
 		s_width			/= 1.2f;
 
 	if(bHorizontalOrientation)
@@ -126,7 +126,7 @@ void CUIFrameLine::SetElementsRect( CUIStaticItem& item, int idx )
 		}
 	}
 
-	if( bHorizontalOrientation && (idx==flSecond) && UI()->is_16_9_mode() )
+	if( bHorizontalOrientation && (idx==flSecond) && UI().is_widescreen() )
 		srtch_width			/= 1.2f;
 
 	item.SetRect( Frect().set( 0.0f, 0.0f, srtch_width, srtch_height ) );

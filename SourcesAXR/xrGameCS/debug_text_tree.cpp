@@ -53,19 +53,19 @@ namespace detail
 
 			if ( !s_params.cur_row )
 			{
-				HUD().Font().pFontStat->OutSet((float)s_params.ori_x, (float)s_params.ori_y);
+				UI().Font().pFontStat->OutSet((float)s_params.ori_x, (float)s_params.ori_y);
 			}			
 
 			if ( s_params.cur_row % 2 )
 			{
-				HUD().Font().pFontStat->SetColor(s_params.color1);
+				UI().Font().pFontStat->SetColor(s_params.color1);
 			}
 			else
 			{
-				HUD().Font().pFontStat->SetColor(s_params.color2);
+				UI().Font().pFontStat->SetColor(s_params.color2);
 			}
 			
-			HUD().Font().pFontStat->OutNext(s);
+			UI().Font().pFontStat->OutNext(s);
 			s_params.cur_row++;
 		}
 	};

@@ -96,7 +96,7 @@ ICF static BOOL pick_trace_callback(collide::rq_result& result, LPVOID params)
 		return FALSE;
 	}else
 	{
-		//получить треугольник и узнать его материал
+		//РїРѕР»СѓС‡РёС‚СЊ С‚СЂРµСѓРіРѕР»СЊРЅРёРє Рё СѓР·РЅР°С‚СЊ РµРіРѕ РјР°С‚РµСЂРёР°Р»
 		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;
 		
 		SGameMtl* mtl = GMLib.GetMaterialByIdx(T->material);
@@ -199,7 +199,7 @@ void CHUDTarget::Render()
 	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);
 	u32 C_ON_FRIEND		= color_rgba(hud_info_r_f, hud_info_g_f, hud_info_b_f, hud_info_a_f);
 
-	CGameFont* F		= HUD().Font().pFontGraffiti19Russian;
+	CGameFont* F		= UI().Font().pFontGraffiti19Russian;
 	F->SetAligment		(CGameFont::alCenter);
 	F->OutSetI			(0.f + hud_info_x, 0.05f + hud_info_y);
 
@@ -341,10 +341,10 @@ void CHUDTarget::Render()
 	if ((pda && pda->m_bZoomed) || GameConstants::GetHideHudOnMaster())
 		return;
 
-	//отрендерить кружочек или крестик
+	//РѕС‚СЂРµРЅРґРµСЂРёС‚СЊ РєСЂСѓР¶РѕС‡РµРє РёР»Рё РєСЂРµСЃС‚РёРє
 	if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)
 	{
-		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI()->m_currentPointType);
+		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI().m_currentPointType);
 
 		//	TODO: return code back to indexed rendering since we use quads
 		//	Tri 1
@@ -368,7 +368,7 @@ void CHUDTarget::Render()
 	}
 	else
 	{
-		//отрендерить прицел
+		//РѕС‚СЂРµРЅРґРµСЂРёС‚СЊ РїСЂРёС†РµР»
 		HUDCrosshair.cross_color = C;
 		HUDCrosshair.OnRender(Fvector2{ cx, cy }, scr_size);
 	}

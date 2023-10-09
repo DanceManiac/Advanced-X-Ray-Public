@@ -36,19 +36,19 @@ void CUICustomItem::Render(const Fvector2& pos, u32 color,
 
 	Fvector2 LTp,RBp;
 	Fvector2 LTt,RBt;
-	//êîîðäèíàòû íà ýêðàíå â ïèêñåëÿõ
-	UI()->ClientToScreenScaled	(LTp, x1,y1);
+	//ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹ Ð½Ð° ÑÐºÑ€Ð°Ð½Ðµ Ð² Ð¿Ð¸ÐºÑÐµÐ»ÑÑ…
+	UI().ClientToScreenScaled	(LTp, x1,y1);
 	LTp.add						(pos);
 
-	UI()->ClientToScreenScaled	(RBp, x2,y2);
+	UI().ClientToScreenScaled	(RBp, x2,y2);
 	RBp.add						(pos);
 
-	//òåêñòóðíûå êîîðäèíàòû
+	//Ñ‚ÐµÐºÑÑ‚ÑƒÑ€Ð½Ñ‹Ðµ ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹
 	LTt.set			( iOriginalRect.x1/ts.x, iOriginalRect.y1/ts.y);
 	RBt.set			( iOriginalRect.x2/ts.x, iOriginalRect.y2/ts.y);
 
 	float offset	= -0.5f;
-	if(UI()->m_currentPointType==IUIRender::pttLIT)
+	if(UI().m_currentPointType==IUIRender::pttLIT)
 		offset		= 0.0f;
 	// clip poly
 	sPoly2D			S; 
@@ -61,8 +61,8 @@ void CUICustomItem::Render(const Fvector2& pos, u32 color,
 	sPoly2D D;
 	sPoly2D* R		= NULL;
 
-	if(UI()->m_currentPointType!=IUIRender::pttLIT)
-		R			= UI()->ScreenFrustum().ClipPoly(S,D);
+	if(UI().m_currentPointType!=IUIRender::pttLIT)
+		R			= UI().ScreenFrustum().ClipPoly(S,D);
 	else
 		R			= &S;
 
@@ -122,7 +122,7 @@ void CUICustomItem::Render(const Fvector2& pos_ns, u32 color, float angle)
 	LTt.set								(iOriginalRect.x1/ts.x+hp.x, iOriginalRect.y1/ts.y+hp.y);
 	RBt.set								(iOriginalRect.x2/ts.x+hp.x, iOriginalRect.y2/ts.y+hp.y);
 
-	float kx =	(UI()->is_16_9_mode())?0.8333f:1.0f;
+	float kx =	(UI().is_widescreen())?0.8333f:1.0f;
 
 	// clip poly
 	sPoly2D								S; 
@@ -146,10 +146,10 @@ void CUICustomItem::Render(const Fvector2& pos_ns, u32 color, float angle)
 	S[3].pt.add		(offset);
 
 	for(int i=0; i<4;++i)
-		UI()->ClientToScreenScaled		(S[i].pt);
+		UI().ClientToScreenScaled		(S[i].pt);
 
 	sPoly2D D;
-	sPoly2D* R		= UI()->ScreenFrustum().ClipPoly(S,D);
+	sPoly2D* R		= UI().ScreenFrustum().ClipPoly(S,D);
 	if (R&&R->size()){
 		for (u32 k=0; k<R->size()-2; k++)
 		{

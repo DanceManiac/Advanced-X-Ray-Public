@@ -44,7 +44,7 @@ bool CUIDebugFonts::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 #include "../string_table.h"
 
 void CUIDebugFonts::FillUpList(){
-	CFontManager::FONTS_VEC& v = UI()->Font()->m_all_fonts;
+	CFontManager::FONTS_VEC& v = UI().Font().m_all_fonts;
 	CFontManager::FONTS_VEC_IT it	= v.begin();
 	CFontManager::FONTS_VEC_IT it_e = v.end();
 	Fvector2 pos, sz;

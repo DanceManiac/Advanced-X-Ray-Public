@@ -966,9 +966,9 @@ void CAI_Stalker::dbg_draw_vision	()
 	string64					out_text;
 	xr_sprintf						(out_text,"%.2f",object ? object->m_value : 0.f);
 
-	HUD().Font().pFontMedium->SetColor	(color_rgba(255,0,0,95));
-	HUD().Font().pFontMedium->OutSet	(x,y);
-	HUD().Font().pFontMedium->OutNext	(out_text);
+	UI().Font().pFontMedium->SetColor	(color_rgba(255,0,0,95));
+	UI().Font().pFontMedium->OutSet	(x,y);
+	UI().Font().pFontMedium->OutNext	(out_text);
 }
 
 typedef xr_vector<Fvector>	COLLIDE_POINTS;

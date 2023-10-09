@@ -376,9 +376,9 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 				m_stArtefacts[i]->SetStretchTexture(true);
 
 				if (GameConstants::GetUseHQ_Icons())
-					m_stArtefacts[i]->SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI()->get_current_kx() / 2 * m_stArtefactsScale, (tex_rect.y2 - tex_rect.y1) / 2 * m_stArtefactsScale));
+					m_stArtefacts[i]->SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx() / 2 * m_stArtefactsScale, (tex_rect.y2 - tex_rect.y1) / 2 * m_stArtefactsScale));
 				else
-					m_stArtefacts[i]->SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI()->get_current_kx() * m_stArtefactsScale, (tex_rect.y2 - tex_rect.y1) * m_stArtefactsScale));
+					m_stArtefacts[i]->SetWndSize(Fvector2().set((tex_rect.x2 - tex_rect.x1) * UI().get_current_kx() * m_stArtefactsScale, (tex_rect.y2 - tex_rect.y1) * m_stArtefactsScale));
 
 				if (af_sections_inside.size() == 1)
 				{

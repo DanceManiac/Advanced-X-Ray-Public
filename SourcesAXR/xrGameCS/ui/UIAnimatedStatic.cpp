@@ -133,13 +133,13 @@ void CUISleepStatic::Update()
 
 	Frect r = Frect().set((float)start_pixel, 0.0f, (float)end_pixel, 128.0f);
 	m_UIStaticItem.SetOriginalRect(r);
-	m_UIStaticItem.SetRect(0, 0, iFloor((end_pixel - start_pixel) * UI()->get_current_kx()), 128);
+	m_UIStaticItem.SetRect(0, 0, iFloor((end_pixel - start_pixel) * UI().get_current_kx()), 128);
 	m_UIStaticItem.SetPos(pos.x, pos.y);
 	if(end_pixel2>0)
 	{
 		r.set((float)start_pixel2, 0.0f, (float)end_pixel2, 128.0f);
 		m_UIStaticItem2.SetOriginalRect(r);
-		m_UIStaticItem.SetRect(0, 0, iFloor(end_pixel2*UI()->get_current_kx()), 128);
+		m_UIStaticItem.SetRect(0, 0, iFloor(end_pixel2*UI().get_current_kx()), 128);
 		m_UIStaticItem2.SetPos(m_UIStaticItem.GetPosX()+m_UIStaticItem.GetRect().width(), m_UIStaticItem.GetPosY());
 	}
 	else

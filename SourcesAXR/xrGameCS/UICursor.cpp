@@ -40,7 +40,7 @@ void CUICursor::InitInternal()
 	m_static->SetOriginalRect	(rect);
 	Fvector2					sz;
 	sz.set						(rect.rb);
-	sz.x						*= UI()->get_current_kx();
+	sz.x						*= UI().get_current_kx();
 
 	m_static->SetWndSize		(sz);
 	m_static->SetStretchTexture	(true);
@@ -59,7 +59,7 @@ void CUICursor::OnRender	()
 
 	if (bDebug)
 	{
-	CGameFont* F		= UI()->Font()->pFontDI;
+	CGameFont* F		= UI().Font().pFontDI;
 	F->SetAligment		(CGameFont::alCenter);
 	F->SetHeightI		(0.02f);
 	F->OutSetI			(0.f,-0.9f);

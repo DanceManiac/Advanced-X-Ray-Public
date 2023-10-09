@@ -8,35 +8,6 @@ extern	u32	ui_hud_type;
 
 class CHUDTarget;
 
-struct CFontManager :public pureDeviceReset			{
-							CFontManager			();
-							~CFontManager			();
-
-	typedef xr_vector<CGameFont**>					FONTS_VEC;
-	typedef FONTS_VEC::iterator						FONTS_VEC_IT;
-	FONTS_VEC				m_all_fonts;
-	void					Render					();
-
-	// hud font
-	CGameFont*				pFontMedium;
-	CGameFont*				pFontDI;
-
-	CGameFont*				pFontArial14;
-	CGameFont*				pFontGraffiti19Russian;
-	CGameFont*				pFontGraffiti22Russian;
-	CGameFont*				pFontLetterica16Russian;
-	CGameFont*				pFontLetterica18Russian;
-	CGameFont*				pFontGraffiti32Russian;
-	CGameFont*				pFontGraffiti50Russian;
-	CGameFont*				pFontLetterica25;
-	CGameFont*				pFontStat;
-
-	void					InitializeFonts			();
-	void					InitializeFont			(CGameFont*& F, LPCSTR section, u32 flags = 0);
-	LPCSTR					GetFontTexName			(LPCSTR section);				
-
-	virtual void			OnDeviceReset			();
-};
 
 class CHUDManager :
 	public CCustomHUD
@@ -68,12 +39,11 @@ public:
 				void		Update_GrenadeView	( Fvector& pos_actor );
 				void		net_Relcase			( CObject* obj );
 
-	CFontManager&			Font				()							{return *(UI()->Font());}
-	//текущий предмет на который смотрит HUD
+	//С‚РµРєСѓС‰РёР№ РїСЂРµРґРјРµС‚ РЅР° РєРѕС‚РѕСЂС‹Р№ СЃРјРѕС‚СЂРёС‚ HUD
 	collide::rq_result&		GetCurrentRayQuery	();
 
 
-	//устанвка внешнего вида прицела в зависимости от текущей дисперсии
+	//СѓСЃС‚Р°РЅРІРєР° РІРЅРµС€РЅРµРіРѕ РІРёРґР° РїСЂРёС†РµР»Р° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РµРєСѓС‰РµР№ РґРёСЃРїРµСЂСЃРёРё
 	void					SetCrosshairDisp	(float dispf, float disps = 0.f);
 #ifdef DEBUG
 	void					SetFirstBulletCrosshairDisp(float fbdispf);

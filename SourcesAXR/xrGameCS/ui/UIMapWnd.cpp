@@ -436,7 +436,7 @@ bool CUIMapWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		return true;
 	}
 
-	Fvector2 cursor_pos1			= GetUICursor()->GetCursorPosition();
+	Fvector2 cursor_pos1			= GetUICursor().GetCursorPosition();
 
 	if(GlobalMap() && !GlobalMap()->Locked() && ActiveMapRect().in( cursor_pos1 ) )
 	{
@@ -445,7 +445,7 @@ bool CUIMapWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		case WINDOW_MOUSE_MOVE:
 			if( pInput->iGetAsyncBtnState(0) )
 			{
-				GlobalMap()->MoveWndDelta		(GetUICursor()->GetCursorPositionDelta());
+				GlobalMap()->MoveWndDelta		(GetUICursor().GetCursorPositionDelta());
 				UpdateScroll					();
 				HideCurHint						();
 				return							true;

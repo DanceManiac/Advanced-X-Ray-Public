@@ -367,7 +367,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 				float(item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons())),
 				float(item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons())) };
 		}
-		if(UI()->is_16_9_mode())
+		if(UI().is_widescreen())
 			v_r.x2 /= 1.2f;
 
 		UIItemImage->GetUIStaticItem().SetRect	(v_r);
@@ -474,7 +474,7 @@ void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem)
 				float(item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons())),
 				float(item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons())) };
 		}
-		if(UI()->is_16_9_mode())
+		if(UI().is_widescreen())
 			v_r.x2 /= 1.2f;
 
 		UIItemImage->GetUIStaticItem().SetRect	(v_r);

@@ -596,11 +596,11 @@ void CPhysicObject::net_Export			(NET_Packet& P)
 
 void CPhysicObject::net_Export_PH_Params(NET_Packet& P, SPHNetState& State, mask_num_items&	num_items)
 {
-	//HUD().Font().pFontStat->OutSet(100.0f,100.0f);
+	//UI().Font().pFontStat->OutSet(100.0f,100.0f);
 	P.w_vec3				(State.force);
 	//Msg("Export State.force.y:%4.6f",State.force.y);
 	P.w_vec3				(State.torque);
-	//HUD().Font().pFontStat->OutNext("Export State.torque:%4.6f",State.torque.magnitude());
+	//UI().Font().pFontStat->OutNext("Export State.torque:%4.6f",State.torque.magnitude());
 	P.w_vec3				(State.position);
 	//Msg("Export State.position.y:%4.6f",State.position.y);
 	//Msg("Export State.enabled:%i",int(State.enabled));
@@ -721,7 +721,7 @@ void CPhysicObject::net_Import_PH_Params(NET_Packet& P, net_update_PItem& N, mas
 	
 	//N.State.force.set			(0.f,0.f,0.f);
 	//N.State.torque.set			(0.f,0.f,0.f);
-	//HUD().Font().pFontStat->OutSet(100.0f,100.0f);
+	//UI().Font().pFontStat->OutSet(100.0f,100.0f);
 	P.r_vec3					(N.State.force);
 	//Msg("Import N.State.force.y:%4.6f",N.State.force.y);
 	P.r_vec3					(N.State.torque);
@@ -737,7 +737,7 @@ void CPhysicObject::net_Import_PH_Params(NET_Packet& P, net_update_PItem& N, mas
 
 
 	N.State.enabled				= num_items.mask & CSE_ALifeObjectPhysic::inventory_item_state_enabled;
-	//HUD().Font().pFontStat->OutNext("Import N.State.enabled:%i",int(N.State.enabled));
+	//UI().Font().pFontStat->OutNext("Import N.State.enabled:%i",int(N.State.enabled));
 	if (!(num_items.mask & CSE_ALifeObjectPhysic::inventory_item_angular_null)) {
 		N.State.angular_vel.x	= P.r_float();
 		N.State.angular_vel.y	= P.r_float();

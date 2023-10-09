@@ -80,7 +80,7 @@ void CUISequenceVideoItem::Load(CUIXml* xml, int idx)
 		m_wnd->SetAlignment								(waCenter);
 		Frect texture_coords							= m_wnd->GetUIStaticItem().GetOriginalRect();
 
-		bool is_16_9									= UI()->is_16_9_mode();
+		bool is_16_9									= UI().is_widescreen();
 		float kw_image									= UI_BASE_WIDTH / texture_coords.width();
 
 		Fvector2										wnd_size;
@@ -105,10 +105,10 @@ void CUISequenceVideoItem::Load(CUIXml* xml, int idx)
 void CUISequenceVideoItem::Update()
 {
 	inherited::Update();
-	if(GetUICursor()->IsVisible())
+	if(GetUICursor().IsVisible())
 	{
 		m_flags.set			(etiStoredCursorState, TRUE);
-		GetUICursor()->Hide	();
+		GetUICursor().Hide	();
 	}
 	// deferred start
 	if (Device.dwTimeContinual>=m_time_start)
@@ -197,7 +197,7 @@ void CUISequenceVideoItem::Start()
 bool CUISequenceVideoItem::Stop	(bool bForce)
 {
 	if(m_flags.test(etiStoredCursorState) )
-		GetUICursor()->Show			();
+		GetUICursor().Show			();
 
 	if(!m_flags.test(etiCanBeStopped) && !bForce && IsPlaying()) 
 		return false;

@@ -29,7 +29,7 @@ CMapSpot::~CMapSpot()
 void CMapSpot::Load(CUIXml* xml, LPCSTR path)
 {
 	CUIXmlInit::InitStatic(*xml,path,0,this);
-	if(UI()->is_16_9_mode() && !Heading())
+	if(UI().is_widescreen() && !Heading())
 	{
 		SetWidth			(GetWidth()/1.2f);
 		SetStretchTexture	(true);
@@ -53,7 +53,7 @@ void CMapSpot::Load(CUIXml* xml, LPCSTR path)
 	{
 		m_border_static	= UIHelper::CreateStatic( *xml, str, this );
 		m_border_static->Show( false );
-		if(UI()->is_16_9_mode() && !Heading())
+		if(UI().is_widescreen() && !Heading())
 		{
 			m_border_static->SetWidth			(m_border_static->GetWidth()/1.2f);
 			m_border_static->SetStretchTexture	(true);

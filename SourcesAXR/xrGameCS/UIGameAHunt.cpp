@@ -113,11 +113,11 @@ void CUIGameAHunt::Init	()
 	//-----------------------------------------------------------
 
 	m_todo_caption					=	"ah_todo";
-	GameCaptions()->addCustomMessage(m_todo_caption, 0.0f, -0.8f, 0.02f, HUD().Font().pFontGraffiti19Russian, CGameFont::alCenter, TODO_MSG_COLOR, "");
+	GameCaptions()->addCustomMessage(m_todo_caption, 0.0f, -0.8f, 0.02f, UI().Font().pFontGraffiti19Russian, CGameFont::alCenter, TODO_MSG_COLOR, "");
 	GameCaptions()->customizeMessage(m_todo_caption, CUITextBanner::tbsFlicker)->fPeriod = 0.5f;
 
 	m_buy_msg_caption				=	"ah_buy";
-	GameCaptions()->addCustomMessage(m_buy_msg_caption, DI2PX(0.0f), DI2PY(0.9f), SZ(0.02f), HUD().Font().pFontGraffiti19Russian, CGameFont::alCenter, BUY_MSG_COLOR, "");
+	GameCaptions()->addCustomMessage(m_buy_msg_caption, DI2PX(0.0f), DI2PY(0.9f), SZ(0.02f), UI().Font().pFontGraffiti19Russian, CGameFont::alCenter, BUY_MSG_COLOR, "");
 	//-----------------------------------------------------------
 	FrameRect = pStatisticWnd->GetFrameRect ();
 	FrameW	= FrameRect.right - FrameRect.left;

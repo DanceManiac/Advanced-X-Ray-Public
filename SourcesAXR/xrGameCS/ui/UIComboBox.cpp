@@ -301,9 +301,9 @@ void CUIComboBox::OnRender()
 	{
 		if(m_list_frame.IsShown())
 		{
-			UI()->PushScissor			(UI()->ScreenRect(),true);
+			UI().PushScissor			(UI().ScreenRect(),true);
 			m_list_frame.Draw			();
-			UI()->PopScissor			();
+			UI().PopScissor			();
 			Device.seqRender.Remove		(this);
 		}
 	}

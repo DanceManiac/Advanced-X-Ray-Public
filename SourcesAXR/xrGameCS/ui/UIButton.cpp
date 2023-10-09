@@ -227,7 +227,7 @@ void  CUIButton::Update()
 	{
 		g_btnHint->SetHintText	(this,*m_hint_text);
 
-		Fvector2 c_pos			= GetUICursor()->GetCursorPosition();
+		Fvector2 c_pos			= GetUICursor().GetCursorPosition();
 		Frect vis_rect;
 		vis_rect.set			(0,0,UI_BASE_WIDTH, UI_BASE_HEIGHT);
 

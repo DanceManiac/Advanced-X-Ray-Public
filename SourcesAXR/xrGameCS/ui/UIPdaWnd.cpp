@@ -344,7 +344,7 @@ void CUIPdaWnd::SetActiveCaption()
 void CUIPdaWnd::ResetCursor()
 {
 	if (!last_cursor_pos.similar({ 0.f, 0.f }))
-		GetUICursor()->SetUICursorPosition(last_cursor_pos);
+		GetUICursor().SetUICursorPosition(last_cursor_pos);
 }
 
 void CUIPdaWnd::Show_SecondTaskWnd(bool status)

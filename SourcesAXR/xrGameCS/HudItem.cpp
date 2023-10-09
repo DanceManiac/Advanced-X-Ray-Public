@@ -384,7 +384,7 @@ bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
 	if (HudItemData()) // First person
 	{
 		string256 anim_name_r;
-		bool is_16x9 = UI()->is_16_9_mode();
+		bool is_16x9 = UI().is_widescreen();
 		u16 attach_place_idx = pSettings->r_u16(HudItemData()->m_sect_name, "attach_place_idx");
 		xr_sprintf(anim_name_r, "%s%s", anim_name, (attach_place_idx == 1 && is_16x9) ? "_16x9" : "");
 		player_hud_motion* anm = HudItemData()->m_hand_motions.find_motion(anim_name_r);
@@ -496,13 +496,13 @@ bool CHudItem::TryPlayAnimIdle()
 			{
 				if (!(State & mcCrouch))
 				{
-					if (State & mcAccel) //Ходьба медленная (SHIFT)
+					if (State & mcAccel) //РҐРѕРґСЊР±Р° РјРµРґР»РµРЅРЅР°СЏ (SHIFT)
 						PlayAnimIdleMovingSlow();
 					else
 						PlayAnimIdleMoving();
 					return true;
 				}
-				else if (State & mcAccel) //Ходьба в присяде (CTRL+SHIFT)
+				else if (State & mcAccel) //РҐРѕРґСЊР±Р° РІ РїСЂРёСЃСЏРґРµ (CTRL+SHIFT)
 				{
 					PlayAnimIdleMovingCrouchSlow();
 					return true;

@@ -208,7 +208,7 @@ void player_hud::tune(Ivector _values)
 	Ivector				values;
 	tune_remap			(_values,values);
 
-	bool is_16x9		= UI()->is_16_9_mode();
+	bool is_16x9		= UI().is_widescreen();
 
 	if(hud_adj_mode==1 || hud_adj_mode==2)
 	{
@@ -323,7 +323,7 @@ void hud_draw_adjust_mode()
 		};
 		if(_text)
 		{
-			CGameFont* F		= UI()->Font()->pFontDI;
+			CGameFont* F		= UI().Font().pFontDI;
 			F->SetAligment		(CGameFont::alCenter);
 			F->OutSetI			(0.f,-0.8f);
 			F->SetColor			(0xffffffff);

@@ -128,7 +128,7 @@ void CUITrackBar::InitTrackBar(Fvector2 pos, Fvector2 size)
 	item_width			= CUITextureMaster::GetTextureWidth(buf);
     item_height			= CUITextureMaster::GetTextureHeight(buf);
 
-	if(UI()->is_16_9_mode())
+	if(UI().is_widescreen())
 		item_width	/= 1.2f;
 
 	m_pSlider->InitButton(	Fvector2().set(0.0f, (size.y - item_height)/2.0f), //pos

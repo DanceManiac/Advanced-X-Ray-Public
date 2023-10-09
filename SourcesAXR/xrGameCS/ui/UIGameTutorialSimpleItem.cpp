@@ -126,9 +126,9 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 
 		_si->m_wnd->SetTextComplexMode(true);
 		_si->m_wnd->Show			(false);
-		_si->m_wnd->SetWidth		(_si->m_wnd->GetWidth()*UI()->get_current_kx());
+		_si->m_wnd->SetWidth		(_si->m_wnd->GetWidth()*UI().get_current_kx());
 		
-		if(UI()->is_16_9_mode())
+		if(UI().is_widescreen())
 		{
 			XML_NODE* autostatic_node	= xml->NavigateToNode("auto_static", i);
 			XML_NODE* ws_rect			= xml->NavigateToNode(autostatic_node, "widescreen_rect", 0);
@@ -219,7 +219,7 @@ void CUISequenceSimpleItem::Update()
 		}
 	}
 	if(m_desired_cursor_pos.x && m_desired_cursor_pos.y)
-		GetUICursor()->SetUICursorPosition(m_desired_cursor_pos);
+		GetUICursor().SetUICursorPosition(m_desired_cursor_pos);
 }
 
 void CUISequenceSimpleItem::Start()
@@ -241,7 +241,7 @@ void CUISequenceSimpleItem::Start()
 		GAME_PAUSE			(TRUE, FALSE, TRUE, "simpleitem_start");
 
 	if(m_desired_cursor_pos.x && m_desired_cursor_pos.y)
-		GetUICursor()->SetUICursorPosition(m_desired_cursor_pos);
+		GetUICursor().SetUICursorPosition(m_desired_cursor_pos);
 
 	m_owner->MainWnd()->AttachChild	(m_UIWindow);
 

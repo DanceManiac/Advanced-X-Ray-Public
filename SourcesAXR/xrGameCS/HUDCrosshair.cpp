@@ -1,4 +1,4 @@
-// HUDCrosshair.cpp:  êðåñòèê ïðèöåëà, îòîáðàæàþùèé òåêóùóþ äèñïåðñèþ
+// HUDCrosshair.cpp:  ÐºÑ€ÐµÑÑ‚Ð¸Ðº Ð¿Ñ€Ð¸Ñ†ÐµÐ»Ð°, Ð¾Ñ‚Ð¾Ð±Ñ€Ð°Ð¶Ð°ÑŽÑ‰Ð¸Ð¹ Ñ‚ÐµÐºÑƒÑ‰ÑƒÑŽ Ð´Ð¸ÑÐ¿ÐµÑ€ÑÐ¸ÑŽ
 // 
 //////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@ CHUDCrosshair::CHUDCrosshair	()
 //	hGeomLine.create			(FVF::F_TL0uv,RCache.Vertex.Buffer(),0);
 	hShader->create				("hud\\crosshair");
 
-	//âû÷èñëèòü è çàïîìíèòü öåíòð ýêðàíà
+	//Ð²Ñ‹Ñ‡Ð¸ÑÐ»Ð¸Ñ‚ÑŒ Ð¸ Ð·Ð°Ð¿Ð¾Ð¼Ð½Ð¸Ñ‚ÑŒ Ñ†ÐµÐ½Ñ‚Ñ€ ÑÐºÑ€Ð°Ð½Ð°
 //	center.set(int(Device.dwWidth)/2,int(Device.dwHeight)/2);
 	radius = 0;
 }
@@ -31,8 +31,8 @@ CHUDCrosshair::~CHUDCrosshair	()
 
 void CHUDCrosshair::Load		()
 {
-	//âñå ðàçìåðû â ïðîöåíòàõ îò äëèíû ýêðàíà
-	//äëèíà êðåñòèêà 
+	//Ð²ÑÐµ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñ‹ Ð² Ð¿Ñ€Ð¾Ñ†ÐµÐ½Ñ‚Ð°Ñ… Ð¾Ñ‚ Ð´Ð»Ð¸Ð½Ñ‹ ÑÐºÑ€Ð°Ð½Ð°
+	//Ð´Ð»Ð¸Ð½Ð° ÐºÑ€ÐµÑÑ‚Ð¸ÐºÐ° 
 	cross_length_perc = pSettings->r_float (HUD_CURSOR_SECTION, "cross_length");
 //	cross_length = iFloor(0.5f + cross_length_perc*float(Device.dwWidth));
 
@@ -45,7 +45,7 @@ void CHUDCrosshair::Load		()
 	cross_color = pSettings->r_fcolor (HUD_CURSOR_SECTION, "cross_color").get();
 }
 
-//âûñòàâëÿåò radius îò min_radius äî max_radius
+//Ð²Ñ‹ÑÑ‚Ð°Ð²Ð»ÑÐµÑ‚ radius Ð¾Ñ‚ min_radius Ð´Ð¾ max_radius
 void CHUDCrosshair::SetDispersion	(float disp)
 { 
 	Fvector4 r;
@@ -82,7 +82,7 @@ void CHUDCrosshair::OnRenderFirstBulletDispertion()
 	center.set		(scr_size.x/2.0f, scr_size.y/2.0f);
 
 //.	UIRender->StartLineList(10);
-	UIRender->StartPrimitive		(10, IUIRender::ptLineList, UI()->m_currentPointType);
+	UIRender->StartPrimitive		(10, IUIRender::ptLineList, UI().m_currentPointType);
 
 	u32	fb_cross_color					= color_rgba(255, 0, 0, 255); //red
 	
@@ -145,7 +145,7 @@ void CHUDCrosshair::OnRender(const Fvector2& cent, const Fvector2& size_scr)
 	}
 
 //.	UIRender->StartLineList(10);
-	UIRender->StartPrimitive		(10, IUIRender::ptLineList, UI()->m_currentPointType);
+	UIRender->StartPrimitive		(10, IUIRender::ptLineList, UI().m_currentPointType);
 	
 
 	float cross_length					= cross_length_perc*scr_size.x;
