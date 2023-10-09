@@ -1597,10 +1597,7 @@ void CWeaponMagazined::PlayAnimHide()
 
 void CWeaponMagazined::PlayAnimBore()
 {
-	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_BORE_EMPTY))
-		PlayHUDMotion("anm_bore_empty", TRUE, this, GetState());
-	else
-		inherited::PlayAnimBore();
+	inherited::PlayAnimBore();
 }
 
 void CWeaponMagazined::PlayAnimIdleSprint()

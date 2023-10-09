@@ -913,11 +913,26 @@ void CWeaponMagazinedWGrenade::PlayAnimBore()
 {
 	if(IsGrenadeLauncherAttached())
 	{
-		if(m_bGrenadeMode)
-			PlayHUDMotion	("anm_bore_g", TRUE, this, GetState());
+		if (m_bGrenadeMode)
+		{
+			if (IsMisfireNow())
+				PlayHUDMotionIfExists({ "anm_bore_g_jammed", "anm_bore_g", "anm_bore" }, true, GetState());
+			else if (IsMagazineEmpty())
+				PlayHUDMotionIfExists({ "anm_bore_g_empty", "anm_bore_g", "anm_bore" }, true, GetState());
+			else
+				PlayHUDMotion("anm_bore_g", TRUE, this, GetState());
+		}
 		else
-			PlayHUDMotion	("anm_bore_w_gl", TRUE, this, GetState());
-	}else
+		{
+			if (IsMisfireNow())
+				PlayHUDMotionIfExists({ "anm_bore_w_gl_jammed", "anm_bore_w_gl", "anm_bore" }, true, GetState());
+			else if (IsMagazineEmpty())
+				PlayHUDMotionIfExists({ "anm_bore_w_gl_empty", "anm_bore_w_gl", "anm_bore" }, true, GetState());
+			else
+				PlayHUDMotion("anm_bore_w_gl", TRUE, this, GetState());
+		}
+	}
+	else
 		inherited::PlayAnimBore();
 }
 
