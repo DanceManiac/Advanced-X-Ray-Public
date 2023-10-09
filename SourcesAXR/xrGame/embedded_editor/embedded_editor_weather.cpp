@@ -299,23 +299,23 @@ void ShowWeatherEditor(bool& show)
 
 	ImGui::Text(u8"Main parameters");
 
-    if (ImGui::Combo("Weather cycle", &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
-        env.SetWeather(cycles[iCycle], true);
-    int sel = -1;
-    for (int i = 0; i != env.CurrentWeather->size(); i++)
-        if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
-            sel = i;
-    if (ImGui::Combo("Current section", &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {
-        env.SetGameTime(env.CurrentWeather->at(sel)->exec_time + 0.5f, tf);
-        time = time / (24 * 60 * 60) * 24 * 60 * 60 * 1000;
-        time += u64(env.CurrentWeather->at(sel)->exec_time * 1000 + 0.5f);
-        Level().SetEnvironmentGameTimeFactor(time, tf);
-        env.SetWeather(cycles[iCycle], true);
-    }
-    static bool b = getScriptWeather();
-    if (ImGui::Checkbox("Script weather", &b))
-        setScriptWeather(b);
-    ImGui::Separator();
+	if (ImGui::Combo("Weather cycle", &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
+		env.SetWeather(cycles[iCycle], true);
+	int sel = -1;
+	for (int i = 0; i != env.CurrentWeather->size(); i++)
+		if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
+			sel = i;
+	if (ImGui::Combo("Current section", &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {
+		env.SetGameTime(env.CurrentWeather->at(sel)->exec_time + 0.5f, tf);
+		time = time / (24 * 60 * 60) * 24 * 60 * 60 * 1000;
+		time += u64(env.CurrentWeather->at(sel)->exec_time * 1000 + 0.5f);
+		Level().SetEnvironmentGameTimeFactor(time, tf);
+		env.SetWeather(cycles[iCycle], true);
+	}
+	static bool b = getScriptWeather();
+	if (ImGui::Checkbox("Script weather", &b))
+		setScriptWeather(b);
+	ImGui::Separator();
 	bool changed = false;
 	sel = -1;
 	for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
@@ -336,7 +336,7 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::ColorEdit4("clouds_color", (float*)&cur->clouds_color, ImGuiColorEditFlags_AlphaBar))
 		changed = true;
 	char buf[100];
-	if (editTexture("clouds_texture", cur->clouds_texture_name)) 
+	if (editTexture("clouds_texture", cur->clouds_texture_name))
 	{
 		cur->on_device_create();
 		changed = true;
@@ -385,6 +385,7 @@ void ShowWeatherEditor(bool& show)
 
 	if (ImGui::SliderFloat("sky_rotation", &cur->sky_rotation, 0.0f, 6.28318f))
 		changed = true;
+
 	if (editTexture("sky_texture", cur->sky_texture_name)) {
 		strconcat(sizeof(buf), buf, cur->sky_texture_name.data(), "#small");
 		cur->sky_texture_env_name = buf;

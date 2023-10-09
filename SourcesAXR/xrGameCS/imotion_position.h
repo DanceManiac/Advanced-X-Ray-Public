@@ -15,9 +15,9 @@ struct tracks_update: public IUpdateTracksCallback
 		imotion_position *motion;
 		bool update;
 	} update_callback;
-	float			time_to_end;
-	UpdateCallback	saved_visual_callback;
-	CBlend			*blend;
+	float					time_to_end;
+	UpdateCallback			saved_visual_callback;
+	CBlend					*blend;
 	bool					shell_motion_has_history;
 public:
 	imotion_position();
@@ -35,11 +35,12 @@ private:
 	virtual	void	state_end	(  );
 	virtual	void	state_start (  );
 
-static	void _BCL	rootbone_callback	( CBoneInstance *BI );
-		void		init_bones			();
-		void		deinit_bones		();
-		void		set_root_callback	();
-		void		remove_root_callback();
+static	void	_BCL	rootbone_callback	( CBoneInstance *BI );
+
+		void	init_bones			();
+		void	deinit_bones		();
+		void	set_root_callback	();
+		void	remove_root_callback();
 
 			void	interactive_motion_diagnostic( LPCSTR message );
 };

@@ -17,11 +17,11 @@
 #include "object_broker.h"
 #include "weapon.h"
 
-#include "AdvancedXrayGameConstants.h"
-#include "CustomOutfit.h"
 #include "PDA.h"
 #include "ai/monsters/BaseMonster/base_monster.h"
 #include "ui/UIMainIngameWnd.h"
+#include "AdvancedXrayGameConstants.h"
+#include "CustomOutfit.h"
 
 #define MAX_SATIETY					1.0f
 #define START_SATIETY				0.5f

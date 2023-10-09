@@ -10,8 +10,9 @@
 void AddEffector		(CActor* A, int type, const shared_str& sect_name)
 {
 	if(pSettings->line_exist(sect_name,"pp_eff_name")){
-		bool bCyclic						= !!pSettings->r_bool(sect_name,"pp_eff_cyclic");
 		CPostprocessAnimator* pp_anm		= xr_new<CPostprocessAnimator>();
+
+		bool bCyclic						= !!pSettings->r_bool(sect_name,"pp_eff_cyclic");
 		pp_anm->SetType						((EEffectorPPType)type);
 		pp_anm->SetCyclic					(bCyclic);
 
@@ -336,7 +337,12 @@ void SndShockEffector::Update()
 #define DELTA_ANGLE_Z	0.5f * PI / 180
 #define ANGLE_SPEED		1.5f	
 
-CControllerPsyHitCamEffector::CControllerPsyHitCamEffector(ECamEffectorType type, const Fvector &src_pos, const Fvector &target_pos, float time)
+
+const float	_base_fov		= 170.f;
+const float	_max_fov_add	= 160.f;
+
+CControllerPsyHitCamEffector::CControllerPsyHitCamEffector(ECamEffectorType type, const Fvector &src_pos, 
+														   const Fvector &target_pos, float time)
 	:inherited(eCEControllerPsyHit, flt_max)
 {
 	m_time_total			= time;
@@ -348,10 +354,6 @@ CControllerPsyHitCamEffector::CControllerPsyHitCamEffector(ECamEffectorType type
 	m_distance				= m_direction.magnitude();
 	m_direction.normalize	();
 }
-
-const float	_base_fov		= 170.f;
-const float	_max_fov_add	= 160.f;
-
 
 BOOL CControllerPsyHitCamEffector::ProcessCam(SCamEffectorInfo& info)
 {

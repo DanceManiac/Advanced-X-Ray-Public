@@ -80,7 +80,7 @@ void Root::log_hierarchy( LPCSTR nest )
 {
 	u32 sz =  (xr_strlen(nest) + 4) * sizeof(char);
 	PSTR	nest2 = (PSTR)_alloca( sz );
-	strcpy_s( nest2, sz, nest );
+	xr_strcpy( nest2, sz, nest );
 	Msg( "%s[r] %s", nest2, id_str() );
 
 	inherited::log_hierarchy( nest2 );

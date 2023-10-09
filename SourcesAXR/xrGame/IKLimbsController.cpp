@@ -40,7 +40,7 @@ void CIKLimbsController::Create( CGameObject* O )
 	_bone_chains.reserve( sz );
 	for( u16 i = 0; sz > i; ++i )
 						LimbSetup();
-	
+
 	bool already_has_callbacks = !O->visual_callbacks().empty();
 	O->add_visual_callback(IKVisualCallback);
 	if( already_has_callbacks )

@@ -118,17 +118,37 @@ Fvector CLevelGraph::convert_position	(const Fvector &position)
 
 void CLevelGraph::draw_edge			(const int &vertex_id0, const int &vertex_id1)
 {
-	const float				radius = .005f;
-	const u32				vertex_color = color_xrgb(0,255,255);
+	const u8				*vt0 = ai().game_graph().vertex(vertex_id0)->vertex_type();
+	const u8				*vt1 = ai().game_graph().vertex(vertex_id1)->vertex_type();
+	
+	float				radius = 0.005f;
+	if (psAI_Flags.test(aiDrawGameGraphRealPos))
+		radius = 1.f;
+	u32						vertex_color0 = color_xrgb(0,255,255);
+	if (vt0[3] == 0)
+		vertex_color0 = color_xrgb(255,0,255);
+	u32						vertex_color1 = color_xrgb(0,255,255);
+	if (vt1[3] == 0)
+		vertex_color1 = color_xrgb(255,0,255);
 	const u32				edge_color = color_xrgb(0,255,0);
 	
 	const CGameGraph		&graph = ai().game_graph();
-	Fvector					position0 = convert_position(graph.vertex(vertex_id0)->game_point());
-	Fvector					position1 = convert_position(graph.vertex(vertex_id1)->game_point());
+	Fvector					position0;
+	Fvector					position1;
+	if (psAI_Flags.test(aiDrawGameGraphRealPos))
+	{
+		position0 = graph.vertex(vertex_id0)->level_point();
+		position1 = graph.vertex(vertex_id1)->level_point();
+	}
+	else
+	{
+		position0 = convert_position(graph.vertex(vertex_id0)->game_point());
+		position1 = convert_position(graph.vertex(vertex_id1)->game_point());
+	}
 
 	CDebugRenderer			&render = Level().debug_renderer();
-	render.draw_aabb		(position0,radius,radius,radius,vertex_color);
-	render.draw_aabb		(position1,radius,radius,radius,vertex_color);
+	render.draw_aabb		(position0,radius,radius,radius,vertex_color0);
+	render.draw_aabb		(position1,radius,radius,radius,vertex_color1);
 	render.draw_line		(Fidentity,position0,position1,edge_color);
 //	RCache.dbg_DrawAABB		(position0,radius,radius,radius,vertex_color);
 //	RCache.dbg_DrawAABB		(position1,radius,radius,radius,vertex_color);
@@ -151,12 +171,18 @@ void CLevelGraph::draw_stalkers		(const int &vertex_id)
 {
 	if (!ai().get_alife())
 		return;
-
-	const float					radius = .0105f;
+	float				radius = .0105f;
+	if (psAI_Flags.test(aiDrawGameGraphRealPos))
+		radius = 1.f;
 	const u32					color = color_xrgb(255,0,0);
 	const CGameGraph			&graph = ai().game_graph();
 	CGameFont					&font = *UI().Font().pFontDI;
-	Fvector						position = convert_position(graph.vertex(vertex_id)->game_point());
+
+	Fvector						position;
+	if (psAI_Flags.test(aiDrawGameGraphRealPos))
+		position = graph.vertex(vertex_id)->level_point();
+	else
+		position = convert_position(graph.vertex(vertex_id)->game_point());
 
 	font.SetColor				(color_xrgb(255,255,0));
 
@@ -226,7 +252,12 @@ void CLevelGraph::draw_stalkers		(const int &vertex_id)
 			if (!first_time)
 				continue;
 
-			Fvector				position = convert_position(graph.vertex(stalker->m_tGraphID)->game_point());
+			Fvector						position;
+			if (psAI_Flags.test(aiDrawGameGraphRealPos))
+				position = graph.vertex(stalker->m_tGraphID)->level_point();
+			else
+				position = convert_position(graph.vertex(stalker->m_tGraphID)->game_point());
+			
 			render.draw_aabb	(position,radius,radius,radius,color);
 			first_time			= false;
 			continue;
@@ -252,12 +283,23 @@ void CLevelGraph::draw_stalkers		(const int &vertex_id)
 		if (fis_zero(walked_distance))
 			continue;
 
-		Fvector					position0 = graph.vertex(game_vertex_id0)->game_point();
-		Fvector					position1 = graph.vertex(game_vertex_id1)->game_point();
-		const float				distance = position0.distance_to(position1);
 
-		position0				= convert_position(position0);
-		position1				= convert_position(position1);
+
+		Fvector					position0;
+		Fvector					position1;
+		float					distance;
+		if (psAI_Flags.test(aiDrawGameGraphRealPos))
+		{
+			position0 = graph.vertex(game_vertex_id0)->level_point();
+			position1 = graph.vertex(game_vertex_id1)->level_point();
+			distance = position0.distance_to(position1);
+		}
+		else
+		{
+			position0 = convert_position(graph.vertex(game_vertex_id0)->game_point());
+			position1 = convert_position(graph.vertex(game_vertex_id1)->game_point());
+			distance = graph.vertex(game_vertex_id0)->game_point().distance_to(graph.vertex(game_vertex_id1)->game_point());
+		}
 
 		Fvector					direction = Fvector().sub(position1,position0);
 		float					magnitude = direction.magnitude();
@@ -296,11 +338,17 @@ void CLevelGraph::draw_objects		(const int &vertex_id)
 	if (!ai().get_alife())
 		return;
 
-	const float					radius = .0105f;
+	float				radius = .0105f;
+	if (psAI_Flags.test(aiDrawGameGraphRealPos))
+		radius = 1.f;
 	const u32					color = color_xrgb(255,0,0);
 	const CGameGraph			&graph = ai().game_graph();
 	CGameFont					&font = *UI().Font().pFontDI;
-	Fvector						position = convert_position(graph.vertex(vertex_id)->game_point());
+	Fvector						position;
+	if (psAI_Flags.test(aiDrawGameGraphRealPos))
+		position = graph.vertex(vertex_id)->level_point();
+	else
+		position = convert_position(graph.vertex(vertex_id)->game_point());
 
 	font.SetColor				(color_xrgb(255,255,0));
 
@@ -370,7 +418,12 @@ void CLevelGraph::draw_objects		(const int &vertex_id)
 			if (!first_time)
 				continue;
 
-			Fvector				position = convert_position(graph.vertex(monster->m_tGraphID)->game_point());
+			Fvector						position;
+			if (psAI_Flags.test(aiDrawGameGraphRealPos))
+				position = graph.vertex(monster->m_tGraphID)->level_point();
+			else
+				position = convert_position(graph.vertex(monster->m_tGraphID)->game_point());
+
 			render.draw_aabb	(position,radius,radius,radius,color);
 			first_time			= false;
 			continue;
@@ -396,12 +449,21 @@ void CLevelGraph::draw_objects		(const int &vertex_id)
 		if (fis_zero(walked_distance))
 			continue;
 
-		Fvector					position0 = graph.vertex(game_vertex_id0)->game_point();
-		Fvector					position1 = graph.vertex(game_vertex_id1)->game_point();
-		const float				distance = position0.distance_to(position1);
-
-		position0				= convert_position(position0);
-		position1				= convert_position(position1);
+		Fvector					position0;
+		Fvector					position1;
+		float					distance;
+		if (psAI_Flags.test(aiDrawGameGraphRealPos))
+		{
+			position0 = graph.vertex(game_vertex_id0)->level_point();
+			position1 = graph.vertex(game_vertex_id1)->level_point();
+			distance = position0.distance_to(position1);
+		}
+		else
+		{
+			position0 = convert_position(graph.vertex(game_vertex_id0)->game_point());
+			position1 = convert_position(graph.vertex(game_vertex_id1)->game_point());
+			distance = graph.vertex(game_vertex_id0)->game_point().distance_to(graph.vertex(game_vertex_id1)->game_point());
+		}
 
 		Fvector					direction = Fvector().sub(position1,position0);
 		float					magnitude = direction.magnitude();

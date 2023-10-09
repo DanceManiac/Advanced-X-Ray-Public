@@ -2214,6 +2214,8 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"ai_draw_game_graph",				&psAI_Flags,	aiDrawGameGraph				);
 	CMD3(CCC_Mask,				"ai_draw_game_graph_stalkers",		&psAI_Flags,	aiDrawGameGraphStalkers		);
 	CMD3(CCC_Mask,				"ai_draw_game_graph_objects",		&psAI_Flags,	aiDrawGameGraphObjects		);
+	CMD3(CCC_Mask,				"ai_draw_game_graph_real_pos",		&psAI_Flags,	aiDrawGameGraphRealPos		);
+	
 
 	CMD3(CCC_Mask,				"ai_nil_object_access",	&psAI_Flags,	aiNilObjectAccess);
 

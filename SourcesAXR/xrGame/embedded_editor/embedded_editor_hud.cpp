@@ -13,12 +13,12 @@
 
 void ShowHudEditor(bool& show)
 {
-    ImguiWnd wnd("HUD Editor", &show);
-    if (wnd.Collapsed)
-        return;
+	ImguiWnd wnd("HUD Editor", &show);
+	if (wnd.Collapsed)
+		return;
 
-    if (!g_player_hud)
-        return;
+	if (!g_player_hud)
+		return;
 
     ImGuiIO& io = ImGui::GetIO();
     //ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -58,7 +58,7 @@ void ShowHudEditor(bool& show)
 
 		/*ImGuizmo::Manipulate((float*)&Device.mView, (float*)&Device.mProject, mode, ImGuizmo::WORLD, (float*)&item->m_attach_offset);
 
-		if (ImGuizmo::IsUsing()) 
+		if (ImGuizmo::IsUsing())
 		{
 			Fvector ypr;
 			item->m_attach_offset.getHPB(ypr.x, ypr.y, ypr.z);
@@ -68,7 +68,7 @@ void ShowHudEditor(bool& show)
 		}*/
 	}
 
-    item = g_player_hud->attached_item(1);
+	item = g_player_hud->attached_item(1);
 
 	if (item)
 	{

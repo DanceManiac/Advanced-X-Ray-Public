@@ -37,15 +37,15 @@ private:
 	void				UpdateTutorialThresholds	();
 			void 		UpdateSatiety				();
 			void 		UpdateThirst				();
-			void 		UpdateSleepeness			();
 			void 		UpdateIntoxication			();
+			void 		UpdateSleepeness			();
 			void 		UpdateAlcoholism			();
 			void 		UpdateNarcotism				();
 			void 		UpdatePsyHealth				();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
-	virtual				~CActorCondition			(void);
+	virtual				~CActorCondition			();
 
 	virtual void		LoadCondition				(LPCSTR section);
 	virtual void		reinit						();
@@ -278,7 +278,7 @@ class CActorDeathEffector
 	ref_sound				m_death_sound;
 	bool					m_b_actual;
 	float					m_start_health;
-	void 		xr_stdcall	OnPPEffectorReleased		();
+	void xr_stdcall			OnPPEffectorReleased		();
 public:
 			CActorDeathEffector	(CActorCondition* parent, LPCSTR sect);	// -((
 			~CActorDeathEffector();

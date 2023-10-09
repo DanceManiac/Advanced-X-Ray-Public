@@ -228,16 +228,17 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 
 			switch (type)
 			{
-			case GEG_PLAYER_ITEM2SLOT:	 
-				inventory().Slot( iitem ); 
-				break;//2
+			case GEG_PLAYER_ITEM2SLOT:
+			{
+				inventory().Slot( iitem );
+			}break;//2
 			case GEG_PLAYER_ITEM2BELT:	 
 				inventory().Belt( iitem ); 
 				break;//2
 			case GEG_PLAYER_ITEM2RUCK:	 
 				inventory().Ruck( iitem ); 
 				break;//2
-			case GEG_PLAYER_ITEM_EAT:	 
+			case GEG_PLAYER_ITEM_EAT:
 				if (pItemToEat)
 				{
 					if (pItemToEat->m_bHasAnimation)

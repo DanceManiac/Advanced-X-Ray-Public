@@ -147,7 +147,6 @@ void	object_shift::set_taget		( float taget_, float time )
 		time = Device.fTimeDelta;
 
 	current			= shift();
-	
 
 	float time_pased = 0.f;
 
