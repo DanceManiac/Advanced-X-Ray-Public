@@ -605,12 +605,23 @@ void CWeaponMagazinedWGrenade::PlayAnimShow()
 			HUD_VisualBulletUpdate();
 
 		if (!m_bGrenadeMode)
-			if (IsMisfire() && isHUDAnimationExist("anm_show_jammed_w_gl"))
-				PlayHUDMotion("anm_show_jammed_w_gl", FALSE, this, GetState());
+		{
+			if (IsMisfire())
+				PlayHUDMotionIfExists({ "anm_show_w_gl_jammed", "anm_show_jammed_w_gl" }, true, GetState());
+			else if (IsMagazineEmpty())
+				PlayHUDMotionIfExists({ "anm_show_w_gl_empty", "anm_show_empty_w_gl" }, true, GetState());
 			else
 				PlayHUDMotion("anm_show_w_gl", FALSE, this, GetState());
+		}
 		else
-			PlayHUDMotion("anm_show_g", FALSE, this, GetState());
+		{
+			if (IsMisfire())
+				PlayHUDMotionIfExists({ "anm_show_g_jammed", "anm_show_jammed_g" }, true, GetState());
+			else if (IsMagazineEmpty())
+				PlayHUDMotionIfExists({ "anm_show_g_empty", "anm_show_empty_g" }, true, GetState());
+			else
+				PlayHUDMotion("anm_show_g", FALSE, this, GetState());
+		}
 	}	
 	else
 		inherited::PlayAnimShow();
@@ -621,14 +632,26 @@ void CWeaponMagazinedWGrenade::PlayAnimHide()
 	VERIFY(GetState()==eHiding);
 	
 	if (IsGrenadeLauncherAttached())
+	{
 		if (!m_bGrenadeMode)
-			if (IsMisfire() && isHUDAnimationExist("anm_hide_jammed_w_gl"))
-				PlayHUDMotion("anm_hide_jammed_w_gl", TRUE, this, GetState());
+		{
+			if (IsMisfire())
+				PlayHUDMotionIfExists({ "anm_hide_w_gl_jammed", "anm_hide_jammed_w_gl" }, true, GetState());
+			else if (IsEmptyMagazine())
+				PlayHUDMotionIfExists({ "anm_hide_w_gl_empty", "anm_hide_empty_w_gl" }, true, GetState());
 			else
 				PlayHUDMotion("anm_hide_w_gl", TRUE, this, GetState());
+		}
 		else
-			PlayHUDMotion("anm_hide_g", TRUE, this, GetState());
-
+		{
+			if (IsMisfire())
+				PlayHUDMotionIfExists({ "anm_hide_g_jammed", "anm_hide_jammed_g" }, true, GetState());
+			else if (IsEmptyMagazine())
+				PlayHUDMotionIfExists({ "anm_hide_g_empty", "anm_hide_empty_g" }, true, GetState());
+			else
+				PlayHUDMotion("anm_hide_g", TRUE, this, GetState());
+		}
+	}
 	else
 		inherited::PlayAnimHide();
 }
@@ -710,13 +733,24 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				}
 			}
 
-			if(m_bGrenadeMode)
-				PlayHUDMotionIfExists({ "anm_idle_aim_g", "anm_idle_g_aim" }, true, GetState());
-			else
-				if (IsMisfire() && isHUDAnimationExist("anm_idle_jammed_w_gl_aim"))
-					PlayHUDMotion("anm_idle_jammed_w_gl_aim", TRUE, nullptr, GetState());
+			if (m_bGrenadeMode)
+			{
+				if (IsMisfire())
+					PlayHUDMotionIfExists({ "anm_idle_aim_g_jammed", "anm_idle_aim_jammed_g" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_aim_g_empty", "anm_idle_aim_empty_g" }, true, GetState());
 				else
-					PlayHUDMotionIfExists({ "anm_idle_aim_w_gl", "anm_idle_w_gl_aim" }, true, GetState());
+					PlayHUDMotionIfExists({ "anm_idle_aim_g", "anm_idle_g_aim", "anm_idle_aim" }, true, GetState());
+			}
+			else
+			{
+				if (IsMisfire())
+					PlayHUDMotionIfExists({ "anm_idle_aim_w_gl_jammed", "anm_idle_aim_jammed_w_gl" }, true, GetState());
+				else if (IsMagazineEmpty())
+					PlayHUDMotionIfExists({ "anm_idle_aim_w_gl_empty", "anm_idle_aim_empty_w_gl" }, true, GetState());
+				else
+					PlayHUDMotionIfExists({ "anm_idle_aim_w_gl", "anm_idle_w_gl_aim", "anm_idle_aim" }, true, GetState());
+			}
 		}
 		else
 		{
@@ -922,18 +956,18 @@ void CWeaponMagazinedWGrenade::PlayAnimBore()
 		if (m_bGrenadeMode)
 		{
 			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_bore_g_jammed", "anm_bore_g", "anm_bore" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_bore_g_jammed", "anm_bore_jammed_g", "anm_bore_g", "anm_bore" }, true, GetState());
 			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_bore_g_empty", "anm_bore_g", "anm_bore" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_bore_g_empty", "anm_bore_empty_g", "anm_bore_g", "anm_bore" }, true, GetState());
 			else
 				PlayHUDMotion("anm_bore_g", TRUE, this, GetState());
 		}
 		else
 		{
 			if (IsMisfireNow())
-				PlayHUDMotionIfExists({ "anm_bore_w_gl_jammed", "anm_bore_w_gl", "anm_bore" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_bore_w_gl_jammed", "anm_bore_jammed_w_gl", "anm_bore_w_gl", "anm_bore" }, true, GetState());
 			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_bore_w_gl_empty", "anm_bore_w_gl", "anm_bore" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_bore_w_gl_empty", "anm_bore_empty_w_gl", "anm_bore_w_gl", "anm_bore" }, true, GetState());
 			else
 				PlayHUDMotion("anm_bore_w_gl", TRUE, this, GetState());
 		}
