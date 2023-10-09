@@ -2384,7 +2384,7 @@ void CWeapon::GetZoomData(const float scope_factor, float& delta, float& min_zoo
 }
 
 // Lex Addon (correct by Suhar_) 24.10.2018		(begin)
-float LastZoomFactor = NULL;
+float LastZoomFactor = 0.0f;
 
 void CWeapon::OnZoomIn()
 {
@@ -3433,6 +3433,9 @@ void CWeapon::ZoomDynamicMod(bool bIncrement, bool bForceLimit)
 		LastZoomFactor = f;
 		// Lex Addon (correct by Suhar_) 24.10.2018		(end)
 	}
+
+	if (m_sounds.FindSoundItem("sndChangeZoom", false) && LastZoomFactor != min_zoom_factor && LastZoomFactor != max_zoom_factor)
+		PlaySound("sndChangeZoom", get_LastFP());
 }
 
 void CWeapon::ZoomInc()

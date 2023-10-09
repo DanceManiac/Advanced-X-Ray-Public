@@ -126,6 +126,9 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	if (WeaponSoundExist(section, "snd_torch_off", true))
 		m_sounds.LoadSound(section, "snd_torch_off", "sndFlashlightOff", m_eSoundEmptyClick);
 
+	if (WeaponSoundExist(section, "snd_change_zoom", true))
+		m_sounds.LoadSound(section, "snd_change_zoom", "sndChangeZoom", m_eSoundEmptyClick);
+
 	if (WeaponSoundExist(section, "snd_close", true))
 		m_sounds.LoadSound(section, "snd_close", "sndClose", m_eSoundClose);
 
@@ -691,6 +694,8 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndFlashlightOn", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "snd_torch_off"))
 		m_sounds.SetPosition("sndFlashlightOff", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_change_zoom"))
+		m_sounds.SetPosition("sndChangeZoom", P);
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);
 //. nah	m_sounds.SetPosition("sndEmptyClick", P);
