@@ -76,6 +76,7 @@ public:
 	virtual void	PlayAnimShoot		();
 	virtual void	PlayAnimModeSwitch	();
 	virtual void	PlayAnimBore		();
+	virtual void	PlayAnimFireMode	();
 	
 private:
 	virtual	void	net_Spawn_install_upgrades	( Upgrades_type saved_upgrades );
