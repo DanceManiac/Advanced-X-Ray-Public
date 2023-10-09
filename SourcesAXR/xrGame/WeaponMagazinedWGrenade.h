@@ -68,6 +68,8 @@ public:
 
 	virtual bool	IsNecessaryItem	    (const shared_str& item_sect);
 
+	bool			IsGrenadeMode		() const override { return m_bGrenadeMode; }
+
 	//виртуальные функции для проигрывания анимации HUD
 	virtual void	PlayAnimShow		();
 	virtual void	PlayAnimHide		();

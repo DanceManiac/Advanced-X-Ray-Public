@@ -737,6 +737,12 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				const u32 State = pActor->get_state();
 				if (State & mcSprint)
 				{
+					if (!m_bSprintType)
+					{
+						SwitchState(eSprintStart);
+						return;
+					}
+
 					act_state = 1;
 				}
 				else if (State & mcAnyMove)

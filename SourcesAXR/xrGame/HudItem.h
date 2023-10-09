@@ -22,7 +22,9 @@ enum EHudStates {
 		eHiding,
 		eHidden,
 		eBore,
-		eLastBaseState = eBore,
+		eSprintStart,
+		eSprintEnd,
+		eLastBaseState = eSprintEnd,
 };
 
 private:
@@ -115,6 +117,7 @@ public:
 	virtual bool				MovingAnimAllowedNow() { return true; }
 	virtual bool				IsMisfireNow		() { return false; }
 	virtual bool				IsMagazineEmpty		() { return false; }
+	virtual bool				IsGrenadeMode		() const { return false; }
 	virtual bool				NeedBlendAnm		();
 
 	virtual void				PlayAnimIdleMoving	();
@@ -122,6 +125,8 @@ public:
 	virtual void				PlayAnimIdleMovingCrouch();
 	virtual void				PlayAnimIdleMovingCrouchSlow();
 	virtual void				PlayAnimIdleSprint	();
+	virtual void				PlayAnimSprintStart	();
+	virtual void				PlayAnimSprintEnd	();
 
 	virtual void				UpdateCL			();
 	virtual void				renderable_Render	();
@@ -191,6 +196,7 @@ public:
 	float						GetHudFov				();
 
 	bool  m_nearwall_enabled;
+	bool  m_bSprintType;
 	float m_hud_fov_add_mod;
 	float m_nearwall_last_hud_fov;
 	float m_nearwall_dist_max		= 0.f;
