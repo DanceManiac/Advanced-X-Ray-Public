@@ -192,7 +192,13 @@ void CWeaponShotgun::switch2_EndReload	()
 void CWeaponShotgun::PlayAnimOpenWeapon()
 {
 	VERIFY(GetState()==eReload);
-	PlayHUDMotionIfExists({ "anm_open_weapon", "anm_open" }, false, GetState());
+
+	if (IsMisfire())
+		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_close" }, true, GetState());
+	else if (iAmmoElapsed == 0)
+		PlayHUDMotionIfExists({ "anm_open_empty", "anm_open_weapon", "anm_open" }, false, GetState());
+	else
+		PlayHUDMotionIfExists({ "anm_open_weapon", "anm_open" }, false, GetState());
 }
 void CWeaponShotgun::PlayAnimAddOneCartridgeWeapon()
 {
