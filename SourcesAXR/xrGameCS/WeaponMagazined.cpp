@@ -1618,6 +1618,8 @@ void CWeaponMagazined::InitAddons()
 	SetAnimFlag(ANM_SHOT_AIM,		"anm_shots_when_aim");
 	SetAnimFlag(ANM_SHOT_AIM_GL,	"anm_shots_w_gl_when_aim");
 
+	m_weapon_attaches.clear();
+
 	if (IsScopeAttached())
 	{
 		if (m_eScopeStatus == ALife::eAddonAttachable)
@@ -1629,10 +1631,21 @@ void CWeaponMagazined::InitAddons()
 				pcstr ScopeBone = pSettings->r_string(m_scopes[m_cur_scope], "bones");
 				m_cur_scope_bone = ScopeBone;
 			}
+
+			if (m_sScopeAttachSection.size() && pSettings->line_exist(m_sScopeAttachSection, "attach_hud_visual"))
+				WeaponAttach().CreateAttach(m_sScopeAttachSection, m_weapon_attaches);
+		}
+		else if (m_eScopeStatus == ALife::eAddonPermanent)
+		{
+			if (m_sScopeAttachSection.size() && pSettings->line_exist(m_sScopeAttachSection, "attach_hud_visual"))
+				WeaponAttach().CreateAttach(m_sScopeAttachSection, m_weapon_attaches);
 		}
 	}
 	else
 	{
+		if (m_sScopeAttachSection.size() && pSettings->line_exist(m_sScopeAttachSection, "attach_hud_visual"))
+			WeaponAttach().RemoveAttach(m_sScopeAttachSection, m_weapon_attaches);
+
 		if (m_UIScope)
 			xr_delete(m_UIScope);
 
@@ -1652,9 +1665,15 @@ void CWeaponMagazined::InitAddons()
 		//подсветка от выстрела
 		LoadLights(*cNameSect(), "silencer_");
 		ApplySilencerKoeffs();
+
+		if (m_sSilencerAttachSection.size() && pSettings->line_exist(m_sSilencerAttachSection, "attach_hud_visual"))
+			WeaponAttach().CreateAttach(m_sSilencerAttachSection, m_weapon_attaches);
 	}
 	else
 	{
+		if (m_sSilencerAttachSection.size() && pSettings->line_exist(m_sSilencerAttachSection, "attach_hud_visual"))
+			WeaponAttach().RemoveAttach(m_sSilencerAttachSection, m_weapon_attaches);
+
 		m_sFlameParticlesCurrent = m_sFlameParticles;
 		m_sSmokeParticlesCurrent = m_sSmokeParticles;
 		m_sSndShotCurrent = "sndShot";
@@ -1662,6 +1681,30 @@ void CWeaponMagazined::InitAddons()
 		//подсветка от выстрела
 		LoadLights(*cNameSect(), "");
 		ResetSilencerKoeffs();
+	}
+
+	if (m_sGrenadeLauncherAttachSection.size() && pSettings->line_exist(m_sGrenadeLauncherAttachSection, "attach_hud_visual"))
+	{
+		if (IsGrenadeLauncherAttached())
+			WeaponAttach().CreateAttach(m_sGrenadeLauncherAttachSection, m_weapon_attaches);
+		else
+			WeaponAttach().RemoveAttach(m_sGrenadeLauncherAttachSection, m_weapon_attaches);
+	}
+
+	if (m_sLaserAttachSection.size() && pSettings->line_exist(m_sLaserAttachSection, "attach_hud_visual"))
+	{
+		if (IsLaserAttached())
+			WeaponAttach().CreateAttach(m_sLaserAttachSection, m_weapon_attaches);
+		else
+			WeaponAttach().RemoveAttach(m_sLaserAttachSection, m_weapon_attaches);
+	}
+
+	if (m_sTacticalTorchAttachSection.size() && pSettings->line_exist(m_sTacticalTorchAttachSection, "attach_hud_visual"))
+	{
+		if (IsTacticalTorchAttached())
+			WeaponAttach().CreateAttach(m_sTacticalTorchAttachSection, m_weapon_attaches);
+		else
+			WeaponAttach().RemoveAttach(m_sTacticalTorchAttachSection, m_weapon_attaches);
 	}
 
 	inherited::InitAddons();

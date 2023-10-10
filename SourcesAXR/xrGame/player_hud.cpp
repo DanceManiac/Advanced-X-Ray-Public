@@ -171,6 +171,7 @@ void attachable_hud_item::update(bool bForce)
 	m_attach_offset.translate_over	(m_measures.m_item_attach[0]);
 
 	m_parent->calc_transform		(m_attach_place_idx, m_attach_offset, m_item_transform);
+	m_parent_hud_item->UpdateAddonsTransform(true);
 	m_upd_firedeps_frame			= Device.dwFrame;
 
 	IKinematicsAnimated* ka			=	m_model->dcast_PKinematicsAnimated();

@@ -1,10 +1,15 @@
 #include "stdAfx.h"
 #include "embedded_editor_hud.h"
-#include "../../xrEngine/device.h"
-#include "../player_hud.h"
 #include "embedded_editor_helper.h"
 //#include <addons/ImGuizmo/ImGuizmo.h>
 #include "imgui_internal.h"
+
+#include "../../xrEngine/device.h"
+#include "../player_hud.h"
+#include "../Weapon.h"
+#include "../WeaponAttaches.h"
+#include "../Actor.h"
+#include "../Inventory.h"
 
 void ShowHudEditor(bool& show)
 {
@@ -20,6 +25,7 @@ void ShowHudEditor(bool& show)
     //ImGuizmo::OPERATION mode = io.KeyCtrl ? ImGuizmo::ROTATE : ImGuizmo::TRANSLATE;
     bool showSeparator = true;
     auto item = g_player_hud->attached_item(0);
+	auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
 
 	if (item)
 	{
@@ -40,6 +46,15 @@ void ShowHudEditor(bool& show)
 		ImGui::InputFloat3("fire_point 0", (float*)&item->m_measures.m_fire_point_offset[0]);
 		ImGui::InputFloat3("fire_point2 0", (float*)&item->m_measures.m_fire_point2_offset[0]);
 		ImGui::InputFloat3("shell_point 0", (float*)&item->m_measures.m_shell_point_offset[0]);
+
+		for (int i = 0; i < Wpn->m_weapon_attaches.size(); i++)
+		{
+			auto mesh = Wpn->m_weapon_attaches[i];
+			std::string pos_name = "attach_" + std::to_string(i + 1) + "_position";
+			std::string orient_name = "attach_" + std::to_string(i + 1) + "_orientation";
+			ImGui::InputFloat3(pos_name.c_str(), (float*)&mesh->hud_attach_pos[0]);
+			ImGui::InputFloat3(orient_name.c_str(), (float*)&mesh->hud_attach_pos[1]);
+		}
 
 		/*ImGuizmo::Manipulate((float*)&Device.mView, (float*)&Device.mProject, mode, ImGuizmo::WORLD, (float*)&item->m_attach_offset);
 

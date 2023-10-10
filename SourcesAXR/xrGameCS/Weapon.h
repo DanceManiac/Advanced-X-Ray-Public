@@ -13,6 +13,7 @@
 #include "first_bullet_controller.h"
 
 #include "CameraRecoil.h"
+#include "WeaponAttaches.h"
 
 class CEntity;
 class ENGINE_API CMotionDef;
@@ -24,6 +25,7 @@ class CUIWindow;
 class CBinocularsVision;
 class CNightVisionEffector;
 class CLAItem;
+class WeaponAttach;
 
 #define WEAPON_INDOOR_HEMI_FACTOR 0.01f
 #define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f
@@ -51,12 +53,17 @@ public:
 	bool					bReloadSectionScope(LPCSTR section);
 	bool					bChangeNVSecondVPStatus();
 	virtual	bool            bMarkCanShow() { return IsZoomed(); }
+	virtual void			UpdateAddonsTransform(bool for_hud);
 
 
 	virtual void			UpdateSecondVP(bool bInGrenade = false);
 	void					Load3DScopeParams(LPCSTR section);
 	void					LoadOriginalScopesParams(LPCSTR section);
 	void					LoadCurrentScopeParams(LPCSTR section);
+	void					LoadSilencerParams(LPCSTR section);
+	void					LoadLaserDesignatorParams(LPCSTR section);
+	void					LoadTacticalTorchParams(LPCSTR section);
+	void					LoadGrenadeLauncherParams(LPCSTR section);
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
@@ -67,6 +74,8 @@ public:
 	int						bullet_cnt;
 	int						last_hide_bullet;
 	bool					bHasBulletsToHide;
+
+	xr_vector<WeaponAttach*> m_weapon_attaches;
 
 	virtual void			HUD_VisualBulletUpdate(bool force = false, int force_idx = -1);
 
@@ -262,6 +271,12 @@ protected:
 	shared_str		m_sGrenadeLauncherName;
 	shared_str		m_sLaserName;
 	shared_str		m_sTacticalTorchName;
+
+	shared_str		m_sScopeAttachSection{};
+	shared_str		m_sSilencerAttachSection{};
+	shared_str		m_sLaserAttachSection{};
+	shared_str		m_sTacticalTorchAttachSection{};
+	shared_str		m_sGrenadeLauncherAttachSection{};
 
 	shared_str		m_sWpn_scope_bone;
 	shared_str		m_sWpn_silencer_bone;
@@ -555,6 +570,8 @@ public:
 	xr_vector<CCartridge>	m_magazine;
 	CCartridge				m_DefaultCartridge;
 	float					m_fCurrentCartirdgeDisp;
+
+	Fmatrix					m_scopeAttachTransform{};
 
 		bool				unlimited_ammo				();
 	IC	bool				can_be_strapped				() const {return m_can_be_strapped;};

@@ -7467,6 +7467,9 @@
     <ClInclude Include="TacticalTorch.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch</Filter>
     </ClInclude>
+    <ClInclude Include="WeaponAttaches.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11184,6 +11187,9 @@
     </ClCompile>
     <ClCompile Include="TacticalTorch.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAttaches.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
