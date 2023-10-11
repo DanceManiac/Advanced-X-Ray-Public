@@ -37,6 +37,7 @@ namespace GameConstants
 	bool GetHUD_UsedItemTextEnabled();
 	bool GetLimitedInventory();
 	bool GetBackpackAnimsEnabled();
+	bool GetFoodIrradiation();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

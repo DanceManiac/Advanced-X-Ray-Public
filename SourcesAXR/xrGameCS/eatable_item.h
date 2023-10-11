@@ -51,6 +51,9 @@ public:
 			int				m_iAnimHandsCnt;
 			int				m_iAnimLength;
 			float			m_fEffectorIntensity;
+			float			m_fRadioactivity;
+			float			m_fIrradiationCoef;
+			float			m_fIrradiationZonePower;
 			LPCSTR			anim_sect;
 			shared_str		use_cam_effector;
 			ref_sound		m_using_sound;

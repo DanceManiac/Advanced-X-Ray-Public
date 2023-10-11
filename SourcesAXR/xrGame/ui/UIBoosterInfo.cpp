@@ -340,6 +340,10 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		if (pSettings->line_exist(section.c_str(), ef_quick_eat_values_names[i]))
 		{
 			val = pSettings->r_float(section, ef_quick_eat_values_names[i]);
+
+			if (eatable && i == _item_quick_radiation)
+				val += eatable->m_fRadioactivity;
+
 			if (fis_zero(val))
 				continue;
 

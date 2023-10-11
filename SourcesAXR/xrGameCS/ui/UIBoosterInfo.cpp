@@ -327,11 +327,15 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 		if (pSettings->line_exist(section.c_str(), ef_quick_eat_values_names[i]))
 		{
 			val = pSettings->r_float(section, ef_quick_eat_values_names[i]);
-			int vle = 2;
+
+			if (eatable && i == _item_quick_radiation)
+				val += eatable->m_fRadioactivity;
+
 			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
 			if (fis_zero(val))
 				continue;
 
+			int vle = 2;
 			if (i >= _item_quick_intoxication)
 				vle = 1;
 

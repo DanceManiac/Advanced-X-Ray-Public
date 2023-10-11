@@ -34,18 +34,22 @@ extern bool g_block_all_except_movement;
 
 CEatableItem::CEatableItem()
 {
-	m_iPortionsNum = 1;
-	use_cam_effector = nullptr;
-	anim_sect = nullptr;
-	m_bHasAnimation = false;
-	m_bUnlimited = false;
-	m_physic_item	= 0;
-	m_fEffectorIntensity = 1.0f;
-	m_iAnimHandsCnt = 1;
-	m_iAnimLength = 0;
-	m_bActivated = false;
-	m_bItmStartAnim = false;
+	m_iPortionsNum			= 1;
+	use_cam_effector		= nullptr;
+	anim_sect				= nullptr;
+	m_bHasAnimation			= false;
+	m_bUnlimited			= false;
+	m_physic_item			= 0;
+	m_fEffectorIntensity	= 1.0f;
+	m_iAnimHandsCnt			= 1;
+	m_iAnimLength			= 0;
+	m_bActivated			= false;
+	m_bItmStartAnim			= false;
 	m_bNeedDestroyNotUseful = true;
+
+	m_fRadioactivity		= 0.0f;
+	m_fIrradiationCoef		= 0.0005f;
+	m_fIrradiationZonePower = 0.0f;
 }
 
 CEatableItem::~CEatableItem()
@@ -69,6 +73,9 @@ void CEatableItem::Load(LPCSTR section)
 	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
 	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
 	m_bNeedDestroyNotUseful = READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
+
+	m_fIrradiationCoef = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
+	m_fIrradiationZonePower = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -116,17 +123,30 @@ void CEatableItem::save(NET_Packet &packet)
 {
 	inherited::save(packet);
 	save_data(m_iPortionsNum, packet);
+	save_data(m_fRadioactivity, packet);
 }
 
 void CEatableItem::load(IReader &packet)
 {
 	inherited::load(packet);
 	load_data(m_iPortionsNum, packet);
+	load_data(m_fRadioactivity, packet);
 }
 
 void CEatableItem::UpdateInRuck(CActor* actor)
 {
 	UpdateUseAnim(actor);
+
+	if (GameConstants::GetFoodIrradiation())
+	{
+		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation);
+		float irradiation_coef = ((m_fIrradiationCoef + m_radia_hit) / 64) * Device.fTimeDelta;
+
+		if (m_radia_hit > m_fIrradiationZonePower)
+			m_fRadioactivity += irradiation_coef;
+
+		clamp(m_fRadioactivity, 0.0f, 1.0f);
+	}
 }
 
 void CEatableItem::HideWeapon()
@@ -252,7 +272,7 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 	R_ASSERT(m_pInventory == IO->m_inventory);
 	R_ASSERT(object().H_Parent()->ID() == entity_alive->ID());
 
-	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect());
+	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect(), this);
 
 	for (u8 i = 0; i < (u8)eBoostMaxCount; i++)
 	{

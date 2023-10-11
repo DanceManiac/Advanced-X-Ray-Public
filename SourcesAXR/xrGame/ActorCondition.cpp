@@ -1464,7 +1464,7 @@ float CActorCondition::HitSlowmo(SHit* pHDS)
 	return ret;	
 }
 
-bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const shared_str& sect)
+bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable)
 {
 	if(m_curr_medicine_influence.InProcess())
 		return false;
@@ -1489,7 +1489,7 @@ bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const sh
 	}
 
 	if(V.fTimeTotal<0.0f)
-		return inherited::ApplyInfluence	(V, sect);
+		return inherited::ApplyInfluence	(V, sect, cur_eatable);
 
 	m_curr_medicine_influence				= V;
 	m_curr_medicine_influence.fTimeCurrent  = m_curr_medicine_influence.fTimeTotal;

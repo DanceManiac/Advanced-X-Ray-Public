@@ -166,7 +166,7 @@ public:
 	bool	PlayHitSound							(SHit* pHDS);
 	float	HitSlowmo								(SHit* pHDS);
 
-	virtual bool ApplyInfluence						(const SMedicineInfluenceValues& V, const shared_str& sect);
+	virtual bool ApplyInfluence						(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable);
 	virtual bool ApplyBooster						(const SBooster& B, const shared_str& sect);
 	float	GetMaxPowerRestoreSpeed					() {return m_max_power_restore_speed;};
 	float	GetMaxWoundProtection					() {return m_max_wound_protection;};
