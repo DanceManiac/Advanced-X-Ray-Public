@@ -436,31 +436,32 @@ void CDetailManager::Render	()
 	m_frame_rendered		= RDEVICE.dwFrame;
 }
 
-void __stdcall	CDetailManager::MT_CALC		()
+void __stdcall CDetailManager::MT_CALC()
 {
 #ifndef _EDITOR
-	if (0 == RImplementation.Details)		return;	// possibly deleted
-	//if (0 == dtFS)						return;
-	if (!psDeviceFlags.is(rsDetails))	return;
-#endif    
+	if (0 == RImplementation.Details) return; // possibly deleted
+	//if (0 == dtFS)                     return;
+	if (!psDeviceFlags.is(rsDetails)) return;
+#endif
 
-	MT.Enter					();
-	if (m_frame_calc!=RDEVICE.dwFrame)	
-		if ((m_frame_rendered+1)==RDEVICE.dwFrame) //already rendered
+
+	std::lock_guard<xrCriticalSection> lock(MT);
+
+	if (m_frame_calc != RDEVICE.dwFrame)
+		if ((m_frame_rendered + 1) == RDEVICE.dwFrame) //already rendered
 		{
-			Fvector		EYE				= RDEVICE.vCameraPosition_saved;
+			Fvector     EYE = RDEVICE.vCameraPosition_saved;
 
-			int s_x	= iFloor			(EYE.x/dm_slot_size+.5f);
-			int s_z	= iFloor			(EYE.z/dm_slot_size+.5f);
+			int s_x = iFloor(EYE.x / dm_slot_size + .5f);
+			int s_z = iFloor(EYE.z / dm_slot_size + .5f);
 
-			RDEVICE.Statistic->RenderDUMP_DT_Cache.Begin	();
-			cache_Update				(s_x,s_z,EYE,dm_max_decompress);
-			RDEVICE.Statistic->RenderDUMP_DT_Cache.End	();
+			RDEVICE.Statistic->RenderDUMP_DT_Cache.Begin();
+			cache_Update(s_x, s_z, EYE, dm_max_decompress);
+			RDEVICE.Statistic->RenderDUMP_DT_Cache.End();
 
-			UpdateVisibleM				();
-			m_frame_calc				= RDEVICE.dwFrame;
+			UpdateVisibleM();
+			m_frame_calc = RDEVICE.dwFrame;
 		}
-	MT.Leave					        ();
 }
 
 void CDetailManager::details_clear()

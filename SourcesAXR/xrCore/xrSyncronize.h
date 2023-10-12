@@ -2,7 +2,7 @@
 #include <mutex>
 #include <thread>
 
-class xrCriticalSection final : std::recursive_mutex
+class xrCriticalSection final : public std::recursive_mutex
 {
 public:
 	inline void Enter() { __super::lock(); }
