@@ -191,7 +191,7 @@ public:
 			bool				CanTrade			() const;
 			void				AllowTrade			()							{ m_flags.set(FCanTrade, m_can_trade); };
 			void				DenyTrade			()							{ m_flags.set(FCanTrade, FALSE); };
-			bool				GetOccupiedInvSpace() const						{ return m_iOccupiedInvSpace; }
+			int					GetOccupiedInvSpace	() const					{ return m_iOccupiedInvSpace; }
 
 	virtual bool 				IsNecessaryItem	    (CInventoryItem* item);
 	virtual bool				IsNecessaryItem	    (const shared_str& item_sect){return false;};
