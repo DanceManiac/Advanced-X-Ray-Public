@@ -440,13 +440,13 @@ void CConsole::DrawBackgrounds( bool bGame )
 
 	if ( m_select_tip < (int)m_tips.size() )
 	{
-		Frect r;
+		Frect r1;
 
-		vecTipsEx::iterator itb = m_tips.begin() + m_start_tip;
-		vecTipsEx::iterator ite = m_tips.end();
-		for ( u32 i = 0; itb != ite; ++itb, ++i ) // tips
+		vecTipsEx::iterator itb1 = m_tips.begin() + m_start_tip;
+		vecTipsEx::iterator ite1 = m_tips.end();
+		for ( u32 i = 0; itb1 != ite1; ++itb1, ++i ) // tips
 		{
-			TipString const& ts = (*itb);
+			TipString const& ts = (*itb1);
 			if ( (ts.HL_start < 0) || (ts.HL_finish < 0) || (ts.HL_start > ts.HL_finish) )
 			{
 				continue;
@@ -457,18 +457,18 @@ void CConsole::DrawBackgrounds( bool bGame )
 				continue;
 			}
 
-			r.null();
+			r1.null();
 			LPSTR  tmp      = (PSTR)_alloca( (str_size + 1) * sizeof(char) );
 
 			strncpy_s( tmp, str_size+1, ts.text.c_str(), ts.HL_start );
-			r.x1 = pr.x1 + w1 + pFont->SizeOf_( tmp );
-			r.y1 = pr.y1 + i * font_h;
+			r1.x1 = pr.x1 + w1 + pFont->SizeOf_( tmp );
+			r1.y1 = pr.y1 + i * font_h;
 
 			strncpy_s( tmp, str_size+1, ts.text.c_str(), ts.HL_finish );
-			r.x2 = pr.x1 + w1 + pFont->SizeOf_( tmp );
-			r.y2 = r.y1 + font_h;
+			r1.x2 = pr.x1 + w1 + pFont->SizeOf_( tmp );
+			r1.y2 = r1.y1 + font_h;
 
-			DrawRect( r, tips_word_color );
+			DrawRect( r1, tips_word_color );
 
 			if ( i >= VIEW_TIPS_COUNT-1 )
 			{

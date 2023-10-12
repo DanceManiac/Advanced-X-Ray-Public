@@ -4,6 +4,7 @@
 
 #include "../ode_include.h"
 
+#pragma warning(disable:4456) // чёрт ногу сломит тут, поэтому лучше так
 // given a pointer `p' to a dContactGeom, return the dContactGeom at
 // p + skip bytes.
 

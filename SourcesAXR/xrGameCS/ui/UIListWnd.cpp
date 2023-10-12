@@ -144,10 +144,10 @@ void CUIListWnd::RemoveItem(int index)
 	m_ScrollBar->Refresh();
 
 	//перенумеровать индексы заново
-	int i=0;
-	for(LIST_ITEM_LIST_it it=m_ItemList.begin();  m_ItemList.end() != it; ++it,i++)
+	int i_=0;
+	for(LIST_ITEM_LIST_it it1=m_ItemList.begin();  m_ItemList.end() != it1; ++it1,i_++)
 	{
-		(*it)->SetIndex(i);
+		(*it1)->SetIndex(i_);
 	}
 
 }

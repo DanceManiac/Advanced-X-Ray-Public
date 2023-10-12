@@ -11,10 +11,10 @@
 #include "../debug_output.h"
 #endif
 
-dcTriListCollider::dcTriListCollider(dxGeom* Geometry)
+dcTriListCollider::dcTriListCollider(dxGeom* Geometry_)
 {
-	this->Geometry = Geometry;
-	GeomData = (dxTriList*)dGeomGetClassData(Geometry);
+	this->Geometry = Geometry_;
+	GeomData = (dxTriList*)dGeomGetClassData(Geometry_);
 
 
 }

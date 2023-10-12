@@ -109,7 +109,7 @@ IC				CPHElement				*PSecondElement 			()																																							
 	virtual		void 					GetLimits					(float& lo_limit,float& hi_limit,int axis_num)																																											;
 	virtual		void 					GetAxisDir					(int num,Fvector& axis,eVs& vs)																																															;
 	virtual		void 					GetAxisDirDynamic			(int num,Fvector& axis)																																																	;
-	virtual		void 					GetAnchorDynamic			(Fvector& anchor)																																																		;
+	virtual		void 					GetAnchorDynamic			(Fvector& anchor_)																																																		;
 	virtual		bool					IsWheelJoint				();
 	virtual		bool					IsHingeJoint				();
 	virtual		void 					GetAxisSDfactors			(float& spring_factor,float& damping_factor,int axis_num)																																								;

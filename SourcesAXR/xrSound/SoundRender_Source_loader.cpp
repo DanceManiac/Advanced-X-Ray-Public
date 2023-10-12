@@ -150,6 +150,7 @@ bool CSoundRender_Source::load(pcstr name, bool replaceWithNoSound /*= true*/, b
 	if (!LoadWave(fn, crashOnError))
 		return false;
 	SoundRender->cache.cat_create	(CAT, dwBytesTotal);
+	return true;
 }
 
 void CSoundRender_Source::unload()

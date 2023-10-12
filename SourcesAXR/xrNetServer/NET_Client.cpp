@@ -648,8 +648,8 @@ if(!psNET_direct_connect)
 					Msg("! IPureClient : port %d is BUSY!", c_port);
 
 //				const char* x = DXGetErrorString9(res);
-				string1024 tmp = "";
-				DXTRACE_ERR(tmp, res);
+				string1024 tmp1 = "";
+				DXTRACE_ERR(tmp1, res);
 #endif				
 				c_port++;
 			}
@@ -698,8 +698,8 @@ if(!psNET_direct_connect)
 		_RELEASE					(pHostAddress);
 #ifdef DEBUG	
 //		const char* x = DXGetErrorString9(res);
-		string1024 tmp = "";
-		DXTRACE_ERR(tmp, res);
+		string1024 tmp2 = "";
+		DXTRACE_ERR(tmp2, res);
 #endif
 		switch (res)
 		{

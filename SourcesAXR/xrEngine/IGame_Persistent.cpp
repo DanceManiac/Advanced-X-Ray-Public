@@ -368,7 +368,7 @@ void IGame_Persistent::GrassBendersAddExplosion(u16 id, Fvector position, Fvecto
         if (grass_shader_data.anim[idx] != BENDER_ANIM_EXPLOSION)
         {
             // Add 99 to the ID to avoid conflicts between explosions and basic benders happening at the same time with the same ID.
-            GrassBendersSet(idx, id + 99, position, dir, fade, speed, intensity, radius, BENDER_ANIM_EXPLOSION, true);
+            GrassBendersSet((u8)idx, id + 99, position, dir, fade, speed, intensity, radius, BENDER_ANIM_EXPLOSION, true);
             grass_shader_data.str_target[idx] = intensity;
             break;
         }

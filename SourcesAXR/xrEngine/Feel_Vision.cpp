@@ -136,11 +136,11 @@ namespace Feel {
 
 			{
 				diff.resize	(_max(seen.size(),query.size()));
-				xr_vector<CObject*>::iterator	E = std::set_difference(
+				xr_vector<CObject*>::iterator	E1 = std::set_difference(
 					seen.begin(), seen.end(),
 					query.begin(),query.end(),
 					diff.begin() );
-				diff.resize(E-diff.begin());
+				diff.resize(E1-diff.begin());
 				for (u32 i=0; i<diff.size(); i++)
 					o_new(diff[i]);
 			}

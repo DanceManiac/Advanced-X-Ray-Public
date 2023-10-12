@@ -23,7 +23,7 @@ class dcTriListCollider
 	xr_vector< flags8 >			gl_cl_tries_state	;
 	xr_vector<int>::iterator	I,E,B				;
 public:
-	dcTriListCollider(dxGeom* Geometry);
+	dcTriListCollider(dxGeom* Geometry_);
 	~dcTriListCollider();
 	int CollideBox(dxGeom* Box, int Flags, dContactGeom* Contact, int Stride);
 	int CollideSphere(dxGeom* Sphere, int Flags, dContactGeom* Contact, int Stride);
@@ -50,7 +50,7 @@ IC	int dSortTriPrimitiveCollide (T primitive,
 							CDB::TRI* T,
 							dReal dist,
 							dxGeom* Sphere,
-							dxGeom* Geometry, 
+							dxGeom* Geometry_, 
 							int Flags, 
 							dContactGeom* Contacts,
 							int			skip
@@ -62,7 +62,7 @@ IC	float	dSphereProj(dxGeom* sphere,const dReal* /**normal/**/)
 		}
 int dTriSphere(const dReal* v0,const dReal* v1,const dReal* v2,
 			Triangle* T,
-			dxGeom* Sphere,dxGeom* Geometry, int Flags, 
+			dxGeom* Sphere,dxGeom* Geometry_, int Flags, 
 			dContactGeom* Contacts,int /**skip/**/);
 IC	 float	dBoxProj(dxGeom* box,const dReal* normal);
 IC			void	CrossProjLine(const dReal* pt1,const dReal* vc1,const dReal* pt2,const dReal* vc2,dReal* proj);

@@ -497,17 +497,17 @@ void CRenderDevice::on_idle		()
 
 	u32 updateDelta = 1; // 1 ms
 
-	IMainMenu* pMainMenu = g_pGamePersistent ? g_pGamePersistent->m_pMainMenu : 0;
+//	IMainMenu* pMainMenu = g_pGamePersistent ? g_pGamePersistent->m_pMainMenu : 0;
 
 	if (Device.Paused() || bMainMenuActive())
 		updateDelta = 16; // 16 ms, ~60 FPS max while paused
 	else
-		updateDelta = fps_to_rate;
+		updateDelta = (u32)fps_to_rate;
 
 	if (fps_to_rate != 0)
 	{
 		if (frameTime < updateDelta)
-			Sleep(updateDelta - frameTime);
+			Sleep(((DWORD)(updateDelta - frameTime)));
 	}
 
 #ifdef MOVE_CURRENT_FRAME_COUNTR

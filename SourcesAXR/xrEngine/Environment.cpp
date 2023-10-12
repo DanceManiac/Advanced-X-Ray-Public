@@ -390,7 +390,7 @@ void CEnvironment::StopWFX	()
 
 void CEnvironment::SetEnvDesc(LPCSTR weather_section, CEnvDescriptor*& e)
 {
-	bool found = false;
+//	bool found = false;
 
 	EnvsMapIt _I, _E;
 	_I = WeatherCycles.begin();

@@ -576,11 +576,11 @@ HWND WINAPI ShowSplash(HINSTANCE hInstance, int nCmdShow)
 
 	//float temp_x_size = 860.f;
 	//float temp_y_size = 461.f;
-	int scr_x = GetSystemMetrics(SM_CXSCREEN);
-	int scr_y = GetSystemMetrics(SM_CYSCREEN);
+//	int scr_x = GetSystemMetrics(SM_CXSCREEN);
+//	int scr_y = GetSystemMetrics(SM_CYSCREEN);
 
-	int pos_x = (scr_x / 2) - (splashWidth / 2);
-	int pos_y = (scr_y / 2) - (splashHeight / 2);
+//	int pos_x = (scr_x / 2) - (splashWidth / 2);
+//	int pos_y = (scr_y / 2) - (splashHeight / 2);
 
 	//if (!RegClass(SplashProc, szClass, COLOR_WINDOW)) return FALSE;
 	hWnd = CreateSplashWindow(hInstance);
@@ -590,8 +590,8 @@ HWND WINAPI ShowSplash(HINSTANCE hInstance, int nCmdShow)
 	HDC hdcScreen = GetDC(NULL);
 	HDC hDC = CreateCompatibleDC(hdcScreen);
 
-	HBITMAP hBmp = CreateCompatibleBitmap(hdcScreen, splashWidth, splashHeight);
-	HBITMAP hBmpOld = (HBITMAP)SelectObject(hDC, hBmp);
+//	HBITMAP hBmp = CreateCompatibleBitmap(hdcScreen, splashWidth, splashHeight);
+//	HBITMAP hBmpOld = (HBITMAP)SelectObject(hDC, hBmp);
 	//рисуем картиночку
 	for (int i = 0; i < img.GetWidth(); i++)
 	{
@@ -678,6 +678,7 @@ void SetSplashImage(HWND hwndSplash, HBITMAP hbmpSplash)
 	ReleaseDC(NULL, hdcScreen);
 }
 
+/*
 static BOOL CALLBACK logDlgProc( HWND hw, UINT msg, WPARAM wp, LPARAM lp )
 {
 	switch( msg ){
@@ -694,7 +695,7 @@ static BOOL CALLBACK logDlgProc( HWND hw, UINT msg, WPARAM wp, LPARAM lp )
 			return FALSE;
 	}
 	return TRUE;
-}
+}*/
 /*
 void	test_rtc	()
 {

@@ -167,8 +167,8 @@ DWORD ttapi_Init( processor_info* ID )
 		return 0;
 
 	// Clearing params
-	for ( DWORD i = 0 ; i < ttapi_workers_count ; i++ )
-		memset( &ttapi_worker_params[ i ] , 0 , sizeof( TTAPI_WORKER_PARAMS ) );
+	for ( DWORD i1 = 0 ; i1 < ttapi_workers_count ; i1++ )
+		memset( &ttapi_worker_params[ i1 ] , 0 , sizeof( TTAPI_WORKER_PARAMS ) );
 
 	char szThreadName[64];
 	DWORD dwThreadId = 0;
@@ -183,12 +183,12 @@ DWORD ttapi_Init( processor_info* ID )
 	//Msg("Master Thread Affinity Mask : 0x%8.8X" , dwCurrentMask );
 
 	// Creating threads
-	for ( DWORD i = 0 ; i < ttapi_threads_count ; i++ ) {
+	for ( DWORD i1 = 0 ; i1 < ttapi_threads_count ; i1++ ) {
 
 		// Initializing "enter" "critical section"
-		ttapi_worker_params[ i ].vlFlag = 1;
+		ttapi_worker_params[ i1 ].vlFlag = 1;
 
-		if ( ( ttapi_threads_handles[ i ] = CreateThread( NULL , 0 , &ttapiThreadProc , &ttapi_worker_params[ i ] , 0 , &dwThreadId ) ) == NULL )
+		if ( ( ttapi_threads_handles[ i1 ] = CreateThread( NULL , 0 , &ttapiThreadProc , &ttapi_worker_params[ i1 ] , 0 , &dwThreadId ) ) == NULL )
 			return 0;
 
 		// Setting affinity
@@ -196,11 +196,11 @@ DWORD ttapi_Init( processor_info* ID )
 			dwCurrentMask <<= 1;
 		while ( ! ( dwAffinitiMask & dwCurrentMask ) );
 			
-		SetThreadAffinityMask( ttapi_threads_handles[ i ] , dwCurrentMask );
+		SetThreadAffinityMask( ttapi_threads_handles[ i1 ] , dwCurrentMask );
 		//Msg("Helper Thread #%u Affinity Mask : 0x%8.8X" , i + 1 , dwCurrentMask );
 
 		// Setting thread name
-		sprintf_s( szThreadName , "Helper Thread #%u" , i );
+		sprintf_s( szThreadName , "Helper Thread #%u" , i1 );
 		SetThreadName( dwThreadId , szThreadName );
 	}
 

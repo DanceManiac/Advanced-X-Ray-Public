@@ -666,21 +666,21 @@ long ogg_sync_pageseek(ogg_sync_state *oy,ogg_page *og){
   
   /* yes, have a whole page all ready to go */
   {
-    unsigned char *page=oy->data+oy->returned;
-    long bytes;
+    unsigned char *page1=oy->data+oy->returned;
+    long bytes1;
 
     if(og){
-      og->header=page;
+      og->header=page1;
       og->header_len=oy->headerbytes;
-      og->body=page+oy->headerbytes;
+      og->body=page1+oy->headerbytes;
       og->body_len=oy->bodybytes;
     }
 
     oy->unsynced=0;
-    oy->returned+=(bytes=oy->headerbytes+oy->bodybytes);
+    oy->returned+=(bytes1=oy->headerbytes+oy->bodybytes);
     oy->headerbytes=0;
     oy->bodybytes=0;
-    return(bytes);
+    return(bytes1);
   }
   
  sync_fail:
