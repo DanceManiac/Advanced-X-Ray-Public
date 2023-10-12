@@ -28,8 +28,9 @@
 #include "CustomBackpack.h"
 #include "WeaponMagazined.h"
 #include "../xrEngine/x_ray.h"
-
 #include <dinput.h>
+
+#include "AdvancedXrayGameConstants.h"
 
 bool  CUIActorMenu::AllowItemDrops(EDDListType from, EDDListType to)
 {

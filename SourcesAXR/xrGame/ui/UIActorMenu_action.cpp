@@ -29,6 +29,8 @@
 #include "../xrEngine/x_ray.h"
 #include <dinput.h>
 
+#include "AdvancedXrayGameConstants.h"
+
 bool  CUIActorMenu::AllowItemDrops(EDDListType from, EDDListType to)
 {
 	xr_vector<EDDListType>& v = m_allowed_drops[to];
