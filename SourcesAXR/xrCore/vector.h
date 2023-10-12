@@ -122,6 +122,13 @@ IC float inertion(float _val_cur, float _val_trgt, float _friction)
 	return _val_cur * _friction + _val_trgt * friction_i;
 }
 
+template <typename T>
+inline constexpr T smoothstep(T min, T max, T res)
+{
+	res = std::max(static_cast<T>(0), std::min(static_cast<T>(1), (res - min) / (max - min)));
+	return res * res * (3 - 2 * res);
+}
+
 // pre-definitions
 template <class T> struct _quaternion;
 
