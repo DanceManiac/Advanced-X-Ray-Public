@@ -43,6 +43,7 @@ bool	m_bHUD_UsedItemText = true;
 bool	m_bLimitedInventory = false;
 bool	m_bBackpackAnimsEnabled = false;
 bool	m_bFoodIrradiation = false;
+bool	m_bFoodRotting = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -94,6 +95,7 @@ namespace GameConstants
 		m_bSleepInfluenceOnPsyHealth = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "sleepeness_infl_on_psy_health", false);
 		m_bLimitedInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inventory", false);
 		m_bFoodIrradiation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_irradiation", false);
+		m_bFoodRotting = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_rotting", false);
 		m_bBackpackAnimsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "actions_animations", "enable_backpack_animations", false);
 		m_iArtefactsCount = READ_IF_EXISTS(pAdvancedSettings, r_u32, "inventory", "artefacts_count", 5);
 		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
@@ -301,6 +303,11 @@ namespace GameConstants
 	bool GetFoodIrradiation()
 	{
 		return m_bFoodIrradiation;
+	}
+
+	bool GetFoodRotting()
+	{
+		return m_bFoodRotting;
 	}
 
 	int GetArtefactsCount()

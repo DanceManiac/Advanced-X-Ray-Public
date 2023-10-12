@@ -344,6 +344,9 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			if (eatable && i == _item_quick_radiation)
 				val += eatable->m_fRadioactivity;
 
+			if (eatable && i == _item_quick_intoxication)
+				val += eatable->m_fSpoliage;
+
 			if (fis_zero(val))
 				continue;
 

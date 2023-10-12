@@ -331,6 +331,9 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			if (eatable && i == _item_quick_radiation)
 				val += eatable->m_fRadioactivity;
 
+			if (eatable && i == _item_quick_intoxication)
+				val += eatable->m_fSpoliage;
+
 			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
 			if (fis_zero(val))
 				continue;

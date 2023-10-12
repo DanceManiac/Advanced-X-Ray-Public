@@ -626,7 +626,7 @@ bool CEntityCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const s
 	SetMaxPower		(GetMaxPower()+V.fMaxPowerUp);
 	ChangeAlcohol	(V.fAlcohol);
 	ChangeThirst	(V.fThirst);
-	ChangeIntoxication(V.fIntoxication);
+	ChangeIntoxication(V.fIntoxication + cur_eatable->m_fSpoliage);
 	ChangeSleepeness(V.fSleepeness);
 	ChangeAlcoholism(V.fAlcoholism);
 	ChangeHangover	(V.fHangover);

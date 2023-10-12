@@ -54,6 +54,8 @@ public:
 			float			m_fRadioactivity;
 			float			m_fIrradiationCoef;
 			float			m_fIrradiationZonePower;
+			float			m_fSpoliage;
+			float			m_fFoodRottingCoef;
 			LPCSTR			anim_sect;
 			shared_str		use_cam_effector;
 			ref_sound		m_using_sound;
