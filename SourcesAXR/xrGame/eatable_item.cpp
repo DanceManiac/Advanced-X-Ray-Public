@@ -136,6 +136,12 @@ void CEatableItem::load(IReader &packet)
 	load_data(m_iPortionsNum, packet);
 	load_data(m_fRadioactivity, packet);
 	load_data(m_fSpoliage, packet);
+
+	if (g_block_all_except_movement)
+		g_block_all_except_movement = false;
+
+	if (!g_actor_allow_ladder)
+		g_actor_allow_ladder = true;
 }
 
 void CEatableItem::UpdateInRuck(CActor* actor)
