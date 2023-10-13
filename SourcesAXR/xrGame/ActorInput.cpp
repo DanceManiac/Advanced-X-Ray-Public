@@ -381,7 +381,6 @@ void CActor::IR_OnKeyboardHold(int cmd)
 
 void CActor::IR_OnMouseMove(int dx, int dy)
 {
-
 	if(hud_adj_mode)
 	{
 		g_player_hud->tune	(Ivector().set(dx,dy,0));
@@ -403,7 +402,10 @@ void CActor::IR_OnMouseMove(int dx, int dy)
 	float LookFactor = GetLookFactor();
 
 	CCameraBase* C	= cameras	[cam_active];
-	float scale		= (C->f_fov/g_fov)*psMouseSens * psMouseSensScale/50.f  / LookFactor;
+
+	auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	float scale		= (C->f_fov/g_fov)* ((wpn && wpn->IsZoomed() && wpn->bIsSecondVPZoomPresent()) ? psSVP_MouseSens : psMouseSens) * psMouseSensScale/50.f  / LookFactor;
 	if (dx){
 		float d = float(dx)*scale;
 		cam_Active()->Move((d<0)?kLEFT:kRIGHT, _abs(d));

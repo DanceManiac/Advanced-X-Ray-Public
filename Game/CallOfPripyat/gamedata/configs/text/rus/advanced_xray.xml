@@ -693,4 +693,7 @@
 	<string id="st_alt_aim_switched_off">
 		<text>Режим прицеливания: Оптика</text>
 	</string>
+	<string id="ui_mm_svp_mouse_sense">
+		<text>Чувст. мыши в 3D прицелах</text>
+	</string>
 </string_table>

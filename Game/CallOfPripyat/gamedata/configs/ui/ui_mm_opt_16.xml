@@ -1070,10 +1070,16 @@
         <track_mousesens x="140" y="6" width="188" height="16" step="0.01">
             <options_item entry="mouse_sens" group="mm_opt_controls"/>
         </track_mousesens>
-        <cap_check_mouseinvert x="12" y="33" width="108" height="24">
+		<cap_svp_mousesens x="12" y="23" width="108" height="24">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_svp_mouse_sense</text>
+        </cap_svp_mousesens>
+        <track_svp_mousesens x="140" y="26" width="188" height="16" step="0.01">
+            <options_item entry="svp_mouse_sens" group="mm_opt_controls"/>
+        </track_svp_mousesens>
+        <cap_check_mouseinvert x="12" y="43" width="108" height="24">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_invert_mouse</text>
         </cap_check_mouseinvert>
-        <check_mouseinvert x="129" y="30" width="35" stretch="1" height="29">
+        <check_mouseinvert x="129" y="40" width="35" stretch="1" height="29">
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="mouse_invert" group="mm_opt_controls"/>
         </check_mouseinvert>

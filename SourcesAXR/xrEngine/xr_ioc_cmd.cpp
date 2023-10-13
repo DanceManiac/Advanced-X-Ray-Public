@@ -834,6 +834,8 @@ void CCC_Register()
 	CMD3(CCC_Mask,		"mouse_invert",			&psMouseInvert,1);
 	psMouseSens			= 0.12f;
 	CMD4(CCC_Float,		"mouse_sens",			&psMouseSens,		0.001f, 0.6f);
+	psSVP_MouseSens		= psMouseSens;
+	CMD4(CCC_Float,		"svp_mouse_sens",		&psSVP_MouseSens,	0.001f, 0.6f);
 
 	// Camera
 	CMD4(CCC_Float,		"cam_inert",			&psCamInert,		0.0f, 0.9f);
