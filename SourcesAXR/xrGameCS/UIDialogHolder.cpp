@@ -59,7 +59,7 @@ void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 	{
 		if (const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem()))
 		{
-			HUD().GetUI()->StartStopMenu(smart_cast<CUIPdaWnd*>(pDialog),false);
+			HUD().GetUI()->UIGame()->PdaMenu().HideDialog1();
 			Actor()->inventory().Action(kACTIVE_JOBS, CMD_START);
 		}
 	}

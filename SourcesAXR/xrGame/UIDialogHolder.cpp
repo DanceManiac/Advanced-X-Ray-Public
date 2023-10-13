@@ -49,7 +49,7 @@ void CDialogHolder::StartMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
 	R_ASSERT						( !pDialog->IsShown() );
 
-	if (IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
+	if (psActorFlags.test(AF_3D_PDA) &&IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
 	{
 		if (const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem()))
 		{
