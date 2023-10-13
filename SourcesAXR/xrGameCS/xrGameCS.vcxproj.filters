@@ -2532,6 +2532,7 @@
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch">
       <UniqueIdentifier>{e5791261-8c3f-48df-8abf-7180767de39b}</UniqueIdentifier>
+    </Filter>
     <Filter Include="AI\AMonsters\common\trajectories">
       <UniqueIdentifier>{fec2de6c-74b8-4027-bb86-d7f8f2b0fa2f}</UniqueIdentifier>
     </Filter>
@@ -7372,6 +7373,7 @@
     </ClInclude>
     <ClInclude Include="WeaponAttaches.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    </ClInclude>
     <ClInclude Include="..\xrGame\doors.h">
       <Filter>AI\AComponents\doors_manager</Filter>
     </ClInclude>
@@ -7383,6 +7385,7 @@
     </ClInclude>
     <ClInclude Include="..\xrGame\doors_manager.h">
       <Filter>AI\AComponents\doors_manager\manager</Filter>
+    </ClInclude>
     <ClInclude Include="SleepingBag.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClInclude>
@@ -11018,6 +11021,7 @@
     </ClCompile>
     <ClCompile Include="WeaponAttaches.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    </ClCompile>
     <ClCompile Include="SleepingBag.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClCompile>
