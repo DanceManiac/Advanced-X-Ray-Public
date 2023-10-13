@@ -235,6 +235,7 @@ void CUIActorMenu::Show(bool status)
 	{
 		PlaySnd								(eSndClose);
 		SetMenuMode							(mmUndefined);
+		clear_highlight_lists				();
 
 		if (Actor() && GameConstants::GetHideWeaponInInventory())
 		{

@@ -243,6 +243,7 @@ void CUIActorMenu::Hide()
 	inherited::Hide						();
 	PlaySnd								(eSndClose);
 	SetMenuMode							(mmUndefined);
+	clear_highlight_lists				();
 
 	if (Actor() && GameConstants::GetHideWeaponInInventory())
 	{
