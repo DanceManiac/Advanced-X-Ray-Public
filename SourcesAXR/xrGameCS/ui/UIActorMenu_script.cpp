@@ -170,12 +170,12 @@ void CUIActorMenu::script_register(lua_State* L)
 				.def(constructor<>()),
  			class_< CUIHudStatesWnd, CUIWindow>("CUIHudStatesWnd")
 				.def(constructor<>())
-				.def_readonly("m_back",				&CUIHudStatesWnd::m_back)
-				.def_readonly("m_fire_mode",		&CUIHudStatesWnd::m_fire_mode)
-				.def_readonly("m_ui_weapon_icon",	&CUIHudStatesWnd::m_ui_weapon_icon)
-				.def_readonly("m_ui_health_bar",	&CUIHudStatesWnd::m_ui_health_bar)
-				.def_readonly("m_ui_stamina_bar",	&CUIHudStatesWnd::m_ui_stamina_bar)
-				.def_readonly("m_radia_damage",		&CUIHudStatesWnd::m_radia_damage)
+				.def_readonly("m_back",								&CUIHudStatesWnd::m_back)
+				.def_readonly("m_fire_mode",						&CUIHudStatesWnd::m_fire_mode)
+				.def_readonly("m_ui_weapon_icon",					&CUIHudStatesWnd::m_ui_weapon_icon)
+				.def_readonly("m_ui_health_bar",					&CUIHudStatesWnd::m_ui_health_bar)
+				.def_readonly("m_ui_stamina_bar",					&CUIHudStatesWnd::m_ui_stamina_bar)
+				.def_readonly("m_radia_damage",						&CUIHudStatesWnd::m_radia_damage)
 		];
 
 		module(L, "ActorMenu")

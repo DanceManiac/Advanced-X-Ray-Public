@@ -51,7 +51,7 @@ void CHudItem::Load(LPCSTR section)
 	m_sounds.LoadSound(section, "snd_bore", "sndBore", true);
 
 	// HUD FOV
-	m_nearwall_enabled			= READ_IF_EXISTS(pSettings, r_bool,  section, "nearwall_on", true);
+	m_nearwall_enabled			= READ_IF_EXISTS(pSettings, r_bool,	 section, "nearwall_on", true);
 	m_nearwall_target_hud_fov	= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_hud_fov", 0.27f);
 	m_nearwall_dist_min			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
 	m_nearwall_dist_max			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
@@ -140,12 +140,12 @@ void CHudItem::OnStateSwitch(u32 S)
 	{
 	case eBore:
 		{
-			SetPending(FALSE);
+			SetPending		(FALSE);
 
-			PlayAnimBore();
+			PlayAnimBore	();
 			if (HudItemData())
 			{
-				Fvector P = HudItemData()->m_item_transform.c;
+				Fvector P		= HudItemData()->m_item_transform.c;
 				m_sounds.PlaySound("sndBore", P, object().H_Root(), !!GetHUDmode(), false, m_started_rnd_anim_idx);
 			}
 
@@ -328,11 +328,6 @@ void CHudItem::on_a_hud_attach()
 #ifdef DEBUG
 //		Msg("continue playing [%s][%d]",m_current_motion.c_str(), Device.dwFrame);
 #endif // #ifdef DEBUG
-	}else
-	{
-#ifdef DEBUG
-//		Msg("no active motion");
-#endif // #ifdef DEBUG
 	}
 }
 
@@ -364,7 +359,8 @@ u32 CHudItem::PlayHUDMotionNew(const shared_str& M, const bool bMixIn, const u32
 		m_dwMotionCurrTm			= m_dwMotionStartTm;
 		m_dwMotionEndTm				= m_dwMotionStartTm + anim_time;
 		m_startedMotionState		= state;
-	}else
+	}
+	else
 		m_bStopAtEndAnimIsRunning	= false;
 
 	return anim_time;
@@ -399,7 +395,7 @@ u32 CHudItem::PlayHUDMotionIfExists(std::initializer_list<const char*> Ms, const
 			return PlayHUDMotionNew(M, bMixIn, state, randomAnim, speed);
 
 	std::string dbg_anim_name;
-	for (const auto* M : Ms) 
+	for (const auto* M : Ms)
 	{
 		dbg_anim_name += M;
 		dbg_anim_name += ", ";
@@ -470,7 +466,7 @@ bool CHudItem::TryPlayAnimIdle()
 	if (MovingAnimAllowedNow())
 	{
 		CActor* pActor = smart_cast<CActor*>(object().H_Parent());
-		if(pActor)
+		if (pActor)
 		{
 			const u32 State = pActor->get_state();
 			if (State & mcSprint)

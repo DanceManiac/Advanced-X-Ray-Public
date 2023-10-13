@@ -151,12 +151,7 @@ void ui_actor_state_wnd::UpdateHitZone()
 	m_state[stt_psi]->set_arrow(   wnd->get_zone_cur_power( ALife::eHitTypeTelepatic ) );
 	*/
 }
-/*
-void ui_actor_state_wnd::Update()
-{
-	inherited::Update();
-}
-*/
+
 void ui_actor_state_wnd::Draw()
 {
 	inherited::Draw();
@@ -208,16 +203,19 @@ void ui_actor_state_item::init_from_xml( CUIXml& xml, LPCSTR path )
 		m_sensor->SetAutoDelete( true );
 		CUIXmlInit::InitProgressShape( xml, "progress_shape", 0, m_sensor );
 	}
+
 	if ( xml.NavigateToNode( "arrow", 0 ) )	
 	{
 		m_arrow = xr_new<UI_Arrow>();
 		m_arrow->init_from_xml( xml, "arrow", this );
 	}
+
 	if ( xml.NavigateToNode( "arrow_shadow", 0 ) )	
 	{
 		m_arrow_shadow = xr_new<UI_Arrow>();
 		m_arrow_shadow->init_from_xml( xml, "arrow_shadow", this );
 	}
+
 	if ( xml.NavigateToNode( "icon", 0 ) )	
 	{
 		m_static = UIHelper::CreateStatic( xml, "icon", this );

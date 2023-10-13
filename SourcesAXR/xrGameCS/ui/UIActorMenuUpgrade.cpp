@@ -15,9 +15,9 @@
 #include "../uigamesp.h"
 #include "../hudmanager.h"
 #include "UI3tButton.h"
-#include "UITalkWnd.h"
 
 #include "inventory_upgrade.h"
+#include "UITalkWnd.h"
 
 void CUIActorMenu::InitUpgradeMode()
 {

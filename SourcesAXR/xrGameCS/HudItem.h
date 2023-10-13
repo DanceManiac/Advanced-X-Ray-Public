@@ -121,10 +121,10 @@ public:
 	virtual bool				NeedBlendAnm		();
 
 	virtual void				PlayAnimIdleMoving	();
-	virtual void				PlayAnimIdleSprint	();
 	virtual void				PlayAnimIdleMovingSlow();
 	virtual void				PlayAnimIdleMovingCrouch();
 	virtual void				PlayAnimIdleMovingCrouchSlow();
+	virtual void				PlayAnimIdleSprint	();
 	virtual void				PlayAnimSprintStart	();
 	virtual void				PlayAnimSprintEnd	();
 
@@ -143,7 +143,7 @@ public:
 	u32							PlayHUDMotion_noCB		(const shared_str& M, const bool bMixIn, const bool randomAnim = true, float speed = 1.f);
 	bool						isHUDAnimationExist		(LPCSTR anim_name);
 	void						StopCurrentAnimWithoutCallback();
-	virtual void				UpdateAddonsTransform(bool for_hud) {};
+	virtual void				UpdateAddonsTransform	(bool for_hud) {};
 
 	IC void						RenderHud				(BOOL B)	{ m_huditem_flags.set(fl_renderhud, B);}
 	IC BOOL						RenderHud				()			{ return m_huditem_flags.test(fl_renderhud);}

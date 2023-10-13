@@ -76,27 +76,27 @@ void CUIActorMenu::Construct()
 	AttachChild							(m_PartnerCharacterInfo);
 	m_PartnerCharacterInfo->InitCharacterInfo( &uiXml, "partner_ch_info" );
 	
-	m_RightDelimiter			= UIHelper::CreateStatic(uiXml, "right_delimiter", this);
-//	m_ActorTradeCaption			= UIHelper::CreateTextWnd(uiXml, "right_delimiter:trade_caption", m_RightDelimiter);
-	m_ActorTradePrice			= UIHelper::CreateTextWnd(uiXml, "right_delimiter:trade_price", m_RightDelimiter);
-	m_ActorTradeWeightMax		= UIHelper::CreateTextWnd(uiXml, "right_delimiter:trade_weight_max", m_RightDelimiter);
+	m_RightDelimiter					= UIHelper::CreateStatic(uiXml, "right_delimiter", this);
+//	m_ActorTradeCaption					= UIHelper::CreateTextWnd(uiXml, "right_delimiter:trade_caption", m_RightDelimiter);
+	m_ActorTradePrice					= UIHelper::CreateTextWnd(uiXml, "right_delimiter:trade_price", m_RightDelimiter);
+	m_ActorTradeWeightMax				= UIHelper::CreateTextWnd(uiXml, "right_delimiter:trade_weight_max", m_RightDelimiter);
 //	m_ActorTradeCaption->AdjustWidthToText();
 	
-	m_LeftDelimiter				= UIHelper::CreateStatic(uiXml, "left_delimiter", this);
-//	m_PartnerTradeCaption		= UIHelper::CreateTextWnd(uiXml, "left_delimiter:trade_caption", m_LeftDelimiter);
-	m_PartnerTradePrice			= UIHelper::CreateTextWnd(uiXml, "left_delimiter:trade_price", m_LeftDelimiter);
-	m_PartnerTradeWeightMax		= UIHelper::CreateTextWnd(uiXml, "left_delimiter:trade_weight_max", m_LeftDelimiter);
+	m_LeftDelimiter						= UIHelper::CreateStatic(uiXml, "left_delimiter", this);
+//	m_PartnerTradeCaption				= UIHelper::CreateTextWnd(uiXml, "left_delimiter:trade_caption", m_LeftDelimiter);
+	m_PartnerTradePrice					= UIHelper::CreateTextWnd(uiXml, "left_delimiter:trade_price", m_LeftDelimiter);
+	m_PartnerTradeWeightMax				= UIHelper::CreateTextWnd(uiXml, "left_delimiter:trade_weight_max", m_LeftDelimiter);
 //	m_PartnerTradeCaption->AdjustWidthToText();
 
-	m_ActorBottomInfo			= UIHelper::CreateStatic(uiXml, "actor_weight_caption", this);
-	m_ActorWeight				= UIHelper::CreateTextWnd(uiXml, "actor_weight", this);
-	m_ActorWeightMax			= UIHelper::CreateTextWnd(uiXml, "actor_weight_max", this);
+	m_ActorBottomInfo					= UIHelper::CreateStatic(uiXml, "actor_weight_caption", this);
+	m_ActorWeight						= UIHelper::CreateTextWnd(uiXml, "actor_weight", this);
+	m_ActorWeightMax					= UIHelper::CreateTextWnd(uiXml, "actor_weight_max", this);
 	m_ActorBottomInfo->AdjustWidthToText();
 
-	m_PartnerBottomInfo			= UIHelper::CreateStatic(uiXml, "partner_weight_caption", this);
-	m_PartnerWeight				= UIHelper::CreateTextWnd(uiXml, "partner_weight", this);
+	m_PartnerBottomInfo					= UIHelper::CreateStatic(uiXml, "partner_weight_caption", this);
+	m_PartnerWeight						= UIHelper::CreateTextWnd(uiXml, "partner_weight", this);
 	m_PartnerBottomInfo->AdjustWidthToText();
-	m_PartnerWeight_end_x		= m_PartnerWeight->GetWndPos().x;
+	m_PartnerWeight_end_x 				= m_PartnerWeight->GetWndPos().x;
 
 	if (GameConstants::GetLimitedInventory())
 	{
@@ -173,19 +173,19 @@ void CUIActorMenu::Construct()
 			m_PistolNewSlotHighlight->Show(false);
 	}
 
-	m_pInventoryBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bag", this);
-	m_pInventoryBeltList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
-	m_pInventoryOutfitList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
-	m_pInventoryHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this);
-	m_pInventoryDetectorList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
-	m_pInventoryPistolList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this);
-	m_pInventoryAutomaticList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this);
-	m_pTradeActorBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
-	m_pTradeActorList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
-	m_pTradePartnerBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
-	m_pTradePartnerList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
-	m_pDeadBodyBagList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
-	m_pQuickSlot = UIHelper::CreateDragDropReferenceList(uiXml, "dragdrop_quick_slots", this);
+	m_pInventoryBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_bag", this);
+	m_pInventoryBeltList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_belt", this);
+	m_pInventoryOutfitList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_outfit", this);
+	m_pInventoryHelmetList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this);
+	m_pInventoryDetectorList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_detector", this);
+	m_pInventoryPistolList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot1", this);
+	m_pInventoryAutomaticList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_inv_slot2", this);
+	m_pTradeActorBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade_bag", this);
+	m_pTradeActorList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_actor_trade", this);
+	m_pTradePartnerBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
+	m_pTradePartnerList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
+	m_pDeadBodyBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
+	m_pQuickSlot				= UIHelper::CreateDragDropReferenceList(uiXml, "dragdrop_quick_slots", this);
 	m_pQuickSlot->Initialize();
 
 	Fvector2 pos;
@@ -508,22 +508,22 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iQuickSlot].push_back(iActorBag);
 	m_allowed_drops[iQuickSlot].push_back(iActorTrade);
 
-	m_upgrade_selected				= NULL;
-	SetCurrentItem					(NULL);
-	SetActor						(NULL);
-	SetPartner						(NULL);
-	SetInvBox						(NULL);
+	m_upgrade_selected					= NULL;
+	SetCurrentItem						(NULL);
+	SetActor							(NULL);
+	SetPartner							(NULL);
+	SetInvBox							(NULL);
 
-	m_actor_trade					= NULL;
-	m_partner_trade					= NULL;
-	m_repair_mode					= false;
-	m_item_info_view				= false;
-	m_highlight_clear				= true;
+	m_actor_trade						= NULL;
+	m_partner_trade						= NULL;
+	m_repair_mode						= false;
+	m_item_info_view					= false;
+	m_highlight_clear					= true;
 
-	DeInitInventoryMode				();
-	DeInitTradeMode					();
-	DeInitUpgradeMode				();
-	DeInitDeadBodySearchMode		();
+	DeInitInventoryMode					();
+	DeInitTradeMode						();
+	DeInitUpgradeMode					();
+	DeInitDeadBodySearchMode			();
 }
 
 void CUIActorMenu::BindDragDropListEvents(CUIDragDropListEx* lst)

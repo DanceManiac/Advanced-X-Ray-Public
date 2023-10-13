@@ -36,7 +36,7 @@ bool  CUIActorMenu::AllowItemDrops(EDDListType from, EDDListType to)
 {
 	xr_vector<EDDListType>& v = m_allowed_drops[to];
 	xr_vector<EDDListType>::iterator it = std::find(v.begin(), v.end(), from);
-	
+
 	return(it!=v.end());
 }
 class CUITrashIcon :public ICustomDrawDragItem
@@ -105,7 +105,7 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 	}
 	EDDListType t_new		= GetListType(new_owner);
 	EDDListType t_old		= GetListType(old_owner);
-	
+
 	if ( !AllowItemDrops(t_old, t_new) )
 	{
 		Msg("incorrect action [%d]->[%d]",t_old, t_new);
@@ -121,43 +121,43 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 			SendEvent_Item_Drop		(CurrentIItem(), m_pActorInvOwner->object_id());
 			SetCurrentItem			(NULL);
 		}break;
-		case iActorSlot:
+	case iActorSlot:
 		{
 			if(GetSlotList(CurrentIItem()->GetSlot())==new_owner)
 				ToSlot	(itm, true);
 		}break;
-		case iActorBag:
+	case iActorBag:
 		{
 			ToBag	(itm, true);
 		}break;
-		case iActorBelt:
+	case iActorBelt:
 		{
 			ToBelt	(itm, true);
 		}break;
-		case iActorTrade:
+	case iActorTrade:
 		{
 			ToActorTrade(itm, true);
 		}break;
-		case iPartnerTrade:
+	case iPartnerTrade:
 		{
 			if(t_old!=iPartnerTradeBag)	
 				return false;
 			ToPartnerTrade(itm, true);
 		}break;
-		case iPartnerTradeBag:
+	case iPartnerTradeBag:
 		{
 			if(t_old!=iPartnerTrade)	
 				return false;
 			ToPartnerTradeBag(itm, true);
 		}break;
-		case iDeadBodyBag:
+	case iDeadBodyBag:
 		{
 			ToDeadBodyBag(itm, true);
 		}break;
 	};
 
-	OnItemDropped			(CurrentIItem(), new_owner, old_owner);
-	
+	OnItemDropped				(CurrentIItem(), new_owner, old_owner);
+
 	UpdateItemsPlace			();
 
 	return true;
@@ -177,7 +177,7 @@ bool CUIActorMenu::OnItemDbClick(CUICellItem* itm)
 
 	switch ( t_old )
 	{
-		case iActorSlot:
+	case iActorSlot:
 		{
 			if ( m_currMenuMode == mmDeadBodySearch )
 				ToDeadBodyBag	( itm, false );
@@ -185,7 +185,7 @@ bool CUIActorMenu::OnItemDbClick(CUICellItem* itm)
 				ToBag			( itm, false );
 			break;
 		}
-		case iActorBag:
+	case iActorBag:
 		{
 			if ( m_currMenuMode == mmTrade )
 			{
@@ -214,27 +214,27 @@ bool CUIActorMenu::OnItemDbClick(CUICellItem* itm)
 			}
 			break;
 		}
-		case iActorBelt:
+	case iActorBelt:
 		{
 			ToBag( itm, false );
 			break;
 		}
-		case iActorTrade:
+	case iActorTrade:
 		{
 			ToBag( itm, false );
 			break;
 		}
-		case iPartnerTradeBag:
+	case iPartnerTradeBag:
 		{
 			ToPartnerTrade( itm, false );
 			break;
 		}
-		case iPartnerTrade:
+	case iPartnerTrade:
 		{
 			ToPartnerTradeBag( itm, false );
 			break;
 		}
-		case iDeadBodyBag:
+	case iDeadBodyBag:
 		{
 			ToBag( itm, false );
 			break;
@@ -289,6 +289,7 @@ bool CUIActorMenu::OnItemFocusLost(CUICellItem* itm)
 	}
 	InfoCurItem( NULL );
 	clear_highlight_lists();
+
 	return true;
 }
 
@@ -311,7 +312,7 @@ bool CUIActorMenu::OnItemFocusedUpdate(CUICellItem* itm)
 	{
 		return true;
 	}	
-	
+
 	InfoCurItem( itm );
 	return true;
 }
@@ -337,7 +338,7 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		}
 		return true;
 	}
-	
+
 	if ( is_binded(kSPRINT_TOGGLE, dik) )
 	{
 		if ( WINDOW_KEY_PRESSED == keyboard_action )
@@ -346,7 +347,7 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		}
 		return true;
 	}	
-	
+
 	if ( is_binded(kUSE, dik) || is_binded(kINVENTORY, dik) || is_binded(kQUIT, dik)  )
 	{
 		if ( WINDOW_KEY_PRESSED == keyboard_action )

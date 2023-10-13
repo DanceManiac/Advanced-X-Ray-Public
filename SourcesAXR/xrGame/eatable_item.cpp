@@ -74,6 +74,7 @@ void CEatableItem::Load(LPCSTR section)
 	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
 	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
 	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
+
 	m_bNeedDestroyNotUseful = READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
 
 	m_fIrradiationCoef = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
@@ -292,10 +293,10 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 	SMedicineInfluenceValues	V;
 	V.Load(m_physic_item->cNameSect());
 
-	CInventoryOwner* IO = smart_cast<CInventoryOwner*>(entity_alive);
-	R_ASSERT(IO);
-	R_ASSERT(m_pInventory == IO->m_inventory);
-	R_ASSERT(object().H_Parent()->ID() == entity_alive->ID());
+	CInventoryOwner* IO		= smart_cast<CInventoryOwner*>(entity_alive);
+	R_ASSERT				(IO);
+	R_ASSERT				(m_pInventory==IO->m_inventory);
+	R_ASSERT				(object().H_Parent()->ID()==entity_alive->ID());
 
 	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect(), this);
 

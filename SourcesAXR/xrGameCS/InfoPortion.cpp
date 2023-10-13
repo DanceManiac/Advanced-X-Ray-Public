@@ -1,4 +1,5 @@
 #include "pch_script.h"
+#include "object_broker.h"
 #include "InfoPortion.h"
 #include "gameobject.h"
 #include "encyclopedia_article.h"
@@ -9,7 +10,6 @@
 #include "xrServer_Objects_ALife.h"
 #include "script_engine.h"
 #include "ui\uixmlinit.h"
-#include "object_broker.h"
 
 void INFO_DATA::load (IReader& stream) 
 {

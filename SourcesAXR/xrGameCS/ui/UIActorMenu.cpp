@@ -17,7 +17,6 @@
 #include "../WeaponAmmo.h"
 #include "../Silencer.h"
 #include "../Scope.h"
-#include "../CustomBackpack.h"
 #include "../GrenadeLauncher.h"
 #include "../LaserDesignator.h"
 #include "../TacticalTorch.h"
@@ -38,10 +37,9 @@
 #include "../Trade.h"
 #include "../WeaponKnife.h"
 #include "../WeaponBinoculars.h"
-
-#include "../CustomBackpack.h"
 #include "../WeaponPistol.h"
 #include "../Torch.h"
+#include "../CustomBackpack.h"
 #include "../AnomalyDetector.h"
 #include "../PDA.h"
 #include "../xrEngine/x_ray.h"
@@ -372,12 +370,14 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
-		if (l == m_pInventoryKnifeList)	return iActorSlot;
+		if (l == m_pInventoryKnifeList)
+			return iActorSlot;
 	}
 
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
-		if (l == m_pInventoryBinocularList) return iActorSlot;;
+		if (l == m_pInventoryBinocularList)
+			return iActorSlot;
 	}
 
 	if (GameConstants::GetTorchSlotEnabled())

@@ -12,7 +12,6 @@
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "Car.h"
-#include "HudManager.h"
 #include "UIGameSP.h"
 #include "inventory.h"
 #include "level.h"
@@ -30,9 +29,10 @@
 #include "flare.h"
 #include "CustomDetector.h"
 #include "clsid_game.h"
-#include "script_engine.h"
+#include "HudManager.h"
 #include "Weapon.h"
 #include "WeaponMagazined.h"
+#include "script_engine.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -569,7 +569,10 @@ void	CActor::OnNextWeaponSlot()
 	{
 		if (SlotsToCheck[CurSlot] == ActiveSlot) break;
 	};
-	if (CurSlot >= NumSlotsToCheck) return;
+
+	if (CurSlot >= NumSlotsToCheck)
+		return;
+
 	for (u32 i=CurSlot+1; i<NumSlotsToCheck; i++)
 	{
 		if (inventory().ItemFromSlot(SlotsToCheck[i]))
@@ -602,13 +605,15 @@ void	CActor::OnPrevWeaponSlot()
 	if (ActiveSlot == NO_ACTIVE_SLOT) 
 		ActiveSlot = KNIFE_SLOT;
 
-	u32 NumSlotsToCheck = sizeof(SlotsToCheck)/sizeof(u32);	
-	u32 CurSlot = 0;
+	u32 NumSlotsToCheck = sizeof(SlotsToCheck)/sizeof(u32);
+	u32 CurSlot			= 0;
+
 	for (;CurSlot<NumSlotsToCheck; CurSlot++)
 	{
 		if (SlotsToCheck[CurSlot] == ActiveSlot) break;
 	};
-	if (CurSlot >= NumSlotsToCheck) return;
+	if (CurSlot >= NumSlotsToCheck)
+		return;
 	for (s32 i=s32(CurSlot-1); i>=0; i--)
 	{
 		if (inventory().ItemFromSlot(SlotsToCheck[i]))

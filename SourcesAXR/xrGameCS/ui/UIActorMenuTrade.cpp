@@ -267,19 +267,18 @@ float CUIActorMenu::CalcItemsWeight(CUIDragDropListEx* pList)
 u32 CUIActorMenu::CalcItemsPrice(CUIDragDropListEx* pList, CTrade* pTrade, bool bBuying)
 {
 	u32 res = 0;
-
 	for( u32 i = 0; i < pList->ItemsCount(); ++i )
 	{
 		CUICellItem* itm	= pList->GetItemIdx(i);
 		PIItem iitem		= (PIItem)itm->m_pData;
 		res					+= pTrade->GetItemPrice(iitem, bBuying);
-
 		for( u32 j = 0; j < itm->ChildsCount(); ++j )
 		{
 			PIItem jitem	= (PIItem)itm->Child(j)->m_pData;
 			res				+= pTrade->GetItemPrice(jitem, bBuying);
 		}
 	}
+
 	return res;
 }
 

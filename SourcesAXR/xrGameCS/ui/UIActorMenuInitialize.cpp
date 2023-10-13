@@ -21,7 +21,6 @@
 #include "UIHelper.h"
 #include "AdvancedXrayGameConstants.h"
 
-
 CUIActorMenu::CUIActorMenu()
 {
 	m_currMenuMode					= mmUndefined;
@@ -63,37 +62,37 @@ void CUIActorMenu::Construct()
 	m_pUpgradeWnd->SetAutoDelete		(true);
 	m_pUpgradeWnd->Init					();
 
-	m_ActorCharacterInfo = xr_new<CUICharacterInfo>();
+	m_ActorCharacterInfo				= xr_new<CUICharacterInfo>();
 	m_ActorCharacterInfo->SetAutoDelete	(true);
 	AttachChild							(m_ActorCharacterInfo);
 	m_ActorCharacterInfo->InitCharacterInfo(&uiXml, "actor_ch_info");
 
-	m_PartnerCharacterInfo = xr_new<CUICharacterInfo>();
+	m_PartnerCharacterInfo				= xr_new<CUICharacterInfo>();
 	m_PartnerCharacterInfo->SetAutoDelete(true);
 	AttachChild							(m_PartnerCharacterInfo);
 	m_PartnerCharacterInfo->InitCharacterInfo( &uiXml, "partner_ch_info" );
 	
-	m_RightDelimiter		= UIHelper::CreateStatic(uiXml, "right_delimiter", this);
-	m_ActorTradeCaption		= UIHelper::CreateStatic(uiXml, "right_delimiter:trade_caption", m_RightDelimiter);
-	m_ActorTradePrice		= UIHelper::CreateStatic(uiXml, "right_delimiter:trade_price", m_RightDelimiter);
-	m_ActorTradeWeightMax	= UIHelper::CreateStatic(uiXml, "right_delimiter:trade_weight_max", m_RightDelimiter);
+	m_RightDelimiter					= UIHelper::CreateStatic(uiXml, "right_delimiter", this);
+	m_ActorTradeCaption					= UIHelper::CreateStatic(uiXml, "right_delimiter:trade_caption", m_RightDelimiter);
+	m_ActorTradePrice					= UIHelper::CreateStatic(uiXml, "right_delimiter:trade_price", m_RightDelimiter);
+	m_ActorTradeWeightMax				= UIHelper::CreateStatic(uiXml, "right_delimiter:trade_weight_max", m_RightDelimiter);
 	m_ActorTradeCaption->AdjustWidthToText();
 	
-	m_LeftDelimiter			= UIHelper::CreateStatic(uiXml, "left_delimiter", this);
-	m_PartnerTradeCaption	= UIHelper::CreateStatic(uiXml, "left_delimiter:trade_caption", m_LeftDelimiter);
-	m_PartnerTradePrice		= UIHelper::CreateStatic(uiXml, "left_delimiter:trade_price", m_LeftDelimiter);
-	m_PartnerTradeWeightMax	= UIHelper::CreateStatic(uiXml, "left_delimiter:trade_weight_max", m_LeftDelimiter);
+	m_LeftDelimiter						= UIHelper::CreateStatic(uiXml, "left_delimiter", this);
+	m_PartnerTradeCaption				= UIHelper::CreateStatic(uiXml, "left_delimiter:trade_caption", m_LeftDelimiter);
+	m_PartnerTradePrice					= UIHelper::CreateStatic(uiXml, "left_delimiter:trade_price", m_LeftDelimiter);
+	m_PartnerTradeWeightMax				= UIHelper::CreateStatic(uiXml, "left_delimiter:trade_weight_max", m_LeftDelimiter);
 	m_PartnerTradeCaption->AdjustWidthToText();
 
-	m_ActorBottomInfo	= UIHelper::CreateStatic(uiXml, "actor_weight_caption", this);
-	m_ActorWeight		= UIHelper::CreateStatic(uiXml, "actor_weight", this);
-	m_ActorWeightMax	= UIHelper::CreateStatic(uiXml, "actor_weight_max", this);
+	m_ActorBottomInfo					= UIHelper::CreateStatic(uiXml, "actor_weight_caption", this);
+	m_ActorWeight						= UIHelper::CreateStatic(uiXml, "actor_weight", this);
+	m_ActorWeightMax					= UIHelper::CreateStatic(uiXml, "actor_weight_max", this);
 	m_ActorBottomInfo->AdjustWidthToText();
 
-	m_PartnerBottomInfo	= UIHelper::CreateStatic(uiXml, "partner_weight_caption", this);
-	m_PartnerWeight		= UIHelper::CreateStatic(uiXml, "partner_weight", this);
+	m_PartnerBottomInfo					= UIHelper::CreateStatic(uiXml, "partner_weight_caption", this);
+	m_PartnerWeight						= UIHelper::CreateStatic(uiXml, "partner_weight", this);
 	m_PartnerBottomInfo->AdjustWidthToText();
-	m_PartnerWeight_end_x = m_PartnerWeight->GetWndPos().x;
+	m_PartnerWeight_end_x 				= m_PartnerWeight->GetWndPos().x;
 
 	if (GameConstants::GetLimitedInventory())
 	{
@@ -178,6 +177,7 @@ void CUIActorMenu::Construct()
 		for (u8 j = 0; j < cols; ++j)
 		{
 			m_ArtefactSlotsHighlight.push_back(UIHelper::CreateStatic(uiXml, "artefact_slot_highlight", this));
+
 			if (i == 0 && j == 0)
 			{
 				pos = m_ArtefactSlotsHighlight[0]->GetWndPos();
@@ -189,6 +189,7 @@ void CUIActorMenu::Construct()
 			{
 				if (j != 0)
 					pos.x += dx;
+
 				m_ArtefactSlotsHighlight[counter]->SetWndPos(pos);
 				m_ArtefactSlotsHighlight[i]->Show(false);
 				counter++;
@@ -235,7 +236,7 @@ void CUIActorMenu::Construct()
 	}
 
 	m_pTrashList				= UIHelper::CreateDragDropListEx		(uiXml, "dragdrop_trash", this);
-	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIActorMenu::OnItemDrop);
+	m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
 	m_pTrashList->m_f_drag_event= CUIDragDropListEx::DRAG_ITEM_EVENT	(this,&CUIActorMenu::OnDragItemOnTrash);
 
 	counter = 1;
@@ -424,7 +425,7 @@ void CUIActorMenu::Construct()
 	m_partner_trade						= NULL;
 	m_repair_mode						= false;
 	m_item_info_view					= false;
-	m_highlight_clear				= true;
+	m_highlight_clear					= true;
 
 	DeInitInventoryMode					();
 	DeInitTradeMode						();

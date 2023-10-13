@@ -66,7 +66,7 @@ void CUIActorMenu::SetActor(CInventoryOwner* io)
 	if ( IsGameTypeSingle() )
 	{
 		if ( io )
-			m_ActorCharacterInfo->InitCharacter	(m_pActorInvOwner);
+			m_ActorCharacterInfo->InitCharacter(m_pActorInvOwner);
 		else
 			m_ActorCharacterInfo->ClearInfo();
 	}
@@ -220,28 +220,25 @@ void CUIActorMenu::Show(bool status)
 		SetMenuMode							(m_currMenuMode);
 		PlaySnd								(eSndOpen);
 		m_ActorStateInfo->UpdateActorInfo	(m_pActorInvOwner);
-
-		if (Actor() && GameConstants::GetHideWeaponInInventory())
-		{
-			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
-
-			if (pDet)
-				pDet->HideDetector(true);
-
-			Actor()->block_action(kDETECTOR);
-		}
 	}
 	else
 	{
 		PlaySnd								(eSndClose);
 		SetMenuMode							(mmUndefined);
 		clear_highlight_lists				();
+	}
+	if (Actor() && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, status);
 
-		if (Actor() && GameConstants::GetHideWeaponInInventory())
+		if(status)
 		{
-			Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
-			Actor()->unblock_action(kDETECTOR);
+			if (pDet)
+				pDet->HideDetector(true);
+			Actor()->block_action(kDETECTOR);
 		}
+		else
+			Actor()->unblock_action(kDETECTOR);
 	}
 	m_ActorStateInfo->Show					(status);
 }
@@ -367,12 +364,14 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 
 	if (GameConstants::GetKnifeSlotEnabled())
 	{
-		if(l == m_pInventoryKnifeList) return iActorSlot;
+		if (l == m_pInventoryKnifeList)
+			return iActorSlot;
 	}
 
 	if (GameConstants::GetBinocularSlotEnabled())
 	{
-		if (l == m_pInventoryBinocularList) return iActorSlot;
+		if (l == m_pInventoryBinocularList)
+			return iActorSlot;
 	}
 
 	if (GameConstants::GetTorchSlotEnabled())
@@ -534,7 +533,6 @@ void CUIActorMenu::InfoCurItem( CUICellItem* cell_item )
 	else
 		m_ItemInfo->InitItem	( cell_item, compare_item, u32(-1));
 
-//	m_ItemInfo->InitItem	( current_item, compare_item );
 	float dx_pos = GetWndRect().left;
 	fit_in_rect(m_ItemInfo, Frect().set( 0.0f, 0.0f, UI_BASE_WIDTH - dx_pos, UI_BASE_HEIGHT ), 10.0f, dx_pos );
 }
@@ -1074,7 +1072,7 @@ void CUIActorMenu::highlight_weapons_for_addon( PIItem addon_item, CUIDragDropLi
 			ci->m_select_armament = true;
 			continue;
 		}
-		if ( pLaser && weapon->CanAttach(pLaser) )
+		if (pLaser && weapon->CanAttach(pLaser))
 		{
 			ci->m_select_armament = true;
 			continue;

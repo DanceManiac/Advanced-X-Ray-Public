@@ -31,7 +31,7 @@
 #include "flare.h"
 #include "CustomDetector.h"
 #include "clsid_game.h"
-#include "hudmanager.h"
+#include "HudManager.h"
 #include "Weapon.h"
 #include "WeaponMagazined.h"
 #include "script_engine.h"
@@ -598,7 +598,7 @@ void	CActor::OnNextWeaponSlot()
 		if (SlotsToCheck[CurSlot] == ActiveSlot) break;
 	};
 
-	if (CurSlot >= NumSlotsToCheck) 
+	if (CurSlot >= NumSlotsToCheck)
 		return;
 
 	for (u32 i=CurSlot+1; i<NumSlotsToCheck; i++)
@@ -633,15 +633,15 @@ void	CActor::OnPrevWeaponSlot()
 	if (ActiveSlot == NO_ACTIVE_SLOT) 
 		ActiveSlot = KNIFE_SLOT;
 
-	u32 NumSlotsToCheck = sizeof(SlotsToCheck)/sizeof(SlotsToCheck[0]);	
-	u32 CurSlot		= 0;
+	u32 NumSlotsToCheck = sizeof(SlotsToCheck)/sizeof(SlotsToCheck[0]);
+	u32 CurSlot			= 0;
 
 	for (; CurSlot<NumSlotsToCheck; CurSlot++)
 	{
 		if (SlotsToCheck[CurSlot] == ActiveSlot) break;
 	};
 
-	if (CurSlot >= NumSlotsToCheck) 
+	if (CurSlot >= NumSlotsToCheck)
 		CurSlot	= NumSlotsToCheck-1; //last in row
 
 	for (s32 i=s32(CurSlot-1); i>=0; i--)

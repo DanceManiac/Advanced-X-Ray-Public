@@ -130,12 +130,14 @@ float	CIKLimbsController::StaticObjectShift			( const SCalculateData cd[max_size
 				shift_up /= cnt;
 		float shift_down = LegLengthShiftLimit( current_shift, cd );
 		float shift = 0;
+
 		if( shift_down > 0.f )
 			shift = -shift_down;
 		else if( -shift_down < shift_up )
 			shift = -shift_down;
 		else
 			shift = shift_up;
+
 		VERIFY( _valid( shift ) );
 		_object_shift.set_taget( shift , _abs( current_shift - shift ) / static_shift_object_speed );
 		return shift;
