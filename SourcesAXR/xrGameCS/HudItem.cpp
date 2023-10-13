@@ -492,6 +492,11 @@ bool CHudItem::TryPlayAnimIdle()
 				PlayAnimIdleSprint();
 				return true;
 			}
+			else if (m_bSprintType)
+			{
+				SwitchState(eSprintEnd);
+				return true;
+			}
 			else if (State & mcAnyMove)
 			{
 				if (!(State & mcCrouch))

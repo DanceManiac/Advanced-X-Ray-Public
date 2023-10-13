@@ -782,6 +782,11 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 
 					act_state = 1;
 				}
+				else if (m_bSprintType)
+				{
+					SwitchState(eSprintEnd);
+					return;
+				}
 				else if (State & mcAnyMove)
 				{
 					if (!(State & mcCrouch))
