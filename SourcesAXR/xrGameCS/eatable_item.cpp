@@ -247,14 +247,16 @@ void CEatableItem::StartAnimation()
 		string128 anim_name{};
 		strconcat(sizeof(anim_name), anim_name, "anm_use", (cur_outfit && cur_outfit->m_bHasLSS) ? "_exo" : (m_iPortionsNum == 1) ? "_last" : "");
 
+		LPCSTR attach_visual = READ_IF_EXISTS(pSettings, r_string, anim_sect, (cur_outfit && cur_outfit->m_bHasLSS) ? "item_visual_exo" : "item_visual", nullptr);
+
 		if (pSettings->line_exist(anim_sect, anim_name))
 		{
-			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, anim_name, false, 1.0f);
+			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, anim_name, false, 1.0f, attach_visual);
 			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, anim_name, 1.0f);
 		}
 		else
 		{
-			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", false, 1.0f);
+			g_player_hud->script_anim_play(m_iAnimHandsCnt, anim_sect, "anm_use", false, 1.0f, attach_visual);
 			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", 1.0f);
 		}
 

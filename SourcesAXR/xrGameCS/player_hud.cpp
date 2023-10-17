@@ -1063,7 +1063,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 	Fvector offs = READ_IF_EXISTS(pSettings, r_fvector3, section, pos.c_str(), def);
 	Fvector rrot = READ_IF_EXISTS(pSettings, r_fvector3, section, rot.c_str(), def);
 
-	if (pSettings->line_exist(section, "item_visual"))
+	if (pSettings->line_exist(section, "item_visual") && !attach_visual)
 		attach_visual = pSettings->r_string(section, "item_visual");
 
 	if (attach_visual)
