@@ -42,6 +42,7 @@ namespace GameConstants
 	bool GetBackpackAnimsEnabled();
 	bool GetFoodIrradiation();
 	bool GetFoodRotting();
+	bool GetOGSE_WpnZoomSystem();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

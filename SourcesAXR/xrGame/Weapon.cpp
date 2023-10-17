@@ -60,7 +60,7 @@ CWeapon::CWeapon()
 
 	eHandDependence			= hdNone;
 
-	m_zoom_params.m_fCurrentZoomFactor			= g_fov;
+	m_zoom_params.m_fCurrentZoomFactor			= GameConstants::GetOGSE_WpnZoomSystem() ? 1.f : g_fov;
 	m_zoom_params.m_fZoomRotationFactor			= 0.f;
 	m_zoom_params.m_pVision						= NULL;
 	m_zoom_params.m_pNight_vision				= NULL;
@@ -1190,7 +1190,17 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 
 	m_fScopeInertionFactor = READ_IF_EXISTS(pSettings, r_float, section, "scope_inertion_factor", m_fControlInertionFactor);
 
-	m_fRTZoomFactor = m_zoom_params.m_fScopeZoomFactor;
+	if (GameConstants::GetOGSE_WpnZoomSystem())
+	{
+		float delta, min_zoom_factor;
+		GetZoomData(m_zoom_params.m_fScopeZoomFactor, delta, min_zoom_factor);
+
+		m_fRTZoomFactor = min_zoom_factor; // set minimal zoom by default for ogse mode
+	}
+	else
+	{
+		m_fRTZoomFactor = m_zoom_params.m_fScopeZoomFactor;
+	}
 
 	if (m_UIScope)
 	{
@@ -2483,7 +2493,7 @@ float CWeapon::CurrentZoomFactor()
 {
 	if (psActorFlags.test(AF_3DSCOPE_ENABLE) && IsScopeAttached())
 	{
-		return bIsSecondVPZoomPresent() ? m_zoom_params.m_f3dZoomFactor : m_zoom_params.m_fScopeZoomFactor;
+		return GameConstants::GetOGSE_WpnZoomSystem() ? 1.0f : bIsSecondVPZoomPresent() ? m_zoom_params.m_f3dZoomFactor : m_zoom_params.m_fScopeZoomFactor; // no change to main fov zoom when use second vp
 	}
 	else
 	{
@@ -2503,7 +2513,7 @@ float CWeapon::GetControlInertionFactor() const
 
 void CWeapon::GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor)
 {
-	float def_fov = bIsSecondVPZoomPresent() ? 75.0f : g_fov;//float(g_fov);
+	float def_fov = GameConstants::GetOGSE_WpnZoomSystem() ? 1.f : bIsSecondVPZoomPresent() ? 75.0f : g_fov;
 	float delta_factor_total = def_fov - scope_factor;
 	VERIFY(delta_factor_total > 0);
 	min_zoom_factor = def_fov - delta_factor_total * m_fZoomMinKoeff;
@@ -2588,7 +2598,7 @@ void CWeapon::OnZoomOut()
 	if (!bIsSecondVPZoomPresent() || !psActorFlags.test(AF_3DSCOPE_ENABLE))
 		m_fRTZoomFactor = GetZoomFactor(); //  
 	m_zoom_params.m_bIsZoomModeNow = false;
-	SetZoomFactor(g_fov);
+	SetZoomFactor(GameConstants::GetOGSE_WpnZoomSystem() ? 1.f : g_fov);
 	//EnableHudInertion					(TRUE);
 
 // 	GamePersistent().RestoreEffectorDOF	();

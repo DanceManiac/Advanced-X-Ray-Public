@@ -41,6 +41,7 @@ bool	m_bLimitedInventory = false;
 bool	m_bBackpackAnimsEnabled = false;
 bool	m_bFoodIrradiation = false;
 bool	m_bFoodRotting = false;
+bool	m_bOGSE_WpnZoomSystem = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -90,6 +91,7 @@ namespace GameConstants
 		m_bLimitedInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inventory", false);
 		m_bFoodIrradiation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_irradiation", false);
 		m_bFoodRotting = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_rotting", false);
+		m_bOGSE_WpnZoomSystem = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "ogse_weapons_zoom_system", false);
 		m_bBackpackAnimsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "actions_animations", "enable_backpack_animations", false);
 		m_iArtefactsCount = READ_IF_EXISTS(pAdvancedSettings, r_u32, "inventory", "artefacts_count", 5);
 		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
@@ -272,6 +274,11 @@ namespace GameConstants
 	bool GetFoodRotting()
 	{
 		return m_bFoodRotting;
+	}
+
+	bool GetOGSE_WpnZoomSystem()
+	{
+		return m_bOGSE_WpnZoomSystem;
 	}
 
 	int GetArtefactsCount()
