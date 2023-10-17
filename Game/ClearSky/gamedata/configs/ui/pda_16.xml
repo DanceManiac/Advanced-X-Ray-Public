@@ -112,9 +112,24 @@
 			</text_color>
 		</button>
 		
-		<!--Конпка навыков. Раскомментировать, если нужно.-->
-		<!--button x="100" y="0" width="42" height="27" id="eptSkills" hint="pda_btn_skills_hint" frame_mode="1" stretch="1">
-			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_skills</text>
+		<!--Кнопка навыков. Раскомментировать, если нужно.-->
+		<!--button x="100" y="0" width="42" height="27" id="eptEnc" hint="pda_btn_enc_hint" frame_mode="1" stretch="1">
+			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_enc</text>
+			<texture_t>ui_nav_bt_t</texture_t>
+			<texture_e>ui_nav_bt_e</texture_e>
+			<texture_h>ui_nav_bt_h</texture_h>
+			<texture_d>ui_nav_bt_d</texture_d>
+			<text_color>
+				<t color="ui_4"/>
+				<d color="ui_4"/>
+				<e color="ui_9"/>
+				<h color="ui_1"/>
+			</text_color>
+		</button-->
+		
+		<!--Кнопка энциклопедии. Раскомментировать, если нужно.-->
+		<!--button x="100" y="0" width="42" height="27" id="eptCon" hint="pda_btn_con_hint" frame_mode="1" stretch="1">
+			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_con</text>
 			<texture_t>ui_nav_bt_t</texture_t>
 			<texture_e>ui_nav_bt_e</texture_e>
 			<texture_h>ui_nav_bt_h</texture_h>

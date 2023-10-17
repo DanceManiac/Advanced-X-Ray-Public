@@ -504,10 +504,10 @@ void CUIWindow::SetKeyboardCapture(CUIWindow* pChildWindow, bool capture_status)
 void CUIWindow::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
 	//оповестить дочерние окна
-	for(WINDOW_LIST_it it = m_ChildWndList.begin(); m_ChildWndList.end()!=it; ++it)
+	for(int i = 0; i < m_ChildWndList.size(); ++i)
 	{
-		if((*it)->IsEnabled())
-			(*it)->SendMessage(pWnd,msg,pData);
+		if(m_ChildWndList[i]->IsEnabled())
+			m_ChildWndList[i]->SendMessage(pWnd,msg,pData);
 	}
 }
 

@@ -9,15 +9,16 @@
 #pragma once
 
 #include "UIWindow.h"
-/*
+
 #include "../encyclopedia_article_defs.h"
 
 class CEncyclopediaArticle;
 class CUIFrameWindow;
 class CUIFrameLineWnd;
+class CUIListWnd;
 class CUIAnimatedStatic;
 class CUIStatic;
-class CUIListWnd;
+class CUIListBoxCOP;
 class CUIEncyclopediaCore;
 class CUIScrollView;
 class CUITreeViewItem;
@@ -42,18 +43,20 @@ public:
 	bool				HasArticle					(shared_str);
 
 	void				ReloadArticles				();
-	virtual void		Reset						();
+	virtual void		ResetAll					();
 protected:
 	u32					prevArticlesCount;
-	// Элементы графического оформления
-	CUIFrameWindow*		UIEncyclopediaIdxBkg;
-	CUIFrameWindow*		UIEncyclopediaInfoBkg;
-	CUIFrameLineWnd*	UIEncyclopediaIdxHeader;
-	CUIFrameLineWnd*	UIEncyclopediaInfoHeader;
+	// Р­Р»РµРјРµРЅС‚С‹ РіСЂР°С„РёС‡РµСЃРєРѕРіРѕ РѕС„РѕСЂРјР»РµРЅРёСЏ
+
+	CUIFrameLineWnd*	UIBackground;
+	CUIFrameLineWnd*	UIEncyclopediaIdxBkg;
+	CUIFrameLineWnd*	UIEncyclopediaInfoBkg;
+	CUIStatic*			UIEncyclopediaIdxHeader;
+	CUIStatic*			UIEncyclopediaInfoHeader;
 	CUIAnimatedStatic*	UIAnimation;
 	CUIStatic*			UIArticleHeader;
 
-	// Хранилище статей
+	// РҐСЂР°РЅРёР»РёС‰Рµ СЃС‚Р°С‚РµР№
 	typedef xr_vector<CEncyclopediaArticle*>			ArticlesDB;
 	typedef ArticlesDB::iterator						ArticlesDB_it;
 
@@ -63,9 +66,8 @@ protected:
 	CGameFont*				m_pTreeItemFont;
 	u32						m_uTreeItemColor;
 
-	CUIListWnd*				UIIdxList;
+	CUIListWnd*			UIIdxList;
 	CUIScrollView*			UIInfoList;
 
 	void				SetCurrentArtice(CUITreeViewItem *pTVItem);
 };
-*/

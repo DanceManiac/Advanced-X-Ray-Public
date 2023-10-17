@@ -8,10 +8,13 @@
 
 #include "StdAfx.h"
 #include "UIEncyclopediaWnd.h"
-/*#include "UIXmlInit.h"
+#include "UIXmlInit.h"
 #include "UIFrameWindow.h"
 #include "UIFrameLineWnd.h"
+#include "UIFrameLine.h"
 #include "UIAnimatedStatic.h"
+#include "UIHelper.h"
+#include "UIStatic.h"
 #include "UIListWnd.h"
 #include "UIScrollView.h"
 #include "UITreeViewItem.h"
@@ -44,51 +47,32 @@ void CUIEncyclopediaWnd::Init()
 	xml_init.InitWindow		(uiXml, "main_wnd", 0, this);
 
 	// Load xml data
-	UIEncyclopediaIdxBkg		= xr_new<CUIFrameWindow>(); UIEncyclopediaIdxBkg->SetAutoDelete(true);
-	AttachChild(UIEncyclopediaIdxBkg);
-	xml_init.InitFrameWindow(uiXml, "right_frame_window", 0, UIEncyclopediaIdxBkg);
 
-	xml_init.InitFont(uiXml, "tree_item_font", 0, m_uTreeItemColor, m_pTreeItemFont);
-	R_ASSERT(m_pTreeItemFont);
-	xml_init.InitFont(uiXml, "tree_root_font", 0, m_uTreeRootColor, m_pTreeRootFont);
-	R_ASSERT(m_pTreeRootFont);
+	UIBackground = UIHelper::CreateFrameLine(uiXml, "background", this);
 
+	UIEncyclopediaIdxBkg = UIHelper::CreateFrameLine(uiXml, "left_background", this);
+	UIEncyclopediaIdxHeader = UIHelper::CreateStatic(uiXml, "left_caption", UIEncyclopediaIdxBkg);
 
-	UIEncyclopediaIdxHeader		= xr_new<CUIFrameLineWnd>(); UIEncyclopediaIdxHeader->SetAutoDelete(true);
-	UIEncyclopediaIdxBkg->AttachChild(UIEncyclopediaIdxHeader);
-	xml_init.InitFrameLine(uiXml, "right_frame_line", 0, UIEncyclopediaIdxHeader);
+	UIEncyclopediaInfoBkg = UIHelper::CreateFrameLine(uiXml, "right_background", this);
+	UIEncyclopediaInfoHeader = UIHelper::CreateStatic(uiXml, "right_caption", UIEncyclopediaInfoBkg);
 
-	UIAnimation					= xr_new<CUIAnimatedStatic>(); UIAnimation->SetAutoDelete(true);
-	UIEncyclopediaIdxHeader->AttachChild(UIAnimation);
-	xml_init.InitAnimatedStatic(uiXml, "a_static", 0, UIAnimation);
+	UIArticleHeader = UIHelper::CreateStatic(uiXml, "article_header_static", UIEncyclopediaInfoBkg);
 
-	UIEncyclopediaInfoBkg		= xr_new<CUIFrameWindow>();UIEncyclopediaInfoBkg->SetAutoDelete(true);
-	AttachChild(UIEncyclopediaInfoBkg);
-	xml_init.InitFrameWindow(uiXml, "left_frame_window", 0, UIEncyclopediaInfoBkg);
-
-	UIEncyclopediaInfoHeader	= xr_new<CUIFrameLineWnd>();UIEncyclopediaInfoHeader->SetAutoDelete(true);
-	UIEncyclopediaInfoBkg->AttachChild(UIEncyclopediaInfoHeader);
-
-#pragma todo("implement this")
-//.	UIEncyclopediaInfoHeader->UITitleText.SetEllipsis(CUIStatic::eepBegin, 20);
-	xml_init.InitFrameLine(uiXml, "left_frame_line", 0, UIEncyclopediaInfoHeader);
-
-	UIArticleHeader				= xr_new<CUIStatic>(); UIArticleHeader->SetAutoDelete(true);
-	UIEncyclopediaInfoBkg->AttachChild(UIArticleHeader);
-	xml_init.InitStatic(uiXml, "article_header_static", 0, UIArticleHeader);
-
-	UIIdxList					= xr_new<CUIListWnd>(); UIIdxList->SetAutoDelete(true);
+	UIIdxList = xr_new <CUIListWnd>(); UIIdxList->SetAutoDelete(true);
 	UIEncyclopediaIdxBkg->AttachChild(UIIdxList);
-	xml_init.InitListWnd(uiXml, "idx_list", 0, UIIdxList);
+	CUIXmlInit::InitListWnd(uiXml, "idx_list", 0, UIIdxList);
 	UIIdxList->SetMessageTarget(this);
-	UIIdxList->EnableScrollBar(true);
 
-	UIInfoList					= xr_new<CUIScrollView>(); UIInfoList->SetAutoDelete(true);
+	UIInfoList = xr_new <CUIScrollView>();
+	UIInfoList->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIInfoList);
-	xml_init.InitScrollView(uiXml, "info_list", 0, UIInfoList);
+	CUIXmlInit::InitScrollView(uiXml, "info_list", 0, UIInfoList);
 
-	xml_init.InitAutoStatic(uiXml, "left_auto_static", UIEncyclopediaInfoBkg);
-	xml_init.InitAutoStatic(uiXml, "right_auto_static", UIEncyclopediaIdxBkg);
+	CUIXmlInit::InitFont(uiXml, "tree_item_font", 0, m_uTreeItemColor, m_pTreeItemFont);
+	CUIXmlInit::InitFont(uiXml, "tree_root_font", 0, m_uTreeRootColor, m_pTreeRootFont);
+
+	R_ASSERT(m_pTreeItemFont);
+	R_ASSERT(m_pTreeRootFont);
 }
 
 #include "../string_table.h"
@@ -96,7 +80,7 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 {
 	if (UIIdxList == pWnd && LIST_ITEM_CLICKED == msg)
 	{
-		CUITreeViewItem *pTVItem = static_cast<CUITreeViewItem*>(pData);
+		CUITreeViewItem *pTVItem = (CUITreeViewItem*)(pData);
 		R_ASSERT		(pTVItem);
 		
 		if( pTVItem->vSubItems.size() )
@@ -106,26 +90,21 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			xr_string caption		= "# ";
 			caption					+= "/";
 			caption					+= CStringTable().translate(A->data()->group).c_str();
-
-#pragma todo("implement this")
-//.			UIEncyclopediaInfoHeader->UITitleText.SetText(caption.c_str());
-
-			UIArticleHeader->SetTextST(*(A->data()->group));
 			SetCurrentArtice		(NULL);
 		}else
 		{
-			CEncyclopediaArticle* A = m_ArticlesDB[pTVItem->GetValue()];
-
-#pragma todo("implement this")
-/*			xr_string caption		= "# ";
+			int idx = pTVItem->GetValue();
+			if (idx==-1) return;
+			CEncyclopediaArticle* A = m_ArticlesDB[idx];
+			xr_string caption		= "# ";
 			caption					+= "/";
 			caption					+= CStringTable().translate(A->data()->group).c_str();
 			caption					+= "/";
 			caption					+= CStringTable().translate(A->data()->name).c_str();
-			UIEncyclopediaInfoHeader->UITitleText.SetText(caption.c_str());
-*
+
+			UIEncyclopediaInfoHeader->SetText(caption.c_str());
 			SetCurrentArtice		(pTVItem);
-			UIArticleHeader->SetTextST(*(A->data()->name));
+			UIArticleHeader->SetText(CStringTable().translate(A->data()->name).c_str());
 		}
 	}
 
@@ -135,22 +114,23 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 void CUIEncyclopediaWnd::Draw()
 {
 	
-if(	m_flags.test(eNeedReload )){
-	if(Actor()->encyclopedia_registry->registry().objects_ptr() && Actor()->encyclopedia_registry->registry().objects_ptr()->size() > prevArticlesCount)
+	if(	m_flags.test(eNeedReload ))
 	{
-		ARTICLE_VECTOR::const_iterator it = Actor()->encyclopedia_registry->registry().objects_ptr()->begin();
-		std::advance(it, prevArticlesCount);
-		for(; it != Actor()->encyclopedia_registry->registry().objects_ptr()->end(); it++)
+		if(Actor() && Actor()->encyclopedia_registry->registry().objects_ptr() && Actor()->encyclopedia_registry->registry().objects_ptr()->size() > prevArticlesCount)
 		{
-			if (ARTICLE_DATA::eEncyclopediaArticle == it->article_type)
+			ARTICLE_VECTOR::const_iterator it = Actor()->encyclopedia_registry->registry().objects_ptr()->begin();
+			std::advance(it, prevArticlesCount);
+			for(; it != Actor()->encyclopedia_registry->registry().objects_ptr()->end(); it++)
 			{
-				AddArticle(it->article_id, it->readed);
+				if (ARTICLE_DATA::eEncyclopediaArticle == it->article_type)
+				{
+					AddArticle(it->article_id, it->readed);
+				}
 			}
+			prevArticlesCount = Actor()->encyclopedia_registry->registry().objects_ptr()->size();
 		}
-		prevArticlesCount = Actor()->encyclopedia_registry->registry().objects_ptr()->size();
-	}
-	
-	m_flags.set(eNeedReload, FALSE);
+		
+		m_flags.set(eNeedReload, FALSE);
 	}
 
 	inherited::Draw();
@@ -244,9 +224,8 @@ void CUIEncyclopediaWnd::AddArticle(shared_str article_id, bool bReaded)
 		m_pTreeRootFont, m_uTreeRootColor, m_pTreeItemFont, m_uTreeItemColor, bReaded);
 }
 
-void CUIEncyclopediaWnd::Reset()
+void CUIEncyclopediaWnd::ResetAll()
 {
-	inherited::Reset	();
+	inherited::ResetAll	();
 	ReloadArticles		();
 }
-*/

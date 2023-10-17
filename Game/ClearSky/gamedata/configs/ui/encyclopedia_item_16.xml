@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<window>
+
+	<!--TASK OBJECTIVE ARTICLE-->
+	<events_wnd>
+		<objective_item x="0" y="0" width="460" height="10">
+			<image x="70" y="0" width="5" height="5"/>
+			
+			<text_cont x="5" y="15" width="455" height="10" complex_mode="1">
+				<text font="letterica18" color="ui_2"/>
+			</text_cont>
+		</objective_item>
+	</events_wnd>
+
+	<!--ENCYCLOPEDIA/DIARY ARTICLE-->
+	<encyclopedia_wnd>
+		<objective_item x="0" y="0" width="500" height="10">
+			<image x="70" y="0" width="2" height="5"/>		
+			<text_cont x="0" y="15" width="495" height="10" complex_mode="1">
+				<text font="letterica18" color="ui_2"/>
+			</text_cont>
+		</objective_item>
+	</encyclopedia_wnd>
+
+</window>

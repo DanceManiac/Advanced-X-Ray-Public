@@ -67,7 +67,7 @@ void CActor::AddEncyclopediaArticle	 (const CInfoPortion* info_portion) const
 		g = *(article.data()->group);
 		n = *(article.data()->name);
 		callback(GameObject::eArticleInfo)(lua_game_object(), g, n, _atype);
-/*
+
 		if( HUD().GetUI() )
 		{
 			CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
@@ -80,9 +80,9 @@ void CActor::AddEncyclopediaArticle	 (const CInfoPortion* info_portion) const
 				case ARTICLE_DATA::eTaskArticle:			p = pda_section::quests;		break;
 				default: NODEFAULT;
 			};
-			pGameSP->PdaMenu->PdaContentsChanged			(p);
+			pGameSP->PdaMenu().PdaContentsChanged(p);
 		}
-*/
+
 		if ( HUD().GetUI() )
 		{
 			HUD().GetUI()->UpdatePda();

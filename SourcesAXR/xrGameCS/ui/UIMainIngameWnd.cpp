@@ -690,8 +690,9 @@ void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 		// Теперь запоминаем иконку и ее тип
 		EFlashingIcons type = efiPdaTask;
 
-		if		(iconType == "pda")		type = efiPdaTask;
-		else if (iconType == "mail")	type = efiMail;
+		if		(iconType == "pda")				type = efiPdaTask;
+		else if (iconType == "mail")			type = efiMail;
+		else if (iconType == "encyclopedia")	type = efiEncyclopedia;
 		else	R_ASSERT(!"Unknown type of mainingame flashing icon");
 
 		R_ASSERT2(m_FlashingIcons.find(type) == m_FlashingIcons.end(), "Flashing icon with this type already exists");
