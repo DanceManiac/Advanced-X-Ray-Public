@@ -724,7 +724,7 @@ void CMissile::render_item_ui()
 	g_MissileForceShape->Draw	();
 }
 
-void	 CMissile::ExitContactCallback(bool& do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
+void CMissile::ExitContactCallback(bool& do_colide, bool bo1, dContact& c, SGameMtl* material_1, SGameMtl* material_2)
 {
 	dxGeomUserData	*gd1=NULL,	*gd2=NULL;
 	if(bo1)
@@ -738,7 +738,33 @@ void	 CMissile::ExitContactCallback(bool& do_colide,bool bo1,dContact& c,SGameMt
 		gd1 =PHRetrieveGeomUserData(c.geom.g2);
 	}
 	if(gd1&&gd2&&(CPhysicsShellHolder*)gd1->callback_data==gd2->ph_ref_object)	
-																				do_colide=false;
+		do_colide=false;
+
+	SGameMtl* material = 0;
+	CMissile* l_this = gd1 ? smart_cast<CMissile*>(gd1->ph_ref_object) : NULL;
+	Fvector vUp;
+
+	if (!l_this)
+	{
+		l_this = gd2 ? smart_cast<CMissile*>(gd2->ph_ref_object) : NULL;
+		material = material_1;
+
+	}
+	else
+		material = material_2;
+
+	VERIFY(material);
+
+	if (material->Flags.is(SGameMtl::flPassable)) return;
+
+	if (!l_this || !l_this->m_bIsContactGrenade) return;
+
+	CGameObject* l_pOwner = gd1 ? smart_cast<CGameObject*>(gd1->ph_ref_object) : NULL;
+
+	if (!l_pOwner || l_pOwner == (CGameObject*)l_this) l_pOwner = gd2 ? smart_cast<CGameObject*>(gd2->ph_ref_object) : NULL;
+
+	if (!l_pOwner || l_pOwner != l_this->m_pOwner)
+		l_this->set_destroy_time(5);
 }
 
 void CMissile::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode)

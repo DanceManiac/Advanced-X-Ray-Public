@@ -58,15 +58,15 @@ protected:
 	virtual void			OnActiveItem		();
 	virtual void			OnHiddenItem		();
 
-	//для сети
+	//РґР»СЏ СЃРµС‚Рё
 	virtual void			net_Relcase			(CObject* O );
 protected:
 
-	//время нахождения в текущем состоянии
+	//РІСЂРµРјСЏ РЅР°С…РѕР¶РґРµРЅРёСЏ РІ С‚РµРєСѓС‰РµРј СЃРѕСЃС‚РѕСЏРЅРёРё
 	u32						m_dwStateTime;
 	bool					m_throw;
 	
-	//время уничтожения
+	//РІСЂРµРјСЏ СѓРЅРёС‡С‚РѕР¶РµРЅРёСЏ
 	u32						m_dwDestroyTime;
 	u32						m_dwDestroyTimeMax;
 
@@ -75,14 +75,17 @@ protected:
 
 	CMissile				*m_fake_missile;
 
-	//параметры броска
+	//РїР°СЂР°РјРµС‚СЂС‹ Р±СЂРѕСЃРєР°
 	
 	float m_fMinForce, m_fConstForce, m_fMaxForce, m_fForceGrowSpeed;
 //private:
 	bool					m_constpower;
 	float					m_fThrowForce;
+
+	bool					m_bIsContactGrenade;
+	CGameObject*			m_pOwner;
 protected:
-	//относительная точка и направление вылета гранаты
+	//РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅР°СЏ С‚РѕС‡РєР° Рё РЅР°РїСЂР°РІР»РµРЅРёРµ РІС‹Р»РµС‚Р° РіСЂР°РЅР°С‚С‹
 	Fvector					m_vThrowPoint;
 	Fvector					m_vThrowDir;
 
@@ -103,5 +106,5 @@ public:
 	virtual u32				ef_weapon_type			() const;
 	IC		u32				destroy_time			() const { return m_dwDestroyTime; }
 	IC		int				time_from_begin_throw	() const { return (Device.dwTimeGlobal + m_dwDestroyTimeMax - m_dwDestroyTime); }
-	static	void			ExitContactCallback		(bool& do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/);
+	static	void			ExitContactCallback		(bool& do_colide,bool bo1,dContact& c,SGameMtl *material_1,SGameMtl* material_2);
 };
