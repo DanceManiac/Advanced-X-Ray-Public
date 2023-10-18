@@ -1,72 +1,73 @@
+//=============================================================================
+//  Filename:   UIDiaryWnd.h
+//	Created by Roman E. Marchenko, vortex@gsc-game.kiev.ua
+//	Copyright 2004. GSC Game World
+//	---------------------------------------------------------------------------
+//  Encyclopedia window
+//=============================================================================
+
 #pragma once
 
 #include "UIWindow.h"
-/*
-#include "UIWndCallback.h"
+
 #include "../encyclopedia_article_defs.h"
-class CUINewsWnd;
-class CUIFrameLineWnd;
+
+class CEncyclopediaArticle;
 class CUIFrameWindow;
+class CUIFrameLineWnd;
+class CUIListWnd;
 class CUIAnimatedStatic;
 class CUIStatic;
-class CUITabControl;
+class CUIListBoxCOP;
+class CUIDiaryCore;
 class CUIScrollView;
-class CUIListWnd;
-class CEncyclopediaArticle;
+class CUITreeViewItem;
 
-class CUIDiaryWnd: public CUIWindow, public CUIWndCallback
+class CUIDiaryWnd: public CUIWindow
 {
+private:
 	typedef CUIWindow inherited;
-protected:
-	shared_str			m_currFilter;
-
-	CUINewsWnd*			m_UINewsWnd;
-
-	CUIWindow*			m_UILeftWnd;
-	CUIWindow*			m_UIRightWnd;
-	CUIFrameWindow*		m_UILeftFrame;
-	CUIFrameLineWnd*	m_UILeftHeader;
-	CUIFrameWindow*		m_UIRightFrame;
-	CUIFrameLineWnd*	m_UIRightHeader;
-	CUIAnimatedStatic*	m_UIAnimation;
-	CUITabControl*		m_FilterTab;
-	CUIListWnd*			m_SrcListWnd;
-	CUIScrollView*		m_DescrView;
-	CGameFont*			m_pTreeRootFont;
-	u32					m_uTreeRootColor;
-	CGameFont*			m_pTreeItemFont;
-	u32					m_uTreeItemColor;
-
-	xr_vector<Fvector2>	m_sign_places;
-	CUIStatic*			m_updatedSectionImage;
-	CUIStatic*			m_oldSectionImage;
-
-	typedef xr_vector<CEncyclopediaArticle*>			ArticlesDB;
-	typedef xr_vector<CEncyclopediaArticle*>::iterator	ArticlesDB_it;
-	ArticlesDB				m_ArticlesDB;
-
-			void 	OnFilterChanged			(CUIWindow*,void*);
-			void 	OnSrcListItemClicked	(CUIWindow*,void*);
-			void		UnloadJournalTab		();
-			void		LoadJournalTab			(ARTICLE_DATA::EArticleType _type);
-			void		UnloadInfoTab			();
-			void		LoadInfoTab				();
-			void		UnloadNewsTab			();
-			void		LoadNewsTab				();
-			void		Reload					(const shared_str& new_filter);
+	enum {eNeedReload=(1<<0),};
+	Flags16				m_flags;
 public:
-						CUIDiaryWnd				();
+						CUIDiaryWnd			();
 	virtual				~CUIDiaryWnd			();
 
-	virtual void		SendMessage				(CUIWindow* pWnd, s16 msg, void* pData);
-	virtual	void		Draw					();
-	virtual	void		Reset					();
+	virtual void		Init						();
+	virtual void		Show						(bool status);
+	virtual void		SendMessage					(CUIWindow *pWnd, s16 msg, void* pData = NULL);
+	virtual void		Draw						();
 
-			void		Init					();
-			void		AddNews					();
-			void		MarkNewsAsRead			(bool status);
-	virtual void		Show					(bool status);
+	void				AddArticle					(shared_str, bool bReaded);
+	void				DeleteArticles				();
+	bool				HasArticle					(shared_str);
 
+	void				ReloadArticles				();
+	virtual void		ResetAll					();
+protected:
+	u32					prevArticlesCount;
+	// Элементы графического оформления
+
+	CUIFrameLineWnd*	UIBackground;
+	CUIFrameLineWnd*		UIDiaryIdxBkg;
+	CUIFrameLineWnd*		UIDiaryInfoBkg;
+	CUIStatic*			UIDiaryIdxHeader;
+	CUIStatic*			UIDiaryInfoHeader;
+	CUIAnimatedStatic*	UIAnimation;
+	CUIStatic*			UIArticleHeader;
+
+	// Хранилище статей
+	typedef xr_vector<CEncyclopediaArticle*>			ArticlesDB;
+	typedef ArticlesDB::iterator						ArticlesDB_it;
+
+	ArticlesDB				m_ArticlesDB;
+	CGameFont*				m_pTreeRootFont;
+	u32						m_uTreeRootColor;
+	CGameFont*				m_pTreeItemFont;
+	u32						m_uTreeItemColor;
+
+	CUIListWnd*			UIIdxList;
+	CUIScrollView*			UIInfoList;
+
+	void				SetCurrentArtice(CUITreeViewItem *pTVItem);
 };
-
-*/

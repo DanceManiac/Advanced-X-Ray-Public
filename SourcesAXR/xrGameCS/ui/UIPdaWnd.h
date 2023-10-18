@@ -20,6 +20,7 @@ class CUIFactionWarWnd;
 class CUIRankingWnd;
 class CUILogsWnd;
 class CUIEncyclopediaWnd;
+class CUIDiaryWnd;
 class CUIAnimatedStatic;
 class UIHint;
 
@@ -76,6 +77,7 @@ public:
 	CUIRankingWnd* pUIRankingWnd;
 	CUILogsWnd* pUILogsWnd;
 	CUIEncyclopediaWnd* pUIEncyclopediaWnd;
+	CUIDiaryWnd* pUIDiaryWnd;
 	Frect m_cursor_box;
 
 	virtual void			Reset();
