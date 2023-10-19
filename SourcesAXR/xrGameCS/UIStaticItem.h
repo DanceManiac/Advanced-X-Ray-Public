@@ -50,7 +50,7 @@ public:
 
 	IC void			SetTile			(int tile_x, int tile_y, float rem_x, float rem_y)
 	{
-		R_ASSERT((tile_x>=0)&&(tile_y>=0)&&(rem_x>=0)&&(rem_y>=0));
+		//R_ASSERT((tile_x>=0)&&(tile_y>=0)&&(rem_x>=0)&&(rem_y>=0));
 		iTile.x=tile_x;iTile.y=tile_y;iRem.x=rem_x;iRem.y=rem_y;
 	}
 	IC void			SetPos			(float left, float top)			{iPos.set(left,top);}

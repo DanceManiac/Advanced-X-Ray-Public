@@ -78,9 +78,6 @@ void CUIFrameLine::UpdateSize()
 	{
 		back_width	= f_width;
 		back_height	= iSize - f_height - s_height;
-
-		// Size of frameline must be equal or greater than sum of size of two side textures
-		R_ASSERT(back_height > 0);
 	}
 
 	// Now resize back texture
