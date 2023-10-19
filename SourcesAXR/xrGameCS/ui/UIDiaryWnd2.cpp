@@ -88,8 +88,32 @@ void CUIDiaryWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			CEncyclopediaArticle* A = m_ArticlesDB[pTVItem->vSubItems[0]->GetValue()];
 
 			xr_string caption		= "# ";
-			caption					+= "/";
-			caption					+= CStringTable().translate(A->data()->group).c_str();
+			std::string str			(A->data()->group.c_str());
+
+			std::vector<std::string>splitParts;
+			if(!splitParts.empty())
+				splitParts.clear();
+			size_t pos				= str.find("/");
+			while (pos != std::string::npos)
+			{
+				splitParts.push_back(str.substr(0, pos));
+				str.erase			(0, pos + 1);
+				pos					= str.find("/");
+			}
+			splitParts.push_back(str);
+			for (size_t i = 0; i < splitParts.size(); i++)
+			{
+				const std::string& part = splitParts[i];
+				string4096 pp;
+				xr_sprintf(pp, "%s", part.c_str());
+				caption += CStringTable().translate(pp).c_str();
+				
+				if (i + 1 != splitParts.size())
+					caption += "/";
+			}
+
+			UIDiaryInfoHeader->SetText(caption.c_str());
+			//UIArticleHeader->SetText(caption.c_str());
 			SetCurrentArtice		(NULL);
 		}else
 		{
@@ -97,9 +121,27 @@ void CUIDiaryWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			if (idx==-1) return;
 			CEncyclopediaArticle* A = m_ArticlesDB[idx];
 			xr_string caption		= "# ";
-			caption					+= "/";
-			caption					+= CStringTable().translate(A->data()->group).c_str();
-			caption					+= "/";
+			std::string str			(A->data()->group.c_str());
+
+			std::vector<std::string>splitParts;
+			if(!splitParts.empty())
+				splitParts.clear();
+			size_t pos				= str.find("/");
+			while (pos != std::string::npos)
+			{
+				splitParts.push_back(str.substr(0, pos));
+				str.erase			(0, pos + 1);
+				pos					= str.find("/");
+			}
+			splitParts.push_back(str);
+			for (const std::string& part : splitParts)
+			{
+				string4096				pp;
+				xr_sprintf				(pp, "%s", part);
+				caption					+= CStringTable().translate(pp).c_str();
+				caption					+= "/";
+			}
+
 			caption					+= CStringTable().translate(A->data()->name).c_str();
 
 			UIDiaryInfoHeader->SetText(caption.c_str());
