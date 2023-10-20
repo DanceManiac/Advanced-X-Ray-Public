@@ -78,6 +78,7 @@
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomBackpack.h"
+#include "WeaponKnife.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -238,9 +239,12 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_bActionAnimInProcess	= false;
 	m_bNVGSwitched			= false;
 	m_bMaskClear			= false;
+	m_bQuickKickActivated	= false;
+	m_bQuickKick			= false;
 	m_iNVGAnimLength		= 0;
 	m_iActionTiming			= 0;
 	m_iMaskAnimLength		= 0;
+	m_iQuickKickAnimLength	= 0;
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
@@ -1257,7 +1261,10 @@ void CActor::shedule_Update	(u32 DT)
 					}
 					else
 					{
-						g_player_hud->attach_item	(pHudItem);
+						bool attach = !m_bQuickKickActivated;
+
+						if (attach)
+							g_player_hud->attach_item(pHudItem);
 					}
 				}
 			}else
@@ -1568,6 +1575,9 @@ void CActor::shedule_Update	(u32 DT)
 
 		if (m_bMaskAnimActivated)
 			UpdateMaskUseAnim();
+
+		if (m_bQuickKickActivated)
+			UpdateQuickKickAnim();
 	}
 
 	inventory().UpdateUseAnim(this);
@@ -2912,6 +2922,104 @@ void CActor::UpdateMaskUseAnim()
 			m_bActionAnimInProcess = false;
 			m_bMaskAnimActivated = false;
 			m_bMaskClear = false;
+		}
+	}
+}
+
+void CActor::QuickKick()
+{
+	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "quick_kick_section", nullptr);
+
+	if (!anim_sect)
+		return;
+
+	CHudItem* active_item = smart_cast<CHudItem*>(inventory().ActiveItem());
+	CWeaponKnife* cur_knife = smart_cast<CWeaponKnife*>(inventory().ItemFromSlot(KNIFE_SLOT));
+
+	if (active_item && !(active_item->GetState() == CWeapon::eIdle))
+		return;
+
+	if (!cur_knife || active_item == cur_knife)
+		return;
+
+	m_bQuickKickActivated = true;
+
+	int anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
+
+	g_block_all_except_movement = true;
+	g_actor_allow_ladder = false;
+
+	LPCSTR use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !active_item ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
+	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
+	float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
+
+	if (pSettings->line_exist(anim_sect, "anm_use"))
+	{
+		if (active_item)
+		{
+			g_player_hud->detach_item(active_item);
+			SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+		}
+
+		string128 attach_visual{};
+		strconcat(sizeof(attach_visual), attach_visual, cur_knife->cNameVisual().c_str(), "_hud");
+
+		g_player_hud->script_anim_play(2, anim_sect, !active_item ? "anm_use" : "anm_use_weapon", true, anim_speed);
+		CEffectorCam* effector = Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+
+		if (!effector && use_cam_effector != nullptr)
+			AddEffector(this, effUseItem, use_cam_effector, effector_intensity);
+
+		m_iQuickKickAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !active_item ? "anm_use" : "anm_use_weapon", anim_speed);
+	}
+
+	if (pSettings->line_exist(anim_sect, "snd_using"))
+	{
+		if (m_action_anim_sound._feedback())
+			m_action_anim_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(anim_sect, "snd_using");
+		m_action_anim_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_action_anim_sound.play(NULL, sm_2D);
+	}
+
+	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
+
+	m_bQuickKick = false;
+	m_bActionAnimInProcess = true;
+}
+
+void CActor::UpdateQuickKickAnim()
+{
+	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bQuickKick) && g_Alive())
+	{
+		m_iActionTiming = Device.dwTimeGlobal;
+		m_bQuickKick = true;
+
+		CWeaponKnife* cur_knife = smart_cast<CWeaponKnife*>(inventory().ItemFromSlot(KNIFE_SLOT));
+
+		if (cur_knife)
+			cur_knife->FastStrike(0);
+	}
+
+	if (m_bQuickKickActivated)
+	{
+		if ((m_iQuickKickAnimLength <= Device.dwTimeGlobal) || !g_Alive())
+		{
+			CEffectorCam* effector = Cameras().GetCamEffector((ECamEffectorType)effUseItem);
+
+			if (effector)
+				RemoveEffector(this, effUseItem);
+
+			SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+			m_iQuickKickAnimLength = Device.dwTimeGlobal;
+			m_iActionTiming = Device.dwTimeGlobal;
+			m_action_anim_sound.stop();
+			g_block_all_except_movement = false;
+			g_actor_allow_ladder = true;
+			m_bActionAnimInProcess = false;
+			m_bQuickKickActivated = false;
+			m_bQuickKick = false;
 		}
 	}
 }

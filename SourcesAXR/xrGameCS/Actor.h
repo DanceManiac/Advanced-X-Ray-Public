@@ -214,6 +214,7 @@ public:
 			void		UpdateSkills();
 			void		UpdateNVGUseAnim();
 			void		UpdateMaskUseAnim();
+			void		UpdateQuickKickAnim();
 			float		GetCamHeightFactor() { return m_fCamHeightFactor; }
 			void		SetCamHeightFactor(float height) { m_fCamHeightFactor = height; }
 
@@ -726,6 +727,7 @@ public:
 			void				SwitchNightVision				();
 			void				SwitchTorch						();
 			void				CleanMask						();
+			void				QuickKick						();
 			bool				IsReloadingWeapon				();
 #ifdef DEBUG
 			void				NoClipFly						(int cmd);
@@ -853,9 +855,12 @@ protected:
 	bool					m_bNVGSwitched;
 	bool					m_bMaskAnimActivated;
 	bool					m_bMaskClear;
+	bool					m_bQuickKickActivated;
+	bool					m_bQuickKick;
 	int						m_iNVGAnimLength;
 	int						m_iActionTiming;
 	int						m_iMaskAnimLength;
+	int						m_iQuickKickAnimLength;
 	int						m_iInventoryCapacity;
 	int						m_iInventoryFullness;
 	int						m_iInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.

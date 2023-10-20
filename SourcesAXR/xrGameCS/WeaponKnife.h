@@ -62,6 +62,8 @@ public:
 
 	virtual void		GetBriefInfo					(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode);
 
+			void		FastStrike						(u32 state);
+
 #ifdef DEBUG
 	virtual void		OnRender						();
 #endif

@@ -62,6 +62,8 @@ public:
 
 	virtual bool		GetBriefInfo					(II_BriefInfo& info);
 
+			void		FastStrike						(u32 state);
+
 #ifdef DEBUG
 	virtual void		OnRender						();
 #endif

@@ -210,9 +210,6 @@
 	<string id="speech_menu_group">
 		<text>Голосовые сообщения (1)</text>
 	</string>
-	<string id="speech_menu_personal">
-		<text>Голосовые сообщения (2)</text>
-	</string>
 	<string id="kb_quick_use_1">
 		<text>Ячейка быстрого доступа 1</text>
 	</string>
@@ -236,5 +233,8 @@
 	</string>
 	<string id="kb_wpn_alt_aim">
 		<text>Режим прицеливания</text>
+	</string>
+	<string id="kb_quick_kick">
+		<text>Быстрый удар</text>
 	</string>
 </string_table>

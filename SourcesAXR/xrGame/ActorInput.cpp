@@ -153,6 +153,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			CleanMaskAnimCheckDetector();
 			break;
 		}
+	case kQUICK_KICK:
+		{
+			QuickKick();
+			break;
+		}
 
 	case kDETECTOR:
 		{

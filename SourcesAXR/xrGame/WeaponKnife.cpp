@@ -140,6 +140,48 @@ void CWeaponKnife::OnStateSwitch	(u32 S)
 	}
 }
 
+void CWeaponKnife::FastStrike(u32 state)
+{
+	if (state == 0)
+	{
+		m_hit_dist		=	m_Hit1Distance;
+		m_splash_dir	=	m_Hit1SpashDir;
+		m_splash_radius	=	m_Hit1SplashRadius;
+		m_hits_count	=	m_Splash1HitsCount;
+		m_perv_hits_count = m_Splash1PerVictimsHCount;
+		m_eHitType		= m_eHitType_1;
+
+		if (GameID() == eGameIDSingle)
+			fCurrentHit = fvHitPower_1[g_SingleGameDifficulty];
+		else
+			fCurrentHit = fvHitPower_1[egdMaster];
+
+		fHitImpulse_cur = fHitImpulse_1;
+	} 
+	else if (state == 1)
+	{
+		m_hit_dist		=	m_Hit2Distance;
+		m_splash_dir	=	m_Hit2SpashDir;
+		m_splash_radius	=	m_Hit2SplashRadius;
+		m_hits_count	=	m_Splash2HitsCount;
+		m_perv_hits_count = 0;
+		m_eHitType		= m_eHitType_2;
+
+		if (GameID() == eGameIDSingle)
+			fCurrentHit = fvHitPower_2[g_SingleGameDifficulty];
+		else
+			fCurrentHit = fvHitPower_2[egdMaster];
+
+		fHitImpulse_cur = fHitImpulse_2;
+	} 
+	else
+		return;
+
+	fireDistance	= m_hit_dist + m_splash_radius;
+
+	if(H_Parent())
+		KnifeStrike(Device.vCameraPosition, Device.vCameraDirection);
+}
 
 void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 {
