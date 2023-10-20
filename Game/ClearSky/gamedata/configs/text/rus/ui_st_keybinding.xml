@@ -225,4 +225,7 @@
 	<string id="kb_quick_kick">
 		<text>Быстрый удар</text>
 	</string>
+	<string id="kb_quick_grenade">
+		<text>Быстрый бросок гранаты</text>
+	</string>
 </string_table>

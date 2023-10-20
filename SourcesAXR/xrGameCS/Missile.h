@@ -13,6 +13,7 @@ public:
 		eReady,
 		eThrow,
 		eThrowEnd,
+		eThrowQuick,
 	};
 							CMissile					();
 	virtual					~CMissile					();
@@ -83,6 +84,7 @@ protected:
 	float					m_fThrowForce;
 
 	bool					m_bIsContactGrenade;
+	bool					m_bQuickThrowActive;
 	CGameObject*			m_pOwner;
 protected:
 	//относительная точка и направление вылета гранаты
@@ -98,6 +100,8 @@ public:
 	virtual void			create_physic_shell		();
 	IC		void			set_destroy_time		(u32 delta_destroy_time) {m_dwDestroyTime = delta_destroy_time + Device.dwTimeGlobal;}
 	virtual void			PH_A_CrPr				();
+
+				void		SetQuickThrowActive		(bool status) { m_bQuickThrowActive = status; }
 
 protected:
 	u32						m_ef_weapon_type;

@@ -31,6 +31,7 @@ void CGrenade::Load(LPCSTR section)
 	CExplosive::Load(section);
 
 	m_sounds.LoadSound(section,"snd_checkout", "sndCheckout", false, m_eSoundCheckout);
+	m_sounds.LoadSound(section, "snd_throw_quick", "sndThrowQuick", false, m_eSoundCheckout);
 
 	//////////////////////////////////////
 	//время убирания оружия с уровня
@@ -123,6 +124,15 @@ void CGrenade::State(u32 state)
 				
 			};
 		}break;
+	case eThrowQuick:
+		{
+			if (!m_sounds.FindSoundItem("sndThrowQuick", false))
+				return;
+
+			Fvector C;
+			Center(C);
+			PlaySound("sndThrowQuick", C);
+		}
 	};
 	inherited::State( state );
 }

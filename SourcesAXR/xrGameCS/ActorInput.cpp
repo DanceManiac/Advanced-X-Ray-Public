@@ -32,6 +32,7 @@
 #include "HudManager.h"
 #include "Weapon.h"
 #include "WeaponMagazined.h"
+#include "Grenade.h"
 #include "script_engine.h"
 
 #include "AdvancedXrayGameConstants.h"
@@ -156,7 +157,28 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			QuickKick();
 			break;
 		}
+	case kQUICK_GRENADE:
+		{
+			if (!GameConstants::GetQuickThrowGrenadesEnabled())
+				return;
 
+			CGrenade* grenade = smart_cast<CGrenade*>(inventory().ItemFromSlot(GRENADE_SLOT));
+			
+			if (grenade)
+			{
+				if (inventory().GetActiveSlot() == GRENADE_SLOT)
+					return;
+
+				m_last_active_slot = inventory().GetActiveSlot();
+
+				inventory().Activate(GRENADE_SLOT, true);
+				grenade->SetQuickThrowActive(true);
+
+				if (grenade->isHUDAnimationExist("anm_throw_quick"))
+					grenade->SwitchState(CGrenade::eThrowQuick);
+			}
+			break;
+		}
 	case kDETECTOR:
 		{
 			PIItem det_active					= inventory().ItemFromSlot(DETECTOR_SLOT);

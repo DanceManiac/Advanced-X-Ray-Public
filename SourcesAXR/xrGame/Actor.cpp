@@ -271,6 +271,7 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_iInventoryCapacity	= 50;
 	m_iInventoryFullness	= 0;
 	m_iInventoryFullnessCtrl = 0;
+	m_last_active_slot		= 0;
 }
 
 

@@ -43,6 +43,7 @@ void create_force_progress()
 CMissile::CMissile(void) 
 {
 	m_dwStateTime		= 0;
+	m_bQuickThrowActive = false;
 }
 
 CMissile::~CMissile(void) 
@@ -298,6 +299,10 @@ void CMissile::State(u32 state)
 		{
 			SetPending			(TRUE);
 			m_fThrowForce		= m_fMinForce;
+
+			if (m_bQuickThrowActive)
+				m_throw = true;
+
 			PlayHUDMotion		("anm_throw_begin", TRUE, this, GetState());
 		} break;
 	case eReady:
@@ -312,8 +317,28 @@ void CMissile::State(u32 state)
 		} break;
 	case eThrowEnd:
 		{
+			if (m_bQuickThrowActive)
+			{
+				Actor()->inventory().Activate(Actor()->GetLastActiveSlot());
+				m_bQuickThrowActive = false;
+				return;
+			}
+
 			SwitchState			(eShowing); 
 		} break;
+	case eThrowQuick:
+		{	  
+			if (isHUDAnimationExist("anm_throw_quick"))
+			{
+				if (!m_fake_missile && !smart_cast<CMissile*>(H_Parent()))
+					spawn_fake_missile();
+
+				PlayHUDMotion("anm_throw_quick", TRUE, this, GetState());
+			}
+			else
+				SwitchState(eThrowStart);
+		}
+
 /*	case eBore:
 		{
 			PlaySound			(sndPlaying,Position());
@@ -343,7 +368,11 @@ void CMissile::OnAnimationEnd(u32 state)
 	case eShowing:
 		{
 			setVisible(TRUE);
-			SwitchState(eIdle);
+
+			if (!isHUDAnimationExist("anm_throw_quick") && m_bQuickThrowActive)
+				SwitchState(eThrowStart);
+			else
+				SwitchState(eIdle);
 		} break;
 	case eThrowStart:
 		{
@@ -363,6 +392,10 @@ void CMissile::OnAnimationEnd(u32 state)
 		{
 			SwitchState	(eShowing);
 		} break;
+	case eThrowQuick:
+		{
+			SwitchState(eThrowEnd);
+		}
 	default:
 		inherited::OnAnimationEnd(state);
 	}
@@ -458,7 +491,7 @@ void CMissile::setup_throw_params()
 void CMissile::OnMotionMark(u32 state, const motion_marks& M)
 {
 	inherited::OnMotionMark(state, M);
-	if(state==eThrow && !m_throw)
+	if((state==eThrow || state == eThrowQuick) && !m_throw)
 	{
 		if (H_Parent())
 			Throw	();
@@ -482,7 +515,7 @@ void CMissile::Throw()
 	CInventoryOwner						*inventory_owner = smart_cast<CInventoryOwner*>(H_Parent());
 	VERIFY								(inventory_owner);
 	if (inventory_owner->use_default_throw_force())
-		m_fake_missile->m_fThrowForce	= m_constpower ? m_fConstForce : m_fThrowForce; 
+		m_fake_missile->m_fThrowForce	= (m_constpower || m_bQuickThrowActive) ? m_fConstForce : m_fThrowForce;
 	else
 		m_fake_missile->m_fThrowForce	= inventory_owner->missile_throw_force(); 
 	

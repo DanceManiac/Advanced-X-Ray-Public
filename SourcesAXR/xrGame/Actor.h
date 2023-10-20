@@ -835,8 +835,9 @@ public:
 
 	int						GetInventoryCapacity() const { return m_iInventoryCapacity; }
 	int						GetInventoryFullness() const { return m_iInventoryFullness; }
-	int						MaxCarryInvCapacity() const;
+	int						MaxCarryInvCapacity	() const;
 	void					ChangeInventoryFullness(int val);
+	u16						GetLastActiveSlot	() { return m_last_active_slot; }
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;
@@ -853,6 +854,8 @@ protected:
 	int						m_iInventoryCapacity;
 	int						m_iInventoryFullness;
 	int						m_iInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
+
+	u16						m_last_active_slot;
 
 	float					m_fDevicesPsyFactor;
 

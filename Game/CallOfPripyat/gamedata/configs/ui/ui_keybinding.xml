@@ -38,6 +38,7 @@
 		<command id="kb_flashlight_on"				exe="flashlight"/>
 		<command id="kb_wpn_alt_aim"				exe="wpn_alt_aim"/>
 		<command id="kb_quick_kick"					exe="quick_kick"/>
+		<command id="kb_quick_grenade"				exe="quick_grenade"/>
 	</group>
 	<group name="kb_grp_auto">
 		<command id="kb_turn_engine"				exe="turn_engine"/>

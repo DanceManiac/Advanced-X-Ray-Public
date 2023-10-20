@@ -40,6 +40,7 @@ namespace GameConstants
 	bool GetFoodIrradiation();
 	bool GetFoodRotting();
 	bool GetOGSE_WpnZoomSystem();
+	bool GetQuickThrowGrenadesEnabled();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();
