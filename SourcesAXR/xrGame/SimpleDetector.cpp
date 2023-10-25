@@ -85,6 +85,7 @@ void CSimpleDetector::UpdateAf()
 		af_info.snd_time		= 0;
 		HUD_SOUND_ITEM::PlaySound	(item_type->detect_snds, Fvector().set(0,0,0), this, true, false);
 
+		ui().Flash(true, fRelPow);
 		Flash(true, fRelPow);
 
 		if(item_type->detect_snds.m_activeSnd)
@@ -180,7 +181,10 @@ void CUIArtefactDetectorSimple::update()
 		if (pCustomDetector)
 		{
 			if (pCustomDetector->m_turn_off_flash_time && pCustomDetector->m_turn_off_flash_time < Device.dwTimeGlobal)
+			{
+				Flash(false, 0.0f);
 				pCustomDetector->Flash(false, 0.0f);
+			}
 		}
 
 		firedeps		fd;
