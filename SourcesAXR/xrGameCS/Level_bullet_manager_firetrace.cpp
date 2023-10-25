@@ -4,6 +4,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include "pch_script.h"
 #include "Level_Bullet_Manager.h"
 #include "entity.h"
 #include "../xrEngine/gamemtllib.h"
@@ -22,6 +23,9 @@
 #include "ik/math3d.h"
 #include "actor.h"
 #include "ai/monsters/basemonster/base_monster.h"
+#include "ai_space.h"
+#include "../xrServerEntitiesCS/script_engine.h"
+
 
 extern ENGINE_API int ps_r__WallmarksOnSkeleton;
 
@@ -126,12 +130,19 @@ BOOL CBulletManager::test_callback(const collide::ray_defs& rd, CObject* object,
 							}
 						}
 						// play whine sound
-						if (play_whine){
+						if (play_whine)
+						{
 							Fvector					pt;
 							pt.mad					(bullet->bullet_pos, bullet->dir, dist);
 							Level().BulletManager().PlayWhineSound				(bullet,initiator,pt);
+
+							luabind::functor<void> m_functor;
+							if (ai().script_engine().functor("mfs_functions.on_play_whine_sound", m_functor))
+								m_functor();
 						}
-					}else{
+					}
+					else
+					{
 						// don't test this object again (return FALSE)
 						bRes		= FALSE;
 					}

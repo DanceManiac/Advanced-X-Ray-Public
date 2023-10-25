@@ -126,12 +126,19 @@ BOOL CBulletManager::test_callback(const collide::ray_defs& rd, CObject* object,
 							}
 						}
 						// play whine sound
-						if (play_whine){
+						if (play_whine)
+						{
 							Fvector					pt;
 							pt.mad					(bullet->bullet_pos, bullet->dir, dist);
 							Level().BulletManager().PlayWhineSound				(bullet,initiator,pt);
+
+							luabind::functor<void> m_functor;
+							if (ai().script_engine().functor("mfs_functions.on_play_whine_sound", m_functor))
+								m_functor();
 						}
-					}else{
+					}
+					else
+					{
 						// don't test this object again (return FALSE)
 						bRes		= FALSE;
 					}
