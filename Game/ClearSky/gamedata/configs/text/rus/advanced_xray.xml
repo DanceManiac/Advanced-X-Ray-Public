@@ -741,4 +741,10 @@
 	<string id="ui_mm_svp_mouse_sense">
 		<text>Чувст. мыши в 3D прицелах</text>
 	</string>
+	<string id="ui_mm_grass_shadows_dintance">
+		<text>Радиус теней от травы</text>
+	</string>
+	<string id="ui_mm_grass_shadows_dintance_hint">
+		<text>Данная опция позволяет отрегулировать радиус отрисовки теней от травы. Понижая значение, можно выиграть какое-то количество FPS.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
 </string_table>

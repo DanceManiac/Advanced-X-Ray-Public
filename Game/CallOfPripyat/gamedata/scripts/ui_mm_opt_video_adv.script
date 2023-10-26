@@ -165,6 +165,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_sun_details", _st)
 	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
 
+--Дальность тени травы
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_grass_shadow_distance", _st)
+	xml:InitTrackBar("video_adv:track_grass_shadow_distance", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
+
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_npc_torch", _st)
 	xml:InitCheck("video_adv:check_npc_torch", _st)

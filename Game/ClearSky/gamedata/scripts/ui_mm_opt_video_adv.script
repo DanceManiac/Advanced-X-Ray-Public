@@ -200,6 +200,13 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_sun_details", _st)
 	ctl = xml:InitCheck("video_adv:check_sun_details", _st)
 	handler.m_preconditions[ctl]		= only_2_and_more_mode
+	
+--Дальность тени от травы
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_grass_shadow_distance", _st)
+	ctl = xml:InitTrackBar("video_adv:track_grass_shadow_distance", _st)
+	handler.track_mblur = ctl
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
 
 	_st											= xml:InitStatic						("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_npc_torch",				_st)

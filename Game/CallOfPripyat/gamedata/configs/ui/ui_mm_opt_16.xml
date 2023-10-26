@@ -375,6 +375,16 @@
             <options_item entry="r2_sun_details" group="mm_opt_video_adv" depend="vid"/>
         </check_sun_details>
 		
+		<cap_grass_shadow_distance x="65" y="3" width="108" height="24" hint = "ui_mm_grass_shadows_dintance_hint">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_grass_shadows_dintance</text>
+        </cap_grass_shadow_distance>	
+		<track_grass_shadow_distance x="182" y="6" width="158" height="16" min="0.01" max="1.0" step="0.01">
+        <options_item entry="r_grass_shadows_dintance" group="mm_opt_video_adv"/>
+			<output_wnd x="160" y="0" width="20" height="20" format="%.1f">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+			</output_wnd>
+        </track_grass_shadow_distance>
+		
         <cap_r2_aa_mode x="65" y="3" width="108" height="24" hint = "ui_mm_r2_aa_mode_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_r2_aa_mode</text>
         </cap_r2_aa_mode>

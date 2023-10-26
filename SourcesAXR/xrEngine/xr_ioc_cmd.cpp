@@ -524,7 +524,7 @@ ENGINE_API BOOL r2_advanced_pp = FALSE;	//	advanced post process and effects
 
 // Ascii1457's Screen Space Shaders
 ENGINE_API Fvector3 ps_ssfx_shadow_cascades = { 20.f, 40.f, 160.f };
-ENGINE_API Fvector4 ps_ssfx_grass_shadows = { .0f, .35f, 30.0f, .0f };
+ENGINE_API Fvector4 ps_ssfx_grass_shadows = { 3.0f, .25f, 30.0f, .0f };
 ENGINE_API Fvector4 ps_ssfx_grass_interactive = { 1.0f, 8.f, 2000.0f, 1.0f };
 ENGINE_API Fvector4 ps_ssfx_int_grass_params_1 = { 1.0f, 1.0f, 1.0f, 25.0f };
 ENGINE_API Fvector4 ps_ssfx_int_grass_params_2 = { 1.0f, 5.0f, 1.0f, 1.0f };
