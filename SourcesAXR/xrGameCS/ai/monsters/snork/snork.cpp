@@ -22,9 +22,6 @@
 #	include "../monster_cover_manager.h"
 #endif
 
-
-
-
 CSnork::CSnork() 
 {
 	StateMan		= xr_new<CStateManagerSnork>	(this);

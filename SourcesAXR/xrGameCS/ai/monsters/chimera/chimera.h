@@ -8,6 +8,9 @@ class CChimera : public CBaseMonster
 
 	bool		b_upper_state;
 
+private:
+	virtual	char*			get_monster_class_name		() { return "chimera"; }
+
 	
 	SVelocityParam		m_fsVelocityWalkUpper;
 	SVelocityParam		m_fsVelocityJumpGround;

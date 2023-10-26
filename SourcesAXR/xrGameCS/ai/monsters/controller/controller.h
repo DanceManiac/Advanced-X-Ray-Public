@@ -170,8 +170,13 @@ public:
 	virtual bool		use_center_to_aim			() const {return true;}
 
 	SAnimationTripleData anim_triple_control;
+
+	virtual	char*		get_monster_class_name		() { return "controller"; }
+
 private:
 	float				m_stamina_hit;
+
+
 #ifdef DEBUG
 	virtual CBaseMonster::SDebugInfo show_debug_info();
 

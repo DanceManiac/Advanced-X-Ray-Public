@@ -171,6 +171,7 @@ public:
 	virtual	void	reinit						();
 			bool	valid						() const;
 			Fvector direction					() const;
+			bool	try_get_direction			(Fvector& direction) const;
 	IC		bool	actual						() const;
 	IC		void	make_inactual				();
 	IC		bool	failed						() const;

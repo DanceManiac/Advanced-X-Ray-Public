@@ -3096,6 +3096,9 @@
     <ClInclude Include="ai_debug.h">
       <Filter>AI\ADebug</Filter>
     </ClInclude>
+    <ClInclude Include="ai_debug_variables.h">
+      <Filter>AI\ADebug</Filter>
+    </ClInclude>
     <ClInclude Include="debug_text_tree.h">
       <Filter>AI\ADebug</Filter>
     </ClInclude>
@@ -7618,6 +7621,9 @@
     </ClCompile>
     <ClCompile Include="smart_cover_object_script.cpp">
       <Filter>AI\ACover\smart_cover\object</Filter>
+    </ClCompile>
+    <ClCompile Include="ai_debug_variables.cpp">
+      <Filter>AI\ADebug</Filter>
     </ClCompile>
     <ClCompile Include="dbg_draw_frustum.cpp">
       <Filter>AI\ADebug</Filter>

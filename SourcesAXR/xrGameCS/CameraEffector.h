@@ -21,6 +21,12 @@
 #define effUseItem				(eStartEffectorID+13)
 #define effDrugs				(eStartEffectorID+14)
 
+#define effPoltergeistTeleDetectStartEffect 2048
+// warning: ~50 constants after effPoltergeistTeleDetectStartEffect are reserved for poltergeists
+
+#define effCustomEffectorStartID	10000
+// warning: constants after effCustomEffectorStartID are reserved
+
 #define	eCEFall					((ECamEffectorType)(cefNext+1))
 #define	eCENoise				((ECamEffectorType)(cefNext+2))
 #define	eCEShot					((ECamEffectorType)(cefNext+3))

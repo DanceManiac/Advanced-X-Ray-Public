@@ -31,6 +31,8 @@ public:
 			bool	look_at_enemy;
 	
 	virtual bool	ability_can_drag	() {return true;}
+
+	virtual	char*	get_monster_class_name () { return "boar"; }
 	
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 

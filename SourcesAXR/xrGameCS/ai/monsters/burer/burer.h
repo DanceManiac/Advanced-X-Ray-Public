@@ -142,6 +142,7 @@ public:
 	SAnimationTripleData	anim_triple_gravi;
 	SAnimationTripleData	anim_triple_tele;
 
+	virtual	char*	get_monster_class_name () { return "burer"; }
 
 #ifdef DEBUG
 	virtual CBaseMonster::SDebugInfo show_debug_info();

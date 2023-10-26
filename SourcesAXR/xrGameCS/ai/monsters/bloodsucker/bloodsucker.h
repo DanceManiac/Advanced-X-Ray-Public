@@ -173,6 +173,7 @@ public:
 
 			u32     get_invisibility_activate_delay () { return m_invisibility_activate_delay; }
 
+			virtual	char* get_monster_class_name () { return "bloodsucker"; }
 
 #ifdef DEBUG
 	virtual CBaseMonster::SDebugInfo show_debug_info();

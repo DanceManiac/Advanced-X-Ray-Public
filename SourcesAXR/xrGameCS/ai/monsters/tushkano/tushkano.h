@@ -16,6 +16,8 @@ public:
 
 	virtual void	Load				(LPCSTR section);
 	virtual void	CheckSpecParams		(u32 spec_params);
+	virtual	char*	get_monster_class_name () { return "tushkano"; }
+
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
