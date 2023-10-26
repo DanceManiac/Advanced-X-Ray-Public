@@ -120,6 +120,9 @@
 		<flashing_icon x="13" y="210" width="48" height="29" type="pda" light_anim="ui_slow_blinking_alpha">
 			<texture>ui_hud_icon_PDA</texture>
 		</flashing_icon>
+		<flashing_icon x="13" y="210" width="48" height="29" type="encyclopedia" light_anim="ui_slow_blinking_alpha">
+			<texture>ui_hud_icon_PDA</texture>
+		</flashing_icon>
 	</flashing_icons>
 
 	<pick_up_item  x="512" y="478" scale="1"/>

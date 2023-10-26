@@ -136,7 +136,7 @@
 		</button-->
 
 		<!--Кнопка дневника. Раскомментировать, если нужно.-->
-		<!--button x="90" y="0" width="50" height="27" id="eptEnc" hint="pda_btn_diar_hint" frame_mode="1">
+		<!--button x="90" y="0" width="50" height="27" id="eptDiar" hint="pda_btn_diar_hint" frame_mode="1">
 			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_diar</text>
 			<texture_t>ui_nav_bt_t</texture_t>
 			<texture_e>ui_nav_bt_e</texture_e>

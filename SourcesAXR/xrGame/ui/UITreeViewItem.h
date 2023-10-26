@@ -11,13 +11,13 @@
 
 #pragma once
 
-#include "UIListBox.h"
-#include "UIListBoxItem.h"
-#include "UIStatic.h"
+#include "UIListItem.h"
 
-class CUITreeViewItem: public CUIListBox
+class CUIListWnd;
+
+class CUITreeViewItem: public CUIListItem
 {
-	typedef CUIListBox inherited;
+	typedef CUIListItem inherited;
 	// Являемся ли мы началом подыерархии
 	bool			isRoot;
 	// Если мы рут, то этот флаг показывает открыта наша подыерархия или нет
@@ -95,7 +95,7 @@ public:
 	// Устанавливаем цвет в зависимости от состояния элемента
 	void	SetItemColor()
 	{
-		m_bArticleRead ? SetTextColor(m_uReadedColor) :SetTextColor(m_uUnreadedColor);
+		m_bArticleRead ? TextItemControl()->SetTextColor(m_uReadedColor) : TextItemControl()->SetTextColor(m_uUnreadedColor);
 	}
 
 private:
@@ -122,7 +122,7 @@ DEF_VECTOR(GroupTree, shared_str);
 
 //////////////////////////////////////////////////////////////////////////
 
-void CreateTreeBranch(shared_str nestingTree, shared_str leafName, CUIListBox *pListToAdd, int leafProperty,
+void CreateTreeBranch(shared_str nestingTree, shared_str leafName, CUIListWnd *pListToAdd, int leafProperty,
 					  CGameFont *pRootFont, u32 rootColor, CGameFont *pLeafFont, u32 leafColor, bool markRead);
 
 #endif	//UI_TREE_VIEW_ITEM_H_

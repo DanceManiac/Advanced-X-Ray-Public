@@ -17,12 +17,34 @@ class CUITaskWnd;
 //-class CUIFactionWarWnd;
 class CUIRankingWnd;
 class CUILogsWnd;
+class CUIEncyclopediaWnd;
 class CUIAnimatedStatic;
 class UIHint;
 class CUIProgressBar;
 
 class CMapSpot;
 
+namespace pda_section {
+	enum part {
+		quests = (1 << 8),
+		map = (1 << 9),
+		diary = (1 << 10),
+		contacts = (1 << 11),
+		ranking = (1 << 12),
+		statistics = (1 << 13),
+		encyclopedia = (1 << 14),
+		skills = (1 << 15),
+		downloads = (1 << 16),
+		games = (1 << 17),
+		mplayer = (1 << 18),
+
+
+		news = diary | (1 << 1),
+		info = diary | (1 << 2),
+		journal = diary | (1 << 3),
+
+	};
+};
 
 class CUIPdaWnd : public CUIDialogWnd
 {
@@ -56,6 +78,7 @@ public:
 	//-	CUIFactionWarWnd*		pUIFactionWarWnd;
 	CUIRankingWnd* pUIRankingWnd;
 	CUILogsWnd* pUILogsWnd;
+	CUIEncyclopediaWnd* pUIEncyclopediaWnd;
 	Frect m_cursor_box;
 	CMapSpot* pSelectedMapSpot;
 
@@ -95,6 +118,7 @@ public:
 	virtual bool StopAnyMove() { return false; }
 
 	void UpdatePda();
+	void PdaContentsChanged(pda_section::part type);
 	void UpdateRankingWnd();
 	void ResetCursor();
 	float m_power;

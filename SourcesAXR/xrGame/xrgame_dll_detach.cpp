@@ -49,8 +49,8 @@ void init_game_globals()
 	InitHudSoundSettings							();
 	if(!g_dedicated_server)
 	{
-//		CInfoPortion::InitInternal					();
-//.		CEncyclopediaArticle::InitInternal			();
+		CInfoPortion::InitInternal					();
+		CEncyclopediaArticle::InitInternal			();
 		CPhraseDialog::InitInternal					();
 		InventoryUtilities::CreateShaders			();
 	};

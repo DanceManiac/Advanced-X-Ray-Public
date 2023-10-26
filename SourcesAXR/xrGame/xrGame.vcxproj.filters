@@ -2508,9 +2508,18 @@
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch">
       <UniqueIdentifier>{744898a7-b82e-421a-8382-cf378c1792cf}</UniqueIdentifier>
-	</Filter>  
+    </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\SleepingBag">
       <UniqueIdentifier>{70f86cf5-7b04-477e-87b5-b7b2aebd8ed3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\Encyclopedia">
+      <UniqueIdentifier>{6d201d34-52c6-44ac-9275-b684a4fa7f86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\UIWindows\ListBox\Ex">
+      <UniqueIdentifier>{668afacb-2b4d-4416-bce8-154048eff79b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\UIWindows\TreeView">
+      <UniqueIdentifier>{67a2141d-85c1-4bed-bedf-028aa7fd6a88}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -7471,9 +7480,30 @@
     </ClInclude>
     <ClInclude Include="WeaponAttaches.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="SleepingBag.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIEncyclopediaArticleWnd.h">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIEncyclopediaWnd.h">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListWnd.h">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListWnd_inline.h">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListItem.h">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListItemEx.h">
+      <Filter>UI\UIWindows\ListBox\Ex</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITreeViewItem.h">
+      <Filter>UI\UIWindows\TreeView</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -11197,9 +11227,30 @@
     </ClCompile>
     <ClCompile Include="WeaponAttaches.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="SleepingBag.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIEncyclopediaArticleWnd.cpp">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIEncyclopediaWnd.cpp">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListWnd.cpp">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListWnd_script.cpp">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListItem.cpp">
+      <Filter>UI\UIWindows\ListBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListItemEx.cpp">
+      <Filter>UI\UIWindows\ListBox\Ex</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITreeViewItem.cpp">
+      <Filter>UI\UIWindows\TreeView</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

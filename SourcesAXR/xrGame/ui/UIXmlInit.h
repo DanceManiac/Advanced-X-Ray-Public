@@ -14,6 +14,7 @@ class CUI3tButton;
 class CUIDragDropList;
 class CUIProgressBar;
 class CUIProgressShape;
+class CUIListWnd;
 class CUITabControl;
 class CUIFrameLineWnd;
 class CUIEditBoxEx;
@@ -52,6 +53,7 @@ public:
 	static bool 	InitText				(CUIXml& xml_doc, LPCSTR path, int index, CUILines* pLines);
 	static bool 	Init3tButton			(CUIXml& xml_doc, LPCSTR path, int index, CUI3tButton* pWnd);
 	static bool 	InitDragDropListEx		(CUIXml& xml_doc, LPCSTR path, int index, CUIDragDropListEx* pWnd);
+	static bool		InitListWnd				(CUIXml& xml_doc, LPCSTR path, int index, CUIListWnd* pWnd);
 	static bool 	InitProgressBar			(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressBar* pWnd);
 	static bool 	InitProgressShape		(CUIXml& xml_doc, LPCSTR path, int index, CUIProgressShape* pWnd);
 	static bool 	InitFont				(CUIXml& xml_doc, LPCSTR path, int index, u32 &color, CGameFont *&pFnt);

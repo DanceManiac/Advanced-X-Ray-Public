@@ -354,7 +354,7 @@ void IterateInfo(const CALifeSimulator* alife, const ALife::_OBJECT_ID& id, cons
     if (!known_info)
         return;
 
-    for (shared_str& it : *known_info)
+    for (auto& it : *known_info)
         functor(id, it);
 }
 

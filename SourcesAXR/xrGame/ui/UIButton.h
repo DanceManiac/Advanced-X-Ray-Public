@@ -24,6 +24,12 @@ public:
 	virtual bool	OnKeyboardAction				(int dik, EUIMessages keyboard_action);
 	virtual void	OnFocusLost				();
 
+	//режимы в которых можно нажимать кнопку
+	typedef enum{NORMAL_PRESS, //кнопка нажимается при 
+							   //нажатии и отпускании на ней мыши
+				 DOWN_PRESS    //сразу при нажатии
+			} E_PRESS_MODE;
+
 	//состояния в которых находится кнопка
 	typedef enum{BUTTON_NORMAL, //кнопка никак не затрагивается
 		BUTTON_PUSHED,			//в нажатом сотоянии
@@ -48,11 +54,20 @@ public:
 	const int			GetAccelerator			(int idx) const;
 	bool				IsAccelerator			(int iAccel) const;
 
+	void				SetPressMode			(E_PRESS_MODE ePressMode)	{m_ePressMode = ePressMode;}
+	E_PRESS_MODE		GetPressMode			()							{return m_ePressMode;}
+
+	void				SetPushOffset			(const Fvector2& offset)	{m_PushOffset = offset;}
+	Fvector2			GetPushOffset			()							{return m_PushOffset;}
+
 	shared_str			m_hint_text;
 protected:
 	
+	E_PRESS_MODE		m_ePressMode;
+	Fvector2			m_PushOffset;
 	E_BUTTON_STATE		m_eButtonState;
 	s16					m_uAccelerator[4];
+	//bool				m_bButtonClicked;
 	bool				m_bIsSwitch;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION

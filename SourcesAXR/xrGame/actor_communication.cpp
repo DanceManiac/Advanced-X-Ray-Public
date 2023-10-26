@@ -30,6 +30,64 @@
 #include "ai/monsters/basemonster/base_monster.h"
 #include "ai/trader/ai_trader.h"
 
+void CActor::AddEncyclopediaArticle	 (const CInfoPortion* info_portion) const
+{
+	VERIFY(info_portion);
+	ARTICLE_VECTOR& article_vector = encyclopedia_registry->registry().objects();
+
+	ARTICLE_VECTOR::iterator last_end = article_vector.end();
+	ARTICLE_VECTOR::iterator B = article_vector.begin();
+	ARTICLE_VECTOR::iterator E = last_end;
+
+	for(ARTICLE_ID_VECTOR::const_iterator it = info_portion->ArticlesDisable().begin();
+									it != info_portion->ArticlesDisable().end(); it++)
+	{
+		FindArticleByIDPred pred(*it);
+		last_end = std::remove_if(B, last_end, pred);
+	}
+	article_vector.erase(last_end, E);
+
+
+	for(ARTICLE_ID_VECTOR::const_iterator it = info_portion->Articles().begin();
+									it != info_portion->Articles().end(); it++)
+	{
+		FindArticleByIDPred pred(*it);
+		if( std::find_if(article_vector.begin(), article_vector.end(), pred) != article_vector.end() ) continue;
+
+		CEncyclopediaArticle article;
+
+		article.Load(*it);
+
+		article_vector.push_back(ARTICLE_DATA(*it, Level().GetGameTime(), article.data()->articleType));
+		LPCSTR g,n;
+		int _atype = article.data()->articleType;
+		g = *(article.data()->group);
+		n = *(article.data()->name);
+		callback(GameObject::eArticleInfo)(lua_game_object(), g, n, _atype);
+
+		if( CurrentGameUI() )
+		{
+			CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(CurrentGameUI());
+			pda_section::part p = pda_section::encyclopedia;
+			switch (article.data()->articleType)
+			{
+				case ARTICLE_DATA::eEncyclopediaArticle:	p = pda_section::encyclopedia;	break;
+				case ARTICLE_DATA::eJournalArticle:			p = pda_section::journal;		break;
+				case ARTICLE_DATA::eInfoArticle:			p = pda_section::info;			break;
+				case ARTICLE_DATA::eTaskArticle:			p = pda_section::quests;		break;
+				default: NODEFAULT;
+			};
+			pGameSP->PdaMenu().PdaContentsChanged(p);
+		}
+
+		if (CurrentGameUI())
+		{
+			CurrentGameUI()->UpdatePda();
+		}
+	}
+
+}
+
 void  CActor::AddGameNews			 (GAME_NEWS_DATA& news_data)
 {
 
@@ -51,6 +109,8 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 
 	CInfoPortion info_portion;
 	info_portion.Load(info_id);
+
+	AddEncyclopediaArticle(&info_portion);
 
 	callback(GameObject::eInventoryInfo)(lua_game_object(), *info_id);
 

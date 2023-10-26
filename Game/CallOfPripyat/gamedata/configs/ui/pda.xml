@@ -93,5 +93,29 @@
 				<h r="170" g="170" b="170"/>
 			</text_color>
 		</button-->
+		
+		<!--Кнопка энциклопедии. Раскомментировать, если нужно.-->
+		<!--button x="413" y="0" width="89" height="27" id="eptEnc" hint="pda_btn_enc_hint" frame_mode="0">
+			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_enc</text>
+			<texture>ui_inGame2_pda_button</texture>
+			<text_color>
+				<t r="255" g="255" b="255"/>
+				<d r="255" g="255" b="255"/>
+				<e r="200" g="200" b="200"/>
+				<h r="170" g="170" b="170"/>
+			</text_color>
+		</button-->
+		
+		<!--Кнопка дневника. Раскомментировать, если нужно.-->
+		<!--button x="413" y="0" width="89" height="27" id="eptDiar" hint="pda_btn_diar_hint" frame_mode="0">
+			<text align="c" vert_align="c" x="0" y="0" font="letterica16">pda_btn_diar</text>
+			<texture>ui_inGame2_pda_button</texture>
+			<text_color>
+				<t r="255" g="255" b="255"/>
+				<d r="255" g="255" b="255"/>
+				<e r="200" g="200" b="200"/>
+				<h r="170" g="170" b="170"/>
+			</text_color>
+		</button-->
 	</tab>
 </w>

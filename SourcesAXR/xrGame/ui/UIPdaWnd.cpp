@@ -26,6 +26,7 @@
 #include "UITaskWnd.h"
 #include "UIRankingWnd.h"
 #include "UILogsWnd.h"
+#include "UIEncyclopediaWnd.h"
 
 #include "UIScriptWnd.h"
 
@@ -48,6 +49,7 @@ CUIPdaWnd::CUIPdaWnd()
 	pUITaskWnd = nullptr;
 	pUIRankingWnd = nullptr;
 	pUILogsWnd = nullptr;
+	pUIEncyclopediaWnd = nullptr;
 	m_hint_wnd = nullptr;
 	m_battery_bar = nullptr;
 	m_power = 0.f;
@@ -61,6 +63,7 @@ CUIPdaWnd::~CUIPdaWnd()
 	delete_data(pUITaskWnd);
 	delete_data(pUIRankingWnd);
 	delete_data(pUILogsWnd);
+	delete_data(pUIEncyclopediaWnd);
 	delete_data(m_hint_wnd);
 	delete_data(UINoice);
 }
@@ -110,6 +113,9 @@ void CUIPdaWnd::Init()
 
 		pUILogsWnd = xr_new<CUILogsWnd>();
 		pUILogsWnd->Init();
+
+		pUIEncyclopediaWnd = xr_new<CUIEncyclopediaWnd>();
+		pUIEncyclopediaWnd->Init();
 	}
 
 	UITabControl = xr_new<CUITabControl>();
@@ -293,6 +299,10 @@ void CUIPdaWnd::SetActiveSubdialog(const shared_str& section)
 	{
 		m_pActiveDialog = pUILogsWnd;
 	}
+	else if (section == "eptEnc")
+	{
+		m_pActiveDialog = pUIEncyclopediaWnd;
+	}
 
 	luabind::functor<CUIDialogWndEx*> functor;
 	if (ai().script_engine().functor("pda.set_active_subdialog", functor))
@@ -420,9 +430,10 @@ void CUIPdaWnd::Reset()
 {
 	inherited::ResetAll();
 
-	if (pUITaskWnd) pUITaskWnd->ResetAll();
-	if (pUIRankingWnd) pUIRankingWnd->ResetAll();
-	if (pUILogsWnd) pUILogsWnd->ResetAll();
+	if (pUITaskWnd)				pUITaskWnd->ResetAll();
+	if (pUIRankingWnd)			pUIRankingWnd->ResetAll();
+	if (pUILogsWnd)				pUILogsWnd->ResetAll();
+	if (pUIEncyclopediaWnd)		pUIEncyclopediaWnd->ResetAll();
 }
 
 void CUIPdaWnd::SetCaption(LPCSTR text)
@@ -561,4 +572,18 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		}
 	}
 	return inherited::OnKeyboardAction(dik, keyboard_action);
+}
+
+void CUIPdaWnd::PdaContentsChanged(pda_section::part type)
+{
+	if (type == pda_section::encyclopedia)
+	{
+		pUIEncyclopediaWnd->ReloadArticles();
+		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, true);
+
+	}
+	else if (type == pda_section::quests)
+	{
+		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
+	}
 }
