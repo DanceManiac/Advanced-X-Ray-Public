@@ -2411,6 +2411,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,		"dbg_draw_actor_alive",		&dbg_net_Draw_Flags,	dbg_draw_actor_alive);
 	CMD3(CCC_Mask,		"dbg_draw_actor_dead",		&dbg_net_Draw_Flags,	dbg_draw_actor_dead );
 	CMD3(CCC_Mask,		"dbg_draw_customzone",		&dbg_net_Draw_Flags,	dbg_draw_customzone );
+	CMD3(CCC_Mask,		"dbg_draw_lchangers",		&dbg_net_Draw_Flags,	dbg_draw_lchangers );
 	CMD3(CCC_Mask,		"dbg_draw_teamzone",		&dbg_net_Draw_Flags,	dbg_draw_teamzone);
 	CMD3(CCC_Mask,		"dbg_draw_invitem",			&dbg_net_Draw_Flags,	dbg_draw_invitem);
 	CMD3(CCC_Mask,		"dbg_draw_actor_phys",		&dbg_net_Draw_Flags,	dbg_draw_actor_phys);

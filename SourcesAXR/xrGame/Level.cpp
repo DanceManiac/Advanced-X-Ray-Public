@@ -11,6 +11,7 @@
 #include "game_cl_base.h"
 #include "entity_alive.h"
 #include "ai_space.h"
+#include "level_changer.h"
 #include "ai_debug.h"
 //#include "PHdynamicdata.h"
 //#include "Physics.h"
@@ -169,7 +170,7 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	m_ph_commander						= xr_new<CPHCommander>();
 	m_ph_commander_scripts				= xr_new<CPHCommander>();
 	//m_ph_commander_physics_worldstep	= xr_new<CPHCommander>();
-		
+
 #ifdef DEBUG
 	m_bSynchronization			= false;
 #endif	
@@ -341,7 +342,7 @@ CLevel::~CLevel()
 	if(g_tutorial2 && g_tutorial2->m_pStoredInputReceiver==this)
 		g_tutorial2->m_pStoredInputReceiver = NULL;
 
-	
+
 	if (IsDemoPlay())
 	{
 		StopPlayDemo();
@@ -917,6 +918,10 @@ void CLevel::OnRender()
 			CSpaceRestrictor	*space_restrictor = smart_cast<CSpaceRestrictor*>	(_O);
 			if (space_restrictor)
 				space_restrictor->OnRender();
+
+			CLevelChanger*		lchanger = smart_cast<CLevelChanger*>	(_O);
+			if (lchanger)
+				lchanger->OnRender();
 			CClimableObject		*climable		  = smart_cast<CClimableObject*>	(_O);
 			if(climable)
 				climable->OnRender();
@@ -1324,7 +1329,7 @@ void CLevel::OnAlifeSimulatorLoaded()
 }
 
 void CLevel::OnDestroyObject(std::uint16_t id)
-{ 
+{
 	m_just_destroyed.push_back(id);
 }
 

@@ -2314,9 +2314,9 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
 		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
 		CMD1(DumpTxrsForPrefetching, "ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
-		CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE);
-		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
-		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode,	0, 5);
+		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
+		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
+		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
 	}
 
 	CMD3(CCC_Mask,		"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
@@ -2333,6 +2333,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,		"dbg_draw_actor_alive",		&dbg_net_Draw_Flags,	dbg_draw_actor_alive);
 	CMD3(CCC_Mask,		"dbg_draw_actor_dead",		&dbg_net_Draw_Flags,	dbg_draw_actor_dead );
 	CMD3(CCC_Mask,		"dbg_draw_customzone",		&dbg_net_Draw_Flags,	dbg_draw_customzone );
+	CMD3(CCC_Mask,		"dbg_draw_lchangers",		&dbg_net_Draw_Flags,	dbg_draw_lchangers );
 	CMD3(CCC_Mask,		"dbg_draw_teamzone",		&dbg_net_Draw_Flags,	dbg_draw_teamzone);
 	CMD3(CCC_Mask,		"dbg_draw_invitem",			&dbg_net_Draw_Flags,	dbg_draw_invitem);
 	CMD3(CCC_Mask,		"dbg_draw_actor_phys",		&dbg_net_Draw_Flags,	dbg_draw_actor_phys);

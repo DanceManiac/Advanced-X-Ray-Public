@@ -11,8 +11,8 @@
 #include "game_cl_base.h"
 #include "entity_alive.h"
 #include "ai_space.h"
+#include "level_changer.h"
 #include "ai_debug.h"
-#include "CustomDetector.h"
 //#include "PHdynamicdata.h"
 //#include "Physics.h"
 #include "ShootingObject.h"
@@ -47,9 +47,7 @@
 #include "UI/UIGameTutorial.h"
 #include "file_transfer.h"
 #include "message_filter.h"
-
-#include "alife_simulator.h"
-#include "alife_time_manager.h"
+#include "CustomDetector.h"
 
 #include "../xrEngine/GameMtlLib.h"
 #include "../xrEngine/IGame_Persistent.h"
@@ -74,6 +72,9 @@
 
 #include "embedded_editor/embedded_editor_main.h"
 #include "embedded_editor/editor_render.h"
+
+#include "alife_simulator.h"
+#include "alife_time_manager.h"
 
 #include "../xrEngine/CameraManager.h"
 #include "ActorEffector.h"
@@ -235,7 +236,7 @@ CLevel::CLevel():IPureClient	(Device.GetTimerGlobal())
 	}
 	*/
 	//---------------------------------------------------------	
-	m_file_transfer = NULL;
+	m_file_transfer					= NULL;
 	m_is_removing_objects = false;
 }
 
@@ -335,6 +336,7 @@ CLevel::~CLevel()
 
 	if(g_tutorial2 && g_tutorial2->m_pStoredInputReceiver==this)
 		g_tutorial2->m_pStoredInputReceiver = NULL;
+
 
 	if (IsDemoPlay())
 	{
@@ -913,6 +915,10 @@ void CLevel::OnRender()
 			CSpaceRestrictor	*space_restrictor = smart_cast<CSpaceRestrictor*>	(_O);
 			if (space_restrictor)
 				space_restrictor->OnRender();
+
+			CLevelChanger*		lchanger = smart_cast<CLevelChanger*>	(_O);
+			if (lchanger)
+				lchanger->OnRender();
 			CClimableObject		*climable		  = smart_cast<CClimableObject*>	(_O);
 			if(climable)
 				climable->OnRender();
