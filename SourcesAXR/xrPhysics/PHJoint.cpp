@@ -489,7 +489,7 @@ void CPHJoint::SetAxisDirDynamic(const Fvector& orientation,const int axis_num)
 void CPHJoint::SetAxisDirVsFirstElement(const float x,const float y,const float z,const int axis_num)
 {
 	int ax=axis_num;
-    LimitAxisNum(ax);
+	LimitAxisNum(ax);
 	if(-1==ax) return;
 	axes[ax].vs=vs_first;
 	axes[ax].direction.set(x,y,z);
@@ -966,58 +966,69 @@ float CPHJoint::GetAxisAngle(int axis_num)
 */
 void CPHJoint::SetLimitsActive(int axis_num)
 {
-	switch(eType){
+	switch (eType)
+	{
+	case hinge2:
+		switch (axis_num)
+		{
+		case -1:
+		case 0:
+		case 1:
+			dJointSetHinge2Param(m_joint, dParamLoStop, axes[0].low);
+			dJointSetHinge2Param(m_joint, dParamHiStop, axes[0].high);
+			break;
+		}
+		break;
+	case slider:
+		switch (axis_num)
+		{
+		case -1:
+			dJointSetSliderParam(m_joint, dParamLoStop, axes[0].low);
+			dJointSetSliderParam(m_joint, dParamHiStop, axes[0].high);
+			dJointSetAMotorParam(m_joint1, dParamLoStop, axes[1].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop, axes[1].high);
+			break;
+		case 0:
+			dJointSetSliderParam(m_joint, dParamLoStop, axes[0].low);
+			dJointSetSliderParam(m_joint, dParamHiStop, axes[0].high);
+			break;
+		case 1:
+			dJointSetAMotorParam(m_joint1, dParamLoStop, axes[1].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop, axes[1].high);
+			break;
+		}
+		break;
+	case ball: break;
+	case hinge:
+		dJointSetHingeParam(m_joint, dParamLoStop, axes[0].low);
+		dJointSetHingeParam(m_joint, dParamHiStop, axes[0].high);
+		break;
 
-						case hinge2:
-									switch(axis_num)
-											{
-											case -1:
-											case 0:
-											case 1:
-												dJointSetHinge2Param(m_joint,dParamLoStop ,axes[0].low);
-												dJointSetHinge2Param(m_joint,dParamHiStop,axes[0].high);break;
-											}
-									break;
-						case slider:switch(axis_num)
-									{
-						case -1:
-							dJointSetSliderParam(m_joint,dParamLoStop ,axes[0].low);
-							dJointSetSliderParam(m_joint,dParamHiStop ,axes[0].high);
-							dJointSetAMotorParam(m_joint1,dParamLoStop ,axes[1].low);
-							dJointSetAMotorParam(m_joint1,dParamHiStop ,axes[1].high);
-						case 0:				dJointSetSliderParam(m_joint,dParamLoStop ,axes[0].low);
-											dJointSetSliderParam(m_joint,dParamHiStop ,axes[0].high);break;
-						case 1:				dJointSetAMotorParam(m_joint1,dParamLoStop ,axes[1].low);
-											dJointSetAMotorParam(m_joint1,dParamHiStop ,axes[1].high);break;
-									}
-									break;
-						case ball:					break;
-						case hinge:					dJointSetHingeParam(m_joint,dParamLoStop ,axes[0].low);
-													dJointSetHingeParam(m_joint,dParamHiStop ,axes[0].high);
-							break;
-
-
-
-						case full_control:
-							switch(axis_num){
-						case -1:
-							dJointSetAMotorParam(m_joint1,dParamLoStop ,axes[0].low);
-							dJointSetAMotorParam(m_joint1,dParamLoStop ,axes[0].low);
-							dJointSetAMotorParam(m_joint1,dParamLoStop2 ,axes[1].low);
-							dJointSetAMotorParam(m_joint1,dParamHiStop2 ,axes[1].high);
-							dJointSetAMotorParam(m_joint1,dParamHiStop3 ,axes[2].high);
-							dJointSetAMotorParam(m_joint1,dParamHiStop3 ,axes[2].high);
-						case 0:dJointSetAMotorParam(m_joint1,dParamLoStop ,axes[0].low);
-							   dJointSetAMotorParam(m_joint1,dParamHiStop ,axes[0].high);
-								break;
-						case 1:dJointSetAMotorParam(m_joint1,dParamLoStop2 ,axes[1].low);
-								dJointSetAMotorParam(m_joint1,dParamHiStop2 ,axes[1].high);
-								break;
-						case 2:dJointSetAMotorParam(m_joint1,dParamLoStop3 ,axes[2].low);
-								dJointSetAMotorParam(m_joint1,dParamHiStop3 ,axes[2].high);
-								break;
-							}
-							break;
+	case full_control:
+		switch (axis_num)
+		{
+		case -1:
+			dJointSetAMotorParam(m_joint1, dParamLoStop, axes[0].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop, axes[0].high);
+			dJointSetAMotorParam(m_joint1, dParamLoStop2, axes[1].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop2, axes[1].high);
+			dJointSetAMotorParam(m_joint1, dParamLoStop3, axes[2].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop3, axes[2].high);
+			break;
+		case 0:
+			dJointSetAMotorParam(m_joint1, dParamLoStop, axes[0].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop, axes[0].high);
+			break;
+		case 1:
+			dJointSetAMotorParam(m_joint1, dParamLoStop2, axes[1].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop2, axes[1].high);
+			break;
+		case 2:
+			dJointSetAMotorParam(m_joint1, dParamLoStop3, axes[2].low);
+			dJointSetAMotorParam(m_joint1, dParamHiStop3, axes[2].high);
+			break;
+		}
+		break;
 	}
 }
 
