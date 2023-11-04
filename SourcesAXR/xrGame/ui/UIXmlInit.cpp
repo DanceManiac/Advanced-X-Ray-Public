@@ -868,10 +868,6 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 
 	string256 buf;
 
-	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") ? true : false;
-	R_ASSERT(stretch_flag==false);
-//.	pWnd->SetStretchTexture( stretch_flag );
-
 	Fvector2 pos, size;
 	pos.x			= xml_doc.ReadAttribFlt(path, index, "x");
 	pos.y			= xml_doc.ReadAttribFlt(path, index, "y");
