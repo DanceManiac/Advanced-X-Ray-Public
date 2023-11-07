@@ -328,7 +328,7 @@ bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 			m_iPortionsNum = 0;
 	}
 
-	if (CurrentGameUI()->ActorMenu().IsShown())
+	if (CurrentGameUI()->ActorMenu().IsShown() && CurrentGameUI()->ActorMenu().GetMenuMode() != mmDeadBodySearch)
 		CurrentGameUI()->ActorMenu().RefreshConsumableCells();
 
 	return true;
