@@ -173,9 +173,9 @@ f_deffer 	main	( p_flat I 		)
 
 	// hemi, sun, material
 	float 	ms	= xmaterial	;
-#ifdef USE_R2_STATIC_SUN
-		 	ms 	= L.w		;
-#endif
+//#ifdef USE_R2_STATIC_SUN
+//		 	ms 	= L.w		;
+//#endif
 
   // 2. Standart output
   float4     Ne = float4	(normalize(N), 									D.w			);

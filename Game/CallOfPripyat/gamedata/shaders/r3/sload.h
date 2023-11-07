@@ -192,7 +192,8 @@ void UpdateTC( inout p_bumped I)
 		I.tcdbump += displaced_tc - I.tcdh; //offset
 	#endif		
 	
-		I.tcdh = displaced_tc;
+	I.tcdh.xy = displaced_tc;
+	
 	}
 }
 

@@ -1,10 +1,10 @@
 #include	"common.h"
 
-#if defined(USE_R2_STATIC_SUN) && !defined(USE_LM_HEMI)
-#define	v_in	v_static_color	
-#else
+//#if defined(USE_R2_STATIC_SUN) && !defined(USE_LM_HEMI)
+//#define	v_in	v_static_color	
+//#else
 #define	v_in	v_static
-#endif
+//#endif
 
 
 v2p_bumped main( v_in I )
@@ -22,9 +22,9 @@ v2p_bumped main( v_in I )
 	O.position	= float4	(Pe, hemi			);
 //	O.position	= float4	(O.hpos.xyz, hemi	);
 
-#if defined(USE_R2_STATIC_SUN) && !defined(USE_LM_HEMI)
-	O.tcdh.w	= I.color.w;					// (r,g,b,dir-occlusion)
-#endif
+//#if defined(USE_R2_STATIC_SUN) && !defined(USE_LM_HEMI)
+	//O.tcdh.w	= I.color.w;					// (r,g,b,dir-occlusion)
+//#endif
 
 	// Calculate the 3x3 transform from tangent space to eye-space
 	// TangentToEyeSpace = object2eye * tangent2object

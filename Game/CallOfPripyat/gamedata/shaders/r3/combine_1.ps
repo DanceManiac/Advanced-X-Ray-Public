@@ -104,7 +104,13 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 	float sun_occ = P.w*2;
 
 	mtl = xmaterial;
-	L += SRGBToLinear(D.rgb * Ldynamic_color.rgb * sun_occ) * plight_infinity	(mtl, P.xyz, N.xyz, D.xyzw, Ldynamic_dir);
+
+#ifdef ES_PSEUDO_PBR
+	L += float4(SRGBToLinear(D.rgb * Ldynamic_color.rgb * sun_occ),0) * plight_infinity	(mtl, P.xyz, N.xyz, D.xyzw, Ldynamic_dir);
+#else
+	L += float4(SRGBToLinear(D.rgb * Ldynamic_color.rgb * sun_occ),1) * plight_infinity	(mtl, P.xyz, N.xyz, D.xyzw, Ldynamic_dir);	
+#endif
+
 #endif
 
 

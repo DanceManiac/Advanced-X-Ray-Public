@@ -9,6 +9,8 @@ float4 wave; // cx,cy,cz,tm
 float4 dir2D; 
 float4 array[61*4];
 
+uniform float2 c_sun; // x=*, y=+
+
 v2p_bumped 	main (v_detail v)
 {
 	v2p_bumped 		O;
