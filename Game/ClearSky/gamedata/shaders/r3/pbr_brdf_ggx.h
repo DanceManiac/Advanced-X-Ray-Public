@@ -48,7 +48,7 @@ float3 Lit_GGX(float NdotL, float NdotH, float NdotV, float VdotH, float3 F0, fl
     float3 numerator = (D * V) * F;
     
     //Denominator
-    float denominator = 4.0 * NdotV;
+    //float denominator = 4.0 * NdotV;
     
     return numerator; //UE4 has no denom
     //return numerator / denominator;
