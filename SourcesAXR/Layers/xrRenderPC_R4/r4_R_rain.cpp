@@ -57,7 +57,11 @@ void CRender::render_rain()
 	Fmatrix	ex_project, ex_full, ex_full_inverse;
 	{
 		//	
-		const float fRainFar = ps_r3_dyn_wet_surf_far;
+		float fRainFar = 250.f;
+
+		if (ps_ssfx_gloss_method == 0)
+			fRainFar = ps_r3_dyn_wet_surf_far;
+
 		ex_project.build_projection	(deg2rad(Device.fFOV/* *Device.fASPECT*/),Device.fASPECT,VIEWPORT_NEAR, fRainFar); 
 		ex_full.mul					(ex_project,Device.mView);
 		D3DXMatrixInverse			((D3DXMATRIX*)&ex_full_inverse,0,(D3DXMATRIX*)&ex_full);

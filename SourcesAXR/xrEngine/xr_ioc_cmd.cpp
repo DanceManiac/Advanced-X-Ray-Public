@@ -530,6 +530,8 @@ ENGINE_API Fvector4 ps_ssfx_int_grass_params_1 = { 1.0f, 1.0f, 1.0f, 25.0f };
 ENGINE_API Fvector4 ps_ssfx_int_grass_params_2 = { 1.0f, 5.0f, 1.0f, 1.0f };
 ENGINE_API Fvector4 ps_ssfx_hud_drops_1 = { 1.0f, 1.0f, 30.f, .05f }; // Anim Speed, Int, Reflection, Refraction
 ENGINE_API Fvector4 ps_ssfx_hud_drops_2 = { .0225f, 1.f, 0.0f, 2.0f }; // Density, Size, Extra Gloss, Gloss
+ENGINE_API Fvector4 ps_ssfx_hud_drops_1_cfg = { 3.0f, 1.f, 1.f, 50.f }; // Quantity of drops, Refrelction intensity, Refraction intensity, Speed of the drops animation
+ENGINE_API Fvector4 ps_ssfx_hud_drops_2_cfg = { 50.f, 50.f, 0.75f, 2.f }; // Drops build up speed, Drying speed, Size of the drops, Raindrops gloss intensity
 ENGINE_API Fvector4 ps_ssfx_blood_decals = { 0.6f, 0.6f, 0.f, 0.f };
 ENGINE_API Fvector4 ps_ssfx_rain_1 = { 6.0f, 0.1f, 0.6f, 2.f }; // Len, Width, Speed, Quality
 ENGINE_API Fvector4 ps_ssfx_rain_2 = { 0.7f, 0.1f, 1.0f, 0.5f }; // Alpha, Brigthness, Refraction, Reflection
@@ -539,10 +541,14 @@ ENGINE_API Fvector4 ps_ssfx_florafixes_2 = { 2.0f, 1.0f, 0.0f, 0.0f }; // Flora 
 ENGINE_API Fvector4 ps_ssfx_wetsurfaces_1 = { 1.0f, 1.0f, 1.0f, 1.0f }; // Wet surfaces 1
 ENGINE_API Fvector4 ps_ssfx_wetsurfaces_2 = { 1.0f, 1.0f, 1.0f, 1.0f }; // Wet surfaces 2
 ENGINE_API int ps_ssfx_is_underground = 0;
-ENGINE_API int ps_ssfx_gloss_method = 0;
+ENGINE_API int ps_ssfx_gloss_method = 1;
 ENGINE_API float ps_ssfx_gloss_factor = 0.5f;
 ENGINE_API Fvector3 ps_ssfx_gloss_minmax = { 0.0f,0.92f,0.0f }; // Gloss
 ENGINE_API Fvector4 ps_ssfx_lightsetup_1 = { 0.35f, 0.5f, 0.0f, 0.0f }; // Spec intensity
+
+ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
+ENGINE_API float ps_r3_dyn_wet_surf_far = 30.f; // 30.0f
+ENGINE_API int ps_r3_dyn_wet_surf_sm_res = 256; // 256
 
 u32	renderer_value	= 3;
 //void fill_render_mode_list();
