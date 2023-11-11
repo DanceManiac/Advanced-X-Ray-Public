@@ -321,8 +321,10 @@ void CObjectHandlerPlanner::remove_item		(CInventoryItem *inventory_item)
 
 			if (it == m_current_state.conditions().end())
 				break;
+#ifdef DEBUG
 			Msg("! [%s]: %s found in m_current_state", __FUNCTION__,
 				inventory_item->object().cName().c_str());
+#endif
 
 			m_current_state.remove_condition(it->condition());
 		}
