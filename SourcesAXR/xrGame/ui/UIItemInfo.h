@@ -12,7 +12,8 @@ class CUIWpnParams;
 class CUIArtefactParams;
 class CUIFrameWindow;
 class UIInvUpgPropertiesWnd;
-class CUIOutfitInfo;
+class CUIOutfitItem;
+class CUIOutfitItemInfo;
 class CUIBoosterInfo;
 class CUICellItem;
 class CUIInventoryItem;
@@ -74,7 +75,8 @@ public:
 	CUIWpnParams*			UIWpnParams;
 	CUIArtefactParams*		UIArtefactParams;
 	UIInvUpgPropertiesWnd*	UIProperties;
-	CUIOutfitInfo*			UIOutfitInfo;
+	CUIOutfitItem*			UIOutfitItem;
+	CUIOutfitItem*			UIOutfitInfo;
 	CUIBoosterInfo*			UIBoosterInfo;
 	CUIInventoryItem*		UIInventoryItem;
 

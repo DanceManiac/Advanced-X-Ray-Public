@@ -747,4 +747,10 @@
 	<string id="ui_mm_grass_shadows_dintance_hint">
 		<text>Данная опция позволяет отрегулировать радиус отрисовки теней от травы. Понижая значение, можно выиграть какое-то количество FPS.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
 	</string>
+	<string id="ui_inv_outfit_artefacts_count">
+		<text>Ячейки артефактов</text>
+	</string>
+	<string id="ui_inv_outfit_inventory_capacity">
+		<text>Вместительность</text>
+	</string>
 </string_table>

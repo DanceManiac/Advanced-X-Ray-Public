@@ -183,8 +183,11 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 	}
 	if ( uiXml.NavigateToNode( "outfit_info", 0 ) )
 	{
-		UIOutfitInfo				= xr_new<CUIOutfitInfo>();
-		UIOutfitInfo->InitFromXml	(uiXml);
+		UIOutfitItem				= xr_new<CUIOutfitItem>();
+		UIOutfitItem->InitFromXml	(uiXml);
+
+		UIOutfitInfo = xr_new<CUIOutfitItem>();
+		UIOutfitInfo->InitFromXml(uiXml);
 	}
 
 	if (uiXml.NavigateToNode("inventory_items_info", 0))
@@ -456,16 +459,21 @@ void CUIItemInfo::TryAddOutfitInfo( CInventoryItem& pInvItem, CInventoryItem* pC
 	if ( outfit && UIOutfitInfo )
 	{
 		CCustomOutfit* comp_outfit = smart_cast<CCustomOutfit*>(pCompareItem);
-		UIOutfitInfo->UpdateInfo( outfit, comp_outfit );
+		UIOutfitItem->SetInfo( outfit, comp_outfit );
 		UIDesc->AddWindow( UIOutfitInfo, false );
 	}
 	if ( helmet && UIOutfitInfo )
 	{
 		CHelmet* comp_helmet = smart_cast<CHelmet*>(pCompareItem);
-		UIOutfitInfo->UpdateInfo( helmet, comp_helmet );
+		UIOutfitItem->SetInfo( helmet, comp_helmet );
 		UIDesc->AddWindow( UIOutfitInfo, false );
 	}
 
+	if ((outfit || helmet) && UIOutfitItem)
+	{
+		UIOutfitItem->SetInfo(pInvItem);
+		UIDesc->AddWindow(UIOutfitItem, false);
+	}
 }
 
 void CUIItemInfo::TryAddUpgradeInfo( CInventoryItem& pInvItem )
