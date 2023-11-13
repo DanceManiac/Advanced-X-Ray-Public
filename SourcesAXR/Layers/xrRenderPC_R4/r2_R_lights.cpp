@@ -132,11 +132,14 @@ void	CRender::render_lights	(light_Package& LP)
 				RCache.set_xform_project			(L->X.S.project);
 				r_dsgraph_render_graph				(0);
 
-				if (check_grass_shadow(L, ViewBase))
+				if (Details)
 				{
-					Details->fade_distance = -1; // Use light position to calc "fade"
-					Details->light_position.set(L->position);
-					Details->Render();
+					if (check_grass_shadow(L, ViewBase))
+					{
+						Details->fade_distance = -1; // Use light position to calc "fade"
+						Details->light_position.set(L->position);
+						Details->Render();
+					}
 				}
 
 				L->X.S.transluent					= FALSE;

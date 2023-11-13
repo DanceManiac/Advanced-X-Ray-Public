@@ -1073,7 +1073,10 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	if (attach_visual)
 	{
+		::Render->hud_loading = true;
 		script_anim_item_model = ::Render->model_Create(attach_visual)->dcast_PKinematics();
+		::Render->hud_loading = false;
+
 		item_pos[0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "item_position", def);
 		item_pos[1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "item_orientation", def);
 		script_anim_item_attached = READ_IF_EXISTS(pSettings, r_bool, section, "item_attached", true);
