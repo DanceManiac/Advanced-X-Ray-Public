@@ -7,8 +7,6 @@ local task_types = {
 	insignificant = 2
 }
 
-local task_difficult = nil
-
 local valid_values = {
 	complete 	= true,
 	fail 		= true,
@@ -69,7 +67,7 @@ function CGeneralTask:__init(task_ini, id, type)
 	self.base_prior		= utils.cfg_get_number(task_ini, id, "prior", nil, false, 0)
 	self.prior			= self.base_prior
 	self.text			= utils.cfg_get_string(task_ini, id, "text", nil, false, "", "NO_TEXT")
-	task_difficult		= utils.cfg_get_string(task_ini, id, "task_difficult", nil, false, "", nil)
+	self.task_difficult	= utils.cfg_get_string(task_ini, id, "task_difficult", nil, false, "", "none")
 	self.description	= utils.cfg_get_string(task_ini, id, "description", nil, false, "", "NO_TEXT")
 	self.board			= sim_board.get_sim_board()
 	self.auto_name		= utils.cfg_get_bool(task_ini, id, "auto_name", nil, false, true)
@@ -101,14 +99,14 @@ function CGeneralTask:__init(task_ini, id, type)
 	self.actor_helped = false
 end
 
-function CGeneralTask.get_task_difficult_icon()
+function CGeneralTask.get_task_difficult_icon(difficult)
 	local icon_name = nil
 	
-	if task_difficult == "easy" then
+	if difficult == "easy" then
 		icon_name = "task_icon_easy"
-	elseif task_difficult == "normal" then
+	elseif difficult == "normal" then
 		icon_name = "task_icon_normal"
-	elseif task_difficult == "hard" then
+	elseif difficult == "hard" then
 		icon_name = "task_icon_hard"
 	else
 		icon_name = "none"
@@ -173,9 +171,9 @@ function CGeneralTask:give_task(community)
 	t:set_priority(self.prior)
 	t:set_icon_name(self.icon)
 	
-	--if task_difficult ~= nil then
-	--	t:set_difficult_icon_name(CGeneralTask.get_task_difficult_icon())
-	--end
+	if self.task_difficult ~= "none" then
+		t:set_difficult_icon_name(CGeneralTask.get_task_difficult_icon(self.task_difficult))
+	end
 
 	if (type=="take_reward") then
 		t:set_description("")

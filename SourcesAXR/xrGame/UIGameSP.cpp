@@ -153,7 +153,7 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 				SDrawStaticStruct* sm2		= AddCustomStatic("secondary_task", true);
 				sm2->m_static->TextItemControl()->SetTextST	(t1->m_Description.c_str());
 
-				if (t1->m_difficulty_icon_name.c_str())
+				if (t1 && t1->m_difficulty_icon_name.c_str())
 					m_game_objective->m_static->InitTexture(t1->m_difficulty_icon_name.c_str());
 			}
 		}break;

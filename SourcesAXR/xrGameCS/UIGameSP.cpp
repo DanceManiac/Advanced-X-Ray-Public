@@ -114,35 +114,37 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 
 	case kSCORES:
 		{
-			CActor *pActor = smart_cast<CActor*>(pInvOwner);
-			if( !pActor ) return false;
-			if( !pActor->g_Alive() )	return false;
+			CActor* pActor = smart_cast<CActor*>(pInvOwner);
+			if (!pActor) return false;
+			if (!pActor->g_Alive())	return false;
 
+			SDrawStaticStruct* sm = AddCustomStatic("main_task", true);
+			CGameTask* t1 = Level().GameTaskManager().ActiveTask(eTaskTypeStoryline);
+			CGameTask* t2 = Level().GameTaskManager().ActiveTask(eTaskTypeAdditional);
 
-			SDrawStaticStruct* sm	= AddCustomStatic("main_task", true);
-			CGameTask* t1			= Level().GameTaskManager().ActiveTask(eTaskTypeStoryline);
-			CGameTask* t2			= Level().GameTaskManager().ActiveTask(eTaskTypeAdditional);
-			if(t1 && t2)
+			sm->m_static->SetTextST((t1) ? t1->m_Title.c_str() : "st_no_active_task");
+
+			if (t1 && t2)
 			{
-				sm->m_static->SetTextST		(t1->m_Title.c_str());
-				SDrawStaticStruct* sm2		= AddCustomStatic("secondary_task", true);
-				sm2->m_static->SetTextST	(t2->m_Title.c_str());
+				SDrawStaticStruct* sm2 = AddCustomStatic("secondary_task", true);
+				sm2->m_static->SetTextST((t2) ? t2->m_Title.c_str() : "");
 
-				//if (t1->m_difficulty_icon_name.c_str())
-				//	sm->m_static->InitTexture(t1->m_difficulty_icon_name.c_str());
-			}
-			else if(t1 || t2)
+				if (t1 && t1->m_difficulty_icon_name.c_str())
+					sm->m_static->InitTexture(t1->m_difficulty_icon_name.c_str());
+			} 
+			else if (t1 || t2)
 			{
-				CGameTask* t				= (t1)?t1:t2;
-				sm->m_static->SetTextST		(t->m_Title.c_str());
+				CGameTask* t = (t1) ? t1 : t2;
+				sm->m_static->SetTextST((t) ? t->m_Title.c_str() : "st_no_active_task");
 
-				//if (t->m_difficulty_icon_name.c_str())
-				//	sm->m_static->InitTexture(t->m_difficulty_icon_name.c_str());
+				if (t && t->m_difficulty_icon_name.c_str())
+					sm->m_static->InitTexture(t->m_difficulty_icon_name.c_str());
 			}
 			else
-				sm->m_static->SetTextST	("st_no_active_task");
-
-		}break;
+				sm->m_static->SetTextST("st_no_active_task");
+			
+			break;
+		}
 	}
 	return false;
 }
