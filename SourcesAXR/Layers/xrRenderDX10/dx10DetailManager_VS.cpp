@@ -158,7 +158,7 @@ void CDetailManager::hw_Render_dump(const Fvector4 &consts, const Fvector4 &wave
 				{
 					RCache.set_c(strGrassSetup, ps_ssfx_int_grass_params_1);
 
-					Fvector4* c_grass;
+					Fvector4* c_grass{};
 					{
 						void* GrassData;
 						RCache.get_ConstantDirect(strPos, BendersQty * sizeof(Fvector4), &GrassData, 0, 0);

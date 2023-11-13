@@ -77,7 +77,7 @@ public:
 	void GrassBendersSet(u8 idx, u16 id, Fvector position, Fvector3 dir, float fade, float speed, float str, float radius, GrassBenders_Anim anim, bool resetTime);
 	float GrassBenderToValue(float& current, float go_to, float intensity, bool use_easing);
 
-	CPerlinNoise1D* PerlinNoise1D;
+	CPerlinNoise1D* PerlinNoise1D{};
 
 	struct grass_data
 	{
@@ -93,10 +93,10 @@ public:
 		float time[16];
 		float fade[16];
 		float speed[16];
-	} grass_shader_data;
+	} grass_shader_data{};
 
-	u32 m_last_ray_pick_time;
-	bool m_isInHideout;
+	u32 m_last_ray_pick_time{};
+	bool m_isInHideout{};
 	bool IsActorInHideout();
 
 			void					destroy_particles	(const bool &all_particles);

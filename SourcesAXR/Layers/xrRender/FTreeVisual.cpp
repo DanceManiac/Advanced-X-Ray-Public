@@ -176,7 +176,7 @@ void FTreeVisual::Render	(float LOD)
 			player_pos.set(Device.vCameraPosition.x, Device.vCameraPosition.y, Device.vCameraPosition.z, -1);
 		}
 
-		Fvector4* c_grass;
+		Fvector4* c_grass{};
 		{
 			void* GrassData;
 			RCache.get_ConstantDirect(c_c_BendersPos, BendersQty * sizeof(Fvector4) * 2, &GrassData, 0, 0);
