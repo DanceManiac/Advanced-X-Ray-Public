@@ -146,6 +146,7 @@ private:
 	LPCSTR							cs_name;
 #endif	//	USE_DX11
 #endif
+
 	u32								stencil_enable;
 	u32								stencil_func;
 	u32								stencil_ref;
@@ -392,6 +393,7 @@ public:
 	IC void	dbg_SetSS				(u32 sampler, D3DSAMPLERSTATETYPE type, u32 value)
 	{ CHK_DX(HW.pDevice->SetSamplerState(sampler,type,value)); }
 #endif
+
 #ifdef DEBUG
 	void dbg_Draw					(D3DPRIMITIVETYPE T, FVF::L* pVerts, int vcnt, u16* pIdx, int pcnt);
 	void dbg_Draw					(D3DPRIMITIVETYPE T, FVF::L* pVerts, int pcnt);

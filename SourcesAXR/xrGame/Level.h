@@ -43,7 +43,7 @@ class	demoplay_control;
 class	demo_info;
 
 #ifdef DEBUG
-	class	CDebugRenderer;
+class	CDebugRenderer;
 #endif
 
 extern float g_fov;
@@ -318,6 +318,7 @@ public:
 #ifdef DEBUG
 	IC CDebugRenderer				&debug_renderer				();
 #endif
+
 	void	__stdcall				script_gc					();			// GC-cycle
 
 	IC CPHCommander					&ph_commander				();

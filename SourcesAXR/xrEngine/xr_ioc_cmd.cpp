@@ -682,6 +682,9 @@ public		:
 ENGINE_API float psHUD_FOV_def = 0.45f;
 ENGINE_API float psHUD_FOV = psHUD_FOV_def;
 
+ENGINE_API float hud_adj_delta_pos = 0.0005f;
+ENGINE_API float hud_adj_delta_rot = 0.05f;
+
 ENGINE_API float psSVPImageSizeK = 0.7f;
 ENGINE_API int psSVPFrameDelay = 1;
 ENGINE_API float fps_limit = 120.0f;
@@ -857,6 +860,12 @@ void CCC_Register()
 #ifdef DEBUG	
 	CMD1(CCC_DumpOpenFiles,		"dump_open_files");
 #endif
+
+	if (bDeveloperMode)
+	{
+		CMD4(CCC_Float, "hud_adjust_delta_pos", &hud_adj_delta_pos, -10.f, 10.f);
+		CMD4(CCC_Float, "hud_adjust_delta_rot", &hud_adj_delta_rot, -10.f, 10.f);
+	}
 
 	CMD1(CCC_ExclusiveMode,		"input_exclusive_mode");
 

@@ -181,6 +181,5 @@ virtual void	add_lines			(Fvector const *vertices, u32 const &vertex_count, u16 
 	_add_lines( _line_vertices, _line_indices, vertices, vertex_count, pairs, pair_count, color );
 }
 } rdebug_render_impl;
-dxDebugRender *rdebug_render = &rdebug_render_impl; 
-
+dxDebugRender *rdebug_render = &rdebug_render_impl;
 #endif	//	DEBUG

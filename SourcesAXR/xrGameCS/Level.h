@@ -41,7 +41,7 @@ class	CZoneList;
 class	message_filter;
 
 #ifdef DEBUG
-	class	CDebugRenderer;
+class	CDebugRenderer;
 #endif
 
 extern float g_fov;
@@ -316,6 +316,7 @@ public:
 #ifdef DEBUG
 	IC CDebugRenderer				&debug_renderer				();
 #endif
+
 	void		_BCL				script_gc					();			// GC-cycle
 
 	IC CPHCommander					&ph_commander				();

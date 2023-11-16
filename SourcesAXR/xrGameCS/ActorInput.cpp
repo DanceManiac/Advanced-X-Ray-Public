@@ -38,13 +38,21 @@
 #include "AdvancedXrayGameConstants.h"
 
 extern int hud_adj_mode;
+extern u32 hud_adj_item_idx;
 bool g_block_actor_movement;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
 
-	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
+	if (hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))
+	{
+		if (pInput->iGetAsyncKeyState(DIK_RETURN) || pInput->iGetAsyncKeyState(DIK_BACKSPACE) ||
+			pInput->iGetAsyncKeyState(DIK_DELETE))
+			g_player_hud->tune(Ivector().set(0, 0, 0));
+
+		return;
+	}
 
 	if (Remote())		return;
 
@@ -139,27 +147,39 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kCAM_3:	cam_Set			(eacFreeLook);				break;
 	case kNIGHT_VISION:
 		{
+			if (hud_adj_mode)
+				return;
+
 			SwitchNightVision();
 			break;
 		}
 	case kTORCH:
 		{
+			if (hud_adj_mode)
+				return;
+
 			SwitchTorch();
 			break;
 		}
 	case kCLEAN_MASK:
 		{
+			if (hud_adj_mode)
+				return;
+
 			CleanMaskAnimCheckDetector();
 			break;
 		}
 	case kQUICK_KICK:
 		{
+			if (hud_adj_mode)
+				return;
+
 			QuickKick();
 			break;
 		}
 	case kQUICK_GRENADE:
 		{
-			if (!GameConstants::GetQuickThrowGrenadesEnabled())
+			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode)
 				return;
 
 			CGrenade* grenade = smart_cast<CGrenade*>(inventory().ItemFromSlot(GRENADE_SLOT));
@@ -333,7 +353,28 @@ void CActor::IR_OnKeyboardHold(int cmd)
 {
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
 
-	if(hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))	return;
+	if (hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT) && g_player_hud)
+	{
+		u8 idx = g_player_hud->attached_item(hud_adj_item_idx)->m_parent_hud_item->GetCurrentHudOffsetIdx();
+
+		bool bIsRot = (hud_adj_mode == 2) && (idx != 0);
+
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_RIGHT : DIK_UP))
+			g_player_hud->tune(Ivector().set(0, 1, 0));
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_LEFT : DIK_DOWN))
+			g_player_hud->tune(Ivector().set(0, -1, 0));
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_DOWN : DIK_LEFT))
+			g_player_hud->tune(Ivector().set(1, 0, 0));
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_UP : DIK_RIGHT))
+			g_player_hud->tune(Ivector().set(-1, 0, 0));
+		if (pInput->iGetAsyncKeyState(DIK_PRIOR))
+			g_player_hud->tune(Ivector().set(0, 0, 1));
+		if (pInput->iGetAsyncKeyState(DIK_NEXT))
+			g_player_hud->tune(Ivector().set(0, 0, -1));
+		if (pInput->iGetAsyncKeyState(DIK_RETURN))
+			g_player_hud->tune(Ivector().set(0, 0, 0));
+		return;
+	}
 
 	if (Remote() || !g_Alive() || g_block_actor_movement) return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;

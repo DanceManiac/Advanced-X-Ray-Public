@@ -22,7 +22,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 		UIRender					= &UIRenderImpl;
 #ifdef DEBUG
 		DRender						= &DebugRenderImpl;
-#endif // DEBUG
+#endif
 		xrRender_initconsole		();
 		break	;
 	case DLL_THREAD_ATTACH	:

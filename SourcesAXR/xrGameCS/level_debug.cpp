@@ -5,10 +5,9 @@
 #include "HUDManager.h"
 
 #ifdef DEBUG
-#	include "debug_renderer.h"
-// Lain: added
-#	include "debug_text_tree.h"
-#	include "ai/monsters/basemonster/base_monster.h"
+	#include "debug_renderer.h"
+	#include "debug_text_tree.h"
+	#include "ai/monsters/basemonster/base_monster.h"
 #endif
 
 #ifdef DEBUG
