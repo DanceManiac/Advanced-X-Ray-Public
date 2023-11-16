@@ -463,11 +463,6 @@ CRenderTarget::CRenderTarget		()
 		rt_Generic.create		(r2_RT_generic,	 vp_params_main_secondary,D3DFMT_A8R8G8B8, 1		);
 		rt_secondVP.create		(r2_RT_secondVP, RtCreationParams(Device.m_SecondViewport.screenWidth, Device.m_SecondViewport.screenHeight, MAIN_VIEWPORT), D3DFMT_A8R8G8B8, 1); //--#SM+#-- +SecondVP+
 
-		if (RImplementation.o.dx10_msaa)
-			rt_Generic_temp.create("$user$generic_temp", vp_params_main_secondary, D3DFMT_A8R8G8B8, SampleCount);
-		else
-			rt_Generic_temp.create("$user$generic_temp", vp_params_main_secondary, D3DFMT_A8R8G8B8, 1);
-
 		rt_dof.create			(r2_RT_dof, vp_params_main_secondary, D3DFMT_A8R8G8B8			);
 		rt_secondVP.create		(r2_RT_secondVP, vp_params_main_secondary, D3DFMT_A8R8G8B8, 1	); //--#SM+#-- +SecondVP+
 		rt_ui_pda.create		(r2_RT_ui, vp_params_main_secondary, D3DFMT_A8R8G8B8			);
