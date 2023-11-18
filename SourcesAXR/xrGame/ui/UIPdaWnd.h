@@ -18,6 +18,7 @@ class CUITaskWnd;
 class CUIRankingWnd;
 class CUILogsWnd;
 class CUIEncyclopediaWnd;
+class CUIDiaryWnd;
 class CUIAnimatedStatic;
 class UIHint;
 class CUIProgressBar;
@@ -79,6 +80,7 @@ public:
 	CUIRankingWnd* pUIRankingWnd;
 	CUILogsWnd* pUILogsWnd;
 	CUIEncyclopediaWnd* pUIEncyclopediaWnd;
+	CUIDiaryWnd* pUIDiaryWnd;
 	Frect m_cursor_box;
 	CMapSpot* pSelectedMapSpot;
 

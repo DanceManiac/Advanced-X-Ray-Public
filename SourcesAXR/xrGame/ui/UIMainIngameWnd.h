@@ -161,6 +161,7 @@ public:
 	{
 		efiPdaTask	= 0,
 		efiEncyclopedia = 1,
+		efiJournal = 2,
 		efiMail
 	};
 	

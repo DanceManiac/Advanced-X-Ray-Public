@@ -12,6 +12,7 @@
 #include "UIStatic.h"
 #include "UIFrameWindow.h"
 #include "UITabControl.h"
+#include "UIDiaryWnd.h"
 #include "UIMapWnd.h"
 #include "UIFrameLineWnd.h"
 #include "object_broker.h"
@@ -50,6 +51,7 @@ CUIPdaWnd::CUIPdaWnd()
 	pUIRankingWnd = nullptr;
 	pUILogsWnd = nullptr;
 	pUIEncyclopediaWnd = nullptr;
+	pUIDiaryWnd = nullptr;
 	m_hint_wnd = nullptr;
 	m_battery_bar = nullptr;
 	m_power = 0.f;
@@ -64,6 +66,7 @@ CUIPdaWnd::~CUIPdaWnd()
 	delete_data(pUIRankingWnd);
 	delete_data(pUILogsWnd);
 	delete_data(pUIEncyclopediaWnd);
+	delete_data(pUIDiaryWnd);
 	delete_data(m_hint_wnd);
 	delete_data(UINoice);
 }
@@ -116,6 +119,9 @@ void CUIPdaWnd::Init()
 
 		pUIEncyclopediaWnd = xr_new<CUIEncyclopediaWnd>();
 		pUIEncyclopediaWnd->Init();
+
+		pUIDiaryWnd = xr_new<CUIDiaryWnd>();
+		pUIDiaryWnd->Init();
 	}
 
 	UITabControl = xr_new<CUITabControl>();
@@ -303,6 +309,10 @@ void CUIPdaWnd::SetActiveSubdialog(const shared_str& section)
 	{
 		m_pActiveDialog = pUIEncyclopediaWnd;
 	}
+	else if (section == "eptDiar")
+	{
+		m_pActiveDialog = pUIDiaryWnd;
+	}
 
 	luabind::functor<CUIDialogWndEx*> functor;
 	if (ai().script_engine().functor("pda.set_active_subdialog", functor))
@@ -434,6 +444,7 @@ void CUIPdaWnd::Reset()
 	if (pUIRankingWnd)			pUIRankingWnd->ResetAll();
 	if (pUILogsWnd)				pUILogsWnd->ResetAll();
 	if (pUIEncyclopediaWnd)		pUIEncyclopediaWnd->ResetAll();
+	if (pUIDiaryWnd)			pUIDiaryWnd->ResetAll();
 }
 
 void CUIPdaWnd::SetCaption(LPCSTR text)
@@ -581,6 +592,11 @@ void CUIPdaWnd::PdaContentsChanged(pda_section::part type)
 		pUIEncyclopediaWnd->ReloadArticles();
 		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, true);
 
+	}
+	else if (type == pda_section::journal)
+	{
+		pUIDiaryWnd->ReloadArticles();
+		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiJournal, true);
 	}
 	else if (type == pda_section::quests)
 	{

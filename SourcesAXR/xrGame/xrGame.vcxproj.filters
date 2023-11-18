@@ -2521,6 +2521,9 @@
     <Filter Include="UI\UIWindows\TreeView">
       <UniqueIdentifier>{67a2141d-85c1-4bed-bedf-028aa7fd6a88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\Common\PDA\Diary">
+      <UniqueIdentifier>{05e38e5e-60ed-412e-8a86-28bfe2870c6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7505,6 +7508,9 @@
     <ClInclude Include="ui\UITreeViewItem.h">
       <Filter>UI\UIWindows\TreeView</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIDiaryWnd.h">
+      <Filter>UI\Common\PDA\Diary</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11251,6 +11257,9 @@
     </ClCompile>
     <ClCompile Include="ui\UITreeViewItem.cpp">
       <Filter>UI\UIWindows\TreeView</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIDiaryWnd2.cpp">
+      <Filter>UI\Common\PDA\Diary</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

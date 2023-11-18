@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <main_wnd x="0" y="0" width="1024" height="768"/>
+
+	<background x="28" y="61" width="764" height="90" vertical="1" stretch="1">
+        <texture>ui_pda2_fr</texture>
+	</background>
+	
+	<left_background x="28" y="155" width="278" height="560" vertical="1" stretch="1">
+		<texture>ui_pda2_fr</texture>
+	</left_background>
+	
+	<right_background x="310" y="155" width="481" height="560" vertical="1" stretch="1">
+		<texture>ui_pda2_fr</texture>
+	</right_background>
+	
+	<!-- Список статей -->
+	<idx_list x="12" y="55" width="265" height="495" item_height="20" scroll_profile="default" always_show_scroll="1">
+		<font font="letterica18" color="ui_2"/>
+		</idx_list>
+	 
+	<!-- Текст статьи -->
+	<info_list x="7" y="45" width="500" height="495" item_height="155" right_ident="5" top_indent="47" scroll_profile="default" always_show_scroll="0">
+		<font font="letterica18" color="ui_2"/>
+		</info_list>
+	
+	<!-- Заголовок статьи -->
+	<article_header_static x="12" y="48" width="238" height="22">
+		<text font="graffiti32" color="ui_2" complex_mode="0"/>
+		</article_header_static>
+
+	<!-- LIST HEADER -->
+	<left_caption x="10" y="20" width="227" height="32" stretch="1">
+		<text align="l" font="letterica16" r="100" g="100" b="100">pda_diary</text>
+		</left_caption>
+	
+	<right_caption x="10" y="20" width="500" height="16">
+		<text align="l" font="letterica16" r="100" g="100" b="100"/>
+		</right_caption>
+	 
+	<tree_root_font font="letterica18" color="ui_4">pda_diary</tree_root_font>
+	<tree_item_font font="letterica18" color="ui_2">pda_diary</tree_item_font>
+</window>

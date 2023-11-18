@@ -636,6 +636,7 @@ void CUIMainIngameWnd::InitFlashingIcons(CUIXml* node)
 		if		(iconType == "pda")				type = efiPdaTask;
 		else if (iconType == "mail")			type = efiMail;
 		else if (iconType == "encyclopedia")	type = efiEncyclopedia;
+		else if (iconType == "journal")			type = efiJournal;
 		else	R_ASSERT(!"Unknown type of mainingame flashing icon");
 
 		if (UIRedraw && m_FlashingIcons.find(type) != m_FlashingIcons.end())
