@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="pda_btn_enc">
+		<text>Энциклопедия</text>
+	</string>
+	<string id="pda_btn_enc_hint">
+		<text>Открыть энциклопедию</text>
+	</string>
+	<string id="pda_btn_diar">
+		<text>Журнал</text>
+	</string>
+	<string id="pda_btn_diar_hint">
+		<text>Открыть журнал</text>
+	</string>
+</string_table>
