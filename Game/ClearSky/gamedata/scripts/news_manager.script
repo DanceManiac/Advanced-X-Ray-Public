@@ -211,6 +211,22 @@ function send_task(actor, type, task)
 ]]
 end
 
+function send_encyclopedy(type, title)
+	if type == "Diary" then
+		pda_news:play(db.actor, 0, sound_object.s2d)
+
+
+		--' Берем координаты из текстуры таска
+		local task_texture, task_rect = get_texture_info("ui_iconsTotal_locations", "ui_iconsTotal_locations")
+		local news_text = "%c[255,160,160,160]"..game.translate_string("st_found_new_pda").."\\n".."%c[default]"..game.translate_string(title)
+		if db.actor:is_talking() then	
+			db.actor:give_talk_message(news_text, task_texture, task_rect,"iconed_answer_item")
+		else
+			db.actor:give_game_news(news_text, task_texture, task_rect, 0, 3000)
+		end	
+	end
+end
+
 function send_treasure(name)
 	local news_caption = game.translate_string("st_found_new_treasure")
 	local news_text = game.translate_string(name)
