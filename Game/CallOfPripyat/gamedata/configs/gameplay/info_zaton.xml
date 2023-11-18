@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding="windows-1251"?>
 
 <game_information_portions>
-   <info_portion id="zat_b14_recon_place"></info_portion>
+   <info_portion id="zat_b14_recon_place">
+		<article>social_military_army</article>
+   </info_portion>
    <info_portion id="zat_b14_take_item"></info_portion>
    <info_portion id="zat_b14_give_item_linker"></info_portion>
    <info_portion id="zat_b14_give_item_stalker"></info_portion>
