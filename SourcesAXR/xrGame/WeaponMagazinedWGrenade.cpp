@@ -1275,10 +1275,11 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 	if(!inherited::GetBriefInfo(info))
 		return false;
 */
-	string32 int_str;
+	string32	int_str, fire_mode, ammo = "";
 	int	ae = GetAmmoElapsed();
 	xr_sprintf(int_str, "%d", ae);
 	info.cur_ammo._set(int_str);
+	info.fire_mode._set("");
 
 	if (bHasBulletsToHide && !m_bGrenadeMode)
 	{
@@ -1309,7 +1310,6 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 	}
 	else
 	{
-		u8 ammo_type = m_bGrenadeMode ? m_ammoType2 : m_ammoType;
 		// Lex Addon (correct by Suhar_) 28.03.2017		(begin)
 		//            WeaponMagazined.cpp
 		/*int add_ammo_count = 0;
@@ -1331,22 +1331,34 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 			xr_sprintf(int_str, "%s", "");
 		info.ap_ammo._set(int_str);*/
 
-		xr_sprintf(int_str, "%d", m_bGrenadeMode ? GetAmmoCount2(0) : GetAmmoCount(0));
-		if(ammo_type==0)
-			info.fmj_ammo._set(int_str);
-		else
-			info.ap_ammo._set(int_str);
+		info.fmj_ammo._set("");
+		info.ap_ammo._set("");
 
-		if(at_size == 2)
+		if (at_size >= 1 && at_size < 3)
 		{
-			xr_sprintf(int_str, "%d", m_bGrenadeMode ? GetAmmoCount2(1) : GetAmmoCount(1));
-			if(ammo_type==0)
-				info.ap_ammo._set(int_str);
-			else
-				info.fmj_ammo._set(int_str);
+			xr_sprintf(ammo, "%d", m_bGrenadeMode ? GetAmmoCount2(0) : GetAmmoCount(0));
+			info.fmj_ammo._set(ammo);
 		}
-		else
-			info.ap_ammo._set("");
+		if (at_size == 2)
+		{
+			xr_sprintf(ammo, "%d", m_bGrenadeMode ? GetAmmoCount2(1) : GetAmmoCount(1));
+			info.ap_ammo._set(ammo);
+		}
+		if (at_size >= 3)
+		{
+			xr_sprintf(ammo, "%d", m_bGrenadeMode ? GetAmmoCount2(m_ammoType) : GetAmmoCount(m_ammoType));
+			info.fmj_ammo._set(ammo);
+			u8 m = 0;
+			u64 ap = 0;
+			while (m < at_size)
+			{
+				if (m != m_ammoType)
+					ap += m_bGrenadeMode ? GetAmmoCount2(m) : GetAmmoCount(m);
+				m++;
+			}
+			xr_sprintf(ammo, "%d", ap);
+			info.ap_ammo._set(ammo);
+		}
 		// Lex Addon (correct by Suhar_) 28.07.2017		(end)
 	}
 
