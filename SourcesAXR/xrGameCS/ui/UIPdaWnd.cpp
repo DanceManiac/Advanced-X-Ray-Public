@@ -528,6 +528,14 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 
 				if (action == kUSE || action == kACTIVE_JOBS || action == kINVENTORY || (action > kCAM_ZOOM_OUT && action < kWPN_NEXT)) // Since UI no longer passes non-movement inputs to the actor input receiver this is needed now.
 				{
+					if (pda->m_bZoomed && action == kACTIVE_JOBS)
+					{
+						Enable(false);
+						HUD().GetUI()->SetMainInputReceiver(nullptr, false);
+
+						return false;
+					}
+
 					CObject* obj = (GameID() == eGameIDSingle) ? Level().CurrentEntity() : Level().CurrentControlEntity();
 					{
 						IInputReceiver* IR = smart_cast<IInputReceiver*>(smart_cast<CGameObject*>(obj));
