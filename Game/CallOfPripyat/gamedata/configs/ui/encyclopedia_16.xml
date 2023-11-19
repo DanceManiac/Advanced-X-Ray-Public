@@ -15,7 +15,7 @@
 	</right_background>
 	
 	<!-- Список статей -->
-	<idx_list x="12" y="55" width="265" height="495" item_height="20" scroll_profile="default" always_show_scroll="1">
+	<idx_list x="12" y="55" width="265" height="495" item_height="20" scroll_profile="default" always_show_scroll="0">
 		<font font="letterica18" color="ui_2"/>
 	</idx_list>
 	 
