@@ -13,7 +13,13 @@
 #pragma warning(pop)
 
 //#define USE_BUG_TRAP
+
+#ifdef DEBUG
 #define DEBUG_INVOKE	DebugBreak();
+#else
+#define DEBUG_INVOKE	TerminateProcess(GetCurrentProcess(), 1);
+#endif
+
 static BOOL bException = FALSE;
 
 #ifndef USE_BUG_TRAP
@@ -716,7 +722,7 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 	void _terminate		()
 	{
 		if (strstr(GetCommandLine(),"-silent_error_mode"))
-			exit				(-1);
+			std::exit(0);
 
 		string4096				assertion_info;
 		
@@ -752,7 +758,7 @@ LONG WINAPI UnhandledFilter	(_EXCEPTION_POINTERS *pExceptionInfo)
 			MB_OK|MB_ICONERROR|MB_SYSTEMMODAL
 		);
 		
-		exit					(-1);
+		std::exit(0);
 	//	FATAL					("Unexpected application termination");
 	}
 #endif // USE_BUG_TRAP
