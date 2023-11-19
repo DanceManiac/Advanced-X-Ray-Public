@@ -98,7 +98,7 @@ public:
 			LPCSTR				NameItem			();// remove <virtual> by sea
 			LPCSTR				NameShort			();
 	shared_str					ItemDescription		() { return m_Description; }
-	virtual void				GetBriefInfo		(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode) {};
+	virtual bool				GetBriefInfo		(II_BriefInfo& info) { info.clear(); return false; }
 	
 	virtual void				OnEvent				(NET_Packet& P, u16 type);
 	

@@ -225,10 +225,22 @@
         <texture>ui_hud_shk_stamina_new</texture>
       </progress>
     </progress_bar_stamina>
+		
+		<static_cur_ammo x="75" y="75" width="60" height="28">
+			<text complex_mode="0" font="graffiti22" color="ui_7" align="c" vert_align="c">Ammo</text>
+		</static_cur_ammo>
 
-    <static_ammo x="78" y="78" width="72" height="28">
-			<text align="r" complex_mode="0" font="graffiti32" color="ui_7">Ammo</text>
-		</static_ammo>
+	    <static_fmj_ammo x="60" y="90" width="60" height="28">
+	        <text align="c" complex_mode="0" font="graffiti19" color="ui_7" vert_align="c">fmj</text>
+	    </static_fmj_ammo>
+
+	    <static_ap_ammo x="90" y="90" width="60" height="28">
+	        <text align="c" complex_mode="0" font="graffiti19" r="238" g="155" b="23" a="150" vert_align="c">ap</text>
+	    </static_ap_ammo>
+
+	    <static_grenade x="75" y="90" width="60" height="28">
+	        <text align="c" complex_mode="0" font="letterica16" color="ui_7" vert_align="c">gr</text>
+	    </static_grenade>
 
 		<static_wpn_icon x="19" y="74" width="30" height="30"/>
 		

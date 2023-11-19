@@ -111,7 +111,7 @@ public:
 	virtual int     CheckAmmoBeforeReload(u8& v_ammoType);
 	virtual void	OnMotionMark	(u32 state, const motion_marks& M);
 
-	virtual void	GetBriefInfo				(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode);
+	virtual bool	GetBriefInfo	(II_BriefInfo& info);
 
 public:
 	virtual bool	SwitchMode				();

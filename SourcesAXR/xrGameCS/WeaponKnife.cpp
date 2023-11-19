@@ -459,11 +459,12 @@ void CWeaponKnife::LoadFireParams(LPCSTR section)
 	m_eHitType_2		= ALife::g_tfString2HitType(pSettings->r_string(section, "hit_type_2"));
 }
 
-void CWeaponKnife::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode)
+bool CWeaponKnife::GetBriefInfo( II_BriefInfo& info )
 {
-	str_name		= NameShort();
-	str_count		= "";
-	icon_sect_name	= *cNameSect();
+	info.clear();
+	info.name._set( m_nameShort );
+	info.icon._set( cNameSect() );
+	return true;
 }
 
 #ifdef DEBUG

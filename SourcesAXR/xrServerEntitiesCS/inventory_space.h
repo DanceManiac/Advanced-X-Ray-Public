@@ -48,3 +48,28 @@ extern u32	INV_STATE_BLOCK_ALL;
 extern u32	INV_STATE_INV_WND;
 extern u32	INV_STATE_BUY_MENU;
 extern u32	INV_STATE_HIDE_WEAPON;
+
+struct II_BriefInfo
+{
+	shared_str		name;
+	shared_str		icon;
+	shared_str		cur_ammo;
+	shared_str		fmj_ammo;
+	shared_str		ap_ammo;
+	shared_str		fire_mode;
+
+	shared_str		grenade;
+
+	II_BriefInfo() { clear(); }
+	
+	IC void clear()
+	{
+		name		= "";
+		icon		= "";
+		cur_ammo	= "";
+		fmj_ammo	= "";
+		ap_ammo		= "";
+		fire_mode	= "";
+		grenade		= "";
+	}
+};

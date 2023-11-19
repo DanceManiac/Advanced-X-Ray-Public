@@ -800,10 +800,10 @@ void CMissile::ExitContactCallback(bool& do_colide, bool bo1, dContact& c, SGame
 		l_this->set_destroy_time(5);
 }
 
-void CMissile::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode)
+bool CMissile::GetBriefInfo(II_BriefInfo& info)
 {
-	str_name		= NameShort();
-	str_count		= "";
-	icon_sect_name	= "";
+	info.clear();
+	info.name._set(m_nameShort);
+	return true;
 }
 

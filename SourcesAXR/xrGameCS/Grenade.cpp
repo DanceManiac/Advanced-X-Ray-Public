@@ -365,12 +365,18 @@ void CGrenade::DeactivateItem()
 	inherited::DeactivateItem();
 }
 
-void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode)
+bool CGrenade::GetBriefInfo(II_BriefInfo& info)
 {
-	str_name				= NameShort();
-	u32 ThisGrenadeCount	= m_pInventory->dwfGetSameItemCount( *cNameSect(), true );
-	string16				stmp;
-	sprintf_s				( stmp, "%d", ThisGrenadeCount );
-	str_count				= stmp;
-	icon_sect_name			= *cNameSect();
+	VERIFY(m_pInventory);
+	info.clear();
+
+	info.name._set(m_nameShort);
+	info.icon._set(cNameSect());
+
+	u32 ThisGrenadeCount = m_pInventory->dwfGetSameItemCount(cNameSect().c_str(), true);
+
+	string16 stmp;
+	xr_sprintf(stmp, "%d", ThisGrenadeCount);
+	info.cur_ammo._set(stmp);
+	return true;
 }

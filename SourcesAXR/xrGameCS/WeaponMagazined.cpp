@@ -2042,57 +2042,125 @@ void CWeaponMagazined::net_Import	(NET_Packet& P)
 }
 
 #include "string_table.h"
-void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count, string16& fire_mode )
+bool CWeaponMagazined::GetBriefInfo(II_BriefInfo& info)
 {
-	int	AE		= GetAmmoElapsed();
-	int	AC		= 0;
-	if ( IsGameTypeSingle() )
-	{
-		AC		= GetCurrentTypeAmmoTotal();
-	}
-	else
-	{
-		AC		= GetSuitableAmmoTotal();//mp = all type
-	}
-	
-	if(AE==0 || 0==m_magazine.size() )
-		icon_sect_name	= *m_ammoTypes[m_ammoType];
-	else
-		icon_sect_name	= *m_ammoTypes[m_magazine.back().m_LocalAmmoType];
+	VERIFY(m_pInventory);
+	string32	int_str, fire_mode, ammo = "";
 
-
-	string256		sItemName;
-	strcpy_s			(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
-
-	strcpy_s( fire_mode, sizeof(fire_mode), "" );
+	int	ae = GetAmmoElapsed();
+	xr_sprintf(int_str, "%d", ae);
+	info.cur_ammo = int_str;
+	info.fire_mode._set("");
 
 	if (bHasBulletsToHide)
 	{
-		last_hide_bullet = AE >= bullet_cnt ? bullet_cnt : bullet_cnt - AE - 1;
+		last_hide_bullet = ae >= bullet_cnt ? bullet_cnt : bullet_cnt - ae - 1;
 
-		if (AE == 0) last_hide_bullet = -1;
+		if (ae == 0) last_hide_bullet = -1;
 
 		//HUD_VisualBulletUpdate();
 	}
 
-	if ( HasFireModes() )
+	if (HasFireModes())
 	{
-		if (m_iQueueSize == -1)
-			strcpy_s(fire_mode, "A");
+		if (m_iQueueSize == WEAPON_ININITE_QUEUE)
+		{
+			info.fire_mode = "A";
+		}
 		else
-			sprintf_s(fire_mode, "%d", m_iQueueSize);
+		{
+			xr_sprintf(fire_mode, "%d", m_iQueueSize);
+			info.fire_mode = fire_mode;
+		}
+	}
+	else
+		info.fire_mode = "";
+
+	if (m_pInventory->ModifyFrame() <= m_dwAmmoCurrentCalcFrame)
+	{
+		return false;
+	}
+	GetSuitableAmmoTotal();//update m_BriefInfo_CalcFrame
+	info.grenade = "";
+
+	u32 at_size = m_ammoTypes.size();
+	if (unlimited_ammo() || at_size == 0)
+	{
+		info.fmj_ammo._set("--");
+		info.ap_ammo._set("--");
+	}
+	else
+	{
+		//GetSuitableAmmoTotal(); //mp = all type
+
+		// Lex Addon (correct by Suhar_) 28.03.2017		(begin)
+		/*int add_ammo_count = 0;
+
+		for (int i = 0; i < at_size; i++)
+		{
+			if (m_ammoType == i)
+			{
+				xr_sprintf(int_str, "%d", GetAmmoCount(i));
+				info.fmj_ammo = int_str;
+			}
+			else
+			{
+				add_ammo_count += GetAmmoCount(i);
+			}
+		}
+		if (at_size > 1)
+			xr_sprintf(int_str, "%d", add_ammo_count);
+		else
+			xr_sprintf(int_str, "%s", "");
+
+		info.ap_ammo = int_str;*/
+
+
+		info.fmj_ammo._set("");
+		info.ap_ammo._set("");
+
+		if (at_size >= 1 && at_size < 3)
+		{
+			xr_sprintf(ammo, "%d", GetAmmoCount(0));
+			info.fmj_ammo._set(ammo);
+		}
+		if (at_size == 2)
+		{
+			xr_sprintf(ammo, "%d", GetAmmoCount(1));
+			info.ap_ammo._set(ammo);
+		}
+		if (at_size >= 3)
+		{
+			xr_sprintf(ammo, "%d", GetAmmoCount(m_ammoType));
+			info.fmj_ammo._set(ammo);
+			u8 m = 0;
+			u64 ap = 0;
+			while (m < at_size)
+			{
+				if (m != m_ammoType)
+					ap += GetAmmoCount(m);
+				m++;
+			}
+			xr_sprintf(ammo, "%d", ap);
+			info.ap_ammo._set(ammo);
+		}
+
+		// Lex Addon (correct by Suhar_) 28.07.2017		(end)
 	}
 
-	str_name		= sItemName;
-
+	if (ae != 0 && m_magazine.size() != 0)
 	{
-		if (!unlimited_ammo())
-			sprintf_s			(sItemName, "%d/%d",AE,AC - AE);
-		else
-			sprintf_s			(sItemName, "%d/--",AE);
-
-		str_count				= sItemName;
+		LPCSTR ammo_type = m_ammoTypes[m_magazine.back().m_LocalAmmoType].c_str();
+		info.name = CStringTable().translate(pSettings->r_string(ammo_type, "inv_name_short"));
+		info.icon = ammo_type;
 	}
+	else
+	{
+		LPCSTR ammo_type = m_ammoTypes[m_ammoType].c_str();
+		info.name = CStringTable().translate(pSettings->r_string(ammo_type, "inv_name_short"));
+		info.icon = ammo_type;
+	}
+	return true;
 }
 
 bool CWeaponMagazined::install_upgrade_impl( LPCSTR section, bool test )

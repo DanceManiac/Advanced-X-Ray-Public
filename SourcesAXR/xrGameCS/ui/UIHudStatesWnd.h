@@ -3,6 +3,7 @@
 
 #include "UIWindow.h"
 #include "..\..\XrServerEntitiesCS\alife_space.h"
+#include "..\..\xrServerEntitiesCS\inventory_space.h"
 #include "..\actor_defs.h"
 
 class CUIStatic;
@@ -29,10 +30,15 @@ public:
 	CUIStatic*			m_resist_back[it_max];
 	CUIStatic*			m_indik[it_max];
 
-	CUIStatic*			m_ui_weapon_sign_ammo;
+	CUIStatic*			m_ui_weapon_cur_ammo;
+	CUIStatic*			m_ui_weapon_fmj_ammo;
+	CUIStatic*			m_ui_weapon_ap_ammo;
+	CUIStatic*			m_fire_mode;
+	CUIStatic*			m_ui_grenade;
+	II_BriefInfo		m_item_info;
+	
 	CUIStatic*			m_ui_weapon_icon;
 	Frect				m_ui_weapon_icon_rect;
-	CUIStatic*			m_fire_mode;
 
 	CUIProgressBar*		m_ui_health_bar;
 	CUIProgressBar*		m_ui_armor_bar;
@@ -51,6 +57,7 @@ public:
 	u32					m_last_time;
 
 	bool				m_cur_state_LA[it_max];
+	bool				m_b_force_update;
 
 //	CZoneList*	m_zones_list; <----- in Level()
 
