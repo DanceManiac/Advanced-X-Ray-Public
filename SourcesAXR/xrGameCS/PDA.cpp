@@ -805,7 +805,10 @@ void CPda::OnH_B_Independent(bool just_before_destroy)
 	m_fZoomfactor = 0.f;
 
 	CUIPdaWnd* pda = &HUD().GetUI()->UIGame()->PdaMenu();
-	HUD().GetUI()->StartStopMenu(pda, false);
+
+	if (pda->IsShown())
+		HUD().GetUI()->StartStopMenu(pda, false);
+
 	g_player_hud->reset_thumb(true);
 	pda->ResetJoystick(true);
 
