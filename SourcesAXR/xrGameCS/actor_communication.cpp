@@ -116,6 +116,8 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 
 	AddEncyclopediaArticle	(&info_portion);
 
+	info_portion.RunScriptActions(this);
+
 	callback(GameObject::eInventoryInfo)(lua_game_object(), *info_id);
 
 	if(!HUD().GetUI())
