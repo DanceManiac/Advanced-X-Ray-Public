@@ -254,6 +254,9 @@ void CUIPdaWnd::Show(bool status)
 	{
 		InventoryUtilities::SendInfoToActor("ui_pda_hide");
 		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
+		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, false);
+		CurrentGameUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiJournal, false);
+
 		if (m_pActiveDialog)
 		{
 			m_pActiveDialog->Show(false);

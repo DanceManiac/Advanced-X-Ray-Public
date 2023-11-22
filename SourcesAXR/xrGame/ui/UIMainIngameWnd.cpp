@@ -610,7 +610,28 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 {
 	// Включаем анимацию требуемой иконки
 	FlashingIcons_it icon = m_FlashingIcons.find(type);
-	R_ASSERT2(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed");
+	shared_str iconType{};
+
+	switch (type)
+	{
+	case 0:
+		iconType = "pda";
+		break;
+	case 1:
+		iconType = "encyclopedia";
+		break;
+	case 2:
+		iconType = "journal";
+		break;
+	case 3:
+		iconType = "mail";
+		break;
+	default:
+		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType);
+	}
+
+	R_ASSERT3(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed!", iconType.c_str());
+
 	icon->second->Show(enable);
 }
 

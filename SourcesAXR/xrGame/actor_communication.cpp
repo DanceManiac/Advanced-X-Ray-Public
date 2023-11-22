@@ -126,7 +126,6 @@ bool CActor::OnReceiveInfo(shared_str info_id) const
 	{
 		pGameSP->TalkMenu->NeedUpdateQuestions();
 	}
-	pGameSP->PdaMenu().PdaContentsChanged(pda_section::journal);
 
 	return true;
 }
@@ -145,7 +144,6 @@ void CActor::OnDisableInfo(shared_str info_id) const
 
 	if(pGameSP->TalkMenu->IsShown())
 		pGameSP->TalkMenu->NeedUpdateQuestions();
-	pGameSP->PdaMenu().PdaContentsChanged(pda_section::journal);
 }
 
 void  CActor::ReceivePhrase		(DIALOG_SHARED_PTR& phrase_dialog)
