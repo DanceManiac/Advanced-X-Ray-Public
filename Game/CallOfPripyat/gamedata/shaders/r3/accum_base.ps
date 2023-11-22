@@ -63,10 +63,15 @@ float4 main(p_volume I, float4 pos2d : SV_Position ) : SV_Target
 			#endif
 
 			//	Can use linear with mip point
-			lightmap = s_lmap.SampleLevel(smp_rtlinear, PS.xy / PS.w, 0 );        //
+			
+			#ifdef SSFX_FLORAFIX
+				lightmap = s_lmap.SampleLevel(smp_rtlinear, PS.xy / PS.w, 0 );        //
+			#else
+				lightmap = s_lmap.Sample( smp_rtlinear, PS.xy / PS.w );        //
+			#endif
 	#endif
 
-#ifdef SSFX_ENHANCED_SHADERS
+#if defined(SSFX_ENHANCED_SHADERS) && defined(SSFX_FLORAFIX)
 		return  float4(SRGBToLinear(Ldynamic_color.rgb * lightmap.rgb * s.xxx),1) * light;
 #else
 		return  float4( Ldynamic_color * light * s * lightmap);

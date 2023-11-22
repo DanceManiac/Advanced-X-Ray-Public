@@ -343,6 +343,7 @@ void					CRender::create					()
 	o.dx10_minmax_sm_screenarea_threshold = 1600*1200;
 	o.dx10_winter_mode = !bWinterMode;
 	o.dx10_lowland_fog_mode = bLowlandFogWeather;
+	o.dx11_sss_addon_enabled = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON);
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -1385,23 +1386,6 @@ HRESULT	CRender::shader_compile			(
 	}
 	sh_name[len] = '0' + char(o.dx10_lowland_fog_mode); ++len;
 
-	// Тип низинного тумана
-	{
-		sprintf_s(c_low_fog_type, "%d", ps_lowland_fog_type);
-		defines[def_it].Name = "LOWLAND_FOG_TYPE";
-		defines[def_it].Definition = c_low_fog_type;
-		def_it++;
-		sh_name[len] = '0' + char(ps_lowland_fog_type); ++len;
-	}
-
-	if (ps_r4_ss_grass_collision)
-	{
-		defines[def_it].Name = "SSFX_INTER_GRASS";
-		defines[def_it].Definition = "1";
-		def_it++;
-	}
-	sh_name[len] = '0' + char(ps_r4_ss_grass_collision); ++len;
-
 	if (ps_r4_pseudo_pbr)
 	{
 		defines[def_it].Name = "ES_PSEUDO_PBR";
@@ -1409,6 +1393,37 @@ HRESULT	CRender::shader_compile			(
 		def_it++;
 	}
 	sh_name[len] = '0' + char(ps_r4_pseudo_pbr); ++len;
+
+	if (o.dx11_sss_addon_enabled)
+	{
+		defines[def_it].Name = "SSS_ADDON_ENABLED";
+		defines[def_it].Definition = "1";
+		def_it++;
+	}
+	sh_name[len] = '0' + char(o.dx11_sss_addon_enabled); ++len;
+
+	// Тип низинного тумана
+	if (o.dx11_sss_addon_enabled)
+	{
+		sprintf_s(c_low_fog_type, "%d", ps_lowland_fog_type);
+		defines[def_it].Name = "LOWLAND_FOG_TYPE";
+		defines[def_it].Definition = c_low_fog_type;
+		def_it++;
+		sh_name[len] = '0' + char(ps_lowland_fog_type); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (ps_r4_ss_grass_collision && o.dx11_sss_addon_enabled)
+	{
+		defines[def_it].Name = "SSFX_INTER_GRASS";
+		defines[def_it].Definition = "1";
+		def_it++;
+	}
+	sh_name[len] = '0' + char(ps_r4_ss_grass_collision); ++len;
 
 	if (ps_ssfx_rain_1.w > 0)
 	{

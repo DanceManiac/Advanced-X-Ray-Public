@@ -194,7 +194,7 @@ void	CBlender_Tree::Compile	(CBlender_Compile& C)
 
 #if defined(USE_DX11)
 		// Is a branch/bush. Use a different VS
-		if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT) && oBlend.value && RImplementation.o.ssfx_branches)
+		if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) && oBlend.value && RImplementation.o.ssfx_branches)
 			tvs = "tree_branch";
 #endif
 

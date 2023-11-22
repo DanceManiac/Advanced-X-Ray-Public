@@ -312,11 +312,11 @@ Shader*		CResourceManager::Create	(LPCSTR s_shader,	LPCSTR s_textures,	LPCSTR s_
 	{
 		//	TODO: DX10: When all shaders are ready switch to common path
 #ifdef USE_DX11
-		if	(_lua_HasShader(s_shader))		
-			return	_lua_Create	(s_shader,s_textures);
+		if	(_lua_HasShader(s_shader))
+			return	_lua_Create	(s_shader,s_textures); // Если есть .s шейдер, начнёт его грузить.
 		else								
 		{
-			Shader* pShader = _cpp_Create	(s_shader,s_textures,s_constants,s_matrices);
+			Shader* pShader = _cpp_Create	(s_shader,s_textures,s_constants,s_matrices);  // Если .s шейдера нет, создаст новый
 			if (pShader)
 				return pShader;
 			else

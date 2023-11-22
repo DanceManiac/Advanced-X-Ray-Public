@@ -25,7 +25,11 @@ dxRainRender::dxRainRender()
 		DM_Drop = ::RImplementation.model_CreateDM(F);
 
 		//
-		SH_Rain.create("effects\\rain", "fx\\fx_rain");
+		if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
+			SH_Rain.create("effects\\rain_screen_space", "fx\\fx_rain");
+		else
+			SH_Rain.create("effects\\rain", "fx\\fx_rain");
+
 		hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
 		hGeom_Drops.create(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, RCache.Vertex.Buffer(), RCache.Index.Buffer());
 
@@ -78,7 +82,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 
 	// SSS Rain shader is available
 #if defined(USE_DX11)
-	if (RImplementation.o.ssfx_rain)
+	if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) && RImplementation.o.ssfx_rain)
 	{
 		_drop_len = ps_ssfx_rain_1.x;
 		_drop_width = ps_ssfx_rain_1.y;
@@ -173,14 +177,14 @@ void dxRainRender::Render(CEffect_Rain &owner)
 
 		if (!bWinterMode)
 		{
-			if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+			if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
 				pos_trail.mad(pos_head, one.D, -_drop_len * factor_visual);
 			else
 				pos_trail.mad(pos_head, one.D, -owner.drop_length * factor_visual);
 		}
 		else
 		{
-			if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+			if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
 				pos_trail.mad(pos_head, one.D, -_drop_len * 5.5f);
 			else
 				pos_trail.mad(pos_head, one.D, -owner.drop_length * 5.5f);
@@ -205,7 +209,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		camDir.sub			(sC,vEye);
 		camDir.normalize	();
 		lineTop.crossproduct(camDir,lineD);
-		float w = ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT) ? _drop_width : owner.drop_width;
+		float w = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? _drop_width : owner.drop_width;
 		u32 s	= one.uv_set;
 		P.mad(pos_trail,lineTop,-w);	verts->set(P,u_rain_color,UV[s][0].x,UV[s][0].y);	verts++;
 		P.mad(pos_trail,lineTop,w);		verts->set(P,u_rain_color,UV[s][1].x,UV[s][1].y);	verts++;
@@ -236,7 +240,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		float	dt				= Device.fTimeDelta;
 		_IndexStream& _IS		= RCache.Index;
 
-		if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+		if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
 		{
 			RCache.set_Shader(_splash_SH);
 			RCache.set_c(s_shader_setup, ps_ssfx_rain_3); // Alpha, Refraction

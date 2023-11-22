@@ -46,9 +46,21 @@ v2p_bumped 	main 	(v_tree I)
 	// TangentToEyeSpace = object2eye * tangent2object
 	//		     = object2eye * transpose(object2tangent) (since the inverse of a rotation is its transpose)
 	//Normal mapping
+	
+#ifdef SSFX_FLORAFIX
 	float3 	N 	= unpack_bx4(I.Nh);
 	float3 	T 	= unpack_bx4(I.T);
 	float3 	B 	= unpack_bx4(I.B);
+#else
+	float3 N = normalize(I.P.xyz); //Spherical normals trick
+	float3 B = float3(0,0,1);
+
+	if (abs(dot(N, B)) > 0.99f) 
+		B = float3(0,1,0);
+		
+	float3 T = normalize(cross(N, B));
+	B = normalize(cross(N, T));	
+#endif
 
 	float3x3 xform	= mul	((float3x3)m_xform_v, float3x3(
 						T.x,B.x,N.x,

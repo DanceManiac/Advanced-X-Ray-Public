@@ -106,6 +106,8 @@ public:
 	  u32		dx10_winter_mode	: 1;
 	  u32		dx10_lowland_fog_mode : 1;
 
+	  u32		dx11_sss_addon_enabled : 1;
+
 	  u32		dx11_enable_tessellation : 1;
 
 		u32		forcegloss			: 1;

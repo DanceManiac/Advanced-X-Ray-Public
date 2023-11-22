@@ -1324,7 +1324,7 @@ void CRender::init_cascades()
 
 	float fBias = -0.0000025f;
 
-	if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+	if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
 	{
 		m_sun_cascades[0].reset_chain = true;
 		m_sun_cascades[0].size = ps_ssfx_shadow_cascades.x; //20

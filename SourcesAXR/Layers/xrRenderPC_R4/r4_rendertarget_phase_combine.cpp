@@ -398,7 +398,7 @@ void	CRenderTarget::phase_combine	()
 	if (ps_r2_postscreen_flags.test(R_FLAG_FILM_GRAIN))
 		phase_film_grain();
 
-	if (ps_r2_ls_flags_ext.test(R4FLAGEXT_NEW_SHADER_SUPPORT))
+	if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
 	{
 		//Compute blur textures
 		phase_blur();

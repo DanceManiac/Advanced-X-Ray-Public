@@ -243,7 +243,6 @@ Flags32		ps_r2_ls_flags				= { R2FLAG_SUN
 Flags32		ps_r2_ls_flags_ext			= {
 		/*R2FLAGEXT_SSAO_OPT_DATA |*/ R2FLAGEXT_SSAO_HALF_DATA
 		|R2FLAGEXT_ENABLE_TESSELLATION
-		|R4FLAGEXT_NEW_SHADER_SUPPORT
 	};
 
 int			ps_no_scale_on_fade			= 0;
@@ -387,6 +386,8 @@ Flags32 psDeviceFlags2 = { 0 };
 //Static on R2+
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 
+Flags32	ps_r4_shaders_flags = { R4FLAG_SSS_ADDON };
+
 //Screen Space Shaders Stuff
 
 // Anomaly
@@ -408,7 +409,7 @@ extern ENGINE_API Fvector4 ps_ssfx_rain_1;
 extern ENGINE_API Fvector4 ps_ssfx_rain_2;
 extern ENGINE_API Fvector4 ps_ssfx_rain_3;
 
-int ps_r4_ss_grass_collision = 1;
+int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
 
 //extern ENGINE_API Fvector4 ps_ssfx_wpn_dof_1;
@@ -1284,7 +1285,7 @@ void		xrRender_initconsole	()
 	//CMD4(CCC_Vector3,	"r_color_grading_es",	&ps_r2_img_cg,				tw_min, tw_max);
 
     // Screen Space Shaders
-    CMD3(CCC_Mask,			"r4_new_shader_support",		&ps_r2_ls_flags_ext,		R4FLAGEXT_NEW_SHADER_SUPPORT);
+	CMD3(CCC_Mask,			"r4_screen_space_shaders",		&ps_r4_shaders_flags,		R4FLAG_SSS_ADDON); //Need restart
     CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
 	CMD4(CCC_Float,			"r_grass_shadows_dintance",		&ps_ssfx_grass_shadows.y,	0.01f, 1.0f);
     CMD4(CCC_ssfx_cascades, "ssfx_shadow_cascades",			&ps_ssfx_shadow_cascades,	Fvector3().set(1.0f, 1.0f, 1.0f), Fvector3().set(300, 300, 300));

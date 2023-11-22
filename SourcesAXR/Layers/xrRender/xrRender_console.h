@@ -250,7 +250,6 @@ enum
 	R2FLAGEXT_SUN_ZCULLING			= (1<<8),
 	R2FLAGEXT_SUN_OLD				= (1<<9),
 	R2FLAGEXT_SSAO_SSDO				= (1<<10),
-	R4FLAGEXT_NEW_SHADER_SUPPORT	= (1<<11),
 };
 
 //ogse sunshafts
@@ -294,6 +293,13 @@ enum
 {
 	R2FLAG_USE_BUMP		= (1 << 0),
 	R2FLAG_STATIC_SUN	= (1 << 1),
+};
+
+extern ECORE_API Flags32 ps_r4_shaders_flags;
+
+enum
+{
+	R4FLAG_SSS_ADDON = (1 << 0),
 };
 
 //Rezy: cleanup flags

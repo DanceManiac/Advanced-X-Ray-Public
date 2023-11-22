@@ -577,7 +577,7 @@ class ssfx_blood_decals : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_ssfx_blood_decals);
+		RCache.set_c(C, ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? ps_ssfx_blood_decals : Fvector4().set(0, 0, 0, 0));
 	}
 };
 static ssfx_blood_decals binder_ssfx_blood_decals;
@@ -586,7 +586,7 @@ class ssfx_hud_drops_1 : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_ssfx_hud_drops_1);
+		RCache.set_c(C, ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? ps_ssfx_hud_drops_1 : Fvector4().set(0, 0, 0, 0));
 	}
 };
 static ssfx_hud_drops_1 binder_ssfx_hud_drops_1;
@@ -595,7 +595,7 @@ class ssfx_hud_drops_2 : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_ssfx_hud_drops_2);
+		RCache.set_c(C, ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? ps_ssfx_hud_drops_2 : Fvector4().set(0, 0, 0, 0));
 	}
 };
 static ssfx_hud_drops_2 binder_ssfx_hud_drops_2;

@@ -25,7 +25,10 @@ vf main (v_static_color v)
 
 	o.c0		= L_final;
 	o.fog 		= saturate(calc_fogging 		(v.P));			// fog, input in world coords
+	
+#ifdef SSFX_FOG
 	o.fog		= SSFX_FOGGING(1.0 - o.fog, v.P.y); // Add SSFX Fog
+#endif
 
 	return o;
 }
