@@ -47,8 +47,8 @@ float4 main( vf I ) : SV_Target
 	float3 Pv = float3(I.tctexgen.z * (I.hpos.xy * pos_decompression_params.zw - pos_decompression_params.xy), I.tctexgen.z);
 
 	// Normal Textures
-	float3	n0	= s_nmap.Sample(smp_base, I.tnorm0.xy);
-	float3	n1	= s_nmap.Sample(smp_base, I.tnorm0.zw);
+	float3 n0 = s_nmap.Sample(smp_base, I.tnorm0.xy * (2.5f / 1.5f) + float2( timers.x * 0.01f, 0.0f) );
+	float3 n1 = s_nmap.Sample(smp_base, I.tnorm0.zw * (1.5f / 1.5f) + float2(-timers.x * 0.01f, 0.2f) );
 	float3	basenormal	= (((n0 * 2 - 1) + (n1 * 2 - 1)) / 2.0f);
 	basenormal += float3(0.1f, 0.1f, 0.1f); // Offset the normal to "center" the textures again
 	
