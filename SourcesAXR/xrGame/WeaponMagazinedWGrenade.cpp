@@ -1414,18 +1414,18 @@ void CWeaponMagazinedWGrenade::switch2_Unmis()
 	{
 		if (m_sounds_enabled)
 		{
-			if (m_sounds.FindSoundItem("sndReloadMisfire", false) && psWpnAnimsFlag.test(ANM_MISFIRE_GL))
+			if (m_sounds.FindSoundItem("sndReloadMisfire", false) && (isHUDAnimationExist("anm_reload_w_gl_misfire") || isHUDAnimationExist("anm_reload_misfire_w_gl")))
 				PlaySound("sndReloadMisfire", get_LastFP());
-			else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
+			else if (m_sounds.FindSoundItem("sndReloadEmpty", false) && (isHUDAnimationExist("anm_reload_w_gl_empty") || isHUDAnimationExist("anm_reload_empty_w_gl")))
 				PlaySound("sndReloadEmpty", get_LastFP());
 			else
 				PlaySound("sndReload", get_LastFP());
 		}
-
-		if (psWpnAnimsFlag.test(ANM_MISFIRE_GL))
-			PlayHUDMotion("anm_reload_w_gl_misfire", TRUE, this, GetState());
-		else if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL))
-			PlayHUDMotion("anm_reload_w_gl_empty", TRUE, this, GetState());
+		
+		if (isHUDAnimationExist("anm_reload_w_gl_misfire") || isHUDAnimationExist("anm_reload_misfire_w_gl"))
+			PlayHUDMotionIfExists({ "anm_reload_w_gl_misfire", "anm_reload_misfire_w_gl" }, true, GetState());
+		else if (isHUDAnimationExist("anm_reload_w_gl_empty") || isHUDAnimationExist("anm_reload_empty_w_gl"))
+			PlayHUDMotionIfExists({ "anm_reload_w_gl_empty", "anm_reload_empty_w_gl" }, true, GetState());
 		else
 			PlayHUDMotion("anm_reload_w_gl", TRUE, this, GetState());
 	}
@@ -1441,11 +1441,11 @@ void CWeaponMagazinedWGrenade::CheckMagazine()
 		return;
 	}
 
-	if ((psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL) || psWpnAnimsFlag.test(ANM_RELOAD_EMPTY)) && iAmmoElapsed >= 1 && m_bNeedBulletInGun == false)
+	if ((isHUDAnimationExist("anm_reload_w_gl_empty") || isHUDAnimationExist("anm_reload_empty_w_gl") || isHUDAnimationExist("anm_reload_empty")) && iAmmoElapsed >= 1 && m_bNeedBulletInGun == false)
 	{
 		m_bNeedBulletInGun = true;
 	}
-	else if ((psWpnAnimsFlag.test(ANM_RELOAD_EMPTY_GL) || psWpnAnimsFlag.test(ANM_RELOAD_EMPTY)) && iAmmoElapsed == 0 && m_bNeedBulletInGun == true)
+	else if ((isHUDAnimationExist("anm_reload_w_gl_empty") || isHUDAnimationExist("anm_reload_empty_w_gl") || isHUDAnimationExist("anm_reload_empty")) && iAmmoElapsed == 0 && m_bNeedBulletInGun == true)
 	{
 		m_bNeedBulletInGun = false;
 	}

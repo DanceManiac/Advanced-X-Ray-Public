@@ -1234,7 +1234,7 @@ void CWeaponMagazined::switch2_Unmis()
 
 	if (m_sounds_enabled)
 	{
-		if (m_sounds.FindSoundItem("sndReloadMisfire", false) && psWpnAnimsFlag.test(ANM_MISFIRE))
+		if (m_sounds.FindSoundItem("sndReloadMisfire", false) && isHUDAnimationExist("anm_reload_misfire"))
 			PlaySound("sndReloadMisfire", get_LastFP());
 		else if (m_sounds.FindSoundItem("sndReloadJammed", false) && isHUDAnimationExist("anm_reload_jammed"))
 			PlaySound("sndReloadJammed", get_LastFP());
@@ -1242,8 +1242,10 @@ void CWeaponMagazined::switch2_Unmis()
 			PlayReloadSound();
 	}
 
-	if (psWpnAnimsFlag.test(ANM_MISFIRE) || isHUDAnimationExist("anm_reload_jammed"))
-		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_reload_jammed", "anm_reload" }, true, GetState());
+	if (isHUDAnimationExist("anm_reload_misfire"))
+		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_reload" }, true, GetState());
+	else if (isHUDAnimationExist("anm_reload_jammed"))
+		PlayHUDMotionIfExists({ "anm_reload_jammed", "anm_reload" }, true, GetState());
 	else
 		PlayAnimReload();
 }
