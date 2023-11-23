@@ -610,22 +610,22 @@ void CWeaponMagazinedWGrenade::PlayAnimShow()
 		if (!m_bGrenadeMode)
 		{
 			if (IsMisfire())
-				PlayHUDMotionIfExists({ "anm_show_w_gl_jammed", "anm_show_jammed_w_gl" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_show_w_gl_jammed", "anm_show_jammed_w_gl", "anm_show_w_gl" }, true, GetState());
 			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_show_w_gl_empty", "anm_show_empty_w_gl" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_show_w_gl_empty", "anm_show_empty_w_gl", "anm_show_w_gl" }, true, GetState());
 			else
 				PlayHUDMotion("anm_show_w_gl", FALSE, this, GetState());
 		}
 		else
 		{
 			if (IsMisfire())
-				PlayHUDMotionIfExists({ "anm_show_g_jammed", "anm_show_jammed_g" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_show_g_jammed", "anm_show_jammed_g", "anm_show_g" }, true, GetState());
 			else if (IsMagazineEmpty())
-				PlayHUDMotionIfExists({ "anm_show_g_empty", "anm_show_empty_g" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_show_g_empty", "anm_show_empty_g", "anm_show_g" }, true, GetState());
 			else
 				PlayHUDMotion("anm_show_g", FALSE, this, GetState());
 		}
-	}	
+	}
 	else
 		inherited::PlayAnimShow();
 }
@@ -639,18 +639,18 @@ void CWeaponMagazinedWGrenade::PlayAnimHide()
 		if (!m_bGrenadeMode)
 		{
 			if (IsMisfire())
-				PlayHUDMotionIfExists({ "anm_hide_w_gl_jammed", "anm_hide_jammed_w_gl" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_hide_w_gl_jammed", "anm_hide_jammed_w_gl", "anm_hide_w_gl" }, true, GetState());
 			else if (IsEmptyMagazine())
-				PlayHUDMotionIfExists({ "anm_hide_w_gl_empty", "anm_hide_empty_w_gl" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_hide_w_gl_empty", "anm_hide_empty_w_gl", "anm_hide_w_gl" }, true, GetState());
 			else
 				PlayHUDMotion("anm_hide_w_gl", TRUE, this, GetState());
 		}
 		else
 		{
 			if (IsMisfire())
-				PlayHUDMotionIfExists({ "anm_hide_g_jammed", "anm_hide_jammed_g" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_hide_g_jammed", "anm_hide_jammed_g", "anm_hide_g" }, true, GetState());
 			else if (IsEmptyMagazine())
-				PlayHUDMotionIfExists({ "anm_hide_g_empty", "anm_hide_empty_g" }, true, GetState());
+				PlayHUDMotionIfExists({ "anm_hide_g_empty", "anm_hide_empty_g", "anm_hide_g" }, true, GetState());
 			else
 				PlayHUDMotion("anm_hide_g", TRUE, this, GetState());
 		}
