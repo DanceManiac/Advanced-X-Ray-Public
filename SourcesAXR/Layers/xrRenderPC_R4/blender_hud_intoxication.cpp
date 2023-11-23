@@ -12,7 +12,7 @@ void CBlender_Hud_Intoxication::Compile(CBlender_Compile& C)
 	switch (C.iElement)
 	{
 		case 0:
-			C.r_Pass("stub_notransform_aa_AA", "hud_intoxication", FALSE, FALSE, FALSE);
+			C.r_Pass("stub_screen_space", "hud_intoxication", FALSE, FALSE, FALSE);
 			C.r_dx10Texture("s_image", r2_RT_generic0);
 			C.r_dx10Texture("s_hud_intoxication", "shaders\\hud_mask\\hud_intoxication");
 			C.r_dx10Sampler("smp_rtlinear");
