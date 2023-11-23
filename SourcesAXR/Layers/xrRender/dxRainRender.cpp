@@ -25,9 +25,11 @@ dxRainRender::dxRainRender()
 		DM_Drop = ::RImplementation.model_CreateDM(F);
 
 		//
+#if defined(USE_DX11)
 		if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
 			SH_Rain.create("effects\\rain_screen_space", "fx\\fx_rain");
 		else
+#endif
 			SH_Rain.create("effects\\rain", "fx\\fx_rain");
 
 		hGeom_Rain.create(FVF::F_LIT, RCache.Vertex.Buffer(), RCache.QuadIB);
