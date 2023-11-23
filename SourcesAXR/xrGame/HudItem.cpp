@@ -583,6 +583,11 @@ void CHudItem::PlayAnimSprintStart()
 			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
 			return;
 		}
+		else
+		{
+			m_bSprintType = true;
+			SwitchState(eIdle);
+		}
 	}
 	else if (strstr(guns_sprint_start_anm, "_empty"))
 	{
@@ -594,6 +599,11 @@ void CHudItem::PlayAnimSprintStart()
 		{
 			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
 			return;
+		}
+		else
+		{
+			m_bSprintType = true;
+			SwitchState(eIdle);
 		}
 	}
 	else
@@ -623,6 +633,11 @@ void CHudItem::PlayAnimSprintEnd()
 			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
 			return;
 		}
+		else
+		{
+			m_bSprintType = false;
+			SwitchState(eIdle);
+		}
 	}
 	else if (strstr(guns_sprint_end_anm, "_empty"))
 	{
@@ -634,6 +649,11 @@ void CHudItem::PlayAnimSprintEnd()
 		{
 			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
 			return;
+		}
+		else
+		{
+			m_bSprintType = false;
+			SwitchState(eIdle);
 		}
 	}
 	else
