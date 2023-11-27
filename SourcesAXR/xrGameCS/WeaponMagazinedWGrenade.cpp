@@ -987,6 +987,15 @@ void CWeaponMagazinedWGrenade::PlayAnimBore()
 void CWeaponMagazinedWGrenade::PlayAnimFireMode()
 {
 	string_path guns_firemode_anm{};
+
+	if (isHUDAnimationExist("anm_changefiremode"))
+	{
+		strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+		PlayHUDMotionIfExists({ guns_firemode_anm, "anm_changefiremode" }, true, GetState());
+		return;
+	}
+
 	strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_from_", (m_iCurFireMode == 0) ? "a_to_1" : (m_iCurFireMode == 1) ? "1_to_2" : (m_iCurFireMode == 2) ? "2_to_a" : "a_to_1");
 
 	string64 guns_aim_anm_full;

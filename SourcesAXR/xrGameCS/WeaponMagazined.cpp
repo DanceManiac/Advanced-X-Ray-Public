@@ -992,6 +992,15 @@ void CWeaponMagazined::switch2_ChangeFireMode()
 void CWeaponMagazined::PlayAnimFireMode()
 {
 	string_path guns_firemode_anm{};
+
+	if (isHUDAnimationExist("anm_changefiremode"))
+	{
+		strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+		PlayHUDMotionIfExists({ guns_firemode_anm, "anm_changefiremode" }, true, GetState());
+		return;
+	}
+
 	strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_from_", (m_iCurFireMode == 0) ? "a_to_1" : (m_iCurFireMode == 1) ? "1_to_2" : (m_iCurFireMode == 2) ? "2_to_a" : "a_to_1");
 
 	string64 guns_aim_anm_full;
@@ -1905,7 +1914,7 @@ void CWeaponMagazined::PlayAnimShoot()
 	//HUD_VisualBulletUpdate();
 
 	if (iAmmoElapsed == 1)
-		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shot_l", "anm_shots_w_gl" }, false, GetState());
+		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shot_l", "anm_shots" }, false, GetState());
 	else
 		PlayHUDMotionIfExists({ guns_shoot_anm, "anm_shots" }, false, GetState());
 }
@@ -1967,7 +1976,7 @@ void	CWeaponMagazined::OnNextFireMode		()
 {
 	if (!m_bHasDifferentFireModes) return;
 
-	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a"))
+	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a") || isHUDAnimationExist("anm_changefiremode"))
 		SwitchState(eFiremodeNext);
 
 	if (GetState() != eIdle) return;
@@ -1979,7 +1988,7 @@ void	CWeaponMagazined::OnPrevFireMode		()
 {
 	if (!m_bHasDifferentFireModes) return;
 
-	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a"))
+	if (isHUDAnimationExist("anm_changefiremode_from_1_to_a") || isHUDAnimationExist("anm_changefiremode"))
 		SwitchState(eFiremodePrev);
 
 	if (GetState() != eIdle) return;
