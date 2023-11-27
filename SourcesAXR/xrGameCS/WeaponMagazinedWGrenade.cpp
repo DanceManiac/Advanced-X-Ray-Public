@@ -951,10 +951,37 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 
 void  CWeaponMagazinedWGrenade::PlayAnimModeSwitch()
 {
-	if(m_bGrenadeMode)
-		PlayHUDMotionIfExists({ "anm_switch_grenade_on", "anm_switch_g" }, true, eSwitch);
-	else 
-		PlayHUDMotionIfExists({ "anm_switch_grenade_off", "anm_switch" }, true, eSwitch);
+	string_path guns_switch_anm{};
+	strconcat(sizeof(guns_switch_anm), guns_switch_anm, "anm_switch", m_bGrenadeMode ? "_g" : isHUDAnimationExist("anm_switch_w_gl") ? "_w_gl" : "", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_switch_anm))
+	{
+		PlayHUDMotionNew(guns_switch_anm, true, GetState());
+		return;
+	}
+	else if (strstr(guns_switch_anm, "_jammed"))
+	{
+		char new_guns_switch_anm[256];
+		strcpy(new_guns_switch_anm, guns_switch_anm);
+		new_guns_switch_anm[strlen(guns_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_switch_anm))
+		{
+			PlayHUDMotionNew(new_guns_switch_anm, true, GetState());
+			return;
+		}
+		else
+			return;
+	}
+	else if (strstr(guns_switch_anm, "_empty"))
+	{
+		char new_guns_switch_anm[256];
+		strcpy(new_guns_switch_anm, guns_switch_anm);
+		new_guns_switch_anm[strlen(guns_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_switch_anm))
+			PlayHUDMotionNew(new_guns_switch_anm, true, GetState());
+	}
 }
 
 void CWeaponMagazinedWGrenade::PlayAnimBore()
