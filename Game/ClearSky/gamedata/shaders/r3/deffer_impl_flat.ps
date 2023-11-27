@@ -15,6 +15,20 @@ Texture2D s_rainsplash;
 
 #if defined(USE_TDETAIL) && defined(USE_4_DETAIL)
 #	define	USE_4_BUMP
+
+float2 UpdateTerrainTC(in p_bumped I, in Texture2D s_dp)
+{
+	float3	 eye = mul (float3x3(I.M1.x, I.M2.x, I.M3.x,
+								 I.M1.y, I.M2.y, I.M3.y,
+								 I.M1.z, I.M2.z, I.M3.z), -I.position.xyz);
+								 
+	float	height	= s_dp.Sample( smp_base, I.tcdbump).w;	//
+			height	= height*(parallax.x) + (parallax.y);	//
+	float2	new_tc  = I.tcdbump + height * normalize(eye);	//
+
+	return new_tc;
+}
+
 #endif
 
 #ifdef USE_4_BUMP
@@ -35,12 +49,17 @@ f_deffer 	main	( p_flat I 		)
 	float4	mask= s_mask.Sample ( smp_base, I.tcdh);
 	float 	mag	= dot 		(mask,1);
 			mask= mask/mag	;
+			
+	float2 tc_r = UpdateTerrainTC(I, s_dp_r);
+	float2 tc_g = UpdateTerrainTC(I, s_dp_g);
+	float2 tc_b = UpdateTerrainTC(I, s_dp_b);
+	float2 tc_a = UpdateTerrainTC(I, s_dp_a);
 
   #ifdef USE_4_BUMP
- 	 float4	n_Rt = s_dn_r.Sample ( smp_base, I.tcdbump).wzyx;
-	 float4	n_Gt = s_dn_g.Sample ( smp_base, I.tcdbump).wzyx;
-	 float4	n_Bt = s_dn_b.Sample ( smp_base, I.tcdbump).wzyx;
-	 float4	n_At = s_dn_a.Sample ( smp_base, I.tcdbump).wzyx;
+ 	 float4	n_Rt = s_dn_r.Sample ( smp_base, tc_r).wzyx;
+	 float4	n_Gt = s_dn_g.Sample ( smp_base, tc_g).wzyx;
+	 float4	n_Bt = s_dn_b.Sample ( smp_base, tc_b).wzyx;
+	 float4	n_At = s_dn_a.Sample ( smp_base, tc_a).wzyx;
 	 
  	 float3	n_R = (n_Rt-0.5)*mask.r; 
 	 float g_R=n_Rt.w*mask.r;
@@ -140,11 +159,15 @@ f_deffer 	main	( p_flat I 		)
 	N_refra.xy *= 0.15f * smoothstep( 0.6f, 0.8f, wetness_f * puddles ) * G_PUDDLES_REFRACTION_INTENSITY;
 
 	// Detail textures + refraction when needed
-	float2 detail_tc = I.tcdbump + N_refra;
-	float3 d_R = s_dt_r.Sample ( smp_base, detail_tc) * mask.r;
-	float3 d_G = s_dt_g.Sample ( smp_base, detail_tc) * mask.g;
-	float3 d_B = s_dt_b.Sample ( smp_base, detail_tc) * mask.b;
-	float3 d_A = s_dt_a.Sample ( smp_base, detail_tc) * mask.a;
+	float2 detail_tc_r = tc_r + N_refra;
+	float2 detail_tc_g = tc_g + N_refra;
+	float2 detail_tc_b = tc_b + N_refra;
+	float2 detail_tc_a = tc_a + N_refra;
+	
+	float3 d_R = s_dt_r.Sample ( smp_base, detail_tc_r) * mask.r;
+	float3 d_G = s_dt_g.Sample ( smp_base, detail_tc_g) * mask.g;
+	float3 d_B = s_dt_b.Sample ( smp_base, detail_tc_b) * mask.b;
+	float3 d_A = s_dt_a.Sample ( smp_base, detail_tc_a) * mask.a;
 	float3 dt = d_R + d_G + d_B + d_A;
 	D.rgb = 2 * D.rgb * dt;
 
