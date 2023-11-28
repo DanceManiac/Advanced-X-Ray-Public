@@ -96,7 +96,7 @@ void CWeaponAutomaticShotgun::Reload()
 
 void CWeaponAutomaticShotgun::TriStateReload()
 {
-	if (m_magazine.size() == (u32)iMagazineSize)
+	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire())
 		return;
 
 	if (HaveCartridgeInInventory(1) || IsMisfire())
@@ -115,7 +115,7 @@ void CWeaponAutomaticShotgun::OnStateSwitch	(u32 S)
 
 	CWeapon::OnStateSwitch(S);
 
-	if( m_magazine.size() == (u32)iMagazineSize || !HaveCartridgeInInventory(1) && !IsMisfire())
+	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire() || !HaveCartridgeInInventory(1) && !IsMisfire())
 	{
 			switch2_EndReload		();
 			m_sub_state = eSubstateReloadEnd;
