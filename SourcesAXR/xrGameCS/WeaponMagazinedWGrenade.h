@@ -103,5 +103,9 @@ public:
 	CCartridge				m_DefaultCartridge2;
 	int						iAmmoElapsed2;
 
+	int						iAmmoElapsedMain;
+
+	bool					IsMainMagazineEmpty() { return iAmmoElapsedMain <= 0; }
+
 	virtual void UpdateGrenadeVisibility(bool visibility);
 };
