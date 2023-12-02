@@ -435,6 +435,8 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 
 	if (iAmmoElapsed < 0)
 		iAmmoElapsed = 0;
+
+	SwitchState(eIdle);
 }
 
 int CWeaponMagazined::CheckAmmoBeforeReload(u8& v_ammoType)
