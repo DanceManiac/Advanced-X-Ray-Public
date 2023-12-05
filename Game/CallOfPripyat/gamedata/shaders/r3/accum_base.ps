@@ -71,7 +71,7 @@ float4 main(p_volume I, float4 pos2d : SV_Position ) : SV_Target
 			#endif
 	#endif
 
-#if defined(SSFX_ENHANCED_SHADERS) && defined(SSFX_FLORAFIX)
+#if defined(ENCHANTED_SHADERS_ENABLED) && defined(SSFX_FLORAFIX)
 		return  float4(SRGBToLinear(Ldynamic_color.rgb * lightmap.rgb * s.xxx),1) * light;
 #else
 		return  float4( Ldynamic_color * light * s * lightmap);

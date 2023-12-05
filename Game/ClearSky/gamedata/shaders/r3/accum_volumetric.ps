@@ -61,11 +61,13 @@ float4 main ( v2p I, uint iSample : SV_SAMPLEINDEX ) : SV_Target
 	//	TODO: DX10: Can use sampler with point mip filter	
 	t_noise *= s_noise.Sample( smp_linear, PS );
 	t_noise = t_noise*0.5+0.5;
-	
+
+#ifdef ENCHANTED_SHADERS_ENABLED	
 	s = max(0, s);
 	att = max(0, att);
 	lightmap = max(0, lightmap);
 	t_noise = max(0, t_noise);
+
 
 #ifdef ES_PSEUDO_PBR
 		// matches vanilla?
@@ -95,4 +97,15 @@ float4 main ( v2p I, uint iSample : SV_SAMPLEINDEX ) : SV_Target
 		//return  float4( SRGBToLinear(result), 1);
 #endif		
 #endif // ES_PSEUDO_PBR
+
+#else //No enchanted shaders
+
+		// matches vanilla?
+		float maxIntens = I.fDensity;
+		float3	result = maxIntens * s * att;
+		result *= lightmap;
+		result *= Ldynamic_color * t_noise;
+		return  float4( result, 1); //srgb		
+
+#endif
 }

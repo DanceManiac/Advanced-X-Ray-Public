@@ -21,6 +21,7 @@ float4 	main(v2p I )	: SV_Target
 
 	float4 	mix = I.color * (s0 + s1)	;
 
+#ifdef ENCHANTED_SHADERS_ENABLED 
 	float4 	rgb , hi;
 	
 #ifdef	USE_VTF
@@ -33,4 +34,8 @@ float4 	main(v2p I )	: SV_Target
 	tonemap(rgb, hi, mix, scale );
 
 	return  float4(rgb.rgb, rgb.a);
+#else
+	float4 	rgb		= mix;
+	return  rgb;
+#endif
 }

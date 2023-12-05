@@ -4,7 +4,7 @@
 // Pixel
 float4 main( p_build I ) : SV_Target
 {
-    
+#ifdef ENCHANTED_SHADERS_ENABLED   
 	float2 ratio = float2( 1/screen_res.x,1/screen_res.y).xy;  
 	
     ratio.x = 1;  
@@ -19,6 +19,7 @@ float4 main( p_build I ) : SV_Target
 	I.Tex1 = UVavg + ((I.Tex1 - UVavg) * ratio);
 	I.Tex2 = UVavg + ((I.Tex2 - UVavg) * ratio);
 	I.Tex3 = UVavg + ((I.Tex3 - UVavg) * ratio);
+#endif
 	
 	float4	t_0	= s_image.Sample( smp_rtlinear, I.Tex0);
 	float4	t_1	= s_image.Sample( smp_rtlinear, I.Tex1);
@@ -26,5 +27,9 @@ float4 main( p_build I ) : SV_Target
 	float4	t_3	= s_image.Sample( smp_rtlinear, I.Tex3);
 
     // out
+#ifdef ENCHANTED_SHADERS_ENABLED 
 	return  ( (t_0+t_1) + (t_2+t_3) ) / 4;
+#else
+	return  ( (t_0+t_1) + (t_2+t_3) ) / 2;
+#endif
 }

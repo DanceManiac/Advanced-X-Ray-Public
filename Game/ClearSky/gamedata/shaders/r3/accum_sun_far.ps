@@ -77,7 +77,7 @@ float4 main ( v2p_volume I ) : SV_Target
 	// Add Shadows
 	shadows *= s;
 
-#ifdef SSFX_ENHANCED_SHADERS
+#ifdef ENCHANTED_SHADERS_ENABLED
 	return blend( float4( SRGBToLinear( Ldynamic_color.rgb * shadows.xxx ), 1.0f ) * light, I.tc );
 #else
 	return blend( Ldynamic_color * light * shadows, I.tc );

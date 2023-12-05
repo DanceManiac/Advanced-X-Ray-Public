@@ -18,7 +18,10 @@ float4 main ( float4 tc:TEXCOORD0, float4 pos2d : SV_Position ) : SV_Target
 
 	float4	_P				= float4( gbd.P, gbd.mtl );
 	float4	_N				= float4( gbd.N, gbd.hemi );
+	
+#ifdef ENCHANTED_SHADERS_ENABLED
 	float4 _C = float4(gbd.C, gbd.gloss );
+#endif
 
 	float3	L2P 	= _P.xyz - Ldynamic_pos.xyz;			// light2point
 	float3 	L2P_N 	= normalize	( L2P );					// light2point
@@ -28,7 +31,12 @@ float4 main ( float4 tc:TEXCOORD0, float4 pos2d : SV_Position ) : SV_Target
 	float	hemi 	= saturate	( dot( L2P_N, direction ) );
 
   // Final color
+  
+#ifdef ENCHANTED_SHADERS_ENABLED
 	float3 result =	SRGBToLinear(att) * hemi;
 	result *=	SRGBToLinear(_C.rgb) * SRGBToLinear(Ldynamic_color.rgb) * light;
 	return 	float4(result, 0);
+#else
+	return 	blendp( float4( Ldynamic_color.xyz * att * light * hemi, 0 ), tc );
+#endif
 }

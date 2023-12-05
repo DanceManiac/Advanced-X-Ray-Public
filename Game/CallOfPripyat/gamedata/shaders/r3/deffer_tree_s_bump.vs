@@ -1,3 +1,10 @@
+#ifndef ENCHANTED_SHADERS_ENABLED 
+
+#define USE_TREEWAVE
+#include "deffer_tree_bump.vs"
+
+#else
+
 #include "common.h"
 
 uniform float3x4	m_xform		;
@@ -103,3 +110,5 @@ v2p_bumped 	main 	(v_tree I)
 	return O;
 }
 FXVS;
+
+#endif

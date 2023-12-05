@@ -17,7 +17,7 @@ float	luminance	(float2	tc)
 //	c):	8x8p	=> 1x1p		with exp
 float4 main( p_build I ) : SV_Target
 {
-	
+#ifdef ENCHANTED_SHADERS_ENABLED  	
     float2 ratio = float2( 1/screen_res.x,1/screen_res.y);  
 	
     ratio.x = 1;  
@@ -31,6 +31,7 @@ float4 main( p_build I ) : SV_Target
 	I.Tex1	= UVavg + ((I.Tex1 - UVavg) * ratio);
 	I.Tex2	= UVavg + ((I.Tex2 - UVavg) * ratio);
 	I.Tex3	= UVavg + ((I.Tex3 - UVavg) * ratio);
+#endif
 	
 	// first 8 bilinear samples (8x4 = 32 pixels)
 	float4 	final;

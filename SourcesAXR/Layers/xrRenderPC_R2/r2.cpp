@@ -13,6 +13,7 @@
 //#include "../../xrServerEntities/smart_cast.h"
 #include "../../xrEngine/Rain.h"
 #include "../../xrEngine/x_ray.h"
+#include "../../xrEngine/xr_ioconsole.h"
 
 CRender										RImplementation;
 
@@ -265,6 +266,8 @@ void					CRender::create					()
 		o.ssao_opt_data = false;
 		o.ssao_hbao = false;
 	}
+
+	Console->Execute("shader_preset original_shaders_preset");
 
 	// constants
 	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("parallax",	&binder_parallax);

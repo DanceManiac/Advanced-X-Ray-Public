@@ -29,6 +29,7 @@ v2p_flat main (v_tree I)
 #endif
 	float4 	f_pos 	= float4(pos.x+result.x, pos.y, pos.z+result.y, 1);
 
+#ifdef ENCHANTED_SHADERS_ENABLED 
 	//Normal mapping
 	float3 N = unpack_bx2(I.Nh); 
 	float3 sphereOffset = float3(0.0, 1.0, 0.0);
@@ -49,6 +50,7 @@ v2p_flat main (v_tree I)
 	float foliageMask = (abs(xmaterial-foliageMat) >= 0.2) ? 1 : 0; //foliage
 	//float foliageMask = 1; //foliage
 	N = normalize(lerp(N, sphereN, foliageMask)); //blend to foliage normals
+#endif
 	
 	// Final xform(s)
 	// Final xform
@@ -57,7 +59,12 @@ v2p_flat main (v_tree I)
 	float hemi 	= I.Nh.w*c_scale.w + c_bias.w;
     //float hemi 	= I.Nh.w;
 	o.hpos			= mul		(m_VP, f_pos				);
+#ifdef ENCHANTED_SHADERS_ENABLED 
 	o.N 			= mul((float3x3)m_xform_v, N);
+#else
+	o.N 			= mul((float3x3)m_xform_v, unpack_bx2(I.Nh));
+#endif
+	
 	o.tcdh 			= float4	((I.tc * consts).xyyy		);
 	o.position		= float4	(Pe, hemi					);
 

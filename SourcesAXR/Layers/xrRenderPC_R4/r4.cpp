@@ -13,6 +13,7 @@
 #include "../xrRenderDX10/3DFluid/dx103DFluidManager.h"
 #include "../xrRender/ShaderResourceTraits.h"
 #include "../../xrEngine/x_ray.h"
+#include "../../xrEngine/xr_ioconsole.h"
 #include "D3DX10Core.h"
 
 CRender										RImplementation;
@@ -344,6 +345,9 @@ void					CRender::create					()
 	o.dx10_winter_mode = !bWinterMode;
 	o.dx10_lowland_fog_mode = bLowlandFogWeather;
 	o.dx11_sss_addon_enabled = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON);
+	o.dx11_es_addon_enabled = ps_r4_shaders_flags.test(R4FLAG_ES_ADDON);
+
+	o.dx11_es_addon_enabled ? Console->Execute("shader_preset es_shaders_preset") : Console->Execute("shader_preset original_shaders_preset");
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -1386,13 +1390,26 @@ HRESULT	CRender::shader_compile			(
 	}
 	sh_name[len] = '0' + char(o.dx10_lowland_fog_mode); ++len;
 
-	if (ps_r4_pseudo_pbr)
+	if (o.dx11_es_addon_enabled)
+	{
+		defines[def_it].Name = "ENCHANTED_SHADERS_ENABLED";
+		defines[def_it].Definition = "1";
+		def_it++;
+	}
+	sh_name[len] = '0' + char(o.dx11_es_addon_enabled); ++len;
+
+	if (ps_r4_pseudo_pbr && o.dx11_es_addon_enabled)
 	{
 		defines[def_it].Name = "ES_PSEUDO_PBR";
 		defines[def_it].Definition = "1";
 		def_it++;
+		sh_name[len] = '0' + char(ps_r4_pseudo_pbr); ++len;
 	}
-	sh_name[len] = '0' + char(ps_r4_pseudo_pbr); ++len;
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
 
 	if (o.dx11_sss_addon_enabled)
 	{

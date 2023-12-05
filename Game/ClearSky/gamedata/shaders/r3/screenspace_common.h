@@ -163,7 +163,7 @@ float4 SSFX_get_fast_scenelighting(float2 tc, uint iSample : SV_SAMPLEINDEX)
 		float4 C = s_diffuse.Load(int3( tc * screen_res.xy, 0 ), iSample);
 	#endif
 	
-	#ifdef SSFX_ENHANCED_SHADERS // We have Enhanced Shaders installed
+	#ifdef ENCHANTED_SHADERS_ENABLED // We have Enhanced Shaders installed
 		
 		/*float3 hdiffuse = C.rgb + L_ambient.rgb;
 		
@@ -215,7 +215,7 @@ float3 SSFX_get_scene(float2 tc, uint iSample : SV_SAMPLEINDEX)
 
 	float3 nw = mul( m_inv_V, rN );
 	
-	#ifdef SSFX_ENHANCED_SHADERS
+	#ifdef ENCHANTED_SHADERS_ENABLED
 
 		rL.rgb += rL.a * SRGBToLinear(rD.rgb);
 

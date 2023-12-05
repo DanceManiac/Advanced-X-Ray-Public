@@ -23,7 +23,7 @@ float	sample	(float2	tc)
 
 float4 main( p_filter I ) : SV_Target
 {
-    
+#ifdef ENCHANTED_SHADERS_ENABLED     
 	float4 ratio = float2( 1/screen_res.x,1/screen_res.y).xyxy;   
 	
     ratio.x = 1;  
@@ -44,7 +44,7 @@ float4 main( p_filter I ) : SV_Target
 	I.Tex5 = UVavg + ((I.Tex5 - UVavg) * ratio);
 	I.Tex6 = UVavg + ((I.Tex6 - UVavg) * ratio);
 	I.Tex7 = UVavg + ((I.Tex7 - UVavg) * ratio);
-	
+#endif	
 	// sample
 	float4 	accum0;
 		accum0.x =	sample(I.Tex0);

@@ -1,4 +1,7 @@
 #include "common.h"
+
+#ifdef ENCHANTED_SHADERS_ENABLED
+
 #include "sload.h"
 
 float4 pda_params;
@@ -16,3 +19,12 @@ float4 main( p_flat I ) : SV_Target
     color.w *= brightness;
   return color;
 }
+
+#else
+
+float4 main() : SV_Target
+{
+  return   float4    (1,1,1,0)*1.0h;
+}
+
+#endif

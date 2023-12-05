@@ -299,7 +299,8 @@ extern ECORE_API Flags32 ps_r4_shaders_flags;
 
 enum
 {
-	R4FLAG_SSS_ADDON = (1 << 0),
+	R4FLAG_SSS_ADDON	= (1 << 0),
+	R4FLAG_ES_ADDON		= (1 << 1),
 };
 
 //Rezy: cleanup flags

@@ -1,6 +1,9 @@
 #include "common.h"
 #include "rainbow_draw.h"
-#include "pbr_cubemap_check.h"
+
+#ifdef ENCHANTED_SHADERS_ENABLED 
+#	include "pbr_cubemap_check.h"
+#endif
 
 struct         v2p
 {
@@ -24,7 +27,8 @@ _out main(v2p I )
 {
 	float3	s0		= s_sky0.SampleLevel( smp_base, I.tc0, 0 );
 	float3	s1		= s_sky1.SampleLevel( smp_base, I.tc1, 0 );
-	
+
+#ifdef ENCHANTED_SHADERS_ENABLED 	
 	float3			sky = lerp (s0,s1,I.factor.w);
 	
 	//srgb tint (matches hmodel)
@@ -46,6 +50,15 @@ _out main(v2p I )
 	_out			o;
 	
 	tonemap(o.low, o.high, sky, tm_scale)	; //factor contains tonemapping
+#else
+
+	float3	sky = I.factor*lerp( s0, s1, I.factor.w );
+	sky		*= 0.33f;
+	
+	_out			o;
+	o.low =	sky.xyzz;
+	o.high = o.low/def_hdr;
+#endif
 	
 	float diff_green_red = L_sun_color.g - L_sun_color.r;
 	float diff_green_blue = L_sun_color.g - L_sun_color.b;

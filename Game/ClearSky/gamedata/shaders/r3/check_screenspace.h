@@ -6,4 +6,3 @@
 #endif
 
 #define SSFX_SSR
-#define SSFX_ENHANCED_SHADERS

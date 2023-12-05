@@ -64,7 +64,7 @@ float4 main ( v2p_volume I ) : SV_Target
 
 	s *= SSFX_ScreenSpaceShadows(_P, I.hpos, ISAMPLE);
 	
-#ifdef SSFX_ENHANCED_SHADERS // We have Enhanced Shaders installed
+#ifdef ENCHANTED_SHADERS_ENABLED // We have Enhanced Shaders installed
 	return 	float4( SRGBToLinear(Ldynamic_color.rgb * s.xxx),1) * light;
 #else
 	return 	float4( Ldynamic_color * light * s);

@@ -9,6 +9,7 @@
 #include "../../xrEngine/CustomHUD.h"
 #include "../../xrEngine/xr_object.h"
 #include "../../xrEngine/fmesh.h"
+#include "../../xrEngine/xr_ioconsole.h"
 #include "../xrRender/SkeletonCustom.h"
 #include "../xrRender/lighttrack.h"
 #include "../xrRender/dxRenderDeviceRender.h"
@@ -114,6 +115,8 @@ void					CRender::create					()
 
 	xrRender_apply_tf			();
 	::PortalTraverser.initialize();
+
+	Console->Execute("shader_preset original_shaders_preset");
 }
 
 void					CRender::destroy				()

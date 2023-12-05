@@ -163,6 +163,14 @@ xr_token lowland_fog_type_token[] = {
 	{ 0, 0 }
 };
 
+//Пресет настроек для шейдеров
+u32 ps_ShaderPreset = 0;
+xr_token							qshader_preset_token[] = {
+	{"original_shaders_preset",		0												},
+	{"es_shaders_preset",			1												},
+	{ 0,							0												}
+};
+
 //	“Off”
 //	“DX10.0 style [Standard]”
 //	“DX10.1 style [Higher quality]”
@@ -386,7 +394,7 @@ Flags32 psDeviceFlags2 = { 0 };
 //Static on R2+
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 
-Flags32	ps_r4_shaders_flags = { R4FLAG_SSS_ADDON };
+Flags32	ps_r4_shaders_flags = { R4FLAG_SSS_ADDON | R4FLAG_ES_ADDON };
 
 //Screen Space Shaders Stuff
 
@@ -939,6 +947,28 @@ static void LoadTokensFromIni(xr_vector<xr_token>& tokens, LPCSTR section)
 	tokens.push_back({nullptr, 0});
 }
 
+class CCC_Shader_Preset : public CCC_Token
+{
+public:
+	CCC_Shader_Preset(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N, V, T) {};
+
+	virtual void Execute(LPCSTR args)
+	{
+		CCC_Token::Execute(args);
+		string_path _cfg;
+		string_path cmd;
+
+		switch (*value)
+		{
+		case 0: xr_strcpy(_cfg, "mfs_team\\shaders_presets\\shaders_original_preset.ltx"); break;
+		case 1: xr_strcpy(_cfg, "mfs_team\\shaders_presets\\shaders_enchanted_preset.ltx"); break;
+		}
+		FS.update_path(_cfg, "$game_config$", _cfg);
+		strconcat(sizeof(cmd), cmd, "cfg_load", " ", _cfg);
+		Console->Execute(cmd);
+	}
+};
+
 //-----------------------------------------------------------------------
 void		xrRender_initconsole	()
 {
@@ -1286,6 +1316,8 @@ void		xrRender_initconsole	()
 
     // Screen Space Shaders
 	CMD3(CCC_Mask,			"r4_screen_space_shaders",		&ps_r4_shaders_flags,		R4FLAG_SSS_ADDON); //Need restart
+	CMD3(CCC_Mask,			"r4_enchanted_shaders",			&ps_r4_shaders_flags,		R4FLAG_ES_ADDON); //Need restart
+	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
     CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
 	CMD4(CCC_Float,			"r_grass_shadows_dintance",		&ps_ssfx_grass_shadows.y,	0.01f, 1.0f);
     CMD4(CCC_ssfx_cascades, "ssfx_shadow_cascades",			&ps_ssfx_shadow_cascades,	Fvector3().set(1.0f, 1.0f, 1.0f), Fvector3().set(300, 300, 300));

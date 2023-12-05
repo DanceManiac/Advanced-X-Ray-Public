@@ -4,7 +4,12 @@
 #define USE_BURLEY_DIFFUSE //use expensive Disney/Burley diffuse
 //#define USE_GGX_SPECULAR //use more expensive GGX specular
 //=================================================================================================
-#define ALBEDO_BOOST 0.0
+#ifdef ENCHANTED_SHADERS_ENABLED 
+#	define ALBEDO_BOOST 0.0
+#else
+#	define ALBEDO_BOOST 0.5	
+#endif
+
 #define ALBEDO_AMOUNT 1.00
 
 #define ROUGHNESS_LOW 0.5

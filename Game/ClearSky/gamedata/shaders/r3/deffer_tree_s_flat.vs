@@ -1,3 +1,10 @@
+#ifndef ENCHANTED_SHADERS_ENABLED 
+
+#define USE_TREEWAVE
+#include "deffer_tree_flat.vs"
+
+#else
+
 #include "common.h"
 
 uniform float3x4	m_xform;
@@ -65,3 +72,5 @@ v2p_flat main (v_tree I)
 	return o;
 }
 FXVS;
+
+#endif
