@@ -268,11 +268,6 @@ float		ps_r2_ls_bloom_speed		= READ_IF_EXISTS(pAdvancedSettings, r_float, "start
 float		ps_r2_ls_bloom_kernel_scale = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_kernel_scale", 0.7f);
 float		ps_r2_ls_bloom_threshold	= READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "bloom_threshold", 0.00001f);
 
-float		r2_tonemap_middlegray_modifier	= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_tonemap_middlegray",	0.0f);
-float		r2_tonemap_low_lum_modifier		= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_tonemap_low_lum",		0.0f);
-float		r2_sun_lumscale_modifier		= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_sun_lumscale",			0.0f);
-float		r2_sun_lumscale_amb_modifier	= READ_IF_EXISTS(pAdvancedSettings, r_float, "variables_modifiers", "mod_sun_lumscale_amb",		0.0f);
-
 float		ps_r2_ls_dsm_kernel			= .7f;				// r2-only
 float		ps_r2_ls_psm_kernel			= .7f;				// r2-only
 float		ps_r2_ls_ssm_kernel			= .7f;				// r2-only

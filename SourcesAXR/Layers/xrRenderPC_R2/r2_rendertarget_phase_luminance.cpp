@@ -116,7 +116,7 @@ void	CRenderTarget::phase_luminance()
 		float		amount			= ps_r2_ls_flags.test(R2FLAG_TONEMAP)?ps_r2_tonemap_amount:0;
 		Fvector3	_none, _full, _result;
 				_none.set			(1,							0,		1						);
-				_full.set			(ps_r2_tonemap_middlegray + r2_tonemap_middlegray_modifier,	1.f,	ps_r2_tonemap_low_lum - r2_tonemap_low_lum_modifier);
+				_full.set			(ps_r2_tonemap_middlegray,	1.f,	ps_r2_tonemap_low_lum	);
 				_result.lerp		(_none, _full, amount	);
 
 		RCache.set_Element			(s_luminance->E[2]		);
