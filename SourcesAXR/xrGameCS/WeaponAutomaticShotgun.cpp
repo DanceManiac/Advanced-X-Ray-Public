@@ -186,6 +186,8 @@ void CWeaponAutomaticShotgun::PlayAnimOpenWeapon()
 
 	if (IsMisfire())
 		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_close" }, true, GetState());
+	else if (iAmmoElapsed == 0)
+		PlayHUDMotionIfExists({ "anm_open_empty", "anm_open_weapon", "anm_open" }, false, GetState());
 	else
 		PlayHUDMotion("anm_open",FALSE,this,GetState());
 }

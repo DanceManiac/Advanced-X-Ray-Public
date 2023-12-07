@@ -13,7 +13,7 @@ void CWeapon::DumpActiveParams(shared_str const & section_name, CInifile & dst_i
 
 	dst_ini.w_bool	(section_name.c_str(), "cam_return",				cam_recoil.ReturnMode);
 	dst_ini.w_bool	(section_name.c_str(), "cam_return_stop",			cam_recoil.StopReturn);
-	
+
 	dst_ini.w_float	(section_name.c_str(), "cam_relax_speed",			cam_recoil.RelaxSpeed);
 	dst_ini.w_float	(section_name.c_str(), "cam_max_angle",				cam_recoil.MaxAngleVert);
 	dst_ini.w_float	(section_name.c_str(), "cam_max_angle_horz",		cam_recoil.MaxAngleHorz);
@@ -25,7 +25,7 @@ void CWeapon::DumpActiveParams(shared_str const & section_name, CInifile & dst_i
 	dst_ini.w_float	(section_name.c_str(), "zoom_cam_max_angle_horz",	zoom_cam_recoil.MaxAngleHorz);
 	dst_ini.w_float	(section_name.c_str(), "zoom_cam_step_angle_horz",	zoom_cam_recoil.StepAngleHorz);
 	dst_ini.w_float	(section_name.c_str(), "zoom_cam_dispersion_frac",	zoom_cam_recoil.DispersionFrac);
-	
+
 	dst_ini.w_float	(section_name.c_str(), "cam_dispersion",			cam_recoil.Dispersion);
 	dst_ini.w_float	(section_name.c_str(), "cam_dispersion_inc",		cam_recoil.DispersionInc);
 	dst_ini.w_float	(section_name.c_str(), "zoom_cam_dispersion",		zoom_cam_recoil.Dispersion);

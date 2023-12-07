@@ -77,6 +77,12 @@ public:
 
 public:
 	virtual u32		ef_weapon_type			() const;
+protected:
+	virtual bool	use_parent_ai_locations	() const
+	{
+		return CAttachableItem::use_parent_ai_locations();
+	}
+
 };
 
 #include "inventory_item_object_inline.h"

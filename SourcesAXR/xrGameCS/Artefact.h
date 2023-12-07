@@ -141,6 +141,7 @@ public:
 	float							m_fVolumetricIntensity;
 
 	int								m_iAfRank;
+
 	bool							m_bInContainer;
 public:
 	enum EAFHudStates {

@@ -42,6 +42,7 @@ float CWeapon::GetFireDispersion	(float cartridge_k, bool for_crosshair)
 	if(H_Parent())
 	{
 		const CInventoryOwner* pOwner	=	smart_cast<const CInventoryOwner*>(H_Parent());
+
 		float parent_disp				= pOwner->GetWeaponAccuracy();
 		fire_disp						+= parent_disp;
 	}

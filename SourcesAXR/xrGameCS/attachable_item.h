@@ -41,7 +41,11 @@ public:
 	IC		const Fmatrix		&offset					() const;
 	IC		bool				enabled					() const;
 	virtual	void				enable					(bool value);
-
+protected:
+	virtual bool		use_parent_ai_locations	() const	=0
+	{
+		return !enabled();
+	}
 public:
 	static CAttachableItem		*m_dbgItem;
 	static Fvector				get_angle_offset		()	{VERIFY(m_dbgItem);Fvector v; m_dbgItem->m_offset.getHPB(v); return v;};

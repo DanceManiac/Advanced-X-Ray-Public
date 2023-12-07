@@ -439,6 +439,11 @@ public:
 #endif
 private:
 	steering_behaviour::manager	*m_behaviour_manager;
+protected:
+	virtual bool	use_parent_ai_locations	() const
+	{
+		return CAttachableItem::use_parent_ai_locations();
+	}
 };
 
 #include "ai_rat_inline.h"

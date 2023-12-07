@@ -59,6 +59,7 @@ CArtefact::CArtefact()
 
 	//For Degradation
 	m_fConstAdditionalWeight	= 0.0f;
+
 	m_bInContainer				= false;
 }
 

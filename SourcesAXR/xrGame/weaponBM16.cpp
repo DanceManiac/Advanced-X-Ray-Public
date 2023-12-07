@@ -204,7 +204,7 @@ void CWeaponBM16::PlayAnimIdle()
 				return;
 			}
 		}
-		if (const char* guns_aim_anm = GetAnimAimName()) 
+		if (const char* guns_aim_anm = GetAnimAimName())
 		{
 			string64 guns_aim_anm_full;
 			strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_aim_anm, "_", std::to_string(m_magazine.size()).c_str());
@@ -245,6 +245,7 @@ void CWeaponBM16::PlayAnimIdle()
 				}
 			}
 		}
+
 		switch (m_magazine.size())
 		{
 		case 0:
@@ -260,11 +261,11 @@ void CWeaponBM16::PlayAnimIdle()
 	}
 	else
 	{
-		if (IsRotatingFromZoom()) 
+		if (IsRotatingFromZoom())
 		{
 			string32 guns_aim_anm;
 			strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_end_", std::to_string(m_magazine.size()).c_str());
-			if (isHUDAnimationExist(guns_aim_anm)) 
+			if (isHUDAnimationExist(guns_aim_anm))
 			{
 				PlayHUDMotionNew(guns_aim_anm, true, GetState());
 				return;

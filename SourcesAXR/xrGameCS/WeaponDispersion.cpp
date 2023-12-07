@@ -26,6 +26,7 @@ float CWeapon::GetFireDispersion	(bool with_cartridge, bool for_crosshair)
 	if (!m_magazine.empty()) m_fCurrentCartirdgeDisp = m_magazine.back().param_s.kDisp;
 	return GetFireDispersion	(m_fCurrentCartirdgeDisp, for_crosshair);
 }
+
 float CWeapon::GetBaseDispersion(float cartridge_k)
 {
 	return fireDispersionBase * cur_silencer_koef.fire_dispersion * cartridge_k * GetConditionDispersionFactor();

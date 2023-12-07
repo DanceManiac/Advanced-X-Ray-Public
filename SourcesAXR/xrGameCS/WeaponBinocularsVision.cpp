@@ -255,7 +255,7 @@ void CBinocularsVision::Update()
 		}else{
 			m_active_objects.push_back		(xr_new<SBinocVisibleObj>() );
 			SBinocVisibleObj* new_vis_obj	= m_active_objects.back();
-			new_vis_obj->m_flags.set			(flVisObjNotValid,FALSE);
+			new_vis_obj->m_flags.set		(flVisObjNotValid,FALSE);
 			new_vis_obj->m_object			= object_;
 			new_vis_obj->create_default		(m_frame_color.get());
 			new_vis_obj->m_upd_speed		= m_rotating_speed;

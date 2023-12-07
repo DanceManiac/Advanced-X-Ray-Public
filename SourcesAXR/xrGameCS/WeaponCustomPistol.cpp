@@ -36,7 +36,7 @@ void CWeaponCustomPistol::FireEnd()
 	}
 	else
 	{
-	inherited::FireEnd();
+		inherited::FireEnd();
 	}
 }
 

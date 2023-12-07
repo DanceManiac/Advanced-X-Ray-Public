@@ -15,7 +15,7 @@ void CWeaponBM16::PlayReloadSound()
 {
 	bool b_both = HaveCartridgeInInventory(2);
 
-	if (m_magazine.size() == 1 || !b_both)	
+	if (m_magazine.size() == 1 || !b_both)
 		PlaySound	("sndReload1",get_LastFP());
 	else						
 		PlaySound	("sndReload",get_LastFP());
@@ -28,7 +28,7 @@ void CWeaponBM16::PlayAnimShoot()
 
 	string_path guns_shoot_anm{};
 	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, "anm_shoot", (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim_" : "_", std::to_string(m_magazine.size()).c_str());
-	if (isHUDAnimationExist(guns_shoot_anm))
+	if (isHUDAnimationExist(guns_shoot_anm)) 
 	{
 		PlayHUDMotionNew(guns_shoot_anm, false, GetState());
 		return;
@@ -218,7 +218,7 @@ void CWeaponBM16::PlayAnimIdle()
 				char new_guns_aim_anm[100];
 				strncpy(new_guns_aim_anm, guns_aim_anm_full, jammed_position - guns_aim_anm_full);
 				strcpy(new_guns_aim_anm + (jammed_position - guns_aim_anm_full), guns_aim_anm_full + (jammed_position - guns_aim_anm_full) + jammed_length);
-			
+
 				if (isHUDAnimationExist(new_guns_aim_anm))
 				{
 					PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
@@ -267,6 +267,7 @@ void CWeaponBM16::PlayAnimIdle()
 				return;
 			}
 		}
+
 		switch (m_magazine.size())
 		{
 		case 0:

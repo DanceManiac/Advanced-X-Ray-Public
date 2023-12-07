@@ -4,25 +4,30 @@
 #include "../xrEngine/CustomHUD.h"
 #include "UI.h"
 #include "HUDManager.h"
-#include "ui/UIBtnHint.h"
 #include "ui/UIStatic.h"
+#include "ui/UIBtnHint.h"
+
+#include "../xrEngine/IInputReceiver.h"
 #include "../xrEngine/IGame_Persistent.h"
 
 #define C_DEFAULT	color_xrgb(0xff,0xff,0xff)
 
 CUICursor::CUICursor()
-:m_static(NULL)
+:m_static(NULL),m_b_use_win_cursor(false)
 {    
 	bVisible				= false;
+	vPrevPos.set			(0.0f, 0.0f);
 	vPos.set				(0.f,0.f);
 	InitInternal			();
-	Device.seqRender.Add	(this,2);
+	Device.seqRender.Add	(this,-3/*2*/);
+	Device.seqResolutionChanged.Add(this);
 }
 //--------------------------------------------------------------------
 CUICursor::~CUICursor	()
 {
 	xr_delete				(m_static);
 	Device.seqRender.Remove	(this);
+	Device.seqResolutionChanged.Remove(this);
 }
 
 void CUICursor::OnScreenResolutionChanged()
@@ -44,14 +49,18 @@ void CUICursor::InitInternal()
 
 	m_static->SetWndSize		(sz);
 	m_static->SetStretchTexture	(true);
+
+	u32 screen_size_x	= GetSystemMetrics( SM_CXSCREEN );
+	u32 screen_size_y	= GetSystemMetrics( SM_CYSCREEN );
+	m_b_use_win_cursor	= (screen_size_y >=Device.dwHeight && screen_size_x>=Device.dwWidth);
 }
 
 //--------------------------------------------------------------------
 u32 last_render_frame = 0;
 void CUICursor::OnRender	()
 {
-	//g_btnHint->OnRender();
-	//g_statHint->OnRender();
+	g_btnHint->OnRender();
+	g_statHint->OnRender();
 
 	if( !IsVisible() ) return;
 #ifdef DEBUG
@@ -94,17 +103,24 @@ Fvector2 CUICursor::GetCursorPositionDelta()
 	return res_delta;
 }
 
-void CUICursor::UpdateCursorPosition()
+void CUICursor::UpdateCursorPosition(int _dx, int _dy)
 {
-
-	POINT		p;
-	BOOL r		= GetCursorPos(&p);
-	R_ASSERT	(r);
-
+	Fvector2	p;
 	vPrevPos = vPos;
-
-	vPos.x			= (float)p.x * (UI_BASE_WIDTH/(float)Device.dwWidth);
-	vPos.y			= (float)p.y * (UI_BASE_HEIGHT/(float)Device.dwHeight);
+	if (m_b_use_win_cursor)
+	{
+		Ivector2	pti;
+		IInputReceiver::IR_GetMousePosReal(pti);
+		p.x			= (float)pti.x;
+		p.y			= (float)pti.y;
+		vPos.x		= p.x * (UI_BASE_WIDTH/(float)Device.dwWidth);
+		vPos.y		= p.y * (UI_BASE_HEIGHT/(float)Device.dwHeight);
+	}else
+	{
+		float sens = 1.0f;
+		vPos.x		+= _dx*sens;
+		vPos.y		+= _dy*sens;
+	}
 	clamp			(vPos.x, 0.f, UI_BASE_WIDTH);
 	clamp			(vPos.y, 0.f, UI_BASE_HEIGHT);
 }
@@ -116,5 +132,7 @@ void CUICursor::SetUICursorPosition(Fvector2 pos)
 	p.x			= iFloor(vPos.x / (UI_BASE_WIDTH/(float)Device.dwWidth));
 	p.y			= iFloor(vPos.y / (UI_BASE_HEIGHT/(float)Device.dwHeight));
 
+	if (m_b_use_win_cursor)
+		ClientToScreen(Device.m_hWnd, (LPPOINT)&p);
 	SetCursorPos(p.x, p.y);
 }

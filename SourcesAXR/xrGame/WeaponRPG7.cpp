@@ -5,7 +5,7 @@
 #include "entity.h"
 #include "level.h"
 #include "player_hud.h"
-#include "hudmanager.h"
+#include "HUDManager.h"
 
 CWeaponRPG7::CWeaponRPG7()
 {

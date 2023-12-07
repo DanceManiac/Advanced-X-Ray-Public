@@ -122,7 +122,7 @@ void CWeaponRPG7::switch2_Fire()
 			p = p2;
 			d = d2;
 
-			if(IsHudModeNow() && !IsZoomed())
+			if(IsHudModeNow())
 			{
 				Fvector		p0;
 				float dist	= HUD().GetCurrentRayQuery().range;

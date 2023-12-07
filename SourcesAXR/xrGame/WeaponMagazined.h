@@ -42,7 +42,6 @@ protected:
 
 	bool            m_bCustomShotSounds;
 protected:
-
 	virtual void	OnMagazineEmpty	();
 
 	virtual void	switch2_Idle	();
@@ -150,7 +149,6 @@ protected:
 	//переменная блокирует использование
 	//только разных типов патронов
 	bool m_bLockType;
-
 	bool m_bAutoreloadEnabled;
 	bool m_opened;
 	bool m_bUseFiremodeChangeAnim;

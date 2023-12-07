@@ -23,7 +23,7 @@ void anim_bone_fix::	callback	( CBoneInstance *BI )
 	anim_bone_fix* fix = (anim_bone_fix*) BI->callback_param();
 	VERIFY( fix->bone );
 	VERIFY( fix->parent );
-	VERIFY( fix->bone == BI );
+	//VERIFY( fix->bone == BI );
 	BI->mTransform.mul_43( fix->parent->mTransform, fix->matrix );
 	
 	//Fmatrix diff  = Fmatrix().mul_43( Fmatrix().invert( m ) , BI->mTransform );

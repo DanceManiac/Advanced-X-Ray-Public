@@ -74,4 +74,9 @@ public:
 
 public:
 	virtual bool			Useful				() const;
+protected:
+	virtual bool	use_parent_ai_locations	() const
+	{
+		return CAttachableItem::use_parent_ai_locations();
+	}
 };

@@ -6,7 +6,6 @@ struct anim_bone_fix
 	CBoneInstance *bone;
 	CBoneInstance *parent;
 	Fmatrix		  matrix;
-
 						anim_bone_fix();
 						~anim_bone_fix();
 static	void	_BCL	callback	( CBoneInstance *BI );

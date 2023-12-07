@@ -38,6 +38,6 @@ public:
 
 	virtual bool			use_parent_ai_locations	() const
 	{
-		return				(Device.dwFrame != dwXF_Frame);
+		return				CInventoryItemObject::use_parent_ai_locations	() && (Device.dwFrame != dwXF_Frame);
 	}
 };
