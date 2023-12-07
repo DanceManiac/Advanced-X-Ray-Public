@@ -39,6 +39,7 @@ public:
 	
 	CUIStatic*			m_ui_weapon_icon;
 	Frect				m_ui_weapon_icon_rect;
+	float				m_ui_weapon_icon_scale;
 
 	CUIProgressBar*		m_ui_health_bar;
 //	CUIProgressBar*		m_ui_armor_bar;

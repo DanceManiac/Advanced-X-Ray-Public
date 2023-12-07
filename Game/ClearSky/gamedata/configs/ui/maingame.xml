@@ -242,7 +242,7 @@
 	        <text align="c" complex_mode="0" font="letterica16" color="ui_7" vert_align="c">gr</text>
 	    </static_grenade>
 
-		<static_wpn_icon x="19" y="74" width="30" height="30"/>
+		<static_wpn_icon x="19" y="76" width="30" height="30" scale="1.00"/>
 		
 		<static_fire_mode x="146" y="105" width="10" height="14">
 			<text font="letterica16" color="ui_2" />

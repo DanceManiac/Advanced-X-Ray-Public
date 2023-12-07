@@ -73,10 +73,10 @@ void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
 	m_fire_mode					= UIHelper::CreateStatic( xml, "static_fire_mode", this );
 	m_ui_grenade				= UIHelper::CreateStatic( xml, "static_grenade", this );
 
-	m_ui_weapon_icon = UIHelper::CreateStatic( xml, "static_wpn_icon", this );
-	m_ui_weapon_icon->SetShader( InventoryUtilities::GetEquipmentIconsShader() );
-	m_ui_weapon_icon->Enable( false );
-	m_ui_weapon_icon_rect = m_ui_weapon_icon->GetWndRect();
+	m_ui_weapon_icon			= UIHelper::CreateStatic( xml, "static_wpn_icon", this );
+	m_ui_weapon_icon->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
+	m_ui_weapon_icon_rect		= m_ui_weapon_icon->GetWndRect();
+	m_ui_weapon_icon_scale		= xml.ReadAttribFlt("static_wpn_icon", 0,"scale", 1.f);
 	
 	m_ui_health_bar   = UIHelper::CreateProgressBar( xml, "progress_bar_health", this );
 	m_ui_armor_bar    = UIHelper::CreateProgressBar( xml, "progress_bar_armor", this );
@@ -265,87 +265,46 @@ void CUIHudStatesWnd::SetAmmoIcon(const shared_str& sect_name)
 	}
 	m_ui_weapon_icon->Show(true);
 
-	if ( pSettings->line_exist( sect_name, "inv_icon" ) ) //temp
-	{
-		LPCSTR icon_name = pSettings->r_string( sect_name, "inv_icon" );
-		m_ui_weapon_icon->InitTexture( icon_name );
-	}
-	else
-	{
-		//properties used by inventory menu
-		float gridWidth  = pSettings->r_float( sect_name, "inv_grid_width"  );
-		float gridHeight = pSettings->r_float( sect_name, "inv_grid_height" );
-
-		float xPos = pSettings->r_float(sect_name, "inv_grid_x");
-		float yPos = pSettings->r_float(sect_name, "inv_grid_y");
-
-		m_ui_weapon_icon->GetUIStaticItem().SetOriginalRect(
-			( xPos      * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), ( yPos       * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
-			( gridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), ( gridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())) );
-		m_ui_weapon_icon->SetStretchTexture( true );
-
-		// now perform only width scale for ammo, which (W)size >2
-		// all others ammo (1x1, 1x2) will be not scaled (original picture)
-		float h = gridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) * 0.65f;
-		float w = gridWidth  * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 0.65f;
-		if (GameConstants::GetUseHQ_Icons())
-		{
-			h = gridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2 * 0.65f;
-			w = gridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2 * 0.65f;
-		}
-
-		if ( gridWidth > 2.01f )
-		{
-			if (GameConstants::GetUseHQ_Icons())
-				w = INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2 * 1.5f;
-			else
-				w = INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 1.5f;
-		}
-
-		bool is_16x10 = UI().is_widescreen();
-		if ( gridWidth < 1.01f )
-		{
-			m_ui_weapon_icon->SetTextureOffset( (is_16x10)? 8.33f : 10.0f, 0.0f );
-		}
-		else
-		{
-			m_ui_weapon_icon->SetTextureOffset( 0.0f, 0.0f );
-		}
-
-
-		m_ui_weapon_icon->SetWidth( (is_16x10)? w*0.833f : w );
-		m_ui_weapon_icon->SetHeight( h );
-	}
-
-	/*Frect texture_rect;
-	texture_rect.x1					= pSettings->r_float(sect_name,  "inv_grid_x")		*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-	texture_rect.y1					= pSettings->r_float(sect_name,  "inv_grid_y")		*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
-	texture_rect.x2					= pSettings->r_float( sect_name, "inv_grid_width")	*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-	texture_rect.y2					= pSettings->r_float( sect_name, "inv_grid_height")	*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
-	texture_rect.rb.add				(texture_rect.lt);
-	m_ui_weapon_icon->GetUIStaticItem().SetRect(texture_rect);
+	//properties used by inventory menu
+	float xPos						= pSettings->r_float(sect_name, "inv_grid_x")		* INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
+	float yPos						= pSettings->r_float(sect_name, "inv_grid_y")		* INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+	float gridWidth					= pSettings->r_float(sect_name, "inv_grid_width")	* INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
+	float gridHeight				= pSettings->r_float(sect_name, "inv_grid_height")	* INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+	m_ui_weapon_icon->GetUIStaticItem().SetOriginalRect(xPos, yPos, gridWidth, gridHeight);
 	m_ui_weapon_icon->SetStretchTexture(true);
 
-	float h = texture_rect.height() * 0.8f;
-	float w = texture_rect.width() * 0.8f;
-
+	// all others ammo (1x1, 1x2) will be not scaled (original picture)
+	float h = gridHeight * 0.65f;
+	float w = gridWidth  * 0.65f;
 	// now perform only width scale for ammo, which (W)size >2
+	if (gridWidth > 2.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
+	{
+		w = INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 1.3f;
+		h /= 0.8f;
+	}
 	if (GameConstants::GetUseHQ_Icons())
 	{
-		if (texture_rect.width() > 2.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
-			w = INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 1.5f / 2;
+		h /= 2;
+		w /= 2;
+	}
 
-		m_ui_weapon_icon->SetWidth(w * UI().get_current_kx() / 2);
-		m_ui_weapon_icon->SetHeight(h / 2);
+	bool is_16x10 = UI().is_widescreen();
+	if (gridWidth < 1.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
+	{
+		m_ui_weapon_icon->SetTextureOffset( (is_16x10)? 8.33f : 10.0f, 0.0f );
 	}
 	else
 	{
-		if (texture_rect.width() > 2.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
-			w = INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 1.5f;
+		if (gridWidth > 2.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
+			m_ui_weapon_icon->SetTextureOffset(3.0f, -2.0f);
+		else
+			m_ui_weapon_icon->SetTextureOffset(0.0f, 0.0f);
+	}
 
-		m_ui_weapon_icon->SetWidth(w * UI().get_current_kx());
-		m_ui_weapon_icon->SetHeight(h);
-	} */
+
+	m_ui_weapon_icon->SetWidth(w * UI().get_current_kx() * m_ui_weapon_icon_scale);
+	m_ui_weapon_icon->SetHeight(h * m_ui_weapon_icon_scale);
+	
 }
 
 // ------------------------------------------------------------------------------------------------

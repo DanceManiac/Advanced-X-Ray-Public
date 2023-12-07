@@ -240,7 +240,7 @@
 	        <text align="c" complex_mode="0" font="letterica16" color="ui_7" vert_align="c">gr</text>
 	    </static_grenade>
 
-		<static_wpn_icon x="17" y="74" width="25" height="30" stretch="1"/>
+		<static_wpn_icon x="17" y="76" width="25" height="30" stretch="1" scale="1.00"/>
 	
 		<static_fire_mode x="122" y="105" width="8" height="14" stretch="1">
 			<text font="arial_14" color="ui_2" />
