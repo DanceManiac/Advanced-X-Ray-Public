@@ -114,9 +114,18 @@ void CParticleManager::StopEffect(int effect_id, int alist_id, BOOL deffered)
 	pa->lock();
 
     // Step through all the actions in the action list.
-    for(PAVecIt it=pa->begin(); it!=pa->end(); it++){
-        switch((*it)->type){
-        case PASourceID: static_cast<PASource*>(*it)->m_Flags.set(PASource::flSilent,TRUE);		break;
+    for(PAVecIt it=pa->begin(); it!=pa->end(); it++)
+	{
+		if (*it == nullptr)
+			continue;
+
+        switch((*it)->type)
+		{
+		case PASourceID:
+			{
+				static_cast<PASource*>(*it)->m_Flags.set(PASource::flSilent, TRUE);
+				break;
+			}
         }
     }
 	if (!deffered){
