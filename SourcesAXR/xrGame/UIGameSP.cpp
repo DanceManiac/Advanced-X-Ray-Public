@@ -93,8 +93,11 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	if(inherited::IR_UIOnKeyboardPress(dik)) return true;
 	if( Device.Paused()		) return false;
 
-	hud_adjust_mode_keyb	(dik);
-	attach_adjust_mode_keyb	(dik);
+	if (Actor()->active_cam() == eacFirstEye)
+	{
+		hud_adjust_mode_keyb(dik);
+		attach_adjust_mode_keyb(dik);
+	}
 
 	CInventoryOwner* pInvOwner  = smart_cast<CInventoryOwner*>( Level().CurrentEntity() );
 	if ( !pInvOwner )			return false;

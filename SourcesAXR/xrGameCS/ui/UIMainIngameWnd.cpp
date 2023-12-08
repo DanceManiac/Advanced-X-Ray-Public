@@ -821,8 +821,11 @@ struct TS{
 TS* pTS = NULL;
 void test_key(int dik)
 {
-	hud_adjust_mode_keyb	(dik);
-	attach_adjust_mode_keyb	(dik);
+	if (Actor()->active_cam() == eacFirstEye)
+	{
+		hud_adjust_mode_keyb(dik);
+		attach_adjust_mode_keyb(dik);
+	}
 }
 
 void test_draw()
