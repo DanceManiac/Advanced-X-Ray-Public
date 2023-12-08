@@ -76,8 +76,6 @@ function only_3_and_more_mode_invisible(ctrl, _id, _ssample_trb_val, _ssample_cb
 	ctrl:Show		(bEnabled)
 end
 
-
-
 function supersample_more_than_1(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
 	local bEnabled	= _ssample_trb_val>1
 	ctrl:Enable		(bEnabled)
@@ -85,6 +83,16 @@ end
 
 function dx_level_ge_655361(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
 	local bEnabled	= render_get_dx_level()>=655361
+	ctrl:Enable		(bEnabled)
+end
+
+function get_screen_space_shaders_status(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
+	local bEnabled	= (get_console():get_bool("r4_screen_space_shaders") and _id>=4)
+	ctrl:Enable		(bEnabled)
+end
+
+function get_enchanted_shaders_status(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
+	local bEnabled	= (get_console():get_bool("r4_enchanted_shaders") and _id>=4)
 	ctrl:Enable		(bEnabled)
 end
 
@@ -159,12 +167,52 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_r2_static_sun",			_st)
 	ctl			= xml:InitCheck					("video_adv:check_r2_static_sun",		_st)
 	handler.m_preconditions[ctl]		= only_2_and_more_mode
+
+--// Опции SSS и ES: Начало
+
+--Screen Space Shaders
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_screen_space_shaders",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_screen_space_shaders",		_st)
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
+
+--SSS Sky Debanding
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_sky_debanding",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_sky_debanding",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--SSS Flora Fix
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_flora_fix",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_flora_fix",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--SSS Fog
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_fog",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_fog",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--SSS Indirect Light
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_indirect_light",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_indirect_light",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+
+--Enchanted Shaders
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_enchanted_shaders",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_enchanted_shaders",		_st)
+	handler.m_preconditions[ctl]		= only_3_and_more_mode
 	
 --Псевдо PBR
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_es_pseudo_pbr",			_st)
 	ctl			= xml:InitCheck					("video_adv:check_es_pseudo_pbr",		_st)
-	handler.m_preconditions[ctl]		= only_3_and_more_mode
+	handler.m_preconditions[ctl]		= get_enchanted_shaders_status
+	
+--// Опции SSS и ES: Конец
 
 --Рендеринг бликов
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)

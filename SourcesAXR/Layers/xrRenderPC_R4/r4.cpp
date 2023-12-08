@@ -349,6 +349,11 @@ void					CRender::create					()
 
 	o.dx11_es_addon_enabled ? Console->Execute("shader_preset es_shaders_preset") : Console->Execute("shader_preset original_shaders_preset");
 
+	o.dx11_ss_sky_debanding		= ps_r4_shaders_flags.test(R4FLAG_SS_DEBANDING);
+	o.dx11_ss_flora_fix			= ps_r4_shaders_flags.test(R4FLAG_SS_FLORAFIX);
+	o.dx11_ss_fog				= ps_r4_shaders_flags.test(R4FLAG_SS_FOG);
+	o.dx11_ss_indirect_light	= ps_r4_shaders_flags.test(R4FLAG_SS_INDIRECT_LIGHT);
+
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
 	if (o.dx10_minmax_sm==MMSM_AUTODETECT)
@@ -1398,7 +1403,7 @@ HRESULT	CRender::shader_compile			(
 	}
 	sh_name[len] = '0' + char(o.dx11_es_addon_enabled); ++len;
 
-	if (ps_r4_pseudo_pbr && o.dx11_es_addon_enabled)
+	if (o.dx11_es_addon_enabled && ps_r4_pseudo_pbr)
 	{
 		defines[def_it].Name = "ES_PSEUDO_PBR";
 		defines[def_it].Definition = "1";
@@ -1420,7 +1425,7 @@ HRESULT	CRender::shader_compile			(
 	sh_name[len] = '0' + char(o.dx11_sss_addon_enabled); ++len;
 
 	// Тип низинного тумана
-	if (o.dx11_sss_addon_enabled)
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_fog)
 	{
 		sprintf_s(c_low_fog_type, "%d", ps_lowland_fog_type);
 		defines[def_it].Name = "LOWLAND_FOG_TYPE";
@@ -1434,15 +1439,20 @@ HRESULT	CRender::shader_compile			(
 		++len;
 	}
 
-	if (ps_r4_ss_grass_collision && o.dx11_sss_addon_enabled)
+	if (o.dx11_sss_addon_enabled && ps_r4_ss_grass_collision)
 	{
 		defines[def_it].Name = "SSFX_INTER_GRASS";
 		defines[def_it].Definition = "1";
 		def_it++;
+		sh_name[len] = '0' + char(ps_r4_ss_grass_collision); ++len;
 	}
-	sh_name[len] = '0' + char(ps_r4_ss_grass_collision); ++len;
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
 
-	if (ps_ssfx_rain_1.w > 0)
+	if (o.dx11_sss_addon_enabled && ps_ssfx_rain_1.w > 0)
 	{
 		xr_sprintf(c_rain_quality, "%d", u8(ps_ssfx_rain_1.w));
 		defines[def_it].Name = "SSFX_RAIN_QUALITY";
@@ -1457,7 +1467,7 @@ HRESULT	CRender::shader_compile			(
 		++len;
 	}
 
-	if (ps_ssfx_grass_interactive.y > 0)
+	if (o.dx11_sss_addon_enabled && ps_ssfx_grass_interactive.y > 0)
 	{
 		xr_sprintf(c_inter_grass, "%d", u8(ps_ssfx_grass_interactive.y));
 		defines[def_it].Name = "SSFX_INT_GRASS";
@@ -1465,6 +1475,58 @@ HRESULT	CRender::shader_compile			(
 		def_it++;
 		xr_strcat(sh_name, c_inter_grass);
 		len += xr_strlen(c_inter_grass);
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_sky_debanding)
+	{
+		defines[def_it].Name = "SSFX_DEBAND";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_sky_debanding); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_flora_fix)
+	{
+		defines[def_it].Name = "SSFX_FLORAFIX";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_flora_fix); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_fog)
+	{
+		defines[def_it].Name = "SSFX_FOG";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_fog); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_indirect_light)
+	{
+		defines[def_it].Name = "SSFX_INDIRECT_LIGHT";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_indirect_light); ++len;
 	}
 	else
 	{

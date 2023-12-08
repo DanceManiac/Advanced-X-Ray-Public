@@ -46,6 +46,14 @@ function mode_4(render_id)
 	return render_id==5
 end
 
+function get_screen_space_shaders_status(render_id)
+	return (get_console():get_bool("r4_screen_space_shaders") and render_id>=4)
+end
+
+function get_enchanted_shaders_status(render_id)
+	return (get_console():get_bool("r4_enchanted_shaders") and render_id>=4)
+end
+
 function opt_video_adv:InitControls(x, y, xml, handler)
 	local ctl
     local _st
@@ -122,12 +130,52 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_r2_static_sun", _st)
 	ctl = xml:InitCheck("video_adv:check_r2_static_sun", _st)
 	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
+
+--// Опции SSS и ES: Начало
+
+--Screen Space Shaders
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_screen_space_shaders", _st)
+	ctl = xml:InitCheck("video_adv:check_screen_space_shaders", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
+	
+--SSS Sky Debanding
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_sky_debanding", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_sky_debanding", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
+--SSS Flora Fix
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_flora_fix", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_flora_fix", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+
+--SSS Fog
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_fog", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_fog", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
+--SSS Indirect Light
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_indirect_light", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_indirect_light", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+
+--Enchanted Shaders
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_enchanted_shaders", _st)
+	ctl = xml:InitCheck("video_adv:check_enchanted_shaders", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
 	
 --Псевдо PBR	
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_es_pseudo_pbr", _st)
 	ctl = xml:InitCheck("video_adv:check_es_pseudo_pbr", _st)
-	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
+	table.insert(handler.m_preconditions, {func=get_enchanted_shaders_status, control=_st})
+
+--// Опции SSS и ES: Конец
 	
 --Рендеринг бликов
 	_st = xml:InitStatic("video_adv:templ_item", nil)

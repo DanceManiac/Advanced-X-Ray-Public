@@ -763,6 +763,48 @@
       <options_item entry="r2_static_sun" group="mm_opt_video" depend="restart"/>
     </check_r2_static_sun>
 	
+	<cap_screen_space_shaders x="77" y="0" width="119" height="21" hint = "ui_mm_screen_space_shaders_hint">
+      <text font="letterica16" color="ui_6">ui_mm_screen_space_shaders</text>
+    </cap_screen_space_shaders>
+    <check_screen_space_shaders x="200" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r4_screen_space_shaders" group="mm_opt_video" depend="restart"/>
+    </check_screen_space_shaders>
+	
+	<cap_sss_sky_debanding x="77" y="0" width="119" height="21" hint = "ui_mm_sss_sky_debanding_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_sky_debanding</text>
+    </cap_sss_sky_debanding>
+    <check_sss_sky_debanding x="200" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r4_ss_sky_debanding" group="mm_opt_video" depend="restart"/>
+    </check_sss_sky_debanding>
+	
+	<cap_sss_flora_fix x="77" y="0" width="119" height="21" hint = "ui_mm_sss_flora_fix_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_flora_fix</text>
+    </cap_sss_flora_fix>
+    <check_sss_flora_fix x="200" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r4_ss_flora_fix" group="mm_opt_video" depend="restart"/>
+    </check_sss_flora_fix>
+	
+	<cap_sss_fog x="77" y="0" width="119" height="21" hint = "ui_mm_sss_fog_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_fog</text>
+    </cap_sss_fog>
+    <check_sss_fog x="200" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r4_ss_fog" group="mm_opt_video" depend="restart"/>
+    </check_sss_fog>
+	
+	<cap_sss_indirect_light x="77" y="0" width="119" height="21" hint = "ui_mm_sss_indirect_light_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_indirect_light</text>
+    </cap_sss_indirect_light>
+    <check_sss_indirect_light x="200" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r4_ss_indirect_light" group="mm_opt_video" depend="restart"/>
+    </check_sss_indirect_light>
+	
+	<cap_enchanted_shaders x="77" y="0" width="119" height="21" hint = "ui_mm_enchanted_shaders_hint">
+      <text font="letterica16" color="ui_6">ui_mm_enchanted_shaders</text>
+    </cap_enchanted_shaders>
+    <check_enchanted_shaders x="200" y="0" width="27" height="21" stretch="1">
+      <options_item entry="r4_enchanted_shaders" group="mm_opt_video" depend="restart"/>
+    </check_enchanted_shaders>
+	
     <cap_es_pseudo_pbr x="77" y="0" width="119" height="21" hint = "ui_mm_r4_es_pseudo_pbr_hint">
       <text font="letterica16" color="ui_6">ui_mm_r4_es_pseudo_pbr</text>
     </cap_es_pseudo_pbr>

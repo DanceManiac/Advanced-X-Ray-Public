@@ -615,6 +615,42 @@
 	<string id="ui_mm_film_grain_hint">
 		<text>Эта опция включает эффект зернистости в игре.\n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_screen_space_shaders">
+		<text>Screen Space Shaders</text>
+	</string>
+	<string id="ui_mm_screen_space_shaders_hint">
+		<text>Данная опция включает аддон Screen Space Shaders. \n \n %c[pda_red] • Нагрузка: Высокая</text>
+	</string>
+	<string id="ui_mm_sss_sky_debanding">
+		<text>SSS: Сглаживание неба</text>
+	</string>
+	<string id="ui_mm_sss_sky_debanding_hint">
+		<text>Данная опция сглаживает текстуры неба, делая переходы между пикселями более плавными. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_flora_fix">
+		<text>SSS: Улучш. осв. флоры</text>
+	</string>
+	<string id="ui_mm_sss_flora_fix_hint">
+		<text>Данная опция улучшает взаимодействие кустов, веток и травы с освещением, а также исправляет недочёты. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_fog">
+		<text>SSS: Screen Space туман</text>
+	</string>
+	<string id="ui_mm_sss_fog_hint">
+		<text>Эта опция активирует поддержку низинного тумана из Screen Space Shaders. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_indirect_light">
+		<text>SSS: Непрямое освещение</text>
+	</string>
+	<string id="ui_mm_sss_indirect_light_hint">
+		<text>Эта опция включает непрямое освещение, которое, попадая на поверхность, отражается от нее в разных направлениях и тем самым освещает другие поверхности вокруг. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_enchanted_shaders">
+		<text>Enchanted Shaders</text>
+	</string>
+	<string id="ui_mm_enchanted_shaders_hint">
+		<text>Данная опция включает аддон Enchanted Shaders. \n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
 	<string id="ui_mm_death_cam_mode">
 		<text>Камера при смерти</text>
 	</string>

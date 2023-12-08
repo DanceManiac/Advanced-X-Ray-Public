@@ -106,8 +106,12 @@ public:
 	  u32		dx10_winter_mode	: 1;
 	  u32		dx10_lowland_fog_mode : 1;
 
-	  u32		dx11_sss_addon_enabled : 1;
-	  u32		dx11_es_addon_enabled : 1;
+	  u32		dx11_sss_addon_enabled	: 1;
+	  u32		dx11_ss_sky_debanding	: 1;
+	  u32		dx11_ss_flora_fix		: 1;
+	  u32		dx11_ss_fog				: 1;
+	  u32		dx11_ss_indirect_light	: 1;
+	  u32		dx11_es_addon_enabled	: 1;
 
 	  u32		dx11_enable_tessellation : 1;
 

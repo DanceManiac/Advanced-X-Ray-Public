@@ -1310,8 +1310,12 @@ void		xrRender_initconsole	()
 	//CMD4(CCC_Vector3,	"r_color_grading_es",	&ps_r2_img_cg,				tw_min, tw_max);
 
     // Screen Space Shaders
-	CMD3(CCC_Mask,			"r4_screen_space_shaders",		&ps_r4_shaders_flags,		R4FLAG_SSS_ADDON); //Need restart
 	CMD3(CCC_Mask,			"r4_enchanted_shaders",			&ps_r4_shaders_flags,		R4FLAG_ES_ADDON); //Need restart
+	CMD3(CCC_Mask,			"r4_screen_space_shaders",		&ps_r4_shaders_flags,		R4FLAG_SSS_ADDON); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_sky_debanding",			&ps_r4_shaders_flags,		R4FLAG_SS_DEBANDING); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_flora_fix",				&ps_r4_shaders_flags,		R4FLAG_SS_FLORAFIX); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_fog",					&ps_r4_shaders_flags,		R4FLAG_SS_FOG); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_indirect_light",			&ps_r4_shaders_flags,		R4FLAG_SS_INDIRECT_LIGHT); //Need restart
 	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
     CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
 	CMD4(CCC_Float,			"r_grass_shadows_dintance",		&ps_ssfx_grass_shadows.y,	0.01f, 1.0f);
