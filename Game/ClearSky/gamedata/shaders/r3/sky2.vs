@@ -32,13 +32,8 @@ v2p main (vi v)
 	o.tc0.xyz = v.tc0;                      					// copy tc
 	o.tc1.xyz = v.tc1;                      					// copy tc
 	float	scale = s_tonemap.Load(int3(0,0,0) ).x;
-	
-#ifdef ES_PSEUDO_PBR
+
 	float3	tint  = v.c.rgb * 1.7;
-#else
-	float3	tint  = v.c.rgb;
-	tint *= 1.7;
-#endif
 	
 	//float3 tint = 1.0;
 	//float3 tint = env_color.rgb; 

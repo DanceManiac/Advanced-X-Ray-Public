@@ -11,13 +11,14 @@ TextureCube		env_s1;
 uniform float4		env_color;        // color.w = lerp factor
 float4 hmodel_stuff;  //x - hemi vibrance // y - hemi contrast // z - wet surface factor
 
-#ifdef ES_PSEUDO_PBR
+#ifdef ENCHANTED_SHADERS_ENABLED
 void hmodel
 (
 	out float3 hdiffuse, out float3 hspecular, 
 	float m, float h, float4 alb_gloss, float3 Pnt, float3 normal
 )
 {
+	
 	//PBR style
 	float3 albedo = calc_albedo(alb_gloss, m);
 	float3 specular = calc_specular(alb_gloss, m);
@@ -26,6 +27,7 @@ void hmodel
 	calc_foliage(albedo, specular, rough, alb_gloss, m);
 	
 	float roughCube = rough;
+	
 	//float roughCube = sqrt(rough); //cubemap mipmaps (brdf too?)
 
 	//float RoughMip = roughCube * CUBE_MIPS;
@@ -121,7 +123,21 @@ void hmodel
 	env_d = SRGBToLinear(env_d); 
 	env_s = SRGBToLinear(env_s);	//gamma correct
 	
+#ifdef ES_PSEUDO_PBR
+	//BRDF
 	hdiffuse = Amb_BRDF(rough, albedo, specular, env_d, env_s, -v2Pnt, nw ).rgb;
+#else
+	
+	//hdiffuse = Amb_BRDF(rough, 1, specular, env_d, env_s, -v2Pnt, nw );
+	//float spec = SRGBToLinear(lerp(alb_gloss.w*Ldynamic_color.w,1,rain_params.x*0.25));
+	float spec = SRGBToLinear(alb_gloss.w);
+	//BRDF
+	hdiffuse = float4(Amb_BRDF(roughCube, 0, specular, env_d, env_s, -v2Pnt, nw ), 0);
+	hdiffuse *= spec*2.0f;
+	hdiffuse += float4(env_d*(albedo*1.0f), 0);
+#endif
+	
+	
 	hspecular = 0; //do not use hspec at all
 }
 #else // NOT ES_PSEUDO_PBR
