@@ -319,6 +319,9 @@ void CUICellItem::UpdateCellItemProgressBars()
 
 void CUICellItem::UpdateConditionProgressBar()
 {
+	if (!m_pConditionState)
+		return;
+
 	if (m_pParentList && m_pParentList->GetConditionProgBarVisibility())
 	{
 		PIItem itm = (PIItem)m_pData;
