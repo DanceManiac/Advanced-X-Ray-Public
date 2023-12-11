@@ -27,10 +27,10 @@
 #include "CarWeapon.h"
 #include "game_object_space.h"
 #include "../xrEngine/gamemtllib.h"
-//#include "PHActivationShape.h"
-#include "CharacterPhysicsSupport.h"
 #include "car_memory.h"
-#include "../xrphysics/IPHWorld.h"
+#include "../xrPhysics/IPHWorld.h"
+#include "../xrPhysics/iActivationShape.h"
+#include "CharacterPhysicsSupport.h"
 #include "hudmanager.h"
 #include "UIGameSP.h"
 
@@ -316,11 +316,11 @@ void CCar::SaveNetState(NET_Packet& P)
 	P.w_float(GetfHealth());
 }
 
-
-
 void CCar::RestoreNetState(CSE_PHSkeleton* po)
 {
-	if(!po->_flags.test(CSE_PHSkeleton::flSavedData))return;
+	if(!po->_flags.test(CSE_PHSkeleton::flSavedData))
+		return;
+
 	CPHSkeleton::RestoreNetState(po);
 	
 	CSE_ALifeCar* co=smart_cast<CSE_ALifeCar*>(po);
@@ -345,48 +345,46 @@ void CCar::RestoreNetState(CSE_PHSkeleton* po)
 			i->second.RestoreNetState(*ii);
 		}
 	}
-/*
+
 	//as later may kill diable/enable state save it;
 	bool enable = PPhysicsShell()->isEnabled();
-/////////////////////////////////////////////////////////////////////////
+
 	Fmatrix restored_form;
-	PPhysicsShell()->GetGlobalTransformDynamic(&restored_form);
-/////////////////////////////////////////////////////////////////////
+	m_pPhysicsShell->GetGlobalTransformDynamic(&restored_form);
+
 	Fmatrix inv ,replace,sof;
 	sof.setXYZ(co->o_Angle.x,co->o_Angle.y,co->o_Angle.z);
 	sof.c.set(co->o_Position);
 	inv.set(restored_form);
 	inv.invert();
 	replace.mul(sof,inv);
-////////////////////////////////////////////////////////////////////
-	{
 		
-		PKinematics(Visual())->CalculateBones_Invalidate();
-		PKinematics(Visual())->CalculateBones();
-		PPhysicsShell()->DisableCollision();
-		CPHActivationShape activation_shape;//Fvector start_box;m_PhysicMovementControl.Box().getsize(start_box);
+	PKinematics(Visual())->CalculateBones_Invalidate();
+	PKinematics(Visual())->CalculateBones(TRUE);
+	m_pPhysicsShell->DisableCollision();
 
-		Fvector center;Center(center);
-		Fvector obj_size;BoundingBox().getsize(obj_size);
-		get_box(PPhysicsShell(),restored_form,obj_size,center);
-		replace.transform(center);
-		activation_shape.Create(center,obj_size,this);
-		activation_shape.set_rotation(sof);
-		activation_shape.Activate(obj_size,1,1.f,M_PI/8.f);
-		Fvector dd;
-		dd.sub(activation_shape.Position(),center);
-		activation_shape.Destroy();
-		sof.c.add(dd);
-		PPhysicsShell()->EnableCollision();
-	}
-////////////////////////////////////////////////////////////////////
+	Fvector center; Center(center);
+	Fvector obj_size; BoundingBox().getsize(obj_size);
+
+	get_box(m_pPhysicsShell, restored_form, obj_size, center);
+
+	Fvector ap = Fvector().set(0, 0, 0);
+
+	ActivateShapePhysShellHolder(this, XFORM(), obj_size, center, ap);
+
+	m_pPhysicsShell->EnableCollision();	
+
 	replace.mul(sof,inv);
-	PPhysicsShell()->TransformPosition(replace);
-	if(enable)PPhysicsShell()->Enable();
-	else PPhysicsShell()->Disable();
-	PPhysicsShell()->GetGlobalTransformDynamic(&XFORM());
-	*/
+	m_pPhysicsShell->TransformPosition(replace, mh_clear);
+
+	if (enable)
+		m_pPhysicsShell->Enable();
+	else 
+		m_pPhysicsShell->Disable();
+
+	m_pPhysicsShell->GetGlobalTransformDynamic(&XFORM());
 }
+
 void CCar::SetDefaultNetState(CSE_PHSkeleton* po)
 {
 	if(po->_flags.test(CSE_PHSkeleton::flSavedData))return;
