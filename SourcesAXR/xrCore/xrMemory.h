@@ -1,5 +1,3 @@
-#ifndef xrMemoryH
-#define xrMemoryH
 #pragma once
 
 #include "memory_monitor.h"
@@ -26,7 +24,6 @@
 #endif // DEBUG_MEMORY_MANAGER
 
 #include "xrMemory_pso.h"
-#include "xrMemory_POOL.h"
 
 class XRCORE_API		xrMemory
 {
@@ -139,7 +136,6 @@ XRCORE_API	char* 	xr_strdup	(const char* string);
 const		u32			mem_pools_count			=	54;
 const		u32			mem_pools_ebase			=	16;
 const		u32			mem_generic				=	mem_pools_count+1;
-extern		MEMPOOL		mem_pools				[mem_pools_count];
 extern		BOOL		mem_initialized;
 
 XRCORE_API void vminfo			(size_t *_free, size_t *reserved, size_t *committed);
@@ -148,4 +144,3 @@ XRCORE_API u32	mem_usage_impl	(HANDLE heap_handle, u32* pBlocksUsed, u32* pBlock
 
 
 #pragma warning(pop)
-#endif // xrMemoryH

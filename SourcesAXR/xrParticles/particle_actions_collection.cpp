@@ -1634,8 +1634,6 @@ extern void	noise3Init();
 #ifndef _EDITOR
 
 #include <xmmintrin.h>
-#include "../xrCPU_Pipe/ttapi.h"
-#pragma comment(lib,"xrCPU_Pipe.lib")
 
 __forceinline __m128 _mm_load_fvector( const Fvector& v )
 {
@@ -1774,39 +1772,17 @@ void PATurbulence::Execute(ParticleEffect *effect, const float dt, float& tm_max
 	if ( ! p_cnt )
 		return;
 
-	u32 nWorkers = ttapi_GetWorkersCount();
-
-	if ( p_cnt < nWorkers * 64 )
-		nWorkers = 1;
-
-	TES_PARAMS* tesParams = (TES_PARAMS*) _alloca( sizeof(TES_PARAMS) * nWorkers );
-
-	// Give ~1% more for the last worker
-	// to minimize wait in final spin
-	u32 nSlice = p_cnt / 128; 
-
-	u32 nStep = ( ( p_cnt - nSlice ) / nWorkers );
-	//u32 nStep = ( p_cnt / nWorkers );
-
-	//Msg( "Trb: %u" , nStep );
-
-	for ( u32 i = 0 ; i < nWorkers ; ++i ) {
-		tesParams[i].p_from = i * nStep;
-		tesParams[i].p_to = ( i == ( nWorkers - 1 ) ) ? p_cnt : ( tesParams[i].p_from + nStep );
-
-		tesParams[i].effect = effect;
-		tesParams[i].offset = offset;
-		tesParams[i].age = age;
-		tesParams[i].epsilon = epsilon;
-		tesParams[i].frequency = frequency;
-		tesParams[i].octaves = octaves;
-		tesParams[i].magnitude = magnitude;
-
-		ttapi_AddWorker( PATurbulenceExecuteStream , (LPVOID) &tesParams[i] );
-	}
-
-	ttapi_RunAllWorkers();
-
+	TES_PARAMS tesParams;
+	tesParams.p_from    = 0;
+	tesParams.p_to      = p_cnt;
+	tesParams.effect    = effect;
+	tesParams.offset    = offset;
+	tesParams.age       = age;
+	tesParams.epsilon   = epsilon;
+	tesParams.frequency = frequency;
+	tesParams.octaves   = octaves;
+	tesParams.magnitude = magnitude;
+	PATurbulenceExecuteStream( &tesParams );
 }
 
 #else

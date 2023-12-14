@@ -5,8 +5,6 @@
 
 #ifndef _EDITOR
 #include <xmmintrin.h>
-#include "../../xrCPU_Pipe/ttapi.h"
-#pragma comment(lib,"xrCPU_Pipe.lib")
 #endif
 
 using namespace PAPI;
@@ -531,32 +529,13 @@ void CParticleEffect::Render(float )
 			FVF::LIT* pv_start	= (FVF::LIT*)RCache.Vertex.Lock(p_cnt*4*4,geom->vb_stride,dwOffset);
 			FVF::LIT* pv		= pv_start;
 
-			u32 nWorkers = ttapi_GetWorkersCount();
-
-			if ( p_cnt < nWorkers * 64)
-				nWorkers = 1;
-
-			PRS_PARAMS* prsParams = (PRS_PARAMS*) _alloca( sizeof(PRS_PARAMS) * nWorkers );
-
-			// Give ~1% more for the last worker
-			// to minimize wait in final spin
-			u32 nSlice = p_cnt / 128;
-
-			u32 nStep = ( ( p_cnt - nSlice ) / nWorkers );
-			//u32 nStep = ( p_cnt  / nWorkers );
-
-			//Msg( "Rnd: %u" , nStep );
-
-			for ( u32 i = 0 ; i < nWorkers ; ++i ) {
-				prsParams[i].pv = pv + i*nStep*4;
-				prsParams[i].p_from = i * nStep;
-				prsParams[i].p_to = ( i == ( nWorkers - 1 ) ) ? p_cnt : ( prsParams[i].p_from + nStep );
-				prsParams[i].particles = particles;
-				prsParams[i].pPE = this;
-				ttapi_AddWorker( ParticleRenderStream , (LPVOID) &prsParams[i] );
-			}
-
-			ttapi_RunAllWorkers();
+			PRS_PARAMS prsParams;
+			prsParams.pPE  = this;
+			prsParams.particles = particles;
+			prsParams.p_from = 0;
+			prsParams.p_to = p_cnt;
+			prsParams.pv   = pv;
+			ParticleRenderStream( &prsParams );
 
 			dwCount = p_cnt<<2;
 

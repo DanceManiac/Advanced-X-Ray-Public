@@ -177,9 +177,6 @@
     <ClCompile Include="xrMemory_debug.cpp">
       <Filter>Memory manager</Filter>
     </ClCompile>
-    <ClCompile Include="xrMemory_POOL.cpp">
-      <Filter>Memory manager</Filter>
-    </ClCompile>
     <ClCompile Include="xrMemory_pso_Copy.cpp">
       <Filter>Memory manager</Filter>
     </ClCompile>
@@ -462,9 +459,6 @@
       <Filter>Memory manager</Filter>
     </ClInclude>
     <ClInclude Include="xrMemory_align.h">
-      <Filter>Memory manager</Filter>
-    </ClInclude>
-    <ClInclude Include="xrMEMORY_POOL.h">
       <Filter>Memory manager</Filter>
     </ClInclude>
     <ClInclude Include="xrMemory_pso.h">
