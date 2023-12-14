@@ -111,9 +111,6 @@ void CRenderDevice::Clear	()
 	m_pRender->Clear();
 }
 
-extern void CheckPrivilegySlowdown();
-
-
 void CRenderDevice::End		(void)
 {
 #ifndef DEDICATED_SERVER
@@ -149,8 +146,6 @@ void CRenderDevice::End		(void)
 #ifdef FIND_CHUNK_BENCHMARK_ENABLE
 			g_find_chunk_counter.flush();
 #endif // FIND_CHUNK_BENCHMARK_ENABLE
-
-			CheckPrivilegySlowdown							();
 			
 			if(g_pGamePersistent->GameType()==1)//haCk
 			{
@@ -200,6 +195,8 @@ void CRenderDevice::End		(void)
 
 void CRenderDevice::SecondaryThreadProc(void* context)
 {
+	set_current_thread_name("X-RAY Secondary thread");
+
 	auto& device = *static_cast<CRenderDevice*>(context);
 
 	while (true)
@@ -542,7 +539,7 @@ void CRenderDevice::Run			()
 //	DUMP_PHASE;
 	g_bLoaded		= FALSE;
 	Log				("Starting engine...");
-	thread_name		("X-RAY Primary thread");
+	set_current_thread_name("X-RAY Primary thread");
 
 	// Startup timers and calculate timer delta
 	dwTimeGlobal				= 0;
@@ -559,7 +556,7 @@ void CRenderDevice::Run			()
 //	InitializeCriticalSection	(&mt_csEnter);
 //	InitializeCriticalSection	(&mt_csLeave);
 	mt_bMustExit				= FALSE;
-    thread_spawn				(SecondaryThreadProc, "X-RAY Secondary thread", 0, this);
+	std::thread second_thread	(SecondaryThreadProc, this);
 
 	// Message cycle
 	seqAppStart.Process			(rp_AppStart);
@@ -575,7 +572,7 @@ void CRenderDevice::Run			()
 	mt_bMustExit			= TRUE;
 	syncProcessFrame.Set	();
 	syncThreadExit.Wait		();
-	while (mt_bMustExit)	Sleep(0);
+	second_thread.join		();
 //	DeleteCriticalSection	(&mt_csEnter);
 //	DeleteCriticalSection	(&mt_csLeave);
 }
@@ -583,7 +580,6 @@ void CRenderDevice::Run			()
 u32 app_inactive_time		= 0;
 u32 app_inactive_time_start = 0;
 
-void ProcessLoading(RP_FUNC *f);
 void CRenderDevice::FrameMove()
 {
 	dwFrame			++;
@@ -633,18 +629,10 @@ void CRenderDevice::FrameMove()
 	// Frame move
 	Statistic->EngineTOTAL.Begin	();
 
-	//	TODO: HACK to test loading screen.
-	//if(!g_bLoaded) 
-		ProcessLoading				(rp_Frame);
-	//else
-	//	seqFrame.Process			(rp_Frame);
-	Statistic->EngineTOTAL.End	();
-}
-
-void ProcessLoading				(RP_FUNC *f)
-{
 	Device.seqFrame.Process				(rp_Frame);
 	g_bLoaded							= TRUE;
+
+	Statistic->EngineTOTAL.End();
 }
 
 ENGINE_API BOOL bShowPauseString = TRUE;

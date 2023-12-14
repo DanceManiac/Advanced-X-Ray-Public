@@ -234,7 +234,7 @@ void configs_dumper::dump_config(complete_callback_t complete_cb)
 	}
 	m_make_start_event			= CreateEvent(NULL, FALSE, TRUE, NULL);
 	m_make_done_event			= CreateEvent(NULL, FALSE, FALSE, NULL);
-	thread_spawn				(&configs_dumper::dumper_thread, "configs_dumper", 0, this);
+	std::thread t				(&configs_dumper::dumper_thread, this);
 	Engine.Sheduler.Register	(this, TRUE);
 }
 
@@ -257,6 +257,7 @@ void configs_dumper::compress_configs	()
 
 void configs_dumper::dumper_thread(void* my_ptr)
 {
+	set_current_thread_name("configs_dumper");
 	configs_dumper* this_ptr	= static_cast<configs_dumper*>(my_ptr);
 	DWORD wait_result = WaitForSingleObject(this_ptr->m_make_start_event, INFINITE);
 	while ((wait_result != WAIT_ABANDONED) || (wait_result != WAIT_FAILED))

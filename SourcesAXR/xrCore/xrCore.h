@@ -53,6 +53,7 @@
 
 #	include "xrCore_platform.h"
 
+#include <thread>
 #include <unordered_map>
 
 /*

@@ -291,7 +291,7 @@ void screenshot_manager::process_screenshot(bool singlecore)
 	}
 	m_make_start_event	= CreateEvent(NULL, FALSE, TRUE, NULL);
 	m_make_done_event	= CreateEvent(NULL, FALSE, FALSE, NULL);
-	thread_spawn	(&screenshot_manager::screenshot_maker_thread, "screenshot_maker", 0, this);
+	std::thread t		(&screenshot_manager::screenshot_maker_thread, this);
 }
 void	__stdcall	screenshot_manager::jpeg_compress_cb(long progress)
 {
@@ -307,6 +307,7 @@ void	__stdcall	screenshot_manager::jpeg_compress_cb(long progress)
 
 void screenshot_manager::screenshot_maker_thread(void* arg_ptr)
 {
+	set_current_thread_name("screenshot_maker");
 	screenshot_manager* this_ptr	= static_cast<screenshot_manager*>(arg_ptr);
 	DWORD wait_result = WaitForSingleObject(this_ptr->m_make_start_event, INFINITE);
 	while ((wait_result != WAIT_ABANDONED) || (wait_result != WAIT_FAILED))
