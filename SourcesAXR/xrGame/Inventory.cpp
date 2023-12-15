@@ -162,7 +162,10 @@ void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_
 			TakeItemAnim(GameObj, Obj, use_pickup_anim);
 
 		if (!pSettings->line_exist("actions_animations", "take_item_section"))
+		{
+			TakeItemAnim(GameObj, Obj, false);
 			return;
+		}
 	}
 
 	isHidingInProgressInv.store(true);
