@@ -260,9 +260,13 @@ void CUIPdaWnd::Hide()
 {
 	inherited::Hide();
 	InventoryUtilities::SendInfoToActor("ui_pda_hide");
-	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
+
+	if (GameConstants::GetPDA_FlashingIconsQuestsEnabled())
+		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
+
 	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiEncyclopedia, false);
 	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiJournal, false);
+
 	if (m_pActiveDialog)
 	{
 		m_pActiveDialog->Update();
@@ -602,7 +606,7 @@ void CUIPdaWnd::PdaContentsChanged(pda_section::part type)
 		pUIDiaryWnd->ReloadArticles();
 		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiJournal, true);
 	}
-	else if (type == pda_section::quests)
+	else if (type == pda_section::quests && GameConstants::GetPDA_FlashingIconsQuestsEnabled())
 	{
 		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
 	}

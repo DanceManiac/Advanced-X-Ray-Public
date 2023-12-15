@@ -608,6 +608,9 @@ void CUIMainIngameWnd::TurnOffWarningIcon(EWarningIcons icon)
 
 void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 {
+	if (!GameConstants::GetPDA_FlashingIconsEnabled())
+		return;
+
 	// Включаем анимацию требуемой иконки
 	FlashingIcons_it icon = m_FlashingIcons.find(type);
 	shared_str iconType{};

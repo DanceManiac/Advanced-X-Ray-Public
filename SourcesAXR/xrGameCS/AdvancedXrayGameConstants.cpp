@@ -43,6 +43,8 @@ bool	m_bFoodIrradiation = false;
 bool	m_bFoodRotting = false;
 bool	m_bOGSE_WpnZoomSystem = false;
 bool	m_bQuickThrowGrenadesEnabled = true;
+bool	m_bPDA_FlashingIconsEnabled = false;
+bool	m_bPDA_FlashingIconsQuestsEnabled = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -106,6 +108,8 @@ namespace GameConstants
 		m_bUseHQ_Icons = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "hq_icons", false);
 		m_bAfPanelEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_artefact_panel", false);
 		m_bHUD_UsedItemText = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_hud_used_item_text", true);
+		m_bPDA_FlashingIconsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_pda_info_icons", false);
+		m_bPDA_FlashingIconsQuestsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_new_task_icon", false);
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 		m_sArtefactsDegradationMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_degradation_mode", "from_belt"); //from_belt|from_ruck
 		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
@@ -321,6 +325,16 @@ namespace GameConstants
 	bool GetBackpackAnimsEnabled()
 	{
 		return m_bBackpackAnimsEnabled;
+	}
+
+	bool GetPDA_FlashingIconsEnabled()
+	{
+		return m_bPDA_FlashingIconsEnabled;
+	}
+
+	bool GetPDA_FlashingIconsQuestsEnabled()
+	{
+		return m_bPDA_FlashingIconsQuestsEnabled;
 	}
 
 	Fvector4 GetRedColor()

@@ -41,6 +41,8 @@ namespace GameConstants
 	bool GetFoodRotting();
 	bool GetOGSE_WpnZoomSystem();
 	bool GetQuickThrowGrenadesEnabled();
+	bool GetPDA_FlashingIconsEnabled();
+	bool GetPDA_FlashingIconsQuestsEnabled();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();
