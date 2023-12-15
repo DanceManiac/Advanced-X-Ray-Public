@@ -116,7 +116,7 @@ void					CRender::create					()
 	xrRender_apply_tf			();
 	::PortalTraverser.initialize();
 
-	Console->Execute("shader_preset original_shaders_preset");
+	Console->Execute("shaders_preset original_shaders_preset");
 }
 
 void					CRender::destroy				()

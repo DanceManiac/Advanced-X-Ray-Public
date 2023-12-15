@@ -347,7 +347,7 @@ void					CRender::create					()
 	o.dx11_sss_addon_enabled = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON);
 	o.dx11_es_addon_enabled = ps_r4_shaders_flags.test(R4FLAG_ES_ADDON);
 
-	o.dx11_es_addon_enabled ? Console->Execute("shader_preset es_shaders_preset") : Console->Execute("shader_preset original_shaders_preset");
+	o.dx11_es_addon_enabled ? Console->Execute("shaders_preset es_shaders_preset") : Console->Execute("shaders_preset original_shaders_preset");
 
 	o.dx11_ss_sky_debanding		= ps_r4_shaders_flags.test(R4FLAG_SS_DEBANDING);
 	o.dx11_ss_flora_fix			= ps_r4_shaders_flags.test(R4FLAG_SS_FLORAFIX);

@@ -267,7 +267,7 @@ void					CRender::create					()
 		o.ssao_hbao = false;
 	}
 
-	Console->Execute("shader_preset original_shaders_preset");
+	Console->Execute("shaders_preset original_shaders_preset");
 
 	// constants
 	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("parallax",	&binder_parallax);
