@@ -17,11 +17,6 @@
 #include "../xrRender/dxUIShader.h"
 #include "../xrAPI/xrGameManager.h"
 //#include "../../xrServerEntities/smart_cast.h"
-
-#ifndef _EDITOR
-#include "../../xrCPU_Pipe/ttapi.h"
-#endif
-
  
 using	namespace		R_dsgraph;
 

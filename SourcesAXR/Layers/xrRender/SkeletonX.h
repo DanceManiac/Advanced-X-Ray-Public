@@ -20,7 +20,7 @@ class 	CSkeletonX
 {
 protected:
 	enum					{ vertRenderFVF = D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_TEX1		};
-	enum					{ RM_SKINNING_SOFT, RM_SINGLE, RM_SKINNING_1B, RM_SKINNING_2B, RM_SKINNING_3B, RM_SKINNING_4B};
+	enum					{ RM_SINGLE, RM_SKINNING_1B, RM_SKINNING_2B, RM_SKINNING_3B, RM_SKINNING_4B};
 
 	CKinematics*			Parent		;		// setted up by parent
 	ref_smem<vertBoned1W>	Vertices1W	;		// shared
@@ -44,7 +44,6 @@ protected:
 	};
 
 	void					_Copy				(CSkeletonX *V);
-	void					_Render_soft		(ref_geom& hGeom, 	u32 vCount,	u32 iOffset, u32 pCount);
 	void					_Render				(ref_geom& hGeom, 	u32 vCount,	u32 iOffset, u32 pCount);
 	void					_Load				(const char* N,		IReader *data,	u32& dwVertCount);
 

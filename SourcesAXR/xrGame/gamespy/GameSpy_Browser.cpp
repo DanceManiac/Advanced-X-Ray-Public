@@ -171,6 +171,7 @@ struct RefreshData
 };
 void	RefreshInternetList	(void * inData)
 {
+	set_current_thread_name("GS Internet Refresh");
 	RefreshData* pRData = (RefreshData*) inData;
 	pRData->pGSBrowser->RefreshListInternet(pRData->FilterStr);
 	xr_delete(pRData);
@@ -215,7 +216,7 @@ void			CGameSpy_Browser::RefreshList_Full(bool Local, const char* FilterStr)
 			m_bTryingToConnectToMasterServer = true;
 			if (MainMenu()) MainMenu()->Show_CTMS_Dialog();
 
-			thread_spawn(RefreshInternetList, "GS Internet Refresh", 0, pRData);
+			std::thread t(RefreshInternetList, this);
 		}
 		if (error != sbe_noerror || !m_bAbleToConnectToMasterServer)
 		{			

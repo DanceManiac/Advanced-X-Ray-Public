@@ -18,8 +18,6 @@
 #include "SkeletonX.h"
 #include "SkeletonCustom.h"
 #include "../../xrEngine/fmesh.h"
-#include "../../xrCPU_Pipe/xrCPU_Pipe.h"
-
 shared_str	s_bones_array_const;
 
 //////////////////////////////////////////////////////////////////////
@@ -58,10 +56,6 @@ void CSkeletonX::_Render	(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCount)
 	RCache.stat.r.s_dynamic.add		(vCount);
 	switch (RenderMode)
 	{
-	case RM_SKINNING_SOFT:
-		_Render_soft		(hGeom,vCount,iOffset,pCount);
-		RCache.stat.r.s_dynamic_sw.add	(vCount);
-		break;
 	case RM_SINGLE:	
 		{
 			Fmatrix	W;	W.mul_43	(RCache.xforms.m_w,Parent->LL_GetTransform_R	(u16(RMS_boneid)));
@@ -106,64 +100,6 @@ void CSkeletonX::_Render	(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCount)
 		break;
 	}
 }
-void CSkeletonX::_Render_soft	(ref_geom& hGeom, u32 vCount, u32 iOffset, u32 pCount)
-{
-	u32 vOffset				= cache_vOffset;
-
-	_VertexStream&	_VS		= RCache.Vertex;
-	if (cache_DiscardID!=_VS.DiscardID() || vCount!=cache_vCount )
-	{
-		vertRender*	Dest	= (vertRender*)_VS.Lock(vCount,hGeom->vb_stride,vOffset);
-		cache_DiscardID		= _VS.DiscardID();
-		cache_vCount		= vCount;
-		cache_vOffset		= vOffset;
-		
-		RDEVICE.Statistic->RenderDUMP_SKIN.Begin	();
-		if (*Vertices1W)
-		{
-			PSGP.skin1W(
-				Dest,										// dest
-				*Vertices1W,								// source
-				vCount,										// count
-				Parent->bone_instances						// bones
-				);
-		}else 
-		if(*Vertices2W)
-		{
-			PSGP.skin2W(
-				Dest,										// dest
-				*Vertices2W,								// source
-				vCount,										// count
-				Parent->bone_instances						// bones
-				);
-		}else
-		if(*Vertices3W)
-		{
-			PSGP.skin3W(
-				Dest,										// dest
-				*Vertices3W,								// source
-				vCount,										// count
-				Parent->bone_instances						// bones
-				);
-		}else
-		if(*Vertices4W)
-		{
-			PSGP.skin4W(
-				Dest,										// dest
-				*Vertices4W,								// source
-				vCount,										// count
-				Parent->bone_instances						// bones
-				);
-		}else
-			R_ASSERT2(0,"unsupported soft rendering");
-
-		RDEVICE.Statistic->RenderDUMP_SKIN.End	();
-		_VS.Unlock			(vCount,hGeom->vb_stride);
-	}
-
-	RCache.set_Geometry		(hGeom);
-	RCache.Render			(D3DPT_TRIANGLELIST,vOffset,0,vCount,iOffset,pCount);
-}
 
 void CSkeletonX::_Load	(const char* N, IReader *data, u32& dwVertCount) 
 {	
@@ -191,7 +127,6 @@ void CSkeletonX::_Load	(const char* N, IReader *data, u32& dwVertCount)
 	dwVertType						= data->r_u32(); 
 	dwVertCount						= data->r_u32();
 
-	RenderMode						= RM_SKINNING_SOFT;
 	Render->shader_option_skinning	(-1);
 	
 	switch(dwVertType)
