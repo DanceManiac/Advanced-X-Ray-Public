@@ -960,6 +960,16 @@ bool CGamePersistent::IsCamFirstEye()
 	return	(Actor()->active_cam() == eacFirstEye);
 }
 
+bool CGamePersistent::GetActorHelmetStatus()
+{
+	CCustomOutfit* outfit = Actor()->GetOutfit();
+
+	if (outfit)
+		return outfit->m_b_HasGlass;
+
+	return false;
+}
+
 bool CGamePersistent::GetActor()
 {
 	return	(Actor());

@@ -151,6 +151,7 @@ public:
 	virtual bool					GetActorAliveStatus () { return 0; };
 	virtual bool					GetActor			() { return 0; };
 	virtual bool					GetActorNightvision	() { return 0; };
+	virtual bool					GetActorHelmetStatus() { return 0; };
 
 	virtual std::string				GetMoonPhase		() { return 0; };
 	virtual u32						GetTimeHours		() { return 0; }

@@ -229,7 +229,10 @@ void	CEffect_Rain::OnFrame	()
 		// Rain On Mask Sound
 		if (snd_RainOnMask._feedback())
 		{
-			snd_RainOnMask.set_volume(_max(0.0f, hemi_factor) * factor);
+			if (g_pGamePersistent->IsCamFirstEye() && g_pGamePersistent->GetActorHelmetStatus())
+				snd_RainOnMask.set_volume(_max(0.0f, hemi_factor) * factor);
+			else
+				snd_RainOnMask.set_volume(0.0f);
 		}
 	}
 }

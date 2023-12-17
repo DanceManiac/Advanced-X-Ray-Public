@@ -103,6 +103,8 @@ public:
 
 			IC int			GetOutfitNV_Type		() const { return m_NightVisionType; }
 
+			bool			IsHelmetAvaliable		() const { return bIsHelmetAvaliable; }
+
 	HitImmunity::HitTypeSVec m_ConstHitTypeProtection;
 	HitImmunity::HitTypeSVec m_HitTypeProtection;
 protected:

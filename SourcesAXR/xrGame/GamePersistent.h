@@ -122,6 +122,7 @@ public:
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
 			bool		IsCamFirstEye			();
+			bool		GetActorHelmetStatus	();
 			std::string	GetMoonPhase			() override;
 			u32			GetTimeHours			() override;
 
