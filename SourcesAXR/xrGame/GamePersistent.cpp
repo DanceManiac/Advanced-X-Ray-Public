@@ -963,11 +963,14 @@ bool CGamePersistent::GetActorAliveStatus()
 
 bool CGamePersistent::IsCamFirstEye()
 {
-	return	(Actor()->active_cam() == eacFirstEye);
+	return	(Actor() && Actor()->active_cam() == eacFirstEye);
 }
 
 bool CGamePersistent::GetActorHelmetStatus()
 {
+	if (!Actor())
+		return false;
+
 	CCustomOutfit* outfit = Actor()->GetOutfit();
 	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
 
