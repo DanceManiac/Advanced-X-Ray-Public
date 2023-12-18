@@ -296,19 +296,23 @@ void CGamePersistent::WeathersUpdate()
 		VERIFY						(_env);
 
 		CEnvAmbient* env_amb		= _env->env_ambient;
-		if (env_amb) {
+		if (env_amb)
+		{
 			CEnvAmbient::SSndChannelVec& vec	= current_env->env_ambient->get_snd_channels();
 			CEnvAmbient::SSndChannelVecIt I		= vec.begin();
 			CEnvAmbient::SSndChannelVecIt E		= vec.end();
 			
-			for (u32 idx=0; I!=E; ++I,++idx) {
+			for (u32 idx=0; I!=E; ++I,++idx)
+			{
 				CEnvAmbient::SSndChannel& ch	= **I;
-				R_ASSERT						(idx<20);
+
+				VERIFY							(idx < 40);
+
 				if(ambient_sound_next_time[idx]==0)//first
 				{
 					ambient_sound_next_time[idx] = Device.dwTimeGlobal + ch.get_rnd_sound_first_time();
-				}else
-				if(Device.dwTimeGlobal > ambient_sound_next_time[idx])
+				}
+				else if(Device.dwTimeGlobal > ambient_sound_next_time[idx])
 				{
 					ref_sound& snd					= ch.get_rnd_sound();
 
