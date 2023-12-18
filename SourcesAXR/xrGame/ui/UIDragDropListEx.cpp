@@ -475,6 +475,9 @@ CUICellItem* CUIDragDropListEx::RemoveItem(CUICellItem* itm, bool force_root)
 
 CUICellItem* CUIDragDropListEx::GetCellItemUnderCursor()
 {
+	if (!this || !m_container)
+		return nullptr;
+
 	Ivector2 pt = m_container->PickCell(GetUICursor().GetCursorPosition());
 	auto cell = m_container->GetCellAtP(pt);
 
