@@ -360,6 +360,9 @@ bool CUIActorMenu::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 				{
 					Actor()->inventory().Activate(NO_ACTIVE_SLOT);
 				}
+
+				g_btnHint->Discard();
+				GetHolder()->StartStopMenu(this, true);
 			}
 			else
 			{
