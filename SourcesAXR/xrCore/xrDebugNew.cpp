@@ -17,7 +17,7 @@
 #ifdef DEBUG
 #define DEBUG_INVOKE	DebugBreak();
 #else
-#define DEBUG_INVOKE	TerminateProcess(GetCurrentProcess(), 1);
+#define DEBUG_INVOKE	(IsDebuggerPresent() ? DebugBreak() : TerminateProcess(GetCurrentProcess(), 1));
 #endif
 
 static BOOL bException = FALSE;
