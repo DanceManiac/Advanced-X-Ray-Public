@@ -468,6 +468,19 @@ public:
 		else
 			Msg("! [g_task] : Actor not found!");
 	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		string_path fname;
+		FS.update_path(fname, "$game_config$", "misc\\task_manager.ltx"); // Читаем так, потому что в pSettings этого файла нет. В ресурсах его скрипты читают.
+
+		CInifile task_manager_ini(fname, true, true, true, 0, nullptr);
+
+		for (auto sect : task_manager_ini.sections())
+			tips.push_back(sect->Name.c_str());
+
+		std::sort(tips.begin(), tips.end());
+	}
 };
 
 class CCC_GiveMoney : public IConsole_Command
