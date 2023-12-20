@@ -481,9 +481,9 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitTrackBar("video_adv:track_hud_fov", _st)
 	
 --Оптимизация статической геометрии	
-	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	--[[_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_optimize_static_geom", _st)
-	xml:InitTrackBar("video_adv:track_optimize_static_geom", _st)
+	xml:InitTrackBar("video_adv:track_optimize_static_geom", _st)]]--
 	
 --Оптимизация динамической геометрии	
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
