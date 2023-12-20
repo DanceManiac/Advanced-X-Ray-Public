@@ -63,7 +63,8 @@ public:
 		return item?item->id:default_id;
 	}
 
-	static const int		GetMaxIndex	()					 {return m_pItemDataVector->size()-1;}
+	static const int		GetMaxIndex	()					{return m_pItemDataVector->size()-1;}
+	static const T_VECTOR*	Items		()					{return m_pItemDataVector;}
 
 	//удаление статичекого массива
 	static void					DeleteIdToIndexData		();

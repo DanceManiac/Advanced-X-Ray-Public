@@ -66,6 +66,7 @@
 #include "clsid_game.h"
 #include "HUDManager.h"
 #include "xrServer_Objects_ALife_Monsters.h"
+#include "InfoPortion.h"
 #include "AdvancedXrayGameConstants.h"
 
 // Hud Type
@@ -336,28 +337,66 @@ public:
 class CCC_Giveinfo : public IConsole_Command {
 public:
 	CCC_Giveinfo(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR info_id) {
+	virtual void Execute(LPCSTR info_id)
+	{
 		if (!g_pGameLevel) return;
 
 		char	Name[128];	Name[0] = 0;
 		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+
 		if (actor)
 			actor->OnReceiveInfo(info_id);
+		else
+			Msg("! [g_info] : Actor not found!");
+	}
 
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+		for (const auto& it : *CInfoPortion::Items())
+		{
+			auto& name = it.id;
+			tips.push_back(name);
+		}
+		std::sort(tips.begin(), tips.end());
 	}
 };
 
 class CCC_Disinfo : public IConsole_Command {
 public:
 	CCC_Disinfo(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR info_id) {
+	virtual void Execute(LPCSTR info_id)
+	{
 		if (!g_pGameLevel) return;
 
 		char	Name[128];	Name[0] = 0;
 		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+
 		if (actor)
 			actor->OnDisableInfo(info_id);
+		else
+			Msg("! [g_info] : Actor not found!");
+	}
 
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+
+		for (const auto& it : *CInfoPortion::Items())
+		{
+			auto& name = it.id;
+			tips.push_back(name);
+		}
+
+		std::sort(tips.begin(), tips.end());
 	}
 };
 
