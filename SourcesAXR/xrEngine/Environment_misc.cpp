@@ -546,7 +546,7 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	{
 		auto getWindInfluencedCloudsVelocity = [](float amplitude, float windVelocity, float koef)
 		{
-			return amplitude * (windVelocity / koef);
+			return amplitude * (windVelocity / (koef * 2.0f));
 		};
 
 		clouds_velocity_0 = (fi * getWindInfluencedCloudsVelocity(A.clouds_velocity_0, A.wind_velocity, bWeatherWindInfluenceKoef / 2.3f)) +
@@ -569,7 +569,7 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	{
 		auto getWindInfluencedAmplitudeIntensity = [](float amplitude, float windVelocity, float koef)
 		{
-			return amplitude * (windVelocity / koef);
+			return amplitude * (windVelocity / (koef * 2.25f));
 		};
 
 		m_fTreeAmplitudeIntensity = (fi * getWindInfluencedAmplitudeIntensity(A.m_fTreeAmplitudeIntensity, A.wind_velocity, bWeatherWindInfluenceKoef)) +
