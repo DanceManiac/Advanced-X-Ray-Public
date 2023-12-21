@@ -5,7 +5,7 @@
 
 using namespace PAPI;
 
-void PAPI::PAAvoid::Execute(ParticleEffect *effect, const float dt, float& tm_max)
+void PAAvoid::Execute(ParticleEffect *effect, const float dt, float& tm_max)
 {
 	float magdt = magnitude * dt;
 	
@@ -342,7 +342,7 @@ void PAPI::PAAvoid::Execute(ParticleEffect *effect, const float dt, float& tm_ma
 		break;
 	}
 }
-void PAPI::PAAvoid::Transform(const Fmatrix& m)
+void PAAvoid::Transform(const Fmatrix& m)
 {
 	position.transform(positionL,m);
 }
