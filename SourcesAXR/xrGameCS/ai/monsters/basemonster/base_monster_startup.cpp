@@ -120,11 +120,13 @@ void CBaseMonster::Load(LPCSTR section)
 	//------------------------------------
 	m_fSkinArmor = 0.f;
 	m_fHitFracMonster = 0.1f;
+	m_bSkinArmorEnabled = false;
 	if(pSettings->line_exist(section, "protections_sect"))
 	{
 		LPCSTR protections_sect = pSettings->r_string(section, "protections_sect");
 		m_fSkinArmor = READ_IF_EXISTS(pSettings,r_float,protections_sect,"skin_armor", 0.f);
 		m_fHitFracMonster = READ_IF_EXISTS(pSettings,r_float,protections_sect,"hit_fraction_monster", 0.1f);
+		m_bSkinArmorEnabled = true;
 	}
 	m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
 	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);

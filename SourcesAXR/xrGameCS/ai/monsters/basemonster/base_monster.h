@@ -589,6 +589,7 @@ private:
 //-------------------------------------------------------------------
 	float							m_fSkinArmor;
 	float							m_fHitFracMonster;
+	bool							m_bSkinArmorEnabled;
 
 private:
 	pcstr							m_head_bone_name;
