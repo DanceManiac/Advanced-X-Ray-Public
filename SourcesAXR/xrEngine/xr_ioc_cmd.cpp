@@ -536,15 +536,15 @@ ENGINE_API Fvector4 ps_ssfx_blood_decals = { 0.6f, 0.6f, 0.f, 0.f };
 ENGINE_API Fvector4 ps_ssfx_rain_1 = { 6.0f, 0.1f, 0.6f, 2.f }; // Len, Width, Speed, Quality
 ENGINE_API Fvector4 ps_ssfx_rain_2 = { 0.7f, 0.1f, 1.0f, 0.5f }; // Alpha, Brigthness, Refraction, Reflection
 ENGINE_API Fvector4 ps_ssfx_rain_3 = { 0.01f, 1.0f, 0.0f, 0.0f }; // Alpha, Refraction ( Splashes ) - Yohji: Alpha was edited (0.5->0.01f) due to a bug with transparency and other particles.
-ENGINE_API Fvector4 ps_ssfx_florafixes_1 = { 0.15f, 0.0f, 0.15f, 0.0f }; // Flora fixes 1
-ENGINE_API Fvector4 ps_ssfx_florafixes_2 = { 0.15f, 0.0f, 0.0f, 0.0f }; // Flora fixes 2
-ENGINE_API Fvector4 ps_ssfx_wetsurfaces_1 = { 1.0f, 1.0f, 1.0f, 1.0f }; // Wet surfaces 1
-ENGINE_API Fvector4 ps_ssfx_wetsurfaces_2 = { 1.0f, 1.0f, 1.0f, 1.0f }; // Wet surfaces 2
+ENGINE_API Fvector4 ps_ssfx_florafixes_1 = { 0.15f, 0.0f, 0.15f, 0.0f }; // Specular value when the grass is dry, Specular value when the grass is wet, Specular when trees and bushes are dry, Specular when trees and bushes are wet
+ENGINE_API Fvector4 ps_ssfx_florafixes_2 = { 0.15f, 0.0f, 0.0f, 0.0f }; // Intensity of the flora SubSurface Scattering, How much sun color is added to the flora SubSurface Scattering (1.0 is 100% sun color)
+ENGINE_API Fvector4 ps_ssfx_wetsurfaces_1 = { 1.0f, 1.0f, 1.0f, 1.0f }; //ripples_size, ripples_speed, ripples_min_speed, ripples_intensity
+ENGINE_API Fvector4 ps_ssfx_wetsurfaces_2 = { 1.0f, 1.0f, 1.0f, 1.0f }; // waterfall_size, waterfall_speed, waterfall_min_speed, waterfall_intensity
 ENGINE_API int ps_ssfx_is_underground = 0;
 ENGINE_API int ps_ssfx_gloss_method = 0;
 ENGINE_API float ps_ssfx_gloss_factor = 0.5f;
-ENGINE_API Fvector3 ps_ssfx_gloss_minmax = { 0.0f,0.92f,0.0f }; // Gloss
-ENGINE_API Fvector4 ps_ssfx_lightsetup_1 = { 0.35f, 0.5f, 0.0f, 0.0f }; // Spec intensity
+ENGINE_API Fvector3 ps_ssfx_gloss_minmax = { 0.0f,0.92f,0.0f }; // Minimum value of gloss, Maximum value of gloss, Extra gloss to the weapons HUD elements when raining
+ENGINE_API Fvector4 ps_ssfx_lightsetup_1 = { 0.35f, 0.5f, 0.0f, 0.0f };  // intensity of specular lighting, Porcentage of the specular color. ( 0 = 0% | 1 = 100% ), Automatic adjustment of gloss based on wetness (0 or 1), Value to control the maximum value of gloss when full wetness is reached. ( 0 = 0% | 1 = 100% )
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
 ENGINE_API float ps_r3_dyn_wet_surf_far = 30.f; // 30.0f
