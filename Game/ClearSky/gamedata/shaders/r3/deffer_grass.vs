@@ -1,3 +1,5 @@
+#define SSFX_WIND_ISGRASS
+
 #include "common.h"
 #include "check_screenspace.h"
 
@@ -11,6 +13,12 @@ float4 array[61*4];
 
 uniform float2 c_sun; // x=*, y=+
 
+float4 wind;
+
+#ifdef SSFX_WIND
+	#include "screenspace_wind.h"
+#endif
+
 v2p_bumped 	main (v_detail v)
 {
 	v2p_bumped 		O;
@@ -22,22 +30,25 @@ v2p_bumped 	main (v_detail v)
 	float4  c0 	= array[i+3];
 
 	// Transform pos to world coords
-	float4 pos;
- 	pos.x = dot(m0, v.pos);
- 	pos.y = dot(m1, v.pos);
- 	pos.z = dot(m2, v.pos);
-	pos.w = 1;
-	
-	//Wave effect
-	float base = m1.w;
-	float dp = calc_cyclic(dot(pos, wave));
-	float H = pos.y - base; 			// height of vertex (scaled)
+	float4 P;
+ 	P.x = dot(m0, v.pos);
+ 	P.y = dot(m1, v.pos);
+ 	P.z = dot(m2, v.pos);
+	P.w = 1;
+
+	float	H = P.y - m1.w;			// height of vertex (scaled)
+
+#ifndef SSFX_WIND
+	float dp = calc_cyclic(dot(P, wave));
 	float frac = v.misc.z * consts.x;	// fractional
 	float inten = H * dp;
 	float2 result = calc_xz_wave(dir2D.xz * inten, frac);
 	
-	// Add wind
-	pos = float4(pos.x + result.x, pos.y, pos.z + result.y, 1);
+	float4 pos = float4(P.x + result.x, P.y, P.z + result.y, 1);
+#else
+	float3	wind_result = ssfx_wind_grass(P.xyz, H, ssfx_wind_setup());
+	float4 pos = float4(P.xyz + wind_result.xyz, 1);
+#endif
 	
 	// INTERACTIVE GRASS - SSS Update 15.4
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
@@ -76,7 +87,7 @@ v2p_bumped 	main (v_detail v)
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
 	
 	// Fake Normal, Bi-Normal and Tangent
-	float3 N = normalize(float3(pos.x - m0.w, pos.y - m1.w + 1.0f, pos.z - m2.w));
+	float3 N = normalize(float3(P.x - m0.w, P.y - m1.w + 1.0f, P.z - m2.w));
 
 	float3x3 xform	= mul	((float3x3)m_WV, float3x3(
 						0,0,N.x,

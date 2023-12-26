@@ -95,12 +95,15 @@ c2_out main( v2p_aa_AA I )
 
 	img = blend_soft(img, bloom.xyz*bloom.w);
 
+#ifndef SSFX_LUT
+	// Move this to the LUT phase if the module is installed.
 	if (tnmp_onoff == 1.0)
 	{		
 		img = Uncharted2ToneMapping(img);
 	}
 
 	img = img_corrections(img);
+#endif
 		
 #ifdef 	USE_DISTORT
  	float3	blurred	= bloom*def_hdr	;
