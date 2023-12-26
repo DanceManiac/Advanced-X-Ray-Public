@@ -1324,11 +1324,11 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r4_ss_flora_fix",				&ps_r4_shaders_flags,		R4FLAG_SS_FLORAFIX); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_fog",					&ps_r4_shaders_flags,		R4FLAG_SS_FOG); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_indirect_light",			&ps_r4_shaders_flags,		R4FLAG_SS_INDIRECT_LIGHT); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_new_gloss",				&ps_r4_shaders_flags,		R4FLAG_SS_NEW_GLOSS); //Need restart
 	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
 
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
 	CMD4(CCC_Float,			"ssfx_wpn_dof_2",				&ps_ssfx_wpn_dof_2,			0.0f, 1.0f);
-    CMD3(CCC_Mask,			"r4_new_shader_support",		&ps_r2_ls_flags_ext,		R4FLAGEXT_NEW_SHADER_SUPPORT);
     CMD4(CCC_Vector4,		"ssfx_grass_shadows",			&ps_ssfx_grass_shadows,		Fvector4().set(0, 0, 0, 0), Fvector4().set(3, 1, 100, 100));
 	CMD4(CCC_Float,			"r_grass_shadows_dintance",		&ps_ssfx_grass_shadows.y,	0.01f, 1.0f);
     CMD4(CCC_ssfx_cascades, "ssfx_shadow_cascades",			&ps_ssfx_shadow_cascades,	Fvector3().set(1.0f, 1.0f, 1.0f), Fvector3().set(300, 300, 300));

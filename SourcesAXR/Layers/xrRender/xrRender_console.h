@@ -299,6 +299,7 @@ enum
 	R4FLAG_SS_FLORAFIX			= (1 << 3),
 	R4FLAG_SS_FOG				= (1 << 4),
 	R4FLAG_SS_INDIRECT_LIGHT	= (1 << 5),
+	R4FLAG_SS_NEW_GLOSS			= (1 << 6),
 };
 
 //Rezy: cleanup flags

@@ -180,7 +180,7 @@ f_deffer 	main	( p_flat I 		)
 	puddles = clamp(puddles, 0, G_PUDDLES_REFLECTIVITY);
 
 	// Add at the end the extra wetness. Full intensity at 50% of wetness ( rain_params.y )
-ifndef SSFX_NEWGLOSS
+#ifndef SSFX_NEWGLOSS
 	puddles = puddles + saturate(rain_params.y * 2.0f) * G_PUDDLES_TERRAIN_EXTRA_WETNESS;
 #endif
 

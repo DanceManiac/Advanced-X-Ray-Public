@@ -111,6 +111,7 @@ public:
 	  u32		dx11_ss_flora_fix		: 1;
 	  u32		dx11_ss_fog				: 1;
 	  u32		dx11_ss_indirect_light	: 1;
+	  u32		dx11_ss_new_gloss		: 1;
 	  u32		dx11_es_addon_enabled	: 1;
 
 	  u32		dx11_enable_tessellation : 1;

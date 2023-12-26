@@ -648,21 +648,18 @@ void IGame_Persistent::UpdateRainGloss() const
 {
     const struct // Настройки
     {
-        bool auto_gloss{ true }; // Automatic adjustment of gloss based on wetness.
-        float auto_gloss_max{ 1.0f }; // Value to control the maximum value of gloss when full wetness is reached. ( 0 = 0% | 1 = 100% )
+        bool auto_gloss{ !fis_zero(ps_ssfx_lightsetup_1.z) }; // Automatic adjustment of gloss based on wetness.
+        float auto_gloss_max{ ps_ssfx_lightsetup_1.w }; // Value to control the maximum value of gloss when full wetness is reached. ( 0 = 0% | 1 = 100% )
 
-        float ripples_size{ 1.5f };
-        float ripples_speed{ 1.4f };
-        float ripples_min_speed{ 0.7f };
-        float ripples_intensity{ 1.25f };
+        float ripples_size{ ps_ssfx_wetsurfaces_1.x };
+        float ripples_speed{ ps_ssfx_wetsurfaces_1.y };
+        float ripples_min_speed{ ps_ssfx_wetsurfaces_1.z };
+        float ripples_intensity{ ps_ssfx_wetsurfaces_1.w };
 
-        float waterfall_size{ 1.2 };
-        float waterfall_speed{ 1.5f };
-        float waterfall_min_speed{ 0.2f };
-        float waterfall_intensity{ 0.35f };
-
-        int cover_res{ 1 }; // Resolution of the rain cover rendering.(0 Low ~5 High)
-        float cover_distance{ 30.f }; // Distance of the rain cover rendering.Higher values are more performance expensive.
+        float waterfall_size{ ps_ssfx_wetsurfaces_2.x };
+        float waterfall_speed{ ps_ssfx_wetsurfaces_2.y };
+        float waterfall_min_speed{ ps_ssfx_wetsurfaces_2.z };
+        float waterfall_intensity{ ps_ssfx_wetsurfaces_2.w };
     } ssfx_default_settings;
 
     if (ssfx_default_settings.auto_gloss)
@@ -673,18 +670,13 @@ void IGame_Persistent::UpdateRainGloss() const
         ps_ssfx_gloss_factor = Wetness_gloss * 0.96f;
     }
     else
-        ps_ssfx_gloss_factor = 0.f;
+        ps_ssfx_gloss_factor = 0.5f;
 
     const float ripples_size = fmax(2.0f - ssfx_default_settings.ripples_size, 0.01f); // Change how the value works to be more intuitive(<1.0 smaller |> 1.0 bigger)
     ps_ssfx_wetsurfaces_1.set(ripples_size, ssfx_default_settings.ripples_speed, ssfx_default_settings.ripples_min_speed, ssfx_default_settings.ripples_intensity);
 
     const float waterfall_size = fmax(2.0f - ssfx_default_settings.waterfall_size, 0.01f); // Change how the value works to be more intuitive(<1.0 smaller |> 1.0 bigger) get_console()
     ps_ssfx_wetsurfaces_2.set(waterfall_size, ssfx_default_settings.waterfall_speed, ssfx_default_settings.waterfall_min_speed, ssfx_default_settings.waterfall_intensity);
-
-    const int wet_resolution = (int)pow(2, ssfx_default_settings.cover_res + 6);
-    ps_r3_dyn_wet_surf_sm_res = wet_resolution;
-
-    ps_r3_dyn_wet_surf_far = ssfx_default_settings.cover_distance;
 }
 
 float IGame_Persistent::GrassBenderToValue(float& current, float go_to, float intensity, bool use_easing)
