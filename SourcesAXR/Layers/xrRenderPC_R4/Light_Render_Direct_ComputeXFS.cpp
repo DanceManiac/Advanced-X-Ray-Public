@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "light_render_direct.h"
 
+extern ENGINE_API Fvector3 ps_ssfx_shadows;
+
 void CLight_Compute_XFORM_and_VIS::compute_xf_spot	(light* L)
 {
 	// Build EYE-space xform
@@ -38,7 +40,7 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot	(light* L)
 	float	intensity			= (intensity0+intensity1)/2.f;		// intensity1 tends to underestimate...
 
 	// compute how much duelling frusta occurs	[-1..1]-> 1 + [-0.5 .. +0.5]
-	float	duel_dot			= 1.f -	0.5f*Device.vCameraDirection.dotproduct(L_dir);
+	//float	duel_dot			= 1.f -	0.5f*Device.vCameraDirection.dotproduct(L_dir);
 
 	// compute how large the light is - give more texels to larger lights, assume 8m as being optimal radius
 	float	sizefactor			= L->range/8.f;				// 4m = .5, 8m=1.f, 16m=2.f, 32m=4.f
@@ -49,15 +51,17 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot	(light* L)
 	// factors
 	float	factor0				= powf	(ssa,		1.f/2.f);		// ssa is quadratic
 	float	factor1				= powf	(intensity, 1.f/16.f);		// less perceptually important?
-	float	factor2				= powf	(duel_dot,	1.f/4.f);		// difficult to fast-change this -> visible
+	//float	factor2				= powf	(duel_dot,	1.f/4.f);		// difficult to fast-change this -> visible
 	float	factor3				= powf	(sizefactor,1.f/4.f);		// this shouldn't make much difference
 	float	factor4				= powf	(widefactor,1.f/2.f);		// make it linear ???
-	float	factor				= ps_r2_ls_squality * factor0 * factor1 * factor2 * factor3 * factor4;
-	
+	//float	factor				= ps_r2_ls_squality * factor0 * factor1 * factor2 * factor3 * factor4;
+	float factor				= ps_r2_ls_squality * factor0 * factor1 * factor3 * factor4;
+
 	// final size calc
+	u32 max_size				= RImplementation.o.smapsize <= ps_ssfx_shadows.y ? RImplementation.o.smapsize : ps_ssfx_shadows.y;
 	u32 _size					= iFloor( factor * SMAP_adapt_optimal );
-	if (_size<SMAP_adapt_min)	_size	= SMAP_adapt_min;
-	if (_size>SMAP_adapt_max)	_size	= SMAP_adapt_max;
+	if							(_size < ps_ssfx_shadows.x) _size = ps_ssfx_shadows.x;
+	if							(_size > max_size) _size = max_size;
 	int _epsilon				= iCeil	(float(_size)*0.01f);
 	int _diff					= _abs	(int(_size)-int(_cached_size));
 	L->X.S.size					= (_diff>=_epsilon)?_size:_cached_size;
@@ -74,6 +78,16 @@ void CLight_Compute_XFORM_and_VIS::compute_xf_spot	(light* L)
 
 	// _min(L->cone + deg2rad(4.5f), PI*0.98f) - Here, it is needed to enlarge the shadow map frustum to include also 
 	// displaced pixels and the pixels neighbor to the examining one.
+
+	/* Ray Twitty */
+	float tan_shift;
+
+	if (L->flags.type == IRender_Light::POINT)
+		tan_shift = 0.2007129f; // deg2rad(11.5f);
+	else
+		tan_shift = 0.0610865f; //deg2rad(3.5f);
+	/* Ray Twitty end */
+
 	L->X.S.project.build_projection		(_min(L->cone + deg2rad(5.f), PI*0.98f), 1.f,SMAP_near_plane,L->range+EPS_S);
 	L->X.S.combine.mul					(L->X.S.project,L->X.S.view);
 }

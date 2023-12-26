@@ -354,6 +354,10 @@ void					CRender::create					()
 	o.dx11_ss_fog				= ps_r4_shaders_flags.test(R4FLAG_SS_FOG);
 	o.dx11_ss_indirect_light	= ps_r4_shaders_flags.test(R4FLAG_SS_INDIRECT_LIGHT);
 	o.dx11_ss_new_gloss			= ps_r4_shaders_flags.test(R4FLAG_SS_NEW_GLOSS);
+	o.dx11_ss_sss				= ps_r4_shaders_flags.test(R4FLAG_SS_SSS);
+	o.dx11_ss_shadows			= ps_r4_shaders_flags.test(R4FLAG_SS_SHADOWS);
+	o.dx11_ss_lut				= ps_r4_shaders_flags.test(R4FLAG_SS_LUT);
+	o.dx11_ss_wind				= ps_r4_shaders_flags.test(R4FLAG_SS_WIND);
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -1541,6 +1545,58 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_new_gloss); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_sss)
+	{
+		defines[def_it].Name = "SSFX_SSS";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_sss); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_shadows)
+	{
+		defines[def_it].Name = "SSFX_SHADOWS";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_shadows); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_lut)
+	{
+		defines[def_it].Name = "SSFX_LUT";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_lut); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_wind)
+	{
+		defines[def_it].Name = "SSFX_WIND";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_wind); ++len;
 	}
 	else
 	{

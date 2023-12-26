@@ -298,9 +298,9 @@ PROTECT_API void InitSettings()
 
 	//Rain
 	rain_max_desired_items	= READ_IF_EXISTS(pAdvancedSettings, r_u32,		"precipitation_params", "max_desired_items",	2500);
-	rain_source_radius		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "source_radius",		12.5f);
-	rain_source_offset		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "source_offset",		40.0f);
-	rain_max_distance_koef	= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "max_distance_koef",	1.25f);
+	rain_source_radius		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "source_radius",		15.0f);
+	rain_source_offset		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "source_offset",		20.0f);
+	rain_max_distance_koef	= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "max_distance_koef",	1.5f);
 	rain_particles_time		= READ_IF_EXISTS(pAdvancedSettings, r_float,	"precipitation_params", "particles_time",		0.3f);
 	rain_max_particles		= READ_IF_EXISTS(pAdvancedSettings, r_u32,		"precipitation_params", "max_particles",		1000);
 	rain_particles_cache	= READ_IF_EXISTS(pAdvancedSettings, r_u32,		"precipitation_params", "particles_cache",		400);

@@ -15,8 +15,12 @@ const int	max_particles = rain_max_particles;
 const int	particles_cache = rain_particles_cache;
 const float particles_time = rain_particles_time;
 
+int current_items;
+
 dxRainRender::dxRainRender()
 {
+	current_items = 0;
+
 	if (!bWinterMode)
 	{
 		IReader* F = FS.r_open("$game_meshes$", "dm\\rain.dm");
@@ -93,17 +97,24 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	}
 #endif
 
-  	u32 desired_items			= iFloor	(0.5f*(1.f+factor)*float(max_desired_items));
+	u32 desired_items = iFloor(0.01f * (1.f + factor * 99.0f) * max_desired_items);
+
+	// Get to the desired items
+	if (current_items < desired_items)
+		current_items += desired_items - current_items;
+
 	// visual
 	float		factor_visual	= factor/2.f+.5f;
 	Fvector3	f_rain_color	= g_pGamePersistent->Environment().CurrentEnv->rain_color;
 	u32			u_rain_color	= color_rgba_f(f_rain_color.x,f_rain_color.y,f_rain_color.z,factor_visual);
 
 	// born _new_ if needed
-	float	b_radius_wrap_sqr	= _sqr((source_radius+.5f));
-	if (owner.items.size()<desired_items)	{
+	float	b_radius_wrap_sqr	= _sqr((source_radius * 1.5f));
+	if (owner.items.size() < current_items)
+	{
 		// owner.items.reserve		(desired_items);
-		while (owner.items.size()<desired_items)	{
+		while (owner.items.size() < current_items)
+		{
 			CEffect_Rain::Item				one;
 			owner.Born					(one, source_radius, _drop_speed);
 			owner.items.push_back		(one);
@@ -121,12 +132,26 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	FVF::LIT	*verts		= (FVF::LIT	*) RCache.Vertex.Lock(desired_items*4,hGeom_Rain->vb_stride,vOffset);
 	FVF::LIT	*start		= verts;
 	const Fvector&	vEye	= Device.vCameraPosition;
-	for (u32 I=0; I<owner.items.size(); I++){
+	for (u32 I = 0; I < current_items; I++)
+	{
 		// physics and time control
-		CEffect_Rain::Item&	one		=	owner.items[I];
+		CEffect_Rain::Item&	one		=	owner.items.at(I);
 
-		if (one.dwTime_Hit<Device.dwTimeGlobal)		owner.Hit (one.Phit);
-		if (one.dwTime_Life<Device.dwTimeGlobal)	owner.Born(one, source_radius, _drop_speed);
+		if (one.dwTime_Hit < Device.dwTimeGlobal)
+		{
+			owner.Hit(one.Phit);
+
+			if (current_items > desired_items)
+				current_items--; // Hit something
+		}
+
+		if (one.dwTime_Life < Device.dwTimeGlobal)
+		{
+			owner.Born(one, source_radius, _drop_speed);
+
+			if (current_items > desired_items)
+				current_items--; // Out of life ( invalidated, never hit something, etc. )
+		}
 
 		// последн€€ дельта ??
 		//.		float xdt		= float(one.dwTime_Hit-Device.dwTimeGlobal)/1000.f;
@@ -201,7 +226,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		sC.add			(pos_trail);
 		if (!::Render->ViewBase.testSphere_dirty(sC,sR))	continue;
 
-		static Fvector2 UV[2][4]={
+		constexpr Fvector2 UV[2][4]={
 			{{0,1},{0,0},{1,1},{1,0}},
 			{{1,0},{1,1},{0,0},{0,1}}
 		};
@@ -253,7 +278,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		}
 
 		Fmatrix					mXform,mScale;
-		int						pcount  = 0;
+		u32						pcount  = 0;
 		u32						v_offset,i_offset;
 		u32						vCount_Lock		= particles_cache*DM_Drop->number_vertices;
 		u32						iCount_Lock		= particles_cache*DM_Drop->number_indices;

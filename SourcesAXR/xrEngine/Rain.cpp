@@ -5,6 +5,7 @@
 #include "igame_persistent.h"
 #include "environment.h"
 #include "x_ray.h"
+#include "perlin.h"
 
 #ifdef _EDITOR
     #include "ui_toolscustom.h"
@@ -26,6 +27,8 @@ const int	max_particles		= rain_max_particles;
 const int	particles_cache		= rain_particles_cache;
 const float particles_time		= rain_particles_time;
  
+CPerlinNoise1D* RainPerlin;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -39,6 +42,10 @@ CEffect_Rain::CEffect_Rain()
 	
 	m_fWindVolumeKoef = READ_IF_EXISTS(pAdvancedSettings, r_float, "environment", "wind_volume_koef", 0.0f);
 
+	RainPerlin = xr_new<CPerlinNoise1D>(Random.randI(0, 0xFFFF));
+	RainPerlin->SetOctaves(2);
+	RainPerlin->SetAmplitude(0.66666f);
+
 	if (!bWinterMode)
 	{
 		snd_Ambient.create("mfs_team\\ambient\\weather\\rain", st_Effect, sg_Undefined);
@@ -47,9 +54,9 @@ CEffect_Rain::CEffect_Rain()
 		drop_speed_max = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "man_rain_drop_speed", 80.0f);
 		drop_length = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_length", 5.0f);
 		drop_width = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_width", 0.30f);
-		drop_angle = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_angle", 3.0f);
-		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 100.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_angle", 89.0f));
+		drop_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_angle", 15.0f));
+		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_wind_vel", 20.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "rain_params", "rain_drop_max_angle", 35.0f));
 	}
 	else
 	{
@@ -57,9 +64,9 @@ CEffect_Rain::CEffect_Rain()
 		drop_speed_max = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "man_rain_drop_speed", 1.5f);
 		drop_length = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_length", 0.1f);
 		drop_width = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_width", 0.25f);
-		drop_angle = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_angle", 3.0f);
-		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 100.0f);
-		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_angle", 89.0f));
+		drop_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_angle", 15.0f));
+		drop_max_wind_vel = READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_wind_vel", 20.0f);
+		drop_max_angle = deg2rad(READ_IF_EXISTS(pAdvancedSettings, r_float, "snow_params", "rain_drop_max_angle", 35.0f));
 	}
 
 
@@ -68,6 +75,8 @@ CEffect_Rain::CEffect_Rain()
 
 CEffect_Rain::~CEffect_Rain()
 {
+	xr_delete(RainPerlin);
+
 	if (!bWinterMode)
 	{
 		snd_Ambient.destroy();
@@ -79,26 +88,67 @@ CEffect_Rain::~CEffect_Rain()
 	p_destroy						();
 }
 
-// Born
-void	CEffect_Rain::Born		(Item& dest, float radius, float speed)
+void CEffect_Rain::Prepare(Fvector2& offset, Fvector3& axis, float W_Velocity, float W_Direction)
 {
-	Fvector		axis;	
-    axis.set			(0,-1,0);
-	float gust			= g_pGamePersistent->Environment().wind_strength_factor;
-	float k				= g_pGamePersistent->Environment().CurrentEnv->wind_velocity*gust/drop_max_wind_vel;
-	clamp				(k,0.f,1.f);
-	float	pitch		= drop_max_angle*k-PI_DIV_2;
-    axis.setHP			(g_pGamePersistent->Environment().CurrentEnv->wind_direction,pitch);
-    
-	Fvector&	view	= Device.vCameraPosition;
-	float		angle	= ::Random.randF	(0,PI_MUL_2);
-	float		dist	= ::Random.randF	(); dist = _sqrt(dist)*radius; 
-	float		x		= dist*_cos		(angle);
-	float		z		= dist*_sin		(angle);
-	dest.D.random_dir	(axis,deg2rad(drop_angle));
-	dest.P.set			(x+view.x-dest.D.x*source_offset,source_offset+view.y,z+view.z-dest.D.z*source_offset);
-	dest.fSpeed			= ::Random.randF(drop_speed_min, drop_speed_max) * speed;
+	// Wind gust, to add variation.
+	float Wind_Gust = RainPerlin->GetContinious(Device.fTimeGlobal * 0.3f) * 2.0f;
 
+	// Wind velocity [ 0 ~ 1 ]
+	float Wind_Velocity = W_Velocity + Wind_Gust;
+
+	clamp(Wind_Velocity, 0.0f, 1.0f);
+
+	// Wind velocity controles the angle
+	float pitch = drop_max_angle * Wind_Velocity;
+	axis.setHP(W_Direction, pitch - PI_DIV_2);
+
+	// Get distance
+	float dist = _sin(pitch) * source_offset;
+	float C = PI_DIV_2 - pitch;
+	dist /= _sin(C);
+
+	// 0 is North
+	float fixNorth = W_Direction - PI_DIV_2;
+
+	// Set offset
+	offset.set(dist * _cos(fixNorth), dist * _sin(fixNorth));
+}
+
+// Born
+void CEffect_Rain::Born(Item& dest, const float radius, const float speed)
+{
+	// Prepare correct angle and distance to hit the player
+	Fvector Rain_Axis = { 0, -1, 0 };
+	Fvector2 Rain_Offset;
+
+	float Wind_Direction = -g_pGamePersistent->Environment().CurrentEnv->wind_direction;
+
+	// Wind Velocity [ From 0 ~ 1000 to 0 ~ 1 ]
+	float Wind_Velocity = g_pGamePersistent->Environment().CurrentEnv->wind_velocity / 20;
+	clamp(Wind_Velocity, 0.0f, 1.0f);
+
+	Prepare(Rain_Offset, Rain_Axis, Wind_Velocity, Wind_Direction);
+
+	// Camera Position
+	const Fvector& view	= Device.vCameraPosition;
+
+	// Random Position
+	float r = radius * 0.5f;
+	Fvector2 RandomP	= { ::Random.randF(-r, r), ::Random.randF(-r, r) };
+
+	// Aim ahead of where the player is facing
+	Fvector FinalView	= Fvector().mad(view, Device.vCameraDirection, 5.0f);
+
+	// Random direction. Higher angle at lower velocity
+	dest.D.random_dir(Rain_Axis, ::Random.randF(-drop_angle, drop_angle) * (1.5f - Wind_Velocity));
+
+	// Set final destination
+	dest.P.set(Rain_Offset.x + FinalView.x + RandomP.x, source_offset + view.y, Rain_Offset.y + FinalView.z + RandomP.y);
+
+	// Set speed
+	dest.fSpeed			= ::Random.randF(drop_speed_min, drop_speed_max) * speed * clampr(Wind_Velocity * 1.5f, 0.5f, 1.0f);
+
+	// Born
 	float height		= max_distance;
 	RenewItem			(dest,height,RayPick(dest.P,dest.D,height,collide::rqtBoth));
 }

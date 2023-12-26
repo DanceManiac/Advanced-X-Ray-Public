@@ -300,6 +300,10 @@ enum
 	R4FLAG_SS_FOG				= (1 << 4),
 	R4FLAG_SS_INDIRECT_LIGHT	= (1 << 5),
 	R4FLAG_SS_NEW_GLOSS			= (1 << 6),
+	R4FLAG_SS_SSS				= (1 << 7),
+	R4FLAG_SS_SHADOWS			= (1 << 8),
+	R4FLAG_SS_LUT				= (1 << 9),
+	R4FLAG_SS_WIND				= (1 << 10),
 };
 
 //Rezy: cleanup flags

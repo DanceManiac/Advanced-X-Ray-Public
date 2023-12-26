@@ -294,6 +294,8 @@ public:
 	float					wind_blast_strength_start_value;
 	float					wind_blast_strength_stop_value;
 	Fquaternion				wind_blast_current;
+
+	Fvector3				wind_anim;
 	
 	float					wetness_accum;
 	

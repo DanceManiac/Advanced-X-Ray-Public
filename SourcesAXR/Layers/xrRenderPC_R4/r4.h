@@ -113,6 +113,10 @@ public:
 	  u32		dx11_ss_indirect_light	: 1;
 	  u32		dx11_ss_new_gloss		: 1;
 	  u32		dx11_es_addon_enabled	: 1;
+	  u32		dx11_ss_sss				: 1;
+	  u32		dx11_ss_shadows			: 1;
+	  u32		dx11_ss_lut				: 1;
+	  u32		dx11_ss_wind			: 1;
 
 	  u32		dx11_enable_tessellation : 1;
 

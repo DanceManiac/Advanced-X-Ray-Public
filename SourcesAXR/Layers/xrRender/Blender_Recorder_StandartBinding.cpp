@@ -237,6 +237,18 @@ class cl_rain_params : public R_constant_setup
 };
 static cl_rain_params binder_rain_params;
 
+class cl_wind_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 result;
+		CEnvDescriptor& E = *g_pGamePersistent->Environment().CurrentEnv;
+		result.set(E.wind_direction, E.wind_velocity, E.m_fTreeAmplitudeIntensity, 0.0f);
+		RCache.set_c(C, result);
+	}
+};
+static cl_wind_params binder_wind_params;
+
 class pp_image_corrections : public R_constant_setup
 {
 	virtual void setup(R_constant* C) override
@@ -541,6 +553,11 @@ extern ENGINE_API Fvector4 ps_ssfx_wetsurfaces_2;
 extern ENGINE_API int ps_ssfx_is_underground;
 extern ENGINE_API Fvector4 ps_ssfx_lightsetup_1;
 
+extern ENGINE_API Fvector3 ps_ssfx_shadow_bias;
+extern ENGINE_API Fvector4 ps_ssfx_lut;
+extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
+extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
+
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
@@ -672,6 +689,47 @@ class ssfx_florafixes_2 : public R_constant_setup
 };
 static ssfx_florafixes_2 binder_ssfx_florafixes_2;
 
+static class ssfx_wind_grass : public R_constant_setup
+{
+	virtual void setup(R_constant * C)
+	{
+		RCache.set_c(C, ps_ssfx_wind_grass);
+	}
+} ssfx_wind_grass;
+
+static class ssfx_wind_trees : public R_constant_setup
+{
+	virtual void setup(R_constant * C)
+	{
+		RCache.set_c(C, ps_ssfx_wind_trees);
+	}
+} ssfx_wind_trees;
+
+static class ssfx_wind_anim : public R_constant_setup
+{
+	virtual void setup(R_constant * C)
+	{
+		Fvector3 WindAni = g_pGamePersistent->Environment().wind_anim;
+		RCache.set_c(C, WindAni.x, WindAni.y, WindAni.z, 0);
+	}
+} ssfx_wind_anim;
+
+static class ssfx_lut : public R_constant_setup
+{
+	virtual void setup(R_constant * C)
+	{
+		RCache.set_c(C, ps_ssfx_lut);
+	}
+} ssfx_lut;
+
+static class ssfx_shadow_bias : public R_constant_setup
+{
+	virtual void setup(R_constant * C)
+	{
+		RCache.set_c(C, ps_ssfx_shadow_bias.x, ps_ssfx_shadow_bias.y, 0, 0);
+	}
+} ssfx_shadow_bias;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -685,6 +743,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("sky_color", &binder_sky_color);
 	r_Constant("screen_res_alt", &binder_screen_res);
     r_Constant("rain_params", &binder_rain_params);
+	r_Constant("wind_params", &binder_wind_params);
 
 	// misc
 	r_Constant("m_hud_params", &binder_hud_params);	//--#SM+#--
@@ -777,6 +836,11 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_gloss",			&binder_ssfx_gloss);
 	r_Constant				("ssfx_florafixes_1",	&binder_ssfx_florafixes_1);
 	r_Constant				("ssfx_florafixes_2",	&binder_ssfx_florafixes_2);
+	r_Constant				("ssfx_shadow_bias",	&ssfx_shadow_bias);
+	r_Constant				("ssfx_wind_anim",		&ssfx_wind_anim);
+	r_Constant				("ssfx_wsetup_grass",	&ssfx_wind_grass);
+	r_Constant				("ssfx_wsetup_trees",	&ssfx_wind_trees);
+	r_Constant				("ssfx_lut",			&ssfx_lut);
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug
