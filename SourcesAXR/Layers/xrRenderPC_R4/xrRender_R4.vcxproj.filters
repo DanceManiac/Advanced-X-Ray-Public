@@ -789,6 +789,9 @@
     <ClInclude Include="blender_hud_intoxication.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="blender_lut.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1497,6 +1500,12 @@
       <Filter>Core_Target</Filter>
     </ClCompile>
     <ClCompile Include="blender_hud_intoxication.cpp">
+      <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRender\rendertarget_phase_lut.cpp">
+      <Filter>Core_Target</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_lut.cpp">
       <Filter>Shading templates</Filter>
     </ClCompile>
   </ItemGroup>

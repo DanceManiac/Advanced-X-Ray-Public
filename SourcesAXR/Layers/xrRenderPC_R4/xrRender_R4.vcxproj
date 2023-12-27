@@ -692,6 +692,7 @@
     <ClInclude Include="blender_light_reflected.h" />
     <ClInclude Include="blender_light_spot.h" />
     <ClInclude Include="blender_luminance.h" />
+    <ClInclude Include="blender_lut.h" />
     <ClInclude Include="blender_nightvision.h" />
     <ClInclude Include="blender_pp_bloom.h" />
     <ClInclude Include="blender_ssao.h" />
@@ -846,6 +847,7 @@
     <ClCompile Include="..\xrRender\rendertarget_phase_film_grain.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_effects.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_hud_mask.cpp" />
+    <ClCompile Include="..\xrRender\rendertarget_phase_lut.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_nightvision.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_pp_bloom.cpp" />
     <ClCompile Include="..\xrRender\rendertarget_phase_smaa.cpp" />
@@ -912,6 +914,7 @@
     <ClCompile Include="blender_light_reflected.cpp" />
     <ClCompile Include="blender_light_spot.cpp" />
     <ClCompile Include="blender_luminance.cpp" />
+    <ClCompile Include="blender_lut.cpp" />
     <ClCompile Include="blender_nightvision.cpp" />
     <ClCompile Include="blender_pp_bloom.cpp" />
     <ClCompile Include="blender_ssao.cpp" />

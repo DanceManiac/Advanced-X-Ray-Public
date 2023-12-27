@@ -406,6 +406,10 @@ void	CRenderTarget::phase_combine	()
 		//Compute bloom (new)
 		//phase_pp_bloom();
 
+		// Anomaly lut
+		if (ps_r4_shaders_flags.test(R4FLAG_SS_LUT))
+			phase_lut();
+
 		if (ps_r2_ls_flags.test(R2FLAG_DOF))
 			phase_dof();
 	}

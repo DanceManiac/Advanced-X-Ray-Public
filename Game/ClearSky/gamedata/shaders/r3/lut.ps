@@ -1,0 +1,20 @@
+#include "common.h"
+////////////////////
+uniform float lut_control;
+////////////////////
+uniform Texture2D s_lut_1;
+uniform Texture2D s_lut_2;
+uniform Texture2D s_lut_3;
+uniform Texture2D s_lut_4;
+uniform Texture2D s_lut_5;
+////////////////////
+
+struct 	v2p
+{
+ 	float2 	tc0: 		TEXCOORD0;	// base & distort
+};
+float4 main ( v2p I ) : SV_Target
+{
+	float4 final = s_image.Sample(smp_rtlinear, I.tc0);
+	return final;
+}

@@ -65,6 +65,7 @@ public:
 	IBlender* 					b_chromatic_aberration;
 	IBlender*					b_film_grain;
 	IBlender*					b_cut;
+	IBlender*					b_lut;
 
     // compute shader for hdao
     IBlender*                   b_hdao_cs;
@@ -187,6 +188,8 @@ private:
 	ref_shader					s_film_grain;
 	//STCoP Engine
 	ref_shader					s_cut;
+	// Anomaly lut
+	ref_shader					s_lut;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -354,6 +357,7 @@ public:
 	void						phase_chrom_aberration	();
 	void						phase_film_grain		();
 	void						phase_cut				();
+	void						phase_lut				();
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

@@ -31,6 +31,7 @@
 #include "blender_chromatic_aberration.h"
 #include "blender_film_grain.h"
 #include "blender_cut.h"
+#include "blender_lut.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -370,6 +371,8 @@ CRenderTarget::CRenderTarget		()
 	b_film_grain			= xr_new<CBlender_FilmGrain>		();
 	// STCoP Engine
 	b_cut					= xr_new<CBlender_cut>				();
+	// Anomaly lut
+	b_lut					= xr_new<CBlender_lut>				();
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -549,7 +552,9 @@ CRenderTarget::CRenderTarget		()
 	//Film Grain
 	s_film_grain.create(b_film_grain, "r3\\film_grain");
 	// STCoP Engine
-	s_cut.create(b_cut, "r4\\cut");
+	s_cut.create(b_cut, "r3\\cut");
+	// Anomaly lut
+	s_lut.create(b_lut, "r3\\lut");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -1203,6 +1208,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_chromatic_aberration	); //Chromatic Aberration
 	xr_delete					(b_film_grain			); //Film Grain
 	xr_delete					(b_cut					); //STCoP Engine
+	xr_delete					(b_lut					); // Anomaly lut
 
    if( RImplementation.o.dx10_msaa )
    {
