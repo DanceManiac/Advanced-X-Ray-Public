@@ -199,6 +199,24 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_sss_indirect_light",			_st)
 	ctl			= xml:InitCheck					("video_adv:check_sss_indirect_light",		_st)
 	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Screen Space Shadows
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_screen_space_shadows",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_screen_space_shadows",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Shadows
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_shadows",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_shadows",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
+	
+--SSS Wind
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_sss_wind",			_st)
+	ctl			= xml:InitCheck					("video_adv:check_sss_wind",		_st)
+	handler.m_preconditions[ctl]		= get_screen_space_shaders_status
 
 --Enchanted Shaders
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)

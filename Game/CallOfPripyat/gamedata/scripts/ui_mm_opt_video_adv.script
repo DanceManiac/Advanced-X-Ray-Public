@@ -162,7 +162,25 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_sss_indirect_light", _st)
 	ctl = xml:InitCheck("video_adv:check_sss_indirect_light", _st)
 	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
+--SSS Screen Space Shadows
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_screen_space_shadows", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_screen_space_shadows", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
 
+--SSS Shadows
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_shadows", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_shadows", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
+--SSS Wind
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_wind", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_wind", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
 --Enchanted Shaders
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_enchanted_shaders", _st)

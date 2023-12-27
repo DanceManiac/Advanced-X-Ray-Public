@@ -783,6 +783,27 @@
       <options_item entry="r4_ss_indirect_light" group="mm_opt_video" depend="restart"/>
     </check_sss_indirect_light>
 	
+	<cap_sss_screen_space_shadows x="120" y="0" width="143" height="21" hint = "ui_mm_sss_screen_space_shadows_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_screen_space_shadows</text>
+    </cap_sss_screen_space_shadows>
+    <check_sss_screen_space_shadows x="264" y="0" width="30" height="21">
+      <options_item entry="r4_screen_space_shadows" group="mm_opt_video" depend="restart"/>
+    </check_sss_screen_space_shadows>
+	
+	<cap_sss_shadows x="120" y="0" width="143" height="21" hint = "ui_mm_sss_shadows_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_shadows</text>
+    </cap_sss_shadows>
+    <check_sss_shadows x="264" y="0" width="30" height="21">
+      <options_item entry="r4_ss_shadows" group="mm_opt_video" depend="restart"/>
+    </check_sss_shadows>
+	
+	<cap_sss_wind x="120" y="0" width="143" height="21" hint = "ui_mm_sss_wind_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_wind</text>
+    </cap_sss_wind>
+    <check_sss_wind x="264" y="0" width="30" height="21">
+      <options_item entry="r4_ss_wind" group="mm_opt_video" depend="restart"/>
+    </check_sss_wind>
+	
 	<cap_enchanted_shaders x="120" y="0" width="143" height="21" hint = "ui_mm_enchanted_shaders_hint">
       <text font="letterica16" color="ui_6">ui_mm_enchanted_shaders</text>
     </cap_enchanted_shaders>
@@ -873,7 +894,7 @@
 		<cap_particles_distance x="120" y="0" width="143" height="21" hint = "ui_mm_particles_distance_hint">
 			<text font="letterica16" color="ui_6">ui_mm_sun_quality</text>
 		</cap_particles_distance>
-		<track_particles_distance x="264" y="0" width="245" height="21" min="0.5" max="1.0" step="0.1">
+		<track_particles_distance x="264" y="0" width="245" height="21" min="0.5" max="3.0" step="0.1">
 			<options_item entry="r2_ls_squality" group="mm_opt_video_adv"/>
 				<output_wnd x="250" y="0" width="20" height="20" format="%.1f">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>

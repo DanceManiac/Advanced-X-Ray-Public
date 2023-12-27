@@ -621,6 +621,24 @@
 	<string id="ui_mm_sss_indirect_light_hint">
 		<text>Эта опция включает непрямое освещение, которое, попадая на поверхность, отражается от нее в разных направлениях и тем самым освещает другие поверхности вокруг. \n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_sss_screen_space_shadows">
+		<text>SSS: Screen Space тени</text>
+	</string>
+	<string id="ui_mm_sss_screen_space_shadows_hint">
+		<text>Данная опция добавляет тени на оружии и мелких деталей. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_shadows">
+		<text>SSS: Смещение теней</text>
+	</string>
+	<string id="ui_mm_sss_shadows_hint">
+		<text>Эта опция включает смещение теней из Screen Space Shaders 19. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_sss_wind">
+		<text>SSS: Ветер</text>
+	</string>
+	<string id="ui_mm_sss_wind_hint">
+		<text>Данная опция включает влияние ветра на траву и деревья из Screen Space Shaders 19. Если включить эту опцию, влияние ветра из Advanced X-Ray будет отключено. \n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
 	<string id="ui_mm_enchanted_shaders">
 		<text>Enchanted Shaders</text>
 	</string>
