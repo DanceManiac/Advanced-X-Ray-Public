@@ -875,7 +875,7 @@
         <cap_dynamic_wet_surfaces_far x="70" y="3" width="135" height="24" hint = "ui_mm_dynamic_wet_surfaces_far_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_dynamic_wet_surfaces_far</text>
         </cap_dynamic_wet_surfaces_far>
-        <track_dynamic_wet_surfaces_far x="220" y="6" width="200" height="16" min="30.0" max="100.0">
+        <track_dynamic_wet_surfaces_far x="220" y="6" width="200" height="16" min="30.0" max="300.0">
             <options_item entry="r3_dynamic_wet_surfaces_far" group="mm_opt_video_adv"/>
 				<output_wnd x="210" y="0" width="20" height="20" format="%.f">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>

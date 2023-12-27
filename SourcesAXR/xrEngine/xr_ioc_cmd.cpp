@@ -553,7 +553,7 @@ ENGINE_API Fvector4 ps_ssfx_wind_grass = { 9.5f, 1.4f, 1.5f, 0.4f }; // Branches
 ENGINE_API Fvector4 ps_ssfx_wind_trees = { 11.0f, 0.15f, 0.5f, 0.025f }; // Anim Speed, Turbulence, Push, Wave
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
-ENGINE_API float ps_r3_dyn_wet_surf_far = 30.f; // 30.0f
+ENGINE_API float ps_r3_dyn_wet_surf_far = 100.f; // 30.0f
 ENGINE_API int ps_r3_dyn_wet_surf_sm_res = 256; // 256
 
 u32	renderer_value	= 3;
