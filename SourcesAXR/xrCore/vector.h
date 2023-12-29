@@ -97,6 +97,7 @@ template <class T>
 IC void clamp	( T& val, const T& _low, const T& _high ){
 	if( val<_low ) val = _low; else if( val>_high ) val = _high;
 };
+
 template <class T>
 IC T	clampr	( const T& val, const T& _low, const T& _high ){
 	if		( val<_low	)	return _low; 
@@ -122,10 +123,10 @@ IC float inertion(float _val_cur, float _val_trgt, float _friction)
 	return _val_cur * _friction + _val_trgt * friction_i;
 }
 
-template <typename T>
-inline constexpr T smoothstep(T min, T max, T res)
+template <class T>
+inline constexpr T smoothstep(T min, T max, T res, T min_range = 0, T max_range = 1)
 {
-	res = std::max(static_cast<T>(0), std::min(static_cast<T>(1), (res - min) / (max - min)));
+	res = clampr((res - min) / (max - min), min_range, max_range);
 	return res * res * (3 - 2 * res);
 }
 
