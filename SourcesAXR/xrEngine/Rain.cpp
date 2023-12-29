@@ -15,17 +15,6 @@
 	#include "../xrcdb/xr_area.h"
 	#include "xr_object.h"
 #endif
-
-//	Warning: duplicated in dxRainRender
-static const int	max_desired_items	= rain_max_desired_items;
-static const float	source_radius		= rain_source_radius;
-static const float	source_offset		= rain_source_offset;
-static const float	max_distance		= source_offset * rain_max_distance_koef;
-static const float	sink_offset			= -(max_distance-source_offset);
-
-const int	max_particles		= rain_max_particles;
-const int	particles_cache		= rain_particles_cache;
-const float particles_time		= rain_particles_time;
  
 CPerlinNoise1D* RainPerlin;
 
