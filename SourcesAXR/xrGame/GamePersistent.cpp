@@ -994,6 +994,11 @@ bool CGamePersistent::GetActor()
 	return	(Actor());
 }
 
+bool CGamePersistent::GetFogInfluenceVolumetricLight()
+{
+	return GameConstants::GetFogInfluenceVolumetricLight();
+}
+
 void CGamePersistent::EditorOnFrame()
 {
 	extern void Editor_OnFrame();

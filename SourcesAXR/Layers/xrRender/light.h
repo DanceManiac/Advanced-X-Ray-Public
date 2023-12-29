@@ -115,8 +115,26 @@ public:
 	}
 
 	virtual void	set_volumetric_quality	(float fValue) {m_volumetric_quality = fValue;}
-	virtual void	set_volumetric_intensity(float fValue) { m_volumetric_intensity = ps_ssfx_volumetric.y; }
-	virtual void	set_volumetric_distance	(float fValue) { m_volumetric_distance = 1.0f; }
+
+	virtual void	set_volumetric_intensity(float fValue = 0.0f)
+	{ 
+		float fog_density = g_pGamePersistent->Environment().CurrentEnv->fog_density;
+
+		if (g_pGamePersistent->GetFogInfluenceVolumetricLight())
+		{
+			if (ps_ssfx_volumetric.x > 0)
+				m_volumetric_intensity = !fis_zero(ps_ssfx_volumetric.y) ? smoothstep(0.0f, ps_ssfx_volumetric.y, fog_density, 0.0f, ps_ssfx_volumetric.y) : fog_density / 2;
+			else
+				m_volumetric_intensity = !fis_zero(fValue) ? smoothstep(0.0f, fValue, fog_density, 0.0f, fValue) : fog_density / 2;
+		}
+		else
+			m_volumetric_intensity = (ps_ssfx_volumetric.x > 0) ? ps_ssfx_volumetric.y : fValue;
+	}
+
+	virtual void	set_volumetric_distance	(float fValue)
+	{ 
+		m_volumetric_distance = (ps_ssfx_volumetric.x > 0) ? 1.0f : fValue;
+	}
 	
 	virtual void	set_position			(const Fvector& P);
 	virtual void	set_rotation			(const Fvector& D, const Fvector& R);

@@ -48,6 +48,7 @@ bool	m_bOGSE_WpnZoomSystem = false;
 bool	m_bQuickThrowGrenadesEnabled = true;
 bool	m_bPDA_FlashingIconsEnabled = false;
 bool	m_bPDA_FlashingIconsQuestsEnabled = false;
+bool	m_bFogInfluenceVolumetricLight = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -122,6 +123,7 @@ namespace GameConstants
 		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_bEnableBoreDoF = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ssfx_dof", "bore_dof_enabled", true);
 		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
+		m_bFogInfluenceVolumetricLight = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "fog_infl_volumetric_light", false);
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -336,6 +338,11 @@ namespace GameConstants
 	bool GetPDA_FlashingIconsQuestsEnabled()
 	{
 		return m_bPDA_FlashingIconsQuestsEnabled;
+	}
+
+	bool GetFogInfluenceVolumetricLight()
+	{
+		return m_bFogInfluenceVolumetricLight;
 	}
 
 	int GetArtefactsCount()

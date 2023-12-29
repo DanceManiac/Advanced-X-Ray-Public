@@ -45,6 +45,7 @@ bool	m_bOGSE_WpnZoomSystem = false;
 bool	m_bQuickThrowGrenadesEnabled = true;
 bool	m_bPDA_FlashingIconsEnabled = false;
 bool	m_bPDA_FlashingIconsQuestsEnabled = false;
+bool	m_bFogInfluenceVolumetricLight = false;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -112,10 +113,11 @@ namespace GameConstants
 		m_bPDA_FlashingIconsQuestsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_new_task_icon", false);
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 		m_sArtefactsDegradationMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_degradation_mode", "from_belt"); //from_belt|from_ruck
-		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
 		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_FV4FocusDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "focus_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
 		m_bEnableBoreDoF = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ssfx_dof", "bore_dof_enabled", true);
+		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
+		m_bFogInfluenceVolumetricLight = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "fog_infl_volumetric_light", false);
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -335,6 +337,11 @@ namespace GameConstants
 	bool GetPDA_FlashingIconsQuestsEnabled()
 	{
 		return m_bPDA_FlashingIconsQuestsEnabled;
+	}
+
+	bool GetFogInfluenceVolumetricLight()
+	{
+		return m_bFogInfluenceVolumetricLight;
 	}
 
 	Fvector4 GetRedColor()
