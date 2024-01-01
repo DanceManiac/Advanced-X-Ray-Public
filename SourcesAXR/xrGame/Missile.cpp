@@ -44,6 +44,7 @@ CMissile::CMissile(void)
 {
 	m_dwStateTime		= 0;
 	m_bQuickThrowActive = false;
+	m_bIsContactGrenade = false;
 }
 
 CMissile::~CMissile(void) 

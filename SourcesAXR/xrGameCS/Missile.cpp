@@ -44,6 +44,7 @@ CMissile::CMissile(void)
 {
 	m_dwStateTime		= 0;
 	m_bQuickThrowActive = false;
+	m_bIsContactGrenade = false;
 }
 
 CMissile::~CMissile(void) 
@@ -77,6 +78,8 @@ void CMissile::Load(LPCSTR section)
 	m_vThrowDir			= pSettings->r_fvector3(section,"throw_dir");
 
 	m_ef_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));
+
+	m_bIsContactGrenade = READ_IF_EXISTS(pSettings, r_bool, section, "is_contact_grenade", false);
 }
 
 BOOL CMissile::net_Spawn(CSE_Abstract* DC) 
@@ -252,7 +255,6 @@ void CMissile::shedule_Update(u32 dt)
 			m_dwDestroyTime = 0xffffffff;
 			VERIFY	(!m_pInventory);
 			Destroy	();
-			return;
 		}
 	} 
 }
