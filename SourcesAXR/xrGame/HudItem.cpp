@@ -383,7 +383,7 @@ bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
 		if (g_player_hud->motion_length(anim_name, HudSection(), m_current_motion_def) > 100)
 			return true;
 #ifdef DEBUG
-	Msg("~ [WARNING] ------ Animation [%s] does not exist in [%s]", anim_name, HudSection().c_str());
+	Msg("~ [WARNING] [%s]: Animation [%s] does not exist in [%s]", __FUNCTION__, anim_name, HudSection().c_str());
 #endif
 	return false;
 }
@@ -400,7 +400,10 @@ u32 CHudItem::PlayHUDMotionIfExists(std::initializer_list<const char*> Ms, const
 		dbg_anim_name += M;
 		dbg_anim_name += ", ";
 	}
-	Msg("~~[%s] Motions [%s] not found for [%s]", __FUNCTION__, dbg_anim_name.c_str(), HudSection().c_str());
+
+#ifdef DEBUG
+	Msg("~ [WARNING] [%s]: Motions [%s] not found for [%s]", __FUNCTION__, dbg_anim_name.c_str(), HudSection().c_str());
+#endif
 
 	return 0;
 }
