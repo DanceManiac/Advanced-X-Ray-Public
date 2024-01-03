@@ -490,6 +490,9 @@ bool CHudItem::TryPlayAnimIdle()
 			}
 			else if (m_bSprintType)
 			{
+				if ((State & mcClimb))
+					return false;
+				
 				SwitchState(eSprintEnd);
 				return true;
 			}
