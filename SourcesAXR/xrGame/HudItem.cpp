@@ -322,7 +322,7 @@ void CHudItem::on_b_hud_detach()
 
 void CHudItem::on_a_hud_attach()
 {
-	if(m_current_motion_def)
+	if(m_current_motion_def && m_current_motion.size())
 	{
 		PlayHUDMotion_noCB(m_current_motion, false);
 #ifdef DEBUG
