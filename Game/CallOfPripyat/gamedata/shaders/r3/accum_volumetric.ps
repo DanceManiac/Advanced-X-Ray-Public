@@ -48,13 +48,7 @@ float4 main ( v2p I, uint iSample : SV_SAMPLEINDEX ) : SV_Target
 	float4	t_noise	= s_noise.Sample( smp_linear, PS.xy );
 	t_noise = t_noise * 0.5f + 0.5f;
 
-#ifdef ENCHANTED_SHADERS_ENABLED	
-	s = max(0, s);
-	att = max(0, att);
-	lightmap = max(0, lightmap);
-	t_noise = max(0, t_noise);
-
-
+#ifdef ENCHANTED_SHADERS_ENABLED
 #ifdef ES_PSEUDO_PBR
 		// matches vanilla?
 		float3	result = I.fDensity * s * att;
