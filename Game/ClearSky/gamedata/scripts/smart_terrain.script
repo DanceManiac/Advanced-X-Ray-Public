@@ -480,7 +480,7 @@ function se_smart_terrain:update_jobs(object)
 		local selected_job_id, selected_job_prior, selected_job_link = job_iterator(self.jobs, npc_info, 0, self)
 		if selected_job_id == nil then
 			print_table(self.jobs)
-			abort("Insufficient smart_terrain jobs %s", self:name())
+			--abort("Insufficient smart_terrain jobs %s", self:name())
 		end
 
 		-- Назначаем работу
@@ -623,6 +623,10 @@ function se_smart_terrain:distance_to_job_location(obj, job)
 	else
 		local obj = db.storage[obj.id].object
 		obj_gv, obj_pos = game_graph():vertex(obj:game_vertex_id()), obj:position()
+	end
+	
+	if job == nil then
+		return 10000
 	end
 
 	local job_gv = game_graph():vertex(job.game_vertex_id)
