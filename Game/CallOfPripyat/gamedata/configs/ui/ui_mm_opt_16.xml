@@ -4,7 +4,7 @@
 		    <texture>ui_inGame2_opt_background</texture>
 	    </auto_static>
      <auto_static x="253" y="250" width="269" height="176" stretch="1">
-        <texture x="1" y="1" width="335" height="174">ui\ui_actor_options_background</texture>
+        <texture x="1" y="1" width="335" height="174">ui\video_window</texture>
       </auto_static>
       <auto_static x="0" y="0" width="102" height="768" stretch="1">
 		    <texture>ui_inGame2_opt_left_widepanel</texture>
