@@ -358,7 +358,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 			m_iPortionsNum = 0;
 	}
 
-	if (HUD().GetUI()->UIGame()->ActorMenu().IsShown() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() != mmDeadBodySearch)
+	if (m_iPortionsNum > 1 && HUD().GetUI()->UIGame()->ActorMenu().IsShown() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() != mmDeadBodySearch)
 		HUD().GetUI()->UIGame()->ActorMenu().RefreshConsumableCells();
 }
 
