@@ -318,6 +318,7 @@ bool CChangeLevelWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 bool g_block_pause	= false;
 void CChangeLevelWnd::Show(bool status)
 {
+	inherited::Show(status);
 	if (status)
 	{
 		m_messageBox->InitMessageBox(m_b_allow_change_level?"message_box_change_level":"message_box_change_level_disabled");
