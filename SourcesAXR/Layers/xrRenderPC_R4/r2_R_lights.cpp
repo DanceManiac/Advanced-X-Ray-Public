@@ -36,7 +36,6 @@ void	CRender::render_lights	(light_Package& LP)
 		for (u32 it=0; it<source.size(); it++)
 		{
 			light*	L		= source[it];
-			L->vis_update	();
 			if	(!L->vis.visible)	{
 				source.erase		(source.begin()+it);
 				it--;
@@ -169,7 +168,6 @@ void	CRender::render_lights	(light_Package& LP)
 		//		if (has_point_unshadowed)	-> 	accum point unshadowed
 		if		(!LP.v_point.empty())	{
 			light*	L	= LP.v_point.back	();		LP.v_point.pop_back		();
-			L->vis_update				();
 			if (L->vis.visible)			{ 
 				Target->accum_point		(L);
 				render_indirect			(L);
@@ -181,7 +179,6 @@ void	CRender::render_lights	(light_Package& LP)
       //		if (has_spot_unshadowed)	-> 	accum spot unshadowed
 		if		(!LP.v_spot.empty())	{
 			light*	L	= LP.v_spot.back	();		LP.v_spot.pop_back			();
-			L->vis_update				();
 			if (L->vis.visible)			{ 
 				LR.compute_xf_spot		(L);
 				Target->accum_spot		(L);
@@ -215,7 +212,6 @@ void	CRender::render_lights	(light_Package& LP)
 	if (!LP.v_point.empty())		{
 		xr_vector<light*>&	Lvec		= LP.v_point;
 		for	(u32 pid=0; pid<Lvec.size(); pid++)	{
-			Lvec[pid]->vis_update		();
 			if (Lvec[pid]->vis.visible)	{
 				render_indirect			(Lvec[pid]);
 				Target->accum_point		(Lvec[pid]);
@@ -229,7 +225,6 @@ void	CRender::render_lights	(light_Package& LP)
 	if (!LP.v_spot.empty())		{
 		xr_vector<light*>&	Lvec		= LP.v_spot;
 		for	(u32 pid=0; pid<Lvec.size(); pid++)	{
-			Lvec[pid]->vis_update		();
 			if (Lvec[pid]->vis.visible)	{
 				LR.compute_xf_spot		(Lvec[pid]);
 				render_indirect			(Lvec[pid]);

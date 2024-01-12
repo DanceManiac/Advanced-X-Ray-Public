@@ -2,14 +2,6 @@
 #define	QueryHelper_included
 #pragma once
 
-//	Interface
-IC HRESULT CreateQuery( ID3DQuery **ppQuery , D3DQUERYTYPE Type);
-IC HRESULT GetData( ID3DQuery *pQuery, void *pData, UINT DataSize );
-IC HRESULT BeginQuery( ID3DQuery *pQuery);
-IC HRESULT EndQuery( ID3DQuery *pQuery);
-
-//	Implementation
-
 #ifdef USE_DX11
 
 IC HRESULT CreateQuery ( ID3DQuery **ppQuery, D3DQUERYTYPE Type)
