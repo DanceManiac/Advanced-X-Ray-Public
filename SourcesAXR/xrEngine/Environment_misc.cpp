@@ -511,6 +511,9 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 		far_plane				=	(fi*A.far_plane + f*B.far_plane + Mdf.far_plane)*psVisDistance*modif_power;
 	else
 		far_plane				=	(fi*A.far_plane + f*B.far_plane)*psVisDistance;
+
+	if (bWeatherFogDistanceClamping)
+		clamp(far_plane, 0.0f, bWeatherFogDistanceClampingMax);
 	
 //.	fog_color.lerp			(A.fog_color,B.fog_color,f).add(Mdf.fog_color).mul(modif_power);
 	fog_color.lerp			(A.fog_color,B.fog_color,f);
@@ -526,6 +529,10 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 	}
 
 	fog_distance			=	(fi*A.fog_distance + f*B.fog_distance);
+
+	if (bWeatherFogDistanceClamping)
+		clamp(fog_distance, 0.0f, bWeatherFogDistanceClampingMax - 25.f);
+
 	fog_near				=	(1.0f - fog_density)*0.85f * fog_distance;
 	fog_far					=	0.99f * fog_distance;
 	
