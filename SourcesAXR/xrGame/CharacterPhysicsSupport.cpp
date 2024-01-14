@@ -50,6 +50,9 @@ extern	BOOL death_anim_debug;
 #define USE_SMART_HITS
 #define USE_IK
 
+constexpr float IK_CALC_DIST = 100.f;
+constexpr float IK_ALWAYS_CALC_DIST = 20.f;
+
 //void  NodynamicsCollide( bool& do_colide, bool bo1, dContact& c, SGameMtl * /*material_1*/, SGameMtl * /*material_2*/ )
 //{
 //	dBodyID body1=dGeomGetBody( c.geom.g1 );
@@ -653,7 +656,22 @@ void CCharacterPhysicsSupport::in_UpdateCL( )
 	else if( ik_controller( ) )
 	{
 		update_interactive_anims();
-		ik_controller( )->Update();
+
+		CFrustum& view_frust = ::Render->ViewBase;
+		vis_data& vis = m_EntityAlife.Visual()->getVisData();
+		Fvector p;
+
+		m_EntityAlife.XFORM().transform_tiny(p, vis.sphere.P);
+
+		float dist = Device.vCameraPosition.distance_to(p);
+
+		if (dist < IK_CALC_DIST)
+		{
+			if (view_frust.testSphere_dirty(p, vis.sphere.R) || dist < IK_ALWAYS_CALC_DIST)
+			{
+				ik_controller()->Update();
+			}
+		}
 	}
 
 #ifdef DEBUG
