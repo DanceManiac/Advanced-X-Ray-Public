@@ -50,9 +50,17 @@ void CLevel::IR_OnMouseWheel( int direction )
 	if (Editor_MouseWheel(direction))
 		return;
 
-	if(	g_bDisableAllInput	) return;
+	if(g_bDisableAllInput)
+		return;
 
-	if (CurrentGameUI()->IR_UIOnMouseWheel(direction)) return;
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eMouseWheel)(direction);
+	/* avo: end */
+
+	if (CurrentGameUI()->IR_UIOnMouseWheel(direction))
+		return;
+
 	if( Device.Paused()
 #ifdef DEBUG
 		&& !psActorFlags.test(AF_NO_CLIP) 
@@ -80,8 +88,17 @@ void CLevel::IR_OnMouseMove( int dx, int dy )
 	if (Editor_MouseMove(dx, dy))
 		return;
 
-	if(g_bDisableAllInput)							return;
-	if (CurrentGameUI()->IR_UIOnMouseMove(dx,dy))		return;
+	if(g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eMouseMove)(dx, dy);
+	/* avo: end */
+
+	if (CurrentGameUI()->IR_UIOnMouseMove(dx,dy))
+		return;
+
 	if (Device.Paused() && !IsDemoPlay() 
 #ifdef DEBUG
 		&& !psActorFlags.test(AF_NO_CLIP) 
@@ -128,6 +145,11 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		if (!(_curr < kCAM_1 || _curr == kWPN_FIRE || _curr == kPAUSE || _curr == kDROP || _curr == kSCREENSHOT || _curr == kQUIT || _curr == kCONSOLE))
 			return;
 	}
+
+	/* avo: script callback */
+	if (!g_bDisableAllInput && g_actor) 
+		g_actor->callback(GameObject::eKeyPress)(key);
+	/* avo: end */
 
 	if(_curr==kPAUSE)
 	{
@@ -487,9 +509,20 @@ void CLevel::IR_OnKeyboardRelease(int key)
 	if (Editor_KeyRelease(key))
 		return;
 
-	if (!bReady || g_bDisableAllInput	)								return;
-	if ( CurrentGameUI() && CurrentGameUI()->IR_UIOnKeyboardRelease(key)) return;
-	if (game && game->OnKeyboardRelease(get_binded_action(key)) )		return;
+	if (!bReady || g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eKeyRelease)(key);
+	/* avo: end */
+
+	if (CurrentGameUI() && CurrentGameUI()->IR_UIOnKeyboardRelease(key))
+		return;
+
+	if (game && game->OnKeyboardRelease(get_binded_action(key)))
+		return;
+
 	if (Device.Paused() 
 #ifdef DEBUG
 		&& !psActorFlags.test(AF_NO_CLIP)
@@ -508,7 +541,13 @@ void CLevel::IR_OnKeyboardHold(int key)
 	if (Editor_KeyHold(key))
 		return;
 
-	if(g_bDisableAllInput) return;
+	if(g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eKeyHold)(key);
+	/* avo: end */
 
 #ifdef DEBUG
 	// Lain: added

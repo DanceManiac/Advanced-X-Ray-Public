@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "weaponmagazinedwgrenade.h"
 #include "HUDManager.h"
 #include "entity.h"
@@ -14,6 +15,9 @@
 #include "../xrphysics/MathUtils.h"
 #include "player_hud.h"
 #include "AdvancedXrayGameConstants.h"
+
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 #ifdef DEBUG
 #	include "phdebug.h"
@@ -164,6 +168,10 @@ void CWeaponMagazinedWGrenade::OnShot		()
 
 		AddShotEffector		();
 		StartFlameParticles2();
+
+		CGameObject* object = smart_cast<CGameObject*>(H_Parent());
+		if (object)
+			object->callback(GameObject::eOnWeaponFired)(object->lua_game_object(), this->lua_game_object(), iAmmoElapsed);
 	} 
 	else 
 		inherited::OnShot	();

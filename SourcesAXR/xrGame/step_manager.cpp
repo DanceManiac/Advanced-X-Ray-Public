@@ -7,6 +7,9 @@
 #include "material_manager.h"
 #include "profiler.h"
 #include "IKLimbsController.h"
+#include "actor.h"
+#include "game_object_space.h"
+#include "script_game_object.h"
 
 #ifdef	DEBUG
 BOOL debug_step_info = FALSE;
@@ -194,6 +197,9 @@ void CStepManager::update(bool b_hud_view)
 			// Играть звук
 			if(b_play && is_on_ground() )
 				m_step_sound.play_next(mtl_pair, m_object, m_step_info.params.step[i].power, b_hud_view);
+
+			if (auto actor = smart_cast<CActor*>(m_object))
+				actor->callback(GameObject::eOnFootStep)(actor->lua_game_object(), m_step_info.params.step[i].power);
 
 			// Играть партиклы
 			if(b_play && !mtl_pair->CollideParticles.empty())	

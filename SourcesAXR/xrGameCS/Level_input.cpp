@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include <dinput.h>
 #include "HUDmanager.h"
 #include "../xrEngine/xr_ioconsole.h"
@@ -35,6 +36,9 @@
 
 #include "embedded_editor/embedded_editor_main.h"
 
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+
 #ifdef DEBUG
 	extern void try_change_current_entity();
 	extern void restore_actor();
@@ -51,9 +55,17 @@ void CLevel::IR_OnMouseWheel( int direction )
 	if (Editor_MouseWheel(direction))
 		return;
 
-	if(	g_bDisableAllInput	) return;
+	if(g_bDisableAllInput)
+		return;
 
-	if (HUD().GetUI()->IR_OnMouseWheel(direction)) return;
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eMouseWheel)(direction);
+	/* avo: end */
+
+	if (HUD().GetUI()->IR_OnMouseWheel(direction))
+		return;
+
 	if( Device.Paused()
 #ifdef DEBUG
 		&& !psActorFlags.test(AF_NO_CLIP) 
@@ -85,8 +97,17 @@ void CLevel::IR_OnMouseMove( int dx, int dy )
 	if (Editor_MouseMove(dx, dy))
 		return;
 
-	if(g_bDisableAllInput)							return;
-	if (HUD().GetUI()->IR_OnMouseMove(dx,dy))		return;
+	if (g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eMouseMove)(dx, dy);
+	/* avo: end */
+
+	if (HUD().GetUI()->IR_OnMouseMove(dx,dy))
+		return;
+
 	if (Device.Paused() && !IsDemoPlay()
 #ifdef DEBUG
 		&& !psActorFlags.test(AF_NO_CLIP) 
@@ -134,6 +155,11 @@ void CLevel::IR_OnKeyboardPress	(int key)
 
 	if (Editor_KeyPress(key))
 		return;
+
+	/* avo: script callback */
+	if (!g_bDisableAllInput && g_actor)
+		g_actor->callback(GameObject::eKeyPress)(key);
+	/* avo: end */
 
 #ifdef INGAME_EDITOR
 	if (Device.editor() && (pInput->iGetAsyncKeyState(DIK_LALT) || pInput->iGetAsyncKeyState(DIK_RALT)))
@@ -519,9 +545,20 @@ void CLevel::IR_OnKeyboardRelease(int key)
 
 	bool b_ui_exist = (g_hud && HUD().GetUI());
 
-	if (!bReady || g_bDisableAllInput	) return;
-	if ( b_ui_exist && HUD().GetUI()->IR_OnKeyboardRelease(key)) return;
-	if (game && game->OnKeyboardRelease(get_binded_action(key)) )		return;
+	if (!bReady || g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eKeyRelease)(key);
+	/* avo: end */
+
+	if (b_ui_exist && HUD().GetUI()->IR_OnKeyboardRelease(key))
+		return;
+
+	if (game && game->OnKeyboardRelease(get_binded_action(key)))
+		return;
+
 	if (Device.Paused() 
 #ifdef DEBUG
 		&& !psActorFlags.test(AF_NO_CLIP)
@@ -540,7 +577,13 @@ void CLevel::IR_OnKeyboardHold(int key)
 	if (Editor_KeyHold(key))
 		return;
 
-	if(g_bDisableAllInput) return;
+	if(g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eKeyHold)(key);
+	/* avo: end */
 
 #ifdef DEBUG
 	// Lain: added

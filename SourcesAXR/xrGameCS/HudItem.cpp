@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "HudItem.h"
 #include "physic_item.h"
 #include "actor.h"
@@ -13,6 +14,9 @@
 #include "ui_base.h"
 #include "HUDManager.h"
 #include "Weapon.h"
+
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 ENGINE_API extern float psHUD_FOV_def;
 
@@ -167,6 +171,14 @@ void CHudItem::OnStateSwitch(u32 S)
 
 void CHudItem::OnAnimationEnd(u32 state)
 {
+	CActor* actor = smart_cast<CActor*>(object().H_Parent());
+	if (actor)
+	{
+		actor->callback(GameObject::eActorHudAnimationEnd)(smart_cast<CGameObject*>(this)->lua_game_object(),
+			this->hud_sect.c_str(), this->m_current_motion.c_str(), state,
+			this->animation_slot());
+	}
+
 	switch(state)
 	{
 	case eBore:

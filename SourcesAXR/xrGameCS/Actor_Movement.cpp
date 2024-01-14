@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 
 #include "actor.h"
 #include "inventory.h"
@@ -23,6 +24,9 @@
 #include "CustomBackpack.h"
 #include "AdvancedXrayGameConstants.h"
 #include "ActorSkills.h"
+
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 #ifdef DEBUG
 #include "phdebug.h"
@@ -245,6 +249,8 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			//уменьшить силу игрока из-за выполненого прыжка
 			if (!GodMode())
 				conditions().ConditionJump(inventory().TotalWeight() / MaxCarryWeight());
+
+			this->callback(GameObject::eOnActorJump)(this->lua_game_object());
 		}
 
 		// mask input into "real" state

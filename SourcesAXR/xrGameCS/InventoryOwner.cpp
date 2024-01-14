@@ -514,14 +514,32 @@ void CInventoryOwner::OnItemDropUpdate ()
 
 void CInventoryOwner::OnItemBelt	(CInventoryItem *inventory_item, EItemPlace previous_place)
 {
+	/* avo: script callback */
+	CGameObject* object = smart_cast<CGameObject*>(this);
+	VERIFY(object);
+	object->callback(GameObject::eItemToBelt)(inventory_item->object().lua_game_object());
+	/* avo: end */
+
 //.	attach		(inventory_item);
 }
 void CInventoryOwner::OnItemRuck	(CInventoryItem *inventory_item, EItemPlace previous_place)
 {
+	/* avo: script callback */
+	CGameObject* object = smart_cast<CGameObject*>(this);
+	VERIFY(object);
+	object->callback(GameObject::eItemToRuck)(inventory_item->object().lua_game_object());
+	/* avo: end */
+
 	detach		(inventory_item);
 }
 void CInventoryOwner::OnItemSlot	(CInventoryItem *inventory_item, EItemPlace previous_place)
 {
+	/* avo: script callback */
+	CGameObject* object = smart_cast<CGameObject*>(this);
+	VERIFY(object);
+	object->callback(GameObject::eItemToSlot)(inventory_item->object().lua_game_object());
+	/* avo: end */
+
 	attach		(inventory_item);
 }
 
