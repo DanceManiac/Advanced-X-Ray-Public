@@ -21,6 +21,7 @@
 #endif
 
 #include "../../xrEngine/x_ray.h"
+#include <future>
 
 
 const float dbgOffset			= 0.f;
@@ -409,8 +410,11 @@ void CDetailManager::Render	()
 	if (!psDeviceFlags.is(rsDetails))	return;
 #endif
 
-	// MT
-	MT_SYNC					();
+	// MT wait
+	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_DETAILS))
+		WaitAsync();
+	else
+		MT_CALC();
 
 	RDEVICE.Statistic->RenderDUMP_DT_Render.Begin	();
 	g_pGamePersistent->m_pGShaderConstants->m_blender_mode.w = 1.0f; //--#SM+#--     [begin of grass render]
@@ -433,35 +437,61 @@ void CDetailManager::Render	()
 	RCache.set_CullMode		(CULL_CCW);
 	g_pGamePersistent->m_pGShaderConstants->m_blender_mode.w = 0.0f; //--#SM+#--     [end of grass render]
 	RDEVICE.Statistic->RenderDUMP_DT_Render.End	();
-	m_frame_rendered		= RDEVICE.dwFrame;
+}
+
+u32 reset_frame = 0;
+
+void CDetailManager::StartAsync()
+{
+	if (!ps_r2_ls_flags.test(R2FLAG_EXP_MT_DETAILS))
+		return;
+
+	if (reset_frame == Device.dwFrame)
+		return;
+
+	if (!RImplementation.Details)
+		return; // possibly deleted
+	if (!dtFS)
+		return;
+	if (!psDeviceFlags.is(rsDetails))
+		return;
+	if (g_pGamePersistent && g_pGamePersistent->m_pMainMenu && g_pGamePersistent->m_pMainMenu->IsActive())
+		return;
+
+	awaiter = std::async(std::launch::async, [&](CDetailManager* self) { return self->MT_CALC(); }, this);
+}
+
+void CDetailManager::WaitAsync() const
+{
+	if (awaiter.valid())
+		awaiter.wait();
 }
 
 void __stdcall CDetailManager::MT_CALC()
 {
 #ifndef _EDITOR
-	if (0 == RImplementation.Details) return; // possibly deleted
+	if (reset_frame == Device.dwFrame)
+		return;
+	if (0 == RImplementation.Details)
+		return; // possibly deleted
 	//if (0 == dtFS)                     return;
-	if (!psDeviceFlags.is(rsDetails)) return;
+	if (!psDeviceFlags.is(rsDetails))
+		return;
 #endif
 
 
 	std::lock_guard<xrCriticalSection> lock(MT);
 
-	if (m_frame_calc != RDEVICE.dwFrame)
-		if ((m_frame_rendered + 1) == RDEVICE.dwFrame) //already rendered
-		{
-			Fvector     EYE = RDEVICE.vCameraPosition_saved;
+	Fvector EYE = RDEVICE.vCameraPosition_saved;
 
-			int s_x = iFloor(EYE.x / dm_slot_size + .5f);
-			int s_z = iFloor(EYE.z / dm_slot_size + .5f);
+	int s_x = iFloor(EYE.x / dm_slot_size + .5f);
+	int s_z = iFloor(EYE.z / dm_slot_size + .5f);
 
-			RDEVICE.Statistic->RenderDUMP_DT_Cache.Begin();
-			cache_Update(s_x, s_z, EYE, dm_max_decompress);
-			RDEVICE.Statistic->RenderDUMP_DT_Cache.End();
+	RDEVICE.Statistic->RenderDUMP_DT_Cache.Begin();
+	cache_Update(s_x, s_z, EYE, dm_max_decompress);
+	RDEVICE.Statistic->RenderDUMP_DT_Cache.End();
 
-			UpdateVisibleM();
-			m_frame_calc = RDEVICE.dwFrame;
-		}
+	UpdateVisibleM();
 }
 
 void CDetailManager::details_clear()

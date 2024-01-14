@@ -244,6 +244,7 @@ enum
 	R2FLAGEXT_SUN_ZCULLING			= (1<<8),
 	R2FLAGEXT_SUN_OLD				= (1<<9),
 	R2FLAGEXT_SSAO_SSDO				= (1<<10),
+	R2FLAG_EXP_MT_DETAILS			= (1<<11),
 };
 
 //ogse sunshafts

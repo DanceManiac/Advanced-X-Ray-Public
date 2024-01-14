@@ -10,6 +10,8 @@
 #include "detailformat.h"
 #include "detailmodel.h"
 
+#include <future>
+
 #ifdef _EDITOR
 //.	#include	"ESceneClassList.h"
 	const int	dm_max_decompress	= 14;
@@ -205,16 +207,11 @@ public:
 
 	/// MT stuff
 	xrCriticalSection				MT;
-	volatile u32					m_frame_calc;
-	volatile u32					m_frame_rendered;
+	void							StartAsync		();
+	void							WaitAsync		() const;
 
-	void	__stdcall				MT_CALC			() ;
-	ICF	void						MT_SYNC			() {
-		if (m_frame_calc == RDEVICE.dwFrame)
-			return;
-
-		MT_CALC						(); 
-	}
+	std::future<void>				awaiter;
+	void	__stdcall				MT_CALC			();
 
 	CDetailManager					();
 	virtual ~CDetailManager			();

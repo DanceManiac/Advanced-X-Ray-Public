@@ -246,6 +246,7 @@ Flags32		ps_r2_ls_flags				= { R2FLAG_SUN
 	|R2FLAG_SUN_TSM
 	|R2FLAG_TONEMAP
 	|R2FLAG_VOLUMETRIC_LIGHTS
+	|R2FLAG_EXP_MT_DETAILS
 	};	// r2-only
 
 Flags32		ps_r2_ls_flags_ext			= {
@@ -1092,6 +1093,8 @@ void		xrRender_initconsole	()
 
 	CMD3(CCC_Mask,		"r__actor_shadow",		&ps_actor_shadow_flags,		RFLAG_ACTOR_SHADOW);  //Swartz
     CMD3(CCC_Token, 	"r2_smap_size", 		&ps_r2_smapsize, 			qsmapsize_token	);
+
+	CMD3(CCC_Mask,		"r2_mt_details",		&ps_r2_ls_flags,			R2FLAG_EXP_MT_DETAILS);
 	
 	CMD4(CCC_Float,		"r_color_r",			&ps_color_grading.x,		0.0f,	2.55f	);
 	CMD4(CCC_Float,		"r_color_g",			&ps_color_grading.y,		0.0f,	2.55f	);

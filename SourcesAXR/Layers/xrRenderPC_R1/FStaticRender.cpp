@@ -130,8 +130,12 @@ void					CRender::destroy				()
 	r_dsgraph_destroy			();
 }
 
+extern u32 reset_frame;
+
 void					CRender::reset_begin			()
 {
+	reset_frame = Device.dwFrame;
+
 	//AVO: let's reload details while changed details options on vid_restart
 	if (b_loaded && ((dm_current_size != dm_size) || (ps_r__Detail_density != ps_current_detail_density)))
 	{
@@ -157,6 +161,13 @@ void					CRender::reset_end				()
 void					CRender::OnFrame				()
 {
 	Models->DeleteQueue	();
+
+	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC))
+	{
+		// MT-details (@front)
+		if (Details)
+			Details->StartAsync();
+	}
 }
 
 // Implementation
