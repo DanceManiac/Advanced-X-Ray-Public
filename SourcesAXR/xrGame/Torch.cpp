@@ -39,6 +39,7 @@ static const float		OPTIMIZATION_DISTANCE		= 100.f;
 static bool stalker_use_dynamic_lights	= false;
 
 ENGINE_API int g_current_renderer;
+extern ENGINE_API bool ps_enchanted_shaders;
 
 extern bool g_block_all_except_movement;
 
@@ -351,6 +352,14 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	guid_bone = K->LL_BoneID(pUserData->r_string(m_light_section, "guide_bone"));	VERIFY(guid_bone != BI_NONE);
 
 	Fcolor clr = pUserData->r_fcolor(m_light_section, (b_r2) ? "color_r2" : "color");
+
+	if (!!psDeviceFlags.test(rsR4) && ps_enchanted_shaders)	//Костыль для нормализации яркости с Enchanted Shaders
+	{
+		clr.r *= 2.5f;
+		clr.g *= 2.5f;
+		clr.b *= 2.5f;
+	}
+
 	fBrightness				= clr.intensity();
 
 	m_fMaxRange = pUserData->r_float(m_light_section, (b_r2) ? "max_range_r2" : "max_range");
@@ -725,6 +734,14 @@ void CTorch::ReloadLights()
 	R_ASSERT2(pUserData->section_exist(m_light_section), "Section not found in torch user data! Check 'light_section' field in config");
 
 	Fcolor clr = pUserData->r_fcolor(m_light_section, (b_r2) ? "color_r2" : "color");
+
+	if (!!psDeviceFlags.test(rsR4) && ps_enchanted_shaders)	//Костыль для нормализации яркости с Enchanted Shaders
+	{
+		clr.r *= 2.5f;
+		clr.g *= 2.5f;
+		clr.b *= 2.5f;
+	}
+
 	fBrightness = clr.intensity();
 
 	m_fMaxRange = pUserData->r_float(m_light_section, (b_r2) ? "max_range_r2" : "max_range");

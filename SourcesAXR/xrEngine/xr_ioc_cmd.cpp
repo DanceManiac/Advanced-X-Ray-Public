@@ -734,6 +734,8 @@ ENGINE_API int			ps_r__ShaderNVG				= 0;
 
 ENGINE_API int			ps_detail_enable_collision	= 0;
 
+ENGINE_API bool			ps_enchanted_shaders		= 0; // For xrGame
+
 void CCC_Register()
 {
 	// General

@@ -16,7 +16,8 @@
 #include "../../xrEngine/xr_ioconsole.h"
 #include "D3DX10Core.h"
 
-CRender										RImplementation;
+CRender RImplementation;
+extern ENGINE_API bool ps_enchanted_shaders;
 
 //////////////////////////////////////////////////////////////////////////
 class CGlow				: public IRender_Glow
@@ -1407,6 +1408,8 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Name = "ENCHANTED_SHADERS_ENABLED";
 		defines[def_it].Definition = "1";
 		def_it++;
+
+		ps_enchanted_shaders = true;
 	}
 	sh_name[len] = '0' + char(o.dx11_es_addon_enabled); ++len;
 
