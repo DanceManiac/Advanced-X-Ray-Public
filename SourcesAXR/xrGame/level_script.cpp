@@ -44,8 +44,9 @@
 #include "CustomTimer.h"
 
 using namespace luabind;
-bool g_block_all_except_movement;
-bool g_block_actor_movement;
+bool g_block_all_except_movement = false;
+bool g_block_actor_movement = false;
+bool g_saves_locked = false;
 
 LPCSTR command_line	()
 {
@@ -1054,6 +1055,16 @@ void buy_skill(int num)
 	return Actor()->ActorSkills->BuySkill(num);
 }
 
+void set_game_saves_lock(bool b)
+{
+	g_saves_locked = b;
+}
+
+bool get_saves_lock_status()
+{
+	return g_saves_locked;
+}
+
 u32 g_get_target_element()
 {
 	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
@@ -1438,6 +1449,8 @@ void CLevel::script_register(lua_State *L)
 		def("active_tutorial_name", +[]() { return g_tutorial->GetTutorName(); }),
 		def("log_stack_trace",		&xrDebug::LogStackTrace),
 		def("get_devices_psy_factor", &get_devices_psy_factor),
-		def("set_devices_psy_factor", &set_devices_psy_factor)
+		def("set_devices_psy_factor", &set_devices_psy_factor),
+		def("set_lock_saves",		set_game_saves_lock),
+		def("get_saves_lock_status", get_saves_lock_status)
 	];
 }

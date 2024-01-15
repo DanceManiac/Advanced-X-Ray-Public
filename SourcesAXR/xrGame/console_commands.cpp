@@ -143,6 +143,8 @@ extern	BOOL	g_advanced_crosshair;
 
 extern	BOOL	g_b_COD_PickUpMode;
 
+extern bool		g_saves_locked;
+
 //Custom commands for scripts
 
 const int I_SCRIPT_CMDS_COUNT = GameConstants::GetIntScriptCMDCount();
@@ -909,6 +911,17 @@ public:
 		if(!g_actor || !Actor()->g_Alive())
 		{
 			Msg("cannot make saved game because actor is dead :(");
+			return;
+		}
+
+		if (g_saves_locked)
+		{
+#ifdef DEBUG
+			Msg("Can`t make saved game: blocked by Lua.");
+#endif
+			SDrawStaticStruct* _s	= CurrentGameUI()->AddCustomStatic("game_save_blocked_icon", true);
+			SDrawStaticStruct* _s2	= CurrentGameUI()->AddCustomStatic("game_saved", true);
+			_s2->wnd()->TextItemControl()->SetText(CStringTable().translate("st_saves_locked").c_str());
 			return;
 		}
 

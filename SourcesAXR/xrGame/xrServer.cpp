@@ -30,6 +30,7 @@ using namespace std::placeholders;
 #pragma warning(pop)
 
 u32 g_sv_traffic_optimization_level = eto_none;
+extern bool g_saves_locked;
 
 xrClientData::xrClientData	() :
 	IClient(Device.GetTimerGlobal())
@@ -550,6 +551,9 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 		}break;
 	case M_LOAD_GAME:
 		{
+			if (g_saves_locked)
+				g_saves_locked		= false;
+
 			game->load_game			(P,sender);
 			SendBroadcast			(BroadcastCID,P,net_flags(TRUE,TRUE));
 			VERIFY					(verify_entities());
