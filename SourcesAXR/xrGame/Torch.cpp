@@ -169,8 +169,9 @@ void CTorch::Switch()
 		return;
 
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+	bool AnimEnabled = pAdvancedSettings->line_exist("actions_animations", "switch_torch_section");
 
-	if (!pDet || pDet->IsHidden())
+	if (!pDet || pDet->IsHidden() || !AnimEnabled)
 	{
 		ProcessSwitch();
 		return;

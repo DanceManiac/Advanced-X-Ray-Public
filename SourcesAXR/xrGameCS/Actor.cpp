@@ -2663,8 +2663,9 @@ void CActor::NVGAnimCheckDetector()
 		return;
 
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+	bool AnimEnabled = pAdvancedSettings->line_exist("actions_animations", "switch_nightvision_section");
 
-	if (!pDet || pDet->IsHidden())
+	if (!pDet || pDet->IsHidden() || !AnimEnabled);
 	{
 		StartNVGAnimation();
 		return;
@@ -2773,6 +2774,9 @@ void CActor::CleanMaskAnimCheckDetector()
 		return;
 
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (!pAdvancedSettings->line_exist("actions_animations", "clean_mask_section"))
+		return;
 
 	if (!pDet || pDet->IsHidden())
 	{
