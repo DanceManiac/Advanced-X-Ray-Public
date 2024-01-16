@@ -31,6 +31,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "DynamicHudGlass.h"
 #include "CustomOutfit.h"
+#include "Inventory.h"
 #include "string_table.h"
 #include "../xrEngine/x_ray.h"
 #include "ui/UILoadingScreen.h"
@@ -946,7 +947,12 @@ bool CGamePersistent::GetClearMaskProcess()
 
 bool CGamePersistent::GetActorNightvision()
 {
-	return	(Actor()->GetNightVisionStatus());
+	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+
+	if (pOutfit)
+		return (Actor()->GetNightVisionStatus() && pOutfit->m_NightVisionSect.size());
+
+	return false;
 }
 
 int CGamePersistent::GetNightvisionType()
