@@ -59,7 +59,6 @@ struct net_updateInvData
 };
 
 
-
 class CInventoryItem : 
 	public CAttachableItem,
 	public CHitImmunity
@@ -172,6 +171,8 @@ public:
 			void				ChangeCondition		(float fDeltaCondition);
 
 	IC		float				GetChargeLevel		() const					{return m_fCurrentChargeLevel;}
+	IC		float				GetMaxChargeLevel	() const					{return m_fMaxChargeLevel;}
+	IC		float				GetUnChargeLevel	() const					{return m_fUnchargeSpeed;}
 	virtual	float				GetChargeToShow		() const					{return GetChargeLevel();}
 	IC		void				SetChargeLevel		(float charge_level)		{ m_fCurrentChargeLevel = charge_level;}
 			void				ChangeChargeLevel	(float val);
@@ -200,6 +201,7 @@ protected:
 	float						m_fCondition;
 	float						m_fCurrentChargeLevel;
 	float						m_fMaxChargeLevel;
+	float						m_fUnchargeSpeed;
 	shared_str					m_Description;
 
 	float						m_fOccupiedInvSpace;

@@ -17,7 +17,6 @@ class CUIOutfitItemInfo;
 class CUIBoosterInfo;
 class CUICellItem;
 class CUIInventoryItem;
-class CUIItemConditionParams;
 
 extern const char * const 		fieldsCaptionColor;
 
@@ -71,12 +70,10 @@ public:
 	// Lex Addon (correct by Suhar_) 7.08.2018		(end)
 
 	//CUIConditionParams*		UIConditionWnd;
-	CUIItemConditionParams* UIItemConditionParams;
 	CUIWpnParams*			UIWpnParams;
 	CUIArtefactParams*		UIArtefactParams;
 	UIInvUpgPropertiesWnd*	UIProperties;
 	CUIOutfitItem*			UIOutfitItem;
-	CUIOutfitItem*			UIOutfitInfo;
 	CUIBoosterInfo*			UIBoosterInfo;
 	CUIInventoryItem*		UIInventoryItem;
 

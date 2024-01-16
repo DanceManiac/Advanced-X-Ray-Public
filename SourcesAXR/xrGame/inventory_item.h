@@ -139,9 +139,8 @@ public:
 			BOOL				IsInvalid			() const;
 
 			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}			
-	virtual	u32					Cost				()	const	{ return m_cost; }
-//			u32					Cost				()	const	{ return m_cost; }
-	virtual float				Weight				() 	const	{ return m_weight;}	
+	virtual	u32					Cost				() const	{ return m_cost; }
+	virtual float				Weight				() const	{ return m_weight;}	
 			void				SetWeight			(float w)	{ m_weight = w; }
 
 public:
@@ -173,6 +172,8 @@ public:
 			void				ChangeCondition		(float fDeltaCondition);
 
 	IC		float				GetChargeLevel		() const					{return m_fCurrentChargeLevel;}
+	IC		float				GetMaxChargeLevel	() const					{return m_fMaxChargeLevel;}
+	IC		float				GetUnChargeLevel	() const					{return m_fUnchargeSpeed;}
 	virtual	float				GetChargeToShow		() const					{return GetChargeLevel();}
 	IC		void				SetChargeLevel		(float charge_level)		{ m_fCurrentChargeLevel = charge_level;}
 			void				ChangeChargeLevel	(float val);
@@ -201,6 +202,7 @@ protected:
 	float						m_fCondition;
 	float						m_fCurrentChargeLevel;
 	float						m_fMaxChargeLevel;
+	float						m_fUnchargeSpeed;
 	shared_str					m_Description;
 
 	float						m_fOccupiedInvSpace;
@@ -262,7 +264,7 @@ public:
 	u16							object_id					() const;
 	u16							parent_id					() const;
 	virtual void				on_activate_physic_shell	() { R_ASSERT2(0, "failed call of virtual function!"); }
-	
+
 protected:
 	float						m_holder_range_modifier;
 	float						m_holder_fov_modifier;

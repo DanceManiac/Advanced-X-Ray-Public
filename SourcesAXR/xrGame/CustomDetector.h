@@ -166,8 +166,6 @@ public:
 			void	Recharge			(float val);
 			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
 
-			float	m_fUnchargeSpeed;
-
 			//Light
 			bool		m_bLightsEnabled;
 			bool		m_bLightsAlways;

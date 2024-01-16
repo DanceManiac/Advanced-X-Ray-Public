@@ -122,90 +122,8 @@ void CUIOutfitItem::InitFromXml(CUIXml& xml)
 	name = CStringTable().translate("ui_inv_outfit_inventory_capacity").c_str();
 	m_inv_capacity->SetCaption(name);
 	xml.SetLocalRoot(base_node);
-}
 
-void CUIOutfitItem::SetInfo(CInventoryItem& pInvItem)
-{
-	DetachAll();
-
-	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
-	shared_str section = pInvItem.object().cNameSect();
-	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&pInvItem);
-
-	if (!actor)
-		return;
-
-	float val = 0.0f, max_val = 1.0f;
-	Fvector2 pos;
-	float h = 0.0f;
-
-	for (u32 i = 0; i < max_count; ++i)
-	{
-		pos.set(m_items[i]->GetWndPos());
-		pos.y = h;
-		m_items[i]->SetWndPos(pos);
-		h += m_items[i]->GetWndSize().y;
-		AttachChild(m_items[i]);
-	}
-
-	if (GameConstants::GetOutfitUseFilters() && pSettings->line_exist(section.c_str(), "use_filter"))
-	{
-		pos.set(m_outfit_filter_condition->GetWndPos());
-		pos.y = h;
-		m_outfit_filter_condition->SetWndPos(pos);
-
-		h += m_outfit_filter_condition->GetWndSize().y;
-		AttachChild(m_outfit_filter_condition);
-	}
-
-	if (pSettings->line_exist(section.c_str(), "additional_inventory_weight"))
-	{
-		val = outfit->m_additional_weight;
-		if (!fis_zero(val))
-		{
-			m_additional_weight->SetValue(val, 2);
-
-			pos.set(m_additional_weight->GetWndPos());
-			pos.y = h;
-			m_additional_weight->SetWndPos(pos);
-
-			h += m_additional_weight->GetWndSize().y;
-			AttachChild(m_additional_weight);
-		}
-	}
-
-	if (GameConstants::GetLimitedInventory() && pSettings->line_exist(section.c_str(), "inventory_capacity"))
-	{
-		val = outfit->GetInventoryCapacity();
-		if (!fis_zero(val))
-		{
-			m_inv_capacity->SetValue(val, 2);
-
-			pos.set(m_inv_capacity->GetWndPos());
-			pos.y = h;
-			m_inv_capacity->SetWndPos(pos);
-
-			h += m_inv_capacity->GetWndSize().y;
-			AttachChild(m_inv_capacity);
-		}
-	}
-
-	if (pSettings->line_exist(section.c_str(), "artefact_count"))
-	{
-		val = pSettings->r_u32(section, "artefact_count");
-		if (!fis_zero(val))
-		{
-			m_artefacts_count->SetValue(val);
-			pos.set(m_artefacts_count->GetWndPos());
-			pos.y = h;
-			m_artefacts_count->SetWndPos(pos);
-
-			h += m_artefacts_count->GetWndSize().y;
-			AttachChild(m_artefacts_count);
-		}
-	}
-
-	SetHeight(h);
+	xml.SetLocalRoot(stored_root);
 }
 
 /// ----------------------------------------------------------------
@@ -317,14 +235,33 @@ void CUIOutfitItemInfo::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void CUIOutfitItemInfo::SetValue(float value, int vle)
+void CUIOutfitItemInfo::SetValue(float value, float comp, int vle, int accuracy)
 {
 	value *= m_magnitude;
 	string32 buf;
 	if (m_show_sign)
+	{
 		xr_sprintf(buf, "%+.0f", value);
+		if (accuracy == 0)
+			xr_sprintf(buf, "%+.0f", value);
+		else if (accuracy == 1)
+			xr_sprintf(buf, "%+.1f", value);
+		else if (accuracy == 2)
+			xr_sprintf(buf, "%+.2f", value);
+		else if (accuracy == 3)
+			xr_sprintf(buf, "%+.3f", value);
+	}
 	else
-		xr_sprintf(buf, "%.0f", value);
+	{
+		if (accuracy == 0)
+			xr_sprintf(buf, "%.0f", value);
+		else if (accuracy == 1)
+			xr_sprintf(buf, "%.1f", value);
+		else if (accuracy == 2)
+			xr_sprintf(buf, "%.2f", value);
+		else if (accuracy == 3)
+			xr_sprintf(buf, "%.3f", value);
+	}
 
 	LPSTR str;
 	if (m_unit_str.size())
@@ -348,20 +285,34 @@ void CUIOutfitItemInfo::SetValue(float value, int vle)
 		}
 		else if (vle == 1)
 		{
-			if (is_positive)
-				current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+			if (value == comp)
+			{
+				m_value->SetTextColor(m_neutral_color);
+			}
 			else
-				current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+			{
+				if (is_positive)
+					current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), value);
+				else
+					current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), value);
+			}
 		}
 		else if (vle == 2)
 		{
-			if (is_positive)
-				current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), 0.25f);
+			if (value == comp)
+			{
+				m_value->SetTextColor(m_neutral_color);
+			}
 			else
-				current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), 0.25f);
+			{
+				if (is_positive)
+					current.lerp(negative.set(m_positive_color), middle.set(m_neutral_color), positive.set(m_negative_color), 0.25f);
+				else
+					current.lerp(negative.set(m_negative_color), middle.set(m_neutral_color), positive.set(m_positive_color), 0.25f);
+			}
 		}
 
-		if (vle == 1 || vle == 2)
+		if ((vle == 1 || vle == 2) && value != comp)
 			m_value->SetTextColor(current.get());
 	}
 	else
@@ -423,18 +374,24 @@ void CUIOutfitItemInfo::SetProgressValue( float cur, float comp )
 
 void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfit)
 {
+	DetachAll();
 	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
-	if (!actor || !cur_outfit)
+	shared_str section = cur_outfit->cNameSect();
+	if (!actor)
 	{
 		return;
 	}
 
+	float h = 0.0f, cur = 0.0f, slot = 0.0f, max_power = 1.0f;
+	Fvector2 pos;
+	pos.set(GetWndPos());
+
 	for (u32 i = 0; i < max_count; ++i)
 	{
-		/*if (i == ALife::eHitTypeStrike || i == ALife::eHitTypeExplosion || i == ALife::eHitTypeFireWound)
+		if (i == ALife::eHitTypeFireWound)
 		{
 			continue;
-		} */
+		}
 
 		ALife::EHitType hit_type = (ALife::EHitType)i;
 		float max_power = actor->conditions().GetZoneMaxPower(hit_type);
@@ -449,6 +406,11 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 			slot /= max_power; //  = 0..1
 		}
 		m_items[i]->SetProgressValue(cur, slot);
+		pos.set(m_items[i]->GetWndPos());
+		pos.y = h;
+		m_items[i]->SetWndPos(pos);
+		h += m_items[i]->GetWndSize().y;
+		AttachChild(m_items[i]);
 	}
 
 	if (m_items[ALife::eHitTypeFireWound])
@@ -458,28 +420,76 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 		u16 spine_bone = ikv->LL_BoneID("bip01_spine");
 
 		float cur = cur_outfit->GetBoneArmor(spine_bone) * cur_outfit->GetCondition();
-		float slot = (slot_outfit) ? slot_outfit->GetBoneArmor(spine_bone) * slot_outfit->GetCondition() : cur;
-
+		slot = slot_outfit ? slot_outfit->GetBoneArmor(spine_bone) * slot_outfit->GetCondition() : cur;
+		float max_power = actor->conditions().GetMaxFireWoundProtection() != 0 ? actor->conditions().GetMaxFireWoundProtection() : 1.f;
+		cur /= max_power;
+		slot /= max_power;
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue(cur, slot);
+		pos.set(m_items[ALife::eHitTypeFireWound]->GetWndPos());
+		pos.y = h;
+		m_items[ALife::eHitTypeFireWound]->SetWndPos(pos);
+		h += m_items[ALife::eHitTypeFireWound]->GetWndSize().y;
+		AttachChild(m_items[ALife::eHitTypeFireWound]);
 	}
 
-	float cur_filter = cur_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS;
-	float slot_filter = cur_filter;
+	float cur_filter = cur_outfit->GetFilterCondition() > 0.f ? (cur_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
 
-	if (slot_outfit && (slot_outfit != cur_outfit))
+	if (GameConstants::GetOutfitUseFilters() && cur_outfit->m_bUseFilter)
 	{
-		slot_filter = slot_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS;
+		m_outfit_filter_condition->SetProgressValue(cur_filter, cur_filter);
+
+		pos.set(m_outfit_filter_condition->GetWndPos());
+		pos.y = h;
+		m_outfit_filter_condition->SetWndPos(pos);
+
+		h += m_outfit_filter_condition->GetWndSize().y;
+		AttachChild(m_outfit_filter_condition);
 	}
 
-	if (GameConstants::GetOutfitUseFilters())
+	
+	cur = cur_outfit->m_additional_weight2;
+	slot = slot_outfit ? slot_outfit->m_additional_weight2 : cur;
+	if (!fis_zero(cur))
 	{
-		m_outfit_filter_condition->SetProgressValue(cur_filter, slot_filter);
+		m_additional_weight->SetValue(cur, slot, 2, 2);
 
-		if (cur_outfit->m_bUseFilter)
-			m_outfit_filter_condition->SetVisible(true);
-		else
-			m_outfit_filter_condition->SetVisible(false);
+		pos.set(m_additional_weight->GetWndPos());
+		pos.y = h;
+		m_additional_weight->SetWndPos(pos);
+
+		h += m_additional_weight->GetWndSize().y;
+		AttachChild(m_additional_weight);
 	}
-	else
-		m_outfit_filter_condition->SetVisible(false);
+
+	if (GameConstants::GetLimitedInventory())
+	{
+		cur = cur_outfit->GetInventoryCapacity();
+		slot = slot_outfit ? slot_outfit->GetInventoryCapacity() : cur;
+		if (!fis_zero(cur))
+		{
+			m_inv_capacity->SetValue(cur, slot, 2, 2);
+
+			pos.set(m_inv_capacity->GetWndPos());
+			pos.y = h;
+			m_inv_capacity->SetWndPos(pos);
+
+			h += m_inv_capacity->GetWndSize().y;
+			AttachChild(m_inv_capacity);
+		}
+	}
+
+	cur = cur_outfit->get_artefact_count();
+	slot = slot_outfit ? slot_outfit->get_artefact_count() : cur;
+	if (!fis_zero(cur))
+	{
+		m_artefacts_count->SetValue(cur, slot, 0);
+		pos.set(m_artefacts_count->GetWndPos());
+		pos.y = h;
+		m_artefacts_count->SetWndPos(pos);
+
+		h += m_artefacts_count->GetWndSize().y;
+		AttachChild(m_artefacts_count);
+	}
+
+	SetHeight(h);
 }

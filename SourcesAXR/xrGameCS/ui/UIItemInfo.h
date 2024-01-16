@@ -4,7 +4,6 @@
 
 class CInventoryItem;
 class CUIStatic;
-class CUICellItem;
 class CUIScrollView;
 class CUIProgressBar;
 class CUIConditionParams;
@@ -14,10 +13,9 @@ class CUIFrameWindow;
 class UIInvUpgPropertiesWnd;
 class CUIOutfitItem;
 class CUIOutfitItemInfo;
-class CUIInventoryItem;
-class CUIItemConditionParams;
 class CUIBoosterInfo;
-
+class CUICellItem;
+class CUIInventoryItem;
 extern const char * const 		fieldsCaptionColor;
 
 class CUIItemInfo: public CUIWindow
@@ -47,8 +45,8 @@ public:
 	void				TryAddArtefactInfo	(CInventoryItem& pInvItem);
 	void				TryAddOutfitInfo	(CInventoryItem& pInvItem, CInventoryItem* pCompareItem);
 	void				TryAddUpgradeInfo	(CInventoryItem& pInvItem);
-	void				TryAddItemInfo		(CInventoryItem& pInvItem);
 	void				TryAddBoosterInfo	(CInventoryItem& pInvItem);
+	void				TryAddItemInfo		(CInventoryItem& pInvItem);
 
 	void				ResetInventoryItem	();
 	
@@ -65,14 +63,12 @@ public:
 	bool				m_complex_desc;
 
 	CUIConditionParams*		UIConditionWnd;
-	CUIItemConditionParams* UIChargeConditionParams;
 	CUIWpnParams*			UIWpnParams;
 	CUIArtefactParams*		UIArtefactParams;
 	UIInvUpgPropertiesWnd*	UIProperties;
 	CUIOutfitItem*			UIOutfitItem;
-	CUIOutfitItem*			UIOutfitInfo;
-	CUIInventoryItem*		UIInventoryItem;
 	CUIBoosterInfo*			UIBoosterInfo;
+	CUIInventoryItem*		UIInventoryItem;
 
 	Fvector2			UIItemImageSize; 
 	CUIStatic*			UIItemImage;

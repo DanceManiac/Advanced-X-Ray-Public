@@ -87,10 +87,17 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 	m_Prop_line->SetAutoDelete(false);
 	CUIXmlInit::InitStatic(xml, "prop_line", 0, m_Prop_line);
 
+	m_charge_level = xr_new<CUIInventoryItemInfo>();
+	m_charge_level->Init(xml, "charge_level");
+	m_charge_level->SetAutoDelete(false);
+	LPCSTR name = CStringTable().translate("ui_inv_battery").c_str();
+	m_charge_level->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
 	m_af_radius = xr_new<CUIInventoryItemInfo>();
 	m_af_radius->Init(xml, "af_radius");
 	m_af_radius->SetAutoDelete(false);
-	LPCSTR name = CStringTable().translate("ui_inv_af_radius").c_str();
+	name = CStringTable().translate("ui_inv_af_radius").c_str();
 	m_af_radius->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
@@ -164,6 +171,7 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 
 		xml.SetLocalRoot(base_node);
 	}
+	xml.SetLocalRoot(stored_root);
 }
 
 void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
@@ -171,15 +179,11 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	DetachAll();
 	AttachChild(m_Prop_line);
 
-	for (int i = 0; i < m_iMaxAfCount; ++i)
-	{
-		AttachChild(m_stArtefacts[i]);
-		AttachChild(m_textArtefacts[i]);
-	}
-
 	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
 	shared_str section = pInvItem.object().cNameSect();
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
+	CDetectorAnomaly* pAnomDet = smart_cast<CDetectorAnomaly*>(&pInvItem);
+	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
 	CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(&pInvItem);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
 
@@ -192,14 +196,30 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	Fvector2 pos;
 	float h = m_Prop_line->GetWndPos().y + m_Prop_line->GetWndSize().y;
 
-	bool ShowCharge = GameConstants::GetTorchHasBattery() || GameConstants::GetArtDetectorUseBattery() || GameConstants::GetAnoDetectorUseBattery();
+	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
+	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
+	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
 
-	if (pSettings->line_exist(section.c_str(), "af_radius"))
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet)
+	{
+		val = pInvItem.GetChargeToShow() <= 0 ? 0 : pInvItem.GetChargeToShow() * 100.f;
+		// (!fis_zero(val))
+		{
+			m_charge_level->SetValue(val, 0, 0);
+			pos.set(m_charge_level->GetWndPos());
+			pos.y = h;
+			m_charge_level->SetWndPos(pos);
+
+			h += m_charge_level->GetWndSize().y;
+			AttachChild(m_charge_level);
+		}
+	}
+	if (pDet)
 	{
 		val = pDet->GetAfDetectRadius();
 		if (!fis_zero(val))
 		{
-			m_af_radius->SetValue(val);
+			m_af_radius->SetValue(val, 0, 2);
 			pos.set(m_af_radius->GetWndPos());
 			pos.y = h;
 			m_af_radius->SetWndPos(pos);
@@ -209,12 +229,12 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	if (pSettings->line_exist(section.c_str(), "af_vis_radius"))
+	if (pDet)
 	{
 		val = pDet->GetAfVisRadius();
 		if (!fis_zero(val))
 		{
-			m_af_vis_radius->SetValue(val);
+			m_af_vis_radius->SetValue(val, 0, 2);
 			pos.set(m_af_vis_radius->GetWndPos());
 			pos.y = h;
 			m_af_vis_radius->SetWndPos(pos);
@@ -224,10 +244,10 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	if (ShowCharge && pSettings->line_exist(section.c_str(), "max_charge_level"))
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet)
 	{
-		val = pSettings->r_float(section, "max_charge_level");
-		if (!fis_zero(val))
+		val = pInvItem.GetMaxChargeLevel();
+		//if (!fis_zero(val))
 		{
 			m_max_charge->SetValue(val);
 			pos.set(m_max_charge->GetWndPos());
@@ -239,9 +259,9 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	if (ShowCharge && pSettings->line_exist(section.c_str(), "uncharge_speed"))
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet)
 	{
-		val = pSettings->r_float(section, "uncharge_speed");
+		val = pInvItem.GetUnChargeLevel();
 		if (!fis_zero(val))
 		{
 			m_uncharge_speed->SetValue(val);
@@ -256,54 +276,48 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 
 	if (pBackpack)
 	{
-		if (pSettings->line_exist(section.c_str(), "additional_inventory_weight"))
+		val = pBackpack->m_additional_weight;
+		if (!fis_zero(val))
 		{
-			val = pBackpack->m_additional_weight;
-			if (!fis_zero(val))
-			{
-				m_additional_weight->SetValue(val, 2);
+			m_additional_weight->SetValue(val, 2, 2);
 
-				pos.set(m_additional_weight->GetWndPos());
-				pos.y = h;
-				m_additional_weight->SetWndPos(pos);
+			pos.set(m_additional_weight->GetWndPos());
+			pos.y = h;
+			m_additional_weight->SetWndPos(pos);
 
-				h += m_additional_weight->GetWndSize().y;
-				AttachChild(m_additional_weight);
-			}
+			h += m_additional_weight->GetWndSize().y;
+			AttachChild(m_additional_weight);
 		}
+	}
 
-		if (GameConstants::GetLimitedInventory() && pSettings->line_exist(section.c_str(), "inventory_capacity"))
+	if (GameConstants::GetLimitedInventory() && pBackpack)
+	{
+		val = pBackpack->GetInventoryCapacity();
+		if (!fis_zero(val))
 		{
-			val = pBackpack->GetInventoryCapacity();
-			if (!fis_zero(val))
-			{
-				m_inv_capacity->SetValue(val, 2);
+			m_inv_capacity->SetValue(val, 2, 2);
 
-				pos.set(m_inv_capacity->GetWndPos());
-				pos.y = h;
-				m_inv_capacity->SetWndPos(pos);
+			pos.set(m_inv_capacity->GetWndPos());
+			pos.y = h;
+			m_inv_capacity->SetWndPos(pos);
 
-				h += m_inv_capacity->GetWndSize().y;
-				AttachChild(m_inv_capacity);
-			}
+			h += m_inv_capacity->GetWndSize().y;
+			AttachChild(m_inv_capacity);
 		}
 	}
 
 	if (pAfContainer)
 	{
-		if (pSettings->line_exist(section.c_str(), "container_size"))
+		val = pAfContainer->GetContainerSize();
+		if (!fis_zero(val))
 		{
-			val = pSettings->r_u32(section, "container_size");
-			if (!fis_zero(val))
-			{
-				m_artefacts_count->SetValue(val);
-				pos.set(m_artefacts_count->GetWndPos());
-				pos.y = h;
-				m_artefacts_count->SetWndPos(pos);
+			m_artefacts_count->SetValue(val);
+			pos.set(m_artefacts_count->GetWndPos());
+			pos.y = h;
+			m_artefacts_count->SetWndPos(pos);
 
-				h += m_artefacts_count->GetWndSize().y;
-				AttachChild(m_artefacts_count);
-			}
+			h += m_artefacts_count->GetWndSize().y;
+			AttachChild(m_artefacts_count);
 		}
 
 		static float h2{};
@@ -316,6 +330,8 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		{
 			m_textArtefacts[i]->Show(false);
 			m_stArtefacts[i]->Show(false);
+			AttachChild(m_stArtefacts[i]);
+			AttachChild(m_textArtefacts[i]);
 		}
 
 		auto findIndexByValue = [&](const u16& targetValue, int iteration)
@@ -484,14 +500,33 @@ void CUIInventoryItemInfo::SetCaption(LPCSTR name)
 	m_caption->SetText(name);
 }
 
-void CUIInventoryItemInfo::SetValue(float value, int vle)
+void CUIInventoryItemInfo::SetValue(float value, int vle, int accuracy)
 {
 	value *= m_magnitude;
 	string32 buf;
 	if (m_show_sign)
+	{
 		xr_sprintf(buf, "%+.0f", value);
+		if (accuracy == 0)
+			xr_sprintf(buf, "%+.0f", value);
+		else if (accuracy == 1)
+			xr_sprintf(buf, "%+.1f", value);
+		else if (accuracy == 2)
+			xr_sprintf(buf, "%+.2f", value);
+		else if (accuracy == 3)
+			xr_sprintf(buf, "%+.3f", value);
+	}
 	else
-		xr_sprintf(buf, "%.0f", value);
+	{
+		if (accuracy == 0)
+			xr_sprintf(buf, "%.0f", value);
+		else if (accuracy == 1)
+			xr_sprintf(buf, "%.1f", value);
+		else if (accuracy == 2)
+			xr_sprintf(buf, "%.2f", value);
+		else if (accuracy == 3)
+			xr_sprintf(buf, "%.3f", value);
+	}
 
 	LPSTR str;
 	if (m_unit_str.size())
@@ -560,37 +595,4 @@ void CUIInventoryItemInfo::SetValue(float value, int vle)
 		else
 			m_caption->SetTextureColor(m_neutral_color);
 	}
-}
-
-// -------------------------------------------------------------------------------------------------
-
-CUIItemConditionParams::CUIItemConditionParams()
-{
-	AttachChild(&m_ProgressCurCharge);
-	AttachChild(&m_icon_charge);
-	AttachChild(&m_textCharge);
-}
-
-CUIItemConditionParams::~CUIItemConditionParams()
-{
-}
-
-void CUIItemConditionParams::InitFromXml(CUIXml& xml_doc)
-{
-	if (!xml_doc.NavigateToNode("inventory_items_info", 0))	return;
-	CUIXmlInit::InitStatic(xml_doc, "static_current_charge_level", 0, &m_icon_charge);
-	CUIXmlInit::InitStatic(xml_doc, "cap_current_charge_level", 0, &m_textCharge);
-	m_ProgressCurCharge.InitFromXml(xml_doc, "progress_current_charge_level");
-}
-
-void CUIItemConditionParams::SetInfo(CInventoryItem const* slot_item, CInventoryItem const& cur_item)
-{
-	float cur_value = cur_item.GetChargeToShow() * 100.0f + 1.0f - EPS;
-	float slot_value = cur_value;
-
-	if (slot_item && (slot_item != &cur_item))
-	{
-		slot_value = slot_item->GetChargeToShow() * 100.0f + 1.0f - EPS;
-	}
-	m_ProgressCurCharge.SetTwoPos(cur_value, slot_value);
 }

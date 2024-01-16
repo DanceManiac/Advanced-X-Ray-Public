@@ -56,6 +56,7 @@ CInventoryItem::CInventoryItem()
 	m_flags.set			(FUsingCondition,FALSE);
 	m_fCondition		= 1.0f;
 	m_fCurrentChargeLevel = 1.0f;
+	m_fUnchargeSpeed	= 0.0f;
 	m_fMaxChargeLevel	= 0.0f;
 
 	m_name = m_nameShort = NULL;

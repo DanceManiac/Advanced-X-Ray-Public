@@ -167,24 +167,5 @@
         </progress>
 		<middle_color r="255" g="255" b="118"/>
     </portions_progess_bar>
-	
-	<static_current_charge_level x="0" y="10" width="14" height="18" stretch="1">
-		<texture>ui_item_battery_icon</texture>
-	</static_current_charge_level>
-	
-	<cap_current_charge_level x="0" y="0" width="121" height="8">
-		<text font="letterica16" r="124" g="119" b="115">ui_inv_battery</text>
-	</cap_current_charge_level>
-
-	<progress_current_charge_level x="0" y="16" width="121" height="8" horz="1">
-		<progress>
-			<texture a="255" r="55" g="255" b="255">ui_buymenu_progBar</texture>
-		</progress>
-		<background>
-			<texture a="90" r="55" g="255" b="255">ui_buymenu_progBar</texture>
-		</background>
-		<color_less color="pda_red"  />
-		<color_more color="pda_green"/>
-	</progress_current_charge_level>
 
 </w>

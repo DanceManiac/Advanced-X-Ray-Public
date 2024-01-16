@@ -18,7 +18,6 @@ public:
 	CUIOutfitItem();
 	virtual				~CUIOutfitItem();
 	void				InitFromXml(CUIXml& xml);
-	void				SetInfo(CInventoryItem& pInvItem);
 	void				SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfit);
 
 protected:
@@ -49,7 +48,7 @@ public:
 	void	Init(CUIXml& xml, LPCSTR section);
 	void	Init(CUIXml& xml, LPCSTR section, int mode);
 	void	SetCaption(LPCSTR name);
-	void	SetValue(float value, int vle = 0);
+	void	SetValue(float value, float comp, int vle = 0, int accuracy = 0);
 
 	void	SetProgressValue(float cur, float comp);
 

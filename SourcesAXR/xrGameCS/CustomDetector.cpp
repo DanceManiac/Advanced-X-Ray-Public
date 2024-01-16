@@ -191,8 +191,6 @@ CCustomDetector::CCustomDetector()
 	m_bFastAnimMode		= false;
 	m_bNeedActivation	= false;
 
-	m_fUnchargeSpeed	= 0.0f;
-
 	flash_light_bone	= "light_bone_1";
 	m_flash_bone_id		= BI_NONE;
 	Flash(false, 0.0f);

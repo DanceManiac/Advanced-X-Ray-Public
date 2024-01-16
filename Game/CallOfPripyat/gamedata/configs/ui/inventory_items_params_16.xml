@@ -2,13 +2,23 @@
     <prop_line x="0" y="25" width="208" height="9" stretch="1">
         <texture>ui_inGame2_hint_wnd_Properties</texture>
     </prop_line>
+	
+	<charge_level x="0" y="0" width="214" height="20">
+		<caption x="0" y="0" width="15" height="20" stretch="1">
+			<texture>ui_item_battery_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
+		</caption>
+		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="%">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</charge_level>
 
 	<af_radius x="0" y="0" width="214" height="20">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_item_af_radius</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
 		</caption>
-		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="ì">
+		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="st_m">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</af_radius>
@@ -18,7 +28,7 @@
 			<texture>ui_item_af_radius</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
 		</caption>
-		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="ì">
+		<value x="117" y="0" width="30" height="20" show_sign="0" unit_str="st_m">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</af_vis_radius>
@@ -68,7 +78,7 @@
 			<texture>ui_am_prop_artefact</texture>
 			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
 		</caption>
-		<value x="117" y="0" width="30" height="20" magnitude="1" show_sign="0">
+		<value x="117" y="0" width="30" height="20" magnitude="1" show_sign="1" unit_str="st_liters">
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</inventory_capacity>

@@ -28,7 +28,6 @@ ZONE_INFO::~ZONE_INFO	()
 CDetectorAnomaly::CDetectorAnomaly(void)
 {
 	m_bWorking					= false;
-	m_fUnchargeSpeed			= 0.0f;
 }
 
 CDetectorAnomaly::~CDetectorAnomaly(void)

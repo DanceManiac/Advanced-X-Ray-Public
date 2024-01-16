@@ -60,7 +60,6 @@ CTorch::CTorch(void)
 	m_prev_hp.set				(0,0);
 	m_delta_h					= 0;
 
-	m_fUnchargeSpeed			= 0.0f;
 	m_fMaxRange					= 20.f;
 	m_fCurveRange				= 20.f;
 
