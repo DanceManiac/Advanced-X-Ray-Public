@@ -689,7 +689,7 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 	pIItem->OnMoveToRuck							(prev_place);
 
 	if (prev_place.type == eItemPlaceSlot || prev_place.type == eItemPlaceBelt)
-		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
+		Actor()->ChangeInventoryFullness(pIItem->GetOccupiedInvSpace());
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();
