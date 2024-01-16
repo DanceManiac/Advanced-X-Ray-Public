@@ -37,6 +37,22 @@ player_hud_section	= actor_hud_01
 ;базовый костюм сталкера - костюм новичка. Обычная одежда туриста - штормовка+сапоги
 full_scale_icon		= 6,6
 
+;Параметры шейдерных ПНВ
+[shader_nightvision_default]
+shader_nightvision_type = 1 ;;Поколение ПНВ
+shader_nightvision_lum_factor = 0.0 ;;Эффективность (прибавляется к sun_lumscale_amb)
+
+[shader_nightvision_1]
+shader_nightvision_type = 1
+shader_nightvision_lum_factor = 3.0
+
+[shader_nightvision_2]
+shader_nightvision_type = 2
+shader_nightvision_lum_factor = 6.0
+
+[shader_nightvision_3]
+shader_nightvision_type = 3
+shader_nightvision_lum_factor = 10.0
 
 ;---------------------------------------------------------------------------------------------
 ;		КОСТЮМ НОВИЧКА
@@ -522,7 +538,7 @@ inv_grid_x			= 16
 inv_grid_y			= 13
 full_icon_name		= npc_icon_scientific_outfit
 nightvision_sect	= effector_nightvision_bad
-night_vision_type	= 1
+shader_nightvision_sect	= shader_nightvision_1
 
 cost				= 18750
 full_scale_icon		= 12,11			;иконка сталкера в костюме в полный рост
@@ -880,7 +896,7 @@ inv_grid_x			= 18
 inv_grid_y			= 17
 full_icon_name		= npc_icon_military_outfit
 nightvision_sect	= effector_nightvision_bad
-night_vision_type	= 1
+shader_nightvision_sect	= shader_nightvision_1
 
 cost				= 25000
 full_scale_icon		= 10,6		;иконка сталкера в костюме в полный рост
@@ -971,7 +987,7 @@ inv_grid_x			= 16
 inv_grid_y			= 16
 full_icon_name		= npc_icon_dolg_heavy_outfit
 nightvision_sect	= effector_nightvision_bad
-night_vision_type	= 1
+shader_nightvision_sect	= shader_nightvision_1
 
 cost				= 20000
 full_scale_icon		= 8,6		;иконка сталкера в костюме в полный рост

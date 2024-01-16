@@ -33,6 +33,7 @@ CCustomOutfit::CCustomOutfit()
 	m_bUseFilter = false;
 	m_bHasLSS = false;
 	m_NightVisionType = 0;
+	m_fNightVisionLumFactor = 0.0f;
 	m_fFilterDegradation = 0.0f;
 	m_fFilterCondition = 1.0f;
 	m_iInventoryCapacity = 0;
@@ -195,7 +196,10 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_b_HasGlass			= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter			= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
 	m_bHasLSS				= READ_IF_EXISTS(pSettings, r_bool, section, "has_ls_system", false);
-	m_NightVisionType		= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
+
+	m_sShaderNightVisionSect	= READ_IF_EXISTS(pSettings, r_string, section, "shader_nightvision_sect", "shader_nightvision_default");
+	m_NightVisionType			= READ_IF_EXISTS(pSettings, r_u32, m_sShaderNightVisionSect, "shader_nightvision_type", 0);
+	m_fNightVisionLumFactor		= READ_IF_EXISTS(pSettings, r_float, m_sShaderNightVisionSect, "shader_nightvision_lum_factor", 0.0f);
 
 	m_SuitableFilters.clear();
 	m_SuitableRepairKits.clear();
@@ -469,6 +473,15 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	}
 	result |= result2;
 
+	result2 = process_if_exists_set(section, "shader_nightvision_sect", &CInifile::r_string, str, test);
+	if (result2 && !test)
+	{
+		m_sShaderNightVisionSect._set(str);
+		m_NightVisionType = READ_IF_EXISTS(pSettings, r_u32, m_sShaderNightVisionSect, "shader_nightvision_type", 0);
+		m_fNightVisionLumFactor = READ_IF_EXISTS(pSettings, r_float, m_sShaderNightVisionSect, "shader_nightvision_lum_factor", 0.0f);
+	}
+	result |= result2;
+
 	result2 = process_if_exists_set( section, "bones_koeff_protection", &CInifile::r_string, str, test );
 	if ( result2 && !test )
 	{
@@ -515,8 +528,6 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
 	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_s32, m_iInventoryCapacity, test);
-
-	result |= process_if_exists_set(section, "night_vision_type", &CInifile::r_u32, m_NightVisionType, test);
 
 	m_fJumpSpeed = READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel = READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);

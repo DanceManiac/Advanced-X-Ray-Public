@@ -50,6 +50,23 @@ control_inertion_factor = 1
 full_scale_icon		= 6,6
 ;player_hud_section	= actor_hud_05
 
+;Параметры шейдерных ПНВ
+[shader_nightvision_default]
+shader_nightvision_type = 1 ;;Поколение ПНВ
+shader_nightvision_lum_factor = 0.0 ;;Эффективность (прибавляется к sun_lumscale_amb)
+
+[shader_nightvision_1]
+shader_nightvision_type = 1
+shader_nightvision_lum_factor = 3.0
+
+[shader_nightvision_2]
+shader_nightvision_type = 2
+shader_nightvision_lum_factor = 6.0
+
+[shader_nightvision_3]
+shader_nightvision_type = 3
+shader_nightvision_lum_factor = 10.0
+
 ;---------------------------------------------------------------------------------------------
 ;		КОСТЮМ НОВИЧКА
 ;---------------------------------------------------------------------------------------------
@@ -1199,7 +1216,7 @@ upgr_icon_height   	= 143
 cost			= 7000
 
 nightvision_sect	= effector_nightvision_1
-night_vision_type	= 1
+shader_nightvision_sect	= shader_nightvision_1
 
 immunities_sect 	= sect_helm_tactic_immunities
 bones_koeff_protection		= actor_helm_tactic
@@ -1259,7 +1276,7 @@ upgr_icon_height   	= 143
 cost			= 6000
 
 nightvision_sect	= effector_nightvision_1
-night_vision_type	= 1
+shader_nightvision_sect	= shader_nightvision_1
 
 immunities_sect 	= sect_helm_battle_immunities
 bones_koeff_protection		= actor_helm_battle
