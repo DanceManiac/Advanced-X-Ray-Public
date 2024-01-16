@@ -189,7 +189,7 @@ public:
 			void				AllowTrade			()							{ m_flags.set(FCanTrade, m_can_trade); };
 			void				DenyTrade			()							{ m_flags.set(FCanTrade, FALSE); };
 
-			int					GetOccupiedInvSpace	() const					{ return m_iOccupiedInvSpace; }
+			float				GetOccupiedInvSpace	() const					{ return m_fOccupiedInvSpace; }
 
 	virtual bool 				IsNecessaryItem	    (CInventoryItem* item);
 	virtual bool				IsNecessaryItem	    (const shared_str& item_sect){return false;};
@@ -202,7 +202,7 @@ protected:
 	float						m_fMaxChargeLevel;
 	shared_str					m_Description;
 
-	int							m_iOccupiedInvSpace;
+	float						m_fOccupiedInvSpace;
 protected:
 
 	ALife::_TIME_ID				m_dwItemRemoveTime;

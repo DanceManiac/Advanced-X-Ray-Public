@@ -253,9 +253,9 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 
 	m_iTrySprintCounter		= 0;
 
-	m_iInventoryCapacity	= 50;
-	m_iInventoryFullness	= 0;
-	m_iInventoryFullnessCtrl = 0;
+	m_fInventoryCapacity	= 50.0f;
+	m_fInventoryFullness	= 0.0f;
+	m_fInventoryFullnessCtrl = 0.0f;
 	m_last_active_slot		= 0;
 }
 
@@ -513,7 +513,7 @@ if(!g_dedicated_server)
 		TimerManager = xr_new<CTimerManager>();
 
 	m_iBaseArtefactCount = READ_IF_EXISTS(pSettings, r_u32, section, "base_artefacts_count", 0);
-	m_iInventoryCapacity = READ_IF_EXISTS(pSettings, r_u32, section, "inventory_capacity", 50);
+	m_fInventoryCapacity = READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 50.0f);
 }
 
 void CActor::PHHit(SHit &H)
@@ -2083,16 +2083,16 @@ void CActor::UpdateInventoryItems()
 		{
 			CInventoryItem* item_to_drop = smart_cast<CInventoryItem*>(*it);
 
-			if (item_to_drop && item_to_drop->m_pInventory && !item_to_drop->IsQuestItem() && m_iInventoryFullness > MaxCarryInvCapacity())
+			if (item_to_drop && item_to_drop->m_pInventory && !item_to_drop->IsQuestItem() && m_fInventoryFullness > MaxCarryInvCapacity())
 			{
-				if (m_iInventoryFullnessCtrl > MaxCarryInvCapacity())
+				if (m_fInventoryFullnessCtrl > MaxCarryInvCapacity())
 				{
 					NET_Packet P;
 					CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, ID());
 					P.w_u16(item_to_drop->object().ID());
 					CGameObject::u_EventSend(P);
 
-					m_iInventoryFullnessCtrl -= item_to_drop->GetOccupiedInvSpace();
+					m_fInventoryFullnessCtrl -= item_to_drop->GetOccupiedInvSpace();
 				}
 
 				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
@@ -3235,24 +3235,24 @@ void CActor::RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item)
 	}
 }
 
-void CActor::ChangeInventoryFullness(int val)
+void CActor::ChangeInventoryFullness(float val)
 {
 	if (!this)
 		return;
 
-	m_iInventoryFullness += val;
+	m_fInventoryFullness += val;
 
-	if (m_iInventoryFullness < 0)
-		m_iInventoryFullness = 0;
+	if (m_fInventoryFullness < 0)
+		m_fInventoryFullness = 0;
 
 	if (val > 0)
-		m_iInventoryFullnessCtrl = m_iInventoryFullness;
+		m_fInventoryFullnessCtrl = m_fInventoryFullness;
 }
 
 //Максимальная вместительность инвентаря
-int CActor::MaxCarryInvCapacity() const
+float CActor::MaxCarryInvCapacity() const
 {
-	int res = m_iInventoryCapacity;
+	float res = m_fInventoryCapacity;
 
 	CCustomOutfit* outfit = GetOutfit();
 	if (outfit)

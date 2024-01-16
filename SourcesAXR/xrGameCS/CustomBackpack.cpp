@@ -44,7 +44,7 @@ CCustomBackpack::CCustomBackpack()
 	m_fWalkAccel				= 1.0f;
 	m_fOverweightWalkK			= 1.0f;
 
-	m_iInventoryCapacity		= 0;
+	m_fInventoryCapacity		= 0.0f;
 }
 
 CCustomBackpack::~CCustomBackpack()
@@ -85,7 +85,7 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
 	m_fOverweightWalkK			= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
-	m_iInventoryCapacity		= READ_IF_EXISTS(pSettings, r_u32, section, "inventory_capacity", 0);
+	m_fInventoryCapacity		= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
 }
 
 void CCustomBackpack::shedule_Update(u32 dt)
@@ -295,7 +295,7 @@ bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
-	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_s32, m_iInventoryCapacity, test);
+	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_float, m_fInventoryCapacity, test);
 
 	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
 

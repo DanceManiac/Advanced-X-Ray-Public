@@ -72,7 +72,7 @@ public:
 	float					m_fMaxFilterCondition;
 	float					m_fFilterCondition;
 
-	int						m_iInventoryCapacity;
+	float					m_fInventoryCapacity;
 
 	shared_str				m_BonesProtectionSect;
 	shared_str				m_NightVisionSect;
@@ -95,7 +95,7 @@ public:
 	virtual	BOOL			BonePassBullet			(int boneID);
 	const shared_str&		GetFullIconName			() const	{ return m_full_icon_name; }
 	u32						get_artefact_count		() const	{ return m_artefact_count; }
-	int						GetInventoryCapacity	() const	{ return m_iInventoryCapacity; }
+	float					GetInventoryCapacity	() const	{ return m_fInventoryCapacity; }
 
 	virtual BOOL			net_Spawn				(CSE_Abstract* DC);
 	virtual void			net_Export				(NET_Packet& P);

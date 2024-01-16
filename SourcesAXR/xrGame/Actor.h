@@ -838,10 +838,10 @@ public:
 	bool					HasItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
 	void					RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
 
-	int						GetInventoryCapacity() const { return m_iInventoryCapacity; }
-	int						GetInventoryFullness() const { return m_iInventoryFullness; }
-	int						MaxCarryInvCapacity	() const;
-	void					ChangeInventoryFullness(int val);
+	float					GetInventoryCapacity() const { return m_fInventoryCapacity; }
+	float					GetInventoryFullness() const { return m_fInventoryFullness; }
+	float					MaxCarryInvCapacity	() const;
+	void					ChangeInventoryFullness(float val);
 	u16						GetLastActiveSlot	() { return m_last_active_slot; }
 protected:
 	bool					m_bNightVisionOn;
@@ -856,9 +856,9 @@ protected:
 	int						m_iActionTiming;
 	int						m_iMaskAnimLength;
 	int						m_iQuickKickAnimLength;
-	int						m_iInventoryCapacity;
-	int						m_iInventoryFullness;
-	int						m_iInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
+	float					m_fInventoryCapacity;
+	float					m_fInventoryFullness;
+	float					m_fInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
 
 	u16						m_last_active_slot;
 

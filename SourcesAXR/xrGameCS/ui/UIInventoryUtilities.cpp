@@ -383,14 +383,14 @@ void InventoryUtilities::UpdateCapacityStr(CUIStatic& wnd, CUIStatic& wnd_max, C
 	if (!Actor)
 		return;
 
-	int total		= Actor->GetInventoryFullness();
-	int max			= Actor->MaxCarryInvCapacity();
+	float total		= Actor->GetInventoryFullness();
+	float max		= Actor->MaxCarryInvCapacity();
 
 	LPCSTR lit_str = CStringTable().translate( "st_liters" ).c_str();
-	xr_sprintf		(buf, "%d", total);
+	xr_sprintf		(buf, "%.1f", total);
 	wnd.SetText		(buf);
 
-	xr_sprintf		(buf, "%s %d %s", "/", max, lit_str);
+	xr_sprintf		(buf, "%s %.1f %s", "/", max, lit_str);
 	wnd_max.SetText	(buf);
 }
 
