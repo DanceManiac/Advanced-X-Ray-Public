@@ -3,7 +3,7 @@
 		<texture>ui_inGame2_hint_wnd_Properties</texture>
 	</prop_line>
 
-	<burn_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<burn_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_prop_thermo</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -21,9 +21,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100" show_sign="1" unit_str="%">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</burn_immunity>
+	</burn_protection>
 
-	<shock_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<shock_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_prop_electro</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -41,9 +41,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</shock_immunity>
+	</shock_protection>
 
-	<chemical_burn_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<chemical_burn_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_prop_chem</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -61,9 +61,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</chemical_burn_immunity>
+	</chemical_burn_protection>
 
-	<radiation_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<radiation_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_propery_09</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -81,9 +81,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</radiation_immunity>
+	</radiation_protection>
 
-	<telepatic_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<telepatic_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_propery_11</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -101,9 +101,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</telepatic_immunity>
+	</telepatic_protection>
 
-	<wound_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<wound_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_prop_damage</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -121,9 +121,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</wound_immunity>
+	</wound_protection>
 		
-	<strike_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<strike_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_prop_strike</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -141,9 +141,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</strike_immunity>
+	</strike_protection>
 
-	<explosion_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<explosion_protection x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_am_prop_exlp</texture>
 			<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -161,9 +161,9 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</explosion_immunity>
+	</explosion_protection>
 		
-	<fire_wound_immunity x="0" y="0" width="14" height="18" stretch="1">
+	<fire_wound_protection x="0" y="0" width="14" height="18" stretch="1">
 	<caption x="0" y="0" width="15" height="20" stretch="1">
 		<texture>ui_am_propery_01</texture>
 		<text font="letterica16" x="18" y="0" r="170" g="170" b="170" align="l" vert_align="c"/>
@@ -181,7 +181,7 @@
 		<static_value x="175" y="0" width="32" height="18" magnitude="100">
 			<text font="letterica16" color="ui_6" align="r" vert_align="c"/>
 		</static_value>
-	</fire_wound_immunity>
+	</fire_wound_protection>
 		
 	<antigas_filter x="0" y="0" width="14" height="18" stretch="1">
 		<caption x="0" y="0" width="15" height="20" stretch="1">

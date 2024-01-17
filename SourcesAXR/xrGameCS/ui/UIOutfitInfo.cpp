@@ -22,15 +22,15 @@
 
 LPCSTR immunity_names[] =
 {
-	"burn_immunity",
-	"shock_immunity",
-	"strike_immunity",
-	"wound_immunity",
-	"radiation_immunity",
-	"telepatic_immunity",
-	"chemical_burn_immunity",
-	"explosion_immunity",
-	"fire_wound_immunity",
+	"burn_protection",
+	"shock_protection",
+	"strike_protection",
+	"wound_protection",
+	"radiation_protection",
+	"telepatic_protection",
+	"chemical_burn_protection",
+	"explosion_protection",
+	"fire_wound_protection",
 };
 
 LPCSTR immunity_st_names[] =
