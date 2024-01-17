@@ -159,11 +159,8 @@ void CInventory::TakeItemAnimCheck(CGameObject* GameObj, CObject* Obj, bool use_
 	else
 	{
 		if (!use_pickup_anim)
-			TakeItemAnim(GameObj, Obj, use_pickup_anim);
-
-		if (!pSettings->line_exist("actions_animations", "take_item_section"))
 		{
-			TakeItemAnim(GameObj, Obj, false);
+			TakeItemAnim(GameObj, Obj, use_pickup_anim);
 			return;
 		}
 	}

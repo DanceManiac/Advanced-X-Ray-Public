@@ -60,7 +60,12 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			if( inventory().CanTakeItem(smart_cast<CInventoryItem*>(_GO)) )
 			{
 				auto CurMenuMode = HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode();
-				const bool use_pickup_anim = (type == GE_OWNERSHIP_TAKE) && (Position().distance_to(_GO->Position()) > 0.2f) && CurMenuMode != mmDeadBodySearch && CurMenuMode != mmCarTrunk && !Actor()->m_bActionAnimInProcess;
+				const bool use_pickup_anim = (type == GE_OWNERSHIP_TAKE)
+					&& (Position().distance_to(_GO->Position()) > 0.2f)
+					&& CurMenuMode != mmDeadBodySearch
+					&& CurMenuMode != mmCarTrunk
+					&& !Actor()->m_bActionAnimInProcess
+					&& pAdvancedSettings->line_exist("actions_animations", "take_item_section");
 
 				inventory().TakeItemAnimCheck(_GO, Obj, use_pickup_anim);
 			}
