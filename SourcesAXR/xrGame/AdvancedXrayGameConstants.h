@@ -39,6 +39,7 @@ namespace GameConstants
 	bool GetArtefactPanelEnabled();
 	bool GetHUD_UsedItemTextEnabled();
 	bool GetLimitedInventory();
+	bool GetInventoryItemsAutoVolume();
 	bool GetBackpackAnimsEnabled();
 	bool GetFoodIrradiation();
 	bool GetFoodRotting();

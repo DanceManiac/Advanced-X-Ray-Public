@@ -41,6 +41,7 @@ bool	m_bUseHQ_Icons = false;
 bool	m_bAfPanelEnabled = false;
 bool	m_bHUD_UsedItemText = true;
 bool	m_bLimitedInventory = false;
+bool	m_bInventoryItemsAutoVolume = false;
 bool	m_bBackpackAnimsEnabled = false;
 bool	m_bFoodIrradiation = false;
 bool	m_bFoodRotting = false;
@@ -99,6 +100,7 @@ namespace GameConstants
 		m_bActorSkills = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "actor_skills_enabled", false);
 		m_bSleepInfluenceOnPsyHealth = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "sleepeness_infl_on_psy_health", false);
 		m_bLimitedInventory = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inventory", false);
+		m_bInventoryItemsAutoVolume = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "items_auto_volume", false);
 		m_bFoodIrradiation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_irradiation", false);
 		m_bFoodRotting = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_rotting", false);
 		m_bOGSE_WpnZoomSystem = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "ogse_weapons_zoom_system", false);
@@ -303,6 +305,11 @@ namespace GameConstants
 	bool GetLimitedInventory()
 	{
 		return m_bLimitedInventory;
+	}
+
+	bool GetInventoryItemsAutoVolume()
+	{
+		return m_bInventoryItemsAutoVolume;
 	}
 
 	bool GetBackpackAnimsEnabled()

@@ -24,7 +24,9 @@
 #include "ui_base.h"
 #include "UIFontDefines.h"
 #include "../xrEngine/igame_persistent.h"
+#include "../xrEngine/xr_collide_form.h"
 
+#include "AdvancedXrayGameConstants.h"
 #include "Artefact.h"
 
 #ifdef DEBUG
@@ -145,7 +147,8 @@ void CInventoryItem::Load(LPCSTR section)
 
 	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text", nullptr);
 
-	m_fOccupiedInvSpace			= READ_IF_EXISTS(pSettings, r_float, section, "occupied_inv_space", 0.0f);
+	if (!GameConstants::GetInventoryItemsAutoVolume())
+		m_fOccupiedInvSpace			= READ_IF_EXISTS(pSettings, r_float, section, "occupied_inv_space", 0.0f);
 
 	if (pSettings->line_exist(section, "item_custom_text_font"))
 	{
@@ -1613,4 +1616,23 @@ void CInventoryItem::SetDropManual(BOOL val)
 bool CInventoryItem::has_network_synchronization	() const
 {
 	return false;
+}
+
+float CInventoryItem::GetOccupiedInvSpace()
+{
+	if (GameConstants::GetInventoryItemsAutoVolume())
+	{
+		if (!cast_physics_shell_holder()->m_pPhysicsShell)
+		{
+			cast_physics_shell_holder()->create_physic_shell();
+
+			m_fOccupiedInvSpace = cast_physics_shell_holder()->CFORM()->getRadius() * 10.0f;
+
+			cast_physics_shell_holder()->deactivate_physics_shell();
+		}
+		else
+			m_fOccupiedInvSpace = cast_physics_shell_holder()->CFORM()->getRadius() * 10.0f;
+	}
+
+	return m_fOccupiedInvSpace;
 }
