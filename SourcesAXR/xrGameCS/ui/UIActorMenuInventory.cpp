@@ -437,7 +437,7 @@ void CUIActorMenu::DetachAddon(LPCSTR addon_name, PIItem itm)
 
 void CUIActorMenu::InitCellForSlot( u32 slot_idx ) 
 {
-	VERIFY( KNIFE_SLOT <= slot_idx && slot_idx <= DETECTOR_SLOT );
+	VERIFY( KNIFE_SLOT <= slot_idx && slot_idx <= LAST_SLOT);
 	PIItem item	= m_pActorInvOwner->inventory().m_slots[slot_idx].m_pIItem;
 	if ( !item )
 	{
