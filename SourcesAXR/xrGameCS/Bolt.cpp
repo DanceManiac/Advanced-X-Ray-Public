@@ -5,6 +5,7 @@
 #include "xr_level_controller.h"
 #include "actor.h"
 #include "inventory.h"
+#include "ai_sounds.h"
 #include "AdvancedXrayGameConstants.h"
 
 CBolt::CBolt(void) 
@@ -14,6 +15,13 @@ CBolt::CBolt(void)
 
 CBolt::~CBolt(void) 
 {
+}
+
+void CBolt::Load(LPCSTR section)
+{
+	inherited::Load(section);
+	m_sounds.LoadSound(section, "snd_throw_start", "sndThrowStart", false, ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING));
+	m_sounds.LoadSound(section, "snd_throw", "sndThrow", false, ESoundTypes(SOUND_TYPE_WEAPON_RECHARGING));
 }
 
 void CBolt::OnH_A_Chield() 
@@ -26,11 +34,20 @@ void CBolt::OnH_A_Chield()
 
 void CBolt::State(u32 state)
 {
+	auto actor = smart_cast<CActor*>(this->H_Parent());
+
 	switch (GetState())
 	{
+	case eThrowStart:
+	{
+		if (!m_sounds.FindSoundItem("sndThrowStart", false) && !actor)
+			return;
+
+		PlaySound("sndThrowStart", actor->Position());
+	} break;
 	case eThrowEnd:
 	{
-		if (GameConstants::GetLimitedBolts() && smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+		if (GameConstants::GetLimitedBolts() && actor && (Level().CurrentViewEntity() == H_Parent()))
 		{
 			if (m_pPhysicsShell) m_pPhysicsShell->Deactivate();
 			xr_delete(m_pPhysicsShell);
@@ -56,6 +73,12 @@ void CBolt::Throw()
 	l_pBolt->set_destroy_time	(u32(m_dwDestroyTimeMax/phTimefactor));
 	inherited::Throw			();
 	spawn_fake_missile			();
+
+	auto actor = smart_cast<CActor*>(this->H_Parent());
+	if (!m_sounds.FindSoundItem("sndThrow", false) && !actor)
+		return;
+
+	PlaySound("sndThrow", actor->Position());
 }
 
 bool CBolt::Useful() const
