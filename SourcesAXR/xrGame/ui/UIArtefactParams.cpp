@@ -299,7 +299,6 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 
 	for ( u32 i = 0; i < ALife::infl_max_count; ++i )
 	{
-		shared_str const& sect = pSettings->r_string( af_section, "hit_absorbation_sect" );
 		val = artefact->m_HitTypeProtection[(ALife::EInfluenceType)i];
 		if ( fis_zero(val) )
 		{
