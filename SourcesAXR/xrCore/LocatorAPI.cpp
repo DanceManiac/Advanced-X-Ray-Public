@@ -553,7 +553,7 @@ bool ignore_path(const char* _path){
 		return true;
 }
 
-bool CLocatorAPI::Recurse		(const char* path)
+bool CLocatorAPI::Recurse(LPCSTR path)
 {
     _finddata_t		sFile;
     intptr_t		hFile;
