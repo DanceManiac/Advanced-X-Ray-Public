@@ -30,10 +30,6 @@ Advanced X-Ray - improved X-Ray 1.6 engine used in the famous series of computer
 - Open engine.sln
 - Build solution
 
-## Binaries
-
-See [Release](https://github.com/ign-1997/Advanced-X-Ray/releases) section.
-
 ## Thanks to
 
 - [OpenXRay](https://github.com/OpenXRay/xray-16)
