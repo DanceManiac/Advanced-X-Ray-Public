@@ -1302,7 +1302,7 @@ void		xrRender_initconsole	()
 	CMD1(CCC_memory_stats,	"render_memory_stats" );
 	
 	// Geometry optimization
-	CMD4(CCC_Integer,		"r__optimize_static_geom",		&opt_static,				0,	4		);
+	CMD4(CCC_Integer,		"r__optimize_static_geom",		&opt_static,				0,	2		);
 	CMD4(CCC_Integer,		"r__optimize_dynamic_geom",		&opt_dynamic,				0,	4		);
 	psDeviceFlags2.set(rsOptShadowGeom, TRUE);
 	CMD3(CCC_Mask,			"r__optimize_shadow_geom",		&psDeviceFlags2,			rsOptShadowGeom);

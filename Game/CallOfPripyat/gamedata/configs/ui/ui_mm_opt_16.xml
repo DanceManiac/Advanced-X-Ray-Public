@@ -820,7 +820,7 @@
         <cap_optimize_static_geom x="65" y="3" width="108" height="24" hint = "ui_mm_optimize_static_geom_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_optimize_static_geom</text>
         </cap_optimize_static_geom>
-        <track_optimize_static_geom x="182" y="6" width="158" height="16" min="0" max="4" step="1" is_integer="1">
+        <track_optimize_static_geom x="182" y="6" width="158" height="16" min="0" max="2" step="1" is_integer="1">
             <options_item entry="r__optimize_static_geom" group="mm_opt_video_adv"/>
 			<output_wnd x="160" y="0" width="20" height="20" format="%d">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
