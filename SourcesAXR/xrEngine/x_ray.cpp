@@ -297,7 +297,7 @@ PROTECT_API void InitSettings()
 	bWeatherFogDistanceClampingMax = READ_IF_EXISTS(pAdvancedSettings, r_float, "environment", "weather_fog_clamping_max", 1000.0f);
 	bWeatherWindInfluenceKoef = READ_IF_EXISTS(pAdvancedSettings, r_float, "environment", "wind_influence_koef", 0.0f);
 
-	psHUD_FOV_def = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "HUD_FOV", 0.45f);
+	psHUD_FOV_def = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "HUD_FOV", 0.55f);
 	psHUD_FOV = psHUD_FOV_def;
 
 	//Rain
