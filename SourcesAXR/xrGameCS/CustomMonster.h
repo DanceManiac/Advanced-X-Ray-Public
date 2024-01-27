@@ -328,7 +328,7 @@ private:
 public:
 	virtual	void					create_anim_mov_ctrl						( CBlend *b, Fmatrix *start_pose, bool local_animation  );
 	virtual	void					destroy_anim_mov_ctrl						();
-//	virtual void					ForceTransform								( Fmatrix const& m );
+	virtual void					ForceTransform								( Fmatrix const& m );
 };
 
 #include "custommonster_inline.h"
