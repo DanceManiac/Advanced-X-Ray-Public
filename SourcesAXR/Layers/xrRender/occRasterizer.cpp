@@ -56,7 +56,12 @@ occRasterizer::occRasterizer	()
 :dbg_HOM_draw_initialized(false)
 #endif
 {
-	
+	ZeroMemory(bufFrame, sizeof(bufFrame));
+	ZeroMemory(bufDepth, sizeof(bufDepth));
+	ZeroMemory(bufDepth_0, sizeof(bufDepth_0));
+	ZeroMemory(bufDepth_1, sizeof(bufDepth_1));
+	ZeroMemory(bufDepth_2, sizeof(bufDepth_2));
+	ZeroMemory(bufDepth_3, sizeof(bufDepth_3));
 }
 
 occRasterizer::~occRasterizer	()
@@ -68,7 +73,7 @@ void occRasterizer::clear		()
 {
 	u32 size			= occ_dim*occ_dim;
 	float f				= 1.f;
-	Memory.mem_fill32	(bufFrame,0,size);
+	ZeroMemory			(bufFrame, sizeof(bufFrame));
 	Memory.mem_fill32	(bufDepth,*LPDWORD(&f),size);
 }
 
