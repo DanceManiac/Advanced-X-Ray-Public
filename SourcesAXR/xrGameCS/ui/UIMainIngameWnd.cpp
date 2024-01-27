@@ -214,6 +214,13 @@ void CUIMainIngameWnd::Init()
 	hud_info_x					= uiXml.ReadAttribFlt("hud_info:position",		0, "x", 0.f);
 	hud_info_y					= uiXml.ReadAttribFlt("hud_info:position",		0, "y", 0.f);
 
+
+	u32 clr{};
+	if (uiXml.NavigateToNode("hud_info:font", 0))
+		xml_init.InitFont		(uiXml, "hud_info:font", 0, clr, m_HudInfoFont);
+	else
+		m_HudInfoFont			= UI().Font().pFontGraffiti19Russian;
+
 	hud_info_item_x				= uiXml.ReadAttribFlt("hud_info:item_name",		0, "x", 0.f);
 	hud_info_item_y1			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y1",0.25f);
 	hud_info_item_y2			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y2",0.3f);

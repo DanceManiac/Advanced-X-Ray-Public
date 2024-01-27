@@ -198,7 +198,8 @@ void CHUDTarget::Render()
 	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);
 	u32 C_ON_FRIEND		= color_rgba(hud_info_r_f, hud_info_g_f, hud_info_b_f, hud_info_a_f);
 
-	CGameFont* F		= UI().Font().pFontGraffiti19Russian;
+	CGameFont* F		= CurrentGameUI()->UIMainIngameWnd->m_HudInfoFont;
+
 	F->SetAligment		(CGameFont::alCenter);
 	F->OutSetI(0.f + hud_info_x, 0.05f + hud_info_y);
 

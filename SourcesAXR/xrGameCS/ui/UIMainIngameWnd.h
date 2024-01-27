@@ -80,6 +80,9 @@ public:
 
 	float				hud_info_x;
 	float				hud_info_y;
+
+	CGameFont*			m_HudInfoFont;
+
 	float				hud_info_item_x;
 	float				hud_info_item_y1;
 	float				hud_info_item_y2;

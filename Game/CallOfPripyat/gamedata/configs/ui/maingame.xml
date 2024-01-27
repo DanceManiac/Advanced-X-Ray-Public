@@ -7,6 +7,12 @@
 	<quick_info x="1" y="670" width="1022" height="50" complex_mode="1" light_anim="ui_btn_hint"  la_cyclic="0" la_texture="0" la_text="1" la_alpha="1">
 		<text align="c" font="graffiti22" r="225" g="225" b="250" a="255" />
 	</quick_info>
+	
+	<hud_info>
+		<position x="0" y="0" />
+		<item_name x="0" y1="0.44" y2="0.48" y3="0.55" />
+		<font font="graffiti19" />
+	</hud_info>
 
 	<icons_scroll_view  x="900" y="350" width="65" height="270" right_ident="2" always_show_scroll="0" vert_interval="16" inverse_dir="1" flip_vert="0"/>
 

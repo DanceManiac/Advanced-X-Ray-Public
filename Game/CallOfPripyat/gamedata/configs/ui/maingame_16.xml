@@ -12,6 +12,12 @@
 		<text align="c" font="graffiti22" r="225" g="225" b="250" a="255" />
 	</quick_info>
 
+	<hud_info>
+		<position x="0" y="0" />
+		<item_name x="0" y1="0.44" y2="0.48" y3="0.55" />
+		<font font="graffiti19" />
+	</hud_info>
+	
 	<icons_scroll_view  x="900" y="350" width="55" height="270" right_ident="2" always_show_scroll="0" vert_interval="16" inverse_dir="1" flip_vert="0"/>
 
 	<weapon_jammed_static x="0" y="0" width="53" height="64" stretch="1">
