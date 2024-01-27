@@ -31,6 +31,8 @@
 #include "AdvancedXrayGameConstants.h"
 
 extern bool g_block_all_except_movement;
+ENGINE_API extern float psHUD_FOV_def;
+static float last_hud_fov{};
 
 CEatableItem::CEatableItem()
 {
@@ -260,6 +262,12 @@ void CEatableItem::StartAnimation()
 			m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, "anm_use", 1.0f);
 		}
 
+		if (pSettings->line_exist(anim_sect, "hud_fov"))
+		{
+			last_hud_fov = psHUD_FOV_def;
+			psHUD_FOV_def = pSettings->r_float(anim_sect, "hud_fov");
+		}
+
 		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
 		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
 	}
@@ -299,7 +307,12 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 		StartAnimation();
 
 	if (!IsActorAlive)
+	{
 		m_using_sound.stop();
+
+		if (pSettings->line_exist(anim_sect, "hud_fov") && last_hud_fov > 0.0f)
+			psHUD_FOV_def = last_hud_fov;
+	}
 
 	if (m_bActivated)
 	{
@@ -312,6 +325,9 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 			g_block_all_except_movement = false;
 			g_actor_allow_ladder = true;
 			actor->m_bActionAnimInProcess = false;
+
+			if (pSettings->line_exist(anim_sect, "hud_fov") && last_hud_fov > 0.0f)
+				psHUD_FOV_def = last_hud_fov;
 
 			if (effector)
 				RemoveEffector(actor, effUseItem);
