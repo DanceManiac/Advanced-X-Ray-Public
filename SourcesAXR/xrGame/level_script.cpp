@@ -189,6 +189,11 @@ bool start_weather_fx_from_time	(LPCSTR weather_name, float time)
 #endif // #ifdef INGAME_EDITOR
 }
 
+bool is_developer()
+{
+	return			(bDeveloperMode);
+}
+
 bool is_wfx_playing	()
 {
 	return			(g_pGamePersistent->Environment().IsWFXPlaying());
@@ -1251,6 +1256,7 @@ void CLevel::script_register(lua_State *L)
 		def("get_wfx_time",						get_wfx_time),
 		def("stop_weather_fx",					stop_weather_fx),
 		def("get_moon_phase",					get_moon_phase),
+		def("is_developer",						is_developer),
 
 		def("environment",						environment),
 		
