@@ -736,15 +736,20 @@ void CWeapon::Load		(LPCSTR section)
 	// Default hidden bones
 	LoadBoneNames(section, "def_hide_bones", m_defHiddenBones);
 
-	if (pSettings->line_exist(section, "bones"))
+	if (pSettings->line_exist(section, "scopes_sect"))
 	{
-		pcstr ScopeSect = pSettings->r_string(section, "scope_sect");
+		pcstr ScopeSect = pSettings->r_string(section, "scopes_sect");
+
 		for (int i = 0; i < _GetItemCount(ScopeSect); i++)
 		{
 			string128 scope;
 			_GetItem(ScopeSect, i, scope);
-			shared_str bone = pSettings->r_string(scope, "bones");
-			m_all_scope_bones.push_back(bone);
+
+			if (pSettings->line_exist(scope, "bones"))
+			{
+				shared_str bone = pSettings->r_string(scope, "bones");
+				m_all_scope_bones.push_back(bone);
+			}
 		}
 	}
 
