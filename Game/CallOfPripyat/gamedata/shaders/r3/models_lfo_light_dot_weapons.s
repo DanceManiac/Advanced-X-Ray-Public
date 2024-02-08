@@ -1,5 +1,5 @@
 function normal   (shader, t_base, t_second, t_detail)
-	  shader:begin  ("model_def_lplanes","models_lfo_light_dot_weapons")
+	  shader:begin  ("models_lfo_light_dot_weapons","models_lfo_light_dot_weapons")
       : fog       	(true)
       : zb        	(true,false)
       : blend     	(true,blend.srcalpha,blend.invsrcalpha)
