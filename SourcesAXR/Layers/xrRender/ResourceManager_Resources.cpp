@@ -186,14 +186,10 @@ SVS*	CResourceManager::_CreateVS		(LPCSTR _name)
 		Msg						( "compiling shader %s", name );
 		HRESULT const _hr		= ::Render->shader_compile( name, (DWORD const*)data, size, c_entry, c_target, D3DXSHADER_DEBUG | D3DXSHADER_PACKMATRIX_ROWMAJOR, (void*&)_vs);
 
-		if ( FAILED(_hr) ) {
+		if (FAILED(_hr))
 			FlushLog();
-		}
 
-		CHECK_OR_EXIT			(
-			!FAILED(_hr),
-			make_string("Your video card doesn't meet game requirements.\n\nTry to lower game settings.")
-		);
+		CHECK_OR_EXIT			(!FAILED(_hr), make_string("Can't compile shader: %s", _name));
 
 		return					_vs;
 	}

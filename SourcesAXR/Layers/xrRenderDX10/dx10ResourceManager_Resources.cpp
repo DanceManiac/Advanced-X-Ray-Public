@@ -188,12 +188,7 @@ SVS*	CResourceManager::_CreateVS		(LPCSTR _name)
 
 		HRESULT	const _hr		= ::Render->shader_compile(name,(DWORD const*)data,size, c_entry, c_target, D3D10_SHADER_PACK_MATRIX_ROW_MAJOR, (void*&)_vs );
 
-		VERIFY(SUCCEEDED(_hr));
-
-		CHECK_OR_EXIT			(
-			!FAILED(_hr),
-			make_string("Your video card doesn't meet game requirements.\n\nTry to lower game settings.")
-		);
+		CHECK_OR_EXIT(!FAILED(_hr), make_string("Can't compile shader: %s", _name));
 
 		return					_vs;
 	}
@@ -294,13 +289,8 @@ SPS*	CResourceManager::_CreatePS			(LPCSTR _name)
 		if (strstr(data,"main_ps_2_0"))			{ c_target = "ps_2_0"; c_entry = "main_ps_2_0";	}
 
 		HRESULT	const _hr		= ::Render->shader_compile(name,(DWORD const*)data,size, c_entry, c_target, D3D10_SHADER_PACK_MATRIX_ROW_MAJOR, (void*&)_ps );
-		
-		VERIFY(SUCCEEDED(_hr));
 
-		CHECK_OR_EXIT		(
-			!FAILED(_hr),
-			make_string("Your video card doesn't meet game requirements.\n\nTry to lower game settings.")
-			);
+		CHECK_OR_EXIT(!FAILED(_hr), make_string("Can't compile shader: %s", _name));
 
 		return			_ps;
 	}
@@ -362,14 +352,9 @@ SGS*	CResourceManager::_CreateGS			(LPCSTR name)
 
 		HRESULT	const _hr		= ::Render->shader_compile(name,(DWORD const*)file->pointer(),file->length(), c_entry, c_target, D3D10_SHADER_PACK_MATRIX_ROW_MAJOR, (void*&)_gs );
 
-		VERIFY(SUCCEEDED(_hr));
-
 		FS.r_close				( file );
 
-		CHECK_OR_EXIT			(
-			!FAILED(_hr),
-			make_string("Your video card doesn't meet game requirements.\n\nTry to lower game settings.")
-		);
+		CHECK_OR_EXIT(!FAILED(_hr), make_string("Can't compile shader: %s", name));
 
 		return					_gs;
 	}

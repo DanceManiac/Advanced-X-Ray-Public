@@ -199,10 +199,5 @@ void CSCompiler::compile(const char* name)
 
 	FS.r_close					( file );
 
-	VERIFY(SUCCEEDED(_hr));
-
-	CHECK_OR_EXIT				(
-		!FAILED(_hr),
-		make_string("Your video card doesn't meet game requirements.\n\nTry to lower game settings.")
-	);
+	CHECK_OR_EXIT				(!FAILED(_hr), make_string("Can't compile shader: %s", name));
 }
