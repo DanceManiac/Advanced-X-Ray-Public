@@ -135,6 +135,9 @@ public:
 
 	xr_vector<sun::cascade>										m_sun_cascades;
 
+	xr_multimap<xr_string, xr_string>							LevelShadersDetList;
+	xr_vector<xr_string>										LevelShadersVec;
+
 private:
 	// Loading / Unloading
 	void							LoadBuffers					(CStreamReader	*fs,	BOOL	_alternative);

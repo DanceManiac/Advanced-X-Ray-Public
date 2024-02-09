@@ -39,6 +39,13 @@ void CRender::level_Load(IReader* fs)
 		R_ASSERT2					(chunk,"Level doesn't builded correctly.");
 		u32 count = chunk->r_u32	();
 		Shaders.resize				(count);
+
+		if (strstr(Core.Params, "-lvl_shaders_log"))
+		{
+			LevelShadersVec.clear();
+			LevelShadersDetList.clear();
+		}
+
 		for(u32 i=0; i<count; i++)	// skip first shader as "reserved" one
 		{
 			string512				n_sh,n_tlist;
@@ -50,8 +57,36 @@ void CRender::level_Load(IReader* fs)
 			*delim					= 0;
 			xr_strcpy					(n_tlist,delim+1);
 			Shaders[i]				= dxRenderDeviceRender::Instance().Resources->Create(n_sh,n_tlist);
+
+			if (strstr(Core.Params, "-lvl_shaders_log"))
+			{
+				if (std::find_if(LevelShadersVec.begin(), LevelShadersVec.end(), [&](const xr_string& name) { return name == n_sh; }) == LevelShadersVec.end())
+					LevelShadersVec.push_back(n_sh);
+
+				LevelShadersDetList.insert(std::make_pair(n_sh, n_tlist));
+			}
 		}
 		chunk->close();
+
+		if (strstr(Core.Params, "-lvl_shaders_log"))
+		{
+			bool firstIt = true;
+			for (const xr_string& shader : LevelShadersVec)
+			{
+				if (firstIt)
+				{
+					Msg("\nUnique level shaders from shaders.xr: \n");
+					firstIt = false;
+				}
+
+				Msg("Shader: '%s'", shader.c_str());
+			}
+
+			Msg("\nDetailed list of level shaders:\n\n");
+
+			for (const auto& pair : LevelShadersDetList)
+				Msg("Loading level shader from shaders.xr: shader: '%s', shader texture: '%s'", pair.first.c_str(), pair.second.c_str());
+		}
 	}
 
 	// Components

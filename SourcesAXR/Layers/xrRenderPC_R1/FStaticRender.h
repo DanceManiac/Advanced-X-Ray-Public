@@ -83,6 +83,8 @@ public:
 	bool														m_bMakeAsyncSS;
 	bool														m_bFirstFrameAfterReset;	// Determines weather the frame is the first after resetting device.
 
+	xr_multimap<xr_string, xr_string>							LevelShadersDetList;
+	xr_vector<xr_string>										LevelShadersVec;
 private:
 	// Loading / Unloading
 	void								LoadBuffers				(CStreamReader	*fs);
