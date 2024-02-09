@@ -66,6 +66,7 @@ public:
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
+	void					UpdateAimOffsets();
 
 	// Up
 	// Magazine system & etc

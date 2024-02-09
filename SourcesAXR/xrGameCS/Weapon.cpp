@@ -2619,7 +2619,10 @@ void CWeapon::OnZoomIn()
 	//	GamePersistent().SetEffectorDOF	(m_zoom_params.m_ZoomDof);
 
 	if (GetHUDmode())
+	{
 		GamePersistent().SetPickableEffectorDOF(true);
+		UpdateAimOffsets();
+	}
 
 	if (m_zoom_params.m_sUseBinocularVision.size() && IsScopeAttached() && NULL == m_zoom_params.m_pVision)
 		m_zoom_params.m_pVision = xr_new<CBinocularsVision>(m_zoom_params.m_sUseBinocularVision);
@@ -2664,7 +2667,10 @@ void CWeapon::OnZoomOut()
 // 	GamePersistent().RestoreEffectorDOF	();
 
 	if (GetHUDmode())
+	{
 		GamePersistent().SetPickableEffectorDOF(false);
+		UpdateAimOffsets();
+	}
 
 	ResetSubStateTime					();
 
@@ -3838,5 +3844,72 @@ void CWeapon::UpdateAddonsTransform(bool for_hud)
 	{
 		for (auto mesh : m_weapon_attaches)
 			mesh->RenderAttach(false);
+	}
+}
+
+void CWeapon::UpdateAimOffsets()
+{
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+
+	if (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom()) || !cur_scope_sect.size())
+	{
+		attachable_hud_item* hi = HudItemData();
+
+		if (!hi)
+			return;
+
+		bool is_16x9 = UI().is_widescreen();
+		string64	_prefix;
+		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+		string128	val_name;
+
+		strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(hud_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(hud_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(hud_sect, val_name);
+
+		return;
+	}
+
+	bool AimOffsetsFromScope = false;
+	AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", false);
+
+
+	if (AimOffsetsFromScope)
+	{
+		attachable_hud_item* hi = HudItemData();
+
+		if (!hi)
+			return;
+
+		bool is_16x9 = UI().is_widescreen();
+		string64	_prefix;
+		xr_sprintf(_prefix, "%s", is_16x9 ? "_16x9" : "");
+		string128	val_name;
+
+		strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+
+		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
 	}
 }
