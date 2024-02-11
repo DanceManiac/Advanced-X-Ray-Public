@@ -21,8 +21,9 @@ public:
 		u32			bShadow	:	1;
 		u32			bVolumetric:1;
 		u32			bHudMode:	1;
+		u32			bMoveable : 1;
+	} flags{};
 
-	}				flags;
 	Fvector			position	;
 	Fvector			direction	;
 	Fvector			right		;
@@ -146,6 +147,7 @@ public:
 	virtual void	set_texture				(LPCSTR name);
 	virtual void	set_hud_mode			(bool b)						{flags.bHudMode=b;}
 	virtual bool	get_hud_mode			()								{return flags.bHudMode;};
+	virtual void	set_moveable			(bool b) override				{flags.bMoveable = b;}
 
 			float	get_range				() const override { return range; };
 
