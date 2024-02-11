@@ -703,12 +703,43 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 		{
 			if (IsRotatingToZoom())
 			{
-				string32 guns_aim_anm;
-				strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_start", m_bGrenadeMode ? "_g" : "_w_gl");
-				if (isHUDAnimationExist(guns_aim_anm)) 
+				string32 guns_aim_start_anm;
+				strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
+
+				if (isHUDAnimationExist(guns_aim_start_anm))
 				{
-					PlayHUDMotionNew(guns_aim_anm, true, GetState());
+					PlayHUDMotionNew(guns_aim_start_anm, true, GetState());
 					return;
+				}
+				else if (strstr(guns_aim_start_anm, "_jammed"))
+				{
+					char* jammed_position = strstr(guns_aim_start_anm, "_jammed");
+					int jammed_length = strlen("_jammed");
+
+					char new_guns_aim_start_anm[100];
+					strncpy(new_guns_aim_start_anm, guns_aim_start_anm, jammed_position - guns_aim_start_anm);
+					strcpy(new_guns_aim_start_anm + (jammed_position - guns_aim_start_anm), guns_aim_start_anm + (jammed_position - guns_aim_start_anm) + jammed_length);
+
+					if (isHUDAnimationExist(new_guns_aim_start_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_start_anm, true, GetState());
+						return;
+					}
+				}
+				else if (strstr(guns_aim_start_anm, "_empty"))
+				{
+					char* empty_position = strstr(guns_aim_start_anm, "_empty");
+					int empty_length = strlen("_empty");
+
+					char new_guns_aim_start_anm[100];
+					strncpy(new_guns_aim_start_anm, guns_aim_start_anm, empty_position - guns_aim_start_anm);
+					strcpy(new_guns_aim_start_anm + (empty_position - guns_aim_start_anm), guns_aim_start_anm + (empty_position - guns_aim_start_anm) + empty_length);
+
+					if (isHUDAnimationExist(new_guns_aim_start_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_start_anm, true, GetState());
+						return;
+					}
 				}
 			}
 
@@ -777,11 +808,43 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 		{
 			if (IsRotatingFromZoom())
 			{
-				string32 guns_aim_anm;
-				strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_end", m_bGrenadeMode ? "_g" : "_w_gl");
-				if (isHUDAnimationExist(guns_aim_anm)) {
-					PlayHUDMotionNew(guns_aim_anm, true, GetState());
+				string32 guns_aim_end_anm;
+				strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
+
+				if (isHUDAnimationExist(guns_aim_end_anm))
+				{
+					PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
 					return;
+				}
+				else if (strstr(guns_aim_end_anm, "_jammed"))
+				{
+					char* jammed_position = strstr(guns_aim_end_anm, "_jammed");
+					int jammed_length = strlen("_jammed");
+
+					char new_guns_aim_end_anm[100];
+					strncpy(new_guns_aim_end_anm, guns_aim_end_anm, jammed_position - guns_aim_end_anm);
+					strcpy(new_guns_aim_end_anm + (jammed_position - guns_aim_end_anm), guns_aim_end_anm + (jammed_position - guns_aim_end_anm) + jammed_length);
+
+					if (isHUDAnimationExist(new_guns_aim_end_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+						return;
+					}
+				}
+				else if (strstr(guns_aim_end_anm, "_empty"))
+				{
+					char* empty_position = strstr(guns_aim_end_anm, "_empty");
+					int empty_length = strlen("_empty");
+
+					char new_guns_aim_end_anm[100];
+					strncpy(new_guns_aim_end_anm, guns_aim_end_anm, empty_position - guns_aim_end_anm);
+					strcpy(new_guns_aim_end_anm + (empty_position - guns_aim_end_anm), guns_aim_end_anm + (empty_position - guns_aim_end_anm) + empty_length);
+
+					if (isHUDAnimationExist(new_guns_aim_end_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+						return;
+					}
 				}
 			}
 

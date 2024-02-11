@@ -1856,10 +1856,37 @@ void CWeaponMagazined::PlayAnimAim()
 {
 	if (IsRotatingToZoom())
 	{
-		if (isHUDAnimationExist("anm_idle_aim_start"))
+		string32 guns_aim_start_anm;
+		strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+		if (isHUDAnimationExist(guns_aim_start_anm))
 		{
-			PlayHUDMotionNew("anm_idle_aim_start", true, GetState());
+			PlayHUDMotionNew(guns_aim_start_anm, true, GetState());
 			return;
+		}
+		else if (strstr(guns_aim_start_anm, "_jammed"))
+		{
+			char new_guns_aim_start_anm[256];
+			strcpy(new_guns_aim_start_anm, guns_aim_start_anm);
+			new_guns_aim_start_anm[strlen(guns_aim_start_anm) - strlen("_jammed")] = '\0';
+
+			if (isHUDAnimationExist(new_guns_aim_start_anm))
+			{
+				PlayHUDMotionNew(new_guns_aim_start_anm, true, GetState());
+				return;
+			}
+		}
+		else if (strstr(guns_aim_start_anm, "_empty"))
+		{
+			char new_guns_aim_start_anm[256];
+			strcpy(new_guns_aim_start_anm, guns_aim_start_anm);
+			new_guns_aim_start_anm[strlen(guns_aim_start_anm) - strlen("_empty")] = '\0';
+
+			if (isHUDAnimationExist(new_guns_aim_start_anm))
+			{
+				PlayHUDMotionNew(new_guns_aim_start_anm, true, GetState());
+				return;
+			}
 		}
 	}
 
@@ -1920,10 +1947,37 @@ void CWeaponMagazined::PlayAnimIdle()
 	{
 		if (IsRotatingFromZoom())
 		{
-			if (isHUDAnimationExist("anm_idle_aim_end"))
+			string32 guns_aim_end_anm;
+			strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+			if (isHUDAnimationExist(guns_aim_end_anm))
 			{
-				PlayHUDMotionNew("anm_idle_aim_end", true, GetState());
+				PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
 				return;
+			}
+			else if (strstr(guns_aim_end_anm, "_jammed"))
+			{
+				char new_guns_aim_end_anm[256];
+				strcpy(new_guns_aim_end_anm, guns_aim_end_anm);
+				new_guns_aim_end_anm[strlen(guns_aim_end_anm) - strlen("_jammed")] = '\0';
+
+				if (isHUDAnimationExist(new_guns_aim_end_anm))
+				{
+					PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+					return;
+				}
+			}
+			else if (strstr(guns_aim_end_anm, "_empty"))
+			{
+				char new_guns_aim_end_anm[256];
+				strcpy(new_guns_aim_end_anm, guns_aim_end_anm);
+				new_guns_aim_end_anm[strlen(guns_aim_end_anm) - strlen("_empty")] = '\0';
+
+				if (isHUDAnimationExist(new_guns_aim_end_anm))
+				{
+					PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+					return;
+				}
 			}
 		}
 		inherited::PlayAnimIdle();
