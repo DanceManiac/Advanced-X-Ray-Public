@@ -489,8 +489,22 @@ void CRender::Load3DFluid()
 				dx103DFluidVolume *pVolume = xr_new<dx103DFluidVolume>();
 				pVolume->Load("", F, 0);
 
+				const auto& v = pVolume->getVisData().sphere.P;
+
 				//	Attach to sector's static geometry
 				CSector *pSector = (CSector*)detectSector(pVolume->getVisData().sphere.P);
+
+				if (!pSector)
+				{
+					const auto& v = pVolume->getVisData().sphere.P;
+
+					Msg("!!Cannot find sector for fog volume. Position x=[%f] y=[%f] z=[%f]!", v.x, v.y, v.z);
+
+					xr_delete(pVolume);
+
+					continue;
+				}
+
 				//	3DFluid volume must be in render sector
 				VERIFY(pSector);
 

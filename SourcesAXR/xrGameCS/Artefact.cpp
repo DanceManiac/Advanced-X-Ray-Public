@@ -478,6 +478,7 @@ void CArtefact::StartLights()
 	bool const b_light_shadow = !!pSettings->r_bool(cNameSect(), "idle_light_shadow");
 
 	m_pTrailLight->set_shadow	(m_bLightsEnabled);
+	m_pTrailLight->set_moveable	(true);
 
 	m_pTrailLight->set_color	(m_TrailLightColor); 
 	m_pTrailLight->set_range	(m_fTrailLightRange);
