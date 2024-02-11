@@ -77,6 +77,9 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 					mstate_real		|= mcLanding2;
 				}
 			}
+
+			// CActor_on_land
+			this->callback(GameObject::eOnActorLand)(this->lua_game_object(), character_physics_support()->movement()->GetContactSpeed());
 		}
 		m_bJumpKeyPressed	=	TRUE;
 		m_fJumpTime			=	s_fJumpTime;
