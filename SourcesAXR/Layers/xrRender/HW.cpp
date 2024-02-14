@@ -159,6 +159,7 @@ void	CHW::DestroyDevice	()
 {
 	ImGui_ImplDX9_Shutdown();
     ImGui_ImplWin32_Shutdown();
+	ImGui::GetIO().Fonts->ConfigData.clear();
     ImGui::DestroyContext();
 
 	_SHOW_REF				("refCount:pBaseZB",pBaseZB);

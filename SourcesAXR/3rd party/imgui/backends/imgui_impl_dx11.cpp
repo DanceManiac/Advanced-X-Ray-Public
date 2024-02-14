@@ -304,11 +304,16 @@ void ImGui_ImplDX11_RenderDrawData(ImDrawData* draw_data)
     ctx->IASetInputLayout(old.InputLayout); if (old.InputLayout) old.InputLayout->Release();
 }
 
+#include "misc/fonts/FontUni.h"
+
 static void ImGui_ImplDX11_CreateFontsTexture()
 {
     // Build texture atlas
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplDX11_Data* bd = ImGui_ImplDX11_GetBackendData();
+
+    io.Fonts->AddFontFromMemoryTTF(FontUni, sizeof(FontUni), 15.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+
     unsigned char* pixels;
     int width, height;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);

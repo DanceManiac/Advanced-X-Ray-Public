@@ -267,6 +267,8 @@
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="misc\fonts\FontUni.h" />
+    <ClInclude Include="misc\fonts\FontUniDx9.h" />
     <ClInclude Include="misc\freetype\imgui_freetype.h" />
     <ClInclude Include="misc\single_file\imgui_single_file.h" />
     <ClInclude Include="stb_rect_pack.h" />

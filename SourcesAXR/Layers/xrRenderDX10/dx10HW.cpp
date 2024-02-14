@@ -438,6 +438,7 @@ void CHW::DestroyDevice()
     // Cleanup
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
+	ImGui::GetIO().Fonts->ConfigData.clear();
     ImGui::DestroyContext();
 
 	//	Destroy state managers
