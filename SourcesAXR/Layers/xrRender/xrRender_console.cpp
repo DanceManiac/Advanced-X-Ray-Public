@@ -7,7 +7,7 @@
 #include "../../build_config_defines.h"
 
 // SSR quality option
-u32			dt_ssr_samp = 16;
+u32			dt_ssr_samp = 2;
 xr_token							qdt_ssr_samp_token[] = {
 	{ "dtssr_off",					0												},
 	{ "dtssr_lowest",				1												},
