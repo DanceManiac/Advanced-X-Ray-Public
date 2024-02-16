@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="windows-1251" ?>
+<string_table>
+	<string id="st_spawner_search">
+		<text>Поиск</text>
+	</string>
+	<string id="st_spawner_items_list">
+		<text>Список объектов</text>
+	</string>
+	<string id="st_spawner_name">
+		<text>Меню спавна</text>
+	</string>
+	<string id="st_spawner_objects_to_spawn">
+		<text>Объекты для спавна:</text>
+	</string>
+	<string id="st_spawner_spawn_options">
+		<text>Параметры спавна</text>
+	</string>
+	<string id="st_spawner_spawn_count">
+		<text>Количество</text>
+	</string>
+	<string id="st_spawner_spawn_button">
+		<text>Заспавнить</text>
+	</string>
+	<string id="st_spawner_spawn_to_inv_button">
+		<text>Заспавнить в инвентарь</text>
+	</string>
+	<string id="st_spawner_objects_type">
+		<text>Тип объектов</text>
+	</string>
+	<string id="st_spawner_cars">
+		<text>Транспорт</text>
+	</string>
+	<string id="st_spawner_weapons">
+		<text>Вооружение</text>
+	</string>
+	<string id="st_spawner_food">
+		<text>Пища и медикаменты</text>
+	</string>
+	<string id="st_spawner_entities">
+		<text>Существа</text>
+	</string>
+	<string id="st_spawner_anomalies">
+		<text>Аномалии</text>
+	</string>
+	<string id="st_spawner_artefacts">
+		<text>Артефакты</text>
+	</string>
+	<string id="st_spawner_ammo">
+		<text>Боеприпасы</text>
+	</string>
+	<string id="st_spawner_outfit">
+		<text>Броня</text>
+	</string>
+	<string id="st_spawner_quest_items">
+		<text>Квестовые предметы</text>
+	</string>
+	<string id="st_spawner_devices">
+		<text>Девайсы</text>
+	</string>
+	<string id="st_spawner_other_items">
+		<text>Другое</text>
+	</string>
+</string_table>

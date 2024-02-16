@@ -7342,7 +7342,7 @@
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xrPhysics\xrPhysics.h" />
+	<ClInclude Include="..\..\xrPhysics\xrPhysics.h" />
     <ClInclude Include="physics_game.h" />
     <ClInclude Include="trajectories.h">
       <Filter>AI\AMonsters\common\trajectories</Filter>
@@ -7391,6 +7391,9 @@
     </ClInclude>
     <ClInclude Include="SleepingBag.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
+      <Filter>EmbeddedEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -11030,6 +11033,9 @@
     </ClCompile>
     <ClCompile Include="SleepingBag.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

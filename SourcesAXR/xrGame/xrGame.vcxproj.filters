@@ -7511,6 +7511,9 @@
     <ClInclude Include="ui\UIDiaryWnd.h">
       <Filter>UI\Common\PDA\Diary</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11260,6 +11263,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIDiaryWnd2.cpp">
       <Filter>UI\Common\PDA\Diary</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@
 #include "embedded_editor_weather.h"
 #include "embedded_editor_hud.h"
 #include "embedded_editor_pos_informer.h"
+#include "embedded_editor_spawner.h"
 #include "../../build_config_defines.h"
 #include <addons/imguinodegrapheditor/imguinodegrapheditor.h>
 #include <dinput.h>
@@ -18,6 +19,7 @@ bool show_test_window = true;
 bool show_weather_window = false;
 bool show_hud_editor = false;
 bool show_position_informer = false;
+bool show_spawn_menu = false;
 /*bool show_info_window = false;
 bool show_prop_window = false;
 bool show_restr_window = false;
@@ -26,6 +28,7 @@ bool show_occ_window = false;
 bool show_node_editor = false;*/
 
 static bool isAlt = false;
+static bool sections_list_created = false;
 
 enum class EditorStage {
     None,
@@ -61,6 +64,8 @@ void ShowMain()
         show_position_informer = !show_position_informer;
 	if (ImGui::Button("HUD Editor"))
 		show_hud_editor = !show_hud_editor;
+    if (ImGui::Button("Spawn Menu"))
+        show_spawn_menu = !show_spawn_menu;
 
     if (psDeviceFlags.test(rsR1))
     {
@@ -102,6 +107,15 @@ void ShowEditor()
         ShowPositionInformer(show_position_informer);
 	if (show_hud_editor)
 		ShowHudEditor(show_hud_editor);
+    if (show_spawn_menu)
+    {
+        if (!sections_list_created)
+        {
+            FillSectionsList();
+            sections_list_created = true;
+        }
+        ShowSpawner(show_spawn_menu);
+    }
     /*if (show_prop_window)
         ShowPropEditor(show_prop_window);
 	if (show_lua_binder)

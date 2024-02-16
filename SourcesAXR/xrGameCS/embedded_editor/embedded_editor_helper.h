@@ -14,4 +14,4 @@ struct ImguiWnd {
 };
 
 xr_string to_string(const luabind::object& o, xr_string offset = xr_string());
-xr_string toUtf8(const char* s); 
+xr_string toUtf8(const char* s);
