@@ -14,6 +14,8 @@
 #include <imgui.h>
 #include "imgui_internal.h"
 
+#include "string_table.h"
+
 bool bShowWindow = true;
 bool show_test_window = true;
 bool show_weather_window = false;
@@ -48,36 +50,36 @@ bool isRenderSpawnElement = false;
 
 void ShowMain()
 {
-	ImguiWnd wnd("Main");
+	ImguiWnd wnd(toUtf8(CStringTable().translate("st_editor_imgui_name").c_str()).c_str());
 
 	if (wnd.Collapsed)
 		return;
 
-	ImGui::Text(u8"Advanced X-Ray Editor");
-	if (ImGui::Button("Test Window"))
+	ImGui::Text(toUtf8(CStringTable().translate("st_editor_imgui_name").c_str()).c_str());
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_test_wnd").c_str()).c_str()))
 		show_test_window ^= 1;
 /*	if (ImGui::Button("Test Node Editor"))
 		show_node_editor ^= 1;*/
-	if (ImGui::Button("Weather"))
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_weather").c_str()).c_str()))
 		show_weather_window ^= 1;
-    if (ImGui::Button("Position Informer"))
+    if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_pos_informer").c_str()).c_str()))
         show_position_informer = !show_position_informer;
-	if (ImGui::Button("HUD Editor"))
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_hud").c_str()).c_str()))
 		show_hud_editor = !show_hud_editor;
-    if (ImGui::Button("Spawn Menu"))
+    if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_spawn").c_str()).c_str()))
         show_spawn_menu = !show_spawn_menu;
 
     if (psDeviceFlags.test(rsR1))
     {
         ImGui::Separator();
-        ImGui::Text(u8"Level");
-        ImGui::Checkbox("Draw AI Map", &isRenderAiMap);
-        ImGui::Checkbox("Draw Spawn Element", &isRenderSpawnElement);
+        ImGui::Text(toUtf8(CStringTable().translate("st_editor_imgui_level").c_str()).c_str());
+        ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_draw_ai_map").c_str()).c_str(), &isRenderAiMap);
+        ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_draw_spawn_element").c_str()).c_str(), &isRenderSpawnElement);
         ImGui::Separator();
     }
 
 	bool full = stage == EditorStage::Full;
-	if (ImGui::Checkbox("Active", &full))
+	if (ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_active").c_str()).c_str(), &full))
 		stage = full ? EditorStage::Full : EditorStage::Light;
 	ImGui::Text(
 		"Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

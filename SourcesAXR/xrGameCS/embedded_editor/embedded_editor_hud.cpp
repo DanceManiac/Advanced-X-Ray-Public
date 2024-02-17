@@ -11,20 +11,22 @@
 #include "../Actor.h"
 #include "../Inventory.h"
 
+#include "string_table.h"
+
 void ShowHudEditor(bool& show)
 {
-	ImguiWnd wnd("HUD Editor", &show);
+	ImguiWnd wnd(toUtf8(CStringTable().translate("st_editor_imgui_hud").c_str()).c_str(), &show);
 	if (wnd.Collapsed)
 		return;
 
 	if (!g_player_hud)
 		return;
 
-	ImGuiIO& io = ImGui::GetIO();
-	//ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-	//ImGuizmo::OPERATION mode = io.KeyCtrl ? ImGuizmo::ROTATE : ImGuizmo::TRANSLATE;
-	bool showSeparator = true;
-	auto item = g_player_hud->attached_item(0);
+    ImGuiIO& io = ImGui::GetIO();
+    //ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    //ImGuizmo::OPERATION mode = io.KeyCtrl ? ImGuizmo::ROTATE : ImGuizmo::TRANSLATE;
+    bool showSeparator = true;
+    auto item = g_player_hud->attached_item(0);
 	auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
 
 	if (item)
@@ -32,15 +34,13 @@ void ShowHudEditor(bool& show)
 		if (showSeparator)
 			ImGui::Separator();
 
-		ImGui::Text("Item 0");
+		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_item_1").c_str()).c_str());
 		ImGui::InputFloat3("hands_position 0", (float*)&item->m_measures.m_hands_attach[0]);
 		ImGui::InputFloat3("hands_orientation 0", (float*)&item->m_measures.m_hands_attach[1]);
 		ImGui::InputFloat3("item_position 0", (float*)&item->m_measures.m_item_attach[0]);
 		ImGui::InputFloat3("item_orientation 0", (float*)&item->m_measures.m_item_attach[1]);
 		ImGui::InputFloat3("aim_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][1]);
 		ImGui::InputFloat3("aim_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][1]);
-		ImGui::InputFloat3("aim_alt_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][1]);
-		ImGui::InputFloat3("aim_alt_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][1]);
 		ImGui::InputFloat3("gl_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][2]);
 		ImGui::InputFloat3("gl_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][2]);
 		ImGui::InputFloat3("aim_alt_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][3]);
@@ -77,7 +77,7 @@ void ShowHudEditor(bool& show)
 		if (showSeparator)
 			ImGui::Separator();
 
-		ImGui::Text("Item 1");
+		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_item_2").c_str()).c_str());
 		ImGui::InputFloat3("hands_position 1", (float*)&item->m_measures.m_hands_attach[0][0]);
 		ImGui::InputFloat3("hands_orientation 1", (float*)&item->m_measures.m_hands_attach[1][0]);
 		ImGui::InputFloat3("item_position 1", (float*)&item->m_measures.m_item_attach[0]);
@@ -98,7 +98,7 @@ void ShowHudEditor(bool& show)
 		}*/
 	}
 
-	if (ImGui::Button("Save"))
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str()))
 	{
 		g_player_hud->SaveCfg(0);
 		g_player_hud->SaveCfg(1);
@@ -107,7 +107,7 @@ void ShowHudEditor(bool& show)
 
 bool HudEditor_MouseWheel(float wheel)
 {
-	ImGui::Begin("HUD Editor");
+	ImGui::Begin(toUtf8(CStringTable().translate("st_editor_imgui_hud").c_str()).c_str());
 
 	if (!ImGui::IsWindowFocused())
 	{

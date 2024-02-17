@@ -1,5 +1,110 @@
 <?xml version="1.0" encoding="windows-1251" ?>
 <string_table>
+	<string id="st_editor_imgui_name">
+		<text>Редактор Advanced X-Ray</text>
+	</string>
+	<string id="st_editor_imgui_test_wnd">
+		<text>Тестовое окно</text>
+	</string>
+	<string id="st_editor_imgui_weather">
+		<text>Редактор погоды</text>
+	</string>
+	<string id="st_editor_imgui_pos_informer">
+		<text>Запись координат</text>
+	</string>
+	<string id="st_editor_imgui_hud">
+		<text>Редактор HUD</text>
+	</string>
+	<string id="st_editor_imgui_spawn">
+		<text>Меню спавна</text>
+	</string>
+	<string id="st_editor_imgui_level">
+		<text>Уровень</text>
+	</string>
+	<string id="st_editor_imgui_draw_ai_map">
+		<text>Показать ИИ-Сетку</text>
+	</string>
+	<string id="st_editor_imgui_draw_spawn_element">
+		<text>Показать спавн-элементы</text>
+	</string>
+	<string id="st_editor_imgui_active">
+		<text>Активный режим</text>
+	</string>
+	<string id="st_hud_editor_item_1">
+		<text>Правая рука</text>
+	</string>
+	<string id="st_hud_editor_item_2">
+		<text>Левая рука</text>
+	</string>
+	<string id="st_editor_imgui_save">
+		<text>Сохранить</text>
+	</string>
+	<string id="st_editor_imgui_choose_texture">
+		<text>Выбор текстуры</text>
+	</string>
+	<string id="st_weather_editor_btn_ok">
+		<text>ОК</text>
+	</string>
+	<string id="st_weather_editor_btn_cancel">
+		<text>Отмена</text>
+	</string>
+	<string id="st_weather_editor_time_factor">
+		<text>Фактор течения времени</text>
+	</string>
+	<string id="st_weather_editor_main_options">
+		<text>Основные настройки</text>
+	</string>
+	<string id="st_weather_editor_wth_cycle">
+		<text>Цикл</text>
+	</string>
+	<string id="st_weather_editor_cur_sect">
+		<text>Текущая секция</text>
+	</string>
+	<string id="st_weather_editor_script_wth">
+		<text>Скриптовая погода</text>
+	</string>
+	<string id="st_weather_editor_amb_light_options">
+		<text>Настройки ambient освещения</text>
+	</string>
+	<string id="st_weather_editor_clouds_options">
+		<text>Настройки облаков</text>
+	</string>
+	<string id="st_weather_editor_fog_options">
+		<text>Настройки тумана</text>
+	</string>
+	<string id="st_weather_editor_hemi_options">
+		<text>Настройки hemi освещения</text>
+	</string>
+	<string id="st_weather_editor_rain_options">
+		<text>Настройки осадков</text>
+	</string>
+	<string id="st_weather_editor_sky_options">
+		<text>Настройки неба</text>
+	</string>
+	<string id="st_weather_editor_sun_options">
+		<text>Настройки солнца</text>
+	</string>
+	<string id="st_weather_editor_thunder_bolt_options">
+		<text>Настройки грозы</text>
+	</string>
+	<string id="st_weather_editor_water_options">
+		<text>Настройки воды</text>
+	</string>
+	<string id="st_weather_editor_wind_options">
+		<text>Настройки ветра</text>
+	</string>
+	<string id="st_weather_editor_trees_options">
+		<text>Настройки деревьев</text>
+	</string>
+	<string id="st_weather_editor_grass_swing_options">
+		<text>Настройки колыхания травы</text>
+	</string>
+	<string id="st_weather_editor_clr_grad_options">
+		<text>Настройки цветокоррекции</text>
+	</string>
+	<string id="st_weather_editor_dof_options">
+		<text>Настройки глубины резкозти</text>
+	</string>
 	<string id="st_spawner_search">
 		<text>Поиск</text>
 	</string>
