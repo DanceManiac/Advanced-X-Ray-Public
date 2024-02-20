@@ -40,6 +40,9 @@ BOOL	b_toggle_weapon_aim		= FALSE;
 BOOL	b_hud_collision			= FALSE;
 extern CUIXml*	pWpnScopeXml	= NULL;
 
+ENGINE_API extern float psHUD_FOV_def;
+static float last_hud_fov = psHUD_FOV_def;
+
 CWeapon::CWeapon()
 {
 	SetState				(eHidden);
@@ -2623,6 +2626,7 @@ void CWeapon::OnZoomIn()
 
 	if (GetHUDmode())
 	{
+		last_hud_fov = psHUD_FOV_def;
 		GamePersistent().SetPickableEffectorDOF(true);
 		UpdateAimOffsets();
 	}
@@ -2671,6 +2675,7 @@ void CWeapon::OnZoomOut()
 
 	if (GetHUDmode())
 	{
+		psHUD_FOV_def = last_hud_fov;
 		GamePersistent().SetPickableEffectorDOF(false);
 		UpdateAimOffsets();
 	}
@@ -3783,6 +3788,17 @@ bool CWeapon::IsMagazineEmpty()
 void CWeapon::SwitchZoomMode()
 {
 	!m_bAltZoomActive ? m_bAltZoomActive = true : m_bAltZoomActive = false;
+
+	if (!IsZoomed())
+		return;
+
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+
+	bool HudFovFromScope = false;
+	HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
+
+	if (HudFovFromScope)
+		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "aim_alt_hud_fov", GetHudFov());
 }
 
 void CWeapon::SwitchLaser(bool on)
@@ -3853,6 +3869,7 @@ void CWeapon::UpdateAddonsTransform(bool for_hud)
 void CWeapon::UpdateAimOffsets()
 {
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+	psHUD_FOV_def = last_hud_fov;
 
 	if (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom()) || !cur_scope_sect.size())
 	{
@@ -3887,6 +3904,11 @@ void CWeapon::UpdateAimOffsets()
 	bool AimOffsetsFromScope = false;
 	AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", false);
 
+	bool HudFovFromScope = false;
+	HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
+
+	if (HudFovFromScope && !IsRotatingFromZoom())
+		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "aim_alt_hud_fov", GetHudFov());
 
 	if (AimOffsetsFromScope)
 	{
