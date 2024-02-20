@@ -810,4 +810,7 @@
 	<string id="st_saves_locked">
 		<text>Сохранения заблокированы</text>
 	</string>
+	<string id="ui_st_animated_backpack">
+		<text>Анимированный рюкзак</text>
+	</string>
 </string_table>
