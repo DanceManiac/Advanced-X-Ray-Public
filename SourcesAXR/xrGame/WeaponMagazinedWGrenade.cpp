@@ -809,7 +809,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 			if (IsRotatingFromZoom())
 			{
 				string32 guns_aim_end_anm;
-				strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
+				strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
 
 				if (isHUDAnimationExist(guns_aim_end_anm))
 				{
