@@ -318,6 +318,9 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 	{
 		if (m_iAnimLength <= Device.dwTimeGlobal || !IsActorAlive)
 		{
+			if (actor->inventory().GetPrevActiveSlot() == BACKPACK_SLOT)
+				actor->inventory().SetPrevActiveSlot(NO_ACTIVE_SLOT);
+
 			actor->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
 
 			m_iAnimLength = Device.dwTimeGlobal;
