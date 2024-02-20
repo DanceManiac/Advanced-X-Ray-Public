@@ -116,7 +116,11 @@ void CInventory::ReloadInv()
 		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory", temp);
 
 		xr_sprintf(temp, "slot_active_%d", i + 1);
-		m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
+
+		if (i == BACKPACK_SLOT)
+			m_slots[i].m_bAct = !!GameConstants::GetBackpackAnimsEnabled(); // Для опции анимированного рюкзака
+		else
+			m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
 	};
 }
 
