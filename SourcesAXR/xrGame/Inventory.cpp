@@ -729,6 +729,9 @@ void CInventory::Activate(u16 slot, bool bForce)
 		return;
 	}
 
+	if (m_iActiveSlot == BACKPACK_SLOT && slot != NO_ACTIVE_SLOT && CurrentGameUI()->ActorMenu().IsShown())
+		return;
+
 	PIItem tmp_item = NULL;
 	if (slot != NO_ACTIVE_SLOT)
 		tmp_item = ItemFromSlot(slot);

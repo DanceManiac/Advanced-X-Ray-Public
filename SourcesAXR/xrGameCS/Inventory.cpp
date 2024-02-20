@@ -829,6 +829,10 @@ void CInventory::Activate(u32 slot, /*EActivationReason reason, */bool bForce)
 	{
 		return;
 	}
+
+	if (m_iActiveSlot == BACKPACK_SLOT && slot != NO_ACTIVE_SLOT && HUD().GetUI()->UIGame()->ActorMenu().IsShown())
+		return;
+
 	if (m_iActiveSlot==slot || (m_iNextActiveSlot==slot && !bForce))
 	{
 		m_iNextActiveSlot=slot;
