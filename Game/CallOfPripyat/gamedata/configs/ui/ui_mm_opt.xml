@@ -1116,6 +1116,14 @@
 			<options_item entry="rs_loadingstages" group="mm_opt_gameplay"/>
 		  </check_loading_stages>
 		  
+		  <cap_animated_backpack x="65" y="3" width="135" height="24">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_animated_backpack</text>
+		  </cap_animated_backpack>
+		  <check_animated_backpack x="212" y="1" width="44" height="29">
+			<texture>ui_inGame2_checkbox</texture>
+			<options_item entry="g_animated_backpack" group="mm_opt_gameplay"/>
+		  </check_animated_backpack>
+		  
 		  <cap_quick_saves_count x="65" y="3" width="135" height="24" hint = "ui_mm_quick_saves_count_hint">
 			  <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_quick_saves_count</text>
 		  </cap_quick_saves_count>

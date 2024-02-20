@@ -41,6 +41,7 @@ public:
 	virtual					~CInventory			();
 
 	void					ReloadInv			();
+	void					ReloadSlotsConfig	();
 	float 					TotalWeight			() const;
 	float 					CalcTotalWeight		();
 

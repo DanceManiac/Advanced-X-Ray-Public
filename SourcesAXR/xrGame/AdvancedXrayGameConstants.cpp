@@ -42,7 +42,6 @@ bool	m_bAfPanelEnabled = false;
 bool	m_bHUD_UsedItemText = true;
 bool	m_bLimitedInventory = false;
 bool	m_bInventoryItemsAutoVolume = false;
-bool	m_bBackpackAnimsEnabled = false;
 bool	m_bFoodIrradiation = false;
 bool	m_bFoodRotting = false;
 bool	m_bOGSE_WpnZoomSystem = false;
@@ -50,6 +49,9 @@ bool	m_bQuickThrowGrenadesEnabled = true;
 bool	m_bPDA_FlashingIconsEnabled = false;
 bool	m_bPDA_FlashingIconsQuestsEnabled = false;
 bool	m_bFogInfluenceVolumetricLight = false;
+bool	m_bEnableBoreDoF = true;
+bool	m_bBackpackAnimsEnabled = false;
+BOOL	m_b_animated_backpack = 0;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
@@ -63,7 +65,6 @@ LPCSTR	m_sMoonPhasesMode = "off";
 //SSFX DoF
 Fvector4 m_FV4DefaultDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
 Fvector4 m_FV4FocusDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
-bool	m_bEnableBoreDoF = true;
 
 namespace GameConstants
 {
@@ -314,7 +315,7 @@ namespace GameConstants
 
 	bool GetBackpackAnimsEnabled()
 	{
-		return m_bBackpackAnimsEnabled;
+		return (m_bBackpackAnimsEnabled && m_b_animated_backpack);
 	}
 
 	bool GetFoodIrradiation()

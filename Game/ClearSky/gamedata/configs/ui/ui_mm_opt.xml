@@ -1226,6 +1226,11 @@
 			<text font="letterica16" color="ui_6">ui_st_loading_stages</text>
 		</check_loading_stages>	
 		
+		<check_animated_backpack x="7" y="5" width="30" height="21">
+			<options_item entry="g_animated_backpack" group="mm_opt_gameplay"/>
+			<text font="letterica16" color="ui_6">ui_st_animated_backpack</text>
+		</check_animated_backpack>	
+		
 		<check_keypress_on_start x="7" y="5" width="30" height="21">
 			<options_item entry="keypress_on_start" group="mm_opt_gameplay"/>
 			<text font="letterica16" color="ui_6">ui_st_keypress_on_start</text>

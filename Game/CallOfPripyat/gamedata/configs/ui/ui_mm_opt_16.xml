@@ -1136,6 +1136,14 @@
 			<texture>ui_inGame2_checkbox</texture>
 			<options_item entry="keypress_on_start" group="mm_opt_gameplay"/>
 		  </check_keypress_on_start>
+		  
+		  <cap_animated_backpack x="62" y="3" width="108" height="24">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_st_animated_backpack</text>
+		  </cap_animated_backpack>
+		  <check_animated_backpack x="199" y="1" width="35" height="29" stretch="1">
+			<texture>ui_inGame2_checkbox</texture>
+			<options_item entry="g_animated_backpack" group="mm_opt_gameplay"/>
+		  </check_animated_backpack>
 
 		  <btn_check_updates x="270" y="322" width="86" height="24" stretch="1">
 				<text align="c" font="letterica16">ui_mm_check_updates</text>
