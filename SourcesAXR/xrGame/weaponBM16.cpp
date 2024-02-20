@@ -27,7 +27,7 @@ void CWeaponBM16::PlayAnimShoot()
 		return;
 
 	string_path guns_shoot_anm{};
-	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, "anm_shoot", (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim_" : "_", std::to_string(m_magazine.size()).c_str());
+	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, pSettings->line_exist(cNameSect().c_str(), "anm_shoot") ? "anm_shoot" : "anm_shots", (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim_" : "_", std::to_string(m_magazine.size()).c_str());
 	if (isHUDAnimationExist(guns_shoot_anm)) 
 	{
 		PlayHUDMotionNew(guns_shoot_anm, false, GetState());
