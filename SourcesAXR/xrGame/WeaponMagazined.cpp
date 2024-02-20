@@ -1570,6 +1570,7 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 		{
 			m_cur_scope = NULL;
 			m_cur_scope_bone = NULL;
+			m_bAltZoomActive = false;
 			detached = true;
 		}
 	}
