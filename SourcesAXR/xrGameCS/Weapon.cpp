@@ -3871,7 +3871,9 @@ void CWeapon::UpdateAimOffsets()
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
 	psHUD_FOV_def = last_hud_fov;
 
-	if (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom()) || !cur_scope_sect.size())
+	static bool bNeedRestoreOffsets = false;
+
+	if (bNeedRestoreOffsets && (!IsScopeAttached() || (!IsZoomed() && !IsRotatingFromZoom()) || !cur_scope_sect.size()))
 	{
 		attachable_hud_item* hi = HudItemData();
 
@@ -3897,6 +3899,8 @@ void CWeapon::UpdateAimOffsets()
 		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(hud_sect, val_name);
 		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
 		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(hud_sect, val_name);
+
+		bNeedRestoreOffsets = false;
 
 		return;
 	}
@@ -3936,5 +3940,7 @@ void CWeapon::UpdateAimOffsets()
 		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
 		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
 		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
+
+		bNeedRestoreOffsets = true;
 	}
 }
