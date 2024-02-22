@@ -105,7 +105,15 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	m_sounds.LoadSound(section, "snd_shoot", "sndShot", false, m_eSoundShot);
 
 	if (WeaponSoundExist(section, "snd_shoot_actor", true))
+	{
 		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", false, m_eSoundShot);
+
+		if (WeaponSoundExist(section, "snd_shoot_last_actor", true))
+			m_sounds.LoadSound(section, "snd_shoot_last_actor", "sndShotActorLast", false, m_eSoundShot);
+
+		if (WeaponSoundExist(section, "snd_silncer_shoot_last_actor", true))
+			m_sounds.LoadSound(section, "snd_silncer_shoot_last_actor", "sndSilencerShotActorLast", false, m_eSoundShot);
+	}
 	//-Alundaio
 
 	if (WeaponSoundExist(section, "snd_shoot_last", true))
@@ -887,7 +895,7 @@ void CWeaponMagazined::OnShot()
 			funct();
 
 		string128 sndName;
-		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor");
+		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor", (iAmmoElapsed == 1) ? "Last" : "");
 		if (m_sounds.FindSoundItem(sndName, false))
 		{
 			m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
