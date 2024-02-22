@@ -287,7 +287,8 @@ IC u32 it_height_rev_base(u32 d, u32 s)	{	return	color_rgba	(
 
 ID3DBaseTexture*	CRender::texture_load(LPCSTR fRName, u32& ret_msize)
 {
-	ID3DTexture2D*		pTexture2D		= NULL;
+	D3DXIMAGE_INFO			IMG;
+	ID3DTexture2D*			pTexture2D		= NULL;
 	IDirect3DCubeTexture9*	pTextureCUBE	= NULL;
 	string_path				fn;
 	u32						dwWidth,dwHeight;
@@ -316,9 +317,90 @@ ID3DBaseTexture*	CRender::texture_load(LPCSTR fRName, u32& ret_msize)
 	return 0;
 #else
 
-	Msg("! Can't find texture '%s'",fname);
-	R_ASSERT(FS.exist(fn,"$game_textures$",	"ed\\ed_not_existing_texture",".dds"));
-	goto _DDS;
+	if (strstr(Core.Params, "-mfs_nftc")) // Dance Maniac: Not founded textures copier
+	{
+		Msg("[NFTC]: Can't find texture [%s]. Texture is being searched in reference textures folder...", fname);
+
+		string_path fn_ref, fn_dont_load;
+
+		if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".seq"))
+		{
+			Msg("[NFTC]: Texture founded: [%s] in reference textures folder. Copying begins...", fname);
+
+			if (!FS.exist(fn_dont_load, "$game_textures$", fname, ".seq"))
+				FS.file_copy(fn_ref, fn_dont_load);
+
+			string256 buffer;
+			IReader* _fs = FS.r_open(fn_dont_load);
+
+			while (!_fs->eof())
+			{
+				_fs->r_string(buffer, sizeof(buffer));
+
+				_Trim(buffer);
+				if (buffer[0])
+				{
+					if (!FS.exist(fn, "$game_textures$", buffer, ".dds"))
+					{
+						if (FS.exist(fn_ref, "$game_textures_reference$", buffer, ".dds"))
+						{
+							FS.file_copy(fn_ref, fn);
+
+							Msg("[NFTC]: Copy from reference textures folder done: [%s]", fname);
+
+							goto _DDS;
+						}
+					}
+				}
+			}
+			FS.r_close(_fs);
+		}
+
+		if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".dds"))
+		{
+			Msg("[NFTC]: Texture founded: [%s] in reference textures folder. Copying begins...", fname);
+			FS.file_copy(fn_ref, fn);
+
+			if (!FS.exist(fn_dont_load, "$game_textures$", fname, ".thm"))
+			{
+				if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".thm"))
+					FS.file_copy(fn_ref, fn_dont_load);
+			}
+
+			Msg("[NFTC]: Copy from reference textures folder done: [%s]", fname);
+
+			if (IMG.ResourceType == D3DRTYPE_CUBETEXTURE)
+				goto _DDS_CUBE;
+
+			goto _DDS;
+		}
+		if (!FS.exist(fn_ref, "$game_textures_reference$", fname, ".dds") && strstr(fname, "_bump"))
+		{
+			Msg("[NFTC]: Texture founded: [%s _bump] in reference textures folder. Copying begins...", fname);
+			FS.file_copy(fn_ref, fn);
+
+			if (!FS.exist(fn, "$game_textures$", fname, ".thm"))
+			{
+				if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".thm"))
+					FS.file_copy(fn_ref, fn);
+			}
+
+			Msg("[NFTC]: Copy from reference textures folder done: [%s]", fname);
+
+			goto _BUMP_from_base;
+		}
+
+		Msg("! [NFTC]: Can't find texture [%s] in reference textures folder!", fname);
+		R_ASSERT(FS.exist(fn, "$game_textures$", "ed\\ed_not_existing_texture", ".dds"));
+		goto _DDS;
+
+	}
+	else
+	{
+		Msg("! Can't find texture '%s'", fname);
+		R_ASSERT(FS.exist(fn, "$game_textures$", "ed\\ed_not_existing_texture", ".dds"));
+		goto _DDS;
+	}
 
 //	Debug.fatal(DEBUG_INFO,"Can't find texture '%s'",fname);
 
@@ -327,7 +409,6 @@ ID3DBaseTexture*	CRender::texture_load(LPCSTR fRName, u32& ret_msize)
 _DDS:
 	{
 		// Load and get header
-		D3DXIMAGE_INFO			IMG;
 		S						= FS.r_open	(fn);
 #ifdef DEBUG
 		Msg						("* Loaded: %s[%d]b",fn,S->length());
@@ -350,6 +431,7 @@ _DDS:
 
 _DDS_CUBE:
 		{
+			S = FS.r_open(fn);
 			HRESULT const result	=
 				D3DXCreateCubeTextureFromFileInMemoryEx(
 					HW.pDevice,
