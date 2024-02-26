@@ -547,6 +547,7 @@
     <ClInclude Include="..\xrRenderDX10\3DFluid\dx103DFluidObstacles.h" />
     <ClInclude Include="..\xrRenderDX10\3DFluid\dx103DFluidRenderer.h" />
     <ClInclude Include="..\xrRenderDX10\3DFluid\dx103DFluidVolume.h" />
+    <ClInclude Include="..\xrRenderDX10\dds.h" />
     <ClInclude Include="..\xrRenderDX10\DX10 Rain\dx10RainBlender.h" />
     <ClInclude Include="..\xrRenderDX10\dx10BufferUtils.h" />
     <ClInclude Include="..\xrRenderDX10\dx10ConstantBuffer.h" />
@@ -563,6 +564,7 @@
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10StateCache.h" />
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10StateCacheImpl.h" />
     <ClInclude Include="..\xrRenderDX10\StateManager\dx10StateManager.h" />
+    <ClInclude Include="..\xrRenderDX10\XRayDDSLoader.h" />
     <ClInclude Include="..\xrRenderPC_R4\blender_vignette.h" />
     <ClInclude Include="..\xrRender\Animation.h" />
     <ClInclude Include="..\xrRender\blenders\Blender.h" />
@@ -749,6 +751,7 @@
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10State.cpp" />
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateCache.cpp" />
     <ClCompile Include="..\xrRenderDX10\StateManager\dx10StateManager.cpp" />
+    <ClCompile Include="..\xrRenderDX10\XRayDDSLoader.cpp" />
     <ClCompile Include="..\xrRenderPC_R4\blender_vignette.cpp" />
     <ClCompile Include="..\xrRender\Animation.cpp" />
     <ClCompile Include="..\xrRender\blenders\Blender.cpp" />

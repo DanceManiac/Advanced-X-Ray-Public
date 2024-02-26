@@ -792,6 +792,12 @@
     <ClInclude Include="blender_lut.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
+    <ClInclude Include="..\xrRenderDX10\dds.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrRenderDX10\XRayDDSLoader.h">
+      <Filter>Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1507,6 +1513,9 @@
     </ClCompile>
     <ClCompile Include="blender_lut.cpp">
       <Filter>Shading templates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrRenderDX10\XRayDDSLoader.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
