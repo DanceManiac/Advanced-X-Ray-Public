@@ -901,6 +901,18 @@ void CWeaponMagazined::OnShot()
 			m_sounds.PlaySound(sndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
 			return;
 		}
+		else if (strstr(sndName, "Last"))
+		{
+			char newSndName[256];
+			strcpy(newSndName, sndName);
+			newSndName[strlen(sndName) - strlen("Last")] = '\0';
+
+			if (m_sounds.FindSoundItem(newSndName, false))
+			{
+				m_sounds.PlaySound(newSndName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+				return;
+			}
+		}
 	}
 
 	string128 sndName;
