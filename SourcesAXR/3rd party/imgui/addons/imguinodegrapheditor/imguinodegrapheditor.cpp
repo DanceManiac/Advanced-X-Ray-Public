@@ -30,7 +30,7 @@
 
 
 #if (defined(_MSC_VER) && !defined(snprintf))
-#   define snprintf _snprintf
+#   define snprintf sprintf_s
 #endif //(defined(_MSC_VER) && !defined(snprintf))
 
 
