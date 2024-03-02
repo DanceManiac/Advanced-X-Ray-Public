@@ -354,20 +354,39 @@ bool CAI_Stalker::conflicted						(const CInventoryItem *item, const CWeapon *ne
 
 bool CAI_Stalker::can_take							(CInventoryItem const * item)
 {
-	const CWeapon				*new_weapon = smart_cast<const CWeapon*>(item);
-	if (!new_weapon)
-		return					(false);
+	const CWeapon *new_weapon = smart_cast<const CWeapon*>(item);
+	
+	if (new_weapon)
+	{
+		bool new_weapon_enough_ammo = enough_ammo(new_weapon);
+		u32	 new_weapon_rank = get_rank(new_weapon->cNameSect());
 
-	bool						new_weapon_enough_ammo = enough_ammo(new_weapon);
-	u32							new_weapon_rank = get_rank(new_weapon->cNameSect());
+		TIItemContainer::iterator	I = inventory().m_all.begin();
+		TIItemContainer::iterator	E = inventory().m_all.end();
 
-	TIItemContainer::iterator	I = inventory().m_all.begin();
-	TIItemContainer::iterator	E = inventory().m_all.end();
-	for ( ; I != E; ++I)
-		if (conflicted(*I,new_weapon,new_weapon_enough_ammo,new_weapon_rank))
-			return				(false);
+		for (; I != E; ++I)
+		{
+			if (conflicted(*I, new_weapon, new_weapon_enough_ammo, new_weapon_rank))
+				return false;
+		}
+	}
+	else
+	{
+		if (!item || item->IsQuestItem())
+			return false;
+		else
+			return CheckCanPickedItem(item);
+	}
 
-	return						(true);
+	return true;
+}
+
+bool CAI_Stalker::CheckCanPickedItem(CInventoryItem const* item)
+{
+	if (!m_sCanPickedItemsVec.size() || std::find(m_sCanPickedItemsVec.begin(), m_sCanPickedItemsVec.end(), item->m_section_id) == m_sCanPickedItemsVec.end())
+		return false;
+	else if (item->Cost() < m_iAcceptableItemCost)
+		return false;
 }
 
 void CAI_Stalker::remove_personal_only_ammo			(const CInventoryItem *item)

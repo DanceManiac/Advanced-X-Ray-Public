@@ -91,6 +91,8 @@ CAI_Stalker::CAI_Stalker			() :
 #endif // DEBUG
 	m_registered_in_combat_on_migration	= false;
 	m_bLastHittedInHead				= false;
+
+	m_iAcceptableItemCost			= 0;
 }
 
 CAI_Stalker::~CAI_Stalker			()
@@ -338,6 +340,23 @@ void CAI_Stalker::Load				(LPCSTR section)
 	m_pPhysics_support->in_Load		(section);
 
 	m_can_select_items				= !!pSettings->r_bool(section,"can_select_items");
+
+	m_iAcceptableItemCost			= READ_IF_EXISTS(pSettings, r_u32, section, "acceptable_item_cost", 0);
+
+	LPCSTR can_picked_items			= READ_IF_EXISTS(pSettings, r_string, section, "can_picked_items", "");
+
+	if (can_picked_items && can_picked_items[0])
+	{
+		string128 can_picked_items_sect;
+		int count = _GetItemCount(can_picked_items);
+
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(can_picked_items, it, can_picked_items_sect);
+
+			m_sCanPickedItemsVec.push_back(can_picked_items_sect);
+		}
+	}
 }
 
 BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)

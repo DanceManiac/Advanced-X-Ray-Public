@@ -129,6 +129,9 @@ private:
 	float							m_fRankImmunity;
 	bool							m_bLastHittedInHead;
 
+	xr_vector<shared_str>			m_sCanPickedItemsVec{};
+	u32								m_iAcceptableItemCost;
+
 	// best item/ammo selection members
 public:
 	bool							m_item_actuality;
@@ -342,6 +345,7 @@ public:
 	bool								can_select_weapon				() {return m_can_select_weapon;};
 	void								can_select_weapon				(bool can) {m_can_select_weapon = can;};
 			bool						can_take						(CInventoryItem const * item);
+			bool						CheckCanPickedItem				(CInventoryItem const* item);
 protected:
 			u32							fill_items						(CInventory &inventory, CGameObject *old_owner, ALife::_OBJECT_ID new_owner_id);
 			
