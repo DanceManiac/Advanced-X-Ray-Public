@@ -1,0 +1,76 @@
+/**
+ * @ Version: SCREEN SPACE SHADERS - UPDATE 20
+ * @ Description: SSR
+ * @ Modified time: 2024-02-09 07:25
+ * @ Author: https://www.moddb.com/members/ascii1457
+ * @ Mod: https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders
+ */
+
+#include "screenspace_reflections.h"
+
+float4x4 m_current; // Current projection matrix
+float4x4 m_previous; // Previous projection matrix
+
+Texture2D ssr_image;
+
+float4 main(p_screen I) : SV_Target
+{
+// Sample buffers and prepare all requiered data ------------------
+	
+	// Scale TexCoor
+	float2 tc = I.tc0 * ssr_setup.x;
+	float2 Pos2D = I.hpos * ssr_setup.x;
+
+	// Sample buffers
+#ifndef USE_MSAA
+	float4 Pos = s_position.Sample( smp_nofilter, tc );
+	float gloss = s_diffuse.Sample( smp_nofilter, tc ).a;
+#else
+	float4 Pos = s_position.Load( int3( Pos2D, 0 ), 0 );
+	float gloss = s_diffuse.Load( int3( Pos2D, 0 ), 0 ).a;
+#endif
+
+	// Reconstruct Position, Normal and Material
+	float3 P 	= float3( Pos.z * ( Pos2D * pos_decompression_params.zw - pos_decompression_params.xy ), Pos.z );
+	float3 N 	= gbuf_unpack_normal( Pos.xy );
+	float mtl	= gbuf_unpack_mtl( Pos.w );
+
+// SSR ------------------------------------------------------------
+	float4 ssr_result = 0;
+
+	// Do the SSR
+	SSFX_ScreenSpaceReflections(I.tc0, float4(P, mtl), N, gloss, ssr_result, 0);
+	
+// Accumulation ---------------------------------------------------
+
+	float3 prev = ssr_image.Sample(smp_nofilter, I.tc0);
+
+	// Position
+	float4 P4 = float4(P, 1.0);
+	
+	// Get current
+	float4 p_current = mul(m_current, P4);
+	float3 current = p_current.xyz / p_current.w;
+	
+	// Get previous
+	float4 p_previous = mul(m_previous, P4);
+	float3 previous = p_previous.xyz / p_previous.w;
+
+	// Depth
+	float depth = 1.0 - abs(current.z / previous.z) * ssr_setup.z;
+
+	// Velocity
+	float vel = distance(current.xy, previous.xy) * 100.0f;
+
+	// 0 Current frame ~ 1 Prev frame
+	float weight = 1.0 - saturate(vel + depth);
+
+	// Mix with previous SSR result. Higher weight more of the previous frame used
+	ssr_result.rgb = lerp(ssr_result.rgb, prev, weight );
+
+// ----------------------------------------------------------------
+	
+	ssr_result.rgb *= ssr_result.a > 0;
+
+	return float4(ssr_result);
+} 

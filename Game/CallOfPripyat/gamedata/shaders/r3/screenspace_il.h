@@ -17,6 +17,7 @@ static const int il_quality[4] = { 8, 16, 24, 32 };
 
 // Some vars to fix incompatibilities for the moment...
 uniform float4 ssfx_wpn_dof_1;
+//uniform float4 fakescope_params3; // Declared on combine_2
 
 float3 ssfx_il_bounce(float3 P, float3 N, float Range, int count, uint iSample) 
 {

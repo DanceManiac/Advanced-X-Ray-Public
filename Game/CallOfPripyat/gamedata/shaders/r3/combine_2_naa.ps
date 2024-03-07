@@ -8,12 +8,20 @@
 	#include "screenspace_debanding.h"
 #endif
 
+// Used by FOG and IL. Keep it here for the moment...
+uniform float4 fakescope_params3;
+
 #ifdef SSFX_FOG
 	#include "screenspace_fog.h"
+	#include "settings_screenspace_FOG.h"
 #endif
 
 #ifdef SSFX_INDIRECT_LIGHT
 	#include "screenspace_il.h"
+#endif
+
+#ifdef SSFX_LUT_INUSE
+	#include "screenspace_lut.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -88,22 +96,60 @@ c2_out main( v2p_aa_AA I )
 #endif
 
 	// Sky Debanding Implementation  - SCREEN SPACE SHADERS - UPDATE 12.5
+	
+#ifdef SSFX_FOG
+
+	// Calc Fog
+	float fogresult = SSFX_CALC_FOG(gbd.P);
+	fogresult *= fogresult;
+
+	// Fog Scattering -----------------------
+	#ifdef G_FOG_USE_SCATTERING
+		// Blur sample
+		float3 foggg = s_blur_2.Sample(smp_rtlinear, center);
+
+		// Scopes
+		int disablefog = (fakescope_params3.x > 0 ? 0 : 1);
+
+		// NVGs
+		#ifdef SSFX_BEEFS_NVG
+			disablefog *= (shader_param_8.x > 0 ? 0 : 1);
+		#endif
+
+		// Blend
+		img = lerp(img, max(img, foggg), smoothstep(0.2f, 0.8f, fogresult) * disablefog);
+	#endif
+	// --------------------------------------
+#endif
+	
 #ifdef SSFX_DEBAND
-	if (depth <= SKY_EPS)
-		img = ssfx_debanding(img, I.Tex0.xy);
+	#ifdef SSFX_FOG
+		float Debanding = depth <= SKY_EPS ? 1.0 : fogresult;
+	#else
+		float Debanding = depth <= SKY_EPS ? 1.0 : 0;
+	#endif
+
+	// Debanding  - SCREEN SPACE SHADERS - UPDATE 12.5
+	img = lerp(img, ssfx_debanding(img, I.Tex0.xy), Debanding);
 #endif
 
 	img = blend_soft(img, bloom.xyz*bloom.w);
 
-#ifndef SSFX_LUT
-	// Move this to the LUT phase if the module is installed.
+// Color grading --------------------------------
+#ifndef SSFX_ENHANCED_SHADERS
 	if (tnmp_onoff == 1.0)
 	{		
 		img = Uncharted2ToneMapping(img);
 	}
-
-	img = img_corrections(img);
 #endif
+
+	// Vanilla color grading ( Exposure, saturation and gamma )
+	img = img_corrections(img);
+	
+#ifdef SSFX_LUT_INUSE
+	img = ssfx_lut_pp(img);
+#endif
+// ----------------------------------------------
 		
 #ifdef 	USE_DISTORT
  	float3	blurred	= bloom*def_hdr	;

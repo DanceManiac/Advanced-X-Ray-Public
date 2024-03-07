@@ -7,10 +7,6 @@
 // Check Addons
 #include "check_screenspace.h"
 
-#ifdef SSFX_SSR
-	#include "screenspace_reflections.h"
-#endif
-
 #if LOWLAND_FOG_TYPE == 1
 	#include "screenspace_fog.h"
 #endif
@@ -168,11 +164,6 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 
 		float3       color     = L.rgb + hdiffuse.rgb;
 					 color = LinearTosRGB(color); 			//gamma correct
-
-	// SSR Implementation
-#ifdef SSFX_SSR
-	SSFX_ScreenSpaceReflections(I.tc0, P, N, rain_params.y / 5.0f, color, ISAMPLE);	
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 

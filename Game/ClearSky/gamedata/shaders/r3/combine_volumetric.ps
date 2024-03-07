@@ -1,5 +1,9 @@
 #include "common.h"
 
+uniform float4 ssfx_volumetric;
+
+Texture2D noise_tex;
+
 //	Igor: used for volumetric light
 #ifndef USE_MSAA
 Texture2D 							s_vollight;
@@ -32,41 +36,55 @@ struct	_out
 //	TODO: DX10: Use load instead of sample
 _out main( _input I )
 {
-	// final tone-mapping
-	float          	tm_scale        = I.tc0.w;	// interpolated from VS
-
 	_out	o;
 	float4	color;
 
 #ifndef USE_MSAA
 #	ifdef ENCHANTED_SHADERS_ENABLED 
-		color = s_vollight.Load(int3(I.tc0.xy*screen_res.xy, 0));
+		color = s_vollight.SampleLevel( smp_linear, I.tc0.xy / ssfx_volumetric.w, 0);
+		// Read Depth
 #	else
-		color = s_vollight.Load(int3(I.tc0.xy*pos_decompression_params2.xy, 0));
+		color = s_vollight.SampleLevel( smp_linear, I.tc0.xy / ssfx_volumetric.w, 0);
+		//color = s_vollight.Load(int3(I.tc0.xy*pos_decompression_params2.xy, 0));
 #	endif
+		float _depth = s_position.Sample(smp_nofilter, I.tc0.xy).z;
 #else // USE_MSAA
-
+	float2 tc = I.tc0.xy * screen_res.xy;
+	
 #	ifdef ENCHANTED_SHADERS_ENABLED 
-		color = s_vollight.Load(int3(I.tc0.xy*screen_res.xy, 0), 0);
+		color = s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), 0);
 #	else
-		color = s_vollight.Load(int3(I.tc0.xy*pos_decompression_params2.xy, 0), 0);
+		color = s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), 0);
 #	endif
 
 	[unroll] for(int iSample = 1; iSample < MSAA_SAMPLES; ++iSample)
 	{
 #ifdef ENCHANTED_SHADERS_ENABLED 
-		color	+= s_vollight.Load(int3(I.tc0*screen_res.xy, 0), iSample);
+		color	+= s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), iSample);
 #else
-		color	+= s_vollight.Load(int3(I.tc0*pos_decompression_params2.xy, 0), iSample);
+		color	+= s_vollight.Load(int3(tc / ssfx_volumetric.w, 0), iSample);
 #endif
 	}
 	color /= MSAA_SAMPLES;
-#endif // USE_MSAA
 	
 	//color.rgb = LinearTosRGB(color.rgb); 			//gamma correct
 	//color.a = LinearTosRGB(color.a); 			//gamma correct
 	
-	tonemap(o.low, o.high, color, tm_scale );
+	// Read Depth [ MSAA ]
+	float _depth = s_position.Load(int3(tc, 0), iSample).z;
+#endif // USE_MSAA
+
+	// Noise TC
+	float2 uv_noise = I.tc0.xy;
+	uv_noise.x *= screen_res.x / screen_res.y;
+
+	// Add noise to dither the result
+	color = saturate(color - noise_tex.Sample( smp_linear, uv_noise * 2.5).xxxx * 0.01f);
+
+	// Discard Sky.
+	color *= _depth < 0.001 ? 1.0f : saturate(_depth * 1.5f);
+
+	tonemap(o.low, o.high, color, I.tc0.w );
 
 	//o.low.a = 1;
 	//o.low.a = dot(o.low.rgb, LUMINANCE_VECTOR); 			//screen blend
