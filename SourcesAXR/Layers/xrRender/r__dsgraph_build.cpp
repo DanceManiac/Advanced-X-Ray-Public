@@ -272,6 +272,19 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 	if (0==sh)								return;
 	if (!pmask[sh->flags.iPriority/2])		return;
 
+	// Water rendering
+
+	if (sh->flags.isWater)
+	{
+		mapWater_Node* N = mapWater.insert_anyway(distSQ);
+		N->second.ssa = SSA;
+		N->second.pObject = NULL;
+		N->second.pVisual = pVisual;
+		N->second.Matrix = Fidentity;
+		N->second.se = sh;
+		return;
+	}
+
 	// strict-sorting selection
 	if (sh->flags.bStrictB2F) {
 		mapSorted_Node* N			= mapSorted.insert_anyway(distSQ);
@@ -310,6 +323,17 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 	if	(val_feedback && counter_S==val_feedback_breakp)	val_feedback->rfeedback_static(pVisual);
 
 	counter_S					++;
+
+	if (sh->flags.bLandscape && RI.phase == CRender::PHASE_NORMAL)
+	{
+		mapLandscape_Node* N = mapLandscape.insert_anyway(distSQ);
+		N->second.ssa = SSA;
+		N->second.pObject = NULL;
+		N->second.pVisual = pVisual;
+		N->second.Matrix = Fidentity;
+		N->second.se = sh;
+		return;
+	}
 
 	for ( u32 iPass = 0; iPass<sh->passes.size(); ++iPass)
 	{
@@ -528,10 +552,15 @@ IC bool IsValuableToRender(dxRender_Visual* pVisual, bool isStatic, bool sm, Fma
 				return false;
 			else if ((sphere_volume < o_optimize_static_l5_size.z) && (adjusted_distane > o_optimize_static_l5_dist.z))
 				return false;
+
+			return true;
 		}
 
 		if (isStatic)
 		{
+			if (pVisual->Type == MT_LOD || pVisual->Type == MT_TREE_PM || pVisual->Type == MT_TREE_ST)
+				return true;
+
 			if (opt_static == 2)
 			{
 				if ((sphere_volume < o_optimize_static_l1_size.y) && (adjusted_distane > o_optimize_static_l1_dist.y))

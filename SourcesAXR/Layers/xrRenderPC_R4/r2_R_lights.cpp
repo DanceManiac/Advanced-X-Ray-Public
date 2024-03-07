@@ -200,8 +200,22 @@ void	CRender::render_lights	(light_Package& LP)
 
          PIX_EVENT(ACCUM_VOLUMETRIC);
 			if (RImplementation.o.advancedpp && ps_r2_ls_flags.is(R2FLAG_VOLUMETRIC_LIGHTS))
-			for (u32 it=0; it<L_spot_s.size(); it++)
-				Target->accum_volumetric(L_spot_s[it]);
+			{
+				// Current Resolution
+				float w = float(Device.dwWidth);
+				float h = float(Device.dwHeight);
+
+				// Adjust resolution
+				if (RImplementation.o.ssfx_volumetric && ps_ssfx_volumetric.w > 1)
+					Target->set_viewport_size(HW.pContext, w / ps_ssfx_volumetric.w, h / ps_ssfx_volumetric.w);
+
+				for (u32 it = 0; it < L_spot_s.size(); it++)
+					Target->accum_volumetric(L_spot_s[it]);
+
+				// Restore resolution
+				if (RImplementation.o.ssfx_volumetric && ps_ssfx_volumetric.w > 1)
+					Target->set_viewport_size(HW.pContext, w, h);
+			}
 
 			L_spot_s.clear	();
 		}

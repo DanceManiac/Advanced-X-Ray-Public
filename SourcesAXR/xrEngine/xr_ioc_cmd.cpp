@@ -546,11 +546,15 @@ ENGINE_API float ps_ssfx_gloss_factor = 0.5f;
 ENGINE_API Fvector3 ps_ssfx_gloss_minmax = { 0.0f,0.92f,0.0f }; // Minimum value of gloss, Maximum value of gloss, Extra gloss to the weapons HUD elements when raining
 ENGINE_API Fvector4 ps_ssfx_lightsetup_1 = { 0.35f, 0.5f, 0.0f, 0.0f };  // intensity of specular lighting, Porcentage of the specular color. ( 0 = 0% | 1 = 100% ), Automatic adjustment of gloss based on wetness (0 or 1), Value to control the maximum value of gloss when full wetness is reached. ( 0 = 0% | 1 = 100% )
 ENGINE_API Fvector3 ps_ssfx_shadows = { 256, 1536, 0.0f };
-ENGINE_API Fvector3 ps_ssfx_volumetric = { 0, 0.15f, 1.5f };
+ENGINE_API Fvector4 ps_ssfx_volumetric = { 0, 0.15f, 1.5f, 8.0f };
 ENGINE_API Fvector3 ps_ssfx_shadow_bias = { 0.4f, 0.03f, 0.0f };
 ENGINE_API Fvector4 ps_ssfx_lut = { 0.0f, 0.0f, 0.0f, 0.0f };
 ENGINE_API Fvector4 ps_ssfx_wind_grass = { 5.0f, 1.4f, 1.5f, 0.4f }; // Branches Speed, Trunk Speed, Bending, Min Wind Speed
 ENGINE_API Fvector4 ps_ssfx_wind_trees = { 7.0f, 0.15f, 0.5f, 0.025f }; // Anim Speed, Turbulence, Push, Wave
+ENGINE_API Fvector4 ps_ssfx_ssr = { 1.0f, 0.25f, 0.0f, 0.0f }; // Res, Blur, Temp, Noise
+ENGINE_API Fvector4 ps_ssfx_ssr_2 = { 1.0f, 1.0f, 0.5f, 0.015f }; // Quality, Fade, Int, Wpn Int
+ENGINE_API Fvector4 ps_ssfx_terrain_quality = { 6, 0, 0, 0 };
+ENGINE_API Fvector4 ps_ssfx_terrain_offset = { 0, 0, 0, 0 };
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
 ENGINE_API float ps_r3_dyn_wet_surf_far = 100.f; // 30.0f

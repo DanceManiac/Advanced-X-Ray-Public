@@ -342,6 +342,7 @@ Fvector4	ps_color_grading = { 1.0f, 1.0f, 1.0f, 0.0f };
 float		ps_r2_rain_drops_intensity = 0.00025f;
 float		ps_r2_rain_drops_speed = 1.25f;
 
+Flags32		ps_r2_ls_flags_2 = { 0 };
 Flags32		ps_actor_shadow_flags = { 0 };
 
 Flags32		ps_r2_postscreen_flags = { R_FLAG_HUD_MASK
@@ -424,11 +425,15 @@ extern ENGINE_API float	   ps_ssfx_gloss_factor;
 extern ENGINE_API Fvector3 ps_ssfx_gloss_minmax;
 extern ENGINE_API Fvector4 ps_ssfx_lightsetup_1;
 extern ENGINE_API Fvector3 ps_ssfx_shadows;
-extern ENGINE_API Fvector3 ps_ssfx_volumetric;
+extern ENGINE_API Fvector4 ps_ssfx_volumetric;
 extern ENGINE_API Fvector3 ps_ssfx_shadow_bias;
 extern ENGINE_API Fvector4 ps_ssfx_lut;
 extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
 extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
+extern ENGINE_API Fvector4 ps_ssfx_ssr ;					// Res, Blur, Temp, Noise
+extern ENGINE_API Fvector4 ps_ssfx_ssr_2 ;					// Quality, Fade, Int, Wpn Int
+extern ENGINE_API Fvector4 ps_ssfx_terrain_quality;
+extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
 
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
@@ -1321,6 +1326,8 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"r__gamma",						&ps_r2_img_gamma,			0.5f, 2.2f);
 	//CMD4(CCC_Float,			"r__saturation",				&ps_r2_img_saturation,		0.0f, 2.0f);
 
+	CMD3(CCC_Mask,			"r2_terrain_z_prepass",			&ps_r2_ls_flags_2,			R2FLAG_TERRAIN_PREPASS); //Terrain Z Prepass @Zagolski
+
 	//tw_min.set(0, 0, 0);
 	//tw_max.set(1, 1, 1);
 
@@ -1364,11 +1371,15 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"ssfx_gloss_factor",			&ps_ssfx_gloss_factor,		0.0f, 1.0f);
 	CMD4(CCC_Vector4,		"ssfx_lightsetup_1",			&ps_ssfx_lightsetup_1,		Fvector4().set(0, 0, 0, 0), Fvector4().set(1.0, 1.0, 1.0, 1.0));
 	CMD4(CCC_Vector3,		"ssfx_shadows",					&ps_ssfx_shadows,			Fvector3().set(128, 1536, 0), Fvector3().set(1536, 4096, 0));
-	CMD4(CCC_Vector3,		"ssfx_volumetric",				&ps_ssfx_volumetric,		Fvector3().set(0, 0, 1.0), Fvector3().set(1.0, 1.0, 5.0));
+	CMD4(CCC_Vector4,		"ssfx_volumetric",				&ps_ssfx_volumetric,		Fvector4().set(0, 0, 1.0, 1.0), Fvector4().set(1.0, 5.0, 5.0, 16.0));
 	CMD4(CCC_Vector3,		"ssfx_shadow_bias",				&ps_ssfx_shadow_bias,		Fvector3().set(0, 0, 0), Fvector3().set(1.0, 1.0, 1.0));
 	CMD4(CCC_Vector4,		"ssfx_lut",						&ps_ssfx_lut,				Fvector4().set(0.0, 0.0, 0.0, 0.0), tw2_max);
 	CMD4(CCC_Vector4,		"ssfx_wind_grass",				&ps_ssfx_wind_grass,		Fvector4().set(0.0, 0.0, 0.0, 0.0), Fvector4().set(20.0, 5.0, 5.0, 5.0));
 	CMD4(CCC_Vector4,		"ssfx_wind_trees",				&ps_ssfx_wind_trees,		Fvector4().set(0.0, 0.0, 0.0, 0.0), Fvector4().set(20.0, 5.0, 5.0, 1.0));
+	CMD4(CCC_Vector4,		"ssfx_ssr",						&ps_ssfx_ssr,				Fvector4().set(1, 0, 0, 0), Fvector4().set(2, 1, 1, 1));
+	CMD4(CCC_Vector4,		"ssfx_ssr_2",					&ps_ssfx_ssr_2,				Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 2, 2, 2));
+	CMD4(CCC_Vector4,		"ssfx_terrain_quality",			&ps_ssfx_terrain_quality,	Fvector4().set(0, 0, 0, 0), Fvector4().set(12, 0, 0, 0));
+	CMD4(CCC_Vector4,		"ssfx_terrain_offset",			&ps_ssfx_terrain_offset,	Fvector4().set(-1, -1, -1, -1), Fvector4().set(1, 1, 1, 1));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR

@@ -83,6 +83,22 @@ void __fastcall sorted_L1		(const T& N)
 	V->Render(LOD);
 }
 
+template<class T>
+void __fastcall sorted_L1_nops(const T& N)
+{
+	VERIFY(&N);
+	dxRender_Visual* V = N.second.pVisual;
+	VERIFY(V && V->shader._get());
+	RCache.set_Element(N.second.se);
+
+#ifdef USE_DX11
+	RCache.set_PS(RImplementation.Target->s_ssfx_dumb->E[0]->passes[0]->ps);
+#endif
+
+	RCache.set_xform_world(N.second.Matrix);
+	V->Render(0);
+}
+
 IC	bool	cmp_vs_nrm			(mapNormalVS::value_type* N1, mapNormalVS::value_type* N2)
 {
 	return (N1->second.ssa > N2->second.ssa);
@@ -511,7 +527,7 @@ template <class T> IC bool cmp_first_h(const T &lhs, const T &rhs) { return (lhs
 
 //////////////////////////////////////////////////////////////////////////
 // HUD render
-void R_dsgraph_structure::r_dsgraph_render_hud	()
+void R_dsgraph_structure::r_dsgraph_render_hud(bool NoPS)
 {	
 	
 	//PIX_EVENT(r_dsgraph_render_hud);
@@ -519,6 +535,17 @@ void R_dsgraph_structure::r_dsgraph_render_hud	()
 	if(!mapHUD.empty())
 	{
 		hud_transform_helper helper;
+
+		if (!NoPS)
+		{
+			mapHUD.traverse_left_right(sorted_L1);
+			mapHUD.clear();
+		}
+		else
+		{
+			HUDMask.traverse_left_right(sorted_L1_nops);
+			HUDMask.clear();
+		}
 
 		// Rendering
 		mapHUD.traverse_left_right(sorted_L1);
@@ -615,6 +642,12 @@ void	R_dsgraph_structure::r_dsgraph_render_emissive	()
 		mapHUDEmissive.clear();
 	}
 #endif
+}
+
+void R_dsgraph_structure::r_dsgraph_render_water()
+{
+	mapWater.traverse_left_right(sorted_L1);
+	mapWater.clear();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -801,3 +834,44 @@ void	R_dsgraph_structure::r_dsgraph_render_R1_box	(IRender_Sector* _S, Fbox& BB,
 	}
 }
 
+template<class T>
+void __fastcall pLandscape_0(const T& N)
+{
+	VERIFY(&N);
+	dxRender_Visual* V = N.second.pVisual;
+	VERIFY(V && V->shader._get());
+	RCache.set_Element(N.second.se, 0);
+	float LOD = calcLOD(N.second.ssa, V->vis.sphere.R);
+#ifdef USE_DX11
+	RCache.LOD.set_LOD(LOD);
+#endif
+	V->Render(LOD);
+}
+
+template<class T>
+void __fastcall pLandscape_1(const T& N)
+{
+	VERIFY(&N);
+	dxRender_Visual* V = N.second.pVisual;
+	VERIFY(V && V->shader._get());
+	RCache.set_Element(N.second.se, 1);
+	RImplementation.apply_lmaterial();
+	float LOD = calcLOD(N.second.ssa, V->vis.sphere.R);
+#ifdef USE_DX11
+	RCache.LOD.set_LOD(LOD);
+#endif
+	V->Render(LOD);
+}
+
+void R_dsgraph_structure::r_dsgraph_render_landscape(u32 pass, bool _clear)
+{
+	RCache.set_xform_world(Fidentity);
+
+	if (pass == 0)
+		mapLandscape.traverse_left_right(pLandscape_0);
+	else
+		mapLandscape.traverse_left_right(pLandscape_1);
+
+	if (_clear)
+		mapLandscape.clear();
+}

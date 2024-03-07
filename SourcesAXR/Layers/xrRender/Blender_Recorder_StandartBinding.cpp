@@ -553,6 +553,10 @@ extern ENGINE_API Fvector4 ps_ssfx_wetsurfaces_2;
 extern ENGINE_API int ps_ssfx_is_underground;
 extern ENGINE_API Fvector4 ps_ssfx_lightsetup_1;
 
+extern ENGINE_API Fvector4 ps_ssfx_volumetric;
+extern ENGINE_API Fvector4 ps_ssfx_ssr_2;
+extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
+
 extern ENGINE_API Fvector3 ps_ssfx_shadow_bias;
 extern ENGINE_API Fvector4 ps_ssfx_lut;
 extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
@@ -730,6 +734,30 @@ static class ssfx_shadow_bias : public R_constant_setup
 	}
 } ssfx_shadow_bias;
 
+static class ssfx_terrain_offset : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_terrain_offset);
+	}
+}    ssfx_terrain_offset;
+
+static class ssfx_ssr_2 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_ssr_2);
+	}
+}    ssfx_ssr_2;
+
+static class ssfx_volumetric : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_volumetric);
+	}
+}    ssfx_volumetric;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -836,6 +864,9 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_gloss",			&binder_ssfx_gloss);
 	r_Constant				("ssfx_florafixes_1",	&binder_ssfx_florafixes_1);
 	r_Constant				("ssfx_florafixes_2",	&binder_ssfx_florafixes_2);
+	r_Constant				("ssfx_volumetric",		&ssfx_volumetric);
+	r_Constant				("ssfx_ssr_2",			&ssfx_ssr_2);
+	r_Constant				("ssfx_terrain_offset", &ssfx_terrain_offset);
 	r_Constant				("ssfx_shadow_bias",	&ssfx_shadow_bias);
 	r_Constant				("ssfx_wind_anim",		&ssfx_wind_anim);
 	r_Constant				("ssfx_wsetup_grass",	&ssfx_wind_grass);

@@ -36,6 +36,12 @@
 #define		r2_RT_smaa_edgetex  "$user$smaa_edgetex"
 #define		r2_RT_smaa_blendtex "$user$smaa_blendtex"
 
+#define		r2_RT_ssfx			"$user$ssfx"			// [Ascii1457] SSS new Phase
+#define		r2_RT_ssfx_temp		"$user$ssfx_temp"		// [Ascii1457] SSS new Phase
+#define		r2_RT_ssfx_temp2	"$user$ssfx_temp2"		// [ SSS ] Full res - D3DFMT_A8B8G8R8F
+#define		r2_RT_ssfx_accum	"$user$ssfx_accum"		// [ SSS ] Full res - D3DFMT_A16B16G16R16F
+#define		r2_RT_ssfx_hud		"$user$ssfx_hud"		// ...
+
 #define		r2_RT_bloom1		"$user$bloom1"			// ---
 #define		r2_RT_bloom2		"$user$bloom2"			// ---
 
