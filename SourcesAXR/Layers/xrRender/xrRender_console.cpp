@@ -1345,6 +1345,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r4_ss_shadows",				&ps_r4_shaders_flags,		R4FLAG_SS_SHADOWS); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_lut",					&ps_r4_shaders_flags,		R4FLAG_SS_LUT); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_wind",					&ps_r4_shaders_flags,		R4FLAG_SS_WIND); //Need restart
+	CMD3(CCC_Mask,			"r4_ss_puddles",				&ps_r4_shaders_flags,		R4FLAG_SS_PUDDLES); //Need restart
 	CMD3(CCC_Shader_Preset, "shaders_preset",				&ps_ShaderPreset,			qshader_preset_token);
 
 	CMD4(CCC_Vector4,		"ssfx_wpn_dof_1",				&ps_ssfx_wpn_dof_1,			tw2_min, tw2_max);
@@ -1378,7 +1379,8 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,		"ssfx_wind_trees",				&ps_ssfx_wind_trees,		Fvector4().set(0.0, 0.0, 0.0, 0.0), Fvector4().set(20.0, 5.0, 5.0, 1.0));
 	CMD4(CCC_Vector4,		"ssfx_ssr",						&ps_ssfx_ssr,				Fvector4().set(1, 0, 0, 0), Fvector4().set(2, 1, 1, 1));
 	CMD4(CCC_Vector4,		"ssfx_ssr_2",					&ps_ssfx_ssr_2,				Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 2, 2, 2));
-	CMD4(CCC_Vector4,		"ssfx_terrain_quality",			&ps_ssfx_terrain_quality,	Fvector4().set(0, 0, 0, 0), Fvector4().set(12, 0, 0, 0));
+	CMD4(CCC_Vector4,		"ssfx_terrain_quality_vec",		&ps_ssfx_terrain_quality,	Fvector4().set(0, 0, 0, 0), Fvector4().set(12, 0, 0, 0));
+	CMD4(CCC_Float,			"ssfx_terrain_quality",			&ps_ssfx_terrain_quality.x,	1, 12);
 	CMD4(CCC_Vector4,		"ssfx_terrain_offset",			&ps_ssfx_terrain_offset,	Fvector4().set(-1, -1, -1, -1), Fvector4().set(1, 1, 1, 1));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision

@@ -181,6 +181,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl = xml:InitCheck("video_adv:check_sss_wind", _st)
 	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
 	
+--SSS Puddles
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_sss_puddles", _st)
+	ctl = xml:InitCheck("video_adv:check_sss_puddles", _st)
+	table.insert(handler.m_preconditions, {func=get_screen_space_shaders_status, control=_st})
+	
 --Enchanted Shaders
 	_st = xml:InitStatic("video_adv:templ_item", nil)
 	xml:InitStatic("video_adv:cap_enchanted_shaders", _st)
@@ -194,6 +200,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	table.insert(handler.m_preconditions, {func=get_enchanted_shaders_status, control=_st})
 
 --// Опции SSS и ES: Конец
+
+--Качество террейна
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_terrain_quality", _st)
+	xml:InitTrackBar("video_adv:track_terrain_quality", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_3, control=_st})
 	
 --Рендеринг бликов
 	_st = xml:InitStatic("video_adv:templ_item", nil)
@@ -480,6 +492,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_optimize_shadow_geom", _st)
 	ctl = xml:InitCheck("video_adv:check_optimize_shadow_geom", _st)
 	table.insert(handler.m_preconditions, {func=all_modes, control=_st})
+	
+--Оптимизация ландшафта
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_terrain_landscape", _st)
+	ctl = xml:InitCheck("video_adv:check_terrain_landscape", _st)
+	table.insert(handler.m_preconditions, {func=mode_ge_2, control=_st})
 
 --Многопоточная загрузка текстур	
 	_st = xml:InitStatic("video_adv:templ_item", nil)

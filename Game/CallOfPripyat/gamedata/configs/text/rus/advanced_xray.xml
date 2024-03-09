@@ -639,6 +639,12 @@
 	<string id="ui_mm_sss_wind_hint">
 		<text>Данная опция включает влияние ветра на траву и деревья из Screen Space Shaders 19. Если включить эту опцию, влияние ветра из Advanced X-Ray будет отключено. \n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_sss_puddles">
+		<text>SSS: Лужи</text>
+	</string>
+	<string id="ui_mm_sss_puddles_hint">
+		<text>Эта опция позволяет включить или отключить эффект динамических луж из Screen Space Shaders во время дождя.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
 	<string id="ui_mm_enchanted_shaders">
 		<text>Enchanted Shaders</text>
 	</string>
@@ -770,5 +776,17 @@
 	</string>
 	<string id="ui_st_animated_backpack">
 		<text>Анимированный рюкзак</text>
+	</string>
+	<string id="ui_mm_terrain_quality">
+		<text>Качество ландшафта</text>
+	</string>
+	<string id="ui_mm_terrain_quality_hint">
+		<text>Данная опция регулирует качество ландшафта.\n \n %c[pda_green] • Нагрузка: Низкая</text>
+	</string>
+	<string id="ui_mm_terrain_landscape">
+		<text>Оптимизация ландшафта</text>
+	</string>
+	<string id="ui_mm_terrain_landscape_hint">
+		<text>Эта опция включает Terrain Landscape. На дальних дистанциях, текстуры террейна подменяются на текстуры более низкого качество. Также, отключается взаимодействие с освещением и параллакс.</text>
 	</string>
 </string_table>

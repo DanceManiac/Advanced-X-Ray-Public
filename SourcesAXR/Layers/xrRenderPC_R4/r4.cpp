@@ -372,6 +372,7 @@ void					CRender::create					()
 	o.dx11_ss_shadows			= ps_r4_shaders_flags.test(R4FLAG_SS_SHADOWS);
 	o.dx11_ss_lut				= ps_r4_shaders_flags.test(R4FLAG_SS_LUT);
 	o.dx11_ss_wind				= ps_r4_shaders_flags.test(R4FLAG_SS_WIND);
+	o.dx11_ss_puddles			= ps_r4_shaders_flags.test(R4FLAG_SS_PUDDLES);
 
 	o.dx11_enable_tessellation = HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 && ps_r2_ls_flags_ext.test(R2FLAGEXT_ENABLE_TESSELLATION);
 
@@ -1621,6 +1622,19 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_wind); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.dx11_ss_puddles)
+	{
+		defines[def_it].Name = "SSFX_PUDDLES";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_ss_puddles); ++len;
 	}
 	else
 	{

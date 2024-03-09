@@ -312,6 +312,7 @@ enum
 	R4FLAG_SS_SHADOWS			= (1 << 8),
 	R4FLAG_SS_LUT				= (1 << 9),
 	R4FLAG_SS_WIND				= (1 << 10),
+	R4FLAG_SS_PUDDLES			= (1 << 11),
 };
 
 //Rezy: cleanup flags

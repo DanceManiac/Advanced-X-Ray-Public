@@ -648,6 +648,13 @@
 			<options_item entry="r__optimize_shadow_geom" group="mm_opt_video_adv" depend="vid"/>
 		</check_optimize_shadow_geom>
 		
+		<cap_terrain_landscape x="120" y="0" width="143" height="21" hint = "ui_mm_terrain_landscape_hint">
+			<text font="letterica16" color="ui_6">ui_mm_terrain_landscape</text>
+		</cap_terrain_landscape>
+		<check_terrain_landscape x="264" y="0" width="30" height="21">
+			<options_item entry="r2_terrain_z_prepass" group="mm_opt_video" depend="restart"/>
+		</check_terrain_landscape>
+		
 		<cap_mt_textures_load x="120" y="0" width="143" height="21" hint = "ui_mm_mt_textures_load_hint">
 			<text font="letterica16" color="ui_6">ui_mm_mt_textures_load</text>
 		</cap_mt_textures_load>
@@ -804,6 +811,13 @@
       <options_item entry="r4_ss_wind" group="mm_opt_video" depend="restart"/>
     </check_sss_wind>
 	
+	<cap_sss_puddles x="120" y="0" width="143" height="21" hint = "ui_mm_sss_puddles_hint">
+      <text font="letterica16" color="ui_6">ui_mm_sss_puddles</text>
+    </cap_sss_puddles>
+    <check_sss_puddles x="264" y="0" width="30" height="21">
+      <options_item entry="r4_ss_puddles" group="mm_opt_video" depend="restart"/>
+    </check_sss_puddles>
+	
 	<cap_enchanted_shaders x="120" y="0" width="143" height="21" hint = "ui_mm_enchanted_shaders_hint">
       <text font="letterica16" color="ui_6">ui_mm_enchanted_shaders</text>
     </cap_enchanted_shaders>
@@ -817,6 +831,16 @@
 	<check_es_pseudo_pbr x="264" y="0" width="30" height="21">
 		<options_item entry="r4_es_pseudo_pbr" group="mm_opt_video" depend="restart"/>
 	</check_es_pseudo_pbr>
+	
+	<cap_terrain_quality x="120" y="0" width="143" height="21" hint = "ui_mm_terrain_quality_hint">
+			<text font="letterica16" color="ui_6">ui_mm_terrain_quality</text>
+    </cap_terrain_quality>	
+	<track_terrain_quality x="264" y="0" width="245" height="21" min="1.0" max="12.0" step="1.0">
+		<options_item entry="ssfx_terrain_quality" group="mm_opt_video_adv"/>
+		<output_wnd x="250" y="0" width="20" height="20" format="%.f">
+			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+		</output_wnd>
+    </track_terrain_quality>
 
     <cap_r1_no_detail_textures x="120" y="0" width="143" height="21" hint = "ui_mm_r1_detail_textures_hint">
       <text font="letterica16" color="ui_6">ui_mm_r1_no_detail_textures</text>

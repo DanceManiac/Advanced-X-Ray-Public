@@ -117,6 +117,7 @@ public:
 	  u32		dx11_ss_shadows			: 1;
 	  u32		dx11_ss_lut				: 1;
 	  u32		dx11_ss_wind			: 1;
+	  u32		dx11_ss_puddles			: 1;
 
 	  u32		dx11_enable_tessellation : 1;
 
