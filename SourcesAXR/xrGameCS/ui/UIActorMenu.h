@@ -172,6 +172,8 @@ protected:
 	CUI3tButtonEx*				m_exit_button;
 	CUIStatic*					m_clock_value;
 
+	CUI3tButtonEx*				m_sleep_button;
+
 	u32							m_last_time;
 	bool						m_repair_mode;
 	bool						m_item_info_view;
@@ -340,6 +342,7 @@ public:
 
 	void		xr_stdcall		OnBtnPerformTrade			(CUIWindow* w, void* d);
 	void		xr_stdcall		OnBtnExitClicked			(CUIWindow* w, void* d);
+	void		xr_stdcall		OnBtnSleepClicked			(CUIWindow* w, void* d);
 	void		xr_stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
 	void						TakeAllFromInventoryBox		();
 	CUICellItem*				GetCurrentConsumable		() { return m_pCurrentConsumable; };

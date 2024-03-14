@@ -37,6 +37,7 @@
 #include "../RepairKit.h"
 #include "../ArtefactContainer.h"
 #include "../SleepingBag.h"
+#include "UI3tButton.h"
 #include "../UICursor.h"
 #include "../MPPlayersBag.h"
 #include "../HUDManager.h"
@@ -56,6 +57,9 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventoryPistolList->Show		(true);
 	m_pInventoryAutomaticList->Show		(true);
 	m_pTrashList->Show					(true);
+
+	if (m_sleep_button)
+		m_sleep_button->Show(true);
 	
 	m_RightDelimiter->Show				(false);
 	m_clock_value->Show					(true);
@@ -106,6 +110,10 @@ void CUIActorMenu::InitInventoryMode()
 void CUIActorMenu::DeInitInventoryMode()
 {
 	m_pTrashList->Show					(false);
+
+	if (m_sleep_button)
+		m_sleep_button->Show(false);
+
 	m_clock_value->Show					(false);
 }
 

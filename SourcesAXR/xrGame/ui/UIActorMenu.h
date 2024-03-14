@@ -198,6 +198,8 @@ protected:
 	CUI3tButton*				m_exit_button;
 //	CUIStatic*					m_clock_value;
 
+	CUI3tButton*				m_sleep_button;
+
 	u32							m_last_time;
 	bool						m_repair_mode;
 	bool						m_item_info_view;
@@ -371,6 +373,7 @@ public:
 	void		xr_stdcall		OnBtnPerformTradeBuy		(CUIWindow* w, void* d);
 	void		xr_stdcall		OnBtnPerformTradeSell		(CUIWindow* w, void* d);
 	void		xr_stdcall		OnBtnExitClicked			(CUIWindow* w, void* d);
+	void		xr_stdcall		OnBtnSleepClicked			(CUIWindow* w, void* d);
 	void		xr_stdcall		TakeAllFromPartner			(CUIWindow* w, void* d);
 	void						TakeAllFromInventoryBox		();
 	void						UpdateConditionProgressBars	();

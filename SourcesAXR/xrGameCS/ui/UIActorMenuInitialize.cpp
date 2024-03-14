@@ -273,6 +273,7 @@ void CUIActorMenu::Construct()
 	m_trade_button		= UIHelper::Create3tButtonEx(uiXml, "trade_button", this);
 	m_takeall_button	= UIHelper::Create3tButtonEx(uiXml, "takeall_button", this);
 	m_exit_button		= UIHelper::Create3tButtonEx(uiXml, "exit_button", this);
+	m_sleep_button		= UIHelper::Create3tButtonEx(uiXml, "sleep_button", this, false);
 
 	m_clock_value						= UIHelper::CreateStatic(uiXml, "clock_value", this);
 
@@ -455,11 +456,17 @@ void CUIActorMenu::InitCallbacks()
 	VERIFY							(m_pUpgradeWnd);
 	Register						(m_pUpgradeWnd->m_btn_repair);
 
+	if (m_sleep_button)
+		Register(m_sleep_button);
+
 	AddCallback( m_trade_button->WindowName(),    BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::OnBtnPerformTrade ) );
 	AddCallback( m_takeall_button->WindowName(),  BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::TakeAllFromPartner ) );
 	AddCallback( m_exit_button->WindowName(),     BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::OnBtnExitClicked ) );
 	AddCallback( m_UIPropertiesBox->WindowName(), PROPERTY_CLICKED, CUIWndCallback::void_function( this, &CUIActorMenu::ProcessPropertiesBoxClicked ) );
 	AddCallback( m_pUpgradeWnd->m_btn_repair->WindowName(), BUTTON_CLICKED,   CUIWndCallback::void_function( this, &CUIActorMenu::TryRepairItem ) );
+
+	if (m_sleep_button)
+		AddCallback(m_sleep_button->WindowName(),    BUTTON_CLICKED,   CUIWndCallback::void_function(this, &CUIActorMenu::OnBtnSleepClicked));
 }
 
 void CUIActorMenu::UpdateButtonsLayout()

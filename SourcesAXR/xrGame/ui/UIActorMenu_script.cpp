@@ -21,8 +21,20 @@
 #include "UIHudStatesWnd.h"
 #include "UIGameCustom.h"
 #include "InventoryBox.h"
+#include "UIBtnHint.h"
 
 using namespace luabind;
+
+void CUIActorMenu::OnBtnSleepClicked(CUIWindow* w, void* d)
+{
+	luabind::functor<void> funct;
+
+	if (ai().script_engine().functor("mfs_functions.on_sleep_button", funct))
+		funct();
+	
+	g_btnHint->Discard();
+	HideDialog();
+}
 
 void CUIActorMenu::TryRepairItem(CUIWindow* w, void* d)
 {

@@ -40,6 +40,7 @@
 #include "../RepairKit.h"
 #include "../ArtefactContainer.h"
 #include "../SleepingBag.h"
+#include "UI3tButton.h"
 
 #include "../actor_defs.h"
 #include "../Actor.h"
@@ -59,6 +60,10 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventoryAutomaticList->Show		(true);
 	m_pQuickSlot->Show					(true);
 	m_pTrashList->Show					(true);
+
+	if (m_sleep_button)
+		m_sleep_button->Show			(true);
+
 	m_RightDelimiter->Show				(false);
 
 	if (GameConstants::GetKnifeSlotEnabled())
@@ -118,6 +123,9 @@ void CUIActorMenu::InitInventoryMode()
 void CUIActorMenu::DeInitInventoryMode()
 {
 	m_pTrashList->Show					(false);
+
+	if (m_sleep_button)
+		m_sleep_button->Show			(false);
 //	m_clock_value->Show					(false);
 }
 
