@@ -255,7 +255,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if(item_name.size())
 			{
 				PIItem itm = inventory().GetAny(item_name.c_str());
-				CEatableItem* pItemToEat = smart_cast<CEatableItem*>(itm);
+				//CEatableItem* pItemToEat = smart_cast<CEatableItem*>(itm);
 
 				if(itm)
 				{
@@ -267,7 +267,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 						inventory().ClientEat		(itm);
 					}
 					
-					if (GameConstants::GetHUD_UsedItemTextEnabled())
+					if (GameConstants::GetHUD_UsedItemTextEnabled() && !inventory().ItmHasAnim(itm))
 					{
 						SDrawStaticStruct* _s = CurrentGameUI()->AddCustomStatic("item_used", true);
 						string1024					str;

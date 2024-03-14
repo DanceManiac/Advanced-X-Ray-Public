@@ -227,7 +227,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 			}
 			
 			PIItem iitem = smart_cast<CInventoryItem*>(Obj);
-			CEatableItem* pItemToEat = smart_cast<CEatableItem*>(iitem);
+			//CEatableItem* pItemToEat = smart_cast<CEatableItem*>(iitem);
 
 			R_ASSERT( iitem );
 
@@ -244,16 +244,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 				inventory().Ruck( iitem ); 
 				break;//2
 			case GEG_PLAYER_ITEM_EAT:
-				if (pItemToEat)
-				{
-					if (pItemToEat->m_bHasAnimation)
-					{
-						if (!Actor()->m_bEatAnimActive)
-							inventory().ChooseItmAnimOrNot(iitem);
-					}
-					else
-						inventory().Eat(iitem);
-				}
+				inventory().ChooseItmAnimOrNot(iitem);
 				break;//2
 			}//switch
 

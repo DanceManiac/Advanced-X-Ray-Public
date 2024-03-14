@@ -254,7 +254,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				{
 					inventory().ChooseItmAnimOrNot(itm);
 
-					if (GameConstants::GetHUD_UsedItemTextEnabled())
+					if (GameConstants::GetHUD_UsedItemTextEnabled() && !inventory().ItmHasAnim(itm))
 					{
 						SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
 						_s->m_endTime = Device.fTimeGlobal + 3.0f;

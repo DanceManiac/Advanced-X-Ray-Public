@@ -1392,15 +1392,28 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 void CInventory::ChooseItmAnimOrNot(PIItem pIItem)
 {
 	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
-	if (!pItemToEat) return;
+	if (!pItemToEat) 
+		return;
+
+	if (ItmHasAnim(pItemToEat))
+		pItemToEat->HideWeapon();
+	else
+		Eat(pItemToEat);
+}
+
+bool CInventory::ItmHasAnim(PIItem pIItem)
+{
+	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
+	if (!pItemToEat) 
+		return false;
 
 	bool HasAnim = pItemToEat->m_bHasAnimation;
 	bool AnimSect = pItemToEat->anim_sect != nullptr;
 
 	if (HasAnim && AnimSect)
-		pItemToEat->HideWeapon();
+		return true;
 	else
-		Eat(pItemToEat);
+		return false;
 }
 
 bool CInventory::Eat(PIItem pIItem)

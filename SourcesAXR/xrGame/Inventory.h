@@ -130,6 +130,7 @@ public:
 	bool					IsSlotBlocked(PIItem const iitem) const;
 
 	void					ChooseItmAnimOrNot	(PIItem pIItem);
+	bool					ItmHasAnim			(PIItem pIItem);
 	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 	void					TakeItemAnim		(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 

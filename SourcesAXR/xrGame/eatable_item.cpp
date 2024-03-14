@@ -179,8 +179,15 @@ void CEatableItem::UpdateInRuck(CActor* actor)
 
 void CEatableItem::HideWeapon()
 {
+	if (Actor()->m_bActionAnimInProcess || m_bActivated || m_bItmStartAnim)
+		return;
+
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+	CWeapon* pWpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+	
+	if (pWpn && !(pWpn->GetState() == CWeapon::eIdle))
+		return;
 
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 
@@ -188,9 +195,6 @@ void CEatableItem::HideWeapon()
 		pDet->HideDetector(true);
 
 	m_bItmStartAnim = true;
-
-	if (!Actor()->inventory_disabled())
-		CurrentGameUI()->HideActorMenu();
 }
 
 void CEatableItem::StartAnimation()
@@ -268,7 +272,10 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 	CEffectorCam* effector = actor->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
 
-	if (m_bItmStartAnim && actor->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()))
+	if (!Actor()->inventory_disabled() && m_bItmStartAnim)
+		CurrentGameUI()->HideActorMenu();
+
+	if (m_bItmStartAnim && actor->inventory().GetActiveSlot() == NO_ACTIVE_SLOT && (!pDet || pDet->IsHidden()) && !m_bActivated)
 		StartAnimation();
 
 	if (!IsActorAlive)

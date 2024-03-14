@@ -111,6 +111,7 @@ public:
 	void					SetSlotsBlocked		(u16 mask, bool bBlock);
 
 	void					ChooseItmAnimOrNot	(PIItem pIItem);
+	bool					ItmHasAnim			(PIItem pIItem);
 	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 	void					TakeItemAnim		(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 

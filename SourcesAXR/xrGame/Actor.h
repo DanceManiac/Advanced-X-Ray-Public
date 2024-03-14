@@ -830,7 +830,6 @@ public:
 	float					GetDevicesPsyFactor() { return m_fDevicesPsyFactor; }
 	void					SetDevicesPsyFactor(float psy_factor) { m_fDevicesPsyFactor = psy_factor; }
 
-	bool					m_bEatAnimActive;
 	bool					m_bActionAnimInProcess;
 	CActorSkills*			ActorSkills;
 	CTimerManager*			TimerManager;
