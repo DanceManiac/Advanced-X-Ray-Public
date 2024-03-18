@@ -452,6 +452,7 @@ void CActor::cam_Update(float dt, float fFOV)
 			Cameras().ApplyDevice	(_viewport_near);
 		}
 	}
+	collide::rq_result RQ = Level().GetPickResult(Device.vCameraPosition, Device.vCameraDirection, 1000.0f, Level().CurrentControlEntity());
 }
 
 // shot effector stuff

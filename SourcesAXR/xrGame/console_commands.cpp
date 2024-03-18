@@ -149,6 +149,8 @@ extern bool		g_saves_locked;
 extern BOOL		m_b_animated_backpack;
 static BOOL		m_b_last_animated_backpack_status = m_b_animated_backpack;
 
+extern BOOL		g_dbgShowMaterialInfo;
+
 //Custom commands for scripts
 
 const int I_SCRIPT_CMDS_COUNT = GameConstants::GetIntScriptCMDCount();
@@ -2485,6 +2487,8 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
+
+		CMD4(CCC_Integer,		"dbg_show_material_info", &g_dbgShowMaterialInfo, 0, 1);
 	}
 
 	CMD3(CCC_Mask,		"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);

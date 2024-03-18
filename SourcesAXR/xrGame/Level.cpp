@@ -56,6 +56,7 @@
 
 #include "UIGameCustom.h"
 #include "ui/UIPdaWnd.h"
+#include "ui/UIStatic.h"
 #include "UICursor.h"
 #include "PDA.h"
 
@@ -87,6 +88,7 @@
 extern CUISequencer * g_tutorial;
 extern CUISequencer * g_tutorial2;
 
+BOOL g_dbgShowMaterialInfo = FALSE;
 
 float		g_cl_lvInterp		= 0.1;
 u32			lvInterpSteps		= 0;
@@ -1398,6 +1400,15 @@ CZoneList::~CZoneList()
 
 ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
 {
+	SDrawStaticStruct* _s = nullptr;
+	string2048 a = "";
+
+	if (g_dbgShowMaterialInfo)
+	{
+		_s = CurrentGameUI()->AddCustomStatic("item_used", true);
+		_s->m_endTime = Device.fTimeGlobal + 3.0f;
+	}
+
 	collide::rq_result* RQ = (collide::rq_result*)params;
 	if (result.O)
 	{
@@ -1417,6 +1428,13 @@ ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
 	{
 		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
 		SGameMtl* pMtl = GMLib.GetMaterialByIdx(T->material);
+
+		if (_s)
+		{
+			sprintf_s(a, "Material: %s", GMLib.GetMaterialByIdx(T->material)->m_Name.c_str());
+			_s->wnd()->TextItemControl()->SetText(a);
+		}
+
 		if (pMtl && (pMtl->Flags.is(SGameMtl::flPassable) || pMtl->Flags.is(SGameMtl::flActorObstacle)))
 			return TRUE;
 	}
@@ -1428,7 +1446,7 @@ collide::rq_result CLevel::GetPickResult(Fvector pos, Fvector dir, float range, 
 {
 	collide::rq_result        RQ; RQ.set(NULL, range, -1);
 	collide::rq_results        RQR;
-	collide::ray_defs    RD(pos, dir, RQ.range, CDB::OPT_FULL_TEST, collide::rqtBoth);
+	collide::ray_defs    RD(pos, dir, RQ.range, CDB::OPT_ONLYNEAREST, collide::rqtBoth);
 	Level().ObjectSpace.RayQuery(RQR, RD, GetPickDist_Callback, &RQ, NULL, ignore);
 	return RQ;
 }

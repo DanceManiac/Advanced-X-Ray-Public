@@ -147,6 +147,8 @@ extern bool		g_saves_locked;
 extern BOOL		m_b_animated_backpack;
 static BOOL		m_b_last_animated_backpack_status = m_b_animated_backpack;
 
+extern BOOL		g_dbgShowMaterialInfo;
+
 //Custom commands for scripts
 
 const int I_SCRIPT_CMDS_COUNT = GameConstants::GetIntScriptCMDCount();
