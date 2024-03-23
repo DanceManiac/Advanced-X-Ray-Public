@@ -3,6 +3,10 @@
 #include "ParticlesObject.h"
 #include "GamePersistent.h"
 #include "../xrEngine/LightAnimLibrary.h"
+
+#include "Actor.h"
+#include "AdvancedXrayGameConstants.h"
+
 /*
 CZoneCampfire* g_zone = NULL;
 void turn_zone()
@@ -107,6 +111,14 @@ void CZoneCampfire::shedule_Update(u32	dt	)
 		m_pIdleParticles->UpdateParent(XFORM(),vel);
 	}
 	inherited::shedule_Update(dt);
+
+	if (Actor() && GameConstants::GetActorFrostbite())
+	{
+		float dist_to_actor = Actor()->Position().distance_to_sqr(Position());
+
+		if (is_on() && dist_to_actor <= 3.f)
+			Actor()->SetHeatingStatus(true, RelativePower(dist_to_actor));
+	}
 }
 
 

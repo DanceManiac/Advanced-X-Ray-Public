@@ -39,6 +39,7 @@ CCustomBackpack::CCustomBackpack()
 	m_fAlcoholismRestoreSpeed	= 0.0f;
 	m_fNarcotismRestoreSpeed	= 0.0f;
 	m_fPsyHealthRestoreSpeed	= 0.0f;
+	m_fFrostbiteRestoreSpeed	= 0.0f;
 
 	m_fJumpSpeed				= 1.0f;
 	m_fWalkAccel				= 1.0f;
@@ -80,6 +81,7 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fAlcoholismRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "alcoholism_restore_speed", 0.0f);
 	m_fNarcotismRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed", 0.0f);
 	m_fPsyHealthRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed", 0.0f);
+	m_fFrostbiteRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "frostbite_restore_speed", 0.0f);
 
 	m_fJumpSpeed				= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
@@ -292,6 +294,7 @@ bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "alcoholism_restore_speed", &CInifile::r_float, m_fAlcoholismRestoreSpeed, test);
 	result |= process_if_exists(section, "narcotism_restore_speed", &CInifile::r_float, m_fNarcotismRestoreSpeed, test);
 	result |= process_if_exists(section, "psy_health_restore_speed", &CInifile::r_float, m_fPsyHealthRestoreSpeed, test);
+	result |= process_if_exists(section, "frostbite_restore_speed", &CInifile::r_float, m_fFrostbiteRestoreSpeed, test);
 	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);

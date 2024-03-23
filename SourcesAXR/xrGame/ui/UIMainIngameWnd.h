@@ -45,6 +45,8 @@ public:
 	CUIStatic*			m_ind_narcotism;
 	CUIStatic*			m_ind_psy_health;
 	CUIStatic*			m_ind_filter_dirty;
+	CUIStatic*			m_ind_frostbite;
+	CUIStatic*			m_ind_heating;
 	CUIStatic*			m_ind_weapon_broken;
 	CUIStatic*			m_ind_helmet_broken;
 	CUIStatic*			m_ind_outfit_broken;
@@ -67,6 +69,7 @@ public:
 	CUIStatic*			m_ind_boost_hangover;
 	CUIStatic*			m_ind_boost_narcotism;
 	CUIStatic*			m_ind_boost_withdrawal;
+	CUIStatic*			m_ind_boost_frostbite;
 
 	CUIStatic*			m_ind_battery;
 

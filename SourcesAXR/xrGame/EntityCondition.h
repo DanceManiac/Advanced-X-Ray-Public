@@ -26,6 +26,7 @@ enum EBoostParams
 	eBoostDrugsRestore,
 	eBoostNarcotismRestore,
 	eBoostWithdrawalRestore,
+	eBoostFrostbiteRestore,
 	eBoostMaxWeight,
 	eBoostRadiationProtection,
 	eBoostTelepaticProtection,
@@ -60,6 +61,7 @@ static const LPCSTR ef_boosters_section_names[] =
 	"boost_drugs_restore",
 	"boost_narcotism_restore",
 	"boost_withdrawal_restore",
+	"boost_frostbite_restore",
 	"boost_max_weight",
 	"boost_radiation_protection",
 	"boost_telepat_protection",
@@ -97,6 +99,7 @@ struct SMedicineInfluenceValues
 	float fHangover;
 	float fNarcotism;
 	float fWithdrawal;
+	float fFrostbite;
 	float fRadiation;
 	float fPsyHealth;
 	float fWoundsHeal;
@@ -156,6 +159,7 @@ public:
 	IC float				GetHangover				() const			{return m_fHangover;}
 	IC float				GetNarcotism			() const			{return m_fNarcotism;}
 	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
+	IC float				GetFrostbite			() const			{return m_fFrostbite;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -172,6 +176,7 @@ public:
 	virtual void			ChangeNarcotism			(const float value)		{};
 	virtual void			ChangeWithdrawal		(const float value)		{};
 	virtual void 			ChangeDrugs				(const float value)		{};
+	virtual void			ChangeFrostbite			(const float value)		{};
 	void 					ChangeHealth			(const float value);
 	void 					ChangePower				(const float value);
 	void 					ChangeRadiation			(const float value);
@@ -249,6 +254,7 @@ protected:
 	float m_fHangover;				//Похмелье
 	float m_fNarcotism;				//Наркомания
 	float m_fWithdrawal;			//Ломка
+	float m_fFrostbite;				//Обморожение
 
 	//максимальные величины
 	//	float m_fSatietyMax;

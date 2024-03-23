@@ -20,6 +20,7 @@
 #define effSleepeness			(eStartEffectorID+12)
 #define effUseItem				(eStartEffectorID+13)
 #define effDrugs				(eStartEffectorID+14)
+#define effFrostbite			(eStartEffectorID+15)
 
 #define effPoltergeistTeleDetectStartEffect 2048
 // warning: ~50 constants after effPoltergeistTeleDetectStartEffect are reserved for poltergeists

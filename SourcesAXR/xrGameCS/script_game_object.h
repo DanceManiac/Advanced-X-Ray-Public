@@ -197,6 +197,7 @@ public:
 	_DECLARE_FUNCTION10	(GetNarcotism		,			float);
 	_DECLARE_FUNCTION10	(GetWithdrawal		,			float);
 	_DECLARE_FUNCTION10	(GetAlcohol			,			float);
+	_DECLARE_FUNCTION10	(GetFrostbite		,			float);
 
 	_DECLARE_FUNCTION11	(SetHealth,			void, float);
 	_DECLARE_FUNCTION11	(SetPsyHealth,		void, float);
@@ -214,6 +215,7 @@ public:
 	_DECLARE_FUNCTION11	(ChangeNarcotism,	void, float);
 	_DECLARE_FUNCTION11	(ChangeWithdrawal,	void, float);
 	_DECLARE_FUNCTION11	(ChangeAlcohol,		void, float);
+	_DECLARE_FUNCTION11	(ChangeFrostbite,	void, float);
 
 			void				set_fov				(float new_fov);
 			void				set_range			(float new_range);

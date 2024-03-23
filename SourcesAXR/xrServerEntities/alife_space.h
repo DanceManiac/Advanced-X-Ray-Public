@@ -123,6 +123,7 @@ namespace ALife {
 		eNarcotismRestoreSpeed,
 		eWithdrawalRestoreSpeed,
 		ePsyHealthRestoreSpeed,
+		eFrostbiteRestoreSpeed,
 		ePowerRestoreSpeed,
 		eBleedingRestoreSpeed,
 		eRadiationRestoreSpeed,

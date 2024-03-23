@@ -110,6 +110,7 @@ void CArtefact::Load(LPCSTR section)
 	m_fConstAlcoholismRestoreSpeed = pSettings->r_float(section, "alcoholism_restore_speed") * m_iAfRank;
 	m_fConstNarcotismRestoreSpeed = pSettings->r_float(section, "narcotism_restore_speed") * m_iAfRank;
 	m_fConstPsyHealthRestoreSpeed = pSettings->r_float(section, "psy_health_restore_speed") * m_iAfRank;
+	m_fConstFrostbiteRestoreSpeed = pSettings->r_float(section, "frostbite_restore_speed") * m_iAfRank;
 	m_fConstAdditionalWeight = pSettings->r_float(section, "additional_inventory_weight") * m_iAfRank;
 
 	m_fChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "artefact_charge_level", 1.0f);
@@ -138,6 +139,7 @@ void CArtefact::Load(LPCSTR section)
 	m_fAlcoholismRestoreSpeed = m_fConstAlcoholismRestoreSpeed;
 	m_fNarcotismRestoreSpeed = m_fConstNarcotismRestoreSpeed;
 	m_fPsyHealthRestoreSpeed = m_fConstPsyHealthRestoreSpeed;
+	m_fFrostbiteRestoreSpeed = m_fConstFrostbiteRestoreSpeed;
 	m_additional_weight = m_fConstAdditionalWeight;
 	m_fJumpSpeed = m_fConstJumpSpeed;
 	m_fWalkAccel = m_fConstWalkAccel;
@@ -267,6 +269,7 @@ void CArtefact::save(NET_Packet &packet)
 	save_data(m_fAlcoholismRestoreSpeed, packet);
 	save_data(m_fNarcotismRestoreSpeed, packet);
 	save_data(m_fPsyHealthRestoreSpeed, packet);
+	save_data(m_fFrostbiteRestoreSpeed, packet);
 	save_data(m_additional_weight, packet);
 	save_data(m_fJumpSpeed, packet);
 	save_data(m_fWalkAccel, packet);
@@ -291,6 +294,7 @@ void CArtefact::load(IReader &packet)
 	load_data(m_fAlcoholismRestoreSpeed, packet);
 	load_data(m_fNarcotismRestoreSpeed, packet);
 	load_data(m_fPsyHealthRestoreSpeed, packet);
+	load_data(m_fFrostbiteRestoreSpeed, packet);
 	load_data(m_additional_weight, packet);
 	load_data(m_fJumpSpeed, packet);
 	load_data(m_fWalkAccel, packet);
@@ -376,6 +380,8 @@ void CArtefact::UpdateDegradation()
 		m_fNarcotismRestoreSpeed = (m_fConstNarcotismRestoreSpeed / 100) * percent;
 	if (m_fPsyHealthRestoreSpeed > 0.0f && m_fConstPsyHealthRestoreSpeed > 0.0f)
 		m_fPsyHealthRestoreSpeed = (m_fConstPsyHealthRestoreSpeed / 100) * percent;
+	if (m_fFrostbiteRestoreSpeed > 0.0f && m_fConstFrostbiteRestoreSpeed > 0.0f)
+		m_fFrostbiteRestoreSpeed = (m_fConstFrostbiteRestoreSpeed / 100) * percent;
 	if (m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
 		m_additional_weight = (m_fConstAdditionalWeight / 100) * percent;
 	if (m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)

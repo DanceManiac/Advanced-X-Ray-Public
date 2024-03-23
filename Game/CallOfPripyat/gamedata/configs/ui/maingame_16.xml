@@ -24,6 +24,10 @@
 		<texture>ui_hud_icon_weapon</texture>
 	</weapon_jammed_static>
 
+	<indicator_heating x="15" y="550" width="29" height="33" stretch="1"/>
+	
+	<indicator_frostbite x="940" y="590" width="26" height="35" stretch="1"/>
+	
     <indicator_psy_health x="980" y="30" width="26" height="35" stretch="1"/>
     <indicator_filter x="980" y="70" width="26" height="35" stretch="1"/>
     <indicator_narcotism x="980" y="110" width="26" height="35" stretch="1"/>
@@ -91,6 +95,9 @@
 	<indicator_booster_withdrawal x="285" y="610" width="24" height="41" stretch="1">
 		<texture>ui_inGame2_shield_Withdrawal</texture>
 	</indicator_booster_withdrawal>
+	<indicator_booster_frostbite x="319" y="610" width="24" height="41" stretch="1">
+		<texture>ui_inGame2_shield_Frostbite</texture>
+	</indicator_booster_frostbite>
 	
 <!--
 	<radiation_static x="0" y="0" width="53" height="64" stretch="1">

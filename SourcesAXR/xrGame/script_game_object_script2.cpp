@@ -86,6 +86,7 @@ class_<CScriptGameObject> script_register_game_object1(class_<CScriptGameObject>
 		.property("hangover",				&CScriptGameObject::GetHangover,		&CScriptGameObject::ChangeHangover)
 		.property("narcotism",				&CScriptGameObject::GetNarcotism,		&CScriptGameObject::ChangeNarcotism)
 		.property("withdrawal",				&CScriptGameObject::GetWithdrawal,		&CScriptGameObject::ChangeWithdrawal)
+		.property("frostbite",				&CScriptGameObject::GetFrostbite,		&CScriptGameObject::ChangeFrostbite)
 
 //		.def("get_bleeding",				&CScriptGameObject::GetBleeding)
 		.def("center",						&CScriptGameObject::Center)

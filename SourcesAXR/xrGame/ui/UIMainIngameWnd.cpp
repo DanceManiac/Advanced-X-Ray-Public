@@ -177,6 +177,8 @@ void CUIMainIngameWnd::Init()
 	m_ind_outfit_broken		= UIHelper::CreateStatic(uiXml, "indicator_outfit_broken", this);
 	m_ind_overweight		= UIHelper::CreateStatic(uiXml, "indicator_overweight", this);
 	m_ind_battery			= UIHelper::CreateStatic(uiXml, "indicator_torch_battery", this);
+	m_ind_frostbite			= UIHelper::CreateStatic(uiXml, "indicator_frostbite", this);
+	m_ind_heating			= UIHelper::CreateStatic(uiXml, "indicator_heating", this);
 
 	m_ind_boost_psy			= UIHelper::CreateStatic(uiXml, "indicator_booster_psy", this);
 	m_ind_boost_radia		= UIHelper::CreateStatic(uiXml, "indicator_booster_radia", this);
@@ -196,6 +198,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_hangover	= UIHelper::CreateStatic(uiXml, "indicator_booster_hangover", this);
 	m_ind_boost_narcotism	= UIHelper::CreateStatic(uiXml, "indicator_booster_narcotism", this);
 	m_ind_boost_withdrawal	= UIHelper::CreateStatic(uiXml, "indicator_booster_withdrawal", this);
+	m_ind_boost_frostbite	= UIHelper::CreateStatic(uiXml, "indicator_booster_frostbite", this);
 
 	m_ind_boost_psy			->Show(false);
 	m_ind_boost_radia		->Show(false);
@@ -214,6 +217,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_hangover	->Show(false);
 	m_ind_boost_narcotism	->Show(false);
 	m_ind_boost_withdrawal	->Show(false);
+	m_ind_boost_frostbite	->Show(false);
 	
 	// Загружаем иконки 
 /*	if ( IsGameTypeSingle() )
@@ -1040,6 +1044,41 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 		}
 	}
 
+	// M.F.S. Team Frostbite icon
+	float frostbite = pActor->conditions().GetFrostbite();
+	if (frostbite < 0.25f || !GameConstants::GetActorFrostbite())
+	{
+		m_ind_frostbite->Show(false);
+	}
+	else
+	{
+		m_ind_frostbite->Show(true);
+		if (frostbite >= 0.25f && frostbite < 0.5f)
+		{
+			m_ind_frostbite->InitTexture("ui_inGame2_circle_frostbite_green");
+		}
+		else if (frostbite >= 0.5f && frostbite < 0.75f)
+		{
+			m_ind_frostbite->InitTexture("ui_inGame2_circle_frostbite_yellow");
+		}
+		else
+		{
+			m_ind_frostbite->InitTexture("ui_inGame2_circle_frostbite_red");
+		}
+	}
+
+	// M.F.S. Team Heating icon
+	float heating = pActor->GetCurrentHeating();
+	if (fis_zero(heating, EPS) || !GameConstants::GetActorFrostbite())
+	{
+		m_ind_heating->Show(false);
+	}
+	else
+	{
+		m_ind_heating->Show(true);
+		m_ind_heating->InitTexture("ui_inGame2_triangle_heating_green");
+	}
+
 // Armor broken icon
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(pActor->inventory().ItemFromSlot(OUTFIT_SLOT));
 	m_ind_outfit_broken->Show(false);
@@ -1410,6 +1449,12 @@ void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
 		m_ind_boost_withdrawal->Draw();
 	}
 
+	if (m_ind_boost_frostbite->IsShown())
+	{
+		m_ind_boost_frostbite->Update();
+		m_ind_boost_frostbite->Draw();
+	}
+
 	if (UIArtefactsPanel && UIArtefactsPanel->GetShowInInventory() && UIArtefactsPanel->IsShown())
 		UIArtefactsPanel->Draw();
 
@@ -1435,6 +1480,7 @@ void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBoost
 	m_ind_boost_hangover->Show(false);
 	m_ind_boost_narcotism->Show(false);
 	m_ind_boost_withdrawal->Show(false);
+	m_ind_boost_frostbite->Show(false);
 
 	LPCSTR str_flag	= "ui_slow_blinking_alpha";
 	u8 flags = 0;
@@ -1601,6 +1647,15 @@ void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBoost
 						m_ind_boost_withdrawal->SetColorAnimation(str_flag, flags);
 					else
 						m_ind_boost_withdrawal->ResetColorAnimation();
+				}
+				break;
+			case eBoostFrostbiteRestore:
+				{
+					m_ind_boost_frostbite->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_frostbite->SetColorAnimation(str_flag, flags);
+					else
+						m_ind_boost_frostbite->ResetColorAnimation();
 				}
 				break;
 		}

@@ -849,6 +849,10 @@ public:
 	void					ChangeInventoryFullness(float val);
 	u16						GetLastActiveSlot	() { return m_last_active_slot; }
 
+	bool					SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
+	bool					GetHeatingStatus	() const { return m_bHeating; }
+	float					GetCurrentHeating	() const { return m_fHeatingPower; }
+
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;
@@ -865,6 +869,9 @@ protected:
 	float					m_fInventoryCapacity;
 	float					m_fInventoryFullness;
 	float					m_fInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
+
+	bool					m_bHeating;
+	float					m_fHeatingPower;
 
 	u16						m_last_active_slot;
 

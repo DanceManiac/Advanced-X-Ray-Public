@@ -64,7 +64,9 @@ LPCSTR ef_quick_eat_values_names[] =
 	"eat_hangover",
 	"eat_drugs",
 	"eat_narcotism",
-	"eat_withdrawal"
+	"eat_withdrawal",
+
+	"eat_frostbite"
 };
 
 LPCSTR quick_eat_influence_caption[] =
@@ -91,7 +93,9 @@ LPCSTR quick_eat_influence_caption[] =
 	"ui_inv_hangover",
 	"ui_inv_drugs",
 	"ui_inv_narcotism",
-	"ui_inv_withdrawal"
+	"ui_inv_withdrawal",
+
+	"ui_inv_frostbite"
 };
 
 LPCSTR ef_quick_eat_nodes_names[] =
@@ -118,7 +122,9 @@ LPCSTR ef_quick_eat_nodes_names[] =
 	"quick_eat_hangover",
 	"quick_eat_drugs",
 	"quick_eat_narcotism",
-	"quick_eat_withdrawal"
+	"quick_eat_withdrawal",
+
+	"quick_eat_frostbite"
 };
 
 LPCSTR ef_boosters_values_names[] =
@@ -138,6 +144,7 @@ LPCSTR ef_boosters_values_names[] =
 	"boost_drugs_restore",
 	"boost_narcotism_restore",
 	"boost_withdrawal_restore",
+	"boost_frostbite_restore",
 	"boost_max_weight",
 	"boost_radiation_protection",
 	"boost_telepat_protection",
@@ -170,6 +177,7 @@ LPCSTR boost_influence_caption[] =
 	"ui_inv_drugs",
 	"ui_inv_narcotism",
 	"ui_inv_withdrawal",
+	"ui_inv_frostbite",
 	"ui_inv_outfit_additional_weight",
 	"ui_inv_outfit_radiation_protection",
 	"ui_inv_outfit_telepatic_protection",
@@ -293,6 +301,7 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 				case eBoostDrugsRestore:
 				case eBoostNarcotismRestore:
 				case eBoostWithdrawalRestore:
+				case eBoostFrostbiteRestore:
 				case eBoostMaxWeight: 
 					max_val = 1.0f;
 					break;

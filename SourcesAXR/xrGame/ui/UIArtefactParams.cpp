@@ -32,6 +32,7 @@ CUIArtefactParams::CUIArtefactParams()
 	m_fSleepenessRestoreSpeed = NULL;
 	m_fAlcoholismRestoreSpeed = NULL;
 	m_fPsyHealthRestoreSpeed = NULL;
+	m_fFrostbiteRestoreSpeed = NULL;
 	m_fWalkAccel = NULL;
 	m_fJumpSpeed = NULL;
 	m_additional_weight = NULL;
@@ -52,6 +53,7 @@ CUIArtefactParams::~CUIArtefactParams()
 	xr_delete	(m_fSleepenessRestoreSpeed);
 	xr_delete	(m_fAlcoholismRestoreSpeed);
 	xr_delete	(m_fPsyHealthRestoreSpeed);
+	xr_delete	(m_fFrostbiteRestoreSpeed);
 	xr_delete	(m_fWalkAccel);
 	xr_delete	(m_fJumpSpeed);
 	xr_delete	(m_additional_weight);
@@ -85,6 +87,7 @@ LPCSTR af_restore_section_names[] = // ALife::EConditionRestoreType
 	"sleepeness_restore_speed",		// eSleepenessRestoreSpeed=7
 	"alcoholism_restore_speed",		// eAlcoholismRestoreSpeed=8
 	"psy_health_restore_speed",		// ePsyHealthRestoreSpeed=9
+	"frostbite_restore_speed",		// eFrostbiteRestoreSpeed=10
 };
 
 LPCSTR af_immunity_caption[] =  // ALife::EInfluenceType
@@ -112,6 +115,7 @@ LPCSTR af_restore_caption[] =  // ALife::EConditionRestoreType
 	"ui_inv_sleepeness",
 	"ui_inv_alcoholism",
 	"ui_inv_psy_health",
+	"ui_inv_frostbite",
 };
 
 /*
@@ -223,6 +227,13 @@ void CUIArtefactParams::InitFromXml( CUIXml& xml )
 	m_fPsyHealthRestoreSpeed->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_psy_health").c_str();
 	m_fPsyHealthRestoreSpeed->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_fFrostbiteRestoreSpeed = xr_new<UIArtefactParamItem>();
+	m_fFrostbiteRestoreSpeed->Init(xml, "frostbite_restore_speed");
+	m_fFrostbiteRestoreSpeed->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_frostbite").c_str();
+	m_fFrostbiteRestoreSpeed->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_fWalkAccel = xr_new<UIArtefactParamItem>();
@@ -459,6 +470,19 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_fPsyHealthRestoreSpeed->GetWndSize().y;
 			AttachChild(m_fPsyHealthRestoreSpeed);
+		}
+
+		val = artefact->m_fFrostbiteRestoreSpeed;
+		if (!fis_zero(val))
+		{
+			m_fFrostbiteRestoreSpeed->SetValue(val, 1);
+
+			pos.set(m_fFrostbiteRestoreSpeed->GetWndPos());
+			pos.y = h;
+			m_fFrostbiteRestoreSpeed->SetWndPos(pos);
+
+			h += m_fFrostbiteRestoreSpeed->GetWndSize().y;
+			AttachChild(m_fFrostbiteRestoreSpeed);
 		}
 
 		val = artefact->m_fWalkAccel;

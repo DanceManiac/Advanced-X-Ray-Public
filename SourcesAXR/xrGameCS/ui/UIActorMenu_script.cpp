@@ -161,7 +161,8 @@ void CUIActorMenu::script_register(lua_State* L)
 				.def_readonly("m_ind_boost_alcoholism", &CUIMainIngameWnd::m_ind_boost_alcoholism)
 				.def_readonly("m_ind_boost_hangover",	&CUIMainIngameWnd::m_ind_boost_hangover)
 				.def_readonly("m_ind_boost_narcotism",	&CUIMainIngameWnd::m_ind_boost_narcotism)
-				.def_readonly("m_ind_boost_withdrawal", &CUIMainIngameWnd::m_ind_boost_withdrawal),
+				.def_readonly("m_ind_boost_withdrawal", &CUIMainIngameWnd::m_ind_boost_withdrawal)
+				.def_readonly("m_ind_boost_frostbite",	&CUIMainIngameWnd::m_ind_boost_frostbite),
  			class_< CUIZoneMap >("CUIZoneMap")
 				.def(constructor<>())
 				.def_readonly("visible",			&CUIZoneMap::visible)

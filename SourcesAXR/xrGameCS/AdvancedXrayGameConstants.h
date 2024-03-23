@@ -20,6 +20,7 @@ namespace GameConstants
 	bool GetActorSleepeness();
 	bool GetActorAlcoholism();
 	bool GetActorNarcotism();
+	bool GetActorFrostbite();
 	bool GetArtefactsDegradation();
 	bool GetShowWpnInfo();
 	bool GetJumpSpeedWeightCalc();

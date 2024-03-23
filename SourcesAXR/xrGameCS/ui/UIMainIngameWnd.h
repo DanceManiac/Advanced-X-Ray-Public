@@ -64,6 +64,7 @@ public:
 	CUIStatic*			m_ind_boost_hangover;
 	CUIStatic*			m_ind_boost_narcotism;
 	CUIStatic*			m_ind_boost_withdrawal;
+	CUIStatic*			m_ind_boost_frostbite;
 
 	//иконка, показывающая количество активных PDA
 //	CUIStatic			UIPdaOnline;
@@ -119,6 +120,8 @@ protected:
 	CUIStatic			UIInvincibleIcon;
 //	CUIStatic			UISleepIcon;
 	CUIStatic			UIArtefactIcon;
+	CUIStatic			UIFrostbiteIcon;
+	CUIStatic			UIHeatingIcon;
 
 	CUIScrollView*		m_UIIcons;
 	CUIWindow*			m_pMPChatWnd;
@@ -133,9 +136,11 @@ public:
 		ewiWeaponJammed,
 //		ewiRadiation,
 //		ewiWound,
+		ewiFrostbite,
 		ewiStarvation,
 //		ewiPsyHealth,
 //		ewiSleep,
+		ewiHeating,
 		ewiInvincible,
 		ewiArtefact,
 	};

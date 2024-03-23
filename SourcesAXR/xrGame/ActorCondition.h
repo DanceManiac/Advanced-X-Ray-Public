@@ -31,6 +31,7 @@ private:
 			eCriticalHangoverReached		=(1<<13),
 			eCriticalNarcotismReached		=(1<<14),
 			eCriticalWithdrawalReached		=(1<<15),
+			eCriticalFrostbiteReached		=(1<<16),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -44,6 +45,7 @@ private:
 			void 		UpdateAlcoholism			();
 			void 		UpdateNarcotism				();
 			void 		UpdatePsyHealth				();
+			void 		UpdateFrostbite				();
 	virtual void		UpdateRadiation				();
 public:
 						CActorCondition				(CActor *object);
@@ -69,6 +71,7 @@ public:
 	virtual void 		ChangeWithdrawal			(const float value);
 	virtual void 		ChangeDrugs					(const float value);
 	virtual void 		ChangePsyHealth				(const float value);
+	virtual void 		ChangeFrostbite				(const float value);
 
 	void 				BoostParameters				(const SBooster& B, bool need_change_tf = true);
 	void 				DisableBoostParameters		(const SBooster& B);
@@ -105,6 +108,7 @@ public:
 	void				BoostDrugsRestore			(const float value);
 	void				BoostNarcotismRestore		(const float value);
 	void				BoostWithdrawalRestore		(const float value);
+	void				BoostFrostbiteRestore		(const float value);
 	BOOSTER_MAP			GetCurBoosterInfluences		() {return m_booster_influences;};
 
 	// хромание при потере сил и здоровья
@@ -132,6 +136,7 @@ public:
 			float	xr_stdcall	GetNarcotism		() { return m_fNarcotism; }
 			float	xr_stdcall	GetWithdrawal		() { return m_fWithdrawal; }
 			float	xr_stdcall	GetDrugs			() { return m_fDrugs; }
+			float	xr_stdcall	GetFrostbite		() { return m_fFrostbite; }
 
 			void		AffectDamage_InjuriousMaterialAndMonstersInfluence();
 			float		GetInjuriousMaterialDamage	();
@@ -167,6 +172,9 @@ public:
 	IC		float const&	V_Hangover				() { return m_fV_Hangover; }
 	IC		float const&	V_Narcotism				() { return m_fV_Narcotism; }
 	IC		float const&	V_Withdrawal			() { return m_fV_Withdrawal; }
+	IC		float const&	V_Frostbite				() { return m_fV_Frostbite; }
+	IC		float const&	V_FrostbiteHealth		() { return m_fV_FrostbiteHealth; }
+	IC		float const&	FrostbiteCritical		() { return m_fFrostbiteCritical; }
 	
 	float	GetZoneMaxPower							(ALife::EInfluenceType type) const;
 	float	GetZoneMaxPower							(ALife::EHitType hit_type) const;
@@ -223,6 +231,11 @@ public:
 	float m_fV_PsyHealth_Health;
 	bool m_bPsyHealthKillActor;
 
+	float m_fV_Frostbite;
+	float m_fV_FrostbiteAdd;
+	float m_fV_FrostbiteHealth;
+	float m_fFrostbiteCritical;
+
 	//Skills System
 	float m_fV_SatietySkill;
 	float m_fV_HealthSkill;
@@ -232,6 +245,7 @@ public:
 	float m_fV_ThirstSkill;
 	float m_fV_IntoxicationSkill;
 	float m_fV_SleepenessSkill;
+	float m_fV_FrostbiteSkill;
 	float m_fMaxWeightSkill;
 	float m_fJumpSpeedSkill;
 	float m_fWalkAccelSkill;

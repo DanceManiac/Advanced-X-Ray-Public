@@ -273,6 +273,9 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_fInventoryFullness	= 0.0f;
 	m_fInventoryFullnessCtrl = 0.0f;
 	m_last_active_slot		= 0;
+
+	m_bHeating				= false;
+	m_fHeatingPower			= 0.0f;
 }
 
 
@@ -674,6 +677,14 @@ void	CActor::Hit(SHit* pHDS)
 			HDS.power				= hit_power;
 			HDS.add_wound			= true;
 			inherited::Hit			(&HDS);
+
+			if (GameConstants::GetActorFrostbite())
+			{
+				if (pHDS->hit_type == ALife::eHitTypeBurn || pHDS->hit_type == ALife::eHitTypeLightBurn)
+					Actor()->SetHeatingStatus(true, hit_power);
+				else
+					Actor()->SetHeatingStatus(false);
+			}
 		}
 	}else
 	{
@@ -1981,6 +1992,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeAlcoholism	(outfit->m_fAlcoholismRestoreSpeed * f_update_time);
 		conditions().ChangeNarcotism	(outfit->m_fNarcotismRestoreSpeed * f_update_time);
 		conditions().ChangePsyHealth	(outfit->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite	(outfit->m_fFrostbiteRestoreSpeed * f_update_time);
 	}
 	else
 	{
@@ -2008,6 +2020,7 @@ void CActor::UpdateArtefactsOnBeltAndOutfit()
 		conditions().ChangeAlcoholism	(backpack->m_fAlcoholismRestoreSpeed	* f_update_time);
 		conditions().ChangeNarcotism	(backpack->m_fNarcotismRestoreSpeed		* f_update_time);
 		conditions().ChangePsyHealth	(backpack->m_fPsyHealthRestoreSpeed		* f_update_time);
+		conditions().ChangeFrostbite	(backpack->m_fFrostbiteRestoreSpeed	* f_update_time);
 	}
 }
 
@@ -2081,6 +2094,7 @@ void CActor::UpdateArtefactsOnBelt()
 			conditions().ChangeAlcoholism(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
 			conditions().ChangeNarcotism(artefact->m_fNarcotismRestoreSpeed * f_update_time);
 			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
+			conditions().ChangeFrostbite(artefact->m_fFrostbiteRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -2132,6 +2146,7 @@ void CActor::UpdateArtefactsInRuck()
 			conditions().ChangeAlcoholism(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
 			conditions().ChangeNarcotism(artefact->m_fNarcotismRestoreSpeed * f_update_time);
 			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
+			conditions().ChangeFrostbite(artefact->m_fFrostbiteRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -2201,6 +2216,7 @@ void CActor::UpdateSkills()
 		float IntoxicationRestoreSkill = conditions().m_fV_IntoxicationSkill * ActorSkills->survivalSkillLevel;
 		float SleepenessRestoreSkill = conditions().m_fV_SleepenessSkill * ActorSkills->survivalSkillLevel;
 		float RadiationRestoreSkill = conditions().m_fV_RadiationSkill * ActorSkills->survivalSkillLevel;
+		float FrostbiteRestoreSkill = conditions().m_fV_FrostbiteSkill * ActorSkills->survivalSkillLevel;
 
 		conditions().ChangeBleeding(BleedingRestoreSkill * f_update_time);
 		conditions().ChangeHealth(HealthRestoreSkill * f_update_time);
@@ -2210,6 +2226,7 @@ void CActor::UpdateSkills()
 		conditions().ChangeIntoxication(IntoxicationRestoreSkill * f_update_time);
 		conditions().ChangeSleepeness(SleepenessRestoreSkill * f_update_time);
 		conditions().ChangeRadiation(RadiationRestoreSkill * f_update_time);
+		conditions().ChangeFrostbite(FrostbiteRestoreSkill * f_update_time);
 	}
 }
 
@@ -2716,6 +2733,31 @@ float CActor::GetRestoreSpeed( ALife::EConditionRestoreType const& type )
 		if (backpack)
 		{
 			res += backpack->m_fPsyHealthRestoreSpeed;
+		}
+		break;
+	}
+	case ALife::eFrostbiteRestoreSpeed:
+	{
+		TIItemContainer::iterator itb = inventory().m_belt.begin();
+		TIItemContainer::iterator ite = inventory().m_belt.end();
+		for (; itb != ite; ++itb)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itb);
+			if (artefact)
+			{
+				res += artefact->m_fFrostbiteRestoreSpeed;
+			}
+		}
+		CCustomOutfit* outfit = GetOutfit();
+		if (outfit)
+		{
+			res += outfit->m_fFrostbiteRestoreSpeed;
+		}
+
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+		if (backpack)
+		{
+			res += backpack->m_fFrostbiteRestoreSpeed;
 		}
 		break;
 	}

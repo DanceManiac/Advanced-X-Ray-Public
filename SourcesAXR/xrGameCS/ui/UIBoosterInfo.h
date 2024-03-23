@@ -35,6 +35,7 @@ protected:
 		_item_boost_drugs_restore,
 		_item_boost_narcotism_restore,
 		_item_boost_withdrawal_restore,
+		_item_boost_frostbite_restore,
 		_item_boost_max_weight,
 		_item_boost_radiation_protection,
 		_item_boost_telepat_protection,
@@ -80,6 +81,8 @@ protected:
 		_item_quick_drugs,
 		_item_quick_narcotism,
 		_item_quick_withdrawal,
+
+		_item_quick_frostbite,
 
 		eQuickItemLast
 	};

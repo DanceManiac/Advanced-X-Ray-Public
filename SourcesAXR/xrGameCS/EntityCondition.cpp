@@ -100,6 +100,7 @@ CEntityCondition::CEntityCondition(CEntityAlive *object)
 	m_fHangover				= 0.0f;
 	m_fNarcotism			= 0.0f;
 	m_fWithdrawal			= 0.0f;
+	m_fFrostbite			= 0.0f;
 }
 
 CEntityCondition::~CEntityCondition(void)
@@ -651,7 +652,8 @@ bool CEntityCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const s
 	ChangeNarcotism	(V.fNarcotism);
 	ChangeWithdrawal(V.fWithdrawal);
 	ChangeDrugs		(V.fDrugs);
-	ChangePsyHealth(V.fPsyHealth);
+	ChangePsyHealth (V.fPsyHealth);
+	ChangeFrostbite	(V.fFrostbite);
 	return true;
 }
 
@@ -674,6 +676,7 @@ void SMedicineInfluenceValues::Load(const shared_str& sect)
 	fWithdrawal = pSettings->r_float(sect.c_str(), "eat_withdrawal");
 	fRadiation = pSettings->r_float(sect.c_str(), "eat_radiation");
 	fPsyHealth = pSettings->r_float(sect.c_str(), "eat_psy_health");
+	fFrostbite = pSettings->r_float(sect.c_str(), "eat_frostbite");
 	fWoundsHeal = pSettings->r_float(sect.c_str(), "wounds_heal_perc");
 	clamp			(fWoundsHeal, 0.f, 1.f);
 	fMaxPowerUp		= READ_IF_EXISTS	(pSettings,r_float,sect.c_str(),	"eat_max_power",0.0f);
@@ -716,6 +719,7 @@ void SBooster::Load(const shared_str& sect, EBoostParams type)
 	case eBoostDrugsRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_drugs_restore"); break;
 	case eBoostNarcotismRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_narcotism_restore"); break;
 	case eBoostWithdrawalRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_withdrawal_restore"); break;
+	case eBoostFrostbiteRestore: fBoostValue = pSettings->r_float(sect.c_str(), "boost_frostbite_restore"); break;
 	case eBoostTimeFactor: fBoostValue = pSettings->r_float(sect.c_str(), "boost_time_factor"); break;
 	default: NODEFAULT;
 	}

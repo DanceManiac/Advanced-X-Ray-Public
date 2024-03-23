@@ -171,6 +171,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_hangover	= UIHelper::CreateStatic(uiXml, "indicator_booster_hangover", this);
 	m_ind_boost_narcotism	= UIHelper::CreateStatic(uiXml, "indicator_booster_narcotism", this);
 	m_ind_boost_withdrawal	= UIHelper::CreateStatic(uiXml, "indicator_booster_withdrawal", this);
+	m_ind_boost_frostbite	= UIHelper::CreateStatic(uiXml, "indicator_booster_frostbite", this);
 
 	m_ind_boost_psy			->Show(false);
 	m_ind_boost_radia		->Show(false);
@@ -189,6 +190,7 @@ void CUIMainIngameWnd::Init()
 	m_ind_boost_hangover	->Show(false);
 	m_ind_boost_narcotism	->Show(false);
 	m_ind_boost_withdrawal	->Show(false);
+	m_ind_boost_frostbite	->Show(false);
 
 	// Загружаем иконки 
 	if ( IsGameTypeSingle() )
@@ -210,6 +212,12 @@ void CUIMainIngameWnd::Init()
 
 	xml_init.InitStatic			(uiXml, "invincible_static", 0, &UIInvincibleIcon);
 	UIInvincibleIcon.Show		(false);
+
+	xml_init.InitStatic			(uiXml, "frostbite_static", 0, &UIFrostbiteIcon);
+	UIFrostbiteIcon.Show		(false);
+
+	xml_init.InitStatic			(uiXml, "heating_static", 0, &UIHeatingIcon);
+	UIHeatingIcon.Show			(false);
 
 	hud_info_x					= uiXml.ReadAttribFlt("hud_info:position",		0, "x", 0.f);
 	hud_info_y					= uiXml.ReadAttribFlt("hud_info:position",		0, "y", 0.f);
@@ -248,20 +256,22 @@ void CUIMainIngameWnd::Init()
 		UIArtefactIcon.Show		(false);
 	}
 	
-	shared_str warningStrings[7] = 
+	shared_str warningStrings[10] = 
 	{	
 		"jammed",
 		"radiation",
 		"wounds",
+		"frostbite",
 		"starvation",
 		"thirst",
 		"fatigue",
-		"invincible"
+		"invincible",
+		"heating",
 		"artefact"
 	};
 
 	// Загружаем пороговые значения для индикаторов
-	EWarningIcons j = ewiStarvation;
+	EWarningIcons j = ewiWeaponJammed;
 	while (j < ewiInvincible)
 	{
 		// Читаем данные порогов для каждого индикатора
@@ -419,6 +429,15 @@ void CUIMainIngameWnd::Update()
 		SetWarningIconColor( ewiInvincible, 0x00ffffff );
 	}
 
+	if (m_pActor->GetHeatingStatus() && GameConstants::GetActorFrostbite())
+	{
+		SetWarningIconColor(ewiHeating, 0xffffffff);
+	}
+	else
+	{
+		SetWarningIconColor(ewiHeating, 0x00ffffff);
+	}
+
 	// ewiArtefact
 	if ( GameID() == eGameIDArtefactHunt && !IsGameTypeSingle())
 	{
@@ -458,7 +477,7 @@ void CUIMainIngameWnd::Update()
 
 	//	UpdateActiveItemInfo();
 
-	EWarningIcons i	= ewiStarvation;
+	EWarningIcons i	= ewiWeaponJammed;
 	while ( i <= ewiStarvation) // ewiInvincible
 	{
 		float value = 0;
@@ -485,9 +504,17 @@ void CUIMainIngameWnd::Update()
 				}
 				break;
 			}
+		case ewiFrostbite:
+			{
+				if (GameConstants::GetActorFrostbite())
+					value = m_pActor->conditions().GetFrostbite();
+
+				break;
+			}
 		case ewiStarvation:
 			value =  _max( 0.0f, 1.0f - m_pActor->conditions().GetSatiety() );
 			break;
+
 		/*case ewiPsyHealth:
 			value = 1 - m_pActor->conditions().GetPsyHealth();
 			break;
@@ -648,6 +675,12 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 		SetWarningIconColorUI	(&UIWoundIcon, cl);
 		if (bMagicFlag) break;*/
 
+	case ewiFrostbite:
+		SetWarningIconColorUI(&UIFrostbiteIcon, cl);
+		if (bMagicFlag) break;
+	case ewiHeating:
+		SetWarningIconColorUI(&UIHeatingIcon, cl);
+		if (bMagicFlag) break;
 	case ewiStarvation:
 		SetWarningIconColorUI	(&UIStarvationIcon, cl);
 		if (bMagicFlag) break;	
@@ -955,6 +988,12 @@ void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
 		m_ind_boost_withdrawal->Draw();
 	}
 
+	if (m_ind_boost_frostbite->IsShown())
+	{
+		m_ind_boost_frostbite->Update();
+		m_ind_boost_frostbite->Draw();
+	}
+
 	if (UIArtefactsPanel && UIArtefactsPanel->GetShowInInventory() && UIArtefactsPanel->IsShown())
 		UIArtefactsPanel->Draw();
 }
@@ -978,6 +1017,7 @@ void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBoost
 	m_ind_boost_hangover->Show(false);
 	m_ind_boost_narcotism->Show(false);
 	m_ind_boost_withdrawal->Show(false);
+	m_ind_boost_frostbite->Show(false);
 
 	LPCSTR str_flag	= "ui_slow_blinking_alpha";
 
@@ -1140,6 +1180,15 @@ void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBoost
 						m_ind_boost_withdrawal->SetClrLightAnim(str_flag, true, true, false, true);
 					else
 						m_ind_boost_withdrawal->ResetClrAnimation();
+				}
+				break;
+			case eBoostFrostbiteRestore:
+				{
+					m_ind_boost_frostbite->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_frostbite->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_frostbite->ResetClrAnimation();
 				}
 				break;
 		}
