@@ -528,7 +528,7 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 --Оптимизация ландшафта
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_terrain_landscape", _st)
-	ctl  xml:InitCheck("video_adv:check_terrain_landscape", _st)
+	ctl = xml:InitCheck("video_adv:check_terrain_landscape", _st)
 	handler.m_preconditions[ctl] = only_3_and_more_mode
 
 --Многопоточная загрузка текстур	
