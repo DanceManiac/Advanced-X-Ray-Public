@@ -789,4 +789,37 @@
 	<string id="ui_mm_terrain_landscape_hint">
 		<text>Эта опция включает Terrain Landscape. На дальних дистанциях, текстуры террейна подменяются на текстуры более низкого качество. Также, отключается взаимодействие с освещением и параллакс.</text>
 	</string>
+	<string id="ui_mm_localization">
+		<text>Язык игры</text>
+	</string>
+	<string id="cze">
+		<text>Чешский</text>
+	</string>
+	<string id="jpn">
+		<text>Японский</text>
+	</string>
+	<string id="eng">
+		<text>Английский</text>
+	</string>
+	<string id="fra">
+		<text>Французский</text>
+	</string>
+	<string id="ger">
+		<text>Немецкий</text>
+	</string>
+	<string id="ita">
+		<text>Итальянский</text>
+	</string>
+	<string id="pol">
+		<text>Польский</text>
+	</string>
+	<string id="rus">
+		<text>Русский</text>
+	</string>
+	<string id="spa">
+		<text>Испанский</text>
+	</string>
+	<string id="ukr">
+		<text>Украинский</text>
+	</string>
 </string_table>

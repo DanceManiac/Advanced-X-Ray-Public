@@ -2266,6 +2266,45 @@ public:
 	}
 };
 
+class CCC_GameLanguage : public CCC_Token
+{
+public:
+	CCC_GameLanguage(pcstr N) : CCC_Token(N, (u32*)&CStringTable::LanguageID, nullptr) {}
+
+	void Execute(pcstr args)// override
+	{
+		CCC_Token::Execute(args);
+		CStringTable().ReloadLanguage();
+
+		if (!g_pGameLevel)
+			return;
+
+		for (u16 id = 0; id < 0xffff; id++)
+		{
+			CObject* gameObj = Level().Objects.net_Find(id);
+			if (gameObj)
+			{
+				if (CInventoryItem* invItem = gameObj->cast_inventory_item())
+					invItem->ReloadNames();
+			}
+		}
+	}
+
+	xr_token* GetToken() noexcept override
+	{
+		tokens = CStringTable().GetLanguagesToken();
+		if (!tokens) // Prevent failure without usage Nifty counters
+		{
+			Msg("GetToken: token missing");
+			CStringTable().Destroy();
+			CStringTable().Init();
+
+			tokens = CStringTable().GetLanguagesToken();
+		}
+		return CCC_Token::GetToken();
+	}
+};
+
 extern BOOL UIRedraw;
 
 void CCC_RegisterCommands()
@@ -2491,12 +2530,13 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD4(CCC_Integer,		"dbg_show_material_info", &g_dbgShowMaterialInfo, 0, 1);
 	}
 
-	CMD3(CCC_Mask,		"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
-	CMD3(CCC_Mask,		"g_pnv_in_scope",		&psActorFlags,	AF_PNV_W_SCOPE_DIS);
+	CMD3(CCC_Mask,			"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
+	CMD3(CCC_Mask,			"g_pnv_in_scope",		&psActorFlags,	AF_PNV_W_SCOPE_DIS);
 
-	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
-	CMD3(CCC_Mask,		"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);
-	CMD3(CCC_Mask,		"g_important_save",		&psActorFlags,	AF_IMPORTANT_SAVE);
+	CMD3(CCC_Mask,			"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
+	CMD3(CCC_Mask,			"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);
+	CMD3(CCC_Mask,			"g_important_save",		&psActorFlags,	AF_IMPORTANT_SAVE);
+	CMD1(CCC_GameLanguage,	"g_language");
 	
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp,				"lua_help");

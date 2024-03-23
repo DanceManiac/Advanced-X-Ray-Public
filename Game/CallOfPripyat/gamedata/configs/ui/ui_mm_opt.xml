@@ -1012,6 +1012,19 @@
 				</text_color>
 			</list_difficulty>
 			
+			<cap_localization x="65" y="3" width="135" height="24">
+				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_localization</text>
+			</cap_localization>
+			
+			<list_localization x="225" y="5" width="235" height="20">
+				<options_item entry="g_language" group="mm_opt_gameplay"/>
+				<list_font r="170" g="170" b="170" font="letterica16"/>
+				<text_color>
+					<e r="170" g="170" b="170"/>
+					<d r="70" g="70" b="70"/>
+				</text_color>
+			</list_localization>
+			
 			<cap_crosshair_type x="65" y="3" width="135" height="24" hint = "ui_mm_crosshair_type_hint">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_crosshair_type</text>
 			</cap_crosshair_type>

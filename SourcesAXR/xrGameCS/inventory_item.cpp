@@ -225,6 +225,16 @@ void CInventoryItem::Load(LPCSTR section)
 	}
 }
 
+void CInventoryItem::ReloadNames()
+{
+	m_name = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "inv_name"));
+	m_nameShort = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "inv_name_short"));
+	if (pSettings->line_exist(m_object->cNameSect(), "description"))
+		m_Description = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "description"));
+	else
+		m_Description = "";
+}
+
 void  CInventoryItem::ChangeCondition(float fDeltaCondition)
 {
 	m_fCondition += fDeltaCondition;
