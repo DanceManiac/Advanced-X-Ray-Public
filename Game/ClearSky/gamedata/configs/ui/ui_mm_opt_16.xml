@@ -843,7 +843,7 @@
 	<cap_terrain_quality x="77" y="0" width="119" height="21" hint = "ui_mm_terrain_quality_hint">
 		<text font="letterica16" color="ui_6">ui_mm_terrain_quality</text>
     </cap_terrain_quality>	
-	<track_terrain_quality x="200" y="0" width="200" height="21" min="1.0" max="12.0" step="1.0">
+	<track_terrain_quality x="200" y="0" width="200" height="21" min="1.0" max="24.0" step="1.0">
         <options_item entry="ssfx_terrain_quality" group="mm_opt_video_adv"/>
 			<output_wnd x="200" y="0" width="20" height="20" format="%.f">
 				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
