@@ -451,7 +451,10 @@ void	CRenderTarget::phase_combine	()
 		}
 
 		if (ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && HudGlassEnabled && IsActorAlive)
+		{
 			phase_hud_mask();
+			phase_hud_frost();
+		}
 
 		if (IsActorAlive && NightVisionEnabled && NightVisionType > 0 && ps_r__ShaderNVG == 1)
 			phase_nightvision();

@@ -57,6 +57,7 @@ public:
 	IBlender*					b_hud_power;
 	IBlender*					b_hud_bleeding;
 	IBlender*					b_hud_intoxication;
+	IBlender*					b_hud_frost;
 	IBlender*					b_nightvision;
 	IBlender*					b_blur;
 	IBlender*					b_pp_bloom;
@@ -184,6 +185,8 @@ private:
 	ref_shader					s_hud_bleeding;
 	//Hud Intoxication
 	ref_shader					s_hud_intoxication;
+	//Hud Frost
+	ref_shader					s_hud_frost;
 	//Nightvision
 	ref_shader					s_nightvision;
 	//Blur
@@ -365,6 +368,7 @@ public:
 	void						phase_hud_power			();
 	void						phase_hud_bleeding		();
 	void						phase_hud_intoxication	();
+	void						phase_hud_frost			();
 	void						phase_nightvision		();
 	void						phase_blur				();
 	void						phase_pp_bloom			();

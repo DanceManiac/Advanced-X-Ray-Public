@@ -945,6 +945,14 @@ float CGamePersistent::GetActorIntoxication()
 	return 0.0f;
 }
 
+float CGamePersistent::GetActorFrostbite()
+{
+	if (GameConstants::GetActorFrostbite())
+		return	(Actor()->conditions().GetFrostbite());
+
+	return 0.0f;
+}
+
 bool CGamePersistent::GetClearMaskProcess()
 {
 	return (Actor() && Actor()->MaskClearInProcess());

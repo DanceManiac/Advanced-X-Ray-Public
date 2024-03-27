@@ -148,6 +148,7 @@ public:
 	virtual float					GetActorPower		() { return 0; };
 	virtual float					GetActorBleeding	() { return 0; };
 	virtual float					GetActorIntoxication() { return 0; };
+	virtual float					GetActorFrostbite	() { return 0; };
 	virtual float					GetRainDropsFactor	() { return 0; };
 	virtual void					SetRainDropsFactor	(float factor) {};
 	virtual bool					GetClearMaskProcess	() { return 0; };

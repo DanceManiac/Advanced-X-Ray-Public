@@ -19,6 +19,7 @@
 #include "blender_hud_stamina.h"
 #include "blender_hud_bleeding.h"
 #include "blender_hud_intoxication.h"
+#include "blender_hud_frost.h"
 
 #include "../xrRender/dxRenderDeviceRender.h"
 
@@ -236,6 +237,8 @@ CRenderTarget::CRenderTarget		()
 	b_hud_bleeding					= xr_new<CBlender_Hud_Stamina>			();
 	//HUD INXTOXICATION
 	b_hud_intoxication				= xr_new<CBlender_Hud_Intoxication>		();
+	//HUD FROST
+	b_hud_frost						= xr_new<CBlender_Hud_Frost>			();
 
 	//	NORMAL
 	{
@@ -412,6 +415,8 @@ CRenderTarget::CRenderTarget		()
 	s_hud_bleeding.create(b_hud_bleeding, "r2\\hud_bleeding");
 	//Hud Intoxication
 	s_hud_intoxication.create(b_hud_intoxication, "r2\\hud_intoxication");
+	//Hud Intoxication
+	s_hud_frost.create(b_hud_frost, "r2\\hud_frost");
 		
 	//SSAO
 	if (RImplementation.o.ssao_blur_on)
@@ -707,6 +712,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_hud_power			); //Hud Stamina
 	xr_delete					(b_hud_bleeding			); //Hud Bleeding
 	xr_delete					(b_hud_intoxication		); //Hud Intoxication
+	xr_delete					(b_hud_frost			); //Hud Frost
 }
 
 void CRenderTarget::reset_light_marker( bool bResetStencil)

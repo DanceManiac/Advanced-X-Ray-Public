@@ -798,6 +798,9 @@
     <ClInclude Include="..\xrRenderDX10\XRayDDSLoader.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="blender_hud_frost.h">
+      <Filter>Shading templates</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1516,6 +1519,9 @@
     </ClCompile>
     <ClCompile Include="..\xrRenderDX10\XRayDDSLoader.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="blender_hud_frost.cpp">
+      <Filter>Shading templates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
