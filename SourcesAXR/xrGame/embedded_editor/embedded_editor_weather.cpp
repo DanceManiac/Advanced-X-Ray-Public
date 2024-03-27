@@ -126,6 +126,7 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_fvector3(el->m_identifier.c_str(), "dof", el->dof_value);
 		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
+		f.w_float(el->m_identifier.c_str(), "air_temperature", el->m_fAirTemperature);
 	}
 	string_path fileName;
 	FS.update_path(fileName, "$game_weathers$", name.c_str());
@@ -506,6 +507,11 @@ void ShowWeatherEditor(bool& show)
 		if (ImGui::SliderFloat("dof_sky", &cur->dof_sky, -10000.0f, 10000.0f))
 			changed = true;
 	}
+
+	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_other_options").c_str()).c_str());
+
+	if (ImGui::SliderFloat("air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
+		changed = true;
 
 	if (changed)
 		modifiedWeathers.insert(env.CurrentWeatherName);

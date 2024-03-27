@@ -204,6 +204,7 @@ public:
 	float m_fV_ThirstPower;
 	float m_fV_ThirstHealth;
 	float m_fThirstCritical;
+	float m_fThirstAccelTemp;
 
 	float m_fV_Intoxication;
 	float m_fV_IntoxicationHealth;
@@ -233,6 +234,8 @@ public:
 
 	float m_fV_Frostbite;
 	float m_fV_FrostbiteAdd;
+	float m_fFrostbiteIncTemp;
+	float m_fFrostbiteDecTemp;
 	float m_fV_FrostbiteHealth;
 	float m_fFrostbiteCritical;
 

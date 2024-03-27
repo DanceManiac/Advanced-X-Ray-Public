@@ -279,6 +279,17 @@ class cl_sky_color : public R_constant_setup
 };
 static cl_sky_color binder_sky_color;
 
+class cl_temperature_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 result;
+		CEnvDescriptor& desc = *g_pGamePersistent->Environment().CurrentEnv;
+		RCache.set_c(C, desc.m_fAirTemperature, 0, 0, 0);
+	}
+};
+static cl_temperature_params binder_temperature_params;
+
 // times
 class cl_times		: public R_constant_setup {
 	virtual void setup(R_constant* C)
@@ -772,6 +783,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant("screen_res_alt", &binder_screen_res);
     r_Constant("rain_params", &binder_rain_params);
 	r_Constant("wind_params", &binder_wind_params);
+
+	r_Constant("temperature_params", &binder_temperature_params);
 
 	// misc
 	r_Constant("m_hud_params", &binder_hud_params);	//--#SM+#--

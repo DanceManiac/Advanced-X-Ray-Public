@@ -44,6 +44,8 @@ public:
 	float				lowland_fog_height;
 	float				lowland_fog_density;
 
+	float				m_fAirTemperature;
+
 	Fvector4			color_grading;
 
 	Fvector3			ambient;
@@ -152,6 +154,8 @@ public:
 	float				fog_distance;
 	float				lowland_fog_height;
 	float				lowland_fog_density;
+
+	float				m_fAirTemperature;
 
 	Fvector4			color_grading;
 

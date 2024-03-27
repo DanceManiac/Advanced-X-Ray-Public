@@ -102,6 +102,9 @@ CAI_Stalker::CAI_Stalker			() :
 	targetPitch						= 0.0f;
 	targetRoll						= 0.0f;
 	targetNormal					= { 0.f, 0.f, 0.f };
+
+	m_sColdSteamParticleBone		= nullptr;
+	m_sColdSteamParticleName		= nullptr;
 }
 
 CAI_Stalker::~CAI_Stalker			()
@@ -551,6 +554,9 @@ void CAI_Stalker::Load				(LPCSTR section)
 			m_sCanPickedItemsVec.push_back(can_picked_items_sect);
 		}
 	}
+
+	m_sColdSteamParticleBone = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
+	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
 }
 
 void CAI_Stalker::BoneCallback(CBoneInstance* B)
@@ -957,6 +963,27 @@ void CAI_Stalker::destroy_anim_mov_ctrl	()
 
 void CAI_Stalker::UpdateCL()
 {
+	if (g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature < -10.0f && Actor()->Position().distance_to(Position()) < 10 && !already_dead())
+	{
+		CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(this);
+
+		if (!PP)
+			return;
+
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		R_ASSERT(K);
+
+		static u32 timing = 0;
+
+		u16 play_bone = K->LL_BoneID(m_sColdSteamParticleBone);
+		R_ASSERT(play_bone != BI_NONE);
+		if (K->LL_GetBoneVisible(play_bone) && timing <= Device.dwTimeGlobal)
+		{
+			PP->StartParticles(m_sColdSteamParticleName, play_bone, Direction(), ID());
+			timing = Device.dwTimeGlobal + ::Random.randI(1000, 2000);
+		}
+	}
+
 	START_PROFILE("stalker")
 	START_PROFILE("stalker/client_update")
 	VERIFY2						(PPhysicsShell()||getEnabled(), *cName());

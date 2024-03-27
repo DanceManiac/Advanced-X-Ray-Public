@@ -840,6 +840,9 @@ private:
 	bool								m_take_items_enabled;
 	bool								m_death_sound_enabled;
 
+	shared_str							m_sColdSteamParticleBone;
+	shared_str							m_sColdSteamParticleName;
+
 public:
 	smart_cover::cover const*			get_current_smart_cover						( );
 	smart_cover::loophole const*		get_current_loophole						( );

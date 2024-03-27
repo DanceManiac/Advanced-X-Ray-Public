@@ -151,7 +151,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_Thirst					= pSettings->r_float(section, "thirst_v");
 	m_fV_ThirstPower			= pSettings->r_float(section, "thirst_power_v");
 	m_fV_ThirstHealth			= pSettings->r_float(section, "thirst_health_v");
-
+	m_fThirstAccelTemp			= pSettings->r_float(section, "thirst_accel_temp");
 
 	// M.F.S. Team Intoxication
 	m_fIntoxicationCritical = pSettings->r_float(section, "intoxication_critical");
@@ -188,6 +188,8 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	clamp(m_fFrostbiteCritical, 0.0f, 1.0f);
 	m_fV_Frostbite = pSettings->r_float(section, "frostbite_v");
 	m_fV_FrostbiteAdd = pSettings->r_float(section, "frostbite_v_add");
+	m_fFrostbiteIncTemp = pSettings->r_float(section, "frostbite_inc_temp");
+	m_fFrostbiteDecTemp = pSettings->r_float(section, "frostbite_dec_temp");
 	m_fV_FrostbiteHealth = pSettings->r_float(section, "frostbite_health_v");
 
 	m_bPsyHealthKillActor = READ_IF_EXISTS(pSettings, r_bool, section, "psy_health_kill_actor", false);
@@ -549,12 +551,14 @@ void CActorCondition::UpdateThirst()
 {
 	if (!IsGameTypeSingle()) return;
 
-	float k = 1.0f;
 	if (m_fThirst > 0)
 	{
-		m_fThirst -= m_fV_Thirst *
-			k*
-			m_fDeltaTime;
+		float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+
+		if (cur_temperature >= m_fThirstAccelTemp)
+			m_fThirst -= (m_fV_Thirst + (cur_temperature / 1000000.f)) * m_fDeltaTime;
+		else
+			m_fThirst -= m_fV_Thirst * m_fDeltaTime;
 
 		clamp(m_fThirst, 0.0f, 1.0f);
 
@@ -784,14 +788,15 @@ void CActorCondition::UpdateFrostbite()
 	if (Actor()->GetCurrentHeating() <= 0.0f)
 		Actor()->SetHeatingStatus(false);
 
-	bool IsHeat = Actor()->GetHeatingStatus(); // Временно, пока в процессе
+	float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+	bool IsHeat = Actor()->GetHeatingStatus() || cur_temperature > m_fFrostbiteDecTemp; // Сейчас ГГ около источника тепла
 
 	if (IsHeat)
-		m_fFrostbite -= (m_fV_Frostbite * Actor()->GetCurrentHeating()) * m_fDeltaTime;
+		m_fFrostbite -= (m_fV_Frostbite * Actor()->GetCurrentHeating() + (cur_temperature / 1000000.f)) * m_fDeltaTime;
 	else
 	{
-		if (!g_pGamePersistent->IsActorInHideout())
-			m_fFrostbite += m_fV_FrostbiteAdd * m_fDeltaTime;
+		if (!g_pGamePersistent->IsActorInHideout() && cur_temperature < m_fFrostbiteIncTemp)
+			m_fFrostbite += (m_fV_FrostbiteAdd + abs(cur_temperature / 1000000.f)) * m_fDeltaTime;
 	}
 
 	clamp(m_fFrostbite, 0.0f, 1.0f);

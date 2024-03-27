@@ -105,6 +105,9 @@
 	<string id="st_weather_editor_dof_options">
 		<text>Настройки глубины резкозти</text>
 	</string>
+	<string id="st_weather_editor_other_options">
+		<text>Прочие настройки</text>
+	</string>
 	<string id="st_spawner_search">
 		<text>Поиск</text>
 	</string>

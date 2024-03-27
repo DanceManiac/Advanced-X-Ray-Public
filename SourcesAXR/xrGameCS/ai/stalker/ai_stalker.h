@@ -673,6 +673,9 @@ public:
 private:
 	bool								m_take_items_enabled;
 
+	shared_str							m_sColdSteamParticleBone;
+	shared_str							m_sColdSteamParticleName;
+
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

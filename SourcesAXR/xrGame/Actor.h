@@ -866,6 +866,9 @@ protected:
 	bool					m_bHeating;
 	float					m_fHeatingPower;
 
+	shared_str				m_sColdSteamParticleBone;
+	shared_str				m_sColdSteamParticleName;
+
 	u16						m_last_active_slot;
 
 	float					m_fDevicesPsyFactor;

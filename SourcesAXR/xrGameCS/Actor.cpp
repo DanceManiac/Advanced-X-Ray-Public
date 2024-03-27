@@ -259,6 +259,9 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 
 	m_bHeating				= false;
 	m_fHeatingPower			= 0.0f;
+
+	m_sColdSteamParticleBone = nullptr;
+	m_sColdSteamParticleName = nullptr;
 }
 
 
@@ -516,6 +519,9 @@ if(!g_dedicated_server)
 
 	m_iBaseArtefactCount = READ_IF_EXISTS(pSettings, r_u32, section, "base_artefacts_count", 0);
 	m_fInventoryCapacity = READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 50.0f);
+
+	m_sColdSteamParticleBone = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
+	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
 }
 
 void CActor::PHHit(SHit &H)
@@ -1533,6 +1539,29 @@ void CActor::shedule_Update	(u32 DT)
 
 		if (m_bQuickKickActivated)
 			UpdateQuickKickAnim();
+	}
+
+	if (g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature < -10.0f && g_Alive())
+	{
+		CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(this);
+
+		if (!PP)
+			return;
+
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		R_ASSERT(K);
+
+		static u32 timing = 0;
+
+		u16 play_bone = K->LL_BoneID(m_sColdSteamParticleBone);
+		R_ASSERT(play_bone != BI_NONE);
+		if (K->LL_GetBoneVisible(play_bone) && timing <= Device.dwTimeGlobal)
+		{
+			PP->StartParticles(m_sColdSteamParticleName, play_bone, Direction(), ID(), -1, false, cam_active == eacFirstEye);
+
+			float stamina = (1.0f - conditions().GetPower()) * 1500.f;
+			timing = Device.dwTimeGlobal + ::Random.randI(2500 - stamina, 5000 - stamina);
+		}
 	}
 
 	inventory().UpdateUseAnim(this);

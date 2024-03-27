@@ -25,6 +25,7 @@ void CEnvModifier::load	(IReader* fs, u32 version)
 	fog_density		= fs->r_float	();
 	lowland_fog_height		= fs->r_float	();
 	lowland_fog_density		= fs->r_float	();
+	m_fAirTemperature = fs->r_float	();
 
 	fs->r_fvector4	(color_grading);
 
@@ -261,6 +262,8 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) :
 	lowland_fog_height	= 0.0f;
 	lowland_fog_density = 0.0f;
 
+	m_fAirTemperature	= 0.0f;
+
 	color_grading.set	(0.0f, 0.0f, 0.0f, 0.0f);
 
 	rain_density		= 0.0f;
@@ -372,6 +375,9 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 
 	if (config.line_exist(m_identifier.c_str(), "lowland_fog_density"))
 		lowland_fog_density = config.r_float(m_identifier.c_str(), "lowland_fog_density");
+
+	if (config.line_exist(m_identifier.c_str(), "air_temperature"))
+		m_fAirTemperature = config.r_float(m_identifier.c_str(), "air_temperature");
 
 	if (config.line_exist(m_identifier.c_str(), "color_grading"))
 		color_grading = config.r_fvector4(m_identifier.c_str(), "color_grading");
@@ -588,6 +594,8 @@ void CEnvDescriptorMixer::lerp	(CEnvironment* , CEnvDescriptor& A, CEnvDescripto
 
 	lowland_fog_height	= fi*A.lowland_fog_height + f * B.lowland_fog_height;
 	lowland_fog_density = fi * A.lowland_fog_density + f * B.lowland_fog_density;
+
+	m_fAirTemperature = fi * A.m_fAirTemperature + f * B.m_fAirTemperature;
 
 	color_grading.lerp(A.color_grading, B.color_grading, f);
 
