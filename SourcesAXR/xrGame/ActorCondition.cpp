@@ -221,6 +221,7 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_IntoxicationSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_intoxication_restore", 0.0f);
 	m_fV_SleepenessSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_sleepeness_restore", 0.0f);
 	m_fV_FrostbiteSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_frostbite_restore", 0.0f);
+	m_fV_FrostbiteAddSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_frostbite_v_add", 0.0f);
 
 	m_fMaxWeightSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_max_weight", 0.0f);
 	m_fJumpSpeedSkill = READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_jump_speed", 0.0f);
@@ -855,7 +856,7 @@ void CActorCondition::UpdateFrostbite()
 	else
 	{
 		if (!g_pGamePersistent->IsActorInHideout() && cur_temperature < m_fFrostbiteIncTemp)
-			m_fFrostbite += (m_fV_FrostbiteAdd + abs(cur_temperature / 1000000.f)) * m_fDeltaTime;
+			m_fFrostbite += ((m_fV_FrostbiteAdd - m_fV_FrostbiteAddSkill + abs(cur_temperature / 1000000.f))) * m_fDeltaTime;
 	}
 
 	clamp(m_fFrostbite, 0.0f, 1.0f);

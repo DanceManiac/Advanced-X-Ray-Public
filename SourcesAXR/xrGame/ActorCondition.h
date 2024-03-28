@@ -249,6 +249,7 @@ public:
 	float m_fV_IntoxicationSkill;
 	float m_fV_SleepenessSkill;
 	float m_fV_FrostbiteSkill;
+	float m_fV_FrostbiteAddSkill;
 	float m_fMaxWeightSkill;
 	float m_fJumpSpeedSkill;
 	float m_fWalkAccelSkill;
