@@ -216,15 +216,16 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float max_jump_speed = 10.0f;
 			float hangover = conditions().GetHangover();
 			float withdrawal = conditions().GetWithdrawal();
+			float frostbite = conditions().GetFrostbite() * 4;
 			float jumpSkill = 0.0f;
 
 			if (ActorSkills)
 				jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
 
 			if (!psActorFlags.test(AF_GODMODE|AF_GODMODE_RT) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25 && mstate_real&mcJump)
-				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal)) - ((inventory().TotalWeight() / MaxCarryWeight()) * 4);
+				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal + frostbite)) - ((inventory().TotalWeight() / MaxCarryWeight()) * 4);
 			else
-				jump_k = m_fJumpSpeed + jumpSkill - (hangover + withdrawal);
+				jump_k = m_fJumpSpeed + jumpSkill - (hangover + withdrawal + frostbite);
 
 			TIItemContainer::iterator it = inventory().m_belt.begin();
 			TIItemContainer::iterator ite = inventory().m_belt.end();
@@ -303,6 +304,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			float	scale			= vControlAccel.magnitude();
 			float hangover			= conditions().GetHangover();
 			float withdrawal		= conditions().GetWithdrawal();
+			float frostbite			= conditions().GetFrostbite() * 4;
 			float walkAccelSkill	= 0.0f;
 
 			if (ActorSkills)
@@ -310,7 +312,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			if(scale>EPS)	
 			{
-				float accel_k = m_fWalkAccel + walkAccelSkill - (hangover + withdrawal);
+				float accel_k = m_fWalkAccel + walkAccelSkill - (hangover + withdrawal + frostbite);
 
 				if (!psActorFlags.test(AF_GODMODE|AF_GODMODE_RT) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25)
 				{
