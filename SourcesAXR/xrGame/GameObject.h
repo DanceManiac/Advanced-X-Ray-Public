@@ -160,6 +160,7 @@ const animation_movement_controller* animation_movement		( ) const	{ return	m_an
 	// Game-specific events
 
 	virtual BOOL			UsedAI_Locations				();
+			void			SetUseAI_Locations				(bool use);
 			BOOL			TestServerFlag					(u32 Flag) const;
 	virtual	bool			can_validate_position_on_spawn	(){return true;}
 #ifdef DEBUG

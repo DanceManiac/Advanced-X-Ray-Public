@@ -353,6 +353,9 @@ BOOL CGameObject::net_Spawn		(CSE_Abstract*	DC)
 			spatial.type				= (spatial.type | STYPE_VISIBLEFORAI) ^ STYPE_VISIBLEFORAI;
 	}
 
+	if (pSettings->line_exist(cNameSect(), "use_ai_locations"))
+		SetUseAI_Locations(!!pSettings->r_bool(cNameSect(), "use_ai_locations"));
+
 	reload						(*cNameSect());
 	if(!g_dedicated_server)
 		CScriptBinder::reload	(*cNameSect());
@@ -776,6 +779,11 @@ void CGameObject::OnH_B_Independent(bool just_before_destroy)
 BOOL CGameObject::UsedAI_Locations()
 {
 	return					(m_server_flags.test(CSE_ALifeObject::flUsedAI_Locations));
+}
+
+void CGameObject::SetUseAI_Locations(bool use)
+{
+	m_server_flags.set(CSE_ALifeObject::flUsedAI_Locations, use);
 }
 
 BOOL CGameObject::TestServerFlag(u32 Flag) const
