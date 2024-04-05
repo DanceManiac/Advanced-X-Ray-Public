@@ -2551,6 +2551,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\SleepingBag">
       <UniqueIdentifier>{07269ab8-75de-41e4-9c7c-4e139a20481a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\AScript\ScriptClasses\ScriptVarsStorage">
+      <UniqueIdentifier>{2aaf534a-bcd4-4186-a354-8d4544fd3916}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7342,7 +7345,6 @@
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
-	<ClInclude Include="..\..\xrPhysics\xrPhysics.h" />
     <ClInclude Include="physics_game.h" />
     <ClInclude Include="trajectories.h">
       <Filter>AI\AMonsters\common\trajectories</Filter>
@@ -7377,23 +7379,14 @@
     <ClInclude Include="WeaponAttaches.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrGame\doors.h">
-      <Filter>AI\AComponents\doors_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrGame\doors_door.h">
-      <Filter>AI\AComponents\doors_manager\door</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrGame\doors_actor.h">
-      <Filter>AI\AComponents\doors_manager\actor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrGame\doors_manager.h">
-      <Filter>AI\AComponents\doors_manager\manager</Filter>
-    </ClInclude>
     <ClInclude Include="SleepingBag.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
       <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="script_vars_storage.h">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -11036,6 +11029,9 @@
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
       <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="script_vars_storage.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

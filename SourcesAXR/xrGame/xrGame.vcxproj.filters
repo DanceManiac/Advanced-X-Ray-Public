@@ -2524,6 +2524,9 @@
     <Filter Include="UI\Common\PDA\Diary">
       <UniqueIdentifier>{05e38e5e-60ed-412e-8a86-28bfe2870c6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\AScript\ScriptClasses\ScriptVarsStorage">
+      <UniqueIdentifier>{749ef268-3fbe-427f-95b5-a63cba31ea15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -7514,6 +7517,9 @@
     <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="script_vars_storage.h">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11266,6 +11272,9 @@
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
       <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="script_vars_storage.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

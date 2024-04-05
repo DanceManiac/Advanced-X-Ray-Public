@@ -1831,6 +1831,7 @@
     <ClInclude Include="script_sound_info.h" />
     <ClInclude Include="script_sound_inline.h" />
     <ClInclude Include="script_ui_registrator.h" />
+    <ClInclude Include="script_vars_storage.h" />
     <ClInclude Include="script_watch_action.h" />
     <ClInclude Include="script_watch_action_inline.h" />
     <ClInclude Include="script_world_property.h" />
@@ -7114,6 +7115,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="script_vars_storage.cpp" />
     <ClCompile Include="script_watch_action.cpp" />
     <ClCompile Include="script_watch_action_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
