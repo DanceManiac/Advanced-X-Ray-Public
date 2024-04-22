@@ -332,6 +332,8 @@ CRenderTarget::CRenderTarget		()
 	param_color_add.set( 0.0f, 0.0f, 0.0f );
 
 	needClearAccumulator = true;
+	dwFlareClearMark = 0;
+
 	dxRenderDeviceRender::Instance().Resources->Evict			();
 
 	// Blenders
@@ -531,6 +533,7 @@ CRenderTarget::CRenderTarget		()
 		rt_ssfx_temp2.create(r2_RT_ssfx_temp2, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT 8B
 		rt_ssfx_accum.create(r2_RT_ssfx_accum, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount); // Temp RT 16B
 		rt_ssfx_hud.create(r2_RT_ssfx_hud, vp_params_main_secondary, D3DFMT_L8); // Temp RT 8B
+		rt_flares.create(r2_RT_flares, vp_params_main_secondary, D3DFMT_A8R8G8B8);
 	}
 
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
@@ -586,6 +589,8 @@ CRenderTarget::CRenderTarget		()
 	s_cut.create(b_cut, "r3\\cut");
 	// Anomaly lut
 	s_lut.create(b_lut, "r3\\lut");
+	// OGSE Flares
+	s_flare.create("effects\\lensflare", "shaders\\lensflare");
 
 	// DIRECT (spot)
 	D3DFORMAT						depth_format	= (D3DFORMAT)RImplementation.o.HW_smap_FORMAT;
@@ -862,6 +867,7 @@ CRenderTarget::CRenderTarget		()
 		g_combine.create					(FVF::F_TL,		RCache.Vertex.Buffer(), RCache.QuadIB);
 		g_combine_2UV.create				(FVF::F_TL2uv,	RCache.Vertex.Buffer(), RCache.QuadIB);
 		g_combine_cuboid.create				(dwDecl,	RCache.Vertex.Buffer(), RCache.Index.Buffer());
+		g_flare.create						(FVF::F_LIT,	RCache.Vertex.Buffer(), RCache.QuadIB);
 
 		u32 fvf_aa_blur				= D3DFVF_XYZRHW|D3DFVF_TEX4|D3DFVF_TEXCOORDSIZE2(0)|D3DFVF_TEXCOORDSIZE2(1)|D3DFVF_TEXCOORDSIZE2(2)|D3DFVF_TEXCOORDSIZE2(3);
 		g_aa_blur.create			(fvf_aa_blur,	RCache.Vertex.Buffer(), RCache.QuadIB);

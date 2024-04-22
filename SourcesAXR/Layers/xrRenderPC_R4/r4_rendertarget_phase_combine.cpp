@@ -618,6 +618,9 @@ void	CRenderTarget::phase_combine	()
 		t_LUM_dest->surface_set		(NULL);
 	}
 
+	phase_flares();
+	u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, NULL, NULL, HW.pBaseZB);
+
 #ifdef DEBUG
 	RCache.set_CullMode	( CULL_CCW );
 	static	xr_vector<Fplane>		saved_dbg_planes;

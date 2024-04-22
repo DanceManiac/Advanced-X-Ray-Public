@@ -27,12 +27,15 @@ uniform float4 fakescope_params3;
 //////////////////////////////////////////////////////////////////////////////////////////
 #ifndef USE_MSAA
 Texture2D 			s_distort;
+Texture2D 			s_flares;
 #define	EPSDEPTH	0.001
 #else
 	#ifndef SM_5
 		Texture2DMS<float4,MSAA_SAMPLES> s_distort;
+		Texture2DMS<float4,MSAA_SAMPLES> s_flares;
 	#else
 		Texture2DMS<float4>	s_distort;
+		Texture2DMS<float4>	s_flares;
 	#endif
 #define	EPSDEPTH	0.001
 #endif
@@ -142,6 +145,14 @@ c2_out main( v2p_aa_AA I )
 		img = Uncharted2ToneMapping(img);
 	}
 #endif
+
+#ifndef USE_MSAA
+	float4 	flares	= s_flares.Sample(smp_nofilter, center);
+#else // USE_MSAA
+	float4 	flares	= s_flares.Load( int3( center * screen_res.xy, 0 ), iSample );
+#endif // USE_MSAA
+	
+    img += flares.xyz * flares.a;
 
 	// Vanilla color grading ( Exposure, saturation and gamma )
 	img = img_corrections(img);

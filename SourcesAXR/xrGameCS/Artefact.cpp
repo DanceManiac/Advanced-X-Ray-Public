@@ -491,6 +491,8 @@ void CArtefact::StartLights()
 	m_pTrailLight->set_position	(Position()); 
 	m_pTrailLight->set_active	(true);
 
+	m_pTrailLight->set_flare	(true);
+
 	m_pTrailLight->set_volumetric(m_bVolumetricLights);
 	m_pTrailLight->set_volumetric_quality(m_fVolumetricQuality);
 	m_pTrailLight->set_volumetric_distance(m_fVolumetricDistance);

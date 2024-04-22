@@ -253,6 +253,10 @@ void CRenderTarget::accum_spot	(light* L)
 	increment_light_marker();
 
 	u_DBT_disable				();
+
+	bool HudGlassEnabled = g_pGamePersistent->GetHudGlassEnabled();
+	if (L->flags.bFlare && ((HudGlassEnabled && ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares == 2) || ps_r2_flares == 1))
+		render_flare(L);
 }
 
 void CRenderTarget::accum_volumetric(light* L)

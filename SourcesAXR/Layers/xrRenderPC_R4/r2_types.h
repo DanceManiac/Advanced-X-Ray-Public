@@ -80,6 +80,8 @@
 #define		r2_RT_pp_bloom		"$user$pp_bloom"
 #define		r2_RT_dof			"$user$dof"
 
+#define		r2_RT_flares		"$user$flares" // KD lensflares
+
 #define		JITTER(a) r2_jitter #a
 
 const		float				SMAP_near_plane		= .1f	;

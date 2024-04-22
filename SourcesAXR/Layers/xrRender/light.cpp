@@ -13,6 +13,7 @@ light::light		(void)	: ISpatial(g_SpatialSpace)
 	flags.bShadow	= false;
 	flags.bVolumetric = false;
 	flags.bHudMode	= false;
+	flags.bFlare	= false;
 	position.set	(0,-1000,0);
 	direction.set	(0,-1,0);
 	right.set		(0,0,0);
@@ -24,6 +25,8 @@ light::light		(void)	: ISpatial(g_SpatialSpace)
 	//m_volumetric_quality	= 0.5;
 	m_volumetric_intensity	= 1;
 	m_volumetric_distance	= 1;
+
+	fBlend			= 0;
 
 	frame_render	= 0;
 	vp_render		= 0;
@@ -317,6 +320,7 @@ void	light::export_to	(light_Package& package)
 						L->spatial.sector	= spatial.sector;	//. dangerous?
 						L->s_spot			= s_spot	;
 						L->s_point			= s_point	;
+						L->set_flare		(flags.bFlare);
 						
 						// Holger - do we need to export msaa stuff as well ?
 #if	(RENDER==R_R4)

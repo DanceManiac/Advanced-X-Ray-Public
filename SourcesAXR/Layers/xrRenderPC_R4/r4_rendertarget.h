@@ -16,6 +16,7 @@ class CRenderTarget		: public IRender_Target
 private:
 	u32							dwWidth;
 	u32							dwHeight;
+	u32							dwFlareClearMark;
 public:
 	enum	eStencilOptimizeMode
 	{
@@ -117,6 +118,7 @@ public:
 	ref_rt						rt_Bloom_2;			// 32bit, dim/4	(r,g,b,?)
 	ref_rt						rt_LUM_64;			// 64bit, 64x64,	log-average in all components
 	ref_rt						rt_LUM_8;			// 64bit, 8x8,		log-average in all components
+	ref_rt						rt_flares;
 
 	ref_rt						rt_LUM_pool[CHWCaps::MAX_GPUS*2]	;	// 1xfp32,1x1,		exp-result -> scaler
 	ref_texture				t_LUM_src		;	// source
@@ -205,6 +207,8 @@ private:
 	ref_shader					s_cut;
 	// Anomaly lut
 	ref_shader					s_lut;
+	//OGSE Flares
+	ref_shader					s_flare;
 
 	ref_rt						rt_blur_h_2;
 	ref_rt						rt_blur_2;
@@ -259,6 +263,7 @@ private:
 	ref_geom						g_accum_spot	;
 	ref_geom						g_accum_omnipart;
 	ref_geom						g_accum_volumetric;
+	ref_geom						g_flare;
 
 	ID3DVertexBuffer*		g_accum_point_vb;
 	ID3DIndexBuffer*		g_accum_point_ib;
@@ -378,6 +383,8 @@ public:
 	void						phase_film_grain		();
 	void						phase_cut				();
 	void						phase_lut				();
+	void						phase_flares			();
+	void						render_flare			(light* L);
 
 	void						phase_sunshafts			();
 	void						phase_scene_prepare		();

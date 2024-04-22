@@ -210,16 +210,6 @@ IC BOOL material_callback(collide::rq_result& result, LPVOID params)
 }
 #endif
 
-IC void	blend_lerp	(float& cur, float tgt, float speed, float dt)
-{
-	float diff		= tgt - cur;
-	float diff_a	= _abs(diff);
-	if (diff_a<EPS_S)	return;
-	float mot		= speed*dt;
-	if (mot>diff_a) mot=diff_a;
-	cur				+= (diff/diff_a)*mot;
-}
-
 #if 0
 static LPCSTR state_to_string (const CLensFlare::LFState &state)
 {

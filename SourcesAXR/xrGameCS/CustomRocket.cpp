@@ -522,6 +522,7 @@ void CCustomRocket::StartLights()
 	m_pTrailLight->set_range(m_fTrailLightRange);
 	m_pTrailLight->set_position(Position()); 
 	m_pTrailLight->set_active(true);
+	m_pTrailLight->set_flare(true);
 }
 
 void CCustomRocket::StopLights()
