@@ -1432,7 +1432,7 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition	=	"1";
 		def_it++;
 	}
-	sh_name[len]='0'+0*char(HW.FeatureLevel == D3D_FEATURE_LEVEL_10_1); ++len;
+	sh_name[len]='0' + char(HW.FeatureLevel == D3D_FEATURE_LEVEL_10_1); ++len;
 
 	if( HW.FeatureLevel>=D3D_FEATURE_LEVEL_11_0 )
 	{
