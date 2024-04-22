@@ -771,9 +771,6 @@
     <ClInclude Include="blender_pp_bloom.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
-    <ClInclude Include="blender_lens_flares.h">
-      <Filter>Shading templates</Filter>
-    </ClInclude>
     <ClInclude Include="blender_dof.h">
       <Filter>Shading templates</Filter>
     </ClInclude>
@@ -1477,9 +1474,6 @@
     </ClCompile>
     <ClCompile Include="..\xrRender\rendertarget_phase_blur.cpp">
       <Filter>Core_Target</Filter>
-    </ClCompile>
-    <ClCompile Include="blender_lens_flares.cpp">
-      <Filter>Shading templates</Filter>
     </ClCompile>
     <ClCompile Include="r4_rendertarget_phase_lens_flares.cpp">
       <Filter>Core_Target</Filter>

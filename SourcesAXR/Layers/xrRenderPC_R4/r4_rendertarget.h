@@ -62,7 +62,6 @@ public:
 	IBlender*					b_nightvision;
 	IBlender*					b_blur;
 	IBlender*					b_pp_bloom;
-	IBlender*					b_lfx;
 	IBlender*					b_dof;
 	IBlender* 					b_chromatic_aberration;
 	IBlender*					b_film_grain;
@@ -195,8 +194,6 @@ private:
 	ref_shader					s_blur;
 	//PP Bloom
 	ref_shader					s_pp_bloom;
-	//SFZ Lens Falres
-	ref_shader					s_lfx;
 	//Anomaly DoF
 	ref_shader					s_dof;
 	//Chromatic Aberration
@@ -300,7 +297,6 @@ private:
 	ref_geom				g_combine_cuboid;
 	ref_geom				g_aa_blur;
 	ref_geom				g_aa_AA;
-	ref_geom				g_lfx;
 	ref_shader				s_combine_dbg_0;
 	ref_shader				s_combine_dbg_1;
 	ref_shader				s_combine_dbg_Accumulator;
@@ -377,7 +373,6 @@ public:
 	void						phase_nightvision		();
 	void						phase_blur				();
 	void						phase_pp_bloom			();
-	void						phase_lfx				(int i);
 	void						phase_dof				();
 	void						phase_chrom_aberration	();
 	void						phase_film_grain		();
@@ -482,10 +477,6 @@ public:
 	IC void						dbg_addline				(Fvector& P0, Fvector& P1, u32 c)					{}
 	IC void						dbg_addplane			(Fplane& P0,  u32 c)								{}
 #endif
-
-	//SFZ Lens Flares
-	xr_vector<Fvector4>			m_miltaka_lfx_coords;
-	xr_vector<Fvector4>			m_miltaka_lfx_color;
 
 private:
 	void						RenderScreenQuad(u32 w, u32 h, ID3DRenderTargetView* rt, ref_selement &sh, xr_unordered_map<LPCSTR, Fvector4*>* consts = nullptr);

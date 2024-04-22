@@ -583,23 +583,7 @@ void	CRenderTarget::phase_combine	()
 	//	if FP16-BLEND !not! supported - draw flares here, overwise they are already in the bloom target
 
 	if (HudGlassEnabled && ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK) && ps_r2_flares != 0 || ps_r2_flares == 1)
-	{
 		g_pGamePersistent->Environment().RenderFlares();// lens-flares
-
-		if (!!ps_r2_lfx)
-		{
-			std::sort(m_miltaka_lfx_color.begin(), m_miltaka_lfx_color.end(), sort_function);
-			std::sort(m_miltaka_lfx_coords.begin(), m_miltaka_lfx_coords.end(), sort_function);
-
-			for (u32 i = 0; i < _min((u32)3, m_miltaka_lfx_coords.size()); ++i)
-			{
-				phase_lfx(i);
-			}
-		}
-	}
-
-	m_miltaka_lfx_color.clear_not_free();
-	m_miltaka_lfx_coords.clear_not_free();
 
 	//	PP-if required
 	if (PP_Complex)		

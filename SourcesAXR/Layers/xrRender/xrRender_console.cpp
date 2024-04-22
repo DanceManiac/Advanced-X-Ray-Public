@@ -375,9 +375,6 @@ Fvector4 ps_dev_param_8 = { .0f, .0f, .0f, .0f };
 int opt_static = 0;
 int opt_dynamic = 0;
 
-//SFZ Lens Flares
-int ps_r2_lfx = 1;
-
 //Многопоточная загрузка текстур
 int ps_mt_texture_load = 1;
 
@@ -1313,7 +1310,6 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r__optimize_shadow_geom",		&psDeviceFlags2,			rsOptShadowGeom);
 
 	CMD3(CCC_Token,			"r2_use_flares",				&ps_r2_flares,				qflares_token);
-	CMD4(CCC_Integer,		"r2_lfx",						&ps_r2_lfx,					 0, 1		); //SFZ Lens Flares
 
 
 	CMD4(CCC_Integer,		"r__mt_textures_load",			&ps_mt_texture_load,		0, 1); //Многопоточная загрузка текстур

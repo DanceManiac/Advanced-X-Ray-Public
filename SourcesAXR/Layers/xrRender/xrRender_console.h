@@ -161,8 +161,6 @@ extern ECORE_API float			ps_r2_rain_drops_speed;
 
 extern ECORE_API int			opt_static;
 extern ECORE_API int			opt_dynamic;
-//SFZ Lens Flares
-extern ECORE_API int			ps_r2_lfx;
 
 //Многопоточная загрузка текстур
 extern ECORE_API int			ps_mt_texture_load;

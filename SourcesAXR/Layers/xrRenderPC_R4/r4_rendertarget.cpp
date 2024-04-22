@@ -27,7 +27,6 @@
 #include "blender_nightvision.h"
 #include "blender_blur.h"
 #include "blender_pp_bloom.h"
-#include "blender_lens_flares.h"
 #include "blender_dof.h"
 #include "blender_chromatic_aberration.h"
 #include "blender_film_grain.h"
@@ -377,8 +376,6 @@ CRenderTarget::CRenderTarget		()
 	b_blur					= xr_new<CBlender_blur>				();
 	//PP Bloom
 	b_pp_bloom				= xr_new<CBlender_pp_bloom>			();
-	//SFZ Lens Flares
-	b_lfx					= xr_new<CBlender_LFX>				();
 	//Anomaly DoF
 	b_dof					= xr_new<CBlender_dof>				();
 	//Chromatic Aberration
@@ -576,9 +573,6 @@ CRenderTarget::CRenderTarget		()
 	s_blur.create(b_blur, "r2\\blur");
 	//PP Bloom
 	s_pp_bloom.create(b_pp_bloom, "r2\\pp_bloom");
-	//SFZ Lens Flares
-	s_lfx.create(b_lfx, "r3\\lfx");
-	g_lfx.create(FVF::F_V, RCache.Vertex.Buffer(), RCache.QuadIB);
 	//Anomaly DoF
 	s_dof.create(b_dof, "r3\\dof");
 	//Chromatic Aberration
@@ -1241,7 +1235,6 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_nightvision			); //Nightvision
 	xr_delete					(b_blur					); //Blur (LVutner)
 	xr_delete					(b_pp_bloom				); //PP Bloom (LVutner)
-	xr_delete					(b_lfx					); //SFZ Lens Flares
 	xr_delete					(b_dof					); //Anomaly DoF
 	xr_delete					(b_chromatic_aberration	); //Chromatic Aberration
 	xr_delete					(b_film_grain			); //Film Grain

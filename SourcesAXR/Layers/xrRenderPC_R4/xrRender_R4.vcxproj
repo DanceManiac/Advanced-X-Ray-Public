@@ -687,7 +687,6 @@
     <ClInclude Include="blender_hud_intoxication.h" />
     <ClInclude Include="blender_hud_mask.h" />
     <ClInclude Include="blender_hud_stamina.h" />
-    <ClInclude Include="blender_lens_flares.h" />
     <ClInclude Include="blender_light_direct.h" />
     <ClInclude Include="blender_light_mask.h" />
     <ClInclude Include="blender_light_occq.h" />
@@ -911,7 +910,6 @@
     <ClCompile Include="blender_hud_intoxication.cpp" />
     <ClCompile Include="blender_hud_mask.cpp" />
     <ClCompile Include="blender_hud_stamina.cpp" />
-    <ClCompile Include="blender_lens_flares.cpp" />
     <ClCompile Include="blender_light_direct.cpp" />
     <ClCompile Include="blender_light_mask.cpp" />
     <ClCompile Include="blender_light_occq.cpp" />
