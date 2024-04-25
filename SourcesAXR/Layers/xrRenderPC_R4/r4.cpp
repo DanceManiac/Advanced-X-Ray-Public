@@ -787,10 +787,16 @@ static HRESULT create_shader				(
 		u32	const		buffer_size,
 		LPCSTR const	file_name,
 		T*&				result,
-		bool const		disasm
+		bool const		disasm,
+		const char*		dbg_name
 	)
 {
 	result->sh			= ShaderTypeTraits<T>::CreateHWShader(buffer, buffer_size);
+
+	if (result->sh)
+	{
+		result->sh->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
+	}
 
 	ID3DShaderReflection *pReflection = 0;
 
@@ -819,6 +825,10 @@ static HRESULT create_shader				(
 		bool const		disasm
 	)
 {
+	string128 dbg_name{}, dbg_ext{};
+	_splitpath(file_name, nullptr, nullptr, dbg_name, dbg_ext);
+	strcat_s(dbg_name, dbg_ext);
+
 	HRESULT		_result = E_FAIL;
 	if (pTarget[0] == 'p') {
 		SPS* sps_result = (SPS*)result;
@@ -829,6 +839,11 @@ static HRESULT create_shader				(
 			Log			("! PS: ", file_name);
 			Msg			("! CreatePixelShader hr == 0x%08x", _result);
 			return		E_FAIL;
+		}
+
+		if (sps_result->ps)
+		{
+			sps_result->ps->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
 		}
 
 		ID3DShaderReflection *pReflection = 0;
@@ -859,6 +874,11 @@ static HRESULT create_shader				(
 			Log			("! VS: ", file_name);
 			Msg			("! CreatePixelShader hr == 0x%08x", _result);
 			return		E_FAIL;
+		}
+
+		if (svs_result->vs)
+		{
+			svs_result->vs->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
 		}
 
 		ID3DShaderReflection *pReflection = 0;
@@ -903,6 +923,11 @@ static HRESULT create_shader				(
 			return		E_FAIL;
 		}
 
+		if (sgs_result->gs)
+		{
+			sgs_result->gs->SetPrivateData(WKPDID_D3DDebugObjectName, strlen(dbg_name), dbg_name);
+		}
+
 		ID3DShaderReflection *pReflection = 0;
 
 		_result			= D3DReflect(buffer, buffer_size, IID_ID3DShaderReflection, (void**)&pReflection);
@@ -923,13 +948,13 @@ static HRESULT create_shader				(
 		}
 	}
 	else if (pTarget[0] == 'c') {
-		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SCS*&)result, disasm );
+		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SCS*&)result, disasm, dbg_name);
 	}
 	else if (pTarget[0] == 'h') {
-		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SHS*&)result, disasm );
+		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SHS*&)result, disasm, dbg_name);
 	}
 	else if (pTarget[0] == 'd') {
-		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SDS*&)result, disasm );
+		_result = create_shader	( pTarget, buffer, buffer_size, file_name, (SDS*&)result, disasm, dbg_name);
 	}
 	else {
 		NODEFAULT;

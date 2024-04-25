@@ -554,6 +554,12 @@ void CTexture::Load		()
 
 			if (pSurface && bCreateView)
 				CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, NULL, &m_pSRView));
+
+			if (pSurface)
+			{
+				pSurface->SetPrivateData(WKPDID_D3DDebugObjectName, cName.size(), cName.c_str());
+			}
+
 			PostLoad	()		;
 }
 
