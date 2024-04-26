@@ -88,6 +88,9 @@
     <Filter Include="Threading">
       <UniqueIdentifier>{f77aa1f5-5e2e-432e-80e9-83f208dabae9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Crypto">
+      <UniqueIdentifier>{5a0b5a90-4e2c-4221-876e-5d218996ac19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FTimer.cpp">
@@ -290,6 +293,9 @@
     </ClCompile>
     <ClCompile Include="Threading\Event.cpp">
       <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Crypto\trivial_encryptor.cpp">
+      <Filter>Crypto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -602,6 +608,12 @@
     </ClInclude>
     <ClInclude Include="Threading\Event.hpp">
       <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Random32.hpp">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Crypto\trivial_encryptor.h">
+      <Filter>Crypto</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

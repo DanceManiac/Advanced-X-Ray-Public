@@ -536,6 +536,7 @@
     <ClCompile Include="clsid.cpp" />
     <ClCompile Include="cpuid.cpp" />
     <ClCompile Include="crc32.cpp" />
+    <ClCompile Include="Crypto\trivial_encryptor.cpp" />
     <ClCompile Include="doug_lea_allocator.cpp" />
     <ClCompile Include="dump_string.cpp" />
     <ClCompile Include="FileSystem.cpp" />
@@ -719,6 +720,7 @@
     <ClInclude Include="compression_ppmd_stream.h" />
     <ClInclude Include="compression_ppmd_stream_inline.h" />
     <ClInclude Include="cpuid.h" />
+    <ClInclude Include="Crypto\trivial_encryptor.h" />
     <ClInclude Include="doug_lea_allocator.h" />
     <ClInclude Include="dump_string.h" />
     <ClInclude Include="fastdelegate.h" />
@@ -748,6 +750,7 @@
     <ClInclude Include="log.h" />
     <ClInclude Include="lzhuf.h" />
     <ClInclude Include="lzo_compressor.h" />
+    <ClInclude Include="Math\Random32.hpp" />
     <ClInclude Include="memory_allocator_options.h" />
     <ClInclude Include="memory_monitor.h" />
     <ClInclude Include="net_utils.h" />

@@ -1638,6 +1638,10 @@ int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)
 	for(;it!=it_e;++it)
 	{
 		CLocatorAPI::archive& A		= *it;
+
+		if (!A.header)
+			continue;
+
 		if(A.hSrcFile==NULL)
 		{
 			LPCSTR ln = A.header->r_string("header", "level_name");

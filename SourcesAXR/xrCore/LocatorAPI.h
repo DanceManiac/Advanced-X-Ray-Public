@@ -36,10 +36,32 @@ public:
 		u32						size;
 		CInifile*				header;
 		u32						vfs_idx;
+		u32						modif = 0;
 		archive():hSrcFile(NULL),hSrcMap(NULL),header(NULL),size(0),vfs_idx(u32(-1)){}
 		void					open();
 		void					close();
 	};
+
+	// IMPORTNT: don't replace u32 with size_t for this struct
+	// (Letter A in the first word is forgotten intentionally,
+	//  size_t will blow up the engine compatibility with it's resources)
+	struct XRCORE_API archive_file_header
+	{
+		u16  size; // size of following members:
+		u32  size_real;
+		u32  size_compr;
+		u32  crc;
+		//char name[]; // there's a string with variable size between crc and ptr
+		string_path name; // but we use fixed-size string for simplicity
+		u32  ptr;
+
+		// Used in file name string size calculation
+		static constexpr auto ELEMENTS_SIZE = sizeof(size_real) + sizeof(size_compr) + sizeof(crc) + sizeof(ptr);
+
+		archive_file_header(IReader& reader);
+		archive_file_header(IWriter& writer, pcstr file_name, u32 real_size, u32 compressed_size, u32 crc_sum, u32 pointer);
+	};
+
     DEFINE_VECTOR				(archive,archives_vec,archives_it);
     archives_vec				m_archives;
 	void						LoadArchive		(archive& A, LPCSTR entrypoint=NULL);

@@ -326,11 +326,11 @@ IReader*	IReader::open_chunk(u32 ID)
 {
 	BOOL	bCompressed;
 
-	u32	dwSize = find_chunk(ID,&bCompressed);
+	size_t	dwSize = find_chunk(ID,&bCompressed);
 	if (dwSize!=0) {
 		if (bCompressed) {
-			BYTE*		dest;
-			unsigned	dest_sz;
+			u8*		dest;
+			unsigned dest_sz;
 			_decompressLZ(&dest,&dest_sz,pointer(),dwSize);
 			return xr_new<CTempReader>	(dest,		dest_sz,		tell()+dwSize);
 		} else {
@@ -375,7 +375,7 @@ IReader*	IReader::open_chunk_iterator	(u32& ID, IReader* _prev)
 	//	open
 	if			(elapsed()<8)	return		NULL;
 	ID			= r_u32	()		;
-	u32 _size	= r_u32	()		;
+	size_t _size	= r_u32	()		;
 	if ( ID & CFS_CompressMark )
 	{
 		// compressed
