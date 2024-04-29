@@ -13,10 +13,19 @@ bool CUIListWnd::AddItem_script(CUIListItem* item){
 	return AddItem(item, -1);
 }
 
-BOOL	xrRender_test_hw();
-bool xrRender_test_hw_script()
+bool xrRender_test_r1_hw_script()
 {
-	return !!xrRender_test_hw();
+	return !psDeviceFlags.test(rsR2|rsR4);
+}
+
+bool xrRender_test_r2_hw_script()
+{
+	return psDeviceFlags.test(rsR2|rsR4);
+}
+
+bool xrRender_test_r4_hw_script()
+{
+	return psDeviceFlags.test(rsR4);
 }
 
 struct CUIListItemWrapper : public CUIListItem, public luabind::wrap_base {};
@@ -115,7 +124,9 @@ void CUIListWnd::script_register(lua_State *L)
 			value("GAME_TEAMDEATHMATCH",	int(GAME_TEAMDEATHMATCH)),
 			value("GAME_ARTEFACTHUNT",		int(GAME_ARTEFACTHUNT))
 		],
-		def("xrRender_test_r2_hw",			&xrRender_test_hw_script)
+		def("xrRender_test_r1_hw",			&xrRender_test_r1_hw_script),
+		def("xrRender_test_r2_hw",			&xrRender_test_r2_hw_script),
+		def("xrRender_test_r4_hw",			&xrRender_test_r4_hw_script)
 		
 	];
 }
