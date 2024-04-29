@@ -23,11 +23,6 @@ void CEnvModifier::load	(IReader* fs, u32 version)
 	far_plane		= fs->r_float	();
 	fs->r_fvector3	(fog_color);
 	fog_density		= fs->r_float	();
-	lowland_fog_height		= fs->r_float	();
-	lowland_fog_density		= fs->r_float	();
-	m_fAirTemperature = fs->r_float	();
-
-	fs->r_fvector4	(color_grading);
 
 	fs->r_fvector3	(ambient);
 	fs->r_fvector3	(sky_color);

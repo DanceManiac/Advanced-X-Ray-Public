@@ -41,12 +41,6 @@ public:
 	float				far_plane;
 	Fvector3			fog_color;
 	float				fog_density;
-	float				lowland_fog_height;
-	float				lowland_fog_density;
-
-	float				m_fAirTemperature;
-
-	Fvector4			color_grading;
 
 	Fvector3			ambient;
 	Fvector3			sky_color;		
