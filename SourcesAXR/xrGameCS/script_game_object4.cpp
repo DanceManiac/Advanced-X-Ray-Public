@@ -289,7 +289,7 @@ void CScriptGameObject::set_level_changer_invitation(LPCSTR str)
 		lch->SetLEvelChangerInvitationStr(str);
 }
 
-void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone)
+void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone, bool auto_stop, bool hud_mode, bool ignore_playing)
 {
 	CParticlesPlayer* PP			= smart_cast<CParticlesPlayer*>(&object());
 	if(!PP)	return;
@@ -300,7 +300,7 @@ void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone)
 	u16 play_bone					= K->LL_BoneID(bone);
 	R_ASSERT						(play_bone!=BI_NONE);
 	if(K->LL_GetBoneVisible(play_bone))
-		PP->StartParticles				(pname, play_bone, Fvector().set(0,1,0), 9999);
+		PP->StartParticles				(pname, play_bone, Fvector().set(0, 1, 0), 9999, -1, auto_stop, hud_mode, ignore_playing);
 	else
 		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"Cant start particles, bone [%s] is not visible now", bone);
 }

@@ -624,7 +624,7 @@ public:
 			CHolderCustom*		get_custom_holder		();
 			CHolderCustom*		get_current_holder		(); //actor only
 
-			void				start_particles			(LPCSTR pname, LPCSTR bone);
+			void				start_particles			(LPCSTR pname, LPCSTR bone, bool auto_stop = false, bool hud_mode = false, bool ignore_playing = false);
 			void				stop_particles			(LPCSTR pname, LPCSTR bone);
 
 			Fvector 			bone_position			(LPCSTR bone_name, bool bHud = false) const;

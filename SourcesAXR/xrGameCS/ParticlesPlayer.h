@@ -72,12 +72,11 @@ public:
 	
 	void					UpdateParticles			();
 
-	void					StartParticles			(const shared_str& ps_name, u16 bone_num,  const Fvector& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false);
-	void					StartParticles			(const shared_str& ps_name, const Fvector& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false);
+	void					StartParticles			(const shared_str& ps_name, u16 bone_num,  const Fvector& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false, bool ignore_playing = false);
+	void					StartParticles			(const shared_str& ps_name, const Fvector& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false, bool ignore_playing = false);
 
-	void					StartParticles			(const shared_str& ps_name, u16 bone_num,  const Fmatrix& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false);
-	void					StartParticles			(const shared_str& ps_name, const Fmatrix& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false);
-
+	void					StartParticles			(const shared_str& ps_name, u16 bone_num,  const Fmatrix& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false, bool ignore_playing = false);
+	void					StartParticles			(const shared_str& ps_name, const Fmatrix& dir, u16 sender_id, int life_time = -1, bool auto_stop = true, bool hud_mode = false, bool ignore_playing = false);
 
 	void					StopParticles			(u16 sender_ID, u16 bone_id, bool bDestroy);
 	void					StopParticles			(const shared_str& particles_name, u16 bone_id, bool bDestroy);
