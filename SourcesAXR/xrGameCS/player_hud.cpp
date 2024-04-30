@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "player_hud.h"
 #include "HudItem.h"
 #include "ui_base.h"
@@ -6,6 +7,8 @@
 #include "physic_item.h"
 #include "static_cast_checked.hpp"
 #include "actoreffector.h"
+#include "ai_space.h"
+#include "script_engine.h"
 #include "../xrEngine/IGame_Persistent.h"
 #include "Weapon.h"
 
@@ -489,6 +492,8 @@ player_hud::player_hud()
 	script_anim_item_model = nullptr;
 	m_item_pos.identity();
 	reset_thumb(true);
+
+	m_current_motion_def	= NULL;
 
 	m_movement_layers.reserve(move_anms_end);
 
@@ -1019,6 +1024,53 @@ void player_hud::update(const Fmatrix& cam_trans)
 		script_anim_offset_factor -= Device.fTimeDelta * 5.f;
 
 	clamp(script_anim_offset_factor, 0.f, 1.f);
+
+	if (m_current_motion_def)
+	{
+		if (m_bStopAtEndAnimIsRunning)
+		{
+			const xr_vector<motion_marks>& marks = m_current_motion_def->marks;
+			if (!marks.empty())
+			{
+				float motion_prev_time = ((float)m_dwMotionCurrTm - (float)m_dwMotionStartTm) / 1000.0f;
+				float motion_curr_time = ((float)Device.dwTimeGlobal - (float)m_dwMotionStartTm) / 1000.0f;
+
+				xr_vector<motion_marks>::const_iterator it = marks.begin();
+				xr_vector<motion_marks>::const_iterator it_e = marks.end();
+				for (; it != it_e; ++it)
+				{
+					const motion_marks& M = (*it);
+					if (M.is_empty())
+						continue;
+
+					const motion_marks::interval* Iprev = M.pick_mark(motion_prev_time);
+					const motion_marks::interval* Icurr = M.pick_mark(motion_curr_time);
+					if (Iprev == NULL && Icurr != NULL)
+					{
+						OnMotionMark(M);
+					}
+				}
+
+			}
+
+			m_dwMotionCurrTm = Device.dwTimeGlobal;
+			if (m_dwMotionCurrTm > m_dwMotionEndTm)
+			{
+				m_current_motion_def = NULL;
+				m_dwMotionStartTm = 0;
+				m_dwMotionEndTm = 0;
+				m_dwMotionCurrTm = 0;
+				m_bStopAtEndAnimIsRunning = false;
+			}
+		}
+	}
+}
+
+void player_hud::OnMotionMark(const motion_marks& M)
+{
+	luabind::functor<bool> funct;
+	if (ai().script_engine().functor("mfs_functions.on_motion_mark", funct))
+		funct(*M.name);
 }
 
 void player_hud::update_script_item()
@@ -1183,11 +1235,15 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	if (length > 0)
 	{
-		m_bStopAtEndAnimIsRunning = true;
-		script_anim_end = Device.dwTimeGlobal + length;
+		m_bStopAtEndAnimIsRunning	= true;
+		script_anim_end				= Device.dwTimeGlobal + length;
+		m_dwMotionStartTm			= Device.dwTimeGlobal;
+		m_dwMotionCurrTm			= m_dwMotionStartTm;
+		m_dwMotionEndTm				= m_dwMotionStartTm + length;
+		m_current_motion_def		= md;
 	}
 	else
-		m_bStopAtEndAnimIsRunning = false;
+		m_bStopAtEndAnimIsRunning	= false;
 
 	updateMovementLayerState();
 
@@ -1387,7 +1443,22 @@ u32 player_hud::anim_play(u16 part, const MotionID& M, BOOL bMixIn, const CMotio
 
 		m_model_2->dcast_PKinematics()->CalculateBones_Invalidate();
 	}
-	return motion_length(M, md, speed);
+	
+	u32 length = motion_length(M, md, speed);
+
+	if (length > 0)
+	{
+		m_bStopAtEndAnimIsRunning	= true;
+		script_anim_end				= Device.dwTimeGlobal + length;
+		m_dwMotionStartTm			= Device.dwTimeGlobal;
+		m_dwMotionCurrTm			= m_dwMotionStartTm;
+		m_dwMotionEndTm				= m_dwMotionStartTm + length;
+		m_current_motion_def		= md;
+	}
+	else
+		m_bStopAtEndAnimIsRunning	= false;
+
+	return length;
 }
 
 void player_hud::update_additional	(Fmatrix& trans)

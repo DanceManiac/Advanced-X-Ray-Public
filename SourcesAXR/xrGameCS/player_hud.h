@@ -302,7 +302,8 @@ public:
 	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed);
 	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);
-	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)	;
+	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
+	void			OnMotionMark		(const motion_marks&);
 	void			SetScriptItemVisible(bool visible);
 private:
 	void			update_inertion		(Fmatrix& trans);
@@ -330,6 +331,10 @@ private:
 	Fvector								script_anim_offset[2];
 	u32									script_anim_end;
 	float								script_anim_offset_factor;
+	const CMotionDef*					m_current_motion_def;
+	u32									m_dwMotionCurrTm;
+	u32									m_dwMotionStartTm;
+	u32									m_dwMotionEndTm;
 	bool								m_bStopAtEndAnimIsRunning;
 	bool								script_anim_item_attached;
 	bool								script_anim_item_visible;

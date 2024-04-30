@@ -198,6 +198,13 @@ void CHudItem::OnAnimationEnd(u32 state)
 	}
 }
 
+void CHudItem::OnMotionMark(u32 state, const motion_marks& M)
+{
+	luabind::functor<bool> funct;
+	if (ai().script_engine().functor("mfs_functions.on_motion_mark", funct))
+		funct(*M.name);
+}
+
 void CHudItem::PlayAnimBore()
 {
 	if (IsMisfireNow())
