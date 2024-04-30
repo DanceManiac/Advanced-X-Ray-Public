@@ -16,8 +16,12 @@ public:
 	virtual void create(LPCSTR sh, LPCSTR tex=0);
 	virtual bool inited() {return hShader;}
 	virtual void destroy();
+	virtual LPCSTR GetTexName() { return dbg_tex; }
+	virtual LPCSTR GetShaderName() { return dbg_shader; }
 private:
 	ref_shader		hShader;
+	LPCSTR			dbg_shader{};
+	LPCSTR			dbg_tex{};
 };
 
 #endif	//	dxUIShader_included

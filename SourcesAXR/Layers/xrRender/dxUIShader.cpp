@@ -9,6 +9,8 @@ void dxUIShader::Copy(IUIShader&_in)
 void dxUIShader::create(LPCSTR sh, LPCSTR tex)
 {
 	hShader.create(sh,tex);
+	dbg_shader = sh;
+	dbg_tex = tex;
 }
 
 void dxUIShader::destroy()

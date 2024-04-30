@@ -10,6 +10,8 @@ public:
 	virtual void create(LPCSTR sh, LPCSTR tex=0) = 0;
 	virtual bool inited() = 0;
 	virtual void destroy() = 0;
+	virtual LPCSTR GetShaderName() { return ""; }
+	virtual LPCSTR GetTexName() { return ""; }
 };
 
 #endif	//	UIShader_included
