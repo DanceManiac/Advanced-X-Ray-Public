@@ -44,9 +44,12 @@ public:
 			void			SetTextComplexMode							(bool mode = true);
 			bool			GetTextComplexMode							() const;
 			void			SetPasswordMode								(bool mode = true);
+			bool			GetPasswordMode								() const;
+
 			void			SetColoringMode								(bool mode);
 			void			SetCutWordsMode								(bool mode);
 			void			SetUseNewLineMode							(bool mode);
+			void			SetEllipsis									(bool mode);
 
     // IUISimpleWindow methods
 	virtual void			Init										(float x, float y, float width, float height);
@@ -100,7 +103,8 @@ protected:
 		flPasswordMode		= (1<<2),
 		flColoringMode		= (1<<3),
 		flCutWordsMode		= (1<<4),
-		flRecognizeNewLine	= (1<<5)
+		flRecognizeNewLine	= (1<<5),
+		flEllipsis			= (1<<6)
 	};	
 private:
 	Flags8					uFlags;

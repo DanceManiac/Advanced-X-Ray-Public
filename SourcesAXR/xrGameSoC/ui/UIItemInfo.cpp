@@ -113,7 +113,7 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		AttachChild					(UIItemImage);	
 		UIItemImage->SetAutoDelete	(true);
 		xml_init.InitStatic			(uiXml, "image_static", 0, UIItemImage);
-		UIItemImage->TextureAvailable(true);
+		UIItemImage->TextureOn		();
 
 		UIItemImage->TextureOff			();
 		UIItemImage->ClipperOn			();
@@ -197,7 +197,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 												0.0f, 
 												float(iGridWidth*INV_GRID_WIDTH),	
 												float(iGridHeight*INV_GRID_HEIGHT)};
-		if(UI()->is_16_9_mode())
+		if(UI().is_widescreen())
 			v_r.x2 /= 1.328f;
 
 		UIItemImage->GetUIStaticItem().SetRect	(v_r);

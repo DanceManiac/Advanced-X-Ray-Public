@@ -31,7 +31,7 @@ CUILines::CUILines()
 	uFlags.set(flColoringMode,		TRUE);
 	uFlags.set(flCutWordsMode,		FALSE);
 	uFlags.set(flRecognizeNewLine,	TRUE);
-	m_pFont = UI()->Font()->pFontLetterica16Russian;
+	m_pFont = UI().Font().pFontLetterica16Russian;
 	m_cursor_pos.set(0,0);
 	m_iCursorPos = 0;
 }
@@ -56,12 +56,20 @@ void CUILines::SetPasswordMode(bool mode){
 		uFlags.set(flComplexMode, false);
 }
 
+bool CUILines::GetPasswordMode() const{
+	return uFlags.test(flPasswordMode)? true : false;
+}
+
 void CUILines::SetColoringMode(bool mode){
 	uFlags.set(flColoringMode, mode);
 }
 
 void CUILines::SetCutWordsMode(bool mode){
 	uFlags.set(flCutWordsMode, mode);
+}
+
+void CUILines::SetEllipsis(bool mode){
+	uFlags.set(flEllipsis, mode);	
 }
 
 void CUILines::SetUseNewLineMode(bool mode){
@@ -75,7 +83,7 @@ void CUILines::Init(float x, float y, float width, float heigt){
 void CUILines::SetText(const char* text){
 	
 	if (!m_pFont)
-        m_pFont = UI()->Font()->pFontLetterica16Russian;
+        m_pFont = UI().Font().pFontLetterica16Russian;
 
 	if (text && text[0] != 0)
 	{
@@ -132,7 +140,7 @@ void CUILines::Reset(){
 float get_str_width(CGameFont*pFont, char ch)
 {
 	float ll = pFont->SizeOf_(ch);
-	UI()->ClientToScreenScaledWidth(ll);
+	UI().ClientToScreenScaledWidth(ll);
 	return ll;
 }
 
@@ -178,7 +186,7 @@ void CUILines::ParseText(){
 				char szTempLine[ MAX_MB_CHARS ] , *pszSearch = NULL;
 				size_t llen = xr_strlen( line->m_subLines[i].m_text.c_str() );
 				VERIFY( llen < MAX_MB_CHARS );
-				strcpy( szTempLine , line->m_subLines[i].m_text.c_str() );
+				strcpy_s( szTempLine , line->m_subLines[i].m_text.c_str() );
 				pszSearch = szTempLine;
 				while ( ( pszTemp = strstr( pszSearch , "\\n" ) ) != NULL ) {
 					bNewLines = TRUE;
@@ -200,7 +208,7 @@ void CUILines::ParseText(){
 		CUILine tmp_line;
 		char szTempLine[ MAX_MB_CHARS ];
 		float fTargetWidth = 1.0f;
-		UI()->ClientToScreenScaledWidth( fTargetWidth );
+		UI().ClientToScreenScaledWidth( fTargetWidth );
 		VERIFY( ( m_wndSize.x > 0 ) && ( fTargetWidth > 0 ) );
 		fTargetWidth = m_wndSize.x / fTargetWidth;
 		int vsz = line->m_subLines.size();
@@ -262,7 +270,7 @@ void CUILines::ParseText(){
 			{
 				bool b_last_ch	= (idx==sub_len-1);
 				
-				if (isspace(u8(sbl.m_text[idx])))
+				if(isspace(sbl.m_text[idx]))
 					last_space_idx = idx;
 
 				float w1		= get_str_width(m_pFont, sbl.m_text[idx]);
@@ -300,9 +308,6 @@ void CUILines::ParseText(){
 			}
 		}
 	}
-//.		while (line->GetSize() > 0 )
-//.			m_lines.push_back(*line->CutByLength(m_pFont, m_wndSize.x, uFlags.test(flCutWordsMode)));
-
 	xr_delete(line);
 	uFlags.set(flNeedReparse, FALSE);
 
@@ -311,7 +316,7 @@ void CUILines::ParseText(){
 float CUILines::GetVisibleHeight()
 {
 	float _curr_h = m_pFont->CurrentHeight_();
-	UI()->ClientToScreenScaledHeight(_curr_h);
+	UI().ClientToScreenScaledHeight(_curr_h);
 
 	if (uFlags.test(flComplexMode))
 	{
@@ -337,6 +342,41 @@ void CUILines::SetFont(CGameFont* pFont){
 	m_pFont = pFont;
 }
 
+LPCSTR GetElipsisText(CGameFont* pFont, float width, LPCSTR source_text, LPSTR buff, int buff_len)
+{
+	float text_len					= pFont->SizeOf_(source_text);
+	UI().ClientToScreenScaledWidth	(text_len);
+
+	if(text_len<width)
+	{
+		return source_text;
+	}else
+	{
+		buff[0]							= 0;
+		float el_len					= pFont->SizeOf_("..");
+		UI().ClientToScreenScaledWidth	(el_len);
+		float total						= 0.0f;
+		u16		pos						= 0;
+		
+		while(total+el_len < width)
+		{
+			const char c					= *(source_text+pos);
+			float ch_len					= pFont->SizeOf_(c);
+			UI().ClientToScreenScaledWidth	(ch_len);
+		
+			if(total+ch_len+el_len < width)
+				buff[pos]				= c;
+
+			total						+= ch_len;
+			++pos;
+			buff[pos]					= 0;
+		}
+
+		strcat_s						(buff,buff_len,"..");
+		return							buff;
+	}
+}
+
 void CUILines::Draw(float x, float y){
 	static string256 passText;
 
@@ -353,7 +393,7 @@ void CUILines::Draw(float x, float y){
 
 		text_pos.x = x + GetIndentByAlign();
 		text_pos.y = y + GetVIndentByAlign();
-		UI()->ClientToScreenScaled(text_pos);
+		UI().ClientToScreenScaled(text_pos);
 
 		if (uFlags.test(flPasswordMode))
 		{
@@ -366,19 +406,27 @@ void CUILines::Draw(float x, float y){
 		}
 		else{
 			m_pFont->SetAligment((CGameFont::EAligment)m_eTextAlign);
+			if(uFlags.test(flEllipsis) )
+			{
+				u32 buff_len	= sizeof(char)*xr_strlen(m_text.c_str()) + 1;
+
+				char* p			= static_cast<char*>(_alloca(buff_len));
+				LPCSTR			str = GetElipsisText(m_pFont, GetWidth(), m_text.c_str(), p, buff_len);
+
+				m_pFont->Out	(text_pos.x, text_pos.y, "%s", str);
+			}else
 			m_pFont->Out(text_pos.x, text_pos.y, "%s", m_text.c_str());
 		}
 	}
 	else
 	{
-		//if (uFlags.test(flNeedReparse))
 			ParseText();
 
 		Fvector2 pos;
 		// get vertical indent
 		pos.y			= y + GetVIndentByAlign();
 		float height	= m_pFont->CurrentHeight_();
-		UI()->ClientToScreenScaledHeight(height);
+		UI().ClientToScreenScaledHeight(height);
 
 		u32 size		= m_lines.size();
 

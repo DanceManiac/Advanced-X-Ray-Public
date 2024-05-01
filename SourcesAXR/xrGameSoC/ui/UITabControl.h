@@ -20,7 +20,7 @@ public:
 	virtual void		SaveValue					();
 	virtual bool		IsChanged					();
 
-	virtual bool		OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 	virtual void		OnTabChange					(int iCur, int iPrev);
 	virtual void		OnStaticFocusReceive		(CUIWindow* pWnd);
 	virtual void		OnStaticFocusLost			(CUIWindow* pWnd);

@@ -130,7 +130,7 @@ void CUIMainIngameWnd::Init()
 
 	UIWeaponBack.AttachChild	(&UIWeaponSignAmmo);
 	xml_init.InitStatic			(uiXml, "static_ammo", 0, &UIWeaponSignAmmo);
-	UIWeaponSignAmmo.SetElipsis	(CUIStatic::eepEnd, 2);
+	//UIWeaponSignAmmo.SetElipsis	(CUIStatic::eepEnd, 2);
 
 	UIWeaponBack.AttachChild	(&UIWeaponIcon);
 	xml_init.InitStatic			(uiXml, "static_wpn_icon", 0, &UIWeaponIcon);
@@ -263,11 +263,7 @@ void CUIMainIngameWnd::Init()
 	}
 
 	AttachChild								(&UIStaticDiskIO);
-	UIStaticDiskIO.SetWndRect				(1000,750,16,16);
-	UIStaticDiskIO.GetUIStaticItem().SetRect(0,0,16,16);
-	UIStaticDiskIO.InitTexture				("ui\\ui_disk_io");
-	UIStaticDiskIO.SetOriginalRect			(0,0,32,32);
-	UIStaticDiskIO.SetStretchTexture		(TRUE);
+	xml_init.InitStatic						(uiXml, "disk_io", 0, &UIStaticDiskIO);
 
 
 	HUD_SOUND::LoadSound					("maingame_ui", "snd_new_contact"		, m_contactSnd		, SOUND_TYPE_IDLE);
@@ -1306,7 +1302,7 @@ void CUIMainIngameWnd::draw_adjust_mode()
 		bool bCamFirstEye = !!m_pWeapon->GetHUDmode();
 		string32 hud_view="HUD view";
 		string32 _3rd_person_view="3-rd person view";
-		CGameFont* F		= UI()->Font()->pFontDI;
+		CGameFont* F		= UI().Font().pFontDI;
 		F->SetAligment		(CGameFont::alCenter);
 //.		F->SetSizeI			(0.02f);
 		F->OutSetI			(0.f,-0.8f);

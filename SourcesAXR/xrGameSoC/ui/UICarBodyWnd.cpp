@@ -388,9 +388,9 @@ void CUICarBodyWnd::TakeAll()
 
 #include "../xr_level_controller.h"
 
-bool CUICarBodyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUICarBodyWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
-	if( inherited::OnKeyboard(dik,keyboard_action) )return true;
+	if( inherited::OnKeyboardAction(dik,keyboard_action) )return true;
 
 	if(keyboard_action==WINDOW_KEY_PRESSED && is_binded(kUSE, dik)) 
 	{
@@ -442,7 +442,7 @@ void CUICarBodyWnd::ActivatePropertiesBox()
 		Frect							vis_rect;
 
 		GetAbsoluteRect					(vis_rect);
-		cursor_pos						= GetUICursor()->GetCursorPosition();
+		cursor_pos						= GetUICursor().GetCursorPosition();
 		cursor_pos.sub					(vis_rect.lt);
 		m_pUIPropertiesBox->Show		(vis_rect, cursor_pos);
 	}

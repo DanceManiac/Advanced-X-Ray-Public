@@ -112,7 +112,7 @@ void CUIMMShniaga::Init(CUIXml& xml_doc, LPCSTR path)
 
 void CUIMMShniaga::OnDeviceReset()
 {
-	if(UI()->is_16_9_mode())
+	if(UI().is_widescreen())
 	{
 		m_anims[0]->SetWndSize(m_wheel_size[1]);
 		m_anims[1]->SetWndSize(m_wheel_size[1]);
@@ -276,9 +276,9 @@ void CUIMMShniaga::Update(){
 }
 
 
-bool CUIMMShniaga::OnMouse(float x, float y, EUIMessages mouse_action){
+bool CUIMMShniaga::OnMouseAction(float x, float y, EUIMessages mouse_action){
 	
-	Fvector2 pos = UI()->GetUICursor()->GetCursorPosition();
+	Fvector2 pos = UI().GetUICursor().GetCursorPosition();
     Frect r;
 	m_magnifier->GetAbsoluteRect(r);
 	if (WINDOW_LBUTTON_DOWN == mouse_action && r.in(pos.x, pos.y))
@@ -286,7 +286,7 @@ bool CUIMMShniaga::OnMouse(float x, float y, EUIMessages mouse_action){
 		OnBtnClick();
 	}
 
-	return CUIWindow::OnMouse(x,y,mouse_action);
+	return CUIWindow::OnMouseAction(x,y,mouse_action);
 }
 
 void CUIMMShniaga::OnBtnClick(){
@@ -300,7 +300,7 @@ void CUIMMShniaga::OnBtnClick(){
 
 #include <dinput.h>
 
-bool CUIMMShniaga::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIMMShniaga::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 
 	if (WINDOW_KEY_PRESSED == keyboard_action){
 		switch (dik){
@@ -323,7 +323,7 @@ bool CUIMMShniaga::OnKeyboard(int dik, EUIMessages keyboard_action){
 	}
 
 
-	return CUIWindow::OnKeyboard(dik, keyboard_action);
+	return CUIWindow::OnKeyboardAction(dik, keyboard_action);
 }
 
 int CUIMMShniaga::BtnCount(){

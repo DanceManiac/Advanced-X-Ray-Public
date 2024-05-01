@@ -115,7 +115,7 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 		VERIFY						(_si->m_wnd);
 		_si->m_wnd->SetTextComplexMode(true);
 		_si->m_wnd->Show			(false);
-		_si->m_wnd->SetWidth		(_si->m_wnd->GetWidth()*UI()->get_current_kx());
+		_si->m_wnd->SetWidth		(_si->m_wnd->GetWidth()*UI().get_current_kx());
 
 		xml->SetLocalRoot			(_sr);
 	}
@@ -210,7 +210,7 @@ void CUISequenceSimpleItem::Start()
 	if(m_flags.test(etiNeedPauseSound))
 		GAME_PAUSE				(TRUE, FALSE, TRUE, "simpleitem_start");
 
-	GetUICursor()->SetUICursorPosition		(m_desired_cursor_pos);
+	GetUICursor().SetUICursorPosition		(m_desired_cursor_pos);
 	m_time_start							= float(Device.dwTimeContinual)/1000.0f;
 	m_owner->MainWnd()->AttachChild	(m_UIWindow);
 

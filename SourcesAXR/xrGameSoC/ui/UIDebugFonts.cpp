@@ -30,7 +30,7 @@ void CUIDebugFonts::Init(float x, float y, float width, float height){
 	m_background.InitTexture("ui\\ui_debug_font");
 }
 
-bool CUIDebugFonts::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIDebugFonts::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	if (DIK_ESCAPE == dik)
 		this->GetHolder()->StartStopMenu(this, true);
 
@@ -42,7 +42,7 @@ bool CUIDebugFonts::OnKeyboard(int dik, EUIMessages keyboard_action){
 #include "../string_table.h"
 
 void CUIDebugFonts::FillUpList(){
-	CFontManager::FONTS_VEC& v = UI()->Font()->m_all_fonts;
+	CFontManager::FONTS_VEC& v = UI().Font().m_all_fonts;
 	CFontManager::FONTS_VEC_IT it	= v.begin();
 	CFontManager::FONTS_VEC_IT it_e = v.end();
 	Fvector2 pos, sz;

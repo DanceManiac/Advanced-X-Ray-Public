@@ -232,7 +232,7 @@ void CChangeLevelWnd::OnCancel()
 	}
 }
 
-bool CChangeLevelWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CChangeLevelWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if(keyboard_action==WINDOW_KEY_PRESSED)
 	{
@@ -240,7 +240,7 @@ bool CChangeLevelWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 			OnCancel		();
 		return true;
 	}
-	return inherited::OnKeyboard(dik, keyboard_action);
+	return inherited::OnKeyboardAction(dik, keyboard_action);
 }
 
 bool g_block_pause	= false;

@@ -7,6 +7,7 @@
 #include "../HUDManager.h"
 #include "UILines.h"
 #include "UIBtnHint.h"
+#include "../../Include/xrRender/UIShader.h"
 
 #define PUSH_OFFSET_RIGHT 1
 #define PUSH_OFFSET_DOWN  1
@@ -18,7 +19,6 @@ CUIButton:: CUIButton()
 	m_eButtonState				= BUTTON_NORMAL;
 	m_ePressMode				= NORMAL_PRESS;
 	m_bButtonClicked			= false;
-	m_bAvailableTexture			= false;
 	m_bIsSwitch					= false;
 
 	m_PushOffset.set			(PUSH_OFFSET_RIGHT, PUSH_OFFSET_DOWN);
@@ -58,11 +58,11 @@ void CUIButton::Enable(bool status){
 		m_bCursorOverWindow		= false;
 }
 
-bool  CUIButton::OnMouse(float x, float y, EUIMessages mouse_action)
+bool  CUIButton::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	m_bButtonClicked			= false;
 
-	if( inherited::OnMouse(x, y, mouse_action) ) return true;
+	if( inherited::OnMouseAction(x, y, mouse_action) ) return true;
 
 	if ( (	WINDOW_LBUTTON_DOWN==mouse_action	||
 			WINDOW_LBUTTON_UP==mouse_action		||
@@ -80,6 +80,7 @@ bool  CUIButton::OnMouse(float x, float y, EUIMessages mouse_action)
 			{
 				m_eButtonState = BUTTON_PUSHED;
 				GetMessageTarget()->SendMessage(this, BUTTON_DOWN, NULL);
+				return true;
 			}
 		}
 		else if(m_eButtonState == BUTTON_PUSHED)
@@ -145,7 +146,7 @@ void CUIButton::DrawTexture()
 	Frect rect; 
 	GetAbsoluteRect		(rect);
 
-	if(m_bAvailableTexture && m_bTextureEnable)
+	if(m_bTextureEnable && GetShader() && GetShader()->inited())
 	{
 		if(m_eButtonState == BUTTON_UP || m_eButtonState == BUTTON_NORMAL)
 			m_UIStaticItem.SetPos(rect.left + m_TextureOffset.x, rect.top + m_TextureOffset.y);
@@ -157,8 +158,8 @@ void CUIButton::DrawTexture()
 		else
 		{
 			Frect r={0,0,
-				m_UIStaticItem.GetOriginalRectScaled().width(),
-				m_UIStaticItem.GetOriginalRectScaled().height()};
+				m_UIStaticItem.GetOriginalRect().width(),
+				m_UIStaticItem.GetOriginalRect().height()};
 			m_UIStaticItem.SetRect(r);
 		}
 
@@ -230,7 +231,7 @@ void  CUIButton::Update()
 	{
 		g_btnHint->SetHintText	(this,*m_hint_text);
 
-		Fvector2 c_pos			= GetUICursor()->GetCursorPosition();
+		Fvector2 c_pos			= GetUICursor().GetCursorPosition();
 		Frect vis_rect;
 		vis_rect.set			(0,0,UI_BASE_WIDTH, UI_BASE_HEIGHT);
 
@@ -259,7 +260,7 @@ void CUIButton::OnFocusLost()
 		g_btnHint->Discard	();
 }
 
-bool CUIButton::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIButton::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_PRESSED == keyboard_action)
 	{
@@ -269,5 +270,5 @@ bool CUIButton::OnKeyboard(int dik, EUIMessages keyboard_action)
 			return		true;
 		}
 	}
-	return inherited::OnKeyboard(dik, keyboard_action);
+	return inherited::OnKeyboardAction(dik, keyboard_action);
 }

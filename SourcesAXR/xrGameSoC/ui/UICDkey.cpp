@@ -35,14 +35,14 @@ void CUICDkey::Draw()
 
 	Fvector2					pos;
 	pos.set						(rect.left+outXY.x, rect.top+outXY.y);
-	UI()->ClientToScreenScaled	(pos);
+	UI().ClientToScreenScaled	(pos);
 
 	if(m_bInputFocus)
 	{		
 		m_lines.m_pFont->Out	( pos.x, pos.y, "%s" ,AddHyphens(m_lines.m_text.c_str()) );
 		
 		float _h				= m_lines.m_pFont->CurrentHeight_();
-		UI()->ClientToScreenScaledHeight(_h);
+		UI().ClientToScreenScaledHeight(_h);
 		
 		outXY.y					= rect.top + (m_wndSize.y - _h)/2.0f;
 		
@@ -53,11 +53,11 @@ void CUICDkey::Draw()
 		strncpy					(buff,m_lines.m_text.c_str(),i);
 		buff					[i]=0;
 		_w_tmp					= m_lines.m_pFont->SizeOf_(buff);
-		UI()->ClientToScreenScaledWidth(_w_tmp);
+		UI().ClientToScreenScaledWidth(_w_tmp);
 		outXY.x					= rect.left+_w_tmp;
 		
 		_w_tmp					= m_lines.m_pFont->SizeOf_("-");
-		UI()->ClientToScreenScaledWidth(_w_tmp);
+		UI().ClientToScreenScaledWidth(_w_tmp);
 		
 		if(i>3)
 			outXY.x	+= _w_tmp;
@@ -66,7 +66,7 @@ void CUICDkey::Draw()
 		if(i>11)
 			outXY.x	+= _w_tmp;
 
-		UI()->ClientToScreenScaled	(outXY);
+		UI().ClientToScreenScaled	(outXY);
 		m_lines.m_pFont->Out		(outXY.x, outXY.y, "_");
 	}
 	else

@@ -100,7 +100,7 @@ void CUICustomEdit::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 //	}
 }
 
-bool CUICustomEdit::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUICustomEdit::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	if (m_bFocusByDbClick)
 	{
@@ -126,7 +126,7 @@ bool CUICustomEdit::OnMouse(float x, float y, EUIMessages mouse_action)
 }
 
 
-bool CUICustomEdit::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUICustomEdit::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {	
 	if(!m_bInputFocus) 
 		return false;
@@ -272,7 +272,7 @@ void CUICustomEdit::AddChar(char c)
 	if(xr_strlen(m_lines.GetText()) >= m_max_symb_count)					return;
 
 	float text_length	= m_lines.GetFont()->SizeOf_(m_lines.GetText());
-	UI()->ClientToScreenScaledWidth		(text_length);
+	UI().ClientToScreenScaledWidth		(text_length);
 
 	if (!m_lines.GetTextComplexMode() && (text_length > GetWidth() - 1))	return;
 
@@ -370,7 +370,7 @@ void  CUICustomEdit::Draw()
 		
 		outXY.x								= 0.0f;
 		float _h				= m_lines.m_pFont->CurrentHeight_();
-		UI()->ClientToScreenScaledHeight(_h);
+		UI().ClientToScreenScaledHeight(_h);
 		outXY.y								= pos.y + (GetWndSize().y - _h)/2.0f;
 
 		float								_w_tmp;
@@ -379,12 +379,12 @@ void  CUICustomEdit::Draw()
 		strncpy								(buff,m_lines.m_text.c_str(),i);
 		buff[i]								= 0;
 		_w_tmp								= m_lines.m_pFont->SizeOf_(buff);
-		UI()->ClientToScreenScaledWidth		(_w_tmp);
+		UI().ClientToScreenScaledWidth		(_w_tmp);
 		outXY.x								= pos.x + _w_tmp;
 		
 		_w_tmp								= m_lines.m_pFont->SizeOf_("-");
-		UI()->ClientToScreenScaledWidth		(_w_tmp);
-		UI()->ClientToScreenScaled			(outXY);
+		UI().ClientToScreenScaledWidth		(_w_tmp);
+		UI().ClientToScreenScaled			(outXY);
 
 		m_lines.m_pFont->Out				(outXY.x, outXY.y, "_");
 	}

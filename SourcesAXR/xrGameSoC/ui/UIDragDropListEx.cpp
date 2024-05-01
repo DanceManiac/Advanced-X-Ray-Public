@@ -237,12 +237,12 @@ void CUIDragDropListEx::Draw()
 	inherited::Draw				();
 
 	if(0 && bDebug){
-		CGameFont* F		= UI()->Font()->pFontDI;
+		CGameFont* F		= UI().Font().pFontDI;
 		F->SetAligment		(CGameFont::alCenter);
 		F->SetHeightI		(0.02f);
 		F->OutSetI			(0.f,-0.5f);
 		F->SetColor			(0xffffffff);
-		Ivector2			pt = m_container->PickCell(GetUICursor()->GetCursorPosition());
+		Ivector2			pt = m_container->PickCell(GetUICursor().GetCursorPosition());
 		F->OutNext			("%d-%d",pt.x, pt.y);
 	};
 
@@ -255,7 +255,7 @@ void CUIDragDropListEx::Update()
 	if( m_drag_item ){
 		Frect	wndRect;
 		GetAbsoluteRect(wndRect);
-		Fvector2 cp			= GetUICursor()->GetCursorPosition();
+		Fvector2 cp			= GetUICursor().GetCursorPosition();
 		if(wndRect.in(cp)){
 			if(NULL==m_drag_item->BackList())
 				m_drag_item->SetBackList(this);
@@ -281,9 +281,9 @@ void CUIDragDropListEx::ReinitScroll()
 		m_container->SetWndPos		(0,0);
 }
 
-bool CUIDragDropListEx::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIDragDropListEx::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	bool b = inherited::OnMouse		(x,y,mouse_action);
+	bool b = inherited::OnMouseAction		(x,y,mouse_action);
 
 	if(m_vScrollBar->IsShown())
 	{
@@ -686,7 +686,7 @@ void CUICellContainer::Draw()
 
 	Fvector2					drawLT;
 	drawLT.set					(lt_abs_pos.x+tgt_cells.lt.x*cell_sz.x, lt_abs_pos.y+tgt_cells.lt.y*cell_sz.y);
-	UI()->ClientToScreenScaled	(drawLT, drawLT.x, drawLT.y);
+	UI().ClientToScreenScaled	(drawLT, drawLT.x, drawLT.y);
 
 	const Fvector2 pts[6] =		{{0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},
 								 {0.0f,0.0f},{1.0f,1.0f},{0.0f,1.0f}};
@@ -697,7 +697,7 @@ void CUICellContainer::Draw()
 
 	// calculate cell size in screen pixels
 	Fvector2 f_len;
-	UI()->ClientToScreenScaled(f_len, float(cell_sz.x), float(cell_sz.y) );
+	UI().ClientToScreenScaled(f_len, float(cell_sz.x), float(cell_sz.y) );
 
 	// fill cell buffer
 	u32 vOffset					= 0;
@@ -716,7 +716,7 @@ void CUICellContainer::Draw()
 		}
 	}
 
-	UI()->PushScissor					(clientArea);
+	UI().PushScissor					(clientArea);
 
 	// draw grid
 	UIRender->SetShader(*hShader);
@@ -731,5 +731,5 @@ void CUICellContainer::Draw()
 			}
 	}
 
-	UI()->PopScissor			();
+	UI().PopScissor			();
 }

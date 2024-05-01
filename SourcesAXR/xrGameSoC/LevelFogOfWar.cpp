@@ -186,8 +186,8 @@ void CLevelFogOfWar::Draw	()
 	realCellsPosLT.sub			(m_levelRect.lt).mul(m->GetCurrentZoom());
 	
 	Ivector2	drawLT;
-	drawLT.set					((realCellsPosLT.x + map_abs_pos.x)*UI()->GetScaleX(), 
-								 (realCellsPosLT.y + map_abs_pos.y)*UI()->GetScaleY());
+	drawLT.set					((realCellsPosLT.x + map_abs_pos.x)*UI().GetScaleX(), 
+								 (realCellsPosLT.y + map_abs_pos.y)*UI().GetScaleY());
 	
 
 	const Fvector2 pts[6] =		{{0.0f,0.0f},{1.0f,0.0f},{1.0f,1.0f},
@@ -197,8 +197,8 @@ void CLevelFogOfWar::Draw	()
 								 {0.0f,0.0f},{0.5f,1.0f},{0.0f,1.0f}};
 
 	// calculate cell size in screen pixels
-	float		fw				= FOG_CELL_SZ*m->GetCurrentZoom()*UI()->GetScaleX();
-	float		fh				= FOG_CELL_SZ*m->GetCurrentZoom()*UI()->GetScaleY();
+	float		fw				= FOG_CELL_SZ*m->GetCurrentZoom()*UI().GetScaleX();
+	float		fh				= FOG_CELL_SZ*m->GetCurrentZoom()*UI().GetScaleY();
 
 	// fill cell buffer
 	u32 vOffset					= 0;
@@ -221,14 +221,14 @@ void CLevelFogOfWar::Draw	()
 	RCache.Vertex.Unlock		(u32(pv-start_pv),hGeom.stride());
 
 	// set scissor
-	UI()->PushScissor			(clip_rect);
+	UI().PushScissor			(clip_rect);
 	if (p_cnt!=0){
 		// draw
 		RCache.set_Shader		(hShader);
 		RCache.set_Geometry		(hGeom);
 		RCache.Render			(D3DPT_TRIANGLELIST,vOffset,u32(p_cnt));
 	}
-	UI()->PopScissor		 	();
+	UI().PopScissor		 	();
 }
 
 void CLevelFogOfWar::save	(IWriter &stream)

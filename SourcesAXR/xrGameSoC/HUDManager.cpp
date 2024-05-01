@@ -52,10 +52,9 @@ void CFontManager::InitializeFonts()
 
 LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 {
-	static char* tex_names[]={"texture800","texture","texture1600"};
+	static char* tex_names[] = { "texture800", "texture", "texture1600", "texture2k", "texture4k" };
 	int def_idx		= 1;//default 1024x768
 	int idx			= def_idx;
-
 #if 0
 	u32 w = Device.dwWidth;
 
@@ -66,8 +65,10 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	u32 h = Device.dwHeight;
 
 	if(h<=600)		idx = 0;
-	else if(h<=900)	idx = 1;
-	else 			idx = 2;
+	else if (h<1024)	idx = 1;
+	else if (h<1200)	idx = 2;
+	else if (h<1440)	idx = 3;
+	else				idx = 4;
 #endif
 
 	while(idx>=0){
@@ -123,10 +124,8 @@ void CFontManager::OnDeviceReset()
 }
 
 //--------------------------------------------------------------------
-CHUDManager::CHUDManager()
+CHUDManager::CHUDManager() : m_Renderable(true), pUI(NULL), m_pHUDTarget(xr_new<CHUDTarget>())
 { 
-	pUI						= 0;
-	m_pHUDTarget			= xr_new<CHUDTarget>();
 	OnDisconnected			();
 }
 //--------------------------------------------------------------------
@@ -152,6 +151,11 @@ void CHUDManager::Load()
 //--------------------------------------------------------------------
 void CHUDManager::OnFrame()
 {
+	if ( !m_Renderable )
+	{
+		return;
+	}
+
 	if(!b_online)					return;
 	if (pUI) pUI->UIOnFrame();
 	m_pHUDTarget->CursorOnFrame();
@@ -162,7 +166,12 @@ ENGINE_API extern float psHUD_FOV;
 
 void CHUDManager::Render_First()
 {
-	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT))return;
+	if ( !m_Renderable )
+	{
+		return;
+	}
+
+	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))return;
 	if (0==pUI)						return;
 	CObject*	O					= g_pGameLevel->CurrentViewEntity();
 	if (0==O)						return;
@@ -198,11 +207,38 @@ void CHUDManager::Render_Last()
 	::Render->set_HUD				(FALSE);
 }
 extern void draw_wnds_rects();
+
+//#include "player_hud.h"
+bool   CHUDManager::RenderActiveItemUIQuery()
+{
+	if ( !m_Renderable )
+	{
+		return false;
+	}
+
+	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))return false;
+//	return (g_player_hud && g_player_hud->render_item_ui_query() );
+}
+
+void   CHUDManager::RenderActiveItemUI()
+{
+	if ( !m_Renderable )
+	{
+		return;
+	}
+
+//	g_player_hud->render_item_ui		();
+}
 extern ENGINE_API BOOL bShowPauseString;
 //отрисовка элементов интерфейса
 #include "string_table.h"
 void  CHUDManager::RenderUI()
 {
+	if ( !m_Renderable )
+	{
+		return;
+	}
+
 	if(!b_online)					return;
 
 	BOOL bAlready					= FALSE;
@@ -210,7 +246,7 @@ void  CHUDManager::RenderUI()
 	{
 		HitMarker.Render			();
 		bAlready					= ! (pUI && !pUI->Render());
-		Font().Render();
+		UI().RenderFont				();
 	}
 
 	if (psHUD_Flags.is(HUD_CROSSHAIR|HUD_CROSSHAIR_RT|HUD_CROSSHAIR_RT2) && !bAlready)	
@@ -219,13 +255,13 @@ void  CHUDManager::RenderUI()
 	draw_wnds_rects		();
 
 	if( Device.Paused() && bShowPauseString){
-		CGameFont* pFont	= Font().pFontGraffiti50Russian;
+		CGameFont* pFont	= UI().Font().pFontGraffiti50Russian;
 		pFont->SetColor		(0x80FF0000	);
 		LPCSTR _str			= CStringTable().translate("st_game_paused").c_str();
 		
 		Fvector2			_pos;
 		_pos.set			(UI_BASE_WIDTH/2.0f, UI_BASE_HEIGHT/2.0f);
-		UI()->ClientToScreenScaled(_pos);
+		UI().ClientToScreenScaled(_pos);
 		pFont->SetAligment	(CGameFont::alCenter);
 		pFont->Out			(_pos.x, _pos.y, _str);
 		pFont->OnRender		();

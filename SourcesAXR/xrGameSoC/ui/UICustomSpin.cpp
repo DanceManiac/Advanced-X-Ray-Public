@@ -31,7 +31,7 @@ CUICustomSpin::CUICustomSpin()
 	AttachChild					(m_pBtnDown);
 	m_pLines->SetTextAlignment	(CGameFont::alLeft);
 	m_pLines->SetVTextAlignment	(valCenter);
-	m_pLines->SetFont			(UI()->Font()->pFontLetterica16Russian);
+	m_pLines->SetFont			(UI().Font().pFontLetterica16Russian);
 	m_pLines->SetTextColor		(color_argb(255,235,219,185));
 
 	m_time_begin				= 0;

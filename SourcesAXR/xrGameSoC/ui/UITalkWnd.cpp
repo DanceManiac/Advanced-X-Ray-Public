@@ -34,7 +34,7 @@ CUITalkWnd::CUITalkWnd()
 
 	Init					();
 	Hide					();
-//.	SetFont					(HUD().Font().pFontHeaderRussian);
+//.	SetFont					(UI().Font().pFontHeaderRussian);
 
 	m_bNeedToUpdateQuestions = false;
 }
@@ -377,13 +377,13 @@ bool CUITalkWnd::IR_OnKeyboardPress(int dik)
 	return inherited::IR_OnKeyboardPress(dik);
 }
 
-bool CUITalkWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUITalkWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (m_pOthersInvOwner&&m_pOthersInvOwner->NeedOsoznanieMode())
 	{
 		return true;
 	}
-	return inherited::OnKeyboard(dik,keyboard_action);
+	return inherited::OnKeyboardAction(dik,keyboard_action);
 }
 
 void CUITalkWnd::PlaySnd(LPCSTR text)

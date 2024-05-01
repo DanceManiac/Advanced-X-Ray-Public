@@ -48,7 +48,7 @@ public:
 	//инициализации начального диалога собеседника
 	void				InitOthersStartDialog();
 	virtual bool		IR_OnKeyboardPress(int dik);
-	virtual bool		OnKeyboard(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction(int dik, EUIMessages keyboard_action);
 	void				SwitchToTrade();
 	void				AddIconedMessage(LPCSTR text, LPCSTR texture_name, Frect texture_rect, LPCSTR templ_name);
 

@@ -45,7 +45,7 @@ bool CUITabControl::AddItem(const char *pItemName, const char *pTexName, float x
 {
 	CUITabButton *pNewButton = xr_new<CUITabButton>();
 	pNewButton->SetAutoDelete	(true);
-	pNewButton->Init			(pTexName, x, y, width, height);
+	pNewButton->InitButton		(x, y, width, height);
 	pNewButton->SetText			(pItemName);
 	pNewButton->SetTextColor	(m_cGlobalTextColor);
 	pNewButton->GetUIStaticItem	().SetColor(m_cGlobalButtonColor);
@@ -162,7 +162,7 @@ void CUITabControl::SetNewActiveTab(const int iNewTab)
 	m_iPrevPushedIndex = m_iPushedIndex;
 }
 
-bool CUITabControl::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUITabControl::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 
 	if (GetAcceleratorsMode() && WINDOW_KEY_PRESSED == keyboard_action)

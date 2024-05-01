@@ -81,8 +81,7 @@ CUIMultiTextStatic::SinglePhrase * CUIMultiTextStatic::GetPhraseByIndex(u32 idx)
 //////////////////////////////////////////////////////////////////////////
 
 CUIMultiTextStatic::SPh::SPh()
-	:	elipsisPos			(CUIStatic::eepEnd),
-		maxWidth			(-1.0f)
+	:maxWidth			(-1.0f)
 {
 	effect.SetStyleParams(CUITextBanner::tbsNone);
 	effect.StopAnimation();
@@ -93,14 +92,15 @@ CUIMultiTextStatic::SPh::SPh()
 void CUIMultiTextStatic::SPh::SetText(const char *fmt, ...)
 {
 	va_list		Print;                                                                  
-	string256	msg;
+	string512	msg;
 	xr_string	buf;
 
 	va_start(Print, fmt);
-		vsprintf(msg, fmt, Print);
+		vsprintf_s( msg , fmt , Print );
+	va_end( Print );
+
 		buf += msg;
 		msg[0] = '\n';
-	va_end(Print);
 
 	str = buf.c_str();
 

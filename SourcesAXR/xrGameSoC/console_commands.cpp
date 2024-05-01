@@ -841,7 +841,7 @@ class CCC_DebugFonts : public IConsole_Command {
 public:
 	CCC_DebugFonts (LPCSTR N) : IConsole_Command(N) {bEmptyArgsHandled = true; }
 	virtual void Execute				(LPCSTR args) {
-		HUD().GetUI()->StartStopMenu( xr_new<CUIDebugFonts>(), true);		
+		HUD().GetUI()->StartStopMenu( xr_new<CUIDebugFonts>(), true);
 	}
 };
 

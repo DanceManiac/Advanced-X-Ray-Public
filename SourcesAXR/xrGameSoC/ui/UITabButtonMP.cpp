@@ -71,11 +71,11 @@ void CUITabButtonMP::Update()
 
 void CUITabButtonMP::Draw()
 {
-	UI()->PushScissor(UI()->ScreenRect(),true);
+	UI().PushScissor(UI().ScreenRect(),true);
 
 	CUITabButton::Draw();
 
-	UI()->PopScissor();
+	UI().PopScissor();
 }
 
 

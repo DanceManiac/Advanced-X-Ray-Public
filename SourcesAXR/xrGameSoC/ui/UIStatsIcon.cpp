@@ -10,7 +10,7 @@ CUIStatsIcon::TEX_INFO		CUIStatsIcon::m_tex_info[MAX_DEF_TEX][2];
 CUIStatsIcon::CUIStatsIcon(){
 	SetStretchTexture(true);
 	InitTexInfo();
-	m_bAvailableTexture = true;
+	//m_bAvailableTexture = true;
 }
 
 using namespace InventoryUtilities;

@@ -17,7 +17,7 @@ public:
 	virtual ~CUIDebugFonts();
 
 	virtual void Init(float x, float y, float width, float height);
-	virtual bool OnKeyboard(int dik, EUIMessages keyboard_action);
+	virtual bool OnKeyboardAction(int dik, EUIMessages keyboard_action);
 			void FillUpList();
 protected:
 	CUIStatic  m_background;

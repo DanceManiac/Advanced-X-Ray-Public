@@ -27,7 +27,7 @@ public:
 	virtual void	Update					();
 	virtual bool	OnMouseDown				(int mouse_btn);
 	virtual void	OnFocusLost				();
-	virtual bool	OnKeyboard				(int dik, EUIMessages keyboard_action);
+	virtual bool	OnKeyboardAction				(int dik, EUIMessages keyboard_action);
 	// IUITextControl
 	virtual void	SetText					(const char* text);
 

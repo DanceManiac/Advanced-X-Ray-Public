@@ -69,5 +69,5 @@ public:
 	virtual bool		WorkInPause					()const {return true;}
 	virtual void		Show						();
 	virtual void		Hide						();
-	virtual bool		OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool		OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 };

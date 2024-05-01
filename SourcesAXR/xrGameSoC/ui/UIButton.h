@@ -12,7 +12,7 @@ public:
 					CUIButton				();
 	virtual			~CUIButton				();
 
-	virtual bool	OnMouse					(float x, float y, EUIMessages mouse_action);
+	virtual bool	OnMouseAction					(float x, float y, EUIMessages mouse_action);
 	virtual void	OnClick					();
 
 	//прорисовка окна
@@ -22,7 +22,7 @@ public:
 
 	virtual void	Update					();
 	virtual void	Enable					(bool status);
-	virtual bool	OnKeyboard				(int dik, EUIMessages keyboard_action);
+	virtual bool	OnKeyboardAction				(int dik, EUIMessages keyboard_action);
 	virtual void	OnFocusLost				();
 
 	//режимы в которых можно нажимать кнопку

@@ -33,7 +33,7 @@ u32 cut_string_by_length(CGameFont* pFont, LPCSTR src, LPSTR dst, u32 dst_size, 
 	} else {
 
 		float	text_len					= pFont->SizeOf_(src);
-		UI()->ClientToScreenScaledWidth		(text_len);
+		UI().ClientToScreenScaledWidth		(text_len);
 		VERIFY								(xr_strlen(src)<=dst_size);
 		strcpy								(dst,src);
 
@@ -42,7 +42,7 @@ u32 cut_string_by_length(CGameFont* pFont, LPCSTR src, LPSTR dst, u32 dst_size, 
 			dst[xr_strlen(dst)-1]			= 0;
 			VERIFY							(xr_strlen(dst));
 			text_len						= pFont->SizeOf_(dst);
-			UI()->ClientToScreenScaledWidth	(text_len);
+			UI().ClientToScreenScaledWidth	(text_len);
 		}
 
 		return xr_strlen(dst);
@@ -106,10 +106,10 @@ bool CUIEditKeyBind::OnMouseDown(int mouse_btn)
 	return CUILabel::OnMouseDown(mouse_btn);
 }
 
-bool CUIEditKeyBind::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIEditKeyBind::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	if (dik == MOUSE_1 || dik == MOUSE_2 || dik == MOUSE_3)
 		return false;
-	if (CUILabel::OnKeyboard(dik, keyboard_action))
+	if (CUILabel::OnKeyboardAction(dik, keyboard_action))
 		return true;
 
 	string64 message;

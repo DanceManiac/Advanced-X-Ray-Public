@@ -49,7 +49,11 @@ void CUICustomMap::Init	(shared_str name, CInifile& gameLtx, LPCSTR sh_name)
 		tmp.set(-10000.0f,-10000.0f,10000.0f,10000.0f);
 	}
 	m_BoundRect.set		(tmp.x, tmp.y, tmp.z, tmp.w);
-	CUIStatic::InitEx	(tex, sh_name, 0, 0, m_BoundRect.width(), m_BoundRect.height() );
+	Fvector2 sz;
+	m_BoundRect.getsize		(sz);
+	CUIStatic::SetWndSize	(sz);
+	CUIStatic::SetWndPos	(Fvector2().set(0,0));
+	CUIStatic::InitTextureEx(tex, sh_name);
 	
 	SetStretchTexture	(true);
 	ClipperOn			();
@@ -185,7 +189,7 @@ void CUICustomMap::SetActivePoint(const Fvector &vNewPoint)
 	clip_abs_rect.getcenter(clip_center);
 	clip_center.sub(pos_abs);
 	MoveWndDelta				(clip_center);
-	SetHeadingPivot				(pos_on_map);
+	SetHeadingPivot				(pos_on_map, Fvector2().set(0,0), false);
 }
 
 bool CUICustomMap::IsRectVisible(Frect r)
@@ -214,9 +218,9 @@ void	CUICustomMap::SendMessage			(CUIWindow* pWnd, s16 msg, void* pData)
 	CUIWndCallback::OnEvent(pWnd, msg, pData);
 }
 
-bool CUIGlobalMap::OnMouse	(float x, float y, EUIMessages mouse_action)
+bool CUIGlobalMap::OnMouseAction	(float x, float y, EUIMessages mouse_action)
 {
-	if(inherited::OnMouse(x,y,mouse_action)) return true;
+	if(inherited::OnMouseAction(x,y,mouse_action)) return true;
 	if(mouse_action==WINDOW_MOUSE_MOVE && (FALSE==pInput->iGetAsyncBtnState(0)))
 	{
 		if( MapWnd() )
@@ -457,9 +461,9 @@ void CUILevelMap::Update()
 
 }
 
-bool CUILevelMap::OnMouse	(float x, float y, EUIMessages mouse_action)
+bool CUILevelMap::OnMouseAction	(float x, float y, EUIMessages mouse_action)
 {
-	if (inherited::OnMouse(x,y,mouse_action))	return true;
+	if (inherited::OnMouseAction(x,y,mouse_action))	return true;
 	if (MapWnd()->GlobalMap()->Locked())		return true;
 /*
 	if (MapWnd()->m_flags.is_any(CUIMapWnd::lmZoomIn+CUIMapWnd::lmZoomOut))	return false;

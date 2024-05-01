@@ -56,7 +56,9 @@ void CUI::UnLoad()
 void CUI::UIOnFrame()
 {
 	CEntity* m_Actor = smart_cast<CEntity*>(Level().CurrentEntity());
-	if (m_Actor){
+
+	if (m_Actor)
+	{
 		
 		//update windows
 		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW|HUD_DRAW_RT) )
@@ -117,8 +119,6 @@ bool CUI::Render()
 
 	return false;
 }
-//.		if(HUD().GetUI())HUD().GetUI()->HideGameIndicators();
-//.		if(HUD().GetUI())HUD().GetUI()->ShowGameIndicators();
 
 bool	CUI::IR_OnMouseWheel			(int direction)
 {

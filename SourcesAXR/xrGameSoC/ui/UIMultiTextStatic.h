@@ -23,7 +23,6 @@ public:
 		float						outX;
 		float						outY;
 		float						maxWidth;
-		CUIStatic::EElipsisPosition elipsisPos;
 		CUITextBanner				effect;
 		shared_str						str;
 

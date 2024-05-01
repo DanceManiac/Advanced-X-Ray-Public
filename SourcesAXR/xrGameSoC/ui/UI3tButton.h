@@ -21,7 +21,7 @@ public:
 	// appearance
 	using CUIButton::Init;
 
-	virtual void 	Init						(float x, float y, float width, float height);
+	virtual void 	InitButton						(float x, float y, float width, float height);
 	virtual void 	InitTexture					(LPCSTR tex_name);
 	virtual void 	InitTexture					(LPCSTR tex_enabled, LPCSTR tex_disabled, LPCSTR tex_touched, LPCSTR tex_highlighted);	
 
@@ -48,7 +48,7 @@ public:
 	virtual void	Update						();
 	
 	//virtual void Enable(bool bEnable);	
-	virtual bool 	OnMouse						(float x, float y, EUIMessages mouse_action);
+	virtual bool 	OnMouseAction						(float x, float y, EUIMessages mouse_action);
 	virtual bool 	OnMouseDown					(int mouse_btn);
 			void 	SetCheckMode				(bool mode) {m_bCheckMode = mode;}
 

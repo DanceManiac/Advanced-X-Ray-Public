@@ -313,7 +313,7 @@ void CUIBagWnd::FillUpGroup(const u32 group)
 
             // Set custom draw
 			itoa						(j+1, tmp_str ,10);
-			CBuyItemCustomDrawCell* p	= xr_new<CBuyItemCustomDrawCell>(tmp_str,UI()->Font()->pFontLetterica16Russian);
+			CBuyItemCustomDrawCell* p	= xr_new<CBuyItemCustomDrawCell>(tmp_str,UI().Font().pFontLetterica16Russian);
 			itm->SetCustomDraw			(p);
             
 			// Set Number
@@ -449,7 +449,7 @@ void CUIBagWnd::PutItemToGroup(CUICellItem* pItem, int iGroup)
 		++subSection_group3[iActiveSection - GROUP_31];
 		
 		sprintf_s						(tmp_str, "%d", subSection_group3[iActiveSection - GROUP_31]);
-		CBuyItemCustomDrawCell* p	= xr_new<CBuyItemCustomDrawCell>(tmp_str, UI()->Font()->pFontLetterica16Russian);
+		CBuyItemCustomDrawCell* p	= xr_new<CBuyItemCustomDrawCell>(tmp_str, UI().Font().pFontLetterica16Russian);
 		pItem->SetCustomDraw		(p);
 
 		m_info[pItem->m_index].short_cut = subSection_group3[iActiveSection - GROUP_31] % 10;
@@ -538,7 +538,7 @@ MENU_LEVELS CUIBagWnd::GetMenuLevel()
 	return m_mlCurrLevel;
 }
 
-bool CUIBagWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIBagWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	int iGroup;
 
@@ -738,22 +738,22 @@ void CUIBagWnd::ShowSectionEx(int iSection){
 
 void CUIBagWnd::OnBtnShotgunsClicked(){
 	m_boxesDefs[0].pButton->OnClick();
-	m_boxesDefs[0].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[0].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_31);
 }
 void CUIBagWnd::OnBtnMachinegunsClicked(){
 	m_boxesDefs[1].pButton->OnClick();
-	m_boxesDefs[1].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[1].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_32);
 }
 void CUIBagWnd::OnBtnSniperClicked(){
 	m_boxesDefs[2].pButton->OnClick();
-	m_boxesDefs[2].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[2].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_33);
 }
 void CUIBagWnd::OnBtnHeavyClicked(){
 	m_boxesDefs[3].pButton->OnClick();
-	m_boxesDefs[3].pButton->OnMouse(-1, -1, WINDOW_MOUSE_MOVE);
+	m_boxesDefs[3].pButton->OnMouseAction(-1, -1, WINDOW_MOUSE_MOVE);
 	ShowSectionEx(GROUP_34);
 }
 

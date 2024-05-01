@@ -36,10 +36,10 @@ public:
 			T*	 CreateD();
 			T*	 CreateT();
 			T*	 CreateH();
-			T*	 GetE();
-			T*	 GetD();
-			T*	 GetT();
-			T*	 GetH();
+			T*	 GetE	();
+			T*	 GetD	();
+			T*	 GetT	();
+			T*	 GetH	();
 	virtual void InitEnabledState(LPCSTR texture_e);
 	virtual void InitDisabledState(LPCSTR texture_d);
 	virtual void InitHighlightedState(LPCSTR texture_h);
@@ -73,29 +73,35 @@ CUIInteractiveBackground<T>::~CUIInteractiveBackground(){
 }
 
 template <class T>
-void CUIInteractiveBackground<T>::Init(float x, float y, float width, float height){
-	CUIWindow::Init(x, y, width, height);
+void CUIInteractiveBackground<T>::Init(float x, float y, float width, float height)
+{
+	CUIWindow::SetWndPos	(Fvector2().set(x,y));
+	CUIWindow::SetWndSize	(Fvector2().set(width,height));
 }
 
 template <class T>
 void CUIInteractiveBackground<T>::Init(LPCSTR texture_e, float x, float y, float width, float height){
-	CUIWindow::Init(x, y, width, height);
+	CUIWindow::SetWndPos	(Fvector2().set(x,y));
+	CUIWindow::SetWndSize	(Fvector2().set(width,height));
 
 	InitEnabledState(texture_e);
 
-	m_stateEnabled->Init(texture_e, 0.0f, 0.0f, width, height);
+	this->m_stateEnabled->InitTexture(texture_e);
+	this->m_stateEnabled->SetWndPos(Fvector2().set(0, 0));
+	this->m_stateEnabled->SetWndSize(Fvector2().set(width, height));
 	m_stateCurrent = this->m_stateEnabled;
 }
 
 template <class T>
 T*	 CUIInteractiveBackground<T>::CreateE(){
-	Frect r = GetWndRect();
+	Fvector2 size = GetWndSize();
 	if (!m_stateEnabled)
 	{
 		m_stateEnabled = xr_new<T>();
 		m_stateEnabled->SetAutoDelete(true);
-		AttachChild(m_stateEnabled);
-		m_stateEnabled->Init(0.0f, 0.0f, r.right - r.left, r.bottom - r.top);
+		AttachChild					(m_stateEnabled);
+		m_stateEnabled->SetWndPos	(Fvector2().set(0,0));
+		m_stateEnabled->SetWndSize	(size);
 	}
 	SetState(S_Enabled);
 	return m_stateEnabled;
@@ -103,39 +109,42 @@ T*	 CUIInteractiveBackground<T>::CreateE(){
 
 template <class T>
 T*	 CUIInteractiveBackground<T>::CreateD(){
-	Frect r = GetWndRect();
+	Fvector2 size = GetWndSize();
 	if (!m_stateDisabled)
 	{
 		m_stateDisabled = xr_new<T>();
 		m_stateDisabled->SetAutoDelete(true);
 		AttachChild(m_stateDisabled);
-		m_stateDisabled->Init(0.0f, 0.0f, r.right - r.left, r.bottom - r.top);
+		m_stateDisabled->SetWndPos	(Fvector2().set(0,0));
+		m_stateDisabled->SetWndSize	(size);
 	}
 	return m_stateDisabled;
 }
 
 template <class T>
 T*	 CUIInteractiveBackground<T>::CreateT(){
-	Frect r = GetWndRect();
+	Fvector2 size = GetWndSize();
 	if (!m_stateTouched)
 	{
 		m_stateTouched = xr_new<T>();
 		m_stateTouched->SetAutoDelete(true);
 		AttachChild(m_stateTouched);		
-		m_stateTouched->Init(0.0f, 0.0f, r.right - r.left, r.bottom - r.top);
+		m_stateTouched->SetWndPos	(Fvector2().set(0,0));
+		m_stateTouched->SetWndSize	(size);
 	}
 	return m_stateTouched;
 }
 
 template <class T>
 T*	 CUIInteractiveBackground<T>::CreateH(){
-	Frect r = GetWndRect();
+	Fvector2 size = GetWndSize();
 	if (!m_stateHighlighted)
 	{
 		m_stateHighlighted = xr_new<T>();
 		m_stateHighlighted->SetAutoDelete(true);
 		AttachChild(m_stateHighlighted);
-		m_stateHighlighted->Init(0.0f, 0.0f, r.right - r.left, r.bottom - r.top);
+		m_stateHighlighted->SetWndPos	(Fvector2().set(0,0));
+		m_stateHighlighted->SetWndSize	(size);
 	}    
 	return m_stateHighlighted;
 }
@@ -162,7 +171,7 @@ T*	 CUIInteractiveBackground<T>::GetH(){
 
 template <class T>
 void CUIInteractiveBackground<T>::InitEnabledState(LPCSTR texture_e){
-	Frect r = GetWndRect();
+	Fvector2 size = GetWndSize();
 
 	if (!m_stateEnabled)
 	{
@@ -171,14 +180,16 @@ void CUIInteractiveBackground<T>::InitEnabledState(LPCSTR texture_e){
 		AttachChild(m_stateEnabled);
 	}
 
-	this->m_stateEnabled->Init(texture_e, 0.0f, 0.0f, r.right - r.left, r.bottom - r.top);
+	this->m_stateEnabled->InitTexture(texture_e);
+	this->m_stateEnabled->SetWndPos(Fvector2().set(0,0));
+	this->m_stateEnabled->SetWndSize(size);
 
 	SetState(S_Enabled);
 }
 
 template <class T>
 void CUIInteractiveBackground<T>::InitDisabledState(LPCSTR texture_d){
-	Frect r = GetWndRect();
+	Fvector2 size = GetWndSize();
 
 	if (!m_stateDisabled)
 	{
@@ -187,12 +198,15 @@ void CUIInteractiveBackground<T>::InitDisabledState(LPCSTR texture_d){
 		AttachChild(m_stateDisabled);
 	}
 
-	this->m_stateDisabled->Init(texture_d, 0.0f, 0.0f, r.right - r.left, r.bottom - r.top); 
+	this->m_stateDisabled->InitTexture(texture_d);
+	this->m_stateDisabled->SetWndPos(Fvector2().set(0,0));
+	this->m_stateDisabled->SetWndSize(size);
+
 }
 
 template <class T>
 void CUIInteractiveBackground<T>::InitHighlightedState(LPCSTR texture_h){
-	Frect r = GetWndRect();
+	Fvector2 size = GetWndSize();
     
 	if (!m_stateHighlighted)
 	{
@@ -201,12 +215,14 @@ void CUIInteractiveBackground<T>::InitHighlightedState(LPCSTR texture_h){
 		AttachChild(m_stateHighlighted);		
 	}
 
-	this->m_stateHighlighted->Init(texture_h, 0.0f, 0.0f, r.right - r.left, r.bottom - r.top); 
+	this->m_stateHighlighted->InitTexture(texture_h);
+	this->m_stateHighlighted->SetWndPos(Fvector2().set(0,0));
+	this->m_stateHighlighted->SetWndSize(size);
 }
 
 template <class T>
-void CUIInteractiveBackground<T>::InitTouchedState(LPCSTR texture_d){
-	Frect r = GetWndRect();
+void CUIInteractiveBackground<T>::InitTouchedState(LPCSTR texture_t){
+	Fvector2 size = GetWndSize();
 
     if (!m_stateTouched)
 	{
@@ -215,7 +231,9 @@ void CUIInteractiveBackground<T>::InitTouchedState(LPCSTR texture_d){
 		AttachChild(m_stateTouched);		
 	}
 
-	this->m_stateTouched->Init(texture_d, 0.0f, 0.0f, r.right - r.left, r.bottom - r.top); 
+	this->m_stateTouched->InitTexture(texture_t);
+	this->m_stateTouched->SetWndPos(Fvector2().set(0,0));
+	this->m_stateTouched->SetWndSize(size);
 }
 
 template <class T>

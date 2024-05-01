@@ -69,7 +69,7 @@ public:
 	IC void			SetMaxZoom				(float zoom){m_max_zoom = zoom;}
 
 	virtual void	Init					(shared_str name, CInifile& gameLtx, LPCSTR sh_name);
-	virtual bool	OnMouse							(float x, float y, EUIMessages mouse_action);
+	virtual bool	OnMouseAction							(float x, float y, EUIMessages mouse_action);
 
 	CUIMapWnd*		MapWnd					() {return m_mapWnd;}
 	void			MoveWndDelta			(const Fvector2& d);
@@ -96,7 +96,7 @@ public:
 	const Frect&				GlobalRect			() const								{return m_GlobalRect;}
 	virtual void				Draw				();
 	virtual void				Update				();
-	virtual bool				OnMouse				(float x, float y, EUIMessages mouse_action);
+	virtual bool				OnMouseAction				(float x, float y, EUIMessages mouse_action);
 	virtual void				SendMessage			(CUIWindow* pWnd, s16 msg, void* pData);
 	
 	Frect						CalcWndRectOnGlobal	();

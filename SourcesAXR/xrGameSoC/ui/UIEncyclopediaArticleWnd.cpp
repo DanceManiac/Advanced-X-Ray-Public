@@ -4,6 +4,7 @@
 #include "../encyclopedia_article.h"
 #include "UIXmlInit.h"
 #include "../string_table.h"
+#include "../../Include/xrRender/UIShader.h"
 
 CUIEncyclopediaArticleWnd::CUIEncyclopediaArticleWnd	()
 :m_Article(NULL)
@@ -40,7 +41,8 @@ void CUIEncyclopediaArticleWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 
 void CUIEncyclopediaArticleWnd::SetArticle(CEncyclopediaArticle* article)
 {
-	if( article->data()->image.TextureAvailable() ){
+	if( article->data()->image.GetShader() && article->data()->image.GetShader()->inited())
+	{
 		m_UIImage->SetShader			(article->data()->image.GetShader());
 		m_UIImage->SetOriginalRect		(article->data()->image.GetStaticItem()->GetOriginalRect());
 		m_UIImage->SetWndSize			(article->data()->image.GetWndSize());

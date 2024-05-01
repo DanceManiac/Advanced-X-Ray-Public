@@ -11,7 +11,7 @@
 #include "UIScrollView.h"
 
 CFontManager& mngr(){
-	return *(UI()->Font());
+	return UI().Font();
 }
 
 // hud font

@@ -7,6 +7,7 @@
 #include "entity_alive.h"
 #include "ui/UIInventoryUtilities.h"
 #include "UI/UIXmlInit.h"
+#include "UI/UItextureMaster.h"
 
 #include "InfoPortion.h"
 #include "PhraseDialog.h"
@@ -39,16 +40,7 @@ extern void clean_wnd_rects							();
 extern void dump_list_xmls							();
 extern void CreateUIGeom							();
 extern void DestroyUIGeom							();
-
-void CreateUIGeom()
-{
-	UIRender->CreateUIGeom();
-}
-
-void DestroyUIGeom()
-{
-	UIRender->DestroyUIGeom();
-}
+extern void InitHudSoundSettings					();
 
 #include "../xrEngine/IGame_Persistent.h"
 void init_game_globals()

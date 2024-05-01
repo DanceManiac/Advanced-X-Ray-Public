@@ -702,7 +702,7 @@ void CUICellItemTradeMenuDraw::OnDraw(CUICellItem* cell)
 {
 	Fvector2							pos;
 	cell->GetAbsolutePos				(pos);
-	UI()->ClientToScreenScaled			(pos, pos.x, pos.y);
+	UI().ClientToScreenScaled			(pos, pos.x, pos.y);
 
 	int acc									= cell->GetAccelerator();
 	if(acc!=0)
@@ -712,7 +712,7 @@ void CUICellItemTradeMenuDraw::OnDraw(CUICellItem* cell)
 		string64							buff;
 
 		sprintf_s								(buff,"%d", acc - DIK_ESCAPE);
-		CGameFont* pFont					= UI()->Font()->pFontLetterica16Russian;
+		CGameFont* pFont					= UI().Font().pFontLetterica16Russian;
 		pFont->SetColor						(color_rgba(135,123,116,255));
 		pFont->Out							(pos.x, pos.y, buff);
 		pFont->OnRender						();

@@ -46,7 +46,6 @@ public:
 	void 			AddSubLine				(const CUISubLine* subLine);
 	void 			Clear					();
 	void 			ProcessNewLines			();
-const CUILine*		CutByLength				(CGameFont* pFont, float length, BOOL cut_word);
 
 void 				Draw					(CGameFont* pFont, float x, float y)						const;
 bool				IsEmpty					() {return m_subLines.empty();}
@@ -54,10 +53,7 @@ protected:
 	int				GetSize					();
 	bool			GetWord					(Word& w, const xr_string& text, int begin)					const;
 const CUILine*		Cut2Pos					(Position& pos, bool to_first = true);
-const CUILine*		CutWord					(CGameFont* pFont, float length);
 const CUILine*		GetEmptyLine			();
-	float			GetLength_inclusiveWord_1(Position& pos, CGameFont* pFont)		const;
-	float			GetLength_inclusiveWord_2(Position& pos, CGameFont* pFont)		const;
 	bool			InitPos(Position& pos)											const;
 	bool			IncPos(Position& pos)											const;
 

@@ -88,7 +88,7 @@ void CUISkinSelectorWnd::UpdateSkins(){
             m_pImage[i]->InitTextureEx(m_skins[i + m_firstSkin].c_str(), *m_shader);
 		else
 			m_pImage[i]->InitTexture(m_skins[i + m_firstSkin].c_str());
-		m_pImage[i]->RescaleRelative2Rect(m_pImage[i]->GetStaticItem()->GetOriginalRect());
+//.		m_pImage[i]->RescaleRelative2Rect(m_pImage[i]->GetStaticItem()->GetOriginalRect());
 
 		if (m_iActiveIndex - m_firstSkin == i)
 			m_pImage[i]->SetSelectedState(true);
@@ -212,12 +212,12 @@ void CUISkinSelectorWnd::OnBtnOK(){
 	dm->OnSkinMenu_Ok();
 }
 
-bool CUISkinSelectorWnd::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUISkinSelectorWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	return CUIWindow::OnMouse(x,y,mouse_action);	
+	return CUIWindow::OnMouseAction(x,y,mouse_action);	
 }
 
-bool CUISkinSelectorWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUISkinSelectorWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_PRESSED != keyboard_action)
 	{
@@ -226,7 +226,7 @@ bool CUISkinSelectorWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
 			ShowChildren(true);
 			game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 			game->OnKeyboardRelease(kSCORES);
-			UI()->GetUICursor()->Show();
+			UI().GetUICursor().Show();
 		}
 		
 		return false;
@@ -237,7 +237,7 @@ bool CUISkinSelectorWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
         ShowChildren(false);
 		game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 		game->OnKeyboardPress(kSCORES);
-		UI()->GetUICursor()->Hide();
+		UI().GetUICursor().Hide();
 		return false;
 	}
 

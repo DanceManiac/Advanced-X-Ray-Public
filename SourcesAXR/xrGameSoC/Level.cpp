@@ -491,7 +491,7 @@ void CLevel::OnFrame	()
 	// Draw client/server stats
 	if ( !g_dedicated_server && psDeviceFlags.test(rsStatistic))
 	{
-		CGameFont* F = HUD().Font().pFontDI;
+		CGameFont* F = UI().Font().pFontDI;
 		if (!psNET_direct_connect) 
 		{
 			if ( IsServer() )
@@ -686,14 +686,14 @@ void CLevel::OnRender()
 		ObjectSpace.dbgRender	();
 
 		//---------------------------------------------------------------------
-		HUD().Font().pFontStat->OutSet		(170,630);
-		HUD().Font().pFontStat->SetHeight	(16.0f);
-		HUD().Font().pFontStat->SetColor	(0xffff0000);
+		UI().Font().pFontStat->OutSet		(170,630);
+		UI().Font().pFontStat->SetHeight	(16.0f);
+		UI().Font().pFontStat->SetColor	(0xffff0000);
 
-		if(Server)HUD().Font().pFontStat->OutNext	("Client Objects:      [%d]",Server->GetEntitiesNum());
-		HUD().Font().pFontStat->OutNext	("Server Objects:      [%d]",Objects.o_count());
-		HUD().Font().pFontStat->OutNext	("Interpolation Steps: [%d]", Level().GetInterpolationSteps());
-		HUD().Font().pFontStat->SetHeight	(8.0f);
+		if(Server)UI().Font().pFontStat->OutNext	("Client Objects:      [%d]",Server->GetEntitiesNum());
+		UI().Font().pFontStat->OutNext	("Server Objects:      [%d]",Objects.o_count());
+		UI().Font().pFontStat->OutNext	("Interpolation Steps: [%d]", Level().GetInterpolationSteps());
+		UI().Font().pFontStat->SetHeight	(8.0f);
 		//---------------------------------------------------------------------
 	}
 #endif

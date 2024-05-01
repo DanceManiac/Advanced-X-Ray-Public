@@ -92,8 +92,8 @@ void draw_wnds_rects()
 	for (; it != it_e; ++it)
 	{
 		Frect& r = *it;
-		UI()->ClientToScreenScaled(r.lt, r.lt.x, r.lt.y);
-		UI()->ClientToScreenScaled(r.rb, r.rb.x, r.rb.y);
+		UI().ClientToScreenScaled(r.lt, r.lt.x, r.lt.y);
+		UI().ClientToScreenScaled(r.rb, r.rb.x, r.rb.y);
 		draw_rect(r, color_rgba(255, 0, 0, 255));
 	};
 
@@ -203,11 +203,11 @@ void CUIWindow::Draw(float x, float y){
 
 void CUIWindow::Update()
 {
-	if (GetUICursor()->IsVisible())
+	if (GetUICursor().IsVisible())
 	{
 		bool cursor_on_window;
 
-		Fvector2			temp = GetUICursor()->GetCursorPosition();
+		Fvector2			temp = GetUICursor().GetCursorPosition();
 		Frect				r;
 		GetAbsoluteRect		(r);
 		cursor_on_window	= !!r.in(temp);
@@ -287,7 +287,7 @@ void CUIWindow::GetAbsoluteRect(Frect& r)
 
 #define DOUBLE_CLICK_TIME 250
 
-bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {	
 	Frect	wndRect = GetWndRect();
 
@@ -320,7 +320,7 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 
 	if(m_pMouseCapturer)
 	{
-		m_pMouseCapturer->OnMouse(cursor_pos.x - m_pMouseCapturer->GetWndRect().left, 
+		m_pMouseCapturer->OnMouseAction(cursor_pos.x - m_pMouseCapturer->GetWndRect().left, 
 								  cursor_pos.y - m_pMouseCapturer->GetWndRect().top, 
 								  mouse_action);
 		return true;
@@ -356,13 +356,13 @@ bool CUIWindow::OnMouse(float x, float y, EUIMessages mouse_action)
 		{
 			if(w->IsEnabled())
 			{
-				if( w->OnMouse(cursor_pos.x -w->GetWndRect().left, 
+				if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
 							   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 			}
 		}
 		else if (w->IsEnabled() && w->CursorOverWindow())
 		{
-			if( w->OnMouse(cursor_pos.x -w->GetWndRect().left, 
+			if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
 						   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 		}
 	}
@@ -439,13 +439,13 @@ void CUIWindow::SetCapture(CUIWindow *pChildWindow, bool capture_status)
 	}
 }
 
-bool CUIWindow::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIWindow::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	bool result;
 
 	if(NULL!=m_pKeyboardCapturer)
 	{
-		result = m_pKeyboardCapturer->OnKeyboard(dik, keyboard_action);
+		result = m_pKeyboardCapturer->OnKeyboardAction(dik, keyboard_action);
 		
 		if(result) return true;
 	}
@@ -456,7 +456,7 @@ bool CUIWindow::OnKeyboard(int dik, EUIMessages keyboard_action)
 	{
 		if((*it)->IsEnabled())
 		{
-			result = (*it)->OnKeyboard(dik, keyboard_action);
+			result = (*it)->OnKeyboardAction(dik, keyboard_action);
 			
 			if(result)	return true;
 		}
@@ -527,7 +527,7 @@ CUIWindow* CUIWindow::GetChildMouseHandler(){
 	{
 		Frect wndRect = (*it)->GetWndRect();
 		// very strange code.... i can't understand difference between
-		// first and second condition. I Got It from OnMouse() method;
+		// first and second condition. I Got It from OnMouseAction() method;
 		if (wndRect.in(cursor_pos) )
 		{
 			if((*it)->IsEnabled())

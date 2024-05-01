@@ -4,10 +4,9 @@
 #include "UICursor.h"
 #include "HUDManager.h"
 
-#include "../Include/xrRender/UIRender.h"
+CUICursor&	GetUICursor		()	{return UI().GetUICursor();};
+ui_core&	UI				()	{return *GamePersistent().m_pUI_core;};
 
-CUICursor*	GetUICursor		()	{return UI()->GetUICursor();};
-ui_core*	UI				()	{return GamePersistent().m_pUI_core;};
 extern ENGINE_API Fvector2		g_current_font_scale;
 
 void S2DVert::rotate_pt(const Fvector2& pivot, const float cosA, const float sinA, const float kx)
@@ -110,7 +109,7 @@ void ui_core::OnDeviceReset()
 												));
 }
 
-void ui_core::ClientToScreenScaled(Fvector2& dest, float left, float top)
+void ui_core::ClientToScreenScaled(Fvector2& dest, float left, float top)	const
 {
 	if(m_currentPointType!=IUIRender::pttLIT)
 		dest.set(ClientToScreenScaledX(left),	ClientToScreenScaledY(top));
@@ -118,25 +117,25 @@ void ui_core::ClientToScreenScaled(Fvector2& dest, float left, float top)
 		dest.set(left,top);
 }
 
-void ui_core::ClientToScreenScaled(Fvector2& src_and_dest)
+void ui_core::ClientToScreenScaled(Fvector2& src_and_dest)	const
 {
 	if(m_currentPointType!=IUIRender::pttLIT)
 		src_and_dest.set(ClientToScreenScaledX(src_and_dest.x),	ClientToScreenScaledY(src_and_dest.y));
 }
 
-void ui_core::ClientToScreenScaledWidth(float& src_and_dest)
+void ui_core::ClientToScreenScaledWidth(float& src_and_dest)	const
 {
 	if(m_currentPointType!=IUIRender::pttLIT)
 		src_and_dest		/= m_current_scale->x;
 }
 
-void ui_core::ClientToScreenScaledHeight(float& src_and_dest)
+void ui_core::ClientToScreenScaledHeight(float& src_and_dest)	const
 {
 	if(m_currentPointType!=IUIRender::pttLIT)
 		src_and_dest		/= m_current_scale->y;
 }
 
-void ui_core::AlignPixel(float src_and_dest)
+void ui_core::AlignPixel(float& src_and_dest)	const
 {
 	if(m_currentPointType!=IUIRender::pttLIT)
 		src_and_dest		= (float)iFloor(src_and_dest);
@@ -150,11 +149,10 @@ Frect ui_core::ScreenRect()
 
 void ui_core::PushScissor(const Frect& r_tgt, bool overlapped)
 {
-	if(UI()->m_currentPointType==IUIRender::pttLIT)
+	if(UI().m_currentPointType==IUIRender::pttLIT)
 		return;
 
-//	return;
-	Frect r_top			= ScreenRect();
+	Frect r_top			= {0.0f, 0.0f, UI_BASE_WIDTH, UI_BASE_HEIGHT};
 	Frect result		= r_tgt;
 	if (!m_Scissors.empty()&&!overlapped){
 		r_top			= m_Scissors.top();
@@ -185,10 +183,9 @@ void ui_core::PushScissor(const Frect& r_tgt, bool overlapped)
 
 void ui_core::PopScissor()
 {
-	if(UI()->m_currentPointType==IUIRender::pttLIT)
+	if(UI().m_currentPointType==IUIRender::pttLIT)
 		return;
 
-//	return;
 	VERIFY(!m_Scissors.empty());
 	m_Scissors.pop		();
 	
@@ -259,10 +256,10 @@ void ui_core::pp_stop()
 
 void ui_core::RenderFont()
 {
-	Font()->Render();
+	Font().Render();
 }
 
-bool ui_core::is_16_9_mode()
+bool ui_core::is_widescreen()
 {
 	return (Device.dwWidth)/float(Device.dwHeight) > (UI_BASE_WIDTH/UI_BASE_HEIGHT +0.01f);
 }
@@ -278,24 +275,24 @@ float ui_core::get_current_kx()
 shared_str	ui_core::get_xml_name(LPCSTR fn)
 {
 	string_path				str;
-	if(!is_16_9_mode()){
-		sprintf_s(str, "%s", fn);
-		if ( NULL==strext(fn) ) strcat(str, ".xml");
+	if(!is_widescreen()){
+		xr_sprintf(str, "%s", fn);
+		if ( NULL==strext(fn) ) xr_strcat(str, ".xml");
 	}else{
 
 		string_path			str_;
 		if ( strext(fn) )
 		{
-			strcpy_s	(str, fn);
+			xr_strcpy	(str, fn);
 			*strext(str)	= 0;
-			strcat	(str, "_16.xml");
+			xr_strcat	(str, "_16.xml");
 		}else
-			sprintf_s				(str, "%s_16", fn);
+			xr_sprintf				(str, "%s_16", fn);
 
 		if(NULL==FS.exist(str_, "$game_config$", "ui\\" , str) )
 		{
-			sprintf_s(str, "%s", fn);
-			if ( NULL==strext(fn) ) strcat(str, ".xml");
+			xr_sprintf(str, "%s", fn);
+			if ( NULL==strext(fn) ) xr_strcat(str, ".xml");
 		}
 #ifdef DEBUG
 		Msg("[16-9] get_xml_name for[%s] returns [%s]", fn, str);

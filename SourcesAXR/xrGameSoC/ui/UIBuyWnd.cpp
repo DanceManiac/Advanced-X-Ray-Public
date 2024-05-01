@@ -182,21 +182,21 @@ void CUIBuyWnd::Init(const shared_str& sectionName, const shared_str& sectionPri
 	m_itemInfo.Init						("buy_mp_item.xml");
 }
 
-bool CUIBuyWnd::OnKeyboard(int dik, EUIMessages keyboard_action)
+bool CUIBuyWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (WINDOW_KEY_RELEASED == keyboard_action) return true;
 
 	if (m_propertiesBox.GetVisible())
-		m_propertiesBox.OnKeyboard		(dik, keyboard_action);
+		m_propertiesBox.OnKeyboardAction		(dik, keyboard_action);
 
 	switch (m_bag.GetMenuLevel())
 	{
 	case mlRoot:
-		if (m_tab.OnKeyboard(dik, keyboard_action))
+		if (m_tab.OnKeyboardAction(dik, keyboard_action))
 			return true;
 		break;
 	default:
-		if (m_bag.OnKeyboard(dik, keyboard_action))
+		if (m_bag.OnKeyboardAction(dik, keyboard_action))
 			return true;
 	}
 
@@ -934,7 +934,7 @@ void CUIBuyWnd::ActivatePropertiesBox()
 	Frect							vis_rect;
 
 	GetAbsoluteRect					(vis_rect);
-	cursor_pos						= GetUICursor()->GetCursorPosition();
+	cursor_pos						= GetUICursor().GetCursorPosition();
 	cursor_pos.sub					(vis_rect.lt);
 	m_propertiesBox.Show			(vis_rect, cursor_pos);
 

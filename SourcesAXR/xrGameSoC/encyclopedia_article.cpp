@@ -84,18 +84,19 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 
 		data()->image.GetUIStaticItem().SetOriginalRect(x, y, width, height);
 		data()->image.ClipperOn();
-		data()->image.TextureAvailable(true);
 	}
 	else 
 	{
-		if( pXML->NavigateToNode(pNode,"texture",0) ){
+		if( pXML->NavigateToNode(pNode,"texture",0) )
+		{
 			pXML->SetLocalRoot(pNode);
 			CUIXmlInit::InitTexture(*pXML, "", 0, &data()->image);
 			pXML->SetLocalRoot(pXML->GetRoot());
 		}
 	}
 
-	if(data()->image.TextureAvailable() ){
+	if(data()->image.GetShader() && data()->image.GetShader()->inited())
+	{
 		Frect r = data()->image.GetUIStaticItem().GetOriginalRect();
 		data()->image.SetAutoDelete(false);
 

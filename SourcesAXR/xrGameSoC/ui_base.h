@@ -1,15 +1,10 @@
 #pragma once
 
-#define UI_BASE_WIDTH	1024.0f
-#define UI_BASE_HEIGHT	768.0f
-
-struct CFontManager;
 class CUICursor;
 
-#include "../Include/xrRender/UIRender.h"
-#include "../Include/xrRender/FactoryPtr.h"
-
 #include "ui_defs.h"
+
+
 
 class CDeviceResetNotifier :public pureDeviceReset
 {
@@ -20,36 +15,43 @@ public:
 
 };
 
+struct CFontManager :public pureDeviceReset			{
+							CFontManager			();
+							~CFontManager			();
 
+	typedef xr_vector<CGameFont**>					FONTS_VEC;
+	typedef FONTS_VEC::iterator						FONTS_VEC_IT;
+	FONTS_VEC				m_all_fonts;
+	void					Render					();
 
-//---------------------------------------------------------------------------------------
-// 2D Frustum & 2D Vertex
-//---------------------------------------------------------------------------------------
-struct S2DVert{
-	Fvector2	pt;
-	Fvector2	uv;
-				S2DVert		(){}
-				S2DVert		(float pX, float pY, float tU, float tV){pt.set(pX,pY);uv.set(tU,tV);}
-	void		set			(float pt_x, float pt_y, float uv_x, float uv_y){pt.set(pt_x,pt_y);uv.set(uv_x,uv_y);}
-	void		set			(const Fvector2& _pt, const Fvector2& _uv){pt.set(_pt);uv.set(_uv);}
-	void		rotate_pt	(const Fvector2& pivot, const float cosA, const float sinA, const float kx);
+	// hud font
+	CGameFont*				pFontMedium;
+	CGameFont*				pFontDI;
+
+	CGameFont*				pFontArial14;
+	CGameFont*				pFontGraffiti19Russian;
+	CGameFont*				pFontGraffiti22Russian;
+	CGameFont*				pFontLetterica16Russian;
+	CGameFont*				pFontLetterica18Russian;
+	CGameFont*				pFontGraffiti32Russian;
+	CGameFont*				pFontGraffiti50Russian;
+	CGameFont*				pFontLetterica25;
+	CGameFont*				pFontStat;
+
+	void					InitializeFonts			();
+	void					InitializeFont			(CGameFont*& F, LPCSTR section, u32 flags = 0);
+	LPCSTR					GetFontTexName			(LPCSTR section);				
+
+	virtual void			OnDeviceReset			();
 };
-#define UI_FRUSTUM_MAXPLANES	12
-#define UI_FRUSTUM_SAFE			(UI_FRUSTUM_MAXPLANES*4)
-typedef svector<S2DVert,UI_FRUSTUM_SAFE>		sPoly2D;
 
-class C2DFrustum{//only rect form
-	svector<Fplane2,FRUSTUM_MAXPLANES> planes;
-	Frect						m_rect;
-public:
-	void		CreateFromRect	(const Frect& rect);
-	sPoly2D*	ClipPoly		(sPoly2D& S, sPoly2D& D) const;
-};
 
 class ui_core: public CDeviceResetNotifier
 {
 	C2DFrustum		m_2DFrustum;
 	C2DFrustum		m_2DFrustumPP;
+	C2DFrustum		m_FrustumLIT;
+
 	bool			m_bPostprocess;
 
 	CFontManager*	m_pFontManager;
@@ -59,24 +61,25 @@ class ui_core: public CDeviceResetNotifier
 	Fvector2		m_scale_;
 	Fvector2*		m_current_scale;
 
-	IC float		ClientToScreenScaledX			(float left)				{return left * m_current_scale->x;};
-	IC float		ClientToScreenScaledY			(float top)					{return top * m_current_scale->y;};
 public:
 	xr_stack<Frect> m_Scissors;
 	
 					ui_core							();
 					~ui_core						();
-	CFontManager*	Font							()							{return m_pFontManager;}
-	CUICursor*		GetUICursor						()							{return m_pUICursor;}
+	CFontManager&	Font							()								{return *m_pFontManager;}
+	CUICursor&		GetUICursor						()								{return *m_pUICursor;}
 
-	void			ClientToScreenScaled			(Fvector2& dest, float left, float top);
-	void			ClientToScreenScaled			(Fvector2& src_and_dest);
-	void			ClientToScreenScaledWidth		(float& src_and_dest);
-	void			ClientToScreenScaledHeight		(float& src_and_dest);
-	void			AlignPixel						(float src_and_dest);
-
+	IC float		ClientToScreenScaledX			(float left)	const			{return left * m_current_scale->x;};
+	IC float		ClientToScreenScaledY			(float top)		const			{return top * m_current_scale->y;};
+	void			ClientToScreenScaled			(Fvector2& dest, float left, float top)	const;
+	void			ClientToScreenScaled			(Fvector2& src_and_dest)const;
+	void			ClientToScreenScaledWidth		(float& src_and_dest)	const;
+	void			ClientToScreenScaledHeight		(float& src_and_dest)	const;
 	Frect			ScreenRect						();
-	const C2DFrustum& ScreenFrustum					(){return (m_bPostprocess)?m_2DFrustumPP:m_2DFrustum;}
+	void			AlignPixel						(float& src_and_dest)	const;
+
+	const C2DFrustum& ScreenFrustum					()	const						{return (m_bPostprocess)?m_2DFrustumPP:m_2DFrustum;}
+	C2DFrustum&		ScreenFrustumLIT				()								{return m_FrustumLIT;}
 	void			PushScissor						(const Frect& r, bool overlapped=false);
 	void			PopScissor						();
 
@@ -85,12 +88,12 @@ public:
 	void			RenderFont						();
 
 	virtual void	OnDeviceReset					();
-	static	bool	is_16_9_mode					();
+	static	bool	is_widescreen					();
 	static float	get_current_kx					();
 	shared_str		get_xml_name					(LPCSTR fn);
 	
 	IUIRender::ePointType		m_currentPointType;
 };
 
-extern CUICursor*	GetUICursor						();
-extern ui_core*		UI								();
+extern CUICursor&		GetUICursor				();
+extern ui_core&			UI						();

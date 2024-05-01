@@ -5,10 +5,10 @@ struct CWrapperBase : public T, public luabind::wrap_base {
 	typedef T inherited;
 	typedef CWrapperBase<T>	self_type;
 
-	virtual bool OnKeyboard(int dik, EUIMessages keyboard_action)
+	virtual bool OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	{ return call_member<bool>(this,"OnKeyboard", dik, keyboard_action);}
 	static bool OnKeyboard_static(inherited* ptr, int dik, EUIMessages keyboard_action)
-	{ return ptr->self_type::inherited::OnKeyboard(dik,keyboard_action );}
+	{ return ptr->self_type::inherited::OnKeyboardAction(dik,keyboard_action );}
 
 	virtual void Update()
 	{ call_member<void>(this,"Update");}

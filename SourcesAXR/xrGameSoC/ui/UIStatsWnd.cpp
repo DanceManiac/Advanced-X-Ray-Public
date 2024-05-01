@@ -155,7 +155,7 @@ void CUIStatsListItem::XmlInit(const char *path, CUIXml &uiXml)
 		FieldsVector.push_back(pButton);
 	}
 
-	FieldsVector[0]->SetElipsis(CUIStatic::eepEnd, 0);
+	FieldsVector[0]->SetEllipsis(1, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////

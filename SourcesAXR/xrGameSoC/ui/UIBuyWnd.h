@@ -75,7 +75,7 @@ public:
 	void 			HightlightCurrAmmo			();
 
 	// CUIWindow
-	virtual bool 	OnKeyboard					(int dik, EUIMessages keyboard_action);
+	virtual bool 	OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 	virtual void 	SendMessage					(CUIWindow* pWnd, s16 msg, void* pData = 0);
 	virtual void 	Update						();
 	virtual void 	Show						();

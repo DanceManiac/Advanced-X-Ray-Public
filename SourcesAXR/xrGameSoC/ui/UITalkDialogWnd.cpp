@@ -50,11 +50,11 @@ void CUITalkDialogWnd::Init(float x, float y, float width, float height)
 	//основной фрейм диалога
 	AttachChild					(&UIDialogFrame);
 	CUIXmlInit::InitFrameLine	(*m_uiXml, "frame_line_window", 0, &UIDialogFrame);
-	UIDialogFrame.UITitleText.SetElipsis(CUIStatic::eepEnd, 10);
+//	UIDialogFrame.UITitleText.SetElipsis(CUIStatic::eepEnd, 10);
 	// Фрейм с нащими фразами
 	AttachChild					(&UIOurPhrasesFrame);
 	CUIXmlInit::InitFrameLine	(*m_uiXml, "frame_line_window", 1, &UIOurPhrasesFrame);
-	UIOurPhrasesFrame.UITitleText.SetElipsis(CUIStatic::eepEnd, 10);
+//	UIOurPhrasesFrame.UITitleText.SetElipsis(CUIStatic::eepEnd, 10);
 
 	//Ответы
 	UIAnswersList				= xr_new<CUIScrollView>();
@@ -291,9 +291,8 @@ CUIAnswerItemIconed::CUIAnswerItemIconed		(CUIXml* xml_doc, LPCSTR path)
 void CUIAnswerItemIconed::Init		(LPCSTR text, LPCSTR texture_name, Frect texture_rect)
 {
 	inherited::Init					(text,"");
-	m_icon->CreateShader			(texture_name,"hud\\default");
+	m_icon->InitTextureEx			(texture_name, "hud\\default");
 	m_icon->GetUIStaticItem().SetOriginalRect(texture_rect.x1,texture_rect.y1,texture_rect.x2,texture_rect.y2);
-	m_icon->TextureAvailable		(true);
 	m_icon->TextureOn				();
 	m_icon->SetStretchTexture		(true);
 

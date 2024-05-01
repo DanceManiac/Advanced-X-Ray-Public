@@ -23,15 +23,15 @@ void CUIStatic::script_register(lua_State *L)
 		.def("SetColor",			&CUIStatic::SetColor)
 		.def("GetColor",			&CUIStatic::GetColor)
 		.def("SetTextColor",		&CUIStatic::SetTextColor_script)
-		.def("Init",				(void(CUIStatic::*)(float,float,float,float))&CUIStatic::Init )
-		.def("Init",				(void(CUIStatic::*)(LPCSTR,float,float,float,float))&CUIStatic::Init )
 		.def("InitTexture",			&CUIStatic::InitTexture )
 		.def("SetTextureOffset",	&CUIStatic::SetTextureOffset )
 
-
-		.def("SetOriginalRect",		(void(CUIStatic::*)(float,float,float,float))&CUIStatic::SetOriginalRect)
+		.def("SetOriginalRect",		&CUIStatic::SetOriginalRect_script)
+		.def("GetOriginalRect",		&CUIStatic::GetOriginalRect_script)
 		.def("SetStretchTexture",	&CUIStatic::SetStretchTexture)
 		.def("GetStretchTexture",	&CUIStatic::GetStretchTexture)
+
+		.def("SetHint",				&CUIStatic::SetHint) //MNP
 
 		.def("SetTextAlign",		&CUIStatic::SetTextAlign_script)
 		.def("GetTextAlign",		&CUIStatic::GetTextAlign_script)
@@ -42,5 +42,7 @@ void CUIStatic::script_register(lua_State *L)
 		.def("ClipperOn",			&CUIStatic::ClipperOn)
 		.def("ClipperOff",			(void(CUIStatic::*)(void))&CUIStatic::ClipperOff )
 		.def("GetClipperState",		&CUIStatic::GetClipperState)
+		.def("SetElipsis",			&CUIStatic::SetEllipsis)
+		
 	];
 }

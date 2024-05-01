@@ -102,7 +102,7 @@ void CUIMapDesc::SendMessage(CUIWindow* pWnd,s16 msg, void* pData){
 
 }
 
-bool CUIMapDesc::OnKeyboard(int dik, EUIMessages keyboard_action){
+bool CUIMapDesc::OnKeyboardAction(int dik, EUIMessages keyboard_action){
 	if (WINDOW_KEY_RELEASED == keyboard_action) 
 	{
 		if (dik == DIK_TAB)
@@ -110,7 +110,7 @@ bool CUIMapDesc::OnKeyboard(int dik, EUIMessages keyboard_action){
 			ShowChildren(true);
 			game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 			game->OnKeyboardRelease(kSCORES);
-			UI()->GetUICursor()->Show();
+			UI().GetUICursor().Show();
 		}
 		
 		return false;
@@ -121,7 +121,7 @@ bool CUIMapDesc::OnKeyboard(int dik, EUIMessages keyboard_action){
         ShowChildren(false);
 		game_cl_mp* game = smart_cast<game_cl_mp*>(&Game());
 		game->OnKeyboardPress(kSCORES);
-		UI()->GetUICursor()->Hide();
+		UI().GetUICursor().Hide();
 		return false;
 	}
 

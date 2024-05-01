@@ -142,7 +142,7 @@ void CHUDTarget::Render()
 	pt.y				= -pt.y;
 	float				di_size = C_SIZE / powf(pt.w, .2f);
 
-	CGameFont* F		= HUD().Font().pFontGraffiti19Russian;
+	CGameFont* F		= UI().Font().pFontGraffiti19Russian;
 	F->SetAligment		(CGameFont::alCenter);
 	F->OutSetI			(0.f,0.05f);
 
@@ -250,7 +250,7 @@ void CHUDTarget::Render()
 	//отрендерить кружочек или крестик
 	if(!m_bShowCrosshair)
 	{
-		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI()->m_currentPointType);
+		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI().m_currentPointType);
 
 		//	TODO: return code back to indexed rendering since we use quads
 		//	Tri 1

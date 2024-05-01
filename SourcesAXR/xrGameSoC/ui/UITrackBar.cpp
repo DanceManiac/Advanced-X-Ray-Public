@@ -34,9 +34,9 @@ CUITrackBar::CUITrackBar()
 //.	m_pSlider->SetOwner				(this);
 }
 
-bool CUITrackBar::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUITrackBar::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	CUIWindow::OnMouse(x, y, mouse_action);
+	CUIWindow::OnMouseAction(x, y, mouse_action);
 
 	if (m_bCursorOverWindow)
 	{

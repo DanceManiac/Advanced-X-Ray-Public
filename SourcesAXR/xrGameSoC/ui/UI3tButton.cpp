@@ -39,12 +39,12 @@ void CUI3tButton::OnClick()
     PlaySoundT			();
 }
 
-bool CUI3tButton::OnMouse(float x, float y, EUIMessages mouse_action)
+bool CUI3tButton::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
 	if (m_bCheckMode)
-		return CUIWindow::OnMouse(x,y,mouse_action);
+		return CUIWindow::OnMouseAction(x,y,mouse_action);
 	else
-		return CUIButton::OnMouse(x,y,mouse_action);
+		return CUIButton::OnMouseAction(x,y,mouse_action);
 }
 
 bool CUI3tButton::OnMouseDown(int mouse_btn)
@@ -100,7 +100,7 @@ void CUI3tButton::PlaySoundH()
 		m_sound_h.play(NULL, sm_2D);
 }
 
-void CUI3tButton::Init(float x, float y, float width, float height)
+void CUI3tButton::InitButton(float x, float y, float width, float height)
 {
 	m_background.Init			(0, 0, width, height);
     CUIButton::Init				(x, y, width, height);

@@ -146,17 +146,17 @@ void draw_planner						(const planner_type &brain, LPCSTR start_indent, LPCSTR i
 	if (planner)
 		draw_planner					(*planner,start_indent,indent,_brain.action2string(brain.solution().front()));
 
-	HUD().Font().pFontStat->OutNext	("%s ",start_indent);
-	HUD().Font().pFontStat->OutNext	("%splanner %s",start_indent,planner_id);
-	HUD().Font().pFontStat->OutNext	("%s%sevaluators  : %d",start_indent,indent,brain.evaluators().size());
-	HUD().Font().pFontStat->OutNext	("%s%soperators   : %d",start_indent,indent,brain.operators().size());
-	HUD().Font().pFontStat->OutNext	("%s%sselected    : %s",start_indent,indent,_brain.action2string(brain.solution().front()));
+	UI().Font().pFontStat->OutNext	("%s ",start_indent);
+	UI().Font().pFontStat->OutNext	("%splanner %s",start_indent,planner_id);
+	UI().Font().pFontStat->OutNext	("%s%sevaluators  : %d",start_indent,indent,brain.evaluators().size());
+	UI().Font().pFontStat->OutNext	("%s%soperators   : %d",start_indent,indent,brain.operators().size());
+	UI().Font().pFontStat->OutNext	("%s%sselected    : %s",start_indent,indent,_brain.action2string(brain.solution().front()));
 	// solution
-	HUD().Font().pFontStat->OutNext	("%s%ssolution",start_indent,indent);
+	UI().Font().pFontStat->OutNext	("%s%ssolution",start_indent,indent);
 	for (int i=0; i<(int)brain.solution().size(); ++i)
-		HUD().Font().pFontStat->OutNext("%s%s%s%s",start_indent,indent,indent,_brain.action2string(brain.solution()[i]));
+		UI().Font().pFontStat->OutNext("%s%s%s%s",start_indent,indent,indent,_brain.action2string(brain.solution()[i]));
 	// current
-	HUD().Font().pFontStat->OutNext	("%s%scurrent world state",start_indent,indent);
+	UI().Font().pFontStat->OutNext	("%s%scurrent world state",start_indent,indent);
 	planner_type::EVALUATORS::const_iterator	I = brain.evaluators().begin();
 	planner_type::EVALUATORS::const_iterator	E = brain.evaluators().end();
 	for ( ; I != E; ++I) {
@@ -164,18 +164,18 @@ void draw_planner						(const planner_type &brain, LPCSTR start_indent, LPCSTR i
 		char				temp = '?';
 		if ((J != brain.current_state().conditions().end()) && ((*J).condition() == (*I).first)) {
 			temp			= (*J).value() ? '+' : '-';
-			HUD().Font().pFontStat->OutNext	("%s%s%s    %5c : [%d][%s]",start_indent,indent,indent,temp,(*I).first,_brain.property2string((*I).first));
+			UI().Font().pFontStat->OutNext	("%s%s%s    %5c : [%d][%s]",start_indent,indent,indent,temp,(*I).first,_brain.property2string((*I).first));
 		}
 	}
 	// goal
-	HUD().Font().pFontStat->OutNext	("%s%starget world state",start_indent,indent);
+	UI().Font().pFontStat->OutNext	("%s%starget world state",start_indent,indent);
 	I = brain.evaluators().begin();
 	for ( ; I != E; ++I) {
 		xr_vector<planner_type::COperatorCondition>::const_iterator J = std::lower_bound(brain.target_state().conditions().begin(),brain.target_state().conditions().end(),planner_type::CWorldProperty((*I).first,false));
 		char				temp = '?';
 		if ((J != brain.target_state().conditions().end()) && ((*J).condition() == (*I).first)) {
 			temp			= (*J).value() ? '+' : '-';
-			HUD().Font().pFontStat->OutNext	("%s%s%s    %5c : [%d][%s]",start_indent,indent,indent,temp,(*I).first,_brain.property2string((*I).first));
+			UI().Font().pFontStat->OutNext	("%s%s%s    %5c : [%d][%s]",start_indent,indent,indent,temp,(*I).first,_brain.property2string((*I).first));
 		}
 	}
 }
@@ -192,10 +192,10 @@ LPCSTR animation_name(CAI_Stalker *self, const MotionID &animation)
 
 void draw_restrictions(const shared_str &restrictions, LPCSTR start_indent, LPCSTR indent, LPCSTR header)
 {
-	HUD().Font().pFontStat->OutNext	("%s%s%s",start_indent,indent,header);
+	UI().Font().pFontStat->OutNext	("%s%s%s",start_indent,indent,header);
 	string256	temp;
 	for (u32 i=0, n=_GetItemCount(*restrictions); i<n; ++i)
-		HUD().Font().pFontStat->OutNext("%s%s%s%s",start_indent,indent,indent,_GetItem(*restrictions,i,temp));
+		UI().Font().pFontStat->OutNext("%s%s%s%s",start_indent,indent,indent,_GetItem(*restrictions,i,temp));
 }
 
 LPCSTR movement_type(const MonsterSpace::EMovementType &movement_type)
@@ -251,85 +251,85 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 	float								up_indent = 40.f;
 	LPCSTR								indent = "  ";
 
-	HUD().Font().pFontStat->SetColor	(color_xrgb(0,255,0));
-	HUD().Font().pFontStat->OutSet		(0,up_indent);
+	UI().Font().pFontStat->SetColor	(color_xrgb(0,255,0));
+	UI().Font().pFontStat->OutSet		(0,up_indent);
 	// memory
-	HUD().Font().pFontStat->OutNext	("memory");
-	HUD().Font().pFontStat->OutNext	("%sname          : %s",indent,*cName());
-	HUD().Font().pFontStat->OutNext	("%sid            : %d",indent,ID());
-	HUD().Font().pFontStat->OutNext	("%shealth        : %f",indent,conditions().health());
-	HUD().Font().pFontStat->OutNext	("%swounded       : %c",indent,wounded() ? '+' : '-');
+	UI().Font().pFontStat->OutNext	("memory");
+	UI().Font().pFontStat->OutNext	("%sname          : %s",indent,*cName());
+	UI().Font().pFontStat->OutNext	("%sid            : %d",indent,ID());
+	UI().Font().pFontStat->OutNext	("%shealth        : %f",indent,conditions().health());
+	UI().Font().pFontStat->OutNext	("%swounded       : %c",indent,wounded() ? '+' : '-');
 	// visual
-	HUD().Font().pFontStat->OutNext	("%svisual",indent);
+	UI().Font().pFontStat->OutNext	("%svisual",indent);
 	
 	float								object_range, object_fov;
 	update_range_fov					(object_range,object_fov,eye_range,deg2rad(eye_fov));
-	HUD().Font().pFontStat->OutNext	("%s%seye range   : %f",indent,indent,object_range);
-	HUD().Font().pFontStat->OutNext	("%s%sFOV         : %f",indent,indent,rad2deg(object_fov));
+	UI().Font().pFontStat->OutNext	("%s%seye range   : %f",indent,indent,object_range);
+	UI().Font().pFontStat->OutNext	("%s%sFOV         : %f",indent,indent,rad2deg(object_fov));
 	if (g_Alive()) {
-		HUD().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().visual().objects().size());
-		HUD().Font().pFontStat->OutNext	("%s%snot yet     : %d",indent,indent,memory().visual().not_yet_visible_objects().size());
-		HUD().Font().pFontStat->OutNext	("%s%sin frustum  : %d",indent,indent,memory().visual().raw_objects().size());
+		UI().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().visual().objects().size());
+		UI().Font().pFontStat->OutNext	("%s%snot yet     : %d",indent,indent,memory().visual().not_yet_visible_objects().size());
+		UI().Font().pFontStat->OutNext	("%s%sin frustum  : %d",indent,indent,memory().visual().raw_objects().size());
 		if (memory().visual().visible_now(actor))
-			HUD().Font().pFontStat->OutNext("%s%sactor       : visible",indent,indent);
+			UI().Font().pFontStat->OutNext("%s%sactor       : visible",indent,indent);
 		else {
 			MemorySpace::CNotYetVisibleObject	*object = memory().visual().not_yet_visible_object(actor);
 			if (object && !fis_zero(object->m_value))
-				HUD().Font().pFontStat->OutNext("%s%sactor       : not yet visible : %f",indent,indent,object->m_value);
+				UI().Font().pFontStat->OutNext("%s%sactor       : not yet visible : %f",indent,indent,object->m_value);
 			else
-				HUD().Font().pFontStat->OutNext("%s%sactor       : not visible",indent,indent);
+				UI().Font().pFontStat->OutNext("%s%sactor       : not visible",indent,indent);
 		}
 		// sound
-		HUD().Font().pFontStat->OutNext	("%ssound",indent);
-		HUD().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().sound().objects().size());
+		UI().Font().pFontStat->OutNext	("%ssound",indent);
+		UI().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().sound().objects().size());
 #ifdef USE_SELECTED_SOUND
 		if (memory().sound().sound()) {
-			HUD().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
-			HUD().Font().pFontStat->OutNext	("%s%s%stype",indent,indent,indent);
-			HUD().Font().pFontStat->OutNext	("%s%s%spower     : %f",indent,indent,indent,memory().sound().sound()->m_power);
-			HUD().Font().pFontStat->OutNext	("%s%s%sobject    : %s",indent,indent,indent,memory().sound().sound()->m_object ? *memory().sound().sound()->m_object->cName() : "unknown");
+			UI().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
+			UI().Font().pFontStat->OutNext	("%s%s%stype",indent,indent,indent);
+			UI().Font().pFontStat->OutNext	("%s%s%spower     : %f",indent,indent,indent,memory().sound().sound()->m_power);
+			UI().Font().pFontStat->OutNext	("%s%s%sobject    : %s",indent,indent,indent,memory().sound().sound()->m_object ? *memory().sound().sound()->m_object->cName() : "unknown");
 			if (g_Alive() && memory().sound().sound()->m_object)
-				HUD().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().sound().sound()->m_object) ? "+" : "-");
+				UI().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().sound().sound()->m_object) ? "+" : "-");
 		}
 #endif
 		// hit
-		HUD().Font().pFontStat->OutNext	("%shit",indent);
-		HUD().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().hit().objects().size());
+		UI().Font().pFontStat->OutNext	("%shit",indent);
+		UI().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().hit().objects().size());
 		ALife::_OBJECT_ID					object_id = memory().hit().last_hit_object_id();
-		HUD().Font().pFontStat->OutNext	("%s%slast hit object id   : %d",indent,indent,object_id);
+		UI().Font().pFontStat->OutNext	("%s%slast hit object id   : %d",indent,indent,object_id);
 		CObject								*object = (object_id == ALife::_OBJECT_ID(-1)) ? 0 : Level().Objects.net_Find(object_id);
-		HUD().Font().pFontStat->OutNext	("%s%slast hit object name : %s",indent,indent,object ? *object->cName() : "");
+		UI().Font().pFontStat->OutNext	("%s%slast hit object name : %s",indent,indent,object ? *object->cName() : "");
 #ifdef USE_SELECTED_HIT
 		if (memory().hit().hit()) {
-			HUD().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
-			HUD().Font().pFontStat->OutNext	("%s%s%spower     : %f",indent,indent,indent,memory().hit().hit()->m_amount);
-			HUD().Font().pFontStat->OutNext	("%s%s%sobject    : %s",indent,indent,indent,memory().hit().hit()->m_object ? *memory().hit().hit()->m_object->cName() : "unknown");
+			UI().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
+			UI().Font().pFontStat->OutNext	("%s%s%spower     : %f",indent,indent,indent,memory().hit().hit()->m_amount);
+			UI().Font().pFontStat->OutNext	("%s%s%sobject    : %s",indent,indent,indent,memory().hit().hit()->m_object ? *memory().hit().hit()->m_object->cName() : "unknown");
 			if (g_Alive() && memory().hit().hit()->m_object)
-				HUD().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().hit().hit()->m_object) ? "+" : "-");
+				UI().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().hit().hit()->m_object) ? "+" : "-");
 		}
 #endif
 	}
 	// enemy
-	HUD().Font().pFontStat->OutNext	("%senemy",indent);
+	UI().Font().pFontStat->OutNext	("%senemy",indent);
 	if (inventory().ActiveItem()) {
-		HUD().Font().pFontStat->OutNext("%s%scan kill member   : %s",indent,indent,can_kill_member() ? "+" : "-");
-		HUD().Font().pFontStat->OutNext("%s%scan kill enemy    : %s",indent,indent,can_kill_enemy() ? "+" : "-");
-		HUD().Font().pFontStat->OutNext("%s%spick distance     : %f",indent,indent,pick_distance());
-		HUD().Font().pFontStat->OutNext("%s%sfire make sense   : %s",indent,indent,fire_make_sense() ? "+" : "-");
-		HUD().Font().pFontStat->OutNext("%s%sactor is enemy    : %c",indent,indent,is_relation_enemy(actor) ? '+' : '-');
-		HUD().Font().pFontStat->OutNext("%s%sis enemy to actor : %c",indent,indent,actor->is_relation_enemy(this) ? '+' : '-');
+		UI().Font().pFontStat->OutNext("%s%scan kill member   : %s",indent,indent,can_kill_member() ? "+" : "-");
+		UI().Font().pFontStat->OutNext("%s%scan kill enemy    : %s",indent,indent,can_kill_enemy() ? "+" : "-");
+		UI().Font().pFontStat->OutNext("%s%spick distance     : %f",indent,indent,pick_distance());
+		UI().Font().pFontStat->OutNext("%s%sfire make sense   : %s",indent,indent,fire_make_sense() ? "+" : "-");
+		UI().Font().pFontStat->OutNext("%s%sactor is enemy    : %c",indent,indent,is_relation_enemy(actor) ? '+' : '-');
+		UI().Font().pFontStat->OutNext("%s%sis enemy to actor : %c",indent,indent,actor->is_relation_enemy(this) ? '+' : '-');
 	}
 
-	HUD().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().enemy().objects().size());
+	UI().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().enemy().objects().size());
 	if (g_Alive()) {
 		CEnemyManager::OBJECTS::const_iterator	I = memory().enemy().objects().begin();
 		CEnemyManager::OBJECTS::const_iterator	E = memory().enemy().objects().end();
 		for ( ; I != E; ++I)
-			HUD().Font().pFontStat->OutNext	("%s%s%s%s : %s",indent,indent,indent,*(*I)->cName(),memory().visual().visible_now(*I) ? "visible" : "invisible");
+			UI().Font().pFontStat->OutNext	("%s%s%s%s : %s",indent,indent,indent,*(*I)->cName(),memory().visual().visible_now(*I) ? "visible" : "invisible");
 	}
 
 	if (memory().enemy().selected()) {
-		HUD().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
+		UI().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
 		
 		float								fuzzy = 0.f;
 		xr_vector<feel_visible_Item>::iterator I=feel_visible.begin(),E=feel_visible.end();
@@ -342,9 +342,9 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 		if (g_Alive()) {
 			if (!g_mt_config.test(mtAiVision))
 				VERIFY						(!memory().visual().visible_now(memory().enemy().selected()) || (fuzzy > 0.f));
-			HUD().Font().pFontStat->OutNext("%s%s%svisible   : %s %f",indent,indent,indent,memory().visual().visible_now(memory().enemy().selected()) ? "+" : "-",fuzzy);
+			UI().Font().pFontStat->OutNext("%s%s%svisible   : %s %f",indent,indent,indent,memory().visual().visible_now(memory().enemy().selected()) ? "+" : "-",fuzzy);
 		}
-		HUD().Font().pFontStat->OutNext	("%s%s%sobject    : %s",indent,indent,indent,*memory().enemy().selected()->cName());
+		UI().Font().pFontStat->OutNext	("%s%s%sobject    : %s",indent,indent,indent,*memory().enemy().selected()->cName());
 		if (g_Alive()) {
 			float								interval = (1.f - panic_threshold())*.25f, left = -1.f, right = -1.f;
 			LPCSTR								description = "invalid";
@@ -398,77 +398,77 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 				}
 				default : NODEFAULT;
 			}
-			HUD().Font().pFontStat->OutNext	("%s%s%svictory   : [%5.2f%%,%5.2f%%] -> %s",indent,indent,indent,100.f*right,100.f*left,description);
+			UI().Font().pFontStat->OutNext	("%s%s%svictory   : [%5.2f%%,%5.2f%%] -> %s",indent,indent,indent,100.f*right,100.f*left,description);
 		}
 	}
 	// danger
-	HUD().Font().pFontStat->OutNext	("%sdanger",indent);
-	HUD().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().danger().objects().size());
+	UI().Font().pFontStat->OutNext	("%sdanger",indent);
+	UI().Font().pFontStat->OutNext	("%s%sobjects     : %d",indent,indent,memory().danger().objects().size());
 	if (memory().danger().selected() && memory().danger().selected()->object()) {
-		HUD().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
-		HUD().Font().pFontStat->OutNext	("%s%s%stype      : %s",indent,indent,indent,danger_type(memory().danger().selected()->type()));
-		HUD().Font().pFontStat->OutNext	("%s%s%stime      : %.3f (%.3f)",indent,indent,indent,float(memory().danger().selected()->time())/1000.f,float(Device.dwTimeGlobal - memory().danger().selected()->time())/1000.f);
-		HUD().Font().pFontStat->OutNext	("%s%s%sinitiator : %s",indent,indent,indent,*memory().danger().selected()->object()->cName());
+		UI().Font().pFontStat->OutNext	("%s%sselected",indent,indent);
+		UI().Font().pFontStat->OutNext	("%s%s%stype      : %s",indent,indent,indent,danger_type(memory().danger().selected()->type()));
+		UI().Font().pFontStat->OutNext	("%s%s%stime      : %.3f (%.3f)",indent,indent,indent,float(memory().danger().selected()->time())/1000.f,float(Device.dwTimeGlobal - memory().danger().selected()->time())/1000.f);
+		UI().Font().pFontStat->OutNext	("%s%s%sinitiator : %s",indent,indent,indent,*memory().danger().selected()->object()->cName());
 		if (g_Alive() && memory().danger().selected()->object())
-			HUD().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().danger().selected()->object()) ? "+" : "-");
+			UI().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().danger().selected()->object()) ? "+" : "-");
 
 		if (memory().danger().selected()->dependent_object() && !!memory().danger().selected()->dependent_object()->cName()) {
-			HUD().Font().pFontStat->OutNext("%s%s%sdependent : %s",indent,indent,indent,*memory().danger().selected()->dependent_object()->cName());
+			UI().Font().pFontStat->OutNext("%s%s%sdependent : %s",indent,indent,indent,*memory().danger().selected()->dependent_object()->cName());
 			if (g_Alive())
-				HUD().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(smart_cast<const CGameObject*>(memory().danger().selected()->dependent_object())) ? "+" : "-");
+				UI().Font().pFontStat->OutNext("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(smart_cast<const CGameObject*>(memory().danger().selected()->dependent_object())) ? "+" : "-");
 		}
 	}
 
-	HUD().Font().pFontStat->OutNext	("%sanomalies",indent);
-	HUD().Font().pFontStat->OutNext	("%s%sundetected  : %s",indent,indent,undetected_anomaly() ? "+" : "-");
-	HUD().Font().pFontStat->OutNext	("%s%sinside      : %s",indent,indent,inside_anomaly() ? "+" : "-");
+	UI().Font().pFontStat->OutNext	("%sanomalies",indent);
+	UI().Font().pFontStat->OutNext	("%s%sundetected  : %s",indent,indent,undetected_anomaly() ? "+" : "-");
+	UI().Font().pFontStat->OutNext	("%s%sinside      : %s",indent,indent,inside_anomaly() ? "+" : "-");
 
 	// agent manager
-	HUD().Font().pFontStat->OutNext	(" ");
-	HUD().Font().pFontStat->OutNext	("agent manager");
+	UI().Font().pFontStat->OutNext	(" ");
+	UI().Font().pFontStat->OutNext	("agent manager");
 	if (g_Alive()) {
-	HUD().Font().pFontStat->OutNext	("%smembers           : %d",indent,agent_manager().member().members().size());
-	HUD().Font().pFontStat->OutNext	("%senemies           : %d",indent,agent_manager().enemy().enemies().size());
-	HUD().Font().pFontStat->OutNext	("%scorpses           : %d",indent,agent_manager().corpse().corpses().size());
-	HUD().Font().pFontStat->OutNext	("%sdanger locations  : %d",indent,agent_manager().location().locations().size());
-	HUD().Font().pFontStat->OutNext	("%smembers in combat : %d",indent,agent_manager().member().combat_members().size());
+	UI().Font().pFontStat->OutNext	("%smembers           : %d",indent,agent_manager().member().members().size());
+	UI().Font().pFontStat->OutNext	("%senemies           : %d",indent,agent_manager().enemy().enemies().size());
+	UI().Font().pFontStat->OutNext	("%scorpses           : %d",indent,agent_manager().corpse().corpses().size());
+	UI().Font().pFontStat->OutNext	("%sdanger locations  : %d",indent,agent_manager().location().locations().size());
+	UI().Font().pFontStat->OutNext	("%smembers in combat : %d",indent,agent_manager().member().combat_members().size());
 	if (g_Alive())
-		HUD().Font().pFontStat->OutNext("%sI am in combat    : %s",indent,agent_manager().member().registered_in_combat(this) ? "+" : "-");
-	HUD().Font().pFontStat->OutNext	("%smembers in detour : %d",indent,agent_manager().member().in_detour());
+		UI().Font().pFontStat->OutNext("%sI am in combat    : %s",indent,agent_manager().member().registered_in_combat(this) ? "+" : "-");
+	UI().Font().pFontStat->OutNext	("%smembers in detour : %d",indent,agent_manager().member().in_detour());
 	if (g_Alive())
-		HUD().Font().pFontStat->OutNext("%sI am in detour    : %s",indent,agent_manager().member().member(this).detour() ? "+" : "-");
+		UI().Font().pFontStat->OutNext("%sI am in detour    : %s",indent,agent_manager().member().member(this).detour() ? "+" : "-");
 
 		if (g_Alive()) {
 			if (agent_manager().member().member(this).cover())
-				HUD().Font().pFontStat->OutNext("%scover         : [%f][%f][%f]",indent,VPUSH(agent_manager().member().member(this).cover()->position()));
+				UI().Font().pFontStat->OutNext("%scover         : [%f][%f][%f]",indent,VPUSH(agent_manager().member().member(this).cover()->position()));
 
 			if (agent_manager().member().member(this).member_death_reaction().m_processing)
-				HUD().Font().pFontStat->OutNext("%react on death : %s",indent,*agent_manager().member().member(this).member_death_reaction().m_member->cName());
+				UI().Font().pFontStat->OutNext("%react on death : %s",indent,*agent_manager().member().member(this).member_death_reaction().m_member->cName());
 
 			if (agent_manager().member().member(this).grenade_reaction().m_processing)
-				HUD().Font().pFontStat->OutNext("%react on grenade : %s",indent,agent_manager().member().member(this).grenade_reaction().m_game_object ? *agent_manager().member().member(this).grenade_reaction().m_game_object->cName() : "unknown");
+				UI().Font().pFontStat->OutNext("%react on grenade : %s",indent,agent_manager().member().member(this).grenade_reaction().m_game_object ? *agent_manager().member().member(this).grenade_reaction().m_game_object->cName() : "unknown");
 		}
 	}
 
 	// objects
-	HUD().Font().pFontStat->OutNext	(" ");
-	HUD().Font().pFontStat->OutNext	("%sobjects",indent);
-	HUD().Font().pFontStat->OutNext	("%s%sobjects             : %d",indent,indent,inventory().m_all.size());
-	HUD().Font().pFontStat->OutNext	("%s%sactive item         : %s",indent,indent,inventory().ActiveItem() ? *inventory().ActiveItem()->object().cName() : "");
-	HUD().Font().pFontStat->OutNext	("%s%sbest weapon         : %s",indent,indent,best_weapon() ? *best_weapon()->object().cName() : "");
-	HUD().Font().pFontStat->OutNext	("%s%sitem to kill        : %s",indent,indent,item_to_kill() ? *m_best_item_to_kill->object().cName() : "");
-	HUD().Font().pFontStat->OutNext	("%s%sitem can kill       : %s",indent,indent,item_can_kill() ? "+" : "-");
-	HUD().Font().pFontStat->OutNext	("%s%smemory item to kill : %s",indent,indent,remember_item_to_kill() ? *m_best_found_item_to_kill->object().cName() : "");
-	HUD().Font().pFontStat->OutNext	("%s%smemory ammo         : %s",indent,indent,remember_ammo() ? *m_best_found_ammo->object().cName() : "");
-	HUD().Font().pFontStat->OutNext	("%s%sinfinite ammo       : %s",indent,indent,m_infinite_ammo ? "+" : "-");
-	HUD().Font().pFontStat->OutNext	("%s%sitem to spawn       : %s",indent,indent,item_to_spawn().size() ? *item_to_spawn() : "no item to spawn");
-	HUD().Font().pFontStat->OutNext	("%s%sammo in box to spawn: %d",indent,indent,item_to_spawn().size() ? ammo_in_box_to_spawn() : 0);
+	UI().Font().pFontStat->OutNext	(" ");
+	UI().Font().pFontStat->OutNext	("%sobjects",indent);
+	UI().Font().pFontStat->OutNext	("%s%sobjects             : %d",indent,indent,inventory().m_all.size());
+	UI().Font().pFontStat->OutNext	("%s%sactive item         : %s",indent,indent,inventory().ActiveItem() ? *inventory().ActiveItem()->object().cName() : "");
+	UI().Font().pFontStat->OutNext	("%s%sbest weapon         : %s",indent,indent,best_weapon() ? *best_weapon()->object().cName() : "");
+	UI().Font().pFontStat->OutNext	("%s%sitem to kill        : %s",indent,indent,item_to_kill() ? *m_best_item_to_kill->object().cName() : "");
+	UI().Font().pFontStat->OutNext	("%s%sitem can kill       : %s",indent,indent,item_can_kill() ? "+" : "-");
+	UI().Font().pFontStat->OutNext	("%s%smemory item to kill : %s",indent,indent,remember_item_to_kill() ? *m_best_found_item_to_kill->object().cName() : "");
+	UI().Font().pFontStat->OutNext	("%s%smemory ammo         : %s",indent,indent,remember_ammo() ? *m_best_found_ammo->object().cName() : "");
+	UI().Font().pFontStat->OutNext	("%s%sinfinite ammo       : %s",indent,indent,m_infinite_ammo ? "+" : "-");
+	UI().Font().pFontStat->OutNext	("%s%sitem to spawn       : %s",indent,indent,item_to_spawn().size() ? *item_to_spawn() : "no item to spawn");
+	UI().Font().pFontStat->OutNext	("%s%sammo in box to spawn: %d",indent,indent,item_to_spawn().size() ? ammo_in_box_to_spawn() : 0);
 	
 	CWeaponMagazined					*weapon = smart_cast<CWeaponMagazined*>(inventory().ActiveItem());
 	if (weapon) {
 		CObjectHandlerPlanner			&planner = CObjectHandler::planner();
-		HUD().Font().pFontStat->OutNext("%s%squeue size          : %d",indent,indent,weapon->GetQueueSize());
-		HUD().Font().pFontStat->OutNext("%s%squeue interval      : %d",
+		UI().Font().pFontStat->OutNext("%s%squeue size          : %d",indent,indent,weapon->GetQueueSize());
+		UI().Font().pFontStat->OutNext("%s%squeue interval      : %d",
 			indent,
 			indent,
 			planner.action(
@@ -481,15 +481,15 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 	}
 	
 	if (inventory().ActiveItem()) {
-		HUD().Font().pFontStat->OutNext	("%s%sactive item",indent,indent);
-		HUD().Font().pFontStat->OutNext	("%s%s%sobject         : %s",indent,indent,indent,inventory().ActiveItem() ? *inventory().ActiveItem()->object().cName() : "");
+		UI().Font().pFontStat->OutNext	("%s%sactive item",indent,indent);
+		UI().Font().pFontStat->OutNext	("%s%s%sobject         : %s",indent,indent,indent,inventory().ActiveItem() ? *inventory().ActiveItem()->object().cName() : "");
 		CWeapon	*weapon = smart_cast<CWeapon*>(inventory().ActiveItem());
 		if (weapon) {
-			HUD().Font().pFontStat->OutNext("%s%s%sstrapped       : %s",indent,indent,indent,weapon_strapped(weapon) ? "+" : "-");
-			HUD().Font().pFontStat->OutNext("%s%s%sunstrapped     : %s",indent,indent,indent,weapon_unstrapped(weapon) ? "+" : "-");
-			HUD().Font().pFontStat->OutNext("%s%s%sammo           : %d",indent,indent,indent,weapon->GetAmmoElapsed());
-			HUD().Font().pFontStat->OutNext("%s%s%smagazine       : %d",indent,indent,indent,weapon->GetAmmoMagSize());
-			HUD().Font().pFontStat->OutNext("%s%s%stotal ammo     : %d",indent,indent,indent,weapon->GetAmmoCurrent());
+			UI().Font().pFontStat->OutNext("%s%s%sstrapped       : %s",indent,indent,indent,weapon_strapped(weapon) ? "+" : "-");
+			UI().Font().pFontStat->OutNext("%s%s%sunstrapped     : %s",indent,indent,indent,weapon_unstrapped(weapon) ? "+" : "-");
+			UI().Font().pFontStat->OutNext("%s%s%sammo           : %d",indent,indent,indent,weapon->GetAmmoElapsed());
+			UI().Font().pFontStat->OutNext("%s%s%smagazine       : %d",indent,indent,indent,weapon->GetAmmoMagSize());
+			UI().Font().pFontStat->OutNext("%s%s%stotal ammo     : %d",indent,indent,indent,weapon->GetAmmoCurrent());
 		}
 	}
 
@@ -499,10 +499,10 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 	strconcat							(sizeof(temp),temp,indent,indent);
 	draw_planner						(objects,temp,indent,"root");
 
-	HUD().Font().pFontStat->OutSet		(330,up_indent);
+	UI().Font().pFontStat->OutSet		(330,up_indent);
 	
 	// brain
-	HUD().Font().pFontStat->OutNext	("brain");
+	UI().Font().pFontStat->OutNext	("brain");
 	
 	// actions
 	draw_planner						(this->brain(),indent,indent,"root");
@@ -511,37 +511,37 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 	if (m_debug_planner)
 		draw_planner					(*m_debug_planner,indent,indent,"debug_planner");
 	
-	HUD().Font().pFontStat->OutSet		(640,up_indent);
+	UI().Font().pFontStat->OutSet		(640,up_indent);
 	// brain
-	HUD().Font().pFontStat->OutNext	("controls");
+	UI().Font().pFontStat->OutNext	("controls");
 	// animations
-	HUD().Font().pFontStat->OutNext	("%sanimations",indent);
+	UI().Font().pFontStat->OutNext	("%sanimations",indent);
 
-	HUD().Font().pFontStat->OutNext	("%s%shead        : [%s][%f]",indent,indent,
+	UI().Font().pFontStat->OutNext	("%s%shead        : [%s][%f]",indent,indent,
 		animation_name(this,animation().head().animation()),
 		animation().head().blend() ? animation().head().blend()->timeCurrent : 0.f
 	);
-	HUD().Font().pFontStat->OutNext	("%s%storso       : [%s][%f]",indent,indent,
+	UI().Font().pFontStat->OutNext	("%s%storso       : [%s][%f]",indent,indent,
 		animation_name(this,animation().torso().animation()),
 		animation().torso().blend() ? animation().torso().blend()->timeCurrent : 0.f
 	);
-	HUD().Font().pFontStat->OutNext	("%s%slegs        : [%s][%f]",indent,indent,
+	UI().Font().pFontStat->OutNext	("%s%slegs        : [%s][%f]",indent,indent,
 		animation_name(this,animation().legs().animation()),
 		animation().legs().blend() ? animation().legs().blend()->timeCurrent : 0.f
 	);
-	HUD().Font().pFontStat->OutNext	("%s%sglobal      : [%s][%f]",indent,indent,
+	UI().Font().pFontStat->OutNext	("%s%sglobal      : [%s][%f]",indent,indent,
 		animation_name(this,animation().global().animation()),
 		animation().global().blend() ? animation().global().blend()->timeCurrent : 0.f
 	);
-	HUD().Font().pFontStat->OutNext	("%s%sscript      : [%s][%f]",indent,indent,
+	UI().Font().pFontStat->OutNext	("%s%sscript      : [%s][%f]",indent,indent,
 		animation_name(this,animation().script().animation()),
 		animation().script().blend() ? animation().script().blend()->timeCurrent : 0.f
 	);
 
 	// movement
-	HUD().Font().pFontStat->OutNext	(" ");
-	HUD().Font().pFontStat->OutNext	("%smovement",indent);
-	HUD().Font().pFontStat->OutNext	("%s%senabled         : %s",indent,indent,movement().enabled() ? "+" : "-");
+	UI().Font().pFontStat->OutNext	(" ");
+	UI().Font().pFontStat->OutNext	("%smovement",indent);
+	UI().Font().pFontStat->OutNext	("%s%senabled         : %s",indent,indent,movement().enabled() ? "+" : "-");
 
 	LPCSTR								mental_state = "invalid";
 	switch (movement().mental_state()) {
@@ -559,7 +559,7 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 		}
 		default : NODEFAULT;
 	}
-	HUD().Font().pFontStat->OutNext	("%s%smental state    : %s",indent,indent,mental_state);
+	UI().Font().pFontStat->OutNext	("%s%smental state    : %s",indent,indent,mental_state);
 
 	LPCSTR								body_state = "invalid";
 	switch (movement().body_state()) {
@@ -573,9 +573,9 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 		}
 		default : NODEFAULT;
 	}
-	HUD().Font().pFontStat->OutNext	("%s%sbody state      : %s",indent,indent,body_state);
-	HUD().Font().pFontStat->OutNext	("%s%smovement type   : %s (current)",indent,indent,movement_type(movement().movement_type()));
-	HUD().Font().pFontStat->OutNext	("%s%smovement type   : %s (target)",indent,indent, movement_type(movement().target_movement_type()));
+	UI().Font().pFontStat->OutNext	("%s%sbody state      : %s",indent,indent,body_state);
+	UI().Font().pFontStat->OutNext	("%s%smovement type   : %s (current)",indent,indent,movement_type(movement().movement_type()));
+	UI().Font().pFontStat->OutNext	("%s%smovement type   : %s (target)",indent,indent, movement_type(movement().target_movement_type()));
 
 	LPCSTR						path_type = "invalid";
 	switch (movement().path_type()) {
@@ -597,64 +597,64 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 		}
 		default : NODEFAULT;
 	}
-	HUD().Font().pFontStat->OutNext	("%s%spath type       : %s",indent,indent,path_type);
-	HUD().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(Position()));
-	HUD().Font().pFontStat->OutNext	("%s%slevel vertex id : %d",indent,indent,ai_location().level_vertex_id());
-	HUD().Font().pFontStat->OutNext	("%s%sgame vertex id  : %d",indent,indent,ai_location().game_vertex_id());
-	HUD().Font().pFontStat->OutNext	("%s%shead current    : [%f][%f]",indent,indent,movement().head_orientation().current.yaw,movement().head_orientation().current.pitch);
-	HUD().Font().pFontStat->OutNext	("%s%shead target     : [%f][%f]",indent,indent,movement().head_orientation().target.yaw,movement().head_orientation().target.pitch);
-	HUD().Font().pFontStat->OutNext	("%s%sbody current    : [%f][%f]",indent,indent,movement().body_orientation().current.yaw,movement().body_orientation().current.pitch);
-	HUD().Font().pFontStat->OutNext	("%s%sbody target     : [%f][%f]",indent,indent,movement().body_orientation().target.yaw,movement().body_orientation().target.pitch);
+	UI().Font().pFontStat->OutNext	("%s%spath type       : %s",indent,indent,path_type);
+	UI().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(Position()));
+	UI().Font().pFontStat->OutNext	("%s%slevel vertex id : %d",indent,indent,ai_location().level_vertex_id());
+	UI().Font().pFontStat->OutNext	("%s%sgame vertex id  : %d",indent,indent,ai_location().game_vertex_id());
+	UI().Font().pFontStat->OutNext	("%s%shead current    : [%f][%f]",indent,indent,movement().head_orientation().current.yaw,movement().head_orientation().current.pitch);
+	UI().Font().pFontStat->OutNext	("%s%shead target     : [%f][%f]",indent,indent,movement().head_orientation().target.yaw,movement().head_orientation().target.pitch);
+	UI().Font().pFontStat->OutNext	("%s%sbody current    : [%f][%f]",indent,indent,movement().body_orientation().current.yaw,movement().body_orientation().current.pitch);
+	UI().Font().pFontStat->OutNext	("%s%sbody target     : [%f][%f]",indent,indent,movement().body_orientation().target.yaw,movement().body_orientation().target.pitch);
 	
 	if (movement().path_type() == MovementManager::ePathTypePatrolPath) {
-		HUD().Font().pFontStat->OutNext("%s%spatrol",indent,indent);
-		HUD().Font().pFontStat->OutNext("%s%s%spath          : %s",indent,indent,indent,*movement().patrol().path_name());
-		HUD().Font().pFontStat->OutNext("%s%s%scompleted     : %s",indent,indent,indent,movement().patrol().completed() ? "+" : "-");
-		HUD().Font().pFontStat->OutNext("%s%s%scurrent point : %d",indent,indent,indent,movement().patrol().get_current_point_index());
+		UI().Font().pFontStat->OutNext("%s%spatrol",indent,indent);
+		UI().Font().pFontStat->OutNext("%s%s%spath          : %s",indent,indent,indent,*movement().patrol().path_name());
+		UI().Font().pFontStat->OutNext("%s%s%scompleted     : %s",indent,indent,indent,movement().patrol().completed() ? "+" : "-");
+		UI().Font().pFontStat->OutNext("%s%s%scurrent point : %d",indent,indent,indent,movement().patrol().get_current_point_index());
 		if	(
 				movement().patrol().get_path()
 				&&
 				movement().patrol().get_path()->vertex(movement().patrol().get_current_point_index())
 			)
-			HUD().Font().pFontStat->OutNext("%s%s%sextrapolate   : %s",indent,indent,indent,movement().patrol().extrapolate_path() ? "+" : "-");
+			UI().Font().pFontStat->OutNext("%s%s%sextrapolate   : %s",indent,indent,indent,movement().patrol().extrapolate_path() ? "+" : "-");
 		else
-			HUD().Font().pFontStat->OutNext("%s%s%sextrapolate   : unknown",indent,indent,indent);
+			UI().Font().pFontStat->OutNext("%s%s%sextrapolate   : unknown",indent,indent,indent);
 	}
 
 	if (movement().path_type() == MovementManager::ePathTypeGamePath) {
-		HUD().Font().pFontStat->OutNext("%s%sgame",indent,indent);
-		HUD().Font().pFontStat->OutNext("%s%s%scompleted     : %s",indent,indent,indent,movement().game_path().completed() ? "+" : "-");
-		HUD().Font().pFontStat->OutNext("%s%s%spath size     : %d",indent,indent,indent,movement().game_path().path().size());
-		HUD().Font().pFontStat->OutNext("%s%s%scurrent point : %d",indent,indent,indent,movement().game_path().intermediate_index());
+		UI().Font().pFontStat->OutNext("%s%sgame",indent,indent);
+		UI().Font().pFontStat->OutNext("%s%s%scompleted     : %s",indent,indent,indent,movement().game_path().completed() ? "+" : "-");
+		UI().Font().pFontStat->OutNext("%s%s%spath size     : %d",indent,indent,indent,movement().game_path().path().size());
+		UI().Font().pFontStat->OutNext("%s%s%scurrent point : %d",indent,indent,indent,movement().game_path().intermediate_index());
 	}
 	
-	HUD().Font().pFontStat->OutNext	("%s%slevel",indent,indent);
-	HUD().Font().pFontStat->OutNext	("%s%s%spath size     : %d",indent,indent,indent,movement().level_path().path().size());
-	HUD().Font().pFontStat->OutNext	("%s%s%sstart vertex  : %d",indent,indent,indent,movement().level_path().path().empty() ? -1 : movement().level_path().path().front());
-	HUD().Font().pFontStat->OutNext	("%s%s%sdest vertex   : %d",indent,indent,indent,movement().level_path().path().empty() ? -1 : movement().level_path().path().back());
+	UI().Font().pFontStat->OutNext	("%s%slevel",indent,indent);
+	UI().Font().pFontStat->OutNext	("%s%s%spath size     : %d",indent,indent,indent,movement().level_path().path().size());
+	UI().Font().pFontStat->OutNext	("%s%s%sstart vertex  : %d",indent,indent,indent,movement().level_path().path().empty() ? -1 : movement().level_path().path().front());
+	UI().Font().pFontStat->OutNext	("%s%s%sdest vertex   : %d",indent,indent,indent,movement().level_path().path().empty() ? -1 : movement().level_path().path().back());
 
-	HUD().Font().pFontStat->OutNext	("%s%sdetail",indent,indent);
-	HUD().Font().pFontStat->OutNext	("%s%s%svelocities    : %d",indent,indent,indent,movement().detail().velocities().size());
-	HUD().Font().pFontStat->OutNext	("%s%s%sextrapolate   : %f",indent,indent,indent,movement().detail().extrapolate_length());
-	HUD().Font().pFontStat->OutNext	("%s%s%spath size     : %d",indent,indent,indent,movement().detail().path().size());
+	UI().Font().pFontStat->OutNext	("%s%sdetail",indent,indent);
+	UI().Font().pFontStat->OutNext	("%s%s%svelocities    : %d",indent,indent,indent,movement().detail().velocities().size());
+	UI().Font().pFontStat->OutNext	("%s%s%sextrapolate   : %f",indent,indent,indent,movement().detail().extrapolate_length());
+	UI().Font().pFontStat->OutNext	("%s%s%spath size     : %d",indent,indent,indent,movement().detail().path().size());
 	if (!movement().detail().path().empty()) {
-		HUD().Font().pFontStat->OutNext	("%s%s%sstart point   : [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().path().front().position));
-		HUD().Font().pFontStat->OutNext	("%s%s%sdest point    : [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().path().back().position));
-		HUD().Font().pFontStat->OutNext	("%s%s%scurrent point",indent,indent,indent);
-		HUD().Font().pFontStat->OutNext	("%s%s%s%sindex     : %d",indent,indent,indent,indent,movement().detail().curr_travel_point_index());
-		HUD().Font().pFontStat->OutNext	("%s%s%s%sposition  : [%f][%f][%f]",indent,indent,indent,indent,VPUSH(movement().detail().path()[movement().detail().curr_travel_point_index()].position));
+		UI().Font().pFontStat->OutNext	("%s%s%sstart point   : [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().path().front().position));
+		UI().Font().pFontStat->OutNext	("%s%s%sdest point    : [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().path().back().position));
+		UI().Font().pFontStat->OutNext	("%s%s%scurrent point",indent,indent,indent);
+		UI().Font().pFontStat->OutNext	("%s%s%s%sindex     : %d",indent,indent,indent,indent,movement().detail().curr_travel_point_index());
+		UI().Font().pFontStat->OutNext	("%s%s%s%sposition  : [%f][%f][%f]",indent,indent,indent,indent,VPUSH(movement().detail().path()[movement().detail().curr_travel_point_index()].position));
 		CDetailPathManager::STravelParams	current_velocity = movement().detail().velocity(movement().detail().path()[movement().detail().curr_travel_point_index()].velocity);
-		HUD().Font().pFontStat->OutNext	("%s%s%s%slinear    : %f",    indent,indent,indent,indent,current_velocity.linear_velocity);
-		HUD().Font().pFontStat->OutNext	("%s%s%s%sangular   : %f deg",indent,indent,indent,indent,rad2deg(current_velocity.angular_velocity));
-		HUD().Font().pFontStat->OutNext	("%s%s%s%sangular(R): %f deg",indent,indent,indent,indent,rad2deg(current_velocity.real_angular_velocity));
-		HUD().Font().pFontStat->OutNext	("%s%s%sspeed(calc)   : %f",indent,indent,indent,movement().speed());
-		HUD().Font().pFontStat->OutNext	("%s%s%sspeed(physics): %f",indent,indent,indent,movement().speed(character_physics_support()->movement()));
+		UI().Font().pFontStat->OutNext	("%s%s%s%slinear    : %f",    indent,indent,indent,indent,current_velocity.linear_velocity);
+		UI().Font().pFontStat->OutNext	("%s%s%s%sangular   : %f deg",indent,indent,indent,indent,rad2deg(current_velocity.angular_velocity));
+		UI().Font().pFontStat->OutNext	("%s%s%s%sangular(R): %f deg",indent,indent,indent,indent,rad2deg(current_velocity.real_angular_velocity));
+		UI().Font().pFontStat->OutNext	("%s%s%sspeed(calc)   : %f",indent,indent,indent,movement().speed());
+		UI().Font().pFontStat->OutNext	("%s%s%sspeed(physics): %f",indent,indent,indent,movement().speed(character_physics_support()->movement()));
 	}
 
 	if (movement().detail().use_dest_orientation())
-		HUD().Font().pFontStat->OutNext("%s%s%sorientation   : + [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().dest_direction()));
+		UI().Font().pFontStat->OutNext("%s%s%sorientation   : + [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().dest_direction()));
 	else
-		HUD().Font().pFontStat->OutNext("%s%s%sorientation   : -",indent,indent,indent);
+		UI().Font().pFontStat->OutNext("%s%s%sorientation   : -",indent,indent,indent);
 
 	if	(
 			movement().restrictions().out_restrictions().size() ||
@@ -662,7 +662,7 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 			movement().restrictions().base_out_restrictions().size() ||
 			movement().restrictions().base_in_restrictions().size()
 		) {
-		HUD().Font().pFontStat->OutNext	("%s%srestrictions",indent,indent);
+		UI().Font().pFontStat->OutNext	("%s%srestrictions",indent,indent);
 		strconcat							(sizeof(temp),temp,indent,indent,indent);
 		draw_restrictions					(movement().restrictions().out_restrictions(),temp,indent,"out");
 		draw_restrictions					(movement().restrictions().in_restrictions(),temp,indent,"in");
@@ -671,9 +671,9 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 	}
 
 	// sounds
-	HUD().Font().pFontStat->OutNext	(" ");
-	HUD().Font().pFontStat->OutNext	("%ssounds",indent);
-	HUD().Font().pFontStat->OutNext	("%s%scollections : %d",indent,indent,sound().objects().size());
+	UI().Font().pFontStat->OutNext	(" ");
+	UI().Font().pFontStat->OutNext	("%ssounds",indent);
+	UI().Font().pFontStat->OutNext	("%s%scollections : %d",indent,indent,sound().objects().size());
 	
 	{
 		u32			object_count = 0;
@@ -681,13 +681,13 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 		CSoundPlayer::SOUND_COLLECTIONS::const_iterator	E = sound().objects().end();
 		for ( ; I != E; ++I)
 			object_count	+= (*I).second.second->m_sounds.size();
-		HUD().Font().pFontStat->OutNext("%s%sobjects     : %d",indent,indent,object_count);
+		UI().Font().pFontStat->OutNext("%s%sobjects     : %d",indent,indent,object_count);
 	}
 	{
 		xr_vector<CSoundPlayer::CSoundSingle>::const_iterator	I = sound().playing_sounds().begin();
 		xr_vector<CSoundPlayer::CSoundSingle>::const_iterator	E = sound().playing_sounds().end();
 		for ( ; I != E; ++I)
-			HUD().Font().pFontStat->OutNext(
+			UI().Font().pFontStat->OutNext(
 				"%s%s%s[%s]%s",
 				indent,
 				indent,
@@ -708,8 +708,8 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 	}
 
 	// sight
-	HUD().Font().pFontStat->OutNext	(" ");
-	HUD().Font().pFontStat->OutNext	("%ssight",indent);
+	UI().Font().pFontStat->OutNext	(" ");
+	UI().Font().pFontStat->OutNext	("%ssight",indent);
 
 	LPCSTR								sight_type = "invalid";
 	switch (sight().current_action().sight_type()) {
@@ -756,8 +756,8 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 		default : NODEFAULT;
 	}
 
-	HUD().Font().pFontStat->OutNext	("%s%stype            : %s",indent,indent,sight_type);
-	HUD().Font().pFontStat->OutNext	("%s%suse torso       : %s",indent,indent,sight().current_action().use_torso_look() ? "+" : "-");
+	UI().Font().pFontStat->OutNext	("%s%stype            : %s",indent,indent,sight_type);
+	UI().Font().pFontStat->OutNext	("%s%suse torso       : %s",indent,indent,sight().current_action().use_torso_look() ? "+" : "-");
 	
 	switch (sight().current_action().sight_type()) {
 		case SightManager::eSightTypeCurrentDirection : {
@@ -767,16 +767,16 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 			break;
 		}
 		case SightManager::eSightTypeDirection : {
-			HUD().Font().pFontStat->OutNext	("%s%sdirection       : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().vector3d()));
+			UI().Font().pFontStat->OutNext	("%s%sdirection       : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().vector3d()));
 			break;
 		}
 		case SightManager::eSightTypePosition : {
-			HUD().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().vector3d()));
+			UI().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().vector3d()));
 			break;
 		}
 		case SightManager::eSightTypeObject : {
-			HUD().Font().pFontStat->OutNext	("%s%sobject          : %s",indent,indent,*sight().current_action().object().cName());
-			HUD().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().object().Position()));
+			UI().Font().pFontStat->OutNext	("%s%sobject          : %s",indent,indent,*sight().current_action().object().cName());
+			UI().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().object().Position()));
 			break;
 		}
 		case SightManager::eSightTypeCover : {
@@ -796,9 +796,9 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 			break;
 		}
 		case SightManager::eSightTypeFireObject : {
-			HUD().Font().pFontStat->OutNext	("%s%sobject          : %s",indent,indent,*sight().current_action().object().cName());
-			HUD().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().object().Position()));
-			HUD().Font().pFontStat->OutNext	("%s%svisible point   : %s",indent,indent,false ? "-" : "+");
+			UI().Font().pFontStat->OutNext	("%s%sobject          : %s",indent,indent,*sight().current_action().object().cName());
+			UI().Font().pFontStat->OutNext	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().object().Position()));
+			UI().Font().pFontStat->OutNext	("%s%svisible point   : %s",indent,indent,false ? "-" : "+");
 			break;
 		}
 		default : NODEFAULT;
@@ -929,9 +929,9 @@ void CAI_Stalker::dbg_draw_vision	()
 	string64					out_text;
 	sprintf_s						(out_text,"%.2f",object ? object->m_value : 0.f);
 
-	HUD().Font().pFontMedium->SetColor	(color_rgba(255,0,0,95));
-	HUD().Font().pFontMedium->OutSet	(x,y);
-	HUD().Font().pFontMedium->OutNext	(out_text);
+	UI().Font().pFontMedium->SetColor	(color_rgba(255,0,0,95));
+	UI().Font().pFontMedium->OutSet	(x,y);
+	UI().Font().pFontMedium->OutNext	(out_text);
 }
 
 typedef xr_vector<Fvector>	COLLIDE_POINTS;

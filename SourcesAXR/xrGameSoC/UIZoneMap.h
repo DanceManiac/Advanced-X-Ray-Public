@@ -4,13 +4,13 @@
 #include "ui/UIStatic.h"
 
 class CActor;
-class CUICustomMap;
+class CUIMiniMap;
 //////////////////////////////////////////////////////////////////////////
 
 
 class CUIZoneMap
 {
-	CUICustomMap*				m_activeMap;
+	CUIMiniMap*				m_activeMap;
 	float						m_fScale;
 
 	CUIStatic					m_background;

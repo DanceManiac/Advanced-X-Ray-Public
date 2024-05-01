@@ -35,10 +35,12 @@ CSE_ALifeTraderAbstract* ch_info_get_from_id (u16 id)
 }
 
 CUICharacterInfo::CUICharacterInfo()
-:m_ownerID(u16(-1)),pUIBio(NULL)
+	: m_ownerID(u16(-1)),
+	pUIBio(nullptr)
 {
 	ZeroMemory			(m_icons,sizeof(m_icons));
 	m_bForceUpdate		= false;
+	m_texture_name		= nullptr;
 }
 
 CUICharacterInfo::~CUICharacterInfo()
@@ -65,7 +67,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	if(xml_doc->NavigateToNode("name_static", 0)){
 		pItem = m_icons[eUIName] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "name_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 0);
+		//pItem->SetElipsis(CUIStatic::eepEnd, 0);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -75,7 +77,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUIRank] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "rank_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+		//pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -93,7 +95,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUICommunity] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "community_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+		//pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -111,7 +113,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUIReputation] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "reputation_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+		//pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}
@@ -129,7 +131,7 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 	{
 		pItem = m_icons[eUIRelation] = xr_new<CUIStatic>();
 		xml_init.InitStatic(*xml_doc, "relation_static", 0, pItem);
-		pItem->SetElipsis(CUIStatic::eepEnd, 1);
+		//pItem->SetElipsis(CUIStatic::eepEnd, 1);
 		AttachChild(pItem);
 		pItem->SetAutoDelete(true);
 	}

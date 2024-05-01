@@ -19,7 +19,7 @@ public:
 	virtual void 	SeveBackUpValue			();
 	virtual void 	Undo					();
 	virtual void	Draw					();
-	virtual bool	OnMouse					(float x, float y, EUIMessages mouse_action);
+	virtual bool	OnMouseAction					(float x, float y, EUIMessages mouse_action);
 	virtual	void 	OnMessage				(const char* message);
 	// CUIWindow
 	virtual void	Init					(float x, float y, float width, float height);

@@ -155,7 +155,7 @@ void CLevelGraph::draw_stalkers		(const int &vertex_id)
 	const float					radius = .0105f;
 	const u32					color = color_xrgb(255,0,0);
 	const CGameGraph			&graph = ai().game_graph();
-	CGameFont					&font = *HUD().Font().pFontDI;
+	CGameFont					&font = *UI().Font().pFontDI;
 	Fvector						position = convert_position(graph.vertex(vertex_id)->game_point());
 
 	font.SetColor				(color_xrgb(255,255,0));
@@ -299,7 +299,7 @@ void CLevelGraph::draw_objects		(const int &vertex_id)
 	const float					radius = .0105f;
 	const u32					color = color_xrgb(255,0,0);
 	const CGameGraph			&graph = ai().game_graph();
-	CGameFont					&font = *HUD().Font().pFontDI;
+	CGameFont					&font = *UI().Font().pFontDI;
 	Fvector						position = convert_position(graph.vertex(vertex_id)->game_point());
 
 	font.SetColor				(color_xrgb(255,255,0));
@@ -441,7 +441,7 @@ void CLevelGraph::draw_game_graph	()
 		return;
 
 //	Fvector					camera_position = Level().CurrentEntity()->Position();
-//	CGameFont				*font = HUD().Font().pFontDI;
+//	CGameFont				*font = UI().Font().pFontDI;
 
 	const Fmatrix			&xform = Level().CurrentEntity()->XFORM();
 	Fvector					center = Fvector().set(0.f,5.f,0.f);
