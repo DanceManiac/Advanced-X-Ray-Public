@@ -665,10 +665,8 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 
 	default:
 		{
-			if (&HUD() && HUD().GetUI())
-			{
-				HUD().GetUI()->HideGameIndicators();
-			};
+			if (g_hud && HUD().GetUI())
+				HUD().GetUI()->ShowGameIndicators(false);
 			HideMessageMenus();
 		}break;
 	}

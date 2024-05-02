@@ -20,8 +20,8 @@ CUI::CUI(CHUDManager* p)
 	m_Parent						= p;
 	pUIGame							= NULL;
 
-	ShowGameIndicators				();
-	ShowCrosshair					();
+	ShowGameIndicators				(true);
+	ShowCrosshair					(true);
 }
 //--------------------------------------------------------------------
 
@@ -215,24 +215,14 @@ SDrawStaticStruct* CUI::AddInfoMessage			(LPCSTR message)
 	return ss;
 }
 
-void CUI::ShowGameIndicators()
+void CUI::ShowGameIndicators(bool b)
 {
-	m_bShowGameIndicators	= true;
+	m_bShowGameIndicators	= b;
 }
 
-void CUI::HideGameIndicators()					
+void CUI::ShowCrosshair(bool b)
 {
-	m_bShowGameIndicators	= false;
-}
-
-void CUI::ShowCrosshair()
-{
-	psHUD_Flags.set		(HUD_CROSSHAIR_RT, TRUE);
-}
-
-void CUI::HideCrosshair()
-{
-	psHUD_Flags.set		(HUD_CROSSHAIR_RT, FALSE);
+	psHUD_Flags.set		(HUD_CROSSHAIR_RT, b);
 }
 
 bool CUI::CrosshairShown()

@@ -891,12 +891,12 @@ bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 		{
 		case DIK_NUMPADMINUS:
 			//.HideAll();
-			HUD().GetUI()->HideGameIndicators();
+			HUD().GetUI()->ShowGameIndicators(false);
 			return true;
 			break;
 		case DIK_NUMPADPLUS:
 			//.ShowAll();
-			HUD().GetUI()->ShowGameIndicators();
+			HUD().GetUI()->ShowGameIndicators(true);
 			return true;
 			break;
 		}

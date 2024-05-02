@@ -64,7 +64,7 @@ void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 		
 		if(bDoHideIndicators){
 			psHUD_Flags.set				(HUD_CROSSHAIR_RT, FALSE);
-			HUD().GetUI					()->HideGameIndicators();
+			HUD().GetUI					()->ShowGameIndicators(false);
 		}
 	}
 	pDialog->SetHolder				(this);
@@ -101,8 +101,7 @@ void CDialogHolder::StopMenu (CUIDialogWnd* pDialog)
 			bool b					= !!m_input_receivers.back().m_flags.test(recvItem::eCrosshair);
 			psHUD_Flags.set			(HUD_CROSSHAIR_RT, b);
 			b						= !!m_input_receivers.back().m_flags.test(recvItem::eIndicators);
-			if(b)					HUD().GetUI()->ShowGameIndicators();
-			else					HUD().GetUI()->HideGameIndicators();
+			HUD().GetUI()->ShowGameIndicators(b);
 		}
 		RemoveDialogToRender	(pDialog);
 		SetMainInputReceiver	(NULL,false);
