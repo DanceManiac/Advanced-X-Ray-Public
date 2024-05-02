@@ -4,14 +4,14 @@
 #include "ActorEffector.h"
 #include "../xrEngine/ObjectAnimator.h"
 
-void CAnimatorCamEffectorScriptCB::ProcessIfInvalid(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect)
+void CAnimatorCamEffectorScriptCB::ProcessIfInvalid(SCamEffectorInfo& info)
 {
 	if(m_bAbsolutePositioning)
 	{
 		const Fmatrix& m			= m_objectAnimator->XFORM();
-		d							= m.k;
-		n							= m.j;
-		p							= m.c;
+		info.d						= m.k;
+		info.n						= m.j;
+		info.p						= m.c;
 	}
 }
 

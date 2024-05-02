@@ -273,16 +273,32 @@ CUIDialogWnd* main_input_receiver()
 #include "UIGameCustom.h"
 void hide_indicators()
 {
+	if(HUD().GetUI())
+	{
 	HUD().GetUI()->UIGame()->HideShownDialogs();
+		HUD().GetUI()->ShowGameIndicators(false);
+		HUD().GetUI()->ShowCrosshair(false);
+	}
+}
 
-	HUD().GetUI()->HideGameIndicators();
-	HUD().GetUI()->HideCrosshair();
+void hide_indicators_safe()
+{
+	if(HUD().GetUI())
+	{
+		HUD().GetUI()->ShowGameIndicators(false);
+		HUD().GetUI()->ShowCrosshair(false);
+
+		//HUD().GetUI()->OnExternalHideIndicators();
+	}
 }
 
 void show_indicators()
 {
-	HUD().GetUI()->ShowGameIndicators();
-	HUD().GetUI()->ShowCrosshair();
+	if(HUD().GetUI())
+	{
+		HUD().GetUI()->ShowGameIndicators(true);
+		HUD().GetUI()->ShowCrosshair(true);
+	}
 }
 
 

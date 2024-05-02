@@ -240,7 +240,7 @@ void CMainMenu::Activate	(bool bActivate)
 		if(m_Flags.test(flRestoreCursor))
 			GetUICursor().Show			();
 
-		GAME_PAUSE						(FALSE, FALSE, TRUE, "mm_deactivate2");
+		GAME_PAUSE					(FALSE, TRUE, TRUE, "mm_deactivate2");
 
 		if(m_Flags.test(flNeedVidRestart))
 		{

@@ -634,10 +634,19 @@ void game_cl_mp::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 		{
 			m_bSpectatorSelected = FALSE;
 
-			if (&HUD() && HUD().GetUI())
+			if (g_hud && HUD().GetUI())
 			{
-				HUD().GetUI()->ShowGameIndicators();
-			};
+				CUIMessagesWindow*	messages_window = NULL;
+				CUI*				ui_window = HUD().GetUI();
+				if (ui_window)
+				{
+					 messages_window = ui_window->m_pMessagesWnd;
+					 ui_window->ShowGameIndicators(true);
+				}
+				if (!messages_window)
+					break;				//it can be when dedicated server
+				//messages_window->PendingMode(false);
+			}
 		}break;
 	case GAME_PHASE_PENDING:
 		{
