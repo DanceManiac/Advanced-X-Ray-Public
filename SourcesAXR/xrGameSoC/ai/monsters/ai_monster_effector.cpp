@@ -59,7 +59,7 @@ CMonsterEffectorHit::CMonsterEffectorHit(float time, float amp, float periods, f
 	offset.set		(Random.randF(1,2),Random.randF(1,6),Random.randF(1,6));
 }
 
-BOOL CMonsterEffectorHit::Process(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect)
+BOOL CMonsterEffectorHit::ProcessCam(SCamEffectorInfo& info)
 {
 	fLifeTime -= Device.fTimeDelta; if(fLifeTime<0) return FALSE;
 
@@ -69,10 +69,10 @@ BOOL CMonsterEffectorHit::Process(Fvector &p, Fvector &d, Fvector &n, float& fFo
 	// Инициализация
 	Fmatrix	Mdef;
 	Mdef.identity		();
-	Mdef.j.set			(n);
-	Mdef.k.set			(d);
-	Mdef.i.crossproduct	(n,d);
-	Mdef.c.set			(p);
+	Mdef.j.set			(info.n);
+	Mdef.k.set			(info.d);
+	Mdef.i.crossproduct	(info.n,info.d);
+	Mdef.c.set			(info.p);
 
 	float period_all	= period_number * PI_MUL_2;		// макс. значение цикла
 	float cur_amp		= max_amp * (PI / 180) * time_left_perc;
@@ -90,8 +90,8 @@ BOOL CMonsterEffectorHit::Process(Fvector &p, Fvector &d, Fvector &n, float& fFo
 	Fmatrix		mR;
 	mR.mul		(Mdef,R);
 
-	d.set		(mR.k);
-	n.set		(mR.j);
+	info.d.set		(mR.k);
+	info.n.set		(mR.j);
 
 	return TRUE;
 }

@@ -2,12 +2,11 @@
 #include "bloodsucker_alien.h"
 #include "bloodsucker.h"
 #include "../../../level.h"
-#include "../../../actor.h"
+#include "../../../Actor.h"
+#include "../../../ActorEffector.h"
 #include "../../../inventory.h"
 #include "../../../HudItem.h"
 #include "../../../../xrEngine/CustomHUD.h"
-#include "../../../../xrEngine/effector.h"
-#include "../../../../xrEngine/effectorPP.h"
 
 #define EFFECTOR_ID_GEN(type) (type( u32(u64(this) & u32(-1)) ))
 
@@ -90,7 +89,7 @@ class CAlienEffector : public CEffectorCam {
 
 public:
 					CAlienEffector	(ECamEffectorType type, CAI_Bloodsucker *obj);
-	virtual	BOOL	Process			(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect);
+	virtual BOOL	ProcessCam		(SCamEffectorInfo& info);
 };
 
 
@@ -120,15 +119,15 @@ CAlienEffector::CAlienEffector(ECamEffectorType type, CAI_Bloodsucker *obj) :
 	m_current_fov			= MIN_FOV;
 }
 
-BOOL CAlienEffector::Process(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect)
+BOOL CAlienEffector::ProcessCam(SCamEffectorInfo& info)
 {
 	// Инициализация
 	Fmatrix	Mdef;
 	Mdef.identity		();
-	Mdef.j.set			(n);
-	Mdef.k.set			(d);
-	Mdef.i.crossproduct	(n,d);
-	Mdef.c.set			(p);
+	Mdef.j.set			(info.n);
+	Mdef.k.set			(info.d);
+	Mdef.i.crossproduct	(info.n, info.d);
+	Mdef.c.set			(info.p);
 
 
 	// set angle 
@@ -169,7 +168,7 @@ BOOL CAlienEffector::Process(Fvector &p, Fvector &d, Fvector &n, float& fFov, fl
 	float	m_target_fov = MIN_FOV + (MAX_FOV-MIN_FOV) * rel_speed;
 	def_lerp(m_current_fov, m_target_fov, FOV_SPEED, Device.fTimeDelta);
 	
-	fFov = m_current_fov;
+	info.fFov = m_current_fov;
 	//////////////////////////////////////////////////////////////////////////
 
 	// Установить углы смещения
@@ -179,9 +178,9 @@ BOOL CAlienEffector::Process(Fvector &p, Fvector &d, Fvector &n, float& fFov, fl
 	Fmatrix		mR;
 	mR.mul		(Mdef,R);
 
-	d.set		(mR.k);
-	n.set		(mR.j);
-	p.set		(mR.c);
+	info.d.set		(mR.k);
+	info.n.set		(mR.j);
+	info.p.set		(mR.c);
 
 	return TRUE;
 }

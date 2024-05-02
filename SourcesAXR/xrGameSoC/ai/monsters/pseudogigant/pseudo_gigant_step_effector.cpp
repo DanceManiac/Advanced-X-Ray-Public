@@ -11,9 +11,11 @@ CPseudogigantStepEffector::CPseudogigantStepEffector(float time, float amp, floa
 	this->power		= power;
 }
 
-BOOL CPseudogigantStepEffector::Process(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect)
+BOOL CPseudogigantStepEffector::ProcessCam(SCamEffectorInfo& info)
 {
-	fLifeTime -= Device.fTimeDelta; if(fLifeTime<0) return FALSE;
+	fLifeTime -= Device.fTimeDelta; 
+	if(fLifeTime<0) 
+		return FALSE;
 
 	// процент оставшегося времени
 	float time_left_perc = fLifeTime / total;
@@ -21,10 +23,10 @@ BOOL CPseudogigantStepEffector::Process(Fvector &p, Fvector &d, Fvector &n, floa
 	// Инициализация
 	Fmatrix	Mdef;
 	Mdef.identity		();
-	Mdef.j.set			(n);
-	Mdef.k.set			(d);
-	Mdef.i.crossproduct	(n,d);
-	Mdef.c.set			(p);
+	Mdef.j.set			(info.n);
+	Mdef.k.set			(info.d);
+	Mdef.i.crossproduct	(info.n, info.d);
+	Mdef.c.set			(info.p);
 
 	float period_all	= period_number * PI_MUL_2;		// макс. значение цикла
 	float k				= 1 - time_left_perc + EPS_L + (1 - power);
@@ -42,8 +44,8 @@ BOOL CPseudogigantStepEffector::Process(Fvector &p, Fvector &d, Fvector &n, floa
 	Fmatrix		mR;
 	mR.mul		(Mdef,R);
 
-	d.set		(mR.k);
-	n.set		(mR.j);
+	info.d.set	(mR.k);
+	info.n.set	(mR.j);
 
 	return TRUE;
 }
