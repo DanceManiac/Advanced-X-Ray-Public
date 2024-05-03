@@ -664,9 +664,13 @@ public:
 			bool				weapon_strapped			() const;
 			bool				weapon_unstrapped		() const;
 			bool				weapon_shooting			() const;
+			bool				weapon_reloading		() const;
 			void				eat						(CScriptGameObject *item);
 			bool				inside					(const Fvector &position, float epsilon) const;
 			bool				inside					(const Fvector &position) const;
+
+			void				start_weapon_shoot		();
+			void				start_weapon_reload		();
 
 			Fvector				head_orientation		() const;
 			u32					vertex_in_direction		(u32 level_vertex_id, Fvector direction, float max_distance) const;

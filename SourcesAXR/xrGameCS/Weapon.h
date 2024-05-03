@@ -443,7 +443,7 @@ protected:
 	//трассирование полета пули
 	virtual	void			FireTrace(const Fvector& P, const Fvector& D);
 	virtual float			GetWeaponDeterioration();
-
+public:
 	virtual void			FireStart();
 	virtual void			FireEnd();
 
@@ -458,7 +458,6 @@ protected:
 	virtual	void			ClearShotEffector();
 	virtual	void			StopShotEffector();
 
-public:
 	float					GetBaseDispersion(float cartridge_k);
 	float					GetFireDispersion(bool with_cartridge, bool for_crosshair = false);
 	virtual float			GetFireDispersion(float cartridge_k, bool for_crosshair = false);

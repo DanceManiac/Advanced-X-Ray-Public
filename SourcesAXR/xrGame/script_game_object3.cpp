@@ -1044,6 +1044,19 @@ bool CScriptGameObject::weapon_shooting() const
 	return result;
 }
 
+bool CScriptGameObject::weapon_reloading() const
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		return false;
+	}
+
+	return stalker->weapon_shooting();
+}
+
 bool CScriptGameObject::path_completed	() const
 {
 	CCustomMonster	*monster = smart_cast<CCustomMonster*>(&object());
@@ -1052,6 +1065,32 @@ bool CScriptGameObject::path_completed	() const
 		return		(false);
 	}
 	return			(monster->movement().path_completed());
+}
+
+void CScriptGameObject::start_weapon_shoot()
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		return;
+	}
+
+	stalker->start_weapon_shoot();
+}
+
+void CScriptGameObject::start_weapon_reload()
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		return;
+	}
+
+	stalker->start_weapon_reload();
 }
 
 void CScriptGameObject::patrol_path_make_inactual	()
