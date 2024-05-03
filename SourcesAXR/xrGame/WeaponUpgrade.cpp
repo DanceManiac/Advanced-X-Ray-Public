@@ -384,5 +384,15 @@ bool CWeapon::install_upgrade_other(LPCSTR section, bool test)
 	if (result && !test)
 		this->ReplaceHudSection(str);
 
+	// Guns: Upgrade show bones
+	result = process_if_exists_set(section, "show_bones", &CInifile::r_string, str, test);
+	if (result && !test)
+		this->ModifyUpgradeBones(str, true);
+
+	// Guns: Upgrade hide bones
+	result = process_if_exists_set(section, "hide_bones", &CInifile::r_string, str, test);
+	if (result && !test)
+		this->ModifyUpgradeBones(str, false);
+
 	return result;
 }

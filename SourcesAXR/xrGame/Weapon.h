@@ -257,6 +257,10 @@ public:
 	bool	GetAltZoomStatus					() const {return m_bAltZoomActive;}
 	bool	SetAltZoomStatus					(bool status) { m_bAltZoomActive = status; }
 	void	SwitchZoomMode						();
+
+	void	ModifyUpgradeBones					(shared_str bone_name, bool show);
+	void	RemoveBones							(xr_vector<shared_str>& m_all_bones, const xr_vector<shared_str>& bones_to_remove);
+
 protected:
 	//состояние подключенных аддонов
 	u8 m_flagsAddOnState;

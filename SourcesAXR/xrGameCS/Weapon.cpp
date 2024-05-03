@@ -3944,3 +3944,54 @@ void CWeapon::UpdateAimOffsets()
 		bNeedRestoreOffsets = true;
 	}
 }
+
+void CWeapon::RemoveBones(xr_vector<shared_str>& m_all_bones, const xr_vector<shared_str>& bones_to_remove)
+{
+	m_all_bones.erase(
+		std::remove_if(m_all_bones.begin(), m_all_bones.end(),
+			[&bones_to_remove](const shared_str& bone) {
+				return std::find(bones_to_remove.begin(),
+					bones_to_remove.end(), bone) !=
+					bones_to_remove.end();
+			}),
+		m_all_bones.end());
+}
+
+void CWeapon::ModifyUpgradeBones(shared_str bones_names, bool show)
+{
+	auto SetBoneVisible = [&](const shared_str& boneName, BOOL visibility)
+	{
+		HudItemData()->set_bone_visible(boneName, visibility, TRUE);
+	};
+
+	xr_vector<shared_str> bones_to_remove_vec{};
+
+	if (show)
+	{
+		for (int i = 0; i < _GetItemCount(*bones_names); i++)
+		{
+			string128 bone;
+			_GetItem(*bones_names, i, bone);
+
+			bones_to_remove_vec.push_back(bone);
+
+			if (std::find_if(m_defShownBones.begin(), m_defShownBones.end(), [&](const shared_str& name) { return name == bone; }) == m_defShownBones.end())
+				m_defShownBones.push_back(bone);
+		}
+		RemoveBones(m_defHiddenBones, bones_to_remove_vec);
+	}
+	else
+	{
+		for (int i = 0; i < _GetItemCount(*bones_names); i++)
+		{
+			string128 bone;
+			_GetItem(*bones_names, i, bone);
+
+			bones_to_remove_vec.push_back(bone);
+
+			if (std::find_if(m_defHiddenBones.begin(), m_defHiddenBones.end(), [&](const shared_str& name) { return name == bone; }) == m_defHiddenBones.end())
+				m_defHiddenBones.push_back(bone);
+		}
+		RemoveBones(m_defShownBones, bones_to_remove_vec);
+	}
+}
