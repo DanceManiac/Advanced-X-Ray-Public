@@ -17,15 +17,17 @@ CUIProgressBar::CUIProgressBar(void)
 	m_ProgressPos.y			= 0.0f;
 	m_inertion				= 0.0f;
 	m_last_render_frame		= u32(-1);
+	m_orient_mode			= om_horz;
+	m_bUseMiddleColor 		= false;
 }
 
 CUIProgressBar::~CUIProgressBar(void)
 {
 }
 
-void CUIProgressBar::Init(float x, float y, float width, float height, bool bIsHorizontal)
+void CUIProgressBar::Init(float x, float y, float width, float height, EOrientMode mode)
 {
-	m_bIsHorizontal			= bIsHorizontal;
+	m_orient_mode			= mode;
 	CUIWindow::Init			(x,y, width, height);
 	UpdateProgressBar		();
 }
@@ -38,12 +40,26 @@ void CUIProgressBar::UpdateProgressBar()
 
 	float fCurrentLength = m_ProgressPos.x*progressbar_unit;
 
-	if(m_bIsHorizontal)	m_CurrentLength			= GetWidth()*fCurrentLength; 	
-	else				m_CurrentLength			= GetHeight()*fCurrentLength; 	
+	if ( m_orient_mode == om_horz || m_orient_mode == om_back )
+	{
+		m_CurrentLength = GetWidth()*fCurrentLength;
+	}
+	else if ( m_orient_mode == om_vert || m_orient_mode == om_down )
+	{
+		m_CurrentLength = GetHeight()*fCurrentLength;
+	}
+	else
+	{
+		m_CurrentLength = 0.0f;
+	}
 
-	if(m_bUseColor){
+	if(m_bUseColor)
+	{
 		Fcolor curr;
-		curr.lerp							(m_minColor,m_maxColor,fCurrentLength);
+		if (m_bUseMiddleColor)
+			curr.lerp							(m_minColor,m_middleColor,m_maxColor,fCurrentLength);
+		else
+			curr.lerp							(m_minColor,m_maxColor,fCurrentLength);
 		m_UIProgressItem.GetStaticItem		()->SetColor			(curr);
 	}
 }
@@ -52,10 +68,6 @@ void CUIProgressBar::SetProgressPos(float _Pos)
 { 
 	m_ProgressPos.y		= _Pos; 
 	clamp(m_ProgressPos.y,m_MinPos,m_MaxPos);
-
-	if(m_last_render_frame+1 != Device.dwFrame)
-		m_ProgressPos.x = m_ProgressPos.y;
-
 	UpdateProgressBar	();
 }
 
@@ -94,13 +106,25 @@ void CUIProgressBar::Draw()
 
 	Frect progress_rect;
 
-	if(m_bIsHorizontal){
-		progress_rect.set	(0, 0, m_CurrentLength, GetHeight());
-	}else{
-		progress_rect.set	(0, GetHeight()-m_CurrentLength,
-							GetWidth(), GetHeight());
+	switch ( m_orient_mode )
+	{
+	case om_horz:
+		progress_rect.set	( 0, 0, m_CurrentLength, GetHeight() );
+		break;
+	case om_vert:
+		progress_rect.set	( 0, GetHeight() - m_CurrentLength, GetWidth(), GetHeight() );
+		break;
+	case om_back:
+		progress_rect.set	( GetWidth() - m_CurrentLength * 1.01f, 0, GetWidth(), GetHeight() );
+	    break;
+	case om_down:
+		progress_rect.set	( 0, 0, GetWidth(), m_CurrentLength );
+	    break;
+	default:
+		NODEFAULT;
+		break;
 	}
-	
+
 	if(m_CurrentLength>0){
 		Fvector2 pos		= m_UIProgressItem.GetWndPos();	
 		progress_rect.add	(rect.left + pos.x,rect.top + pos.y);

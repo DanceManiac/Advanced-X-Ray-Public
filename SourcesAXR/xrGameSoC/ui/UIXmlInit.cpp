@@ -526,16 +526,27 @@ bool CUIXmlInit::InitProgressBar(CUIXml& xml_doc, LPCSTR path,
 
 	float width = xml_doc.ReadAttribFlt(path, index, "width");
 	float height = xml_doc.ReadAttribFlt(path, index, "height");
-	bool is_horizontal = (xml_doc.ReadAttribInt(path, index, "horz")==1);
-
-	pWnd->Init(x, y, width, height, is_horizontal);
+	
+	CUIProgressBar::EOrientMode mode = CUIProgressBar::om_vert;
+	int mode_horz     = xml_doc.ReadAttribInt(path, index, "horz", 0);
+	LPCSTR mode_str = xml_doc.ReadAttrib(path, index, "mode");
+	if ( mode_horz == 1 ) // om_horz
+	{
+		mode = CUIProgressBar::om_horz;
+	}
+	else if ( stricmp( mode_str, "horz" ) == 0 )	{	mode = CUIProgressBar::om_horz;	}
+	else if ( stricmp( mode_str, "vert" ) == 0 )	{	mode = CUIProgressBar::om_vert;	}
+	else if ( stricmp( mode_str, "back" ) == 0 )	{	mode = CUIProgressBar::om_back;	}
+	else if ( stricmp( mode_str, "down" ) == 0 )	{	mode = CUIProgressBar::om_down;	}
+	
+	pWnd->Init(x, y, width, height, mode);
 
 	float min = xml_doc.ReadAttribFlt(path, index, "min");
 	float max = xml_doc.ReadAttribFlt(path, index, "max");
-	float pos = xml_doc.ReadAttribFlt(path, index, "pos");
+	float ppos = xml_doc.ReadAttribFlt(path, index, "pos");
 	
 	pWnd->SetRange			(min, max);
-	pWnd->SetProgressPos	(pos);
+	pWnd->SetProgressPos	(ppos);
 	pWnd->m_inertion		= xml_doc.ReadAttribFlt(path, index, "inertion", 0.0f);
 	// progress
 	strconcat(sizeof(buf),buf,path,":progress");
@@ -565,6 +576,16 @@ bool CUIXmlInit::InitProgressBar(CUIXml& xml_doc, LPCSTR path,
 		u32 color = GetColor	(xml_doc, buf, index, 0xff);
 		pWnd->m_minColor.set(color);
 
+		strconcat(sizeof(buf),buf,path,":middle_color");
+		
+		if (xml_doc.NavigateToNode(buf, 0))
+        {
+            color = GetColor	(xml_doc, buf, index, 0xff);
+		pWnd->m_middleColor.set(color);
+            pWnd->m_bUseMiddleColor = true;
+        }
+		
+
 		strconcat(sizeof(buf),buf,path,":max_color");
 	
 		color = GetColor	(xml_doc, buf, index, 0xff);
@@ -592,7 +613,11 @@ bool CUIXmlInit::InitProgressShape(CUIXml& xml_doc, const char* path, int index,
 
 	pWnd->m_sectorCount	= xml_doc.ReadAttribInt(path, index, "sector_count", 8);
 	pWnd->m_bClockwise	= xml_doc.ReadAttribInt(path, index, "clockwise") ? true : false;
-
+	
+	pWnd->m_blend		= ( xml_doc.ReadAttribInt(path, index, "blend", 1) == 1 )? true : false;
+	pWnd->m_angle_begin = xml_doc.ReadAttribFlt(path, index, "begin_angle", 0.0f);
+	pWnd->m_angle_end   = xml_doc.ReadAttribFlt(path, index, "end_angle", PI_MUL_2);
+	
     return true;
 }
 

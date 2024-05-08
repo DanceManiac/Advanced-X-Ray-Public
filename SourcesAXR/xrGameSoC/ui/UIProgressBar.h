@@ -9,7 +9,15 @@ class CUIProgressBar : public CUIWindow
 	friend class		CUIXmlInit;
 	typedef CUIWindow	inherited;
 protected:
-	bool				m_bIsHorizontal;
+//	bool				m_bIsHorizontal;
+	enum EOrientMode
+	{
+		om_horz = 0,
+		om_vert = 1,
+		om_back = 2,
+		om_down = 3,
+		om_count
+	}	m_orient_mode;
 
 	Fvector2			m_ProgressPos; //x-current y-dest
 	float				m_MinPos;
@@ -24,7 +32,9 @@ protected:
 	
 public:
 	bool				m_bUseColor;
+	bool 				m_bUseMiddleColor; // Hrust: optional middle color for CS/SoC compatibility, without middle color it doesn't looks correctly
 	Fcolor				m_minColor;
+	Fcolor				m_middleColor;
 	Fcolor				m_maxColor;
 	float				m_inertion;	//
 public:
@@ -36,15 +46,17 @@ public:
 	virtual				~CUIProgressBar				();
 
 
-	virtual void		Init						(float x, float y, float width, float height, bool bIsHorizontal);
+	virtual void		Init						(float x, float y, float width, float height, EOrientMode mode);
 
 	void				SetRange					(float _Min, float _Max)	{ m_MinPos = _Min;  m_MaxPos = _Max; UpdateProgressBar();}
-	float				GetRange_min				() 							{ return  m_MinPos;}
-	float				GetRange_max				() 							{ return  m_MaxPos;}
+	float				GetRange_min				() 							{ return  m_MinPos; }
+	float				GetRange_max				() 							{ return  m_MaxPos; }
 
 	void				SetProgressPos				(float _Pos);
 	float				GetProgressPos				()							{ return m_ProgressPos.y; }
 
+	void				ShowBackground				(bool status)				{ m_bBackgroundPresent = status; }
+	bool				IsShownBackground			()							{ return m_bBackgroundPresent; }
 
 	virtual void		Draw						();
 	virtual void		Update						();
