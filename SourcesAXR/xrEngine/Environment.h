@@ -97,6 +97,13 @@ protected:
 	SSndChannelVec			m_sound_channels;
 	shared_str              m_ambients_config_filename;
 
+	shared_str				section;
+	xr_vector<SEffect>		effects_shoc;
+	xr_vector<ref_sound>	sounds;
+	Fvector2				sound_dist;
+	Ivector2				sound_period;
+	Ivector2				effect_period;
+
 public:
 	IC const shared_str&	name				()	{return m_load_section;}
 	IC const shared_str&	get_ambients_config_filename ()	{return m_ambients_config_filename;}
@@ -116,6 +123,13 @@ public:
 							void			destroy					();
 	inline INGAME_EDITOR_VIRTUAL EffectVec&			effects			() { return m_effects; }
 	inline INGAME_EDITOR_VIRTUAL SSndChannelVec&	get_snd_channels() { return m_sound_channels; }
+
+	void load_shoc(const shared_str& section);
+
+	IC ref_sound* get_rnd_sound() { return sounds.empty() ? 0 : &sounds[Random.randI(sounds.size())]; }
+	IC u32 get_rnd_sound_time() { return Random.randI(sound_period.x, sound_period.y); }
+	IC float get_rnd_sound_dist() { return Random.randF(sound_dist.x, sound_dist.y); }
+	IC u32 get_rnd_effect_time_shoc() { return Random.randI(effect_period.x, effect_period.y); }
 };
 
 class ENGINE_API	CEnvDescriptor
@@ -203,9 +217,12 @@ public:
 	CEnvAmbient*		env_ambient;
 
 
-						CEnvDescriptor	(shared_str const& identifier);
+						CEnvDescriptor	(shared_str const& identifier = 0);
 
 	void				load			(CEnvironment& environment, CInifile& config);
+	void				load_shoc		(CEnvironment& environment, LPCSTR exec_tm, LPCSTR S);
+	void				load_shoc		(float exec_tm, LPCSTR S, CEnvironment& environment);
+
 	void				copy			(const CEnvDescriptor& src)
 	{
 		float tm0		= exec_time;
@@ -319,6 +336,8 @@ public:
 	CLensFlare*				eff_LensFlare;
 	CEffect_Thunderbolt*	eff_Thunderbolt;
 
+	bool					used_soc_weather;
+
 	float					fTimeFactor;
 
     void					SelectEnvs			(float gt);
@@ -383,6 +402,7 @@ public:
 
 protected:
 	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor	(shared_str const& identifier, CInifile* config);
+	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor_shoc(LPCSTR exec_tm, LPCSTR S);
 	INGAME_EDITOR_VIRTUAL	void load_weathers					();
 	INGAME_EDITOR_VIRTUAL	void load_weather_effects			();
 	INGAME_EDITOR_VIRTUAL	void create_mixer					();
@@ -391,9 +411,11 @@ protected:
 							void load_level_specific_ambients   ();
 
 public:
-	INGAME_EDITOR_VIRTUAL	SThunderboltDesc* thunderbolt_description		(CInifile& config, shared_str const& section);
+	INGAME_EDITOR_VIRTUAL	SThunderboltDesc*		thunderbolt_description	(CInifile& config, shared_str const& section);
 	INGAME_EDITOR_VIRTUAL	SThunderboltCollection* thunderbolt_collection	(CInifile* pIni, CInifile* thunderbolts, LPCSTR section);
 	INGAME_EDITOR_VIRTUAL	SThunderboltCollection* thunderbolt_collection	(xr_vector<SThunderboltCollection*>& collection,  shared_str const& id);
+	INGAME_EDITOR_VIRTUAL	SThunderboltDesc*		thunderbolt_description_shoc(CInifile* config, shared_str const& section);
+	INGAME_EDITOR_VIRTUAL	SThunderboltCollection* thunderbolt_collection_shoc(CInifile* pIni, LPCSTR section);
 	INGAME_EDITOR_VIRTUAL	CLensFlareDescriptor*	add_flare				(xr_vector<CLensFlareDescriptor*>& collection, shared_str const& id);
 
 public:
