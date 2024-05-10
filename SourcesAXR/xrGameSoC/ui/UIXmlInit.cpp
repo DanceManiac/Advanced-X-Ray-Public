@@ -217,6 +217,14 @@ bool CUIXmlInit::InitStatic(CUIXml& xml_doc, LPCSTR path,
 	bool bComplexMode = xml_doc.ReadAttribInt(path, index, "complex_mode",0)?true:false;
 	if(bComplexMode)
 		pWnd->SetTextComplexMode(bComplexMode);
+
+	shared_str mirroring = xml_doc.ReadAttrib(path, index, "mirror", "");
+	if (0 == xr_strcmp(mirroring, "h"))
+		pWnd->GetStaticItem()->SetMirrorMode(tmMirrorHorisontal);
+	else if (0 == xr_strcmp(mirroring, "v"))
+		pWnd->GetStaticItem()->SetMirrorMode(tmMirrorVertical);
+	else if (0 == xr_strcmp(mirroring, "b"))
+		pWnd->GetStaticItem()->SetMirrorMode(tmMirrorBoth);
 	
 	return true;
 }
