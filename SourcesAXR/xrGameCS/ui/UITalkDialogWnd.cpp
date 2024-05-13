@@ -7,7 +7,7 @@
 #include "UI3tButton.h"
 #include "../UI.h"
 #include "UITalkWnd.h"
-
+#include "UIHelper.h"
 #include "dinput.h"
 
 #define				TALK_XML				"talk.xml"
@@ -186,15 +186,15 @@ void CUITalkDialogWnd::AddQuestion(LPCSTR str, LPCSTR value, int number, bool b_
 
 	string16 buff;
 	xr_sprintf(buff, "%d.", number);
-	itm->m_num_text->SetText(buff);
+	if (itm->m_num_text)
+		itm->m_num_text->SetText(buff);
+
 	if (number > 9)
-	{
-		itm->m_text->SetTextX( itm->m_fOffset);
-	}
+		itm->m_text->SetTextX(itm->m_fOffset);
+
 	if (number < 10)
-	{
 		itm->m_text->SetAccelerator(DIK_ESCAPE + number, 0);
-	}
+	
 	if (b_finalizer)
 	{
 		itm->m_text->SetAccelerator(kQUIT, 2);
@@ -304,7 +304,8 @@ void CUIQuestionItem::SendMessage				(CUIWindow* pWnd, s16 msg, void* pData)
 
 CUIQuestionItem::CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path)
 {
-	m_text							= xr_new<CUI3tButtonEx>();m_text->SetAutoDelete(true);
+	m_text							= xr_new<CUI3tButtonEx>();
+	m_text->SetAutoDelete			(true);
 	AttachChild						(m_text);
 
 	string512						str;
@@ -323,11 +324,8 @@ CUIQuestionItem::CUIQuestionItem			(CUIXml* xml_doc, LPCSTR path)
 	m_text->SetWindowName			("text_button");
 	AddCallback						("text_button",BUTTON_CLICKED,CUIWndCallback::void_function(this, &CUIQuestionItem::OnTextClicked));
 
-	m_num_text = new CUIStatic();
-	m_num_text->SetAutoDelete(true);
-	AttachChild(m_num_text);
-	strconcat(sizeof(str), str, path, ":num_text");
-	xml_init.InitStatic(*xml_doc, str, 0, m_num_text);
+	strconcat						(sizeof(str), str, path, ":num_text");
+	m_num_text						= UIHelper::CreateStatic(*xml_doc, str, this, false);
 }
 
 void CUIQuestionItem::Init			(LPCSTR val, LPCSTR text)
