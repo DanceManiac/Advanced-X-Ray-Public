@@ -13,6 +13,7 @@
 #include "stalker_animation_data_storage.h"
 #include "client_spawn_manager.h"
 #include "seniority_hierarchy_holder.h"
+#include "script_vars_storage.h"
 
 ENGINE_API bool g_dedicated_server;
 
@@ -88,6 +89,8 @@ void CLevel::remove_objects	()
 	}
 
 	g_pGamePersistent->destroy_particles		(false);
+
+	g_ScriptVars.clear();
 
 //.	xr_delete									(m_seniority_hierarchy_holder);
 //.	m_seniority_hierarchy_holder				= xr_new<CSeniorityHierarchyHolder>();

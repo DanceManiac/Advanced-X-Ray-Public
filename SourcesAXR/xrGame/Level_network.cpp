@@ -19,6 +19,7 @@
 #include "UI/UIGameTutorial.h"
 #include "ui/UIPdaWnd.h"
 #include "../xrNetServer/NET_AuthCheck.h"
+#include "script_vars_storage.h"
 
 #include "../xrphysics/physicscommon.h"
 ENGINE_API bool g_dedicated_server;
@@ -106,7 +107,9 @@ void CLevel::remove_objects	()
 	}
 
 	g_pGamePersistent->destroy_particles		(false);
-
+	
+	g_ScriptVars.clear();
+	
 //.	xr_delete									(m_seniority_hierarchy_holder);
 //.	m_seniority_hierarchy_holder				= xr_new<CSeniorityHierarchyHolder>();
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - End");
