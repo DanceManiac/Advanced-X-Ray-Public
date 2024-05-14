@@ -1333,3 +1333,21 @@ void CAI_Stalker::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)
 		}
 	}
 }
+
+void CAI_Stalker::ReloadDamageAndAnimations()
+{
+	IKinematicsAnimated* V = smart_cast<IKinematicsAnimated*>(Visual());
+	if (V)
+	{
+		if (!g_Alive())
+			m_pPhysics_support->in_Die(false);
+		else
+			CStepManager::reload(cNameSect().c_str());
+
+		CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
+		ResetBoneProtections(NULL, NULL);
+		reattach_items();
+		m_pPhysics_support->in_ChangeVisual();
+		animation().reload();
+	}
+}

@@ -1143,14 +1143,19 @@ void CScriptGameObject::jump(const Fvector &position, float factor)
 void CScriptGameObject::ReloadDamageAndAnimations()
 {
 	CBaseMonster* monster = smart_cast<CBaseMonster*>(&object());
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
 
-	if (!monster)
+	if (!monster && !stalker)
 	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot process reload damage and animations for not a monster!");
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot process reload damage and animations for not a monster or not a stalker!");
 		return;
 	}
 
-	monster->ReloadDamageAndAnimations();
+	if (monster)
+		monster->ReloadDamageAndAnimations();
+
+	if (stalker)
+		stalker->ReloadDamageAndAnimations();
 }
 
 void CScriptGameObject::make_object_visible_somewhen	(CScriptGameObject *object)

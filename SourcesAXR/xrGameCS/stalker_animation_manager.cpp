@@ -104,6 +104,12 @@ void CStalkerAnimationManager::reload				()
 	legs().set_dbg_info			(*object().cName(),"Legs  ");
 	script().set_dbg_info		(*object().cName(),"Script");
 #endif
+
+	m_global.reset();
+	m_head.reset();
+	m_torso.reset();
+	m_legs.reset();
+	m_script.reset();
 };
 
 void CStalkerAnimationManager::play_fx(float power_factor, int fx_index)

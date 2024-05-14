@@ -283,6 +283,7 @@ public:
 			bool						ready_to_detour			();
 			void						update_best_item_info	();
 			void						ResetBoneProtections	(pcstr imm_sect, pcstr bone_sect);
+			void						ReloadDamageAndAnimations();
 	virtual float						GetWeaponAccuracy		() const;
 	virtual	void						spawn_supplies			();
 	IC		CAgentManager				&agent_manager			() const;
