@@ -1035,7 +1035,7 @@ bool CScriptGameObject::weapon_shooting() const
 
 	if (!stalker)
 	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_shooting!");
 		return false;
 	}
 
@@ -1050,7 +1050,7 @@ bool CScriptGameObject::weapon_reloading() const
 
 	if (!stalker)
 	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_reloading!");
 		return false;
 	}
 
@@ -1073,7 +1073,7 @@ void CScriptGameObject::start_weapon_shoot()
 
 	if (!stalker)
 	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member start_weapon_shoot!");
 		return;
 	}
 
@@ -1086,7 +1086,7 @@ void CScriptGameObject::start_weapon_reload()
 
 	if (!stalker)
 	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_strapped!");
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member start_weapon_reload!");
 		return;
 	}
 
