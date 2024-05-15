@@ -434,7 +434,7 @@ void	CActor::Hit							(SHit* pHDS)
 	if( HDS.hit_type<ALife::eHitTypeBurn || HDS.hit_type >= ALife::eHitTypeMax )
 	{
 		string256	err;
-		sprintf_s		(err, "Unknown/unregistered hit type [%d]", HDS.hit_type);
+		xr_sprintf	(err, "Unknown/unregistered hit type [%d]", HDS.hit_type);
 		R_ASSERT2	(0, err );
 	
 	}
@@ -657,7 +657,7 @@ void CActor::HitMark	(float P,
 			}
 
 			string64 sect_name;
-			sprintf_s(sect_name,"effector_fire_hit_%d",id);
+			xr_sprintf(sect_name,"effector_fire_hit_%d",id);
 			AddEffector(this, effFireHit, sect_name, P/100.0f);
 			}
 		}

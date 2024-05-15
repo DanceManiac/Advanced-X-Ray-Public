@@ -483,7 +483,7 @@ void CMainMenu::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		::Render->Screenshot		(mode,name);
 	}else{
 		m_Flags.set					(flGameSaveScreenshot, TRUE);
-		strcpy_s(m_screenshot_name,name);
+		xr_strcpy(m_screenshot_name,name);
 		if(g_pGameLevel && m_Flags.test(flActive)){
 			Device.seqFrame.Add		(g_pGameLevel);
 			Device.seqRender.Add	(g_pGameLevel);
@@ -638,7 +638,7 @@ void	CMainMenu::OnLoadError				(LPCSTR module)
 	LPCSTR str=CStringTable().translate("ui_st_error_loading").c_str();
 	string1024 Text;
 	strconcat(sizeof(Text),Text,str," ");
-	strcat_s(Text,sizeof(Text),module);
+	xr_strcat(Text,sizeof(Text),module);
 	m_pMB_ErrDlgs[LoadingError]->SetText(Text);
 	SetErrorDialog(CMainMenu::LoadingError);
 }
@@ -653,9 +653,9 @@ extern ENGINE_API string512  g_sLaunchOnExit_params;
 extern ENGINE_API string_path	g_sLaunchWorkingFolder;
 void	CMainMenu::OnRunDownloadedPatch			(CUIWindow*, void*)
 {
-	strcpy_s					(g_sLaunchOnExit_app,*m_sPatchFileName);
-	strcpy_s					(g_sLaunchOnExit_params,"");
-	strcpy_s					(g_sLaunchWorkingFolder, "");
+	xr_strcpy					(g_sLaunchOnExit_app,*m_sPatchFileName);
+	xr_strcpy					(g_sLaunchOnExit_params,"");
+	xr_strcpy					(g_sLaunchWorkingFolder, "");
 	Console->Execute		("quit");
 }
 
@@ -774,7 +774,7 @@ LPCSTR CMainMenu::GetGSVer()
 	static string256	buff2;
 	if(m_pGameSpyFull)
 	{
-		strcpy_s(buff2, m_pGameSpyFull->GetGameVersion(buff));
+		xr_strcpy(buff2, m_pGameSpyFull->GetGameVersion(buff));
 	}else
 	{
 		buff[0]		= 0;
@@ -790,7 +790,7 @@ LPCSTR CMainMenu::GetAxrPlatform()
 	static string256	buff2;
 	if (m_pGameSpyFull)
 	{
-		strcpy_s(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
+		xr_strcpy(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
 	}
 	else
 	{

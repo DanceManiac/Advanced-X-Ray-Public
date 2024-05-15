@@ -118,7 +118,7 @@ void						CLevel::Demo_PrepareToStore			()
 	GetComputerName(CName, (DWORD*)&CNameSize);
 	SYSTEMTIME Time;
 	GetLocalTime(&Time);
-	sprintf_s(m_sDemoName, "xray_%s_%02d-%02d-%02d_%02d-%02d-%02d.tdemo", CName, Time.wMonth, Time.wDay, Time.wYear, Time.wHour, Time.wMinute, Time.wSecond);
+	xr_sprintf(m_sDemoName, "xray_%s_%02d-%02d-%02d_%02d-%02d-%02d.tdemo", CName, Time.wMonth, Time.wDay, Time.wYear, Time.wHour, Time.wMinute, Time.wSecond);
 	Msg("Tech Demo would be stored in - %s", m_sDemoName);
 	
 	FS.update_path      (m_sDemoName,"$logs$",m_sDemoName);
@@ -400,17 +400,17 @@ void						CLevel::Demo_Update				()
 				string1024 tmp;
 				if (m_bDemoPlayByFrame)
 				{
-//					sprintf_s(tmp, "Demo Playing. %d perc.", u32(float(m_dwCurDemoFrame)/m_dwLastDemoFrame*100.0f));
+//					xr_sprintf(tmp, "Demo Playing. %d perc.", u32(float(m_dwCurDemoFrame)/m_dwLastDemoFrame*100.0f));
 					if (float(m_lDemoOfs)/lFileSize > 0.9)
 					{
 						int x=0;
 						x=x;
 					}
-					sprintf_s(tmp, "Demo Playing. %d perc.", u32(float(m_lDemoOfs)/lFileSize*100.0f));
+					xr_sprintf(tmp, "Demo Playing. %d perc.", u32(float(m_lDemoOfs)/lFileSize*100.0f));
 				}
 				else
 				{
-					sprintf_s(tmp, "Demo Playing. %d perc.", u32(float(Pos)/m_aDemoData.size()*100.0f));
+					xr_sprintf(tmp, "Demo Playing. %d perc.", u32(float(Pos)/m_aDemoData.size()*100.0f));
 				}
 				game_dm_ui->SetDemoPlayCaption(tmp);
 			}

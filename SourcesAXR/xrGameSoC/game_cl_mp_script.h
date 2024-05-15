@@ -8,7 +8,7 @@ class game_cl_mp_script : public game_cl_mp
 {
 	typedef game_cl_mp	inherited;
 protected:
-	CScriptGameObject*				GetObjectByGameID		(u32 id);
+	CScriptGameObject*				GetObjectByGameID		(u16 id);
 	game_PlayerState*				GetLocalPlayer			(){return local_player;};
 public:
 									game_cl_mp_script		();

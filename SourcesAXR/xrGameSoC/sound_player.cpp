@@ -255,7 +255,7 @@ CSoundPlayer::CSoundCollection::CSoundCollection	(const CSoundCollectionParams &
 		}
 		for (u32 i=0; i<params.m_max_count; ++i){
 			string256					name;
-			sprintf_s						(name,"%s%d",S,i);
+			xr_sprintf						(name,"%s%d",S,i);
 			if (FS.exist(fn,"$game_sounds$",name,".ogg")) {
 				ref_sound				*temp = add(params.m_type,name);
 				if (temp)

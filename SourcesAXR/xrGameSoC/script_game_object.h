@@ -138,7 +138,7 @@ public:
 	_DECLARE_FUNCTION10	(Position	,	Fvector		);
 	_DECLARE_FUNCTION10	(Direction	,	Fvector		);
 	_DECLARE_FUNCTION10	(Mass		,	float		);
-	_DECLARE_FUNCTION10	(ID			,	u32			);
+	_DECLARE_FUNCTION10	(ID			,	u16			);
 	_DECLARE_FUNCTION10	(getVisible	,	BOOL		);
 	_DECLARE_FUNCTION10	(getEnabled	,	BOOL		);
 	_DECLARE_FUNCTION10	(story_id	,	ALife::_STORY_ID);

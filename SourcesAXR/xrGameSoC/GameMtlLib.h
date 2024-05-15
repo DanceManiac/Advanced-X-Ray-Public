@@ -81,6 +81,9 @@ public:
 		flSuppressShadows	= (1ul<<10ul),
 		flSuppressWallmarks	= (1ul<<11ul),
 		flActorObstacle	= (1ul<<12ul),
+		flNoRicoshet	= (1ul<<13ul),
+		
+		
 
         flInjurious		= (1ul<<28ul),// flInjurious = fInjuriousSpeed > 0.f
 		flShootable 	= (1ul<<29ul),
@@ -105,6 +108,7 @@ public:
     float				fInjuriousSpeed; 		// 0.f - ...	(0.f-не отбирает здоровье (скорость уменьшения здоровья))
     float				fVisTransparencyFactor;	// 0.f - 1.f	(1.f-полностью прозрачный)
     float				fSndOcclusionFactor;	// 0.f - 1.f    (1.f-полностью слышен)
+	float				fDensityFactor;
 public:
 	SGameMtl			()
     {

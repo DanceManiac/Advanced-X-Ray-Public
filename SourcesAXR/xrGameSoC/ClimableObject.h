@@ -3,7 +3,7 @@
 class CPHLeaderGeomShell;
 class CPHCharacter;
 struct dContact;
-class SGameMtl;
+struct SGameMtl;
 class CClimableObject: public CPhysicsShellHolder 
 #ifdef DEBUG
 ,public pureRender

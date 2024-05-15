@@ -265,7 +265,7 @@ string64 s;
 bool	 rendered;
 	SPHDBGOutText(LPCSTR t)
 	{
-		strcpy(s,t);
+		xr_strcpy(s,t);
 		rendered=false;
 	}
 	virtual void render()
@@ -677,7 +677,7 @@ LPCSTR PH_DBG_ObjectTrack()
 }
 void PH_DBG_SetTrackObject(LPCSTR obj)
 {
-	strcpy( s_dbg_tsrace_obj,obj);
+	xr_strcpy( s_dbg_tsrace_obj,obj);
 	dbg_trace_object=s_dbg_tsrace_obj;
 }
 #endif

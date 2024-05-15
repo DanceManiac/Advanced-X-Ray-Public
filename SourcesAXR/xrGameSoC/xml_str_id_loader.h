@@ -169,7 +169,7 @@ typename void	CSXML_IdToIndex::InitInternal ()
 			LPCSTR item_name	= uiXml->ReadAttrib(uiXml->GetRoot(), tag_name, i, "id", NULL);
 
 			string256			buf;
-			sprintf_s				(buf, "id for item don't set, number %d in %s", i, xml_file);
+			xr_sprintf			(buf, "id for item don't set, number %d in %s", i, xml_file);
 			R_ASSERT2			(item_name, buf);
 
 

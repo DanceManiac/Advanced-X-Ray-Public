@@ -14,14 +14,14 @@ void HUD_SOUND::LoadSound(	LPCSTR section, LPCSTR line,
 	hud_snd.sounds.clear	();
 
 	string256	sound_line;
-	strcpy_s		(sound_line,line);
+	xr_strcpy		(sound_line,line);
 	int k=0;
 	while( pSettings->line_exist(section, sound_line) ){
 		hud_snd.sounds.push_back( SSnd() );
 		SSnd& s = hud_snd.sounds.back();
 
 		LoadSound	(section, sound_line, s.snd, type, &s.volume, &s.delay);
-		sprintf_s		(sound_line,"%s%d",line,++k);
+		xr_sprintf		(sound_line,"%s%d",line,++k);
 	}//while
 
 	R_ASSERT3				(!hud_snd.sounds.empty(), "there is no sounds for:", section);

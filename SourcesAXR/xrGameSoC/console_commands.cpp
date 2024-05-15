@@ -180,7 +180,7 @@ public:
 	}
 	virtual void	Info	(TInfo& I)		
 	{
-		strcpy_s(I,"game difficulty"); 
+		xr_strcpy(I,"game difficulty"); 
 	}
 };
 
@@ -420,7 +420,7 @@ public:
 		string_path				S,S1;
 		S[0]					= 0;
 //.		sscanf					(args ,"%s",S);
-		strcpy_s					(S,args);
+		xr_strcpy					(S,args);
 		
 #ifdef DEBUG
 		CTimer					timer;
@@ -454,7 +454,7 @@ public:
 		strconcat					(sizeof(save_name),save_name,*CStringTable().translate("st_game_saved"),": ", S);
 		_s->wnd()->SetText			(save_name);
 
-		strcat					(S,".dds");
+		xr_strcat				(S,".dds");
 		FS.update_path			(S1,"$game_saves$",S);
 		
 #ifdef DEBUG
@@ -481,7 +481,7 @@ public:
 		string256					saved_game;
 		saved_game[0]				= 0;
 //.		sscanf						(args,"%s",saved_game);
-		strcpy_s					(saved_game, args);
+		xr_strcpy					(saved_game, args);
 		if (!xr_strlen(saved_game)) {
 			Log						("! Specify file name!");
 			return;
@@ -534,7 +534,7 @@ public:
 	virtual void	Execute				(LPCSTR args)
 	{
 		if (args && *args) {
-			strcpy_s				(g_last_saved_game,args);
+			xr_strcpy				(g_last_saved_game,args);
 			return;
 		}
 
@@ -660,7 +660,7 @@ public:
 #else
 			string4096		S;
 			shared_str		m_script_name = "console command";
-			sprintf_s			(S,"%s\n",args);
+			xr_sprintf			(S,"%s\n",args);
 			int				l_iErrorCode = luaL_loadbuffer(ai().script_engine().lua(),S,xr_strlen(S),"@console_command");
 			if (!l_iErrorCode) {
 				l_iErrorCode = lua_pcall(ai().script_engine().lua(),0,0,0);
@@ -773,13 +773,13 @@ public:
 	virtual void	Info	(TInfo& I)		
 	{
 		if(strstr(cName,"script_debug_break")==cName )
-			strcpy_s(I,"initiate script debugger [DebugBreak] command"); 
+			xr_strcpy(I,"initiate script debugger [DebugBreak] command"); 
 
 		else if(strstr(cName,"script_debug_stop")==cName )
-			strcpy_s(I,"stop script debugger activity"); 
+			xr_strcpy(I,"stop script debugger activity"); 
 
 		else if(strstr(cName,"script_debug_restart")==cName )
-			strcpy_s(I,"restarts script debugger or start if no script debugger presents"); 
+			xr_strcpy(I,"restarts script debugger or start if no script debugger presents"); 
 	}
 };
 
@@ -793,7 +793,7 @@ public:
 	}
 	virtual void	Info	(TInfo& I)		
 	{
-		strcpy_s(I,"dumps all infoportions that actor have"); 
+		xr_strcpy(I,"dumps all infoportions that actor have"); 
 	}
 };
 #include "map_manager.h"
@@ -805,7 +805,7 @@ public:
 	}
 	virtual void	Info	(TInfo& I)		
 	{
-		strcpy_s(I,"dumps all currentmap locations"); 
+		xr_strcpy(I,"dumps all currentmap locations"); 
 	}
 
 };
@@ -830,7 +830,7 @@ public:
 	}
 	virtual void	Info	(TInfo& I)		
 	{
-		strcpy_s(I,"dumps all creature names"); 
+		xr_strcpy(I,"dumps all creature names"); 
 	}
 
 };
@@ -908,7 +908,7 @@ public:
 	
 	//virtual void	Info	(TInfo& I)		
 	//{
-	//	strcpy_s(I,"restart game fast"); 
+	//	xr_strcpy(I,"restart game fast"); 
 	//}
 };
 #endif
@@ -946,9 +946,9 @@ public:
 	  virtual void	Status	(TStatus& S)
 	{	
 		if(ph_world)
-			sprintf_s	(S,"%3.5f",ph_world->Gravity());
+			xr_sprintf	(S,"%3.5f",ph_world->Gravity());
 		else
-			sprintf_s	(S,"%3.5f",default_world_gravity);
+			xr_sprintf	(S,"%3.5f",default_world_gravity);
 		while	(xr_strlen(S) && ('0'==S[xr_strlen(S)-1]))	S[xr_strlen(S)-1] = 0;
 	}
 	
@@ -968,7 +968,7 @@ public:
 	  }
 	  virtual void	Status	(TStatus& S)
 	  {	
-		 	sprintf_s	(S,"%3.5f",1.f/fixed_step);	  
+		 	xr_sprintf	(S,"%3.5f",1.f/fixed_step);	  
 	  }
 
 };
@@ -1076,7 +1076,7 @@ struct CCC_StartTimeSingle : public IConsole_Command {
 	{
 		u32 year = 1, month = 1, day = 1, hours = 0, mins = 0, secs = 0, milisecs = 0;
 		split_time	(g_qwStartGameTime, year, month, day, hours, mins, secs, milisecs);
-		sprintf_s		(S,"%d.%d.%d %d:%d:%d.%d",year,month,day,hours,mins,secs,milisecs);
+		xr_sprintf		(S,"%d.%d.%d %d:%d:%d.%d",year,month,day,hours,mins,secs,milisecs);
 	}
 };
 
@@ -1201,7 +1201,7 @@ public		:
 
 	virtual void	Info	(TInfo& I)
 	{	
-		sprintf_s(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
+		xr_sprintf(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
 	}
 };
 
@@ -1254,7 +1254,7 @@ public:
 		if (0==strext(arguments))
 			strconcat			(sizeof(name),name,arguments,".ogf");
 		else
-			strcpy_s			(name,sizeof(name),arguments);
+			xr_strcpy			(name,sizeof(name),arguments);
 
 		if (!FS.exist(arguments) && !FS.exist(fn, "$level$", name) && !FS.exist(fn, "$game_meshes$", name)) {
 			Msg					("! Cannot find visual \"%s\"",arguments);

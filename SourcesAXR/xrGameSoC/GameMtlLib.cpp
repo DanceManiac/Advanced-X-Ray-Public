@@ -2,11 +2,11 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "../xrEngine/gamemtllib.h"
+#include "GameMtlLib.h"
 
 CGameMtlLibrary GMLib;
 
-/*void SGameMtl::Load(IReader& fs)
+void SGameMtl::Load(IReader& fs)
 {
 	R_ASSERT(fs.find_chunk(GAMEMTL_CHUNK_MAIN));
 	ID						= fs.r_u32();
@@ -102,15 +102,17 @@ void CGameMtlLibrary::Load()
     }
 #endif
 
-	//for (GameMtlPairIt p_it=material_pairs.begin(); material_pairs.end() != p_it; ++p_it){
-	//	SGameMtlPair* S	= *p_it;
-	//	for (int k=0; k<S->StepSounds.size(); k++){
-	//		Msg("%40s - 0x%x", S->StepSounds[k].handle->file_name(), S->StepSounds[k].g_type);
-	//	}
-	//}
+/*
+	for (GameMtlPairIt p_it=material_pairs.begin(); material_pairs.end() != p_it; ++p_it){
+		SGameMtlPair* S	= *p_it;
+		for (int k=0; k<S->StepSounds.size(); k++){
+			Msg("%40s - 0x%x", S->StepSounds[k].handle->file_name(), S->StepSounds[k].g_type);
+		}
+	}
+*/
 	FS.r_close		(F);
 }
- */
+
 #ifdef GM_NON_GAME
 SGameMtlPair::~SGameMtlPair		()
 {
@@ -141,7 +143,7 @@ void SGameMtlPair::Load(IReader& fs)
 }
 #endif
 
-/*#ifdef DEBUG
+#ifdef DEBUG
 LPCSTR SGameMtlPair::dbg_Name()
 {
 	static string256 nm;
@@ -150,4 +152,4 @@ LPCSTR SGameMtlPair::dbg_Name()
 	sprintf_s(nm,"Pair: %s - %s",*M0->m_Name,*M1->m_Name);
 	return nm;
 }
-#endif   */
+#endif

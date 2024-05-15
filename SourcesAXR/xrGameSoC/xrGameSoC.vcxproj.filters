@@ -7858,9 +7858,6 @@
     <ClCompile Include="DynamicHeightMap.cpp">
       <Filter>Core\Client\Effects\Core</Filter>
     </ClCompile>
-    <ClCompile Include="GameMtlLib.cpp">
-      <Filter>Core\Client\Game Materials</Filter>
-    </ClCompile>
     <ClCompile Include="GamePersistent.cpp">
       <Filter>Core\Client\Game Persistent</Filter>
     </ClCompile>

@@ -387,6 +387,8 @@ bool CAI_Stalker::CheckCanPickedItem(CInventoryItem const* item)
 		return false;
 	else if (item->Cost() < m_iAcceptableItemCost)
 		return false;
+
+	return true;
 }
 
 void CAI_Stalker::remove_personal_only_ammo			(const CInventoryItem *item)

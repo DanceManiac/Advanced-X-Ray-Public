@@ -114,7 +114,7 @@ void CMainMenu::ReadTextureInfo()
 		for (int i = 0; i < itemsCount; i++)
 		{
 			_GetItem(itemsList.c_str(), i, single_item);
-			strcat(single_item,".xml");
+			xr_strcat(single_item,".xml");
 			CUITextureMaster::ParseShTexInfo(single_item, UI_PATH);
 		}		
 	}
@@ -130,7 +130,7 @@ void CMainMenu::ReadTextureInfo()
 		{
 			string_path fn1, fn2, fn3;
 			_splitpath((*fit).name.c_str(), fn1, fn2, fn3, 0);
-			strcat_s(fn3, ".xml");
+			xr_strcat(fn3, ".xml");
 
 			CUITextureMaster::ParseShTexInfo(fn3, "ui\\textures_descr");
 		}
@@ -449,7 +449,7 @@ void CMainMenu::Screenshot(IRender_interface::ScreenshotMode mode, LPCSTR name)
 		::Render->Screenshot		(mode,name);
 	}else{
 		m_Flags.set					(flGameSaveScreenshot, TRUE);
-		strcpy(m_screenshot_name,name);
+		xr_strcpy(m_screenshot_name,name);
 		if(g_pGameLevel && m_Flags.test(flActive)){
 			Device.seqFrame.Add		(g_pGameLevel);
 			Device.seqRender.Add	(g_pGameLevel);
@@ -591,8 +591,8 @@ void CMainMenu::OnSessionTerminate(LPCSTR reason)
 
 	m_start_time = Device.dwTimeGlobal;
 	string1024 Text;
-	strcpy_s(Text, sizeof(Text), "Client disconnected. ");
-	strcat_s(Text,sizeof(Text),reason);
+	xr_strcpy(Text, sizeof(Text), "Client disconnected. ");
+	xr_strcat(Text,sizeof(Text),reason);
 	m_pMB_ErrDlgs[SessionTerminate]->SetText(Text);
 	SetErrorDialog(CMainMenu::SessionTerminate);
 }
@@ -600,8 +600,8 @@ void CMainMenu::OnSessionTerminate(LPCSTR reason)
 void	CMainMenu::OnLoadError(LPCSTR module)
 {
 	string1024 Text;
-	strcpy_s(Text, sizeof(Text),"Error loading (not found) ");
-	strcat_s(Text,sizeof(Text), module);
+	xr_strcpy(Text, sizeof(Text),"Error loading (not found) ");
+	xr_strcat(Text,sizeof(Text), module);
 	m_pMB_ErrDlgs[LoadingError]->SetText(Text);
 	SetErrorDialog(CMainMenu::LoadingError);
 }
@@ -615,8 +615,8 @@ extern ENGINE_API string512  g_sLaunchOnExit_app;
 extern ENGINE_API string512  g_sLaunchOnExit_params;
 void	CMainMenu::OnRunDownloadedPatch			(CUIWindow*, void*)
 {
-	strcpy					(g_sLaunchOnExit_app,*m_sPatchFileName);
-	strcpy					(g_sLaunchOnExit_params,"");
+	xr_strcpy					(g_sLaunchOnExit_app,*m_sPatchFileName);
+	xr_strcpy					(g_sLaunchOnExit_params,"");
 	Console->Execute		("quit");
 }
 
@@ -692,7 +692,7 @@ LPCSTR CMainMenu::GetGSVer()
 	static string256	buff2;
 	if(m_pGameSpyFull)
 	{
-		strcpy(buff2, m_pGameSpyFull->GetGameVersion(buff));
+		xr_strcpy(buff2, m_pGameSpyFull->GetGameVersion(buff));
 	}else
 	{
 		buff[0]		= 0;
@@ -708,7 +708,7 @@ LPCSTR CMainMenu::GetAxrPlatform()
 	static string256	buff2;
 	if (m_pGameSpyFull)
 	{
-		strcpy_s(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
+		xr_strcpy(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
 	}
 	else
 	{
