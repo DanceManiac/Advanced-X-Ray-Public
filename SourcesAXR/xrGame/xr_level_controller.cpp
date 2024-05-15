@@ -23,7 +23,7 @@ _action  actions[]		= {
 	{ "back",				kBACK					,_both},	
 	{ "lstrafe",			kL_STRAFE				,_both},	
 	{ "rstrafe",			kR_STRAFE				,_both},	
-																
+
 	{ "llookout",			kL_LOOKOUT				,_both},	
 	{ "rlookout",			kR_LOOKOUT				,_both},	
 																
@@ -50,7 +50,7 @@ _action  actions[]		= {
 	{ "wpn_7",				kWPN_7					,_both},
 	{ "laser_on",			kLASER_ON				,_both},
 	{ "flashlight",			kFLASHLIGHT				,_both},
-	{ "artefact",			kARTEFACT				,_both/*_mp*/},		
+	{ "artefact",			kARTEFACT				,_both},
 	{ "wpn_next",			kWPN_NEXT				,_both},	// means next ammo type
 	{ "wpn_fire",			kWPN_FIRE				,_both},	
 	{ "wpn_zoom",			kWPN_ZOOM				,_both},	
@@ -63,7 +63,7 @@ _action  actions[]		= {
 	{ "wpn_alt_aim",		kWPN_ALT_AIM			,_both},
 	{ "quick_kick",			kQUICK_KICK				,_both},
 	{ "quick_grenade",		kQUICK_GRENADE			,_both},
-															
+
 	{ "pause",				kPAUSE					,_both},	
 	{ "drop",				kDROP					,_both},	
 	{ "use",				kUSE					,_both},	
@@ -250,7 +250,7 @@ _action* action_name_to_ptr(LPCSTR _name)
 			return &actions[idx];
 		++idx;
 	}
-	Msg				("! cant find corresponding [id] for action_name %s", _name);
+	Msg				("! cant find corresponding [id] for action_name [%s]", _name);
 	return			NULL;
 }
 
@@ -324,18 +324,19 @@ bool is_binded(EGameActions _action_id, int _dik)
 int get_action_dik(EGameActions _action_id, int idx)
 {
 	_binding* pbinding = &g_key_bindings[_action_id];
-	
-	if(idx==-1)
-	{
-	if(pbinding->m_keyboard[0])
-		return pbinding->m_keyboard[0]->dik;
 
-	if(pbinding->m_keyboard[1])
-		return pbinding->m_keyboard[1]->dik;
-	}else
+	if (idx == -1)
 	{
-	if(pbinding->m_keyboard[idx])
-		return pbinding->m_keyboard[idx]->dik;
+		if (pbinding->m_keyboard[0])
+			return pbinding->m_keyboard[0]->dik;
+
+		if (pbinding->m_keyboard[1])
+			return pbinding->m_keyboard[1]->dik;
+	}
+	else
+	{
+		if (pbinding->m_keyboard[idx])
+			return pbinding->m_keyboard[idx]->dik;
 	}
 	return 0;
 }
@@ -377,23 +378,23 @@ bool GetActionAllBinding(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 	prim[0]		= 0;
 	sec[0]		= 0;
 
-	if(pbinding->m_keyboard[0])
+	if (pbinding->m_keyboard[0])
 	{
 		xr_strcpy(prim, pbinding->m_keyboard[0]->key_local_name.c_str());
 	}
-	if(pbinding->m_keyboard[1])
+	if (pbinding->m_keyboard[1])
 	{
 		xr_strcpy(sec, pbinding->m_keyboard[1]->key_local_name.c_str());
 	}
-	if(NULL==pbinding->m_keyboard[0] && NULL==pbinding->m_keyboard[1])
+	if (NULL == pbinding->m_keyboard[0] && NULL == pbinding->m_keyboard[1])
 	{
-		xr_sprintf		(dst_buff, dst_buff_sz, "%s", CStringTable().translate("st_key_notbinded").c_str());
+		xr_sprintf(dst_buff, dst_buff_sz, "%s", CStringTable().translate("st_key_notbinded").c_str());
 	}
 	else
 	{
 		xr_sprintf(dst_buff, dst_buff_sz, "%s%s%s", prim[0] ? prim : "", (sec[0] && prim[0]) ? " , " : "", sec[0] ? sec : "");
 	}
-	return true;		
+	return true;
 }
 
 ConsoleBindCmds	bindConsoleCmds;
@@ -460,7 +461,7 @@ public:
 	virtual void Save(IWriter* F) 
 	{
 		if(m_work_idx==0)
-			F->w_printf		("default_controls\r\n");
+			F->w_printf("default_controls\r\n");
 
 		for(int idx=0; idx<bindings_count;++idx)
 		{

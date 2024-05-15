@@ -10,22 +10,22 @@ enum	EGameActions
 	kCROUCH,
 	kACCEL,
 	kSPRINT_TOGGLE,
-						
+
 	kFWD,
 	kBACK,
 	kL_STRAFE,
 	kR_STRAFE,
-						
+
 	kL_LOOKOUT,
 	kR_LOOKOUT,
-						
+
 	kCAM_1,
 	kCAM_2,
 	kCAM_3,
 	kCAM_4,
 	kCAM_ZOOM_IN,
 	kCAM_ZOOM_OUT,
-						
+
 	kTORCH,
 	kNIGHT_VISION,
 	kCLEAN_MASK,
@@ -53,7 +53,7 @@ enum	EGameActions
 	kWPN_ALT_AIM,
 	kQUICK_KICK,
 	kQUICK_GRENADE,
-						
+
 	kPAUSE,
 	kDROP,
 	kUSE,
@@ -71,15 +71,15 @@ enum	EGameActions
 	kMAP,
 	kCONTACTS,
 	kEXT_1,
-						
+
 	kVOTE_BEGIN,
 	kVOTE,
 	kVOTEYES,
 	kVOTENO,
-						
+
 	kNEXT_SLOT,
 	kPREV_SLOT,
-						
+
 	kSPEECH_MENU_0,
 	kSPEECH_MENU_1,
 	kSPEECH_MENU_2,
@@ -87,12 +87,12 @@ enum	EGameActions
 	kSPEECH_MENU_4,
 	kSPEECH_MENU_5,
 	kSPEECH_MENU_6,
-	kSPEECH_MENU_7,		
-	kSPEECH_MENU_8,		
+	kSPEECH_MENU_7,
+	kSPEECH_MENU_8,
 	kSPEECH_MENU_9,
-						
+
 	kUSE_BANDAGE,
-	kUSE_MEDKIT,		
+	kUSE_MEDKIT,
 	
 	kQUICK_SAVE,
 	kQUICK_LOAD,
@@ -105,7 +105,7 @@ enum	EGameActions
 	kFORCEDWORD		= u32(-1)
 };
 
-struct _keyboard		
+struct _keyboard
 {
 	LPCSTR		key_name;
 	int			dik;
@@ -151,7 +151,7 @@ struct _binding
 extern _binding g_key_bindings[];
 
 bool				is_binded			(EGameActions action_id, int dik);
-int					get_action_dik		(EGameActions action_id);
+int					get_action_dik		(EGameActions action_id, int idx=-1);
 EGameActions		get_binded_action	(int dik);
 
 extern void		CCC_RegisterInput();
@@ -171,7 +171,7 @@ public:
 	void 	save			(IWriter* F);
 };
 
-bool GetActionAllBinding(LPCSTR action, char* dst_buff, int dst_buff_sz);
+bool GetActionAllBinding	(LPCSTR action, char* dst_buff, int dst_buff_sz);
 
 extern ConsoleBindCmds		bindConsoleCmds;
 

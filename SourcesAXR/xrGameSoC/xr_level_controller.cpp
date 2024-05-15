@@ -24,11 +24,9 @@ _action  actions[]		= {
 	{ "back",				kBACK					,_both},	
 	{ "lstrafe",			kL_STRAFE				,_both},	
 	{ "rstrafe",			kR_STRAFE				,_both},	
-																
+
 	{ "llookout",			kL_LOOKOUT				,_both},	
 	{ "rlookout",			kR_LOOKOUT				,_both},	
-																
-	{ "turn_engine",		kENGINE					,_sp},		
 																
 	{ "cam_1",				kCAM_1					,_both},	
 	{ "cam_2",				kCAM_2					,_both},	
@@ -38,14 +36,15 @@ _action  actions[]		= {
 	{ "cam_zoom_out",		kCAM_ZOOM_OUT			,_both},	
 															
 	{ "torch",				kTORCH					,_both},	
-	{ "night_vision",		kNIGHT_VISION			,_both},	
+	{ "night_vision",		kNIGHT_VISION			,_both},
+	{ "turn_engine",		kTURN_ENGINE			,_both},
 	{ "wpn_1",				kWPN_1					,_both},	
 	{ "wpn_2",				kWPN_2					,_both},	
 	{ "wpn_3",				kWPN_3					,_both},	
 	{ "wpn_4",				kWPN_4					,_both},	
 	{ "wpn_5",				kWPN_5					,_both},	
-	{ "wpn_6",				kWPN_6					,_both},	
-	{ "artefact",			kARTEFACT				,_mp},		
+	{ "wpn_6",				kWPN_6					,_both},
+	{ "artefact",			kARTEFACT				,_mp},
 	{ "wpn_next",			kWPN_NEXT				,_both},	
 	{ "wpn_fire",			kWPN_FIRE				,_both},	
 	{ "wpn_zoom",			kWPN_ZOOM				,_both},	
@@ -54,8 +53,8 @@ _action  actions[]		= {
 	{ "wpn_reload",			kWPN_RELOAD				,_both},	
 	{ "wpn_func",			kWPN_FUNC				,_both},	
 	{ "wpn_firemode_prev",	kWPN_FIREMODE_PREV		,_both},	
-	{ "wpn_firemode_next",	kWPN_FIREMODE_NEXT		,_both},	
-															
+	{ "wpn_firemode_next",	kWPN_FIREMODE_NEXT		,_both},
+
 	{ "pause",				kPAUSE					,_both},	
 	{ "drop",				kDROP					,_both},	
 	{ "use",				kUSE					,_both},	
@@ -205,7 +204,7 @@ void remap_keys()
 	{
 		buff[0]				= 0;
 		_keyboard&	kb		= keyboards[idx];
-		bool res			= pInput->get_dik_name(kb.dik, buff, 128 );
+		bool res			= pInput->get_dik_name(kb.dik, buff, sizeof(buff) );
 		if(res)
 			kb.key_local_name	= buff;
 		else
@@ -216,7 +215,7 @@ void remap_keys()
 	}
 }
 
-LPCSTR id_to_action_name(int _id)
+LPCSTR id_to_action_name(EGameActions _id)
 {
 	int idx				= 0;
 	while( actions[idx].action_name )
@@ -247,7 +246,7 @@ _action* action_name_to_ptr(LPCSTR _name)
 			return &actions[idx];
 		++idx;
 	}
-	Msg				("! cant find corresponding [id] for action_name", _name);
+	Msg				("! cant find corresponding [id] for action_name [%s]", _name);
 	return			NULL;
 }
 
@@ -318,16 +317,23 @@ bool is_binded(EGameActions _action_id, int _dik)
 	return false;
 }
 
-int get_action_dik(EGameActions _action_id)
+int get_action_dik(EGameActions _action_id, int idx)
 {
 	_binding* pbinding = &g_key_bindings[_action_id];
 
-	if(pbinding->m_keyboard[0] )
-		return pbinding->m_keyboard[0]->dik;
+	if (idx == -1)
+	{
+		if (pbinding->m_keyboard[0])
+			return pbinding->m_keyboard[0]->dik;
 
-	if(pbinding->m_keyboard[1] )
-		return pbinding->m_keyboard[1]->dik;
-
+		if (pbinding->m_keyboard[1])
+			return pbinding->m_keyboard[1]->dik;
+	}
+	else
+	{
+		if (pbinding->m_keyboard[idx])
+			return pbinding->m_keyboard[idx]->dik;
+	}
 	return 0;
 }
 
@@ -352,7 +358,7 @@ EGameActions get_binded_action(int _dik)
 
 bool GetActionAllBinding(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 {
-	int			action_id = action_name_to_id(_action);
+	int			action_id	= action_name_to_id(_action);
 
 	if (action_id == kNOTBINDED)
 	{
@@ -361,12 +367,12 @@ bool GetActionAllBinding(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 		return false;
 	}
 
-	_binding* pbinding = &g_key_bindings[action_id];
+	_binding*	pbinding	= &g_key_bindings[action_id];
 
 	string128	prim;
 	string128	sec;
-	prim[0] = 0;
-	sec[0] = 0;
+	prim[0]		= 0;
+	sec[0]		= 0;
 
 	if (pbinding->m_keyboard[0])
 	{
@@ -451,7 +457,7 @@ public:
 	virtual void Save(IWriter* F) 
 	{
 		if(m_work_idx==0)
-			F->w_printf		("unbindall\r\n");
+			F->w_printf("default_controls\r\n");
 
 		for(int idx=0; idx<bindings_count;++idx)
 		{
@@ -514,10 +520,18 @@ public:
 			pbinding->m_keyboard[0]	= NULL;
 			pbinding->m_keyboard[1]	= NULL;
 		}
-
 		bindConsoleCmds.clear();
-//.		Console->Execute("cfg_load default_controls.ltx");
+	}
+};
 
+class CCC_DefControls : public CCC_UnBindAll
+{
+public:
+	CCC_DefControls(LPCSTR N) : CCC_UnBindAll(N){}
+
+	virtual void Execute(LPCSTR args) 
+	{
+		CCC_UnBindAll::Execute(args);
 		string_path				_cfg;
 		string_path				cmd;
 		FS.update_path			(_cfg,"$game_config$","default_controls.ltx");
@@ -539,7 +553,7 @@ public:
 		for(int idx=0; idx<bindings_count;++idx)
 		{
 			_binding* pbinding		= &g_key_bindings[idx];
-			sprintf_s		(buff,"[%s] primary is[%s] secondary is[%s]",
+			xr_sprintf		(buff,"[%s] primary is[%s] secondary is[%s]",
 						pbinding->m_action->action_name,
 						(pbinding->m_keyboard[0])?pbinding->m_keyboard[0]->key_local_name.c_str():"NULL",
 						(pbinding->m_keyboard[1])?pbinding->m_keyboard[1]->key_local_name.c_str():"NULL");
@@ -635,6 +649,7 @@ void CCC_RegisterInput()
 	CMD2(CCC_UnBind,			"unbind",				0);
 	CMD2(CCC_UnBind,			"unbind_sec",			1);
 	CMD1(CCC_UnBindAll,			"unbindall"				);
+	CMD1(CCC_DefControls,		"default_controls"		);
 	CMD1(CCC_ListActions,		"list_actions"			);
 
 	CMD1(CCC_BindList,			"bind_list"				);
