@@ -333,10 +333,20 @@ void CUITrackBar::UpdatePos()
 		string256 buff;
 		if (m_b_is_float)
 		{
+			float f = m_f_val;
+
+			if (GetInvert())
+				f = m_f_max - f;
+
 			xr_sprintf(buff, (m_static_format == NULL ? "%.1f" : m_static_format.c_str()), m_f_val);
 		}
 		else
 		{
+			int i = m_i_val;
+
+			if (GetInvert())
+				i = m_i_max - i;
+
 			xr_sprintf(buff, (m_static_format == NULL ? "%d" : m_static_format.c_str()), m_i_val);
 		}
 		m_static->SetTextST(buff);
