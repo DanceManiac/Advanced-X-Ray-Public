@@ -14,6 +14,10 @@
 #include "game_object_space.h"
 #include "effectorshot.h"
 
+#include "../../Include/xrRender/RenderVisual.h"
+#include "../../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
+
 #define TEMPLATE_SPECIALIZATION\
 	template <\
 		int yaw_factor_non_fire,\
@@ -42,7 +46,7 @@ typedef detail	<  50, 100,   0,   0>	head;
 TEMPLATE_SPECIALIZATION
 void _detail::callback		(CBoneInstance *B)
 {
-	CAI_Stalker*			A = static_cast<CAI_Stalker*>(B->Callback_Param);
+	CAI_Stalker*			A = static_cast<CAI_Stalker*>(B->callback_param());
 	VERIFY					(_valid(B->mTransform));
 	Fvector c				= B->mTransform.c;
 	Fmatrix					spin;
@@ -86,7 +90,7 @@ void _detail::callback		(CBoneInstance *B)
 
 void CStalkerAnimationManager::assign_bone_callbacks	()
 {
-	CKinematics						*kinematics = smart_cast<CKinematicsAnimated*>(m_visual);
+	IKinematics						*kinematics = m_visual->dcast_PKinematics();
 	VERIFY							(kinematics);
 
 	LPCSTR							section = *object().cNameSect();

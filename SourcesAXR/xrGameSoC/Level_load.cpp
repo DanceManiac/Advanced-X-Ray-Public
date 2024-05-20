@@ -8,8 +8,8 @@
 #include "script_engine_space.h"
 #include "level.h"
 #include "game_cl_base.h"
-#include "../x_ray.h"
-#include "gamemtllib.h"
+#include "../xrEngine/x_ray.h"
+#include "../xrEngine/gamemtllib.h"
 #include "PhysicsCommon.h"
 #include "level_sounds.h"
 #include "GamePersistent.h"
@@ -19,7 +19,8 @@ ENGINE_API	bool g_dedicated_server;
 BOOL CLevel::Load_GameSpecific_Before()
 {
 	// AI space
-	g_pGamePersistent->LoadTitle		("st_loading_ai_objects");
+	g_pGamePersistent->SetLoadStageTitle("st_loading_ai_objects");
+	g_pGamePersistent->LoadTitle();
 	string_path							fn_game;
 	
 	if (GamePersistent().GameType() == GAME_SINGLE && !ai().get_alife() && FS.exist(fn_game,"$level$","level.ai"))
@@ -128,6 +129,18 @@ struct translation_pair {
 		return	(m_id < id);
 	}
 };
+
+void CLevel::Load_GameSpecific_CFORM_Serialize(IWriter& writer)
+{
+	writer.w_u32(GMLib.GetFileAge());
+}
+
+bool CLevel::Load_GameSpecific_CFORM_Deserialize(IReader& reader)
+{
+	const auto materials_file_age = GMLib.GetFileAge();
+	const auto cached_materials_file_age = reader.r_u32();
+	return materials_file_age == cached_materials_file_age;
+}
 
 void CLevel::Load_GameSpecific_CFORM	( CDB::TRI* tris, u32 count )
 {

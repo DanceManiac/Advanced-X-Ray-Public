@@ -44,7 +44,7 @@ void CUIMpTradeWnd::Init(const shared_str& sectionName, const shared_str& sectio
 	m_sectionPrice						= sectionPrice;
 
 	CUIXml								xml_doc;
-	R_ASSERT							(xml_doc.Init(CONFIG_PATH, UI_PATH, "mp_buy_menu.xml"));
+	xml_doc.Load						(CONFIG_PATH, UI_PATH, "mp_buy_menu.xml");
 
 	m_store_hierarchy					= xr_new<CStoreHierarchy>();
  	m_store_hierarchy->Init				(xml_doc, "items_hierarchy");

@@ -3,7 +3,8 @@
 #include "BaseMonster/base_monster.h"
 #include "control_manager.h"
 #include "../../PHMovementControl.h"
-#include "../../../skeletonanimated.h"
+#include "../../../Include/xrRender/KinematicsAnimated.h"
+#include "../../../Include/xrRender/Kinematics.h"
 #include "../../detail_path_manager.h"
 #include "../../level.h"
 #include "control_animation_base.h"
@@ -302,8 +303,8 @@ void CControlJump::stop()
 // Get target point in world space
 Fvector CControlJump::get_target(CObject *obj)
 {
-	u16 bone_id			= smart_cast<CKinematics*>(obj->Visual())->LL_GetBoneRoot			();
-	CBoneInstance &bone = smart_cast<CKinematics*>(obj->Visual())->LL_GetBoneInstance		(bone_id);
+	u16 bone_id			= smart_cast<IKinematics*>(obj->Visual())->LL_GetBoneRoot			();
+	CBoneInstance &bone = smart_cast<IKinematics*>(obj->Visual())->LL_GetBoneInstance		(bone_id);
 
 	Fmatrix	global_transform;
 	global_transform.mul	(obj->XFORM(),bone.mTransform);
@@ -518,8 +519,8 @@ Fvector CControlJump::predict_position(CObject *obj, const Fvector &pos)
 	
 //#ifdef DEBUG
 //	DBG().level_info(this).clear	();
-//	DBG().level_info(this).add_item	(pos, 0.35f, D3DCOLOR_XRGB(0,0,255));
-//	DBG().level_info(this).add_item	(prediction_pos, 0.35f, D3DCOLOR_XRGB(255,0,0));
+//	DBG().level_info(this).add_item	(pos, 0.35f, color_xrgb(0,0,255));
+//	DBG().level_info(this).add_item	(prediction_pos, 0.35f, color_xrgb(255,0,0));
 //#endif
 //
 //	return prediction_pos;

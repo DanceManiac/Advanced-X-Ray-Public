@@ -11,10 +11,10 @@ class CTextureDescrMngr
 	struct texture_assoc
 	{
 		shared_str			detail_name;
-		//R_constant_setup*	cs;
+		R_constant_setup*	cs;
 		u8					usage;
-        texture_assoc       () : /*cs(NULL),*/ usage(0) {}
-		~texture_assoc		() { /*xr_delete(cs);*/ }
+		texture_assoc() : /*cs(NULL),*/ usage(0) { if (ShadowOfChernobylMode) cs = NULL; }
+		~texture_assoc		() { /*xr_delete(cs);*/ if (ShadowOfChernobylMode) xr_delete(cs); }
 
 	};
 	struct texture_spec
@@ -34,6 +34,8 @@ class CTextureDescrMngr
 	map_TD									m_texture_details;
 	map_CS									m_detail_scalers;
 
+	void		LoadLTX		();
+	void		LoadTHM		();
 	void		LoadTHM		(LPCSTR initial);
 
 public:

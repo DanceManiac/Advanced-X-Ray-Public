@@ -11,9 +11,9 @@
 #include "associative_vector.h"
 
 #ifdef XRGAME_EXPORTS
-#	include "../xrLevel.h"
+#	include "../xrEngine/xrLevelSoC.h"
 #else
-#	include "xrLevel.h"
+#	include "../../xrEngine/xrLevelSoC.h"
 #endif
 
 namespace GameGraph {

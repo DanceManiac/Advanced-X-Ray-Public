@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "UI.h"
-#include "../xr_IOConsole.h"
+#include "../xrEngine/xr_IOConsole.h"
 #include "Entity.h"
 #include "HUDManager.h"
 #include "UIGameSP.h"

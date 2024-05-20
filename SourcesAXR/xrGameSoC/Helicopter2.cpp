@@ -3,8 +3,8 @@
 #include "level.h"
 #include "script_game_object.h"
 #include "game_object_space.h"
-#include "../skeletonanimated.h"
-#include "../LightAnimLibrary.h"
+#include "../Include/xrRender/Kinematics.h"
+#include "../xrEngine/LightAnimLibrary.h"
 #include "PhysicsShell.h"
 #include "clsid_game.h"
 #include "script_callback_ex.h"
@@ -60,7 +60,7 @@ void CHelicopter::StartFlame ()
 
 void CHelicopter::UpdateHeliParticles	()
 {
-	CKinematics* K		= smart_cast<CKinematics*>(Visual());
+	IKinematics* K		= smart_cast<IKinematics*>(Visual());
 	m_particleXFORM		= K->LL_GetTransform(m_smoke_bone);
 	m_particleXFORM.mulA_43(XFORM());
 
@@ -279,7 +279,7 @@ void CHelicopter::DieHelicopter()
 	m_brokenSound.play_at_pos		(0,XFORM().c,sm_Looped);
 
 
-	CKinematics* K		= smart_cast<CKinematics*>(Visual());
+	IKinematics* K		= smart_cast<IKinematics*>(Visual());
 	if(true /*!PPhysicsShell()*/){
 		string256						I;
 		LPCSTR bone;
@@ -309,7 +309,7 @@ void CHelicopter::DieHelicopter()
 	PPhysicsShell()->set_AngularVel	(m_death_ang_vel);
 	PPhysicsShell()->Enable			();
 	K->CalculateBones_Invalidate	();
-	K->CalculateBones				();
+	K->CalculateBones				(TRUE);
 	setState						(CHelicopter::eDead);
 	m_engineSound.stop				();
 	processing_deactivate			();

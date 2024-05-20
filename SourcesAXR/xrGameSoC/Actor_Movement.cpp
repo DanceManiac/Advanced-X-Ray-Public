@@ -6,7 +6,7 @@
 #include "actor.h"
 #include "inventory.h"
 #include "weapon.h"
-#include "../CameraBase.h"
+#include "../xrEngine/CameraBase.h"
 #include "xrMessages.h"
 
 #include "level.h"

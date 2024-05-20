@@ -23,7 +23,7 @@ protected:
 		MAX_DEF_TEX
 	};
 	typedef struct {
-		ref_shader	sh;
+		ui_shader	sh;
 		Frect		rect;
 	} TEX_INFO;
 

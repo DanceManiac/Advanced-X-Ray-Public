@@ -8,7 +8,7 @@
 #include "xr_level_controller.h"
 #include "UsableScriptObject.h"
 #include "customzone.h"
-#include "GameMtlLib.h"
+#include "../xrEngine/gamemtllib.h"
 #include "ui/UIMainIngameWnd.h"
 #include "Grenade.h"
 #include "clsid_game.h"
@@ -85,7 +85,7 @@ ICF static BOOL info_trace_callback(collide::rq_result& result, LPVOID params)
 	}else{
 		//получить треугольник и узнать его материал
 		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;
-		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable)) 
+		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable))
 			return TRUE;
 	}	
 	bOverlaped			= TRUE;
@@ -136,7 +136,7 @@ void CActor::PickupModeUpdate()
 		if (CanPickItem(frustum,Device.vCameraPosition,*it)) PickupInfoDraw(*it);
 }
 
-#include "../CameraBase.h"
+#include "../xrEngine/CameraBase.h"
 BOOL	g_b_COD_PickUpMode = TRUE;
 void	CActor::PickupModeUpdate_COD	()
 {

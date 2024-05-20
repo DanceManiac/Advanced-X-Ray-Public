@@ -1,0 +1,11 @@
+#include "screenspace_common.h"
+
+// Check Addons
+#include "check_screenspace.h"
+
+float4 blur_params;
+
+float4 main(p_screen I) : SV_Target
+{
+	return SSFX_Blur(I.tc0, 0.25f);
+}

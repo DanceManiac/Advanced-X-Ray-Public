@@ -25,13 +25,14 @@ bool pgd_find_pred	(const PS::CPGDef* a, 	LPCSTR b)				{	return xr_strcmp(a->m_N
 void CPSLibrary::OnCreate()
 {
 #ifdef _EDITOR
-    if(pCreateEAction)
-    {
-        Load2();
-    }else
+	if (pCreateEAction && xrGameManager::GetGame() != EGame::SHOC)
+	{
+		Load2();
+	}
+	else
 #endif
-    {
-    	string_path		fn;
+	{
+		string_path fn;
 
 		if (!bWinterMode)
 		{

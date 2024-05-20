@@ -12,7 +12,6 @@ enum class EGamePath
 	COP_1602,
 	CS_1510,
 	SHOC_10006,
-	SHOC_10004,
 };
 
 class XRAPI_API xrGameManager

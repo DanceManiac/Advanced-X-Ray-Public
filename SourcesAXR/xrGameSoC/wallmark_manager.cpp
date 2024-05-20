@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "wallmark_manager.h"
 #include "Level.h"
-#include "GameMtlLib.h"
+#include "../xrEngine/gamemtllib.h"
 #include "CalculateTriangle.h"
 #include "profiler.h"
+
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
@@ -17,12 +18,12 @@ CWalmarkManager::~CWalmarkManager()
 }
 void CWalmarkManager::Clear()
 {
-	m_wallmarks.clear();
+	m_wallmarks->clear();
 }
 
 void CWalmarkManager::AddWallmark(const Fvector& dir, const Fvector& start_pos, 
 								  float range, float wallmark_size,
-								  SHADER_VECTOR& wallmarks_vector,int t)
+								  IWallMarkArray& wallmarks_vector,int t)
 {
 	CDB::TRI*	pTri	= Level().ObjectSpace.GetStaticTris()+t;//result.element;
 	SGameMtl*	pMaterial = GMLib.GetMaterialByIdx(pTri->material);
@@ -37,6 +38,12 @@ void CWalmarkManager::AddWallmark(const Fvector& dir, const Fvector& start_pos,
 		end_point.set(0,0,0);
 		end_point.mad(start_pos, dir, range);
 
+		if (!wallmarks_vector.empty())
+		{		
+			::Render->add_StaticWallmark(&wallmarks_vector, end_point, wallmark_size, pTri, pVerts);
+		}
+
+		/*
 		ref_shader* pWallmarkShader = wallmarks_vector.empty()?NULL:
 		&wallmarks_vector[::Random.randI(0,wallmarks_vector.size())];
 
@@ -45,6 +52,7 @@ void CWalmarkManager::AddWallmark(const Fvector& dir, const Fvector& start_pos,
 			//добавить отметку на материале
 			::Render->add_StaticWallmark(*pWallmarkShader, end_point, wallmark_size, pTri, pVerts);
 		}
+		*/
 	}
 }
 
@@ -114,14 +122,14 @@ void CWalmarkManager::StartWorkflow()
 	u32 _not_dist		= 0;
 /*
 	DBG_OpenCashedDraw		();
-	DBG_DrawAABB			(m_pos,Fvector().set(m_trace_dist,m_trace_dist,m_trace_dist),D3DCOLOR_XRGB(255,0,0));
-	DBG_DrawAABB			(m_pos,Fvector().set(0.05f,0.05f,0.05f),D3DCOLOR_XRGB(0,255,0));
+	DBG_DrawAABB			(m_pos,Fvector().set(m_trace_dist,m_trace_dist,m_trace_dist),color_xrgb(255,0,0));
+	DBG_DrawAABB			(m_pos,Fvector().set(0.05f,0.05f,0.05f),color_xrgb(0,255,0));
 	
 	CTimer T; T.Start();
 */
 	for (CDB::RESULT* Res=R_begin; Res!=R_end; ++Res)
 	{
-//.		DBG_DrawTri(Res, D3DCOLOR_XRGB(0,255,0) );
+//.		DBG_DrawTri(Res, color_xrgb(0,255,0) );
 
 		if(wm_count >= max_wallmarks_count) break;
 		
@@ -170,8 +178,9 @@ void CWalmarkManager::StartWorkflow()
 
 		if(dist <= m_trace_dist )
 		{
-			ref_shader wallmarkShader = m_wallmarks[::Random.randI( m_wallmarks.size())];
-			::Render->add_StaticWallmark(wallmarkShader, end_point, m_wallmark_size, _t, V_array);
+			//ref_shader wallmarkShader = m_wallmarks[::Random.randI( m_wallmarks.size())];
+			//::Render->add_StaticWallmark(wallmarkShader, end_point, m_wallmark_size, _t, V_array);
+			::Render->add_StaticWallmark(&*m_wallmarks, end_point, m_wallmark_size, _t, V_array);
 			++wm_count;
 		}else
 			++_not_dist;
@@ -200,21 +209,10 @@ void CWalmarkManager::PlaceWallmarks(const Fvector& start_pos,CObject* ignore_ob
 
 void CWalmarkManager::Load (LPCSTR section)
 {
-//.	m_trace_dist	= pSettings->r_float(section,"dist");
-//.	m_wallmark_size	= pSettings->r_float(section,"size");
-	
-	//кровавые отметки на стенах
-	string256	tmp;
-	LPCSTR wallmarks_name = pSettings->r_string(section, "wallmarks"); 
-
-	int cnt		=_GetItemCount(wallmarks_name);
-	VERIFY		(cnt);
-	ref_shader	s;
-	for (int k=0; k<cnt; ++k)
-	{
-		s.create ("effects\\wallmark",_GetItem(wallmarks_name,k,tmp));
-		m_wallmarks.push_back	(s);
-	}
+    //кровавые отметки на стенах
+//	string256	tmp;
+    LPCSTR wallmarks_name = pSettings->r_string(section, "wallmarks");
+    m_wallmarks->AppendMark(wallmarks_name);
 }
 
 

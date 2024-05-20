@@ -1,13 +1,19 @@
 #include "stdafx.h"
 #include "IKLimb.h"
-#include "../../SkeletonCustom.h"
-#include "../ode_include.h"
-#include "../MathUtils.h"
+
+#include <boost/noncopyable.hpp>
+
+#include "../../Include/xrRender/KinematicsAnimated.h"
+#include "../../Include/xrRender/Kinematics.h"
+
 #include "../GameObject.h"
-#include "../Level.h"
 #include "../game_object_space.h"
 #include "../ik_anim_state.h"
 
+#include "../../xrEngine/bone.h"
+#include "../ode_include.h"
+#include "../MathUtils.h"
+#include "../Level.h"
 #ifdef DEBUG
 #include "../PHDebug.h"
 #endif
@@ -167,7 +173,7 @@ void	CIKLimb::Solve(SCalculateData& cd)
 			{
 				Fvector dbg_pos;
 				cd.m_obj.transform_tiny(dbg_pos, pos);
-				DBG_DrawPoint( dbg_pos, 0.02f, D3DCOLOR_XRGB( 255, 255 , 255 ) );
+				DBG_DrawPoint( dbg_pos, 0.02f, color_xrgb( 255, 255 , 255 ) );
 			}
 #endif
 			Fmatrix ihip;
@@ -207,7 +213,7 @@ void	CIKLimb::Solve(SCalculateData& cd)
 			Fvector dbg_pos;
 			cd.m_K->LL_GetBoneInstance(m_bones[2]).mTransform.transform_tiny( dbg_pos, m_toe_position );
 			cd.m_obj.transform_tiny( dbg_pos );
-			DBG_DrawPoint( dbg_pos, 0.02f, D3DCOLOR_XRGB( 255, 255 , 0 ) );
+			DBG_DrawPoint( dbg_pos, 0.02f, color_xrgb( 255, 255 , 0 ) );
 		}
 #endif
 }
@@ -226,7 +232,7 @@ IC void free_limits( float &min, float &max)
 	min = 0  ;max = 2 * M_PI  ;
 }
 
-void CIKLimb::Create( u16 id, CKinematics* K, const u16 bones[4], const Fvector& toe_pos, bool collide_ )
+void CIKLimb::Create( u16 id, IKinematics* K, const u16 bones[4], const Fvector& toe_pos, bool collide_ )
 {
 	m_id	 = id;
 	m_collide= collide_;
@@ -413,7 +419,7 @@ void CollideGoal( Fmatrix &g, const  SIKCollideData &cld )
 #ifdef DEBUG
 	if( ph_dbg_draw_mask.test( phDbgDrawIKGoal ) )
 	{
-		DBG_DrawLine(cld.m_collide,cld.m_anime,D3DCOLOR_XRGB(0,0,255));
+		DBG_DrawLine(cld.m_collide,cld.m_anime,color_xrgb(0,0,255));
 	}
 #endif
 		g.c.add( Fvector( ).sub( cld.m_collide,cld.m_anime ) );
@@ -531,13 +537,13 @@ void	CIKLimb::SetNewGoal			( const SIKCollideData &cld, SCalculateData& cd )
 		if( cd.foot_step && state_valide( sv_state ) )
 		{
 			DBG_DrawMatrix( sv_state.collide_pos, 1.0f, 100 );
-			DBG_DrawPoint ( sv_state.collide_pos.c, 0.05, D3DCOLOR_XRGB( 0, 255 , 255 ) );
+			DBG_DrawPoint ( sv_state.collide_pos.c, 0.05, color_xrgb( 0, 255 , 255 ) );
 		}
 		if( cd.do_collide )
 		{
-			DBG_DrawPoint( cld.m_anime, 0.03f, D3DCOLOR_XRGB( 255, 255 , 255 ) );
+			DBG_DrawPoint( cld.m_anime, 0.03f, color_xrgb( 255, 255 , 255 ) );
 			if( cld.collided )
-				DBG_DrawPoint( cld.m_collide , 0.05f, D3DCOLOR_XRGB( 255, 0 , 0 ) );
+				DBG_DrawPoint( cld.m_collide , 0.05f, color_xrgb( 255, 0 , 0 ) );
 		}
 		if( blending )
 		{
@@ -550,14 +556,14 @@ void	CIKLimb::SetNewGoal			( const SIKCollideData &cld, SCalculateData& cd )
 			sv_state.goal.transform_tiny( a0, m_toe_position );
 			Fvector a1;
 			blend_from.transform_tiny( a1, m_toe_position );
-			DBG_DrawLine( a0, a1, D3DCOLOR_XRGB( c, 0, c ) );
+			DBG_DrawLine( a0, a1, color_xrgb( c, 0, c ) );
 			Fvector a2;
 			gl_goal.transform_tiny( a2, m_toe_position );
-			DBG_DrawLine( a1, a2, D3DCOLOR_XRGB( 0, c , 0 ) );
+			DBG_DrawLine( a1, a2, color_xrgb( 0, c , 0 ) );
 			Fvector a3; sv_state_DBR.goal.transform_tiny( a3, m_toe_position );
-			DBG_DrawLine( a3, a0, D3DCOLOR_XRGB( c, c , 0 ) );
+			DBG_DrawLine( a3, a0, color_xrgb( c, c , 0 ) );
 			if( Fvector( ).sub( a3, a0 ).magnitude() > 0.1f )
-					DBG_DrawLine( a3, a0, D3DCOLOR_XRGB( c, 0 , 0 ) );
+					DBG_DrawLine( a3, a0, color_xrgb( c, 0 , 0 ) );
 			if( sv_state.count > -1 )
 			{
 				DBG_ClosedCashedDraw( 3000 );
@@ -595,8 +601,9 @@ void CIKLimb::ApplyContext( SCalculateData &cd )
 	SetNewGoal(cld,cd);
 }
 
-void	CIKLimb::	AnimGoal			( Fmatrix &gl, CKinematicsAnimated	&K )
+void	CIKLimb::	AnimGoal			( Fmatrix &gl, IKinematics	&K )
 {
+
 	K.Bone_GetAnimPos( gl, m_bones[2], 1<<0, false );
 }
 
@@ -611,9 +618,10 @@ void	CIKLimb::Update( CGameObject *O, const	CBlend *b, u16 interval )
 	if(!m_collide)
 				return;
 	Fmatrix foot;
-	CKinematicsAnimated *K = O->Visual( )->dcast_PKinematicsAnimated( );
+	IKinematics *K = O->Visual( )->dcast_PKinematics( );
+	IKinematicsAnimated* Ka = O->Visual()->dcast_PKinematicsAnimated();
 	AnimGoal( foot,  *K );
-	anim_state.update( K, b, interval );
+	anim_state.update( Ka, b, interval );
 	Collide( collide_data, O, foot, anim_state.step() );
 }
 
@@ -645,16 +653,15 @@ void CIKLimb::Collide( SIKCollideData &cld, CGameObject *O, const Fmatrix &foot,
 			tri_plane( *tri, cld.m_plane );
 			cld.m_collide.add( pos, Fvector( ).mul( pick_v, R.range ) );
 			cld.clamp_down = R.range > pick_dist + EPS_L;
-		} else {
-			
-			IRender_Visual* V =R.O->Visual();
+		}  /*else {
+			IRenderVisual* V =R.O->Visual();
 			if( V )
 			{
-				CKinematics *K = V->dcast_PKinematics( );
+				IKinematics *K = V->dcast_PKinematics( );
 				if( K )
 				{
 					float dist = l_pick_dist;
-					if( K->PickBone(R.O->XFORM(), cld.m_plane.n, dist,  pos, pick_v,(u16) R.element))
+				/*	if( K->PickBone(R.O->XFORM(), cld.m_plane.n, dist,  pos, pick_v,(u16) R.element))
 					{
 						cld.collided = true;
 						Fvector point; point.add( pos, Fvector( ).mul( pick_v, dist ) );
@@ -664,7 +671,7 @@ void CIKLimb::Collide( SIKCollideData &cld, CGameObject *O, const Fmatrix &foot,
 				}
 			}	
 			
-		}
+		}*/
 	}
 
 #ifdef DEBUG
@@ -672,11 +679,11 @@ void CIKLimb::Collide( SIKCollideData &cld, CGameObject *O, const Fmatrix &foot,
 	{
 		CDB::TRI	*tri	= Level( ).ObjectSpace.GetStaticTris( ) + R.element;
 		Fvector p = pos;p.add( Fvector( ).mul( pick_v, l_pick_dist ) );
-		DBG_DrawLine(pos,p,D3DCOLOR_XRGB( 255, 0, 0 ) );
+		DBG_DrawLine(pos,p,color_xrgb( 255, 0, 0 ) );
 		if( tri )
 		{
 			Fvector p = pos;p.add( Fvector( ).mul( pick_v, l_pick_dist ) );
-			DBG_DrawTri( tri,Level( ).ObjectSpace.GetStaticVerts( ), D3DCOLOR_XRGB( 255, 0, 0 ) );
+			DBG_DrawTri( tri,Level( ).ObjectSpace.GetStaticVerts( ), color_xrgb( 255, 0, 0 ) );
 		}
 	}
 #endif
@@ -684,7 +691,7 @@ void CIKLimb::Collide( SIKCollideData &cld, CGameObject *O, const Fmatrix &foot,
 
 Fmatrix&	CIKLimb::GetHipInvert( Fmatrix &ihip, const SCalculateData& cd  )
 {
-	CKinematics *K=cd.m_K;
+	IKinematics *K=cd.m_K;
 	Fmatrix H;
 	CBoneData& bd=K->LL_GetData(m_bones[0]);
 	H.set(bd.bind_transform);
@@ -705,9 +712,9 @@ Matrix &CIKLimb::Goal			( Matrix &gl, const Fmatrix &xm, SCalculateData& cd )
 		DBG_DrawMatrix( DBGG, 0.2f );
 		if( cd.do_collide )
 		{
-			DBG_DrawLine( sv_state.goal.c, DBGG.c, D3DCOLOR_XRGB( 255, 0, 255 ) );
-			DBG_DrawPoint( sv_state.goal.c, 0.05, D3DCOLOR_XRGB( 255, 255, 255 ) );
-			DBG_DrawPoint( DBGG.c, 0.04,D3DCOLOR_XRGB(0, 255 ,0 ) );
+			DBG_DrawLine( sv_state.goal.c, DBGG.c, color_xrgb( 255, 0, 255 ) );
+			DBG_DrawPoint( sv_state.goal.c, 0.05, color_xrgb( 255, 255, 255 ) );
+			DBG_DrawPoint( DBGG.c, 0.04,color_xrgb(0, 255 ,0 ) );
 			Fvector ch; ch.sub( DBGG.c, sv_state.goal.c );
 			if( ch.magnitude( ) > 0.5f )
 			{
@@ -733,45 +740,45 @@ Matrix &CIKLimb::Goal			( Matrix &gl, const Fmatrix &xm, SCalculateData& cd )
 void CIKLimb::CalculateBones(SCalculateData &cd)
 {
 	VERIFY(cd.m_angles);
-	CKinematics *K=cd.m_K;
+	IKinematics *K=cd.m_K;
 	K->LL_GetBoneInstance(m_bones[0]).set_callback(bctCustom,BonesCallback0,&cd);
 	K->LL_GetBoneInstance(m_bones[1]).set_callback(bctCustom,BonesCallback1,&cd);
 	K->LL_GetBoneInstance(m_bones[2]).set_callback(bctCustom,BonesCallback2,&cd);
-	K->LL_GetBoneInstance(m_bones[0]).Callback_overwrite=TRUE;
-	K->LL_GetBoneInstance(m_bones[1]).Callback_overwrite=TRUE;
-	K->LL_GetBoneInstance(m_bones[2]).Callback_overwrite=TRUE;
+	K->LL_GetBoneInstance(m_bones[0]).set_callback_overwrite(true);
+	K->LL_GetBoneInstance(m_bones[1]).set_callback_overwrite(true);
+	K->LL_GetBoneInstance(m_bones[2]).set_callback_overwrite(true);
 	CBoneData &BD=K->LL_GetData(m_bones[0]);
 	K->Bone_Calculate(&BD,&K->LL_GetTransform(BD.GetParentID()));
 
 	K->LL_GetBoneInstance(m_bones[0]).set_callback(bctCustom,NULL,NULL);
 	K->LL_GetBoneInstance(m_bones[1]).set_callback(bctCustom,NULL,NULL);
 	K->LL_GetBoneInstance(m_bones[2]).set_callback(bctCustom,NULL,NULL);
-	K->LL_GetBoneInstance(m_bones[0]).Callback_overwrite=FALSE;
-	K->LL_GetBoneInstance(m_bones[1]).Callback_overwrite=FALSE;
-	K->LL_GetBoneInstance(m_bones[2]).Callback_overwrite=FALSE;
+	K->LL_GetBoneInstance(m_bones[0]).set_callback_overwrite(false);
+	K->LL_GetBoneInstance(m_bones[1]).set_callback_overwrite(false);
+	K->LL_GetBoneInstance(m_bones[2]).set_callback_overwrite(false);
 }
 
 void	DBG_DrawRotationLimitsY(const Fmatrix &start,float ang, float l, float h )
 {
 #ifdef DEBUG
-	DBG_DrawRotationY( start, ang - EPS, ang + EPS, 0.15f, D3DCOLOR_XRGB( 0, 255, 0 ), false, 1 );
-	DBG_DrawRotationY( start, l, h, 0.15f, D3DCOLOR_ARGB( 50, 0, 250, 0 ), true );
+	DBG_DrawRotationY( start, ang - EPS, ang + EPS, 0.15f, color_xrgb( 0, 255, 0 ), false, 1 );
+	DBG_DrawRotationY( start, l, h, 0.15f, color_argb( 50, 0, 250, 0 ), true );
 #endif // DEBUG
 }
 
 void	DBG_DrawRotationLimitsZ(const Fmatrix &start,float ang, float l, float h )
 {
 #ifdef DEBUG
-	DBG_DrawRotationZ( start, ang - EPS, ang + EPS, 0.15f, D3DCOLOR_XRGB( 0, 0, 255 ), false, 1 );
-	DBG_DrawRotationZ( start, l, h, 0.15f, D3DCOLOR_ARGB( 50, 0, 0, 250 ), true );
+	DBG_DrawRotationZ( start, ang - EPS, ang + EPS, 0.15f, color_xrgb( 0, 0, 255 ), false, 1 );
+	DBG_DrawRotationZ( start, l, h, 0.15f, color_argb( 50, 0, 0, 250 ), true );
 #endif // DEBUG
 }
 
 void	DBG_DrawRotationLimitsX(const Fmatrix &start,float ang, float l, float h )
 {
 #ifdef DEBUG
-	DBG_DrawRotationX( start, ang + EPS, ang - EPS, 0.15f, D3DCOLOR_XRGB( 255, 0, 0 ), false, 1 );
-	DBG_DrawRotationX( start, l, h, 0.15f, D3DCOLOR_ARGB( 50, 255, 0, 0 ), true );
+	DBG_DrawRotationX( start, ang + EPS, ang - EPS, 0.15f, color_xrgb( 255, 0, 0 ), false, 1 );
+	DBG_DrawRotationX( start, l, h, 0.15f, color_argb( 50, 255, 0, 0 ), true );
 #endif // DEBUG
 }
 
@@ -794,7 +801,7 @@ IC void ang_evaluate(Fmatrix& M, const float ang[3] )
 
 IC void CIKLimb:: get_start( Fmatrix &start, SCalculateData &D, u16 bone )
 {
-	CKinematics		*K	=D.m_K;
+	IKinematics		*K	=D.m_K;
 	VERIFY( K );
 	CIKLimb&		L	=D.m_limb;
 	CBoneData		&BD	=K->LL_GetData( L.m_bones[bone] );
@@ -803,7 +810,7 @@ IC void CIKLimb:: get_start( Fmatrix &start, SCalculateData &D, u16 bone )
 
 void 	CIKLimb::BonesCallback0				(CBoneInstance* B)
 {
-	SCalculateData* D	=(SCalculateData*)B->Callback_Param;
+	SCalculateData* D	=(SCalculateData*)B->callback_param();
 	VERIFY( D );
 
 	float	const	*x	=D->m_angles;
@@ -828,7 +835,7 @@ void 	CIKLimb::BonesCallback0				(CBoneInstance* B)
 }
 void 	CIKLimb::BonesCallback1				(CBoneInstance* B)
 {
-	SCalculateData	*D	=(SCalculateData*)B->Callback_Param;
+	SCalculateData	*D	=(SCalculateData*)B->callback_param();
 
 	float	const	*x	=D->m_angles;
 	Fmatrix 		bm;
@@ -840,7 +847,7 @@ void 	CIKLimb::BonesCallback1				(CBoneInstance* B)
 }
 void 	CIKLimb::BonesCallback2				(CBoneInstance* B)
 {
-	SCalculateData	*D		=(SCalculateData*)B->Callback_Param;
+	SCalculateData	*D		=(SCalculateData*)B->callback_param();
 	
 	float	const	*x		=D->m_angles;
 	Fmatrix 		bm;

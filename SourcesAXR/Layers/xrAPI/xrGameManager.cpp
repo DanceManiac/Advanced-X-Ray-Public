@@ -11,7 +11,6 @@ EGame xrGameManager::GetGame()
 	case EGamePath::CS_1510:
 		return EGame::CS;
 	case EGamePath::SHOC_10006:
-	case EGamePath::SHOC_10004:
 		return EGame::SHOC;
 	default:
 		return EGame::COP;

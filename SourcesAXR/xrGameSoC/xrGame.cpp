@@ -11,18 +11,11 @@
 #include "ui/xrUIXmlParser.h"
 #include "xr_level_controller.h"
 #include "profiler.h"
+#include "../xrScripts/xrScripts.h"
+#include "script_storage.h"
 
 #pragma comment(lib,"ode.lib")
-#pragma comment(lib,"xr_3da.lib")
-
-#ifdef NDEBUG
-namespace std {
-	void terminate()
-	{
-		abort();
-	}
-}
-#endif // #ifdef NDEBUG
+#pragma comment(lib,"AdvancedXRay.lib")
 
 extern "C" {
 	DLL_API DLL_Pure*	__cdecl xrFactory_Create		(CLASS_ID clsid)
@@ -42,12 +35,14 @@ extern "C" {
 	}
 };
 
+extern void setup_luabind_allocator();
 extern void CCC_RegisterCommands();
 
 BOOL APIENTRY DllMain(HANDLE hModule, u32 ul_reason_for_call, LPVOID lpReserved)
 {
 	switch (ul_reason_for_call) {
 		case DLL_PROCESS_ATTACH: {
+			setup_luabind_allocator();
 			// register console commands
 			CCC_RegisterCommands();
 			// keyboard binding

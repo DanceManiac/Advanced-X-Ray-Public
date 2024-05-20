@@ -1,0 +1,77 @@
+[environment] ;;Различные настройки для погоды
+dynamic_sun_dir = true				;; Движение солнца по погодным конфигам
+winter_mode = false					;; Зимний режим (влияет на циклы и эффекты)
+weather_dof = false					;; Использовать параметры DoF из погоды
+lowland_fog_from_weather = false	;; Использовать параметры низинного тумана из погоды
+weather_color_grading = false		;; Влияние погоды на цветокоррекцию
+wind_volume_koef = 16.5				;; Коэффицент общей громкости звука ветра
+wind_influence_koef = 2.3			;; Коэффицент влияния ветра на колыхание травы и деревьев. Значение 0.0 отключает эффект.
+moon_phases_mode = off				;; Режим лунных фаз (off|8days|28days)
+fog_infl_volumetric_light = false	;; Влияние интенсивности тумана на интенсивность объёмного света
+weather_fog_clamping = false		;; Ограничитель дальности тумана
+weather_fog_clamping_max = 1000.0	;; Предельно возможная дальность тумана
+
+[precipitation_params] ;Общие параметры осадков
+max_desired_items = 2500
+source_radius = 15.0
+source_offset = 20.0
+max_distance_koef = 1.5
+particles_time = 0.3
+max_particles = 1000
+particles_cache = 400
+
+[rain_params] ;Параметры для дождя
+min_rain_drop_speed = 40.0
+max_rain_drop_speed = 80.0
+rain_drop_lenght = 5.0
+rain_drop_width = 0.30
+rain_drop_angle = 15.0
+rain_drop_max_wind_vel = 20.0
+rain_drop_max_angle = 35.0
+
+[snow_params] ;Параметры для снегопада
+min_rain_drop_speed = 1.0
+max_rain_drop_speed = 1.5
+rain_drop_lenght = 0.1
+rain_drop_width = 0.25
+rain_drop_angle = 15.0
+rain_drop_max_wind_vel = 20.0
+rain_drop_max_angle = 35.0
+
+[details_params] ;Стандартные параметры колыхания травы
+swing_normal_amp1 = 0.011000
+swing_normal_amp2 = 0.006000
+swing_normal_rot1 = 300.000000
+swing_normal_rot2 = 15.000000
+swing_normal_speed = 2.000000
+swing_fast_amp1	= 0.400000
+swing_fast_amp2	= 0.300000
+swing_fast_rot1	= 5.500000
+swing_fast_rot2	= 0.600000
+swing_fast_speed = 0.600000
+
+[moon_phases_clr_settings] ;Настройки освещения для лунных фаз
+;секция_светила_sun_color = <Fvector3>
+;секция_светила_sun_shafts_intensity = <float>
+
+[lowland_fog_params] ;Базовые высоты тумана в низинах для каждого уровня
+;Зов Припяти
+zaton = -11.0
+jupiter = -30.5
+jupiter_underground = 0.0
+pripyat = 0.0
+labx8 = 0.0
+
+;Чистое Небо
+marsh = -0.80
+escape = -37.5
+garbage = -5.0
+darkvalley = -8.0
+agroprom = 1.0
+agroprom_underground = 0.0
+yantar = -13.5
+red_forest = -6.0
+military = -23.5
+limansk = -6.0
+hospital = 24.0
+stancia_2 = -1.0

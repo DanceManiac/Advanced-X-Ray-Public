@@ -1459,7 +1459,12 @@ void PATargetColor::Execute(ParticleEffect *effect, const float dt, float& tm_ma
 	for(u32 i = 0; i < effect->p_count; i++)
 	{
 		Particle &m = effect->particles[i];
-		if(m.age<timeFrom*tm_max || m.age>timeTo*tm_max ) continue;
+
+		if (xrGameManager::GetGame() != EGame::SHOC)
+		{
+			if (m.age < timeFrom * tm_max || m.age > timeTo * tm_max)
+				continue;
+		}
 
         c_p.set	(m.color);
         c_t.set	(c_p.r+(color.x-c_p.r)*scaleFac, c_p.g+(color.y-c_p.g)*scaleFac, c_p.b+(color.z-c_p.b)*scaleFac, c_p.a+(alpha-c_p.a)*scaleFac);

@@ -14,22 +14,22 @@ extern "C" {
 	public:
 		xrIDirect3DVertexBuffer9(IDirect3DDevice9*	pIDirect3DDevice9, UINT iLength,DWORD iUsage,DWORD iFVF,D3DPOOL iPool);
 		/*** IUnknown methods ***/
-		HRESULT			__stdcall	QueryInterface( REFIID riid, void** ppvObj) ;
-		ULONG			__stdcall	AddRef() ;
-		ULONG			__stdcall	Release() ;
+		HRESULT				QueryInterface( REFIID riid, void** ppvObj) ;
+		ULONG				AddRef() ;
+		ULONG				Release() ;
 
 		/*** IDirect3DResource9 methods ***/
-		HRESULT			__stdcall	GetDevice( IDirect3DDevice9** ppDevice) ;
-		HRESULT			__stdcall	SetPrivateData( REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) ;
-		HRESULT			__stdcall	GetPrivateData( REFGUID refguid,void* pData,DWORD* pSizeOfData) ;
-		HRESULT			__stdcall	FreePrivateData( REFGUID refguid) ;
-		DWORD			__stdcall	SetPriority( DWORD PriorityNew) ;
-		DWORD			__stdcall	GetPriority() ;
-		void			__stdcall	PreLoad() ;
-		D3DRESOURCETYPE	__stdcall	GetType() ;
-		HRESULT			__stdcall	Lock( UINT OffsetToLock,UINT SizeToLock,void** ppbData,DWORD Flags) ;
-		HRESULT			__stdcall	Unlock() ;
-		HRESULT			__stdcall	GetDesc( D3DVERTEXBUFFER_DESC *pDesc) ;
+		HRESULT				GetDevice( IDirect3DDevice9** ppDevice) ;
+		HRESULT				SetPrivateData( REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) ;
+		HRESULT				GetPrivateData( REFGUID refguid,void* pData,DWORD* pSizeOfData) ;
+		HRESULT				FreePrivateData( REFGUID refguid) ;
+		DWORD				SetPriority( DWORD PriorityNew) ;
+		DWORD				GetPriority() ;
+		void				PreLoad() ;
+		D3DRESOURCETYPE		GetType() ;
+		HRESULT				Lock( UINT OffsetToLock,UINT SizeToLock,void** ppbData,DWORD Flags) ;
+		HRESULT				Unlock() ;
+		HRESULT				GetDesc( D3DVERTEXBUFFER_DESC *pDesc) ;
 
 //#ifdef D3D_DEBUG_INFO
 		LPCWSTR Name;

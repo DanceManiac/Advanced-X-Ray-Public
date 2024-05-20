@@ -13,30 +13,30 @@ extern "C" {
 	public:
 		xrIDirect3DTexture9(IDirect3DDevice9*	pIDirect3DDevice9, UINT iWidth,UINT iHeight,UINT iLevels,DWORD iUsage,D3DFORMAT iFormat,D3DPOOL iPool);
 		/*** IUnknown methods ***/
-		HRESULT			__stdcall	QueryInterface( REFIID riid, void** ppvObj) ;
-		ULONG			__stdcall	AddRef() ;
-		ULONG			__stdcall	Release() ;
+		HRESULT				QueryInterface( REFIID riid, void** ppvObj) ;
+		ULONG				AddRef() ;
+		ULONG				Release() ;
 
 		/*** IDirect3DBaseTexture9 methods ***/
-		HRESULT			__stdcall	GetDevice( IDirect3DDevice9** ppDevice) ;
-		HRESULT			__stdcall	SetPrivateData( REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) ;
-		HRESULT			__stdcall	GetPrivateData( REFGUID refguid,void* pData,DWORD* pSizeOfData) ;
-		HRESULT			__stdcall	FreePrivateData( REFGUID refguid) ;
-		DWORD			__stdcall	SetPriority( DWORD PriorityNew) ;
-		DWORD			__stdcall	GetPriority() ;
-		void			__stdcall	PreLoad() ;
-		D3DRESOURCETYPE	__stdcall	GetType() ;
-		DWORD			__stdcall	SetLOD( DWORD LODNew) ;
-		DWORD			__stdcall	GetLOD() ;
-		DWORD			__stdcall	GetLevelCount() ;
-		HRESULT			__stdcall	SetAutoGenFilterType( D3DTEXTUREFILTERTYPE FilterType) ;
-		D3DTEXTUREFILTERTYPE			__stdcall	GetAutoGenFilterType() ;
-		void			__stdcall	GenerateMipSubLevels() ;
-		HRESULT			__stdcall	GetLevelDesc( UINT Level,D3DSURFACE_DESC *pDesc) ;
-		HRESULT			__stdcall	GetSurfaceLevel( UINT Level,IDirect3DSurface9** ppSurfaceLevel) ;
-		HRESULT			__stdcall	LockRect( UINT Level,D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags) ;
-		HRESULT			__stdcall	UnlockRect( UINT Level) ;
-		HRESULT			__stdcall	AddDirtyRect( CONST RECT* pDirtyRect) ;
+		HRESULT				GetDevice( IDirect3DDevice9** ppDevice) ;
+		HRESULT				SetPrivateData( REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) ;
+		HRESULT				GetPrivateData( REFGUID refguid,void* pData,DWORD* pSizeOfData) ;
+		HRESULT				FreePrivateData( REFGUID refguid) ;
+		DWORD				SetPriority( DWORD PriorityNew) ;
+		DWORD				GetPriority() ;
+		void				PreLoad() ;
+		D3DRESOURCETYPE		GetType() ;
+		DWORD				SetLOD( DWORD LODNew) ;
+		DWORD				GetLOD() ;
+		DWORD				GetLevelCount() ;
+		HRESULT				SetAutoGenFilterType( D3DTEXTUREFILTERTYPE FilterType) ;
+		D3DTEXTUREFILTERTYPE				GetAutoGenFilterType() ;
+		void				GenerateMipSubLevels() ;
+		HRESULT				GetLevelDesc( UINT Level,D3DSURFACE_DESC *pDesc) ;
+		HRESULT				GetSurfaceLevel( UINT Level,IDirect3DSurface9** ppSurfaceLevel) ;
+		HRESULT				LockRect( UINT Level,D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags) ;
+		HRESULT				UnlockRect( UINT Level) ;
+		HRESULT				AddDirtyRect( CONST RECT* pDirtyRect) ;
 
 //#ifdef D3D_DEBUG_INFO
 		LPCWSTR Name;

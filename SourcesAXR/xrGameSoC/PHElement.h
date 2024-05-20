@@ -9,6 +9,8 @@
 #include "PHDisabling.h"
 #include "PHGeometryOwner.h"
 #include "PHInterpolation.h"
+#include "PHFracture.h"
+
 #ifndef PH_ELEMENT
 #define PH_ELEMENT
 class CPHElement;

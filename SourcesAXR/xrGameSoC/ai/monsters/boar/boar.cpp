@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "boar.h"
 #include "boar_state_manager.h"
-#include "../../../../skeletoncustom.h"
+#include "../../../../Include/xrRender/Kinematics.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../monster_velocity_space.h"
 #include "../../../game_object_space.h"
 #include "../control_animation_base.h"
@@ -116,7 +117,7 @@ void CAI_Boar::reinit()
 
 void  CAI_Boar::BoneCallback(CBoneInstance *B)
 {
-	CAI_Boar	*P = static_cast<CAI_Boar*>(B->Callback_Param);
+	CAI_Boar	*P = static_cast<CAI_Boar*>(B->callback_param());
 
 	if (!P->look_at_enemy) return;
 	
@@ -132,7 +133,7 @@ BOOL CAI_Boar::net_Spawn (CSE_Abstract* DC)
 	
 	if(!PPhysicsShell())//нельзя ставить колбеки, если создан физ шел - у него стоят свои колбеки!!!
 	{
-		CBoneInstance& BI = smart_cast<CKinematics*>(Visual())->LL_GetBoneInstance(smart_cast<CKinematics*>(Visual())->LL_BoneID("bip01_head"));
+		CBoneInstance& BI = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(smart_cast<IKinematics*>(Visual())->LL_BoneID("bip01_head"));
 		BI.set_callback(bctCustom,BoneCallback,this);
 	}
 	

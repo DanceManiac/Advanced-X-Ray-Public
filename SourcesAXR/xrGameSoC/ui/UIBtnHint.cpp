@@ -14,8 +14,7 @@ CUIButtonHint::CUIButtonHint	()
 
 	CUIXmlInit					xml_init;
 	CUIXml						uiXml;
-	bool xml_result				= uiXml.Init(CONFIG_PATH, UI_PATH, "hint_item.xml");
-	R_ASSERT3					(xml_result, "xml file not found", "hint_item.xml");
+	uiXml.Load					(CONFIG_PATH, UI_PATH, "hint_item.xml");
 
 	xml_init.InitWindow			(uiXml,"button_hint",0,this);
 	

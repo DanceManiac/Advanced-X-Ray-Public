@@ -1,17 +1,20 @@
 #pragma once
 #include <boost/noncopyable.hpp>
+
+#include "../Include/xrRender/KinematicsAnimated.h"
+
 class CBlend;
 class animation_movement_controller : private boost::noncopyable
 {
 	Fmatrix&		m_pObjXForm;
 	Fmatrix			m_startObjXForm;
 	Fmatrix			m_startRootXform;
-	CKinematics*	m_pKinematicsC;
+	IKinematics*	m_pKinematicsC;
 	CBlend*			m_control_blend;
 	static void		RootBoneCallback				(CBoneInstance* B);
 	void			deinitialize					();
 public:		
-			animation_movement_controller		( Fmatrix	*_pObjXForm, CKinematics *_pKinematicsC,CBlend *b );
+			animation_movement_controller		( Fmatrix	*_pObjXForm, IKinematics *_pKinematicsC,CBlend *b );
 			~animation_movement_controller		( );
 			void	ObjStartXform				( Fmatrix &m )const { m.set( m_startObjXForm ) ;}
 			CBlend*	ControlBlend				( ) const { return m_control_blend; }

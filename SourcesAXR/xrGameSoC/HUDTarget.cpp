@@ -6,14 +6,14 @@
 #include "stdafx.h"
 #include "hudtarget.h"
 #include "hudmanager.h"
-#include "GameMtlLib.h"
+#include "../xrEngine/gamemtllib.h"
 
-#include "../Environment.h"
-#include "../CustomHUD.h"
+#include "../xrEngine/Environment.h"
+#include "../xrEngine/CustomHUD.h"
 #include "Entity.h"
 #include "level.h"
 #include "game_cl_base.h"
-#include "../igame_persistent.h"
+#include "../xrEngine/igame_persistent.h"
 
 
 #include "InventoryOwner.h"
@@ -26,12 +26,11 @@
 #include "inventory_item.h"
 #include "inventory.h"
 
-u32 C_ON_ENEMY		D3DCOLOR_XRGB(0xff,0,0);
-u32 C_ON_NEUTRAL	D3DCOLOR_XRGB(0xff,0xff,0x80);
-u32 C_ON_FRIEND		D3DCOLOR_XRGB(0,0xff,0);
+#define C_ON_ENEMY		color_xrgb(0xff,0,0)
+#define C_ON_NEUTRAL	color_xrgb(0xff,0xff,0x80)
+#define C_ON_FRIEND		color_xrgb(0,0xff,0)
 
-
-#define C_DEFAULT	D3DCOLOR_XRGB(0xff,0xff,0xff)
+#define C_DEFAULT	color_xrgb(0xff,0xff,0xff)
 #define C_SIZE		0.025f
 #define NEAR_LIM	0.5f
 
@@ -60,8 +59,8 @@ CHUDTarget::CHUDTarget	()
 {    
 	fuzzyShowInfo		= 0.f;
 	RQ.range			= 0.f;
-	hGeom.create		(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
-	hShader.create		("hud\\cursor","ui\\cursor");
+	//	hGeom.create		(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
+	hShader->create("hud\\cursor", "ui\\cursor");
 
 	RQ.set				(NULL, 0.f, -1);
 
@@ -91,7 +90,7 @@ ICF static BOOL pick_trace_callback(collide::rq_result& result, LPVOID params)
 	}else{
 		//получить треугольник и узнать его материал
 		CDB::TRI* T		= Level().ObjectSpace.GetStaticTris()+result.element;
-		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable)) 
+		if (GMLib.GetMaterialByIdx(T->material)->Flags.is(SGameMtl::flPassable))
 			return TRUE;
 	}
 	*RQ					= result;
@@ -108,7 +107,7 @@ void CHUDTarget::CursorOnFrame ()
 	// Render cursor
 	if(Level().CurrentEntity()){
 		RQ.O			= 0; 
-		RQ.range		= g_pGamePersistent->Environment().CurrentEnv.far_plane*0.99f;
+		RQ.range		= g_pGamePersistent->Environment().CurrentEnv->far_plane*0.99f;
 		RQ.element		= -1;
 		
 		collide::ray_defs	RD(p1, dir, RQ.range, CDB::OPT_CULL, collide::rqtBoth);
@@ -135,12 +134,13 @@ void CHUDTarget::Render()
 	
 	// Render cursor
 	u32 C				= C_DEFAULT;
-	
-	FVF::TL				PT;
+
 	Fvector				p2;
 	p2.mad				(p1,dir,RQ.range);
-	PT.transform		(p2,Device.mFullTransform);
-	float				di_size = C_SIZE/powf(PT.p.w,.2f);
+	Fvector4			pt;
+	Device.mFullTransform.transform(pt, p2);
+	pt.y				= -pt.y;
+	float				di_size = C_SIZE / powf(pt.w, .2f);
 
 	CGameFont* F		= HUD().Font().pFontGraffiti19Russian;
 	F->SetAligment		(CGameFont::alCenter);
@@ -233,41 +233,50 @@ void CHUDTarget::Render()
 		clamp(fuzzyShowInfo,0.f,1.f);
 	}
 
+	Fvector2 scr_size;
+	scr_size.set(float(Device.dwWidth), float(Device.dwHeight));
+	float size_x = scr_size.x * di_size;
+	float size_y = scr_size.y * di_size;
+
+	size_y = size_x;
+
+	float w_2 = scr_size.x / 2.0f;
+	float h_2 = scr_size.y / 2.0f;
+
+	// Convert to screen coords
+	float cx = (pt.x + 1) * w_2;
+	float cy = (pt.y + 1) * h_2;
+
 	//отрендерить кружочек или крестик
-	if(!m_bShowCrosshair){
-		// actual rendering
-		u32			vOffset;
-		FVF::TL*	pv		= (FVF::TL*)RCache.Vertex.Lock(4,hGeom.stride(),vOffset);
-		
-		Fvector2		scr_size;
-//.		scr_size.set	(float(::Render->getTarget()->get_width()), float(::Render->getTarget()->get_height()));
-		scr_size.set	(float(Device.dwWidth) ,float(Device.dwHeight));
-		float			size_x = scr_size.x	* di_size;
-		float			size_y = scr_size.y * di_size;
+	if(!m_bShowCrosshair)
+	{
+		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI()->m_currentPointType);
 
-		size_y			= size_x;
-
-		float			w_2		= scr_size.x/2.0f;
-		float			h_2		= scr_size.y/2.0f;
-
-		// Convert to screen coords
-		float cx		    = (PT.p.x+1)*w_2;
-		float cy		    = (PT.p.y+1)*h_2;
-
-		pv->set				(cx - size_x, cy + size_y, C, 0, 1); ++pv;
-		pv->set				(cx - size_x, cy - size_y, C, 0, 0); ++pv;
-		pv->set				(cx + size_x, cy + size_y, C, 1, 1); ++pv;
-		pv->set				(cx + size_x, cy - size_y, C, 1, 0); ++pv;
+		//	TODO: return code back to indexed rendering since we use quads
+		//	Tri 1
+		UIRender->PushPoint(cx - size_x, cy + size_y, 0, C, 0, 1);
+		UIRender->PushPoint(cx - size_x, cy - size_y, 0, C, 0, 0);
+		UIRender->PushPoint(cx + size_x, cy + size_y, 0, C, 1, 1);
+		//	Tri 2
+		UIRender->PushPoint(cx + size_x, cy + size_y, 0, C, 1, 1);
+		UIRender->PushPoint(cx - size_x, cy - size_y, 0, C, 0, 0);
+		UIRender->PushPoint(cx + size_x, cy - size_y, 0, C, 1, 0);
 
 		// unlock VB and Render it as triangle LIST
-		RCache.Vertex.Unlock(4,hGeom.stride());
-		RCache.set_Shader	(hShader);
-		RCache.set_Geometry	(hGeom);
-		RCache.Render		(D3DPT_TRIANGLELIST,vOffset,0,4,0,2);
-	}else{
+
+		//if (crosshair_type == 2)
+		//	UIRender->SetShader(*hShaderCrosshairBuild);
+
+		if (!m_bShowCrosshair /*&&  crosshair_type == 1 || crosshair_type == 3*/)
+			UIRender->SetShader(*hShader);
+
+		UIRender->FlushPrimitive();
+	}
+	else
+	{
 		//отрендерить прицел
-		HUDCrosshair.cross_color	= C;
-		HUDCrosshair.OnRender		();
+		HUDCrosshair.cross_color = C;
+		HUDCrosshair.OnRender(Fvector2{ cx, cy }, scr_size);
 	}
 }
 

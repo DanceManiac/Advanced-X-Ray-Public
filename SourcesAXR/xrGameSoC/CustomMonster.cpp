@@ -16,7 +16,8 @@
 #include "group_hierarchy_holder.h"
 #include "customzone.h"
 #include "clsid_game.h"
-#include "../skeletonanimated.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "detail_path_manager.h"
 #include "memory_manager.h"
 #include "visual_memory_manager.h"
@@ -57,7 +58,7 @@ extern int g_AI_inactive_time;
 	Flags32		psAI_Flags	= {0};
 #endif // MASTER_GOLD
 
-void CCustomMonster::SAnimState::Create(CKinematicsAnimated* K, LPCSTR base)
+void CCustomMonster::SAnimState::Create(IKinematicsAnimated* K, LPCSTR base)
 {
 	char	buf[128];
 	fwd		= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base,"_fwd"));
@@ -66,7 +67,7 @@ void CCustomMonster::SAnimState::Create(CKinematicsAnimated* K, LPCSTR base)
 	rs		= K->ID_Cycle_Safe(strconcat(sizeof(buf),buf,base,"_rs"));
 }
 
-//void __stdcall CCustomMonster::TorsoSpinCallback(CBoneInstance* B)
+//void  CCustomMonster::TorsoSpinCallback(CBoneInstance* B)
 //{
 //	CCustomMonster*		M = static_cast<CCustomMonster*> (B->Callback_Param);
 //
@@ -79,7 +80,8 @@ void CCustomMonster::SAnimState::Create(CKinematicsAnimated* K, LPCSTR base)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CCustomMonster::CCustomMonster()
+CCustomMonster::CCustomMonster() :
+	Feel::Vision(cast_game_object())
 {
 	m_sound_user_data_visitor	= 0;
 	m_memory_manager			= 0;
@@ -407,7 +409,7 @@ void CCustomMonster::UpdateCL	()
 	/*	//. hack just to skip 'CalculateBones'
 	if (sound().need_bone_data()) {
 		// we do this because we know here would be virtual function call
-		CKinematics					*kinematics = smart_cast<CKinematics*>(Visual());
+		IKinematics					*kinematics = smart_cast<IKinematics*>(Visual());
 		VERIFY						(kinematics);
 		kinematics->CalculateBones	();
 	}
@@ -524,7 +526,7 @@ BOOL CCustomMonster::feel_visible_isRelevant (CObject* O)
 void CCustomMonster::eye_pp_s0			( )
 {
 	// Eye matrix
-	CKinematics* V							= smart_cast<CKinematics*>(Visual());
+	IKinematics* V							= smart_cast<IKinematics*>(Visual());
 	V->CalculateBones						();
 	Fmatrix&	mEye						= V->LL_GetTransform(u16(eye_bone));
 	Fmatrix		X;							X.mul_43	(XFORM(),mEye);
@@ -540,9 +542,9 @@ void CCustomMonster::update_range_fov	(float &new_range, float &new_fov, float s
 {
 	const float	standard_far_plane			= eye_range;
 
-	float	current_fog_density				= GamePersistent().Environment().CurrentEnv.fog_density	;	
+	float	current_fog_density				= GamePersistent().Environment().CurrentEnv->fog_density	;	
 	// 0=no_fog, 1=full_fog, >1 = super-fog
-	float	current_far_plane				= GamePersistent().Environment().CurrentEnv.far_plane	;	
+	float	current_far_plane				= GamePersistent().Environment().CurrentEnv->far_plane	;
 	// 300=standart, 50=super-fog
 
 	new_fov									= start_fov;
@@ -619,7 +621,7 @@ void CCustomMonster::UpdateCamera()
 	float									new_range = eye_range, new_fov = eye_fov;
 	if (g_Alive())
 		update_range_fov					(new_range, new_fov, memory().visual().current_state().m_max_view_distance*eye_range, eye_fov);
-	g_pGameLevel->Cameras().Update(eye_matrix.c,eye_matrix.k,eye_matrix.j,new_fov,.75f,new_range);
+	g_pGameLevel->Cameras().Update(eye_matrix.c, eye_matrix.k, eye_matrix.j, new_fov, .75f, new_range, 0, csFirstEye, 0); //Не уверен, что так можно. Будем смотреть.
 }
 
 void CCustomMonster::HitSignal(float /**perc/**/, Fvector& /**vLocalDir/**/, CObject* /**who/**/)
@@ -690,7 +692,7 @@ BOOL CCustomMonster::net_Spawn	(CSE_Abstract* DC)
 	}
 
 	// Eyes
-	eye_bone					= smart_cast<CKinematics*>(Visual())->LL_BoneID(pSettings->r_string(cNameSect(),"bone_head"));
+	eye_bone					= smart_cast<IKinematics*>(Visual())->LL_BoneID(pSettings->r_string(cNameSect(),"bone_head"));
 
 	// weapons
 	if (Local()) {
@@ -1055,15 +1057,15 @@ void draw_visiblity_rays	(CCustomMonster *self, const CObject *object, collide::
 
 void CCustomMonster::OnRender()
 {
-	RCache.OnFrameEnd				();
+	DRender->OnFrameEnd();
 
 	for (int i=0; i<1; ++i) {
 		const xr_vector<CDetailPathManager::STravelPoint>		&keys	= !i ? movement().detail().m_key_points					: movement().detail().m_key_points;
 		const xr_vector<DetailPathManager::STravelPathPoint>	&path	= !i ? movement().detail().path()	: movement().detail().path();
-		u32									color0	= !i ? D3DCOLOR_XRGB(0,255,0)		: D3DCOLOR_XRGB(0,0,255);
-		u32									color1	= !i ? D3DCOLOR_XRGB(255,0,0)		: D3DCOLOR_XRGB(255,255,0);
-		u32									color2	= !i ? D3DCOLOR_XRGB(0,0,255)		: D3DCOLOR_XRGB(0,255,255);
-		u32									color3	= !i ? D3DCOLOR_XRGB(255,255,255)	: D3DCOLOR_XRGB(255,0,255);
+		u32									color0	= !i ? color_xrgb(0,255,0)		: color_xrgb(0,0,255);
+		u32									color1	= !i ? color_xrgb(255,0,0)		: color_xrgb(255,255,0);
+		u32									color2	= !i ? color_xrgb(0,0,255)		: color_xrgb(0,255,255);
+		u32									color3	= !i ? color_xrgb(255,255,255)	: color_xrgb(255,0,255);
 		float								radius0 = !i ? .1f : .15f;
 		float								radius1 = !i ? .2f : .3f;
 		{
@@ -1102,19 +1104,19 @@ void CCustomMonster::OnRender()
 
 		Fvector				P1 = ai().level_graph().vertex_position(node);
 		P1.y				+= 1.f;
-		Level().debug_renderer().draw_aabb	(P1,.5f,1.f,.5f,D3DCOLOR_XRGB(255,0,0));
+		Level().debug_renderer().draw_aabb	(P1,.5f,1.f,.5f,color_xrgb(255,0,0));
 	}
 	if (g_Alive()) {
 		if (memory().enemy().selected()) {
 			Fvector				P1 = memory().memory(memory().enemy().selected()).m_object_params.m_position;
 			P1.y				+= 1.f;
-			Level().debug_renderer().draw_aabb	(P1,1.f,1.f,1.f,D3DCOLOR_XRGB(0,0,0));
+			Level().debug_renderer().draw_aabb	(P1,1.f,1.f,1.f,color_xrgb(0,0,0));
 		}
 
 		if (memory().danger().selected()) {
 			Fvector				P1 = memory().danger().selected()->position();
 			P1.y				+= 1.f;
-			Level().debug_renderer().draw_aabb	(P1,1.f,1.f,1.f,D3DCOLOR_XRGB(0,0,0));
+			Level().debug_renderer().draw_aabb	(P1,1.f,1.f,1.f,color_xrgb(0,0,0));
 		}
 	}
 
@@ -1131,7 +1133,7 @@ void CCustomMonster::OnRender()
 		character_physics_support()->movement()->dbg_Draw();
 	
 	if (bDebug)
-		smart_cast<CKinematics*>(Visual())->DebugRender(XFORM());
+		smart_cast<IKinematics*>(Visual())->DebugRender(XFORM());
 }
 #endif // DEBUG
 

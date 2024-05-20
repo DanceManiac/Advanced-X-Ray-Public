@@ -291,21 +291,36 @@ float3	v_hemi        	(float3 n)                        	{        return L_hemi_
 float3	v_hemi_wrap     (float3 n, float w)                	{        return L_hemi_color*(w + (1-w)*n.y);                   }
 float3	v_sun           (float3 n)                        	{        return L_sun_color*dot(n,-L_sun_dir_w);                }
 float3	v_sun_wrap      (float3 n, float w)                	{        return L_sun_color*(w+(1-w)*dot(n,-L_sun_dir_w));      }
-half3   p_hemi          (float2 tc)                         {
-//        half3        	t_lmh         = tex2D             	(s_hemi, tc);
-//        return  dot     (t_lmh,1.h/4.h);
-        half4        	t_lmh         = tex2D             	(s_hemi, tc);
-        return t_lmh.a;
+
+half3   p_hemi(float2 tc)
+{
+	half4 t_lmh = tex2D(s_hemi, tc);
+		
+#ifdef USE_SHOC_MODE
+	half r_lmh = (1.0/3.0);
+	return dot(t_lmh.rgb, float3(r_lmh, r_lmh, r_lmh));
+#else // USE_SHOC_MODE
+	return t_lmh.a;
+#endif // USE_SHOC_MODE
 }
 
 half   get_hemi( half4 lmh)
 {
+#ifdef USE_SHOC_MODE
+	half r_lmh = (1.0/3.0);
+	return dot(lmh.rgb, half3(r_lmh, r_lmh, r_lmh));
+#else // USE_SHOC_MODE
 	return lmh.a;
+#endif // USE_SHOC_MODE
 }
 
 half   get_sun( half4 lmh)
 {
+#ifdef USE_SHOC_MODE
+	return lmh.a;
+#else // USE_SHOC_MODE
 	return lmh.g;
+#endif // USE_SHOC_MODE
 }
 
 //	contrast function

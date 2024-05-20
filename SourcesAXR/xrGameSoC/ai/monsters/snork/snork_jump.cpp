@@ -2,7 +2,7 @@
 #include "snork.h"
 #include "snork_jump.h"
 //#include "../jump_ability.h"
-#include "../../../../skeletonanimated.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../level.h"
 
 //CSnorkJump::CSnorkJump(CSnork *monster)
@@ -134,7 +134,7 @@
 //void CSnorkJump::init_jump_normal()
 //{
 //	MotionID			def1, def2, def3;
-//	CKinematicsAnimated	*pSkel = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+//	IKinematicsAnimated	*pSkel = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 //
 //	def1				= pSkel->ID_Cycle_Safe("stand_attack_2_0");		VERIFY(def1);
 //	def2				= pSkel->ID_Cycle_Safe("stand_attack_2_1");		VERIFY(def2);
@@ -146,7 +146,7 @@
 //void CSnorkJump::init_jump_specific()
 //{
 //	MotionID			def1, def2, def3;
-//	CKinematicsAnimated	*pSkel = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+//	IKinematicsAnimated	*pSkel = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 //
 //	def1				= pSkel->ID_Cycle_Safe("stand_attack_2_0");		VERIFY(def1);
 //	def2				= pSkel->ID_Cycle_Safe("jump_rs_0");			VERIFY(def2);

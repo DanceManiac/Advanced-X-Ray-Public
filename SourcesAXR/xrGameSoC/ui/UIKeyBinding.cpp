@@ -35,7 +35,7 @@ void CUIKeyBinding::FillUpList(CUIXml& xml_doc_ui, LPCSTR path_ui)
 	string256		buf;
 	CUIXml			xml_doc;
 	CStringTable	st;
-	xml_doc.Init							(CONFIG_PATH, UI_PATH, "ui_keybinding.xml");
+	xml_doc.Load							(CONFIG_PATH, UI_PATH, "ui_keybinding.xml");
 
 	int groupsCount = xml_doc.GetNodesNum	("",0,"group");
 

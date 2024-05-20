@@ -1386,6 +1386,14 @@ HRESULT	CRender::shader_compile			(
 	{
 		sh_name[len]='0'; ++len;
 	}
+
+	if (ShadowOfChernobylMode)
+	{
+		defines[def_it].Name		= "USE_SHOC_MODE";
+		defines[def_it].Definition	= "1";
+		def_it						++;
+		sh_name[len] = '0' + char(ShadowOfChernobylMode); ++len;
+	}
 	
 	defines[def_it].Name = "USE_PUDDLES";
 	defines[def_it].Definition = "1";

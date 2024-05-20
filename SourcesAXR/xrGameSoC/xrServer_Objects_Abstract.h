@@ -35,12 +35,12 @@ class CDUInterface;
 
 class ISE_Shape{
 public:
-	virtual void __stdcall			assign_shapes	(CShapeData::shape_def* shapes, u32 cnt)=0;
+	virtual void					assign_shapes	(CShapeData::shape_def* shapes, u32 cnt)=0;
 };
 
 SERVER_ENTITY_DECLARE_BEGIN0(CSE_Visual)
-    void __stdcall					OnChangeVisual	(PropValue* sender);  
-    void __stdcall					OnChangeAnim	(PropValue* sender);  
+    void							OnChangeVisual	(PropValue* sender);  
+    void							OnChangeAnim	(PropValue* sender);  
 public:
 	shared_str						visual_name;
 	shared_str						startup_animation;
@@ -59,13 +59,13 @@ public:
 	LPCSTR							get_visual		() const {return *visual_name;};
 	virtual void					FillProps		(LPCSTR pref, PropItemVec &items);
 
-	virtual CSE_Visual* __stdcall	visual			() = 0;
+	virtual CSE_Visual*				visual			() = 0;
 };
 add_to_type_list(CSE_Visual)
 #define script_type_list save_type_list(CSE_Visual)
 
 SERVER_ENTITY_DECLARE_BEGIN0(CSE_Motion)
-	void __stdcall	OnChangeMotion	(PropValue* sender);  
+	void			OnChangeMotion	(PropValue* sender);  
 public:
 	shared_str						motion_name;
 public:
@@ -80,13 +80,13 @@ public:
 
 	virtual void					FillProps		(LPCSTR pref, PropItemVec &items);
 
-	virtual CSE_Motion* __stdcall	motion			() = 0;
+	virtual CSE_Motion*				motion			() = 0;
 };
 add_to_type_list(CSE_Motion)
 #define script_type_list save_type_list(CSE_Motion)
 
 struct ISE_AbstractLEOwner{
-	virtual void		__stdcall	get_bone_xform	(LPCSTR name, Fmatrix& xform) = 0;
+	virtual void					get_bone_xform	(LPCSTR name, Fmatrix& xform) = 0;
 };
 
 struct ISE_Abstract {
@@ -101,21 +101,21 @@ public:
 	IC	void						set_editor_flag	(u32 mask)	{m_editor_flags.set	(mask,TRUE);}
 
 public:
-	virtual void		__stdcall	Spawn_Write		(NET_Packet &tNetPacket, BOOL bLocal) = 0;
-	virtual BOOL		__stdcall	Spawn_Read		(NET_Packet &tNetPacket) = 0;
-	virtual void		__stdcall	FillProp		(LPCSTR pref, PropItemVec &items) = 0;
-	virtual LPCSTR		__stdcall	name			() const = 0;
-	virtual void		__stdcall	set_name		(LPCSTR) = 0;
-	virtual LPCSTR		__stdcall	name_replace	() const = 0;
-	virtual void		__stdcall	set_name_replace(LPCSTR) = 0;
-	virtual Fvector&	__stdcall	position		() = 0;
-	virtual Fvector&	__stdcall	angle			() = 0;
-	virtual Flags16&	__stdcall	flags			() = 0;
-	virtual ISE_Shape*  __stdcall	shape			() = 0;
-	virtual CSE_Visual* __stdcall	visual			() = 0;
-	virtual CSE_Motion* __stdcall	motion			() = 0;
-	virtual bool		__stdcall	validate		() = 0;
-	virtual void 		__stdcall	on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F) = 0;
+	virtual void					Spawn_Write		(NET_Packet &tNetPacket, BOOL bLocal) = 0;
+	virtual BOOL					Spawn_Read		(NET_Packet &tNetPacket) = 0;
+	virtual void					FillProp		(LPCSTR pref, PropItemVec &items) = 0;
+	virtual LPCSTR					name			() const = 0;
+	virtual void					set_name		(LPCSTR) = 0;
+	virtual LPCSTR					name_replace	() const = 0;
+	virtual void					set_name_replace(LPCSTR) = 0;
+	virtual Fvector&				position		() = 0;
+	virtual Fvector&				angle			() = 0;
+	virtual Flags16&				flags			() = 0;
+	virtual ISE_Shape*				shape			() = 0;
+	virtual CSE_Visual*				visual			() = 0;
+	virtual CSE_Motion*				motion			() = 0;
+	virtual bool					validate		() = 0;
+	virtual void 					on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F) = 0;
 };
 
 #pragma warning(pop)

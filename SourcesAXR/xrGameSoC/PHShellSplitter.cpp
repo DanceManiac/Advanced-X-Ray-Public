@@ -6,7 +6,8 @@
 #include "PHJointDestroyInfo.h"
 #include "Geometry.h"
 #include "MathUtils.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "PHCollideValidator.h"
 CPHShellSplitterHolder::CPHShellSplitterHolder(CPHShell* shell)
 {
@@ -38,7 +39,7 @@ shell_root CPHShellSplitterHolder::SplitJoint(u16 aspl)
 	u16 end_joint=m_pShell->joints[start_joint]->JointDestroyInfo()->m_end_joint;
 
 
-	shell_root ret = mk_pair(new_shell,(m_pShell->joints[start_joint])->BoneID());
+	shell_root ret = std::make_pair(new_shell,(m_pShell->joints[start_joint])->BoneID());
 
 
 
@@ -289,7 +290,7 @@ shell_root CPHShellSplitterHolder::ElementSingleSplit(const element_fracture &sp
 			CPHJoint* joint=(*i);
 			if(joint->PFirst_element()==source_element)
 			{
-				CKinematics* K = m_pShell->PKinematics();
+				IKinematics* K = m_pShell->PKinematics();
 				dVector3 safe_pos1, safe_pos2;
 				dQuaternion safe_q1, safe_q2;
 				CPhysicsElement* el1=cast_PhysicsElement(split_elem.first),*el2=joint->PSecond_element();
@@ -350,7 +351,7 @@ shell_root CPHShellSplitterHolder::ElementSingleSplit(const element_fracture &sp
 	VERIFY(dBodyStateValide(split_elem.first->get_body()));
 	new_shell_last->set_ObjectContactCallback(NULL);
 	new_shell_last->set_PhysicsRefObject(NULL);
-	return mk_pair(new_shell_last,split_elem.second.m_bone_id);
+	return std::make_pair(new_shell_last,split_elem.second.m_bone_id);
 
 }
 

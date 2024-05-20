@@ -5,7 +5,7 @@
 #pragma once
 
 #include "CameraEffector.h"
-#include "../cameramanager.h"
+#include "../xrEngine/cameramanager.h"
 #include "WeaponMagazined.h"
 
 class CEffectorZoomInertion : public CEffectorCam

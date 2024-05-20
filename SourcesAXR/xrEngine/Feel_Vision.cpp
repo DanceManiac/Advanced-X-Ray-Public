@@ -171,7 +171,7 @@ namespace Feel {
 
 			// verify relation
 
-			if (ClearSkyMode)
+			if (ClearSkyMode || ShadowOfChernobylMode)
 			{
 				if (positive(I->fuzzy) && I->O->Position().similar(I->cp_LR_dst, lr_granularity) && P.similar(I->cp_LR_src, lr_granularity))
 					continue;

@@ -1,17 +1,19 @@
 #pragma once
 
-#include "../feel_touch.h"
-#include "../feel_sound.h"
-#include "../iinputreceiver.h"
-#include "../SkeletonAnimated.h"
+#include "../xrEngine/feel_touch.h"
+#include "../xrEngine/feel_sound.h"
+#include "../xrEngine/iinputreceiver.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../Include/xrRender/UIShader.h"
 #include "actor_flags.h"
 #include "actor_defs.h"
 #include "entity_alive.h"
 #include "PHMovementControl.h"
 #include "PhysicsShell.h"
 #include "InventoryOwner.h"
-#include "../StatGraph.h"
+#include "../xrEngine/StatGraph.h"
 #include "PhraseDialogManager.h"
+#include "ui_defs.h"
 
 #include "step_manager.h"
 
@@ -607,7 +609,7 @@ virtual	bool				can_validate_position_on_spawn	(){return false;}
 	//---------------------------------------------
 #endif
 
-	ref_geom 				hFriendlyIndicator;
+//	ref_geom 				hFriendlyIndicator;
 	//////////////////////////////////////////////////////////////////////////
 	// Actor physics
 	//////////////////////////////////////////////////////////////////////////
@@ -636,7 +638,7 @@ public:
 	virtual void			ChangeVisual			( shared_str NewVisual );
 	virtual void			OnChangeVisual			();
 
-	virtual void			RenderIndicator			(Fvector dpos, float r1, float r2, ref_shader IndShader);
+	virtual void			RenderIndicator			(Fvector dpos, float r1, float r2, ui_shader IndShader);
 	virtual void			RenderText				(LPCSTR Text, Fvector dpos, float* pdup, u32 color);
 
 	//////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,7 @@
 #include "script_zone.h"
 #include "script_game_object.h"
 #include "xrserver_objects_alife_monsters.h"
-#include "../xr_collide_form.h"
+#include "../xrEngine/xr_collide_form.h"
 #include "script_callback_ex.h"
 #include "game_object_space.h"
 
@@ -97,7 +97,7 @@ BOOL CScriptZone::feel_touch_contact	(CObject* O)
 void CScriptZone::OnRender() 
 {
 	if(!bDebug) return;
-	RCache.OnFrameEnd();
+	//RCache.OnFrameEnd();
 	Fvector l_half; l_half.set(.5f, .5f, .5f);
 	Fmatrix l_ball, l_box;
 	xr_vector<CCF_Shape::shape_def> &l_shapes = ((CCF_Shape*)CFORM())->Shapes();
@@ -113,13 +113,13 @@ void CScriptZone::OnRender()
 				l_ball.scale(l_sphere.R, l_sphere.R, l_sphere.R);
 				Fvector l_p; XFORM().transform(l_p, l_sphere.P);
 				l_ball.translate_add(l_p);
-				Level().debug_renderer().draw_ellipse(l_ball, D3DCOLOR_XRGB(0,255,255));
+				Level().debug_renderer().draw_ellipse(l_ball, color_xrgb(0,255,255));
 			}
 			break;
 		case 1:
 			{
 				l_box.mul(XFORM(), l_pShape->data.box);
-				Level().debug_renderer().draw_obb(l_box, l_half, D3DCOLOR_XRGB(0,255,255));
+				Level().debug_renderer().draw_obb(l_box, l_half, color_xrgb(0,255,255));
 			}
 			break;
 		}

@@ -7,6 +7,10 @@
 #include "../hudmanager.h"
 #include <dinput.h>
 
+#include "../../Include/xrRender/DebugRender.h"
+#include "../../Include/xrRender/UIRender.h"
+#include "../../Include/xrRender/UISequenceVideoItem.h"
+
 void CUIVideoPlayerWnd::SendMessage	(CUIWindow* pWnd, s16 msg, void* pData)
 {
 	CUIWndCallback::OnEvent			(pWnd, msg, pData);
@@ -15,8 +19,7 @@ void CUIVideoPlayerWnd::SendMessage	(CUIWindow* pWnd, s16 msg, void* pData)
 void CUIVideoPlayerWnd::Init	(LPCSTR file_name)
 {
 	CUIXml uiXml;
-	bool xml_result					= uiXml.Init(CONFIG_PATH, UI_PATH, "video_templ.xml");
-	R_ASSERT3						(xml_result, "xml file not found", "video_templ.xml");
+	uiXml.Load						(CONFIG_PATH, UI_PATH, "video_templ.xml");
 	Init							(&uiXml,"video_player");
 	SetFile							(file_name);
 }
@@ -68,9 +71,9 @@ void CUIVideoPlayerWnd::SetFile		(LPCSTR fn)
 void CUIVideoPlayerWnd::Draw		()
 {
 	inherited::Draw	();
-	if(!m_texture && m_surface->GetShader()){
-		RCache.set_Shader							(m_surface->GetShader());
-		m_texture = RCache.get_ActiveTexture		(0);
+	if (!m_texture && m_surface->GetShader()) {
+		UIRender->SetShader(*m_surface->GetShader());
+		m_texture->CaptureTexture					();
 		m_texture->video_Stop						();
 	}
 }

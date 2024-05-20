@@ -10,19 +10,19 @@
 #include "SpaceUtils.h"
 #include "MathUtils.h"
 #include "PhysicsShellHolder.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "PHCollideValidator.h"
 #include "game_object_space.h"
 //#pragma warning(disable:4995)
 //#pragma warning(disable:4267)
-//#include "../../xrODE/ode/src/collision_kernel.h"
+//#include "../3rd party/ode/ode/src/collision_kernel.h"
 //#pragma warning(default:4995)
 //#pragma warning(default:4267)
 ///////////////////////////////////////////////////////////////
 ///#pragma warning(disable:4995)
 
-//#include "../../xrODE/ode/src/joint.h"
-//#include "../../xrODE/ode/src/objects.h"
+//#include "../3rd party/ode/ode/src/joint.h"
+//#include "../3rd party/ode/ode/src/objects.h"
 
 //#pragma warning(default:4995)
 ///////////////////////////////////////////////////////////////////
@@ -32,7 +32,9 @@
 #include "PHShell.h"
 #include "PHCollideValidator.h"
 #include "PHElementInline.h"
+#include "PhysicsShellAnimator.h"
 
+#include <boost/noncopyable.hpp>
 #ifdef ANIMATED_PHYSICS_OBJECT_SUPPORT
 	#include "PhysicsShellAnimator.h"
 #endif
@@ -592,7 +594,7 @@ void CPHShell::addEquelInertiaToEls(const dMass& M)
 	}
 }
 static BONE_P_MAP* spGetingMap=NULL;
-void CPHShell::build_FromKinematics(CKinematics* K,BONE_P_MAP* p_geting_map)
+void CPHShell::build_FromKinematics(IKinematics* K,BONE_P_MAP* p_geting_map)
 {
 	m_pKinematics			=K;
 	spGetingMap				=p_geting_map;
@@ -605,7 +607,7 @@ void CPHShell::build_FromKinematics(CKinematics* K,BONE_P_MAP* p_geting_map)
 	if(m_spliter_holder->isEmpty())ClearBreakInfo();
 }
 
-void CPHShell::preBuild_FromKinematics(CKinematics* K,BONE_P_MAP* p_geting_map)
+void CPHShell::preBuild_FromKinematics(IKinematics* K,BONE_P_MAP* p_geting_map)
 {
 	m_pKinematics			=K;
 	spGetingMap				=p_geting_map;
@@ -1028,7 +1030,7 @@ void CPHShell::AddElementRecursive(CPhysicsElement* root_e, u16 id,Fmatrix globa
 	bool bbb = lvis_check||(!breakable && root_e);
 	if(!bbb)
 	{	
-		CKinematics* K = m_pKinematics;
+		IKinematics* K = m_pKinematics;
 
 		Msg("all bones transform:--------");
 		

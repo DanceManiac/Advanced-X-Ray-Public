@@ -71,7 +71,7 @@ void					CRender::create					()
 
 	if (strstr(Core.Params, "-nodistort"))		o.distortion = FALSE;
 
-	if (xrGameManager::GetGame() == EGame::CS)
+	if (xrGameManager::GetGame() == EGame::CS || xrGameManager::GetGame() == EGame::SHOC)
 	{
 		o.distortion = FALSE;
 	}
@@ -82,7 +82,7 @@ void					CRender::create					()
 	if ( v_dev >= v_need )						o.color_mapping = TRUE;
 	else										o.color_mapping = FALSE;
 
-	if (xrGameManager::GetGame() == EGame::CS)
+	if (xrGameManager::GetGame() == EGame::CS || xrGameManager::GetGame() == EGame::SHOC)
 	{
 		o.color_mapping = FALSE;
 	}
@@ -865,6 +865,14 @@ HRESULT	CRender::shader_compile			(
 		def_it						++;
 	}
 	sh_name[len]='0'+char(4==m_skinning); ++len;
+
+	if (ShadowOfChernobylMode)
+	{
+		defines[def_it].Name		= "USE_SHOC_MODE";
+		defines[def_it].Definition	= "1";
+		def_it						++;
+		sh_name[len] = '0' + char(ShadowOfChernobylMode); ++len;
+	}
 
 	// finish
 	defines[def_it].Name			=	0;

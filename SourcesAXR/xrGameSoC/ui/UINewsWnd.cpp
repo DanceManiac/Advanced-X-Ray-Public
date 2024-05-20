@@ -28,8 +28,7 @@ void CUINewsWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 	string512 pth;
 
 	CUIXml uiXml;
-	bool xml_result				= uiXml.Init(CONFIG_PATH, UI_PATH, xml_name);
-	R_ASSERT3					(xml_result, "xml file not found", xml_name);
+	uiXml.Load					(CONFIG_PATH, UI_PATH, xml_name);
 	CUIXmlInit xml_init;
 
 	strconcat					(sizeof(pth),pth,start_from,"list");

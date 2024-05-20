@@ -4,6 +4,7 @@
 #include "../monster_velocity_space.h"
 #include "../control_animation_base.h"
 #include "../control_movement_base.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
 
 #ifdef _DEBUG
 #	include <dinput.h>
@@ -141,7 +142,7 @@ void CAI_Dog::CheckSpecParams(u32 spec_params)
 #ifdef _DEBUG
 void CAI_Dog::debug_on_key(int key)
 {
-	CKinematicsAnimated *skel = smart_cast<CKinematicsAnimated *>(Visual());
+	IKinematicsAnimated *skel = smart_cast<IKinematicsAnimated *>(Visual());
 
 	switch (key){
 	case DIK_1:

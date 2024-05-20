@@ -41,10 +41,10 @@ void	CGameSpy_QR2::LoadGameSpy(HMODULE hGameSpyDLL)
 {
 
 	GAMESPY_LOAD_FN(xrGS_RegisteredKey);
-	GAMESPY_LOAD_FN(xrGS_qr2_register_key);
+	GAMESPY_LOAD_FN(xrGS_qr2_register_keyA);
 	GAMESPY_LOAD_FN(xrGS_qr2_think);
 	GAMESPY_LOAD_FN(xrGS_qr2_shutdown);
-	GAMESPY_LOAD_FN(xrGS_qr2_buffer_add);
+	GAMESPY_LOAD_FN(xrGS_qr2_buffer_addA);
 	GAMESPY_LOAD_FN(xrGS_qr2_buffer_add_int);
 	GAMESPY_LOAD_FN(xrGS_qr2_keybuffer_add);
 
@@ -52,7 +52,7 @@ void	CGameSpy_QR2::LoadGameSpy(HMODULE hGameSpyDLL)
 	GAMESPY_LOAD_FN(xrGS_qr2_register_clientmessage_callback);
 	GAMESPY_LOAD_FN(xrGS_qr2_register_publicaddress_callback);
 
-	GAMESPY_LOAD_FN(xrGS_qr2_init);
+	GAMESPY_LOAD_FN(xrGS_qr2_initA);
 
 	GAMESPY_LOAD_FN(xrGS_GetGameVersion);
 }
@@ -69,55 +69,55 @@ void	CGameSpy_QR2::ShutDown	(void* qrec)
 void	CGameSpy_QR2::RegisterAdditionalKeys	()
 {
 	//---- Global Keys ----
-	xrGS_qr2_register_key(GAMETYPE_NAME_KEY,			("gametypename"));	
-	xrGS_qr2_register_key(DEDICATED_KEY,				("dedicated"));	
+	xrGS_qr2_register_keyA(GAMETYPE_NAME_KEY,			("gametypename"));	
+	xrGS_qr2_register_keyA(DEDICATED_KEY,				("dedicated"));	
 	//---- game_sv_base ---
-	xrGS_qr2_register_key(G_MAP_ROTATION_KEY,			("maprotation"));
-	xrGS_qr2_register_key(G_VOTING_ENABLED_KEY,			("voting"));
+	xrGS_qr2_register_keyA(G_MAP_ROTATION_KEY,			("maprotation"));
+	xrGS_qr2_register_keyA(G_VOTING_ENABLED_KEY,			("voting"));
 	//---- game sv mp ----
-	xrGS_qr2_register_key(G_SPECTATOR_MODES_KEY,		("spectatormodes"));
-	xrGS_qr2_register_key(G_MAX_PING_KEY,				("max_ping_limit"));
-	xrGS_qr2_register_key(G_USER_PASSWORD_KEY,			("user_password"));
+	xrGS_qr2_register_keyA(G_SPECTATOR_MODES_KEY,		("spectatormodes"));
+	xrGS_qr2_register_keyA(G_MAX_PING_KEY,				("max_ping_limit"));
+	xrGS_qr2_register_keyA(G_USER_PASSWORD_KEY,			("user_password"));
 #ifdef BATTLEYE
-	xrGS_qr2_register_key(G_BATTLEYE_KEY,				("use_battleye"));
+	xrGS_qr2_register_keyA(G_BATTLEYE_KEY,				("use_battleye"));
 #endif // BATTLEYE
 
 	//---- game_sv_deathmatch ----
-	xrGS_qr2_register_key(G_FRAG_LIMIT_KEY,				("fraglimit"));	
-	xrGS_qr2_register_key(G_TIME_LIMIT_KEY,				("timelimit"));	
-	xrGS_qr2_register_key(G_DAMAGE_BLOCK_TIME_KEY,		("damageblocktime"));
-	xrGS_qr2_register_key(G_DAMAGE_BLOCK_INDICATOR_KEY, ("damageblockindicator"));
-	xrGS_qr2_register_key(G_ANOMALIES_ENABLED_KEY,		("anomalies"));
-	xrGS_qr2_register_key(G_ANOMALIES_TIME_KEY,			("anomaliestime"));
-	xrGS_qr2_register_key(G_WARM_UP_TIME_KEY,			("warmuptime"));
-	xrGS_qr2_register_key(G_FORCE_RESPAWN_KEY,			("forcerespawn"));
+	xrGS_qr2_register_keyA(G_FRAG_LIMIT_KEY,				("fraglimit"));	
+	xrGS_qr2_register_keyA(G_TIME_LIMIT_KEY,				("timelimit"));	
+	xrGS_qr2_register_keyA(G_DAMAGE_BLOCK_TIME_KEY,		("damageblocktime"));
+	xrGS_qr2_register_keyA(G_DAMAGE_BLOCK_INDICATOR_KEY, ("damageblockindicator"));
+	xrGS_qr2_register_keyA(G_ANOMALIES_ENABLED_KEY,		("anomalies"));
+	xrGS_qr2_register_keyA(G_ANOMALIES_TIME_KEY,			("anomaliestime"));
+	xrGS_qr2_register_keyA(G_WARM_UP_TIME_KEY,			("warmuptime"));
+	xrGS_qr2_register_keyA(G_FORCE_RESPAWN_KEY,			("forcerespawn"));
 	//---- game_sv_teamdeathmatch ----
-	xrGS_qr2_register_key(G_AUTO_TEAM_BALANCE_KEY,		("autoteambalance"));
-	xrGS_qr2_register_key(G_AUTO_TEAM_SWAP_KEY,			("autoteamswap"));
-	xrGS_qr2_register_key(G_FRIENDLY_INDICATORS_KEY,	("friendlyindicators"));
-	xrGS_qr2_register_key(G_FRIENDLY_NAMES_KEY,			("friendlynames"));
-	xrGS_qr2_register_key(G_FRIENDLY_FIRE_KEY,			("friendlyfire"));
+	xrGS_qr2_register_keyA(G_AUTO_TEAM_BALANCE_KEY,		("autoteambalance"));
+	xrGS_qr2_register_keyA(G_AUTO_TEAM_SWAP_KEY,			("autoteamswap"));
+	xrGS_qr2_register_keyA(G_FRIENDLY_INDICATORS_KEY,	("friendlyindicators"));
+	xrGS_qr2_register_keyA(G_FRIENDLY_NAMES_KEY,			("friendlynames"));
+	xrGS_qr2_register_keyA(G_FRIENDLY_FIRE_KEY,			("friendlyfire"));
 	//---- game_sv_artefacthunt ----	
-	xrGS_qr2_register_key(G_ARTEFACTS_COUNT_KEY,		("artefactscount"));
-	xrGS_qr2_register_key(G_ARTEFACT_STAY_TIME_KEY,		("artefactstaytime"));
-	xrGS_qr2_register_key(G_ARTEFACT_RESPAWN_TIME_KEY,	("artefactrespawntime"));	
-	xrGS_qr2_register_key(G_REINFORCEMENT_KEY,			("reinforcement"));
-	xrGS_qr2_register_key(G_SHIELDED_BASES_KEY,			("shieldedbases"));
-	xrGS_qr2_register_key(G_RETURN_PLAYERS_KEY,			("returnplayers"));
-	xrGS_qr2_register_key(G_BEARER_CANT_SPRINT_KEY,		("bearercant_sprint"));
+	xrGS_qr2_register_keyA(G_ARTEFACTS_COUNT_KEY,		("artefactscount"));
+	xrGS_qr2_register_keyA(G_ARTEFACT_STAY_TIME_KEY,		("artefactstaytime"));
+	xrGS_qr2_register_keyA(G_ARTEFACT_RESPAWN_TIME_KEY,	("artefactrespawntime"));	
+	xrGS_qr2_register_keyA(G_REINFORCEMENT_KEY,			("reinforcement"));
+	xrGS_qr2_register_keyA(G_SHIELDED_BASES_KEY,			("shieldedbases"));
+	xrGS_qr2_register_keyA(G_RETURN_PLAYERS_KEY,			("returnplayers"));
+	xrGS_qr2_register_keyA(G_BEARER_CANT_SPRINT_KEY,		("bearercant_sprint"));
 
 	//---- Player keys	
-//	xrGS_qr2_register_key(P_NAME__KEY,					("name_"));
-//	xrGS_qr2_register_key(P_FRAGS__KEY,					("frags_"));
-//	xrGS_qr2_register_key(P_DEATH__KEY,					("death_"));
-//	xrGS_qr2_register_key(P_RANK__KEY,					("rank_"));
-//	xrGS_qr2_register_key(P_TEAM__KEY,					("p_team_"));
-	xrGS_qr2_register_key(P_SPECTATOR__KEY,				("spectator_"));
-	xrGS_qr2_register_key(P_ARTEFACTS__KEY,				("artefacts_"));
+//	xrGS_qr2_register_keyA(P_NAME__KEY,					("name_"));
+//	xrGS_qr2_register_keyA(P_FRAGS__KEY,					("frags_"));
+//	xrGS_qr2_register_keyA(P_DEATH__KEY,					("death_"));
+//	xrGS_qr2_register_keyA(P_RANK__KEY,					("rank_"));
+//	xrGS_qr2_register_keyA(P_TEAM__KEY,					("p_team_"));
+	xrGS_qr2_register_keyA(P_SPECTATOR__KEY,				("spectator_"));
+	xrGS_qr2_register_keyA(P_ARTEFACTS__KEY,				("artefacts_"));
 
 	//---- Team keys
-//	xrGS_qr2_register_key(T_NAME_KEY,					("t_name_key"));
-	xrGS_qr2_register_key(T_SCORE_T_KEY,					("t_score_t"));
+//	xrGS_qr2_register_keyA(T_NAME_KEY,					("t_name_key"));
+	xrGS_qr2_register_keyA(T_SCORE_T_KEY,					("t_score_t"));
 };
 
 //bool	CGameSpy_QR2::Init		(u32 PortID, int Public, void* instance)
@@ -127,7 +127,7 @@ bool	CGameSpy_QR2::Init		(int PortID, int Public, void* instance)
 	//call qr_init with the query port number and gamename, default IP address, and no user data
 	
 //	if (xrGS_qr2_init(NULL,NULL,PortID, GAMESPY_GAMENAME, m_SecretKey, Public, 0,
-	if (xrGS_qr2_init(NULL,NULL,PortID, Public, 0,
+	if (xrGS_qr2_initA(NULL,NULL,PortID, Public, 0,
 		callback_serverkey, callback_playerkey, callback_teamkey,
 		callback_keylist, callback_count, callback_adderror, instance) != e_qrnoerror)
 	{
@@ -150,7 +150,7 @@ bool	CGameSpy_QR2::Init		(int PortID, int Public, void* instance)
 
 void	CGameSpy_QR2::BufferAdd		(void* outbuf, const char* value)
 {
-	xrGS_qr2_buffer_add(outbuf, value);
+	xrGS_qr2_buffer_addA(outbuf, value);
 };
 
 void	CGameSpy_QR2::BufferAdd_Int	(void* outbuf, int value)

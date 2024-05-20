@@ -4,7 +4,7 @@
 #include "map_manager.h"
 
 #include "level.h"
-#include "../xr_object.h"
+#include "../xrEngine/xr_object.h"
 #include "ai_space.h"
 #include "game_graph.h"
 #include "xrServer.h"
@@ -67,8 +67,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 {
 	if(!g_uiSpotXml){
 		g_uiSpotXml				= xr_new<CUIXml>();
-		bool xml_result			= g_uiSpotXml->Init(CONFIG_PATH, UI_PATH, "map_spots.xml");
-		R_ASSERT3(xml_result, "xml file not found", "map_spots.xml");
+		g_uiSpotXml->Load		(CONFIG_PATH, UI_PATH, "map_spots.xml");
 	}
 
 	XML_NODE* node = NULL;

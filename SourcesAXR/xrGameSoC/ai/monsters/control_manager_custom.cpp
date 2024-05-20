@@ -152,7 +152,7 @@ void CControlManagerCustom::update_schedule()
 void CControlManagerCustom::ta_fill_data(SAnimationTripleData &data, LPCSTR s1, LPCSTR s2, LPCSTR s3, bool execute_once, bool skip_prep, u32 capture_type)
 {
 	// Load triple animations
-	CKinematicsAnimated	*skel_animated = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+	IKinematicsAnimated	*skel_animated = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 	data.pool[0]		= skel_animated->ID_Cycle_Safe(s1);	VERIFY(data.pool[0]);
 	data.pool[1]		= skel_animated->ID_Cycle_Safe(s2);	VERIFY(data.pool[1]);
 	data.pool[2]		= skel_animated->ID_Cycle_Safe(s3);	VERIFY(data.pool[2]);
@@ -286,7 +286,7 @@ void CControlManagerCustom::load_jump_data(LPCSTR s1, LPCSTR s2, LPCSTR s3, LPCS
 {
 	m_jump->setup_data().flags.assign(flags);
 	
-	CKinematicsAnimated	*skel_animated = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+	IKinematicsAnimated	*skel_animated = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 	if (s1) {
 		m_jump->setup_data().state_prepare.motion = skel_animated->ID_Cycle_Safe(s1);
 		VERIFY(m_jump->setup_data().state_prepare.motion);
@@ -527,7 +527,7 @@ void CControlManagerCustom::check_threaten()
 
 void CControlManagerCustom::add_melee_jump_data(LPCSTR left,LPCSTR right)
 {
-	CKinematicsAnimated	*skel_animated = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+	IKinematicsAnimated	*skel_animated = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 	m_melee_jump_data.anim_ls = skel_animated->ID_Cycle_Safe(left);
 	m_melee_jump_data.anim_rs = skel_animated->ID_Cycle_Safe(right);
 }
@@ -553,7 +553,7 @@ void CControlManagerCustom::check_melee_jump()
 void CControlManagerCustom::fill_rotation_data(SControlRotationJumpData	&data, LPCSTR left1,LPCSTR left2,LPCSTR right1,LPCSTR right2, float angle, u32 flags)
 {
 	VERIFY				(m_object->Visual());
-	CKinematicsAnimated	*skeleton_animated	= smart_cast<CKinematicsAnimated*>(m_object->Visual());
+	IKinematicsAnimated	*skeleton_animated	= smart_cast<IKinematicsAnimated*>(m_object->Visual());
 
 	data.flags.assign			(flags);
 	data.turn_angle				= angle;

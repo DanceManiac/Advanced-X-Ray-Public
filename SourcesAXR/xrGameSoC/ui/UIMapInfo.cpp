@@ -46,8 +46,7 @@ void CUIMapInfo::InitMap(const char* map_name){
 	CStringTable str_tbl;
 
  	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "ui_mapinfo.xml");
-	R_ASSERT3(xml_result, "xml file not found", "ui_mapinfo.xml");
+	xml_doc.Load(CONFIG_PATH, UI_PATH, "ui_mapinfo.xml");
 
 
 	CUIStatic* st;

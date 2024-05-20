@@ -44,7 +44,7 @@ ULONG			xrIDirect3DStateBlock9::Release()
 }
 
 /*** IDirect3DResource9 methods ***/
-HRESULT			__stdcall	xrIDirect3DStateBlock9::GetDevice		( IDirect3DDevice9** ppDevice)										
+HRESULT				xrIDirect3DStateBlock9::GetDevice		( IDirect3DDevice9** ppDevice)										
 {
 	APIDEBUG("xrIDirect3DStateBlock9::GetDevice");
 	m_pIDirect3DDevice9->AddRef();
@@ -52,5 +52,5 @@ HRESULT			__stdcall	xrIDirect3DStateBlock9::GetDevice		( IDirect3DDevice9** ppDe
 	return HRESULT_Proc(S_OK);
 };
 
-HRESULT			__stdcall	xrIDirect3DStateBlock9::Capture() { APIDEBUG("xrIDirect3DStateBlock9::Capture"); return HRESULT_Proc(S_OK); };
-HRESULT			__stdcall	xrIDirect3DStateBlock9::Apply() { APIDEBUG("xrIDirect3DStateBlock9::Apply"); return HRESULT_Proc(S_OK);};
+HRESULT				xrIDirect3DStateBlock9::Capture() { APIDEBUG("xrIDirect3DStateBlock9::Capture"); return HRESULT_Proc(S_OK); };
+HRESULT				xrIDirect3DStateBlock9::Apply() { APIDEBUG("xrIDirect3DStateBlock9::Apply"); return HRESULT_Proc(S_OK);};

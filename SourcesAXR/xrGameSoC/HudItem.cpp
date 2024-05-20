@@ -13,7 +13,8 @@
 #include "xrmessages.h"
 #include "level.h"
 #include "inventory.h"
-#include "../CameraBase.h"
+#include "../xrEngine/CameraBase.h"
+#include "../xrEngine/SkeletonMotions.h"
 
 
 CHudItem::CHudItem(void)
@@ -180,6 +181,8 @@ void CHudItem::UpdateHudPosition	()
 			pActor->Cameras().camera_Matrix				(trans);
 			UpdateHudInertion							(trans);
 			UpdateHudAdditonal							(trans);
+
+			trans.c.sub									(Device.vCameraPosition);
 			m_pHUD->UpdatePosition						(trans);
 		}
 	}

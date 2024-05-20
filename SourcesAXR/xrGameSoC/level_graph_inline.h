@@ -31,8 +31,13 @@ ICF bool CLevelGraph::valid_vertex_id	(u32 id) const
 
 ICF	CLevelGraph::CVertex	*CLevelGraph::vertex(const u32 vertex_id) const
 {
+#ifdef _M_X64
+	return (valid_vertex_id(vertex_id)) ? (m_nodes + vertex_id)
+		: (m_nodes + header().vertex_count() - 1);
+#else
 	VERIFY				(valid_vertex_id(vertex_id));
 	return				(m_nodes + vertex_id);
+#endif
 }
 
 ICF	u32	CLevelGraph::vertex	(const CVertex *vertex_p) const
@@ -274,19 +279,19 @@ ICF const xrGUID &CLevelGraph::CHeader::guid() const
 	return				(hdrNODES::guid);
 }
 
-ICF u8	CLevelGraph::CVertex::light() const
-{
-	return				(NodeCompressed::light());
-}
-
 ICF u32	CLevelGraph::CVertex::link(int index) const
 {
 	return				(NodeCompressed::link(u8(index)));
 }
 
-ICF u16	CLevelGraph::CVertex::cover(u8 index) const
+ICF u16	CLevelGraph::CVertex::high_cover(u8 index) const
 {
-	return				(NodeCompressed::cover(index));
+	return				(cover(index));
+}
+
+ICF u16	CLevelGraph::CVertex::low_cover(u8 index) const
+{
+	return				(cover(index));
 }
 
 ICF u16	CLevelGraph::CVertex::plane() const
@@ -577,12 +582,21 @@ IC	bool CLevelGraph::valid_vertex_position	(const Fvector &position) const
 	return				((vertex_position(position).xz() < (1 << MAX_NODE_BIT_COUNT) - 1));
 }
 
+
 IC	void CLevelGraph::set_mask				(const xr_vector<u32> &mask)
 {
 	xr_vector<u32>::const_iterator	I = mask.begin();
 	xr_vector<u32>::const_iterator	E = mask.end();
 	for ( ; I != E; ++I)
 		set_mask		(*I);
+}
+
+IC	void CLevelGraph::set_mask_no_check		(const xr_vector<u32> &mask)
+{
+	xr_vector<u32>::const_iterator	I = mask.begin();
+	xr_vector<u32>::const_iterator	E = mask.end();
+	for ( ; I != E; ++I)
+		set_mask_no_check		(*I);
 }
 
 IC	void CLevelGraph::clear_mask			(const xr_vector<u32> &mask)
@@ -593,15 +607,33 @@ IC	void CLevelGraph::clear_mask			(const xr_vector<u32> &mask)
 		clear_mask		(*I);
 }
 
+IC	void CLevelGraph::clear_mask_no_check	(const xr_vector<u32> &mask)
+{
+	xr_vector<u32>::const_iterator	I = mask.begin();
+	xr_vector<u32>::const_iterator	E = mask.end();
+	for ( ; I != E; ++I)
+		clear_mask_no_check		(*I);
+}
+
 IC	void CLevelGraph::set_mask				(u32 vertex_id)
 {
 	VERIFY						(m_access_mask[vertex_id]);
+	set_mask_no_check			(vertex_id);
+}
+
+IC	void CLevelGraph::set_mask_no_check		(u32 vertex_id)
+{
 	m_access_mask[vertex_id]	= false;
 }
 
 IC	void CLevelGraph::clear_mask			(u32 vertex_id)
 {
 	VERIFY						(!m_access_mask[vertex_id]);
+	clear_mask_no_check			(vertex_id);
+}
+
+IC	void CLevelGraph::clear_mask_no_check	(u32 vertex_id)
+{
 	m_access_mask[vertex_id]	= true;
 }
 

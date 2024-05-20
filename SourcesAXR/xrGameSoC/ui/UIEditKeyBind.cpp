@@ -174,7 +174,7 @@ void CUIEditKeyBind::SaveValue()
 	m_bChanged			= false;
 }
 
-#include "../../xr_ioconsole.h"
+#include "../../xrEngine/xr_ioconsole.h"
 void CUIEditKeyBind::BindAction2Key()
 {
 	xr_string comm_unbind	= (m_bPrimary)?"unbind ":"unbind_sec ";

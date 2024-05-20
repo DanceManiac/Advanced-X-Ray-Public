@@ -2,6 +2,7 @@
 #pragma hdrstop
 
 #include "fs_internal.h"
+#include "../Layers/xrAPI/xrGameManager.h"
 
 XRCORE_API CInifile *pSettings				= nullptr;
 XRCORE_API CInifile *pAdvancedSettings		= nullptr;
@@ -27,8 +28,36 @@ bool item_pred(const CInifile::Item& x, LPCSTR val)
 //------------------------------------------------------------------------------
 //Тело функций Inifile
 //------------------------------------------------------------------------------
+XRCORE_API BOOL _parseSOC(LPSTR dest, LPCSTR src)
+{
+	BOOL bInsideSTR = false;
+	while (*src)
+	{
+		if (isspace((u8)*src))
+		{
+			if (bInsideSTR)
+			{
+				*dest++ = *src++;
+				continue;
+			}
+			while (*src && isspace(*src))
+				src++;
+			continue;
+		}
+		else if (*src == '"')
+		{
+			bInsideSTR = !bInsideSTR;
+		}
+		*dest++ = *src++;
+	}
+	*dest = 0;
+	return 0;
+}
+
 XRCORE_API BOOL _parse(LPSTR dest, LPCSTR src)
 {
+	if (xrGameManager::GetGame() == EGame::SHOC)
+		return _parseSOC(dest, src);
 	BOOL bInsideSTR = false;
 	if (src) 
 	{
@@ -307,27 +336,32 @@ void	CInifile::Load(IReader* F, LPCSTR path
 			}
 			*strchr(str,']') 	= 0;
 			Current->Name 		= strlwr(str+1);
-		} 
-		else // name = value
+		}
+		else   // name = value
 		{
 			if (Current)
 			{
-				string4096			value_raw;
-				char*		name	= str;
+				string4096 value_raw;
+				char* name = str;
 				char*		t		= strchr(name,'=');
-				if (t)		
+				if (t)
 				{
-					*t				= 0;
+					*t = 0;
 					_Trim			(name);
-					++t;
-					xr_strcpy		(value_raw, sizeof(value_raw), t);
-					bInsideSTR		= _parse(str2, value_raw);
-					if(bInsideSTR)//multiline str value
+
+					if (xrGameManager::GetGame() == EGame::SHOC)
+						_parse(str2, ++t);
+					else
 					{
-						while(bInsideSTR)
+						++t;
+					xr_strcpy		(value_raw, sizeof(value_raw), t);
+						bInsideSTR = _parse(str2, value_raw);
+						if (bInsideSTR) // multiline str value
 						{
+							while (bInsideSTR)
+							{
 							xr_strcat		(value_raw, sizeof(value_raw),"\r\n");
-							string4096		str_add_raw;
+								string4096 str_add_raw;
 							F->r_string		(str_add_raw, sizeof(str_add_raw));
 							R_ASSERT2		(
 								xr_strlen(value_raw) + xr_strlen(str_add_raw) < sizeof(value_raw),
@@ -338,35 +372,37 @@ void	CInifile::Load(IReader* F, LPCSTR path
 								)
 							);
 							xr_strcat		(value_raw, sizeof(value_raw),str_add_raw);
-							bInsideSTR		= _parse(str2, value_raw);
+								bInsideSTR = _parse(str2, value_raw);
                             if(bInsideSTR)
-                            {
+								{
                             	if( is_empty_line_now(F) )
 									xr_strcat		(value_raw, sizeof(value_raw),"\r\n");
-                            }
+								}
+							}
 						}
 					}
-				} else 
+				}
+				else
 				{
-					_Trim	(name);
-					str2[0]	= 0;
+					_Trim(name);
+					str2[0] = 0;
 				}
 
-				Item		I;
-				I.first		= (name[0]?name:NULL);
-				I.second	= (str2[0]?str2:NULL);
+				Item I;
+				I.first		= (name[0] ? name : NULL);
+				I.second	= (str2[0] ? str2 : NULL);
 //#ifdef DEBUG
 //				I.comment	= m_flags.test(eReadOnly)?0:comment;
 //#endif
 
-				if (m_flags.test(eReadOnly)) 
+				if (m_flags.test(eReadOnly))
 				{
-					if (*I.first)							insert_item	(Current,I);
-				} else 
+					if (*I.first)
+						insert_item(Current, I);
+				}
+				else
 				{
-					if	(
-							*I.first
-							|| *I.second 
+					if (*I.first || *I.second
 //#ifdef DEBUG
 //							|| *I.comment
 //#endif

@@ -2,7 +2,7 @@
 
 #include "PHDynamicData.h"
 #include "ExtendedGeom.h"
-#include "../cl_intersect.h"
+#include "../xrEngine/cl_intersect.h"
 #include "tri-colliderKNoOPC\__aabb_tri.h"
 #include "PHSimpleCharacter.h"
 #include "PHContactBodyEffector.h"
@@ -11,10 +11,11 @@
 #include "PhysicsGamePars.h"
 #include "MathUtils.h" 
 #include "level.h"
-#include "gamemtllib.h"
+#include "../xrEngine/gamemtllib.h"
 #include "gameobject.h"
 #include "physicsshellholder.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "PHSimpleCharacterInline.h"
 #include "DamageSource.h"
 #include "PHCollideValidator.h"
@@ -547,7 +548,7 @@ void CPHSimpleCharacter::PhTune(dReal step){
 #ifdef DEBUG
 	if(ph_dbg_draw_mask.test(phDbgCharacterControl))
 	{
-		if(b_air_contact_state)DBG_DrawPoint(cast_fv(dBodyGetPosition(m_body)),m_radius,D3DCOLOR_XRGB(255,0,0));
+		if(b_air_contact_state)DBG_DrawPoint(cast_fv(dBodyGetPosition(m_body)),m_radius,color_xrgb(255,0,0));
 		
 	}
 #endif
@@ -696,9 +697,9 @@ void CPHSimpleCharacter::PhTune(dReal step){
 #ifdef DEBUG
 		if(ph_dbg_draw_mask.test(phDbgCharacterControl))
 		{
-			DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(sidedir),1.f)),D3DCOLOR_XRGB(0,0,255));
-			DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(m_control_force),1.f/19.6f)),D3DCOLOR_XRGB(0,0,255));
-			DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(dBodyGetForce(m_body)),1.f/19.6f)),D3DCOLOR_XRGB(255,0,0));
+			DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(sidedir),1.f)),color_xrgb(0,0,255));
+			DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(m_control_force),1.f/19.6f)),color_xrgb(0,0,255));
+			DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(dBodyGetForce(m_body)),1.f/19.6f)),color_xrgb(255,0,0));
 		}
 #endif
 		//if(b_clamb_jump){
@@ -742,7 +743,7 @@ void CPHSimpleCharacter::PhTune(dReal step){
 #ifdef DEBUG
 	if(ph_dbg_draw_mask.test(phDbgCharacterControl))
 	{
-		DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(dBodyGetForce(m_body)),1.f/19.6f)),D3DCOLOR_XRGB(255,0,128));
+		DBG_DrawLine(cast_fv(dBodyGetPosition(m_body)),Fvector().add(cast_fv(dBodyGetPosition(m_body)),Fvector().mul(cast_fv(dBodyGetForce(m_body)),1.f/19.6f)),color_xrgb(255,0,128));
 	}
 #endif
 }
@@ -854,9 +855,9 @@ bool CPHSimpleCharacter::ValidateWalkOnMesh()
 		m.i.set(sd_dir);
 		m.k.set(accel);
 		m.c.set(center);
-		DBG_DrawOBB(m,obb,D3DCOLOR_XRGB(0,255,0));
+		DBG_DrawOBB(m,obb,color_xrgb(0,255,0));
 		m.c.set(center_forbid);
-		DBG_DrawOBB(m,obb_fb,D3DCOLOR_XRGB(255,0,0));
+		DBG_DrawOBB(m,obb_fb,color_xrgb(255,0,0));
 	}
 #endif
 
@@ -865,7 +866,7 @@ bool CPHSimpleCharacter::ValidateWalkOnMesh()
 	CDB::RESULT*    R_end          = XRC.r_end();
 	for (CDB::RESULT* Res=R_begin; Res!=R_end; ++Res)
 	{
-		SGameMtl* m =  GMLib.GetMaterialByIdx(Res->material);
+		SGameMtl* m = GMLib.GetMaterialByIdx(Res->material);
 		if(m->Flags.test(SGameMtl::flPassable))continue;
 		//CDB::TRI* T = T_array + Res->id;
 		Point vertices[3]={Point((dReal*)&Res->verts[0]),Point((dReal*)&Res->verts[1]),Point((dReal*)&Res->verts[2])};
@@ -878,7 +879,7 @@ bool CPHSimpleCharacter::ValidateWalkOnMesh()
 #ifdef DEBUG
 					if(ph_dbg_draw_mask.test(phDbgCharacterControl))
 					{
-						DBG_DrawTri(Res,D3DCOLOR_XRGB(255,0,0));
+						DBG_DrawTri(Res,color_xrgb(255,0,0));
 					}
 #endif
 					b_side_contact=true;
@@ -898,7 +899,7 @@ bool CPHSimpleCharacter::ValidateWalkOnMesh()
 	for (CDB::RESULT* Res=R_begin; Res!=R_end; ++Res)
 	{
 		//CDB::TRI* T = T_array + Res->id;
-		SGameMtl* m =  GMLib.GetMaterialByIdx(Res->material);
+		SGameMtl* m = GMLib.GetMaterialByIdx(Res->material);
 		if(m->Flags.test(SGameMtl::flPassable))continue;
 		Point vertices[3]={Point((dReal*)&Res->verts[0]),Point((dReal*)&Res->verts[1]),Point((dReal*)&Res->verts[2])};
 		if(__aabb_tri(Point((float*)&center),Point((float*)&AABB),vertices)){
@@ -907,7 +908,7 @@ bool CPHSimpleCharacter::ValidateWalkOnMesh()
 #ifdef DEBUG
 				if(ph_dbg_draw_mask.test(phDbgCharacterControl))
 				{
-					DBG_DrawTri(Res,D3DCOLOR_XRGB(0,255,0));
+					DBG_DrawTri(Res,color_xrgb(0,255,0));
 				}
 #endif
 				return true;
@@ -1119,8 +1120,8 @@ void CPHSimpleCharacter::OnRender(){
 	Level().debug_renderer().draw_ellipse(M, 0xffffffff);
 
 #ifdef DRAW_BOXES
-	Level().debug_renderer().draw_aabb			(m_bcenter,m_AABB.x,m_AABB.y,m_AABB.z,D3DCOLOR_XRGB(0,0,255));
-	Level().debug_renderer().draw_aabb			(m_bcenter_forbid,m_AABB_forbid.x,m_AABB_forbid.y,m_AABB_forbid.z,D3DCOLOR_XRGB(255,0,0));
+	Level().debug_renderer().draw_aabb			(m_bcenter,m_AABB.x,m_AABB.y,m_AABB.z,color_xrgb(0,0,255));
+	Level().debug_renderer().draw_aabb			(m_bcenter_forbid,m_AABB_forbid.x,m_AABB_forbid.y,m_AABB_forbid.z,color_xrgb(255,0,0));
 #endif
 	///M.c.set(0.f,1.f,0.f);
 	//Level().debug_renderer().draw_ellipse(M, 0xffffffff);
@@ -1371,7 +1372,7 @@ u16 CPHSimpleCharacter::RetriveContactBone()
 	}
 	else 
 	{
-		CKinematics* K=smart_cast<CKinematics*>(object->Visual());
+		IKinematics* K=smart_cast<IKinematics*>(object->Visual());
 		u16 count=K->LL_BoneCount();
 		CBoneInstance* bone_instances=&K->LL_GetBoneInstance(0);
 		Fvector pos_in_object;
@@ -1408,10 +1409,10 @@ void CPHSimpleCharacter::InitContact(dContact* c,bool	&do_collide,u16 material_i
 	const dGeomID g2=c->geom.g2;
 	bool bo1=(g1==m_wheel)||g1==m_cap_transform||g1==m_shell_transform||g1==m_hat_transform;
 
-	//SGameMtl* tri_material=GMLib.GetMaterialByIdx((u16)c->surface.mode);
+	//SGameMtl* tri_material=GameMaterialLibrary->GetMaterialByIdx((u16)c->surface.mode);
 	
 	u16			contact_material=bo1	? material_idx_2:material_idx_1;
-	SGameMtl* tri_material=GMLib.GetMaterialByIdx(contact_material);
+	SGameMtl* tri_material= GMLib.GetMaterialByIdx(contact_material);
 
 	bool bClimable=!!tri_material->Flags.test(SGameMtl::flClimable);
 	if(is_control&&m_elevator_state.ClimbingState())

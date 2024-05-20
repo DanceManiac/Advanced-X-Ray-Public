@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "UIOptionsItem.h"
 #include "UIOptionsManager.h"
-#include "../../xr_ioconsole.h"
+#include "../../xrEngine/xr_ioconsole.h"
 
 CUIOptionsManager CUIOptionsItem::m_optionsManager;
 
@@ -41,7 +41,7 @@ void CUIOptionsItem::SaveOptStringValue(const char* val)
 
 void CUIOptionsItem::GetOptIntegerValue(int& val, int& min, int& max)
 {
-	Console->GetInteger(m_entry.c_str(), val, min, max);
+	val = Console->GetInteger(m_entry.c_str(), min, max);
 }
 
 void CUIOptionsItem::SaveOptIntegerValue(int val)
@@ -53,7 +53,7 @@ void CUIOptionsItem::SaveOptIntegerValue(int val)
 
 void CUIOptionsItem::GetOptFloatValue(float& val, float& min, float& max)
 {
-	Console->GetFloat(m_entry.c_str(), val, min, max);
+	val = Console->GetFloat(m_entry.c_str(), min, max);
 }
 
 void CUIOptionsItem::SaveOptFloatValue(float val)
@@ -65,9 +65,7 @@ void CUIOptionsItem::SaveOptFloatValue(float val)
 
 bool CUIOptionsItem::GetOptBoolValue()
 {
-	BOOL val;
-	Console->GetBool(m_entry.c_str(), val);
-	return val ? true : false;
+	return Console->GetBool(m_entry.c_str());
 }
 
 void CUIOptionsItem::SaveOptBoolValue(bool val)
@@ -77,7 +75,7 @@ void CUIOptionsItem::SaveOptBoolValue(bool val)
 	Console->Execute	(command);
 }
 
-char* CUIOptionsItem::GetOptTokenValue()
+LPCSTR CUIOptionsItem::GetOptTokenValue()
 {
 	return Console->GetToken(m_entry.c_str());
 }

@@ -10,7 +10,7 @@
 #include "Actor_Flags.h"
 #include "xr_level_controller.h"
 #include "level.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "object_broker.h"
 #include "game_base_space.h"
 #include "MathUtils.h"
@@ -373,12 +373,12 @@ void CWeaponMagazinedWGrenade::SwitchState(u32 S)
 				Fvector res[2];
 #ifdef		DEBUG
 //.				DBG_OpenCashedDraw();
-//.				DBG_DrawLine(p1,Fvector().add(p1,d),D3DCOLOR_XRGB(255,0,0));
+//.				DBG_DrawLine(p1,Fvector().add(p1,d),color_xrgb(255,0,0));
 #endif
 				u8 canfire0 = TransferenceAndThrowVelToThrowDir(Transference, CRocketLauncher::m_fLaunchSpeed, EffectiveGravity(), res);
 #ifdef DEBUG
-//.				if(canfire0>0)DBG_DrawLine(p1,Fvector().add(p1,res[0]),D3DCOLOR_XRGB(0,255,0));
-//.				if(canfire0>1)DBG_DrawLine(p1,Fvector().add(p1,res[1]),D3DCOLOR_XRGB(0,0,255));
+//.				if(canfire0>0)DBG_DrawLine(p1,Fvector().add(p1,res[0]),color_xrgb(0,255,0));
+//.				if(canfire0>1)DBG_DrawLine(p1,Fvector().add(p1,res[1]),color_xrgb(0,0,255));
 //.				DBG_ClosedCashedDraw(30000);
 #endif
 				
@@ -703,7 +703,7 @@ void CWeaponMagazinedWGrenade::UpdateSounds	()
 void CWeaponMagazinedWGrenade::UpdateGrenadeVisibility(bool visibility)
 {
 	if (H_Parent() != Level().CurrentEntity())	return;
-	CKinematics* pHudVisual						= smart_cast<CKinematics*>(m_pHUD->Visual());
+	IKinematics* pHudVisual						= smart_cast<IKinematics*>(m_pHUD->Visual());
 	VERIFY										(pHudVisual);
 	pHudVisual->LL_SetBoneVisible				(pHudVisual->LL_BoneID(*grenade_bone_name),visibility,TRUE);
 	pHudVisual->CalculateBones_Invalidate		();

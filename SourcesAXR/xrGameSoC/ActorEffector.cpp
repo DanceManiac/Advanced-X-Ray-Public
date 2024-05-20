@@ -2,8 +2,8 @@
 
 #include "ActorEffector.h"
 #include "PostprocessAnimator.h"
-#include "../effectorPP.h"
-#include "../ObjectAnimator.h"
+#include "../xrEngine/effectorPP.h"
+#include "../xrEngine/ObjectAnimator.h"
 #include "object_broker.h"
 #include "actor.h"
 
@@ -141,7 +141,14 @@ BOOL CAnimatorCamEffector::Valid()
 
 BOOL CAnimatorCamEffector::Process (Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect)
 {
-	if(!inherited::Process(p,d,n,fFov,fFar,fAspect))	return FALSE;
+	SCamEffectorInfo Args;
+	Args.p = p;
+	Args.d = d;
+	Args.n = n;
+	Args.fFov = fFov;
+	Args.fFar = fFar;
+	Args.fAspect = fAspect;
+	if(!inherited::ProcessCam(Args))	return FALSE;
 
 	const Fmatrix& m			= m_objectAnimator->XFORM();
 	m_objectAnimator->Update	(Device.fTimeDelta);
@@ -169,7 +176,14 @@ BOOL CAnimatorCamEffector::Process (Fvector &p, Fvector &d, Fvector &n, float& f
 
 BOOL CAnimatorCamLerpEffector::Process(Fvector &p, Fvector &d, Fvector &n, float& fFov, float& fFar, float& fAspect)
 {
-	if(!inherited::inherited::Process(p,d,n,fFov,fFar,fAspect))	return FALSE;
+	SCamEffectorInfo Args;
+	Args.p = p;
+	Args.d = d;
+	Args.n = n;
+	Args.fFov = fFov;
+	Args.fFar = fFar;
+	Args.fAspect = fAspect;
+	if(!inherited::ProcessCam(Args))	return FALSE;
 
 	const Fmatrix& m			= m_objectAnimator->XFORM();
 	m_objectAnimator->Update	(Device.fTimeDelta);

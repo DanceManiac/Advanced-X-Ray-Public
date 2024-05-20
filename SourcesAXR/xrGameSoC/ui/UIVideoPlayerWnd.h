@@ -12,15 +12,16 @@ class CUIVideoPlayerWnd :public CUIDialogWnd, public CUIWndCallback
 	CUITabControl*	m_tabControl;
 	CUIStatic*		m_surface;
 protected:
-	ref_sound		m_sound;
-	ref_texture		m_texture;
-	shared_str		m_fn;
-	Flags8			m_flags;
+	ref_sound							m_sound;
+	FactoryPtr<IUISequenceVideoItem>	m_texture;
+	shared_str							m_fn;
+	Flags8								m_flags;
+
 	enum			{eStoping=(1<<0),ePlaying=(1<<1),eLooped=(1<<2)};
 private:
 	void			OnBtnPlayClicked		();
 	void			OnBtnPauseClicked		();
-	void __stdcall	OnTabChanged			(CUIWindow* pWnd, void* pData);
+	void			OnTabChanged			(CUIWindow* pWnd, void* pData);
 public:
 	void			Init					(CUIXml* doc, LPCSTR start_from);
 	void			Init					(LPCSTR name);

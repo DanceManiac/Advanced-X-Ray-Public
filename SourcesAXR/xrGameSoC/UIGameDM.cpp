@@ -68,7 +68,7 @@ CUIGameDM::CUIGameDM()
 	GameCaptions()->addCustomMessage(m_warm_up_caption, DI2PX(0.0f), DI2PY(-0.75f), SZ(0.05f), HUD().Font().pFontGraffiti19Russian, CGameFont::alCenter, WARM_UP_COLOR, "");
 
 	CUIXml							uiXml;
-	uiXml.Init						(CONFIG_PATH, UI_PATH, "ui_game_dm.xml");
+	uiXml.Load						(CONFIG_PATH, UI_PATH, "ui_game_dm.xml");
 	m_pMoneyIndicator				= xr_new<CUIMoneyIndicator>();
 	m_pMoneyIndicator->InitFromXML	(uiXml);
 	m_pRankIndicator				= xr_new<CUIRankIndicator>();
@@ -104,8 +104,9 @@ void CUIGameDM::SetClGame (game_cl_GameState* g)
 void	CUIGameDM::Init				()
 {
 	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "stats.xml");
-	R_ASSERT2(xml_result, "xml file not found");
+	/*bool xml_result =*/ 
+	xml_doc.Load(CONFIG_PATH, UI_PATH, "stats.xml");
+	/*R_ASSERT2(xml_result, "xml file not found");*/
 
 	CUIFrags* pFragList		= xr_new<CUIFrags>();
 	CUIFrags* pPlayerList	= xr_new<CUIFrags>();
@@ -256,7 +257,7 @@ void CUIGameDM::SetVoteMessage					(LPCSTR str)
 		if(!m_voteStatusWnd)
 		{
 			CUIXml							uiXml;
-			uiXml.Init						(CONFIG_PATH, UI_PATH, "ui_game_dm.xml");
+			uiXml.Load						(CONFIG_PATH, UI_PATH, "ui_game_dm.xml");
 			m_voteStatusWnd					= xr_new<UIVoteStatusWnd>();
 			m_voteStatusWnd->InitFromXML	(uiXml);
 		}

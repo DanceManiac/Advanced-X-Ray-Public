@@ -6,10 +6,10 @@
 
 #include "entity_alive.h"
 #include "script_entity.h"
-#include "../feel_vision.h"
-#include "../feel_sound.h"
-#include "../feel_touch.h"
-#include "../skeletonanimated.h"
+#include "../xrEngine/feel_vision.h"
+#include "../xrEngine/Feel_Sound.h"
+#include "../xrEngine/feel_touch.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 #include "associative_vector.h"
 
 namespace MonsterSpace {
@@ -17,7 +17,7 @@ namespace MonsterSpace {
 };
 
 class CMotionDef;
-class CKinematicsAnimated;
+class IKinematicsAnimated;
 class CMemoryManager;
 class CItemManager;
 class CEnemyManager;
@@ -55,7 +55,7 @@ protected:
 		MotionID		ls;
 		MotionID		rs;
 
-		void			Create(CKinematicsAnimated* K, LPCSTR base);
+		void			Create(IKinematicsAnimated* K, LPCSTR base);
 	};
 
 private:
@@ -121,7 +121,7 @@ public:
 	// stream executors
 	virtual void		Exec_Action				( float dt );
 	virtual void		Exec_Look				( float dt );
-	void	__stdcall	Exec_Visibility			( );
+	void				Exec_Visibility			( );
 	void				eye_pp_s0				( );
 	void				eye_pp_s1				( );
 	void				eye_pp_s2				( );
@@ -252,7 +252,7 @@ public:
 	virtual	void					update_range_fov		(float &new_range, float &new_fov, float start_range, float start_fov);
 
 public:
-			void __stdcall			update_sound_player		();
+			void					update_sound_player		();
 	virtual	void					on_restrictions_change	();
 	virtual	LPCSTR					visual_name				(CSE_Abstract *server_entity);
 

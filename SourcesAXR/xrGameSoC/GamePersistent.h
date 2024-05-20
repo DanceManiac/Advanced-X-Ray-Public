@@ -2,7 +2,7 @@
 #define GamePersistentH
 #pragma once
 
-#include "../IGame_Persistent.h"
+#include "../xrEngine/IGame_Persistent.h"
 class CMainMenu;
 class CUICursor;
 class CParticlesObject;
@@ -15,9 +15,17 @@ class CGamePersistent:
 {
 	// ambient particles
 	CParticlesObject*	ambient_particles; 
-	u32					ambient_sound_next_time;
+	u32					ambient_sound_next_time[20]; //max snd channels
 	u32					ambient_effect_next_time;
 	u32					ambient_effect_stop_time;
+
+	float				ambient_effect_wind_start;
+	float				ambient_effect_wind_in_time;
+	float				ambient_effect_wind_end;
+	float				ambient_effect_wind_out_time;
+	bool				ambient_effect_wind_on;
+
+	bool				ls_tips_enabled;
 
 	CUISequencer*		m_intro;
 	EVENT				eQuickLoad;
@@ -26,6 +34,9 @@ class CGamePersistent:
 
 	void xr_stdcall		start_logo_intro		();
 	void xr_stdcall		update_logo_intro		();
+	void xr_stdcall		game_loaded				();
+	void xr_stdcall		update_game_loaded		();
+	
 	void xr_stdcall		start_game_intro		();
 	void xr_stdcall		update_game_intro		();
 
@@ -45,6 +56,7 @@ public:
 						CGamePersistent			();
 	virtual				~CGamePersistent		();
 
+			void		PreStart				(LPCSTR op) override;
 	virtual void		Start					(LPCSTR op);
 	virtual void		Disconnect				();
 
@@ -60,14 +72,15 @@ public:
 
 	virtual void		UpdateGameType			();
 
-	virtual void		RegisterModel			(IRender_Visual* V);
+	virtual void		RegisterModel			(IRenderVisual* V);
 	virtual	float		MtlTransparent			(u32 mtl_idx);
 	virtual	void		Statistics				(CGameFont* F);
 
 	virtual bool		OnRenderPPUI_query		();
 	virtual void		OnRenderPPUI_main		();
 	virtual void		OnRenderPPUI_PP			();
-	virtual	void		LoadTitle				(LPCSTR str);
+	virtual	void		LoadTitle				(bool change_tip = false, shared_str map_name = "");
+	void				SetLoadStageTitle		(const char* ls_title = nullptr) override;
 
 	virtual bool		CanBePaused				();
 };

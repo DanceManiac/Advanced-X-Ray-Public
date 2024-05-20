@@ -68,6 +68,7 @@ XRCORE_API	u32		build_id;
 
 ENGINE_API bool CallOfPripyatMode = false;
 ENGINE_API bool ClearSkyMode = false;
+ENGINE_API bool ShadowOfChernobylMode = false;
 ENGINE_API bool bDeveloperMode = false;
 ENGINE_API bool bWinterMode = false;
 ENGINE_API bool bDofWeather = false;
@@ -313,16 +314,9 @@ PROTECT_API void InitSettings()
 	Msg("# Developer Mode: %d", bDeveloperMode);
 	Msg("# Winter Mode: %d", bWinterMode);
 
-	if (xr_strcmp("cop", EngineMode) == 0)
-	{
-		CallOfPripyatMode = true;
-		ClearSkyMode = false;
-	}
-	else if (xr_strcmp("cs", EngineMode) == 0)
-	{
-		CallOfPripyatMode = false;
-		ClearSkyMode = true;
-	}
+	CallOfPripyatMode		= (xr_strcmp("cop", EngineMode) == 0);
+	ClearSkyMode			= (xr_strcmp("cs", EngineMode) == 0);
+	ShadowOfChernobylMode	= (xr_strcmp("shoc", EngineMode) == 0);
 }
 PROTECT_API void InitConsole	()
 {
@@ -400,8 +394,14 @@ void destroyEngine	()
 
 void execUserScript				( )
 {
-	Console->Execute			("default_controls");
-	Console->ExecuteScript		(Console->ConfigFile);
+	if (xrGameManager::GetGame() == EGame::SHOC)
+	{
+		string_path fname;
+		FS.update_path(fname, "$game_config$", "default_controls.ltx");
+		Console->ExecuteScript(fname);
+	}
+	else
+		Console->Execute("default_controls");
 }
 
 void Startup()
@@ -1041,6 +1041,10 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 	{
 		GCurrentGame = EGamePath::COP_1602;
 	}
+	else if (ShadowOfChernobylMode)
+	{
+		GCurrentGame = EGamePath::SHOC_10006;
+	}
 
 #ifndef DEDICATED_SERVER
 	{
@@ -1479,7 +1483,7 @@ void CApplication::LoadForceFinish()
 
 void CApplication::SetLoadStageTitle(const char* _ls_title)
 {
-	if (((load_screen_renderer.b_need_user_input && ClearSkyMode) || ps_rs_loading_stages) && loadingScreen)
+	if (((load_screen_renderer.b_need_user_input && (ClearSkyMode || ShadowOfChernobylMode)) || ps_rs_loading_stages) && loadingScreen)
 		loadingScreen->SetStageTitle(_ls_title);
 }
 

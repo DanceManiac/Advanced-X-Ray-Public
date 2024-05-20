@@ -3,7 +3,7 @@
 #include "hudtarget.h"
 
 #include "actor.h"
-#include "../igame_level.h"
+#include "../xrEngine/igame_level.h"
 #include "clsid_game.h"
 #include "GamePersistent.h"
 
@@ -263,7 +263,7 @@ void CHUDManager::SetHitmarkType		(LPCSTR tex_name)
 	HitMarker.InitShader				(tex_name);
 }
 #include "ui\UIMainInGameWnd.h"
-void CHUDManager::OnScreenRatioChanged()
+void CHUDManager::OnScreenResolutionChanged()
 {
 	xr_delete							(pUI->UIMainIngameWnd);
 
@@ -271,6 +271,8 @@ void CHUDManager::OnScreenRatioChanged()
 	pUI->UIMainIngameWnd->Init			();
 	pUI->UnLoad							();
 	pUI->Load							(pUI->UIGame());
+
+	pUI->OnConnected					();
 }
 
 void CHUDManager::OnDisconnected()

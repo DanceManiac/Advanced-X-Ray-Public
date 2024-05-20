@@ -15,25 +15,25 @@ extern "C" {
 	public:
 		xrIDirect3DSurface9	(IDirect3DDevice9* pIDirect3DDevice9, UINT Width,UINT Height,D3DFORMAT Format,D3DMULTISAMPLE_TYPE MultiSample,DWORD MultisampleQuality);
 		/*** IUnknown methods ***/
-		HRESULT			__stdcall	QueryInterface( REFIID riid, void** ppvObj) ;
-		ULONG			__stdcall	AddRef() ;
-		ULONG			__stdcall	Release() ;
+		HRESULT				QueryInterface( REFIID riid, void** ppvObj) ;
+		ULONG				AddRef() ;
+		ULONG				Release() ;
 
 		/*** IDirect3DResource9 methods ***/
-		HRESULT			__stdcall	GetDevice( IDirect3DDevice9** ppDevice) ;
-		HRESULT			__stdcall	SetPrivateData( REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) ;
-		HRESULT			__stdcall	GetPrivateData( REFGUID refguid,void* pData,DWORD* pSizeOfData) ;
-		HRESULT			__stdcall	FreePrivateData( REFGUID refguid) ;
-		DWORD			__stdcall	SetPriority( DWORD PriorityNew) ;
-		DWORD			__stdcall	GetPriority() ;
-		void			__stdcall	PreLoad() ;
-		D3DRESOURCETYPE	__stdcall	GetType() ;
-		HRESULT			__stdcall	GetContainer( REFIID riid,void** ppContainer) ;
-		HRESULT			__stdcall	GetDesc( D3DSURFACE_DESC *pDesc) ;
-		HRESULT			__stdcall	LockRect( D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags) ;
-		HRESULT			__stdcall	UnlockRect() ;
-		HRESULT			__stdcall	GetDC( HDC *phdc) ;
-		HRESULT			__stdcall	ReleaseDC( HDC hdc) ;
+		HRESULT				GetDevice( IDirect3DDevice9** ppDevice) ;
+		HRESULT				SetPrivateData( REFGUID refguid,CONST void* pData,DWORD SizeOfData,DWORD Flags) ;
+		HRESULT				GetPrivateData( REFGUID refguid,void* pData,DWORD* pSizeOfData) ;
+		HRESULT				FreePrivateData( REFGUID refguid) ;
+		DWORD				SetPriority( DWORD PriorityNew) ;
+		DWORD				GetPriority() ;
+		void				PreLoad() ;
+		D3DRESOURCETYPE		GetType() ;
+		HRESULT				GetContainer( REFIID riid,void** ppContainer) ;
+		HRESULT				GetDesc( D3DSURFACE_DESC *pDesc) ;
+		HRESULT				LockRect( D3DLOCKED_RECT* pLockedRect,CONST RECT* pRect,DWORD Flags) ;
+		HRESULT				UnlockRect() ;
+		HRESULT				GetDC( HDC *phdc) ;
+		HRESULT				ReleaseDC( HDC hdc) ;
 
 //#ifdef D3D_DEBUG_INFO
 		LPCWSTR Name;

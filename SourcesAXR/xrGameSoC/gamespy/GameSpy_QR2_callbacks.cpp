@@ -113,19 +113,46 @@ void __cdecl callback_playerkey(int keyid, int index, void* outbuf, void *userda
 {
 	xrGameSpyServer* pServer = (xrGameSpyServer*) userdata;
 	if (!pServer) return;
-	if (u32(index) >= pServer->client_Count()) return;
+	if (u32(index) >= pServer->GetClientsCount()) return;
 	CGameSpy_QR2* pQR2 = pServer->QR2();
 	if (!pQR2) return;
 
 	xrGameSpyClientData* pCD = NULL;
 	
+	struct index_searcher
+	{
+		u32 index;
+		u32 current;
+		explicit index_searcher(u32 i)
+		{
+			index = i;
+			current = 0;
+		}
+		bool operator()(IClient* client)
+		{
+			if (current == index)
+				return true;
+			++current;
+			return false;
+		}
+	};
+
 	if (pServer->IsDedicated())
 	{
-		if (u32(index+1) >= pServer->client_Count()) return;
-		pCD = (xrGameSpyClientData*)pServer->client_Get(index+1);
+		index_searcher tmp_predicate(index + 1);
+		if (u32(index + 1) >= pServer->GetClientsCount()) return;
+		pCD = static_cast<xrGameSpyClientData*>(
+			pServer->FindClient(tmp_predicate)
+			);
 	}
 	else
-		pCD = (xrGameSpyClientData*)pServer->client_Get(index);
+	{
+		index_searcher tmp_predicate(index);
+		pCD = static_cast<xrGameSpyClientData*>(
+			pServer->FindClient(tmp_predicate)
+			);
+	}
+
 	if (!pCD || !pCD->ps) return;
 
 	switch (keyid)
@@ -138,8 +165,6 @@ void __cdecl callback_playerkey(int keyid, int index, void* outbuf, void *userda
 	case TEAM__KEY:		pQR2->BufferAdd_Int(outbuf, pCD->ps->team); break;
 	case P_SPECTATOR__KEY: pQR2->BufferAdd_Int(outbuf, pCD->ps->testFlag(GAME_PLAYER_FLAG_SPECTATOR)); break;
 	case P_ARTEFACTS__KEY: 
-		if (pServer->game->Type() == GAME_ARTEFACTHUNT) 
-			pQR2->BufferAdd_Int(outbuf, pCD->ps->af_count); break;
 			break;
 	default:
 		{

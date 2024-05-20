@@ -13,13 +13,13 @@
 #include "Level.h"
 #include "game_cl_base.h"
 #include "AI/Monsters/BaseMonster/base_monster.h"
-#include "../igame_persistent.h"
+#include "../xrEngine/igame_persistent.h"
 
 #define RECT_SIZE	16
 
-extern u32 C_ON_ENEMY;
-extern u32 C_ON_NEUTRAL;
-extern u32 C_ON_FRIEND;
+#define C_ON_ENEMY		color_xrgb(0xff,0,0)
+#define C_ON_NEUTRAL	color_xrgb(0xff,0xff,0x80)
+#define C_ON_FRIEND		color_xrgb(0,0xff,0)
 
 struct FindVisObjByObject{
 	const CObject*			O;
@@ -68,7 +68,7 @@ void SBinocVisibleObj::Update()
 	m_flags.set		(	flVisObjNotValid,TRUE);
 
 
-	Fbox		b		= m_object->Visual()->vis.box;
+	Fbox		b		= m_object->Visual()->getVisData().box;
 
 	Fmatrix				xform;
 	xform.mul			(Device.mFullTransform,m_object->XFORM());

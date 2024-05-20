@@ -142,12 +142,24 @@ void CEngineAPI::Initialize(void)
 
 	// game	
 	{
-		LPCSTR			g_name = "XrGame.dll";
+		LPCSTR			g_name = "";
 		switch (xrGameManager::GetGame())
 		{
-		case EGame::CS:
-			g_name = "XrGameCS.dll";
-			break;
+		case EGame::COP:
+			{
+				g_name = "xrGame.dll";
+
+			} break;
+			case EGame::CS:
+			{
+				g_name = "xrGameCS.dll";
+
+			} break;
+			case EGame::SHOC:
+			{
+				g_name = "xrGameSoC.dll";
+
+			} break;
 		}
 		Log				("Loading DLL:",g_name);
 		hGame			= LoadLibrary	(g_name);

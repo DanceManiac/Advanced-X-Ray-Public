@@ -17,7 +17,7 @@
 #include "../game_cl_base.h"
 #include "../string_table.h"
 #include "../xr_level_controller.h"
-#include "../../cameraBase.h"
+#include "../../xrEngine/CameraBase.h"
 #include "UIXmlInit.h"
 
 CUITalkWnd::CUITalkWnd()
@@ -291,7 +291,7 @@ void CUITalkWnd::AskQuestion()
 		{
 
 			string128	s;
-			sprintf_s		(s,"ID = [%s] of selected question is out of range of available dialogs ",UITalkDialogWnd->m_ClickedQuestionID);
+			sprintf_s		(s,"ID = [%s] of selected question is out of range of available dialogs ",*UITalkDialogWnd->m_ClickedQuestionID);
 			VERIFY2(FALSE, s);
 		}
 

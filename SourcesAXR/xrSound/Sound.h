@@ -157,6 +157,7 @@ public:
 	virtual LPCSTR			file_name				( ) const			= 0;
 	virtual u16				channels_num			( ) const			= 0;
 	virtual u32				bytes_total				( ) const			= 0;
+	inline  u32				length_ms				( )	const			{ return static_cast<u32>(length_sec() * 1000); }
 };
 
 /// definition (Sound Source)

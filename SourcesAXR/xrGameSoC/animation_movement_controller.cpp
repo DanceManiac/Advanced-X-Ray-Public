@@ -1,9 +1,10 @@
 #include "StdAfx.h"
 #include "animation_movement_controller.h"
-#include "../SkeletonAnimated.h" 
+
+#include "../Include/xrRender/Kinematics.h"
 #include "game_object_space.h"
 
-animation_movement_controller::animation_movement_controller( Fmatrix *_pObjXForm, CKinematics* _pKinematicsC, CBlend* b ):
+animation_movement_controller::animation_movement_controller( Fmatrix *_pObjXForm, IKinematics* _pKinematicsC, CBlend* b ):
 m_startObjXForm( *_pObjXForm ), 
 m_pObjXForm( *_pObjXForm ),
 m_pKinematicsC( _pKinematicsC ),
@@ -13,7 +14,7 @@ m_control_blend( b )
 	VERIFY( _pObjXForm );
 	VERIFY( b );
 	CBoneInstance& B=m_pKinematicsC->LL_GetBoneInstance( m_pKinematicsC->LL_GetBoneRoot( ) );
-	VERIFY( !B.Callback && !B.Callback_Param );
+	VERIFY( !B.callback_param() && !B.callback());
 	B.set_callback( bctCustom, RootBoneCallback, this );
 	m_startRootXform.set(B.mTransform);
 }
@@ -26,8 +27,8 @@ animation_movement_controller::~animation_movement_controller( )
 void	animation_movement_controller::	deinitialize					()
 {
 	CBoneInstance& B=m_pKinematicsC->LL_GetBoneInstance( m_pKinematicsC->LL_GetBoneRoot( ) );
-	VERIFY( B.Callback == RootBoneCallback );
-	VERIFY( B.Callback_Param == (void*)this );
+	VERIFY( B.callback() == RootBoneCallback );
+	VERIFY( B.callback_param() == (void*)this );
 	B.reset_callback( );
 	m_control_blend =  0 ;
 }
@@ -35,21 +36,21 @@ void animation_movement_controller::OnFrame( )
 {
 	m_pKinematicsC->CalculateBones( );
 	
-	if(CBlend::eFREE_SLOT == m_control_blend->blend)
+	if(CBlend::eFREE_SLOT == m_control_blend->blend_state())
 	{
 		deinitialize();
 		return;
 	}
-	if( m_control_blend->blend == CBlend::eAccrue && m_control_blend->blendPower - EPS_L > m_control_blend->blendAmount )
+	if( m_control_blend->blend_state() == CBlend::eAccrue && m_control_blend->blendPower - EPS_L > m_control_blend->blendAmount )
 			m_control_blend->timeCurrent =0;
 }
 
 void animation_movement_controller::RootBoneCallback( CBoneInstance* B )
 {
 	VERIFY( B );
-	VERIFY( B->Callback_Param );
+	VERIFY( B->callback_param() );
 	
-	animation_movement_controller* O=( animation_movement_controller* )( B->Callback_Param );
+	animation_movement_controller* O=( animation_movement_controller* )( B->callback_param());
 
 	if(O->m_control_blend->playing)
 	{

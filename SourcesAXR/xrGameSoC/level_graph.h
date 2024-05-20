@@ -9,14 +9,16 @@
 #pragma once
 
 #ifndef AI_COMPILER
-	#include "../xrLevel.h"
+#	include "../xrEngine/xrLevelSoC.h"
 #else
-	#include "xrLevel.h"
+#	include "../../xrEngine/xrLevelSoC.h"
 #endif
 
 #include "alife_space.h"
 #include "level_graph_space.h"
 #include "game_graph_space.h"
+
+#include "../Include/xrRender/DebugShader.h"
 
 namespace LevelGraph {
 	class	CHeader;
@@ -88,10 +90,19 @@ public:
 	virtual			~CLevelGraph				();
 	IC		const_vertex_iterator begin			() const;
 	IC		const_vertex_iterator end			() const;
+
 	IC		void	set_mask					(const xr_vector<u32> &mask);
+	IC		void	set_mask_no_check			(const xr_vector<u32> &mask);
+	
 	IC		void	set_mask					(u32 vertex_id);
+	IC		void	set_mask_no_check			(u32 vertex_id);
+
 	IC		void	clear_mask					(const xr_vector<u32> &mask);
+	IC		void	clear_mask_no_check			(const xr_vector<u32> &mask);
+
 	IC		void	clear_mask					(u32 vertex_id);
+	IC		void	clear_mask_no_check			(u32 vertex_id);
+
 	IC		bool	is_accessible				(const u32 vertex_id) const;
 	IC		void	level_id					(const GameGraph::_LEVEL_ID &level_id);
 	IC		u32		max_x						() const;
@@ -207,7 +218,7 @@ public:
 #ifdef DEBUG
 #	ifndef AI_COMPILER
 private:
-	ref_shader			sh_debug;
+	debug_shader		sh_debug;
 
 private:
 	int					m_current_level_id;

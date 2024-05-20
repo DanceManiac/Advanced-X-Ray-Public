@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../SkeletonAnimated.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 class CHudItem;
 
 struct weapon_hud_value: public shared_value
 {
-	CKinematicsAnimated*	m_animations;
+	IKinematicsAnimated*	m_animations;
 public:
 	int					m_fire_bone;
 	Fvector				m_fp_offset;
@@ -34,7 +34,7 @@ public:
 	{	
 		shared_item<weapon_hud_value>::create	(key,g_pWeaponHUDContainer,on_new_pred(owner));	
 	}
-	CKinematicsAnimated*	animations				(){return p_->m_animations;}
+	IKinematicsAnimated*	animations				(){return p_->m_animations;}
 	u32					motion_length			(MotionID M);
 	MotionID			motion_id				(LPCSTR name);
 };
@@ -77,7 +77,7 @@ public:
 	void				net_DestroyHud	();
 	void				Init			();
 
-	IC IRender_Visual*	Visual			()	{ return m_shared_data.animations();			}
+	IC IRenderVisual*	Visual			()	{ return m_shared_data.animations()->dcast_RenderVisual();}
 	IC Fmatrix&			Transform		()	{ return m_Transform;							}
 
 	int					FireBone		()	{return m_shared_data.get_value()->m_fire_bone;	}

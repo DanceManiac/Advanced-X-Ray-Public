@@ -56,6 +56,7 @@ void	CGameSpy_Full::LoadGameSpy()
 
 	HMODULE	hGameSpyDLL = m_hGameSpyDLL;
 	GAMESPY_LOAD_FN(xrGS_GetGameVersion);
+	GAMESPY_LOAD_FN(xrGS_GetAxrPlatform);
 }
 
 void	CGameSpy_Full::Update	()
@@ -72,4 +73,9 @@ void	CGameSpy_Full::Update	()
 const	char*	CGameSpy_Full::GetGameVersion	(const	char*result)
 {
 	return xrGS_GetGameVersion(result);
+};
+
+const	char* CGameSpy_Full::GetAxrPlatform(const	char* result)
+{
+	return xrGS_GetAxrPlatform(result);
 };

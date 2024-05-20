@@ -17,10 +17,10 @@
 #include "alife_registry_container.h"
 #include "xrserver.h"
 #include "level.h"
-#include "../x_ray.h"
+#include "../xrEngine/x_ray.h"
 #include "saved_game_wrapper.h"
 #include "string_table.h"
-#include "../igame_persistent.h"
+#include "../xrEngine/igame_persistent.h"
 
 using namespace ALife;
 
@@ -143,8 +143,9 @@ bool CALifeStorageManager::load	(LPCSTR save_name)
 	CHECK_OR_EXIT				(CSavedGameWrapper::valid_saved_game(*stream),make_string("%s\nSaved game version mismatch or saved game is corrupted",file_name));
 
 	string512					temp;
-	strconcat					(sizeof(temp),temp,CStringTable().translate("st_loading_saved_game").c_str()," \"",save_name,SAVE_EXTENSION,"\"");
-	g_pGamePersistent->LoadTitle(temp);
+	strconcat					(sizeof(temp), temp, CStringTable().translate("st_loading_saved_game").c_str(), " \"", save_name, SAVE_EXTENSION, "\"");
+	pApp->SetLoadStageTitle		(temp);
+	pApp->LoadStage				();
 
 	unload						();
 	reload						(m_section);

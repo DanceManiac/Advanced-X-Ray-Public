@@ -42,7 +42,7 @@ class PropItem;
 DEFINE_VECTOR			(PropItem*,PropItemVec,PropItemIt);
 
 //------------------------------------------------------------------------------
-#include "ChooseTypes.H"     
+#include "../xrCore/ChooseTypes.H"     
 #include "fastdelegate.h"                         
 //------------------------------------------------------------------------------
 typedef fastdelegate::FastDelegate2<PropValue*, xr_string&> 	TOnDrawTextEvent; 

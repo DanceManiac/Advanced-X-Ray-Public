@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "UICellItem.h"
 #include "../xr_level_controller.h"
-#include "../../xr_input.h"
+#include "../../xrEngine/xr_input.h"
 #include "../HUDManager.h"
 #include "../level.h"
 #include "../object_broker.h"
@@ -150,7 +150,7 @@ CUIDragItem::~CUIDragItem()
 	Device.seqFrame.Remove			(this);
 }
 
-void CUIDragItem::Init(const ref_shader& sh, const Frect& rect, const Frect& text_rect)
+void CUIDragItem::Init(const ui_shader& sh, const Frect& rect, const Frect& text_rect)
 {
 	SetWndRect						(rect);
 	m_static.SetShader				(sh);

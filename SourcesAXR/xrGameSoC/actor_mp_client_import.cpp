@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "actor_mp_client.h"
 #include "inventory.h"
-#include "../camerabase.h"
+#include "../xrEngine/camerabase.h"
 
 void CActorMP::net_Import	( NET_Packet &P)
 {

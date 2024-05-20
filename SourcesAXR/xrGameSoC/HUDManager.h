@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../CustomHUD.h"
+#include "../xrEngine/CustomHUD.h"
 #include "HitMarker.h"
 #include "UI.h"
 
@@ -72,8 +72,11 @@ public:
 	void					ShowCrosshair		(bool show);
 
 	void					SetHitmarkType		(LPCSTR tex_name);
-	virtual void			OnScreenRatioChanged();
+	virtual void			OnScreenResolutionChanged();
 	virtual void			OnDisconnected		();
 	virtual void			OnConnected			();
 	virtual void			net_Relcase			(CObject *object);
+
+	virtual	void			RenderActiveItemUI			() {}
+	virtual	bool			RenderActiveItemUIQuery		() { return false; }
 };

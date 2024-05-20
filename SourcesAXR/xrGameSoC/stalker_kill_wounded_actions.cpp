@@ -28,6 +28,10 @@
 #include "agent_manager.h"
 #include "agent_enemy_manager.h"
 
+#include "../../Include/xrRender/RenderVisual.h"
+#include "../../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
+
 const u32 MIN_QUEUE		= 0;
 const u32 MAX_QUEUE		= 1;
 const u32 MIN_INTERVAL	= 1000;
@@ -319,7 +323,7 @@ void CStalkerActionKillWounded::execute					()
 	HS.weaponID				= weapon_to_kill(&object())->object().ID();
 	HS.dir					= Fvector().set(0.f,0.f,1.f);
 	HS.power				= 1.f;
-	HS.boneID				= smart_cast<CKinematics*>((const_cast<CEntityAlive*>(enemy))->Visual())->LL_GetBoneRoot();
+	HS.boneID				= const_cast<CEntityAlive*>(enemy)->Visual()->dcast_PKinematics()->LL_GetBoneRoot();
 	HS.p_in_bone_space		= Fvector().set(0.f,0.f,0.f);
 	HS.impulse				= 1.f;
 	HS.hit_type				= ALife::eHitTypeWound;

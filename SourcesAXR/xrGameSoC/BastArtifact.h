@@ -5,11 +5,11 @@
 
 #pragma once
 #include "artifact.h"
-#include "../feel_touch.h"
+#include "../xrEngine/feel_touch.h"
 
 #include "entity_alive.h"
 
-struct SGameMtl;
+class SGameMtl;
 struct	dContact;
 
 DEFINE_VECTOR (CEntityAlive*, ALIVE_LIST, ALIVE_LIST_it);

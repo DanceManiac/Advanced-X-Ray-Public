@@ -17,12 +17,12 @@ IC	CScriptMovementAction::CScriptMovementAction		(MonsterSpace::EBodyState tBody
 	SetSpeed			(fSpeed);
 }
 
-IC	CScriptMovementAction::CScriptMovementAction		(MonsterSpace::EBodyState tBodyState, MonsterSpace::EMovementType tMovementType, DetailPathManager::EDetailPathType tPathType, const Fvector &tPosition, float fSpeed)
+IC	CScriptMovementAction::CScriptMovementAction		(MonsterSpace::EBodyState tBodyState, MonsterSpace::EMovementType tMovementType, DetailPathManager::EDetailPathType tPathType,  Fvector *tPosition, float fSpeed)
 {
 	SetBodyState		(tBodyState);
 	SetMovementType		(tMovementType);
 	SetPathType			(tPathType);
-	SetPosition			(tPosition);
+	SetPosition			(*tPosition);
 	SetSpeed			(fSpeed);
 }
 
@@ -35,10 +35,10 @@ IC	CScriptMovementAction::CScriptMovementAction		(const EInputKeys tInputKeys, f
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------						
 // Monsters
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IC	CScriptMovementAction::CScriptMovementAction		(MonsterSpace::EScriptMonsterMoveAction tAct, Fvector &tPosition, float	dist_to_end, MonsterSpace::EScriptMonsterSpeedParam speed_param)
+IC	CScriptMovementAction::CScriptMovementAction		(MonsterSpace::EScriptMonsterMoveAction tAct, Fvector *tPosition, float	dist_to_end, MonsterSpace::EScriptMonsterSpeedParam speed_param)
 {																																			
 	m_tMoveAction		= tAct;
-	SetPosition			(tPosition);																										
+	SetPosition			(*tPosition);																										
 	m_tSpeedParam		= speed_param;
 	m_fDistToEnd		= dist_to_end;
 }						

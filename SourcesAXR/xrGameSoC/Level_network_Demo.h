@@ -44,6 +44,7 @@ private:
 			NET_Packet	Packet;
 			DemoFrameTime	FrameTime;
 		};
+		DemoDataStruct() :Packet() { }
 	};
 
 	DEF_DEQUE(DemoDeque, DemoDataStruct);

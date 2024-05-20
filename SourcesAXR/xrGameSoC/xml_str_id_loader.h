@@ -158,8 +158,8 @@ typename void	CSXML_IdToIndex::InitInternal ()
 		xr_string				xml_file_full;
 		xml_file_full			= xml_file;
 		xml_file_full			+= ".xml";
-		bool xml_result			= uiXml->Init(CONFIG_PATH, GAME_PATH, xml_file_full.c_str());
-		R_ASSERT3				(xml_result, "error while parsing XML file", xml_file_full.c_str());
+		uiXml->Load				(CONFIG_PATH, "gameplay", xml_file_full.c_str());
+		//R_ASSERT3				(xml_result, "error while parsing XML file", xml_file_full.c_str());
 
 		//общий список
 		int items_num			= uiXml->GetNodesNum(uiXml->GetRoot(), tag_name);

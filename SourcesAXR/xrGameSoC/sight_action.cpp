@@ -14,6 +14,7 @@
 #include "stalker_movement_manager.h"
 #include "inventory.h"
 
+#include "ai_object_location_impl.h"
 //#define SIGHT_TEST
 
 void CSightAction::initialize					()

@@ -78,9 +78,12 @@ IC	const CObjectItemAbstract *CObjectFactory::item	(const CLASS_ID &clsid, bool 
 
 IC	void CObjectFactory::add	(CObjectItemAbstract *item)
 {
-	const_iterator		I;
-
-	I					= std::find_if(clsids().begin(),clsids().end(),CObjectItemPredicateCLSID(item->clsid()));
+	auto I = std::find_if(clsids().begin(), clsids().end(),
+		[item](CObjectItemAbstract* right)
+		{
+			return right->clsid() == item->clsid();
+		}
+	);
 	VERIFY				(I == clsids().end());
 	
 #ifndef NO_XR_GAME

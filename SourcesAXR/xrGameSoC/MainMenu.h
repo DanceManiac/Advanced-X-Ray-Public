@@ -6,8 +6,8 @@ class CUICursor;
 class CUIMessageBoxEx;
 class CGameSpy_HTTP;
 class CGameSpy_Full;
-#include "../IInputReceiver.h"
-#include "../IGame_Persistent.h"
+#include "../xrEngine/IInputReceiver.h"
+#include "../xrEngine/IGame_Persistent.h"
 #include "UIDialogHolder.h"
 #include "ui/UIWndCallback.h"
 #include "ui_base.h"
@@ -124,7 +124,7 @@ public:
 	void			OnRenderPPUI_PP					();
 
 	virtual void	OnRender						();
-	virtual void	OnFrame							(void);
+	virtual void	_BCL	OnFrame					(void);
 	virtual void	StartStopMenu					(CUIDialogWnd* pDialog, bool bDoHideIndicators);
 	virtual bool	UseIndicators					()						{return false;}
 
@@ -154,8 +154,10 @@ public:
 	void			SetNeedVidRestart				();
 	virtual void	OnDeviceReset					();
 	LPCSTR			GetGSVer						();
-		bool		ValidateCDKey					();
-		bool		IsCDKeyIsValid();
+	LPCSTR			GetAxrPlatform					();
+			bool	ValidateCDKey					();
+			bool	IsCDKeyIsValid					();
+	virtual bool CanSkipSceneRendering				() { return false; }
 };
 
 extern CMainMenu*	MainMenu();

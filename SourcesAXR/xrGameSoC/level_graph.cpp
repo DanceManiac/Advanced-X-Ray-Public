@@ -20,13 +20,13 @@ CLevelGraph::CLevelGraph		()
 {
 #ifndef AI_COMPILER
 #ifdef DEBUG
-	sh_debug.create				("debug\\ai_nodes","$null");
+	sh_debug->create				("debug\\ai_nodes","$null");
 #endif
 	string_path					file_name;
 	FS.update_path				(file_name,"$level$",LEVEL_GRAPH_NAME);
 #else
 	string256					file_name;
-	strconcat					(file_name,filename,LEVEL_GRAPH_NAME);
+	strconcat					(sizeof(file_name), file_name, filename, LEVEL_GRAPH_NAME);
 #endif
 	m_reader					= FS.r_open	(file_name);
 
@@ -100,6 +100,29 @@ u32 CLevelGraph::vertex		(u32 current_node_id, const Fvector& position) const
 			// so, there is a node which corresponds with x and z to the position
 			bool				ok = true;
 			if (valid_vertex_id(current_node_id)) {
+				{
+					CVertex const 	&vertex = *this->vertex(current_node_id);
+					for (u32 i=0; i<4; ++i) {
+						if (vertex.link(i) == _vertex_id) {
+#ifndef AI_COMPILER
+							Device.Statistic->AI_Node.End();
+#endif // AI_COMPILER
+							return			(_vertex_id);
+						}
+					}
+				}
+				{
+					CVertex const 	&vertex = *this->vertex(_vertex_id);
+					for (u32 i=0; i<4; ++i) {
+						if (vertex.link(i) == current_node_id) {
+#ifndef AI_COMPILER
+							Device.Statistic->AI_Node.End();
+#endif // AI_COMPILER
+							return			(_vertex_id);
+						}
+					}
+				}
+
 				float				y0 = vertex_plane_y(current_node_id,position.x,position.z);
 				float				y1 = vertex_plane_y(_vertex_id,position.x,position.z);
 				bool				over0 = position.y > y0;

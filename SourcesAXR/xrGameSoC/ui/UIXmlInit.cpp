@@ -1173,8 +1173,7 @@ void CUIXmlInit::InitColorDefs()
 	m_pColorDefs = xr_new<ColorDefs>();
 
 	CUIXml uiXml;
-	bool flag = uiXml.Init(CONFIG_PATH, UI_PATH, COLOR_DEFINITIONS);
-	R_ASSERT3(flag, "xml file not found", COLOR_DEFINITIONS);
+	uiXml.Load(CONFIG_PATH, UI_PATH, COLOR_DEFINITIONS);
 
 	int num = uiXml.GetNodesNum("colors", 0, "color");
 

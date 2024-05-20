@@ -2,6 +2,7 @@
 #define PHSHELL_SPLITTER_H
 #include "PHDefs.h"
 #include "PHObject.h"
+#include "PHFracture.h"
 
 class CPHShellSplitter 
 {

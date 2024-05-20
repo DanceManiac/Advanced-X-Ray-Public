@@ -1,12 +1,14 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 #include "StdAfx.h"
+
+#include "PHCapture.h"
 #include "phcharacter.h"
 #include "Physics.h"
 #include "ExtendedGeom.h"
-#include "PHCapture.h"
+
 #include "entity_alive.h"
 #include "phmovementcontrol.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "characterphysicssupport.h"
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
@@ -25,7 +27,6 @@ void CPHCapture::CreateBody()
 
 CPHCapture::~CPHCapture()
 {
-	
 	Deactivate();
 }
 void CPHCapture::PhDataUpdate(dReal /**step/**/)

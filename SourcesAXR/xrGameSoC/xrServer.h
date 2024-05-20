@@ -12,6 +12,8 @@
 #include "id_generator.h"
 #include "battleye.h"
 
+#include "xrClientsPool.h"
+
 #ifdef DEBUG
 //. #define SLOW_VERIFY_ENTITIES
 #endif
@@ -143,6 +145,8 @@ public:
 
 	void					AttachNewClient			(IClient* CL);
 	virtual void			OnBuildVersionRespond				(IClient* CL, NET_Packet& P);
+
+	xrClientsPool			m_disconnected_clients;
 protected:
 	bool					CheckAdminRights		(const shared_str& user, const shared_str& pass, string512 reason);
 	virtual IClient*		new_client				( SClientConnectData* cl_data );
@@ -181,8 +185,8 @@ public:
 	u32						GetEntitiesNum		()			{ return entities.size(); };
 	CSE_Abstract*			GetEntity			(u32 Num);
 
-	IC void					clients_Lock		()			{	csPlayers.Enter();	}
-	IC void					clients_Unlock		()			{   csPlayers.Leave();	}
+	//IC void					clients_Lock		()			{	/*csPlayers.Enter();*/	}
+	//IC void					clients_Unlock		()			{   /*csPlayers.Leave();*/	}
 
 	xrClientData*			ID_to_client		(ClientID ID, bool ScanAll = false ) { return (xrClientData*)(IPureServer::ID_to_client( ID, ScanAll)); }
 	CSE_Abstract*			ID_to_entity		(u16 ID);
@@ -212,6 +216,7 @@ public:
 			bool			verify_entities		() const;
 			void			verify_entity		(const CSE_Abstract *entity) const;
 #endif
+			void			ClearDisconnectedPool() { m_disconnected_clients.Clear(); };
 };
 
 #endif // !defined(AFX_XRSERVER_H__65728A25_16FC_4A7B_8CCE_D798CA5EC64E__INCLUDED_)

@@ -12,6 +12,7 @@
 
 ENGINE_API extern	bool		CallOfPripyatMode;
 ENGINE_API extern	bool		ClearSkyMode;
+ENGINE_API extern	bool		ShadowOfChernobylMode;
 // textures
 ENGINE_API extern	int		psTextureLOD		;
 

@@ -5,9 +5,11 @@
 #include "ui/UIXmlInit.h"
 #include "ui/UIMApWnd.h"
 #include "level.h"
-#include "../xr_object.h"
+#include "../xrEngine/xr_object.h"
 #include "object_broker.h"
 #include "ui/UITextureMaster.h"
+
+#include "../Include/xrRender/UIShader.h"
 
 CMapSpot::CMapSpot(CMapLocation* ml)
 :m_map_location(ml)
@@ -175,7 +177,8 @@ void CMiniMapSpot::Load(CUIXml* xml, LPCSTR path)
 void CMiniMapSpot::Draw()
 {
 	CObject* O = Level().CurrentViewEntity();
-	if(O&&m_icon_above&&m_icon_below){
+	if (O && m_icon_above->inited() && m_icon_below->inited())
+	{
 		float ml_y = MapLocation()->GetLastPosition().y;
 		float d = O->Position().y-ml_y;
 

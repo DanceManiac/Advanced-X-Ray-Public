@@ -18,7 +18,7 @@
 #include "xrserver.h"
 #include "level.h"
 #include "graph_engine.h"
-#include "../x_ray.h"
+#include "../xrEngine/x_ray.h"
 #include "restriction_space.h"
 #include "profiler.h"
 #include "mt_config.h"
@@ -227,10 +227,11 @@ bool CALifeUpdateManager::change_level	(NET_Packet &net_packet)
 	return							(true);
 }
 
-#include "../igame_persistent.h"
+#include "../xrEngine/igame_persistent.h"
 void CALifeUpdateManager::new_game			(LPCSTR save_name)
 {
-	g_pGamePersistent->LoadTitle		("st_creating_new_game");
+	g_pGamePersistent->SetLoadStageTitle("st_creating_new_game");
+	g_pGamePersistent->LoadTitle		();
 	Msg									("* Creating new game...");
 
 	unload								();
@@ -261,7 +262,8 @@ void CALifeUpdateManager::new_game			(LPCSTR save_name)
 
 void CALifeUpdateManager::load			(LPCSTR game_name, bool no_assert, bool new_only)
 {
-	g_pGamePersistent->LoadTitle		("st_loading_alife_simulator");
+	g_pGamePersistent->SetLoadStageTitle("st_loading_alife_simulator");
+	g_pGamePersistent->LoadTitle		();
 
 #ifdef DEBUG
 	Memory.mem_compact					();
@@ -278,7 +280,8 @@ void CALifeUpdateManager::load			(LPCSTR game_name, bool no_assert, bool new_onl
 #ifdef DEBUG
 	Msg									("* Loading alife simulator is successfully completed (%7.3f Mb)",float(Memory.mem_usage() - memory_usage)/1048576.0);
 #endif
-	g_pGamePersistent->LoadTitle		("st_server_connecting");
+	g_pGamePersistent->SetLoadStageTitle("st_server_connecting");
+	g_pGamePersistent->LoadTitle		(true, g_pGameLevel->name());
 }
 
 void CALifeUpdateManager::reload		(LPCSTR section)

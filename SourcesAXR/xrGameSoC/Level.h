@@ -6,15 +6,16 @@
 #define AFX_LEVEL_H__38F63863_DB0C_494B_AFAB_C495876EC671__INCLUDED_
 #pragma once
 
-#include "../igame_level.h"
+#include "../xrEngine/igame_level.h"
 #include "../../xrNetServer/net_client.h"
 #include "script_export_space.h"
-#include "../StatGraph.h"
+#include "../xrEngine/StatGraph.h"
 #include "xrMessages.h"
 #include "alife_space.h"
-#include "xrDebug.h"
+#include "../xrcore/xrDebug.h"
 #include "xrServer.h"
 #include "battleye_system.h"
+#include "../xrEngine/CustomHUD.h"
 
 class	CHUDManager;
 class	CParticlesObject;
@@ -45,7 +46,7 @@ class CFogOfWarMngr;
 class CBulletManager;
 class CMapManager;
 
-#include "../feel_touch.h"
+#include "../xrEngine/feel_touch.h"
 
 class GlobalFeelTouch : public Feel::Touch
 {
@@ -65,6 +66,7 @@ class CLevel					: public IGame_Level, public IPureClient
 private:
 #ifdef DEBUG
 	bool						m_bSynchronization;
+	bool						m_bEnvPaused;
 #endif
 protected:
 	typedef IGame_Level			inherited;
@@ -234,11 +236,14 @@ public:
 	virtual BOOL				Load_GameSpecific_Before( );
 	virtual BOOL				Load_GameSpecific_After ( );
 	virtual void				Load_GameSpecific_CFORM	( CDB::TRI* T, u32 count );
+	void						Load_GameSpecific_CFORM_Serialize(IWriter& writer) override;
+	bool						Load_GameSpecific_CFORM_Deserialize(IReader& reader) override;
 
 	// Events
 	virtual void				OnEvent					( EVENT E, u64 P1, u64 P2 );
 	virtual void				OnFrame					( void );
 	virtual void				OnRender				( );
+	virtual void				ApplyCamera				();
 	void						cl_Process_Event		(u16 dest, u16 type, NET_Packet& P);
 	void						cl_Process_Spawn		(NET_Packet& P);
 	void						ProcessGameEvents		( );
@@ -281,7 +286,7 @@ public:
 #ifdef DEBUG
 	IC CDebugRenderer				&debug_renderer				();
 #endif
-	void	__stdcall				script_gc					();			// GC-cycle
+	void							script_gc					();			// GC-cycle
 
 	IC CPHCommander					&ph_commander				();
 	IC CPHCommander					&ph_commander_scripts		();
@@ -306,7 +311,14 @@ public:
 	float				GetGameTimeFactor		();
 	void				SetGameTimeFactor		(const float fTimeFactor);
 	void				SetGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
-	void				SetEnvironmentGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);
+	virtual void		SetEnvironmentGameTimeFactor(u64 const& GameTime, float const& fTimeFactor);
+
+	virtual float		GetEnvironmentTimeFactor() const; // override;
+	virtual void		SetEnvironmentTimeFactor(const float fTimeFactor); // override;
+	virtual u64			GetEnvironmentGameTime	() const; // override
+
+	virtual	shared_str	OpenDemoFile			(LPCSTR demo_file_name) { return ""; }
+	virtual void		net_StartPlayDemo		() {}
 //	void				SetGameTime				(ALife::_TIME_ID GameTime);
 
 	// gets current daytime [0..23]
@@ -344,6 +356,7 @@ public:
 public:
 			void			remove_objects				();
 	virtual void			OnSessionTerminate			(LPCSTR reason);
+			void			OnDestroyObject				(std::uint16_t id) {}
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
@@ -356,7 +369,7 @@ IC game_cl_GameState&	Game()		{ return *Level().game;					}
 	u32					GameID();
 
 
-IC CHUDManager&			HUD()		{ return *((CHUDManager*)Level().pHUD);	}
+IC CHUDManager&			HUD()		{ return *((CHUDManager*)g_hud);	}
 
 #ifdef DEBUG
 IC CLevelDebug&			DBG()		{return *((CLevelDebug*)Level().m_level_debug);}

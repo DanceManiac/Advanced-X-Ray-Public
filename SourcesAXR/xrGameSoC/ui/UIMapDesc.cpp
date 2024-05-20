@@ -53,8 +53,7 @@ CUIMapDesc::~CUIMapDesc(){
 
 void CUIMapDesc::Init(){
 	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "map_desc.xml");
-	R_ASSERT3(xml_result, "xml file not found", "map_desc.xml");
+	xml_doc.Load(CONFIG_PATH, UI_PATH, "map_desc.xml");
 
 	CUIXmlInit::InitWindow		(xml_doc,"map_desc",				0,	this);
 	CUIXmlInit::InitStatic		(xml_doc,"map_desc:caption",		0,	m_pCaption);

@@ -2,7 +2,7 @@
 
 BOOL	xrRender_test_hw		()
 {
-	D3DCAPS9					caps	;
+	/*D3DCAPS9					caps	;
 	CHW							_HW;
 	_HW.CreateD3D				()		;
 	_HW.pD3D->GetDeviceCaps		(D3DADAPTER_DEFAULT,D3DDEVTYPE_HAL,&caps);
@@ -12,6 +12,6 @@ BOOL	xrRender_test_hw		()
 	u16		mrt_count			= u16 (caps.NumSimultaneousRTs);
 	if		(ps_ver_major<2)		return	FALSE;
 	if		(ps_instructions<256)	return	FALSE;
-	if		(mrt_count<3)			return	FALSE;
+	if		(mrt_count<3)			return	FALSE;*/
 	return	TRUE;
 }

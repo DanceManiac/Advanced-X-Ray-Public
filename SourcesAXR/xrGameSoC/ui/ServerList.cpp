@@ -2,7 +2,7 @@
 #include "ServerList.h"
 #include "UIXmlInit.h"
 #include "../string_table.h"
-#include "../../xr_ioconsole.h"
+#include "../../xrEngine/xr_ioconsole.h"
 #include "UIEditBox.h"
 #include "UIColorAnimatorWrapper.h"
 #include "UIListItemAdv.h"
@@ -686,8 +686,8 @@ void CServerList::SrvInfo2LstSrvInfo(const ServerInfo* pServerInfo)
 	m_itemInfo.info.address			= address.c_str();
 	m_itemInfo.info.map				= pServerInfo->m_SessionName;
 	m_itemInfo.info.game			= pServerInfo->m_ServerGameType;
-	m_itemInfo.info.players.sprintf("%d/%d", pServerInfo->m_ServerNumPlayers, pServerInfo->m_ServerMaxPlayers);
-	m_itemInfo.info.ping.sprintf	("%d", pServerInfo->m_Ping);
+	m_itemInfo.info.players.printf	("%d/%d", pServerInfo->m_ServerNumPlayers, pServerInfo->m_ServerMaxPlayers);
+	m_itemInfo.info.ping.printf		("%d", pServerInfo->m_Ping);
 	m_itemInfo.info.version			= pServerInfo->m_ServerVersion;
 	m_itemInfo.info.icons.pass		= pServerInfo->m_bPassword;
 	m_itemInfo.info.icons.dedicated	= pServerInfo->m_bDedicated;

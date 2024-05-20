@@ -44,14 +44,14 @@ ULONG			xrIDirect3DVertexShader9::Release()
 }
 
 /*** IDirect3DResource9 methods ***/
-HRESULT			__stdcall	xrIDirect3DVertexShader9::GetDevice		( IDirect3DDevice9** ppDevice)										
+HRESULT				xrIDirect3DVertexShader9::GetDevice		( IDirect3DDevice9** ppDevice)										
 {
 	APIDEBUG("xrIDirect3DVertexShader9::GetDevice");
 	m_pIDirect3DDevice9->AddRef();
 	*ppDevice = m_pIDirect3DDevice9;
 	return HRESULT_Proc(S_OK);
 };
-HRESULT			__stdcall	xrIDirect3DVertexShader9::GetFunction(void* pData,UINT* pSizeOfData)
+HRESULT				xrIDirect3DVertexShader9::GetFunction(void* pData,UINT* pSizeOfData)
 {
 	APIDEBUG("xrIDirect3DVertexShader9::GetFunction");
 	*pSizeOfData = 0;

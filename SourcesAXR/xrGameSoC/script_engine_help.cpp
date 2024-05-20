@@ -62,10 +62,10 @@ xr_string &process_signature				(xr_string &str)
 
 xr_string member_to_string			(luabind::object const& e, LPCSTR function_signature)
 {
-#if !defined(LUABIND_NO_ERROR_CHECKING)
+#if 0 || !defined(LUABIND_NO_ERROR_CHECKING)
     using namespace luabind;
 	lua_State* L = e.lua_state();
-	LUABIND_CHECK_STACK(L);
+	//LUABIND_CHECK_STACK(L);
 
 	if (e.type() == LUA_TFUNCTION)
 	{
@@ -117,6 +117,7 @@ xr_string member_to_string			(luabind::object const& e, LPCSTR function_signatur
 
 void print_class						(lua_State *L, luabind::detail::class_rep *crep)
 {
+	/*
 	xr_string			S;
 	// print class and bases
 	{
@@ -134,6 +135,7 @@ void print_class						(lua_State *L, luabind::detail::class_rep *crep)
 			S.append	((*I).base->name());
 		}
 		Msg				("%s {",S.c_str());
+		*/
 	}
 	// print class constants
 	{
@@ -215,6 +217,7 @@ void print_class						(lua_State *L, luabind::detail::class_rep *crep)
 
 void print_free_functions				(lua_State *L, const luabind::object &object, LPCSTR header, const xr_string &indent)
 {
+#if 0
 	u32							count = 0;
 	luabind::object::iterator	I = object.begin();
 	luabind::object::iterator	E = object.end();
@@ -279,6 +282,7 @@ void print_free_functions				(lua_State *L, const luabind::object &object, LPCST
 	}
 	if (count)
 		Msg("%s};",indent.c_str());
+#endif
 }
 
 void print_help							(lua_State *L)

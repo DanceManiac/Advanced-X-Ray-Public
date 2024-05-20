@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "xrMessages.h"
 #include "xrGameSpyServer.h"
-#include "../igame_persistent.h"
+#include "../xrEngine/igame_persistent.h"
 
 #include "GameSpy/GameSpy_Base_Defs.h"
 #include "GameSpy/GameSpy_Available.h"
@@ -58,17 +58,17 @@ xrGameSpyServer::EConnect xrGameSpyServer::Connect(shared_str &session_name)
 	EConnect res = inherited::Connect(session_name);
 	if (res!=ErrNoError) return res;
 
-	if ( 0 == *(game->get_option_s		(*session_name,"hname",NULL)))
+	if (0 == *(game->get_option_s(*session_name, "hname", NULL)))
 	{
 		string1024	CompName;
 		DWORD		CompNameSize = 1024;
 		if (GetComputerName(CompName, &CompNameSize)) HostName._set(CompName);
 	}
 	else
-		HostName._set(game->get_option_s		(*session_name,"hname",NULL));
-	
-	if (0 != *(game->get_option_s		(*session_name,"psw",NULL)))
-		Password._set(game->get_option_s		(*session_name,"psw",NULL));
+		HostName._set(game->get_option_s(*session_name, "hname", NULL));
+
+	if (0 != *(game->get_option_s(*session_name, "psw", NULL)))
+		Password._set(game->get_option_s(*session_name, "psw", NULL));
 
 	string4096	tMapName = "";
 	const char* SName = *session_name;
@@ -133,7 +133,7 @@ void			xrGameSpyServer::Update				()
 
 int				xrGameSpyServer::GetPlayersCount()
 {
-	int NumPlayers = client_Count();
+	int NumPlayers = GetClientsCount();
 	if (!g_dedicated_server || NumPlayers < 1) return NumPlayers;
 	return NumPlayers - 1;
 };
@@ -154,15 +154,11 @@ void			xrGameSpyServer::OnCL_Disconnected	(IClient* _CL)
 {
 	inherited::OnCL_Disconnected(_CL);
 
-	csPlayers.Enter			();
-
 	if (m_bCDKey_Initialized)
 	{
 		Msg("xrGS::CDKey::Server : Disconnecting Client");
 		m_GCDServer.DisconnectUser(int(_CL->ID.value()));
 	};
-
-	csPlayers.Leave			();
 }
 
 u32				xrGameSpyServer::OnMessage(NET_Packet& P, ClientID sender)			// Non-Zero means broadcasting with "flags" as returned

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "../xr_ioconsole.h"
+#include "../xrEngine/xr_ioconsole.h"
 #include "customzone.h"
 #include "hit.h"
 #include "PHDestroyable.h"
@@ -7,16 +7,16 @@
 #include "hudmanager.h"
 #include "ParticlesObject.h"
 #include "xrserver_objects_alife_monsters.h"
-#include "../LightAnimLibrary.h"
+#include "../xrEngine/LightAnimLibrary.h"
 #include "level.h"
 #include "game_cl_base.h"
-#include "../igame_persistent.h"
+#include "../xrEngine/igame_persistent.h"
+#include "../xrEngine/xr_collide_form.h"
 #include "artifact.h"
 #include "ai_object_location.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "zone_effector.h"
 #include "breakableobject.h"
-
 //////////////////////////////////////////////////////////////////////////
 #define PREFETCHED_ARTEFACTS_NUM 1	//количество предварительно проспавненых артефактов
 #define WIND_RADIUS (4*Radius())	//расстояние до актера, когда появляется ветер 
@@ -301,7 +301,7 @@ void CCustomZone::Load(LPCSTR section)
 
 		R_ASSERT3(!fis_zero(total_probability), "The probability of artefact spawn is zero!",*cName());
 		//нормализировать вероятности
-		for(i=0; i<m_ArtefactSpawn.size(); ++i)
+		for(u32 i=0; i<m_ArtefactSpawn.size(); ++i)
 		{
 			m_ArtefactSpawn[i].probability = m_ArtefactSpawn[i].probability/total_probability;
 		}
@@ -646,7 +646,7 @@ BOOL CCustomZone::feel_touch_contact(CObject* O)
 {
 	if (smart_cast<CCustomZone*>(O))				return FALSE;
 	if (smart_cast<CBreakableObject*>(O))			return FALSE;
-	if (0==smart_cast<CKinematics*>(O->Visual()))	return FALSE;
+	if (0==smart_cast<IKinematics*>(O->Visual()))	return FALSE;
 
 	if (O->ID() == ID())
 		return		(FALSE);

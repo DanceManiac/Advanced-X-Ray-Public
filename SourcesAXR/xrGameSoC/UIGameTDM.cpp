@@ -25,7 +25,7 @@ CUIGameTDM::CUIGameTDM()
 
 	CUIXml							uiXml;
 	CUIXmlInit						xml_init;
-	uiXml.Init						(CONFIG_PATH, UI_PATH, "ui_game_tdm.xml");
+	uiXml.Load						(CONFIG_PATH, UI_PATH, "ui_game_tdm.xml");
 	m_team1_icon					= xr_new<CUIStatic>();
 	m_team2_icon					= xr_new<CUIStatic>();
 	m_team1_score					= xr_new<CUIStatic>();
@@ -59,8 +59,9 @@ void CUIGameTDM::SetClGame (game_cl_GameState* g)
 void CUIGameTDM::Init ()
 {
 	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "stats.xml");
-	R_ASSERT2(xml_result, "xml file not found");
+	/*bool xml_result =*/ 
+	xml_doc.Load(CONFIG_PATH, UI_PATH, "stats.xml");
+	/*R_ASSERT2(xml_result, "xml file not found");*/
 
 	CUIFrags2* pFragList		= xr_new<CUIFrags2>();			pFragList->SetAutoDelete(true);
 	//-----------------------------------------------------------

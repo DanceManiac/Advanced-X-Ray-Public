@@ -8,17 +8,19 @@
 
 #include "stdafx.h"
 #include "stalker_animation_pair.h"
-#include "../motion.h"
+#include "../xrEngine/motion.h"
 #include "ai_debug.h"
 #include "ai/stalker/ai_stalker.h"
 #include "ai/ai_monsters_anims.h"
+
+#include "../../Include/xrRender/KinematicsAnimated.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
 #include <malloc.h>
 #pragma warning(pop)
 
-void CStalkerAnimationPair::synchronize		(CKinematicsAnimated *skeleton_animated, const CStalkerAnimationPair &stalker_animation) const
+void CStalkerAnimationPair::synchronize		(IKinematicsAnimated *skeleton_animated, const CStalkerAnimationPair &stalker_animation) const
 {
 	if (!blend())
 		return;
@@ -40,9 +42,9 @@ void CStalkerAnimationPair::synchronize		(CKinematicsAnimated *skeleton_animated
 }
 
 #ifndef USE_HEAD_BONE_PART_FAKE
-void CStalkerAnimationPair::play_global_animation	(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control)
+void CStalkerAnimationPair::play_global_animation	(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control)
 #else
-void CStalkerAnimationPair::play_global_animation	(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const u32 &bone_part, const bool &use_animation_movement_control)
+void CStalkerAnimationPair::play_global_animation	(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const u32 &bone_part, const bool &use_animation_movement_control)
 #endif
 {
 	m_blend				= 0;
@@ -67,9 +69,9 @@ void CStalkerAnimationPair::play_global_animation	(CKinematicsAnimated *skeleton
 }
 
 #ifndef USE_HEAD_BONE_PART_FAKE
-void CStalkerAnimationPair::play			(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation)
+void CStalkerAnimationPair::play			(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation)
 #else
-void CStalkerAnimationPair::play			(CKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation, const u32 &bone_part)
+void CStalkerAnimationPair::play			(IKinematicsAnimated *skeleton_animated, PlayCallback callback, CAI_Stalker *object, const bool &use_animation_movement_control, bool continue_interrupted_animation, const u32 &bone_part)
 #endif
 {
 	VERIFY					(animation());
@@ -136,7 +138,7 @@ void CStalkerAnimationPair::play			(CKinematicsAnimated *skeleton_animated, Play
 }
 
 #ifdef DEBUG
-std::pair<LPCSTR,LPCSTR> *CStalkerAnimationPair::blend_id	(CKinematicsAnimated *skeleton_animated, std::pair<LPCSTR,LPCSTR> &result) const
+std::pair<LPCSTR,LPCSTR> *CStalkerAnimationPair::blend_id	(IKinematicsAnimated *skeleton_animated, std::pair<LPCSTR,LPCSTR> &result) const
 {
 	if (!blend())
 		return				(0);
@@ -145,20 +147,24 @@ std::pair<LPCSTR,LPCSTR> *CStalkerAnimationPair::blend_id	(CKinematicsAnimated *
 	if (!global_animation())
 		bone_part_id		= blend()->bone_or_part;
 
-	const BlendSVec			&blends = skeleton_animated->blend_cycle(bone_part_id);
-	if (blends.size() < 2)
+	//const BlendSVec			&blends = skeleton_animated->blend_cycle(bone_part_id);
+	const u32	part_blends_num = skeleton_animated->LL_PartBlendsCount(bone_part_id);
+	if (part_blends_num < 2)
 		return				(0);
 
+	const u32	part_blend = part_blends_num - 2;
+	CBlend* b = skeleton_animated->LL_PartBlend(bone_part_id, part_blend);
+
 #if 0
-	VERIFY2					(
-		blends[blends.size() - 2]->motionID != animation(),
+	VERIFY2(
+		b->motionID != animation(),
 		make_string(
 			"animation is blending with itself (%s)",
 			skeleton_animated->LL_MotionDefName_dbg(animation()).first
 		)
 	);
 #endif
-	result					= skeleton_animated->LL_MotionDefName_dbg(blends[blends.size() - 2]->motionID);
+	result					= skeleton_animated->LL_MotionDefName_dbg(b->motionID);
 	return					(&result);
 }
 #endif // DEBUG

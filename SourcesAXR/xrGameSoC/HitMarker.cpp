@@ -1,9 +1,14 @@
 // exxZERO Time Stamp AddIn. Document modified at : Thursday, March 07, 2002 14:12:50 , by user : Oles , from computer : OLES
 #include "stdafx.h"
 #include "HitMarker.h"
-#include "../render.h"
-#include "../LightAnimLibrary.h"
+#include "../xrEngine/render.h"
+#include "../xrEngine/LightAnimLibrary.h"
 #include "UIStaticItem.h"
+
+#include "grenade.h"
+
+#include "../Include/xrRender/UIRender.h"
+#include "../Include/xrRender/UIShader.h"
 
 static Fvector2			as_PC[5];
 static Fvector2			as_TC[5];
@@ -18,7 +23,7 @@ CHitMarker::CHitMarker()
 
 void CHitMarker::InitShader	(LPCSTR tex_name)
 {
-	hShader2.create	("hud\\default", tex_name);
+	hShader2->create( "hud\\default", tex_name );
 }
 
 //--------------------------------------------------------------------
@@ -59,7 +64,7 @@ void CHitMarker::Hit(int id, const Fvector& dir){
 
 
 
-SHitMark::SHitMark		(const ref_shader& sh, const Fvector& dir)
+SHitMark::SHitMark		(const ui_shader& sh, const Fvector& dir)
 {
 	m_StartTime							= Device.fTimeGlobal;
 	m_lanim								= LALib.FindItem("hud_hit_mark");

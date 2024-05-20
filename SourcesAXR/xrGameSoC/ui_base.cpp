@@ -4,11 +4,13 @@
 #include "UICursor.h"
 #include "HUDManager.h"
 
+#include "../Include/xrRender/UIRender.h"
+
 CUICursor*	GetUICursor		()	{return UI()->GetUICursor();};
 ui_core*	UI				()	{return GamePersistent().m_pUI_core;};
 extern ENGINE_API Fvector2		g_current_font_scale;
 
-void S2DVert::rotate_pt(const Fvector2& pivot, float cosA, float sinA, float kx)
+void S2DVert::rotate_pt(const Fvector2& pivot, const float cosA, const float sinA, const float kx)
 {
 	Fvector2 t		= pt;
 	t.sub			(pivot);
@@ -57,7 +59,7 @@ sPoly2D* C2DFrustum::ClipPoly	(sPoly2D& S, sPoly2D& D) const
 		cls[src->size()] = cls[0]	;
 		src->push_back((*src)[0])	;
 		Fvector2 dir_pt,dir_uv;		float denum,t;
-		for (j=0; j<src->size()-1; j++)	{
+		for (u32 j=0; j<src->size()-1; j++)	{
 			if ((*src)[j].pt.similar((*src)[j+1].pt,EPS_S)) continue;
 			if (negative(cls[j]))	{
 				dest->push_back((*src)[j])	;
@@ -110,24 +112,34 @@ void ui_core::OnDeviceReset()
 
 void ui_core::ClientToScreenScaled(Fvector2& dest, float left, float top)
 {
-	dest.set(ClientToScreenScaledX(left),	ClientToScreenScaledY(top));
+	if(m_currentPointType!=IUIRender::pttLIT)
+		dest.set(ClientToScreenScaledX(left),	ClientToScreenScaledY(top));
+	else
+		dest.set(left,top);
 }
 
 void ui_core::ClientToScreenScaled(Fvector2& src_and_dest)
 {
-	src_and_dest.set(ClientToScreenScaledX(src_and_dest.x),	ClientToScreenScaledY(src_and_dest.y));
+	if(m_currentPointType!=IUIRender::pttLIT)
+		src_and_dest.set(ClientToScreenScaledX(src_and_dest.x),	ClientToScreenScaledY(src_and_dest.y));
 }
 
 void ui_core::ClientToScreenScaledWidth(float& src_and_dest)
 {
-//.	src_and_dest		= ClientToScreenScaledX(src_and_dest);
-	src_and_dest		/= m_current_scale->x;
+	if(m_currentPointType!=IUIRender::pttLIT)
+		src_and_dest		/= m_current_scale->x;
 }
 
 void ui_core::ClientToScreenScaledHeight(float& src_and_dest)
 {
-//.	src_and_dest		= ClientToScreenScaledY(src_and_dest);
-	src_and_dest		/= m_current_scale->y;
+	if(m_currentPointType!=IUIRender::pttLIT)
+		src_and_dest		/= m_current_scale->y;
+}
+
+void ui_core::AlignPixel(float src_and_dest)
+{
+	if(m_currentPointType!=IUIRender::pttLIT)
+		src_and_dest		= (float)iFloor(src_and_dest);
 }
 
 Frect ui_core::ScreenRect()
@@ -138,7 +150,10 @@ Frect ui_core::ScreenRect()
 
 void ui_core::PushScissor(const Frect& r_tgt, bool overlapped)
 {
-//.	return;
+	if(UI()->m_currentPointType==IUIRender::pttLIT)
+		return;
+
+//	return;
 	Frect r_top			= ScreenRect();
 	Frect result		= r_tgt;
 	if (!m_Scissors.empty()&&!overlapped){
@@ -165,17 +180,20 @@ void ui_core::PushScissor(const Frect& r_tgt, bool overlapped)
 	r.x2 				= iFloor(result.x2+0.5f);
 	r.y1 				= iFloor(result.y1);
 	r.y2 				= iFloor(result.y2+0.5f);
-	RCache.set_Scissor	(&r);
+	UIRender->SetScissor(&r);
 }
 
 void ui_core::PopScissor()
 {
-//.	return;
+	if(UI()->m_currentPointType==IUIRender::pttLIT)
+		return;
+
+//	return;
 	VERIFY(!m_Scissors.empty());
 	m_Scissors.pop		();
 	
 	if(m_Scissors.empty())
-		RCache.set_Scissor(NULL);
+		UIRender->SetScissor(NULL);
 	else{
 		const Frect& top= m_Scissors.top();
 		Irect tgt;
@@ -184,7 +202,7 @@ void ui_core::PopScissor()
 		tgt.rb.x 		= iFloor(ClientToScreenScaledX(top.rb.x));
 		tgt.rb.y 		= iFloor(ClientToScreenScaledY(top.rb.y));
 
-		RCache.set_Scissor(&tgt);
+		UIRender->SetScissor(&tgt);
 	}
 }
 
@@ -204,8 +222,8 @@ ui_core::ui_core()
 	OnDeviceReset				();
 
 	m_current_scale				= &m_scale_;
-//.	g_current_font_scale		= m_scale_;
 	g_current_font_scale.set	(1.0f,1.0f);
+	m_currentPointType			= IUIRender::pttTL;
 }
 
 ui_core::~ui_core()
@@ -226,7 +244,6 @@ void ui_core::pp_start()
 												));
 
 	m_current_scale			= &m_pp_scale_;
-//.	g_current_font_scale	= m_pp_scale_;
 	
 	g_current_font_scale.set(	float(::Render->getTarget()->get_width())/float(Device.dwWidth),	
 								float(::Render->getTarget()->get_height())/float(Device.dwHeight) );
@@ -237,7 +254,6 @@ void ui_core::pp_stop()
 {
 	m_bPostprocess			= false;
 	m_current_scale			= &m_scale_;
-//.	g_current_font_scale	= m_scale_;
 	g_current_font_scale.set	(1.0f,1.0f);
 }
 
@@ -251,6 +267,14 @@ bool ui_core::is_16_9_mode()
 	return (Device.dwWidth)/float(Device.dwHeight) > (UI_BASE_WIDTH/UI_BASE_HEIGHT +0.01f);
 }
 
+float ui_core::get_current_kx()
+{
+	float h = float(Device.dwHeight);
+	float w = float(Device.dwWidth);
+	float res = (h / w) / (UI_BASE_HEIGHT / UI_BASE_WIDTH);
+	return res;
+}
+
 shared_str	ui_core::get_xml_name(LPCSTR fn)
 {
 	string_path				str;
@@ -262,7 +286,7 @@ shared_str	ui_core::get_xml_name(LPCSTR fn)
 		string_path			str_;
 		if ( strext(fn) )
 		{
-			strcpy	(str, fn);
+			strcpy_s	(str, fn);
 			*strext(str)	= 0;
 			strcat	(str, "_16.xml");
 		}else
@@ -273,7 +297,9 @@ shared_str	ui_core::get_xml_name(LPCSTR fn)
 			sprintf_s(str, "%s", fn);
 			if ( NULL==strext(fn) ) strcat(str, ".xml");
 		}
+#ifdef DEBUG
 		Msg("[16-9] get_xml_name for[%s] returns [%s]", fn, str);
+#endif // #ifdef DEBUG
 	}
 	return str;
 }

@@ -19,10 +19,10 @@
 #include "level.h"
 #include "level_bullet_manager.h"
 #include "xrmessages.h"
-#include "gamemtllib.h"
+#include "../xrEngine/gamemtllib.h"
 #include "clsid_game.h"
 #ifdef DEBUG
-#include "../StatGraph.h"
+#include "../xrEngine/StatGraph.h"
 #include "PHDebug.h"
 #endif
 #include "Physics.h"
@@ -31,6 +31,9 @@
 #include "PHActivationShape.h"
 #include "game_base_space.h"
 #include "profiler.h"
+
+#include "../Include/xrRender/Kinematics.h"
+
 #define EFFECTOR_RADIUS 30.f
 const u16	TEST_RAYS_PER_OBJECT=5;
 const u16	BLASTED_OBJ_PROCESSED_PER_FRAME=3;
@@ -180,8 +183,8 @@ ICF static BOOL grenade_hit_callback(collide::rq_result& result, LPVOID params)
 	SExpQParams& ep	= *(SExpQParams*)params;
 	u16 mtl_idx			= GAMEMTL_NONE_IDX;
 	if(result.O){
-		CKinematics* V  = 0;
-		if (0!=(V=smart_cast<CKinematics*>(result.O->Visual()))){
+		IKinematics* V  = 0;
+		if (0!=(V=smart_cast<IKinematics*>(result.O->Visual()))){
 			CBoneData& B= V->LL_GetData((u16)result.element);
 			mtl_idx		= B.game_mtl_idx;
 		}
@@ -197,7 +200,7 @@ ICF static BOOL grenade_hit_callback(collide::rq_result& result, LPVOID params)
 	{
 		Fvector p;p.set(ep.l_dir);p.mul(result.range);p.add(ep.source_p);
 		u8 c	=u8(mtl->fShootFactor*255.f);
-		DBG_DrawPoint(p,0.1f,D3DCOLOR_XRGB(255-c,0,c));
+		DBG_DrawPoint(p,0.1f,color_xrgb(255-c,0,c));
 	}
 #endif
 	return				(ep.shoot_factor>0.01f);
@@ -229,7 +232,7 @@ float CExplosive::ExplosionEffect(collide::rq_results& storage, CExplosive*exp_o
 	{
 		Fmatrix dbg_box_m;dbg_box_m.set(obj_xform);
 		dbg_box_m.c.set(l_c);obj_xform.transform(dbg_box_m.c);
-		DBG_DrawOBB(dbg_box_m,l_d,D3DCOLOR_XRGB(255,255,0));
+		DBG_DrawOBB(dbg_box_m,l_d,color_xrgb(255,255,0));
 	}
 #endif
 
@@ -253,9 +256,9 @@ float CExplosive::ExplosionEffect(collide::rq_results& storage, CExplosive*exp_o
 #ifdef DEBUG
 			if(ph_dbg_draw_mask.test(phDbgDrawExplosions))
 			{
-			DBG_DrawPoint(l_source_p,0.1f,D3DCOLOR_XRGB(0,0,255));
-			DBG_DrawPoint(l_end_p,0.1f,D3DCOLOR_XRGB(0,0,255));
-			DBG_DrawLine(l_source_p,l_end_p,D3DCOLOR_XRGB(0,0,255));
+			DBG_DrawPoint(l_source_p,0.1f,color_xrgb(0,0,255));
+			DBG_DrawPoint(l_end_p,0.1f,color_xrgb(0,0,255));
+			DBG_DrawLine(l_source_p,l_end_p,color_xrgb(0,0,255));
 			}
 #endif
 		
@@ -321,7 +324,7 @@ void CExplosive::Explode()
 	if(ph_dbg_draw_mask.test(phDbgDrawExplosions))
 	{
 		DBG_OpenCashedDraw();
-		DBG_DrawPoint(pos,0.3f,D3DCOLOR_XRGB(255,0,0));
+		DBG_DrawPoint(pos,0.3f,color_xrgb(255,0,0));
 	}
 #endif
 //	Msg("---------CExplosive Explode [%d] frame[%d]",cast_game_object()->ID(), Device.dwFrame);

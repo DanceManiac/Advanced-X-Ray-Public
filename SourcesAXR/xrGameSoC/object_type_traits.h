@@ -5,7 +5,8 @@
 //	Author		: Dmitriy Iassenev
 //	Description : Object type traits
 ////////////////////////////////////////////////////////////////////////////
-
+#ifndef object_type_traits_h_included
+#define object_type_traits_h_included
 #pragma once
 
 //#define USE_BOOST
@@ -153,8 +154,8 @@
 
 			enum { 
 				value = 
-					is_class<T1>::result && 
-					is_class<T2>::result && 
+					std::is_class<T1>::value &&
+					std::is_class<T2>::value &&
 					!is_same<T1,T2>::value &&
 					sizeof(detail::yes) == sizeof(select((T2*)(0)))
 			};
@@ -213,3 +214,4 @@
 //		};
 	};
 #endif
+#endif //	object_type_traits_h_included

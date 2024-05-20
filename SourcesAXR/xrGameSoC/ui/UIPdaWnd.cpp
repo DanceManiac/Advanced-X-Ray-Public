@@ -64,8 +64,7 @@ CUIPdaWnd::~CUIPdaWnd()
 void CUIPdaWnd::Init()
 {
 	CUIXml uiXml;
-	bool xml_result			= uiXml.Init(CONFIG_PATH, UI_PATH,PDA_XML);
-	R_ASSERT3				(xml_result, "xml file not found", PDA_XML);
+	uiXml.Load				(CONFIG_PATH, UI_PATH, PDA_XML);
 
 	CUIXmlInit xml_init;
 	

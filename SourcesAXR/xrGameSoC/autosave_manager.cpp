@@ -13,6 +13,9 @@
 #include "level.h"
 #include "xrMessages.h"
 #include "hudmanager.h"
+#include "UIGameCustom.h"
+#include "Actor.h"
+#include "MainMenu.h"
 
 extern LPCSTR alife_section;
 
@@ -45,10 +48,6 @@ float CAutosaveManager::shedule_Scale		()
 	return						(.5f);
 }
 
-#include "UIGameCustom.h"
-#include "Actor.h"
-#include "MainMenu.h"
-
 void CAutosaveManager::shedule_Update		(u32 dt)
 {
 	inherited::shedule_Update	(dt);
@@ -59,7 +58,7 @@ void CAutosaveManager::shedule_Update		(u32 dt)
 	if (last_autosave_time() + autosave_interval() >= Device.dwTimeGlobal)
 		return;
 
-	if (!g_actor || !ready_for_autosave() || !Actor()->g_Alive()) {
+	if (Device.dwPrecacheFrame || !g_actor || !ready_for_autosave() || !Actor()->g_Alive()) {
 		delay_autosave			();
 		return;
 	}

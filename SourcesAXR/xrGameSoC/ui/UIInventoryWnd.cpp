@@ -56,8 +56,7 @@ CUIInventoryWnd::CUIInventoryWnd()
 void CUIInventoryWnd::Init()
 {
 	CUIXml								uiXml;
-	bool xml_result						= uiXml.Init(CONFIG_PATH, UI_PATH, INVENTORY_XML);
-	R_ASSERT3							(xml_result, "file parsing error ", uiXml.m_xml_file_name);
+	uiXml.Load							(CONFIG_PATH, UI_PATH, INVENTORY_XML);
 
 	CUIXmlInit							xml_init;
 

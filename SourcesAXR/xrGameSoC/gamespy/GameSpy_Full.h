@@ -25,6 +25,8 @@ public:
 
 	void		Update	();
 	const char*	GetGameVersion		(const	char*result);
+	const char* GetAxrPlatform		(const	char*result);
 private:
 	GAMESPY_FN_VAR_DECL(const char*, GetGameVersion, (const	char*));
+	GAMESPY_FN_VAR_DECL(const char*, GetAxrPlatform, (const	char*));
 };

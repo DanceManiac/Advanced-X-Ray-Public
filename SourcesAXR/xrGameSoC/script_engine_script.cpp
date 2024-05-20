@@ -22,6 +22,11 @@ void LuaLog(LPCSTR caMessage)
 		ai().script_engine().debugger()->Write(caMessage);
 	}
 #endif
+
+	if (strstr(Core.Params, "-lua_dbg"))
+	{
+		Msg("LUALOG: %s", caMessage);
+	}
 }
 
 void ErrorLog(LPCSTR caMessage)
@@ -47,7 +52,7 @@ void verify_if_thread_is_running()
 	THROW2	(ai().script_engine().current_thread(),"coroutine.yield() is called outside the LUA thread!");
 }
 
-bool editor()
+bool is_editor()
 {
 #ifdef XRGAME_EXPORTS
 	return		(false);
@@ -153,9 +158,7 @@ struct profile_timer_script {
 
 	IC		float					time					() const
 	{
-		FPU::m64r				();
 		float					result = (float(double(m_accumulator)/double(CPU::clk_per_second))*1000000.f);
-		FPU::m24r				();
 		return					(result);
 	}
 };
@@ -200,7 +203,7 @@ void CScriptEngine::script_register(lua_State *L)
 	function	(L,	"flush",						FlushLogs);
 	function	(L,	"prefetch",						prefetch_module);
 	function	(L,	"verify_if_thread_is_running",	verify_if_thread_is_running);
-	function	(L,	"editor",						editor);
+	function	(L,	"editor",						is_editor);
 	function	(L,	"bit_and",						bit_and);
 	function	(L,	"bit_or",						bit_or);
 	function	(L,	"bit_xor",						bit_xor);

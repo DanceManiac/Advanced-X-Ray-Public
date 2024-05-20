@@ -1,6 +1,8 @@
 #ifndef PH_COLLIDE_VALIDATOR
 #define PH_COLLIDE_VALIDATOR
 
+
+
 typedef u32	CGID;
 typedef u32	CLClassBits;
 typedef u32 CLBits;

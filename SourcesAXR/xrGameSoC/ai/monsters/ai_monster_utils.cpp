@@ -4,7 +4,7 @@
 #include "../../ai_object_location.h"
 #include "../../ai_space.h"
 #include "../../level_graph.h"
-#include "../../../skeletoncustom.h"
+#include "../../../Include/xrRender/Kinematics.h"
 
 // проверить, находится ли объект entity на ноде
 // возвращает позицию объекта, если он находится на ноде, или центр его ноды
@@ -32,8 +32,8 @@ bool object_position_valid(const CEntity *entity)
 
 Fvector get_bone_position	(CObject *object, LPCSTR bone_name)
 {
-	u16 bone_id			= smart_cast<CKinematics*>(object->Visual())->LL_BoneID				(bone_name);
-	CBoneInstance &bone = smart_cast<CKinematics*>(object->Visual())->LL_GetBoneInstance	(bone_id);
+	u16 bone_id			= smart_cast<IKinematics*>(object->Visual())->LL_BoneID				(bone_name);
+	CBoneInstance &bone = smart_cast<IKinematics*>(object->Visual())->LL_GetBoneInstance	(bone_id);
 
 	Fmatrix	global_transform;
 	global_transform.mul	(object->XFORM(),bone.mTransform);

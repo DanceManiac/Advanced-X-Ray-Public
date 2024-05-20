@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "melee_checker.h"
 #include "basemonster/base_monster.h"
-#include "../../../skeletonanimated.h"
-#include "../../../xr_collide_form.h"
+#include "../../../Include/xrRender/KinematicsAnimated.h"
+#include "../../../xrEngine/xr_collide_form.h"
 
 #define MAX_TRACE_ENEMY_RANGE	6.f
 
-float CMeleeChecker::distance_to_enemy(const CEntity *enemy)
+float CMeleeChecker::distance_to_enemy(const CEntityAlive *enemy)
 {
 	float dist = enemy->Position().distance_to	(m_object->Position());
 	if (dist > MAX_TRACE_ENEMY_RANGE)			return dist;
@@ -52,3 +52,19 @@ void CMeleeChecker::on_hit_attempt(bool hit_success)
 		else m_current_min_distance = m_as_min_dist;
 	}
 }
+
+bool	CMeleeChecker::can_start_melee (const CEntityAlive *enemy)
+{
+	if ( !m_object->EnemyMan.see_enemy_now() )
+	{
+		return false;
+	}
+
+	return distance_to_enemy(enemy) < get_min_distance();
+}
+
+bool	CMeleeChecker::should_stop_melee (const CEntityAlive *enemy)
+{
+	return distance_to_enemy(enemy) > get_max_distance();
+}
+

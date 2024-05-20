@@ -35,7 +35,7 @@ public:
 		Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(this,&CDetailPathBuilder::process));
 	}
 
-			void __stdcall	process			()
+			void			process			()
 	{
 		m_object->m_wait_for_distributed_computation	= false;
 		m_object->detail().build_path	(*m_level_path,m_path_vertex_index);

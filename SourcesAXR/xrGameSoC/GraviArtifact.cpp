@@ -10,7 +10,7 @@
 #include "level.h"
 #include "xrmessages.h"
 #include "game_cl_base.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "phworld.h"
 extern CPHWorld*	ph_world;
 #define CHOOSE_MAX(x,inst_x,y,inst_y,z,inst_z)\
@@ -71,7 +71,7 @@ void CGraviArtefact::UpdateCLChild()
 			
 			if (GameID() == GAME_ARTEFACTHUNT && m_CarringBoneID != u16(-1))
 			{
-				CKinematics* K	= smart_cast<CKinematics*>(H_Parent()->Visual());
+				IKinematics* K	= smart_cast<IKinematics*>(H_Parent()->Visual());
 				if (K)
 				{
 					K->CalculateBones	();

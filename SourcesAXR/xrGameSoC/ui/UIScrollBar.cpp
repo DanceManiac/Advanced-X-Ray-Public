@@ -28,7 +28,7 @@ void CUIScrollBar::Init(float x, float y, float length, bool bIsHorizontal, LPCS
 {
 	string256 _path;
 	CUIXml xml_doc;
-	R_ASSERT(xml_doc.Init	(CONFIG_PATH, UI_PATH, "scroll_bar.xml"));
+	xml_doc.Load					(CONFIG_PATH, UI_PATH, "scroll_bar.xml");
 
 	float height = xml_doc.ReadAttribFlt(profile, 0, "height", 16);
     	

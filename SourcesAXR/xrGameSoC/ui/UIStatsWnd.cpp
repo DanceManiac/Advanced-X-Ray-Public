@@ -31,8 +31,7 @@ void CUIStatsWnd::Init(LPCSTR XML)
 	CUIXml uiXml;
 	if (XML) strcpy(XML_NAME, XML);
 	else strcpy(XML_NAME, STATS_XML);
-	bool xml_result = uiXml.Init(CONFIG_PATH, UI_PATH, XML_NAME);
-	R_ASSERT2(xml_result, "xml file not found");
+	uiXml.Load(CONFIG_PATH, UI_PATH, XML_NAME);
 
 	CUIXmlInit xml_init;
 
@@ -62,8 +61,7 @@ CUIStatsListItem * CUIStatsWnd::AddItem()
 	UIStatsList.ScrollToBegin();
 
 	CUIXml uiXml;
-	bool xml_result = uiXml.Init(CONFIG_PATH, UI_PATH, XML_NAME);
-	R_ASSERT2(xml_result, "xml file not found");
+	uiXml.Load(CONFIG_PATH, UI_PATH, XML_NAME);
 
 	pNewItem->XmlInit("list", uiXml);
 //	pNewItem->SetMessageTarget(this);

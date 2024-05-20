@@ -12,7 +12,7 @@
 #include "object_interfaces.h"
 #include "script_value_container.h"
 #include "alife_space.h"
-#include "../../xrNetServer/client_id.h"
+#include "../../xrCore/client_id.h"
 
 class NET_Packet;
 class xrClientData;
@@ -109,24 +109,24 @@ public:
 	virtual void					FillProps		(LPCSTR pref, PropItemVec &items);
 	virtual BOOL					Net_Relevant	(){return TRUE;};
 	//
-	virtual void		__stdcall	Spawn_Write		(NET_Packet &tNetPacket, BOOL bLocal);
-	virtual BOOL		__stdcall	Spawn_Read		(NET_Packet &tNetPacket);
-	virtual void		__stdcall	FillProp		(LPCSTR pref, PropItemVec &items);
-	virtual LPCSTR		__stdcall	name			() const;
-	virtual LPCSTR		__stdcall	name_replace	() const;
-	virtual void		__stdcall	set_name		(LPCSTR s)
+	virtual void					Spawn_Write		(NET_Packet &tNetPacket, BOOL bLocal);
+	virtual BOOL					Spawn_Read		(NET_Packet &tNetPacket);
+	virtual void					FillProp		(LPCSTR pref, PropItemVec &items);
+	virtual LPCSTR					name			() const;
+	virtual LPCSTR					name_replace	() const;
+	virtual void					set_name		(LPCSTR s)
 	{
 		s_name		= s;
 	};
-	virtual void		__stdcall	set_name_replace(LPCSTR s) {xr_free(s_name_replace); s_name_replace = xr_strdup(s);};
-	virtual Fvector&	__stdcall	position		();
-	virtual Fvector&	__stdcall	angle			();
-	virtual Flags16&	__stdcall	flags			();
-	virtual CSE_Visual* __stdcall	visual			();
-	virtual ISE_Shape*  __stdcall	shape			();
-	virtual CSE_Motion* __stdcall	motion			();
-	virtual bool		__stdcall	validate		();
-	virtual void 		__stdcall	on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F){} 
+	virtual void					set_name_replace(LPCSTR s) {xr_free(s_name_replace); s_name_replace = xr_strdup(s);};
+	virtual Fvector&				position		();
+	virtual Fvector&				angle			();
+	virtual Flags16&				flags			();
+	virtual CSE_Visual*				visual			();
+	virtual ISE_Shape*				shape			();
+	virtual CSE_Motion*				motion			();
+	virtual bool					validate		();
+	virtual void 					on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F){} 
 	//
 
 	IC		const Fvector			&Position		() const					{return o_Position;};

@@ -29,7 +29,9 @@ float4 main ( p_TL I ) : SV_Target
 
 //	L = 1;
 
+#ifndef USE_SHOC_MODE
 	clip(L-CLIP_THRESHOLD);
+#endif // !USE_SHOC_MODE
 
   	return	float4( L, L, L, L );
 }

@@ -12,14 +12,14 @@ extern "C" {
 	public:
 		xrIDirect3DStateBlock9(IDirect3DDevice9*	pIDirect3DDevice9);
 		/*** IUnknown methods ***/
-		HRESULT			__stdcall	QueryInterface(REFIID riid, void** ppvObj);
-		ULONG			__stdcall	AddRef();
-		ULONG			__stdcall	Release();
+		HRESULT				QueryInterface(REFIID riid, void** ppvObj);
+		ULONG				AddRef();
+		ULONG				Release();
 
 		/*** IDirect3DVertexDeclaration9 methods ***/
-		HRESULT			__stdcall	GetDevice( IDirect3DDevice9** ppDevice);
-		HRESULT			__stdcall	Capture();
-		HRESULT			__stdcall	Apply();
+		HRESULT				GetDevice( IDirect3DDevice9** ppDevice);
+		HRESULT				Capture();
+		HRESULT				Apply();
 	};
 
 #ifdef __cplusplus

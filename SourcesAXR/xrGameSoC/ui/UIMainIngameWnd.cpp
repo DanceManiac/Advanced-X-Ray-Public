@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <functional>
 
 #include "UIMainIngameWnd.h"
 #include "UIMessagesWindow.h"
@@ -25,7 +26,11 @@
 
 #include "../date_time.h"
 #include "../xrServer_Objects_ALife_Monsters.h"
-#include "../../LightAnimLibrary.h"
+#include "../../xrEngine/LightAnimLibrary.h"
+
+#include "../../Include/xrRender/RenderVisual.h"
+#include "../../Include/xrRender/Kinematics.h"
+#include "../../Include/xrRender/KinematicsAnimated.h"
 
 #include "UIInventoryUtilities.h"
 
@@ -41,7 +46,7 @@
 
 #ifdef DEBUG
 #	include "../attachable_item.h"
-#	include "../../xr_input.h"
+#	include "../../xrEngine/xr_input.h"
 #endif
 
 #include "UIScrollView.h"
@@ -73,8 +78,8 @@ const u32	g_clWhite					= 0xffffffff;
 
 #define		SHOW_INFO_SPEED				0.5f
 #define		HIDE_INFO_SPEED				10.f
-#define		C_ON_ENEMY					D3DCOLOR_XRGB(0xff,0,0)
-#define		C_DEFAULT					D3DCOLOR_XRGB(0xff,0xff,0xff)
+#define		C_ON_ENEMY					color_xrgb(0xff,0,0)
+#define		C_DEFAULT					color_xrgb(0xff,0xff,0xff)
 
 #define				MAININGAME_XML				"maingame.xml"
 
@@ -106,7 +111,7 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 void CUIMainIngameWnd::Init()
 {
 	CUIXml						uiXml;
-	uiXml.Init					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
+	uiXml.Load					(CONFIG_PATH, UI_PATH, MAININGAME_XML);
 	
 	CUIXmlInit					xml_init;
 	CUIWindow::Init				(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
@@ -462,7 +467,7 @@ void CUIMainIngameWnd::Update()
 
 			// ≈сли его нет, то берем последнее меньшее значение ()
 			if (rit == m_Thresholds[i].rend())
-				rit = std::find_if(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), std::bind2nd(std::less<float>(), value));
+				rit = std::find_if(m_Thresholds[i].rbegin(), m_Thresholds[i].rend(), [&value](float a) {return a < value; });;
 
 			// ћинимальное и максимальное значени€ границы
 			float min = m_Thresholds[i].front();
@@ -1163,8 +1168,7 @@ void CUIMainIngameWnd::reset_ui()
 /*
 #include "d3dx9core.h"
 #include "winuser.h"
-#pragma comment(lib,"d3dx9.lib")
-#pragma comment(lib,"d3d9.lib")
+
 ID3DXFont*     g_pTestFont = NULL;
 ID3DXSprite*        g_pTextSprite = NULL;   // Sprite for batching draw text calls
 */
@@ -1198,7 +1202,7 @@ void test_key	(int dik)
 		if(!pUIFrame)
 		{
 			CUIXml uiXML;
-			uiXML.Init(CONFIG_PATH, UI_PATH, "talk.xml");
+			uiXML.Load(CONFIG_PATH, UI_PATH, "talk.xml");
 
 			pUIFrame					= xr_new<CUIFrameWindow>();
 			CUIXmlInit::InitFrameWindow	(uiXML, "frame_window", 0, pUIFrame);
@@ -1293,7 +1297,7 @@ void test_draw	()
 
 void CUIMainIngameWnd::draw_adjust_mode()
 {
-	if (g_bHudAdjustMode&&m_pWeapon) //draw firePoint,ShellPoint etc
+	/*if (g_bHudAdjustMode&&m_pWeapon) //draw firePoint,ShellPoint etc
 	{
 		CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
 		if(!pActor)
@@ -1326,7 +1330,7 @@ void CUIMainIngameWnd::draw_adjust_mode()
 
 			Fvector FP,SP,FP2;
 
-			CKinematics* V			= smart_cast<CKinematics*>(pWpnHud->Visual());
+			IKinematics* V			= smart_cast<IKinematics*>(pWpnHud->Visual());
 			VERIFY					(V);
 			V->CalculateBones		();
 
@@ -1348,18 +1352,18 @@ void CUIMainIngameWnd::draw_adjust_mode()
 			parent.transform_tiny	(SP);
 
 
-			RCache.dbg_DrawAABB(FP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(255,0,0));
-			RCache.dbg_DrawAABB(FP2,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,0,255));
-			RCache.dbg_DrawAABB(SP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(0,255,0));
+			RCache.dbg_DrawAABB(FP,0.01f,0.01f,0.01f,color_xrgb(255,0,0));
+			RCache.dbg_DrawAABB(FP2,0.02f,0.02f,0.02f,color_xrgb(0,0,255));
+			RCache.dbg_DrawAABB(SP,0.01f,0.01f,0.01f,color_xrgb(0,255,0));
 		
 		}else{
 			Fvector FP = m_pWeapon->get_CurrentFirePoint();
 			Fvector FP2 = m_pWeapon->get_CurrentFirePoint2();
 			Fvector SP = m_pWeapon->get_LastSP();
-			RCache.dbg_DrawAABB(FP,0.01f,0.01f,0.01f,D3DCOLOR_XRGB(255,0,0));
-			RCache.dbg_DrawAABB(FP2,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,0,255));
-			RCache.dbg_DrawAABB(SP,0.02f,0.02f,0.02f,D3DCOLOR_XRGB(0,255,0));
+			RCache.dbg_DrawAABB(FP,0.01f,0.01f,0.01f,color_xrgb(255,0,0));
+			RCache.dbg_DrawAABB(FP2,0.02f,0.02f,0.02f,color_xrgb(0,0,255));
+			RCache.dbg_DrawAABB(SP,0.02f,0.02f,0.02f,color_xrgb(0,255,0));
 		}
-	}
+	}  */
 }
 #endif

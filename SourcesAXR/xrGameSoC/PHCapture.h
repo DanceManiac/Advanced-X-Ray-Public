@@ -5,9 +5,12 @@
 #include "phobject.h"
 #include "gameobject.h"
 #include "physicsshellholder.h"
+#include "PhysicsShell.h"
+#include "PHCharacter.h"
 
 class CPhysicShellHolder;
 class CPHCharacter;
+class CPhysicsElement;
 
 class CPHCapture : public CPHUpdateObject
 {

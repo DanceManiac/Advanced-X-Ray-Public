@@ -4,7 +4,7 @@
 #include <dinput.h>
 #include "../HUDManager.h"
 #include "UICustomEdit.h"
-#include "../../LightAnimLibrary.h"
+#include "../../xrEngine/LightAnimLibrary.h"
 
 
 static u32 DILetters[] = { DIK_A, DIK_B, DIK_C, DIK_D, DIK_E, 

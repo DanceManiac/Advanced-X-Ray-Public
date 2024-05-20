@@ -24,12 +24,4 @@ IC float CMeleeChecker::get_max_distance()
 {
 	return (m_max_attack_distance - (m_min_attack_distance - m_current_min_distance));
 }
-IC bool	CMeleeChecker::can_start_melee(const CEntity *enemy)
-{
-	return (distance_to_enemy(enemy) < get_min_distance());
-}
-IC bool	CMeleeChecker::should_stop_melee(const CEntity *enemy)
-{
-	return (distance_to_enemy(enemy) > get_max_distance());
-}
 

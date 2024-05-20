@@ -15,16 +15,16 @@ extern "C" {
 	public:
 		xrIDirect3DQuery9(IDirect3DDevice9* pIDirect3DDevice9, D3DQUERYTYPE rType);
 		/*** IUnknown methods ***/
-		HRESULT		__stdcall	QueryInterface( REFIID riid, void** ppvObj) ;
-		ULONG		__stdcall	AddRef() ;
-		ULONG		__stdcall	Release() ;
+		HRESULT			QueryInterface( REFIID riid, void** ppvObj) ;
+		ULONG			AddRef() ;
+		ULONG			Release() ;
 
 		/*** IDirect3DQuery9 methods ***/
-		HRESULT			__stdcall	GetDevice( IDirect3DDevice9** ppDevice) ;
-		D3DQUERYTYPE	__stdcall	GetType() ;
-		DWORD			__stdcall	GetDataSize() ;
-		HRESULT			__stdcall	Issue( DWORD dwIssueFlags) ;
-		HRESULT			__stdcall	GetData( void* pData,DWORD dwSize,DWORD dwGetDataFlags) ;
+		HRESULT				GetDevice( IDirect3DDevice9** ppDevice) ;
+		D3DQUERYTYPE		GetType() ;
+		DWORD				GetDataSize() ;
+		HRESULT				Issue( DWORD dwIssueFlags) ;
+		HRESULT				GetData( void* pData,DWORD dwSize,DWORD dwGetDataFlags) ;
 
 //#ifdef D3D_DEBUG_INFO
 		D3DQUERYTYPE Type;

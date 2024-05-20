@@ -1,6 +1,6 @@
 #include "pch_script.h"
 #include "console_registrator.h"
-#include "../xr_ioconsole.h"
+#include "../xrEngine/xr_ioconsole.h"
 
 using namespace luabind;
 
@@ -12,21 +12,21 @@ CConsole*	console()
 int get_console_integer(CConsole* c, LPCSTR cmd)
 {
 	int val=0,min=0,max=0;
-	c->GetInteger ( cmd, val, min, max);
+	max = c->GetInteger ( cmd, val, min);
 	return val;
 }
 
 float get_console_float(CConsole* c, LPCSTR cmd)
 {
 	float val=0,min=0,max=0;
-	c->GetFloat ( cmd, val, min, max);
+	max = c->GetFloat ( cmd, val, min);
 	return val;
 }
 
 bool get_console_bool(CConsole* c, LPCSTR cmd)
 {
 	BOOL val;
-	val = c->GetBool (cmd, val);
+	val = c->GetBool (cmd);
 	return !!val;
 }
 

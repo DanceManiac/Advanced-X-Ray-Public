@@ -6,6 +6,7 @@
 #include "entity_alive.h"
 #include "PHMovementControl.h"
 #include "CharacterPhysicsSupport.h"
+#include "../xrEngine/xr_collide_form.h"
 
 bool CHairsZone::BlowoutState()
 {

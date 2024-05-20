@@ -33,7 +33,7 @@ protected:
 			bool			GetOptBoolValue		();
 			void			SaveOptBoolValue	(bool val);
 			// token
-			char*			GetOptTokenValue	();
+			LPCSTR			GetOptTokenValue	();
 			xr_token*		GetOptToken			();
 			void			SaveOptTokenValue	(const char* val);
 

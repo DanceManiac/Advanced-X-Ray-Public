@@ -10,27 +10,14 @@
 
 IC	void CDebugRenderer::render			()
 {
-	if (m_line_vertices.empty())
-		return;
-
-	RCache.set_xform_world			(Fidentity);
-	RCache.dbg_Draw					(D3DPT_LINELIST,&*m_line_vertices.begin(),m_line_vertices.size(),&*m_line_indices.begin(),m_line_vertices.size()/2);
-	m_line_vertices.resize			(0);
+	DRender->Render();
 }
 
 IC	void CDebugRenderer::draw_line		(const Fmatrix &matrix, const Fvector &vertex0, const Fvector &vertex1, const u32 &color)
 {
-	if ((m_line_vertices.size() + 2) >= line_vertex_limit)
-		render						();
-
-	FVF::L							temp;
-	temp.color						= color;
-
-	matrix.transform_tiny			(temp.p,vertex0);
-	m_line_vertices.push_back		(temp);
-
-	matrix.transform_tiny			(temp.p,vertex1);
-	m_line_vertices.push_back		(temp);
+	Fvector				vertices[2] = { vertex0, vertex1 };
+	u16					indices[2] = { 0, 1 };
+	add_lines(&vertices[0], sizeof(vertices) / sizeof(Fvector), &indices[0], sizeof(indices) / (2 * sizeof(u16)), color);
 }
 
 IC	void CDebugRenderer::draw_aabb		(const Fvector &center, const float &half_radius_x, const float &half_radius_y, const float &half_radius_z, const u32 &color)

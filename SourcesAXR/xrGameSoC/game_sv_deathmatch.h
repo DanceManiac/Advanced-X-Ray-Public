@@ -2,9 +2,11 @@
 
 #include "game_sv_mp.h"
 #include "inventory_space.h"
-#include "../../xrNetServer/client_id.h"
+#include "../xrCore/client_id.h"
 #include "Hit.h"
-#include "../pure_relcase.h"
+#include "../xrEngine/pure_relcase.h"
+
+class IClient;
 
 class	game_sv_Deathmatch			: public game_sv_mp,private pure_relcase
 {
@@ -93,7 +95,7 @@ protected:
 	u32								m_dwWarmUp_CurTime;
 	bool							m_bInWarmUp;
 
-				void	__stdcall	net_Relcase				(CObject* O);
+				void				net_Relcase				(CObject* O);
 
 public:
 									game_sv_Deathmatch		();

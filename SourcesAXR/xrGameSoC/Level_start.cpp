@@ -5,11 +5,13 @@
 #include "game_cl_base.h"
 #include "xrmessages.h"
 #include "xrGameSpyServer.h"
-#include "../x_ray.h"
-#include "../device.h"
-#include "../IGame_Persistent.h"
-#include "../xr_ioconsole.h"
+#include "../xrEngine/x_ray.h"
+#include "../xrEngine/device.h"
+#include "../xrEngine/IGame_Persistent.h"
+#include "../xrEngine/xr_ioconsole.h"
 #include "MainMenu.h"
+
+extern XRCORE_API bool g_allow_heap_min;
 
 BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 {
@@ -22,9 +24,9 @@ BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 	if (!NameStart)
 	{
 		string512 tmp;
-		strcpy_s(tmp, op_client);
-		strcat_s(tmp, "/name=");
-		strcat_s(tmp, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
+		xr_strcpy(tmp, op_client);
+		xr_strcat(tmp, "/name=");
+		xr_strcat(tmp, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
 		m_caClientOptions			= tmp;
 	} else {
 		string1024	ret="";
@@ -33,12 +35,12 @@ BOOL CLevel::net_Start	( LPCSTR op_server, LPCSTR op_client )
 		if (!xr_strlen(ret))
 		{
 			string1024 tmpstr;
-			strcpy_s(tmpstr, op_client);
+			xr_strcpy(tmpstr, op_client);
 			*(strstr(tmpstr, "name=")+5) = 0;
-			strcat_s(tmpstr, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
+			xr_strcat(tmpstr, xr_strlen(Core.UserName) ? Core.UserName : Core.CompName);
 			const char* ptmp = strstr(strstr(op_client, "name="), "/");
 			if (ptmp)
-				strcat_s(tmpstr, ptmp);
+				xr_strcat(tmpstr, ptmp);
 			m_caClientOptions = tmpstr;
 		}
 		else
@@ -94,7 +96,8 @@ bool CLevel::net_start1				()
 	// Start client and server if need it
 	if (m_caServerOptions.size())
 	{
-		g_pGamePersistent->LoadTitle		("st_server_starting");
+		g_pGamePersistent->SetLoadStageTitle("st_server_starting");
+		g_pGamePersistent->LoadTitle();
 
 		typedef IGame_Persistent::params params;
 		params							&p = g_pGamePersistent->m_game_params;
@@ -102,7 +105,10 @@ bool CLevel::net_start1				()
 		if (!xr_strcmp(p.m_game_type,"single"))
 			Server					= xr_new<xrServer>();		
 		else
+		{
+			g_allow_heap_min		= false;
 			Server					= xr_new<xrGameSpyServer>();
+		}
 		
 //		if (!strstr(*m_caServerOptions,"/alife")) 
 		if (xr_strcmp(p.m_alife,"alife"))
@@ -116,7 +122,10 @@ bool CLevel::net_start1				()
 
 			m_name					= l_name;
 
-			int						id = pApp->Level_ID(l_name);
+			if (!g_dedicated_server)
+				g_pGamePersistent->LoadTitle(true, l_name);
+
+			int						id = pApp->Level_ID(l_name, "1.0", true);
 
 			if (id<0) {
 				pApp->LoadEnd				();
@@ -127,6 +136,9 @@ bool CLevel::net_start1				()
 			pApp->Level_Set			(id);
 		}
 	}
+	else
+		g_allow_heap_min = false;
+
 	return true;
 }
 
@@ -143,6 +155,9 @@ bool CLevel::net_start2				()
 		}
 		Server->SLS_Default		();
 		m_name					= Server->level_name(m_caServerOptions);
+
+		if (!g_dedicated_server)
+			g_pGamePersistent->LoadTitle(true, m_name);
 	}
 	return true;
 }
@@ -154,11 +169,11 @@ bool CLevel::net_start3				()
 	if (!strstr(m_caClientOptions.c_str(), "port=") && Server)
 	{
 		string64	PortStr;
-		sprintf_s(PortStr, "/port=%d", Server->GetPort());
+		xr_sprintf(PortStr, "/port=%d", Server->GetPort());
 
 		string4096	tmp;
-		strcpy_s(tmp, m_caClientOptions.c_str());
-		strcat_s(tmp, PortStr);
+		xr_strcpy(tmp, m_caClientOptions.c_str());
+		xr_strcat(tmp, PortStr);
 		
 		m_caClientOptions = tmp;
 	}
@@ -171,10 +186,10 @@ bool CLevel::net_start3				()
 			if (strchr(PSW, '/')) 
 				strncpy(PasswordStr, PSW, strchr(PSW, '/') - PSW);
 			else
-				strcpy_s(PasswordStr, PSW);
+				xr_strcpy(PasswordStr, PSW);
 
 			string4096	tmp;
-			sprintf_s(tmp, "%s/psw=%s", m_caClientOptions.c_str(), PasswordStr);
+			xr_sprintf(tmp, "%s/psw=%s", m_caClientOptions.c_str(), PasswordStr);
 			m_caClientOptions = tmp;
 		};
 	};
@@ -185,7 +200,7 @@ bool CLevel::net_start3				()
 		const char* start = strstr(m_caClientOptions.c_str(),"/cdkey=") +xr_strlen("/cdkey=");
 		sscanf			(start, "%[^/]",CDKey);
 		string128 cmd;
-		sprintf_s(cmd, "cdkey %s", _strupr(CDKey));
+		xr_sprintf(cmd, "cdkey %s", _strupr(CDKey));
 		Console->Execute			(cmd);
 	}
 	return true;
@@ -237,19 +252,19 @@ bool xr_stdcall net_start_finalizer()
 		DEL_INSTANCE	(g_pGameLevel);
 		Console->Execute("main_menu on");
 
-		if (g_connect_server_err==xrServer::ErrBELoad)
+		/*if (g_connect_server_err==xrServer::ErrBELoad)
 		{
 			MainMenu()->OnLoadError("BattlEye/BEServer.dll");
-		}else
+		}else */
 		if(g_connect_server_err==xrServer::ErrConnect && !psNET_direct_connect && !g_dedicated_server) 
 		{
 			MainMenu()->SwitchToMultiplayerMenu();
-		}else
-		if(g_connect_server_err==xrServer::ErrNoLevel)
+		}
+		/*	if(g_connect_server_err==xrServer::ErrNoLevel)
 		{
 			MainMenu()->SwitchToMultiplayerMenu();
 			MainMenu()->OnLoadError(ln.c_str());
-		}
+		}*/
 	}
 	return true;
 }

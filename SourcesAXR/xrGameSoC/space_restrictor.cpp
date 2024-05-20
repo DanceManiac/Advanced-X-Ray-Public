@@ -14,7 +14,7 @@
 #include "restriction_space.h"
 #include "ai_space.h"
 #include "CustomZone.h"
-
+#include "..\xrEngine\xr_collide_form.h"
 #ifdef DEBUG
 #	include "debug_renderer.h"
 #endif
@@ -210,7 +210,7 @@ void CSpaceRestrictor::OnRender	()
 {
 	if(!bDebug) return;
 	if (!(dbg_net_Draw_Flags.is_any((1<<2)))) return;
-	RCache.OnFrameEnd();
+	//RCache.OnFrameEnd();
 	Fvector l_half; l_half.set(.5f, .5f, .5f);
 	Fmatrix l_ball, l_box;
 	xr_vector<CCF_Shape::shape_def> &l_shapes = ((CCF_Shape*)CFORM())->Shapes();
@@ -219,9 +219,9 @@ void CSpaceRestrictor::OnRender	()
 	u32 Color = 0;
 	CCustomZone	*custom_zone = smart_cast<CCustomZone*>(this);
 	if (custom_zone && custom_zone->IsEnabled())
-		Color = D3DCOLOR_XRGB(0,255,255);
+		Color = color_xrgb(0,255,255);
 	else
-		Color = D3DCOLOR_XRGB(255,0,0);
+		Color = color_xrgb(255,0,0);
 
 	
 	for(l_pShape = l_shapes.begin(); l_shapes.end() != l_pShape; ++l_pShape) 

@@ -20,12 +20,12 @@
 
 #include "xr_level_controller.h"
 #include "game_cl_base.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "ai_object_location.h"
 #include "clsid_game.h"
 #include "mathutils.h"
 #include "object_broker.h"
-#include "../igame_persistent.h"
+#include "../xrEngine/igame_persistent.h"
 
 #define WEAPON_REMOVE_TIME		60000
 #define ROTATION_TIME			0.25f
@@ -123,7 +123,7 @@ void CWeapon::UpdateXForm	()
 			return;
 
 		R_ASSERT		(E);
-		CKinematics*	V		= smart_cast<CKinematics*>	(E->Visual());
+		IKinematics*	V		= smart_cast<IKinematics*>	(E->Visual());
 		VERIFY			(V);
 
 		// Get matrices
@@ -172,7 +172,7 @@ void CWeapon::UpdateFireDependencies_internal()
 		if (GetHUDmode() && (0!=H_Parent()) )
 		{
 			// 1st person view - skeletoned
-			CKinematics* V			= smart_cast<CKinematics*>(m_pHUD->Visual());
+			IKinematics* V			= smart_cast<IKinematics*>(m_pHUD->Visual());
 			VERIFY					(V);
 			V->CalculateBones		();
 
@@ -186,14 +186,21 @@ void CWeapon::UpdateFireDependencies_internal()
 
 			fire_mat.transform_tiny	(m_firedeps.vLastFP,fp);
 			parent.transform_tiny	(m_firedeps.vLastFP);
+
+			m_firedeps.vLastFP.add(Device.vCameraPosition);
+
+			m_firedeps.vLastFD.set(0.f, 0.f, 1.f);
+			parent.transform_dir(m_firedeps.vLastFD);
+
 			fire_mat.transform_tiny	(m_firedeps.vLastFP2,fp2);
 			parent.transform_tiny	(m_firedeps.vLastFP2);
+
+			m_firedeps.vLastFP2.add(Device.vCameraPosition);
 		
 			fire_mat.transform_tiny	(m_firedeps.vLastSP,sp);
 			parent.transform_tiny	(m_firedeps.vLastSP);
 
-			m_firedeps.vLastFD.set	(0.f,0.f,1.f);
-			parent.transform_dir	(m_firedeps.vLastFD);
+			m_firedeps.vLastSP.add(Device.vCameraPosition);
 
 			m_firedeps.m_FireParticlesXForm.identity();
 			m_firedeps.m_FireParticlesXForm.k.set(m_firedeps.vLastFD);
@@ -733,7 +740,7 @@ void CWeapon::UpdateCL		()
 	if(!IsGameTypeSingle())
 		make_Interpolation		();
 	
-	VERIFY(smart_cast<CKinematics*>(Visual()));
+	VERIFY(smart_cast<IKinematics*>(Visual()));
 }
 
 
@@ -1053,7 +1060,7 @@ void CWeapon::UpdateHUDAddonsVisibility()
 //	if(IsZoomed() && )
 
 
-	CKinematics* pHudVisual									= smart_cast<CKinematics*>(m_pHUD->Visual());
+	IKinematics* pHudVisual									= smart_cast<IKinematics*>(m_pHUD->Visual());
 	VERIFY(pHudVisual);
 	if (H_Parent() != Level().CurrentEntity()) pHudVisual	= NULL;
 
@@ -1134,7 +1141,7 @@ void CWeapon::UpdateHUDAddonsVisibility()
 
 void CWeapon::UpdateAddonsVisibility()
 {
-	CKinematics* pWeaponVisual = smart_cast<CKinematics*>(Visual()); R_ASSERT(pWeaponVisual);
+	IKinematics* pWeaponVisual = smart_cast<IKinematics*>(Visual()); R_ASSERT(pWeaponVisual);
 
 	u16  bone_id;
 	UpdateHUDAddonsVisibility								();	

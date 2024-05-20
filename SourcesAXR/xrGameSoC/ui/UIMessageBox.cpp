@@ -52,8 +52,7 @@ void CUIMessageBox::Init	(LPCSTR box_template)
 {
 	Clear();
 	CUIXml uiXml;
-	bool xml_result = uiXml.Init	(CONFIG_PATH, UI_PATH, "message_box.xml");
-	R_ASSERT3						(xml_result, "xml file not found", "message_box.xml");
+	uiXml.Load(CONFIG_PATH, UI_PATH, "message_box.xml");
 
 	CUIXmlInit xml_init;
 

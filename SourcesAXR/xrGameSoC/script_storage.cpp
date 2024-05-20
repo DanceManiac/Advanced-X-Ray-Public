@@ -10,7 +10,12 @@
 #include "script_storage.h"
 #include "script_thread.h"
 #include <stdarg.h>
-#include "doug_lea_memory_allocator.h"
+#include "../xrCore/doug_lea_allocator.h"
+
+#ifndef DEBUG
+#	include "opt.lua.h"
+#	include "opt_inline.lua.h"
+#endif // #ifndef DEBUG
 
 LPCSTR	file_header_old = "\
 local function script_name() \
@@ -60,33 +65,118 @@ LPCSTR	file_header = 0;
 #endif // PURE_ALLOC
 
 #ifndef USE_DL_ALLOCATOR
-static void *lua_alloc_xr	(void *ud, void *ptr, size_t osize, size_t nsize) {
-  (void)ud;
-  (void)osize;
-  if (nsize == 0) {
-    xr_free	(ptr);
-    return	NULL;
-  }
-  else
+static void* lua_alloc(void* ud, void* ptr, size_t osize, size_t nsize) {
+	(void)ud;
+	(void)osize;
+	if (nsize == 0) {
+		xr_free(ptr);
+		return	NULL;
+	}
+	else
 #ifdef DEBUG_MEMORY_NAME
-    return Memory.mem_realloc		(ptr, nsize, "LUA");
+		return Memory.mem_realloc(ptr, nsize, "LUA");
 #else // DEBUG_MEMORY_MANAGER
-    return Memory.mem_realloc		(ptr, nsize);
+		return Memory.mem_realloc(ptr, nsize);
 #endif // DEBUG_MEMORY_MANAGER
 }
 #else // USE_DL_ALLOCATOR
-static void *lua_alloc_dl	(void *ud, void *ptr, size_t osize, size_t nsize) {
-  (void)ud;
-  (void)osize;
-  if (nsize == 0)	{	dlfree			(ptr);	 return	NULL;  }
-  else				return dlrealloc	(ptr, nsize);
-}
+
+#include "../xrCore/memory_allocator_options.h"
+
+#ifdef USE_ARENA_ALLOCATOR
+static const u32			s_arena_size = 96 * 1024 * 1024;
+static char					s_fake_array[s_arena_size];
+static doug_lea_allocator	s_allocator(s_fake_array, s_arena_size, "lua");
+#else // #ifdef USE_ARENA_ALLOCATOR
+static doug_lea_allocator	s_allocator(0, 0, "lua");
+#endif // #ifdef USE_ARENA_ALLOCATOR
 
 u32 game_lua_memory_usage	()
 {
-	return					((u32)dlmallinfo().uordblks);
+	return					(s_allocator.get_allocated_size());
 }
 #endif // USE_DL_ALLOCATOR
+
+static LPVOID __cdecl luabind_allocator(
+	luabind::memory_allocation_function_parameter const,
+	void const* const pointer,
+	size_t const size
+)
+{
+	if (!size) {
+		LPVOID	non_const_pointer = const_cast<LPVOID>(pointer);
+		xr_free(non_const_pointer);
+		return	(0);
+	}
+
+	if (!pointer) {
+#ifdef DEBUG
+		return	(Memory.mem_alloc(size, "luabind"));
+#else // #ifdef DEBUG
+		return	(Memory.mem_alloc(size));
+#endif // #ifdef DEBUG
+	}
+
+	LPVOID		non_const_pointer = const_cast<LPVOID>(pointer);
+#ifdef DEBUG
+	return		(Memory.mem_realloc(non_const_pointer, size, "luabind"));
+#else // #ifdef DEBUG
+	return		(Memory.mem_realloc(non_const_pointer, size));
+#endif // #ifdef DEBUG
+}
+
+void setup_luabind_allocator()
+{
+	luabind::allocator = &luabind_allocator;
+	luabind::allocator_parameter = 0;
+}
+
+/* ---- start of LuaJIT extensions */
+static void l_message(lua_State* state, const char* msg) {
+	Msg("! [LUA_JIT] %s", msg);
+}
+
+static int report(lua_State* L, int status) {
+	if (status && !lua_isnil(L, -1)) {
+		const char* msg = lua_tostring(L, -1);
+		if (msg == NULL) msg = "(error object is not a string)";
+		l_message(L, msg);
+		lua_pop(L, 1);
+	}
+	return status;
+}
+
+static int loadjitmodule(lua_State* L, const char* notfound) {
+	lua_getglobal(L, "require");
+	lua_pushliteral(L, "jit.");
+	lua_pushvalue(L, -3);
+	lua_concat(L, 2);
+	if (lua_pcall(L, 1, 1, 0)) {
+		const char* msg = lua_tostring(L, -1);
+		if (msg && !strncmp(msg, "module ", 7)) {
+			l_message(L, notfound);
+			return 1;
+		}
+		else
+			return report(L, 1);
+	}
+	lua_getfield(L, -1, "start");
+	lua_remove(L, -2);  /* drop module table */
+	return 0;
+}
+
+#ifndef DEBUG
+/* start optimizer */
+static int dojitopt(lua_State* L, const char* opt) {
+	lua_pushliteral(L, "opt");
+	if (loadjitmodule(L, "LuaJIT optimizer module not installed"))
+		return 1;
+	lua_remove(L, -2);  /* drop module name */
+	if (*opt) lua_pushstring(L, opt);
+	return report(L, lua_pcall(L, *opt ? 1 : 0, 0, 0));
+}
+/* ---- end of LuaJIT extensions */
+#endif // #ifndef DEBUG
 
 CScriptStorage::CScriptStorage		()
 {
@@ -105,16 +195,29 @@ CScriptStorage::~CScriptStorage		()
 		lua_close			(m_virtual_machine);
 }
 
+#ifndef DEBUG
+static void put_function	(lua_State* state, u8 const* buffer, u32 const buffer_size, LPCSTR package_id)
+{
+	lua_getglobal	(state, "package");
+	lua_pushstring	(state, "preload");
+	lua_gettable	(state, -2);
+
+	lua_pushstring	(state, package_id);
+	luaL_loadbuffer	(state, (char*)buffer, buffer_size, package_id );
+	lua_settable	(state, -3);
+}
+#endif // #ifndef DEBUG
+
 void CScriptStorage::reinit	()
 {
 	if (m_virtual_machine)
 		lua_close			(m_virtual_machine);
 
-#ifndef USE_DL_ALLOCATOR
-	m_virtual_machine		= lua_newstate(lua_alloc_xr, NULL);
-#else // USE_DL_ALLOCATOR
-	m_virtual_machine		= lua_newstate(lua_alloc_dl, NULL);
-#endif // USE_DL_ALLOCATOR
+//#ifndef USE_DL_ALLOCATOR
+//	m_virtual_machine		= lua_newstate(lua_alloc_xr, NULL);
+//#else // USE_DL_ALLOCATOR
+	m_virtual_machine		= luaL_newstate();
+//#endif // USE_DL_ALLOCATOR
 
 	if (!m_virtual_machine) {
 		Msg					("! ERROR : Cannot initialize script virtual machine!");
@@ -131,17 +234,35 @@ void CScriptStorage::reinit	()
 //	luaopen_io				(lua());
 #endif
 
-#ifdef USE_JIT
-	if (strstr(Core.Params,"-nojit")) {
-//		luaopen_jit			(lua());
-//		luaopen_coco		(lua());
-//		luaJIT_setmode		(lua(),2,LUAJIT_MODE_DEBUG);
+	struct luajit
+	{
+		static void open_lib(lua_State* L, pcstr module_name, lua_CFunction function)
+		{
+			lua_pushcfunction(L, function);
+			lua_pushstring(L, module_name);
+			lua_call(L, 1, 0);
+		}
+	};
+	luajit::open_lib(lua(), "", luaopen_base);
+	luajit::open_lib(lua(), LUA_LOADLIBNAME, luaopen_package);
+	luajit::open_lib(lua(), LUA_TABLIBNAME, luaopen_table);
+	luajit::open_lib(lua(), LUA_IOLIBNAME, luaopen_io);
+	luajit::open_lib(lua(), LUA_OSLIBNAME, luaopen_os);
+	luajit::open_lib(lua(), LUA_MATHLIBNAME, luaopen_math);
+	luajit::open_lib(lua(), LUA_STRLIBNAME, luaopen_string);
+
+#ifdef DEBUG
+	luajit::open_lib(lua(), LUA_DBLIBNAME, luaopen_debug);
+#endif // #ifdef DEBUG
+
+	if (!strstr(Core.Params, "-nojit")) {
+		luajit::open_lib(lua(), LUA_JITLIBNAME, luaopen_jit);
+#ifndef DEBUG
+		put_function(lua(), opt_lua_binary, sizeof(opt_lua_binary), "jit.opt");
+		put_function(lua(), opt_inline_lua_binary, sizeof(opt_lua_binary), "jit.opt_inline");
+		dojitopt		(lua(), "2");
+#endif // #ifndef DEBUG
 	}
-	else {
-		luaopen_jit			(lua());
-		luaopen_coco		(lua());
-	}
-#endif
 
 	if (strstr(Core.Params,"-_g"))
 		file_header			= file_header_new;

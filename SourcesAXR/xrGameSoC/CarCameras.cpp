@@ -2,7 +2,7 @@
 #pragma hdrstop
 #ifdef DEBUG
 #include "ode_include.h"
-#include "../StatGraph.h"
+#include "../xrEngine/StatGraph.h"
 #include "PHDebug.h"
 #include "phworld.h"
 #endif
@@ -14,7 +14,7 @@
 #include "cameralook.h"
 #include "camerafirsteye.h"
 #include "level.h"
-#include "../cameramanager.h"
+#include "../xrEngine/cameramanager.h"
 
 bool CCar::HUDView() const		
 {
@@ -41,7 +41,7 @@ void	CCar::cam_Update			(float dt, float fov)
 	}
 	active_camera->f_fov			= fov;
 	active_camera->Update			(P,Da);
-	Level().Cameras().Update		(active_camera);
+	Level().Cameras().UpdateFromCamera		(active_camera);
 }
 
 void	CCar::OnCameraChange		(int type)

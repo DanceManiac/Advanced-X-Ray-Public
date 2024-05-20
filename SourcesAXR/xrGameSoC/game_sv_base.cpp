@@ -9,8 +9,8 @@
 #include "xrserver.h"
 #include "ai_space.h"
 #include "game_sv_event_queue.h"
-#include "../XR_IOConsole.h"
-#include "../xr_ioc_cmd.h"
+#include "../xrEngine/XR_IOConsole.h"
+#include "../xrEngine/xr_ioc_cmd.h"
 #include "string_table.h"
 
 #include "debug_renderer.h"
@@ -40,56 +40,32 @@ xr_token	round_end_result_str[]=
 };
 
 // Main
-game_PlayerState*	game_sv_GameState::get_it					(u32 it)
+
+game_PlayerState* game_sv_GameState::get_id(ClientID id)
 {
-	xrClientData*	C	= (xrClientData*)m_server->client_Get			(it);
-	if (0==C)			return 0;
+	xrClientData* C = (xrClientData*)m_server->ID_to_client(id);
+	if (0 == C)			return NULL;
 	else				return C->ps;
 }
 
-game_PlayerState*	game_sv_GameState::get_id					(ClientID id)							
+LPCSTR				game_sv_GameState::get_name_id(ClientID id)
 {
-	xrClientData*	C	= (xrClientData*)m_server->ID_to_client	(id);
-	if (0==C)			return NULL;
-	else				return C->ps;
-}
-
-ClientID				game_sv_GameState::get_it_2_id				(u32 it)
-{
-	xrClientData*	C	= (xrClientData*)m_server->client_Get		(it);
-	if (0==C){
-		ClientID clientID;clientID.set(0);
-		return clientID;
-	}
-	else				return C->ID;
-}
-
-LPCSTR				game_sv_GameState::get_name_it				(u32 it)
-{
-	xrClientData*	C	= (xrClientData*)m_server->client_Get		(it);
-	if (0==C)			return 0;
+	xrClientData* C = (xrClientData*)m_server->ID_to_client(id);
+	if (0 == C)			return 0;
 	else				return *C->name;
 }
 
-LPCSTR				game_sv_GameState::get_name_id				(ClientID id)							
+LPCSTR				game_sv_GameState::get_player_name_id(ClientID id)
 {
-	xrClientData*	C	= (xrClientData*)m_server->ID_to_client	(id);
-	if (0==C)			return 0;
-	else				return *C->name;
-}
-
-LPCSTR				game_sv_GameState::get_player_name_id				(ClientID id)								
-{
-	xrClientData* xrCData	=	m_server->ID_to_client(id);
-	if(xrCData)
+	xrClientData* xrCData = m_server->ID_to_client(id);
+	if (xrCData)
 		return xrCData->name.c_str();
-	else 
+	else
 		return "unknown";
 }
-
 u32					game_sv_GameState::get_players_count		()
 {
-	return				m_server->client_Count();
+	return				m_server->GetClientsCount();
 }
 
 u16					game_sv_GameState::get_id_2_eid				(ClientID id)
@@ -109,7 +85,7 @@ game_PlayerState*	game_sv_GameState::get_eid (u16 id) //if exist
 	{
 		if (entity->owner)
 		{
-			if(entity->owner->ps)
+			if (entity->owner->ps)
 			{
 				if (entity->owner->ps->GameID == id)
 					return entity->owner->ps;
@@ -117,14 +93,23 @@ game_PlayerState*	game_sv_GameState::get_eid (u16 id) //if exist
 		}
 	}
 	//-------------------------------------------------
-	u32		cnt		= get_players_count	();
-	for		(u32 it=0; it<cnt; ++it)	
+	struct id_searcher
 	{
-		game_PlayerState*	ps	=	get_it	(it);
-		if (!ps) continue;
-		if (ps->HasOldID(id)) return ps;
+		u16 id_to_search;
+		bool operator()(IClient* client)
+		{
+			xrClientData* tmp_client = static_cast<xrClientData*>(client);
+			if (!tmp_client->ps)
+				return false;
+			return tmp_client->ps->HasOldID(id_to_search);
+		}
 	};
-	//-------------------------------------------------
+	id_searcher tmp_predicate;
+	tmp_predicate.id_to_search = id;
+	xrClientData* tmp_client = static_cast<xrClientData*>(
+		m_server->FindClient(tmp_predicate));
+	if (tmp_client)
+		return tmp_client->ps;
 	return NULL;
 }
 
@@ -133,17 +118,20 @@ void* game_sv_GameState::get_client (u16 id) //if exist
 	CSE_Abstract* entity = get_entity_from_eid(id);
 	if (entity && entity->owner && entity->owner->ps && entity->owner->ps->GameID == id)
 		return entity->owner;
-	//-------------------------------------------------
-	u32		cnt		= get_players_count	();
-	for		(u32 it=0; it<cnt; ++it)	
+	struct client_searcher
 	{
-		xrClientData*	C	= (xrClientData*)m_server->client_Get		(it);
-		if (!C || !C->ps) continue;
-//		game_PlayerState*	ps	=	get_it	(it);
-		if (C->ps->HasOldID(id)) return C;
+		u16 binded_id;
+		bool operator()(IClient* client)
+		{
+			xrClientData* tmp_client = static_cast<xrClientData*>(client);
+			if (!tmp_client || !tmp_client->ps)
+				return false;
+			return tmp_client->ps->HasOldID(binded_id);
+		}
 	};
-	//-------------------------------------------------
-	return NULL;
+	client_searcher searcher_predicate;
+	searcher_predicate.binded_id = id;
+	return m_server->FindClient(searcher_predicate);
 }
 
 CSE_Abstract*		game_sv_GameState::get_entity_from_eid		(u16 id)
@@ -154,15 +142,27 @@ CSE_Abstract*		game_sv_GameState::get_entity_from_eid		(u16 id)
 // Utilities
 u32					game_sv_GameState::get_alive_count			(u32 team)
 {
-	u32		cnt		= get_players_count	();
-	u32		alive	= 0;
-	for		(u32 it=0; it<cnt; ++it)	
+	struct alife_counter
 	{
-		game_PlayerState*	ps	=	get_it	(it);
-		if (!ps) continue;
-		if (u32(ps->team) == team)	alive	+=	(ps->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD))?0:1;
-	}
-	return alive;
+		u32 team;
+		u32 count;
+		void operator()(IClient* client)
+		{
+			xrClientData* tmp_client = static_cast<xrClientData*>(client);
+			if (!tmp_client->ps)
+				return;
+			if (tmp_client->ps->team == team)
+			{
+				count += tmp_client->ps->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD) ? 0 : 1;
+			}
+		}
+	};
+	alife_counter tmp_counter;
+	tmp_counter.team = team;
+	tmp_counter.count = 0;
+
+	m_server->ForEachClientDo(tmp_counter);
+	return tmp_counter.count;
 }
 
 xr_vector<u16>*		game_sv_GameState::get_children				(ClientID id)
@@ -199,30 +199,79 @@ float					game_sv_GameState::get_option_f				(LPCSTR lst, LPCSTR name, float def
 		return def;
 }
 
-string64&			game_sv_GameState::get_option_s				(LPCSTR lst, LPCSTR name, LPCSTR def)
+LPCSTR			game_sv_GameState::get_option_s(LPCSTR lst, LPCSTR name, LPCSTR def)
 {
-	static string64	ret;
+	string64	ret;
 
 	string64		op;
-	strconcat		(sizeof(op),op,"/",name,"=");
-	LPCSTR			start	= strstr(lst,op);
-	if (start)		
+	strconcat(sizeof(op), op, "/", name, "=");
+	LPCSTR			start = strstr(lst, op);
+	if (start)
 	{
-		LPCSTR			begin	= start + xr_strlen(op); 
-		sscanf			(begin, "%[^/]",ret);
+		LPCSTR			begin = start + xr_strlen(op);
+		sscanf(begin, "%[^/]", ret);
 	}
-	else			
+	else
 	{
-		if (def)	strcpy		(ret,def);
-		else		ret[0]=0;
+		if (def)	strcpy_s(ret, def);
+		else		ret[0] = 0;
 	}
 	return ret;
 }
-void				game_sv_GameState::signal_Syncronize		()
+void				game_sv_GameState::signal_Syncronize()
 {
-	sv_force_sync	= TRUE;
+	sv_force_sync = TRUE;
 }
 
+
+class EventDeleterPredicate
+{
+private:
+	u16 id_entity_victim;
+public:
+	EventDeleterPredicate()
+	{
+		id_entity_victim = u16(-1);
+	}
+
+	EventDeleterPredicate(u16 id_entity)
+	{
+		id_entity_victim = id_entity;
+	}
+
+	bool  PredicateDelVictim(GameEvent* const ge)
+	{
+		bool ret_val = false;
+		switch (ge->type)
+		{
+		case GAME_EVENT_PLAYER_KILLED:
+		case GAME_EVENT_PLAYER_HITTED:
+		{
+			u32 tmp_pos = ge->P.r_tell();
+			u16 id_entity_for = ge->P.r_u16();
+			if (id_entity_for == id_entity_victim)
+				ret_val = true;
+			ge->P.r_seek(tmp_pos);
+		} break;
+		};
+		return ret_val;
+	}
+	bool  PredicateForAll(GameEvent* const ge)
+	{
+		Msg("- Erasing [%d] event before start.", ge->type);
+		return true;
+	}
+
+};
+
+
+void game_sv_GameState::CleanDelayedEventFor(u16 id_entity_victim)
+{
+	EventDeleterPredicate event_deleter(id_entity_victim);
+	m_event_queue->EraseEvents(
+		fastdelegate::MakeDelegate(&event_deleter, &EventDeleterPredicate::PredicateDelVictim)
+	);
+}
 // Network
 void game_sv_GameState::net_Export_State						(NET_Packet& P, ClientID to)
 {
@@ -239,45 +288,47 @@ void game_sv_GameState::net_Export_State						(NET_Packet& P, ClientID to)
 	// Players
 //	u32	p_count			= get_players_count() - ((g_dedicated_server)? 1 : 0);
 	u32 p_count = 0;
-	for (u32 p_it=0; p_it<get_players_count(); ++p_it)
+	auto ForEach1 = [&](IClient* client)
 	{
-		xrClientData*	C		=	(xrClientData*)	m_server->client_Get	(p_it);		
-		if (!C->net_Ready || (C->ps->IsSkip() && C->ID != to)) continue;
+		xrClientData*	C		=	(xrClientData*)client;
+		if (!C->net_Ready || (C->ps->IsSkip() && C->ID != to)) return;
 		p_count++;
 	};
 
+	m_server->ForEachClientDo(ForEach1);
 	P.w_u16				(u16(p_count));
 	game_PlayerState*	Base	= get_id(to);
-	for (u32 p_it=0; p_it<get_players_count(); ++p_it)
+	auto ForEach2 = [&](IClient* client)
 	{
 		string64	p_name;
-		xrClientData*	C		=	(xrClientData*)	m_server->client_Get	(p_it);
-		game_PlayerState* A		=	get_it			(p_it);
-		if (!C->net_Ready || (A->IsSkip() && C->ID != to)) continue;
-		if (0==C)	strcpy(p_name,"Unknown");
-		else 
+		xrClientData* C = (xrClientData*)client;
+		game_PlayerState* A = C->ps;
+		if (!C->net_Ready || (A->IsSkip() && C->ID != to)) return;
+		if (0 == C)	strcpy(p_name, "Unknown");
+		else
 		{
-			CSE_Abstract* C_e		= C->owner;
-			if (0==C_e)		strcpy(p_name,"Unknown");
-			else 
+			CSE_Abstract* C_e = C->owner;
+			if (0 == C_e)		strcpy(p_name, "Unknown");
+			else
 			{
-				strcpy	(p_name,C_e->name_replace());
+				strcpy(p_name, C_e->name_replace());
 			}
 		}
 
 		A->setName(p_name);
 		u16 tmp_flags = A->flags__;
 
-		if (Base==A)	
+		if (Base == A)
 			A->setFlag(GAME_PLAYER_FLAG_LOCAL);
 
-		ClientID clientID = get_it_2_id	(p_it);
-		P.w_clientID			(clientID);
-		A->net_Export			(P, TRUE);
-		
-		A->flags__ = tmp_flags;
-	}
+		ClientID clientID = C->ID;
+		P.w_clientID(clientID);
+		A->net_Export(P, TRUE);
 
+		A->flags__ = tmp_flags;
+	};
+
+	m_server->ForEachClientDo(ForEach2);
 	net_Export_GameTime(P);
 }
 
@@ -554,11 +605,12 @@ void game_sv_GameState::u_EventSend(NET_Packet& P, u32 dwFlags)
 
 void game_sv_GameState::Update		()
 {
-	for (u32 it=0; it<m_server->client_Count(); ++it) {
-		xrClientData*	C			= (xrClientData*)	m_server->client_Get(it);
-		C->ps->ping					= u16(C->stats.getPing());
-	}
-	
+	auto ForEach = [&](IClient* client)
+	{
+		xrClientData* C = (xrClientData*)client;
+		C->ps->ping = u16(C->stats.getPing());
+	};
+	m_server->ForEachClientDo(ForEach);
 	if (!g_dedicated_server)
 	{
 		if (Level().game) {
@@ -703,17 +755,16 @@ bool game_sv_GameState::NewPlayerName_Exists( void* pClient, LPCSTR NewName )
 	if ( !pClient || !NewName ) return false;
 	IClient* CL = (IClient*)pClient;
 	if ( !CL->name || xr_strlen( CL->name.c_str() ) == 0 ) return false;
-
-	u32	cnt	= get_players_count();
-	for ( u32 it = 0; it < cnt; ++it )	
+	bool Result = false;
+	auto ForEach = [&](IClient* client)
 	{
-		IClient*	pIC	= m_server->client_Get(it);
-		if ( !pIC || pIC == CL ) continue;
+		IClient*	pIC	= client;
+		if ( !pIC || pIC == CL ) return;
 		string64 xName;
 		strcpy( xName, pIC->name.c_str() );
-		if ( !xr_strcmp(NewName, xName) ) return true;
+		if ( !xr_strcmp(NewName, xName) ) Result = true;
 	};
-	return false;
+	m_server->ForEachClientDo(ForEach);
 }
 
 void game_sv_GameState::NewPlayerName_Generate( void* pClient, LPSTR NewPlayerName )
@@ -843,7 +894,7 @@ void game_sv_GameState::OnRoundStart			()
 		}
 	};
 	rpointsBlocked.clear();
-}// старт раунда
+}
 
 void game_sv_GameState::OnRoundEnd()
 { 
@@ -861,7 +912,7 @@ void game_sv_GameState::OnRoundEnd()
 	{
 		m_bFastRestart = true;
 	}
-}// конец раунда
+}
 
 void game_sv_GameState::SaveMapList				()
 {
@@ -901,9 +952,9 @@ extern	Flags32	dbg_net_Draw_Flags;
 
 void		game_sv_GameState::OnRender				()
 {
-	Fmatrix T; T.identity();
+/*	Fmatrix T; T.identity();
 	Fvector V0, V1;
-	u32 TeamColors[TEAM_COUNT] = {D3DCOLOR_XRGB(255, 0, 0), D3DCOLOR_XRGB(0, 255, 0), D3DCOLOR_XRGB(0, 0, 255), D3DCOLOR_XRGB(255, 255, 0)};
+	u32 TeamColors[TEAM_COUNT] = {color_xrgb(255, 0, 0), color_xrgb(0, 255, 0), color_xrgb(0, 0, 255), color_xrgb(255, 255, 0)};
 //	u32 TeamColorsDist[TEAM_COUNT] = {color_argb(128, 255, 0, 0), color_argb(128, 0, 255, 0), color_argb(128, 0, 0, 255), color_argb(128, 255, 255, 0)};
 
 	if (dbg_net_Draw_Flags.test(1<<9))
@@ -953,7 +1004,7 @@ void		game_sv_GameState::OnRender				()
 				T.scale(r, r, r);
 				T.translate_add(rp.P);
 				Level().debug_renderer().draw_ellipse(T, TeamColorsDist[t]);
-*/
+
 			}
 		}
 	};
@@ -975,7 +1026,7 @@ void		game_sv_GameState::OnRender				()
 			Level().debug_renderer().draw_ellipse(T, TeamColors[PS->team]);
 		};
 
-	}
+	}*/
 };
 #endif
 //  [7/5/2005]

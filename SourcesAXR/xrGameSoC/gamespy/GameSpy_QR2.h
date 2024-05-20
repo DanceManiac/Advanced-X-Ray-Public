@@ -31,10 +31,10 @@ private:
 public:
 	GAMESPY_FN_VAR_DECL(const char*, RegisteredKey, (DWORD KeyID));	
 private:
-	GAMESPY_FN_VAR_DECL(void, qr2_register_key, (int keyid, const char *key));
+	GAMESPY_FN_VAR_DECL(void, qr2_register_keyA, (int keyid, const char *key));
 	GAMESPY_FN_VAR_DECL(void, qr2_think, (void* qrec));
 	GAMESPY_FN_VAR_DECL(void, qr2_shutdown, (void* qrec));
-	GAMESPY_FN_VAR_DECL(void, qr2_buffer_add, (void* outbuf, const char *value));
+	GAMESPY_FN_VAR_DECL(void, qr2_buffer_addA, (void* outbuf, const char *value));
 	GAMESPY_FN_VAR_DECL(void, qr2_buffer_add_int, (void* outbuf, int value));
 	GAMESPY_FN_VAR_DECL(void, qr2_keybuffer_add, (void* keybuffer, int keyid));
 
@@ -45,7 +45,7 @@ private:
 	GAMESPY_FN_VAR_DECL(const char*, GetGameVersion, (const	char*));
 
 //	GAMESPY_FN_VAR_DECL(qr2_error_t, qr2_init, (void* *qrec, const char *ip, int baseport, const char *gamename, const char *secret_key,
-	GAMESPY_FN_VAR_DECL(qr2_error_t, qr2_init, (void* *qrec, const char *ip, int baseport, 
+	GAMESPY_FN_VAR_DECL(qr2_error_t, qr2_initA, (void* *qrec, const char *ip, int baseport, 
 		int ispublic, int natnegotiate,
 		fnqr2_serverkeycallback_t server_key_callback,
 		fnqr2_playerteamkeycallback_t player_key_callback,

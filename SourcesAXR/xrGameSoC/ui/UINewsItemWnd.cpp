@@ -14,8 +14,7 @@ CUINewsItemWnd::~CUINewsItemWnd()
 void CUINewsItemWnd::Init				(LPCSTR xml_name, LPCSTR start_from)
 {
 	CUIXml uiXml;
-	bool xml_result = uiXml.Init(CONFIG_PATH, UI_PATH, xml_name);
-	R_ASSERT3(xml_result, "xml file not found", xml_name);
+	uiXml.Load(CONFIG_PATH, UI_PATH, xml_name);
 
 	CUIXmlInit xml_init;
 

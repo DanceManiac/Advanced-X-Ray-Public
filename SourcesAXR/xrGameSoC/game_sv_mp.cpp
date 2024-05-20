@@ -8,8 +8,8 @@
 #include "xrserver_objects_alife_monsters.h"
 #include "actor.h"
 #include "clsid_game.h"
-#include "../XR_IOConsole.h"
-#include "../igame_persistent.h"
+#include "../xrEngine/XR_IOConsole.h"
+#include "../xrEngine/igame_persistent.h"
 #include "date_time.h"
 #include "game_cl_base.h"
 #include "Spectator.h"
@@ -107,7 +107,6 @@ void	game_sv_mp::Update	()
 void game_sv_mp::OnRoundStart()
 {
 	inherited::OnRoundStart();
-	
 	if( g_pGameLevel && Level().game )
 	{
 		Game().m_WeaponUsageStatistic->Clear();
@@ -121,14 +120,14 @@ void game_sv_mp::OnRoundStart()
 	timestamp			(m_round_start_time_str);
 
 	// clear "ready" flag
-	u32		cnt		= get_players_count	();
-	for		(u32 it=0; it<cnt; ++it)	
-	{
-		game_PlayerState*	ps	=	get_it	(it);
-		ps->resetFlag(GAME_PLAYER_FLAG_READY+GAME_PLAYER_FLAG_VERY_VERY_DEAD);
-		ps->m_online_time = Level().timeServer();
-	};
+	m_server->ForEachClientDo([&](IClient* client)
+		{
+			game_PlayerState* ps = static_cast<xrClientData*>(client)->ps;
+			ps->resetFlag(GAME_PLAYER_FLAG_READY + GAME_PLAYER_FLAG_VERY_VERY_DEAD);
+			ps->m_online_time = Level().timeServer();
+		});
 
+	m_server->ClearDisconnectedPool();
 	// 1. We have to destroy all player-entities and entities
 	m_server->SLS_Clear	();
 
@@ -476,13 +475,11 @@ void	game_sv_mp::SetSkin					(CSE_Abstract* E, u16 Team, u16 ID)
 	//-------------------------------------------
 	string256 SkinName;
 	std::strcpy(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
-	//загружены ли скины для этой комманды
 
 	if (!TeamList.empty()	&&
 		TeamList.size() > Team	&&
 		!TeamList[Team].aSkins.empty())
 	{
-		//загружено ли достаточно скинов для этой комманды
 		if (TeamList[Team].aSkins.size() > ID)
 		{
 			std::strcat(SkinName, TeamList[Team].aSkins[ID].c_str());
@@ -492,7 +489,6 @@ void	game_sv_mp::SetSkin					(CSE_Abstract* E, u16 Team, u16 ID)
 	}
 	else
 	{
-		//скины для такой комманды не загружены
 		switch (Team)
 		{
 		case 0:
@@ -517,7 +513,7 @@ void	game_sv_mp::SetSkin					(CSE_Abstract* E, u16 Team, u16 ID)
 	//-------------------------------------------
 };
 
-#include "../CameraBase.h"
+#include "../XrEngine/CameraBase.h"
 
 bool	game_sv_mp::GetPosAngleFromActor				(ClientID id, Fvector& Pos, Fvector &Angle)
 {
@@ -572,7 +568,6 @@ void	game_sv_mp::SpawnWeapon4Actor		(u16 actorId,  LPCSTR N, u8 Addons)
 
 	E->s_flags.assign		(M_SPAWN_OBJECT_LOCAL);	// flags
 	/////////////////////////////////////////////////////////////////////////////////
-	//если это оружие - спавним его с полным магазином
 	CSE_ALifeItemWeapon		*pWeapon	=	smart_cast<CSE_ALifeItemWeapon*>(E);
 	if (pWeapon)
 	{
@@ -704,34 +699,33 @@ void game_sv_mp::OnVoteStart				(LPCSTR VoteCommand, ClientID sender)
 			string256 WeatherTime = "", WeatherName = "";
 			sscanf(CommandParams, "%s %s", WeatherName, WeatherTime );
 
-			m_pVoteCommand.sprintf("%s %s", votecommands[i].command, WeatherTime);
+			m_pVoteCommand.printf("%s %s", votecommands[i].command, WeatherTime);
 			sprintf_s(resVoteCommand, "%s %s", votecommands[i].name, WeatherName);
 		}
 		else
 		{
-			m_pVoteCommand.sprintf("%s %s", votecommands[i].command, CommandParams);
+			m_pVoteCommand.printf("%s %s", votecommands[i].command, CommandParams);
 			strcpy(resVoteCommand, VoteCommand);
 		}		
 	}
 	else
 	{
-		m_pVoteCommand.sprintf("%s", VoteCommand+1);
+		m_pVoteCommand.printf("%s", VoteCommand+1);
 	};
 
 	xrClientData *pStartedPlayer = NULL;
-	u32	cnt = get_players_count();	
-	for(u32 it=0; it<cnt; it++)	
-	{
-		xrClientData *l_pC = (xrClientData*)	m_server->client_Get	(it);
-		if (!l_pC) continue;
-		if (l_pC->ID == sender)
+	m_server->ForEachClientDo([&](IClient* client)
 		{
-			l_pC->ps->m_bCurrentVoteAgreed = 1;
-			pStartedPlayer = l_pC;
-		}
-		else
-			l_pC->ps->m_bCurrentVoteAgreed = 2;
-	};
+			xrClientData* l_pC = (xrClientData*)client;
+			if (!l_pC) return;
+			if (l_pC->ID == sender)
+			{
+				l_pC->ps->m_bCurrentVoteAgreed = 1;
+				pStartedPlayer = l_pC;
+			}
+			else
+				l_pC->ps->m_bCurrentVoteAgreed = 2;
+		});
 
 	signal_Syncronize();
 	//-----------------------------------------------------------------------------
@@ -757,15 +751,15 @@ void		game_sv_mp::UpdateVote				()
 	u32 NumParticipated = 0;
 	u32 NumToCount = 0;
 	u32	cnt = get_players_count();	
-	for(u32 it=0; it<cnt; it++)	
-	{
-		xrClientData *l_pC = (xrClientData*)	m_server->client_Get	(it);
-		game_PlayerState* ps	= l_pC->ps;
-		if (!l_pC || !l_pC->net_Ready || !ps || ps->IsSkip()) continue;
-		if (ps->m_bCurrentVoteAgreed != 2) NumParticipated++;
-		if (ps->m_bCurrentVoteAgreed == 1) NumAgreed++;
-		NumToCount++;
-	};
+	m_server->ForEachClientDo([&](IClient* client)
+		{
+			xrClientData* l_pC = (xrClientData*)client;
+			game_PlayerState* ps = l_pC->ps;
+			if (!l_pC || !l_pC->net_Ready || !ps || ps->IsSkip()) return;
+			if (ps->m_bCurrentVoteAgreed != 2) NumParticipated++;
+			if (ps->m_bCurrentVoteAgreed == 1) NumAgreed++;
+			NumToCount++;
+		});
 
 	bool VoteSucceed = false;
 	u32 CurTime = Level().timeServer();
@@ -1007,13 +1001,13 @@ void	game_sv_mp::SendPlayerKilledMessage	(u16 KilledID, KILL_TYPE KillType, u16 
 	P.w_u8	(u8(SpecialKill));
 
 	u32	cnt = get_players_count();	
-	for( u32 it = 0; it < cnt; it++ )
-	{
-		xrClientData *l_pC = (xrClientData*)	m_server->client_Get	(it);
-		game_PlayerState* ps	= l_pC->ps;
-		if (!l_pC || !l_pC->net_Ready || !ps) continue;
-		m_server->SendTo(l_pC->ID, P);
-	};
+	m_server->ForEachClientDo([&](IClient* client)
+		{
+			xrClientData* l_pC = (xrClientData*)client;
+			game_PlayerState* ps = l_pC->ps;
+			if (!l_pC || !l_pC->net_Ready || !ps) return;
+			m_server->SendTo(l_pC->ID, P);
+		});
 };
 
 void	game_sv_mp::OnPlayerChangeName		(NET_Packet& P, ClientID sender)
@@ -1053,14 +1047,13 @@ void	game_sv_mp::OnPlayerChangeName		(NET_Packet& P, ClientID sender)
 		P.w_stringZ(ps->getName());
 		P.w_stringZ(NewName);
 		//---------------------------------------------------		
-		u32	cnt = get_players_count();	
-		for(u32 it=0; it<cnt; it++)	
-		{
-			xrClientData *l_pC = (xrClientData*)	m_server->client_Get	(it);
-			game_PlayerState* ps	= l_pC->ps;
-			if (!l_pC || !l_pC->net_Ready || !ps) continue;
-			m_server->SendTo(l_pC->ID, P);
-		};
+		m_server->ForEachClientDo([&](IClient* client)
+			{
+				xrClientData* l_pC = (xrClientData*)client;
+				game_PlayerState* ps = l_pC->ps;
+				if (!l_pC || !l_pC->net_Ready || !ps) return;
+				m_server->SendTo(l_pC->ID, P);
+			});
 		//---------------------------------------------------
 		pClient->owner->set_name_replace(NewName);
 		NewPlayerName_Replace(pClient, NewName);
@@ -1090,14 +1083,13 @@ void		game_sv_mp::OnPlayerSpeechMessage	(NET_Packet& P, ClientID sender)
 		NP.w_u8(P.r_u8());
 		NP.w_u8(P.r_u8());		
 		//---------------------------------------------------		
-		u32	cnt = get_players_count();	
-		for(u32 it=0; it<cnt; it++)	
-		{
-			xrClientData *l_pC = (xrClientData*)	m_server->client_Get	(it);
-			game_PlayerState* ps	= l_pC->ps;
-			if (!l_pC || !l_pC->net_Ready || !ps) continue;
-			m_server->SendTo(l_pC->ID, NP, net_flags(TRUE, TRUE, TRUE));
-		};
+		m_server->ForEachClientDo([&](IClient* client)
+			{
+				xrClientData* l_pC = (xrClientData*)client;
+				game_PlayerState* ps = l_pC->ps;
+				if (!l_pC || !l_pC->net_Ready || !ps) return;
+				m_server->SendTo(l_pC->ID, NP, net_flags(TRUE, TRUE, TRUE));
+			});
 	};
 };
 
@@ -1235,37 +1227,36 @@ void	game_sv_mp::Player_ExperienceFin	(game_PlayerState* ps)
 
 void	game_sv_mp::UpdatePlayersMoney		()
 {
-	u32	cnt = get_players_count();	
-	for(u32 it=0; it<cnt; it++)	
-	{
-		xrClientData *l_pC = (xrClientData*)	m_server->client_Get	(it);
-		game_PlayerState* ps	= l_pC->ps;
-		if (!l_pC || !l_pC->net_Ready || !ps) continue;
-		if (!ps->money_added && ps->m_aBonusMoney.empty()) continue;
-		//-----------------------------------------------------------
-		NET_Packet P;
-		
-		GenerateGameMessage (P);
-		P.w_u32		(GAME_EVENT_PLAYERS_MONEY_CHANGED);
-
-		P.w_s32(ps->money_for_round);
-		P.w_s32(ps->money_added);	
-		ps->money_added = 0;
-		P.w_u8(u8(ps->m_aBonusMoney.size() & 0xff));
-		if (!ps->m_aBonusMoney.empty())
+	m_server->ForEachClientDo([&](IClient* client)
 		{
-			for (u32 i=0; i<ps->m_aBonusMoney.size(); i++)
-			{
-				Bonus_Money_Struct* pBMS = &(ps->m_aBonusMoney[i]);
-				P.w_s32(pBMS->Money);
-				P.w_u8(u8(pBMS->Reason & 0xff));
-				if (pBMS->Reason == SKT_KIR) P.w_u8(pBMS->Kills);
-			};
-			ps->m_aBonusMoney.clear();
-		};		
+			xrClientData* l_pC = (xrClientData*)client;
+			game_PlayerState* ps = l_pC->ps;
+			if (!l_pC || !l_pC->net_Ready || !ps) return;
+			if (!ps->money_added && ps->m_aBonusMoney.empty()) return;
+			//-----------------------------------------------------------
+			NET_Packet P;
 
-		m_server->SendTo(l_pC->ID, P);
-	};
+			GenerateGameMessage(P);
+			P.w_u32(GAME_EVENT_PLAYERS_MONEY_CHANGED);
+
+			P.w_s32(ps->money_for_round);
+			P.w_s32(ps->money_added);
+			ps->money_added = 0;
+			P.w_u8(u8(ps->m_aBonusMoney.size() & 0xff));
+			if (!ps->m_aBonusMoney.empty())
+			{
+				for (u32 i = 0; i < ps->m_aBonusMoney.size(); i++)
+				{
+					Bonus_Money_Struct* pBMS = &(ps->m_aBonusMoney[i]);
+					P.w_s32(pBMS->Money);
+					P.w_u8(u8(pBMS->Reason & 0xff));
+					if (pBMS->Reason == SKT_KIR) P.w_u8(pBMS->Kills);
+				};
+				ps->m_aBonusMoney.clear();
+			};
+
+			m_server->SendTo(l_pC->ID, P);
+		});
 };
 /*
 bool	game_sv_mp::GetTeamItem_ByID		(WeaponDataStruct** pRes, TEAM_WPN_LIST* pWpnList, u16 ItemID)
@@ -1368,7 +1359,7 @@ void game_sv_mp::DumpOnlineStatistic()
 	shared_str					current_section = "global";
 	string256					str_buff;
 
-	ini.w_u32					(current_section.c_str(), "players_total_cnt", m_server->client_Count());
+	ini.w_u32					(current_section.c_str(), "players_total_cnt", m_server->GetClientsCount());
 
 	sprintf_s					(str_buff,"\"%s\"",CStringTable().translate(Level().name().c_str()).c_str());
 	ini.w_string				(current_section.c_str(), "current_map_name", str_buff);
@@ -1385,22 +1376,22 @@ void game_sv_mp::DumpOnlineStatistic()
 		sprintf_s					(str_buff,"\"%s\"", CStringTable().translate((*it).c_str()).c_str());
 		ini.w_string				("map_rotation", num_buf, str_buff);
 	}
+	int idx = 0;
+	m_server->ForEachClientDo([&](IClient* client)
+		{
+			xrClientData* l_pC = (xrClientData*)client;
 
-	for(u32 idx=0; idx<m_server->client_Count(); ++idx)
-	{
-		xrClientData *l_pC			= (xrClientData*)m_server->client_Get(idx);
-		
-		if(m_server->GetServerClient()==l_pC && g_dedicated_server) 
-			continue;
-		
-		if(!l_pC->net_Ready)
-			continue;
+			if (m_server->GetServerClient() == l_pC && g_dedicated_server)
+				return;
 
-		string16					num_buf;
-		sprintf_s					(num_buf,"player_%d",idx);
+			if (!l_pC->net_Ready)
+				return;
 
-		WritePlayerStats			(ini,num_buf,l_pC);
-	}
+			string16					num_buf;
+			sprintf_s(num_buf, "player_%d", idx++);
+
+			WritePlayerStats(ini, num_buf, l_pC);
+		});
 	WriteGameState				(ini, current_section.c_str(), false);
 }
 
@@ -1470,18 +1461,18 @@ void game_sv_mp::DumpRoundStatistics()
 
 	sprintf_s					(str_buff,"\"%s\"",Level().name().c_str());
 	ini.w_string				(current_section.c_str(), "current_map_name_internal", str_buff);
+	int idx = 0;
+	m_server->ForEachClientDo([&](IClient* client)
+		{
+			xrClientData* l_pC = (xrClientData*)client;
+			if (m_server->GetServerClient() == l_pC && g_dedicated_server)
+				return;
 
-	for(u32 idx=0; idx<m_server->client_Count(); ++idx)
-	{
-		xrClientData *l_pC			= (xrClientData*)m_server->client_Get(idx);
-		if(m_server->GetServerClient()==l_pC && g_dedicated_server) 
-			continue;
+			string16					num_buf;
+			sprintf_s(num_buf, "player_%d", idx++);
 
-		string16					num_buf;
-		sprintf_s					(num_buf,"player_%d",idx);
-
-		WritePlayerStats			(ini,num_buf,l_pC);
-	}
+			WritePlayerStats(ini, num_buf, l_pC);
+		});
 	WriteGameState					(ini,current_section.c_str(), true);
 
 	Game().m_WeaponUsageStatistic->SaveDataLtx(ini);

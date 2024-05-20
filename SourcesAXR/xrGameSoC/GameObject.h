@@ -6,12 +6,14 @@
 #define AFX_GAMEOBJECT_H__3DA72D03_C759_4688_AEBB_89FA812AA873__INCLUDED_
 #pragma once
 
-#include "../xr_object.h"
+#include "../xrEngine/xr_object.h"
 #include "xrServer_Space.h"
 #include "alife_space.h"
 #include "UsableScriptObject.h"
 #include "script_binder.h"
 #include "Hit.h"
+#include "game_object_space.h"
+#include <DPlay/dplay8.h>
 
 class CPhysicsShell;
 class CSE_Abstract;
@@ -40,9 +42,9 @@ class CSpaceRestrictor;
 class CAttachableItem;
 class animation_movement_controller;
 class CBlend;
-namespace GameObject {
-	enum ECallbackType;
-};
+class ai_obstacle;
+
+class IKinematics;
 
 template <typename _return_type>
 class CScriptCallbackEx;
@@ -148,11 +150,12 @@ public:
 			void			validate_ai_locations(bool decrement_reference = true);
 
 	//animation_movement_controller
-	virtual	void			create_anim_mov_ctrl			( CBlend* b );
+	virtual	void			create_anim_mov_ctrl			( CBlend *b, Fmatrix *start_pose, bool local_animation  );
 	virtual	void			destroy_anim_mov_ctrl			( );
 			void			update_animation_movement_controller();
-	IC		bool			animation_movement_controlled	( ) const	{ return	!!animation_movement(); }
+			bool			animation_movement_controlled	( ) const	;
 const animation_movement_controller*animation_movement		( ) const	{ return	m_anim_mov_ctrl; }
+	  animation_movement_controller* animation_movement		( )			{ return	m_anim_mov_ctrl; }
 	// Game-specific events
 
 	virtual BOOL			UsedAI_Locations				();
@@ -166,6 +169,7 @@ const animation_movement_controller*animation_movement		( ) const	{ return	m_ani
 	virtual	void			reinit				();
 	virtual	void			reload				(LPCSTR section);
 	///////////////////// network /////////////////////////////////////////
+	bool					object_removed		() const { return m_bObjectRemoved; };
 private:
 	bool					m_bCrPr_Activated;
 	u32						m_dwCrPr_ActivationStep;
@@ -200,7 +204,7 @@ public:
 	}
 
 public:
-	typedef void __stdcall visual_callback(CKinematics *);
+	typedef void visual_callback(IKinematics *);
 	typedef svector<visual_callback*,6>			CALLBACK_VECTOR;
 	typedef CALLBACK_VECTOR::iterator			CALLBACK_VECTOR_IT;
 
@@ -267,6 +271,8 @@ public:
 	virtual bool			natural_weapon		() const {return true;}
 	virtual bool			natural_detector	() const {return true;}
 	virtual bool			use_center_to_aim	() const {return false;}
+	// [12.11.07] Alexander Maniluk: added this method for moving object
+	virtual void MoveTo(Fvector const & position) {};
 
 public:
 	
@@ -282,6 +288,28 @@ public:
 	virtual	LPCSTR			visual_name			(CSE_Abstract *server_entity);
 
 	virtual	void			On_B_NotCurrentEntity () {};
+	CSE_ALifeDynamicObject* alife_object		() const; // returns the server instance for this object
+
+	// for moving objects
+private:
+			u32				new_level_vertex_id	() const;
+			void			update_ai_locations	(bool decrement_reference);
+
+private:
+	ai_obstacle				*m_ai_obstacle;
+	Fmatrix					m_previous_matrix;
+
+public:
+	virtual	bool			is_ai_obstacle		() const;
+
+public:
+	IC		ai_obstacle		&obstacle			() const
+	{
+		VERIFY				(m_ai_obstacle);
+		return				(*m_ai_obstacle);
+	}
+
+	virtual void			on_matrix_change	(const Fmatrix &previous);
 };
 
 #endif // !defined(AFX_GAMEOBJECT_H__3DA72D03_C759_4688_AEBB_89FA812AA873__INCLUDED_)

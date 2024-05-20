@@ -3,11 +3,13 @@
 #include "Physics.h"
 #include "PHElement.h"
 #include "PHShell.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
+
+#include "../xrEngine/bone.h"
 
 #pragma warning(disable:4995)
 #pragma warning(disable:4267)
-#include "../../xrODE/ode/src/joint.h"
+#include "../3rd party/ode/ode/src/joint.h"
 #pragma warning(default:4995)
 #pragma warning(default:4267)
 extern	class CPHWorld	*ph_world;
@@ -48,7 +50,7 @@ element_fracture CPHFracturesHolder::SplitFromEnd(CPHElement* element,u16 fractu
 	new_element->mXFORM.set(element->mXFORM);
 	element->PassEndGeoms(geom_num,end_geom_num,new_element);
 	/////////////////////////////////////////////
-	CKinematics* pKinematics= element->m_shell->PKinematics();
+	IKinematics* pKinematics= element->m_shell->PKinematics();
 	const CBoneInstance& new_bi=pKinematics->LL_GetBoneInstance(new_element->m_SelfID);
 	const CBoneInstance& old_bi=pKinematics->LL_GetBoneInstance(element->m_SelfID);
 
@@ -80,7 +82,7 @@ element_fracture CPHFracturesHolder::SplitFromEnd(CPHElement* element,u16 fractu
 	//									   fract_i->m_break_torque,
 	//									   fract_i->m_add_torque_z);
 	//BodyCutForce(new_element_body,default_l_limit,default_w_limit);
-	element_fracture ret	=mk_pair(new_element,(CShellSplitInfo)(*fract_i));
+	element_fracture ret	=std::make_pair(new_element,(CShellSplitInfo)(*fract_i));
 
 	if(m_fractures.size()-fracture>0) 
 	{	

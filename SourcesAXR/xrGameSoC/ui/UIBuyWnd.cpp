@@ -129,7 +129,7 @@ void CUIBuyWnd::Init(const shared_str& sectionName, const shared_str& sectionPri
 	m_sectionPrice						= sectionPrice;
 
 	CUIXml								xml_doc;
-	R_ASSERT							(xml_doc.Init(CONFIG_PATH, UI_PATH, "inventoryMP.xml"));
+	xml_doc.Load						(CONFIG_PATH, UI_PATH, "inventoryMP.xml");
 
 	CUIXmlInit::InitWindow				(xml_doc, "main",						0, this);
 
@@ -293,7 +293,7 @@ void CUIBuyWnd::Update()
 	}
 }
 
-#include "../../xr_input.h"
+#include "../xrEngine/xr_input.h"
 
 void CUIBuyWnd::OnBtnBulletBuy(int slot)
 {

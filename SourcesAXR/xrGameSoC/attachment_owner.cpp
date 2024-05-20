@@ -9,7 +9,7 @@
 #include "stdafx.h"
 #include "attachment_owner.h"
 #include "attachable_item.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
 #include "inventory_item.h"
 #include "physicsshellholder.h"
 
@@ -59,20 +59,23 @@ void CAttachmentOwner::renderable_Render		()
 		(*I)->renderable_Render();
 }
 
-void __stdcall AttachmentCallback(CKinematics *tpKinematics)
+void _BCL AttachmentCallback(IKinematics *tpKinematics)
 {
-	CGameObject				*game_object = smart_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->Update_Callback_Param));
+	CGameObject				*game_object = smart_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->GetUpdateCallbackParam()));
 	VERIFY					(game_object);
 	
 	CAttachmentOwner		*attachment_owner = smart_cast<CAttachmentOwner*>(game_object);
 	VERIFY					(attachment_owner);
 
-	CKinematics				*kinematics = smart_cast<CKinematics*>(game_object->Visual());
+	IKinematics				*kinematics = smart_cast<IKinematics*>(game_object->Visual());
 
 	xr_vector<CAttachableItem*>::const_iterator	I = attachment_owner->attached_objects().begin();
 	xr_vector<CAttachableItem*>::const_iterator	E = attachment_owner->attached_objects().end();
-	for ( ; I != E; ++I) {
-		(*I)->item().object().XFORM().mul_43	(kinematics->LL_GetBoneInstance((*I)->bone_id()).mTransform,(*I)->offset());
+	for (; I != E; ++I) 
+	{
+        Fmatrix bone_mtx;
+        kinematics->Bone_GetAnimPos(bone_mtx, (*I)->bone_id(), u8(-1), false);
+        (*I)->item().object().XFORM().mul_43(bone_mtx, (*I)->offset());
 		(*I)->item().object().XFORM().mulA_43	(game_object->XFORM());
 	}
 }
@@ -81,8 +84,9 @@ void CAttachmentOwner::attach(CInventoryItem *inventory_item)
 {
 	xr_vector<CAttachableItem*>::const_iterator	I = m_attached_objects.begin();
 	xr_vector<CAttachableItem*>::const_iterator	E = m_attached_objects.end();
-	for ( ; I != E; ++I) {
-		if( (*I)->item().object().ID() != inventory_item->object().ID() )
+	for ( ; I != E; ++I)
+	{
+		if( (*I)->item().object().ID() == inventory_item->object().ID() )
 			return; //already attached, fake, I'll repair It
 //		VERIFY								((*I)->ID() != inventory_item->object().ID());
 	}
@@ -94,7 +98,7 @@ void CAttachmentOwner::attach(CInventoryItem *inventory_item)
 		VERIFY								(game_object && game_object->Visual());
 		if (m_attached_objects.empty())
 			game_object->add_visual_callback(AttachmentCallback);
-		attachable_item->set_bone_id		(smart_cast<CKinematics*>(game_object->Visual())->LL_BoneID(attachable_item->bone_name()));
+		attachable_item->set_bone_id		(smart_cast<IKinematics*>(game_object->Visual())->LL_BoneID(attachable_item->bone_name()));
 		m_attached_objects.push_back		(smart_cast<CAttachableItem*>(inventory_item));
 
 		inventory_item->object().setVisible	(true);
@@ -106,11 +110,14 @@ void CAttachmentOwner::detach(CInventoryItem *inventory_item)
 {
 	xr_vector<CAttachableItem*>::iterator	I = m_attached_objects.begin();
 	xr_vector<CAttachableItem*>::iterator	E = m_attached_objects.end();
-	for ( ; I != E; ++I) {
-		if ((*I)->item().object().ID() == inventory_item->object().ID()) {
+	for ( ; I != E; ++I)
+	{
+		if ((*I)->item().object().ID() == inventory_item->object().ID())
+		{
 			m_attached_objects.erase	(I);
 			(*I)->afterDetach();
-			if (m_attached_objects.empty()) {
+			if (m_attached_objects.empty())
+			{
 				CGameObject					*game_object = smart_cast<CGameObject*>(this);
 				VERIFY						(game_object && game_object->Visual());
 				game_object->remove_visual_callback(AttachmentCallback);
@@ -160,7 +167,7 @@ void CAttachmentOwner::reattach_items		()
 	for ( ; I != E; ++I) {
 		CAttachableItem* attachable_item = *I;
 		VERIFY (attachable_item);
-		attachable_item->set_bone_id		(smart_cast<CKinematics*>(game_object->Visual())->LL_BoneID(attachable_item->bone_name()));
+		attachable_item->set_bone_id		(smart_cast<IKinematics*>(game_object->Visual())->LL_BoneID(attachable_item->bone_name()));
 	}
 }
 

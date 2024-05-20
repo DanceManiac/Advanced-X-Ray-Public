@@ -1,6 +1,6 @@
 #pragma once
 class CBaseMonster;
-class CEntity;
+class CEntityAlive;
 
 #define HIT_STACK_SIZE	2
 
@@ -31,13 +31,13 @@ public:
 
 			// Получить расстояние от fire_bone до врага
 			// Выполнить RayQuery от fire_bone в enemy.center
-			float	distance_to_enemy		(const CEntity *enemy);
+			float	distance_to_enemy		(const CEntityAlive *enemy);
 
 	IC		float	get_min_distance		();
 	IC		float	get_max_distance		();
 
-	IC		bool	can_start_melee			(const CEntity *enemy);
-	IC		bool	should_stop_melee		(const CEntity *enemy);
+			bool	can_start_melee			(const CEntityAlive *enemy);
+			bool	should_stop_melee		(const CEntityAlive *enemy);
 
 #ifdef DEBUG
 	IC		float	dbg_as_min_dist			(){return m_as_min_dist;}

@@ -44,7 +44,7 @@ void CUIMpTradeWnd::TryUsePreset(ETradePreset idx)
 	ApplyPreset					(idx);
 }
 
-#include "../../xr_input.h"
+#include "../../xrEngine/xr_input.h"
 void CUIMpTradeWnd::OnBtnPreset1Clicked(CUIWindow* w, void* d)
 {
 	CheckDragItemToDestroy				();

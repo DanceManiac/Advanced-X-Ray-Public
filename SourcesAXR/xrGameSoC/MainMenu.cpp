@@ -2,9 +2,9 @@
 #include "MainMenu.h"
 #include "UI/UIDialogWnd.h"
 #include "ui/UIMessageBoxEx.h"
-#include "../xr_IOConsole.h"
-#include "../IGame_Level.h"
-#include "../CameraManager.h"
+#include "../xrEngine/xr_IOConsole.h"
+#include "../xrEngine/IGame_Level.h"
+#include "../xrEngine/CameraManager.h"
 #include "xr_Level_controller.h"
 #include "ui\UITextureMaster.h"
 #include "ui\UIXmlInit.h"
@@ -115,8 +115,25 @@ void CMainMenu::ReadTextureInfo()
 		{
 			_GetItem(itemsList.c_str(), i, single_item);
 			strcat(single_item,".xml");
-			CUITextureMaster::ParseShTexInfo(single_item);
+			CUITextureMaster::ParseShTexInfo(single_item, UI_PATH);
 		}		
+	}
+
+	{
+		// Cop\CS style
+		FS_FileSet fset;
+		FS.file_list(fset, "$game_config$", FS_ListFiles, "ui\\textures_descr\\*.xml");
+		FS_FileSetIt fit = fset.begin();
+		FS_FileSetIt fit_e = fset.end();
+
+		for (; fit != fit_e; ++fit)
+		{
+			string_path fn1, fn2, fn3;
+			_splitpath((*fit).name.c_str(), fn1, fn2, fn3, 0);
+			strcat_s(fn3, ".xml");
+
+			CUITextureMaster::ParseShTexInfo(fn3, "ui\\textures_descr");
+		}
 	}
 }
 
@@ -138,7 +155,7 @@ void CMainMenu::Activate	(bool bActivate)
 	if(bActivate)
 	{
 		b_shniaganeed_pp			= true;
-		Device.Pause				(TRUE, FALSE, TRUE, "mm_activate1");
+		GAME_PAUSE					(TRUE, FALSE, TRUE, "mm_activate1");
 			m_Flags.set				(flActive|flNeedChangeCapture,TRUE);
 
 		{
@@ -166,7 +183,7 @@ void CMainMenu::Activate	(bool bActivate)
 			m_Flags.set					(flRestorePauseStr, bShowPauseString);
 			bShowPauseString			= FALSE;
 			if(!m_Flags.test(flRestorePause))
-				Device.Pause			(TRUE, TRUE, FALSE, "mm_activate2");
+				GAME_PAUSE				(TRUE, TRUE, FALSE, "mm_activate2");
 		}
 
 		m_startDialog->m_bWorkInPause		= true;
@@ -215,7 +232,7 @@ void CMainMenu::Activate	(bool bActivate)
 		if(b_is_single)
 		{
 			if(!m_Flags.test(flRestorePause))
-				Device.Pause			(FALSE, TRUE, FALSE, "mm_deactivate1");
+				GAME_PAUSE				(FALSE, TRUE, FALSE, "mm_deactivate1");
 
 			bShowPauseString			= m_Flags.test(flRestorePauseStr);
 		}	
@@ -223,7 +240,7 @@ void CMainMenu::Activate	(bool bActivate)
 		if(m_Flags.test(flRestoreCursor))
 			GetUICursor()->Show			();
 
-		Device.Pause					(FALSE, FALSE, TRUE, "mm_deactivate2");
+		GAME_PAUSE						(FALSE, FALSE, TRUE, "mm_deactivate2");
 
 		if(m_Flags.test(flNeedVidRestart))
 		{
@@ -498,7 +515,7 @@ void CMainMenu::OnNewPatchFound(LPCSTR VersionName, LPCSTR URL)
 		INIT_MSGBOX(m_pMB_ErrDlgs[NewPatchFound], "msg_box_new_patch");
 
 		shared_str tmpText;
-		tmpText.sprintf(m_pMB_ErrDlgs[NewPatchFound]->GetText(), VersionName, URL);
+		tmpText.printf(m_pMB_ErrDlgs[NewPatchFound]->GetText(), VersionName, URL);
 		m_pMB_ErrDlgs[NewPatchFound]->SetText(*tmpText);		
 	}
 	m_sPatchURL = URL;
@@ -544,7 +561,7 @@ void CMainMenu::OnDownloadPatch(CUIWindow*, void*)
 		m_sPatchFileName = fname;
 	}
 	else
-		m_sPatchFileName.sprintf	("downloads\\%s", FileName);	
+		m_sPatchFileName.printf	("downloads\\%s", FileName);	
 	
 	m_sPDProgress.IsInProgress	= true;
 	m_sPDProgress.Progress		= 0;
@@ -680,6 +697,23 @@ LPCSTR CMainMenu::GetGSVer()
 	{
 		buff[0]		= 0;
 		buff2[0]	= 0;
+	}
+
+	return buff2;
+}
+
+LPCSTR CMainMenu::GetAxrPlatform()
+{
+	static string256	buff;
+	static string256	buff2;
+	if (m_pGameSpyFull)
+	{
+		strcpy_s(buff2, m_pGameSpyFull->GetAxrPlatform(buff));
+	}
+	else
+	{
+		buff[0] = 0;
+		buff2[0] = 0;
 	}
 
 	return buff2;

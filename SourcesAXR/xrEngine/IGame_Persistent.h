@@ -31,7 +31,12 @@ public:
 			string256	m_game_type;
 			string256	m_alife;
 			string256	m_new_or_load;
-			EGameIDs	m_e_game_type;
+
+			union
+			{
+				EGameIDs	m_e_game_type;
+				u32			m_e_game_type_for_soc;
+			};
 		};
 		string256		m_params[4];
 						params		()	{	reset();	}

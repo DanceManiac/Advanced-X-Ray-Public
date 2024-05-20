@@ -4,7 +4,7 @@
 #include "../../../characterphysicssupport.h"
 #include "../../../actor.h"
 #include "burer_state_manager.h"
-#include "../../../../skeletonanimated.h"
+#include "../../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../sound_player.h"
 #include "../../../level.h"
 #include "../../../ai_monster_space.h"
@@ -240,12 +240,10 @@ void CBurer::UpdateGraviObject()
 	// draw particle
 	CParticlesObject* ps = CParticlesObject::Create(particle_gravi_wave,TRUE);
 
-	// вычислить позицию и направленность партикла
 	Fmatrix pos; 
 	pos.identity();
 	pos.k.set(dir);
-	Fvector::generate_orthonormal_basis_normalized(pos.k,pos.j,pos.i);
-	// установить позицию
+
 	pos.translate_over(m_gravi_object.cur_pos);
 
 	ps->UpdateParent(pos, zero_vel);
@@ -266,7 +264,6 @@ void CBurer::UpdateGraviObject()
 		obj->m_pPhysicsShell->applyImpulse(dir,m_gravi_impulse_to_objects * obj->m_pPhysicsShell->getMass());
 	}
 
-	// играть звук
 	Fvector snd_pos = m_gravi_object.cur_pos;
 	snd_pos.y += 0.5f;
 	if (sound_gravi_wave._feedback())		{

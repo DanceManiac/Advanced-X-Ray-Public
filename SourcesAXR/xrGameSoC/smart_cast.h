@@ -15,7 +15,7 @@
 
 #define  TL_FAST_COMPILATION
 #undef   STATIC_CHECK
-#include <typelist.h>
+#include <loki/typelist.h>
 
 #ifdef PURE_DYNAMIC_CAST
 #	define smart_cast dynamic_cast
@@ -35,17 +35,17 @@
 
 #	ifdef XRGAME_EXPORTS
 
-		DECLARE_SPECIALIZATION			(CKinematics,		IRender_Visual,		dcast_PKinematics);
+		DECLARE_SPECIALIZATION			(IKinematics, IRenderVisual,		dcast_PKinematics);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(CKinematics,		IRender_Visual)
+#		define cast_type_list save_cast_list	(IKinematics,		IRenderVisual)
 
-		DECLARE_SPECIALIZATION			(CKinematicsAnimated,	IRender_Visual,		dcast_PKinematicsAnimated);
+		DECLARE_SPECIALIZATION			(IKinematicsAnimated, IRenderVisual,		dcast_PKinematicsAnimated);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(CKinematicsAnimated,	IRender_Visual)
+#		define cast_type_list save_cast_list	(IKinematicsAnimated,	IRenderVisual)
 
-		DECLARE_SPECIALIZATION			(IParticleCustom,	IRender_Visual,		dcast_ParticleCustom);
+		DECLARE_SPECIALIZATION			(IParticleCustom, IRenderVisual,		dcast_ParticleCustom);
 #		undef cast_type_list
-#		define cast_type_list save_cast_list	(IParticleCustom,	IRender_Visual)
+#		define cast_type_list save_cast_list	(IParticleCustom,	IRenderVisual)
 
 #		ifndef DO_NOT_DECLARE_TYPE_LIST
 			class ENGINE_API ISpatial;

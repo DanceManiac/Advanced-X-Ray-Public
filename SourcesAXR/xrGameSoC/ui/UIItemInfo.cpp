@@ -40,8 +40,7 @@ CUIItemInfo::~CUIItemInfo()
 void CUIItemInfo::Init(LPCSTR xml_name){
 
 	CUIXml						uiXml;
-	bool xml_result				= uiXml.Init(CONFIG_PATH, UI_PATH, xml_name);
-	R_ASSERT2					(xml_result, "xml file not found");
+	uiXml.Load					(CONFIG_PATH, UI_PATH, xml_name);
 
 	CUIXmlInit					xml_init;
 

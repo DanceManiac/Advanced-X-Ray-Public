@@ -1,9 +1,9 @@
 #include "pch_script.h"
-#include "../xr_ioconsole.h"
-#include "../xr_ioc_cmd.h"
-#include "../customhud.h"
-#include "../fdemorecord.h"
-#include "../fdemoplay.h"
+#include "../xrEngine/xr_ioconsole.h"
+#include "../xrEngine/xr_ioc_cmd.h"
+#include "../xrEngine/customhud.h"
+#include "../xrEngine/fdemorecord.h"
+#include "../xrEngine/fdemoplay.h"
 #include "xrMessages.h"
 #include "xrserver.h"
 #include "level.h"
@@ -37,13 +37,12 @@
 #include "MainMenu.h"
 #include "saved_game_wrapper.h"
 #include "level_graph.h"
-#include "../resourcemanager.h"
 #include "doug_lea_memory_allocator.h"
 #include "cameralook.h"
 
 #include "GameSpy/GameSpy_Full.h"
 #include "GameSpy/GameSpy_Patching.h"
-
+#include "../Include/xrRender/Kinematics.h"
 #ifdef DEBUG
 #	include "PHDebug.h"
 #	include "ui/UIDebugFonts.h" 
@@ -81,7 +80,7 @@ extern	BOOL	g_show_wnd_rect			;
 extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
-
+		int		g_keypress_on_start = 1;
 
 void register_mp_console_commands();
 //-----------------------------------------------------------
@@ -120,7 +119,7 @@ CUIOptConCom g_OptConCom;
 #endif // PURE_ALLOC
 
 #ifdef SEVERAL_ALLOCATORS
-	ENGINE_API 	u32 engine_lua_memory_usage	();
+	//ENGINE_API 	u32 engine_lua_memory_usage	();
 	extern		u32 game_lua_memory_usage	();
 #endif // SEVERAL_ALLOCATORS
 
@@ -134,14 +133,13 @@ public:
 		u32		_process_heap	= mem_usage_impl(GetProcessHeap(),0,0);
 #ifdef SEVERAL_ALLOCATORS
 		u32		_game_lua		= game_lua_memory_usage();
-		u32		_engine_lua		= engine_lua_memory_usage();
 		u32		_render			= ::Render->memory_usage();
 #endif // SEVERAL_ALLOCATORS
 		int		_eco_strings	= (int)g_pStringContainer->stat_economy			();
 		int		_eco_smem		= (int)g_pSharedMemoryContainer->stat_economy	();
 		u32		m_base=0,c_base=0,m_lmaps=0,c_lmaps=0;
 		
-		if (Device.Resources)	Device.Resources->_GetMemoryUsage	(m_base,c_base,m_lmaps,c_lmaps);
+		if (Device.m_pRender) Device.m_pRender->ResourcesGetMemoryUsage(m_base, c_base, m_lmaps, c_lmaps);
 		
 		log_vminfo	();
 		
@@ -150,12 +148,12 @@ public:
 #ifndef SEVERAL_ALLOCATORS
 		Msg		("* [x-ray]: crt heap[%d K], process heap[%d K]",_crt_heap/1024,_process_heap/1024);
 #else // SEVERAL_ALLOCATORS
-		Msg		("* [x-ray]: crt heap[%d K], process heap[%d K], game lua[%d K], engine lua[%d K], render[%d K]",_crt_heap/1024,_process_heap/1024,_game_lua/1024,_engine_lua/1024,_render/1024);
+		Msg		("* [x-ray]: crt heap[%d K], process heap[%d K], game lua[%d K], render[%d K]",_crt_heap/1024,_process_heap/1024,_game_lua/1024,_render/1024);
 #endif // SEVERAL_ALLOCATORS
 
 		Msg		("* [x-ray]: economy: strings[%d K], smem[%d K]",_eco_strings/1024,_eco_smem);
 
-#ifdef DEBUG
+#ifdef FS_DEBUG
 		Msg		("* [x-ray]: file mapping: memory[%d K], count[%d]",g_file_mapped_memory/1024,g_file_mapped_count);
 		dump_file_mappings	();
 #endif // DEBUG
@@ -517,7 +515,7 @@ public:
 			MainMenu()->Activate(false);
 
 		if (Device.Paused())
-			Device.Pause			(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
+			GAME_PAUSE				(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
 
 		NET_Packet					net_packet;
 		net_packet.w_begin			(M_LOAD_GAME);
@@ -641,7 +639,7 @@ public:
 			// rescan pathes
 			FS_Path* P = FS.get_path("$game_scripts$");
 			P->m_Flags.set	(FS_Path::flNeedRescan,TRUE);
-			FS.rescan_pathes();
+			//FS.rescan_pathes();
 			// run script
 			if (ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel))
 				ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel)->add_script(S,false,true);
@@ -1263,11 +1261,11 @@ public:
 			return;
 		}
 
-		IRender_Visual			*visual = Render->model_Create(arguments);
-		CKinematics				*kinematics = smart_cast<CKinematics*>(visual);
+		IRenderVisual			*visual = Render->model_Create(arguments);
+		IKinematics				*kinematics = smart_cast<IKinematics*>(visual);
 		if (!kinematics) {
 			Render->model_Delete(visual);
-			Msg					("! Invalid visual type \"%s\" (not a CKinematics)",arguments);
+			Msg					("! Invalid visual type \"%s\" (not a IKinematics)",arguments);
 			return;
 		}
 
@@ -1611,6 +1609,8 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,		"dbg_dump_physics_step", &g_bDebugDumpPhysicsStep, 0, 1);
 #endif
 	*g_last_saved_game	= 0;
+
+	CMD4(CCC_Integer,		"keypress_on_start",		&g_keypress_on_start, 0, 1);
 
 	register_mp_console_commands					();
 }

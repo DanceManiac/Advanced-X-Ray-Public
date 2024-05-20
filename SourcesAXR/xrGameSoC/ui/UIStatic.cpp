@@ -4,7 +4,7 @@
 #include "UITextureMaster.h"
 #include "uiframewindow.h"
 #include "../HUDManager.h"
-#include "../../LightAnimLibrary.h"
+#include "../../xrEngine/LightAnimLibrary.h"
 #include "uilines.h"
 #include "../string_table.h"
 #include "../ui_base.h"
@@ -107,7 +107,7 @@ void CUIStatic::CreateShader(const char* tex, const char* sh){
 	m_UIStaticItem.CreateShader(tex,sh);	
 }
 
-ref_shader& CUIStatic::GetShader(){
+ui_shader& CUIStatic::GetShader(){
 	return m_UIStaticItem.GetShader();
 }
 
@@ -124,9 +124,8 @@ void CUIStatic::InitTextureEx(LPCSTR tex_name, LPCSTR sh_name)
 {
 
 	string_path buff;
-	u32		v_dev	= CAP_VERSION(HW.Caps.raster_major, HW.Caps.raster_minor);
-	u32		v_need	= CAP_VERSION(2,0);
-	if (/*strstr(Core.Params,"-ps_movie") &&*/ (v_dev >= v_need) && FS.exist(buff,"$game_textures$", tex_name, ".ogm") )
+
+	if (/*strstr(Core.Params,"-ps_movie") &&*/ true && FS.exist(buff, "$game_textures$", tex_name, ".ogm"))
 		CUITextureMaster::InitTexture	(tex_name, "hud\\movie", &m_UIStaticItem);
 	else
 		CUITextureMaster::InitTexture	(tex_name, sh_name, &m_UIStaticItem);
@@ -401,7 +400,7 @@ void CUIStatic::ClipperOff()
 	ClipperOff(m_UIStaticItem);
 }
 
-void  CUIStatic::SetShader(const ref_shader& sh)
+void  CUIStatic::SetShader(const ui_shader& sh)
 {
 	m_UIStaticItem.SetShader(sh);
 	m_bAvailableTexture = true;

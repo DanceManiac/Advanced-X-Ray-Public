@@ -12,6 +12,8 @@
 #	include "stalker_animation_manager.h"
 #	include "ai/stalker/ai_stalker.h"
 
+#include "../../Include/xrRender/RenderVisual.h"
+
 #	pragma warning(push)
 #	pragma warning(disable:4995)
 #	include <malloc.h>
@@ -228,7 +230,7 @@ void add_animation_stats	(const shared_str &animation_id, const shared_str &anim
 
 void CStalkerAnimationManager::add_animation_stats	(const ANIMATION_ID &animation_id, const BLEND_ID *blend_id, bool just_started)
 {
-	::add_animation_stats		(animation_id.first,animation_id.second,*object().Visual()->dbg_name,blend_id,just_started);
+	::add_animation_stats		(animation_id.first,animation_id.second, object().Visual()->getDebugName(),blend_id,just_started);
 }
 
 void CStalkerAnimationManager::add_animation_stats	()

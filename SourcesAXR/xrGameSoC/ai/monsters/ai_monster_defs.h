@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../../../skeletonanimated.h"
-#include "../../../cameramanager.h"
+#include "../../../Include/xrRender/KinematicsAnimated.h"
+#include "../../../xrEngine/cameramanager.h"
 
 typedef u32 TTime;
 
-#define COLOR		D3DCOLOR_XRGB
+#define COLOR		color_xrgb
 #define COLOR_RED	COLOR(255,0,0)	
 #define COLOR_GREEN	COLOR(0,255,0)	
 #define COLOR_BLUE	COLOR(0,0,255)	

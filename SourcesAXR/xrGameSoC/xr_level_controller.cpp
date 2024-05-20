@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include <dinput.h>
-#include "../xr_ioconsole.h"
-#include "../xr_input.h"
-#include "../xr_ioc_cmd.h"
+#include "../xrEngine/xr_ioconsole.h"
+#include "../xrEngine/xr_input.h"
+#include "../xrEngine/xr_ioc_cmd.h"
 #include "xr_level_controller.h"
 #include "string_table.h"
 
@@ -350,27 +350,41 @@ EGameActions get_binded_action(int _dik)
 	return kNOTBINDED;
 }
 
-void GetActionAllBinding		(LPCSTR _action, char* dst_buff, int dst_buff_sz)
+bool GetActionAllBinding(LPCSTR _action, char* dst_buff, int dst_buff_sz)
 {
-	int			action_id	= action_name_to_id(_action);
-	_binding*	pbinding	= &g_key_bindings[action_id];
+	int			action_id = action_name_to_id(_action);
+
+	if (action_id == kNOTBINDED)
+	{
+		// Just insert the unknown action name as is
+		xr_strcpy(dst_buff, dst_buff_sz, _action);
+		return false;
+	}
+
+	_binding* pbinding = &g_key_bindings[action_id];
 
 	string128	prim;
 	string128	sec;
-	prim[0]		= 0;
-	sec[0]		= 0;
+	prim[0] = 0;
+	sec[0] = 0;
 
-	if(pbinding->m_keyboard[0])
+	if (pbinding->m_keyboard[0])
 	{
-		strcpy_s(prim, pbinding->m_keyboard[0]->key_local_name.c_str());
+		xr_strcpy(prim, pbinding->m_keyboard[0]->key_local_name.c_str());
 	}
-	if(pbinding->m_keyboard[1])
+	if (pbinding->m_keyboard[1])
 	{
-		strcpy_s(sec, pbinding->m_keyboard[1]->key_local_name.c_str());
+		xr_strcpy(sec, pbinding->m_keyboard[1]->key_local_name.c_str());
 	}
-	
-	sprintf_s		(dst_buff, dst_buff_sz, "%s%s%s", prim[0]?prim:"", (sec[0]&&prim[0])?" , ":"", sec[0]?sec:"");
-					
+	if (NULL == pbinding->m_keyboard[0] && NULL == pbinding->m_keyboard[1])
+	{
+		xr_sprintf(dst_buff, dst_buff_sz, "%s", CStringTable().translate("st_key_notbinded").c_str());
+	}
+	else
+	{
+		xr_sprintf(dst_buff, dst_buff_sz, "%s%s%s", prim[0] ? prim : "", (sec[0] && prim[0]) ? " , " : "", sec[0] ? sec : "");
+	}
+	return true;
 }
 
 ConsoleBindCmds	bindConsoleCmds;

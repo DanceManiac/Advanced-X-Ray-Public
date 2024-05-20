@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Actor.h"
-#include "../CameraBase.h"
+#include "../xrEngine/CameraBase.h"
 #ifdef DEBUG
 #include "PHDebug.h"
 #endif
@@ -14,8 +14,8 @@
 #include "SleepEffector.h"
 #include "ActorEffector.h"
 #include "level.h"
-#include "../cl_intersect.h"
-#include "gamemtllib.h"
+#include "../xrEngine/cl_intersect.h"
+#include "../xrEngine/gamemtllib.h"
 #include "elevatorstate.h"
 #include "CharacterPhysicsSupport.h"
 #include "EffectorShot.h"
@@ -189,7 +189,8 @@ void CActor::cam_Update(float dt, float fFOV)
 					da			= PI/1000.f;
 					if (!fis_zero(r_torso.roll))
 						da		*= r_torso.roll/_abs(r_torso.roll);
-					for (float angle=0.f; _abs(angle)<_abs(alpha); angle+=da)
+					float angle = 0.f;
+					for (; _abs(angle)<_abs(alpha); angle+=da)
 						if (test_point(xrc,xform,mat,ext,radius,angle)) { bIntersect=TRUE; break; } 
 						valid_angle	= bIntersect?angle:alpha;
 				} 
@@ -274,8 +275,8 @@ void CActor::cam_Update(float dt, float fFOV)
 		vbox.set					(oobox_size, oobox_size, oobox_size);
 
 
-		Level().debug_renderer().draw_aabb  (C->vPosition, 0.05f, 0.051f, 0.05f, D3DCOLOR_XRGB(0,255,0));
-		Level().debug_renderer().draw_obb  (_rot, Fvector().div(vbox,2.0f), D3DCOLOR_XRGB(255,0,0));
+		Level().debug_renderer().draw_aabb  (C->vPosition, 0.05f, 0.051f, 0.05f, color_xrgb(0,255,0));
+		Level().debug_renderer().draw_obb  (_rot, Fvector().div(vbox,2.0f), color_xrgb(255,0,0));
 
 		dMatrix3					d_rot;
 		PHDynamicData::FMXtoDMX		(_rot, d_rot);
@@ -303,10 +304,10 @@ void CActor::cam_Update(float dt, float fFOV)
 	
 	if( psActorFlags.test(AF_PSP) )
 	{
-		Cameras().Update			(C);
+		Cameras().UpdateFromCamera(C);
 	}else
 	{
-		Cameras().Update			(cameras[eacFirstEye]);
+		Cameras().UpdateFromCamera(cameras[eacFirstEye]);
 	}
 
 	fCurAVelocity			= vPrevCamDir.sub(cameras[eacFirstEye]->vDirection).magnitude()/Device.fTimeDelta;
@@ -314,7 +315,7 @@ void CActor::cam_Update(float dt, float fFOV)
 
 	if (Level().CurrentEntity() == this)
 	{
-		Level().Cameras().Update	(C);
+		Level().Cameras().UpdateFromCamera(C);
 		if(eacFirstEye == cam_active && !Level().Cameras().GetCamEffector(cefDemo)){
 			Cameras().ApplyDevice	(_viewport_near);
 		}

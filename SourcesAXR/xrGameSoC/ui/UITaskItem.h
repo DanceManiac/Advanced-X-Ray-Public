@@ -15,10 +15,11 @@ class CUITaskItem :public CUIListItem, public CUIWndCallback
 {
 	typedef		CUIListItem	inherited;
 protected:
-	CGameTask*				m_GameTask;
-	u16						m_TaskObjectiveIdx;
-	void __stdcall	OnItemClicked			(CUIWindow*, void*);
-	void					Init			();
+	CGameTask*		m_GameTask;
+	u16				m_TaskObjectiveIdx;
+
+	void			OnItemClicked			(CUIWindow*, void*);
+	void			Init					();
 public:
 					CUITaskItem				(CUIEventsWnd* w);
 	virtual			~CUITaskItem			();
@@ -49,7 +50,7 @@ public:
 	virtual			~CUITaskRootItem		();
 	virtual void	Update					();
 	virtual void	SetGameTask				(CGameTask* gt, u16 obj_idx);
-	void __stdcall	OnSwitchDescriptionClicked(CUIWindow*, void*);
+			void	OnSwitchDescriptionClicked(CUIWindow*, void*);
 
 	virtual void	MarkSelected			(bool b);
 	virtual bool	OnDbClick				();
@@ -75,7 +76,7 @@ public:
 	virtual void	Update					();
 	virtual void	SetGameTask				(CGameTask* gt, u16 obj_idx);
 			void	OnActiveObjectiveClicked();
-	void __stdcall	OnShowDescriptionClicked(CUIWindow*, void*);
+			void	OnShowDescriptionClicked(CUIWindow*, void*);
 	virtual void	MarkSelected			(bool b);
 	virtual bool	OnDbClick				();
 };

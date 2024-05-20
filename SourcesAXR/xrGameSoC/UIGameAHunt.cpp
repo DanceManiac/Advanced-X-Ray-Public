@@ -30,7 +30,7 @@
 CUIGameAHunt::CUIGameAHunt()
 {
 	CUIXml							uiXml;
-	uiXml.Init						(CONFIG_PATH, UI_PATH, "ui_game_ahunt.xml");
+	uiXml.Load						(CONFIG_PATH, UI_PATH, "ui_game_ahunt.xml");
 	if(m_pFragLimitIndicator)
 		xr_delete(m_pFragLimitIndicator);
 
@@ -62,8 +62,8 @@ void CUIGameAHunt::SetClGame (game_cl_GameState* g)
 void CUIGameAHunt::Init	()
 {
 	CUIXml xml_doc;
-	bool xml_result = xml_doc.Init(CONFIG_PATH, UI_PATH, "stats.xml");
-	R_ASSERT2(xml_result, "xml file not found");
+	xml_doc.Load(CONFIG_PATH, UI_PATH, "stats.xml");
+	/*R_ASSERT2(xml_result, "xml file not found");*/
 
 	CUIFrags2* pFragList		= xr_new<CUIFrags2>();			pFragList->SetAutoDelete(true);
 	//-----------------------------------------------------------

@@ -19,7 +19,7 @@
 #include "../HUDManager.h"
 
 #include <dinput.h>				//remove me !!!
-#include "../../xr_input.h"		//remove me !!!
+#include "../../xrEngine/xr_input.h"		//remove me !!!
 
 const	int			SCROLLBARS_SHIFT			= 5;
 const	int			VSCROLLBAR_STEP				= 20; // В пикселях
@@ -51,8 +51,7 @@ CUIMapWnd::~CUIMapWnd()
 void CUIMapWnd::Init(LPCSTR xml_name, LPCSTR start_from)
 {
 	CUIXml uiXml;
-	bool xml_result					= uiXml.Init(CONFIG_PATH, UI_PATH, xml_name);
-	R_ASSERT3						(xml_result, "xml file not found", xml_name);
+	uiXml.Load(CONFIG_PATH, UI_PATH, xml_name);
 
 	string512	pth;
 	// load map background

@@ -17,7 +17,7 @@
 #include "team_hierarchy_holder.h"
 #include "squad_hierarchy_holder.h"
 #include "group_hierarchy_holder.h"
-#include "../CameraManager.h"
+#include "../xrEngine/CameraManager.h"
 #include "Inventory.h"
 #include "huditem.h"
 #include "clsid_game.h"
@@ -356,7 +356,7 @@ void CSpectator::cam_Update	(CActor* A)
 		P.y -= 1.6f;
 		XFORM().translate_over(P);
 		//-----------------------------------
-		g_pGameLevel->Cameras().Update(cam);
+		g_pGameLevel->Cameras().UpdateFromCamera(cam);
 	}else{
 		CCameraBase* cam			= cameras[eacFreeFly];
 		Fvector point, dangle;
@@ -368,7 +368,7 @@ void CSpectator::cam_Update	(CActor* A)
 		
 		cam->Update					(point,dangle);
 //		cam->vPosition.set(point0);
-		g_pGameLevel->Cameras().Update	(cam);
+		g_pGameLevel->Cameras().UpdateFromCamera(cam);
 		// hud output
 	};
 }
@@ -394,7 +394,7 @@ BOOL			CSpectator::net_Spawn				( CSE_Abstract*	DC )
 	return TRUE;
 };
 
-#include "../IGame_Persistent.h"
+#include "../xrEngine/igame_persistent.h"
 void			CSpectator::net_Destroy	()
 {
 	inherited::net_Destroy	();

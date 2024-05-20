@@ -7,18 +7,19 @@
 #include "MathUtils.h"
 #include "PhysicsShellHolder.h"
 #include "game_object_space.h"
-//#include "../skeletoncustom.h"
-#include "../skeletonanimated.h"
-#include <../../xrODE/ode/src/util.h>
+//#include "../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../3rd party/ode/ode/src/util.h"
 #ifdef DEBUG
-#include	"PHDebug.h"
-#endif
+#	include "PHDebug.h"
+#endif // DEBUG
 
 ///////////////////////////////////////////////////////////////
 #pragma warning(disable:4995)
 #pragma warning(disable:4267)
 
-#include "../../xrODE/ode/src/collision_kernel.h"
+#include "../3rd party/ode/ode/src/collision_kernel.h"
 
 
 #pragma warning(default:4267)
@@ -218,7 +219,7 @@ void		CPHElement::Deactivate()
 	m_flags.set(flActivating,FALSE);
 	//bActive=false;
 	//bActivating=false;
-	CKinematics* K=m_shell->PKinematics();
+	IKinematics* K=m_shell->PKinematics();
 	if(K)
 	{
 		K->LL_GetBoneInstance(m_SelfID).reset_callback();
@@ -324,7 +325,7 @@ void CPHElement::Activate(const Fmatrix &transform,const Fvector& lin_vel,const 
 	if(disable) dBodyDisable(m_body);
 	m_flags.set(flActive,TRUE);
 	m_flags.set(flActivating,TRUE);
-	CKinematics* K=m_shell->PKinematics();
+	IKinematics* K=m_shell->PKinematics();
 	if(K)
 	{
 		K->LL_GetBoneInstance(m_SelfID).set_callback(bctPhysics,m_shell->GetBonesCallback(),static_cast<CPhysicsElement*>(this));
@@ -610,7 +611,7 @@ void	CPHElement::	applyImpulseTrace		(const Fvector& pos, const Fvector& dir, fl
 		}
 		else
 		{ 
-			CKinematics* K=m_shell->PKinematics();
+			IKinematics* K=m_shell->PKinematics();
 			if(K)
 			{
 				Fmatrix m;m.set(K->LL_GetTransform(m_SelfID));
@@ -810,17 +811,16 @@ void CPHElement::BoneGlPos(Fmatrix &m,CBoneInstance* B)
 void CPHElement::GetAnimBonePos(Fmatrix &bp)
 {
 	VERIFY(m_shell->PKinematics());
-	CKinematicsAnimated *ak = m_shell->PKinematics()->dcast_PKinematicsAnimated();
+	IKinematics* ak = m_shell->PKinematics();
 	VERIFY(ak);
-	CBoneInstance *BI = &ak->LL_GetBoneInstance(m_SelfID);
-	if(!BI->Callback)//.
+	CBoneInstance* BI = &ak->LL_GetBoneInstance(m_SelfID);
+	if (!BI->callback())//.
 	{
 		bp.set(BI->mTransform);
 		return;
 	}
 
-	ak->Bone_GetAnimPos( bp, m_SelfID, u8(-1), true );
-
+	ak->Bone_GetAnimPos(bp, m_SelfID, u8(-1), true);
 }
 
 IC bool put_in_range( Fvector &v, float range )

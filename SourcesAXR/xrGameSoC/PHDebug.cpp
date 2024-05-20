@@ -2,7 +2,7 @@
 #ifdef DEBUG
 #include "physics.h"
 #include "MathUtils.h"
-#include "../StatGraph.h"
+#include "../xrEngine/StatGraph.h"
 #include "PHDebug.h"
 #include "PHObject.h"
 #include "ExtendedGeom.h"
@@ -10,6 +10,13 @@
 #include "Hudmanager.h"
 
 #include "debug_renderer.h"
+#include "physicsshellholder.h"
+
+#include "../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../xrEngine/bone.h"
+#include "../xrEngine/iphdebug.h"
+#include "phelement.h"
 
 Flags32		ph_dbg_draw_mask						;
 Flags32		ph_dbg_draw_mask1						;
@@ -82,8 +89,8 @@ struct SPHDBGDrawTri :public SPHDBGDrawAbsract
 	{
 		if(solid)
 		{
-			RCache.dbg_DrawTRI	(Fidentity, v[0], v[1], v[2], c );
-			RCache.dbg_DrawTRI	(Fidentity, v[2], v[1], v[0], c );
+			DRender->dbg_DrawTRI(Fidentity, v[0], v[1], v[2], c);
+			DRender->dbg_DrawTRI(Fidentity, v[2], v[1], v[0], c);
 		} else {
 			Level().debug_renderer().draw_line(Fidentity,v[0],v[1],c);
 			Level().debug_renderer().draw_line(Fidentity,v[1],v[2],c);
@@ -470,7 +477,7 @@ void PH_DBG_Clear()
 
 void PH_DBG_Render()
 {
-	if(ph_dbg_draw_mask.test(phDbgDrawZDisable))CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE,0));
+	if (ph_dbg_draw_mask.test(phDbgDrawZDisable))DRender->ZEnable(false);
 	HUD().Font().pFontStat->OutSet	(550,250);
 
 	if(ph_dbg_draw_mask.test(phDbgDrawEnabledAABBS))
@@ -526,7 +533,7 @@ void PH_DBG_Render()
 //	HUD().Font().pFontStat->OutNext("---------------------");
 #endif
 
-	if(ph_dbg_draw_mask.test(phDbgDrawZDisable))CHK_DX(HW.pDevice->SetRenderState(D3DRS_ZENABLE,1));
+	if (ph_dbg_draw_mask.test(phDbgDrawZDisable))DRender->ZEnable(true);
 }
 
 void DBG_DrawStatBeforeFrameStep()

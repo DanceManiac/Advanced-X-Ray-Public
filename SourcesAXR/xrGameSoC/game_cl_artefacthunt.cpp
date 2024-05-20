@@ -32,7 +32,7 @@
 #define MESSAGE_MENUS	"ahunt_messages_menu"
 
 #include "game_cl_artefacthunt_snd_msg.h"
-#include "../IGame_Persistent.h"
+#include "../xrEngine/IGame_Persistent.h"
 
 game_cl_ArtefactHunt::game_cl_ArtefactHunt()
 {

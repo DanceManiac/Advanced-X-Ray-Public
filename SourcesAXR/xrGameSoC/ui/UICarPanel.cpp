@@ -9,8 +9,7 @@ const LPCSTR POINTER_ARROW_TEX = "ui\\hud_map_arrow";
 void CUICarPanel::Init			(float x, float y, float width, float height)
 {
 	CUIXml uiXml;
-	bool result = uiXml.Init(CONFIG_PATH, UI_PATH, CAR_PANEL_XML);
-	R_ASSERT3(result, "xml file not found", CAR_PANEL_XML);
+	uiXml.Load(CONFIG_PATH, UI_PATH, CAR_PANEL_XML);
 
 	CUIXmlInit	xml_init;
 	////////////////////////////////////////////////////////////////////

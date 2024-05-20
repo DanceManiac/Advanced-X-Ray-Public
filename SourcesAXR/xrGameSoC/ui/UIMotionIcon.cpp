@@ -25,8 +25,7 @@ void CUIMotionIcon::ResetVisibility()
 void CUIMotionIcon::Init()
 {
 	CUIXml uiXml;
-	bool result = uiXml.Init(CONFIG_PATH, UI_PATH, MOTION_ICON_XML);
-	R_ASSERT3(result, "xml file not found", MOTION_ICON_XML);
+	uiXml.Load(CONFIG_PATH, UI_PATH, MOTION_ICON_XML);
 
 	CUIXmlInit	xml_init;
 

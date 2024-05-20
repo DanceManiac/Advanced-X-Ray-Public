@@ -31,7 +31,7 @@ CGameSpy_Patching::~CGameSpy_Patching()
 };
 void	CGameSpy_Patching::LoadGameSpy(HMODULE hGameSpyDLL)
 {	
-	GAMESPY_LOAD_FN(xrGS_ptCheckForPatch);
+	GAMESPY_LOAD_FN(xrGS_ptCheckForPatchA);
 }
 
 bool g_bInformUserThatNoPatchFound = true;
@@ -52,7 +52,7 @@ void __cdecl GS_ptPatchCallback ( PTBool available, PTBool mandatory, const char
 void	CGameSpy_Patching::CheckForPatch(bool InformOfNoPatch)
 {
 	g_bInformUserThatNoPatchFound = InformOfNoPatch;
-	bool res =  xrGS_ptCheckForPatch(
+	bool res =  xrGS_ptCheckForPatchA(
 		GS_ptPatchCallback,
 		PTFalse,
 		this

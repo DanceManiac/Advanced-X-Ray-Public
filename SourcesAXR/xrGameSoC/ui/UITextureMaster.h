@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "ui_defs.h"
+
 class IUISimpleTextureControl;
 
 struct TEX_INFO{
@@ -21,7 +23,7 @@ struct TEX_INFO{
 class CUITextureMaster{
 public:
 
-	static void ParseShTexInfo			(LPCSTR xml_file);
+	static void		ParseShTexInfo		(LPCSTR xml_file, LPCSTR ui_path);
 
 	static void		InitTexture			(LPCSTR texture_name,		IUISimpleTextureControl* tc);
 	static void		InitTexture			(LPCSTR texture_name, const char* shader_name, IUISimpleTextureControl* tc);
@@ -29,7 +31,7 @@ public:
 	static float	GetTextureWidth		(LPCSTR texture_name);
 	static Frect	GetTextureRect		(LPCSTR texture_name);
 	static LPCSTR	GetTextureFileName	(LPCSTR texture_name);
-	static void		GetTextureShader	(LPCSTR texture_name, ref_shader& sh);
+	static void		GetTextureShader	(LPCSTR texture_name, ui_shader& sh);
 	static TEX_INFO	FindItem			(LPCSTR texture_name, LPCSTR def_texture_name);
 	static void WriteLog();
 

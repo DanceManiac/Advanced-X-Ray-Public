@@ -95,6 +95,47 @@ GameEvent*		GameEventQueue::Retreive	()
 	return	ge;
 }
 
+u32 GameEventQueue::EraseEvents(event_predicate to_del)
+{
+	u32 ret_val = 0;
+	cs.Enter();
+	if (ready.empty())	//read synchronization...
+	{
+		cs.Leave();
+		return 0;
+	}
+	typedef xr_deque<GameEvent*>	event_queue;
+	typedef event_queue::iterator	eq_iterator;
+
+	eq_iterator need_to_erase = std::find_if(ready.begin(), ready.end(), to_del);
+	while (need_to_erase != ready.end())
+	{
+		//-----
+		u32 tmp_time = GetTickCount() - 60000;
+		u32 size = unused.size();
+		if ((LastTimeCreate < tmp_time) && (size > 32))
+		{
+			xr_delete(*need_to_erase);
+#ifdef _DEBUG
+			//			Msg ("GameEventQueue::EraseEvents - ready %d, unused %d", ready.size(), unused.size());
+#endif
+		}
+		else
+		{
+			unused.push_back(*need_to_erase);
+		}
+		//-----
+#ifdef DEBUG
+		Msg("! GameEventQueue::EraseEvents - destroying event type[%d], sender[0x%08x]", (*need_to_erase)->type, (*need_to_erase)->sender);
+#endif
+		ready.erase(need_to_erase);
+		++ret_val;
+		need_to_erase = std::find_if(ready.begin(), ready.end(), to_del);
+	}
+	cs.Leave();
+	return ret_val;
+}
+
 void			GameEventQueue::Release	()
 {
 	cs.Enter		();

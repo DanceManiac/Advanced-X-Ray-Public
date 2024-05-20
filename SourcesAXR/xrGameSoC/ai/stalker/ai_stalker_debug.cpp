@@ -42,13 +42,17 @@
 #include "../../agent_corpse_manager.h"
 #include "../../agent_location_manager.h"
 #include "../../cover_point.h"
-#include "../../../camerabase.h"
+#include "../../../xrEngine/camerabase.h"
 #include "../../clsid_game.h"
 #include "../../mt_config.h"
 #include "../../weaponmagazined.h"
 #include "../../object_handler_space.h"
 #include "../../debug_renderer.h"
 #include "../../CharacterPhysicsSupport.h"
+
+#include "../../../Include/xrRender/KinematicsAnimated.h"
+#include "../../../Include/xrRender/Kinematics.h"
+#include "../../../Include/xrRender/RenderVisual.h"
 
 CActor *g_debug_actor = 0;
 
@@ -180,7 +184,7 @@ LPCSTR animation_name(CAI_Stalker *self, const MotionID &animation)
 {
 	if (!animation)
 		return			("");
-	CKinematicsAnimated	*skeleton_animated = smart_cast<CKinematicsAnimated*>(self->Visual());
+	IKinematicsAnimated	*skeleton_animated = smart_cast<IKinematicsAnimated*>(self->Visual());
 	VERIFY				(skeleton_animated);
 	LPCSTR				name = skeleton_animated->LL_MotionDefName_dbg(animation).first;
 	return				(name);
@@ -247,7 +251,7 @@ void CAI_Stalker::OnHUDDraw				(CCustomHUD *hud)
 	float								up_indent = 40.f;
 	LPCSTR								indent = "  ";
 
-	HUD().Font().pFontStat->SetColor	(D3DCOLOR_XRGB(0,255,0));
+	HUD().Font().pFontStat->SetColor	(color_xrgb(0,255,0));
 	HUD().Font().pFontStat->OutSet		(0,up_indent);
 	// memory
 	HUD().Font().pFontStat->OutNext	("memory");
@@ -809,7 +813,7 @@ void CAI_Stalker::OnRender			()
 		temp					= direction;
 		temp.mul				(1.f);
 		temp.add				(position);
-		Level().debug_renderer().draw_line		(Fidentity,position,temp,D3DCOLOR_XRGB(0*255,255,0*255));
+		Level().debug_renderer().draw_line		(Fidentity,position,temp,color_xrgb(0*255,255,0*255));
 	}
 
 	if (IsMyCamera()) {
@@ -823,7 +827,7 @@ void CAI_Stalker::OnRender			()
 		feel_vision_get			(objects);
 		if (std::find(objects.begin(),objects.end(),memory().enemy().selected()) != objects.end()) {
 			Fvector				position = feel_vision_get_vispoint(const_cast<CEntityAlive*>(memory().enemy().selected()));
-			Level().debug_renderer().draw_aabb	(position,.05f,.05f,.05f,D3DCOLOR_XRGB(0*255,255,0*255));
+			Level().debug_renderer().draw_aabb	(position,.05f,.05f,.05f,color_xrgb(0*255,255,0*255));
 			return;
 		}
 
@@ -837,12 +841,12 @@ void CAI_Stalker::OnRender			()
 		c0.y					+= 2.f;
 		c1.setHP				(-movement().m_body.current.yaw,-movement().m_body.current.pitch);
 		c1.add					(c0);
-		Level().debug_renderer().draw_line		(Fidentity,c0,c1,D3DCOLOR_XRGB(0,255,0));
+		Level().debug_renderer().draw_line		(Fidentity,c0,c1,color_xrgb(0,255,0));
 		
 		t0.y					+= 2.f;
 		t1.setHP				(-movement().m_body.target.yaw,-movement().m_body.target.pitch);
 		t1.add					(t0);
-		Level().debug_renderer().draw_line		(Fidentity,t0,t1,D3DCOLOR_XRGB(255,0,0));
+		Level().debug_renderer().draw_line		(Fidentity,t0,t1,color_xrgb(255,0,0));
 	}
 
 	if (memory().danger().selected() && ai().level_graph().valid_vertex_position(memory().danger().selected()->position())) {
@@ -850,7 +854,7 @@ void CAI_Stalker::OnRender			()
 		u32							level_vertex_id = ai().level_graph().vertex_id(position);
 		float						half_size = ai().level_graph().header().cell_size()*.5f;
 		position.y					+= 1.f;
-		Level().debug_renderer().draw_aabb	(position,half_size - .01f,1.f,ai().level_graph().header().cell_size()*.5f-.01f,D3DCOLOR_XRGB(0*255,255,0*255));
+		Level().debug_renderer().draw_aabb	(position,half_size - .01f,1.f,ai().level_graph().header().cell_size()*.5f-.01f,color_xrgb(0*255,255,0*255));
 
 		if (ai().level_graph().valid_vertex_id(level_vertex_id)) {
 			LevelGraph::CVertex			*v = ai().level_graph().vertex(level_vertex_id);
@@ -864,7 +868,7 @@ void CAI_Stalker::OnRender			()
 				direction.mul		(value*half_size);
 				direction.add		(position);
 				direction.y			= position.y;
-				Level().debug_renderer().draw_line	(Fidentity,position,direction,D3DCOLOR_XRGB(0,0,255));
+				Level().debug_renderer().draw_line	(Fidentity,position,direction,color_xrgb(0,0,255));
 				value				= ai().level_graph().compute_square(float(10*i)/180.f*PI,PI/2.f,v);
 				if (value > best_value) {
 					best_value		= value;
@@ -872,17 +876,17 @@ void CAI_Stalker::OnRender			()
 				}
 			}
 
-			direction.set		(position.x - half_size*float(v->cover(0))/15.f,position.y,position.z);
-			Level().debug_renderer().draw_line(Fidentity,position,direction,D3DCOLOR_XRGB(255,0,0));
+			direction.set		(position.x - half_size*float(v->high_cover(0))/15.f,position.y,position.z);
+			Level().debug_renderer().draw_line(Fidentity,position,direction,color_xrgb(255,0,0));
 
-			direction.set		(position.x,position.y,position.z + half_size*float(v->cover(1))/15.f);
-			Level().debug_renderer().draw_line(Fidentity,position,direction,D3DCOLOR_XRGB(255,0,0));
+			direction.set		(position.x,position.y,position.z + half_size*float(v->high_cover(1))/15.f);
+			Level().debug_renderer().draw_line(Fidentity,position,direction,color_xrgb(255,0,0));
 
-			direction.set		(position.x + half_size*float(v->cover(2))/15.f,position.y,position.z);
-			Level().debug_renderer().draw_line(Fidentity,position,direction,D3DCOLOR_XRGB(255,0,0));
+			direction.set		(position.x + half_size*float(v->high_cover(2))/15.f,position.y,position.z);
+			Level().debug_renderer().draw_line(Fidentity,position,direction,color_xrgb(255,0,0));
 
-			direction.set		(position.x,position.y,position.z - half_size*float(v->cover(3))/15.f);
-			Level().debug_renderer().draw_line(Fidentity,position,direction,D3DCOLOR_XRGB(255,0,0));
+			direction.set		(position.x,position.y,position.z - half_size*float(v->high_cover(3))/15.f);
+			Level().debug_renderer().draw_line(Fidentity,position,direction,color_xrgb(255,0,0));
 
 			float				value = ai().level_graph().cover_in_direction(float(10*j)/180.f*PI,v);
 			direction.setHP		(float(10*j)/180.f*PI,0);
@@ -890,7 +894,7 @@ void CAI_Stalker::OnRender			()
 			direction.mul		(value*half_size);
 			direction.add		(position);
 			direction.y			= position.y;
-			Level().debug_renderer().draw_line	(Fidentity,position,direction,D3DCOLOR_XRGB(0,0,0));
+			Level().debug_renderer().draw_line	(Fidentity,position,direction,color_xrgb(0,0,0));
 		}
 	}
 }
@@ -925,7 +929,7 @@ void CAI_Stalker::dbg_draw_vision	()
 	string64					out_text;
 	sprintf_s						(out_text,"%.2f",object ? object->m_value : 0.f);
 
-	HUD().Font().pFontMedium->SetColor	(D3DCOLOR_RGBA(255,0,0,95));
+	HUD().Font().pFontMedium->SetColor	(color_rgba(255,0,0,95));
 	HUD().Font().pFontMedium->OutSet	(x,y);
 	HUD().Font().pFontMedium->OutNext	(out_text);
 }
@@ -1035,18 +1039,18 @@ void draw_visiblity_rays	(CCustomMonster *self, const CObject *object, collide::
 	VERIFY					(points.size() > 1);
 	
 	Fvector					size = Fvector().set(.05f,.05f,.05f);
-	Level().debug_renderer().draw_aabb	(points.front(),size.x,size.y,size.z,D3DCOLOR_XRGB(0,0,255));
+	Level().debug_renderer().draw_aabb	(points.front(),size.x,size.y,size.z,color_xrgb(0,0,255));
 
 	{
 		COLLIDE_POINTS::const_iterator	I = points.begin() + 1;
 		COLLIDE_POINTS::const_iterator	E = points.end();
 		for ( ; I != E; ++I) {
-			Level().debug_renderer().draw_line	(Fidentity,*(I-1),*I,D3DCOLOR_XRGB(0,255,0));
-			Level().debug_renderer().draw_aabb	(*I,size.x,size.y,size.z,D3DCOLOR_XRGB(0,255,0));
+			Level().debug_renderer().draw_line	(Fidentity,*(I-1),*I,color_xrgb(0,255,0));
+			Level().debug_renderer().draw_aabb	(*I,size.x,size.y,size.z,color_xrgb(0,255,0));
 		}
 	}
 
-	Level().debug_renderer().draw_aabb	(points.back(),size.x,size.y,size.z,D3DCOLOR_XRGB(255,0,0));
+	Level().debug_renderer().draw_aabb	(points.back(),size.x,size.y,size.z,color_xrgb(255,0,0));
 }
 
 void CAI_Stalker::dbg_draw_visibility_rays	()

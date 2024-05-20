@@ -20,6 +20,8 @@
 #include "HudManager.h"
 #include "UIGameSP.h"
 
+#include "../xrEngine/xr_collide_form.h"
+
 xr_vector<CLevelChanger*>	g_lchangers;
 
 CLevelChanger::~CLevelChanger	()

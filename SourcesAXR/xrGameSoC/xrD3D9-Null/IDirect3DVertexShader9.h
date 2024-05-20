@@ -12,13 +12,13 @@ extern "C" {
 	public:
 		xrIDirect3DVertexShader9(IDirect3DDevice9*	pIDirect3DDevice9);
 		/*** IUnknown methods ***/
-		HRESULT			__stdcall	QueryInterface(REFIID riid, void** ppvObj);
-		ULONG			__stdcall	AddRef();
-		ULONG			__stdcall	Release();
+		HRESULT				QueryInterface(REFIID riid, void** ppvObj);
+		ULONG				AddRef();
+		ULONG				Release();
 
 		/*** IDirect3DVertexDeclaration9 methods ***/
-		HRESULT			__stdcall	GetDevice( IDirect3DDevice9** ppDevice);
-		HRESULT			__stdcall	GetFunction(void*,UINT* pSizeOfData);		
+		HRESULT				GetDevice( IDirect3DDevice9** ppDevice);
+		HRESULT				GetFunction(void*,UINT* pSizeOfData);		
 	};
 
 #ifdef __cplusplus

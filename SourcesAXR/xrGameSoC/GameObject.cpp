@@ -1,6 +1,6 @@
 #include "pch_script.h"
 #include "GameObject.h"
-#include "../fbasicvisual.h"
+#include "../Include/xrRender/RenderVisual.h"
 #include "PhysicsShell.h"
 #include "ai_space.h"
 #include "CustomMonster.h" 
@@ -15,19 +15,28 @@
 #include "xrServer_Objects_ALife_Items.h"
 #include "game_cl_base.h"
 #include "object_factory.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
+#include "../xrEngine/xr_collide_form.h"
 #include "ai_object_location_impl.h"
 #include "game_graph.h"
 #include "ai_debug.h"
-#include "../igame_level.h"
+#include "../xrEngine/igame_level.h"
 #include "level.h"
-#include "../../xrNetServer/net_utils.h"
+#include "../xrCore/net_utils.h"
 #include "script_callback_ex.h"
 #include "MathUtils.h"
 #include "game_cl_base_weapon_usage_statistic.h"
 #include "game_level_cross_table.h"
+#include "magic_box3.h"
 #include "animation_movement_controller.h"
 #include "game_object_space.h"
+
+extern MagicBox3 MagicMinBox(int iQuantity, const Fvector* akPoint);
+
+#pragma warning(push)
+#pragma warning(disable:4995)
+#include <malloc.h>
+#pragma warning(pop)
 
 #ifdef DEBUG
 #	include "debug_renderer.h"
@@ -108,8 +117,8 @@ void CGameObject::net_Destroy	()
 	xr_delete				(m_ini_file);
 
 	m_script_clsid			= -1;
-	if (Visual() && smart_cast<CKinematics*>(Visual()))
-		smart_cast<CKinematics*>(Visual())->Callback	(0,0);
+	if (Visual() && smart_cast<IKinematics*>(Visual()))
+		smart_cast<IKinematics*>(Visual())->Callback	(0,0);
 
 	inherited::net_Destroy						();
 	setReady									(FALSE);
@@ -207,7 +216,7 @@ void CGameObject::OnEvent		(NET_Packet& P, u16 type)
 	}
 }
 
-void VisualCallback(CKinematics *tpKinematics);
+void VisualCallback(IKinematics *tpKinematics);
 
 BOOL CGameObject::net_Spawn		(CSE_Abstract*	DC)
 {
@@ -521,6 +530,13 @@ void CGameObject::setup_parent_ai_locations(bool assign_position)
 	if (assign_position && use_parent_ai_locations())
 		Position().set		(l_tpGameObject->Position());
 
+	//if ( assign_position && 
+	//		( use_parent_ai_locations() &&
+	//		!( cast_attachable_item() && cast_attachable_item()->enabled() )
+	//		 ) 
+	//	)
+	//	Position().set		(l_tpGameObject->Position());
+
 	// setup its ai locations
 	if (!UsedAI_Locations())
 		return;
@@ -544,49 +560,40 @@ void CGameObject::setup_parent_ai_locations(bool assign_position)
 //	ai_location().game_vertex	(l_tpGameObject->ai_location().game_vertex_id());
 }
 
-void CGameObject::validate_ai_locations			(bool decrement_reference)
+u32 CGameObject::new_level_vertex_id			() const
 {
-	if (!ai().get_level_graph())
-		return;
-
-	if (!UsedAI_Locations()) {
-//		if (ai().get_game_graph() && ai().get_cross_table())
-//			set_game_vertex		(ai().cross_table().vertex(level_vertex_id()).game_vertex_id());
-		return;
-	}
-
-//	CTimer							timer;
-//	timer.Start						();
 	Fvector							center;
 	Center							(center);
 	center.x						= Position().x;
 	center.z						= Position().z;
-	u32								l_dwNewLevelVertexID = ai().level_graph().vertex(ai_location().level_vertex_id(),center);
-
-#ifdef _DEBUG
-//	Msg								("%6d Searching for node for object %s (%.5f seconds)",Device.dwTimeGlobal,*cName(),timer.GetElapsed_sec());
-#endif
-	VERIFY							(ai().level_graph().valid_vertex_id(l_dwNewLevelVertexID));
-
-#if 0
-	if (decrement_reference && (ai_location().level_vertex_id() != l_dwNewLevelVertexID)) {
-		Fvector						new_position = ai().level_graph().vertex_position(l_dwNewLevelVertexID);
-		if (Position().y - new_position.y >= 1.5f) {
-			u32						new_vertex_id = ai().level_graph().vertex(ai_location().level_vertex_id(),center);
-			new_vertex_id			= new_vertex_id;
+	return							(ai().level_graph().vertex(ai_location().level_vertex_id(),center));
 		}
-	}
-#endif
 
+void CGameObject::update_ai_locations			(bool decrement_reference)
+{
+	u32								l_dwNewLevelVertexID = new_level_vertex_id();
+	VERIFY							(ai().level_graph().valid_vertex_id(l_dwNewLevelVertexID));
 	if (decrement_reference && (ai_location().level_vertex_id() == l_dwNewLevelVertexID))
 		return;
 
 	ai_location().level_vertex		(l_dwNewLevelVertexID);
 
-	if (ai().get_game_graph() && ai().get_cross_table()) {
+	if (!ai().get_game_graph() && ai().get_cross_table())
+		return;
+
 		ai_location().game_vertex	(ai().cross_table().vertex(ai_location().level_vertex_id()).game_vertex_id());
 		VERIFY						(ai().game_graph().valid_vertex_id(ai_location().game_vertex_id()));
 	}
+
+void CGameObject::validate_ai_locations			(bool decrement_reference)
+{
+	if (!ai().get_level_graph())
+		return;
+
+	if (!UsedAI_Locations())
+		return;
+
+	update_ai_locations				(decrement_reference);
 }
 
 void CGameObject::spatial_move	()
@@ -642,6 +649,7 @@ void CGameObject::renderable_Render	()
 	inherited::renderable_Render();
 	::Render->set_Transform		(&XFORM());
 	::Render->add_Visual		(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
 }
 
 /*
@@ -691,21 +699,6 @@ void CGameObject::OnH_B_Independent(bool just_before_destroy)
 		validate_ai_locations	(false);
 }
 
-
-#ifdef DEBUG
-
-void CGameObject::OnRender()
-{
-	if (bDebug && Visual())
-	{
-		Fvector bc,bd; 
-		Visual()->vis.box.get_CD	(bc,bd);
-		Fmatrix	M = XFORM();		M.c.add (bc);
-		Level().debug_renderer().draw_obb			(M,bd,color_rgba(0,0,255,255));
-	}	
-}
-#endif
-
 BOOL CGameObject::UsedAI_Locations()
 {
 	return					(m_server_flags.test(CSE_ALifeObject::flUsedAI_Locations));
@@ -718,12 +711,12 @@ BOOL CGameObject::TestServerFlag(u32 Flag) const
 
 void CGameObject::add_visual_callback		(visual_callback *callback)
 {
-	VERIFY						(smart_cast<CKinematics*>(Visual()));
+	VERIFY						(smart_cast<IKinematics*>(Visual()));
 	CALLBACK_VECTOR_IT			I = std::find(visual_callbacks().begin(),visual_callbacks().end(),callback);
 	VERIFY						(I == visual_callbacks().end());
 
 	if (m_visual_callback.empty())	SetKinematicsCallback(true);
-//		smart_cast<CKinematics*>(Visual())->Callback(VisualCallback,this);
+//		smart_cast<IKinematics*>(Visual())->Callback(VisualCallback,this);
 	m_visual_callback.push_back	(callback);
 }
 
@@ -733,21 +726,21 @@ void CGameObject::remove_visual_callback	(visual_callback *callback)
 	VERIFY						(I != m_visual_callback.end());
 	m_visual_callback.erase		(I);
 	if (m_visual_callback.empty())	SetKinematicsCallback(false);
-//		smart_cast<CKinematics*>(Visual())->Callback(0,0);
+//		smart_cast<IKinematics*>(Visual())->Callback(0,0);
 }
 
 void CGameObject::SetKinematicsCallback		(bool set)
 {
 	if(!Visual())	return;
 	if (set)
-		smart_cast<CKinematics*>(Visual())->Callback(VisualCallback,this);
+		smart_cast<IKinematics*>(Visual())->Callback(VisualCallback,this);
 	else
-		smart_cast<CKinematics*>(Visual())->Callback(0,0);
+		smart_cast<IKinematics*>(Visual())->Callback(0,0);
 };
 
-void VisualCallback	(CKinematics *tpKinematics)
+void VisualCallback	(IKinematics *tpKinematics)
 {
-	CGameObject						*game_object = static_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->Update_Callback_Param));
+	CGameObject						*game_object = static_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->GetUpdateCallbackParam()));
 	VERIFY							(game_object);
 	
 	CGameObject::CALLBACK_VECTOR_IT	I = game_object->visual_callbacks().begin();
@@ -791,13 +784,12 @@ void CGameObject::DestroyObject()
 void CGameObject::shedule_Update	(u32 dt)
 {
 	//уничтожить
-	if(!IsGameTypeSingle() && OnServer() && NeedToDestroyObject())
+	if(NeedToDestroyObject())
 	{
-#ifdef DEBUG
+#ifndef MASTER_GOLD
 		Msg("--NeedToDestroyObject for [%d][%d]", ID(), Device.dwFrame);
-#endif
+#endif // #ifndef MASTER_GOLD
 		DestroyObject			();
-
 	}
 
 	// Msg							("-SUB-:[%x][%s] CGameObject::shedule_Update",smart_cast<void*>(this),*cName());
@@ -881,6 +873,10 @@ LPCSTR CGameObject::visual_name			(CSE_Abstract *server_entity)
 	VERIFY						(visual);
 	return						(visual->get_visual());
 }
+bool		CGameObject::	animation_movement_controlled	( ) const	
+{ 
+	return	!!animation_movement() && animation_movement()->isActive();
+}
 
 void CGameObject::update_animation_movement_controller	()
 {
@@ -895,36 +891,186 @@ void CGameObject::update_animation_movement_controller	()
 	destroy_anim_mov_ctrl		();
 }
 
-void	CGameObject::		UpdateCL			( )
+bool CGameObject::is_ai_obstacle	() const
 {
-	inherited::UpdateCL			();
+	return							(false);
 }
 
 void	CGameObject::OnChangeVisual	( )
 {
 	inherited::OnChangeVisual( );
-	if( animation_movement_controlled( ) )
-	{
+	if ( m_anim_mov_ctrl )
 		destroy_anim_mov_ctrl( );
 	}
-}
+
 bool CGameObject::shedule_Needed( )
 {
 	return						( !getDestroy( ) );
-//	return						(processing_enabled() || CScriptBinder::object());
-};
+}
 
-void	CGameObject::		create_anim_mov_ctrl( CBlend* b )
+void CGameObject::create_anim_mov_ctrl	( CBlend *b, Fmatrix *start_pose, bool local_animation )
 {
 	//if(m_anim_mov_ctrl)
 		//destroy_anim_mov_ctrl( );
 	VERIFY( !animation_movement() );
 	VERIFY(Visual());
-	CKinematics *K = Visual( )->dcast_PKinematics( );
+	IKinematics *K = Visual( )->dcast_PKinematics( );
 	VERIFY( K );
-	m_anim_mov_ctrl = xr_new<animation_movement_controller>( &XFORM(), K, b ); 
+	m_anim_mov_ctrl = xr_new<animation_movement_controller>( &XFORM(), K, b );
 }
+
 void	CGameObject::		destroy_anim_mov_ctrl()
 {
 	xr_delete( m_anim_mov_ctrl );
 }
+
+IC	bool similar						(const Fmatrix &_0, const Fmatrix &_1, const float &epsilon = EPS)
+{
+	if (!_0.i.similar(_1.i,epsilon))
+		return						(false);
+
+	if (!_0.j.similar(_1.j,epsilon))
+		return						(false);
+
+	if (!_0.k.similar(_1.k,epsilon))
+		return						(false);
+
+	if (!_0.c.similar(_1.c,epsilon))
+		return						(false);
+
+	// note: we do not compare projection here
+	return							(true);
+}
+
+void CGameObject::UpdateCL			()
+{
+	inherited::UpdateCL				();
+	
+//	if (!is_ai_obstacle())
+//		return;
+	
+	if (H_Parent())
+		return;
+
+	if (similar(XFORM(),m_previous_matrix,EPS))
+		return;
+
+	on_matrix_change				(m_previous_matrix);
+	m_previous_matrix				= XFORM();
+}
+
+void CGameObject::on_matrix_change	(const Fmatrix &previous)
+{
+	//obstacle().on_move				();
+}
+
+#ifdef DEBUG
+
+void render_box						(IRenderVisual *visual, const Fmatrix &xform, const Fvector &additional, bool draw_child_boxes, const u32 &color)
+{
+	CDebugRenderer			&renderer = Level().debug_renderer();
+	IKinematics				*kinematics = smart_cast<IKinematics*>(visual);
+	VERIFY					(kinematics);
+	u16						bone_count = kinematics->LL_BoneCount();
+	VERIFY					(bone_count);
+	u16						visible_bone_count = kinematics->LL_VisibleBoneCount();
+	if (!visible_bone_count)
+		return;
+
+	Fmatrix					matrix;
+	Fvector					*points = (Fvector*)_alloca(visible_bone_count*8*sizeof(Fvector));
+	Fvector					*I = points;
+	for (u16 i=0; i<bone_count; ++i) {
+		if (!kinematics->LL_GetBoneVisible(i))
+			continue;
+		
+		const Fobb			&obb = kinematics->LL_GetData(i).obb;
+		if (fis_zero(obb.m_halfsize.square_magnitude())) {
+			VERIFY			(visible_bone_count > 1);
+			--visible_bone_count;
+			continue;
+		}
+
+		Fmatrix				Mbox;
+		obb.xform_get		(Mbox);
+
+		const Fmatrix		&Mbone = kinematics->LL_GetBoneInstance(i).mTransform;
+		Fmatrix				X;
+		matrix.mul_43		(xform,X.mul_43(Mbone,Mbox));
+
+		Fvector				half_size = Fvector().add(obb.m_halfsize,additional);
+		matrix.mulB_43		(Fmatrix().scale(half_size));
+
+		if (draw_child_boxes)
+			renderer.draw_obb	(matrix,color);
+
+		static const Fvector	local_points[8] = {
+			Fvector().set(-1.f,-1.f,-1.f),
+			Fvector().set(-1.f,-1.f,+1.f),
+			Fvector().set(-1.f,+1.f,+1.f),
+			Fvector().set(-1.f,+1.f,-1.f),
+			Fvector().set(+1.f,+1.f,+1.f),
+			Fvector().set(+1.f,+1.f,-1.f),
+			Fvector().set(+1.f,-1.f,+1.f),
+			Fvector().set(+1.f,-1.f,-1.f)
+		};
+		
+		for (u32 i=0; i<8; ++i, ++I)
+			matrix.transform_tiny	(*I,local_points[i]);
+	}
+
+	VERIFY						(visible_bone_count);
+	if (visible_bone_count == 1) {
+		renderer.draw_obb		(matrix,color);
+		return;
+	}
+
+	VERIFY						((I - points) == (visible_bone_count*8));
+	MagicBox3					box = MagicMinBox(visible_bone_count*8,points);
+	box.ComputeVertices			(points);
+	
+	Fmatrix						result;
+	result.identity				();
+
+	result.c					= box.Center();
+
+	result.i.sub(points[3],points[2]).normalize();
+	result.j.sub(points[2],points[1]).normalize();
+	result.k.sub(points[2],points[6]).normalize();
+
+	Fvector						scale;
+	scale.x						= points[3].distance_to(points[2])*.5f;
+	scale.y						= points[2].distance_to(points[1])*.5f;
+	scale.z						= points[2].distance_to(points[6])*.5f;
+	result.mulB_43				(Fmatrix().scale(scale));
+
+	renderer.draw_obb			(result,color);
+}
+
+void CGameObject::OnRender			()
+{
+	if (!ai().get_level_graph())
+		return;
+
+	CDebugRenderer					&renderer = Level().debug_renderer();
+	if (/**bDebug && /**/Visual()) {
+		float						half_cell_size = 1.f*ai().level_graph().header().cell_size()*.5f;
+		Fvector						additional = Fvector().set(half_cell_size,half_cell_size,half_cell_size);
+
+		render_box					(Visual(),XFORM(),Fvector().set(0.f,0.f,0.f),true,color_rgba(0,0,255,255));
+		render_box					(Visual(),XFORM(),additional,false,color_rgba(0,255,0,255));
+	}
+
+	if (0) {
+		Fvector						bc,bd; 
+		Visual()->getVisData().box.get_CD	(bc,bd);
+		Fmatrix						M = Fidentity;
+		float						half_cell_size = ai().level_graph().header().cell_size()*.5f;
+		bd.add						(Fvector().set(half_cell_size,half_cell_size,half_cell_size));
+		M.scale						(bd);
+		Fmatrix						T = XFORM();
+		T.c.add						(bc);
+		renderer.draw_obb			(T,bd,color_rgba(255,255,255,255));
+	}
+}
+#endif // DEBUG

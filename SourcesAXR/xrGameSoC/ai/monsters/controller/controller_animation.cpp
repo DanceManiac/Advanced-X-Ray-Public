@@ -92,7 +92,7 @@ void CControllerAnimation::update_frame()
 
 void CControllerAnimation::load()
 {
-	CKinematicsAnimated *skeleton = smart_cast<CKinematicsAnimated*>(m_object->Visual());
+	IKinematicsAnimated *skeleton = smart_cast<IKinematicsAnimated*>(m_object->Visual());
 	
 	m_legs[eLegsStand]					= skeleton->ID_Cycle_Safe("new_idle_0");
 	m_legs[eLegsSteal]					= skeleton->ID_Cycle_Safe("new_cr_idle_0");
@@ -153,7 +153,7 @@ void CControllerAnimation::add_path_rotation(ELegsActionType action, float angle
 	if (map_it == m_path_rotations.end()) {
 		PATH_ROTATIONS_VEC vec;
 		vec.push_back(rot);
-		m_path_rotations.insert(mk_pair(action, vec));
+		m_path_rotations.insert(std::make_pair(action, vec));
 	} else {
 		map_it->second.push_back(rot);
 	}

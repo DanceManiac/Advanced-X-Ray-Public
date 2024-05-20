@@ -52,7 +52,7 @@ void CUIVotingCategory::Init()
 	if (!xml_doc)
 		xml_doc = xr_new<CUIXml>();
 
-	xml_doc->Init(CONFIG_PATH, UI_PATH, "voting_category.xml");
+	xml_doc->Load(CONFIG_PATH, UI_PATH, "voting_category.xml");
 
 	CUIXmlInit::InitWindow(*xml_doc, "category", 0, this);
 
@@ -105,7 +105,7 @@ bool CUIVotingCategory::OnKeyboard(int dik, EUIMessages keyboard_action)
 	return false;
 }
 
-#include "../../xr_ioconsole.h"
+#include "../../xrEngine/xr_ioconsole.h"
 
 void CUIVotingCategory::OnBtn(int i)
 {

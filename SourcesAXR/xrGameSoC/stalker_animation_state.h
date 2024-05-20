@@ -30,7 +30,7 @@ public:
 					CStalkerAnimationState	();
 					CStalkerAnimationState	(const CStalkerAnimationState &animations);
 	virtual			~CStalkerAnimationState	();
-			void	Load					(CKinematicsAnimated *kinematics, LPCSTR base_name);
+			void	Load					(IKinematicsAnimated *kinematics, LPCSTR base_name);
 };
 
 #include "stalker_animation_state_inline.h"

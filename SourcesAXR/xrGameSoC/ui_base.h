@@ -6,6 +6,10 @@
 struct CFontManager;
 class CUICursor;
 
+#include "../Include/xrRender/UIRender.h"
+#include "../Include/xrRender/FactoryPtr.h"
+
+#include "ui_defs.h"
 
 class CDeviceResetNotifier :public pureDeviceReset
 {
@@ -28,7 +32,7 @@ struct S2DVert{
 				S2DVert		(float pX, float pY, float tU, float tV){pt.set(pX,pY);uv.set(tU,tV);}
 	void		set			(float pt_x, float pt_y, float uv_x, float uv_y){pt.set(pt_x,pt_y);uv.set(uv_x,uv_y);}
 	void		set			(const Fvector2& _pt, const Fvector2& _uv){pt.set(_pt);uv.set(_uv);}
-	void		rotate_pt	(const Fvector2& pivot, float cosA, float sinA, float kx);
+	void		rotate_pt	(const Fvector2& pivot, const float cosA, const float sinA, const float kx);
 };
 #define UI_FRUSTUM_MAXPLANES	12
 #define UI_FRUSTUM_SAFE			(UI_FRUSTUM_MAXPLANES*4)
@@ -69,6 +73,7 @@ public:
 	void			ClientToScreenScaled			(Fvector2& src_and_dest);
 	void			ClientToScreenScaledWidth		(float& src_and_dest);
 	void			ClientToScreenScaledHeight		(float& src_and_dest);
+	void			AlignPixel						(float src_and_dest);
 
 	Frect			ScreenRect						();
 	const C2DFrustum& ScreenFrustum					(){return (m_bPostprocess)?m_2DFrustumPP:m_2DFrustum;}
@@ -81,7 +86,10 @@ public:
 
 	virtual void	OnDeviceReset					();
 	static	bool	is_16_9_mode					();
+	static float	get_current_kx					();
 	shared_str		get_xml_name					(LPCSTR fn);
+	
+	IUIRender::ePointType		m_currentPointType;
 };
 
 extern CUICursor*	GetUICursor						();

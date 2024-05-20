@@ -2,6 +2,8 @@
 #include "ShootingObject.h"
 #include "HudSound.h"
 
+#include "../xrEngine/bone.h"
+
 class CPhysicsShellHolder;
 
 class CCarWeapon :public CShootingObject

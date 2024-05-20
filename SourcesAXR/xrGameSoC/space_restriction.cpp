@@ -313,7 +313,7 @@ void CSpaceRestriction::remove_border			()
 u32	CSpaceRestriction::accessible_nearest		(const Fvector &position, Fvector &result)
 {
 	if (m_out_space_restriction)
-		return						(m_out_space_restriction->accessible_nearest(this,position,result,true));
+		return						(m_out_space_restriction->accessible_nearest(m_out_space_restriction,position,result,true));
 
 	VERIFY							(m_in_space_restriction);
 	return							(m_in_space_restriction->accessible_nearest(m_in_space_restriction,position,result,false));

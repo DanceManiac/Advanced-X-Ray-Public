@@ -8,7 +8,7 @@
 #include "../../../level.h"
 #include "../../../actor.h"
 #include "../../../ActorEffector.h"
-#include "../../../../CameraBase.h"
+#include "../../../../xrEngine/CameraBase.h"
 #include "../../../CharacterPhysicsSupport.h"
 #include "../../../level_debug.h"
 
@@ -21,7 +21,7 @@ void CControllerPsyHit::reinit()
 {
 	inherited::reinit();
 
-	CKinematicsAnimated	*skel = smart_cast<CKinematicsAnimated *>(m_object->Visual());
+	IKinematicsAnimated	*skel = smart_cast<IKinematicsAnimated *>(m_object->Visual());
 	m_stage[0] = skel->ID_Cycle_Safe("psy_attack_0"); VERIFY(m_stage[0]);
 	m_stage[1] = skel->ID_Cycle_Safe("psy_attack_1"); VERIFY(m_stage[1]);
 	m_stage[2] = skel->ID_Cycle_Safe("psy_attack_2"); VERIFY(m_stage[2]);
@@ -191,7 +191,7 @@ bool CControllerPsyHit::check_conditions_final()
 
 	//
 	//trace_to.mad(trace_from,trace_dir,l_rq.range);
-	//DBG().level_info(this).add_item	(trace_from,trace_to,D3DCOLOR_XRGB(0,150,150));
+	//DBG().level_info(this).add_item	(trace_from,trace_to,color_xrgb(0,150,150));
 
 	return true;
 }

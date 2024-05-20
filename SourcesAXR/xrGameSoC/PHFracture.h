@@ -5,6 +5,7 @@
 
 #include "PHDefs.h"
 #include "PHImpact.h"
+#include "ode_include.h"
 
 class CPHFracture;
 class CPHElement;

@@ -1,0 +1,18 @@
+#include "common.h"
+
+Texture2D s_hud_intoxication;
+uniform float4 hud_intoxication_params; // x=intensity
+
+float4 main(p_screen I) : SV_Target
+{	
+	float2	texcoord 				= I.tc0;
+	float4	intoxication_texture 	= s_hud_intoxication.Sample(smp_rtlinear, texcoord);
+	float3 	scene 					= s_image.Sample(smp_rtlinear, I.tc0).xyz;
+	
+	// Calculate the interpolated intensity
+    float intensity = smoothstep(0.5, 1.0, hud_intoxication_params.x);
+	
+	scene = lerp(scene, intoxication_texture.xyz, intoxication_texture.w * intensity);
+
+	return float4(scene, 1.0f);
+}

@@ -29,7 +29,7 @@ private:
 	GAMESPY_FN_VAR_DECL(void, ghttpThink,());
 	GAMESPY_FN_VAR_DECL(void, ghttpCancelRequest, ( GHTTPRequest request )); 
 
-	GAMESPY_FN_VAR_DECL(GHTTPRequest, ghttpSave,
+	GAMESPY_FN_VAR_DECL(GHTTPRequest, ghttpSaveA,
 		(
 		const char * URL,       // The URL for the file ("http://host.domain[:port]/path/filename").
 		const char * filename,  // The path and name to store the file as locally.
@@ -38,7 +38,7 @@ private:
 		void * param                // User-data to be passed to the callbacks.
 		));
 
-	GAMESPY_FN_VAR_DECL(GHTTPRequest, ghttpSaveEx,
+	GAMESPY_FN_VAR_DECL(GHTTPRequest, ghttpSaveExA,
 		(
 		const char * URL,       // The URL for the file ("http://host.domain[:port]/path/filename").
 		const char * filename,  // The path and name to store the file as locally.

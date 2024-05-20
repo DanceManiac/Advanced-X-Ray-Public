@@ -429,7 +429,7 @@ IC bool CLevelGraph::intersect(Fvector& dst, const Fvector& v1, const Fvector& v
 
 	// projected intersection
 	Fvector		T;
-	if (eLineIntersectionIntersect != 
+	if (eLineIntersectionIntersect !=
 		intersect(v1.x,v1.z,v2.x,v2.z,v3.x,v3.z,v4.x,v4.z,&T.x,&T.z))
 		return (false);
 	
@@ -459,7 +459,7 @@ IC	float CLevelGraph::square(float a1, float b1, float fAlpha) const
 	return(fAlpha*fAlpha*fAlpha*a*a/6 + fAlpha*fAlpha*a*b/2 + fAlpha*b*b/2);
 }
 
-#define NORMALIZE_NODE_COVER(a,b) (float(a->cover(b))/15.f)
+#define NORMALIZE_NODE_COVER(a,b) (float(a->low_cover(b))/15.f)
 
 IC	float CLevelGraph::compute_square(float fAngle, float fAngleOfView, float b1, float b0, float b3, float b2) const
 {

@@ -2,17 +2,18 @@
 #include "cardamageparticles.h"
 #ifdef DEBUG
 #include "ode_include.h"
-#include "../StatGraph.h"
+#include "../xrEngine/StatGraph.h"
 #include "PHDebug.h"
 #endif
 #include "alife_space.h"
 #include "hit.h"
 #include "PHDestroyable.h"
 #include "Car.h"
-#include "../skeletoncustom.h"
+#include "../Include/xrRender/Kinematics.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
 #include "PHWorld.h"
 extern CPHWorld*	ph_world;
-void read_bones(CKinematics *K, LPCSTR S , xr_vector<u16>& bones)
+void read_bones(IKinematics *K, LPCSTR S , xr_vector<u16>& bones)
 {
 	string64					S1;
 	int count =					_GetItemCount(S);
@@ -29,7 +30,7 @@ void read_bones(CKinematics *K, LPCSTR S , xr_vector<u16>& bones)
 }
 void CCarDamageParticles::Init(CCar *car)
 {
-	CKinematics *K=smart_cast<CKinematics*>(car->Visual());
+	IKinematics *K=smart_cast<IKinematics*>(car->Visual());
 	CInifile	*ini=K->LL_UserData();
 	if(ini->section_exist("damage_particles"))
 	{

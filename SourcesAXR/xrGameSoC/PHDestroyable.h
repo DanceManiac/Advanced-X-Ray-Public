@@ -18,8 +18,9 @@ class	CPHDestroyable :
 public  CPHDestroyableNotificator
 
 {
-			
+public:			
 			xr_vector<shared_str>						m_destroyed_obj_visual_names																											;
+private:
 			xr_vector<CPHDestroyableNotificate *>		m_notificate_objects																													;
 			u16											m_depended_objects																														;
 			Flags8										m_flags																																	;

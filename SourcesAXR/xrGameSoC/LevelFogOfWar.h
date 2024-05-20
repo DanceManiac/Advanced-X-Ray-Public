@@ -13,7 +13,7 @@ class CFogOfWarWrapper;
 class CLevelFogOfWar: public IPureSerializeObject<IReader,IWriter>, public CUIWindow
 {
 public:
-	ref_shader			hShader;
+	ui_shader			hShader;
 	ref_geom			hGeom;	
 
 	shared_str			m_level_name;

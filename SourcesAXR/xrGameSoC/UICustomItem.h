@@ -1,14 +1,5 @@
 #pragma once
 
-enum EUIItemAlign{
-	alNone	= 0x0000,
-	alLeft	= 0x0001,
-	alRight	= 0x0002,
-	alTop	= 0x0004,
-	alBottom= 0x0008,
-	alCenter= 0x0010
-};
-
 enum EUIMirroring{
 	tmNone,
 	tmMirrorHorisontal,
@@ -54,12 +45,12 @@ public:
 	   Fvector2		GetHeadingPivot			()						{return iHeadingPivot;}
 	   
 
-	void			Render					(FVF::TL*& Pointer, const Fvector2& pos, u32 color, 
+	void			Render					( const Fvector2& pos, u32 color, 
 														float x1, float y1, 
 														float x2, float y2);
 	
-	void			Render					(FVF::TL*& Pointer, const Fvector2& pos, u32 color);
-	void			Render					(FVF::TL*& Pointer, const Fvector2& pos, u32 color, float angle);
+	void			Render					( const Fvector2& pos, u32 color);
+	void			Render					( const Fvector2& pos, u32 color, float angle);
 
 	IC void			SetAlign				(u32 align)					{uAlign=align;};
 	IC u32			GetAlign				()							{return uAlign;}

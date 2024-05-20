@@ -10,8 +10,9 @@
 #include "physic_item.h"
 #include "physicsshell.h"
 #include "xrserver_objects.h"
-#include "../fbasicvisual.h"
-#include "../SkeletonCustom.h"
+#include "../Include/xrRender/RenderVisual.h"
+#include "../Include/xrRender/KinematicsAnimated.h"
+#include "../Include/xrRender/Kinematics.h"
 #define CHOOSE_MAX(x,inst_x,y,inst_y,z,inst_z)\
 	if(x>y)\
 	if(x>z){inst_x;}\
@@ -78,10 +79,11 @@ void CPhysicItem::OnH_B_Chield		()
 BOOL CPhysicItem::net_Spawn			(CSE_Abstract* DC)
 {
 	if (!inherited::net_Spawn(DC))
-		return				(FALSE);
-	smart_cast<CKinematics*>(Visual())->CalculateBones_Invalidate	();
-	smart_cast<CKinematics*>(Visual())->CalculateBones				();
-	CSE_Abstract			*abstract = (CSE_Abstract*)DC;
+		return (FALSE);
+	IKinematics* pK = smart_cast<IKinematics*>(Visual());
+	pK->CalculateBones_Invalidate();
+	pK->CalculateBones(TRUE);
+	CSE_Abstract *abstract = (CSE_Abstract*)DC;
 	if (0xffff == abstract->ID_Parent)
 	{
 		if(!PPhysicsShell())setup_physic_shell	();
@@ -119,11 +121,11 @@ void CPhysicItem::activate_physic_shell()
 	R_ASSERT					(object);
 	XFORM().set					(object->XFORM());
 	inherited::activate_physic_shell();
-	CKinematics* K=smart_cast<CKinematics*>(Visual());
+	IKinematics* K=smart_cast<IKinematics*>(Visual());
 	if(K)
 	{
 		K->CalculateBones_Invalidate();
-		K->CalculateBones();
+		K->CalculateBones(TRUE);
 	}
 	///m_pPhysicsShell->Update		();	
 }
@@ -131,11 +133,11 @@ void CPhysicItem::activate_physic_shell()
 void CPhysicItem::setup_physic_shell	()
 {
 	inherited::setup_physic_shell();
-	CKinematics* K=smart_cast<CKinematics*>(Visual());
+	IKinematics* K=smart_cast<IKinematics*>(Visual());
 	if(K)
 	{
 		K->CalculateBones_Invalidate();
-		K->CalculateBones();
+		K->CalculateBones(TRUE);
 	}
 	//m_pPhysicsShell->Update		();
 }
@@ -144,7 +146,7 @@ void CPhysicItem::create_box_physic_shell	()
 {
 	// Physics (Box)
 	Fobb obb; 
-	Visual()->vis.box.get_CD(obb.m_translate,obb.m_halfsize); 
+	Visual()->getVisData().box.get_CD(obb.m_translate,obb.m_halfsize); 
 	obb.m_rotate.identity();
 	
 	// Physics (Elements)
@@ -164,7 +166,7 @@ void CPhysicItem::create_box2sphere_physic_shell()
 {
 	// Physics (Box)
 	Fobb								obb;
-	Visual()->vis.box.get_CD			(obb.m_translate,obb.m_halfsize);
+	Visual()->getVisData().box.get_CD			(obb.m_translate,obb.m_halfsize);
 	obb.m_rotate.identity				();
 
 	// Physics (Elements)

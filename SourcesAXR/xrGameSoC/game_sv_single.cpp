@@ -5,11 +5,12 @@
 #include "alife_object_registry.h"
 #include "alife_graph_registry.h"
 #include "alife_time_manager.h"
-#include "../../xrNetServer/net_utils.h"
+#include "../../xrCore/net_utils.h"
 #include "object_broker.h"
 #include "gamepersistent.h"
 #include "xrServer.h"
-#include "..\x_ray.h"
+#include "..\xrEngine\x_ray.h"
+#include "ui/UILoadingScreen.h"
 
 game_sv_Single::game_sv_Single			()
 {
@@ -188,19 +189,22 @@ void game_sv_Single::SetGameTimeFactor		(const float fTimeFactor)
 		return(inherited::SetGameTimeFactor(fTimeFactor));
 }
 
-ALife::_TIME_ID game_sv_Single::GetEnvironmentGameTime		()
+ALife::_TIME_ID game_sv_Single::GetEnvironmentGameTime()
 {
-	return(inherited::GetGameTime());
+	if (ai().get_alife() && ai().alife().initialized())
+		return(alife().time_manager().game_time());
+	else
+		return(inherited::GetGameTime());
 }
 
-float game_sv_Single::GetEnvironmentGameTimeFactor		()
+float game_sv_Single::GetEnvironmentGameTimeFactor()
 {
 	return(inherited::GetGameTimeFactor());
 }
 
-void game_sv_Single::SetEnvironmentGameTimeFactor		(const float fTimeFactor)
+void game_sv_Single::SetEnvironmentGameTimeFactor(const float fTimeFactor)
 {
-//	return(inherited::SetGameTimeFactor(fTimeFactor));
+	return(inherited::SetGameTimeFactor(fTimeFactor));
 }
 
 bool game_sv_Single::change_level					(NET_Packet &net_packet, ClientID sender)
@@ -327,9 +331,12 @@ void game_sv_Single::restart_simulator			(LPCSTR saved_game_name)
 	strcpy					(g_pGamePersistent->m_game_params.m_game_or_spawn,saved_game_name);
 	strcpy					(g_pGamePersistent->m_game_params.m_new_or_load,"load");
 
+	pApp->SetLoadingScreen	(new UILoadingScreen());
 	pApp->LoadBegin			();
 	m_alife_simulator		= xr_new<CALifeSimulator>(&server(),&options);
-	g_pGamePersistent->LoadTitle		("st_client_synchronising");
-	Device.PreCache			(30);
+	g_pGamePersistent->SetLoadStageTitle("st_client_synchronising");
+	g_pGamePersistent->LoadTitle();
+	pApp->LoadForceFinish	();
+	Device.PreCache			(60, true, true);
 	pApp->LoadEnd			();
 }

@@ -87,6 +87,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BugTrap", "3rd party\BugTra
 		{B5919129-6716-499D-9516-04EC34C86CDF} = {B5919129-6716-499D-9516-04EC34C86CDF}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrGameSoC", "xrGameSoC\xrGameSoC.vcxproj", "{F774C008-D95A-4027-B3F8-F2A3038D0648}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -486,6 +488,18 @@ Global
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C}.Release|Win32.Build.0 = Release|Win32
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C}.Release|x64.ActiveCfg = Release|x64
 		{E8CF1ADA-264A-4127-86C2-FD7057D3792C}.Release|x64.Build.0 = Release|x64
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Debug|Win32.Build.0 = Debug|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Debug|x64.ActiveCfg = Debug|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Debug|x64.Build.0 = Debug|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Mixed|Win32.ActiveCfg = Mixed|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Mixed|Win32.Build.0 = Mixed|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Mixed|x64.ActiveCfg = Mixed|x64
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Mixed|x64.Build.0 = Mixed|x64
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Release|Win32.ActiveCfg = Release|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Release|Win32.Build.0 = Release|Win32
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Release|x64.ActiveCfg = Release|x64
+		{F774C008-D95A-4027-B3F8-F2A3038D0648}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
