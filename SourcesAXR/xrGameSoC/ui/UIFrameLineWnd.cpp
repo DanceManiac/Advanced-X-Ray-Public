@@ -39,13 +39,17 @@ void CUIFrameLineWnd::InitTexture(LPCSTR tex_name, bool horizontal){
 
 	if (horizontal)
 	{
-		UIFrameLine.Init(tex_name, rect.left, rect.top, rect.right - rect.left, horizontal, alNone);
-		UITitleText.Init(0,0, rect.right - rect.left, 50);
+		bool m_bDecNotNeeded = rect.right == rect.left;
+
+		UIFrameLine.Init(tex_name, rect.left, rect.top, m_bDecNotNeeded ? rect.right : rect.right - rect.left, horizontal, alNone);
+		UITitleText.Init(0,0, m_bDecNotNeeded ? rect.right : rect.right - rect.left, 50);
 	}
 	else
 	{
-		UIFrameLine.Init(tex_name, rect.left, rect.top, rect.bottom - rect.top, horizontal, alNone);
-		UITitleText.Init(0,0, 50, rect.bottom - rect.top);
+		bool m_bDecNotNeeded = rect.bottom == rect.top;
+
+		UIFrameLine.Init(tex_name, rect.left, rect.top, m_bDecNotNeeded ? rect.bottom : rect.bottom - rect.top, horizontal, alNone);
+		UITitleText.Init(0,0, 50, m_bDecNotNeeded ? rect.bottom : rect.bottom - rect.top);
 	}
 
 	m_bTextureAvailable = true;
