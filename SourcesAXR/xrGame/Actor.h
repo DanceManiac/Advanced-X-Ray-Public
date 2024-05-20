@@ -204,8 +204,8 @@ public:
 public:
 
 	//свойства артефактов
-	virtual void		UpdateArtefactsOnBeltAndOutfit();
-	virtual void		UpdateInventoryItems();
+	virtual void		UpdateRestores			();
+	virtual void		UpdateInventoryItems	();
 	virtual void		MoveArtefactBelt		(const CArtefact* artefact, bool on_belt);
 			float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 			float		GetProtection_ArtefactsOnBelt(ALife::EHitType hit_type);

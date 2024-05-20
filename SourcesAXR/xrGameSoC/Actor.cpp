@@ -36,6 +36,7 @@
 #include "ai_sounds.h"
 #include "ai_space.h"
 #include "trade.h"
+#include "Torch.h"
 #include "inventory.h"
 #include "Physics.h"
 #include "level.h"
@@ -1194,7 +1195,7 @@ void CActor::shedule_Update	(u32 DT)
 //	UpdateSleep									();
 
 	//для свойст артефактов, находящихся на поясе
-	UpdateArtefactsOnBelt						();
+	UpdateRestores								();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
 };
@@ -1497,7 +1498,7 @@ void CActor::MoveArtefactBelt(const CArtefact* artefact, bool on_belt)
 
 #define ARTEFACTS_UPDATE_TIME 0.100f
 
-void CActor::UpdateArtefactsOnBelt()
+void CActor::UpdateRestores()
 {
 	static float update_time = 0;
 
@@ -1513,18 +1514,53 @@ void CActor::UpdateArtefactsOnBelt()
 		f_update_time	= update_time;
 		update_time		= 0.0f;
 	}
-
-	for(TIItemContainer::iterator it = inventory().m_belt.begin(); 
-		inventory().m_belt.end() != it; ++it) 
+	UpdateArtefactsOnBelt();
+	CCustomOutfit* outfit = GetOutfit();
+	if (outfit)
 	{
-		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if(artefact)
+		conditions().ChangeBleeding((outfit->m_fBleedingRestoreSpeed) * f_update_time);
+		conditions().ChangeHealth(outfit->m_fHealthRestoreSpeed * f_update_time);
+		conditions().ChangePower(outfit->m_fPowerRestoreSpeed * f_update_time);
+		conditions().ChangeSatiety(outfit->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeRadiation(outfit->m_fRadiationRestoreSpeed * f_update_time);
+	}
+	else
+	{
+		CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
+		if (pTorch && pTorch->GetNightVisionStatus())
 		{
-			conditions().ChangeBleeding			(artefact->m_fBleedingRestoreSpeed*f_update_time);
-			conditions().ChangeHealth			(artefact->m_fHealthRestoreSpeed*f_update_time);
-			conditions().ChangePower			(artefact->m_fPowerRestoreSpeed*f_update_time);
-//			conditions().ChangeSatiety			(artefact->m_fSatietyRestoreSpeed*f_update_time);
-			conditions().ChangeRadiation		(artefact->m_fRadiationRestoreSpeed*f_update_time);
+			pTorch->SwitchNightVision(false);
+		}
+	}
+}
+
+void CActor::UpdateArtefactsOnBelt()
+{
+	static float update_time = 0;
+
+	float f_update_time = 0;
+
+	if (update_time < ARTEFACTS_UPDATE_TIME)
+	{
+		update_time += conditions().fdelta_time();
+		return;
+	}
+	else
+	{
+		f_update_time = update_time;
+		update_time = 0.0f;
+	}
+	for (TIItemContainer::iterator it = inventory().m_belt.begin();
+		inventory().m_belt.end() != it; ++it)
+	{
+		CArtefact* artefact = smart_cast<CArtefact*>(*it);
+		if (artefact)
+		{
+			conditions().ChangeBleeding(artefact->m_fBleedingRestoreSpeed * f_update_time);
+			conditions().ChangeHealth(artefact->m_fHealthRestoreSpeed * f_update_time);
+			conditions().ChangePower(artefact->m_fPowerRestoreSpeed * f_update_time);
+			conditions().ChangeSatiety(artefact->m_fSatietyRestoreSpeed * f_update_time);
+			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time);
 		}
 	}
 }

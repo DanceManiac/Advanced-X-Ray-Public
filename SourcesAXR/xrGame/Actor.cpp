@@ -1547,7 +1547,7 @@ void CActor::shedule_Update	(u32 DT)
 //	UpdateSleep									();
 
 	//для свойст артефактов, находящихся на поясе
-	UpdateArtefactsOnBeltAndOutfit				();
+	UpdateRestores								();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
 
@@ -1984,7 +1984,7 @@ void CActor::MoveArtefactBelt(const CArtefact* artefact, bool on_belt)
 
 #define ARTEFACTS_UPDATE_TIME 0.100f
 
-void CActor::UpdateArtefactsOnBeltAndOutfit()
+void CActor::UpdateRestores()
 {
 	static float update_time = 0;
 
