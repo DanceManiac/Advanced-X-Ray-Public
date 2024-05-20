@@ -238,6 +238,7 @@ void CUICarBodyWnd::UpdateLists()
 	{
 		CUICellItem* itm				= create_cell_item(*it);
 		m_pUIOurBagList->SetItem		(itm);
+		ColorizeItem					(itm);
 	}
 
 
@@ -614,4 +615,11 @@ void CUICarBodyWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemDbClick);
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUICarBodyWnd::OnItemRButtonClick);
+}
+
+void CUICarBodyWnd::ColorizeItem(CUICellItem* itm)
+{
+	CInventoryItem* jitem = (CInventoryItem*)itm->m_pData;
+	if (jitem->m_eItemPlace == eItemPlaceBelt || jitem->m_eItemPlace == eItemPlaceSlot)
+		itm->SetColor(color_rgba(180, 255, 180, 255));
 }

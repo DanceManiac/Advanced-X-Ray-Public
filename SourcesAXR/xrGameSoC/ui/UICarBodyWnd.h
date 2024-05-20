@@ -95,4 +95,6 @@ protected:
 	bool					TransferItem				(PIItem itm, CInventoryOwner* owner_from, CInventoryOwner* owner_to, bool b_check);
 	void					BindDragDropListEnents		(CUIDragDropListEx* lst);
 
+	void					ColorizeItem				(CUICellItem* itm);
+
 };

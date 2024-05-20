@@ -507,7 +507,7 @@ void CUITradeWnd::UpdateLists(EListType mode)
 		ruck_list.clear					();
 		m_pOthersInv->AddAvailableItems	(ruck_list, true);
 		std::sort						(ruck_list.begin(),ruck_list.end(),InventoryUtilities::GreaterRoomInRuck);
-		FillList						(ruck_list, m_uidata->UIOthersBagList, false);
+		FillList						(ruck_list, m_uidata->UIOthersBagList, true);
 	}
 }
 
@@ -628,8 +628,20 @@ void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 
 void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
 {
-	if(!b)
-		itm->SetColor				(color_rgba(255,100,100,255));
+	CInventoryItem*	jitem = (CInventoryItem*)itm->m_pData;
+	PIItem piitem = (PIItem)itm->m_pData;
+	if ((jitem->m_eItemPlace == eItemPlaceBelt || jitem->m_eItemPlace == eItemPlaceSlot) && b && piitem->m_pCurrentInventory->GetOwner() == m_pInvOwner)
+	{
+		itm->SetColor(color_rgba(180, 255, 180, 255));
+	}
+	else if ((jitem->m_eItemPlace == eItemPlaceBelt || jitem->m_eItemPlace == eItemPlaceSlot) && !b)
+	{
+		itm->SetColor(color_rgba(225, 155, 130, 255));
+	}
+	else if (jitem->m_eItemPlace == eItemPlaceRuck && !b)
+	{
+		itm->SetColor(color_rgba(255, 100, 100, 255));
+	}
 }
 
 bool CUITradeWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
