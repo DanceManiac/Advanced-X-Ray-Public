@@ -187,9 +187,9 @@ public:
 	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
 	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
 
-	const shared_str& GetGrenadeLauncherName	()		{return m_sGrenadeLauncherName;}
-	const shared_str& GetScopeName				()		{return m_sScopeName;}
-	const shared_str& GetSilencerName			()		{return m_sSilencerName;}
+	const shared_str& GetGrenadeLauncherName	() const { return m_sGrenadeLauncherName;}
+	const shared_str& GetScopeName				() const { return m_sScopeName;}
+	const shared_str& GetSilencerName			() const { return m_sSilencerName;}
 
 	u8		GetAddonsState						()		const		{return m_flagsAddOnState;};
 	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}//dont use!!! for buy menu only!!!
@@ -252,7 +252,8 @@ public:
 
 			void			LoadZoomOffset		(LPCSTR section, LPCSTR prefix);
 
-	virtual float				Weight			();		
+	virtual float			Weight				() const;
+	virtual	u32				Cost				() const;
 
 public:
     virtual EHandDependence		HandDependence		()	const		{	return eHandDependence;}

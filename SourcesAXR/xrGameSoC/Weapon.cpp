@@ -1528,28 +1528,54 @@ LPCSTR	CWeapon::GetCurrentAmmo_ShortName	()
 	return *(l_cartridge.m_InvShortName);
 }
 
-float CWeapon::Weight()
+float CWeapon::Weight() const
 {
 	float res = CInventoryItemObject::Weight();
-	if(IsGrenadeLauncherAttached()&&GetGrenadeLauncherName().size()){
-		res += pSettings->r_float(GetGrenadeLauncherName(),"inv_weight");
-	}
-	if(IsScopeAttached()&&GetScopeName().size()){
-		res += pSettings->r_float(GetScopeName(),"inv_weight");
-	}
-	if(IsSilencerAttached()&&GetSilencerName().size()){
-		res += pSettings->r_float(GetSilencerName(),"inv_weight");
-	}
-	
-	if(iAmmoElapsed)
+	if (IsGrenadeLauncherAttached() && GetGrenadeLauncherName().size())
 	{
-		float w		= pSettings->r_float(*m_ammoTypes[m_ammoType],"inv_weight");
-		float bs	= pSettings->r_float(*m_ammoTypes[m_ammoType],"box_size");
+		res += pSettings->r_float(GetGrenadeLauncherName(), "inv_weight");
+	}
+	if (IsScopeAttached() && GetScopeName().size())
+	{
+		res += pSettings->r_float(GetScopeName(), "inv_weight");
+	}
+	if (IsSilencerAttached() && GetSilencerName().size()) {
+		res += pSettings->r_float(GetSilencerName(), "inv_weight");
+	}
 
-		res			+= w*(iAmmoElapsed/bs);
+	if (iAmmoElapsed)
+	{
+		float w = pSettings->r_float(*m_ammoTypes[m_ammoType], "inv_weight");
+		float bs = pSettings->r_float(*m_ammoTypes[m_ammoType], "box_size");
+
+		res += w * (iAmmoElapsed / bs);
 	}
 	return res;
 }
+
+u32 CWeapon::Cost() const
+{
+	u32 res = CInventoryItem::Cost();
+	if (IsGrenadeLauncherAttached() && GetGrenadeLauncherName().size()) {
+		res += pSettings->r_u32(GetGrenadeLauncherName(), "cost");
+	}
+	if (IsScopeAttached() && GetScopeName().size()) {
+		res += pSettings->r_u32(GetScopeName(), "cost");
+	}
+	if (IsSilencerAttached() && GetSilencerName().size()) {
+		res += pSettings->r_u32(GetSilencerName(), "cost");
+	}
+
+	if (iAmmoElapsed)
+	{
+		float w = pSettings->r_float(m_ammoTypes[m_ammoType].c_str(), "cost");
+		float bs = pSettings->r_float(m_ammoTypes[m_ammoType].c_str(), "box_size");
+
+		res += iFloor(w * (iAmmoElapsed / bs));
+	}
+	return res;
+}
+
 void CWeapon::Hide		()
 {
 	if(IsGameTypeSingle())

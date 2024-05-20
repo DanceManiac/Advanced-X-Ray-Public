@@ -226,11 +226,22 @@ CInventoryItem *CWeaponAmmo::can_make_killing	(const CInventory *inventory) cons
 	return					(0);
 }
 
-float CWeaponAmmo::Weight()
+float CWeaponAmmo::Weight() const
 {
-	float res = inherited::Weight();
+	if (m_boxSize > 0)
+	{
+		float res = inherited::Weight();
+		res *= (float)m_boxCurr / (float)m_boxSize;
+		return res;
+	}
+	return 0;
+}
 
-	res *= (float)m_boxCurr/(float)m_boxSize;
+u32 CWeaponAmmo::Cost() const
+{
+	u32 res = inherited::Cost();
+
+	res = iFloor(res*(float)m_boxCurr/(float)m_boxSize+0.5f);
 
 	return res;
 }
