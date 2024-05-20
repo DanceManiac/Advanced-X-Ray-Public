@@ -31,6 +31,7 @@ public:
 
 	void 				DisableAll					();
 	void 				EnableAll					();
+	virtual bool		OnKeyboardAction			(int dik, EUIMessages keyboard_action);
 
 	void 				SwitchToTalk				();
 	void 				StartTrade					();

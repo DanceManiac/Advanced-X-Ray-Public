@@ -363,25 +363,25 @@ void CUITalkWnd::SwitchToTrade()
 
 bool CUITalkWnd::IR_OnKeyboardPress(int dik)
 {
-//.	StopSnd						();
-	EGameActions cmd = get_binded_action(dik);
-	if(cmd==kUSE)
-	{
-		if (m_pOthersInvOwner&&m_pOthersInvOwner->NeedOsoznanieMode())
-		{
-			return true;
-		}
-		GetHolder()->StartStopMenu(this, true);
-		return true;
-	}
 	return inherited::IR_OnKeyboardPress(dik);
 }
 
 bool CUITalkWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
-	if (m_pOthersInvOwner&&m_pOthersInvOwner->NeedOsoznanieMode())
+	if (HUD().GetUI()->MainInputReceiver() == this && keyboard_action == WINDOW_KEY_PRESSED)
 	{
-		return true;
+		if (!UITradeWnd->IsShown() && !m_pOthersInvOwner->NeedOsoznanieMode())
+		{
+			if (is_binded(kUSE, dik) || is_binded(kQUIT, dik))
+			{
+				g_actor->StopTalk();
+				StopSnd();
+			}
+			else if (is_binded(kSPRINT_TOGGLE, dik))
+			{
+				SwitchToTrade();
+			}
+		}
 	}
 	return inherited::OnKeyboardAction(dik,keyboard_action);
 }
