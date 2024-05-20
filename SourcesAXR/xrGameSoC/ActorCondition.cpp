@@ -106,35 +106,34 @@ void CActorCondition::UpdateCondition()
 {
 	if (GodMode())				return;
 	if (!object().g_Alive())	return;
-	if (!object().Local() && m_object != Level().CurrentViewEntity())		return;	
+	if (!object().Local() && m_object != Level().CurrentViewEntity())		return;
 	
+	float base_weight			= object().MaxCarryWeight();
+	float cur_weight			= object().inventory().TotalWeight();
 
-	if ((object().mstate_real&mcAnyMove)) {
-		ConditionWalk(object().inventory().TotalWeight()/object().inventory().GetMaxWeight(), isActorAccelerated(object().mstate_real,object().IsZoomAimingMode()), (object().mstate_real&mcSprint) != 0);
+	if ((object().mstate_real&mcAnyMove))
+	{
+		ConditionWalk( cur_weight / base_weight,
+			isActorAccelerated( object().mstate_real,object().IsZoomAimingMode() ),
+			(object().mstate_real&mcSprint) != 0 );
 	}
-	else {
-		ConditionStand(object().inventory().TotalWeight()/object().inventory().GetMaxWeight());
-	};
+	else
+	{
+		ConditionStand( cur_weight / base_weight );
+	}
 	
-	if( IsGameTypeSingle() ){
-
+	if( IsGameTypeSingle() )
+	{
 		float k_max_power = 1.0f;
-
 		if( true )
 		{
-			float weight = object().inventory().TotalWeight();
-
-			float base_w = object().MaxCarryWeight();
-/*
-			CCustomOutfit* outfit	= m_object->GetOutfit();
-			if(outfit)
-				base_w += outfit->m_additional_weight2;
-*/
-
-			k_max_power = 1.0f + _min(weight,base_w)/base_w + _max(0.0f, (weight-base_w)/10.0f);
-		}else
+			k_max_power = 1.0f + _min(cur_weight, base_weight) / base_weight
+				+ _max(0.0f, (cur_weight - base_weight) / 10.0f);
+		}
+		else
+		{
 			k_max_power = 1.0f;
-		
+		}
 		SetMaxPower		(GetMaxPower() - m_fPowerLeakSpeed*m_fDeltaTime*k_max_power);
 	}
 

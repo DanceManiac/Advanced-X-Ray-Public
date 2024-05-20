@@ -61,7 +61,8 @@ public:
 	virtual void					StartLights();
 	virtual void					StopLights();
 	void							ActivateArtefact					();
-	bool							CanBeActivated						()				{return m_bCanSpawnZone;};// does artefact can spawn anomaly zone
+	bool							CanBeActivated						() {return m_bCanSpawnZone;};// does artefact can spawn anomaly zone
+	float							AdditionalInventoryWeight			() const {return m_additional_weight;}
 
 	virtual void					PhDataUpdate						(dReal step);
 	virtual void					PhTune								(dReal step)	{};
@@ -72,6 +73,7 @@ public:
 	float 							m_fSatietyRestoreSpeed;
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
+	float							m_additional_weight;
 	CHitImmunity 					m_ArtefactHitImmunities;
 
 protected:

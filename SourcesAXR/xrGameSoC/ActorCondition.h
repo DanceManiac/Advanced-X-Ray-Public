@@ -53,6 +53,7 @@ public:
 			void		ConditionJump				(float weight);
 			void		ConditionWalk				(float weight, bool accel, bool sprint);
 			void		ConditionStand				(float weight);
+	IC		float		MaxWalkWeight				() const { return m_MaxWalkWeight; }
 			
 			float	xr_stdcall	GetAlcohol			()	{return m_fAlcohol;}
 			float	xr_stdcall	GetPsy				()	{return 1.0f-GetPsyHealth();}
