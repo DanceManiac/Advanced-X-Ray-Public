@@ -21,7 +21,11 @@ end
 function main_menu:InitControls()
 	self:Init(0,0,1024,768)			  
     local xml = CScriptXmlInit()
-    xml:ParseFile("ui_mm_main.xml")
+	if xml:is_widescreen() then
+		xml:ParseFile("ui_mm_main_16.xml")
+	else
+		xml:ParseFile("ui_mm_main.xml")
+	end
      
     xml:InitStatic("back_movie", self)
     xml:InitStatic("background", self)

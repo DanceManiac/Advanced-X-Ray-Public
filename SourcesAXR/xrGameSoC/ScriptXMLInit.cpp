@@ -214,6 +214,11 @@ void CScriptXmlInit::ParseShTexInfo(LPCSTR xml_file){
 	CUITextureMaster::ParseShTexInfo(xml_file, UI_PATH);
 }
 
+bool CScriptXmlInit::is_widescreen()
+{
+	return UI().is_widescreen();
+}
+
 CServerList* CScriptXmlInit::InitServerList(LPCSTR path, CUIWindow* parent){
 	CServerList* pWnd = xr_new<CServerList>();
 	pWnd->InitFromXml(m_xml, path);	
@@ -291,6 +296,7 @@ void CScriptXmlInit::script_register(lua_State *L){
 		.def(							constructor<>())
 		.def("ParseFile",				&CScriptXmlInit::ParseFile)
 		.def("ParseShTexInfo",			&CScriptXmlInit::ParseShTexInfo)
+		.def("is_widescreen",			&CScriptXmlInit::is_widescreen)
 		.def("InitWindow",				&CScriptXmlInit::InitWindow)
 		.def("InitFrame",				&CScriptXmlInit::InitFrame)
 		.def("InitFrameLine",			&CScriptXmlInit::InitFrameLine)

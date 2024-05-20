@@ -39,9 +39,10 @@ public:
 	CScriptXmlInit(const CScriptXmlInit& other);
 	CScriptXmlInit& operator= (const CScriptXmlInit& other);
 
-	void ParseFile		(LPCSTR xml_file);
-	void ParseShTexInfo	(LPCSTR xml_file);
-	void InitWindow		(LPCSTR path, int index, CUIWindow* pWnd);
+	void				ParseFile		(LPCSTR xml_file);
+	void				ParseShTexInfo	(LPCSTR xml_file);
+	bool				is_widescreen	();
+	void				InitWindow		(LPCSTR path, int index, CUIWindow* pWnd);
 	//void InitList		(LPCSTR path, int index, CUIListWnd* pWnd);
 
 	CUIListWnd*			InitList(LPCSTR path, CUIWindow* parent);

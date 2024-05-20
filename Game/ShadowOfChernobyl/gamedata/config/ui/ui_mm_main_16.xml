@@ -12,21 +12,21 @@
 		<texture>ui\ui_mm_fire</texture>
 	</fire_movie>
 
-	<shniaga_wnd x="590" y="417" width="392" height="280">
+	<shniaga_wnd x="590" y="419" width="392" height="280">
 		<buttons_region	x="110" y="0" width="164" height="280" always_show_scroll="false"/>
 		
-		<shniaga x="9" y="2" width="240" height="73" stretch="1">
+		<shniaga x="9" y="0" width="253" height="73" stretch="1">
 			<texture>ui_menu_move</texture>
-			<texture_offset x="70" y="0"/>
-			<magnifire x="66" y="22" width="248" height="36" stretch="1">
+			<texture_offset x="65" y="0"/>
+			<magnifire x="66" y="22" width="252" height="36" stretch="1">
 				<texture>ui\ui_magnifier</texture>
         <y_offset>0</y_offset>
 			</magnifire>
 			
-			<left_back_wheel x="14" y="0" width="57" height="73" stretch="1">
+			<left_back_wheel x="14" y="0" width="52" height="73" stretch="1">
 				<texture>ui_menu_move_l</texture>
 			</left_back_wheel>
-			<right_back_wheel x="310" y="0" width="57" height="73" stretch="1">
+			<right_back_wheel x="314" y="0" width="52" height="73" stretch="1">
 				<texture>ui_menu_move_r</texture>
 			</right_back_wheel>
 			<left_anim x="43" y="37" width="55" height="55" stretch="1" heading="1" alignment="c">

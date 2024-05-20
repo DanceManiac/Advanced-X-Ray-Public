@@ -16,15 +16,17 @@
 extern string_path g_last_saved_game;
 
 CUIMMShniaga::CUIMMShniaga(){
-	m_sound			= xr_new<CMMSound>();
+	m_sound				= xr_new<CMMSound>();
 
-	m_view			= xr_new<CUIScrollView>();	AttachChild(m_view);
-	m_shniaga		= xr_new<CUIStatic>();	AttachChild(m_shniaga);
-	m_magnifier		= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_magnifier);	m_magnifier->SetPPMode();
-	m_gratings[0]	= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_gratings[0]);
-	m_gratings[1]	= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_gratings[1]);
-	m_anims[0]		= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_anims[0]);
-	m_anims[1]		= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_anims[1]);
+	m_view				= xr_new<CUIScrollView>();	AttachChild(m_view);
+	m_shniaga			= xr_new<CUIStatic>();	AttachChild(m_shniaga);
+	m_magnifier			= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_magnifier);	m_magnifier->SetPPMode();
+	m_backs_wheel[0]	= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_backs_wheel[0]);
+	m_backs_wheel[1]	= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_backs_wheel[1]);
+	m_anims[0]			= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_anims[0]);
+	m_anims[1]			= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_anims[1]);
+	m_gratings[0]		= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_gratings[0]);
+	m_gratings[1]		= xr_new<CUIStatic>();	m_shniaga->AttachChild(m_gratings[1]);
 
 	m_mag_pos = 0;
 
@@ -65,14 +67,18 @@ void CUIMMShniaga::Init(CUIXml& xml_doc, LPCSTR path)
 	m_mag_pos				= m_magnifier->GetWndPos().x;
 	strconcat				(sizeof(_path),_path,path,":shniaga");
 	CUIXmlInit::InitStatic(xml_doc, _path,0,m_shniaga);
-	strconcat				(sizeof(_path),_path,path,":shniaga:left_anim");
-	CUIXmlInit::InitStatic(xml_doc, _path,0,m_anims[0]);
-	strconcat				(sizeof(_path),_path,path,":shniaga:right_anim");
-	CUIXmlInit::InitStatic(xml_doc, _path,0,m_anims[1]);
 	strconcat				(sizeof(_path),_path,path,":shniaga:left_grating");
 	CUIXmlInit::InitStatic(xml_doc, _path,0,m_gratings[0]);
 	strconcat				(sizeof(_path),_path,path,":shniaga:right_grating");
 	CUIXmlInit::InitStatic(xml_doc, _path,0,m_gratings[1]);
+	strconcat				(sizeof(_path),_path,path,":shniaga:left_back_wheel");
+	CUIXmlInit::InitStatic(xml_doc, _path,0, m_backs_wheel[0]);
+	strconcat				(sizeof(_path),_path,path,":shniaga:right_back_wheel");
+	CUIXmlInit::InitStatic(xml_doc, _path,0, m_backs_wheel[1]);
+	strconcat				(sizeof(_path),_path,path,":shniaga:left_anim");
+	CUIXmlInit::InitStatic(xml_doc, _path,0,m_anims[0]);
+	strconcat				(sizeof(_path),_path,path,":shniaga:right_anim");
+	CUIXmlInit::InitStatic(xml_doc, _path,0,m_anims[1]);
 	strconcat				(sizeof(_path),_path,path,":buttons_region");
 	CUIXmlInit::InitScrollView(xml_doc, _path,0,m_view);
 	strconcat				(sizeof(_path),_path,path,":shniaga:magnifire:y_offset");
@@ -107,7 +113,6 @@ void CUIMMShniaga::Init(CUIXml& xml_doc, LPCSTR path)
 	m_wheel_size[0]		= m_anims[0]->GetWndSize();
 	
 	m_wheel_size[1].set(m_wheel_size[0]);
-	m_wheel_size[1].x	/= 1.33f;
 }
 
 void CUIMMShniaga::OnDeviceReset()
@@ -260,7 +265,7 @@ void CUIMMShniaga::Update(){
 		m_anims[1]->SetHeading(a);
 
 		pos.y = this->pos(m_origin, m_destination, Device.dwTimeContinual - m_start_time);
-		m_shniaga->SetWndPos(pos);		
+		m_shniaga->SetWndPos(pos);
 	}
 	else
 		ProcessEvent(E_Stop);
