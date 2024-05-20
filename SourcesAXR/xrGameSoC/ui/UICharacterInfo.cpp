@@ -14,6 +14,7 @@
 
 #include "uistatic.h"
 #include "UIScrollView.h"
+#include "UIFrameWindow.h"
 
 
 #include "../alife_simulator.h"
@@ -62,6 +63,15 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, CUIXml*
 		pItem->Enable		(true);
 		AttachChild			(pItem);
 		pItem->SetAutoDelete(true);
+
+		if (xml_doc->NavigateToNode("mask_frame_window", 0))
+		{
+			CUIFrameWindow* pMask = NULL;
+			pMask = xr_new<CUIFrameWindow>();
+			pMask->SetAutoDelete(true);
+			xml_init.InitFrameWindow(*xml_doc, "mask_frame_window", 0, pMask);
+			pItem->SetMask(pMask);
+		}
 	}
 
 	if(xml_doc->NavigateToNode("name_static", 0)){
@@ -204,6 +214,7 @@ void CUICharacterInfo::InitCharacter(u16 id)
 			pItem->SetWidth					(pUIBio->GetDesiredChildWidth());
 			pItem->SetText					(*(chInfo.Bio()));
 			pItem->AdjustHeightToText		();
+			pItem->SetTextComplexMode		(true);
 			pUIBio->AddWindow				(pItem, true);
 		}
 	}
@@ -275,10 +286,16 @@ void CUICharacterInfo::Update()
 		}else
 			UpdateRelation();
 
-		if(m_icons[eUIIcon]){
-			CSE_ALifeCreatureAbstract*		pCreature = smart_cast<CSE_ALifeCreatureAbstract*>(T);
-			if(pCreature && !pCreature->g_Alive())
-				m_icons[eUIIcon]->SetColor	(color_argb(255,255,160,160));
+		if(m_icons[eUIIcon])
+		{
+			CSE_ALifeCreatureAbstract* pCreature = smart_cast<CSE_ALifeCreatureAbstract*>(T);
+			if (pCreature)
+			{
+				if (!pCreature->g_Alive())
+					m_icons[eUIIcon]->SetColor(color_argb(255, 255, 160, 160));
+				else
+					m_icons[eUIIcon]->SetColor(color_argb(255, 255, 255, 255));
+			}
 		}
 	}
 }

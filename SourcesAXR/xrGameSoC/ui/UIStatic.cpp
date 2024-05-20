@@ -33,7 +33,7 @@ void lanim_cont_xf::set_defaults()
 	m_origSize.set			(0,0);
 }
 
-CUIStatic:: CUIStatic()
+CUIStatic::CUIStatic()
 {
 	m_bTextureEnable		= true;
 	m_bClipper				= false;
@@ -41,7 +41,8 @@ CUIStatic:: CUIStatic()
 
 	m_TextureOffset.set		(0.0f,0.0f);
 	m_TextOffset.set		(0.0f,0.0f);
-
+	
+	m_pMask					= NULL;
 	m_ClipRect.set			(-1,-1,-1,-1);
 
 	m_bCursorOverWindow		= false;
@@ -498,6 +499,19 @@ Frect CUIStatic::GetSelfClipRect()
 		r.set(0.0f, 0.0f, UI_BASE_WIDTH, UI_BASE_HEIGHT);
 
 	return r;
+}
+
+void CUIStatic::SetMask(CUIFrameWindow *pMask)
+{
+	DetachChild(m_pMask);
+	m_pMask = pMask;
+	if (m_pMask)
+	{
+		AttachChild			(m_pMask);
+		Frect r				= GetWndRect();
+		m_pMask->SetWidth	(r.right - r.left);
+		m_pMask->SetHeight	(r.bottom - r.top);
+	}
 }
 
 

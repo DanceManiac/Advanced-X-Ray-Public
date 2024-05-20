@@ -63,6 +63,7 @@ public:
 
 			void		SetHeadingPivot				(const Fvector2& p, const Fvector2& offset, bool fixedLT)				{m_UIStaticItem.SetHeadingPivot(p,offset,fixedLT);}
 			void		ResetHeadingPivot			()				{m_UIStaticItem.ResetHeadingPivot();}
+			void		SetMask						(CUIFrameWindow *pMask);
 	virtual void		SetTextureOffset			(float x, float y)			{ m_TextureOffset.set(x, y); }
 			Fvector2	GetTextureOffeset			() const					{ return m_TextureOffset; }
 			void		TextureOn					()							{ m_bTextureEnable = true; }
@@ -182,7 +183,9 @@ protected:
 	bool			m_bHeading;
 	bool			m_bConstHeading;
 	float			m_fHeading;
-
+	
+    // Для вывода текстуры с обрезанием по маске используем CUIFrameWindow
+	CUIFrameWindow*	m_pMask;
 	Fvector2		m_TextureOffset;
 
 	Frect	m_ClipRect;
