@@ -201,9 +201,8 @@ void CUIDiaryWnd::LoadJournalTab			(ARTICLE_DATA::EArticleType _type)
 				a = xr_new<CEncyclopediaArticle>();
 				a->Load(it->article_id);
 
-				bool bReaded = false;
 				CreateTreeBranch(a->data()->group, a->data()->name, m_SrcListWnd, m_ArticlesDB.size()-1, 
-					m_pTreeRootFont, m_uTreeRootColor, m_pTreeItemFont, m_uTreeItemColor, bReaded);
+					m_pTreeRootFont, m_uTreeRootColor, m_pTreeItemFont, m_uTreeItemColor, it->readed);
 			}
 		}
 	}
@@ -250,6 +249,24 @@ void CUIDiaryWnd::OnSrcListItemClicked	(CUIWindow* w,void* p)
 		article_info->Init			("encyclopedia_item.xml","encyclopedia_wnd:objective_item");
 		article_info->SetArticle	(m_ArticlesDB[pSelItem->GetValue()]);
 		m_DescrView->AddWindow		(article_info, true);
+
+		// Пометим как прочитанную
+		if (!pSelItem->IsArticleReaded())
+		{
+			if (Actor()->encyclopedia_registry->registry().objects_ptr())
+			{
+				for (ARTICLE_VECTOR::iterator it = Actor()->encyclopedia_registry->registry().objects().begin();
+					it != Actor()->encyclopedia_registry->registry().objects().end(); it++)
+				{
+					if (ARTICLE_DATA::eJournalArticle == it->article_type &&
+						m_ArticlesDB[pSelItem->GetValue()]->Id() == it->article_id)
+					{
+						it->readed = true;
+						break;
+					}
+				}
+			}
+		}
 	}
 }
 
