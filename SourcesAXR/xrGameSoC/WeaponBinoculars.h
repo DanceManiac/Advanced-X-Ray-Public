@@ -12,8 +12,6 @@ class CWeaponBinoculars: public CWeaponCustomPistol
 private:
 	typedef CWeaponCustomPistol inherited;
 protected:
-	HUD_SOUND		sndZoomIn;
-	HUD_SOUND		sndZoomOut;
 	float			m_fRTZoomFactor; //run-time zoom factor
 	bool			m_bVision;
 public:

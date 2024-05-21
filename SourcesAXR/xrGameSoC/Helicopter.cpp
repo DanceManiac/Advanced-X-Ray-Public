@@ -31,8 +31,6 @@ CHelicopter::CHelicopter()
 
 CHelicopter::~CHelicopter()
 {
-	HUD_SOUND::DestroySound		(m_sndShot);
-	HUD_SOUND::DestroySound		(m_sndShotRocket);
 }
 
 void CHelicopter::setState(CHelicopter::EHeliState s)
@@ -90,8 +88,8 @@ void CHelicopter::Load(LPCSTR section)
 
 	//weapons
 	CShootingObject::Load				(section);
-	HUD_SOUND::LoadSound				(section,"snd_shoot", m_sndShot, SOUND_TYPE_WEAPON_SHOOTING);
-	HUD_SOUND::LoadSound				(section,"snd_shoot_rocket", m_sndShotRocket, SOUND_TYPE_WEAPON_SHOOTING);
+	m_layered_sounds.LoadSound			(section,"snd_shoot", "m_sndShot", false, SOUND_TYPE_WEAPON_SHOOTING);
+	m_layered_sounds.LoadSound			(section,"snd_shoot_rocket", "m_sndShotRocket", false, SOUND_TYPE_WEAPON_SHOOTING);
 	CRocketLauncher::Load				(section);
 
 	UseFireTrail						(m_enemy.bUseFireTrail);//temp force reloar disp params

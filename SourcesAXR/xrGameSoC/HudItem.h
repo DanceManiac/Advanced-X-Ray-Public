@@ -13,6 +13,7 @@ class CInventoryItem;
 
 #include "actor_defs.h"
 #include "weaponHUD.h"
+#include "HudSound.h"
 
 class CHudItem {
 protected: //чтоб нельзя было вызвать на прямую
@@ -27,7 +28,7 @@ public:
 	virtual CHudItem*cast_hud_item		()	 { return this; }
 
 
-	virtual void	PlaySound			(HUD_SOUND& snd, const Fvector& position);
+	virtual void	PlaySound			(LPCSTR alias, const Fvector& position);
 										
 	///////////////////////////////////////////////
 	// общие функции HUD
@@ -118,6 +119,8 @@ private:
 	bool					m_bInertionAllow;
 protected:
 	u32						m_animation_slot;
+
+	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 public:
 	IC		u32				animation_slot			()	{	return m_animation_slot;}
 

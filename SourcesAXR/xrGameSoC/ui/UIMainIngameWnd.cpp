@@ -104,7 +104,6 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 	DestroyFlashingIcons		();
 	xr_delete					(UIZoneMap);
 	xr_delete					(m_artefactPanel);
-	HUD_SOUND::DestroySound		(m_contactSnd);
 	xr_delete					(g_MissileForceShape);
 }
 
@@ -266,7 +265,7 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitStatic						(uiXml, "disk_io", 0, &UIStaticDiskIO);
 
 
-	HUD_SOUND::LoadSound					("maingame_ui", "snd_new_contact"		, m_contactSnd		, SOUND_TYPE_IDLE);
+	HUD_SOUND_ITEM::LoadSound				("maingame_ui", "snd_new_contact", m_contactSnd, SOUND_TYPE_IDLE);
 }
 
 float UIStaticDiskIO_start_time = 0.0f;
@@ -1069,7 +1068,7 @@ void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 	UIPdaOnline.ResetClrAnimation	();
 
 	if(b_snd)
-		HUD_SOUND::PlaySound	(m_contactSnd, Fvector().set(0,0,0), 0, true );
+		HUD_SOUND_ITEM::PlaySound	(m_contactSnd, Fvector().set(0, 0, 0), 0, true);
 
 }
 

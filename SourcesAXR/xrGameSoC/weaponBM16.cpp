@@ -4,7 +4,6 @@
 
 CWeaponBM16::~CWeaponBM16()
 {
-	HUD_SOUND::DestroySound(m_sndReload1);
 }
 
 void CWeaponBM16::Load	(LPCSTR section)
@@ -19,14 +18,14 @@ void CWeaponBM16::Load	(LPCSTR section)
 	animGet	(mhud_zoomed_idle2,		pSettings->r_string(*hud_sect,"anim_zoomedidle_2"));
 
 
-	HUD_SOUND::LoadSound(section, "snd_reload_1", m_sndReload1, m_eSoundShot);
+	m_sounds.LoadSound(section, "snd_reload_1", "m_sndReload1", false, m_eSoundShot);
 
 }
 
 void CWeaponBM16::PlayReloadSound()
 {
-	if(m_magazine.size()==1)	PlaySound	(m_sndReload1,get_LastFP());
-	else						PlaySound	(sndReload,get_LastFP());
+	if(m_magazine.size()==1)	PlaySound	("m_sndReload1", get_LastFP());
+	else						PlaySound	("sndReload", get_LastFP());
 }
 
 void CWeaponBM16::PlayAnimShoot()

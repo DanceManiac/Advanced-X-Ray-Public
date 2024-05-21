@@ -19,20 +19,16 @@ private:
 	typedef CWeapon inherited;
 protected:
 	// Media :: sounds
-	HUD_SOUND		sndShow;
-	HUD_SOUND		sndHide;
-	HUD_SOUND		sndShot;
-	HUD_SOUND		sndEmptyClick;
-	HUD_SOUND		sndReload;
+
 	//звук текущего выстрела
-	HUD_SOUND*		m_pSndShotCurrent;
+	shared_str		m_pSndShotCurrent;
 
 	virtual void	StopHUDSounds		();
 
 	//дополнительная информация о глушителе
 	LPCSTR			m_sSilencerFlameParticles;
 	LPCSTR			m_sSilencerSmokeParticles;
-	HUD_SOUND		sndSilencerShot;
+	HUD_SOUND_ITEM	sndSilencerShot;
 
 	ESoundTypes		m_eSoundShow;
 	ESoundTypes		m_eSoundHide;

@@ -44,7 +44,6 @@ CMissile::CMissile(void)
 
 CMissile::~CMissile(void) 
 {
-	HUD_SOUND::DestroySound(sndPlaying);
 }
 
 void CMissile::reinit		()
@@ -87,7 +86,7 @@ void CMissile::Load(LPCSTR section)
 	m_sAnimThrowEnd		= pSettings->r_string(*hud_sect, "anim_throw_end");
 
 	if(pSettings->line_exist(section,"snd_playing"))
-		HUD_SOUND::LoadSound(section,"snd_playing",sndPlaying);
+		m_sounds.LoadSound(section, "snd_playing", "sndPlaying", false, m_eSoundPlaying);
 
 	m_ef_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));
 }
@@ -274,7 +273,7 @@ void CMissile::State(u32 state)
 		} break;
 	case MS_PLAYING:
 		{
-			PlaySound(sndPlaying,Position());
+			PlaySound("sndPlaying", Position());
 			m_pHUD->animPlay(m_pHUD->animGet(*m_sAnimPlaying), TRUE, this, GetState());
 		} break;
 	}

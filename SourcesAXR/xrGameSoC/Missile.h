@@ -1,6 +1,7 @@
 #pragma once
 #include "hud_item_object.h"
 #include "HudSound.h"
+#include "ai_sounds.h"
 
 #define MS_HIDDEN	0
 #define MS_SHOWING	1
@@ -109,7 +110,7 @@ protected:
 	shared_str				m_sAnimThrowEnd;
 
 	//звук анимации "играния"
-	HUD_SOUND				sndPlaying;
+	ESoundTypes				m_eSoundPlaying;
 
 protected:
 			void			setup_throw_params		();

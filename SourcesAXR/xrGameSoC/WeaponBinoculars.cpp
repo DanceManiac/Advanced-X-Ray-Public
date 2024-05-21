@@ -16,8 +16,6 @@ CWeaponBinoculars::CWeaponBinoculars() : CWeaponCustomPistol("BINOCULARS")
 
 CWeaponBinoculars::~CWeaponBinoculars()
 {
-	HUD_SOUND::DestroySound	(sndZoomIn);
-	HUD_SOUND::DestroySound	(sndZoomOut);
 	xr_delete				(m_binoc_vision);
 }
 
@@ -26,8 +24,8 @@ void CWeaponBinoculars::Load	(LPCSTR section)
 	inherited::Load(section);
 
 	// Sounds
-	HUD_SOUND::LoadSound(section, "snd_zoomin",  sndZoomIn,		SOUND_TYPE_ITEM_USING);
-	HUD_SOUND::LoadSound(section, "snd_zoomout", sndZoomOut,	SOUND_TYPE_ITEM_USING);
+	m_sounds.LoadSound(section, "snd_zoomin",  "sndZoomIn",		SOUND_TYPE_ITEM_USING);
+	m_sounds.LoadSound(section, "snd_zoomout", "sndZoomOut",	SOUND_TYPE_ITEM_USING);
 	m_bVision = !!pSettings->r_bool(section,"vision_present");
 }
 
@@ -47,9 +45,9 @@ void CWeaponBinoculars::OnZoomIn		()
 {
 	if(H_Parent() && !IsZoomed())
 	{
-		HUD_SOUND::StopSound(sndZoomOut);
+		m_sounds.StopSound("sndZoomOut");
 		bool b_hud_mode = (Level().CurrentEntity() == H_Parent());
-		HUD_SOUND::PlaySound(sndZoomIn, H_Parent()->Position(), H_Parent(), b_hud_mode);
+		m_sounds.PlaySound("sndZoomIn", H_Parent()->Position(), H_Parent(), b_hud_mode);
 		if(m_bVision && !m_binoc_vision) 
 		{
 			//.VERIFY			(!m_binoc_vision);
@@ -66,9 +64,9 @@ void CWeaponBinoculars::OnZoomOut		()
 {
 	if(H_Parent() && IsZoomed() && !IsRotatingToZoom())
 	{
-		HUD_SOUND::StopSound(sndZoomIn);
+		m_sounds.StopSound("sndZoomIn");
 		bool b_hud_mode = (Level().CurrentEntity() == H_Parent());	
-		HUD_SOUND::PlaySound(sndZoomOut, H_Parent()->Position(), H_Parent(), b_hud_mode);
+		m_sounds.PlaySound("sndZoomOut", H_Parent()->Position(), H_Parent(), b_hud_mode);
 		VERIFY			(m_binoc_vision);
 		xr_delete		(m_binoc_vision);
 	

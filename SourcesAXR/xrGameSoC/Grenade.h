@@ -53,7 +53,6 @@ protected:
 	ALife::_TIME_ID			m_dwGrenadeRemoveTime;
 	ALife::_TIME_ID			m_dwGrenadeIndependencyTime;
 protected:
-	HUD_SOUND				sndCheckout;
 	ESoundTypes				m_eSoundCheckout;
 private:
 	float					m_grenade_detonation_threshold_hit;

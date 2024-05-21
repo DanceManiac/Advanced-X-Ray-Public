@@ -28,17 +28,10 @@ CWeaponMagazinedWGrenade::CWeaponMagazinedWGrenade(LPCSTR name,ESoundTypes eSoun
 CWeaponMagazinedWGrenade::~CWeaponMagazinedWGrenade(void)
 {
 	// sounds
-	HUD_SOUND::DestroySound(sndShotG);
-	HUD_SOUND::DestroySound(sndReloadG);
-	HUD_SOUND::DestroySound(sndSwitch);
 }
 
 void CWeaponMagazinedWGrenade::StopHUDSounds		()
 {
-	HUD_SOUND::StopSound(sndShotG);
-	HUD_SOUND::StopSound(sndReloadG);
-	HUD_SOUND::StopSound(sndSwitch);
-
 	inherited::StopHUDSounds();
 }
 
@@ -49,9 +42,9 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	
 	
 	//// Sounds
-	HUD_SOUND::LoadSound(section,"snd_shoot_grenade"	, sndShotG		, m_eSoundShot);
-	HUD_SOUND::LoadSound(section,"snd_reload_grenade"	, sndReloadG	, m_eSoundReload);
-	HUD_SOUND::LoadSound(section,"snd_switch"			, sndSwitch		, m_eSoundReload);
+	m_sounds.LoadSound(section,"snd_shoot_grenade"	, "sndShotG",	false, m_eSoundShot);
+	m_sounds.LoadSound(section,"snd_reload_grenade"	, "sndReloadG", false, m_eSoundReload);
+	m_sounds.LoadSound(section,"snd_switch"			, "sndSwitch",	false, m_eSoundReload);
 	
 
 	m_sFlameParticles2 = pSettings->r_string(section, "grenade_flame_particles");
@@ -165,7 +158,7 @@ void CWeaponMagazinedWGrenade::switch2_Reload()
 	VERIFY(GetState()==eReload);
 	if(m_bGrenadeMode) 
 	{
-		PlaySound(sndReloadG,get_LastFP2());
+		PlaySound("sndReloadG", get_LastFP2());
 
 		m_pHUD->animPlay(random_anim(mhud_reload_g),FALSE,this,GetState());
 		m_bPending = true;
@@ -178,7 +171,7 @@ void CWeaponMagazinedWGrenade::OnShot		()
 {
 	if(m_bGrenadeMode)
 	{
-		PlaySound(sndShotG, get_LastFP2());
+		PlaySound("sndShotG", get_LastFP2());
 		
 		AddShotEffector		();
 		
@@ -204,7 +197,7 @@ bool CWeaponMagazinedWGrenade::SwitchMode()
 
 	PerformSwitchGL			();
 	
-	PlaySound				(sndSwitch,get_LastFP());
+	PlaySound				("sndSwitch", get_LastFP());
 
 	PlayAnimModeSwitch		();
 
@@ -695,9 +688,9 @@ void CWeaponMagazinedWGrenade::UpdateSounds	()
 {
 	inherited::UpdateSounds			();
 
-	if (sndShotG.playing			())	sndShotG.set_position		(get_LastFP());
-	if (sndReloadG.playing			())	sndReloadG.set_position		(get_LastFP());
-	if (sndSwitch.playing			())	sndSwitch.set_position		(get_LastFP());
+	m_sounds.SetPosition("sndShotG", get_LastFP());
+	m_sounds.SetPosition("sndReloadG", get_LastFP());
+	m_sounds.SetPosition("sndSwitch", get_LastFP());
 }
 
 void CWeaponMagazinedWGrenade::UpdateGrenadeVisibility(bool visibility)

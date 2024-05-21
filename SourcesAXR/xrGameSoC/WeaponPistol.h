@@ -29,7 +29,7 @@ public:
 protected:	
 	virtual bool	AllowFireWhileWorking() {return true;}
 
-	HUD_SOUND			sndClose;
+	HUD_SOUND_ITEM		sndClose;
 	ESoundTypes			m_eSoundClose;
 	struct WWPMotions{
 		MotionSVec		mhud_show_empty;

@@ -15,8 +15,6 @@ protected:
 	MotionSVec			mhud_attack_e;
 	MotionSVec			mhud_attack2_e;
 
-	HUD_SOUND			m_sndShot;
-
 	bool				m_attackStart;
 
 protected:

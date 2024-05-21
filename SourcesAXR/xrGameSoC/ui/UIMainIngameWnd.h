@@ -122,7 +122,7 @@ public:
 	void				SetFlashIconState_				(EFlashingIcons type, bool enable);
 
 	void				AnimateContacts					(bool b_snd);
-	HUD_SOUND			m_contactSnd;
+	HUD_SOUND_ITEM		m_contactSnd;
 
 	void				ReceiveNews						(GAME_NEWS_DATA* news);
 	

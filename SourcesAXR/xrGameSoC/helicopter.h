@@ -157,8 +157,8 @@ public:
 	u32								m_time_between_rocket_attack;
 	bool							m_syncronize_rocket;
 	float							m_barrel_dir_tolerance;
-	HUD_SOUND						m_sndShot;
-	HUD_SOUND						m_sndShotRocket;
+
+	HUD_SOUND_COLLECTION_LAYERED	m_layered_sounds;
 
 	Fvector							m_fire_dir,m_fire_pos;
 

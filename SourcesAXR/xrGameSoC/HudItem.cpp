@@ -73,9 +73,9 @@ void CHudItem::net_Destroy()
 	m_dwStateTime		= 0;
 }
 
-void CHudItem::PlaySound	(HUD_SOUND& hud_snd, const Fvector& position)
+void CHudItem::PlaySound(LPCSTR alias, const Fvector& position)
 {
-	HUD_SOUND::PlaySound	(hud_snd, position, object().H_Root(), !!GetHUDmode());
+	m_sounds.PlaySound(alias, position, object().H_Root(), !!GetHUDmode());
 }
 
 BOOL  CHudItem::net_Spawn	(CSE_Abstract* DC) 
@@ -276,7 +276,7 @@ void CHudItem::OnH_B_Independent	(bool just_before_destroy)
 	if (m_pHUD)
 		m_pHUD->Visible		(false);
 	
-	StopHUDSounds			();
+	m_sounds.StopAllSounds	();
 
 	UpdateXForm				();
 }

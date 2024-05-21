@@ -65,5 +65,5 @@ private:
 	float					m_barrel_speed;
 	Fvector					m_destEnemyDir;
 	bool					m_allow_fire;
-	HUD_SOUND				m_sndShot;
+	HUD_SOUND_ITEM			m_sndShot;
 };

@@ -65,11 +65,6 @@ public:
 	virtual void	PlayAnimIdle();
 	virtual void	PlayAnimShoot();
 	virtual void	PlayAnimModeSwitch();
-	
-	HUD_SOUND			sndShotG;
-	HUD_SOUND			sndReloadG;
-	HUD_SOUND			sndSwitch;
-
 
 	//анимации с подключенным подствольником
 	//(режим обычной стрельбы)

@@ -80,7 +80,7 @@ CCarWeapon::~CCarWeapon()
 void CCarWeapon::Load(LPCSTR section)
 {
 	inheritedShooting::Load(section);
-	HUD_SOUND::LoadSound(section,"snd_shoot", m_sndShot, SOUND_TYPE_WEAPON_SHOOTING);
+	HUD_SOUND_ITEM::LoadSound(section, "snd_shoot", m_sndShot, SOUND_TYPE_WEAPON_SHOOTING);
 	m_Ammo->Load(pSettings->r_string(section, "ammo_class"), 0);
 }
 
@@ -235,7 +235,7 @@ void CCarWeapon::OnShot()
 	StartSmokeParticles		(m_fire_pos, zero_vel);
 //	OnShellDrop				(m_fire_pos, zero_vel);
 
-	HUD_SOUND::PlaySound	(m_sndShot, m_fire_pos, m_object, false);
+	HUD_SOUND_ITEM::PlaySound(m_sndShot, m_fire_pos, m_object, false);
 }
 
 void CCarWeapon::Action				(int id, u32 flags)

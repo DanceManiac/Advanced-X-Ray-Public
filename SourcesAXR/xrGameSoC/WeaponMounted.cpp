@@ -55,7 +55,7 @@ void	CWeaponMounted::Load(LPCSTR section)
 	inherited::Load(section);
 	CShootingObject::Load	(section);
 
-	HUD_SOUND::LoadSound(section,"snd_shoot", sndShot, SOUND_TYPE_WEAPON_SHOOTING);
+	m_sounds.LoadSound(section,"snd_shoot", "sndShot", false, SOUND_TYPE_WEAPON_SHOOTING);
 
 	//тип используемых патронов
 	m_sAmmoType = pSettings->r_string(section, "ammo_class");
@@ -320,7 +320,7 @@ void CWeaponMounted::OnShot		()
 	OnShellDrop(fire_pos, zero_vel);
 
 	bool b_hud_mode = (Level().CurrentEntity() == smart_cast<CObject*>(Owner()));
-	HUD_SOUND::PlaySound(sndShot, fire_pos, Owner(), b_hud_mode);
+	m_sounds.PlaySound("sndShot", fire_pos, Owner(), b_hud_mode);
 
 	//добавить эффектор стрельбы
 	AddShotEffector		();

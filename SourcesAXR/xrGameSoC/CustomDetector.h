@@ -12,7 +12,7 @@ struct ZONE_TYPE
 	float		max_freq;
 	//звук реакции детектора на конкретную зону
 //	ref_sound	detect_snd;
-	HUD_SOUND	detect_snds;
+	HUD_SOUND_ITEM	detect_snds;
 
 	shared_str	zone_map_location;
 };

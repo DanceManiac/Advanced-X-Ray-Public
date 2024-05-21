@@ -42,7 +42,6 @@ protected:
 	bool			HaveCartridgeInInventory(u8 cnt);
 	virtual u8		AddCartridge		(u8 cnt);
 
-	HUD_SOUND		sndShotBoth;
 	ESoundTypes		m_eSoundShotBoth;
 
 	MotionSVec		mhud_shot_boths;
@@ -50,9 +49,7 @@ protected:
 	ESoundTypes		m_eSoundOpen;
 	ESoundTypes		m_eSoundAddCartridge;
 	ESoundTypes		m_eSoundClose;
-	HUD_SOUND		m_sndOpen;
-	HUD_SOUND		m_sndAddCartridge;
-	HUD_SOUND		m_sndClose;
+	
 	MotionSVec		mhud_open;
 	MotionSVec		mhud_add_cartridge;
 	MotionSVec		mhud_close;
