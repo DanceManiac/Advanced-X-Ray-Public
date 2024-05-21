@@ -345,8 +345,7 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 
 	m_prop_flags.set(e_16x9_mode_now,is_16x9);
 
-
-	//--#SM+# Begin--
+	//Загрузка параметров инерции --#SM+# Begin--
 	m_inertion_params.m_pitch_offset_r = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_right", PITCH_OFFSET_R);
 	m_inertion_params.m_pitch_offset_n = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_up", PITCH_OFFSET_N);
 	m_inertion_params.m_pitch_offset_d = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_forward", PITCH_OFFSET_D);
@@ -372,7 +371,7 @@ attachable_hud_item::~attachable_hud_item()
 {
 	IRenderVisual* v			= m_model->dcast_RenderVisual();
 	::Render->model_Delete		(v);
-	m_model						= NULL;
+	m_model						= nullptr;
 }
 
 void attachable_hud_item::load(const shared_str& sect_name)
@@ -388,7 +387,7 @@ void attachable_hud_item::load(const shared_str& sect_name)
 
 	::Render->hud_loading = false;
 
-	m_attach_place_idx			= pSettings->r_u16(sect_name, "attach_place_idx");
+	m_attach_place_idx			= READ_IF_EXISTS(pSettings, r_u16, sect_name, "attach_place_idx", 0);
 	m_measures.load				(sect_name, m_model);
 }
 
@@ -403,11 +402,11 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 	R_ASSERT2				(anm, make_string("model [%s] has no motion alias defined [%s]", m_sect_name.c_str(), anim_name_r).c_str());
 	R_ASSERT2				(anm->m_animations.size(), make_string("model [%s] has no motion defined in motion_alias [%s]", pSettings->r_string(m_sect_name, "item_visual"), anim_name_r).c_str());
 	
-	if (speed == 1.f)
-		speed = anm->m_anim_speed != 0 ? anm->m_anim_speed : CalcMotionSpeed(anm_name_b);
-
 	rnd_idx					= (u8)Random.randI(anm->m_animations.size()) ;
 	const motion_descr& M	= anm->m_animations[ rnd_idx ];
+
+	if (speed == 1.f)
+		speed = anm->m_anim_speed != 0 ? anm->m_anim_speed : CalcMotionSpeed(anm_name_b);
 
 	u32 ret					= g_player_hud->anim_play(m_attach_place_idx, M.mid, bMixIn, md, speed);
 	
@@ -428,7 +427,7 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 			if(bDebug)
 				Msg						("playing item animation [%s]",item_anm_name.c_str());
 		
-		R_ASSERT3(M2.valid(),"model has no motion [idle] ", pSettings->r_string(m_sect_name, "item_visual"));
+		R_ASSERT3(M2.valid(), make_string("model has no motion [idle], section %s", m_sect_name.c_str()).c_str(), pSettings->r_string(m_sect_name, "item_visual"));
 
 		u16 root_id						= m_model->LL_GetBoneRoot();
 		CBoneInstance& root_binst		= m_model->LL_GetBoneInstance(root_id);
@@ -467,11 +466,11 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 			if (ec)
 				current_actor->Cameras().RemoveCamEffector(eCEWeaponAction);
 
-			CAnimatorCamEffector* e = new CAnimatorCamEffector();
-			e->SetType(eCEWeaponAction);
-			e->SetHudAffect(false);
-			e->SetCyclic(false);
-			e->Start(anm_name);
+			CAnimatorCamEffector* e		= xr_new<CAnimatorCamEffector>();
+			e->SetType					(eCEWeaponAction);
+			e->SetHudAffect				(false);
+			e->SetCyclic				(false);
+			e->Start					(anm_name);
 			current_actor->Cameras().AddCamEffector(e);
 		}
 	}
@@ -481,56 +480,63 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 
 player_hud::player_hud()
 {
-	m_model					= NULL;
-	m_model_2				= NULL;
-	m_attached_items[0]		= NULL;
-	m_attached_items[1]		= NULL;
+	m_model					= nullptr;
+	m_model_2				= nullptr;
+	m_attached_items[0]		= nullptr;
+	m_attached_items[1]		= nullptr;
 	m_transform.identity	();
 	m_transform_2.identity	();
 	script_anim_part = u8(-1);
 	script_anim_offset_factor = 0.f;
-	script_anim_item_model = nullptr;
+	script_anim_item_model	= nullptr;
 	m_item_pos.identity();
 	reset_thumb(true);
 
-	m_current_motion_def	= NULL;
-
-	m_movement_layers.reserve(move_anms_end);
-
-	for (int i = 0; i < move_anms_end; i++)
+	m_current_motion_def	= nullptr;
+	
+	if (pSettings->section_exist("hud_movement_layers"))
 	{
-		movement_layer* anm = xr_new<movement_layer>();
+		m_movement_layers.reserve(move_anms_end);
 
-		char temp[20];
-		string512 tmp;
-		strconcat(sizeof(temp), temp, "movement_layer_", std::to_string(i).c_str());
-		R_ASSERT2(pAdvancedSettings->line_exist("hud_movement_layers", temp), make_string("Missing definition for [hud_movement_layers] %s", temp));
-		LPCSTR layer_def = pAdvancedSettings->r_string("hud_movement_layers", temp);
-		R_ASSERT2(_GetItemCount(layer_def) > 0, make_string("Wrong definition for [hud_movement_layers] %s", temp));
+		for (int i = 0; i < move_anms_end; i++)
+		{
+			movement_layer* anm = xr_new<movement_layer>();
 
-		_GetItem(layer_def, 0, tmp);
-		anm->Load(tmp);
-		_GetItem(layer_def, 1, tmp);
-		anm->anm->Speed() = (atof(tmp) ? atof(tmp) : 1.f);
-		_GetItem(layer_def, 2, tmp);
-		anm->m_power = (atof(tmp) ? atof(tmp) : 1.f);
-		m_movement_layers.push_back(anm);
+			char temp[20];
+			string512 tmp;
+			strconcat(sizeof(temp), temp, "movement_layer_", std::to_string(i).c_str());
+			R_ASSERT2(pAdvancedSettings->line_exist("hud_movement_layers", temp), make_string("Missing definition for [hud_movement_layers] %s", temp));
+			LPCSTR layer_def = pAdvancedSettings->r_string("hud_movement_layers", temp);
+			R_ASSERT2(_GetItemCount(layer_def) > 0, make_string("Wrong definition for [hud_movement_layers] %s", temp));
+
+			_GetItem(layer_def, 0, tmp);
+			anm->Load(tmp);
+			_GetItem(layer_def, 1, tmp);
+			anm->anm->Speed() = (atof(tmp) ? atof(tmp) : 1.f);
+			_GetItem(layer_def, 2, tmp);
+			anm->m_power = (atof(tmp) ? atof(tmp) : 1.f);
+			m_movement_layers.push_back(anm);
+		}
 	}
 }
 
-
 player_hud::~player_hud()
 {
-	IRenderVisual* v			= m_model->dcast_RenderVisual();
-	::Render->model_Delete		(v);
-	m_model						= NULL;
+	if (m_model) 
+	{
+		IRenderVisual* v			= m_model->dcast_RenderVisual();
+		::Render->model_Delete		(v);
+		m_model						= nullptr;
+	}
+	if (m_model_2) 
+	{
+		IRenderVisual* v2			= m_model_2->dcast_RenderVisual();
+		::Render->model_Delete		(v2);
+		m_model_2					= nullptr;
+	}
 
-	v = m_model_2->dcast_RenderVisual();
-	::Render->model_Delete(v);
-	m_model_2 = NULL;
-
-	xr_vector<attachable_hud_item*>::iterator it	= m_pool.begin();
-	xr_vector<attachable_hud_item*>::iterator it_e	= m_pool.end();
+	auto it = m_pool.begin();
+	auto it_e = m_pool.end();
 	for(;it!=it_e;++it)
 	{
 		attachable_hud_item* a	= *it;
@@ -648,17 +654,19 @@ void player_hud::Thumb02Callback(CBoneInstance* B)
 void player_hud::load(const shared_str& player_hud_sect)
 {
 	if(player_hud_sect ==m_sect_name)	return;
-	bool b_reload = (m_model!=NULL);
+	bool b_reload = (m_model != nullptr || m_model_2 != nullptr);
 	if(m_model)
 	{
 		IRenderVisual* v			= m_model->dcast_RenderVisual();
 		::Render->model_Delete		(v);
+		m_model = nullptr;
 	}
 
 	if (m_model_2)
 	{
-		IRenderVisual* v = m_model_2->dcast_RenderVisual();
-		::Render->model_Delete(v);
+		IRenderVisual* v			= m_model_2->dcast_RenderVisual();
+		::Render->model_Delete		(v);
+		m_model_2 = nullptr;
 	}
 
 	m_sect_name = player_hud_sect;
@@ -792,7 +800,7 @@ u32 player_hud::motion_length(const shared_str& anim_name, const shared_str& hud
 	float speed						= CalcMotionSpeed(anim_name);
 	attachable_hud_item* pi			= create_hud_item(hud_name);
 	player_hud_motion*	pm			= pi->m_hand_motions.find_motion(anim_name);
-	if(!pm)
+	if(!pm || !pm->m_animations.size())
 		return						100; // ms TEMPORARY
 	R_ASSERT2						(pm, 
 		make_string	("hudItem model [%s] has no motion with alias [%s]", hud_name.c_str(), anim_name.c_str() ).c_str() 
@@ -811,6 +819,9 @@ u32 player_hud::motion_length(const MotionID& M, const CMotionDef*& md, float sp
 	}
 	return					0;
 }
+
+#pragma warning(push)
+#pragma warning(disable: 4172)
 const Fvector& player_hud::attach_rot(u8 part) const
 {
 	if (m_attached_items[part])
@@ -830,6 +841,7 @@ const Fvector& player_hud::attach_pos(u8 part) const
 
 	return Fvector().set(0.f, 0.f, 0.f);
 }
+#pragma warning(pop)
 
 void player_hud::update(const Fmatrix& cam_trans)
 {
@@ -853,18 +865,19 @@ void player_hud::update(const Fmatrix& cam_trans)
 		trans_2 = trans;
 
 	// override hand offset for single hand animation
-	if (script_anim_offset_factor != 0.f)
+	//if (script_anim_offset_factor != 0.f)
 	{
-		if (script_anim_part == 2 || (!m_attached_items[0] && !m_attached_items[1]))
+		if (script_anim_part == 2 || (script_anim_part && !m_attached_items[0] && !m_attached_items[1]))
 		{
 			m1pos = script_anim_offset[0];
 			m2pos = script_anim_offset[0];
 			m1rot = script_anim_offset[1];
 			m2rot = script_anim_offset[1];
+
 			trans = trans_b;
 			trans_2 = trans_b;
 		}
-		else
+		else if (script_anim_offset_factor != 0.f)
 		{
 			Fvector& hand_pos = script_anim_part == 0 ? m1pos : m2pos;
 			Fvector& hand_rot = script_anim_part == 0 ? m1rot : m2rot;
@@ -1104,6 +1117,14 @@ void player_hud::SetScriptItemVisible(bool visible)
 
 u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool bMixIn, float speed, LPCSTR attach_visual)
 {
+	if (!pSettings->section_exist(section))
+	{
+		Msg("!script motion section [%s] does not exist", section);
+		m_bStopAtEndScriptAnimIsRunning = true;
+		script_anim_end = Device.dwTimeGlobal;
+		return 0;
+	}
+	
 	xr_string pos = "hands_position";
 	xr_string rot = "hands_orientation";
 
@@ -1153,15 +1174,6 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 	script_anim_offset[0] = offs;
 	script_anim_offset[1] = rrot;
 	script_anim_part = hand;
-
-	if (!pSettings->section_exist(section))
-	{
-		Msg("!script motion section [%s] does not exist", section);
-		m_bStopAtEndScriptAnimIsRunning = true;
-		script_anim_end = Device.dwTimeGlobal;
-		return 0;
-	}
-
 	player_hud_motion_container* pm = get_hand_motions(section);
 	player_hud_motion* phm = pm->find_motion(anm_name);
 
@@ -1257,6 +1269,9 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 void player_hud::updateMovementLayerState()
 {
+	if (!m_movement_layers.size())
+		return;
+
 	CActor* pActor = Actor();
 
 	if (!pActor)
@@ -1300,10 +1315,15 @@ void player_hud::PlayBlendAnm(LPCSTR name, u8 part, float speed, float power, bo
 		{
 			if (!no_restart)
 			{
-				anm->anm->Play(bLooped);
+				anm->anm->Stop();
 				anm->blend_amount = 0.f;
+				anm->blend.identity();
 			}
 
+			if (!anm->anm->IsPlaying())
+				anm->anm->Play(bLooped);
+
+			anm->anm->bLoop = bLooped;
 			anm->m_part = part;
 			anm->anm->Speed() = speed;
 			anm->m_power = power;
@@ -1342,6 +1362,9 @@ float player_hud::SetBlendAnmTime(LPCSTR name, float time)
 	{
 		if (!xr_strcmp(anm->m_name, name))
 		{
+			if (!anm->anm->IsPlaying())
+				return 0;
+
 			float speed = (anm->anm->anim_param().max_t - anm->anm->anim_param().t_current) / time;
 			anm->anm->Speed() = speed;
 			return speed;
@@ -1490,7 +1513,7 @@ void player_hud::update_inertion(Fmatrix& trans)
 		// load params
 		hud_item_measures::inertion_params inertion_data;
 		if (pMainHud != NULL)
-		{
+		{ // Загружаем параметры инерции из основного худа
 			inertion_data.m_pitch_offset_r = pMainHud->m_measures.m_inertion_params.m_pitch_offset_r;
 			inertion_data.m_pitch_offset_n = pMainHud->m_measures.m_inertion_params.m_pitch_offset_n;
 			inertion_data.m_pitch_offset_d = pMainHud->m_measures.m_inertion_params.m_pitch_offset_d;
@@ -1507,7 +1530,7 @@ void player_hud::update_inertion(Fmatrix& trans)
 			inertion_data.m_min_angle_aim = pMainHud->m_measures.m_inertion_params.m_min_angle_aim;
 		}
 		else
-		{
+		{ // Загружаем дефолтные параметры инерции
 			inertion_data.m_pitch_offset_r = PITCH_OFFSET_R;
 			inertion_data.m_pitch_offset_n = PITCH_OFFSET_N;
 			inertion_data.m_pitch_offset_d = PITCH_OFFSET_D;
@@ -1517,6 +1540,7 @@ void player_hud::update_inertion(Fmatrix& trans)
 
 			inertion_data.m_offset_LRUD.set(ORIGIN_OFFSET);
 			inertion_data.m_offset_LRUD_aim.set(ORIGIN_OFFSET_AIM);
+
 			inertion_data.m_tendto_speed = TENDTO_SPEED;
 			inertion_data.m_tendto_speed_aim = TENDTO_SPEED_AIM;
 			inertion_data.m_tendto_ret_speed = TENDTO_SPEED_RET;
@@ -1525,6 +1549,9 @@ void player_hud::update_inertion(Fmatrix& trans)
 			inertion_data.m_min_angle_aim = INERT_MIN_ANGLE_AIM;
 		}
 
+		// Replaced by CWeapon::UpdateHudAdditonal()
+		// Very FPS sensitive and hard to control
+		/*
 		// calc difference
 		Fvector								diff_dir;
 		diff_dir.sub						(xform.k, st_last_dir);
@@ -1542,18 +1569,19 @@ void player_hud::update_inertion(Fmatrix& trans)
 		// tend to forward
 		float _tendto_speed, _origin_offset;
 		if (pMainHud != NULL && pMainHud->m_parent_hud_item->GetCurrentHudOffsetIdx() > 0)
-		{
+		{ // Худ в режиме "Прицеливание"
 			float factor = pMainHud->m_parent_hud_item->GetInertionFactor();
 			_tendto_speed = inertion_data.m_tendto_speed_aim - (inertion_data.m_tendto_speed_aim - inertion_data.m_tendto_speed) * factor;
 			_origin_offset =
 				inertion_data.m_origin_offset_aim - (inertion_data.m_origin_offset_aim - inertion_data.m_origin_offset) * factor;
 		}
 		else
-		{
+		{ // Худ в режиме "От бедра"
 			_tendto_speed = inertion_data.m_tendto_speed;
 			_origin_offset = inertion_data.m_origin_offset;
 		}
 
+		// Фактор силы инерции
 		if (pMainHud != NULL)
 		{
 			float power_factor = pMainHud->m_parent_hud_item->GetInertionPowerFactor();
@@ -1563,17 +1591,20 @@ void player_hud::update_inertion(Fmatrix& trans)
 
 		st_last_dir.mad(diff_dir, _tendto_speed * Device.fTimeDelta);
 		origin.mad(diff_dir, _origin_offset);
-
+		*/
 		// pitch compensation
 		float pitch							= angle_normalize_signed(xform.k.getP());
 
 		if (pMainHud != NULL)
 			pitch *= pMainHud->m_parent_hud_item->GetInertionFactor();
 
+		// Отдаление\приближение
 		origin.mad(xform.k, -pitch * inertion_data.m_pitch_offset_d);
 
+		// Сдвиг в противоположную часть экрана
 		origin.mad(xform.i, -pitch * inertion_data.m_pitch_offset_r);
 
+		// Подьём\опускание
 		clamp(pitch, inertion_data.m_pitch_low_limit, PI);
 		origin.mad(xform.j, -pitch * inertion_data.m_pitch_offset_n);
 	}
@@ -1593,6 +1624,7 @@ attachable_hud_item* player_hud::create_hud_item(const shared_str& sect)
 	attachable_hud_item* res	= xr_new<attachable_hud_item>(this);
 	res->load					(sect);
 	res->m_hand_motions.load	(m_model, sect);
+	res->m_hand_motions.load	(m_model_2, sect);		// cari0us - верно ли тут?
 	m_pool.push_back			(res);
 
 	return	res;
@@ -1669,8 +1701,8 @@ void player_hud::detach_item_idx(u16 idx)
 
 	m_attached_items[idx]->m_parent_hud_item->on_b_hud_detach();
 
-	m_attached_items[idx]->m_parent_hud_item = NULL;
-	m_attached_items[idx] = NULL;
+	m_attached_items[idx]->m_parent_hud_item		= nullptr;
+	m_attached_items[idx]							= nullptr;
 
 	if (idx == 1)
 	{
@@ -1687,9 +1719,12 @@ void player_hud::detach_item_idx(u16 idx)
 		{
 			//fix for a rare case where the right hand stays visible on screen after detaching the right hand's attached item
 			player_hud_motion* pm = m_attached_items[1]->m_hand_motions.find_motion("anm_idle");
-			const motion_descr& M = pm->m_animations[0];
-			m_model->PlayCycle(0, M.mid, false);
-			m_model->PlayCycle(2, M.mid, false);
+			if (pm) 
+			{
+				const motion_descr& M = pm->m_animations[0];
+				m_model->PlayCycle(0, M.mid, false);
+				m_model->PlayCycle(2, M.mid, false);
+			}
 		}
 		else
 		{
@@ -1761,9 +1796,9 @@ void player_hud::OnMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 
 bool player_hud::allow_script_anim()
 {
-	if (m_attached_items[0] && m_attached_items[0]->m_parent_hud_item->IsPending())
+	if (m_attached_items[0] && (m_attached_items[0]->m_parent_hud_item->IsPending() || m_attached_items[0]->m_parent_hud_item->GetState() == CHudItem::EHudStates::eBore))
 		return false;
-	else if (m_attached_items[1] && m_attached_items[1]->m_parent_hud_item->IsPending())
+	else if (m_attached_items[1] && (m_attached_items[1]->m_parent_hud_item->IsPending() || m_attached_items[1]->m_parent_hud_item->GetState() == CHudItem::EHudStates::eBore))
 		return false;
 	else if (script_anim_part != u8(-1))
 		return false;
