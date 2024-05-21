@@ -54,6 +54,8 @@
 
 #include <functional>
 
+#include "embedded_editor/embedded_editor_main.h"
+
 ENGINE_API bool g_dedicated_server;
 
 extern BOOL	g_bDebugDumpPhysicsStep;
@@ -591,6 +593,8 @@ void CLevel::OnFrame	()
 		pStatGraphR->AppendItem(float(m_dwRPC)*fRPC_Mult, 0xffff0000, 1);
 		pStatGraphR->AppendItem(float(m_dwRPS)*fRPS_Mult, 0xff00ff00, 0);
 	};
+
+	ShowEditor();
 }
 
 int		psLUA_GCSTEP					= 10			;

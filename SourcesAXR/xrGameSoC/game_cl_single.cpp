@@ -4,6 +4,10 @@
 #include "clsid_game.h"
 #include "actor.h"
 
+#include "ai_space.h"
+#include "alife_simulator.h"
+#include "alife_time_manager.h"
+
 using namespace luabind;
 
 ESingleGameDifficulty g_SingleGameDifficulty = egdMaster;
@@ -38,6 +42,22 @@ char*	game_cl_Single::getTeamSection(int Team)
 void game_cl_Single::OnDifficultyChanged()
 {
 	Actor()->OnDifficultyChanged();
+}
+
+void game_cl_Single::SetEnvironmentGameTimeFactor(ALife::_TIME_ID GameTime, const float fTimeFactor)
+{
+	if (ai().get_alife() && ai().alife().initialized())
+		Level().Server->game->SetGameTimeFactor(GameTime, fTimeFactor);
+	else
+		inherited::SetEnvironmentGameTimeFactor(fTimeFactor);
+}
+
+void game_cl_Single::SetEnvironmentGameTimeFactor(const float fTimeFactor)
+{
+	if (ai().get_alife() && ai().alife().initialized())
+		Level().Server->game->SetGameTimeFactor(fTimeFactor);
+	else
+		inherited::SetEnvironmentGameTimeFactor(fTimeFactor);
 }
 
 #pragma optimize("s",on)

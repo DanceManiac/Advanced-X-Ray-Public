@@ -27,6 +27,7 @@ struct WeaponUsageStatistic;
 
 class	game_cl_GameState	: public game_GameState, public ISheduled
 {
+public:
 	typedef game_GameState	inherited;
 	shared_str							m_game_type_name;
 //	bool								m_bCrosshair;	//был ли показан прицел-курсор HUD перед вызовом меню

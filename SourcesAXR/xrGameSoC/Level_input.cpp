@@ -26,6 +26,8 @@
 
 #include "../Include/xrRender/DebugRender.h"
 
+#include "embedded_editor/embedded_editor_main.h"
+
 #ifdef DEBUG
 #	include "ai/monsters/BaseMonster/base_monster.h"
 #endif
@@ -42,6 +44,9 @@ extern	float	g_fTimeFactor;
 
 void CLevel::IR_OnMouseWheel( int direction )
 {
+	if (Editor_MouseWheel(direction))
+		return;
+
 	if(	g_bDisableAllInput	) return;
 
 	if (HUD().GetUI()->IR_OnMouseWheel(direction)) return;
@@ -68,6 +73,9 @@ void CLevel::IR_OnMouseHold(int btn)
 
 void CLevel::IR_OnMouseMove( int dx, int dy )
 {
+	if (Editor_MouseMove(dx, dy))
+		return;
+
 	if(g_bDisableAllInput)						return;
 	if (HUD().GetUI()->IR_OnMouseMove(dx,dy))	return;
 	if (Device.Paused())							return;
@@ -98,11 +106,14 @@ extern bool g_block_pause;
 
 void CLevel::IR_OnKeyboardPress	(int key)
 {
+	if (Editor_KeyPress(key))
+		return;
+
 	bool b_ui_exist = (g_hud && HUD().GetUI());
 
 //.	if (DIK_F10 == key)		vtune.enable();
 //.	if (DIK_F11 == key)		vtune.disable();
-	
+
 	EGameActions _curr = get_binded_action(key);
 	switch ( _curr ) 
 	{
@@ -400,6 +411,9 @@ void CLevel::IR_OnKeyboardPress	(int key)
 
 void CLevel::IR_OnKeyboardRelease(int key)
 {
+	if (Editor_KeyRelease(key))
+		return;
+
 	bool b_ui_exist = (g_hud && HUD().GetUI());
 
 	if (g_bDisableAllInput)
@@ -426,6 +440,9 @@ void CLevel::IR_OnKeyboardRelease(int key)
 
 void CLevel::IR_OnKeyboardHold(int key)
 {
+	if (Editor_KeyHold(key))
+		return;
+
 	if(g_bDisableAllInput) return;
 
 	bool b_ui_exist = (g_hud && HUD().GetUI());

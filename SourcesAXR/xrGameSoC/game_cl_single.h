@@ -11,6 +11,8 @@ public :
 
 	virtual		ALife::_TIME_ID			GetEnvironmentGameTime	()				{return GetGameTime();};
 	virtual		float					GetEnvironmentGameTimeFactor		()	{return GetGameTimeFactor();};
+				void					SetEnvironmentGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor) override;
+	virtual		void					SetEnvironmentGameTimeFactor		(const float fTimeFactor);
 
 	void		OnDifficultyChanged		();
 };

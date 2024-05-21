@@ -2293,6 +2293,9 @@
     <Filter Include="UI\Tutorial">
       <UniqueIdentifier>{88a8db38-34ed-401c-bed9-9fb6ae742d2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="EmbeddedEditor">
+      <UniqueIdentifier>{9a53a2f6-86eb-43bb-a8f2-32f44fd28c6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6572,6 +6575,33 @@
     <ClInclude Include="ui\UIHelper.h" />
     <ClInclude Include="opt.lua.h" />
     <ClInclude Include="opt_inline.lua.h" />
+    <ClInclude Include="embedded_editor\editor_render.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\editor_render_ai_map.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_helper.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_hud.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_main.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_weather.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9721,6 +9751,33 @@
     <ClCompile Include="magic_minimize_1d.cpp" />
     <ClCompile Include="ui\UILoadingScreen.cpp" />
     <ClCompile Include="ui\UIHelper.cpp" />
+    <ClCompile Include="embedded_editor\editor_render.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

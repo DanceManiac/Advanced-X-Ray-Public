@@ -868,3 +868,9 @@ bool CGamePersistent::GetHelmetStatus()
 	CCustomOutfit Outfit;
 	return	(Outfit.GetHelmetStatus());
 }
+
+void CGamePersistent::EditorOnFrame()
+{
+	extern void Editor_OnFrame();
+	Editor_OnFrame();
+}

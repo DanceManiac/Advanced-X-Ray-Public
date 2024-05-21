@@ -87,6 +87,8 @@ public:
 
 			int			GetHudMaskElement		();
 			bool		GetHelmetStatus			();
+
+	virtual void		EditorOnFrame			();
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}

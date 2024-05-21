@@ -480,6 +480,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CaptureBoneCallback.h" />
+    <ClInclude Include="embedded_editor\editor_render.h" />
+    <ClInclude Include="embedded_editor\editor_render_ai_map.h" />
+    <ClInclude Include="embedded_editor\editor_render_spawn_element.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_helper.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_hud.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_main.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_spawner.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_weather.h" />
     <ClInclude Include="magic_box3.h" />
     <ClInclude Include="magic_box3_inline.h" />
     <ClInclude Include="magic_minimize_1d.h" />
@@ -1936,6 +1945,15 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render.cpp" />
+    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp" />
+    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_hud.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_main.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_weather.cpp" />
     <ClCompile Include="magic_box3.cpp" />
     <ClCompile Include="magic_minimize_1d.cpp" />
     <ClCompile Include="min_obb.cpp" />
@@ -6763,6 +6781,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\3rd party\imgui\imgui.vcxproj">
+      <Project>{c8fbc3ce-d6de-4fc3-bc15-7b647614db09}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\3rd party\ode\contrib\msvc7\ode_default\default.vcxproj">
       <Project>{1bf75feb-87dd-486c-880b-227987d191c2}</Project>
     </ProjectReference>
