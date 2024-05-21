@@ -27,6 +27,7 @@ protected:
 	ref_light		light_omni;
 	ref_glow		glow_render;
 	Fvector			m_focus;
+	shared_str		m_light_section;
 private:
 	inline	bool	can_use_dynamic_lights	();
 
@@ -60,10 +61,12 @@ protected:
 	bool					m_bNightVisionEnabled;
 	bool					m_bNightVisionOn;
 
-	HUD_SOUND				m_NightVisionOnSnd;
+	HUD_SOUND_COLLECTION_LAYERED m_sounds;
+
+	/*HUD_SOUND				m_NightVisionOnSnd;
 	HUD_SOUND				m_NightVisionOffSnd;
 	HUD_SOUND				m_NightVisionIdleSnd;
-	HUD_SOUND				m_NightVisionBrokenSnd;
+	HUD_SOUND				m_NightVisionBrokenSnd;	*/
 
 	/*float					m_NightVisionRechargeTime;
 	float					m_NightVisionRechargeTimeMin;

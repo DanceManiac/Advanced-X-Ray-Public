@@ -22,6 +22,8 @@
 #include "weapon.h"
 #include "../xrEngine/xr_collide_form.h"
 
+extern ENGINE_API int ps_r__WallmarksOnSkeleton;
+
 //константы shoot_factor, определ€ющие 
 //поведение пули при столкновении с объектом
 #define RICOCHET_THRESHOLD		0.1
@@ -200,7 +202,7 @@ void CBulletManager::FireShotmark (SBullet* bullet, const Fvector& vDir, const F
 	SGameMtlPair* mtl_pair	= GMLib.GetMaterialPair(bullet->bullet_material_idx, target_material);
 	Fvector particle_dir;
 
-	if (R.O)
+	if (R.O && ps_r__WallmarksOnSkeleton)
 	{
 		particle_dir		 = vDir;
 		particle_dir.invert	();

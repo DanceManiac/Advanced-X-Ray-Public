@@ -43,6 +43,7 @@
 #include "MainMenu.h"
 #include "Actor.h"
 #include "../xrEngine/XR_IOConsole.h"
+#include "../xrEngine/GameMtlLib.h"
 
 #ifdef DEBUG
 #	include "level_debug.h"
@@ -1141,4 +1142,42 @@ bool GlobalFeelTouch::is_object_denied(CObject const * O)
 		return false;
 	}
 	return true;
+}
+
+ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
+{
+	collide::rq_result* RQ = (collide::rq_result*)params;
+	if (result.O)
+	{
+		if (Actor())
+		{
+			if (result.O == Actor())
+				return TRUE;
+			if (Actor()->Holder())
+			{
+				CCar* car = smart_cast<CCar*>(Actor()->Holder());
+				if (car && result.O == car)
+					return TRUE;
+			}
+		}
+	}
+	else
+	{
+		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+		SGameMtl* pMtl = GMLib.GetMaterialByIdx(T->material);
+
+		if (pMtl && (pMtl->Flags.is(SGameMtl::flPassable) || pMtl->Flags.is(SGameMtl::flActorObstacle)))
+			return TRUE;
+	}
+	*RQ = result;
+	return FALSE;
+}
+
+collide::rq_result CLevel::GetPickResult(Fvector pos, Fvector dir, float range, CObject* ignore)
+{
+	collide::rq_result        RQ; RQ.set(NULL, range, -1);
+	collide::rq_results        RQR;
+	collide::ray_defs    RD(pos, dir, RQ.range, CDB::OPT_ONLYNEAREST, collide::rqtBoth);
+	Level().ObjectSpace.RayQuery(RQR, RD, GetPickDist_Callback, &RQ, NULL, ignore);
+	return RQ;
 }

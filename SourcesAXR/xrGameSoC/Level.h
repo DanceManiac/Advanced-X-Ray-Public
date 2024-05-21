@@ -327,6 +327,8 @@ public:
 	float				GetGameDayTimeSec		();
 	float				GetEnvironmentGameDayTimeSec();
 
+	collide::rq_result	GetPickResult			(Fvector pos, Fvector dir, float range, CObject* ignore);
+
 protected:
 //	CFogOfWarMngr*		m_pFogOfWarMngr;
 protected:	
