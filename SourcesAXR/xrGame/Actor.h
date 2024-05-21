@@ -843,7 +843,7 @@ public:
 	void					ChangeInventoryFullness(float val);
 	u16						GetLastActiveSlot	() { return m_last_active_slot; }
 
-	bool					SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
+	void					SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
 	bool					GetHeatingStatus	() const { return m_bHeating; }
 	float					GetCurrentHeating	() const { return m_fHeatingPower; }
 protected:
