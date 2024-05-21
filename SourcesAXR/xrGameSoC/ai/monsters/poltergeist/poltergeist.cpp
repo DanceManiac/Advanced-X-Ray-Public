@@ -108,6 +108,8 @@ void CPoltergeist::Load(LPCSTR section)
 		m_tele->load	(section);
 	}
 	
+	m_dead_always_visible	= READ_IF_EXISTS(pSettings, r_bool, section, "dead_always_visible", false);
+	m_bPolterVisibleDie		= READ_IF_EXISTS(pSettings, r_bool, "gameplay", "poltergeist_visible_corpse", true);
 }
 
 void CPoltergeist::reload(LPCSTR section)
@@ -215,6 +217,7 @@ BOOL CPoltergeist::net_Spawn (CSE_Abstract* DC)
 void CPoltergeist::net_Destroy()
 {
 	inherited::net_Destroy();
+	CTelekinesis::deactivate();
 	Energy::disable();
 
 	ability()->on_destroy();
@@ -222,21 +225,26 @@ void CPoltergeist::net_Destroy()
 
 void CPoltergeist::Die(CObject* who)
 {
-	if (m_tele) {
-		if (state_invisible) {
-			setVisible(true);
+	if ((m_tele || m_dead_always_visible) && m_bPolterVisibleDie)
+	{
+ 		if (state_invisible)
+		{
+ 			setVisible(true);
 
-			if (PPhysicsShell()) {
-				Fmatrix M;
-				M.set							(XFORM());
-				M.translate_over				(m_current_position);
-				PPhysicsShell()->SetTransform	(M);
-			} else 
-				Position() = m_current_position;
-		}
-	}
+ 			if (PPhysicsShell())
+			{
+ 				Fmatrix M;
+ 				M.set							(XFORM());
+ 				M.translate_over				(m_current_position);
+ 				PPhysicsShell()->SetTransform	(M);
+ 			} 
+			else 
+ 				Position() = m_current_position;
+ 		}
+ 	}
 
 	inherited::Die				(who);
+	CTelekinesis::deactivate	();
 	Energy::disable				();
 
 	ability()->on_die			();

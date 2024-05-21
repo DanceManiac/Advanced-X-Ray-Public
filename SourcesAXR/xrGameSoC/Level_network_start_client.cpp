@@ -10,6 +10,8 @@
 #include "PhysicsGamePars.h"
 #include "ai_space.h"
 
+#include "../xrEngine/DiscordRichPresense.h"
+
 extern	pureFrame*				g_pNetProcessor;
 
 BOOL CLevel::net_Start_client	( LPCSTR options )
@@ -83,6 +85,11 @@ bool	CLevel::net_start_client3				()
 		}
 		pApp->Level_Set			(level_id);
 		m_name					= level_name;
+
+		snprintf				(rpc_settings.Detail, 128, ToUTF8(*CStringTable().translate(level_name)).c_str());
+		snprintf				(rpc_settings.LargeImageKey, 128, level_name);
+		g_discord.SetStatus		();
+
 		// Load level
 		R_ASSERT2				(Load(level_id),"Loading failed.");
 

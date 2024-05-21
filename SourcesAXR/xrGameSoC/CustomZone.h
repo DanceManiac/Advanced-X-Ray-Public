@@ -103,6 +103,8 @@ protected:
 		eSpawnBlowoutArtefacts	=(1<<7),
 		eUseOnOffTime			=(1<<8),
 		eIdleLightVolumetric	=(1<<9),
+		eAlwaysFastmode			=(1<<10),
+		eZoneIsActive			=(1<<11),
 	};
 	u32					m_owner_id;		//if created from artefact
 	u32					m_ttl;
@@ -370,7 +372,6 @@ protected:
 protected:
 	u32						m_ef_anomaly_type;
 	u32						m_ef_weapon_type;
-	BOOL					m_b_always_fastmode;
 public:
 	virtual u32				ef_anomaly_type				() const;
 	virtual u32				ef_weapon_type				() const;

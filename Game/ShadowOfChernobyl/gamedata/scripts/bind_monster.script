@@ -113,6 +113,14 @@ function generic_object_binder:death_callback(victim, who)
 	h.impulse = 10
 	self.object:hit(h)
 
+	local obj_clsid = self.object:clsid()
+	
+	if obj_clsid == clsid.poltergeist_s and mfs_functions.ReadPolterDieMode() == false then
+		printf("releasing object ["..self.object:name().."]")
+		if alife():object(self.object:id()) ~= nil then
+			alife():release(alife():object(self.object:id()), true)
+		end
+	end
 end
 
 function generic_object_binder:hit_callback(obj, amount, local_direction, who, bone_index)

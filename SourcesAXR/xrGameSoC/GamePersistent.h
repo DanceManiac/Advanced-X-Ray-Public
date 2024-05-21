@@ -84,6 +84,9 @@ public:
 	void				SetLoadStageTitle		(const char* ls_title = nullptr) override;
 
 	virtual bool		CanBePaused				();
+
+			int			GetHudMaskElement		();
+			bool		GetHelmetStatus			();
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}

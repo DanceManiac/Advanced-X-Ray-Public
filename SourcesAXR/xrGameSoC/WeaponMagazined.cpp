@@ -17,6 +17,9 @@
 #include "object_broker.h"
 #include "string_table.h"
 
+ENGINE_API  extern float psHUD_FOV;
+ENGINE_API  extern float psHUD_FOV_def;
+
 CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapon(name)
 {
 	m_eSoundShow		= ESoundTypes(SOUND_TYPE_ITEM_TAKING | eSoundType);
@@ -663,6 +666,7 @@ void CWeaponMagazined::switch2_Hidden()
 
 	signal_HideComplete		();
 	RemoveShotEffector		();
+	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 void CWeaponMagazined::switch2_Showing()
 {

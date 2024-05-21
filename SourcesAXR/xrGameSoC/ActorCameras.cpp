@@ -21,6 +21,10 @@
 #include "EffectorShot.h"
 #include "phcollidevalidator.h"
 #include "PHShell.h"
+
+ENGINE_API extern float psHUD_FOV;
+ENGINE_API extern float psHUD_FOV_def;
+
 void CActor::cam_Set	(EActorCameras style)
 {
 	CCameraBase* old_cam = cam_Active();
@@ -131,14 +135,42 @@ ICF BOOL test_point(xrXRC& xrc, const Fmatrix& xform, const Fmatrix33& mat, cons
 #include "debug_renderer.h"
 void CActor::cam_Update(float dt, float fFOV)
 {
-	if(m_holder)		return;
+	if (m_holder)
+		return;
+
+	// HUD FOV Update
+	if (this == Level().CurrentControlEntity())
+	{
+		auto pItem = smart_cast<CHudItem*>(inventory().ActiveItem());
+		//auto pDet = smart_cast<CHudItem*>(inventory().ItemFromSlot(DETECTOR_SLOT));
+
+		if (eacFirstEye == cam_active)
+		{
+			if (pItem)
+				psHUD_FOV = pItem->GetHudFov();
+			//else if (pDet) //Если будут добавлены детекторы артефактор
+			//	psHUD_FOV = pDet->GetHudFov();
+			else
+				psHUD_FOV = psHUD_FOV_def;
+		}
+		else
+			psHUD_FOV = psHUD_FOV_def;
+	}
 
 	if(mstate_real & mcClimb&&cam_active!=eacFreeLook)
 		camUpdateLadder(dt);
 
-	Fvector point={0,CameraHeight(),0}, dangle={0,0,0};
-	
+	// Alex ADD: smooth crouch fix
+	float HeightInterpolationSpeed = 4.f;
 
+	if (CurrentHeight < 0.0f)
+		CurrentHeight = CameraHeight();
+
+	if (CurrentHeight != CameraHeight())
+		CurrentHeight = (CurrentHeight * (1.0f - HeightInterpolationSpeed * dt)) + (CameraHeight() * HeightInterpolationSpeed*dt);
+
+	Fvector point = { 0, CurrentHeight, 0 };
+	Fvector dangle={0,0,0};
 	Fmatrix				xform,xformR;
 	xform.setXYZ		(0,r_torso.yaw,0);
 	xform.translate_over(XFORM().c);
@@ -302,13 +334,13 @@ void CActor::cam_Update(float dt, float fFOV)
 		cameras[eacFirstEye]->f_fov		= fFOV;
 	}
 	
-	if( psActorFlags.test(AF_PSP) )
-	{
+	//if( psActorFlags.test(AF_PSP) )
+	//{
 		Cameras().UpdateFromCamera(C);
-	}else
-	{
-		Cameras().UpdateFromCamera(cameras[eacFirstEye]);
-	}
+	//}else
+	//{
+	//	Cameras().UpdateFromCamera(cameras[eacFirstEye]);
+	//}
 
 	fCurAVelocity			= vPrevCamDir.sub(cameras[eacFirstEye]->vDirection).magnitude()/Device.fTimeDelta;
 	vPrevCamDir				= cameras[eacFirstEye]->vDirection;
@@ -328,7 +360,7 @@ void CActor::update_camera (CCameraShotEffector* effector)
 	if (!effector) return;
 	//	if (Level().CurrentViewEntity() != this) return;
 
-	CCameraBase* pACam = cam_FirstEye();
+	CCameraBase* pACam = cam_Active();
 	if (!pACam) return;
 
 	if (pACam->bClampPitch)

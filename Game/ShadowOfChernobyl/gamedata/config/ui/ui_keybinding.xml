@@ -55,6 +55,9 @@
 		<command id="kb_console"					exe="console"/>
 		<command id="ui_mm_save_game"				exe="quick_save"/>
 		<command id="ui_mm_load_game"				exe="quick_load"/>
+		<command id="camera_1"						exe="cam_1"/>
+		<command id="camera_2"						exe="cam_2"/>
+		<command id="camera_3"						exe="cam_3"/>
 	</group>
 	<group name="kb_grp_multiplayer">
 		<command id="kb_artefact"					exe="artefact"/>

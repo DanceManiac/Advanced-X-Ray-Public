@@ -1,0 +1,152 @@
+-- 'Проверка включен ли режим зимы.
+function ReadWinterMode()
+	local ltx = ini_file("mfs_team\\mfs_weather_params.ltx")
+	return ltx and ltx:line_exist("environment","winter_mode") and ltx:r_bool("environment","winter_mode")
+end
+
+-- 'Проверка включена ли старая версия смерти полтергейста.
+function ReadPolterDieMode()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","poltergeist_visible_corpse") and ltx:r_bool("gameplay","poltergeist_visible_corpse")
+end
+
+-- 'Проверка включена ли система навыков героя.
+function ReadSkillsSystemEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","actor_skills_enabled") and ltx:r_bool("gameplay","actor_skills_enabled")
+end
+
+-- 'Проверка включен ли ограниченный заряд батареи детекторов артефактов.
+function ReadDetectorsUseBatteryEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","artefact_detector_use_battery") and ltx:r_bool("gameplay","artefact_detector_use_battery")
+end
+
+-- 'Проверка включен ли ограниченный заряд батареи детекторов аномалий.
+function ReadAnomalyDetectorsUseBatteryEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","anomaly_detector_use_battery") and ltx:r_bool("gameplay","anomaly_detector_use_battery")
+end
+
+-- 'Проверка включен ли ограниченный заряд батареи фонарей.
+function ReadTorchUseBatteryEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","torch_use_battery") and ltx:r_bool("gameplay","torch_use_battery")
+end
+
+-- 'Проверка включена ли деградация артефактов.
+function ReadArtefactsDegradationEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","artefacts_degradation") and ltx:r_bool("gameplay","artefacts_degradation")
+end
+
+-- 'Проверка включено ли использование фильтров брони и шлемов.
+function ReadOutfitFiltersEnabled()
+	local ltx = ini_file("mfs_team\\mfs_adv_xr_params.ltx")
+	return ltx and ltx:line_exist("gameplay","enable_antigas_filters") and ltx:r_bool("gameplay","enable_antigas_filters")
+end
+
+-- 'Уложить героя спать на 5 часов, если он слишком давно не спал
+function put_the_actor_to_sleep()
+	level.change_game_time(0,5,0)
+	level_weathers.get_weather_manager():forced_weather_change()
+	--surge_manager.get_surge_manager().time_forwarded = true
+
+	xr_effects.disable_ui(db.actor)
+	db.actor.sleepeness = -0.5
+	level.add_cam_effector("camera_effects\\surge_02.anm", 10, false, "mfs_functions.forced_actor_sleep")
+	level.add_pp_effector("surge_fade.ppe", 11, false)
+	local c = get_console()
+	_G.mus_vol = c:get_float("snd_volume_music")
+	_G.amb_vol = c:get_float("snd_volume_eff")
+	c:execute("snd_volume_music 0")
+	c:execute("snd_volume_eff 0")
+end
+
+function forced_actor_sleep()
+	level.add_cam_effector("camera_effects\\surge_01.anm", 10, false, "mfs_functions.after_forced_sleep")
+
+	level.change_game_time(0,0,math.random(35,45))
+	level_weathers.get_weather_manager():forced_weather_change()
+end
+
+function after_forced_sleep()
+	xr_effects.enable_ui(db.actor)
+    get_console():execute("snd_volume_music "..tostring(_G.mus_vol))
+	get_console():execute("snd_volume_eff "..tostring(_G.amb_vol))
+	_G.amb_vol = 0
+	_G.mus_vol = 0
+end
+
+--Кэшируем функции
+local rnd = math.random
+
+-- 'Создавать фантомов, если ГГ слишком давно не спал
+function generate_phantoms()
+	local phantom_idle = rnd(2000,5000)
+	local phantom_time = 0
+	
+	if time_global() - phantom_time > phantom_idle then
+		phantom_time				= time_global()
+		phantom_idle = rnd(5000,10000)
+		local phantom_spawn_prob = 1
+		if rnd(0, 500) < phantom_spawn_prob then --Фантомы спавнятся в 2-х случаях из 500
+			if phantom_manager:phantom_count() < 5 then --Макстмальное кол-во фантомов: 5
+				local phantom_spawn_radius = 30.0
+				local radius = phantom_spawn_radius * ( rnd()/2.0+0.5 )
+				local phantom_fov = 45
+				local ang    = phantom_fov * rnd() - phantom_fov * 0.5
+				local dir    = vector_rotate_y( db.actor:direction(), ang )
+
+				phantom_manager.spawn_phantom( db.actor:position():add( dir:mul(radius) ) )
+			end
+		end
+	end
+end
+
+-- 'Апдейтер похмелья
+function on_actor_hangover()
+
+end
+
+-- 'Апдейтер ломки
+function on_actor_withdrawal()
+
+end
+
+-- 'Апдейтер наркотического опьянения
+function on_actor_drugs()
+
+end
+
+function devices_check_surge()
+	if xr_surge_hide.surge_activated then
+		if (xr_surge_hide.phase > 1) then
+			game.set_devices_psy_factor(game.get_devices_psy_factor() + 0.00075)
+		end
+		
+		return true
+	else
+		game.set_devices_psy_factor(game.get_devices_psy_factor() - 0.0025)
+		return false
+	end
+end
+
+function sleeping_bag_sleep()
+	ui_sleep_dialog.sleep()
+	db.actor:give_info_portion("sleep_active")
+end
+
+-- 'Для команды g_task. Не трогать!
+function g_task_script(task)
+	task_manager.get_task_manager():give_task(task)
+end
+
+-- 'Для команды kill. Не трогать!
+function get_id_by_sid(story_id_to_kill)
+	local npc = get_story_object(story_id_to_kill)
+
+	if npc then
+		return npc:id()
+	end
+end

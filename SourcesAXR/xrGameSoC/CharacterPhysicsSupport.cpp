@@ -703,7 +703,9 @@ void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
 	if(IsGameTypeSingle())
 	{
 		m_pPhysicsShell->SetPrefereExactIntegration	();//use exact integration for ragdolls in single
-		m_pPhysicsShell->SetRemoveCharacterCollLADisable();
+
+		if (!psActorFlags.test(AF_COLLISION))
+			m_pPhysicsShell->SetRemoveCharacterCollLADisable();
 	}
 	else
 	{

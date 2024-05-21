@@ -30,7 +30,7 @@ CCustomZone::CCustomZone(void)
 	m_fAttenuation				= 1.f;
 	m_dwPeriod					= 1100;
 	m_fEffectiveRadius			= 0.75f;
-	m_bZoneActive				= false;
+	m_zone_flags.set			(eZoneIsActive, FALSE);
 	m_eHitTypeBlowout			= ALife::eHitTypeWound;
 	m_pLocalActor				= NULL;
 	m_pIdleParticles			= NULL;
@@ -55,7 +55,6 @@ CCustomZone::CCustomZone(void)
 
 	m_effector					= NULL;
 	m_bIdleObjectParticlesDontStop = FALSE;
-	m_b_always_fastmode			= FALSE;
 
 	m_bVolumetricBlowout		= true;
 	m_fVolumetricQuality		= 1.0f;
@@ -398,7 +397,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	o_fastmode					= TRUE;		// start initially with fast-mode enabled
 	if(spawn_ini() && spawn_ini()->line_exist("fast_mode","always_fast"))
 	{
-		m_b_always_fastmode		= spawn_ini()->r_bool("fast_mode","always_fast");
+		m_zone_flags.set(eAlwaysFastmode, spawn_ini()->r_bool("fast_mode", "always_fast"));
 	}
 	return						(TRUE);
 }
@@ -465,7 +464,7 @@ bool CCustomZone::AccumulateState()
 {
 	if(m_iStateTime>=m_StateTime[eZoneStateAccumulate])
 	{
-		if(m_bZoneActive)
+		if (m_zone_flags.test(eZoneIsActive))
 			SwitchZoneState(eZoneStateBlowout);
 		else
 			SwitchZoneState(eZoneStateIdle);
@@ -536,7 +535,7 @@ void CCustomZone::UpdateCL		()
 // called as usual
 void CCustomZone::shedule_Update(u32 dt)
 {
-	m_bZoneActive			= false;
+	m_zone_flags.set(eZoneIsActive, FALSE);
 
 	if (IsEnabled())
 	{
@@ -574,7 +573,7 @@ void CCustomZone::shedule_Update(u32 dt)
 			//если есть хотя бы один не дисабленый объект, то
 			//зона считается активной
 			if(info.zone_ignore == false) 
-				m_bZoneActive = true;
+				m_zone_flags.set(eZoneIsActive, TRUE);
 		}
 
 		if(eZoneStateIdle ==  m_eZoneState)
@@ -583,8 +582,8 @@ void CCustomZone::shedule_Update(u32 dt)
 		inherited::shedule_Update(dt);
 
 		// check "fast-mode" border
-		float	cam_distance	= Device.vCameraPosition.distance_to(P)-s.R;
-		if (cam_distance > FASTMODE_DISTANCE && !m_b_always_fastmode)	
+		float act_distance = Level().CurrentControlEntity()->Position().distance_to(P) - s.R;
+		if (act_distance > FASTMODE_DISTANCE && !m_zone_flags.test(eAlwaysFastmode))
 			o_switch_2_slow	();
 		else									
 			o_switch_2_fast	();
@@ -1467,7 +1466,7 @@ BOOL CCustomZone::feel_touch_on_contact	(CObject *O)
 
 BOOL CCustomZone::AlwaysTheCrow()
 {
-	if(m_b_always_fastmode && IsEnabled() )
+	if (m_zone_flags.test(eAlwaysFastmode) && IsEnabled())
 		return TRUE;
 	else
 		return inherited::AlwaysTheCrow();

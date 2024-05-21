@@ -57,6 +57,7 @@
 #include "InfoPortion.h"
 
 string_path		g_last_saved_game;
+int				quick_save_counter = 0;
 
 extern void show_smart_cast_stats		();
 extern void clear_smart_cast_stats		();
@@ -66,7 +67,7 @@ extern	u64		g_qwStartGameTime;
 extern	u64		g_qwEStartGameTime;
 
 ENGINE_API
-extern	float	psHUD_FOV;
+extern  float   psHUD_FOV_def;
 extern	float	psSqueezeVelocity;
 extern	int		psLUA_GCSTEP;
 
@@ -314,7 +315,6 @@ public:
 	}
 };
 
-#ifndef MASTER_GOLD
 class CCC_TimeFactor : public IConsole_Command {
 public:
 					CCC_TimeFactor	(LPCSTR N) : IConsole_Command(N) {}
@@ -325,7 +325,6 @@ public:
 		Device.time_factor	(time_factor);
 	}
 };
-#endif // MASTER_GOLD
 
 //-----------------------------------------------------------------------
 class CCC_DemoRecord : public IConsole_Command
@@ -398,6 +397,36 @@ bool valid_file_name(LPCSTR file_name)
 	return		(true);
 }
 
+void get_files_list(xr_vector<shared_str>& files, LPCSTR dir, LPCSTR file_ext)
+{
+	VERIFY(dir && file_ext);
+	files.clear_not_free();
+
+	FS_Path* P = FS.get_path(dir);
+	P->m_Flags.set(FS_Path::flNeedRescan, TRUE);
+	FS.m_Flags.set(CLocatorAPI::flNeedCheck, TRUE);
+	FS.rescan_pathes();
+
+	LPCSTR fext;
+	STRCONCAT(fext, "*", file_ext);
+
+	FS_FileSet  files_set;
+	FS.file_list(files_set, dir, FS_ListFiles, fext);
+	u32 len_str_ext = xr_strlen(file_ext);
+
+	FS_FileSetIt itb = files_set.begin();
+	FS_FileSetIt ite = files_set.end();
+
+	for (; itb != ite; ++itb)
+	{
+		LPCSTR fn_ext = (*itb).name.c_str();
+		VERIFY(xr_strlen(fn_ext) > len_str_ext);
+		string_path fn;
+		strncpy_s(fn, sizeof(fn), fn_ext, xr_strlen(fn_ext) - len_str_ext);
+		files.push_back(fn);
+	}
+	FS.m_Flags.set(CLocatorAPI::flNeedCheck, FALSE);
+}
 
 #include "UIGameCustom.h"
 #include "HUDManager.h"
@@ -431,15 +460,25 @@ public:
 		CTimer					timer;
 		timer.Start				();
 #endif
-		if (!xr_strlen(S)){
-			strconcat			(sizeof(S),S,Core.UserName,"_","quicksave");
+		if (!xr_strlen(S))
+		{
+			static u32 last_quick = 0;
+			xr_sprintf			(S, "%s - quicksave %d", Core.UserName, last_quick);
 			NET_Packet			net_packet;
 			net_packet.w_begin	(M_SAVE_GAME);
 			net_packet.w_stringZ(S);
 			net_packet.w_u8		(0);
 			Level().Send		(net_packet,net_flags(TRUE));
-		}else{
-			if(!valid_file_name(S)){
+			
+			if (last_quick < quick_save_counter)
+				last_quick++;
+			else
+				last_quick = 0;
+		}
+		else
+		{
+			if(!valid_file_name(S))
+			{
 				Msg("invalid file name");
 				return;
 			}
@@ -629,8 +668,6 @@ public:
 	  }
 };
 
-
-#ifndef MASTER_GOLD
 class CCC_Script : public IConsole_Command {
 public:
 	CCC_Script(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -682,7 +719,6 @@ public:
 		}
 	}
 };
-#endif // MASTER_GOLD
 
 #ifdef DEBUG
 
@@ -1006,7 +1042,6 @@ struct CCC_ClearSmartCastStats : public IConsole_Command {
 };
 #endif
 
-#ifndef MASTER_GOLD
 #	include "game_graph.h"
 struct CCC_JumpToLevel : public IConsole_Command {
 	CCC_JumpToLevel(LPCSTR N) : IConsole_Command(N)  {};
@@ -1029,10 +1064,8 @@ struct CCC_JumpToLevel : public IConsole_Command {
 		Msg							("! There is no level \"%s\" in the game graph!",level);
 	}
 };
-#endif // MASTER_GOLD
 
 #include "GamePersistent.h"
-
 
 class CCC_MainMenu : public IConsole_Command {
 public:
@@ -1547,6 +1580,17 @@ public:
 		//if (!Device.editor())
 		g_pGamePersistent->Environment().SetWeather(args, true);
 	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (FS.path_exist("$game_weathers$"))
+			get_files_list(tips, "$game_weathers$", ".ltx");
+		else
+		{
+			for (auto& it : g_pGamePersistent->Environment().WeatherCycles)
+				tips.push_back(it.first);
+		}
+	}
 };
 
 void CCC_RegisterCommands()
@@ -1586,9 +1630,8 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_weapon",			&psHUD_Flags,	HUD_WEAPON);
 	CMD3(CCC_Mask,				"hud_info",				&psHUD_Flags,	HUD_INFO);
 
-#ifndef MASTER_GOLD
 	CMD3(CCC_Mask,				"hud_draw",				&psHUD_Flags,	HUD_DRAW);
-#endif // MASTER_GOLD
+
 	// hud
 	psHUD_Flags.set(HUD_CROSSHAIR,		true);
 	psHUD_Flags.set(HUD_WEAPON,			true);
@@ -1598,7 +1641,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 
-	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV,		0.1f,	1.0f);
+	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV_def,	0.25f,	1.0f);
 	CMD4(CCC_Float,				"fov",					&g_fov,			5.0f,	180.0f);
 
 	// Demo
@@ -1674,10 +1717,6 @@ void CCC_RegisterCommands()
 	CMD1(CCC_DebugFonts,		"debug_fonts");
 	CMD1(CCC_TuneAttachableItem,"dbg_adjust_attachable_item");
 
-	// adjust mode support
-	CMD4(CCC_Integer,			"hud_adjust_mode",		&g_bHudAdjustMode,	0, 5);
-	CMD4(CCC_Float,				"hud_adjust_value",		&g_fHudAdjustValue,	0.0f, 1.0f);
-
 	CMD1(CCC_ShowAnimationStats,"ai_show_animation_stats");
 #endif // DEBUG
 	
@@ -1697,16 +1736,6 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,			"ph_tri_clear_disable_count",	&ph_tri_clear_disable_count	,			0,		255				);
 	CMD4(CCC_FloatBlock,		"ph_tri_query_ex_aabb_rate",	&ph_tri_query_ex_aabb_rate	,			1.01f	,3.f			);
 #endif // DEBUG
-
-
-#ifndef MASTER_GOLD
-	CMD1(CCC_JumpToLevel,	"jump_to_level"		);
-	CMD3(CCC_Mask,			"g_god",			&psActorFlags,	AF_GODMODE	);
-	CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags,	AF_UNLIMITEDAMMO);
-	CMD1(CCC_Script,		"run_script");
-	CMD1(CCC_ScriptCommand,	"run_string");
-	CMD1(CCC_TimeFactor,	"time_factor");		
-#endif // MASTER_GOLD
 
 	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
 
@@ -1819,6 +1848,19 @@ void CCC_RegisterCommands()
 	CMD1(CCC_Giveinfo,		"g_info");
 	CMD1(CCC_Disinfo,		"d_info");
 	CMD1(CCC_SetWeather,	"set_weather");
+	CMD1(CCC_JumpToLevel,	"jump_to_level");
+	CMD3(CCC_Mask,			"g_god",					&psActorFlags,				AF_GODMODE);
+	CMD3(CCC_Mask,			"g_unlimitedammo",			&psActorFlags,				AF_UNLIMITEDAMMO);
+	CMD1(CCC_Script,		"run_script");
+	CMD1(CCC_ScriptCommand,	"run_string");
+	CMD1(CCC_TimeFactor,	"time_factor");	
+
+	// adjust mode support
+	CMD4(CCC_Integer,		"hud_adjust_mode",			&g_bHudAdjustMode,			0, 5);
+	CMD4(CCC_Float,			"hud_adjust_value",			&g_fHudAdjustValue,			0.0f, 1.0f);
+
+	CMD3(CCC_Mask,			"ph_corpse_collision",		&psActorFlags,				AF_COLLISION);
+	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
 
 	register_mp_console_commands					();
 }

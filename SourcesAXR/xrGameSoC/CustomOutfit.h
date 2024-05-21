@@ -56,4 +56,11 @@ public:
 
 	virtual void			net_Export			(NET_Packet& P);
 	virtual void			net_Import			(NET_Packet& P);
+
+	virtual void			UpdateHudMask		();
+
+			int				HudMaskElement;
+			bool			HelmetInSlot;
+			IC int			GetHudMaskElement	()	const { return HudMaskElement; }
+			IC bool			GetHelmetStatus		()	const { return HelmetInSlot; }
 };

@@ -30,6 +30,8 @@
 #include "ai_space.h"
 #include "script_engine.h"
 
+#include "CustomOutfit.h"
+
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
 #endif // MASTER_GOLD
@@ -853,4 +855,16 @@ void CGamePersistent::LoadTitle(bool change_tip, shared_str map_name)
 bool CGamePersistent::CanBePaused()
 {
 	return IsGameTypeSingle() || (g_pGameLevel && Level().IsDemoPlay());
+}
+
+int CGamePersistent::GetHudMaskElement()
+{
+	CCustomOutfit Outfit;
+	return	(Outfit.GetHudMaskElement());
+}
+
+bool CGamePersistent::GetHelmetStatus()
+{
+	CCustomOutfit Outfit;
+	return	(Outfit.GetHelmetStatus());
 }
