@@ -538,3 +538,16 @@ void CScriptGameObject::invulnerable		(bool invulnerable)
 
 	monster->invulnerable	(invulnerable);
 }
+
+bool CScriptGameObject::addon_IsActorHideout() const
+{
+	static bool actorInhideout = true;
+	static u32 last_ray_pick_time = Device.dwTimeGlobal;
+	if (Device.dwTimeGlobal > (last_ray_pick_time + 500)) {
+		last_ray_pick_time = Device.dwTimeGlobal;
+		collide::rq_result RQ;
+		actorInhideout = !!g_pGameLevel->ObjectSpace.RayPick(Device.vCameraPosition, Fvector().set(0, 1, 0), 50.f, collide::rqtBoth, RQ, g_pGameLevel->CurrentViewEntity());
+	}
+
+	return actorInhideout;
+}

@@ -1,5 +1,6 @@
 #include "pch_script.h"
 #include "../xrEngine/xr_ioconsole.h"
+#include "../xrEngine/x_ray.h"
 #include "../xrEngine/xr_ioc_cmd.h"
 #include "../xrEngine/customhud.h"
 #include "../xrEngine/fdemorecord.h"
@@ -58,6 +59,7 @@
 
 string_path		g_last_saved_game;
 int				quick_save_counter = 0;
+extern u32		last_quick;
 
 extern void show_smart_cast_stats		();
 extern void clear_smart_cast_stats		();
@@ -462,7 +464,6 @@ public:
 #endif
 		if (!xr_strlen(S))
 		{
-			static u32 last_quick = 0;
 			xr_sprintf			(S, "%s - quicksave %d", Core.UserName, last_quick);
 			NET_Packet			net_packet;
 			net_packet.w_begin	(M_SAVE_GAME);
@@ -1063,6 +1064,23 @@ struct CCC_JumpToLevel : public IConsole_Command {
 			}
 		Msg							("! There is no level \"%s\" in the game graph!",level);
 	}
+
+	virtual void	Save(IWriter *F) {};
+	virtual void	fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+
+		GameGraph::LEVEL_MAP::const_iterator	itb = ai().game_graph().header().levels().begin();
+		GameGraph::LEVEL_MAP::const_iterator	ite = ai().game_graph().header().levels().end();
+		for (; itb != ite; ++itb)
+		{
+			tips.push_back((*itb).second.name());
+		}
+	}
 };
 
 #include "GamePersistent.h"
@@ -1618,9 +1636,10 @@ void CCC_RegisterCommands()
 	CMD1(CCC_FlushLog,			"flush"					);		// flush log
 	CMD1(CCC_ClearLog,			"clear_log"					);
 
+	CMD1(CCC_ALifeSwitchDistance,	"al_switch_distance"	);		// set switch distance
+
 #ifndef MASTER_GOLD
 	CMD1(CCC_ALifeTimeFactor,		"al_time_factor"		);		// set time factor
-	CMD1(CCC_ALifeSwitchDistance,	"al_switch_distance"	);		// set switch distance
 	CMD1(CCC_ALifeProcessTime,		"al_process_time"		);		// set process time
 	CMD1(CCC_ALifeObjectsPerUpdate,	"al_objects_per_update"	);		// set process time
 	CMD1(CCC_ALifeSwitchFactor,		"al_switch_factor"		);		// set switch factor
@@ -1843,22 +1862,27 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,		"keypress_on_start",		&g_keypress_on_start, 0, 1);
 
 	// AXR: New Commands
-	CMD1(CCC_Spawn,			"g_spawn");
-	CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
-	CMD1(CCC_Giveinfo,		"g_info");
-	CMD1(CCC_Disinfo,		"d_info");
-	CMD1(CCC_SetWeather,	"set_weather");
-	CMD1(CCC_JumpToLevel,	"jump_to_level");
-	CMD3(CCC_Mask,			"g_god",					&psActorFlags,				AF_GODMODE);
-	CMD3(CCC_Mask,			"g_unlimitedammo",			&psActorFlags,				AF_UNLIMITEDAMMO);
-	CMD1(CCC_Script,		"run_script");
-	CMD1(CCC_ScriptCommand,	"run_string");
-	CMD1(CCC_TimeFactor,	"time_factor");	
+
+	if (bDeveloperMode)
+	{
+		CMD1(CCC_Spawn,			"g_spawn");
+		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
+		CMD1(CCC_Giveinfo,		"g_info");
+		CMD1(CCC_Disinfo,		"d_info");
+		CMD1(CCC_SetWeather,	"set_weather");
+		CMD1(CCC_JumpToLevel,	"jump_to_level");
+		CMD3(CCC_Mask,			"g_god",					&psActorFlags,				AF_GODMODE);
+		CMD3(CCC_Mask,			"g_unlimitedammo",			&psActorFlags,				AF_UNLIMITEDAMMO);
+		CMD1(CCC_Script,		"run_script");
+		CMD1(CCC_ScriptCommand,	"run_string");
+		CMD1(CCC_TimeFactor,	"time_factor");
+	}
 
 	// adjust mode support
 	CMD4(CCC_Integer,		"hud_adjust_mode",			&g_bHudAdjustMode,			0, 5);
 	CMD4(CCC_Float,			"hud_adjust_value",			&g_fHudAdjustValue,			0.0f, 1.0f);
 
+	CMD3(CCC_Mask,			"g_right_shoulder",			&psActorFlags,				AF_RIGHT_SHOULDER);
 	CMD3(CCC_Mask,			"ph_corpse_collision",		&psActorFlags,				AF_COLLISION);
 	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
 

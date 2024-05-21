@@ -61,7 +61,13 @@ void CWeaponMagazined::Load	(LPCSTR section)
 	// Sounds
 	m_sounds.LoadSound	(section, "snd_draw", "sndShow", false, m_eSoundShow);
 	m_sounds.LoadSound	(section, "snd_holster", "sndHide", false, m_eSoundHide);
-	m_sounds.LoadSound	(section, "snd_shoot", "sndShot", false, m_eSoundShot);
+	
+	//Alundaio: LAYERED_SND_SHOOT
+	m_sounds.LoadSound(section, "snd_shoot", "sndShot", m_eSoundShot);
+	if (WeaponSoundExist(section, "snd_shoot_actor"))
+		m_sounds.LoadSound(section, "snd_shoot_actor", "sndShotActor", m_eSoundShot);
+	//-Alundaio
+
 	m_sounds.LoadSound	(section, "snd_empty", "sndEmptyClick", false, m_eSoundEmptyClick);
 	m_sounds.LoadSound	(section, "snd_reload", "sndReload", false, m_eSoundReload);
 	
@@ -1183,4 +1189,18 @@ void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_na
 
 		str_count				= sItemName;
 	}
+}
+
+// AVO: for custom added sounds check if sound exists
+bool CWeaponMagazined::WeaponSoundExist(LPCSTR section, LPCSTR sound_name, bool log) const
+{
+	pcstr str;
+	bool sec_exist = process_if_exists_set(section, sound_name, &CInifile::r_string, str, true);
+	if (sec_exist)
+		return true;
+#ifdef DEBUG
+	if (log)
+		Msg("~ [WARNING] ------ Sound [%s] does not exist in [%s]", sound_name, section);
+#endif
+	return false;
 }

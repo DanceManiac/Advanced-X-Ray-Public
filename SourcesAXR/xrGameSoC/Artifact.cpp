@@ -67,6 +67,11 @@ CArtefact::CArtefact(void)
 	m_pTrailLight				= NULL;
 	m_activationObj				= NULL;
 	m_additional_weight			= 0.0f;
+
+	m_bVolumetricLights			= false;
+	m_fVolumetricQuality		= 1.0f;
+	m_fVolumetricDistance		= 0.3f;
+	m_fVolumetricIntensity		= 0.5f;
 }
 
 
@@ -82,10 +87,18 @@ void CArtefact::Load(LPCSTR section)
 		m_sParticlesName	= pSettings->r_string(section, "particles");
 
 	m_bLightsEnabled		= !!pSettings->r_bool(section, "lights_enabled");
-	if(m_bLightsEnabled){
+	
+	if(m_bLightsEnabled)
+	{
 		sscanf(pSettings->r_string(section,"trail_light_color"), "%f,%f,%f", 
 			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
+
 		m_fTrailLightRange	= pSettings->r_float(section,"trail_light_range");
+
+		m_bVolumetricLights			= READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+		m_fVolumetricQuality		= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+		m_fVolumetricDistance		= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+		m_fVolumetricIntensity		= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
 	}
 
 

@@ -241,7 +241,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			mstate_real|=mcSprint;
 		else
 			mstate_real&=~mcSprint;
-		if(!(mstate_real&(mcFwd|mcLStrafe|mcRStrafe))||mstate_real&(mcCrouch|mcClimb)|| !isActorAccelerated(mstate_wf, IsZoomAimingMode()))
+		if (!(mstate_real & (mcFwd | mcLStrafe | mcRStrafe)) || (mstate_real & mcFwd && mstate_real & mcBack) || (mstate_real & mcLStrafe && mstate_real & mcRStrafe) || mstate_real & (mcCrouch | mcClimb) || !isActorAccelerated(mstate_wf, IsZoomAimingMode()))
 		{
 			mstate_real&=~mcSprint;
 			mstate_wishful&=~mcSprint;
@@ -424,15 +424,20 @@ bool CActor::g_LadderOrient()
 void CActor::g_cl_Orientate	(u32 mstate_rl, float dt)
 {
 	// capture camera into torso (only for FirstEye & LookAt cameras)
-	if (eacFreeLook!=cam_active)
+	if (eacLookAt == cam_active)
 	{
-		r_torso.yaw		=	cam_Active()->GetWorldYaw	();
-		r_torso.pitch	=	cam_Active()->GetWorldPitch	();
+		r_torso.yaw = cam_Active()->GetWorldYaw();
+		r_torso.pitch = cam_Active()->GetWorldPitch();
+	}
+	else if (eacFreeLook == cam_active)
+	{
+		r_torso.yaw = cam_FirstEye()->GetWorldYaw();
+		r_torso.pitch = cam_FirstEye()->GetWorldPitch();
 	}
 	else
 	{
-		r_torso.yaw		=	cam_FirstEye()->GetWorldYaw	();
-		r_torso.pitch	=	cam_FirstEye()->GetWorldPitch	();
+		r_torso.yaw = cam_FirstEye()->GetWorldYaw();
+		r_torso.pitch = 0;
 	}
 
 	unaffected_r_torso.yaw		= r_torso.yaw;
@@ -453,18 +458,40 @@ void CActor::g_cl_Orientate	(u32 mstate_rl, float dt)
 		r_model_yaw		= angle_normalize(r_torso.yaw);
 		mstate_real		&=~mcTurn;
 	} else {
-		// if camera rotated more than 45 degrees - align model with it
-		float ty = angle_normalize(r_torso.yaw);
-		if (_abs(r_model_yaw-ty)>PI_DIV_4 - 30)	{
-			r_model_yaw_dest = ty;
-			// 
-			mstate_real	|= mcTurn;
+		if (eacFirstEye != cam_active)
+		{
+			// if camera rotated more than 45 degrees - align model with it
+			float ty = angle_normalize(r_torso.yaw);
+			if (_abs(r_model_yaw - ty) > PI_DIV_4) {
+				r_model_yaw_dest = ty;
+				// 
+				mstate_real |= mcTurn;
+			}
+			if (_abs(r_model_yaw - r_model_yaw_dest) < EPS_L) {
+				mstate_real &= ~mcTurn;
+			}
+			if (mstate_rl & mcTurn) {
+				angle_lerp(r_model_yaw, r_model_yaw_dest, PI_MUL_2, dt);
+			}
 		}
-		if (_abs(r_model_yaw-r_model_yaw_dest)<EPS_L){
-			mstate_real	&=~mcTurn;
-		}
-		if (mstate_rl&mcTurn){
-			angle_lerp	(r_model_yaw,r_model_yaw_dest,PI_MUL_2,dt);
+		else {
+			// if camera rotated more than 35 degrees - align model with it
+			float ty = angle_normalize(r_torso.yaw);
+			if (_abs(r_model_yaw - ty) > PI_DIV_6) {
+				if ((r_model_yaw - ty) > 0)
+					r_model_yaw = angle_normalize(r_torso.yaw + PI_DIV_6);
+				else
+					r_model_yaw = angle_normalize(r_torso.yaw - PI_DIV_6);
+				r_model_yaw_dest = ty;
+				// 
+				mstate_real |= mcTurn;
+			}
+			if (_abs(r_model_yaw - r_model_yaw_dest) < EPS_L) {
+				mstate_real &= ~mcTurn;
+			}
+			if (mstate_rl & mcTurn) {
+				angle_lerp(r_model_yaw, r_model_yaw_dest, PI_MUL_2, dt);
+			}
 		}
 	}
 }

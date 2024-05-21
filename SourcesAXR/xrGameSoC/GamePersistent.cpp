@@ -23,6 +23,7 @@
 
 #include "UI/UIGameTutorial.h"
 #include "ui/UILoadingScreen.h"
+#include "ActorCondition.h"
 
 #include "string_table.h"
 
@@ -31,6 +32,9 @@
 #include "script_engine.h"
 
 #include "CustomOutfit.h"
+
+#include "AdvancedXrayGameConstants.h"
+#include "DynamicHudGlass.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -857,16 +861,54 @@ bool CGamePersistent::CanBePaused()
 	return IsGameTypeSingle() || (g_pGameLevel && Level().IsDemoPlay());
 }
 
-int CGamePersistent::GetHudMaskElement()
+int CGamePersistent::GetHudGlassElement()
 {
-	CCustomOutfit Outfit;
-	return	(Outfit.GetHudMaskElement());
+	return	(DynamicHudGlass::GetHudGlassElement());
 }
 
-bool CGamePersistent::GetHelmetStatus()
+bool CGamePersistent::GetHudGlassEnabled()
 {
-	CCustomOutfit Outfit;
-	return	(Outfit.GetHelmetStatus());
+	return	(DynamicHudGlass::GetHudGlassEnabled());
+}
+
+float CGamePersistent::GetActorMaxHealth()
+{
+	return	(Actor()->GetMaxHealth());
+}
+
+float CGamePersistent::GetActorHealth()
+{
+	return	(Actor()->GetfHealth());
+}
+
+float CGamePersistent::GetActorMaxPower()
+{
+	return	(Actor()->conditions().GetMaxPower());
+}
+
+float CGamePersistent::GetActorPower()
+{
+	return	(Actor()->conditions().GetPower());
+}
+
+float CGamePersistent::GetActorBleeding()
+{
+	return	(Actor()->conditions().BleedingSpeed());
+}
+
+bool CGamePersistent::GetActorAliveStatus()
+{
+	return	(Actor()->g_Alive());
+}
+
+bool CGamePersistent::GetActor()
+{
+	return	(Actor());
+}
+
+bool CGamePersistent::IsCamFirstEye()
+{
+	return	(Actor() && Actor()->active_cam() == eacFirstEye);
 }
 
 void CGamePersistent::EditorOnFrame()

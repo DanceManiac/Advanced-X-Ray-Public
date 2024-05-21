@@ -6,6 +6,11 @@
 #include "../../xrEngine/xr_ioc_cmd.h"
 #endif //#ifdef DEBUG
 #include "../string_table.h"
+
+// Lex Addon (correct by Suhar_) 29.05.2019		(begin)
+#include "../Level.h"
+// Lex Addon (correct by Suhar_) 29.05.2019		(end)
+
 CRestrictions g_mp_restrictions;
 
 shared_str	g_ranks[_RANK_COUNT];
@@ -31,12 +36,13 @@ u32 get_rank(const shared_str &section)
 		}
 	}
 
-	if (res == -1)
-	{
-		Msg("Setting rank to 0. Cannot find rank for: [%s]", section.c_str());
-		// Xottab_DUTY: I`m not sure if it`s save to leave it -1
+	// Lex Addon (correct by Suhar_) 29.05.2019		(begin)
+	//   -       
+	if (IsGameTypeSingle() && res == -1)
 		res = 0;
-	}
+
+	R_ASSERT3(res != -1, "cannot find rank for", section.c_str());
+	// Lex Addon (correct by Suhar_) 29.05.2019		(end)
 
 	return		res;
 }

@@ -15,6 +15,7 @@ public:
 	
 	//уменьшенная версия хита, для вызова, когда костюм надет на персонажа
 	virtual void					Hit					(float P, ALife::EHitType hit_type);
+	virtual void					UpdateCL			();
 
 	//коэффициенты на которые домножается хит
 	//при соответствующем типе воздействия
@@ -50,17 +51,13 @@ public:
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
 	shared_str						m_NightVisionSect;
+
+	bool							m_b_HasGlass;
+
 	virtual u32						ef_equipment_type		() const;
 	virtual	BOOL					BonePassBullet			(int boneID);
 	const shared_str&				GetFullIconName			() const	{return m_full_icon_name;};
 
 	virtual void			net_Export			(NET_Packet& P);
 	virtual void			net_Import			(NET_Packet& P);
-
-	virtual void			UpdateHudMask		();
-
-			int				HudMaskElement;
-			bool			HelmetInSlot;
-			IC int			GetHudMaskElement	()	const { return HudMaskElement; }
-			IC bool			GetHelmetStatus		()	const { return HelmetInSlot; }
 };

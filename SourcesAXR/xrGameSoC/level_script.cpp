@@ -31,6 +31,7 @@
 
 #include "alife_simulator.h"
 #include "alife_time_manager.h"
+#include "game_sv_single.h"
 
 using namespace luabind;
 
@@ -121,6 +122,19 @@ float get_wfx_time()
 void stop_weather_fx()
 {
 	g_pGamePersistent->Environment().StopWFX();
+}
+
+void change_game_time(u32 days, u32 hours, u32 mins)
+{
+	game_sv_Single* tpGame = smart_cast<game_sv_Single*>(Level().Server->game);
+	if (tpGame && ai().get_alife())
+	{
+		u32 value = days * 86400 + hours * 3600 + mins * 60;
+		float fValue = static_cast<float> (value);
+		value *= 1000;//msec		
+		g_pGamePersistent->Environment().ChangeGameTime(fValue);
+		tpGame->alife().time_manager().change_game_time(value);
+	}
 }
 
 void set_time_factor(float time_factor)
@@ -595,6 +609,7 @@ void CLevel::script_register(lua_State *L)
 		def("get_time_days",					get_time_days),
 		def("get_time_hours",					get_time_hours),
 		def("get_time_minutes",					get_time_minutes),
+		def("change_game_time",					change_game_time),
 
 		def("cover_in_direction",				cover_in_direction),
 		def("vertex_in_direction",				vertex_in_direction),

@@ -120,6 +120,22 @@ void CCar::reload		(LPCSTR section)
 		m_memory->reload	(section);
 }
 
+void CCar::Rotate_z(CBoneInstance* B)
+{
+
+	CCar* C = static_cast<CCar*>(B->callback_param());
+	Fmatrix m;
+
+
+	u32 cur_time = Device.dwTimeGlobal;
+	if (C->b_engine_on != true)
+		m.rotateZ(0);
+	else
+		m.rotateZ(cur_time / 100.0f * 0.5f);
+
+	B->mTransform.mulB_43(m);
+}
+
 void CCar::cb_Steer			(CBoneInstance* B)
 {
 	VERIFY2(fsimilar(DET(B->mTransform),1.f,DET_CHECK_EPS),"Bones receive returns 0 matrix");
@@ -418,22 +434,33 @@ BOOL CCar::AlwaysTheCrow()
 	return (m_car_weapon && m_car_weapon->IsActive() );
 }
 
-void CCar::UpdateCL				( )
+void CCar::UpdateCL()
 {
 	inherited::UpdateCL();
 	CExplosive::UpdateCL();
+
 	if(m_car_weapon)
 	{
 		m_car_weapon->UpdateCL();
 		if(m_memory)
 			m_memory->set_camera(m_car_weapon->ViewCameraPos(), m_car_weapon->ViewCameraDir(), m_car_weapon->ViewCameraNorm());
+
+		if (OwnerActor() && HasWeapon() && m_car_weapon->IsActive())
+		{
+			collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+			CCameraBase* C = active_camera;
+			m_car_weapon->SetParam(CCarWeapon::eWpnDesiredPos, C->vPosition.add(C->vDirection.mul(RQ.range)));
+		}
 	}
-	ASCUpdate			();
-	if(Owner()) return;
-//	UpdateEx			(g_fov);
+
+	ASCUpdate();
+
+	if (Owner())
+		return;
+
 	VisualUpdate(90);
 	if (GetScriptControl())
-			ProcessScripts();
+		ProcessScripts();
 
 }
 
@@ -600,18 +627,21 @@ void CCar::ApplyDamage(u16 level)
 }
 void CCar::detach_Actor()
 {
-	if(!Owner()) return;
+	if(!Owner())
+		return;
 	Owner()->setVisible(1);
 	CHolderCustom::detach_Actor();
 	PPhysicsShell()->remove_ObjectContactCallback(ActorObstacleCallback);
 	NeutralDrive();
 	Unclutch();
 	ResetKeys();
-	m_current_rpm=m_min_rpm;
+	m_current_rpm = m_min_rpm;
 	HUD().GetUI()->UIMainIngameWnd->CarPanel().Show(false);
-	///Break();
-	//H_SetParent(NULL);
 	HandBreak();
+
+	if (HasWeapon())
+		m_car_weapon->Action(CCarWeapon::eWpnFire, 0);
+
 	processing_deactivate();
 #ifdef DEBUG
 	DBgClearPlots();
@@ -823,7 +853,12 @@ void CCar::ParseDefinitions()
 
 void CCar::CreateSkeleton(CSE_Abstract	*po)
 {
-	if (!Visual()) return;
+	if (m_pPhysicsShell)
+		return;
+
+	if (!Visual())
+		return;
+
 	IKinematicsAnimated* K = smart_cast<IKinematicsAnimated*>(Visual());
 	if (K)
 	{
@@ -831,13 +866,7 @@ void CCar::CreateSkeleton(CSE_Abstract	*po)
 		K->OnCalculateBones();
 	}
 
-#pragma todo(" replace below by P_build_Shell or call inherited")
-	m_pPhysicsShell = P_create_Shell();
-	m_pPhysicsShell->build_FromKinematics(smart_cast<IKinematics*>(Visual()), &bone_map);
-	m_pPhysicsShell->set_PhysicsRefObject(this);
-	m_pPhysicsShell->mXFORM.set(XFORM());
-	m_pPhysicsShell->Activate(true);
-	m_pPhysicsShell->SetAirResistance(0.f, 0.f);
+	m_pPhysicsShell = P_build_Shell(this, true, &bone_map);
 	m_pPhysicsShell->SetPrefereExactIntegration();
 
 	ApplySpawnIniToPhysicShell(&po->spawn_ini(), m_pPhysicsShell, false);
@@ -867,6 +896,14 @@ void CCar::Init()
 		VERIFY2(fsimilar(DET(pKinematics->LL_GetTransform(m_bone_steer)),1.f,EPS_L),"BBADD MTX");
 		pKinematics->LL_GetBoneInstance(m_bone_steer).set_callback(bctPhysics,cb_Steer,this);
 	}
+
+	if (ini->line_exist("car_definition", "rotate_z"))
+	{
+		m_bone_steer = pKinematics->LL_BoneID(ini->r_string("car_definition", "rotate_z"));
+		VERIFY2(fsimilar(DET(pKinematics->LL_GetTransform(m_bone_steer)), 1.f, EPS_L), "BBADD MTX");
+		pKinematics->LL_GetBoneInstance(m_bone_steer).set_callback(bctPhysics, Rotate_z, this);
+	}
+
 	m_steer_angle=0.f;
 	//ref_wheel.Init();
 	m_ref_radius=ini->r_float("car_definition","reference_radius");//ref_wheel.radius;
@@ -1059,6 +1096,17 @@ void CCar::SwitchEngine()
 	if(b_engine_on) StopEngine();
 	else			StartEngine();
 }
+
+///**Horn**///
+void CCar::SwitchHorn()
+{
+	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual());
+	CInifile* ini = pKinematics->LL_UserData();
+	snd_horn.create(ini->r_string("car_sound", "snd_horn_name"), st_Effect, sg_SourceType);
+	snd_horn.play_at_pos(Actor(), Actor()->Position());
+}
+///**Horn**///
+
 void CCar::Clutch()
 {
 	b_clutch=true;
@@ -1780,6 +1828,8 @@ void CCar::CarExplode()
 	CPHSkeleton::SetNotNeedSave();
 	if(m_car_weapon)m_car_weapon->Action(CCarWeapon::eWpnActivate,0);
 	m_lights.TurnOffHeadLights();
+	m_damage_particles.Stop1(this);
+	m_damage_particles.Stop2(this);
 	b_exploded=true;
 	CExplosive::GenExplodeEvent(Position(),Fvector().set(0.f,1.f,0.f));
 
@@ -2024,3 +2074,74 @@ Fvector	CCar::		ExitVelocity				()
 	return v;
 }
 
+/************************************************** added by Ray Twitty (aka Shadows) START **************************************************/
+
+float CCar::GetfFuel()
+{
+	return m_fuel;
+}
+void CCar::SetfFuel(float fuel)
+{
+	m_fuel = fuel;
+}
+
+float CCar::GetfFuelTank()
+{
+	return m_fuel_tank;
+}
+void CCar::SetfFuelTank(float fuel_tank)
+{
+	m_fuel_tank = fuel_tank;
+}
+
+float CCar::GetfFuelConsumption()
+{
+	return m_fuel_consumption;
+}
+void CCar::SetfFuelConsumption(float fuel_consumption)
+{
+	m_fuel_consumption = fuel_consumption;
+}
+
+void CCar::ChangefFuel(float fuel)
+{
+	if (m_fuel + fuel < 0)
+	{
+		m_fuel = 0;
+		return;
+	}
+
+	if (fuel < m_fuel_tank - m_fuel)
+	{
+		m_fuel += fuel;
+	}
+	else
+	{
+		m_fuel = m_fuel_tank;
+	}
+}
+
+void CCar::ChangefHealth(float health)
+{
+	float current_health = GetfHealth();
+	if (current_health + health < 0)
+	{
+		SetfHealth(0);
+		return;
+	}
+
+	if (health < 1 - current_health)
+	{
+		SetfHealth(current_health + health);
+	}
+	else
+	{
+		SetfHealth(1);
+	}
+}
+
+bool CCar::isActiveEngine()
+{
+	return b_engine_on;
+}
+/*************************************************** added by Ray Twitty (aka Shadows) END ***************************************************/

@@ -6602,6 +6602,12 @@
     <ClInclude Include="embedded_editor\embedded_editor_weather.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="AdvancedXrayGameConstants.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicHudGlass.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9777,6 +9783,12 @@
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
       <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="AdvancedXrayGameConstants.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicHudGlass.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

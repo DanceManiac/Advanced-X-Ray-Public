@@ -36,3 +36,8 @@ IC void CALifeTimeManager::set_game_time_factor(ALife::_TIME_ID gameTime, const 
 	m_start_time = Device.dwTimeGlobal;
 	m_time_factor = timeFactor;
 }
+
+IC	void CALifeTimeManager::change_game_time(u32 value)
+{
+	m_game_time += value;
+}

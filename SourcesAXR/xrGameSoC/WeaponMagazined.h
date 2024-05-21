@@ -183,6 +183,8 @@ protected:
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();
 
+	bool	WeaponSoundExist			(LPCSTR section, LPCSTR sound_name, bool log = false) const;
+
 };
 
 #endif //__XR_WEAPON_MAG_H__

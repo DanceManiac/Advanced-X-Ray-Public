@@ -9,6 +9,7 @@ enum{
 		AF_AUTOPICKUP		=(1<<5),
 		AF_PSP				=(1<<6),
 		AF_COLLISION		=(1<<10),
+		AF_RIGHT_SHOULDER	=(1<<11),
 };
 
 extern Flags32 psActorFlags;

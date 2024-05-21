@@ -39,6 +39,7 @@
 
 bool g_bDisableAllInput = false;
 extern	float	g_fTimeFactor;
+u32	last_quick = 0;
 
 #define CURRENT_ENTITY()	(game?((GameID() == GAME_SINGLE) ? CurrentEntity() : CurrentControlEntity()):NULL)
 
@@ -184,7 +185,7 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		//FS.rescan_pathes			();
 #endif // DEBUG
 		string_path					saved_game,command;
-		strconcat					(sizeof(saved_game),saved_game,Core.UserName,"_","quicksave");
+		xr_sprintf					(saved_game, "%s - quicksave %d", Core.UserName, last_quick - 1);
 		if (!CSavedGameWrapper::valid_saved_game(saved_game))
 			return;
 

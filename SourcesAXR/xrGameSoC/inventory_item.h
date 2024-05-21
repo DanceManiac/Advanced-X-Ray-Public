@@ -233,6 +233,9 @@ public:
 protected:
 	IC	CInventoryOwner&		inventory_owner				() const;
 
+	template <typename T>
+	IC static bool				process_if_exists_set		( LPCSTR section, LPCSTR name, T (CInifile::*method)(LPCSTR, LPCSTR)const, T& value, bool test );
+
 private:
 	CPhysicsShellHolder*		m_object;
 

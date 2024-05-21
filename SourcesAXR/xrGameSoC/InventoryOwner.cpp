@@ -29,6 +29,8 @@
 
 #include "CustomOutfit.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 CInventoryOwner::CInventoryOwner			()
 {
 	m_pTrade					= NULL;
@@ -330,7 +332,7 @@ void CInventoryOwner::spawn_supplies		()
 	if (smart_cast<CBaseMonster*>(this))	return;
 
 
-	if (use_bolts())
+	if (use_bolts() && !GameConstants::GetLimitedBolts())
 		Level().spawn_item					("bolt",game_object->Position(),game_object->ai_location().level_vertex_id(),game_object->ID());
 
 	if (!ai().get_alife() && GameID()==GAME_SINGLE) {

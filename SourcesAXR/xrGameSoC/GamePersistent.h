@@ -85,8 +85,16 @@ public:
 
 	virtual bool		CanBePaused				();
 
-			int			GetHudMaskElement		();
-			bool		GetHelmetStatus			();
+			int			GetHudGlassElement		();
+			bool		GetHudGlassEnabled		();
+			float		GetActorMaxHealth		() override;
+			float		GetActorHealth			() override;
+			float		GetActorMaxPower		() override;
+			float		GetActorPower			() override;
+			float		GetActorBleeding		() override;
+			bool		GetActorAliveStatus		();
+			bool		GetActor				();
+			bool		IsCamFirstEye			();
 
 	virtual void		EditorOnFrame			();
 };

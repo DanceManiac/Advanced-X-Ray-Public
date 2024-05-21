@@ -69,6 +69,8 @@
 #include "InventoryBox.h"
 #include "location_manager.h"
 
+#include "DynamicHudGlass.h"
+
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
 const float		respawn_auto	= 7.f;
@@ -964,6 +966,9 @@ void CActor::UpdateCL	()
 }
 
 float	NET_Jump = 0;
+
+#include "ai\monsters\ai_monster_utils.h"
+
 void CActor::shedule_Update	(u32 DT)
 {
 	setSVU(OnServer());
@@ -1146,7 +1151,18 @@ void CActor::shedule_Update	(u32 DT)
 	collide::rq_result& RQ = HUD().GetCurrentRayQuery();
 	
 
-	if(!input_external_handler_installed() && RQ.O &&  RQ.range<inventory().GetTakeDist()) 
+	float InteractionDist;
+	if (eacFirstEye != cam_active)
+		InteractionDist = 2.4f;
+	else
+		InteractionDist = 2.0f;
+
+	float dist_to_obj = RQ.range;
+
+	if (RQ.O && eacFirstEye != cam_active)
+		dist_to_obj = get_bone_position(this, "bip01_spine").distance_to((smart_cast<CGameObject*>(RQ.O))->Position());
+
+	if (!input_external_handler_installed() && RQ.O && dist_to_obj < InteractionDist)
 	{
 		m_pObjectWeLookingAt			= smart_cast<CGameObject*>(RQ.O);
 		
@@ -1207,6 +1223,9 @@ void CActor::shedule_Update	(u32 DT)
 	UpdateRestores								();
 	m_pPhysics_support->in_shedule_Update		(DT);
 	Check_for_AutoPickUp						();
+
+	if (Actor())
+		DynamicHudGlass::UpdateDynamicHudGlass();
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()

@@ -433,6 +433,7 @@ private:
 	CCarLights				m_lights;
 	////////////////////////////////////////////////////
 	/////////////////////////////////////////////////
+public:
 	void				InitParabola();
 	float				Parabola(float rpm);
 	//float GetSteerAngle();
@@ -446,6 +447,10 @@ private:
 	void				 Unclutch							()	;
 	void				 SwitchEngine						()	;
 	void				 NeutralDrive						()	;
+
+	void				 SwitchHorn							()	;
+	ref_sound 			 snd_horn								;
+
 	void				 UpdatePower						()	;
 	void				 ReleasePedals						()	;
 	void				 ResetKeys							()	;
@@ -501,6 +506,19 @@ IC	size_t				CurrentTransmission					(){return m_current_transmission_num;}
 	void UpdateFuel										(float time_delta);
 	float AddFuel										(float ammount); //ammount - fuel to load, ret - fuel loaded
 	void CarExplode										();
+	float GetfFuel										();
+	void SetfFuel										(float fuel);
+	float GetfFuelTank									();
+	void SetfFuelTank									(float fuel_tank);
+	float GetfFuelConsumption							();
+	void SetfFuelConsumption							(float fuel_consumption);
+	void ChangefFuel									(float fuel);
+	void ChangefHealth									(float health);
+	void PlayDamageParticles							() { m_damage_particles.Play1(this); m_damage_particles.Play2(this); }
+	void StopDamageParticles							() { m_damage_particles.Stop1(this); m_damage_particles.Stop2(this); }
+	bool isActiveEngine									();
+	float GetRPM										() { return m_current_rpm; }
+	void SetRPM											(float val) { m_current_rpm = val; }
 	////////////////////////////////////////////		////////
 
 	void					OnCameraChange				(int type);
@@ -511,7 +529,8 @@ IC	size_t				CurrentTransmission					(){return m_current_transmission_num;}
 
 	bool					HUDview						( ) { return IsFocused(); }
 
-	static void				cb_Steer					(CBoneInstance* B);
+	static void	_BCL		Rotate_z					(CBoneInstance* B);
+	static void	_BCL		cb_Steer					(CBoneInstance* B);
 	virtual	void			Hit							(SHit* pHDS);
 	virtual void			Die							(CObject* who);
 	virtual void PHHit									(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type/* =ALife::eHitTypeWound */);

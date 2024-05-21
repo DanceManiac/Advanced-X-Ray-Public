@@ -125,19 +125,71 @@ void CCar::OnKeyboardPress(int cmd)
 
 	switch (cmd)	
 	{
-	case kCAM_1:	OnCameraChange(ectFirst);	break;
-	case kCAM_2:	OnCameraChange(ectChase);	break;
-	case kCAM_3:	OnCameraChange(ectFree);	break;
-	case kACCEL:	TransmissionUp();			break;
-	case kCROUCH:	TransmissionDown();			break;
-	case kFWD:		PressForward();				break;
-	case kBACK:		PressBack();				break;
-	case kR_STRAFE:	PressRight();				if (OwnerActor()) OwnerActor()->steer_Vehicle(1);	break;
-	case kL_STRAFE:	PressLeft();				if (OwnerActor()) OwnerActor()->steer_Vehicle(-1);break;
-	case kJUMP:		PressBreaks();				break;
-	case kTURN_ENGINE:	SwitchEngine();				break;
-	case kTORCH:	m_lights.SwitchHeadLights();break;
-	case kUSE:									break;
+	case kCAM_1:
+		OnCameraChange(ectFirst);
+		break;
+
+	case kCAM_2:
+		OnCameraChange(ectChase);
+		break;
+
+	case kCAM_3:
+		OnCameraChange(ectFree);
+		break;
+
+	case kACCEL:
+		TransmissionUp();
+		break;
+
+	case kCROUCH:
+		TransmissionDown();
+		break;
+
+	case kFWD:
+		PressForward();
+		break;
+
+	case kBACK:
+		PressBack();
+		break;
+
+	case kR_STRAFE:
+		PressRight();
+		if (OwnerActor())
+			OwnerActor()->steer_Vehicle(1);
+		break;
+
+	case kL_STRAFE:
+		PressLeft();
+		if (OwnerActor())
+			OwnerActor()->steer_Vehicle(-1);
+		break;
+
+	case kJUMP:
+		PressBreaks();
+		break;
+
+	case kTURN_ENGINE:
+		SwitchEngine();
+		if (HasWeapon())
+			m_car_weapon->Action(CCarWeapon::eWpnActivate, b_engine_on);
+		break;
+
+	case kTORCH:
+		m_lights.SwitchHeadLights();
+		break;
+
+	case kUSE:
+		break;
+
+	case kWPN_FIRE:
+		if (HasWeapon())
+			m_car_weapon->Action(CCarWeapon::eWpnFire, 1);
+		break;
+
+	case kSWITCH_HORN:
+		SwitchHorn();
+		break;
 	};
 
 }
@@ -152,7 +204,9 @@ void	CCar::OnKeyboardRelease(int cmd)
 	case kBACK:		ReleaseBack();				break;
 	case kL_STRAFE:	ReleaseLeft();				if (OwnerActor()) OwnerActor()->steer_Vehicle(0);	break;
 	case kR_STRAFE:	ReleaseRight();				if (OwnerActor()) OwnerActor()->steer_Vehicle(0);	break;
+	case kWPN_FIRE: 							if (HasWeapon()) m_car_weapon->Action(CCarWeapon::eWpnFire, 0);	break;
 	case kJUMP:		ReleaseBreaks();			break;
+	case kSWITCH_HORN: snd_horn.destroy();		break;
 	};
 }
 

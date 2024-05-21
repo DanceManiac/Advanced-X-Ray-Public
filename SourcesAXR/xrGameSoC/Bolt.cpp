@@ -3,6 +3,9 @@
 #include "ParticlesObject.h"
 #include "PhysicsShell.h"
 #include "xr_level_controller.h"
+#include "actor.h"
+#include "inventory.h"
+#include "AdvancedXrayGameConstants.h"
 
 CBolt::CBolt(void) 
 {
@@ -40,6 +43,30 @@ void CBolt::Deactivate()
 	Hide();
 }
 
+void CBolt::State(u32 state)
+{
+	switch (GetState())
+	{
+	case MS_HIDDEN:
+	{
+		if (GameConstants::GetLimitedBolts())
+		{
+			if (m_pPhysicsShell) m_pPhysicsShell->Deactivate();
+			xr_delete(m_pPhysicsShell);
+			m_dwDestroyTime = 0xffffffff;
+			PutNextToSlot();
+			if (Local())
+			{
+				//Msg("Destroying local bolt[%d][%d]", ID(), Device.dwFrame);
+				DestroyObject();
+			}
+		}
+	}
+	break;
+	}
+	inherited::State(state);
+}
+
 void CBolt::Throw() 
 {
 	CMissile					*l_pBolt = smart_cast<CMissile*>(m_fake_missile);
@@ -51,7 +78,10 @@ void CBolt::Throw()
 
 bool CBolt::Useful() const
 {
-	return false;
+	if (GameConstants::GetLimitedBolts())
+		return true;
+	else
+		return false;
 }
 
 bool CBolt::Action(s32 cmd, u32 flags) 
@@ -82,6 +112,42 @@ bool CBolt::Action(s32 cmd, u32 flags)
 void CBolt::Destroy()
 {
 	inherited::Destroy();
+}
+
+void CBolt::PutNextToSlot()
+{
+	if (OnClient()) return;
+
+	VERIFY(!getDestroy());
+
+	NET_Packet						P;
+	if (m_pCurrentInventory)
+	{
+		m_pCurrentInventory->Ruck(this);
+
+		this->u_EventGen(P, GEG_PLAYER_ITEM2RUCK, this->H_Parent()->ID());
+		P.w_u16(this->ID());
+		this->u_EventSend(P);
+	}
+	else
+		Msg("! PutNextToSlot : m_pInventory = NULL [%d][%d]", ID(), Device.dwFrame);
+
+	if (smart_cast<CInventoryOwner*>(H_Parent()) && m_pCurrentInventory)
+	{
+		CBolt* pNext = smart_cast<CBolt*>(m_pCurrentInventory->Same(this, true));
+		if (!pNext) pNext = smart_cast<CBolt*>(m_pCurrentInventory->SameSlot(GRENADE_SLOT, this, true));
+
+		VERIFY(pNext != this);
+
+		if (pNext && m_pCurrentInventory->Slot(pNext))
+		{
+
+			pNext->u_EventGen(P, GEG_PLAYER_ITEM2SLOT, pNext->H_Parent()->ID());
+			P.w_u16(pNext->ID());
+			pNext->u_EventSend(P);
+			m_pCurrentInventory->SetActiveSlot(pNext->GetSlot());
+		}
+	}
 }
 
 void CBolt::activate_physic_shell	()

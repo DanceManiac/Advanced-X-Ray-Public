@@ -76,6 +76,11 @@ public:
 	float							m_additional_weight;
 	CHitImmunity 					m_ArtefactHitImmunities;
 
+	bool							m_bVolumetricLights;
+	float							m_fVolumetricQuality;
+	float							m_fVolumetricDistance;
+	float							m_fVolumetricIntensity;
+
 protected:
 	MotionSVec						m_anim_idle;
 	MotionSVec						m_anim_idle_sprint;
