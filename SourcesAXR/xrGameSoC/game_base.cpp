@@ -230,6 +230,10 @@ void game_GameState::switch_Phase		(u32 new_phase)
 	m_start_time		= Level().timeServer();
 }
 
+ALife::_TIME_ID  game_GameState::GetStartGameTime()
+{
+	return			(m_qwStartGameTime);
+}
 
 ALife::_TIME_ID game_GameState::GetGameTime()
 {

@@ -131,13 +131,11 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 
 		}
 
-		R_ASSERT2	(
-			!phrase_dialog->m_PhraseVector.empty(),
-			make_string(
-				"No available phrase to say, dialog[%s]",
-				*phrase_dialog->m_DialogId
-			)
-		);
+		if (phrase_dialog->m_PhraseVector.empty())
+		{
+			Msg("No available phrase to say, dialog[%s]", *phrase_dialog->m_DialogId);
+			return !(phrase_dialog->m_bFinished = true);
+		}
 
 		//упорядочить списко по убыванию благосклонности
 		std::sort(phrase_dialog->m_PhraseVector.begin(),

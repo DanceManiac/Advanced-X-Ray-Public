@@ -87,6 +87,8 @@ CCar::CCar()
 	m_car_weapon=NULL;
 	m_power_neutral_factor=0.25f;
 	m_steer_angle=0.f;
+	m_current_rpm = 0.f;
+	m_current_engine_power = 0.f;
 #ifdef DEBUG
 	InitDebug();
 #endif
@@ -1072,6 +1074,7 @@ void CCar::StartEngine()
 	m_car_sound->Start();
 	b_engine_on=true;
 	m_current_rpm=0.f;
+	m_current_engine_power = 0.f;
 	b_starting=true;
 }
 void CCar::StopEngine()

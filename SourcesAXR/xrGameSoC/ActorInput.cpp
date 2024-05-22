@@ -26,8 +26,6 @@
 #include "InventoryBox.h"
 #include "script_engine.h"
 
-bool g_bAutoClearCrouch = true;
-
 void CActor::IR_OnKeyboardPress(int cmd)
 {
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
@@ -77,12 +75,10 @@ void CActor::IR_OnKeyboardPress(int cmd)
 //				u_EventSend(P);
 			}
 		}break;
-	case kCROUCH_TOGGLE:
+	case kCROUCH:
 		{
-			g_bAutoClearCrouch = !g_bAutoClearCrouch;
-			if (!g_bAutoClearCrouch)
-				mstate_wishful |= mcCrouch;
-
+			if (psActorFlags.test(AF_CROUCH_TOGGLE))
+				mstate_wishful ^= mcCrouch;
 		}break;
 	case kSPRINT_TOGGLE:	
 		{
@@ -187,7 +183,6 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 		{
 		case kJUMP:		mstate_wishful &=~mcJump;		break;
 		case kDROP:		if(GAME_PHASE_INPROGRESS == Game().Phase()) g_PerformDrop();				break;
-		case kCROUCH:	g_bAutoClearCrouch = true;
 		}
 	}
 }
@@ -227,9 +222,12 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	case kR_LOOKOUT:mstate_wishful |= mcRLookout;								break;
 	case kFWD:		mstate_wishful |= mcFwd;									break;
 	case kBACK:		mstate_wishful |= mcBack;									break;
-	case kCROUCH:	mstate_wishful |= mcCrouch;									break;
+	case kCROUCH:
+		{
+			if (!psActorFlags.test(AF_CROUCH_TOGGLE))
+				mstate_wishful |= mcCrouch;
 
-
+		}break;
 	}
 }
 

@@ -98,6 +98,20 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fV_SatietyHealth			= pSettings->r_float(section,"satiety_health_v");
 	
 	m_MaxWalkWeight					= pSettings->r_float(section,"max_walk_weight");
+
+	// M.F.S. Team Skills System
+	m_fV_SatietySkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_satiety_restore", 0.0f);
+	m_fV_HealthSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_health_restore", 0.0f);
+	m_fV_BleedingSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_bleeding_restore", 0.0f);
+	m_fV_RadiationSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_radiation_restore", 0.0f);
+	m_fV_PowerSkill				= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_power_restore", 0.0f);
+	m_fV_ThirstSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_thirst_restore", 0.0f);
+	m_fV_IntoxicationSkill		= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_intoxication_restore", 0.0f);
+	m_fV_SleepenessSkill		= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_sleepeness_restore", 0.0f);
+
+	m_fMaxWeightSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_max_weight", 0.0f);
+	m_fJumpSpeedSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_jump_speed", 0.0f);
+	m_fWalkAccelSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_walk_accel", 0.0f);
 }
 
 
@@ -411,5 +425,17 @@ void CActorCondition::UpdateTutorialThresholds()
 		luabind::functor<LPCSTR>			fl;
 		R_ASSERT							(ai().script_engine().functor<LPCSTR>(cb_name,fl));
 		fl									();
+	}
+}
+
+void CActorCondition::WoundForEach(const luabind::functor<bool>& funct)
+{
+	auto const& cur_wounds = wounds();
+	CEntityCondition::WOUND_VECTOR::const_iterator it = wounds().begin();
+	CEntityCondition::WOUND_VECTOR::const_iterator it_e = wounds().end();
+	for (; it != it_e; ++it)
+	{
+		if (funct(it) == true)
+			break;
 	}
 }

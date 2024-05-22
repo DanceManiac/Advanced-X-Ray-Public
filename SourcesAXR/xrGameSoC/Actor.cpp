@@ -210,6 +210,8 @@ CActor::CActor() : CEntityAlive()
 	m_night_vision			= nullptr;
 	m_bNightVisionAllow		= true;
 	m_bNightVisionOn		= false;
+
+	ActorSkills				= nullptr;
 }
 
 
@@ -241,6 +243,7 @@ CActor::~CActor()
 	xr_delete				(m_vehicle_anims);
 
 	xr_delete				(m_night_vision);
+	xr_delete				(ActorSkills);
 }
 
 void CActor::reinit	()
@@ -259,6 +262,9 @@ void CActor::reinit	()
 	
 	set_input_external_handler					(0);
 	m_time_lock_accel							= 0;
+
+	if (!ActorSkills && GameConstants::GetActorSkillsEnabled())
+		ActorSkills = xr_new<CActorSkills>();
 }
 
 void CActor::reload	(LPCSTR section)
@@ -351,7 +357,7 @@ void CActor::Load	(LPCSTR section )
 	float AirControlParam		= pSettings->r_float	(section,"air_control_param"	);
 	character_physics_support()->movement()		->SetAirControlParam(AirControlParam);
 
-	m_fPickupInfoRadius	= pSettings->r_float(section,"pickup_info_radius");
+	m_fPickupInfoRadius = READ_IF_EXISTS(pSettings, r_float, section, "pickup_info_radius", 0.0f);
 	m_fSleepTimeFactor	= pSettings->r_float(section,"sleep_time_factor");
 
 	character_physics_support()->in_Load		(section);
@@ -1061,9 +1067,8 @@ void CActor::shedule_Update	(u32 DT)
 		mstate_wishful &=~mcRLookout;
 		mstate_wishful &=~mcFwd;
 		mstate_wishful &=~mcBack;
-		extern bool g_bAutoClearCrouch;
-		if (g_bAutoClearCrouch)
-			mstate_wishful &=~mcCrouch;
+		if (!psActorFlags.test(AF_CROUCH_TOGGLE))
+			mstate_wishful &= ~mcCrouch;
 		//-----------------------------------------------------
 		}
 	}
@@ -1234,6 +1239,9 @@ void CActor::shedule_Update	(u32 DT)
 
 	if (Actor())
 		DynamicHudGlass::UpdateDynamicHudGlass();
+
+	if (GameConstants::GetActorSkillsEnabled())
+		UpdateSkills();
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()
@@ -1558,7 +1566,12 @@ void CActor::UpdateRestores()
 		f_update_time	= update_time;
 		update_time		= 0.0f;
 	}
-	UpdateArtefactsOnBelt();
+
+	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
+		UpdateArtefactsOnBelt();
+	else if (xr_strcmp("from_ruck", GameConstants::GetAfInfluenceMode()) == 0)
+		UpdateArtefactsInRuck();
+
 	CCustomOutfit* outfit = GetOutfit();
 	if (outfit)
 	{
@@ -1607,12 +1620,107 @@ void CActor::UpdateArtefactsOnBelt()
 	}
 }
 
+void CActor::UpdateArtefactsInRuck()
+{
+	static float update_time = 0;
+
+	float f_update_time = 0;
+
+	if (update_time < ARTEFACTS_UPDATE_TIME)
+	{
+		update_time += conditions().fdelta_time();
+		return;
+	}
+	else
+	{
+		f_update_time = update_time;
+		update_time = 0.0f;
+	}
+
+	TIItemContainer::iterator it = inventory().m_ruck.begin();
+	TIItemContainer::iterator ite = inventory().m_ruck.end();
+
+	for (TIItemContainer::iterator it = inventory().m_belt.begin();
+		inventory().m_belt.end() != it; ++it)
+	{
+		CArtefact* artefact = smart_cast<CArtefact*>(*it);
+		if (artefact)
+		{
+			conditions().ChangeBleeding(artefact->m_fBleedingRestoreSpeed * f_update_time);
+			conditions().ChangeHealth(artefact->m_fHealthRestoreSpeed * f_update_time);
+			conditions().ChangePower(artefact->m_fPowerRestoreSpeed * f_update_time);
+			conditions().ChangeSatiety(artefact->m_fSatietyRestoreSpeed * f_update_time);
+			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time);
+
+			if (GameConstants::GetArtefactsDegradation())
+				artefact->UpdateDegradation();
+		}
+	}
+}
+
+void CActor::UpdateSkills()
+{
+	static float update_time = 0;
+	float f_update_time = 0;
+
+	f_update_time += conditions().fdelta_time();
+
+	if (ActorSkills)
+	{
+		float BleedingRestoreSkill = conditions().m_fV_BleedingSkill * ActorSkills->survivalSkillLevel;
+		float HealthRestoreSkill = conditions().m_fV_HealthSkill * ActorSkills->survivalSkillLevel;
+		float PowerRestoreSkill = conditions().m_fV_PowerSkill * ActorSkills->survivalSkillLevel;
+		float SatietyRestoreSkill = conditions().m_fV_SatietySkill * ActorSkills->survivalSkillLevel;
+		//float ThirstRestoreSkill = conditions().m_fV_ThirstSkill * ActorSkills->survivalSkillLevel;
+		//float IntoxicationRestoreSkill = conditions().m_fV_IntoxicationSkill * ActorSkills->survivalSkillLevel;
+		//float SleepenessRestoreSkill = conditions().m_fV_SleepenessSkill * ActorSkills->survivalSkillLevel;
+		float RadiationRestoreSkill = conditions().m_fV_RadiationSkill * ActorSkills->survivalSkillLevel;
+
+		conditions().ChangeBleeding(BleedingRestoreSkill * f_update_time);
+		conditions().ChangeHealth(HealthRestoreSkill * f_update_time);
+		conditions().ChangePower(PowerRestoreSkill * f_update_time);
+		conditions().ChangeSatiety(SatietyRestoreSkill * f_update_time);
+		//conditions().ChangeThirst(ThirstRestoreSkill * f_update_time);
+		//conditions().ChangeIntoxication(IntoxicationRestoreSkill * f_update_time);
+		//conditions().ChangeSleepeness(SleepenessRestoreSkill * f_update_time);
+		conditions().ChangeRadiation(RadiationRestoreSkill * f_update_time);
+	}
+}
+
 float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 {
 	float res_hit_power_k		= 1.0f;
 	float _af_count				= 0.0f;
-	for(TIItemContainer::iterator it = inventory().m_belt.begin(); 
-		inventory().m_belt.end() != it; ++it) 
+
+	TIItemContainer::iterator it = inventory().m_belt.begin();
+	TIItemContainer::iterator ite = inventory().m_belt.end();
+	TIItemContainer::iterator itR = inventory().m_ruck.begin();
+	TIItemContainer::iterator iteR = inventory().m_ruck.end();
+
+	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
+	{
+		for (; it != ite; ++it)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*it);
+			if (artefact)
+			{
+				hit_power -= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			}
+		}
+	}
+	else if (xr_strcmp("from_ruck", GameConstants::GetAfInfluenceMode()) == 0)
+	{
+		for (; itR != iteR; ++itR)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itR);
+			if (artefact)
+			{
+				hit_power -= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+			}
+		}
+	}
+
+	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
 	{
 		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
 		if(artefact){
@@ -1620,12 +1728,10 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 			_af_count		+= 1.0f;
 		}
 	}
-	res_hit_power_k			-= _af_count;
+	clamp(hit_power, 0.0f, flt_max);
 
-	return					res_hit_power_k * hit_power;
+	return hit_power;
 }
-
-
 
 void	CActor::SetZoomRndSeed		(s32 Seed)
 {
@@ -1847,4 +1953,124 @@ void CActor::unblock_action(EGameActions cmd)
 	{
 		m_blocked_actions.erase(iter);
 	}
+}
+
+bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
+{
+	if (m_holder)
+	{
+		/*
+		CCar* car = smart_cast<CCar*>(m_holder);
+		if (car)
+		{
+			detach_Vehicle();
+			return true;
+		}
+		*/
+		if (!m_holder->ExitLocked() || bForce)
+		{
+			if (!object || (m_holder == object)) {
+
+				CGameObject* go = smart_cast<CGameObject*>(m_holder);
+				CPhysicsShellHolder* pholder = smart_cast<CPhysicsShellHolder*>(go);
+				if (pholder)
+				{
+					pholder->PPhysicsShell()->SplitterHolderDeactivate();
+					if (!character_physics_support()->movement()->ActivateBoxDynamic(0))
+					{
+						pholder->PPhysicsShell()->SplitterHolderActivate();
+						return true;
+					}
+					pholder->PPhysicsShell()->SplitterHolderActivate();
+				}
+
+				SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+
+				if (go)
+					this->callback(GameObject::eDetachVehicle)(go->lua_game_object());
+
+				m_holder->detach_Actor();
+
+				character_physics_support()->movement()->CreateCharacter();
+				character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());
+				character_physics_support()->movement()->SetVelocity(m_holder->ExitVelocity());
+
+				r_model_yaw = -m_holder->Camera()->yaw;
+				r_torso.yaw = r_model_yaw;
+				r_model_yaw_dest = r_model_yaw;
+
+				cam_Active()->Direction().set(m_holder->Camera()->Direction());
+
+				SetCallbacks();
+
+				m_holder = NULL;
+				m_holderID = u16(-1);
+
+				IKinematicsAnimated* V = smart_cast<IKinematicsAnimated*>(Visual()); R_ASSERT(V);
+				V->PlayCycle(m_anims->m_normal.legs_idle);
+				V->PlayCycle(m_anims->m_normal.m_torso_idle);
+
+				IKinematics* pK = smart_cast<IKinematics*>(Visual());
+				u16 head_bone = pK->LL_BoneID("bip01_head");
+				pK->LL_GetBoneInstance(u16(head_bone)).set_callback(bctPhysics, HeadCallback, this);
+			}
+		}
+		return true;
+	}
+	else
+	{
+		/*
+		CCar* car = smart_cast<CCar*>(object);
+		if (car)
+		{
+			attach_Vehicle(object);
+			return true;
+		}
+		*/
+		if (object && (!object->EnterLocked() || bForce))
+		{
+			Fvector center;	Center(center);
+			if ((bForce || object->Use(Device.vCameraPosition, Device.vCameraDirection, center)) && object->attach_Actor(this))
+			{
+				inventory().SetActiveSlot(NO_ACTIVE_SLOT);
+				SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+
+				// destroy actor character
+				character_physics_support()->movement()->DestroyCharacter();
+
+				m_holder = object;
+				CGameObject* oHolder = smart_cast<CGameObject*>(object);
+				m_holderID = oHolder->ID();
+
+				if (pCamBobbing) {
+					Cameras().RemoveCamEffector(eCEBobbing);
+					pCamBobbing = NULL;
+				}
+
+				//if (actor_camera_shell)
+				//	destroy_physics_shell(actor_camera_shell);
+
+				IKinematics* pK = smart_cast<IKinematics*>(Visual());
+				u16 head_bone = pK->LL_BoneID("bip01_head");
+				pK->LL_GetBoneInstance(u16(head_bone)).set_callback(bctPhysics, VehicleHeadCallback, this);
+
+				CCar* car = smart_cast<CCar*>(object);
+				if (car)
+				{
+					u16 anim_type = car->DriverAnimationType();
+					SVehicleAnimCollection& anims = m_vehicle_anims->m_vehicles_type_collections[anim_type];
+					IKinematicsAnimated* V = smart_cast<IKinematicsAnimated*>(Visual()); R_ASSERT(V);
+					V->PlayCycle(anims.idles[0], FALSE);
+					CStepManager::on_animation_start(MotionID(), 0);
+				}
+
+				CGameObject* go = smart_cast<CGameObject*>(object);
+				if (go)
+					this->callback(GameObject::eAttachVehicle)(go->lua_game_object());
+
+				return true;
+			}
+		}
+	}
+	return false;
 }

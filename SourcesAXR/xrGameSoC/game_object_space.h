@@ -49,6 +49,11 @@ namespace GameObject {
 		eTraderSoundEnd,
 
 		eInvBoxItemTake,
+		// vehicle
+		eAttachVehicle,
+		eDetachVehicle,
+		eUseVehicle,
+
 		eDummy = u32(-1),
 	};
 };

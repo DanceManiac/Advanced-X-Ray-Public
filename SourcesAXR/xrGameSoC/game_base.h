@@ -172,6 +172,7 @@ private:
 	//-------------------------------------------------------
 public:
 
+	virtual		ALife::_TIME_ID		GetStartGameTime		();
 	virtual		ALife::_TIME_ID		GetGameTime				();	
 	virtual		float				GetGameTimeFactor		();	
 	virtual		void				SetGameTimeFactor		(ALife::_TIME_ID GameTime, const float fTimeFactor);

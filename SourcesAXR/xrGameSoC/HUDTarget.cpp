@@ -27,6 +27,8 @@
 #include "inventory.h"
 #include "HudItem.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 #define C_ON_ENEMY		color_xrgb(0xff,0,0)
 #define C_ON_NEUTRAL	color_xrgb(0xff,0xff,0x80)
 #define C_ON_FRIEND		color_xrgb(0,0xff,0)
@@ -252,6 +254,9 @@ void CHUDTarget::Render()
 	// Convert to screen coords
 	float cx = (pt.x + 1) * w_2;
 	float cy = (pt.y + 1) * h_2;
+
+	if (GameConstants::GetHideHudOnMaster())
+		return;
 
 	//отрендерить кружочек или крестик
 	if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)

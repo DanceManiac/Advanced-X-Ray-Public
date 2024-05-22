@@ -103,6 +103,7 @@ public:
 	shared_str				m_visual_default;
 	LPCSTR					m_visual_predator;
 	bool					m_predator;
+	bool					m_bHitIfInvisible;
 			
 			void			predator_start			();
 			void			predator_stop			();

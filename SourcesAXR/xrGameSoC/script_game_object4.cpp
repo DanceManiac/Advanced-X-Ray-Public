@@ -215,3 +215,13 @@ bool CScriptGameObject::IsInvBoxEmpty()
 	else
 		return			ib->IsEmpty		();
 }
+
+//AVO: directly set entity health instead of going through normal health property which operates on delta
+void CScriptGameObject::SetHealthEx(float hp)
+{
+	CEntity* obj = smart_cast<CEntity*>(&object());
+	if (!obj) return;
+	clamp(hp, -0.01f, 1.0f);
+	obj->SetfHealth(hp);
+}
+//-AVO

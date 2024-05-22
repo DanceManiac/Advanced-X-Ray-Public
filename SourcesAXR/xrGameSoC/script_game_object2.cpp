@@ -450,3 +450,39 @@ u32 CScriptGameObject::location_on_path				(float distance, Fvector *location)
 	VERIFY									(location);
 	return									(monster->movement().detail().location_on_path(monster,distance,*location));
 }
+
+void CScriptGameObject::RemoveMemorySoundObject(const MemorySpace::CSoundObject& memory_object)
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker)
+		return;
+
+	stalker->memory().sound().remove(&memory_object);
+}
+
+void CScriptGameObject::RemoveMemoryHitObject(const MemorySpace::CHitObject& memory_object)
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker)
+		return;
+
+	stalker->memory().hit().remove(&memory_object);
+}
+
+void CScriptGameObject::RemoveMemoryVisibleObject(const MemorySpace::CVisibleObject& memory_object)
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker)
+		return;
+
+	stalker->memory().visual().remove(&memory_object);
+}
+
+void CScriptGameObject::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker)
+		return;
+
+	stalker->ResetBoneProtections(imm_sect, bone_sect);
+}

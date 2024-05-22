@@ -462,7 +462,7 @@
     <Link>
       <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
       <GenerateMapFile>false</GenerateMapFile>
       <MapFileName>
@@ -480,6 +480,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ActorNightVision.h" />
+    <ClInclude Include="ActorSkills.h" />
     <ClInclude Include="AdvancedXrayGameConstants.h" />
     <ClInclude Include="CaptureBoneCallback.h" />
     <ClInclude Include="DynamicHudGlass.h" />
@@ -1934,7 +1935,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ActorNightVision.cpp" />
+    <ClCompile Include="ActorSkills.cpp" />
+    <ClCompile Include="actor_script.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
+    <ClCompile Include="CustomOutfit_script.cpp" />
     <ClCompile Include="damage_manager.cpp" />
     <ClCompile Include="action_base_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -1960,6 +1964,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_weather.cpp" />
+    <ClCompile Include="EntityCondition_script.cpp" />
     <ClCompile Include="magic_box3.cpp" />
     <ClCompile Include="magic_minimize_1d.cpp" />
     <ClCompile Include="min_obb.cpp" />

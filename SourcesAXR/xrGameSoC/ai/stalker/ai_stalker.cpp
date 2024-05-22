@@ -696,7 +696,8 @@ void CAI_Stalker::UpdateCL()
 			sight().update			();
 		}
 
-		Exec_Look					(client_update_fdelta());
+		Exec_Look					(Device.fTimeDelta);
+		Exec_Visibility				();
 		STOP_PROFILE
 
 		START_PROFILE("stalker/client_update/step_manager")
@@ -1091,4 +1092,24 @@ void CAI_Stalker::on_after_change_team			()
 		return;
 		
 	agent_manager().member().register_in_combat	(this);
+}
+
+void CAI_Stalker::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)
+{
+	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual());
+	CInifile* ini = pKinematics->LL_UserData();
+	if (ini)
+	{
+		if (imm_sect || ini->section_exist("immunities"))
+		{
+			imm_sect = imm_sect ? imm_sect : ini->r_string("immunities", "immunities_sect");
+			conditions().LoadImmunities(imm_sect, pSettings);
+		}
+
+		if (bone_sect || ini->line_exist("bone_protection", "bones_protection_sect"))
+		{
+			bone_sect = ini->r_string("bone_protection", "bones_protection_sect");
+			m_boneHitProtection->reload(bone_sect, pKinematics);
+		}
+	}
 }

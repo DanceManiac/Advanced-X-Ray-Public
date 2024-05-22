@@ -15,8 +15,7 @@ _action  actions[]		= {
 	{ "up",					kUP						,_both},	
 	{ "down",				kDOWN					,_both},	
 	{ "jump",				kJUMP					,_both},	
-	{ "crouch",				kCROUCH					,_both},	
-	{ "crouch_toggle",		kCROUCH_TOGGLE			,_both},	
+	{ "crouch",				kCROUCH					,_both},		
 	{ "accel",				kACCEL					,_both},	
 	{ "sprint_toggle",  	kSPRINT_TOGGLE  		,_both},	
 																

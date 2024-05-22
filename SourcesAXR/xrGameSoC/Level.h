@@ -301,6 +301,7 @@ public:
 
 	//gets the time from the game simulation
 	
+	ALife::_TIME_ID		GetStartGameTime		();
 	//возвращает время в милисекундах относительно начала игры
 	ALife::_TIME_ID		GetGameTime				();
 	//возвращает время для энвайронмента в милисекундах относительно начала игры

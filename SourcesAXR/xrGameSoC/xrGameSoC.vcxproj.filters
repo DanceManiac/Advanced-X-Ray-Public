@@ -6611,6 +6611,9 @@
     <ClInclude Include="ActorNightVision.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices</Filter>
     </ClInclude>
+    <ClInclude Include="ActorSkills.h">
+      <Filter>Core\Client\Objects\actor\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9795,6 +9798,18 @@
     </ClCompile>
     <ClCompile Include="ActorNightVision.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorSkills.cpp">
+      <Filter>Core\Client\Objects\actor\base</Filter>
+    </ClCompile>
+    <ClCompile Include="actor_script.cpp">
+      <Filter>Core\Client\Objects\actor\base</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityCondition_script.cpp">
+      <Filter>Core\Client\Objects\base\EntityCondition</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomOutfit_script.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

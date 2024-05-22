@@ -137,7 +137,8 @@ void CActor::PickupModeUpdate()
 	frustum.CreateFromMatrix(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
 	//. slow (ray-query test)
 	for(xr_vector<CObject*>::iterator it = feel_touch.begin(); it != feel_touch.end(); it++)
-		if (CanPickItem(frustum,Device.vCameraPosition,*it)) PickupInfoDraw(*it);
+		if (CanPickItem(frustum, Device.vCameraPosition, *it) && m_fPickupInfoRadius > 0)
+			PickupInfoDraw(*it);
 }
 
 #include "../xrEngine/CameraBase.h"

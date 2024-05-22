@@ -264,7 +264,11 @@ float CVisualMemoryManager::object_luminocity	(const CGameObject *game_object) c
 	const auto* pTorch = smart_cast<const CTorch*>(pActor->GetCurrentTorch());
 	if (pTorch && pTorch->torch_active())
 	{
-		float dist = m_object->Position().distance_to(game_object->Position());
+		float dist = 0.0f;
+
+		if (m_object)
+			dist = m_object->Position().distance_to(game_object->Position());
+
 		if (dist < pTorch->get_range())
 			return 1.f;
 	}
@@ -546,6 +550,16 @@ struct CVisibleObjectPredicateEx {
 		return				(m_object->ID() == not_yet_visible_object.m_object->ID());
 	}
 };
+
+void CVisualMemoryManager::remove(const MemorySpace::CVisibleObject* visible_object)
+{
+	VISIBLES::iterator I = std::find_if(m_objects->begin(), m_objects->end(), [&](const MemorySpace::CVisibleObject& object)
+		{
+			return visible_object == &object;
+		});
+	if (I != m_objects->end())
+		m_objects->erase(I);
+}
 
 void CVisualMemoryManager::remove_links	(CObject *object)
 {

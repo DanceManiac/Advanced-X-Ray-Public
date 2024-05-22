@@ -1361,6 +1361,21 @@ void CPHShell::SplitProcess(PHSHELL_PAIR_VECTOR &out_shels)
 	if(!m_spliter_holder->m_splitters.size()) xr_delete(m_spliter_holder);
 }
 
+void	CPHShell::SplitterHolderActivate()
+{
+	CPHShellSplitterHolder* sh = SplitterHolder();
+	if (sh)
+		sh->Activate();
+}
+
+void	CPHShell::SplitterHolderDeactivate()
+{
+
+	CPHShellSplitterHolder* sh = SplitterHolder();
+	if (sh)
+		sh->Deactivate();
+}
+
 u16 CPHShell::BoneIdToRootGeom(u16 id)
 {
 	if(! m_spliter_holder)return u16(-1);

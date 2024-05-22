@@ -135,6 +135,8 @@ public:
 	void			RegisterPPDraw					(CUIWindow* w);
 	void			UnregisterPPDraw				(CUIWindow* w);
 
+	xr_vector<shared_str> SuggestedForPrefetching;
+
 	void			SetErrorDialog					(EErrorDlg ErrDlg);
 	EErrorDlg		GetErrorDialogType				() const { return m_NeedErrDialog; } ;
 	void			CheckForErrorDlg				();
@@ -155,6 +157,10 @@ public:
 	virtual void	OnDeviceReset					();
 	LPCSTR			GetGSVer						();
 	LPCSTR			GetAxrPlatform					();
+
+	//Dump UI Texture list that are suggested to be prefetched
+			void	ReportTxrsForPrefetching		();
+
 			bool	ValidateCDKey					();
 			bool	IsCDKeyIsValid					();
 	virtual bool CanSkipSceneRendering				() { return false; }

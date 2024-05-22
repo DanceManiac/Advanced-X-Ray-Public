@@ -11,6 +11,8 @@
 #include "ui/UIMessagesWindow.h"
 #include "ui/UIPdaWnd.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 CUI::CUI(CHUDManager* p)
 {
 	UIMainIngameWnd					= xr_new<CUIMainIngameWnd>	();
@@ -96,20 +98,28 @@ bool CUI::Render()
 				(smart_cast<CHudItem*>(item))->OnDrawUI();
 		}
 
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) )
+		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())
 		{
 			UIMainIngameWnd->Draw();
 			m_pMessagesWnd->Draw();
 		}
 		else
 		{  //hack - draw messagess wnd in scope mode
-			CUIGameSP* gSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
-			if (gSP){
-				if (!gSP->PdaMenu->GetVisible())
-					m_pMessagesWnd->Draw();
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())
+			{
+				UIMainIngameWnd->Draw();
+				m_pMessagesWnd->Draw();
 			}
 			else
-				m_pMessagesWnd->Draw();
+			{
+				CUIGameSP* gSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+				if (gSP) {
+					if (!gSP->PdaMenu->GetVisible())
+						m_pMessagesWnd->Draw();
+				}
+				else
+					m_pMessagesWnd->Draw();
+			}
 		}	
 	}
 	else

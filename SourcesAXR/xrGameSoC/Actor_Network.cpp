@@ -50,6 +50,8 @@ int			g_cl_InterpolationType		= 0;
 u32			g_cl_InterpolationMaxPoints = 0;
 int			g_dwInputUpdateDelta		= 20;
 BOOL		net_cl_inputguaranteed		= FALSE;
+int			g_start_game_vertex_id		= 0;
+Fvector		g_start_position{};
 CActor*		g_actor						= NULL;
 
 CActor*			Actor()	
@@ -1322,6 +1324,10 @@ void CActor::save(NET_Packet &output_packet)
 {
 	inherited::save(output_packet);
 	CInventoryOwner::save(output_packet);
+	
+	if (ActorSkills)
+		ActorSkills->save(output_packet);
+
 	output_packet.w_u8(u8(m_bOutBorder));
 }
 
@@ -1329,6 +1335,10 @@ void CActor::load(IReader &input_packet)
 {
 	inherited::load(input_packet);
 	CInventoryOwner::load(input_packet);
+	
+	if (ActorSkills)
+		ActorSkills->load(input_packet);
+
 	m_bOutBorder=!!(input_packet.r_u8());
 }
 

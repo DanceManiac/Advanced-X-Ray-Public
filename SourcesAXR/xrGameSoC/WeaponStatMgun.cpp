@@ -71,6 +71,8 @@ void CWeaponStatMgun::Load(LPCSTR section)
 	camRelaxSpeed		= pSettings->r_float		(section,"cam_relax_speed"	); 
 	camRelaxSpeed		= deg2rad					(camRelaxSpeed);
 
+	m_bEnterLocked		= !!READ_IF_EXISTS(pSettings, r_bool, section, "lock_enter", false);
+	m_bExitLocked		= !!READ_IF_EXISTS(pSettings, r_bool, section, "lock_exit", false);
 }
 
 BOOL CWeaponStatMgun::net_Spawn(CSE_Abstract* DC)

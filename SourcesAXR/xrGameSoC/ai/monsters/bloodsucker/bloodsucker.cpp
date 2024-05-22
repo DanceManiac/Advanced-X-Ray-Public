@@ -150,6 +150,8 @@ void CAI_Bloodsucker::Load(LPCSTR section)
 
 
 	invisible_particle_name			= pSettings->r_string(section,"Particle_Invisible");
+
+	m_bHitIfInvisible				= READ_IF_EXISTS(pSettings, r_bool, section, "hit_if_invisible_mode", true);
 }
 
 
@@ -413,6 +415,11 @@ void CAI_Bloodsucker::move_actor_cam()
 
 void CAI_Bloodsucker::HitEntity(const CEntity *pEntity, float fDamage, float impulse, Fvector &dir)
 {
+	if (state_invisible && !m_bHitIfInvisible)
+	{
+		return;
+	}
+
 	inherited::HitEntity(pEntity,fDamage,impulse,dir);
 
 	EMonsterState state = StateMan->get_state_type();

@@ -17,6 +17,7 @@
 
 #include "step_manager.h"
 #include "xr_level_controller.h"
+#include "ActorSkills.h"
 
 using namespace ACTOR_DEFS;
 
@@ -208,6 +209,9 @@ public:
 	virtual void		MoveArtefactBelt		(const CArtefact* artefact, bool on_belt);
 	virtual float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 			void		UpdateArtefactsOnBelt	();
+			void		UpdateArtefactsInRuck	();
+			void		UpdateSkills			();
+
 	const xr_vector<const CArtefact*>& ArtefactsOnBelt() {return m_ArtefactsOnBelt;}
 protected:
 	//звук тяжелого дыхания
@@ -274,6 +278,7 @@ public:
 	void					detach_Vehicle			();
 	void					steer_Vehicle			(float angle);
 	void					attach_Vehicle			(CHolderCustom* vehicle);
+	bool					use_HolderEx			(CHolderCustom* object, bool bForce);
 
 	virtual bool			can_attach				(const CInventoryItem *inventory_item) const;
 protected:
@@ -454,7 +459,7 @@ public:
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
 
 	bool					is_jump					();		
-protected:
+
 	u32						mstate_wishful;
 	u32						mstate_old;
 	u32						mstate_real;
@@ -785,6 +790,9 @@ public:
 	void						block_action					(EGameActions cmd);
 	void						unblock_action					(EGameActions cmd);
 	// Real Wolf. End. 14.10.2014
+
+	CActorSkills*				ActorSkills;
+
 protected:
 	bool						m_bNightVisionOn;
 	bool						m_bNightVisionAllow;
@@ -795,12 +803,20 @@ public:
 	IC u32						get_state						() const { return this->mstate_real; }
 	IC u32						get_state_wishful				() const { return this->mstate_wishful; }
 	IC void						set_state_wishful				(u32 state) { mstate_wishful = state; }
+	
+	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
+
+add_to_type_list(CActor)
+#undef script_type_list
+#define script_type_list save_type_list(CActor)
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);
 
 IC	CActorCondition	&CActor::conditions	() const{ VERIFY(m_entity_condition); return(*m_entity_condition);}
 
+extern Fvector		g_start_position;
+extern int			g_start_game_vertex_id;
 extern CActor*		g_actor;
 CActor*				Actor		();
 extern const float	s_fFallTime;

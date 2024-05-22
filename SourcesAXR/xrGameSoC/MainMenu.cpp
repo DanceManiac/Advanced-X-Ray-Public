@@ -91,12 +91,15 @@ CMainMenu::CMainMenu	()
 		Register						(m_pMB_ErrDlgs[ConnectToMasterServer]);
 		m_pMB_ErrDlgs[PatchDownloadSuccess]->SetWindowName	("msg_box_connecting");
 		m_pMB_ErrDlgs[PatchDownloadSuccess]->AddCallback	("msg_box_connecting", MESSAGE_BOX_OK_CLICKED, CUIWndCallback::void_function(this, &CMainMenu::OnConnectToMasterServerOkClicked));
+   	}
 
-	}
+	Msg("*Start prefetching UI textures");
+	Device.m_pRender->RenderPrefetchUITextures();
 }
 
 CMainMenu::~CMainMenu	()
 {
+	ReportTxrsForPrefetching		();
 	xr_delete						(g_btnHint);
 	xr_delete						(m_startDialog);
 	g_pGamePersistent->m_pMainMenu	= NULL;
@@ -725,4 +728,15 @@ LPCSTR CMainMenu::GetAxrPlatform()
 	}
 
 	return buff2;
+}
+
+void CMainMenu::ReportTxrsForPrefetching()
+{
+	if (SuggestedForPrefetching.size() > 0)
+	{
+		Msg("---These UI textures are suggested to be prefetched since they caused stutterings when some UI window was loading");
+		Msg("---Add this list to section [prefetch_ui_textures]");
+		for (u32 i = 0; i < SuggestedForPrefetching.size(); i++)
+			Msg("%s", SuggestedForPrefetching[i].c_str());
+	}
 }

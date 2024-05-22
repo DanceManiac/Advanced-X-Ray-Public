@@ -938,6 +938,10 @@ void				CLevel::SetNumCrSteps		( u32 NumSteps )
 	}
 };
 
+ALife::_TIME_ID CLevel::GetStartGameTime()
+{
+	return			(game->GetStartGameTime());
+}
 
 ALife::_TIME_ID CLevel::GetGameTime()
 {

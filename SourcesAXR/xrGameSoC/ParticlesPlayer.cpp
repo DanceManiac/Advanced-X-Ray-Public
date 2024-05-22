@@ -269,7 +269,10 @@ void CParticlesPlayer::UpdateParticles()
 				m_bActiveBones  = true;
 		}
 
-		ParticlesInfoListIt RI = std::remove_if(b_info.particles.begin(), b_info.particles.end(), [](const SParticlesInfo& Right) {return !Right.ps; });
+		const auto RI = std::remove_if(b_info.particles.begin(), b_info.particles.end(), [](const SParticlesInfo& pi)
+			{
+				return pi.ps == nullptr;
+			});
 		b_info.particles.erase(RI,b_info.particles.end());
 	}
 }

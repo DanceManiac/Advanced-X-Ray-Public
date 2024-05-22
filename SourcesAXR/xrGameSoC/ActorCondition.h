@@ -68,6 +68,8 @@ public:
 	virtual void			save					(NET_Packet &output_packet);
 	virtual void			load					(IReader &input_packet);
 
+			void			WoundForEach			(const luabind::functor<bool>& funct);
+
 	float m_fAlcohol;
 	float m_fV_Alcohol;
 //--
@@ -76,6 +78,22 @@ public:
 	float m_fV_SatietyPower;
 	float m_fV_SatietyHealth;
 //--
+
+//--M.F.S. Team
+	//Skills System
+	float m_fV_SatietySkill;
+	float m_fV_HealthSkill;
+	float m_fV_BleedingSkill;
+	float m_fV_RadiationSkill;
+	float m_fV_PowerSkill;
+	float m_fV_ThirstSkill;
+	float m_fV_IntoxicationSkill;
+	float m_fV_SleepenessSkill;
+	float m_fMaxWeightSkill;
+	float m_fJumpSpeedSkill;
+	float m_fWalkAccelSkill;
+//--M.F.S. Team
+
 	float m_fPowerLeakSpeed;
 
 	float m_fJumpPower;
@@ -105,4 +123,10 @@ public:
 
 	float m_fLimpingHealthBegin;
 	float m_fLimpingHealthEnd;
+
+	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
+
+add_to_type_list(CActorCondition)
+#undef script_type_list
+#define script_type_list save_type_list(CActorCondition)

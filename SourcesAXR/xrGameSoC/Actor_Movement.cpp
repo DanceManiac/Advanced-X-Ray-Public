@@ -21,6 +21,7 @@
 #include "Artifact.h"
 #include "CustomOutfit.h"
 #include "AdvancedXrayGameConstants.h"
+#include "ActorSkills.h"
 
 #ifdef DEBUG
 #include "phdebug.h"
@@ -208,11 +209,15 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			float jump_k = 0.0;
 			float max_jump_speed = 10.0f;
+			float jumpSkill = 0.0f;
+
+			if (ActorSkills)
+				jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
 
 			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real & mcJump)
-				jump_k = m_fJumpSpeed - (cur_weight / 25);
+				jump_k = m_fJumpSpeed + jumpSkill - (cur_weight / 25);
 			else
-				jump_k = m_fJumpSpeed;
+				jump_k = m_fJumpSpeed + jumpSkill;
 
 			TIItemContainer::iterator it = inventory().m_belt.begin();
 			TIItemContainer::iterator ite = inventory().m_belt.end();
@@ -293,9 +298,14 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			// normalize and analyze crouch and run
 			float	scale				= vControlAccel.magnitude();
+			float walkAccelSkill = 0.0f;
+
+			if (ActorSkills)
+				walkAccelSkill = conditions().m_fWalkAccelSkill * ActorSkills->enduranceSkillLevel;
+
 			if (scale>EPS)
 			{
-				float accel_k = m_fWalkAccel;
+				float accel_k = m_fWalkAccel + walkAccelSkill;
 
 				if (cur_weight >= 25 && GameConstants::GetJumpSpeedWeightCalc())
 				{
@@ -700,6 +710,9 @@ float CActor::get_additional_weight() const
 		if(artefact)
 			res			+= artefact->AdditionalInventoryWeight();
 	}
+
+	if (ActorSkills)
+		res += (ActorSkills->powerSkillLevel * conditions().m_fMaxWeightSkill);
 
 	return res;
 }

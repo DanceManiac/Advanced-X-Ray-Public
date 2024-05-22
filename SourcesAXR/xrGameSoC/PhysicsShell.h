@@ -270,6 +270,8 @@ IC					IKinematics					*PKinematics								()																{return m_pKinemati
 	virtual			bool						isFractured									()																							= 0;
 	virtual			CPHShellSplitterHolder		*SplitterHolder								()																							= 0;
 	virtual			void						SplitProcess								(PHSHELL_PAIR_VECTOR &out_shels)															= 0;
+	virtual			void						SplitterHolderActivate						()																							= 0;
+	virtual			void						SplitterHolderDeactivate					()																							= 0;
 	virtual			void						BlockBreaking								()																							= 0;
 	virtual			void						UnblockBreaking								()																							= 0;
 	virtual			bool						IsBreakingBlocked							()																							= 0;
