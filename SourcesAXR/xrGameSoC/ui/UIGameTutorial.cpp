@@ -14,6 +14,7 @@
 #include "../script_engine.h"
 #include "../ai_space.h"
 #include "Level.h"
+#include "../xrEngine/IGame_Persistent.h"
 
 extern ENGINE_API BOOL bShowPauseString;
 
@@ -82,6 +83,11 @@ void CUISequenceItem::Update()
 
 void CUISequenceItem::Start()
 {
+	if (m_flags.test(etiSkipSceneRendering))
+	{
+		g_pGamePersistent->render_scene = false;
+	}
+
 	CallFunctions(m_start_lua_functions);
 
 	if (m_onframe_lua_function.size())
@@ -93,6 +99,11 @@ void CUISequenceItem::Start()
 
 bool CUISequenceItem::Stop(bool bForce)
 {
+	if (m_flags.test(etiSkipSceneRendering))
+	{
+		g_pGamePersistent->render_scene = true;
+	}
+
 	CallFunctions(m_stop_lua_functions);
 	return true;
 }

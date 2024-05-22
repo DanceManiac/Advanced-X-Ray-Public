@@ -16,6 +16,7 @@
 #include "level.h"
 #include "object_broker.h"
 #include "string_table.h"
+#include "AdvancedXrayGameConstants.h"
 
 ENGINE_API  extern float psHUD_FOV;
 ENGINE_API  extern float psHUD_FOV_def;
@@ -532,6 +533,9 @@ void CWeaponMagazined::SetDefaults	()
 
 void CWeaponMagazined::OnShot		()
 {
+	if (ParentIsActor() && GameConstants::GetStopActorIfShoot())
+		Actor()->set_state_wishful(Actor()->get_state_wishful() & (~mcSprint));
+
 	// Sound
 	PlaySound			(*m_pSndShotCurrent,get_LastFP());
 

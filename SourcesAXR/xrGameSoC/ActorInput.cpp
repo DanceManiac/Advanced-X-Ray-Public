@@ -24,11 +24,14 @@
 #include "UI/UIStatic.h"
 #include "CharacterPhysicsSupport.h"
 #include "InventoryBox.h"
+#include "script_engine.h"
 
 bool g_bAutoClearCrouch = true;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
 	if (Remote())		return;
 
 //	if (conditions().IsSleeping())	return;
@@ -157,6 +160,8 @@ void CActor::IR_OnMouseWheel(int direction)
 }
 void CActor::IR_OnKeyboardRelease(int cmd)
 {
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
 	if (Remote())		return;
 
 //	if (conditions().IsSleeping())	return;
@@ -189,6 +194,8 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 
 void CActor::IR_OnKeyboardHold(int cmd)
 {
+	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
 	if (Remote() || !g_Alive())					return;
 //	if (conditions().IsSleeping())				return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;

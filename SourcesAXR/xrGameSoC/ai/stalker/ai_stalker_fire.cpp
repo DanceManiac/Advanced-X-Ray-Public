@@ -217,8 +217,10 @@ void			CAI_Stalker::Hit					(SHit* pHDS)
 
 		const CEntityAlive* entity_alive = smart_cast<const CEntityAlive*>(HDS.initiator());
 		IKinematics* tpKinematics = smart_cast<IKinematics*>(Visual());
-		//m_bLastHittedInHead = HDS.bone() == tpKinematics->LL_BoneID("bip01_head") ? true : false;
-		if (entity_alive && !wounded()) {
+		m_bLastHittedInHead = HDS.bone() == tpKinematics->LL_BoneID("bip01_head") ? true : false;
+
+		if (entity_alive && !wounded() && !m_bLastHittedInHead)
+		{
 			if (is_relation_enemy(entity_alive))
 				sound().play		(eStalkerSoundInjuring);
 //			else

@@ -61,7 +61,7 @@ protected:
 
 	// Функции добавления строк в листы вопросов и ответов
 public:
-	void				AddQuestion				(const shared_str& text, const shared_str& id);
+	void                AddQuestion				(const shared_str& text, const shared_str& id, int number, bool b_finalizer);
 	void				AddAnswer				(const shared_str& text, LPCSTR SpeakerName);
 protected:
 	//для режима торговли

@@ -4,6 +4,8 @@
 #include "HitMarker.h"
 #include "UI.h"
 
+extern	u32	ui_hud_type;
+
 class CContextMenu;
 class CHUDTarget;
 

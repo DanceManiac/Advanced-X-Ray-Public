@@ -7,6 +7,7 @@
 #include "clsid_game.h"
 #include "GamePersistent.h"
 
+u32	ui_hud_type;
 
 CFontManager::CFontManager()
 {

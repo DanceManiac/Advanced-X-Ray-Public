@@ -14,6 +14,7 @@ CPhrase::CPhrase	(void)
 {
 	m_ID				= "";
 	m_iGoodwillLevel	= 0;
+	m_b_finalizer		= false;
 }
 CPhrase::~CPhrase	(void)
 {

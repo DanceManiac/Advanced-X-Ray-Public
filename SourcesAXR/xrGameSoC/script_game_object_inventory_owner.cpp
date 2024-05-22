@@ -34,6 +34,7 @@
 #include "AI/Monsters/BaseMonster/base_monster.h"
 #include "weaponmagazined.h"
 #include "ai/stalker/ai_stalker.h"
+#include "CustomOutfit.h"
 
 bool CScriptGameObject::GiveInfoPortion(LPCSTR info_id)
 {
@@ -871,3 +872,103 @@ bool CScriptGameObject::movement_enabled()
 
 	return								(monster->movement().enabled());
 }
+
+/*added by Ray Twitty (aka Shadows) START*/
+float CScriptGameObject::GetActorMaxWeight() const
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member GetActorMaxWeight!");
+		return			(false);
+	}
+	return				(pActor->inventory().GetMaxWeight());
+}
+
+void CScriptGameObject::SetActorMaxWeight(float max_weight)
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member SetActorMaxWeight!");
+		return;
+	}
+	pActor->inventory().SetMaxWeight(max_weight);
+}
+
+float CScriptGameObject::GetActorMaxWalkWeight() const
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member GetActorMaxWalkWeight!");
+		return			(false);
+	}
+	return				(pActor->conditions().m_MaxWalkWeight);
+}
+void CScriptGameObject::SetActorMaxWalkWeight(float max_walk_weight)
+{
+	CActor* pActor = smart_cast<CActor*>(&object());
+	if (!pActor) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CActor : cannot access class member SetActorMaxWalkWeight!");
+		return;
+	}
+	pActor->conditions().m_MaxWalkWeight = max_walk_weight;
+}
+
+float CScriptGameObject::GetAdditionalMaxWeight() const
+{
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&object());
+	if (!outfit) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CCustomOutfit : cannot access class member GetAdditionalMaxWeight!");
+		return			(false);
+	}
+	return				(outfit->m_additional_weight2);
+}
+float CScriptGameObject::GetAdditionalMaxWalkWeight() const
+{
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&object());
+	if (!outfit) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CCustomOutfit : cannot access class member GetAdditionalMaxWalkWeight!");
+		return			(false);
+	}
+	return				(outfit->m_additional_weight);
+}
+void CScriptGameObject::SetAdditionalMaxWeight(float add_max_weight)
+{
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&object());
+	if (!outfit) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CCustomOutfit : cannot access class member SetAdditionalMaxWeight!");
+		return;
+	}
+	outfit->m_additional_weight2 = add_max_weight;
+}
+void CScriptGameObject::SetAdditionalMaxWalkWeight(float add_max_walk_weight)
+{
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&object());
+	if (!outfit) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CCustomOutfit : cannot access class member SetAdditionalMaxWalkWeight!");
+		return;
+	}
+	outfit->m_additional_weight = add_max_walk_weight;
+}
+
+#include "InventoryBox.h"
+
+float CScriptGameObject::GetTotalWeight() const
+{
+	CInventoryOwner* inventory_owner = smart_cast<CInventoryOwner*>(&object());
+	if (!inventory_owner) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CInventoryOwner : cannot access class member GetTotalWeight!");
+		return			(false);
+	}
+	return				(inventory_owner->inventory().TotalWeight());
+}
+
+float CScriptGameObject::Weight() const
+{
+	CInventoryItem* inventory_item = smart_cast<CInventoryItem*>(&object());
+	if (!inventory_item) {
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CSciptEntity : cannot access class member Weight!");
+		return			(false);
+	}
+	return				(inventory_item->Weight());
+}
+/*added by Ray Twitty (aka Shadows) END*/

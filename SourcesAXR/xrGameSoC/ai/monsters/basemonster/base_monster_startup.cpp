@@ -85,6 +85,9 @@ void CBaseMonster::Load(LPCSTR section)
 
 	m_bParticlesEnabled				= !!READ_IF_EXISTS(pSettings, r_bool, section, "particles_enabled", false);
 	m_sParticlesIdleName			= READ_IF_EXISTS(pSettings, r_string, section, "particles_idle", NULL);
+
+	m_bDropItemAfterSuperAttack		= READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
+	m_iSuperAttackDropItemPer		= READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
 }
 
 // if sound is absent just do not load that one
@@ -465,6 +468,9 @@ void CBaseMonster::UpdateLights()
 
 void CBaseMonster::SwitchMonsterParticles(bool bOn)
 {
+	VERIFY(!ph_world->Processing());
+	if (!m_bParticlesEnabled) return;
+
 	IKinematics*          model = Visual()->dcast_PKinematics();
 	u16                  boneID = model->LL_BoneID(particles_bone);
 	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);

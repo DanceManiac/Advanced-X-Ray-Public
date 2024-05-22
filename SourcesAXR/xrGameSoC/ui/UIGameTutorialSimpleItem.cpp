@@ -71,6 +71,9 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 	m_flags.set										(etiNeedPauseOff,	0==_stricmp(str, "off"));
 	m_flags.set										(etiNeedPauseSound, 0==_stricmp(str, "on"));
 
+	LPCSTR skip_scene		= xml->Read				("skip_scene_rendering", 0, "false");
+	m_flags.set										(etiSkipSceneRendering, (0 == _stricmp(skip_scene, "true") || 0 == _stricmp(skip_scene, "1")));
+
 	str						= xml->Read				("guard_key",0,NULL		);
 	m_continue_dik_guard	= -1;
 	if (str && !_stricmp(str,"any")){

@@ -99,6 +99,7 @@ void CExplosive::Load(CInifile *ini,LPCSTR section)
 	m_fBlastHitImpulse	= ini->r_float(section,"blast_impulse");
 
 	m_iFragsNum			= ini->r_s32(section,"frags");
+	m_iFragsNum			*= 2;
 	m_fFragsRadius		= ini->r_float(section,"frags_r");
 	m_fFragHit			= ini->r_float(section,"frag_hit");
 	m_fFragHitImpulse	= ini->r_float(section,"frag_hit_impulse");
@@ -330,6 +331,7 @@ void CExplosive::Explode()
 #endif
 //	Msg("---------CExplosive Explode [%d] frame[%d]",cast_game_object()->ID(), Device.dwFrame);
 	OnBeforeExplosion();
+
 	//играем звук взрыва
 	m_layered_sounds.PlaySound("sndExplode", pos, smart_cast<CObject*>(this), false, false, (u8)-1);
 	

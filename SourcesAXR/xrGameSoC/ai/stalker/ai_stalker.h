@@ -120,6 +120,7 @@ private:
 	float							m_fRankDisperison;
 	float							m_fRankVisibility;
 	float							m_fRankImmunity;
+	bool							m_bLastHittedInHead;
 
 	// best item/ammo selection members
 public:

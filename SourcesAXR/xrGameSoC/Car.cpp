@@ -481,7 +481,7 @@ void CCar::UpdateCL()
 		
 		if(m_pPhysicsShell->isEnabled())
 		{
-			Owner()->XFORM().mul_43	(XFORM(),m_sits_transforms[0]);
+			Owner()->XFORM().mul_43(XFORM(), m_sits_transforms);
 		}
 /*
 		if(OwnerActor() && OwnerActor()->IsMyCamera()) 
@@ -556,7 +556,6 @@ void	CCar::Hit							(SHit* pHDS)
 	//	CExplosive::SetInitiator(HDS.who->ID());
 	//}
 	WheelHit(HDS.damage(),HDS.bone(),HDS.hit_type);
-	DoorHit(HDS.damage(),HDS.bone(),HDS.hit_type);
 	float hitScale=1.f,woundScale=1.f;
 	if(HDS.hit_type!=ALife::eHitTypeStrike) CDamageManager::HitScale(HDS.bone(), hitScale, woundScale);
 	HDS.power *= m_HitTypeK[HDS.hit_type]*hitScale;
@@ -656,15 +655,28 @@ bool CCar::attach_Actor(CGameObject* actor)
 	IKinematics* K	= smart_cast<IKinematics*>(Visual());
 	CInifile* ini	= K->LL_UserData();
 	int id;
-	if(ini->line_exist("car_definition","driver_place"))
+	
+	Fmatrix	driver_xform;
+	if (ini->line_exist("car_definition", "driver_position") && ini->line_exist("car_definition", "driver_direction"))
+	{
+		driver_xform.c.set(ini->r_fvector3("car_definition", "driver_position"));
+		driver_xform.k.set(ini->r_fvector3("car_definition", "driver_direction"));
+	}
+	else if (ini->line_exist("car_definition", "driver_place"))
+	{
 		id=K->LL_BoneID(ini->r_string("car_definition","driver_place"));
+		CBoneInstance& instance = K->LL_GetBoneInstance(u16(id));
+		driver_xform.set(instance.mTransform);
+	}
 	else
-	{	
+	{
 		Owner()->setVisible(0);
 		id=K->LL_GetBoneRoot();
+		CBoneInstance& instance = K->LL_GetBoneInstance(u16(id));
+		driver_xform.set(instance.mTransform);
 	}
-	CBoneInstance& instance=K->LL_GetBoneInstance				(u16(id));
-	m_sits_transforms.push_back(instance.mTransform);
+
+	m_sits_transforms.set(driver_xform);
 	OnCameraChange(ectFirst);
 	PPhysicsShell()->Enable();
 	PPhysicsShell()->add_ObjectContactCallback(ActorObstacleCallback);
@@ -754,8 +766,11 @@ void CCar::ParseDefinitions()
 	CInifile* ini = pKinematics->LL_UserData();
 	R_ASSERT2(ini,"Car has no description !!! See ActorEditor Object - UserData");
 	CExplosive::Load(ini,"explosion");
-	//CExplosive::SetInitiator(ID());
-	m_camera_position			= ini->r_fvector3("car_definition","camera_pos");
+	
+	m_camera_position_firsteye	= ini->r_fvector3("car_definition", "camera_pos_firsteye");
+	m_camera_position_lookat	= ini->r_fvector3("car_definition", "camera_pos_lookat");
+	m_camera_position_free		= ini->r_fvector3("car_definition", "camera_pos_free");
+
 	///////////////////////////car definition///////////////////////////////////////////////////
 	fill_wheel_vector			(ini->r_string	("car_definition","driving_wheels"),m_driving_wheels);
 	fill_wheel_vector			(ini->r_string	("car_definition","steering_wheels"),m_steering_wheels);
@@ -866,7 +881,7 @@ void CCar::CreateSkeleton(CSE_Abstract	*po)
 		K->OnCalculateBones();
 	}
 
-	m_pPhysicsShell = P_build_Shell(this, true, &bone_map);
+	m_pPhysicsShell = P_build_Shell(this, false, &bone_map);
 	m_pPhysicsShell->SetPrefereExactIntegration();
 
 	ApplySpawnIniToPhysicShell(&po->spawn_ini(), m_pPhysicsShell, false);

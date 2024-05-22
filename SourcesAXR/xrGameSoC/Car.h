@@ -381,7 +381,9 @@ private:
 	CCameraBase*			camera[3];
 	CCameraBase*			active_camera;
 
-	Fvector					m_camera_position;
+	Fvector					m_camera_position_firsteye;
+	Fvector					m_camera_position_lookat;
+	Fvector					m_camera_position_free;
 
 	////////////////////////////////////////////////////
 	friend struct SWheel;
@@ -396,7 +398,7 @@ private:
 	xr_map	  <u16,SDoor>	m_doors;
 	xr_vector <SDoor*>		m_doors_update;
 	xr_vector <Fvector>		m_gear_ratious;
-	xr_vector <Fmatrix>		m_sits_transforms;// m_sits_transforms[0] - driver_place
+	Fmatrix					m_sits_transforms;// driver_place
 	float					m_current_gear_ratio;
 
 	/////////////////////////////////////////////////////////////

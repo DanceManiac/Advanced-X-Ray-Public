@@ -266,6 +266,7 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemBolt,CSE_ALifeItem)
 	virtual bool					can_save			() const;
 	virtual bool					used_ai_locations	() const;
 	virtual u32						ef_weapon_type		() const;
+	bool							m_can_save;
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeItemBolt)
 #define script_type_list save_type_list(CSE_ALifeItemBolt)

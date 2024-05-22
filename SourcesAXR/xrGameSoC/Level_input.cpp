@@ -40,6 +40,7 @@
 bool g_bDisableAllInput = false;
 extern	float	g_fTimeFactor;
 u32	last_quick = 0;
+extern bool g_block_all_except_movement;
 
 #define CURRENT_ENTITY()	(game?((GameID() == GAME_SINGLE) ? CurrentEntity() : CurrentControlEntity()):NULL)
 
@@ -116,6 +117,13 @@ void CLevel::IR_OnKeyboardPress	(int key)
 //.	if (DIK_F11 == key)		vtune.disable();
 
 	EGameActions _curr = get_binded_action(key);
+
+	if (g_block_all_except_movement)
+	{
+		if (!(_curr < kCAM_1 || _curr == kWPN_FIRE || _curr == kPAUSE || _curr == kDROP || _curr == kSCREENSHOT || _curr == kQUIT || _curr == kCONSOLE))
+			return;
+	}
+
 	switch ( _curr ) 
 	{
 

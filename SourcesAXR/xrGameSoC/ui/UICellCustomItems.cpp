@@ -49,6 +49,9 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	if (artefact && artefact->GetCurrentChargeLevel() != smart_cast<CArtefact*>(ci->object())->GetCurrentChargeLevel())
 		return false;
 
+	if (artefact && artefact->GetCurrentAfRank() != smart_cast<CArtefact*>(ci->object())->GetCurrentAfRank())
+		return false;
+
 	return true;
 }
 

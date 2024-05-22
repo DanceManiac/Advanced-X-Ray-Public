@@ -337,8 +337,13 @@ void CInventoryOwner::spawn_supplies		()
 	if (smart_cast<CBaseMonster*>(this))	return;
 
 
-	if (use_bolts() && !GameConstants::GetLimitedBolts())
-		Level().spawn_item					("bolt",game_object->Position(),game_object->ai_location().level_vertex_id(),game_object->ID());
+	if (use_bolts() && !smart_cast<CActor*>(this))
+	{
+		CSE_Abstract* abstract = Level().spawn_item("bolt", game_object->Position(), game_object->ai_location().level_vertex_id(), game_object->ID(), true);
+		CSE_ALifeItemBolt* bolt = smart_cast<CSE_ALifeItemBolt*>(abstract);
+		R_ASSERT(bolt);
+		bolt->m_can_save = false;
+	}
 
 	if (!ai().get_alife() && GameID()==GAME_SINGLE) {
 		CSE_Abstract						*abstract = Level().spawn_item("device_pda",game_object->Position(),game_object->ai_location().level_vertex_id(),game_object->ID(),true);
@@ -571,18 +576,23 @@ bool CInventoryOwner::use_throw_randomness		()
 
 void CInventoryOwner::AfterLoad()
 {
-	TIItemContainer::iterator I = inventory().m_all.begin();
-	TIItemContainer::iterator E = inventory().m_all.end();
-	for (; I != E; ++I)
+	if (&inventory() != nullptr)
 	{
-		CBolt* pBolt = smart_cast<CBolt*>((*I));
-		if (pBolt)
-			pBolt->DestroyObject();
-	}
+		TIItemContainer::iterator I = inventory().m_all.begin();
+		TIItemContainer::iterator E = inventory().m_all.end();
+		for (; I != E; ++I)
+		{
+			CBolt* pBolt = smart_cast<CBolt*>((*I));
+			if (pBolt)
+				pBolt->DestroyObject();
+		}
 
-	CGameObject* game_object = smart_cast<CGameObject*>(this);
-	VERIFY(game_object);
-	Level().spawn_item("bolt", game_object->Position(), game_object->ai_location().level_vertex_id(), game_object->ID());
+		CGameObject* game_object = smart_cast<CGameObject*>(this);
+		VERIFY(game_object);
+		Level().spawn_item("bolt", game_object->Position(), game_object->ai_location().level_vertex_id(), game_object->ID());
+	}
+	else
+		Msg("inventory == null!");
 }
 
 CInventoryItem* CInventoryOwner::GetCurrentTorch() const

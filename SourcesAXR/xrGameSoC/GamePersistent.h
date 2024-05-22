@@ -99,6 +99,8 @@ public:
 			bool		IsCamFirstEye			();
 
 	virtual void		EditorOnFrame			();
+
+	xr_vector<fastdelegate::FastDelegate0<>>    GameLoadedCallback;
 };
 
 IC CGamePersistent&		GamePersistent()		{ return *((CGamePersistent*) g_pGamePersistent);			}

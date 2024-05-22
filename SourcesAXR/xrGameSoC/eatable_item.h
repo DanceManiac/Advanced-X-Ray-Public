@@ -31,6 +31,8 @@ public:
 
 			IC		u32		GetPortionsNum				()	const				{return m_iPortionsNum;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
+
+			bool			m_bUnlimited;
 protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;

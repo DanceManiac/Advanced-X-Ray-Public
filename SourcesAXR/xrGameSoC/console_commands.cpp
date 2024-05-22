@@ -53,9 +53,17 @@
 #	include "game_graph.h"
 #endif // DEBUG
 
-#include "hudmanager.h"
+#include "HUDManager.h"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "InfoPortion.h"
+#include "GametaskManager.h"
+
+// Hud Type
+xr_token			qhud_type_token[] = {
+	{ "hud_1",					1},
+	{ "hud_2",					2},
+	{ 0,						0}
+};
 
 // M.F.S. Crosshair Type
 extern u32	crosshair_type;
@@ -98,6 +106,29 @@ extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
 		int		g_keypress_on_start = 1;
+
+//Custom commands for scripts
+BOOL			b_script_cmd1 = 0;
+BOOL			b_script_cmd2 = 0;
+BOOL			b_script_cmd3 = 0;
+BOOL			b_script_cmd4 = 0;
+BOOL			b_script_cmd5 = 0;
+BOOL			b_script_cmd6 = 0;
+BOOL			b_script_cmd7 = 0;
+BOOL			b_script_cmd8 = 0;
+BOOL			b_script_cmd9 = 0;
+BOOL			b_script_cmd10 = 0;
+int				i_script_cmd1 = 0;
+int				i_script_cmd2 = 0;
+int				i_script_cmd3 = 0;
+int				i_script_cmd4 = 0;
+int				i_script_cmd5 = 0;
+int				i_script_cmd6 = 0;
+int				i_script_cmd7 = 0;
+int				i_script_cmd8 = 0;
+int				i_script_cmd9 = 0;
+int				i_script_cmd10 = 0;
+//Custom commands for scripts end
 
 void register_mp_console_commands();
 //-----------------------------------------------------------
@@ -334,6 +365,7 @@ public:
 		float				time_factor = (float)atof(args);
 		clamp				(time_factor,.001f,1000.f);
 		Device.time_factor	(time_factor);
+		psSpeedOfSound		= time_factor;
 	}
 };
 
@@ -1620,6 +1652,96 @@ public:
 	}
 };
 
+class CCC_UiHud_Mode : public CCC_Token
+{
+public:
+	CCC_UiHud_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N, V, T) {};
+
+	virtual void	Execute(LPCSTR args) {
+		CCC_Token::Execute(args);
+
+		if (g_pGamePersistent && g_pGameLevel && Level().game)
+		{
+			if (*value >= 1 && *value <= 3)
+			{
+				HUD().OnScreenResolutionChanged();
+			}
+		}
+	}
+};
+
+extern CUIXml* g_gameTaskXml;
+
+class CCC_GiveTask : public IConsole_Command
+{
+public:
+	CCC_GiveTask(LPCSTR N) : IConsole_Command(N) {};
+	virtual void Execute(LPCSTR task)
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (actor)
+			actor->GameTaskManager().GiveGameTaskToActor(task, 0, true);
+		else
+			Msg("! [g_task] : Actor not found!");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+
+		if (g_gameTaskXml)
+		{
+			const int tag_num = g_gameTaskXml->GetNodesNum(g_gameTaskXml->GetLocalRoot(), "game_task");
+
+			for (int i = 0; i < tag_num; i++)
+			{
+				XML_NODE* l_root = g_gameTaskXml->NavigateToNode("game_task", i);
+				g_gameTaskXml->SetLocalRoot(l_root);
+
+				if (auto name = g_gameTaskXml->ReadAttrib(l_root, "id", nullptr))
+				{
+					tips.emplace_back(name);
+				}
+			}
+
+			std::sort(tips.begin(), tips.end());
+		}
+	}
+};
+
+class CCC_GiveMoney : public IConsole_Command
+{
+public:
+	CCC_GiveMoney(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR money)
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		int	m_iMoney = (int)atoi(money);
+		if (actor)
+		{
+			Actor()->set_money(Actor()->get_money() + m_iMoney, false);
+		}
+		else
+			Msg("! [g_money] : Actor not found!");
+	}
+};
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -1878,6 +2000,8 @@ void CCC_RegisterCommands()
 		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
 		CMD1(CCC_Giveinfo,		"g_info");
 		CMD1(CCC_Disinfo,		"d_info");
+		CMD1(CCC_GiveTask,		"g_task");
+		CMD1(CCC_GiveMoney,		"g_money");
 		CMD1(CCC_SetWeather,	"set_weather");
 		CMD1(CCC_JumpToLevel,	"jump_to_level");
 		CMD3(CCC_Mask,			"g_god",					&psActorFlags,				AF_GODMODE);
@@ -1898,6 +2022,30 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Token,			"g_crosshair_type",			&crosshair_type,			crosshair_type_token);
 
 	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
+	CMD3(CCC_UiHud_Mode,	"hud_type",					&ui_hud_type,				qhud_type_token);
+
+	//Custom commands for scripts
+	CMD4(CCC_Integer,		"b_script_cmd1",			&b_script_cmd1,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd2",			&b_script_cmd2,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd3",			&b_script_cmd3,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd4",			&b_script_cmd4,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd5",			&b_script_cmd5,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd6",			&b_script_cmd6,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd7",			&b_script_cmd7,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd8",			&b_script_cmd8,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd9",			&b_script_cmd9,				0, 1);
+	CMD4(CCC_Integer,		"b_script_cmd10",			&b_script_cmd10,			0, 1);
+	CMD4(CCC_Integer,		"i_script_cmd1",			&i_script_cmd1,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd2",			&i_script_cmd2,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd3",			&i_script_cmd3,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd4",			&i_script_cmd4,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd5",			&i_script_cmd5,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd6",			&i_script_cmd6,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd7",			&i_script_cmd7,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd8",			&i_script_cmd8,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd9",			&i_script_cmd9,				0, 64);
+	CMD4(CCC_Integer,		"i_script_cmd10",			&i_script_cmd10,			0, 64);
+	//Custom commands for scripts end
 
 	register_mp_console_commands					();
 }

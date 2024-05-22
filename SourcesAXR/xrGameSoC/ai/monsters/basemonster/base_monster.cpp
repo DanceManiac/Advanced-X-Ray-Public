@@ -87,6 +87,9 @@ CBaseMonster::CBaseMonster()
 
 	light_bone						= "bip01_head";
 	particles_bone					= "bip01_head";
+
+	m_bDropItemAfterSuperAttack		= false;
+	m_iSuperAttackDropItemPer		= 50;
 }
 
 

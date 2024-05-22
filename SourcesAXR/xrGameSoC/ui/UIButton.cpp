@@ -272,3 +272,9 @@ bool CUIButton::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	}
 	return inherited::OnKeyboardAction(dik, keyboard_action);
 }
+
+void CUIButton::SetAccelerator(int iAccel, int idx)
+{
+	VERIFY(idx >= 0 && idx < 4);
+	m_uAccelerator[idx] = s16(iAccel);
+}

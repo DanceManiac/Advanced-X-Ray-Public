@@ -68,7 +68,6 @@ public:
 	virtual void			save					(NET_Packet &output_packet);
 	virtual void			load					(IReader &input_packet);
 
-protected:
 	float m_fAlcohol;
 	float m_fV_Alcohol;
 //--

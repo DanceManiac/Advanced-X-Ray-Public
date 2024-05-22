@@ -139,6 +139,8 @@ BOOL CAI_Crow::net_Spawn		(CSE_Abstract* DC)
 	m_Anims.m_fly.Load			(M,"norm_fly_fwd");
 	m_Anims.m_idle.Load			(M,"norm_idle");
 
+	renderable.visual->_ignore_optimization = true;
+
 	// disable UpdateCL, enable only on HIT
 	processing_deactivate		();
 

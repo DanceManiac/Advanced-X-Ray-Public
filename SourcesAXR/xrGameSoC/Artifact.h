@@ -39,6 +39,7 @@ public:
 
 	//for smart_cast
 	virtual CArtefact*				cast_artefact						()		{return this;}
+	virtual	u32						Cost								() const;
 
 protected:
 	virtual void					UpdateCLChild						()		{};
@@ -81,11 +82,15 @@ public:
 	float							m_fWalkAccel;
 
 	CHitImmunity 					m_ArtefactHitImmunities;
+	HitImmunity::HitTypeSVec		m_HitTypeProtection;
+	HitImmunity::HitTypeSVec		m_ConstHitTypeProtection;
 
 	bool							m_bVolumetricLights;
 	float							m_fVolumetricQuality;
 	float							m_fVolumetricDistance;
 	float							m_fVolumetricIntensity;
+
+	int								m_iAfRank;
 
 	//For Degradation
 	float							m_fConstHealthRestoreSpeed;
@@ -103,7 +108,8 @@ public:
 	float							m_fChargeLevel;
 	float							m_fCurrentChargeLevel;
 	float							m_fDegradationSpeed;
-	float							GetCurrentChargeLevel(void) const;
+	float							GetCurrentChargeLevel() const;
+	int								GetCurrentAfRank() const;
 
 protected:
 	MotionSVec						m_anim_idle;

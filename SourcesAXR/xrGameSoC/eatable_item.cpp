@@ -26,6 +26,8 @@ CEatableItem::CEatableItem()
 	m_iPortionsNum = 1;
 
 	m_physic_item	= 0;
+
+	m_bUnlimited	= false;
 }
 
 CEatableItem::~CEatableItem()
@@ -52,6 +54,8 @@ void CEatableItem::Load(LPCSTR section)
 	m_iPortionsNum				= READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
 	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
 	VERIFY						(m_iPortionsNum<10000);
+
+	m_bUnlimited				= READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -67,6 +71,7 @@ bool CEatableItem::Useful() const
 
 	//проверить не все ли еще съедено
 	if(Empty()) return false;
+	if (m_iPortionsNum == 0 && !m_bUnlimited) return false;
 
 	return true;
 }
@@ -110,7 +115,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	
 	//уменьшить количество порций
-	if (m_iPortionsNum != -1)
+	if (m_iPortionsNum != -1 && !m_bUnlimited)
 	{
 		if (m_iPortionsNum > 0)
 			--(m_iPortionsNum);

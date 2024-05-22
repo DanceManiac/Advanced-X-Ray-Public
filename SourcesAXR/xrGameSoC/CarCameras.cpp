@@ -15,6 +15,7 @@
 #include "camerafirsteye.h"
 #include "level.h"
 #include "../xrEngine/cameramanager.h"
+#include "../../Include/xrRender/Kinematics.h"
 
 bool CCar::HUDView() const		
 {
@@ -28,16 +29,22 @@ void	CCar::cam_Update			(float dt, float fov)
 	Da.set							(0,0,0);
 	//bool							owner = !!Owner();
 
-	XFORM().transform_tiny			(P,m_camera_position);
-
 	switch(active_camera->tag) {
 	case ectFirst:
+		XFORM().transform_tiny(P, m_camera_position_firsteye);
+
 		// rotate head
 		if(OwnerActor()) OwnerActor()->Orientation().yaw	= -active_camera->yaw;
 		if(OwnerActor()) OwnerActor()->Orientation().pitch	= -active_camera->pitch;
 		break;
-	case ectChase:					break;
-	case ectFree:					break;
+	case ectChase:
+		XFORM().transform_tiny(P, m_camera_position_lookat);
+
+		break;
+	case ectFree:
+		XFORM().transform_tiny(P, m_camera_position_free);
+
+		break;
 	}
 	active_camera->f_fov			= fov;
 	active_camera->Update			(P,Da);
@@ -48,10 +55,15 @@ void	CCar::OnCameraChange		(int type)
 {
 	if(Owner())
 	{
+		Owner()->setVisible(TRUE);
+
+		IKinematics* pKinematics = smart_cast<IKinematics*>(Owner()->Visual());
+		u16 		head_bone = pKinematics->LL_BoneID("bip01_head");
+
 		if (type == ectFirst)
-			Owner()->setVisible(TRUE);
-		else
-			Owner()->setVisible(FALSE);
+			pKinematics->LL_SetBoneVisible(head_bone, false, false);
+		else if (active_camera->tag == ectFirst)
+			pKinematics->LL_SetBoneVisible(head_bone, true, true);
 	}
 	
 	if (!active_camera||active_camera->tag!=type){

@@ -976,6 +976,7 @@ CSE_ALifeItemBolt::CSE_ALifeItemBolt		(LPCSTR caSection) : CSE_ALifeItem(caSecti
 {
 	m_flags.set					(flUseSwitches,FALSE);
 	m_flags.set					(flSwitchOffline,FALSE);
+	m_can_save					= true;
 	m_ef_weapon_type			= READ_IF_EXISTS(pSettings,r_u32,caSection,"ef_weapon_type",u32(-1));
 }
 
@@ -1011,7 +1012,7 @@ void CSE_ALifeItemBolt::UPDATE_Read			(NET_Packet &tNetPacket)
 
 bool CSE_ALifeItemBolt::can_save			() const
 {
-	return true;
+	return m_can_save;
 }
 bool CSE_ALifeItemBolt::used_ai_locations		() const
 {

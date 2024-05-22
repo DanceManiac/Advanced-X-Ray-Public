@@ -212,7 +212,9 @@ void		CPHElement::Start()
 
 void		CPHElement::Deactivate()
 {
-	VERIFY(isActive());
+	//VERIFY(isActive());
+	if (!isActive())
+		return;
 
 	destroy();
 	m_flags.set(flActive,FALSE);
@@ -681,6 +683,9 @@ void CPHElement::InterpolateGlobalTransform(Fmatrix* m){
 }
 void CPHElement::GetGlobalTransformDynamic(Fmatrix* m)
 {
+	if (!m_body)
+		return;
+
 	PHDynamicData::DMXPStoFMX(dBodyGetRotation(m_body),dBodyGetPosition(m_body),*m);
 	MulB43InverceLocalForm(*m);
 	VERIFY(_valid(*m));
@@ -1265,7 +1270,13 @@ void	CPHElement::set_DisableParams				(const SAllDDOParams& params)
 
 void CPHElement::get_Extensions(const Fvector& axis,float center_prg,float& lo_ext, float& hi_ext)
 {
-	CPHGeometryOwner::get_Extensions(axis,center_prg,lo_ext,hi_ext);
+	//lost alpha starts
+	if (m_body)
+		CPHGeometryOwner::get_Extensions(axis, center_prg, lo_ext, hi_ext);
+	else
+	{
+		lo_ext = dInfinity; hi_ext = -dInfinity;
+	}
 }
 
 const Fvector& CPHElement::mass_Center()
