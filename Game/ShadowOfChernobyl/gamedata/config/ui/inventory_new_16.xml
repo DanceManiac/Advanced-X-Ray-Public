@@ -63,7 +63,7 @@
     
 	<outfit_info x="737" y="550" width="260" height="180">
 		<auto_static x="140" y="0">
-			<text font="graffiti22" color="UI_orange" complex_mode="0">ui_st_params</text>
+			<text font="graffiti22" color="ui_orange" complex_mode="0">ui_st_params</text>
 		</auto_static>
 		
 		<scroll_view x="8" y="33" width="236" height="147" always_show_scroll="0"/>

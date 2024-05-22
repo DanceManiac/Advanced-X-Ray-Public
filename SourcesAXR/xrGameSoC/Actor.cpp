@@ -1689,13 +1689,12 @@ void CActor::UpdateSkills()
 
 float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 {
-	float res_hit_power_k		= 1.0f;
-	float _af_count				= 0.0f;
-
-	TIItemContainer::iterator it = inventory().m_belt.begin();
-	TIItemContainer::iterator ite = inventory().m_belt.end();
-	TIItemContainer::iterator itR = inventory().m_ruck.begin();
-	TIItemContainer::iterator iteR = inventory().m_ruck.end();
+	float res_hit_power_k	= 1.0f;
+	float _af_count			= 0.0f;
+	TIItemContainer::iterator it	= inventory().m_belt.begin(); 
+	TIItemContainer::iterator ite	= inventory().m_belt.end();
+	TIItemContainer::iterator itR	= inventory().m_ruck.begin();
+	TIItemContainer::iterator iteR	= inventory().m_ruck.end();
 
 	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
 	{
@@ -1704,7 +1703,8 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 			CArtefact* artefact = smart_cast<CArtefact*>(*it);
 			if (artefact)
 			{
-				hit_power -= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+				res_hit_power_k += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+				_af_count += 1.0f;
 			}
 		}
 	}
@@ -1715,22 +1715,14 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 			CArtefact* artefact = smart_cast<CArtefact*>(*itR);
 			if (artefact)
 			{
-				hit_power -= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+				res_hit_power_k += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
+				_af_count += 1.0f;
 			}
 		}
 	}
+	res_hit_power_k -= _af_count;
 
-	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
-	{
-		CArtefact*	artefact = smart_cast<CArtefact*>(*it);
-		if(artefact){
-			res_hit_power_k	+= artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
-			_af_count		+= 1.0f;
-		}
-	}
-	clamp(hit_power, 0.0f, flt_max);
-
-	return hit_power;
+	return					res_hit_power_k * hit_power;
 }
 
 void	CActor::SetZoomRndSeed		(s32 Seed)
