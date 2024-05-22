@@ -36,36 +36,38 @@ static float last_hud_fov{};
 
 CEatableItem::CEatableItem()
 {
-	m_iPortionsNum			= 1;
-	use_cam_effector		= nullptr;
-	anim_sect				= nullptr;
-	m_bHasAnimation			= false;
-	m_bUnlimited			= false;
-	m_physic_item			= 0;
-	m_fEffectorIntensity	= 1.0f;
-	m_iAnimHandsCnt			= 1;
-	m_iAnimLength			= 0;
-	m_bActivated			= false;
-	m_bItmStartAnim			= false;
-	m_bNeedDestroyNotUseful = true;
+	m_iPortionsNum				= 1;
+	use_cam_effector			= nullptr;
+	anim_sect					= nullptr;
+	m_bHasAnimation				= false;
+	m_bUnlimited				= false;
+	m_physic_item				= 0;
+	m_fEffectorIntensity		= 1.0f;
+	m_iAnimHandsCnt				= 1;
+	m_iAnimLength				= 0;
+	m_bActivated				= false;
+	m_bItmStartAnim				= false;
+	m_bNeedDestroyNotUseful		= true;
 
-	m_fRadioactivity		= 0.0f;
-	m_fIrradiationCoef		= 0.0005f;
-	m_fIrradiationZonePower = 0.0f;
-	m_fSpoliage				= 0.0f;
-	m_fFoodRottingCoef		= 0.0f;
-	m_fHealthInfluence			= 0;
-	m_fPowerInfluence			= 0;
-	m_fSatietyInfluence			= 0;
-	m_fRadiationInfluence		= 0;
-	m_fThirstInfluence			= 0;
-	m_fIntoxicationInfluence	= 0;
-	m_fSleepenessInfluence		= 0;
-	m_fAlcoholismInfluence		= 0;
-	m_fHangoverInfluence		= 0;
-	m_fNarcotismInfluence		= 0;
-	m_fWithdrawalInfluence		= 0;
-	m_fPsyHealthInfluence		= 0;
+	m_fRadioactivity			= 0.0f;
+	m_fIrradiationCoef			= 0.0005f;
+	m_fIrradiationZonePower		= 0.0f;
+	m_fSpoliage					= 0.0f;
+	m_fFoodRottingCoef			= 0.0f;
+	m_fHealthInfluence			= 0.f;
+	m_fPowerInfluence			= 0.f;
+	m_fSatietyInfluence			= 0.f;
+	m_fRadiationInfluence		= 0.f;
+	m_fThirstInfluence			= 0.f;
+	m_fIntoxicationInfluence	= 0.f;
+	m_fSleepenessInfluence		= 0.f;
+	m_fAlcoholismInfluence		= 0.f;
+	m_fHangoverInfluence		= 0.f;
+	m_fNarcotismInfluence		= 0.f;
+	m_fWithdrawalInfluence		= 0.f;
+	m_fPsyHealthInfluence		= 0.f;
+	m_alcohol					= 0.f;
+	m_drugs						= 0.f;
 }
 
 CEatableItem::~CEatableItem()
@@ -97,6 +99,8 @@ void CEatableItem::Load(LPCSTR section)
 	m_fWithdrawalInfluence		= pSettings->r_float(section, "eat_withdrawal");
 	m_fPsyHealthInfluence		= pSettings->r_float(section, "eat_psy_health");
 	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
+	m_alcohol					= READ_IF_EXISTS(pSettings, r_float, section, "eat_alcohol", 0.0f);
+	m_drugs						= READ_IF_EXISTS(pSettings, r_float, section, "eat_drugs", 0.0f);
 	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
 
 	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);

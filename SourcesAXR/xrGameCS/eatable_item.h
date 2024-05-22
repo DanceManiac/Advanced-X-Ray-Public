@@ -74,6 +74,8 @@ public:
 	float					m_fNarcotismInfluence;
 	float					m_fWithdrawalInfluence;
 	float					m_fPsyHealthInfluence;
+	float					m_alcohol;
+	float					m_drugs;
 	//заживление ран на кол-во процентов
 	float					m_fWoundsHealPerc;
 
