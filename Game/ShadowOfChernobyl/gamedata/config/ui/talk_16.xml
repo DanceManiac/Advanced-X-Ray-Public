@@ -43,8 +43,11 @@
 	<answers_list x="20" y="46" width="557" height="377" right_ident="0" always_show_scroll="0"/>
 
 
-	<question_item x="0" y="0" width="557" height="20" min_height="13">
-		<content_text x="0" y="0" width="550" height="20">
+	<question_item x="15" y="2" width="557" height="20" min_height="13">
+		<num_text x="0" y="2" width="8" height="20">
+			<text font="letterica18" color="ui_2"/>
+		</num_text>
+		<content_text x="15" y="0" width="550" height="20" offset="2">
 		<text font="letterica18" r="255" g="232" b="208" align="l"/>
 		<text_color>
 			<t r="231" g="168" b="12"/> <e r="255" g="232" b="208"/> <h r="255" g="255" b="255"/>
