@@ -99,19 +99,19 @@ void CArtefact::Load(LPCSTR section)
 			m_iAfRank = 5;
 	}
 
-	m_fConstHealthRestoreSpeed = pSettings->r_float(section, "health_restore_speed") * m_iAfRank;
-	m_fConstRadiationRestoreSpeed = pSettings->r_float(section, "radiation_restore_speed");
-	m_fConstSatietyRestoreSpeed = pSettings->r_float(section, "satiety_restore_speed") * m_iAfRank;
-	m_fConstPowerRestoreSpeed = pSettings->r_float(section, "power_restore_speed") * m_iAfRank;
-	m_fConstBleedingRestoreSpeed = pSettings->r_float(section, "bleeding_restore_speed") * m_iAfRank;
-	m_fConstThirstRestoreSpeed = pSettings->r_float(section, "thirst_restore_speed") * m_iAfRank;
-	m_fConstIntoxicationRestoreSpeed = pSettings->r_float(section, "intoxication_restore_speed") * m_iAfRank;
-	m_fConstSleepenessRestoreSpeed = pSettings->r_float(section, "sleepeness_restore_speed") * m_iAfRank;
-	m_fConstAlcoholismRestoreSpeed = pSettings->r_float(section, "alcoholism_restore_speed") * m_iAfRank;
-	m_fConstNarcotismRestoreSpeed = pSettings->r_float(section, "narcotism_restore_speed") * m_iAfRank;
-	m_fConstPsyHealthRestoreSpeed = pSettings->r_float(section, "psy_health_restore_speed") * m_iAfRank;
-	m_fConstFrostbiteRestoreSpeed = pSettings->r_float(section, "frostbite_restore_speed") * m_iAfRank;
-	m_fConstAdditionalWeight = pSettings->r_float(section, "additional_inventory_weight") * m_iAfRank;
+	m_fConstHealthRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",			0.f) * m_iAfRank;
+	m_fConstRadiationRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",		0.f);
+	m_fConstSatietyRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",			0.f) * m_iAfRank;
+	m_fConstPowerRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",			0.f) * m_iAfRank;
+	m_fConstBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",			0.f) * m_iAfRank;
+	m_fConstThirstRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "thirst_restore_speed",			0.f) * m_iAfRank;
+	m_fConstIntoxicationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "intoxication_restore_speed",		0.f) * m_iAfRank;
+	m_fConstSleepenessRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "sleepeness_restore_speed",		0.f) * m_iAfRank;
+	m_fConstAlcoholismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcoholism_restore_speed",		0.f) * m_iAfRank;
+	m_fConstNarcotismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed",		0.f) * m_iAfRank;
+	m_fConstPsyHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",		0.f) * m_iAfRank;
+	m_fConstFrostbiteRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "frostbite_restore_speed",		0.f) * m_iAfRank;
+	m_fConstAdditionalWeight			= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight",	0.f) * m_iAfRank;
 
 	m_fChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "artefact_charge_level", 1.0f);
 

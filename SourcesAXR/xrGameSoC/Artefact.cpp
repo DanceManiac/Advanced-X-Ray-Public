@@ -131,15 +131,15 @@ void CArtefact::Load(LPCSTR section)
 			m_iAfRank = 5;
 	}
 
-	m_fConstHealthRestoreSpeed		= pSettings->r_float(section, "health_restore_speed") * m_iAfRank;
-	m_fConstRadiationRestoreSpeed	= pSettings->r_float(section, "radiation_restore_speed");
-	m_fConstSatietyRestoreSpeed		= pSettings->r_float(section, "satiety_restore_speed") * m_iAfRank;
-	m_fConstPowerRestoreSpeed		= pSettings->r_float(section, "power_restore_speed") * m_iAfRank;
-	m_fConstBleedingRestoreSpeed	= pSettings->r_float(section, "bleeding_restore_speed") * m_iAfRank;
-	m_fConstThirstRestoreSpeed		= pSettings->r_float(section, "thirst_restore_speed") * m_iAfRank;
-	m_fConstAdditionalWeight		= pSettings->r_float(section, "additional_inventory_weight") * m_iAfRank;
-	m_fConstJumpSpeed				= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
-	m_fConstWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
+	m_fConstHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",			0.f) * m_iAfRank;
+	m_fConstRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",		0.f);
+	m_fConstSatietyRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",			0.f) * m_iAfRank;
+	m_fConstPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",			0.f) * m_iAfRank;
+	m_fConstBleedingRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",			0.f) * m_iAfRank;
+	m_fConstThirstRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "thirst_restore_speed",			0.f) * m_iAfRank;
+	m_fConstAdditionalWeight		= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight",	0.f) * m_iAfRank;
+	m_fConstJumpSpeed				= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed",						1.f);
+	m_fConstWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel",						1.f);
 
 	m_fTrailLightRange				= m_fConstTrailLightRange;
 
