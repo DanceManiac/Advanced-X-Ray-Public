@@ -11,6 +11,7 @@ public:
 	virtual						~CUIArtefactParams		();
 	void 						InitFromXml				(CUIXml& xml_doc);
 	bool 						Check					(const shared_str& af_section);
+	bool						CheckDescrInfoPortions	(const shared_str& af_section);
 	void 						SetInfo					(const shared_str& af_section);
 
 protected:

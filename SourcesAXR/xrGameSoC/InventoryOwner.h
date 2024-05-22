@@ -94,6 +94,7 @@ public:
 	void				set_money		(u32 amount, bool bSendEvent);
 protected:
 	u32					m_money;
+	Flags32				m_trader_flags;
 	// торговля
 	CTrade*				m_pTrade;
 	bool				m_bTalking; 
@@ -148,6 +149,7 @@ public:
 	virtual void			ChangeRank		(CHARACTER_RANK_VALUE);
 	virtual void			SetReputation	(CHARACTER_REPUTATION_VALUE);
 	virtual void			ChangeReputation(CHARACTER_REPUTATION_VALUE);
+	virtual void			SetName			(LPCSTR name);
 
 	//для работы с relation system
 	u16								object_id	() const;
@@ -172,8 +174,9 @@ public:
 	virtual void			OnItemDropUpdate		();
 	virtual bool			use_bolts				() const {return(true);}
 	virtual	void			spawn_supplies			();
-
-	CInventoryItem* CInventoryOwner::GetCurrentOutfit() const;
+	
+	CInventoryItem*			GetCurrentTorch			() const;
+	CInventoryItem*			GetCurrentOutfit		() const;
 
 	//////////////////////////////////////////////////////////////////////////
 	// связь со скриптами
@@ -193,6 +196,8 @@ public:
 
 public:
 	virtual	bool				use_simplified_visual	() const {return (false);};
+	
+			void				AfterLoad				();
 
 private:
 	CTradeParameters			*m_trade_parameters;

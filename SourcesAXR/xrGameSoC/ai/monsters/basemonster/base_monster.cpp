@@ -84,6 +84,9 @@ CBaseMonster::CBaseMonster()
 	Home							= xr_new<CMonsterHome>(this);
 
 	com_man().add_ability			(ControlCom::eComCriticalWound);
+
+	light_bone						= "bip01_head";
+	particles_bone					= "bip01_head";
 }
 
 
@@ -117,6 +120,8 @@ void CBaseMonster::UpdateCL()
 	control().update_frame();
 
 	m_pPhysics_support->in_UpdateCL();
+
+	UpdateLights();
 }
 
 void CBaseMonster::shedule_Update(u32 dt)
@@ -155,6 +160,8 @@ void CBaseMonster::Die(CObject* who)
 	monster_squad().remove_member	((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(),this);
 	
 	if (m_controlled)			m_controlled->on_die();
+
+	SwitchMonsterParticles(false);
 }
 
 

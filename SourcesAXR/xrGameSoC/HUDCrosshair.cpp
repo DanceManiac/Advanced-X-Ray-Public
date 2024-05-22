@@ -135,8 +135,8 @@ void CHUDCrosshair::OnRender(const Fvector2& cent, const Fvector2& size_scr)
 
 	if (!g_advanced_crosshair)
 	{
-	scr_size.set	(float(::Render->getTarget()->get_width()), float(::Render->getTarget()->get_height()));
-	center.set		(scr_size.x/2.0f, scr_size.y/2.0f);
+		scr_size.set	(float(::Render->getTarget()->get_width()), float(::Render->getTarget()->get_height()));
+		center.set		(scr_size.x/2.0f, scr_size.y/2.0f);
 	}
 	else
 	{

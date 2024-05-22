@@ -86,7 +86,9 @@ public:
 	virtual bool		CanBePaused				();
 
 			int			GetHudGlassElement		();
+			int			GetNightvisionType		();
 			bool		GetHudGlassEnabled		();
+			bool		GetActorNightvision		();
 			float		GetActorMaxHealth		() override;
 			float		GetActorHealth			() override;
 			float		GetActorMaxPower		() override;

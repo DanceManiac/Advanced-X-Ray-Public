@@ -61,6 +61,8 @@ class CActorStatisticMgr;
 
 class CLocationManager;
 
+class CNightVisionEffector;
+
 class	CActor: 
 	public CEntityAlive, 
 	public IInputReceiver,
@@ -485,7 +487,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 public:
 	virtual void						g_WeaponBones		(int &L, int &R1, int &R2);
-	virtual void						g_fireParams		(const CHudItem* pHudItem, Fvector& P, Fvector& D);
+	virtual void						g_fireParams		(CHudItem* pHudItem, Fvector& P, Fvector& D) override;
 	virtual BOOL						g_State				(SEntityState& state) const;
 	virtual	float						GetWeaponAccuracy	() const;
 			bool						IsZoomAimingMode	() const {return m_bZoomAimingMode;}
@@ -768,6 +770,18 @@ private:
 
 public:
 	virtual bool				register_schedule				() const {return false;}
+
+public:
+	void						SwitchNightVision				(bool light_on, bool use_sounds = true, bool send_event = true);
+
+	bool						GetNightVisionStatus			() { return m_bNightVisionOn; }
+	void						SetNightVisionAllowed			(bool bAllow) { m_bNightVisionAllow = bAllow; }
+	CNightVisionEffector*		GetNightVision					() { return m_night_vision; }
+protected:
+	bool						m_bNightVisionOn;
+	bool						m_bNightVisionAllow;
+
+	CNightVisionEffector*		m_night_vision;
 };
 
 extern bool		isActorAccelerated			(u32 mstate, bool ZoomMode);

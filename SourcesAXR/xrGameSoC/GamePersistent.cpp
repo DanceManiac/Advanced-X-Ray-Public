@@ -896,6 +896,16 @@ float CGamePersistent::GetActorBleeding()
 	return	(Actor()->conditions().BleedingSpeed());
 }
 
+bool CGamePersistent::GetActorNightvision()
+{
+	return	(Actor()->GetNightVisionStatus());
+}
+
+int CGamePersistent::GetNightvisionType()
+{
+	return (DynamicHudGlass::GetNightvisionType());
+}
+
 bool CGamePersistent::GetActorAliveStatus()
 {
 	return	(Actor()->g_Alive());

@@ -68,6 +68,8 @@ enum {
 	M_BATTLEYE,
 	M_MAP_SYNC,
 
+	GE_TRADER_FLAGS = 55,
+
 	MSG_FORCEDWORD				= u32(-1)
 };
 

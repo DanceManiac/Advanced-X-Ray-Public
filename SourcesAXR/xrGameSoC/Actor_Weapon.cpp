@@ -17,8 +17,8 @@
 #include "game_base_space.h"
 #include "Artifact.h"
 
-static const float VEL_MAX		= 10.f;
-static const float VEL_A_MAX	= 10.f;
+constexpr float VEL_MAX = 10.f;
+constexpr float VEL_A_MAX = 10.f;
 
 #define GetWeaponParam(pWeapon, func_name, def_value)	((pWeapon) ? (pWeapon->func_name) : def_value)
 
@@ -58,7 +58,7 @@ float CActor::GetWeaponAccuracy() const
 }
 
 
-void CActor::g_fireParams	(const CHudItem* pHudItem, Fvector &fire_pos, Fvector &fire_dir)
+void CActor::g_fireParams(CHudItem* pHudItem, Fvector& fire_pos, Fvector& fire_dir)
 {
 //	VERIFY			(inventory().ActiveItem());
 
@@ -71,6 +71,14 @@ void CActor::g_fireParams	(const CHudItem* pHudItem, Fvector &fire_pos, Fvector 
 		Fvector offset;
 		XFORM().transform_dir(offset, m_vMissileOffset);
 		fire_pos.add(offset);
+	}
+	else if (auto weapon = smart_cast<CWeapon*>(pHudItem))
+	{
+		if (cam_active == eacFirstEye && !(weapon->IsZoomed() && !weapon->IsRotatingToZoom()))
+		{
+			//fire_dir = weapon->get_LastFD();
+			fire_pos = weapon->get_LastFP();
+		}
 	}
 }
 

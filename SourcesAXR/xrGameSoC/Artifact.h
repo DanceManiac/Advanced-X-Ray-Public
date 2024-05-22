@@ -22,6 +22,8 @@ public:
 
 	virtual void					OnH_A_Chield					();
 	virtual void					OnH_B_Independent				(bool just_before_destroy);
+	virtual void					save							(NET_Packet &output_packet);
+	virtual void					load							(IReader &input_packet);
 	
 	virtual void					UpdateCL						();
 	virtual void					shedule_Update					(u32 dt);	
@@ -74,12 +76,34 @@ public:
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
 	float							m_additional_weight;
+	float 							m_fThirstRestoreSpeed;
+	float							m_fJumpSpeed;
+	float							m_fWalkAccel;
+
 	CHitImmunity 					m_ArtefactHitImmunities;
 
 	bool							m_bVolumetricLights;
 	float							m_fVolumetricQuality;
 	float							m_fVolumetricDistance;
 	float							m_fVolumetricIntensity;
+
+	//For Degradation
+	float							m_fConstHealthRestoreSpeed;
+	float							m_fConstRadiationRestoreSpeed;
+	float							m_fConstSatietyRestoreSpeed;
+	float							m_fConstPowerRestoreSpeed;
+	float							m_fConstBleedingRestoreSpeed;
+	float							m_fConstThirstRestoreSpeed;
+	float							m_fConstAdditionalWeight;
+	float							m_fConstTrailLightRange;
+	float							m_fConstVolumetricDistance;
+	float							m_fConstVolumetricIntensity;
+	float							m_fConstJumpSpeed;
+	float							m_fConstWalkAccel;
+	float							m_fChargeLevel;
+	float							m_fCurrentChargeLevel;
+	float							m_fDegradationSpeed;
+	float							GetCurrentChargeLevel(void) const;
 
 protected:
 	MotionSVec						m_anim_idle;
@@ -106,6 +130,8 @@ public:
 	virtual void					OnAnimationEnd		(u32 state);
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
 	virtual u16						bone_count_to_synchronize	() const;
+
+			void					UpdateDegradation	();
 
 	// optimization FAST/SLOW mode
 public:						

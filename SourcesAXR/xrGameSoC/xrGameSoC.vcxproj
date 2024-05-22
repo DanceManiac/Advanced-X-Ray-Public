@@ -479,6 +479,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ActorNightVision.h" />
     <ClInclude Include="AdvancedXrayGameConstants.h" />
     <ClInclude Include="CaptureBoneCallback.h" />
     <ClInclude Include="DynamicHudGlass.h" />
@@ -1932,6 +1933,7 @@
     <ClInclude Include="ui\UIGameTutorial.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ActorNightVision.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
     <ClCompile Include="damage_manager.cpp" />
     <ClCompile Include="action_base_script.cpp">

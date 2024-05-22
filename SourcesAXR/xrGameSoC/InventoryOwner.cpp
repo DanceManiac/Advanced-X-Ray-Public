@@ -28,6 +28,7 @@
 #include "alife_object_registry.h"
 
 #include "CustomOutfit.h"
+#include "Bolt.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -45,6 +46,8 @@ CInventoryOwner::CInventoryOwner			()
 	m_known_info_registry		= xr_new<CInfoPortionWrapper>();
 	m_tmp_active_slot_num		= NO_ACTIVE_SLOT;
 	m_need_osoznanie_mode		= FALSE;
+
+	m_trader_flags.zero();
 }
 
 DLL_Pure *CInventoryOwner::_construct		()
@@ -140,6 +143,8 @@ BOOL CInventoryOwner::net_Spawn		(CSE_Abstract* DC)
 			dialog_manager->SetDefaultStartDialog(CharacterInfo().StartDialog());
 		}
 		m_game_name			= pTrader->m_character_name;
+
+		m_trader_flags.assign(pTrader->m_trader_flags.get());
 	}
 	else
 	{
@@ -402,6 +407,11 @@ void CInventoryOwner::SetRank			(CHARACTER_RANK_VALUE rank)
 	trader->m_rank  = rank;
 }
 
+void CInventoryOwner::SetName(LPCSTR name)
+{
+	m_game_name = name;
+}
+
 void CInventoryOwner::ChangeRank			(CHARACTER_RANK_VALUE delta)
 {
 	SetRank(Rank()+delta);
@@ -557,4 +567,25 @@ float CInventoryOwner::missile_throw_force		()
 bool CInventoryOwner::use_throw_randomness		()
 {
 	return						(true);
+}
+
+void CInventoryOwner::AfterLoad()
+{
+	TIItemContainer::iterator I = inventory().m_all.begin();
+	TIItemContainer::iterator E = inventory().m_all.end();
+	for (; I != E; ++I)
+	{
+		CBolt* pBolt = smart_cast<CBolt*>((*I));
+		if (pBolt)
+			pBolt->DestroyObject();
+	}
+
+	CGameObject* game_object = smart_cast<CGameObject*>(this);
+	VERIFY(game_object);
+	Level().spawn_item("bolt", game_object->Position(), game_object->ai_location().level_vertex_id(), game_object->ID());
+}
+
+CInventoryItem* CInventoryOwner::GetCurrentTorch() const
+{
+	return inventory().ItemFromSlot(TORCH_SLOT);
 }

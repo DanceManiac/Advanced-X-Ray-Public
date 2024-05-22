@@ -24,6 +24,7 @@ class CALifeOnlineOfflineGroupBrain;
 SERVER_ENTITY_DECLARE_BEGIN0(CSE_ALifeTraderAbstract)
 	enum eTraderFlags {
 		eTraderFlagInfiniteAmmo		= u32(1) << 0,
+		eTraderFlagNightVisionActive = u32(1) << 1,
 		eTraderFlagDummy			= u32(-1),
 	};
 //	float							m_fCumulativeItemMass;

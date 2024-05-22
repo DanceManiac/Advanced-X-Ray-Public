@@ -10,7 +10,7 @@
 
 #include "../xrEngine/Environment.h"
 #include "../xrEngine/CustomHUD.h"
-#include "Entity.h"
+#include "Actor.h"
 #include "level.h"
 #include "game_cl_base.h"
 #include "../xrEngine/igame_persistent.h"
@@ -25,6 +25,7 @@
 
 #include "inventory_item.h"
 #include "inventory.h"
+#include "HudItem.h"
 
 #define C_ON_ENEMY		color_xrgb(0xff,0,0)
 #define C_ON_NEUTRAL	color_xrgb(0xff,0xff,0x80)
@@ -37,6 +38,7 @@
 #define SHOW_INFO_SPEED		0.5f
 #define HIDE_INFO_SPEED		10.f
 
+u32	crosshair_type = 1;
 
 IC	float	recon_mindist	()		{
 	return 2.f;
@@ -61,6 +63,7 @@ CHUDTarget::CHUDTarget	()
 	RQ.range			= 0.f;
 	//	hGeom.create		(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
 	hShader->create("hud\\cursor", "ui\\cursor");
+	hShaderCrosshairPoint->create("hud\\cursor", "ui\\crosshair_cop_point");
 
 	RQ.set				(NULL, 0.f, -1);
 
@@ -124,13 +127,16 @@ void CHUDTarget::Render()
 {
 	VERIFY		(g_bRendering);
 
-	CObject*	O		= Level().CurrentEntity();
-	if (0==O)	return;
-	CEntity*	E		= smart_cast<CEntity*>(O);
-	if (0==E)	return;
+	CActor* Actor			= smart_cast<CActor*>(Level().CurrentEntity());
+	
+	if (!Actor)
+		return;
 
 	Fvector p1				= Device.vCameraPosition;
 	Fvector dir				= Device.vCameraDirection;
+
+	if (auto Wpn = smart_cast<CHudItem*>(Actor->inventory().ActiveItem()))
+		Actor->g_fireParams(Wpn, p1, dir);
 	
 	// Render cursor
 	u32 C				= C_DEFAULT;
@@ -248,7 +254,7 @@ void CHUDTarget::Render()
 	float cy = (pt.y + 1) * h_2;
 
 	//отрендерить кружочек или крестик
-	if(!m_bShowCrosshair)
+	if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2 || crosshair_type == 3)
 	{
 		UIRender->StartPrimitive(6, IUIRender::ptTriList, UI().m_currentPointType);
 
@@ -264,10 +270,10 @@ void CHUDTarget::Render()
 
 		// unlock VB and Render it as triangle LIST
 
-		//if (crosshair_type == 2)
-		//	UIRender->SetShader(*hShaderCrosshairBuild);
+		if (crosshair_type == 3)
+			UIRender->SetShader(*hShaderCrosshairPoint);
 
-		if (!m_bShowCrosshair /*&&  crosshair_type == 1 || crosshair_type == 3*/)
+		if (!m_bShowCrosshair &&  crosshair_type == 1 || crosshair_type == 2)
 			UIRender->SetShader(*hShader);
 
 		UIRender->FlushPrimitive();

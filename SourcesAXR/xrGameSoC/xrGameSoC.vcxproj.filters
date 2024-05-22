@@ -6608,6 +6608,9 @@
     <ClInclude Include="DynamicHudGlass.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClInclude>
+    <ClInclude Include="ActorNightVision.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9789,6 +9792,9 @@
     </ClCompile>
     <ClCompile Include="DynamicHudGlass.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorNightVision.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

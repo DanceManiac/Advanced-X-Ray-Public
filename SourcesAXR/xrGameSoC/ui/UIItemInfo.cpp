@@ -15,6 +15,8 @@
 #include "UIWpnParams.h"
 #include "ui_af_params.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 CUIItemInfo::CUIItemInfo()
 {
 	UIItemImageSize.set			(0.0f,0.0f);
@@ -207,7 +209,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 }
 
 void CUIItemInfo::TryAddWpnInfo (const shared_str& wpn_section){
-	if (UIWpnParams->Check(wpn_section))
+	if (UIWpnParams->Check(wpn_section) && GameConstants::GetShowWpnInfo())
 	{
 		UIWpnParams->SetInfo(wpn_section);
 		UIDesc->AddWindow(UIWpnParams,false);
@@ -216,7 +218,7 @@ void CUIItemInfo::TryAddWpnInfo (const shared_str& wpn_section){
 
 void CUIItemInfo::TryAddArtefactInfo	(const shared_str& af_section)
 {
-	if (UIArtefactParams->Check(af_section))
+	if (UIArtefactParams->Check(af_section) && UIArtefactParams->CheckDescrInfoPortions(af_section))
 	{
 		UIArtefactParams->SetInfo(af_section);
 		UIDesc->AddWindow(UIArtefactParams, false);

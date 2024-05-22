@@ -57,6 +57,15 @@
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "InfoPortion.h"
 
+// M.F.S. Crosshair Type
+extern u32	crosshair_type;
+xr_token							crosshair_type_token[] = {
+	{ "default_crosshair",			1												},
+	{ "builds_crosshair",			2												},
+	{ "point_crosshair",			3												},
+	{ 0,							0												}
+};
+
 string_path		g_last_saved_game;
 int				quick_save_counter = 0;
 extern u32		last_quick;
@@ -1884,6 +1893,10 @@ void CCC_RegisterCommands()
 
 	CMD3(CCC_Mask,			"g_right_shoulder",			&psActorFlags,				AF_RIGHT_SHOULDER);
 	CMD3(CCC_Mask,			"ph_corpse_collision",		&psActorFlags,				AF_COLLISION);
+
+	//M.F.S. Crosshair Type
+	CMD3(CCC_Token,			"g_crosshair_type",			&crosshair_type,			crosshair_type_token);
+
 	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
 
 	register_mp_console_commands					();

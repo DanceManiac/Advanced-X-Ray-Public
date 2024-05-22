@@ -26,6 +26,8 @@
 #include "../../../xrServer.h"
 #include "../../../inventory_item.h"
 #include "../../../xrServer_Objects_ALife.h"
+#include "PHWorld.h"
+#include "..\xrCore\_vector3d_ext.h"
 
 void CBaseMonster::Load(LPCSTR section)
 {
@@ -63,6 +65,26 @@ void CBaseMonster::Load(LPCSTR section)
 
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= !!READ_IF_EXISTS(pSettings,r_bool,section,"berserk_always", false);
+
+	m_bVolumetricLights				= READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
+	m_fVolumetricQuality			= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+	m_fVolumetricDistance			= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+	m_fVolumetricIntensity			= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+
+	light_bone						= READ_IF_EXISTS(pSettings, r_string, section, "light_bone", "bip01_head");
+	particles_bone					= READ_IF_EXISTS(pSettings, r_string, section, "particles_bone", "bip01_head");
+
+	m_bLightsEnabled				= !!READ_IF_EXISTS(pSettings, r_bool, section, "lights_enabled", false);
+
+	if (m_bLightsEnabled)
+	{
+		sscanf(pSettings->r_string(section, "light_color"), "%f,%f,%f",
+			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
+		m_fTrailLightRange = pSettings->r_float(section, "light_range");
+	}
+
+	m_bParticlesEnabled				= !!READ_IF_EXISTS(pSettings, r_bool, section, "particles_enabled", false);
+	m_sParticlesIdleName			= READ_IF_EXISTS(pSettings, r_string, section, "particles_idle", NULL);
 }
 
 // if sound is absent just do not load that one
@@ -221,6 +243,9 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 //		}
 //	}
 
+	StartLights();
+	SwitchMonsterParticles(true);
+
 	return(TRUE);
 }
 
@@ -242,6 +267,7 @@ void CBaseMonster::net_Destroy()
 	m_show_debug_info				= 0;
 #endif 
 
+	StopLights							();
 }
 
 #define READ_SETTINGS(var,name,method,ltx,section) {\
@@ -386,3 +412,76 @@ void CBaseMonster::fill_bones_body_parts	(LPCSTR body_part, CriticalWoundType wo
 		);
 }
 
+  void CBaseMonster::StartLights()
+{
+	VERIFY(!ph_world->Processing());
+	if (!m_bLightsEnabled)		return;
+
+	VERIFY(m_pTrailLight == NULL);
+	m_pTrailLight = ::Render->light_create();
+
+	IKinematics*          model = Visual()->dcast_PKinematics();
+	u16                  boneID = model->LL_BoneID(light_bone);
+	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);
+	Fvector bonePositionInModel = boneMatrix.c;
+	Fvector bonePositionInWorld = bonePositionInModel + Position();
+
+	m_pTrailLight->set_shadow(m_bLightsEnabled);
+
+	m_pTrailLight->set_color(m_TrailLightColor);
+	m_pTrailLight->set_range(m_fTrailLightRange);
+	m_pTrailLight->set_position(bonePositionInWorld);
+	m_pTrailLight->set_active(true);
+
+	m_pTrailLight->set_volumetric(m_bVolumetricLights);
+	m_pTrailLight->set_volumetric_quality(m_fVolumetricQuality);
+	m_pTrailLight->set_volumetric_distance(m_fVolumetricDistance);
+	m_pTrailLight->set_volumetric_intensity(m_fVolumetricIntensity);
+}
+
+void CBaseMonster::StopLights()
+{
+	VERIFY(!ph_world->Processing());
+	if (!m_bLightsEnabled || !m_pTrailLight)
+		return;
+
+	m_pTrailLight->set_active(false);
+	m_pTrailLight.destroy();
+}
+
+void CBaseMonster::UpdateLights()
+{
+	VERIFY(!ph_world->Processing());
+	if (!m_bLightsEnabled || !m_pTrailLight || !m_pTrailLight->get_active()) return;
+
+	IKinematics*          model = Visual()->dcast_PKinematics();
+	u16                  boneID = model->LL_BoneID(light_bone);
+	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);
+	Fvector bonePositionInModel = boneMatrix.c;
+	Fvector bonePositionInWorld = bonePositionInModel + Position();
+
+	m_pTrailLight->set_position(bonePositionInWorld);
+}
+
+void CBaseMonster::SwitchMonsterParticles(bool bOn)
+{
+	IKinematics*          model = Visual()->dcast_PKinematics();
+	u16                  boneID = model->LL_BoneID(particles_bone);
+	Fmatrix          boneMatrix = model->LL_GetTransform(boneID);
+	Fvector bonePositionInModel = boneMatrix.c;
+	Fvector bonePositionInWorld = bonePositionInModel + Position();
+
+	if (m_sParticlesIdleName.size() == 0)
+		return;
+
+	if (bOn)
+	{
+		Fvector dir;
+		dir.set(0, 1, 0);
+		CParticlesPlayer::StartParticles(m_sParticlesIdleName, bonePositionInWorld, ID(), -1, false);
+	}
+	else
+	{
+		CParticlesPlayer::StopParticles(m_sParticlesIdleName, BI_NONE, true);
+	}
+}

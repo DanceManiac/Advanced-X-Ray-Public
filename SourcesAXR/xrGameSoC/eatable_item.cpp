@@ -23,7 +23,7 @@ CEatableItem::CEatableItem()
 	m_fSatietyInfluence = 0;
 	m_fRadiationInfluence = 0;
 
-	m_iPortionsNum = -1;
+	m_iPortionsNum = 1;
 
 	m_physic_item	= 0;
 }
@@ -49,7 +49,7 @@ void CEatableItem::Load(LPCSTR section)
 	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
 	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
 	
-	m_iStartPortionsNum			= pSettings->r_s32	(section, "eat_portions_num");
+	m_iPortionsNum				= READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
 	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
 	VERIFY						(m_iPortionsNum<10000);
 }
@@ -57,8 +57,6 @@ void CEatableItem::Load(LPCSTR section)
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
 {
 	if (!inherited::net_Spawn(DC)) return FALSE;
-
-	m_iPortionsNum = m_iStartPortionsNum;
 
 	return TRUE;
 };
@@ -85,6 +83,18 @@ void CEatableItem::OnH_B_Independent(bool just_before_destroy)
 	inherited::OnH_B_Independent(just_before_destroy);
 }
 
+void CEatableItem::save(NET_Packet& packet)
+{
+	inherited::save(packet);
+	save_data(m_iPortionsNum, packet);
+}
+
+void CEatableItem::load(IReader& packet)
+{
+	inherited::load(packet);
+	load_data(m_iPortionsNum, packet);
+}
+
 void CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
@@ -100,10 +110,13 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	
 	//уменьшить количество порций
-	if(m_iPortionsNum > 0)
-		--(m_iPortionsNum);
-	else
-		m_iPortionsNum = 0;
+	if (m_iPortionsNum != -1)
+	{
+		if (m_iPortionsNum > 0)
+			--(m_iPortionsNum);
+		else
+			m_iPortionsNum = 0;
+	}
 
 
 }

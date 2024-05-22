@@ -48,14 +48,10 @@ void	CCar::OnCameraChange		(int type)
 {
 	if(Owner())
 	{
-		if	(type==ectFirst)
-		{
-			Owner()->setVisible(FALSE);
-		}
-		else if(active_camera->tag==ectFirst)
-		{
+		if (type == ectFirst)
 			Owner()->setVisible(TRUE);
-		}
+		else
+			Owner()->setVisible(FALSE);
 	}
 	
 	if (!active_camera||active_camera->tag!=type){

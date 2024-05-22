@@ -25,6 +25,7 @@ CCustomOutfit::CCustomOutfit()
 	m_boneProtection = xr_new<SBoneProtections>();
 
 	m_b_HasGlass = false;
+	m_NightVisionType = 0;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -79,7 +80,12 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fPowerRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",     0.0f );
 	m_fBleedingRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",  0.0f );
 
+	m_fJumpSpeed					= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
+	m_fWalkAccel					= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
+	m_fOverweightWalkK				= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
+
 	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
+	m_NightVisionType				= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
 
 	if (pSettings->line_exist(section, "nightvision_sect"))
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");
@@ -128,7 +134,6 @@ BOOL	CCustomOutfit::BonePassBullet					(int boneID)
 	return m_boneProtection->getBonePassBullet(s16(boneID));
 };
 
-#include "torch.h"
 void	CCustomOutfit::OnMoveToSlot		()
 {
 	if (m_pCurrentInventory)
@@ -173,11 +178,9 @@ void	CCustomOutfit::OnMoveToRuck		()
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor)
 		{
-			CTorch* pTorch = smart_cast<CTorch*>(pActor->inventory().ItemFromSlot(TORCH_SLOT));
-			if(pTorch)
-			{
-				pTorch->SwitchNightVision(false);
-			}
+			//if(!bIsHelmetAvaliable)
+				pActor->SwitchNightVision(false);
+
 			if (m_ActorVisual.size())
 			{
 				shared_str DefVisual = pActor->GetDefaultVisualOutfit();

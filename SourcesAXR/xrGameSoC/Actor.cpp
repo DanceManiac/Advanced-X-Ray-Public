@@ -70,6 +70,8 @@
 #include "location_manager.h"
 
 #include "DynamicHudGlass.h"
+#include "ActorNightVision.h"
+#include "AdvancedXrayGameConstants.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -90,7 +92,7 @@ static Fvector	vFootExt;
 
 Flags32			psActorFlags={0};
 
-
+ENGINE_API extern int ps_r__ShaderNVG;
 
 CActor::CActor() : CEntityAlive()
 {
@@ -204,6 +206,10 @@ CActor::CActor() : CEntityAlive()
 
 	// Alex ADD: for smooth crouch fix
 	CurrentHeight			= -1.f;
+
+	m_night_vision			= nullptr;
+	m_bNightVisionAllow		= true;
+	m_bNightVisionOn		= false;
 }
 
 
@@ -233,6 +239,8 @@ CActor::~CActor()
 
 	xr_delete				(m_anims);
 	xr_delete				(m_vehicle_anims);
+
+	xr_delete				(m_night_vision);
 }
 
 void CActor::reinit	()
@@ -1562,11 +1570,9 @@ void CActor::UpdateRestores()
 	}
 	else
 	{
-		CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
-		if (pTorch && pTorch->GetNightVisionStatus())
+		/* if (GetNightVisionStatus())
 		{
-			pTorch->SwitchNightVision(false);
-		}
+		} */
 	}
 }
 
@@ -1780,4 +1786,48 @@ CCustomOutfit* CActor::GetOutfit() const
 {
 	PIItem _of	= inventory().m_slots[OUTFIT_SLOT].m_pIItem;
 	return _of?smart_cast<CCustomOutfit*>(_of):NULL;
+}
+
+void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
+{
+	m_bNightVisionOn = vision_on;
+
+	if (!m_night_vision)
+		m_night_vision = xr_new<CNightVisionEffector>(cNameSect());
+
+	bool bIsActiveNow = m_night_vision->IsActive();
+
+	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+	if (pOutfit && pOutfit->m_NightVisionSect.size())
+	{
+		if (m_bNightVisionAllow)
+		{
+			if (m_bNightVisionOn && !bIsActiveNow)
+			{
+				m_night_vision->Start(pOutfit->m_NightVisionSect, this, use_sounds);
+			}
+		}
+		else
+		{
+			m_night_vision->OnDisabled(this, use_sounds);
+			m_bNightVisionOn = false;
+		}
+	}
+
+	if ((!m_bNightVisionOn && bIsActiveNow) || (!m_bNightVisionOn && ps_r__ShaderNVG == 1))
+	{
+		m_night_vision->Stop(100000.0f, use_sounds);
+	}
+
+	//Alun: Update flags and send message they were changed
+	if (send_event)
+	{
+		m_trader_flags.set(CSE_ALifeTraderAbstract::eTraderFlagNightVisionActive, m_bNightVisionOn);
+		CGameObject *object = smart_cast<CGameObject*>(this);
+		NET_Packet packet;
+		object->u_EventGen(packet, GE_TRADER_FLAGS, object->ID());
+		packet.w_u32(m_trader_flags.get());
+		object->u_EventSend(packet);
+		//Msg("GE_TRADER_FLAGS event sent %d", m_trader_flags.get());
+	}
 }

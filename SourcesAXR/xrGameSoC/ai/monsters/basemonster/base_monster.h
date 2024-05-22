@@ -347,6 +347,24 @@ public:
 
 	//---------------------------------------------------------------------------------------
 
+	ref_light					m_pTrailLight;
+	Fcolor						m_TrailLightColor;
+	float						m_fTrailLightRange;
+	bool						m_bLightsEnabled;
+	bool						m_bParticlesEnabled;
+	bool						m_bVolumetricLights;
+	float						m_fVolumetricQuality;
+	float						m_fVolumetricDistance;
+	float						m_fVolumetricIntensity;
+
+	shared_str					light_bone;
+	shared_str					particles_bone;
+	shared_str					m_sParticlesIdleName;
+
+	virtual void				StartLights();
+	virtual void				StopLights();
+	virtual void				UpdateLights();
+			void				SwitchMonsterParticles(bool bOn);
 
 	u32						m_prev_sound_type;
 	u32						get_attack_rebuild_time	();

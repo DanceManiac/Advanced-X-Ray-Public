@@ -28,6 +28,10 @@ protected:
 	ref_glow		glow_render;
 	Fvector			m_focus;
 	shared_str		m_light_section;
+	Fvector			m_torch_offset;
+	Fvector			m_omni_offset;
+	float			m_torch_inertion_speed_max;
+	float			m_torch_inertion_speed_min;
 private:
 	inline	bool	can_use_dynamic_lights	();
 
@@ -44,22 +48,20 @@ public:
 	virtual void	OnH_A_Chield		();
 	virtual void	OnH_B_Independent	(bool just_before_destroy);
 
+	virtual void	OnMoveToSlot		();
+	virtual void	OnMoveToRuck		();
+
 	virtual void	UpdateCL			();
 
 			void	Switch				();
 			void	Switch				(bool light_on);
+			bool	torch_active		() const;
 
 	virtual bool	can_be_attached		() const;
- 
-public:
-			void	SwitchNightVision		();
-			void	SwitchNightVision		(bool light_on);
-			void	UpdateSwitchNightVision	();
-			float	NightVisionBattery		();
-			bool	GetNightVisionStatus	() { return m_bNightVisionOn; }
+
+			float	get_range			() const;
+
 protected:
-	bool					m_bNightVisionEnabled;
-	bool					m_bNightVisionOn;
 
 	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 

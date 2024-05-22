@@ -17,9 +17,15 @@
 #include "game_cl_base.h"
 #include "WeaponMagazined.h"
 #include "CharacterPhysicsSupport.h"
+
+#include "Artifact.h"
+#include "CustomOutfit.h"
+#include "AdvancedXrayGameConstants.h"
+
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
+
 static const float	s_fLandingTime1		= 0.1f;// через сколько снять флаг Landing1 (т.е. включить следующую анимацию)
 static const float	s_fLandingTime2		= 0.3f;// через сколько снять флаг Landing2 (т.е. включить следующую анимацию)
 static const float	s_fJumpTime			= 0.3f;
@@ -140,6 +146,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 {
 	mstate_old = mstate_real;
 	vControlAccel.set	(0,0,0);
+	float cur_weight = inventory().TotalWeight();
 
 	if (!(mstate_real&mcFall) && (character_physics_support()->movement()->Environment()==CPHMovementControl::peInAir)) 
 	{
@@ -199,6 +206,32 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			Jump				= m_fJumpSpeed;
 			m_fJumpTime			= s_fJumpTime;
 
+			float jump_k = 0.0;
+			float max_jump_speed = 10.0f;
+
+			if (GameConstants::GetJumpSpeedWeightCalc() && cur_weight >= 25 && mstate_real & mcJump)
+				jump_k = m_fJumpSpeed - (cur_weight / 25);
+			else
+				jump_k = m_fJumpSpeed;
+
+			TIItemContainer::iterator it = inventory().m_belt.begin();
+			TIItemContainer::iterator ite = inventory().m_belt.end();
+			for (; it != ite; ++it)
+			{
+				CArtefact* artefact = smart_cast<CArtefact*>(*it);
+				if (artefact)
+				{
+					jump_k *= (artefact->m_fJumpSpeed * artefact->GetCondition());
+				}
+			}
+
+			CCustomOutfit* outfit = GetOutfit();
+			if (outfit)
+				jump_k *= outfit->m_fJumpSpeed;
+
+			clamp(jump_k, 0.0f, max_jump_speed);
+
+			character_physics_support()->movement()->SetJumpUpVelocity(jump_k);
 
 			//уменьшить силу игрока из-за выполненого прыжка
 			if (!GodMode())
@@ -260,8 +293,32 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 			// normalize and analyze crouch and run
 			float	scale				= vControlAccel.magnitude();
-			if (scale>EPS)	{
-				scale	=	m_fWalkAccel/scale;
+			if (scale>EPS)
+			{
+				float accel_k = m_fWalkAccel;
+
+				if (cur_weight >= 25 && GameConstants::GetJumpSpeedWeightCalc())
+				{
+					accel_k -= cur_weight / 6;
+				}
+
+				TIItemContainer::iterator it = inventory().m_belt.begin();
+				TIItemContainer::iterator ite = inventory().m_belt.end();
+				for (; it != ite; ++it)
+				{
+					CArtefact* artefact = smart_cast<CArtefact*>(*it);
+					if (artefact)
+					{
+						accel_k *= (artefact->m_fWalkAccel * artefact->GetCondition());
+					}
+				}
+
+				CCustomOutfit* outfit = GetOutfit();
+				if (outfit)
+					accel_k *= outfit->m_fWalkAccel;
+
+				scale = accel_k / scale;
+
 				if (bAccelerated)
 					if (mstate_real&mcBack)
 						scale *= m_fRunBackFactor;
@@ -625,9 +682,6 @@ float CActor::MaxWalkWeight() const
 	max_w      += get_additional_weight();
 	return max_w;
 }
-
-#include "Artifact.h"
-#include "CustomOutfit.h"
 
 float CActor::get_additional_weight() const
 {

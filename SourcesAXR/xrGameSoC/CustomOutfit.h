@@ -50,13 +50,20 @@ public:
 	float 							m_fSatietyRestoreSpeed;
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
+	float							m_fJumpSpeed;
+	float							m_fWalkAccel;
+	float							m_fOverweightWalkK;
+
 	shared_str						m_NightVisionSect;
 
 	bool							m_b_HasGlass;
+	u32								m_NightVisionType;
 
 	virtual u32						ef_equipment_type		() const;
 	virtual	BOOL					BonePassBullet			(int boneID);
 	const shared_str&				GetFullIconName			() const	{return m_full_icon_name;};
+
+	IC int							GetOutfitNV_Type		() const { return m_NightVisionType; }
 
 	virtual void			net_Export			(NET_Packet& P);
 	virtual void			net_Import			(NET_Packet& P);

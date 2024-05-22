@@ -12,6 +12,9 @@
 #include "ui/UIPDAWnd.h"
 #include "encyclopedia_article.h"
 #include "ui/UIEventsWnd.h"
+#include "../xrEngine/DiscordRichPresense.h"
+#include "string_table.h"
+#include "../xrEngine/x_ray.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -39,7 +42,12 @@ CGameTaskManager::CGameTaskManager()
 	m_gametasks					= xr_new<CGameTaskWrapper>();
 	m_flags.zero				();
 	m_flags.set					(eChanged, TRUE);
-	if(g_active_task_id.size())	SetActiveTask(g_active_task_id, g_active_task_objective_id);
+
+	if (g_active_task_id.size())
+	{
+		SetActiveTask(g_active_task_id, g_active_task_objective_id);
+		DiscordUpdateTask();
+	}
 }
 
 CGameTaskManager::~CGameTaskManager()
@@ -283,6 +291,15 @@ void CGameTaskManager::UpdateActiveTask				()
 	}
 
 	m_flags.set					(eChanged, FALSE);
+	DiscordUpdateTask			();
+}
+
+void CGameTaskManager::DiscordUpdateTask()
+{
+	CGameTask* t = ActiveTask();
+	std::string task = ToUTF8(CStringTable().translate(t ? t->m_Title.c_str() : "st_no_active_task").c_str());
+	snprintf(rpc_settings.State, 128, task.c_str());
+	g_discord.SetStatus();
 }
 
 CGameTask* CGameTaskManager::ActiveTask()

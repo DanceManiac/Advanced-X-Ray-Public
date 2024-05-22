@@ -9,6 +9,7 @@
 #include "pch_script.h"
 #include "xrServer_Objects_ALife.h"
 #include "xrServer_script_macroses.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 
 using namespace luabind;
 
@@ -37,6 +38,11 @@ void CSE_ALifeGraphPoint::script_register(lua_State *L)
 	];
 }
 
+template <typename T>
+T* cse_object_cast(CSE_ALifeDynamicObject* se_obj) {
+	return smart_cast<T*>(se_obj);
+}
+
 void CSE_ALifeObject::script_register(lua_State *L)
 {
 	module(L)[
@@ -55,6 +61,7 @@ void CSE_ALifeObject::script_register(lua_State *L)
 		.def_readonly	("m_level_vertex_id",	&CSE_ALifeObject::m_tNodeID)
 		.def_readonly	("m_game_vertex_id",	&CSE_ALifeObject::m_tGraphID)
 		.def_readonly	("m_story_id",			&CSE_ALifeObject::m_story_id)
+		.def			("get_trader",			&cse_object_cast<CSE_ALifeTraderAbstract>)
 	];
 }
 

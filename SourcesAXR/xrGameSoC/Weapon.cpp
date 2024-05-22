@@ -348,7 +348,8 @@ void CWeapon::Load		(LPCSTR section)
 	fireDispersionConditionFactor = pSettings->r_float(section,"fire_dispersion_condition_factor"); 
 	misfireProbability			  = pSettings->r_float(section,"misfire_probability"); 
 	misfireConditionK			  = READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
-	conditionDecreasePerShot	  = pSettings->r_float(section,"condition_shot_dec"); 
+	conditionDecreasePerShot	  = pSettings->r_float(section,"condition_shot_dec");
+	conditionDecreasePerShotOnHit = READ_IF_EXISTS(pSettings, r_float, section, "condition_shot_dec_on_hit", 0.f);
 		
 	vLoadedFirePoint	= pSettings->r_fvector3		(section,"fire_point"		);
 	
@@ -1643,4 +1644,10 @@ const float &CWeapon::hit_probability	() const
 {
 	VERIFY					((g_SingleGameDifficulty >= egdNovice) && (g_SingleGameDifficulty <= egdMaster)); 
 	return					(m_hit_probability[egdNovice]);
+}
+
+void CWeapon::OnBulletHit()
+{
+	if (!fis_zero(conditionDecreasePerShotOnHit))
+		ChangeCondition(-conditionDecreasePerShotOnHit);
 }

@@ -376,6 +376,7 @@ protected:
 	float					misfireConditionK;
 	//увеличение изношености при выстреле
 	float					conditionDecreasePerShot;
+	float					conditionDecreasePerShotOnHit;
 
 	//  [8/2/2005]
 	float					m_fPDM_disp_base			;
@@ -488,4 +489,6 @@ private:
 
 public:
 	const float				&hit_probability			() const;
+
+	virtual void			OnBulletHit					();
 };

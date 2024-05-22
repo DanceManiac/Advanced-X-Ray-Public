@@ -316,6 +316,7 @@ public:
 			void ChangeCharacterRank		(int);
 			void ChangeCharacterReputation	(int);
 			void SetCharacterCommunity		(LPCSTR,int,int);
+			void SetCharacterName			(LPCSTR name);
 		
 
 			u32					GetInventoryObjectCount() const;
@@ -357,6 +358,8 @@ public:
 			CScriptGameObject	*GetBestEnemy		();
 			const CDangerObject	*GetBestDanger		();
 			CScriptGameObject	*GetBestItem		();
+			void				SetPortionsNum		(u32 num);
+			u32					GetPortionsNum		() const;
 
 	_DECLARE_FUNCTION10			(GetActionCount,u32);
 	

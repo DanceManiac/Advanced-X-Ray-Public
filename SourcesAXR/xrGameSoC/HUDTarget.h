@@ -15,6 +15,7 @@ private:
 
 private:
 	ui_shader				hShader;
+	ui_shader				hShaderCrosshairPoint;
 	float			fuzzyShowInfo;
 	rq_result		RQ;
 	rq_results		RQR;
