@@ -19,10 +19,6 @@
 #include "../relation_registry.h"
 #include "../string_table.h"
 
-#define				ACTOR_STATISTIC_XML		"actor_statistic.xml"
-#define				ACTOR_CHARACTER_XML		"pda_dialog_character.xml"
-
-
 CUIActorInfoWnd::CUIActorInfoWnd()
 {}
 
@@ -31,7 +27,9 @@ void CUIActorInfoWnd::Init()
 {
 	CUIXml									uiXml;
 	CUIXmlInit								xml_init;
-	uiXml.Load								(CONFIG_PATH, UI_PATH,ACTOR_STATISTIC_XML);
+	string256								doc_name = "";
+	xr_sprintf								(doc_name, "%s%s%s","actor_statistic", UI().is_widescreen() ? "_16" : "", ".xml");
+	uiXml.Load								(CONFIG_PATH, UI_PATH, doc_name);
 
 	xml_init.InitWindow						(uiXml, "main_wnd", 0, this);
 
@@ -70,7 +68,9 @@ void CUIActorInfoWnd::Init()
 
 	UICharacterInfo							= xr_new<CUICharacterInfo>(); UICharacterInfo->SetAutoDelete(true);
 	UICharacterWindow->AttachChild			(UICharacterInfo);
-	UICharacterInfo->Init					(0,0,UICharacterWindow->GetWidth(), UICharacterWindow->GetHeight(), ACTOR_CHARACTER_XML);
+	string256								doc_name_char = "";
+	xr_sprintf								(doc_name_char, "%s%s%s","pda_dialog_character", UI().is_widescreen() ? "_16" : "", ".xml");
+	UICharacterInfo->Init					(0,0,UICharacterWindow->GetWidth(), UICharacterWindow->GetHeight(), doc_name_char);
 
 	//Элементы автоматического добавления
 	xml_init.InitAutoStatic					(uiXml, "right_auto_static", UICharIconFrame);
@@ -92,7 +92,9 @@ void CUIActorInfoWnd::Show(bool status)
 void CUIActorInfoWnd::FillPointsInfo			()
 {
 	CUIXml									uiXml;
-	uiXml.Load								(CONFIG_PATH, UI_PATH,ACTOR_STATISTIC_XML);
+	string256								doc_name = "";
+	xr_sprintf								(doc_name, "%s%s%s","actor_statistic", UI().is_widescreen() ? "_16" : "", ".xml");
+	uiXml.Load								(CONFIG_PATH, UI_PATH, doc_name);
 
 	UIMasterList->Clear						();
 
@@ -181,7 +183,9 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 
 	UIDetailList->Clear						();
 	CUIXml									uiXml;
-	uiXml.Load								(CONFIG_PATH, UI_PATH,ACTOR_STATISTIC_XML);
+	string256								doc_name = "";
+	xr_sprintf								(doc_name, "%s%s%s","actor_statistic", UI().is_widescreen() ? "_16" : "", ".xml");
+	uiXml.Load								(CONFIG_PATH, UI_PATH, doc_name);
 	uiXml.SetLocalRoot						(uiXml.NavigateToNode("actor_stats_wnd",0));
 	
 	string512 path;
@@ -276,7 +280,10 @@ void	CUIActorInfoWnd::FillReputationDetails(CUIXml* xml, LPCSTR path)
 
 		sprintf_s							(buff,"%d", gw);
 		itm->m_text3->SetTextST				(buff);
-
+		Fvector2 sz							= itm->GetWndSize();
+		float _height						= _max(sz.y, itm->m_text1->GetWndPos().y + itm->m_text1->GetWndSize().y + 3);
+		sz.y								= _height;
+		itm->SetWndSize						(sz);
 		UIDetailList->AddWindow				(itm, true);
 	}
 }

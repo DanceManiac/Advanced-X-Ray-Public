@@ -15,7 +15,7 @@
 		
 	<main_wnd x="110" y="90" width="761" height="455"/>
 
-	<character_info x="22" y="58" width="236" height="120"/>
+	<character_info x="26" y="58" width="236" height="120"/>
 
 	<master_list x="15" y="200" width="280" height="262" always_show_scroll="0" can_select="1" scroll_profile="pda"/>
 

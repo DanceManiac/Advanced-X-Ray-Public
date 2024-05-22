@@ -24,20 +24,16 @@ ALife::ERelationType RELATION_REGISTRY::GetRelationBetween		(T char1,T char2) co
 template<typename T>
 void				 RELATION_REGISTRY::SetRelationType		(T from, T to, ALife::ERelationType new_relation)
 {
-	static int goodwill_enemy	= pSettings->r_s16(GAME_RELATIONS_SECT, "goodwill_enemy");
-	static int goodwill_neutral = pSettings->r_s16(GAME_RELATIONS_SECT, "goodwill_neutal");
-	static int goodwill_friend	= pSettings->r_s16(GAME_RELATIONS_SECT, "goodwill_friend");
-
 	switch(new_relation)
 	{
 	case ALife::eRelationTypeEnemy:
-		SetGoodwill(from->object_id(), to->object_id(), goodwill_enemy);
+		SetGoodwill(from->object_id(), to->object_id(), m_sgoodwill_enemy);
 		break;
 	case ALife::eRelationTypeNeutral:
-		SetGoodwill(from->object_id(), to->object_id(), goodwill_neutral);
+		SetGoodwill(from->object_id(), to->object_id(), m_sgoodwill_neutral);
 		break;
 	case ALife::eRelationTypeFriend:
-		SetGoodwill(from->object_id(), to->object_id(), goodwill_friend);
+		SetGoodwill(from->object_id(), to->object_id(), m_sgoodwill_friend);
 		break;
 	default:
 		NODEFAULT;

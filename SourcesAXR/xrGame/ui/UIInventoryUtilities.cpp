@@ -14,6 +14,7 @@
 #include "../InfoPortion.h"
 #include "game_base_space.h"
 #include "../actor.h"
+#include "../relation_registry.h"
 
 #include "../ai_space.h"
 #include "../../xrServerEntities/script_engine.h"
@@ -140,7 +141,7 @@ bool InventoryUtilities::FreeRoom_inBelt	(TIItemContainer& item_list, PIItem _it
 	for(xr_vector<PIItem>::iterator it = item_list.begin(); (item_list.end() != it) && found_place; ++it) 
 	{
 		PIItem pItem = *it;
-		Ivector2 iWH = pItem->GetInvGridRect().rb; 
+		Ivector2 iWH = pItem->GetInvGridRect().rb;
 		//проверить можно ли разместить элемент,
 		//проверяем последовательно каждую клеточку
 		found_place = false;
@@ -583,13 +584,16 @@ void InventoryUtilities::SendInfoToLuaScripts(shared_str info)
 u32 InventoryUtilities::GetGoodwillColor(CHARACTER_GOODWILL gw)
 {
 	u32 res = 0xffc0c0c0;
-	if(gw==NEUTRAL_GOODWILL){
+	if (gw == RELATION_REGISTRY().m_sgoodwill_neutral)
+	{
 		res = 0xffc0c0c0;
-	}else
-	if(gw>1000){
+	}
+	else if (gw >= RELATION_REGISTRY().m_sgoodwill_friend)
+	{
 		res = 0xff00ff00;
-	}else
-	if(gw<-1000){
+	}
+	else if (gw <= RELATION_REGISTRY().m_sgoodwill_enemy)
+	{
 		res = 0xffff0000;
 	}
 	return res;
