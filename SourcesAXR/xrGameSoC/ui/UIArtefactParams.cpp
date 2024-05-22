@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ui_af_params.h"
+#include "UIArtefactParams.h"
 #include "UIStatic.h"
 #include "../object_broker.h"
 #include "UIXmlInit.h"

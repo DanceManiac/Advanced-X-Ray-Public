@@ -15,7 +15,7 @@
 #include "WeaponMagazined.h"
 #include "Grenade.h"
 #include "game_base_space.h"
-#include "Artifact.h"
+#include "Artefact.h"
 
 constexpr float VEL_MAX = 10.f;
 constexpr float VEL_A_MAX = 10.f;

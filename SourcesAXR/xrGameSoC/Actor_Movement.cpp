@@ -18,7 +18,7 @@
 #include "WeaponMagazined.h"
 #include "CharacterPhysicsSupport.h"
 
-#include "Artifact.h"
+#include "Artefact.h"
 #include "CustomOutfit.h"
 #include "AdvancedXrayGameConstants.h"
 #include "ActorSkills.h"

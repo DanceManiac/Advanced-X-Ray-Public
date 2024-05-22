@@ -4,7 +4,7 @@
 #include "../silencer.h"
 #include "../scope.h"
 #include "../grenadelauncher.h"
-#include "../Artifact.h"
+#include "../Artefact.h"
 #include "../eatable_item.h"
 #include "../BottleItem.h"
 #include "../WeaponMagazined.h"

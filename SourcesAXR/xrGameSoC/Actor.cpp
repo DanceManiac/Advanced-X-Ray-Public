@@ -54,7 +54,7 @@
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "../Include/xrRender/UIShader.h"
-#include "artifact.h"
+#include "Artefact.h"
 #include "CharacterPhysicsSupport.h"
 #include "material_manager.h"
 #include "IColisiondamageInfo.h"

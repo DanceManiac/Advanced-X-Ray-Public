@@ -5217,7 +5217,7 @@
     <ClInclude Include="WeaponStatMgun.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\StationaryMgun</Filter>
     </ClInclude>
-    <ClInclude Include="Artifact.h">
+    <ClInclude Include="Artefact.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts</Filter>
     </ClInclude>
     <ClInclude Include="MercuryBall.h">
@@ -6183,7 +6183,7 @@
     <ClInclude Include="ui\UICharacterInfo.h">
       <Filter>UI\Common\CharacterInfo</Filter>
     </ClInclude>
-    <ClInclude Include="ui\ui_af_params.h">
+    <ClInclude Include="ui\UIArtefactParams.h">
       <Filter>UI\Common\ItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIItemInfo.h">
@@ -8398,7 +8398,7 @@
     <ClCompile Include="artefact_script.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts</Filter>
     </ClCompile>
-    <ClCompile Include="Artifact.cpp">
+    <ClCompile Include="Artefact.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts</Filter>
     </ClCompile>
     <ClCompile Include="MercuryBall.cpp">
@@ -9346,7 +9346,7 @@
     <ClCompile Include="ui\IUWpnParams.cpp">
       <Filter>UI\Common\ItemInfo</Filter>
     </ClCompile>
-    <ClCompile Include="ui\ui_af_params.cpp">
+    <ClCompile Include="ui\UIArtefactParams.cpp">
       <Filter>UI\Common\ItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIItemInfo.cpp">

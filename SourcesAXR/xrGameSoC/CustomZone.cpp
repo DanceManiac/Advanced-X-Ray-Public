@@ -12,7 +12,7 @@
 #include "game_cl_base.h"
 #include "../xrEngine/igame_persistent.h"
 #include "../xrEngine/xr_collide_form.h"
-#include "artifact.h"
+#include "Artefact.h"
 #include "ai_object_location.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "zone_effector.h"

@@ -119,7 +119,7 @@
 #	include "PHDestroyable.h"
 #	include "car.h"
 #	include "script_lanim.h"
-#	include "artifact.h"
+#	include "Artefact.h"
 #	include "game_cl_single.h"
 #	include "alife_human_brain.h"
 #	include "alife_monster_brain.h"

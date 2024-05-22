@@ -4,7 +4,7 @@
 #include "uigamesp.h"
 #include "hudmanager.h"
 #include "weapon.h"
-#include "artifact.h"
+#include "Artefact.h"
 #include "scope.h"
 #include "silencer.h"
 #include "grenadelauncher.h"

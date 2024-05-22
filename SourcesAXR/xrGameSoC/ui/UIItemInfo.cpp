@@ -13,7 +13,7 @@
 #include "UIInventoryUtilities.h"
 #include "../PhysicsShellHolder.h"
 #include "UIWpnParams.h"
-#include "ui_af_params.h"
+#include "UIArtefactParams.h"
 
 #include "AdvancedXrayGameConstants.h"
 

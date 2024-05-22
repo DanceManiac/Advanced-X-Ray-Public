@@ -1480,7 +1480,7 @@
     <ClInclude Include="WeaponHUD.h" />
     <ClInclude Include="WeaponMounted.h" />
     <ClInclude Include="WeaponStatMgun.h" />
-    <ClInclude Include="Artifact.h" />
+    <ClInclude Include="Artefact.h" />
     <ClInclude Include="MercuryBall.h" />
     <ClInclude Include="GraviArtifact.h" />
     <ClInclude Include="BlackDrops.h" />
@@ -1807,7 +1807,7 @@
     <ClInclude Include="ui\UIEditKeyBind.h" />
     <ClInclude Include="ui\UIKeyBinding.h" />
     <ClInclude Include="ui\UICharacterInfo.h" />
-    <ClInclude Include="ui\ui_af_params.h" />
+    <ClInclude Include="ui\UIArtefactParams.h" />
     <ClInclude Include="ui\UIItemInfo.h" />
     <ClInclude Include="ui\UIWpnParams.h" />
     <ClInclude Include="ui\UIOutfitInfo.h" />
@@ -5203,7 +5203,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="Artifact.cpp" />
+    <ClCompile Include="Artefact.cpp" />
     <ClCompile Include="MercuryBall.cpp" />
     <ClCompile Include="GraviArtifact.cpp" />
     <ClCompile Include="BlackDrops.cpp" />
@@ -6338,7 +6338,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="ui\ui_af_params.cpp" />
+    <ClCompile Include="ui\UIArtefactParams.cpp" />
     <ClCompile Include="ui\UIItemInfo.cpp" />
     <ClCompile Include="ui\UIOutfitInfo.cpp" />
     <ClCompile Include="ui\UITimeWnd.cpp">

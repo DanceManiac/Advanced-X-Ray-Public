@@ -17,7 +17,7 @@
 #include "ui/UIMessageBoxEx.h"
 #include "ui/UIProgressShape.h"
 #include "xr_level_controller.h"
-#include "Artifact.h"
+#include "Artefact.h"
 #include "map_location.h"
 #include "Inventory.h"
 #include "ActorCondition.h"

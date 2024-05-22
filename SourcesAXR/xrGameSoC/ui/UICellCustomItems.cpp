@@ -3,7 +3,7 @@
 #include "UIInventoryUtilities.h"
 #include "../Weapon.h"
 #include "../eatable_item.h"
-#include "../Artifact.h"
+#include "../Artefact.h"
 
 #define INV_GRID_WIDTHF			50.0f
 #define INV_GRID_HEIGHTF		50.0f
