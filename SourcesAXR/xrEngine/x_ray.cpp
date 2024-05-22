@@ -401,7 +401,10 @@ void execUserScript				( )
 		Console->ExecuteScript(fname);
 	}
 	else
+	{
 		Console->Execute("default_controls");
+	}
+	Console->ExecuteScript(Console->ConfigFile);
 }
 
 void Startup()
