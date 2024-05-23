@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "uiiteminfo.h"
-#include "uistatic.h"
+#include "UIItemInfo.h"
+#include "UIStatic.h"
 #include "UIXmlInit.h"
 
 #include "UIListWnd.h"
@@ -10,10 +10,13 @@
 
 #include "../string_table.h"
 #include "../Inventory_Item.h"
-#include "UIInventoryUtilities.h"
 #include "../PhysicsShellHolder.h"
+#include "../CustomOutfit.h"
+
+#include "UIInventoryUtilities.h"
 #include "UIWpnParams.h"
 #include "UIArtefactParams.h"
+#include "UIOutfitInfo.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -28,6 +31,7 @@ CUIItemInfo::CUIItemInfo()
 	UIDesc						= NULL;
 	UIWpnParams					= NULL;
 	UIArtefactParams			= NULL;
+	UIOutfitItem				= NULL;
 	UIName						= NULL;
 	m_pInvItem					= NULL;
 	m_b_force_drawing			= false;
@@ -37,6 +41,7 @@ CUIItemInfo::~CUIItemInfo()
 {
 	xr_delete					(UIWpnParams);
 	xr_delete					(UIArtefactParams);
+	xr_delete					(UIOutfitItem);
 }
 
 void CUIItemInfo::Init(LPCSTR xml_name){
@@ -46,9 +51,9 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 
 	CUIXmlInit					xml_init;
 
-	if(uiXml.NavigateToNode("main_frame",0))
+	if (uiXml.NavigateToNode("main_frame", 0))
 	{
-		Frect wnd_rect;
+		Frect wnd_rect{ 0.f, 0.f };
 		wnd_rect.x1		= uiXml.ReadAttribFlt("main_frame", 0, "x", 0);
 		wnd_rect.y1		= uiXml.ReadAttribFlt("main_frame", 0, "y", 0);
 
@@ -58,7 +63,7 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		inherited::Init(wnd_rect.x1, wnd_rect.y1, wnd_rect.x2, wnd_rect.y2);
 	}
 
-	if(uiXml.NavigateToNode("static_name",0))
+	if (uiXml.NavigateToNode("static_name", 0))
 	{
 		UIName						= xr_new<CUIStatic>();	 
 		AttachChild					(UIName);		
@@ -73,7 +78,7 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		xml_init.InitStatic		(uiXml, "static_weight", 0,			UIWeight);
 	}
 
-	if(uiXml.NavigateToNode("static_cost",0))
+	if (uiXml.NavigateToNode("static_cost", 0))
 	{
 		UICost					= xr_new<CUIStatic>();	 
 		AttachChild				(UICost);
@@ -81,7 +86,7 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		xml_init.InitStatic		(uiXml, "static_cost", 0,			UICost);
 	}
 
-	if(uiXml.NavigateToNode("static_condition",0))
+	if (uiXml.NavigateToNode("static_condition", 0))
 	{
 		UICondition					= xr_new<CUIStatic>();	 
 		AttachChild					(UICondition);
@@ -89,20 +94,25 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		xml_init.InitStatic			(uiXml, "static_condition", 0,		UICondition);
 	}
 
-	if(uiXml.NavigateToNode("condition_progress",0))
+	if (uiXml.NavigateToNode("condition_progress", 0))
 	{
 		UICondProgresBar			= xr_new<CUIProgressBar>(); AttachChild(UICondProgresBar);UICondProgresBar->SetAutoDelete(true);
 		xml_init.InitProgressBar	(uiXml, "condition_progress", 0, UICondProgresBar);
 	}
 
-	if(uiXml.NavigateToNode("descr_list",0))
+	if (uiXml.NavigateToNode("descr_list", 0))
 	{
 		UIWpnParams						= xr_new<CUIWpnParams>();
 		UIArtefactParams				= xr_new<CUIArtefactParams>();
 		UIWpnParams->InitFromXml		(uiXml);
 		UIArtefactParams->InitFromXml	(uiXml);
+		if (uiXml.NavigateToNode("outfit_info", 0))
+		{
+			UIOutfitItem = xr_new<CUIOutfitItem>();
+			UIOutfitItem->InitFromXml(uiXml);
+		}
 		UIDesc							= xr_new<CUIScrollView>(); 
-		AttachChild						(UIDesc);		
+		AttachChild						(UIDesc);
 		UIDesc->SetAutoDelete			(true);
 		m_desc_info.bShowDescrText		= !!uiXml.ReadAttribInt("descr_list",0,"only_text_info", 1);
 		xml_init.InitScrollView			(uiXml, "descr_list", 0, UIDesc);
@@ -136,37 +146,39 @@ bool				IsGameTypeSingle();
 void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 {
 	m_pInvItem				= pInvItem;
-	if(!m_pInvItem)			return;
+	if (!m_pInvItem)
+		return;
 
 	string256				str;
-	if(UIName)
+	if (UIName)
 	{
 		UIName->SetText		(pInvItem->Name());
 	}
-	if(UIWeight)
+	if (UIWeight)
 	{
-		sprintf_s				(str, "%3.2f kg", pInvItem->Weight());
+		sprintf_s			(str, "%3.2f kg", pInvItem->Weight());
 		UIWeight->SetText	(str);
 	}
-	if( UICost && IsGameTypeSingle() )
+	if (UICost && IsGameTypeSingle())
 	{
-		sprintf_s				(str, "%d RU", pInvItem->Cost());		// will be owerwritten in multiplayer
+		sprintf_s			(str, "%d RU", pInvItem->Cost());		// will be owerwritten in multiplayer
 		UICost->SetText		(str);
 	}
 
-	if(UICondProgresBar)
+	if (UICondProgresBar)
 	{
 		float cond							= pInvItem->GetConditionToShow();
 		UICondProgresBar->Show				(true);
 		UICondProgresBar->SetProgressPos	( cond*100.0f+1.0f-EPS );
 	}
 
-	if(UIDesc)
+	if (UIDesc)
 	{
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
 		TryAddWpnInfo						(pInvItem->object().cNameSect());
 		TryAddArtefactInfo					(pInvItem->object().cNameSect());
+		TryAddOutfitInfo					(*pInvItem, NULL);
 		if(m_desc_info.bShowDescrText)
 		{
 			CUIStatic* pItem					= xr_new<CUIStatic>();
@@ -180,7 +192,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		}
 		UIDesc->ScrollToBegin				();
 	}
-	if(UIItemImage)
+	if (UIItemImage)
 	{
 		// Загружаем картинку
 		UIItemImage->SetShader				(InventoryUtilities::GetEquipmentIconsShader());
@@ -208,7 +220,8 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	}
 }
 
-void CUIItemInfo::TryAddWpnInfo (const shared_str& wpn_section){
+void CUIItemInfo::TryAddWpnInfo(const shared_str& wpn_section)
+{
 	if (UIWpnParams->Check(wpn_section) && GameConstants::GetShowWpnInfo())
 	{
 		UIWpnParams->SetInfo(wpn_section);
@@ -216,7 +229,7 @@ void CUIItemInfo::TryAddWpnInfo (const shared_str& wpn_section){
 	}
 }
 
-void CUIItemInfo::TryAddArtefactInfo	(const shared_str& af_section)
+void CUIItemInfo::TryAddArtefactInfo(const shared_str& af_section)
 {
 	if (UIArtefactParams->Check(af_section) && UIArtefactParams->CheckDescrInfoPortions(af_section))
 	{
@@ -225,8 +238,20 @@ void CUIItemInfo::TryAddArtefactInfo	(const shared_str& af_section)
 	}
 }
 
+void CUIItemInfo::TryAddOutfitInfo(CInventoryItem& pInvItem, CInventoryItem* pCompareItem)
+{
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(&pInvItem);
+
+	if (outfit && UIOutfitItem)
+	{
+		CCustomOutfit* comp_outfit = smart_cast<CCustomOutfit*>(pCompareItem);
+		UIOutfitItem->SetInfo(outfit, comp_outfit);
+		UIDesc->AddWindow(UIOutfitItem, false);
+	}
+}
+
 void CUIItemInfo::Draw()
 {
-	if(m_pInvItem || m_b_force_drawing)
+	if (m_pInvItem || m_b_force_drawing)
 		inherited::Draw();
 }

@@ -505,8 +505,10 @@
     <ClInclude Include="DamageSource.h" />
     <ClInclude Include="opt.lua.h" />
     <ClInclude Include="opt_inline.lua.h" />
+    <ClInclude Include="ui\UIDoubleProgressBar.h" />
     <ClInclude Include="ui\UIHelper.h" />
     <ClInclude Include="ui\UILoadingScreen.h" />
+    <ClInclude Include="ui\UIOutfitInfo.h" />
     <ClInclude Include="ui_defs.h" />
     <ClInclude Include="wrapper_abstract.h" />
     <ClInclude Include="wrapper_abstract_inline.h" />
@@ -2167,8 +2169,10 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ui\UIDoubleProgressBar.cpp" />
     <ClCompile Include="ui\UIHelper.cpp" />
     <ClCompile Include="ui\UILoadingScreen.cpp" />
+    <ClCompile Include="ui\UIOutfitInfo.cpp" />
     <ClCompile Include="visual_memory_manager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>

@@ -6614,6 +6614,12 @@
     <ClInclude Include="ActorSkills.h">
       <Filter>Core\Client\Objects\actor\base</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIOutfitInfo.h">
+      <Filter>UI\Common\ItemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIDoubleProgressBar.h">
+      <Filter>UI\UIWindows\ProgressBar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9810,6 +9816,12 @@
     </ClCompile>
     <ClCompile Include="CustomOutfit_script.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIOutfitInfo.cpp">
+      <Filter>UI\Common\ItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIDoubleProgressBar.cpp">
+      <Filter>UI\UIWindows\ProgressBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,15 +1,13 @@
 #pragma once
 #include "uiwindow.h"
 
-
 class CInventoryItem;
 class CUIStatic;
 class CUIScrollView;
 class CUIProgressBar;
 class CUIWpnParams;
 class CUIArtefactParams;
-
-extern const char * const 		fieldsCaptionColor;
+class CUIOutfitItem;
 
 class CUIItemInfo: public CUIWindow
 {
@@ -22,7 +20,7 @@ private:
 		bool				bShowDescrText;
 	};
 	_desc_info				m_desc_info;
-	CInventoryItem* m_pInvItem;
+	CInventoryItem*			m_pInvItem;
 public:
 						CUIItemInfo			();
 	virtual				~CUIItemInfo		();
@@ -32,6 +30,7 @@ public:
 	void				InitItem			(CInventoryItem* pInvItem);
 	void				TryAddWpnInfo		(const shared_str& wpn_section);
 	void				TryAddArtefactInfo	(const shared_str& af_section);
+	void				TryAddOutfitInfo	(CInventoryItem& pInvItem, CInventoryItem* pCompareItem);
 
 	virtual void		Draw				();
 	bool				m_b_force_drawing;
@@ -43,6 +42,7 @@ public:
 	CUIProgressBar*		UICondProgresBar;
 	CUIWpnParams*		UIWpnParams;
 	CUIArtefactParams*	UIArtefactParams;
+	CUIOutfitItem*		UIOutfitItem;
 
 	Fvector2			UIItemImageSize; 
 	CUIStatic*			UIItemImage;

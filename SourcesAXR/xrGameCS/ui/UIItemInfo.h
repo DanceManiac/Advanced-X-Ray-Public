@@ -16,7 +16,6 @@ class CUIOutfitItemInfo;
 class CUIBoosterInfo;
 class CUICellItem;
 class CUIInventoryItem;
-extern const char * const 		fieldsCaptionColor;
 
 class CUIItemInfo: public CUIWindow
 {

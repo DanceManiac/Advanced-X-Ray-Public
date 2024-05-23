@@ -813,4 +813,7 @@
 	<string id="ui_st_animated_backpack">
 		<text>Анимированный рюкзак</text>
 	</string>
+	<string id="st_kg">
+		<text>кг</text>
+	</string>
 </string_table>
