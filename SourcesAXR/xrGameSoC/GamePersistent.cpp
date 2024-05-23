@@ -198,9 +198,8 @@ void CGamePersistent::Disconnect()
 void CGamePersistent::OnGameStart()
 {
 	__super::OnGameStart		();
-	
 	UpdateGameType				();
-
+	GameConstants::LoadConstants();
 }
 
 void CGamePersistent::UpdateGameType			()
