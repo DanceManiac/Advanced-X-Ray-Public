@@ -114,9 +114,9 @@ void CUIInventoryWnd::Init()
 	xml_init.InitStatic					(uiXml, "static_personal",0, &UIStaticPersonal);
 //	UIStaticPersonal.Init				(1, UIPersonalWnd.GetHeight() - 175, 260, 260);
 
-	AttachChild							(&UIOutfitInfo);
-	UIOutfitInfo.InitFromXml			(uiXml);
-//.	xml_init.InitStatic					(uiXml, "outfit_info_window",0, &UIOutfitInfo);
+	AttachChild							(&UIActorStats);
+	UIActorStats.InitFromXml			(uiXml);
+//.	xml_init.InitStatic					(uiXml, "outfit_info_window",0, &UIActorStats);
 
 	//Элементы автоматического добавления
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
@@ -277,7 +277,7 @@ void CUIInventoryWnd::Update()
 
 		// update outfit parameters
 		CCustomOutfit* outfit			= smart_cast<CCustomOutfit*>(pOurInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem);		
-		UIOutfitInfo.Update				(outfit);		
+		UIActorStats.Update				(outfit);		
 	}
 
 	UIStaticTimeString.SetText(*InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes));

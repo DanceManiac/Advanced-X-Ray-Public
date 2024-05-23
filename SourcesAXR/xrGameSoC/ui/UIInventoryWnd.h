@@ -10,7 +10,7 @@ class CInventory;
 #include "UIPropertiesBox.h"
 #include "UIOutfitSlot.h"
 
-#include "UIOutfitInfo.h"
+#include "UIActorStats.h"
 #include "UIItemInfo.h"
 #include "../inventory_space.h"
 
@@ -111,7 +111,7 @@ protected:
 	CUIPropertiesBox			UIPropertiesBox;
 	
 	//информация о персонаже
-	CUIOutfitInfo				UIOutfitInfo;
+	CUIActorStats				UIActorStats;
 	CUIItemInfo					UIItemInfo;
 
 	CInventory*					m_pInv;

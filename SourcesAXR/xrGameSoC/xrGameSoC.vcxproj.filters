@@ -6192,7 +6192,7 @@
     <ClInclude Include="ui\UIWpnParams.h">
       <Filter>UI\Common\ItemInfo</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UIOutfitInfo.h">
+    <ClInclude Include="ui\UIActorStats.h">
       <Filter>UI\Common\OutfitInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UITimeWnd.h">
@@ -9352,7 +9352,7 @@
     <ClCompile Include="ui\UIItemInfo.cpp">
       <Filter>UI\Common\ItemInfo</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIOutfitInfo.cpp">
+    <ClCompile Include="ui\UIActorStats.cpp">
       <Filter>UI\Common\OutfitInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UITimeWnd.cpp">

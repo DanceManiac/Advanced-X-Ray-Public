@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "UIOutfitInfo.h"
+#include "UIActorStats.h"
 #include "UIXmlInit.h"
 #include "UIStatic.h"
 #include "UIScrollView.h"
@@ -7,12 +7,12 @@
 #include "../CustomOutfit.h"
 #include "../string_table.h"
 
-CUIOutfitInfo::CUIOutfitInfo()
+CUIActorStats::CUIActorStats()
 {
 	Memory.mem_fill			(m_items, 0, sizeof(m_items));
 }
 
-CUIOutfitInfo::~CUIOutfitInfo()
+CUIActorStats::~CUIActorStats()
 {
 	for(u32 i=_item_start; i<_max_item_index; ++i)
 	{
@@ -45,7 +45,7 @@ LPCSTR _imm_st_names[]={
 	"ui_inv_outfit_fire_wound_protection",
 };
 
-void CUIOutfitInfo::InitFromXml(CUIXml& xml_doc)
+void CUIActorStats::InitFromXml(CUIXml& xml_doc)
 {
 	LPCSTR _base				= "outfit_info";
 
@@ -68,7 +68,7 @@ void CUIOutfitInfo::InitFromXml(CUIXml& xml_doc)
 
 }
 
-void CUIOutfitInfo::Update(CCustomOutfit* outfit)
+void CUIActorStats::Update(CCustomOutfit* outfit)
 {
 	m_outfit				= outfit;
 
@@ -83,7 +83,7 @@ void CUIOutfitInfo::Update(CCustomOutfit* outfit)
 	SetItem(ALife::eHitTypeFireWound,	false);
 }
 
-void CUIOutfitInfo::SetItem(u32 hitType, bool force_add)
+void CUIActorStats::SetItem(u32 hitType, bool force_add)
 {
 	string128 _buff;
 	float _val_outfit	= 0.0f;

@@ -1810,7 +1810,7 @@
     <ClInclude Include="ui\UIArtefactParams.h" />
     <ClInclude Include="ui\UIItemInfo.h" />
     <ClInclude Include="ui\UIWpnParams.h" />
-    <ClInclude Include="ui\UIOutfitInfo.h" />
+    <ClInclude Include="ui\UIActorStats.h" />
     <ClInclude Include="ui\UITimeWnd.h" />
     <ClInclude Include="ui\UISleepWnd.h" />
     <ClInclude Include="ui\UIInventoryUtilities.h" />
@@ -6340,7 +6340,7 @@
     </ClCompile>
     <ClCompile Include="ui\UIArtefactParams.cpp" />
     <ClCompile Include="ui\UIItemInfo.cpp" />
-    <ClCompile Include="ui\UIOutfitInfo.cpp" />
+    <ClCompile Include="ui\UIActorStats.cpp" />
     <ClCompile Include="ui\UITimeWnd.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

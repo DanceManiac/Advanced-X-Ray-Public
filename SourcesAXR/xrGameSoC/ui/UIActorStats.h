@@ -7,12 +7,12 @@ class CCustomOutfit;
 class CUIStatic;
 class CUIXml;
 
-class CUIOutfitInfo : public CUIWindow
+class CUIActorStats : public CUIWindow
 {
 CCustomOutfit*		m_outfit;
 public:
-					CUIOutfitInfo			();
-	virtual			~CUIOutfitInfo			();
+					CUIActorStats			();
+	virtual			~CUIActorStats			();
 
 			void 	Update					(CCustomOutfit* outfit);	
 			void 	InitFromXml				(CUIXml& xml_doc);
