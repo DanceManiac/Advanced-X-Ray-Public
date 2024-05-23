@@ -9343,7 +9343,7 @@
     <ClCompile Include="ui\UICharacterInfo.cpp">
       <Filter>UI\Common\CharacterInfo</Filter>
     </ClCompile>
-    <ClCompile Include="ui\IUWpnParams.cpp">
+    <ClCompile Include="ui\UIWpnParams.cpp">
       <Filter>UI\Common\ItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIArtefactParams.cpp">

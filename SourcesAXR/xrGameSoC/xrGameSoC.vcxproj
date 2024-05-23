@@ -6324,7 +6324,7 @@
     <ClCompile Include="ui\UIEditKeyBind.cpp" />
     <ClCompile Include="ui\UIKeyBinding.cpp" />
     <ClCompile Include="ui\UICharacterInfo.cpp" />
-    <ClCompile Include="ui\IUWpnParams.cpp">
+    <ClCompile Include="ui\UIWpnParams.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
