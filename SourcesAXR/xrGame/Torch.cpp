@@ -195,17 +195,25 @@ void CTorch::ProcessSwitch()
 	if (OnClient())
 		return;
 
-	bool bActive			= !m_switched_on;
+
+	CActor* pA = smart_cast<CActor*>(H_Parent());
+	if (!pA)
+		return;
+
+	CWeapon* Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+	if (Wpn && Wpn->IsZoomed())
+		return;
+		
 
 	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "switch_torch_section", nullptr);
 
 	if (!anim_sect)
 	{
+		bool bActive			= !m_switched_on;
 		Switch(bActive);
 		return;
 	}
 
-	CWeapon* Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
 
 	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
 		return;
@@ -280,7 +288,7 @@ void CTorch::UpdateUseAnim()
 void CTorch::Switch(bool light_on)
 {
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
-	if (pActor)
+	if (pActor && pActor->g_Alive())
 	{
 		if (light_on && !m_switched_on)
 		{
@@ -313,7 +321,14 @@ void CTorch::Switch(bool light_on)
 	if (*light_trace_bone) 
 	{
 		IKinematics* pVisual				= smart_cast<IKinematics*>(Visual()); VERIFY(pVisual);
+
+		if (!pVisual)
+			return;
+
 		u16 bi								= pVisual->LL_BoneID(light_trace_bone);
+
+		if (bi == BI_NONE)
+			return;
 
 		pVisual->LL_SetBoneVisible			(bi,	light_on,	TRUE);
 		pVisual->CalculateBones				(TRUE);
@@ -362,8 +377,8 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 
 	fBrightness				= clr.intensity();
 
-	m_fMaxRange = pUserData->r_float(m_light_section, (b_r2) ? "max_range_r2" : "max_range");
-	m_fCurveRange = pUserData->r_float(m_light_section, "curve_range");
+	m_fMaxRange = (READ_IF_EXISTS(pUserData, r_float, m_light_section, (b_r2) ? "max_range_r2" : "max_range", 20.f));
+	m_fCurveRange = (READ_IF_EXISTS(pUserData, r_float, m_light_section, "curve_range", 20.f));
 
 	float range				= pUserData->r_float(m_light_section, (b_r2) ? "range_r2" : "range");
 	light_render->set_color(clr);
@@ -481,7 +496,7 @@ void CTorch::UpdateCL()
 			M.c.y	+= H_Parent()->Radius	()*2.f/3.f;
 		}
 
-		if (actor) 
+		if (actor && actor->g_Alive())
 		{
 			if (actor->active_cam() == eacLookAt)
 			{
