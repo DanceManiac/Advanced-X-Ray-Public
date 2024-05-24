@@ -34,56 +34,9 @@
 			<texture>ui_mg_progress_efficiency_full</texture>
 		</progress>
     </condition_progress>
-    <wpn_params x="0" y="0" width="157" height="70">
-		<cap_accuracy x="0" y="8" width="121" height="8">
-			<text font="letterica16" r="124" g="119" b="115">ui_inv_accuracy</text>
-		</cap_accuracy>		
-		<cap_handling x="142" y="8" width="121" height="8">
-			<text font="letterica16" r="124" g="119" b="115">ui_inv_handling</text>
-		</cap_handling>
-		<cap_damage x="0" y="39" width="121" height="8">
-			<text font="letterica16" r="124" g="119" b="115">ui_inv_damage</text>
-		</cap_damage>
-		<cap_rpm x="142" y="39" width="121" height="8">
-			<text font="letterica16" r="124" g="119" b="115">ui_inv_rate_of_fire</text>
-		</cap_rpm>
-		
-		<progress_accuracy x="0" y="24" width="121" height="8" horz="1">
-			<progress>
-				<texture a="255" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</progress>
-			<background>
-				<texture a="100" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</background>
-		</progress_accuracy>		
-		<progress_handling x="142" y="24" width="121" height="8" horz="1">
-			<progress>
-				<texture a="255" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</progress>
-			<background>
-				<texture a="100" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</background>
-		</progress_handling>
-		<progress_damage x="0" y="55" width="121" height="8" horz="1">
-			<progress>
-				<texture a="255" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</progress>
-			<background>
-				<texture a="100" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</background>
-		</progress_damage>		
-		<progress_rpm x="142" y="55" width="121" height="8" horz="1">
-			<progress>
-				<texture a="255" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</progress>
-			<background>
-				<texture a="100" r="255" g="255" b="255">ui_buymenu_progBar</texture>
-			</background>
-		</progress_rpm>
-		
-	</wpn_params>
-	
+
 #include "ui\af_params_16.xml"
+#include "ui\wpn_params_16.xml"
 #include "ui\outfit_info_16.xml"
 	
 </w>
