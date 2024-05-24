@@ -23,16 +23,17 @@ private:
 			eCriticalSatietyReached			=(1<<3),
 			eCriticalRadiationReached		=(1<<4),
 			eWeaponJammedReached			=(1<<5),
-			ePhyHealthMinReached			=(1<<6),
+			ePsyHealthMinReached			=(1<<6),
 			eCantWalkWeight					=(1<<7),
-			eCriticalThirstReached			=(1<<8),
-			eCriticalIntoxicationReached	=(1<<9),
-			eCriticalSleepenessReached		=(1<<10),
-			eCriticalAlcoholismReached		=(1<<11),
-			eCriticalHangoverReached		=(1<<12),
-			eCriticalNarcotismReached		=(1<<13),
-			eCriticalWithdrawalReached		=(1<<14),
-			eCriticalFrostbiteReached		=(1<<15),
+			eCantWalkWeightReached			=(1<<8),
+			eCriticalThirstReached			=(1<<9),
+			eCriticalIntoxicationReached	=(1<<10),
+			eCriticalSleepenessReached		=(1<<11),
+			eCriticalAlcoholismReached		=(1<<12),
+			eCriticalHangoverReached		=(1<<13),
+			eCriticalNarcotismReached		=(1<<14),
+			eCriticalWithdrawalReached		=(1<<15),
+			eCriticalFrostbiteReached		=(1<<16),
 			};
 	Flags16											m_condition_flags;
 private:
@@ -57,9 +58,9 @@ public:
 	virtual void		UpdateCondition				();
 			void		UpdateBoosters				();
 
-	virtual void 		ChangeAlcohol				(float value);
-	virtual void 		ChangeSatiety				(float value);
-	virtual void 		ChangeThirst				(float value);
+	virtual void 		ChangeAlcohol				(const float value);
+	virtual void 		ChangeSatiety				(const float value);
+	virtual void 		ChangeThirst				(const float value);
 	virtual void 		ChangeIntoxication			(const float value);
 	virtual void 		ChangeSleepeness			(const float value);
 	virtual void 		ChangeAlcoholism			(const float value);
@@ -126,9 +127,9 @@ public:
 			float	xr_stdcall	GetIntoxication		()	{return m_fIntoxication;}
 			float	xr_stdcall	GetSleepeness		()	{return m_fSleepeness;}
 			float	xr_stdcall	GetAlcoholism		()	{return m_fAlcoholism;}
+			float	xr_stdcall	GetHangover			()	{return m_fHangover;}
 			float	xr_stdcall	GetNarcotism		()	{return m_fNarcotism;}
 			float	xr_stdcall	GetWithdrawal		()	{return m_fWithdrawal;}
-			float	xr_stdcall	GetHangover			()	{return m_fHangover;}
 			float	xr_stdcall	GetDrugs			()	{return m_fDrugs;}
 			float	xr_stdcall	GetFrostbite		()	{return m_fFrostbite;}
 
@@ -150,6 +151,7 @@ public:
 	IC		float const&	V_Thirst				()  { return m_fV_Thirst; }
 	IC		float const&	V_ThirstPower			()  { return m_fV_ThirstPower; }
 	IC		float const&	V_ThirstHealth			()  { return m_fV_ThirstHealth; }
+	//IC		float const&	ThirstCritical			() { return m_fThirstCritical; }
 	IC		float const&	V_Intoxication			() { return m_fV_Intoxication; }
 	IC		float const&	V_IntoxicationHealth	() { return m_fV_IntoxicationHealth; }
 	IC		float const&	IntoxicationCritical	() { return m_fIntoxicationCritical; }
@@ -189,19 +191,24 @@ public:
 	float m_fV_Thirst;
 	float m_fV_ThirstPower;
 	float m_fV_ThirstHealth;
+	float m_fThirstCritical;
 	float m_fThirstAccelTemp;
+
 	float m_fV_Intoxication;
 	float m_fV_IntoxicationHealth;
 	float m_fIntoxicationCritical;
+
 	float m_fV_Sleepeness;
 	float m_fV_SleepenessPower;
 	float m_fV_SleepenessPsyHealth;
 	float m_fSleepenessCritical;
 	float m_fSleepeness_V_Sleep;
+
 	float m_fV_Alcoholism;
 	float m_fV_Hangover;
 	float m_fV_HangoverPower;
 	float m_fHangoverCritical;
+
 	float m_fV_Narcotism;
 	float m_fV_Withdrawal;
 	float m_fV_WithdrawalPower;
@@ -209,15 +216,16 @@ public:
 	float m_fWithdrawalCritical;
 	float m_fDrugs;
 	float m_fV_Drugs;
+
+	float m_fV_PsyHealth_Health;
+	bool m_bPsyHealthKillActor;
+
 	float m_fV_Frostbite;
 	float m_fV_FrostbiteAdd;
 	float m_fFrostbiteIncTemp;
 	float m_fFrostbiteDecTemp;
 	float m_fV_FrostbiteHealth;
 	float m_fFrostbiteCritical;
-
-	float m_fV_PsyHealth_Health;
-	bool m_bPsyHealthKillActor;
 
 	//Skills System
 	float m_fV_SatietySkill;

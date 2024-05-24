@@ -36,38 +36,24 @@ static float last_hud_fov{};
 
 CEatableItem::CEatableItem()
 {
-	m_iPortionsNum				= 1;
-	use_cam_effector			= nullptr;
-	anim_sect					= nullptr;
-	m_bHasAnimation				= false;
-	m_bUnlimited				= false;
-	m_physic_item				= 0;
-	m_fEffectorIntensity		= 1.0f;
-	m_iAnimHandsCnt				= 1;
-	m_iAnimLength				= 0;
-	m_bActivated				= false;
-	m_bItmStartAnim				= false;
-	m_bNeedDestroyNotUseful		= true;
+	m_iPortionsNum			= 1;
+	use_cam_effector		= nullptr;
+	anim_sect				= nullptr;
+	m_bHasAnimation			= false;
+	m_bUnlimited			= false;
+	m_physic_item			= 0;
+	m_fEffectorIntensity	= 1.0f;
+	m_iAnimHandsCnt			= 1;
+	m_iAnimLength			= 0;
+	m_bActivated			= false;
+	m_bItmStartAnim			= false;
+	m_bNeedDestroyNotUseful = true;
 
-	m_fRadioactivity			= 0.0f;
-	m_fIrradiationCoef			= 0.0005f;
-	m_fIrradiationZonePower		= 0.0f;
-	m_fSpoliage					= 0.0f;
-	m_fFoodRottingCoef			= 0.0f;
-	m_fHealthInfluence			= 0.f;
-	m_fPowerInfluence			= 0.f;
-	m_fSatietyInfluence			= 0.f;
-	m_fRadiationInfluence		= 0.f;
-	m_fThirstInfluence			= 0.f;
-	m_fIntoxicationInfluence	= 0.f;
-	m_fSleepenessInfluence		= 0.f;
-	m_fAlcoholismInfluence		= 0.f;
-	m_fHangoverInfluence		= 0.f;
-	m_fNarcotismInfluence		= 0.f;
-	m_fWithdrawalInfluence		= 0.f;
-	m_fPsyHealthInfluence		= 0.f;
-	m_alcohol					= 0.f;
-	m_drugs						= 0.f;
+	m_fRadioactivity		= 0.0f;
+	m_fIrradiationCoef		= 0.0005f;
+	m_fIrradiationZonePower = 0.0f;
+	m_fSpoliage				= 0.0f;
+	m_fFoodRottingCoef		= 0.0f;
 }
 
 CEatableItem::~CEatableItem()
@@ -84,39 +70,23 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_iPortionsNum = m_iConstPortions = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iConstPortions			= READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iPortionsNum				= m_iConstPortions;
 
-	m_fHealthInfluence			= pSettings->r_float(section, "eat_health");
-	m_fPowerInfluence			= pSettings->r_float(section, "eat_power");
-	m_fSatietyInfluence			= pSettings->r_float(section, "eat_satiety");
-	m_fRadiationInfluence		= pSettings->r_float(section, "eat_radiation");
-	m_fThirstInfluence			= pSettings->r_float(section, "eat_thirst");
-	m_fIntoxicationInfluence	= pSettings->r_float(section, "eat_intoxication");
-	m_fSleepenessInfluence		= pSettings->r_float(section, "eat_sleepeness");
-	m_fAlcoholismInfluence		= pSettings->r_float(section, "eat_alcoholism");
-	m_fHangoverInfluence		= pSettings->r_float(section, "eat_hangover");
-	m_fNarcotismInfluence		= pSettings->r_float(section, "eat_narcotism");
-	m_fWithdrawalInfluence		= pSettings->r_float(section, "eat_withdrawal");
-	m_fPsyHealthInfluence		= pSettings->r_float(section, "eat_psy_health");
-	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
-	m_alcohol					= READ_IF_EXISTS(pSettings, r_float, section, "eat_alcohol", 0.0f);
-	m_drugs						= READ_IF_EXISTS(pSettings, r_float, section, "eat_drugs", 0.0f);
-	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
+	//m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
+	//VERIFY						(m_iPortionsNum<10000);
 
-	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
-	VERIFY						(m_iPortionsNum<10000);
+	m_bHasAnimation				= READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
+	m_bUnlimited				= READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
+	anim_sect					= READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
+	m_fEffectorIntensity		= READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
+	use_cam_effector			= READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
 
-	m_bHasAnimation = READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
-	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
-	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
-	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
-	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
+	m_bNeedDestroyNotUseful		= READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
 
-	m_bNeedDestroyNotUseful = READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
-
-	m_fIrradiationCoef = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
-	m_fIrradiationZonePower = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
-	m_fFoodRottingCoef = READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
+	m_fIrradiationCoef			= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
+	m_fIrradiationZonePower		= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
+	m_fFoodRottingCoef			= READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -138,7 +108,6 @@ bool CEatableItem::Useful() const
 
 void CEatableItem::OnH_A_Independent() 
 {
-
 	if (!m_bNeedDestroyNotUseful) return;
 
 	inherited::OnH_A_Independent();
@@ -229,8 +198,8 @@ void CEatableItem::StartAnimation()
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 
-	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
-		m_iAnimHandsCnt = pSettings->r_u32(anim_sect, "single_handed_anim");
+	bool m_bSingleHanded = READ_IF_EXISTS(pSettings, r_bool, anim_sect, "single_handed_anim", false);
+	int m_iAnimHandsCnt = m_bSingleHanded ? 1 : 2;
 
 	m_bItmStartAnim = false;
 	g_block_all_except_movement = true;
@@ -373,7 +342,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 		}
 	}
 
-	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
+	//entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	
 	//уменьшить количество порций
 	if (m_iPortionsNum != -1 && !m_bUnlimited)

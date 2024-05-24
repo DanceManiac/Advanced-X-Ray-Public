@@ -26,30 +26,29 @@ public:
 
 	virtual void			OnH_B_Independent			(bool just_before_destroy);
 	virtual void			OnH_A_Independent			();
-	virtual	void			UseBy						(CEntityAlive* npc);
 	virtual void			save						(NET_Packet &output_packet);
 	virtual void			load						(IReader &input_packet);
+			void			UpdateInRuck				(CActor* actor);
+			void			UpdateUseAnim				(CActor* actor);
+			void			HideWeapon					();
+			void			StartAnimation				();
+			void SetRemainingUses(u8 value) { if (value > m_iConstPortions) return; m_iPortionsNum = value; };
+			u8 GetMaxUses() const { return m_iConstPortions; };
+	virtual	void			UseBy						(CEntityAlive* npc);
 	virtual	bool			Empty						()						{return m_iPortionsNum==0;};
 	virtual	u32				Cost						()	const;
 	virtual float			Weight						()	const;
 			void			HitFromActorHit				(SHit* pHDS);
 
-			void			SetRemainingUses			(u32 value) { if (value > m_iConstPortions) return; m_iPortionsNum = value; };
-			u32				GetMaxUses					() const { return m_iConstPortions; };
-
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
 	IC		u32				GetConstPortionsNum			()	const				{return m_iConstPortions;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
 
-			void			UpdateInRuck				(CActor* actor);
-			void			UpdateUseAnim				(CActor* actor);
-			void			StartAnimation				();
-			void			HideWeapon					();
 
 			bool			m_bHasAnimation;
+			bool			m_bUnlimited;
 			bool			m_bActivated;
 			bool			m_bItmStartAnim;
-			bool			m_bUnlimited;
 			bool			m_bNeedDestroyNotUseful;
 			int				m_iAnimHandsCnt;
 			int				m_iAnimLength;
@@ -63,28 +62,9 @@ public:
 			shared_str		use_cam_effector;
 			ref_sound		m_using_sound;
 
-	//влияние при поедании вещи на параметры игрока
-	float					m_fHealthInfluence;
-	float					m_fPowerInfluence;
-	float					m_fSatietyInfluence;
-	float					m_fRadiationInfluence;
-	float					m_fMaxPowerUpInfluence;
-	float					m_fThirstInfluence;
-	float					m_fIntoxicationInfluence;
-	float					m_fSleepenessInfluence;
-	float					m_fAlcoholismInfluence;
-	float					m_fHangoverInfluence;
-	float					m_fNarcotismInfluence;
-	float					m_fWithdrawalInfluence;
-	float					m_fPsyHealthInfluence;
-	float					m_alcohol;
-	float					m_drugs;
-	//заживление ран на кол-во процентов
-	float					m_fWoundsHealPerc;
-
-	//количество порций еды, 
-	//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)
-	u32						m_iConstPortions;
-	u32						m_iPortionsNum;
+			//количество порций еды, 
+			//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)
+			u32						m_iConstPortions;
+			u32						m_iPortionsNum;
 };
 

@@ -70,18 +70,19 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_iPortionsNum = m_iConstPortions = READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
-	m_bHasAnimation = READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
-	m_bUnlimited = READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
-	anim_sect = READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
-	m_fEffectorIntensity = READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
-	use_cam_effector = READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
+	m_iConstPortions			= READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
+	m_iPortionsNum				= m_iConstPortions;
+	m_bHasAnimation				= READ_IF_EXISTS(pSettings, r_bool, section, "has_anim", false);
+	m_bUnlimited				= READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
+	anim_sect					= READ_IF_EXISTS(pSettings, r_string, section, "hud_section", nullptr);
+	m_fEffectorIntensity		= READ_IF_EXISTS(pSettings, r_float, section, "cam_effector_intensity", 1.0f);
+	use_cam_effector			= READ_IF_EXISTS(pSettings, r_string, section, "use_cam_effector", nullptr);
 
-	m_bNeedDestroyNotUseful = READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
+	m_bNeedDestroyNotUseful		= READ_IF_EXISTS(pSettings, r_bool, section, "need_destroy_if_not_useful", true);
 
-	m_fIrradiationCoef = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
-	m_fIrradiationZonePower = READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
-	m_fFoodRottingCoef = READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
+	m_fIrradiationCoef			= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
+	m_fIrradiationZonePower		= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
+	m_fFoodRottingCoef			= READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -192,8 +193,8 @@ void CEatableItem::StartAnimation()
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 
-	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
-		m_iAnimHandsCnt = pSettings->r_u32(anim_sect, "single_handed_anim");
+	bool m_bSingleHanded = READ_IF_EXISTS(pSettings, r_bool, anim_sect, "single_handed_anim", false);
+	int m_iAnimHandsCnt = m_bSingleHanded ? 1 : 2;
 
 	m_bItmStartAnim = false;
 	g_block_all_except_movement = true;
@@ -201,7 +202,7 @@ void CEatableItem::StartAnimation()
 	Actor()->m_bActionAnimInProcess = true;
 
 	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
-		
+
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
 		string128 anim_name{};

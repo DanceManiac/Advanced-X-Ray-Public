@@ -43,8 +43,7 @@ public:
 
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
 	IC		u32				GetConstPortionsNum			()	const				{return m_iConstPortions;}
-			u32				m_iConstPortions;
-			u32				m_iPortionsNum;
+
 			bool			m_bHasAnimation;
 			bool			m_bUnlimited;
 			bool			m_bActivated;
@@ -61,5 +60,10 @@ public:
 			LPCSTR			anim_sect;
 			shared_str		use_cam_effector;
 			ref_sound		m_using_sound;
+
+			//количество порций еды, 
+			//-1 - порция одна и больше не бывает (чтоб не выводить надпись в меню)
+			u32						m_iConstPortions;
+			u32						m_iPortionsNum;
 };
 

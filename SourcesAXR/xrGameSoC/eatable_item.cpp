@@ -43,22 +43,6 @@ static float last_hud_fov{};
 
 CEatableItem::CEatableItem()
 {
-	m_fHealthInfluence			= 0;
-	m_fPowerInfluence			= 0;
-	m_fSatietyInfluence			= 0;
-	m_fRadiationInfluence		= 0;
-	m_fThirstInfluence			= 0.f;
-	m_fIntoxicationInfluence	= 0.f;
-	m_fSleepenessInfluence		= 0.f;
-	m_fAlcoholismInfluence		= 0.f;
-	m_fHangoverInfluence		= 0.f;
-	m_fNarcotismInfluence		= 0.f;
-	m_fWithdrawalInfluence		= 0.f;
-	m_fPsyHealthInfluence		= 0.f;
-	m_fFrostbiteInfluence		= 0.f;
-	m_alcohol					= 0.f;
-	m_drugs						= 0.f;
-
 	m_iPortionsNum				= 1;
 
 	anim_sect = nullptr;
@@ -96,27 +80,9 @@ void CEatableItem::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	m_fHealthInfluence			= pSettings->r_float(section, "eat_health");
-	m_fPowerInfluence			= pSettings->r_float(section, "eat_power");
-	m_fSatietyInfluence			= pSettings->r_float(section, "eat_satiety");
-	m_fRadiationInfluence		= pSettings->r_float(section, "eat_radiation");
-	m_fThirstInfluence			= pSettings->r_float(section, "eat_thirst");
-	m_fIntoxicationInfluence	= pSettings->r_float(section, "eat_intoxication");
-	m_fSleepenessInfluence		= pSettings->r_float(section, "eat_sleepeness");
-	m_fAlcoholismInfluence		= pSettings->r_float(section, "eat_alcoholism");
-	m_fHangoverInfluence		= pSettings->r_float(section, "eat_hangover");
-	m_fNarcotismInfluence		= pSettings->r_float(section, "eat_narcotism");
-	m_fWithdrawalInfluence		= pSettings->r_float(section, "eat_withdrawal");
-	m_fPsyHealthInfluence		= pSettings->r_float(section, "eat_psy_health");
-	m_fFrostbiteInfluence		= pSettings->r_float(section, "eat_frostbite");
-	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
-	m_alcohol					= READ_IF_EXISTS(pSettings, r_float, section, "eat_alcohol", 0.0f);
-	m_drugs						= READ_IF_EXISTS(pSettings, r_float, section, "eat_drugs", 0.0f);
-	clamp						(m_fWoundsHealPerc, 0.f, 1.f);
-	
 	m_iConstPortions			= READ_IF_EXISTS(pSettings, r_u32, section, "eat_portions_num", 1);
 	m_iPortionsNum				= m_iConstPortions;
-	m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
+	//m_fMaxPowerUpInfluence		= READ_IF_EXISTS	(pSettings,r_float,section,"eat_max_power",0.0f);
 	VERIFY						(m_iPortionsNum<10000);
 
 	m_bUnlimited				= READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
@@ -175,8 +141,8 @@ void CEatableItem::StartAnimation()
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
 
-	if (pSettings->line_exist(anim_sect, "single_handed_anim"))
-		m_iAnimHandsCnt = pSettings->r_u32(anim_sect, "single_handed_anim");
+	bool m_bSingleHanded = READ_IF_EXISTS(pSettings, r_bool, anim_sect, "single_handed_anim", false);
+	int m_iAnimHandsCnt = m_bSingleHanded ? 1 : 2;
 
 	m_bItmStartAnim = false;
 	g_block_all_except_movement = true;
@@ -388,7 +354,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 		}
 	}
 	
-	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
+	//entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	
 	//уменьшить количество порций
 	if (m_iPortionsNum != -1 && !m_bUnlimited)

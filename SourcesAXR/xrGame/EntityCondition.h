@@ -210,6 +210,7 @@ public:
 
 	IC void 				SetCanBeHarmedState		(bool CanBeHarmed) 			{m_bCanBeHarmed = CanBeHarmed;}
 	IC bool					CanBeHarmed				() const					{return OnServer() && m_bCanBeHarmed;};
+	
 	virtual bool			ApplyInfluence			(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable);
 	virtual bool			ApplyBooster			(const SBooster& B, const shared_str& sect);
 	void					ClearWounds				();
@@ -217,6 +218,7 @@ public:
 	IC float				GetBoostRadiationImmunity() const {return m_fBoostRadiationImmunity;};
 
 	typedef					xr_map<EBoostParams, SBooster> BOOSTER_MAP;
+
 protected:
 	void					UpdateHealth			();
 	void					UpdatePower				();
@@ -235,8 +237,10 @@ protected:
 	//для подсчета состояния открытых ран,
 	//запоминается кость куда был нанесен хит
 	//и скорость потери крови из раны
+public:
 	DEFINE_VECTOR(CWound*, WOUND_VECTOR, WOUND_VECTOR_IT);
 	WOUND_VECTOR			m_WoundVector;
+protected:
 	//очистка массива ран
 	
 
