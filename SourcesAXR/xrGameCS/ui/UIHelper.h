@@ -18,7 +18,7 @@ class CUI3tButtonEx;
 class CUICheckButton;
 class UIHint;
 class CUIDragDropListEx;
-class CUIDragDropReferenceList;
+//class CUIDragDropReferenceList;
 class CUIScrollView;
 class CUIListWnd;
 class CUIAnimatedStatic;

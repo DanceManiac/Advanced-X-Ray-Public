@@ -41,13 +41,13 @@ public:
 	CUIXmlInit();
 	virtual ~CUIXmlInit();
 		
-	static bool InitWindow				(CUIXml& xml_doc, LPCSTR path,	int index, CUIWindow* pWnd);
+	static bool InitWindow				(CUIXml& xml_doc, LPCSTR path,	int index, CUIWindow* pWnd, bool fatal = true);
 	static bool InitFrameWindow			(CUIXml& xml_doc, LPCSTR path,	int index, CUIFrameWindow* pWnd);
 	static bool InitFrameLine			(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameLineWnd* pWnd);
 	static bool InitCustomEdit			(CUIXml& xml_doc, LPCSTR paht, int index, CUICustomEdit* pWnd);
 	static bool InitEditBox				(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBox* pWnd);
 	static bool InitEditBoxEx			(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBoxEx* pWnd);
-	static bool InitStatic				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
+	static bool InitStatic				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd, bool fatal = true);
 	static bool	InitCheck				(CUIXml& xml_doc, LPCSTR path, int index, CUICheckButton* pWnd);
 	static bool InitSpin				(CUIXml& xml_doc, LPCSTR path, int index, CUICustomSpin* pWnd);
 	static bool InitText				(CUIXml& xml_doc, LPCSTR path, int index, CUIStatic* pWnd);
