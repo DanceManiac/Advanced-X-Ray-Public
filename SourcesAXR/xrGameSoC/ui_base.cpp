@@ -143,7 +143,7 @@ void ui_core::AlignPixel(float& src_and_dest)	const
 
 Frect ui_core::ScreenRect()
 {
-	static Frect R={0.0f, 0.0f, UI_BASE_WIDTH, UI_BASE_HEIGHT};
+	constexpr Frect R{0.0f, 0.0f, UI_BASE_WIDTH, UI_BASE_HEIGHT};
 	return R;
 }
 

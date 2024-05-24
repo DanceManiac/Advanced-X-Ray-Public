@@ -574,9 +574,6 @@
     <ClInclude Include="..\xrServerEntitiesSoC\ShapeData.h" />
     <ClInclude Include="..\xrServerEntitiesSoC\shared_data.h" />
     <ClInclude Include="..\xrServerEntitiesSoC\smart_cast.h" />
-    <ClInclude Include="..\xrServerEntitiesSoC\smart_cast_impl0.h" />
-    <ClInclude Include="..\xrServerEntitiesSoC\smart_cast_impl1.h" />
-    <ClInclude Include="..\xrServerEntitiesSoC\smart_cast_impl2.h" />
     <ClInclude Include="..\xrServerEntitiesSoC\specific_character.h" />
     <ClInclude Include="..\xrServerEntitiesSoC\WaveForm.h" />
     <ClInclude Include="..\xrServerEntitiesSoC\xml_str_id_loader.h" />
@@ -5669,15 +5666,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="random32.cpp" />
-    <ClCompile Include="../xrServerEntitiesSoC/smart_cast.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mixed|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/smart_cast_stats.cpp" />
     <ClCompile Include="string_table.cpp" />
     <ClCompile Include="RegistryFuncs.cpp" />
     <ClCompile Include="battleye_system.cpp" />

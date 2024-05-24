@@ -6225,15 +6225,6 @@
     <ClInclude Include="..\xrServerEntitiesCS\smart_cast.h">
       <Filter>Core\Common\SmartCast</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\smart_cast_impl0.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\smart_cast_impl1.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesCS\smart_cast_impl2.h">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClInclude>
     <ClInclude Include="string_table.h">
       <Filter>Core\Common\StringTable</Filter>
     </ClInclude>
@@ -9759,12 +9750,6 @@
     </ClCompile>
     <ClCompile Include="random32.cpp">
       <Filter>Core\Common\Random\32bit</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesCS\smart_cast.cpp">
-      <Filter>Core\Common\SmartCast</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesCS\smart_cast_stats.cpp">
-      <Filter>Core\Common\SmartCast</Filter>
     </ClCompile>
     <ClCompile Include="string_table.cpp">
       <Filter>Core\Common\StringTable</Filter>

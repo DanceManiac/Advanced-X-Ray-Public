@@ -93,6 +93,12 @@
     </Filter>
     <Filter Include="SphereMap">
       <UniqueIdentifier>{168b6e8c-c6ab-48a1-bc60-800b09bd3e62}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{c4866ff7-f5fd-4722-9e1a-73ef37fde25e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils\imdexlib">
+      <UniqueIdentifier>{58baf96e-ab86-4e39-8fab-60b26515b38c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -632,6 +638,27 @@
     </ClInclude>
     <ClInclude Include="Spheremap\stb_image_write.hpp">
       <Filter>SphereMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\fast_dynamic_cast.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\identity.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\is_reference_wrapper.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\mpl.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\traits.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\typelist.hpp">
+      <Filter>Utils\imdexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\imdexlib\utility.hpp">
+      <Filter>Utils\imdexlib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,10 +25,8 @@ void CSE_ALifeObject::spawn_supplies		(LPCSTR ini_string)
 	if (!xr_strlen(ini_string))
 		return;
 
-#pragma warning(push)
-#pragma warning(disable:4238)
-	CInifile ini(&IReader((void*)(ini_string), xr_strlen(ini_string)), FS.get_path("$game_config$")->m_Path);
-#pragma warning(pop)
+	IReader r((void*)(ini_string), xr_strlen(ini_string));
+	CInifile ini(&r, FS.get_path("$game_config$")->m_Path);
 
 // Alundaio: This will spawn a single random section listed in [spawn_loadout]
 // No need to spawn ammo, this will automatically spawn 1 box for weapon and if ammo_type is specficied it will spawn that type

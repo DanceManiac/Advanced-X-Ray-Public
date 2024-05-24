@@ -781,6 +781,13 @@ copy /Y "..\..\SDK\binaries\jpeg62.dll" "$(OutDir)"</Command>
     <ClInclude Include="Spheremap\stb_image.hpp" />
     <ClInclude Include="Spheremap\stb_image_write.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Utils\imdexlib\fast_dynamic_cast.hpp" />
+    <ClInclude Include="Utils\imdexlib\identity.hpp" />
+    <ClInclude Include="Utils\imdexlib\is_reference_wrapper.hpp" />
+    <ClInclude Include="Utils\imdexlib\mpl.hpp" />
+    <ClInclude Include="Utils\imdexlib\traits.hpp" />
+    <ClInclude Include="Utils\imdexlib\typelist.hpp" />
+    <ClInclude Include="Utils\imdexlib\utility.hpp" />
     <ClInclude Include="stream_reader.h" />
     <ClInclude Include="stream_reader_inline.h" />
     <ClInclude Include="string_concatenations.h" />

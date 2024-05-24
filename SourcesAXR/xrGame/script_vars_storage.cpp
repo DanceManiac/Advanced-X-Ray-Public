@@ -11,7 +11,7 @@
 #include "script_vars_storage.h"
 #include "script_net_packet.h"
 #include "script_engine.h"
-#include "../../xrCore/net_utils.h"
+#include "../xrCore/net_utils.h"
 
 CScriptVarsStorage g_ScriptVars;
 
