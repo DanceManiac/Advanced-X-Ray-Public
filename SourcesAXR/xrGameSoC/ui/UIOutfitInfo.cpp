@@ -320,7 +320,7 @@ void CUIOutfitItemInfo::SetValue(float value, float comp, int vle, int accuracy)
 
 	m_caption->InitTexture(m_texture.c_str());
 
-	if (GameConstants::GetColorizeValues() || use_color)
+	if (GameConstants::GetColorizeValues() && use_color)
 	{
 		if (clr_dynamic)
 		{

@@ -43,6 +43,8 @@ public:
 	virtual CArtefact*				cast_artefact					()		{return this;}
 	virtual	u32						Cost							() const;
 
+			float					GetRestoreByType				(ALife::EConditionRestoreType type) const;
+
 			float					GetHealthPower					() const { return m_fHealthRestoreSpeed; }
 			float					GetRadiationPower				() const { return m_fRadiationRestoreSpeed; }
 			float					GetSatietyPower					() const { return m_fSatietyRestoreSpeed; }
@@ -107,8 +109,8 @@ public:
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 	CHitImmunity 					m_ArtefactHitImmunities;
-	xr_hash_map<ALife::EInfluenceType, float>		m_HitTypeProtection;
-	xr_hash_map<ALife::EInfluenceType, float>		m_ConstHitTypeProtection;
+	xr_hash_map<ALife::EHitType, float>		m_HitTypeProtection;
+	xr_hash_map<ALife::EHitType, float>		m_ConstHitTypeProtection;
 
 	//For Degradation
 	float							m_fConstHealthRestoreSpeed;
