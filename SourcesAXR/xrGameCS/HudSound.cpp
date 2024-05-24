@@ -11,7 +11,7 @@ float HUD_SOUND_ITEM::g_fHudSndVolumeFactor = 1.0f; //--#SM+#--
 void InitHudSoundSettings()
 {
 	psHUDSoundVolume		= pSettings->r_float("hud_sound", "hud_sound_vol_k");
-	psHUDStepSoundVolume	= pSettings->r_float("hud_sound", "hud_step_sound_vol_k");
+	psHUDStepSoundVolume	= READ_IF_EXISTS(pSettings, r_float, "hud_sound", "hud_step_sound_vol_k", 0.21f);
 }
 
 void HUD_SOUND_ITEM::LoadSound(	LPCSTR section, LPCSTR line, 
@@ -218,7 +218,7 @@ void HUD_SOUND_COLLECTION::StopSound(LPCSTR alias)
 void HUD_SOUND_COLLECTION::SetPosition(LPCSTR alias, const Fvector& pos)
 {
 	HUD_SOUND_ITEM* snd_item		= FindSoundItem(alias, true);
-	if(snd_item->playing())
+	if(snd_item && snd_item->playing())
 		snd_item->set_position		(pos);
 }
 
