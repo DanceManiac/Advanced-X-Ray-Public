@@ -135,6 +135,9 @@
 	<string id="ui_mm_hud_draw">
 		<text>Показывать интерфейс</text>
 	</string>
+	<string id="renderer_r2.5">
+		<text>Улучшенное полное освещение</text>
+	</string>
 	<string id="renderer_r4">
 		<text>Ул. полное освещение (DX11)</text>
 	</string>
