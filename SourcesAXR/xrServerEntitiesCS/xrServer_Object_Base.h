@@ -113,6 +113,7 @@ public:
 	virtual void 			on_render				(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F){} 
 	virtual	visual_data*	visual_collection		() const { return 0; }
 	virtual	u32				visual_collection_size	() const { return 0; }
+	virtual	void			set_additional_info		(void* info) {};
 #endif // #ifndef XRGAME_EXPORTS
 	virtual BOOL					Net_Relevant			(){return FALSE;}; // !!!! WARNING!!!
 	//
