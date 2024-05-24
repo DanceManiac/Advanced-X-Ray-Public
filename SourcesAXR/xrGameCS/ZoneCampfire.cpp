@@ -52,10 +52,13 @@ void CZoneCampfire::GoEnabledState()
 	m_pEnablingParticles			= CParticlesObject::Create(str,FALSE);
 	m_pEnablingParticles->UpdateParent(XFORM(), m_zero_vel);
 	m_pEnablingParticles->Play		(false);
-
-	str = pSettings->r_string(cNameSect(), "enabling_sound");
-	m_sound.create(str, st_Effect, sg_SourceType);
-	m_sound.play_at_pos(this, Position(), true);
+	
+	if (pSettings->line_exist(cNameSect(), "enabling_sound"))
+	{
+		str = pSettings->r_string(cNameSect(), "enabling_sound");
+		m_sound.create(str, st_Effect, sg_SourceType);
+		m_sound.play_at_pos(this, Position(), true);
+	}
 }
 
 void CZoneCampfire::GoDisabledState()
@@ -71,9 +74,12 @@ void CZoneCampfire::GoDisabledState()
 	m_sound.stop();
 	m_sound.destroy();
 
-	str = pSettings->r_string(cNameSect(), "disabled_sound");
-	m_sound.create(str, st_Effect, sg_SourceType);
-	m_sound.play_at_pos(this, Position(), true);
+	if (pSettings->line_exist(cNameSect(), "disabled_sound"))
+	{
+		str = pSettings->r_string(cNameSect(), "disabled_sound");
+		m_sound.create(str, st_Effect, sg_SourceType);
+		m_sound.play_at_pos(this, Position(), true);
+	}
 }
 
 #define OVL_TIME 3000
