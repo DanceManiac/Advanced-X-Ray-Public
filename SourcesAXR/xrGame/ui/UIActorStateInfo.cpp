@@ -445,9 +445,9 @@ void ui_actor_state_item::init_from_xml( CUIXml& xml, LPCSTR path )
 		m_texture._set(texture);
 	}
 
-	Fvector4 red = GameConstants::GetRedColor();
-	Fvector4 green = GameConstants::GetGreenColor();
-	Fvector4 neutral = GameConstants::GetNeutralColor();
+	Ivector4 red = GameConstants::GetRedColor();
+	Ivector4 green = GameConstants::GetGreenColor();
+	Ivector4 neutral = GameConstants::GetNeutralColor();
 
 	if (xml.NavigateToNode("state_caption:negative_color", 0))
 		m_negative_color = CUIXmlInit::GetColor(xml, "state_caption:negative_color", 0, color_rgba(red.x, red.y, red.z, red.w));

@@ -54,9 +54,9 @@ int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
 float	m_fDistantSndDistance = 150.f;
-Fvector4 m_FV4RedColor = Fvector4().set(255, 0, 0, 255);
-Fvector4 m_FV4GreenColor = Fvector4().set(0, 255, 0, 255);
-Fvector4 m_FV4NeutralColor = Fvector4().set(170, 170, 170, 255);
+Ivector4 m_IV4RedColor = Ivector4().set(255, 0, 0, 255);
+Ivector4 m_IV4GreenColor = Ivector4().set(0, 255, 0, 255);
+Ivector4 m_IV4NeutralColor = Ivector4().set(170, 170, 170, 255);
 LPCSTR	m_sAfInfluenceMode = "from_belt";
 LPCSTR	m_sArtefactsDegradationMode = "from_belt";
 LPCSTR	m_sMoonPhasesMode = "off";
@@ -108,9 +108,9 @@ namespace GameConstants
 		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
 		m_bColorizeValues = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "colorize_values", true);
-		m_FV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_red", Fvector4().set(255, 0, 0, 255));
-		m_FV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_green", Fvector4().set(0, 255, 0, 255));
-		m_FV4NeutralColor = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ui_settings", "colorize_values_neutral", Fvector4().set(170, 170, 170, 255));
+		m_IV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_red", Ivector4().set(255, 0, 0, 255));
+		m_IV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_green", Ivector4().set(0, 255, 0, 255));
+		m_IV4NeutralColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_neutral", Ivector4().set(170, 170, 170, 255));
 		m_bUseHQ_Icons = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "hq_icons", false);
 		m_bAfPanelEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_artefact_panel", false);
 		m_bHUD_UsedItemText = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_hud_used_item_text", true);
@@ -361,19 +361,19 @@ namespace GameConstants
 		return m_bFogInfluenceVolumetricLight;
 	}
 
-	Fvector4 GetRedColor()
+	Ivector4 GetRedColor()
 	{
-		return m_FV4RedColor;
+		return m_IV4RedColor;
 	}
 
-	Fvector4 GetGreenColor()
+	Ivector4 GetGreenColor()
 	{
-		return m_FV4GreenColor;
+		return m_IV4GreenColor;
 	}
 
-	Fvector4 GetNeutralColor()
+	Ivector4 GetNeutralColor()
 	{
-		return m_FV4NeutralColor;
+		return m_IV4NeutralColor;
 	}
 
 	Fvector4 GetSSFX_DefaultDoF()

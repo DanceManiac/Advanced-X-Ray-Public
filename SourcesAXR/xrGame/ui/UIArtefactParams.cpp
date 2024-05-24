@@ -582,9 +582,9 @@ void UIArtefactParamItem::Init( CUIXml& xml, LPCSTR section )
 		m_texture._set(texture);
 	}
 
-	Fvector4 red = GameConstants::GetRedColor();
-	Fvector4 green = GameConstants::GetGreenColor();
-	Fvector4 neutral = GameConstants::GetNeutralColor();
+	Ivector4 red = GameConstants::GetRedColor();
+	Ivector4 green = GameConstants::GetGreenColor();
+	Ivector4 neutral = GameConstants::GetNeutralColor();
 
 	if (xml.NavigateToNode("caption:min_color", 0))
 		m_negative_color = CUIXmlInit::GetColor(xml, "caption:min_color", 0, color_rgba(red.x, red.y, red.z, red.w));

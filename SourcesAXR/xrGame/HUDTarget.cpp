@@ -175,30 +175,30 @@ void CHUDTarget::Render()
 	Device.mFullTransform.transform(pt, p2);
 	pt.y = -pt.y;
 	float				di_size = C_SIZE/powf(pt.w,.2f);
+	
+	CUIMainIngameWnd* pMaingame	= CurrentGameUI()->UIMainIngameWnd;
+	CGameFont* F				= pMaingame->m_HudInfoFont;
+	float hud_info_x			= pMaingame->hud_info_x * 0.025f;
+	float hud_info_y			= pMaingame->hud_info_y * 0.025f;
 
-	float hud_info_x	= CurrentGameUI()->UIMainIngameWnd->hud_info_x * 0.025f;
-	float hud_info_y	= CurrentGameUI()->UIMainIngameWnd->hud_info_y * 0.025f;
+	int hud_info_r_e			= pMaingame->hud_info_e.x;
+	int hud_info_g_e			= pMaingame->hud_info_e.y;
+	int hud_info_b_e			= pMaingame->hud_info_e.z;
+	int hud_info_a_e			= pMaingame->hud_info_e.w;
 
-	int hud_info_r_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_r_e;
-	int hud_info_g_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_g_e;
-	int hud_info_b_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_b_e;
-	int hud_info_a_e	= CurrentGameUI()->UIMainIngameWnd->hud_info_a_e;
+	int hud_info_r_n			= pMaingame->hud_info_n.x;
+	int hud_info_g_n			= pMaingame->hud_info_n.y;
+	int hud_info_b_n			= pMaingame->hud_info_n.z;
+	int hud_info_a_n			= pMaingame->hud_info_n.w;
 
-	int hud_info_r_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_r_n;
-	int hud_info_g_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_g_n;
-	int hud_info_b_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_b_n;
-	int hud_info_a_n	= CurrentGameUI()->UIMainIngameWnd->hud_info_a_n;
-
-	int hud_info_r_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_r_f;
-	int hud_info_g_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_g_f;
-	int hud_info_b_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_b_f;
-	int hud_info_a_f	= CurrentGameUI()->UIMainIngameWnd->hud_info_a_f;
+	int hud_info_r_f			= pMaingame->hud_info_f.x;
+	int hud_info_g_f			= pMaingame->hud_info_f.y;
+	int hud_info_b_f			= pMaingame->hud_info_f.z;
+	int hud_info_a_f			= pMaingame->hud_info_f.w;
 
 	u32 C_ON_ENEMY		= color_rgba(hud_info_r_e, hud_info_g_e, hud_info_b_e, hud_info_a_e);
 	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);
 	u32 C_ON_FRIEND		= color_rgba(hud_info_r_f, hud_info_g_f, hud_info_b_f, hud_info_a_f);
-
-	CGameFont* F		= CurrentGameUI()->UIMainIngameWnd->m_HudInfoFont;
 
 	F->SetAligment		(CGameFont::alCenter);
 	F->OutSetI(0.f + hud_info_x, 0.05f + hud_info_y);
@@ -256,10 +256,10 @@ void CHUDTarget::Render()
 					{
 						if (fuzzyShowInfo>0.5f && l_pI->NameItem())
 						{
-							float hud_info_item_x  = CurrentGameUI()->UIMainIngameWnd->hud_info_item_x;
-							float hud_info_item_y1 = CurrentGameUI()->UIMainIngameWnd->hud_info_item_y1;
-							float hud_info_item_y2 = CurrentGameUI()->UIMainIngameWnd->hud_info_item_y2;
-							float hud_info_item_y3 = CurrentGameUI()->UIMainIngameWnd->hud_info_item_y3;
+							float hud_info_item_x	= pMaingame->hud_info_item_x;
+							float hud_info_item_y1	= pMaingame->hud_info_item_y_pos.x;
+							float hud_info_item_y2	= pMaingame->hud_info_item_y_pos.y;
+							float hud_info_item_y3	= pMaingame->hud_info_item_y_pos.z;
 							int height = l_pI->GetInvGridRect().y2;
 							float pos = hud_info_item_y1;
 							F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
