@@ -41,6 +41,8 @@ public:
 	virtual CArtefact*				cast_artefact						()		{return this;}
 	virtual	u32						Cost								() const;
 
+			float					GetRestoreByType				(ALife::EConditionRestoreType type) const;
+
 			float					GetHealthPower					() const { return m_fHealthRestoreSpeed; }
 			float					GetRadiationPower				() const { return m_fRadiationRestoreSpeed; }
 			float					GetSatietyPower					() const { return m_fSatietyRestoreSpeed; }

@@ -1,42 +1,62 @@
 #pragma once
 #include "UIWindow.h"
+#include "..\alife_space.h"
+#include "..\inventory_item.h"
+
 
 class CUIXml;
 class CUIStatic;
+class UIArtefactParamItem;
+class CArtefact;
 
-class CUIArtefactParams :public CUIWindow
+class CUIArtefactParams : public CUIWindow
 {
 public:
-								CUIArtefactParams		();
-	virtual						~CUIArtefactParams		();
-	void 						InitFromXml				(CUIXml& xml_doc);
-	bool 						Check					(const shared_str& af_section);
-	bool						CheckDescrInfoPortions	(const shared_str& af_section);
-	void 						SetInfo					(const shared_str& af_section);
+					CUIArtefactParams		();
+	virtual			~CUIArtefactParams		();
+			void	InitFromXml				(CUIXml& xml);
+			bool	Check					(const shared_str& af_section);
+			bool	CheckDescrInfoPortions	(const shared_str& af_section);
+			void	SetInfo					(CInventoryItem& pInvItem);
 
 protected:
-	enum{
-		_item_start						=0,
-		_item_health_restore_speed		=_item_start,
-		_item_radiation_restore_speed,
-		_item_satiety_restore_speed,
-		_item_power_restore_speed,
-		_item_bleeding_restore_speed,
+	UIArtefactParamItem*	m_immunity_item[ALife::eHitTypeMax];
+	UIArtefactParamItem*	m_restore_item[ALife::eRestoreTypeMax];
+	UIArtefactParamItem*	m_additional_weight;
+	UIArtefactParamItem*	m_fJumpSpeed;
+	UIArtefactParamItem*	m_fWalkAccel;
+	UIArtefactParamItem*	m_iArtefactRank;
+	UIArtefactParamItem*	m_fChargeLevel;
 
-		_max_item_index1,
+}; // class CUIArtefactParams
 
-		_item_burn_immunity				= _max_item_index1,
-		_item_strike_immunity,
-		_item_shock_immunity,
-		_item_wound_immunity,		
-		_item_radiation_immunity,
-		_item_telepatic_immunity,
-		_item_chemical_burn_immunity,
-		_item_explosion_immunit,
-		_item_fire_wound_immunity,
+// -----------------------------------
 
-		_max_item_index,
+class UIArtefactParamItem : public CUIWindow
+{
+public:
+				UIArtefactParamItem	();
+	virtual		~UIArtefactParamItem();
+		
+		void	Init				( CUIXml& xml, LPCSTR section );
+		void	SetCaption			( LPCSTR name );
+		void	SetValue			( float value, int vle = 0 );
+	
+private:
+	CUIStatic*	m_caption;
+	CUIStatic*	m_value;
+	float		m_magnitude;
+	bool		m_sign_inverse;
+	bool		m_show_sign;
+	shared_str	m_unit_str;
+	shared_str	m_texture;
 
-	};
-	CUIStatic*					m_info_items[_max_item_index];
-};
+	//Color
+	u32			m_negative_color;
+	u32			m_neutral_color;
+	u32			m_positive_color;
+	bool		clr_invert;
+	bool		use_color;
+	bool		clr_dynamic;
+
+}; // class UIArtefactParamItem

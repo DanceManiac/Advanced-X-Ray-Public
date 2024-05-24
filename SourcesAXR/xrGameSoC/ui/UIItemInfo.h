@@ -29,7 +29,7 @@ public:
 	void				Init				(LPCSTR xml_name);
 	void				InitItem			(CInventoryItem* pInvItem);
 	void				TryAddWpnInfo		(const shared_str& wpn_section);
-	void				TryAddArtefactInfo	(const shared_str& af_section);
+	void				TryAddArtefactInfo	(CInventoryItem& pInvItem);
 	void				TryAddOutfitInfo	(CInventoryItem& pInvItem, CInventoryItem* pCompareItem);
 
 	virtual void		Draw				();

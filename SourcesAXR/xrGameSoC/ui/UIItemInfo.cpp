@@ -177,7 +177,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
 		TryAddWpnInfo						(pInvItem->object().cNameSect());
-		TryAddArtefactInfo					(pInvItem->object().cNameSect());
+		TryAddArtefactInfo					(*pInvItem);
 		TryAddOutfitInfo					(*pInvItem, NULL);
 		if(m_desc_info.bShowDescrText)
 		{
@@ -229,12 +229,12 @@ void CUIItemInfo::TryAddWpnInfo(const shared_str& wpn_section)
 	}
 }
 
-void CUIItemInfo::TryAddArtefactInfo(const shared_str& af_section)
+void CUIItemInfo::TryAddArtefactInfo(CInventoryItem& pInvItem)
 {
-	if (UIArtefactParams->Check(af_section) && UIArtefactParams->CheckDescrInfoPortions(af_section))
+	if (UIArtefactParams->Check(pInvItem.object().cNameSect()) && UIArtefactParams->CheckDescrInfoPortions(pInvItem.object().cNameSect()))
 	{
-		UIArtefactParams->SetInfo(af_section);
-		UIDesc->AddWindow(UIArtefactParams, false);
+		UIArtefactParams->SetInfo(pInvItem);
+		UIDesc->AddWindow( UIArtefactParams, false );
 	}
 }
 

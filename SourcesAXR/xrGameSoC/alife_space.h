@@ -85,16 +85,34 @@ namespace ALife {
 	enum EHitType {
 		eHitTypeBurn = u32(0),
 		eHitTypeShock,
-		eHitTypeStrike,
-		eHitTypeWound,
+		eHitTypeChemicalBurn,
 		eHitTypeRadiation,
 		eHitTypeTelepatic,
-		eHitTypeChemicalBurn,
-		eHitTypeExplosion,
+		eHitTypeWound,
 		eHitTypeFireWound,
+		eHitTypeStrike,
+		eHitTypeExplosion,
 		eHitTypeWound_2,		//knife's alternative fire
 		eHitTypePhysicStrike,
 		eHitTypeMax,
+	};
+
+	enum EConditionRestoreType {
+		eHealthRestoreSpeed = u32(0),
+		eSatietyRestoreSpeed,
+		eThirstRestoreSpeed,
+		eRadiationRestoreSpeed,
+		ePowerRestoreSpeed,
+		eBleedingRestoreSpeed,
+		ePsyHealthRestoreSpeed,
+		eSleepenessRestoreSpeed,
+		eIntoxicationRestoreSpeed,
+		eAlcoholismRestoreSpeed,
+		eHangoverRestoreSpeed,
+		eNarcotismRestoreSpeed,
+		eWithDrawalRestoreSpeed,
+		eFrostbiteRestoreSpeed,
+		eRestoreTypeMax,
 	};
 
 	enum ETakeType {

@@ -888,3 +888,74 @@ u32 CArtefact::Cost() const
 
 	return res;
 }
+
+float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
+{
+	float res = 0.f;
+
+	switch (type)
+	{
+		case ALife::eHealthRestoreSpeed:
+		{
+			res = m_fHealthRestoreSpeed;
+		}break;
+		case ALife::eSatietyRestoreSpeed:
+		{
+			res = m_fSatietyRestoreSpeed;
+		}break;
+		case ALife::eThirstRestoreSpeed:
+		{
+			res = m_fThirstRestoreSpeed;
+		}break;
+		case ALife::eRadiationRestoreSpeed:
+		{
+			res = m_fRadiationRestoreSpeed;
+		}break;
+		case ALife::ePowerRestoreSpeed:
+		{
+			res = m_fPowerRestoreSpeed;
+		}break;
+		case ALife::eBleedingRestoreSpeed:
+		{
+			res = m_fBleedingRestoreSpeed;
+		}break;
+		case ALife::ePsyHealthRestoreSpeed:
+		{
+			res = 0.f; //m_fPsyHealthRestoreSpeed;
+		}break;
+#pragma todo("new params are temporary empty")
+		case ALife::eSleepenessRestoreSpeed:
+		{
+			res = 0.f; //m_fSleepenessRestoreSpeed;
+		}break;
+		case ALife::eIntoxicationRestoreSpeed:
+		{
+			res = 0.f; //m_fIntoxicationRestoreSpeed;
+		}break;
+		case ALife::eAlcoholismRestoreSpeed:
+		{
+			res = 0.f; //m_fAlcoholismRestoreSpeed;
+		}break;
+		case ALife::eHangoverRestoreSpeed:
+		{
+			res = 0.f; //m_fHangoverRestoreSpeed;
+		}break;
+		case ALife::eNarcotismRestoreSpeed:
+		{
+			res = 0.f; //m_fNarcotismRestoreSpeed;
+		}break;
+		case ALife::eWithDrawalRestoreSpeed:
+		{
+			res = 0.f; //m_fWithdrawalRestoreSpeed;
+		}break;
+		case ALife::eFrostbiteRestoreSpeed:
+		{
+			res = 0.f; //m_FrostbiteRestoreSpeed;
+		}break;
+		default:
+		{
+			NODEFAULT;
+		}break;
+	}
+	return res;
+}
