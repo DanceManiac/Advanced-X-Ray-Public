@@ -58,48 +58,36 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventoryDetectorList->Show		(true);
 	m_pInventoryPistolList->Show		(true);
 	m_pInventoryAutomaticList->Show		(true);
-	m_pTrashList->Show					(true);
+	if (m_pTrashList)
+		m_pTrashList->Show				(true);
 
 	if (m_sleep_button)
-		m_sleep_button->Show(true);
-	
+		m_sleep_button->Show			(true);
+
 	m_RightDelimiter->Show				(false);
-	m_clock_value->Show					(true);
+	if (m_clock_value)
+		m_clock_value->Show				(true);
 
-	if (GameConstants::GetKnifeSlotEnabled())
-	{
+	if (m_pInventoryKnifeList && GameConstants::GetKnifeSlotEnabled())
 		m_pInventoryKnifeList->Show(true);
-	}
 
-	if (GameConstants::GetBinocularSlotEnabled())
-	{
+	if (m_pInventoryBinocularList && GameConstants::GetBinocularSlotEnabled())
 		m_pInventoryBinocularList->Show(true);
-	}
 
-	if (GameConstants::GetTorchSlotEnabled())
-	{
+	if (m_pInventoryTorchList && GameConstants::GetTorchSlotEnabled())
 		m_pInventoryTorchList->Show(true);
-	}
 
-	if (GameConstants::GetBackpackSlotEnabled())
-	{
+	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
 		m_pInventoryBackpackList->Show(true);
-	}
 
-	if (GameConstants::GetDosimeterSlotEnabled())
-	{
+	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
 		m_pInventoryDosimeterList->Show(true);
-	}
 
-	if (GameConstants::GetPantsSlotEnabled())
-	{
+	if (m_pInventoryPantsList && GameConstants::GetPantsSlotEnabled())
 		m_pInventoryPantsList->Show(true);
-	}
 
-	if (GameConstants::GetPdaSlotEnabled())
-	{
+	if (m_pInventoryPdaList && GameConstants::GetPdaSlotEnabled())
 		m_pInventoryPdaList->Show(true);
-	}
 
 	InitInventoryContents				(m_pInventoryBagList);
 
@@ -111,12 +99,12 @@ void CUIActorMenu::InitInventoryMode()
 
 void CUIActorMenu::DeInitInventoryMode()
 {
-	m_pTrashList->Show					(false);
-
+	if (m_pTrashList)
+		m_pTrashList->Show				(false);
 	if (m_sleep_button)
-		m_sleep_button->Show(false);
-
-	m_clock_value->Show					(false);
+		m_sleep_button->Show			(false);
+	if (m_clock_value)
+		m_clock_value->Show					(false);
 }
 
 void CUIActorMenu::SendEvent_ActivateSlot(u32 slot, u16 recipient)
@@ -136,9 +124,9 @@ void CUIActorMenu::SendEvent_Item2Slot(PIItem pItem, u16 recipient)
 	CGameObject::u_EventGen			(P, GEG_PLAYER_ITEM2SLOT, pItem->object().H_Parent()->ID());
 	P.w_u16							(pItem->object().ID());
 	CGameObject::u_EventSend		(P);
-	
-	clear_highlight_lists			();
+
 	PlaySnd							(eItemToSlot);
+	clear_highlight_lists			();
 };
 
 void CUIActorMenu::SendEvent_Item2Belt(PIItem pItem, u16 recipient)
@@ -150,9 +138,9 @@ void CUIActorMenu::SendEvent_Item2Belt(PIItem pItem, u16 recipient)
 	CGameObject::u_EventGen			(P, GEG_PLAYER_ITEM2BELT, pItem->object().H_Parent()->ID());
 	P.w_u16							(pItem->object().ID());
 	CGameObject::u_EventSend		(P);
-	
-	clear_highlight_lists			();
+
 	PlaySnd							(eItemToBelt);
+	clear_highlight_lists			();
 };
 
 void CUIActorMenu::SendEvent_Item2Ruck(PIItem pItem, u16 recipient)
@@ -190,9 +178,8 @@ void CUIActorMenu::SendEvent_Item_Drop(PIItem pItem, u16 recipient)
 	pItem->object().u_EventGen	(P,GE_OWNERSHIP_REJECT,pItem->parent_id());
 	P.w_u16						(pItem->object().ID());
 	pItem->object().u_EventSend	(P);
-
-	clear_highlight_lists		();
 	PlaySnd						(eDropItem);
+	clear_highlight_lists		();
 }
 
 void CUIActorMenu::DropAllCurrentItem()
@@ -455,6 +442,9 @@ void CUIActorMenu::InitCellForSlot( u32 slot_idx )
 	}
 
 	CUIDragDropListEx* curr_list	= GetSlotList( slot_idx );
+	if (!curr_list)
+		return;
+
 	CUICellItem* cell_item			= create_cell_item( item );
 	curr_list->SetItem( cell_item );
 	if ( m_currMenuMode == mmTrade && m_pPartnerInvOwner )
@@ -478,39 +468,25 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	InitCellForSlot				(DETECTOR_SLOT);
 
 	if (GameConstants::GetKnifeSlotEnabled())
-	{
 		InitCellForSlot(KNIFE_SLOT);
-	}
 
 	if (GameConstants::GetBinocularSlotEnabled())
-	{
 		InitCellForSlot(APPARATUS_SLOT);
-	}
 
 	if (GameConstants::GetTorchSlotEnabled())
-	{
 		InitCellForSlot(TORCH_SLOT);
-	}
 
 	if (GameConstants::GetBackpackSlotEnabled())
-	{
 		InitCellForSlot(BACKPACK_SLOT);
-	}
 
 	if (GameConstants::GetDosimeterSlotEnabled())
-	{
 		InitCellForSlot(DOSIMETER_SLOT);
-	}
 
 	if (GameConstants::GetPantsSlotEnabled())
-	{
 		InitCellForSlot(PANTS_SLOT);
-	}
 
 	if (GameConstants::GetPdaSlotEnabled())
-	{
 		InitCellForSlot(PDA_SLOT);
-	}
 
 	curr_list					= m_pInventoryBeltList;
 	TIItemContainer::iterator itb = m_pActorInvOwner->inventory().m_belt.begin();
@@ -1613,9 +1589,12 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 
 void CUIActorMenu::UpdateOutfit()
 {
-	for ( u8 i = 0; i < GameConstants::GetArtefactsCount(); ++i )
+	if (m_bBeltSlotsOverInitialized)
 	{
-		m_belt_list_over[i]->SetVisible( true );
+		for (u8 i = 0; i < GameConstants::GetArtefactsCount(); ++i)
+		{
+			m_belt_list_over[i]->SetVisible(true);
+		}
 	}
 
 	u32 af_count = m_pActorInvOwner->inventory().BeltWidth();
@@ -1646,9 +1625,12 @@ void CUIActorMenu::UpdateOutfit()
 
 	m_pInventoryBeltList->SetCellsCapacity( afc );
 
-	for ( u8 i = 0; i < af_count ; ++i )
+	if (m_bBeltSlotsOverInitialized)
 	{
-		m_belt_list_over[i]->SetVisible( false );
+		for (u8 i = 0; i < af_count; ++i)
+		{
+			m_belt_list_over[i]->SetVisible(false);
+		}
 	}
 }
 

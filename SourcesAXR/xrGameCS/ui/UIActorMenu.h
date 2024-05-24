@@ -184,6 +184,10 @@ protected:
 	bool						m_highlight_clear;
 	u32							m_trade_partner_inventory_state;
 	bool						m_bNeedMoveAfsToBag;
+
+	bool						m_bArtefactSlotsHighlightInitialized = false;
+	bool						m_bBeltSlotsOverInitialized = false;
+
 public:
 	void						SetMenuMode					(EMenuMode mode);
 	EMenuMode					GetMenuMode					() {return m_currMenuMode;};

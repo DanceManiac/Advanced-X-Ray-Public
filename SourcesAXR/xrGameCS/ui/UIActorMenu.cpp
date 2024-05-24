@@ -276,7 +276,8 @@ void CUIActorMenu::Update()
 		break;
 	case mmInventory:
 		{
-			m_clock_value->SetText( InventoryUtilities::GetGameTimeAsString( InventoryUtilities::etpTimeToMinutes ).c_str() );
+			if (m_clock_value)
+				m_clock_value->SetText( InventoryUtilities::GetGameTimeAsString( InventoryUtilities::etpTimeToMinutes ).c_str() );
 			HUD().GetUI()->UIMainIngameWnd->UpdateZoneMap();
 			break;
 		}
@@ -368,47 +369,29 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pTradePartnerBagList)		return iPartnerTradeBag;
 	if(l==m_pTradePartnerList)			return iPartnerTrade;
 	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
-	if(l==m_pTrashList)					return iTrashSlot;
+	if(l == m_pTrashList && m_pTrashList != nullptr)
+		return iTrashSlot;
 
-	if (GameConstants::GetKnifeSlotEnabled())
-	{
-		if (l == m_pInventoryKnifeList)
-			return iActorSlot;
-	}
+	if ((l == m_pInventoryKnifeList) && (m_pInventoryKnifeList != nullptr) && GameConstants::GetKnifeSlotEnabled())
+		return iActorSlot;
 
-	if (GameConstants::GetBinocularSlotEnabled())
-	{
-		if (l == m_pInventoryBinocularList)
-			return iActorSlot;
-	}
+	if ((l == m_pInventoryBinocularList) && (m_pInventoryBinocularList != nullptr) && GameConstants::GetBinocularSlotEnabled())
+		return iActorSlot;
 
-	if (GameConstants::GetTorchSlotEnabled())
-	{
-		if (l == m_pInventoryTorchList) return iActorSlot;
-	}
+	if ((l == m_pInventoryTorchList) && (m_pInventoryTorchList != nullptr) && GameConstants::GetTorchSlotEnabled())
+		return iActorSlot;
 
-	if (GameConstants::GetBackpackSlotEnabled())
-	{
-		if (l == m_pInventoryBackpackList) return iActorSlot;
-	}
+	if ((l == m_pInventoryBackpackList) && (m_pInventoryBackpackList != nullptr) && GameConstants::GetBackpackSlotEnabled())
+		return iActorSlot;
 
-	if (GameConstants::GetDosimeterSlotEnabled())
-	{
-		if (l == m_pInventoryDosimeterList)
-			return iActorSlot;
-	}
+	if ((l == m_pInventoryDosimeterList) && (m_pInventoryDosimeterList != nullptr) && GameConstants::GetDosimeterSlotEnabled())
+		return iActorSlot;
 
-	if (GameConstants::GetPantsSlotEnabled())
-	{
-		if (l == m_pInventoryPantsList)
-			return iActorSlot;
-	}
+	if ((l == m_pInventoryPantsList) && (m_pInventoryPantsList != nullptr) && GameConstants::GetPantsSlotEnabled())
+		return iActorSlot;
 
-	if (GameConstants::GetPdaSlotEnabled())
-	{
-		if (l == m_pInventoryPdaList)
-			return iActorSlot;
-	}
+	if ((l == m_pInventoryPdaList) && (m_pInventoryPdaList != nullptr) && GameConstants::GetPdaSlotEnabled())
+		return iActorSlot;
 
 	R_ASSERT(0);
 	
@@ -568,53 +551,38 @@ void CUIActorMenu::UpdateItemsPlace()
 
 void CUIActorMenu::clear_highlight_lists()
 {
-	m_PistolSlotHighlight->Show(false);
-	m_RiffleSlotHighlight->Show(false);
-	m_OutfitSlotHighlight->Show(false);
-	m_DetectorSlotHighlight->Show(false);
+	if (m_PistolSlotHighlight)
+		m_PistolSlotHighlight->Show(false);
+	if (m_RiffleSlotHighlight)
+		m_RiffleSlotHighlight->Show(false);
+	if (m_OutfitSlotHighlight)
+		m_OutfitSlotHighlight->Show(false);
+	if (m_DetectorSlotHighlight)
+		m_DetectorSlotHighlight->Show(false);
 
-	if (GameConstants::GetKnifeSlotEnabled())
-	{
+	if (m_KnifeSlotHighlight && GameConstants::GetKnifeSlotEnabled())
 		m_KnifeSlotHighlight->Show(false);
-	}
-
-	if (GameConstants::GetBinocularSlotEnabled())
-	{
+	if (m_BinocularSlotHighlight && GameConstants::GetBinocularSlotEnabled())
 		m_BinocularSlotHighlight->Show(false);
-	}
+	if (m_TorchSlotHighlight && GameConstants::GetTorchSlotEnabled())
+		m_TorchSlotHighlight->Show(false);
+	if (m_BackpackSlotHighlight && GameConstants::GetBackpackSlotEnabled())
+		m_BackpackSlotHighlight->Show(false);
 
-	if (GameConstants::GetTorchSlotEnabled())
+	if (m_DosimeterSlotHighlight && GameConstants::GetDosimeterSlotEnabled())
+		m_DosimeterSlotHighlight->Show(false);
+
+	if (m_PantsSlotHighlight && GameConstants::GetPantsSlotEnabled())
+		m_PantsSlotHighlight->Show(false);
+
+	if (m_PdaSlotHighlight && GameConstants::GetPdaSlotEnabled())
+		m_PdaSlotHighlight->Show(false);
+
+	if (m_bArtefactSlotsHighlightInitialized)
 	{
-		if (m_TorchSlotHighlight)
-			m_TorchSlotHighlight->Show(false);
+		for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
+			m_ArtefactSlotsHighlight[i]->Show(false);
 	}
-
-	if (GameConstants::GetBackpackSlotEnabled())
-	{
-		if (m_BackpackSlotHighlight)
-			m_BackpackSlotHighlight->Show(false);
-	}
-
-	if (GameConstants::GetDosimeterSlotEnabled())
-	{
-		if (m_DosimeterSlotHighlight)
-			m_DosimeterSlotHighlight->Show(false);
-	}
-
-	if (GameConstants::GetPantsSlotEnabled())
-	{
-		if (m_PantsSlotHighlight)
-			m_PantsSlotHighlight->Show(false);
-	}
-
-	if (GameConstants::GetPdaSlotEnabled())
-	{
-		if (m_PdaSlotHighlight)
-			m_PdaSlotHighlight->Show(false);
-	}
-
-	for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
-		m_ArtefactSlotsHighlight[i]->Show(false);
 
 	m_pInventoryBagList->clear_select_armament();
 
@@ -659,12 +627,12 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CPda* pda = smart_cast<CPda*>(item);
 	CWeaponPistol* pistol = smart_cast<CWeaponPistol*>(item);
 
-	if (pistol)
+	if (pistol && m_PistolSlotHighlight)
 	{
 		m_PistolSlotHighlight->Show(true);
 		return;
 	}
-	if (weapon && !pistol && !(knife || binoculars))
+	if (weapon && !pistol && !(knife || binoculars) && m_RiffleSlotHighlight)
 	{
 		m_RiffleSlotHighlight->Show(true);
 		return;
@@ -672,23 +640,22 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 
 	if(outfit)
 	{
-		m_OutfitSlotHighlight->Show(true);
+		if (m_OutfitSlotHighlight)
+			m_OutfitSlotHighlight->Show(true);
 
-		if (GameConstants::GetPantsSlotEnabled())
-		{
-			if (m_PantsSlotHighlight)
-				m_PantsSlotHighlight->Show(true);
-		}
+		if (m_PantsSlotHighlight && GameConstants::GetPantsSlotEnabled())
+			m_PantsSlotHighlight->Show(true);
+
 		return;
 	}
 
-	if(detector)
+	if(detector && m_DetectorSlotHighlight)
 	{
 		m_DetectorSlotHighlight->Show(true);
 		return;
 	}
 
-	if(artefact)
+	if(artefact && m_bArtefactSlotsHighlightInitialized)
 	{
 		if(cell_item->OwnerList() && GetListType(cell_item->OwnerList())==iActorBelt)
 			return;
@@ -699,70 +666,40 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		return;
 	}
 
-	if (GameConstants::GetKnifeSlotEnabled())
+	if (m_KnifeSlotHighlight && knife && GameConstants::GetKnifeSlotEnabled())
 	{
-		if (knife)
-		{
-			if (m_KnifeSlotHighlight)
-			{
-				m_KnifeSlotHighlight->Show(true);
-			}
-			return;
-		}
+		m_KnifeSlotHighlight->Show(true);	
+		return;
 	}
 
-	if (GameConstants::GetBinocularSlotEnabled())
+	if (m_BinocularSlotHighlight && binoculars && GameConstants::GetBinocularSlotEnabled())
 	{
-		if (binoculars)
-		{
-			if (m_BinocularSlotHighlight)
-			{
-				m_BinocularSlotHighlight->Show(true);
-			}
-			return;
-		}
+		m_BinocularSlotHighlight->Show(true);
+		return;
 	}
 
-	if (GameConstants::GetTorchSlotEnabled())
+	if (m_TorchSlotHighlight && torch && GameConstants::GetTorchSlotEnabled())
 	{
-		if (torch)
-		{
-			if (m_TorchSlotHighlight)
-			{
-				m_TorchSlotHighlight->Show(true);
-			}
-			return;
-		}
+		m_TorchSlotHighlight->Show(true);
+		return;
 	}
 
-	if (GameConstants::GetBackpackSlotEnabled())
+	if (m_BackpackSlotHighlight && backpack && GameConstants::GetBackpackSlotEnabled())
 	{
-		if (backpack)
-		{
-			if (m_BackpackSlotHighlight)
-			{
-				m_BackpackSlotHighlight->Show(true);
-			}
-			return;
-		}
+		m_BackpackSlotHighlight->Show(true);
+		return;
 	}
 
-	if (GameConstants::GetDosimeterSlotEnabled())
+	if (m_DosimeterSlotHighlight && anomaly_detector && GameConstants::GetDosimeterSlotEnabled())
 	{
-		if (anomaly_detector)
-		{
-			m_DosimeterSlotHighlight->Show(true);
-			return;
-		}
+		m_DosimeterSlotHighlight->Show(true);
+		return;
 	}
 
-	if (GameConstants::GetPdaSlotEnabled())
+	if (m_PdaSlotHighlight && pda && GameConstants::GetPdaSlotEnabled())
 	{
-		if (pda)
-		{
-			m_PdaSlotHighlight->Show(true);
-			return;
-		}
+		m_PdaSlotHighlight->Show(true);
+		return;
 	}
 }
 void CUIActorMenu::set_highlight_item( CUICellItem* cell_item )
@@ -1058,40 +995,26 @@ void CUIActorMenu::ClearAllLists()
 	m_pTradePartnerList->ClearAll				(true);
 	m_pDeadBodyBagList->ClearAll				(true);
 
-	if (GameConstants::GetKnifeSlotEnabled())
-	{
+	if (m_pInventoryKnifeList && GameConstants::GetKnifeSlotEnabled())
 		m_pInventoryKnifeList->ClearAll(true);
-	}
 
-	if (GameConstants::GetBinocularSlotEnabled())
-	{
+	if (m_pInventoryBinocularList && GameConstants::GetBinocularSlotEnabled())
 		m_pInventoryBinocularList->ClearAll(true);
-	}
 
-	if (GameConstants::GetTorchSlotEnabled())
-	{
+	if (m_pInventoryTorchList && GameConstants::GetTorchSlotEnabled())
 		m_pInventoryTorchList->ClearAll(true);
-	}
 
-	if (GameConstants::GetBackpackSlotEnabled())
-	{
+	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
 		m_pInventoryBackpackList->ClearAll(true);
-	}
 
-	if (GameConstants::GetDosimeterSlotEnabled())
-	{
+	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
 		m_pInventoryDosimeterList->ClearAll(true);
-	}
 
-	if (GameConstants::GetPantsSlotEnabled())
-	{
+	if (m_pInventoryPantsList && GameConstants::GetPantsSlotEnabled())
 		m_pInventoryPantsList->ClearAll(true);
-	}
 
-	if (GameConstants::GetPdaSlotEnabled())
-	{
+	if (m_pInventoryPdaList && GameConstants::GetPdaSlotEnabled())
 		m_pInventoryPdaList->ClearAll(true);
-	}
 }
 
 void CUIActorMenu::CallMessageBoxYesNo( LPCSTR text )
