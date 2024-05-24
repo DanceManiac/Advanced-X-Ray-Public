@@ -149,6 +149,10 @@ public:
 	void				InvalidateState				()							{ m_dwModifyFrame = Device.dwFrame; }
 	void				Items_SetCurrentEntityHud	(bool current_entity);
 	bool				isBeautifulForActiveSlot	(CInventoryItem *pIItem);
+
+	const char*			inv_sect;
+	CInifile*			inv_settings;
+
 protected:
 	void					UpdateDropTasks		();
 	void					UpdateDropItem		(PIItem pIItem);

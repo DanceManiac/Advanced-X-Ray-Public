@@ -74,9 +74,18 @@ bool CInventorySlot::IsBlocked() const
 
 CInventory::CInventory() 
 {
-	m_fTakeDist									= pSettings->r_float	("inventory","take_dist");
-	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
-	m_iMaxBelt									= pSettings->r_s32		("inventory","max_belt");
+	inv_sect = "inventory";
+	inv_settings = pSettings;
+	
+	if (pAdvancedSettings->section_exist("axr_inventory"))
+	{
+		inv_sect = "axr_inventory";
+		inv_settings = pAdvancedSettings;
+	}
+
+	m_fTakeDist									= inv_settings->r_float	(inv_sect, "take_dist");
+	m_fMaxWeight								= inv_settings->r_float	(inv_sect, "max_weight");
+	m_iMaxBelt									= inv_settings->r_s32	(inv_sect, "max_belt");
 	
 	m_slots.resize								(LAST_SLOT);
 	
@@ -92,8 +101,8 @@ CInventory::CInventory()
 	for(u32 i=0; i<m_slots.size(); ++i ) 
 	{
 		sprintf_s(temp, "slot_persistent_%d", i+1);
-		if(pSettings->line_exist("inventory",temp)) 
-			m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory",temp);
+		if(pSettings->line_exist(inv_sect, temp))
+			m_slots[i].m_bPersistent = !!inv_settings->r_bool(inv_sect, temp);
 	};
 
 	m_slots[PDA_SLOT].m_bVisible				= true;
@@ -329,7 +338,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		result							= Belt(pIItem); 
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant put in belt item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in belt item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 
 		break;
@@ -337,7 +346,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		result							= Ruck(pIItem);
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant put in ruck item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in ruck item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 
 		break;
@@ -345,7 +354,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		result							= Slot(pIItem, bNotActivate); 
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant slot in ruck item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in slot item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 
 		break;
@@ -385,7 +394,8 @@ bool CInventory::DropItem(CGameObject *pObj)
 {
 	CInventoryItem *pIItem				= smart_cast<CInventoryItem*>(pObj);
 	VERIFY								(pIItem);
-	if( !pIItem )						return false;
+	if(!pIItem)
+		return false;
 
 	if(pIItem->m_pCurrentInventory!=this)
 	{
@@ -750,7 +760,10 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 
 PIItem CInventory::ItemFromSlot(u32 slot) const
 {
-	VERIFY(NO_ACTIVE_SLOT != slot);
+	if (slot == NO_ACTIVE_SLOT)
+		return (0);
+
+	//VERIFY(NO_ACTIVE_SLOT != slot);
 	return m_slots[slot].m_pIItem;
 }
 
@@ -964,7 +977,7 @@ void CInventory::UpdateDropTasks()
 
 void CInventory::UpdateDropItem(PIItem pIItem)
 {
-	if( pIItem->GetDropManual() )
+	if (pIItem && pIItem->GetDropManual())
 	{
 		pIItem->SetDropManual(FALSE);
 		if ( OnServer() ) 

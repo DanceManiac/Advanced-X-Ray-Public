@@ -68,7 +68,15 @@ bool CInventorySlot::IsBlocked() const
 
 CInventory::CInventory() 
 {
-	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
+	inv_sect = "inventory";
+	inv_settings = pSettings;
+	if (pAdvancedSettings->section_exist("axr_inventory"))
+	{
+		inv_sect = "axr_inventory";
+		inv_settings = pAdvancedSettings;
+	}
+
+	m_fMaxWeight								= inv_settings->r_float	(inv_sect,"max_weight");
 	
 	ReloadInv();
 	
@@ -80,10 +88,10 @@ CInventory::CInventory()
 	for(u32 i=0; i<m_slots.size(); ++i ) 
 	{
 		xr_sprintf(temp, "slot_persistent_%d", i);
-		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory",temp);
+		m_slots[i].m_bPersistent = !!inv_settings->r_bool(inv_sect,temp);
 
 		xr_sprintf			(temp, "slot_active_%d", i);
-		m_slots[i].m_bAct	= !!pSettings->r_bool("inventory",temp);
+		m_slots[i].m_bAct	= !!inv_settings->r_bool(inv_sect,temp);
 	};*/
 
 	m_bSlotsUseful								= true;
@@ -107,21 +115,21 @@ void CInventory::ReloadInv()
 {
 	m_slots.clear();
 
-	u32 sz = pSettings->r_s32("inventory", "slots_count");
+	u32 sz = inv_settings->r_s32(inv_sect, "slots_count");
 	m_slots.resize(sz);
 
 	string256 temp;
 	for (u16 i = FirstSlot(); i <= LastSlot(); ++i)
 	{
 		xr_sprintf(temp, "slot_persistent_%d", i + 1);
-		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory", temp);
+		m_slots[i].m_bPersistent = !!inv_settings->r_bool(inv_sect, temp);
 
 		xr_sprintf(temp, "slot_active_%d", i + 1);
 
 		if (i == BACKPACK_SLOT)
 			m_slots[i].m_bAct = !!GameConstants::GetBackpackAnimsEnabled(); // Для опции анимированного рюкзака
 		else
-			m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
+			m_slots[i].m_bAct = !!inv_settings->r_bool(inv_sect, temp);
 	};
 }
 
@@ -131,14 +139,14 @@ void CInventory::ReloadSlotsConfig()
 	for (u16 i = FirstSlot(); i <= LastSlot(); ++i)
 	{
 		xr_sprintf(temp, "slot_persistent_%d", i + 1);
-		m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory", temp);
+		m_slots[i].m_bPersistent = !!inv_settings->r_bool(inv_sect, temp);
 
 		xr_sprintf(temp, "slot_active_%d", i + 1);
 
 		if (i == BACKPACK_SLOT)
 			m_slots[i].m_bAct = !!GameConstants::GetBackpackAnimsEnabled(); // Для опции анимированного рюкзака
 		else
-			m_slots[i].m_bAct = !!pSettings->r_bool("inventory", temp);
+			m_slots[i].m_bAct = !!inv_settings->r_bool(inv_sect, temp);
 	};
 }
 
@@ -349,7 +357,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant put in belt item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in belt item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 
 		break;
@@ -359,7 +367,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant put in ruck item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in ruck item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 
 		break;
@@ -369,7 +377,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
-			Msg("cant slot in slot item %s", *pIItem->object().cName());
+			Msg("!![%s] cant put in slot item [%s], moving to ruck...", __FUNCTION__, pIItem->object().cName().c_str());
 #endif
 		break;
 	}
@@ -428,6 +436,9 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 {
 	CInventoryItem *pIItem				= smart_cast<CInventoryItem*>(pObj);
 	VERIFY								(pIItem);
+	if (!pIItem)
+		return false;
+
 	VERIFY								(pIItem->m_pInventory);
 	VERIFY								(pIItem->m_pInventory==this);
 	VERIFY								(pIItem->m_eItemCurrPlace!=eItemPlaceUndefined);
@@ -932,7 +943,10 @@ void CInventory::Activate(u32 slot, /*EActivationReason reason, */bool bForce)
 
 PIItem CInventory::ItemFromSlot(u32 slot) const
 {
-	VERIFY(NO_ACTIVE_SLOT != slot);
+	if (slot == NO_ACTIVE_SLOT)
+		return (0);
+
+	//VERIFY(NO_ACTIVE_SLOT != slot);
 	return m_slots[slot].m_pIItem;
 }
 
@@ -1160,7 +1174,7 @@ void CInventory::Update()
 			}
 			m_iActiveSlot			= m_iNextActiveSlot;
 		}
-		if((m_iNextActiveSlot!=NO_ACTIVE_SLOT) && m_slots[m_iActiveSlot].m_pIItem && m_slots[m_iActiveSlot].m_pIItem->cast_hud_item()->IsHidden())
+		else if((m_iNextActiveSlot!=NO_ACTIVE_SLOT) && m_slots[m_iActiveSlot].m_pIItem && m_slots[m_iActiveSlot].m_pIItem->cast_hud_item()->IsHidden())
 				m_slots[m_iActiveSlot].m_pIItem->ActivateItem();
 	}
 	UpdateDropTasks	();
@@ -1196,7 +1210,7 @@ void CInventory::UpdateDropTasks()
 
 void CInventory::UpdateDropItem(PIItem pIItem)
 {
-	if( pIItem->GetDropManual() )
+	if (pIItem && pIItem->GetDropManual())
 	{
 		pIItem->SetDropManual(FALSE);
 		pIItem->DenyTrade();
@@ -1303,7 +1317,7 @@ PIItem CInventory::item(CLASS_ID cls_id) const
 	for(TIItemContainer::const_iterator it = list.begin(); list.end() != it; ++it) 
 	{
 		PIItem pIItem = *it;
-		if(pIItem->object().CLS_ID == cls_id && 
+		if (pIItem && pIItem->object().CLS_ID == cls_id &&
 			pIItem->Useful()) 
 			return pIItem;
 	}
@@ -1348,7 +1362,7 @@ u32		CInventory::dwfGetGrenadeCount(LPCSTR caSection, bool SearchAll)
 	for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it) 
 	{
 		PIItem	l_pIItem = *l_it;
-		if (l_pIItem->object().CLS_ID == CLSID_GRENADE_F1 || l_pIItem->object().CLS_ID == CLSID_GRENADE_RGD5)
+		if (l_pIItem && l_pIItem->object().CLS_ID == CLSID_GRENADE_F1 || l_pIItem->object().CLS_ID == CLSID_GRENADE_RGD5)
 			++l_dwCount;
 	}
 
@@ -1361,7 +1375,7 @@ bool CInventory::bfCheckForObject(ALife::_OBJECT_ID tObjectID)
 	for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it) 
 	{
 		PIItem	l_pIItem = *l_it;
-		if (l_pIItem->object().ID() == tObjectID)
+		if (l_pIItem && l_pIItem->object().ID() == tObjectID)
 			return(true);
 	}
 	return		(false);
@@ -1373,7 +1387,7 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 	for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it) 
 	{
 		PIItem	l_pIItem = *l_it;
-		if (l_pIItem->object().ID() == tObjectID)
+		if (l_pIItem && l_pIItem->object().ID() == tObjectID)
 			return	(l_pIItem);
 	}
 	return		(0);
