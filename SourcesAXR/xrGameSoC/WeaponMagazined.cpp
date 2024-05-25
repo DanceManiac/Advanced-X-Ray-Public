@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "hudmanager.h"
 #include "WeaponHUD.h"
 #include "WeaponMagazined.h"
@@ -16,6 +17,7 @@
 #include "level.h"
 #include "object_broker.h"
 #include "string_table.h"
+#include "script_callback_ex.h"
 #include "AdvancedXrayGameConstants.h"
 
 ENGINE_API  extern float psHUD_FOV;
@@ -533,7 +535,6 @@ void CWeaponMagazined::SetDefaults	()
 	CWeapon::SetDefaults		();
 }
 
-
 void CWeaponMagazined::OnShot		()
 {
 	if (ParentIsActor() && GameConstants::GetStopActorIfShoot())
@@ -559,6 +560,13 @@ void CWeaponMagazined::OnShot		()
 	//дым из ствола
 	ForceUpdateFireParticles	();
 	StartSmokeParticles			(get_LastFP(), vel);
+
+	if (ParentIsActor())
+	{
+		luabind::functor<void> funct;
+		if (ai().script_engine().functor("mfs_functions.on_actor_shoot", funct))
+			funct();
+	}
 }
 
 

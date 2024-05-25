@@ -18,6 +18,9 @@ public:
 
 	virtual float	GetWorldYaw		( )	{ return -yaw;	};
 	virtual float	GetWorldPitch	( )	{ return pitch; };
+
+			void	save			(NET_Packet& output_packet) override;
+			void	load			(IReader& input_packet) override;
 };
 
 #endif // __CAMERALOOK_H__

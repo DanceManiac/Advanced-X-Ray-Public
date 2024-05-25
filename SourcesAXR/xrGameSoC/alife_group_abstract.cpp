@@ -28,16 +28,19 @@ void CSE_ALifeGroupAbstract::switch_online	()
 	ALife::OBJECT_IT			I = m_tpMembers.begin(), B = I;
 	ALife::OBJECT_IT			E = m_tpMembers.end();
 	u32							N = (u32)(E - I);
-	for ( ; I != E; ++I) {
+	for ( ; I != E; ++I) 
+	{
 		CSE_ALifeDynamicObject	*J = ai().alife().objects().object(*I);
-		if (m_bCreateSpawnPositions) {
+		if (m_bCreateSpawnPositions)
+		{
 			J->o_Position		= object->o_Position;
 			J->m_tNodeID		= object->m_tNodeID;
 			CSE_ALifeMonsterAbstract	*l_tpALifeMonsterAbstract = smart_cast<CSE_ALifeMonsterAbstract*>(J);
 			if (l_tpALifeMonsterAbstract)
 				l_tpALifeMonsterAbstract->o_torso.yaw = angle_normalize_signed((I - B)/N*PI_MUL_2);
 		}
-		object->alife().add_online	(J, false);
+		if (!J->m_bOnline)
+			object->alife().add_online(J, false);
 	}
 	m_bCreateSpawnPositions		= false;
 	object->alife().scheduled().remove	(object);

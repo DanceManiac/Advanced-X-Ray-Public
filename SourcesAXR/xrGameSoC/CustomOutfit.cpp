@@ -173,7 +173,7 @@ void	CCustomOutfit::OnMoveToSlot		()
 
 void	CCustomOutfit::OnMoveToRuck		()
 {
-	if (m_pCurrentInventory)
+	if (m_pCurrentInventory && !Level().is_removing_objects())
 	{
 		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
 		if (pActor)

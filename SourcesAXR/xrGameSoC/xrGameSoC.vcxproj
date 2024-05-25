@@ -483,6 +483,7 @@
     <ClInclude Include="ActorSkills.h" />
     <ClInclude Include="AdvancedXrayGameConstants.h" />
     <ClInclude Include="CaptureBoneCallback.h" />
+    <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="DynamicHudGlass.h" />
     <ClInclude Include="embedded_editor\editor_render.h" />
     <ClInclude Include="embedded_editor\editor_render_ai_map.h" />
@@ -1941,6 +1942,7 @@
     <ClCompile Include="actor_script.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
     <ClCompile Include="CustomOutfit_script.cpp" />
+    <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="damage_manager.cpp" />
     <ClCompile Include="action_base_script.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>

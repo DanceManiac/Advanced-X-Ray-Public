@@ -72,6 +72,7 @@
 #include "DynamicHudGlass.h"
 #include "ActorNightVision.h"
 #include "AdvancedXrayGameConstants.h"
+#include "../xrEngine/Rain.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -213,6 +214,7 @@ CActor::CActor() : CEntityAlive()
 	m_bNightVisionOn		= false;
 
 	ActorSkills				= nullptr;
+	TimerManager			= nullptr;
 }
 
 
@@ -245,6 +247,7 @@ CActor::~CActor()
 
 	xr_delete				(m_night_vision);
 	xr_delete				(ActorSkills);
+	xr_delete				(TimerManager);
 }
 
 void CActor::reinit	()
@@ -266,6 +269,9 @@ void CActor::reinit	()
 
 	if (!ActorSkills && GameConstants::GetActorSkillsEnabled())
 		ActorSkills = xr_new<CActorSkills>();
+
+	if (!TimerManager)
+		TimerManager = xr_new<CTimerManager>();
 }
 
 void CActor::reload	(LPCSTR section)
@@ -987,6 +993,62 @@ void CActor::UpdateCL	()
 		else
 			xr_delete(m_sndShockEffector);
 	}
+
+	// Ascii hud rain drops support
+	{
+		float animSpeed = 1.f;
+		float buildSpeed = 2.f;
+		float dryingSpeed = 1.f;
+		float rainFactor = g_pGamePersistent->Environment().CurrentEnv->rain_density;
+		float rainHemi{};
+		CEffect_Rain* rain = g_pGamePersistent->pEnvironment->eff_Rain;
+
+		if (rainFactor > 0.f)
+		{
+			// get rain hemi
+			if (rain)
+			{
+				rainHemi = rain->GetRainHemi();
+			}
+			else
+			{
+				CObject* E = g_pGameLevel->CurrentViewEntity();
+				if (E && E->renderable_ROS())
+				{
+					float* hemi_cube = E->renderable_ROS()->get_luminocity_hemi_cube();
+					float hemi_val = _max(hemi_cube[0], hemi_cube[1]);
+					hemi_val = _max(hemi_val, hemi_cube[2]);
+					hemi_val = _max(hemi_val, hemi_cube[3]);
+					hemi_val = _max(hemi_val, hemi_cube[5]);
+
+					rainHemi = hemi_val;
+				}
+			}
+
+			if (rainHemi > 0.15f)
+			{
+				float rainSpeedFactor = (1.5f - rainFactor) * 10.f;
+				m_dropsAnimIncrementor += (animSpeed * Device.fTimeDelta) / rainSpeedFactor;
+				m_dropsIntensity += (buildSpeed * Device.fTimeDelta) / 100.f;
+			}
+			else
+			{
+				m_dropsIntensity -= (dryingSpeed * Device.fTimeDelta) / 100.f;
+			}
+		}
+		else
+		{
+			m_dropsIntensity -= (dryingSpeed * Device.fTimeDelta) / 100.f;
+		}
+
+		clamp(m_dropsIntensity, 0.f, 1.f);
+
+		if (fsimilar(m_dropsAnimIncrementor, FLT_MAX, 1.f))
+			m_dropsAnimIncrementor = 0.f;
+
+		ps_ssfx_hud_drops_1.x = m_dropsAnimIncrementor;
+		ps_ssfx_hud_drops_1.y = m_dropsIntensity;
+	}
 }
 
 float	NET_Jump = 0;
@@ -1252,6 +1314,15 @@ void CActor::shedule_Update	(u32 DT)
 
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();
+
+	if (TimerManager)
+	{
+		TimerManager->Update();
+
+		/*TimerManager->SetOnTimerStopCallback([](std::string name)	// Does not work after restarting the game
+		{
+		});*/
+	}
 };
 #include "debug_renderer.h"
 void CActor::renderable_Render	()
@@ -1706,6 +1777,17 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 	TIItemContainer::iterator itR	= inventory().m_ruck.begin();
 	TIItemContainer::iterator iteR	= inventory().m_ruck.end();
 
+	if (GameConstants::GetArtefactsDegradation() && xr_strcmp("from_ruck", GameConstants::GetArtefactDegradationMode()) == 0)
+	{
+		for (itR; iteR != itR; ++itR)
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(*itR);
+
+			if (artefact)
+				artefact->UpdateDegradation();
+		}
+	}
+
 	if (xr_strcmp("from_belt", GameConstants::GetAfInfluenceMode()) == 0 || xr_strcmp("from_ruck_only_rad", GameConstants::GetAfInfluenceMode()) == 0)
 	{
 		for (; it != ite; ++it)
@@ -1715,6 +1797,9 @@ float	CActor::HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type)
 			{
 				res_hit_power_k += artefact->m_ArtefactHitImmunities.AffectHit(1.0f, hit_type);
 				_af_count += 1.0f;
+
+				if (GameConstants::GetArtefactsDegradation() && (xr_strcmp("from_ruck", GameConstants::GetArtefactDegradationMode()) == 0))
+					artefact->UpdateDegradation();
 			}
 		}
 	}

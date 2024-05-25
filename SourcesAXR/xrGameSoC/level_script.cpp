@@ -32,6 +32,9 @@
 #include "alife_simulator.h"
 #include "alife_time_manager.h"
 #include "game_sv_single.h"
+#include "../xrEngine/Rain.h"
+
+#include "CustomTimer.h"
 
 using namespace luabind;
 
@@ -192,6 +195,37 @@ float cover_in_direction(u32 level_vertex_id, const Fvector &direction)
 float rain_factor()
 {
 	return			(g_pGamePersistent->Environment().CurrentEnv->rain_density);
+}
+
+float rain_wetness()
+{
+	return (g_pGamePersistent->Environment().wetness_accum);
+}
+
+float rain_hemi()
+{
+	CEffect_Rain* rain = g_pGamePersistent->pEnvironment->eff_Rain;
+
+	if (rain)
+	{
+		return rain->GetRainHemi();
+	}
+	else
+	{
+		CObject* E = g_pGameLevel->CurrentViewEntity();
+		if (E && E->renderable_ROS())
+		{
+			float* hemi_cube = E->renderable_ROS()->get_luminocity_hemi_cube();
+			float hemi_val = _max(hemi_cube[0], hemi_cube[1]);
+			hemi_val = _max(hemi_val, hemi_cube[2]);
+			hemi_val = _max(hemi_val, hemi_cube[3]);
+			hemi_val = _max(hemi_val, hemi_cube[5]);
+
+			return hemi_val;
+		}
+
+		return 0.f;
+	}
 }
 
 u32	vertex_in_direction(u32 level_vertex_id, Fvector direction, float max_distance)
@@ -788,6 +822,133 @@ void g_send(NET_Packet& P, bool bReliable = false, bool bSequential = true, bool
 	Level().Send(P);
 }
 
+void create_custom_timer(LPCSTR name, int start_value, int mode = 0)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->CreateTimer(name, start_value, mode);
+}
+
+void start_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->StartTimer(name);
+}
+
+void stop_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->StopTimer(name);
+}
+
+void reset_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->ResetTimer(name);
+}
+
+void delete_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return;
+	}
+
+	Actor()->TimerManager->DeleteTimer(name);
+}
+
+int get_custom_timer(LPCSTR name)
+{
+	if (!Actor()->TimerManager)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CUSTOM TIMER : TimerManager is NULL!");
+		return 0;
+	}
+
+	Actor()->TimerManager->GetTimerValue(name);
+}
+
+u32 nearest_vertex_id(const Fvector& vec)
+{
+	return ai().level_graph().vertex_id(vec);
+}
+
+bool valid_vertex_id(u32 level_vertex_id)
+{
+	return ai().level_graph().valid_vertex_id(level_vertex_id);
+}
+
+u32 vertex_count()
+{
+	return ai().level_graph().header().vertex_count();
+}
+
+std::string get_moon_phase()
+{
+	return Level().GetMoonPhase().c_str();
+}
+
+LPCSTR get_past_wdesc()
+{
+	return			(g_pGamePersistent->Environment().Current[0] ? g_pGamePersistent->Environment().Current[0]->m_identifier.c_str() : "null");
+}
+
+LPCSTR get_next_wdesc()
+{
+	return			(g_pGamePersistent->Environment().Current[1] ? g_pGamePersistent->Environment().Current[1]->m_identifier.c_str() : "null");
+}
+
+float get_past_wdesc_execution_time()
+{
+	return			(g_pGamePersistent->Environment().Current[0] ? g_pGamePersistent->Environment().Current[0]->exec_time : -1.f);
+}
+
+float get_next_wdesc_execution_time()
+{
+	return			(g_pGamePersistent->Environment().Current[1] ? g_pGamePersistent->Environment().Current[1]->exec_time : -1.f);
+}
+
+float get_weather_game_time()
+{
+	return			(&g_pGamePersistent->Environment() ? g_pGamePersistent->Environment().GetGameTime() : -1.f);
+}
+
+void set_past_wdesc(LPCSTR WeatherSection)
+{
+	if (&g_pGamePersistent->Environment())
+	{
+		g_pGamePersistent->Environment().SetEnvDesc(WeatherSection, g_pGamePersistent->Environment().Current[0]);
+	}
+}
+
+void set_next_wdesc(LPCSTR WeatherSection)
+{
+	if (&g_pGamePersistent->Environment())
+	{
+		g_pGamePersistent->Environment().SetEnvDesc(WeatherSection, g_pGamePersistent->Environment().Current[1]);
+	}
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -830,11 +991,20 @@ void CLevel::script_register(lua_State *L)
 
 		def("get_weather",						get_weather),
 		def("set_weather",						set_weather),
+		def("set_past_weather",					set_past_wdesc),
+		def("set_next_weather",					set_next_wdesc),
+		def("set_weather_fx",					set_weather_fx),
+		def("get_weather_game_time",			get_weather_game_time),
+		def("get_past_wdesc_execution_time",	get_past_wdesc_execution_time),
+		def("get_next_wdesc_execution_time",	get_next_wdesc_execution_time),
+		def("get_past_weather",					get_past_wdesc),
+		def("get_next_weather",					get_next_wdesc),
 		def("set_weather_fx",					set_weather_fx),
 		def("start_weather_fx_from_time",		start_weather_fx_from_time),
 		def("is_wfx_playing",					is_wfx_playing),
 		def("get_wfx_time",						get_wfx_time),
 		def("stop_weather_fx",					stop_weather_fx),
+		def("get_moon_phase",					get_moon_phase),
 
 		def("environment",						environment),
 		
@@ -860,6 +1030,9 @@ void CLevel::script_register(lua_State *L)
 		def("patrol_path_remove",				&patrol_path_remove ),
 
 		def("client_spawn_manager",				get_client_spawn_manager),
+
+		def("rain_wetness",						rain_wetness),
+		def("rain_hemi",						rain_hemi),
 
 		def("map_add_object_spot_ser",			map_add_object_spot_ser),
 		def("map_add_object_spot",				map_add_object_spot),
@@ -902,8 +1075,18 @@ void CLevel::script_register(lua_State *L)
 
 		def("add_complex_effector",				&add_complex_effector),
 		def("remove_complex_effector",			&remove_complex_effector),
+
+		def("nearest_vertex_id",				&nearest_vertex_id),
+		def("valid_vertex_id",					valid_vertex_id),
+		def("vertex_count",						vertex_count),
 		
-		def("game_id",							&GameID)
+		def("game_id",							&GameID),
+		def("create_custom_timer",				&create_custom_timer),
+		def("start_custom_timer",				&start_custom_timer),
+		def("stop_custom_timer",				&stop_custom_timer),
+		def("reset_custom_timer",				&reset_custom_timer),
+		def("delete_custom_timer",				&delete_custom_timer),
+		def("get_custom_timer",					&get_custom_timer)
 	],
 	
 	module(L,"actor_stats")

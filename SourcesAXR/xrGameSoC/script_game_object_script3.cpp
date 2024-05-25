@@ -132,6 +132,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("attachable_item_enabled",		&CScriptGameObject::attachable_item_enabled)
 		.def("weapon_strapped",				&CScriptGameObject::weapon_strapped)
 		.def("weapon_unstrapped",			&CScriptGameObject::weapon_unstrapped)
+		.def("is_weapon_shooting",			&CScriptGameObject::weapon_shooting)
 
 		//////////////////////////////////////////////////////////////////////////
 		//inventory owner
@@ -258,6 +259,7 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("is_inv_box_empty",			&CScriptGameObject::IsInvBoxEmpty)
 		// monster jumper
 		.def("jump",						&CScriptGameObject::jump)
+		.def("reload_damage_and_animations",&CScriptGameObject::ReloadDamageAndAnimations)
 
 		.def("make_object_visible_somewhen",&CScriptGameObject::make_object_visible_somewhen)
 
@@ -405,5 +407,37 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("get_actor_runback_coef",			&CScriptGameObject::GetActorRunBackCoef)
 		.def("set_actor_runback_coef",			&CScriptGameObject::SetActorRunBackCoef)
 		//-AVO
+
+		.def("set_artefact_charge_level",		&CScriptGameObject::SetArtefactChargeLevel)
+		.def("get_artefact_charge_level",		&CScriptGameObject::GetArtefactChargeLevel)
+		.def("set_artefact_rank",				&CScriptGameObject::SetArtefactRank)
+		.def("get_artefact_rank",				&CScriptGameObject::GetArtefactRank)
+
+		.def("is_entity_alive",					&CScriptGameObject::IsEntityAlive)
+		.def("is_inventory_item",				&CScriptGameObject::IsInventoryItem)
+		.def("is_inventory_owner",				&CScriptGameObject::IsInventoryOwner)
+		.def("is_actor",						&CScriptGameObject::IsActor)
+		.def("is_custom_monster",				&CScriptGameObject::IsCustomMonster)
+		.def("is_weapon",						&CScriptGameObject::IsWeapon)
+		.def("is_outfit",						&CScriptGameObject::IsCustomOutfit)
+		.def("is_scope",						&CScriptGameObject::IsScope)
+		.def("is_silencer",						&CScriptGameObject::IsSilencer)
+		.def("is_grenade_launcher",				&CScriptGameObject::IsGrenadeLauncher)
+		.def("is_weapon_magazined",				&CScriptGameObject::IsWeaponMagazined)
+		.def("is_space_restrictor",				&CScriptGameObject::IsSpaceRestrictor)
+		.def("is_stalker",						&CScriptGameObject::IsStalker)
+		.def("is_anomaly",						&CScriptGameObject::IsAnomaly)
+		.def("is_monster",						&CScriptGameObject::IsMonster)
+		.def("is_trader",						&CScriptGameObject::IsTrader)
+		.def("is_hud_item",						&CScriptGameObject::IsHudItem)
+		.def("is_artefact",						&CScriptGameObject::IsArtefact)
+		.def("is_ammo",							&CScriptGameObject::IsAmmo)
+		.def("is_weapon_gl",					&CScriptGameObject::IsWeaponGL)
+		.def("is_inventory_box",				&CScriptGameObject::IsInventoryBox)
+		.def("is_food",							&CScriptGameObject::IsEatableItem)
+		.def("is_detector",						&CScriptGameObject::IsDetector)
+		//.def("is_anomaly_detector",				&CScriptGameObject::IsDetectorAnomaly)
+		.def("is_torch",						&CScriptGameObject::IsTorch)
+		//.def("is_antigas_filter",				&CScriptGameObject::IsAntigasFilter)
 			;
 }

@@ -16,8 +16,13 @@
 #include "level_bullet_manager.h"
 #include "../xrEngine/IGame_Persistent.h"
 
+#include "pch_script.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+
 #define FLAME_TIME 0.05f
 
+extern ENGINE_API Fvector4 ps_ssfx_int_grass_params_2;
 
 float _nrand(float sigma)
 {
@@ -85,7 +90,6 @@ void CWeapon::FireTrace		(const Fvector& P, const Fvector& D)
 		Light_Start			();
 
 	// Interactive Grass FX
-	ENGINE_API extern Fvector4 ps_ssfx_int_grass_params_2;
 	Fvector ShotPos = Fvector().mad(P, D, 1.5f);
 	g_pGamePersistent->GrassBendersAddShot(cast_game_object()->ID(), ShotPos, D, 3.0f, 20.0f, ps_ssfx_int_grass_params_2.z, ps_ssfx_int_grass_params_2.w);
 
@@ -124,6 +128,19 @@ void CWeapon::StopShooting		()
 
 	bWorking = false;
 	//if(IsWorking()) FireEnd();
+}
+
+void CWeapon::FireStart()
+{
+	if (H_Parent())
+	{
+		CGameObject* game_object = smart_cast<CGameObject*>(H_Parent());
+
+		if (game_object)
+			game_object->callback(GameObject::eActionTypeWeaponFire)(game_object->lua_game_object(), lua_game_object());
+	}
+
+	CShootingObject::FireStart();
 }
 
 void CWeapon::FireEnd				() 

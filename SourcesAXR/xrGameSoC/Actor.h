@@ -18,6 +18,7 @@
 #include "step_manager.h"
 #include "xr_level_controller.h"
 #include "ActorSkills.h"
+#include "CustomTimer.h"
 
 using namespace ACTOR_DEFS;
 
@@ -460,6 +461,9 @@ public:
 
 	bool					is_jump					();		
 
+	float					m_dropsIntensity{};
+	float					m_dropsAnimIncrementor{};
+
 	u32						mstate_wishful;
 	u32						mstate_old;
 	u32						mstate_real;
@@ -792,6 +796,7 @@ public:
 	// Real Wolf. End. 14.10.2014
 
 	CActorSkills*				ActorSkills;
+	CTimerManager*				TimerManager;
 
 protected:
 	bool						m_bNightVisionOn;

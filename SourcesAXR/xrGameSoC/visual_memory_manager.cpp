@@ -535,18 +535,22 @@ struct CVisibleObjectPredicateEx {
 	bool		operator()			(const MemorySpace::CVisibleObject &visible_object) const
 	{
 		if (!m_object)
-			return			(!visible_object.m_object);
+			return false;
+
 		if (!visible_object.m_object)
-			return			(false);
+			return false;
+
 		return				(m_object->ID() == visible_object.m_object->ID());
 	}
 
 	bool		operator()			(const MemorySpace::CNotYetVisibleObject &not_yet_visible_object) const
 	{
 		if (!m_object)
-			return			(!not_yet_visible_object.m_object);
+			return false;
+
 		if (!not_yet_visible_object.m_object)
-			return			(false);
+			return false;
+
 		return				(m_object->ID() == not_yet_visible_object.m_object->ID());
 	}
 };

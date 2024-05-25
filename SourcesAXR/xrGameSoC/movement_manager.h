@@ -74,9 +74,6 @@ class CLevelPathBuilder;
 class CDetailPathBuilder;
 
 class CMovementManager {
-public:
-	u8		grassbender_id;
-	u32		grassbender_frame;
 private:
 	friend class CLevelPathBuilder;
 	friend class CDetailPathBuilder;
@@ -257,6 +254,9 @@ public:
 
 public:
 	virtual	void					on_restrictions_change		();
+
+			u8						grassbender_id{};
+			u32						grassbender_frame;
 };
 
 #include "movement_manager_inline.h"

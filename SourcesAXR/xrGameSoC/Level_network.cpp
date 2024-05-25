@@ -23,6 +23,8 @@ extern bool	g_b_ClearGameCaptions;
 
 void CLevel::remove_objects	()
 {
+	m_is_removing_objects = true;
+
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - Start");
 	BOOL						b_stored = psDeviceFlags.test(rsDisableObjectsAsCrows);
 
@@ -90,6 +92,8 @@ void CLevel::remove_objects	()
 //.	xr_delete									(m_seniority_hierarchy_holder);
 //.	m_seniority_hierarchy_holder				= xr_new<CSeniorityHierarchyHolder>();
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - End");
+
+	m_is_removing_objects = false;
 }
 
 #ifdef DEBUG
@@ -124,7 +128,7 @@ void CLevel::net_Stop		()
 
 void CLevel::ClientSend()
 {
-	if (GameID() == GAME_SINGLE || OnClient())
+	if (GameID() != GAME_SINGLE && OnClient())
 	{
 		if ( !net_HasBandwidth() ) return;
 	};

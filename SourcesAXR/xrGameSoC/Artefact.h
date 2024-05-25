@@ -122,8 +122,10 @@ public:
 	float							m_fChargeLevel;
 	float							m_fCurrentChargeLevel;
 	float							m_fDegradationSpeed;
+	void							SetChargeLevel(float charge_level);
 	float							GetCurrentChargeLevel() const;
 	int								GetCurrentAfRank() const;
+	void							SetRank(int rank);
 
 protected:
 	MotionSVec						m_anim_idle;

@@ -148,6 +148,9 @@ public:
 
 	CObject*					CurrentControlEntity	( void ) const		{ return pCurrentControlEntity; }
 	void						SetControlEntity		( CObject* O  )		{ pCurrentControlEntity=O; }
+
+	std::string					GetMoonPhase			();
+	u32							GetTimeHours			();
 private:
 	
 	void						make_NetCorrectionPrediction	();
@@ -179,6 +182,7 @@ public:
 	xr_deque<CSE_Abstract*>		game_spawn_queue;
 	xrServer*					Server;
 	GlobalFeelTouch				m_feel_deny;
+	std::vector<std::uint16_t>	m_just_destroyed;
 
 
 #ifdef BATTLEYE
@@ -356,10 +360,13 @@ protected:
 public:
 	virtual	u32				GetRealPing					() { return m_dwRealPing; };
 
+private:
+			bool			m_is_removing_objects;
 public:
+			bool			is_removing_objects			() { return m_is_removing_objects; }
 			void			remove_objects				();
 	virtual void			OnSessionTerminate			(LPCSTR reason);
-			void			OnDestroyObject				(std::uint16_t id) {}
+			void			OnDestroyObject				(std::uint16_t id) override;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

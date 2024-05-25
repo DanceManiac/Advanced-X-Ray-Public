@@ -733,6 +733,21 @@ bool CScriptGameObject::weapon_unstrapped	() const
 	return			(stalker->weapon_unstrapped());
 }
 
+bool CScriptGameObject::weapon_shooting() const
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_shooting!");
+		return false;
+	}
+
+	bool const result = stalker->weapon_shooting();
+
+	return result;
+}
+
 bool CScriptGameObject::path_completed	() const
 {
 	CCustomMonster	*monster = smart_cast<CCustomMonster*>(&object());
@@ -790,6 +805,18 @@ void CScriptGameObject::jump(const Fvector &position, float factor)
 	monster->jump(position, factor);
 }
 
+void CScriptGameObject::ReloadDamageAndAnimations()
+{
+	CBaseMonster* monster = smart_cast<CBaseMonster*>(&object());
+
+	if (!monster)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot process reload damage and animations for not a monster!");
+		return;
+	}
+
+	monster->ReloadDamageAndAnimations();
+}
 
 void CScriptGameObject::make_object_visible_somewhen	(CScriptGameObject *object)
 {
@@ -1260,3 +1287,55 @@ void CScriptGameObject::RemoveDanger(const CDangerObject& dobject)
 }
 
 //-Alundaio
+
+void CScriptGameObject::SetArtefactChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CArtefact* eArtefact = IItm->cast_artefact();
+	if (!eArtefact)
+		return;
+
+	eArtefact->SetChargeLevel(charge_level);
+}
+
+float CScriptGameObject::GetArtefactChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CArtefact* eItm = IItm->cast_artefact();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetCurrentChargeLevel();
+}
+
+void CScriptGameObject::SetArtefactRank(int rank)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CArtefact* eArtefact = IItm->cast_artefact();
+	if (!eArtefact)
+		return;
+
+	eArtefact->SetRank(rank);
+}
+
+int CScriptGameObject::GetArtefactRank() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CArtefact* eItm = IItm->cast_artefact();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetCurrentAfRank();
+}

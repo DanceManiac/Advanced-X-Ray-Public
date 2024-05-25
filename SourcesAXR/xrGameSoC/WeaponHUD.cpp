@@ -25,7 +25,13 @@ BOOL weapon_hud_value::load(const shared_str& section, CHudItem* owner)
 
 	// Visual
 	LPCSTR visual_name			= pSettings->r_string(section, "visual");
+
+	::Render->hud_loading		= true;
+
 	m_animations				= smart_cast<IKinematicsAnimated*>(::Render->model_Create(visual_name));
+
+	::Render->hud_loading		= false;
+
 	IKinematics* pK = smart_cast<IKinematics*>(m_animations);
 	// fire bone	
 	if(smart_cast<CWeapon*>(owner)){

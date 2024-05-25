@@ -574,4 +574,8 @@ void CBaseMonster::OnEvent(NET_Packet& P, u16 type)
 	}
 }
 
-
+void CBaseMonster::ReloadDamageAndAnimations()
+{
+	CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
+	control().animation().restart();
+}

@@ -7,6 +7,10 @@
 #include "actorEffector.h"
 #include "EffectorShot.h"
 
+#include "pch_script.h"
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+
 const Fvector&	CWeaponStatMgun::get_CurrentFirePoint()
 {
 	return m_fire_pos;
@@ -19,6 +23,9 @@ const Fmatrix&	CWeaponStatMgun::get_ParticlesXFORM	()
 
 void CWeaponStatMgun::FireStart()
 {
+	if (Owner())
+		Owner()->callback(GameObject::eActionTypeWeaponFire)(Owner()->lua_game_object(), lua_game_object());
+
 	m_dAngle.set(0.0f,0.0f);
 	inheritedShooting::FireStart();
 }

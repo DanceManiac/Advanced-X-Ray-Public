@@ -6620,6 +6620,7 @@
     <ClInclude Include="ui\UIDoubleProgressBar.h">
       <Filter>UI\UIWindows\ProgressBar</Filter>
     </ClInclude>
+    <ClInclude Include="CustomTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9823,6 +9824,7 @@
     <ClCompile Include="ui\UIDoubleProgressBar.cpp">
       <Filter>UI\UIWindows\ProgressBar</Filter>
     </ClCompile>
+    <ClCompile Include="CustomTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

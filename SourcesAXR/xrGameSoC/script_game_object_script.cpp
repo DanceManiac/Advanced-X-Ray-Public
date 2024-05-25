@@ -80,6 +80,7 @@ void CScriptGameObject::script_register(lua_State *L)
 				value("action_sound",				int(GameObject::eActionTypeSound)),
 				value("action_particle",			int(GameObject::eActionTypeParticle)),
 				value("action_object",				int(GameObject::eActionTypeObject)),
+				value("action_wpn_fire",			int(GameObject::eActionTypeWeaponFire)),
 				value("actor_sleep",				int(GameObject::eActorSleep)),
 				value("helicopter_on_point",		int(GameObject::eHelicopterOnPoint)),
 				value("helicopter_on_hit",			int(GameObject::eHelicopterOnHit)),

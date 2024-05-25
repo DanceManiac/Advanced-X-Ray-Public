@@ -179,3 +179,27 @@ function load(obj, packet)
 		tt.resuply_time = cur_tm + a
 	end
 end
+
+----------- NOT TO DELETE!!!!!!!!! called from engine
+function get_buy_discount(npc_id)
+	local str = utils.cfg_get_string(trade_manager[npc_id].config, "trader", "discounts", nil, false, "", "")
+	if(str=="") then
+		return 1
+	end
+
+	local sect = xr_logic.pick_section_from_condlist(db.actor, nil, xr_logic.parse_condlist(nil, "trade_manager", "discounts", str))
+	str = utils.cfg_get_number(trade_manager[npc_id].config, sect, "buy", nil, false, 1)
+		return str
+end
+----------- NOT TO DELETE!!!!!!!!! called from engine
+function get_sell_discount(npc_id)
+	local str = utils.cfg_get_string(trade_manager[npc_id].config, "trader", "discounts", nil, false, "", "")
+	if(str=="") then
+		return 1
+	end
+
+	local sect = xr_logic.pick_section_from_condlist(db.actor, nil, xr_logic.parse_condlist(npc, "trade_manager", "discounts", str))
+	str = utils.cfg_get_number(trade_manager[npc_id].config, sect, "sell", nil, false, 1)
+
+	return str
+end
