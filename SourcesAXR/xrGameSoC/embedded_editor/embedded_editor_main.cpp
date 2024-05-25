@@ -18,7 +18,7 @@
 
 bool bShowWindow = true;
 bool show_test_window = true;
-//bool show_weather_window = false;
+bool show_weather_window = false;
 //bool show_hud_editor = false;      // Требует адаптации
 bool show_position_informer = false;
 bool show_spawn_menu = false;
@@ -60,8 +60,8 @@ void ShowMain()
 		show_test_window ^= 1;
 /*	if (ImGui::Button("Test Node Editor"))
 		show_node_editor ^= 1;*/
-	//if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_weather").c_str()).c_str()))
-	//	show_weather_window ^= 1;
+	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_weather").c_str()).c_str()))
+		show_weather_window ^= 1;
     if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_pos_informer").c_str()).c_str()))
         show_position_informer = !show_position_informer;
 	//if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_hud").c_str()).c_str()))    // Требует адаптации
@@ -103,8 +103,8 @@ void ShowEditor()
         }
         ImGui::End();
     }*/
-    //if (show_weather_window)
-    //    ShowWeatherEditor(show_weather_window);
+    if (show_weather_window)
+        ShowWeatherEditor(show_weather_window);
     if (show_position_informer)
         ShowPositionInformer(show_position_informer);
 	//if (show_hud_editor)   // Требует адаптации

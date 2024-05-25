@@ -306,6 +306,10 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::Combo(toUtf8(CStringTable().translate("st_weather_editor_wth_cycle").c_str()).c_str(), &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
 		env.SetWeather(cycles[iCycle], true);
 	int sel = -1;
+
+	if (!cur)
+		return;
+
 	for (int i = 0; i != env.CurrentWeather->size(); i++)
 		if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
 			sel = i;
@@ -316,9 +320,9 @@ void ShowWeatherEditor(bool& show)
 		Level().SetEnvironmentGameTimeFactor(time, tf);
 		env.SetWeather(cycles[iCycle], true);
 	}
-	static bool b = getScriptWeather();
-	if (ImGui::Checkbox(toUtf8(CStringTable().translate("st_weather_editor_script_wth").c_str()).c_str(), &b))
-		setScriptWeather(b);
+	//static bool b = getScriptWeather();
+	//if (ImGui::Checkbox(toUtf8(CStringTable().translate("st_weather_editor_script_wth").c_str()).c_str(), &b))
+	//	setScriptWeather(b);
 	ImGui::Separator();
 	bool changed = false;
 	sel = -1;
