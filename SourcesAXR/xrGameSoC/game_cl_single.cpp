@@ -47,7 +47,7 @@ void game_cl_Single::OnDifficultyChanged()
 void game_cl_Single::SetEnvironmentGameTimeFactor(ALife::_TIME_ID GameTime, const float fTimeFactor)
 {
 	if (ai().get_alife() && ai().alife().initialized())
-		Level().Server->game->SetGameTimeFactor(GameTime, fTimeFactor);
+		Level().SetGameTimeFactor(GameTime, fTimeFactor);
 	else
 		inherited::SetEnvironmentGameTimeFactor(fTimeFactor);
 }
@@ -55,7 +55,7 @@ void game_cl_Single::SetEnvironmentGameTimeFactor(ALife::_TIME_ID GameTime, cons
 void game_cl_Single::SetEnvironmentGameTimeFactor(const float fTimeFactor)
 {
 	if (ai().get_alife() && ai().alife().initialized())
-		Level().Server->game->SetGameTimeFactor(fTimeFactor);
+		Level().SetGameTimeFactor(fTimeFactor);
 	else
 		inherited::SetEnvironmentGameTimeFactor(fTimeFactor);
 }

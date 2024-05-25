@@ -10,7 +10,7 @@
 #include "../GamePersistent.h"
 #include "../Level.h"
 #include "../ai_space.h"
-#include "../xrServerEntitiesCS/script_engine.h"
+#include "script_engine.h"
 #include <imgui.h>
 #include "imgui_internal.h"
 
