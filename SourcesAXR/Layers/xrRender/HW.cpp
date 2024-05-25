@@ -565,13 +565,6 @@ BOOL	CHW::support	(D3DFORMAT fmt, DWORD type, DWORD usage)
 
 void	CHW::updateWindowProps	(HWND m_hWnd)
 {
-//	BOOL	bWindowed				= strstr(Core.Params,"-dedicated") ? TRUE : !psDeviceFlags.is	(rsFullscreen);
-//#ifndef DEDICATED_SERVER
-//	BOOL	bWindowed				= !psDeviceFlags.is	(rsFullscreen);
-//#else
-//	BOOL	bWindowed				= TRUE;
-//#endif
-
 	BOOL	bWindowed				= TRUE;
 #ifndef _EDITOR
 	if (!g_dedicated_server)
@@ -580,11 +573,16 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 
 	u32		dwWindowStyle			= 0;
 	// Set window properties depending on what mode were in.
-	if (bWindowed)		{
-		if (m_move_window) {
-            dwWindowStyle = WS_BORDER | WS_VISIBLE;
-            if (!strstr(Core.Params, "-no_dialog_header"))
-                dwWindowStyle |= WS_DLGFRAME | WS_SYSMENU | WS_MINIMIZEBOX;
+	if (bWindowed)
+	{
+		if (m_move_window)
+		{
+			bool bBordersMode = strstr(Core.Params, "-draw_borders");
+			dwWindowStyle = WS_VISIBLE;
+			
+			if (bBordersMode)
+				dwWindowStyle |= WS_BORDER | WS_DLGFRAME | WS_SYSMENU | WS_MINIMIZEBOX;
+
             SetWindowLong(m_hWnd, GWL_STYLE, dwWindowStyle);
 			// When moving from fullscreen to windowed mode, it is important to
 			// adjust the window size after recreating the device rather than
@@ -595,26 +593,41 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 			// changed to 1024x768, because windows cannot be larger than the
 			// desktop.
 
-			RECT			m_rcWindowBounds;
-			RECT				DesktopRect;
-				
-			GetClientRect		(GetDesktopWindow(), &DesktopRect);
+			RECT m_rcWindowBounds;
+			float fYOffset = 0.f;
+			bool bCenter = false;
 
-			SetRect(			&m_rcWindowBounds, 
-								(DesktopRect.right-DevPP.BackBufferWidth)/2, 
-								(DesktopRect.bottom-DevPP.BackBufferHeight)/2, 
-								(DesktopRect.right+DevPP.BackBufferWidth)/2, 
-								(DesktopRect.bottom+DevPP.BackBufferHeight)/2);	
+			if (strstr(Core.Params, "-center_screen"))
+				bCenter = true;
+				
+#ifndef _EDITOR
+			if (g_dedicated_server)
+				bCenter = true;
+#endif
+
+			if (bCenter)
+			{
+				RECT DesktopRect;
+
+				GetClientRect(GetDesktopWindow(), &DesktopRect);
+
+				SetRect(&m_rcWindowBounds, (DesktopRect.right - DevPP.BackBufferWidth) / 2,
+					(DesktopRect.bottom - DevPP.BackBufferHeight) / 2, (DesktopRect.right + DevPP.BackBufferWidth) / 2,
+					(DesktopRect.bottom + DevPP.BackBufferHeight) / 2);
+			}
+			else
+			{
+				if (bBordersMode)
+					fYOffset = GetSystemMetrics(SM_CYCAPTION); // size of the window title bar
+				SetRect(&m_rcWindowBounds, 0, 0, DevPP.BackBufferWidth, DevPP.BackBufferHeight);
+			};
 
 			AdjustWindowRect		(	&m_rcWindowBounds, dwWindowStyle, FALSE );
 
-			SetWindowPos			(	m_hWnd, 
-										HWND_NOTOPMOST,	
-                                        m_rcWindowBounds.left,
-                                        m_rcWindowBounds.top,
-										( m_rcWindowBounds.right - m_rcWindowBounds.left ),
-										( m_rcWindowBounds.bottom - m_rcWindowBounds.top ),
-										SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
+			SetWindowPos(m_hWnd, HWND_NOTOPMOST, m_rcWindowBounds.left, m_rcWindowBounds.top + fYOffset,
+						( m_rcWindowBounds.right - m_rcWindowBounds.left ),
+						( m_rcWindowBounds.bottom - m_rcWindowBounds.top ),
+						SWP_SHOWWINDOW|SWP_NOCOPYBITS|SWP_DRAWFRAME );
 		}
 	}
 	else
