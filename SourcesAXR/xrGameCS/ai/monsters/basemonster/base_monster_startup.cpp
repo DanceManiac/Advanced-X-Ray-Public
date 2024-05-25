@@ -136,6 +136,8 @@ void CBaseMonster::Load(LPCSTR section)
 	light_bone = READ_IF_EXISTS(pSettings, r_string, section, "light_bone", "bip01_head");
 	particles_bone = READ_IF_EXISTS(pSettings, r_string, section, "particles_bone", "bip01_head");
 
+	m_bDisableDieLights = READ_IF_EXISTS(pSettings, r_bool, section, "disable_lights_on_die", true);
+
 	m_bLightsEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "lights_enabled", false);
 	if (m_bLightsEnabled)
 	{

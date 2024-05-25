@@ -80,6 +80,7 @@ const float		respawn_auto	= 7.f;
 static float IReceived = 0;
 static float ICoincidenced = 0;
 
+u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);
 
 //skeleton
 
@@ -804,6 +805,15 @@ void CActor::Die(CObject* who)
 
 	if(IsGameTypeSingle())
 	{
+		if (death_camera_mode == 1)
+			cam_Set(eacFreeLook);
+		else if (death_camera_mode == 2)
+			cam_Set(eacLookAt);
+		else if (death_camera_mode == 3)
+			cam_Set(eacFirstEye);
+
+		HUD().GetUI()->UIGame()->HideShownDialogs();
+
 		start_tutorial		("game_over");
 	}
 	xr_delete				(m_sndShockEffector);
@@ -870,7 +880,7 @@ void CActor::g_Physics(Fvector& _accel, float jump, float dt)
 		}
 	}
 }
-float g_fov = 67.5f;
+float g_fov = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "Camera_FOV", 67.5f);
 
 float CActor::currentFOV()
 {
@@ -1888,6 +1898,18 @@ CCustomOutfit* CActor::GetOutfit() const
 
 void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 {
+	CWeapon* wpn1{}, * wpn2{};
+
+	if (inventory().ItemFromSlot(PISTOL_SLOT))
+		wpn1 = smart_cast<CWeapon*>(inventory().ItemFromSlot(PISTOL_SLOT));
+	if (inventory().ItemFromSlot(RIFLE_SLOT))
+		wpn2 = smart_cast<CWeapon*>(inventory().ItemFromSlot(RIFLE_SLOT));
+
+	if (wpn1 && wpn1->IsZoomed())
+		return;
+	if (wpn2 && wpn2->IsZoomed())
+		return;
+
 	m_bNightVisionOn = vision_on;
 
 	if (!m_night_vision)

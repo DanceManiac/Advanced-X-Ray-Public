@@ -17,6 +17,9 @@
 #include "game_base_space.h"
 #include "clsid_game.h"
 
+#include "ai/stalker/ai_stalker.h"
+#include "weaponmagazined.h"
+
 using namespace InventoryUtilities;
 
 // what to block
@@ -128,6 +131,18 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	
 	pIItem->m_pCurrentInventory			= this;
 	pIItem->SetDropManual				(FALSE);
+
+	u16 actor_id = Level().CurrentEntity()->ID();
+
+	if (GetOwner()->object_id() == actor_id && this->m_pOwner->object_id() == actor_id)		//actors inventory
+	{
+		CWeaponMagazined* pWeapon = smart_cast<CWeaponMagazined*>(pIItem);
+		if (pWeapon && pWeapon->strapped_mode())
+		{
+			pWeapon->strapped_mode(false);
+			Ruck(pWeapon);
+		}
+	}
 
 	m_all.push_back						(pIItem);
 
@@ -1050,14 +1065,26 @@ void  CInventory::AddAvailableItems(TIItemContainer& items_container, bool for_t
 		}
 	}
 	
-	if(m_bSlotsUseful)
+	CAI_Stalker* pOwner = smart_cast<CAI_Stalker*>(m_pOwner);
+	if (pOwner && !pOwner->g_Alive())
 	{
 		TISlotArr::const_iterator slot_it			= m_slots.begin();
 		TISlotArr::const_iterator slot_it_e			= m_slots.end();
 		for(;slot_it!=slot_it_e;++slot_it)
 		{
 			const CInventorySlot& S = *slot_it;
-			if(S.m_pIItem && (!for_trade || S.m_pIItem->CanTrade())  )
+			if (S.m_pIItem && (S.m_pIItem->GetSlot() == RIFLE_SLOT || S.m_pIItem->GetSlot() == GRENADE_SLOT))
+				items_container.push_back(S.m_pIItem);
+		}
+
+	}
+	else if (m_bSlotsUseful) {
+		TISlotArr::const_iterator slot_it = m_slots.begin();
+		TISlotArr::const_iterator slot_it_e = m_slots.end();
+		for (; slot_it != slot_it_e; ++slot_it)
+		{
+			const CInventorySlot& S = *slot_it;
+			if (S.m_pIItem && (!for_trade || S.m_pIItem->CanTrade()))
 			{
 				if(!S.m_bPersistent || S.m_pIItem->GetSlot()==GRENADE_SLOT )
 					items_container.push_back(S.m_pIItem);

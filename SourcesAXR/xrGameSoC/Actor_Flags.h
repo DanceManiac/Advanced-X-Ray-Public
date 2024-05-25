@@ -11,6 +11,7 @@ enum{
 		AF_COLLISION		=(1<<10),
 		AF_RIGHT_SHOULDER	=(1<<11),
 		AF_CROUCH_TOGGLE	=(1<<12),
+		AF_FP_DEATH			=(1<<13),
 };
 
 extern Flags32 psActorFlags;

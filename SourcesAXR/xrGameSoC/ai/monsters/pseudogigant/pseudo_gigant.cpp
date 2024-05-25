@@ -10,6 +10,7 @@
 #include "../control_movement_base.h"
 #include "../ai_monster_effector.h"
 #include "../../../../xrEngine/CameraBase.h"
+#include "../../../../xrEngine/IGame_Persistent.h"
 #include "../../../xr_level_controller.h"
 #include "../../../detail_path_manager_space.h"
 #include "../../../detail_path_manager.h"
@@ -261,6 +262,10 @@ void CPseudoGigant::on_threaten_execute()
 	pos.set		(Position());
 	pos.y		+= 0.1f;
 	m_sound_threaten_hit.play_at_pos(this,pos);
+
+	// Interactive Grass FX
+	ENGINE_API extern Fvector4 ps_ssfx_grass_interactive;
+	g_pGamePersistent->GrassBendersAddExplosion(ID(), pos, Fvector().set(0, -99, 0), 1.33f, 5.0f, ps_ssfx_grass_interactive.w, 20);
 
 	// играть партиклы
 	PlayParticles(m_kick_particles, pos, Direction());

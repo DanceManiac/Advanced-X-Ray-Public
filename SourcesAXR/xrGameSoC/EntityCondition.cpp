@@ -396,6 +396,7 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 		break;
 	case ALife::eHitTypeChemicalBurn:
 		hit_power *= m_HitTypeK[pHDS->hit_type];
+		bAddWound = false;
 		break;
 	case ALife::eHitTypeShock:
 		hit_power		*= m_HitTypeK[pHDS->hit_type];
@@ -406,15 +407,22 @@ CWound* CEntityCondition::ConditionHit(SHit* pHDS)
 		break;
 	case ALife::eHitTypeRadiation:
 		m_fDeltaRadiation += hit_power;
+		bAddWound = false;
 		return NULL;
 		break;
 	case ALife::eHitTypeExplosion:
+		hit_power		*= m_HitTypeK[pHDS->hit_type];
+		m_fHealthLost	= hit_power * m_fHealthHitPart;
+		m_fDeltaHealth	-= CanBeHarmed() ? m_fHealthLost : 0;
+		m_fDeltaPower	-= hit_power * m_fPowerHitPart;
+		break;
 	case ALife::eHitTypeStrike:
 	case ALife::eHitTypePhysicStrike:
 		hit_power *= m_HitTypeK[pHDS->hit_type];
 		m_fHealthLost = hit_power*m_fHealthHitPart;
 		m_fDeltaHealth -= CanBeHarmed() ? m_fHealthLost : 0;
 		m_fDeltaPower -= hit_power*m_fPowerHitPart;
+		bAddWound = false;
 		break;
 	case ALife::eHitTypeFireWound:
 	case ALife::eHitTypeWound:

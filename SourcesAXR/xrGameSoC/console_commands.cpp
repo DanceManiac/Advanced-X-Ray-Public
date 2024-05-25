@@ -75,6 +75,14 @@ xr_token							crosshair_type_token[] = {
 	{ 0,							0												}
 };
 
+extern u32	death_camera_mode;
+xr_token							death_camera_mode_token[] = {
+	{ "freelook",					1												},
+	{ "fixedlook",					2												},
+	{ "firsteye",					3												},
+	{ 0,							0												}
+};
+
 string_path		g_last_saved_game;
 int				quick_save_counter = 0;
 extern u32		last_quick;
@@ -1806,7 +1814,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 
 	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV_def,	0.25f,	1.0f);
-	CMD4(CCC_Float,				"fov",					&g_fov,			5.0f,	180.0f);
+	CMD4(CCC_Float,				"cam_fov",				&g_fov,			5.0f,	180.0f);
 
 	// Demo
 	CMD1(CCC_DemoPlay,			"demo_play"				);
@@ -2030,7 +2038,6 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,		"hud_adjust_mode",			&g_bHudAdjustMode,			0, 5);
 	CMD4(CCC_Float,			"hud_adjust_value",			&g_fHudAdjustValue,			0.0f, 1.0f);
 
-	CMD3(CCC_Mask,			"g_right_shoulder",			&psActorFlags,				AF_RIGHT_SHOULDER);
 	CMD3(CCC_Mask,			"ph_corpse_collision",		&psActorFlags,				AF_COLLISION);
 	CMD3(CCC_Mask,			"g_crouch_toggle",			&psActorFlags,				AF_CROUCH_TOGGLE);
 
@@ -2040,6 +2047,7 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
 	CMD3(CCC_UiHud_Mode,	"hud_type",					&ui_hud_type,				qhud_type_token);
 	CMD4(CCC_Integer,		"g_advanced_crosshair",		&g_advanced_crosshair,		0, 1);
+	CMD3(CCC_Token,			"g_death_cam_mode",			&death_camera_mode,			death_camera_mode_token);
 
 	//Custom commands for scripts
 

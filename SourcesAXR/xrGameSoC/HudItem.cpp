@@ -29,8 +29,6 @@ CHudItem::CHudItem(void)
 
 	m_bInertionEnable	= true;
 	m_bInertionAllow	= true;
-
-	m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 
 CHudItem::~CHudItem(void)
@@ -55,12 +53,17 @@ void CHudItem::Load(LPCSTR section)
 	if(pSettings->line_exist(section,"hud"))
 		hud_sect		= pSettings->r_string		(section,"hud");
 
-	if(*hud_sect){
+	item_sect			= section;
+
+	if(*hud_sect)
+	{
 		m_pHUD			= xr_new<CWeaponHUD> (this);
 		m_pHUD->Load	(*hud_sect);
 		if(pSettings->line_exist(*hud_sect, "allow_inertion")) 
 			m_bInertionAllow = !!pSettings->r_bool(*hud_sect, "allow_inertion");
-	}else{
+	}
+	else
+	{
 		m_pHUD = NULL;
 		//если hud не задан, но задан слот, то ошибка
 		R_ASSERT2(item().GetSlot() == NO_ACTIVE_SLOT, "active slot is set, but hud for food item is not available");
@@ -74,6 +77,9 @@ void CHudItem::Load(LPCSTR section)
 	m_nearwall_dist_min			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
 	m_nearwall_dist_max			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
 	m_nearwall_speed_mod		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
+
+	m_base_fov					= READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", psHUD_FOV_def);
+	m_nearwall_last_hud_fov		= m_base_fov;
 }
 
 void CHudItem::net_Destroy()
@@ -114,8 +120,12 @@ void CHudItem::renderable_Render()
 				CInventoryOwner	*owner = smart_cast<CInventoryOwner*>(object().H_Parent());
 				VERIFY			(owner);
 				CInventoryItem	*self = smart_cast<CInventoryItem*>(this);
-				if (owner->attached(self))
-					on_renderable_Render();
+				if (item().GetSlot() != RIFLE_SLOT)
+				{
+					if (owner->attached(self))
+						on_renderable_Render();
+				}
+				else on_renderable_Render();
 			}
 	}
 }
@@ -280,7 +290,10 @@ void CHudItem::OnH_B_Chield		()
 {
 	OnHiddenItem ();
 
-	m_nearwall_last_hud_fov = psHUD_FOV_def;
+	if (pSettings->line_exist(item_sect, "hud_fov"))
+		m_nearwall_last_hud_fov = m_base_fov;
+	else
+		m_nearwall_last_hud_fov = psHUD_FOV_def;
 }
 
 void CHudItem::OnH_B_Independent	(bool just_before_destroy)
@@ -292,7 +305,10 @@ void CHudItem::OnH_B_Independent	(bool just_before_destroy)
 	
 	m_sounds.StopAllSounds	();
 
-	m_nearwall_last_hud_fov = psHUD_FOV_def;
+	if (pSettings->line_exist(item_sect, "hud_fov"))
+		m_nearwall_last_hud_fov = m_base_fov;
+	else
+		m_nearwall_last_hud_fov = psHUD_FOV_def;
 
 	UpdateXForm				();
 }
@@ -337,8 +353,10 @@ float CHudItem::GetHudFov()
 		clamp(dist, m_nearwall_dist_min, m_nearwall_dist_max);
 		float fDistanceMod = ((dist - m_nearwall_dist_min) / (m_nearwall_dist_max - m_nearwall_dist_min)); // 0.f ... 1.f
 
-		float fBaseFov = psHUD_FOV_def;
-		clamp(fBaseFov, 0.0f, FLT_MAX);
+		float fBaseFov{ psHUD_FOV_def };
+
+		if (pSettings->line_exist(item_sect, "hud_fov"))
+			fBaseFov = m_base_fov;
 
 		float src = m_nearwall_speed_mod * Device.fTimeDelta;
 		clamp(src, 0.f, 1.f);

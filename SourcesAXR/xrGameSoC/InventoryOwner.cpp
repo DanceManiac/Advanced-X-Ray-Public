@@ -294,6 +294,9 @@ void CInventoryOwner::renderable_Render		()
 	if (inventory().ActiveItem())
 		inventory().ActiveItem()->renderable_Render();
 
+	if (inventory().ItemFromSlot(RIFLE_SLOT))
+		inventory().ItemFromSlot(RIFLE_SLOT)->renderable_Render();
+
 	CAttachmentOwner::renderable_Render();
 }
 

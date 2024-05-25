@@ -10,8 +10,6 @@
 #include "patrol_path.h"
 #include "levelgamedef.h"
 
-LPCSTR TEST_PATROL_PATH_NAME		= "val_dogs_nest4_centre";
-
 CPatrolPath::CPatrolPath			(shared_str name)
 {
 #ifdef DEBUG
@@ -52,3 +50,17 @@ void CPatrolPath::load		(IReader &stream)
 		(*I).second->data().path	(this);
 }
 #endif
+
+CPatrolPoint CPatrolPath::add_point(Fvector pos)
+{
+	auto pp = CPatrolPoint(this).position(pos);
+	u32 index = vertices().size();
+	add_vertex(pp, index);
+	return vertex(index)->data();
+}
+
+
+CPatrolPoint CPatrolPath::point(u32 index)
+{
+	return vertex(index)->data();
+}

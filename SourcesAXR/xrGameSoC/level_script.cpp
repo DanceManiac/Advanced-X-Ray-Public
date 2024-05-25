@@ -765,6 +765,16 @@ u8 get_active_cam()
 	return 255;
 }
 
+void patrol_path_add(LPCSTR patrol_path, CPatrolPath* path)
+{
+	ai().patrol_paths_raw().add_path(shared_str(patrol_path), path);
+}
+
+void patrol_path_remove(LPCSTR patrol_path)
+{
+	ai().patrol_paths_raw().remove_path(shared_str(patrol_path));
+}
+
 void set_active_cam(u8 mode)
 {
 	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
@@ -846,6 +856,8 @@ void CLevel::script_register(lua_State *L)
 		def("vertex_position",					vertex_position),
 		def("name",								get_name),
 		def("prefetch_sound",					prefetch_sound),
+		def("patrol_path_add",					&patrol_path_add ),
+		def("patrol_path_remove",				&patrol_path_remove ),
 
 		def("client_spawn_manager",				get_client_spawn_manager),
 

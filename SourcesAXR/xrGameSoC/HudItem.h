@@ -102,6 +102,7 @@ protected:
 	CWeaponHUD*				m_pHUD;
 	BOOL					hud_mode;
 	shared_str				hud_sect;
+	shared_str				item_sect;
 	bool					m_bRenderHud;
 
 	//время нахождения в текущем состоянии
@@ -134,6 +135,7 @@ public:
 	float					m_nearwall_dist_min			= 0.f;
 	float					m_nearwall_target_hud_fov	= 0.f;
 	float					m_nearwall_speed_mod		= 0.f;
+	float					m_base_fov					= 0.f;
 
 private:
 	CPhysicItem				*m_object;

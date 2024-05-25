@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../xrEngine/IGame_Persistent.h"
+
 #define TEMPLATE_SPECIALIZATION template <\
 	typename _Object\
 >
@@ -154,6 +156,10 @@ void CStateBurerAttackGraviAbstract::ExecuteGraviFire()
 	object->StopGraviPrepare	();
 	object->sound().play		(CBurer::eMonsterSoundGraviAttack);
 	object->DeactivateShield	();
+
+	// Interactive Grass FX
+	ENGINE_API extern Fvector4 ps_ssfx_grass_interactive;
+	g_pGamePersistent->GrassBendersAddExplosion(object->ID(), from_pos, object->Direction(), 1.33f, 3.0f, ps_ssfx_grass_interactive.w, 13.0f);
 }
 
 #undef TEMPLATE_SPECIALIZATION

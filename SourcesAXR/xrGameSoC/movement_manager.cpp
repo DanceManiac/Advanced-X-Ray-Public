@@ -23,6 +23,9 @@
 #include "detail_path_builder.h"
 #include "profiler.h"
 #include "mt_config.h"
+
+#include "../xrEngine/IGame_Persistent.h"
+
 //#include "custommonster.h"
 
 using namespace MovementManager;
@@ -351,6 +354,9 @@ void CMovementManager::on_frame					(CPHMovementControl *movement_control, Fvect
 		update_path					();
 			
 	move_along_path					(movement_control,dest_position,object().client_update_fdelta());
+
+	// Update Grass benders
+	g_pGamePersistent->GrassBendersUpdate(object().ID(), grassbender_id, grassbender_frame, object().Position(), -1.0f, 1.0f, true);
 }
 
 void CMovementManager::on_travel_point_change	(const u32 &previous_travel_point_index)

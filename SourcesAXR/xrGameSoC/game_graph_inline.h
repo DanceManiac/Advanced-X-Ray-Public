@@ -131,7 +131,12 @@ IC	const float &CGameGraph::edge_weight							(const_iterator i) const
 
 IC	const CGameGraph::CVertex *CGameGraph::vertex					(const u32 &vertex_id) const
 {
+#ifdef _M_X64
+	return (valid_vertex_id(vertex_id)) ? (m_nodes + vertex_id)
+		: (m_nodes + header().vertex_count() - 1);
+#else
 	return						(m_nodes + vertex_id);
+#endif
 }
 
 IC	const u8 &CGameGraph::CHeader::version							() const

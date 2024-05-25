@@ -13,6 +13,7 @@ class CTraderAnimation {
 
 	LPCSTR				m_anim_global;
 	LPCSTR				m_anim_head;
+	int					m_head;
 	
 	MotionID			m_motion_head;	
 	MotionID			m_motion_global;
@@ -40,8 +41,7 @@ public:
 	void			external_sound_stop		();
 
 private:
-	void			remove_sound			();	
-
-
+	void			remove_sound			();
+	Fvector			sound_position			();
 };
 
