@@ -355,6 +355,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	{
 		m_pIdleLight = ::Render->light_create();
 		m_pIdleLight->set_shadow(!!m_zone_flags.test(eIdleLightShadow));
+		m_pIdleLight->set_flare(true);
 
 		if(m_zone_flags.test(eIdleLightVolumetric))
 		{
@@ -372,6 +373,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	{
 		m_pLight = ::Render->light_create();
 		m_pLight->set_shadow(true);
+		m_pLight->set_flare(true);
 		m_pLight->set_volumetric(m_bVolumetricBlowout);
 		m_pLight->set_volumetric_quality(m_fVolumetricQuality);
 		m_pLight->set_volumetric_distance(m_fVolumetricDistance);

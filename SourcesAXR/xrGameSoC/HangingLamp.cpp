@@ -106,6 +106,7 @@ BOOL CHangingLamp::net_Spawn(CSE_Abstract* DC)
 	light_render->set_color	(clr);
 	light_render->set_cone	(lamp->spot_cone_angle);
 	light_render->set_texture(*lamp->light_texture);
+	light_render->set_flare	(true);
 
 	if (lamp->glow_texture.size())	{
 		glow_render				= ::Render->glow_create();
@@ -368,5 +369,6 @@ void CHangingLamp::script_register(lua_State *L)
 			.def(luabind::constructor<>())
 			.def("turn_on",		&CHangingLamp::TurnOn)
 			.def("turn_off",	&CHangingLamp::TurnOff)
+			//.def("set_flare",	[](CHangingLamp* self, const bool val) { self->light_render->set_flare(val); })
 	];
 }
