@@ -456,6 +456,7 @@ public:
 	bool					CanSprint				();
 	bool					CanRun					();
 	void					StopAnyMove				();
+	void					StopSprint				() {mstate_wishful &= ~mcSprint;}
 
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
 
@@ -481,6 +482,9 @@ public:
 
 	float					m_fWalk_StrafeFactor;
 	float					m_fRun_StrafeFactor;
+
+	// For activating sprint when reloading
+	u8						m_iTrySprintCounter;
 	//////////////////////////////////////////////////////////////////////////
 	// User input/output
 	//////////////////////////////////////////////////////////////////////////
@@ -795,12 +799,19 @@ public:
 	void						unblock_action					(EGameActions cmd);
 	// Real Wolf. End. 14.10.2014
 
+	float						GetDevicesPsyFactor				() { return m_fDevicesPsyFactor; }
+	void						SetDevicesPsyFactor				(float psy_factor) { m_fDevicesPsyFactor = psy_factor; }
+
+	bool						IsReloadingWeapon				();
+
 	CActorSkills*				ActorSkills;
 	CTimerManager*				TimerManager;
 
 protected:
 	bool						m_bNightVisionOn;
 	bool						m_bNightVisionAllow;
+
+	float						m_fDevicesPsyFactor;
 
 	CNightVisionEffector*		m_night_vision;
 

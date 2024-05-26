@@ -118,6 +118,8 @@ extern	float	g_fTimeFactor;
 
 extern	BOOL	g_advanced_crosshair;
 
+extern bool		g_saves_locked;
+
 //Custom commands for scripts
 
 const int I_SCRIPT_CMDS_COUNT = GameConstants::GetIntScriptCMDCount();
@@ -493,6 +495,17 @@ public:
 			return;
 		}
 
+		if (g_saves_locked)
+		{
+#ifdef DEBUG
+			Msg("Can`t make saved game: locked by Lua.");
+#endif
+			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("game_save_blocked_icon", true);
+			SDrawStaticStruct* _s2 = HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
+			_s2->wnd()->SetText(*CStringTable().translate("st_saves_locked"));
+			return;
+		}
+
 		string_path				S,S1;
 		S[0]					= 0;
 //.		sscanf					(args ,"%s",S);
@@ -538,10 +551,8 @@ public:
 		Msg						("Game save overhead  : %f milliseconds",timer.GetElapsed_sec()*1000.f);
 #endif
 		SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
-		_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
-		string_path					save_name;
-		strconcat					(sizeof(save_name),save_name,*CStringTable().translate("st_game_saved"),": ", S);
-		_s->wnd()->SetText			(save_name);
+		_s->wnd()->SetText			(*CStringTable().translate("st_game_saved"));
+		SDrawStaticStruct* _s2		= HUD().GetUI()->UIGame()->AddCustomStatic("game_saved_icon", true);
 
 		xr_strcat				(S,".dds");
 		FS.update_path			(S1,"$game_saves$",S);
@@ -1764,6 +1775,114 @@ struct DumpTxrsForPrefetching : public IConsole_Command {
 	}
 };
 
+// kill
+class CCC_KillEntity : public IConsole_Command {
+public:
+	CCC_KillEntity(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
+	virtual void Execute(LPCSTR args)
+	{
+		if (!g_pGameLevel) return;
+
+		char story_id_to_kill[128];
+		story_id_to_kill[0] = 0;
+
+		sscanf(args, "%s", story_id_to_kill);
+
+		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+
+		if (story_id_to_kill[0] != 0)
+		{
+			u16 id_to_kill{};
+
+			luabind::functor<u16> m_functor;
+			if (ai().script_engine().functor("mfs_functions.get_id_by_sid", m_functor));
+			id_to_kill = m_functor(story_id_to_kill);
+
+			if (!id_to_kill)
+			{
+				Msg("! [kill] : Invalid story_id or NPC offline! story_id: %s", story_id_to_kill);
+				return;
+			}
+
+			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(Level().Objects.net_Find(id_to_kill));
+
+			if (entity_to_kill)
+			{
+				if (!entity_to_kill->g_Alive())
+				{
+					Msg("! [kill] : This entity is already dead!");
+					return;
+				}
+
+				entity_to_kill->KillEntity(entity_to_kill->ID());
+			}
+			else
+				Msg("! [kill] : Entity with id [%s] not found!", story_id_to_kill);
+		}
+		else if (RQ.O && story_id_to_kill[0] == 0)
+		{
+			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(RQ.O);
+
+			if (entity_to_kill)
+			{
+				if (!entity_to_kill->g_Alive())
+				{
+					Msg("! [kill] : This entity is already dead!");
+					return;
+				}
+
+				entity_to_kill->KillEntity(entity_to_kill->ID());
+			}
+			else
+				Msg("! [kill] : Is not EntityAlive!");
+		}
+		else
+			Msg("! [kill] : Empty entity to kill or is not EntityAlive!");
+	}
+
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+};
+
+struct CCC_ReloadSystemLtx : public IConsole_Command
+{
+	CCC_ReloadSystemLtx(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = true;
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		string_path fname;
+		FS.update_path(fname, "$game_config$", "system.ltx");
+		CInifile::Destroy(pSettings);
+		pSettings = new CInifile(fname, TRUE);
+		CHECK_OR_EXIT(0 != pSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+		Msg("system.ltx was reloaded.");
+	}
+};
+
+struct CCC_ReloadAdvancedXRayCfg : public IConsole_Command
+{
+	CCC_ReloadAdvancedXRayCfg(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = true;
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		string_path fname;
+		FS.update_path(fname, "$game_config$", "AdvancedXRay.ltx");
+		CInifile::Destroy(pAdvancedSettings);
+		pAdvancedSettings = new CInifile(fname, TRUE);
+		CHECK_OR_EXIT(0 != pAdvancedSettings->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+		GameConstants::LoadConstants();
+		Msg("AdvancedXRay.ltx was reloaded.");
+	}
+};
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -1929,6 +2048,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,		"dbg_draw_rp",				&dbg_net_Draw_Flags,	(1<<9));
 	CMD3(CCC_Mask,		"dbg_draw_climbable",		&dbg_net_Draw_Flags,	(1<<10));
 	CMD3(CCC_Mask,		"dbg_draw_skeleton",		&dbg_net_Draw_Flags,	(1<<11));
+	CMD3(CCC_Mask,		"dbg_draw_lchangers",		&dbg_net_Draw_Flags,	(1<<12));
 
 
 	CMD3(CCC_Mask,		"dbg_draw_ph_contacts",			&ph_dbg_draw_mask,	phDbgDrawContacts);
@@ -2024,6 +2144,9 @@ void CCC_RegisterCommands()
 		CMD1(CCC_Disinfo,		"d_info");
 		CMD1(CCC_GiveTask,		"g_task");
 		CMD1(CCC_GiveMoney,		"g_money");
+		CMD1(CCC_KillEntity,	"kill");
+		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
+		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
 		CMD3(CCC_Mask,			"g_god",					&psActorFlags,				AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",			&psActorFlags,				AF_UNLIMITEDAMMO);
 		CMD1(CCC_SetWeather,	"set_weather");

@@ -11,6 +11,7 @@ public:
 	CBolt(void);
 	virtual ~CBolt(void);
 
+	virtual void Load(LPCSTR section);
 	virtual void OnH_A_Chield();
 	virtual void OnEvent(NET_Packet& P, u16 type);
 	

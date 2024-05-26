@@ -29,6 +29,7 @@ public:
 
 
 	virtual void	PlaySound			(LPCSTR alias, const Fvector& position);
+			void	StopAllSounds		() { m_sounds.StopAllSounds(); }
 										
 	///////////////////////////////////////////////
 	// общие функции HUD

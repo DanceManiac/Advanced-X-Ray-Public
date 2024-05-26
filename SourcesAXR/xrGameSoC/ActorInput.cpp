@@ -25,6 +25,9 @@
 #include "CharacterPhysicsSupport.h"
 #include "InventoryBox.h"
 #include "script_engine.h"
+#include "Weapon.h"
+
+#include "AdvancedXrayGameConstants.h"
 
 bool g_block_actor_movement;
 
@@ -84,8 +87,25 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		}break;
 	case kSPRINT_TOGGLE:	
 		{
-			if (mstate_wishful & mcSprint)
-				mstate_wishful &=~mcSprint;
+		CWeapon* W = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+		if (IsReloadingWeapon() && !GameConstants::GetReloadIfSprint())
+		{
+			if (m_iTrySprintCounter == 0) // don't interrupt reloading on first key press and skip sprint request
+			{
+				m_iTrySprintCounter++;
+
+				return;
+			}
+			else if (m_iTrySprintCounter >= 1) // break reloading, if player insist(presses two or more times) and do sprint
+			{
+				W->StopAllSounds();
+				W->SwitchState(CWeapon::eIdle);
+			}
+		}
+
+		if (mstate_wishful & mcSprint && !GameConstants::GetReloadIfSprint())
+			mstate_wishful &= ~mcSprint;
 			else
 				mstate_wishful |= mcSprint;					
 		}break;
@@ -133,7 +153,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if(IsGameTypeSingle())
 			{
 				PIItem itm = inventory().item((cmd==kUSE_BANDAGE)?  CLSID_IITEM_BANDAGE:CLSID_IITEM_MEDKIT );	
-				if(itm)
+				if(GameConstants::GetHUD_UsedItemTextEnabled() && itm)
 				{
 					inventory().Eat				(itm);
 					SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);

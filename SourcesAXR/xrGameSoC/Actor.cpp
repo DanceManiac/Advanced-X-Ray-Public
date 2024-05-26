@@ -215,6 +215,10 @@ CActor::CActor() : CEntityAlive()
 
 	ActorSkills				= nullptr;
 	TimerManager			= nullptr;
+
+	m_fDevicesPsyFactor		= 0.0f;
+
+	m_iTrySprintCounter		= 0;
 }
 
 
@@ -994,61 +998,12 @@ void CActor::UpdateCL	()
 			xr_delete(m_sndShockEffector);
 	}
 
-	// Ascii hud rain drops support
-	{
-		float animSpeed = 1.f;
-		float buildSpeed = 2.f;
-		float dryingSpeed = 1.f;
-		float rainFactor = g_pGamePersistent->Environment().CurrentEnv->rain_density;
-		float rainHemi{};
-		CEffect_Rain* rain = g_pGamePersistent->pEnvironment->eff_Rain;
+	g_pGamePersistent->devices_shader_data.device_global_psy_influence = m_fDevicesPsyFactor;
 
-		if (rainFactor > 0.f)
-		{
-			// get rain hemi
-			if (rain)
-			{
-				rainHemi = rain->GetRainHemi();
-			}
-			else
-			{
-				CObject* E = g_pGameLevel->CurrentViewEntity();
-				if (E && E->renderable_ROS())
-				{
-					float* hemi_cube = E->renderable_ROS()->get_luminocity_hemi_cube();
-					float hemi_val = _max(hemi_cube[0], hemi_cube[1]);
-					hemi_val = _max(hemi_val, hemi_cube[2]);
-					hemi_val = _max(hemi_val, hemi_cube[3]);
-					hemi_val = _max(hemi_val, hemi_cube[5]);
+	luabind::functor<bool> m_functor;
 
-					rainHemi = hemi_val;
-				}
-			}
-
-			if (rainHemi > 0.15f)
-			{
-				float rainSpeedFactor = (1.5f - rainFactor) * 10.f;
-				m_dropsAnimIncrementor += (animSpeed * Device.fTimeDelta) / rainSpeedFactor;
-				m_dropsIntensity += (buildSpeed * Device.fTimeDelta) / 100.f;
-			}
-			else
-			{
-				m_dropsIntensity -= (dryingSpeed * Device.fTimeDelta) / 100.f;
-			}
-		}
-		else
-		{
-			m_dropsIntensity -= (dryingSpeed * Device.fTimeDelta) / 100.f;
-		}
-
-		clamp(m_dropsIntensity, 0.f, 1.f);
-
-		if (fsimilar(m_dropsAnimIncrementor, FLT_MAX, 1.f))
-			m_dropsAnimIncrementor = 0.f;
-
-		ps_ssfx_hud_drops_1.x = m_dropsAnimIncrementor;
-		ps_ssfx_hud_drops_1.y = m_dropsIntensity;
-	}
+	if (ai().script_engine().functor("mfs_functions.devices_check_surge", m_functor))
+		m_functor();
 }
 
 float	NET_Jump = 0;
@@ -2010,12 +1965,16 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 			if (m_bNightVisionOn && !bIsActiveNow)
 			{
 				m_night_vision->Start(pOutfit->m_NightVisionSect, this, use_sounds);
+
+				if (ps_r__ShaderNVG)
+					g_pGamePersistent->devices_shader_data.nightvision_lum_factor = pOutfit->m_fNightVisionLumFactor;
 			}
 		}
 		else
 		{
 			m_night_vision->OnDisabled(this, use_sounds);
 			m_bNightVisionOn = false;
+			g_pGamePersistent->devices_shader_data.nightvision_lum_factor = 0.0f;
 		}
 	}
 

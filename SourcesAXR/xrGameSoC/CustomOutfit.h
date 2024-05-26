@@ -57,7 +57,10 @@ public:
 	shared_str						m_NightVisionSect;
 
 	bool							m_b_HasGlass;
+
+	shared_str						m_sShaderNightVisionSect;
 	u32								m_NightVisionType;
+	float							m_fNightVisionLumFactor;
 
 	virtual u32						ef_equipment_type		() const;
 	virtual	BOOL					BonePassBullet			(int boneID);

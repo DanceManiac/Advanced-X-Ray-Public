@@ -27,6 +27,8 @@
 #include "object_broker.h"
 #include "../xrEngine/igame_persistent.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 #define WEAPON_REMOVE_TIME		60000
 #define ROTATION_TIME			0.25f
 
@@ -1035,6 +1037,53 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 	return l_count + iAmmoCurrent;
 }
 
+
+int CWeapon::GetSuitableAmmoTotal(bool use_item_to_spawn) const
+{
+	int l_count = iAmmoElapsed;
+	if (!m_pCurrentInventory) return l_count;
+
+	//чтоб не делать лишних пересчетов
+	if (m_pCurrentInventory->ModifyFrame() <= m_dwAmmoCurrentCalcFrame)
+		return l_count + iAmmoCurrent;
+
+	m_dwAmmoCurrentCalcFrame = Device.dwFrame;
+	iAmmoCurrent = 0;
+
+	for (int i = 0; i < (int)m_ammoTypes.size(); ++i)
+	{
+		LPCSTR l_ammoType = *m_ammoTypes[i];
+
+		for (TIItemContainer::iterator l_it = m_pCurrentInventory->m_belt.begin(); m_pCurrentInventory->m_belt.end() != l_it; ++l_it)
+		{
+			CWeaponAmmo* l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);
+
+			if (l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType))
+			{
+				iAmmoCurrent = iAmmoCurrent + l_pAmmo->m_boxCurr;
+			}
+		}
+
+		for (TIItemContainer::iterator l_it = m_pCurrentInventory->m_ruck.begin(); m_pCurrentInventory->m_ruck.end() != l_it; ++l_it)
+		{
+			CWeaponAmmo* l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);
+			if (l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType))
+			{
+				iAmmoCurrent = iAmmoCurrent + l_pAmmo->m_boxCurr;
+			}
+		}
+
+		if (!use_item_to_spawn)
+			continue;
+
+		if (!inventory_owner().item_to_spawn())
+			continue;
+
+		iAmmoCurrent += inventory_owner().ammo_in_box_to_spawn();
+	}
+	return l_count + iAmmoCurrent;
+}
+
 float CWeapon::GetConditionMisfireProbability() const
 {
 	if( GetCondition()>0.95f ) return 0.0f;
@@ -1072,6 +1121,12 @@ BOOL CWeapon::IsMisfire() const
 void CWeapon::Reload()
 {
 	OnZoomOut();
+
+	if (ParentIsActor() && !GameConstants::GetReloadIfSprint())
+	{
+		Actor()->StopSprint();
+		Actor()->m_iTrySprintCounter = 0;
+	}
 }
 
 

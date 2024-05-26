@@ -26,6 +26,7 @@ CCustomOutfit::CCustomOutfit()
 
 	m_b_HasGlass = false;
 	m_NightVisionType = 0;
+	m_fNightVisionLumFactor = 0.0f;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -85,7 +86,9 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fOverweightWalkK				= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
 	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
-	m_NightVisionType				= READ_IF_EXISTS(pSettings, r_u32, section, "night_vision_type", 0);
+	m_sShaderNightVisionSect		= READ_IF_EXISTS(pSettings, r_string, section, "shader_nightvision_sect", "shader_nightvision_default");
+	m_NightVisionType				= READ_IF_EXISTS(pSettings, r_u32, m_sShaderNightVisionSect, "shader_nightvision_type", 0);
+	m_fNightVisionLumFactor			= READ_IF_EXISTS(pSettings, r_float, m_sShaderNightVisionSect, "shader_nightvision_lum_factor", 0.0f);
 
 	if (pSettings->line_exist(section, "nightvision_sect"))
 		m_NightVisionSect = pSettings->r_string(section, "nightvision_sect");

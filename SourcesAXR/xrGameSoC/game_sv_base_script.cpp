@@ -15,12 +15,14 @@
 #include "UI/UIGameTutorial.h"
 #include "string_table.h"
 #include "object_broker.h"
+#include "Actor.h"
 
 using namespace luabind;
 
-bool g_block_all_except_movement;
+bool g_block_all_except_movement = false;
 extern bool g_block_actor_movement;
 extern bool g_actor_allow_ladder;
+bool g_saves_locked = false;
 
 CUISequencer* g_tutorial = NULL;
 CUISequencer* g_tutorial2 = NULL;
@@ -81,6 +83,38 @@ void set_actor_allow_ladder(bool b)
 bool actor_allow_ladder()
 {
 	return g_actor_allow_ladder;
+}
+
+float get_devices_psy_factor()
+{
+	if (Actor())
+		return Actor()->GetDevicesPsyFactor();
+
+	Msg("![get_devices_psy_factor]: Actor not found!");
+	return 0;
+}
+
+void set_devices_psy_factor(float psy_factor)
+{
+	clamp(psy_factor, 0.0f, 1.0f);
+
+	if (Actor())
+	{
+		Actor()->SetDevicesPsyFactor(psy_factor);
+		return;
+	}
+
+	Msg("![set_devices_psy_factor]: Actor not found!");
+}
+
+void set_game_saves_lock(bool b)
+{
+	g_saves_locked = b;
+}
+
+bool get_saves_lock_status()
+{
+	return g_saves_locked;
 }
 
 #pragma optimize("s",on)
@@ -161,7 +195,11 @@ void game_sv_GameState::script_register(lua_State *L)
 	def("set_actor_allow_ladder",set_actor_allow_ladder),
 	def("actor_ladder_allowed", actor_allow_ladder),
 	def("active_tutorial_name", +[]() { return g_tutorial->GetTutorName(); }),
-	def("log_stack_trace",		&xrDebug::LogStackTrace)
+	def("log_stack_trace",		&xrDebug::LogStackTrace),
+	def("get_devices_psy_factor", &get_devices_psy_factor),
+	def("set_devices_psy_factor", &set_devices_psy_factor),
+	def("set_lock_saves",		set_game_saves_lock),
+	def("get_saves_lock_status", get_saves_lock_status)
 
 	];
 	

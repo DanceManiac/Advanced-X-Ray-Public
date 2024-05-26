@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "weaponmagazinedwgrenade.h"
 #include "WeaponHUD.h"
 #include "HUDManager.h"
@@ -18,6 +19,9 @@
 #ifdef DEBUG
 #include "phdebug.h"
 #endif
+
+#include "script_callback_ex.h"
+#include "script_game_object.h"
 
 CWeaponMagazinedWGrenade::CWeaponMagazinedWGrenade(LPCSTR name,ESoundTypes eSoundType) : CWeaponMagazined(name, eSoundType)
 {
@@ -177,6 +181,10 @@ void CWeaponMagazinedWGrenade::OnShot		()
 		
 		//партиклы огня вылета гранаты из подствольника
 		StartFlameParticles2();
+
+		CGameObject* object = smart_cast<CGameObject*>(H_Parent());
+		if (object)
+			object->callback(GameObject::eOnWeaponFired)(object->lua_game_object(), this->lua_game_object(), iAmmoElapsed);
 	} 
 	else inherited::OnShot();
 }

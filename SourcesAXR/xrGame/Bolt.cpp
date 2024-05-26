@@ -75,7 +75,7 @@ void CBolt::Throw()
 	spawn_fake_missile			();
 
 	auto actor = smart_cast<CActor*>(this->H_Parent());
-	if (!m_sounds.FindSoundItem("sndThrow", false) && !actor)
+	if (!m_sounds.FindSoundItem("sndThrow", false) || !actor)
 		return;
 
 	PlaySound("sndThrow", actor->Position());

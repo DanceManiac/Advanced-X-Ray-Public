@@ -11,6 +11,7 @@
 #include "entity_alive.h"
 #include "hudmanager.h"
 #include "ai_space.h"
+#include "level_changer.h"
 #include "ai_debug.h"
 #include "PHdynamicdata.h"
 #include "Physics.h"
@@ -673,6 +674,11 @@ void CLevel::OnRender()
 			CSpaceRestrictor	*space_restrictor = smart_cast<CSpaceRestrictor*>	(_O);
 			if (space_restrictor)
 				space_restrictor->OnRender();
+
+			CLevelChanger* lchanger = smart_cast<CLevelChanger*>	(_O);
+			if (lchanger)
+				lchanger->OnRender();
+
 			CClimableObject		*climable		  = smart_cast<CClimableObject*>	(_O);
 			if(climable)
 				climable->OnRender();

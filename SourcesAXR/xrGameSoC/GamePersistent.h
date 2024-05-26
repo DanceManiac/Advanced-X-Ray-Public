@@ -97,6 +97,8 @@ public:
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
 			bool		IsCamFirstEye			();
+			bool		GetActorHelmetStatus	();
+			bool		GetFogInfluenceVolumetricLight();
 			std::string	GetMoonPhase			() override;
 			u32			GetTimeHours			() override;
 

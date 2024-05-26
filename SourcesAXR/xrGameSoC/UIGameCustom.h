@@ -30,8 +30,6 @@ struct SDrawStaticStruct :public IPureDestroyableObject{
 	}
 };
 
-
-typedef xr_vector<SDrawStaticStruct>	st_vec;
 #include "game_base_space.h"
 struct SGameTypeMaps
 {
@@ -71,6 +69,10 @@ class CUIGameCustom :public DLL_Pure, public ISheduled
 {
 	typedef ISheduled inherited;
 protected:
+	typedef xr_vector<SDrawStaticStruct*>	st_vec;
+	typedef st_vec::iterator				st_vec_it;
+	st_vec									m_custom_statics;
+
 	u32					uFlags;
 
 	void				SetFlag					(u32 mask, BOOL flag){if (flag) uFlags|=mask; else uFlags&=~mask; }
@@ -79,7 +81,6 @@ protected:
 	CUICaption*			GameCaptions			() {return m_pgameCaptions;}
 	CUICaption*			m_pgameCaptions;
 	CUIXml*				m_msgs_xml;
-	st_vec										m_custom_statics;
 public:
 	virtual void		SetClGame				(game_cl_GameState* g){};
 

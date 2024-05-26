@@ -32,7 +32,7 @@
 #include "script_engine.h"
 
 #include "CustomOutfit.h"
-
+#include "Inventory.h"
 #include "AdvancedXrayGameConstants.h"
 #include "DynamicHudGlass.h"
 
@@ -265,7 +265,7 @@ void CGamePersistent::WeathersUpdate()
 				for (u32 idx = 0; I != E; ++I, ++idx)
 				{
 					CEnvAmbient::SSndChannel& ch = **I;
-					R_ASSERT(idx < 20);
+					VERIFY(idx < 40);
 					if (ambient_sound_next_time[idx] == 0)//first
 					{
 						ambient_sound_next_time[idx] = Device.dwTimeGlobal + ch.get_rnd_sound_first_time();
@@ -905,7 +905,12 @@ float CGamePersistent::GetActorBleeding()
 
 bool CGamePersistent::GetActorNightvision()
 {
-	return	(Actor()->GetNightVisionStatus());
+	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+
+	if (pOutfit)
+		return (Actor()->GetNightVisionStatus() && pOutfit->m_NightVisionSect.size());
+
+	return false;
 }
 
 int CGamePersistent::GetNightvisionType()
@@ -918,9 +923,27 @@ bool CGamePersistent::GetActorAliveStatus()
 	return	(Actor()->g_Alive());
 }
 
+bool CGamePersistent::GetActorHelmetStatus()
+{
+	if (!Actor())
+		return false;
+
+	CCustomOutfit* outfit = Actor()->GetOutfit();
+
+	if (outfit)
+		return outfit->m_b_HasGlass;
+
+	return false;
+}
+
 bool CGamePersistent::GetActor()
 {
 	return	(Actor());
+}
+
+bool CGamePersistent::GetFogInfluenceVolumetricLight()
+{
+	return GameConstants::GetFogInfluenceVolumetricLight();
 }
 
 bool CGamePersistent::IsCamFirstEye()

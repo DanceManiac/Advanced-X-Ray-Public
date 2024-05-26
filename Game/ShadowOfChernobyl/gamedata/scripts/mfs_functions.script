@@ -119,8 +119,8 @@ function on_actor_drugs()
 
 end
 
-function devices_check_surge()
-	if xr_surge_hide.surge_activated then
+function devices_check_surge() -- Âûבנמסמג ג Ò× םוע
+	--[[if xr_surge_hide.surge_activated then
 		if (xr_surge_hide.phase > 1) then
 			game.set_devices_psy_factor(game.get_devices_psy_factor() + 0.00075)
 		end
@@ -129,7 +129,8 @@ function devices_check_surge()
 	else
 		game.set_devices_psy_factor(game.get_devices_psy_factor() - 0.0025)
 		return false
-	end
+	end]]--
+	return false
 end
 
 function sleeping_bag_sleep()

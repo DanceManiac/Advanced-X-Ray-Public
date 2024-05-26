@@ -503,4 +503,5 @@ public:
 	const float				&hit_probability			() const;
 
 	virtual void			OnBulletHit					();
+			int				GetSuitableAmmoTotal		(bool use_item_to_spawn = false) const;
 };

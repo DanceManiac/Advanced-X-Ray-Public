@@ -20,6 +20,8 @@
 #include <malloc.h>
 #pragma warning(pop)
 
+extern bool g_saves_locked;
+
 xrClientData::xrClientData	():IClient(Device.GetTimerGlobal())
 {
 	ps					= Level().Server->game->createPlayerState();
@@ -547,6 +549,9 @@ u32 xrServer::OnMessage	(NET_Packet& P, ClientID sender)			// Non-Zero means bro
 		}break;
 	case M_LOAD_GAME:
 		{
+			if (g_saves_locked)
+				g_saves_locked = false;
+
 			game->load_game			(P,sender);
 			SendBroadcast			(BroadcastCID,P,net_flags(TRUE,TRUE));
 			VERIFY					(verify_entities());

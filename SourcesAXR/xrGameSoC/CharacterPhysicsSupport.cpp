@@ -32,6 +32,9 @@
 #	define USE_IK
 #endif // PRIQUEL
 
+constexpr float IK_CALC_DIST = 100.f;
+constexpr float IK_ALWAYS_CALC_DIST = 20.f;
+
 void  NodynamicsCollide(bool& do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
 {
 	dBodyID body1=dGeomGetBody(c.geom.g1);
@@ -480,12 +483,30 @@ void CCharacterPhysicsSupport::in_UpdateCL( )
 	
 		UpdateDeathAnims();
 		UpdateFrictionAndJointResistanse( );
-	} else if ( !m_EntityAlife.g_Alive( ) && !m_EntityAlife.use_simplified_visual( ) )
+	}
+	else if ( !m_EntityAlife.g_Alive( ) && !m_EntityAlife.use_simplified_visual( ) )
 	{
 		ActivateShell( NULL );
 		m_PhysicMovementControl->DestroyCharacter( );
-	} else if( ik_controller( ) )
-		ik_controller( )->Update();
+	} 
+	else if (ik_controller())
+	{
+		CFrustum& view_frust = ::Render->ViewBase;
+		vis_data& vis = m_EntityAlife.Visual()->getVisData();
+		Fvector p;
+
+		m_EntityAlife.XFORM().transform_tiny(p, vis.sphere.P);
+
+		float dist = Device.vCameraPosition.distance_to(p);
+
+		if (dist < IK_CALC_DIST)
+		{
+			if (view_frust.testSphere_dirty(p, vis.sphere.R) || dist < IK_ALWAYS_CALC_DIST)
+			{
+				ik_controller()->Update();
+			}
+		}
+	}
 
 
 #ifdef DEBUG

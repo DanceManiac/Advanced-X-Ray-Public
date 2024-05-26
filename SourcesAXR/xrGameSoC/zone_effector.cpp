@@ -8,6 +8,8 @@
 #include "actoreffector.h"
 #include "postprocessanimator.h"
 
+extern u32	death_camera_mode;
+
 CZoneEffector::CZoneEffector() 
 {
 	radius			= 1;
@@ -59,9 +61,13 @@ void CZoneEffector::Update(float dist)
 
 	bool camera_on_actor = (Level().CurrentEntity() && (Level().CurrentEntity()->CLS_ID == CLSID_OBJECT_ACTOR));
 	
-	if (m_pp_effector) {
-		if ((dist > max_r) || !camera_on_actor || (m_pActor&&!m_pActor->g_Alive()))	Stop();
-	} else {
+	if (m_pp_effector)
+	{
+		if ((dist > max_r) || !camera_on_actor || (m_pActor && !m_pActor->g_Alive() && death_camera_mode != 3))
+			Stop();
+	}
+	else
+	{
 		if ((dist < max_r) && camera_on_actor)	Activate();
 	}
 	

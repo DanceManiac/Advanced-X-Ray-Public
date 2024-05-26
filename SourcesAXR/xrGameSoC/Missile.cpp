@@ -40,6 +40,7 @@ void create_force_progress()
 
 CMissile::CMissile(void) 
 {
+	m_bIsContactGrenade = false;
 }
 
 CMissile::~CMissile(void) 
@@ -89,6 +90,8 @@ void CMissile::Load(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_playing", "sndPlaying", false, m_eSoundPlaying);
 
 	m_ef_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));
+
+	m_bIsContactGrenade = READ_IF_EXISTS(pSettings, r_bool, section, "is_contact_grenade", false);
 }
 
 BOOL CMissile::net_Spawn(CSE_Abstract* DC) 
@@ -205,7 +208,6 @@ void CMissile::shedule_Update(u32 dt)
 			m_dwDestroyTime = 0xffffffff;
 			VERIFY	(!m_pCurrentInventory);
 			Destroy	();
-			return;
 		}
 	} 
 }
@@ -678,7 +680,7 @@ void CMissile::OnDrawUI()
 	}	
 }
 
-void	 CMissile::ExitContactCallback(bool& do_colide,bool bo1,dContact& c,SGameMtl * /*material_1*/,SGameMtl * /*material_2*/)
+void	 CMissile::ExitContactCallback(bool& do_colide, bool bo1, dContact& c, SGameMtl* material_1, SGameMtl* material_2)
 {
 	dxGeomUserData	*gd1=NULL,	*gd2=NULL;
 	if(bo1)
@@ -692,7 +694,33 @@ void	 CMissile::ExitContactCallback(bool& do_colide,bool bo1,dContact& c,SGameMt
 		gd1 =retrieveGeomUserData(c.geom.g2);
 	}
 	if(gd1&&gd2&&(CPhysicsShellHolder*)gd1->callback_data==gd2->ph_ref_object)	
-																				do_colide=false;
+		do_colide = false;
+
+	SGameMtl* material = 0;
+	CMissile* l_this = gd1 ? smart_cast<CMissile*>(gd1->ph_ref_object) : NULL;
+	Fvector vUp;
+
+	if (!l_this)
+	{
+		l_this = gd2 ? smart_cast<CMissile*>(gd2->ph_ref_object) : NULL;
+		material = material_1;
+
+	}
+	else
+		material = material_2;
+
+	VERIFY(material);
+
+	if (material->Flags.is(SGameMtl::flPassable)) return;
+
+	if (!l_this || !l_this->m_bIsContactGrenade) return;
+
+	CGameObject* l_pOwner = gd1 ? smart_cast<CGameObject*>(gd1->ph_ref_object) : NULL;
+
+	if (!l_pOwner || l_pOwner == (CGameObject*)l_this) l_pOwner = gd2 ? smart_cast<CGameObject*>(gd2->ph_ref_object) : NULL;
+
+	if (!l_pOwner || l_pOwner != l_this->m_pOwner)
+		l_this->set_destroy_time(5);
 }
 
 void CMissile::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)

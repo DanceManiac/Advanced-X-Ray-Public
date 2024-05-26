@@ -14,6 +14,21 @@ struct predicate_remove_stat {
 	}
 };
 
+bool predicate_sort_stat(SDrawStaticStruct* s1, SDrawStaticStruct* s2)
+{
+	return (s1->IsActual() > s2->IsActual());
+}
+
+struct predicate_find_stat
+{
+	LPCSTR	m_id;
+	predicate_find_stat(LPCSTR id) :m_id(id) {}
+	bool	operator() (SDrawStaticStruct* s)
+	{
+		return (s->m_name == m_id);
+	}
+};
+
 CUIGameCustom::CUIGameCustom()
 {
 	uFlags					= 0;
@@ -48,18 +63,18 @@ bool g_b_ClearGameCaptions = false;
 
 void CUIGameCustom::OnFrame() 
 {
-	st_vec::iterator it = m_custom_statics.begin();
-	for(;it!=m_custom_statics.end();++it)
-		(*it).Update();
+	st_vec_it it = m_custom_statics.begin();
+	st_vec_it it_e = m_custom_statics.end();
+	for (; it != it_e; ++it)
+		(*it)->Update();
 
-	m_custom_statics.erase(
-		std::remove_if(
-			m_custom_statics.begin(),
-			m_custom_statics.end(),
-			predicate_remove_stat()
-		),
-		m_custom_statics.end()
-	);
+	std::sort(it, it_e, predicate_sort_stat);
+
+	while (!m_custom_statics.empty() && !m_custom_statics.back()->IsActual())
+	{
+		delete_data(m_custom_statics.back());
+		m_custom_statics.pop_back();
+	}
 	
 	if(g_b_ClearGameCaptions)
 	{
@@ -71,10 +86,11 @@ void CUIGameCustom::OnFrame()
 void CUIGameCustom::Render()
 {
 	GameCaptions()->Draw();
-	st_vec::iterator it = m_custom_statics.begin();
-	for(;it!=m_custom_statics.end();++it)
-		(*it).Draw();
 
+	st_vec_it it = m_custom_statics.begin();
+	st_vec_it it_e = m_custom_statics.end();
+	for (; it != it_e; ++it)
+		(*it)->Draw();
 }
 
 bool CUIGameCustom::IR_OnKeyboardPress(int dik) 
@@ -135,40 +151,42 @@ void CUIGameCustom::RemoveCustomMessage		(LPCSTR id)
 
 SDrawStaticStruct* CUIGameCustom::AddCustomStatic			(LPCSTR id, bool bSingleInstance)
 {
-	if(bSingleInstance){
-		st_vec::iterator it = std::find(m_custom_statics.begin(),m_custom_statics.end(), id);
-		if(it!=m_custom_statics.end())
-			return &(*it);
+	if (bSingleInstance)
+	{
+		st_vec::iterator it = std::find_if(m_custom_statics.begin(), m_custom_statics.end(), predicate_find_stat(id));
+		if (it != m_custom_statics.end())
+			return (*it);
 	}
-	
+
 	CUIXmlInit xml_init;
-	m_custom_statics.push_back		(SDrawStaticStruct());
-	SDrawStaticStruct& sss			= m_custom_statics.back();
+	m_custom_statics.push_back(xr_new<SDrawStaticStruct>());
+	SDrawStaticStruct* sss = m_custom_statics.back();
 
-	sss.m_static					= xr_new<CUIStatic>();
-	sss.m_name						= id;
-	xml_init.InitStatic				(*m_msgs_xml, id, 0, sss.m_static);
-	float ttl						= m_msgs_xml->ReadAttribFlt(id, 0, "ttl", -1);
-	if(ttl>0.0f)
-		sss.m_endTime				= Device.fTimeGlobal + ttl;
+	sss->m_static = xr_new<CUIStatic>();
+	sss->m_name = id;
+	xml_init.InitStatic(*m_msgs_xml, id, 0, sss->m_static);
+	float ttl = m_msgs_xml->ReadAttribFlt(id, 0, "ttl", -1);
+	if (ttl > 0.0f)
+		sss->m_endTime = Device.fTimeGlobal + ttl;
 
-	return &sss;
+	return sss;
 }
 
 SDrawStaticStruct* CUIGameCustom::GetCustomStatic		(LPCSTR id)
 {
-	st_vec::iterator it = std::find(m_custom_statics.begin(),m_custom_statics.end(), id);
-	if(it!=m_custom_statics.end()){
-		return &(*it);
-	}
+	st_vec::iterator it = std::find_if(m_custom_statics.begin(), m_custom_statics.end(), predicate_find_stat(id));
+	if (it != m_custom_statics.end())
+		return (*it);
+
 	return NULL;
 }
 
 void CUIGameCustom::RemoveCustomStatic		(LPCSTR id)
 {
-	st_vec::iterator it = std::find(m_custom_statics.begin(),m_custom_statics.end(), id);
-	if(it!=m_custom_statics.end()){
-		xr_delete((*it).m_static);
+	st_vec::iterator it = std::find_if(m_custom_statics.begin(), m_custom_statics.end(), predicate_find_stat(id));
+	if (it != m_custom_statics.end())
+	{
+		delete_data(*it);
 		m_custom_statics.erase(it);
 	}
 }

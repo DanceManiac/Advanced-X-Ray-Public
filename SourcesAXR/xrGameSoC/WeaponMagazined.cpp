@@ -18,6 +18,7 @@
 #include "object_broker.h"
 #include "string_table.h"
 #include "script_callback_ex.h"
+#include "script_game_object.h"
 #include "AdvancedXrayGameConstants.h"
 
 ENGINE_API  extern float psHUD_FOV;
@@ -221,6 +222,12 @@ bool CWeaponMagazined::IsAmmoAvailable()
 
 void CWeaponMagazined::OnMagazineEmpty() 
 {
+	if (IsGameTypeSingle() && ParentIsActor())
+	{
+		int AC = GetSuitableAmmoTotal();
+		Actor()->callback(GameObject::eOnWeaponMagazineEmpty)(lua_game_object(), AC);
+	}
+
 	//попытка стрелять когда нет патронов
 	if(GetState() == eIdle) 
 	{
@@ -260,6 +267,12 @@ void CWeaponMagazined::UnloadMagazine(bool spawn_ammo)
 
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
 	
+	if (IsGameTypeSingle() && ParentIsActor())
+	{
+		int AC = GetSuitableAmmoTotal();
+		Actor()->callback(GameObject::eOnWeaponMagazineEmpty)(lua_game_object(), AC);
+	}
+
 	if (!spawn_ammo)
 		return;
 
@@ -382,9 +395,15 @@ void CWeaponMagazined::OnStateSwitch	(u32 S)
 		switch2_Fire2	();
 		break;
 	case eMisfire:
-		if(smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity()==H_Parent()) )
+	{
+		//misfire
+		CGameObject* object = smart_cast<CGameObject*>(H_Parent());
+		if (object)
+			object->callback(GameObject::eOnWeaponJammed)(object->lua_game_object(), this->lua_game_object());
+
+		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
 			HUD().GetUI()->AddInfoMessage("gun_jammed");
-		break;
+	} break;
 	case eMagEmpty:
 		switch2_Empty	();
 		break;
@@ -567,6 +586,10 @@ void CWeaponMagazined::OnShot		()
 		if (ai().script_engine().functor("mfs_functions.on_actor_shoot", funct))
 			funct();
 	}
+
+	CGameObject* object = smart_cast<CGameObject*>(H_Parent());
+	if (object)
+		object->callback(GameObject::eOnWeaponFired)(object->lua_game_object(), this->lua_game_object(), iAmmoElapsed);
 }
 
 
@@ -1047,6 +1070,12 @@ void CWeaponMagazined::OnZoomIn			()
 	if(GetState() == eIdle)
 		PlayAnimIdle();
 
+	//Alundaio: callback not sure why vs2013 gives error, it's fine
+	CGameObject* object = smart_cast<CGameObject*>(H_Parent());
+
+	if (object)
+		object->callback(GameObject::eOnWeaponZoomIn)(object->lua_game_object(), this->lua_game_object());
+	//-Alundaio
 
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 	if(pActor)
@@ -1069,6 +1098,12 @@ void CWeaponMagazined::OnZoomOut		()
 
 	if(GetState() == eIdle)
 		PlayAnimIdle();
+
+	//Alundaio
+	CGameObject* object = smart_cast<CGameObject*>(H_Parent());
+	if (object)
+		object->callback(GameObject::eOnWeaponZoomOut)(object->lua_game_object(), this->lua_game_object());
+	//-Alundaio
 
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 	if(pActor)

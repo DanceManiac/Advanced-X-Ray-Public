@@ -885,7 +885,7 @@ int get_custom_timer(LPCSTR name)
 		return 0;
 	}
 
-	Actor()->TimerManager->GetTimerValue(name);
+	return Actor()->TimerManager->GetTimerValue(name);
 }
 
 u32 nearest_vertex_id(const Fvector& vec)

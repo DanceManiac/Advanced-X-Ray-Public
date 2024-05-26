@@ -28,6 +28,8 @@ static const float		OPTIMIZATION_DISTANCE		= 100.f;
 
 static bool stalker_use_dynamic_lights	= false;
 
+extern ENGINE_API bool ps_enchanted_shaders;
+
 CTorch::CTorch(void) 
 {
 	light_render				= ::Render->light_create();
@@ -183,6 +185,14 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	guid_bone													= K->LL_BoneID(pUserData->r_string(m_light_section, "guide_bone"));	VERIFY(guid_bone != BI_NONE);
 
 	Fcolor clr													= pUserData->r_fcolor(m_light_section, (b_r2) ? "color_r2" : "color");
+
+	if (!!psDeviceFlags.test(rsR4) && ps_enchanted_shaders)	//Костыль для нормализации яркости с Enchanted Shaders
+	{
+		clr.r *= 2.5f;
+		clr.g *= 2.5f;
+		clr.b *= 2.5f;
+	}
+
 	fBrightness				= clr.intensity();
 	float range = pUserData->r_float							(m_light_section, (b_r2) ? "range_r2" : "range");
 	light_render->set_color	(clr);

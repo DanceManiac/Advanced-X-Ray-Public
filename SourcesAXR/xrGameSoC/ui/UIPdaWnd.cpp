@@ -27,6 +27,8 @@
 #include "UIMainIngameWnd.h"
 #include "UITabButton.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 #define		PDA_XML					"pda.xml"
 u32			g_pda_info_state		= 0;
 
@@ -171,8 +173,9 @@ void CUIPdaWnd::Hide()
 	inherited::Hide();
 
 	InventoryUtilities::SendInfoToActor("ui_pda_hide");
-	HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
 
+	if (GameConstants::GetPDA_FlashingIconsQuestsEnabled())
+		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, false);
 }
 
 void CUIPdaWnd::UpdateDateTime()
@@ -277,7 +280,8 @@ void CUIPdaWnd::PdaContentsChanged	(pda_section::part type)
 		b = false;
 	}
 
-	if(b){
+	if(b && GameConstants::GetPDA_FlashingIconsQuestsEnabled())
+	{
 		g_pda_info_state |= type;
 		HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
 	}

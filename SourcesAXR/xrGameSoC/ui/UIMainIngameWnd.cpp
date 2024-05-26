@@ -54,6 +54,8 @@
 #include "UIColorAnimatorWrapper.h"
 #include "../game_news.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 #ifdef DEBUG
 #	include "../debug_renderer.h"
 
@@ -103,7 +105,10 @@ CUIMainIngameWnd::~CUIMainIngameWnd()
 {
 	DestroyFlashingIcons		();
 	xr_delete					(UIZoneMap);
-	xr_delete					(m_artefactPanel);
+
+	if (m_artefactPanel)
+		xr_delete				(m_artefactPanel);
+
 	xr_delete					(g_MissileForceShape);
 }
 
@@ -255,7 +260,7 @@ void CUIMainIngameWnd::Init()
 	AttachChild								(&UIMotionIcon);
 	UIMotionIcon.Init						();
 
-	if(IsGameTypeSingle())
+	if(GameConstants::GetArtefactPanelEnabled() && IsGameTypeSingle())
 	{
 		m_artefactPanel->InitFromXML		(uiXml, "artefact_panel", 0);
 		this->AttachChild					(m_artefactPanel);	
@@ -1007,6 +1012,9 @@ void CUIMainIngameWnd::TurnOffWarningIcon(EWarningIcons icon)
 
 void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 {
+	if (!GameConstants::GetPDA_FlashingIconsEnabled())
+		return;
+
 	// ¬ключаем анимацию требуемой иконки
 	FlashingIcons_it icon = m_FlashingIcons.find(type);
 	R_ASSERT2(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed");

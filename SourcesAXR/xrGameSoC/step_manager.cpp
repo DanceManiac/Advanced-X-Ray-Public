@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "step_manager_defs.h"
 #include "step_manager.h"
 #include "entity_alive.h"
@@ -9,6 +10,10 @@
 #include "material_manager.h"
 #include "profiler.h"
 #include "IKLimbsController.h"
+#include "actor.h"
+#include "script_callback_ex.h"
+#include "game_object_space.h"
+#include "script_game_object.h"
 
 CStepManager::CStepManager()
 {
@@ -149,6 +154,9 @@ void CStepManager::update()
 				sound_pos.y += 0.5;
 				GET_RANDOM(mtl_pair->StepSounds).play_no_feedback(m_object,0,0,&sound_pos,&m_step_info.params.step[i].power);
 			}
+
+			if (auto actor = smart_cast<CActor*>(m_object))
+				actor->callback(GameObject::eOnFootStep)(actor->lua_game_object(), m_step_info.params.step[i].power);
 
 			// Играть партиклы
 			if (!mtl_pair->CollideParticles.empty())	{

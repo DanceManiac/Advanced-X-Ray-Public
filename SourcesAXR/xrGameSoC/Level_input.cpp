@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include <dinput.h>
 #include "HUDmanager.h"
 #include "../xrEngine/xr_ioconsole.h"
@@ -28,6 +29,9 @@
 
 #include "embedded_editor/embedded_editor_main.h"
 
+#include "script_callback_ex.h"
+#include "script_game_object.h"
+
 #ifdef DEBUG
 #	include "ai/monsters/BaseMonster/base_monster.h"
 #endif
@@ -49,9 +53,17 @@ void CLevel::IR_OnMouseWheel( int direction )
 	if (Editor_MouseWheel(direction))
 		return;
 
-	if(	g_bDisableAllInput	) return;
+	if (g_bDisableAllInput)
+		return;
 
-	if (HUD().GetUI()->IR_OnMouseWheel(direction)) return;
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eMouseWheel)(direction);
+	/* avo: end */
+
+	if (HUD().GetUI()->IR_OnMouseWheel(direction))
+		return;
+
 	if( Device.Paused()		) return;
 
 	if (game && Game().IR_OnMouseWheel(direction) ) return;
@@ -78,8 +90,17 @@ void CLevel::IR_OnMouseMove( int dx, int dy )
 	if (Editor_MouseMove(dx, dy))
 		return;
 
-	if(g_bDisableAllInput)						return;
-	if (HUD().GetUI()->IR_OnMouseMove(dx,dy))	return;
+	if (g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eMouseMove)(dx, dy);
+	/* avo: end */
+
+	if (HUD().GetUI()->IR_OnMouseMove(dx, dy))
+		return;
+
 	if (Device.Paused())							return;
 	if (CURRENT_ENTITY())		{
 		IInputReceiver*		IR	= smart_cast<IInputReceiver*>	(smart_cast<CGameObject*>(CURRENT_ENTITY()));
@@ -110,6 +131,11 @@ void CLevel::IR_OnKeyboardPress	(int key)
 {
 	if (Editor_KeyPress(key))
 		return;
+
+	/* avo: script callback */
+	if (!g_bDisableAllInput && g_actor)
+		g_actor->callback(GameObject::eKeyPress)(key);
+	/* avo: end */
 
 	bool b_ui_exist = (g_hud && HUD().GetUI());
 
@@ -433,6 +459,11 @@ void CLevel::IR_OnKeyboardRelease(int key)
 	if (g_bDisableAllInput)
 		return;
 
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eKeyRelease)(key);
+	/* avo: end */
+
 	if (b_ui_exist && HUD().GetUI()->IR_OnKeyboardRelease(key))
 		return;
 
@@ -457,7 +488,13 @@ void CLevel::IR_OnKeyboardHold(int key)
 	if (Editor_KeyHold(key))
 		return;
 
-	if(g_bDisableAllInput) return;
+	if (g_bDisableAllInput)
+		return;
+
+	/* avo: script callback */
+	if (g_actor)
+		g_actor->callback(GameObject::eKeyHold)(key);
+	/* avo: end */
 
 	bool b_ui_exist = (g_hud && HUD().GetUI());
 

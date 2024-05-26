@@ -90,6 +90,38 @@ void CScriptGameObject::script_register(lua_State *L)
 				value("task_state",					int(GameObject::eTaskStateChange)),
 				value("take_item_from_box",			int(GameObject::eInvBoxItemTake)),
 				value("map_location_added",			int(GameObject::eMapLocationAdded)),
+
+				//Alundaio:
+				value("hud_animation_end",			int(GameObject::eActorHudAnimationEnd)),
+				//AVO: custom callbacks
+
+				// input
+				value("key_press",					int(GameObject::eKeyPress)),
+				value("key_release",				int(GameObject::eKeyRelease)),
+				value("key_hold",					int(GameObject::eKeyHold)),
+
+				value("mouse_move",					int(GameObject::eMouseMove)),
+				value("mouse_wheel",				int(GameObject::eMouseWheel)),
+
+				//weapon
+				value("weapon_fired",				int(GameObject::eOnWeaponFired)),
+				value("weapon_jammed",				int(GameObject::eOnWeaponJammed)),
+				value("weapon_zoom_in",				int(GameObject::eOnWeaponZoomIn)),
+				value("weapon_zoom_out",			int(GameObject::eOnWeaponZoomOut)),
+				value("weapon_magazine_empty",		int(GameObject::eOnWeaponMagazineEmpty)),
+				//value("weapon_lowered",				int(GameObject::eOnWeaponLowered)),	 //For safemode
+				//value("weapon_raised",				int(GameObject::eOnWeaponRaised)),	 //For safemode
+
+				// inventory
+				value("item_to_belt",				int(GameObject::eItemToBelt)),
+				value("item_to_slot",				int(GameObject::eItemToSlot)),
+				value("item_to_ruck",				int(GameObject::eItemToRuck)),
+
+				//-AVO
+				value("on_foot_step",				int(GameObject::eOnFootStep)),
+				//Dance Maniac
+				value("on_actor_jump",				int(GameObject::eOnActorJump)),
+
 				// vehicle
 				value("on_attach_vehicle",			int(GameObject::eAttachVehicle)),
 				value("on_detach_vehicle",			int(GameObject::eDetachVehicle)),

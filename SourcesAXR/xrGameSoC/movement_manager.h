@@ -256,7 +256,7 @@ public:
 	virtual	void					on_restrictions_change		();
 
 			u8						grassbender_id{};
-			u32						grassbender_frame;
+			u32						grassbender_frame{};
 };
 
 #include "movement_manager_inline.h"
