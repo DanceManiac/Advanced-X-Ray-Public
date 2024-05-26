@@ -228,7 +228,7 @@ void CInventoryItem::UpdateCL()
 {
 #ifdef DEBUG
 	if(bDebug){
-		if (dbg_net_Draw_Flags.test(1<<4) )
+		if (dbg_net_Draw_Flags.test(dbg_draw_invitem) )
 		{
 			Device.seqRender.Remove(this);
 			Device.seqRender.Add(this);
@@ -970,7 +970,7 @@ void CInventoryItem::OnRender()
 {
 	if (bDebug && object().Visual())
 	{
-		if (!(dbg_net_Draw_Flags.is_any((1<<4)))) return;
+		if (!(dbg_net_Draw_Flags.is_any(dbg_draw_invitem))) return;
 
 		Fvector bc,bd; 
 		object().Visual()->getVisData().box.get_CD	(bc,bd);

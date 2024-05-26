@@ -1223,7 +1223,7 @@ extern	Flags32	dbg_net_Draw_Flags;
 void game_sv_ArtefactHunt::OnRender				()
 {
 
-	if (dbg_net_Draw_Flags.test(1<<9))
+	if (dbg_net_Draw_Flags.test(dbg_draw_rp))
 	{
 		Fmatrix T; T.identity();
 		Fvector V0, V1;
