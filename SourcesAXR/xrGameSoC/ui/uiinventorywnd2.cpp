@@ -32,16 +32,12 @@ void CUIInventoryWnd::SetCurrentItem(CUICellItem* itm)
 
 void CUIInventoryWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
-	if(pWnd == &UIPropertiesBox &&	msg==PROPERTY_CLICKED)
-	{
-		ProcessPropertiesBoxClicked	();
-	}else 
-	if (UIExitButton == pWnd && BUTTON_CLICKED == msg)
-	{
-		GetHolder()->StartStopMenu			(this,true);
-	}
+	CUIWndCallback::OnEvent(pWnd, msg, pData);
+}
 
-	CUIWindow::SendMessage(pWnd, msg, pData);
+void CUIInventoryWnd::OnExitBtnClicked(CUIWindow* w, void* d)
+{
+	GetHolder()->StartStopMenu(this, true);
 }
 
 
@@ -57,7 +53,7 @@ void CUIInventoryWnd::InitInventory()
 
 	m_pInv						= &pInvOwner->inventory();
 
-	UIPropertiesBox.Hide		();
+	UIPropertiesBox->Hide		();
 	ClearAllLists				();
 	m_pMouseCapturer			= NULL;
 	SetCurrentItem				(NULL);
@@ -295,7 +291,7 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 
 bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 {
-	if(TryUseItem((PIItem)itm->m_pData))		
+	if (TryUseItem(itm))		
 		return true;
 
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();

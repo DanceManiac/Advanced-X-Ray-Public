@@ -153,9 +153,12 @@ void CUIInventoryWnd::Init()
 	BindDragDropListEnents				(m_pUIAutomaticList);
 
 	//pop-up menu
-	AttachChild							(&UIPropertiesBox);
-	UIPropertiesBox.Init				(0,0,300,300);
-	UIPropertiesBox.Hide				();
+	UIPropertiesBox							= xr_new <CUIPropertiesBox>();
+	AttachChild								(UIPropertiesBox);
+	UIPropertiesBox->SetAutoDelete			(true);
+	UIPropertiesBox->Init					(0,0,300,300);
+	UIPropertiesBox->Hide					();
+	UIPropertiesBox->SetWindowName			("property_box");
 
 	AttachChild							(&UIStaticTime);
 	xml_init.InitStatic					(uiXml, "time_static", 0, &UIStaticTime);
@@ -163,9 +166,13 @@ void CUIInventoryWnd::Init()
 	UIStaticTime.AttachChild			(&UIStaticTimeString);
 	xml_init.InitStatic					(uiXml, "time_static_str", 0, &UIStaticTimeString);
 
-	UIExitButton						= xr_new<CUI3tButton>();UIExitButton->SetAutoDelete(true);
+	UIExitButton						= xr_new<CUI3tButton>();
+	UIExitButton->SetAutoDelete			(true);
 	AttachChild							(UIExitButton);
 	xml_init.Init3tButton				(uiXml, "exit_button", 0, UIExitButton);
+	UIExitButton->SetWindowName			("exit_button");
+
+	InitCallbacks						();
 
 //Load sounds
 
@@ -183,6 +190,15 @@ void CUIInventoryWnd::Init()
 	::Sound->create						(sounds[eInvItemUse],		uiXml.Read("snd_item_use",		0,	NULL),st_Effect,sg_SourceType);
 
 	uiXml.SetLocalRoot					(stored_root);
+}
+
+void CUIInventoryWnd::InitCallbacks()
+{
+	Register(UIPropertiesBox);
+	Register(UIExitButton);
+
+	AddCallback(UIPropertiesBox->WindowName(), PROPERTY_CLICKED, CUIWndCallback::void_function(this, &CUIInventoryWnd::ProcessPropertiesBoxClicked));
+	AddCallback(UIExitButton->WindowName(), BUTTON_CLICKED, CUIWndCallback::void_function(this, &CUIInventoryWnd::OnExitBtnClicked));
 }
 
 EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
@@ -218,11 +234,11 @@ bool CUIInventoryWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
 		return true;
 
 	//вызов дополнительного меню по правой кнопке
-	if(mouse_action == WINDOW_RBUTTON_DOWN)
+	if (mouse_action == WINDOW_RBUTTON_DOWN)
 	{
-		if(UIPropertiesBox.IsShown())
+		if (UIPropertiesBox->IsShown())
 		{
-			UIPropertiesBox.Hide		();
+			UIPropertiesBox->Hide		();
 			return						true;
 		}
 	}
@@ -371,17 +387,25 @@ void CUIInventoryWnd::AttachAddon(PIItem item_to_upgrade)
 	SetCurrentItem								(NULL);
 }
 
-void CUIInventoryWnd::DetachAddon(const char* addon_name)
+void CUIInventoryWnd::DetachAddon(LPCSTR addon_name, PIItem itm)
 {
 	PlaySnd										(eInvDetachAddon);
 	if (OnClient())
 	{
 		NET_Packet								P;
-		CurrentIItem()->object().u_EventGen		(P, GE_ADDON_DETACH, CurrentIItem()->object().ID());
-		P.w_stringZ								(addon_name);
-		CurrentIItem()->object().u_EventSend	(P);
-	};
-	CurrentIItem()->Detach						(addon_name, true);
+		if (itm == NULL)
+			CGameObject::u_EventGen(P, GE_ADDON_DETACH, CurrentIItem()->object().ID());
+		else
+			CGameObject::u_EventGen(P, GE_ADDON_DETACH, itm->object().ID());
+
+		P.w_stringZ(addon_name);
+		CGameObject::u_EventSend(P);
+		return;
+	}
+	if (itm == NULL)
+		CurrentIItem()->Detach(addon_name, true);
+	else
+		itm->Detach(addon_name, true);
 
 	//спрятать вещь из активного слота в инвентарь на время вызова менюшки
 	CActor *pActor								= smart_cast<CActor*>(Level().CurrentEntity());
@@ -471,12 +495,12 @@ bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	if(m_b_need_reinit)
 		return true;
 
-	if (UIPropertiesBox.GetVisible())
-		UIPropertiesBox.OnKeyboardAction(dik, keyboard_action);
+	if (UIPropertiesBox->GetVisible())
+		UIPropertiesBox->OnKeyboardAction(dik, keyboard_action);
 
-	if ( is_binded(kDROP, dik) )
+	if (is_binded(kDROP, dik))
 	{
-		if(WINDOW_KEY_PRESSED==keyboard_action)
+		if (WINDOW_KEY_PRESSED==keyboard_action)
 			DropCurrentItem(false);
 		return true;
 	}

@@ -12,6 +12,7 @@ class CInventory;
 
 #include "UIActorStats.h"
 #include "UIItemInfo.h"
+#include "UIWndCallback.h"
 #include "../inventory_space.h"
 
 class CArtefact;
@@ -19,7 +20,7 @@ class CUI3tButton;
 class CUIDragDropListEx;
 class CUICellItem;
 
-class CUIInventoryWnd: public CUIDialogWnd
+class CUIInventoryWnd : public CUIDialogWnd, public CUIWndCallback
 {
 private:
 	typedef CUIDialogWnd	inherited;
@@ -30,13 +31,15 @@ public:
 
 	virtual void			Init						();
 
+	void					InitCallbacks				();
+
 	void					InitInventory				();
 	void					InitInventory_delayed		();
 	virtual bool			StopAnyMove					()					{return false;}
 
 	virtual void			SendMessage					(CUIWindow *pWnd, s16 msg, void *pData);
-	virtual bool			OnMouseAction						(float x, float y, EUIMessages mouse_action);
-	virtual bool			OnKeyboardAction					(int dik, EUIMessages keyboard_action);
+	virtual bool			OnMouseAction				(float x, float y, EUIMessages mouse_action);
+	virtual bool			OnKeyboardAction			(int dik, EUIMessages keyboard_action);
 
 
 	IC CInventory*			GetInventory				()					{return m_pInv;}
@@ -108,7 +111,7 @@ protected:
 	CUIProgressBar				UIProgressBarRadiation;
 	CUIProgressBar				UIProgressBarRank;
 
-	CUIPropertiesBox			UIPropertiesBox;
+	CUIPropertiesBox*			UIPropertiesBox;
 	
 	//информация о персонаже
 	CUIActorStats				UIActorStats;
@@ -119,7 +122,13 @@ protected:
 	CUICellItem*				m_pCurrentCellItem;
 
 	bool						DropItem					(PIItem itm, CUIDragDropListEx* lst);
-	bool						TryUseItem					(PIItem itm);
+	void						PropertiesBoxForUsing		(PIItem item, bool& b_show);
+	void						PropertiesBoxForSlots		(PIItem item, bool& b_show);
+	void						PropertiesBoxForWeapon		(CUICellItem* cell_item, PIItem item, bool& b_show);
+	void						PropertiesBoxForAddon		(PIItem item, bool& b_show);
+	void						PropertiesBoxForDrop		(CUICellItem* cell_item, PIItem item, bool& b_show);
+	void						ActivatePropertiesBox		();
+	bool						TryUseItem					(CUICellItem* cell_itm);
 	//----------------------	-----------------------------------------------
 	void						SendEvent_Item2Slot			(PIItem	pItem);
 	void						SendEvent_Item2Belt			(PIItem	pItem);
@@ -129,9 +138,9 @@ protected:
 	void						SendEvent_ActivateSlot		(PIItem	pItem);
 
 	//---------------------------------------------------------------------
-
-	void						ProcessPropertiesBoxClicked	();
-	void						ActivatePropertiesBox		();
+	
+	void		xr_stdcall		ProcessPropertiesBoxClicked	(CUIWindow* w, void* d);
+	void		xr_stdcall		OnExitBtnClicked			(CUIWindow* w, void* d);
 
 	void						DropCurrentItem				(bool b_all);
 	void						EatItem						(PIItem itm);
@@ -142,7 +151,7 @@ protected:
 
 
 	void						AttachAddon					(PIItem item_to_upgrade);
-	void						DetachAddon					(const char* addon_name);
+	void						DetachAddon					(LPCSTR addon_name, PIItem itm = NULL);
 
 	void						SetCurrentItem				(CUICellItem* itm);
 	CUICellItem*				CurrentItem					();
