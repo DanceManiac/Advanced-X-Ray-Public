@@ -21,6 +21,8 @@ CUILines::CUILines()
 	m_eTextAlign = CGameFont::alLeft;
 	m_eVTextAlign = valTop;
 	m_dwTextColor = 0xffffffff;
+	m_wndPos.set(0.f, 0.f);
+	m_wndSize.set(0.f, 0.f);
 	m_dwCursorColor = 0xAAFFFF00;
 
 	m_bShowMe = true;
