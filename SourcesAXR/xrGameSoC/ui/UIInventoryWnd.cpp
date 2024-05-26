@@ -34,10 +34,10 @@ using namespace InventoryUtilities;
 #include "UIOutfitSlot.h"
 #include "UI3tButton.h"
 
+#include "AdvancedXrayGameConstants.h"
+
 #define				INVENTORY_ITEM_XML		"inventory_item.xml"
 #define				INVENTORY_XML			"inventory_new.xml"
-
-
 
 CUIInventoryWnd*	g_pInvWnd = NULL;
 
@@ -152,6 +152,69 @@ void CUIInventoryWnd::Init()
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_automatic", 0, m_pUIAutomaticList);
 	BindDragDropListEnents				(m_pUIAutomaticList);
 
+	if (GameConstants::GetKnifeSlotEnabled())
+	{
+		m_pUIKnifeList					= xr_new<CUIDragDropListEx>();
+		AttachChild						(m_pUIKnifeList);
+		m_pUIKnifeList->SetAutoDelete	(true);
+		xml_init.InitDragDropListEx		(uiXml, "dragdrop_knife", 0, m_pUIKnifeList);
+		BindDragDropListEnents			(m_pUIKnifeList);
+	}
+
+	if (GameConstants::GetTorchSlotEnabled())
+	{
+		m_pUITorchList					= xr_new<CUIDragDropListEx>();
+		AttachChild						(m_pUITorchList);
+		m_pUITorchList->SetAutoDelete	(true);
+		xml_init.InitDragDropListEx		(uiXml, "dragdrop_torch", 0, m_pUITorchList);
+		BindDragDropListEnents			(m_pUITorchList);
+	}
+
+	if (GameConstants::GetBinocularSlotEnabled())
+	{
+		m_pUIBinocularList				= xr_new<CUIDragDropListEx>();
+		AttachChild						(m_pUIBinocularList);
+		m_pUIBinocularList->SetAutoDelete(true);
+		xml_init.InitDragDropListEx		(uiXml, "dragdrop_binocular", 0, m_pUIBinocularList);
+		BindDragDropListEnents			(m_pUIBinocularList);
+	}
+
+	if (GameConstants::GetPdaSlotEnabled())
+	{
+		m_pUIPdaList					= xr_new<CUIDragDropListEx>();
+		AttachChild						(m_pUIPdaList);
+		m_pUIPdaList->SetAutoDelete(true);
+		xml_init.InitDragDropListEx		(uiXml, "dragdrop_pda", 0, m_pUIPdaList);
+		BindDragDropListEnents			(m_pUIPdaList);
+	}
+
+	if (GameConstants::GetDosimeterSlotEnabled())
+	{
+		m_pUIDosimeterList				= xr_new<CUIDragDropListEx>();
+		AttachChild						(m_pUIDosimeterList);
+		m_pUIDosimeterList->SetAutoDelete(true);
+		xml_init.InitDragDropListEx		(uiXml, "dragdrop_dosimeter", 0, m_pUIDosimeterList);
+		BindDragDropListEnents			(m_pUIDosimeterList);
+	}
+
+	if (GameConstants::GetBackpackSlotEnabled())
+	{
+		m_pUIBackpackList				= xr_new<CUIDragDropListEx>();
+		AttachChild						(m_pUIBackpackList);
+		m_pUIBackpackList->SetAutoDelete(true);
+		xml_init.InitDragDropListEx		(uiXml, "dragdrop_backpack", 0, m_pUIBackpackList);
+		BindDragDropListEnents			(m_pUIBackpackList);
+	}
+
+	if (GameConstants::GetPantsSlotEnabled())
+	{
+		m_pUIPantsList					= xr_new<CUIDragDropListEx>();
+		AttachChild						(m_pUIPantsList);
+		m_pUIPantsList->SetAutoDelete	(true);
+		xml_init.InitDragDropListEx		(uiXml, "dragdrop_pants", 0, m_pUIPantsList);
+		BindDragDropListEnents			(m_pUIPantsList);
+	}
+
 	//pop-up menu
 	UIPropertiesBox							= xr_new <CUIPropertiesBox>();
 	AttachChild								(UIPropertiesBox);
@@ -209,6 +272,27 @@ EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 	if(l==m_pUIAutomaticList)	return iwSlot;
 	if(l==m_pUIPistolList)		return iwSlot;
 	if(l==m_pUIOutfitList)		return iwSlot;
+
+	if (m_pUIKnifeList && l == m_pUIKnifeList)
+		return iwSlot;
+
+	if (m_pUITorchList && l == m_pUITorchList)
+		return iwSlot;
+	
+	if (m_pUIBinocularList && l == m_pUIBinocularList)
+		return iwSlot;
+
+	if (m_pUIPdaList && l == m_pUIPdaList)
+		return iwSlot;
+	
+	if (m_pUIDosimeterList && l == m_pUIDosimeterList)
+		return iwSlot;
+	
+	if (m_pUIBackpackList && l == m_pUIBackpackList)
+		return iwSlot;
+
+	if (m_pUIPantsList && l == m_pUIPantsList)
+		return iwSlot;
 
 	NODEFAULT;
 #ifdef DEBUG

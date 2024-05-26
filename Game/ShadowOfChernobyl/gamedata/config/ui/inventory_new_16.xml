@@ -37,6 +37,33 @@
             cell_width="39" cell_height="52" rows_num="2" cols_num="6"
             custom_placement="0"/>
 
+	<dragdrop_knife x="64" y="64" width="117" height="104"
+            cell_width="39" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_torch x="64" y="64" width="117" height="104"
+            cell_width="39" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_binocular x="64" y="64" width="117" height="104"
+            cell_width="39" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_pda x="64" y="64" width="117" height="104"
+            cell_width="39" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_dosimeter x="64" y="64" width="117" height="104"
+            cell_width="39" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_backpack x="64" y="64" width="117" height="104"
+            cell_width="39" cell_height="52" rows_num="2" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_pants x="64" y="64" width="117" height="104"
+            cell_width="39" cell_height="52" rows_num="2" cols_num="2"
+            custom_placement="0"/>
 
 	<bottom_static x="0" y="736" width="1024" height="32" stretch="1">
 		<texture>ui\ui_bottom_background</texture>

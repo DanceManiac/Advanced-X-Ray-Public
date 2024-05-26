@@ -66,12 +66,81 @@ void CUIInventoryWnd::InitInventory()
 		m_pUIPistolList->SetItem		(itm);
 	}
 
-
 	_itm								= m_pInv->m_slots[RIFLE_SLOT].m_pIItem;
 	if(_itm)
 	{
 		CUICellItem* itm				= create_cell_item(_itm);
 		m_pUIAutomaticList->SetItem		(itm);
+	}
+
+	if (m_pUIKnifeList)
+	{
+		_itm = m_pInv->m_slots[KNIFE_SLOT].m_pIItem;
+		if (_itm)
+		{
+			CUICellItem* itm = create_cell_item(_itm);
+			m_pUIKnifeList->SetItem(itm);
+		}
+	}
+	
+	if (m_pUITorchList)
+	{
+		_itm = m_pInv->m_slots[TORCH_SLOT].m_pIItem;
+		if (_itm)
+		{
+			CUICellItem* itm = create_cell_item(_itm);
+			m_pUITorchList->SetItem(itm);
+		}
+	}
+	
+	if (m_pUIBinocularList)
+	{
+		_itm = m_pInv->m_slots[APPARATUS_SLOT].m_pIItem;
+		if (_itm)
+		{
+			CUICellItem* itm = create_cell_item(_itm);
+			m_pUIBinocularList->SetItem(itm);
+		}
+	}
+
+	if (m_pUIPdaList)
+	{
+		_itm = m_pInv->m_slots[PDA_SLOT].m_pIItem;
+		if (_itm)
+		{
+			CUICellItem* itm = create_cell_item(_itm);
+			m_pUIPdaList->SetItem(itm);
+		}
+	}
+
+	if (m_pUIDosimeterList)
+	{
+		_itm = m_pInv->m_slots[DETECTOR_SLOT].m_pIItem;
+		if (_itm)
+		{
+			CUICellItem* itm = create_cell_item(_itm);
+			m_pUIDosimeterList->SetItem(itm);
+		}
+	}
+	
+	if (m_pUIBackpackList)
+	{
+		_itm = m_pInv->m_slots[BACKPACK_SLOT].m_pIItem;
+		if (_itm)
+		{
+			CUICellItem* itm = create_cell_item(_itm);
+			m_pUIBackpackList->SetItem(itm);
+		}
+	}
+
+	if (m_pUIPantsList)
+	{
+		_itm = m_pInv->m_slots[PANTS_SLOT].m_pIItem;
+		if (_itm)
+		{
+			CUICellItem* itm = create_cell_item(_itm);
+			m_pUIPantsList->SetItem(itm);
+		}
 	}
 
 	PIItem _outfit						= m_pInv->m_slots[OUTFIT_SLOT].m_pIItem;
@@ -342,6 +411,62 @@ CUIDragDropListEx* CUIInventoryWnd::GetSlotList(u32 slot_idx)
 			return m_pUIOutfitList;
 			break;
 
+		case KNIFE_SLOT:
+		{
+			if (m_pUIKnifeList)
+				return m_pUIKnifeList;
+
+			return nullptr;
+		} break;
+		
+		case TORCH_SLOT:
+		{
+			if (m_pUITorchList)
+				return m_pUITorchList;
+
+			return nullptr;
+		} break;
+
+		case APPARATUS_SLOT:
+		{
+			if (m_pUIBinocularList)
+				return m_pUIBinocularList;
+
+			return nullptr;
+		} break;
+
+		case PDA_SLOT:
+		{
+			if (m_pUIPdaList)
+				return m_pUIPdaList;
+
+			return nullptr;
+		} break;
+		
+		case DETECTOR_SLOT:
+		{
+			if (m_pUIDosimeterList)
+				return m_pUIDosimeterList;
+
+			return nullptr;
+		} break;
+		
+		case BACKPACK_SLOT:
+		{
+			if (m_pUIBackpackList)
+				return m_pUIBackpackList;
+
+			return nullptr;
+		} break;
+
+		case PANTS_SLOT:
+		{
+			if (m_pUIPantsList)
+				return m_pUIPantsList;
+
+			return nullptr;
+		} break;
+
 	};
 	return NULL;
 }
@@ -355,4 +480,25 @@ void CUIInventoryWnd::ClearAllLists()
 	m_pUIOutfitList->ClearAll				(true);
 	m_pUIPistolList->ClearAll				(true);
 	m_pUIAutomaticList->ClearAll			(true);
+
+	if (m_pUIKnifeList)
+		m_pUIKnifeList->ClearAll			(true);
+	
+	if (m_pUITorchList)
+		m_pUITorchList->ClearAll			(true);
+	
+	if (m_pUIBinocularList)
+		m_pUIBinocularList->ClearAll		(true);
+
+	if (m_pUIPdaList)
+		m_pUIPdaList->ClearAll				(true);
+
+	if (m_pUIDosimeterList)
+		m_pUIDosimeterList->ClearAll		(true);
+	
+	if (m_pUIBackpackList)
+		m_pUIBackpackList->ClearAll			(true);	
+	
+	if (m_pUIPantsList)
+		m_pUIPantsList->ClearAll			(true);
 }

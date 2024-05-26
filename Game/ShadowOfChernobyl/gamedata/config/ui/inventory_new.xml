@@ -40,11 +40,35 @@
     <dragdrop_automatic x="237" y="118" width="312" height="104"
             cell_width = "52" cell_height="52" rows_num="2" cols_num="6"
             custom_placement="0"/>
+			
+	<dragdrop_knife x="64" y="64" width="156" height="104"
+            cell_width = "52" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_torch x="64" y="64" width="156" height="104"
+            cell_width = "52" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_binocular x="64" y="64" width="156" height="104"
+            cell_width = "52" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_pda x="64" y="64" width="156" height="104"
+            cell_width = "52" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_dosimeter x="64" y="64" width="156" height="104"
+            cell_width = "52" cell_height="52" rows_num="1" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_backpack x="64" y="64" width="156" height="104"
+            cell_width = "52" cell_height="52" rows_num="2" cols_num="2"
+            custom_placement="0"/>
+			
+	<dragdrop_pants x="64" y="64" width="156" height="104"
+            cell_width = "52" cell_height="52" rows_num="2" cols_num="2"
+            custom_placement="0"/>
 
-
-
-
-	
     <bag_static x="15" y="240" width="350" height="480" complex_mode="1">		
         <text x="30" y="8" font="graffiti22" r="231" g="153" b="22">ui_inv_bag</text>
     </bag_static>

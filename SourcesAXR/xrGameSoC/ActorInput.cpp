@@ -436,6 +436,8 @@ static	u32 SlotsToCheck [] = {
 		GRENADE_SLOT	,		// 3
 		APPARATUS_SLOT	,		// 4
 		ARTEFACT_SLOT	,		// 10
+		PDA_SLOT		,
+		BACKPACK_SLOT	,
 };
 
 void	CActor::OnNextWeaponSlot()

@@ -965,6 +965,12 @@ bool CUIBuyWnd::CanPutInBelt(CInventoryItem* iitem)
 
 	else if (OUTFIT_SLOT == iitem->GetSlot())
 		return false;
+	
+	else if (BACKPACK_SLOT == iitem->GetSlot())
+		return false;
+	
+	else if (PANTS_SLOT == iitem->GetSlot())
+		return false;
 
 	return true;
 }

@@ -91,6 +91,16 @@ protected:
 	CUIDragDropListEx*			m_pUIPistolList;
 	CUIDragDropListEx*			m_pUIAutomaticList;
 	CUIOutfitDragDropList*		m_pUIOutfitList;
+
+	// M.F.S. Team: New Slots
+	CUIDragDropListEx*			m_pUIKnifeList;
+	CUIDragDropListEx*			m_pUITorchList;
+	CUIDragDropListEx*			m_pUIBinocularList;
+	CUIDragDropListEx*			m_pUIPdaList;
+	CUIDragDropListEx*			m_pUIDosimeterList;
+	CUIDragDropListEx*			m_pUIBackpackList;
+	CUIDragDropListEx*			m_pUIPantsList;
+
 	void						ClearAllLists				();
 	void						BindDragDropListEnents		(CUIDragDropListEx* lst);
 	
