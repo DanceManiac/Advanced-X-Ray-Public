@@ -275,6 +275,8 @@ class_<CScriptGameObject> script_register_game_object1(class_<CScriptGameObject>
 		.def("debug_planner",				&CScriptGameObject::debug_planner)
 #endif // DEBUG
 		.def("invulnerable",				(bool (CScriptGameObject::*)() const)&CScriptGameObject::invulnerable)
-		.def("invulnerable",				(void (CScriptGameObject::*)(bool))&CScriptGameObject::invulnerable);
+		.def("invulnerable",				(void (CScriptGameObject::*)(bool))&CScriptGameObject::invulnerable)
 
+		.def("set_visual_name",				&CScriptGameObject::set_visual_name)
+        .def("get_visual_name",				&CScriptGameObject::get_visual_name);
 }

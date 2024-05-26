@@ -60,6 +60,8 @@
 #include "../../agent_member_manager.h"
 #include "../../location_manager.h"
 
+#include "../xrEngine/CameraBase.h"
+
 #ifdef DEBUG
 #	include "../../alife_simulator.h"
 #	include "../../alife_object_registry.h"
@@ -85,6 +87,13 @@ CAI_Stalker::CAI_Stalker			()
 #endif // DEBUG
 	m_registered_in_combat_on_migration	= false;
 	m_bLastHittedInHead				= false;
+
+	savedOrientation				= { 0.f, 0.f, 0.f };
+	dTimeFSeen						= Device.dwTimeGlobal + 1000;
+	dTimeNfSeen						= Device.dwTimeGlobal + 1000;
+	targetPitch						= 0.0f;
+	targetRoll						= 0.0f;
+	targetNormal					= { 0.f, 0.f, 0.f };
 }
 
 CAI_Stalker::~CAI_Stalker			()
@@ -184,6 +193,8 @@ void CAI_Stalker::reinit			()
 	m_sight_enabled_before_animation_controller		= true;
 	m_update_rotation_on_frame						= false;
 	m_bLastHittedInHead								= false;
+
+	m_iAcceptableItemCost							= 0;
 }
 
 void CAI_Stalker::LoadSounds		(LPCSTR section)
@@ -327,6 +338,103 @@ void CAI_Stalker::Load				(LPCSTR section)
 	m_pPhysics_support->in_Load		(section);
 
 	m_can_select_items				= !!pSettings->r_bool(section,"can_select_items");
+
+	m_iAcceptableItemCost = READ_IF_EXISTS(pSettings, r_u32, section, "acceptable_item_cost", 0);
+
+	LPCSTR can_picked_items = READ_IF_EXISTS(pSettings, r_string, section, "can_picked_items", "");
+
+	if (can_picked_items && can_picked_items[0])
+	{
+		string128 can_picked_items_sect;
+		int count = _GetItemCount(can_picked_items);
+
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(can_picked_items, it, can_picked_items_sect);
+
+			m_sCanPickedItemsVec.push_back(can_picked_items_sect);
+		}
+	}
+}
+
+void CAI_Stalker::BoneCallback(CBoneInstance* B)
+{
+	CAI_Stalker* this_class = static_cast<CAI_Stalker*>(B->callback_param());
+
+	this_class->LookAtActor(B);
+	R_ASSERT2(_valid(B->mTransform), "CAI_Stalker::BoneCallback");
+}
+
+void CAI_Stalker::LookAtActor(CBoneInstance* headBone)
+{
+	if (!g_Alive() || !Actor() || wounded())
+		return;
+
+	auto adjustHeadOrientation = [&](float targetPitch, float targetYaw, float targetRoll)
+	{
+		savedOrientation.x = angle_inertion(savedOrientation.x, targetPitch, angle_difference(savedOrientation.x, targetPitch), PI_MUL_2, Device.fTimeDelta);
+		savedOrientation.y = angle_inertion(savedOrientation.y, targetYaw, angle_difference(savedOrientation.y, targetYaw), PI_MUL_2, Device.fTimeDelta);
+		savedOrientation.z = angle_inertion(savedOrientation.z, targetRoll, angle_difference(savedOrientation.z, targetRoll), PI_MUL_2, Device.fTimeDelta);
+	};
+
+	if (Actor()->Position().distance_to(Position()) > 4.f)
+	{
+		adjustHeadOrientation(0.f, 0.f, 0.f);
+		Fmatrix M;
+		M.setHPB(VPUSH(savedOrientation));
+		headBone->mTransform.mulB_43(M);
+		return;
+	}
+
+	if (memory().visual().visible_right_now(Actor()))
+	{
+		Fmatrix actorHead;
+		smart_cast<IKinematics*>(Actor()->Visual())->Bone_GetAnimPos(actorHead, u16(Actor()->m_head), u8(-1), false);
+		actorHead.mulA_43(Actor()->XFORM());
+
+		Fmatrix myHead = headBone->mTransform;
+		myHead.mulA_43(XFORM());
+		myHead.c.mad(myHead.i, .15f);
+
+		Fvector dir, cam_pos = Actor()->HUDview() ? Actor()->cam_FirstEye()->Position() : actorHead.c;
+		dir.sub(cam_pos, myHead.c).normalize();
+
+		Fmatrix target_matrix;
+		target_matrix.identity();
+		target_matrix.k.set(dir);
+		Fvector::generate_orthonormal_basis_normalized(target_matrix.k, target_matrix.i, target_matrix.j);
+		target_matrix.j.invert();
+		target_matrix.mulA_43(Fmatrix(headBone->mTransform).mulA_43(XFORM()).invert());
+
+		float yaw, pitch, roll;
+		target_matrix.getHPB(pitch, yaw, roll);
+
+		clamp(pitch, -0.75f, 0.7f);
+		clamp(yaw, -1.0f, 1.0f);
+		clamp(roll, -0.4f, 0.4f);
+
+		bool inRange = (pitch > -0.7f && pitch < 0.65f) && (yaw > -0.9f && yaw < 0.9f) && (roll > -0.35f && roll < 0.35f);
+
+		if (inRange && dTimeNfSeen < Device.dwTimeGlobal)
+		{
+			dTimeFSeen = Device.dwTimeGlobal + 1000;
+			adjustHeadOrientation(pitch, yaw, roll);
+		}
+
+		bool outOfRange = !(pitch > -0.75f && pitch < 0.7f) && !(yaw > -1.2f && yaw < 1.2f) && !(roll > -0.5f && roll < 0.5f);
+
+		if (outOfRange && dTimeFSeen < Device.dwTimeGlobal)
+		{
+			dTimeNfSeen = Device.dwTimeGlobal + 1000;
+			adjustHeadOrientation(0.f, 0.f, 0.f);
+		}
+	}
+	else
+		adjustHeadOrientation(0.f, 0.f, 0.f); // Reset if actor not visible
+
+	Fmatrix M;
+	M.setHPB(VPUSH(savedOrientation));
+	headBone->mTransform.mulB_43(M);
 }
 
 BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
@@ -449,6 +557,9 @@ BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
 		movement().locations().Load(*SpecificCharacter().terrain_sect());
 	}
 	
+	CBoneInstance* bone_head = &smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(smart_cast<IKinematics*>(Visual())->LL_BoneID("bip01_head"));
+	bone_head->set_callback(bctCustom, BoneCallback, this);
+
 	m_pPhysics_support->in_NetSpawn	(e);
 
 	return							(TRUE);
@@ -1111,5 +1222,25 @@ void CAI_Stalker::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)
 			bone_sect = ini->r_string("bone_protection", "bones_protection_sect");
 			m_boneHitProtection->reload(bone_sect, pKinematics);
 		}
+	}
+}
+
+void CAI_Stalker::ReloadDamageAndAnimations()
+{
+	IKinematicsAnimated* V = smart_cast<IKinematicsAnimated*>(Visual());
+	if (V)
+	{
+		if (!g_Alive())
+		{
+			//m_pPhysics_support->in_Die(false);
+		}
+		else
+			CStepManager::reload(cNameSect().c_str());
+
+		CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
+		ResetBoneProtections(NULL, NULL);
+		reattach_items();
+		m_pPhysics_support->in_ChangeVisual();
+		animation().reload(this);
 	}
 }

@@ -40,6 +40,7 @@ void SCarLight::ParseDefinitions(LPCSTR section)
 	light_omni				= ::Render->light_create();
 	light_omni->set_type	(IRender_Light::POINT);
 	light_omni->set_shadow(true);
+	light_omni->set_moveable(true);
 	light_render			= ::Render->light_create();
 	light_render->set_type	(IRender_Light::SPOT);
 	light_render->set_shadow(true);

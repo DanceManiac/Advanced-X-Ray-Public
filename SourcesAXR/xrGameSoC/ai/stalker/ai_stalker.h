@@ -116,11 +116,21 @@ private:
 private:
 	float							m_power_fx_factor;
 
+	Fvector							savedOrientation;
+	u32								dTimeFSeen;
+	u32								dTimeNfSeen;
+	float							targetPitch;
+	float							targetRoll;
+	Fvector							targetNormal;
+
 private:
 	float							m_fRankDisperison;
 	float							m_fRankVisibility;
 	float							m_fRankImmunity;
 	bool							m_bLastHittedInHead;
+
+	xr_vector<shared_str>			m_sCanPickedItemsVec{};
+	u32								m_iAcceptableItemCost;
 
 	// best item/ammo selection members
 public:
@@ -174,6 +184,9 @@ public:
 	virtual	void						reinit								();
 	virtual void						reload								(LPCSTR	section );				
 	virtual void						LoadSounds							(LPCSTR section );
+
+	static	void						BoneCallback						(CBoneInstance* B);
+			void						LookAtActor							(CBoneInstance* headBone);
 	
 	virtual BOOL						net_Spawn							(CSE_Abstract* DC);
 	virtual void						net_Export							(NET_Packet& P);
@@ -262,6 +275,7 @@ public:
 			bool						ready_to_detour			();
 			void						update_best_item_info	();
 			void						ResetBoneProtections	(pcstr imm_sect, pcstr bone_sect);
+			void						ReloadDamageAndAnimations();
 	virtual float						GetWeaponAccuracy		() const;
 	virtual	void						spawn_supplies			();
 	IC		CAgentManager				&agent_manager			() const;
@@ -348,6 +362,7 @@ protected:
 			bool						tradable_item					(CInventoryItem *inventory_item, const u16 &current_owner_id);
 			bool						can_sell						(CInventoryItem const * item);
 			bool						can_take						(CInventoryItem const * item);
+			bool						CheckCanPickedItem				(CInventoryItem const* item);
 
 			bool						non_conflicted					(const CInventoryItem *item, const CWeapon *new_weapon) const;
 			bool						enough_ammo						(const CWeapon *new_weapon) const;

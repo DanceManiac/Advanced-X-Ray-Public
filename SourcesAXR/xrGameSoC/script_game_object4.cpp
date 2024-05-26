@@ -248,6 +248,34 @@ bool CScriptGameObject::IsInvBoxEmpty()
 		return			ib->IsEmpty		();
 }
 
+void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone, bool auto_stop, bool hud_mode, bool ignore_playing)
+{
+	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(&object());
+	if (!PP)	return;
+	IKinematics* K = smart_cast<IKinematics*>(object().Visual());
+	R_ASSERT(K);
+	u16 play_bone = K->LL_BoneID(bone);
+	R_ASSERT(play_bone != BI_NONE);
+	if (K->LL_GetBoneVisible(play_bone))
+		PP->StartParticles(pname, play_bone, Fvector().set(0, 1, 0), 9999, -1, auto_stop, hud_mode, ignore_playing);
+	else
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Cant start particles, bone [%s] is not visible now", bone);
+}
+
+void CScriptGameObject::stop_particles(LPCSTR pname, LPCSTR bone)
+{
+	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(&object());
+	if (!PP)	return;
+	IKinematics* K = smart_cast<IKinematics*>(object().Visual());
+	R_ASSERT(K);
+	u16 play_bone = K->LL_BoneID(bone);
+	R_ASSERT(play_bone != BI_NONE);
+	if (K->LL_GetBoneVisible(play_bone))
+		PP->StopParticles(9999, play_bone, true);
+	else
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "Cant stop particles, bone [%s] is not visible now", bone);
+}
+
 //AVO: directly set entity health instead of going through normal health property which operates on delta
 void CScriptGameObject::SetHealthEx(float hp)
 {

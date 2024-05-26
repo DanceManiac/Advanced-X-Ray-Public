@@ -204,6 +204,7 @@ BOOL CArtefact::net_Spawn(CSE_Abstract* DC)
 	VERIFY(m_pTrailLight == NULL);
 	m_pTrailLight = ::Render->light_create();
 	m_pTrailLight->set_shadow(true);
+	m_pTrailLight->set_moveable(true);
 
 	StartLights();
 	/////////////////////////////////////////

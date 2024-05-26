@@ -748,6 +748,45 @@ bool CScriptGameObject::weapon_shooting() const
 	return result;
 }
 
+bool CScriptGameObject::weapon_reloading() const
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member weapon_reloading!");
+		return false;
+	}
+
+	return stalker->weapon_shooting();
+}
+
+void CScriptGameObject::start_weapon_shoot()
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member start_weapon_shoot!");
+		return;
+	}
+
+	stalker->start_weapon_shoot();
+}
+
+void CScriptGameObject::start_weapon_reload()
+{
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
+
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot access class member start_weapon_reload!");
+		return;
+	}
+
+	stalker->start_weapon_reload();
+}
+
 bool CScriptGameObject::path_completed	() const
 {
 	CCustomMonster	*monster = smart_cast<CCustomMonster*>(&object());
@@ -808,14 +847,19 @@ void CScriptGameObject::jump(const Fvector &position, float factor)
 void CScriptGameObject::ReloadDamageAndAnimations()
 {
 	CBaseMonster* monster = smart_cast<CBaseMonster*>(&object());
+	CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(&object());
 
-	if (!monster)
+	if (!monster && !stalker)
 	{
-		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot process reload damage and animations for not a monster!");
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CScriptGameObject : cannot process reload damage and animations for not a monster or not a stalker!");
 		return;
 	}
 
-	monster->ReloadDamageAndAnimations();
+	if (monster)
+		monster->ReloadDamageAndAnimations();
+
+	if (stalker)
+		stalker->ReloadDamageAndAnimations();
 }
 
 void CScriptGameObject::make_object_visible_somewhen	(CScriptGameObject *object)

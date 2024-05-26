@@ -92,6 +92,7 @@ CInventoryItem::CInventoryItem()
 	m_name = m_nameShort = NULL;
 
 	m_eItemPlace		= eItemPlaceUndefined;
+	m_section_id		= 0;
 	m_Description		= "";
 }
 
@@ -122,6 +123,8 @@ void CInventoryItem::Load(LPCSTR section)
 
 	ISpatial*			self				=	smart_cast<ISpatial*> (this);
 	if (self)			self->spatial.type	|=	STYPE_VISIBLEFORAI;	
+
+	m_section_id._set	(section);
 
 	m_name				= CStringTable().translate( pSettings->r_string(section, "inv_name") );
 	m_nameShort			= CStringTable().translate( pSettings->r_string(section, "inv_name_short"));
@@ -157,6 +160,15 @@ void CInventoryItem::Load(LPCSTR section)
 
 }
 
+void CInventoryItem::ReloadNames()
+{
+	m_name = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "inv_name"));
+	m_nameShort = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "inv_name_short"));
+	if (pSettings->line_exist(m_object->cNameSect(), "description"))
+		m_Description = CStringTable().translate(pSettings->r_string(m_object->cNameSect(), "description"));
+	else
+		m_Description = "";
+}
 
 void  CInventoryItem::ChangeCondition(float fDeltaCondition)
 {

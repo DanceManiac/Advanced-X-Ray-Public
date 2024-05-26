@@ -1334,7 +1334,10 @@ bool CUIXmlInit::InitComboBox(CUIXml& xml_doc, const char* path, int index, CUIC
 	u32							color;
 	CGameFont*					pFont;
 
-	pWnd->SetListLength			(xml_doc.ReadAttribInt(path, index, "list_length", 4));
+	if (xml_doc.ReadAttribInt(path, 0, "list_length_by_lang_num", 0) == 1)
+		pWnd->SetListLength		(CStringTable().LanguagesNum);
+	else
+		pWnd->SetListLength		(xml_doc.ReadAttribInt(path, index, "list_length", 4));
 
 	InitWindow					(xml_doc, path, index, pWnd);
 	InitOptionsItem				(xml_doc, path, index, pWnd);

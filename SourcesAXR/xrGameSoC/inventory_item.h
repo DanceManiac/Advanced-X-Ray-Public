@@ -68,6 +68,8 @@ public:
 public:
 	virtual void				Load				(LPCSTR section);
 
+			void				ReloadNames			();
+
 	virtual LPCSTR				Name				();
 	virtual LPCSTR				NameShort			();
 //.	virtual LPCSTR				NameComplex			();
@@ -120,13 +122,12 @@ public:
 
 public:
 	CInventory*					m_pCurrentInventory;
-
+	shared_str					m_section_id;
 	shared_str					m_name;
 	shared_str					m_nameShort;
 	shared_str					m_nameComplex;
 
 	EItemPlace					m_eItemPlace;
-
 
 	virtual void				OnMoveToSlot		() {};
 	virtual void				OnMoveToBelt		() {};

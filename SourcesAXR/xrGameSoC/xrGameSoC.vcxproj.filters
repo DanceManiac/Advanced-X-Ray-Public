@@ -2296,6 +2296,9 @@
     <Filter Include="EmbeddedEditor">
       <UniqueIdentifier>{9a53a2f6-86eb-43bb-a8f2-32f44fd28c6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\AScript\ScriptClasses\ScriptVarsStorage">
+      <UniqueIdentifier>{acba0ab9-d70a-415a-ae08-8ee6a5f17a13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6621,6 +6624,9 @@
       <Filter>UI\UIWindows\ProgressBar</Filter>
     </ClInclude>
     <ClInclude Include="CustomTimer.h" />
+    <ClInclude Include="script_vars_storage.h">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9825,6 +9831,9 @@
       <Filter>UI\UIWindows\ProgressBar</Filter>
     </ClCompile>
     <ClCompile Include="CustomTimer.cpp" />
+    <ClCompile Include="script_vars_storage.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

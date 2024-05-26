@@ -139,7 +139,7 @@ void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 	PlaySound						("m_sndShot", pos);
 
 	CActor* actor = smart_cast<CActor*>(H_Parent());
-	if (actor->active_cam() != eacFirstEye)
+	if (actor && actor->active_cam() != eacFirstEye)
 	{
 		if (ParentIsActor() && !fis_zero(conditionDecreasePerShotOnHit) && GetCondition() < 0.95f)
 			fCurrentHit = fCurrentHit * (GetCondition() / 0.95f);

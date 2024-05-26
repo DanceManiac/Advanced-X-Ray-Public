@@ -85,6 +85,9 @@ namespace GameObject {
 
 		//Dance Maniac
 		eOnActorJump,
+		//-Dance Maniac
+
+		eOnActorLand,
 
 		//eOnWeaponLowered,	 //For safemode
 		//eOnWeaponRaised,	 //For safemode

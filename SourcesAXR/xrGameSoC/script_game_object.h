@@ -502,15 +502,22 @@ public:
 			CHolderCustom*		get_custom_holder		();
 			CHolderCustom*		get_current_holder		(); //actor only
 
+			void				start_particles			(LPCSTR pname, LPCSTR bone, bool auto_stop = false, bool hud_mode = false, bool ignore_playing = false);
+			void				stop_particles			(LPCSTR pname, LPCSTR bone);
+
 			Fvector				bone_position			(LPCSTR bone_name) const;
 			bool				is_body_turning			() const;
 			CPhysicsShell*		get_physics_shell		() const;
 			bool				weapon_strapped			() const;
 			bool				weapon_unstrapped		() const;
 			bool				weapon_shooting			() const;
+			bool				weapon_reloading		() const;
 			void				eat						(CScriptGameObject *item);
 			bool				inside					(const Fvector &position, float epsilon) const;
 			bool				inside					(const Fvector &position) const;
+
+			void				start_weapon_shoot		();
+			void				start_weapon_reload		();
 
 			Fvector				head_orientation		() const;
 			u32					vertex_in_direction		(u32 level_vertex_id, Fvector direction, float max_distance) const;
@@ -563,6 +570,9 @@ public:
 
 			bool				invulnerable						() const;
 			void				invulnerable						(bool invulnerable);
+
+			void				set_visual_name						(LPCSTR visual);
+			LPCSTR				get_visual_name						() const;
 
 			bool				addon_IsActorHideout				() const;
 

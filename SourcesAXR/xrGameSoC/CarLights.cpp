@@ -42,10 +42,12 @@ void SCarLight::ParseDefinitions(LPCSTR section)
 	light_omni				= ::Render->light_create();
 	light_omni->set_type	(IRender_Light::POINT);
 	light_omni->set_shadow	(true);
+	light_omni->set_moveable(true);
 
 	light_render			= ::Render->light_create();
 	light_render->set_type	(IRender_Light::SPOT);
 	light_render->set_shadow(true);
+	light_render->set_moveable(true);
 	glow_render				= ::Render->glow_create();
 	//	lanim					= 0;
 	//	time2hide				= 0;
@@ -55,21 +57,21 @@ void SCarLight::ParseDefinitions(LPCSTR section)
 	CInifile* ini		=	pKinematics->LL_UserData();
 	
 	Fcolor					clr;
-	clr.set					(ini->r_fcolor(section,"color"));
+	clr.set					(READ_IF_EXISTS(ini, r_fcolor, section, "color", Fcolor({ 0.f, 0.f, 0.f })));
 	//clr.mul_rgb				(torch->spot_brightness);
 	//fBrightness				= torch->spot_brightness;
-	light_render->set_range	(ini->r_float(section,"range"));
+	light_render->set_range	(READ_IF_EXISTS(ini, r_float, section, "range", 25.0f));
 	light_render->set_color	(clr);
-	light_render->set_cone	(deg2rad(ini->r_float(section,"cone_angle")));
-	light_render->set_texture(ini->r_string(section,"spot_texture"));
+	light_render->set_cone	(deg2rad(READ_IF_EXISTS(ini, r_float, section, "cone_angle", 80.0f)));
+	light_render->set_texture(READ_IF_EXISTS(ini, r_string, section, "spot_texture", nullptr));
 
-	glow_render->set_texture(ini->r_string(section,"glow_texture"));
+	glow_render->set_texture(READ_IF_EXISTS(ini, r_string, section, "glow_texture", nullptr));
 	glow_render->set_color	(clr);
-	glow_render->set_radius	(ini->r_float(section,"glow_radius"));
+	glow_render->set_radius	(READ_IF_EXISTS(ini, r_float, section, "glow_radius", 0.5f));
 
-	light_omni->set_range	(ini->r_float(section, "range_omni"));
+	light_omni->set_range	(READ_IF_EXISTS(ini, r_float , section, "range_omni", 0.0f));
 	Fcolor					clr_o;
-	clr_o.set				(ini->r_fcolor(section, "color_omni"));
+	clr_o.set				(READ_IF_EXISTS(ini, r_fcolor, section, "color_omni", Fcolor({ 0.f, 0.f, 0.f })));
 	light_omni->set_color	(clr_o);
 	
 	bone_id	= pKinematics->LL_BoneID(ini->r_string(section,"bone"));

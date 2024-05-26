@@ -510,6 +510,8 @@ public:
 	float								MaxWalkWeight		() const;
 	float								get_additional_weight() const;
 
+	int									m_head;
+
 protected:
 	//если актер целится в прицел
 	bool								m_bZoomAimingMode;
@@ -539,7 +541,6 @@ protected:
 	int									m_r_hand;
 	int									m_l_finger1;
     int									m_r_finger2;
-	int									m_head;
 
 	int									m_l_clavicle;
 	int									m_r_clavicle;

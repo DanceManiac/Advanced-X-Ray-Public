@@ -119,7 +119,7 @@ extern	float	g_fTimeFactor;
 extern	BOOL	g_advanced_crosshair;
 
 extern bool		g_saves_locked;
-
+extern BOOL		g_dbgShowMaterialInfo;
 //Custom commands for scripts
 
 const int I_SCRIPT_CMDS_COUNT = GameConstants::GetIntScriptCMDCount();
@@ -1883,6 +1883,45 @@ struct CCC_ReloadAdvancedXRayCfg : public IConsole_Command
 	}
 };
 
+class CCC_GameLanguage : public CCC_Token
+{
+public:
+	CCC_GameLanguage(pcstr N) : CCC_Token(N, (u32*)&CStringTable::LanguageID, nullptr) {}
+
+	void Execute(pcstr args)// override
+	{
+		CCC_Token::Execute(args);
+		CStringTable().ReloadLanguage();
+
+		if (!g_pGameLevel)
+			return;
+
+		for (u16 id = 0; id < 0xffff; id++)
+		{
+			CObject* gameObj = Level().Objects.net_Find(id);
+			if (gameObj)
+			{
+				if (CInventoryItem* invItem = gameObj->cast_inventory_item())
+					invItem->ReloadNames();
+			}
+		}
+	}
+
+	xr_token* GetToken() noexcept override
+	{
+		tokens = CStringTable().GetLanguagesToken();
+		if (!tokens) // Prevent failure without usage Nifty counters
+		{
+			Msg("GetToken: token missing");
+			CStringTable().Destroy();
+			CStringTable().Init();
+
+			tokens = CStringTable().GetLanguagesToken();
+		}
+		return CCC_Token::GetToken();
+	}
+};
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -2155,6 +2194,7 @@ void CCC_RegisterCommands()
 		CMD1(CCC_ScriptCommand,	"run_string");
 		CMD1(CCC_TimeFactor,	"time_factor");
 		CMD1(DumpTxrsForPrefetching, "ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
+		CMD4(CCC_Integer,		"dbg_show_material_info",	&g_dbgShowMaterialInfo,		0, 1);
 	}
 
 	// adjust mode support
@@ -2172,6 +2212,7 @@ void CCC_RegisterCommands()
 	CMD4(CCC_Integer,		"g_advanced_crosshair",		&g_advanced_crosshair,		0, 1);
 	CMD3(CCC_Token,			"g_death_cam_mode",			&death_camera_mode,			death_camera_mode_token);
 
+	CMD1(CCC_GameLanguage,	"g_language");
 	//Custom commands for scripts
 
 	i_script_cmd_name.clear();

@@ -332,6 +332,7 @@ protected:
 			void			FireTrace			(const Fvector& P, const Fvector& D);
 	virtual float			GetWeaponDeterioration	();
 
+public:
 	virtual void			FireStart			();
 	virtual void			FireEnd				();// {CShootingObject::FireEnd();}
 
@@ -347,7 +348,6 @@ protected:
 	virtual void			RemoveShotEffector	();
 	virtual	void			ClearShotEffector	();
 
-public:
 	//текущая дисперсия (в радианах) оружия с учетом используемого патрона
 	float					GetFireDispersion	(bool with_cartridge)			;
 	float					GetFireDispersion	(float cartridge_k)				;

@@ -76,6 +76,10 @@ public:
 			bool					weapon_unstrapped	() const;
 			bool					weapon_unstrapped	(CWeapon *weapon) const;
 			bool					weapon_shooting		() const;
+			bool					weapon_reloading	() const;
+
+			void					start_weapon_shoot	();
+			void					start_weapon_reload	();
 
 public:
 	virtual bool					can_use_dynamic_lights	();

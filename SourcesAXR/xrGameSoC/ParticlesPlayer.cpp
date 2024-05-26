@@ -128,13 +128,14 @@ CParticlesPlayer::SBoneInfo* CParticlesPlayer::get_nearest_bone_info(IKinematics
 }
 
 
-void CParticlesPlayer::StartParticles(const shared_str& particles_name, u16 bone_num, const Fvector& dir, u16 sender_id, int life_time, bool auto_stop)
+void CParticlesPlayer::StartParticles(const shared_str& particles_name, u16 bone_num, const Fvector& dir, u16 sender_id, int life_time, bool auto_stop, bool hud_mode, bool ignore_playing)
 {
 	Fmatrix xform;
 	generate_orthonormal_basis(dir,xform);
-	StartParticles(particles_name,bone_num,xform,sender_id,life_time,auto_stop);
+	StartParticles(particles_name,bone_num,xform,sender_id,life_time,auto_stop,hud_mode,ignore_playing);
 }
-void CParticlesPlayer::StartParticles(const shared_str& particles_name, u16 bone_num, const Fmatrix& xform, u16 sender_id, int life_time, bool auto_stop)
+
+void CParticlesPlayer::StartParticles(const shared_str& particles_name, u16 bone_num, const Fmatrix& xform, u16 sender_id, int life_time, bool auto_stop, bool hud_mode, bool ignore_playing)
 {
 	VERIFY(fis_zero(xform.c.magnitude()));
 	R_ASSERT(*particles_name);
@@ -155,13 +156,14 @@ void CParticlesPlayer::StartParticles(const shared_str& particles_name, u16 bone
 	Fmatrix m;m.setHPB(particles_info.angles.x,particles_info.angles.y,particles_info.angles.z);
 	GetBonePos(object,pBoneInfo->index,pBoneInfo->offset,m.c);
 	particles_info.ps->UpdateParent(m,zero_vel);
-	if(!particles_info.ps->IsPlaying())
-		particles_info.ps->Play		();
+
+	if(!particles_info.ps->IsPlaying() || ignore_playing)
+		particles_info.ps->Play		(hud_mode);
 
 	m_bActiveBones = true;
 }
 
-void CParticlesPlayer::StartParticles(const shared_str& ps_name, const Fmatrix& xform, u16 sender_id, int life_time, bool auto_stop)
+void CParticlesPlayer::StartParticles(const shared_str& ps_name, const Fmatrix& xform, u16 sender_id, int life_time, bool auto_stop, bool hud_mode, bool ignore_playing)
 {
 	CObject* object					= m_self_object;
 	VERIFY(object);
@@ -177,18 +179,19 @@ void CParticlesPlayer::StartParticles(const shared_str& ps_name, const Fmatrix& 
 		Fmatrix m;m.set(xform);
 		GetBonePos(object,it->index,it->offset,m.c);
 		particles_info.ps->UpdateParent(m,zero_vel);
-		if(!particles_info.ps->IsPlaying())
-			particles_info.ps->Play	();
+
+		if(!particles_info.ps->IsPlaying() || ignore_playing)
+			particles_info.ps->Play		(hud_mode);
 	}
 
 	m_bActiveBones = true;
 }
 
-void CParticlesPlayer::StartParticles(const shared_str& ps_name, const Fvector& dir, u16 sender_id, int life_time, bool auto_stop)
+void CParticlesPlayer::StartParticles(const shared_str& ps_name, const Fvector& dir, u16 sender_id, int life_time, bool auto_stop, bool hud_mode, bool ignore_playing)
 {
 	Fmatrix xform;
 	generate_orthonormal_basis(dir,xform);
-	StartParticles(ps_name,xform,sender_id,life_time,auto_stop);
+	StartParticles(ps_name,xform,sender_id,life_time,auto_stop,hud_mode,ignore_playing);
 }
 
 

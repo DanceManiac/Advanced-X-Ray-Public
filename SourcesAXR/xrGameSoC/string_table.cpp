@@ -6,6 +6,8 @@
 
 STRING_TABLE_DATA* CStringTable::pData = NULL;
 BOOL CStringTable::m_bWriteErrorsToLog = FALSE;
+u32 CStringTable::LanguageID = std::numeric_limits<u32>::max();
+xr_vector<xr_token> CStringTable::languagesToken;
 
 CStringTable::CStringTable	()
 {
@@ -20,12 +22,17 @@ void CStringTable::Destroy	()
 
 void CStringTable::Init		()
 {
+	LanguagesNum = 0;
+
 	if(NULL != pData) return;
     
 	pData				= xr_new<STRING_TABLE_DATA>();
 	
 	//имя языка, если не задано (NULL), то первый <text> в <string> в XML
 	pData->m_sLanguage	= pSettings->r_string("string_table", "language");
+
+	FillLanguageToken();
+	SetLanguage();
 
 	LPCSTR S			= pSettings->r_string("string_table", "files");
 	if (S && S[0]) 
@@ -41,6 +48,82 @@ void CStringTable::Init		()
 
 	LPCSTR window_name = translate("st_game_window_name").c_str();
 	SetWindowText(Device.m_hWnd, window_name);
+}
+
+xr_token* CStringTable::GetLanguagesToken() const { return languagesToken.data(); }
+
+void CStringTable::FillLanguageToken()
+{
+	languagesToken.clear();
+
+	string_path path;
+	FS.update_path(path, _game_config_, "text\\");
+	auto languages = FS.file_list_open(path, FS_ListFolders | FS_RootOnly);
+
+	const bool localizationPresent = languages != nullptr;
+
+	// We must warn about lack of localization
+	// However we can work without it
+	VERIFY(localizationPresent);
+	if (localizationPresent)
+	{
+		int i = 0;
+		for (const auto& language : *languages)
+		{
+			const auto pos = strchr(language, '\\');
+			*pos = '\0'; // we don't need that backslash in the end
+
+			// Skip map_desc folder
+			if (0 == xr_strcmp(language, "map_desc"))
+				continue;
+
+			bool shouldSkip = false;
+
+			// Open current language folder
+			string_path folder;
+			strconcat(sizeof(folder), folder, path, language, "\\");
+			auto files = FS.file_list_open(folder, FS_ListFiles | FS_RootOnly);
+
+			// Skip folder with "_old" postfix
+			if (strstr(folder, "_old"))
+				continue;
+
+			// Skip empty folder
+			if (!files || files->empty())
+				shouldSkip = true;
+
+			// Don't forget to close opened folder
+			FS.file_list_close(files);
+
+			if (shouldSkip)
+				continue;
+
+			// Finally, we can add language
+			languagesToken.emplace_back(xr_strdup(language), i++); // It's important to have postfix increment!
+		}
+		FS.file_list_close(languages);
+	}
+	LanguagesNum = languagesToken.size();
+
+	languagesToken.emplace_back(nullptr, -1);
+}
+
+void CStringTable::SetLanguage()
+{
+	Msg("cur lang: %s", pData->m_sLanguage.c_str());
+	if (LanguageID != std::numeric_limits<u32>::max())
+		pData->m_sLanguage = languagesToken.at(LanguageID).name;
+	else
+	{
+		pData->m_sLanguage = pSettings->r_string("string_table", "language");
+		auto it = std::find_if(languagesToken.begin(), languagesToken.end(), [](const xr_token& token) {
+			return token.name && token.name == pData->m_sLanguage;
+			});
+
+		R_ASSERT3(it != languagesToken.end(), "Check localization.ltx! Current language: ", pData->m_sLanguage.c_str());
+		if (it != languagesToken.end())
+			LanguageID = (*it).id;
+	}
 }
 
 void CStringTable::Load	(LPCSTR xml_file)
@@ -88,9 +171,20 @@ void CStringTable::ReparseKeyBindings()
 	}
 }
 
+void CStringTable::ReloadLanguage()
+{
+	if (0 == xr_strcmp(languagesToken.at(LanguageID).name, pData->m_sLanguage.c_str()))
+		return;
+
+	Destroy();
+	Init();
+}
 
 STRING_VALUE CStringTable::ParseLine(LPCSTR str, LPCSTR skey, bool bFirst)
 {
+	if (!str)
+		return "";
+
 //	LPCSTR str = "1 $$action_left$$ 2 $$action_right$$ 3 $$action_left$$ 4";
 	xr_string			res;
 	int k = 0;

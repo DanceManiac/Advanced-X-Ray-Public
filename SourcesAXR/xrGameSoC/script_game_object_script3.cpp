@@ -133,6 +133,10 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("weapon_strapped",				&CScriptGameObject::weapon_strapped)
 		.def("weapon_unstrapped",			&CScriptGameObject::weapon_unstrapped)
 		.def("is_weapon_shooting",			&CScriptGameObject::weapon_shooting)
+		.def("is_weapon_reloading",			&CScriptGameObject::weapon_reloading)
+
+		.def("start_weapon_shoot",			&CScriptGameObject::start_weapon_shoot)
+		.def("start_weapon_reload",			&CScriptGameObject::start_weapon_reload)
 
 		//////////////////////////////////////////////////////////////////////////
 		//inventory owner
@@ -289,6 +293,9 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("movement_enabled",			&CScriptGameObject::movement_enabled)
 
 		.def("critically_wounded",			&CScriptGameObject::critically_wounded)
+
+		.def("start_particles",				&CScriptGameObject::start_particles)
+		.def("stop_particles",				&CScriptGameObject::stop_particles)
 			
 		.def("is_ActorHide",				&CScriptGameObject::addon_IsActorHideout)
 			

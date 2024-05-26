@@ -202,6 +202,36 @@ bool CObjectHandler::weapon_shooting() const
 	return (weapon->GetState() == CWeapon::eFire);
 }
 
+bool CObjectHandler::weapon_reloading() const
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	if (!weapon)
+		return					(false);
+
+	return (weapon->GetState() == CWeapon::eReload);
+}
+
+void CObjectHandler::start_weapon_shoot()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	if (!weapon)
+		return;
+
+	weapon->FireStart();
+}
+
+void CObjectHandler::start_weapon_reload()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	if (!weapon)
+		return;
+
+	weapon->Reload();
+}
+
 void CObjectHandler::actualize_strap_mode	(CWeapon *weapon) const
 {
 	VERIFY						(weapon);

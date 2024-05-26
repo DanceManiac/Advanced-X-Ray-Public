@@ -45,6 +45,11 @@ void start_tutorial(LPCSTR name)
 
 }
 
+void reload_language()
+{
+	CStringTable().ReloadLanguage();
+}
+
 LPCSTR translate_string(LPCSTR str)
 {
 	return *CStringTable().translate(str);
@@ -186,6 +191,7 @@ void game_sv_GameState::script_register(lua_State *L)
 
 	def("start_tutorial",		&start_tutorial),
 	def("has_active_tutorial",	&has_active_tutotial),
+	def("reload_language",		&reload_language),
 	def("translate_string",		&translate_string),
 
 	def("only_allow_movekeys",	block_all_except_movement),

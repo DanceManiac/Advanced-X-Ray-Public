@@ -51,6 +51,9 @@
 #include "../xrEngine/XR_IOConsole.h"
 #include "../xrEngine/GameMtlLib.h"
 
+#include "UIGameCustom.h"
+#include "ui/UIStatic.h"
+
 #ifdef DEBUG
 #	include "level_debug.h"
 #	include "ai/stalker/ai_stalker.h"
@@ -68,6 +71,8 @@
 ENGINE_API bool g_dedicated_server;
 
 extern BOOL	g_bDebugDumpPhysicsStep;
+
+BOOL g_dbgShowMaterialInfo = FALSE;
 
 CPHWorld	*ph_world			= 0;
 float		g_cl_lvInterp		= 0;
@@ -1179,6 +1184,15 @@ bool GlobalFeelTouch::is_object_denied(CObject const * O)
 
 ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
 {
+	SDrawStaticStruct* _s = nullptr;
+	string2048 a = "";
+
+	if (g_dbgShowMaterialInfo)
+	{
+		_s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
+		_s->m_endTime = Device.fTimeGlobal + 3.0f;
+	}
+
 	collide::rq_result* RQ = (collide::rq_result*)params;
 	if (result.O)
 	{
@@ -1198,6 +1212,12 @@ ICF static BOOL GetPickDist_Callback(collide::rq_result& result, LPVOID params)
 	{
 		CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
 		SGameMtl* pMtl = GMLib.GetMaterialByIdx(T->material);
+
+		if (_s)
+		{
+			sprintf_s(a, "Material: %s", GMLib.GetMaterialByIdx(T->material)->m_Name.c_str());
+			_s->wnd()->SetText(a);
+		}
 
 		if (pMtl && (pMtl->Flags.is(SGameMtl::flPassable) || pMtl->Flags.is(SGameMtl::flActorObstacle)))
 			return TRUE;

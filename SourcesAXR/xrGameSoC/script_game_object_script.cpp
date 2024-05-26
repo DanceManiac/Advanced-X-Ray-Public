@@ -121,6 +121,9 @@ void CScriptGameObject::script_register(lua_State *L)
 				value("on_foot_step",				int(GameObject::eOnFootStep)),
 				//Dance Maniac
 				value("on_actor_jump",				int(GameObject::eOnActorJump)),
+				//-Dance Maniac
+
+				value("on_actor_land",				int(GameObject::eOnActorLand)),
 
 				// vehicle
 				value("on_attach_vehicle",			int(GameObject::eAttachVehicle)),
