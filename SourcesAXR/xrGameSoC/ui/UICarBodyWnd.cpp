@@ -125,12 +125,21 @@ void CUICarBodyWnd::Init()
 
 	m_pUITakeAll					= xr_new<CUI3tButton>(); m_pUITakeAll->SetAutoDelete(true);
 	AttachChild						(m_pUITakeAll);
-	xml_init.Init3tButton				(uiXml, "take_all_btn", 0, m_pUITakeAll);
+	xml_init.Init3tButton			(uiXml, "take_all_btn", 0, m_pUITakeAll);
 
 	BindDragDropListEnents			(m_pUIOurBagList);
 	BindDragDropListEnents			(m_pUIOthersBagList);
 
+	InitCallbacks					();
+}
 
+void CUICarBodyWnd::InitCallbacks()
+{
+	Register(m_pUIPropertiesBox);
+	Register(m_pUITakeAll);
+
+	AddCallback(m_pUIPropertiesBox->WindowName(), PROPERTY_CLICKED, CUIWndCallback::void_function(this, &CUICarBodyWnd::ProcessPropertiesBoxClicked));
+	AddCallback(m_pUITakeAll->WindowName(), BUTTON_CLICKED, CUIWndCallback::void_function(this, &CUICarBodyWnd::OnBtnTakeAll));
 }
 
 void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
@@ -263,34 +272,7 @@ void CUICarBodyWnd::UpdateLists()
 
 void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
-	if (BUTTON_CLICKED == msg && m_pUITakeAll == pWnd)
-	{
-		TakeAll					();
-	}
-	else if(pWnd == m_pUIPropertiesBox &&	msg == PROPERTY_CLICKED)
-	{
-		if(m_pUIPropertiesBox->GetClickedItem())
-		{
-			switch(m_pUIPropertiesBox->GetClickedItem()->GetTAG())
-			{
-			case INVENTORY_EAT_ACTION:	//סתוסעü מבתוךע
-				EatItem();
-				break;
-			case INVENTORY_UNLOAD_MAGAZINE:
-				{
-				CUICellItem * itm = CurrentItem();
-				(smart_cast<CWeaponMagazined*>((CWeapon*)itm->m_pData))->UnloadMagazine();
-				for(u32 i=0; i<itm->ChildsCount(); ++i)
-				{
-					CUICellItem * child_itm			= itm->Child(i);
-					(smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData))->UnloadMagazine();
-				}
-				}break;
-			}
-		}
-	}
-
-	inherited::SendMessage			(pWnd, msg, pData);
+	CUIWndCallback::OnEvent(pWnd, msg, pData);
 }
 
 void CUICarBodyWnd::Draw()
@@ -298,6 +280,10 @@ void CUICarBodyWnd::Draw()
 	inherited::Draw	();
 }
 
+void CUICarBodyWnd::OnBtnTakeAll(CUIWindow* w, void* d)
+{
+	TakeAll();
+}
 
 void CUICarBodyWnd::Update()
 {
@@ -386,6 +372,17 @@ void CUICarBodyWnd::TakeAll()
 	}
 }
 
+void CUICarBodyWnd::DetachAddon(LPCSTR addon_name)
+{
+	if (OnClient())
+	{
+		NET_Packet								P;
+		CurrentIItem()->object().u_EventGen(P, GE_ADDON_DETACH, CurrentIItem()->object().ID());
+		P.w_stringZ(addon_name);
+		CurrentIItem()->object().u_EventSend(P);
+	};
+	CurrentIItem()->Detach(addon_name, true);
+}
 
 #include "../xr_level_controller.h"
 
@@ -410,72 +407,24 @@ bool CUICarBodyWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	return false;
 }
 
-#include "../Medkit.h"
-#include "../Antirad.h"
-
-void CUICarBodyWnd::ActivatePropertiesBox()
-{
-	if(m_pInventoryBox)	return;
-		
-	m_pUIPropertiesBox->RemoveAll();
-	
-//.	CWeaponMagazined*		pWeapon			= smart_cast<CWeaponMagazined*>(CurrentIItem());
-	CEatableItem*			pEatableItem	= smart_cast<CEatableItem*>(CurrentIItem());
-	CMedkit*				pMedkit			= smart_cast<CMedkit*>			(CurrentIItem());
-	CAntirad*				pAntirad		= smart_cast<CAntirad*>			(CurrentIItem());
-	CBottleItem*			pBottleItem		= smart_cast<CBottleItem*>		(CurrentIItem());
-    bool					b_show			= false;
-	
-	LPCSTR _action				= NULL;
-	if(pMedkit || pAntirad)
-	{
-		_action						= "st_use";
-		b_show						= true;
-	}
-	else if(pEatableItem)
-	{
-		if(pBottleItem)
-			_action					= "st_drink";
-		else
-			_action					= "st_eat";
-		b_show						= true;
-	}
-	if(_action)
-		m_pUIPropertiesBox->AddItem(_action,  NULL, INVENTORY_EAT_ACTION);
-
-
-	if(b_show){
-		m_pUIPropertiesBox->AutoUpdateSize	();
-		m_pUIPropertiesBox->BringAllToTop	();
-
-		Fvector2						cursor_pos;
-		Frect							vis_rect;
-
-		GetAbsoluteRect					(vis_rect);
-		cursor_pos						= GetUICursor().GetCursorPosition();
-		cursor_pos.sub					(vis_rect.lt);
-		m_pUIPropertiesBox->Show		(vis_rect, cursor_pos);
-	}
-}
-
-void CUICarBodyWnd::EatItem()
+void CUICarBodyWnd::EatItem(CUICellItem* itm)
 {
 	CActor *pActor				= smart_cast<CActor*>(Level().CurrentEntity());
 	if(!pActor)					return;
-
-	CUIDragDropListEx* owner_list		= CurrentItem()->OwnerList();
+	PIItem item					= (PIItem)itm->m_pData;
+	CUIDragDropListEx* owner_list		= itm->OwnerList();
 	if(owner_list==m_pUIOthersBagList)
 	{
 		u16 owner_id				= (m_pInventoryBox)?m_pInventoryBox->ID():smart_cast<CGameObject*>(m_pOthersObject)->ID();
 
 		move_item(	owner_id, //from
 					Actor()->ID(), //to
-					CurrentIItem()->object().ID());
+			item->object().ID());
 	}
 
 	NET_Packet					P;
 	CGameObject::u_EventGen		(P, GEG_PLAYER_ITEM_EAT, Actor()->ID());
-	P.w_u16						(CurrentIItem()->object().ID());
+	P.w_u16						(item->object().ID());
 	CGameObject::u_EventSend	(P);
 
 }
@@ -576,7 +525,7 @@ bool CUICarBodyWnd::OnItemRButtonClick(CUICellItem* itm)
 	return						false;
 }
 
-void move_item (u16 from_id, u16 to_id, u16 what_id)
+void CUICarBodyWnd::move_item (u16 from_id, u16 to_id, u16 what_id)
 {
 	NET_Packet P;
 	CGameObject::u_EventGen					(	P,

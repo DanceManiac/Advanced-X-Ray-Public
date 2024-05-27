@@ -9266,6 +9266,9 @@
     <ClCompile Include="ui\UICarBodyWnd.cpp">
       <Filter>UI\Common\CarBodyWnd</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UICarBodyWnd2.cpp">
+      <Filter>UI\Common\CarBodyWnd</Filter>
+    </ClCompile>
     <ClCompile Include="ui\UIDiaryWnd2.cpp">
       <Filter>UI\Common\Diary</Filter>
     </ClCompile>

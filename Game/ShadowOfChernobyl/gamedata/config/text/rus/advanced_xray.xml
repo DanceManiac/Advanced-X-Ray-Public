@@ -819,4 +819,16 @@
 	<string id="st_kg">
 		<text>кг</text>
 	</string>
+	<string id="st_move_to_partners_bag">
+		<text>переместить в труп</text>
+	</string>
+	<string id="st_move_to_box">
+		<text>переместить в ящик</text>
+	</string>
+	<string id="st_move_all_to_partners_bag">
+		<text>переместить всё в труп</text>
+	</string>
+	<string id="st_move_all_to_box">
+		<text>переместить всё в ящик</text>
+	</string>
 </string_table>

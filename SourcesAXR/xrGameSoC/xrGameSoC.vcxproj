@@ -6253,6 +6253,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ui\UICarBodyWnd2.cpp" />
     <ClCompile Include="ui\UIDiaryWnd2.cpp" />
     <ClCompile Include="ui\UIEncyclopediaArticleWnd.cpp" />
     <ClCompile Include="ui\UIEncyclopediaWnd.cpp" />

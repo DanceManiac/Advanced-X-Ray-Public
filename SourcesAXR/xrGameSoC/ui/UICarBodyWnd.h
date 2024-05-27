@@ -2,6 +2,7 @@
 
 #include "UIDialogWnd.h"
 #include "UIEditBox.h"
+#include "UIWndCallback.h"
 #include "../inventory_space.h"
 
 class CUIDragDropListEx;
@@ -13,7 +14,7 @@ class CUICellItem;
 class CInventoryBox;
 class CInventoryOwner;
 
-class CUICarBodyWnd: public CUIDialogWnd
+class CUICarBodyWnd: public CUIDialogWnd, public CUIWndCallback
 {
 private:
 	typedef CUIDialogWnd	inherited;
@@ -23,6 +24,7 @@ public:
 	virtual					~CUICarBodyWnd				();
 
 	virtual void			Init						();
+	void					InitCallbacks				();
 	virtual bool			StopAnyMove					(){return true;}
 
 	virtual void			SendMessage					(CUIWindow *pWnd, s16 msg, void *pData);
@@ -72,8 +74,14 @@ protected:
 
 	void					UpdateLists					();
 
+	void					EatItem						(CUICellItem* itm);
+
+	void					PropertiesBoxForUsing		(PIItem item, bool& b_show);
+	void					PropertiesBoxForWeapon		(CUICellItem* cell_item, PIItem item, bool& b_show);
+	void					PropertiesBoxForDrop		(CUICellItem* cell_item, PIItem item, bool& b_show);
 	void					ActivatePropertiesBox		();
-	void					EatItem						();
+	void		xr_stdcall	ProcessPropertiesBoxClicked	(CUIWindow* w, void* d);
+	void		xr_stdcall	OnBtnTakeAll				(CUIWindow* w, void* d);
 
 	bool					ToOurBag					();
 	bool					ToOthersBag					();
@@ -93,8 +101,13 @@ protected:
 	bool		xr_stdcall	OnItemRButtonClick			(CUICellItem* itm);
 
 	bool					TransferItem				(PIItem itm, CInventoryOwner* owner_from, CInventoryOwner* owner_to, bool b_check);
+	void					move_item					(u16 from_id, u16 to_id, u16 what_id);
+
 	void					BindDragDropListEnents		(CUIDragDropListEx* lst);
 
+	void					DetachAddon					(LPCSTR addon_name);
+	
+	void					DropCurrentItem				(bool b_all);
 	void					ColorizeItem				(CUICellItem* itm);
 
 };
