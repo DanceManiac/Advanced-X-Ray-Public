@@ -45,12 +45,28 @@ CUIInventoryWnd::CUIInventoryWnd()
 {
 	m_iCurrentActiveSlot				= NO_ACTIVE_SLOT;
 	UIRank								= NULL;
+
+	m_pUIBagList						= NULL;
+	m_pUIBeltList						= NULL;
+	m_pUIPistolList						= NULL;
+	m_pUIAutomaticList					= NULL;
+	m_pUIOutfitList						= NULL;
+
+	// M.F.S. Team: New Slots
+	m_pUIKnifeList						= NULL;
+	m_pUITorchList						= NULL;
+	m_pUIBinocularList					= NULL;
+	m_pUIPdaList						= NULL;
+	m_pUIDosimeterList					= NULL;
+	m_pUIBackpackList					= NULL;
+	m_pUIPantsList						= NULL;
+
 	Init								();
 	SetCurrentItem						(NULL);
 
-	g_pInvWnd							= this;	
+	g_pInvWnd							= this;
 	m_b_need_reinit						= false;
-	Hide								();	
+	Hide								();
 }
 
 void CUIInventoryWnd::Init()
