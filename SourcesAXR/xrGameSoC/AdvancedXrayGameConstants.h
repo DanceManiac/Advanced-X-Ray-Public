@@ -41,6 +41,9 @@ namespace GameConstants
 	bool GetBackpackAnimsEnabled();
 	bool GetFoodIrradiation();
 	bool GetFoodRotting();
+	bool GetDisableStopping();
+	bool GetDisableStoppingBolt();
+	bool GetDisableStoppingGrenade();
 	bool GetOGSE_WpnZoomSystem();
 	bool GetQuickThrowGrenadesEnabled();
 	bool GetPDA_FlashingIconsEnabled();

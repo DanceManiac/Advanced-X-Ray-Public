@@ -42,6 +42,9 @@ bool	m_bLimitedInventory = false;
 bool	m_bInventoryItemsAutoVolume = false;
 bool	m_bFoodIrradiation = false;
 bool	m_bFoodRotting = false;
+bool	m_DisableStopping = true;
+bool	m_DisableStoppingBolt = true;
+bool	m_DisableStoppingGrenade = true;
 bool	m_bOGSE_WpnZoomSystem = false;
 bool	m_bQuickThrowGrenadesEnabled = true;
 bool	m_bPDA_FlashingIconsEnabled = false;
@@ -100,6 +103,9 @@ namespace GameConstants
 		m_bInventoryItemsAutoVolume = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "items_auto_volume", false);
 		m_bFoodIrradiation = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_irradiation", false);
 		m_bFoodRotting = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_food_rotting", false);
+		m_DisableStopping = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "disable_stopping_empty", true);
+		m_DisableStoppingBolt = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "disable_stopping_bolt", true);
+		m_DisableStoppingGrenade = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "disable_stopping_grenade", true);
 		m_bOGSE_WpnZoomSystem = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "ogse_weapons_zoom_system", false);
 		m_bQuickThrowGrenadesEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_quick_throw_grenades", true);
 		m_bBackpackAnimsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "actions_animations", "enable_backpack_animations", false);
@@ -294,6 +300,21 @@ namespace GameConstants
 	bool GetFoodRotting()
 	{
 		return m_bFoodRotting;
+	}
+
+	bool GetDisableStopping()
+	{
+		return m_DisableStopping;
+	}
+
+	bool GetDisableStoppingBolt()
+	{
+		return m_DisableStoppingBolt;
+	}
+
+	bool GetDisableStoppingGrenade()
+	{
+		return m_DisableStoppingGrenade;
 	}
 
 	bool GetOGSE_WpnZoomSystem()
