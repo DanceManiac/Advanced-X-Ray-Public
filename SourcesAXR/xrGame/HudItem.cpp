@@ -28,6 +28,7 @@ CHudItem::CHudItem()
 	m_bSprintType				= false;
 	m_current_motion_def		= NULL;
 	m_started_rnd_anim_idx		= u8(-1);
+	m_hud_sect					= nullptr;
 }
 
 DLL_Pure *CHudItem::_construct	()
@@ -47,21 +48,29 @@ CHudItem::~CHudItem()
 
 void CHudItem::Load(LPCSTR section)
 {
-	m_hud_sect				= pSettings->r_string		(section,"hud");
 	m_item_sect				= section;
+
+	//загрузить hud, если он нужен
+	if (pSettings->line_exist(section, "hud"))
+		m_hud_sect			= pSettings->r_string		(section,"hud");
+
 	m_animation_slot		= pSettings->r_u32			(section,"animation_slot");
 
 	m_sounds.LoadSound(section, "snd_bore", "sndBore", true);
 
 	// HUD FOV
 	m_nearwall_enabled			= READ_IF_EXISTS(pSettings, r_bool,	 section, "nearwall_on", true);
-	m_nearwall_target_hud_fov	= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_hud_fov", 0.27f);
-	m_nearwall_dist_min			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
-	m_nearwall_dist_max			= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
-	m_nearwall_speed_mod		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
 
-	m_base_fov					= READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", psHUD_FOV_def);
-	m_nearwall_last_hud_fov		= m_base_fov;
+	if (m_nearwall_enabled)
+	{
+		m_nearwall_target_hud_fov= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_target_hud_fov", 0.27f);
+		m_nearwall_dist_min		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_min", 0.5f);
+		m_nearwall_dist_max		= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_dist_max", 1.f);
+		m_nearwall_speed_mod	= READ_IF_EXISTS(pSettings, r_float, section, "nearwall_speed_mod", 10.f);
+	}
+	
+	m_base_fov					= READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", 0.0f);
+	m_nearwall_last_hud_fov		= m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def;
 }
 
 
@@ -75,10 +84,7 @@ void CHudItem::renderable_Render()
 	UpdateXForm					();
 	BOOL _hud_render			= ::Render->get_HUD() && GetHUDmode();
 	
-	if(_hud_render  && !IsHidden())
-	{ 
-	}
-	else 
+	if (!(_hud_render && !IsHidden()))
 	{
 		if (!object().H_Parent() || (!_hud_render && !IsHidden()))
 		{
@@ -135,7 +141,10 @@ void CHudItem::OnStateSwitch(u32 S)
 		SetNextState	(S);
 
 	if (S == eHidden)
+	{
+		m_nearwall_last_hud_fov = m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def;
 		m_bSprintType = false;
+	}
 	if (S != eIdle)
 		m_bSprintType = false;
 
@@ -266,7 +275,7 @@ void CHudItem::UpdateCL()
 	
 					const motion_marks::interval* Iprev = M.pick_mark(motion_prev_time);
 					const motion_marks::interval* Icurr = M.pick_mark(motion_curr_time);
-					if(Iprev==NULL && Icurr!=NULL /* || M.is_mark_between(motion_prev_time, motion_curr_time)*/)
+					if(Iprev==nullptr && Icurr!=nullptr /* || M.is_mark_between(motion_prev_time, motion_curr_time)*/)
 					{
 						OnMotionMark				(m_startedMotionState, M);
 					}
@@ -277,7 +286,7 @@ void CHudItem::UpdateCL()
 			m_dwMotionCurrTm					= Device.dwTimeGlobal;
 			if(m_dwMotionCurrTm > m_dwMotionEndTm)
 			{
-				m_current_motion_def				= NULL;
+				m_current_motion_def				= nullptr;
 				m_dwMotionStartTm					= 0;
 				m_dwMotionEndTm						= 0;
 				m_dwMotionCurrTm					= 0;
@@ -295,21 +304,15 @@ void CHudItem::OnH_B_Chield		()
 {
 	StopCurrentAnimWithoutCallback();
 
-	if (m_item_sect.size() && pSettings->line_exist(m_item_sect, "hud_fov"))
-		m_nearwall_last_hud_fov = m_base_fov;
-	else
-		m_nearwall_last_hud_fov = psHUD_FOV_def;
+	m_nearwall_last_hud_fov = m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def;
 }
 
 void CHudItem::OnH_B_Independent	(bool just_before_destroy)
 {
 	m_sounds.StopAllSounds	();
 	UpdateXForm				();
-	
-	if (m_item_sect.size() && pSettings->line_exist(m_item_sect, "hud_fov"))
-		m_nearwall_last_hud_fov = m_base_fov;
-	else
-		m_nearwall_last_hud_fov = psHUD_FOV_def;
+
+	m_nearwall_last_hud_fov = m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def;
 
 	// next code was commented 
 	/*
@@ -456,7 +459,7 @@ void CHudItem::StopCurrentAnimWithoutCallback()
 	m_dwMotionEndTm				= 0;
 	m_dwMotionCurrTm			= 0;
 	m_bStopAtEndAnimIsRunning	= false;
-	m_current_motion_def		= NULL;
+	m_current_motion_def		= nullptr;
 }
 
 BOOL CHudItem::GetHUDmode()
@@ -484,10 +487,9 @@ void CHudItem::PlayAnimIdle()
 
 bool CHudItem::TryPlayAnimIdle()
 {
-	if (MovingAnimAllowedNow())
+	if (MovingAnimAllowedNow() || !smart_cast<CWeapon*>(this))
 	{
-		CActor* pActor = smart_cast<CActor*>(object().H_Parent());
-		if (pActor)
+		if (auto pActor = smart_cast<CActor*>(object().H_Parent()))
 		{
 			const u32 State = pActor->get_state();
 			if (State & mcSprint)
@@ -505,7 +507,7 @@ bool CHudItem::TryPlayAnimIdle()
 			{
 				if ((State & mcClimb))
 					return false;
-
+				
 				SwitchState(eSprintEnd);
 				return true;
 			}
@@ -698,7 +700,7 @@ void CHudItem::OnMovementChanged(ACTOR_DEFS::EMoveCommand cmd)
 
 attachable_hud_item* CHudItem::HudItemData()
 {
-	attachable_hud_item* hi = NULL;
+	attachable_hud_item* hi = nullptr;
 	if(!g_player_hud)		
 		return				hi;
 
@@ -744,9 +746,7 @@ float CHudItem::GetHudFov()
 
 		float fBaseFov{ psHUD_FOV_def };
 
-		if (pSettings->line_exist(m_item_sect, "hud_fov"))
-			fBaseFov = m_base_fov;
-
+		fBaseFov = (m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def);
 		clamp(fBaseFov, 0.0f, FLT_MAX);
 
 		float src = m_nearwall_speed_mod * Device.fTimeDelta;
