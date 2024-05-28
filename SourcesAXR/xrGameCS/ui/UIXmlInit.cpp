@@ -604,7 +604,9 @@ bool CUIXmlInit::InitProgressBar(CUIXml& xml_doc, LPCSTR path,
 	else if ( stricmp( mode_str, "vert" ) == 0 )	{	mode = CUIProgressBar::om_vert;	}
 	else if ( stricmp( mode_str, "back" ) == 0 )	{	mode = CUIProgressBar::om_back;	}
 	else if ( stricmp( mode_str, "down" ) == 0 )	{	mode = CUIProgressBar::om_down;	}
-	
+	else if ( stricmp( mode_str, "from_center" ) == 0 )	{	mode = CUIProgressBar::om_fromcenter;	}
+	else if ( stricmp( mode_str, "vert_from_center" ) == 0 )	{	mode = CUIProgressBar::om_vfromcenter;	}
+
 	pWnd->InitProgressBar(pos, size, mode);
 
 	float min = xml_doc.ReadAttribFlt(path, index, "min");
