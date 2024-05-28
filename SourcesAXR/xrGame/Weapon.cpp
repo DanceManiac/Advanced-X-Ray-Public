@@ -32,8 +32,8 @@
 #include "../xrEngine/GameMtlLib.h"
 #include "AdvancedXrayGameConstants.h"
 
-#define WEAPON_REMOVE_TIME		60000
-#define ROTATION_TIME			0.25f
+constexpr auto WEAPON_REMOVE_TIME = 60000;
+constexpr auto ROTATION_TIME = 0.25f;
 
 BOOL	b_toggle_weapon_aim		= FALSE;
 BOOL	b_hud_collision			= FALSE;
@@ -611,17 +611,17 @@ void CWeapon::Load		(LPCSTR section)
 	m_strafe_offset[3][1].set(fStrafeCamLFactor_aim, fStrafeMinAngle_aim, NULL); // aim-GL
 
 
-// modified by Peacemaker [17.10.08]
-//	misfireProbability			  = pSettings->r_float(section,"misfire_probability"); 
-//	misfireConditionK			  = READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
-	misfireStartCondition			= pSettings->r_float(section, "misfire_start_condition");
+	// modified by Peacemaker [17.10.08]
+	misfireProbability				= READ_IF_EXISTS(pSettings, r_float, section, "misfire_probability",	0.0f);
+	misfireConditionK				= READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
+	misfireStartCondition			= READ_IF_EXISTS(pSettings, r_float, section, "misfire_start_condition", 0.95f);
 	misfireEndCondition				= READ_IF_EXISTS(pSettings, r_float, section, "misfire_end_condition", 0.f);
-	misfireStartProbability			= READ_IF_EXISTS(pSettings, r_float, section, "misfire_start_prob", 0.f);
-	misfireEndProbability			= pSettings->r_float(section, "misfire_end_prob");
-	conditionDecreasePerShot		= pSettings->r_float(section,"condition_shot_dec"); 
+	misfireStartProbability			= READ_IF_EXISTS(pSettings, r_float, section, "misfire_start_prob", misfireProbability);
+	misfireEndProbability			= READ_IF_EXISTS(pSettings, r_float, section, "misfire_end_prob", (misfireProbability + misfireConditionK) * 0.25f);
+	conditionDecreasePerShot		= pSettings->r_float(section,"condition_shot_dec");
 	conditionDecreasePerQueueShot	= READ_IF_EXISTS(pSettings, r_float, section, "condition_queue_shot_dec", conditionDecreasePerShot); 
 	conditionDecreasePerShotOnHit	= READ_IF_EXISTS(pSettings, r_float, section, "condition_shot_dec_on_hit", 0.f);
-
+		
 	vLoadedFirePoint	= pSettings->r_fvector3		(section,"fire_point"		);
 	
 	if(pSettings->line_exist(section,"fire_point2")) 

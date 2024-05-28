@@ -37,8 +37,8 @@
 
 #include "AdvancedXrayGameConstants.h"
 
-#define WEAPON_REMOVE_TIME		60000
-#define ROTATION_TIME			0.25f
+constexpr auto WEAPON_REMOVE_TIME = 60000;
+constexpr auto ROTATION_TIME = 0.25f;
 
 BOOL	b_hud_collision = FALSE;
 extern CUIXml* pWpnScopeXml = NULL;
@@ -573,8 +573,8 @@ void CWeapon::Load		(LPCSTR section)
 	m_strafe_offset[3][0].set(fStrafeCamLFactor, fStrafeMinAngle, NULL); // normal
 	m_strafe_offset[3][1].set(fStrafeCamLFactor_aim, fStrafeMinAngle_aim, NULL); // aim-GL
 
-	misfireProbability			  = pSettings->r_float(section,"misfire_probability"); 
-	misfireConditionK			  = READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
+	misfireProbability			= READ_IF_EXISTS(pSettings, r_float, section, "misfire_probability", 0.0f);
+	misfireConditionK			= READ_IF_EXISTS(pSettings, r_float, section, "misfire_condition_k",	1.0f);
 	conditionDecreasePerShot	  = pSettings->r_float(section,"condition_shot_dec");
 	conditionDecreasePerShotOnHit = READ_IF_EXISTS(pSettings, r_float, section, "condition_shot_dec_on_hit", 0.f);
 		
@@ -1408,11 +1408,6 @@ void CWeapon::OnH_B_Independent	(bool just_before_destroy)
 void CWeapon::OnH_A_Independent	()
 {
 	m_dwWeaponIndependencyTime = Level().timeServer();
-
-	m_fLR_MovingFactor			= 0.f;
-	m_fLR_CameraFactor			= 0.f;
-	m_fLR_InertiaFactor			= 0.f;
-	m_fUD_InertiaFactor			= 0.f;
 
 	inherited::OnH_A_Independent();
 	Light_Destroy				();

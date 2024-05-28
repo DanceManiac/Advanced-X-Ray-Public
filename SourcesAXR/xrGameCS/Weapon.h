@@ -479,15 +479,15 @@ protected:
 	float					fireDispersionConditionFactor;
 	//вероятность осечки при максимальной изношености
 
-// modified by Peacemaker [17.10.08]
-//	float					misfireProbability;
-//	float					misfireConditionK;
-	float misfireStartCondition;			//изношенность, при которой появляется шанс осечки
-	float misfireEndCondition;				//изношеность при которой шанс осечки становится константным
-	float misfireStartProbability;			//шанс осечки при изношености больше чем misfireStartCondition
-	float misfireEndProbability;			//шанс осечки при изношености больше чем misfireEndCondition
-	float conditionDecreasePerQueueShot;	//увеличение изношености при выстреле очередью
-	float conditionDecreasePerShot;			//увеличение изношености при одиночном выстреле
+	// modified by Peacemaker [17.10.08]
+	float					misfireProbability;
+	float					misfireConditionK;
+	float					misfireStartCondition;			//изношенность, при которой появляется шанс осечки
+	float					misfireEndCondition;			//изношеность при которой шанс осечки становится константным
+	float					misfireStartProbability;		//шанс осечки при изношености больше чем misfireStartCondition
+	float					misfireEndProbability;			//шанс осечки при изношености больше чем misfireEndCondition
+	float					conditionDecreasePerQueueShot;	//увеличение изношености при выстреле очередью
+	float					conditionDecreasePerShot;		//увеличение изношености при одиночном выстреле
 	float					conditionDecreasePerShotOnHit;
 	
 public:
