@@ -1,7 +1,7 @@
 #include "pch_script.h"
 #include "UIScriptWnd.h"
 #include "../HudManager.h"
-#include "../object_broker.h"
+#include "object_broker.h"
 #include "../callback_info.h"
 
 struct event_comparer{

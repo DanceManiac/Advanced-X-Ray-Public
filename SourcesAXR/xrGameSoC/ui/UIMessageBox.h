@@ -2,7 +2,7 @@
 
 
 #include "UIStatic.h"
-#include "../script_export_space.h"
+#include "script_export_space.h"
 
 class CUI3tButton;
 class CUIEditBox;

@@ -3,7 +3,7 @@
 #include "UIDialogWnd.h"
 #include "UIEditBox.h"
 #include "UIWndCallback.h"
-#include "../inventory_space.h"
+#include "inventory_space.h"
 
 class CUIDragDropListEx;
 class CUIItemInfo;

@@ -19,7 +19,7 @@ CUIOutfitDragDropList::~CUIOutfitDragDropList()
 }
 
 #include "../level.h"
-#include "../game_base_space.h"
+#include "game_base_space.h"
 
 void CUIOutfitDragDropList::SetOutfit(CUICellItem* itm)
 {

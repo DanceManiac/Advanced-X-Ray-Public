@@ -4,8 +4,8 @@
 #pragma once
 
 #include "uiwindow.h"
-#include "../alife_space.h"
-#include "../character_info_defs.h"
+#include "alife_space.h"
+#include "character_info_defs.h"
 
 class CUIStatic;
 class CCharacterInfo;

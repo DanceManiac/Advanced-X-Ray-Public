@@ -12,7 +12,7 @@
 #include "../Level.h"
 #include "../pda.h"
 #include "../actor.h"
-#include "../xrServer_Objects_ALife_Monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 
 #define		STALKERS_RANKING_XML			"stalkers_ranking.xml"
 #define		STALKERS_RANKING_CHARACTER_XML	"stalkers_ranking_character.xml"

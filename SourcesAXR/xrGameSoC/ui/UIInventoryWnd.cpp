@@ -13,7 +13,7 @@
 
 #include "../weapon.h"
 
-#include "../script_process.h"
+#include "script_process.h"
 
 #include "../eatable_item.h"
 #include "../inventory.h"
@@ -24,7 +24,7 @@ using namespace InventoryUtilities;
 
 #include "../InfoPortion.h"
 #include "../level.h"
-#include "../game_base_space.h"
+#include "game_base_space.h"
 #include "../entitycondition.h"
 
 #include "../game_cl_base.h"

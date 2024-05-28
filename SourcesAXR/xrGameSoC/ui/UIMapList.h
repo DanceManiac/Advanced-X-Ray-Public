@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UIWindow.h"
-#include "../game_base_space.h"
+#include "game_base_space.h"
 
 class CUIListBox;
 class CUILabel;

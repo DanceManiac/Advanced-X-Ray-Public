@@ -4,7 +4,7 @@
 #include "../../xrEngine/xr_input.h"
 #include "../HUDManager.h"
 #include "../level.h"
-#include "../object_broker.h"
+#include "object_broker.h"
 
 CUICellItem::CUICellItem()
 {

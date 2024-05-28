@@ -10,7 +10,7 @@
 
 #include "../inventory_item.h"
 #include "../PhysicsShellHolder.h"
-#include "../object_broker.h"
+#include "object_broker.h"
 #include <dinput.h>
 
 bool CUIMpTradeWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)

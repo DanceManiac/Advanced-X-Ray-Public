@@ -18,7 +18,7 @@
 #include "../../../Include/xrRender/Kinematics.h"
 #include "../../../Include/xrRender/KinematicsAnimated.h"
 #include "../../../Include/xrRender/RenderVisual.h"
-#include "../../script_engine.h"
+#include "../../../xrServerEntitiesSoC/script_engine.h"
 #include "../../sight_manager.h"
 #include "../../stalker_movement_manager.h"
 #include "../../ai_space.h"

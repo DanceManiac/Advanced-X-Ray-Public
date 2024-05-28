@@ -6,7 +6,7 @@
 #include "UIStatic.h"
 #include "UIFrameWindow.h"
 #include "../level.h"
-#include "../game_base_space.h"
+#include "game_base_space.h"
 
 
 CUIStats::CUIStats()

@@ -1,6 +1,6 @@
 #pragma once
 #include "UIWindow.h"
-#include "..\alife_space.h"
+#include "alife_space.h"
 #include "..\inventory_item.h"
 
 

@@ -9,7 +9,7 @@
 #include <dinput.h>
 #include "../HUDManager.h"
 #include "../weapon.h"
-#include "../xrServer_Objects_ALife_Items.h"
+#include "xrServer_Objects_ALife_Items.h"
 #include "../game_cl_Deathmatch.h"
 
 CUIBagWnd::CUIBagWnd()

@@ -3,7 +3,7 @@
 
 #include "uiwindow.h"
 #include "../uistaticitem.h"
-#include "../script_export_space.h"
+#include "script_export_space.h"
 
 class CUIFrameWindow;
 class CLAItem;

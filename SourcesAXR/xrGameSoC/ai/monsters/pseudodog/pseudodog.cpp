@@ -16,7 +16,7 @@
 #	include "../../../level_graph.h"
 #	include "../../../ai_space.h"
 #	include "../../../alife_simulator.h"
-#	include "../../../xrServer_Object_Base.h"
+#	include "xrServer_Object_Base.h"
 #	include "../../../xrserver.h"
 #endif
 

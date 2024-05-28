@@ -8,7 +8,7 @@
 #include "../HUDManager.h"
 #include "../UIGameSP.h"
 #include "../PDA.h"
-#include "../character_info.h"
+#include "character_info.h"
 #include "../level.h"
 
 #include "../PhraseDialog.h"

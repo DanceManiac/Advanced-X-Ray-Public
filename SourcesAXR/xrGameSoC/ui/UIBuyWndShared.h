@@ -12,7 +12,7 @@
 #endif
 
 
-#include "../associative_vector.h"
+#include "associative_vector.h"
 #include "restrictions.h"
 
 struct string_lex_less

@@ -12,7 +12,7 @@
 #include "../InventoryOwner.h"
 
 #include "../InfoPortion.h"
-#include "../game_base_space.h"
+#include "game_base_space.h"
 #include "../actor.h"
 #include "../relation_registry.h"
 

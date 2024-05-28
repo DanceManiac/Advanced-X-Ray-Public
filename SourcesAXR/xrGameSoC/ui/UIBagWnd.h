@@ -3,7 +3,7 @@
 #include "UIStatic.h"
 #include "UIDragDropListEx.h"
 #include "UI3tButton.h"
-#include "../xrServer_Objects_ALife_Items.h"
+#include "xrServer_Objects_ALife_Items.h"
 
 class CUITabButtonMP;
 

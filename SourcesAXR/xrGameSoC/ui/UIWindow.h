@@ -12,7 +12,7 @@ using ui_list = xr_list<T>;
 //////////////////////////////////////////////////////////////////////////
 
 #include "UIMessages.h"
-#include "../script_export_space.h"
+#include "script_export_space.h"
 #include "uiabstract.h"
 
 

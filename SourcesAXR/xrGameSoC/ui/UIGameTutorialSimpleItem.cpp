@@ -3,7 +3,7 @@
 #include "uicursor.h"
 #include "UIStatic.h"
 #include "UIXmlInit.h"
-#include "../object_broker.h"
+#include "object_broker.h"
 #include "../../xrEngine/xr_input.h"
 #include "../xr_level_controller.h"
 #include "../UIGameSp.h"
@@ -14,7 +14,7 @@
 #include "UITalkWnd.h"
 #include "UICarBodyWnd.h"
 #include "../MainMenu.h"
-#include "../script_engine.h"
+#include "script_engine.h"
 
 extern ENGINE_API BOOL bShowPauseString;
 

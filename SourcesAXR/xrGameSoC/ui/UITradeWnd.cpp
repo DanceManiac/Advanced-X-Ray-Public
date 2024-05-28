@@ -16,7 +16,7 @@
 #include "../inventory.h"
 #include "../level.h"
 #include "../string_table.h"
-#include "../character_info.h"
+#include "character_info.h"
 #include "UIMultiTextStatic.h"
 #include "UI3tButton.h"
 #include "UIItemInfo.h"

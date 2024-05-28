@@ -20,7 +20,7 @@
 #include "../encyclopedia_article.h"
 #include "../alife_registry_wrappers.h"
 #include "../actor.h"
-#include "../object_broker.h"
+#include "object_broker.h"
 
 #define				ENCYCLOPEDIA_DIALOG_XML		"encyclopedia.xml"
 

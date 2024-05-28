@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../inventory_item.h"
-#include "../character_info_defs.h"
+#include "character_info_defs.h"
 
 #include "UIStaticItem.h"
 

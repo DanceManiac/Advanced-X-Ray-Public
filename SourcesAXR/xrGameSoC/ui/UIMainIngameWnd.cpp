@@ -11,13 +11,13 @@
 #include "../HUDManager.h"
 #include "../PDA.h"
 #include "../WeaponHUD.h"
-#include "../character_info.h"
+#include "character_info.h"
 #include "../inventory.h"
 #include "../UIGameSP.h"
 #include "../weaponmagazined.h"
 #include "../missile.h"
 #include "../Grenade.h"
-#include "../xrServer_objects_ALife.h"
+#include "xrServer_objects_ALife.h"
 #include "../alife_simulator.h"
 #include "../alife_object_registry.h"
 #include "../game_cl_base.h"
@@ -25,7 +25,7 @@
 #include "../seniority_hierarchy_holder.h"
 
 #include "../date_time.h"
-#include "../xrServer_Objects_ALife_Monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 #include "../../xrEngine/LightAnimLibrary.h"
 
 #include "../../Include/xrRender/RenderVisual.h"
@@ -41,7 +41,7 @@
 #include "../actorcondition.h"
 
 #include "../string_table.h"
-#include "../clsid_game.h"
+#include "clsid_game.h"
 #include "UIArtefactPanel.h"
 
 #ifdef DEBUG

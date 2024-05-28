@@ -13,7 +13,7 @@ class CInventory;
 #include "UIActorStats.h"
 #include "UIItemInfo.h"
 #include "UIWndCallback.h"
-#include "../inventory_space.h"
+#include "inventory_space.h"
 
 class CArtefact;
 class CUI3tButton;

@@ -7,7 +7,7 @@
 #include "UIProgressBar.h"
 #include "UIGameLog.h"
 
-#include "../alife_space.h"
+#include "alife_space.h"
 
 #include "UICarPanel.h"
 #include "UIMotionIcon.h"

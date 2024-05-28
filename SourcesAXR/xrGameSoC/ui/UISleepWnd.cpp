@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "UISleepWnd.h"
-#include "../alife_space.h"
+#include "alife_space.h"
 #include "UIXmlInit.h"
 #include "UIButton.h"
 

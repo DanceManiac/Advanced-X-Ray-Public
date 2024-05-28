@@ -13,7 +13,7 @@
 #include "../HUDManager.h"
 #include "CExtraContentFilter.h"
 
-#include "../object_broker.h"
+#include "object_broker.h"
 
 CUISkinSelectorWnd::CUISkinSelectorWnd(const char* strSectionName, s16 team)
 {	

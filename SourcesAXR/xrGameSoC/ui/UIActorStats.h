@@ -1,7 +1,7 @@
 #pragma once
 
 #include "UIWindow.h"
-#include "../alife_space.h"
+#include "alife_space.h"
 
 class CUIScrollView;
 class CCustomOutfit;
