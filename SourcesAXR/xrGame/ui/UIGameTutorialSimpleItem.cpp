@@ -254,6 +254,7 @@ void CUISequenceSimpleItem::Start()
 		if (     !stricmp( m_pda_section, "pda_tasks"       ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptTasks");		bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_ranking"     ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptRanking");	bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_logs"        ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptLogs");		bShowPda = true;	}
+		else if( !stricmp( m_pda_section, "pda_encyclopedia") ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptEncyclopedia");bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_show_second_task_wnd" ) )
 		{
 			ui_game_sp->PdaMenu().Show_SecondTaskWnd(true);	bShowPda = true;

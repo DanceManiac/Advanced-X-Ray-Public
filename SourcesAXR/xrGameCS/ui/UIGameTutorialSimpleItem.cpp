@@ -126,7 +126,8 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 
 		_si->m_wnd->SetTextComplexMode(true);
 		_si->m_wnd->Show			(false);
-		_si->m_wnd->SetWidth		(_si->m_wnd->GetWidth()*UI().get_current_kx());
+		_si->m_wnd->SetWidth		(_si->m_wnd->GetWidth()/1.2f);	// cari0us -- иначе некоторые стандартные туториалы сжимаются по ширине гораздо сильнее, чем нужно 
+																	// (например, затемнение экрана в интро при старте игры)
 		
 		if(UI().is_widescreen())
 		{
@@ -256,6 +257,7 @@ void CUISequenceSimpleItem::Start()
 		else if( !stricmp( m_pda_section, "pda_fraction_war") ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptFractionWar");bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_ranking"     ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptRanking");	bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_logs"        ) ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptLogs");		bShowPda = true;	}
+		else if( !stricmp( m_pda_section, "pda_encyclopedia") ) {ui_game_sp->PdaMenu().SetActiveSubdialog("eptEncyclopedia");bShowPda = true;	}
 		else if( !stricmp( m_pda_section, "pda_show_second_task_wnd" ) )
 		{
 			ui_game_sp->PdaMenu().Show_SecondTaskWnd(true);	bShowPda = true;
