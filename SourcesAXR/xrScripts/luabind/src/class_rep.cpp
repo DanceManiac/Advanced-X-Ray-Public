@@ -1077,6 +1077,13 @@ int luabind::detail::class_rep::construct_lua_class_callback(lua_State* L)
 	// we don't have any stack objects here
 	lua_call(L, args, 0);
 
+#pragma todo("KRodin: «аметка: здесь попытка исправить утечку пам€ти")
+	// https://stackoverflow.com/questions/1946465/luabind-class-deriving-problem-memory-leak
+	// https://github.com/luabind/luabind/commit/2c99f0475afea7c282c2e432499fd22aa17744e3
+	lua_pushstring(L, "super");
+	lua_pushnil(L);
+	lua_settable(L, LUA_GLOBALSINDEX);
+
 #ifndef LUABIND_NO_ERROR_CHECKING
 
 	object_rep* obj = static_cast<object_rep*>(obj_ptr);
