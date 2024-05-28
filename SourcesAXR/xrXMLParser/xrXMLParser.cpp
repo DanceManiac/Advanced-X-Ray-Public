@@ -168,6 +168,18 @@ XML_NODE* CXml::NavigateToNodeWithAttribute(LPCSTR tag_name, LPCSTR attrib_name,
 	return NULL;
 }
 
+bool CXml::HasNode(LPCSTR path, int index)
+{
+	const XML_NODE* node = NavigateToNode(path, index);
+	return !!node;
+}
+
+bool CXml::HasNodeAttribute(LPCSTR path, int index, LPCSTR attrib)
+{
+	XML_NODE* node = NavigateToNode(path, index);
+	const LPCSTR result = ReadAttrib(node, attrib, NULL);
+	return !!result;
+}
 
 LPCSTR CXml::Read(LPCSTR path, int index, LPCSTR   default_str_val)
 {
