@@ -418,20 +418,38 @@
     <Filter Include="AI\AMonsters\common\monster states\Panic">
       <UniqueIdentifier>{5742fa08-95b1-4625-be19-aa8c31d3f3ee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Find Enemy">
-      <UniqueIdentifier>{e65758cc-96f4-483d-8ee8-6f9925f12149}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Dangerous Sound">
-      <UniqueIdentifier>{d23cfc25-1d4c-4150-a4bb-7bb7e0a25f9f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Interesting Sound">
       <UniqueIdentifier>{e31324bf-6734-4c24-a0de-c30ec8ab37ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Attack">
+      <UniqueIdentifier>{1389a337-7d3d-49a3-9baa-9b2fe45e6b3e}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Squad">
       <UniqueIdentifier>{19ff531f-5af7-4a51-a56e-df96cf87d7af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Hitted">
+      <UniqueIdentifier>{6aa4b019-97ec-4604-8ce1-1d40fa26b5cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Steal">
+      <UniqueIdentifier>{18b5f1fc-256e-4ba4-a890-6855efab1205}</UniqueIdentifier>
+    </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Squad\Rest">
       <UniqueIdentifier>{7cffb754-ccd6-4543-b2bd-ad242db71368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Hunt">
+      <UniqueIdentifier>{8ab5e273-9dd4-4992-ac9f-9e55396aa19d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Home Point">
+      <UniqueIdentifier>{b0d22c86-757b-40e4-90e1-c93d2759e051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Help Sound">
+      <UniqueIdentifier>{88d6cfb0-c89b-4942-a3dd-445e71a6f866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\ALife">
+      <UniqueIdentifier>{2e5b54bd-401f-4a4b-b8a4-25969608b675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\common\monster states\Find Enemy">
+      <UniqueIdentifier>{e65758cc-96f4-483d-8ee8-6f9925f12149}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Eat">
       <UniqueIdentifier>{63ab9d45-b5f4-4b32-9c23-dab075043443}</UniqueIdentifier>
@@ -457,32 +475,14 @@
     <Filter Include="AI\AMonsters\common\monster states\General\Test">
       <UniqueIdentifier>{d7efefad-92fc-473d-86fc-9474a2a5a26e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Attack">
-      <UniqueIdentifier>{1389a337-7d3d-49a3-9baa-9b2fe45e6b3e}</UniqueIdentifier>
+    <Filter Include="AI\AMonsters\common\monster states\Dangerous Sound">
+      <UniqueIdentifier>{d23cfc25-1d4c-4150-a4bb-7bb7e0a25f9f}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Attack\Camp">
       <UniqueIdentifier>{6138f156-bacf-4c3a-b41e-1f9d7e3ebbc7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Hitted">
-      <UniqueIdentifier>{6aa4b019-97ec-4604-8ce1-1d40fa26b5cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Steal">
-      <UniqueIdentifier>{18b5f1fc-256e-4ba4-a890-6855efab1205}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Hunt">
-      <UniqueIdentifier>{8ab5e273-9dd4-4992-ac9f-9e55396aa19d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AMonsters\common\monster states\Controlled">
       <UniqueIdentifier>{2cc01a32-cd66-4581-a656-c8f8d7538eb8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Home Point">
-      <UniqueIdentifier>{b0d22c86-757b-40e4-90e1-c93d2759e051}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\Help Sound">
-      <UniqueIdentifier>{88d6cfb0-c89b-4942-a3dd-445e71a6f866}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\common\monster states\ALife">
-      <UniqueIdentifier>{2e5b54bd-401f-4a4b-b8a4-25969608b675}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\common\components">
       <UniqueIdentifier>{2c447f05-c548-4d4e-b008-9090f8e51500}</UniqueIdentifier>
@@ -643,24 +643,6 @@
     <Filter Include="AI\AMonsters\monsters\Crow">
       <UniqueIdentifier>{f342e4b0-3163-40e5-b2de-f7006150d626}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\monsters\Flesh">
-      <UniqueIdentifier>{70700042-e24e-488e-9204-d896e1c8e6ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\monsters\Flesh\Script">
-      <UniqueIdentifier>{a880a688-f32d-4178-8267-8ec59e384ee8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\monsters\PseudoDog">
-      <UniqueIdentifier>{484d492c-dc81-4e5e-a3da-703adfd6c8c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\monsters\PseudoDog\DogPsy">
-      <UniqueIdentifier>{7a2a4740-fb5e-4699-96f4-a9bab779c755}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide">
-      <UniqueIdentifier>{2126d098-a83c-4d73-9995-34836f5db70f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\monsters\PseudoDog\Script">
-      <UniqueIdentifier>{f1fa614a-20cc-4ec0-9999-29efaaf58061}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AMonsters\monsters\Burer">
       <UniqueIdentifier>{678a795b-be29-4af6-ae3b-fa0d50f6ce0f}</UniqueIdentifier>
     </Filter>
@@ -774,6 +756,24 @@
     </Filter>
     <Filter Include="AI\AMonsters\monsters\Dog\Script">
       <UniqueIdentifier>{afa8387b-2e88-46a7-995e-a175172feec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\Flesh">
+      <UniqueIdentifier>{70700042-e24e-488e-9204-d896e1c8e6ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\Flesh\Script">
+      <UniqueIdentifier>{a880a688-f32d-4178-8267-8ec59e384ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\PseudoDog">
+      <UniqueIdentifier>{484d492c-dc81-4e5e-a3da-703adfd6c8c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\PseudoDog\DogPsy">
+      <UniqueIdentifier>{7a2a4740-fb5e-4699-96f4-a9bab779c755}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide">
+      <UniqueIdentifier>{2126d098-a83c-4d73-9995-34836f5db70f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\PseudoDog\Script">
+      <UniqueIdentifier>{f1fa614a-20cc-4ec0-9999-29efaaf58061}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\humans">
       <UniqueIdentifier>{8d4b6db5-2824-4850-9d01-c2a9c050bb41}</UniqueIdentifier>
@@ -901,14 +901,14 @@
     <Filter Include="AI\AMonsters\humans\stalker\MovementManager\velocity_holder">
       <UniqueIdentifier>{f0afa30f-116d-4e93-91f0-8f245f454e4d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\humans\stalker\Miscellaneous">
-      <UniqueIdentifier>{d0cb6b99-5ae4-4a84-830b-ed9627f54055}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AMonsters\humans\stalker\SoundDataVisitor">
       <UniqueIdentifier>{214d86fd-b8eb-4dec-8725-6b239f2fef6d}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\humans\stalker\SoundUserData">
       <UniqueIdentifier>{15ee4ccb-49ca-4b7e-8b67-f39dfb4859ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\humans\stalker\Miscellaneous">
+      <UniqueIdentifier>{d0cb6b99-5ae4-4a84-830b-ed9627f54055}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\ANavigation">
       <UniqueIdentifier>{1954842b-4cca-4b8d-872e-d23e7f29a47a}</UniqueIdentifier>
@@ -1693,9 +1693,6 @@
     <Filter Include="Core\Client\Objects\zones\SmartZone">
       <UniqueIdentifier>{693747f5-1ca7-442d-9dee-bbcab366554b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Client\Objects\map">
-      <UniqueIdentifier>{bf9c8373-bc9d-4648-99bf-3497c140edba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Client\Objects\vehicles">
       <UniqueIdentifier>{17f9308b-988c-4c87-b839-3f7616839e4a}</UniqueIdentifier>
     </Filter>
@@ -1882,6 +1879,54 @@
     <Filter Include="Core\Server\xrGameSpyServer">
       <UniqueIdentifier>{89ba55b1-7e11-44b4-980d-9a808bc8e8b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{7a0d20ac-68e7-4212-ad97-564878443528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common">
+      <UniqueIdentifier>{15b1f46a-6e35-4b92-86b8-662fb3b8b8e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\InventoryWnd">
+      <UniqueIdentifier>{820490a6-345b-43cf-be96-4fa764779bfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA">
+      <UniqueIdentifier>{cc389ae6-c911-46a0-878b-b36f0ad838bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\Encyclopedia">
+      <UniqueIdentifier>{07d898b8-8035-40bd-9c1c-4db387760734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\Contacts">
+      <UniqueIdentifier>{983b3485-1311-4ab5-bdec-f38340955d7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\TRADE">
+      <UniqueIdentifier>{5cf09273-2e37-47ca-bb9e-646cc1cc0ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\EventsWnd">
+      <UniqueIdentifier>{08a94f9d-aaa8-4a61-9a26-7e1d5ec7a19a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\MAP">
+      <UniqueIdentifier>{c55a966c-95db-48c8-9802-b3b82cd7bd6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\Diary">
+      <UniqueIdentifier>{27d137e9-8cd1-47e4-9b84-f59e10eb210d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\logs">
+      <UniqueIdentifier>{cc998464-a4e5-45f6-9fb8-1013bce4577c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\logs\News">
+      <UniqueIdentifier>{b40c378b-ec31-4d33-becb-929f8b2729b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\TALK">
+      <UniqueIdentifier>{4fcc90d4-dc6d-4339-9e93-5b9b3e093413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\Statistics &amp; Rankings">
+      <UniqueIdentifier>{a07177d9-2eda-4016-9c93-36de1bab26f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\UIItemInfo">
+      <UniqueIdentifier>{e8d1793d-09e9-409d-b75e-f81957b9dd02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\UIItemInfo\CharacterInfo">
+      <UniqueIdentifier>{621bd6e4-adb5-4a20-a318-fd15bce16a09}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{b38b720c-c535-4735-aaee-4591cad4b7a1}</UniqueIdentifier>
     </Filter>
@@ -1996,41 +2041,14 @@
     <Filter Include="Physics\IK">
       <UniqueIdentifier>{71ab9071-8867-42af-8ad7-28713add2995}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI">
-      <UniqueIdentifier>{7a0d20ac-68e7-4212-ad97-564878443528}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common">
-      <UniqueIdentifier>{15b1f46a-6e35-4b92-86b8-662fb3b8b8e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\InventoryWnd">
-      <UniqueIdentifier>{820490a6-345b-43cf-be96-4fa764779bfc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\TradeWnd">
-      <UniqueIdentifier>{5cf09273-2e37-47ca-bb9e-646cc1cc0ea6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\PdaWnd">
-      <UniqueIdentifier>{cc389ae6-c911-46a0-878b-b36f0ad838bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\MapWnd">
-      <UniqueIdentifier>{c55a966c-95db-48c8-9802-b3b82cd7bd6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\TalkWnd">
-      <UniqueIdentifier>{4fcc90d4-dc6d-4339-9e93-5b9b3e093413}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI\Common\CarBodyWnd">
       <UniqueIdentifier>{c9514d3c-0626-4e62-bd61-b2e97991ab6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\Diary">
-      <UniqueIdentifier>{07d898b8-8035-40bd-9c1c-4db387760734}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\MainIngame">
       <UniqueIdentifier>{310114f8-c5e8-4360-a52c-61ac113b5208}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\Animations">
       <UniqueIdentifier>{50606fb3-571b-4a76-8352-718f6ca8d122}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\Statistics">
-      <UniqueIdentifier>{a07177d9-2eda-4016-9c93-36de1bab26f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\_Debug Fonts">
       <UniqueIdentifier>{2bb24340-3bc8-411f-b6a9-a23c0c27d602}</UniqueIdentifier>
@@ -2041,20 +2059,11 @@
     <Filter Include="UI\Common\OptionsConsoleCommands">
       <UniqueIdentifier>{ec1031d8-903a-416e-b106-980c7b43ddb1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\Common\EventsWnd">
-      <UniqueIdentifier>{08a94f9d-aaa8-4a61-9a26-7e1d5ec7a19a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI\Common\MainMenu">
       <UniqueIdentifier>{5da5ce96-c6c7-4e2c-a71a-a53c48d2fa27}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\MainMenu\KeyBinding">
       <UniqueIdentifier>{28ac5e1f-306a-4180-91e3-92b2cc73d2c2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\CharacterInfo">
-      <UniqueIdentifier>{621bd6e4-adb5-4a20-a318-fd15bce16a09}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\ItemInfo">
-      <UniqueIdentifier>{e8d1793d-09e9-409d-b75e-f81957b9dd02}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\OutfitInfo">
       <UniqueIdentifier>{98dff9db-c77f-4c44-9ca1-1dd455d64646}</UniqueIdentifier>
@@ -2275,21 +2284,6 @@
     <Filter Include="AI\ALife\server_entities\group_abstract">
       <UniqueIdentifier>{f8abb0c6-3d23-4a34-b2e7-73c45a040088}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract">
-      <UniqueIdentifier>{dcadbb4e-c42f-49cf-baec-0dc3bf631ee7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\brain">
-      <UniqueIdentifier>{f696cc8c-1202-4626-9757-896f707f93df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager">
-      <UniqueIdentifier>{a25ecc4b-934f-4d3f-9e8d-0a946066bfeb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager">
-      <UniqueIdentifier>{1c1c68d5-b793-4b88-8c34-1c73bceb9834}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager">
-      <UniqueIdentifier>{edb6ef4d-893d-44b9-be6d-65dee9e6021f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\ALife\server_entities\object">
       <UniqueIdentifier>{62710305-da58-4252-a34d-e6a18f1f9f26}</UniqueIdentifier>
     </Filter>
@@ -2308,15 +2302,6 @@
     <Filter Include="AI\ALife\server_entities\trader_abstract">
       <UniqueIdentifier>{e8b57070-3322-4d3b-9953-c7a74b764574}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\ALife\server_entities\human">
-      <UniqueIdentifier>{854c52a0-1b95-4898-a29c-a007873d423c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\human\brain">
-      <UniqueIdentifier>{23f2e4e5-f46b-4b7a-b7a1-2e739a1ebd92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\human\object_handler">
-      <UniqueIdentifier>{c9ec4174-aa4d-4b71-9afd-d025894ee6b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Client\Level\LevelNetworkDemo">
       <UniqueIdentifier>{0b4c754e-0261-4a99-939b-4d3dbcf8ea35}</UniqueIdentifier>
     </Filter>
@@ -2325,6 +2310,27 @@
     </Filter>
     <Filter Include="UI\Common\LoadingScreen">
       <UniqueIdentifier>{193dba92-e5aa-4dd8-b1c9-5b56456ed7e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract">
+      <UniqueIdentifier>{854c52a0-1b95-4898-a29c-a007873d423c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\brain">
+      <UniqueIdentifier>{23f2e4e5-f46b-4b7a-b7a1-2e739a1ebd92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\object_handler">
+      <UniqueIdentifier>{c9ec4174-aa4d-4b71-9afd-d025894ee6b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager">
+      <UniqueIdentifier>{a25ecc4b-934f-4d3f-9e8d-0a946066bfeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager">
+      <UniqueIdentifier>{1c1c68d5-b793-4b88-8c34-1c73bceb9834}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager">
+      <UniqueIdentifier>{edb6ef4d-893d-44b9-be6d-65dee9e6021f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Objects\tasks_info_dialogs\map">
+      <UniqueIdentifier>{bf9c8373-bc9d-4648-99bf-3497c140edba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3135,6 +3141,108 @@
     <ClInclude Include="ai\Monsters\States\monster_state_panic_run_inline.h">
       <Filter>AI\AMonsters\common\monster states\Panic</Filter>
     </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hear_int_sound.h">
+      <Filter>AI\AMonsters\common\monster states\Interesting Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hear_int_sound_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Interesting Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_melee.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_melee_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_run.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_run_attack.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_run_attack_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_attack_run_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hitted.h">
+      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hitted_hide.h">
+      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hitted_hide_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hitted_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hitted_moveout.h">
+      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_hitted_moveout_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_steal.h">
+      <Filter>AI\AMonsters\common\monster states\Steal</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_steal_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Steal</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest.h">
+      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow.h">
+      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_home_point_attack.h">
+      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_home_point_attack_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_home_point_danger.h">
+      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_home_point_danger_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_home_point_rest.h">
+      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_home_point_rest_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_help_sound.h">
+      <Filter>AI\AMonsters\common\monster states\Help Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_help_sound_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Help Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task.h">
+      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task_graph_walk.h">
+      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task_graph_walk_inline.h">
+      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task_inline.h">
+      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
+    </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_find_enemy.h">
       <Filter>AI\AMonsters\common\monster states\Find Enemy</Filter>
     </ClInclude>
@@ -3164,30 +3272,6 @@
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_find_enemy_walk_inline.h">
       <Filter>AI\AMonsters\common\monster states\Find Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound.h">
-      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hear_int_sound.h">
-      <Filter>AI\AMonsters\common\monster states\Interesting Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hear_int_sound_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Interesting Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_follow_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_squad_rest_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Squad\Rest</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_eat.h">
       <Filter>AI\AMonsters\common\monster states\Eat</Filter>
@@ -3276,29 +3360,11 @@
     <ClInclude Include="ai\Monsters\States\state_test_state_inline.h">
       <Filter>AI\AMonsters\common\monster states\General\Test</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound.h">
+      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_melee.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_melee_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_run.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_run_attack.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_run_attack_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_attack_run_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Attack</Filter>
+    <ClInclude Include="ai\Monsters\States\monster_state_hear_danger_sound_inline.h">
+      <Filter>AI\AMonsters\common\monster states\Dangerous Sound</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_attack_camp.h">
       <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
@@ -3311,30 +3377,6 @@
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_attack_camp_stealout_inline.h">
       <Filter>AI\AMonsters\common\monster states\Attack\Camp</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hitted.h">
-      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hitted_hide.h">
-      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hitted_hide_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hitted_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hitted_moveout.h">
-      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_hitted_moveout_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Hitted</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_steal.h">
-      <Filter>AI\AMonsters\common\monster states\Steal</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_steal_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Steal</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_controlled.h">
       <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
@@ -3353,42 +3395,6 @@
     </ClInclude>
     <ClInclude Include="ai\Monsters\States\monster_state_controlled_inline.h">
       <Filter>AI\AMonsters\common\monster states\Controlled</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_home_point_attack.h">
-      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_home_point_attack_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_home_point_danger.h">
-      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_home_point_danger_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_home_point_rest.h">
-      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_home_point_rest_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Home Point</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_help_sound.h">
-      <Filter>AI\AMonsters\common\monster states\Help Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_help_sound_inline.h">
-      <Filter>AI\AMonsters\common\monster states\Help Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task.h">
-      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task_graph_walk.h">
-      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task_graph_walk_inline.h">
-      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\States\monster_state_smart_terrain_task_inline.h">
-      <Filter>AI\AMonsters\common\monster states\ALife</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\ai_monster_defs.h">
       <Filter>AI\AMonsters\common\components</Filter>
@@ -3621,9 +3627,6 @@
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_vampire_inline.h">
       <Filter>AI\AMonsters\monsters\Bloodsucker\Vampire State</Filter>
     </ClInclude>
-    <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_alien.h">
-      <Filter>AI\AMonsters\monsters\Bloodsucker\Alien Feature</Filter>
-    </ClInclude>
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_predator.h">
       <Filter>AI\AMonsters\monsters\Bloodsucker\Predator State</Filter>
     </ClInclude>
@@ -3648,6 +3651,9 @@
     <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_attack_state_inline.h">
       <Filter>AI\AMonsters\monsters\Bloodsucker\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="ai\Monsters\Bloodsucker\bloodsucker_alien.h">
+      <Filter>AI\AMonsters\monsters\Bloodsucker\Alien Feature</Filter>
+    </ClInclude>
     <ClInclude Include="ai\Monsters\Boar\boar.h">
       <Filter>AI\AMonsters\monsters\Boar</Filter>
     </ClInclude>
@@ -3656,42 +3662,6 @@
     </ClInclude>
     <ClInclude Include="AI\Crow\ai_crow.h">
       <Filter>AI\AMonsters\monsters\Crow</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Flesh\flesh.h">
-      <Filter>AI\AMonsters\monsters\Flesh</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Flesh\flesh_state_manager.h">
-      <Filter>AI\AMonsters\monsters\Flesh</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\pseudodog.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\pseudodog_psi_effector.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\pseudodog_state_manager.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_aura.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_manager.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_hide.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_hide_inline.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
-    </ClInclude>
-    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_inline.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Burer\burer.h">
       <Filter>AI\AMonsters\monsters\Burer</Filter>
@@ -3935,6 +3905,42 @@
     </ClInclude>
     <ClInclude Include="ai\Monsters\Dog\dog_state_manager.h">
       <Filter>AI\AMonsters\monsters\Dog</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Flesh\flesh.h">
+      <Filter>AI\AMonsters\monsters\Flesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Flesh\flesh_state_manager.h">
+      <Filter>AI\AMonsters\monsters\Flesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\pseudodog.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\pseudodog_psi_effector.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\pseudodog_state_manager.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_aura.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_manager.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_hide.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_hide_inline.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
+    </ClInclude>
+    <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_inline.h">
+      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
     </ClInclude>
     <ClInclude Include="Ai\Trader\ai_trader.h">
       <Filter>AI\AMonsters\humans\trader</Filter>
@@ -4710,6 +4716,9 @@
     <ClInclude Include="Tracer.h">
       <Filter>Core\Client\Level\Bullet Manager</Filter>
     </ClInclude>
+    <ClInclude Include="LevelGameDef.h">
+      <Filter>Core\Client\Level\SeniorityHierarchyHolder</Filter>
+    </ClInclude>
     <ClInclude Include="seniority_hierarchy_holder.h">
       <Filter>Core\Client\Level\SeniorityHierarchyHolder</Filter>
     </ClInclude>
@@ -4757,9 +4766,6 @@
     </ClInclude>
     <ClInclude Include="debug_renderer_inline.h">
       <Filter>Core\Client\Level\Debug Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelGameDef.h">
-      <Filter>Core\Client\Level</Filter>
     </ClInclude>
     <ClInclude Include="Level_network_Demo.h">
       <Filter>Core\Client\Level\LevelNetworkDemo</Filter>
@@ -4955,6 +4961,15 @@
     </ClInclude>
     <ClInclude Include="actor_statistic_mgr.h">
       <Filter>Core\Client\Objects\tasks_info_dialogs\statistics</Filter>
+    </ClInclude>
+    <ClInclude Include="map_location.h">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
+    </ClInclude>
+    <ClInclude Include="map_location_defs.h">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
+    </ClInclude>
+    <ClInclude Include="map_manager.h">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Core\Client\Objects\inventory</Filter>
@@ -5349,9 +5364,6 @@
     <ClInclude Include="TorridZone.h">
       <Filter>Core\Client\Objects\zones\TorridZone</Filter>
     </ClInclude>
-    <ClInclude Include="ZoneVisual.h">
-      <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
-    </ClInclude>
     <ClInclude Include="space_restrictor.h">
       <Filter>Core\Client\Objects\zones\SpaceRestrictor</Filter>
     </ClInclude>
@@ -5370,14 +5382,8 @@
     <ClInclude Include="smart_zone.h">
       <Filter>Core\Client\Objects\zones\SmartZone</Filter>
     </ClInclude>
-    <ClInclude Include="map_location.h">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClInclude>
-    <ClInclude Include="map_location_defs.h">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClInclude>
-    <ClInclude Include="map_manager.h">
-      <Filter>Core\Client\Objects\map</Filter>
+    <ClInclude Include="ZoneVisual.h">
+      <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
     </ClInclude>
     <ClInclude Include="Car.h">
       <Filter>Core\Client\Objects\vehicles\Car</Filter>
@@ -6018,6 +6024,9 @@
     <ClInclude Include="ui_base.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="ui_defs.h">
+      <Filter>UI</Filter>
+    </ClInclude>
     <ClInclude Include="UIDialogHolder.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -6028,64 +6037,97 @@
       <Filter>UI\Common\InventoryWnd</Filter>
     </ClInclude>
     <ClInclude Include="ui\UITradeWnd.h">
-      <Filter>UI\Common\TradeWnd</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIPdaAux.h">
-      <Filter>UI\Common\PdaWnd</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIPdaContactsWnd.h">
-      <Filter>UI\Common\PdaWnd</Filter>
+      <Filter>UI\Common\TRADE</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIPdaListItem.h">
-      <Filter>UI\Common\PdaWnd</Filter>
+      <Filter>UI\Common\PDA</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIPdaWnd.h">
-      <Filter>UI\Common\PdaWnd</Filter>
+      <Filter>UI\Common\PDA</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIPdaAux.h">
+      <Filter>UI\Common\PDA</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIEventsWnd.h">
+      <Filter>UI\Common\PDA\EventsWnd</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITaskDescrWnd.h">
+      <Filter>UI\Common\PDA\EventsWnd</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITaskItem.h">
+      <Filter>UI\Common\PDA\EventsWnd</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIDiaryWnd.h">
+      <Filter>UI\Common\PDA\Diary</Filter>
     </ClInclude>
     <ClInclude Include="ui\map_hint.h">
-      <Filter>UI\Common\MapWnd</Filter>
+      <Filter>UI\Common\PDA\MAP</Filter>
     </ClInclude>
     <ClInclude Include="map_spot.h">
-      <Filter>UI\Common\MapWnd</Filter>
+      <Filter>UI\Common\PDA\MAP</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMap.h">
-      <Filter>UI\Common\MapWnd</Filter>
+      <Filter>UI\Common\PDA\MAP</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMapWnd.h">
-      <Filter>UI\Common\MapWnd</Filter>
+      <Filter>UI\Common\PDA\MAP</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMapWndActions.h">
-      <Filter>UI\Common\MapWnd</Filter>
+      <Filter>UI\Common\PDA\MAP</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMapWndActionsSpace.h">
-      <Filter>UI\Common\MapWnd</Filter>
+      <Filter>UI\Common\PDA\MAP</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIActorInfo.h">
+      <Filter>UI\Common\PDA\Statistics &amp; Rankings</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIStalkersRankingWnd.h">
+      <Filter>UI\Common\PDA\Statistics &amp; Rankings</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIEncyclopediaArticleWnd.h">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIEncyclopediaWnd.h">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIPdaContactsWnd.h">
+      <Filter>UI\Common\PDA\Contacts</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UINewsItemWnd.h">
+      <Filter>UI\Common\PDA\logs\News</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UINewsWnd.h">
+      <Filter>UI\Common\PDA\logs\News</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIArtefactParams.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIItemInfo.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIWpnParams.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UICharacterInfo.h">
+      <Filter>UI\Common\UIItemInfo\CharacterInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIActorStats.h">
+      <Filter>UI\Common\OutfitInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UITimeWnd.h">
+      <Filter>UI\Common\TimeWnd</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UISleepWnd.h">
+      <Filter>UI\Common\SleepWnd</Filter>
     </ClInclude>
     <ClInclude Include="ui\UITalkDialogWnd.h">
-      <Filter>UI\Common\TalkWnd</Filter>
+      <Filter>UI\Common\TALK</Filter>
     </ClInclude>
     <ClInclude Include="ui\UITalkWnd.h">
-      <Filter>UI\Common\TalkWnd</Filter>
+      <Filter>UI\Common\TALK</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICarBodyWnd.h">
       <Filter>UI\Common\CarBodyWnd</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIDiaryWnd.h">
-      <Filter>UI\Common\Diary</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIEncyclopediaArticleWnd.h">
-      <Filter>UI\Common\Diary</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIEncyclopediaWnd.h">
-      <Filter>UI\Common\Diary</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UINewsItemWnd.h">
-      <Filter>UI\Common\Diary</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UINewsWnd.h">
-      <Filter>UI\Common\Diary</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIArtefactPanel.h">
-      <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICarPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
@@ -6114,15 +6156,6 @@
     <ClInclude Include="ui\UIColorAnimatorWrapper.h">
       <Filter>UI\Common\Animations</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UIActorInfo.h">
-      <Filter>UI\Common\Statistics</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIStalkersRankingWnd.h">
-      <Filter>UI\Common\Statistics</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIDebugFonts.h">
-      <Filter>UI\Common\_Debug Fonts</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UIOptionsItem.h">
       <Filter>UI\Common\OptionsItem</Filter>
     </ClInclude>
@@ -6137,15 +6170,6 @@
     </ClInclude>
     <ClInclude Include="MainMenu.h">
       <Filter>UI\Common\MainMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIEventsWnd.h">
-      <Filter>UI\Common\EventsWnd</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UITaskDescrWnd.h">
-      <Filter>UI\Common\EventsWnd</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UITaskItem.h">
-      <Filter>UI\Common\EventsWnd</Filter>
     </ClInclude>
     <ClInclude Include="ui\MMSound.h">
       <Filter>UI\Common\MainMenu</Filter>
@@ -6165,34 +6189,13 @@
     <ClInclude Include="ui\UIInventoryUtilities.h">
       <Filter>UI\Common\InventoryUtilities</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UICharacterInfo.h">
-      <Filter>UI\Common\CharacterInfo</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIArtefactParams.h">
-      <Filter>UI\Common\ItemInfo</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIItemInfo.h">
-      <Filter>UI\Common\ItemInfo</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIWpnParams.h">
-      <Filter>UI\Common\ItemInfo</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIActorStats.h">
-      <Filter>UI\Common\OutfitInfo</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UITimeWnd.h">
-      <Filter>UI\Common\TimeWnd</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UISleepWnd.h">
-      <Filter>UI\Common\SleepWnd</Filter>
+    <ClInclude Include="ui\UIDebugFonts.h">
+      <Filter>UI\Common\_Debug Fonts</Filter>
     </ClInclude>
     <ClInclude Include="callback_info.h">
       <Filter>UI\UIWindows</Filter>
     </ClInclude>
     <ClInclude Include="ui\uiabstract.h">
-      <Filter>UI\UIWindows</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIBtnHint.h">
       <Filter>UI\UIWindows</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMessages.h">
@@ -6283,6 +6286,9 @@
       <Filter>UI\UIWindows\ScriptWnd</Filter>
     </ClInclude>
     <ClInclude Include="ui\UI3tButton.h">
+      <Filter>UI\UIWindows\Buttons</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIBtnHint.h">
       <Filter>UI\UIWindows\Buttons</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIButton.h">
@@ -6543,39 +6549,24 @@
     <ClInclude Include="ui\UIGameTutorial.h">
       <Filter>UI\Tutorial</Filter>
     </ClInclude>
-    <ClInclude Include="ui_defs.h">
-      <Filter>UI</Filter>
-    </ClInclude>
+    <ClCompile Include="../xrServerEntitiesSoC/PHNetState.cpp">
+      <Filter>Physics\Base\Objects\PHNet</Filter>
+    </ClCompile>
     <ClInclude Include="CaptureBoneCallback.h">
       <Filter>Physics\Base\Objects\PhyMove\MovementControl</Filter>
     </ClInclude>
     <ClInclude Include="opt.lua.h" />
     <ClInclude Include="opt_inline.lua.h" />
-    <ClInclude Include="embedded_editor\editor_render.h">
+    <ClInclude Include="embedded_editor\embedded_editor_main.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_ai_map.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
+    <ClInclude Include="embedded_editor\embedded_editor_weather.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_helper.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_hud.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\embedded_editor_main.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
-      <Filter>EmbeddedEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="embedded_editor\embedded_editor_weather.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="AdvancedXrayGameConstants.h">
@@ -6587,41 +6578,58 @@
     <ClInclude Include="ActorNightVision.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_pos_informer.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
     <ClInclude Include="ActorSkills.h">
       <Filter>Core\Client\Objects\actor\base</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIOutfitInfo.h">
-      <Filter>UI\Common\ItemInfo</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="script_vars_storage.h">
       <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
     </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesSoC\PHNetState.h" />
+    <ClInclude Include="embedded_editor\editor_render.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\editor_render_ai_map.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIArtefactPanel.h">
+      <Filter>UI\Common\MainIngame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesSoC\PHNetState.h">
+      <Filter>Physics\Base\Objects\PHNet</Filter>
+    </ClInclude>
     <ClInclude Include="pch_script.h" />
     <ClInclude Include="alife_human_object_handler.h">
-      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
     </ClInclude>
     <ClInclude Include="alife_human_object_handler_inline.h">
-      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
     </ClInclude>
     <ClInclude Include="alife_human_object_handler_save.h">
-      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
     </ClInclude>
     <ClInclude Include="..\xrServerEntitiesSoC\alife_human_brain.h">
-      <Filter>AI\ALife\server_entities\human\brain</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClInclude>
     <ClInclude Include="..\xrServerEntitiesSoC\alife_human_brain_inline.h">
-      <Filter>AI\ALife\server_entities\human\brain</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClInclude>
     <ClInclude Include="alife_human_brain_save.h">
-      <Filter>AI\ALife\server_entities\human\brain</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClInclude>
     <ClInclude Include="..\xrServerEntitiesSoC\alife_monster_brain.h">
-      <Filter>AI\ALife\server_entities\human\brain</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClInclude>
     <ClInclude Include="..\xrServerEntitiesSoC\alife_monster_brain_inline.h">
-      <Filter>AI\ALife\server_entities\human\brain</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClInclude>
     <ClInclude Include="alife_monster_detail_path_manager.h">
       <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
@@ -6649,6 +6657,9 @@
     </ClInclude>
     <ClInclude Include="game_graph_space.h">
       <Filter>AI\ANavigation\GameGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
+      <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="xr_Client_BattlEye.h">
       <Filter>Core\Client\BattlEye_Client</Filter>
@@ -6886,7 +6897,7 @@
     <ClCompile Include="alife_simulator_script.cpp">
       <Filter>AI\ALife</Filter>
     </ClCompile>
-    <ClCompile Include="alife_space.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/alife_space.cpp">
       <Filter>AI\ALife</Filter>
     </ClCompile>
     <ClCompile Include="alife_interaction_manager.cpp">
@@ -6977,31 +6988,16 @@
       <Filter>AI\ALife\server_entities\dynamic_object</Filter>
     </ClCompile>
     <ClCompile Include="alife_human_abstract.cpp">
-      <Filter>AI\ALife\server_entities\human</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_human_brain.cpp">
-      <Filter>AI\ALife\server_entities\human\brain</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
     </ClCompile>
     <ClCompile Include="alife_human_brain_script.cpp">
-      <Filter>AI\ALife\server_entities\human\brain</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClCompile>
     <ClCompile Include="alife_human_object_handler.cpp">
-      <Filter>AI\ALife\server_entities\human\object_handler</Filter>
+      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
     </ClCompile>
     <ClCompile Include="alife_group_abstract.cpp">
       <Filter>AI\ALife\server_entities\group_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_abstract.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_base.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_brain.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_brain_script.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClCompile>
     <ClCompile Include="alife_monster_movement_manager.cpp">
       <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
@@ -7720,13 +7716,13 @@
     <ClCompile Include="script_effector_wrapper.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptEffector\ScriptEffectorWrapper</Filter>
     </ClCompile>
-    <ClCompile Include="script_flags_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_flags_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptFlags</Filter>
     </ClCompile>
-    <ClCompile Include="script_fmatrix_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_fmatrix_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptFmatrix</Filter>
     </ClCompile>
-    <ClCompile Include="script_fvector_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_fvector_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptFvector</Filter>
     </ClCompile>
     <ClCompile Include="script_game_object.cpp">
@@ -7771,40 +7767,34 @@
     <ClCompile Include="script_hit_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptHit</Filter>
     </ClCompile>
-    <ClCompile Include="script_ini_file.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_ini_file.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptIniFile</Filter>
     </ClCompile>
-    <ClCompile Include="script_ini_file_script.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_ini_file_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptIniFile</Filter>
     </ClCompile>
-    <ClCompile Include="script_token_list.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_token_list.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptIniFile\ScriptTokenList</Filter>
     </ClCompile>
-    <ClCompile Include="script_token_list_script.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_token_list_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptIniFile\ScriptTokenList</Filter>
     </ClCompile>
-    <ClCompile Include="script_rtoken_list_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_rtoken_list_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptIniFile\ScriptRTokenList</Filter>
     </ClCompile>
     <ClCompile Include="script_monster_hit_info_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptMonsterHitInfo</Filter>
     </ClCompile>
-    <ClCompile Include="script_net_packet_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_net_packet_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptNetPacket</Filter>
     </ClCompile>
     <ClCompile Include="script_render_device_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptRenderDevice</Filter>
     </ClCompile>
-    <ClCompile Include="script_sound.cpp">
-      <Filter>AI\AScript\ScriptClasses\ScriptSound</Filter>
-    </ClCompile>
-    <ClCompile Include="script_sound_script.cpp">
-      <Filter>AI\AScript\ScriptClasses\ScriptSound</Filter>
-    </ClCompile>
     <ClCompile Include="script_sound_info_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptSoundInfo</Filter>
     </ClCompile>
-    <ClCompile Include="script_sound_type_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_sound_type_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptSoundType</Filter>
     </ClCompile>
     <ClCompile Include="ScriptXMLInit.cpp">
@@ -7816,7 +7806,7 @@
     <ClCompile Include="key_binding_registrator_script.cpp">
       <Filter>AI\AScript\ScriptClasses\KeyBindings</Filter>
     </ClCompile>
-    <ClCompile Include="script_reader_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_reader_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptReader</Filter>
     </ClCompile>
     <ClCompile Include="fs_registrator_script.cpp">
@@ -7831,7 +7821,7 @@
     <ClCompile Include="script_lanim.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptLAnim</Filter>
     </ClCompile>
-    <ClCompile Include="script_fcolor_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_fcolor_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptFcolor</Filter>
     </ClCompile>
     <ClCompile Include="script_particles.cpp">
@@ -7840,40 +7830,46 @@
     <ClCompile Include="script_particles_script.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptParticles</Filter>
     </ClCompile>
-    <ClCompile Include="script_callStack.cpp">
+    <ClCompile Include="script_sound.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptSound</Filter>
+    </ClCompile>
+    <ClCompile Include="script_sound_script.cpp">
+      <Filter>AI\AScript\ScriptClasses\ScriptSound</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/script_callStack.cpp">
       <Filter>AI\AScript\ScriptDebugger</Filter>
     </ClCompile>
-    <ClCompile Include="script_debugger.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_debugger.cpp">
       <Filter>AI\AScript\ScriptDebugger</Filter>
     </ClCompile>
-    <ClCompile Include="script_debugger_threads.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_debugger_threads.cpp">
       <Filter>AI\AScript\ScriptDebugger</Filter>
     </ClCompile>
-    <ClCompile Include="script_lua_helper.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_lua_helper.cpp">
       <Filter>AI\AScript\ScriptDebugger</Filter>
     </ClCompile>
-    <ClCompile Include="script_engine.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_engine.cpp">
       <Filter>AI\AScript\ScriptEngine</Filter>
     </ClCompile>
-    <ClCompile Include="script_engine_export.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_engine_export.cpp">
+      <Filter>AI\AScript\ScriptEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/script_engine_script.cpp">
       <Filter>AI\AScript\ScriptEngine</Filter>
     </ClCompile>
     <ClCompile Include="script_engine_help.cpp">
       <Filter>AI\AScript\ScriptEngine</Filter>
     </ClCompile>
-    <ClCompile Include="script_engine_script.cpp">
-      <Filter>AI\AScript\ScriptEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="script_process.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_process.cpp">
       <Filter>AI\AScript\ScriptProcess</Filter>
     </ClCompile>
-    <ClCompile Include="script_storage.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_storage.cpp">
       <Filter>AI\AScript\ScriptStorage</Filter>
     </ClCompile>
-    <ClCompile Include="script_thread.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_thread.cpp">
       <Filter>AI\AScript\ScriptThread</Filter>
     </ClCompile>
-    <ClCompile Include="script_stack_tracker.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\script_stack_tracker.cpp">
       <Filter>AI\AScript\ScriptThread\ScriptStackTracker</Filter>
     </ClCompile>
     <ClCompile Include="doug_lea_memory_allocator.c">
@@ -7987,12 +7983,6 @@
     <ClCompile Include="Level_start.cpp">
       <Filter>Core\Client\Level</Filter>
     </ClCompile>
-    <ClCompile Include="LevelGameDef.cpp">
-      <Filter>Core\Client\Level</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelFogOfWar.cpp">
-      <Filter>Core\Client\Level\Map Fog Of War</Filter>
-    </ClCompile>
     <ClCompile Include="Level_Bullet_Manager.cpp">
       <Filter>Core\Client\Level\Bullet Manager</Filter>
     </ClCompile>
@@ -8001,6 +7991,12 @@
     </ClCompile>
     <ClCompile Include="Tracer.cpp">
       <Filter>Core\Client\Level\Bullet Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/LevelGameDef.cpp">
+      <Filter>Core\Client\Level\SeniorityHierarchyHolder</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelFogOfWar.cpp">
+      <Filter>Core\Client\Level\Map Fog Of War</Filter>
     </ClCompile>
     <ClCompile Include="seniority_hierarchy_holder.cpp">
       <Filter>Core\Client\Level\SeniorityHierarchyHolder</Filter>
@@ -8137,6 +8133,15 @@
     <ClCompile Include="ParticlesPlayer.cpp">
       <Filter>Core\Client\Objects\base\GameObject\Holder\ParticlesPlayer</Filter>
     </ClCompile>
+    <ClCompile Include="min_obb.cpp">
+      <Filter>Core\Client\Objects\base\GameObject\ai_obstacle\min_obb</Filter>
+    </ClCompile>
+    <ClCompile Include="magic_box3.cpp">
+      <Filter>Core\Client\Objects\base\GameObject\ai_obstacle\min_obb\magic_box</Filter>
+    </ClCompile>
+    <ClCompile Include="magic_minimize_1d.cpp">
+      <Filter>Core\Client\Objects\base\GameObject\ai_obstacle\min_obb\minimize_1d</Filter>
+    </ClCompile>
     <ClCompile Include="UsableScriptObject.cpp">
       <Filter>Core\Client\Objects\base\UsableScriptObject</Filter>
     </ClCompile>
@@ -8218,6 +8223,12 @@
     <ClCompile Include="actor_statistic_mgr.cpp">
       <Filter>Core\Client\Objects\tasks_info_dialogs\statistics</Filter>
     </ClCompile>
+    <ClCompile Include="map_location.cpp">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
+    </ClCompile>
+    <ClCompile Include="map_manager.cpp">
+      <Filter>Core\Client\Objects\tasks_info_dialogs\map</Filter>
+    </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>Core\Client\Objects\inventory</Filter>
     </ClCompile>
@@ -8248,9 +8259,6 @@
     <ClCompile Include="character_community.cpp">
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
-    <ClCompile Include="character_info.cpp">
-      <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
-    </ClCompile>
     <ClCompile Include="character_rank.cpp">
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
@@ -8258,9 +8266,6 @@
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
     <ClCompile Include="monster_community.cpp">
-      <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
-    </ClCompile>
-    <ClCompile Include="specific_character.cpp">
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
     <ClCompile Include="relation_registry.cpp">
@@ -8308,12 +8313,6 @@
     <ClCompile Include="Missile.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Grenades &amp; Missiles</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponMagazined.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponMagazinedWGrenade.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
-    </ClCompile>
     <ClCompile Include="Scope.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Scope</Filter>
     </ClCompile>
@@ -8331,6 +8330,12 @@
     </ClCompile>
     <ClCompile Include="RocketLauncher.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\RocketLauncher</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponMagazined.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponMagazinedWGrenade.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
     </ClCompile>
     <ClCompile Include="WeaponWalther.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon Walther 99</Filter>
@@ -8437,14 +8442,11 @@
     <ClCompile Include="WeaponStatMgunIR.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\StationaryMgun</Filter>
     </ClCompile>
-    <ClCompile Include="artefact_script.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts</Filter>
-    </ClCompile>
     <ClCompile Include="Artefact.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts</Filter>
     </ClCompile>
-    <ClCompile Include="MercuryBall.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Mercury Ball</Filter>
+    <ClCompile Include="artefact_script.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts</Filter>
     </ClCompile>
     <ClCompile Include="GraviArtifact.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\GraviArtifact</Filter>
@@ -8472,6 +8474,9 @@
     </ClCompile>
     <ClCompile Include="FadedBall.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Faded Ball</Filter>
+    </ClCompile>
+    <ClCompile Include="MercuryBall.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Mercury Ball</Filter>
     </ClCompile>
     <ClCompile Include="ElectricBall.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Electric Ball</Filter>
@@ -8605,9 +8610,6 @@
     <ClCompile Include="TorridZone.cpp">
       <Filter>Core\Client\Objects\zones\TorridZone</Filter>
     </ClCompile>
-    <ClCompile Include="ZoneVisual.cpp">
-      <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
-    </ClCompile>
     <ClCompile Include="space_restrictor.cpp">
       <Filter>Core\Client\Objects\zones\SpaceRestrictor</Filter>
     </ClCompile>
@@ -8626,11 +8628,8 @@
     <ClCompile Include="NoGravityZone.cpp">
       <Filter>Core\Client\Objects\zones\NoGravityZone</Filter>
     </ClCompile>
-    <ClCompile Include="map_location.cpp">
-      <Filter>Core\Client\Objects\map</Filter>
-    </ClCompile>
-    <ClCompile Include="map_manager.cpp">
-      <Filter>Core\Client\Objects\map</Filter>
+    <ClCompile Include="ZoneVisual.cpp">
+      <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
     </ClCompile>
     <ClCompile Include="Car.cpp">
       <Filter>Core\Client\Objects\vehicles\Car</Filter>
@@ -8698,12 +8697,6 @@
     <ClCompile Include="Spectator.cpp">
       <Filter>Core\Client\Spectator</Filter>
     </ClCompile>
-    <ClCompile Include="r2_test_hw.cpp">
-      <Filter>Core\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="xrGame.cpp">
-      <Filter>Core\Common</Filter>
-    </ClCompile>
     <ClCompile Include="console_commands.cpp">
       <Filter>Core\Common\Console Commands</Filter>
     </ClCompile>
@@ -8716,16 +8709,16 @@
     <ClCompile Include="xrgame_dll_detach.cpp">
       <Filter>Core\Common\Dll Process Detach</Filter>
     </ClCompile>
-    <ClCompile Include="object_factory.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/object_factory.cpp">
       <Filter>Core\Common\ObjectFactory</Filter>
     </ClCompile>
-    <ClCompile Include="object_factory_register.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/object_factory_register.cpp">
       <Filter>Core\Common\ObjectFactory</Filter>
     </ClCompile>
-    <ClCompile Include="object_factory_script.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/object_factory_script.cpp">
       <Filter>Core\Common\ObjectFactory</Filter>
     </ClCompile>
-    <ClCompile Include="object_item_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\object_item_script.cpp">
       <Filter>Core\Common\ObjectFactory\object_item_script</Filter>
     </ClCompile>
     <ClCompile Include="profiler.cpp">
@@ -8734,10 +8727,10 @@
     <ClCompile Include="random32.cpp">
       <Filter>Core\Common\Random\32bit</Filter>
     </ClCompile>
-    <ClCompile Include="smart_cast.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/smart_cast.cpp">
       <Filter>Core\Common\SmartCast</Filter>
     </ClCompile>
-    <ClCompile Include="smart_cast_stats.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/smart_cast_stats.cpp">
       <Filter>Core\Common\SmartCast</Filter>
     </ClCompile>
     <ClCompile Include="string_table.cpp">
@@ -8757,6 +8750,9 @@
     </ClCompile>
     <ClCompile Include="xrServer_balance.cpp">
       <Filter>Core\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="r2_test_hw.cpp">
+      <Filter>Core\Common</Filter>
     </ClCompile>
     <ClCompile Include="game_base.cpp">
       <Filter>Core\Server\Games</Filter>
@@ -8893,61 +8889,79 @@
     <ClCompile Include="gamespy\CdkeyDecode\cdkeydecode.c">
       <Filter>Core\Server\GameSpy\CdkeyDecode</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Factory.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Factory.cpp">
       <Filter>Core\Server\ServerEntities</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_Abstract.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects.cpp">
+      <Filter>Core\Server\ServerEntities\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_Abstract.cpp">
       <Filter>Core\Server\ServerEntities</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Object_Base.cpp">
-      <Filter>Core\Server\ServerEntities\objects</Filter>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife.cpp">
+      <Filter>Core\Server\ServerEntities</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects.cpp">
-      <Filter>Core\Server\ServerEntities\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Objects_script.cpp">
-      <Filter>Core\Server\ServerEntities\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Objects_script2.cpp">
-      <Filter>Core\Server\ServerEntities\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_script.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_script.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/alife_human_brain.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_base.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_abstract.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/alife_monster_brain.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_brain_script.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Object_Base.cpp">
+      <Filter>Core\Server\ServerEntities\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Monsters.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Monsters_script.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_script2.cpp">
+      <Filter>Core\Server\ServerEntities\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_script2.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_script2.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_script3.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_script3.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Items.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Items_script2.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Items_script.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Items_script3.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Items_script2.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Monsters_script2.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Items.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Items_script3.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Items_script.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Monsters.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_script.cpp">
+      <Filter>Core\Server\ServerEntities\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/specific_character.cpp">
+      <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesSoC\xrserver_objects_alife_monsters_script3.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
     </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Monsters_script.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Monsters_script2.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
-    </ClCompile>
-    <ClCompile Include="xrserver_objects_alife_monsters_script3.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Objects_ALife_Monsters_script4.cpp">
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Monsters_script4.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
     </ClCompile>
     <ClCompile Include="xrServer_perform_GameExport.cpp">
@@ -9001,6 +9015,141 @@
     <ClCompile Include="xrGameSpyServer_callbacks.cpp">
       <Filter>Core\Server\xrGameSpyServer</Filter>
     </ClCompile>
+    <ClCompile Include="ui\CExtraContentFilter.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui_base.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIDialogHolder.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInventoryWnd.cpp">
+      <Filter>UI\Common\InventoryWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\uiinventorywnd2.cpp">
+      <Filter>UI\Common\InventoryWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInventoryWnd3.cpp">
+      <Filter>UI\Common\InventoryWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIOutfitSlot.cpp">
+      <Filter>UI\Common\InventoryWnd</Filter>
+    </ClCompile>
+    <!--<ClCompile Include="ui\UIOutfitInfo2.cpp">
+      <Filter>UI\Common\InventoryWnd\OutfitInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInventoryUpgradeWnd.cpp">
+      <Filter>UI\Common\InventoryWnd\InventoryUpgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInventoryUpgradeWnd_add.cpp">
+      <Filter>UI\Common\InventoryWnd\InventoryUpgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInvUpgrade.cpp">
+      <Filter>UI\Common\InventoryWnd\InventoryUpgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInvUpgradeInfo.cpp">
+      <Filter>UI\Common\InventoryWnd\InventoryUpgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInvUpgradeProperty.cpp">
+      <Filter>UI\Common\InventoryWnd\InventoryUpgrade</Filter>
+    </ClCompile> -->
+    <ClCompile Include="ui\UITradeWnd.cpp">
+      <Filter>UI\Common\TRADE</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIPdaListItem.cpp">
+      <Filter>UI\Common\PDA</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIPdaWnd.cpp">
+      <Filter>UI\Common\PDA</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIEventsWnd.cpp">
+      <Filter>UI\Common\PDA\EventsWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITaskDescrWnd.cpp">
+      <Filter>UI\Common\PDA\EventsWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITaskItem.cpp">
+      <Filter>UI\Common\PDA\EventsWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIDiaryWnd2.cpp">
+      <Filter>UI\Common\PDA\Diary</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIPdaAux.cpp">
+      <Filter>UI\Common\PDA</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\map_hint.cpp">
+      <Filter>UI\Common\PDA\MAP</Filter>
+    </ClCompile>
+    <ClCompile Include="map_spot.cpp">
+      <Filter>UI\Common\PDA\MAP</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIMap.cpp">
+      <Filter>UI\Common\PDA\MAP</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIMapWnd.cpp">
+      <Filter>UI\Common\PDA\MAP</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIMapWndActions.cpp">
+      <Filter>UI\Common\PDA\MAP</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIActorInfo.cpp">
+      <Filter>UI\Common\PDA\Statistics &amp; Rankings</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIStalkersRankingWnd.cpp">
+      <Filter>UI\Common\PDA\Statistics &amp; Rankings</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIEncyclopediaArticleWnd.cpp">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIEncyclopediaWnd.cpp">
+      <Filter>UI\Common\PDA\Encyclopedia</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIPdaContactsWnd.cpp">
+      <Filter>UI\Common\PDA\Contacts</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UINewsItemWnd.cpp">
+      <Filter>UI\Common\PDA\logs\News</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UINewsWnd.cpp">
+      <Filter>UI\Common\PDA\logs\News</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIWpnParams.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIArtefactPanel.cpp">
+      <Filter>UI\Common\MainIngame</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIDebugFonts.cpp">
+      <Filter>UI\Common\_Debug Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIArtefactParams.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIItemInfo.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIOutfitInfo.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIWpnParams.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UICharacterInfo.cpp">
+      <Filter>UI\Common\UIItemInfo\CharacterInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIActorStats.cpp">
+      <Filter>UI\Common\OutfitInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITimeWnd.cpp">
+      <Filter>UI\Common\TimeWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UISleepWnd.cpp">
+      <Filter>UI\Common\SleepWnd</Filter>
+    </ClCompile>
     <ClCompile Include="PHDebug.cpp">
       <Filter>Physics\Base</Filter>
     </ClCompile>
@@ -9036,12 +9185,6 @@
     </ClCompile>
     <ClCompile Include="PHContactBodyEffector.cpp">
       <Filter>Physics\Base\Objects\BodyEffectors</Filter>
-    </ClCompile>
-    <ClCompile Include="PHNetState.cpp">
-      <Filter>Physics\Base\Objects\PHNet</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSynchronize.cpp">
-      <Filter>Physics\Base\Objects\PHNet</Filter>
     </ClCompile>
     <ClCompile Include="PHMoveStorage.cpp">
       <Filter>Physics\Base\Objects\MoveStorage</Filter>
@@ -9229,89 +9372,17 @@
     <ClCompile Include="Ik\mathTrig.cpp">
       <Filter>Physics\IK</Filter>
     </ClCompile>
-    <ClCompile Include="ui\CExtraContentFilter.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="ui_base.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UIDialogHolder.cpp">
-      <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIInventoryWnd.cpp">
-      <Filter>UI\Common\InventoryWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\uiinventorywnd2.cpp">
-      <Filter>UI\Common\InventoryWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIInventoryWnd3.cpp">
-      <Filter>UI\Common\InventoryWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIOutfitSlot.cpp">
-      <Filter>UI\Common\InventoryWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UITradeWnd.cpp">
-      <Filter>UI\Common\TradeWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIPdaAux.cpp">
-      <Filter>UI\Common\PdaWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIPdaContactsWnd.cpp">
-      <Filter>UI\Common\PdaWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIPdaListItem.cpp">
-      <Filter>UI\Common\PdaWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIPdaWnd.cpp">
-      <Filter>UI\Common\PdaWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\map_hint.cpp">
-      <Filter>UI\Common\MapWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="map_spot.cpp">
-      <Filter>UI\Common\MapWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIMap.cpp">
-      <Filter>UI\Common\MapWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIMapWnd.cpp">
-      <Filter>UI\Common\MapWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIMapWndActions.cpp">
-      <Filter>UI\Common\MapWnd</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UITalkDialogWnd.cpp">
-      <Filter>UI\Common\TalkWnd</Filter>
+      <Filter>UI\Common\TALK</Filter>
     </ClCompile>
     <ClCompile Include="ui\UITalkWnd.cpp">
-      <Filter>UI\Common\TalkWnd</Filter>
+      <Filter>UI\Common\TALK</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICarBodyWnd.cpp">
       <Filter>UI\Common\CarBodyWnd</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICarBodyWnd2.cpp">
       <Filter>UI\Common\CarBodyWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIDiaryWnd2.cpp">
-      <Filter>UI\Common\Diary</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIEncyclopediaArticleWnd.cpp">
-      <Filter>UI\Common\Diary</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIEncyclopediaWnd.cpp">
-      <Filter>UI\Common\Diary</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UINewsItemWnd.cpp">
-      <Filter>UI\Common\Diary</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UINewsWnd.cpp">
-      <Filter>UI\Common\Diary</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIArtefactPanel.cpp">
-      <Filter>UI\Common\MainIngame</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICarPanel.cpp">
       <Filter>UI\Common\MainIngame</Filter>
@@ -9340,15 +9411,6 @@
     <ClCompile Include="ui\UIColorAnimatorWrapper.cpp">
       <Filter>UI\Common\Animations</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIActorInfo.cpp">
-      <Filter>UI\Common\Statistics</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIStalkersRankingWnd.cpp">
-      <Filter>UI\Common\Statistics</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIDebugFonts.cpp">
-      <Filter>UI\Common\_Debug Fonts</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UIOptionsItem.cpp">
       <Filter>UI\Common\OptionsItem</Filter>
     </ClCompile>
@@ -9363,15 +9425,6 @@
     </ClCompile>
     <ClCompile Include="MainMenu.cpp">
       <Filter>UI\Common\MainMenu</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIEventsWnd.cpp">
-      <Filter>UI\Common\EventsWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UITaskDescrWnd.cpp">
-      <Filter>UI\Common\EventsWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UITaskItem.cpp">
-      <Filter>UI\Common\EventsWnd</Filter>
     </ClCompile>
     <ClCompile Include="ui\MMSound.cpp">
       <Filter>UI\Common\MainMenu</Filter>
@@ -9390,30 +9443,6 @@
     </ClCompile>
     <ClCompile Include="ui\UIInventoryUtilities.cpp">
       <Filter>UI\Common\InventoryUtilities</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UICharacterInfo.cpp">
-      <Filter>UI\Common\CharacterInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIWpnParams.cpp">
-      <Filter>UI\Common\ItemInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIArtefactParams.cpp">
-      <Filter>UI\Common\ItemInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIItemInfo.cpp">
-      <Filter>UI\Common\ItemInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIActorStats.cpp">
-      <Filter>UI\Common\OutfitInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UITimeWnd.cpp">
-      <Filter>UI\Common\TimeWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UISleepWnd.cpp">
-      <Filter>UI\Common\SleepWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIBtnHint.cpp">
-      <Filter>UI\UIWindows</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIWndCallback.cpp">
       <Filter>UI\UIWindows</Filter>
@@ -9524,6 +9553,9 @@
       <Filter>UI\UIWindows\ScriptWnd</Filter>
     </ClCompile>
     <ClCompile Include="ui\UI3tButton.cpp">
+      <Filter>UI\UIWindows\Buttons</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIBtnHint.cpp">
       <Filter>UI\UIWindows\Buttons</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIButton.cpp">
@@ -9811,32 +9843,14 @@
     <ClCompile Include="embedded_editor\editor_render.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="AdvancedXrayGameConstants.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="DynamicHudGlass.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
@@ -9850,6 +9864,9 @@
     <ClCompile Include="actor_script.cpp">
       <Filter>Core\Client\Objects\actor\base</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UILoadingScreen.cpp">
+      <Filter>UI\Common\LoadingScreen</Filter>
+    </ClCompile>
     <ClCompile Include="EntityCondition_script.cpp">
       <Filter>Core\Client\Objects\base\EntityCondition</Filter>
     </ClCompile>
@@ -9857,20 +9874,32 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIOutfitInfo.cpp">
-      <Filter>UI\Common\ItemInfo</Filter>
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="script_vars_storage.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
-    </ClCompile>
-    <ClCompile Include="magic_box3.cpp">
-      <Filter>Core\Client\Objects\base\GameObject\ai_obstacle\min_obb\magic_box</Filter>
-    </ClCompile>
-    <ClCompile Include="magic_minimize_1d.cpp">
-      <Filter>Core\Client\Objects\base\GameObject\ai_obstacle\min_obb\minimize_1d</Filter>
-    </ClCompile>
-    <ClCompile Include="min_obb.cpp">
-      <Filter>Core\Client\Objects\base\GameObject\ai_obstacle\min_obb</Filter>
     </ClCompile>
     <ClCompile Include="xr_Client_BattlEye.cpp">
       <Filter>Core\Client\BattlEye_Client</Filter>
@@ -9878,8 +9907,15 @@
     <ClCompile Include="xrClientsPool.cpp">
       <Filter>Core\Server</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UILoadingScreen.cpp">
-      <Filter>UI\Common\LoadingScreen</Filter>
+    <ClCompile Include="../xrServerEntitiesSoC/character_info.cpp" />
+    <ClCompile Include="ui\UICharacterInfo.cpp">
+      <Filter>UI\Common\UIItemInfo\CharacterInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="xrGame.cpp">
+      <Filter>Core\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/PHSynchronize.cpp">
+      <Filter>Physics\Base\Objects\PHNet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
