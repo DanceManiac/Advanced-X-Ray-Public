@@ -12,6 +12,7 @@ struct flare
     float4 tc1 : TEXCOORD1;
 	float4 tc2 : TEXCOORD2;
     float4 c0 : COLOR;
+	float fog : FOG;
 };
 
 uniform Texture2D s_glow;
@@ -50,6 +51,8 @@ float4 main(flare I) : SV_Target
 	final.rgb += dirt.aaa * saturate(0.5 - length(len)) * 2 * (1.0 - flare_params.x);
 	final.rgb *= flare_color.rgba;
 	final.rgb = clamp(0.0, 0.7, final.rgb);
+
+	final.a *= I.fog;
 
 	return final;
 }
