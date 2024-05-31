@@ -227,7 +227,7 @@ void SSFX_ScreenSpaceReflections(float2 tc, float4 P, float3 N, float gloss, ino
 	float main_clamp = clamp(refl_power * ssfx_ssr_2.x, 0, G_SSR_MAX_INTENSITY);
 	
 	// Raise reflection intensity and max limit when raining. ( NOTE: Reverted to rain intensity, but improvements are on the way... )
-	float rain_extra = G_SSR_WEAPON_RAIN_FACTOR * rain_params.x;
+	float rain_extra = G_SSR_WEAPON_RAIN_FACTOR * rain_params.y;
 
 	// Weapon intensity and limit max value.
 	float wpn_clamp = clamp((refl_power + rain_extra) * ssfx_ssr_2.z, 0, ssfx_ssr_2.w + rain_extra);
