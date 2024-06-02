@@ -65,7 +65,7 @@ CInventoryItem::CInventoryItem()
 
 	m_name = m_nameShort = NULL;
 
-	m_eItemCurrPlace	= EItemPlaceUndefined;
+	m_eItemCurrPlace	= eItemPlaceUndefined;
 	m_Description		= "";
 	m_section_id		= 0;
 	m_bCanUse			= true;
@@ -307,13 +307,13 @@ void CInventoryItem::DeactivateItem()
 void CInventoryItem::OnH_B_Independent(bool just_before_destroy)
 {
 	UpdateXForm();
-	m_eItemCurrPlace = EItemPlaceUndefined ;
+	m_eItemCurrPlace = eItemPlaceUndefined ;
 }
 
 void CInventoryItem::OnH_A_Independent()
 {
 	m_dwItemIndependencyTime	= Level().timeServer();
-	m_eItemCurrPlace			= EItemPlaceUndefined;	
+	m_eItemCurrPlace			= eItemPlaceUndefined;	
 	inherited::OnH_A_Independent();
 }
 
@@ -1332,7 +1332,7 @@ void CInventoryItem::reload		(LPCSTR section)
 void CInventoryItem::reinit		()
 {
 	m_pInventory	= NULL;
-	m_eItemCurrPlace = EItemPlaceUndefined;
+	m_eItemCurrPlace = eItemPlaceUndefined;
 }
 
 bool CInventoryItem::can_kill			() const

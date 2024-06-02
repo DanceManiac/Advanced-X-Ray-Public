@@ -515,7 +515,7 @@ void CPda::OnMoveToRuck(EItemPlace prev)
 	if (!ParentIsActor())
 		return;
 
-	if (prev == EItemPlaceSlot)
+	if (prev == eItemPlaceSlot)
 	{
 		SwitchState(eHidden);
 		if (joystick != BI_NONE && HudItemData())

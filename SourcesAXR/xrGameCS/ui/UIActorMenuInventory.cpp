@@ -320,17 +320,17 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 				EItemPlace pl						= pItem->m_eItemCurrPlace;
 				if ( pItem->GetSlot() == GRENADE_SLOT )
 				{
-					pl = EItemPlaceRuck;
+					pl = eItemPlaceRuck;
 				}
 #ifndef MASTER_GOLD
 				Msg("item place [%d]", pl);
 #endif // #ifndef MASTER_GOLD
 
-				if(pl == EItemPlaceSlot)
+				if(pl == eItemPlaceSlot)
 					lst_to_add					= GetSlotList(pItem->GetSlot());
-				else if(pl == EItemPlaceRuck)
+				else if(pl == eItemPlaceRuck)
 					lst_to_add					= GetListByType(iActorBag);
-				else if(pl == EItemPlaceBelt)
+				else if(pl == eItemPlaceBelt)
 					lst_to_add					= GetListByType(iActorBelt);
 		else /* if(pl.type==eItemPlaceRuck)*/
 		{

@@ -860,7 +860,7 @@ void CBaseMonster::OnEvent(NET_Packet& P, u16 type)
 			CGameObject			*GO = smart_cast<CGameObject*>(O);
 			CInventoryItem		*pIItem = smart_cast<CInventoryItem*>(GO);
 			VERIFY				(inventory().CanTakeItem(pIItem));
-			pIItem->m_eItemCurrPlace = EItemPlaceRuck;
+			pIItem->m_eItemCurrPlace = eItemPlaceRuck;
 
 			O->H_SetParent		(this);
 			inventory().Take	(GO, true, true);

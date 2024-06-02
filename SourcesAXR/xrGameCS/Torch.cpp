@@ -95,7 +95,7 @@ void CTorch::OnMoveToSlot()
 
 void CTorch::OnMoveToRuck(EItemPlace prev)
 {
-	if (prev == EItemPlaceSlot)
+	if (prev == eItemPlaceSlot)
 	{
 		Switch(false);
 	}

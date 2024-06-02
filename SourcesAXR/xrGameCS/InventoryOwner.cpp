@@ -603,7 +603,7 @@ void CInventoryOwner::sell_useless_items		()
 			continue;
 		}
 		CInventoryItem* item = smart_cast<CInventoryItem*>( *I );
-		if (item->GetSlot() && item->cast_weapon() && item->m_eItemCurrPlace == EItemPlaceSlot)
+		if (item->GetSlot() && item->cast_weapon() && item->m_eItemCurrPlace == eItemPlaceSlot)
 		{
 			continue;
 		}

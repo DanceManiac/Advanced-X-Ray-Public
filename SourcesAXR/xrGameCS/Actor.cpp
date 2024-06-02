@@ -1858,13 +1858,13 @@ void CActor::OnItemDrop(CInventoryItem *inventory_item)
 	CInventoryOwner::OnItemDrop(inventory_item);
 
 	CCustomOutfit* outfit		= smart_cast<CCustomOutfit*>(inventory_item);
-	if(outfit && inventory_item->m_eItemCurrPlace==EItemPlaceSlot)
+	if(outfit && inventory_item->m_eItemCurrPlace==eItemPlaceSlot)
 	{
 		outfit->ApplySkinModel	(this, false, false);
 	}
 
 	CWeapon* weapon = smart_cast<CWeapon*>(inventory_item);
-	if (weapon && inventory_item->m_eItemCurrPlace == EItemPlaceSlot)
+	if (weapon && inventory_item->m_eItemCurrPlace == eItemPlaceSlot)
 	{
 		weapon->OnZoomOut();
 		if (weapon->GetRememberActorNVisnStatus())
@@ -1891,7 +1891,7 @@ void CActor::OnItemRuck		(CInventoryItem *inventory_item, EItemPlace previous_pl
 	CInventoryOwner::OnItemRuck(inventory_item, previous_place);
 
 	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
-	if(artefact && previous_place == EItemPlaceBelt)
+	if(artefact && previous_place == eItemPlaceBelt)
 		MoveArtefactBelt(artefact, false);
 }
 

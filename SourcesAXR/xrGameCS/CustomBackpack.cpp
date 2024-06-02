@@ -132,7 +132,7 @@ void CCustomBackpack::OnMoveToRuck(EItemPlace prev)
 	if (!ParentIsActor())
 		return;
 
-	if (prev == EItemPlaceSlot)
+	if (prev == eItemPlaceSlot)
 	{
 		g_actor_allow_ladder = true;
 		g_block_actor_movement = false;

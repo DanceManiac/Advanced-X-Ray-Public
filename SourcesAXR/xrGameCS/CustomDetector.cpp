@@ -521,7 +521,7 @@ void CCustomDetector::OnH_B_Independent(bool just_before_destroy)
 void CCustomDetector::OnMoveToRuck(EItemPlace prev)
 {
 	inherited::OnMoveToRuck	(prev);
-	if(prev == EItemPlaceSlot)
+	if(prev == eItemPlaceSlot)
 	{
 		SwitchState					(eHidden);
 		g_player_hud->detach_item	(this);

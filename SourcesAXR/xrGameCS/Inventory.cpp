@@ -337,35 +337,35 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	m_all.push_back						(pIItem);
 
 	if(!strict_placement)
-		pIItem->m_eItemCurrPlace			= EItemPlaceUndefined;
+		pIItem->m_eItemCurrPlace			= eItemPlaceUndefined;
 
 	bool result							= false;
 	switch(pIItem->m_eItemCurrPlace)
 	{
-	case EItemPlaceBelt:
+	case eItemPlaceBelt:
 		result							= Belt(pIItem, strict_placement); 
 		if(!result)
-			pIItem->m_eItemCurrPlace	= EItemPlaceUndefined;
+			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
 			Msg("cant put in belt item %s", *pIItem->object().cName());
 #endif
 
 		break;
-	case EItemPlaceRuck:
+	case eItemPlaceRuck:
 		result							= Ruck(pIItem, strict_placement);
 		if(!result)
-			pIItem->m_eItemCurrPlace	= EItemPlaceUndefined;
+			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
 			Msg("cant put in ruck item %s", *pIItem->object().cName());
 #endif
 
 		break;
-	case EItemPlaceSlot:
+	case eItemPlaceSlot:
 		result							= Slot(pIItem, bNotActivate, strict_placement); 
 		if(!result)
-			pIItem->m_eItemCurrPlace	= EItemPlaceUndefined;
+			pIItem->m_eItemCurrPlace	= eItemPlaceUndefined;
 #ifdef DEBUG
 		if(!result) 
 			Msg("cant slot in slot item %s", *pIItem->object().cName());
@@ -373,7 +373,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		break;
 	}
 
-	if(pIItem->m_eItemCurrPlace==EItemPlaceUndefined)
+	if(pIItem->m_eItemCurrPlace==eItemPlaceUndefined)
 	{
 		if( !pIItem->RuckDefault() )
 		{
@@ -400,7 +400,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 	InvalidateState						();
 
 	pIItem->object().processing_deactivate();
-	VERIFY								(pIItem->m_eItemCurrPlace != EItemPlaceUndefined);
+	VERIFY								(pIItem->m_eItemCurrPlace != eItemPlaceUndefined);
 
 
 	CUI* ui				= HUD().GetUI();
@@ -412,7 +412,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 		{
 			ui->UIGame()->OnInventoryAction(pIItem, GE_OWNERSHIP_TAKE);
 			
-			if (pIItem->m_eItemCurrPlace == EItemPlaceRuck)
+			if (pIItem->m_eItemCurrPlace == eItemPlaceRuck)
 				Actor()->ChangeInventoryFullness(pIItem->GetOccupiedInvSpace());
 		}
 		else if(ui->UIGame()->ActorMenu().GetMenuMode()==mmDeadBodySearch)
@@ -429,13 +429,13 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 	VERIFY								(pIItem);
 	VERIFY								(pIItem->m_pInventory);
 	VERIFY								(pIItem->m_pInventory==this);
-	VERIFY								(pIItem->m_eItemCurrPlace!=EItemPlaceUndefined);
+	VERIFY								(pIItem->m_eItemCurrPlace!=eItemPlaceUndefined);
 	
 	pIItem->object().processing_activate(); 
 	
 	switch(pIItem->m_eItemCurrPlace)
 	{
-	case EItemPlaceBelt:{
+	case eItemPlaceBelt:{
 			VERIFY(InBelt(pIItem));
 			TIItemContainer::iterator temp_iter = std::find(m_belt.begin(), m_belt.end(), pIItem);
 			if (temp_iter != m_belt.end())
@@ -447,7 +447,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 			}
 			pIItem->object().processing_deactivate();
 		}break;
-	case EItemPlaceRuck:{
+	case eItemPlaceRuck:{
 			VERIFY(InRuck(pIItem));
 			TIItemContainer::iterator temp_iter = std::find(m_ruck.begin(), m_ruck.end(), pIItem);
 			if (temp_iter != m_ruck.end())
@@ -458,7 +458,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 				Msg("! ERROR: CInventory::Drop item not found in ruck...");
 			}
 		}break;
-	case EItemPlaceSlot:{
+	case eItemPlaceSlot:{
 			VERIFY			(InSlot(pIItem));
 			if(m_iActiveSlot == pIItem->GetSlot())
 			{
@@ -510,7 +510,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy)
 		{
 			ui->UIGame()->OnInventoryAction(pIItem, GE_OWNERSHIP_REJECT);
 
-			if (pIItem->m_eItemCurrPlace == EItemPlaceRuck)
+			if (pIItem->m_eItemCurrPlace == eItemPlaceRuck)
 				Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
 		}
 	};
@@ -537,13 +537,13 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 		}
 	}
 
-	if (ItemFromSlot(pIItem->GetSlot()) && pIItem->m_eItemCurrPlace == EItemPlaceSlot)
+	if (ItemFromSlot(pIItem->GetSlot()) && pIItem->m_eItemCurrPlace == eItemPlaceSlot)
 	{
-		pIItem->m_eItemCurrPlace = EItemPlaceRuck;
+		pIItem->m_eItemCurrPlace = eItemPlaceRuck;
 		return false;
 	}
 
-	if (ItemFromSlot(pIItem->GetSlot()) && pIItem->m_eItemCurrPlace == EItemPlaceSlot && pIItem->m_eItemCurrPlace == pIItem->GetSlot())
+	if (ItemFromSlot(pIItem->GetSlot()) && pIItem->m_eItemCurrPlace == eItemPlaceSlot && pIItem->m_eItemCurrPlace == pIItem->GetSlot())
 		return false;
 
 //.	Msg("To Slot %s[%d]", *pIItem->object().cName(), pIItem->object().ID());
@@ -610,10 +610,10 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 	
 	m_pOwner->OnItemSlot		(pIItem, pIItem->m_eItemCurrPlace);
 	EItemPlace prev_place		= pIItem->m_eItemCurrPlace;
-	pIItem->m_eItemCurrPlace	= EItemPlaceSlot;
+	pIItem->m_eItemCurrPlace	= eItemPlaceSlot;
 	pIItem->OnMoveToSlot		();
 
-	if (prev_place == EItemPlaceRuck)
+	if (prev_place == eItemPlaceRuck)
 		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
 	
 	pIItem->object().processing_activate();
@@ -646,11 +646,11 @@ bool CInventory::Belt(PIItem pIItem, bool strict_placement)
 	InvalidateState					();
 
 	EItemPlace prev_place = pIItem->m_eItemCurrPlace;
-	pIItem->m_eItemCurrPlace = EItemPlaceBelt;
+	pIItem->m_eItemCurrPlace = eItemPlaceBelt;
 	m_pOwner->OnItemBelt(pIItem, prev_place);
 	pIItem->OnMoveToBelt();
 
-	if (prev_place == EItemPlaceRuck)
+	if (prev_place == eItemPlaceRuck)
 		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
 
 	if(in_slot)
@@ -711,10 +711,10 @@ bool CInventory::Ruck(PIItem pIItem, bool strict_placement)
 
 	m_pOwner->OnItemRuck							(pIItem, pIItem->m_eItemCurrPlace);
 	EItemPlace prev_place							= pIItem->m_eItemCurrPlace;
-	pIItem->m_eItemCurrPlace						= EItemPlaceRuck;
+	pIItem->m_eItemCurrPlace						= eItemPlaceRuck;
 	pIItem->OnMoveToRuck							(prev_place);
 
-	if (prev_place == EItemPlaceSlot || prev_place == EItemPlaceBelt)
+	if (prev_place == eItemPlaceSlot || prev_place == eItemPlaceBelt)
 		Actor()->ChangeInventoryFullness(pIItem->GetOccupiedInvSpace());
 
 	if(in_slot)
