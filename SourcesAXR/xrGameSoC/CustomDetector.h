@@ -59,7 +59,7 @@ public:
 			bool IsWorking			() {return m_bWorking;}
 
 	virtual void OnMoveToSlot		();
-	virtual void OnMoveToRuck		();
+	virtual void OnMoveToRuck		(EItemPlace prev);
 	virtual void OnMoveToBelt		();
 
 protected:

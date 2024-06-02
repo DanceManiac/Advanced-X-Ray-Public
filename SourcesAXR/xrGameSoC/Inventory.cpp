@@ -366,8 +366,9 @@ bool CInventory::Ruck(PIItem pIItem)
 	InvalidateState									();
 
 	m_pOwner->OnItemRuck							(pIItem, pIItem->m_eItemPlace);
+	EItemPlace prev_place							= pIItem->m_eItemPlace;
 	pIItem->m_eItemPlace							= eItemPlaceRuck;
-	pIItem->OnMoveToRuck							();
+	pIItem->OnMoveToRuck							(prev_place);
 
 	if(in_slot)
 		pIItem->object().processing_deactivate();

@@ -174,7 +174,7 @@ void	CCustomOutfit::OnMoveToSlot		()
 	}
 };
 
-void	CCustomOutfit::OnMoveToRuck		()
+void	CCustomOutfit::OnMoveToRuck		(EItemPlace prev)
 {
 	if (m_pCurrentInventory && !Level().is_removing_objects())
 	{

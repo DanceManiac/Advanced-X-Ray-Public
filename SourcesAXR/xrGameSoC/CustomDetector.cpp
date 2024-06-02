@@ -213,9 +213,9 @@ u32	CCustomDetector::ef_detector_type	() const
 	return	(m_ef_detector_type);
 }
 
-void CCustomDetector::OnMoveToRuck()
+void CCustomDetector::OnMoveToRuck(EItemPlace prev)
 {
-	inherited::OnMoveToRuck();
+	inherited::OnMoveToRuck(prev);
 	TurnOff();
 }
 

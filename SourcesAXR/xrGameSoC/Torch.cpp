@@ -76,7 +76,7 @@ void CTorch::OnMoveToSlot()
 	}
 }
 
-void CTorch::OnMoveToRuck()
+void CTorch::OnMoveToRuck(EItemPlace prev)
 {
 	Switch(false);
 }
