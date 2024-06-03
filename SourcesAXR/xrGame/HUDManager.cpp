@@ -106,9 +106,7 @@ void CFontManager::InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 	else
 		F->Initialize(sh_name, font_tex_name);
 
-#ifdef DEBUG
 	F->m_font_name = section;
-#endif
 }
 
 CFontManager::~CFontManager()

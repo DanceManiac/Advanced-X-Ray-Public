@@ -107,9 +107,7 @@ public:
 
 	IC	void				Clear			()  { strings.clear(); };
 
-#ifdef DEBUG
 	shared_str				m_font_name;
-#endif
 };
 
 #endif // _XR_GAMEFONT_H_

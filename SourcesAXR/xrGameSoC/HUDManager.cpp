@@ -90,9 +90,7 @@ void CFontManager::InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 	else
 		F->Initialize("font",font_tex_name);
 
-#ifdef DEBUG
 	F->m_font_name = section;
-#endif
 	if (pSettings->line_exist(section,"size")){
 		float sz = pSettings->r_float(section,"size");
 		if (flags&CGameFont::fsDeviceIndependent)	F->SetHeightI(sz);

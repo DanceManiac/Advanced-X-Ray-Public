@@ -55,10 +55,10 @@
 #include "../build_config_defines.h"
 #include "ai_object_location.h"
 #include "GametaskManager.h"
+#include "ui/UIDebugFonts.h" 
 
 #ifdef DEBUG
 #	include "PHDebug.h"
-#	include "ui/UIDebugFonts.h" 
 #	include "game_graph.h"
 #	include "CharacterPhysicsSupport.h"
 #endif // DEBUG
@@ -1130,6 +1130,20 @@ public:
 	}
 };
 
+class CCC_DebugFonts : public IConsole_Command
+{
+public:
+	CCC_DebugFonts(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; }
+	virtual void Execute(LPCSTR args)
+	{
+		xr_new<CUIDebugFonts>()->ShowDialog(true);
+	}
+	virtual void	Info(TInfo& I)
+	{
+		strcpy_s(I, "draw all existing fonts");
+	}
+};
+
 class CCC_UiHud_Mode : public CCC_Token
 {
 public:
@@ -1396,17 +1410,6 @@ public:
 		xr_strcpy(I,"dumps all creature names"); 
 	}
 
-};
-
-
-
-class CCC_DebugFonts : public IConsole_Command {
-public:
-	CCC_DebugFonts (LPCSTR N) : IConsole_Command(N) {bEmptyArgsHandled = true; }
-	virtual void Execute				(LPCSTR args) 
-	{
-		xr_new<CUIDebugFonts>()->ShowDialog(true);		
-	}
 };
 
 class CCC_DebugNode : public IConsole_Command {
@@ -2478,7 +2481,6 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 #endif // #if defined(USE_DEBUGGER) && defined(USE_LUA_STUDIO)
 	
 	CMD1(CCC_ShowMonsterInfo,	"ai_monster_info");
-	CMD1(CCC_DebugFonts,		"debug_fonts");
 	CMD1(CCC_TuneAttachableItem,"dbg_adjust_attachable_item");
 
 
@@ -2804,6 +2806,7 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD4(CCC_BKPK_ANIM, "g_animated_backpack",  &m_b_animated_backpack, 0, 1);
 
 	CMD3(CCC_UiHud_Mode, "hud_type",			&ui_hud_type, qhud_type_token);
+	CMD1(CCC_DebugFonts, "debug_fonts");
 
 	//Custom commands fo scripts
 

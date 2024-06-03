@@ -46,10 +46,10 @@
 #include "../Include/xrRender/Kinematics.h"
 
 #include "ai_object_location.h"
+#include "ui/UIDebugFonts.h" 
 
 #ifdef DEBUG
 #	include "PHDebug.h"
-#	include "ui/UIDebugFonts.h" 
 #	include "game_graph.h"
 #endif // DEBUG
 
@@ -673,6 +673,23 @@ public:
 	}
 };
 
+class CCC_DebugFonts : public IConsole_Command
+{
+public:
+	CCC_DebugFonts(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; }
+	virtual void Execute(LPCSTR args)
+	{
+		if (g_pGamePersistent && g_pGameLevel && Level().game)
+			HUD().GetUI()->StartStopMenu(xr_new<CUIDebugFonts>(), true);
+		else if (MainMenu() && MainMenu()->IsActive())
+			MainMenu()->StartStopMenu(xr_new<CUIDebugFonts>(), true);
+	}
+	virtual void	Info(TInfo& I)
+	{
+		strcpy_s(I, "draw all existing fonts");
+	}
+};
+
 class CCC_FlushLog : public IConsole_Command {
 public:
 	CCC_FlushLog(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -940,16 +957,6 @@ public:
 		xr_strcpy(I,"dumps all creature names"); 
 	}
 
-};
-
-
-
-class CCC_DebugFonts : public IConsole_Command {
-public:
-	CCC_DebugFonts (LPCSTR N) : IConsole_Command(N) {bEmptyArgsHandled = true; }
-	virtual void Execute				(LPCSTR args) {
-		HUD().GetUI()->StartStopMenu( xr_new<CUIDebugFonts>(), true);
-	}
 };
 
 class CCC_DebugNode : public IConsole_Command {
@@ -2209,6 +2216,7 @@ void CCC_RegisterCommands()
 
 	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
 	CMD3(CCC_UiHud_Mode,	"hud_type",					&ui_hud_type,				qhud_type_token);
+	CMD1(CCC_DebugFonts, "debug_fonts");
 	CMD4(CCC_Integer,		"g_advanced_crosshair",		&g_advanced_crosshair,		0, 1);
 	CMD3(CCC_Token,			"g_death_cam_mode",			&death_camera_mode,			death_camera_mode_token);
 

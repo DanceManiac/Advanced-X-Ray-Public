@@ -6284,10 +6284,7 @@
     <ClCompile Include="ui\UIColorAnimatorWrapper.cpp" />
     <ClCompile Include="ui\UIActorInfo.cpp" />
     <ClCompile Include="ui\UIStalkersRankingWnd.cpp" />
-    <ClCompile Include="ui\UIDebugFonts.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="ui\UIDebugFonts.cpp" />
     <ClCompile Include="ui\UIOptionsItem.cpp" />
     <ClCompile Include="ui\UIOptionsManager.cpp" />
     <ClCompile Include="ui\UIOptionsManagerScript.cpp">
