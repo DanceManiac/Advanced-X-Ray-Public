@@ -326,13 +326,16 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	//(последние в списке имеют высший приоритет)
 	WINDOW_LIST::reverse_iterator it = m_ChildWndList.rbegin();
 
-	for(; it!=m_ChildWndList.rend(); ++it)
+	for(int i = m_ChildWndList.size() - 1; it!=m_ChildWndList.rend(); ++it, i--)
 	{
 		CUIWindow* w	= (*it);
 
+		if (i < 0) // Dance Maniac: Костыль от вылета энциклопедии при открытии статьи
+			return false;
+
 		auto sw = smart_cast<CUISimpleWindow*>(w);
 
-		if (sw)	// Dance Maniac: Костыль от вылета при открытии статей в энциклопедии
+		if (sw)	// Dance Maniac: Костыль от вылета энциклопедии при открытии статьи
 		{
 			if (sw->GetAlignment() != waNone && sw->GetAlignment() != waLeft && sw->GetAlignment() != waRight && sw->GetAlignment() != waTop && sw->GetAlignment() != waBottom && sw->GetAlignment() != waCenter)
 				return false;
@@ -435,7 +438,8 @@ bool CUIWindow::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	{
 		result = m_pKeyboardCapturer->OnKeyboardAction(dik, keyboard_action);
 		
-		if(result) return true;
+		if(result)
+			return true;
 	}
 
 	WINDOW_LIST::reverse_iterator it = m_ChildWndList.rbegin();
