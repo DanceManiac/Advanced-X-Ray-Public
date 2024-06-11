@@ -98,6 +98,11 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_bEnablePsyAuraAfterDie		= false;
 	m_bEnableRadAuraAfterDie		= false;
 	m_bEnableFireAuraAfterDie		= false;
+
+	m_bModelScaleRandom				= false;
+	m_fModelScale					= 1.0f;
+	m_fModelScaleRandomMin			= 1.0f;
+	m_fModelScaleRandomMax			= 1.0f;
 }
 
 
@@ -632,4 +637,28 @@ void CBaseMonster::ReloadDamageAndAnimations()
 {
 	CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
 	control().get_animation().restart();
+}
+
+void CBaseMonster::renderable_Render()
+{
+	Fmatrix m_model_transform = XFORM();
+
+	if (m_fModelScale != 1.0f || m_bModelScaleRandom)
+	{
+		Fmatrix scale, t;
+		t = m_model_transform;
+
+		float cur_scale = m_fModelScale;
+
+		if (m_bModelScaleRandom)
+			cur_scale = ::Random.randF(m_fModelScaleRandomMin, m_fModelScaleRandomMax);
+
+		scale.scale(cur_scale, cur_scale, cur_scale);
+
+		m_model_transform.mul(t, scale);
+	}
+
+	::Render->set_Transform(&m_model_transform);
+	::Render->add_Visual(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
 }

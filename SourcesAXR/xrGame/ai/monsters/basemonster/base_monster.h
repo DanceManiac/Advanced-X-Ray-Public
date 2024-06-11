@@ -134,7 +134,7 @@ public:
 	virtual BOOL			UsedAI_Locations				()							{return inherited::UsedAI_Locations();}
 
 	virtual const SRotation	Orientation						() const					{return inherited::Orientation();}
-	virtual void			renderable_Render				()							{return inherited::renderable_Render();} 
+	virtual void			renderable_Render				();
 
 	virtual	void			on_restrictions_change			();
 
@@ -393,6 +393,10 @@ public:
 	bool						m_bEnableFireAuraAfterDie;
 	bool						m_bDropItemAfterSuperAttack;
 	int							m_iSuperAttackDropItemPer;
+	bool						m_bModelScaleRandom;
+	float						m_fModelScale;
+	float						m_fModelScaleRandomMin;
+	float						m_fModelScaleRandomMax;
 
 	shared_str					light_bone;
 	shared_str					particles_bone;

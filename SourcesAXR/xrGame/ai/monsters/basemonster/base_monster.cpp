@@ -122,6 +122,11 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_bEnableFireAuraAfterDie				= false;
 	m_bDropItemAfterSuperAttack				= false;
 	m_iSuperAttackDropItemPer				= 50;
+
+	m_bModelScaleRandom						= false;
+	m_fModelScale							= 1.0f;
+	m_fModelScaleRandomMin					= 1.0f;
+	m_fModelScaleRandomMax					= 1.0f;
 }
 
 #pragma warning (pop)
@@ -1085,7 +1090,6 @@ void CBaseMonster::ReloadDamageAndAnimations()
 }
 
 #ifdef DEBUG
-
 bool   CBaseMonster::is_paused () const
 {
 	bool monsters_result		=	false;	
@@ -1100,5 +1104,28 @@ bool   CBaseMonster::is_paused () const
 	return							ai_dbg::get_var (id_paused_var_name, monster_result) ?
 									monster_result : monsters_result;
 }
-
 #endif // DEBUG
+
+void CBaseMonster::renderable_Render()
+{
+	Fmatrix m_model_transform = XFORM();
+
+	if (m_fModelScale != 1.0f || m_bModelScaleRandom)
+	{
+		Fmatrix scale, t;
+		t = m_model_transform;
+
+		float cur_scale = m_fModelScale;
+
+		if (m_bModelScaleRandom)
+			cur_scale = ::Random.randF(m_fModelScaleRandomMin, m_fModelScaleRandomMax);
+
+		scale.scale(cur_scale, cur_scale, cur_scale);
+
+		m_model_transform.mul(t, scale);
+	}
+
+	::Render->set_Transform(&m_model_transform);
+	::Render->add_Visual(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
+}

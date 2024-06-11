@@ -178,6 +178,11 @@ void CBaseMonster::Load(LPCSTR section)
 	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
 	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
 	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
+
+	m_bModelScaleRandom			= READ_IF_EXISTS(pSettings, r_bool, section, "random_scale", false);
+	m_fModelScale				= READ_IF_EXISTS(pSettings, r_float, section, "model_scale", 1.0f);
+	m_fModelScaleRandomMin		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
+	m_fModelScaleRandomMax		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
 }
 
 void CBaseMonster::PostLoad (LPCSTR section)

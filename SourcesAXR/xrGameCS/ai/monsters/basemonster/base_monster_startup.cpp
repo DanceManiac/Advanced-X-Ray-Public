@@ -155,6 +155,11 @@ void CBaseMonster::Load(LPCSTR section)
 	m_bEnablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
 	m_bEnableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
 	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
+
+	m_bModelScaleRandom			= READ_IF_EXISTS(pSettings, r_bool, section, "random_scale", false);
+	m_fModelScale				= READ_IF_EXISTS(pSettings, r_float, section, "model_scale", 1.0f);
+	m_fModelScaleRandomMin		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
+	m_fModelScaleRandomMax		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
 }
 
 steering_behaviour::manager*   CBaseMonster::get_steer_manager ()

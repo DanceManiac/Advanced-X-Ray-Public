@@ -128,6 +128,7 @@ public:
 						SElement	(u16 id, u16 t)	:elem_id(id),type(t)		{}
 		BOOL			valid		() const									{return (elem_id!=(u16(-1)))&&(type!=0);}
 		void			center		(Fvector& center) const;
+		void set_size(Fvector& new_size) { b_hsize = new_size; }
 	};
 	DEFINE_VECTOR		(SElement,ElementVec,ElementVecIt);
 private:
