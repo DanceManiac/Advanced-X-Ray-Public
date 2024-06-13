@@ -1,7 +1,6 @@
 #include "stdAfx.h"
 #include "embedded_editor_hud.h"
 #include "embedded_editor_helper.h"
-//#include <addons/ImGuizmo/ImGuizmo.h>
 #include "imgui_internal.h"
 
 #include "../../xrEngine/device.h"
@@ -10,6 +9,8 @@
 #include "../WeaponAttaches.h"
 #include "../Actor.h"
 #include "../Inventory.h"
+#include "../CustomDetector.h"
+#include "../Grenade.h"
 
 #include "string_table.h"
 
@@ -23,79 +24,67 @@ void ShowHudEditor(bool& show)
 		return;
 
     ImGuiIO& io = ImGui::GetIO();
-    //ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-    //ImGuizmo::OPERATION mode = io.KeyCtrl ? ImGuizmo::ROTATE : ImGuizmo::TRANSLATE;
     bool showSeparator = true;
     auto item = g_player_hud->attached_item(0);
 	auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+	auto Grenade = smart_cast<CGrenade*>(Actor()->inventory().ActiveItem());
+
+	static float drag_intensity = 0.0001f;
+
+	ImGui::DragFloat(toUtf8(CStringTable().translate("st_editor_imgui_drag_intensity").c_str()).c_str(), &drag_intensity, 0.000001f, 0.000001f, 1.0f, "%.6f");
 
 	if (item)
 	{
 		if (showSeparator)
 			ImGui::Separator();
 
-		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_item_1").c_str()).c_str());
-		ImGui::InputFloat3("hands_position 0", (float*)&item->m_measures.m_hands_attach[0]);
-		ImGui::InputFloat3("hands_orientation 0", (float*)&item->m_measures.m_hands_attach[1]);
-		ImGui::InputFloat3("item_position 0", (float*)&item->m_measures.m_item_attach[0]);
-		ImGui::InputFloat3("item_orientation 0", (float*)&item->m_measures.m_item_attach[1]);
-		ImGui::InputFloat3("aim_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][1]);
-		ImGui::InputFloat3("aim_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][1]);
-		ImGui::InputFloat3("gl_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][2]);
-		ImGui::InputFloat3("gl_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][2]);
-		ImGui::InputFloat3("aim_alt_hud_offset_pos 0", (float*)&item->m_measures.m_hands_offset[0][3]);
-		ImGui::InputFloat3("aim_alt_hud_offset_rot 0", (float*)&item->m_measures.m_hands_offset[1][3]);
-		ImGui::InputFloat3("fire_point 0", (float*)&item->m_measures.m_fire_point_offset[0]);
-		ImGui::InputFloat3("fire_point2 0", (float*)&item->m_measures.m_fire_point2_offset[0]);
-		ImGui::InputFloat3("shell_point 0", (float*)&item->m_measures.m_shell_point_offset[0]);
+		ImGui::Text(Wpn ? toUtf8(Wpn->NameItem()).c_str() : Grenade ? toUtf8(Grenade->NameItem()).c_str() : toUtf8(CStringTable().translate("st_hud_editor_item_1").c_str()).c_str());
+		ImGui::DragFloat3("hands_position 0",				(float*)&item->m_measures.m_hands_attach[0],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hands_orientation 0",			(float*)&item->m_measures.m_hands_attach[1],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("item_position 0",				(float*)&item->m_measures.m_item_attach[0],			drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("item_orientation 0",				(float*)&item->m_measures.m_item_attach[1],			drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_pos 0",			(float*)&item->m_measures.m_hands_offset[0][1],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_hud_offset_rot 0",			(float*)&item->m_measures.m_hands_offset[1][1],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("gl_hud_offset_pos 0",			(float*)&item->m_measures.m_hands_offset[0][2],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("gl_hud_offset_rot 0",			(float*)&item->m_measures.m_hands_offset[1][2],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_alt_hud_offset_pos 0",		(float*)&item->m_measures.m_hands_offset[0][3],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("aim_alt_hud_offset_rot 0",		(float*)&item->m_measures.m_hands_offset[1][3],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("fire_point 0",					(float*)&item->m_measures.m_fire_point_offset[0],	drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("fire_point2 0",					(float*)&item->m_measures.m_fire_point2_offset[0],	drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("shell_point 0",					(float*)&item->m_measures.m_shell_point_offset[0],	drag_intensity, NULL, NULL, "%.6f");
 
-		for (int i = 0; i < Wpn->m_weapon_attaches.size(); i++)
+		if (Wpn)
 		{
-			auto mesh = Wpn->m_weapon_attaches[i];
-			std::string pos_name = "attach_" + std::to_string(i + 1) + "_position";
-			std::string orient_name = "attach_" + std::to_string(i + 1) + "_orientation";
-			ImGui::InputFloat3(pos_name.c_str(), (float*)&mesh->hud_attach_pos[0]);
-			ImGui::InputFloat3(orient_name.c_str(), (float*)&mesh->hud_attach_pos[1]);
+			for (int i = 0; i < Wpn->m_weapon_attaches.size(); i++)
+			{
+				auto mesh = Wpn->m_weapon_attaches[i];
+
+				string256 pos_name, orient_name;
+				strconcat(sizeof(pos_name), pos_name, mesh->m_section.c_str(), "_position");
+				strconcat(sizeof(orient_name), orient_name, mesh->m_section.c_str(), "_orientation");
+
+				ImGui::DragFloat3(pos_name,			(float*)&mesh->hud_attach_pos[0],		drag_intensity, NULL, NULL, "%.6f");
+				ImGui::DragFloat3(orient_name,		(float*)&mesh->hud_attach_pos[1],		drag_intensity, NULL, NULL, "%.6f");
+			}
 		}
-
-		/*ImGuizmo::Manipulate((float*)&Device.mView, (float*)&Device.mProject, mode, ImGuizmo::WORLD, (float*)&item->m_attach_offset);
-
-		if (ImGuizmo::IsUsing())
-		{
-			Fvector ypr;
-			item->m_attach_offset.getHPB(ypr.x, ypr.y, ypr.z);
-			ypr.mul(180.f / PI);
-			item->m_measures.m_hands_attach[1] = ypr;
-			item->m_measures.m_hands_attach[0] = item->m_attach_offset.c;
-		}*/
 	}
 
 	item = g_player_hud->attached_item(1);
+	auto Det = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (item)
 	{
 		if (showSeparator)
 			ImGui::Separator();
 
-		ImGui::Text(toUtf8(CStringTable().translate("st_hud_editor_item_2").c_str()).c_str());
-		ImGui::InputFloat3("hands_position 1", (float*)&item->m_measures.m_hands_attach[0][0]);
-		ImGui::InputFloat3("hands_orientation 1", (float*)&item->m_measures.m_hands_attach[1][0]);
-		ImGui::InputFloat3("item_position 1", (float*)&item->m_measures.m_item_attach[0]);
-		ImGui::InputFloat3("item_orientation 1", (float*)&item->m_measures.m_item_attach[1]);
-		ImGui::InputFloat3("fire_point 1", (float*)&item->m_measures.m_fire_point_offset[0]);
-		ImGui::InputFloat3("fire_point2 1", (float*)&item->m_measures.m_fire_point2_offset[0]);
-		ImGui::InputFloat3("shell_point 1", (float*)&item->m_measures.m_shell_point_offset[0]);
-
-		/*ImGuizmo::Manipulate((float*)&Device.mView, (float*)&Device.mProject, mode, ImGuizmo::WORLD, (float*)&item->m_attach_offset);
-
-		if (ImGuizmo::IsUsing())
-		{
-			Fvector ypr;
-			item->m_attach_offset.getHPB(ypr.x, ypr.y, ypr.z);
-			ypr.mul(180.f / PI);
-			item->m_measures.m_hands_attach[1] = ypr;
-			item->m_measures.m_hands_attach[0] = item->m_attach_offset.c;
-		}*/
+		ImGui::Text(Det ? toUtf8(Det->NameItem()).c_str() : toUtf8(CStringTable().translate("st_hud_editor_item_2").c_str()).c_str());
+		ImGui::DragFloat3("hands_position 1",		(float*)&item->m_measures.m_hands_attach[0][0],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("hands_orientation 1",	(float*)&item->m_measures.m_hands_attach[1][0],		drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("item_position 1",		(float*)&item->m_measures.m_item_attach[0],			drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("item_orientation 1",		(float*)&item->m_measures.m_item_attach[1],			drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("fire_point 1",			(float*)&item->m_measures.m_fire_point_offset[0],	drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("fire_point2 1",			(float*)&item->m_measures.m_fire_point2_offset[0],	drag_intensity, NULL, NULL, "%.6f");
+		ImGui::DragFloat3("shell_point 1",			(float*)&item->m_measures.m_shell_point_offset[0],	drag_intensity, NULL, NULL, "%.6f");
 	}
 
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str()))

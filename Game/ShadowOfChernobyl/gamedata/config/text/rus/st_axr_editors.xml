@@ -168,4 +168,7 @@
 	<string id="st_spawner_other_items">
 		<text>Другое</text>
 	</string>
+	<string id="st_editor_imgui_drag_intensity">
+		<text>Шаг</text>
+	</string>
 </string_table>

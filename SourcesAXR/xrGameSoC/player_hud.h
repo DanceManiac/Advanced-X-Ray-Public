@@ -5,6 +5,7 @@
 #include "../Include/xrRender/Kinematics.h"
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "actor_defs.h"
+#include "Weapon.h"
 
 class player_hud;
 class CHudItem;
@@ -302,6 +303,7 @@ public:
 	void			calc_transform		(u16 attach_slot_idx, const Fmatrix& offset, Fmatrix& result);
 	void			tune				(Ivector values);
 	void			SaveCfg				(const int idx) const;
+	void			SaveAttachesCfg		(LPCSTR parent_section, CWeapon* parent_wpn) const;
 	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed, IKinematicsAnimated* itemModel);
 	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);

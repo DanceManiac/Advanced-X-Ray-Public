@@ -10,6 +10,9 @@
 #include "../xrEngine/FDemoRecord.h"
 #include "ui_base.h"
 #include "debug_renderer.h"
+#include "Weapon.h"
+#include "Actor.h"
+#include "Inventory.h"
 
 int hud_adj_mode		= 0;
 int hud_adj_item_idx	= 0;
@@ -468,7 +471,56 @@ void player_hud::SaveCfg(const int idx) const
 		make_string("%f,%f,%f", hi->m_measures.m_shell_point_offset.x, hi->m_measures.m_shell_point_offset.y, hi->m_measures.m_shell_point_offset.z)
 		.c_str());
 
+	auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+
+	if (Wpn && Wpn->m_weapon_attaches.size())
+		SaveAttachesCfg(Wpn->cNameSect().c_str(), Wpn);
+
 	//-----------------//
 	Msg("[%s] HUD data saved to %s", __FUNCTION__, fname);
 	Sleep(250);
+}
+
+void player_hud::SaveAttachesCfg(LPCSTR parent_section, CWeapon* parent_wpn) const
+{
+	string_path fname;
+
+	string256 parent_section_attaches_fname;
+	strconcat(sizeof(parent_section_attaches_fname), parent_section_attaches_fname, parent_section, "_attaches");
+
+	FS.update_path(fname, "$app_data_root$", make_string("HudEditor\\%s\\%s.ltx", parent_section, parent_section_attaches_fname).c_str());
+
+	CInifile pAttachesCfg(fname, false, false, true);
+
+	for (int i = 0; i < parent_wpn->m_weapon_attaches.size(); i++)
+	{
+		auto mesh = parent_wpn->m_weapon_attaches[i];
+
+		string128 section_to_w{};
+		strconcat(sizeof(section_to_w), section_to_w, "[", mesh->m_section.c_str(), "]");
+
+		pAttachesCfg.w_string(parent_section_attaches_fname, "\n", section_to_w);
+
+		pAttachesCfg.w_string(parent_section_attaches_fname,
+			"hud_attach_offset",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[0].x, mesh->hud_attach_pos[0].y, mesh->hud_attach_pos[0].z)
+			.c_str());
+
+		pAttachesCfg.w_string(parent_section_attaches_fname,
+			"hud_attach_rotation",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[1].x, mesh->hud_attach_pos[1].y, mesh->hud_attach_pos[1].z)
+			.c_str());
+
+		pAttachesCfg.w_string(parent_section_attaches_fname,
+			"world_attach_offset",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[0].x, mesh->hud_attach_pos[0].y, mesh->hud_attach_pos[0].z)
+			.c_str());
+
+		pAttachesCfg.w_string(parent_section_attaches_fname,
+			"world_attach_rotation",
+			make_string("%f,%f,%f", mesh->hud_attach_pos[1].x, mesh->hud_attach_pos[1].y, mesh->hud_attach_pos[1].z)
+			.c_str());
+	}
+
+	Msg("[%s] Weapon attaches data saved to %s", __FUNCTION__, fname);
 }
