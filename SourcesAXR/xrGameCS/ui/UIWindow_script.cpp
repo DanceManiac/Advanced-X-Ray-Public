@@ -23,6 +23,10 @@ CGameFont* GetFontMedium()
 CGameFont* GetFontDI()
 {return mngr().pFontDI;}
 //шрифты для интерфейса
+CGameFont* GetFontArial14()
+{return mngr().pFontArial14;}
+CGameFont* GetFontArial21()
+{return mngr().pFontArial21;}
 CGameFont* GetFontGraffiti19Russian()
 {return mngr().pFontGraffiti19Russian;}
 CGameFont* GetFontGraffiti22Russian()
@@ -33,6 +37,8 @@ CGameFont* GetFontLetterica18Russian()
 {return mngr().pFontLetterica18Russian;}
 CGameFont* GetFontGraffiti32Russian()
 {return mngr().pFontGraffiti32Russian;}
+CGameFont* GetFontGraffiti40Russian()
+{return mngr().pFontGraffiti40Russian;}
 CGameFont* GetFontGraffiti50Russian()
 {return mngr().pFontGraffiti50Russian;}
 CGameFont* GetFontLetterica25()

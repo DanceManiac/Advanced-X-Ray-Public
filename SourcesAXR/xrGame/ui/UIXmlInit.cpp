@@ -798,13 +798,21 @@ bool CUIXmlInit::InitFont(CUIXml &xml_doc, LPCSTR path, int index, u32 &color, C
 		{
 			pFnt = UI().Font().pFontGraffiti32Russian;
 		}
+		else if(!xr_strcmp(font_name, GRAFFITI40_FONT_NAME))
+		{
+			pFnt = UI().Font().pFontGraffiti40Russian;
+		}
 		else if(!xr_strcmp(font_name, GRAFFITI50_FONT_NAME))
 		{
 			pFnt = UI().Font().pFontGraffiti50Russian;
 		}
-		else if(!xr_strcmp(font_name, ARIAL_FONT_NAME))
+		else if(!xr_strcmp(font_name, ARIAL14_FONT_NAME))
 		{
 			pFnt = UI().Font().pFontArial14;
+		}
+		else if(!xr_strcmp(font_name, ARIAL21_FONT_NAME))
+		{
+			pFnt = UI().Font().pFontArial21;
 		}
 		else if(!xr_strcmp(font_name, MEDIUM_FONT_NAME))
 		{

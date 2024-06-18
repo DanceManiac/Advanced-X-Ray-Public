@@ -30,11 +30,13 @@ CFontManager::CFontManager()
 	m_all_fonts.push_back(&pFontMedium				);// used cpp
 	m_all_fonts.push_back(&pFontDI					);// used cpp
 	m_all_fonts.push_back(&pFontArial14				);// used xml
+	m_all_fonts.push_back(&pFontArial21				);// used xml
 	m_all_fonts.push_back(&pFontGraffiti19Russian	);
 	m_all_fonts.push_back(&pFontGraffiti22Russian	);
 	m_all_fonts.push_back(&pFontLetterica16Russian	);
 	m_all_fonts.push_back(&pFontLetterica18Russian	);
 	m_all_fonts.push_back(&pFontGraffiti32Russian	);
+	m_all_fonts.push_back(&pFontGraffiti40Russian	);
 	m_all_fonts.push_back(&pFontGraffiti50Russian	);
 	m_all_fonts.push_back(&pFontLetterica25			);
 	m_all_fonts.push_back(&pFontStat				);
@@ -54,11 +56,13 @@ void CFontManager::InitializeFonts()
 	InitializeFont(pFontMedium				,"hud_font_medium"				);
 	InitializeFont(pFontDI					,"hud_font_di",					CGameFont::fsGradient|CGameFont::fsDeviceIndependent);
 	InitializeFont(pFontArial14				,"ui_font_arial_14"				);
+	InitializeFont(pFontArial21				,"ui_font_arial_21"				);
 	InitializeFont(pFontGraffiti19Russian	,"ui_font_graffiti19_russian"	);
 	InitializeFont(pFontGraffiti22Russian	,"ui_font_graffiti22_russian"	);
 	InitializeFont(pFontLetterica16Russian	,"ui_font_letterica16_russian"	);
 	InitializeFont(pFontLetterica18Russian	,"ui_font_letterica18_russian"	);
 	InitializeFont(pFontGraffiti32Russian	,"ui_font_graff_32"				);
+	InitializeFont(pFontGraffiti40Russian	,"ui_font_graff_40"				);
 	InitializeFont(pFontGraffiti50Russian	,"ui_font_graff_50"				);
 	InitializeFont(pFontLetterica25			,"ui_font_letter_25"			);
 	InitializeFont(pFontStat				,"stat_font",					CGameFont::fsDeviceIndependent);

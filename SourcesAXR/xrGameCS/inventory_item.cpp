@@ -167,13 +167,21 @@ void CInventoryItem::Load(LPCSTR section)
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti32Russian;
 		}
+		else if(!xr_strcmp(font_str, GRAFFITI40_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontGraffiti40Russian;
+		}
 		else if(!xr_strcmp(font_str, GRAFFITI50_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti50Russian;
 		}
-		else if(!xr_strcmp(font_str, ARIAL_FONT_NAME))
+		else if(!xr_strcmp(font_str, ARIAL14_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontArial14;
+		}
+		else if(!xr_strcmp(font_str, ARIAL21_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontArial21;
 		}
 		else if(!xr_strcmp(font_str, MEDIUM_FONT_NAME))
 		{
