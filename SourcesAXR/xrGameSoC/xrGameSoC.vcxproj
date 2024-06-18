@@ -1520,6 +1520,7 @@
     <ClInclude Include="searchlight.h" />
     <ClInclude Include="pch_script.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="UIFontDefines.h" />
     <ClInclude Include="xrClientsPool.h" />
     <ClInclude Include="SleepEffector.h" />
     <ClInclude Include="ai\Monsters\ai_monster_effector.h" />
