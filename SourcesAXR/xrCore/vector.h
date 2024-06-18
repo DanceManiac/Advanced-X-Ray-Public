@@ -130,6 +130,12 @@ inline constexpr T smoothstep(T min, T max, T res, T min_range = 0, T max_range 
 	return res * res * (3 - 2 * res);
 }
 
+template <class T>
+inline constexpr T remapval(T value, T oldLow, T oldHigh, T newLow, T newHigh)
+{
+	return newLow + (value - oldLow) * (newHigh - newLow) / (oldHigh - oldLow);
+}
+
 // pre-definitions
 template <class T> struct _quaternion;
 
