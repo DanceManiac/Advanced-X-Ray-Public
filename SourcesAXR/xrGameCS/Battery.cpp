@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //	Module 		: Battery.cpp
 //	Created 	: 07.04.2021
-//  Modified 	: 20.04.2021
+//  Modified 	: 01.07.2024
 //	Author		: Dance Maniac (M.F.S. Team)
 //	Description : Torch battery
 ////////////////////////////////////////////////////////////////////////////
@@ -99,12 +99,6 @@ void CBattery::UseBy(CEntityAlive* entity_alive)
 	else
 		ChargeAnomalyDetector();
 
-	//уменьшить количество порций
-	if (m_iPortionsNum > 0)
-		--(m_iPortionsNum);
-	else
-		m_iPortionsNum = 0;
-
 	m_iUseFor = 0;
 }
 
@@ -113,7 +107,14 @@ void CBattery::ChargeTorch()
 	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 
 	if (flashlight)
+	{
 		flashlight->Recharge(m_fBatteryChargeLevel);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
+	}
 
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
@@ -123,7 +124,14 @@ void CBattery::ChargeArtifactDetector()
 	CCustomDetector* artifact_detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (artifact_detector)
+	{
 		artifact_detector->Recharge(m_fBatteryChargeLevel);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
+	}
 
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
@@ -133,7 +141,14 @@ void CBattery::ChargeAnomalyDetector()
 	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(Actor()->inventory().ItemFromSlot(DOSIMETER_SLOT));
 
 	if (anomaly_detector)
+	{
 		anomaly_detector->Recharge(m_fBatteryChargeLevel);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
+	}
 
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
