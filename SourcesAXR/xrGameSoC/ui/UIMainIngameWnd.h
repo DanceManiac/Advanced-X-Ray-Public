@@ -78,6 +78,8 @@ protected:
 	CUIStatic			UIInvincibleIcon;
 //	CUIStatic			UISleepIcon;
 	CUIStatic			UIArtefactIcon;
+	CUIStatic			UIFrostbiteIcon;
+	CUIStatic			UIHeatingIcon;
 
 	CUIScrollView*		m_UIIcons;
 	CUIWindow*			m_pMPChatWnd;
@@ -94,10 +96,12 @@ public:
 		ewiWeaponJammed,
 		ewiRadiation,
 		ewiWound,
+		ewiFrostbite,
 		ewiStarvation,
 		ewiPsyHealth,
 		ewiInvincible,
 //		ewiSleep,
+		ewiHeating,
 		ewiArtefact,
 	};
 

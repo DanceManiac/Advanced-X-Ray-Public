@@ -210,19 +210,27 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitStatic			(uiXml, "invincible_static", 0, &UIInvincibleIcon);
 	UIInvincibleIcon.Show		(false);
 
+	xml_init.InitStatic			(uiXml, "frostbite_static", 0, &UIFrostbiteIcon);
+	UIFrostbiteIcon.Show		(false);
+
+	xml_init.InitStatic			(uiXml, "heating_static", 0, &UIHeatingIcon);
+	UIHeatingIcon.Show			(false);
+
 
 	if(GameID()==GAME_ARTEFACTHUNT){
 		xml_init.InitStatic		(uiXml, "artefact_static", 0, &UIArtefactIcon);
 		UIArtefactIcon.Show		(false);
 	}
 	
-	shared_str warningStrings[6] = 
+	shared_str warningStrings[8] = 
 	{	
 		"jammed",
 		"radiation",
 		"wounds",
+		"frostbite",
 		"starvation",
 		"fatigue",
+		"heating",
 		"invincible"
 	};
 
@@ -415,6 +423,16 @@ void CUIMainIngameWnd::Update()
 			else
 				SetWarningIconColor	(ewiInvincible,0x00ffffff);
 		}
+
+		if (m_pActor->GetHeatingStatus() && GameConstants::GetActorFrostbite())
+		{
+			SetWarningIconColor(ewiHeating, 0xffffffff);
+		}
+		else
+		{
+			SetWarningIconColor(ewiHeating, 0x00ffffff);
+		}
+
 		// ewiArtefact
 		if( (GameID() == GAME_ARTEFACTHUNT) && !(Device.dwFrame%30) ){
 			bool b_Artefact = (NULL != m_pActor->inventory().ItemFromSlot(ARTEFACT_SLOT));
@@ -459,6 +477,13 @@ void CUIMainIngameWnd::Update()
 				if (m_pWeapon)
 					value = 1 - m_pWeapon->GetConditionToShow();
 				break;
+			case ewiFrostbite:
+				{
+					if (GameConstants::GetActorFrostbite())
+						value = m_pActor->conditions().GetFrostbite();
+
+					break;
+				}
 			case ewiStarvation:
 				value = 1 - m_pActor->conditions().GetSatiety();
 				break;		
@@ -984,6 +1009,12 @@ void CUIMainIngameWnd::SetWarningIconColor(EWarningIcons icon, const u32 cl)
 		if (bMagicFlag) break;
 	case ewiWound:
 		SetWarningIconColor		(&UIWoundIcon, cl);
+		if (bMagicFlag) break;
+	case ewiFrostbite:
+		SetWarningIconColor		(&UIFrostbiteIcon, cl);
+		if (bMagicFlag) break;
+	case ewiHeating:
+		SetWarningIconColor		(&UIHeatingIcon, cl);
 		if (bMagicFlag) break;
 	case ewiStarvation:
 		SetWarningIconColor		(&UIStarvationIcon, cl);

@@ -882,6 +882,22 @@ float CGamePersistent::GetActorBleeding()
 	return	(Actor()->conditions().BleedingSpeed());
 }
 
+float CGamePersistent::GetActorIntoxication()
+{
+	if (GameConstants::GetActorIntoxication())
+		return	(Actor()->conditions().GetIntoxication());
+
+	return 0.0f;
+}
+
+float CGamePersistent::GetActorFrostbite()
+{
+	if (GameConstants::GetActorFrostbite())
+		return	(Actor()->conditions().GetFrostbite());
+
+	return 0.0f;
+}
+
 bool CGamePersistent::GetActorNightvision()
 {
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));

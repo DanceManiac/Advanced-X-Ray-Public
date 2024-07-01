@@ -18,10 +18,21 @@
 
 CEatableItem::CEatableItem()
 {
-	m_fHealthInfluence = 0;
-	m_fPowerInfluence = 0;
-	m_fSatietyInfluence = 0;
-	m_fRadiationInfluence = 0;
+	m_fHealthInfluence			= 0;
+	m_fPowerInfluence			= 0;
+	m_fSatietyInfluence			= 0;
+	m_fRadiationInfluence		= 0;
+	m_fThirstInfluence			= 0.f;
+	m_fIntoxicationInfluence	= 0.f;
+	m_fSleepenessInfluence		= 0.f;
+	m_fAlcoholismInfluence		= 0.f;
+	m_fHangoverInfluence		= 0.f;
+	m_fNarcotismInfluence		= 0.f;
+	m_fWithdrawalInfluence		= 0.f;
+	m_fPsyHealthInfluence		= 0.f;
+	m_fFrostbiteInfluence		= 0.f;
+	m_alcohol					= 0.f;
+	m_drugs						= 0.f;
 
 	m_iPortionsNum = 1;
 
@@ -48,6 +59,15 @@ void CEatableItem::Load(LPCSTR section)
 	m_fPowerInfluence			= pSettings->r_float(section, "eat_power");
 	m_fSatietyInfluence			= pSettings->r_float(section, "eat_satiety");
 	m_fRadiationInfluence		= pSettings->r_float(section, "eat_radiation");
+	m_fThirstInfluence			= pSettings->r_float(section, "eat_thirst");
+	m_fIntoxicationInfluence	= pSettings->r_float(section, "eat_intoxication");
+	m_fSleepenessInfluence		= pSettings->r_float(section, "eat_sleepeness");
+	m_fAlcoholismInfluence		= pSettings->r_float(section, "eat_alcoholism");
+	m_fHangoverInfluence		= pSettings->r_float(section, "eat_hangover");
+	m_fNarcotismInfluence		= pSettings->r_float(section, "eat_narcotism");
+	m_fWithdrawalInfluence		= pSettings->r_float(section, "eat_withdrawal");
+	m_fPsyHealthInfluence		= pSettings->r_float(section, "eat_psy_health");
+	m_fFrostbiteInfluence		= pSettings->r_float(section, "eat_frostbite");
 	m_fWoundsHealPerc			= pSettings->r_float(section, "wounds_heal_perc");
 	m_alcohol					= READ_IF_EXISTS(pSettings, r_float, section, "eat_alcohol", 0.0f);
 	m_drugs						= READ_IF_EXISTS(pSettings, r_float, section, "eat_drugs", 0.0f);
@@ -109,12 +129,22 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	R_ASSERT		(IO);
 	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
-	entity_alive->conditions().ChangeHealth		(m_fHealthInfluence);
-	entity_alive->conditions().ChangePower		(m_fPowerInfluence);
-	entity_alive->conditions().ChangeSatiety	(m_fSatietyInfluence);
-	entity_alive->conditions().ChangeRadiation	(m_fRadiationInfluence);
-	entity_alive->conditions().ChangeBleeding	(m_fWoundsHealPerc);
-	entity_alive->conditions().ChangeAlcohol	(m_alcohol);
+	entity_alive->conditions().ChangeHealth			(m_fHealthInfluence);
+	entity_alive->conditions().ChangePower			(m_fPowerInfluence);
+	entity_alive->conditions().ChangeSatiety		(m_fSatietyInfluence);
+	entity_alive->conditions().ChangeRadiation		(m_fRadiationInfluence);
+	entity_alive->conditions().ChangeThirst			(m_fThirstInfluence);
+	entity_alive->conditions().ChangeIntoxication	(m_fIntoxicationInfluence);
+	entity_alive->conditions().ChangeSleepeness		(m_fSleepenessInfluence);
+	entity_alive->conditions().ChangeAlcoholism		(m_fAlcoholismInfluence);
+	entity_alive->conditions().ChangeHangover		(m_fHangoverInfluence);
+	entity_alive->conditions().ChangeNarcotism		(m_fNarcotismInfluence);
+	entity_alive->conditions().ChangeWithdrawal		(m_fWithdrawalInfluence);
+	entity_alive->conditions().ChangePsyHealth		(m_fPsyHealthInfluence);
+	entity_alive->conditions().ChangeFrostbite		(m_fFrostbiteInfluence);
+	entity_alive->conditions().ChangeDrugs			(m_drugs);
+	entity_alive->conditions().ChangeBleeding		(m_fWoundsHealPerc);
+	entity_alive->conditions().ChangeAlcohol		(m_alcohol);
 	
 	entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	

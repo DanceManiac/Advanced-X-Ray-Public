@@ -21,6 +21,7 @@
 
 #include "Artefact.h"
 #include "CustomOutfit.h"
+#include "CustomBackpack.h"
 #include "AdvancedXrayGameConstants.h"
 #include "ActorSkills.h"
 
@@ -213,17 +214,20 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			Jump				= m_fJumpSpeed;
 			m_fJumpTime			= s_fJumpTime;
 
-			float jump_k = 0.0;
-			float max_jump_speed = 10.0f;
-			float jumpSkill = 0.0f;
+			float jump_k			= 0.0;
+			float max_jump_speed	= 10.0f;
+			float hangover			= conditions().GetHangover();
+			float withdrawal		= conditions().GetWithdrawal();
+			float frostbite			= conditions().GetFrostbite() * 4;
+			float jumpSkill			= 0.0f;
 
 			if (ActorSkills)
 				jumpSkill = conditions().m_fJumpSpeedSkill * ActorSkills->enduranceSkillLevel;
 
 			if (!psActorFlags.test(AF_GODMODE) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25 && mstate_real & mcJump)
-				jump_k = (m_fJumpSpeed + jumpSkill) - ((inventory().TotalWeight() / MaxCarryWeight()) * 4);
+				jump_k = (m_fJumpSpeed + jumpSkill - (hangover + withdrawal + frostbite)) - ((inventory().TotalWeight() / MaxCarryWeight()) * 4);
 			else
-				jump_k = m_fJumpSpeed + jumpSkill;
+				jump_k = m_fJumpSpeed + jumpSkill - (hangover + withdrawal + frostbite);
 
 			TIItemContainer::iterator it = inventory().m_belt.begin();
 			TIItemContainer::iterator ite = inventory().m_belt.end();
@@ -239,6 +243,10 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			CCustomOutfit* outfit = GetOutfit();
 			if (outfit)
 				jump_k *= outfit->m_fJumpSpeed;
+
+			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+			if (backpack)
+				jump_k *= backpack->m_fJumpSpeed;
 
 			clamp(jump_k, 0.0f, max_jump_speed);
 
@@ -305,15 +313,18 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			if (_abs(vControlAccel.x)<EPS)	mstate_real &= ~(mcLStrafe+mcRStrafe);
 
 			// normalize and analyze crouch and run
-			float	scale				= vControlAccel.magnitude();
-			float walkAccelSkill = 0.0f;
+			float	scale			= vControlAccel.magnitude();
+			float hangover			= conditions().GetHangover();
+			float withdrawal		= conditions().GetWithdrawal();
+			float frostbite			= conditions().GetFrostbite() * 4;
+			float walkAccelSkill	= 0.0f;
 
 			if (ActorSkills)
 				walkAccelSkill = conditions().m_fWalkAccelSkill * ActorSkills->enduranceSkillLevel;
 
 			if (scale>EPS)
 			{
-				float accel_k = m_fWalkAccel + walkAccelSkill;
+				float accel_k = m_fWalkAccel + walkAccelSkill - (hangover + withdrawal + frostbite);
 
 				if (!psActorFlags.test(AF_GODMODE) && GameConstants::GetJumpSpeedWeightCalc() && inventory().TotalWeight() >= 25)
 				{
@@ -334,6 +345,14 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				CCustomOutfit* outfit = GetOutfit();
 				if (outfit)
 					accel_k *= outfit->m_fWalkAccel;
+
+				CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+				if (backpack)
+				{
+					accel_k *= backpack->m_fWalkAccel;
+					if (inventory().TotalWeight() > MaxWalkWeight())
+						accel_k *= backpack->m_fOverweightWalkK;
+				}
 
 				scale = accel_k / scale;
 
@@ -709,6 +728,12 @@ float CActor::get_additional_weight() const
 	if ( outfit )
 	{
 		res				+= outfit->m_additional_weight;
+	}
+
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+	if (backpack)
+	{
+		res += backpack->m_additional_weight;
 	}
 
 	for(TIItemContainer::const_iterator it = inventory().m_belt.begin(); 

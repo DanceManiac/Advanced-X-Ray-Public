@@ -73,6 +73,7 @@
 #include "ActorNightVision.h"
 #include "AdvancedXrayGameConstants.h"
 #include "../xrEngine/Rain.h"
+#include "CustomBackpack.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -219,6 +220,12 @@ CActor::CActor() : CEntityAlive()
 	m_fDevicesPsyFactor		= 0.0f;
 
 	m_iTrySprintCounter		= 0;
+
+	m_bHeating				= false;
+	m_fHeatingPower			= 0.0f;
+
+	m_sColdSteamParticleBone = nullptr;
+	m_sColdSteamParticleName = nullptr;
 }
 
 
@@ -448,6 +455,9 @@ if(!g_dedicated_server)
 	m_sInventoryBoxUseAction		= "inventory_box_use";
 	//---------------------------------------------------------------------
 	m_sHeadShotParticle	= READ_IF_EXISTS(pSettings,r_string,section,"HeadShotParticle",0);
+
+	m_sColdSteamParticleBone = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
+	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
 }
 
 void CActor::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /* = ALife::eHitTypeWound */)
@@ -595,6 +605,14 @@ void	CActor::Hit							(SHit* pHDS)
 				//inherited::Hit		(hit_power,dir,who,element,position_in_bone_space, impulse, hit_type);
 				HDS.power = hit_power;
 				inherited::Hit(&HDS);
+
+				if (GameConstants::GetActorFrostbite())
+				{
+					if (pHDS->hit_type == ALife::eHitTypeBurn)
+						Actor()->SetHeatingStatus(true, hit_power);
+					else
+						Actor()->SetHeatingStatus(false);
+				}
 			};
 		}
 		break;
@@ -1270,6 +1288,29 @@ void CActor::shedule_Update	(u32 DT)
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();
 
+	if (g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature < -10.0f && g_Alive())
+	{
+		CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(this);
+
+		if (!PP)
+			return;
+
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		R_ASSERT(K);
+
+		static u32 timing = 0;
+
+		u16 play_bone = K->LL_BoneID(m_sColdSteamParticleBone);
+		R_ASSERT(play_bone != BI_NONE);
+		if (K->LL_GetBoneVisible(play_bone) && timing <= Device.dwTimeGlobal)
+		{
+			PP->StartParticles(m_sColdSteamParticleName, play_bone, Direction(), ID(), -1, false, cam_active == eacFirstEye);
+
+			float stamina = (1.0f - conditions().GetPower()) * 1500.f;
+			timing = Device.dwTimeGlobal + ::Random.randI(2500 - stamina, 5000 - stamina);
+		}
+	}
+
 	if (TimerManager)
 	{
 		TimerManager->Update();
@@ -1615,13 +1656,36 @@ void CActor::UpdateRestores()
 		conditions().ChangeHealth(outfit->m_fHealthRestoreSpeed * f_update_time);
 		conditions().ChangePower(outfit->m_fPowerRestoreSpeed * f_update_time);
 		conditions().ChangeSatiety(outfit->m_fSatietyRestoreSpeed * f_update_time);
+		conditions().ChangeThirst(outfit->m_fThirstRestoreSpeed * f_update_time);
 		conditions().ChangeRadiation(outfit->m_fRadiationRestoreSpeed * f_update_time);
+		conditions().ChangeIntoxication(outfit->m_fIntoxicationRestoreSpeed * f_update_time);
+		conditions().ChangeSleepeness(outfit->m_fSleepenessRestoreSpeed * f_update_time);
+		conditions().ChangeAlcoholism(outfit->m_fAlcoholismRestoreSpeed * f_update_time);
+		conditions().ChangeNarcotism(outfit->m_fNarcotismRestoreSpeed * f_update_time);
+		conditions().ChangePsyHealth(outfit->m_fPsyHealthRestoreSpeed * f_update_time);
+		conditions().ChangeFrostbite(outfit->m_fFrostbiteRestoreSpeed * f_update_time);
 	}
 	else
 	{
 		/* if (GetNightVisionStatus())
 		{
 		} */
+	}
+
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+	if (backpack)
+	{
+		conditions().ChangeBleeding		(backpack->m_fBleedingRestoreSpeed		* f_update_time);
+		conditions().ChangeHealth		(backpack->m_fHealthRestoreSpeed		* f_update_time);
+		conditions().ChangePower		(backpack->m_fPowerRestoreSpeed			* f_update_time);
+		conditions().ChangeSatiety		(backpack->m_fSatietyRestoreSpeed		* f_update_time);
+		conditions().ChangeThirst		(backpack->m_fThirstRestoreSpeed		* f_update_time);
+		conditions().ChangeRadiation	(backpack->m_fRadiationRestoreSpeed		* f_update_time);
+		conditions().ChangeIntoxication	(backpack->m_fIntoxicationRestoreSpeed	* f_update_time);
+		conditions().ChangeSleepeness	(backpack->m_fSleepenessRestoreSpeed	* f_update_time);
+		conditions().ChangeAlcoholism	(backpack->m_fAlcoholismRestoreSpeed	* f_update_time);
+		conditions().ChangeNarcotism	(backpack->m_fNarcotismRestoreSpeed		* f_update_time);
+		conditions().ChangePsyHealth	(backpack->m_fPsyHealthRestoreSpeed		* f_update_time);
 	}
 }
 
@@ -1651,7 +1715,14 @@ void CActor::UpdateArtefactsOnBelt()
 			conditions().ChangeHealth(artefact->m_fHealthRestoreSpeed * f_update_time);
 			conditions().ChangePower(artefact->m_fPowerRestoreSpeed * f_update_time);
 			conditions().ChangeSatiety(artefact->m_fSatietyRestoreSpeed * f_update_time);
+			conditions().ChangeThirst(artefact->m_fThirstRestoreSpeed * f_update_time);
 			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time);
+			conditions().ChangeIntoxication(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
+			conditions().ChangeSleepeness(artefact->m_fSleepenessRestoreSpeed * f_update_time);
+			conditions().ChangeAlcoholism(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
+			conditions().ChangeNarcotism(artefact->m_fNarcotismRestoreSpeed * f_update_time);
+			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
+			conditions().ChangeFrostbite(artefact->m_fFrostbiteRestoreSpeed * f_update_time);
 		}
 	}
 }
@@ -1686,7 +1757,14 @@ void CActor::UpdateArtefactsInRuck()
 			conditions().ChangeHealth(artefact->m_fHealthRestoreSpeed * f_update_time);
 			conditions().ChangePower(artefact->m_fPowerRestoreSpeed * f_update_time);
 			conditions().ChangeSatiety(artefact->m_fSatietyRestoreSpeed * f_update_time);
+			conditions().ChangeThirst(artefact->m_fThirstRestoreSpeed * f_update_time);
 			conditions().ChangeRadiation(artefact->m_fRadiationRestoreSpeed * f_update_time);
+			conditions().ChangeIntoxication(artefact->m_fIntoxicationRestoreSpeed * f_update_time);
+			conditions().ChangeSleepeness(artefact->m_fSleepenessRestoreSpeed * f_update_time);
+			conditions().ChangeAlcoholism(artefact->m_fAlcoholismRestoreSpeed * f_update_time);
+			conditions().ChangeNarcotism(artefact->m_fNarcotismRestoreSpeed * f_update_time);
+			conditions().ChangePsyHealth(artefact->m_fPsyHealthRestoreSpeed * f_update_time);
+			conditions().ChangeFrostbite(artefact->m_fFrostbiteRestoreSpeed * f_update_time);
 
 			if (GameConstants::GetArtefactsDegradation())
 				artefact->UpdateDegradation();
@@ -1707,18 +1785,18 @@ void CActor::UpdateSkills()
 		float HealthRestoreSkill = conditions().m_fV_HealthSkill * ActorSkills->survivalSkillLevel;
 		float PowerRestoreSkill = conditions().m_fV_PowerSkill * ActorSkills->survivalSkillLevel;
 		float SatietyRestoreSkill = conditions().m_fV_SatietySkill * ActorSkills->survivalSkillLevel;
-		//float ThirstRestoreSkill = conditions().m_fV_ThirstSkill * ActorSkills->survivalSkillLevel;
-		//float IntoxicationRestoreSkill = conditions().m_fV_IntoxicationSkill * ActorSkills->survivalSkillLevel;
-		//float SleepenessRestoreSkill = conditions().m_fV_SleepenessSkill * ActorSkills->survivalSkillLevel;
+		float ThirstRestoreSkill = conditions().m_fV_ThirstSkill * ActorSkills->survivalSkillLevel;
+		float IntoxicationRestoreSkill = conditions().m_fV_IntoxicationSkill * ActorSkills->survivalSkillLevel;
+		float SleepenessRestoreSkill = conditions().m_fV_SleepenessSkill * ActorSkills->survivalSkillLevel;
 		float RadiationRestoreSkill = conditions().m_fV_RadiationSkill * ActorSkills->survivalSkillLevel;
 
 		conditions().ChangeBleeding(BleedingRestoreSkill * f_update_time);
 		conditions().ChangeHealth(HealthRestoreSkill * f_update_time);
 		conditions().ChangePower(PowerRestoreSkill * f_update_time);
 		conditions().ChangeSatiety(SatietyRestoreSkill * f_update_time);
-		//conditions().ChangeThirst(ThirstRestoreSkill * f_update_time);
-		//conditions().ChangeIntoxication(IntoxicationRestoreSkill * f_update_time);
-		//conditions().ChangeSleepeness(SleepenessRestoreSkill * f_update_time);
+		conditions().ChangeThirst(ThirstRestoreSkill * f_update_time);
+		conditions().ChangeIntoxication(IntoxicationRestoreSkill * f_update_time);
+		conditions().ChangeSleepeness(SleepenessRestoreSkill * f_update_time);
 		conditions().ChangeRadiation(RadiationRestoreSkill * f_update_time);
 	}
 }

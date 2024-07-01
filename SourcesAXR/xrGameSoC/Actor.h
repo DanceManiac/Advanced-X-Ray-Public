@@ -808,9 +808,19 @@ public:
 	CActorSkills*				ActorSkills;
 	CTimerManager*				TimerManager;
 
+	void						SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
+	bool						GetHeatingStatus	() const { return m_bHeating; }
+	float						GetCurrentHeating	() const { return m_fHeatingPower; }
+
 protected:
 	bool						m_bNightVisionOn;
 	bool						m_bNightVisionAllow;
+
+	bool						m_bHeating;
+	float						m_fHeatingPower;
+
+	shared_str					m_sColdSteamParticleBone;
+	shared_str					m_sColdSteamParticleName;
 
 	float						m_fDevicesPsyFactor;
 

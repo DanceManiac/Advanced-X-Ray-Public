@@ -112,13 +112,13 @@ void CZoneCampfire::shedule_Update(u32	dt	)
 	}
 	inherited::shedule_Update(dt);
 #pragma todo("move this into Actor's feel_touch")
-	//if (Actor() && GameConstants::GetActorFrostbite())
-	//{
-	//	float dist_to_actor = Actor()->Position().distance_to_sqr(Position());
-	//
-	//	if (is_on() && dist_to_actor <= 3.f)
-	//		Actor()->SetHeatingStatus(true, RelativePower(dist_to_actor));
-	//}
+	if (Actor() && GameConstants::GetActorFrostbite())
+	{
+		float dist_to_actor = Actor()->Position().distance_to_sqr(Position());
+	
+		if (is_on() && dist_to_actor <= 3.f)
+			Actor()->SetHeatingStatus(true, RelativePower(dist_to_actor));
+	}
 }
 
 

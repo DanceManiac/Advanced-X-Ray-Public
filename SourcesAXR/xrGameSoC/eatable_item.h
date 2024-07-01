@@ -42,6 +42,15 @@ protected:
 	float					m_fSatietyInfluence;
 	float					m_fRadiationInfluence;
 	float					m_fMaxPowerUpInfluence;
+	float					m_fThirstInfluence;
+	float					m_fIntoxicationInfluence;
+	float					m_fSleepenessInfluence;
+	float					m_fAlcoholismInfluence;
+	float					m_fHangoverInfluence;
+	float					m_fNarcotismInfluence;
+	float					m_fWithdrawalInfluence;
+	float					m_fPsyHealthInfluence;
+	float					m_fFrostbiteInfluence;
 	float					m_alcohol;
 	float					m_drugs;
 	//заживление ран на кол-во процентов

@@ -563,7 +563,10 @@ public:
 	virtual	void						destroy_anim_mov_ctrl						();
 
 private:
-	bool	m_can_select_items;
+	bool								m_can_select_items;
+	
+	shared_str							m_sColdSteamParticleBone;
+	shared_str							m_sColdSteamParticleName;
 
 public:
 	DECLARE_SCRIPT_REGISTER_FUNCTION

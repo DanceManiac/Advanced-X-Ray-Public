@@ -50,6 +50,13 @@ public:
 	float 							m_fSatietyRestoreSpeed;
 	float							m_fPowerRestoreSpeed;
 	float							m_fBleedingRestoreSpeed;
+	float 							m_fThirstRestoreSpeed;
+	float 							m_fIntoxicationRestoreSpeed;
+	float 							m_fSleepenessRestoreSpeed;
+	float 							m_fAlcoholismRestoreSpeed;
+	float 							m_fNarcotismRestoreSpeed;
+	float 							m_fPsyHealthRestoreSpeed;
+	float 							m_fFrostbiteRestoreSpeed;
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 	float							m_fOverweightWalkK;

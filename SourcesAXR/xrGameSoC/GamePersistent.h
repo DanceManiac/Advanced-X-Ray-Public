@@ -94,6 +94,8 @@ public:
 			float		GetActorMaxPower		() override;
 			float		GetActorPower			() override;
 			float		GetActorBleeding		() override;
+			float		GetActorIntoxication	() override;
+			float		GetActorFrostbite		() override;
 			bool		GetActorAliveStatus		();
 			bool		GetActor				();
 			bool		IsCamFirstEye			();

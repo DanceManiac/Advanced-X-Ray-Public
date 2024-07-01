@@ -131,15 +131,21 @@ void CArtefact::Load(LPCSTR section)
 			m_iAfRank = 5;
 	}
 
-	m_fConstHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",			0.f) * m_iAfRank;
-	m_fConstRadiationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",		0.f);
-	m_fConstSatietyRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",			0.f) * m_iAfRank;
-	m_fConstPowerRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",			0.f) * m_iAfRank;
-	m_fConstBleedingRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",			0.f) * m_iAfRank;
-	m_fConstThirstRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "thirst_restore_speed",			0.f) * m_iAfRank;
-	m_fConstAdditionalWeight		= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight",	0.f) * m_iAfRank;
-	m_fConstJumpSpeed				= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed",						1.f);
-	m_fConstWalkAccel				= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel",						1.f);
+	m_fConstHealthRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "health_restore_speed",			0.f) * m_iAfRank;
+	m_fConstRadiationRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_restore_speed",		0.f);
+	m_fConstSatietyRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "satiety_restore_speed",			0.f) * m_iAfRank;
+	m_fConstPowerRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "power_restore_speed",			0.f) * m_iAfRank;
+	m_fConstBleedingRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "bleeding_restore_speed",			0.f) * m_iAfRank;
+	m_fConstThirstRestoreSpeed			= READ_IF_EXISTS(pSettings, r_float, section, "thirst_restore_speed",			0.f) * m_iAfRank;
+	m_fConstIntoxicationRestoreSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "intoxication_restore_speed",		0.f) * m_iAfRank;
+	m_fConstSleepenessRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "sleepeness_restore_speed",		0.f) * m_iAfRank;
+	m_fConstAlcoholismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "alcoholism_restore_speed",		0.f) * m_iAfRank;
+	m_fConstNarcotismRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "narcotism_restore_speed",		0.f) * m_iAfRank;
+	m_fConstPsyHealthRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "psy_health_restore_speed",		0.f) * m_iAfRank;
+	m_fConstFrostbiteRestoreSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "frostbite_restore_speed",		0.f) * m_iAfRank;
+	m_fConstAdditionalWeight			= READ_IF_EXISTS(pSettings, r_float, section, "additional_inventory_weight",	0.f) * m_iAfRank;
+	m_fConstJumpSpeed					= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed",						1.f);
+	m_fConstWalkAccel					= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel",						1.f);
 
 	m_fTrailLightRange				= m_fConstTrailLightRange;
 
@@ -151,7 +157,13 @@ void CArtefact::Load(LPCSTR section)
 	m_fSatietyRestoreSpeed			= m_fConstSatietyRestoreSpeed;
 	m_fPowerRestoreSpeed			= m_fConstPowerRestoreSpeed;
 	m_fBleedingRestoreSpeed			= m_fConstBleedingRestoreSpeed;
-	m_fThirstRestoreSpeed			= m_fConstThirstRestoreSpeed;		// ∆ажды пока нет
+	m_fThirstRestoreSpeed			= m_fConstThirstRestoreSpeed;
+	m_fIntoxicationRestoreSpeed		= m_fConstIntoxicationRestoreSpeed;
+	m_fSleepenessRestoreSpeed		= m_fConstSleepenessRestoreSpeed;
+	m_fAlcoholismRestoreSpeed		= m_fConstAlcoholismRestoreSpeed;
+	m_fNarcotismRestoreSpeed		= m_fConstNarcotismRestoreSpeed;
+	m_fPsyHealthRestoreSpeed		= m_fConstPsyHealthRestoreSpeed;
+	m_fFrostbiteRestoreSpeed		= m_fConstFrostbiteRestoreSpeed;
 	m_additional_weight				= m_fConstAdditionalWeight;
 	m_fJumpSpeed					= m_fConstJumpSpeed;
 	m_fWalkAccel					= m_fConstWalkAccel;
@@ -284,10 +296,12 @@ void CArtefact::save(NET_Packet &packet)
 	save_data(m_fPowerRestoreSpeed, packet);
 	save_data(m_fBleedingRestoreSpeed, packet);
 	save_data(m_fThirstRestoreSpeed, packet);
-	//save_data(m_fIntoxicationRestoreSpeed, packet);
-	//save_data(m_fSleepenessRestoreSpeed, packet);
-	//save_data(m_fAlcoholismRestoreSpeed, packet);
-	//save_data(m_fNarcotismRestoreSpeed, packet);
+	save_data(m_fIntoxicationRestoreSpeed, packet);
+	save_data(m_fSleepenessRestoreSpeed, packet);
+	save_data(m_fAlcoholismRestoreSpeed, packet);
+	save_data(m_fNarcotismRestoreSpeed, packet);
+	save_data(m_fPsyHealthRestoreSpeed, packet);
+	save_data(m_fFrostbiteRestoreSpeed, packet);
 	save_data(m_additional_weight, packet);
 	save_data(m_fJumpSpeed, packet);
 	save_data(m_fWalkAccel, packet);
@@ -307,10 +321,12 @@ void CArtefact::load(IReader &packet)
 	load_data(m_fPowerRestoreSpeed, packet);
 	load_data(m_fBleedingRestoreSpeed, packet);
 	load_data(m_fThirstRestoreSpeed, packet);
-	//load_data(m_fIntoxicationRestoreSpeed, packet);
-	//load_data(m_fSleepenessRestoreSpeed, packet);
-	//load_data(m_fAlcoholismRestoreSpeed, packet);
-	//load_data(m_fNarcotismRestoreSpeed, packet);
+	load_data(m_fIntoxicationRestoreSpeed, packet);
+	load_data(m_fSleepenessRestoreSpeed, packet);
+	load_data(m_fAlcoholismRestoreSpeed, packet);
+	load_data(m_fNarcotismRestoreSpeed, packet);
+	load_data(m_fPsyHealthRestoreSpeed, packet);
+	load_data(m_fFrostbiteRestoreSpeed, packet);
 	load_data(m_additional_weight, packet);
 	load_data(m_fJumpSpeed, packet);
 	load_data(m_fWalkAccel, packet);
@@ -356,7 +372,7 @@ void CArtefact::UpdateDegradation()
 		m_fBleedingRestoreSpeed = (m_fConstBleedingRestoreSpeed / 100) * percent;
 	if (m_fThirstRestoreSpeed > 0.0f && m_fConstThirstRestoreSpeed > 0.0f)
 		m_fThirstRestoreSpeed = (m_fConstThirstRestoreSpeed / 100) * percent;
-	/*if (m_fIntoxicationRestoreSpeed > 0.0f && m_fConstIntoxicationRestoreSpeed > 0.0f)
+	if (m_fIntoxicationRestoreSpeed > 0.0f && m_fConstIntoxicationRestoreSpeed > 0.0f)
 		m_fIntoxicationRestoreSpeed = (m_fConstIntoxicationRestoreSpeed / 100) * percent;
 	if (m_fSleepenessRestoreSpeed > 0.0f && m_fConstSleepenessRestoreSpeed > 0.0f)
 		m_fSleepenessRestoreSpeed = (m_fConstSleepenessRestoreSpeed / 100) * percent;
@@ -365,7 +381,9 @@ void CArtefact::UpdateDegradation()
 	if (m_fNarcotismRestoreSpeed > 0.0f && m_fConstNarcotismRestoreSpeed > 0.0f)
 		m_fNarcotismRestoreSpeed = (m_fConstNarcotismRestoreSpeed / 100) * percent;
 	if (m_fPsyHealthRestoreSpeed > 0.0f && m_fConstPsyHealthRestoreSpeed > 0.0f)
-		m_fPsyHealthRestoreSpeed = (m_fConstPsyHealthRestoreSpeed / 100) * percent;*/
+		m_fPsyHealthRestoreSpeed = (m_fConstPsyHealthRestoreSpeed / 100) * percent;
+	if (m_fFrostbiteRestoreSpeed > 0.0f && m_fConstFrostbiteRestoreSpeed > 0.0f)
+		m_fFrostbiteRestoreSpeed = (m_fConstFrostbiteRestoreSpeed / 100) * percent;
 	if (m_additional_weight > 0.0f && m_fConstAdditionalWeight > 0.0f)
 		m_additional_weight = (m_fConstAdditionalWeight / 100) * percent;
 	if (m_fJumpSpeed > 1.f && m_fConstJumpSpeed > 1.f)

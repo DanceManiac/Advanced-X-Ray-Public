@@ -67,6 +67,14 @@
 	<wound_static x="0" y="0" width="48" height="64" stretch="1">
 		<texture>ui_hud_icon_drop</texture>
 	</wound_static>
+	
+	<frostbite_static x="0" y="0" width="53" height="64" stretch="1">
+		<texture>ui_hud_icon_frostbite</texture>
+	</frostbite_static>
+
+	<heating_static x="0" y="0" width="53" height="64" stretch="1">
+		<texture>ui_hud_icon_heating</texture>
+	</heating_static>
 
 	<starvation_static x="0" y="0" width="48" height="64" stretch="1">
 		<texture>ui_hud_icon_eat</texture>

@@ -28,6 +28,7 @@
 #include "alife_object_registry.h"
 
 #include "CustomOutfit.h"
+#include "CustomBackpack.h"
 #include "Bolt.h"
 
 #include "AdvancedXrayGameConstants.h"
@@ -327,8 +328,13 @@ float  CInventoryOwner::MaxCarryWeight () const
 	float ret =  inventory().GetMaxWeight();
 
 	const CCustomOutfit* outfit	= GetOutfit();
+	const CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+
 	if(outfit)
 		ret += outfit->m_additional_weight2;
+
+	if (backpack)
+		ret += backpack->m_additional_weight2;
 
 	return ret;
 }

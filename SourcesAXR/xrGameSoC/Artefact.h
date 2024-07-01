@@ -92,6 +92,12 @@ public:
 	float							m_fBleedingRestoreSpeed;
 	float							m_additional_weight;
 	float 							m_fThirstRestoreSpeed;
+	float 							m_fIntoxicationRestoreSpeed;
+	float 							m_fSleepenessRestoreSpeed;
+	float 							m_fAlcoholismRestoreSpeed;
+	float 							m_fNarcotismRestoreSpeed;
+	float 							m_fPsyHealthRestoreSpeed;
+	float 							m_fFrostbiteRestoreSpeed;
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 
@@ -113,6 +119,12 @@ public:
 	float							m_fConstPowerRestoreSpeed;
 	float							m_fConstBleedingRestoreSpeed;
 	float							m_fConstThirstRestoreSpeed;
+	float							m_fConstIntoxicationRestoreSpeed;
+	float							m_fConstSleepenessRestoreSpeed;
+	float							m_fConstAlcoholismRestoreSpeed;
+	float							m_fConstNarcotismRestoreSpeed;
+	float 							m_fConstPsyHealthRestoreSpeed;
+	float							m_fConstFrostbiteRestoreSpeed;
 	float							m_fConstAdditionalWeight;
 	float							m_fConstTrailLightRange;
 	float							m_fConstVolumetricDistance;

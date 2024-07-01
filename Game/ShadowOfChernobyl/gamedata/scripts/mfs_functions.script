@@ -49,7 +49,7 @@ end
 -- 'Уложить героя спать на 5 часов, если он слишком давно не спал
 function put_the_actor_to_sleep()
 	level.change_game_time(0,5,0)
-	level_weathers.get_weather_manager():forced_weather_change()
+	--level_weathers.get_weather_manager():forced_weather_change() -- Это потом надо будет добавить
 	--surge_manager.get_surge_manager().time_forwarded = true
 
 	xr_effects.disable_ui(db.actor)
@@ -67,7 +67,7 @@ function forced_actor_sleep()
 	level.add_cam_effector("camera_effects\\surge_01.anm", 10, false, "mfs_functions.after_forced_sleep")
 
 	level.change_game_time(0,0,math.random(35,45))
-	level_weathers.get_weather_manager():forced_weather_change()
+	--level_weathers.get_weather_manager():forced_weather_change() -- Это потом надо будет добавить
 end
 
 function after_forced_sleep()

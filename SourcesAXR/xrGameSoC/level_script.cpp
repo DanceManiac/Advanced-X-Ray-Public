@@ -228,6 +228,11 @@ float rain_hemi()
 	}
 }
 
+float air_temperature()
+{
+	return (g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature);
+}
+
 u32	vertex_in_direction(u32 level_vertex_id, Fvector direction, float max_distance)
 {
 	direction.normalize_safe();
@@ -1038,6 +1043,8 @@ void CLevel::script_register(lua_State *L)
 
 		def("rain_wetness",						rain_wetness),
 		def("rain_hemi",						rain_hemi),
+
+		def("air_temperature",					air_temperature),
 
 		def("map_add_object_spot_ser",			map_add_object_spot_ser),
 		def("map_add_object_spot",				map_add_object_spot),

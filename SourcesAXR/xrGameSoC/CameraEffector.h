@@ -15,6 +15,11 @@
 #define effControllerAura		(eStartEffectorID+7)
 #define effControllerAura2		(eStartEffectorID+8)
 #define effBigMonsterHit		(eStartEffectorID+9)
+#define effIntoxication			(eStartEffectorID+10)
+#define effSleepeness			(eStartEffectorID+11)
+#define effUseItem				(eStartEffectorID+12)
+#define effDrugs				(eStartEffectorID+13)
+#define effFrostbite			(eStartEffectorID+14)
 
 #define	eCEFall					((ECamEffectorType)(cefNext+1))
 #define	eCENoise				((ECamEffectorType)(cefNext+2))

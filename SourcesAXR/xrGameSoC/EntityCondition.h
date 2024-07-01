@@ -43,6 +43,15 @@ public:
 	IC void					SetPower				(float value)		{m_fPower = value; clamp(m_fPower, 0.f, m_fPowerMax);}
 	IC float				GetRadiation			() const			{return m_fRadiation;}
 	IC float				GetPsyHealth			() const			{return m_fPsyHealth;}
+	IC float				GetThirst				() const			{return m_fThirst;}
+	IC float				GetIntoxication			() const			{return m_fIntoxication;}
+	IC float				GetSleepeness			() const			{return m_fSleepeness;}
+	IC float				GetAlcoholism			() const			{return m_fAlcoholism;}
+	IC float				GetAlcohol				() const			{return m_fAlcohol;}
+	IC float				GetHangover				() const			{return m_fHangover;}
+	IC float				GetNarcotism			() const			{return m_fNarcotism;}
+	IC float				GetWithdrawal			() const			{return m_fWithdrawal;}
+	IC float				GetFrostbite			() const			{return m_fFrostbite;}
 
 	IC float 				GetEntityMorale			() const			{return m_fEntityMorale;}
 
@@ -51,6 +60,15 @@ public:
 	virtual bool 			IsLimping				() const;
 
 	virtual void			ChangeSatiety			(float value)		{};
+	virtual void 			ChangeThirst			(float value)		{};
+	virtual void			ChangeIntoxication		(const float value)	{};
+	virtual void			ChangeSleepeness		(const float value)	{};
+	virtual void			ChangeAlcoholism		(const float value)	{};
+	virtual void			ChangeHangover			(const float value)	{};
+	virtual void			ChangeNarcotism			(const float value)	{};
+	virtual void			ChangeWithdrawal		(const float value)	{};
+	virtual void 			ChangeDrugs				(float value)		{};
+	virtual void			ChangeFrostbite			(const float value)	{};
 	void 					ChangeHealth			(float value);
 	void 					ChangePower				(float value);
 	void 					ChangeRadiation			(float value);
@@ -114,8 +132,16 @@ protected:
 	float m_fPower;					//сила
 	float m_fRadiation;				//доза радиактивного облучения
 	float m_fPsyHealth;				//здоровье
-
 	float m_fEntityMorale;			//мораль
+	float m_fThirst;				//Жажда
+	float m_fIntoxication;			//Интоксикация
+	float m_fSleepeness;			//Сонливость
+	float m_fAlcoholism;			//Алкоголизм
+	float m_fAlcohol;				//Алкоголь
+	float m_fHangover;				//Похмелье
+	float m_fNarcotism;				//Наркомания
+	float m_fWithdrawal;			//Ломка
+	float m_fFrostbite;				//Обморожение
 
 	//максимальные величины
 	//	float m_fSatietyMax;

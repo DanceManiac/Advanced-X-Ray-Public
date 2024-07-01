@@ -2341,6 +2341,9 @@
     <Filter Include="AI\AScript\ScriptClasses\ScriptVarsStorage">
       <UniqueIdentifier>{acba0ab9-d70a-415a-ae08-8ee6a5f17a13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Backpack">
+      <UniqueIdentifier>{72308f01-fed3-458c-8831-976b79595bfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6685,6 +6688,9 @@
     <ClInclude Include="ui\UILoadingScreen.h">
       <Filter>UI\Common\LoadingScreen</Filter>
     </ClInclude>
+    <ClInclude Include="CustomBackpack.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9934,6 +9940,9 @@
     </ClCompile>
     <ClCompile Include="../xrServerEntitiesSoC/PHSynchronize.cpp">
       <Filter>Physics\Base\Objects\PHNet</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomBackpack.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
