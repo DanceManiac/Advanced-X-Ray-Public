@@ -1523,6 +1523,7 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="UIFontDefines.h" />
     <ClInclude Include="ui\UIBoosterInfo.h" />
+    <ClInclude Include="ui\UIHudStatesWnd.h" />
     <ClInclude Include="ui\UIInventoryItemParams.h" />
     <ClInclude Include="xrClientsPool.h" />
     <ClInclude Include="SleepEffector.h" />
@@ -2188,6 +2189,7 @@
     <ClCompile Include="ui\UIBoosterInfo.cpp" />
     <ClCompile Include="ui\UIDoubleProgressBar.cpp" />
     <ClCompile Include="ui\UIHelper.cpp" />
+    <ClCompile Include="ui\UIHudStatesWnd.cpp" />
     <ClCompile Include="ui\UIInventoryItemParams.cpp" />
     <ClCompile Include="ui\UILoadingScreen.cpp" />
     <ClCompile Include="ui\UIOutfitInfo.cpp" />

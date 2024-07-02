@@ -3072,6 +3072,54 @@
     <ClInclude Include="saved_game_wrapper_inline.h">
       <Filter>AI\ALife\saved_game_wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesSoC\alife_human_brain.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesSoC\alife_monster_brain_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_brain_save.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_object_handler.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_object_handler_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_human_object_handler_save.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesSoC\alife_human_brain_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\xrServerEntitiesSoC\alife_monster_brain.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_movement_manager.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_movement_manager_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_detail_path_manager.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_detail_path_manager_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_patrol_path_manager.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_monster_patrol_path_manager_inline.h">
+      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_online_offline_group_brain.h">
+      <Filter>AI\ALife\server_entities\online_offline_group\brain</Filter>
+    </ClInclude>
+    <ClInclude Include="alife_online_offline_group_brain_inline.h">
+      <Filter>AI\ALife\server_entities\online_offline_group\brain</Filter>
+    </ClInclude>
     <ClInclude Include="CustomMonster.h">
       <Filter>AI\AMonsters\common\custom</Filter>
     </ClInclude>
@@ -4107,26 +4155,14 @@
     <ClInclude Include="stalker_property_evaluators_inline.h">
       <Filter>AI\AMonsters\humans\stalker\DecisionMaker\properties</Filter>
     </ClInclude>
+    <ClInclude Include="stalker_movement_manager_space.h">
+      <Filter>AI\AMonsters\humans\stalker\MovementManager</Filter>
+    </ClInclude>
     <ClInclude Include="stalker_movement_manager.h">
       <Filter>AI\AMonsters\humans\stalker\MovementManager</Filter>
     </ClInclude>
     <ClInclude Include="stalker_movement_manager_inline.h">
       <Filter>AI\AMonsters\humans\stalker\MovementManager</Filter>
-    </ClInclude>
-    <ClInclude Include="stalker_movement_manager_space.h">
-      <Filter>AI\AMonsters\humans\stalker\MovementManager</Filter>
-    </ClInclude>
-    <ClInclude Include="stalker_movement_params.h">
-      <Filter>AI\AMonsters\humans\stalker\MovementManager\params</Filter>
-    </ClInclude>
-    <ClInclude Include="stalker_movement_params_inline.h">
-      <Filter>AI\AMonsters\humans\stalker\MovementManager\params</Filter>
-    </ClInclude>
-    <ClInclude Include="stalker_movement_restriction.h">
-      <Filter>AI\AMonsters\humans\stalker\MovementManager\restriction</Filter>
-    </ClInclude>
-    <ClInclude Include="stalker_movement_restriction_inline.h">
-      <Filter>AI\AMonsters\humans\stalker\MovementManager\restriction</Filter>
     </ClInclude>
     <ClInclude Include="stalker_velocity_collection.h">
       <Filter>AI\AMonsters\humans\stalker\MovementManager\velocity_collection</Filter>
@@ -4139,6 +4175,18 @@
     </ClInclude>
     <ClInclude Include="stalker_velocity_holder_inline.h">
       <Filter>AI\AMonsters\humans\stalker\MovementManager\velocity_holder</Filter>
+    </ClInclude>
+    <ClInclude Include="stalker_movement_restriction.h">
+      <Filter>AI\AMonsters\humans\stalker\MovementManager\restriction</Filter>
+    </ClInclude>
+    <ClInclude Include="stalker_movement_restriction_inline.h">
+      <Filter>AI\AMonsters\humans\stalker\MovementManager\restriction</Filter>
+    </ClInclude>
+    <ClInclude Include="stalker_movement_params.h">
+      <Filter>AI\AMonsters\humans\stalker\MovementManager\params</Filter>
+    </ClInclude>
+    <ClInclude Include="stalker_movement_params_inline.h">
+      <Filter>AI\AMonsters\humans\stalker\MovementManager\params</Filter>
     </ClInclude>
     <ClInclude Include="stalker_sound_data_visitor.h">
       <Filter>AI\AMonsters\humans\stalker\SoundDataVisitor</Filter>
@@ -5772,267 +5820,6 @@
     <ClInclude Include="ode_redefine.h">
       <Filter>Physics\Base</Filter>
     </ClInclude>
-    <ClInclude Include="PHDebug.h">
-      <Filter>Physics\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="phvalide.h">
-      <Filter>Physics\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="PHWorld.h">
-      <Filter>Physics\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics.h">
-      <Filter>Physics\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsCommon.h">
-      <Filter>Physics\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsGamePars.h">
-      <Filter>Physics\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="ph_shell_interface.h">
-      <Filter>Physics\Base\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="PHDefs.h">
-      <Filter>Physics\Base\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="PHShellCreator.h">
-      <Filter>Physics\Base\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="PHStaticGeomShell.h">
-      <Filter>Physics\Base\Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="BlockAllocator.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="CycleConstStorage.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="MathUtils.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="PHDynamicData.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="PHInterpolation.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="PHItemList.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="PHValideValues.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="SpaceUtils.h">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="PHBaseBodyEffector.h">
-      <Filter>Physics\Base\Objects\BodyEffectors</Filter>
-    </ClInclude>
-    <ClInclude Include="PHContactBodyEffector.h">
-      <Filter>Physics\Base\Objects\BodyEffectors</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSynchronize.h">
-      <Filter>Physics\Base\Objects\PHNet</Filter>
-    </ClInclude>
-    <ClInclude Include="PHMoveStorage.h">
-      <Filter>Physics\Base\Objects\MoveStorage</Filter>
-    </ClInclude>
-    <ClInclude Include="DisablingParams.h">
-      <Filter>Physics\Base\Objects\Disabling</Filter>
-    </ClInclude>
-    <ClInclude Include="PHDisabling.h">
-      <Filter>Physics\Base\Objects\Disabling</Filter>
-    </ClInclude>
-    <ClInclude Include="PHActorCharacter.h">
-      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
-    </ClInclude>
-    <ClInclude Include="PHActorCharacterInline.h">
-      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
-    </ClInclude>
-    <ClInclude Include="PHAICharacter.h">
-      <Filter>Physics\Base\Objects\PhyMove\AICharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="PHCapture.h">
-      <Filter>Physics\Base\Objects\PhyMove\Capture</Filter>
-    </ClInclude>
-    <ClInclude Include="PHMovementControl.h">
-      <Filter>Physics\Base\Objects\PhyMove\MovementControl</Filter>
-    </ClInclude>
-    <ClInclude Include="ElevatorState.h">
-      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSimpleCharacter.h">
-      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSimpleCharacterInline.h">
-      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="IColisiondamageInfo.h">
-      <Filter>Physics\Base\Objects\PhyMove\BaseCharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="PHCharacter.h">
-      <Filter>Physics\Base\Objects\PhyMove\BaseCharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsShell.h">
-      <Filter>Physics\Base\Objects\BaseShell</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsShellAnimator.h">
-      <Filter>Physics\Base\Objects\BaseShell\PhysicsShellAnimator</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsShellAnimatorBoneData.h">
-      <Filter>Physics\Base\Objects\BaseShell\PhysicsShellAnimator</Filter>
-    </ClInclude>
-    <ClInclude Include="animation_movement_controller.h">
-      <Filter>Physics\Base\Objects\BaseShell\animation_movement_controller</Filter>
-    </ClInclude>
-    <ClInclude Include="PHElement.h">
-      <Filter>Physics\Base\Objects\Elemenet</Filter>
-    </ClInclude>
-    <ClInclude Include="PHElementInline.h">
-      <Filter>Physics\Base\Objects\Elemenet</Filter>
-    </ClInclude>
-    <ClInclude Include="PHJoint.h">
-      <Filter>Physics\Base\Objects\Joint</Filter>
-    </ClInclude>
-    <ClInclude Include="PHShell.h">
-      <Filter>Physics\Base\Objects\Shell</Filter>
-    </ClInclude>
-    <ClInclude Include="PHFracture.h">
-      <Filter>Physics\Base\Objects\Breakable</Filter>
-    </ClInclude>
-    <ClInclude Include="PHJointDestroyInfo.h">
-      <Filter>Physics\Base\Objects\Breakable</Filter>
-    </ClInclude>
-    <ClInclude Include="PHShellSplitter.h">
-      <Filter>Physics\Base\Objects\Breakable</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSplitedShell.h">
-      <Filter>Physics\Base\Objects\SplitedShell</Filter>
-    </ClInclude>
-    <ClInclude Include="PHObject.h">
-      <Filter>Physics\Base\Objects\PHObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry.h">
-      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
-    </ClInclude>
-    <ClInclude Include="PHGeometryOwner.h">
-      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
-    </ClInclude>
-    <ClInclude Include="PHIsland.h">
-      <Filter>Physics\Base\Objects\PHIsland</Filter>
-    </ClInclude>
-    <ClInclude Include="PHCommander.h">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHReqComparer.h">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHScriptCall.h">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSimpleCalls.h">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClInclude>
-    <ClInclude Include="PHImpact.h">
-      <Filter>Physics\Base\Impact</Filter>
-    </ClInclude>
-    <ClInclude Include="character_hit_animations.h">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterPhysicsSupport.h">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClInclude>
-    <ClInclude Include="interactive_motion.h">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderKNoOPC\__aabb_tri.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\dcTriangle.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderKNoOPC\dcTriListCollider.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\dSortTriPrimitive.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\dTriBox.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderKNoOPC\dTriCollideK.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\dTriColliderCommon.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\dTriColliderMath.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\dTriCylinder.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderKNoOPC\dTriList.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\dTriSphere.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderKNoOPC\dxTriList.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="tri-colliderknoopc\TriPrimitiveCollideClassDef.h">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="dCylinder\dCylinder.h">
-      <Filter>Physics\Colliders\Cyl_Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="DamagableItem.h">
-      <Filter>Physics\DamagableItem</Filter>
-    </ClInclude>
-    <ClInclude Include="PHSoundPlayer.h">
-      <Filter>Physics\PhysicsSoundPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="PHActivationShape.h">
-      <Filter>Physics\ActivationBox</Filter>
-    </ClInclude>
-    <ClInclude Include="Hit.h">
-      <Filter>Physics\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\aint.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\Dof7control.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\eqn.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\eulersolver.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="ik_anim_state.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\IKLimb.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="IKLimbsController.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\jtlimits.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\limb.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\math3d.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
-    <ClInclude Include="Ik\mathTrig.h">
-      <Filter>Physics\IK</Filter>
-    </ClInclude>
     <ClInclude Include="ui\CExtraContentFilter.h">
       <Filter>UI</Filter>
     </ClInclude>
@@ -6123,7 +5910,13 @@
     <ClInclude Include="ui\UIArtefactParams.h">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIBoosterInfo.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
     <ClInclude Include="ui\UIItemInfo.h">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIOutfitInfo.h">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIWpnParams.h">
@@ -6151,6 +5944,9 @@
       <Filter>UI\Common\CarBodyWnd</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICarPanel.h">
+      <Filter>UI\Common\MainIngame</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIHudStatesWnd.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIMainIngameWnd.h">
@@ -6345,12 +6141,6 @@
     <ClInclude Include="ui\UIScrollView.h">
       <Filter>UI\UIWindows\ScrollView</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UIListBox.h">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIListBoxItem.h">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UILine.h">
       <Filter>UI\UIWindows\Lines</Filter>
     </ClInclude>
@@ -6410,6 +6200,12 @@
     </ClInclude>
     <ClInclude Include="ContextMenu.h">
       <Filter>UI\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListBox.h">
+      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\UIListBoxItem.h">
+      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
     </ClInclude>
     <ClInclude Include="HitMarker.h">
       <Filter>UI\HUD</Filter>
@@ -6570,9 +6366,267 @@
     <ClInclude Include="ui\UIGameTutorial.h">
       <Filter>UI\Tutorial</Filter>
     </ClInclude>
-    <ClCompile Include="../xrServerEntitiesSoC/PHNetState.cpp">
+    <ClInclude Include="PHDebug.h">
+      <Filter>Physics\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="phvalide.h">
+      <Filter>Physics\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="PHWorld.h">
+      <Filter>Physics\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>Physics\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsCommon.h">
+      <Filter>Physics\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsGamePars.h">
+      <Filter>Physics\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="character_hit_animations.h">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterPhysicsSupport.h">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="interactive_motion.h">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClInclude>
+    <ClInclude Include="ph_shell_interface.h">
+      <Filter>Physics\Base\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PHDefs.h">
+      <Filter>Physics\Base\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PHShellCreator.h">
+      <Filter>Physics\Base\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PHStaticGeomShell.h">
+      <Filter>Physics\Base\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockAllocator.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="CycleConstStorage.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MathUtils.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PHDynamicData.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PHInterpolation.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PHItemList.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PHValideValues.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceUtils.h">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="PHBaseBodyEffector.h">
+      <Filter>Physics\Base\Objects\BodyEffectors</Filter>
+    </ClInclude>
+    <ClInclude Include="PHContactBodyEffector.h">
+      <Filter>Physics\Base\Objects\BodyEffectors</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSynchronize.h">
       <Filter>Physics\Base\Objects\PHNet</Filter>
-    </ClCompile>
+    </ClInclude>
+    <ClInclude Include="PHMoveStorage.h">
+      <Filter>Physics\Base\Objects\MoveStorage</Filter>
+    </ClInclude>
+    <ClInclude Include="DisablingParams.h">
+      <Filter>Physics\Base\Objects\Disabling</Filter>
+    </ClInclude>
+    <ClInclude Include="PHDisabling.h">
+      <Filter>Physics\Base\Objects\Disabling</Filter>
+    </ClInclude>
+    <ClInclude Include="PHActorCharacter.h">
+      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
+    </ClInclude>
+    <ClInclude Include="PHActorCharacterInline.h">
+      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
+    </ClInclude>
+    <ClInclude Include="PHAICharacter.h">
+      <Filter>Physics\Base\Objects\PhyMove\AICharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="PHCapture.h">
+      <Filter>Physics\Base\Objects\PhyMove\Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="PHMovementControl.h">
+      <Filter>Physics\Base\Objects\PhyMove\MovementControl</Filter>
+    </ClInclude>
+    <ClInclude Include="ElevatorState.h">
+      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSimpleCharacter.h">
+      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSimpleCharacterInline.h">
+      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="IColisiondamageInfo.h">
+      <Filter>Physics\Base\Objects\PhyMove\BaseCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="PHCharacter.h">
+      <Filter>Physics\Base\Objects\PhyMove\BaseCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsShell.h">
+      <Filter>Physics\Base\Objects\BaseShell</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsShellAnimator.h">
+      <Filter>Physics\Base\Objects\BaseShell\PhysicsShellAnimator</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsShellAnimatorBoneData.h">
+      <Filter>Physics\Base\Objects\BaseShell\PhysicsShellAnimator</Filter>
+    </ClInclude>
+    <ClInclude Include="animation_movement_controller.h">
+      <Filter>Physics\Base\Objects\BaseShell\animation_movement_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="PHElement.h">
+      <Filter>Physics\Base\Objects\Elemenet</Filter>
+    </ClInclude>
+    <ClInclude Include="PHElementInline.h">
+      <Filter>Physics\Base\Objects\Elemenet</Filter>
+    </ClInclude>
+    <ClInclude Include="PHJoint.h">
+      <Filter>Physics\Base\Objects\Joint</Filter>
+    </ClInclude>
+    <ClInclude Include="PHShell.h">
+      <Filter>Physics\Base\Objects\Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="PHFracture.h">
+      <Filter>Physics\Base\Objects\Breakable</Filter>
+    </ClInclude>
+    <ClInclude Include="PHJointDestroyInfo.h">
+      <Filter>Physics\Base\Objects\Breakable</Filter>
+    </ClInclude>
+    <ClInclude Include="PHShellSplitter.h">
+      <Filter>Physics\Base\Objects\Breakable</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSplitedShell.h">
+      <Filter>Physics\Base\Objects\SplitedShell</Filter>
+    </ClInclude>
+    <ClInclude Include="PHObject.h">
+      <Filter>Physics\Base\Objects\PHObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="PHGeometryOwner.h">
+      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
+    </ClInclude>
+    <ClInclude Include="PHIsland.h">
+      <Filter>Physics\Base\Objects\PHIsland</Filter>
+    </ClInclude>
+    <ClInclude Include="PHCommander.h">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="PHReqComparer.h">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="PHScriptCall.h">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSimpleCalls.h">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClInclude>
+    <ClInclude Include="PHSoundPlayer.h">
+      <Filter>Physics\PhysicsSoundPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="PHActivationShape.h">
+      <Filter>Physics\ActivationBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Hit.h">
+      <Filter>Physics\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="PHImpact.h">
+      <Filter>Physics\Base\Impact</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderKNoOPC\__aabb_tri.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\dcTriangle.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderKNoOPC\dcTriListCollider.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\dSortTriPrimitive.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\dTriBox.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderKNoOPC\dTriCollideK.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\dTriColliderCommon.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\dTriColliderMath.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\dTriCylinder.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderKNoOPC\dTriList.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\dTriSphere.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderKNoOPC\dxTriList.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="tri-colliderknoopc\TriPrimitiveCollideClassDef.h">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="dCylinder\dCylinder.h">
+      <Filter>Physics\Colliders\Cyl_Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="DamagableItem.h">
+      <Filter>Physics\DamagableItem</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\aint.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\Dof7control.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\eqn.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\eulersolver.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="ik_anim_state.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\IKLimb.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="IKLimbsController.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\jtlimits.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\limb.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\math3d.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
+    <ClInclude Include="Ik\mathTrig.h">
+      <Filter>Physics\IK</Filter>
+    </ClInclude>
     <ClInclude Include="CaptureBoneCallback.h">
       <Filter>Physics\Base\Objects\PhyMove\MovementControl</Filter>
     </ClInclude>
@@ -6605,10 +6659,9 @@
     <ClInclude Include="ActorSkills.h">
       <Filter>Core\Client\Objects\actor\base</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UIOutfitInfo.h">
-      <Filter>UI\Common\UIItemInfo</Filter>
+    <ClInclude Include="ui\UILoadingScreen.h">
+      <Filter>UI\Common\LoadingScreen</Filter>
     </ClInclude>
-    <ClInclude Include="CustomTimer.h" />
     <ClInclude Include="script_vars_storage.h">
       <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
     </ClInclude>
@@ -6621,63 +6674,15 @@
     <ClInclude Include="embedded_editor\editor_render_spawn_element.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="CustomTimer.h" />
+    <ClInclude Include="CustomBackpack.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
+    </ClInclude>
     <ClInclude Include="ui\UIArtefactPanel.h">
       <Filter>UI\Common\MainIngame</Filter>
     </ClInclude>
     <ClInclude Include="..\xrServerEntitiesSoC\PHNetState.h">
       <Filter>Physics\Base\Objects\PHNet</Filter>
-    </ClInclude>
-    <ClInclude Include="pch_script.h" />
-    <ClInclude Include="alife_human_object_handler.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_human_object_handler_inline.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_human_object_handler_save.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\object_handler</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesSoC\alife_human_brain.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesSoC\alife_human_brain_inline.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_human_brain_save.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesSoC\alife_monster_brain.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntitiesSoC\alife_monster_brain_inline.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_detail_path_manager.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_detail_path_manager_inline.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_movement_manager.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_movement_manager_inline.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_patrol_path_manager_inline.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_monster_patrol_path_manager.h">
-      <Filter>AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_online_offline_group_brain.h">
-      <Filter>AI\ALife\server_entities\online_offline_group\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="alife_online_offline_group_brain_inline.h">
-      <Filter>AI\ALife\server_entities\online_offline_group\brain</Filter>
-    </ClInclude>
-    <ClInclude Include="game_graph_space.h">
-      <Filter>AI\ANavigation\GameGraph</Filter>
     </ClInclude>
     <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
       <Filter>EmbeddedEditor</Filter>
@@ -6685,17 +6690,12 @@
     <ClInclude Include="xrClientsPool.h">
       <Filter>Core\Server</Filter>
     </ClInclude>
-    <ClInclude Include="ui\UILoadingScreen.h">
-      <Filter>UI\Common\LoadingScreen</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomBackpack.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
-    </ClInclude>
-    <ClInclude Include="ui\UIBoosterInfo.h">
-      <Filter>UI\Common\UIItemInfo</Filter>
-    </ClInclude>
     <ClInclude Include="ui\UIInventoryItemParams.h">
       <Filter>UI\Common\UIItemInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="pch_script.h" />
+    <ClInclude Include="game_graph_space.h">
+      <Filter>AI\ANavigation\GameGraph</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -7017,6 +7017,9 @@
     <ClCompile Include="alife_human_abstract.cpp">
       <Filter>AI\ALife\server_entities\monster_abstract</Filter>
     </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/alife_human_brain.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClCompile>
     <ClCompile Include="alife_human_brain_script.cpp">
       <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClCompile>
@@ -7025,6 +7028,18 @@
     </ClCompile>
     <ClCompile Include="alife_group_abstract.cpp">
       <Filter>AI\ALife\server_entities\group_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_abstract.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_base.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/alife_monster_brain.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
+    </ClCompile>
+    <ClCompile Include="alife_monster_brain_script.cpp">
+      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
     </ClCompile>
     <ClCompile Include="alife_monster_movement_manager.cpp">
       <Filter>AI\ALife\server_entities\monster_abstract\movement_manager</Filter>
@@ -7908,9 +7923,6 @@
     <ClCompile Include="ai_space.cpp">
       <Filter>AI\ASpace</Filter>
     </ClCompile>
-    <ClCompile Include="pch_script.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="StdAfx.cpp">
       <Filter>Core</Filter>
     </ClCompile>
@@ -8106,6 +8118,9 @@
     <ClCompile Include="Actor_Network.cpp">
       <Filter>Core\Client\Objects\actor\base</Filter>
     </ClCompile>
+    <ClCompile Include="actor_script.cpp">
+      <Filter>Core\Client\Objects\actor\base</Filter>
+    </ClCompile>
     <ClCompile Include="Actor_Sleep.cpp">
       <Filter>Core\Client\Objects\actor\base</Filter>
     </ClCompile>
@@ -8289,6 +8304,9 @@
     <ClCompile Include="character_community.cpp">
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/character_info.cpp">
+      <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
+    </ClCompile>
     <ClCompile Include="character_rank.cpp">
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
@@ -8296,6 +8314,9 @@
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
     <ClCompile Include="monster_community.cpp">
+      <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/specific_character.cpp">
       <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
     </ClCompile>
     <ClCompile Include="relation_registry.cpp">
@@ -8772,6 +8793,9 @@
     <ClCompile Include="RegistryFuncs.cpp">
       <Filter>Core\Common\Registry</Filter>
     </ClCompile>
+    <ClCompile Include="xrGame.cpp">
+      <Filter>Core\Server</Filter>
+    </ClCompile>
     <ClCompile Include="xrServer.cpp">
       <Filter>Core\Server</Filter>
     </ClCompile>
@@ -8907,11 +8931,20 @@
     <ClCompile Include="../xrServerEntitiesSoC/xrServer_Factory.cpp">
       <Filter>Core\Server\ServerEntities</Filter>
     </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_Abstract.cpp">
+      <Filter>Core\Server\ServerEntities</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Object_Base.cpp">
+      <Filter>Core\Server\ServerEntities\objects</Filter>
+    </ClCompile>
     <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects.cpp">
       <Filter>Core\Server\ServerEntities\objects</Filter>
     </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_Abstract.cpp">
-      <Filter>Core\Server\ServerEntities</Filter>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_script.cpp">
+      <Filter>Core\Server\ServerEntities\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_script2.cpp">
+      <Filter>Core\Server\ServerEntities\objects</Filter>
     </ClCompile>
     <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife.cpp">
       <Filter>Core\Server\ServerEntities</Filter>
@@ -8919,47 +8952,11 @@
     <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_script.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife</Filter>
     </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/alife_human_brain.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_base.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_abstract.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract</Filter>
-    </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/alife_monster_brain.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="alife_monster_brain_script.cpp">
-      <Filter>AI\ALife\server_entities\monster_abstract\brain</Filter>
-    </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Object_Base.cpp">
-      <Filter>Core\Server\ServerEntities\objects</Filter>
-    </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Monsters.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
-    </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Monsters_script.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_script2.cpp">
-      <Filter>Core\Server\ServerEntities\objects</Filter>
-    </ClCompile>
     <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_script2.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife</Filter>
     </ClCompile>
     <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_script3.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Items_script2.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Items_script3.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
-    </ClCompile>
-    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Monsters_script2.cpp">
-      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
     </ClCompile>
     <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Items.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
@@ -8967,11 +8964,20 @@
     <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Items_script.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
     </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_script.cpp">
-      <Filter>Core\Server\ServerEntities\objects</Filter>
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Items_script2.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
     </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/specific_character.cpp">
-      <Filter>Core\Client\Objects\inventory\InventoryOwner\character_info</Filter>
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Items_script3.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_items</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Monsters.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="../xrServerEntitiesSoC/xrServer_Objects_ALife_Monsters_script.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\xrServerEntitiesSoC\xrServer_Objects_ALife_Monsters_script2.cpp">
+      <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
     </ClCompile>
     <ClCompile Include="..\xrServerEntitiesSoC\xrserver_objects_alife_monsters_script3.cpp">
       <Filter>Core\Server\ServerEntities\objects_alife_monsters</Filter>
@@ -9150,16 +9156,10 @@
     <ClCompile Include="ui\UINewsWnd.cpp">
       <Filter>UI\Common\PDA\logs\News</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIWpnParams.cpp">
+    <ClCompile Include="ui\UIArtefactParams.cpp">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIArtefactPanel.cpp">
-      <Filter>UI\Common\MainIngame</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIDebugFonts.cpp">
-      <Filter>UI\Common\_Debug Fonts</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIArtefactParams.cpp">
+    <ClCompile Include="ui\UIBoosterInfo.cpp">
       <Filter>UI\Common\UIItemInfo</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIItemInfo.cpp">
@@ -9196,6 +9196,9 @@
       <Filter>UI\Common\CarBodyWnd</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICarPanel.cpp">
+      <Filter>UI\Common\MainIngame</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIHudStatesWnd.cpp">
       <Filter>UI\Common\MainIngame</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIMainIngameWnd.cpp">
@@ -9254,6 +9257,9 @@
     </ClCompile>
     <ClCompile Include="ui\UIInventoryUtilities.cpp">
       <Filter>UI\Common\InventoryUtilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIDebugFonts.cpp">
+      <Filter>UI\Common\_Debug Fonts</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIWndCallback.cpp">
       <Filter>UI\UIWindows</Filter>
@@ -9405,12 +9411,6 @@
     <ClCompile Include="ui\UIScrollView.cpp">
       <Filter>UI\UIWindows\ScrollView</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIListBox.cpp">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIListBoxItem.cpp">
-      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UILine.cpp">
       <Filter>UI\UIWindows\Lines</Filter>
     </ClCompile>
@@ -9461,6 +9461,12 @@
     </ClCompile>
     <ClCompile Include="ui\UIListItemEx.cpp">
       <Filter>UI\UIWindows\ListBox\Ex</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListBox.cpp">
+      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListBoxItem.cpp">
+      <Filter>UI\UIWindows\ScrollView\ListBox</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIListWnd_script.cpp">
       <Filter>UI\UIWindows\ListBox</Filter>
@@ -9651,53 +9657,8 @@
     <ClCompile Include="ui\UIGameTutorialVideoItem.cpp">
       <Filter>UI\Tutorial</Filter>
     </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="AdvancedXrayGameConstants.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="DynamicHudGlass.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorNightVision.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Devices</Filter>
-    </ClCompile>
-    <ClCompile Include="ActorSkills.cpp">
-      <Filter>Core\Client\Objects\actor\base</Filter>
-    </ClCompile>
-    <ClCompile Include="actor_script.cpp">
-      <Filter>Core\Client\Objects\actor\base</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UILoadingScreen.cpp">
-      <Filter>UI\Common\LoadingScreen</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityCondition_script.cpp">
-      <Filter>Core\Client\Objects\base\EntityCondition</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomOutfit_script.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIOutfitInfo.cpp">
-      <Filter>UI\Common\UIItemInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
-      <Filter>EmbeddedEditor</Filter>
+    <ClCompile Include="../xrServerEntitiesSoC/PHNetState.cpp">
+      <Filter>Physics\Base\Objects\PHNet</Filter>
     </ClCompile>
     <ClCompile Include="PHDebug.cpp">
       <Filter>Physics\Base</Filter>
@@ -9711,11 +9672,32 @@
     <ClCompile Include="Physics.cpp">
       <Filter>Physics\Base</Filter>
     </ClCompile>
-    <ClCompile Include="physics_game.cpp">
-      <Filter>Physics\Base</Filter>
+    <ClCompile Include="PHCommander.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsGamePars.cpp">
-      <Filter>Physics\Base</Filter>
+    <ClCompile Include="PHScriptCall.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSimpleCalls.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSimpleCallsScript.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="DamagableItem.cpp">
+      <Filter>Physics\DamagableItem</Filter>
+    </ClCompile>
+    <ClCompile Include="Hit.cpp">
+      <Filter>Physics\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\aint.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\Dof7control.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\eqn.cxx">
+      <Filter>Physics\IK</Filter>
     </ClCompile>
     <ClCompile Include="PHShellCreator.cpp">
       <Filter>Physics\Base\Objects</Filter>
@@ -9747,9 +9729,6 @@
     <ClCompile Include="PHActorCharacter.cpp">
       <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
     </ClCompile>
-    <ClCompile Include="PHMovementDynamicActivate.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
-    </ClCompile>
     <ClCompile Include="PHAICharacter.cpp">
       <Filter>Physics\Base\Objects\PhyMove\AICharacter</Filter>
     </ClCompile>
@@ -9759,8 +9738,14 @@
     <ClCompile Include="PHCaptureInit.cpp">
       <Filter>Physics\Base\Objects\PhyMove\Capture</Filter>
     </ClCompile>
+    <ClCompile Include="animation_movement_controller.cpp">
+      <Filter>Physics\Base\Objects\BaseShell\animation_movement_controller</Filter>
+    </ClCompile>
     <ClCompile Include="PHMovementControl.cpp">
       <Filter>Physics\Base\Objects\PhyMove\MovementControl</Filter>
+    </ClCompile>
+    <ClCompile Include="PHMovementDynamicActivate.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
     </ClCompile>
     <ClCompile Include="ElevatorState.cpp">
       <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
@@ -9780,9 +9765,6 @@
     <ClCompile Include="PhysicsShellAnimator.cpp">
       <Filter>Physics\Base\Objects\BaseShell\PhysicsShellAnimator</Filter>
     </ClCompile>
-    <ClCompile Include="animation_movement_controller.cpp">
-      <Filter>Physics\Base\Objects\BaseShell\animation_movement_controller</Filter>
-    </ClCompile>
     <ClCompile Include="PHElement.cpp">
       <Filter>Physics\Base\Objects\Elemenet</Filter>
     </ClCompile>
@@ -9798,8 +9780,41 @@
     <ClCompile Include="PHShellActivate.cpp">
       <Filter>Physics\Base\Objects\Shell</Filter>
     </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_weather.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="AdvancedXrayGameConstants.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIInventoryItemParams.cpp">
+      <Filter>UI\Common\UIItemInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_hud.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicHudGlass.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorNightVision.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorSkills.cpp">
+      <Filter>Core\Client\Objects\actor\base</Filter>
+    </ClCompile>
     <ClCompile Include="PHShellNetState.cpp">
       <Filter>Physics\Base\Objects\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UILoadingScreen.cpp">
+      <Filter>UI\Common\LoadingScreen</Filter>
     </ClCompile>
     <ClCompile Include="ShellHit.cpp">
       <Filter>Physics\Base\Objects\Shell</Filter>
@@ -9819,6 +9834,25 @@
     <ClCompile Include="PHObject.cpp">
       <Filter>Physics\Base\Objects\PHObject</Filter>
     </ClCompile>
+    <ClCompile Include="EntityCondition_script.cpp">
+      <Filter>Core\Client\Objects\base\EntityCondition</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomOutfit_script.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render_ai_map.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\editor_render_spawn_element.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomTimer.cpp" />
+    <ClCompile Include="CustomBackpack.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
+    </ClCompile>
     <ClCompile Include="Geometry.cpp">
       <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
     </ClCompile>
@@ -9827,18 +9861,6 @@
     </ClCompile>
     <ClCompile Include="PHIsland.cpp">
       <Filter>Physics\Base\Objects\PHIsland</Filter>
-    </ClCompile>
-    <ClCompile Include="PHCommander.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHScriptCall.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSimpleCalls.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSimpleCallsScript.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
     </ClCompile>
     <ClCompile Include="character_hit_animations.cpp">
       <Filter>Physics\CharacterSupport</Filter>
@@ -9873,11 +9895,11 @@
     <ClCompile Include="dCylinder\dCylinder.cpp">
       <Filter>Physics\Colliders\Cyl_Collider</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIArtefactPanel.cpp">
+      <Filter>UI\Common\MainIngame</Filter>
+    </ClCompile>
     <ClCompile Include="dRayMotions.cpp">
       <Filter>Physics\Colliders\RayMotions-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="DamagableItem.cpp">
-      <Filter>Physics\DamagableItem</Filter>
     </ClCompile>
     <ClCompile Include="PHSoundPlayer.cpp">
       <Filter>Physics\PhysicsSoundPlayer</Filter>
@@ -9885,17 +9907,11 @@
     <ClCompile Include="PHActivationShape.cpp">
       <Filter>Physics\ActivationBox</Filter>
     </ClCompile>
-    <ClCompile Include="Hit.cpp">
-      <Filter>Physics\Hit</Filter>
+    <ClCompile Include="physics_game.cpp">
+      <Filter>Physics\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Ik\aint.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\Dof7control.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\eqn.cxx">
-      <Filter>Physics\IK</Filter>
+    <ClCompile Include="PhysicsGamePars.cpp">
+      <Filter>Physics\Base</Filter>
     </ClCompile>
     <ClCompile Include="Ik\eulersolver.cxx">
       <Filter>Physics\IK</Filter>
@@ -9921,41 +9937,19 @@
     <ClCompile Include="Ik\mathTrig.cpp">
       <Filter>Physics\IK</Filter>
     </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
-      <Filter>EmbeddedEditor</Filter>
-    </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
-    <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="script_vars_storage.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
     </ClCompile>
     <ClCompile Include="xrClientsPool.cpp">
       <Filter>Core\Server</Filter>
     </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/character_info.cpp" />
-    <ClCompile Include="ui\UICharacterInfo.cpp">
-      <Filter>UI\Common\UIItemInfo\CharacterInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="xrGame.cpp">
-      <Filter>Core\Server</Filter>
-    </ClCompile>
     <ClCompile Include="../xrServerEntitiesSoC/PHSynchronize.cpp">
       <Filter>Physics\Base\Objects\PHNet</Filter>
     </ClCompile>
-    <ClCompile Include="CustomBackpack.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Backpack</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIBoosterInfo.cpp">
-      <Filter>UI\Common\UIItemInfo</Filter>
-    </ClCompile>
-    <ClCompile Include="ui\UIInventoryItemParams.cpp">
-      <Filter>UI\Common\UIItemInfo</Filter>
-    </ClCompile>
+    <ClCompile Include="pch_script.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">
