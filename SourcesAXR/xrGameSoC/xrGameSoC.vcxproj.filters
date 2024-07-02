@@ -1693,6 +1693,9 @@
     <Filter Include="Core\Client\Objects\zones\SmartZone">
       <UniqueIdentifier>{693747f5-1ca7-442d-9dee-bbcab366554b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\zones\campfire">
+      <UniqueIdentifier>{ab681870-a682-4197-a895-ca7f03615e98}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Client\Objects\vehicles">
       <UniqueIdentifier>{17f9308b-988c-4c87-b839-3f7616839e4a}</UniqueIdentifier>
     </Filter>
@@ -5385,6 +5388,9 @@
     <ClInclude Include="ZoneVisual.h">
       <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
     </ClInclude>
+    <ClInclude Include="ZoneCampfire.h">
+      <Filter>Core\Client\Objects\zones\campfire</Filter>
+    </ClInclude>
     <ClInclude Include="Car.h">
       <Filter>Core\Client\Objects\vehicles\Car</Filter>
     </ClInclude>
@@ -8633,6 +8639,9 @@
     </ClCompile>
     <ClCompile Include="ZoneVisual.cpp">
       <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
+    </ClCompile>
+    <ClCompile Include="ZoneCampfire.cpp">
+      <Filter>Core\Client\Objects\zones\campfire</Filter>
     </ClCompile>
     <ClCompile Include="Car.cpp">
       <Filter>Core\Client\Objects\vehicles\Car</Filter>

@@ -19,7 +19,6 @@
 #include "sight_control_action.h"
 #include "sight_manager.h"
 #include "inventoryBox.h"
-#include "ZoneCampfire.h"
 #include "physicobject.h"
 
 #include "Actor.h"

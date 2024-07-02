@@ -82,6 +82,7 @@ struct STasks;
 class CCar;
 class CDangerObject;
 class CScriptGameObject;
+class CZoneCampfire;
 
 #ifdef DEBUG
 	template <typename _object_type>
@@ -575,6 +576,8 @@ public:
 			LPCSTR				get_visual_name						() const;
 
 			bool				addon_IsActorHideout				() const;
+			
+			CZoneCampfire*		get_campfire						();
 
 			// Alundaio
 			bool				IsOnBelt(CScriptGameObject* obj) const;

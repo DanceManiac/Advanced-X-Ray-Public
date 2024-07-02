@@ -2,7 +2,7 @@
 GroupControlSection			= spawn_group_zone
 $spawn 						= "zones\campfire_mp_nolight"
 $prefetch 					= 16
-class						= Z_MBALD
+class           			= Z_CFIRE
 
 hit_impulse_scale			= 0.00
 effective_radius			= 1.3 ;размер радиуса в процентах от оригинального, где действует зона
@@ -168,31 +168,31 @@ spawn_blowout_artefacts = off
 
 
 [zone_flame]
-GroupControlSection	= spawn_group_zone
-$spawn 			= "zones\flame"
-$prefetch 		= 16
-class			= Z_MBALD
-hit_impulse_scale	= 0.0
-effective_radius	= 1.3 ;размер радиуса в процентах от оригинального, где действует зона
-sound			= zone_mosquito_bald
-postprocess		= postprocess_flame
+GroupControlSection			= spawn_group_zone
+$spawn 						= "zones\flame"
+$prefetch 					= 16
+class           			= Z_CFIRE
+hit_impulse_scale			= 0.0
+effective_radius			= 1.3 ;размер радиуса в процентах от оригинального, где действует зона
+sound						= zone_mosquito_bald
+postprocess					= postprocess_flame
 
-ef_anomaly_type			= 1
-ef_weapon_type			= 13
+ef_anomaly_type				= 1
+ef_weapon_type				= 13
 
-artefacts		= 
-BirthProbability = 0.0
+artefacts					= 
+BirthProbability 			= 0.0
 
 ;----------- Anomaly settings -----------------------
-min_start_power		= 0.39
-max_start_power		= 0.40
-attenuation			= 1
-period				= 1
-min_artefact_count	= 0
-max_artefact_count	= 0
+min_start_power				= 0.39
+max_start_power				= 0.40
+attenuation					= 1
+period						= 1
+min_artefact_count			= 0
+max_artefact_count			= 0
 
-idle_particles		= explosions\campfire_04
-blowout_particles	= explosions\campfire_blowout
+idle_particles				= explosions\campfire_04
+blowout_particles			= explosions\campfire_blowout
 
 hit_small_particles			= damage_fx\burn_creatures
 hit_big_particles			= damage_fx\burn_creatures00
@@ -201,45 +201,45 @@ idle_big_particles			= damage_fx\burn_creatures00
 
 idle_particles_dont_stop	= true;
 
-idle_sound			= ambient\fire2						;постоянный звук
-blowout_sound		= ambient\fire2		;во время выброса(удара) в центре аномалии	
-hit_sound			= ambient\fire2								;на персонаже, когда тот получает хит
-entrance_sound		= ambient\fire2									;при попадании объекта в аномалию
+idle_sound					= ambient\fire2						;постоянный звук
+blowout_sound				= ambient\fire2		;во время выброса(удара) в центре аномалии	
+hit_sound					= ambient\fire2								;на персонаже, когда тот получает хит
+entrance_sound				= ambient\fire2									;при попадании объекта в аномалию
 
-hit_type			= burn
+hit_type					= burn
 
-disable_time		= 10000		;время игнорирования неживого объекта в зоне (-1 если не нужно)
-disable_time_small	= -1		;время игнорирования маленького неживого объекта в зоне (-1 если не нужно)
-disable_idle_time	= 50000		;время отключения idle партиклов
+disable_time				= 10000		;время игнорирования неживого объекта в зоне (-1 если не нужно)
+disable_time_small			= -1		;время игнорирования маленького неживого объекта в зоне (-1 если не нужно)
+disable_idle_time			= 50000		;время отключения idle партиклов
 
-ignore_nonalive		= false
-ignore_small		= true
-ignore_artefacts	= true
+ignore_nonalive				= false
+ignore_small				= true
+ignore_artefacts			= true
 
-blowout_light		= off
-light_color		    = 1.8,1.7,1.4
-light_range		    = 8.0
-light_time 		    = 0.35
-light_height		= 0.75			;подъем источника света на высоту
+blowout_light				= off
+light_color		    		= 1.8,1.7,1.4
+light_range		    		= 8.0
+light_time 		    		= 0.35
+light_height				= 0.75			;подъем источника света на высоту
 
 
-idle_light			= off
-idle_light_range	= 8.0
-idle_light_range_delta = 0.2
-idle_light_anim		= koster_01
-idle_light_height	= 0.70			;подъем источника света на высоту
+idle_light					= off
+idle_light_range			= 8.0
+idle_light_range_delta		= 0.2
+idle_light_anim				= koster_01
+idle_light_height			= 0.70			;подъем источника света на высоту
 
-awaking_time		= 1000
-blowout_time		= 300	
-accamulate_time		= 1000
+awaking_time				= 1000
+blowout_time				= 300	
+accamulate_time				= 1000
 
-visible_by_detector = off
+visible_by_detector 		= off
 
-blowout_wind		= off
+blowout_wind				= off
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;рождение артефактов во время срабатывания
-spawn_blowout_artefacts = off
+spawn_blowout_artefacts		= off
 
 
 
@@ -249,7 +249,7 @@ $spawn 			= "zones\zhar"
 $prefetch 		= 16
 class			= Z_MBALD
 hit_impulse_scale	= 0.0
-effective_radius	= 1.3 ;?acia? ?aaeona a i?ioaioao io i?eaeiaeuiiai, aaa aaenoaoao ciia
+effective_radius	= 1.3 ;размер радиуса в процентах от оригинального, где действует зона
 sound			= zone_mosquito_bald
 postprocess		= postprocess_flame
 
@@ -399,7 +399,7 @@ spawn_blowout_artefacts = off
 GroupControlSection			= spawn_group_zone
 $spawn 						= "zones\campfire"
 $prefetch 					= 16
-class						= Z_MBALD
+class           			= Z_CFIRE
 
 hit_impulse_scale			= 0.0
 effective_radius			= 1.3 ;размер радиуса в процентах от оригинального, где действует зона

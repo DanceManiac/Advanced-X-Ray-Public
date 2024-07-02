@@ -54,6 +54,9 @@ public:
 	virtual		void	Load							(LPCSTR section);
 	virtual		void	net_Destroy						();
 	
+	virtual		void	save							(NET_Packet &output_packet);
+	virtual		void	load							(IReader &input_packet);
+	
 	virtual		void	UpdateCL						();
 	virtual		void	UpdateWorkload					(u32	dt	);				// related to fast-mode optimizations
 	virtual		void	shedule_Update					(u32	dt	);
@@ -298,8 +301,8 @@ protected:
 
 
 	//для визуализации зоны
-				void		PlayIdleParticles			();
-				void		StopIdleParticles			();
+		virtual	void		PlayIdleParticles			(bool bIdleLight=true);
+		virtual	void		StopIdleParticles			(bool bIdleLight=true);
 				void		PlayAccumParticles			();
 				void		PlayAwakingParticles		();
 				void		PlayBlowoutParticles		();

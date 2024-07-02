@@ -28,6 +28,7 @@
 #include "CustomZone.h"
 #include "TorridZone.h"
 #include "MosquitoBald.h"
+#include "ZoneCampfire.h"
 #include "CustomOutfit.h"
 #include "Artefact.h"
 #include "Weapon.h"
@@ -246,6 +247,11 @@ bool CScriptGameObject::IsInvBoxEmpty()
 		return			(false);
 	else
 		return			ib->IsEmpty		();
+}
+
+CZoneCampfire* CScriptGameObject::get_campfire()
+{
+	return smart_cast<CZoneCampfire*>(&object());
 }
 
 void CScriptGameObject::start_particles(LPCSTR pname, LPCSTR bone, bool auto_stop, bool hud_mode, bool ignore_playing)

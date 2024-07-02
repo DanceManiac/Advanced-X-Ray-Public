@@ -1940,6 +1940,7 @@
     <ClInclude Include="xr_level_controller.h" />
     <ClInclude Include="xr_Server_BattlEye.h" />
     <ClInclude Include="xr_time.h" />
+    <ClInclude Include="ZoneCampfire.h" />
     <ClInclude Include="ZoneVisual.h" />
     <ClInclude Include="zone_effector.h" />
     <ClInclude Include="ZudaArtifact.h" />
@@ -6803,6 +6804,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ZoneCampfire.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd party\imgui\imgui.vcxproj">

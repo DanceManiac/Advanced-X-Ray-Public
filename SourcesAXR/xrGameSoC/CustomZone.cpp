@@ -774,7 +774,7 @@ float CCustomZone::Power(float dist)
 	return  m_fMaxPower * RelativePower(dist);
 }
 
-void CCustomZone::PlayIdleParticles()
+void CCustomZone::PlayIdleParticles(bool bIdleLight)
 {
 	m_idle_sound.play_at_pos(0, Position(), true);
 
@@ -788,18 +788,22 @@ void CCustomZone::PlayIdleParticles()
 		m_pIdleParticles->UpdateParent(XFORM(),zero_vel);
 		m_pIdleParticles->Play();
 	}
-
-	StartIdleLight	();
+	if(bIdleLight)
+		StartIdleLight	();
 }
 
-void CCustomZone::StopIdleParticles()
+void CCustomZone::StopIdleParticles(bool bIdleLight)
 {
 	m_idle_sound.stop();
 
 	if(m_pIdleParticles)
+	{
 		m_pIdleParticles->Stop(FALSE);
+		CParticlesObject::Destroy(m_pIdleParticles);
+	}
 
-	StopIdleLight();
+	if(bIdleLight)
+		StopIdleLight();
 }
 
 
@@ -1548,6 +1552,24 @@ BOOL CCustomZone::AlwaysTheCrow()
 		return TRUE;
 	else
 		return inherited::AlwaysTheCrow();
+}
+
+void CCustomZone::save							(NET_Packet &output_packet)
+{
+	inherited::save			(output_packet);
+	output_packet.w_u8		(static_cast<u8>(m_eZoneState));
+}
+
+void CCustomZone::load							(IReader &input_packet)
+{
+	inherited::load			(input_packet);	
+
+	CCustomZone::EZoneState temp = static_cast<CCustomZone::EZoneState>(input_packet.r_u8());
+
+	if (temp == eZoneStateDisabled)
+		m_eZoneState = eZoneStateDisabled;
+	else
+		m_eZoneState = eZoneStateIdle;
 }
 
 void CCustomZone::GrassZoneUpdate()
