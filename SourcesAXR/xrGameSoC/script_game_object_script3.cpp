@@ -420,6 +420,13 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("set_artefact_rank",				&CScriptGameObject::SetArtefactRank)
 		.def("get_artefact_rank",				&CScriptGameObject::GetArtefactRank)
 
+		.def("set_battery_charge_level",		&CScriptGameObject::SetBatteryChargeLevel)
+		.def("get_battery_charge_level",		&CScriptGameObject::GetBatteryChargeLevel)
+		.def("set_torch_charge_level",			&CScriptGameObject::SetTorchChargeLevel)
+		.def("get_torch_charge_level",			&CScriptGameObject::GetTorchChargeLevel)
+		.def("set_detector_charge_level",		&CScriptGameObject::SetDetectorChargeLevel)
+		.def("get_detector_charge_level",		&CScriptGameObject::GetDetectorChargeLevel)
+
 		.def("is_entity_alive",					&CScriptGameObject::IsEntityAlive)
 		.def("is_inventory_item",				&CScriptGameObject::IsInventoryItem)
 		.def("is_inventory_owner",				&CScriptGameObject::IsInventoryOwner)

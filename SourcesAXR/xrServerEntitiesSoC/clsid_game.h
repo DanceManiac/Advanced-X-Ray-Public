@@ -179,6 +179,7 @@
 #define CLSID_IITEM_BOTTLE			MK_CLSID('I','I','_','B','O','T','T','L')
 #define CLSID_IITEM_ANTIRAD			MK_CLSID('I','I','_','A','N','T','I','R')
 #define CLSID_IITEM_EXPLOSIVE		MK_CLSID('I','I','_','E','X','P','L','O')
+#define CLSID_IITEM_BATTERY			MK_CLSID('I','I','_','B','A','T','T','E')
 
 // Info Document
 #define CLSID_IITEM_DOCUMENT		MK_CLSID('I','I','_','D','O','C',' ',' ')

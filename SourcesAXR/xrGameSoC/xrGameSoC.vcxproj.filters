@@ -2344,6 +2344,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Backpack">
       <UniqueIdentifier>{72308f01-fed3-458c-8831-976b79595bfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Consumables">
+      <UniqueIdentifier>{590dbb1c-9f7d-42b3-8c2b-2ebf3d86f579}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6697,6 +6700,9 @@
     <ClInclude Include="game_graph_space.h">
       <Filter>AI\ANavigation\GameGraph</Filter>
     </ClInclude>
+    <ClInclude Include="Battery.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9950,6 +9956,9 @@
       <Filter>Physics\Base\Objects\PHNet</Filter>
     </ClCompile>
     <ClCompile Include="pch_script.cpp" />
+    <ClCompile Include="Battery.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

@@ -200,8 +200,8 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
 	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
 
-	/*
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet)
+	
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/)
 	{
 		val = pInvItem.GetChargeToShow() <= 0 ? 0 : pInvItem.GetChargeToShow() * 100.f;
 		// (!fis_zero(val))
@@ -215,7 +215,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 			AttachChild(m_charge_level);
 		}
 	}
-	if (pDet)
+	/*if (pDet)
 	{
 		val = pDet->GetAfDetectRadius();
 		if (!fis_zero(val))
@@ -243,9 +243,9 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 			h += m_af_vis_radius->GetWndSize().y;
 			AttachChild(m_af_vis_radius);
 		}
-	}
+	}*/
 
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet)
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/)
 	{
 		val = pInvItem.GetMaxChargeLevel();
 		//if (!fis_zero(val))
@@ -260,7 +260,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet)
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/)
 	{
 		val = pInvItem.GetUnChargeLevel();
 		if (!fis_zero(val))
@@ -274,7 +274,6 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 			AttachChild(m_uncharge_speed);
 		}
 	}
-	 */
 
 	if (pBackpack)
 	{

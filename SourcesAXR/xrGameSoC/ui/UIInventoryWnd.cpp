@@ -610,11 +610,13 @@ bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 #ifdef DEBUG
 		if(DIK_NUMPAD7 == dik && CurrentIItem())
 		{
+			CurrentIItem()->ChangeChargeLevel(-0.05f);
 			CurrentIItem()->ChangeCondition(-0.05f);
 			UIItemInfo.InitItem(CurrentIItem());
 		}
 		else if(DIK_NUMPAD8 == dik && CurrentIItem())
 		{
+			CurrentIItem()->ChangeChargeLevel(0.05f);
 			CurrentIItem()->ChangeCondition(0.05f);
 			UIItemInfo.InitItem(CurrentIItem());
 		}

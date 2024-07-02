@@ -50,6 +50,9 @@
 #include "Actor.h"
 #include "WeaponAmmo.h"
 #include "WeaponMagazinedWGrenade.h"
+#include "Battery.h"
+#include "CustomDetector.h"
+#include "Torch.h"
 
 namespace MemorySpace {
 	struct CVisibleObject;
@@ -1382,4 +1385,82 @@ int CScriptGameObject::GetArtefactRank() const
 		return 0;
 
 	return eItm->GetCurrentAfRank();
+}
+
+void CScriptGameObject::SetBatteryChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CBattery* eBattery = IItm->cast_battery();
+	if (!eBattery)
+		return;
+
+	eBattery->SetChargeLevel(charge_level);
+}
+
+float CScriptGameObject::GetBatteryChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CBattery* eBattery = IItm->cast_battery();
+	if (!eBattery)
+		return 0;
+
+	return eBattery->GetCurrentChargeLevel();
+}
+
+void CScriptGameObject::SetTorchChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CTorch* eTorch = IItm->cast_torch();
+	if (!eTorch)
+		return;
+
+	eTorch->SetChargeLevel(charge_level);
+}
+
+float CScriptGameObject::GetTorchChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CTorch* eTorch = IItm->cast_torch();
+	if (!eTorch)
+		return 0;
+
+	return eTorch->GetCurrentChargeLevel();
+}
+
+void CScriptGameObject::SetDetectorChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CCustomDetector* eDetector = IItm->cast_detector();
+	if (!eDetector)
+		return;
+
+	eDetector->SetChargeLevel(charge_level);
+}
+
+float CScriptGameObject::GetDetectorChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CCustomDetector* eDetector = IItm->cast_detector();
+	if (!eDetector)
+		return 0;
+
+	return eDetector->GetCurrentChargeLevel();
 }

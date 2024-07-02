@@ -739,6 +739,13 @@ public:
 			void				SetArtefactRank(int rank);
 			int					GetArtefactRank() const;
 
+			void				SetBatteryChargeLevel(float charge_level);
+			float				GetBatteryChargeLevel() const;
+			void				SetDetectorChargeLevel(float charge_level);
+			float				GetDetectorChargeLevel() const;
+			void				SetTorchChargeLevel(float charge_level);
+			float				GetTorchChargeLevel() const;
+
 			/*added by Ray Twitty (aka Shadows) START*/
 			float				GetActorMaxWeight					() const;
 			void				SetActorMaxWeight					(float max_weight);

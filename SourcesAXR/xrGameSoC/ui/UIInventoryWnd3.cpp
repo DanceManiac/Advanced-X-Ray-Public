@@ -15,7 +15,9 @@
 #include "UICellItem.h"
 #include "UIListBoxItem.h"
 #include "../CustomOutfit.h"
+#include "../Battery.h"
 
+#include "../string_table.h"
 
 void CUIInventoryWnd::EatItem(PIItem itm)
 {
@@ -171,24 +173,51 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 		}
 		break;
 	case INVENTORY_UNLOAD_MAGAZINE:
-	{
-		CWeaponMagazined* weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)cell_item->m_pData);
-		if (!weap_mag)
 		{
+			CWeaponMagazined* weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)cell_item->m_pData);
+			if (!weap_mag)
+			{
+				break;
+			}
+			weap_mag->UnloadMagazine();
+			for (u32 i = 0; i < cell_item->ChildsCount(); ++i)
+			{
+				CUICellItem* child_itm = cell_item->Child(i);
+				CWeaponMagazined* child_weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData);
+				if (child_weap_mag)
+				{
+					child_weap_mag->UnloadMagazine();
+				}
+			}
 			break;
 		}
-		weap_mag->UnloadMagazine();
-		for (u32 i = 0; i < cell_item->ChildsCount(); ++i)
+	case BATTERY_CHARGE_TORCH:
 		{
-			CUICellItem* child_itm = cell_item->Child(i);
-			CWeaponMagazined* child_weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData);
-			if (child_weap_mag)
-			{
-				child_weap_mag->UnloadMagazine();
-			}
+			CBattery* battery = smart_cast<CBattery*>(CurrentItem());
+			if (!battery)
+				break;
+			battery->m_iUseFor = 1;
+			TryUseItem(cell_item);
+			break;
 		}
-		break;
-	}
+	case BATTERY_CHARGE_DETECTOR:
+		{
+			CBattery* battery = smart_cast<CBattery*>(item);
+			if (!battery)
+				break;
+			battery->m_iUseFor = 2;
+			TryUseItem(cell_item);
+			break;
+		}
+	/*case BATTERY_CHARGE_DOSIMETER:
+		{
+			CBattery* battery = smart_cast<CBattery*>(CurrentItem());
+			if (!battery)
+				break;
+			battery->m_iUseFor = 2;
+			TryUseItem((PIItem)(UIPropertiesBox.GetClickedItem()->GetData()));
+			break;
+		} */
 	}//switch
 
 	SetCurrentItem(NULL);
@@ -206,9 +235,10 @@ bool CUIInventoryWnd::TryUseItem(CUICellItem* cell_itm)
 	CMedkit*			pMedkit				= smart_cast<CMedkit*>			(item);
 	CAntirad*			pAntirad			= smart_cast<CAntirad*>			(item);
 	CEatableItem*		pEatableItem		= smart_cast<CEatableItem*>		(item);
+	CBattery*			pBattery			= smart_cast<CBattery*>			(item);
 
 	Msg("trying to eat [%s]", item->object().cNameSect().c_str());
-	if (pMedkit || pAntirad || pEatableItem || pBottleItem)
+	if (pMedkit || pAntirad || pEatableItem || pBottleItem || pBattery)
 	{
 		EatItem(item);
 		return true;
@@ -338,11 +368,17 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 	CEatableItem* pEatableItem = smart_cast<CEatableItem*>	(item);
 	CBottleItem* pBottleItem = smart_cast<CBottleItem*>	(item);
 	CArtefact* pArtefact = smart_cast<CArtefact*>	(item);
+	CBattery* pBattery = smart_cast<CBattery*>(item);
 
 	LPCSTR act_str = NULL;
 
 	if (!item->Useful())
 		return;
+
+	CInventory* inv = &Actor()->inventory();
+	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
+	PIItem	item_in_detector_slot = inv->ItemFromSlot(DETECTOR_SLOT);
+	//PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
 
 	if (pMedkit || pAntirad)
 	{
@@ -358,6 +394,33 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		{
 			act_str = "st_eat";
 		}
+	}
+	else if (pBattery)
+	{
+		if (item_in_torch_slot)
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_torch_slot->m_name.c_str());
+			UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_torch_slot, BATTERY_CHARGE_TORCH);
+			b_show = true;
+		}
+
+		if (item_in_detector_slot)
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_detector_slot->m_name.c_str());
+			UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_detector_slot, BATTERY_CHARGE_DETECTOR);
+			b_show = true;
+		}
+
+		/*if (item_in_anomaly_detector_slot) // Это потом пригодится ещё
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
+			UIPropertiesBox.AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
+			b_show = true;
+		}  */
+		return;
 	}
 	if (act_str)
 	{

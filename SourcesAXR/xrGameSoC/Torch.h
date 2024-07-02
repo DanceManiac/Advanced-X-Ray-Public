@@ -4,6 +4,7 @@
 //#include "night_vision_effector.h"
 #include "hudsound.h"
 #include "script_export_space.h"
+#include "Battery.h"
 
 class CLAItem;
 class CMonsterEffector;
@@ -17,12 +18,21 @@ protected:
 	CLAItem*		lanim;
 	float			time2hide;
 
+	float			m_fUnchargeSpeed;
+	float			m_fMaxRange;
+	float			m_fCurveRange;
+
 	u16				guid_bone;
 	shared_str		light_trace_bone;
 
 	float			m_delta_h;
 	Fvector2		m_prev_hp;
 	bool			m_switched_on;
+
+public:
+	xr_vector<shared_str> m_SuitableBatteries;
+
+protected:
 	ref_light		light_render;
 	ref_light		light_omni;
 	ref_glow		glow_render;
@@ -61,6 +71,17 @@ public:
 
 			float	get_range			() const;
 
+			void	UpdateChargeLevel		(void);
+	virtual void	save					(NET_Packet &output_packet);
+	virtual void	load					(IReader &input_packet);
+			float	GetCurrentChargeLevel	(void) const;
+			void	SetCurrentChargeLevel	(float val);
+			bool	IsSwitchedOn			(void) const;
+			float	GetUnchargeSpeed		(void) const;
+			void	Recharge				(float val);
+			bool	IsNecessaryItem			(const shared_str& item_sect, xr_vector<shared_str> item);
+
+	virtual CTorch* cast_torch				() { return this; }
 protected:
 
 	HUD_SOUND_COLLECTION_LAYERED m_sounds;

@@ -10,6 +10,9 @@
 #include "actor.h"
 #include "ai_sounds.h"
 
+#include "AdvancedXrayGameConstants.h"
+#include "Battery.h"
+
 ZONE_INFO::ZONE_INFO	()
 {
 	pParticle=NULL;
@@ -24,6 +27,10 @@ ZONE_INFO::~ZONE_INFO	()
 CCustomDetector::CCustomDetector(void) 
 {
 	m_bWorking					= false;
+
+	m_fMaxChargeLevel			= 0.0f;
+	m_fCurrentChargeLevel		= 1.0f;
+	m_fUnchargeSpeed			= 0.0f;
 }
 
 CCustomDetector::~CCustomDetector(void) 
@@ -83,6 +90,29 @@ void CCustomDetector::Load(LPCSTR section)
 	} while(true);
 
 	m_ef_detector_type	= pSettings->r_u32(section,"ef_detector_type");
+
+	m_fMaxChargeLevel	= READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
+	m_fUnchargeSpeed	= READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+
+	m_SuitableBatteries.clear();
+	LPCSTR batteries = READ_IF_EXISTS(pSettings, r_string, section, "suitable_batteries", "torch_battery");
+
+	if (batteries && batteries[0])
+	{
+		string128 battery_sect;
+		int count = _GetItemCount(batteries);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(batteries, it, battery_sect);
+			m_SuitableBatteries.push_back(battery_sect);
+		}
+	}
+
+	if (GameConstants::GetArtDetectorUseBattery())
+	{
+		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
+		m_fCurrentChargeLevel = rnd_charge;
+	}
 }
 
 
@@ -123,6 +153,9 @@ void CCustomDetector::UpdateCL()
 	if( !H_Parent()  ) return;
 
 	if(!m_pCurrentActor) return;
+
+	if (GameConstants::GetArtDetectorUseBattery())
+		UpdateChargeLevel();
 
 	ZONE_INFO_MAP_IT it;
 	for(it = m_ZoneInfoMap.begin(); m_ZoneInfoMap.end() != it; ++it) 
@@ -245,6 +278,16 @@ void CCustomDetector::TurnOff()
 	UpdateNightVisionMode	();
 }
 
+void CCustomDetector::save(NET_Packet& output_packet)
+{
+	inherited::save(output_packet);
+}
+
+void CCustomDetector::load(IReader& input_packet)
+{
+	inherited::load(input_packet);
+}
+
 void CCustomDetector::AddRemoveMapSpot(CCustomZone* pZone, bool bAdd)
 {
 	if(m_ZoneTypeMap.find(pZone->CLS_ID) == m_ZoneTypeMap.end() )return;
@@ -266,6 +309,45 @@ void CCustomDetector::UpdateMapLocations() // called on turn on/off only
 	ZONE_INFO_MAP_IT it;
 	for(it = m_ZoneInfoMap.begin(); it != m_ZoneInfoMap.end(); ++it)
 		AddRemoveMapSpot(it->first,IsWorking());
+}
+
+void CCustomDetector::UpdateChargeLevel(void)
+{
+	if (IsWorking())
+	{
+		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
+		ChangeChargeLevel(-uncharge_coef);
+	}
+}
+
+float CCustomDetector::GetUnchargeSpeed() const
+{
+	return m_fUnchargeSpeed;
+}
+
+float CCustomDetector::GetCurrentChargeLevel() const
+{
+	return m_fCurrentChargeLevel;
+}
+
+void CCustomDetector::SetCurrentChargeLevel(float val)
+{
+	m_fCurrentChargeLevel = val;
+	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
+	SetChargeLevel(condition);
+}
+
+void CCustomDetector::Recharge(float val)
+{
+	m_fCurrentChargeLevel += val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+
+	SetChargeLevel(m_fCurrentChargeLevel);
+}
+
+bool CCustomDetector::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+{
+	return (std::find(item.begin(), item.end(), item_sect) != item.end());
 }
 
 #include "clsid_game.h"

@@ -15,8 +15,10 @@
 #include "inventory.h"
 #include "game_base_space.h"
 
+#include "AdvancedXrayGameConstants.h"
 #include "UIGameCustom.h"
 #include "CustomOutfit.h"
+#include "Battery.h"
 
 static const float		TIME_2_HIDE					= 5.f;
 static const float		TORCH_INERTION_CLAMP		= PI_DIV_6;
@@ -54,6 +56,9 @@ CTorch::CTorch(void)
 
 	m_prev_hp.set				(0,0);
 	m_delta_h					= 0;
+
+	m_fMaxRange					= 20.f;
+	m_fCurveRange				= 20.f;
 }
 
 CTorch::~CTorch(void) 
@@ -108,6 +113,30 @@ void CTorch::Load(LPCSTR section)
 	m_omni_offset				= READ_IF_EXISTS(pSettings, r_fvector3, section, "omni_offset", OMNI_OFFSET);
 	m_torch_inertion_speed_max	= READ_IF_EXISTS(pSettings, r_float, section, "torch_inertion_speed_max", TORCH_INERTION_SPEED_MAX);
 	m_torch_inertion_speed_min	= READ_IF_EXISTS(pSettings, r_float, section, "torch_inertion_speed_min", TORCH_INERTION_SPEED_MIN);
+
+	m_fMaxChargeLevel		= READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
+	m_fUnchargeSpeed		= READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0000055f);
+
+	m_SuitableBatteries.clear();
+	LPCSTR batteries		= READ_IF_EXISTS(pSettings, r_string, section, "suitable_batteries", "torch_battery");
+
+	if (batteries && batteries[0])
+	{
+		string128 battery_sect;
+		int count = _GetItemCount(batteries);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(batteries, it, battery_sect);
+			m_SuitableBatteries.push_back(battery_sect);
+		}
+	}
+
+	//Случайный начальный заряд батареек в фонарике, если включена опция ограниченного заряда батареек у фонарика
+	if (GameConstants::GetTorchHasBattery())
+	{
+		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
+		m_fCurrentChargeLevel = rnd_charge;
+	}
 }
 
 
@@ -196,9 +225,13 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	}
 
 	fBrightness				= clr.intensity();
+
+	m_fMaxRange				= pUserData->r_float("torch_definition", (b_r2) ? "max_range_r2" : "max_range");
+	m_fCurveRange			= pUserData->r_float("torch_definition", "curve_range");
+
 	float range = pUserData->r_float							(m_light_section, (b_r2) ? "range_r2" : "range");
 	light_render->set_color	(clr);
-	light_render->set_range	(range);
+	light_render->set_range(m_fMaxRange);
 
 	Fcolor clr_o			= pUserData->r_fcolor				(m_light_section, (b_r2) ? "omni_color_r2" : "omni_color");
 	float range_o			= pUserData->r_float				(m_light_section, (b_r2) ? "omni_range_r2" : "omni_range");
@@ -231,7 +264,7 @@ BOOL CTorch::net_Spawn(CSE_Abstract* DC)
 	Switch					(torch->m_active);
 	VERIFY					(!torch->m_active || (torch->ID_Parent != 0xffff));
 
-	m_delta_h				= PI_DIV_2-atan((range*0.5f)/_abs(m_torch_offset.x));
+	m_delta_h				= PI_DIV_2-atan((m_fMaxRange*0.5f)/_abs(TORCH_OFFSET.x));
 
 	return					(TRUE);
 }
@@ -262,6 +295,8 @@ void CTorch::UpdateCL()
 	inherited::UpdateCL			();
 
 	if (!m_switched_on)			return;
+
+	UpdateChargeLevel();
 
 	CBoneInstance			&BI = smart_cast<IKinematics*>(Visual())->LL_GetBoneInstance(guid_bone);
 	Fmatrix					M;
@@ -440,6 +475,16 @@ void CTorch::net_Import			(NET_Packet& P)
 		Switch(new_m_switched_on);
 }
 
+void CTorch::save(NET_Packet& output_packet)
+{
+	inherited::save(output_packet);
+}
+
+void CTorch::load(IReader& input_packet)
+{
+	inherited::load(input_packet);
+}
+
 bool  CTorch::can_be_attached		() const
 {
 //	if( !inherited::can_be_attached() ) return false;
@@ -468,4 +513,65 @@ void CTorch::renderable_Render()
 float CTorch::get_range() const
 {
 	return light_render->get_range();
+}
+
+void CTorch::UpdateChargeLevel(void)
+{
+	if (GameConstants::GetTorchHasBattery())
+	{
+		float uncharge_coef = (m_fUnchargeSpeed / 16) * Device.fTimeDelta;
+		ChangeChargeLevel(-uncharge_coef);
+
+		float rangeCoef = atan(m_fCurveRange * m_fCurrentChargeLevel) / PI_DIV_2;
+		clamp(rangeCoef, 0.f, 1.f);
+		float range = m_fMaxRange * rangeCoef;
+
+		light_render->set_range(range);
+		m_delta_h = PI_DIV_2 - atan((range * 0.5f) / _abs(TORCH_OFFSET.x));
+
+		if (m_fCurrentChargeLevel <= 0.0)
+		{
+			Switch(false);
+			return;
+		}
+	}
+	else
+		SetChargeLevel(m_fCurrentChargeLevel);
+}
+
+float CTorch::GetUnchargeSpeed() const
+{
+	return m_fUnchargeSpeed;
+}
+
+float CTorch::GetCurrentChargeLevel() const
+{
+	return m_fCurrentChargeLevel;
+}
+
+bool CTorch::IsSwitchedOn() const
+{
+	return m_switched_on;
+}
+
+void CTorch::SetCurrentChargeLevel(float val)
+{
+	m_fCurrentChargeLevel = val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+
+	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
+	SetChargeLevel(condition);
+}
+
+void CTorch::Recharge(float val)
+{
+	m_fCurrentChargeLevel += val;
+	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
+
+	SetChargeLevel(m_fCurrentChargeLevel);
+}
+
+bool CTorch::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+{
+	return (std::find(item.begin(), item.end(), item_sect) != item.end());
 }
