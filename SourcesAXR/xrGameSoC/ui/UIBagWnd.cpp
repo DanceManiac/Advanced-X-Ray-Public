@@ -11,6 +11,7 @@
 #include "../weapon.h"
 #include "xrServer_Objects_ALife_Items.h"
 #include "../game_cl_Deathmatch.h"
+#include "UIMainIngameWnd.h"
 
 CUIBagWnd::CUIBagWnd()
 {
@@ -212,6 +213,7 @@ bool CUIBagWnd::UpdatePrice(CUICellItem* pItem, int index)
 void CUIBagWnd::Update()
 {
 	UpdateBuyPossibility				();
+	HUD().GetUI()->UIMainIngameWnd->DrawMainIndicatorsForInventory();
 	inherited::Update					();
 }
 

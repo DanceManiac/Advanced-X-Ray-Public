@@ -51,6 +51,8 @@
 #include "ui\af_params.xml"
 #include "ui\wpn_params.xml"
 #include "ui\outfit_info.xml"
+#include "ui\booster_params.xml"
+#include "ui\inventory_items_params.xml"
 
 	<static_condition x="210" y="170" width="200" height="20">
 		<text  align="r" x="0" y="0" font="letterica18" r="240" g="217" b="182"/>

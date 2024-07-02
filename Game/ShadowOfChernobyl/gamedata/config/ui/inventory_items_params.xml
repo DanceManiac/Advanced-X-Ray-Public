@@ -1,0 +1,108 @@
+<inventory_items_info x="0" y="0" width="265" height="180">
+    <prop_line x="0" y="5" width="208" height="4" stretch="1">
+    </prop_line>
+	
+	<charge_level x="0" y="0" width="257" height="20">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_battery_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" show_sign="0" unit_str="st_m">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</charge_level>
+	
+	<af_radius x="0" y="0" width="257" height="20">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_af_radius</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" show_sign="0" unit_str="st_m">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</af_radius>
+	
+	<af_vis_radius x="0" y="0" width="257" height="20">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_af_radius</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" show_sign="0" unit_str="st_m">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</af_vis_radius>
+	
+	<max_charge x="0" y="0" width="257" height="20">
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_battery_max_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="100" show_sign="0" unit_str="%">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</max_charge>
+
+	<uncharge_speed x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_item_battery_uncharge_icon</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="100" show_sign="0" unit_str="%">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</uncharge_speed>
+	
+	<container_size x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_prop_artefact</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="1" show_sign="0">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</container_size>
+	
+	<additional_weight x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_propery_08</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="1" unit_str="st_kg">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</additional_weight>
+	
+	<inventory_capacity x="0" y="0" width="257" height="20" >
+		<caption x="0" y="0" width="257" height="20" complex_mode="0">
+			<texture>ui_am_prop_artefact</texture>
+			<text color="ui_3" font="letterica16" vert_align="c" x="22" y="0"/>
+		</caption>
+		<value x="140" y="0" width="30" height="20" magnitude="1" show_sign="0">
+			<text font="letterica16" vert_align="c"/>
+		</value>
+	</inventory_capacity>
+	
+	<artefacts_inside x="0" y="0" width="257" height="20" max_af_count="5" complex_mode="0" scale="0.7" inc_height="5">
+		<cap_artefacts_stats_0 x="10" y="85" width="40" height="8">
+			<text font="arial_14" align="c" r="170" g="170" b="170"/>
+		</cap_artefacts_stats_0>
+		<cap_artefacts_stats_1 x="60" y="85" width="40" height="8">
+			<text font="arial_14" align="c" r="170" g="170" b="170"/>
+		</cap_artefacts_stats_1>
+		<cap_artefacts_stats_2 x="110" y="85" width="40" height="8">
+			<text font="arial_14" align="c" r="170" g="170" b="170"/>
+		</cap_artefacts_stats_2>
+		<cap_artefacts_stats_3 x="160" y="85" width="40" height="8">
+			<text font="arial_14" align="c" r="170" g="170" b="170"/>
+		</cap_artefacts_stats_3>
+		<cap_artefacts_stats_4 x="210" y="85" width="40" height="8">
+			<text font="arial_14" align="c" r="170" g="170" b="170"/>
+		</cap_artefacts_stats_4>
+
+		<static_artefact_0 x="12" y="45" width="80" height="40"/>
+	    <static_artefact_1 x="62" y="45" width="80" height="40"/>
+		<static_artefact_2 x="112" y="45" width="80" height="40"/>
+		<static_artefact_3 x="162" y="45" width="80" height="40"/>
+		<static_artefact_4 x="212" y="45" width="80" height="40"/>
+	</artefacts_inside>
+</inventory_items_info>

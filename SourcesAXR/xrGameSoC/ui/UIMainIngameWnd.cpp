@@ -56,6 +56,9 @@
 
 #include "AdvancedXrayGameConstants.h"
 
+#include "UIStatic.h"
+#include "UIHelper.h"
+
 #ifdef DEBUG
 #	include "../debug_renderer.h"
 
@@ -187,6 +190,43 @@ void CUIMainIngameWnd::Init()
 	m_UIIcons					= xr_new<CUIScrollView>(); m_UIIcons->SetAutoDelete(true);
 	xml_init.InitScrollView		(uiXml, "icons_scroll_view", 0, m_UIIcons);
 	AttachChild					(m_UIIcons);
+
+	m_ind_boost_psy			= UIHelper::CreateStatic(uiXml, "indicator_booster_psy", this);
+	m_ind_boost_radia		= UIHelper::CreateStatic(uiXml, "indicator_booster_radia", this);
+	m_ind_boost_chem		= UIHelper::CreateStatic(uiXml, "indicator_booster_chem", this);
+	m_ind_boost_wound		= UIHelper::CreateStatic(uiXml, "indicator_booster_wound", this);
+	m_ind_boost_weight		= UIHelper::CreateStatic(uiXml, "indicator_booster_weight", this);
+	m_ind_boost_health		= UIHelper::CreateStatic(uiXml, "indicator_booster_health", this);
+	m_ind_boost_power		= UIHelper::CreateStatic(uiXml, "indicator_booster_power", this);
+	m_ind_boost_rad			= UIHelper::CreateStatic(uiXml, "indicator_booster_rad", this);
+
+	m_ind_boost_satiety		= UIHelper::CreateStatic(uiXml, "indicator_booster_satiety", this);
+	m_ind_boost_thirst		= UIHelper::CreateStatic(uiXml, "indicator_booster_thirst", this);
+	m_ind_boost_psy_health	= UIHelper::CreateStatic(uiXml, "indicator_booster_psy_health", this);
+	m_ind_boost_intoxication = UIHelper::CreateStatic(uiXml, "indicator_booster_intoxication", this);
+	m_ind_boost_sleepeness	= UIHelper::CreateStatic(uiXml, "indicator_booster_sleepeness", this);
+	m_ind_boost_alcoholism	= UIHelper::CreateStatic(uiXml, "indicator_booster_alcoholism", this);
+	m_ind_boost_hangover	= UIHelper::CreateStatic(uiXml, "indicator_booster_hangover", this);
+	m_ind_boost_narcotism	= UIHelper::CreateStatic(uiXml, "indicator_booster_narcotism", this);
+	m_ind_boost_withdrawal	= UIHelper::CreateStatic(uiXml, "indicator_booster_withdrawal", this);
+
+	m_ind_boost_psy			->Show(false);
+	m_ind_boost_radia		->Show(false);
+	m_ind_boost_chem		->Show(false);
+	m_ind_boost_wound		->Show(false);
+	m_ind_boost_weight		->Show(false);
+	m_ind_boost_health		->Show(false);
+	m_ind_boost_power		->Show(false);
+	m_ind_boost_rad			->Show(false);
+	m_ind_boost_satiety		->Show(false);
+	m_ind_boost_thirst		->Show(false);
+	m_ind_boost_psy_health	->Show(false);
+	m_ind_boost_intoxication->Show(false);
+	m_ind_boost_sleepeness	->Show(false);
+	m_ind_boost_alcoholism	->Show(false);
+	m_ind_boost_hangover	->Show(false);
+	m_ind_boost_narcotism	->Show(false);
+	m_ind_boost_withdrawal	->Show(false);
 
 	// Загружаем иконки 
 	if(IsGameTypeSingle())
@@ -1410,3 +1450,302 @@ void CUIMainIngameWnd::draw_adjust_mode()
 	}  */
 }
 #endif
+
+void CUIMainIngameWnd::DrawMainIndicatorsForInventory()
+{
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
+
+	if (!pActor)
+		return;
+
+	UpdateBoosterIndicators(pActor->conditions().GetCurBoosterInfluences());
+
+	if (m_ind_boost_psy->IsShown())
+	{
+		m_ind_boost_psy->Update();
+		m_ind_boost_psy->Draw();
+	}
+
+	if (m_ind_boost_radia->IsShown())
+	{
+		m_ind_boost_radia->Update();
+		m_ind_boost_radia->Draw();
+	}
+
+	if (m_ind_boost_chem->IsShown())
+	{
+		m_ind_boost_chem->Update();
+		m_ind_boost_chem->Draw();
+	}
+
+	if (m_ind_boost_wound->IsShown())
+	{
+		m_ind_boost_wound->Update();
+		m_ind_boost_wound->Draw();
+	}
+
+	if (m_ind_boost_weight->IsShown())
+	{
+		m_ind_boost_weight->Update();
+		m_ind_boost_weight->Draw();
+	}
+
+	if (m_ind_boost_health->IsShown())
+	{
+		m_ind_boost_health->Update();
+		m_ind_boost_health->Draw();
+	}
+
+	if (m_ind_boost_power->IsShown())
+	{
+		m_ind_boost_power->Update();
+		m_ind_boost_power->Draw();
+	}
+
+	if (m_ind_boost_rad->IsShown())
+	{
+		m_ind_boost_rad->Update();
+		m_ind_boost_rad->Draw();
+	}
+
+	if (m_ind_boost_satiety->IsShown())
+	{
+		m_ind_boost_satiety->Update();
+		m_ind_boost_satiety->Draw();
+	}
+
+	if (m_ind_boost_thirst->IsShown())
+	{
+		m_ind_boost_thirst->Update();
+		m_ind_boost_thirst->Draw();
+	}
+
+	if (m_ind_boost_psy_health->IsShown())
+	{
+		m_ind_boost_psy_health->Update();
+		m_ind_boost_psy_health->Draw();
+	}
+
+	if (m_ind_boost_intoxication->IsShown())
+	{
+		m_ind_boost_intoxication->Update();
+		m_ind_boost_intoxication->Draw();
+	}
+
+	if (m_ind_boost_sleepeness->IsShown())
+	{
+		m_ind_boost_sleepeness->Update();
+		m_ind_boost_sleepeness->Draw();
+	}
+
+	if (m_ind_boost_alcoholism->IsShown())
+	{
+		m_ind_boost_alcoholism->Update();
+		m_ind_boost_alcoholism->Draw();
+	}
+
+	if (m_ind_boost_hangover->IsShown())
+	{
+		m_ind_boost_hangover->Update();
+		m_ind_boost_hangover->Draw();
+	}
+
+	if (m_ind_boost_narcotism->IsShown())
+	{
+		m_ind_boost_narcotism->Update();
+		m_ind_boost_narcotism->Draw();
+	}
+
+	if (m_ind_boost_withdrawal->IsShown())
+	{
+		m_ind_boost_withdrawal->Update();
+		m_ind_boost_withdrawal->Draw();
+	}
+}
+
+void CUIMainIngameWnd::UpdateBoosterIndicators(const xr_map<EBoostParams, SBooster> influences)
+{
+	m_ind_boost_psy->Show(false);
+	m_ind_boost_radia->Show(false);
+	m_ind_boost_chem->Show(false);
+	m_ind_boost_wound->Show(false);
+	m_ind_boost_weight->Show(false);
+	m_ind_boost_health->Show(false);
+	m_ind_boost_power->Show(false);
+	m_ind_boost_rad->Show(false);
+	m_ind_boost_satiety->Show(false);
+	m_ind_boost_thirst->Show(false);
+	m_ind_boost_psy_health->Show(false);
+	m_ind_boost_intoxication->Show(false);
+	m_ind_boost_sleepeness->Show(false);
+	m_ind_boost_alcoholism->Show(false);
+	m_ind_boost_hangover->Show(false);
+	m_ind_boost_narcotism->Show(false);
+	m_ind_boost_withdrawal->Show(false);
+
+	LPCSTR str_flag	= "ui_slow_blinking_alpha";
+
+	xr_map<EBoostParams, SBooster>::const_iterator b = influences.begin(), e = influences.end();
+	for(; b!=e; b++)
+	{
+		switch(b->second.m_type)
+		{
+			case eBoostHpRestore: 
+				{
+					m_ind_boost_health->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_health->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_health->ResetClrAnimation();
+				}
+				break;
+			case eBoostPowerRestore: 
+				{
+					m_ind_boost_power->Show(true); 
+					if(b->second.fBoostTime<=3.0f)
+						m_ind_boost_power->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_power->ResetClrAnimation();
+				}
+				break;
+			case eBoostRadiationRestore: 
+				{
+					m_ind_boost_rad->Show(true); 
+					if(b->second.fBoostTime<=3.0f)
+						m_ind_boost_rad->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_rad->ResetClrAnimation();
+				}
+				break;
+			case eBoostBleedingRestore: 
+				{
+					m_ind_boost_wound->Show(true); 
+					if(b->second.fBoostTime<=3.0f)
+						m_ind_boost_wound->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_wound->ResetClrAnimation();
+				}
+				break;
+			case eBoostMaxWeight: 
+				{
+					m_ind_boost_weight->Show(true); 
+					if(b->second.fBoostTime<=3.0f)
+						m_ind_boost_weight->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_weight->ResetClrAnimation();
+				}
+				break;
+			case eBoostRadiationImmunity: 
+			case eBoostRadiationProtection: 
+				{
+					m_ind_boost_radia->Show(true); 
+					if(b->second.fBoostTime<=3.0f)
+						m_ind_boost_radia->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_radia->ResetClrAnimation();
+				}
+				break;
+			case eBoostTelepaticImmunity: 
+			case eBoostTelepaticProtection: 
+				{
+					m_ind_boost_psy->Show(true); 
+					if(b->second.fBoostTime<=3.0f)
+						m_ind_boost_psy->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_psy->ResetClrAnimation();
+				}
+				break;
+			case eBoostChemicalBurnImmunity: 
+			case eBoostChemicalBurnProtection: 
+				{
+					m_ind_boost_chem->Show(true); 
+					if(b->second.fBoostTime<=3.0f)
+						m_ind_boost_chem->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_chem->ResetClrAnimation();
+				}
+				break;
+			case eBoostSatietyRestore:
+				{
+					m_ind_boost_satiety->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_satiety->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_satiety->ResetClrAnimation();
+				}
+				break;
+			case eBoostThirstRestore:
+				{
+					m_ind_boost_thirst->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_thirst->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_thirst->ResetClrAnimation();
+				}
+				break;
+			case eBoostPsyHealthRestore:
+				{
+					m_ind_boost_psy_health->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_psy_health->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_psy_health->ResetClrAnimation();
+				}
+				break;
+			case eBoostIntoxicationRestore:
+				{
+					m_ind_boost_intoxication->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_intoxication->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_intoxication->ResetClrAnimation();
+				}
+				break;
+			case eBoostSleepenessRestore:
+				{
+					m_ind_boost_sleepeness->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_sleepeness->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_sleepeness->ResetClrAnimation();
+				}
+				break;
+			case eBoostAlcoholismRestore:
+				{
+					m_ind_boost_alcoholism->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_alcoholism->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_alcoholism->ResetClrAnimation();
+				}
+				break;
+			case eBoostHangoverRestore:
+				{
+					m_ind_boost_hangover->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_hangover->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_hangover->ResetClrAnimation();
+				}
+				break;
+			case eBoostNarcotismRestore:
+				{
+					m_ind_boost_narcotism->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_narcotism->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_narcotism->ResetClrAnimation();
+				}
+				break;
+			case eBoostWithdrawalRestore:
+				{
+					m_ind_boost_withdrawal->Show(true);
+					if (b->second.fBoostTime <= 3.0f)
+						m_ind_boost_withdrawal->SetClrLightAnim(str_flag, true, true, false, true);
+					else
+						m_ind_boost_withdrawal->ResetClrAnimation();
+				}
+				break;
+		}
+	}
+}

@@ -33,6 +33,39 @@ void CEntityCondition::script_register(lua_State* L)
             .def("ChangeEntityMorale",          &CEntityCondition::ChangeEntityMorale)
             .def("ChangeBleeding",              &CEntityCondition::ChangeBleeding)
             .def("BleedingSpeed",               &CEntityCondition::BleedingSpeed)
+            .enum_("EBoostParams")
+                [
+                    value("eBoostHpRestore",                int(EBoostParams::eBoostHpRestore)),
+                    value("eBoostPowerRestore",             int(EBoostParams::eBoostPowerRestore)),
+                    value("eBoostRadiationRestore",         int(EBoostParams::eBoostRadiationRestore)),
+                    value("eBoostBleedingRestore",          int(EBoostParams::eBoostBleedingRestore)),
+                    value("eBoostMaxWeight",                int(EBoostParams::eBoostMaxWeight)),
+                    value("eBoostRadiationProtection",      int(EBoostParams::eBoostRadiationProtection)),
+                    value("eBoostTelepaticProtection",      int(EBoostParams::eBoostTelepaticProtection)),
+                    value("eBoostChemicalBurnProtection",   int(EBoostParams::eBoostChemicalBurnProtection)),
+                    value("eBoostBurnImmunity",             int(EBoostParams::eBoostBurnImmunity)),
+                    value("eBoostShockImmunity",            int(EBoostParams::eBoostShockImmunity)),
+                    value("eBoostRadiationImmunity",        int(EBoostParams::eBoostRadiationImmunity)),
+                    value("eBoostTelepaticImmunity",        int(EBoostParams::eBoostTelepaticImmunity)),
+                    value("eBoostChemicalBurnImmunity",     int(EBoostParams::eBoostChemicalBurnImmunity)),
+                    value("eBoostExplImmunity",             int(EBoostParams::eBoostExplImmunity)),
+                    value("eBoostStrikeImmunity",           int(EBoostParams::eBoostStrikeImmunity)),
+                    value("eBoostFireWoundImmunity",        int(EBoostParams::eBoostFireWoundImmunity)),
+                    value("eBoostWoundImmunity",            int(EBoostParams::eBoostWoundImmunity)),
+
+                    value("eBoostSatietyRestore",           int(EBoostParams::eBoostSatietyRestore)),
+                    value("eBoostThirstRestore",            int(EBoostParams::eBoostThirstRestore)),
+                    value("eBoostPsyHealthRestore",         int(EBoostParams::eBoostPsyHealthRestore)),
+                    value("eBoostIntoxicationRestore",      int(EBoostParams::eBoostIntoxicationRestore)),
+                    value("eBoostSleepenessRestore",        int(EBoostParams::eBoostSleepenessRestore)),
+                    value("eBoostAlcoholRestore",           int(EBoostParams::eBoostAlcoholRestore)),
+                    value("eBoostAlcoholismRestore",        int(EBoostParams::eBoostAlcoholismRestore)),
+                    value("eBoostHangoverRestore",          int(EBoostParams::eBoostHangoverRestore)),
+                    value("eBoostDrugsRestore",             int(EBoostParams::eBoostDrugsRestore)),
+                    value("eBoostNarcotismRestore",         int(EBoostParams::eBoostNarcotismRestore)),
+                    value("eBoostWithdrawalRestore",        int(EBoostParams::eBoostWithdrawalRestore)),
+                    value("eBoostTimeFactor",               int(EBoostParams::eBoostTimeFactor))
+                ]
     ];
 };
 
@@ -42,6 +75,11 @@ void CActorCondition::script_register(lua_State* L)
 
     module(L)
     [
+        class_<SBooster>("SBooster")
+            .def(constructor<>())
+            .def_readwrite("fBoostTime",        &SBooster::fBoostTime)
+            .def_readwrite("fBoostValue",       &SBooster::fBoostValue)
+            .def_readwrite("m_type",            &SBooster::m_type),
 
         class_<CWound>("CWound")
             .def("TypeSize",                    &CWound::TypeSize)
@@ -57,8 +95,40 @@ void CActorCondition::script_register(lua_State* L)
             .def("GetDestroy",                  &CWound::GetDestroy),
 
         class_<CActorCondition, CEntityCondition>("CActorCondition")
+            .def("ClearAllBoosters",            &CActorCondition::ClearAllBoosters)
+            .def("ApplyBooster",                &CActorCondition::ApplyBooster_script)
+            .def("BoosterForEach",              &CActorCondition::BoosterForEach)
             .def("WoundForEach",                &CActorCondition::WoundForEach)
             .def("GetSatiety",                  &CActorCondition::GetSatiety)
+            .def("BoostMaxWeight",              &CActorCondition::BoostMaxWeight)
+            .def("BoostHpRestore",              &CActorCondition::BoostHpRestore)
+            .def("BoostPowerRestore",           &CActorCondition::BoostPowerRestore)
+            .def("BoostRadiationRestore",       &CActorCondition::BoostRadiationRestore)
+            .def("BoostBleedingRestore",        &CActorCondition::BoostBleedingRestore)
+            .def("BoostBurnImmunity",           &CActorCondition::BoostBurnImmunity)
+            .def("BoostShockImmunity",          &CActorCondition::BoostShockImmunity)
+            .def("BoostRadiationImmunity",      &CActorCondition::BoostRadiationImmunity)
+            .def("BoostTelepaticImmunity",      &CActorCondition::BoostTelepaticImmunity)
+            .def("BoostChemicalBurnImmunity",   &CActorCondition::BoostChemicalBurnImmunity)
+            .def("BoostExplImmunity",           &CActorCondition::BoostExplImmunity)
+            .def("BoostStrikeImmunity",         &CActorCondition::BoostStrikeImmunity)
+            .def("BoostFireWoundImmunity",      &CActorCondition::BoostFireWoundImmunity)
+            .def("BoostWoundImmunity",          &CActorCondition::BoostWoundImmunity)
+            .def("BoostRadiationProtection",    &CActorCondition::BoostRadiationProtection)
+            .def("BoostTelepaticProtection",    &CActorCondition::BoostTelepaticProtection)
+            .def("BoostChemicalBurnProtection", &CActorCondition::BoostChemicalBurnProtection)
+            .def("BoostSatietyRestore",         &CActorCondition::BoostSatietyRestore)
+            .def("BoostThirstRestore",          &CActorCondition::BoostThirstRestore)
+            .def("BoostPsyHealthRestore",       &CActorCondition::BoostPsyHealthRestore)
+            .def("BoostIntoxicationRestore",    &CActorCondition::BoostIntoxicationRestore)
+            .def("BoostSleepenessRestore",      &CActorCondition::BoostSleepenessRestore)
+            .def("BoostAlcoholRestore",         &CActorCondition::BoostAlcoholRestore)
+            .def("BoostAlcoholismRestore",      &CActorCondition::BoostAlcoholismRestore)
+            .def("BoostHangoverRestore",        &CActorCondition::BoostHangoverRestore)
+            .def("BoostDrugsRestore",           &CActorCondition::BoostDrugsRestore)
+            .def("BoostNarcotismRestore",       &CActorCondition::BoostNarcotismRestore)
+            .def("BoostWithdrawalRestore",      &CActorCondition::BoostWithdrawalRestore)
+            .def("BoostTimeFactor",             &CActorCondition::BoostTimeFactor)
             .def("IsLimping",                   &CActorCondition::IsLimping)
             .def("IsCantWalk",                  &CActorCondition::IsCantWalk)
             .def("IsCantWalkWeight",            &CActorCondition::IsCantWalkWeight)

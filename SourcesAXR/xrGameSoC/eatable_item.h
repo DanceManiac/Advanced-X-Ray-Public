@@ -33,6 +33,7 @@ public:
 
 			IC		u32		GetPortionsNum				()	const				{return m_iPortionsNum;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
+			IC		u32		GetConstPortionsNum			()	const				{return m_iConstPortions;}
 
 			bool			m_bUnlimited;
 protected:	

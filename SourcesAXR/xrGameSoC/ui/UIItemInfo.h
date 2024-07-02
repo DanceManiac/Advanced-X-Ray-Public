@@ -8,6 +8,8 @@ class CUIProgressBar;
 class CUIWpnParams;
 class CUIArtefactParams;
 class CUIOutfitItem;
+class CUIBoosterInfo;
+class CUIInventoryItem;
 
 class CUIItemInfo: public CUIWindow
 {
@@ -31,6 +33,8 @@ public:
 	void				TryAddWpnInfo		(const shared_str& wpn_section);
 	void				TryAddArtefactInfo	(CInventoryItem& pInvItem);
 	void				TryAddOutfitInfo	(CInventoryItem& pInvItem, CInventoryItem* pCompareItem);
+	void				TryAddBoosterInfo	(CInventoryItem& pInvItem);
+	void				TryAddItemInfo		(CInventoryItem& pInvItem);
 
 	virtual void		Draw				();
 	bool				m_b_force_drawing;
@@ -43,6 +47,8 @@ public:
 	CUIWpnParams*		UIWpnParams;
 	CUIArtefactParams*	UIArtefactParams;
 	CUIOutfitItem*		UIOutfitItem;
+	CUIBoosterInfo*		UIBoosterInfo;
+	CUIInventoryItem*	UIInventoryItem;
 
 	Fvector2			UIItemImageSize; 
 	CUIStatic*			UIItemImage;

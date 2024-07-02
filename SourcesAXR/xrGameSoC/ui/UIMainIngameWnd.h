@@ -12,6 +12,8 @@
 #include "UICarPanel.h"
 #include "UIMotionIcon.h"
 #include "../hudsound.h"
+#include "../EntityCondition.h"
+
 //дл€ режима настройки HUD
 extern int				g_bHudAdjustMode;
 extern float			g_fHudAdjustValue;
@@ -51,6 +53,24 @@ protected:
 	CUIMotionIcon		UIMotionIcon;	
 	CUIZoneMap*			UIZoneMap;
 
+	CUIStatic*			m_ind_boost_psy;
+	CUIStatic*			m_ind_boost_radia;
+	CUIStatic*			m_ind_boost_chem;
+	CUIStatic*			m_ind_boost_wound;
+	CUIStatic*			m_ind_boost_weight;
+	CUIStatic*			m_ind_boost_health;
+	CUIStatic*			m_ind_boost_power;
+	CUIStatic*			m_ind_boost_rad;
+	CUIStatic*			m_ind_boost_satiety;
+	CUIStatic*			m_ind_boost_thirst;
+	CUIStatic*			m_ind_boost_psy_health;
+	CUIStatic*			m_ind_boost_intoxication;
+	CUIStatic*			m_ind_boost_sleepeness;
+	CUIStatic*			m_ind_boost_alcoholism;
+	CUIStatic*			m_ind_boost_hangover;
+	CUIStatic*			m_ind_boost_narcotism;
+	CUIStatic*			m_ind_boost_withdrawal;
+
 	//иконка, показывающа€ количество активных PDA
 	CUIStatic			UIPdaOnline;
 	
@@ -60,6 +80,7 @@ protected:
 	CUIStatic			UIWeaponIcon;
 	Frect				UIWeaponIcon_rect;
 public:
+	void				DrawMainIndicatorsForInventory	();
 	CUIStatic*			GetPDAOnline					() { return &UIPdaOnline; };
 protected:
 
@@ -106,6 +127,8 @@ public:
 	};
 
 	void				SetMPChatLog					(CUIWindow* pChat, CUIWindow* pLog);
+
+	void				UpdateBoosterIndicators			(const xr_map<EBoostParams, SBooster> influences);
 
 	// «адаем цвет соответствующей иконке
 	void				SetWarningIconColor				(EWarningIcons icon, const u32 cl);

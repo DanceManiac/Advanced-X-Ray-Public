@@ -17,8 +17,16 @@
 #include "UIWpnParams.h"
 #include "UIArtefactParams.h"
 #include "UIOutfitInfo.h"
+#include "UIBoosterInfo.h"
+#include "UIInventoryItemParams.h"
 
 #include "AdvancedXrayGameConstants.h"
+#include "eatable_item.h"
+#include "../Torch.h"
+#include "../CustomDetector.h"
+//#include "../AnomalyDetector.h"
+//#include "../ArtefactContainer.h"
+#include "../CustomBackpack.h"
 
 CUIItemInfo::CUIItemInfo()
 {
@@ -32,6 +40,8 @@ CUIItemInfo::CUIItemInfo()
 	UIWpnParams					= NULL;
 	UIArtefactParams			= NULL;
 	UIOutfitItem				= NULL;
+	UIBoosterInfo				= NULL;
+	UIInventoryItem				= NULL;
 	UIName						= NULL;
 	m_pInvItem					= NULL;
 	m_b_force_drawing			= false;
@@ -42,6 +52,8 @@ CUIItemInfo::~CUIItemInfo()
 	xr_delete					(UIWpnParams);
 	xr_delete					(UIArtefactParams);
 	xr_delete					(UIOutfitItem);
+	xr_delete					(UIBoosterInfo);
+	xr_delete					(UIInventoryItem);
 }
 
 void CUIItemInfo::Init(LPCSTR xml_name){
@@ -106,11 +118,22 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		UIArtefactParams				= xr_new<CUIArtefactParams>();
 		UIWpnParams->InitFromXml		(uiXml);
 		UIArtefactParams->InitFromXml	(uiXml);
+
+		UIBoosterInfo					= xr_new<CUIBoosterInfo>();
+		UIBoosterInfo->InitFromXml		(uiXml);
+
 		if (uiXml.NavigateToNode("outfit_info", 0))
 		{
 			UIOutfitItem = xr_new<CUIOutfitItem>();
 			UIOutfitItem->InitFromXml(uiXml);
 		}
+
+		if (uiXml.NavigateToNode("inventory_items_info", 0))
+		{
+			UIInventoryItem = xr_new<CUIInventoryItem>();
+			UIInventoryItem->InitFromXml(uiXml);
+		}
+
 		UIDesc							= xr_new<CUIScrollView>(); 
 		AttachChild						(UIDesc);
 		UIDesc->SetAutoDelete			(true);
@@ -176,9 +199,13 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	{
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
+
 		TryAddWpnInfo						(pInvItem->object().cNameSect());
 		TryAddArtefactInfo					(*pInvItem);
 		TryAddOutfitInfo					(*pInvItem, NULL);
+		TryAddBoosterInfo					(*pInvItem);
+		TryAddItemInfo						(*pInvItem);
+
 		if(m_desc_info.bShowDescrText)
 		{
 			CUIStatic* pItem					= xr_new<CUIStatic>();
@@ -247,6 +274,33 @@ void CUIItemInfo::TryAddOutfitInfo(CInventoryItem& pInvItem, CInventoryItem* pCo
 		CCustomOutfit* comp_outfit = smart_cast<CCustomOutfit*>(pCompareItem);
 		UIOutfitItem->SetInfo(outfit, comp_outfit);
 		UIDesc->AddWindow(UIOutfitItem, false);
+	}
+}
+
+void CUIItemInfo::TryAddBoosterInfo(CInventoryItem& pInvItem)
+{
+	CEatableItem* food = smart_cast<CEatableItem*>(&pInvItem);
+	if (food && UIBoosterInfo)
+	{
+		UIBoosterInfo->SetInfo(pInvItem);
+		UIDesc->AddWindow(UIBoosterInfo, false);
+	}
+}
+
+void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
+{
+	CTorch* torch = smart_cast<CTorch*>(&pInvItem);
+	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
+	//CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
+	//CArtefactContainer* af_container = smart_cast<CArtefactContainer*>(&pInvItem);
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(&pInvItem);
+
+	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
+
+	if ((torch && ShowChargeTorch /*|| artefact_detector || anomaly_detector || af_container*/ || backpack) && UIInventoryItem)
+	{
+		UIInventoryItem->SetInfo(pInvItem);
+		UIDesc->AddWindow(UIInventoryItem, false);
 	}
 }
 

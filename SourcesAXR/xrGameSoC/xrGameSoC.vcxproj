@@ -1522,6 +1522,8 @@
     <ClInclude Include="pch_script.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="UIFontDefines.h" />
+    <ClInclude Include="ui\UIBoosterInfo.h" />
+    <ClInclude Include="ui\UIInventoryItemParams.h" />
     <ClInclude Include="xrClientsPool.h" />
     <ClInclude Include="SleepEffector.h" />
     <ClInclude Include="ai\Monsters\ai_monster_effector.h" />
@@ -2183,8 +2185,10 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="ui\UIBoosterInfo.cpp" />
     <ClCompile Include="ui\UIDoubleProgressBar.cpp" />
     <ClCompile Include="ui\UIHelper.cpp" />
+    <ClCompile Include="ui\UIInventoryItemParams.cpp" />
     <ClCompile Include="ui\UILoadingScreen.cpp" />
     <ClCompile Include="ui\UIOutfitInfo.cpp" />
     <ClCompile Include="visual_memory_manager.cpp">
