@@ -382,6 +382,57 @@
     <Filter Include="AI\ALife\saved_game_wrapper">
       <UniqueIdentifier>{c51cd9b7-32c9-4b32-8644-30c5b01b4f53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI\ALife\server_entities">
+      <UniqueIdentifier>{9383f79f-d01d-4b48-be79-b9800a74461f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\anomalous_zone">
+      <UniqueIdentifier>{17e81b07-9e74-48ee-a531-3405be2915e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\creature_abstract">
+      <UniqueIdentifier>{619a5492-b6e2-41ba-a45c-5e17ef017705}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\dynamic_object">
+      <UniqueIdentifier>{c11e5439-ad03-441d-9484-70135371cfdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\group_abstract">
+      <UniqueIdentifier>{f8abb0c6-3d23-4a34-b2e7-73c45a040088}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract">
+      <UniqueIdentifier>{854c52a0-1b95-4898-a29c-a007873d423c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\brain">
+      <UniqueIdentifier>{23f2e4e5-f46b-4b7a-b7a1-2e739a1ebd92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\object_handler">
+      <UniqueIdentifier>{c9ec4174-aa4d-4b71-9afd-d025894ee6b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager">
+      <UniqueIdentifier>{a25ecc4b-934f-4d3f-9e8d-0a946066bfeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager">
+      <UniqueIdentifier>{1c1c68d5-b793-4b88-8c34-1c73bceb9834}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager">
+      <UniqueIdentifier>{edb6ef4d-893d-44b9-be6d-65dee9e6021f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\object">
+      <UniqueIdentifier>{62710305-da58-4252-a34d-e6a18f1f9f26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\online_offline_group">
+      <UniqueIdentifier>{858d52e1-9d80-4de8-947d-e3273958eba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\online_offline_group\brain">
+      <UniqueIdentifier>{132ede4c-adcb-4e78-b48f-4e72a7c1b835}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\smart_zone">
+      <UniqueIdentifier>{829e9536-170f-4648-845c-c72345d07a5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\trader">
+      <UniqueIdentifier>{acccc5f4-5f08-44fc-b6e3-060d3e8251e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\ALife\server_entities\trader_abstract">
+      <UniqueIdentifier>{e8b57070-3322-4d3b-9953-c7a74b764574}</UniqueIdentifier>
+    </Filter>
     <Filter Include="AI\AMonsters">
       <UniqueIdentifier>{60c25a94-193c-4394-a4d6-e5c0bc5188c1}</UniqueIdentifier>
     </Filter>
@@ -766,14 +817,14 @@
     <Filter Include="AI\AMonsters\monsters\PseudoDog">
       <UniqueIdentifier>{484d492c-dc81-4e5e-a3da-703adfd6c8c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AMonsters\monsters\PseudoDog\DogPsy">
-      <UniqueIdentifier>{7a2a4740-fb5e-4699-96f4-a9bab779c755}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide">
-      <UniqueIdentifier>{2126d098-a83c-4d73-9995-34836f5db70f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AMonsters\monsters\PseudoDog\Script">
       <UniqueIdentifier>{f1fa614a-20cc-4ec0-9999-29efaaf58061}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\DogPsy">
+      <UniqueIdentifier>{7a2a4740-fb5e-4699-96f4-a9bab779c755}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AMonsters\monsters\DogPsy\Psy Attack Hide">
+      <UniqueIdentifier>{2126d098-a83c-4d73-9995-34836f5db70f}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AMonsters\humans">
       <UniqueIdentifier>{8d4b6db5-2824-4850-9d01-c2a9c050bb41}</UniqueIdentifier>
@@ -1129,9 +1180,6 @@
     <Filter Include="AI\AScript\ScriptClasses\ScriptRenderDevice">
       <UniqueIdentifier>{73fd3445-18cd-4f94-ac1c-3e3a0b583ff8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="AI\AScript\ScriptClasses\ScriptSound">
-      <UniqueIdentifier>{8dab8531-87fd-4869-bfbe-8cbea62149a9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="AI\AScript\ScriptClasses\ScriptSoundInfo">
       <UniqueIdentifier>{8a31c783-cc97-472b-bf74-6d372e1bf1d4}</UniqueIdentifier>
     </Filter>
@@ -1167,6 +1215,9 @@
     </Filter>
     <Filter Include="AI\AScript\ScriptClasses\ScriptParticles">
       <UniqueIdentifier>{dc7cdb60-b073-4f42-be2b-103b39029828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\AScript\ScriptClasses\ScriptSound">
+      <UniqueIdentifier>{8dab8531-87fd-4869-bfbe-8cbea62149a9}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AScript\ScriptDebugger">
       <UniqueIdentifier>{285910d7-0364-4224-9de8-325d876959e6}</UniqueIdentifier>
@@ -1225,6 +1276,9 @@
     <Filter Include="Core\Client\Effects\Core">
       <UniqueIdentifier>{b327f6e6-11fa-4cb5-b174-0110aad0efa4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\BattlEye_Client">
+      <UniqueIdentifier>{163c89cf-2b9e-4678-8cba-3c66d53ffda5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Client\Game Materials">
       <UniqueIdentifier>{4fc5a5d8-47ba-42d2-b983-fe5c0e262734}</UniqueIdentifier>
     </Filter>
@@ -1263,6 +1317,9 @@
     </Filter>
     <Filter Include="Core\Client\Level\Debug Renderer">
       <UniqueIdentifier>{810b5d4e-82b3-477e-ac9a-db05d8400a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Level\LevelNetworkDemo">
+      <UniqueIdentifier>{0b4c754e-0261-4a99-939b-4d3dbcf8ea35}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Client\Level Controller">
       <UniqueIdentifier>{e469c001-db1c-4b0c-88a3-2f492228df0e}</UniqueIdentifier>
@@ -1387,6 +1444,9 @@
     <Filter Include="Core\Client\Objects\tasks_info_dialogs\statistics">
       <UniqueIdentifier>{017dbf15-21b2-40dc-bff7-63db8afb836c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\tasks_info_dialogs\map">
+      <UniqueIdentifier>{bf9c8373-bc9d-4648-99bf-3497c140edba}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Core\Client\Objects\inventory">
       <UniqueIdentifier>{71cdc2b7-9928-4573-a110-2dd0f8c37d1e}</UniqueIdentifier>
     </Filter>
@@ -1462,9 +1522,6 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Grenades &amp; Missiles">
       <UniqueIdentifier>{9a9ce447-2560-469f-9a80-365abc06fe6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic">
-      <UniqueIdentifier>{207b7912-48d9-4d16-8b16-934b9ab34b37}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons">
       <UniqueIdentifier>{826bd94e-c642-443e-8e3f-963090ed2e8b}</UniqueIdentifier>
     </Filter>
@@ -1479,6 +1536,9 @@
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\RocketLauncher">
       <UniqueIdentifier>{94f1ad1d-e6ee-41eb-99cd-4fd15d9353ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic">
+      <UniqueIdentifier>{207b7912-48d9-4d16-8b16-934b9ab34b37}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Various weapons">
       <UniqueIdentifier>{a1dff176-240c-48cb-bec4-77aa5fd440dc}</UniqueIdentifier>
@@ -1561,9 +1621,6 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Artifacts">
       <UniqueIdentifier>{c7b4cbe5-85a2-465c-af58-59560525126d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Client\Objects\items &amp; weapons\Artifacts\Mercury Ball">
-      <UniqueIdentifier>{70f430c7-108c-4460-9a8f-3c4b36a5ec6f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Artifacts\GraviArtifact">
       <UniqueIdentifier>{b47858b5-f835-4cd3-9b3c-8a61010dfa06}</UniqueIdentifier>
     </Filter>
@@ -1590,6 +1647,9 @@
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Artifacts\Faded Ball">
       <UniqueIdentifier>{df8bbf2a-c7a5-4e0c-933c-43d9826e28ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Artifacts\Faded Ball\Mercury Ball">
+      <UniqueIdentifier>{70f430c7-108c-4460-9a8f-3c4b36a5ec6f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Client\Objects\items &amp; weapons\Artifacts\Electric Ball">
       <UniqueIdentifier>{e72b7934-d265-4818-8f28-75d2a94af0c8}</UniqueIdentifier>
@@ -1675,9 +1735,6 @@
     <Filter Include="Core\Client\Objects\zones\TorridZone">
       <UniqueIdentifier>{740428a1-8173-47a5-a2a8-54597cca89f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Client\Objects\zones\TorridZone\ZoneVisual">
-      <UniqueIdentifier>{8d8daa38-00a1-453e-99fd-6994424aa506}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Client\Objects\zones\SpaceRestrictor">
       <UniqueIdentifier>{f0567234-533f-4c4e-b9d9-b222bacc110d}</UniqueIdentifier>
     </Filter>
@@ -1692,6 +1749,9 @@
     </Filter>
     <Filter Include="Core\Client\Objects\zones\SmartZone">
       <UniqueIdentifier>{693747f5-1ca7-442d-9dee-bbcab366554b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Client\Objects\zones\ZoneVisual">
+      <UniqueIdentifier>{8d8daa38-00a1-453e-99fd-6994424aa506}</UniqueIdentifier>
     </Filter>
     <Filter Include="Core\Client\Objects\zones\campfire">
       <UniqueIdentifier>{ab681870-a682-4197-a895-ca7f03615e98}</UniqueIdentifier>
@@ -1882,6 +1942,12 @@
     <Filter Include="Core\Server\xrGameSpyServer">
       <UniqueIdentifier>{89ba55b1-7e11-44b4-980d-9a808bc8e8b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Server\ServerConnect">
+      <UniqueIdentifier>{15de1227-304e-4e3a-9165-997d44d55c04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Server\BattlEye_Server">
+      <UniqueIdentifier>{e385ff61-e1de-4dd7-9c14-6e4797a961d1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{7a0d20ac-68e7-4212-ad97-564878443528}</UniqueIdentifier>
     </Filter>
@@ -1891,8 +1957,23 @@
     <Filter Include="UI\Common\InventoryWnd">
       <UniqueIdentifier>{820490a6-345b-43cf-be96-4fa764779bfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\Common\TRADE">
+      <UniqueIdentifier>{5cf09273-2e37-47ca-bb9e-646cc1cc0ea6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="UI\Common\PDA">
       <UniqueIdentifier>{cc389ae6-c911-46a0-878b-b36f0ad838bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\EventsWnd">
+      <UniqueIdentifier>{08a94f9d-aaa8-4a61-9a26-7e1d5ec7a19a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\Diary">
+      <UniqueIdentifier>{27d137e9-8cd1-47e4-9b84-f59e10eb210d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\MAP">
+      <UniqueIdentifier>{c55a966c-95db-48c8-9802-b3b82cd7bd6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\PDA\Statistics &amp; Rankings">
+      <UniqueIdentifier>{a07177d9-2eda-4016-9c93-36de1bab26f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\PDA\Encyclopedia">
       <UniqueIdentifier>{07d898b8-8035-40bd-9c1c-4db387760734}</UniqueIdentifier>
@@ -1900,29 +1981,11 @@
     <Filter Include="UI\Common\PDA\Contacts">
       <UniqueIdentifier>{983b3485-1311-4ab5-bdec-f38340955d7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\Common\TRADE">
-      <UniqueIdentifier>{5cf09273-2e37-47ca-bb9e-646cc1cc0ea6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\PDA\EventsWnd">
-      <UniqueIdentifier>{08a94f9d-aaa8-4a61-9a26-7e1d5ec7a19a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\PDA\MAP">
-      <UniqueIdentifier>{c55a966c-95db-48c8-9802-b3b82cd7bd6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\PDA\Diary">
-      <UniqueIdentifier>{27d137e9-8cd1-47e4-9b84-f59e10eb210d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI\Common\PDA\logs">
       <UniqueIdentifier>{cc998464-a4e5-45f6-9fb8-1013bce4577c}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\PDA\logs\News">
       <UniqueIdentifier>{b40c378b-ec31-4d33-becb-929f8b2729b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\TALK">
-      <UniqueIdentifier>{4fcc90d4-dc6d-4339-9e93-5b9b3e093413}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\PDA\Statistics &amp; Rankings">
-      <UniqueIdentifier>{a07177d9-2eda-4016-9c93-36de1bab26f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\UIItemInfo">
       <UniqueIdentifier>{e8d1793d-09e9-409d-b75e-f81957b9dd02}</UniqueIdentifier>
@@ -1930,119 +1993,8 @@
     <Filter Include="UI\Common\UIItemInfo\CharacterInfo">
       <UniqueIdentifier>{621bd6e4-adb5-4a20-a318-fd15bce16a09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics">
-      <UniqueIdentifier>{b38b720c-c535-4735-aaee-4591cad4b7a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base">
-      <UniqueIdentifier>{c4c4bc90-70fe-4007-af84-0eb97e1f6c4e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects">
-      <UniqueIdentifier>{865b4544-27af-401c-a772-80f6979fec05}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\Utils">
-      <UniqueIdentifier>{53818496-8fe8-4836-9ce3-f6373c9fb307}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\BodyEffectors">
-      <UniqueIdentifier>{f14124b1-1e9e-4414-b2ae-034a2f0da828}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PHNet">
-      <UniqueIdentifier>{a7aea454-ac49-4612-aa6c-aae2e1d7d1f2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\MoveStorage">
-      <UniqueIdentifier>{f1f95048-b025-4ecd-89cb-5d46fc34960b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\Disabling">
-      <UniqueIdentifier>{0fb6fb47-8fb3-490e-a010-b967badbcbd3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PhyMove">
-      <UniqueIdentifier>{7219963a-b759-4258-a2ff-022b8a5ffa9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PhyMove\ActorCaracter">
-      <UniqueIdentifier>{9e9b3d42-3383-4e34-a7e4-ff5eb93de9e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PhyMove\AICharacter">
-      <UniqueIdentifier>{19242dd1-25a8-4b41-afa6-84dd6f9184af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PhyMove\Capture">
-      <UniqueIdentifier>{8c96229d-b6ae-450e-a46a-3031b3fe802e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PhyMove\MovementControl">
-      <UniqueIdentifier>{216291be-a5b3-437e-a6ce-33eae4ab52f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PhyMove\SipmpleCharacter">
-      <UniqueIdentifier>{cbe0a436-248b-4ab8-a6d3-2cca987e2f8e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PhyMove\BaseCharacter">
-      <UniqueIdentifier>{2a8247fe-3ac4-4661-85cb-6e7a7c4614a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\BaseShell">
-      <UniqueIdentifier>{05a94f8b-aa25-47d9-905c-dd2c9a0274d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\BaseShell\PhysicsShellAnimator">
-      <UniqueIdentifier>{bffb0bca-0bf4-4cca-8bd5-19b4570f7a3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\BaseShell\animation_movement_controller">
-      <UniqueIdentifier>{a4b68164-a75a-4323-bb2c-4971f1b4aea7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\Elemenet">
-      <UniqueIdentifier>{ff5d6c5c-0e5c-48c8-8375-74f4b9a2d6a6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\Joint">
-      <UniqueIdentifier>{225d8ca3-16f4-4cd1-b924-05c26f4f9fd5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\Shell">
-      <UniqueIdentifier>{fb149ced-ecd9-4739-b390-99adc7475f15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\Breakable">
-      <UniqueIdentifier>{fe47ab97-9236-46d6-b3c7-664ea3a7ca19}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\SplitedShell">
-      <UniqueIdentifier>{58815922-8630-4a86-b0ea-5a2b2651c997}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PHObject">
-      <UniqueIdentifier>{652c9c74-3567-462d-a619-30bf79a3ef36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PHObject\Geom">
-      <UniqueIdentifier>{fe8f8221-7e1b-4962-bc79-4372a0aedb29}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PHIsland">
-      <UniqueIdentifier>{47433230-a67d-46ba-bfde-ac94f621e228}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Objects\PHCommander">
-      <UniqueIdentifier>{a098b23d-5ade-4ac6-bf6b-d34557aec36c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Base\Impact">
-      <UniqueIdentifier>{9c3d7337-6657-4bc3-9d65-ff81ceb95d39}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\CharacterSupport">
-      <UniqueIdentifier>{92bdbcca-324b-40b4-bc88-4d9e9b849b89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Colliders">
-      <UniqueIdentifier>{3f60226a-4e04-4666-be72-546d86225869}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Colliders\Tri-Collider">
-      <UniqueIdentifier>{71933ea0-78fd-45b5-b290-39209b16b47f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Colliders\Cyl_Collider">
-      <UniqueIdentifier>{3218ccff-dc89-48f2-a0e8-7b786040f762}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Colliders\RayMotions-Collider">
-      <UniqueIdentifier>{b036be61-69dd-481e-a4a9-fadc86a91801}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\DamagableItem">
-      <UniqueIdentifier>{26f326b7-573f-440a-878d-ba229de2c19c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\PhysicsSoundPlayer">
-      <UniqueIdentifier>{57012e6c-51ed-4061-bfd0-bb5445b21824}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\ActivationBox">
-      <UniqueIdentifier>{1e110699-175d-40ce-aa6e-f582429bfe13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\Hit">
-      <UniqueIdentifier>{21a356ef-3fef-49ac-a1b2-6853af50b6e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Physics\IK">
-      <UniqueIdentifier>{71ab9071-8867-42af-8ad7-28713add2995}</UniqueIdentifier>
+    <Filter Include="UI\Common\TALK">
+      <UniqueIdentifier>{4fcc90d4-dc6d-4339-9e93-5b9b3e093413}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\CarBodyWnd">
       <UniqueIdentifier>{c9514d3c-0626-4e62-bd61-b2e97991ab6e}</UniqueIdentifier>
@@ -2052,9 +2004,6 @@
     </Filter>
     <Filter Include="UI\Common\Animations">
       <UniqueIdentifier>{50606fb3-571b-4a76-8352-718f6ca8d122}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\_Debug Fonts">
-      <UniqueIdentifier>{2bb24340-3bc8-411f-b6a9-a23c0c27d602}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\Common\OptionsItem">
       <UniqueIdentifier>{904f4bdd-93fe-40c8-bf27-9d9420ebb5d5}</UniqueIdentifier>
@@ -2079,6 +2028,9 @@
     </Filter>
     <Filter Include="UI\Common\InventoryUtilities">
       <UniqueIdentifier>{5b897f4a-2373-4aed-9be5-1af55162fee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\_Debug Fonts">
+      <UniqueIdentifier>{2bb24340-3bc8-411f-b6a9-a23c0c27d602}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\UIWindows">
       <UniqueIdentifier>{bc47b2b9-4f66-4c72-9395-76578ac3c439}</UniqueIdentifier>
@@ -2143,7 +2095,7 @@
     <Filter Include="UI\UIWindows\VideoPlayer">
       <UniqueIdentifier>{f5c8c60f-eb57-4f77-aa70-7387e20bd7a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="UI\UIWindows\DragDrop2">
+    <Filter Include="UI\UIWindows\DragDrop">
       <UniqueIdentifier>{feebcb3b-6095-49fb-b5cc-45756b2894be}</UniqueIdentifier>
     </Filter>
     <Filter Include="UI\UIWindows\Label">
@@ -2266,74 +2218,128 @@
     <Filter Include="UI\Tutorial">
       <UniqueIdentifier>{88a8db38-34ed-401c-bed9-9fb6ae742d2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{b38b720c-c535-4735-aaee-4591cad4b7a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base">
+      <UniqueIdentifier>{c4c4bc90-70fe-4007-af84-0eb97e1f6c4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects">
+      <UniqueIdentifier>{865b4544-27af-401c-a772-80f6979fec05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\Utils">
+      <UniqueIdentifier>{53818496-8fe8-4836-9ce3-f6373c9fb307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\BodyEffectors">
+      <UniqueIdentifier>{f14124b1-1e9e-4414-b2ae-034a2f0da828}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PHNet">
+      <UniqueIdentifier>{a7aea454-ac49-4612-aa6c-aae2e1d7d1f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\MoveStorage">
+      <UniqueIdentifier>{f1f95048-b025-4ecd-89cb-5d46fc34960b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\Disabling">
+      <UniqueIdentifier>{0fb6fb47-8fb3-490e-a010-b967badbcbd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PhyMove">
+      <UniqueIdentifier>{7219963a-b759-4258-a2ff-022b8a5ffa9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PhyMove\ActorCaracter">
+      <UniqueIdentifier>{9e9b3d42-3383-4e34-a7e4-ff5eb93de9e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PhyMove\AICharacter">
+      <UniqueIdentifier>{19242dd1-25a8-4b41-afa6-84dd6f9184af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PhyMove\Capture">
+      <UniqueIdentifier>{8c96229d-b6ae-450e-a46a-3031b3fe802e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PhyMove\MovementControl">
+      <UniqueIdentifier>{216291be-a5b3-437e-a6ce-33eae4ab52f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PhyMove\SipmpleCharacter">
+      <UniqueIdentifier>{cbe0a436-248b-4ab8-a6d3-2cca987e2f8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PhyMove\BaseCharacter">
+      <UniqueIdentifier>{2a8247fe-3ac4-4661-85cb-6e7a7c4614a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\BaseShell">
+      <UniqueIdentifier>{05a94f8b-aa25-47d9-905c-dd2c9a0274d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\BaseShell\PhysicsShellAnimator">
+      <UniqueIdentifier>{bffb0bca-0bf4-4cca-8bd5-19b4570f7a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\BaseShell\animation_movement_controller">
+      <UniqueIdentifier>{a4b68164-a75a-4323-bb2c-4971f1b4aea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\Elemenet">
+      <UniqueIdentifier>{ff5d6c5c-0e5c-48c8-8375-74f4b9a2d6a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\Joint">
+      <UniqueIdentifier>{225d8ca3-16f4-4cd1-b924-05c26f4f9fd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\Shell">
+      <UniqueIdentifier>{fb149ced-ecd9-4739-b390-99adc7475f15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\Breakable">
+      <UniqueIdentifier>{fe47ab97-9236-46d6-b3c7-664ea3a7ca19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\SplitedShell">
+      <UniqueIdentifier>{58815922-8630-4a86-b0ea-5a2b2651c997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PHObject">
+      <UniqueIdentifier>{652c9c74-3567-462d-a619-30bf79a3ef36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PHObject\Geom">
+      <UniqueIdentifier>{fe8f8221-7e1b-4962-bc79-4372a0aedb29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PHIsland">
+      <UniqueIdentifier>{47433230-a67d-46ba-bfde-ac94f621e228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Common\LoadingScreen">
+      <UniqueIdentifier>{193dba92-e5aa-4dd8-b1c9-5b56456ed7e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Objects\PHCommander">
+      <UniqueIdentifier>{a098b23d-5ade-4ac6-bf6b-d34557aec36c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Base\Impact">
+      <UniqueIdentifier>{9c3d7337-6657-4bc3-9d65-ff81ceb95d39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\CharacterSupport">
+      <UniqueIdentifier>{92bdbcca-324b-40b4-bc88-4d9e9b849b89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Colliders">
+      <UniqueIdentifier>{3f60226a-4e04-4666-be72-546d86225869}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Colliders\Tri-Collider">
+      <UniqueIdentifier>{71933ea0-78fd-45b5-b290-39209b16b47f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Colliders\Cyl_Collider">
+      <UniqueIdentifier>{3218ccff-dc89-48f2-a0e8-7b786040f762}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Colliders\RayMotions-Collider">
+      <UniqueIdentifier>{b036be61-69dd-481e-a4a9-fadc86a91801}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\DamagableItem">
+      <UniqueIdentifier>{26f326b7-573f-440a-878d-ba229de2c19c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\PhysicsSoundPlayer">
+      <UniqueIdentifier>{57012e6c-51ed-4061-bfd0-bb5445b21824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\ActivationBox">
+      <UniqueIdentifier>{1e110699-175d-40ce-aa6e-f582429bfe13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\Hit">
+      <UniqueIdentifier>{21a356ef-3fef-49ac-a1b2-6853af50b6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics\IK">
+      <UniqueIdentifier>{71ab9071-8867-42af-8ad7-28713add2995}</UniqueIdentifier>
+    </Filter>
     <Filter Include="EmbeddedEditor">
       <UniqueIdentifier>{9a53a2f6-86eb-43bb-a8f2-32f44fd28c6a}</UniqueIdentifier>
     </Filter>
     <Filter Include="AI\AScript\ScriptClasses\ScriptVarsStorage">
       <UniqueIdentifier>{acba0ab9-d70a-415a-ae08-8ee6a5f17a13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities">
-      <UniqueIdentifier>{9383f79f-d01d-4b48-be79-b9800a74461f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\anomalous_zone">
-      <UniqueIdentifier>{17e81b07-9e74-48ee-a531-3405be2915e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\creature_abstract">
-      <UniqueIdentifier>{619a5492-b6e2-41ba-a45c-5e17ef017705}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\dynamic_object">
-      <UniqueIdentifier>{c11e5439-ad03-441d-9484-70135371cfdf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\group_abstract">
-      <UniqueIdentifier>{f8abb0c6-3d23-4a34-b2e7-73c45a040088}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\object">
-      <UniqueIdentifier>{62710305-da58-4252-a34d-e6a18f1f9f26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\online_offline_group">
-      <UniqueIdentifier>{858d52e1-9d80-4de8-947d-e3273958eba1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\online_offline_group\brain">
-      <UniqueIdentifier>{132ede4c-adcb-4e78-b48f-4e72a7c1b835}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\smart_zone">
-      <UniqueIdentifier>{829e9536-170f-4648-845c-c72345d07a5e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\trader">
-      <UniqueIdentifier>{acccc5f4-5f08-44fc-b6e3-060d3e8251e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\trader_abstract">
-      <UniqueIdentifier>{e8b57070-3322-4d3b-9953-c7a74b764574}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Client\Level\LevelNetworkDemo">
-      <UniqueIdentifier>{0b4c754e-0261-4a99-939b-4d3dbcf8ea35}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Client\BattlEye_Client">
-      <UniqueIdentifier>{163c89cf-2b9e-4678-8cba-3c66d53ffda5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="UI\Common\LoadingScreen">
-      <UniqueIdentifier>{193dba92-e5aa-4dd8-b1c9-5b56456ed7e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract">
-      <UniqueIdentifier>{854c52a0-1b95-4898-a29c-a007873d423c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\brain">
-      <UniqueIdentifier>{23f2e4e5-f46b-4b7a-b7a1-2e739a1ebd92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\object_handler">
-      <UniqueIdentifier>{c9ec4174-aa4d-4b71-9afd-d025894ee6b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager">
-      <UniqueIdentifier>{a25ecc4b-934f-4d3f-9e8d-0a946066bfeb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\detail_path_manager">
-      <UniqueIdentifier>{1c1c68d5-b793-4b88-8c34-1c73bceb9834}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\ALife\server_entities\monster_abstract\movement_manager\patrol_path_manager">
-      <UniqueIdentifier>{edb6ef4d-893d-44b9-be6d-65dee9e6021f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Client\Objects\tasks_info_dialogs\map">
-      <UniqueIdentifier>{bf9c8373-bc9d-4648-99bf-3497c140edba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -3925,25 +3931,25 @@
       <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Pseudodog\psy_dog.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
+      <Filter>AI\AMonsters\monsters\DogPsy</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_aura.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
+      <Filter>AI\AMonsters\monsters\DogPsy</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_manager.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
+      <Filter>AI\AMonsters\monsters\DogPsy</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
+      <Filter>AI\AMonsters\monsters\DogPsy\Psy Attack Hide</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_hide.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
+      <Filter>AI\AMonsters\monsters\DogPsy\Psy Attack Hide</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_hide_inline.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
+      <Filter>AI\AMonsters\monsters\DogPsy\Psy Attack Hide</Filter>
     </ClInclude>
     <ClInclude Include="ai\Monsters\Pseudodog\psy_dog_state_psy_attack_inline.h">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy\Psy Attack Hide</Filter>
+      <Filter>AI\AMonsters\monsters\DogPsy\Psy Attack Hide</Filter>
     </ClInclude>
     <ClInclude Include="Ai\Trader\ai_trader.h">
       <Filter>AI\AMonsters\humans\trader</Filter>
@@ -4707,6 +4713,9 @@
     <ClInclude Include="DynamicHeightMap.h">
       <Filter>Core\Client\Effects\Core</Filter>
     </ClInclude>
+    <ClInclude Include="xr_Client_BattlEye.h">
+      <Filter>Core\Client\BattlEye_Client</Filter>
+    </ClInclude>
     <ClInclude Include="GamePersistent.h">
       <Filter>Core\Client\Game Persistent</Filter>
     </ClInclude>
@@ -5115,12 +5124,6 @@
     <ClInclude Include="Missile.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Grenades &amp; Missiles</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponMagazined.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponMagazinedWGrenade.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
-    </ClInclude>
     <ClInclude Include="Scope.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\Scope</Filter>
     </ClInclude>
@@ -5138,6 +5141,12 @@
     </ClInclude>
     <ClInclude Include="RocketLauncher.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\RocketLauncher</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponMagazined.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponMagazinedWGrenade.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Automatic</Filter>
     </ClInclude>
     <ClInclude Include="WeaponWalther.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon Walther 99</Filter>
@@ -5220,9 +5229,6 @@
     <ClInclude Include="Artefact.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts</Filter>
     </ClInclude>
-    <ClInclude Include="MercuryBall.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Mercury Ball</Filter>
-    </ClInclude>
     <ClInclude Include="GraviArtifact.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\GraviArtifact</Filter>
     </ClInclude>
@@ -5249,6 +5255,9 @@
     </ClInclude>
     <ClInclude Include="FadedBall.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Faded Ball</Filter>
+    </ClInclude>
+    <ClInclude Include="MercuryBall.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Faded Ball\Mercury Ball</Filter>
     </ClInclude>
     <ClInclude Include="ElectricBall.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Electric Ball</Filter>
@@ -5386,7 +5395,7 @@
       <Filter>Core\Client\Objects\zones\SmartZone</Filter>
     </ClInclude>
     <ClInclude Include="ZoneVisual.h">
-      <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
+      <Filter>Core\Client\Objects\zones\ZoneVisual</Filter>
     </ClInclude>
     <ClInclude Include="ZoneCampfire.h">
       <Filter>Core\Client\Objects\zones\campfire</Filter>
@@ -5540,15 +5549,6 @@
     </ClInclude>
     <ClInclude Include="RegistryFuncs.h">
       <Filter>Core\Common\Registry</Filter>
-    </ClInclude>
-    <ClInclude Include="battleye.h">
-      <Filter>Core\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="battleye_system.h">
-      <Filter>Core\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="xr_Server_BattlEye.h">
-      <Filter>Core\Server</Filter>
     </ClInclude>
     <ClInclude Include="xrServer.h">
       <Filter>Core\Server</Filter>
@@ -5747,6 +5747,15 @@
     </ClInclude>
     <ClInclude Include="xrGameSpyServer_callbacks.h">
       <Filter>Core\Server\xrGameSpyServer</Filter>
+    </ClInclude>
+    <ClInclude Include="battleye.h">
+      <Filter>Core\Server\BattlEye_Server</Filter>
+    </ClInclude>
+    <ClInclude Include="battleye_system.h">
+      <Filter>Core\Server\BattlEye_Server</Filter>
+    </ClInclude>
+    <ClInclude Include="xr_Server_BattlEye.h">
+      <Filter>Core\Server\BattlEye_Server</Filter>
     </ClInclude>
     <ClInclude Include="CalculateTriangle.h">
       <Filter>Physics\Base</Filter>
@@ -6028,6 +6037,9 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="ui_base.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIFontDefines.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="ui_defs.h">
@@ -6352,16 +6364,16 @@
       <Filter>UI\UIWindows\VideoPlayer</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICellCustomItems.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICellItem.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UICellItemFactory.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UIDragDropListEx.h">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
     <ClInclude Include="ui\UILabel.h">
       <Filter>UI\UIWindows\Label</Filter>
@@ -6667,17 +6679,11 @@
     <ClInclude Include="embedded_editor\embedded_editor_spawner.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
-    <ClInclude Include="xr_Client_BattlEye.h">
-      <Filter>Core\Client\BattlEye_Client</Filter>
-    </ClInclude>
     <ClInclude Include="xrClientsPool.h">
       <Filter>Core\Server</Filter>
     </ClInclude>
     <ClInclude Include="ui\UILoadingScreen.h">
       <Filter>UI\Common\LoadingScreen</Filter>
-    </ClInclude>
-    <ClInclude Include="UIFontDefines.h">
-      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -7272,36 +7278,6 @@
     <ClCompile Include="AI\Crow\ai_crow.cpp">
       <Filter>AI\AMonsters\monsters\Crow</Filter>
     </ClCompile>
-    <ClCompile Include="ai\Monsters\Flesh\flesh.cpp">
-      <Filter>AI\AMonsters\monsters\Flesh</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Flesh\flesh_state_manager.cpp">
-      <Filter>AI\AMonsters\monsters\Flesh</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Flesh\flesh_script.cpp">
-      <Filter>AI\AMonsters\monsters\Flesh\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog.cpp">
-      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog_psi_effector.cpp">
-      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog_state_manager.cpp">
-      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Pseudodog\psy_dog.cpp">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Pseudodog\psy_dog_aura.cpp">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Pseudodog\psy_dog_state_manager.cpp">
-      <Filter>AI\AMonsters\monsters\PseudoDog\DogPsy</Filter>
-    </ClCompile>
-    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog_script.cpp">
-      <Filter>AI\AMonsters\monsters\PseudoDog\Script</Filter>
-    </ClCompile>
     <ClCompile Include="ai\Monsters\Burer\burer.cpp">
       <Filter>AI\AMonsters\monsters\Burer</Filter>
     </ClCompile>
@@ -7439,6 +7415,36 @@
     </ClCompile>
     <ClCompile Include="ai\Monsters\Dog\dog_script.cpp">
       <Filter>AI\AMonsters\monsters\Dog\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Flesh\flesh.cpp">
+      <Filter>AI\AMonsters\monsters\Flesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Flesh\flesh_state_manager.cpp">
+      <Filter>AI\AMonsters\monsters\Flesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Flesh\flesh_script.cpp">
+      <Filter>AI\AMonsters\monsters\Flesh\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog.cpp">
+      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog_psi_effector.cpp">
+      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog_state_manager.cpp">
+      <Filter>AI\AMonsters\monsters\PseudoDog</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Pseudodog\pseudodog_script.cpp">
+      <Filter>AI\AMonsters\monsters\PseudoDog\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Pseudodog\psy_dog.cpp">
+      <Filter>AI\AMonsters\monsters\DogPsy</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Pseudodog\psy_dog_aura.cpp">
+      <Filter>AI\AMonsters\monsters\DogPsy</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\Monsters\Pseudodog\psy_dog_state_manager.cpp">
+      <Filter>AI\AMonsters\monsters\DogPsy</Filter>
     </ClCompile>
     <ClCompile Include="Ai\Trader\ai_trader.cpp">
       <Filter>AI\AMonsters\humans\trader</Filter>
@@ -7584,6 +7590,12 @@
     <ClCompile Include="stalker_velocity_holder.cpp">
       <Filter>AI\AMonsters\humans\stalker\MovementManager\velocity_holder</Filter>
     </ClCompile>
+    <ClCompile Include="stalker_sound_data_visitor.cpp">
+      <Filter>AI\AMonsters\humans\stalker\SoundDataVisitor</Filter>
+    </ClCompile>
+    <ClCompile Include="stalker_sound_data.cpp">
+      <Filter>AI\AMonsters\humans\stalker\SoundUserData</Filter>
+    </ClCompile>
     <ClCompile Include="ai_stalker_alife.cpp">
       <Filter>AI\AMonsters\humans\stalker\Miscellaneous</Filter>
     </ClCompile>
@@ -7607,12 +7619,6 @@
     </ClCompile>
     <ClCompile Include="ai\stalker\ai_stalker_script_entity.cpp">
       <Filter>AI\AMonsters\humans\stalker\Miscellaneous</Filter>
-    </ClCompile>
-    <ClCompile Include="stalker_sound_data_visitor.cpp">
-      <Filter>AI\AMonsters\humans\stalker\SoundDataVisitor</Filter>
-    </ClCompile>
-    <ClCompile Include="stalker_sound_data.cpp">
-      <Filter>AI\AMonsters\humans\stalker\SoundUserData</Filter>
     </ClCompile>
     <ClCompile Include="game_graph_script.cpp">
       <Filter>AI\ANavigation\GameGraph</Filter>
@@ -7863,10 +7869,10 @@
     <ClCompile Include="../xrServerEntitiesSoC/script_engine_export.cpp">
       <Filter>AI\AScript\ScriptEngine</Filter>
     </ClCompile>
-    <ClCompile Include="../xrServerEntitiesSoC/script_engine_script.cpp">
+    <ClCompile Include="script_engine_help.cpp">
       <Filter>AI\AScript\ScriptEngine</Filter>
     </ClCompile>
-    <ClCompile Include="script_engine_help.cpp">
+    <ClCompile Include="../xrServerEntitiesSoC/script_engine_script.cpp">
       <Filter>AI\AScript\ScriptEngine</Filter>
     </ClCompile>
     <ClCompile Include="..\xrServerEntitiesSoC\script_process.cpp">
@@ -7946,6 +7952,9 @@
     </ClCompile>
     <ClCompile Include="DynamicHeightMap.cpp">
       <Filter>Core\Client\Effects\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="xr_Client_BattlEye.cpp">
+      <Filter>Core\Client\BattlEye_Client</Filter>
     </ClCompile>
     <ClCompile Include="GamePersistent.cpp">
       <Filter>Core\Client\Game Persistent</Filter>
@@ -8485,7 +8494,7 @@
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Faded Ball</Filter>
     </ClCompile>
     <ClCompile Include="MercuryBall.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Mercury Ball</Filter>
+      <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Faded Ball\Mercury Ball</Filter>
     </ClCompile>
     <ClCompile Include="ElectricBall.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\Electric Ball</Filter>
@@ -8638,7 +8647,7 @@
       <Filter>Core\Client\Objects\zones\NoGravityZone</Filter>
     </ClCompile>
     <ClCompile Include="ZoneVisual.cpp">
-      <Filter>Core\Client\Objects\zones\TorridZone\ZoneVisual</Filter>
+      <Filter>Core\Client\Objects\zones\ZoneVisual</Filter>
     </ClCompile>
     <ClCompile Include="ZoneCampfire.cpp">
       <Filter>Core\Client\Objects\zones\campfire</Filter>
@@ -8751,12 +8760,6 @@
     <ClCompile Include="RegistryFuncs.cpp">
       <Filter>Core\Common\Registry</Filter>
     </ClCompile>
-    <ClCompile Include="battleye_system.cpp">
-      <Filter>Core\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="xr_Server_BattlEye.cpp">
-      <Filter>Core\Server</Filter>
-    </ClCompile>
     <ClCompile Include="xrServer.cpp">
       <Filter>Core\Server</Filter>
     </ClCompile>
@@ -8843,18 +8846,6 @@
     </ClCompile>
     <ClCompile Include="game_sv_single.cpp">
       <Filter>Core\Server\Games\server\single</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_CL_connect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_CL_disconnect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Connect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
-    </ClCompile>
-    <ClCompile Include="xrServer_Disconnect.cpp">
-      <Filter>Core\Server\Games\server\single\ServerConnect</Filter>
     </ClCompile>
     <ClCompile Include="game_sv_teamdeathmatch.cpp">
       <Filter>Core\Server\Games\server\team_deathmatch</Filter>
@@ -9027,11 +9018,29 @@
     <ClCompile Include="xrGameSpyServer_callbacks.cpp">
       <Filter>Core\Server\xrGameSpyServer</Filter>
     </ClCompile>
+    <ClCompile Include="battleye_system.cpp">
+      <Filter>Core\Server\BattlEye_Server</Filter>
+    </ClCompile>
+    <ClCompile Include="xr_Server_BattlEye.cpp">
+      <Filter>Core\Server\BattlEye_Server</Filter>
+    </ClCompile>
     <ClCompile Include="ui\CExtraContentFilter.cpp">
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
       <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_CL_connect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_CL_disconnect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_Connect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="xrServer_Disconnect.cpp">
+      <Filter>Core\Server\ServerConnect</Filter>
     </ClCompile>
     <ClCompile Include="ui_base.cpp">
       <Filter>UI</Filter>
@@ -9161,228 +9170,6 @@
     </ClCompile>
     <ClCompile Include="ui\UISleepWnd.cpp">
       <Filter>UI\Common\SleepWnd</Filter>
-    </ClCompile>
-    <ClCompile Include="PHDebug.cpp">
-      <Filter>Physics\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="PHWorld.cpp">
-      <Filter>Physics\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="PHWorldScript.cpp">
-      <Filter>Physics\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics.cpp">
-      <Filter>Physics\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="physics_game.cpp">
-      <Filter>Physics\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsGamePars.cpp">
-      <Filter>Physics\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="PHShellCreator.cpp">
-      <Filter>Physics\Base\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="PHStaticGeomShell.cpp">
-      <Filter>Physics\Base\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="MathUtils.cpp">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="PHDynamicData.cpp">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="PHInterpolation.cpp">
-      <Filter>Physics\Base\Objects\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="PHContactBodyEffector.cpp">
-      <Filter>Physics\Base\Objects\BodyEffectors</Filter>
-    </ClCompile>
-    <ClCompile Include="PHMoveStorage.cpp">
-      <Filter>Physics\Base\Objects\MoveStorage</Filter>
-    </ClCompile>
-    <ClCompile Include="DisablingParams.cpp">
-      <Filter>Physics\Base\Objects\Disabling</Filter>
-    </ClCompile>
-    <ClCompile Include="PHDisabling.cpp">
-      <Filter>Physics\Base\Objects\Disabling</Filter>
-    </ClCompile>
-    <ClCompile Include="PHActorCharacter.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
-    </ClCompile>
-    <ClCompile Include="PHMovementDynamicActivate.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
-    </ClCompile>
-    <ClCompile Include="PHAICharacter.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\AICharacter</Filter>
-    </ClCompile>
-    <ClCompile Include="PHCapture.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\Capture</Filter>
-    </ClCompile>
-    <ClCompile Include="PHCaptureInit.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\Capture</Filter>
-    </ClCompile>
-    <ClCompile Include="PHMovementControl.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\MovementControl</Filter>
-    </ClCompile>
-    <ClCompile Include="ElevatorState.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSimpleCharacter.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
-    </ClCompile>
-    <ClCompile Include="PHCharacter.cpp">
-      <Filter>Physics\Base\Objects\PhyMove\BaseCharacter</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsShell.cpp">
-      <Filter>Physics\Base\Objects\BaseShell</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsShellScript.cpp">
-      <Filter>Physics\Base\Objects\BaseShell</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsShellAnimator.cpp">
-      <Filter>Physics\Base\Objects\BaseShell\PhysicsShellAnimator</Filter>
-    </ClCompile>
-    <ClCompile Include="animation_movement_controller.cpp">
-      <Filter>Physics\Base\Objects\BaseShell\animation_movement_controller</Filter>
-    </ClCompile>
-    <ClCompile Include="PHElement.cpp">
-      <Filter>Physics\Base\Objects\Elemenet</Filter>
-    </ClCompile>
-    <ClCompile Include="PHElementNetState.cpp">
-      <Filter>Physics\Base\Objects\Elemenet</Filter>
-    </ClCompile>
-    <ClCompile Include="PHJoint.cpp">
-      <Filter>Physics\Base\Objects\Joint</Filter>
-    </ClCompile>
-    <ClCompile Include="PHShell.cpp">
-      <Filter>Physics\Base\Objects\Shell</Filter>
-    </ClCompile>
-    <ClCompile Include="PHShellActivate.cpp">
-      <Filter>Physics\Base\Objects\Shell</Filter>
-    </ClCompile>
-    <ClCompile Include="PHShellNetState.cpp">
-      <Filter>Physics\Base\Objects\Shell</Filter>
-    </ClCompile>
-    <ClCompile Include="ShellHit.cpp">
-      <Filter>Physics\Base\Objects\Shell</Filter>
-    </ClCompile>
-    <ClCompile Include="PHFracture.cpp">
-      <Filter>Physics\Base\Objects\Breakable</Filter>
-    </ClCompile>
-    <ClCompile Include="PHJointDestroyInfo.cpp">
-      <Filter>Physics\Base\Objects\Breakable</Filter>
-    </ClCompile>
-    <ClCompile Include="PHShellSplitter.cpp">
-      <Filter>Physics\Base\Objects\Breakable</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSplitedShell.cpp">
-      <Filter>Physics\Base\Objects\SplitedShell</Filter>
-    </ClCompile>
-    <ClCompile Include="PHObject.cpp">
-      <Filter>Physics\Base\Objects\PHObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry.cpp">
-      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
-    </ClCompile>
-    <ClCompile Include="PHGeometryOwner.cpp">
-      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
-    </ClCompile>
-    <ClCompile Include="PHIsland.cpp">
-      <Filter>Physics\Base\Objects\PHIsland</Filter>
-    </ClCompile>
-    <ClCompile Include="PHCommander.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHScriptCall.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSimpleCalls.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSimpleCallsScript.cpp">
-      <Filter>Physics\Base\Objects\PHCommander</Filter>
-    </ClCompile>
-    <ClCompile Include="character_hit_animations.cpp">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterPhysicsSupport.cpp">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClCompile>
-    <ClCompile Include="interactive_motion.cpp">
-      <Filter>Physics\CharacterSupport</Filter>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dcTriListCollider.cpp">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dSortTriPrimitive.cpp">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dTriBox.cpp">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="tri-colliderKNoOPC\dTriCallideK.cpp">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dTriCylinder.cpp">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="tri-colliderKNoOPC\dTriList.cpp">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="tri-colliderknoopc\dTriSphere.cpp">
-      <Filter>Physics\Colliders\Tri-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="dCylinder\dCylinder.cpp">
-      <Filter>Physics\Colliders\Cyl_Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="dRayMotions.cpp">
-      <Filter>Physics\Colliders\RayMotions-Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="DamagableItem.cpp">
-      <Filter>Physics\DamagableItem</Filter>
-    </ClCompile>
-    <ClCompile Include="PHSoundPlayer.cpp">
-      <Filter>Physics\PhysicsSoundPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="PHActivationShape.cpp">
-      <Filter>Physics\ActivationBox</Filter>
-    </ClCompile>
-    <ClCompile Include="Hit.cpp">
-      <Filter>Physics\Hit</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\aint.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\Dof7control.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\eqn.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\eulersolver.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="ik_anim_state.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\IKLimb.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="IKLimbsController.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\jtlimits.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\limb.cxx">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\math3d.cpp">
-      <Filter>Physics\IK</Filter>
-    </ClCompile>
-    <ClCompile Include="Ik\mathTrig.cpp">
-      <Filter>Physics\IK</Filter>
     </ClCompile>
     <ClCompile Include="ui\UITalkDialogWnd.cpp">
       <Filter>UI\Common\TALK</Filter>
@@ -9625,16 +9412,16 @@
       <Filter>UI\UIWindows\VideoPlayer</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICellCustomItems.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICellItem.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UICellItemFactory.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UIDragDropListEx.cpp">
-      <Filter>UI\UIWindows\DragDrop2</Filter>
+      <Filter>UI\UIWindows\DragDrop</Filter>
     </ClCompile>
     <ClCompile Include="ui\UILabel.cpp">
       <Filter>UI\UIWindows\Label</Filter>
@@ -9660,11 +9447,11 @@
     <ClCompile Include="ui\UIListWnd.cpp">
       <Filter>UI\UIWindows\ListBox</Filter>
     </ClCompile>
-    <ClCompile Include="ui\UIListWnd_script.cpp">
-      <Filter>UI\UIWindows\ListBox</Filter>
-    </ClCompile>
     <ClCompile Include="ui\UIListItemEx.cpp">
       <Filter>UI\UIWindows\ListBox\Ex</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UIListWnd_script.cpp">
+      <Filter>UI\UIWindows\ListBox</Filter>
     </ClCompile>
     <ClCompile Include="ContextMenu.cpp">
       <Filter>UI\HUD</Filter>
@@ -9900,6 +9687,228 @@
     <ClCompile Include="embedded_editor\embedded_editor_helper.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
+    <ClCompile Include="PHDebug.cpp">
+      <Filter>Physics\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="PHWorld.cpp">
+      <Filter>Physics\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="PHWorldScript.cpp">
+      <Filter>Physics\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Physics.cpp">
+      <Filter>Physics\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="physics_game.cpp">
+      <Filter>Physics\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsGamePars.cpp">
+      <Filter>Physics\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="PHShellCreator.cpp">
+      <Filter>Physics\Base\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="PHStaticGeomShell.cpp">
+      <Filter>Physics\Base\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="MathUtils.cpp">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="PHDynamicData.cpp">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="PHInterpolation.cpp">
+      <Filter>Physics\Base\Objects\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="PHContactBodyEffector.cpp">
+      <Filter>Physics\Base\Objects\BodyEffectors</Filter>
+    </ClCompile>
+    <ClCompile Include="PHMoveStorage.cpp">
+      <Filter>Physics\Base\Objects\MoveStorage</Filter>
+    </ClCompile>
+    <ClCompile Include="DisablingParams.cpp">
+      <Filter>Physics\Base\Objects\Disabling</Filter>
+    </ClCompile>
+    <ClCompile Include="PHDisabling.cpp">
+      <Filter>Physics\Base\Objects\Disabling</Filter>
+    </ClCompile>
+    <ClCompile Include="PHActorCharacter.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
+    </ClCompile>
+    <ClCompile Include="PHMovementDynamicActivate.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\ActorCaracter</Filter>
+    </ClCompile>
+    <ClCompile Include="PHAICharacter.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\AICharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="PHCapture.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="PHCaptureInit.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="PHMovementControl.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\MovementControl</Filter>
+    </ClCompile>
+    <ClCompile Include="ElevatorState.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSimpleCharacter.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\SipmpleCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="PHCharacter.cpp">
+      <Filter>Physics\Base\Objects\PhyMove\BaseCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsShell.cpp">
+      <Filter>Physics\Base\Objects\BaseShell</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsShellScript.cpp">
+      <Filter>Physics\Base\Objects\BaseShell</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsShellAnimator.cpp">
+      <Filter>Physics\Base\Objects\BaseShell\PhysicsShellAnimator</Filter>
+    </ClCompile>
+    <ClCompile Include="animation_movement_controller.cpp">
+      <Filter>Physics\Base\Objects\BaseShell\animation_movement_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="PHElement.cpp">
+      <Filter>Physics\Base\Objects\Elemenet</Filter>
+    </ClCompile>
+    <ClCompile Include="PHElementNetState.cpp">
+      <Filter>Physics\Base\Objects\Elemenet</Filter>
+    </ClCompile>
+    <ClCompile Include="PHJoint.cpp">
+      <Filter>Physics\Base\Objects\Joint</Filter>
+    </ClCompile>
+    <ClCompile Include="PHShell.cpp">
+      <Filter>Physics\Base\Objects\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="PHShellActivate.cpp">
+      <Filter>Physics\Base\Objects\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="PHShellNetState.cpp">
+      <Filter>Physics\Base\Objects\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="ShellHit.cpp">
+      <Filter>Physics\Base\Objects\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="PHFracture.cpp">
+      <Filter>Physics\Base\Objects\Breakable</Filter>
+    </ClCompile>
+    <ClCompile Include="PHJointDestroyInfo.cpp">
+      <Filter>Physics\Base\Objects\Breakable</Filter>
+    </ClCompile>
+    <ClCompile Include="PHShellSplitter.cpp">
+      <Filter>Physics\Base\Objects\Breakable</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSplitedShell.cpp">
+      <Filter>Physics\Base\Objects\SplitedShell</Filter>
+    </ClCompile>
+    <ClCompile Include="PHObject.cpp">
+      <Filter>Physics\Base\Objects\PHObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="PHGeometryOwner.cpp">
+      <Filter>Physics\Base\Objects\PHObject\Geom</Filter>
+    </ClCompile>
+    <ClCompile Include="PHIsland.cpp">
+      <Filter>Physics\Base\Objects\PHIsland</Filter>
+    </ClCompile>
+    <ClCompile Include="PHCommander.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHScriptCall.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSimpleCalls.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSimpleCallsScript.cpp">
+      <Filter>Physics\Base\Objects\PHCommander</Filter>
+    </ClCompile>
+    <ClCompile Include="character_hit_animations.cpp">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterPhysicsSupport.cpp">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="interactive_motion.cpp">
+      <Filter>Physics\CharacterSupport</Filter>
+    </ClCompile>
+    <ClCompile Include="tri-colliderknoopc\dcTriListCollider.cpp">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="tri-colliderknoopc\dSortTriPrimitive.cpp">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="tri-colliderknoopc\dTriBox.cpp">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="tri-colliderKNoOPC\dTriCallideK.cpp">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="tri-colliderknoopc\dTriCylinder.cpp">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="tri-colliderKNoOPC\dTriList.cpp">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="tri-colliderknoopc\dTriSphere.cpp">
+      <Filter>Physics\Colliders\Tri-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="dCylinder\dCylinder.cpp">
+      <Filter>Physics\Colliders\Cyl_Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="dRayMotions.cpp">
+      <Filter>Physics\Colliders\RayMotions-Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="DamagableItem.cpp">
+      <Filter>Physics\DamagableItem</Filter>
+    </ClCompile>
+    <ClCompile Include="PHSoundPlayer.cpp">
+      <Filter>Physics\PhysicsSoundPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="PHActivationShape.cpp">
+      <Filter>Physics\ActivationBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Hit.cpp">
+      <Filter>Physics\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\aint.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\Dof7control.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\eqn.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\eulersolver.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="ik_anim_state.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\IKLimb.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="IKLimbsController.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\jtlimits.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\limb.cxx">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\math3d.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
+    <ClCompile Include="Ik\mathTrig.cpp">
+      <Filter>Physics\IK</Filter>
+    </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_main.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
@@ -9912,9 +9921,6 @@
     <ClCompile Include="CustomTimer.cpp" />
     <ClCompile Include="script_vars_storage.cpp">
       <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
-    </ClCompile>
-    <ClCompile Include="xr_Client_BattlEye.cpp">
-      <Filter>Core\Client\BattlEye_Client</Filter>
     </ClCompile>
     <ClCompile Include="xrClientsPool.cpp">
       <Filter>Core\Server</Filter>
