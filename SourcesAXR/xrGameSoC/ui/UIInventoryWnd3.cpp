@@ -193,7 +193,7 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 		}
 	case BATTERY_CHARGE_TORCH:
 		{
-			CBattery* battery = smart_cast<CBattery*>(CurrentItem());
+			CBattery* battery = smart_cast<CBattery*>(item);
 			if (!battery)
 				break;
 			battery->m_iUseFor = 1;
@@ -375,27 +375,11 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 	if (!item->Useful())
 		return;
 
-	CInventory* inv = &Actor()->inventory();
-	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
-	PIItem	item_in_detector_slot = inv->ItemFromSlot(DETECTOR_SLOT);
-	//PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
+	PIItem	item_in_torch_slot = m_pInv->ItemFromSlot(TORCH_SLOT);
+	PIItem	item_in_detector_slot = m_pInv->ItemFromSlot(DETECTOR_SLOT);
+	//PIItem	item_in_anomaly_detector_slot = m_pInv->ItemFromSlot(DOSIMETER_SLOT);
 
-	if (pMedkit || pAntirad)
-	{
-		act_str = "st_use";
-	}
-	else if (pEatableItem)
-	{
-		if (pBottleItem)
-		{
-			act_str = "st_drink";
-		}
-		else
-		{
-			act_str = "st_eat";
-		}
-	}
-	else if (pBattery)
+	if (pBattery)
 	{
 		if (item_in_torch_slot)
 		{
@@ -421,6 +405,21 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 			b_show = true;
 		}  */
 		return;
+	}
+	else if (pMedkit || pAntirad)
+	{
+		act_str = "st_use";
+	}
+	else if (pEatableItem)
+	{
+		if (pBottleItem)
+		{
+			act_str = "st_drink";
+		}
+		else
+		{
+			act_str = "st_eat";
+		}
 	}
 	if (act_str)
 	{

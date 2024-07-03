@@ -903,29 +903,51 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 #include "game_object_space.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"
+#include "Battery.h"
 bool CInventory::Eat(PIItem pIItem)
 {
 	R_ASSERT(pIItem->m_pCurrentInventory==this);
 	//устанаовить съедобна ли вещь
 	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
+	CBattery* pBattery = smart_cast<CBattery*>(pIItem);
 	R_ASSERT				(pItemToEat);
 
 	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(m_pOwner);
 	R_ASSERT				(entity_alive);
 	
-	pItemToEat->UseBy		(entity_alive);
+	if (!pBattery && !pItemToEat->m_bUnlimited) // что это за говно вообще было???
+	{
+		pItemToEat->UseBy(entity_alive);
+	}
+	else if (pBattery)
+	{
+		pBattery->UseBy(entity_alive);
+	}
+
 
 	if(IsGameTypeSingle() && Actor()->m_inventory == this)
 		Actor()->callback(GameObject::eUseObject)((smart_cast<CGameObject*>(pIItem))->lua_game_object());
 
-	if(pItemToEat->Empty() && entity_alive->Local())
+	if (pBattery && pBattery->Empty() && entity_alive->Local())
 	{
 		NET_Packet					P;
-		CGameObject::u_EventGen		(P,GE_OWNERSHIP_REJECT,entity_alive->ID());
+		CGameObject::u_EventGen		(P, GE_OWNERSHIP_REJECT, entity_alive->ID());
 		P.w_u16						(pIItem->object().ID());
 		CGameObject::u_EventSend	(P);
 
-		CGameObject::u_EventGen		(P,GE_DESTROY,pIItem->object().ID());
+		CGameObject::u_EventGen		(P, GE_DESTROY, pIItem->object().ID());
+		CGameObject::u_EventSend	(P);
+
+		return		false;
+	}
+	else if (!pItemToEat->m_bUnlimited && pItemToEat->Empty() && entity_alive->Local())
+	{
+		NET_Packet					P;
+		CGameObject::u_EventGen		(P, GE_OWNERSHIP_REJECT, entity_alive->ID());
+		P.w_u16						(pIItem->object().ID());
+		CGameObject::u_EventSend	(P);
+
+		CGameObject::u_EventGen		(P, GE_DESTROY, pIItem->object().ID());
 		CGameObject::u_EventSend	(P);
 
 		return		false;
