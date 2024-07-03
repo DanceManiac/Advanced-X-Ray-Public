@@ -199,11 +199,14 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
 	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
 	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
-
+	CBattery* battery = smart_cast<CBattery*>(&pInvItem);
 	
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/)
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/ || battery)
 	{
-		val = pInvItem.GetChargeToShow() <= 0 ? 0 : pInvItem.GetChargeToShow() * 100.f;
+		if (battery)
+			val = battery->GetCurrentChargeLevel() <= 0 ? 0 : battery->GetCurrentChargeLevel() * 100.f;
+		else
+			val = pInvItem.GetChargeToShow() <= 0 ? 0 : pInvItem.GetChargeToShow() * 100.f;
 		// (!fis_zero(val))
 		{
 			m_charge_level->SetValue(val, 0, 0);

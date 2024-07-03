@@ -178,7 +178,7 @@ public:
 	IC		float				GetUnChargeLevel	() const					{return m_fUnchargeSpeed;}
 	virtual	float				GetChargeToShow		() const					{return GetChargeLevel();}
 	IC		void				SetChargeLevel		(float charge_level)		{ m_fCurrentChargeLevel = charge_level;}
-			void				ChangeChargeLevel	(float val);
+	virtual	void				ChangeChargeLevel	(float val);
 
 			u16					BaseSlot			()  const					{return m_ItemCurrPlace.base_slot_id;}
 			u16					CurrSlot			()  const					{return m_ItemCurrPlace.slot_id;}

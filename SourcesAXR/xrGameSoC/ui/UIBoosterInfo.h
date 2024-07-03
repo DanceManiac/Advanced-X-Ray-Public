@@ -66,10 +66,6 @@ protected:
 		_item_quick_thirst,
 		_item_quick_psy_health,
 
-		_item_quick_battery,
-		_item_quick_filter,
-		_item_quick_repair_condition,
-
 		_item_quick_intoxication,
 		_item_quick_radiation,
 		_item_quick_sleepeness,

@@ -2,6 +2,10 @@
 
 #include "eatable_item_object.h"
 
+class CCustomDetector;
+class CDetectorAnomaly;
+class CTorch;
+
 class CBattery : public CEatableItemObject
 {
     using inherited = CEatableItemObject;
@@ -20,9 +24,10 @@ public:
 			int				m_iUseFor;
 			float			m_fBatteryChargeLevel;
 			float			GetCurrentChargeLevel(void) const;
-			void			ChargeTorch();
-			void			ChargeArtifactDetector();
-			void			ChargeAnomalyDetector();
+	virtual	void			ChangeChargeLevel(float val);
+			void			ChargeTorch(CTorch* flashlight);
+			void			ChargeArtifactDetector(CCustomDetector* artifact_detector);
+			void			ChargeAnomalyDetector(CDetectorAnomaly* anomaly_detector);
 protected:
 			int				m_iPortionsNum;
 };

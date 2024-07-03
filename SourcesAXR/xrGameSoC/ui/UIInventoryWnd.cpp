@@ -16,6 +16,9 @@
 #include "script_process.h"
 
 #include "../eatable_item.h"
+#include "../Battery.h"
+#include "../CustomDetector.h"
+#include "../Torch.h"
 #include "../inventory.h"
 
 #include "UIInventoryUtilities.h"
@@ -608,16 +611,27 @@ bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	if (WINDOW_KEY_PRESSED == keyboard_action)
 	{
 #ifdef DEBUG
+		CTorch* flashlight = smart_cast<CTorch*>(CurrentIItem());
+		CCustomDetector* detector = smart_cast<CCustomDetector*>(CurrentIItem());
+		CBattery* battery = smart_cast<CBattery*>(CurrentIItem());
 		if(DIK_NUMPAD7 == dik && CurrentIItem())
 		{
-			CurrentIItem()->ChangeChargeLevel(-0.05f);
-			CurrentIItem()->ChangeCondition(-0.05f);
+			if (flashlight && GameConstants::GetTorchHasBattery() || detector && GameConstants::GetAnoDetectorUseBattery() || battery)
+			{
+				CurrentIItem()->ChangeChargeLevel(-0.05f);
+			}
+			else
+				CurrentIItem()->ChangeCondition(-0.05f);
 			UIItemInfo.InitItem(CurrentIItem());
 		}
 		else if(DIK_NUMPAD8 == dik && CurrentIItem())
 		{
-			CurrentIItem()->ChangeChargeLevel(0.05f);
-			CurrentIItem()->ChangeCondition(0.05f);
+			if (flashlight && GameConstants::GetTorchHasBattery() || detector && GameConstants::GetAnoDetectorUseBattery() || battery)
+			{
+				CurrentIItem()->ChangeChargeLevel(0.05f);
+			}
+			else
+				CurrentIItem()->ChangeCondition(0.05f);
 			UIItemInfo.InitItem(CurrentIItem());
 		}
 #endif

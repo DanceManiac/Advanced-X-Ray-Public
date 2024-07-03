@@ -23,6 +23,7 @@ public:
 			int				m_iUseFor;
 			float			m_fBatteryChargeLevel;
 			float			GetCurrentChargeLevel(void) const;
+	virtual	void			ChangeChargeLevel(float val);
 			void			ChargeTorch(CTorch* flashlight);
 			void			ChargeDetector(CCustomDetector* detector);
 			//void			ChargeAnomalyDetector();

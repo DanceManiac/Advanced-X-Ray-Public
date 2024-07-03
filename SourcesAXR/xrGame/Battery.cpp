@@ -79,37 +79,35 @@ bool CBattery::UseBy(CEntityAlive* entity_alive)
 	if (m_iUseFor == 0)
 	{
 		if (flashlight && !artifact_detector && !anomaly_detector)
-			ChargeTorch();
+			ChargeTorch(flashlight);
 		else if (!flashlight && artifact_detector && !anomaly_detector)
-			ChargeArtifactDetector();
+			ChargeArtifactDetector(artifact_detector);
 		else if (!flashlight && !artifact_detector && anomaly_detector)
-			ChargeAnomalyDetector();
+			ChargeAnomalyDetector(anomaly_detector);
 		else if (flashlight && artifact_detector)
 		{
 			float torch_battery = flashlight->GetChargeLevel();
 			float art_det_battery = artifact_detector->GetChargeLevel();
 			if (torch_battery < art_det_battery)
-				ChargeTorch();
+				ChargeTorch(flashlight);
 			else
-				ChargeArtifactDetector();
+				ChargeArtifactDetector(artifact_detector);
 		}
 	}
 	else if (m_iUseFor == 1)
-		ChargeTorch();
+		ChargeTorch(flashlight);
 	else if (m_iUseFor == 2)
-		ChargeArtifactDetector();
+		ChargeArtifactDetector(artifact_detector);
 	else
-		ChargeAnomalyDetector();
+		ChargeAnomalyDetector(anomaly_detector);
 
 	m_iUseFor = 0;
 
 	return true;
 }
 
-void CBattery::ChargeTorch()
+void CBattery::ChargeTorch(CTorch* flashlight)
 {
-	CTorch* flashlight = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
-
 	if (flashlight)
 	{
 		flashlight->Recharge(m_fBatteryChargeLevel);
@@ -123,10 +121,8 @@ void CBattery::ChargeTorch()
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
 
-void CBattery::ChargeArtifactDetector()
+void CBattery::ChargeArtifactDetector(CCustomDetector* artifact_detector)
 {
-	CCustomDetector* artifact_detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
-
 	if (artifact_detector)
 	{
 		artifact_detector->Recharge(m_fBatteryChargeLevel);
@@ -140,10 +136,8 @@ void CBattery::ChargeArtifactDetector()
 	//Msg("Battery Charge is: %f", m_fBatteryChargeLevel); //Для тестов
 }
 
-void CBattery::ChargeAnomalyDetector()
+void CBattery::ChargeAnomalyDetector(CDetectorAnomaly* anomaly_detector)
 {
-	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(Actor()->inventory().ItemFromSlot(DOSIMETER_SLOT));
-
 	if (anomaly_detector)
 	{
 		anomaly_detector->Recharge(m_fBatteryChargeLevel);
@@ -160,4 +154,10 @@ void CBattery::ChargeAnomalyDetector()
 float CBattery::GetCurrentChargeLevel() const
 {
 	return m_fBatteryChargeLevel;
+}
+
+void CBattery::ChangeChargeLevel(float val)
+{
+	m_fBatteryChargeLevel += val;
+	clamp(m_fBatteryChargeLevel, 0.f, 1.f);
 }

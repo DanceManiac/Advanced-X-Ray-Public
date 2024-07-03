@@ -45,10 +45,6 @@ LPCSTR ef_quick_eat_values_names[] =
 	"eat_thirst",
 	"eat_psy_health",
 
-	"charge_level",
-	"filter_condition",
-	"restore_condition",
-
 	"eat_intoxication",
 	"eat_radiation",
 	"eat_sleepeness",
@@ -73,11 +69,6 @@ LPCSTR quick_eat_influence_caption[] =
 	"ui_inv_thirst",
 	"ui_inv_psy_health",
 
-	//M.F.S Team additions
-	"ui_inv_battery",
-	"ui_inv_filter_condition",
-	"ui_inv_repair_kit_condition",
-
 	"ui_inv_intoxication",
 	"ui_inv_radiation",
 	"ui_inv_sleepeness",
@@ -101,11 +92,6 @@ LPCSTR ef_quick_eat_nodes_names[] =
 	"quick_eat_satiety",
 	"quick_eat_thirst",
 	"quick_eat_psy_health",
-
-	//M.F.S Team additions
-	"quick_eat_battery",
-	"quick_eat_filter_condition",
-	"quick_eat_repair_kit_condition",
 
 	"quick_eat_intoxication",
 	"quick_eat_radiation",
@@ -234,7 +220,7 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	m_portions->SetAutoDelete(false);
 	name = CStringTable().translate("ui_inv_portions").c_str();
 	m_portions->SetCaption(name);
-	xml.SetLocalRoot(stored_root);
+	xml.SetLocalRoot(base_node);
 
 	xml.SetLocalRoot(stored_root);
 }

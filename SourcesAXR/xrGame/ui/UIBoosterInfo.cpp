@@ -10,8 +10,8 @@
 #include "../string_table.h"
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
-#include "../AntigasFilter.h"
-#include "../RepairKit.h"
+//#include "../AntigasFilter.h"
+//#include "../RepairKit.h"
 #include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
@@ -50,10 +50,6 @@ LPCSTR ef_quick_eat_values_names[] =
 	"eat_thirst",
 	"eat_psy_health",
 
-	"charge_level",
-	"filter_condition",
-	"restore_condition",
-
 	"eat_intoxication",
 	"eat_radiation",
 	"eat_sleepeness",
@@ -78,11 +74,6 @@ LPCSTR quick_eat_influence_caption[] =
 	"ui_inv_thirst",
 	"ui_inv_psy_health",
 
-	//M.F.S Team additions
-	"ui_inv_battery",
-	"ui_inv_filter_condition",
-	"ui_inv_repair_kit_condition",
-
 	"ui_inv_intoxication",
 	"ui_inv_radiation",
 	"ui_inv_sleepeness",
@@ -106,11 +97,6 @@ LPCSTR ef_quick_eat_nodes_names[] =
 	"quick_eat_satiety",
 	"quick_eat_thirst",
 	"quick_eat_psy_health",
-
-	//M.F.S Team additions
-	"quick_eat_battery",
-	"quick_eat_filter_condition",
-	"quick_eat_repair_kit_condition",
 
 	"quick_eat_intoxication",
 	"quick_eat_radiation",
@@ -254,36 +240,36 @@ void CUIBoosterInfo::InitFromXml(CUIXml& xml)
 	name = CStringTable().translate("ui_inv_effect_time").c_str();
 	m_booster_time->SetCaption(name);
 
-	xml.SetLocalRoot( stored_root );
+	xml.SetLocalRoot(stored_root);
 }
 
 void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 {
 	DetachAll();
-	AttachChild( m_Prop_line );
+	AttachChild(m_Prop_line);
 
-	CActor* actor = smart_cast<CActor*>( Level().CurrentViewEntity() );
-	if ( !actor )
+	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	if (!actor)
 	{
 		return;
 	}
 
 	const shared_str& section = pInvItem.object().cNameSect();
 	CEatableItem* eatable = pInvItem.cast_eatable_item();
-	CAntigasFilter* pFilter = pInvItem.cast_filter();
-	CRepairKit* pRepairKit = pInvItem.cast_repair_kit();
+	//CAntigasFilter* pFilter = pInvItem.cast_filter();
+	//CRepairKit* pRepairKit = pInvItem.cast_repair_kit();
 	CEntityCondition::BOOSTER_MAP boosters = actor->conditions().GetCurBoosterInfluences();
 
 	float val = 0.0f, max_val = 1.0f, max_value = 0.0f;
 	Fvector2 pos;
-	float h = m_Prop_line->GetWndPos().y+m_Prop_line->GetWndSize().y;
+	float h = m_Prop_line->GetWndPos().y + m_Prop_line->GetWndSize().y;
 
 	for (u32 i = 0; i < eBoostExplImmunity; ++i)
 	{
-		if(pSettings->line_exist(section.c_str(), ef_boosters_values_names[i]))
+		if (pSettings->line_exist(section.c_str(), ef_boosters_values_names[i]))
 		{
-			val	= pSettings->r_float(section, ef_boosters_values_names[i]);
-			if(fis_zero(val))
+			val = pSettings->r_float(section, ef_boosters_values_names[i]);
+			if (fis_zero(val))
 				continue;
 
 			EBoostParams type = (EBoostParams)i;
@@ -356,11 +342,11 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 			if (eatable && i == _item_quick_intoxication)
 				val += eatable->m_fSpoliage;
 
+			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
 			if (fis_zero(val))
 				continue;
 
 			int vle = 2;
-			//vle: 0 - color from node; 1 - negative value is green, positive value is red(radiaton for example); 2 - negative value is red, positive value is green(satiety, health for example)
 			if (i >= _item_quick_intoxication)
 				vle = 1;
 
@@ -496,10 +482,9 @@ void UIBoosterInfoItem::SetValue(float value, int vle, float max_val)
 	m_show_sign ? xr_sprintf(buf, "%+.0f", value) : xr_sprintf(buf, "%.0f", value);
 
 	xr_sprintf(buf2, "%.0f", max_val);
-	
-	LPSTR str, str2, comp_str;
 
-	if(m_unit_str.size())
+	LPSTR str, str2, comp_str;
+	if (m_unit_str.size())
 		STRCONCAT(str, buf, " ", m_unit_str.c_str());
 	else
 		STRCONCAT(str, buf);

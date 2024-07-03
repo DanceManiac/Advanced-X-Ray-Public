@@ -21,18 +21,22 @@
 #include "UIActorMenu.h"
 #include "UIInventoryUtilities.h"
 
-#include "../Torch.h"
-#include "../CustomDetector.h"
+#include "../AdvancedXrayGameConstants.h"
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
+#include "../AntigasFilter.h"
+#include "../CustomDetector.h"
 #include "../CustomBackpack.h"
-#include "../AdvancedXrayGameConstants.h"
+#include "../RepairKit.h"
+#include "../Torch.h"
 
 CUIInventoryItem::CUIInventoryItem()
 {
 	m_af_radius			= nullptr;
 	m_af_vis_radius		= nullptr;
 	m_charge_level		= nullptr;
+	m_filter_cond		= nullptr;
+	m_rep_kit_cond		= nullptr;
 	m_max_charge		= nullptr;
 	m_uncharge_speed	= nullptr;
 	m_artefacts_count	= nullptr;
@@ -48,6 +52,8 @@ CUIInventoryItem::~CUIInventoryItem()
 	xr_delete(m_af_radius);
 	xr_delete(m_af_vis_radius);
 	xr_delete(m_charge_level);
+	xr_delete(m_filter_cond);
+	xr_delete(m_rep_kit_cond);
 	xr_delete(m_max_charge);
 	xr_delete(m_uncharge_speed);
 	xr_delete(m_artefacts_count);
@@ -92,6 +98,20 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 	m_charge_level->SetAutoDelete(false);
 	LPCSTR name = CStringTable().translate("ui_inv_battery").c_str();
 	m_charge_level->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_filter_cond = xr_new<CUIInventoryItemInfo>();
+	m_filter_cond->Init(xml, "filter_condition");
+	m_filter_cond->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_filter_condition").c_str();
+	m_filter_cond->SetCaption(name);
+	xml.SetLocalRoot(base_node);
+
+	m_rep_kit_cond = xr_new<CUIInventoryItemInfo>();
+	m_rep_kit_cond->Init(xml, "repair_kit_condition");
+	m_rep_kit_cond->SetAutoDelete(false);
+	name = CStringTable().translate("ui_inv_battery").c_str();
+	m_rep_kit_cond->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 
 	m_af_radius = xr_new<CUIInventoryItemInfo>();
@@ -186,6 +206,9 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
 	CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(&pInvItem);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
+	CBattery* pBattery = smart_cast<CBattery*>(&pInvItem);
+	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(&pInvItem);
+	CRepairKit* pKit = smart_cast<CRepairKit*>(&pInvItem);
 
 	if (!actor)
 	{
@@ -199,10 +222,13 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
 	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
 	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
-
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet || ShowChargeAnomDet && pAnomDet)
+	
+	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/ || pBattery)
 	{
-		val = pInvItem.GetChargeToShow() <= 0 ? 0 : pInvItem.GetChargeToShow() * 100.f;
+		if (pBattery)
+			val = pBattery->GetCurrentChargeLevel() <= 0 ? 0.f : pBattery->GetCurrentChargeLevel() * 100.f;
+		else
+			val = pInvItem.GetChargeToShow() <= 0 ? 0.f : pInvItem.GetChargeToShow() * 100.f;
 		// (!fis_zero(val))
 		{
 			m_charge_level->SetValue(val, 0, 0);
@@ -212,6 +238,34 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_charge_level->GetWndSize().y;
 			AttachChild(m_charge_level);
+		}
+	}
+	if (pFilter)
+	{
+		val = pFilter->GetFilterCondition() <= 0 ? 0.f : pFilter->GetFilterCondition() * 100.f;
+		// (!fis_zero(val))
+		{
+			m_filter_cond->SetValue(val, 0, 0);
+			pos.set(m_filter_cond->GetWndPos());
+			pos.y = h;
+			m_filter_cond->SetWndPos(pos);
+
+			h += m_filter_cond->GetWndSize().y;
+			AttachChild(m_filter_cond);
+		}
+	}
+	if (pKit)
+	{
+		val = pKit->GetRepairKitCondition() <= 0 ? 0.f : pKit->GetRepairKitCondition() * 100.f;
+		// (!fis_zero(val))
+		{
+			m_rep_kit_cond->SetValue(val, 0, 0);
+			pos.set(m_rep_kit_cond->GetWndPos());
+			pos.y = h;
+			m_rep_kit_cond->SetWndPos(pos);
+
+			h += m_rep_kit_cond->GetWndSize().y;
+			AttachChild(m_rep_kit_cond);
 		}
 	}
 	if (pDet)

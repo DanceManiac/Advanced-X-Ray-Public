@@ -374,16 +374,6 @@
 		</value>
 	</quick_eat_bleeding>
 	
-	<quick_eat_battery x="0" y="0" width="214" height="20" >
-		<caption x="0" y="0" width="15" height="20" stretch="1">
-			<texture>ui_item_battery_icon</texture>
-			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
-		</caption>
-		<value x="117" y="0" width="30" height="20" magnitude="100" unit_str="%">
-			<text font="letterica16" vert_align="c"/>
-		</value>
-	</quick_eat_battery>
-	
 	<quick_eat_thirst x="0" y="0" width="214" height="20" >
 		<caption x="0" y="0" width="15" height="20" stretch="1">
 			<texture>ui_mfs_thirst_restore_speed</texture>
@@ -453,26 +443,6 @@
 			<text font="letterica16" vert_align="c"/>
 		</value>
 	</quick_eat_withdrawal>
-	
-	<quick_eat_filter_condition x="0" y="0" width="214" height="20" >
-		<caption x="0" y="0" width="15" height="20" stretch="1">
-			<texture>ui_item_filter_icon</texture>
-			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
-		</caption>
-		<value x="117" y="0" width="30" height="20" magnitude="100" show_sign="0" unit_str="%">
-			<text font="letterica16" vert_align="c"/>
-		</value>
-	</quick_eat_filter_condition>
-	
-	<quick_eat_repair_kit_condition x="0" y="0" width="214" height="20" >
-		<caption x="0" y="0" width="15" height="20" stretch="1">
-			<texture>ui_item_repair_kit_icon</texture>
-			<text color="ui_3" font="letterica16" vert_align="c" x="18" y="0"/>
-		</caption>
-		<value x="117" y="0" width="30" height="20" magnitude="100" show_sign="1" unit_str="%">
-			<text font="letterica16" vert_align="c"/>
-		</value>
-	</quick_eat_repair_kit_condition>
 	
 	<quick_eat_psy_health x="0" y="0" width="214" height="20" >
 		<caption x="0" y="0" width="15" height="20" stretch="1">

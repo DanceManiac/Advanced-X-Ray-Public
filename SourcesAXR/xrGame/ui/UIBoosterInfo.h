@@ -17,8 +17,7 @@ public:
 			void	SetInfo					(CInventoryItem& pInvItem);
 
 protected:
-
-	enum 
+	enum
 	{
 		_item_start = 0,
 		_item_boost_health_restore = _item_start,
@@ -66,10 +65,6 @@ protected:
 		//M.F.S Team additions
 		_item_quick_thirst,
 		_item_quick_psy_health,
-
-		_item_quick_battery,
-		_item_quick_filter,
-		_item_quick_repair_condition,
 
 		_item_quick_intoxication,
 		_item_quick_radiation,

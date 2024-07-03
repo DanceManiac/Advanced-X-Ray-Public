@@ -171,3 +171,9 @@ float CBattery::GetCurrentChargeLevel() const
 {
 	return m_fBatteryChargeLevel;
 }
+
+void CBattery::ChangeChargeLevel(float val)
+{
+	m_fBatteryChargeLevel += val;
+	clamp(m_fBatteryChargeLevel, 0.f, 1.f);
+}
