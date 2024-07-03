@@ -213,6 +213,9 @@
 	<string id="st_charge_item">
 		<text>Зарядить:</text>
 	</string>
+	<string id="st_charge">
+		<text>заряд</text>
+	</string>
 	<string id="ui_st_walk_inertion">
 		<text>Инерция ходьбы героя</text>
 	</string>

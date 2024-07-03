@@ -17,6 +17,10 @@
 		<text align="r" x="0" y="0" font="letterica18" r="135" g="128" b="122">st_condition</text>
 	</static_condition>
 
+	<static_charge x="113" y="222" width="95" height="20" stretch="1">
+		<text align="r" x="0" y="0" font="letterica18" r="135" g="128" b="122">st_charge</text>
+	</static_charge>
+
 	<descr_list x="24" y="245" width="300" height="193" always_show_scroll="0" left_ident="16">
 		<font font="letterica16" r="240" g="217" b="182"/>
 	</descr_list>

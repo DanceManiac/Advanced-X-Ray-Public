@@ -33,6 +33,7 @@ CUIItemInfo::CUIItemInfo()
 	UIItemImageSize.set			(0.0f,0.0f);
 	UICondProgresBar			= NULL;
 	UICondition					= NULL;
+	UICharge					= NULL;
 	UICost						= NULL;
 	UIWeight					= NULL;
 	UIItemImage					= NULL;
@@ -104,6 +105,16 @@ void CUIItemInfo::Init(LPCSTR xml_name){
 		AttachChild					(UICondition);
 		UICondition->SetAutoDelete	(true);
 		xml_init.InitStatic			(uiXml, "static_condition", 0,		UICondition);
+		UICondition->Show			(false);
+	}
+
+	if (uiXml.NavigateToNode("static_charge", 0))
+	{
+		UICharge					= xr_new<CUIStatic>();	 
+		AttachChild					(UICharge);
+		UICharge->SetAutoDelete		(true);
+		xml_init.InitStatic			(uiXml, "static_charge", 0, UICharge);
+		UICharge->Show				(false);
 	}
 
 	if (uiXml.NavigateToNode("condition_progress", 0))
@@ -190,9 +201,33 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 
 	if (UICondProgresBar)
 	{
-		float cond							= pInvItem->GetConditionToShow();
+		float cond							= 0.f;
+
+		CTorch* flashlight					= smart_cast<CTorch*>(pInvItem);
+		CCustomDetector* detector			= smart_cast<CCustomDetector*>(pInvItem);
+		CBattery* battery					= smart_cast<CBattery*>(pInvItem);
 		UICondProgresBar->Show				(true);
-		UICondProgresBar->SetProgressPos	( cond*100.0f+1.0f-EPS );
+		if (UICharge && (GameConstants::GetTorchHasBattery() && flashlight || GameConstants::GetAnoDetectorUseBattery() && detector || battery))
+		{
+			if (flashlight && GameConstants::GetTorchHasBattery())
+				cond = flashlight->GetChargeToShow();
+			if (detector && GameConstants::GetAnoDetectorUseBattery())
+				cond = detector->GetChargeToShow();
+			if (battery)
+				cond = battery->GetCurrentChargeLevel();
+			UICharge->Show(true);
+			if (UICondition)
+				UICondition->Show(false);
+		}
+		else
+		{
+			cond							= pInvItem->GetConditionToShow();
+			if (UICondition)
+				UICondition->Show(true);
+			if (UICharge)
+				UICharge->Show(false);
+		}
+		UICondProgresBar->SetProgressPos(cond * 100.0f + 1.0f - EPS);
 	}
 
 	if (UIDesc)
@@ -289,15 +324,16 @@ void CUIItemInfo::TryAddBoosterInfo(CInventoryItem& pInvItem)
 
 void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 {
-	CTorch* torch = smart_cast<CTorch*>(&pInvItem);
-	CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
-	//CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
-	//CArtefactContainer* af_container = smart_cast<CArtefactContainer*>(&pInvItem);
-	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(&pInvItem);
+	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
+	CCustomDetector* pArtefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
+	//CDetectorAnomaly* pAnomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
+	//CArtefactContainer* pAf_container = smart_cast<CArtefactContainer*>(&pInvItem);
+	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
+	CBattery* pBattery = smart_cast<CBattery*>(&pInvItem);
 
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
 
-	if ((torch && ShowChargeTorch /*|| artefact_detector || anomaly_detector || af_container*/ || backpack) && UIInventoryItem)
+	if ((pTorch && ShowChargeTorch || /*|| pArtefact_detector || pAnomaly_detector || pAf_container*/ pBackpack || pBattery) && UIInventoryItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);

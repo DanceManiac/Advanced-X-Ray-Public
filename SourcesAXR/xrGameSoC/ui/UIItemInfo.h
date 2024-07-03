@@ -42,6 +42,7 @@ public:
 	CUIStatic*			UIWeight;
 	CUIStatic*			UICost;
 	CUIStatic*			UICondition;
+	CUIStatic*			UICharge;
 	CUIScrollView*		UIDesc;
 	CUIProgressBar*		UICondProgresBar;
 	CUIWpnParams*		UIWpnParams;
