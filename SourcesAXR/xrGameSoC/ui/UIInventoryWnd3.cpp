@@ -16,6 +16,8 @@
 #include "UIListBoxItem.h"
 #include "../CustomOutfit.h"
 #include "../Battery.h"
+#include "../Torch.h"
+#include "../CustomDetector.h"
 
 #include "../string_table.h"
 
@@ -375,13 +377,13 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 	if (!item->Useful())
 		return;
 
-	PIItem	item_in_torch_slot = m_pInv->ItemFromSlot(TORCH_SLOT);
-	PIItem	item_in_detector_slot = m_pInv->ItemFromSlot(DETECTOR_SLOT);
+	CTorch* item_in_torch_slot = smart_cast<CTorch*>(m_pInv->ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* item_in_detector_slot = smart_cast<CCustomDetector*>(m_pInv->ItemFromSlot(DETECTOR_SLOT));
 	//PIItem	item_in_anomaly_detector_slot = m_pInv->ItemFromSlot(DOSIMETER_SLOT);
 
 	if (pBattery)
 	{
-		if (item_in_torch_slot)
+		if (item_in_torch_slot && item_in_torch_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_torch_slot->m_SuitableBatteries))
 		{
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_torch_slot->m_name.c_str());
@@ -389,7 +391,7 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 			b_show = true;
 		}
 
-		if (item_in_detector_slot)
+		if (item_in_detector_slot && item_in_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_detector_slot->m_SuitableBatteries))
 		{
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_detector_slot->m_name.c_str());
@@ -410,7 +412,7 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 	{
 		act_str = "st_use";
 	}
-	else if (pEatableItem)
+	else if (pEatableItem && !pBattery)
 	{
 		if (pBottleItem)
 		{

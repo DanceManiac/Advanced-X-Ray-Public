@@ -31,6 +31,8 @@
 #include "../CustomOutfit.h"
 #include "../player_hud.h"
 #include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
+#include "../Torch.h"
 #include "../PDA.h"
 #include "../Battery.h"
 #include "../AntigasFilter.h"
@@ -1137,9 +1139,9 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CSleepingBag*	pSleepingBag	= smart_cast<CSleepingBag*>	(item);
 
 	CInventory*	inv = &m_pActorInvOwner->inventory();
-	PIItem	item_in_torch_slot = inv->ItemFromSlot(TORCH_SLOT);
-	PIItem	item_in_art_detector_slot = inv->ItemFromSlot(DETECTOR_SLOT);
-	PIItem	item_in_anomaly_detector_slot = inv->ItemFromSlot(DOSIMETER_SLOT);
+	CTorch* item_in_torch_slot = smart_cast<CTorch*>(inv->ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* item_in_art_detector_slot = smart_cast<CCustomDetector*>(inv->ItemFromSlot(DETECTOR_SLOT));
+	CDetectorAnomaly* item_in_anomaly_detector_slot = smart_cast<CDetectorAnomaly*>(inv->ItemFromSlot(DOSIMETER_SLOT));
 	PIItem	item_in_outfit_slot = inv->ItemFromSlot(OUTFIT_SLOT);
 	PIItem	item_in_knife_slot = inv->ItemFromSlot(KNIFE_SLOT);
 	PIItem	item_in_wpn1_slot = inv->ItemFromSlot(PISTOL_SLOT);
@@ -1178,9 +1180,13 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	{
 		act_str = "st_use";
 	}
+	else if ( pBottleItem )
+	{
+		act_str = "st_drink";
+	}
 	else if (pBattery)
 	{
-		if (item_in_torch_slot)
+		if (item_in_torch_slot && item_in_torch_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_torch_slot->m_SuitableBatteries))
 		{
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_torch_slot->m_name.c_str());
@@ -1188,7 +1194,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			b_show = true;
 		}
 
-		if (item_in_art_detector_slot)
+		if (item_in_art_detector_slot && item_in_art_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_art_detector_slot->m_SuitableBatteries))
 		{
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_art_detector_slot->m_name.c_str());
@@ -1196,7 +1202,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			b_show = true;
 		}
 
-		if (item_in_anomaly_detector_slot)
+		if (item_in_anomaly_detector_slot && item_in_anomaly_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_anomaly_detector_slot->m_SuitableBatteries))
 		{
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
