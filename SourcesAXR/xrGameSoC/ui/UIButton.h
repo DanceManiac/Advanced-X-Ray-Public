@@ -56,8 +56,8 @@ public:
 	// Работа с акселератором
 	// Код акселератора берется из файла dinput.h, из DirectX SDK.
 	// Например: кнопка A - код 0x1E(DIK_A)
-	void                SetAccelerator			(int iAccel, int idx);
-	const int			GetAccelerator			(int idx) const			{VERIFY(idx==0||idx==1); return m_uAccelerator[idx]; }
+	void				SetAccelerator			(int iAccel, int idx)	{VERIFY(idx>=0 && idx<4); m_uAccelerator[idx] = iAccel; }
+	const int			GetAccelerator			(int idx) const			{VERIFY(idx>=0 && idx<4); return m_uAccelerator[idx]; }
 	IC bool				IsAccelerator			(int iAccel) const		{return (m_uAccelerator[0]==iAccel)||(m_uAccelerator[1]==iAccel) ;}
 
 	void				SetPressMode			(E_PRESS_MODE ePressMode)	{m_ePressMode = ePressMode;}

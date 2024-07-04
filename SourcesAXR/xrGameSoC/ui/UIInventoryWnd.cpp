@@ -38,11 +38,14 @@ using namespace InventoryUtilities;
 #include "UI3tButton.h"
 
 #include "AdvancedXrayGameConstants.h"
+#include "../../xrEngine/x_ray.h"
 
 #define				INVENTORY_ITEM_XML		"inventory_item.xml"
 #define				INVENTORY_XML			"inventory_new.xml"
 
 CUIInventoryWnd*	g_pInvWnd = NULL;
+
+extern bool SSFX_UI_DoF_active;
 
 CUIInventoryWnd::CUIInventoryWnd()
 {
@@ -409,9 +412,10 @@ void CUIInventoryWnd::Show()
 	InitInventory			();
 	inherited::Show			();
 
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentEntity());
+
 	if (!IsGameTypeSingle())
 	{
-		CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
 		if(!pActor) return;
 
 		pActor->SetWeaponHideState(INV_STATE_INV_WND, true);
@@ -437,6 +441,18 @@ void CUIInventoryWnd::Show()
 
 	Update								();
 	PlaySnd								(eInvSndOpen);
+
+	if (pActor && GameConstants::GetHideWeaponInInventory())
+	{
+		pActor->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	}
+
+	if (!SSFX_UI_DoF_active)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		SSFX_UI_DoF_active = true;
+	}
 }
 
 void CUIInventoryWnd::Hide()
@@ -462,6 +478,18 @@ void CUIInventoryWnd::Hide()
 		if(!pActor)			return;
 
 		pActor->SetWeaponHideState(INV_STATE_INV_WND, false);
+	}
+
+	if (pActor && GameConstants::GetHideWeaponInInventory())
+	{
+		pActor->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	}
+
+	if (SSFX_UI_DoF_active)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		SSFX_UI_DoF_active = false;
 	}
 }
 

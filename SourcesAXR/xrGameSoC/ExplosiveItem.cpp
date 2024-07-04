@@ -20,9 +20,11 @@ void CExplosiveItem::Load(LPCSTR section)
 {
 	inherited::Load							(section);
 	CExplosive::Load						(section);
-	m_flags.set								(FUsingCondition, TRUE);
 	CDelayedActionFuse::Initialize			(pSettings->r_float(section,"time_to_explode"),pSettings->r_float(section,"condition_to_explode"));
 	VERIFY(pSettings->line_exist			(section,"set_timer_particles"));
+
+	// Added by Axel, to enable optional condition use on any item
+	m_flags.set								(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
 }
 
 void CExplosiveItem::net_Destroy()

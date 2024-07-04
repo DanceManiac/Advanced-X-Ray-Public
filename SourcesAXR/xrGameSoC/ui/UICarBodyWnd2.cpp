@@ -18,6 +18,12 @@
 #include "Weapon.h"
 #include "WeaponMagazined.h"
 #include "WeaponMagazined.h"
+#include "Car.h"
+#include "../Battery.h"
+#include "../Torch.h"
+#include "../CustomDetector.h"
+
+#include "../string_table.h"
 
 void CUICarBodyWnd::ActivatePropertiesBox()
 {
@@ -68,79 +74,82 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 	switch (m_pUIPropertiesBox->GetClickedItem()->GetTAG())
 	{
 	case INVENTORY_EAT_ACTION:
-	{
-		//	HUD().GetUI()->UIGame()->ActorMenu().SetCurrentConsumable(cell_item);
-		EatItem(cell_item);
-		SetCurrentItem(NULL);
-		break;
-	}
-	case INVENTORY_DROP_ACTION:
-	{
-		void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
-		bool b_all = (d == (void*)33);
-
-		DropCurrentItem(b_all);
-		break;
-	}
-	case INVENTORY_ALL_TO_BAG_ACTION:
-	{
-#pragma todo("find out why it crashes")
-		/*CUIDragDropListEx* old_owner = cell_item->OwnerList();
-		CUIDragDropListEx* new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
-		if (m_pOthersObject)
 		{
-			u32 cnt = CurrentItem()->ChildsCount();
-			for (u32 i = 0; i < cnt; ++i)
+			//	HUD().GetUI()->UIGame()->ActorMenu().SetCurrentConsumable(cell_item);
+			EatItem(cell_item);
+			SetCurrentItem(NULL);
+			break;
+		}
+	case INVENTORY_DROP_ACTION:
+		{
+			void* d = m_pUIPropertiesBox->GetClickedItem()->GetData();
+			bool b_all = (d == (void*)33);
+
+			DropCurrentItem(b_all);
+			break;
+		}
+	case INVENTORY_ALL_TO_BAG_ACTION:
+		{
+	#pragma todo("find out why it crashes")
+			/*CUIDragDropListEx* old_owner = cell_item->OwnerList();
+			CUIDragDropListEx* new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
+			if (m_pOthersObject)
 			{
-				CUICellItem* itm = CurrentItem()->PopChild();
-				PIItem iitm = (PIItem)itm->m_pData;
-				if (TransferItem(iitm, (old_owner == m_pUIOthersBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList)))
+				u32 cnt = CurrentItem()->ChildsCount();
+				for (u32 i = 0; i < cnt; ++i)
 				{
-					CUICellItem* ci = old_owner->RemoveItem(itm, true);
+					CUICellItem* itm = CurrentItem()->PopChild();
+					PIItem iitm = (PIItem)itm->m_pData;
+					if (TransferItem(iitm, (old_owner == m_pUIOthersBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList)))
+					{
+						CUICellItem* ci = old_owner->RemoveItem(itm, true);
+						new_owner->SetItem(ci);
+					}
+				}
+			}
+			else
+			{
+				u32 cnt = CurrentItem()->ChildsCount();
+				bool bMoveDirection = (old_owner == m_pUIOthersBagList);
+
+				for (u32 i = 0; i < cnt; ++i)
+				{
+					CUICellItem* itm = CurrentItem()->PopChild();
+					PIItem iitm = (PIItem)itm->m_pData;
+					u16 tmp_id = (smart_cast<CGameObject*>(m_pOurObject))->ID();
+					move_item(bMoveDirection ? m_pInventoryBox->ID() : tmp_id, bMoveDirection ? tmp_id : m_pInventoryBox->ID(), iitm->object().ID());
+				}
+
+			}
+			SetCurrentItem(NULL);*/
+			break;
+		}
+	case INVENTORY_TO_BAG_ACTION:
+		{
+			CUIDragDropListEx* old_owner = cell_item->OwnerList();
+			CUIDragDropListEx* new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
+			if (m_pOthersObject)
+			{
+				if (TransferItem(CurrentIItem(), (old_owner == m_pUIOthersBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList)))
+				{
+					CUICellItem* ci = old_owner->RemoveItem(CurrentItem(), false);
 					new_owner->SetItem(ci);
 				}
 			}
-		}
-		else
-		{
-			u32 cnt = CurrentItem()->ChildsCount();
-			bool bMoveDirection = (old_owner == m_pUIOthersBagList);
-
-			for (u32 i = 0; i < cnt; ++i)
+			else
 			{
-				CUICellItem* itm = CurrentItem()->PopChild();
-				PIItem iitm = (PIItem)itm->m_pData;
+				bool bMoveDirection = (old_owner == m_pUIOthersBagList);
+
 				u16 tmp_id = (smart_cast<CGameObject*>(m_pOurObject))->ID();
-				move_item(bMoveDirection ? m_pInventoryBox->ID() : tmp_id, bMoveDirection ? tmp_id : m_pInventoryBox->ID(), iitm->object().ID());
+
+				if (m_pInventoryBox)
+					move_item(bMoveDirection ? m_pInventoryBox->ID() : tmp_id, bMoveDirection ? tmp_id : m_pInventoryBox->ID(), CurrentIItem()->object().ID());
+				else
+					move_item(bMoveDirection ? m_pCar->ID() : tmp_id, bMoveDirection ? tmp_id : m_pCar->ID(), CurrentIItem()->object().ID());
 			}
-
+			SetCurrentItem(NULL);
+			break;
 		}
-		SetCurrentItem(NULL);*/
-		break;
-	}
-	case INVENTORY_TO_BAG_ACTION:
-	{
-		CUIDragDropListEx* old_owner = cell_item->OwnerList();
-		CUIDragDropListEx* new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
-		if (m_pOthersObject)
-		{
-			if (TransferItem(CurrentIItem(), (old_owner == m_pUIOthersBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList)))
-			{
-				CUICellItem* ci = old_owner->RemoveItem(CurrentItem(), false);
-				new_owner->SetItem(ci);
-			}
-		}
-		else
-		{
-			bool bMoveDirection = (old_owner == m_pUIOthersBagList);
-
-			u16 tmp_id = (smart_cast<CGameObject*>(m_pOurObject))->ID();
-			move_item(bMoveDirection ? m_pInventoryBox->ID() : tmp_id, bMoveDirection ? tmp_id : m_pInventoryBox->ID(), CurrentIItem()->object().ID());
-
-		}
-		SetCurrentItem(NULL);
-		break;
-	}
 	case INVENTORY_DETACH_SCOPE_ADDON:
 		if (weapon)
 		{
@@ -196,24 +205,51 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 		}
 		break;
 	case INVENTORY_UNLOAD_MAGAZINE:
-	{
-		CWeaponMagazined* weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)cell_item->m_pData);
-		if (!weap_mag)
 		{
+			CWeaponMagazined* weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)cell_item->m_pData);
+			if (!weap_mag)
+			{
+				break;
+			}
+			weap_mag->UnloadMagazine();
+			for (u32 i = 0; i < cell_item->ChildsCount(); ++i)
+			{
+				CUICellItem* child_itm = cell_item->Child(i);
+				CWeaponMagazined* child_weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData);
+				if (child_weap_mag)
+				{
+					child_weap_mag->UnloadMagazine();
+				}
+			}
 			break;
 		}
-		weap_mag->UnloadMagazine();
-		for (u32 i = 0; i < cell_item->ChildsCount(); ++i)
+	case BATTERY_CHARGE_TORCH:
 		{
-			CUICellItem* child_itm = cell_item->Child(i);
-			CWeaponMagazined* child_weap_mag = smart_cast<CWeaponMagazined*>((CWeapon*)child_itm->m_pData);
-			if (child_weap_mag)
-			{
-				child_weap_mag->UnloadMagazine();
-			}
+			CBattery* battery = smart_cast<CBattery*>(item);
+			if (!battery)
+				break;
+			battery->m_iUseFor = 1;
+			EatItem(cell_item);
+			break;
 		}
-		break;
-	}
+	case BATTERY_CHARGE_DETECTOR:
+		{
+			CBattery* battery = smart_cast<CBattery*>(item);
+			if (!battery)
+				break;
+			battery->m_iUseFor = 2;
+			EatItem(cell_item);
+			break;
+		}
+	/*case BATTERY_CHARGE_DOSIMETER:
+		{
+			CBattery* battery = smart_cast<CBattery*>(CurrentItem());
+			if (!battery)
+				break;
+			battery->m_iUseFor = 2;
+			TryUseItem((PIItem)(UIPropertiesBox.GetClickedItem()->GetData()));
+			break;
+		} */
 	}//switch
 
 	SetCurrentItem(NULL);
@@ -316,17 +352,49 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 	CAntirad* pAntirad			= smart_cast<CAntirad*>		(item);
 	CEatableItem* pEatableItem	= smart_cast<CEatableItem*>	(item);
 	CBottleItem* pBottleItem	= smart_cast<CBottleItem*>	(item);
+	CBattery* pBattery			= smart_cast<CBattery*>(item);
 
 	LPCSTR act_str = NULL;
 
 	if (!item->Useful())
 		return;
 
+	CTorch* item_in_torch_slot = smart_cast<CTorch*>(m_pOurObject->inventory().ItemFromSlot(TORCH_SLOT));
+	CCustomDetector* item_in_detector_slot = smart_cast<CCustomDetector*>(m_pOurObject->inventory().ItemFromSlot(DETECTOR_SLOT));
+	//PIItem	item_in_anomaly_detector_slot = m_pOurObject->inventory().ItemFromSlot(DOSIMETER_SLOT);
+
+	if (pBattery)
+	{
+		if (item_in_torch_slot && item_in_torch_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_torch_slot->m_SuitableBatteries))
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_torch_slot->m_name.c_str());
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_torch_slot, BATTERY_CHARGE_TORCH);
+			b_show = true;
+		}
+
+		if (item_in_detector_slot && item_in_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_detector_slot->m_SuitableBatteries))
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_detector_slot->m_name.c_str());
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_detector_slot, BATTERY_CHARGE_DETECTOR);
+			b_show = true;
+		}
+
+		/*if (item_in_anomaly_detector_slot) // Это потом пригодится ещё
+		{
+			shared_str str = CStringTable().translate("st_charge_item");
+			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
+			UIPropertiesBox.AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
+			b_show = true;
+		}  */
+		return;
+	}
 	if (pMedkit || pAntirad)
 	{
 		act_str = "st_use";
 	}
-	else if (pEatableItem)
+	else if (pEatableItem && !pBattery)
 	{
 		if (pBottleItem)
 		{

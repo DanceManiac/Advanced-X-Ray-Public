@@ -72,6 +72,8 @@ public:
 			void Recharge			(float val);
 			bool IsNecessaryItem	(const shared_str& item_sect, xr_vector<shared_str> item);
 
+			float GetVisRadius() { return m_fRadius; };
+
 			float	m_fUnchargeSpeed;
 			xr_vector<shared_str> m_SuitableBatteries;
 

@@ -102,8 +102,8 @@ public:
 	float							m_fWalkAccel;
 
 	CHitImmunity 					m_ArtefactHitImmunities;
-	HitImmunity::HitTypeSVec		m_HitTypeProtection;
-	HitImmunity::HitTypeSVec		m_ConstHitTypeProtection;
+	xr_hash_map<ALife::EHitType, float>	m_HitTypeProtection;
+	xr_hash_map<ALife::EHitType, float>	m_ConstHitTypeProtection;
 
 	bool							m_bVolumetricLights;
 	float							m_fVolumetricQuality;

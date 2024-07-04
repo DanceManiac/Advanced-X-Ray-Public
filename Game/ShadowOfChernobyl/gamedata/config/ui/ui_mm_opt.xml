@@ -158,91 +158,115 @@
 		<cap_vis_dist x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_vis_distance</text>
 		</cap_vis_dist>
-		<track_vis_dist x="194" y="0" width="245" height="21" step="0.1">
+		<track_vis_dist x="170" y="0" width="245" height="21" min="0.4" max="1.5" step="0.1">
 			<options_item entry="rs_vis_distance" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%.1f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_vis_dist>
 		
 		<cap_geometry_lod x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_geometry_lod</text>
 		</cap_geometry_lod>
-		<track_geometry_lod x="194" y="0" width="245" height="21" step="0.1">
+		<track_geometry_lod x="170" y="0" width="245" height="21" min="0.1" max="3.0" step="0.1">
 			<options_item entry="r__geometry_lod" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%.1f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_geometry_lod>
 		
 		<cap_detail_density x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_detail_density</text>
 		</cap_detail_density>
-		<track_detail_density x="194" y="0" width="245" height="21" invert="1" step="0.02">
+		<track_detail_density x="170" y="0" width="245" height="21" invert="1" min="0.3" max="1.5" step="0.02">
 			<options_item entry="r__detail_density" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%.1f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_detail_density>
 
 		<cap_texture_lod x="20" y="0" width="143" height="21" >
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_texture_quality</text>
 		</cap_texture_lod>
-		<track_texture_lod x="194" y="0" width="245" height="21" invert="1" step="1" is_integer="1">
+		<track_texture_lod x="170" y="0" width="245" height="21" invert="1" min="0" max="4" step="1" is_integer="1">
 			<options_item entry="texture_lod" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%d">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_texture_lod>
 	
 		<cap_aniso x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_anisotropic</text>
 		</cap_aniso>
-		<track_aniso x="194" y="0" width="245" height="21" step="1" is_integer="1">
+		<track_aniso x="170" y="0" width="245" height="21" min="1" max="16" step="1" is_integer="1">
 			<options_item entry="r__tf_aniso" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%d">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_aniso>
 		
 		<cap_ssample x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_supersample</text>
 		</cap_ssample>
-		<track_ssample x="194" y="0" width="245" height="21" step="1" is_integer="1">
+		<track_ssample x="170" y="0" width="245" height="21" min="1" max="8" step="1" is_integer="1">
 			<options_item entry="r__supersample" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%d">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_ssample>
 
 		<cap_r2_sun x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_r2_sun</text>
 		</cap_r2_sun>
-		<check_r2_sun x="194" y="0" width="30" height="21">
+		<check_r2_sun x="170" y="0" width="30" height="21">
 			<options_item entry="r2_sun" group="mm_opt_video"/>
 		</check_r2_sun>
 		
 		<cap_r2_sun_details x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_r2_sun_details</text>
 		</cap_r2_sun_details>
-		<check_r2_sun_details x="194" y="0" width="30" height="21">
+		<check_r2_sun_details x="170" y="0" width="30" height="21">
 			<options_item entry="r2_sun_details" group="mm_opt_video"/>
 		</check_r2_sun_details>
 
 		<cap_light_distance x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_light_distance</text>
 		</cap_light_distance>
-		<track_light_distance x="194" y="0" width="245" height="21">
+		<track_light_distance x="170" y="0" width="245" height="21" min="0.2" max="1.0" step="0.1">
 			<options_item entry="r2_slight_fade" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%.1f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_light_distance>
 		
 		<cap_npc_torch x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_npc_torch</text>
 		</cap_npc_torch>
-		<check_npc_torch x="194" y="0" width="243" height="21">
+		<check_npc_torch x="170" y="0" width="243" height="21">
 			<options_item entry="ai_use_torch_dynamic_lights" group="mm_opt_video_adv"/>
 		</check_npc_torch>
 		
 		<cap_particles_distance x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_sun_quality</text>
 		</cap_particles_distance>
-		<track_particles_distance x="194" y="0" width="245" height="21" step="0.1">
+		<track_particles_distance x="170" y="0" width="245" height="21" min="0.5" max="3.0" step="0.1">
 			<options_item entry="r2_ls_squality" group="mm_opt_video_adv"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%.1f">
+					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_particles_distance>
 		
 		<cap_vsync x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_vsync</text>
 		</cap_vsync>
-		<check_vsync x="194" y="0" width="30" height="21">
+		<check_vsync x="170" y="0" width="30" height="21">
 			<options_item entry="rs_v_sync" group="mm_opt_video_adv"/>
 		</check_vsync>
 
 		<cap_60hz x="20" y="0" width="143" height="21">
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_60_hz</text>
 		</cap_60hz>
-		<check_60hz x="194" y="0" width="30" height="21">
+		<check_60hz x="170" y="0" width="30" height="21">
 			<options_item entry="rs_refresh_60hz" group="mm_opt_video_adv"/>
 		</check_60hz>
 		
@@ -268,11 +292,17 @@
 			<text font="letterica16" r="215" g="195" b="170">ui_mm_eax</text>
 		</check_eax>
 		
-		<track_mastervolume x="194" y="20" width="245" height="21">
+		<track_mastervolume x="194" y="20" width="245" height="21" min="0.0" max="1.0" step="0.1">
 			<options_item entry="snd_volume_eff" group="mm_opt_sound"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%.1f">
+						<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_mastervolume>
-		<track_musicvolume x="194" y="45" width="245" height="21">
+		<track_musicvolume x="194" y="45" width="245" height="21" min="0.0" max="1.0" step="0.1">
 			<options_item entry="snd_volume_music" group="mm_opt_sound"/>
+				<output_wnd x="243" y="0" width="20" height="20" format="%.1f">
+						<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
+				</output_wnd>
 		</track_musicvolume>		
 		<_list_soundquality x="194" y="70" width="245" height="21">
 			<options_item entry="snd_freq" group="mm_opt_sound"/>

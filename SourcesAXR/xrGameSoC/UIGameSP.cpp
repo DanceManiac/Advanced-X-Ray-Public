@@ -153,6 +153,13 @@ void CUIGameSP::StartCarBody(CInventoryOwner* pOurInv, CInventoryBox* pBox)
 	m_game->StartStopMenu			(UICarBodyMenu,true);
 }
 
+void CUIGameSP::StartCarBody(CInventoryOwner* pActorInv, CCar* pCar) //Car trunk search
+{
+	if( MainInputReceiver() )		return;
+	UICarBodyMenu->InitCarBody		(pActorInv, pCar);
+	m_game->StartStopMenu			(UICarBodyMenu,true);
+}
+
 void CUIGameSP::ReInitShownUI() 
 { 
 	if (InventoryMenu->IsShown()) 

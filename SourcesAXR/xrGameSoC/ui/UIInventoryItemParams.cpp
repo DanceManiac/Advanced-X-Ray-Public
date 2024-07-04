@@ -180,17 +180,17 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	AttachChild(m_Prop_line);
 
 	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+
+	if (!actor)
+		return;
+
 	shared_str section = pInvItem.object().cNameSect();
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
 	//CDetectorAnomaly* pAnomDet = smart_cast<CDetectorAnomaly*>(&pInvItem);
 	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
 	//CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(&pInvItem);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
-
-	if (!actor)
-	{
-		return;
-	}
+	CBattery* battery = smart_cast<CBattery*>(&pInvItem);
 
 	float val = 0.0f, max_val = 1.0f;
 	Fvector2 pos;
@@ -199,7 +199,6 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
 	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
 	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
-	CBattery* battery = smart_cast<CBattery*>(&pInvItem);
 	
 	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/ || battery)
 	{
@@ -218,35 +217,6 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 			AttachChild(m_charge_level);
 		}
 	}
-	/*if (pDet)
-	{
-		val = pDet->GetAfDetectRadius();
-		if (!fis_zero(val))
-		{
-			m_af_radius->SetValue(val, 0, 2);
-			pos.set(m_af_radius->GetWndPos());
-			pos.y = h;
-			m_af_radius->SetWndPos(pos);
-
-			h += m_af_radius->GetWndSize().y;
-			AttachChild(m_af_radius);
-		}
-	}
-
-	if (pDet)
-	{
-		val = pDet->GetAfVisRadius();
-		if (!fis_zero(val))
-		{
-			m_af_vis_radius->SetValue(val, 0, 2);
-			pos.set(m_af_vis_radius->GetWndPos());
-			pos.y = h;
-			m_af_vis_radius->SetWndPos(pos);
-
-			h += m_af_vis_radius->GetWndSize().y;
-			AttachChild(m_af_vis_radius);
-		}
-	}*/
 
 	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/)
 	{
@@ -275,6 +245,48 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 
 			h += m_uncharge_speed->GetWndSize().y;
 			AttachChild(m_uncharge_speed);
+		}
+	}
+
+	/*if (pDet)
+	{
+		val = pDet->GetAfDetectRadius();
+		if (!fis_zero(val))
+		{
+			m_af_radius->SetValue(val, 0, 2);
+			pos.set(m_af_radius->GetWndPos());
+			pos.y = h;
+			m_af_radius->SetWndPos(pos);
+
+			h += m_af_radius->GetWndSize().y;
+			AttachChild(m_af_radius);
+		}
+
+		val = pDet->GetAfVisRadius();
+		if (!fis_zero(val))
+		{
+			m_af_vis_radius->SetValue(val, 0, 2);
+			pos.set(m_af_vis_radius->GetWndPos());
+			pos.y = h;
+			m_af_vis_radius->SetWndPos(pos);
+
+			h += m_af_vis_radius->GetWndSize().y;
+			AttachChild(m_af_vis_radius);
+		}
+	}*/
+
+	if (pDet) // For anomaly detectors
+	{
+		val = pDet->GetVisRadius();
+		if (!fis_zero(val))
+		{
+			m_af_vis_radius->SetValue(val, 0, 2);
+			pos.set(m_af_vis_radius->GetWndPos());
+			pos.y = h;
+			m_af_vis_radius->SetWndPos(pos);
+
+			h += m_af_vis_radius->GetWndSize().y;
+			AttachChild(m_af_vis_radius);
 		}
 	}
 

@@ -26,14 +26,22 @@
 #include "../script_game_object.h"
 #include "../BottleItem.h"
 
+#include "AdvancedXrayGameConstants.h"
+#include "Car.h"
+#include "../../xrEngine/x_ray.h"
+
+
 #define				CAR_BODY_XML		"carbody_new.xml"
 #define				CARBODY_ITEM_XML	"carbody_item.xml"
+
+extern bool SSFX_UI_DoF_active;
 
 void move_item (u16 from_id, u16 to_id, u16 what_id);
 
 CUICarBodyWnd::CUICarBodyWnd()
 {
 	m_pInventoryBox		= NULL;
+	m_pCar				= NULL;
 	Init				();
 	Hide				();
 	m_b_need_update		= false;
@@ -147,6 +155,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
     m_pOurObject									= pOur;
 	m_pOthersObject									= NULL;
 	m_pInventoryBox									= pInvBox;
+	m_pCar											= NULL;
 	m_pInventoryBox->m_in_use						= true;
 
 	u16 our_id										= smart_cast<CGameObject*>(m_pOurObject)->ID();
@@ -165,6 +174,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
     m_pOurObject									= pOur;
 	m_pOthersObject									= pOthers;
 	m_pInventoryBox									= NULL;
+	m_pCar											= NULL;
 	
 	u16 our_id										= smart_cast<CGameObject*>(m_pOurObject)->ID();
 	u16 other_id									= smart_cast<CGameObject*>(m_pOthersObject)->ID();
@@ -212,7 +222,35 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 		known_info.clear	();
 		xr_delete			(known_info_registry);
 	}
-}  
+}
+
+void CUICarBodyWnd::InitCarBody(CInventoryOwner* pActorInv, CCar* pCar)
+{
+	m_pOurObject		= pActorInv;
+	m_pOthersObject		= NULL;
+	m_pInventoryBox		= NULL;
+	m_pCar				= pCar;
+
+	u16 our_id			= smart_cast<CGameObject*>(m_pOurObject)->ID();
+	u16 other_id		= smart_cast<CGameObject*>(pCar)->ID();
+
+	if (m_pCar || m_pCar->use_simplified_visual())
+	{
+		m_pUICharacterInfoRight->ClearInfo();
+		if (m_pCar)
+		{
+			shared_str car_tex_name = pSettings->r_string(m_pCar->cNameSect(), "icon");
+			m_pUICharacterInfoRight->UIIcon().InitTexture(car_tex_name.c_str());
+			m_pUICharacterInfoRight->UIIcon().SetStretchTexture(true);
+		}
+	}
+	else
+		return;
+
+	m_pUIPropertiesBox->Hide();
+	EnableAll();
+	UpdateLists();
+}
 
 void CUICarBodyWnd::UpdateLists_delayed()
 {
@@ -229,6 +267,18 @@ void CUICarBodyWnd::Hide()
 	inherited::Hide								();
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
+
+	if (smart_cast<CActor*>(Level().CurrentEntity()) && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	}
+
+	if (SSFX_UI_DoF_active)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		SSFX_UI_DoF_active = false;
+	}
 }
 
 void CUICarBodyWnd::UpdateLists()
@@ -254,6 +304,8 @@ void CUICarBodyWnd::UpdateLists()
 	ruck_list.clear									();
 	if(m_pOthersObject)
 		m_pOthersObject->inventory().AddAvailableItems	(ruck_list, false);
+	else if (m_pCar)
+		m_pCar->AddAvailableItems					(ruck_list);
 	else
 		m_pInventoryBox->AddAvailableItems			(ruck_list);
 
@@ -308,6 +360,18 @@ void CUICarBodyWnd::Show()
 	inherited::Show							();
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
+
+	if (smart_cast<CActor*>(Level().CurrentEntity()) && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	}
+
+	if (!SSFX_UI_DoF_active)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		SSFX_UI_DoF_active = true;
+	}
 }
 
 void CUICarBodyWnd::DisableAll()
@@ -364,8 +428,12 @@ void CUICarBodyWnd::TakeAll()
 		PIItem itm		= (PIItem)(ci->m_pData);
 		if(m_pOthersObject)
 			TransferItem	(itm, m_pOthersObject, m_pOurObject, false);
-		else{
-			move_item		(m_pInventoryBox->ID(), tmp_id, itm->object().ID());
+		else
+		{
+			if (m_pInventoryBox)
+				move_item		(m_pInventoryBox->ID(), tmp_id, itm->object().ID());
+			else
+				move_item		(m_pCar->ID(), tmp_id, itm->object().ID());
 //.			Actor()->callback(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), itm->object().lua_game_object() );
 		}
 
@@ -415,10 +483,15 @@ void CUICarBodyWnd::EatItem(CUICellItem* itm)
 	CUIDragDropListEx* owner_list		= itm->OwnerList();
 	if(owner_list==m_pUIOthersBagList)
 	{
-		u16 owner_id				= (m_pInventoryBox)?m_pInventoryBox->ID():smart_cast<CGameObject*>(m_pOthersObject)->ID();
+		u16 owner_id{};
 
-		move_item(	owner_id, //from
-					Actor()->ID(), //to
+		if (m_pCar)
+			owner_id = m_pCar->ID();
+		else
+			owner_id				= (m_pInventoryBox)?m_pInventoryBox->ID():smart_cast<CGameObject*>(m_pOthersObject)->ID();
+
+		move_item(owner_id, //from
+			Actor()->ID(), //to
 			item->object().ID());
 	}
 
@@ -450,16 +523,27 @@ bool CUICarBodyWnd::OnItemDrop(CUICellItem* itm)
 			CUICellItem* ci					= old_owner->RemoveItem(CurrentItem(), false);
 			new_owner->SetItem				(ci);
 		}
-	}else
+	}
+	else
 	{
 		u16 tmp_id	= (smart_cast<CGameObject*>(m_pOurObject))->ID();
 
 		bool bMoveDirection		= (old_owner==m_pUIOthersBagList);
 
-		move_item				(
-								bMoveDirection?m_pInventoryBox->ID():tmp_id,
-								bMoveDirection?tmp_id:m_pInventoryBox->ID(),
-								CurrentIItem()->object().ID());
+		if (m_pInventoryBox)
+		{
+			move_item(
+				bMoveDirection ? m_pInventoryBox->ID() : tmp_id,
+				bMoveDirection ? tmp_id : m_pInventoryBox->ID(),
+				CurrentIItem()->object().ID());
+		}
+		else
+		{
+			move_item(
+				bMoveDirection ? m_pCar->ID() : tmp_id,
+				bMoveDirection ? tmp_id : m_pCar->ID(),
+				CurrentIItem()->object().ID());
+		}
 
 
 //		Actor()->callback		(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), CurrentIItem()->object().lua_game_object() );
@@ -494,16 +578,29 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 			CUICellItem* ci			= old_owner->RemoveItem(CurrentItem(), false);
 			new_owner->SetItem		(ci);
 		}
-	}else
+	}
+	else
 	{
 		if(false && old_owner==m_pUIOurBagList) return true;
 		bool bMoveDirection		= (old_owner==m_pUIOthersBagList);
 
-		u16 tmp_id				= (smart_cast<CGameObject*>(m_pOurObject))->ID();
-		move_item				(
-								bMoveDirection?m_pInventoryBox->ID():tmp_id,
-								bMoveDirection?tmp_id:m_pInventoryBox->ID(),
-								CurrentIItem()->object().ID());
+		u16 tmp_id				= smart_cast<CGameObject*>(m_pOurObject)->ID();
+
+		if (m_pInventoryBox)
+		{
+			move_item(
+				bMoveDirection ? m_pInventoryBox->ID() : tmp_id,
+				bMoveDirection ? tmp_id : m_pInventoryBox->ID(),
+				CurrentIItem()->object().ID());
+		}
+		else
+		{
+			move_item(
+				bMoveDirection ? m_pCar->ID() : tmp_id,
+				bMoveDirection ? tmp_id : m_pCar->ID(),
+				CurrentIItem()->object().ID());
+		}
+
 //.		Actor()->callback		(GameObject::eInvBoxItemTake)(m_pInventoryBox->lua_game_object(), CurrentIItem()->object().lua_game_object() );
 
 	}

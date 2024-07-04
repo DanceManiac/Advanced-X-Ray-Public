@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "UIDialogHolder.h"
 #include "ui\UIDialogWnd.h"
+#include "ui\UIBtnHint.h"
 #include "UICursor.h"
 #include "level.h"
 #include "actor.h"
@@ -196,7 +197,12 @@ void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 	if( pDialog->IsShown() )
 		StopMenu(pDialog);
 	else
+	{
+		if (g_statHint->IsShown())
+			g_statHint->Discard();
+
 		StartMenu(pDialog, bDoHideIndicators);
+	}
 	
 }
 

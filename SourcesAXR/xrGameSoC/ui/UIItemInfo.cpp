@@ -264,15 +264,30 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		int iXPos							= pInvItem->GetXPos();
 		int iYPos							= pInvItem->GetYPos();
 
-		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(iXPos*INV_GRID_WIDTH), float(iYPos*INV_GRID_HEIGHT),
-														float(iGridWidth*INV_GRID_WIDTH),	float(iGridHeight*INV_GRID_HEIGHT));
+		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(iXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), float(iYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
+														float(iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),	float(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
+
 		UIItemImage->TextureOn				();
 		UIItemImage->ClipperOn				();
 		UIItemImage->SetStretchTexture		(true);
-		Frect v_r							= {	0.0f, 
-												0.0f, 
-												float(iGridWidth*INV_GRID_WIDTH),	
-												float(iGridHeight*INV_GRID_HEIGHT)};
+		
+		Frect v_r{};
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			v_r = { 0.0f,
+													0.0f,
+													float(iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2),
+													float(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2) };
+		}
+		else
+		{
+			v_r = { 0.0f,
+													0.0f,
+													float(iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
+													float(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())) };
+		}
+
 		if(UI().is_widescreen())
 			v_r.x2 /= 1.328f;
 
@@ -332,8 +347,9 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 	CBattery* pBattery = smart_cast<CBattery*>(&pInvItem);
 
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
+	bool ShowChargeDetector = GameConstants::GetArtDetectorUseBattery();
 
-	if ((pTorch && ShowChargeTorch || /*|| pArtefact_detector || pAnomaly_detector || pAf_container*/ pBackpack || pBattery) && UIInventoryItem)
+	if ((pTorch && ShowChargeTorch || pArtefact_detector && ShowChargeDetector /*|| pAnomaly_detector || pAf_container*/ || pBackpack || pBattery) && UIInventoryItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);

@@ -40,10 +40,10 @@ void CUIStatsIcon::InitTexInfo(){
 
 	m_tex_info[ARTEFACT][0].sh = GetEquipmentIconsShader();
 	m_tex_info[ARTEFACT][0].rect.set(
-		fXPos * INV_GRID_WIDTH, 
-		fYPos * INV_GRID_HEIGHT, 
-		fXPos * INV_GRID_WIDTH + fGridWidth * INV_GRID_WIDTH, 
-		fYPos * INV_GRID_HEIGHT + fGridHeight * INV_GRID_HEIGHT);
+		fXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),
+		fYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()),
+		fXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) + fGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),
+		fYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) + fGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
 
 //	m_tex_info[ARTEFACT][0].rect.set( 200, 400, 50, 50);
 

@@ -16,6 +16,7 @@ class CChangeLevelWnd;
 class CUIMessageBox;
 class CInventoryBox;
 class CInventoryOwner;
+class CCar;
 
 class CUIGameSP : public CUIGameCustom
 {
@@ -35,6 +36,7 @@ public:
 	void				StartTalk				();
 	void				StartCarBody			(CInventoryOwner* pOurInv, CInventoryOwner* pOthers);
 	void				StartCarBody			(CInventoryOwner* pOurInv, CInventoryBox* pBox);
+	void				StartCarBody			(CInventoryOwner* pActorInv, CCar* pCar);
 	virtual void		ReInitShownUI			();
 	void				ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_vert_id, Fvector pos, Fvector ang, Fvector pos2, Fvector ang2, bool b);
 

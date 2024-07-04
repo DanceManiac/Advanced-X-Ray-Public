@@ -5,7 +5,7 @@
 #include "UI.h"
 #include "HUDManager.h"
 #include "ui/UIStatic.h"
-
+#include "ui/UIBtnHint.h"
 
 #define C_DEFAULT	color_xrgb(0xff,0xff,0xff)
 
@@ -43,6 +43,9 @@ void CUICursor::InitInternal()
 u32 last_render_frame = 0;
 void CUICursor::OnRender	()
 {
+	//g_btnHint->OnRender();
+	//g_statHint->OnRender();
+
 	if( !IsVisible() ) return;
 #ifdef DEBUG
 	VERIFY(last_render_frame != Device.dwFrame);

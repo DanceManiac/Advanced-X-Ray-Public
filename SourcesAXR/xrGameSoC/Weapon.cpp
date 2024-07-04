@@ -439,24 +439,51 @@ void CWeapon::Load		(LPCSTR section)
 	if(m_eScopeStatus == ALife::eAddonAttachable)
 	{
 		m_sScopeName = pSettings->r_string(section,"scope_name");
-		m_iScopeX = pSettings->r_s32(section,"scope_x");
-		m_iScopeY = pSettings->r_s32(section,"scope_y");
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			m_iScopeX = pSettings->r_s32(section, "scope_x") * 2;
+			m_iScopeY = pSettings->r_s32(section, "scope_y") * 2;
+		}
+		else
+		{
+			m_iScopeX = pSettings->r_s32(section, "scope_x");
+			m_iScopeY = pSettings->r_s32(section, "scope_y");
+		}
 	}
 
     
 	if(m_eSilencerStatus == ALife::eAddonAttachable)
 	{
 		m_sSilencerName = pSettings->r_string(section,"silencer_name");
-		m_iSilencerX = pSettings->r_s32(section,"silencer_x");
-		m_iSilencerY = pSettings->r_s32(section,"silencer_y");
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			m_iSilencerX = pSettings->r_s32(section, "silencer_x") * 2;
+			m_iSilencerY = pSettings->r_s32(section, "silencer_y") * 2;
+		}
+		else
+		{
+			m_iSilencerX = pSettings->r_s32(section, "silencer_x");
+			m_iSilencerY = pSettings->r_s32(section, "silencer_y");
+		}
 	}
 
     
 	if(m_eGrenadeLauncherStatus == ALife::eAddonAttachable)
 	{
 		m_sGrenadeLauncherName = pSettings->r_string(section,"grenade_launcher_name");
-		m_iGrenadeLauncherX = pSettings->r_s32(section,"grenade_launcher_x");
-		m_iGrenadeLauncherY = pSettings->r_s32(section,"grenade_launcher_y");
+
+		if (GameConstants::GetUseHQ_Icons())
+		{
+			m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x") * 2;
+			m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y") * 2;
+		}
+		else
+		{
+			m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x");
+			m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y");
+		}
 	}
 
 	InitAddons();
@@ -489,6 +516,10 @@ void CWeapon::Load		(LPCSTR section)
 		strconcat					(sizeof(temp),temp,"hit_probability_",get_token_name(difficulty_type_token,i));
 		m_hit_probability[i]		= READ_IF_EXISTS(pSettings,r_float,section,temp,1.f);
 	}
+
+	// Added by Axel, to enable optional condition use on any item
+	m_flags.set						(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
+	m_bShowWpnStats					= READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
 }
 
 void CWeapon::LoadFireParams		(LPCSTR section, LPCSTR prefix)

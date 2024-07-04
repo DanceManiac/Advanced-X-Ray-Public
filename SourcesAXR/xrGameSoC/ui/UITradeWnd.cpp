@@ -26,11 +26,14 @@
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
 
+#include "AdvancedXrayGameConstants.h"
+#include "../../xrEngine/x_ray.h"
 
 #define				TRADE_XML			"trade.xml"
 #define				TRADE_CHARACTER_XML	"trade_character.xml"
 #define				TRADE_ITEM_XML		"trade_item.xml"
 
+extern bool SSFX_UI_DoF_active;
 
 struct CUITradeInternal{
 	CUIStatic			UIStaticTop;
@@ -256,6 +259,18 @@ void CUITradeWnd::Show()
 	SetCurrentItem					(NULL);
 	ResetAll						();
 	m_uidata->UIDealMsg				= NULL;
+
+	if (smart_cast<CActor*>(Level().CurrentEntity()) && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	}
+
+	if (!SSFX_UI_DoF_active)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		SSFX_UI_DoF_active = true;
+	}
 }
 
 void CUITradeWnd::Hide()
@@ -277,6 +292,18 @@ void CUITradeWnd::Hide()
 	m_uidata->UIOurTradeList.ClearAll	(true);
 	m_uidata->UIOthersBagList.ClearAll	(true);
 	m_uidata->UIOthersTradeList.ClearAll(true);
+
+	if (smart_cast<CActor*>(Level().CurrentEntity()) && GameConstants::GetHideWeaponInInventory())
+	{
+		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	}
+
+	if (SSFX_UI_DoF_active)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+		SSFX_UI_DoF_active = false;
+	}
 }
 
 void CUITradeWnd::StartTrade()
@@ -296,6 +323,8 @@ void CUITradeWnd::StopTrade()
 #include "../trade_parameters.h"
 bool CUITradeWnd::CanMoveToOther(PIItem pItem)
 {
+	if (pItem->GetCondition() < m_pOthersInvOwner->trade_parameters().buy_item_condition_factor)
+		return false;
 
 	float r1				= CalcItemsWeight(&m_uidata->UIOurTradeList);	// our
 	float r2				= CalcItemsWeight(&m_uidata->UIOthersTradeList);	// other

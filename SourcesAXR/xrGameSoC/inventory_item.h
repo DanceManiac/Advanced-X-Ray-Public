@@ -64,6 +64,7 @@ protected:
 	};
 
 	Flags16						m_flags;
+	bool						m_bCanUse;
 public:
 								CInventoryItem		();
 	virtual						~CInventoryItem		();

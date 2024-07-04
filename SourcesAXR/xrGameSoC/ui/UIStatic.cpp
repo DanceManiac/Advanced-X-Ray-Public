@@ -10,6 +10,11 @@
 #include "../ui_base.h"
 
 #include "../Include/xrRender/UIRender.h"
+
+#include "UIBtnHint.h"
+#include "UICursor.h"
+#include "MainMenu.h"
+
 const char * const	clDefault	= "default";
 #define CREATE_LINES if (!m_pLines) {m_pLines = xr_new<CUILines>(); m_pLines->SetTextAlignment(CGameFont::alLeft);}
 #define LA_CYCLIC			(1<<0)
@@ -181,10 +186,10 @@ void CUIStatic::DrawText()
 			p.add				(m_TextOffset);
 			m_pLines->Draw		(p.x, p.y);
 		}
-
 	}
-	//if (g_statHint->Owner() == this)
-	//	g_statHint->Draw_();
+	if (g_statHint->Owner() == this)
+		g_statHint->Draw_();
+
 }
 #include "../../Include/xrRender/UIShader.h"
 
@@ -244,37 +249,44 @@ void CUIStatic::Update()
 	//update light animation if defined
 	if (m_lanim_clr.m_lanim)
 	{
-		if(m_lanim_clr.m_lanim_start_time<0.0f)		ResetClrAnimation	();
+		if(m_lanim_clr.m_lanim_start_time<0.0f)
+			ResetClrAnimation();
+
 		float t = Device.dwTimeContinual/1000.0f;
 
 		if (t < m_lanim_clr.m_lanim_start_time)	// consider animation delay
 			return;
 
-		if(m_lanim_clr.m_lanimFlags.test(LA_CYCLIC) || t-m_lanim_clr.m_lanim_start_time < m_lanim_clr.m_lanim->Length_sec()){
+		if(m_lanim_clr.m_lanimFlags.test(LA_CYCLIC) || t-m_lanim_clr.m_lanim_start_time < m_lanim_clr.m_lanim->Length_sec())
+		{
 
 			int frame;
 			u32 clr					= m_lanim_clr.m_lanim->CalculateRGB(t-m_lanim_clr.m_lanim_start_time,frame);
 
-			if(m_lanim_clr.m_lanimFlags.test(LA_TEXTURECOLOR))
-				if(m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
-					SetColor				(subst_alpha(GetColor(), color_get_A(clr)));
+			if (m_lanim_clr.m_lanimFlags.test(LA_TEXTURECOLOR))
+			{
+				if (m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
+					SetColor(subst_alpha(GetColor(), color_get_A(clr)));
 				else
-					SetColor				(clr);
+					SetColor(clr);
+			}
 
-			if(m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR))
-				if(m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
-					SetTextColor				(subst_alpha(GetTextColor(), color_get_A(clr)));
+			if (m_lanim_clr.m_lanimFlags.test(LA_TEXTCOLOR))
+			{
+				if (m_lanim_clr.m_lanimFlags.test(LA_ONLYALPHA))
+					SetTextColor(subst_alpha(GetTextColor(), color_get_A(clr)));
 				else
-					SetTextColor				(clr);
+					SetTextColor(clr);
+			}
 			
 		}
 	}
 	
 	if(m_lanim_xform.m_lanim)
 	{
-		if(m_lanim_xform.m_lanim_start_time<0.0f){
+		if(m_lanim_xform.m_lanim_start_time<0.0f)
 			ResetXformAnimation();
-		}
+
 		float t = Device.dwTimeGlobal/1000.0f;
 
 		if(	m_lanim_xform.m_lanimFlags.test(LA_CYCLIC) || 
@@ -293,10 +305,37 @@ void CUIStatic::Update()
 			Fvector2 _sz;
 			_sz.set				(m_lanim_xform.m_origSize.x*f_scale, m_lanim_xform.m_origSize.y*f_scale );
 			SetWndSize			(_sz);
-		}else{
+		}
+		else
+		{
 			EnableHeading_int	( !!m_lanim_xform.m_lanimFlags.test(1<<4) );
 			SetWndSize			(m_lanim_xform.m_origSize);
 		}
+	}
+
+	if(CursorOverWindow() && m_stat_hint_text.size() && !g_statHint->Owner() && (MainMenu() && !MainMenu()->IsActive() ? (Device.dwTimeGlobal > m_dwFocusReceiveTime + 700) : true))
+	{
+		g_statHint->SetHintText	(this, m_stat_hint_text.c_str());
+
+		Fvector2 c_pos			= GetUICursor().GetCursorPosition();
+		Frect vis_rect;
+		vis_rect.set			(0,0,UI_BASE_WIDTH, UI_BASE_HEIGHT);
+
+		//select appropriate position
+		Frect r;
+		r.set					(0.0f, 0.0f, g_statHint->GetWidth(), g_statHint->GetHeight());
+		r.add					(c_pos.x, c_pos.y);
+
+		r.sub					(0.0f,r.height());
+		if (false==is_in2(vis_rect,r))
+			r.sub				(r.width(),0.0f);
+		if (false==is_in2(vis_rect,r))
+			r.add				(0.0f,r.height());
+
+		if (false==is_in2(vis_rect,r))
+			r.add				(r.width(), 45.0f);
+
+		g_statHint->SetWndPos(r.lt);
 	}
 }
 
@@ -581,8 +620,8 @@ void CUIStatic::OnFocusLost()
 	if (GetMessageTarget())
 		GetMessageTarget()->SendMessage(this, STATIC_FOCUS_LOST, NULL);
 
-	//if (g_statHint->Owner() == this)
-	//	g_statHint->Discard();
+	if (g_statHint->Owner() == this)
+		g_statHint->Discard();
 }
 
 void CUIStatic::AdjustHeightToText(){

@@ -1,7 +1,7 @@
 [global]
 engine_mode = shoc 				;; Режим работы движка cop|cs (Зов Припяти|Чистое Небо)
 discord_app_id = 745606008499601438	;; ID приложения для Discord Rich Presense
-discord_show_task = false		;; Выводить в статус Дискорда текущий квест
+discord_show_task = true		;; Выводить в статус Дискорда текущий квест
 ls_tips_enabled = true			;; Включены ли 100 советов по выживанию в Зоне
 developer_mode = false			;; Режим разработчика (больше команд, телепортация в демо рекорде, редактор погоды)
 block_console = false			;; Заблокировать использование консоли
@@ -9,7 +9,7 @@ auto_snd_targets = true			;; Автоматическое определение кол-ва источников звука
 
 [gameplay]
 death_camera_mode = 1 				;; 1 - freelook| 2 - fixedlook| 3 - firsteye
-poltergeist_visible_corpse = false 	;; Старая смерть полтергейстов true\false (вкл.\выкл.)
+poltergeist_visible_corpse = true 	;; Старая смерть полтергейстов true\false (вкл.\выкл.)
 autoreload_enabled = true			;; Включена ли автоматическая перезарядка оружия
 distant_snd_distance = 150.0		;; Дистанция после которой звуки становятся приглушенными
 torch_use_battery = false			;; Ограниченный заряд фонаря
@@ -55,7 +55,6 @@ enable_dosimeter_slot = false		;; Включен ли слот дозиметра
 enable_pants_slot = false			;; Включен ли слот штанов
 enable_pda_slot = false				;; Включен ли слот КПК
 enable_pistol_slot = false			;; Включен ли слот пистолета
-artefacts_count = 5					;; Количество слотов под артефакты
 
 [ui_settings]
 colorize_values = true				;; Подкрашивание значения у артефактов, бустеров
@@ -63,9 +62,9 @@ colorize_values_red = 255,0,0,255	;; Цвет негативного значения у артефактов, бус
 colorize_values_green = 0,255,0,255	;; Цвет положительного значения у артефактов, бустеров(RBGA)
 colorize_values_neutral = 170,170,170,255 ;; Цвет нейтрального значения у артефактов, бустеров(RBGA)
 hq_icons = false					;; 100x100 иконки инвентаря (требуются правки в ui_incon_equipment.xml)
-enable_artefact_panel = false		;; Вкл.\выкл. панель артефактов на худе
+enable_artefact_panel = true		;; Вкл.\выкл. панель артефактов на худе
 enable_hud_used_item_text = true	;; Вкл.\выкл. надпись об использованном предмете на HUD
-enable_pda_info_icons = false		;; Вкл.\выкл. HUD иконку оповещения о новой информации в КПК 
+enable_pda_info_icons = true		;; Вкл.\выкл. HUD иконку оповещения о новой информации в КПК 
 enable_new_task_icon = false		;; Вкл.\выкл. HUD иконку оповещения при получении квеста 
 
 [hud_movement_layers]; Эффекты камеры при ходьбе из Anomaly
@@ -102,8 +101,8 @@ clr_blue 			= 6
 
 [start_settings];Стартовые значения необходимых настроек
 ;FOV
-Camera_FOV = 55.0
-HUD_FOV = 0.55
+Camera_FOV = 67.5
+HUD_FOV = 0.45
 
 ;Enchanted Shaders color grading
 color_grading_es = 0.5, 0.5, 0.5

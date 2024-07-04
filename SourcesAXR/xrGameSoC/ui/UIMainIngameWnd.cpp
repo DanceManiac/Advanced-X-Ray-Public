@@ -384,16 +384,22 @@ void CUIMainIngameWnd::SetAmmoIcon (const shared_str& sect_name)
 	float iXPos				= pSettings->r_float(sect_name, "inv_grid_x");
 	float iYPos				= pSettings->r_float(sect_name, "inv_grid_y");
 
-	UIWeaponIcon.GetUIStaticItem().SetOriginalRect(	(iXPos		 * INV_GRID_WIDTH),
-													(iYPos		 * INV_GRID_HEIGHT),
-													(iGridWidth	 * INV_GRID_WIDTH),
-													(iGridHeight * INV_GRID_HEIGHT));
+	UIWeaponIcon.GetUIStaticItem().SetOriginalRect(	(iXPos		 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
+													(iYPos		 * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
+													(iGridWidth	 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
+													(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
 	UIWeaponIcon.SetStretchTexture(true);
 
 	// now perform only width scale for ammo, which (W)size >2
 	// all others ammo (1x1, 1x2) will be not scaled (original picture)
-	float w = ((iGridWidth > 2) ? 1.6f : iGridWidth) * INV_GRID_WIDTH * 0.9f;
-	float h = INV_GRID_HEIGHT * 0.9f;//1 cell
+	float w = ((iGridWidth > 2) ? 1.6f : iGridWidth) * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 0.9f;
+	float h = INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) * 0.9f;//1 cell
+
+	if (GameConstants::GetUseHQ_Icons())
+	{
+		float w = ((iGridWidth > 2) ? 1.6f : iGridWidth) * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2 * 0.9f;
+		float h = INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2 * 0.9f;//1 cell
+	}
 
 	float x = UIWeaponIcon_rect.x1;
 	float posx_16 = 8.0f;
@@ -1175,27 +1181,37 @@ void CUIMainIngameWnd::UpdatePickUpItem	()
 	int m_iXPos			= pSettings->r_u32(sect_name, "inv_grid_x");
 	int m_iYPos			= pSettings->r_u32(sect_name, "inv_grid_y");
 
-	float scale_x = m_iPickUpItemIconWidth/
-		float(m_iGridWidth*INV_GRID_WIDTH);
+	float scale_x = m_iPickUpItemIconWidth /
+		float(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
+	float scale_y = m_iPickUpItemIconHeight /
+		float(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
 
-	float scale_y = m_iPickUpItemIconHeight/
-		float(m_iGridHeight*INV_GRID_HEIGHT);
+	scale_x = (scale_x > 1) ? 1.0f : scale_x;
+	scale_y = (scale_y > 1) ? 1.0f : scale_y;
 
-	scale_x = (scale_x>1) ? 1.0f : scale_x;
-	scale_y = (scale_y>1) ? 1.0f : scale_y;
+	if (GameConstants::GetUseHQ_Icons())
+	{
+		scale_x = m_iPickUpItemIconWidth /
+			(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2);
+		scale_y = m_iPickUpItemIconHeight /
+			(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2);
+
+		scale_x = (scale_x > 1) ? 0.5f : scale_x / 2;
+		scale_y = (scale_y > 1) ? 0.5f : scale_y / 2;
+	}
 
 	float scale = scale_x<scale_y?scale_x:scale_y;
 
 	UIPickUpItemIcon.GetUIStaticItem().SetOriginalRect(
-		float(m_iXPos * INV_GRID_WIDTH),
-		float(m_iYPos * INV_GRID_HEIGHT),
-		float(m_iGridWidth * INV_GRID_WIDTH),
-		float(m_iGridHeight * INV_GRID_HEIGHT));
+		float(m_iXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
+		float(m_iYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
+		float(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
+		float(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
 
 	UIPickUpItemIcon.SetStretchTexture(true);
 
-	UIPickUpItemIcon.SetWidth(m_iGridWidth *INV_GRID_WIDTH * scale * UI().get_current_kx());
-	UIPickUpItemIcon.SetHeight(m_iGridHeight * INV_GRID_HEIGHT * scale);
+	UIPickUpItemIcon.SetWidth(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * scale);
+	UIPickUpItemIcon.SetHeight(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) * scale);
 
 	UIPickUpItemIcon.SetWndPos(m_iPickUpItemIconX + 
 		(m_iPickUpItemIconWidth - UIPickUpItemIcon.GetWidth())/2,

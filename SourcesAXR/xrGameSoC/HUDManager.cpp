@@ -6,6 +6,7 @@
 #include "../xrEngine/igame_level.h"
 #include "clsid_game.h"
 #include "GamePersistent.h"
+#include "MainMenu.h"
 
 u32	ui_hud_type;
 
@@ -348,4 +349,12 @@ void CHUDManager::net_Relcase	(CObject *object)
 {
 	VERIFY						(m_pHUDTarget);
 	m_pHUDTarget->net_Relcase	(object);
+}
+
+CDialogHolder* CurrentDialogHolder()
+{
+	if (MainMenu()->IsActive())
+		return MainMenu();
+	else
+		return HUD().GetUI();
 }

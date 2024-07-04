@@ -10,6 +10,7 @@
 #include "ui/UIInventoryUtilities.h"
 #include "object_broker.h"
 #include "../Include/xrRender/UIShader.h"
+#include "AdvancedXrayGameConstants.h"
 
 using namespace InventoryUtilities;
 
@@ -77,10 +78,10 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 	{
 		data()->image.SetShader(InventoryUtilities::GetEquipmentIconsShader());
 
-		float x			= float(pSettings->r_u32(ltx, "inv_grid_x") * INV_GRID_WIDTH);
-		float y			= float(pSettings->r_u32(ltx, "inv_grid_y") * INV_GRID_HEIGHT);
-		float width		= float(pSettings->r_u32(ltx, "inv_grid_width") * INV_GRID_WIDTH);
-		float height	= float(pSettings->r_u32(ltx, "inv_grid_height") * INV_GRID_HEIGHT);
+		float x			= float(pSettings->r_u32(ltx, "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
+		float y			= float(pSettings->r_u32(ltx, "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+		float width		= float(pSettings->r_u32(ltx, "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
+		float height	= float(pSettings->r_u32(ltx, "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
 
 		data()->image.GetUIStaticItem().SetOriginalRect(x, y, width, height);
 		data()->image.ClipperOn();

@@ -97,6 +97,8 @@ CInventoryItem::CInventoryItem()
 	m_eItemPlace		= eItemPlaceUndefined;
 	m_section_id		= 0;
 	m_Description		= "";
+
+	m_bCanUse			= true;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -151,8 +153,9 @@ void CInventoryItem::Load(LPCSTR section)
 	m_flags.set(FCanTake,		READ_IF_EXISTS(pSettings, r_bool, section, "can_take",			TRUE));
 	m_flags.set(FCanTrade,		READ_IF_EXISTS(pSettings, r_bool, section, "can_trade",			TRUE));
 	m_flags.set(FIsQuestItem,	READ_IF_EXISTS(pSettings, r_bool, section, "quest_item",		FALSE));
-
-
+	
+	// Added by Axel, to enable optional condition use on any item
+	m_flags.set					(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", false));
 
 	//время убирания объекта с уровня
 	m_dwItemRemoveTime			= READ_IF_EXISTS(pSettings, r_u32, section,"item_remove_time",			ITEM_REMOVE_TIME);
@@ -161,6 +164,7 @@ void CInventoryItem::Load(LPCSTR section)
 	m_fControlInertionFactor	= READ_IF_EXISTS(pSettings, r_float,section,"control_inertion_factor",	1.0f);
 	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",				NULL);
 
+	m_bCanUse					= READ_IF_EXISTS(pSettings, r_bool, section, "can_use", true);
 }
 
 void CInventoryItem::ReloadNames()
@@ -207,6 +211,8 @@ const char* CInventoryItem::NameShort()
 
 bool CInventoryItem::Useful() const
 {
+	if (!m_bCanUse) return false;
+
 	return CanTake();
 }
 

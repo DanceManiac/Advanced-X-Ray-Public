@@ -90,6 +90,9 @@ void CUIOptionsItem::SaveOptTokenValue(const char* val){
 }
 
 void CUIOptionsItem::SaveValue(){
+	if (!IsChanged())
+		return;
+
 	if (	m_entry == "vid_mode"		|| 
 			m_entry == "_preset"		|| 
 			m_entry == "rs_fullscreen" 	||	

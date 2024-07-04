@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "UIPdaWnd.h"
 #include "../Pda.h"
 
@@ -26,13 +27,17 @@
 #include "UIMessagesWindow.h"
 #include "UIMainIngameWnd.h"
 #include "UITabButton.h"
+#include "UIScriptWnd.h"
 
 #include "AdvancedXrayGameConstants.h"
+#include "../xrServerEntitiesSoC/script_engine.h"
+#include "ai_space.h"
 
 #define		PDA_XML					"pda.xml"
 u32			g_pda_info_state		= 0;
 
 void RearrangeTabButtons(CUITabControl* pTab, xr_vector<Fvector2>& vec_sign_places);
+CDialogHolder* CurrentDialogHolder();
 
 CUIPdaWnd::CUIPdaWnd()
 {
@@ -207,44 +212,65 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		m_pActiveDialog->Show(false);
 	}
 
+	shared_str section_name{};
+
 	switch (section) 
 	{
 	case eptDiary:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIDiaryWnd);
 		InventoryUtilities::SendInfoToActor("ui_pda_events");
 		g_pda_info_state		&= ~pda_section::diary;
+		section_name			= "eptDiar";
 		break;
 	case eptContacts:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIPdaContactsWnd);
 		InventoryUtilities::SendInfoToActor("ui_pda_contacts");
 		g_pda_info_state		&= ~pda_section::contacts;
+		section_name			= "eptContacts";
 		break;
 	case eptMap:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIMapWnd);
 		g_pda_info_state		&= ~pda_section::map;
+		section_name			= "eptMap";
 		break;
 	case eptEncyclopedia:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIEncyclopediaWnd);
 		InventoryUtilities::SendInfoToActor("ui_pda_encyclopedia");
 		g_pda_info_state		&= ~pda_section::encyclopedia;
+		section_name			= "eptEnc";
 		break;
 	case eptActorStatistic:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIActorInfo);
 		InventoryUtilities::SendInfoToActor("ui_pda_actor_info");
 		g_pda_info_state		&= ~pda_section::statistics;
+		section_name			= "eptStats";
 		break;
 	case eptRanking:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIStalkersRanking);
 		g_pda_info_state		&= ~pda_section::ranking;
 		InventoryUtilities::SendInfoToActor("ui_pda_ranking");
+		section_name			= "eptRanking";
 		break;
 	case eptQuests:
 		m_pActiveDialog			= smart_cast<CUIWindow*>(UIEventsWnd);
 		g_pda_info_state		&= ~pda_section::quests;
+		section_name			= "eptTasks";
 		break;
 	default:
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
 	}
+
+	luabind::functor<CUIDialogWndEx*> functor;
+	if (ai().script_engine().functor("pda.set_active_subdialog", functor))
+	{
+		CUIDialogWndEx* scriptWnd = functor(section_name);
+		if (scriptWnd)
+		{
+			scriptWnd->SetHolder(CurrentDialogHolder());
+			m_pActiveDialog = scriptWnd;
+		}
+	}
+
 	UIMainPdaFrame->AttachChild		(m_pActiveDialog);
 	m_pActiveDialog->Show			(true);
 

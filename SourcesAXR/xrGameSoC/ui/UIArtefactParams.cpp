@@ -215,7 +215,7 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 
 	for ( u32 i = 0; i < ALife::eHitTypeWound_2; ++i )
 	{
-		val = artefact->m_HitTypeProtection[i];
+		val = artefact->m_HitTypeProtection[(ALife::EHitType)i];
 		val = (1.0f - val);
 		val *= 100.0f;
 		if ( fis_zero(val) )
