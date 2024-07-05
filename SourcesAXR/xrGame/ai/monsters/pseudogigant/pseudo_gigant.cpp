@@ -325,7 +325,7 @@ void CPseudoGigant::on_threaten_execute()
 	if (Actor() && this->m_bDropItemAfterSuperAttack && drop_item_chance <= this->m_iSuperAttackDropItemPer)
 	{
 		CInventoryItem* active_item = Actor()->inventory().ActiveItem();
-		active_item->SetDropManual(true);
+		active_item->SetDropManual(TRUE);
 	}
 }
 

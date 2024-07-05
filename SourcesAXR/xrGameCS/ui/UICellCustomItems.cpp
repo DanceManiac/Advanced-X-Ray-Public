@@ -285,9 +285,7 @@ void CUIWeaponCellItem::CreateIcon(eAddonType t)
 	m_addons[t]->SetAutoDelete	(true);
 	AttachChild					(m_addons[t]);
 	m_addons[t]->SetShader		(InventoryUtilities::GetEquipmentIconsShader());
-
-	u32 color = GetColor		();
-	m_addons[t]->SetColor		(color);
+	m_addons[t]->SetColor		(GetColor());
 }
 
 void CUIWeaponCellItem::DestroyIcon(eAddonType t)

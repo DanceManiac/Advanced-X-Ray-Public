@@ -417,9 +417,9 @@ bool CUIXmlInit::InitButton(CUIXml& xml_doc, LPCSTR path,
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool CUIXmlInit::InitDragDropListEx(CUIXml& xml_doc, const char* path, int index, CUIDragDropListEx* pWnd)
+bool CUIXmlInit::InitDragDropListEx(CUIXml& xml_doc, LPCSTR path, int index, CUIDragDropListEx* pWnd)
 {
-	R_ASSERT3(xml_doc.NavigateToNode(path,index), "XML node not found", path);
+	R_ASSERT4(xml_doc.NavigateToNode(path,index), "XML node not found", path, xml_doc.m_xml_file_name);
 
 	float x			= xml_doc.ReadAttribFlt(path, index, "x");
 	float y			= xml_doc.ReadAttribFlt(path, index, "y");
@@ -432,13 +432,18 @@ bool CUIXmlInit::InitDragDropListEx(CUIXml& xml_doc, const char* path, int index
 
 	pWnd->Init		(x,y, width,height);
 
-	Ivector2 w_cell_sz, w_cells;
+	Ivector2 w_cell_sz, w_cells, w_cell_sp;
 
 	w_cell_sz.x				= xml_doc.ReadAttribInt(path, index, "cell_width");
 	w_cell_sz.y				= xml_doc.ReadAttribInt(path, index, "cell_height");
 	w_cells.y				= xml_doc.ReadAttribInt(path, index, "rows_num");
 	w_cells.x				= xml_doc.ReadAttribInt(path, index, "cols_num");
-	pWnd->SetCellSize		(w_cell_sz);	
+
+	w_cell_sp.x				= xml_doc.ReadAttribInt(path, index, "cell_sp_x");
+	w_cell_sp.y				= xml_doc.ReadAttribInt(path, index, "cell_sp_y");
+
+	pWnd->SetCellSize		(w_cell_sz);
+	pWnd->SetCellsSpacing	(w_cell_sp);	
 	pWnd->SetStartCellsCapacity	(w_cells);	
 
 	int tmp					= xml_doc.ReadAttribInt(path, index, "unlimited", 0);
@@ -447,6 +452,27 @@ bool CUIXmlInit::InitDragDropListEx(CUIXml& xml_doc, const char* path, int index
 	pWnd->SetGrouping		(tmp!=0);
 	tmp						= xml_doc.ReadAttribInt(path, index, "custom_placement", 1);
 	pWnd->SetCustomPlacement(tmp!=0);
+
+	tmp						= xml_doc.ReadAttribInt(path, index, "vertical_placement", 0);
+	pWnd->SetVerticalPlacement(tmp!=0);
+
+	tmp						= xml_doc.ReadAttribInt(path, index, "always_show_scroll", 0);
+	pWnd->SetAlwaysShowScroll(tmp!=0);
+
+	tmp						= xml_doc.ReadAttribInt(path, index, "virtual_cells", 0);
+	pWnd->SetVirtualCells(tmp!=0);
+
+	if(tmp!=0)
+	{
+		xr_string vc_vert_align = xml_doc.ReadAttrib(path, index, "vc_vert_align", "");
+		pWnd->SetCellsVertAlignment(vc_vert_align);
+		xr_string vc_horiz_align = xml_doc.ReadAttrib(path, index, "vc_horiz_align", "");
+		pWnd->SetCellsHorizAlignment(vc_horiz_align);
+	}
+	pWnd->back_color		= GetColor( xml_doc, path, index, 0xFFFFFFFF );
+
+	tmp = xml_doc.ReadAttribInt(path, index, "condition_progress_bar", 0);
+	pWnd->SetConditionProgBarVisibility(tmp != 0);
 
 	return true;
 }
@@ -801,7 +827,7 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, const char* path, int index, CUI
 	return true;
 }
 
-bool CUIXmlInit::InitLabel(CUIXml& xml_doc, const char* path, int index, CUILabel* pWnd){
+bool CUIXmlInit::InitLabel(CUIXml& xml_doc, LPCSTR path, int index, CUILabel* pWnd){
 	InitFrameLine(xml_doc, path, index, pWnd);
 
 	string256 buf;
@@ -888,7 +914,7 @@ bool CUIXmlInit::InitEditBox(CUIXml& xml_doc, const char* path, int index, CUIEd
 
 //////////////////////////////////////////////////////////////////////////
 
-bool CUIXmlInit::InitTextBanner(CUIXml &xml_doc, const char *path, int index, CUITextBanner *pBnr)
+bool CUIXmlInit::InitTextBanner(CUIXml &xml_doc, LPCSTR path, int index, CUITextBanner *pBnr)
 {
 	R_ASSERT3(xml_doc.NavigateToNode(path,index), "XML node not found", path);
 
@@ -923,7 +949,7 @@ bool CUIXmlInit::InitTextBanner(CUIXml &xml_doc, const char *path, int index, CU
 
 //////////////////////////////////////////////////////////////////////////
 
-bool CUIXmlInit::InitMultiTextStatic(CUIXml &xml_doc, const char *path, int index, CUIMultiTextStatic *pWnd)
+bool CUIXmlInit::InitMultiTextStatic(CUIXml &xml_doc, LPCSTR path, int index, CUIMultiTextStatic *pWnd)
 {
 	R_ASSERT3(xml_doc.NavigateToNode(path,index), "XML node not found", path);
 
@@ -967,7 +993,7 @@ bool CUIXmlInit::InitMultiTextStatic(CUIXml &xml_doc, const char *path, int inde
 
 //////////////////////////////////////////////////////////////////////////
 
-bool CUIXmlInit::InitAnimatedStatic(CUIXml &xml_doc, const char *path, int index, CUIAnimatedStatic *pWnd)
+bool CUIXmlInit::InitAnimatedStatic(CUIXml &xml_doc, LPCSTR path, int index, CUIAnimatedStatic *pWnd)
 {
 	R_ASSERT3(xml_doc.NavigateToNode(path,index), "XML node not found", path);
 

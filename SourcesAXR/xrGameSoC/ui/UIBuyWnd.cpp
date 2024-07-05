@@ -642,12 +642,12 @@ bool CUIBuyWnd::OnItemSelected(CUICellItem* itm)
 
 void CUIBuyWnd::BindDragDropListEvents(CUIDragDropListEx* lst, bool bDrag)
 {
-	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemDrop);
-	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemDbClick);
-	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemSelected);
-	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemRButtonClick);
+	lst->m_f_item_drop				= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemDrop);
+	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemDbClick);
+	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemSelected);
+	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemRButtonClick);
 	if(bDrag)
-		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_DROP_EVENT(this,&CUIBuyWnd::OnItemStartDrag);
+		lst->m_f_item_start_drag	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUIBuyWnd::OnItemStartDrag);
 
 }
 

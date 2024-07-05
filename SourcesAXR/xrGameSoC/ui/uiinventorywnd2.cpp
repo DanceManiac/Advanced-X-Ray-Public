@@ -197,7 +197,7 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 		u32 cnt = CurrentItem()->ChildsCount();
 
 		for(u32 i=0; i<cnt; ++i){
-			CUICellItem*	itm				= CurrentItem()->PopChild();
+			CUICellItem*	itm				= CurrentItem()->PopChild(NULL);
 			PIItem			iitm			= (PIItem)itm->m_pData;
 			SendEvent_Item_Drop				(iitm);
 		}
@@ -333,9 +333,31 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 {
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
 	CUIDragDropListEx*	new_owner		= CUIDragDropListEx::m_drag_item->BackList();
-	if(old_owner==new_owner || !old_owner || !new_owner)
-					return false;
+	if ( old_owner==new_owner || !old_owner || !new_owner )
+	{
+		CUICellItem* cell_item				= new_owner->GetCellItemUnderCursor();
+		PIItem item_in_cell					= cell_item ? (PIItem)cell_item->m_pData : NULL;
+		//CArtefactContainer* pAfContainer	= smart_cast<CArtefactContainer*>(item_in_cell);
+		//CArtefact*	pArtefact				= smart_cast<CArtefact*>	(CurrentIItem());
 
+		if (old_owner == new_owner && item_in_cell && item_in_cell->CanAttach(CurrentIItem()))
+		{
+			AttachAddon(item_in_cell);
+			//UpdateItemsPlace();
+			return true;
+		}
+		/*if (old_owner == new_owner && pArtefact)
+		{
+			if (pAfContainer && !pAfContainer->IsFull())
+			{
+				pAfContainer->PutArtefactToContainer(*pArtefact);
+
+				pArtefact->DestroyObject();
+				return true;	
+			}
+		}*/
+		return false;
+	}
 	EListType t_new		= GetType(new_owner);
 	EListType t_old		= GetType(old_owner);
 	if(t_new == t_old)	return true;

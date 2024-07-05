@@ -1,0 +1,22 @@
+<w>
+	<cell_item_text x="1" y="1" width="29" height="16">
+		<text x="0" y="0" width="29" height="16" font="letterica16" color="ui_2" align="c" vert_align="c"/>
+	</cell_item_text>
+
+	<cell_item_custom_text x="1" y="1" width="24" height="16" stretch="1">
+		<text x="2" y="6" width="24" height="16" font="arial_14" color="ui_2" align="r" vert_align="c"/>
+	</cell_item_custom_text>
+
+	<cell_item_quest_mark x="0" y="0" width="14" height="15" stretch="1">
+		<texture>ui_item_mark_quest</texture>
+		<texture_offset x="2" y="1"/>
+	</cell_item_quest_mark>
+
+    <condition_progess_bar x="1" y="1" width="38" height="5" horz="1" min="0" max="1" pos="1">
+		<min_color r="255" g="0" b="0"/>
+		<max_color r="0" g="255" b="0"/>
+		<progress>
+			<texture>ui_mg_progress_efficiency_full</texture>
+		</progress>
+    </condition_progess_bar>
+</w>

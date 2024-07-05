@@ -124,16 +124,15 @@ void CShootingObject::LoadFireParams	(LPCSTR section, LPCSTR prefix)
 		fvHitPower[egdNovice]	= (float)atof(_GetItem(*s_sHitPower,3,buffer));//то вычитываем его для уровня новичка
 	}
 	
-	//fHitPower			= pSettings->r_float	(section,strconcat(full_name, prefix, "hit_power"));
-	fHitImpulse			= pSettings->r_float	(section,strconcat(sizeof(full_name),full_name, prefix, "hit_impulse"));
+	fHitImpulse			= pSettings->r_float	(section, "hit_impulse" );
 	//максимальное расстояние полета пули
-	fireDistance		= pSettings->r_float	(section,strconcat(sizeof(full_name),full_name, prefix, "fire_distance"));
+	fireDistance		= pSettings->r_float	(section, "fire_distance" );
 	//начальная скорость пули
-	m_fStartBulletSpeed = pSettings->r_float	(section,strconcat(sizeof(full_name),full_name, prefix, "bullet_speed"));
-	m_bUseAimBullet		= pSettings->r_bool		(section,strconcat(sizeof(full_name),full_name, prefix, "use_aim_bullet"));
+	m_fStartBulletSpeed = pSettings->r_float	(section, "bullet_speed" );
+	m_bUseAimBullet		= READ_IF_EXISTS(pSettings, r_bool, section, "use_aim_bullet",FALSE);
 	if (m_bUseAimBullet)
 	{
-		m_fTimeToAim		= pSettings->r_float	(section,strconcat(sizeof(full_name),full_name, prefix, "time_to_aim"));
+		m_fTimeToAim		= pSettings->r_float	(section, "time_to_aim" );
 	}
 }
 

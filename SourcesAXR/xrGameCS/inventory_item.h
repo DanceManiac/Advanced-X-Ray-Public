@@ -140,9 +140,9 @@ public:
 
 			BOOL				IsInvalid			() const;
 
-			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}			
+			BOOL				IsQuestItem			()	const	{return m_flags.test(FIsQuestItem);}
 	virtual	u32					Cost				() const	{ return m_cost; }
-	virtual float				Weight				() const	{ return m_weight;}	
+	virtual float				Weight				() const	{ return m_weight;}
 			void				SetWeight			(float w)	{ m_weight = w; }
 
 public:
@@ -163,7 +163,7 @@ public:
 	virtual void				OnMoveToBelt		() {};
 	virtual void				OnMoveToRuck		(EItemPlace prev) {};
 					
-			Irect			GetInvGridRect		() const;
+			Irect				GetInvGridRect		() const;
 			const shared_str&	GetIconName			() const		{return m_icon_name;};
 			Frect			GetKillMsgRect		() const;
 	//---------------------------------------------------------------------

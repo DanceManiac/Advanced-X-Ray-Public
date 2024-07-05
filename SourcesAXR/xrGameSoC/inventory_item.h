@@ -61,9 +61,11 @@ protected:
 								FInInterpolation	=(1<<9),
 								FInInterpolate		=(1<<10),
 								FIsQuestItem		=(1<<11),
+								FIsHelperItem		=(1<<12),
 	};
 
 	Flags16						m_flags;
+	BOOL						m_can_trade;
 	bool						m_bCanUse;
 public:
 								CInventoryItem		();
@@ -83,6 +85,7 @@ public:
 	virtual void				OnEvent				(NET_Packet& P, u16 type);
 	
 	virtual bool				Useful				() const;									// !!! Переопределить. (см. в Inventory.cpp)
+	virtual bool				IsUsingCondition	() const { return m_flags.test(FUsingCondition); };
 	virtual bool				Attach				(PIItem pIItem, bool b_send_event) {return false;}
 	virtual bool				Detach				(PIItem pIItem) {return false;}
 	//при детаче спаунится новая вещь при заданно названии секции
@@ -115,12 +118,12 @@ public:
 	virtual	void				Hit					(SHit* pHDS);
 
 			BOOL				GetDropManual		() const	{ return m_flags.test(FdropManual);}
-			void				SetDropManual		(BOOL val)	{ m_flags.set(FdropManual, val);}
+			void				SetDropManual		(BOOL val);
 
 			BOOL				IsInvalid			() const;
 
-			BOOL				IsQuestItem			()	const	{ return m_flags.test(FIsQuestItem);}			
-			u32					Cost				()	const	{ return m_cost; }
+			BOOL				IsQuestItem			()	const	{ return m_flags.test(FIsQuestItem);}
+	virtual	u32					Cost				() const	{ return m_cost; }
 	virtual float				Weight				()	const	{ return m_weight; }
 			void				SetWeight			(float w)	{ m_weight = w; }
 
@@ -130,6 +133,10 @@ public:
 	shared_str					m_name;
 	shared_str					m_nameShort;
 	shared_str					m_nameComplex;
+	shared_str					m_custom_text;
+	CGameFont*					m_custom_text_font;
+	u32							m_custom_text_clr_inv;
+	u32							m_custom_text_clr_hud;
 
 	EItemPlace					m_eItemPlace;
 
@@ -137,6 +144,7 @@ public:
 	virtual void				OnMoveToBelt		() {};
 	virtual void				OnMoveToRuck		(EItemPlace prev) {};
 					
+			Irect				GetInvGridRect		() const;
 			int					GetGridWidth		() const ;
 			int					GetGridHeight		() const ;
 			const shared_str&	GetIconName			() const		{return m_icon_name;};
@@ -148,8 +156,9 @@ public:
 			float				GetKillMsgWidth		() const ;
 			float				GetKillMsgHeight	() const ;
 	//---------------------------------------------------------------------
-			float				GetCondition		() const					{return m_fCondition;}
+	IC		float				GetCondition		() const					{return m_fCondition;}
 	virtual	float				GetConditionToShow	() const					{return GetCondition();}
+	IC		void				SetCondition		(float val)					{m_fCondition = val;}
 			void				ChangeCondition		(float fDeltaCondition);
 
 	IC		float				GetChargeLevel		() const					{return m_fCurrentChargeLevel;}
@@ -169,6 +178,8 @@ public:
 			
 	virtual bool				CanTake				() const					{return !!m_flags.test(FCanTake);}
 			bool				CanTrade			() const;
+			void				AllowTrade			()							{ m_flags.set(FCanTrade, m_can_trade); };
+			void				DenyTrade			()							{ m_flags.set(FCanTrade, FALSE); };
 	virtual bool 				IsNecessaryItem	    (CInventoryItem* item);
 	virtual bool				IsNecessaryItem	    (const shared_str& item_sect){return false;};
 protected:
@@ -181,7 +192,6 @@ protected:
 	float						m_fCurrentChargeLevel;
 	float						m_fMaxChargeLevel;
 	float						m_fUnchargeSpeed;
-
 	shared_str					m_Description;
 
 	ALife::_TIME_ID				m_dwItemRemoveTime;
@@ -240,7 +250,9 @@ public:
 public:
 	virtual DLL_Pure*			_construct					();
 	IC	CPhysicsShellHolder&	object						() const{ VERIFY		(m_object); return		(*m_object);}
-	virtual void				on_activate_physic_shell	() { R_ASSERT(0); } //sea
+	u16							object_id					() const;
+	u16							parent_id					() const;
+	virtual void				on_activate_physic_shell	() { R_ASSERT2(0, "failed call of virtual function!"); }
 
 protected:
 	float						m_holder_range_modifier;
@@ -273,6 +285,10 @@ public:
 	virtual CHudItem			*cast_hud_item				()	{return 0;}
 	virtual CWeaponAmmo			*cast_weapon_ammo			()	{return 0;}
 	virtual CGameObject			*cast_game_object			()  {return 0;};
+
+public:
+	IC bool	is_helper_item				()				 { return !!m_flags.test(FIsHelperItem); }
+	IC void	set_is_helper				(bool is_helper) { m_flags.set(FIsHelperItem,is_helper); }
 };
 
 #include "inventory_item_inline.h"

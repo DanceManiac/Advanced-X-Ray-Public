@@ -509,7 +509,7 @@ void CUIMpTradeWnd::CleanUserItems()
 			{
 				while( iinfo->m_cell_item->ChildsCount() )
 				{
-					CUICellItem* iii = iinfo->m_cell_item->PopChild	();
+					CUICellItem* iii = iinfo->m_cell_item->PopChild	(NULL);
 					SBuyItemInfo* iinfo_sub		= FindItem(iii);
 					R_ASSERT2(	iinfo_sub->GetState()==_state || iinfo_sub->GetState()==SBuyItemInfo::e_shop || iinfo_sub->GetState()==SBuyItemInfo::e_own,
 								_state_names[_state]);

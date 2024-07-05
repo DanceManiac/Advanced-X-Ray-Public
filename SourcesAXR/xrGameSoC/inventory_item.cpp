@@ -22,6 +22,8 @@
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "ai_object_location.h"
 #include "object_broker.h"
+#include "ui_base.h"
+#include "UIFontDefines.h"
 #include "../xrEngine/igame_persistent.h"
 
 #ifdef DEBUG
@@ -95,10 +97,16 @@ CInventoryItem::CInventoryItem()
 	m_name = m_nameShort = NULL;
 
 	m_eItemPlace		= eItemPlaceUndefined;
-	m_section_id		= 0;
 	m_Description		= "";
-
+	m_section_id		= 0;
 	m_bCanUse			= true;
+	m_flags.set						(FIsHelperItem,FALSE);
+	
+	m_custom_text		= nullptr;
+	m_custom_text_font	= nullptr;
+	m_custom_text_clr_inv = 0;
+	m_custom_text_clr_hud = 0;
+
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -147,24 +155,114 @@ void CInventoryItem::Load(LPCSTR section)
 	if ( pSettings->line_exist(section, "description") )
 		m_Description = CStringTable().translate( pSettings->r_string(section, "description") );
 
-	m_flags.set(Fbelt,			READ_IF_EXISTS(pSettings, r_bool, section, "belt",				FALSE));
-	m_flags.set(FRuckDefault,	READ_IF_EXISTS(pSettings, r_bool, section, "default_to_ruck",	TRUE));
+	m_flags.set(Fbelt,			READ_IF_EXISTS(pSettings, r_bool, section, "belt",		FALSE));
+	m_can_trade = READ_IF_EXISTS(pSettings, r_bool, section, "can_take",	TRUE);
+	m_flags.set(FCanTake,		m_can_trade);
+	m_flags.set(FCanTrade,		READ_IF_EXISTS(pSettings, r_bool, section, "can_trade",	TRUE));
+	m_flags.set(FIsQuestItem,	READ_IF_EXISTS(pSettings, r_bool, section, "quest_item",FALSE));
 
-	m_flags.set(FCanTake,		READ_IF_EXISTS(pSettings, r_bool, section, "can_take",			TRUE));
-	m_flags.set(FCanTrade,		READ_IF_EXISTS(pSettings, r_bool, section, "can_trade",			TRUE));
-	m_flags.set(FIsQuestItem,	READ_IF_EXISTS(pSettings, r_bool, section, "quest_item",		FALSE));
-	
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set					(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", false));
 
 	//время убирания объекта с уровня
 	m_dwItemRemoveTime			= READ_IF_EXISTS(pSettings, r_u32, section,"item_remove_time",			ITEM_REMOVE_TIME);
 
-	m_flags.set					(FAllowSprint,READ_IF_EXISTS	(pSettings, r_bool, section,"sprint_allowed",			TRUE));
-	m_fControlInertionFactor	= READ_IF_EXISTS(pSettings, r_float,section,"control_inertion_factor",	1.0f);
-	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",				NULL);
+	if ( m_slot != NO_ACTIVE_SLOT )
+	{
+		m_flags.set					(FRuckDefault, READ_IF_EXISTS(pSettings, r_bool, section, "default_to_ruck", FALSE ));
+		m_flags.set					(FAllowSprint, READ_IF_EXISTS(pSettings, r_bool, section, "sprint_allowed", TRUE ));
+		m_fControlInertionFactor	= READ_IF_EXISTS(pSettings, r_float, section, "control_inertion_factor", 1.f);
+	}
+	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",		NULL);
 
 	m_bCanUse					= READ_IF_EXISTS(pSettings, r_bool, section, "can_use", true);
+
+	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text", nullptr);
+
+#pragma todo("volume stuff stuff")
+	/*if (!GameConstants::GetInventoryItemsAutoVolume())
+		m_fOccupiedInvSpace			= READ_IF_EXISTS(pSettings, r_float, section, "occupied_inv_space", 0.0f);*/
+
+	if (pSettings->line_exist(section, "item_custom_text_font"))
+	{
+		shared_str font_str = pSettings->r_string(section, "item_custom_text_font");
+		
+		if(!xr_strcmp(font_str, GRAFFITI19_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontGraffiti19Russian;
+		}
+		else if(!xr_strcmp(font_str, GRAFFITI22_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontGraffiti22Russian;
+		}
+		else if(!xr_strcmp(font_str, GRAFFITI32_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontGraffiti32Russian;
+		}
+		else if(!xr_strcmp(font_str, GRAFFITI40_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontGraffiti40Russian;
+		}
+		else if(!xr_strcmp(font_str, GRAFFITI50_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontGraffiti50Russian;
+		}
+		else if(!xr_strcmp(font_str, ARIAL14_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontArial14;
+		}
+		else if(!xr_strcmp(font_str, ARIAL21_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontArial21;
+		}
+		else if(!xr_strcmp(font_str, MEDIUM_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontMedium;
+		}
+		else if(!xr_strcmp(font_str, SMALL_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontStat;
+		}
+		else if(!xr_strcmp(font_str, LETTERICA16_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontLetterica16Russian;
+		}
+		else if(!xr_strcmp(font_str, LETTERICA18_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontLetterica18Russian;
+		}
+		else if(!xr_strcmp(font_str, LETTERICA25_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontLetterica25;
+		}
+		else if(!xr_strcmp(font_str, DI_FONT_NAME))
+		{
+			m_custom_text_font = UI().Font().pFontDI;
+		}
+		else
+		{
+			m_custom_text_font = nullptr;
+		}
+	}
+	if (pSettings->line_exist(section, "item_custom_text_font"))
+	{
+		m_custom_text_clr_inv = pSettings->r_color(section, "item_custom_text_clr_inv");
+	}
+	else
+	{
+		m_custom_text_clr_inv = 0;
+	}
+	if (pSettings->line_exist(section, "item_custom_text_clr_hud"))
+	{
+		m_custom_text_clr_hud = pSettings->r_color(section, "item_custom_text_clr_hud");
+	}
+	else
+	{
+		if (m_custom_text_clr_inv != 0)
+			m_custom_text_clr_hud = m_custom_text_clr_inv;
+		else
+			m_custom_text_clr_hud = 0;
+	}
 }
 
 void CInventoryItem::ReloadNames()
@@ -191,7 +289,8 @@ void  CInventoryItem::ChangeChargeLevel(float val)
 
 void	CInventoryItem::Hit					(SHit* pHDS)
 {
-	if( !m_flags.test(FUsingCondition) ) return;
+	if (!IsUsingCondition())
+		return;
 
 	float hit_power = pHDS->damage();
 	hit_power *= m_HitTypeK[pHDS->hit_type];
@@ -1114,6 +1213,60 @@ float CInventoryItem::GetKillMsgXPos		() const
 	return READ_IF_EXISTS(pSettings,r_float,m_object->cNameSect(),"kill_msg_x", 0.0f);
 }
 
+Irect CInventoryItem::GetInvGridRect() const
+{
+	u32 x,y,w,h;
+
+	x = pSettings->r_u32(m_object->cNameSect(),"inv_grid_x");
+	y = pSettings->r_u32(m_object->cNameSect(),"inv_grid_y");
+	w = pSettings->r_u32(m_object->cNameSect(),"inv_grid_width");
+	h = pSettings->r_u32(m_object->cNameSect(),"inv_grid_height");
+
+	return Irect().set(x,y,w,h);
+}
+
+bool CInventoryItem::IsNecessaryItem(CInventoryItem* item)		
+{
+	return IsNecessaryItem(item->object().cNameSect());
+};
+
+BOOL CInventoryItem::IsInvalid() const
+{
+	return object().getDestroy() || GetDropManual();
+}
+
+u16 CInventoryItem::object_id()const
+{
+	return object().ID();
+}
+
+u16 CInventoryItem::parent_id() const
+{
+	return (object().H_Parent()) ? object().H_Parent()->ID() : u16(-1);
+}
+
+void CInventoryItem::SetDropManual(BOOL val)
+{
+	m_flags.set(FdropManual, val);
+	
+#ifdef DEBUG
+	if (!IsGameTypeSingle())
+	{
+		if (!!m_name)
+		{
+			Msg("! WARNING: trying to set drop manual flag to item [%d][%s] to %d", object_id(), m_name.c_str(), val);
+		}
+	}
+#endif // #ifdef DEBUG
+	if (!IsGameTypeSingle())
+	{
+		if (val == TRUE)
+			DenyTrade();
+		else
+			AllowTrade();
+	}
+}
+
 float CInventoryItem::GetKillMsgYPos		() const 
 {
 	return READ_IF_EXISTS(pSettings,r_float,m_object->cNameSect(),"kill_msg_y", 0.0f);
@@ -1145,16 +1298,6 @@ int  CInventoryItem::GetXPos				() const
 int  CInventoryItem::GetYPos				() const 
 {
 	return pSettings->r_u32(m_object->cNameSect(), "inv_grid_y");
-}
-
-bool CInventoryItem::IsNecessaryItem(CInventoryItem* item)		
-{
-	return IsNecessaryItem(item->object().cNameSect());
-};
-
-BOOL CInventoryItem::IsInvalid() const
-{
-	return object().getDestroy() || GetDropManual();
 }
 
 u16 CInventoryItem::bone_count_to_synchronize	() const

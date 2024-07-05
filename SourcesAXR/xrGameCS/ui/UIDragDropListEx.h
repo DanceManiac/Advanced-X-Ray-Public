@@ -121,7 +121,7 @@ public:
 			virtual void	SetItem				(CUICellItem* itm, Fvector2 abs_pos);  // start at cursor pos
 			virtual void	SetItem				(CUICellItem* itm, Ivector2 cell_pos); // start at cell
 					bool	CanSetItem			(CUICellItem* itm);
-			
+
 			u32				ItemsCount			();
 			CUICellItem*	GetItemIdx			(u32 idx);
 	virtual CUICellItem*	RemoveItem			(CUICellItem* itm, bool force_root);
