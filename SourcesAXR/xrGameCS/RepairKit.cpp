@@ -100,11 +100,6 @@ void CRepairKit::UseBy(CEntityAlive* entity_alive)
 	else if (m_iUseFor == 4)
 		ChangeInWpn2();
 
-	if (m_iPortionsNum > 0)
-		--m_iPortionsNum;
-	else
-		m_iPortionsNum = 0;
-
 	m_iUseFor = 0;
 }
 
@@ -126,6 +121,11 @@ void CRepairKit::ChangeInOutfit()
 	{
 		Actor()->RemoveItemsForRepair(outfit->m_ItemsForRepair);
 		outfit->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -147,6 +147,11 @@ void CRepairKit::ChangeInKnife()
 	{
 		Actor()->RemoveItemsForRepair(knife->m_ItemsForRepair);
 		knife->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -168,6 +173,11 @@ void CRepairKit::ChangeInWpn1()
 	{
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -189,6 +199,11 @@ void CRepairKit::ChangeInWpn2()
 	{
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 

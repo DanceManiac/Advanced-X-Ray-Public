@@ -109,6 +109,8 @@ public:
 
 			bool			IsHelmetAvaliable		() const { return bIsHelmetAvaliable; }
 
+	virtual CCustomOutfit*	cast_outfit() { return this; }
+
 	HitImmunity::HitTypeSVec m_ConstHitTypeProtection;
 	HitImmunity::HitTypeSVec m_HitTypeProtection;
 protected:

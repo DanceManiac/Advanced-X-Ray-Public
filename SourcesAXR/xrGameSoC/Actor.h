@@ -812,6 +812,8 @@ public:
 	bool						GetHeatingStatus	() const { return m_bHeating; }
 	float						GetCurrentHeating	() const { return m_fHeatingPower; }
 
+	bool						HasItemsForRepair	(xr_vector<std::pair<shared_str, int>> item);
+	void						RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
 protected:
 	bool						m_bNightVisionOn;
 	bool						m_bNightVisionAllow;

@@ -110,7 +110,7 @@ void CUIInventoryItem::InitFromXml(CUIXml& xml)
 	m_rep_kit_cond = xr_new<CUIInventoryItemInfo>();
 	m_rep_kit_cond->Init(xml, "repair_kit_condition");
 	m_rep_kit_cond->SetAutoDelete(false);
-	name = CStringTable().translate("ui_inv_battery").c_str();
+	name = CStringTable().translate("ui_inv_repair_kit_condition").c_str();
 	m_rep_kit_cond->SetCaption(name);
 	xml.SetLocalRoot(base_node);
 

@@ -129,11 +129,6 @@ bool CRepairKit::UseBy(CEntityAlive* entity_alive)
 	else
 		return false;
 
-	if (m_iPortionsNum > 0)
-		--m_iPortionsNum;
-	else
-		m_iPortionsNum = 0;
-
 	m_iUseFor = 0;
 
 	return true;
@@ -158,6 +153,11 @@ void CRepairKit::ChangeInOutfit()
 	{
 		Actor()->RemoveItemsForRepair(outfit->m_ItemsForRepair);
 		outfit->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -179,6 +179,11 @@ void CRepairKit::ChangeInHelmet()
 	{
 		Actor()->RemoveItemsForRepair(helmet->m_ItemsForRepair);
 		helmet->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -200,6 +205,11 @@ void CRepairKit::ChangeInSecondHelmet()
 	{
 		Actor()->RemoveItemsForRepair(helmet->m_ItemsForRepair);
 		helmet->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -221,6 +231,11 @@ void CRepairKit::ChangeInKnife()
 	{
 		Actor()->RemoveItemsForRepair(knife->m_ItemsForRepair);
 		knife->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -242,6 +257,11 @@ void CRepairKit::ChangeInWpn1()
 	{
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -263,6 +283,11 @@ void CRepairKit::ChangeInWpn2()
 	{
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 
@@ -284,6 +309,11 @@ void CRepairKit::ChangeInWpn3()
 	{
 		Actor()->RemoveItemsForRepair(wpn->m_ItemsForRepair);
 		wpn->ChangeCondition(rnd_cond);
+
+		if (m_iPortionsNum > 0)
+			--m_iPortionsNum;
+		else
+			m_iPortionsNum = 0;
 	}
 }
 

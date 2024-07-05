@@ -36,6 +36,7 @@ CCustomOutfit::CCustomOutfit()
 	m_fNightVisionLumFactor = 0.0f;
 	m_fFilterDegradation = 0.0f;
 	m_fFilterCondition = 1.0f;
+	m_fMaxFilterCondition = 1.0f;
 	m_fInventoryCapacity = 0.0f;
 }
 

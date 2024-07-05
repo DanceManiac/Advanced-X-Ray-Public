@@ -59,6 +59,9 @@ bool CBattery::Useful() const
 		CCustomDetector* detector = smart_cast<CCustomDetector*>(*l_it);
 	}
 
+	if (!detector)
+		detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+
 	if (flashlight || detector)
 	{
 		if (flashlight)
@@ -95,6 +98,9 @@ void CBattery::UseBy(CEntityAlive* entity_alive)
 	{
 		detector = smart_cast<CCustomDetector*>(*l_it);
 	}
+
+	if (!detector)
+		detector = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 
 	if (m_iUseFor == 0)
 	{

@@ -2210,3 +2210,80 @@ bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
 	}
 	return false;
 }
+
+bool CActor::HasItemsForRepair(xr_vector<std::pair<shared_str, int>> item)
+{
+	for (int i{}; i < item.size(); ++i)
+	{
+		CInventoryOwner* l_tpInventoryOwner = smart_cast<CInventoryOwner*>(this);
+
+		if (!l_tpInventoryOwner)
+			return false;
+
+		CInventoryItem* l_tpInventoryItem = l_tpInventoryOwner->inventory().GetItemFromInventory(item[i].first.c_str());
+
+		if (!l_tpInventoryItem)
+			return false;
+
+		int need_count = item[i].second;
+		int has_count = 0;
+
+		auto calc = [&](LPCSTR section)
+		{
+			if (section == item[i].first.c_str())
+				has_count++;
+		};
+
+		TIItemContainer::iterator I = l_tpInventoryOwner->inventory().m_all.begin();
+		TIItemContainer::iterator E = l_tpInventoryOwner->inventory().m_all.end();
+
+		for (; I != E; ++I)
+			calc((*I)->object().cNameSect().c_str());
+
+		if (has_count < need_count)
+			return false;
+	}
+
+	return true;
+}
+
+void CActor::RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item)
+{
+	for (int i{}; i < item.size(); ++i)
+	{
+		CInventoryOwner* l_tpInventoryOwner = smart_cast<CInventoryOwner*>(this);
+
+		if (!l_tpInventoryOwner)
+			return;
+
+		CInventoryItem* l_tpInventoryItem = l_tpInventoryOwner->inventory().GetItemFromInventory(item[i].first.c_str());
+
+		if (!l_tpInventoryItem)
+			return;
+
+		int need_count = item[i].second;
+		int has_count = 0;
+
+		auto calc = [&](LPCSTR section)
+		{
+			if (section == item[i].first.c_str())
+			{
+				has_count++;
+
+				return true;
+			}
+			return false;
+		};
+
+		TIItemContainer::iterator I = l_tpInventoryOwner->inventory().m_all.begin();
+		TIItemContainer::iterator E = l_tpInventoryOwner->inventory().m_all.end();
+
+		for (; I != E; ++I)
+		{
+			bool is_item_to_remove = calc((*I)->object().cNameSect().c_str());
+
+			if (has_count && has_count <= need_count && is_item_to_remove)
+				(*I)->object().DestroyObject();
+		}
+	}
+}

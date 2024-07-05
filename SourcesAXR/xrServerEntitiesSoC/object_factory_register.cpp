@@ -172,6 +172,8 @@
 #	include "actor_mp_client.h"
 
 #	include "Battery.h"
+#	include "AntigasFilter.h"
+#	include "RepairKit.h"
 #endif // NO_XR_GAME
 
 ENGINE_API	bool g_dedicated_server;
@@ -312,6 +314,8 @@ void CObjectFactory::register_classes	()
 	ADD(CBottleItem				,CSE_ALifeItem					,CLSID_IITEM_BOTTLE				,"obj_bottle");
 	ADD(CExplosiveItem			,CSE_ALifeItemExplosive			,CLSID_IITEM_EXPLOSIVE			,"obj_explosive");
 	ADD(CBattery				,CSE_ALifeItem					,CLSID_IITEM_BATTERY			,"obj_battery");
+	ADD(CAntigasFilter			,CSE_ALifeItem					,CLSID_IITEM_AFILTER			,"obj_filter");
+	ADD(CRepairKit				,CSE_ALifeItem					,CLSID_IITEM_DREPKIT			,"obj_repair_kit");
 	
 	//Info Document
 	ADD(CInfoDocument			,CSE_ALifeItemDocument			,CLSID_IITEM_DOCUMENT			,"obj_document");

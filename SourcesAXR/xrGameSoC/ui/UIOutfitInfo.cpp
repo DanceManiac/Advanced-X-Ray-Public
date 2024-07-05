@@ -428,7 +428,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 		m_items[ALife::eHitTypeFireWound]->SetWndPos(pos);
 		h += m_items[ALife::eHitTypeFireWound]->GetWndSize().y;
 		AttachChild(m_items[ALife::eHitTypeFireWound]);
-	}
+	}*/
 
 	float cur_filter = cur_outfit->GetFilterCondition() > 0.f ? (cur_outfit->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
 
@@ -443,7 +443,6 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 		h += m_outfit_filter_condition->GetWndSize().y;
 		AttachChild(m_outfit_filter_condition);
 	}
-*/
 	
 	cur = cur_outfit->m_additional_weight2;
 	slot = slot_outfit ? slot_outfit->m_additional_weight2 : cur;

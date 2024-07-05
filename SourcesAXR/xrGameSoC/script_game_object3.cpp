@@ -51,6 +51,7 @@
 #include "WeaponAmmo.h"
 #include "WeaponMagazinedWGrenade.h"
 #include "Battery.h"
+#include "AntigasFilter.h"
 #include "CustomDetector.h"
 #include "Torch.h"
 
@@ -1474,4 +1475,56 @@ float CScriptGameObject::GetDetectorChargeLevel() const
 		return 0;
 
 	return eDetector->GetCurrentChargeLevel();
+}
+
+void CScriptGameObject::SetFilterChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CAntigasFilter* eFilter = IItm->cast_filter();
+	if (!eFilter)
+		return;
+
+	eFilter->SetFilterCondition(charge_level);
+}
+
+float CScriptGameObject::GetFilterChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CAntigasFilter* eFilter = IItm->cast_filter();
+	if (!eFilter)
+		return 0;
+
+	return eFilter->GetFilterCondition();
+}
+
+void CScriptGameObject::SetOutfitFilterCondition(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CCustomOutfit* eOutfit = IItm->cast_outfit();
+	if (!eOutfit)
+		return;
+
+	eOutfit->SetFilterCondition(charge_level);
+}
+
+float CScriptGameObject::GetOutfitFilterCondition() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CCustomOutfit* eOutfit = IItm->cast_outfit();
+	if (!eOutfit)
+		return 0;
+
+	return eOutfit->GetFilterCondition();
 }

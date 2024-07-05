@@ -11,7 +11,6 @@
 #include "../Inventory_Item.h"
 #include "../eatable_item.h"
 //#include "../AntigasFilter.h"
-//#include "../RepairKit.h"
 #include "../AdvancedXrayGameConstants.h"
 
 CUIBoosterInfo::CUIBoosterInfo()
@@ -237,7 +236,6 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 	const shared_str& section = pInvItem.object().cNameSect();
 	CEatableItem* eatable = pInvItem.cast_eatable_item();
 	//CAntigasFilter* pFilter = pInvItem.cast_filter();
-	//CRepairKit* pRepairKit = pInvItem.cast_repair_kit();
 	CEntityCondition::BOOSTER_MAP boosters = actor->conditions().GetCurBoosterInfluences();
 
 	float val = 0.0f, max_val = 1.0f, max_value = 0.0f;

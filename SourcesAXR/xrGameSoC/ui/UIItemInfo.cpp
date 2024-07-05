@@ -26,6 +26,8 @@
 #include "../CustomDetector.h"
 //#include "../AnomalyDetector.h"
 //#include "../ArtefactContainer.h"
+#include "../AntigasFilter.h"
+#include "../RepairKit.h"
 #include "../CustomBackpack.h"
 
 CUIItemInfo::CUIItemInfo()
@@ -206,6 +208,8 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		CTorch* flashlight					= smart_cast<CTorch*>(pInvItem);
 		CCustomDetector* detector			= smart_cast<CCustomDetector*>(pInvItem);
 		CBattery* battery					= smart_cast<CBattery*>(pInvItem);
+		CAntigasFilter* filter				= smart_cast<CAntigasFilter*>(pInvItem);
+		
 		if (UICharge && (GameConstants::GetTorchHasBattery() && flashlight || GameConstants::GetAnoDetectorUseBattery() && detector || battery))
 		{
 			if (flashlight && GameConstants::GetTorchHasBattery())
@@ -222,6 +226,9 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		else if (pInvItem->IsUsingCondition())
 		{
 			cond							= pInvItem->GetConditionToShow();
+
+			if (filter)
+				cond = filter->GetFilterCondition();
 			if (UICondition)
 				UICondition->Show(true);
 			if (UICharge)
@@ -355,11 +362,13 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 	//CArtefactContainer* pAf_container = smart_cast<CArtefactContainer*>(&pInvItem);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
 	CBattery* pBattery = smart_cast<CBattery*>(&pInvItem);
+	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(&pInvItem);
+	CRepairKit* pKit = smart_cast<CRepairKit*>(&pInvItem);
 
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
 	bool ShowChargeDetector = GameConstants::GetArtDetectorUseBattery();
 
-	if ((pTorch && ShowChargeTorch || pArtefact_detector && ShowChargeDetector /*|| pAnomaly_detector || pAf_container*/ || pBackpack || pBattery) && UIInventoryItem)
+	if ((pTorch && ShowChargeTorch || pArtefact_detector && ShowChargeDetector /*|| pAnomaly_detector || pAf_container*/ || pBackpack || pBattery || pFilter || pKit) && UIInventoryItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);

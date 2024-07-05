@@ -10,7 +10,8 @@
 #include "BoneProtections.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "DynamicHudGlass.h"
-
+#include "AdvancedXrayGameConstants.h"
+#include "AntigasFilter.h"
 
 CCustomOutfit::CCustomOutfit()
 {
@@ -23,9 +24,13 @@ CCustomOutfit::CCustomOutfit()
 
 	m_boneProtection = xr_new<SBoneProtections>();
 
+	m_bUseFilter = false;
 	m_b_HasGlass = false;
 	m_NightVisionType = 0;
 	m_fNightVisionLumFactor = 0.0f;
+	m_fFilterDegradation = 0.0f;
+	m_fFilterCondition = 1.0f;
+	m_fMaxFilterCondition = 1.0f;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -45,17 +50,33 @@ void CCustomOutfit::net_Import(NET_Packet& P)
 	P.r_float_q8			(m_fCondition,0.0f,1.0f);
 }
 
+void CCustomOutfit::save(NET_Packet& output_packet)
+{
+	inherited::save(output_packet);
+	save_data(m_fFilterCondition, output_packet);
+
+}
+
+void CCustomOutfit::load(IReader& input_packet)
+{
+	inherited::load(input_packet);
+	load_data(m_fFilterCondition, input_packet);
+}
+
 void CCustomOutfit::Load(LPCSTR section) 
 {
 	inherited::Load(section);
+
+	m_ConstHitTypeProtection[ALife::eHitTypeRadiation] = pSettings->r_float(section, "radiation_protection");
+	m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] = pSettings->r_float(section, "chemical_burn_protection");
 
 	m_HitTypeProtection[ALife::eHitTypeBurn]		= pSettings->r_float(section,"burn_protection");
 	m_HitTypeProtection[ALife::eHitTypeStrike]		= pSettings->r_float(section,"strike_protection");
 	m_HitTypeProtection[ALife::eHitTypeShock]		= pSettings->r_float(section,"shock_protection");
 	m_HitTypeProtection[ALife::eHitTypeWound]		= pSettings->r_float(section,"wound_protection");
-	m_HitTypeProtection[ALife::eHitTypeRadiation]	= pSettings->r_float(section,"radiation_protection");
+	m_HitTypeProtection[ALife::eHitTypeRadiation]	= m_ConstHitTypeProtection[ALife::eHitTypeRadiation];
 	m_HitTypeProtection[ALife::eHitTypeTelepatic]	= pSettings->r_float(section,"telepatic_protection");
-	m_HitTypeProtection[ALife::eHitTypeChemicalBurn]= pSettings->r_float(section,"chemical_burn_protection");
+	m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn];
 	m_HitTypeProtection[ALife::eHitTypeExplosion]	= pSettings->r_float(section,"explosion_protection");
 	m_HitTypeProtection[ALife::eHitTypeFireWound]	= pSettings->r_float(section,"fire_wound_protection");
 	m_HitTypeProtection[ALife::eHitTypePhysicStrike]= READ_IF_EXISTS(pSettings, r_float, section, "physic_strike_protection", 0.0f);
@@ -93,8 +114,12 @@ void CCustomOutfit::Load(LPCSTR section)
 	m_fJumpSpeed					= READ_IF_EXISTS(pSettings, r_float, section, "jump_speed", 1.f);
 	m_fWalkAccel					= READ_IF_EXISTS(pSettings, r_float, section, "walk_accel", 1.f);
 	m_fOverweightWalkK				= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
+	
+	m_fFilterDegradation			= READ_IF_EXISTS(pSettings, r_float, section, "filter_degradation_speed", 0.0f);
+	m_fMaxFilterCondition			= READ_IF_EXISTS(pSettings, r_float, section, "max_filter_condition", 1.0f);
 
 	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
+	m_bUseFilter					= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
 	m_sShaderNightVisionSect		= READ_IF_EXISTS(pSettings, r_string, section, "shader_nightvision_sect", "shader_nightvision_default");
 	m_NightVisionType				= READ_IF_EXISTS(pSettings, r_u32, m_sShaderNightVisionSect, "shader_nightvision_type", 0);
 	m_fNightVisionLumFactor			= READ_IF_EXISTS(pSettings, r_float, m_sShaderNightVisionSect, "shader_nightvision_lum_factor", 0.0f);
@@ -105,6 +130,58 @@ void CCustomOutfit::Load(LPCSTR section)
 		m_NightVisionSect = NULL;
 
 	m_full_icon_name								= pSettings->r_string(section,"full_icon_name");
+
+	m_SuitableFilters.clear();
+	m_SuitableRepairKits.clear();
+	m_ItemsForRepair.clear();
+
+	LPCSTR filters = READ_IF_EXISTS(pSettings, r_string, section, "suitable_filters", "antigas_filter");
+	LPCSTR repair_kits = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kits", "repair_kit");
+	LPCSTR items_for_repair = READ_IF_EXISTS(pSettings, r_string, section, "items_for_repair", "");
+
+	if (filters && filters[0])
+	{
+		string128 filter_sect;
+		int count = _GetItemCount(filters);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(filters, it, filter_sect);
+			m_SuitableFilters.push_back(filter_sect);
+		}
+	}
+
+	if (repair_kits && repair_kits[0])
+	{
+		string128 repair_kits_sect;
+		int count = _GetItemCount(repair_kits);
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(repair_kits, it, repair_kits_sect);
+			m_SuitableRepairKits.push_back(repair_kits_sect);
+		}
+	}
+
+	if (items_for_repair && items_for_repair[0])
+	{
+		string128 items_for_repair_sect;
+		int count = _GetItemCount(items_for_repair);
+
+		for (int it = 0; it < count; ++it)
+		{
+			_GetItem(items_for_repair, it, items_for_repair_sect);
+
+			if ((it % 2 != 0 && it != 0) || it == 1)
+				m_ItemsForRepair[it / 2].second = std::stoi(items_for_repair_sect);
+			else
+				m_ItemsForRepair.push_back(std::make_pair(items_for_repair_sect, 0));
+		}
+	}
+
+	if (GameConstants::GetOutfitUseFilters())
+	{
+		float rnd_cond = ::Random.randF(0.0f, m_fMaxFilterCondition);
+		m_fFilterCondition = rnd_cond;
+	}
 }
 
 void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)
@@ -119,6 +196,40 @@ void CCustomOutfit::UpdateCL()
 
 	if (Actor())
 		DynamicHudGlass::UpdateDynamicHudGlass();
+
+	if (GameConstants::GetOutfitUseFilters())
+		UpdateFilterCondition();
+}
+
+void CCustomOutfit::UpdateFilterCondition(void)
+{
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
+
+	if (outfit && m_bUseFilter)
+	{
+		float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
+
+		m_fFilterCondition -= uncharge_coef;
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+
+		float condition = 1.f * m_fFilterCondition;
+		float percent = outfit->m_fFilterCondition * 100;
+
+		if (percent > 20.0f)
+		{
+			if (!fis_zero(outfit->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+				outfit->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
+			if (!fis_zero(outfit->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+				outfit->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
+		}
+		else
+		{
+			if (!fis_zero(outfit->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+				outfit->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
+			if (!fis_zero(outfit->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+				outfit->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
+		}
+	}
 }
 
 float CCustomOutfit::GetDefHitTypeProtection(ALife::EHitType hit_type)
@@ -218,3 +329,29 @@ float CCustomOutfit::GetPowerLoss()
 	};
 	return m_fPowerLoss;
 };
+
+bool CCustomOutfit::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+{
+	return (std::find(item.begin(), item.end(), item_sect) != item.end());
+}
+
+float CCustomOutfit::GetDegradationSpeed() const
+{
+	return m_fFilterDegradation;
+}
+
+float CCustomOutfit::GetFilterCondition() const
+{
+	return m_fFilterCondition;
+}
+
+void CCustomOutfit::SetFilterCondition(float val)
+{
+	m_fFilterCondition = val;
+}
+
+void CCustomOutfit::FilterReplace(float val)
+{
+	m_fFilterCondition = m_fFilterCondition + val;
+	clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+}

@@ -940,6 +940,15 @@ public:
 
 			void				SetFilterChargeLevel(float charge_level);
 			float				GetFilterChargeLevel() const;
+			void				SetOutfitFilterCondition(float charge_level);
+			float				GetOutfitFilterCondition() const;
+
+			void				SetBatteryChargeLevel(float charge_level);
+			float				GetBatteryChargeLevel() const;
+			void				SetDetectorChargeLevel(float charge_level);
+			float				GetDetectorChargeLevel() const;
+			void				SetTorchChargeLevel(float charge_level);
+			float				GetTorchChargeLevel() const;
 
 			/*added by Ray Twitty (aka Shadows) START*/
 			float				GetActorMaxWeight						() const;

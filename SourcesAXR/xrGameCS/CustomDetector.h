@@ -199,6 +199,8 @@ public:
 			void	UpdateLights();
 			void	Flash(bool bOn, float fRelPower);
 
+			virtual CCustomDetector* cast_detector() { return this; }
+
 protected:
 			bool	CheckCompatibilityInt		(CHudItem* itm, u16* slot_to_activate);
 			void 	TurnDetectorInternal		(bool b);

@@ -30,10 +30,13 @@ class CWeapon;
 class CPhysicsShellHolder;
 class NET_Packet;
 class CEatableItem;
-class CAntigasFilter;
-class CBattery;
-class CRepairKit;
 class CArtefact;
+class CBattery;
+class CAntigasFilter;
+class CRepairKit;
+class CTorch;
+class CCustomDetector;
+class CCustomOutfit;
 
 struct SPHNetState;
 struct net_update_IItem;
@@ -287,8 +290,11 @@ public:
 	virtual CEatableItem		*cast_eatable_item			()	{return 0;}
 	virtual CAntigasFilter		*cast_filter				()	{return 0;}
 	virtual CArtefact			*cast_artefact				()	{return 0;}
+	virtual CTorch				*cast_torch					()	{return 0;}
 	virtual CRepairKit			*cast_repair_kit			()	{return 0;}
 	virtual CBattery			*cast_battery				()	{return 0;}
+	virtual CCustomDetector		*cast_detector				()	{return 0;}
+	virtual CCustomOutfit		*cast_outfit				()	{return 0;}
 	virtual CWeapon				*cast_weapon				()	{return 0;}
 	virtual CFoodItem			*cast_food_item				()	{return 0;}
 	virtual CMissile			*cast_missile				()	{return 0;}

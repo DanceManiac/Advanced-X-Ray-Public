@@ -7,6 +7,7 @@
 #include "../eatable_item.h"
 #include "../Artefact.h"
 #include "../CustomOutfit.h"
+#include "../AntigasFilter.h"
 #include "../CustomDetector.h"
 #include "../Torch.h"
 #include "../AdvancedXrayGameConstants.h"
@@ -84,7 +85,7 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	{
 		return false;
 	}
-	/*auto outfit = smart_cast<CCustomOutfit*>(object());
+	auto outfit = smart_cast<CCustomOutfit*>(object());
 	if (outfit && outfit->GetFilterCondition() != smart_cast<CCustomOutfit*>(ci->object())->GetFilterCondition())
 	{
 		return false;
@@ -93,7 +94,7 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	if (filter && filter->GetFilterCondition() != smart_cast<CAntigasFilter*>(ci->object())->GetFilterCondition())
 	{
 		return false;
-	}*/
+	}
 	auto torch = smart_cast<CTorch*>(object());
 	if (torch && torch->GetCurrentChargeLevel() != smart_cast<CTorch*>(ci->object())->GetCurrentChargeLevel())
 	{

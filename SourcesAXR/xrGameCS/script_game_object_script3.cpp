@@ -518,6 +518,8 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 
 		.def("set_filter_condition",			&CScriptGameObject::SetFilterChargeLevel)
 		.def("get_filter_condition",			&CScriptGameObject::GetFilterChargeLevel)
+		.def("set_outfit_filter_condition",		&CScriptGameObject::SetOutfitFilterCondition)
+		.def("get_outfit_filter_condition",		&CScriptGameObject::GetOutfitFilterCondition)
 		//-AVO
 
 		.def("is_entity_alive",					&CScriptGameObject::IsEntityAlive)

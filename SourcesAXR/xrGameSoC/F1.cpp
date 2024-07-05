@@ -1,6 +1,7 @@
 #include "pch_script.h"
 #include "f1.h"
 #include "Battery.h"
+#include "RepairKit.h"
 #include "CustomBackpack.h"
 
 CF1::CF1(void) {
@@ -19,6 +20,8 @@ void CF1::script_register	(lua_State *L)
 		class_<CF1,CGameObject>("CF1")
 			.def(constructor<>()),
 		class_<CBattery, CGameObject>("CBattery")
+			.def(constructor<>()),
+		class_<CRepairKit, CGameObject>("CRepairKit")
 			.def(constructor<>()),
 		class_<CCustomBackpack, CGameObject>("CCustomBackpack")
 			.def(constructor<>())

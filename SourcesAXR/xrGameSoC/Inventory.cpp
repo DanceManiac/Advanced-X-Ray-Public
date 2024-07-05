@@ -904,18 +904,23 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 #include "script_callback_ex.h"
 #include "script_game_object.h"
 #include "Battery.h"
+#include "RepairKit.h"
+#include "AntigasFilter.h"
 bool CInventory::Eat(PIItem pIItem)
 {
 	R_ASSERT(pIItem->m_pCurrentInventory==this);
 	//устанаовить съедобна ли вещь
 	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
 	CBattery* pBattery = smart_cast<CBattery*>(pIItem);
+	CRepairKit* pRepairKit = smart_cast<CRepairKit*>(pIItem);
+	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(pIItem);
 	R_ASSERT				(pItemToEat);
 
 	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(m_pOwner);
 	R_ASSERT				(entity_alive);
 	
-	if (!pBattery && !pItemToEat->m_bUnlimited) // что это за говно вообще было???
+#pragma todo("Find out why it works only with these hacks")
+	if (!pBattery && !pRepairKit && !pFilter && !pItemToEat->m_bUnlimited) // что это за говно вообще было???
 	{
 		pItemToEat->UseBy(entity_alive);
 	}
@@ -923,12 +928,20 @@ bool CInventory::Eat(PIItem pIItem)
 	{
 		pBattery->UseBy(entity_alive);
 	}
+	else if (pFilter)
+	{
+		pFilter->UseBy(entity_alive);
+	}
+	else if (pRepairKit)
+	{
+		pRepairKit->UseBy(entity_alive);
+	}
 
 
 	if(IsGameTypeSingle() && Actor()->m_inventory == this)
 		Actor()->callback(GameObject::eUseObject)((smart_cast<CGameObject*>(pIItem))->lua_game_object());
 
-	if (pBattery && pBattery->Empty() && entity_alive->Local())
+	if (((pBattery && pBattery->Empty()) || (pRepairKit && pRepairKit->Empty()) || (pFilter && pFilter->Empty())) && entity_alive->Local())
 	{
 		NET_Packet					P;
 		CGameObject::u_EventGen		(P, GE_OWNERSHIP_REJECT, entity_alive->ID());

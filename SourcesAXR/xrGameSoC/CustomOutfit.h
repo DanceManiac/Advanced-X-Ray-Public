@@ -16,6 +16,13 @@ public:
 	//уменьшенная версия хита, для вызова, когда костюм надет на персонажа
 	virtual void					Hit					(float P, ALife::EHitType hit_type);
 	virtual void					UpdateCL			();
+	virtual void			save						(NET_Packet& output_packet);
+	virtual void			load						(IReader& input_packet);
+	void					UpdateFilterCondition		(void);
+	float					GetFilterCondition			(void) const;
+	void					SetFilterCondition			(float val);
+	float					GetDegradationSpeed			(void) const;
+	void					FilterReplace				(float val);
 
 	//коэффициенты на которые домножается хит
 	//при соответствующем типе воздействия
@@ -32,8 +39,8 @@ public:
 	virtual void					OnMoveToSlot		();
 	virtual void					OnMoveToRuck		(EItemPlace prev);
 
+	bool							IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
 protected:
-	HitImmunity::HitTypeSVec		m_HitTypeProtection;
 	float							m_fPowerLoss;
 
 	shared_str						m_ActorVisual;
@@ -60,10 +67,18 @@ public:
 	float							m_fJumpSpeed;
 	float							m_fWalkAccel;
 	float							m_fOverweightWalkK;
+	float							m_fFilterDegradation;
+	float							m_fMaxFilterCondition;
+	float							m_fFilterCondition;
 
 	shared_str						m_NightVisionSect;
+	
+	xr_vector<shared_str>			m_SuitableFilters;
+	xr_vector<shared_str>			m_SuitableRepairKits;
+	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
 
 	bool							m_b_HasGlass;
+	bool							m_bUseFilter;
 
 	shared_str						m_sShaderNightVisionSect;
 	u32								m_NightVisionType;
@@ -74,6 +89,11 @@ public:
 	const shared_str&				GetFullIconName			() const	{return m_full_icon_name;};
 
 	IC int							GetOutfitNV_Type		() const { return m_NightVisionType; }
+
+	virtual CCustomOutfit*			cast_outfit() { return this; }
+
+	HitImmunity::HitTypeSVec		m_ConstHitTypeProtection;
+	HitImmunity::HitTypeSVec		m_HitTypeProtection;
 
 	virtual void			net_Export			(NET_Packet& P);
 	virtual void			net_Import			(NET_Packet& P);

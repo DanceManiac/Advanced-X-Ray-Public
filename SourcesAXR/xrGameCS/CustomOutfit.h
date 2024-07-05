@@ -106,6 +106,8 @@ public:
 
 			IC int			GetOutfitNV_Type		() const { return m_NightVisionType; }
 
+	virtual CCustomOutfit*	cast_outfit() { return this; }
+
 	HitImmunity::HitTypeSVec m_ConstHitTypeProtection;
 	HitImmunity::HitTypeSVec m_HitTypeProtection;
 protected:

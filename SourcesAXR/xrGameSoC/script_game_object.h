@@ -740,6 +740,11 @@ public:
 			void				SetArtefactRank(int rank);
 			int					GetArtefactRank() const;
 
+			void				SetFilterChargeLevel(float charge_level);
+			float				GetFilterChargeLevel() const;
+			void				SetOutfitFilterCondition(float charge_level);
+			float				GetOutfitFilterCondition() const;
+
 			void				SetBatteryChargeLevel(float charge_level);
 			float				GetBatteryChargeLevel() const;
 			void				SetDetectorChargeLevel(float charge_level);

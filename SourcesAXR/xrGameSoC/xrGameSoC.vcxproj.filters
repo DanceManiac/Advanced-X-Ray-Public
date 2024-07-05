@@ -6703,6 +6703,12 @@
     <ClInclude Include="Battery.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClInclude>
+    <ClInclude Include="RepairKit.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClInclude>
+    <ClInclude Include="AntigasFilter.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9957,6 +9963,12 @@
     </ClCompile>
     <ClCompile Include="pch_script.cpp" />
     <ClCompile Include="Battery.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClCompile>
+    <ClCompile Include="RepairKit.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClCompile>
+    <ClCompile Include="AntigasFilter.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>
   </ItemGroup>

@@ -443,6 +443,9 @@ public:
 	virtual	float			Get_PDM_Crouch		()	const	{ return m_fPDM_disp_crouch			; };
 	virtual	float			Get_PDM_Crouch_NA	()	const	{ return m_fPDM_disp_crouch_no_acc	; };
 	//  [8/3/2005]
+
+	virtual bool			IsNecessaryItem		(const shared_str& item_sect);
+			bool			IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
 protected:
 	int						iAmmoElapsed;		// ammo in magazine, currently
 	int						iMagazineSize;		// size (in bullets) of magazine
@@ -453,8 +456,6 @@ protected:
 	//  [10/5/2005]
 	bool					m_bAmmoWasSpawned;
 	//  [10/5/2005]
-
-	virtual bool			IsNecessaryItem	    (const shared_str& item_sect);
 
 public:
 	xr_vector<shared_str>	m_ammoTypes;
@@ -476,6 +477,8 @@ public:
 
 	LPCSTR					GetCurrentAmmo_ShortName	();
 
+	xr_vector<shared_str>	m_SuitableRepairKits;
+	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
 protected:
 	u32						m_ef_main_weapon_type;
 	u32						m_ef_weapon_type;

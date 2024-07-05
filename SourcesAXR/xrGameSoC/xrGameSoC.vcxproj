@@ -590,10 +590,12 @@
     <ClInclude Include="abstract_location_selector_inline.h" />
     <ClInclude Include="abstract_path_manager.h" />
     <ClInclude Include="abstract_path_manager_inline.h" />
+    <ClInclude Include="AntigasFilter.h" />
     <ClInclude Include="Battery.h" />
     <ClInclude Include="CustomBackpack.h" />
     <ClInclude Include="opt.lua.h" />
     <ClInclude Include="opt_inline.lua.h" />
+    <ClInclude Include="RepairKit.h" />
     <ClInclude Include="script_vars_storage.h" />
     <ClInclude Include="action_base.h" />
     <ClInclude Include="action_base_inline.h" />
@@ -1955,6 +1957,7 @@
     <ClCompile Include="ActorSkills.cpp" />
     <ClCompile Include="actor_script.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
+    <ClCompile Include="AntigasFilter.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="CustomBackpack.cpp" />
     <ClCompile Include="CustomOutfit_script.cpp" />
@@ -1988,6 +1991,7 @@
     <ClCompile Include="magic_box3.cpp" />
     <ClCompile Include="magic_minimize_1d.cpp" />
     <ClCompile Include="min_obb.cpp" />
+    <ClCompile Include="RepairKit.cpp" />
     <ClCompile Include="script_action_wrapper.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>
