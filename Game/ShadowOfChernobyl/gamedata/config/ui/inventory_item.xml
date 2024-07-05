@@ -32,7 +32,10 @@
 		<max_color r="0" g="255" b="0"/>
 		<progress>
 			<texture>ui_mg_progress_efficiency_full</texture>
-		</progress>        
+		</progress>
+		<background>
+			<texture>ui_mg_progress_efficiency_empty</texture>
+		</background>
     </condition_progress>
 	
 #include "ui\af_params.xml"

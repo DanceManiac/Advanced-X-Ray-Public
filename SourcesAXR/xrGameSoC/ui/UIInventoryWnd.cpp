@@ -99,9 +99,11 @@ void CUIInventoryWnd::Init()
 	AttachChild							(&UIMoneyWnd);
 	xml_init.InitStatic					(uiXml, "money_static", 0, &UIMoneyWnd);
 
+	//Элементы автоматического добавления
+	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
+
 	AttachChild							(&UIDescrWnd);
 	xml_init.InitStatic					(uiXml, "descr_static", 0, &UIDescrWnd);
-
 
 	UIDescrWnd.AttachChild				(&UIItemInfo);
 	UIItemInfo.Init						(0, 0, UIDescrWnd.GetWidth(), UIDescrWnd.GetHeight(), INVENTORY_ITEM_XML);
@@ -121,16 +123,15 @@ void CUIInventoryWnd::Init()
 		UIProgressBarRank.SetProgressPos(100);
 
 	}
-	
 
-	UIProgressBack.AttachChild (&UIProgressBarHealth);
-	xml_init.InitProgressBar (uiXml, "progress_bar_health", 0, &UIProgressBarHealth);
+	UIProgressBack.AttachChild			(&UIProgressBarHealth);
+	xml_init.InitProgressBar			(uiXml, "progress_bar_health", 0, &UIProgressBarHealth);
 	
-	UIProgressBack.AttachChild	(&UIProgressBarPsyHealth);
-	xml_init.InitProgressBar (uiXml, "progress_bar_psy", 0, &UIProgressBarPsyHealth);
+	UIProgressBack.AttachChild			(&UIProgressBarPsyHealth);
+	xml_init.InitProgressBar			(uiXml, "progress_bar_psy", 0, &UIProgressBarPsyHealth);
 
-	UIProgressBack.AttachChild	(&UIProgressBarRadiation);
-	xml_init.InitProgressBar (uiXml, "progress_bar_radiation", 0, &UIProgressBarRadiation);
+	UIProgressBack.AttachChild			(&UIProgressBarRadiation);
+	xml_init.InitProgressBar			(uiXml, "progress_bar_radiation", 0, &UIProgressBarRadiation);
 
 	UIPersonalWnd.AttachChild			(&UIStaticPersonal);
 	xml_init.InitStatic					(uiXml, "static_personal",0, &UIStaticPersonal);
@@ -139,10 +140,6 @@ void CUIInventoryWnd::Init()
 	AttachChild							(&UIActorStats);
 	UIActorStats.InitFromXml			(uiXml);
 //.	xml_init.InitStatic					(uiXml, "outfit_info_window",0, &UIActorStats);
-
-	//Элементы автоматического добавления
-	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
-
 
 	if (GameID() != GAME_SINGLE){
 		UIRankFrame = xr_new<CUIStatic> (); UIRankFrame->SetAutoDelete(true);

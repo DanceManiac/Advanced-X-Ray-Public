@@ -30,12 +30,15 @@
 		<font font="letterica16" r="240" g="217" b="182"/>
 	</descr_list>
     
-    <condition_progress x="450" y="50" width="110" height="8" horz="1" min="0" max="100" pos="100">
+    <condition_progress x="480" y="50" width="110" height="8" horz="1" min="0" max="100" pos="100">
 		<min_color r="255" g="0" b="0"/>
 		<max_color r="0" g="255" b="0"/>
 		<progress>
 			<texture>ui_mg_progress_efficiency_full</texture>
 		</progress>
+		<background>
+			<texture>ui_mg_progress_efficiency_empty</texture>
+		</background>
     </condition_progress>
 
 #include "ui\af_params.xml"

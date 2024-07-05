@@ -206,7 +206,6 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		CTorch* flashlight					= smart_cast<CTorch*>(pInvItem);
 		CCustomDetector* detector			= smart_cast<CCustomDetector*>(pInvItem);
 		CBattery* battery					= smart_cast<CBattery*>(pInvItem);
-		UICondProgresBar->Show				(true);
 		if (UICharge && (GameConstants::GetTorchHasBattery() && flashlight || GameConstants::GetAnoDetectorUseBattery() && detector || battery))
 		{
 			if (flashlight && GameConstants::GetTorchHasBattery())
@@ -218,16 +217,27 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 			UICharge->Show(true);
 			if (UICondition)
 				UICondition->Show(false);
+			UICondProgresBar->Show(true);
 		}
-		else
+		else if (pInvItem->IsUsingCondition())
 		{
 			cond							= pInvItem->GetConditionToShow();
 			if (UICondition)
 				UICondition->Show(true);
 			if (UICharge)
 				UICharge->Show(false);
+			UICondProgresBar->Show(true);
 		}
-		UICondProgresBar->SetProgressPos(cond * 100.0f + 1.0f - EPS);
+		else
+		{
+			if (UICharge)
+				UICharge->Show(false);
+			if (UICondition)
+				UICondition->Show(false);
+			UICondProgresBar->Show(false);
+		}
+		if (UICondProgresBar->IsShown())
+			UICondProgresBar->SetProgressPos(cond * 100.0f + 1.0f - EPS);
 	}
 
 	if (UIDesc)

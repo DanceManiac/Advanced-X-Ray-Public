@@ -36,6 +36,9 @@
 		<progress>
 			<texture>ui_mg_progress_efficiency_full</texture>
 		</progress>
+		<background>
+			<texture>ui_mg_progress_efficiency_empty</texture>
+		</background>
     </condition_progress>
 
 #include "ui\af_params_16.xml"

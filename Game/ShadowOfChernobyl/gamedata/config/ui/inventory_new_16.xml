@@ -8,7 +8,7 @@
 	</properties_box>
 	
 	<main x="0" y="0" width="1024" height="768"/>
-	
+
 	<belt_slots x="127" y="80" width="771" height="172" stretch="1">
 		<texture>ui_slots_belt</texture>		
 	</belt_slots>
@@ -76,7 +76,10 @@
     <money_static x="744" y="530" width="81" height="33" stretch="1">
 		<text font="graffiti19" r="238" g="153" b="26" align="c" vert_align="c"></text>
     </money_static>
-
+	
+	<auto_static x="573" y="476" width="117" height="16" stretch="1">
+		<texture>ui_inventory_descr_hack</texture>
+	</auto_static>
    
     <descr_static x="370" y="253" width="330" height="475" stretch="1">
         <text x="24" y="0" font="graffiti22" r="238" g="155" b="23">ui_inv_description</text>

@@ -152,21 +152,19 @@ void CUITradeWnd::Init()
 	m_uidata->UIOthersTradeWnd.AttachChild(&m_uidata->UIOthersTradeList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 3, &m_uidata->UIOthersTradeList);
 
-	
 	AttachChild							(&m_uidata->UIDescWnd);
 	xml_init.InitStatic					(uiXml, "desc_static", 0, &m_uidata->UIDescWnd);
+	xml_init.InitAutoStatic				(uiXml, "auto_static_hack", &m_uidata->UIDescWnd);
 	m_uidata->UIDescWnd.AttachChild		(&m_uidata->UIItemInfo);
 	m_uidata->UIItemInfo.Init			(0,0, m_uidata->UIDescWnd.GetWidth(), m_uidata->UIDescWnd.GetHeight(), TRADE_ITEM_XML);
 
-
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
 
-
 	AttachChild							(&m_uidata->UIPerformTradeButton);
-	xml_init.Init3tButton					(uiXml, "button", 0, &m_uidata->UIPerformTradeButton);
+	xml_init.Init3tButton				(uiXml, "button", 0, &m_uidata->UIPerformTradeButton);
 
 	AttachChild							(&m_uidata->UIToTalkButton);
-	xml_init.Init3tButton					(uiXml, "button", 1, &m_uidata->UIToTalkButton);
+	xml_init.Init3tButton				(uiXml, "button", 1, &m_uidata->UIToTalkButton);
 
 	m_uidata->UIDealMsg					= NULL;
 

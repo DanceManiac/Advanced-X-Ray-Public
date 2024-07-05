@@ -86,6 +86,10 @@
 		<texture>ui_frame_03</texture>		
 	</desc_frame_window>
 
+	<auto_static_hack x="476" y="50" width="120" height="14" stretch="1">
+		<texture>ui_inventory_descr_hack</texture>
+	</auto_static_hack>
+
 	<desc_static x="212" y="22" width="607" height="232" stretch="1">
 		<texture>ui_hud_frame_buyM</texture>		
 	</desc_static>

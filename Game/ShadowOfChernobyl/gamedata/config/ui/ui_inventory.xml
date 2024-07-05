@@ -13,6 +13,7 @@
     <texture id="ui_inv_btn_drop_t" x="818" y="960" width="113" height="64" />
     <texture id="ui_inv_btn_drop_d" x="592" y="960" width="113" height="64" />
     <texture id="ui_inventory_main" x="0" y="0" width="1005" height="483" />
+    <texture id="ui_inventory_descr_hack" x="369" y="747" width="117" height="16" />
     <texture id="ui_inventory_mp_buy" x="0" y="483" width="1014" height="477" />
     <texture id="ui_inventory_rank" x="0" y="959" width="75" height="65" />
 
