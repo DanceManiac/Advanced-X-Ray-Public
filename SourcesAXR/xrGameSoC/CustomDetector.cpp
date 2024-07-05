@@ -151,11 +151,16 @@ void CCustomDetector::UpdateCL()
 
 	if( !IsWorking() ) return;
 	if( !H_Parent()  ) return;
-
 	if(!m_pCurrentActor) return;
 
 	if (GameConstants::GetArtDetectorUseBattery())
 		UpdateChargeLevel();
+
+	if (m_fCurrentChargeLevel <= 0.0f)
+	{
+		TurnOff();
+		return;
+	}
 
 	ZONE_INFO_MAP_IT it;
 	for(it = m_ZoneInfoMap.begin(); m_ZoneInfoMap.end() != it; ++it) 
@@ -335,6 +340,9 @@ void CCustomDetector::SetCurrentChargeLevel(float val)
 	m_fCurrentChargeLevel = val;
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
 	SetChargeLevel(condition);
+
+	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemPlace == eItemPlaceBelt || m_eItemPlace == eItemPlaceRuck))
+		TurnOn();
 }
 
 void CCustomDetector::Recharge(float val)
@@ -343,6 +351,9 @@ void CCustomDetector::Recharge(float val)
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
 
 	SetChargeLevel(m_fCurrentChargeLevel);
+
+	if (!IsWorking() && m_fCurrentChargeLevel > 0.0f && (m_eItemPlace == eItemPlaceBelt || m_eItemPlace == eItemPlaceRuck))
+		TurnOn();
 }
 
 bool CCustomDetector::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
