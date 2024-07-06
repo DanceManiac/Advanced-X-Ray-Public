@@ -74,6 +74,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "../xrEngine/Rain.h"
 #include "CustomBackpack.h"
+#include "CustomZone.h"
 
 const u32		patch_frames	= 50;
 const float		respawn_delay	= 1.f;
@@ -600,7 +601,7 @@ void	CActor::Hit							(SHit* pHDS)
 				inherited::Hit(&HDS);
 				return;
 			}
-			else 
+			else
 			{
 				//inherited::Hit		(hit_power,dir,who,element,position_in_bone_space, impulse, hit_type);
 				HDS.power = hit_power;
@@ -612,6 +613,19 @@ void	CActor::Hit							(SHit* pHDS)
 						Actor()->SetHeatingStatus(true, hit_power);
 					else
 						Actor()->SetHeatingStatus(false);
+				}
+				
+				if (GameConstants::GetOutfitUseFilters())
+				{
+					CCustomZone* zone_hitter = smart_cast<CCustomZone*>(pHDS->who);
+
+					if (zone_hitter)
+					{
+						CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+						if (outfit && outfit->m_bUseFilter)
+							outfit->HitAntigasFilter(hit_power, pHDS->hit_type);
+					}
 				}
 			};
 		}

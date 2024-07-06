@@ -355,3 +355,17 @@ void CCustomOutfit::FilterReplace(float val)
 	m_fFilterCondition = m_fFilterCondition + val;
 	clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 }
+
+void CCustomOutfit::HitAntigasFilter(float hit_power, ALife::EHitType hit_type)
+{
+	switch (hit_type)
+	{
+	case ALife::eHitTypeChemicalBurn:
+	case ALife::eHitTypeRadiation:
+		{
+			m_fFilterCondition -= hit_power / 100;
+		} break;
+	default:
+		break;
+	}
+}

@@ -40,6 +40,8 @@ public:
 	virtual void					OnMoveToRuck		(EItemPlace prev);
 
 	bool							IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
+
+	void							HitAntigasFilter	(float hit_power, ALife::EHitType hit_type);
 protected:
 	float							m_fPowerLoss;
 
