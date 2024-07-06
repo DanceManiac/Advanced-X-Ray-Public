@@ -1,6 +1,7 @@
 #pragma once
 
 #include "inventory_item.h"
+#include "Actor.h"
 
 class CPhysicItem;
 class CEntityAlive;
@@ -30,12 +31,20 @@ public:
 			bool			Empty						()	const				{return m_iPortionsNum==0;};
 	virtual	u32				Cost						()	const;
 	virtual float			Weight						()	const;
+			void			HitFromActorHit				(SHit* pHDS);
 
 			IC		u32		GetPortionsNum				()	const				{return m_iPortionsNum;}
 			void			SetPortionsNum				(u32 value)				{m_iPortionsNum = value;}
 			IC		u32		GetConstPortionsNum			()	const				{return m_iConstPortions;}
 
+			void			UpdateInRuck				(CActor* actor);
+
 			bool			m_bUnlimited;
+			float			m_fRadioactivity;
+			float			m_fIrradiationCoef;
+			float			m_fIrradiationZonePower;
+			float			m_fSpoliage;
+			float			m_fFoodRottingCoef;
 protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;

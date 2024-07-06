@@ -172,6 +172,7 @@ void CSE_ALifeTraderAbstract::STATE_Write	(NET_Packet &tNetPacket)
 	tNetPacket.w_s32			(NO_REPUTATION);
 #endif
 	save_data					(m_character_name, tNetPacket);
+	save_data					(m_character_icon, tNetPacket);
 }
 
 void CSE_ALifeTraderAbstract::STATE_Read	(NET_Packet &tNetPacket, u16 size)
@@ -233,6 +234,9 @@ void CSE_ALifeTraderAbstract::STATE_Read	(NET_Packet &tNetPacket, u16 size)
 		if (m_wVersion > 104) {
 			load_data			(m_character_name, tNetPacket);
 		}
+
+		if (m_wVersion > 118)
+			load_data			(m_character_icon, tNetPacket);
 	}
 
 #ifdef XRGAME_EXPORTS
@@ -404,6 +408,7 @@ void CSE_ALifeTraderAbstract::set_specific_character	(shared_str new_spec_char)
 		m_reputation = selected_char.Reputation();
 
 	m_character_name = *(CStringTable().translate(selected_char.Name()));
+	m_character_icon = *(CStringTable().translate(selected_char.IconName()));
 	
 	LPCSTR gen_name = "GENERATE_NAME_";
 	if( strstr(m_character_name.c_str(),gen_name) ){

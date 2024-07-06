@@ -15,11 +15,10 @@
 #include "AI/Monsters/BaseMonster/base_monster.h"
 #include "../xrEngine/igame_persistent.h"
 
-#define RECT_SIZE	16
+#include "HUDManager.h"
+#include "ui/UIMainIngameWnd.h"
 
-#define C_ON_ENEMY		color_xrgb(0xff,0,0)
-#define C_ON_NEUTRAL	color_xrgb(0xff,0xff,0x80)
-#define C_ON_FRIEND		color_xrgb(0,0xff,0)
+#define RECT_SIZE	16
 
 struct FindVisObjByObject{
 	const CObject*			O;
@@ -98,6 +97,28 @@ void SBinocVisibleObj::Update()
 	mx.x		= (1.f + mx.x)/2.f * UI_BASE_WIDTH;
 	mn.y		= (1.f - mn.y)/2.f * UI_BASE_HEIGHT;
 	mx.y		= (1.f - mx.y)/2.f * UI_BASE_HEIGHT;
+
+	float hud_info_x	= HUD().GetUI()->UIMainIngameWnd->hud_info_x * 0.025f;
+	float hud_info_y	= HUD().GetUI()->UIMainIngameWnd->hud_info_y * 0.025f;
+
+	int hud_info_r_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_e;
+	int hud_info_g_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_e;
+	int hud_info_b_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_e;
+	int hud_info_a_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_e;
+
+	int hud_info_r_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_n;
+	int hud_info_g_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_n;
+	int hud_info_b_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_n;
+	int hud_info_a_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_n;
+
+	int hud_info_r_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_f;
+	int hud_info_g_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_f;
+	int hud_info_b_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_f;
+	int hud_info_a_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_f;
+
+	u32 C_ON_ENEMY		= color_rgba(hud_info_r_e, hud_info_g_e, hud_info_b_e, hud_info_a_e);
+	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);
+	u32 C_ON_FRIEND		= color_rgba(hud_info_r_f, hud_info_g_f, hud_info_b_f, hud_info_a_f);
 
 	if (m_flags.is(flTargetLocked)){
 		cur_rect.lt.set	(mn);

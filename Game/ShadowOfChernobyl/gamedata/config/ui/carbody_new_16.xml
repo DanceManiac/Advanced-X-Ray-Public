@@ -13,6 +13,16 @@
 		<texture_offset x="2" y="0"/>
 	</static_icon>
 
+	<actor_inv_capacity_caption x="60" y="695" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
+	</actor_inv_capacity_caption>
+    <actor_inv_fullness x="125" y="695" width="38" height="14">
+		<text align="l" font="arial_14" color="ui_7"/>
+	</actor_inv_fullness>
+	<actor_inv_capacity x="138" y="695" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</actor_inv_capacity>
+
 	<our_bag_static x="35" y="270" width="570" height="513" stretch="1">
 		<texture>ui\ui_dg_inventory_exchange_trade</texture>
 		<text x="30" y="8" font="graffiti22" r="238" g="153" b="26" complex_mode="1"/>

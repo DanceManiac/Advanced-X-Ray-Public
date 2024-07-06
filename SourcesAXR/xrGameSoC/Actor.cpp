@@ -222,6 +222,10 @@ CActor::CActor() : CEntityAlive()
 
 	m_iTrySprintCounter		= 0;
 
+	m_fInventoryCapacity	= 50.0f;
+	m_fInventoryFullness	= 0.0f;
+	m_fInventoryFullnessCtrl = 0.0f;
+
 	m_bHeating				= false;
 	m_fHeatingPower			= 0.0f;
 
@@ -459,6 +463,8 @@ if(!g_dedicated_server)
 
 	m_sColdSteamParticleBone = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
 	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
+
+	m_fInventoryCapacity = READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 50.0f);
 }
 
 void CActor::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /* = ALife::eHitTypeWound */)
@@ -614,17 +620,23 @@ void	CActor::Hit							(SHit* pHDS)
 					else
 						Actor()->SetHeatingStatus(false);
 				}
-				
-				if (GameConstants::GetOutfitUseFilters())
+
+				if (GameConstants::GetFoodIrradiation())
 				{
 					CCustomZone* zone_hitter = smart_cast<CCustomZone*>(pHDS->who);
 
 					if (zone_hitter)
 					{
-						CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+						TIItemContainer::iterator it = inventory().m_ruck.begin();
+						TIItemContainer::iterator ite = inventory().m_ruck.end();
 
-						if (outfit && outfit->m_bUseFilter)
-							outfit->HitAntigasFilter(hit_power, pHDS->hit_type);
+						for (; it != ite; ++it)
+						{
+							CEatableItem* current_eatable = smart_cast<CEatableItem*>(*it);
+
+							if (current_eatable)
+								current_eatable->HitFromActorHit(pHDS);
+						}
 					}
 				}
 			};
@@ -1786,6 +1798,42 @@ void CActor::UpdateArtefactsInRuck()
 	}
 }
 
+void CActor::UpdateInventoryItems()
+{
+	TIItemContainer::iterator it = inventory().m_ruck.begin();
+	TIItemContainer::iterator ite = inventory().m_ruck.end();
+
+	for (; it != ite; ++it)
+	{
+		CEatableItem* current_eatable = smart_cast<CEatableItem*>(*it);
+		if (current_eatable)
+		{
+			current_eatable->UpdateInRuck(this);
+		}
+
+		if (GameConstants::GetLimitedInventory())
+		{
+			CInventoryItem* item_to_drop = smart_cast<CInventoryItem*>(*it);
+
+			if (item_to_drop && item_to_drop->m_pCurrentInventory && !item_to_drop->IsQuestItem() && m_fInventoryFullness > MaxCarryInvCapacity())
+			{
+				if (m_fInventoryFullnessCtrl > MaxCarryInvCapacity())
+				{
+					NET_Packet P;
+					CGameObject::u_EventGen(P, GE_OWNERSHIP_REJECT, ID());
+					P.w_u16(item_to_drop->object().ID());
+					CGameObject::u_EventSend(P);
+
+					m_fInventoryFullnessCtrl -= item_to_drop->GetOccupiedInvSpace();
+				}
+
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
+				_s->wnd()->SetText(CStringTable().translate("st_backpack_full").c_str());
+			}
+		}
+	}
+}
+
 void CActor::UpdateSkills()
 {
 	static float update_time = 0;
@@ -2300,4 +2348,35 @@ void CActor::RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item)
 				(*I)->object().DestroyObject();
 		}
 	}
+}
+
+void CActor::ChangeInventoryFullness(float val)
+{
+	m_fInventoryFullness += val;
+
+	if (m_fInventoryFullness < 0)
+		m_fInventoryFullness = 0;
+
+	if (val > 0)
+		m_fInventoryFullnessCtrl = m_fInventoryFullness;
+}
+
+//Максимальная вместительность инвентаря
+float CActor::MaxCarryInvCapacity() const
+{
+	int res = m_fInventoryCapacity;
+
+	CCustomOutfit* outfit = GetOutfit();
+	if (outfit)
+		res += outfit->GetInventoryCapacity();
+
+	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(inventory().ItemFromSlot(BACKPACK_SLOT));
+	if (backpack)
+		res += backpack->GetInventoryCapacity();
+
+	CCustomOutfit* pants = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(PANTS_SLOT));
+	if (pants)
+		res += pants->GetInventoryCapacity();
+
+	return res;
 }

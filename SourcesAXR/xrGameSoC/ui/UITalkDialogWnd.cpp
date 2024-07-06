@@ -15,9 +15,11 @@
 //////////////////////////////////////////////////////////////////////////
 
 CUITalkDialogWnd::CUITalkDialogWnd()
-	:	m_pNameTextFont		(NULL)
+	:	m_pNameTextFont		(nullptr)
 {
 	m_ClickedQuestionID = "";
+	m_pOurInvOwner = nullptr;
+	m_pOthersInvOwner = nullptr;
 }
 
 CUITalkDialogWnd::~CUITalkDialogWnd()
@@ -193,7 +195,12 @@ void CUITalkDialogWnd::AddAnswer(LPCSTR SpeakerName, LPCSTR str, bool bActor)
 //.	news_data.texture_name			= "ui\\ui_icons_npc";
 	CUICharacterInfo& ci			= bActor?UICharacterInfoLeft:UICharacterInfoRight; 
 	
-	news_data.texture_name			= ci.IconName();
+	m_pOurInvOwner = smart_cast<CInventoryOwner*>(Actor());
+	m_pOthersInvOwner = Actor()->GetTalkPartner();
+
+	auto owner = bActor ? m_pOurInvOwner->IconName() : (m_pOthersInvOwner ? m_pOthersInvOwner->IconName() : m_pOurInvOwner->IconName());
+
+	news_data.texture_name			= (bActor) ? owner : ci.IconName();
 	news_data.tex_rect				= ci.UIIcon().GetUIStaticItem().GetOriginalRect();
 	news_data.tex_rect.x2			= news_data.tex_rect.width();
 	news_data.tex_rect.y2			= news_data.tex_rect.height();

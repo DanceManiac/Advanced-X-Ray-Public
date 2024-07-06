@@ -18,7 +18,7 @@
 #define BACKPACK_SLOT		11
 #define PANTS_SLOT			12
 //#define DOSIMETER_SLOT	13 //Когда будут детекторы артефактов, старые детекторы отправятся в этот слот
-#define SLOTS_TOTAL			12
+#define SLOTS_TOTAL			13
 
 #define RUCK_HEIGHT			280
 #define RUCK_WIDTH			7

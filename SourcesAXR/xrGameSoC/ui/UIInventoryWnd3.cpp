@@ -20,6 +20,7 @@
 #include "../RepairKit.h"
 #include "../Torch.h"
 #include "../CustomDetector.h"
+#include "../PDA.h"
 
 #include "../string_table.h"
 
@@ -193,6 +194,14 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 					child_weap_mag->UnloadMagazine();
 				}
 			}
+			break;
+		}
+	case INVENTORY_PLAY_ACTION:
+		{
+			CPda* pPda = smart_cast<CPda*>(item);
+			if(!pPda)
+				break;
+			pPda->PlayScriptFunction();
 			break;
 		}
 	case BATTERY_CHARGE_TORCH:
@@ -552,6 +561,17 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		UIPropertiesBox->AddItem(act_str, NULL, INVENTORY_EAT_ACTION);
 		b_show = true;
 	}
+}
+
+void CUIInventoryWnd::PropertiesBoxForPlaying(PIItem item, bool& b_show)
+{
+	CPda* pPda = smart_cast<CPda*>(item);
+	if (!pPda || !pPda->CanPlayScriptFunction())
+		return;
+
+	LPCSTR act_str = "st_play";
+	UIPropertiesBox->AddItem(act_str, NULL, INVENTORY_PLAY_ACTION);
+	b_show = true;
 }
 
 void CUIInventoryWnd::PropertiesBoxForDrop(CUICellItem* cell_item, PIItem item, bool& b_show)

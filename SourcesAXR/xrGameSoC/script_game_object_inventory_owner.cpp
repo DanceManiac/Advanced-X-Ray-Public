@@ -540,6 +540,20 @@ void CScriptGameObject::SetCharacterName(LPCSTR name)
 	pOurOwner->SetName(name);
 }
 
+void CScriptGameObject::SetCharacterIcon(LPCSTR icon)
+{
+	CInventoryOwner* pOurOwner = smart_cast<CInventoryOwner*>(&object());
+
+	if (!pOurOwner)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"SetCharacterIcon available only for InventoryOwner");
+		return;
+	}
+
+	return pOurOwner->SetIcon(icon);
+}
+
 LPCSTR CScriptGameObject::sound_voice_prefix () const
 {
 	CInventoryOwner* pInventoryOwner = smart_cast<CInventoryOwner*>(&object());

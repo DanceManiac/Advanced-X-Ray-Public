@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "pda.h"
 #include "hudmanager.h"
 #include "PhysicsShell.h"
@@ -12,6 +13,7 @@
 #include "specific_character.h"
 #include "alife_registry_wrappers.h"
 
+#include "script_engine.h"
 
 CPda::CPda(void)						
 {										
@@ -53,6 +55,7 @@ void CPda::Load(LPCSTR section)
 	inherited::Load(section);
 
 	m_fRadius = pSettings->r_float(section,"radius");
+	m_functor_str = READ_IF_EXISTS(pSettings, r_string, section, "play_function", "");
 }
 
 void CPda::shedule_Update(u32 dt)	
@@ -206,4 +209,14 @@ LPCSTR		CPda::Name				()
 CPda* CPda::GetPdaFromOwner(CObject* owner)
 {
 	return smart_cast<CInventoryOwner*>(owner)->GetPDA			();
+}
+
+void CPda::PlayScriptFunction()
+{
+	if (xr_strcmp(m_functor_str, ""))
+	{
+		luabind::functor<void> m_functor;
+		R_ASSERT(ai().script_engine().functor(m_functor_str.c_str(), m_functor));
+		m_functor();
+	}
 }

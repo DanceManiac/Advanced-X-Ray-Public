@@ -36,6 +36,7 @@ using namespace InventoryUtilities;
 #include "UIDragDropListEx.h"
 #include "UIOutfitSlot.h"
 #include "UI3tButton.h"
+#include "UIHelper.h"
 
 #include "AdvancedXrayGameConstants.h"
 #include "../../xrEngine/x_ray.h"
@@ -149,6 +150,14 @@ void CUIInventoryWnd::Init()
 		CUIXmlInit::InitStatic(uiXml, "rank:pic", 0, UIRank);
 		AttachChild(UIRankFrame);
 		UIRankFrame->AttachChild(UIRank);		
+	}
+
+	if (GameConstants::GetLimitedInventory())
+	{
+		m_ActorInvCapacityInfo			= UIHelper::CreateStatic(uiXml, "actor_inv_capacity_caption", this);
+		m_ActorInvFullness				= UIHelper::CreateStatic(uiXml, "actor_inv_fullness", this);
+		m_ActorInvCapacity				= UIHelper::CreateStatic(uiXml, "actor_inv_capacity", this);
+		m_ActorInvCapacityInfo->AdjustWidthToText();
 	}
 
 	m_pUIBagList						= xr_new<CUIDragDropListEx>(); UIBagWnd.AttachChild(m_pUIBagList); m_pUIBagList->SetAutoDelete(true);

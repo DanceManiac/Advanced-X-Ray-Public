@@ -137,9 +137,9 @@ void CUIStalkersRankingWnd::FillList()
 	}
 }
 
-void CUIStalkersRankingWnd::ShowHumanInfo(u16 id)
+void CUIStalkersRankingWnd::ShowHumanInfo(CInventoryOwner* owner)
 {
-	UICharacterInfo->InitCharacter(id);
+	UICharacterInfo->InitCharacter(owner);
 }
 
 void CUIStalkersRankingWnd::AddStalkerItem(CUIXml* xml, int num, CSE_ALifeTraderAbstract* t)
@@ -157,6 +157,7 @@ void CUIStalkersRankingWnd::AddStalkerItem(CUIXml* xml, int num, CSE_ALifeTrader
 	sprintf_s								(buff,"%d",t->m_rank);
 	itm->m_text3->SetText				(buff);		
 	itm->m_humanID						= t->object_id();
+	itm->m_humanOwner					= smart_cast<CInventoryOwner*>(t);
 	UIList->AddWindow					(itm, true);
 
 }
@@ -262,7 +263,7 @@ void CUIStalkerRankingInfoItem::SetSelected	(bool b)
 	m_text2->SetTextColor( subst_alpha(m_text2->GetTextColor(), b?255:m_stored_alpha ));
 	m_text3->SetTextColor( subst_alpha(m_text3->GetTextColor(), b?255:m_stored_alpha ));
 	if(b){ 
-		m_StalkersRankingWnd->ShowHumanInfo			(m_humanID);
+		m_StalkersRankingWnd->ShowHumanInfo(m_humanOwner);
 	}
 
 }

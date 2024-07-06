@@ -54,6 +54,14 @@ public:
 			CPda*							GetPdaFromOwner			(CObject* owner);
 			u32								ActiveContactsNum		()							{return m_active_contacts.size();}
 
+			void							PlayScriptFunction		();
+
+			bool CanPlayScriptFunction()
+			{
+				if (!xr_strcmp(m_functor_str, "")) return false;
+				return true;
+			};
+
 
 	virtual void							save					(NET_Packet &output_packet);
 	virtual void							load					(IReader &input_packet);
@@ -68,7 +76,8 @@ protected:
 	float									m_fRadius;
 
 	u16										m_idOriginalOwner;
-	shared_str					m_SpecificChracterOwner;
+	shared_str								m_SpecificChracterOwner;
+	shared_str								m_functor_str;
 	xr_string								m_sFullName;
 
 	bool									m_bTurnedOff;

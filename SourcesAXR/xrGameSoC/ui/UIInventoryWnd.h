@@ -85,6 +85,10 @@ protected:
 	CUIStatic					UIStaticTimeString;
 
 	CUIStatic					UIStaticPersonal;
+
+	CUIStatic*					m_ActorInvCapacityInfo;
+	CUIStatic*					m_ActorInvFullness;
+	CUIStatic*					m_ActorInvCapacity;
 		
 	CUIDragDropListEx*			m_pUIBagList;
 	CUIDragDropListEx*			m_pUIBeltList;
@@ -133,6 +137,7 @@ protected:
 
 	bool						DropItem					(PIItem itm, CUIDragDropListEx* lst);
 	void						PropertiesBoxForUsing		(PIItem item, bool& b_show);
+	void						PropertiesBoxForPlaying		(PIItem item, bool& b_show);
 	void						PropertiesBoxForSlots		(PIItem item, bool& b_show);
 	void						PropertiesBoxForWeapon		(CUICellItem* cell_item, PIItem item, bool& b_show);
 	void						PropertiesBoxForAddon		(PIItem item, bool& b_show);

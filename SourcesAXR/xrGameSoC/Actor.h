@@ -207,6 +207,7 @@ public:
 
 	//свойства артефактов
 	virtual void		UpdateRestores			();
+	virtual void		UpdateInventoryItems	();
 	virtual void		MoveArtefactBelt		(const CArtefact* artefact, bool on_belt);
 	virtual float		HitArtefactsOnBelt		(float hit_power, ALife::EHitType hit_type);
 			void		UpdateArtefactsOnBelt	();
@@ -814,9 +815,17 @@ public:
 
 	bool						HasItemsForRepair	(xr_vector<std::pair<shared_str, int>> item);
 	void						RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
+
+	float						GetInventoryCapacity() const { return m_fInventoryCapacity; }
+	float						GetInventoryFullness() const { return m_fInventoryFullness; }
+	float						MaxCarryInvCapacity	() const;
+	void						ChangeInventoryFullness(float val);
 protected:
 	bool						m_bNightVisionOn;
 	bool						m_bNightVisionAllow;
+	float						m_fInventoryCapacity;
+	float						m_fInventoryFullness;
+	float						m_fInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
 
 	bool						m_bHeating;
 	float						m_fHeatingPower;

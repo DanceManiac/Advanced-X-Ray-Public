@@ -17,7 +17,16 @@
 		<texture>ui_inventory_main</texture>
 	</back>
 
-
+	<actor_inv_capacity_caption x="32" y="685" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
+	</actor_inv_capacity_caption>
+    <actor_inv_fullness x="95" y="685" width="38" height="14">
+		<text align="l" font="arial_14" color="ui_7"/>
+	</actor_inv_fullness>
+	<actor_inv_capacity x="108" y="685" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</actor_inv_capacity>
+	
     <dragdrop_bag x="22" y="46" width="307" height="415"
             cell_width="30" cell_height="40" rows_num="10" cols_num="10" 
             unlimited="1" group_similar="1"/>

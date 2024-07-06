@@ -31,6 +31,7 @@ CCustomOutfit::CCustomOutfit()
 	m_fFilterDegradation = 0.0f;
 	m_fFilterCondition = 1.0f;
 	m_fMaxFilterCondition = 1.0f;
+	m_fInventoryCapacity = 0.0f;
 }
 
 CCustomOutfit::~CCustomOutfit() 
@@ -94,6 +95,8 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_additional_weight				= pSettings->r_float(section,"additional_inventory_weight");
 	m_additional_weight2			= pSettings->r_float(section,"additional_inventory_weight2");
+
+	m_fInventoryCapacity			= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
 
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));

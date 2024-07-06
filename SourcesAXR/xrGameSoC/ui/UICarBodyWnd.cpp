@@ -20,6 +20,7 @@
 #include "../alife_registry_wrappers.h"
 #include "UI3tButton.h"
 #include "UIListBoxItem.h"
+#include "UIHelper.h"
 #include "../InventoryBox.h"
 #include "../game_object_space.h"
 #include "../script_callback_ex.h"
@@ -98,6 +99,14 @@ void CUICarBodyWnd::Init()
 	AttachChild						(m_pUIOthersBagWnd);
 	xml_init.InitStatic				(uiXml, "others_bag_static", 0, m_pUIOthersBagWnd);
 
+	if (GameConstants::GetLimitedInventory())
+	{
+		m_ActorInvCapacityInfo			= UIHelper::CreateStatic(uiXml, "actor_inv_capacity_caption", this);
+		m_ActorInvFullness				= UIHelper::CreateStatic(uiXml, "actor_inv_fullness", this);
+		m_ActorInvCapacity				= UIHelper::CreateStatic(uiXml, "actor_inv_capacity", this);
+		m_ActorInvCapacityInfo->AdjustWidthToText();
+	}
+
 	m_pUIOurBagList					= xr_new<CUIDragDropListEx>(); m_pUIOurBagList->SetAutoDelete(true);
 	m_pUIOurBagWnd->AttachChild		(m_pUIOurBagList);	
 	xml_init.InitDragDropListEx		(uiXml, "dragdrop_list_our", 0, m_pUIOurBagList);
@@ -158,8 +167,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryBox* pInvBox)
 	m_pCar											= NULL;
 	m_pInventoryBox->m_in_use						= true;
 
-	u16 our_id										= smart_cast<CGameObject*>(m_pOurObject)->ID();
-	m_pUICharacterInfoLeft->InitCharacter			(our_id);
+	m_pUICharacterInfoLeft->InitCharacter			(m_pOurObject);
 	m_pUIOthersIcon->Show							(false);
 	m_pUICharacterInfoRight->ClearInfo				();
 	m_pUIPropertiesBox->Hide						();
@@ -179,7 +187,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	u16 our_id										= smart_cast<CGameObject*>(m_pOurObject)->ID();
 	u16 other_id									= smart_cast<CGameObject*>(m_pOthersObject)->ID();
 
-	m_pUICharacterInfoLeft->InitCharacter			(our_id);
+	m_pUICharacterInfoLeft->InitCharacter			(m_pOurObject);
 	m_pUIOthersIcon->Show							(true);
 	
 	CBaseMonster *monster = NULL;
@@ -196,7 +204,7 @@ void CUICarBodyWnd::InitCarBody(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 			}
 		}else 
 		{
-			m_pUICharacterInfoRight->InitCharacter	(other_id);
+			m_pUICharacterInfoRight->InitCharacter	(m_pOthersObject);
 		}
 	}
 
@@ -319,6 +327,10 @@ void CUICarBodyWnd::UpdateLists()
 	}
 
 	InventoryUtilities::UpdateWeight				(*m_pUIOurBagWnd);
+
+	if (GameConstants::GetLimitedInventory())
+		InventoryUtilities::UpdateCapacityStr(*m_ActorInvFullness, *m_ActorInvCapacity);
+
 	m_b_need_update									= false;
 }
 
@@ -360,6 +372,9 @@ void CUICarBodyWnd::Show()
 	inherited::Show							();
 	SetCurrentItem							(NULL);
 	InventoryUtilities::UpdateWeight		(*m_pUIOurBagWnd);
+
+	if (GameConstants::GetLimitedInventory())
+		InventoryUtilities::UpdateCapacityStr(*m_ActorInvFullness, *m_ActorInvCapacity);
 
 	if (smart_cast<CActor*>(Level().CurrentEntity()) && GameConstants::GetHideWeaponInInventory())
 	{

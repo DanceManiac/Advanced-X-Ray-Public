@@ -847,7 +847,7 @@ void CActorCondition::ChangeFrostbite(float value)
 	clamp(m_fFrostbite, 0.0f, 1.0f);
 }
 
-bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const shared_str& sect)
+bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable)
 {
 	if (m_curr_medicine_influence.InProcess())
 		return false;
@@ -866,7 +866,7 @@ bool CActorCondition::ApplyInfluence(const SMedicineInfluenceValues& V, const sh
 	}
 
 	if (V.fTimeTotal < 0.0f)
-		return inherited::ApplyInfluence(V, sect);
+		return inherited::ApplyInfluence(V, sect, cur_eatable);
 
 	m_curr_medicine_influence = V;
 	m_curr_medicine_influence.fTimeCurrent = m_curr_medicine_influence.fTimeTotal;
@@ -1245,7 +1245,7 @@ void CActorCondition::UpdateTutorialThresholds()
 		strcpy_s(cb_name,"_G.on_actor_radiation");
 	}
 
-	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()>_cPsyHealthThr){
+	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()<_cPsyHealthThr){
 //.		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_psy");

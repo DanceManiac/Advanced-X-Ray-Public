@@ -107,6 +107,7 @@ CInventoryItem::CInventoryItem()
 	m_custom_text_clr_inv = 0;
 	m_custom_text_clr_hud = 0;
 
+	m_fOccupiedInvSpace = 0.0f;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -178,6 +179,8 @@ void CInventoryItem::Load(LPCSTR section)
 	m_bCanUse					= READ_IF_EXISTS(pSettings, r_bool, section, "can_use", true);
 
 	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text", nullptr);
+
+	m_fOccupiedInvSpace			= READ_IF_EXISTS(pSettings, r_float, section, "occupied_inv_space", 0.0f);
 
 #pragma todo("volume stuff stuff")
 	/*if (!GameConstants::GetInventoryItemsAutoVolume())

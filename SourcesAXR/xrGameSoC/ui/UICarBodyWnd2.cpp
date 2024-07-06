@@ -24,6 +24,7 @@
 #include "../RepairKit.h"
 #include "../Torch.h"
 #include "../CustomDetector.h"
+#include "../PDA.h"
 
 #include "../string_table.h"
 
@@ -130,8 +131,17 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 		{
 			CUIDragDropListEx* old_owner = cell_item->OwnerList();
 			CUIDragDropListEx* new_owner = (old_owner == m_pUIOthersBagList) ? m_pUIOurBagList : m_pUIOthersBagList;
+
 			if (m_pOthersObject)
 			{
+#pragma todo("ТЧ: Тут надо завозить deadbody_can_take_status()")
+				//if (!m_pOthersObject->deadbody_can_take_status())
+				//	return;
+
+				PIItem quest_item = (PIItem)CurrentItem()->m_pData;
+				if (quest_item->IsQuestItem())
+					return;
+
 				if (TransferItem(CurrentIItem(), (old_owner == m_pUIOthersBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList) ? m_pOthersObject : m_pOurObject, (old_owner == m_pUIOurBagList)))
 				{
 					CUICellItem* ci = old_owner->RemoveItem(CurrentItem(), false);
@@ -223,6 +233,14 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 					child_weap_mag->UnloadMagazine();
 				}
 			}
+			break;
+		}
+	case INVENTORY_PLAY_ACTION:
+		{
+			CPda* pPda = smart_cast<CPda*>(item);
+			if(!pPda)
+				break;
+			pPda->PlayScriptFunction();
 			break;
 		}
 	case BATTERY_CHARGE_TORCH:
@@ -527,6 +545,17 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		m_pUIPropertiesBox->AddItem(act_str, NULL, INVENTORY_EAT_ACTION);
 		b_show = true;
 	}
+}
+
+void CUICarBodyWnd::PropertiesBoxForPlaying(PIItem item, bool& b_show)
+{
+	CPda* pPda = smart_cast<CPda*>(item);
+	if (!pPda || !pPda->CanPlayScriptFunction())
+		return;
+
+	LPCSTR act_str = "st_play";
+	m_pUIPropertiesBox->AddItem(act_str, NULL, INVENTORY_PLAY_ACTION);
+	b_show = true;
 }
 
 void CUICarBodyWnd::PropertiesBoxForDrop(CUICellItem* cell_item, PIItem item, bool& b_show)

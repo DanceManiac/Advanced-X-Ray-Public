@@ -73,6 +73,8 @@ public:
 	float							m_fMaxFilterCondition;
 	float							m_fFilterCondition;
 
+	float							m_fInventoryCapacity;
+
 	shared_str						m_NightVisionSect;
 	
 	xr_vector<shared_str>			m_SuitableFilters;
@@ -90,7 +92,8 @@ public:
 	virtual	BOOL					BonePassBullet			(int boneID);
 	const shared_str&				GetFullIconName			() const	{return m_full_icon_name;};
 
-	IC int							GetOutfitNV_Type		() const { return m_NightVisionType; }
+	IC	int							GetOutfitNV_Type		() const { return m_NightVisionType; }
+		float						GetInventoryCapacity	() const { return m_fInventoryCapacity; }
 
 	virtual CCustomOutfit*			cast_outfit() { return this; }
 

@@ -15,6 +15,7 @@
 #include "entity_alive.h"
 #include "EntityCondition.h"
 #include "InventoryOwner.h"
+#include "AdvancedXrayGameConstants.h"
 
 CEatableItem::CEatableItem()
 {
@@ -34,11 +35,17 @@ CEatableItem::CEatableItem()
 	m_alcohol					= 0.f;
 	m_drugs						= 0.f;
 
-	m_iPortionsNum = 1;
+	m_iPortionsNum				= 1;
 
-	m_physic_item	= 0;
+	m_physic_item				= 0;
 
-	m_bUnlimited	= false;
+	m_bUnlimited				= false;
+
+	m_fRadioactivity			= 0.0f;
+	m_fIrradiationCoef			= 0.0005f;
+	m_fIrradiationZonePower		= 0.0f;
+	m_fSpoliage					= 0.0f;
+	m_fFoodRottingCoef			= 0.0f;
 }
 
 CEatableItem::~CEatableItem()
@@ -79,6 +86,10 @@ void CEatableItem::Load(LPCSTR section)
 	VERIFY						(m_iPortionsNum<10000);
 
 	m_bUnlimited				= READ_IF_EXISTS(pSettings, r_bool, section, "unlimited_usage", false);
+
+	m_fIrradiationCoef			= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_coef", 0.0005f);
+	m_fIrradiationZonePower		= READ_IF_EXISTS(pSettings, r_float, section, "irradiation_zone_power", 0.0f);
+	m_fFoodRottingCoef			= READ_IF_EXISTS(pSettings, r_float, section, "rotting_factor", 0.0f);
 }
 
 BOOL CEatableItem::net_Spawn				(CSE_Abstract* DC)
@@ -115,12 +126,46 @@ void CEatableItem::save(NET_Packet& packet)
 {
 	inherited::save(packet);
 	save_data(m_iPortionsNum, packet);
+	save_data(m_fRadioactivity, packet);
+	save_data(m_fSpoliage, packet);
 }
 
 void CEatableItem::load(IReader& packet)
 {
 	inherited::load(packet);
 	load_data(m_iPortionsNum, packet);
+	load_data(m_fRadioactivity, packet);
+	load_data(m_fSpoliage, packet);
+}
+
+void CEatableItem::UpdateInRuck(CActor* actor)
+{
+	//UpdateUseAnim(actor);
+
+	if (GameConstants::GetFoodRotting() && GameConstants::GetActorIntoxication())
+	{
+		float rotten_coef = (m_fFoodRottingCoef / 128) * Device.fTimeDelta;
+		static float spoliage = m_fSpoliage;
+
+		if (spoliage < 1.0f)
+			spoliage += rotten_coef;
+
+		if (spoliage > 0.0f)
+			m_fSpoliage = smoothstep(0.75f, 1.0f, spoliage);
+
+		clamp(m_fFoodRottingCoef, 0.0f, 1.0f);
+	}
+}
+
+void CEatableItem::HitFromActorHit(SHit* pHDS)
+{
+	float hit_power = pHDS->damage();
+
+	if (pHDS->hit_type == ALife::eHitTypeRadiation && hit_power > m_fIrradiationZonePower)
+	{
+		m_fRadioactivity += (hit_power / 10) * m_fIrradiationCoef;
+		clamp(m_fRadioactivity, 0.0f, 1.0f);
+	}
 }
 
 void CEatableItem::UseBy (CEntityAlive* entity_alive)
@@ -133,7 +178,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
 	
-	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect());
+	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect(), this);
 
 	for (u8 i = 0; i < (u8)eBoostMaxCount; i++)
 	{

@@ -345,6 +345,29 @@ void InventoryUtilities::UpdateWeight(CUIStatic &wnd, bool withPrefix)
 	//	UIStaticWeight.ClipperOff();
 }
 
+void InventoryUtilities::UpdateCapacityStr(CUIStatic& wnd, CUIStatic& wnd_max)
+{
+	CInventoryOwner* pInvOwner = smart_cast<CInventoryOwner*>(Level().CurrentEntity());
+
+	R_ASSERT(pInvOwner);
+	string128		buf;
+
+	CActor* Actor = smart_cast<CActor*>(pInvOwner);
+
+	if (!Actor)
+		return;
+
+	float total = Actor->GetInventoryFullness();
+	float max = Actor->MaxCarryInvCapacity();
+
+	LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
+	xr_sprintf(buf, "%.1f", total);
+	wnd.SetText(buf);
+
+	xr_sprintf(buf, "%s %.1f %s", "/", max, lit_str);
+	wnd_max.SetText(buf);
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 void LoadStrings(CharInfoStrings *container, LPCSTR section, LPCSTR field)

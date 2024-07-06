@@ -46,6 +46,7 @@ SERVER_ENTITY_DECLARE_BEGIN0(CSE_ALifeTraderAbstract)
 	CHARACTER_REPUTATION_VALUE		m_reputation;
 	CHARACTER_RANK_VALUE			m_rank;
 	xr_string						m_character_name;
+	shared_str						m_character_icon;
 		
 #ifdef XRGAME_EXPORTS
 	//для работы с relation system

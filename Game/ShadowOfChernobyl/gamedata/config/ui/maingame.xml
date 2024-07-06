@@ -56,6 +56,12 @@
 		<text align="c" font="graffiti22" r="225" g="225" b="250" a="255" />
 	</quick_info>
 
+	<hud_info>
+		<position x="0" y="0" />
+		<item_name x="0" y1="0.44" y2="0.48" y3="0.55" />
+		<font font="graffiti19" />
+	</hud_info>
+
 	<indicator_booster_psy x="20" y="710" width="31" height="41">
 		<texture>ui_inGame2_shield_Psy</texture>
 	</indicator_booster_psy>
@@ -161,7 +167,7 @@
 		</flashing_icon>
 	</flashing_icons>
 
-	<pick_up_item x="437" y="400" width="150" height="100"/>
+	<pick_up_item  x="512" y="478" scale="1"/>
 
 	<artefact_panel x="130" y="710" width="730" height="50" cell_width="50" cell_height="50" scale="0.75"/>
 	

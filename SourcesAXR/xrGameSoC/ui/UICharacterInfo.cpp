@@ -169,9 +169,9 @@ void CUICharacterInfo::Init(float x, float y, float width, float height, const c
 	Init							(x,y,width,height,&uiXml);
 }
 
-void CUICharacterInfo::InitCharacter(u16 id)
+void CUICharacterInfo::InitCharacter(CInventoryOwner* owner)
 {
-	m_ownerID					= id;
+	m_ownerID					= owner->object_id();
 
 	CCharacterInfo				chInfo;
 	CSE_ALifeTraderAbstract*	T = ch_info_get_from_id(m_ownerID);
@@ -200,7 +200,7 @@ void CUICharacterInfo::InitCharacter(u16 id)
 		m_icons[eUICommunity]->SetText(str);
 	}
 
-	m_texture_name										= chInfo.IconName().c_str();
+	m_texture_name._set(owner->IconName());
 	m_icons[eUIIcon]->InitTexture						( m_texture_name.c_str() );
 	m_icons[eUIIcon]->SetStretchTexture					(true);
 

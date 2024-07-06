@@ -28,6 +28,8 @@ class					CActor;
 class					CWeapon;
 class					CMissile;
 class					CInventoryItem;
+class					CUIHudStatesWnd;
+class					CUICellItem;
 
 class CUIMainIngameWnd: public CUIWindow  
 {
@@ -82,6 +84,31 @@ protected:
 public:
 	void				DrawMainIndicatorsForInventory	();
 	CUIStatic*			GetPDAOnline					() { return &UIPdaOnline; };
+
+	float				hud_info_x;
+	float				hud_info_y;
+
+	CGameFont*			m_HudInfoFont;
+
+	float				hud_info_item_x;
+	float				hud_info_item_y1;
+	float				hud_info_item_y2;
+	float				hud_info_item_y3;
+
+	int					hud_info_r_n;
+	int					hud_info_g_n;
+	int					hud_info_b_n;
+	int					hud_info_a_n;
+
+	int					hud_info_r_e;
+	int					hud_info_g_e;
+	int					hud_info_b_e;
+	int					hud_info_a_e;
+
+	int					hud_info_r_f;
+	int					hud_info_g_f;
+	int					hud_info_b_f;
+	int					hud_info_a_f;
 protected:
 
 
@@ -182,14 +209,11 @@ public:
 	void				reset_ui							();
 protected:
 	CInventoryItem*		m_pPickUpItem;
-	CUIStatic			UIPickUpItemIcon;
-
+	float				fuzzyShowInfo_;
+	CUICellItem*		uiPickUpItemIconNew_;
 	float				m_iPickUpItemIconX;
 	float				m_iPickUpItemIconY;
-	float				m_iPickUpItemIconWidth;
-	float				m_iPickUpItemIconHeight;
-
-	void				UpdatePickUpItem();
+	float				m_iPickUpItemIconScale;
 public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
 #ifdef DEBUG

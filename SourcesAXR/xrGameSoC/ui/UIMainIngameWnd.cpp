@@ -58,6 +58,8 @@
 
 #include "UIStatic.h"
 #include "UIHelper.h"
+#include "UICellItem.h"
+#include "UICellItemFactory.h"
 
 #ifdef DEBUG
 #	include "../debug_renderer.h"
@@ -99,6 +101,8 @@ CUIMainIngameWnd::CUIMainIngameWnd()
 	m_artefactPanel				= xr_new<CUIArtefactPanel>();
 	m_pMPChatWnd				= NULL;
 	m_pMPLogWnd					= NULL;	
+	uiPickUpItemIconNew_		= NULL;	
+	fuzzyShowInfo_				= 0.f;
 }
 
 #include "UIProgressShape.h"
@@ -144,15 +148,10 @@ void CUIMainIngameWnd::Init()
 	UIWeaponIcon.SetShader		(GetEquipmentIconsShader());
 	UIWeaponIcon_rect			= UIWeaponIcon.GetWndRect();
 	//---------------------------------------------------------
-	AttachChild					(&UIPickUpItemIcon);
-	xml_init.InitStatic			(uiXml, "pick_up_item", 0, &UIPickUpItemIcon);
-	UIPickUpItemIcon.SetShader	(GetEquipmentIconsShader());
-	UIPickUpItemIcon.ClipperOn	();
+	m_iPickUpItemIconX			= uiXml.ReadAttribFlt("pick_up_item", 0, "x", 512.f);
+	m_iPickUpItemIconY			= uiXml.ReadAttribFlt("pick_up_item", 0, "y", 550.f);
 
-	m_iPickUpItemIconWidth		= UIPickUpItemIcon.GetWidth();
-	m_iPickUpItemIconHeight		= UIPickUpItemIcon.GetHeight();
-	m_iPickUpItemIconX			= UIPickUpItemIcon.GetWndRect().left;
-	m_iPickUpItemIconY			= UIPickUpItemIcon.GetWndRect().top;
+	m_iPickUpItemIconScale		= uiXml.ReadAttribFlt("pick_up_item", 0, "scale", 1.f);
 	//---------------------------------------------------------
 
 
@@ -256,6 +255,34 @@ void CUIMainIngameWnd::Init()
 	xml_init.InitStatic			(uiXml, "heating_static", 0, &UIHeatingIcon);
 	UIHeatingIcon.Show			(false);
 
+	hud_info_x					= uiXml.ReadAttribFlt("hud_info:position",		0, "x", 0.f);
+	hud_info_y					= uiXml.ReadAttribFlt("hud_info:position",		0, "y", 0.f);
+
+	u32 clr{};
+	if (uiXml.NavigateToNode("hud_info:font", 0))
+		xml_init.InitFont		(uiXml, "hud_info:font", 0, clr, m_HudInfoFont);
+	else
+		m_HudInfoFont			= UI().Font().pFontGraffiti19Russian;
+
+	hud_info_item_x				= uiXml.ReadAttribFlt("hud_info:item_name",		0, "x", 0.f);
+	hud_info_item_y1			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y1",0.25f);
+	hud_info_item_y2			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y2",0.3f);
+	hud_info_item_y3			= uiXml.ReadAttribFlt("hud_info:item_name",		0, "y3",0.32f);
+
+	hud_info_r_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "r", 0xff);
+	hud_info_g_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "g", 0);
+	hud_info_b_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "b", 0);
+	hud_info_a_e 				= uiXml.ReadAttribInt("hud_info_color:enemy",   0, "a", 0x80);
+
+	hud_info_r_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "r", 0xff);
+	hud_info_g_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "g", 0xff);
+	hud_info_b_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "b", 0x80);
+	hud_info_a_n 				= uiXml.ReadAttribInt("hud_info_color:neutral", 0, "a", 0x80);
+
+	hud_info_r_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "r", 0);
+	hud_info_g_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "g", 0xff);
+	hud_info_b_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "b", 0);
+	hud_info_a_f 				= uiXml.ReadAttribInt("hud_info_color:friend",  0, "a", 0x80);
 
 	if(GameID()==GAME_ARTEFACTHUNT){
 		xml_init.InitStatic		(uiXml, "artefact_static", 0, &UIArtefactIcon);
@@ -355,7 +382,10 @@ void CUIMainIngameWnd::Draw()
 	CUIWindow::Draw				();
 	UIZoneMap->Render			();			
 
-	RenderQuickInfos			();		
+	RenderQuickInfos			();
+
+	if (uiPickUpItemIconNew_)
+		uiPickUpItemIconNew_->Draw();
 
 #ifdef DEBUG
 	draw_adjust_mode			();
@@ -574,7 +604,13 @@ void CUIMainIngameWnd::Update()
 	Device.vCameraDirection.getHP	(h,p);
 	UIZoneMap->SetHeading			(-h);
 
-	UpdatePickUpItem				();
+	fuzzyShowInfo_ += SHOW_INFO_SPEED * Device.fTimeDelta;
+
+	if (uiPickUpItemIconNew_ && fuzzyShowInfo_ > 0.f)
+	{
+		uiPickUpItemIconNew_->Update();
+	}
+
 	CUIWindow::Update				();
 }
 
@@ -1094,7 +1130,28 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 
 	// ¬ключаем анимацию требуемой иконки
 	FlashingIcons_it icon = m_FlashingIcons.find(type);
-	R_ASSERT2(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed");
+	shared_str iconType{};
+
+	switch (type)
+	{
+	case 0:
+		iconType = "pda";
+		break;
+	case 1:
+		iconType = "encyclopedia";
+		break;
+	case 2:
+		iconType = "journal";
+		break;
+	case 3:
+		iconType = "mail";
+		break;
+	default:
+		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType);
+	}
+
+	R_ASSERT3(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed!", iconType.c_str());
+
 	icon->second->Show(enable);
 }
 
@@ -1157,70 +1214,28 @@ void CUIMainIngameWnd::AnimateContacts(bool b_snd)
 
 }
 
-
 void CUIMainIngameWnd::SetPickUpItem	(CInventoryItem* PickUpItem)
 {
-	m_pPickUpItem = PickUpItem;
-};
+	if (m_pPickUpItem != PickUpItem)
+		xr_delete(uiPickUpItemIconNew_);
 
-void CUIMainIngameWnd::UpdatePickUpItem	()
-{
-	if (!m_pPickUpItem || !Level().CurrentViewEntity() || Level().CurrentViewEntity()->CLS_ID != CLSID_OBJECT_ACTOR) 
-	{
-		UIPickUpItemIcon.Show(false);
+	if (m_pPickUpItem == PickUpItem)
 		return;
-	};
 
+	m_pPickUpItem = PickUpItem;
 
-	shared_str sect_name	= m_pPickUpItem->object().cNameSect();
+	if (!m_pPickUpItem)
+		return;
 
-	//properties used by inventory menu
-	int m_iGridWidth	= pSettings->r_u32(sect_name, "inv_grid_width");
-	int m_iGridHeight	= pSettings->r_u32(sect_name, "inv_grid_height");
+	uiPickUpItemIconNew_ = create_cell_item(m_pPickUpItem); // use inventory cell item class
 
-	int m_iXPos			= pSettings->r_u32(sect_name, "inv_grid_x");
-	int m_iYPos			= pSettings->r_u32(sect_name, "inv_grid_y");
-
-	float scale_x = m_iPickUpItemIconWidth /
-		float(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-	float scale_y = m_iPickUpItemIconHeight /
-		float(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-
-	scale_x = (scale_x > 1) ? 1.0f : scale_x;
-	scale_y = (scale_y > 1) ? 1.0f : scale_y;
-
-	if (GameConstants::GetUseHQ_Icons())
-	{
-		scale_x = m_iPickUpItemIconWidth /
-			(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2);
-		scale_y = m_iPickUpItemIconHeight /
-			(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2);
-
-		scale_x = (scale_x > 1) ? 0.5f : scale_x / 2;
-		scale_y = (scale_y > 1) ? 0.5f : scale_y / 2;
-	}
-
-	float scale = scale_x<scale_y?scale_x:scale_y;
-
-	UIPickUpItemIcon.GetUIStaticItem().SetOriginalRect(
-		float(m_iXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
-		float(m_iYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
-		float(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
-		float(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
-
-	UIPickUpItemIcon.SetStretchTexture(true);
-
-	UIPickUpItemIcon.SetWidth(m_iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * scale);
-	UIPickUpItemIcon.SetHeight(m_iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) * scale);
-
-	UIPickUpItemIcon.SetWndPos(m_iPickUpItemIconX + 
-		(m_iPickUpItemIconWidth - UIPickUpItemIcon.GetWidth())/2,
-		m_iPickUpItemIconY + 
-		(m_iPickUpItemIconHeight - UIPickUpItemIcon.GetHeight())/2);
-
-	UIPickUpItemIcon.SetColor(color_rgba(255,255,255,192));
-	UIPickUpItemIcon.Show(true);
-};
+	float x_size = m_pPickUpItem->GetInvGridRect().x2 * (UI().is_widescreen() ? 30.f : 40.f);
+	float y_size = m_pPickUpItem->GetInvGridRect().y2 * 40.f;
+	uiPickUpItemIconNew_->SetAlignment(waCenter);
+	uiPickUpItemIconNew_->SetWndPos(Fvector2().set(m_iPickUpItemIconX, m_iPickUpItemIconY));
+	uiPickUpItemIconNew_->SetWndSize(Fvector2().set(x_size * m_iPickUpItemIconScale, y_size * m_iPickUpItemIconScale));
+	fuzzyShowInfo_ = 0.f;
+}
 
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {

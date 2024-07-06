@@ -65,6 +65,10 @@ protected:
 	CUIStatic*				m_pUIOurBagWnd;
 	CUIStatic*				m_pUIOthersBagWnd;
 
+	CUIStatic*				m_ActorInvCapacityInfo;
+	CUIStatic*				m_ActorInvFullness;
+	CUIStatic*				m_ActorInvCapacity;
+
 	//информация о персонажах 
 	CUIStatic*				m_pUIOurIcon;
 	CUIStatic*				m_pUIOthersIcon;
@@ -80,6 +84,7 @@ protected:
 	void					EatItem						(CUICellItem* itm);
 
 	void					PropertiesBoxForUsing		(PIItem item, bool& b_show);
+	void					PropertiesBoxForPlaying		(PIItem item, bool& b_show);
 	void					PropertiesBoxForWeapon		(CUICellItem* cell_item, PIItem item, bool& b_show);
 	void					PropertiesBoxForDrop		(CUICellItem* cell_item, PIItem item, bool& b_show);
 	void					ActivatePropertiesBox		();

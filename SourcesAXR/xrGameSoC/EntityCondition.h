@@ -4,6 +4,7 @@ class CWound;
 class NET_Packet;
 class CEntityAlive;
 class CLevel;
+class CEatableItem;
 
 #include "hit_immunity.h"
 #include "Hit.h"
@@ -205,7 +206,7 @@ public:
 	IC void 				SetCanBeHarmedState		(bool CanBeHarmed) 			{m_bCanBeHarmed = CanBeHarmed;}
 	IC bool					CanBeHarmed				() const					{return OnServer() && m_bCanBeHarmed;};
 	
-	virtual bool			ApplyInfluence			(const SMedicineInfluenceValues& V, const shared_str& sect);
+	virtual bool			ApplyInfluence			(const SMedicineInfluenceValues& V, const shared_str& sect, CEatableItem* cur_eatable);
 	virtual bool			ApplyBooster			(const SBooster& B, const shared_str& sect);
 	void					ClearWounds				();
 

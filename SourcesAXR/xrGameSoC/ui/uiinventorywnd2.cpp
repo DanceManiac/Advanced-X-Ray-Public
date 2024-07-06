@@ -175,6 +175,9 @@ void CUIInventoryWnd::InitInventory()
 
 	InventoryUtilities::UpdateWeight					(UIBagWnd, true);
 
+	if (GameConstants::GetLimitedInventory())
+		InventoryUtilities::UpdateCapacityStr(*m_ActorInvFullness, *m_ActorInvCapacity);
+
 	m_b_need_reinit					= false;
 }  
 
@@ -189,6 +192,10 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 		SendEvent_Item_Drop		(CurrentIItem());
 		SetCurrentItem			(NULL);
 		InventoryUtilities::UpdateWeight			(UIBagWnd, true);
+
+		if (GameConstants::GetLimitedInventory())
+			InventoryUtilities::UpdateCapacityStr(*m_ActorInvFullness, *m_ActorInvCapacity);
+
 		return;
 	}
 
@@ -205,6 +212,10 @@ void CUIInventoryWnd::DropCurrentItem(bool b_all)
 		SendEvent_Item_Drop					(CurrentIItem());
 		SetCurrentItem						(NULL);
 		InventoryUtilities::UpdateWeight	(UIBagWnd, true);
+
+		if (GameConstants::GetLimitedInventory())
+			InventoryUtilities::UpdateCapacityStr(*m_ActorInvFullness, *m_ActorInvCapacity);
+
 		return;
 	}
 }

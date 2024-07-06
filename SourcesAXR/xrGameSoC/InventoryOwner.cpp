@@ -144,6 +144,7 @@ BOOL CInventoryOwner::net_Spawn		(CSE_Abstract* DC)
 			dialog_manager->SetDefaultStartDialog(CharacterInfo().StartDialog());
 		}
 		m_game_name			= pTrader->m_character_name;
+		m_character_icon	= pTrader->m_character_icon;
 
 		m_trader_flags.assign(pTrader->m_trader_flags.get());
 	}
@@ -180,6 +181,7 @@ void	CInventoryOwner::save	(NET_Packet &output_packet)
 
 	CharacterInfo().save(output_packet);
 	save_data	(m_game_name, output_packet);
+	save_data	(m_character_icon, output_packet);
 	save_data	(m_money,	output_packet);
 }
 void	CInventoryOwner::load	(IReader &input_packet)
@@ -194,6 +196,7 @@ void	CInventoryOwner::load	(IReader &input_packet)
 
 	CharacterInfo().load(input_packet);
 	load_data		(m_game_name, input_packet);
+	load_data		(m_character_icon, input_packet);
 	load_data		(m_money,	input_packet);
 }
 
@@ -624,4 +627,10 @@ void CInventoryOwner::AfterLoad()
 CInventoryItem* CInventoryOwner::GetCurrentTorch() const
 {
 	return inventory().ItemFromSlot(TORCH_SLOT);
+}
+
+LPCSTR CInventoryOwner::IconName() const
+{
+	return CharacterInfo().IconName().c_str();
+	return m_character_icon.c_str();
 }

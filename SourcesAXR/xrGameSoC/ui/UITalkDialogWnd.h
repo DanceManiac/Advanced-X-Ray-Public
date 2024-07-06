@@ -55,6 +55,9 @@ public:
 	CUICharacterInfo	UICharacterInfoLeft;
 	CUICharacterInfo	UICharacterInfoRight;
 
+	CInventoryOwner*	m_pOurInvOwner;
+	CInventoryOwner*	m_pOthersInvOwner;
+
 	void                AddQuestion			(LPCSTR str, LPCSTR value, int number, bool b_finalizer);
 	void				AddAnswer			(LPCSTR SpeakerName, const char* str, bool bActor);
 	void				AddIconedAnswer		(LPCSTR text, LPCSTR texture_name, Frect texture_rect, LPCSTR templ_name);

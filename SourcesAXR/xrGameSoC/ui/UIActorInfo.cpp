@@ -83,7 +83,7 @@ void CUIActorInfoWnd::Show(bool status)
 	inherited::Show(status);
 	if (!status) return;
 	
-	UICharacterInfo->InitCharacter			(Actor()->ID());
+	UICharacterInfo->InitCharacter			(Actor());
 	UICharIconHeader->UITitleText.SetText	(Actor()->Name());
 	FillPointsInfo							();
 }
