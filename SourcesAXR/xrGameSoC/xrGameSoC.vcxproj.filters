@@ -2350,6 +2350,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer">
       <UniqueIdentifier>{204999d2-3e37-4fb8-b34e-8f6e64fe988d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\SleepingBag">
+      <UniqueIdentifier>{d59de4ef-cc02-420f-a339-d1740cd8eaa1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6715,6 +6718,9 @@
     <ClInclude Include="ArtefactContainer.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
     </ClInclude>
+    <ClInclude Include="SleepingBag.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9979,6 +9985,9 @@
     </ClCompile>
     <ClCompile Include="ArtefactContainer.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
+    </ClCompile>
+    <ClCompile Include="SleepingBag.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

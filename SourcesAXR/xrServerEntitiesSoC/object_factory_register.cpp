@@ -175,6 +175,7 @@
 #	include "AntigasFilter.h"
 #	include "RepairKit.h"
 #	include "ArtefactContainer.h"
+#	include "SleepingBag.h"
 #endif // NO_XR_GAME
 
 ENGINE_API	bool g_dedicated_server;
@@ -318,6 +319,7 @@ void CObjectFactory::register_classes	()
 	ADD(CAntigasFilter			,CSE_ALifeItem					,CLSID_IITEM_AFILTER			,"obj_filter");
 	ADD(CRepairKit				,CSE_ALifeItem					,CLSID_IITEM_DREPKIT			,"obj_repair_kit");
 	ADD(CArtefactContainer		,CSE_ALifeItem					,CLSID_IITEM_DAFCONT			,"obj_af_container");
+	ADD(CSleepingBag			,CSE_ALifeItem					,CLSID_IITEM_DSLEBAG			,"obj_sleeping_bag");
 	
 	//Info Document
 	ADD(CInfoDocument			,CSE_ALifeItemDocument			,CLSID_IITEM_DOCUMENT			,"obj_document");

@@ -1524,6 +1524,7 @@
     <ClInclude Include="script_zone.h" />
     <ClInclude Include="searchlight.h" />
     <ClInclude Include="pch_script.h" />
+    <ClInclude Include="SleepingBag.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="UIFontDefines.h" />
     <ClInclude Include="ui\UIBoosterInfo.h" />
@@ -2180,6 +2181,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="script_vars_storage.cpp" />
+    <ClCompile Include="SleepingBag.cpp" />
     <ClCompile Include="sound_memory_manager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>

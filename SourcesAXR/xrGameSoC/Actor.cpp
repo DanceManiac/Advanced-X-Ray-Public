@@ -96,6 +96,8 @@ static Fvector	vFootExt;
 
 Flags32			psActorFlags={0};
 
+int				psActorSleepTime = 1;
+
 ENGINE_API extern int ps_r__ShaderNVG;
 
 CActor::CActor() : CEntityAlive()

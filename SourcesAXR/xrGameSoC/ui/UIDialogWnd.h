@@ -40,6 +40,9 @@ public:
 	virtual bool NeedCursor						()const {return true;}
 	virtual bool WorkInPause					()const {return m_bWorkInPause;}
 	virtual bool Dispatch						(int cmd, int param)				{return true;}
+
+			void ShowDialog1					(bool bDoHideIndicators);
+			void HideDialog1					();
 };
 
 #endif // _UI_DIALOG_WND_H_

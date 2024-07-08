@@ -19,6 +19,7 @@
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
 #include "../ArtefactContainer.h"
+#include "../SleepingBag.h"
 #include "../Torch.h"
 #include "../CustomDetector.h"
 #include "../PDA.h"
@@ -304,6 +305,17 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 
 			break;
 		}
+	case INVENTORY_SLEEP_ACTION:
+		{
+			CSleepingBag* sleeping_bag = smart_cast<CSleepingBag*>(item);
+
+			if (!sleeping_bag)
+				break;
+
+			sleeping_bag->StartSleep();
+
+			break;
+		}
 	}//switch
 
 	SetCurrentItem(NULL);
@@ -324,6 +336,18 @@ bool CUIInventoryWnd::TryUseItem(CUICellItem* cell_itm)
 	CBattery*			pBattery			= smart_cast<CBattery*>			(item);
 	CAntigasFilter*		pFilter				= smart_cast<CAntigasFilter*>	(item);
 	CRepairKit*			pRepairKit			= smart_cast<CRepairKit*>		(item);
+	CSleepingBag*		pSleepingBag		= smart_cast<CSleepingBag*>		(item);
+
+	if (pSleepingBag)
+	{
+		pSleepingBag->StartSleep();
+
+		PlaySnd(eInvItemUse);
+		cell_itm->Update();
+		SetCurrentItem(NULL);
+
+		return true;
+	}
 
 	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()) || (pRepairKit && !pRepairKit->UseAllowed()))
 	{
@@ -465,6 +489,7 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(item);
 	CRepairKit* pRepairKit = smart_cast<CRepairKit*>(item);
 	CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(item);
+	CSleepingBag* pSleepingBag = smart_cast<CSleepingBag*>(item);
 
 	LPCSTR act_str = NULL;
 
@@ -603,6 +628,11 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 				b_show = true;
 			}
 		}
+	}
+	else if (pSleepingBag)
+	{
+		UIPropertiesBox->AddItem("st_use", NULL, INVENTORY_SLEEP_ACTION);
+		b_show = true;
 	}
 	else if (pMedkit || pAntirad)
 	{

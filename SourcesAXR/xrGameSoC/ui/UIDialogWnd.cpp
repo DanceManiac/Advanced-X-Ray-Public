@@ -10,6 +10,8 @@
 #include "../../xrEngine/xr_ioconsole.h"
 #include "../level.h"
 #include "../GameObject.h"
+#include "UIBtnHint.h"
+#include "MainMenu.h"
 
 CUIDialogWnd:: CUIDialogWnd()
 {
@@ -174,4 +176,21 @@ bool CUIDialogWnd::IR_process()
 
 void CUIDialogWnd::Update(){
 	CUIWindow::Update();
+}
+
+void CUIDialogWnd::ShowDialog1(bool bDoHideIndicators)
+{
+	if (MainMenu()->IsActive())
+		return MainMenu()->StartStopMenu(this, bDoHideIndicators);
+	else
+		return HUD().GetUI()->StartStopMenu(this, bDoHideIndicators);
+}
+
+void CUIDialogWnd::HideDialog1()
+{
+	if (g_statHint->IsShown())
+		g_statHint->Discard();
+
+	if (IsShown() && GetHolder())
+		GetHolder()->StartStopMenu(this, false);
 }

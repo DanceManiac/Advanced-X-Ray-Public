@@ -92,5 +92,9 @@
 
 
 	<info_portion id="autojump_enabled"></info_portion>
+	
+	<info_portion id="sleep_active"></info_portion>
+	<info_portion id="actor_is_sleeping"></info_portion>
+	<info_portion id="tutorial_sleep"></info_portion>
 
 </game_information_portions>

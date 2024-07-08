@@ -2180,6 +2180,7 @@ void CCC_RegisterCommands()
 
 	CMD4(CCC_Integer,		"keypress_on_start",		&g_keypress_on_start, 0, 1);
 
+	CMD4(CCC_Integer,		"g_sleep_time",				&psActorSleepTime, 1, 24);
 	// AXR: New Commands
 
 	if (bDeveloperMode)
