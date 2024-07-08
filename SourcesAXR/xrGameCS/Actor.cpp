@@ -676,6 +676,25 @@ void	CActor::Hit(SHit* pHDS)
 				else
 					Actor()->SetHeatingStatus(false);
 			}
+
+			if (GameConstants::GetFoodIrradiation())
+			{
+				CCustomZone* zone_hitter = smart_cast<CCustomZone*>(pHDS->who);
+
+				if (zone_hitter)
+				{
+					TIItemContainer::iterator it = inventory().m_ruck.begin();
+					TIItemContainer::iterator ite = inventory().m_ruck.end();
+
+					for (; it != ite; ++it)
+					{
+						CEatableItem* current_eatable = smart_cast<CEatableItem*>(*it);
+
+						if (current_eatable)
+							current_eatable->HitFromActorHit(pHDS);
+					}
+				}
+			}
 		}
 	}else
 	{

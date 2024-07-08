@@ -151,17 +151,6 @@ void CEatableItem::UpdateInRuck(CActor* actor)
 {
 	UpdateUseAnim(actor);
 
-	if (GameConstants::GetFoodIrradiation())
-	{
-		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation);
-		float irradiation_coef = ((m_fIrradiationCoef + m_radia_hit) / 64) * Device.fTimeDelta;
-
-		if (m_radia_hit > m_fIrradiationZonePower)
-			m_fRadioactivity += irradiation_coef;
-
-		clamp(m_fRadioactivity, 0.0f, 1.0f);
-	}
-
 	if (GameConstants::GetFoodRotting() && GameConstants::GetActorIntoxication())
 	{
 		float rotten_coef = (m_fFoodRottingCoef / 128) * Device.fTimeDelta;
@@ -315,6 +304,14 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 				actor->inventory().Eat(this);
 		}
 	}
+}
+
+void CEatableItem::HitFromActorHit(SHit* pHDS)
+{
+	float hit_power = pHDS->damage();
+
+	if (pHDS->hit_type == ALife::eHitTypeRadiation && hit_power > m_fIrradiationZonePower)
+		m_fRadioactivity += (hit_power / 10) * m_fIrradiationCoef;
 }
 
 bool CEatableItem::UseBy (CEntityAlive* entity_alive)

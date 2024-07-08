@@ -32,6 +32,8 @@ public:
 	virtual	bool			Empty						()						{return m_iPortionsNum==0;};
 	virtual	u32				Cost						()	const;
 	virtual float			Weight						()	const;
+			void			HitFromActorHit				(SHit* pHDS);
+
 			void SetRemainingUses(u8 value) { if (value > m_iConstPortions) return; m_iPortionsNum = value; };
 			u8 GetMaxUses() const { return m_iConstPortions; };
 

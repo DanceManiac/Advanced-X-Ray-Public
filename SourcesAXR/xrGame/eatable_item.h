@@ -38,6 +38,7 @@ public:
 	virtual	bool			Empty						()						{return m_iPortionsNum==0;};
 	virtual	u32				Cost						()	const;
 	virtual float			Weight						()	const;
+			void			HitFromActorHit				(SHit* pHDS);
 
 	IC		u32				GetPortionsNum				()	const				{return m_iPortionsNum;}
 			u32				m_iConstPortions;
