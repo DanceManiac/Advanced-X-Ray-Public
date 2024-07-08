@@ -2347,6 +2347,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Consumables">
       <UniqueIdentifier>{590dbb1c-9f7d-42b3-8c2b-2ebf3d86f579}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer">
+      <UniqueIdentifier>{204999d2-3e37-4fb8-b34e-8f6e64fe988d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6709,6 +6712,9 @@
     <ClInclude Include="AntigasFilter.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClInclude>
+    <ClInclude Include="ArtefactContainer.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -9970,6 +9976,9 @@
     </ClCompile>
     <ClCompile Include="AntigasFilter.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
+    </ClCompile>
+    <ClCompile Include="ArtefactContainer.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\ArtefactContainer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

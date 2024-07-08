@@ -3,6 +3,7 @@
 #include "Battery.h"
 #include "RepairKit.h"
 #include "CustomBackpack.h"
+#include "ArtefactContainer.h"
 
 CF1::CF1(void) {
 }
@@ -24,6 +25,8 @@ void CF1::script_register	(lua_State *L)
 		class_<CRepairKit, CGameObject>("CRepairKit")
 			.def(constructor<>()),
 		class_<CCustomBackpack, CGameObject>("CCustomBackpack")
+			.def(constructor<>()),
+		class_<CArtefactContainer, CGameObject>("CArtefactContainer")
 			.def(constructor<>())
 	];
 }

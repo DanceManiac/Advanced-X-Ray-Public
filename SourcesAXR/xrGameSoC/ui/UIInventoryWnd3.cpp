@@ -18,6 +18,7 @@
 #include "../Battery.h"
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
+#include "../ArtefactContainer.h"
 #include "../Torch.h"
 #include "../CustomDetector.h"
 #include "../PDA.h"
@@ -275,6 +276,34 @@ void CUIInventoryWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 			TryUseItem(cell_item);
 			break;
 		}
+	case ARTEFACT_TO_CONTAINER:
+		{
+			CArtefact* artefact = smart_cast<CArtefact*>(item);
+			CArtefactContainer* af_container = smart_cast<CArtefactContainer*>((PIItem)UIPropertiesBox->GetClickedItem()->GetData());
+
+			if (!artefact || !af_container)
+				break;
+
+			af_container->PutArtefactToContainer(*artefact);
+
+			artefact->DestroyObject();
+
+			break;
+		}
+	case ARTEFACT_FROM_CONTAINER:
+		{
+			CArtefactContainer* af_container = smart_cast<CArtefactContainer*>(item);
+			CArtefact* artefact = smart_cast<CArtefact*>((PIItem)UIPropertiesBox->GetClickedItem()->GetData());
+
+			if (!af_container)
+				break;
+
+			af_container->TakeArtefactFromContainer(artefact);
+
+			UIItemInfo.ResetInventoryItem();
+
+			break;
+		}
 	}//switch
 
 	SetCurrentItem(NULL);
@@ -427,14 +456,15 @@ void CUIInventoryWnd::PropertiesBoxForWeapon(CUICellItem* cell_item, PIItem item
 #include "WeaponKnife.h"
 void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 {
-	CMedkit* pMedkit = smart_cast<CMedkit*>		(item);
-	CAntirad* pAntirad = smart_cast<CAntirad*>		(item);
-	CEatableItem* pEatableItem = smart_cast<CEatableItem*>	(item);
-	CBottleItem* pBottleItem = smart_cast<CBottleItem*>	(item);
-	CArtefact* pArtefact = smart_cast<CArtefact*>	(item);
+	CMedkit* pMedkit = smart_cast<CMedkit*>(item);
+	CAntirad* pAntirad = smart_cast<CAntirad*>(item);
+	CEatableItem* pEatableItem = smart_cast<CEatableItem*>(item);
+	CBottleItem* pBottleItem = smart_cast<CBottleItem*>(item);
+	CArtefact* pArtefact = smart_cast<CArtefact*>(item);
 	CBattery* pBattery = smart_cast<CBattery*>(item);
 	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(item);
 	CRepairKit* pRepairKit = smart_cast<CRepairKit*>(item);
+	CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(item);
 
 	LPCSTR act_str = NULL;
 
@@ -540,6 +570,39 @@ void CUIInventoryWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 			b_show = true;
 		}
 		return;
+	}
+	else if (pArtefact)
+	{
+		TIItemContainer::iterator it = m_pInv->m_ruck.begin();
+		TIItemContainer::iterator ite = m_pInv->m_ruck.end();
+
+		for (it; ite != it; ++it)
+		{
+			CArtefactContainer* container = smart_cast<CArtefactContainer*>(*it);
+
+			if (container && !container->IsFull())
+			{
+				shared_str str = CStringTable().translate("st_put_to");
+				str.printf("%s %s", str.c_str(), container->m_name.c_str());
+				UIPropertiesBox->AddItem(str.c_str(), (void*)container, ARTEFACT_TO_CONTAINER);
+				b_show = true;
+			}
+		}
+	}
+	else if (pAfContainer && pAfContainer->GetArtefactsInside().size())
+	{
+		for (auto af_in_container : pAfContainer->GetArtefactsInside())
+		{
+			CArtefact* af_in_container_casted = smart_cast<CArtefact*>(af_in_container);
+
+			if (af_in_container_casted)
+			{
+				shared_str str = CStringTable().translate("st_take_from");
+				str.printf("%s %s", str.c_str(), af_in_container_casted->m_name.c_str());
+				UIPropertiesBox->AddItem(str.c_str(), (void*)af_in_container_casted, ARTEFACT_FROM_CONTAINER);
+				b_show = true;
+			}
+		}
 	}
 	else if (pMedkit || pAntirad)
 	{

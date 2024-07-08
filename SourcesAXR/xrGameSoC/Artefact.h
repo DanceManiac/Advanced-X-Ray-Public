@@ -111,6 +111,7 @@ public:
 	float							m_fVolumetricIntensity;
 
 	int								m_iAfRank;
+	bool							m_bInContainer;
 
 	//For Degradation
 	float							m_fConstHealthRestoreSpeed;
@@ -166,6 +167,7 @@ public:
 	virtual u16						bone_count_to_synchronize	() const;
 
 			void					UpdateDegradation	();
+			bool					IsInContainer		();
 
 	// optimization FAST/SLOW mode
 public:						

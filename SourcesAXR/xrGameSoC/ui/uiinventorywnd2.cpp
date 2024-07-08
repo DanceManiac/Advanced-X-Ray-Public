@@ -8,6 +8,9 @@
 #include "../inventory.h"
 #include "UIInventoryUtilities.h"
 
+#include "../Artefact.h"
+#include "../ArtefactContainer.h"
+
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
 #include "UIDragDropListEx.h"
@@ -348,8 +351,8 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 	{
 		CUICellItem* cell_item				= new_owner->GetCellItemUnderCursor();
 		PIItem item_in_cell					= cell_item ? (PIItem)cell_item->m_pData : NULL;
-		//CArtefactContainer* pAfContainer	= smart_cast<CArtefactContainer*>(item_in_cell);
-		//CArtefact*	pArtefact				= smart_cast<CArtefact*>	(CurrentIItem());
+		CArtefactContainer* pAfContainer	= smart_cast<CArtefactContainer*>(item_in_cell);
+		CArtefact*	pArtefact				= smart_cast<CArtefact*>	(CurrentIItem());
 
 		if (old_owner == new_owner && item_in_cell && item_in_cell->CanAttach(CurrentIItem()))
 		{
@@ -357,7 +360,7 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 			//UpdateItemsPlace();
 			return true;
 		}
-		/*if (old_owner == new_owner && pArtefact)
+		if (old_owner == new_owner && pArtefact)
 		{
 			if (pAfContainer && !pAfContainer->IsFull())
 			{
@@ -366,7 +369,7 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 				pArtefact->DestroyObject();
 				return true;	
 			}
-		}*/
+		}
 		return false;
 	}
 	EListType t_new		= GetType(new_owner);

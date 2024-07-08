@@ -591,6 +591,7 @@
     <ClInclude Include="abstract_path_manager.h" />
     <ClInclude Include="abstract_path_manager_inline.h" />
     <ClInclude Include="AntigasFilter.h" />
+    <ClInclude Include="ArtefactContainer.h" />
     <ClInclude Include="Battery.h" />
     <ClInclude Include="CustomBackpack.h" />
     <ClInclude Include="opt.lua.h" />
@@ -1958,6 +1959,7 @@
     <ClCompile Include="actor_script.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
     <ClCompile Include="AntigasFilter.cpp" />
+    <ClCompile Include="ArtefactContainer.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="CustomBackpack.cpp" />
     <ClCompile Include="CustomOutfit_script.cpp" />

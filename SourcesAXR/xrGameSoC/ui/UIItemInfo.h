@@ -36,6 +36,8 @@ public:
 	void				TryAddBoosterInfo	(CInventoryItem& pInvItem);
 	void				TryAddItemInfo		(CInventoryItem& pInvItem);
 
+	void				ResetInventoryItem	();
+
 	virtual void		Draw				();
 	bool				m_b_force_drawing;
 	CUIStatic*			UIName;

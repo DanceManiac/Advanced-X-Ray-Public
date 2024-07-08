@@ -24,10 +24,11 @@
 #include "../Torch.h"
 #include "../CustomDetector.h"
 //#include "../AnomalyDetector.h"
-//#include "../ArtefactContainer.h"
+#include "../ArtefactContainer.h"
 #include "../CustomBackpack.h"
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
+#include "Artefact.h"
 #include "../AdvancedXrayGameConstants.h"
 
 CUIInventoryItem::CUIInventoryItem()
@@ -208,7 +209,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
 	//CDetectorAnomaly* pAnomDet = smart_cast<CDetectorAnomaly*>(&pInvItem);
 	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
-	//CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(&pInvItem);
+	CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(&pInvItem);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
 	CBattery* pBattery = smart_cast<CBattery*>(&pInvItem);
 	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(&pInvItem);
@@ -374,7 +375,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	/*if (pAfContainer)
+	if (pAfContainer)
 	{
 		val = pAfContainer->GetContainerSize();
 		if (!fis_zero(val))
@@ -499,7 +500,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 
 			return;
 		}
-	}*/
+	}
 
 	SetHeight(h);
 }

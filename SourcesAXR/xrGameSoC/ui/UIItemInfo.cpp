@@ -25,7 +25,7 @@
 #include "../Torch.h"
 #include "../CustomDetector.h"
 //#include "../AnomalyDetector.h"
-//#include "../ArtefactContainer.h"
+#include "../ArtefactContainer.h"
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
 #include "../CustomBackpack.h"
@@ -354,12 +354,18 @@ void CUIItemInfo::TryAddBoosterInfo(CInventoryItem& pInvItem)
 	}
 }
 
+void CUIItemInfo::ResetInventoryItem()
+{
+	if (UIInventoryItem)
+		UIInventoryItem->SetHeight(0);
+}
+
 void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 {
 	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
 	CCustomDetector* pArtefact_detector = smart_cast<CCustomDetector*>(&pInvItem);
 	//CDetectorAnomaly* pAnomaly_detector = smart_cast<CDetectorAnomaly*>(&pInvItem);
-	//CArtefactContainer* pAf_container = smart_cast<CArtefactContainer*>(&pInvItem);
+	CArtefactContainer* pAf_container = smart_cast<CArtefactContainer*>(&pInvItem);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
 	CBattery* pBattery = smart_cast<CBattery*>(&pInvItem);
 	CAntigasFilter* pFilter = smart_cast<CAntigasFilter*>(&pInvItem);
@@ -368,7 +374,7 @@ void CUIItemInfo::TryAddItemInfo(CInventoryItem& pInvItem)
 	bool ShowChargeTorch = GameConstants::GetTorchHasBattery();
 	bool ShowChargeDetector = GameConstants::GetArtDetectorUseBattery();
 
-	if ((pTorch && ShowChargeTorch || pArtefact_detector && ShowChargeDetector /*|| pAnomaly_detector || pAf_container*/ || pBackpack || pBattery || pFilter || pKit) && UIInventoryItem)
+	if ((pTorch && ShowChargeTorch || pArtefact_detector && ShowChargeDetector /*|| pAnomaly_detector */ || pAf_container || pBackpack || pBattery || pFilter || pKit) && UIInventoryItem)
 	{
 		UIInventoryItem->SetInfo(pInvItem);
 		UIDesc->AddWindow(UIInventoryItem, false);

@@ -13,6 +13,7 @@
 #include "restriction_space.h"
 #include "../xrEngine/IGame_Persistent.h"
 #include "Actor.h"
+#include "ArtefactContainer.h"
 #include "AdvancedXrayGameConstants.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
@@ -60,6 +61,9 @@ struct SArtefactActivation{
 	void						PhDataUpdate					(dReal step);
 };
 
+extern float af_from_container_charge_level;
+extern int af_from_container_rank;
+extern CArtefactContainer* m_LastAfContainer;
 
 CArtefact::CArtefact(void) 
 {
@@ -80,6 +84,7 @@ CArtefact::CArtefact(void)
 
 	//For Degradation
 	m_fConstAdditionalWeight	= 0.0f;
+	m_bInContainer				= false;
 
 	m_iAfRank					= 1;
 }
@@ -265,6 +270,14 @@ void CArtefact::OnH_A_Chield()
 			m_CarringBoneID			= K->LL_BoneID("bip01_head");
 		else
 			m_CarringBoneID = u16(-1);
+	}
+
+	if (m_LastAfContainer) //Костыль для контейнеров, потом надо нормально как-то сделать
+	{
+		SetChargeLevel(af_from_container_charge_level);
+		SetRank(af_from_container_rank);
+
+		m_LastAfContainer = nullptr;
 	}
 }
 
@@ -978,4 +991,9 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 		}break;
 	}
 	return res;
+}
+
+bool CArtefact::IsInContainer()
+{
+	return m_bInContainer;
 }
