@@ -96,7 +96,7 @@ void CCustomOutfit::UpdateFilterCondition(void)
 	{
 		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
 		float m_chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
-		float uncharge_coef = ((m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
+		float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 
 		m_fFilterCondition -= uncharge_coef;
 		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
@@ -273,8 +273,26 @@ void CCustomOutfit::ReloadBonesProtection()
 
 void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)
 {
+	ChangeCondition(-hit_power);
+
+	float hit_power_not_k = hit_power;
 	hit_power *= GetHitImmunity(hit_type);
 	ChangeCondition(-hit_power);
+
+	if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+		return;
+
+	switch (hit_type)
+	{
+	case ALife::eHitTypeChemicalBurn:
+	case ALife::eHitTypeRadiation:
+	{
+		m_fFilterCondition -= hit_power_not_k / 50;
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+	} break;
+	default:
+		break;
+	}
 }
 
 float CCustomOutfit::GetDefHitTypeProtection(ALife::EHitType hit_type)

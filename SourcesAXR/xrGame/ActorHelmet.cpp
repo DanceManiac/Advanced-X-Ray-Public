@@ -201,7 +201,7 @@ void CHelmet::UpdateFilterCondition(void)
 
 		if (helmet)
 		{
-			float uncharge_coef = ((helmet->m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
+			float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 
 			helmet->m_fFilterCondition -= uncharge_coef;
 			clamp(helmet->m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
@@ -227,7 +227,7 @@ void CHelmet::UpdateFilterCondition(void)
 
 		if (helmet2)
 		{
-			float uncharge_coef = ((helmet2->m_fFilterDegradation + m_radia_hit + m_chemical_hit) / 16) * Device.fTimeDelta;
+			float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 
 			helmet2->m_fFilterCondition -= uncharge_coef;
 			clamp(helmet2->m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
@@ -311,8 +311,26 @@ void CHelmet::OnMoveToRuck(const SInvItemPlace& previous_place)
 
 void CHelmet::Hit(float hit_power, ALife::EHitType hit_type)
 {
+	ChangeCondition(-hit_power);
+
+	float hit_power_not_k = hit_power;
 	hit_power *= GetHitImmunity(hit_type);
 	ChangeCondition(-hit_power);
+
+	if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+		return;
+
+	switch (hit_type)
+	{
+	case ALife::eHitTypeChemicalBurn:
+	case ALife::eHitTypeRadiation:
+	{
+		m_fFilterCondition -= hit_power_not_k / 50;
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+	} break;
+	default:
+		break;
+	}
 }
 
 float CHelmet::GetDefHitTypeProtection(ALife::EHitType hit_type)

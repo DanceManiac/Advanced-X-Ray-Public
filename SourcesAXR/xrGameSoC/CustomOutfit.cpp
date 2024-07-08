@@ -12,6 +12,7 @@
 #include "DynamicHudGlass.h"
 #include "AdvancedXrayGameConstants.h"
 #include "AntigasFilter.h"
+#include "Inventory.h"
 
 CCustomOutfit::CCustomOutfit()
 {
@@ -189,8 +190,24 @@ void CCustomOutfit::Load(LPCSTR section)
 
 void CCustomOutfit::Hit(float hit_power, ALife::EHitType hit_type)
 {
+	float hit_power_not_k = hit_power;
 	hit_power *= m_HitTypeK[hit_type];
 	ChangeCondition(-hit_power);
+
+	if (!GameConstants::GetOutfitUseFilters() || !Actor()->inventory().InSlot(this) || !m_bUseFilter)
+		return;
+
+	switch (hit_type)
+	{
+	case ALife::eHitTypeChemicalBurn:
+	case ALife::eHitTypeRadiation:
+	{
+		m_fFilterCondition -= hit_power_not_k / 50;
+		clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+	} break;
+	default:
+		break;
+	}
 }
 
 void CCustomOutfit::UpdateCL()
@@ -357,18 +374,4 @@ void CCustomOutfit::FilterReplace(float val)
 {
 	m_fFilterCondition = m_fFilterCondition + val;
 	clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
-}
-
-void CCustomOutfit::HitAntigasFilter(float hit_power, ALife::EHitType hit_type)
-{
-	switch (hit_type)
-	{
-	case ALife::eHitTypeChemicalBurn:
-	case ALife::eHitTypeRadiation:
-		{
-			m_fFilterCondition -= hit_power / 100;
-		} break;
-	default:
-		break;
-	}
 }
