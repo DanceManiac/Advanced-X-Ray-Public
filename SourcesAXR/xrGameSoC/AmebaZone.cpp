@@ -38,16 +38,11 @@ bool CAmebaZone::BlowoutState()
 
 void  CAmebaZone::Affect(SZoneObjectInfo* O) 
 {
-	CPhysicsShellHolder *pGameObject = smart_cast<CPhysicsShellHolder*>(O->object);
+	/*CPhysicsShellHolder *pGameObject = smart_cast<CPhysicsShellHolder*>(O->object);
 	if(!pGameObject) return;
 
 	if(O->zone_ignore) return;
 
-#ifdef DEBUG
-	char l_pow[255]; 
-	sprintf_s(l_pow, "zone hit. %.1f", Power(distance_to_center(O->object)));
-	if(bDebug) Msg("%s %s",*pGameObject->cName(), l_pow);
-#endif
 	Fvector hit_dir; 
 	hit_dir.set(::Random.randF(-.5f,.5f), 
 		::Random.randF(.0f,1.f), 
@@ -58,21 +53,18 @@ void  CAmebaZone::Affect(SZoneObjectInfo* O)
 	Fvector position_in_bone_space;
 
 	float power = Power(distance_to_center(O->object));
+	float power_critical = 0.0f;
 	float impulse = m_fHitImpulseScale*power*pGameObject->GetMass();
-
-	//статистика по объекту
-	O->total_damage += power;
-	O->hit_num++;
 
 	if(power > 0.01f) 
 	{
 		m_dwDeltaTime = 0;
 		position_in_bone_space.set(0.f,0.f,0.f);
 
-		CreateHit(pGameObject->ID(),ID(),hit_dir,power,0,position_in_bone_space,impulse,m_eHitTypeBlowout);
+		CreateHit(pGameObject->ID(),ID(),hit_dir,power,power_critical,0,position_in_bone_space,impulse,m_eHitTypeBlowout);
 
 		PlayHitParticles(pGameObject);
-	}
+	}*/
 }
 
 void CAmebaZone::PhTune(dReal step)

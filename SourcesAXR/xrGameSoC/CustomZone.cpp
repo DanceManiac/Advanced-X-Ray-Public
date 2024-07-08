@@ -11,14 +11,14 @@
 #include "level.h"
 #include "game_cl_base.h"
 #include "../xrEngine/igame_persistent.h"
-#include "../xrEngine/xr_collide_form.h"
-#include "Artefact.h"
+#include "../xrengine/xr_collide_form.h"
+#include "artefact.h"
 #include "ai_object_location.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "zone_effector.h"
 #include "breakableobject.h"
-//////////////////////////////////////////////////////////////////////////
-#define PREFETCHED_ARTEFACTS_NUM 1	//количество предварительно проспавненых артефактов
+#include "GamePersistent.h"
+
 #define WIND_RADIUS (4*Radius())	//расстояние до актера, когда появляется ветер 
 #define FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
@@ -32,11 +32,9 @@ CCustomZone::CCustomZone(void)
 
 	m_fMaxPower					= 100.f;
 	m_fAttenuation				= 1.f;
-	m_dwPeriod					= 1100;
-	m_fEffectiveRadius			= 0.75f;
+	m_fEffectiveRadius			= 1.0f;
 	m_zone_flags.set			(eZoneIsActive, FALSE);
 	m_eHitTypeBlowout			= ALife::eHitTypeWound;
-	m_pLocalActor				= NULL;
 	m_pIdleParticles			= NULL;
 	m_pLight					= NULL;
 	m_pIdleLight				= NULL;
@@ -49,16 +47,15 @@ CCustomZone::CCustomZone(void)
 
 
 	m_dwAffectFrameNum			= 0;
-	m_fArtefactSpawnProbability = 0.f;
-	m_fThrowOutPower			= 0.f;
-	m_fArtefactSpawnHeight		= 0.f;
 	m_fBlowoutWindPowerMax = m_fStoreWindPower = 0.f;
 	m_fDistanceToCurEntity		= flt_max;
 	m_ef_weapon_type			= u32(-1);
 	m_owner_id					= u32(-1);
 
-	m_effector					= NULL;
-	m_bIdleObjectParticlesDontStop = FALSE;
+	m_actor_effector			= NULL;
+	m_zone_flags.set			(eIdleObjectParticlesDontStop, FALSE);
+	m_zone_flags.set			(eBlowoutWindActive, FALSE);
+	m_zone_flags.set			(eFastMode, TRUE);
 
 	m_bVolumetricBlowout		= true;
 	m_fVolumetricQuality		= 1.0f;
@@ -91,9 +88,7 @@ CCustomZone::~CCustomZone(void)
 	m_blowout_sound.destroy		();
 	m_hit_sound.destroy			();
 	m_entrance_sound.destroy	();
-	m_ArtefactBornSound.destroy	();
-
-	xr_delete					(m_effector);
+	xr_delete					(m_actor_effector);
 }
 
 void CCustomZone::Load(LPCSTR section) 
@@ -111,9 +106,6 @@ void CCustomZone::Load(LPCSTR section)
 	m_zone_flags.set(eIgnoreSmall,		pSettings->r_bool(section,	"ignore_small"));
 	m_zone_flags.set(eIgnoreArtefact,	pSettings->r_bool(section,	"ignore_artefacts"));
 	m_zone_flags.set(eVisibleByDetector,pSettings->r_bool(section,	"visible_by_detector"));
-	
-
-
 
 	//загрузить времена для зоны
 	m_StateTime[eZoneStateIdle]			= -1;
@@ -126,6 +118,8 @@ void CCustomZone::Load(LPCSTR section)
 	if (self)		self->spatial.type	|=	(STYPE_COLLIDEABLE|STYPE_SHAPE);
 //////////////////////////////////////////////////////////////////////////
 
+	LPCSTR sound_str = NULL;
+	
 	// -- Interactive Grass - IDLE
 	m_BendGrass_idle_anim		= READ_IF_EXISTS(pSettings, r_s8, section, "bend_grass_idle_anim", -1);
 	m_BendGrass_idle_str		= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_idle_str", 1.0f);
@@ -143,8 +137,6 @@ void CCustomZone::Load(LPCSTR section)
 	m_BendGrass_Blowout_speed	= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_blowout_speed", 0.0f);
 	m_BendGrass_Blowout_radius	= READ_IF_EXISTS(pSettings, r_float, section, "bend_grass_blowout_radius", 0.0f);
 
-	LPCSTR sound_str = NULL;
-	
 	if(pSettings->line_exist(section,"idle_sound")) 
 	{
 		sound_str = pSettings->r_string(section,"idle_sound");
@@ -206,25 +198,34 @@ void CCustomZone::Load(LPCSTR section)
 
 	if(pSettings->line_exist(section,"idle_small_particles")) 
 		m_sIdleObjectParticlesBig = pSettings->r_string(section,"idle_big_particles");
+	
 	if(pSettings->line_exist(section,"idle_big_particles")) 
 		m_sIdleObjectParticlesSmall = pSettings->r_string(section,"idle_small_particles");
+	
 	if(pSettings->line_exist(section,"idle_particles_dont_stop"))
-		m_bIdleObjectParticlesDontStop=pSettings->r_bool(section,"idle_particles_dont_stop");
+		m_zone_flags.set(eIdleObjectParticlesDontStop, pSettings->r_bool(section,"idle_particles_dont_stop"));
 
 	if(pSettings->line_exist(section,"postprocess")) 
 	{
-		m_effector					= xr_new<CZoneEffector>();
-		m_effector->Load			(pSettings->r_string(section,"postprocess"));
+		m_actor_effector				= xr_new<CZoneEffector>();
+		m_actor_effector->Load			(pSettings->r_string(section,"postprocess"));
 	};
 
 
+	if(pSettings->line_exist(section,"bolt_entrance_particles")) 
+	{
+		m_sBoltEntranceParticles	= pSettings->r_string(section, "bolt_entrance_particles");
+		m_zone_flags.set			(eBoltEntranceParticles, (m_sBoltEntranceParticles.size()!=0));
+	}
 
 	if(pSettings->line_exist(section,"blowout_particles_time")) 
 	{
 		m_dwBlowoutParticlesTime = pSettings->r_u32(section,"blowout_particles_time");
 		if (s32(m_dwBlowoutParticlesTime)>m_StateTime[eZoneStateBlowout])	{
 			m_dwBlowoutParticlesTime=m_StateTime[eZoneStateBlowout];
+#ifndef MASTER_GOLD
 			Msg("! ERROR: invalid 'blowout_particles_time' in '%s'",section);
+#endif // #ifndef MASTER_GOLD
 		}
 	}
 	else
@@ -235,7 +236,9 @@ void CCustomZone::Load(LPCSTR section)
 		m_dwBlowoutLightTime = pSettings->r_u32(section,"blowout_light_time");
 		if (s32(m_dwBlowoutLightTime)>m_StateTime[eZoneStateBlowout])	{
 			m_dwBlowoutLightTime=m_StateTime[eZoneStateBlowout];
+#ifndef MASTER_GOLD
 			Msg("! ERROR: invalid 'blowout_light_time' in '%s'",section);
+#endif // #ifndef MASTER_GOLD
 		}
 	}
 	else
@@ -246,7 +249,9 @@ void CCustomZone::Load(LPCSTR section)
 		m_dwBlowoutSoundTime = pSettings->r_u32(section,"blowout_sound_time");
 		if (s32(m_dwBlowoutSoundTime)>m_StateTime[eZoneStateBlowout])	{
 			m_dwBlowoutSoundTime=m_StateTime[eZoneStateBlowout];
+#ifndef MASTER_GOLD
 			Msg("! ERROR: invalid 'blowout_sound_time' in '%s'",section);
+#endif // #ifndef MASTER_GOLD
 		}
 	}
 	else
@@ -256,7 +261,9 @@ void CCustomZone::Load(LPCSTR section)
 		m_dwBlowoutExplosionTime = pSettings->r_u32(section,"blowout_explosion_time"); 
 		if (s32(m_dwBlowoutExplosionTime)>m_StateTime[eZoneStateBlowout])	{
 			m_dwBlowoutExplosionTime=m_StateTime[eZoneStateBlowout];
+#ifndef MASTER_GOLD
 			Msg("! ERROR: invalid 'blowout_explosion_time' in '%s'",section);
+#endif // #ifndef MASTER_GOLD
 		}
 	}
 	else
@@ -272,7 +279,9 @@ void CCustomZone::Load(LPCSTR section)
 
 		if((s32)m_dwBlowoutWindTimeEnd < m_StateTime[eZoneStateBlowout]){
 			m_dwBlowoutWindTimeEnd =u32( m_StateTime[eZoneStateBlowout]-1);
+#ifndef MASTER_GOLD
 			Msg("! ERROR: invalid 'blowout_wind_time_end' in '%s'",section);
+#endif // #ifndef MASTER_GOLD
 		}
 
 		
@@ -281,7 +290,6 @@ void CCustomZone::Load(LPCSTR section)
 
 	//загрузить параметры световой вспышки от взрыва
 	m_zone_flags.set(eBlowoutLight, pSettings->r_bool (section, "blowout_light"));
-
 	if(m_zone_flags.test(eBlowoutLight) ){
 		sscanf(pSettings->r_string(section,"light_color"), "%f,%f,%f", &m_LightColor.r, &m_LightColor.g, &m_LightColor.b);
 		m_fLightRange			= pSettings->r_float(section,"light_range");
@@ -291,72 +299,28 @@ void CCustomZone::Load(LPCSTR section)
 		m_fLightHeight		= pSettings->r_float(section,"light_height");
 	}
 
-	m_bVolumetricBlowout		= READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_blowout", false);
-	m_fVolumetricQuality		= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
-	m_fVolumetricDistance		= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
-	m_fVolumetricIntensity		= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
+	m_bVolumetricBlowout = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_blowout", false);
+	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
+	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
+	m_fVolumetricIntensity = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_intensity", 0.5f);
 
 	//загрузить параметры idle подсветки
 	m_zone_flags.set(eIdleLight,	pSettings->r_bool (section, "idle_light"));
 	if( m_zone_flags.test(eIdleLight) )
 	{
-		m_fIdleLightRange = pSettings->r_float(section,"idle_light_range");
-		m_fIdleLightRangeDelta = pSettings->r_float(section,"idle_light_range_delta");
-		LPCSTR light_anim = pSettings->r_string(section,"idle_light_anim");
-		m_pIdleLAnim	 = LALib.FindItem(light_anim);
-		m_fIdleLightHeight = pSettings->r_float(section,"idle_light_height");
-		m_zone_flags.set(eIdleLightVolumetric, READ_IF_EXISTS(pSettings, r_bool, section, "idle_light_volumetric", false));
-	}
-
-
-	//загрузить параметры для разбрасывания артефактов
-	m_zone_flags.set(eSpawnBlowoutArtefacts,	pSettings->r_bool(section,"spawn_blowout_artefacts"));
-	if( m_zone_flags.test(eSpawnBlowoutArtefacts) )
-	{
-		m_fArtefactSpawnProbability	= pSettings->r_float (section,"artefact_spawn_probability");
-		if(pSettings->line_exist(section,"artefact_spawn_particles")) 
-			m_sArtefactSpawnParticles = pSettings->r_string(section,"artefact_spawn_particles");
-		else
-			m_sArtefactSpawnParticles = NULL;
-
-		if(pSettings->line_exist(section,"artefact_born_sound"))
-		{
-			sound_str = pSettings->r_string(section,"artefact_born_sound");
-			m_ArtefactBornSound.create(sound_str, st_Effect,sg_SourceType);
-		}
-
-		m_fThrowOutPower = pSettings->r_float (section,			"throw_out_power");
-		m_fArtefactSpawnHeight = pSettings->r_float (section,	"artefact_spawn_height");
-
-		LPCSTR						l_caParameters = pSettings->r_string(section, "artefacts");
-		u16 m_wItemCount			= (u16)_GetItemCount(l_caParameters);
-		R_ASSERT2					(!(m_wItemCount & 1),"Invalid number of parameters in string 'artefacts' in the 'system.ltx'!");
-		m_wItemCount				>>= 1;
-
-		m_ArtefactSpawn.clear();
-		string512 l_caBuffer;
-
-		float total_probability = 0.f;
-
-		m_ArtefactSpawn.resize(m_wItemCount);
-		for (u16 i=0; i<m_wItemCount; ++i) 
-		{
-			ARTEFACT_SPAWN& artefact_spawn = m_ArtefactSpawn[i];
-			artefact_spawn.section = _GetItem(l_caParameters,i << 1,l_caBuffer);
-			artefact_spawn.probability = (float)atof(_GetItem(l_caParameters,(i << 1) | 1,l_caBuffer));
-			total_probability += artefact_spawn.probability;
-		}
-
-		R_ASSERT3(!fis_zero(total_probability), "The probability of artefact spawn is zero!",*cName());
-		//нормализировать вероятности
-		for(u32 i=0; i<m_ArtefactSpawn.size(); ++i)
-		{
-			m_ArtefactSpawn[i].probability = m_ArtefactSpawn[i].probability/total_probability;
-		}
+		m_fIdleLightRange		= pSettings->r_float(section,"idle_light_range");
+		LPCSTR light_anim		= pSettings->r_string(section,"idle_light_anim");
+		m_pIdleLAnim			= LALib.FindItem(light_anim);
+		m_fIdleLightHeight		= pSettings->r_float(section,"idle_light_height");
+		m_zone_flags.set(eIdleLightVolumetric,pSettings->r_bool (section, "idle_light_volumetric") );
+		m_zone_flags.set(eIdleLightShadow,pSettings->r_bool (section, "idle_light_shadow") );
+		m_zone_flags.set(eIdleLightR1,pSettings->r_bool (section, "idle_light_r1") );
 	}
 
 	m_ef_anomaly_type			= pSettings->r_u32(section,"ef_anomaly_type");
 	m_ef_weapon_type			= pSettings->r_u32(section,"ef_weapon_type");
+	
+	m_zone_flags.set			(eAffectPickDOF, false/*pSettings->r_bool (section, "pick_dof_effector")*/);
 }
 
 BOOL CCustomZone::net_Spawn(CSE_Abstract* DC) 
@@ -368,17 +332,13 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	CSE_ALifeCustomZone			*Z = smart_cast<CSE_ALifeCustomZone*>(e);
 	VERIFY						(Z);
 	
-	m_fMaxPower					= Z->m_maxPower;
+	m_fMaxPower					= pSettings->r_float(cNameSect(),"max_start_power");
 	m_fAttenuation				= pSettings->r_float(cNameSect(),"attenuation");
-	m_dwPeriod					= pSettings->r_u32(cNameSect(),"period");
 	m_owner_id					= Z->m_owner_id;
 	if(m_owner_id != u32(-1))
 		m_ttl					= Device.dwTimeGlobal + 40000;// 40 sec
 	else
 		m_ttl					= u32(-1);
-
-	if (GameID() != GAME_SINGLE)
-		m_zone_flags.set(eSpawnBlowoutArtefacts,	FALSE);
 
 	m_TimeToDisable				= Z->m_disabled_time*1000;
 	m_TimeToEnable				= Z->m_enabled_time*1000;
@@ -387,16 +347,21 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	m_zone_flags.set			(eUseOnOffTime,	(m_TimeToDisable!=0)&&(m_TimeToEnable!=0) );
 
 	//добавить источники света
-	if ( m_zone_flags.test(eIdleLight) )
+	bool br1 = (0==psDeviceFlags.test(rsR2|rsR4));
+	
+	
+	bool render_ver_allowed = !br1 || (br1&&m_zone_flags.test(eIdleLightR1)) ;
+
+	if ( m_zone_flags.test(eIdleLight) && render_ver_allowed)
 	{
 		m_pIdleLight = ::Render->light_create();
-		m_pIdleLight->set_shadow(true);
+		m_pIdleLight->set_shadow(!!m_zone_flags.test(eIdleLightShadow));
 		m_pIdleLight->set_flare(true);
 
-		if (m_zone_flags.test(eIdleLightVolumetric))
+		if(m_zone_flags.test(eIdleLightVolumetric))
 		{
 			//m_pIdleLight->set_type				(IRender_Light::SPOT);
-			m_pIdleLight->set_volumetric(true);
+			m_pIdleLight->set_volumetric		(true);
 			m_pIdleLight->set_volumetric_quality(m_fVolumetricQuality);
 			m_pIdleLight->set_volumetric_distance(m_fVolumetricDistance);
 			m_pIdleLight->set_volumetric_intensity(m_fVolumetricIntensity);
@@ -414,8 +379,7 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 		m_pLight->set_volumetric_quality(m_fVolumetricQuality);
 		m_pLight->set_volumetric_distance(m_fVolumetricDistance);
 		m_pLight->set_volumetric_intensity(m_fVolumetricIntensity);
-	}
-	else
+	}else
 		m_pLight = NULL;
 
 	setEnabled					(TRUE);
@@ -426,19 +390,13 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	m_eZoneState				= eZoneStateIdle;
 	m_iPreviousStateTime		= m_iStateTime = 0;
 
-	if(m_effector)				m_effector->SetRadius		(CFORM()->getSphere().R);
-
 	m_dwLastTimeMoved			= Device.dwTimeGlobal;
 	m_vPrevPos.set				(Position());
 
 
-	m_fDistanceToCurEntity		= flt_max;
-	m_bBlowoutWindActive		= false;
-
-	o_fastmode					= TRUE;		// start initially with fast-mode enabled
 	if(spawn_ini() && spawn_ini()->line_exist("fast_mode","always_fast"))
 	{
-		m_zone_flags.set(eAlwaysFastmode, spawn_ini()->r_bool("fast_mode", "always_fast"));
+		m_zone_flags.set(eAlwaysFastmode, spawn_ini()->r_bool("fast_mode","always_fast"));
 	}
 	return						(TRUE);
 }
@@ -456,23 +414,24 @@ void CCustomZone::net_Destroy()
 
 	CParticlesObject::Destroy(m_pIdleParticles);
 
-	if(m_effector)			m_effector->Stop		();
-	//---------------------------------------------
-	OBJECT_INFO_VEC_IT i=m_ObjectInfoMap.begin(),e=m_ObjectInfoMap.end();
-	for(;e!=i;i++)exit_Zone(*i);
+	if(m_actor_effector)			
+		m_actor_effector->Stop		(); 
+
+	OBJECT_INFO_VEC_IT i = m_ObjectInfoMap.begin();
+	OBJECT_INFO_VEC_IT e = m_ObjectInfoMap.end();
+	for(;e!=i;++i)
+		exit_Zone(*i);
 	m_ObjectInfoMap.clear();	
 }
 
 void CCustomZone::net_Import(NET_Packet& P)
 {
 	inherited::net_Import(P);
-//	P.r_u32				(m_owner_id);
 }
 
 void CCustomZone::net_Export(NET_Packet& P)
 {
 	inherited::net_Export(P);
-//	P.w_u32				(m_owner_id);
 }
 
 bool CCustomZone::IdleState()
@@ -505,7 +464,7 @@ bool CCustomZone::AccumulateState()
 {
 	if(m_iStateTime>=m_StateTime[eZoneStateAccumulate])
 	{
-		if (m_zone_flags.test(eZoneIsActive))
+		if(m_zone_flags.test(eZoneIsActive) )
 			SwitchZoneState(eZoneStateBlowout);
 		else
 			SwitchZoneState(eZoneStateIdle);
@@ -521,8 +480,8 @@ void CCustomZone::UpdateWorkload	(u32 dt)
 	m_iStateTime			+= (int)dt;
 
 	if (!IsEnabled())		{
-		if (m_effector && EnableEffector())
-			m_effector->Stop();
+		if (m_actor_effector)
+			m_actor_effector->Stop();
 		return;
 	};
 
@@ -547,19 +506,17 @@ void CCustomZone::UpdateWorkload	(u32 dt)
 	default: NODEFAULT;
 	}
 
-	//вычислить время срабатывания зоны
-	if(m_bZoneActive)	m_dwDeltaTime	+=	dt;
-	else				m_dwDeltaTime	=	0;
+	if (Level().CurrentEntity()) 
+	{
+		Fvector P = Level().CurrentControlEntity()->Position();
+		P.y					-= 0.9f;
+		float radius		= 1.0f;
+		CalcDistanceTo		(P, m_fDistanceToCurEntity, radius);
 
-	if(m_dwDeltaTime > m_dwPeriod)		{
-		m_dwDeltaTime	= m_dwPeriod;
-	}
-
-	if (Level().CurrentEntity()) {
-		m_fDistanceToCurEntity = Level().CurrentEntity()->Position().distance_to(Position());
-
-		if (m_effector && EnableEffector())
-			m_effector->Update(m_fDistanceToCurEntity);
+		if (m_actor_effector)
+		{
+			m_actor_effector->Update(m_fDistanceToCurEntity);
+		}
 	}
 
 	if(m_pLight && m_pLight->get_active())
@@ -570,7 +527,8 @@ void CCustomZone::UpdateWorkload	(u32 dt)
 void CCustomZone::UpdateCL		() 
 {
 	inherited::UpdateCL			();
-	if (o_fastmode)				UpdateWorkload	(Device.dwTimeDelta);	
+	if (m_zone_flags.test(eFastMode))				
+		UpdateWorkload	(Device.dwTimeDelta);	
 }
 
 // called as usual
@@ -592,29 +550,29 @@ void CCustomZone::shedule_Update(u32 dt)
 		for(OBJECT_INFO_VEC_IT it = m_ObjectInfoMap.begin(); 
 			m_ObjectInfoMap.end() != it; ++it) 
 		{
-			CObject* pObject = (*it).object;
-			if (!pObject) continue;
-			CEntityAlive* pEntityAlive = smart_cast<CEntityAlive*>(pObject);
-			SZoneObjectInfo& info = (*it);
+			CGameObject* pObject		= (*it).object;
+			if (!pObject)				continue;
+			CEntityAlive* pEntityAlive	= smart_cast<CEntityAlive*>(pObject);
+			SZoneObjectInfo& info		= (*it);
 
-			info.time_in_zone += dt;
+			info.dw_time_in_zone += dt;
 
-			if((!info.small_object && m_iDisableHitTime != -1 && (int)info.time_in_zone > m_iDisableHitTime) ||
-				(info.small_object && m_iDisableHitTimeSmall != -1 && (int)info.time_in_zone > m_iDisableHitTimeSmall))
+			if((!info.small_object && m_iDisableHitTime != -1 && (int)info.dw_time_in_zone > m_iDisableHitTime) ||
+				(info.small_object && m_iDisableHitTimeSmall != -1 && (int)info.dw_time_in_zone > m_iDisableHitTimeSmall))
 			{
 				if(!pEntityAlive || !pEntityAlive->g_Alive())
 					info.zone_ignore = true;
 			}
-			if(m_iDisableIdleTime != -1 && (int)info.time_in_zone > m_iDisableIdleTime)
+			if(m_iDisableIdleTime != -1 && (int)info.dw_time_in_zone > m_iDisableIdleTime)
 			{
 				if(!pEntityAlive || !pEntityAlive->g_Alive())
-					StopObjectIdleParticles(smart_cast<CPhysicsShellHolder*>(pObject));
+					StopObjectIdleParticles( pObject );
 			}
 
 			//если есть хотя бы один не дисабленый объект, то
 			//зона считается активной
 			if(info.zone_ignore == false) 
-				m_zone_flags.set(eZoneIsActive, TRUE);
+				m_zone_flags.set(eZoneIsActive,TRUE);
 		}
 
 		if(eZoneStateIdle ==  m_eZoneState)
@@ -623,13 +581,14 @@ void CCustomZone::shedule_Update(u32 dt)
 		inherited::shedule_Update(dt);
 
 		// check "fast-mode" border
-		float act_distance = Level().CurrentControlEntity()->Position().distance_to(P) - s.R;
+		float	act_distance = Level().CurrentControlEntity()->Position().distance_to(P) - s.R;
 		if (act_distance > FASTMODE_DISTANCE && !m_zone_flags.test(eAlwaysFastmode))
 			o_switch_2_slow	();
 		else									
 			o_switch_2_fast	();
 
-		if (!o_fastmode)		UpdateWorkload	(dt);
+		if (!m_zone_flags.test(eFastMode))
+			UpdateWorkload	(dt);
 
 		if (act_distance < ps_ssfx_int_grass_params_1.w)
 			GrassZoneUpdate();
@@ -669,14 +628,14 @@ void CCustomZone::shedule_Update(u32 dt)
 
 void CCustomZone::CheckForAwaking()
 {
-	if(m_bZoneActive && eZoneStateIdle ==  m_eZoneState)
+	if(m_zone_flags.test(eZoneIsActive) && eZoneStateIdle ==  m_eZoneState)
 		SwitchZoneState(eZoneStateAwaking);
 }
 
 void CCustomZone::feel_touch_new	(CObject* O) 
 {
-	if(smart_cast<CActor*>(O) && O == Level().CurrentEntity())
-					m_pLocalActor	= smart_cast<CActor*>(O);
+//	if(smart_cast<CActor*>(O) && O == Level().CurrentEntity())
+//					m_pLocalActor	= smart_cast<CActor*>(O);
 
 	CGameObject*	pGameObject		= smart_cast<CGameObject*>(O);
 	CEntityAlive*	pEntityAlive	= smart_cast<CEntityAlive*>(pGameObject);
@@ -713,11 +672,6 @@ void CCustomZone::feel_touch_new	(CObject* O)
 
 void CCustomZone::feel_touch_delete(CObject* O) 
 {
-#ifdef DEBUG
-	if(bDebug) Msg("%s %s",*O->cName(),"leaving a zone.");
-#endif
-
-	if(smart_cast<CActor*>(O)) m_pLocalActor = NULL;
 	CGameObject* pGameObject =smart_cast<CGameObject*>(O);
 	if(!pGameObject->getDestroy())
 	{
@@ -755,20 +709,15 @@ BOOL CCustomZone::feel_touch_contact(CObject* O)
 float CCustomZone::RelativePower(float dist)
 {
 	float radius = effective_radius();
-	float power = radius < dist ? 0 : (1.f - m_fAttenuation*(dist/radius)*(dist/radius));
-	return power < 0 ? 0 : power;
+	float power = (radius<dist) ? 0 : (1.f - m_fAttenuation*(dist/radius)*(dist/radius));
+	return (power<0.0f) ? 0.0f : power;
 }
+
 float CCustomZone::effective_radius()
 {
 	return Radius()*m_fEffectiveRadius;
 }
 
-float CCustomZone::distance_to_center(CObject* O)
-{
-	Fvector P; 
-	XFORM().transform_tiny(P,CFORM()->getSphere().P);
-	return P.distance_to(O->Position());
-}
 float CCustomZone::Power(float dist) 
 {
 	return  m_fMaxPower * RelativePower(dist);
@@ -782,11 +731,12 @@ void CCustomZone::PlayIdleParticles(bool bIdleLight)
 	{
 		if (!m_pIdleParticles)
 		{
-			m_pIdleParticles = CParticlesObject::Create(*m_sIdleParticles,FALSE);
+			m_pIdleParticles = CParticlesObject::Create(m_sIdleParticles.c_str(),FALSE);
 			m_pIdleParticles->UpdateParent(XFORM(),zero_vel);
+		
+			m_pIdleParticles->UpdateParent(XFORM(),zero_vel);
+			m_pIdleParticles->Play(false);
 		}
-		m_pIdleParticles->UpdateParent(XFORM(),zero_vel);
-		m_pIdleParticles->Play();
 	}
 	if(bIdleLight)
 		StartIdleLight	();
@@ -823,6 +773,7 @@ void  CCustomZone::StopIdleLight	()
 	if(m_pIdleLight)
 		m_pIdleLight->set_active(false);
 }
+
 void CCustomZone::UpdateIdleLight	()
 {
 	if(!m_pIdleLight || !m_pIdleLight->get_active())
@@ -836,7 +787,7 @@ void CCustomZone::UpdateIdleLight	()
 	Fcolor					fclr;
 	fclr.set				((float)color_get_B(clr)/255.f,(float)color_get_G(clr)/255.f,(float)color_get_R(clr)/255.f,1.f);
 	
-	float range = m_fIdleLightRange + m_fIdleLightRangeDelta*::Random.randF(-1.f,1.f);
+	float range = m_fIdleLightRange + 0.25f*::Random.randF(-1.f,1.f);
 	m_pIdleLight->set_range	(range);
 	m_pIdleLight->set_color	(fclr);
 
@@ -853,7 +804,7 @@ void CCustomZone::PlayBlowoutParticles()
 	CParticlesObject* pParticles;
 	pParticles	= CParticlesObject::Create(*m_sBlowoutParticles,TRUE);
 	pParticles->UpdateParent(XFORM(),zero_vel);
-	pParticles->Play();
+	pParticles->Play(false);
 
 	m_fBlowoutTimeLeft = (float)Device.dwTimeGlobal + m_BendGrass_Blowout_time;
 }
@@ -885,61 +836,122 @@ void CCustomZone::PlayHitParticles(CGameObject* pObject)
 		}
 	}
 }
-
+#include "bolt.h"
 void CCustomZone::PlayEntranceParticles(CGameObject* pObject)
 {
-	if (!IsEnabled())		return;
+	m_entrance_sound.play_at_pos		(0, pObject->Position());
 
-	m_entrance_sound.play_at_pos(0, pObject->Position());
-
-	shared_str particle_str = NULL;
+	LPCSTR particle_str				= NULL;
 
 	if(pObject->Radius()<SMALL_OBJECT_RADIUS)
 	{
-		if(!m_sEntranceParticlesSmall) return;
-		particle_str = m_sEntranceParticlesSmall;
+		if(!m_sEntranceParticlesSmall) 
+			return;
+
+		particle_str = m_sEntranceParticlesSmall.c_str();
 	}
 	else
 	{
-		if(!m_sEntranceParticlesBig) return;
-		particle_str = m_sEntranceParticlesBig;
+		if(!m_sEntranceParticlesBig) 
+			return;
+
+		particle_str				= m_sEntranceParticlesBig.c_str();
 	}
 
-	Fvector vel;
+	Fvector							vel;
 	CPhysicsShellHolder* shell_holder=smart_cast<CPhysicsShellHolder*>(pObject);
 	if(shell_holder)
 		shell_holder->PHGetLinearVell(vel);
 	else 
-		vel.set(0,0,0);
+		vel.set						(0,0,0);
 	
 	//выбрать случайную косточку на объекте
-	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(pObject);
-	if (PP){
-		u16 play_bone = PP->GetRandomBone(); 
-		if (play_bone!=BI_NONE){
-			CParticlesObject* pParticles = CParticlesObject::Create(*particle_str,TRUE);
-			Fmatrix xform;
-
-			Fvector dir;
-			if(fis_zero(vel.magnitude()))
-				dir.set(0,1,0);
+	CParticlesPlayer* PP			= smart_cast<CParticlesPlayer*>(pObject);
+	if (PP)
+	{
+		u16 play_bone				= PP->GetRandomBone(); 
+		
+		if (play_bone!=BI_NONE)
+		{
+			CParticlesObject* pParticles = CParticlesObject::Create(particle_str, TRUE);
+			Fmatrix					xform;
+			Fvector					dir;
+			if(fis_zero				(vel.magnitude()))
+				dir.set				(0,1,0);
 			else
 			{
-				dir.set(vel);
-				dir.normalize();
+				dir.set				(vel);
+				dir.normalize		();
 			}
 
 			PP->MakeXFORM			(pObject,play_bone,dir,Fvector().set(0,0,0),xform);
 			pParticles->UpdateParent(xform, vel);
-			{
-				pParticles->Play		();
-				//. <-->
-				//. PP->StartParticles (particle_str, play_bone, dir, ID());
-			}
+			pParticles->Play		(false);
 		}
 	}
+	if(m_zone_flags.test(eBoltEntranceParticles) && smart_cast<CBolt*>(pObject))
+		PlayBoltEntranceParticles();
 }
 
+void CCustomZone::PlayBoltEntranceParticles()
+{
+
+	CCF_Shape* Sh		= (CCF_Shape*)CFORM();
+	const Fmatrix& XF	= XFORM();
+	Fmatrix				PXF;
+	xr_vector<CCF_Shape::shape_def>& Shapes = Sh->Shapes();
+	Fvector				sP0, sP1, vel;
+
+	CParticlesObject* pParticles = NULL;
+
+	xr_vector<CCF_Shape::shape_def>::iterator it = Shapes.begin();
+	xr_vector<CCF_Shape::shape_def>::iterator it_e = Shapes.end();
+	
+	for(;it!=it_e;++it)
+	{
+		CCF_Shape::shape_def& s = *it;
+		switch (s.type)
+		{
+		case 0: // sphere
+			{
+			sP0						= s.data.sphere.P;
+			XF.transform_tiny		(sP0);
+
+			
+			
+			float ki				= 10.0f * s.data.sphere.R;
+			float c					= 2.0f * s.data.sphere.R;
+
+			float quant_h			= (PI_MUL_2/float(ki))*c;
+			float quant_p			= (PI_DIV_2/float(ki));
+
+			for(float i=0; i<ki; ++i)
+			{
+				vel.setHP				(	::Random.randF(quant_h/2.0f, quant_h)*i, 
+											::Random.randF(quant_p/2.0f, quant_p)*i
+										);
+
+				vel.mul					(s.data.sphere.R);
+
+				sP1.add					(sP0, vel);
+
+				PXF.identity			();
+				PXF.k.normalize			(vel);
+				Fvector::generate_orthonormal_basis(PXF.k, PXF.j, PXF.i);
+
+				PXF.c					= sP1;
+
+				pParticles				= CParticlesObject::Create(m_sBoltEntranceParticles.c_str(), TRUE);
+				pParticles->UpdateParent(PXF,vel);
+				pParticles->Play		(false);
+			}
+			}break;
+		case 1: // box
+			break;
+		}
+	}
+
+}
 
 void CCustomZone::PlayBulletParticles(Fvector& pos)
 {
@@ -955,7 +967,7 @@ void CCustomZone::PlayBulletParticles(Fvector& pos)
 	M.c.set(pos);
 
 	pParticles->UpdateParent(M,zero_vel);
-	pParticles->Play();
+	pParticles->Play(false);
 }
 
 void CCustomZone::PlayObjectIdleParticles(CGameObject* pObject)
@@ -989,8 +1001,7 @@ void CCustomZone::PlayObjectIdleParticles(CGameObject* pObject)
 
 void CCustomZone::StopObjectIdleParticles(CGameObject* pObject)
 {
-	//. new
-	if (m_bIdleObjectParticlesDontStop&&!pObject->cast_actor())
+	if (m_zone_flags.test(eIdleObjectParticlesDontStop) && !pObject->cast_actor())
 		return;
 
 	CParticlesPlayer* PP = smart_cast<CParticlesPlayer*>(pObject);
@@ -1074,10 +1085,13 @@ void CCustomZone::UpdateBlowoutLight	()
 
 void CCustomZone::AffectObjects()
 {
-	if(m_dwAffectFrameNum == Device.dwFrame)	return;
+	if(m_dwAffectFrameNum == Device.dwFrame)	
+		return;
+
 	m_dwAffectFrameNum	= Device.dwFrame;
 
-	if(Device.dwPrecacheFrame)					return;
+	if(Device.dwPrecacheFrame)					
+		return;
 
 
 	OBJECT_INFO_VEC_IT it;
@@ -1086,8 +1100,6 @@ void CCustomZone::AffectObjects()
 		if( !(*it).object->getDestroy() )
 			Affect( &(*it) );
 	}
-
-	m_dwDeltaTime = 0;
 }
 
 void CCustomZone::UpdateBlowout()
@@ -1115,7 +1127,6 @@ void CCustomZone::UpdateBlowout()
 		m_dwBlowoutExplosionTime<(u32)m_iStateTime)
 	{
 		AffectObjects();
-		BornArtefact();
 	}
 
 	if (m_BendGrass_Blowout)
@@ -1173,58 +1184,16 @@ void	CCustomZone::OnEvent (NET_Packet& P, u16 type)
 				OnStateSwitch	(EZoneState(S));
 				break;
 			}
-		case GE_OWNERSHIP_TAKE : 
-			{
-				u16 id;
-                P.r_u16(id);
-				OnOwnershipTake(id);
-				break;
-			} 
-         case GE_OWNERSHIP_REJECT : 
-			 {
-				 u16 id;
-                 P.r_u16			(id);
-                 CArtefact *artefact = smart_cast<CArtefact*>(Level().Objects.net_Find(id)); 
-				 if(artefact)
-				 {
-					 bool			just_before_destroy = !P.r_eof() && P.r_u8();
-					artefact->H_SetParent(NULL,just_before_destroy);
-					if (!just_before_destroy)
-						ThrowOutArtefact(artefact);
-				 }
-                 break;
-			}
 	}
 	inherited::OnEvent(P, type);
 };
-void CCustomZone::OnOwnershipTake(u16 id)
-{
-	CGameObject* GO  = smart_cast<CGameObject*>(Level().Objects.net_Find(id));  VERIFY(GO);
-	if(!smart_cast<CArtefact*>(GO))
-	{
-		Msg("zone_name[%s] object_name[%s]",cName().c_str(), GO->cName().c_str() );
-	}
-	CArtefact *artefact = smart_cast<CArtefact*>(Level().Objects.net_Find(id));  VERIFY(artefact);
-	artefact->H_SetParent(this);
-	
-	artefact->setVisible(FALSE);
-	artefact->setEnabled(FALSE);
-
-	m_SpawnedArtefacts.push_back(artefact);
-}
 
 void CCustomZone::OnStateSwitch	(EZoneState new_state)
 {
-	if (eZoneStateDisabled == new_state)
+	if (new_state==eZoneStateDisabled)
 		Disable();
 	else
 		Enable();
-
-	if(m_eZoneState==eZoneStateIdle)
-		StopIdleParticles();
-
-	if(new_state==eZoneStateIdle)
-		PlayIdleParticles();
 
 	if(new_state==eZoneStateAccumulate)
 		PlayAccumParticles();
@@ -1262,6 +1231,7 @@ bool CCustomZone::Enable()
 		PlayEntranceParticles(pObject);
 		PlayObjectIdleParticles(pObject);
 	}
+	PlayIdleParticles	();
 	return true;
 };
 
@@ -1276,6 +1246,7 @@ bool CCustomZone::Disable()
 		if (!pObject) continue;
 		StopObjectIdleParticles(pObject);
 	}
+	StopIdleParticles	();
 	return false;
 };
 
@@ -1289,97 +1260,26 @@ void CCustomZone::ZoneDisable()
 	SwitchZoneState(eZoneStateDisabled);
 };
 
-
-void CCustomZone::SpawnArtefact()
-{
-	//вычислить согласно распределению вероятностей
-	//какой артефакт из списка ставить
-	float rnd = ::Random.randF(.0f,1.f-EPS_L);
-	float prob_threshold = 0.f;
-	
-	std::size_t i=0;
-	for(; i<m_ArtefactSpawn.size(); i++)
-	{
-		prob_threshold += m_ArtefactSpawn[i].probability;
-		if(rnd<prob_threshold) break;
-	}
-	R_ASSERT(i<m_ArtefactSpawn.size());
-
-	Fvector pos;
-	Center(pos);
-	Level().spawn_item(*m_ArtefactSpawn[i].section, pos, (g_dedicated_server)?u32(-1):ai_location().level_vertex_id(), ID());
-}
-
-
-void CCustomZone::BornArtefact()
-{
-	if(!m_zone_flags.test(eSpawnBlowoutArtefacts) || m_SpawnedArtefacts.empty()) return;
-
-	if(::Random.randF(0.f, 1.f)> m_fArtefactSpawnProbability) return;
-
-	PrefetchArtefacts						();
-	CArtefact* pArtefact					= m_SpawnedArtefacts.back(); VERIFY(pArtefact);
-	m_SpawnedArtefacts.pop_back				();
-
-	if (Local())	{
-		if (pArtefact->H_Parent() && (pArtefact->H_Parent()->ID() == this->ID())  )	//. todo: need to remove on actual message parsing
-		{
-			NET_Packet						P;
-			u_EventGen						(P,GE_OWNERSHIP_REJECT,ID());
-			P.w_u16							(pArtefact->ID());
-			u_EventSend						(P);
-		}
-	}
-
-}
-
-void CCustomZone::ThrowOutArtefact(CArtefact* pArtefact)
-{
-	pArtefact->XFORM().c.set(Position());
-	pArtefact->XFORM().c.y += m_fArtefactSpawnHeight;
-
-	if(*m_sArtefactSpawnParticles)
-	{
-		CParticlesObject* pParticles;
-		pParticles = CParticlesObject::Create(*m_sArtefactSpawnParticles,TRUE);
-		pParticles->UpdateParent(pArtefact->XFORM(),zero_vel);
-		pParticles->Play();
-	}
-
-	m_ArtefactBornSound.play_at_pos(0, pArtefact->Position());
-
-	Fvector dir;
-	dir.random_dir();
-	pArtefact->m_pPhysicsShell->applyImpulse (dir, m_fThrowOutPower);
-}
-
-void CCustomZone::PrefetchArtefacts()
-{
-	if (FALSE==m_zone_flags.test(eSpawnBlowoutArtefacts) || m_ArtefactSpawn.empty()) return;
-
-	for(u32 i = m_SpawnedArtefacts.size(); i < PREFETCHED_ARTEFACTS_NUM; ++i)
-		SpawnArtefact();
-}
-
 void CCustomZone::StartWind()
 {
 	if(m_fDistanceToCurEntity>WIND_RADIUS) return;
 
-	m_bBlowoutWindActive = true;
+	m_zone_flags.set(eBlowoutWindActive, TRUE);
+
 	m_fStoreWindPower = g_pGamePersistent->Environment().wind_strength_factor;
 	clamp(g_pGamePersistent->Environment().wind_strength_factor, 0.f, 1.f);
 }
 
 void CCustomZone::StopWind()
 {
-	if(!m_bBlowoutWindActive) return;
-	m_bBlowoutWindActive = false;
+	if(!m_zone_flags.test(eBlowoutWindActive)) return;
+	m_zone_flags.set(eBlowoutWindActive, FALSE);
 	g_pGamePersistent->Environment().wind_strength_factor = m_fStoreWindPower;
 }
 
 void CCustomZone::UpdateWind()
 {
-	if(!m_bBlowoutWindActive) return;
+	if(!m_zone_flags.test(eBlowoutWindActive)) return;
 
 	if(m_fDistanceToCurEntity>WIND_RADIUS || m_dwBlowoutWindTimeEnd<(u32)m_iStateTime)
 	{
@@ -1403,12 +1303,12 @@ void CCustomZone::UpdateWind()
 	}
 }
 
-u32	CCustomZone::ef_anomaly_type	() const
+u32	CCustomZone::ef_anomaly_type() const
 {
 	return	(m_ef_anomaly_type);
 }
 
-u32	CCustomZone::ef_weapon_type		() const
+u32	CCustomZone::ef_weapon_type() const
 {
 	VERIFY	(m_ef_weapon_type != u32(-1));
 	return	(m_ef_weapon_type);
@@ -1428,46 +1328,62 @@ void CCustomZone::CreateHit	(	u16 id_to,
 		if(m_owner_id != u32(-1) )
 			id_from	= (u16)m_owner_id;
 
-		NET_Packet	l_P;
-		Fvector hdir = hit_dir;
-		SHit	Hit = SHit(hit_power, hdir, this, bone_id, pos_in_bone, hit_impulse, hit_type);		
-		Hit.GenHeader(GE_HIT, id_to);
-		Hit.whoID = id_from;
-		Hit.weaponID = this->ID();
-		Hit.Write_Packet(l_P);
-
-		u_EventSend	(l_P);
+		NET_Packet			l_P;
+		Fvector hdir		= hit_dir;
+		SHit Hit			= SHit(hit_power, hdir, this, bone_id, pos_in_bone, hit_impulse, hit_type, 0.0f, false);		
+		Hit.GenHeader		(GE_HIT, id_to);
+		Hit.whoID			= id_from;
+		Hit.weaponID		= this->ID();
+		Hit.Write_Packet	(l_P);
+		u_EventSend			(l_P);
 	};
 }
 
 void CCustomZone::net_Relcase(CObject* O)
 {
-	CGameObject* GO = smart_cast<CGameObject*>(O);
-	OBJECT_INFO_VEC_IT it = std::find(m_ObjectInfoMap.begin(),m_ObjectInfoMap.end(), GO);
-	if(it!=m_ObjectInfoMap.end()){
-		exit_Zone(*it);
-		m_ObjectInfoMap.erase(it);
+	CGameObject* GO				= smart_cast<CGameObject*>(O);
+	OBJECT_INFO_VEC_IT it		= std::find(m_ObjectInfoMap.begin(),m_ObjectInfoMap.end(), GO);
+	if(it!=m_ObjectInfoMap.end())
+	{
+		exit_Zone				(*it);
+		m_ObjectInfoMap.erase	(it);
 	}
 	if(GO->ID()==m_owner_id)	m_owner_id = u32(-1);
 
-	if(m_effector && m_effector->m_pActor && m_effector->m_pActor->ID() == GO->ID())
-		m_effector->Stop();
+	if(m_actor_effector && m_actor_effector->m_pActor && m_actor_effector->m_pActor->ID() == GO->ID())
+		m_actor_effector->Stop();
 
 	inherited::net_Relcase(O);
+}
+
+void CCustomZone::enter_Zone(SZoneObjectInfo& io)
+{
+	//if(m_zone_flags.test(eAffectPickDOF) && Level().CurrentEntity())
+	//{
+	//	if(io.object->ID()==Level().CurrentEntity()->ID())
+	//		GamePersistent().SetPickableEffectorDOF(true);
+	//}
 }
 
 void CCustomZone::exit_Zone	(SZoneObjectInfo& io)
 {
 	StopObjectIdleParticles(io.object);
+
+	//if(m_zone_flags.test(eAffectPickDOF) && Level().CurrentEntity())
+	//{
+	//	if(io.object->ID()==Level().CurrentEntity()->ID())
+	//		GamePersistent().SetPickableEffectorDOF(false);
+	//}
 }
 
 void CCustomZone::PlayAccumParticles()
 {
-	if(m_sAccumParticles.size()){
+	if(m_sAccumParticles.size())
+	{
 		CParticlesObject* pParticles;
 		pParticles	= CParticlesObject::Create(*m_sAccumParticles,TRUE);
 		pParticles->UpdateParent(XFORM(),zero_vel);
-		pParticles->Play();
+		pParticles->Play(false);
 	}
 
 	if(m_accum_sound._handle())
@@ -1476,39 +1392,45 @@ void CCustomZone::PlayAccumParticles()
 
 void CCustomZone::PlayAwakingParticles()
 {
-	if(m_sAwakingParticles.size()){
+	if(m_sAwakingParticles.size())
+	{
 		CParticlesObject* pParticles;
 		pParticles	= CParticlesObject::Create(*m_sAwakingParticles,TRUE);
 		pParticles->UpdateParent(XFORM(),zero_vel);
-		pParticles->Play();
+		pParticles->Play(false);
 	}
 
 	if(m_awaking_sound._handle())
 		m_awaking_sound.play_at_pos	(0, Position());
 }
 
-void CCustomZone::UpdateOnOffState	()
+void CCustomZone::UpdateOnOffState()
 {
 	if(!m_zone_flags.test(eUseOnOffTime)) return;
 	
 	bool dest_state;
 	u32 t = (Device.dwTimeGlobal-m_StartTime+m_TimeShift) % (m_TimeToEnable+m_TimeToDisable);
-	if	(t < m_TimeToEnable) 
+	if	(t < m_TimeToEnable)
+	{
 		dest_state=true;
-	else
-	if	(t >=(m_TimeToEnable+m_TimeToDisable) ) 
+	}else
+	if(t >=(m_TimeToEnable+m_TimeToDisable) ) 
+	{
 		dest_state=true;
-	else{
+	}else
+	{
 		dest_state=false;
 		VERIFY(t<(m_TimeToEnable+m_TimeToDisable));
 	}
 
-	if( (eZoneStateDisabled==m_eZoneState) && dest_state){
-			GoEnabledState		();
-		}else
-	if( (eZoneStateIdle==m_eZoneState) && !dest_state){
-			GoDisabledState			();
-		}
+	if( (eZoneStateDisabled==m_eZoneState) && dest_state)
+	{
+		GoEnabledState		();
+	}else
+	if( (eZoneStateIdle==m_eZoneState) && !dest_state)
+	{
+		GoDisabledState			();
+	}
 }
 
 void CCustomZone::GoDisabledState()
@@ -1548,10 +1470,105 @@ BOOL CCustomZone::feel_touch_on_contact	(CObject *O)
 
 BOOL CCustomZone::AlwaysTheCrow()
 {
-	if (m_zone_flags.test(eAlwaysFastmode) && IsEnabled())
+ 	if(m_zone_flags.test(eAlwaysFastmode) && IsEnabled() )
 		return TRUE;
+ 	else
+ 		return inherited::AlwaysTheCrow();
+}
+
+void CCustomZone::CalcDistanceTo(const Fvector& P, float& dist, float& radius)
+{
+	R_ASSERT			(CFORM()->Type()==cftShape);
+	CCF_Shape* Sh		= (CCF_Shape*)CFORM();
+
+	dist				= P.distance_to(Position());
+	float sr			= CFORM()->getSphere().R;
+	//quick test
+	if(Sh->Shapes().size()==1)
+	{
+		radius			= sr;
+		return;
+	}
+/*
+	//2nd quick test
+	Fvector				SC;
+	float				dist2;
+	XF.transform_tiny	(SC,CFORM()->getSphere().P);
+	dist2				= P.distance_to(SC);
+	if(dist2>sr)
+	{
+		radius		= sr;
+		return;
+	}
+*/
+	//full test
+	const Fmatrix& XF	= XFORM();
+	xr_vector<CCF_Shape::shape_def>& Shapes = Sh->Shapes();
+	CCF_Shape::shape_def* nearest_s = NULL;
+	float nearest = flt_max;
+
+
+	Fvector sP;
+
+	xr_vector<CCF_Shape::shape_def>::iterator it = Shapes.begin();
+	xr_vector<CCF_Shape::shape_def>::iterator it_e = Shapes.end();
+	for(;it!=it_e;++it)
+	{
+		CCF_Shape::shape_def& s = *it;
+		float d = 0.0f;
+		switch (s.type)
+		{
+		case 0: // sphere
+			sP = s.data.sphere.P;
+			break;
+		case 1: // box
+			sP = s.data.box.c;
+			break;
+		}
+
+		XF.transform_tiny(sP);
+		d = P.distance_to(sP);
+		if(d<nearest)
+		{
+			nearest		= d;
+			nearest_s	= &s;
+		}
+	}
+	R_ASSERT(nearest_s);
+	
+	dist	= nearest;
+
+	if(nearest_s->type==0)
+		radius	= nearest_s->data.sphere.R;
 	else
-		return inherited::AlwaysTheCrow();
+	{
+		float r1 = nearest_s->data.box.i.magnitude();
+		float r2 = nearest_s->data.box.j.magnitude();
+		float r3 = nearest_s->data.box.k.magnitude();
+		radius = _max(r1,r2);
+		radius = _max(radius,r3);
+	}
+
+}
+
+// Lain: added Start/Stop idle light calls
+void CCustomZone::o_switch_2_fast				()
+{
+	if (m_zone_flags.test(eFastMode))		return	;
+	m_zone_flags.set(eFastMode, TRUE);
+	StartIdleLight();
+	processing_activate			();
+}
+
+void CCustomZone::o_switch_2_slow				()
+{
+	if (!m_zone_flags.test(eFastMode))	return	;
+	m_zone_flags.set(eFastMode, FALSE);
+	if ( !light_in_slow_mode() )
+	{
+		StopIdleLight();
+	}
+	processing_deactivate		();
 }
 
 void CCustomZone::save							(NET_Packet &output_packet)
@@ -1570,6 +1587,19 @@ void CCustomZone::load							(IReader &input_packet)
 		m_eZoneState = eZoneStateDisabled;
 	else
 		m_eZoneState = eZoneStateIdle;
+}
+
+void CCustomZone::ChangeIdleParticles(LPCSTR name, bool bIdleLight)
+{
+	StopIdleParticles(true);
+	m_sIdleParticles = name;
+	PlayIdleParticles(bIdleLight);
+}
+
+void CCustomZone::MoveScript(Fvector pos)
+{
+	XFORM().translate_over(pos);
+	OnMove();
 }
 
 void CCustomZone::GrassZoneUpdate()

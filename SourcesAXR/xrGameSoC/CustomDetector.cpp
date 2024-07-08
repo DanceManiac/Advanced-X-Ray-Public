@@ -167,8 +167,7 @@ void CCustomDetector::UpdateCL()
 	{
 		CCustomZone *pZone = it->first;
 		ZONE_INFO& zone_info = it->second;
-
-		
+	
 		//такой тип зон не обнаруживается
 		if(m_ZoneTypeMap.find(pZone->CLS_ID) == m_ZoneTypeMap.end() ||
 			!pZone->VisibleByDetector())
@@ -191,7 +190,7 @@ void CCustomDetector::UpdateCL()
 		if((float)zone_info.snd_time > current_snd_time)
 		{
 			zone_info.snd_time	= 0;
-			HUD_SOUND_ITEM::PlaySound	(zone_type.detect_snds, Fvector().set(0,0,0), this, true, false);
+			HUD_SOUND_ITEM::PlaySound(zone_type.detect_snds, Fvector().set(0, 0, 0), NULL, true, false);
 
 		} 
 		else 
@@ -298,7 +297,6 @@ void CCustomDetector::AddRemoveMapSpot(CCustomZone* pZone, bool bAdd)
 	if(m_ZoneTypeMap.find(pZone->CLS_ID) == m_ZoneTypeMap.end() )return;
 	
 	if ( bAdd && !pZone->VisibleByDetector() ) return;
-		
 
 	ZONE_TYPE& zone_type = m_ZoneTypeMap[pZone->CLS_ID];
 	if( xr_strlen(zone_type.zone_map_location) ){

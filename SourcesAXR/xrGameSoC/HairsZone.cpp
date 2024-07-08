@@ -6,8 +6,7 @@
 #include "entity_alive.h"
 #include "PHMovementControl.h"
 #include "CharacterPhysicsSupport.h"
-#include "../xrEngine/xr_collide_form.h"
-
+#include "../xrengine/xr_collide_form.h"
 bool CHairsZone::BlowoutState()
 {
 	bool result = inherited::BlowoutState();
@@ -32,21 +31,6 @@ void CHairsZone::CheckForAwaking()
 				return;
 			}
 		}
-/*
-		u32 cnt = pObject->ps_Size();
-		if(cnt>2){
-			CObject::SavedPosition p0 = pObject->ps_Element(cnt-1);
-			CObject::SavedPosition p1 = pObject->ps_Element(cnt-2);
-
-			float dist	= p0.vPosition.distance_to(p1.vPosition);
-			float tm	= (p0.dwTime-p1.dwTime)/1000.0f;
-			float sp	= dist/tm;
-			if(sp>m_min_speed_to_react){
-				SwitchZoneState				(eZoneStateAwaking);
-				return;
-			}
-		}
-*/
 	}
 }
 
@@ -66,14 +50,6 @@ void CHairsZone::Affect(SZoneObjectInfo* O)
 	Fvector P; 
 	XFORM().transform_tiny(P,CFORM()->getSphere().P);
 
-#ifdef DEBUG
-	if(bDebug){
-		char l_pow[255]; 
-		sprintf_s(l_pow, "zone hit. %.1f", Power(pGameObject->Position().distance_to(P)));
-		Msg("%s %s",*pGameObject->cName(), l_pow);
-	}
-#endif
-
 	Fvector hit_dir; 
 	hit_dir.set(::Random.randF(-.5f,.5f), 
 		::Random.randF(.0f,1.f), 
@@ -85,16 +61,11 @@ void CHairsZone::Affect(SZoneObjectInfo* O)
 
 	P.y = pGameObject->Position().y;
 
-	float power = Power(pGameObject->Position().distance_to(P));
-	float impulse = m_fHitImpulseScale*power*pGameObject->GetMass();
-
-	//статистика по объекту
-	O->total_damage += power;
-	O->hit_num++;
+	float power				= Power(pGameObject->Position().distance_to(P));
+	float impulse			= m_fHitImpulseScale*power*pGameObject->GetMass();
 
 	if(power > 0.01f) 
 	{
-		m_dwDeltaTime = 0;
 		position_in_bone_space.set(0.f,0.f,0.f);
 
 		CreateHit(pGameObject->ID(),ID(),hit_dir,power,0,position_in_bone_space,impulse,m_eHitTypeBlowout);

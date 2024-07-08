@@ -4,7 +4,7 @@
 #include "level.h"
 #include "xrmessages.h"
 #include "../xrEngine/bone.h"
-#include "clsid_game.h"
+#include "actor.h"
 #include "game_base_space.h"
 #include "Hit.h"
 #include "../xrengine/xr_collide_form.h"
@@ -29,37 +29,51 @@ bool  CRadioactiveZone::BlowoutState	()
 
 void CRadioactiveZone::Affect(SZoneObjectInfo* O) 
 {
-	// вермя срабатывания не чаще, чем заданный период
-	if(m_dwDeltaTime < m_dwPeriod) return;
-//.	m_dwDeltaTime = 0;
-	
-	CGameObject *GO = O->object;
-	
-	if(GO) 
+	float one				= 0.1f;
+	float tg				= Device.fTimeGlobal;
+
+	if(!O->object || O->f_time_affected+one > Device.fTimeGlobal) 
+		return;
+
+	clamp					(O->f_time_affected, tg-(one*3), tg);
+
+	Fvector					pos; 
+	XFORM().transform_tiny	(pos,CFORM()->getSphere().P);
+
+	Fvector dir				={0,0,0}; 
+	float power				= Power(O->object->Position().distance_to(pos));
+
+	float impulse			= 0.0f;
+	if(power < EPS)			
 	{
-		Fvector pos; 
-		XFORM().transform_tiny(pos,CFORM()->getSphere().P);
-
-#ifdef DEBUG		
-		char pow[255]; 
-		sprintf_s(pow, "zone hit. %.3f", Power(GO->Position().distance_to(pos)));
-		if(bDebug) Msg("%s %s", *GO->cName(), pow);
-#endif
-
-		Fvector dir; 
-		dir.set(0,0,0);
-	
-		Fvector position_in_bone_space;
-		float power = (GameID() == GAME_SINGLE) ? Power(GO->Position().distance_to(pos)) : 0.0f;
-		float impulse = 0.f;
-		if(power > EPS) 
-		{
-//.			m_dwDeltaTime = 0;
-			position_in_bone_space.set(0.f,0.f,0.f);
-
-			CreateHit(GO->ID(),ID(),dir,power,BI_NONE,position_in_bone_space,impulse,ALife::eHitTypeRadiation);
-		}
+		O->f_time_affected	= tg;
+		return;
 	}
+	
+	float send_power		= power*one;
+
+	while(O->f_time_affected+one < tg)
+	{
+		CreateHit	(	O->object->ID(),
+						ID(),
+						dir,
+						send_power,
+						BI_NONE,
+						Fvector().set(0.0f,0.0f,0.0f),
+						impulse,
+						m_eHitTypeBlowout);
+#ifdef DEBUG
+//		if(bDebug)
+/*		Msg			(	"Zone[%s]-hit->[%s] Power=%3.3f Frame=%d Time=%3.3f", 
+						cName().c_str(), 
+						O->object->cName().c_str(), 
+						send_power, 
+						Device.dwFrame, 
+						tg);*/
+///		Msg( "Zone hit ___   damage = %.4f    Frame=%d ", send_power, Device.dwFrame );
+#endif
+		O->f_time_affected += one;
+	}//while
 }
 
 void CRadioactiveZone::feel_touch_new					(CObject* O	)
@@ -67,9 +81,9 @@ void CRadioactiveZone::feel_touch_new					(CObject* O	)
 	inherited::feel_touch_new(O);
 	if (GameID() != GAME_SINGLE)
 	{
-		if (O->CLS_ID == CLSID_OBJECT_ACTOR)
+		if (smart_cast<CActor*>(O))
 		{
-			CreateHit(O->ID(),ID(),Fvector().set(0, 0, 0),0.0f,BI_NONE,Fvector().set(0, 0, 0),0.0f,ALife::eHitTypeRadiation);
+			CreateHit(O->ID(),ID(),Fvector().set(0, 0, 0),0.0f,BI_NONE,Fvector().set(0, 0, 0),0.0f,m_eHitTypeBlowout);// ALife::eHitTypeRadiation
 		}
 	};
 };
@@ -96,7 +110,7 @@ void CRadioactiveZone::UpdateWorkload					(u32	dt)
 		XFORM().transform_tiny(pos,CFORM()->getSphere().P);
 		for(it = m_ObjectInfoMap.begin(); m_ObjectInfoMap.end() != it; ++it) 
 		{
-			if( !(*it).object->getDestroy() && (*it).object->CLS_ID == CLSID_OBJECT_ACTOR)
+			if( !(*it).object->getDestroy() && smart_cast<CActor*>((*it).object))
 			{
 				//=====================================
 				NET_Packet	l_P;
@@ -116,7 +130,7 @@ void CRadioactiveZone::UpdateWorkload					(u32	dt)
 				HS.boneID = BI_NONE;
 				HS.p_in_bone_space = Fvector().set(0, 0, 0);
 				HS.impulse = 0.0f;
-				HS.hit_type = ALife::eHitTypeRadiation;
+				HS.hit_type = m_eHitTypeBlowout;
 				
 				HS.Write_Packet_Cont(l_P);
 

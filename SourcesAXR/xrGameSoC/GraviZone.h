@@ -42,7 +42,6 @@ public:
 	virtual bool	BlowoutState();
 	virtual bool	IdleState();
 
-	virtual float	RelativePower(float dist);
 	virtual float	BlowoutRadiusPercent(CPhysicsShellHolder* /*GO*/){return m_fBlowoutRadiusPercent;}
 protected:
 	virtual void	exit_Zone(SZoneObjectInfo& io);
