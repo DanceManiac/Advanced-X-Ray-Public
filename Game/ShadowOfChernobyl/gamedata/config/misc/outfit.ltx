@@ -12,6 +12,22 @@ full_icon_name					= npc_icon_without_outfit
 ;базовый костюм сталкера - костюм новичка. ќбычна€ одежда туриста - штормовка+сапоги
 full_scale_icon		= 6,6
 
+;Параметры шейдерных ПНВ
+[shader_nightvision_default]
+shader_nightvision_type = 1 ;;Поколение ПНВ
+shader_nightvision_lum_factor = 0.0 ;;Эффективность (прибавляется к sun_lumscale_amb)
+
+[shader_nightvision_1]
+shader_nightvision_type = 1
+shader_nightvision_lum_factor = 3.0
+
+[shader_nightvision_2]
+shader_nightvision_type = 2
+shader_nightvision_lum_factor = 6.0
+
+[shader_nightvision_3]
+shader_nightvision_type = 3
+shader_nightvision_lum_factor = 10.0
 
 ;---------------------------------------------------------------------------------------------
 ;		 ќ—“ёћ Ќќ¬»„ ј
@@ -275,6 +291,7 @@ inv_grid_x			= 10
 inv_grid_y			= 13
 full_icon_name		= npc_icon_specops_outfit
 nightvision_sect	= effector_nightvision_bad
+shader_nightvision_sect	= shader_nightvision_1
 
 cost				= 12000
 slot				= 6
@@ -338,6 +355,7 @@ inv_grid_x			= 18
 inv_grid_y			= 17
 full_icon_name		= npc_icon_military_outfit
 nightvision_sect	= effector_nightvision_bad
+shader_nightvision_sect	= shader_nightvision_1
 
 cost				= 40000
 full_scale_icon		= 10,6		;иконка сталкера в костюме в полный рост
@@ -403,6 +421,7 @@ cost				= 15000
 slot				= 6
 full_scale_icon		= 14,11			;иконка сталкера в костюме в полный рост
 nightvision_sect				= effector_nightvision_bad
+shader_nightvision_sect	= shader_nightvision_1
 
 immunities_sect			= sect_stalker_outfit_immunities
 
@@ -460,6 +479,7 @@ inv_grid_x			= 16
 inv_grid_y			= 13
 full_icon_name		= npc_icon_scientific_outfit
 nightvision_sect	= effector_nightvision_good
+shader_nightvision_sect	= shader_nightvision_2
 
 cost				= 30000
 full_scale_icon		= 12,11			;иконка сталкера в костюме в полный рост
@@ -520,6 +540,7 @@ inv_grid_x			= 14
 inv_grid_y			= 13
 full_icon_name		= npc_icon_exo_outfit
 nightvision_sect	= effector_nightvision_bad
+shader_nightvision_sect	= shader_nightvision_1
 
 cost				= 50000
 full_scale_icon		= 2,11			;иконка сталкера в костюме в полный рост
@@ -646,6 +667,7 @@ inv_grid_x			= 8
 inv_grid_y			= 15
 full_icon_name		= npc_icon_svoboda_heavy_outfit
 nightvision_sect	= effector_nightvision_bad
+shader_nightvision_sect	= shader_nightvision_1
 
 cost				= 12500
 slot				= 6
@@ -711,6 +733,7 @@ cost				= 14000
 slot				= 6
 full_scale_icon		= 8,11			;иконка сталкера в костюме в полный рост
 nightvision_sect	= effector_nightvision_bad
+shader_nightvision_sect	= shader_nightvision_1
 
 immunities_sect			= sect_dolg_outfit_immunities
 
@@ -769,6 +792,7 @@ inv_grid_x			= 16
 inv_grid_y			= 16
 full_icon_name		= npc_icon_dolg_scientific_outfit
 nightvision_sect	= effector_nightvision_good
+shader_nightvision_sect	= shader_nightvision_2
 
 cost				= 25000
 full_scale_icon		= 8,6		;иконка сталкера в костюме в полный рост
@@ -830,6 +854,7 @@ inv_grid_x			= 18
 inv_grid_y			= 13
 full_icon_name		= npc_icon_ecolog_outfit
 nightvision_sect	= effector_nightvision_good
+shader_nightvision_sect	= shader_nightvision_2
 
 cost				= 15000
 full_scale_icon		= 14,6			;иконка сталкера в костюме в полный рост
@@ -891,6 +916,7 @@ inv_grid_x			= 14
 inv_grid_y			= 16
 full_icon_name		= npc_icon_protection_outfit
 nightvision_sect	= effector_nightvision_good
+shader_nightvision_sect	= shader_nightvision_2
 
 cost				= 24000
 full_scale_icon		= 12,6			;иконка сталкера в костюме в полный рост
