@@ -13,6 +13,16 @@ class CGamePersistent:
 	public IGame_Persistent, 
 	public IEventReceiver
 {
+	enum
+	{
+		eDofDest = 0,
+		eDofCurrent,
+		eDofFrom,
+		eDofOriginal,
+
+		eDofParamsCount,
+	};
+
 	// ambient particles
 	CParticlesObject*	ambient_particles; 
 	xr_vector<u32>		ambient_sound_next_time; // max snd channels
@@ -28,8 +38,11 @@ class CGamePersistent:
 
 	bool				ls_tips_enabled;
 
+	bool				m_bPickableDOF;
+
 	CUISequencer*		m_intro;
 	EVENT				eQuickLoad;
+	Fvector 			m_dof[eDofParamsCount]; // 0-dest 1-current 2-from 3-original
 
 	fastdelegate::FastDelegate0<> m_intro_event;
 
@@ -47,6 +60,7 @@ class CGamePersistent:
 #endif
 
 	void				WeathersUpdate			();
+	void				UpdateDof				();
 
 public:
 	ui_core*			m_pUI_core;
@@ -84,6 +98,13 @@ public:
 	void				SetLoadStageTitle		(const char* ls_title = nullptr) override;
 
 	virtual bool		CanBePaused				();
+
+			void		SetPickableEffectorDOF	(bool bSet);
+			void		SetEffectorDOF			(const Fvector& needed_dof);
+			void		RestoreEffectorDOF		();
+
+	virtual void		GetCurrentDof			(Fvector3& dof);
+	virtual void		SetBaseDof				(const Fvector3& dof);
 
 			int			GetHudGlassElement		();
 			int			GetNightvisionType		();

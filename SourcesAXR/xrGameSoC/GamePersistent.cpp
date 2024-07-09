@@ -56,6 +56,7 @@
 
 CGamePersistent::CGamePersistent(void)
 {
+	m_bPickableDOF				= false;
 	m_game_params.m_e_game_type_for_soc = GAME_ANY;
 	ambient_effect_next_time	= 0;
 	ambient_effect_stop_time	= 0;
@@ -689,6 +690,7 @@ if (Level().IsDemoPlay())
 	if ((m_last_stats_frame + 1) < m_frame_counter)
 		profiler().clear		();
 #endif
+	UpdateDof();
 }
 
 #include "game_sv_single.h"
@@ -847,6 +849,23 @@ bool CGamePersistent::CanBePaused()
 	return IsGameTypeSingle() || (g_pGameLevel && Level().IsDemoPlay());
 }
 
+void CGamePersistent::SetPickableEffectorDOF(bool bSet)
+{
+	m_bPickableDOF = bSet;
+	if (!bSet)
+		RestoreEffectorDOF();
+}
+
+void CGamePersistent::GetCurrentDof(Fvector3& dof)
+{
+	dof = m_dof[eDofCurrent];
+}
+
+void CGamePersistent::SetBaseDof(const Fvector3& dof)
+{
+	m_dof[eDofDest] = m_dof[eDofCurrent] = m_dof[eDofFrom] = m_dof[eDofOriginal] = dof;
+}
+
 int CGamePersistent::GetHudGlassElement()
 {
 	return	(DynamicHudGlass::GetHudGlassElement());
@@ -950,6 +969,56 @@ void CGamePersistent::EditorOnFrame()
 {
 	extern void Editor_OnFrame();
 	Editor_OnFrame();
+}
+
+void CGamePersistent::SetEffectorDOF(const Fvector& needed_dof)
+{
+	if (m_bPickableDOF)	return;
+	m_dof[eDofDest] = needed_dof;
+	m_dof[eDofFrom] = m_dof[eDofCurrent];
+}
+
+void CGamePersistent::RestoreEffectorDOF()
+{
+	SetEffectorDOF(m_dof[eDofOriginal]);
+}
+#include "hudmanager.h"
+
+//	m_dof		[4];	// 0-dest 1-current 2-from 3-original
+void CGamePersistent::UpdateDof()
+{
+	static float diff_far = pSettings->r_float("zone_pick_dof", "far");//70.0f;
+	static float diff_near = pSettings->r_float("zone_pick_dof", "near");//-70.0f;
+
+	if (m_bPickableDOF)
+	{
+		Fvector pick_dof;
+		pick_dof.y = HUD().GetCurrentRayQuery().range;
+		pick_dof.x = pick_dof.y + diff_near;
+		pick_dof.z = pick_dof.y + diff_far;
+		m_dof[eDofDest] = pick_dof;
+		m_dof[eDofFrom] = m_dof[eDofCurrent];
+	}
+	if (m_dof[eDofCurrent].similar(m_dof[eDofDest]))
+		return;
+
+	float td = Device.fTimeDelta;
+	Fvector				diff;
+	diff.sub(m_dof[eDofDest], m_dof[eDofFrom]);
+	diff.mul(td / 0.2f); //0.2 sec
+	m_dof[eDofCurrent].add(diff);
+	if (m_dof[eDofDest].x < m_dof[eDofFrom].x)
+		clamp(m_dof[eDofCurrent].x, m_dof[eDofDest].x, m_dof[eDofFrom].x);
+	else
+		clamp(m_dof[eDofCurrent].x, m_dof[eDofFrom].x, m_dof[eDofDest].x);
+	if (m_dof[eDofDest].y < m_dof[eDofFrom].y)
+		clamp(m_dof[eDofCurrent].y, m_dof[eDofDest].y, m_dof[eDofFrom].y);
+	else
+		clamp(m_dof[eDofCurrent].y, m_dof[eDofFrom].y, m_dof[eDofDest].y);
+	if (m_dof[eDofDest].z < m_dof[eDofFrom].z)
+		clamp(m_dof[eDofCurrent].z, m_dof[eDofDest].z, m_dof[eDofFrom].z);
+	else
+		clamp(m_dof[eDofCurrent].z, m_dof[eDofFrom].z, m_dof[eDofDest].z);
 }
 
 std::string CGamePersistent::GetMoonPhase()

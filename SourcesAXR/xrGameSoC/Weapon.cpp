@@ -26,6 +26,7 @@
 #include "mathutils.h"
 #include "object_broker.h"
 #include "../xrEngine/igame_persistent.h"
+#include "GamePersistent.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -1413,6 +1414,11 @@ void CWeapon::OnZoomIn()
 		m_freelook_switch_back = true;
 	}
 
+	if (GetHUDmode())
+	{
+		GamePersistent().SetPickableEffectorDOF(true);
+	}
+
 	m_bZoomMode = true;
 	m_fZoomFactor = CurrentZoomFactor();
 	StopHudInertion();
@@ -1428,6 +1434,11 @@ void CWeapon::OnZoomOut()
 			pA->cam_Set(eacLookAt);
 
 		m_freelook_switch_back = false;
+	}
+
+	if (GetHUDmode())
+	{
+		GamePersistent().SetPickableEffectorDOF(false);
 	}
 
 	m_bZoomMode = false;
