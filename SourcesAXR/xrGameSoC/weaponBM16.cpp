@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "weaponBM16.h"
-#include "WeaponHUD.h"
 
 CWeaponBM16::~CWeaponBM16()
 {
@@ -10,16 +9,7 @@ void CWeaponBM16::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
 
-	animGet	(mhud_reload1,	pSettings->r_string(*hud_sect,"anim_reload_1"));
-	animGet	(mhud_shot1,	pSettings->r_string(*hud_sect,"anim_shoot_1"));
-	animGet	(mhud_idle1,		pSettings->r_string(*hud_sect,"anim_idle_1"));
-	animGet	(mhud_idle2,		pSettings->r_string(*hud_sect,"anim_idle_2"));
-	animGet	(mhud_zoomed_idle1,		pSettings->r_string(*hud_sect,"anim_zoomed_idle_1"));
-	animGet	(mhud_zoomed_idle2,		pSettings->r_string(*hud_sect,"anim_zoomedidle_2"));
-
-
 	m_sounds.LoadSound(section, "snd_reload_1", "m_sndReload1", false, m_eSoundShot);
-
 }
 
 void CWeaponBM16::PlayReloadSound()
@@ -34,22 +24,21 @@ void CWeaponBM16::PlayReloadSound()
 
 void CWeaponBM16::PlayAnimShoot()
 {
-	if(m_magazine.size()==1)
-		m_pHUD->animPlay(random_anim(mhud_shot1),TRUE,this,GetState());
-	else
-		m_pHUD->animPlay(random_anim(mhud.mhud_shots),TRUE,this,GetState());
+	switch (m_magazine.size())
+	{
+	case 1: PlayHUDMotionIfExists({"anim_shoot_1", "anm_shot_1"}, FALSE, GetState()); break;
+	case 2: PlayHUDMotionIfExists({"anim_shoot", "anm_shot_2"}, FALSE, GetState()); break;
+	default: PlayHUDMotionIfExists({"anim_shoot", "anm_shots"}, FALSE, GetState()); break;
+	}
 }
 
 void CWeaponBM16::PlayAnimReload()
 {
-	bool b_both = HaveCartridgeInInventory(2);
-
-	VERIFY(GetState()==eReload);
-	if(m_magazine.size()==1 || !b_both)
-		m_pHUD->animPlay(random_anim(mhud_reload1),TRUE,this,GetState());
+	VERIFY(GetState() == eReload);
+	if (m_magazine.size() == 1 || !HaveCartridgeInInventory(2))
+		PlayHUDMotionIfExists({"anim_reload_1", "anm_reload_1"}, TRUE, GetState());
 	else
-		m_pHUD->animPlay(random_anim(mhud.mhud_reload),TRUE,this,GetState());
-
+		PlayHUDMotionIfExists({"anim_reload", "anm_reload_2"}, TRUE, GetState());
 }
 
 void CWeaponBM16::PlayAnimIdle()
@@ -61,27 +50,100 @@ void CWeaponBM16::PlayAnimIdle()
 		switch (m_magazine.size())
 		{
 		case 0:{
-			m_pHUD->animPlay(random_anim(mhud.mhud_idle_aim), TRUE, NULL, GetState());
+			PlayHUDMotionIfExists({"anim_idle", "anm_idle_aim_0"}, TRUE, GetState());
 		}break;
 		case 1:{
-			m_pHUD->animPlay(random_anim(mhud_zoomed_idle1), TRUE, NULL, GetState());
+			PlayHUDMotionIfExists({"anim_zoomed_idle_1", "anm_idle_aim_1"}, TRUE, GetState());
 		}break;
 		case 2:{
-			m_pHUD->animPlay(random_anim(mhud_zoomed_idle2), TRUE, NULL, GetState());
+			PlayHUDMotionIfExists({"anim_zoomed_idle_2", "anm_idle_aim_2"}, TRUE, GetState());
 		}break;
 		};
-	}else{
+	}
+	else
+	{
 		switch (m_magazine.size())
 		{
-		case 0:{
-			m_pHUD->animPlay(random_anim(mhud.mhud_idle), TRUE, NULL, GetState());
-		}break;
-		case 1:{
-			m_pHUD->animPlay(random_anim(mhud_idle1), TRUE, NULL, GetState());
-		}break;
-		case 2:{
-			m_pHUD->animPlay(random_anim(mhud_idle2), TRUE, NULL, GetState());
-		}break;
+		case 0:
+		{
+			PlayHUDMotionIfExists({"anim_idle", "anm_idle_0"}, TRUE, GetState());
+		}
+		break;
+		case 1:
+		{
+			PlayHUDMotionIfExists({"anim_idle_1", "anm_idle_1"}, TRUE, GetState());
+		}
+		break;
+		case 2:
+		{
+			PlayHUDMotionIfExists({ "anim_idle_2", "anm_idle_2" }, TRUE, GetState());
+		}
+		break;
 		};
+	}
+}
+
+void CWeaponBM16::PlayAnimShow()
+{
+	switch (m_magazine.size())
+	{
+	case 0:
+		PlayHUDMotionIfExists({ "anm_show_0", "anim_draw" }, true, GetState());
+		break;
+	case 1:
+		PlayHUDMotionIfExists({ "anm_show_1", "anim_draw" }, true, GetState());
+		break;
+	case 2:
+		PlayHUDMotionIfExists({ "anm_show_2", "anim_draw" }, true, GetState());
+		break;
+	}
+}
+
+void CWeaponBM16::PlayAnimHide()
+{
+	switch (m_magazine.size())
+	{
+	case 0:
+		PlayHUDMotionIfExists({ "anm_hide_0", "anim_holster" }, true, GetState());
+		break;
+	case 1:
+		PlayHUDMotionIfExists({ "anm_hide_1", "anim_holster" }, true, GetState());
+		break;
+	case 2:
+		PlayHUDMotionIfExists({ "anm_hide_2", "anim_holster" }, true, GetState());
+		break;
+	}
+}
+
+void  CWeaponBM16::PlayAnimIdleMoving()
+{
+	switch (m_magazine.size())
+	{
+	case 0:
+		PlayHUDMotionIfExists({ "anm_idle_moving_0", "anim_idle" }, true, GetState());
+		break;
+	case 1:
+		PlayHUDMotionIfExists({ "anm_idle_moving_1", "anim_idle" }, true, GetState());
+		break;
+	case 2:
+		PlayHUDMotionIfExists({ "anm_idle_moving_2", "anim_idle" }, true, GetState());
+		break;
+	}
+}
+
+void  CWeaponBM16::PlayAnimIdleSprint()
+{
+	switch (m_magazine.size())
+	{
+	case 0:
+		PlayHUDMotion("anm_idle_sprint_0", TRUE, this, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_sprint_0", "anim_idle_sprint", "anim_idle" }, true, GetState());
+		break;
+	case 1:
+		PlayHUDMotionIfExists({ "anm_idle_sprint_1", "anim_idle_sprint", "anim_idle" }, true, GetState());
+		break;
+	case 2:
+		PlayHUDMotionIfExists({ "anm_idle_sprint_2", "anim_idle_sprint", "anim_idle" }, true, GetState());
+		break;
 	}
 }

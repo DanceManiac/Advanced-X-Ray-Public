@@ -6,14 +6,6 @@
 class CWeaponBM16 :public CWeaponShotgun
 {
 	typedef CWeaponShotgun inherited;
-protected:
-	MotionSVec		mhud_reload1;
-	MotionSVec		mhud_shot1;
-	MotionSVec		mhud_idle1;
-	MotionSVec		mhud_idle2;
-	MotionSVec		mhud_idle_zoomed_empty;
-	MotionSVec		mhud_zoomed_idle1;
-	MotionSVec		mhud_zoomed_idle2;
 
 public:
 	virtual			~CWeaponBM16					();
@@ -22,8 +14,12 @@ public:
 protected:
 	virtual void	PlayAnimShoot					();
 	virtual void	PlayAnimReload					();
-	virtual void	PlayReloadSound					();
+	virtual void	PlayAnimShow					();
+	virtual void	PlayAnimHide					();
+	virtual void	PlayAnimIdleMoving				();
+	virtual void	PlayAnimIdleSprint				();
 	virtual void	PlayAnimIdle					();
+	virtual void	PlayReloadSound					();
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

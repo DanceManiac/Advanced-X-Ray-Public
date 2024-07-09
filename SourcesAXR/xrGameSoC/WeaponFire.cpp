@@ -4,7 +4,6 @@
 
 #include "stdafx.h"
 #include "Weapon.h"
-#include "WeaponHUD.h"
 #include "ParticlesObject.h"
 #include "HUDManager.h"
 #include "entity.h"
@@ -118,7 +117,7 @@ void CWeapon::Fire2End	()
 
 void CWeapon::StopShooting		()
 {
-	m_bPending = true;
+	SetPending(TRUE);
 
 	//принудительно останавливать зацикленные партиклы
 	if(m_pFlameParticles && m_pFlameParticles->IsLooped())

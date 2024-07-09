@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "weaponshotgun.h"
-#include "WeaponHUD.h"
 #include "entity.h"
 #include "ParticlesObject.h"
 #include "xr_level_controller.h"
@@ -31,22 +30,18 @@ void CWeaponShotgun::Load	(LPCSTR section)
 
 	// Звук и анимация для выстрела дуплетом
 	m_sounds.LoadSound(section, "snd_shoot_duplet", "sndShotBoth", false, m_eSoundShotBoth);
-	animGet	(mhud_shot_boths,	pSettings->r_string(*hud_sect,"anim_shoot_both"));
-
-	if(pSettings->line_exist(section, "tri_state_reload")){
+	
+	if (pSettings->line_exist(section, "tri_state_reload"))
+	{
 		m_bTriStateReload = !!pSettings->r_bool(section, "tri_state_reload");
 	};
-	if(m_bTriStateReload){
+
+	if (m_bTriStateReload)
+	{
 		m_sounds.LoadSound(section, "snd_open_weapon", "m_sndOpen", false, m_eSoundOpen);
-		animGet	(mhud_open,	pSettings->r_string(*hud_sect,"anim_open_weapon"));
-
 		m_sounds.LoadSound(section, "snd_add_cartridge", "m_sndAddCartridge", false, m_eSoundAddCartridge);
-		animGet	(mhud_add_cartridge,	pSettings->r_string(*hud_sect,"anim_add_cartridge"));
-
 		m_sounds.LoadSound(section, "snd_close_weapon", "m_sndClose", false, m_eSoundClose);
-		animGet	(mhud_close,	pSettings->r_string(*hud_sect,"anim_close_weapon"));
 	};
-
 }
 
 
@@ -61,7 +56,8 @@ void CWeaponShotgun::OnShot ()
 
 void CWeaponShotgun::Fire2Start () 
 {
-	if(m_bPending) return;
+	if (IsPending())
+		return;
 
 	inherited::Fire2Start();
 
@@ -113,7 +109,7 @@ void CWeaponShotgun::OnShotBoth()
 	AddShotEffector		();
 	
 	// анимация дуплета
-	m_pHUD->animPlay			(random_anim(mhud_shot_boths),FALSE,this,GetState());
+	PlayHUDMotionIfExists({"anim_shoot_both", "anm_shots_both"}, false, GetState());
 	
 	// Shell Drop
 	Fvector vel; 
@@ -151,7 +147,7 @@ void CWeaponShotgun::switch2_Fire2	()
 
 		CEntity*					E = smart_cast<CEntity*>(H_Parent());
 		if (E){
-		CInventoryOwner* io		= smart_cast<CInventoryOwner*>(H_Parent());
+		/*CInventoryOwner* io		= smart_cast<CInventoryOwner*>(H_Parent());
 			if(NULL == io->inventory().ActiveItem())
 			{
 			Log("current_state", GetState() );
@@ -159,7 +155,7 @@ void CWeaponShotgun::switch2_Fire2	()
 			Log("state_time", m_dwStateTime);
 			Log("item_sect", cNameSect().c_str());
 			Log("H_Parent", H_Parent()->cNameSect().c_str());
-			}
+			}	*/
 			E->g_fireParams		(this, p1,d);
 		}
 		
@@ -251,14 +247,14 @@ void CWeaponShotgun::TriStateReload()
 	SwitchState			(eReload);
 }
 
-void CWeaponShotgun::OnStateSwitch	(u32 S)
+void CWeaponShotgun::OnStateSwitch(u32 S, u32 oldState)
 {
 	if(!m_bTriStateReload || S != eReload){
-		inherited::OnStateSwitch(S);
+		inherited::OnStateSwitch(S, oldState);
 		return;
 	}
 
-	CWeapon::OnStateSwitch(S);
+	CWeapon::OnStateSwitch(S, oldState);
 
 	if( m_magazine.size() == (u32)iMagazineSize || !HaveCartridgeInInventory(1) ){
 			switch2_EndReload		();
@@ -285,19 +281,19 @@ void CWeaponShotgun::switch2_StartReload()
 {
 	PlaySound			("m_sndOpen", get_LastFP());
 	PlayAnimOpenWeapon	();
-	m_bPending = true;
+	SetPending(TRUE);
 }
 
 void CWeaponShotgun::switch2_AddCartgidge	()
 {
 	PlaySound	("m_sndAddCartridge", get_LastFP());
 	PlayAnimAddOneCartridgeWeapon();
-	m_bPending = true;
+	SetPending(TRUE);
 }
 
 void CWeaponShotgun::switch2_EndReload	()
 {
-	m_bPending = false;
+	SetPending(FALSE);
 	PlaySound			("m_sndClose", get_LastFP());
 	PlayAnimCloseWeapon	();
 }
@@ -305,17 +301,17 @@ void CWeaponShotgun::switch2_EndReload	()
 void CWeaponShotgun::PlayAnimOpenWeapon()
 {
 	VERIFY(GetState()==eReload);
-	m_pHUD->animPlay(random_anim(mhud_open),TRUE,this,GetState());
+	PlayHUDMotionIfExists({"anim_open_weapon", "anm_open"}, FALSE, GetState());
 }
 void CWeaponShotgun::PlayAnimAddOneCartridgeWeapon()
 {
 	VERIFY(GetState()==eReload);
-	m_pHUD->animPlay(random_anim(mhud_add_cartridge),TRUE,this,GetState());
+	PlayHUDMotionIfExists({"anim_add_cartridge", "anm_add_cartridge"}, FALSE, GetState());
 }
 void CWeaponShotgun::PlayAnimCloseWeapon()
 {
 	VERIFY(GetState()==eReload);
-	m_pHUD->animPlay(random_anim(mhud_close),TRUE,this,GetState());
+	PlayHUDMotionIfExists({"anim_close_weapon", "anm_close"}, FALSE, GetState());
 }
 
 bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)

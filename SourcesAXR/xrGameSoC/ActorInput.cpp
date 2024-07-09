@@ -28,13 +28,19 @@
 #include "Weapon.h"
 #include "Bolt.h"
 #include "Grenade.h"
+#include "player_hud.h"
+#include "HudItem.h"
 
 #include "AdvancedXrayGameConstants.h"
 
 bool g_block_actor_movement;
+extern int hud_adj_mode;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
+	if (hud_adj_mode)
+		return;
+
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
 
 	if (Remote())		return;
@@ -178,8 +184,13 @@ void CActor::IR_OnKeyboardPress(int cmd)
 }
 void CActor::IR_OnMouseWheel(int direction)
 {
-	if(inventory().Action( (direction>0)? kWPN_ZOOM_DEC:kWPN_ZOOM_INC , CMD_START)) return;
+	if (hud_adj_mode)
+	{
+		g_player_hud->tune(Ivector().set(0, 0, direction));
+		return;
+	}
 
+	if(inventory().Action( (direction>0)? kWPN_ZOOM_DEC:kWPN_ZOOM_INC , CMD_START)) return;
 
 	if (direction>0)
 		OnNextWeaponSlot				();
@@ -188,6 +199,9 @@ void CActor::IR_OnMouseWheel(int direction)
 }
 void CActor::IR_OnKeyboardRelease(int cmd)
 {
+	if (hud_adj_mode)
+		return;
+
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
 
 	if (Remote())		return;
@@ -221,6 +235,9 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 
 void CActor::IR_OnKeyboardHold(int cmd)
 {
+	if (hud_adj_mode)
+		return;
+
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
 
 	if (Remote() || !g_Alive() || g_block_actor_movement) return;
@@ -274,6 +291,16 @@ void CActor::IR_OnKeyboardHold(int cmd)
 
 void CActor::IR_OnMouseMove(int dx, int dy)
 {
+	if (hud_adj_mode)
+	{
+		g_player_hud->tune(Ivector().set(dx, dy, 0));
+		return;
+	}
+
+	PIItem iitem = inventory().ActiveItem();
+	if (iitem && iitem->cast_hud_item())
+		iitem->cast_hud_item()->ResetSubStateTime();
+
 	if (Remote())		return;
 //	if (conditions().IsSleeping())	return;
 

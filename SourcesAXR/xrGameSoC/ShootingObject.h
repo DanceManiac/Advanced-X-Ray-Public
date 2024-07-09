@@ -62,6 +62,8 @@ protected:
 	Fvector4				fvHitPower;
 	//float					fHitPower;
 	float					fHitImpulse;
+	bool					m_bForcedParticlesHudMode;
+	bool					m_bParticlesHudMode;
 
 	//скорость вылета пули из ствола
 	float					m_fStartBulletSpeed;
@@ -117,6 +119,7 @@ protected:
 	virtual const Fvector&	get_CurrentFirePoint()		= 0;
 	virtual const Fmatrix&	get_ParticlesXFORM()		= 0;
 	virtual void			ForceUpdateFireParticles	(){};
+	virtual bool			IsHudModeNow				() = 0;
 	
 	////////////////////////////////////////////////
 	//общие функции для работы с партиклами оружия

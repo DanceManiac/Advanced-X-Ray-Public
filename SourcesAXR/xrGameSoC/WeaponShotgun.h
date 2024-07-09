@@ -37,22 +37,16 @@ public:
 protected:
 	virtual void	OnAnimationEnd		(u32 state);
 	void			TriStateReload		();
-	virtual void	OnStateSwitch		(u32 S);
+	virtual void	OnStateSwitch		(u32 S, u32 oldState);
 
 	bool			HaveCartridgeInInventory(u8 cnt);
 	virtual u8		AddCartridge		(u8 cnt);
 
 	ESoundTypes		m_eSoundShotBoth;
 
-	MotionSVec		mhud_shot_boths;
-
 	ESoundTypes		m_eSoundOpen;
 	ESoundTypes		m_eSoundAddCartridge;
 	ESoundTypes		m_eSoundClose;
-	
-	MotionSVec		mhud_open;
-	MotionSVec		mhud_add_cartridge;
-	MotionSVec		mhud_close;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

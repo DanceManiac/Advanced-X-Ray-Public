@@ -19,6 +19,7 @@
 
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
+#include "HudItem.h"
 
 using namespace InventoryUtilities;
 
@@ -64,7 +65,8 @@ CInventory::CInventory()
 	m_iPrevActiveSlot							= NO_ACTIVE_SLOT;
 	m_iLoadActiveSlot							= NO_ACTIVE_SLOT;
 	m_ActivationSlotReason						= eGeneral;
-	m_pTarget									= NULL;
+	m_pTarget									= nullptr;
+	m_pOwner									= nullptr;
 
 	string256 temp;
 	for(u32 i=0; i<m_slots.size(); ++i ) 
@@ -502,8 +504,8 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 	if(	m_iActiveSlot == slot || 
 		(m_iNextActiveSlot == slot &&
 		 m_iActiveSlot != NO_ACTIVE_SLOT &&
-		 m_slots[m_iActiveSlot].m_pIItem &&
-		 m_slots[m_iActiveSlot].m_pIItem->IsHiding()
+		m_slots[m_iActiveSlot].m_pIItem->cast_hud_item() &&
+		m_slots[m_iActiveSlot].m_pIItem->cast_hud_item()->IsHiding()
 		 )
 	   )
 	{
@@ -695,8 +697,8 @@ void CInventory::Update()
 	bool bActiveSlotVisible;
 	
 	if(m_iActiveSlot == NO_ACTIVE_SLOT || 
-		!m_slots[m_iActiveSlot].m_pIItem ||
-        m_slots[m_iActiveSlot].m_pIItem->IsHidden())
+		!m_slots[m_iActiveSlot].m_pIItem->cast_hud_item() ||
+		m_slots[m_iActiveSlot].m_pIItem->cast_hud_item()->IsHidden())
 	{ 
 		bActiveSlotVisible = false;
 	}
@@ -1167,18 +1169,13 @@ bool CInventory::isBeautifulForActiveSlot	(CInventoryItem *pIItem)
 	return				(false);
 }
 
-#include "WeaponHUD.h"
 void CInventory::Items_SetCurrentEntityHud(bool current_entity)
 {
 	TIItemContainer::iterator it;
 	for(it = m_all.begin(); m_all.end() != it; ++it) 
 	{
 		PIItem pIItem = *it;
-		CHudItem* pHudItem = smart_cast<CHudItem*> (pIItem);
-		if (pHudItem) 
-		{
-			pHudItem->GetHUD()->Visible(current_entity);
-		};
+
 		CWeapon* pWeapon = smart_cast<CWeapon*>(pIItem);
 		if (pWeapon)
 		{

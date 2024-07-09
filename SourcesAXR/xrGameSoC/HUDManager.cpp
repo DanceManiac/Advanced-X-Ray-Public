@@ -8,6 +8,9 @@
 #include "GamePersistent.h"
 #include "MainMenu.h"
 
+#include "Car.h"
+#include "Spectator.h"
+
 u32	ui_hud_type;
 
 CFontManager::CFontManager()
@@ -168,6 +171,22 @@ void CHUDManager::OnFrame()
 
 ENGINE_API extern float psHUD_FOV;
 
+bool need_render_hud()
+{
+	CObject* O = (g_pGameLevel) ? g_pGameLevel->CurrentViewEntity() : nullptr;
+	if (!O)
+		return false;
+
+	CActor* A = smart_cast<CActor*>(O);
+	if (A && (!A->HUDview() || !A->g_Alive()))
+		return false;
+
+	if (smart_cast<CCar*>(O) || smart_cast<CSpectator*>(O))
+		return false;
+
+	return true;
+}
+
 void CHUDManager::Render_First()
 {
 	if ( !m_Renderable )
@@ -175,15 +194,17 @@ void CHUDManager::Render_First()
 		return;
 	}
 
-	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))return;
-	if (0==pUI)						return;
-	CObject*	O					= g_pGameLevel->CurrentViewEntity();
-	if (0==O)						return;
-	CActor*		A					= smart_cast<CActor*> (O);
-	if (!A)							return;
-	if (A && !A->HUDview())			return;
+	if (!psHUD_Flags.is(HUD_WEAPON | HUD_WEAPON_RT))
+		return;
+
+	if (pUI == nullptr)
+		return;
+
+	if (!need_render_hud())
+		return;
 
 	// only shadow 
+	CObject* O = g_pGameLevel->CurrentViewEntity();
 	::Render->set_Invisible			(TRUE);
 	::Render->set_Object			(O->H_Root());
 	O->renderable_Render			();
@@ -225,7 +246,7 @@ void CHUDManager::Render_Actor_Shadow() // added by KD
 	O->renderable_Render();
 }
 
-//#include "player_hud.h"
+#include "player_hud.h"
 bool   CHUDManager::RenderActiveItemUIQuery()
 {
 	if ( !m_Renderable )
@@ -233,18 +254,18 @@ bool   CHUDManager::RenderActiveItemUIQuery()
 		return false;
 	}
 
-	if (!psHUD_Flags.is(HUD_WEAPON|HUD_WEAPON_RT|HUD_WEAPON_RT2))return false;
-//	return (g_player_hud && g_player_hud->render_item_ui_query() );
+	if (!psHUD_Flags.is(HUD_WEAPON | HUD_WEAPON_RT))
+		return false;
+
+	if (!need_render_hud())
+		return false;
+
+	return (g_player_hud && g_player_hud->render_item_ui_query());
 }
 
 void   CHUDManager::RenderActiveItemUI()
 {
-	if ( !m_Renderable )
-	{
-		return;
-	}
-
-//	g_player_hud->render_item_ui		();
+	g_player_hud->render_item_ui();
 }
 extern ENGINE_API BOOL bShowPauseString;
 //отрисовка элементов интерфейса

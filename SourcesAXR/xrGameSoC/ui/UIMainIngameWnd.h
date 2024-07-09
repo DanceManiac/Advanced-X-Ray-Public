@@ -14,10 +14,6 @@
 #include "../hudsound.h"
 #include "../EntityCondition.h"
 
-//для режима настройки HUD
-extern int				g_bHudAdjustMode;
-extern float			g_fHudAdjustValue;
-
 class					CUIPdaMsgListItem;
 class					CLAItem;
 class					CUIZoneMap;
@@ -216,7 +212,4 @@ protected:
 	float				m_iPickUpItemIconScale;
 public:
 	void				SetPickUpItem	(CInventoryItem* PickUpItem);
-#ifdef DEBUG
-	void				draw_adjust_mode					();
-#endif
 };

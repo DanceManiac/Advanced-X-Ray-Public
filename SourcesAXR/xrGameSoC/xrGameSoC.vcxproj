@@ -596,6 +596,7 @@
     <ClInclude Include="CustomBackpack.h" />
     <ClInclude Include="opt.lua.h" />
     <ClInclude Include="opt_inline.lua.h" />
+    <ClInclude Include="player_hud.h" />
     <ClInclude Include="RepairKit.h" />
     <ClInclude Include="script_vars_storage.h" />
     <ClInclude Include="action_base.h" />
@@ -1916,7 +1917,6 @@
     <ClInclude Include="WeaponBinoculars.h" />
     <ClInclude Include="WeaponBinocularsVision.h" />
     <ClInclude Include="weaponBM16.h" />
-    <ClInclude Include="WeaponHUD.h" />
     <ClInclude Include="WeaponCustomPistol.h" />
     <ClInclude Include="WeaponFN2000.h" />
     <ClInclude Include="WeaponFORT.h" />
@@ -1994,6 +1994,8 @@
     <ClCompile Include="magic_box3.cpp" />
     <ClCompile Include="magic_minimize_1d.cpp" />
     <ClCompile Include="min_obb.cpp" />
+    <ClCompile Include="player_hud.cpp" />
+    <ClCompile Include="player_hud_tune.cpp" />
     <ClCompile Include="RepairKit.cpp" />
     <ClCompile Include="script_action_wrapper.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
@@ -5218,7 +5220,6 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="WeaponHUD.cpp" />
     <ClCompile Include="WeaponMounted.cpp" />
     <ClCompile Include="WeaponStatMgun.cpp" />
     <ClCompile Include="WeaponStatMgunFire.cpp" />

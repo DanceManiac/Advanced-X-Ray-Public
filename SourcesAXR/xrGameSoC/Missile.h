@@ -3,23 +3,20 @@
 #include "HudSound.h"
 #include "ai_sounds.h"
 
-#define MS_HIDDEN	0
-#define MS_SHOWING	1
-#define MS_IDLE		2
-#define MS_THREATEN	3
-#define MS_READY	4
-#define MS_THROW	5
-#define MS_END		6
-#define MS_EMPTY	7
-#define MS_HIDING	8
-#define MS_PLAYING	9
-
 struct dContact;
 struct SGameMtl;
 class CMissile : public CHudItemObject
 {
 	typedef CHudItemObject inherited;
 public:
+	enum EMissileStates
+	{
+		eThrowStart = eLastBaseState + 1,
+		eReady,
+		eThrow,
+		eThrowEnd,
+	};
+
 							CMissile					();
 	virtual					~CMissile					();
 
@@ -42,12 +39,10 @@ public:
 	virtual void 			OnEvent						(NET_Packet& P, u16 type);
 
 	virtual void 			OnAnimationEnd				(u32 state);
+	virtual void			OnMotionMark				(u32 state, const motion_marks& M);
 
 	virtual void 			Show();
 	virtual void 			Hide();
-	virtual bool 			IsHidden					() const {return GetState() == MS_HIDDEN;}
-	virtual bool 			IsHiding					() const {return GetState() == MS_HIDING;}
-	virtual bool 			IsShowing					() const {return GetState() == MS_SHOWING;}
 
 	virtual void 			Throw();
 	virtual void 			Destroy();
@@ -55,12 +50,12 @@ public:
 	virtual bool 			Action						(s32 cmd, u32 flags);
 
 //.	IC u32		 			State						()				{return m_state;}
-	virtual void 			State						(u32 state);
-	virtual void 			OnStateSwitch				(u32 S);
+	virtual void 			State						(u32 state, u32 oldState = 0);
+	virtual void 			OnStateSwitch				(u32 S, u32 oldState = 0);
+	virtual void			PlayAnimIdle				();
 	virtual void			GetBriefInfo				(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
 protected:
-	virtual void			UpdateFireDependencies_internal	();
 	virtual void			UpdateXForm						();
 	void					UpdatePosition					(const Fmatrix& trans);
 	void					spawn_fake_missile				();
@@ -70,7 +65,6 @@ protected:
 	virtual void			OnHiddenItem		();
 
 	//для сети
-	virtual void			StartIdleAnim		();
 	virtual void			net_Relcase			(CObject* O );
 protected:
 
@@ -83,7 +77,7 @@ protected:
 	Fvector					m_throw_direction;
 	Fmatrix					m_throw_matrix;
 
-	CMissile				*m_fake_missile;
+	CMissile*				m_fake_missile;
 
 	//параметры броска
 	
@@ -102,19 +96,10 @@ protected:
 	Fvector					m_vHudThrowPoint;
 	Fvector					m_vHudThrowDir;
 
-	//имена анимаций
-	shared_str				m_sAnimShow;
-	shared_str				m_sAnimHide;
-	shared_str				m_sAnimIdle;
-	shared_str				m_sAnimPlaying;
-	shared_str				m_sAnimThrowBegin;
-	shared_str				m_sAnimThrowIdle;
-	shared_str				m_sAnimThrowAct;
-	shared_str				m_sAnimThrowEnd;
-
 	//звук анимации "играния"
 	ESoundTypes				m_eSoundPlaying;
 
+	bool					m_throwMotionMarksAvailable;
 protected:
 			void			setup_throw_params		();
 public:

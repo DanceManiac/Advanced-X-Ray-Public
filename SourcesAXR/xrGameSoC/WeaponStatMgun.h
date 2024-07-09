@@ -73,6 +73,7 @@ protected:
 	virtual	void			FireEnd				();
 	virtual	void			UpdateFire			();
 	virtual	void			OnShot				();
+	virtual bool			IsHudModeNow		() { return false; };
 			void			AddShotEffector		();
 			void			RemoveShotEffector	();
 			void			SetDesiredDir		(float h, float p);

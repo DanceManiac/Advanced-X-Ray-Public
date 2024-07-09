@@ -24,6 +24,7 @@
 #include "CustomBackpack.h"
 #include "AdvancedXrayGameConstants.h"
 #include "ActorSkills.h"
+#include "player_hud.h"
 
 #ifdef DEBUG
 #include "phdebug.h"
@@ -145,7 +146,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 	if ((mstate_real&mcSprint) != (mstate_old&mcSprint))
 	{
 		CHudItem* pHudItem = smart_cast<CHudItem*>(inventory().ActiveItem());	
-		if (pHudItem) pHudItem->onMovementChanged(mcSprint);
+		if (pHudItem) pHudItem->OnMovementChanged(mcSprint);
 	};
 	*/
 	};
@@ -698,6 +699,11 @@ void CActor::StopAnyMove()
 {
 	mstate_wishful	&=		~mcAnyMove;
 	mstate_real		&=		~mcAnyMove;
+
+	if (this == Level().CurrentViewEntity())
+	{
+		g_player_hud->OnMovementChanged((EMoveCommand)0);
+	}
 }
 
 

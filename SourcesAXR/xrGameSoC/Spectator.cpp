@@ -288,12 +288,6 @@ void CSpectator::FirstEye_ToPlayer(CObject* pObject)
 		if (pActor)
 		{
 			pActor->inventory().Items_SetCurrentEntityHud(true);
-
-			CHudItem* pHudItem = smart_cast<CHudItem*>(pActor->inventory().ActiveItem());
-			if (pHudItem) 
-			{
-				pHudItem->OnStateSwitch(pHudItem->GetState());
-			}
 		}
 	};
 };

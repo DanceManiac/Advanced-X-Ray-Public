@@ -115,6 +115,10 @@ extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
 		int		g_keypress_on_start = 1;
+extern	int		hud_adj_mode;
+extern	int		hud_adj_item_idx;
+//extern	float	g_bHudAdjustDeltaPos;
+//extern	float	g_bHudAdjustDeltaRot;
 
 extern	BOOL	g_advanced_crosshair;
 
@@ -2206,8 +2210,10 @@ void CCC_RegisterCommands()
 	}
 
 	// adjust mode support
-	CMD4(CCC_Integer,		"hud_adjust_mode",			&g_bHudAdjustMode,			0, 5);
-	CMD4(CCC_Float,			"hud_adjust_value",			&g_fHudAdjustValue,			0.0f, 1.0f);
+	CMD4(CCC_Integer,			"hud_adjust_mode",			&hud_adj_mode,		0, 7);
+	//CMD4(CCC_Integer,			"hud_adjust_item_index",	&g_bHudAdjustItemIdx,	0, 1);
+	//CMD4(CCC_Float,				"hud_adjust_delta_value",	&g_bHudAdjustDeltaPos,	0.0005f, 1.f);
+	//CMD4(CCC_Float,				"hud_adjust_delta_rot",		&g_bHudAdjustDeltaRot,	0.0005f, 10.f);
 
 	CMD3(CCC_Mask,			"ph_corpse_collision",		&psActorFlags,				AF_COLLISION);
 	CMD3(CCC_Mask,			"g_crouch_toggle",			&psActorFlags,				AF_CROUCH_TOGGLE);

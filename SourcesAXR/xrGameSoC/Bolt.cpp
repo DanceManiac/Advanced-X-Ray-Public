@@ -57,14 +57,14 @@ void CBolt::State(u32 state)
 
 	switch (GetState())
 	{
-	case MS_THROW:
+	case eThrowStart:
 	{
 		if (!m_sounds.FindSoundItem("sndThrowStart", false) && !actor)
 			return;
 
 		PlaySound("sndThrowStart", actor->Position());
 	} break;
-	case MS_HIDDEN:
+	case eThrowEnd:
 	{
 		if (GameConstants::GetLimitedBolts() && actor && (Level().CurrentViewEntity() == H_Parent()))
 		{
@@ -80,7 +80,7 @@ void CBolt::State(u32 state)
 				DestroyObject();
 			}
 		}
-	} break;
+	}break;
 	}
 	inherited::State(state);
 }
@@ -178,10 +178,10 @@ void CBolt::OnAnimationEnd(u32 state)
 {
 	switch (state)
 	{
-	case MS_END:
+	case eThrowEnd:
 		{
 			if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
-				SwitchState(MS_HIDDEN);
+				SwitchState(eHidden);
 		} break;
 	}
 	inherited::OnAnimationEnd(state);

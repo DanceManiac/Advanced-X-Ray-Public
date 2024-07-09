@@ -5277,9 +5277,6 @@
     <ClInclude Include="weaponBM16.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\BM-16</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponHUD.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\HUD</Filter>
-    </ClInclude>
     <ClInclude Include="WeaponMounted.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Mounted Weapon</Filter>
     </ClInclude>
@@ -6720,6 +6717,9 @@
     </ClInclude>
     <ClInclude Include="SleepingBag.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClInclude>
+    <ClInclude Include="player_hud.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\HudItem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -8502,9 +8502,6 @@
     <ClCompile Include="weaponBM16_script.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\BM-16</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponHUD.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\HUD</Filter>
-    </ClCompile>
     <ClCompile Include="WeaponMounted.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Mounted Weapon</Filter>
     </ClCompile>
@@ -9988,6 +9985,12 @@
     </ClCompile>
     <ClCompile Include="SleepingBag.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\SleepingBag</Filter>
+    </ClCompile>
+    <ClCompile Include="player_hud.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\HudItem</Filter>
+    </ClCompile>
+    <ClCompile Include="player_hud_tune.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\HudItem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

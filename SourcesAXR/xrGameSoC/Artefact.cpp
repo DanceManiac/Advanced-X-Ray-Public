@@ -69,9 +69,9 @@ CArtefact::CArtefact(void)
 {
 	shedule.t_min				= 20;
 	shedule.t_max				= 50;
-	m_sParticlesName			= NULL;
-	m_pTrailLight				= NULL;
-	m_activationObj				= NULL;
+	m_sParticlesName			= nullptr;
+	m_pTrailLight				= nullptr;
+	m_activationObj				= nullptr;
 	m_additional_weight			= 0.0f;
 
 	m_bVolumetricLights			= false;
@@ -200,13 +200,6 @@ void CArtefact::Load(LPCSTR section)
 	m_HitTypeProtection[ALife::eHitTypeFireWound]		= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound);
 
 	m_bCanSpawnZone = !!pSettings->line_exist("artefact_spawn_zones", section);
-
-
-	animGet				(m_anim_idle,					pSettings->r_string(*hud_sect,"anim_idle"));
-	animGet				(m_anim_idle_sprint,			pSettings->r_string(*hud_sect,"anim_idle_sprint"));
-	animGet				(m_anim_hide,					pSettings->r_string(*hud_sect,"anim_hide"));
-	animGet				(m_anim_show,					pSettings->r_string(*hud_sect,"anim_show"));
-	animGet				(m_anim_activate,				pSettings->r_string(*hud_sect,"anim_activate"));
 }
 
 BOOL CArtefact::net_Spawn(CSE_Abstract* DC) 
@@ -611,41 +604,37 @@ bool CArtefact::Action(s32 cmd, u32 flags)
 	return inherited::Action(cmd,flags);
 }
 
-void CArtefact::onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)
+void CArtefact::OnStateSwitch(u32 S, u32 oldState)
 {
-	if( (cmd == ACTOR_DEFS::mcSprint)&&(GetState()==eIdle)  )
-		PlayAnimIdle		();
-}
-
-void CArtefact::OnStateSwitch		(u32 S)
-{
-	inherited::OnStateSwitch	(S);
-	switch(S){
-	case eShowing:
-		{
-			m_pHUD->animPlay(random_anim(m_anim_show),		FALSE, this, S);
-		}break;
-	case eHiding:
-		{
-			m_pHUD->animPlay(random_anim(m_anim_hide),		FALSE, this, S);
-		}break;
-	case eActivating:
-		{
-			m_pHUD->animPlay(random_anim(m_anim_activate),	FALSE, this, S);
-		}break;
-	case eIdle:
-		{
-			PlayAnimIdle();
-		}break;
-	};
+    inherited::OnStateSwitch(S, oldState);
+    switch (S)
+    {
+    case eShowing: {
+		PlayHUDMotionIfExists({"anim_show", "anm_show"}, false, S);
+    }
+    break;
+    case eHiding: {
+        if (oldState != eHiding)
+			PlayHUDMotionIfExists({"anim_hide", "anm_hide"}, true, S);
+    }
+    break;
+    case eActivating: {
+		PlayHUDMotionIfExists({"anim_activate", "anm_activate"}, true, S);
+    }
+    break;
+    case eIdle: {
+        PlayAnimIdle();
+    }
+    break;
+    }
 }
 
 void CArtefact::PlayAnimIdle()
 {
-	m_pHUD->animPlay(random_anim(m_anim_idle),		FALSE, NULL, eIdle);
+	PlayHUDMotionIfExists({"anim_idle", "anm_idle"}, FALSE, eIdle);
 }
 
-void CArtefact::OnAnimationEnd		(u32 state)
+void CArtefact::OnAnimationEnd(u32 state)
 {
 	switch (state)
 	{

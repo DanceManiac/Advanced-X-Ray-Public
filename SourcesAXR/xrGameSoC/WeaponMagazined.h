@@ -34,17 +34,7 @@ protected:
 	ESoundTypes		m_eSoundHide;
 	ESoundTypes		m_eSoundShot;
 	ESoundTypes		m_eSoundEmptyClick;
-	ESoundTypes		m_eSoundReload;
-	struct SWMmotions{
-		MotionSVec		mhud_idle;
-		MotionSVec		mhud_idle_aim;
-		MotionSVec		mhud_reload;	//
-		MotionSVec		mhud_hide;		//
-		MotionSVec		mhud_show;		//
-		MotionSVec		mhud_shots;		//
-		MotionSVec		mhud_idle_sprint;
-	};
-	SWMmotions			mhud;	
+	ESoundTypes		m_eSoundReload;	
 	
 	// General
 	//кадр момента пересчета UpdateSounds
@@ -66,12 +56,11 @@ protected:
 	virtual void	OnEmptyClick	();
 
 	virtual void	OnAnimationEnd	(u32 state);
-	virtual void	OnStateSwitch	(u32 S);
+	virtual void	OnStateSwitch	(u32 S, u32 oldState);
 
 	virtual void	UpdateSounds	();
 
 	bool			TryReload		();
-	bool			TryPlayAnimIdle	();
 
 protected:
 	virtual void	ReloadMagazine	();
@@ -108,7 +97,6 @@ public:
 	virtual void	InitAddons();
 
 	virtual bool	Action			(s32 cmd, u32 flags);
-	virtual void	onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
 	bool			IsAmmoAvailable	();
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
 
@@ -176,10 +164,10 @@ protected:
 	virtual void	PlayAnimHide();
 	virtual void	PlayAnimReload();
 	virtual void	PlayAnimIdle();
+	virtual void	PlayAnimAim();
 	virtual void	PlayAnimShoot();
 	virtual void	PlayReloadSound		();
 
-	virtual void	StartIdleAnim		();
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();
 

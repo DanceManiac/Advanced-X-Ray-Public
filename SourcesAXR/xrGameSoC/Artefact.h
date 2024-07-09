@@ -140,12 +140,6 @@ public:
 	int								GetCurrentAfRank() const;
 	void							SetRank(int rank);
 
-protected:
-	MotionSVec						m_anim_idle;
-	MotionSVec						m_anim_idle_sprint;
-	MotionSVec						m_anim_hide;
-	MotionSVec						m_anim_show;
-	MotionSVec						m_anim_activate;
 public:
 	enum EAFHudStates {
 		eIdle		= 0,
@@ -154,14 +148,14 @@ public:
 		eHidden,
 		eActivating,
 	};
-	virtual	void					PlayAnimIdle		();
+
 public:
 	virtual void					Hide				();
 	virtual void					Show				();
 	virtual	void					UpdateXForm			();
 	virtual bool					Action				(s32 cmd, u32 flags);
-	virtual void					onMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
-	virtual void					OnStateSwitch		(u32 S);
+	virtual	void					PlayAnimIdle		();
+	virtual void					OnStateSwitch		(u32 S, u32 oldState = 0);
 	virtual void					OnAnimationEnd		(u32 state);
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
 	virtual u16						bone_count_to_synchronize	() const;

@@ -10,7 +10,7 @@
 #include "Actor_Flags.h"
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "game_cl_single.h"
-
+#include "firedeps.h"
 
 // refs
 class CEntity;
@@ -52,7 +52,12 @@ public:
 	virtual void			shedule_Update		(u32 dt);
 
 	virtual void			renderable_Render	();
+	//virtual void			render_hud_mode		();
 	virtual void			OnDrawUI			();
+	virtual bool			need_renderable		();
+
+	virtual void			render_item_ui		();
+	virtual bool			render_item_ui_query();
 
 	virtual void			OnH_B_Chield		();
 	virtual void			OnH_A_Chield		();
@@ -94,9 +99,7 @@ protected:
 	ALife::_TIME_ID			m_dwWeaponRemoveTime;
 	ALife::_TIME_ID			m_dwWeaponIndependencyTime;
 
-//////////////////////////////////////////////////////////////////////////
-//  Animation 
-//////////////////////////////////////////////////////////////////////////
+	virtual bool			IsHudModeNow		();
 public:
 
 //	void					animGet				(MotionSVec& lst, LPCSTR prefix);
@@ -113,13 +116,9 @@ public:
 //////////////////////////////////////////////////////////////////////////
 public:
 	enum EWeaponStates {
-		eIdle		= 0,
-		eFire,
+		eFire		= eLastBaseState+1,
 		eFire2,
 		eReload,
-		eShowing,
-		eHiding,
-		eHidden,
 		eMisfire,
 		eMagEmpty,
 		eSwitch,
@@ -129,10 +128,6 @@ public:
 		eSubstateReloadInProcess,
 		eSubstateReloadEnd,
 	};
-
-	virtual bool			IsHidden			()	const		{	return GetState() == eHidden;}						// Does weapon is in hidden state
-	virtual bool			IsHiding			()	const		{	return GetState() == eHiding;}
-	virtual bool			IsShowing			()	const		{	return GetState() == eShowing;}
 
 	IC BOOL					IsValid				()	const		{	return iAmmoElapsed;						}
 	// Does weapon need's update?
@@ -287,22 +282,7 @@ public:
 	Fvector					vLoadedFirePoint2	;
 
 private:
-	//текущее положение и напрвление для партиклов
-	struct					_firedeps
-	{
-		Fmatrix				m_FireParticlesXForm;	//направление для партиклов огня и дыма
-		Fvector				vLastFP, vLastFP2	;	//огня
-		Fvector				vLastFD				;	// direction
-		Fvector				vLastSP				;	//гильз	
-
-		_firedeps()			{
-			m_FireParticlesXForm.identity();
-			vLastFP.set			(0,0,0);
-			vLastFP2.set		(0,0,0);
-			vLastFD.set			(0,0,0);
-			vLastSP.set			(0,0,0);
-		}
-	}						m_firedeps			;
+	firedeps				m_current_firedeps;
 protected:
 	virtual void			UpdateFireDependencies_internal	();
 	virtual void			UpdatePosition			(const Fmatrix& transform);	//.
@@ -312,14 +292,14 @@ protected:
 
 	virtual void			LoadFireParams		(LPCSTR section, LPCSTR prefix);
 public:	
-	IC		const Fvector&	get_LastFP				()			{ UpdateFireDependencies(); return m_firedeps.vLastFP;	}
-	IC		const Fvector&	get_LastFP2				()			{ UpdateFireDependencies(); return m_firedeps.vLastFP2;	}
-	IC		const Fvector&	get_LastFD				()			{ UpdateFireDependencies(); return m_firedeps.vLastFD;	}
-	IC		const Fvector&	get_LastSP				()			{ UpdateFireDependencies(); return m_firedeps.vLastSP;	}
+	IC		const Fvector&	get_LastFP				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastFP;	}
+	IC		const Fvector&	get_LastFP2				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastFP2;	}
+	IC		const Fvector&	get_LastFD				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastFD;	}
+	IC		const Fvector&	get_LastSP				()			{ UpdateFireDependencies(); return m_current_firedeps.vLastSP;	}
 
 	virtual const Fvector&	get_CurrentFirePoint	()			{ return get_LastFP();				}
 	virtual const Fvector&	get_CurrentFirePoint2	()			{ return get_LastFP2();				}
-	virtual const Fmatrix&	get_ParticlesXFORM		()			{ UpdateFireDependencies(); return m_firedeps.m_FireParticlesXForm;	}
+	virtual const Fmatrix&	get_ParticlesXFORM		()			{ UpdateFireDependencies(); return m_current_firedeps.m_FireParticlesXForm;	}
 	virtual void			ForceUpdateFireParticles();
 
 	//////////////////////////////////////////////////////////////////////////
@@ -327,6 +307,10 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 protected:
 	virtual void			SetDefaults			();
+
+	virtual bool			MovingAnimAllowedNow	();
+	virtual void			OnStateSwitch			(u32 S, u32 oldState = 0);
+	virtual void			OnAnimationEnd			(u32 state);
 
 	//трассирование полета пули
 			void			FireTrace			(const Fvector& P, const Fvector& D);
