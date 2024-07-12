@@ -27,7 +27,7 @@ struct player_hud_motion_container
 {
 	xr_vector<player_hud_motion>	m_anims;
 	player_hud_motion*				find_motion(const shared_str& name);
-	void		load				(IKinematicsAnimated* model, const shared_str& sect);
+	void		load				(IKinematicsAnimated* model, const shared_str& sect, bool has_separated_hands = false, IKinematicsAnimated* animatedHudItem = nullptr);
 };
 
 struct hud_item_measures
@@ -56,6 +56,7 @@ struct attachable_hud_item
 	player_hud*						m_parent;
 	CHudItem*						m_parent_hud_item;
 	shared_str						m_sect_name;
+	shared_str						m_visual_name;
 	IKinematics*					m_model;
 	u16								m_attach_place_idx;
 	hud_item_measures				m_measures;
@@ -65,6 +66,8 @@ struct attachable_hud_item
 	Fmatrix							m_item_transform;
 
 	player_hud_motion_container		m_hand_motions;
+
+	bool							m_has_separated_hands{};
 			
 			attachable_hud_item		(player_hud* pparent):m_parent(pparent),m_upd_firedeps_frame(u32(-1)),m_parent_hud_item(NULL){}
 			~attachable_hud_item	();
@@ -105,7 +108,7 @@ public:
 	void			render_hud			();	
 	void			render_item_ui		();
 	bool			render_item_ui_query();
-	u32				anim_play			(u16 part, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed);
+	u32				anim_play			(u16 part, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed, bool hasHands, IKinematicsAnimated* itemModel);
 	const shared_str& section_name		() const {return m_sect_name;}
 
 	attachable_hud_item* create_hud_item(const shared_str& sect);
@@ -119,9 +122,11 @@ public:
 
 	void			calc_transform		(u16 attach_slot_idx, const Fmatrix& offset, Fmatrix& result);
 	void			tune				(Ivector values);
-	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed);
+	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed, IKinematicsAnimated* itemModel);
 	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
-	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd)	;
+	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
+
+	IKinematicsAnimated* Model			() { return m_model; }
 private:
 	void			update_inertion		(Fmatrix& trans);
 	void			update_additional	(Fmatrix& trans);

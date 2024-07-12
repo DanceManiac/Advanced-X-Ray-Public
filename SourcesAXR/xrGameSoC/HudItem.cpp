@@ -212,7 +212,7 @@ void CHudItem::PlayAnimBore()
 	else if (IsMagazineEmpty())
 		PlayHUDMotionIfExists({ "anm_bore_empty", "anm_bore" }, true, GetState());
 	else
-		PlayHUDMotion("anm_bore", TRUE, this, GetState());
+		PlayHUDMotionIfExists({ "anim_bore", "anm_bore" }, true, GetState());
 }
 
 bool CHudItem::Activate() 
@@ -397,7 +397,7 @@ bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
 	{
 		string256 anim_name_r;
 		bool is_16x9 = UI().is_widescreen();
-		u16 attach_place_idx = pSettings->r_u16(HudItemData()->m_sect_name, "attach_place_idx");
+		u16 attach_place_idx = HudItemData()->m_attach_place_idx;
 		xr_sprintf(anim_name_r, "%s%s", anim_name, (attach_place_idx == 1 && is_16x9) ? "_16x9" : "");
 		player_hud_motion* anm = HudItemData()->m_hand_motions.find_motion(anim_name_r);
 		if (anm)
@@ -485,7 +485,7 @@ void CHudItem::PlayAnimIdle()
 	else if (IsMagazineEmpty())
 		PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle" }, true, GetState());
 	else
-		PlayHUDMotion("anm_idle", TRUE, NULL, GetState());
+		PlayHUDMotionIfExists({ "anim_idle", "anm_idle" }, true, GetState());
 }
 
 bool CHudItem::TryPlayAnimIdle()
@@ -550,47 +550,47 @@ bool CHudItem::NeedBlendAnm()
 void CHudItem::PlayAnimIdleMoving()
 {
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_idle_moving_jammed", "anm_idle_moving", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_jammed", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 	else
-		PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle"}, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 }
 
 void CHudItem::PlayAnimIdleMovingSlow()
 {
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 	else if (IsMagazineEmpty())
-		PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty", "anm_idle_moving_slow", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 	else
-		PlayHUDMotionIfExists({ "anm_idle_moving_slow", "anm_idle_moving", "anm_idle"}, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_slow", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 }
 
 void CHudItem::PlayAnimIdleMovingCrouch()
 {
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 	else if (IsMagazineEmpty())
-		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 	else
-		PlayHUDMotionIfExists({ "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle"}, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 }
 
 void CHudItem::PlayAnimIdleMovingCrouchSlow()
 {
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 	else if (IsMagazineEmpty())
-		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty", "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 	else
-		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle"}, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow", "anm_idle_moving_crouch", "anm_idle_moving", "anm_idle", "anim_idle" }, true, GetState());
 }
 
 void CHudItem::PlayAnimIdleSprint()
 {
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_idle_sprint_jammed", "anm_idle_sprint", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_sprint_jammed", "anim_idle_sprint", "anm_idle_sprint", "anm_idle", "anim_idle" }, true, GetState());
 	else
-		PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle"}, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_sprint", "anm_idle", "anim_idle_sprint", "anim_idle" }, true, GetState());
 }
 
 void CHudItem::PlayAnimSprintStart()

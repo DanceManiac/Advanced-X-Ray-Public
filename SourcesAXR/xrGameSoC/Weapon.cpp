@@ -235,7 +235,8 @@ void CWeapon::UpdateFireDependencies_internal()
 		{
 			HudItemData()->setup_firedeps		(m_current_firedeps);
 			VERIFY(_valid(m_current_firedeps.m_FireParticlesXForm));
-		} else 
+		}
+		else 
 		{
 			// 3rd person or no parent
 			Fmatrix& parent			= XFORM();
@@ -543,32 +544,6 @@ void CWeapon::LoadFireParams		(LPCSTR section, LPCSTR prefix)
 
 	CShootingObject::LoadFireParams(section, prefix);
 };
-
-void CWeapon::LoadZoomOffset (LPCSTR section, LPCSTR prefix)
-{
-	/*string256 full_name;
-	m_pHUD->SetZoomOffset(pSettings->r_fvector3	(hud_sect, strconcat(sizeof(full_name),full_name, prefix, "zoom_offset")));
-	m_pHUD->SetZoomRotateX(pSettings->r_float	(hud_sect, strconcat(sizeof(full_name),full_name, prefix, "zoom_rotate_x")));
-	m_pHUD->SetZoomRotateY(pSettings->r_float	(hud_sect, strconcat(sizeof(full_name),full_name, prefix, "zoom_rotate_y")));
-
-	if(pSettings->line_exist(hud_sect, "zoom_rotate_time"))
-		m_fZoomRotateTime = pSettings->r_float(hud_sect,"zoom_rotate_time");*/
-}
-/*
-void CWeapon::animGet	(MotionSVec& lst, LPCSTR prefix)
-{
-	const MotionID		&M = m_pHUD->animGet(prefix);
-	if (M)				lst.push_back(M);
-	for (int i=0; i<MAX_ANIM_COUNT; ++i)
-	{
-		string128		sh_anim;
-		sprintf_s			(sh_anim,"%s%d",prefix,i);
-		const MotionID	&M = m_pHUD->animGet(sh_anim);
-		if (M)			lst.push_back(M);
-	}
-	R_ASSERT2			(!lst.empty(),prefix);
-}
-*/
 
 BOOL CWeapon::net_Spawn		(CSE_Abstract* DC)
 {
@@ -1589,7 +1564,7 @@ bool CWeapon::ready_to_kill	() const
 }
 
 
-void CWeapon::UpdateHudAdditonal		(Fmatrix& trans)
+void CWeapon::UpdateHudAdditional(Fmatrix& trans)
 {
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
 	if(!pActor)		return;
@@ -1700,6 +1675,20 @@ void CWeapon::OnDrawUI()
 //			m_UILens.Draw();
 		}
 	}
+}
+
+u8 CWeapon::GetCurrentHudOffsetIdx()
+{
+	CActor* pActor = smart_cast<CActor*>(H_Parent());
+	if (!pActor)		return 0;
+
+	bool b_aiming = ((IsZoomed() && m_fZoomRotationFactor <= 1.f) ||
+		(!IsZoomed() && m_fZoomRotationFactor > 0.f));
+
+	if (!b_aiming)
+		return 0;
+	else
+		return 1;
 }
 
 bool CWeapon::MovingAnimAllowedNow()

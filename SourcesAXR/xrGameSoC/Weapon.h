@@ -101,8 +101,6 @@ protected:
 
 	virtual bool			IsHudModeNow		();
 public:
-
-//	void					animGet				(MotionSVec& lst, LPCSTR prefix);
 	void					signal_HideComplete	();
 
 //////////////////////////////////////////////////////////////////////////
@@ -244,7 +242,7 @@ public:
 	//показывает, что оружие находится в соостоянии поворота для приближенного прицеливания
 			bool			IsRotatingToZoom	() const		{	return (m_fZoomRotationFactor<1.f);}
 
-			void			LoadZoomOffset		(LPCSTR section, LPCSTR prefix);
+	virtual	u8				GetCurrentHudOffsetIdx();
 
 	virtual float			Weight				() const;
 	virtual	u32				Cost				() const;
@@ -287,7 +285,7 @@ protected:
 	virtual void			UpdateFireDependencies_internal	();
 	virtual void			UpdatePosition			(const Fmatrix& transform);	//.
 	virtual void			UpdateXForm				();
-	virtual void			UpdateHudAdditonal		(Fmatrix&);
+	virtual void			UpdateHudAdditional		(Fmatrix&);
 	IC		void			UpdateFireDependencies	()			{ if (dwFP_Frame==Device.dwFrame) return; UpdateFireDependencies_internal(); };
 
 	virtual void			LoadFireParams		(LPCSTR section, LPCSTR prefix);
