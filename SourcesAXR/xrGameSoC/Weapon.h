@@ -480,7 +480,7 @@ public:
 			bool			show_crosshair				();
 			bool			show_indicators				();
 	virtual BOOL			ParentMayHaveAimBullet		();
-	virtual BOOL			ParentIsActor				();
+	virtual bool			ParentIsActor				();
 
 private:
 	float					m_hit_probability[egdCount];

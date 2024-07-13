@@ -191,65 +191,36 @@ void CHelmet::OnH_A_Chield()
 
 void CHelmet::UpdateFilterCondition(void)
 {
-	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
-	CHelmet* helmet2 = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+	if (!ParentIsActor() || ParentIsActor() && m_ItemCurrPlace.type != eItemPlaceSlot)
+		return;
 
-	if ((helmet && helmet->m_bUseFilter) || (helmet2 && helmet2->m_bUseFilter))
+	if (m_bUseFilter)
 	{
 		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
 		float m_chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
 
-		if (helmet)
-		{
 			float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 
-			helmet->m_fFilterCondition -= uncharge_coef;
-			clamp(helmet->m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
+			m_fFilterCondition -= uncharge_coef;
+			clamp(m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
 
-			float condition = 1.f * helmet->m_fFilterCondition;
-			float percent = helmet->m_fFilterCondition * 100;
+			float condition = 1.f * m_fFilterCondition;
+			float percent = m_fFilterCondition * 100;
 
 			if (percent > 20.0f)
 			{
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
+				if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+					m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
+				if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+					m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
 			}
 			else
 			{
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
-				if (!fis_zero(helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
+				if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
+					m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
+				if (!fis_zero(m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
+					m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
 			}
-		}
-
-		if (helmet2)
-		{
-			float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
-
-			helmet2->m_fFilterCondition -= uncharge_coef;
-			clamp(helmet2->m_fFilterCondition, 0.0f, m_fMaxFilterCondition);
-
-			float condition = 1.f * helmet2->m_fFilterCondition;
-			float percent = helmet2->m_fFilterCondition * 100;
-
-			if (percent > 20.0f)
-			{
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * percent;
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * percent;
-			}
-			else
-			{
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeRadiation]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeRadiation] = (m_ConstHitTypeProtection[ALife::eHitTypeRadiation] / 100) * 20.0f;
-				if (!fis_zero(helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn]) && !fis_zero(m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]))
-					helmet2->m_HitTypeProtection[ALife::eHitTypeChemicalBurn] = (m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn] / 100) * 20.0f;
-			}
-		}
 	}
 }
 

@@ -1679,8 +1679,8 @@ void CWeapon::OnDrawUI()
 
 u8 CWeapon::GetCurrentHudOffsetIdx()
 {
-	CActor* pActor = smart_cast<CActor*>(H_Parent());
-	if (!pActor)		return 0;
+	if (!ParentIsActor())
+		return 0;
 
 	bool b_aiming = ((IsZoomed() && m_fZoomRotationFactor <= 1.f) ||
 		(!IsZoomed() && m_fZoomRotationFactor > 0.f));
@@ -1820,7 +1820,7 @@ BOOL CWeapon::ParentMayHaveAimBullet	()
 	return EA->cast_actor()!=0;
 }
 
-BOOL CWeapon::ParentIsActor	()
+bool CWeapon::ParentIsActor	()
 {
 	CObject* O=H_Parent();
 	CEntityAlive* EA=smart_cast<CEntityAlive*>(O);

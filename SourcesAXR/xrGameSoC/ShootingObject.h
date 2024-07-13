@@ -52,7 +52,7 @@ protected:
 public:
 	IC BOOL					IsWorking			()	const	{return bWorking;}
 	virtual BOOL			ParentMayHaveAimBullet()		{return FALSE;}
-	virtual BOOL			ParentIsActor()					{return FALSE;}
+	virtual bool			ParentIsActor()					{return false;}
 
 protected:
 	// Weapon fires now

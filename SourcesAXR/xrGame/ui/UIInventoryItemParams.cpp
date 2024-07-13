@@ -426,7 +426,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 			for (auto artefact_ptr : artefacts_inside)
 				af_sections_inside.emplace_back(artefact_ptr->cNameSect(), artefact_ptr->ID());
 
-			for (int i = 0; i < artefacts_inside.size(); ++i)
+			for (u32 i = 0; i < artefacts_inside.size(); ++i)
 			{
 				m_textArtefacts[i]->Show((GameConstants::GetArtefactsDegradation() || GameConstants::GetAfRanks()) && artefacts_inside[i]->ID() == af_sections_inside[i].second);
 				m_stArtefacts[i]->Show(artefacts_inside[i]->ID() == af_sections_inside[i].second);

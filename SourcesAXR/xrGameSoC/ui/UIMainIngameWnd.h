@@ -165,7 +165,9 @@ public:
 	// ≈нум перечислени€ возможных мигающих иконок
 	enum EFlashingIcons
 	{
-		efiPdaTask	= 0,
+		efiPdaTask = 0,
+		efiEncyclopedia = 1,
+		efiJournal = 2,
 		efiMail
 	};
 	

@@ -270,7 +270,7 @@ public:
 	u16							object_id					() const;
 	u16							parent_id					() const;
 	virtual void				on_activate_physic_shell	() { R_ASSERT2(0, "failed call of virtual function!"); }
-
+	virtual bool				ParentIsActor				();
 protected:
 	float						m_holder_range_modifier;
 	float						m_holder_fov_modifier;

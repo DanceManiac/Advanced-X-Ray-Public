@@ -3529,8 +3529,8 @@ void CWeapon::OnAnimationEnd(u32 state)
 
 u8 CWeapon::GetCurrentHudOffsetIdx()
 {
-	CActor* pActor	= smart_cast<CActor*>(H_Parent());
-	if(!pActor)		return 0;
+	if (!ParentIsActor())
+		return 0;
 	
 	bool b_aiming		= 	((IsZoomed() && m_zoom_params.m_fZoomRotationFactor<=1.f) ||
 							(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor>0.f));

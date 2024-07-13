@@ -1317,3 +1317,16 @@ u16 CInventoryItem::bone_count_to_synchronize	() const
 {
 	return 0;
 }
+
+bool CInventoryItem::ParentIsActor()
+{
+	CObject* O = object().H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return EA->cast_actor() != nullptr;
+}

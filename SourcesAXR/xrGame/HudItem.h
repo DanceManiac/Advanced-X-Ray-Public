@@ -160,7 +160,7 @@ public:
 	virtual bool				render_item_3d_ui_query	()					{return false;}
 
 	virtual bool				CheckCompatibility		(CHudItem*)			{return true;}
-	virtual BOOL				ParentIsActor			();
+	virtual bool				ParentIsActor			();
 			void				ReplaceHudSection		(LPCSTR hud_section);
 protected:
 

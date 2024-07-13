@@ -713,7 +713,7 @@ attachable_hud_item* CHudItem::HudItemData()
 	return NULL;
 }
 
-BOOL CHudItem::ParentIsActor()
+bool CHudItem::ParentIsActor()
 {
 	CObject* O = object().H_Parent();
 	if (!O)
@@ -723,7 +723,7 @@ BOOL CHudItem::ParentIsActor()
 	if (!EA)
 		return false;
 
-	return !!EA->cast_actor();
+	return EA->cast_actor() != nullptr;
 }
 
 void CHudItem::ReplaceHudSection(LPCSTR hud_section)

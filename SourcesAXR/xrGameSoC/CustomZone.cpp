@@ -328,6 +328,9 @@ BOOL CCustomZone::net_Spawn(CSE_Abstract* DC)
 	if (!inherited::net_Spawn(DC))
 		return					(FALSE);
 
+	if (m_actor_effector)
+		m_actor_effector->SetRadius(CFORM()->getSphere().R);
+
 	CSE_Abstract				*e = (CSE_Abstract*)(DC);
 	CSE_ALifeCustomZone			*Z = smart_cast<CSE_ALifeCustomZone*>(e);
 	VERIFY						(Z);
