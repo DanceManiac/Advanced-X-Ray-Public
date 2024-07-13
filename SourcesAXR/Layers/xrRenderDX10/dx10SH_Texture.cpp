@@ -148,6 +148,9 @@ void CTexture::surface_null()
 
 ID3DBaseTexture*	CTexture::surface_get	()
 {
+	if (!this)
+		return nullptr;
+
 	if (flags.bLoadedAsStaging)
 		ProcessStaging();
 

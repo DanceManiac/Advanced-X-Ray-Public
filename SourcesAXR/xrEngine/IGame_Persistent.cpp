@@ -205,7 +205,7 @@ void IGame_Persistent::OnFrame		()
 {
 #ifndef _EDITOR
 
-    if (!Device.Paused() || Device.dwPrecacheFrame)
+    if (pEnvironment && (!Device.Paused() || Device.dwPrecacheFrame))
     {
         Environment().OnFrame();
         UpdateHudRaindrops();
@@ -692,4 +692,15 @@ float IGame_Persistent::GrassBenderToValue(float& current, float go_to, float in
     }
 
     return current < go_to ? r_value : -r_value;
+}
+
+void IGame_Persistent::DestroyEnvironment()
+{
+    Environment().unload();
+}
+
+void IGame_Persistent::CreateEnvironment()
+{
+    Environment().load();
+    Environment().bNeed_re_create_env = TRUE;
 }

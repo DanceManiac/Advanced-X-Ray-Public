@@ -61,6 +61,9 @@ void					CTexture::surface_set	(ID3DBaseTexture* surf )
 
 ID3DBaseTexture*	CTexture::surface_get	()
 {
+	if (!this)
+		return nullptr;
+
 	if (pSurface)		pSurface->AddRef	();
 	return pSurface;
 }

@@ -53,6 +53,8 @@
 #	include "game_graph.h"
 #endif // DEBUG
 
+#include "../../xrNetServer/NET_AuthCheck.h"
+
 #include "HUDManager.h"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "InfoPortion.h"
@@ -1933,6 +1935,101 @@ public:
 	}
 };
 
+struct path_excluder_predicate
+{
+	explicit path_excluder_predicate(xr_auth_strings_t const* ignore) :
+		m_ignore(ignore)
+	{
+	}
+	bool xr_stdcall is_allow_include(LPCSTR path)
+	{
+		if (!m_ignore)
+			return true;
+
+		return allow_to_include_path(*m_ignore, path);
+	}
+	xr_auth_strings_t const* m_ignore;
+};
+
+
+class CCC_ReloadWeather : public IConsole_Command
+{
+public:
+	CCC_ReloadWeather(LPCSTR N) : IConsole_Command(N)
+	{
+		bEmptyArgsHandled = true;
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		if (!g_pGamePersistent->Environment().GetWeather().size())
+		{
+			Log("CCC_ReloadWeather error: No weather in game!");
+			return;
+		}
+
+		g_pGamePersistent->DestroyEnvironment();
+
+		Msg("CCC_ReloadWeather: Environment destroyed");
+		Msg("CCC_ReloadWeather: Start to destroy configs");
+		CInifile** s = (CInifile**)(&pSettings);
+		xr_delete(*s);
+		xr_delete(pGameIni);
+		Msg("CCC_ReloadWeather: Start to rescan configs");
+		FS.get_path("$game_config$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
+		FS.get_path("$game_scripts$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
+		FS.rescan_pathes();
+
+		Msg("CCC_ReloadWeather: Start to create configs");
+		string_path					fname;
+		FS.update_path(fname, "$game_config$", "system.ltx");
+		Msg("CCC_ReloadWeather: Updated path to system.ltx is %s", fname);
+
+		pSettings = xr_new<CInifile>(fname, TRUE);
+		CHECK_OR_EXIT(0 != pSettings->section_count(), make_string("CCC_ReloadWeather: Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+
+		xr_auth_strings_t			tmp_ignore_pathes;
+		xr_auth_strings_t			tmp_check_pathes;
+		fill_auth_check_params(tmp_ignore_pathes, tmp_check_pathes);
+
+		path_excluder_predicate			tmp_excluder(&tmp_ignore_pathes);
+		CInifile::allow_include_func_t	tmp_functor;
+		tmp_functor.bind(&tmp_excluder, &path_excluder_predicate::is_allow_include);
+		pSettingsAuth = xr_new<CInifile>(
+			fname,
+			TRUE,
+			TRUE,
+			FALSE,
+			0,
+			tmp_functor
+			);
+
+		FS.update_path(fname, "$game_config$", "game.ltx");
+		pGameIni = xr_new<CInifile>(fname, TRUE);
+		CHECK_OR_EXIT(0 != pGameIni->section_count(), make_string("CCC_ReloadWeather: Cannot find file %s.\nReinstalling application may fix this problem.", fname));
+
+		Msg("CCC_ReloadWeather: Create environment");
+		g_pGamePersistent->CreateEnvironment();
+
+		Msg("CCC_ReloadWeather: Call level_weathers.restart_weather_manager");
+		luabind::functor<void>	lua_function;
+		string256		fn;
+		xr_strcpy(fn, "level_weathers.restart_weather_manager");
+		if (ai().script_engine().functor<void>(fn, lua_function))
+			lua_function();
+		else
+			Msg("CCC_ReloadWeather: Can't find function %s", fn);
+
+		Msg("CCC_ReloadWeather: Reload weather done!");
+	}
+};
+
 void CCC_RegisterCommands()
 {
 	// options
@@ -2198,6 +2295,7 @@ void CCC_RegisterCommands()
 		CMD1(CCC_KillEntity,	"kill");
 		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
 		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
+		CMD1(CCC_ReloadWeather, "reload_weather");
 		CMD3(CCC_Mask,			"g_god",					&psActorFlags,				AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",			&psActorFlags,				AF_UNLIMITEDAMMO);
 		CMD1(CCC_SetWeather,	"set_weather");

@@ -119,6 +119,10 @@ public:
 	CEnvironment&					Environment()	{return *pEnvironment;};
 	void							Prefetch			( );
 #endif
+
+	void							DestroyEnvironment	();
+	void							CreateEnvironment	();
+
 	IMainMenu*						m_pMainMenu;
 
 	ShadersExternalData*			m_pGShaderConstants; //--#SM+#--
