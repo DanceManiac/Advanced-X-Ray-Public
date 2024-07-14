@@ -111,6 +111,8 @@ public:
 	virtual void				load				(IReader &input_packet);
 	virtual BOOL				net_SaveRelevant	()								{return TRUE;}
 
+	virtual void				render_item_ui		() {}; //when in slot & query return TRUE
+	virtual bool				render_item_ui_query() { return false; }; //when in slot
 
 	virtual void				UpdateCL			();
 

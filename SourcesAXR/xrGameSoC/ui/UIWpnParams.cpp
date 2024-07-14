@@ -88,6 +88,13 @@ void CUIWpnParams::SetInfo(const shared_str& wpn_section)
 	else
 		m_progressDamage.SetProgressPos	(g_lua_wpn_params->m_functorDamageMP(*wpn_section));
 	m_progressHandling.SetProgressPos	(g_lua_wpn_params->m_functorHandling(*wpn_section));
+
+	const bool showAmmo = READ_IF_EXISTS(pSettings, r_bool, wpn_section, "show_ammo", true);
+
+	m_progressRPM.Show(showAmmo);
+	m_progressAccuracy.Show(showAmmo);
+	m_textAccuracy.Show(showAmmo);
+	m_textRPM.Show(showAmmo);
 }
 
 bool CUIWpnParams::Check(const shared_str& wpn_section){

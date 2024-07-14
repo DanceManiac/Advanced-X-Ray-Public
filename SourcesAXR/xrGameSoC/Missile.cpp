@@ -657,19 +657,22 @@ u32	CMissile::ef_weapon_type		() const
 	return	(m_ef_weapon_type);
 }
 
-
-void CMissile::OnDrawUI()
+bool CMissile::render_item_ui_query()
 {
-	if (GetState() == eReady && !m_throw)
-	{
-		CActor	*actor = smart_cast<CActor*>(H_Parent());
-		if (actor) {
-			if(!g_MissileForceShape) create_force_progress();
-			float k = (m_fThrowForce-m_fMinForce)/(m_fMaxForce-m_fMinForce);
-			g_MissileForceShape->SetPos	(k);
-			g_MissileForceShape->Draw	();
-		}
-	}	
+	bool b_is_active_item = m_pCurrentInventory->ActiveItem() == this;
+	return b_is_active_item && (GetState() == eReady) && !m_throw && smart_cast<CActor*>(H_Parent());
+}
+
+void CMissile::render_item_ui()
+{
+	CActor* actor = smart_cast<CActor*>(H_Parent());
+	R_ASSERT(actor);
+
+	if (!g_MissileForceShape)
+		create_force_progress();
+	float k = (m_fThrowForce - m_fMinForce) / (m_fMaxForce - m_fMinForce);
+	g_MissileForceShape->SetPos(k);
+	g_MissileForceShape->Draw();
 }
 
 void	 CMissile::ExitContactCallback(bool& do_colide, bool bo1, dContact& c, SGameMtl* material_1, SGameMtl* material_2)

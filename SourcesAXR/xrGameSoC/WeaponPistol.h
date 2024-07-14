@@ -8,28 +8,13 @@ class CWeaponPistol :
 public:
 	CWeaponPistol	(LPCSTR name);
 	virtual ~CWeaponPistol(void);
-
-	virtual void	Load			(LPCSTR section);
 	
 	virtual void	switch2_Reload	();
 
-	virtual void	OnShot			();
 	virtual void	OnAnimationEnd	(u32 state);
 	virtual void	net_Destroy		();
 	virtual void	OnH_B_Chield	();
 
-	//анимации
-	virtual void	PlayAnimShow	() override;
-	//virtual void	PlayAnimBore	() override;
-	virtual void	PlayAnimIdleSprint() override;
-	virtual void	PlayAnimIdleMoving() override;
-	virtual void	PlayAnimIdle	() override;
-	virtual void	PlayAnimAim		() override;
-	virtual void	PlayAnimHide	() override;
-	virtual void	PlayAnimReload	() override;
-	virtual void	PlayAnimShoot	() override;
-
-	virtual void	UpdateSounds	();
 protected:	
 	virtual bool	AllowFireWhileWorking() {return true;}
 

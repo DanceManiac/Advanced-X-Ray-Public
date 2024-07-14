@@ -90,6 +90,8 @@ enum	EGameActions
 	kQUICK_SAVE,
 	kQUICK_LOAD,
 
+	kWPN_NV_CHANGE,
+
 	kLASTACTION,
 	kNOTBINDED,
 	kFORCEDWORD		= u32(-1)

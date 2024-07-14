@@ -44,7 +44,6 @@ public:
 	IC		void			ResetSubStateTime	()					{m_dw_curr_substate_time=Device.dwTimeGlobal;}
 	virtual void			SwitchState			(u32 S)				= 0;
 	virtual void			OnStateSwitch		(u32 S, u32 oldState = 0) = 0;
-	virtual void			OnDrawUI			()					{};
 };
 
 class CHudItem :public CHUDState

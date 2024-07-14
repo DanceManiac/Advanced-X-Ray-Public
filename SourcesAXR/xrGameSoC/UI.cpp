@@ -94,8 +94,9 @@ bool CUI::Render()
 		if(pActor)
 		{
 			PIItem item		=  pActor->inventory().ActiveItem();
-			if(item && pActor->HUDview() && smart_cast<CHudItem*>(item))
-				(smart_cast<CHudItem*>(item))->OnDrawUI();
+
+			if (item && item->render_item_ui_query())
+				item->render_item_ui();
 		}
 
 		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())

@@ -26,6 +26,11 @@ public:
 	virtual void	save				(NET_Packet &output_packet);
 	virtual void	load				(IReader &input_packet);
 
+	virtual	bool    bMarkCanShow		() { return IsZoomed() && !m_bGrenadeMode; }
+	virtual void	UpdateSecondVP		(bool bInGrenade = false);
+	virtual	bool	bInZoomRightNow		() const { return (m_fZoomRotationFactor > 0.05) && !m_bGrenadeMode; }
+	virtual void    CheckMagazine		();
+	//=========================================
 
 	virtual bool	Attach(PIItem pIItem, bool b_send_event);
 	virtual bool	Detach(const char* item_section_name, bool b_spawn_item);
@@ -40,6 +45,7 @@ public:
 	
 	virtual void	switch2_Idle	();
 	virtual void	switch2_Reload	();
+	virtual void    switch2_Unmis	();
 	virtual void	state_Fire		(float dt);
 	virtual void	OnShot			();
 	virtual void	SwitchState		(u32 S);

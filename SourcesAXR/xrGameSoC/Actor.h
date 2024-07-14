@@ -391,6 +391,9 @@ protected:
 	// или предметами
 	///////////////////////////////////////////
 public:
+	float					fFPCamYawMagnitude;			//--#SM+#--
+	float					fFPCamPitchMagnitude;		//--#SM+#--
+
 	virtual void			feel_touch_new				(CObject* O);
 	virtual void			feel_touch_delete			(CObject* O);
 	virtual BOOL			feel_touch_contact			(CObject* O);
@@ -462,6 +465,7 @@ public:
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
 
 	bool					is_jump					();		
+	u32						MovingState				() const { return mstate_real; }
 
 	float					m_dropsIntensity{};
 	float					m_dropsAnimIncrementor{};

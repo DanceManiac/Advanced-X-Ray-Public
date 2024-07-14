@@ -695,10 +695,10 @@ bool CInventory::Action(s32 cmd, u32 flags)
 void CInventory::Update() 
 {
 	bool bActiveSlotVisible;
-	
+#pragma todo("DANCE MANIAC: Add [m_slots[m_iActiveSlot].m_pIItem &&] for fix crash.");
 	if(m_iActiveSlot == NO_ACTIVE_SLOT || 
-		!m_slots[m_iActiveSlot].m_pIItem->cast_hud_item() ||
-		m_slots[m_iActiveSlot].m_pIItem->cast_hud_item()->IsHidden())
+		m_slots[m_iActiveSlot].m_pIItem && !m_slots[m_iActiveSlot].m_pIItem->cast_hud_item() ||
+		m_slots[m_iActiveSlot].m_pIItem && m_slots[m_iActiveSlot].m_pIItem->cast_hud_item()->IsHidden())
 	{ 
 		bActiveSlotVisible = false;
 	}

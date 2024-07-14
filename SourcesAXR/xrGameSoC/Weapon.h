@@ -11,6 +11,7 @@
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "game_cl_single.h"
 #include "firedeps.h"
+#include "ui\UIWindow.h"
 
 // refs
 class CEntity;
@@ -19,7 +20,7 @@ class CSE_ALifeItemWeapon;
 class CSE_ALifeItemWeaponAmmo;
 class CWeaponMagazined;
 class CParticlesObject;
-class CUIStaticItem;
+class CUIWindow;
 
 class CWeapon : public CHudItemObject,
 				public CShootingObject
@@ -30,6 +31,38 @@ private:
 public:
 							CWeapon				(LPCSTR name);
 	virtual					~CWeapon			();
+
+	bool					bUseAltScope;
+	bool					bScopeIsHasTexture;
+	bool					bNVsecondVPavaible;
+	bool					bNVsecondVPstatus;
+
+	virtual	bool			bInZoomRightNow() const { return m_fZoomRotationFactor > 0.05; }
+	IC		bool			bIsSecondVPZoomPresent() const { return GetSecondVPZoomFactor() > 0.000f; }
+	bool					bLoadAltScopesParams(LPCSTR section);
+	bool					bChangeNVSecondVPStatus();
+	virtual	bool            bMarkCanShow() { return IsZoomed(); }
+
+
+	virtual void			UpdateSecondVP(bool bInGrenade = false);
+	void					Load3DScopeParams(LPCSTR section);
+	void					LoadOriginalScopesParams(LPCSTR section);
+	void					LoadCurrentScopeParams(LPCSTR section);
+	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
+	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
+	void					UpdateAltScope();
+
+	virtual float			GetControlInertionFactor() const;
+	IC		float			GetZRotatingFactor()    const { return m_fZoomRotationFactor; }
+	IC		float			GetSecondVPZoomFactor() const { return m_fSecondVPFovFactor; }
+	float					GetSecondVPFov() const;
+
+	shared_str				GetNameWithAttachment();
+
+
+	float					m_fScopeInertionFactor;
+	float					m_fZoomStepCount;
+	float					m_fZoomMinKoeff;
 
 	// Generic
 	virtual void			Load				(LPCSTR section);
@@ -53,7 +86,6 @@ public:
 
 	virtual void			renderable_Render	();
 	//virtual void			render_hud_mode		();
-	virtual void			OnDrawUI			();
 	virtual bool			need_renderable		();
 
 	virtual void			render_item_ui		();
@@ -120,6 +152,7 @@ public:
 		eMisfire,
 		eMagEmpty,
 		eSwitch,
+		eUnMisfire,
 	};
 	enum EWeaponSubStates{
 		eSubstateReloadBegin		=0,
@@ -171,9 +204,15 @@ public:
 	//инициализация свойств присоединенных аддонов
 	virtual void InitAddons();
 
+	float		m_fLR_MovingFactor; // Фактор бокового наклона худа при ходьбе [-1; +1]
+	float		m_fLR_CameraFactor; // Фактор бокового наклона худа при движении камеры [-1; +1]
+	float		m_fLR_InertiaFactor; // Фактор горизонтальной инерции худа при движении камеры [-1; +1]
+	float		m_fUD_InertiaFactor; // Фактор вертикальной инерции худа при движении камеры [-1; +1]
+	Fvector		m_strafe_offset[4][2]; //pos,rot,data1,data2/ normal,aim-GL --#SM+#--
+
 	//для отоброажения иконок апгрейдов в интерфейсе
-	int	GetScopeX() {return m_iScopeX;}
-	int	GetScopeY() {return m_iScopeY;}
+	int GetScopeX();
+	int GetScopeY();
 	int	GetSilencerX() {return m_iSilencerX;}
 	int	GetSilencerY() {return m_iSilencerY;}
 	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
@@ -199,10 +238,20 @@ protected:
 	shared_str		m_sSilencerName;
 	shared_str		m_sGrenadeLauncherName;
 
+	shared_str		m_sWpn_scope_bone;
+	shared_str		m_sWpn_silencer_bone;
+	shared_str		m_sWpn_launcher_bone;
+
+	xr_vector<shared_str> m_all_scope_bones;
+	shared_str		m_cur_scope_bone;
+
 	//смещение иконов апгрейдов в инвентаре
 	int	m_iScopeX, m_iScopeY;
 	int	m_iSilencerX, m_iSilencerY;
 	int	m_iGrenadeLauncherX, m_iGrenadeLauncherY;
+
+	RStringVec		m_defShownBones;
+	RStringVec		m_defHiddenBones;
 
 ///////////////////////////////////////////////////
 //	для режима приближения и снайперского прицела
@@ -211,33 +260,45 @@ protected:
 	//разрешение режима приближения
 	bool			m_bZoomEnabled;
 	//текущий фактор приближения
-	float			m_fZoomFactor;
+	float			m_fCurrentZoomFactor;
 	//время приближения
 	float			m_fZoomRotateTime;
+
+	float			m_fRTZoomFactor; //run-time zoom factor
+
+	float			m_fFactor;
+
 	//текстура для снайперского прицела, в режиме приближения
-	CUIStaticItem*	m_UIScope;
+	CUIWindow*		m_UIScope;
 	//коэффициент увеличения прицеливания
 	float			m_fIronSightZoomFactor;
 	//коэффициент увеличения прицела
 	float			m_fScopeZoomFactor;
 	//когда режим приближения включен
-	bool			m_bZoomMode;
+	bool			m_bIsZoomModeNow;
 	//от 0 до 1, показывает насколько процентов
 	//мы перемещаем HUD  
 	float			m_fZoomRotationFactor;
+	float           m_fSecondVPFovFactor;
 	bool			m_bHideCrosshairInZoom;
+
+	shared_str		m_sUseBinocularVision;
+	BOOL			m_bUseDynamicZoom;
+	shared_str		m_sUseZoomPostprocess;
 public:
 
 	IC bool					IsZoomEnabled		()	const	{return m_bZoomEnabled;}
-	virtual	void			ZoomInc				(){};
-	virtual	void			ZoomDec				(){};
+	virtual	void			ZoomInc				();
+	virtual	void			ZoomDec				();
 	virtual void			OnZoomIn			();
 	virtual void			OnZoomOut			();
-			bool			IsZoomed			()	const	{return m_bZoomMode;};
-	CUIStaticItem*			ZoomTexture			();	
+			bool			IsZoomed			()	const	{return m_bIsZoomModeNow;};
+	CUIWindow*				ZoomTexture			();
 			bool			ZoomHideCrosshair	()			{return m_bHideCrosshairInZoom || ZoomTexture();}
 
-	IC float				GetZoomFactor		() const		{	return m_fZoomFactor;	}
+	IC float				GetZoomFactor		() const		{	return m_fCurrentZoomFactor;	}
+	IC void					SetZoomFactor		(float f) 		{m_fCurrentZoomFactor = f;}
+
 	virtual	float			CurrentZoomFactor	();
 	//показывает, что оружие находится в соостоянии поворота для приближенного прицеливания
 			bool			IsRotatingToZoom	() const		{	return (m_fZoomRotationFactor<1.f);}
@@ -441,6 +502,10 @@ protected:
 
 public:
 	xr_vector<shared_str>	m_ammoTypes;
+
+	DEFINE_VECTOR(shared_str, SCOPES_VECTOR, SCOPES_VECTOR_IT);
+	SCOPES_VECTOR			m_scopes;
+	u8						m_cur_scope;
 
 	CWeaponAmmo*			m_pAmmo;
 	u32						m_ammoType;

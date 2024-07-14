@@ -116,6 +116,7 @@ extern	BOOL	g_show_wnd_rect			;
 extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
+extern	BOOL	b_hud_collision;
 		int		g_keypress_on_start = 1;
 extern	int		hud_adj_mode;
 extern	int		hud_adj_item_idx;
@@ -2321,9 +2322,12 @@ void CCC_RegisterCommands()
 
 	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
 	CMD3(CCC_UiHud_Mode,	"hud_type",					&ui_hud_type,				qhud_type_token);
-	CMD1(CCC_DebugFonts, "debug_fonts");
+	CMD1(CCC_DebugFonts,	"debug_fonts");
 	CMD4(CCC_Integer,		"g_advanced_crosshair",		&g_advanced_crosshair,		0, 1);
+	CMD4(CCC_Integer,		"hud_collision",			&b_hud_collision,			0, 1);
 	CMD3(CCC_Token,			"g_death_cam_mode",			&death_camera_mode,			death_camera_mode_token);
+	CMD3(CCC_Mask,			"g_3d_scopes",				&psActorFlags,				AF_3DSCOPE_ENABLE);
+	CMD3(CCC_Mask,			"g_pnv_in_scope",			&psActorFlags,				AF_PNV_W_SCOPE_DIS);
 
 	CMD1(CCC_GameLanguage,	"g_language");
 	//Custom commands for scripts
