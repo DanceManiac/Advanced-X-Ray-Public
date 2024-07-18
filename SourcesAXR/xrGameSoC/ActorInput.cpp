@@ -38,13 +38,20 @@
 
 bool g_block_actor_movement;
 extern int hud_adj_mode;
+extern int hud_adj_item_idx;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
-	if (hud_adj_mode)
-		return;
-
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
+	if (hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT))
+	{
+		if (pInput->iGetAsyncKeyState(DIK_RETURN) || pInput->iGetAsyncKeyState(DIK_BACKSPACE) ||
+			pInput->iGetAsyncKeyState(DIK_DELETE))
+			g_player_hud->tune(Ivector().set(0, 0, 0));
+
+		return;
+	}
 
 	if (Remote())		return;
 
@@ -140,10 +147,16 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kCAM_3:	cam_Set			(eacFreeLook);				break;
 	case kNIGHT_VISION:
 		{
+			if (hud_adj_mode)
+				return;
+
 			SwitchNightVision(!m_bNightVisionOn);
 		}break;
 	case kTORCH:
 		{ 
+			if (hud_adj_mode)
+				return;
+
 			CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
 			if (pTorch)
 				pTorch->Switch();
@@ -202,6 +215,24 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (wpn)
 				wpn->SwitchFlashlight(!wpn->IsFlashlightOn());
 		}break;
+	case kWPN_ALT_AIM:
+		{
+			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+			if (wpn && wpn->IsScopeAttached())
+			{
+				if (!wpn->IsAltAimEnabled())
+					return;
+
+				wpn->SwitchZoomMode();
+
+				string256 alt_aim_status;
+				strconcat(sizeof(alt_aim_status), alt_aim_status, "st_alt_aim_switched_", wpn->GetAltZoomStatus() ? "on" : "off");
+
+				SDrawStaticStruct* custom_static = HUD().GetUI()->UIGame()->AddCustomStatic("alt_aim_switched", true);
+				custom_static->wnd()->SetText(CStringTable().translate(alt_aim_status).c_str());
+			}
+		}break;
 	}
 }
 void CActor::IR_OnMouseWheel(int direction)
@@ -257,10 +288,30 @@ void CActor::IR_OnKeyboardRelease(int cmd)
 
 void CActor::IR_OnKeyboardHold(int cmd)
 {
-	if (hud_adj_mode)
-		return;
-
 	if (m_blocked_actions.find((EGameActions)cmd) != m_blocked_actions.end()) return; // Real Wolf. 14.10.2014
+
+	if (hud_adj_mode && pInput->iGetAsyncKeyState(DIK_LSHIFT) && g_player_hud)
+	{
+		u8 idx = g_player_hud->attached_item(hud_adj_item_idx)->m_parent_hud_item->GetCurrentHudOffsetIdx();
+
+		bool bIsRot = (hud_adj_mode == 2) && (idx != 0);
+
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_RIGHT : DIK_UP))
+			g_player_hud->tune(Ivector().set(0, 1, 0));
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_LEFT : DIK_DOWN))
+			g_player_hud->tune(Ivector().set(0, -1, 0));
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_DOWN : DIK_LEFT))
+			g_player_hud->tune(Ivector().set(1, 0, 0));
+		if (pInput->iGetAsyncKeyState(bIsRot ? DIK_UP : DIK_RIGHT))
+			g_player_hud->tune(Ivector().set(-1, 0, 0));
+		if (pInput->iGetAsyncKeyState(DIK_PRIOR))
+			g_player_hud->tune(Ivector().set(0, 0, 1));
+		if (pInput->iGetAsyncKeyState(DIK_NEXT))
+			g_player_hud->tune(Ivector().set(0, 0, -1));
+		if (pInput->iGetAsyncKeyState(DIK_RETURN))
+			g_player_hud->tune(Ivector().set(0, 0, 0));
+		return;
+	}
 
 	if (Remote() || !g_Alive() || g_block_actor_movement) return;
 	if (m_input_external_handler && !m_input_external_handler->authorized(cmd))	return;
@@ -335,7 +386,10 @@ void CActor::IR_OnMouseMove(int dx, int dy)
 	float LookFactor = GetLookFactor();
 
 	CCameraBase* C	= cameras	[cam_active];
-	float scale		= (C->f_fov/g_fov)*psMouseSens * psMouseSensScale/50.f  / LookFactor;
+
+	auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+
+	float scale = (C->f_fov / g_fov) * ((wpn && wpn->IsZoomed() && wpn->bIsSecondVPZoomPresent()) ? psSVP_MouseSens : psMouseSens) * psMouseSensScale / 50.f / LookFactor;
 	if (dx){
 		float d = float(dx)*scale;
 		cam_Active()->Move((d<0)?kLEFT:kRIGHT, _abs(d));

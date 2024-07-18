@@ -19,9 +19,7 @@ private:
 	u16							m_bone_id;
 	bool						m_enabled;
 //	bool						m_auto_attach;
-#ifdef DEBUG
 	bool						m_valid;
-#endif
 
 
 public:
@@ -46,7 +44,6 @@ public:
 			void				enable					(bool value);
 
 public:
-#ifdef DEBUG
 	static CAttachableItem		*m_dbgItem;
 	static Fvector				get_angle_offset		()	{VERIFY(m_dbgItem);Fvector v; m_dbgItem->m_offset.getHPB(v); return v;};
 	static Fvector				get_pos_offset			()	{VERIFY(m_dbgItem);return m_dbgItem->m_offset.c;};
@@ -59,7 +56,6 @@ public:
 	static	void				mov_dx					(float val){Fvector c = get_pos_offset(); c.x +=val; m_dbgItem->m_offset.c=c;}	
 	static	void				mov_dy					(float val){Fvector c = get_pos_offset(); c.y +=val; m_dbgItem->m_offset.c=c;}	
 	static	void				mov_dz					(float val){Fvector c = get_pos_offset(); c.z +=val; m_dbgItem->m_offset.c=c;}	
-#endif
 };
 
 #include "attachable_item_inline.h"

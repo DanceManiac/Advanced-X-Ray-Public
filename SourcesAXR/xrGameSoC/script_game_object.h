@@ -323,8 +323,8 @@ public:
 			void				SwitchToTalk		();	
 			void				RunTalkDialog		(CScriptGameObject* pToWho);
 
-			void				HideWeapon			();
-			void				RestoreWeapon		();
+			void				HideWeapon			(int mode = 0);
+			void				RestoreWeapon		(int mode = 0);
 
 			bool				Weapon_IsGrenadeLauncherAttached();
 			bool				Weapon_IsScopeAttached			();

@@ -150,8 +150,8 @@
 // 116 - CSE_ALifeCreatureAbstract		appended with property m_game_death_time
 // 117 - CSE_ALifeLevelChanger			appended with property m_bSilentMode
 // 118 - CALifeHumanBrain				removed property m_tpKnownCustomers, sad but true
-// 119   CSE_AlifeTraderAbstract		added m_character_icon
-// 120   CSE_ALifeItemWeapon            added cur_scope for alternative installed scopes
+// 119   CSE_ALifeItemWeapon            added cur_scope for alternative installed scopes
+// 120   CSE_AlifeTraderAbstract		added m_character_icon
 //------------------------------------------------------------------------------
 #define SPAWN_VERSION	u16(120)
 

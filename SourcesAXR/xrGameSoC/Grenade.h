@@ -3,8 +3,6 @@
 #include "explosive.h"
 #include "../xrEngine/feel_touch.h"
 
-#define SND_RIC_COUNT 5
-
 class CGrenade :
 	public CMissile,
 	public CExplosive
@@ -26,6 +24,7 @@ public:
 	virtual void 			OnH_A_Chield						();
 	
 	virtual void 			OnEvent								(NET_Packet& P, u16 type);
+	virtual bool			DropGrenade							();			//in this case if grenade state is eReady, it should Throw
 	
 	virtual void 			OnAnimationEnd						(u32 state);
 	virtual void 			UpdateCL							();
@@ -36,7 +35,7 @@ public:
 	
 	virtual bool			Action								(s32 cmd, u32 flags);
 	virtual bool			Useful								() const;
-	virtual void			State								(u32 state, u32 oldState);
+	virtual void			State								(u32 state);
 
 	virtual void			OnH_B_Chield						()				{inherited::OnH_B_Chield();}
 
@@ -49,6 +48,8 @@ public:
 
 	virtual void			Deactivate							();
 	virtual void			GetBriefInfo						(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
+
+	virtual void			SendHiddenItem						();	//same as OnHiddenItem but for client... (sends message to a server)...
 protected:
 	ALife::_TIME_ID			m_dwGrenadeRemoveTime;
 	ALife::_TIME_ID			m_dwGrenadeIndependencyTime;

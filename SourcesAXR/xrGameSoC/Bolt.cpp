@@ -10,9 +10,6 @@
 
 CBolt::CBolt(void) 
 {
-	m_weight					= .1f;
-	m_slot						= BOLT_SLOT;
-	m_flags.set					(Fruck, FALSE);
 	m_thrower_id				=u16(-1);
 }
 
@@ -33,22 +30,6 @@ void CBolt::OnH_A_Chield()
 	CObject* o= H_Parent()->H_Parent();
 	if(o)SetInitiator(o->ID());
 	
-}
-
-void CBolt::OnEvent(NET_Packet& P, u16 type) 
-{
-	inherited::OnEvent(P,type);
-}
-
-bool CBolt::Activate() 
-{
-	Show();
-	return true;
-}
-
-void CBolt::Deactivate() 
-{
-	Hide();
 }
 
 void CBolt::State(u32 state)
@@ -133,17 +114,12 @@ bool CBolt::Action(s32 cmd, u32 flags)
 	return false;
 }
 
-void CBolt::Destroy()
-{
-	inherited::Destroy();
-}
-
 void CBolt::PutNextToSlot()
 {
 	if (OnClient()) return;
 
 	VERIFY(!getDestroy());
-
+	//выкинуть болт из инвентаря
 	NET_Packet						P;
 	if (m_pCurrentInventory)
 	{
@@ -158,7 +134,7 @@ void CBolt::PutNextToSlot()
 
 	if (smart_cast<CInventoryOwner*>(H_Parent()) && m_pCurrentInventory)
 	{
-		CBolt* pNext = smart_cast<CBolt*>(m_pCurrentInventory->Same(this, true));
+		CBolt *pNext = smart_cast<CBolt*>(m_pCurrentInventory->Same(this, true));
 		if (!pNext) pNext = smart_cast<CBolt*>(m_pCurrentInventory->SameSlot(GRENADE_SLOT, this, true));
 
 		VERIFY(pNext != this);
@@ -168,7 +144,7 @@ void CBolt::PutNextToSlot()
 
 			pNext->u_EventGen(P, GEG_PLAYER_ITEM2SLOT, pNext->H_Parent()->ID());
 			P.w_u16(pNext->ID());
-			pNext->u_EventSend(P);
+			pNext->u_EventSend(P);		
 			m_pCurrentInventory->SetActiveSlot(pNext->GetSlot());
 		}
 	}
@@ -179,10 +155,10 @@ void CBolt::OnAnimationEnd(u32 state)
 	switch (state)
 	{
 	case eThrowEnd:
-		{
-			if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
-				SwitchState(eHidden);
-		} break;
+	{
+		if (smart_cast<CActor*>(this->H_Parent()) && (Level().CurrentViewEntity() == H_Parent()))
+			SwitchState(eHidden);
+	}break;
 	}
 	inherited::OnAnimationEnd(state);
 }

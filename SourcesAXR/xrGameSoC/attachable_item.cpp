@@ -12,9 +12,7 @@
 #include "inventoryowner.h"
 #include "inventory.h"
 
-#ifdef DEBUG
-	CAttachableItem*	CAttachableItem::m_dbgItem = NULL;
-#endif
+CAttachableItem*	CAttachableItem::m_dbgItem = NULL;
 
 IC	CPhysicsShellHolder &CAttachableItem::object	() const
 {
@@ -45,9 +43,7 @@ void CAttachableItem::reload			(LPCSTR section)
 	m_bone_name						= pSettings->r_string	(section,"attach_bone_name");
 //	enable							(m_auto_attach = !!(READ_IF_EXISTS(pSettings,r_bool,section,"auto_attach",TRUE)));
 	enable							(false);
-#ifdef DEBUG
 	m_valid							= true;
-#endif
 }
 
 void CAttachableItem::OnH_A_Chield		() 

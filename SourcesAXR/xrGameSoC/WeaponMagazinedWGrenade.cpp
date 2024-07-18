@@ -85,6 +85,7 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 		m_ammoName2 = 0;
 
 	iMagazineSize2 = iMagazineSize;
+	iAmmoElapsedMain = 0;
 }
 
 void CWeaponMagazinedWGrenade::net_Destroy()
@@ -150,7 +151,13 @@ void CWeaponMagazinedWGrenade::switch2_Reload()
 	{
 		PlaySound("sndReloadG", get_LastFP2());
 
-		PlayHUDMotionIfExists({"anim_reload_g", "anm_reload_g"}, FALSE, GetState());
+		if (IsMisfire())
+			PlayHUDMotionIfExists({ "anm_reload_g_jammed", "anm_reload_jammed_g", "anm_reload_g", "anim_reload_g" }, true, GetState());
+		else if (IsMainMagazineEmpty())
+			PlayHUDMotionIfExists({ "anm_reload_g_empty", "anm_reload_empty_g", "anm_reload_g", "anim_reload_g" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({"anim_reload_g", "anm_reload_g"}, FALSE, GetState());
+
 		SetPending(TRUE);
 	}
 	else 
@@ -185,7 +192,7 @@ void CWeaponMagazinedWGrenade::OnMotionMark(u32 state, const motion_marks& M)
 //на одиночные, а уже потом на подствольник
 bool CWeaponMagazinedWGrenade::SwitchMode() 
 {
-	bool bUsefulStateToSwitch = ((eIdle==GetState())||(eHidden==GetState())||(eMisfire==GetState())||(eMagEmpty==GetState())) && (!IsPending());
+	bool bUsefulStateToSwitch = ((eSwitch == GetState())||eIdle==GetState())||(eHidden==GetState())||(eMisfire==GetState())||(eMagEmpty==GetState()) && (!IsPending());
 
 	if(!bUsefulStateToSwitch)
 		return false;
@@ -212,6 +219,9 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 
 	iMagazineSize		= m_bGrenadeMode?1:iMagazineSize2;
 
+	if (m_bGrenadeMode)
+		iAmmoElapsedMain = iAmmoElapsed;
+
 	m_ammoTypes.swap	(m_ammoTypes2);
 
 	swap				(m_ammoType,m_ammoType2);
@@ -224,23 +234,13 @@ void  CWeaponMagazinedWGrenade::PerformSwitchGL()
 	while(m_magazine2.size()) { m_magazine.push_back(m_magazine2.back()); m_magazine2.pop_back(); }
 	while(l_magazine.size()) { m_magazine2.push_back(l_magazine.back()); l_magazine.pop_back(); }
 	iAmmoElapsed = (int)m_magazine.size();
-
-	/*if(m_bZoomEnabled && m_pHUD)
-	{
-		if(m_bGrenadeMode)
-			LoadZoomOffset(*hud_sect, "grenade_");
-		else 
-		{
-			if(GrenadeLauncherAttachable())
-				LoadZoomOffset(*hud_sect, "grenade_normal_");
-			else
-				LoadZoomOffset(*hud_sect, "");
-		}
-	} */
 }
 
 bool CWeaponMagazinedWGrenade::Action(s32 cmd, u32 flags) 
 {
+	if (m_bGrenadeMode && (cmd == kWPN_FIREMODE_PREV || cmd == kWPN_FIREMODE_NEXT))
+		return false;
+
 	if(inherited::Action(cmd, flags)) return true;
 	
 	switch(cmd) 
@@ -462,6 +462,9 @@ void CWeaponMagazinedWGrenade::OnStateSwitch(u32 S, u32 oldState)
 
 void CWeaponMagazinedWGrenade::OnAnimationEnd(u32 state)
 {
+	if (eSwitch == GetState())
+		SwitchState(eIdle);
+
 	switch (state)
 	{
 	case eSwitch:
@@ -622,7 +625,7 @@ void CWeaponMagazinedWGrenade::PlayAnimShow()
 		{
 			if (IsMisfire())
 				PlayHUDMotionIfExists({ "anm_show_g_jammed", "anm_show_jammed_g", "anim_draw_g", "anm_show_g" }, true, GetState());
-			else if (IsMagazineEmpty())
+			else if (IsMainMagazineEmpty())
 				PlayHUDMotionIfExists({ "anm_show_g_empty", "anm_show_empty_g", "anim_draw_g", "anm_show_g" }, true, GetState());
 			else
 				PlayHUDMotionIfExists({ "anim_draw_g", "anm_show_g" }, FALSE, GetState());
@@ -642,7 +645,7 @@ void CWeaponMagazinedWGrenade::PlayAnimHide()
 		{
 			if (IsMisfire())
 				PlayHUDMotionIfExists({ "anm_hide_w_gl_jammed", "anm_hide_jammed_w_gl", "anim_holster_gl", "anm_hide_w_gl" }, true, GetState());
-			else if (IsMagazineEmpty())
+			else if (IsEmptyMagazine())
 				PlayHUDMotionIfExists({ "anm_hide_w_gl_empty", "anm_hide_empty_w_gl", "anim_holster_gl", "anm_hide_w_gl" }, true, GetState());
 			else
 				PlayHUDMotionIfExists({ "anim_holster_gl", "anm_hide_w_gl" }, TRUE, GetState());
@@ -651,7 +654,7 @@ void CWeaponMagazinedWGrenade::PlayAnimHide()
 		{
 			if (IsMisfire())
 				PlayHUDMotionIfExists({ "anm_hide_g_jammed", "anm_hide_jammed_g", "anim_holster_g", "anm_hide_g" }, true, GetState());
-			else if (IsMagazineEmpty())
+			else if (IsEmptyMagazine())
 				PlayHUDMotionIfExists({ "anm_hide_g_empty", "anm_hide_empty_g", "anim_holster_g", "anm_hide_g" }, true, GetState());
 			else
 				PlayHUDMotionIfExists({ "anim_holster_g", "anm_hide_g" }, TRUE, GetState());
@@ -689,7 +692,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 			if (IsRotatingToZoom())
 			{
 				string32 guns_aim_start_anm;
-				strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
+				strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
 
 				if (isHUDAnimationExist(guns_aim_start_anm))
 				{
@@ -774,7 +777,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 			{
 				if (IsMisfire())
 					PlayHUDMotionIfExists({ "anm_idle_aim_g_jammed", "anm_idle_aim_jammed_g", "anm_idle_aim_g", "anm_idle_g_aim", "anim_idle_g_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
-				else if (IsMagazineEmpty())
+				else if (IsMainMagazineEmpty())
 					PlayHUDMotionIfExists({ "anm_idle_aim_g_empty", "anm_idle_aim_empty_g", "anm_idle_aim_g", "anm_idle_g_aim", "anim_idle_g_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
 				else
 					PlayHUDMotionIfExists({ "anm_idle_aim_g", "anim_idle_g_aim", "anm_idle_g_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
@@ -794,7 +797,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 			if (IsRotatingFromZoom())
 			{
 				string32 guns_aim_end_anm;
-				strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
+				strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
 
 				if (isHUDAnimationExist(guns_aim_end_anm))
 				{
@@ -876,7 +879,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				case 0:
 					if (IsMisfire())
 						PlayHUDMotionIfExists({ "anm_idle_jammed_g", "anm_idle_g_jammed", "anm_idle_g", "anim_idle_g" }, true, GetState());
-					else if (IsMagazineEmpty())
+					else if (IsMainMagazineEmpty())
 						PlayHUDMotionIfExists({ "anm_idle_empty_g", "anm_idle_g_empty", "anm_idle_g", "anim_idle_g" }, true, GetState());
 					else if (IsZoomed())
 						PlayHUDMotionIfExists({ "anim_idle_g_aim", "anm_idle_g_aim", "anim_idle_g" }, true, GetState());
@@ -886,7 +889,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				case 1:
 					if (IsMisfire())
 						PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_g", "anm_idle_sprint_g_jammed", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-					else if (IsMagazineEmpty())
+					else if (IsMainMagazineEmpty())
 						PlayHUDMotionIfExists({ "anm_idle_sprint_empty_g", "anm_idle_sprint_g_empty", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
 					else
 						PlayHUDMotionIfExists({ "anm_idle_sprint_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
@@ -894,7 +897,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				case 2:
 					if (IsMisfire())
 						PlayHUDMotionIfExists({ "anm_idle_moving_jammed_g", "anm_idle_moving_g_jammed", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-					else if (IsMagazineEmpty())
+					else if (IsMainMagazineEmpty())
 						PlayHUDMotionIfExists({ "anm_idle_moving_empty_g", "anm_idle_moving_g_empty", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
 					else
 						PlayHUDMotionIfExists({ "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
@@ -902,7 +905,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				case 3:
 					if (IsMisfire())
 						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed_g", "anm_idle_moving_crouch_g_jammed", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-					else if (IsMagazineEmpty())
+					else if (IsMainMagazineEmpty())
 						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty_g", "anm_idle_moving_crouch_g_empty", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
 					else
 						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
@@ -910,7 +913,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				case 4:
 					if (IsMisfire())
 						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed_g", "anm_idle_moving_crouch_slow_g_jammed", "anm_idle_moving_crouch_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-					else if (IsMagazineEmpty())
+					else if (IsMainMagazineEmpty())
 						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty_g", "anm_idle_moving_crouch_slow_g_empty", "anm_idle_moving_crouch_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
 					else
 						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_g", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
@@ -918,7 +921,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				case 5:
 					if (IsMisfire())
 						PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed_g", "anm_idle_moving_slow_g_jammed", "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-					else if (IsMagazineEmpty())
+					else if (IsMainMagazineEmpty())
 						PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty_g", "anm_idle_moving_slow_g_empty", "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
 					else
 						PlayHUDMotionIfExists({ "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
@@ -991,13 +994,13 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 	if (m_bGrenadeMode)
 	{
 		string_path guns_shoot_anm{};
-		strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim" : "", "_g", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""));
+		strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim" : "", "_g", (IsMisfire() ? "_jammed" : IsMainMagazineEmpty() ? "_empty" : ""));
 
 		PlayHUDMotionIfExists({ guns_shoot_anm, "anim_shoot_g", "anm_shots_g" }, false, GetState());
 	}
 	else
 	{
-		HUD_VisualBulletUpdate();
+		//HUD_VisualBulletUpdate();
 
 		VERIFY(GetState() == eFire);
 
@@ -1021,7 +1024,7 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 void  CWeaponMagazinedWGrenade::PlayAnimModeSwitch()
 {
 	string_path guns_switch_anm{};
-	strconcat(sizeof(guns_switch_anm), guns_switch_anm, "anm_switch", m_bGrenadeMode ? "_g" : isHUDAnimationExist("anm_switch_w_gl") ? "_w_gl" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""));
+	strconcat(sizeof(guns_switch_anm), guns_switch_anm, "anm_switch", m_bGrenadeMode ? "_g" : isHUDAnimationExist("anm_switch_w_gl") ? "_w_gl" : "", (IsMisfire() ? "_jammed" : IsMainMagazineEmpty() ? "_empty" : ""));
 
 	if (isHUDAnimationExist(guns_switch_anm))
 	{
@@ -1072,6 +1075,203 @@ void  CWeaponMagazinedWGrenade::PlayAnimModeSwitch()
 	}
 }
 
+void CWeaponMagazinedWGrenade::PlayAnimBore()
+{
+	if (IsGrenadeLauncherAttached())
+	{
+		if (m_bGrenadeMode)
+		{
+			if (IsMisfireNow())
+				PlayHUDMotionIfExists({ "anm_bore_g_jammed", "anm_bore_jammed_g", "anm_bore_g", "anm_bore" }, true, GetState());
+			else if (IsMainMagazineEmpty())
+				PlayHUDMotionIfExists({ "anm_bore_g_empty", "anm_bore_empty_g", "anm_bore_g", "anm_bore" }, true, GetState());
+			else
+				PlayHUDMotion("anm_bore_g", TRUE, this, GetState());
+		}
+		else
+		{
+			if (IsMisfireNow())
+				PlayHUDMotionIfExists({ "anm_bore_w_gl_jammed", "anm_bore_jammed_w_gl", "anm_bore_w_gl", "anm_bore" }, true, GetState());
+			else if (IsMagazineEmpty())
+				PlayHUDMotionIfExists({ "anm_bore_w_gl_empty", "anm_bore_empty_w_gl", "anm_bore_w_gl", "anm_bore" }, true, GetState());
+			else
+				PlayHUDMotion("anm_bore_w_gl", TRUE, this, GetState());
+		}
+	}
+	else
+		inherited::PlayAnimBore();
+}
+
+void CWeaponMagazinedWGrenade::PlayAnimFireMode()
+{
+	if (!IsGrenadeLauncherAttached())
+	{
+		inherited::PlayAnimFireMode();
+		return;
+	}
+
+	string_path guns_firemode_anm{};
+
+	if (isHUDAnimationExist("anm_changefiremode"))
+	{
+		strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+		if (isHUDAnimationExist(guns_firemode_anm))
+		{
+			PlayHUDMotionNew(guns_firemode_anm, true, GetState());
+			return;
+		}
+		else if (strstr(guns_firemode_anm, "_jammed"))
+		{
+			char new_guns_firemode_anm[256];
+			strcpy(new_guns_firemode_anm, guns_firemode_anm);
+			new_guns_firemode_anm[strlen(guns_firemode_anm) - strlen("_jammed")] = '\0';
+
+			if (isHUDAnimationExist(new_guns_firemode_anm))
+			{
+				PlayHUDMotionNew(new_guns_firemode_anm, true, GetState());
+				return;
+			}
+		}
+		else if (strstr(guns_firemode_anm, "_empty"))
+		{
+			char new_guns_firemode_anm[256];
+			strcpy(new_guns_firemode_anm, guns_firemode_anm);
+			new_guns_firemode_anm[strlen(guns_firemode_anm) - strlen("_empty")] = '\0';
+
+			if (isHUDAnimationExist(new_guns_firemode_anm))
+			{
+				PlayHUDMotionNew(new_guns_firemode_anm, true, GetState());
+				return;
+			}
+		}
+	}
+
+	strconcat(sizeof(guns_firemode_anm), guns_firemode_anm, "anm_changefiremode_from_", (m_iCurFireMode == 0) ? "a_to_1" : (m_iCurFireMode == 1) ? (m_aFireModes.size() == 3) ? "1_to_2" : "1_to_a" : (m_iCurFireMode == 2) ? "2_to_a" : "a_to_1");
+
+	string64 guns_aim_anm_full;
+	strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_firemode_anm, m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_aim_anm_full))
+	{
+		PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
+		return;
+	}
+	else if (strstr(guns_aim_anm_full, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm_full);
+		new_guns_aim_anm[strlen(guns_aim_anm_full) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+		else
+			inherited::PlayAnimFireMode();
+	}
+	else if (strstr(guns_aim_anm_full, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm_full);
+		new_guns_aim_anm[strlen(guns_aim_anm_full) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+		else
+			inherited::PlayAnimFireMode();
+	}
+	else
+		inherited::PlayAnimFireMode();
+}
+
+void CWeaponMagazinedWGrenade::PlayAnimLaserSwitch()
+{
+	string_path guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_laser", IsLaserOn() ? "_on" : "_off", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+		return;
+	}
+	else if (strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+		else
+			inherited::PlayAnimLaserSwitch();
+	}
+	else if (strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+		else
+			inherited::PlayAnimLaserSwitch();
+	}
+	else
+		inherited::PlayAnimLaserSwitch();
+}
+
+void CWeaponMagazinedWGrenade::PlayAnimFlashlightSwitch()
+{
+	string_path guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_torch", IsFlashlightOn() ? "_on" : "_off", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+		return;
+	}
+	else if (strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+		else
+			inherited::PlayAnimFlashlightSwitch();
+	}
+	else if (strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_device_switch_anm);
+		new_guns_aim_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+		else
+			inherited::PlayAnimFlashlightSwitch();
+	}
+	else
+		inherited::PlayAnimFlashlightSwitch();
+}
 
 void CWeaponMagazinedWGrenade::UpdateSounds	()
 {
@@ -1131,6 +1331,24 @@ void CWeaponMagazinedWGrenade::net_Import	(NET_Packet& P)
 		SwitchMode				();
 
 	inherited::net_Import		(P);
+}
+
+u8 CWeaponMagazinedWGrenade::GetCurrentHudOffsetIdx()
+{
+	bool b_aiming = ((IsZoomed() && m_fZoomRotationFactor <= 1.f) ||
+		(!IsZoomed() && m_fZoomRotationFactor > 0.f));
+
+	if (!b_aiming)
+		return 0;
+	else
+	{
+		if (m_bGrenadeMode)
+			return 2;
+		else if (m_bAltZoomActive)
+			return 3;
+		else
+			return 1;
+	}
 }
 
 bool CWeaponMagazinedWGrenade::IsNecessaryItem	    (const shared_str& item_sect)

@@ -100,6 +100,8 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_fInventoryCapacity			= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
 
+	m_PlayerHudSection				= READ_IF_EXISTS(pSettings, r_string, section, "player_hud_section", "actor_hud");
+
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
 
@@ -321,26 +323,63 @@ void	CCustomOutfit::OnMoveToSlot		()
 	}
 };
 
+void CCustomOutfit::ApplySkinModel(CActor* pActor, bool bDress, bool bHUDOnly)
+{
+	if (bDress)
+	{
+		if (!bHUDOnly && m_ActorVisual.size())
+		{
+			shared_str NewVisual = NULL;
+			char* TeamSection = Game().getTeamSection(pActor->g_Team());
+			if (TeamSection)
+			{
+				if (pSettings->line_exist(TeamSection, *cNameSect()))
+				{
+					NewVisual = pSettings->r_string(TeamSection, *cNameSect());
+					string256 SkinName;
+
+					xr_strcpy(SkinName, pSettings->r_string("mp_skins_path", "skin_path"));
+					xr_strcat(SkinName, *NewVisual);
+					xr_strcat(SkinName, ".ogf");
+					NewVisual._set(SkinName);
+				}
+			}
+			if (!NewVisual.size())
+				NewVisual = m_ActorVisual;
+
+			pActor->ChangeVisual(NewVisual);
+		}
+
+
+		if (pActor == Level().CurrentViewEntity())
+			g_player_hud->load(m_PlayerHudSection);
+	}
+	else
+	{
+		if (!bHUDOnly && m_ActorVisual.size())
+		{
+			shared_str DefVisual = pActor->GetDefaultVisualOutfit();
+			if (DefVisual.size())
+			{
+				pActor->ChangeVisual(DefVisual);
+			};
+		}
+
+		if (pActor == Level().CurrentViewEntity())
+			g_player_hud->load_default();
+	}
+
+}
+
 void	CCustomOutfit::OnMoveToRuck		(EItemPlace prev)
 {
 	if (m_pCurrentInventory && prev == eItemPlaceSlot && !Level().is_removing_objects())
 	{
-		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
+		CActor* pActor = smart_cast<CActor*> (H_Parent());
 		if (pActor)
 		{
-			//if(!bIsHelmetAvaliable)
-				pActor->SwitchNightVision(false);
-
-			if (m_ActorVisual.size())
-			{
-				shared_str DefVisual = pActor->GetDefaultVisualOutfit();
-				if (DefVisual.size())
-				{
-					pActor->ChangeVisual(DefVisual);
-				};
-			}
-
-			g_player_hud->load_default();
+			ApplySkinModel(pActor, false, false);
+			pActor->SwitchNightVision(false);
 		}
 	}
 };

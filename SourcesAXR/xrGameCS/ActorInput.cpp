@@ -38,7 +38,7 @@
 #include "AdvancedXrayGameConstants.h"
 
 extern int hud_adj_mode;
-extern u32 hud_adj_item_idx;
+extern int hud_adj_item_idx;
 bool g_block_actor_movement = false;
 
 void CActor::IR_OnKeyboardPress(int cmd)

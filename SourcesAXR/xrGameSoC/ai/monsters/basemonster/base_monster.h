@@ -25,6 +25,8 @@
 #include "../monster_sound_defs.h"
 #include "../../../inventoryowner.h"
 
+#include "../monster_aura.h"
+
 class CCharacterPhysicsSupport;
 class CMonsterCorpseCoverEvaluator;
 class CCoverEvaluatorFarFromEnemy;
@@ -360,6 +362,9 @@ public:
 
 	bool						m_bDropItemAfterSuperAttack;
 	int							m_iSuperAttackDropItemPer;
+	bool						m_bEnablePsyAuraAfterDie;
+	bool						m_bEnableRadAuraAfterDie;
+	bool						m_bEnableFireAuraAfterDie;
 
 	shared_str					light_bone;
 	shared_str					particles_bone;
@@ -396,6 +401,23 @@ public:
 	// -----------------------------------------------------------------------------
 	//////////////////////////////////////////////////////////////////////////
 
+//-------------------------------------------------------------------
+// CBaseMonster's  Auras
+//-------------------------------------------------------------------
+public:
+	float							get_psy_influence();
+	float							get_radiation_influence();
+	float							get_fire_influence();
+	bool							get_enable_psy_aura_after_die();
+	bool							get_enable_rad_aura_after_die();
+	bool							get_enable_fire_aura_after_die();
+	void							play_detector_sound();
+
+private:
+	monster_aura					m_psy_aura;
+	monster_aura					m_radiation_aura;
+	monster_aura					m_fire_aura;
+	monster_aura					m_base_aura;
 
 public:
 	CControl_Manager		&control() {return (*m_control_manager);}

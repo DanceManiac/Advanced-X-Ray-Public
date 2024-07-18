@@ -1,14 +1,15 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "player_hud.h"
 #include "HudItem.h"
 #include "ui_base.h"
 #include "actor.h"
 #include "physic_item.h"
-//#include "static_cast_checked.hpp"
 #include "actoreffector.h"
+#include "ai_space.h"
+#include "script_engine.h"
 #include "../xrEngine/IGame_Persistent.h"
 #include "Weapon.h"
-//#include "InertionData.h"
 
 player_hud* g_player_hud = NULL;
 Fvector _ancor_pos;
@@ -86,13 +87,16 @@ void player_hud_motion_container::load(IKinematicsAnimated* model, const shared_
 				}
 				else
 				{
-					R_ASSERT2(_GetItemCount(anm.c_str()) == 2, anm.c_str());
+					R_ASSERT2(_GetItemCount(anm.c_str()) <= 3, anm.c_str());
 					string512				str_item;
 					_GetItem(anm.c_str(), 0, str_item);
 					pm->m_base_name = str_item;
 
 					_GetItem(anm.c_str(), 1, str_item);
-					pm->m_additional_name = str_item;
+					pm->m_additional_name = (xr_strlen(str_item) > 0) ? pm->m_additional_name = str_item : pm->m_base_name;
+
+					_GetItem(anm.c_str(), 2, str_item);
+					pm->m_anim_speed = atof(str_item);
 				}
 			}
 			else
@@ -185,6 +189,7 @@ void attachable_hud_item::update(bool bForce)
 	m_attach_offset.translate_over	(m_measures.m_item_attach[0]);
 
 	m_parent->calc_transform		(m_attach_place_idx, m_attach_offset, m_item_transform);
+	m_parent_hud_item->UpdateAddonsTransform(true);
 	m_upd_firedeps_frame			= Device.dwFrame;
 
 	IKinematicsAnimated* ka			=	m_model->dcast_PKinematicsAnimated();
@@ -225,7 +230,6 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 			Wpn->CorrectDirFromWorldToHud(fd.vLastFD);
 
 		VERIFY(_valid(fd.vLastFD));
-		VERIFY(_valid(fd.vLastFD));
 
 		fd.m_FireParticlesXForm.identity				();
 		fd.m_FireParticlesXForm.k.set					(fd.vLastFD);
@@ -242,7 +246,6 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 		m_item_transform.transform_tiny	(fd.vLastFP2);
 		fd.vLastFP2.add				(Device.vCameraPosition);
 		VERIFY(_valid(fd.vLastFP2));
-		VERIFY(_valid(fd.vLastFP2));
 	}
 
 	if(m_measures.m_prop_flags.test(hud_item_measures::e_shell_point))
@@ -251,7 +254,6 @@ void attachable_hud_item::setup_firedeps(firedeps& fd)
 		fire_mat.transform_tiny		(fd.vLastSP,m_measures.m_shell_point_offset);
 		m_item_transform.transform_tiny	(fd.vLastSP);
 		fd.vLastSP.add				(Device.vCameraPosition);
-		VERIFY(_valid(fd.vLastSP));
 		VERIFY(_valid(fd.vLastSP));
 	}
 }
@@ -371,6 +373,11 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	else
 		m_hands_offset[1][2] = READ_IF_EXISTS(pSettings, r_fvector3, sect_name, val_name, Fvector{});
 
+	strconcat					(sizeof(val_name),val_name,"aim_alt_hud_offset_pos",_prefix);
+	m_hands_offset[0][3]		= READ_IF_EXISTS(pSettings, r_fvector3, sect_name, val_name, m_hands_offset[0][1]);
+	strconcat					(sizeof(val_name),val_name,"aim_alt_hud_offset_rot",_prefix);
+	m_hands_offset[1][3]		= READ_IF_EXISTS(pSettings, r_fvector3, sect_name, val_name, m_hands_offset[1][1]);
+
 	if (pSettings->line_exist(sect_name, "hud_collision_enabled"))
 	{
 		strconcat(sizeof(val_name), val_name, "hud_collision_offset_pos", _prefix);
@@ -451,10 +458,8 @@ void attachable_hud_item::load(const shared_str& sect_name)
 	m_hand_motions.load				(m_parent->Model(), sect_name, m_has_separated_hands, animatedHudItem);
 }
 
-u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, const CMotionDef*& md, u8& rnd_idx)
+u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, const CMotionDef*& md, u8& rnd_idx, float speed)
 {
-	float speed				= CalcMotionSpeed(anm_name_b);
-
 	R_ASSERT				(strstr(anm_name_b.c_str(),"anm_")==anm_name_b.c_str() || strstr(anm_name_b.c_str(), "anim_") == anm_name_b.c_str());
 	string256				anim_name_r;
 	bool is_16x9			= UI().is_widescreen();
@@ -464,6 +469,9 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 	R_ASSERT2				(anm, make_string("model [%s] has no motion alias defined [%s]", m_sect_name.c_str(), anim_name_r).c_str());
 	R_ASSERT2				(anm->m_animations.size(), make_string("model [%s] has no motion defined in motion_alias [%s]", pSettings->r_string(m_sect_name, "item_visual"), anim_name_r).c_str());
 	
+	if (speed == 1.f)
+		speed = anm->m_anim_speed != 0 ? anm->m_anim_speed : CalcMotionSpeed(anm_name_b);
+
 	rnd_idx					= (u8)Random.randI(anm->m_animations.size()) ;
 	const motion_descr& M	= anm->m_animations[ rnd_idx ];
 
@@ -513,29 +521,30 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 	//R_ASSERT2		(parent_object, "object has no parent actor");
 	//CObject*		parent_object = static_cast_checked<CObject*>(&m_parent_hud_item->object());
 
-	/*if (IsGameTypeSingle() && parent_object.H_Parent() == Level().CurrentControlEntity())
+	if (IsGameTypeSingle() && parent_object.H_Parent() == Level().CurrentControlEntity())
 	{
-		CActor* current_actor	= static_cast_checked<CActor*>(Level().CurrentControlEntity());
-		VERIFY					(current_actor);
-		CEffectorCam* ec		= current_actor->Cameras().GetCamEffector(eCEWeaponAction);
+		CActor* current_actor = smart_cast<CActor*>(Level().CurrentControlEntity());
+		VERIFY(current_actor);
 
-	
-		if(NULL==ec)
+		string_path ce_path;
+		string_path anm_name;
+		strconcat(sizeof(anm_name), anm_name, "camera_effects" "\\" "weapon" "\\", M.name.c_str(), ".anm");
+
+		if (FS.exist(ce_path, "$game_anims$", anm_name))
 		{
-			string_path			ce_path;
-			string_path			anm_name;
-			strconcat			(sizeof(anm_name),anm_name,"camera_effects\\weapon\\", M.name.c_str(),".anm");
-			if (FS.exist( ce_path, "$game_anims$", anm_name))
-			{
-				CAnimatorCamEffector* e		= xr_new<CAnimatorCamEffector>();
-				e->SetType					(eCEWeaponAction);
-				e->SetHudAffect				(false);
-				e->SetCyclic				(false);
-				e->Start					(anm_name);
-				current_actor->Cameras().AddCamEffector(e);
-			}
+			CEffectorCam* ec = current_actor->Cameras().GetCamEffector(eCEWeaponAction);
+
+			if (ec)
+				current_actor->Cameras().RemoveCamEffector(eCEWeaponAction);
+
+			CAnimatorCamEffector* e = new CAnimatorCamEffector();
+			e->SetType(eCEWeaponAction);
+			e->SetHudAffect(false);
+			e->SetCyclic(false);
+			e->Start(anm_name);
+			current_actor->Cameras().AddCamEffector(e);
 		}
-	}  */
+	}
 	return ret;
 }
 
@@ -553,6 +562,8 @@ player_hud::player_hud()
 	script_anim_offset_factor = 0.f;
 	script_anim_item_model = nullptr;
 	m_item_pos.identity();
+
+	m_current_motion_def	= NULL;
 
 	m_movement_layers.reserve(move_anms_end);
 	for (int i = 0; i < move_anms_end; i++)
@@ -994,6 +1005,53 @@ void player_hud::update(const Fmatrix& cam_trans)
 		script_anim_offset_factor -= Device.fTimeDelta * 5.f;
 
 	clamp(script_anim_offset_factor, 0.f, 1.f);
+
+	if (m_current_motion_def)
+	{
+		if (m_bStopAtEndAnimIsRunning)
+		{
+			const xr_vector<motion_marks>& marks = m_current_motion_def->marks;
+			if (!marks.empty())
+			{
+				float motion_prev_time = ((float)m_dwMotionCurrTm - (float)m_dwMotionStartTm) / 1000.0f;
+				float motion_curr_time = ((float)Device.dwTimeGlobal - (float)m_dwMotionStartTm) / 1000.0f;
+
+				xr_vector<motion_marks>::const_iterator it = marks.begin();
+				xr_vector<motion_marks>::const_iterator it_e = marks.end();
+				for (; it != it_e; ++it)
+				{
+					const motion_marks& M = (*it);
+					if (M.is_empty())
+						continue;
+
+					const motion_marks::interval* Iprev = M.pick_mark(motion_prev_time);
+					const motion_marks::interval* Icurr = M.pick_mark(motion_curr_time);
+					if (Iprev == NULL && Icurr != NULL)
+					{
+						OnMotionMark(M);
+					}
+				}
+
+			}
+
+			m_dwMotionCurrTm = Device.dwTimeGlobal;
+			if (m_dwMotionCurrTm > m_dwMotionEndTm)
+			{
+				m_current_motion_def = NULL;
+				m_dwMotionStartTm = 0;
+				m_dwMotionEndTm = 0;
+				m_dwMotionCurrTm = 0;
+				m_bStopAtEndAnimIsRunning = false;
+			}
+		}
+	}
+}
+
+void player_hud::OnMotionMark(const motion_marks& M)
+{
+	luabind::functor<bool> funct;
+	if (ai().script_engine().functor("mfs_functions.on_motion_mark", funct))
+		funct(*M.name);
 }
 
 void player_hud::update_script_item()
@@ -1140,11 +1198,15 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	if (length > 0)
 	{
-		m_bStopAtEndAnimIsRunning = true;
-		script_anim_end = Device.dwTimeGlobal + length;
+		m_bStopAtEndAnimIsRunning	= true;
+		script_anim_end				= Device.dwTimeGlobal + length;
+		m_dwMotionStartTm			= Device.dwTimeGlobal;
+		m_dwMotionCurrTm			= m_dwMotionStartTm;
+		m_dwMotionEndTm				= m_dwMotionStartTm + length;
+		m_current_motion_def		= md;
 	}
 	else
-		m_bStopAtEndAnimIsRunning = false;
+		m_bStopAtEndAnimIsRunning	= false;
 
 	updateMovementLayerState();
 
@@ -1346,7 +1408,21 @@ u32 player_hud::anim_play(u16 part, const MotionID& M, BOOL bMixIn, const CMotio
 		}
 	}
 
-	return motion_length(M, md, speed, hasHands ? m_model : itemModel);
+	u32 length = motion_length(M, md, speed, hasHands ? m_model : itemModel);
+
+	if (length > 0)
+	{
+		m_bStopAtEndAnimIsRunning	= true;
+		script_anim_end				= Device.dwTimeGlobal + length;
+		m_dwMotionStartTm			= Device.dwTimeGlobal;
+		m_dwMotionCurrTm			= m_dwMotionStartTm;
+		m_dwMotionEndTm				= m_dwMotionStartTm + length;
+		m_current_motion_def		= md;
+	}
+	else
+		m_bStopAtEndAnimIsRunning	= false;
+
+	return length;
 }
 
 void player_hud::update_additional	(Fmatrix& trans)

@@ -1027,11 +1027,10 @@ void CActor::UpdateCL	()
 			//      [Update SecondVP with weapon data]
 			pWeapon->UpdateSecondVP(); //--#SM+#-- +SecondVP+
 			bool bUseMark = !!pWeapon->IsZoomed();
-			bool bInZoom = !!(pWeapon->bInZoomRightNow() && pWeapon->bIsSecondVPZoomPresent() && psActorFlags.test(AF_3DSCOPE_ENABLE));
 			bool bNVEnbl = !!pWeapon->bNVsecondVPstatus;
 
 			//      
-			g_pGamePersistent->m_pGShaderConstants->hud_params.x = bInZoom;  //--#SM+#--
+			g_pGamePersistent->m_pGShaderConstants->hud_params.x = pWeapon->GetZRotatingFactor();  //--#SM+#--
 			g_pGamePersistent->m_pGShaderConstants->hud_params.y = pWeapon->GetSecondVPFov(); //--#SM+#--
 			g_pGamePersistent->m_pGShaderConstants->hud_params.z = bUseMark; //--#SM+#--
 			g_pGamePersistent->m_pGShaderConstants->m_blender_mode.x = bNVEnbl;  //--#SM+#--
@@ -1670,6 +1669,20 @@ void CActor::OnItemDrop			(CInventoryItem *inventory_item)
 	CArtefact* artefact = smart_cast<CArtefact*>(inventory_item);
 	if(artefact && artefact->m_eItemPlace == eItemPlaceBelt)
 		MoveArtefactBelt(artefact, false);
+
+	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(inventory_item);
+	if (outfit && inventory_item->m_eItemPlace == eItemPlaceSlot)
+	{
+		outfit->ApplySkinModel(this, false, false);
+	}
+
+	CWeapon* weapon = smart_cast<CWeapon*>(inventory_item);
+	if (weapon && inventory_item->m_eItemPlace == eItemPlaceBelt)
+	{
+		weapon->OnZoomOut();
+		if (weapon->GetRememberActorNVisnStatus())
+			weapon->EnableActorNVisnAfterZoom();
+	}
 }
 
 

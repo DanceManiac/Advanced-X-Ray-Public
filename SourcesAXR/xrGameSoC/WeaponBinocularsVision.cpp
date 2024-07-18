@@ -18,7 +18,7 @@
 #include "HUDManager.h"
 #include "ui/UIMainIngameWnd.h"
 
-#define RECT_SIZE	16
+#define RECT_SIZE	11
 
 struct FindVisObjByObject{
 	const CObject*			O;
@@ -67,6 +67,7 @@ void SBinocVisibleObj::Update()
 {
 	m_flags.set		(	flVisObjNotValid,TRUE);
 
+	if(!m_object->Visual())			return;
 
 	Fbox		b		= m_object->Visual()->getVisData().box;
 
@@ -98,8 +99,7 @@ void SBinocVisibleObj::Update()
 	mn.y		= (1.f - mn.y)/2.f * UI_BASE_HEIGHT;
 	mx.y		= (1.f - mx.y)/2.f * UI_BASE_HEIGHT;
 
-	float hud_info_x	= HUD().GetUI()->UIMainIngameWnd->hud_info_x * 0.025f;
-	float hud_info_y	= HUD().GetUI()->UIMainIngameWnd->hud_info_y * 0.025f;
+	CUIMainIngameWnd* pMaingame = HUD().GetUI()->UIMainIngameWnd;
 
 	int hud_info_r_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_e;
 	int hud_info_g_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_e;
@@ -119,6 +119,12 @@ void SBinocVisibleObj::Update()
 	u32 C_ON_ENEMY		= color_rgba(hud_info_r_e, hud_info_g_e, hud_info_b_e, hud_info_a_e);
 	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);
 	u32 C_ON_FRIEND		= color_rgba(hud_info_r_f, hud_info_g_f, hud_info_b_f, hud_info_a_f);
+
+	if(mx.x-mn.x<RECT_SIZE)
+		mx.x = mn.x+RECT_SIZE;
+
+	if(mx.y-mn.y<RECT_SIZE)
+		mx.y = mn.y+RECT_SIZE;
 
 	if (m_flags.is(flTargetLocked)){
 		cur_rect.lt.set	(mn);
@@ -186,23 +192,22 @@ void SBinocVisibleObj::Update()
 		}
 	}
 
-	m_lt.SetWndPos		( (cur_rect.lt.x)+2,	(cur_rect.lt.y)+2 );
-	m_lb.SetWndPos		( (cur_rect.lt.x)+2,	(cur_rect.rb.y)-14 );
-	m_rt.SetWndPos		( (cur_rect.rb.x)-14,	(cur_rect.lt.y)+2 );
-	m_rb.SetWndPos		( (cur_rect.rb.x)-14,	(cur_rect.rb.y)-14 );
+	m_lt.SetWndPos		( Fvector2().set((cur_rect.lt.x),	(cur_rect.lt.y)) );
+	m_lb.SetWndPos		( Fvector2().set((cur_rect.lt.x),	(cur_rect.rb.y)) );
+	m_rt.SetWndPos		( Fvector2().set((cur_rect.rb.x),	(cur_rect.lt.y)) );
+	m_rb.SetWndPos		( Fvector2().set((cur_rect.rb.x),	(cur_rect.rb.y)) );
 
-	m_flags.set		(flVisObjNotValid, FALSE);
+	m_flags.set			(flVisObjNotValid, FALSE);
 }
 
 
-CBinocularsVision::CBinocularsVision(CWeaponBinoculars* parent)
+CBinocularsVision::CBinocularsVision(const shared_str& sect)
 {
-	m_parent = parent;
-	Load									(m_parent->cNameSect());
+	Load							(sect);
 }
+
 CBinocularsVision::~CBinocularsVision()
 {
-	m_snd_found.destroy	();
 	delete_data			(m_active_objects);
 }
 
@@ -252,12 +257,12 @@ void CBinocularsVision::Update()
 		}else{
 			m_active_objects.push_back		(xr_new<SBinocVisibleObj>() );
 			SBinocVisibleObj* new_vis_obj	= m_active_objects.back();
-			new_vis_obj->m_flags.set			(flVisObjNotValid,FALSE);
+			new_vis_obj->m_flags.set		(flVisObjNotValid,FALSE);
 			new_vis_obj->m_object			= object_;
 			new_vis_obj->create_default		(m_frame_color.get());
-			new_vis_obj->m_upd_speed			= m_rotating_speed;
-			if(NULL==m_snd_found._feedback())
-				m_snd_found.play_at_pos			(0,Fvector().set(0,0,0),sm_2D);
+			new_vis_obj->m_upd_speed		= m_rotating_speed;
+			
+			m_sounds.PlaySound	("found_snd", Fvector().set(0,0,0), NULL, true);
 		}
 	}
 	std::sort								(m_active_objects.begin(), m_active_objects.end());
@@ -269,7 +274,16 @@ void CBinocularsVision::Update()
 
 	it = m_active_objects.begin();
 	for(;it!=m_active_objects.end();++it)
+	{
+		SBinocVisibleObj* visObj			= (*it);
+		
+		BOOL bLocked = visObj->m_flags.test(flTargetLocked);
+		
 		(*it)->Update						();
+		
+		if(bLocked != visObj->m_flags.test(flTargetLocked))
+			m_sounds.PlaySound	("catch_snd", Fvector().set(0,0,0), NULL, true);
+	}
 
 }
 
@@ -284,7 +298,8 @@ void CBinocularsVision::Load(const shared_str& section)
 {
 	m_rotating_speed	= pSettings->r_float(section,"vis_frame_speed");
 	m_frame_color		= pSettings->r_fcolor(section,"vis_frame_color");
-	m_snd_found.create	(pSettings->r_string(section,"found_snd"),st_Effect,sg_SourceType);
+	m_sounds.LoadSound	(section.c_str(),"found_snd", "found_snd", false, SOUND_TYPE_NO_SOUND);
+	m_sounds.LoadSound	(section.c_str(),"catch_snd", "catch_snd", false, SOUND_TYPE_NO_SOUND);
 }
 
 void CBinocularsVision::remove_links(CObject *object)

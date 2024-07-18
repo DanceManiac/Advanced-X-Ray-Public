@@ -241,7 +241,7 @@ void CSE_ALifeTraderAbstract::STATE_Read	(NET_Packet &tNetPacket, u16 size)
 			load_data			(m_character_name, tNetPacket);
 		}
 
-		if (m_wVersion > 126)
+		if (m_wVersion > 125)
 			load_data			(m_character_icon, tNetPacket);
 	}
 

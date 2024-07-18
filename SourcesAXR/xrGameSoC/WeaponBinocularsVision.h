@@ -1,7 +1,8 @@
 #pragma once
 #include "ui\uistatic.h"
+#include "HudSound.h"
+
 class CObject;
-class CWeaponBinoculars;
 
 
 enum{
@@ -31,16 +32,15 @@ class CBinocularsVision
 	typedef VIS_OBJECTS::iterator			VIS_OBJECTS_IT;
 	VIS_OBJECTS								m_active_objects;
 public:
-	CBinocularsVision			(CWeaponBinoculars* parent);
+	CBinocularsVision			(const shared_str& sect);
 	~CBinocularsVision			();
 	void	Update				();
 	void	Draw				();
 	void	remove_links		(CObject *object);
 
 protected :
-	CWeaponBinoculars*			m_parent;
 	Fcolor						m_frame_color;
 	float						m_rotating_speed;
 	void	Load				(const shared_str& section);
-	ref_sound					m_snd_found;
+	HUD_SOUND_COLLECTION_LAYERED m_sounds;
 };

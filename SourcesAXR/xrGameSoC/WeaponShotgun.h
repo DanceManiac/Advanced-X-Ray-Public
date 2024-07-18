@@ -30,6 +30,7 @@ public:
 	virtual void	UpdateSounds		();
 	virtual void	PlayAnimOpenWeapon	();
 	virtual void	PlayAnimAddOneCartridgeWeapon();
+	virtual void	PlayAnimAim			();
 	void			PlayAnimCloseWeapon	();
 
 	virtual bool	Action(s32 cmd, u32 flags);

@@ -14,15 +14,18 @@ public:
 protected:
 	virtual void	PlayAnimShoot					();
 	virtual void	PlayAnimReload					();
-	virtual void	PlayAnimShow					();
-	virtual void	PlayAnimHide					();
+	virtual void	PlayReloadSound					();
+	virtual void	PlayAnimIdle					();
 	virtual void	PlayAnimIdleMoving				();
 	virtual void	PlayAnimIdleSprint				();
+	virtual void	PlayAnimShow					();
+	virtual void	PlayAnimHide					();
+	virtual void	PlayAnimBore					();
 	virtual void	PlayAnimIdleMovingSlow			() override;
 	virtual void	PlayAnimIdleMovingCrouch		() override;
 	virtual void	PlayAnimIdleMovingCrouchSlow	() override;
-	virtual void	PlayAnimIdle					();
-	virtual void	PlayReloadSound					();
+	virtual void	PlayAnimSprintStart				() override;
+	virtual void	PlayAnimSprintEnd				() override;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

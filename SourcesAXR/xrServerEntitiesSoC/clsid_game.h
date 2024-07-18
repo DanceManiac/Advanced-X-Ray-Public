@@ -73,6 +73,7 @@
 #define CLSID_OBJECT_W_FORT			MK_CLSID('W','_','F','O','R','T',' ',' ')
 #define CLSID_OBJECT_W_BINOCULAR	MK_CLSID('W','_','B','I','N','O','C',' ')
 #define CLSID_OBJECT_W_SHOTGUN		MK_CLSID('W','_','S','H','O','T','G','N')
+#define CLSID_OBJECT_W_ASHOTGUN		MK_CLSID('W','_','A','S','H','T','G','N')
 //  [8/15/2006]
 #define CLSID_OBJECT_W_MAGAZINED	MK_CLSID('W','_','W','M','A','G','A','Z')
 //  [8/15/2006]

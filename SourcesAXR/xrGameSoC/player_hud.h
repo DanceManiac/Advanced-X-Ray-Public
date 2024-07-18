@@ -21,6 +21,7 @@ struct player_hud_motion
 	shared_str				m_alias_name;
 	shared_str				m_base_name;
 	shared_str				m_additional_name;
+	float					m_anim_speed;
 	xr_vector<motion_descr>	m_animations;
 };
 
@@ -185,7 +186,7 @@ struct hud_item_measures
 	Fvector							m_item_attach[2];//pos,rot
 	Fvector							m_collision_offset[2];//pos,rot
 
-	Fvector							m_hands_offset[2][3];//pos,rot/ normal,aim,GL
+	Fvector							m_hands_offset[2][4];//pos,rot/ normal,aim,GL,aim alt
 
 	u16								m_fire_bone;
 	Fvector							m_fire_point_offset;
@@ -262,7 +263,7 @@ struct attachable_hud_item
 //props
 	u32								m_upd_firedeps_frame;
 	void		tune				(Ivector values);
-	u32			anim_play			(const shared_str& anim_name, BOOL bMixIn, const CMotionDef*& md, u8& rnd);
+	u32			anim_play			(const shared_str& anim_name, BOOL bMixIn, const CMotionDef*& md, u8& rnd, float speed = 1.f);
 
 };
 
@@ -300,10 +301,12 @@ public:
 
 	void			calc_transform		(u16 attach_slot_idx, const Fmatrix& offset, Fmatrix& result);
 	void			tune				(Ivector values);
+	void			SaveCfg				(const int idx) const;
 	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed, IKinematicsAnimated* itemModel);
 	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);
 	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
+	void			OnMotionMark		(const motion_marks&);
 
 	IKinematicsAnimated* Model			() { return m_model; }
 private:
@@ -332,6 +335,10 @@ private:
 	Fvector								script_anim_offset[2];
 	u32									script_anim_end;
 	float								script_anim_offset_factor;
+	const CMotionDef*					m_current_motion_def;
+	u32									m_dwMotionCurrTm;
+	u32									m_dwMotionStartTm;
+	u32									m_dwMotionEndTm;
 	bool								m_bStopAtEndAnimIsRunning;
 	bool								script_anim_item_attached;
 	IKinematicsAnimated* script_anim_item_model;

@@ -12,8 +12,8 @@
 #include "game_cl_single.h"
 #include "firedeps.h"
 #include "ui\UIWindow.h"
-
-#include "xrserver_objects_alife_items.h"
+#include "xrServer_Objects_ALife_Items.h"
+#include "WeaponAttaches.h"
 
 // refs
 class CEntity;
@@ -23,7 +23,10 @@ class CSE_ALifeItemWeaponAmmo;
 class CWeaponMagazined;
 class CParticlesObject;
 class CUIWindow;
+class CBinocularsVision;
+class CNightVisionEffector;
 class CLAItem;
+class WeaponAttach;
 
 #define WEAPON_INDOOR_HEMI_FACTOR 0.01f         // Сила освещённости персонжаей солнечным светом, ниже которой считается что персонаж в помещении 
 #define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f   // Коэфицент на который домножается громкость звука эха от выстрела, если он был сделат от 1-го лица
@@ -44,21 +47,26 @@ public:
 	bool					bNVsecondVPstatus;
 
 	virtual	bool			bInZoomRightNow() const { return m_fZoomRotationFactor > 0.05; }
-	IC		bool			bIsSecondVPZoomPresent() const { return GetSecondVPZoomFactor() > 0.000f; }
+	IC		bool			bIsSecondVPZoomPresent() const { return (GetSecondVPZoomFactor() > 0.000f && !m_bAltZoomActive); }
 	bool					bLoadAltScopesParams(LPCSTR section);
+	bool					bReloadSectionScope(LPCSTR section);
 	bool					bChangeNVSecondVPStatus();
 	virtual	bool            bMarkCanShow() { return IsZoomed(); }
+	virtual void			UpdateAddonsTransform(bool for_hud);
 
 
 	virtual void			UpdateSecondVP(bool bInGrenade = false);
 	void					Load3DScopeParams(LPCSTR section);
 	void					LoadOriginalScopesParams(LPCSTR section);
 	void					LoadCurrentScopeParams(LPCSTR section);
+	void					LoadSilencerParams(LPCSTR section);
+	void					LoadGrenadeLauncherParams(LPCSTR section);
 	void					LoadLaserDesignatorParams(LPCSTR section);
 	void					LoadTacticalTorchParams(LPCSTR section);
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
+	void					UpdateAimOffsets();
 
 	// Up
 	// Magazine system & etc
@@ -66,6 +74,8 @@ public:
 	int						bullet_cnt;
 	int						last_hide_bullet;
 	bool					bHasBulletsToHide;
+
+	xr_vector<WeaponAttach*> m_weapon_attaches;
 
 	virtual void			HUD_VisualBulletUpdate(bool force = false, int force_idx = -1);
 
@@ -102,7 +112,7 @@ public:
 	virtual void			shedule_Update		(u32 dt);
 
 	virtual void			renderable_Render	();
-	//virtual void			render_hud_mode		();
+	virtual void			render_hud_mode		();
 	virtual bool			need_renderable		();
 
 	virtual void			render_item_ui		();
@@ -188,7 +198,7 @@ public:
 
 	BOOL					IsMisfire			() const;
 	BOOL					CheckForMisfire		();
-
+	BOOL					IsEmptyMagazine		() const;
 
 	BOOL					AutoSpawnAmmo		() const		{ return m_bAutoSpawnAmmo; };
 	bool					IsTriStateReload	() const		{ return m_bTriStateReload;}
@@ -262,6 +272,14 @@ public:
 
 	u8		GetAddonsState						()		const		{return m_flagsAddOnState;};
 	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}
+
+	bool	IsAltAimEnabled						() const {return m_bAltZoomEnabled;}
+	bool	GetAltZoomStatus					() const {return m_bAltZoomActive;}
+	bool	SetAltZoomStatus					(bool status) { m_bAltZoomActive = status; }
+	void	SwitchZoomMode						();
+
+	void	ModifyUpgradeBones					(shared_str bone_name, bool show);
+	void	RemoveBones							(xr_vector<shared_str>& m_all_bones, const xr_vector<shared_str>& bones_to_remove);
 protected:
 	//состояние подключенных аддонов
 	u8 m_flagsAddOnState;
@@ -336,11 +354,14 @@ protected:
 	//мы перемещаем HUD  
 	float			m_fZoomRotationFactor;
 	float           m_fSecondVPFovFactor;
+	float           m_f3dZoomFactor; //коэффициент мирового зума при использовании второго вьюпорта
 	bool			m_bHideCrosshairInZoom;
 
 	shared_str		m_sUseBinocularVision;
 	BOOL			m_bUseDynamicZoom;
 	shared_str		m_sUseZoomPostprocess;
+	CBinocularsVision*		m_pVision;
+	CNightVisionEffector*	m_pNight_vision;
 public:
 
 	IC bool					IsZoomEnabled		()	const	{return m_bZoomEnabled;}
@@ -353,7 +374,7 @@ public:
 
 			bool			IsPartlyReloading	();
 
-			bool			ZoomHideCrosshair	()			{return m_bHideCrosshairInZoom || ZoomTexture();}
+			bool			ZoomHideCrosshair	();
 
 	IC float				GetZoomFactor		() const		{	return m_fCurrentZoomFactor;	}
 	IC void					SetZoomFactor		(float f) 		{m_fCurrentZoomFactor = f;}
@@ -394,6 +415,10 @@ protected:
 	// 0-используется без участия рук, 1-одна рука, 2-две руки
 	EHandDependence			eHandDependence;
 	bool					m_bIsSingleHanded;
+	bool					m_bUseAimAnmDirDependency;
+	bool					m_bUseScopeAimMoveAnims;
+	bool					m_bAltZoomEnabled;
+	bool					m_bAltZoomActive;
 
 public:
 	//загружаемые параметры
@@ -432,6 +457,7 @@ protected:
 
 	virtual bool			MovingAnimAllowedNow	();
 	virtual bool			IsMisfireNow			();
+	virtual bool			IsMagazineEmpty			();
 	virtual void			OnStateSwitch			(u32 S, u32 oldState = 0);
 	virtual void			OnAnimationEnd			(u32 state);
 
@@ -580,12 +606,16 @@ public:
 	shared_str				m_ammoName;
 	BOOL					m_bHasTracers;
 	bool					m_bShowWpnStats;
+	bool					m_bEnableBoreDof;
+	bool					m_bUseAimSilShotAnim;
 	u8						m_u8TracerColorID;
 	u32						m_set_next_ammoType_on_reload;
 	// Multitype ammo support
 	xr_vector<CCartridge>	m_magazine;
 	CCartridge				m_DefaultCartridge;
 	float					m_fCurrentCartirdgeDisp;
+
+	Fmatrix					m_scopeAttachTransform{};
 
 		bool				unlimited_ammo				();
 	IC	bool				can_be_strapped				() const {return m_can_be_strapped;};
@@ -620,10 +650,13 @@ public:
 private:
 	float					m_hit_probability[egdCount];
 
+	bool					m_bRememberActorNVisnStatus;
 public:
 	const float				&hit_probability			() const;
 
 	virtual void			OnBulletHit					();
+			bool			GetRememberActorNVisnStatus	() { return m_bRememberActorNVisnStatus; };
+	virtual void			EnableActorNVisnAfterZoom	();
 			int				GetSuitableAmmoTotal		(bool use_item_to_spawn = false) const;
 
 virtual void processing_deactivate() override

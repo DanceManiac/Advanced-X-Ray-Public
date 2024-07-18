@@ -39,6 +39,7 @@ public:
 	virtual void	InitAddons();
 	virtual bool	UseScopeTexture();
 	virtual	float	CurrentZoomFactor	();
+	virtual	u8		GetCurrentHudOffsetIdx();
 
 	
 	virtual void	OnStateSwitch	(u32 S, u32 oldState);
@@ -65,6 +66,8 @@ public:
 
 	virtual bool	IsNecessaryItem	    (const shared_str& item_sect);
 
+	bool			IsGrenadeMode		() const override { return m_bGrenadeMode; }
+
 	//виртуальные функции для проигрывания анимации HUD
 	virtual void	PlayAnimShow	();
 	virtual void	PlayAnimHide	();
@@ -72,6 +75,10 @@ public:
 	virtual void	PlayAnimIdle	();
 	virtual void	PlayAnimShoot	();
 	virtual void	PlayAnimModeSwitch();
+	virtual void	PlayAnimBore	();
+	virtual void	PlayAnimFireMode();
+	virtual void	PlayAnimLaserSwitch();
+	virtual void	PlayAnimFlashlightSwitch();
 
 	//дополнительные параметры патронов 
 	//для подствольника
@@ -85,6 +92,10 @@ public:
 	bool					m_bGrenadeMode;
 
 	CCartridge				m_DefaultCartridge2;
+
+	int						iAmmoElapsedMain;
+
+	bool					IsMainMagazineEmpty() { return iAmmoElapsedMain <= 0; }
 
 	virtual void UpdateGrenadeVisibility(bool visibility);
 

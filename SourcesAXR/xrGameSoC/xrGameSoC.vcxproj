@@ -590,6 +590,7 @@
     <ClInclude Include="abstract_location_selector_inline.h" />
     <ClInclude Include="abstract_path_manager.h" />
     <ClInclude Include="abstract_path_manager_inline.h" />
+    <ClInclude Include="ai\monsters\monster_aura.h" />
     <ClInclude Include="AntigasFilter.h" />
     <ClInclude Include="ArtefactContainer.h" />
     <ClInclude Include="Battery.h" />
@@ -1533,6 +1534,8 @@
     <ClInclude Include="ui\UIBoosterInfo.h" />
     <ClInclude Include="ui\UIHudStatesWnd.h" />
     <ClInclude Include="ui\UIInventoryItemParams.h" />
+    <ClInclude Include="WeaponAttaches.h" />
+    <ClInclude Include="WeaponAutomaticShotgun.h" />
     <ClInclude Include="xrClientsPool.h" />
     <ClInclude Include="SleepEffector.h" />
     <ClInclude Include="ai\Monsters\ai_monster_effector.h" />
@@ -1961,6 +1964,7 @@
     <ClCompile Include="ActorSkills.cpp" />
     <ClCompile Include="actor_script.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
+    <ClCompile Include="ai\monsters\monster_aura.cpp" />
     <ClCompile Include="AntigasFilter.cpp" />
     <ClCompile Include="ArtefactContainer.cpp" />
     <ClCompile Include="Battery.cpp" />
@@ -4287,6 +4291,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="WeaponAttaches.cpp" />
+    <ClCompile Include="WeaponAutomaticShotgun.cpp" />
     <ClCompile Include="xrClientsPool.cpp" />
     <ClCompile Include="xr_Client_BattlEye.cpp" />
     <ClCompile Include="CameraFirstEye.cpp" />

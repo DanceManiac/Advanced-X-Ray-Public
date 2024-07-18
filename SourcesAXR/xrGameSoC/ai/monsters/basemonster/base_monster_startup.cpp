@@ -66,6 +66,15 @@ void CBaseMonster::Load(LPCSTR section)
 	m_melee_rotation_factor			= READ_IF_EXISTS(pSettings,r_float,section,"Melee_Rotation_Factor", 1.5f);
 	berserk_always					= !!READ_IF_EXISTS(pSettings,r_bool,section,"berserk_always", false);
 
+	//------------------------------------
+	// Auras
+	//------------------------------------
+
+	m_psy_aura.load_from_ini		(pSettings, section);
+	m_radiation_aura.load_from_ini	(pSettings, section);
+	m_fire_aura.load_from_ini		(pSettings, section);
+	m_base_aura.load_from_ini		(pSettings, section);
+
 	m_bVolumetricLights				= READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
 	m_fVolumetricQuality			= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
 	m_fVolumetricDistance			= READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
@@ -90,6 +99,10 @@ void CBaseMonster::Load(LPCSTR section)
 
 	m_bDropItemAfterSuperAttack		= READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
 	m_iSuperAttackDropItemPer		= READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
+
+	m_bEnablePsyAuraAfterDie		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
+	m_bEnableRadAuraAfterDie		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
+	m_bEnableFireAuraAfterDie		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
 }
 
 // if sound is absent just do not load that one

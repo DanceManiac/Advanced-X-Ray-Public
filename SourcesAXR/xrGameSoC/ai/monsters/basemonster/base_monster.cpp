@@ -43,7 +43,10 @@
 #include "../../../ai_space.h"
 #include "script_engine.h"
 
-CBaseMonster::CBaseMonster()
+CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"), 
+								m_fire_aura(this, "fire"), 
+								m_radiation_aura(this, "radiation"), 
+								m_base_aura(this, "base")
 {
 	m_pPhysics_support=xr_new<CCharacterPhysicsSupport>(CCharacterPhysicsSupport::etBitting,this);
 	
@@ -91,6 +94,10 @@ CBaseMonster::CBaseMonster()
 	m_bDisableDieLights				= true;
 	m_bDropItemAfterSuperAttack		= false;
 	m_iSuperAttackDropItemPer		= 50;
+
+	m_bEnablePsyAuraAfterDie		= false;
+	m_bEnableRadAuraAfterDie		= false;
+	m_bEnableFireAuraAfterDie		= false;
 }
 
 
@@ -133,6 +140,11 @@ void CBaseMonster::shedule_Update(u32 dt)
 	inherited::shedule_Update	(dt);
 	control().update_schedule	();
 
+	m_psy_aura.update_schedule();
+	m_fire_aura.update_schedule();
+	m_base_aura.update_schedule();
+	m_radiation_aura.update_schedule();
+
 	Morale.update_schedule		(dt);
 
 	m_anomaly_detector->update_schedule();
@@ -153,6 +165,11 @@ void CBaseMonster::shedule_Update(u32 dt)
 void CBaseMonster::Die(CObject* who)
 {
 	if (StateMan) StateMan->critical_finalize();
+
+	m_psy_aura.on_monster_death();
+	m_radiation_aura.on_monster_death();
+	m_fire_aura.on_monster_death();
+	m_base_aura.on_monster_death();
 
 	inherited::Die(who);
 
@@ -572,6 +589,43 @@ void CBaseMonster::OnEvent(NET_Packet& P, u16 type)
 			
 		break;
 	}
+}
+
+float CBaseMonster::get_psy_influence()
+{
+	return m_psy_aura.calculate();
+}
+
+float CBaseMonster::get_radiation_influence()
+{
+	return m_radiation_aura.calculate();
+}
+
+float CBaseMonster::get_fire_influence()
+{
+	return m_fire_aura.calculate();
+}
+
+void CBaseMonster::play_detector_sound()
+{
+	m_psy_aura.play_detector_sound();
+	m_radiation_aura.play_detector_sound();
+	m_fire_aura.play_detector_sound();
+}
+
+bool CBaseMonster::get_enable_psy_aura_after_die()
+{
+	return m_bEnablePsyAuraAfterDie;
+}
+
+bool CBaseMonster::get_enable_rad_aura_after_die()
+{
+	return m_bEnableRadAuraAfterDie;
+}
+
+bool CBaseMonster::get_enable_fire_aura_after_die()
+{
+	return m_bEnableFireAuraAfterDie;
 }
 
 void CBaseMonster::ReloadDamageAndAnimations()

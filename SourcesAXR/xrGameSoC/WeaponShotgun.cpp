@@ -40,12 +40,16 @@ void CWeaponShotgun::Load	(LPCSTR section)
 	{
 		m_sounds.LoadSound(section, "snd_open_weapon", "m_sndOpen", false, m_eSoundOpen);
 		m_sounds.LoadSound(section, "snd_add_cartridge", "m_sndAddCartridge", false, m_eSoundAddCartridge);
+
+		if (WeaponSoundExist(section, "snd_add_cartridge_empty", true))
+			m_sounds.LoadSound(section, "snd_add_cartridge_empty", "sndAddCartridgeEmpty", false, m_eSoundAddCartridge);
+
+		if (WeaponSoundExist(section, "snd_reload_misfire", true))
+			m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", false, m_eSoundOpen);
+
 		m_sounds.LoadSound(section, "snd_close_weapon", "m_sndClose_2", false, m_eSoundClose_2);
 	};
 }
-
-
-
 
 void CWeaponShotgun::OnShot () 
 {
@@ -183,7 +187,7 @@ bool CWeaponShotgun::Action			(s32 cmd, u32 flags)
 {
 	if(inherited::Action(cmd, flags)) return true;
 
-	if(	m_bTriStateReload && GetState()==eReload &&
+	if(	m_bTriStateReload && GetState()==eReload && !IsMisfire() &&
 		cmd==kWPN_FIRE && flags&CMD_START &&
 		m_sub_state==eSubstateReloadInProcess		)//остановить перезагрузку
 	{
@@ -211,20 +215,25 @@ void CWeaponShotgun::OnAnimationEnd(u32 state)
 	if(!m_bTriStateReload || state != eReload)
 		return inherited::OnAnimationEnd(state);
 
-	switch(m_sub_state){
-		case eSubstateReloadBegin:{
-			m_sub_state = eSubstateReloadInProcess;
+	switch(m_sub_state)
+	{
+		case eSubstateReloadBegin:
+		{
+			m_sub_state = IsMisfire() ? eSubstateReloadEnd : eSubstateReloadInProcess;
 			SwitchState(eReload);
 		}break;
 
-		case eSubstateReloadInProcess:{
-			if( 0 != AddCartridge(1) ){
+		case eSubstateReloadInProcess:
+		{
+			if( 0 != AddCartridge(1) )
+			{
 				m_sub_state = eSubstateReloadEnd;
 			}
 			SwitchState(eReload);
 		}break;
 
-		case eSubstateReloadEnd:{
+		case eSubstateReloadEnd:
+		{
 			m_sub_state = eSubstateReloadBegin;
 			SwitchState(eIdle);
 		}break;
@@ -242,9 +251,14 @@ void CWeaponShotgun::Reload()
 
 void CWeaponShotgun::TriStateReload()
 {
-	if( !HaveCartridgeInInventory(1) )return;
-	m_sub_state			= eSubstateReloadBegin;
-	SwitchState			(eReload);
+	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire())
+		return;
+
+	if (HaveCartridgeInInventory(1) || IsMisfire())
+	{
+		m_sub_state = eSubstateReloadBegin;
+		SwitchState(eReload);
+	}
 }
 
 void CWeaponShotgun::OnStateSwitch(u32 S, u32 oldState)
@@ -256,7 +270,8 @@ void CWeaponShotgun::OnStateSwitch(u32 S, u32 oldState)
 
 	CWeapon::OnStateSwitch(S, oldState);
 
-	if( m_magazine.size() == (u32)iMagazineSize || !HaveCartridgeInInventory(1) ){
+	if ((m_magazine.size() == (u32)iMagazineSize) && !IsMisfire() || !HaveCartridgeInInventory(1) && !IsMisfire())
+	{
 			switch2_EndReload		();
 			m_sub_state = eSubstateReloadEnd;
 	};
@@ -264,7 +279,7 @@ void CWeaponShotgun::OnStateSwitch(u32 S, u32 oldState)
 	switch (m_sub_state)
 	{
 	case eSubstateReloadBegin:
-		if( HaveCartridgeInInventory(1) )
+		if (HaveCartridgeInInventory(1) || IsMisfire())
 			switch2_StartReload	();
 		break;
 	case eSubstateReloadInProcess:
@@ -279,14 +294,22 @@ void CWeaponShotgun::OnStateSwitch(u32 S, u32 oldState)
 
 void CWeaponShotgun::switch2_StartReload()
 {
-	PlaySound			("m_sndOpen", get_LastFP());
+	if (!IsMisfire())
+		PlaySound("m_sndOpen", get_LastFP());
+	else
+		PlaySound("sndReloadMisfire", get_LastFP());
+
 	PlayAnimOpenWeapon	();
 	SetPending(TRUE);
 }
 
 void CWeaponShotgun::switch2_AddCartgidge	()
 {
-	PlaySound	("m_sndAddCartridge", get_LastFP());
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_add_cartridge_empty") && iAmmoElapsed == 0)
+		PlaySound("sndAddCartridgeEmpty", get_LastFP());
+	else
+		PlaySound("sndAddCartridge", get_LastFP());
+
 	PlayAnimAddOneCartridgeWeapon();
 	SetPending(TRUE);
 }
@@ -294,24 +317,97 @@ void CWeaponShotgun::switch2_AddCartgidge	()
 void CWeaponShotgun::switch2_EndReload	()
 {
 	SetPending(FALSE);
-	PlaySound			("m_sndClose_2", get_LastFP());
-	PlayAnimCloseWeapon	();
+
+	if (!IsMisfire())
+	{
+		PlaySound("sndClose_2", get_LastFP());
+		PlayAnimCloseWeapon();
+	}
+	else
+	{
+		bMisfire = false;
+
+		if (GetAmmoElapsed() > 0) //xrKrodin: хз, надо ли удал€ть заклинивший патрон в данном случае. Ќадо подумать над этим.
+			SetAmmoElapsed(GetAmmoElapsed() - 1);
+
+		SwitchState(eIdle);
+	}
 }
 
 void CWeaponShotgun::PlayAnimOpenWeapon()
 {
 	VERIFY(GetState()==eReload);
-	PlayHUDMotionIfExists({"anim_open_weapon", "anm_open_weapon", "anm_open"}, FALSE, GetState());
+
+	if (IsMisfire())
+		PlayHUDMotionIfExists({ "anm_reload_misfire", "anm_close", "anim_close_weapon" }, true, GetState());
+	else if (iAmmoElapsed == 0)
+		PlayHUDMotionIfExists({ "anm_open_empty", "anm_open_weapon", "anm_open", "anim_open_weapon" }, false, GetState());
+	else
+		PlayHUDMotionIfExists({"anim_open_weapon", "anm_open_weapon", "anm_open"}, FALSE, GetState());
 }
 void CWeaponShotgun::PlayAnimAddOneCartridgeWeapon()
 {
 	VERIFY(GetState()==eReload);
-	PlayHUDMotionIfExists({"anim_add_cartridge", "anm_add_cartridge"}, FALSE, GetState());
+
+	if (iAmmoElapsed == 0)
+		PlayHUDMotionIfExists({ "anm_add_cartridge_empty", "anm_add_cartridge", "anim_add_cartridge" }, true, GetState());
+	else
+		PlayHUDMotionIfExists({"anim_add_cartridge", "anm_add_cartridge"}, FALSE, GetState());
 }
 void CWeaponShotgun::PlayAnimCloseWeapon()
 {
 	VERIFY(GetState()==eReload);
 	PlayHUDMotionIfExists({"anim_close_weapon", "anm_close_weapon", "anm_close"}, FALSE, GetState());
+}
+
+void CWeaponShotgun::PlayAnimAim()
+{
+	if (IsRotatingToZoom())
+	{
+		if (isHUDAnimationExist("anm_idle_aim_start"))
+		{
+			PlayHUDMotionNew("anm_idle_aim_start", true, GetState());
+			return;
+		}
+	}
+
+	if (const char* guns_aim_anm = GetAnimAimName())
+	{
+		if (isHUDAnimationExist(guns_aim_anm))
+		{
+			PlayHUDMotionNew(guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (strstr(guns_aim_anm, "_jammed"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm);
+		new_guns_aim_anm[strlen(guns_aim_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+	else if (strstr(guns_aim_anm, "_empty"))
+	{
+		char new_guns_aim_anm[256];
+		strcpy(new_guns_aim_anm, guns_aim_anm);
+		new_guns_aim_anm[strlen(guns_aim_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return;
+		}
+	}
+
+	if (isHUDAnimationExist("anm_idle_aim"))
+		PlayHUDMotion("anm_idle_aim", TRUE, NULL, GetState());
+	else if (isHUDAnimationExist("anim_idle_aim"))
+		PlayHUDMotion("anim_idle_aim", TRUE, NULL, GetState());
 }
 
 bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)

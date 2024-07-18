@@ -11,7 +11,7 @@
 #include "debug_renderer.h"
 
 int hud_adj_mode		= 0;
-u32 hud_adj_item_idx	= 0;
+int hud_adj_item_idx	= 0;
 // "press SHIFT+NUM 0-return 1-hud_pos 2-hud_rot 3-itm_pos 4-itm_rot 5-fire_point 6-fire_2_point 7-shell_point";
 
 extern ENGINE_API float hud_adj_delta_pos, hud_adj_delta_rot;

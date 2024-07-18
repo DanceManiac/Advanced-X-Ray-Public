@@ -74,6 +74,7 @@ public:
 	float							m_fInventoryCapacity;
 
 	shared_str						m_NightVisionSect;
+	shared_str						m_PlayerHudSection;
 	
 	xr_vector<shared_str>			m_SuitableFilters;
 	xr_vector<shared_str>			m_SuitableRepairKits;
@@ -100,6 +101,8 @@ public:
 
 	virtual void			net_Export			(NET_Packet& P);
 	virtual void			net_Import			(NET_Packet& P);
+
+			void			ApplySkinModel		(CActor* pActor, bool bDress, bool bHUDOnly);
 	
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

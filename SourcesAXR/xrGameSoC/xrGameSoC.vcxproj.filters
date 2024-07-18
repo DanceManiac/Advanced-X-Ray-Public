@@ -2359,6 +2359,9 @@
     <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch">
       <UniqueIdentifier>{6daa3286-918b-4a86-b51d-63e31911938c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun">
+      <UniqueIdentifier>{449dbe9d-6e97-44c9-a755-a6ca00582d78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mt_config.h">
@@ -6733,6 +6736,15 @@
     <ClInclude Include="TacticalTorch.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch</Filter>
     </ClInclude>
+    <ClInclude Include="ai\monsters\monster_aura.h">
+      <Filter>AI\AMonsters\common\components</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponAttaches.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponAutomaticShotgun.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -10009,6 +10021,15 @@
     </ClCompile>
     <ClCompile Include="TacticalTorch.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons\TacticalTorch</Filter>
+    </ClCompile>
+    <ClCompile Include="ai\monsters\monster_aura.cpp">
+      <Filter>AI\AMonsters\common\components</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAttaches.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Custom Weapon\Addons</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponAutomaticShotgun.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

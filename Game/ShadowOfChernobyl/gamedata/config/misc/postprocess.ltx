@@ -1,5 +1,5 @@
 [postprocess_base]
-ppe_file		= radiation.ppe
+pp_eff_name		= radiation.ppe
 duality_h		= .015
 duality_v		= .015
 blur			= 1
@@ -11,7 +11,7 @@ noise_color		= 255,255,255,70
 ;noise_color		= 200,180,50,0
 
 [postprocess_anomaly]
-ppe_file		= radiation.ppe
+pp_eff_name		= radiation.ppe
 duality_h		= 0
 duality_v		= 0
 blur			= 1
@@ -28,50 +28,77 @@ noise_color		= 155,155,155,70
 ; New zone postprocess
 ;---------------------------------------------------------------------
 [postprocess_new]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.5
 radius_max		= 1.1
 
 
 [postprocess_rad]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.1
 radius_max		= 0.9
 
 [postprocess_psi]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.5
 radius_max		= 1.1
 
 
 [postprocess_death]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.5
 radius_max		= 1.1
 
 [postprocess_flame]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.5
 radius_max		= 0.8
 
 [postprocess_fuzz]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.5
 radius_max		= 0.8
 
 [postprocess_gravi]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.3
 radius_max		= 1.0
 
 [postprocess_electra]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.5
 radius_max		= 0.9
 
 
 [mosquito_bald]
-ppe_file		= radiation.ppe
+pp_eff_cyclic	= 1
+pp_eff_overlap  = true
+
+pp_eff_name		= radiation.ppe
 radius_min		= 0.2
 radius_max		= 2.7
 ;---------------------------------------------------------------------

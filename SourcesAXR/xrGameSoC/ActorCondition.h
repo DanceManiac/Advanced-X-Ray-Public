@@ -132,6 +132,8 @@ public:
 			float	xr_stdcall	GetDrugs			()	{return m_fDrugs;}
 			float	xr_stdcall	GetFrostbite		()	{return m_fFrostbite;}
 
+			void	AffectDamage_InjuriousMaterialAndMonstersInfluence();
+
 public:
 	IC		CActor		&object						() const
 	{
@@ -247,6 +249,7 @@ public:
 	
 	float	m_MaxWalkWeight;
 
+	float	m_f_time_affected;
 	float	m_max_power_restore_speed;
 	float	m_max_wound_protection;
 	float	m_max_fire_wound_protection;

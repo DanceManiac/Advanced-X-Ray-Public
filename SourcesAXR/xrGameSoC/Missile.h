@@ -1,7 +1,6 @@
 #pragma once
 #include "hud_item_object.h"
 #include "HudSound.h"
-#include "ai_sounds.h"
 
 struct dContact;
 struct SGameMtl;
@@ -9,20 +8,19 @@ class CMissile : public CHudItemObject
 {
 	typedef CHudItemObject inherited;
 public:
-	enum EMissileStates
-	{
-		eThrowStart = eLastBaseState + 1,
+	enum EMissileStates{
+		eThrowStart = eLastBaseState+1,
 		eReady,
 		eThrow,
 		eThrowEnd,
+		eThrowQuick,
 	};
-
 							CMissile					();
 	virtual					~CMissile					();
 
 	virtual BOOL			AlwaysTheCrow				()				{ return TRUE; }
-	virtual void			render_item_ui				();
-	virtual bool			render_item_ui_query		();
+	virtual void			render_item_ui					();
+	virtual bool			render_item_ui_query					();
 
 	virtual void			reinit						();
 	virtual CMissile*		cast_missile				()				{return this;}
@@ -40,28 +38,24 @@ public:
 	virtual void 			OnEvent						(NET_Packet& P, u16 type);
 
 	virtual void 			OnAnimationEnd				(u32 state);
-	virtual void			OnMotionMark				(u32 state, const motion_marks& M);
+	virtual void			OnMotionMark				(u32 state, const motion_marks&);
 
-	virtual void 			Show();
-	virtual void 			Hide();
 
 	virtual void 			Throw();
 	virtual void 			Destroy();
 
 	virtual bool 			Action						(s32 cmd, u32 flags);
 
-//.	IC u32		 			State						()				{return m_state;}
-	virtual void 			State						(u32 state, u32 oldState = 0);
-	virtual void 			OnStateSwitch				(u32 S, u32 oldState = 0);
-	virtual void			PlayAnimIdle				();
+	virtual void 			State						(u32 state);
+	virtual void 			OnStateSwitch				(u32 S, u32 oldState);
 	virtual void			GetBriefInfo				(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
 protected:
+	virtual void			UpdateFireDependencies_internal	();
 	virtual void			UpdateXForm						();
 	void					UpdatePosition					(const Fmatrix& trans);
 	void					spawn_fake_missile				();
 
-	//инициализация если вещь в активном слоте или спрятана на OnH_B_Chield
 	virtual void			OnActiveItem		();
 	virtual void			OnHiddenItem		();
 
@@ -69,6 +63,8 @@ protected:
 	virtual void			net_Relcase			(CObject* O );
 protected:
 
+	//время нахождения в текущем состоянии
+	u32						m_dwStateTime;
 	bool					m_throw;
 	
 	//время уничтожения
@@ -78,7 +74,7 @@ protected:
 	Fvector					m_throw_direction;
 	Fmatrix					m_throw_matrix;
 
-	CMissile*				m_fake_missile;
+	CMissile				*m_fake_missile;
 
 	//параметры броска
 	
@@ -88,33 +84,30 @@ protected:
 	float					m_fThrowForce;
 
 	bool					m_bIsContactGrenade;
+	//bool					m_bQuickThrowActive;
 	CGameObject*			m_pOwner;
 protected:
 	//относительная точка и направление вылета гранаты
 	Fvector					m_vThrowPoint;
 	Fvector					m_vThrowDir;
-	//для HUD
-	Fvector					m_vHudThrowPoint;
-	Fvector					m_vHudThrowDir;
 
-	//звук анимации "играния"
-	ESoundTypes				m_eSoundPlaying;
-
-	bool					m_throwMotionMarksAvailable;
 protected:
 			void			setup_throw_params		();
 public:
+	Fvector const&			throw_point_offset		() const {return m_vThrowPoint;}
 	virtual void			activate_physic_shell	();
 	virtual void			setup_physic_shell		();
 	virtual void			create_physic_shell		();
 	IC		void			set_destroy_time		(u32 delta_destroy_time) {m_dwDestroyTime = delta_destroy_time + Device.dwTimeGlobal;}
+
+				//void		SetQuickThrowActive		(bool status) { m_bQuickThrowActive = status; }
 
 protected:
 	u32						m_ef_weapon_type;
 
 public:
 	virtual u32				ef_weapon_type			() const;
-	IC		u32				destroy_time			() const {return m_dwDestroyTime;};
+	IC		u32				destroy_time			() const { return m_dwDestroyTime; }
+	IC		int				time_from_begin_throw	() const { return (Device.dwTimeGlobal + m_dwDestroyTimeMax - m_dwDestroyTime); }
 	static	void			ExitContactCallback		(bool& do_colide,bool bo1,dContact& c,SGameMtl *material_1,SGameMtl* material_2);
-	virtual u16				bone_count_to_synchronize	() const;
 };
