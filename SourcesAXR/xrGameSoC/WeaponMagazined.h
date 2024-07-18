@@ -5,6 +5,7 @@
 #include "weapon.h"
 #include "hudsound.h"
 #include "ai_sounds.h"
+#include "hud_item_object.h"
 
 class ENGINE_API CMotionDef;
 
@@ -35,6 +36,7 @@ protected:
 	ESoundTypes		m_eSoundShot;
 	ESoundTypes		m_eSoundEmptyClick;
 	ESoundTypes		m_eSoundReload;
+	ESoundTypes		m_eSoundReflect;
 	ESoundTypes		m_eSoundClose;
 	
 	// General
@@ -58,6 +60,7 @@ protected:
 	virtual void	switch2_Hidden	();
 	virtual void	switch2_Showing	();
 	virtual void    switch2_Unmis	();
+	virtual void	switch2_ChangeFireMode();
 	
 	virtual void	OnShot			();	
 	
@@ -109,6 +112,8 @@ public:
 	virtual bool	Action			(s32 cmd, u32 flags);
 	bool			IsAmmoAvailable	();
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
+	virtual int     CheckAmmoBeforeReload(u8& v_ammoType);
+	virtual void	OnMotionMark	(u32 state, const motion_marks& M);
 
 	virtual void	GetBriefInfo				(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
 
@@ -152,6 +157,7 @@ protected:
 	bool m_bLockType;
 	bool m_bAutoreloadEnabled;
 	bool m_opened;
+	bool m_bUseFiremodeChangeAnim;
 
 	//////////////////////////////////////////////
 	// режим приближения
@@ -183,24 +189,28 @@ protected:
 	virtual void	PlayAnimBore		();
 	virtual void	PlayAnimIdleSprint	();
 	virtual void	PlayAnimIdleMoving	();
+	virtual void	PlayAnimFireMode	();
+
+protected:
 
 	virtual void    SetAnimFlag(u32 flag, LPCSTR anim_name);
 
+	// Флаги наличия анимаций, будем их искать заранее, так будет намного проще мейби
 	enum {
-		ANM_SHOW_EMPTY = (1 << 0),
-		ANM_HIDE_EMPTY = (1 << 1),
-		ANM_AIM_EMPTY = (1 << 2),
-		ANM_BORE_EMPTY = (1 << 3),
-		ANM_SHOT_EMPTY = (1 << 4),
-		ANM_SPRINT_EMPTY = (1 << 5),
-		ANM_MOVING_EMPTY = (1 << 6),
-		ANM_RELOAD_EMPTY = (1 << 7),
-		ANM_RELOAD_EMPTY_GL = (1 << 8),
-		ANM_SHOT_AIM = (1 << 9),
-		ANM_SHOT_AIM_GL = (1 << 10),
-		ANM_MISFIRE = (1 << 11),
-		ANM_MISFIRE_GL = (1 << 12),
-		ANM_IDLE_EMPTY = (1 << 13),
+		ANM_SHOW_EMPTY = (1<<0),
+		ANM_HIDE_EMPTY = (1<<1),
+		ANM_AIM_EMPTY =	 (1<<2),
+		ANM_BORE_EMPTY = (1<<3),
+		ANM_SHOT_EMPTY = (1<<4),
+		ANM_SPRINT_EMPTY = (1<<5),
+		ANM_MOVING_EMPTY = (1<<6),
+		ANM_RELOAD_EMPTY = (1<<7),
+		ANM_RELOAD_EMPTY_GL = (1<<8),
+		ANM_SHOT_AIM = (1<<9),
+		ANM_SHOT_AIM_GL = (1<<10),
+		ANM_MISFIRE = (1<<11),
+		ANM_MISFIRE_GL = (1<<12),
+		ANM_IDLE_EMPTY = (1<<13),
 	};
 
 	Flags32 psWpnAnimsFlag;

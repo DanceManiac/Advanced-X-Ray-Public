@@ -813,6 +813,116 @@ void  CScriptGameObject::HideWeapon			()
 	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL,true);
 }
 
+int CScriptGameObject::Weapon_GrenadeLauncher_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_GrenadeLauncher_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_GrenadeLauncherStatus();
+}
+
+int CScriptGameObject::Weapon_Scope_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_Scope_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_ScopeStatus();
+}
+
+int CScriptGameObject::Weapon_Silencer_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_Silencer_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_SilencerStatus();
+}
+
+int CScriptGameObject::Weapon_LaserDesignator_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_LaserDesignator_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_LaserDesignatorStatus();
+}
+
+int CScriptGameObject::Weapon_TacticalTorch_Status()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_TacticalTorch_Status!");
+		return								(false);
+	}
+	return (int)weapon->get_TacticalTorchStatus();
+}
+
+bool CScriptGameObject::Weapon_IsGrenadeLauncherAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsGrenadeLauncherAttached!");
+		return								(false);
+	}
+	return weapon->IsGrenadeLauncherAttached();
+}
+
+bool CScriptGameObject::Weapon_IsScopeAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsScopeAttached!");
+		return								(false);
+	}
+	return weapon->IsScopeAttached();
+}
+
+bool CScriptGameObject::Weapon_IsSilencerAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsSilencerAttached!");
+		return								(false);
+	}
+	return weapon->IsSilencerAttached();
+}
+
+bool CScriptGameObject::Weapon_IsLaserDesignatorAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsLaserDesignatorAttached!");
+		return								(false);
+	}
+	return weapon->IsLaserAttached();
+}
+
+bool CScriptGameObject::Weapon_IsTacticalTorchAttached()
+{
+	CWeapon* weapon = smart_cast<CWeapon*>(&object());
+	if (!weapon)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CWeapon : cannot access class member Weapon_IsTacticalTorchAttached!");
+		return								(false);
+	}
+	return weapon->IsTacticalTorchAttached();
+}
+
 int	CScriptGameObject::animation_slot			() const
 {
 	CHudItem		*hud_item = smart_cast<CHudItem*>(&object());

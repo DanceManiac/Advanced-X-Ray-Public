@@ -37,7 +37,7 @@ class CUIWeaponCellItem :public CUIInventoryCellItem
 {
 	typedef  CUIInventoryCellItem	inherited;
 public:
-	enum eAddonType{	eSilencer=0, eScope, eLauncher, /*eLaser, eTorch,*/ eMaxAddon};
+	enum eAddonType{	eSilencer=0, eScope, eLauncher, eLaser, eTorch, eMaxAddon};
 protected:
 	CUIStatic*					m_addons					[eMaxAddon];
 	Fvector2					m_addon_offset				[eMaxAddon];

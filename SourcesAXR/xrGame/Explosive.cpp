@@ -342,10 +342,6 @@ void CExplosive::Explode()
 	OnBeforeExplosion();
 	//играем звук взрыва
 
-	CObject* who = nullptr;
-	if (Initiator() != ALife::_OBJECT_ID(-1))
-		who = Level().Objects.net_Find(Initiator());
-
 	m_layered_sounds.PlaySound("sndExplode", pos, smart_cast<CObject*>(this), false, false, (u8)-1);
 	
 	//показываем эффекты

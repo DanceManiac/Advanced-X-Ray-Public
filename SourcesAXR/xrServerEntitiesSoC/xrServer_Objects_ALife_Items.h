@@ -129,16 +129,22 @@ SERVER_ENTITY_DECLARE_BEGIN(CSE_ALifeItemWeapon,CSE_ALifeItem)
 	};
 
 	//текущее состояние аддонов
-	enum EWeaponAddonState 
+	enum EWeaponAddonState : u8
 	{
-		eWeaponAddonScope = 0x01,
-		eWeaponAddonGrenadeLauncher = 0x02,
-		eWeaponAddonSilencer = 0x04
+		eWeaponAddonScope = 1 << 0,
+		eWeaponAddonGrenadeLauncher = 1 << 1,
+		eWeaponAddonSilencer = 1 << 2,
+		eWeaponAddonLaserOn = 1 << 3,
+		eWeaponAddonFlashlightOn = 1 << 4,
+		eWeaponAddonLaserDesignator = 1 << 5,
+		eWeaponAddonTacticalTorch = 1 << 6,
 	};
 
 	EWeaponAddonStatus				m_scope_status;
 	EWeaponAddonStatus				m_silencer_status;				
 	EWeaponAddonStatus				m_grenade_launcher_status;
+	EWeaponAddonStatus				m_laser_designator_status;
+	EWeaponAddonStatus				m_tactical_torch_status;
 
 	u32								timestamp;
 	u8								wpn_flags;

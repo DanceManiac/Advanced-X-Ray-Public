@@ -109,6 +109,8 @@
 #define CLSID_OBJECT_W_SCOPE		MK_CLSID('W','_','S','C','O','P','E',' ')
 #define CLSID_OBJECT_W_SILENCER		MK_CLSID('W','_','S','I','L','E','N','C')
 #define CLSID_OBJECT_W_GLAUNCHER	MK_CLSID('W','_','G','L','A','U','N','C')
+#define CLSID_OBJECT_W_LASER		MK_CLSID('W','_','L','A','S','E','R',' ')
+#define CLSID_OBJECT_W_TTORCH		MK_CLSID('W','_','T','T','O','R','C','H')
 
 // Modifiers
 #define CLSID_OBJECT_M_QDAMAGE		MK_CLSID('O','_','Q','D','M','G',' ',' ')

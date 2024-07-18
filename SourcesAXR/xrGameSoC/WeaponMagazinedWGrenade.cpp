@@ -174,6 +174,12 @@ void CWeaponMagazinedWGrenade::OnShot		()
 	} 
 	else inherited::OnShot();
 }
+
+void CWeaponMagazinedWGrenade::OnMotionMark(u32 state, const motion_marks& M)
+{
+	inherited::OnMotionMark(state, M);
+}
+
 //переход в режим подствольника или выход из него
 //если мы в режиме стрельбы очередями, переключиться
 //на одиночные, а уже потом на подствольник
@@ -600,8 +606,8 @@ void CWeaponMagazinedWGrenade::PlayAnimShow()
 
 	if (IsGrenadeLauncherAttached())
 	{
-		//if (!m_bGrenadeMode)
-		//	HUD_VisualBulletUpdate();
+		if (!m_bGrenadeMode)
+			HUD_VisualBulletUpdate();
 
 		if (!m_bGrenadeMode)
 		{
@@ -673,156 +679,307 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 
 void CWeaponMagazinedWGrenade::PlayAnimIdle()
 {
-	//if(TryPlayAnimIdle())	return;
-	VERIFY(GetState()==eIdle);
-	if(IsGrenadeLauncherAttached())
+	if (GetState() == eSwitch)
+		return;
+
+	if (IsGrenadeLauncherAttached())
 	{
-		int act_state = 0;
-		CActor* pActor = smart_cast<CActor*>(H_Parent());
-		if (pActor)
+		if (IsZoomed())
 		{
-			const u32 State = pActor->get_state();
-			if (State & mcSprint)
+			if (IsRotatingToZoom())
 			{
-				//if (!m_bSprintType)
-				//{
-				//	SwitchState(eSprintStart);
-				//	return;
-				//}
+				string32 guns_aim_start_anm;
+				strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
 
-				act_state = 1;
-			}
-			//else if (m_bSprintType)
-			//{
-			//	SwitchState(eSprintEnd);
-			//	return;
-			//}
-			else if (State & mcAnyMove)
-			{
-				if (!(State & mcCrouch))
+				if (isHUDAnimationExist(guns_aim_start_anm))
 				{
-					if (State & mcAccel) //Ходьба медленная (SHIFT)
-						act_state = 5;
-					else
-						act_state = 2;
+					PlayHUDMotionNew(guns_aim_start_anm, true, GetState());
+					return;
 				}
-				else if (State & mcAccel) //Ходьба в присяде (CTRL+SHIFT)
-					act_state = 4;
-				else
-					act_state = 3;
-			}
-		}
+				else if (strstr(guns_aim_start_anm, "_jammed"))
+				{
+					char* jammed_position = strstr(guns_aim_start_anm, "_jammed");
+					int jammed_length = strlen("_jammed");
 
-		if (m_bGrenadeMode)
-		{
-			switch (act_state)
+					char new_guns_aim_start_anm[100];
+					strncpy(new_guns_aim_start_anm, guns_aim_start_anm, jammed_position - guns_aim_start_anm);
+					strcpy(new_guns_aim_start_anm + (jammed_position - guns_aim_start_anm), guns_aim_start_anm + (jammed_position - guns_aim_start_anm) + jammed_length);
+
+					if (isHUDAnimationExist(new_guns_aim_start_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_start_anm, true, GetState());
+						return;
+					}
+				}
+				else if (strstr(guns_aim_start_anm, "_empty"))
+				{
+					char* empty_position = strstr(guns_aim_start_anm, "_empty");
+					int empty_length = strlen("_empty");
+
+					char new_guns_aim_start_anm[100];
+					strncpy(new_guns_aim_start_anm, guns_aim_start_anm, empty_position - guns_aim_start_anm);
+					strcpy(new_guns_aim_start_anm + (empty_position - guns_aim_start_anm), guns_aim_start_anm + (empty_position - guns_aim_start_anm) + empty_length);
+
+					if (isHUDAnimationExist(new_guns_aim_start_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_start_anm, true, GetState());
+						return;
+					}
+				}
+			}
+
+			if (const char* guns_aim_anm = GetAnimAimName())
 			{
-			case 0:
+				string64 guns_aim_anm_full;
+				strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_aim_anm, m_bGrenadeMode ? "_g" : "_w_gl");
+
+				if (isHUDAnimationExist(guns_aim_anm_full))
+				{
+					PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
+					return;
+				}
+				else if (strstr(guns_aim_anm_full, "_jammed"))
+				{
+					char* jammed_position = strstr(guns_aim_anm_full, "_jammed");
+					int jammed_length = strlen("_jammed");
+
+					char new_guns_aim_anm[100];
+					strncpy(new_guns_aim_anm, guns_aim_anm_full, jammed_position - guns_aim_anm_full);
+					strcpy(new_guns_aim_anm + (jammed_position - guns_aim_anm_full), guns_aim_anm_full + (jammed_position - guns_aim_anm_full) + jammed_length);
+
+					if (isHUDAnimationExist(new_guns_aim_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+						return;
+					}
+				}
+				else if (strstr(guns_aim_anm_full, "_empty"))
+				{
+					char* empty_position = strstr(guns_aim_anm_full, "_empty");
+					int empty_length = strlen("_empty");
+
+					char new_guns_aim_anm[100];
+					strncpy(new_guns_aim_anm, guns_aim_anm_full, empty_position - guns_aim_anm_full);
+					strcpy(new_guns_aim_anm + (empty_position - guns_aim_anm_full), guns_aim_anm_full + (empty_position - guns_aim_anm_full) + empty_length);
+
+					if (isHUDAnimationExist(new_guns_aim_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+						return;
+					}
+				}
+			}
+
+			if (m_bGrenadeMode)
+			{
 				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_jammed_g", "anm_idle_g_jammed", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					PlayHUDMotionIfExists({ "anm_idle_aim_g_jammed", "anm_idle_aim_jammed_g", "anm_idle_aim_g", "anm_idle_g_aim", "anim_idle_g_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
 				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_empty_g", "anm_idle_g_empty", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else if (IsZoomed())
-					PlayHUDMotionIfExists({ "anim_idle_g_aim", "anm_idle_g_aim", "anim_idle_g" }, true, GetState());
+					PlayHUDMotionIfExists({ "anm_idle_aim_g_empty", "anm_idle_aim_empty_g", "anm_idle_aim_g", "anm_idle_g_aim", "anim_idle_g_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
 				else
-					PlayHUDMotionIfExists({ "anm_idle_g", "anim_idle_g" }, true, GetState());
-				break;
-			case 1:
+					PlayHUDMotionIfExists({ "anm_idle_aim_g", "anim_idle_g_aim", "anm_idle_g_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
+			}
+			else
+			{
 				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_g", "anm_idle_sprint_g_jammed", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					PlayHUDMotionIfExists({ "anm_idle_aim_w_gl_jammed", "anm_idle_aim_jammed_w_gl", "anm_idle_aim_w_gl", "anm_idle_w_gl_aim", "anim_idle_gl_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
 				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_sprint_empty_g", "anm_idle_sprint_g_empty", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					PlayHUDMotionIfExists({ "anm_idle_aim_w_gl_empty", "anm_idle_aim_empty_w_gl", "anm_idle_aim_w_gl", "anm_idle_w_gl_aim", "anim_idle_gl_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
 				else
-					PlayHUDMotionIfExists({ "anm_idle_sprint_g", "anm_idle_sprint_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				break;
-			case 2:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_jammed_g", "anm_idle_moving_g_jammed", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_empty_g", "anm_idle_moving_g_empty", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				break;
-			case 3:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed_g", "anm_idle_moving_crouch_g_jammed", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty_g", "anm_idle_moving_crouch_g_empty", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				break;
-			case 4:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed_g", "anm_idle_moving_crouch_slow_g_jammed", "anm_idle_moving_crouch_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty_g", "anm_idle_moving_crouch_slow_g_empty", "anm_idle_moving_crouch_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_g", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				break;
-			case 5:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed_g", "anm_idle_moving_slow_g_jammed", "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty_g", "anm_idle_moving_slow_g_empty", "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
-				break;
+					PlayHUDMotionIfExists({ "anm_idle_aim_w_gl", "anm_idle_w_gl_aim", "anim_idle_gl_aim", "anm_idle_aim", "anim_idle_aim" }, true, GetState());
 			}
 		}
 		else
 		{
-			switch (act_state)
+			if (IsRotatingFromZoom())
 			{
-			case 0:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_jammed_w_gl", "anm_idle_w_gl_jammed","anm_idle_w_gl_jammed", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_empty_w_gl", "anm_idle_w_gl_empty","anm_idle_w_gl_empty", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else if (IsZoomed())
-					PlayHUDMotionIfExists({ "anim_idle_gl_aim", "anm_idle_w_gl_aim", "anim_idle_gl" }, /*FALSE*/TRUE, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				break;
-			case 1:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_w_gl", "anm_idle_sprint_w_gl_jammed", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_sprint_empty_w_gl", "anm_idle_sprint_w_gl_empty", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				break;
-			case 2:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_jammed_w_gl", "anm_idle_moving_w_gl_jammed", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_empty_w_gl", "anm_idle_moving_w_gl_empty", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				break;
-			case 3:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed_w_gl", "anm_idle_moving_crouch_w_gl_jammed", "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty_w_gl", "anm_idle_moving_crouch_w_gl_empty", "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				break;
-			case 4:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed_w_gl", "anm_idle_moving_crouch_slow_w_gl_jammed", "anm_idle_moving_crouch_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty_w_gl", "anm_idle_moving_crouch_slow_w_gl_empty","anm_idle_moving_crouch_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_w_gl", "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				break;
-			case 5:
-				if (IsMisfire())
-					PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed_w_gl", "anm_idle_moving_slow_w_gl_jammed","anm_idle_moving_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else if (IsMagazineEmpty())
-					PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty_w_gl", "anm_idle_moving_slow_w_gl_empty", "anm_idle_moving_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				else
-					PlayHUDMotionIfExists({ "anm_idle_moving_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
-				break;
+				string32 guns_aim_end_anm;
+				strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
+
+				if (isHUDAnimationExist(guns_aim_end_anm))
+				{
+					PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
+					return;
+				}
+				else if (strstr(guns_aim_end_anm, "_jammed"))
+				{
+					char* jammed_position = strstr(guns_aim_end_anm, "_jammed");
+					int jammed_length = strlen("_jammed");
+
+					char new_guns_aim_end_anm[100];
+					strncpy(new_guns_aim_end_anm, guns_aim_end_anm, jammed_position - guns_aim_end_anm);
+					strcpy(new_guns_aim_end_anm + (jammed_position - guns_aim_end_anm), guns_aim_end_anm + (jammed_position - guns_aim_end_anm) + jammed_length);
+
+					if (isHUDAnimationExist(new_guns_aim_end_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+						return;
+					}
+				}
+				else if (strstr(guns_aim_end_anm, "_empty"))
+				{
+					char* empty_position = strstr(guns_aim_end_anm, "_empty");
+					int empty_length = strlen("_empty");
+
+					char new_guns_aim_end_anm[100];
+					strncpy(new_guns_aim_end_anm, guns_aim_end_anm, empty_position - guns_aim_end_anm);
+					strcpy(new_guns_aim_end_anm + (empty_position - guns_aim_end_anm), guns_aim_end_anm + (empty_position - guns_aim_end_anm) + empty_length);
+
+					if (isHUDAnimationExist(new_guns_aim_end_anm))
+					{
+						PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+						return;
+					}
+				}
+			}
+
+			int act_state = 0;
+			CActor* pActor = smart_cast<CActor*>(H_Parent());
+			if (pActor)
+			{
+				const u32 State = pActor->get_state();
+				if (State & mcSprint)
+				{
+					if (!m_bSprintType)
+					{
+						SwitchState(eSprintStart);
+						return;
+					}
+
+					act_state = 1;
+				}
+				else if (m_bSprintType)
+				{
+					SwitchState(eSprintEnd);
+					return;
+				}
+				else if (State & mcAnyMove)
+				{
+					if (!(State & mcCrouch))
+					{
+						if (State & mcAccel) //Ходьба медленная (SHIFT)
+							act_state = 5;
+						else
+							act_state = 2;
+					}
+					else if (State & mcAccel) //Ходьба в присяде (CTRL+SHIFT)
+						act_state = 4;
+					else
+						act_state = 3;
+				}
+			}
+
+			if (m_bGrenadeMode)
+			{
+				switch (act_state)
+				{
+				case 0:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_jammed_g", "anm_idle_g_jammed", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_empty_g", "anm_idle_g_empty", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else if (IsZoomed())
+						PlayHUDMotionIfExists({ "anim_idle_g_aim", "anm_idle_g_aim", "anim_idle_g" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_g", "anim_idle_g" }, true, GetState());
+					break;
+				case 1:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_g", "anm_idle_sprint_g_jammed", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_sprint_empty_g", "anm_idle_sprint_g_empty", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_sprint_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					break;
+				case 2:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_jammed_g", "anm_idle_moving_g_jammed", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_empty_g", "anm_idle_moving_g_empty", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					break;
+				case 3:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed_g", "anm_idle_moving_crouch_g_jammed", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty_g", "anm_idle_moving_crouch_g_empty", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					break;
+				case 4:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed_g", "anm_idle_moving_crouch_slow_g_jammed", "anm_idle_moving_crouch_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty_g", "anm_idle_moving_crouch_slow_g_empty", "anm_idle_moving_crouch_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_g", "anm_idle_moving_crouch_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					break;
+				case 5:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed_g", "anm_idle_moving_slow_g_jammed", "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty_g", "anm_idle_moving_slow_g_empty", "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_slow_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+					break;
+				}
+			}
+			else
+			{
+				switch (act_state)
+				{
+				case 0:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_jammed_w_gl", "anm_idle_w_gl_jammed","anm_idle_w_gl_jammed", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_empty_w_gl", "anm_idle_w_gl_empty","anm_idle_w_gl_empty", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else if (IsZoomed())
+						PlayHUDMotionIfExists({ "anim_idle_gl_aim", "anm_idle_w_gl_aim", "anim_idle_gl" }, /*FALSE*/TRUE, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					break;
+				case 1:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_w_gl", "anm_idle_sprint_w_gl_jammed", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_sprint_empty_w_gl", "anm_idle_sprint_w_gl_empty", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					break;
+				case 2:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_jammed_w_gl", "anm_idle_moving_w_gl_jammed", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_empty_w_gl", "anm_idle_moving_w_gl_empty", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					break;
+				case 3:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_jammed_w_gl", "anm_idle_moving_crouch_w_gl_jammed", "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_empty_w_gl", "anm_idle_moving_crouch_w_gl_empty", "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					break;
+				case 4:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_jammed_w_gl", "anm_idle_moving_crouch_slow_w_gl_jammed", "anm_idle_moving_crouch_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_empty_w_gl", "anm_idle_moving_crouch_slow_w_gl_empty","anm_idle_moving_crouch_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_crouch_slow_w_gl", "anm_idle_moving_crouch_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					break;
+				case 5:
+					if (IsMisfire())
+						PlayHUDMotionIfExists({ "anm_idle_moving_slow_jammed_w_gl", "anm_idle_moving_slow_w_gl_jammed","anm_idle_moving_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else if (IsMagazineEmpty())
+						PlayHUDMotionIfExists({ "anm_idle_moving_slow_empty_w_gl", "anm_idle_moving_slow_w_gl_empty", "anm_idle_moving_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					else
+						PlayHUDMotionIfExists({ "anm_idle_moving_slow_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+					break;
+				}
 			}
 		}
 	}
@@ -831,8 +988,6 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 }
 void CWeaponMagazinedWGrenade::PlayAnimShoot()
 {
-	VERIFY(GetState()==eFire || GetState()==eFire2);
-
 	if (m_bGrenadeMode)
 	{
 		string_path guns_shoot_anm{};
@@ -842,7 +997,7 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 	}
 	else
 	{
-		//HUD_VisualBulletUpdate();
+		HUD_VisualBulletUpdate();
 
 		VERIFY(GetState() == eFire);
 
@@ -865,10 +1020,56 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 
 void  CWeaponMagazinedWGrenade::PlayAnimModeSwitch()
 {
-	if (m_bGrenadeMode)
-		PlayHUDMotionIfExists({"anim_switch_grenade_on", "anm_switch_g"}, /*FALSE*/ TRUE, eSwitch);
+	string_path guns_switch_anm{};
+	strconcat(sizeof(guns_switch_anm), guns_switch_anm, "anm_switch", m_bGrenadeMode ? "_g" : isHUDAnimationExist("anm_switch_w_gl") ? "_w_gl" : "", (IsMisfire() ? "_jammed" : IsMagazineEmpty() ? "_empty" : ""));
+
+	if (isHUDAnimationExist(guns_switch_anm))
+	{
+		PlayHUDMotionNew(guns_switch_anm, true, GetState());
+		return;
+	}
+	else if (strstr(guns_switch_anm, "_jammed"))
+	{
+		char new_guns_switch_anm[256];
+		strcpy(new_guns_switch_anm, guns_switch_anm);
+		new_guns_switch_anm[strlen(guns_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_switch_anm))
+		{
+			PlayHUDMotionNew(new_guns_switch_anm, true, GetState());
+			return;
+		}
+		else
+		{
+			if (m_bGrenadeMode)
+				PlayHUDMotion("anim_switch_grenade_on", /*FALSE*/ TRUE, this, eSwitch);
+			else
+				PlayHUDMotion("anim_switch_grenade_off", /*FALSE*/ TRUE, this, eSwitch);
+		}
+	}
+	else if (strstr(guns_switch_anm, "_empty"))
+	{
+		char new_guns_switch_anm[256];
+		strcpy(new_guns_switch_anm, guns_switch_anm);
+		new_guns_switch_anm[strlen(guns_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_switch_anm))
+			PlayHUDMotionNew(new_guns_switch_anm, true, GetState());
+		else
+		{
+			if (m_bGrenadeMode)
+				PlayHUDMotion("anim_switch_grenade_on", /*FALSE*/ TRUE, this, eSwitch);
+			else
+				PlayHUDMotion("anim_switch_grenade_off", /*FALSE*/ TRUE, this, eSwitch);
+		}
+	}
 	else
-		PlayHUDMotionIfExists({"anim_switch_grenade_off", "anm_switch"}, /*FALSE*/ TRUE, eSwitch);
+	{
+		if (m_bGrenadeMode)
+			PlayHUDMotion("anim_switch_grenade_on", /*FALSE*/ TRUE, this, eSwitch);
+		else
+			PlayHUDMotion("anim_switch_grenade_off", /*FALSE*/ TRUE, this, eSwitch);
+	}
 }
 
 

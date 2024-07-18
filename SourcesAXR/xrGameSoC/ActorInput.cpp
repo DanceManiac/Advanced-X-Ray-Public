@@ -31,6 +31,8 @@
 #include "Grenade.h"
 #include "player_hud.h"
 #include "HudItem.h"
+#include "Weapon.h"
+#include "WeaponMagazined.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -187,6 +189,18 @@ void CActor::IR_OnKeyboardPress(int cmd)
 					_s->wnd()->SetText			(str);
 				}
 			}
+		}break;
+	case kLASER_ON:
+		{
+		auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+			if (wpn)
+				wpn->SwitchLaser(!wpn->IsLaserOn());
+		}break;
+	case kFLASHLIGHT:
+		{
+			auto wpn = smart_cast<CWeapon*>(inventory().ActiveItem());
+			if (wpn)
+				wpn->SwitchFlashlight(!wpn->IsFlashlightOn());
 		}break;
 	}
 }

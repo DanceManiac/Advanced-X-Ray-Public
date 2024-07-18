@@ -62,6 +62,22 @@ void CCartridge::Load(LPCSTR section, u8 LocalAmmoType)
 	m_InvShortName			= CStringTable().translate( pSettings->r_string(section, "inv_name_short"));
 }
 
+float CCartridge::Weight() const
+{
+	auto s = m_ammoSect.c_str();
+	float res = 0;
+	if (s)
+	{
+		float box = pSettings->r_float(s, "box_size");
+		if (box > 0)
+		{
+			float w = pSettings->r_float(s, "inv_weight");
+			res = w / box;
+		}
+	}
+	return res;
+}
+
 CWeaponAmmo::CWeaponAmmo(void) 
 {
 	m_weight				= .2f;

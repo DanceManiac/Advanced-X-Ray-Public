@@ -278,12 +278,10 @@ void CWeaponMagazined::FireEnd()
 
 	if (m_bAutoreloadEnabled)
 	{
-		CActor	*actor = smart_cast<CActor*>(H_Parent());
-
 		if (Actor()->mstate_real & (mcSprint) && !GameConstants::GetReloadIfSprint())
 			return;
 
-		if (m_pInventory && !iAmmoElapsed && actor && GetState() != eReload)
+		if (m_pInventory && !iAmmoElapsed && ParentIsActor() && GetState() != eReload)
 			Reload();
 	}
 }

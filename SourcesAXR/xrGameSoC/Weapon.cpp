@@ -31,6 +31,7 @@
 #include "ui/UIWindow.h"
 #include "Torch.h"
 #include "../xrEngine/GameMtlLib.h"
+#include "../xrEngine/LightAnimLibrary.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -105,9 +106,12 @@ CWeapon::CWeapon(LPCSTR name)
 	m_fLR_CameraFactor		= 0.f;
 	m_fLR_InertiaFactor		= 0.f;
 	m_fUD_InertiaFactor		= 0.f;
+
+	bHasBulletsToHide		= false;
+	bullet_cnt				= 0;
 }
 
-/*const shared_str CWeapon::GetScopeName() const
+const shared_str CWeapon::GetScopeName() const
 {
 	if (bUseAltScope)
 	{
@@ -117,7 +121,7 @@ CWeapon::CWeapon(LPCSTR name)
 	{
 		return pSettings->r_string(m_scopes[m_cur_scope], "scope_name");
 	}
-}	*/
+}
 
 void CWeapon::UpdateAltScope()
 {
@@ -223,7 +227,12 @@ int CWeapon::GetScopeY()
 CWeapon::~CWeapon		()
 {
 	xr_delete	(m_UIScope);
-	//delete_data	(m_scopes);
+	delete_data	(m_scopes);
+
+	laser_light_render.destroy();
+	flashlight_render.destroy();
+	flashlight_omni.destroy();
+	flashlight_glow.destroy();
 }
 
 //void CWeapon::Hit(float P, Fvector &dir,	
@@ -328,7 +337,8 @@ void CWeapon::UpdateXForm	()
 	if ((HandDependence() == hd1Hand) || (GetState() == eReload) || (!E->g_Alive()))
 		boneL = boneR2;
 #pragma todo("TO ALL: serious performance problem")
-	V->CalculateBones	();
+	V->CalculateBones_Invalidate();
+	V->CalculateBones(true);
 	Fmatrix& mL			= V->LL_GetTransform(u16(boneL));
 	Fmatrix& mR			= V->LL_GetTransform(u16(boneR));
 	// Calculate
@@ -425,6 +435,8 @@ void CWeapon::ForceUpdateFireParticles()
 LPCSTR wpn_scope_def_bone = "wpn_scope";
 LPCSTR wpn_silencer_def_bone = "wpn_silencer";
 LPCSTR wpn_launcher_def_bone = "wpn_launcher";
+LPCSTR wpn_laser_def_bone = "wpn_laser";
+LPCSTR wpn_torch_def_bone = "wpn_torch";
 
 void CWeapon::Load		(LPCSTR section)
 {
@@ -572,6 +584,8 @@ void CWeapon::Load		(LPCSTR section)
 	m_eScopeStatus			 = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"scope_status");
 	m_eSilencerStatus		 = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"silencer_status");
 	m_eGrenadeLauncherStatus = (ALife::EWeaponAddonStatus)pSettings->r_s32(section,"grenade_launcher_status");
+	m_eLaserDesignatorStatus = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "laser_designator_status", 0);
+	m_eTacticalTorchStatus	 = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "tactical_torch_status", 0);
 
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
@@ -619,6 +633,9 @@ void CWeapon::Load		(LPCSTR section)
 		}
 	}
 
+	LoadLaserDesignatorParams(section);
+	LoadTacticalTorchParams(section);
+
 	UpdateAltScope();
 	InitAddons();
 
@@ -661,6 +678,16 @@ void CWeapon::Load		(LPCSTR section)
 	else
 		m_sWpn_launcher_bone = wpn_launcher_def_bone;
 
+	//Кости самих аддонов
+	m_sWpn_laser_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_attach_bone", wpn_laser_def_bone);
+	m_sWpn_flashlight_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_attach_bone", wpn_torch_def_bone);
+
+	//Кости для эффектов
+	m_sWpn_laser_ray_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_ray_bones", "");
+	m_sWpn_flashlight_cone_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_cone_bones", "");
+	m_sHud_wpn_laser_ray_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "laser_ray_bones", m_sWpn_laser_ray_bone);
+	m_sHud_wpn_flashlight_cone_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "torch_cone_bones", m_sWpn_flashlight_cone_bone);
+
 	auto LoadBoneNames = [](pcstr section, pcstr line, RStringVec& list)
 	{
 		list.clear();
@@ -699,6 +726,81 @@ void CWeapon::Load		(LPCSTR section)
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set						(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
 	m_bShowWpnStats					= READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
+
+	if (!laser_light_render && m_eLaserDesignatorStatus)
+	{
+		has_laser = true;
+
+		laserdot_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "laserdot_attach_bone", m_sWpn_laser_bone);
+		laserdot_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "laserdot_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_attach_offset_z", 0.0f) };
+		laserdot_world_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "laserdot_world_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_world_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "laserdot_world_attach_offset_z", 0.0f) };
+
+		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
+
+		const char* m_light_section = pSettings->r_string(m_sLaserName, "laser_light_section");
+
+		laser_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, m_light_section, "color_animator", ""));
+
+		laser_light_render = ::Render->light_create();
+		laser_light_render->set_type(IRender_Light::SPOT);
+		laser_light_render->set_shadow(true);
+		laser_light_render->set_moveable(true);
+
+		const Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "color_r2" : "color", (Fcolor{ 1.0f, 0.0f, 0.0f, 1.0f }));
+		laser_fBrightness = clr.intensity();
+		laser_light_render->set_color(clr);
+		const float range = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "range_r2" : "range", 100.f);
+		laser_light_render->set_range(range);
+		laser_light_render->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, m_light_section, "spot_angle", 1.f)));
+		laser_light_render->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "spot_texture", nullptr));
+	}
+
+	if (!flashlight_render && m_eTacticalTorchStatus)
+	{
+		has_flashlight = true;
+
+		flashlight_attach_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_light_bone", m_sWpn_flashlight_bone);
+		flashlight_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_attach_offset_z", 0.0f) };
+		flashlight_omni_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_attach_offset_z", 0.0f) };
+		flashlight_world_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_world_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_world_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_world_attach_offset_z", 0.0f) };
+		flashlight_omni_world_attach_offset = Fvector{ READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_world_attach_offset_x", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_world_attach_offset_y", 0.0f), READ_IF_EXISTS(pSettings, r_float, section, "torch_omni_world_attach_offset_z", 0.0f) };
+
+		const bool b_r2 = psDeviceFlags.test(rsR2) || psDeviceFlags.test(rsR4);
+
+		const char* m_light_section = pSettings->r_string(m_sTacticalTorchName, "flashlight_section");
+
+		flashlight_lanim = LALib.FindItem(READ_IF_EXISTS(pSettings, r_string, m_light_section, "color_animator", ""));
+
+		flashlight_render = ::Render->light_create();
+		flashlight_render->set_type(IRender_Light::SPOT);
+		flashlight_render->set_shadow(true);
+		flashlight_render->set_moveable(true);
+
+		const Fcolor clr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "color_r2" : "color", (Fcolor{ 0.6f, 0.55f, 0.55f, 1.0f }));
+		flashlight_fBrightness = clr.intensity();
+		flashlight_render->set_color(clr);
+		const float range = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "range_r2" : "range", 50.f);
+		flashlight_render->set_range(range);
+		flashlight_render->set_cone(deg2rad(READ_IF_EXISTS(pSettings, r_float, m_light_section, "spot_angle", 60.f)));
+		flashlight_render->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "spot_texture", nullptr));
+
+		flashlight_omni = ::Render->light_create();
+		flashlight_omni->set_type((IRender_Light::LT)(READ_IF_EXISTS(pSettings, r_u8, m_light_section, "omni_type", 2))); //KRodin: вообще omni это обычно поинт, но поинт светит во все стороны от себя, поэтому тут спот используется по умолчанию.
+		flashlight_omni->set_shadow(false);
+		flashlight_omni->set_moveable(true);
+
+		const Fcolor oclr = READ_IF_EXISTS(pSettings, r_fcolor, m_light_section, b_r2 ? "omni_color_r2" : "omni_color", (Fcolor{ 1.0f , 1.0f , 1.0f , 0.0f }));
+		flashlight_omni->set_color(oclr);
+		const float orange = READ_IF_EXISTS(pSettings, r_float, m_light_section, b_r2 ? "omni_range_r2" : "omni_range", 0.25f);
+		flashlight_omni->set_range(orange);
+
+		flashlight_glow = ::Render->glow_create();
+		flashlight_glow->set_texture(READ_IF_EXISTS(pSettings, r_string, m_light_section, "glow_texture", "glow\\glow_torch_r2"));
+		flashlight_glow->set_color(clr);
+		flashlight_glow->set_radius(READ_IF_EXISTS(pSettings, r_float, m_light_section, "glow_radius", 0.3f));
+	}
+
+	hud_recalc_koef = READ_IF_EXISTS(pSettings, r_float, hud_sect, "hud_recalc_koef", 1.35f); //На калаше при 1.35 вроде норм смотрится, другим стволам возможно придется подбирать другие значения.
 
 	m_SuitableRepairKits.clear();
 	m_ItemsForRepair.clear();
@@ -749,6 +851,92 @@ void CWeapon::LoadFireParams		(LPCSTR section, LPCSTR prefix)
 
 	CShootingObject::LoadFireParams(section, prefix);
 };
+
+void CWeapon::LoadLaserDesignatorParams(LPCSTR section)
+{
+	if (m_eLaserDesignatorStatus == ALife::eAddonAttachable)
+	{
+		if (pSettings->line_exist(section, "laser_designator_attach_sect"))
+		{
+			m_sLaserAttachSection = pSettings->r_string(section, "laser_designator_attach_sect");
+			m_sLaserName = pSettings->r_string(m_sLaserAttachSection, "laser_designator_name");
+
+			if (GameConstants::GetUseHQ_Icons())
+			{
+				m_iLaserX = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_x") * 2;
+				m_iLaserY = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_y") * 2;
+			}
+			else
+			{
+				m_iLaserX = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_x");
+				m_iLaserY = pSettings->r_s32(m_sLaserAttachSection, "laser_designator_y");
+			}
+		}
+		else
+		{
+			m_sLaserName = pSettings->r_string(section, "laser_designator_name");
+
+			if (GameConstants::GetUseHQ_Icons())
+			{
+				m_iLaserX = pSettings->r_s32(section, "laser_designator_x") * 2;
+				m_iLaserY = pSettings->r_s32(section, "laser_designator_y") * 2;
+			}
+			else
+			{
+				m_iLaserX = pSettings->r_s32(section, "laser_designator_x");
+				m_iLaserY = pSettings->r_s32(section, "laser_designator_y");
+			}
+		}
+	}
+	else if (m_eLaserDesignatorStatus == ALife::eAddonPermanent)
+	{
+		m_sLaserName = READ_IF_EXISTS(pSettings, r_string, section, "laser_designator_name", "");
+		m_sLaserAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "laser_designator_attach_sect", "");
+	}
+}
+
+void CWeapon::LoadTacticalTorchParams(LPCSTR section)
+{
+	if (m_eTacticalTorchStatus == ALife::eAddonAttachable)
+	{
+		if (pSettings->line_exist(section, "tactical_torch_attach_sect"))
+		{
+			m_sTacticalTorchAttachSection = pSettings->r_string(section, "tactical_torch_attach_sect");
+			m_sTacticalTorchName = pSettings->r_string(m_sTacticalTorchAttachSection, "tactical_torch_name");
+
+			if (GameConstants::GetUseHQ_Icons())
+			{
+				m_iTacticalTorchX = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_x") * 2;
+				m_iTacticalTorchY = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_y") * 2;
+			}
+			else
+			{
+				m_iTacticalTorchX = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_x");
+				m_iTacticalTorchY = pSettings->r_s32(m_sTacticalTorchAttachSection, "tactical_torch_y");
+			}
+		}
+		else
+		{
+			m_sTacticalTorchName = pSettings->r_string(section, "tactical_torch_name");
+
+			if (GameConstants::GetUseHQ_Icons())
+			{
+				m_iTacticalTorchX = pSettings->r_s32(section, "tactical_torch_x") * 2;
+				m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y") * 2;
+			}
+			else
+			{
+				m_iTacticalTorchX = pSettings->r_s32(section, "tactical_torch_x");
+				m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y");
+			}
+		}
+	}
+	else if (m_eLaserDesignatorStatus == ALife::eAddonPermanent)
+	{
+		m_sTacticalTorchName = READ_IF_EXISTS(pSettings, r_string, section, "tactical_torch_name", "");
+		m_sTacticalTorchAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "tactical_torch_attach_sect", "");
+	}
+}
 
 bool CWeapon::bLoadAltScopesParams(LPCSTR section)
 {
@@ -1162,6 +1350,8 @@ void CWeapon::UpdateCL		()
 	UpdateHUDAddonsVisibility();
 	//подсветка от выстрела
 	UpdateLight				();
+	UpdateLaser				();
+	UpdateFlashlight		();
 
 	//нарисовать партиклы
 	UpdateFlameParticles	();
@@ -1189,6 +1379,160 @@ void CWeapon::UpdateCL		()
 				ResetSubStateTime	();
 			}
 		} */
+	}
+}
+
+void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset)
+{
+	const u16 bone_id = HudItemData()->m_model->LL_BoneID(bone_name);
+	//ASSERT_FMT(bone_id != BI_NONE, "!![%s] bone [%s] not found in weapon [%s]", __FUNCTION__, bone_name.c_str(), cNameSect().c_str());
+	Fmatrix& fire_mat = HudItemData()->m_model->LL_GetTransform(bone_id);
+	fire_mat.transform_tiny(dest_pos, offset);
+	HudItemData()->m_item_transform.transform_tiny(dest_pos);
+	dest_pos.add(Device.vCameraPosition);
+	dest_dir.set(0.f, 0.f, 1.f);
+	HudItemData()->m_item_transform.transform_dir(dest_dir);
+}
+
+void CWeapon::CorrectDirFromWorldToHud(Fvector& dir)
+{
+	const auto& CamDir = Device.vCameraDirection;
+	const float Fov = Device.fFOV;
+	extern ENGINE_API float psHUD_FOV;
+	const float HudFov = psHUD_FOV < 1.f ? psHUD_FOV * Device.fFOV : psHUD_FOV;
+	const float diff = hud_recalc_koef * Fov / HudFov;
+	dir.sub(CamDir);
+	dir.mul(diff);
+	dir.add(CamDir);
+	dir.normalize();
+}
+
+void CWeapon::UpdateLaser()
+{
+	if (laser_light_render)
+	{
+		auto io = smart_cast<CInventoryOwner*>(H_Parent());
+		if (!laser_light_render->get_active() && IsLaserOn() && (!H_Parent() || (io && this == io->inventory().ActiveItem())))
+		{
+			laser_light_render->set_active(true);
+			UpdateAddonsVisibility();
+		}
+		else if (laser_light_render->get_active() && (!IsLaserOn() || !(!H_Parent() || (io && this == io->inventory().ActiveItem()))))
+		{
+			laser_light_render->set_active(false);
+			UpdateAddonsVisibility();
+		}
+
+		if (laser_light_render->get_active())
+		{
+			Fvector laser_pos = get_LastFP(), laser_dir = get_LastFD();
+
+			if (GetHUDmode())
+			{
+				if (laserdot_attach_bone.size())
+				{
+					GetBoneOffsetPosDir(laserdot_attach_bone, laser_pos, laser_dir, laserdot_attach_offset);
+					CorrectDirFromWorldToHud(laser_dir);
+				}
+			}
+			else
+			{
+				XFORM().transform_tiny(laser_pos, laserdot_world_attach_offset);
+			}
+
+			Fmatrix laserXForm;
+			laserXForm.identity();
+			laserXForm.k.set(laser_dir);
+			Fvector::generate_orthonormal_basis_normalized(laserXForm.k, laserXForm.j, laserXForm.i);
+
+			laser_light_render->set_position(laser_pos);
+			laser_light_render->set_rotation(laserXForm.k, laserXForm.i);
+
+			// calc color animator
+			if (laser_lanim)
+			{
+				int frame;
+				const u32 clr = laser_lanim->CalculateBGR(Device.fTimeGlobal, frame);
+
+				Fcolor fclr{ (float)color_get_B(clr), (float)color_get_G(clr), (float)color_get_R(clr), 1.f };
+				fclr.mul_rgb(laser_fBrightness / 255.f);
+				laser_light_render->set_color(fclr);
+			}
+		}
+	}
+}
+
+void CWeapon::UpdateFlashlight()
+{
+	if (flashlight_render)
+	{
+		auto io = smart_cast<CInventoryOwner*>(H_Parent());
+		if (!flashlight_render->get_active() && IsFlashlightOn() && (!H_Parent() || (io && this == io->inventory().ActiveItem())))
+		{
+			flashlight_render->set_active(true);
+			flashlight_omni->set_active(true);
+			flashlight_glow->set_active(true);
+			UpdateAddonsVisibility();
+		}
+		else if (flashlight_render->get_active() && (!IsFlashlightOn() || !(!H_Parent() || (io && this == io->inventory().ActiveItem()))))
+		{
+			flashlight_render->set_active(false);
+			flashlight_omni->set_active(false);
+			flashlight_glow->set_active(false);
+			UpdateAddonsVisibility();
+		}
+
+		if (flashlight_render->get_active())
+		{
+			Fvector flashlight_pos, flashlight_pos_omni, flashlight_dir, flashlight_dir_omni;
+
+			if (GetHUDmode())
+			{
+				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos, flashlight_dir, flashlight_attach_offset);
+				CorrectDirFromWorldToHud(flashlight_dir);
+
+				GetBoneOffsetPosDir(flashlight_attach_bone, flashlight_pos_omni, flashlight_dir_omni, flashlight_omni_attach_offset);
+				CorrectDirFromWorldToHud(flashlight_dir_omni);
+			}
+			else
+			{
+				flashlight_dir = get_LastFD();
+				XFORM().transform_tiny(flashlight_pos, flashlight_world_attach_offset);
+
+				flashlight_dir_omni = get_LastFD();
+				XFORM().transform_tiny(flashlight_pos_omni, flashlight_omni_world_attach_offset);
+			}
+
+			Fmatrix flashlightXForm;
+			flashlightXForm.identity();
+			flashlightXForm.k.set(flashlight_dir);
+			Fvector::generate_orthonormal_basis_normalized(flashlightXForm.k, flashlightXForm.j, flashlightXForm.i);
+			flashlight_render->set_position(flashlight_pos);
+			flashlight_render->set_rotation(flashlightXForm.k, flashlightXForm.i);
+
+			flashlight_glow->set_position(flashlight_pos);
+			flashlight_glow->set_direction(flashlightXForm.k);
+
+			Fmatrix flashlightomniXForm;
+			flashlightomniXForm.identity();
+			flashlightomniXForm.k.set(flashlight_dir_omni);
+			Fvector::generate_orthonormal_basis_normalized(flashlightomniXForm.k, flashlightomniXForm.j, flashlightomniXForm.i);
+			flashlight_omni->set_position(flashlight_pos_omni);
+			flashlight_omni->set_rotation(flashlightomniXForm.k, flashlightomniXForm.i);
+
+			// calc color animator
+			if (flashlight_lanim)
+			{
+				int frame;
+				const u32 clr = flashlight_lanim->CalculateBGR(Device.fTimeGlobal, frame);
+
+				Fcolor fclr{ (float)color_get_B(clr), (float)color_get_G(clr), (float)color_get_R(clr), 1.f };
+				fclr.mul_rgb(flashlight_fBrightness / 255.f);
+				flashlight_render->set_color(fclr);
+				flashlight_omni->set_color(fclr);
+				flashlight_glow->set_color(fclr);
+			}
+		}
 	}
 }
 
@@ -1485,6 +1829,42 @@ int CWeapon::GetSuitableAmmoTotal(bool use_item_to_spawn) const
 	return l_count + iAmmoCurrent;
 }
 
+int CWeapon::GetAmmoCount(u8 ammo_type) const
+{
+	VERIFY(m_pCurrentInventory);
+	R_ASSERT(ammo_type < m_ammoTypes.size());
+
+	return GetAmmoCount_forType(m_ammoTypes[ammo_type]);
+}
+
+int CWeapon::GetAmmoCount_forType(shared_str const& ammo_type) const
+{
+	int res = 0;
+
+	TIItemContainer::iterator itb = m_pCurrentInventory->m_belt.begin();
+	TIItemContainer::iterator ite = m_pCurrentInventory->m_belt.end();
+	for (; itb != ite; ++itb)
+	{
+		CWeaponAmmo* pAmmo = smart_cast<CWeaponAmmo*>(*itb);
+		if (pAmmo && (pAmmo->cNameSect() == ammo_type))
+		{
+			res += pAmmo->m_boxCurr;
+		}
+	}
+
+	itb = m_pCurrentInventory->m_ruck.begin();
+	ite = m_pCurrentInventory->m_ruck.end();
+	for (; itb != ite; ++itb)
+	{
+		CWeaponAmmo* pAmmo = smart_cast<CWeaponAmmo*>(*itb);
+		if (pAmmo && (pAmmo->cNameSect() == ammo_type))
+		{
+			res += pAmmo->m_boxCurr;
+		}
+	}
+	return res;
+}
+
 float CWeapon::GetConditionMisfireProbability() const
 {
 	if( GetCondition()>0.95f ) return 0.0f;
@@ -1553,6 +1933,20 @@ bool CWeapon::IsSilencerAttached() const
 			CSE_ALifeItemWeapon::eAddonPermanent == m_eSilencerStatus;
 }
 
+bool CWeapon::IsLaserAttached() const
+{
+	return (ALife::eAddonAttachable == m_eLaserDesignatorStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator)) ||
+		ALife::eAddonPermanent == m_eLaserDesignatorStatus;
+}
+
+bool CWeapon::IsTacticalTorchAttached() const
+{
+	return (ALife::eAddonAttachable == m_eTacticalTorchStatus &&
+		0 != (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch)) ||
+		ALife::eAddonPermanent == m_eTacticalTorchStatus;
+}
+
 bool CWeapon::GrenadeLauncherAttachable()
 {
 	return (CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus);
@@ -1564,6 +1958,45 @@ bool CWeapon::ScopeAttachable()
 bool CWeapon::SilencerAttachable()
 {
 	return (CSE_ALifeItemWeapon::eAddonAttachable == m_eSilencerStatus);
+}
+bool CWeapon::LaserAttachable()
+{
+	return (ALife::eAddonAttachable == m_eLaserDesignatorStatus);
+}
+bool CWeapon::TacticalTorchAttachable()
+{
+	return (ALife::eAddonAttachable == m_eTacticalTorchStatus);
+}
+
+void CWeapon::HUD_VisualBulletUpdate(bool force, int force_idx)
+{
+	if (!bHasBulletsToHide)
+		return;
+
+	/*if (m_pInventory->ModifyFrame() <= m_BriefInfo_CalcFrame)
+	{
+		return;
+	}*/
+
+	if (!GetHUDmode()) return;
+
+	//return;
+
+	bool hide = true;
+
+	Msg("Print %d bullets", last_hide_bullet);
+
+	if (last_hide_bullet == bullet_cnt || force) hide = false;
+
+	for (u8 b = 0; b < bullet_cnt; b++)
+	{
+		u16 bone_id = HudItemData()->m_model->LL_BoneID(bullets_bones[b]);
+
+		if (bone_id != BI_NONE)
+			HudItemData()->set_bone_visible(bullets_bones[b], !hide);
+
+		if (b == last_hide_bullet) hide = false;
+	}
 }
 
 void CWeapon::UpdateHUDAddonsVisibility()
@@ -1608,8 +2041,7 @@ void CWeapon::UpdateHUDAddonsVisibility()
 		{
 			HudItemData()->set_bone_visible(wpn_scope_def_bone, FALSE, TRUE);
 		}
-		else
-			if (m_eScopeStatus == ALife::eAddonPermanent)
+		else if (m_eScopeStatus == ALife::eAddonPermanent)
 				HudItemData()->set_bone_visible(wpn_scope_def_bone, TRUE, TRUE);
 	}
 
@@ -1621,8 +2053,7 @@ void CWeapon::UpdateHUDAddonsVisibility()
 	{
 		SetBoneVisible(m_sWpn_silencer_bone, FALSE);
 	}
-	else
-		if(m_eSilencerStatus==ALife::eAddonPermanent)
+	else if(m_eSilencerStatus==ALife::eAddonPermanent)
 			SetBoneVisible(m_sWpn_silencer_bone, TRUE);
 
 	if(GrenadeLauncherAttachable())
@@ -1632,10 +2063,39 @@ void CWeapon::UpdateHUDAddonsVisibility()
 	if(m_eGrenadeLauncherStatus==ALife::eAddonDisabled )
 	{
 		SetBoneVisible(m_sWpn_launcher_bone, FALSE);
-	}else
-		if(m_eGrenadeLauncherStatus==ALife::eAddonPermanent)
+	}
+	else if(m_eGrenadeLauncherStatus==ALife::eAddonPermanent)
 			SetBoneVisible(m_sWpn_launcher_bone, TRUE);
 
+	if (LaserAttachable())
+	{
+		SetBoneVisible(m_sWpn_laser_bone, IsLaserAttached() && !m_sLaserAttachSection.size());
+	}
+	if (m_eLaserDesignatorStatus == ALife::eAddonDisabled || m_sLaserAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_laser_bone, FALSE);
+	}
+	else
+		if (m_eLaserDesignatorStatus == ALife::eAddonPermanent && !m_sLaserAttachSection.size())
+			SetBoneVisible(m_sWpn_laser_bone, TRUE);
+
+	if (m_sHud_wpn_laser_ray_bone.size() && has_laser)
+		SetBoneVisible(m_sHud_wpn_laser_ray_bone, IsLaserOn());
+
+	if (TacticalTorchAttachable())
+	{
+		SetBoneVisible(m_sWpn_flashlight_bone, IsLaserAttached() && !m_sTacticalTorchAttachSection.size());
+	}
+	if (m_eTacticalTorchStatus == ALife::eAddonDisabled || m_sTacticalTorchAttachSection.size())
+	{
+		SetBoneVisible(m_sWpn_flashlight_bone, FALSE);
+	}
+	else
+		if (m_eTacticalTorchStatus == ALife::eAddonPermanent && !m_sTacticalTorchAttachSection.size())
+			SetBoneVisible(m_sWpn_laser_bone, TRUE);
+
+	if (m_sHud_wpn_flashlight_cone_bone.size() && has_flashlight)
+		SetBoneVisible(m_sHud_wpn_flashlight_cone_bone, IsFlashlightOn());
 }
 
 void CWeapon::UpdateAddonsVisibility()
@@ -1725,6 +2185,77 @@ void CWeapon::UpdateAddonsVisibility()
 
 		pWeaponVisual->LL_SetBoneVisible			(bone_id,FALSE,TRUE);
 	
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_bone);
+	if (LaserAttachable())
+	{
+		if (IsLaserAttached() && !m_sLaserAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_eLaserDesignatorStatus == ALife::eAddonDisabled || m_sLaserAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("laser", pWeaponVisual->LL_GetBoneVisible	(bone_id));
+	}
+
+	bone_id = pWeaponVisual->LL_BoneID(m_sWpn_flashlight_bone);
+	if (TacticalTorchAttachable())
+	{
+		if (IsTacticalTorchAttached() && !m_sTacticalTorchAttachSection.size())
+		{
+			if (!pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+		else
+		{
+			if (bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		}
+	}
+	if ((m_eTacticalTorchStatus == ALife::eAddonDisabled || m_sTacticalTorchAttachSection.size()) && bone_id != BI_NONE && pWeaponVisual->LL_GetBoneVisible(bone_id))
+	{
+		pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+		//		Log("tactical torch", pWeaponVisual->LL_GetBoneVisible	(bone_id));
+	}
+
+	if (m_sWpn_laser_ray_bone.size() && has_laser)
+	{
+		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_laser_ray_bone);
+
+		if (bone_id != BI_NONE)
+		{
+			const bool laser_on = IsLaserOn();
+			if (pWeaponVisual->LL_GetBoneVisible(bone_id) && !laser_on)
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+			else if (!pWeaponVisual->LL_GetBoneVisible(bone_id) && laser_on)
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////
+
+	if (m_sWpn_flashlight_cone_bone.size() && has_flashlight)
+	{
+		bone_id = pWeaponVisual->LL_BoneID(m_sWpn_flashlight_cone_bone);
+
+		if (bone_id != BI_NONE)
+		{
+			const bool flashlight_on = IsFlashlightOn();
+			if (pWeaponVisual->LL_GetBoneVisible(bone_id) && !flashlight_on)
+				pWeaponVisual->LL_SetBoneVisible(bone_id, FALSE, TRUE);
+			else if (!pWeaponVisual->LL_GetBoneVisible(bone_id) && flashlight_on)
+				pWeaponVisual->LL_SetBoneVisible(bone_id, TRUE, TRUE);
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////
 
 	pWeaponVisual->CalculateBones_Invalidate				();
 	pWeaponVisual->CalculateBones							();
@@ -1816,6 +2347,7 @@ void CWeapon::OnZoomIn()
 			}
 		}*/
 	}
+	g_player_hud->updateMovementLayerState();
 }
 
 void CWeapon::OnZoomOut()
@@ -1848,6 +2380,7 @@ void CWeapon::OnZoomOut()
 		m_zoom_params.m_pNight_vision->Stop(100000.0f, false);
 		xr_delete(m_zoom_params.m_pNight_vision);
 	}*/
+	g_player_hud->updateMovementLayerState();
 }
 
 CUIWindow* CWeapon::ZoomTexture()
@@ -1964,17 +2497,16 @@ void CWeapon::reload			(LPCSTR section)
 		m_can_be_strapped_rifle = false;
 	}
 
-	m_addon_holder_range_modifier = m_holder_range_modifier;
-	m_addon_holder_fov_modifier = m_holder_fov_modifier;
-
-	/*if (m_eScopeStatus == ALife::eAddonAttachable) {
-		m_addon_holder_range_modifier	= READ_IF_EXISTS(pSettings,r_float, GetScopeName(),"holder_range_modifier",m_holder_range_modifier);
-		m_addon_holder_fov_modifier		= READ_IF_EXISTS(pSettings,r_float, GetScopeName(),"holder_fov_modifier",m_holder_fov_modifier);
+	if (m_eScopeStatus == ALife::eAddonAttachable)
+	{
+		m_addon_holder_range_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_range_modifier", m_holder_range_modifier);
+		m_addon_holder_fov_modifier = READ_IF_EXISTS(pSettings, r_float, GetScopeName(), "holder_fov_modifier", m_holder_fov_modifier);
 	}
-	else {
-		m_addon_holder_range_modifier	= m_holder_range_modifier;
-		m_addon_holder_fov_modifier		= m_holder_fov_modifier;
-	}	 */
+	else
+	{
+		m_addon_holder_range_modifier = m_holder_range_modifier;
+		m_addon_holder_fov_modifier = m_holder_fov_modifier;
+	}
 
 
 	{
@@ -2561,20 +3093,6 @@ void CWeapon::modify_holder_params		(float &range, float &fov) const
 	fov		*= m_addon_holder_fov_modifier;
 }
 
-u8 CWeapon::GetCurrentHudOffsetIdx()
-{
-	if (!ParentIsActor())
-		return 0;
-
-	bool b_aiming = ((IsZoomed() && m_fZoomRotationFactor <= 1.f) ||
-		(!IsZoomed() && m_fZoomRotationFactor > 0.f));
-
-	if (!b_aiming)
-		return 0;
-	else
-		return 1;
-}
-
 bool CWeapon::MovingAnimAllowedNow()
 {
 	return !IsZoomed();
@@ -2616,6 +3134,24 @@ LPCSTR	CWeapon::GetCurrentAmmo_ShortName	()
 	return *(l_cartridge.m_InvShortName);
 }
 
+float CWeapon::GetMagazineWeight(const decltype(CWeapon::m_magazine)& mag) const
+{
+	float res = 0;
+	const char* last_type = nullptr;
+	float last_ammo_weight = 0;
+	for (auto& c : mag)
+	{
+		// Usually ammos in mag have same type, use this fact to improve performance
+		if (last_type != c.m_ammoSect.c_str())
+		{
+			last_type = c.m_ammoSect.c_str();
+			last_ammo_weight = c.Weight();
+		}
+		res += last_ammo_weight;
+	}
+	return res;
+}
+
 float CWeapon::Weight() const
 {
 	float res = CInventoryItemObject::Weight();
@@ -2623,21 +3159,25 @@ float CWeapon::Weight() const
 	{
 		res += pSettings->r_float(GetGrenadeLauncherName(), "inv_weight");
 	}
-	if (IsScopeAttached() && GetScopeName().size())
+	if (IsScopeAttached() && m_scopes.size())
 	{
 		res += pSettings->r_float(GetScopeName(), "inv_weight");
 	}
 	if (IsSilencerAttached() && GetSilencerName().size()) {
 		res += pSettings->r_float(GetSilencerName(), "inv_weight");
 	}
-
-	if (iAmmoElapsed)
-	{
-		float w = pSettings->r_float(*m_ammoTypes[m_ammoType], "inv_weight");
-		float bs = pSettings->r_float(*m_ammoTypes[m_ammoType], "box_size");
-
-		res += w * (iAmmoElapsed / bs);
+	if (IsSilencerAttached() && GetSilencerName().size()) {
+		res += pSettings->r_float(GetSilencerName(), "inv_weight");
 	}
+	if (IsLaserAttached() && GetLaserName().size()) {
+		res += pSettings->r_float(GetLaserName(), "inv_weight");
+	}
+	if (IsTacticalTorchAttached() && GetTacticalTorchName().size()) {
+		res += pSettings->r_float(GetTacticalTorchName(), "inv_weight");
+	}
+
+	res += GetMagazineWeight(m_magazine);
+
 	return res;
 }
 
@@ -2647,11 +3187,17 @@ u32 CWeapon::Cost() const
 	if (IsGrenadeLauncherAttached() && GetGrenadeLauncherName().size()) {
 		res += pSettings->r_u32(GetGrenadeLauncherName(), "cost");
 	}
-	if (IsScopeAttached() && GetScopeName().size()) {
+	if (IsScopeAttached() && m_scopes.size()) {
 		res += pSettings->r_u32(GetScopeName(), "cost");
 	}
 	if (IsSilencerAttached() && GetSilencerName().size()) {
 		res += pSettings->r_u32(GetSilencerName(), "cost");
+	}
+	if (IsLaserAttached() && GetLaserName().size()) {
+		res += pSettings->r_u32(GetLaserName(), "cost");
+	}
+	if (IsTacticalTorchAttached() && GetTacticalTorchName().size()) {
+		res += pSettings->r_u32(GetTacticalTorchName(), "cost");
 	}
 
 	if (iAmmoElapsed)
@@ -2662,6 +3208,7 @@ u32 CWeapon::Cost() const
 		res += iFloor(w * (iAmmoElapsed / bs));
 	}
 	return res;
+
 }
 
 void CWeapon::Hide		()
@@ -2708,16 +3255,72 @@ bool CWeapon::ParentIsActor	()
 	return EA->cast_actor()!=0;
 }
 
-const float &CWeapon::hit_probability	() const
+const char* CWeapon::GetAnimAimName()
 {
-	VERIFY					((g_SingleGameDifficulty >= egdNovice) && (g_SingleGameDifficulty <= egdMaster)); 
-	return					(m_hit_probability[egdNovice]);
+	auto pActor = smart_cast<const CActor*>(H_Parent());
+	if (pActor)
+	{
+		const u32 state = pActor->get_state();
+
+		if (state && state & mcAnyMove)
+		{
+#pragma todo("DANCE MANIAC: Uncomment this for advanced moving anims.");
+			//if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
+			//	return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "");
+			//else
+			//{
+			//	if (m_bUseAimAnmDirDependency)
+			//		return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (state & mcFwd) ? "_forward" : ((state & mcBack) ? "_back" : ""), (state & mcLStrafe) ? "_left" : ((state & mcRStrafe) ? "_right" : ""), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+			//	else
+					return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_moving"), (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+			//}
+		}
+	}
+	return nullptr;
+}
+
+const char* CWeapon::GenerateAimAnimName(string64 base_anim)
+{
+	auto pActor = smart_cast<const CActor*>(H_Parent());
+	if (pActor)
+	{
+		const u32 state = pActor->get_state();
+
+		string64 buff;
+
+		if (state & mcAnyMove)
+		{
+			if (!(state & mcCrouch))
+			{
+				if (state & mcAccel) //Ходьба медленная (SHIFT)
+					return strconcat(sizeof(buff), buff, base_anim, "_slow");
+				else
+					return base_anim;
+			}
+			else if (state & mcAccel) //Ходьба в присяде (CTRL+SHIFT)
+			{
+				return strconcat(sizeof(buff), buff, base_anim, "_crouch_slow");
+			}
+			else
+			{
+				return strconcat(sizeof(buff), buff, base_anim, "_crouch");
+			}
+		}
+	}
+
+	return base_anim;
 }
 
 void CWeapon::OnBulletHit()
 {
 	if (!fis_zero(conditionDecreasePerShotOnHit))
 		ChangeCondition(-conditionDecreasePerShotOnHit);
+}
+
+const float &CWeapon::hit_probability	() const
+{
+	VERIFY					((g_SingleGameDifficulty >= egdNovice) && (g_SingleGameDifficulty <= egdMaster)); 
+	return					(m_hit_probability[egdNovice]);
 }
 
 void CWeapon::OnStateSwitch(u32 S, u32 oldState)
@@ -2750,6 +3353,20 @@ void CWeapon::OnAnimationEnd(u32 state)
 	inherited::OnAnimationEnd(state);
 }
 
+u8 CWeapon::GetCurrentHudOffsetIdx()
+{
+	if (!ParentIsActor())
+		return 0;
+
+	bool b_aiming = ((IsZoomed() && m_fZoomRotationFactor <= 1.f) ||
+		(!IsZoomed() && m_fZoomRotationFactor > 0.f));
+
+	if (!b_aiming)
+		return 0;
+	else
+		return 1;
+}
+
 //  FOV       
 float CWeapon::GetSecondVPFov() const
 {
@@ -2776,4 +3393,56 @@ void CWeapon::UpdateSecondVP(bool bInGrenade)
 	bool bCond_3 = pActor->cam_Active() == pActor->cam_FirstEye(); //     1-
 
 	Device.m_SecondViewport.SetSVPActive(bCond_1 && bCond_2 && bCond_3);
+}
+
+bool CWeapon::IsPartlyReloading()
+{
+	return (m_set_next_ammoType_on_reload == u32(-1) && GetAmmoElapsed() > 0 && !IsMisfire());
+}
+
+bool CWeapon::IsMisfireNow()
+{
+	return IsMisfire();
+}
+
+void CWeapon::SwitchLaser(bool on)
+{
+	if (!has_laser || !IsLaserAttached())
+		return;
+
+	if (on)
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+
+		if (isHUDAnimationExist("anm_laser_on"))
+			SwitchState(eLaserSwitch);
+	}
+	else
+	{
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+
+		if (isHUDAnimationExist("anm_laser_off"))
+			SwitchState(eLaserSwitch);
+	}
+}
+
+void CWeapon::SwitchFlashlight(bool on)
+{
+	if (!has_flashlight || !IsTacticalTorchAttached())
+		return;
+
+	if (on)
+	{
+		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+
+		if (isHUDAnimationExist("anm_torch_on"))
+			SwitchState(eFlashlightSwitch);
+	}
+	else
+	{
+		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+
+		if (isHUDAnimationExist("anm_torch_off"))
+			SwitchState(eFlashlightSwitch);
+	}
 }

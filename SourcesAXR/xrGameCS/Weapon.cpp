@@ -3668,6 +3668,12 @@ u32 CWeapon::Cost() const
 	if(IsSilencerAttached()&&GetSilencerName().size()){
 		res += pSettings->r_u32(GetSilencerName(),"cost");
 	}
+	if (IsLaserAttached() && GetLaserName().size()) {
+		res += pSettings->r_u32(GetLaserName(), "cost");
+	}
+	if (IsTacticalTorchAttached() && GetTacticalTorchName().size()) {
+		res += pSettings->r_u32(GetTacticalTorchName(), "cost");
+	}
 	
 	if(iAmmoElapsed)
 	{

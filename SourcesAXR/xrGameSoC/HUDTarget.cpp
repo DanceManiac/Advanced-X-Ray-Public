@@ -26,6 +26,7 @@
 #include "inventory_item.h"
 #include "inventory.h"
 #include "HudItem.h"
+#include "Weapon.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -292,6 +293,11 @@ void CHUDTarget::Render()
 	float cy = (pt.y + 1) * h_2;
 
 	if (GameConstants::GetHideHudOnMaster())
+		return;
+
+	auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem());
+
+	if (Wpn && Wpn->IsLaserOn())
 		return;
 
 	//отрендерить кружочек или крестик

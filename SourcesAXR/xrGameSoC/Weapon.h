@@ -13,6 +13,8 @@
 #include "firedeps.h"
 #include "ui\UIWindow.h"
 
+#include "xrserver_objects_alife_items.h"
+
 // refs
 class CEntity;
 class ENGINE_API CMotionDef;
@@ -21,6 +23,10 @@ class CSE_ALifeItemWeaponAmmo;
 class CWeaponMagazined;
 class CParticlesObject;
 class CUIWindow;
+class CLAItem;
+
+#define WEAPON_INDOOR_HEMI_FACTOR 0.01f         // Сила освещённости персонжаей солнечным светом, ниже которой считается что персонаж в помещении 
+#define WEAPON_SND_REFLECTION_HUD_FACTOR 0.7f   // Коэфицент на который домножается громкость звука эха от выстрела, если он был сделат от 1-го лица
 
 class CWeapon : public CHudItemObject,
 				public CShootingObject
@@ -48,9 +54,20 @@ public:
 	void					Load3DScopeParams(LPCSTR section);
 	void					LoadOriginalScopesParams(LPCSTR section);
 	void					LoadCurrentScopeParams(LPCSTR section);
+	void					LoadLaserDesignatorParams(LPCSTR section);
+	void					LoadTacticalTorchParams(LPCSTR section);
 	void					GetZoomData(const float scope_factor, float& delta, float& min_zoom_factor);
 	void					ZoomDynamicMod(bool bIncrement, bool bForceLimit);
 	void					UpdateAltScope();
+
+	// Up
+	// Magazine system & etc
+	xr_vector<shared_str>	bullets_bones;
+	int						bullet_cnt;
+	int						last_hide_bullet;
+	bool					bHasBulletsToHide;
+
+	virtual void			HUD_VisualBulletUpdate(bool force = false, int force_idx = -1);
 
 	virtual float			GetControlInertionFactor() const;
 	IC		float			GetZRotatingFactor()    const { return m_fZoomRotationFactor; }
@@ -153,6 +170,10 @@ public:
 		eMagEmpty,
 		eSwitch,
 		eUnMisfire,
+		eFiremodePrev,
+		eFiremodeNext,
+		eLaserSwitch,
+		eFlashlightSwitch,
 	};
 	enum EWeaponSubStates{
 		eSubstateReloadBegin		=0,
@@ -192,10 +213,21 @@ public:
 			bool IsGrenadeLauncherAttached	() const;
 			bool IsScopeAttached			() const;
 			bool IsSilencerAttached			() const;
+			bool IsLaserAttached			() const;
+			bool IsTacticalTorchAttached	() const;
 
 	virtual bool GrenadeLauncherAttachable();
 	virtual bool ScopeAttachable();
 	virtual bool SilencerAttachable();
+	virtual bool LaserAttachable();
+	virtual bool TacticalTorchAttachable();
+
+	ALife::EWeaponAddonStatus	get_GrenadeLauncherStatus	() const { return m_eGrenadeLauncherStatus; }
+	ALife::EWeaponAddonStatus	get_ScopeStatus				() const { return m_eScopeStatus; }
+	ALife::EWeaponAddonStatus	get_SilencerStatus			() const { return m_eSilencerStatus; }
+	ALife::EWeaponAddonStatus	get_LaserDesignatorStatus	() const { return m_eLaserDesignatorStatus; }
+	ALife::EWeaponAddonStatus	get_TacticalTorchStatus		() const { return m_eTacticalTorchStatus; }
+
 	virtual bool UseScopeTexture() {return true;};
 
 	//обновление видимости для косточек аддонов
@@ -217,13 +249,19 @@ public:
 	int	GetSilencerY() {return m_iSilencerY;}
 	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
 	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
+	int	GetLaserDesignatorX() {return m_iLaserX;}
+	int	GetLaserDesignatorY() {return m_iLaserY;}
+	int	GetTacticalTorchX() {return m_iTacticalTorchX;}
+	int	GetTacticalTorchY() {return m_iTacticalTorchY;}
 
 	const shared_str& GetGrenadeLauncherName	() const { return m_sGrenadeLauncherName;}
-	const shared_str& GetScopeName				() const { return m_sScopeName;}
+	const shared_str GetScopeName				()		const;
 	const shared_str& GetSilencerName			() const { return m_sSilencerName;}
+	const shared_str& GetLaserName				() const {return m_sLaserName;}
+	const shared_str& GetTacticalTorchName		() const{return m_sTacticalTorchName;}
 
 	u8		GetAddonsState						()		const		{return m_flagsAddOnState;};
-	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}//dont use!!! for buy menu only!!!
+	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}
 protected:
 	//состояние подключенных аддонов
 	u8 m_flagsAddOnState;
@@ -232,15 +270,31 @@ protected:
 	ALife::EWeaponAddonStatus	m_eScopeStatus;
 	ALife::EWeaponAddonStatus	m_eSilencerStatus;
 	ALife::EWeaponAddonStatus	m_eGrenadeLauncherStatus;
+	ALife::EWeaponAddonStatus	m_eLaserDesignatorStatus;
+	ALife::EWeaponAddonStatus	m_eTacticalTorchStatus;
 
 	//названия секций подключаемых аддонов
 	shared_str		m_sScopeName;
 	shared_str		m_sSilencerName;
 	shared_str		m_sGrenadeLauncherName;
+	shared_str		m_sLaserName;
+	shared_str		m_sTacticalTorchName;
+
+	shared_str		m_sScopeAttachSection{};
+	shared_str		m_sSilencerAttachSection{};
+	shared_str		m_sLaserAttachSection{};
+	shared_str		m_sTacticalTorchAttachSection{};
+	shared_str		m_sGrenadeLauncherAttachSection{};
 
 	shared_str		m_sWpn_scope_bone;
 	shared_str		m_sWpn_silencer_bone;
 	shared_str		m_sWpn_launcher_bone;
+	shared_str		m_sWpn_laser_bone;
+	shared_str		m_sWpn_flashlight_bone;
+	shared_str		m_sWpn_laser_ray_bone;
+	shared_str		m_sWpn_flashlight_cone_bone;
+	shared_str		m_sHud_wpn_laser_ray_bone;
+	shared_str		m_sHud_wpn_flashlight_cone_bone;
 
 	xr_vector<shared_str> m_all_scope_bones;
 	shared_str		m_cur_scope_bone;
@@ -249,6 +303,8 @@ protected:
 	int	m_iScopeX, m_iScopeY;
 	int	m_iSilencerX, m_iSilencerY;
 	int	m_iGrenadeLauncherX, m_iGrenadeLauncherY;
+	int m_iLaserX, m_iLaserY;
+	int m_iTacticalTorchX, m_iTacticalTorchY;
 
 	RStringVec		m_defShownBones;
 	RStringVec		m_defHiddenBones;
@@ -294,6 +350,9 @@ public:
 	virtual void			OnZoomOut			();
 			bool			IsZoomed			()	const	{return m_bIsZoomModeNow;};
 	CUIWindow*				ZoomTexture			();
+
+			bool			IsPartlyReloading	();
+
 			bool			ZoomHideCrosshair	()			{return m_bHideCrosshairInZoom || ZoomTexture();}
 
 	IC float				GetZoomFactor		() const		{	return m_fCurrentZoomFactor;	}
@@ -301,7 +360,8 @@ public:
 
 	virtual	float			CurrentZoomFactor	();
 	//показывает, что оружие находится в соостоянии поворота для приближенного прицеливания
-			bool			IsRotatingToZoom	() const		{	return (m_fZoomRotationFactor<1.f);}
+			bool			IsRotatingToZoom	() const		{return (m_fZoomRotationFactor<1.f);}
+			bool			IsRotatingFromZoom	() const		{return (m_fZoomRotationFactor>0.f);}
 
 	virtual	u8				GetCurrentHudOffsetIdx();
 
@@ -364,12 +424,19 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Weapon fire
 	//////////////////////////////////////////////////////////////////////////
+
+private:
+	string64 guns_aim_anm;
 protected:
 	virtual void			SetDefaults			();
 
 	virtual bool			MovingAnimAllowedNow	();
+	virtual bool			IsMisfireNow			();
 	virtual void			OnStateSwitch			(u32 S, u32 oldState = 0);
 	virtual void			OnAnimationEnd			(u32 state);
+
+	const char*				GetAnimAimName			();
+	const char*				GenerateAimAnimName		(string64 base_anim);
 
 	//трассирование полета пули
 			void			FireTrace			(const Fvector& P, const Fvector& D);
@@ -467,6 +534,7 @@ public:
 	virtual void			set_ef_weapon_type		(u32 type) { m_ef_weapon_type = type; };
 	virtual void			SetAmmoType				(u32 type) { m_ammoType = type; };
 	u8						GetAmmoType				() { return m_ammoType; };
+
 	//-Alundaio
 	IC int					GetAmmoElapsed		()	const		{	return /*int(m_magazine.size())*/iAmmoElapsed;}
 	IC int					GetAmmoMagSize		()	const		{	return iMagazineSize;						}
@@ -522,6 +590,8 @@ public:
 		bool				unlimited_ammo				();
 	IC	bool				can_be_strapped				() const {return m_can_be_strapped;};
 
+	float					GetMagazineWeight			(const decltype(m_magazine)& mag) const;
+
 	LPCSTR					GetCurrentAmmo_ShortName	();
 
 	xr_vector<shared_str>	m_SuitableRepairKits;
@@ -555,4 +625,52 @@ public:
 
 	virtual void			OnBulletHit					();
 			int				GetSuitableAmmoTotal		(bool use_item_to_spawn = false) const;
+
+virtual void processing_deactivate() override
+	{
+		UpdateLaser();
+		UpdateFlashlight();
+		inherited::processing_deactivate();
+	}
+
+	void GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset);
+	//Функция из ганслингера для приблизительной коррекции разности фовов худа и мира. Так себе на самом деле, но более годных способов я не нашел.
+	void CorrectDirFromWorldToHud(Fvector& dir);
+
+private:
+	float hud_recalc_koef;
+	bool has_laser;
+	shared_str laserdot_attach_bone;
+	Fvector laserdot_attach_offset, laserdot_world_attach_offset;
+	ref_light laser_light_render;
+	CLAItem* laser_lanim;
+	float laser_fBrightness{ 1.f };
+
+	void UpdateLaser();
+public:
+	void SwitchLaser(bool on);
+
+	inline bool IsLaserOn() const
+	{
+		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserOn && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator || m_eLaserDesignatorStatus == ALife::eAddonPermanent));
+	}
+
+private:
+	bool has_flashlight;
+	shared_str flashlight_attach_bone;
+	Fvector flashlight_attach_offset, flashlight_omni_attach_offset, flashlight_world_attach_offset, flashlight_omni_world_attach_offset;
+	ref_light flashlight_render;
+	ref_light flashlight_omni;
+	ref_glow flashlight_glow;
+	CLAItem* flashlight_lanim;
+	float flashlight_fBrightness{ 1.f };
+
+	void UpdateFlashlight();
+public:
+	void SwitchFlashlight(bool on);
+
+	inline bool IsFlashlightOn() const
+	{
+		return (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn && (m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonTacticalTorch || m_eTacticalTorchStatus == ALife::eAddonPermanent));
+	}
 };

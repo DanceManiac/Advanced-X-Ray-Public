@@ -463,6 +463,7 @@ public:
 	void					StopSprint				() {mstate_wishful &= ~mcSprint;}
 
 	bool					AnyAction				()	{return (mstate_real & mcAnyAction) != 0;};
+	bool					AnyMove					()	{return (mstate_real & mcAnyMove) != 0;};
 
 	bool					is_jump					();		
 	u32						MovingState				() const { return mstate_real; }

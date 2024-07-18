@@ -15,6 +15,7 @@
 #include "UI/UIGameTutorial.h"
 #include "string_table.h"
 #include "object_broker.h"
+#include "player_hud.h"
 #include "Actor.h"
 
 using namespace luabind;
@@ -122,6 +123,46 @@ bool get_saves_lock_status()
 	return g_saves_locked;
 }
 
+u32 PlayHudMotion(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f)
+{
+	return g_player_hud->script_anim_play(hand, itm_name, anm_name, bMixIn, speed);
+}
+
+void StopHudMotion()
+{
+	g_player_hud->StopScriptAnim();
+}
+
+float MotionLength(LPCSTR section, LPCSTR name, float speed)
+{
+	return g_player_hud->motion_length_script(section, name, speed);
+}
+
+bool AllowHudMotion()
+{
+	return g_player_hud->allow_script_anim();
+}
+
+void PlayBlendAnm(LPCSTR name, u8 part, float speed, float power, bool bLooped, bool no_restart)
+{
+	g_player_hud->PlayBlendAnm(name, part, speed, power, bLooped, no_restart);
+}
+
+void StopBlendAnm(LPCSTR name, bool bForce)
+{
+	g_player_hud->StopBlendAnm(name, bForce);
+}
+
+void StopAllBlendAnms(bool bForce)
+{
+	g_player_hud->StopAllBlendAnms(bForce);
+}
+
+float SetBlendAnmTime(LPCSTR name, float time)
+{
+	return g_player_hud->SetBlendAnmTime(name, time);
+}
+
 #pragma optimize("s",on)
 void game_sv_GameState::script_register(lua_State *L)
 {
@@ -193,6 +234,14 @@ void game_sv_GameState::script_register(lua_State *L)
 	def("has_active_tutorial",	&has_active_tutotial),
 	def("reload_language",		&reload_language),
 	def("translate_string",		&translate_string),
+	def("play_hud_motion",		PlayHudMotion),
+	def("stop_hud_motion",		StopHudMotion),
+	def("get_motion_length",	MotionLength),
+	def("hud_motion_allowed",	AllowHudMotion),
+	def("play_hud_anm",			PlayBlendAnm),
+	def("stop_hud_anm",			StopBlendAnm),
+	def("stop_all_hud_anms",	StopAllBlendAnms),
+	def("set_hud_anm_time",		SetBlendAnmTime),
 
 	def("only_allow_movekeys",	block_all_except_movement),
 	def("only_movekeys_allowed",only_movement_allowed),

@@ -301,7 +301,7 @@ void CWeaponShotgun::switch2_EndReload	()
 void CWeaponShotgun::PlayAnimOpenWeapon()
 {
 	VERIFY(GetState()==eReload);
-	PlayHUDMotionIfExists({"anim_open_weapon", "anm_open"}, FALSE, GetState());
+	PlayHUDMotionIfExists({"anim_open_weapon", "anm_open_weapon", "anm_open"}, FALSE, GetState());
 }
 void CWeaponShotgun::PlayAnimAddOneCartridgeWeapon()
 {
@@ -311,7 +311,7 @@ void CWeaponShotgun::PlayAnimAddOneCartridgeWeapon()
 void CWeaponShotgun::PlayAnimCloseWeapon()
 {
 	VERIFY(GetState()==eReload);
-	PlayHUDMotionIfExists({"anim_close_weapon", "anm_close"}, FALSE, GetState());
+	PlayHUDMotionIfExists({"anim_close_weapon", "anm_close_weapon", "anm_close"}, FALSE, GetState());
 }
 
 bool CWeaponShotgun::HaveCartridgeInInventory		(u8 cnt)

@@ -18,6 +18,9 @@ protected:
 	virtual void	PlayAnimHide					();
 	virtual void	PlayAnimIdleMoving				();
 	virtual void	PlayAnimIdleSprint				();
+	virtual void	PlayAnimIdleMovingSlow			() override;
+	virtual void	PlayAnimIdleMovingCrouch		() override;
+	virtual void	PlayAnimIdleMovingCrouchSlow	() override;
 	virtual void	PlayAnimIdle					();
 	virtual void	PlayReloadSound					();
 
