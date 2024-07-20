@@ -933,6 +933,8 @@ public:
 			u32					GetRemainingUses();
 			u32					GetMaxUses();
 
+			bool				IsQuestItem() const;
+
 			void				SetArtefactChargeLevel(float charge_level);
 			float				GetArtefactChargeLevel() const;
 			void				SetArtefactRank(int rank);

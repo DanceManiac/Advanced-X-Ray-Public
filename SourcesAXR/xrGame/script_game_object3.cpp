@@ -1802,3 +1802,15 @@ void CScriptGameObject::DestroyObject()
 	object().DestroyObject();
 }
 //-Alundaio
+
+bool CScriptGameObject::IsQuestItem() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+	{
+		Msg("[CScriptGameObject::IsQuestItem]: The object class is not CInventoryItem!");
+		return false;
+	}
+
+	return IItm->IsQuestItem();
+}

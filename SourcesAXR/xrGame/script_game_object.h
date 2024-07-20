@@ -962,6 +962,8 @@ public:
 			u32 				GetMaxUses();
 			//-Alundaio
 
+			bool				IsQuestItem() const;
+
 			void				SetArtefactChargeLevel(float charge_level);
 			float				GetArtefactChargeLevel() const;
 			void				SetArtefactRank(int rank);
