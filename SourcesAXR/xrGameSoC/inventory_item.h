@@ -128,6 +128,8 @@ public:
 	virtual float				Weight				()	const	{ return m_weight; }
 			void				SetWeight			(float w)	{ m_weight = w; }
 
+			shared_str			GetPropertyBoxUseText()	const { return m_sPropertyBoxUseText; }
+
 public:
 	CInventory*					m_pCurrentInventory;
 	shared_str					m_section_id;
@@ -197,6 +199,7 @@ protected:
 	float						m_fMaxChargeLevel;
 	float						m_fUnchargeSpeed;
 	shared_str					m_Description;
+	shared_str					m_sPropertyBoxUseText;
 
 	float						m_fOccupiedInvSpace;
 

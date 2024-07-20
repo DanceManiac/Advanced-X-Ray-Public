@@ -1428,19 +1428,21 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()) || (pRepairKit && !pRepairKit->UseAllowed()))
 		return;
 
+	LPCSTR use_text = item->GetPropertyBoxUseText().c_str();
+
 	if ( pMedkit || pAntirad )
 	{
-		act_str = "st_use";
+		act_str = use_text ? use_text : "st_use";
 	}
 	else if ( pBottleItem )
 	{
-		act_str = "st_drink";
+		act_str = use_text ? use_text : "st_drink";
 	}
 	else if (pBattery)
 	{
 		if (item_in_torch_slot && item_in_torch_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_torch_slot->m_SuitableBatteries) && item_in_torch_slot->GetChargeLevel() <= 0.99f)
 		{
-			shared_str str = CStringTable().translate("st_charge_item");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_torch_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_torch_slot, BATTERY_CHARGE_TORCH);
 			b_show = true;
@@ -1448,7 +1450,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_art_detector_slot && item_in_art_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_art_detector_slot->m_SuitableBatteries) && item_in_art_detector_slot->GetChargeLevel() <= 0.99f)
 		{
-			shared_str str = CStringTable().translate("st_charge_item");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_art_detector_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_art_detector_slot, BATTERY_CHARGE_DETECTOR);
 			b_show = true;
@@ -1456,7 +1458,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_anomaly_detector_slot && item_in_anomaly_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_anomaly_detector_slot->m_SuitableBatteries) && item_in_anomaly_detector_slot->GetChargeLevel() <= 0.99f)
 		{
-			shared_str str = CStringTable().translate("st_charge_item");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
 			b_show = true;
@@ -1467,7 +1469,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	{
 		if (item_in_outfit_slot && outfit_use_filter)
 		{
-			shared_str str = CStringTable().translate("st_change_filter");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, FILTER_CHANGE_OUTFIT);
 			b_show = true;
@@ -1475,7 +1477,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_helmet_slot && helmet_use_filter)
 		{
-			shared_str str = CStringTable().translate("st_change_filter");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, FILTER_CHANGE_HELMET);
 			b_show = true;
@@ -1483,7 +1485,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_helmet2_slot && helmet2_use_filter)
 		{
-			shared_str str = CStringTable().translate("st_change_filter");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
 			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, FILTER_CHANGE_HELMET);
 			b_show = true;
@@ -1494,7 +1496,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	{
 		if (item_in_outfit_slot && can_repair_outfit)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT);
 			b_show = true;
@@ -1502,7 +1504,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_helmet_slot && can_repair_helmet)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, REPAIR_KIT_HELMET);
 			b_show = true;
@@ -1510,7 +1512,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_helmet2_slot && can_repair_helmet2)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, REPAIR_KIT_SECOND_HELMET);
 			b_show = true;
@@ -1518,7 +1520,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_knife_slot && can_repair_knife)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_knife_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_knife_slot, REPAIR_KIT_KNIFE);
 			b_show = true;
@@ -1526,7 +1528,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_wpn1_slot && can_repair_wpn1)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn1_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn1_slot, REPAIR_KIT_WPN1);
 			b_show = true;
@@ -1534,7 +1536,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_wpn2_slot && can_repair_wpn2)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn2_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn2_slot, REPAIR_KIT_WPN2);
 			b_show = true;
@@ -1542,7 +1544,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 		if (item_in_wpn3_slot && can_repair_wpn3)
 		{
-			shared_str str = CStringTable().translate("st_repair");
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn3_slot->m_name.c_str());
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn3_slot, REPAIR_KIT_WPN3);
 			b_show = true;
@@ -1560,7 +1562,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 			if (container && !container->IsFull())
 			{
-				shared_str str = CStringTable().translate("st_put_to");
+				shared_str str = CStringTable().translate(use_text ? use_text : "st_put_to");
 				str.printf("%s %s", str.c_str(), container->m_name.c_str());
 				m_UIPropertiesBox->AddItem(str.c_str(), (void*)container, ARTEFACT_TO_CONTAINER);
 				b_show = true;
@@ -1575,7 +1577,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 
 			if (af_in_container_casted)
 			{
-				shared_str str = CStringTable().translate("st_take_from");
+				shared_str str = CStringTable().translate(use_text ? use_text : "st_take_from");
 				str.printf("%s %s", str.c_str(), af_in_container_casted->m_name.c_str());
 				m_UIPropertiesBox->AddItem(str.c_str(), (void*)af_in_container_casted, ARTEFACT_FROM_CONTAINER);
 				b_show = true;
@@ -1584,7 +1586,7 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	}
 	else if (pSleepingBag)
 	{
-		m_UIPropertiesBox->AddItem("st_use", NULL, INVENTORY_SLEEP_ACTION);
+		m_UIPropertiesBox->AddItem(use_text ? use_text : "st_use", NULL, INVENTORY_SLEEP_ACTION);
 		b_show = true;
 	}
 	else if ( pEatableItem )
@@ -1593,15 +1595,15 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 		shared_str	section_name	= pObj->cNameSect();
 		if ( !xr_strcmp(section_name,"vodka") || !(xr_strcmp(section_name,"energy_drink")) )
 		{
-			act_str = "st_drink";
+			act_str = use_text ? use_text : "st_drink";
 		}
 		else if( !xr_strcmp(section_name,"bread") || !xr_strcmp(section_name,"kolbasa") || !xr_strcmp(section_name,"conserva"))
 		{
-			act_str = "st_eat";
+			act_str = use_text ? use_text : "st_eat";
 		}
 		else
 		{
-			act_str = "st_use";
+			act_str = use_text ? use_text : "st_use";
 		}
 	}
 
