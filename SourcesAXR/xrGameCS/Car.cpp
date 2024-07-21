@@ -172,26 +172,39 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 #ifdef DEBUG
 	InitDebug();
 #endif
-	CSE_Abstract					*e = (CSE_Abstract*)(DC);
-	CSE_ALifeCar					*co=smart_cast<CSE_ALifeCar*>(e);
-	BOOL							R = inherited::net_Spawn(DC);
+	if (!inherited::net_Spawn(DC))
+		return (FALSE);
 
-	PKinematics(Visual())->CalculateBones_Invalidate();
-	PKinematics(Visual())->CalculateBones(TRUE);
+	CSE_Abstract* e = (CSE_Abstract*)(DC);
+	CSE_ALifeCar* car = smart_cast<CSE_ALifeCar*>(e);
 
 	CPHSkeleton::Spawn(e);
-	setEnabled						(TRUE);
-	setVisible						(TRUE);
-	PKinematics(Visual())->CalculateBones_Invalidate();
-	PKinematics(Visual())->CalculateBones(TRUE);
-	m_fSaveMaxRPM					= m_max_rpm;
-	SetfHealth						(co->health);
 
-	if(!g_Alive())					b_exploded=true;
-	else							b_exploded=false;
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	IKinematicsAnimated* A = smart_cast<IKinematicsAnimated*>(Visual());
+
+	if (A)
+	{
+		if (car->startup_animation.size())
+			A->PlayCycle(*car->startup_animation);
+		K->CalculateBones(TRUE);
+	}
+
+	setEnabled(TRUE);
+	setVisible(TRUE);
+
+	m_fSaveMaxRPM = m_max_rpm;
+	SetfHealth(car->health);
+
+	if (!g_Alive())
+		b_exploded = true;
+	else
+	{
+		b_exploded = false;
+		processing_activate();
+	}
 									
 	CDamagableItem::RestoreEffect();
-	
 	
 	CInifile* pUserData		= PKinematics(Visual())->LL_UserData(); 
 	if(pUserData->section_exist("destroyed"))
@@ -205,8 +218,7 @@ BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
 		m_memory->reload	(pUserData->r_string("visual_memory_definition", "section"));
 	}
 
-	return							(CScriptEntity::net_Spawn(DC) && R);
-	
+	return							(CScriptEntity::net_Spawn(DC));
 }
 
 void CCar::ActorObstacleCallback					(bool& do_colide,bool bo1,dContact& c,SGameMtl* material_1,SGameMtl* material_2)	
@@ -231,6 +243,8 @@ void CCar::SpawnInitPhysics	(CSE_Abstract	*D)
 	//PPhysicsShell()->add_ObjectContactCallback(ActorObstacleCallback);
 	SetDefaultNetState				(so);
 	CPHUpdateObject::Activate       ();
+
+	m_pPhysicsShell->applyImpulse	(Fvector().set(0.f, -1.f, 0.f), 0.1f);
 }
 
 void	CCar::net_Destroy()
@@ -248,12 +262,6 @@ void	CCar::net_Destroy()
 	CScriptEntity::net_Destroy();
 	inherited::net_Destroy();
 	CExplosive::net_Destroy();
-	if(m_pPhysicsShell)
-	{
-		m_pPhysicsShell->Deactivate();
-		m_pPhysicsShell->ZeroCallbacks();
-		xr_delete(m_pPhysicsShell);
-	}
 	CHolderCustom::detach_Actor();
 	ClearExhausts();
 	m_wheels_map.clear();
@@ -269,6 +277,14 @@ void	CCar::net_Destroy()
 	m_damage_particles.Clear();
 	CPHDestroyable::RespawnInit();
 	CPHCollisionDamageReceiver::Clear();
+
+	if (m_pPhysicsShell)
+	{
+		m_pPhysicsShell->Deactivate();
+		m_pPhysicsShell->ZeroCallbacks();
+		xr_delete(m_pPhysicsShell);
+	}
+
 	b_breaks=false;
 }
 
