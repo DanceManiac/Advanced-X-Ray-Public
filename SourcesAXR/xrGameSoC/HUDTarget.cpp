@@ -27,6 +27,7 @@
 #include "inventory.h"
 #include "HudItem.h"
 #include "Weapon.h"
+#include "PDA.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -193,54 +194,58 @@ void CHUDTarget::Render()
 
 			if (IsGameTypeSingle())
 			{
-				CInventoryOwner* our_inv_owner		= smart_cast<CInventoryOwner*>(pCurEnt);
-				if (E && E->g_Alive() && !E->cast_base_monster())
+				const auto our_inv_owner = smart_cast<CInventoryOwner*>(pCurEnt);
+				const auto pda = Actor->GetPDA();
+
+				if (!(pda && pda->m_bZoomed))
 				{
-//.					CInventoryOwner* our_inv_owner		= smart_cast<CInventoryOwner*>(pCurEnt);
-					CInventoryOwner* others_inv_owner	= smart_cast<CInventoryOwner*>(E);
+					if (E && E->g_Alive() && !E->cast_base_monster())
+					{
+						CInventoryOwner* others_inv_owner = smart_cast<CInventoryOwner*>(E);
 
-					if(our_inv_owner && others_inv_owner){
+						if (our_inv_owner && others_inv_owner) {
 
-						switch(RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
-						{
-						case ALife::eRelationTypeEnemy:
-							C = C_ON_ENEMY; break;
-						case ALife::eRelationTypeNeutral:
-							C = C_ON_NEUTRAL; break;
-						case ALife::eRelationTypeFriend:
-							C = C_ON_FRIEND; break;
+							switch (RELATION_REGISTRY().GetRelationType(others_inv_owner, our_inv_owner))
+							{
+							case ALife::eRelationTypeEnemy:
+								C = C_ON_ENEMY; break;
+							case ALife::eRelationTypeNeutral:
+								C = C_ON_NEUTRAL; break;
+							case ALife::eRelationTypeFriend:
+								C = C_ON_FRIEND; break;
+							}
+
+							if (fuzzyShowInfo > 0.5f)
+							{
+								CStringTable	strtbl;
+								F->SetColor(subst_alpha(C, u8(iFloor(255.f * (fuzzyShowInfo - 0.5f) * 2.f))));
+								F->OutNext("%s", *strtbl.translate(others_inv_owner->Name()));
+								F->OutNext("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()));
+							}
 						}
 
-					if (fuzzyShowInfo>0.5f){
-						CStringTable	strtbl		;
-						F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
-						F->OutNext	("%s", *strtbl.translate(others_inv_owner->Name()) );
-						F->OutNext	("%s", *strtbl.translate(others_inv_owner->CharacterInfo().Community().id()) );
+						fuzzyShowInfo += SHOW_INFO_SPEED * Device.fTimeDelta;
 					}
-					}
-
-					fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
-				}
-				else 
-					if (l_pI && our_inv_owner && RQ.range < 2.0f*our_inv_owner->inventory().GetTakeDist())
+					else if (l_pI && our_inv_owner && RQ.range < 2.0f * our_inv_owner->inventory().GetTakeDist())
 					{
-						if (fuzzyShowInfo>0.5f){
-							float hud_info_item_x  = HUD().GetUI()->UIMainIngameWnd->hud_info_item_x;
+						if (fuzzyShowInfo > 0.5f) {
+							float hud_info_item_x = HUD().GetUI()->UIMainIngameWnd->hud_info_item_x;
 							float hud_info_item_y1 = HUD().GetUI()->UIMainIngameWnd->hud_info_item_y1;
 							float hud_info_item_y2 = HUD().GetUI()->UIMainIngameWnd->hud_info_item_y2;
 							float hud_info_item_y3 = HUD().GetUI()->UIMainIngameWnd->hud_info_item_y3;
 							int height = l_pI->GetInvGridRect().y2;
 							float pos = hud_info_item_y1;
-							F->SetColor	(subst_alpha(C,u8(iFloor(255.f*(fuzzyShowInfo-0.5f)*2.f))));
+							F->SetColor(subst_alpha(C, u8(iFloor(255.f * (fuzzyShowInfo - 0.5f) * 2.f))));
 							if (height == 2)
 								pos = hud_info_item_y2;
 							else if (height == 3)
 								pos = hud_info_item_y3; // Hrust: 4 cells by height is not normal)
 							F->OutSetI(0.f + hud_info_x + hud_info_item_x, 0.05f + hud_info_y + pos);
-							F->OutNext	("%s",l_pI->Name/*Complex*/());
+							F->OutNext("%s", l_pI->Name/*Complex*/());
 						}
-						fuzzyShowInfo += SHOW_INFO_SPEED*Device.fTimeDelta;
+						fuzzyShowInfo += SHOW_INFO_SPEED * Device.fTimeDelta;
 					}
+				}
 			}
 			else
 			{
@@ -298,6 +303,10 @@ void CHUDTarget::Render()
 	auto Wpn = smart_cast<CWeapon*>(Actor->inventory().ActiveItem());
 
 	if (Wpn && Wpn->IsLaserOn())
+		return;
+
+	auto pda = smart_cast<CPda*>(Actor->inventory().ActiveItem());
+	if ((pda && pda->m_bZoomed) || GameConstants::GetHideHudOnMaster())
 		return;
 
 	//отрендерить кружочек или крестик

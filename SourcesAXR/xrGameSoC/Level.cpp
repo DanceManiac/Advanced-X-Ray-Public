@@ -53,6 +53,9 @@
 
 #include "UIGameCustom.h"
 #include "ui/UIStatic.h"
+#include "ui/UIPdaWnd.h"
+#include "UICursor.h"
+#include "PDA.h"
 
 #include "player_hud.h"
 
@@ -636,9 +639,68 @@ extern	Flags32	dbg_net_Draw_Flags;
 #endif
 
 extern void draw_wnds_rects();
+#include "UIGameSP.h"
+#include "ui/UIBtnHint.h"
 
 void CLevel::OnRender()
 {
+	// PDA
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if (game && pGameSP && pGameSP->PdaMenu)
+	{
+		const auto pda = pGameSP->PdaMenu;
+		const auto pda_actor = Actor() ? Actor()->GetPDA() : nullptr;
+
+		if (psActorFlags.test(AF_3D_PDA) && pda && pda->IsShown())
+		{
+			pda->Draw();
+
+			if (g_btnHint)
+				g_btnHint->OnRender();
+
+			CUICursor* cursor = &UI().GetUICursor();
+
+			if (cursor)
+			{
+				static bool need_reset{};
+				if (pda_actor && pda_actor->m_bZoomed && HUD().GetUI()->UIGame()->MainInputReceiver() != pda)
+					HUD().GetUI()->SetMainInputReceiver(pda, false);
+
+				const bool is_top = HUD().GetUI()->UIGame()->MainInputReceiver() == pda;
+
+				if (pda->IsEnabled() && is_top && !Console->bVisible)
+				{
+					if (need_reset)
+					{
+						need_reset = false;
+						pda->ResetCursor();
+					}
+
+					Frect& pda_border = pda->m_cursor_box;
+					Fvector2 cursor_pos = cursor->GetCursorPosition();
+
+					if (!pda_border.in(cursor_pos))
+					{
+						clamp(cursor_pos.x, pda_border.left, pda_border.right);
+						clamp(cursor_pos.y, pda_border.top, pda_border.bottom);
+						cursor->SetUICursorPosition(cursor_pos);
+					}
+
+					Fvector2 cursor_pos_dif;
+					cursor_pos_dif.set(cursor_pos);
+					cursor_pos_dif.sub(pda->last_cursor_pos);
+					pda->last_cursor_pos.set(cursor_pos);
+					pda->MouseMovement(cursor_pos_dif.x, cursor_pos_dif.y);
+				}
+				else
+					need_reset = true;
+
+				cursor->OnRender();
+			}
+			Render->RenderToTarget(Render->rtPDA);
+		}
+	}
+
 	::Render->BeforeWorldRender();	//--#SM+#-- +SecondVP+
 	//Level().rend
 

@@ -960,6 +960,9 @@ float CActor::currentFOV()
 
 void CActor::UpdateCL	()
 {
+	if (load_screen_renderer.IsActive() && inventory().GetActiveSlot() == PDA_SLOT)
+		inventory().Activate(NO_ACTIVE_SLOT);
+
 	if(m_feel_touch_characters>0)
 	{
 		for(xr_vector<CObject*>::iterator it = feel_touch.begin(); it != feel_touch.end(); it++)
@@ -1091,6 +1094,8 @@ void CActor::UpdateCL	()
 	}
 
 	g_pGamePersistent->devices_shader_data.device_global_psy_influence = m_fDevicesPsyFactor;
+	g_pGamePersistent->devices_shader_data.device_psy_zone_influence = 0.0f;
+	g_pGamePersistent->devices_shader_data.device_radiation_zone_influence = 0.0f;
 
 	luabind::functor<bool> m_functor;
 

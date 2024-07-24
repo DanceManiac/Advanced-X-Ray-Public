@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "UIDialogHolder.h"
-#include "ui\UIDialogWnd.h"
+#include "ui\UIPdaWnd.h"
 #include "ui\UIBtnHint.h"
 #include "UICursor.h"
 #include "level.h"
 #include "actor.h"
 #include "xr_level_controller.h"
+#include "PDA.h"
+#include "Inventory.h"
+#include "UIGameSP.h"
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -51,6 +54,16 @@ CDialogHolder::~CDialogHolder()
 void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
 	R_ASSERT						( !pDialog->IsShown() );
+
+	if (psActorFlags.test(AF_3D_PDA) && IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
+	{
+		if (const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem()))
+		{
+			CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+			pGameSP->PdaMenu->HideDialog1();
+			Actor()->inventory().Action(kACTIVE_JOBS, CMD_START);
+		}
+	}
 
 	AddDialogToRender				(pDialog);
 	SetMainInputReceiver			(pDialog, false);
@@ -204,6 +217,20 @@ void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 		StartMenu(pDialog, bDoHideIndicators);
 	}
 	
+}
+
+void CDialogHolder::StartDialog(CUIDialogWnd* pDialog, bool bDoHideIndicators)
+{
+	if (pDialog && pDialog->NeedCenterCursor())
+	{
+		GetUICursor().SetUICursorPosition(Fvector2().set(512.0f, 384.0f));
+	}
+	StartMenu(pDialog, bDoHideIndicators);
+}
+
+void CDialogHolder::StopDialog(CUIDialogWnd* pDialog)
+{
+	StopMenu(pDialog);
 }
 
 void CDialogHolder::OnFrame	()

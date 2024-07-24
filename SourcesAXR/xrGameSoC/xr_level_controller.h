@@ -94,6 +94,7 @@ enum	EGameActions
 	kQUICK_LOAD,
 
 	kWPN_NV_CHANGE,
+	kFREELOOK,
 
 	kLASTACTION,
 	kNOTBINDED,

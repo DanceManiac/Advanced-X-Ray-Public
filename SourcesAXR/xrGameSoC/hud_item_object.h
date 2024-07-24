@@ -42,6 +42,7 @@ public:
 	virtual void		UpdateCL			();
 	virtual void		renderable_Render	();
 	virtual void		on_renderable_Render();
+	virtual void		OnMoveToRuck		(EItemPlace prev);
 
 	virtual bool			use_parent_ai_locations	() const
 	{

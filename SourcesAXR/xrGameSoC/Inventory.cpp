@@ -77,7 +77,7 @@ CInventory::CInventory()
 			m_slots[i].m_bPersistent = !!pSettings->r_bool("inventory",temp);
 	};
 
-	m_slots[PDA_SLOT].m_bVisible				= false;
+	m_slots[PDA_SLOT].m_bVisible				= true;
 	m_slots[OUTFIT_SLOT].m_bVisible				= false;
 	m_slots[DETECTOR_SLOT].m_bVisible			= false;
 	m_slots[TORCH_SLOT].m_bVisible				= false;
@@ -681,6 +681,25 @@ bool CInventory::Action(s32 cmd, u32 flags)
 					b_send_event = Activate(NO_ACTIVE_SLOT);
 				}else {
 					b_send_event = Activate(ARTEFACT_SLOT);
+				}
+			}
+		}break;
+	case kACTIVE_JOBS:
+	case kMAP:
+	case kCONTACTS:
+		{
+			b_send_event = true;
+			if (flags & CMD_STOP)
+			{
+				if (!psActorFlags.test(AF_3D_PDA)) return false;
+
+				if (GetActiveSlot() == PDA_SLOT && ActiveItem())
+				{
+					Activate(NO_ACTIVE_SLOT);
+				}
+				else
+				{
+					Activate(PDA_SLOT);
 				}
 			}
 		}break;

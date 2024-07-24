@@ -26,6 +26,7 @@
 #include "Artefact.h"
 #include "IKLimbsController.h"
 #include "player_hud.h"
+#include "PDA.h"
 
 static const float y_spin0_factor		= 0.0f;
 static const float y_spin1_factor		= 0.4f;
@@ -462,6 +463,7 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 						CWeapon			*W = smart_cast<CWeapon*>(_i);
 						CMissile		*M = smart_cast<CMissile*>(_i);
 						CArtefact		*A = smart_cast<CArtefact*>(_i);
+						CPda			*P = smart_cast<CPda*>(_i);
 						if (W) 
 						{
 							bool K = inventory().GetActiveSlot() == KNIFE_SLOT;
@@ -519,46 +521,63 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 							if (!M_torso)
 								M_torso = ST->m_torso[4].moving[moving_idx]; //Alundaio: Fix torso animations for binoc
 						}
-					else if (M)
+						else if (M) 
 						{
 							if (is_standing)
 							{
-								switch (M->GetState())
+								switch (M->GetState()) 
 								{
-									case CMissile::eShowing:	M_torso = TW->draw;								break;
-									case CMissile::eHiding:		M_torso = TW->holster;							break;
-									case CMissile::eIdle:		M_torso = TW->moving[moving_idx];				break;
-									case CMissile::eThrowStart:	M_torso = M_legs = M_head = TW->all_attack_0;	break;
+									case CMissile::eShowing:		M_torso = TW->draw;			break;
+									case CMissile::eHiding:		M_torso = TW->holster;		break;
+									case CMissile::eIdle:		M_torso = TW->moving[moving_idx];		break;
+									case CMissile::eThrowStart:		M_torso = M_legs = M_head = TW->all_attack_0;	break;
 									case CMissile::eReady:		M_torso = M_legs = M_head = TW->all_attack_1;	break;
 									case CMissile::eThrow:		M_torso = M_legs = M_head = TW->all_attack_2;	break;
-									case CMissile::eThrowEnd:	M_torso = M_legs = M_head = TW->all_attack_2;	break;
-									default:					M_torso = TW->draw;								break;
+									case CMissile::eThrowEnd:		M_torso = M_legs = M_head = TW->all_attack_2;	break;
+									default:		M_torso = TW->draw;			break;
 								}
 							}
 							else
 							{
-								switch (M->GetState())
+								switch (M->GetState()) 
 								{
-									case CMissile::eShowing:	M_torso = TW->draw;								break;
-									case CMissile::eHiding:		M_torso = TW->holster;							break;
-									case CMissile::eIdle:		M_torso = TW->moving[moving_idx];				break;
-									case CMissile::eThrowStart:	M_torso = TW->attack_zoom;						break;
-									case CMissile::eReady:		M_torso = TW->fire_idle;						break;
-									case CMissile::eThrow:		M_torso = TW->fire_end;							break;
-									case CMissile::eThrowEnd:	M_torso = TW->fire_end;							break;
-									default:					M_torso = TW->draw;								break;
+									case CMissile::eShowing:		M_torso = TW->draw;						break;
+									case CMissile::eHiding:		M_torso = TW->holster;					break;
+									case CMissile::eIdle:		M_torso = TW->moving[moving_idx];		break;
+									case CMissile::eThrowStart:		M_torso = TW->attack_zoom;				break;
+									case CMissile::eReady:		M_torso = TW->fire_idle;				break;
+									case CMissile::eThrow:		M_torso = TW->fire_end;					break;
+									case CMissile::eThrowEnd:		M_torso = TW->fire_end;					break;
+									default:		M_torso = TW->draw;						break;
 								}
 							}
 						}
-					else if (A) {
-							switch (A->GetState()) {
-							case CArtefact::eIdle: M_torso = TW->moving[moving_idx];	break;
-							case CArtefact::eShowing: M_torso = TW->draw;					break;
-							case CArtefact::eHiding: M_torso = TW->holster;				break;
-							case CArtefact::eActivating: M_torso = TW->zoom;					break;
-							default: M_torso = TW->moving[moving_idx];
+						else if (A) 
+						{
+							switch (A->GetState()) 
+							{
+								case CArtefact::eIdle: M_torso = TW->moving[moving_idx];	break;
+								case CArtefact::eShowing: M_torso = TW->draw;					break;
+								case CArtefact::eHiding: M_torso = TW->holster;				break;
+								case CArtefact::eActivating: M_torso = TW->zoom;					break;
+								default: M_torso = TW->moving[moving_idx];
 							}
 						}
+						else if (P)
+						{
+							switch (P->GetState())
+							{
+								case CPda::eIdle: M_torso = P->m_bZoomed ? TW->zoom : (moving_idx == STorsoWpn::eSprint ? ST->m_torso[0].moving[moving_idx] : ST->m_torso[4].moving[moving_idx]);
+									break;
+								case CPda::eShowing: M_torso = TW->draw;
+									break;
+								case CPda::eHiding: M_torso = TW->holster;
+									break;
+								default: M_torso = ST->m_torso[4].moving[moving_idx];
+									break;
+							}
+						}
+
 					}
 				}
 			}

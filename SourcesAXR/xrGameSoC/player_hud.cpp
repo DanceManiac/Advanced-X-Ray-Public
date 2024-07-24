@@ -562,6 +562,7 @@ player_hud::player_hud()
 	script_anim_offset_factor = 0.f;
 	script_anim_item_model = nullptr;
 	m_item_pos.identity();
+	reset_thumb(true);
 
 	m_current_motion_def	= NULL;
 
@@ -616,6 +617,108 @@ player_hud::~player_hud()
 	delete_data(m_movement_layers);
 }
 
+void player_hud::Thumb0Callback(CBoneInstance* B)
+{
+	player_hud* P = static_cast<player_hud*>(B->callback_param());
+
+	Fvector& target = P->target_thumb0rot;
+	Fvector& current = P->thumb0rot;
+
+	if (!target.similar(current))
+	{
+		Fvector diff[2];
+		diff[0] = target;
+		diff[0].sub(current);
+		diff[0].mul(Device.fTimeDelta / .1f);
+		current.add(diff[0]);
+	}
+	else
+		current.set(target);
+
+	Fmatrix rotation;
+	rotation.identity();
+	rotation.rotateX(current.x);
+
+	Fmatrix rotation_y;
+	rotation_y.identity();
+	rotation_y.rotateY(current.y);
+	rotation.mulA_43(rotation_y);
+
+	rotation_y.identity();
+	rotation_y.rotateZ(current.z);
+	rotation.mulA_43(rotation_y);
+
+	B->mTransform.mulB_43(rotation);
+}
+
+void player_hud::Thumb01Callback(CBoneInstance* B)
+{
+	player_hud* P = static_cast<player_hud*>(B->callback_param());
+
+	Fvector& target = P->target_thumb01rot;
+	Fvector& current = P->thumb01rot;
+
+	if (!target.similar(current))
+	{
+		Fvector diff[2];
+		diff[0] = target;
+		diff[0].sub(current);
+		diff[0].mul(Device.fTimeDelta / .1f);
+		current.add(diff[0]);
+	}
+	else
+		current.set(target);
+
+	Fmatrix rotation;
+	rotation.identity();
+	rotation.rotateX(current.x);
+
+	Fmatrix rotation_y;
+	rotation_y.identity();
+	rotation_y.rotateY(current.y);
+	rotation.mulA_43(rotation_y);
+
+	rotation_y.identity();
+	rotation_y.rotateZ(current.z);
+	rotation.mulA_43(rotation_y);
+
+	B->mTransform.mulB_43(rotation);
+}
+
+void player_hud::Thumb02Callback(CBoneInstance* B)
+{
+	player_hud* P = static_cast<player_hud*>(B->callback_param());
+
+	Fvector& target = P->target_thumb02rot;
+	Fvector& current = P->thumb02rot;
+
+	if (!target.similar(current))
+	{
+		Fvector diff[2];
+		diff[0] = target;
+		diff[0].sub(current);
+		diff[0].mul(Device.fTimeDelta / .1f);
+		current.add(diff[0]);
+	}
+	else
+		current.set(target);
+
+	Fmatrix rotation;
+	rotation.identity();
+	rotation.rotateX(current.x);
+
+	Fmatrix rotation_y;
+	rotation_y.identity();
+	rotation_y.rotateY(current.y);
+	rotation.mulA_43(rotation_y);
+
+	rotation_y.identity();
+	rotation_y.rotateZ(current.z);
+	rotation.mulA_43(rotation_y);
+
+	B->mTransform.mulB_43(rotation);
+}
+
 void player_hud::load(const shared_str& player_hud_sect)
 {
 	if(player_hud_sect ==m_sect_name)	return;
@@ -644,6 +747,14 @@ void player_hud::load(const shared_str& player_hud_sect)
 
 	u16 l_arm = m_model->dcast_PKinematics()->LL_BoneID("l_clavicle");
 	u16 r_arm = m_model_2->dcast_PKinematics()->LL_BoneID("r_clavicle");
+
+	u16 r_finger0 = m_model->dcast_PKinematics()->LL_BoneID("r_finger0");
+	u16 r_finger01 = m_model->dcast_PKinematics()->LL_BoneID("r_finger01");
+	u16 r_finger02 = m_model->dcast_PKinematics()->LL_BoneID("r_finger02");
+
+	m_model->dcast_PKinematics()->LL_GetBoneInstance(r_finger0).set_callback(bctCustom, Thumb0Callback, this);
+	m_model->dcast_PKinematics()->LL_GetBoneInstance(r_finger01).set_callback(bctCustom, Thumb01Callback, this);
+	m_model->dcast_PKinematics()->LL_GetBoneInstance(r_finger02).set_callback(bctCustom, Thumb02Callback, this);
 
 	// hides the unused arm meshes
 	m_model->dcast_PKinematics()->LL_SetBoneVisible(l_arm, FALSE, TRUE);

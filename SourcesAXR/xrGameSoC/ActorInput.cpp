@@ -576,6 +576,10 @@ void	CActor::OnNextWeaponSlot()
 			{
 				IR_OnKeyboardPress(kARTEFACT);
 			}
+			else if (SlotsToCheck[i] == PDA_SLOT)
+			{
+				IR_OnKeyboardPress(kACTIVE_JOBS);
+			}
 			else
 				IR_OnKeyboardPress(kWPN_1+(i-KNIFE_SLOT));
 			return;
@@ -605,6 +609,10 @@ void	CActor::OnPrevWeaponSlot()
 			if (SlotsToCheck[i] == ARTEFACT_SLOT) 
 			{
 				IR_OnKeyboardPress(kARTEFACT);
+			}
+			else if (SlotsToCheck[i] == PDA_SLOT)
+			{
+				IR_OnKeyboardPress(kACTIVE_JOBS);
 			}
 			else
 				IR_OnKeyboardPress(kWPN_1+(i-KNIFE_SLOT));

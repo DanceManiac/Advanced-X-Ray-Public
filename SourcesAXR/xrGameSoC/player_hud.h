@@ -354,6 +354,28 @@ private:
 	player_hud_motion_container*		get_hand_motions(LPCSTR section);
 
 	void update_script_item();
+
+	static void _BCL Thumb0Callback(CBoneInstance* B);
+	static void _BCL Thumb01Callback(CBoneInstance* B);
+	static void _BCL Thumb02Callback(CBoneInstance* B);
+
+public:
+	Fvector target_thumb0rot, target_thumb01rot, target_thumb02rot;
+	Fvector thumb0rot, thumb01rot, thumb02rot;
+
+	void reset_thumb(bool bForce)
+	{
+		if (bForce)
+		{
+			thumb0rot.set(0.f, 0.f, 0.f);
+			thumb01rot.set(0.f, 0.f, 0.f);
+			thumb02rot.set(0.f, 0.f, 0.f);
+		}
+
+		target_thumb0rot.set(0.f, 0.f, 0.f);
+		target_thumb01rot.set(0.f, 0.f, 0.f);
+		target_thumb02rot.set(0.f, 0.f, 0.f);
+	}
 };
 
 extern player_hud* g_player_hud;

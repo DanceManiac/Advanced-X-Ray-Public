@@ -7,6 +7,8 @@
 #include "ui/UIStatic.h"
 #include "ui/UIBtnHint.h"
 
+#include "../xrEngine/IGame_Persistent.h"
+
 #define C_DEFAULT	color_xrgb(0xff,0xff,0xff)
 
 CUICursor::CUICursor()
@@ -43,15 +45,14 @@ void CUICursor::InitInternal()
 u32 last_render_frame = 0;
 void CUICursor::OnRender	()
 {
-	//g_btnHint->OnRender();
-	//g_statHint->OnRender();
+	g_btnHint->OnRender();
+	g_statHint->OnRender();
 
 	if( !IsVisible() ) return;
 #ifdef DEBUG
-	VERIFY(last_render_frame != Device.dwFrame);
-	last_render_frame = Device.dwFrame;
+	VERIFY(!g_pGamePersistent->IsMainMenuActive() || last_render_frame != Device.dwFrame);
 
-	if(bDebug)
+	if (bDebug)
 	{
 	CGameFont* F		= UI().Font().pFontDI;
 	F->SetAligment		(CGameFont::alCenter);
@@ -63,9 +64,15 @@ void CUICursor::OnRender	()
 	}
 #endif
 
-	m_static->SetWndPos	(vPos);
-	m_static->Update	();
-	m_static->Draw		();
+	u32 curFrame = Device.dwFrame;
+	if (g_pGamePersistent->IsMainMenuActive() || curFrame != last_render_frame)
+	{
+		m_static->SetWndPos(vPos);
+		m_static->Update();
+		m_static->Draw();
+	}
+
+	last_render_frame = Device.dwFrame;
 }
 
 Fvector2 CUICursor::GetCursorPosition()

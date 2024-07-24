@@ -17,6 +17,8 @@
 #include "hudmanager.h"
 #include "UIGameCustom.h"
 #include "ui\UIStatic.h"
+#include "ui\UIPdaWnd.h"
+#include "UIGameSP.h"
 #include "string_table.h"
 #include "AdvancedXrayGameConstants.h"
 
@@ -118,8 +120,12 @@ BOOL CActor::CanPickItem(const CFrustum& frustum, const Fvector& from, CObject* 
 
 void CActor::PickupModeUpdate()
 {
+	const auto pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	const auto pda = pGameSP->PdaMenu;
+
 	if(!m_bPickupMode) return;
 	if (GameID() != GAME_SINGLE) return;
+	if (pda->IsShown()) return;
 
 	//подбирание объекта
 	if(inventory().m_pTarget && inventory().m_pTarget->Useful() &&

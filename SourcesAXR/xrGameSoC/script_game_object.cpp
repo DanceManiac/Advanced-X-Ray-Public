@@ -45,6 +45,7 @@
 #include "PhysicsShellHolder.h"
 #include "CharacterPhysicsSupport.h"
 #include "ai\stalker\ai_stalker.h"
+#include "PDA.h"
 
 class CScriptBinderObject;
 
@@ -516,6 +517,32 @@ void CScriptGameObject::SetCondition	(float val)
 	}
 	val					-= inventory_item->GetCondition();
 	inventory_item->ChangeCondition			(val);
+}
+
+float CScriptGameObject::GetPsyFactor() const
+{
+	CPda* pda = smart_cast<CPda*>(&object());
+	if (!pda)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CSciptEntity : cannot access class member GetPsyFactor!");
+		return 0.f;
+	}
+	return (pda->m_psy_factor);
+}
+
+void CScriptGameObject::SetPsyFactor(float val)
+{
+	CPda* pda = smart_cast<CPda*>(&object());
+	if (!pda)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CSciptEntity : cannot access class member SetPsyFactor!");
+		return;
+	}
+	pda->m_psy_factor = val;
+
+	clamp(pda->m_psy_factor, 0.0f, 1.0f);
 }
 
 void CScriptGameObject::eat				(CScriptGameObject *item)

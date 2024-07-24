@@ -10,6 +10,7 @@
 #include "ui/UIMainIngameWnd.h"
 #include "ui/UIMessagesWindow.h"
 #include "ui/UIPdaWnd.h"
+#include "PDA.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -91,6 +92,8 @@ bool CUI::Render()
 	if (pEntity)
 	{
 		CActor* pActor			=	smart_cast<CActor*>(pEntity);
+		CPda* pda				= pActor->GetPDA();
+
 		if(pActor)
 		{
 			PIItem item		=  pActor->inventory().ActiveItem();
@@ -99,32 +102,59 @@ bool CUI::Render()
 				item->render_item_ui();
 		}
 
-		if( GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())
+		if (pda)
 		{
-			UIMainIngameWnd->Draw();
-			m_pMessagesWnd->Draw();
-		}
-		else
-		{  //hack - draw messagess wnd in scope mode
-			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !pda->m_bZoomed && !GameConstants::GetHideHudOnMaster())
 			{
 				UIMainIngameWnd->Draw();
 				m_pMessagesWnd->Draw();
 			}
 			else
 			{
+				//hack - draw messagess wnd in scope mode
 				CUIGameSP* gSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
-				if (gSP) {
+				if (gSP)
+				{
 					if (!gSP->PdaMenu->GetVisible())
+					{
 						m_pMessagesWnd->Draw();
+					}
 				}
 				else
+				{
 					m_pMessagesWnd->Draw();
+				}
 			}
-		}	
+		}
+		else
+		{
+			if (GameIndicatorsShown() && psHUD_Flags.is(HUD_DRAW | HUD_DRAW_RT) && !GameConstants::GetHideHudOnMaster())
+			{
+				UIMainIngameWnd->Draw();
+				m_pMessagesWnd->Draw();
+			}
+			else
+			{  
+				//hack - draw messagess wnd in scope mode
+				CUIGameSP* gSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+				if (gSP)
+				{
+					if (!gSP->PdaMenu->GetVisible())
+					{
+						m_pMessagesWnd->Draw();
+					}
+				}
+				else
+				{
+					m_pMessagesWnd->Draw();
+				}
+			}
+		}
 	}
 	else
+	{
 		m_pMessagesWnd->Draw();
+	}
 
 	DoRenderDialogs();
 

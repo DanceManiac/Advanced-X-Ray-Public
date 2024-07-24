@@ -24,6 +24,7 @@
 #include "Grenade.h"
 #include "WeaponMagazined.h"
 #include "CustomOutfit.h"
+#include "PDA.h"
 
 #include "actor_anim_defs.h"
 
@@ -56,9 +57,10 @@ CActor*		g_actor						= NULL;
 
 CActor*			Actor()	
 {	
+	R_ASSERT2(IsGameTypeSingle(), "Actor() method invokation must be only in Single Player game!");
 	//VERIFY		(g_actor); 
-	if (GameID() != GAME_SINGLE) 
-		VERIFY	(g_actor == Level().CurrentControlEntity());
+	/*if (GameID() != GAME_SINGLE) 
+		VERIFY	(g_actor == Level().CurrentControlEntity()); */
 	return		(g_actor); 
 };
 
@@ -1985,6 +1987,12 @@ bool				CActor::InventoryAllowSprint			()
 	{
 		return false;
 	}
+
+	CPda* pPda = Actor()->GetPDA();
+
+	if (pPda && pPda->m_bZoomed)
+		return false;
+
 	return true;
 };
 

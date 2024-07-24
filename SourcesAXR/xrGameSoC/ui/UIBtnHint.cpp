@@ -30,6 +30,11 @@ CUIButtonHint::~CUIButtonHint()
 
 void CUIButtonHint::OnRender()
 {
+	static u32 last_frame{};
+	if (last_frame == Device.dwFrame)
+		return;
+	last_frame = Device.dwFrame;
+
 	if (m_enabledOnFrame)
 	{
 		m_text->Update();

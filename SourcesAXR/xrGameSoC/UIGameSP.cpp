@@ -19,6 +19,11 @@
 #include "ui/UICarBodyWnd.h"
 #include "ui/UIMessageBox.h"
 
+#include "alife_registry_wrappers.h"
+#include "../xrServerEntitiesSoC/script_engine.h"
+#include "HUDManager.h"
+#include "Inventory.h"
+
 CUIGameSP::CUIGameSP()
 {
 	m_game			= NULL;
@@ -87,16 +92,34 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 
 	switch ( get_binded_action(dik) )
 	{
-	case kINVENTORY: 
-		if( !MainInputReceiver() || MainInputReceiver()==InventoryMenu){
-			m_game->StartStopMenu(InventoryMenu,true);
-			return true;
-		}break;
+	case kINVENTORY:
+		{
+			if (psActorFlags.test(AF_3D_PDA) && PdaMenu->IsShown())
+				pActor->inventory().Activate(NO_ACTIVE_SLOT);
 
+			if (!MainInputReceiver() || MainInputReceiver() == InventoryMenu)
+			{
+				m_game->StartStopMenu(InventoryMenu, true);
+				return true;
+			}
+
+		} break;
 	case kACTIVE_JOBS:
-		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu){
-			PdaMenu->SetActiveSubdialog(eptQuests);
-			m_game->StartStopMenu(PdaMenu,true);
+		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu)
+		{
+			if (!psActorFlags.test(AF_3D_PDA))
+			{
+				luabind::functor<bool> funct;
+				if (ai().script_engine().functor("pda.pda_use", funct))
+				{
+					if (funct())
+					{
+						PdaMenu->SetActiveSubdialog(eptQuests);
+						m_game->StartStopMenu(PdaMenu, true);
+					}
+				}
+			}
+
 			return true;
 		}break;
 

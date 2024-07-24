@@ -12,8 +12,10 @@ enum{
 		AF_RIGHT_SHOULDER	=(1<<11),
 		AF_3DSCOPE_ENABLE	=(1<<12),
 		AF_PNV_W_SCOPE_DIS	=(1<<13),
-		AF_CROUCH_TOGGLE	=(1<<14),
-		AF_FP_DEATH			=(1<<15),
+		AF_SIMPLE_PDA		=(1<<14),
+		AF_3D_PDA			=(1<<15),
+		AF_CROUCH_TOGGLE	=(1<<16),
+		AF_FP_DEATH			=(1<<17),
 };
 
 extern Flags32 psActorFlags;

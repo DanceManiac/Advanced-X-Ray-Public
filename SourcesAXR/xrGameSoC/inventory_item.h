@@ -296,6 +296,8 @@ public:
 	virtual CWeaponAmmo			*cast_weapon_ammo			()	{return 0;}
 	virtual CGameObject			*cast_game_object			()  {return 0;};
 
+	float	m_fLowestBatteryCharge;
+
 public:
 	IC bool	is_helper_item				()				 { return !!m_flags.test(FIsHelperItem); }
 	IC void	set_is_helper				(bool is_helper) { m_flags.set(FIsHelperItem,is_helper); }

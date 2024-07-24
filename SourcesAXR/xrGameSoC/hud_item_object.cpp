@@ -47,6 +47,12 @@ void CHudItemObject::OnStateSwitch(u32 S, u32 oldState)
 	CHudItem::OnStateSwitch(S, oldState);
 }
 
+void CHudItemObject::OnMoveToRuck(EItemPlace prev)
+{
+	CInventoryItemObject::OnMoveToRuck(prev);
+	CHudItem::OnMoveToRuck(prev);
+}
+
 void CHudItemObject::OnEvent			(NET_Packet& P, u16 type)
 {
 	CInventoryItemObject::OnEvent(P,type);

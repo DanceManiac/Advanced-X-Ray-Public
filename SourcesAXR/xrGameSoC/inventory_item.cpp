@@ -178,6 +178,7 @@ void CInventoryItem::Load(LPCSTR section)
 	}
 	m_icon_name					= READ_IF_EXISTS(pSettings, r_string,section,"icon_name",		NULL);
 
+	m_fLowestBatteryCharge		= READ_IF_EXISTS(pSettings, r_float, section, "power_critical", .03f);
 	m_bCanUse					= READ_IF_EXISTS(pSettings, r_bool, section, "can_use", true);
 
 	m_custom_text				= READ_IF_EXISTS(pSettings, r_string, section,"item_custom_text", nullptr);

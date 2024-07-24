@@ -174,9 +174,12 @@ bool CUIDialogWnd::IR_process()
 	return true;
 }
 
-void CUIDialogWnd::Update(){
+void CUIDialogWnd::Update()
+{
 	CUIWindow::Update();
 }
+
+CDialogHolder* CurrentDialogHolder();
 
 void CUIDialogWnd::ShowDialog1(bool bDoHideIndicators)
 {

@@ -24,6 +24,9 @@
 #include "../xrEngine/xr_input.h"
 #include "saved_game_wrapper.h"
 
+#include "ui\UIPdaWnd.h"
+#include "UIGameSP.h"
+
 #include "../Include/xrRender/DebugRender.h"
 
 #include "embedded_editor/embedded_editor_main.h"
@@ -148,6 +151,10 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		if (!(_curr < kCAM_1 || _curr == kWPN_FIRE || _curr == kPAUSE || _curr == kDROP || _curr == kSCREENSHOT || _curr == kQUIT || _curr == kCONSOLE))
 			return;
 	}
+
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if (auto pda = b_ui_exist && pGameSP ? pGameSP->PdaMenu : nullptr) // Fix PDA hotkey input for disabled state
+		if (pda->IsShown() && pda->OnKeyboardAction(key, WINDOW_KEY_PRESSED)) return;
 
 	switch ( _curr ) 
 	{
