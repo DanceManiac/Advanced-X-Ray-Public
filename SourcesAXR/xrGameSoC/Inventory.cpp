@@ -955,6 +955,21 @@ CInventoryItem *CInventory::get_object_by_id(ALife::_OBJECT_ID tObjectID)
 #include "Battery.h"
 #include "RepairKit.h"
 #include "AntigasFilter.h"
+
+void CInventory::ChooseItmAnimOrNot(PIItem pIItem)
+{
+	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
+	if (!pItemToEat) return;
+
+	bool HasAnim = pItemToEat->m_bHasAnimation;
+	bool AnimSect = pItemToEat->anim_sect != nullptr;
+
+	if (HasAnim && AnimSect)
+		pItemToEat->HideWeapon();
+	else
+		Eat(pItemToEat);
+}
+
 bool CInventory::Eat(PIItem pIItem)
 {
 	R_ASSERT(pIItem->m_pCurrentInventory==this);

@@ -236,6 +236,8 @@ CActor::CActor() : CEntityAlive()
 
 	m_sColdSteamParticleBone = nullptr;
 	m_sColdSteamParticleName = nullptr;
+
+	m_bEatAnimActive		= false;
 }
 
 
@@ -1392,6 +1394,8 @@ void CActor::shedule_Update	(u32 DT)
 
 	if (Actor())
 		DynamicHudGlass::UpdateDynamicHudGlass();
+
+	UpdateInventoryItems();
 
 	if (GameConstants::GetActorSkillsEnabled())
 		UpdateSkills();

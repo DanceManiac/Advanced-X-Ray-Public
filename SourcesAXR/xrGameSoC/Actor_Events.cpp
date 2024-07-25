@@ -145,6 +145,8 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 		{
 			P.r_u16		(id);
 			CObject* O	= Level().Objects.net_Find	(id);
+			CEatableItem* pItemToEat = smart_cast<CEatableItem*>(O);
+
 			if(!O)		break;
 			if (O->getDestroy()) 
 			{
@@ -165,7 +167,16 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 				inventory().Ruck(smart_cast<CInventoryItem*>(O)); 
 				break;
 			case GEG_PLAYER_ITEM_EAT:	 
-				inventory().Eat(smart_cast<CInventoryItem*>(O)); 
+				if (pItemToEat)
+				{
+					if (pItemToEat->m_bHasAnimation)
+					{
+						if (!Actor()->m_bEatAnimActive)
+							inventory().ChooseItmAnimOrNot(smart_cast<CInventoryItem*>(O));
+					}
+					else
+						inventory().Eat(smart_cast<CInventoryItem*>(O));
+				}
 				break;
 			case GEG_PLAYER_ACTIVATEARTEFACT:
 				{

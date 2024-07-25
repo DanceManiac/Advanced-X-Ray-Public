@@ -822,9 +822,9 @@ void player_hud::render_hud()
 	if (!b_r0 && !b_r1)
 		return;
 
-	bool b_has_hands = (m_attached_items[0] && m_attached_items[0]->m_has_separated_hands) || (m_attached_items[1] && m_attached_items[1]->m_has_separated_hands);
+	bool b_has_hands = (m_attached_items[0] && m_attached_items[0]->m_has_separated_hands) || (m_attached_items[1] && m_attached_items[1]->m_has_separated_hands) || script_anim_item_model;
 
-	if (b_has_hands)
+	if (b_has_hands || script_anim_part != u8(-1))
 	{
 		::Render->set_Transform(&m_transform);
 		::Render->add_Visual(m_model->dcast_RenderVisual(), true);
@@ -838,7 +838,7 @@ void player_hud::render_hud()
 	if(m_attached_items[1])
 		m_attached_items[1]->render();
 
-	if (script_anim_item_model)
+	if (b_has_hands && script_anim_item_model)
 	{
 		::Render->set_Transform(&m_item_pos);
 		::Render->add_Visual(script_anim_item_model->dcast_RenderVisual());
@@ -986,7 +986,7 @@ void player_hud::update(const Fmatrix& cam_trans)
 
 	bool hasHands = (m_attached_items[0] && m_attached_items[0]->m_has_separated_hands) || (m_attached_items[1] && m_attached_items[1]->m_has_separated_hands);
 
-	if (hasHands)
+	if (hasHands || script_anim_item_model)
 	{
 		m_model->UpdateTracks();
 		m_model->dcast_PKinematics()->CalculateBones_Invalidate();
@@ -995,103 +995,103 @@ void player_hud::update(const Fmatrix& cam_trans)
 		m_model_2->UpdateTracks();
 		m_model_2->dcast_PKinematics()->CalculateBones_Invalidate();
 		m_model_2->dcast_PKinematics()->CalculateBones(TRUE);
+	}
 
-		for (script_layer* anm : m_script_layers)
+	for (script_layer* anm : m_script_layers)
+	{
+		if (!anm || !anm->anm || (!anm->active && anm->blend_amount == 0.f))
+			continue;
+
+		if (anm->active)
+			anm->blend_amount += Device.fTimeDelta / .4f;
+		else
+			anm->blend_amount -= Device.fTimeDelta / .4f;
+
+		clamp(anm->blend_amount, 0.f, 1.f);
+
+		if (anm->blend_amount > 0.f)
 		{
-			if (!anm || !anm->anm || (!anm->active && anm->blend_amount == 0.f))
-				continue;
-
-			if (anm->active)
-				anm->blend_amount += Device.fTimeDelta / .4f;
+			if (anm->anm->bLoop || anm->anm->anim_param().t_current < anm->anm->anim_param().max_t)
+				anm->anm->Update(Device.fTimeDelta);
 			else
-				anm->blend_amount -= Device.fTimeDelta / .4f;
-
-			clamp(anm->blend_amount, 0.f, 1.f);
-
-			if (anm->blend_amount > 0.f)
-			{
-				if (anm->anm->bLoop || anm->anm->anim_param().t_current < anm->anm->anim_param().max_t)
-					anm->anm->Update(Device.fTimeDelta);
-				else
-					anm->Stop(false);
-			}
-			else
-			{
-				anm->Stop(true);
-				continue;
-			}
-
-			Fmatrix blend = anm->XFORM();
-
-			if (anm->m_part == 0 || anm->m_part == 2)
-				m_transform.mulB_43(blend);
-
-			if (anm->m_part == 1 || anm->m_part == 2)
-				m_transform_2.mulB_43(blend);
+				anm->Stop(false);
+		}
+		else
+		{
+			anm->Stop(true);
+			continue;
 		}
 
-		bool need_blend[2];
-		need_blend[0] = ((script_anim_part == 0 || script_anim_part == 2) || (m_attached_items[0] && m_attached_items[0]->m_parent_hud_item->NeedBlendAnm()));
-		need_blend[1] = ((script_anim_part == 1 || script_anim_part == 2) || (m_attached_items[1] && m_attached_items[1]->m_parent_hud_item->NeedBlendAnm()));
+		Fmatrix blend = anm->XFORM();
 
-		for (movement_layer* anm : m_movement_layers)
+		if (anm->m_part == 0 || anm->m_part == 2)
+			m_transform.mulB_43(blend);
+
+		if (anm->m_part == 1 || anm->m_part == 2)
+			m_transform_2.mulB_43(blend);
+	}
+
+	bool need_blend[2];
+	need_blend[0] = ((script_anim_part == 0 || script_anim_part == 2) || (m_attached_items[0] && m_attached_items[0]->m_parent_hud_item->NeedBlendAnm()));
+	need_blend[1] = ((script_anim_part == 1 || script_anim_part == 2) || (m_attached_items[1] && m_attached_items[1]->m_parent_hud_item->NeedBlendAnm()));
+
+	for (movement_layer* anm : m_movement_layers)
+	{
+		if (!anm || !anm->anm || (!anm->active && anm->blend_amount[0] == 0.f && anm->blend_amount[1] == 0.f))
+			continue;
+
+		if (anm->active && (need_blend[0] || need_blend[1]))
 		{
-			if (!anm || !anm->anm || (!anm->active && anm->blend_amount[0] == 0.f && anm->blend_amount[1] == 0.f))
-				continue;
-
-			if (anm->active && (need_blend[0] || need_blend[1]))
+			if (need_blend[0])
 			{
-				if (need_blend[0])
-				{
-					anm->blend_amount[0] += Device.fTimeDelta / .4f;
+				anm->blend_amount[0] += Device.fTimeDelta / .4f;
 
-					if (!m_attached_items[1])
-						anm->blend_amount[1] += Device.fTimeDelta / .4f;
-					else if (!need_blend[1])
-						anm->blend_amount[1] -= Device.fTimeDelta / .4f;
-				}
-
-				if (need_blend[1])
-				{
+				if (!m_attached_items[1])
 					anm->blend_amount[1] += Device.fTimeDelta / .4f;
-
-					if (!m_attached_items[0])
-						anm->blend_amount[0] += Device.fTimeDelta / .4f;
-					else if (!need_blend[0])
-						anm->blend_amount[0] -= Device.fTimeDelta / .4f;
-				}
+				else if (!need_blend[1])
+					anm->blend_amount[1] -= Device.fTimeDelta / .4f;
 			}
-			else
+
+			if (need_blend[1])
 			{
-				anm->blend_amount[0] -= Device.fTimeDelta / .4f;
-				anm->blend_amount[1] -= Device.fTimeDelta / .4f;
+				anm->blend_amount[1] += Device.fTimeDelta / .4f;
+
+				if (!m_attached_items[0])
+					anm->blend_amount[0] += Device.fTimeDelta / .4f;
+				else if (!need_blend[0])
+					anm->blend_amount[0] -= Device.fTimeDelta / .4f;
 			}
+		}
+		else
+		{
+			anm->blend_amount[0] -= Device.fTimeDelta / .4f;
+			anm->blend_amount[1] -= Device.fTimeDelta / .4f;
+		}
 
-			clamp(anm->blend_amount[0], 0.f, 1.f);
-			clamp(anm->blend_amount[1], 0.f, 1.f);
+		clamp(anm->blend_amount[0], 0.f, 1.f);
+		clamp(anm->blend_amount[1], 0.f, 1.f);
 
-			if (anm->blend_amount[0] == 0.f && anm->blend_amount[1] == 0.f)
-			{
-				anm->Stop(true);
-				continue;
-			}
+		if (anm->blend_amount[0] == 0.f && anm->blend_amount[1] == 0.f)
+		{
+			anm->Stop(true);
+			continue;
+		}
 
-			anm->anm->Update(Device.fTimeDelta);
+		anm->anm->Update(Device.fTimeDelta);
 
-			if (anm->blend_amount[0] == anm->blend_amount[1])
-			{
-				Fmatrix blend = anm->XFORM(0);
-				m_transform.mulB_43(blend);
-				m_transform_2.mulB_43(blend);
-			}
-			else
-			{
-				if (anm->blend_amount[0] > 0.f)
-					m_transform.mulB_43(anm->XFORM(0));
+		if (anm->blend_amount[0] == anm->blend_amount[1])
+		{
+			Fmatrix blend = anm->XFORM(0);
+			m_transform.mulB_43(blend);
+			m_transform_2.mulB_43(blend);
+		}
+		else
+		{
+			if (anm->blend_amount[0] > 0.f)
+				m_transform.mulB_43(anm->XFORM(0));
 
-				if (anm->blend_amount[1] > 0.f)
-					m_transform_2.mulB_43(anm->XFORM(1));
-			}
+			if (anm->blend_amount[1] > 0.f)
+				m_transform_2.mulB_43(anm->XFORM(1));
 		}
 	}
 
@@ -1176,18 +1176,35 @@ void player_hud::update_script_item()
 
 	if (script_anim_item_model)
 	{
-		script_anim_item_model->UpdateTracks();
-		script_anim_item_model->dcast_PKinematics()->CalculateBones_Invalidate();
-		script_anim_item_model->dcast_PKinematics()->CalculateBones(TRUE);
+		if (script_anim_item_model->dcast_PKinematicsAnimated())
+			script_anim_item_model->dcast_PKinematicsAnimated()->UpdateTracks();
+
+		script_anim_item_model->CalculateBones_Invalidate();
+		script_anim_item_model->CalculateBones(TRUE);
 	}
 }
 
-u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool bMixIn, float speed)
+void player_hud::SetScriptItemVisible(bool visible)
 {
-	bool hasHands = (m_attached_items[0] && m_attached_items[0]->m_has_separated_hands) || (m_attached_items[1] && m_attached_items[1]->m_has_separated_hands);
+	if (script_anim_item_model)
+	{
+		u16 root_id = script_anim_item_model->LL_GetBoneRoot();
+		script_anim_item_model->LL_SetBoneVisible(root_id, visible, TRUE);
+	}
+}
+
+u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool bMixIn, float speed, LPCSTR attach_visual)
+{
+	bool hasHands = pSettings->line_exist(section, "item_visual");
+
+	//if (!hasHands)
+	//	Msg("[player_hud::script_anim_play]: This function don`t work with monolithic (SoC) hands!");
 
 	if (!hasHands)
+	{
 		Msg("[player_hud::script_anim_play]: This function don`t work with monolithic (SoC) hands!");
+		return 0;
+	}
 
 	xr_string pos = "hands_position";
 	xr_string rot = "hands_orientation";
@@ -1202,12 +1219,26 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 	Fvector offs = READ_IF_EXISTS(pSettings, r_fvector3, section, pos.c_str(), def);
 	Fvector rrot = READ_IF_EXISTS(pSettings, r_fvector3, section, rot.c_str(), def);
 
-	if (pSettings->line_exist(section, "item_visual"))
+	if (pSettings->line_exist(section, "item_visual") && !attach_visual)
+		attach_visual = pSettings->r_string(section, "item_visual");
+
+	if (attach_visual)
 	{
-		script_anim_item_model = ::Render->model_Create(pSettings->r_string(section, "item_visual"))->dcast_PKinematicsAnimated();
+		::Render->hud_loading = true;
+		script_anim_item_model = ::Render->model_Create(attach_visual)->dcast_PKinematics();
+		::Render->hud_loading = false;
+
 		item_pos[0] = READ_IF_EXISTS(pSettings, r_fvector3, section, "item_position", def);
 		item_pos[1] = READ_IF_EXISTS(pSettings, r_fvector3, section, "item_orientation", def);
 		script_anim_item_attached = READ_IF_EXISTS(pSettings, r_bool, section, "item_attached", true);
+		script_anim_item_visible = READ_IF_EXISTS(pSettings, r_bool, section, "item_visible", true);
+
+		if (script_anim_item_model)
+		{
+			u16 root_id = script_anim_item_model->LL_GetBoneRoot();
+			script_anim_item_model->LL_SetBoneVisible(root_id, script_anim_item_visible, TRUE);
+		}
+
 		m_attach_idx = READ_IF_EXISTS(pSettings, r_u8, section, "attach_place_idx", 0);
 
 		if (!script_anim_item_attached)
@@ -1233,7 +1264,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 		return 0;
 	}
 
-	player_hud_motion_container* pm = get_hand_motions(section);
+	player_hud_motion_container* pm = get_hand_motions(section, script_anim_item_model->dcast_PKinematicsAnimated());
 	player_hud_motion* phm = pm->find_motion(anm_name);
 
 	if (!phm)
@@ -1246,7 +1277,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	const motion_descr& M = phm->m_animations[Random.randI(phm->m_animations.size())];
 
-	if (script_anim_item_model)
+	if (script_anim_item_model && script_anim_item_model->dcast_PKinematicsAnimated())
 	{
 		shared_str item_anm_name;
 		if (phm->m_base_name != phm->m_additional_name)
@@ -1254,26 +1285,26 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 		else
 			item_anm_name = M.name;
 
-		MotionID M2 = script_anim_item_model->ID_Cycle_Safe(item_anm_name);
+		MotionID M2 = script_anim_item_model->dcast_PKinematicsAnimated()->ID_Cycle_Safe(item_anm_name);
 		if (!M2.valid())
-			M2 = script_anim_item_model->ID_Cycle_Safe("idle");
+			M2 = script_anim_item_model->dcast_PKinematicsAnimated()->ID_Cycle_Safe("idle");
 
 		R_ASSERT3(M2.valid(), "model %s has no motion [idle] ", pSettings->r_string(m_sect_name, "item_visual"));
 
-		u16 root_id = script_anim_item_model->dcast_PKinematics()->LL_GetBoneRoot();
-		CBoneInstance& root_binst = script_anim_item_model->dcast_PKinematics()->LL_GetBoneInstance(root_id);
+		u16 root_id = script_anim_item_model->LL_GetBoneRoot();
+		CBoneInstance& root_binst = script_anim_item_model->LL_GetBoneInstance(root_id);
 		root_binst.set_callback_overwrite(TRUE);
 		root_binst.mTransform.identity();
 
-		u16 pc = script_anim_item_model->partitions().count();
+		u16 pc = script_anim_item_model->dcast_PKinematicsAnimated()->partitions().count();
 		for (u16 pid = 0; pid < pc; ++pid)
 		{
-			CBlend* B = script_anim_item_model->PlayCycle(pid, M2, bMixIn);
+			CBlend* B = script_anim_item_model->dcast_PKinematicsAnimated()->PlayCycle(pid, M2, bMixIn);
 			R_ASSERT(B);
 			B->speed *= speed;
 		}
 
-		script_anim_item_model->dcast_PKinematics()->CalculateBones_Invalidate();
+		script_anim_item_model->CalculateBones_Invalidate();
 	}
 
 	if (hand == 0) // right hand
@@ -1304,7 +1335,6 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 
 	const CMotionDef* md;
 
-#pragma todo("Dance Maniac: Need edit for SoC hands.");
 	u32 length = motion_length(M.mid, md, speed, m_model);
 
 	if (length > 0)
@@ -1434,7 +1464,7 @@ void player_hud::StopScriptAnim()
 		OnMovementChanged((ACTOR_DEFS::EMoveCommand)0);
 }
 
-player_hud_motion_container* player_hud::get_hand_motions(LPCSTR section)
+player_hud_motion_container* player_hud::get_hand_motions(LPCSTR section, IKinematicsAnimated* animatedHudItem)
 {
 	xr_vector<hand_motions*>::iterator it = m_hand_motions.begin();
 	xr_vector<hand_motions*>::iterator it_e = m_hand_motions.end();
@@ -1446,7 +1476,10 @@ player_hud_motion_container* player_hud::get_hand_motions(LPCSTR section)
 
 	hand_motions* res = xr_new<hand_motions>();
 	res->section = section;
-	res->pm.load(m_model, section);
+
+	bool hasHands = pSettings->line_exist(section, "item_visual");
+
+	res->pm.load(m_model, section, hasHands, animatedHudItem);
 	m_hand_motions.push_back(res);
 
 	return &res->pm;
@@ -1795,7 +1828,7 @@ void player_hud::calc_transform(u16 attach_slot_idx, const Fmatrix& offset, Fmat
 {
 	bool hasHands			= m_attached_items[attach_slot_idx] && m_attached_items[attach_slot_idx]->m_has_separated_hands;
 
-	if (hasHands)
+	if (hasHands || script_anim_item_model)
 	{
 		IKinematics* kin = (attach_slot_idx == 0) ? m_model->dcast_PKinematics() : m_model_2->dcast_PKinematics();
 		Fmatrix ancor_m = kin->LL_GetTransform(m_ancors[attach_slot_idx]);

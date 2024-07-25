@@ -825,6 +825,8 @@ public:
 	float						GetInventoryFullness() const { return m_fInventoryFullness; }
 	float						MaxCarryInvCapacity	() const;
 	void						ChangeInventoryFullness(float val);
+
+	bool						m_bEatAnimActive;
 protected:
 	bool						m_bNightVisionOn;
 	bool						m_bNightVisionAllow;

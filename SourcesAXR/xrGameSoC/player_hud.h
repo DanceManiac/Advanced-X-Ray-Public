@@ -285,7 +285,7 @@ public:
 	void			render_item_ui		();
 	bool			render_item_ui_query();
 	u32				anim_play			(u16 part, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed, bool hasHands, IKinematicsAnimated* itemModel, u16 override_part = u16(-1));
-	u32				script_anim_play	(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f);
+	u32				script_anim_play	(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f, LPCSTR attach_visual = nullptr);
 	const shared_str& section_name		() const {return m_sect_name;}
 
 	attachable_hud_item* create_hud_item(const shared_str& sect);
@@ -307,6 +307,7 @@ public:
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);
 	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
 	void			OnMotionMark		(const motion_marks&);
+	void			SetScriptItemVisible(bool visible);
 
 	IKinematicsAnimated* Model			() { return m_model; }
 private:
@@ -341,7 +342,8 @@ private:
 	u32									m_dwMotionEndTm;
 	bool								m_bStopAtEndAnimIsRunning;
 	bool								script_anim_item_attached;
-	IKinematicsAnimated* script_anim_item_model;
+	bool								script_anim_item_visible;
+	IKinematics*						script_anim_item_model;
 	Fvector								item_pos[2];
 	Fmatrix								m_item_pos;
 	u8									m_attach_idx;
@@ -351,7 +353,7 @@ private:
 	xr_vector<script_layer*>			m_script_layers;
 
 	xr_vector<hand_motions*>			m_hand_motions;
-	player_hud_motion_container*		get_hand_motions(LPCSTR section);
+	player_hud_motion_container*		get_hand_motions(LPCSTR section, IKinematicsAnimated* animatedHudItem = nullptr);
 
 	void update_script_item();
 

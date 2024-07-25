@@ -5,6 +5,7 @@
 
 class CPhysicItem;
 class CEntityAlive;
+class CActor;
 
 class CEatableItem : public CInventoryItem {
 private:
@@ -38,13 +39,26 @@ public:
 			IC		u32		GetConstPortionsNum			()	const				{return m_iConstPortions;}
 
 			void			UpdateInRuck				(CActor* actor);
+			void			UpdateUseAnim				(CActor* actor);
+			void			StartAnimation				();
+			void			HideWeapon					();
 
+			bool			m_bHasAnimation;
+			bool			m_bActivated;
+			bool			m_bItmStartAnim;
 			bool			m_bUnlimited;
+			bool			m_bNeedDestroyNotUseful;
+			int				m_iAnimHandsCnt;
+			int				m_iAnimLength;
+			float			m_fEffectorIntensity;
 			float			m_fRadioactivity;
 			float			m_fIrradiationCoef;
 			float			m_fIrradiationZonePower;
 			float			m_fSpoliage;
 			float			m_fFoodRottingCoef;
+			LPCSTR			anim_sect;
+			shared_str		use_cam_effector;
+			ref_sound		m_using_sound;
 protected:	
 	//влияние при поедании вещи на параметры игрока
 	float					m_fHealthInfluence;
