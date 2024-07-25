@@ -105,17 +105,17 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	if (!EA || !EA->g_Alive() )	return false;
 
 	CActor *pActor = smart_cast<CActor*>(pInvOwner);
-	if( !pActor ) 
+
+	if (pActor && !pActor->g_Alive())
 		return false;
 
-	if( !pActor->g_Alive() )	
-		return false;
+	auto Pda = pActor->GetPDA();
 
 	switch ( get_binded_action(dik) )
 	{
 	case kACTIVE_JOBS:
 		{
-			if (!psActorFlags.test(AF_3D_PDA) && !pActor->inventory_disabled())
+			if ((!psActorFlags.test(AF_3D_PDA) || (psActorFlags.test(AF_3D_PDA) && Pda && !Pda->Is3DPDA())) && !pActor->inventory_disabled() )
 			{
 				luabind::functor<bool> funct;
 				if (ai().script_engine().functor("pda.pda_use", funct))
@@ -123,6 +123,8 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 					if (funct())
 						ShowPdaMenu();
 				}
+				else
+					ShowPdaMenu();	// cari0us -- для совместимости с оригинальной игрой
 			}
 			break;
 		}
@@ -130,7 +132,7 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 		{
 			if (!pActor->inventory_disabled())
 			{
-				if (psActorFlags.test(AF_3D_PDA) && CurrentGameUI()->PdaMenu().IsShown())
+				if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && CurrentGameUI()->PdaMenu().IsShown())
 					pActor->inventory().Activate(NO_ACTIVE_SLOT);
 
 				CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(pActor->inventory().ItemFromSlot(BACKPACK_SLOT));

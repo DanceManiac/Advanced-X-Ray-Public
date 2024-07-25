@@ -57,7 +57,8 @@ void CDialogHolder::StartMenu (CUIDialogWnd* pDialog, bool bDoHideIndicators)
 
 	if (psActorFlags.test(AF_3D_PDA) && IsGameTypeSingle() && !smart_cast<CUIPdaWnd*>(pDialog) && Actor())
 	{
-		if (const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem()))
+		const auto pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem());
+		if (pda && pda->Is3DPDA())
 		{
 			HUD().GetUI()->UIGame()->PdaMenu().HideDialog1();
 			Actor()->inventory().Action(kACTIVE_JOBS, CMD_START);

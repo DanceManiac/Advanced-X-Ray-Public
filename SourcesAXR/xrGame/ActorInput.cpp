@@ -36,12 +36,14 @@
 #include "WeaponMagazined.h"
 #include "Grenade.h"
 #include "script_engine.h"
+#include "PDA.h"
+#include "ui/UIPdaWnd.h"
 
 #include "AdvancedXrayGameConstants.h"
 
 extern int hud_adj_mode;
 extern int hud_adj_item_idx;
-extern bool g_block_actor_movement;
+bool g_block_actor_movement = false;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
@@ -532,6 +534,12 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 
 void CActor::ActorUse()
 {
+	auto PdaUI = &CurrentGameUI()->PdaMenu();
+	auto Pda = GetPDA();
+
+	if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && PdaUI && PdaUI->IsShown())
+		return;
+
 	if (m_holder)
 	{
 		CGameObject*	GO			= smart_cast<CGameObject*>(m_holder);

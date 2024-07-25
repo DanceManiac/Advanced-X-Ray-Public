@@ -34,6 +34,8 @@
 #include "WeaponMagazined.h"
 #include "Grenade.h"
 #include "script_engine.h"
+#include "PDA.h"
+#include "ui/UIPdaWnd.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -519,6 +521,12 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 void CActor::ActorUse()
 {
 	//mstate_real = 0;
+	auto PdaUI = &HUD().GetUI()->UIGame()->PdaMenu();
+	auto Pda = GetPDA();
+
+	if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && PdaUI && PdaUI->IsShown())
+		return;
+		
 	PickupModeOn();
 
 		

@@ -301,7 +301,7 @@ void CHudItem::OnH_B_Chield		()
 {
 	StopCurrentAnimWithoutCallback();
 
-	if (pSettings->line_exist(item_sect, "hud_fov"))
+	if (item_sect.size() && pSettings->line_exist(item_sect, "hud_fov"))
 		m_nearwall_last_hud_fov = m_base_fov;
 	else
 		m_nearwall_last_hud_fov = psHUD_FOV_def;
@@ -312,7 +312,7 @@ void CHudItem::OnH_B_Independent	(bool just_before_destroy)
 	m_sounds.StopAllSounds	();
 	UpdateXForm				();
 	
-	if (pSettings->line_exist(item_sect, "hud_fov"))
+	if (item_sect.size() && pSettings->line_exist(item_sect, "hud_fov"))
 		m_nearwall_last_hud_fov = m_base_fov;
 	else
 		m_nearwall_last_hud_fov = psHUD_FOV_def;

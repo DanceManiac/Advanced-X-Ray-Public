@@ -26,6 +26,8 @@
 #include "CharacterPhysicsSupport.h"
 #include "InventoryBox.h"
 #include "script_engine.h"
+#include "PDA.h"
+#include "ui/UIPdaWnd.h"
 #include "Weapon.h"
 #include "Bolt.h"
 #include "Grenade.h"
@@ -36,9 +38,9 @@
 
 #include "AdvancedXrayGameConstants.h"
 
-bool g_block_actor_movement;
 extern int hud_adj_mode;
 extern int hud_adj_item_idx;
+bool g_block_actor_movement = false;
 
 void CActor::IR_OnKeyboardPress(int cmd)
 {
@@ -451,6 +453,14 @@ bool CActor::use_Holder				(CHolderCustom* holder)
 void CActor::ActorUse()
 {
 	//mstate_real = 0;
+
+	auto pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	auto PdaUI = pGameSP->PdaMenu;
+	auto Pda = GetPDA();
+
+	if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && PdaUI && PdaUI->IsShown())
+		return;
+
 	PickupModeOn();
 
 		

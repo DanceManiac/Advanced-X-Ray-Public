@@ -2418,7 +2418,7 @@ void CCC_RegisterCommands()
 #endif //#ifdef DEBUG	
 	// game
 	psActorFlags.set(AF_SIMPLE_PDA, TRUE);
-	psActorFlags.set(AF_3D_PDA, TRUE);
+	psActorFlags.set(AF_3D_PDA, FALSE);
 
 	CMD3(CCC_Mask,				"g_3d_pda",				&psActorFlags, AF_3D_PDA);
 	CMD3(CCC_Mask,				"g_simple_pda",			&psActorFlags, AF_SIMPLE_PDA);

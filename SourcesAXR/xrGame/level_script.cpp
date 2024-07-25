@@ -45,7 +45,7 @@
 
 using namespace luabind;
 bool g_block_all_except_movement = false;
-bool g_block_actor_movement = false;
+extern bool g_block_actor_movement;
 bool g_saves_locked = false;
 
 LPCSTR command_line	()

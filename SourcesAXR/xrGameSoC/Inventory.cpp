@@ -20,6 +20,7 @@
 #include "ai/stalker/ai_stalker.h"
 #include "weaponmagazined.h"
 #include "HudItem.h"
+#include "PDA.h"
 
 using namespace InventoryUtilities;
 
@@ -691,16 +692,15 @@ bool CInventory::Action(s32 cmd, u32 flags)
 			b_send_event = true;
 			if (flags & CMD_STOP)
 			{
-				if (!psActorFlags.test(AF_3D_PDA)) return false;
+				auto Pda = m_pOwner->GetPDA();
+				if (!Pda || !Pda->Is3DPDA() || !psActorFlags.test(AF_3D_PDA))
+					break;
+
 
 				if (GetActiveSlot() == PDA_SLOT && ActiveItem())
-				{
 					Activate(NO_ACTIVE_SLOT);
-				}
 				else
-				{
 					Activate(PDA_SLOT);
-				}
 			}
 		}break;
 	}

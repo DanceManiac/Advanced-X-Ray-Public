@@ -28,6 +28,7 @@ CPda::CPda(void)
 	m_idOriginalOwner = u16(-1);
 	m_SpecificChracterOwner = nullptr;
 	TurnOff();
+
 	m_bZoomed = false;
 	joystick = BI_NONE;
 	target_screen_switch = 0.f;
@@ -41,15 +42,17 @@ CPda::CPda(void)
 
 CPda::~CPda()
 {
-	pda_light.destroy();
-	pda_glow.destroy();
+	if (pda_light)
+		pda_light.destroy();
+
+	if (pda_glow)
+		pda_glow.destroy();
 }
 
 BOOL CPda::net_Spawn(CSE_Abstract* DC)
 {
 	inherited::net_Spawn(DC);
-	CSE_Abstract* abstract = (CSE_Abstract*)(DC);
-	CSE_ALifeItemPDA* pda = smart_cast<CSE_ALifeItemPDA*>(abstract);
+	auto pda = smart_cast<CSE_ALifeItemPDA*>(DC);
 	R_ASSERT(pda);
 	m_idOriginalOwner = pda->m_original_owner;
 	m_SpecificChracterOwner = pda->m_specific_character;
@@ -59,7 +62,11 @@ BOOL CPda::net_Spawn(CSE_Abstract* DC)
 
 void CPda::net_Destroy()
 {
-	inherited::net_Destroy();
+	if (this_is_3d_pda)
+		inherited::net_Destroy();
+	else
+		CInventoryItemObject::net_Destroy();
+
 	TurnOff();
 	feel_touch.clear();
 	UpdateActiveContacts();
@@ -67,24 +74,33 @@ void CPda::net_Destroy()
 
 void CPda::Load(LPCSTR section)
 {
-	inherited::Load(section);
+	this_is_3d_pda = pSettings->line_exist(section, "hud");
+	if (this_is_3d_pda)
+		inherited::Load(section);
+	else
+		CInventoryItemObject::Load(section);
 
 	m_fRadius = pSettings->r_float(section, "radius");
 	m_functor_str = READ_IF_EXISTS(pSettings, r_string, section, "play_function", "");
-	m_fDisplayBrightnessPowerSaving = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_brightness", .6f);
-	m_fPowerSavingCharge = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_charge", .15f);
-	m_joystick_bone = READ_IF_EXISTS(pSettings, r_string, section, "joystick_bone", nullptr);
-	m_sounds.LoadSound(section, "snd_draw", "sndShow", true);
-	m_sounds.LoadSound(section, "snd_holster", "sndHide", true);
-	m_sounds.LoadSound(section, "snd_draw_empty", "sndShowEmpty", true);
-	m_sounds.LoadSound(section, "snd_holster_empty", "sndHideEmpty", true);
-	m_sounds.LoadSound(section, "snd_btn_press", "sndButtonPress");
-	m_sounds.LoadSound(section, "snd_btn_release", "sndButtonRelease"); 
-	m_sounds.LoadSound(section, "snd_empty", "sndEmptyBattery", true);
-	m_screen_on_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_on_delay", 0.f);
-	m_screen_off_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_off_delay", 0.f);
-	m_thumb_rot[0] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_x", 0.f);
-	m_thumb_rot[1] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_y", 0.f);
+
+	if (this_is_3d_pda)
+	{
+		m_fDisplayBrightnessPowerSaving = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_brightness", .6f);
+		m_fPowerSavingCharge = READ_IF_EXISTS(pSettings, r_float, section, "power_saving_charge", .15f);
+
+		m_joystick_bone = READ_IF_EXISTS(pSettings, r_string, section, "joystick_bone", nullptr);
+		m_sounds.LoadSound(section, "snd_draw", "sndShow", true);
+		m_sounds.LoadSound(section, "snd_holster", "sndHide", true);
+		m_sounds.LoadSound(section, "snd_draw_empty", "sndShowEmpty", true);
+		m_sounds.LoadSound(section, "snd_holster_empty", "sndHideEmpty", true);
+		m_sounds.LoadSound(section, "snd_btn_press", "sndButtonPress");
+		m_sounds.LoadSound(section, "snd_btn_release", "sndButtonRelease");
+		m_sounds.LoadSound(section, "snd_empty", "sndEmptyBattery", true);
+		m_screen_on_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_on_delay", 0.f);
+		m_screen_off_delay = READ_IF_EXISTS(pSettings, r_float, section, "screen_off_delay", 0.f);
+		m_thumb_rot[0] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_x", 0.f);
+		m_thumb_rot[1] = READ_IF_EXISTS(pSettings, r_float, section, "thumb_rot_y", 0.f);
+	}
 
 	m_bLightsEnabled = READ_IF_EXISTS(pSettings, r_string, section, "light_enabled", false);
 
@@ -134,6 +150,9 @@ void CPda::Load(LPCSTR section)
 
 void CPda::OnStateSwitch(u32 S)
 {
+	if (!this_is_3d_pda)
+		return;
+
 	inherited::OnStateSwitch(S);
 
 	if (!ParentIsActor())
@@ -218,6 +237,9 @@ void CPda::OnStateSwitch(u32 S)
 
 void CPda::OnAnimationEnd(u32 state)
 {
+	if (!this_is_3d_pda)
+		return;
+
 	inherited::OnAnimationEnd(state);
 	switch (state)
 	{
@@ -311,7 +333,14 @@ void CPda::JoystickCallback(CBoneInstance* B)
 
 void CPda::UpdateCL()
 {
-	inherited::UpdateCL();
+	if (this_is_3d_pda)
+		inherited::UpdateCL();
+	else
+	{
+		CInventoryItemObject::UpdateCL();
+		return;
+	}
+		
 	if (!ParentIsActor())
 		return;
 
@@ -380,6 +409,7 @@ void CPda::UpdateCL()
 			pda->ShowDialog(false); // Don't hide indicators
 			CurrentGameUI()->SetMainInputReceiver(nullptr, false);
 			m_bNoticedEmptyBattery = false;
+
 			if (!m_bZoomed)
 				pda->Enable(false);
 		}
@@ -460,7 +490,7 @@ void CPda::shedule_Update(u32 dt)
 
 void CPda::UpdateLights()
 {
-	if (pda_light && psActorFlags.test(AF_3D_PDA))
+	if (pda_light && psActorFlags.test(AF_3D_PDA) && this_is_3d_pda)
 	{
 		const u32 state = GetState();
 
@@ -508,7 +538,7 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 {
 	inherited::OnMoveToRuck(prev);
 
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
 	if (prev.type == eItemPlaceSlot)
@@ -527,9 +557,9 @@ void CPda::OnMoveToRuck(const SInvItemPlace& prev)
 void CPda::UpdateHudAdditional(Fmatrix& trans)
 {
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
-	if (!pActor)
+	if (!this_is_3d_pda || !pActor)
 		return;
-
+	
 	attachable_hud_item* hi = HudItemData();
 	R_ASSERT(hi);
 
@@ -696,7 +726,7 @@ void CPda::UpdateXForm()
 
 void CPda::OnActiveItem()
 {
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
 	SwitchState(eShowing);
@@ -704,7 +734,7 @@ void CPda::OnActiveItem()
 
 void CPda::OnHiddenItem()
 {
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
 	SwitchState(eHiding);
@@ -783,15 +813,23 @@ void CPda::OnH_A_Chield()
 			m_sFullName += (smart_cast<CInventoryOwner*>(H_Parent()))->Name();
 		}
 	};
-	inherited::OnH_A_Chield();
+
+	if (this_is_3d_pda)
+		inherited::OnH_A_Chield();
+	else
+		CInventoryItemObject::OnH_A_Chield();
 }
 
 void CPda::OnH_B_Independent(bool just_before_destroy)
 {
-	inherited::OnH_B_Independent(just_before_destroy);
+	if (this_is_3d_pda)
+		inherited::OnH_B_Independent(just_before_destroy);
+	else
+		CInventoryItemObject::OnH_B_Independent(just_before_destroy);
+		
 	TurnOff();
 
-	if (!ParentIsActor())
+	if (!this_is_3d_pda || !ParentIsActor())
 		return;
 
 	m_sounds.PlaySound(hasEnoughBatteryPower() ? "sndHide" : "sndHideEmpty", Position(), H_Root(), !!GetHUDmode(), false);

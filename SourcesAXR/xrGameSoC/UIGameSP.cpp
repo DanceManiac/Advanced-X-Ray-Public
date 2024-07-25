@@ -22,6 +22,7 @@
 #include "alife_registry_wrappers.h"
 #include "../xrServerEntitiesSoC/script_engine.h"
 #include "HUDManager.h"
+#include "PDA.h"
 #include "Inventory.h"
 
 CUIGameSP::CUIGameSP()
@@ -85,17 +86,21 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	if( Device.Paused()		) return false;
 
 	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if(!pActor)								return false;
-	if( pActor && !pActor->g_Alive() )		return false;
+
+	if(pActor && !pActor->g_Alive())
+		return false;
 
 	hud_adjust_mode_keyb(dik);
+
+	auto Pda = pActor->GetPDA();
 
 	switch ( get_binded_action(dik) )
 	{
 	case kINVENTORY:
 		{
-			if (psActorFlags.test(AF_3D_PDA) && PdaMenu->IsShown())
+			if (Pda && Pda->Is3DPDA() && psActorFlags.test(AF_3D_PDA) && PdaMenu->IsShown())
 				pActor->inventory().Activate(NO_ACTIVE_SLOT);
+
 
 			if (!MainInputReceiver() || MainInputReceiver() == InventoryMenu)
 			{
@@ -107,13 +112,19 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	case kACTIVE_JOBS:
 		if( !MainInputReceiver() || MainInputReceiver()==PdaMenu)
 		{
-			if (!psActorFlags.test(AF_3D_PDA))
+			if (!psActorFlags.test(AF_3D_PDA) || (psActorFlags.test(AF_3D_PDA) && Pda && !Pda->Is3DPDA()))
 			{
 				luabind::functor<bool> funct;
 				if (ai().script_engine().functor("pda.pda_use", funct))
 				{
 					if (funct())
 					{
+						PdaMenu->SetActiveSubdialog(eptQuests);
+						m_game->StartStopMenu(PdaMenu, true);
+					}
+					else
+					{
+						// cari0us -- для совместимости с оригинальной игрой
 						PdaMenu->SetActiveSubdialog(eptQuests);
 						m_game->StartStopMenu(PdaMenu, true);
 					}
