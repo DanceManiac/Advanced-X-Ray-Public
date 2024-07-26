@@ -37,6 +37,8 @@
 		<command id="kb_laser_on"					exe="laser_on"/>
 		<command id="kb_flashlight_on"				exe="flashlight"/>
 		<command id="kb_wpn_alt_aim"				exe="wpn_alt_aim"/>
+		<command id="kb_quick_kick"					exe="quick_kick"/>
+		<command id="kb_quick_grenade"				exe="quick_grenade"/>
 	</group>
 	<group name="kb_grp_auto">
 		<command id="kb_turn_engine"				exe="turn_engine"/>
@@ -49,6 +51,7 @@
 		<command id="kb_contacts"					exe="contacts"/>
 		<command id="kb_torch"						exe="torch"/>
 		<command id="kb_night_vision"				exe="night_vision"/>
+		<command id="kb_clean_mask"					exe="clean_mask"/>
 		<command id="kb_use_bandage"				exe="use_bandage"/>
 		<command id="kb_use_medkit"					exe="use_medkit"/>
 		<command id="kb_drop"						exe="drop"/>		
@@ -78,6 +81,5 @@
 		<command id="kb_vote_yes"					exe="vote_yes"/>
 		<command id="kb_vote_no"					exe="vote_no"/>
 		<command id="speech_menu_group"				exe="speech_menu_0"/>
-		<command id="speech_menu_personal"			exe="speech_menu_1"/>
 	</group>
 </keybingidg>

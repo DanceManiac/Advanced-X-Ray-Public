@@ -36,6 +36,7 @@ _action  actions[]		= {
 															
 	{ "torch",				kTORCH					,_both},	
 	{ "night_vision",		kNIGHT_VISION			,_both},
+	{ "clean_mask",			kCLEAN_MASK				,_both},
 	{ "turn_engine",		kTURN_ENGINE			,_both},
 	{ "switch_horn",		kSWITCH_HORN			,_both},
 	{ "wpn_1",				kWPN_1					,_both},	
@@ -57,6 +58,8 @@ _action  actions[]		= {
 	{ "wpn_firemode_prev",	kWPN_FIREMODE_PREV		,_both},	
 	{ "wpn_firemode_next",	kWPN_FIREMODE_NEXT		,_both},
 	{ "wpn_alt_aim",		kWPN_ALT_AIM			,_both},
+	{ "quick_kick",			kQUICK_KICK				,_both},
+	{ "quick_grenade",		kQUICK_GRENADE			,_both},
 
 	{ "pause",				kPAUSE					,_both},	
 	{ "drop",				kDROP					,_both},	

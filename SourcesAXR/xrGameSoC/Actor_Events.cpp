@@ -18,7 +18,8 @@
 #include "CameraLook.h"
 #include "CameraFirstEye.h"
 #include "holder_custom.h"
-#include "ui/uiinventoryWnd.h"
+#include "ui/UIInventoryWnd.h"
+#include "ui/UICarBodyWnd.h"
 #include "game_base_space.h"
 #ifdef DEBUG
 #include "PHDebug.h"
@@ -57,15 +58,24 @@ void CActor::OnEvent		(NET_Packet& P, u16 type)
 			
 			if( inventory().CanTakeItem(smart_cast<CInventoryItem*>(_GO)) )
 			{
-				O->H_SetParent(smart_cast<CObject*>(this));
+				CUIGameSP* pGameSP = nullptr;
+				pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 
-				inventory().Take(_GO, false, true);
+				if (pGameSP)
+				{
+					const bool use_pickup_anim = (type == GE_OWNERSHIP_TAKE)
+						&& (Position().distance_to(_GO->Position()) > 0.2f)
+						&& !pGameSP->InventoryMenu->IsShown()
+						&& !pGameSP->UICarBodyMenu->IsShown()
+						&& !Actor()->m_bActionAnimInProcess
+						&& pAdvancedSettings->line_exist("actions_animations", "take_item_section");
 
-				CUIGameSP* pGameSP = NULL;
+					inventory().TakeItemAnimCheck(_GO, O, use_pickup_anim);
+				}
+
 				CUI* ui = HUD().GetUI();
 				if( ui&&ui->UIGame() )
 				{
-					pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 					if (Level().CurrentViewEntity() == this)
 							HUD().GetUI()->UIGame()->ReInitShownUI();
 				};

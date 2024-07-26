@@ -1082,7 +1082,7 @@ void player_hud::update_script_item()
 
 	calc_transform(m_attach_idx, m_attach_offset, m_item_pos);
 
-	if (script_anim_item_model)
+	if (script_anim_item_model && script_anim_item_visible)
 	{
 		if (script_anim_item_model->dcast_PKinematicsAnimated())
 			script_anim_item_model->dcast_PKinematicsAnimated()->UpdateTracks();

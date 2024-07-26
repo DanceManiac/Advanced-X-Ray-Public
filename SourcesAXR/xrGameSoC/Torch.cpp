@@ -15,6 +15,10 @@
 #include "inventory.h"
 #include "game_base_space.h"
 
+#include "player_hud.h"
+#include "Weapon.h"
+#include "ActorEffector.h"
+#include "GamePersistent.h"
 #include "AdvancedXrayGameConstants.h"
 #include "UIGameCustom.h"
 #include "CustomOutfit.h"
@@ -30,6 +34,8 @@ static const float		OPTIMIZATION_DISTANCE		= 100.f;
 
 static bool stalker_use_dynamic_lights	= false;
 
+extern bool g_block_all_except_movement;
+extern bool g_actor_allow_ladder;
 extern ENGINE_API bool ps_enchanted_shaders;
 
 CTorch::CTorch(void) 
@@ -59,6 +65,11 @@ CTorch::CTorch(void)
 
 	m_fMaxRange					= 20.f;
 	m_fCurveRange				= 20.f;
+
+	m_iAnimLength				= 0;
+	m_iActionTiming				= 0;
+	m_bActivated				= false;
+	m_bSwitched					= false;
 }
 
 CTorch::~CTorch(void) 
@@ -139,12 +150,122 @@ void CTorch::Load(LPCSTR section)
 	}
 }
 
-
 void CTorch::Switch()
 {
-	if (OnClient()) return;
-	bool bActive			= !m_switched_on;
-	Switch					(bActive);
+	if (OnClient())
+		return;
+
+	//if (isHidingInProgressTorch.load())
+	//	return;
+
+	//CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
+	bool AnimEnabled = pAdvancedSettings->line_exist("actions_animations", "switch_torch_section");
+
+	//if (!pDet || pDet->IsHidden() || !AnimEnabled)
+	//{
+		ProcessSwitch();
+	//	return;
+	//}
+
+	//isHidingInProgressTorch.store(true);
+
+	/*std::thread hidingThread([&, pDet]
+		{
+			while (pDet && !pDet->IsHidden())
+				pDet->HideDetector(true);
+
+			isHidingInProgressTorch.store(false);
+			processSwitchNeeded.store(true);
+		});	*/
+
+	//hidingThread.detach();
+}
+
+void CTorch::ProcessSwitch()
+{
+	if (OnClient())
+		return;
+
+	bool bActive = !m_switched_on;
+
+	LPCSTR anim_sect = READ_IF_EXISTS(pAdvancedSettings, r_string, "actions_animations", "switch_torch_section", nullptr);
+
+	if (!anim_sect)
+	{
+		Switch(bActive);
+		return;
+	}
+
+	CWeapon* Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+
+	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
+		return;
+
+	m_bActivated = true;
+
+	int anim_timer = READ_IF_EXISTS(pSettings, r_u32, anim_sect, "anim_timing", 0);
+
+	g_block_all_except_movement = true;
+	g_actor_allow_ladder = false;
+
+	LPCSTR use_cam_effector = READ_IF_EXISTS(pSettings, r_string, anim_sect, !Wpn ? "anim_camera_effector" : "anim_camera_effector_weapon", nullptr);
+	float effector_intensity = READ_IF_EXISTS(pSettings, r_float, anim_sect, "cam_effector_intensity", 1.0f);
+	float anim_speed = READ_IF_EXISTS(pSettings, r_float, anim_sect, "anim_speed", 1.0f);
+
+	if (pSettings->line_exist(anim_sect, "anm_use"))
+	{
+		g_player_hud->script_anim_play(!Actor()->inventory().GetActiveSlot() ? 2 : 1, anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", true, anim_speed);
+
+		if (use_cam_effector)
+			g_player_hud->PlayBlendAnm(use_cam_effector, 0, anim_speed, effector_intensity, false);
+
+		m_iAnimLength = Device.dwTimeGlobal + g_player_hud->motion_length_script(anim_sect, !Wpn ? "anm_use" : "anm_use_weapon", anim_speed);
+	}
+
+	if (pSettings->line_exist(anim_sect, "snd_using"))
+	{
+		if (m_action_anim_sound._feedback())
+			m_action_anim_sound.stop();
+
+		shared_str snd_name = pSettings->r_string(anim_sect, "snd_using");
+		m_action_anim_sound.create(snd_name.c_str(), st_Effect, sg_SourceType);
+		m_action_anim_sound.play(NULL, sm_2D);
+	}
+
+	m_iActionTiming = Device.dwTimeGlobal + anim_timer;
+
+	m_bSwitched = false;
+	Actor()->m_bActionAnimInProcess = true;
+}
+
+void CTorch::UpdateUseAnim()
+{
+	if (OnClient())
+		return;
+
+	bool IsActorAlive = g_pGamePersistent->GetActorAliveStatus();
+	bool bActive = !m_switched_on;
+
+	if ((m_iActionTiming <= Device.dwTimeGlobal && !m_bSwitched) && IsActorAlive)
+	{
+		m_iActionTiming = Device.dwTimeGlobal;
+		Switch(bActive);
+		m_bSwitched = true;
+	}
+
+	if (m_bActivated)
+	{
+		if ((m_iAnimLength <= Device.dwTimeGlobal) || !IsActorAlive)
+		{
+			m_iAnimLength = Device.dwTimeGlobal;
+			m_iActionTiming = Device.dwTimeGlobal;
+			m_action_anim_sound.stop();
+			g_block_all_except_movement = false;
+			g_actor_allow_ladder = true;
+			Actor()->m_bActionAnimInProcess = false;
+			m_bActivated = false;
+		}
+	}
 }
 
 void CTorch::Switch	(bool light_on)
@@ -293,6 +414,9 @@ void CTorch::OnH_B_Independent	(bool just_before_destroy)
 void CTorch::UpdateCL() 
 {
 	inherited::UpdateCL			();
+
+	if (Actor()->m_bActionAnimInProcess && m_bActivated)
+		UpdateUseAnim();
 
 	if (!m_switched_on)			return;
 

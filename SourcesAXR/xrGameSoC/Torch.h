@@ -22,6 +22,11 @@ protected:
 	float			m_fMaxRange;
 	float			m_fCurveRange;
 
+	int				m_iActionTiming;
+	int				m_iAnimLength;
+	bool			m_bActivated;
+	bool			m_bSwitched;
+
 	u16				guid_bone;
 	shared_str		light_trace_bone;
 
@@ -64,6 +69,7 @@ public:
 	virtual void	UpdateCL			();
 
 			void	Switch				();
+			void	ProcessSwitch		();
 			void	Switch				(bool light_on);
 			bool	torch_active		() const;
 
@@ -72,6 +78,7 @@ public:
 			float	get_range			() const;
 
 			void	UpdateChargeLevel		(void);
+			void	UpdateUseAnim			();
 	virtual void	save					(NET_Packet &output_packet);
 	virtual void	load					(IReader &input_packet);
 			float	GetCurrentChargeLevel	(void) const;
@@ -85,6 +92,7 @@ public:
 protected:
 
 	HUD_SOUND_COLLECTION_LAYERED m_sounds;
+	ref_sound		m_action_anim_sound;
 
 	/*HUD_SOUND				m_NightVisionOnSnd;
 	HUD_SOUND				m_NightVisionOffSnd;

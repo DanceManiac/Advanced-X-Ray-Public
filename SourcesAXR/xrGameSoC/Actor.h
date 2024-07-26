@@ -213,6 +213,9 @@ public:
 			void		UpdateArtefactsOnBelt	();
 			void		UpdateArtefactsInRuck	();
 			void		UpdateSkills			();
+			void		UpdateNVGUseAnim		();
+			void		UpdateMaskUseAnim		();
+			void		UpdateQuickKickAnim		();
 
 	const xr_vector<const CArtefact*>& ArtefactsOnBelt() {return m_ArtefactsOnBelt;}
 protected:
@@ -795,7 +798,12 @@ public:
 	virtual bool				register_schedule				() const {return false;}
 
 public:
+	void						NVGAnimCheckDetector			();
+	void						CleanMaskAnimCheckDetector		();
+	void						StartNVGAnimation				();
 	void						SwitchNightVision				(bool light_on, bool use_sounds = true, bool send_event = true);
+	void						CleanMask						();
+	void						QuickKick						();
 
 	bool						GetNightVisionStatus			() { return m_bNightVisionOn; }
 	void						SetNightVisionAllowed			(bool bAllow) { m_bNightVisionAllow = bAllow; }
@@ -825,14 +833,30 @@ public:
 	float						GetInventoryFullness() const { return m_fInventoryFullness; }
 	float						MaxCarryInvCapacity	() const;
 	void						ChangeInventoryFullness(float val);
+	u16							GetLastActiveSlot	() { return m_last_active_slot; }
+
+	bool						MaskClearInProcess	() { return m_bMaskClear; }
 
 	bool						m_bEatAnimActive;
+	bool						m_bActionAnimInProcess;
 protected:
 	bool						m_bNightVisionOn;
 	bool						m_bNightVisionAllow;
+	bool						m_bNVGActivated;
+	bool						m_bNVGSwitched;
+	bool						m_bMaskAnimActivated;
+	bool						m_bMaskClear;
+	bool						m_bQuickKickActivated;
+	bool						m_bQuickKick;
+	int							m_iNVGAnimLength;
+	int							m_iActionTiming;
+	int							m_iMaskAnimLength;
+	int							m_iQuickKickAnimLength;
 	float						m_fInventoryCapacity;
 	float						m_fInventoryFullness;
 	float						m_fInventoryFullnessCtrl; // Для контроля эвента. Иначе эвент отправляется пачкой и дропает больше, чем нужно.
+
+	u16							m_last_active_slot;
 
 	bool						m_bHeating;
 	float						m_fHeatingPower;
@@ -841,6 +865,8 @@ protected:
 	shared_str					m_sColdSteamParticleName;
 
 	float						m_fDevicesPsyFactor;
+
+	ref_sound					m_action_anim_sound;
 
 	CNightVisionEffector*		m_night_vision;
 

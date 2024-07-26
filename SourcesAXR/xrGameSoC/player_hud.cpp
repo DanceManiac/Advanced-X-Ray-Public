@@ -1174,7 +1174,7 @@ void player_hud::update_script_item()
 
 	calc_transform(m_attach_idx, m_attach_offset, m_item_pos);
 
-	if (script_anim_item_model)
+	if (script_anim_item_model && script_anim_item_visible)
 	{
 		if (script_anim_item_model->dcast_PKinematicsAnimated())
 			script_anim_item_model->dcast_PKinematicsAnimated()->UpdateTracks();
@@ -1195,10 +1195,7 @@ void player_hud::SetScriptItemVisible(bool visible)
 
 u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool bMixIn, float speed, LPCSTR attach_visual)
 {
-	bool hasHands = pSettings->line_exist(section, "item_visual");
-
-	//if (!hasHands)
-	//	Msg("[player_hud::script_anim_play]: This function don`t work with monolithic (SoC) hands!");
+	bool hasHands = pSettings->line_exist(section, "item_visual") || READ_IF_EXISTS(pSettings, r_bool, section, "without_item_model", false);
 
 	if (!hasHands)
 	{
@@ -1264,7 +1261,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 		return 0;
 	}
 
-	player_hud_motion_container* pm = get_hand_motions(section, script_anim_item_model->dcast_PKinematicsAnimated());
+	player_hud_motion_container* pm = get_hand_motions(section, script_anim_item_model ? script_anim_item_model->dcast_PKinematicsAnimated() : nullptr);
 	player_hud_motion* phm = pm->find_motion(anm_name);
 
 	if (!phm)
@@ -1477,8 +1474,8 @@ player_hud_motion_container* player_hud::get_hand_motions(LPCSTR section, IKinem
 	hand_motions* res = xr_new<hand_motions>();
 	res->section = section;
 
-	bool hasHands = pSettings->line_exist(section, "item_visual");
-
+	bool hasHands = pSettings->line_exist(section, "item_visual") || READ_IF_EXISTS(pSettings, r_bool, section, "without_item_model", false);
+	
 	res->pm.load(m_model, section, hasHands, animatedHudItem);
 	m_hand_motions.push_back(res);
 
@@ -1884,11 +1881,6 @@ bool player_hud::allow_script_anim()
 		return false;
 	else if (m_attached_items[1] && m_attached_items[1]->m_parent_hud_item->IsPending())
 		return false;
-	else if ((m_attached_items[0] && m_attached_items[0]->m_has_separated_hands) || (m_attached_items[1] && m_attached_items[1]->m_has_separated_hands))
-	{
-		Msg("[player_hud::allow_script_anim]: This function don`t work with monolithic (SoC) hands!");
-		return false;
-	}
 	else if (script_anim_part != u8(-1))
 		return false;
 

@@ -106,7 +106,37 @@ void CWeaponKnife::OnStateSwitch(u32 S, u32 oldState)
 		}break;
 	}
 }
-	
+
+void CWeaponKnife::FastStrike(u32 state)
+{
+	if (state == 0)
+	{
+		m_eHitType = m_eHitType_1;
+
+		if (GameID() == GAME_SINGLE)
+			fCurrentHit = fvHitPower_1[g_SingleGameDifficulty];
+		else
+			fCurrentHit = fvHitPower_1[egdMaster];
+
+		fHitImpulse = fHitImpulse_1;
+	}
+	else if (state == 1)
+	{
+		m_eHitType = m_eHitType_2;
+
+		if (GameID() == GAME_SINGLE)
+			fCurrentHit = fvHitPower_2[g_SingleGameDifficulty];
+		else
+			fCurrentHit = fvHitPower_2[egdMaster];
+
+		fHitImpulse = fHitImpulse_2;
+	}
+	else
+		return;
+
+	if (H_Parent())
+		KnifeStrike(Device.vCameraPosition, Device.vCameraDirection);
+}
 
 void CWeaponKnife::KnifeStrike(const Fvector& pos, const Fvector& dir)
 {

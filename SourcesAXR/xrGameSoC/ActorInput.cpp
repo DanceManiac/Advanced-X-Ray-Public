@@ -35,6 +35,7 @@
 #include "HudItem.h"
 #include "Weapon.h"
 #include "WeaponMagazined.h"
+#include "Grenade.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -152,7 +153,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			SwitchNightVision(!m_bNightVisionOn);
+			if (!Actor()->m_bActionAnimInProcess)
+				NVGAnimCheckDetector();
 		}break;
 	case kTORCH:
 		{ 
@@ -160,9 +162,48 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				return;
 
 			CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
-			if (pTorch)
+			
+			if (pTorch && !Actor()->m_bActionAnimInProcess)
 				pTorch->Switch();
 		} break;
+	case kCLEAN_MASK:
+		{
+			if (hud_adj_mode)
+				return;
+
+			CleanMaskAnimCheckDetector();
+			break;
+		}
+	case kQUICK_KICK:
+		{
+			if (hud_adj_mode)
+				return;
+
+			QuickKick();
+			break;
+		}
+	case kQUICK_GRENADE:
+		{
+			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode)
+				return;
+
+			CGrenade* grenade = smart_cast<CGrenade*>(inventory().ItemFromSlot(GRENADE_SLOT));
+			
+			if (grenade)
+			{
+				if (inventory().GetActiveSlot() == GRENADE_SLOT)
+					return;
+
+				m_last_active_slot = inventory().GetActiveSlot();
+
+				inventory().Activate(GRENADE_SLOT, EActivationReason::eGeneral, true);
+				grenade->SetQuickThrowActive(true);
+
+				if (grenade->isHUDAnimationExist("anm_throw_quick"))
+					grenade->SwitchState(CGrenade::eThrowQuick);
+			}
+			break;
+		}
 	case kWPN_1:	
 	case kWPN_2:	
 	case kWPN_3:	

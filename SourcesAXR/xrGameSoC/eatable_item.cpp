@@ -24,9 +24,15 @@
 #include "actorEffector.h"
 #include "HudManager.h"
 #include "UIGameCustom.h"
+#include "UIGameSP.h"
+#include "ui\UIInventoryWnd.h"
+#include "ui\UICarBodyWnd.h"
+#include "ui\UIPdaWnd.h"
+#include "ui\UITalkWnd.h"
 #include "player_hud.h"
 #include "CustomOutfit.h"
 #include "GamePersistent.h"
+#include "../xrEngine/x_ray.h"
 #include "AdvancedXrayGameConstants.h"
 
 extern bool g_block_all_except_movement;
@@ -145,7 +151,7 @@ bool CEatableItem::Useful() const
 
 void CEatableItem::HideWeapon()
 {
-	if (/*Actor()->m_bActionAnimInProcess ||*/ m_bActivated || m_bItmStartAnim)
+	if (Actor()->m_bActionAnimInProcess || m_bActivated || m_bItmStartAnim)
 		return;
 
 	CEffectorCam* effector = Actor()->Cameras().GetCamEffector((ECamEffectorType)effUseItem);
@@ -175,7 +181,7 @@ void CEatableItem::StartAnimation()
 	m_bItmStartAnim = false;
 	g_block_all_except_movement = true;
 	g_actor_allow_ladder = false;
-	//Actor()->m_bActionAnimInProcess = true;
+	Actor()->m_bActionAnimInProcess = true;
 
 	CCustomOutfit* cur_outfit = Actor()->GetOutfit();
 
@@ -204,8 +210,8 @@ void CEatableItem::StartAnimation()
 			psHUD_FOV_def = pSettings->r_float(anim_sect, "hud_fov");
 		}
 
-		//ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
-		//ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
 	}
 
 	if (!effector && use_cam_effector != nullptr)
@@ -230,11 +236,6 @@ void CEatableItem::StartAnimation()
 		m_using_sound.play(NULL, sm_2D);
 	}
 }
-#include "UIGameSP.h"
-#include "ui\UIInventoryWnd.h"
-#include "ui\UICarBodyWnd.h"
-#include "ui\UIPdaWnd.h"
-#include "ui\UITalkWnd.h"
 
 void CEatableItem::UpdateUseAnim(CActor* actor)
 {
@@ -284,7 +285,7 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 			m_bActivated = false;
 			g_block_all_except_movement = false;
 			g_actor_allow_ladder = true;
-			//actor->m_bActionAnimInProcess = false;
+			actor->m_bActionAnimInProcess = false;
 
 			if (pSettings->line_exist(anim_sect, "hud_fov") && last_hud_fov > 0.0f)
 				psHUD_FOV_def = last_hud_fov;
@@ -292,8 +293,8 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 			if (effector)
 				RemoveEffector(actor, effUseItem);
 
-			//ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
-			//ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+			ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+			ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
 
 			if (IsActorAlive)
 				actor->inventory().Eat(this);

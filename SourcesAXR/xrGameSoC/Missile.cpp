@@ -42,7 +42,7 @@ void create_force_progress()
 CMissile::CMissile(void) 
 {
 	m_dwStateTime		= 0;
-	//m_bQuickThrowActive = false;
+	m_bQuickThrowActive = false;
 	m_bIsContactGrenade = false;
 }
 
@@ -274,8 +274,8 @@ void CMissile::State(u32 state)
 			SetPending			(TRUE);
 			m_fThrowForce		= m_fMinForce;
 
-			//if (m_bQuickThrowActive)
-			//	m_throw = true;
+			if (m_bQuickThrowActive)
+				m_throw = true;
 
 			PlayHUDMotionIfExists({ "anm_throw_begin", "anim_throw_begin" }, FALSE, state);
 		} break;
@@ -291,12 +291,12 @@ void CMissile::State(u32 state)
 		} break;
 	case eThrowEnd:
 		{
-			//if (m_bQuickThrowActive)
-			//{
-			//	Actor()->inventory().Activate(Actor()->GetLastActiveSlot());
-			//	m_bQuickThrowActive = false;
-			//	return;
-			//}
+			if (m_bQuickThrowActive)
+			{
+				Actor()->inventory().Activate(Actor()->GetLastActiveSlot());
+				m_bQuickThrowActive = false;
+				return;
+			}
 
 			SwitchState			(eShowing); 
 		} break;
@@ -342,9 +342,9 @@ void CMissile::OnAnimationEnd(u32 state)
 		{
 			setVisible(TRUE);
 
-			//if (!isHUDAnimationExist("anm_throw_quick") && m_bQuickThrowActive)
-			//	SwitchState(eThrowStart);
-			//else
+			if (!isHUDAnimationExist("anm_throw_quick") && m_bQuickThrowActive)
+				SwitchState(eThrowStart);
+			else
 				SwitchState(eIdle);
 
 		} break;
@@ -490,7 +490,7 @@ void CMissile::Throw()
 	CInventoryOwner						*inventory_owner = smart_cast<CInventoryOwner*>(H_Parent());
 	VERIFY								(inventory_owner);
 	if (inventory_owner->use_default_throw_force())
-		m_fake_missile->m_fThrowForce	= (m_constpower /*|| m_bQuickThrowActive*/) ? m_fConstForce : m_fThrowForce;
+		m_fake_missile->m_fThrowForce	= (m_constpower || m_bQuickThrowActive) ? m_fConstForce : m_fThrowForce;
 	else
 		m_fake_missile->m_fThrowForce	= inventory_owner->missile_throw_force(); 
 	
