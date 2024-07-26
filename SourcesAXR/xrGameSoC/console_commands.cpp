@@ -58,6 +58,7 @@
 #include "HUDManager.h"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "InfoPortion.h"
+#include "Inventory.h"
 #include "GametaskManager.h"
 #include "AdvancedXrayGameConstants.h"
 
@@ -126,6 +127,10 @@ extern	int		hud_adj_item_idx;
 extern	BOOL	g_advanced_crosshair;
 
 extern bool		g_saves_locked;
+
+extern BOOL		m_b_animated_backpack;
+static BOOL		m_b_last_animated_backpack_status = m_b_animated_backpack;
+
 extern BOOL		g_dbgShowMaterialInfo;
 //Custom commands for scripts
 
@@ -1897,6 +1902,29 @@ struct CCC_ReloadAdvancedXRayCfg : public IConsole_Command
 	}
 };
 
+class CCC_BKPK_ANIM : public CCC_Integer
+{
+public:
+	CCC_BKPK_ANIM(LPCSTR args, BOOL* value, int min, int max) : CCC_Integer(args, value, min, max)
+	{
+		bEmptyArgsHandled = false;
+	};
+
+	virtual void Execute(LPCSTR args)
+	{
+		CCC_Integer::Execute(args);
+
+		if (!g_pGameLevel || !Actor() || atoi(args) > 1)
+			return;
+
+		if (m_b_last_animated_backpack_status != m_b_animated_backpack)
+		{
+			Actor()->inventory().ReloadSlotsConfig();
+			m_b_last_animated_backpack_status = m_b_animated_backpack;
+		}
+	}
+};
+
 class CCC_GameLanguage : public CCC_Token
 {
 public:
@@ -2327,6 +2355,7 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Token,			"g_crosshair_type",			&crosshair_type,			crosshair_type_token);
 
 	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
+	CMD4(CCC_BKPK_ANIM,		"g_animated_backpack",		&m_b_animated_backpack,		0, 1);
 	CMD3(CCC_UiHud_Mode,	"hud_type",					&ui_hud_type,				qhud_type_token);
 	CMD1(CCC_DebugFonts,	"debug_fonts");
 	CMD4(CCC_Integer,		"g_advanced_crosshair",		&g_advanced_crosshair,		0, 1);

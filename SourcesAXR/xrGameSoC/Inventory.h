@@ -36,6 +36,7 @@ public:
 							CInventory			();
 	virtual					~CInventory			();
 
+	void					ReloadSlotsConfig	();
 	float 					TotalWeight			() const;
 	float 					CalcTotalWeight		();
 
@@ -43,7 +44,9 @@ public:
 	bool					DropItem			(CGameObject *pObj);
 	void					Clear				();
 
-	
+
+	IC u16					FirstSlot			() const { return KNIFE_SLOT; }
+	IC u16					LastSlot			() const { return LAST_SLOT; } // not "end"
 	bool					Slot				(PIItem pIItem, bool bNotActivate = false);	
 	bool					Belt				(PIItem pIItem);
 	bool					Ruck				(PIItem pIItem);

@@ -2,8 +2,10 @@
 //	Module 		: CustomBackpack.cpp
 //	Created 	: 21.08.2023
 //  Modified 	: 21.08.2023
-//	Author		: Dance Maniac (M.F.S. Team)
+//	Author		: Dance Maniac
 //	Description : Backpack class
+//  MIT License
+//	Copyright(c) 2020 M.F.S. Team
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
@@ -11,19 +13,24 @@
 
 #include "Actor.h"
 #include "Inventory.h"
-//#include "player_hud.h"
-//#include "UIGameCustom.h"
-//#include "HudManager.h"
-//#include "UI\UIActorMenu.h"
+#include "player_hud.h"
+#include "UIGameCustom.h"
+#include "HudManager.h"
+#include "UIGameSP.h"
+#include "ui\UIInventoryWnd.h"
+#include "ui\UICarBodyWnd.h"
+#include "ui\UIPdaWnd.h"
+#include "ui\UITalkWnd.h"
 #include "ElevatorState.h"
-//#include "../xrEngine/CameraBase.h"
+#include "../xrEngine/CameraBase.h"
 
 extern bool g_block_actor_movement;
+extern bool g_actor_allow_ladder;
 
 CCustomBackpack::CCustomBackpack()
 {
-	//SetState					(eHidden);
-	//SetNextState				(eHidden);
+	SetState					(eHidden);
+	SetNextState				(eHidden);
 	m_fPowerLoss				= 1.0f;
 	m_additional_weight			= 0.0f;
 	m_additional_weight2		= 0.0f;
@@ -52,17 +59,17 @@ CCustomBackpack::~CCustomBackpack()
 {
 }
 
-/*BOOL CCustomBackpack::net_Spawn(CSE_Abstract* DC)
+BOOL CCustomBackpack::net_Spawn(CSE_Abstract* DC)
 {
 	return		(inherited::net_Spawn(DC));
-}*/
+}
 
 void CCustomBackpack::Load(LPCSTR section)
 {
 	inherited::Load(section);
 
-	//m_sounds.LoadSound(section, "snd_draw", "sndShow");
-	//m_sounds.LoadSound(section, "snd_holster", "sndHide");
+	m_sounds.LoadSound(section, "snd_draw", "sndShow");
+	m_sounds.LoadSound(section, "snd_holster", "sndHide");
 
 	m_fPowerLoss				= READ_IF_EXISTS(pSettings, r_float, section, "power_loss", 1.0f);
 	clamp(m_fPowerLoss, 0.0f, 1.0f);
@@ -90,12 +97,12 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fInventoryCapacity		= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
 }
 
-/*void CCustomBackpack::shedule_Update(u32 dt)
+void CCustomBackpack::shedule_Update(u32 dt)
 {
 	inherited::shedule_Update(dt);
-}*/
+}
 
-/*void CCustomBackpack::UpdateCL()
+void CCustomBackpack::UpdateCL()
 {
 	inherited::UpdateCL();
 
@@ -113,9 +120,9 @@ void CCustomBackpack::Load(LPCSTR section)
 
 	clamp(cam_height, 0.55f, start_cam_height);
 	Actor()->SetCamHeightFactor(cam_height);
-}*/
+}
 
-/*void CCustomBackpack::OnH_A_Chield()
+void CCustomBackpack::OnH_A_Chield()
 {
 	inherited::OnH_A_Chield();
 }
@@ -152,7 +159,7 @@ void CCustomBackpack::OnMoveToRuck(EItemPlace prev)
 	}
 
 	StopCurrentAnimWithoutCallback();
-}  
+}
 
 void CCustomBackpack::OnMoveToSlot()
 {
@@ -183,15 +190,15 @@ void CCustomBackpack::HideBackpack()
 
 void CCustomBackpack::ShowBackpack()
 {
-	//if (GetState() == eHidden)
-	//	ToggleBackpack();
+	if (GetState() == eHidden)
+		ToggleBackpack();
 }
 
 void CCustomBackpack::ToggleBackpack()
 {
 	if (GetState() == eHidden)
 	{
-		PIItem iitem = m_pInventory->ActiveItem();
+		PIItem iitem = m_pCurrentInventory->ActiveItem();
 		CHudItem* itm = (iitem) ? iitem->cast_hud_item() : NULL;
 		u16 slot_to_activate = NO_ACTIVE_SLOT;
 	}
@@ -201,12 +208,14 @@ void CCustomBackpack::ToggleBackpack()
 
 }
 
-void CCustomBackpack::OnStateSwitch(u32 S)
+void CCustomBackpack::OnStateSwitch(u32 S, u32 old_state)
 {
 	if (!ParentIsActor())
 		return;
 
-	inherited::OnStateSwitch(S);
+	inherited::OnStateSwitch(S, old_state);
+
+	auto* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 
 	switch (S)
 	{
@@ -228,8 +237,8 @@ void CCustomBackpack::OnStateSwitch(u32 S)
 			m_sounds.PlaySound("sndHide", Fvector().set(0, 0, 0), this, true, false);
 			PlayHUDMotion("anm_hide", FALSE, this, GetState());
 
-			if (HUD().GetUI()->UIGame()->ActorMenu().IsShown())
-				HUD().GetUI()->UIGame()->HideActorMenu();
+			if (pGameSP && pGameSP->InventoryMenu && pGameSP->InventoryMenu->IsShown())
+				pGameSP->InventoryMenu->HideDialog1();
 
 			SetPending(TRUE);
 		}break;
@@ -237,8 +246,8 @@ void CCustomBackpack::OnStateSwitch(u32 S)
 		{
 			PlayAnimIdle();
 
-			if (!HUD().GetUI()->UIGame()->ActorMenu().IsShown())
-				HUD().GetUI()->UIGame()->ShowActorMenu();
+			if (pGameSP && pGameSP->InventoryMenu && !pGameSP->InventoryMenu->IsShown())
+				pGameSP->InventoryMenu->ShowDialog1(false);
 
 			SetPending(FALSE);
 		}break;
@@ -276,31 +285,15 @@ void CCustomBackpack::UpdateXForm()
 	CInventoryItem::UpdateXForm();
 }
 
-bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
+bool CCustomBackpack::ParentIsActor()
 {
-	bool result = inherited::install_upgrade_impl(section, test);
+	CObject* O = H_Parent();
+	if (!O)
+		return false;
 
-	result |= process_if_exists(section, "power_loss", &CInifile::r_float, m_fPowerLoss, test);
-	result |= process_if_exists(section, "additional_inventory_weight", &CInifile::r_float, m_additional_weight, test);
-	result |= process_if_exists(section, "additional_inventory_weight2", &CInifile::r_float, m_additional_weight2, test);
-	result |= process_if_exists(section, "health_restore_speed", &CInifile::r_float, m_fHealthRestoreSpeed, test);
-	result |= process_if_exists(section, "radiation_restore_speed", &CInifile::r_float, m_fRadiationRestoreSpeed, test);
-	result |= process_if_exists(section, "satiety_restore_speed", &CInifile::r_float, m_fSatietyRestoreSpeed, test);
-	result |= process_if_exists(section, "power_restore_speed", &CInifile::r_float, m_fPowerRestoreSpeed, test);
-	result |= process_if_exists(section, "bleeding_restore_speed", &CInifile::r_float, m_fBleedingRestoreSpeed, test);
-	result |= process_if_exists(section, "thirst_restore_speed", &CInifile::r_float, m_fThirstRestoreSpeed, test);
-	result |= process_if_exists(section, "intoxication_restore_speed", &CInifile::r_float, m_fIntoxicationRestoreSpeed, test);
-	result |= process_if_exists(section, "sleepeness_restore_speed", &CInifile::r_float, m_fSleepenessRestoreSpeed, test);
-	result |= process_if_exists(section, "alcoholism_restore_speed", &CInifile::r_float, m_fAlcoholismRestoreSpeed, test);
-	result |= process_if_exists(section, "narcotism_restore_speed", &CInifile::r_float, m_fNarcotismRestoreSpeed, test);
-	result |= process_if_exists(section, "psy_health_restore_speed", &CInifile::r_float, m_fPsyHealthRestoreSpeed, test);
-	result |= process_if_exists(section, "frostbite_restore_speed", &CInifile::r_float, m_fFrostbiteRestoreSpeed, test);
-	result |= process_if_exists(section, "jump_speed", &CInifile::r_float, m_fJumpSpeed, test);
-	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
-	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
-	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_float, m_fInventoryCapacity, test);
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
 
-	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
-
-	return result;
-}	*/
+	return EA->cast_actor() != nullptr;
+}

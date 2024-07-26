@@ -10,6 +10,7 @@
 
 #include "../Artefact.h"
 #include "../ArtefactContainer.h"
+#include "../CustomBackpack.h"
 
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
@@ -40,6 +41,9 @@ void CUIInventoryWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 
 void CUIInventoryWnd::OnExitBtnClicked(CUIWindow* w, void* d)
 {
+	if (GameConstants::GetBackpackAnimsEnabled() && smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT)) && Actor()->inventory().GetActiveSlot() == BACKPACK_SLOT && Actor()->inventory().ActiveItem())
+		Actor()->inventory().Activate(NO_ACTIVE_SLOT);
+
 	GetHolder()->StartStopMenu(this, true);
 }
 

@@ -10,6 +10,7 @@
 #include "../hudmanager.h"
 
 #include "../CustomOutfit.h"
+#include "../CustomBackpack.h"
 
 #include "../weapon.h"
 
@@ -639,6 +640,28 @@ bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	{
 		if (WINDOW_KEY_PRESSED==keyboard_action)
 			DropCurrentItem(false);
+		return true;
+	}
+
+	if (is_binded(kUSE, dik) || is_binded(kINVENTORY, dik) || is_binded(kQUIT, dik))
+	{
+		if (WINDOW_KEY_PRESSED == keyboard_action)
+		{
+			CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
+			if (GameConstants::GetBackpackAnimsEnabled() && backpack)
+			{
+				if (Actor()->inventory().GetActiveSlot() == BACKPACK_SLOT && Actor()->inventory().ActiveItem())
+				{
+					Actor()->inventory().Activate(NO_ACTIVE_SLOT);
+				}
+
+				GetHolder()->StartStopMenu(this, true);
+			}
+			else
+			{
+				GetHolder()->StartStopMenu(this, true);
+			}
+		}
 		return true;
 	}
 

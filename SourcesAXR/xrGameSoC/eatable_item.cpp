@@ -250,15 +250,15 @@ void CEatableItem::UpdateUseAnim(CActor* actor)
 	if (pGameSP && m_bItmStartAnim)
 	{
 		if (pGameSP->InventoryMenu && pGameSP->InventoryMenu->IsShown())
-			pGameSP->InventoryMenu->Hide();
+			pGameSP->InventoryMenu->HideDialog1();
 		if (pGameSP->UICarBodyMenu && pGameSP->UICarBodyMenu->IsShown())
-			pGameSP->UICarBodyMenu->Hide();
+			pGameSP->UICarBodyMenu->HideDialog1();
 		if (pGameSP->PdaMenu && pGameSP->PdaMenu->IsShown())
-			pGameSP->PdaMenu->Hide();
+			pGameSP->PdaMenu->HideDialog1();
 		if (pGameSP->TalkMenu && pGameSP->TalkMenu->IsShown())
-			pGameSP->TalkMenu->Hide();
+			pGameSP->TalkMenu->HideDialog1();
 		if (pGameSP->UIChangeLevelWnd && pGameSP->UIChangeLevelWnd->IsShown())
-			pGameSP->UIChangeLevelWnd->Hide();
+			pGameSP->UIChangeLevelWnd->HideDialog1();
 	}
 
 	if (m_bItmStartAnim && actor->inventory().GetActiveSlot() == NO_ACTIVE_SLOT /*&& (!pDet || pDet->IsHidden())*/ && !m_bActivated)

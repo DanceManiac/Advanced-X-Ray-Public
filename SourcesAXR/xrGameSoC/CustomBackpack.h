@@ -1,35 +1,36 @@
 #pragma once
 
-#include "inventory_item_object.h"
+#include "hud_item_object.h"
 
-class CCustomBackpack : public CInventoryItemObject
+class CCustomBackpack : public CHudItemObject
 {
-	using inherited = CInventoryItemObject;
+	typedef	CHudItemObject	inherited;
 public:
 	CCustomBackpack();
 	virtual ~CCustomBackpack();
 
-	//virtual BOOL 	net_Spawn(CSE_Abstract* DC);
+	virtual BOOL 	net_Spawn(CSE_Abstract* DC);
 	virtual void	Load(LPCSTR section);
 
-	//virtual void 	OnH_A_Chield();
-	//virtual void 	OnH_B_Independent(bool just_before_destroy);
+	virtual void 	OnH_A_Chield();
+	virtual void 	OnH_B_Independent(bool just_before_destroy);
 
-	//virtual void 	shedule_Update(u32 dt);
-	//virtual void 	UpdateCL();
+	virtual void 	shedule_Update(u32 dt);
+	virtual void 	UpdateCL();
 
-	//virtual void 	OnMoveToSlot();
-	//virtual void 	OnMoveToRuck(EItemPlace prev);
-	//virtual void	OnActiveItem();
-	//virtual void	OnHiddenItem();
+	virtual void 	OnMoveToSlot();
+	virtual void 	OnMoveToRuck(EItemPlace prev);
+	virtual void	OnActiveItem();
+	virtual void	OnHiddenItem();
+	virtual bool	ParentIsActor() override;
 
-	//void			ToggleBackpack();
-	//void			HideBackpack();
-	//void			ShowBackpack();
+	void			ToggleBackpack();
+	void			HideBackpack();
+	void			ShowBackpack();
 
-	//virtual void	OnStateSwitch(u32 S);
-	//virtual void	OnAnimationEnd(u32 state);
-	//virtual	void	UpdateXForm();
+	virtual void	OnStateSwitch(u32 S, u32 old_state);
+	virtual void	OnAnimationEnd(u32 state);
+	virtual	void	UpdateXForm();
 
 	float			GetInventoryCapacity() const { return m_fInventoryCapacity; }
 

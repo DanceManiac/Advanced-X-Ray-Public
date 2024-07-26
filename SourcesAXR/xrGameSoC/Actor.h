@@ -216,6 +216,8 @@ public:
 			void		UpdateNVGUseAnim		();
 			void		UpdateMaskUseAnim		();
 			void		UpdateQuickKickAnim		();
+			float		GetCamHeightFactor		() { return m_fCamHeightFactor; }
+			void		SetCamHeightFactor		(float height) { m_fCamHeightFactor = height; }
 
 	const xr_vector<const CArtefact*>& ArtefactsOnBelt() {return m_ArtefactsOnBelt;}
 protected:

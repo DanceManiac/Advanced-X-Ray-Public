@@ -23,7 +23,9 @@
 #include "../xrServerEntitiesSoC/script_engine.h"
 #include "HUDManager.h"
 #include "PDA.h"
+#include "CustomBackpack.h"
 #include "Inventory.h"
+#include "AdvancedXrayGameConstants.h"
 
 CUIGameSP::CUIGameSP()
 {
@@ -104,7 +106,11 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 
 			if (!MainInputReceiver() || MainInputReceiver() == InventoryMenu)
 			{
-				m_game->StartStopMenu(InventoryMenu, true);
+				CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(pActor->inventory().ItemFromSlot(BACKPACK_SLOT));
+
+				if (!GameConstants::GetBackpackAnimsEnabled() || !backpack)
+					m_game->StartStopMenu(InventoryMenu, true);
+
 				return true;
 			}
 

@@ -2,8 +2,10 @@
 //	Module 		: CustomBackpack.cpp
 //	Created 	: 21.08.2023
 //  Modified 	: 21.08.2023
-//	Author		: Dance Maniac (M.F.S. Team)
+//	Author		: Dance Maniac
 //	Description : Backpack class
+//  MIT License
+//	Copyright(c) 2020 M.F.S. Team
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"

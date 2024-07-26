@@ -22,7 +22,8 @@ void CActorMP::net_Import	( NET_Packet &P)
 	if (OnClient()) 
 	{
 //.		if (ActiveSlot >= SLOTS_TOTAL) inventory().SetActiveSlot(NO_ACTIVE_SLOT);
-		if (ActiveSlot >= SLOTS_TOTAL) inventory().Activate(NO_ACTIVE_SLOT);
+		if (ActiveSlot >= inventory().m_slots.size())
+			inventory().Activate(NO_ACTIVE_SLOT);
 		else 
 		{
 			if (inventory().GetActiveSlot() != u32(ActiveSlot) )

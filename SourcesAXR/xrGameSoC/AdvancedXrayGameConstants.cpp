@@ -4,7 +4,7 @@
 #include "game_cl_single.h"
 #include "Actor.h"
 #include "Inventory.h"
-//#include "CustomBackpack.h"
+#include "CustomBackpack.h"
 
 bool	m_bKnifeSlotEnabled = false;
 bool	m_bBinocularSlotEnabled = false;
@@ -235,11 +235,9 @@ namespace GameConstants
 
 	bool GetHideWeaponInInventory()
 	{
-	//	CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
-	//
-	//	return (backpack) ? ((Actor()->inventory().ActiveItem() != backpack) && m_bHideWeaponInInventory) : m_bHideWeaponInInventory;
+		CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT));
 
-		return false;
+		return (backpack) ? ((Actor()->inventory().ActiveItem() != backpack) && m_bHideWeaponInInventory) : m_bHideWeaponInInventory;
 	}
 
 	bool GetStopActorIfShoot()

@@ -23,6 +23,10 @@
 #include "PDA.h"
 #include "player_hud.h"
 #include "GamePersistent.h"
+#include "CustomBackpack.h"
+#include "HUDManager.h"
+#include "UIGameSP.h"
+#include "ui\UIInventoryWnd.h"
 
 using namespace InventoryUtilities;
 
@@ -48,6 +52,12 @@ CInventorySlot::CInventorySlot()
 	m_blockCounter			= 0;
 }
 
+void CInventory::ReloadSlotsConfig()
+{
+	m_slots[BACKPACK_SLOT].m_bVisible = GameConstants::GetBackpackAnimsEnabled(); // Для опции анимированного рюкзака
+}
+
+
 CInventorySlot::~CInventorySlot() 
 {
 }
@@ -68,7 +78,7 @@ CInventory::CInventory()
 	m_fMaxWeight								= pSettings->r_float	("inventory","max_weight");
 	m_iMaxBelt									= pSettings->r_s32		("inventory","max_belt");
 	
-	m_slots.resize								(SLOTS_TOTAL);
+	m_slots.resize								(LAST_SLOT);
 	
 	m_iActiveSlot								= NO_ACTIVE_SLOT;
 	m_iNextActiveSlot							= NO_ACTIVE_SLOT;
@@ -643,7 +653,7 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 
 	}
 
-	if( (slot!=NO_ACTIVE_SLOT && m_slots[slot].IsBlocked()) && !bForce)
+	if( (slot!=NO_ACTIVE_SLOT && slot != BACKPACK_SLOT && slot != PDA_SLOT && m_slots[slot].IsBlocked()) && !bForce)
 	{
 		res = false;
 		goto _finish;
@@ -657,6 +667,10 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 		goto _finish;
 	}
 	
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	if (m_iActiveSlot == BACKPACK_SLOT && slot != NO_ACTIVE_SLOT && pGameSP->InventoryMenu->IsShown())
+		return false;
+
 	if(m_iActiveSlot == slot && m_iActiveSlot != NO_ACTIVE_SLOT && m_slots[m_iActiveSlot].m_pIItem)
 	{
 		m_slots[m_iActiveSlot].m_pIItem->Activate();
@@ -860,6 +874,23 @@ bool CInventory::Action(s32 cmd, u32 flags)
 					Activate(NO_ACTIVE_SLOT);
 				else
 					Activate(PDA_SLOT);
+			}
+		}break;
+	case kINVENTORY:
+		{
+			b_send_event = true;
+			if (flags & CMD_STOP)
+			{
+				if (!GameConstants::GetBackpackAnimsEnabled() || !smart_cast<CCustomBackpack*>(ItemFromSlot(BACKPACK_SLOT))) return false;
+
+				if (GetActiveSlot() == BACKPACK_SLOT && ActiveItem())
+				{
+					Activate(NO_ACTIVE_SLOT);
+				}
+				else
+				{
+					Activate(BACKPACK_SLOT);
+				}
 			}
 		}break;
 	}
@@ -1383,11 +1414,12 @@ void CInventory::Items_SetCurrentEntityHud(bool current_entity)
 void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 {
 	bool bChanged = false;
-	for(int i =0; i<SLOTS_TOTAL; ++i)
+	for(int i =0; i < m_slots.size(); ++i)
 	{
 		if(mask & (1<<i))
 		{
 			bool bCanBeActivated = m_slots[i].CanBeActivated();
+
 			if(bBlock){
 				++m_slots[i].m_blockCounter;
 				VERIFY2(m_slots[i].m_blockCounter< 5,"block slots overflow");
