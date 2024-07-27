@@ -568,7 +568,7 @@ void CRender::OnFrame()
 void CRender::OnFrame()
 {
 	Models->DeleteQueue			();
-	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC))
+	if (ps_r2_ls_flags.test(R2FLAG_EXP_MT_CALC) && g_pGameLevel)
 	{
 		// MT-details (@front)
 		if (Details)
