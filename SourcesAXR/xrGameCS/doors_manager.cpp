@@ -13,7 +13,7 @@
 
 using doors::actor;
 using doors::manager;
-using doors::door;
+using doors::CDoor;
 
 manager::manager					( Fbox const& bounding_box ) :
 	m_doors					( bounding_box, 2.f, 512, 2048 )
@@ -52,9 +52,9 @@ manager::~manager					( )
 //	Msg						( "object[\"shkaf_work_01_door_0000\"] has been registered as a door" );
 //}
 //
-door* manager::register_door		( CPhysicObject& object )
+CDoor* manager::register_door		( CPhysicObject& object )
 {
-	door* const result		= xr_new<door>( &object );
+	CDoor* const result		= xr_new<CDoor>( &object );
 	//if ( !xr_strcmp(result->get_name(),"shkaf_work_01_door_0000") ) {
 	//	Msg					( "registering door[\"shkaf_work_01_door_0000\"][%f][%f][%f]", VPUSH(result->position()) );
 	//}
@@ -64,7 +64,7 @@ door* manager::register_door		( CPhysicObject& object )
 	return					result;
 }
 
-void manager::unregister_door		( door*& door )
+void manager::unregister_door		(CDoor*& door )
 {
 	//if ( !xr_strcmp(door->get_name(),"shkaf_work_01_door_0000") ) {
 	//	Msg					( "UNregistering door[\"shkaf_work_01_door_0000\"][%f][%f][%f]", VPUSH(door->position()) );
@@ -88,32 +88,32 @@ bool manager::actualize_doors_state	( actor& actor, float const average_speed )
 	return					actor.update_doors( m_nearest_doors, average_speed );
 }
 
-void manager::on_door_is_open		( door* door )
+void manager::on_door_is_open		(CDoor* door )
 {
 	door->on_change_state	( door_state_open );
 }
 
-void manager::on_door_is_closed		( door* door )
+void manager::on_door_is_closed		(CDoor* door )
 {
 	door->on_change_state	( door_state_closed );
 }
 
-bool manager::is_door_locked		( door const* door ) const
+bool manager::is_door_locked		(CDoor const* door ) const
 {
 	return					door->is_locked( doors::door_state_open ) || door->is_locked( doors::door_state_closed );
 }
 
-void manager::lock_door				( door* const door )
+void manager::lock_door				(CDoor* const door )
 {
 	door->lock				( );
 }
 
-void manager::unlock_door			( door* const door )
+void manager::unlock_door			(CDoor* const door )
 {
 	door->unlock			( );
 }
 
-bool manager::is_door_blocked		( door* const door ) const
+bool manager::is_door_blocked		(CDoor* const door ) const
 {
 	return					door->is_blocked(door_state_open) || door->is_blocked(door_state_closed);
 }

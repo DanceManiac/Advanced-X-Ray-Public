@@ -12,7 +12,7 @@
 #include "debug_renderer.h"
 
 using doors::actor;
-using doors::door;
+using doors::CDoor;
 using doors::doors_type;
 using doors::door_state;
 
@@ -30,14 +30,14 @@ actor::~actor						( )
 	revert_states					( m_closed_doors, door_state_open );
 }
 
-static void on_door_destroy			( doors_type& doors, door& door )
+static void on_door_destroy			( doors_type& doors, CDoor& door )
 {
 	doors_type::iterator const found = std::find( doors.begin(), doors.end(), &door );
 	if ( found != doors.end() )
 		doors.erase					( found );
 }
 
-void actor::on_door_destroy			( door& door )
+void actor::on_door_destroy			(CDoor& door )
 {
 	::on_door_destroy				( m_open_doors, door );
 	::on_door_destroy				( m_closed_doors, door );
@@ -87,7 +87,7 @@ public:
 	{
 	}
 
-	inline	bool	operator()				( door* const door ) const
+	inline	bool	operator()				(CDoor* const door ) const
 	{
 		if ( door->is_locked(m_state) )
 			return				false;
@@ -159,7 +159,7 @@ BOOL g_debug_doors = 1;
 
 bool actor::add_new_door			(
 		float const average_speed,
-		door* const door,
+		CDoor* const door,
 		doors_type const& processed_doors,
 		doors_type& locked_doors,
 		temp_doors_type& new_doors,

@@ -25,6 +25,7 @@ namespace ScriptEntity {enum EActionType;};
 namespace MovementManager { enum EPathType;};
 namespace DetailPathManager { enum EDetailPathType;};
 namespace SightManager {enum ESightType;};
+namespace doors { class door; }
 
 class NET_Packet;
 class CGameTask;

@@ -26,7 +26,7 @@ namespace MovementManager { enum EPathType; }
 namespace DetailPathManager { enum EDetailPathType; }
 namespace SightManager { enum ESightType; }
 namespace smart_cover { class object; }
-namespace doors { class door; }
+namespace doors { class CDoor; }
 
 class NET_Packet;
 class CGameTask;
@@ -993,7 +993,7 @@ public:
 			void				SetWeight								(float w);
 			/*added by Ray Twitty (aka Shadows) END*/
 
-	doors::door*				m_door;
+	doors::CDoor*				m_door;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
