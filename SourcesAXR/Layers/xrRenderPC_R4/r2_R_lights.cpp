@@ -27,20 +27,40 @@ bool check_grass_shadow(light* L, CFrustum VB)
 
 void	CRender::render_lights	(light_Package& LP)
 {
+	// ѕроверка на рассто€ние и нахождение света за спиной камеры
+	auto isLightVisible = [&](light* L) -> bool {
+		Fvector toLight;
+		toLight.sub(L->position, Device.vCameraPosition);
+		float distance = toLight.magnitude();
+		toLight.normalize();
+
+		if (distance > ps_r__opt_dist)
+			return false;
+
+		Fvector cameraDirection = Device.vCameraDirection;
+		float dotProduct = cameraDirection.dotproduct(toLight);
+		if (dotProduct < 0 && distance > L->range)
+			return false;
+
+		return true;
+	};
+
 	//////////////////////////////////////////////////////////////////////////
 	// Refactor order based on ability to pack shadow-maps
 	// 1. calculate area + sort in descending order
 	// const	u16		smap_unassigned		= u16(-1);
 	{
-		xr_vector<light*>&	source			= LP.v_shadowed;
-		for (u32 it=0; it<source.size(); it++)
+		// ќбработка источников света
+		xr_vector<light*>& source = LP.v_shadowed;
+		for (u32 it = 0; it < source.size(); it++)
 		{
-			light*	L		= source[it];
-			if	(!L->vis.visible)	{
-				source.erase		(source.begin()+it);
+			light* L = source[it];
+			if (!L->vis.visible || !isLightVisible(L)) {
+				source.erase(source.begin() + it);
 				it--;
-			} else {
-				LR.compute_xf_spot	(L);
+			}
+			else {
+				LR.compute_xf_spot(L);
 			}
 		}
 	}

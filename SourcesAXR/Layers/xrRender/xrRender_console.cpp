@@ -437,6 +437,8 @@ extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
 
+float ps_r__opt_dist = 100.f;
+
 //extern ENGINE_API Fvector4 ps_ssfx_wpn_dof_1;
 //extern ENGINE_API float ps_ssfx_wpn_dof_2;
 
@@ -1386,6 +1388,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR
 
 	CMD3(CCC_Mask,			"r__use_shader_cache",			&ps_r__common_flags,		RFLAG_USE_SHADERS_CACHE);
+	CMD4(CCC_Float,			"r__dyn_opt_dist",				&ps_r__opt_dist,			100.0f, 1000.0f);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

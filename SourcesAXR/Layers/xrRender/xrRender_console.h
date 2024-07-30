@@ -183,6 +183,8 @@ extern ECORE_API Fvector		ps_r2_img_cg;
 extern ECORE_API int			ps_r4_ss_grass_collision;
 extern ECORE_API int			ps_r4_pseudo_pbr;
 
+extern ECORE_API float			ps_r__opt_dist;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),

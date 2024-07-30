@@ -663,11 +663,30 @@ void CCharacterPhysicsSupport::in_UpdateCL( )
 
 		m_EntityAlife.XFORM().transform_tiny(p, vis.sphere.P);
 
-		float dist = Device.vCameraPosition.distance_to(p);
+		float distance = Device.vCameraPosition.distance_to(p);
 
-		if (dist < IK_CALC_DIST)
+		auto isVisible = [&p, distance]() -> bool {
+
+			// Дальше IK_CALC_DIST не играем
+			if (distance > IK_CALC_DIST)
+				return false;
+
+			// За спиной не играем
+			Fvector toObject;
+			toObject.sub(p, Device.vCameraPosition);
+			toObject.normalize();
+
+			Fvector cameraDirection = Device.vCameraDirection;
+			float dotProduct = cameraDirection.dotproduct(toObject);
+			if (dotProduct < 0)
+				return false;
+
+			return true;
+		};
+
+		if (isVisible())
 		{
-			if (view_frust.testSphere_dirty(p, vis.sphere.R) || dist < IK_ALWAYS_CALC_DIST)
+			if (view_frust.testSphere_dirty(p, vis.sphere.R) || distance < IK_ALWAYS_CALC_DIST)
 			{
 				ik_controller()->Update();
 			}
