@@ -353,6 +353,8 @@ Flags32		ps_r2_postscreen_flags = { R_FLAG_HUD_MASK
 
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
+Flags32		ps_r__common_flags = { RFLAG_USE_SHADERS_CACHE };
+
 int ps_force_enable_lens_flares = 0;
 
 float ps_r2_gloss_factor = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_factor", 10.0f);
@@ -1382,6 +1384,8 @@ void		xrRender_initconsole	()
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR
+
+	CMD3(CCC_Mask,			"r__use_shader_cache",			&ps_r__common_flags,		RFLAG_USE_SHADERS_CACHE);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

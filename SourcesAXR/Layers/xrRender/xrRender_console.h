@@ -182,6 +182,7 @@ extern ECORE_API Fvector		ps_r2_img_cg;
 
 extern ECORE_API int			ps_r4_ss_grass_collision;
 extern ECORE_API int			ps_r4_pseudo_pbr;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),
@@ -312,6 +313,13 @@ enum
 	R4FLAG_SS_WIND				= (1 << 10),
 	R4FLAG_SS_PUDDLES			= (1 << 11),
 	R4FLAG_ES_ACES_TONEMAPPING  = (1 << 12),
+};
+
+extern ECORE_API Flags32		ps_r__common_flags;
+
+enum
+{
+	RFLAG_USE_SHADERS_CACHE		= (1 << 0),
 };
 
 //Rezy: cleanup flags

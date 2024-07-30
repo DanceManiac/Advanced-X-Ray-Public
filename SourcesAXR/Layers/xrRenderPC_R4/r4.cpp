@@ -1011,10 +1011,6 @@ public:
 	}
 };
 
-#include <boost/crc.hpp>
-
-static inline bool match_shader_id		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result );
-
 HRESULT	CRender::shader_compile			(
 	LPCSTR							name,
 	DWORD const*                    pSrcData,
@@ -1822,54 +1818,40 @@ HRESULT	CRender::shader_compile			(
 
 	HRESULT		_result = E_FAIL;
 
-	string_path	folder_name, folder;
-	xr_strcpy		( folder, "r3\\objects\\r4\\" );
-	xr_strcat		( folder, name );
-	xr_strcat		( folder, "." );
-
 	char extension[3];
-	strncpy_s		( extension, pTarget, 2 );
-	xr_strcat		( folder, extension );
+	strncpy_s(extension, pTarget, 2);
 
-	FS.update_path	( folder_name, "$game_shaders$", folder );
-	xr_strcat		( folder_name, "\\" );
-	
-	m_file_set.clear( );
-	FS.file_list	( m_file_set, folder_name, FS_ListFiles | FS_RootOnly, "*");
-
-	string_path temp_file_name, file_name;
-	if ( !match_shader_id(name, sh_name, m_file_set, temp_file_name) ) {
-		string_path file;
-		xr_strcpy		( file, "shaders_cache\\r4\\" );
-		xr_strcat		( file, name );
-		xr_strcat		( file, "." );
-		xr_strcat		( file, extension );
-		xr_strcat		( file, "\\" );
-		xr_strcat		( file, sh_name );
-		FS.update_path	( file_name, "$app_data_root$", file);
-	}
-	else {
-		xr_strcpy		( file_name, folder_name );
-		xr_strcat		( file_name, temp_file_name );
-	}
-
-	if (FS.exist(file_name))
+	string_path file_name;
 	{
-		IReader* file = FS.r_open(file_name);
-		if (file->length()>4)
+		string_path file;
+		xr_strcpy(file, "shaders_cache\\r4\\");
+		xr_strcat(file, name);
+		xr_strcat(file, ".");
+		xr_strcat(file, extension);
+		xr_strcat(file, "\\");
+		xr_strcat(file, sh_name);
+		FS.update_path(file_name, "$app_data_root$", file);
+	}
+
+	u32 const file_crc = crc32(pSrcData, SrcDataLen);
+
+	if (FS.exist(file_name) && ps_r__common_flags.test(RFLAG_USE_SHADERS_CACHE))
+	{
+		std::unique_ptr<IReader> file(FS.r_open(file_name));
+
+		if (file && file->length() > 4)
 		{
-			u32 crc = 0;
-			crc = file->r_u32();
+			u32 crc = file->r_u32();
+			u32 savedBytecodeCrc = file->r_u32();
 
-			boost::crc_32_type		processor;
-			processor.process_block	( file->pointer(), ((char*)file->pointer()) + file->elapsed() );
-			u32 const real_crc		= processor.checksum( );
+			if (file_crc == savedBytecodeCrc)
+			{
+				u32 real_crc = crc32(file->pointer(), file->elapsed());
 
-			if ( real_crc == crc ) {
-				_result				= create_shader(pTarget, (DWORD*)file->pointer(), file->elapsed(), file_name, result, o.disasm);
+				if (real_crc == crc)
+					_result = create_shader(pTarget, reinterpret_cast<DWORD*>(file->pointer()), file->elapsed(), file_name, result, o.disasm);
 			}
 		}
-		file->close();
 	}
 
 	if (FAILED(_result))
@@ -1891,103 +1873,26 @@ HRESULT	CRender::shader_compile			(
 
 		if (SUCCEEDED(_result))
 		{
-			IWriter* file = FS.w_open(file_name);
+			std::unique_ptr<IWriter> file(FS.w_open(file_name));
 
-			boost::crc_32_type		processor;
-			processor.process_block	( pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize() );
-			u32 const crc			= processor.checksum( );
+			u32 const crc = crc32(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
+			file->w_u32(crc);
+			file->w_u32(file_crc);
 
-			file->w_u32				(crc);
-			file->w					(pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
-			FS.w_close				(file);
+			file->w(pShaderBuf->GetBufferPointer(), static_cast<u32>(pShaderBuf->GetBufferSize()));
 
-			_result					= create_shader(pTarget, (DWORD*)pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize(), file_name, result, o.disasm);
+			_result = create_shader(pTarget, reinterpret_cast<DWORD*>(pShaderBuf->GetBufferPointer()), static_cast<u32>(pShaderBuf->GetBufferSize()), file_name, result, o.disasm);
 		}
-		else {
-//			Msg						( "! shader compilation failed" );
-			Log						("! ", file_name);
-			if ( pErrorBuf )
-				Log					("! error: ",(LPCSTR)pErrorBuf->GetBufferPointer());
+		else
+		{
+			Log("! ", file_name);
+			
+			if (pErrorBuf)
+				Log("! error: ", (LPCSTR)pErrorBuf->GetBufferPointer());
 			else
-				Msg					("Can't compile shader hr=0x%08x", _result);
+				Msg("Can't compile shader hr=0x%08x", _result);
 		}
 	}
 
 	return		_result;
 }
-
-static inline bool match_shader(LPCSTR const debug_shader_id, LPCSTR const full_shader_id, LPCSTR const mask, size_t const mask_length)
-{
-	return true;
-}
-
-static inline bool match_shader_id(LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result)
-{
-	return (strstr(Core.Params, "-noscache")) ? (true) : (false);
-}
-
-/*
-static inline bool match_shader		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, LPCSTR const mask, size_t const mask_length )
-{
-	u32 const full_shader_id_length	= xr_strlen( full_shader_id );
-	R_ASSERT2				(
-		full_shader_id_length == mask_length,
-		make_string(
-			"bad cache for shader %s, [%s], [%s]",
-			debug_shader_id,
-			mask,
-			full_shader_id
-		)
-	);
-	char const* i			= full_shader_id;
-	char const* const e		= full_shader_id + full_shader_id_length;
-	char const* j			= mask;
-	for ( ; i != e; ++i, ++j ) {
-		if ( *i == *j )
-			continue;
-
-		if ( *j == '_' )
-			continue;
-
-		return				false;
-	}
-
-	return					true;
-}
-
-static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result )
-{
-#if 0
-	strcpy_s					( result, "" );
-	return						false;
-#else // #if 1
-#ifdef DEBUG
-	LPCSTR temp					= "";
-	bool found					= false;
-	FS_FileSet::const_iterator	i = file_set.begin();
-	FS_FileSet::const_iterator	const e = file_set.end();
-	for ( ; i != e; ++i ) {
-		if ( match_shader(debug_shader_id, full_shader_id, (*i).name.c_str(), (*i).name.size() ) ) {
-			VERIFY				( !found );
-			found				= true;
-			temp				= (*i).name.c_str();
-		}
-	}
-
-	xr_strcpy					( result, temp );
-	return						found;
-#else // #ifdef DEBUG
-	FS_FileSet::const_iterator	i = file_set.begin();
-	FS_FileSet::const_iterator	const e = file_set.end();
-	for ( ; i != e; ++i ) {
-		if ( match_shader(debug_shader_id, full_shader_id, (*i).name.c_str(), (*i).name.size() ) ) {
-			xr_strcpy			( result, (*i).name.c_str() );
-			return				true;
-		}
-	}
-
-	return						false;
-#endif // #ifdef DEBUG
-#endif// #if 1
-}
-*/
