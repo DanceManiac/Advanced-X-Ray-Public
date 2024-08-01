@@ -470,51 +470,60 @@ void CEnvDescriptor::load_shoc(CEnvironment& environment, LPCSTR exec_tm, LPCSTR
 
 void CEnvDescriptor::load_shoc(float exec_tm, LPCSTR S, CEnvironment& environment)
 {
-	m_identifier = S;
-	exec_time = exec_tm;
-	exec_time_loaded = exec_time;
-	string_path st, st_env;
-	xr_strcpy(st, pSettings->r_string(m_identifier.c_str(), "sky_texture"));
-	strconcat(sizeof(st_env), st_env, st, "#small");
-	sky_texture_name = st;
-	sky_texture_env_name = st_env;
-	clouds_texture_name = pSettings->r_string(m_identifier.c_str(), "clouds_texture");
-	LPCSTR cldclr = pSettings->r_string(m_identifier.c_str(), "clouds_color");
-	float multiplier = 0, save = 0;
-	sscanf(cldclr, "%f,%f,%f,%f,%f", &clouds_color.x, &clouds_color.y, &clouds_color.z, &clouds_color.w, &multiplier);
-	save = clouds_color.w;
-	clouds_color.mul(.5f * multiplier);
-	clouds_color.w = save;
+	m_identifier					= S;
+	exec_time						= exec_tm;
+	exec_time_loaded				= exec_time;
 
-	sky_color = pSettings->r_fvector3(m_identifier.c_str(), "sky_color");
-	sky_color.mul(0.5f);
+	string_path st, st_env;
+	xr_strcpy						(st, pSettings->r_string(m_identifier.c_str(), "sky_texture"));
+	strconcat						(sizeof(st_env), st_env, st, "#small");
+
+	sky_texture_name				= st;
+	sky_texture_env_name			= st_env;
+	clouds_texture_name				= pSettings->r_string(m_identifier.c_str(), "clouds_texture");
+	
+	LPCSTR cldclr					= pSettings->r_string(m_identifier.c_str(), "clouds_color");
+	float multiplier				= 0, save = 0;
+	
+	sscanf(cldclr, "%f,%f,%f,%f,%f", &clouds_color.x, &clouds_color.y, &clouds_color.z, &clouds_color.w, &multiplier);
+	save							= clouds_color.w;
+
+	clouds_color.mul				(.5f * multiplier);
+	clouds_color.w					= save;
+
+	sky_color						= pSettings->r_fvector3(m_identifier.c_str(), "sky_color");
+	sky_color.mul					(0.5f);
 
 	if (pSettings->line_exist(m_identifier.c_str(), "sky_rotation"))
 		sky_rotation = deg2rad(pSettings->r_float(m_identifier.c_str(), "sky_rotation"));
 	else
 		sky_rotation = 0;
-	far_plane = pSettings->r_float(m_identifier.c_str(), "far_plane");
-	fog_color = pSettings->r_fvector3(m_identifier.c_str(), "fog_color");
-	fog_density = pSettings->r_float(m_identifier.c_str(), "fog_density");
-	fog_distance = pSettings->r_float(m_identifier.c_str(), "fog_distance");
-	rain_density = pSettings->r_float(m_identifier.c_str(), "rain_density");
-	clamp(rain_density, 0.f, 1.f);
-	rain_color = pSettings->r_fvector3(m_identifier.c_str(), "rain_color");
-	wind_velocity = pSettings->r_float(m_identifier.c_str(), "wind_velocity");
-	wind_direction = deg2rad(pSettings->r_float(m_identifier.c_str(), "wind_direction"));
-	ambient = pSettings->r_fvector3(m_identifier.c_str(), "ambient");
-	hemi_color = pSettings->r_fvector4(m_identifier.c_str(), "hemi_color");
-	hemi_color.w = 1.f;
-	sun_color = pSettings->r_fvector3(m_identifier.c_str(), "sun_color");
-	Fvector2 sund = pSettings->r_fvector2(m_identifier.c_str(), "sun_dir");
-	sun_dir.setHP(deg2rad(sund.y), deg2rad(sund.x));
-	VERIFY2(sun_dir.y < 0, "Invalid sun direction settings while loading");
 
-	lens_flare_id = environment.eff_LensFlare->AppendDef(environment, pSettings, pSettings->r_string(m_identifier.c_str(), "flares"));
-	tb_id = environment.eff_Thunderbolt->AppendDef_shoc(environment, pSettings, pSettings->r_string(m_identifier.c_str(), "thunderbolt"));
-	bolt_period = (tb_id.size()) ? pSettings->r_float(m_identifier.c_str(), "bolt_period") : 0.f;
-	bolt_duration = (tb_id.size()) ? pSettings->r_float(m_identifier.c_str(), "bolt_duration") : 0.f;
-	env_ambient = pSettings->line_exist(m_identifier.c_str(), "env_ambient") ? environment.AppendEnvAmb(pSettings->r_string(m_identifier.c_str(), "env_ambient")) : 0;
+	far_plane						= pSettings->r_float(m_identifier.c_str(), "far_plane");
+	fog_color						= pSettings->r_fvector3(m_identifier.c_str(), "fog_color");
+	fog_density						= pSettings->r_float(m_identifier.c_str(), "fog_density");
+	fog_distance					= pSettings->r_float(m_identifier.c_str(), "fog_distance");
+	rain_density					= pSettings->r_float(m_identifier.c_str(), "rain_density");
+	clamp(rain_density, 0.f, 1.f);
+
+	rain_color						= pSettings->r_fvector3(m_identifier.c_str(), "rain_color");
+	wind_velocity					= pSettings->r_float(m_identifier.c_str(), "wind_velocity");
+	wind_direction					= deg2rad(pSettings->r_float(m_identifier.c_str(), "wind_direction"));
+	ambient							= pSettings->r_fvector3(m_identifier.c_str(), "ambient");
+	hemi_color						= pSettings->r_fvector4(m_identifier.c_str(), "hemi_color");
+	hemi_color.w					= 1.f;
+	sun_color						= pSettings->r_fvector3(m_identifier.c_str(), "sun_color");
+
+	Fvector2 sund					= pSettings->r_fvector2(m_identifier.c_str(), "sun_dir");
+	sun_dir.setHP					(deg2rad(sund.y), deg2rad(sund.x));
+
+	VERIFY2							(sun_dir.y < 0, "Invalid sun direction settings while loading");
+
+	lens_flare_id					= environment.eff_LensFlare->AppendDef(environment, pSettings, pSettings->r_string(m_identifier.c_str(), "flares"));
+	tb_id							= environment.eff_Thunderbolt->AppendDef_shoc(environment, pSettings, pSettings->r_string(m_identifier.c_str(), "thunderbolt"));
+	bolt_period						= (tb_id.size()) ? pSettings->r_float(m_identifier.c_str(), "bolt_period") : 0.f;
+	bolt_duration					= (tb_id.size()) ? pSettings->r_float(m_identifier.c_str(), "bolt_duration") : 0.f;
+	env_ambient						= pSettings->line_exist(m_identifier.c_str(), "env_ambient") ? environment.AppendEnvAmb(pSettings->r_string(m_identifier.c_str(), "env_ambient")) : 0;
 
 	if (pSettings->line_exist(m_identifier.c_str(), "sun_shafts_intensity"))
 		m_fSunShaftsIntensity = pSettings->r_float(m_identifier.c_str(), "sun_shafts_intensity");
@@ -524,9 +533,43 @@ void CEnvDescriptor::load_shoc(float exec_tm, LPCSTR S, CEnvironment& environmen
 	if (pSettings->line_exist(m_identifier.c_str(), "water_intensity"))
 		m_fWaterIntensity = pSettings->r_float(m_identifier.c_str(), "water_intensity");
 
-	constexpr float def_min_TAI = 0.01f, def_max_TAI = 0.07f;
-	const float def_TAI = def_min_TAI + (rain_density * (def_max_TAI - def_min_TAI)); //Если не прописано, дефолт будет рассчитываться от силы дождя.
-	m_fTreeAmplitudeIntensity = READ_IF_EXISTS(pSettings, r_float, m_identifier.c_str(), "tree_amplitude_intensity", def_TAI);
+#ifdef TREE_WIND_EFFECT
+	if (pSettings->line_exist(m_identifier.c_str(), "tree_amplitude_intensity"))
+		m_fTreeAmplitudeIntensity = pSettings->r_float(m_identifier.c_str(), "tree_amplitude_intensity");
+#endif
+
+	dof_value = pSettings->line_exist(m_identifier.c_str(), "dof") ? pSettings->r_fvector3(m_identifier.c_str(), "dof") : Fvector3().set(-1.25f, 1.4f, 10000.f);
+	dof_kernel = pSettings->line_exist(m_identifier.c_str(), "dof_kernel") ? pSettings->r_float(m_identifier.c_str(), "dof_kernel") : 7.0f;
+	dof_sky = pSettings->line_exist(m_identifier.c_str(), "dof_sky") ? pSettings->r_float(m_identifier.c_str(), "dof_sky") : 30.0f;
+
+	if (pSettings->line_exist(m_identifier.c_str(), "lowland_fog_height"))
+		lowland_fog_height = pSettings->r_float(m_identifier.c_str(), "lowland_fog_height");
+
+	if (pSettings->line_exist(m_identifier.c_str(), "lowland_fog_density"))
+		lowland_fog_density = pSettings->r_float(m_identifier.c_str(), "lowland_fog_density");
+
+	if (pSettings->line_exist(m_identifier.c_str(), "air_temperature"))
+		m_fAirTemperature = pSettings->r_float(m_identifier.c_str(), "air_temperature");
+
+	if (pSettings->line_exist(m_identifier.c_str(), "color_grading"))
+		color_grading = pSettings->r_fvector4(m_identifier.c_str(), "color_grading");
+
+	clouds_velocity_0 = pSettings->line_exist(m_identifier.c_str(), "clouds_velocity_0") ? pSettings->r_float(m_identifier.c_str(), "clouds_velocity_0") : 0.001f;
+	clouds_velocity_1 = pSettings->line_exist(m_identifier.c_str(), "clouds_velocity_1") ? pSettings->r_float(m_identifier.c_str(), "clouds_velocity_1") : 0.0005f;
+
+	// swing desc
+	// normal
+	m_cSwingDesc[0].amp1 = pSettings->line_exist(m_identifier.c_str(), "swing_normal_amp1") ? pSettings->r_float(m_identifier.c_str(), "swing_normal_amp1") : pAdvancedSettings->r_float("details_params", "swing_normal_amp1");
+	m_cSwingDesc[0].amp2 = pSettings->line_exist(m_identifier.c_str(), "swing_normal_amp2") ? pSettings->r_float(m_identifier.c_str(), "swing_normal_amp2") : pAdvancedSettings->r_float("details_params", "swing_normal_amp2");
+	m_cSwingDesc[0].rot1 = pSettings->line_exist(m_identifier.c_str(), "swing_normal_rot1") ? pSettings->r_float(m_identifier.c_str(), "swing_normal_rot1") : pAdvancedSettings->r_float("details_params", "swing_normal_rot1");
+	m_cSwingDesc[0].rot2 = pSettings->line_exist(m_identifier.c_str(), "swing_normal_rot2") ? pSettings->r_float(m_identifier.c_str(), "swing_normal_rot2") : pAdvancedSettings->r_float("details_params", "swing_normal_rot2");
+	m_cSwingDesc[0].speed = pSettings->line_exist(m_identifier.c_str(), "swing_normal_speed") ? pSettings->r_float(m_identifier.c_str(), "swing_normal_speed") : pAdvancedSettings->r_float("details_params", "swing_normal_speed");
+	// fast
+	m_cSwingDesc[1].amp1 = pSettings->line_exist(m_identifier.c_str(), "swing_fast_amp1") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_amp1") : pAdvancedSettings->r_float("details_params", "swing_fast_amp1");
+	m_cSwingDesc[1].amp2 = pSettings->line_exist(m_identifier.c_str(), "swing_fast_amp2") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_amp2") : pAdvancedSettings->r_float("details_params", "swing_fast_amp2");
+	m_cSwingDesc[1].rot1 = pSettings->line_exist(m_identifier.c_str(), "swing_fast_rot1") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_rot1") : pAdvancedSettings->r_float("details_params", "swing_fast_rot1");
+	m_cSwingDesc[1].rot2 = pSettings->line_exist(m_identifier.c_str(), "swing_fast_rot2") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_rot2") : pAdvancedSettings->r_float("details_params", "swing_fast_rot2");
+	m_cSwingDesc[1].speed = pSettings->line_exist(m_identifier.c_str(), "swing_fast_speed") ? pSettings->r_float(m_identifier.c_str(), "swing_fast_speed") : pAdvancedSettings->r_float("details_params", "swing_fast_speed");
 
 	C_CHECK(clouds_color);
 	C_CHECK(sky_color);
@@ -535,6 +578,7 @@ void CEnvDescriptor::load_shoc(float exec_tm, LPCSTR S, CEnvironment& environmen
 	C_CHECK(ambient);
 	C_CHECK(hemi_color);
 	C_CHECK(sun_color);
+
 	on_device_create();
 }
 
