@@ -63,6 +63,35 @@ bool enumIni(void* data, int idx, const char** item)
 	return true;
 }
 
+bool enumAmbientsSoC(void* data, int idx, const char** item)
+{
+	//xr_vector<CEnvAmbient*>* ambs = (xr_vector<CEnvAmbient*>*)data;
+	//CEnvAmbient* ambs = (CEnvAmbient*)data;
+	//xr_vector<shared_str>* ambs = (xr_vector<shared_str>*)data;
+	//*item = (*ambs)[idx].c_str();//(*ambs)[idx]->name().c_str();
+	return false;
+}
+
+bool enumFlaresSoC(void* data, int idx, const char** item)
+{
+	//xr_vector<CLensFlare*>* flares = (xr_vector<CLensFlare*>*)data;
+	//*item = (*flares)[idx]->m_Current->section.c_str();
+
+	//CLensFlare* flares = (CLensFlare*)data;
+	//*item = flares->m_Current->section.c_str();//(*ambs)[idx]->name().c_str();
+	return false;
+}
+
+bool enumBoltSoC(void* data, int idx, const char** item)
+{
+	//xr_vector<CEffect_Thunderbolt*>* bolt = (xr_vector<CEffect_Thunderbolt*>*)data;
+	//*item = (*bolt)[idx]->current->name.c_str();
+
+	//CEffect_Thunderbolt* bolt = (CEffect_Thunderbolt*)data;
+	//*item = bolt->current->name.c_str();//(*ambs)[idx]->name().c_str();
+	return false;
+}
+
 bool getScriptWeather()
 {
     luabind::object benchmark = ai().script_engine().name_space("benchmark");
@@ -77,13 +106,13 @@ void setScriptWeather(bool b)
 
 xr_set<shared_str> modifiedWeathers;
 
-void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
+void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env, bool soc_weather)
 {
 	CInifile f(nullptr, FALSE, FALSE, FALSE);
 	for (auto el : env) {
-		if (el->env_ambient)
-			f.w_string(el->m_identifier.c_str(), "ambient", el->env_ambient->name().c_str());
-		f.w_fvector3(el->m_identifier.c_str(), "ambient_color", el->ambient);
+		//if (el->env_ambient)
+		//	f.w_string(el->m_identifier.c_str(), !soc_weather ? "ambient" : "env_ambient", el->env_ambient->name().c_str());
+		f.w_fvector3(el->m_identifier.c_str(), !soc_weather ? "ambient_color" : "ambient", el->ambient);
 		f.w_fvector4(el->m_identifier.c_str(), "clouds_color", el->clouds_color);
 		f.w_string(el->m_identifier.c_str(), "clouds_texture", el->clouds_texture_name.c_str());
 		f.w_float(el->m_identifier.c_str(), "clouds_velocity_0", el->clouds_velocity_0);
@@ -101,16 +130,23 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_string(el->m_identifier.c_str(), "sky_texture", el->sky_texture_name.c_str());
 		f.w_fvector3(el->m_identifier.c_str(), "sun_color", el->sun_color);
 		f.w_float(el->m_identifier.c_str(), "sun_shafts_intensity", el->m_fSunShaftsIntensity);
-		f.w_string(el->m_identifier.c_str(), "sun", el->lens_flare_id.c_str());
-		f.w_string(el->m_identifier.c_str(), "thunderbolt_collection", el->tb_id.c_str());
-		f.w_float(el->m_identifier.c_str(), "thunderbolt_duration", el->bolt_duration);
-		f.w_float(el->m_identifier.c_str(), "thunderbolt_period", el->bolt_period);
+		//f.w_string(el->m_identifier.c_str(), !soc_weather ? "sun" : "flares", el->lens_flare_id.c_str());
+		//f.w_string(el->m_identifier.c_str(), !soc_weather ? "thunderbolt_collection" : "thunderbolt", el->tb_id.c_str());
+		f.w_float(el->m_identifier.c_str(), !soc_weather ? "thunderbolt_duration" : "bolt_duration", el->bolt_duration);
+		f.w_float(el->m_identifier.c_str(), !soc_weather ? "thunderbolt_period" : "bolt_period", el->bolt_period);
 		f.w_float(el->m_identifier.c_str(), "water_intensity", el->m_fWaterIntensity);
 		f.w_float(el->m_identifier.c_str(), "wind_direction", rad2deg(el->wind_direction));
 		f.w_float(el->m_identifier.c_str(), "wind_velocity", el->wind_velocity);
-		f.w_fvector4(el->m_identifier.c_str(), "hemisphere_color", el->hemi_color);
-		f.w_float(el->m_identifier.c_str(), "sun_altitude", rad2deg(el->sun_dir.getH()));
-		f.w_float(el->m_identifier.c_str(), "sun_longitude", rad2deg(el->sun_dir.getP()));
+		f.w_fvector4(el->m_identifier.c_str(), !soc_weather ? "hemisphere_color" : "hemi_color", el->hemi_color);
+
+		if (!soc_weather)
+		{
+			f.w_float(el->m_identifier.c_str(), "sun_altitude", rad2deg(el->sun_dir.getH()));
+			f.w_float(el->m_identifier.c_str(), "sun_longitude", rad2deg(el->sun_dir.getP()));
+		}
+		else
+			f.w_fvector2(el->m_identifier.c_str(), "sun_dir", Fvector2().set(el->sun_dir.getH(), el->sun_dir.getP()));
+
 		f.w_float(el->m_identifier.c_str(), "tree_amplitude_intensity", el->m_fTreeAmplitudeIntensity);
 		f.w_float(el->m_identifier.c_str(), "swing_normal_amp1", el->m_cSwingDesc[0].amp1);
 		f.w_float(el->m_identifier.c_str(), "swing_normal_amp2", el->m_cSwingDesc[0].amp2);
@@ -128,9 +164,21 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env)
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
 		f.w_float(el->m_identifier.c_str(), "air_temperature", el->m_fAirTemperature);
 	}
+	
 	string_path fileName;
-	FS.update_path(fileName, "$game_weathers$", name.c_str());
-	strconcat(sizeof(fileName), fileName, fileName, ".ltx");
+
+	if (FS.path_exist("$game_weathers$"))
+	{
+		FS.update_path(fileName, "$game_weathers$", name.c_str());
+		strconcat(sizeof(fileName), fileName, fileName, ".ltx");
+	}
+	else
+	{
+		string128 file_name{};
+		strconcat(sizeof(file_name), file_name, "weathers\\weather_", name.c_str(), ".ltx");
+		FS.update_path(fileName, "$game_config$", file_name);
+	}
+
 	f.save_as(fileName);
 }
 
@@ -326,17 +374,40 @@ void ShowWeatherEditor(bool& show)
 	ImGui::Separator();
 	bool changed = false;
 	sel = -1;
-	for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
-		if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
-			sel = i;
+
+	if (!env.used_soc_weather)
+	{
+		for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
+			if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
+				sel = i;
+	}
+	else
+	{
+		for (int i = 0; i != env.Ambients.size(); i++ )
+			if (cur->env_ambient->name() == env.Ambients[i]->name())
+				sel = i;
+	}
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_amb_light_options").c_str()).c_str());
 
-	if (ImGui::Combo("ambient", &sel, enumIni, env.m_ambients_config, env.m_ambients_config->sections().size())) {
-		cur->env_ambient = env.AppendEnvAmb(env.m_ambients_config->sections()[sel]->Name);
-		changed = true;
+	if (!env.used_soc_weather)
+	{
+		if (ImGui::Combo("ambient", &sel, enumIni, env.m_ambients_config, env.m_ambients_config->sections().size()))
+		{
+			cur->env_ambient = env.AppendEnvAmb(env.m_ambients_config->sections()[sel]->Name);
+			changed = true;
+		}
 	}
-	if (ImGui::ColorEdit3("ambient_color", (float*)&cur->ambient))
+	else
+	{
+		if (ImGui::Combo("ambient", &sel, enumAmbientsSoC, &env.Ambients, env.Ambients.size()))
+		{
+			cur->env_ambient = env.AppendEnvAmb(env.Ambients[sel]->name());
+			changed = true;
+		}
+	}
+
+	if (ImGui::ColorEdit3(!env.used_soc_weather ? "ambient_color" : "ambient", (float*)&cur->ambient))
 		changed = true;
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_clouds_options").c_str()).c_str());
@@ -376,8 +447,13 @@ void ShowWeatherEditor(bool& show)
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_hemi_options").c_str()).c_str());
 
-	if (ImGui::ColorEdit4("hemisphere_color", (float*)&cur->hemi_color, ImGuiColorEditFlags_AlphaBar))
+	if (ImGui::ColorEdit4(!env.used_soc_weather ? "hemisphere_color" : "hemi_color", (float*)&cur->hemi_color, ImGuiColorEditFlags_AlphaBar))
+	{
+		if (env.used_soc_weather)
+			cur->hemi_color.w = 1.f;
+
 		changed = true;
+	}
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_rain_options").c_str()).c_str());
 
@@ -404,17 +480,38 @@ void ShowWeatherEditor(bool& show)
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_sun_options").c_str()).c_str());
 
 	sel = -1;
-	for (int i = 0; i != env.m_suns_config->sections().size(); i++)
-		if (cur->lens_flare_id == env.m_suns_config->sections()[i]->Name)
-			sel = i;
-	if (ImGui::Combo("sun", &sel, enumIni, env.m_suns_config, env.m_suns_config->sections().size())) {
-		cur->lens_flare_id
-			= env.eff_LensFlare->AppendDef(env, env.m_suns_config, env.m_suns_config->sections()[sel]->Name.c_str());
-		env.eff_LensFlare->Invalidate();
-		changed = true;
+
+	if (!env.used_soc_weather)
+	{
+		for (int i = 0; i != env.m_suns_config->sections().size(); i++)
+			if (cur->lens_flare_id == env.m_suns_config->sections()[i]->Name)
+				sel = i;
+
+		if (ImGui::Combo("sun", &sel, enumIni, env.m_suns_config, env.m_suns_config->sections().size())) {
+			cur->lens_flare_id = env.eff_LensFlare->AppendDef(env, env.m_suns_config, env.m_suns_config->sections()[sel]->Name.c_str());
+			env.eff_LensFlare->Invalidate();
+			changed = true;
+		}
 	}
+	else
+	{
+		CLensFlare* flares = env.eff_LensFlare->GetLensFlareClass();
+
+		for (int i = 0; i != flares->m_Palette.size(); i++)
+			if (cur->lens_flare_id == flares->m_Palette[i]->section)
+				sel = i;
+
+		if (ImGui::Combo("flares", &sel, enumFlaresSoC, &flares->m_Palette, flares->m_Palette.size()))
+		{
+			cur->lens_flare_id = env.eff_LensFlare->AppendDef(env, pSettings, flares->m_Palette[sel]->section.c_str());
+			env.eff_LensFlare->Invalidate();
+			changed = true;
+		}
+	}
+
 	if (ImGui::ColorEdit3("sun_color", (float*)&cur->sun_color))
 		changed = true;
+
 	if (ImGui::SliderFloat("sun_altitude", &editor_altitude, -360.0f, 360.0f))
 	{
 		changed = true;
@@ -430,23 +527,42 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("sun_shafts_intensity", &cur->m_fSunShaftsIntensity, 0.0f, 2.0f))
 		changed = true;
 	sel = 0;
-	for (int i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
-		if (cur->tb_id == env.m_thunderbolt_collections_config->sections()[i]->Name)
-			sel = i + 1;
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_thunder_bolt_options").c_str()).c_str());
 
-	if (ImGui::Combo("thunderbolt_collection", &sel, enumIniWithEmpty, env.m_thunderbolt_collections_config,
-		env.m_thunderbolt_collections_config->sections().size() + 1)) {
-		cur->tb_id = (sel == 0)
-			? env.eff_Thunderbolt->AppendDef(env, env.m_thunderbolt_collections_config, env.m_thunderbolts_config, "")
-			: env.eff_Thunderbolt->AppendDef(env, env.m_thunderbolt_collections_config, env.m_thunderbolts_config,
-				env.m_thunderbolt_collections_config->sections()[sel - 1]->Name.c_str());
-		changed = true;
+	if (!env.used_soc_weather)
+	{
+		for (int i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
+			if (cur->tb_id == env.m_thunderbolt_collections_config->sections()[i]->Name)
+				sel = i + 1;
+
+		if (ImGui::Combo("thunderbolt_collection", &sel, enumIniWithEmpty, env.m_thunderbolt_collections_config,
+			env.m_thunderbolt_collections_config->sections().size() + 1)) {
+			cur->tb_id = (sel == 0)
+				? env.eff_Thunderbolt->AppendDef(env, env.m_thunderbolt_collections_config, env.m_thunderbolts_config, "")
+				: env.eff_Thunderbolt->AppendDef(env, env.m_thunderbolt_collections_config, env.m_thunderbolts_config,
+					env.m_thunderbolt_collections_config->sections()[sel - 1]->Name.c_str());
+			changed = true;
+		}
 	}
-	if (ImGui::SliderFloat("thunderbolt_duration", &cur->bolt_duration, 0.0f, 2.0f))
+	else
+	{
+		CEffect_Thunderbolt* bolt = env.eff_Thunderbolt->GetThunderboltClass();
+
+		for (int i = 0; i != bolt->collection.size(); i++)
+			if (cur->tb_id == bolt->collection[i]->section)
+				sel = i;
+
+		if (ImGui::Combo("thunderbolt", &sel, enumBoltSoC, &bolt->collection, bolt->collection.size()))
+		{
+			cur->tb_id = env.eff_Thunderbolt->AppendDef_shoc(env, pSettings, bolt->collection[sel]->section.c_str());
+			changed = true;
+		}
+	}
+
+	if (ImGui::SliderFloat(!env.used_soc_weather ? "thunderbolt_duration" : "bolt_period", &cur->bolt_duration, 0.0f, 2.0f))
 		changed = true;
-	if (ImGui::SliderFloat("thunderbolt_period", &cur->bolt_period, 0.0f, 10.0f))
+	if (ImGui::SliderFloat(!env.used_soc_weather ? "thunderbolt_period" : "bolt_duration", &cur->bolt_period, 0.0f, 10.0f))
 		changed = true;
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_water_options").c_str()).c_str());
@@ -521,7 +637,7 @@ void ShowWeatherEditor(bool& show)
 		modifiedWeathers.insert(env.CurrentWeatherName);
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str())) {
 		for (auto name : modifiedWeathers)
-			saveWeather(name, env.WeatherCycles[name]);
+			saveWeather(name, env.WeatherCycles[name], env.used_soc_weather);
 		modifiedWeathers.clear();
 	}
     ImGui::End();

@@ -57,6 +57,8 @@ public:
     void				load				(CInifile* pIni, LPCSTR section);
 	void 				OnDeviceCreate	();
 	void 				OnDeviceDestroy	();
+
+    FlareVec            GetFlaresVector () { return m_Flares; };
 };
 DEFINE_VECTOR(CLensFlareDescriptor*,LensFlareDescVec,LensFlareDescIt); 
 
@@ -91,12 +93,11 @@ protected:
 
 	FactoryPtr<ILensFlareRender>	m_pRender;
 	//ref_geom			hGeom;
-
+public:
     LensFlareDescVec	m_Palette;
 	CLensFlareDescriptor* m_Current;
 
 //. #ifdef DEBUG
-public:
     enum LFState{
         lfsNone,
         lfsIdle,
@@ -121,6 +122,8 @@ public:
     shared_str			AppendDef		(CEnvironment& environment, CInifile* pIni, LPCSTR sect);
 
 	void				Invalidate		(){m_State=lfsNone;}
+
+    CLensFlare*         GetLensFlareClass() { return this; };
 };
 
 IC void blend_lerp(float& cur, float tgt, float speed, float dt)

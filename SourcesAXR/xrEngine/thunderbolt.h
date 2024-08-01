@@ -77,7 +77,7 @@ public:
 class ENGINE_API CEffect_Thunderbolt
 {
 	friend class dxThunderboltRender;
-protected:
+public:
 	DEFINE_VECTOR(SThunderboltCollection*,CollectionVec,CollectionVecIt);
 	CollectionVec				collection;
 	SThunderboltDesc*			current;
@@ -127,6 +127,8 @@ public:
 
 	shared_str 					AppendDef			(CEnvironment& environment, CInifile* pIni, CInifile* thunderbolts, LPCSTR sect);
 	shared_str					AppendDef_shoc		(CEnvironment& environment, CInifile* pIni, LPCSTR sect);
+
+	CEffect_Thunderbolt*		GetThunderboltClass	() { return this; };
 };
 
 #endif //ThunderboltH
