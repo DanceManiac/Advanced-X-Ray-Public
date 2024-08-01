@@ -1,0 +1,118 @@
+<w>
+	<main_wnd x="0" y="0" width="1024" height="768"/>
+	<scrollbar x="36" y="150" width="760" height="558" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="0" always_show_scroll="0"/>
+	<temp x="36" y="150" width="748" height="76"/>
+	
+	<frame1 x="28" y="41" width="764" height="90" stretch="1">
+		<texture>ui_inGame2_pda_buttons_background</texture>
+	</frame1>
+		
+	<frame2 x="28" y="137" width="764" height="571" stretch="1">
+		<texture>ui_inGame2_pda_buttons_background</texture>
+	</frame2>
+
+	<pda_skills x="128" y="96">
+		<irp_first_priem_item x="50" y="90" width="127" height="23">
+                <text align="l" vert_align="l" font="letterica16" r="87" g="255" b="87" a="255">ui_bai_1_priem_text</text>
+        </irp_first_priem_item>
+	</pda_skills>
+	
+    <skills_points x="32" y="96" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica16" r="220" g="220" b="220"/>
+    </skills_points>
+	
+    <skill_survival x="32" y="192" width="128" height="128" hint="st_survival_descr">
+        <texture>ui_mfs_skill_survival</texture>
+    </skill_survival>
+    <skill_survival_name x="32" y="144" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica25" r="220" g="220" b="220"/>
+    </skill_survival_name>
+    <skill_survival_lvl x="128" y="96" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica16" r="220" g="220" b="220"/>
+    </skill_survival_lvl>
+	
+    <skill_power x="150" y="192" width="128" height="128" hint="st_power_descr">
+        <texture>ui_mfs_skill_power</texture>
+    </skill_power>
+    <skill_power_name x="150" y="144" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica25" r="220" g="220" b="220"/>
+    </skill_power_name>
+    <skill_power_lvl x="224" y="96" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica16" r="220" g="220" b="220"/>
+    </skill_power_lvl>
+
+    <skill_repair x="278" y="192" width="128" height="128" hint="st_repair_descr">
+        <texture>ui_mfs_skill_repair</texture>
+    </skill_repair>
+    <skill_repair_name x="278" y="144" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica25" r="220" g="220" b="220"/>
+    </skill_repair_name>
+    <skill_repair_lvl x="320" y="96" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica16" r="220" g="220" b="220"/>
+    </skill_repair_lvl>
+	
+    <skill_endurance x="406" y="192" width="128" height="128" hint="st_endurance_descr">
+        <texture>ui_mfs_skill_endurance</texture>
+    </skill_endurance>
+    <skill_endurance_name x="406" y="144" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica25" r="220" g="220" b="220"/>
+    </skill_endurance_name>
+    <skill_endurance_lvl x="416" y="96" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica16" r="220" g="220" b="220"/>
+    </skill_endurance_lvl>
+	
+    <!--bye_survival_skill x="32" y="192" width="101" height="28" check_mode="0" stretch="1">
+        <window_name>button_yes</window_name>
+        <text font="letterica18">st_bye_survival_skill_descr</text>
+        <texture>ui_inGame2_pda_button</texture>
+    </bye_survival_skill-->
+	
+	<buy_survival_skill x="160" y="416" width="128" height="19" hint="st_buy_survival_descr" frame_mode="0" stretch="1">
+		<window_name>buy_survival_skill</window_name>
+        <texture>ui_inGame2_Mp_bigbuttone</texture>
+        <text align="c" vert_align="c" x="0" y="0" width="96" height="19" font="letterica16">st_buy</text>
+        <text_color>
+            <t r="255" g="255" b="255"/>
+            <d r="255" g="255" b="255"/>
+            <e r="200" g="200" b="200"/>
+            <h r="170" g="170" b="170"/>
+        </text_color>
+	</buy_survival_skill>
+	
+	<buy_power_skill x="278" y="416" width="128" height="19" hint="st_buy_power_descr" frame_mode="0" stretch="1">
+		<window_name>buy_power_skill</window_name>
+        <texture>ui_inGame2_Mp_bigbuttone</texture>
+        <text align="c" vert_align="c" x="0" y="0" width="96" height="19" font="letterica16">st_buy</text>
+        <text_color>
+            <t r="255" g="255" b="255"/>
+            <d r="255" g="255" b="255"/>
+            <e r="200" g="200" b="200"/>
+            <h r="170" g="170" b="170"/>
+        </text_color>
+	</buy_power_skill>
+	
+	<buy_repair_skill x="410" y="416" width="128" height="19" hint="st_buy_repair_descr" frame_mode="0" stretch="1">
+		<window_name>buy_repair_skill</window_name>
+        <texture>ui_inGame2_Mp_bigbuttone</texture>
+        <text align="c" vert_align="c" x="0" y="0" width="96" height="19" font="letterica16">st_buy</text>
+        <text_color>
+            <t r="255" g="255" b="255"/>
+            <d r="255" g="255" b="255"/>
+            <e r="200" g="200" b="200"/>
+            <h r="170" g="170" b="170"/>
+        </text_color>
+	</buy_repair_skill>
+	
+	<buy_endurance_skill x="540" y="416" width="128" height="19" hint="st_buy_endurance_descr" frame_mode="0" stretch="1">
+		<window_name>buy_endurance_skill</window_name>
+        <texture>ui_inGame2_Mp_bigbuttone</texture>
+        <text align="c" vert_align="c" x="0" y="0" width="96" height="19" font="letterica16">st_buy</text>
+        <text_color>
+            <t r="255" g="255" b="255"/>
+            <d r="255" g="255" b="255"/>
+            <e r="200" g="200" b="200"/>
+            <h r="170" g="170" b="170"/>
+        </text_color>
+	</buy_endurance_skill>
+	
+</w>

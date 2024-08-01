@@ -4,6 +4,7 @@ function WeatherManager:__init()
 	self.weather_change_day = 0
 	self.update_time = 0
 	self.update_level = ""
+	self.forced_weather_change_on_time_change = false
 end
 
 function WeatherManager:reset()
@@ -33,6 +34,12 @@ function WeatherManager:select_weather(now)
 	self.weather_change_day = level.get_time_days()
 	self.update_level = level.name()
 	local weather = xr_logic.pick_section_from_condlist(db.actor, db.actor, self.weather_list)
+	
+	if self.forced_weather_change_on_time_change then
+		now = true
+		self.forced_weather_change_on_time_change = false
+	end
+	
 	printf("WEATHER: '%s' now '%s'", weather, tostring(now))
 	level.set_weather(weather,now);
 end
@@ -45,6 +52,10 @@ end
 function WeatherManager:save(F)
 	F:w_stringZ				(self.update_level);
 	F:w_u32					(self.update_time);
+end
+
+function WeatherManager:forced_weather_change()
+	self.forced_weather_change_on_time_change = true
 end
 
 function WeatherManager:update()

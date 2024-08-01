@@ -1,5 +1,21 @@
 #include "weapons\addon_tactical.ltx"
 
+[hud_base]
+aim_hud_offset_pos				= 0,0,0
+aim_hud_offset_rot				= 0,0,0
+
+aim_hud_offset_pos_16x9			= 0,0,0
+aim_hud_offset_rot_16x9			= 0,0,0
+
+gl_hud_offset_pos_16x9			= 0,0,0
+gl_hud_offset_rot_16x9			= 0,0,0
+
+gl_hud_offset_pos				= 0,0,0
+gl_hud_offset_rot				= 0,0,0
+
+lean_hud_offset_pos		= 0,0,0
+lean_hud_offset_rot		= 0,0,0
+
 [sect_identity_immunities]
 burn_immunity			= 1.0
 strike_immunity			= 1.0
@@ -19,6 +35,19 @@ hit_probability_gd_novice	= 0.20
 hit_probability_gd_stalker	= 0.30
 hit_probability_gd_veteran	= 0.40
 hit_probability_gd_master	= 0.50
+
+[default_weapon_params]
+; Стрейфы
+strafe_enabled = true 
+strafe_transition_time = 0.25
+strafe_hud_offset_pos = 0.015,0.0,0.00
+strafe_hud_offset_rot = 0.0,0.0,4.5
+
+; Настройки для режима прицеливания
+strafe_aim_enabled = false
+strafe_aim_transition_time = 0.15
+strafe_aim_hud_offset_pos = 0.005,0.0,0.00
+strafe_aim_hud_offset_rot = 0.0,0.0,2.5
 
 [common_ph_friction_params_on_npc_death] ;Параметры для задания изменения трения в момент смерти персонажа
 

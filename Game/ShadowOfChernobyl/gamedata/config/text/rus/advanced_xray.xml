@@ -165,6 +165,12 @@
 	<string id="ui_mm_hud_dynamic_effects">
 		<text>Динам. эффекты HUD</text>
 	</string>
+	<string id="ui_mm_ssao_quality">
+		<text>Качество SSAO</text>
+	</string>
+	<string id="ui_mm_ssao">
+		<text>по умолчанию</text>
+	</string>
 	<string id="ui_mm_ssao_text">
 		<text>Режим SSAO</text>
 	</string>
@@ -669,6 +675,12 @@
 	<string id="ui_mm_sss_wind_hint">
 		<text>Данная опция включает влияние ветра на траву и деревья из Screen Space Shaders 19. Если включить эту опцию, влияние ветра из Advanced X-Ray будет отключено. \n \n %c[pda_green] • Нагрузка: Низкая</text>
 	</string>
+	<string id="ui_mm_sss_puddles">
+		<text>SSS: Лужи</text>
+	</string>
+	<string id="ui_mm_sss_puddles_hint">
+		<text>Эта опция позволяет включить или отключить эффект динамических луж из Screen Space Shaders во время дождя.\n \n %c[pda_yellow] • Нагрузка: Средняя</text>
+	</string>
 	<string id="ui_mm_enchanted_shaders">
 		<text>Enchanted Shaders</text>
 	</string>
@@ -831,6 +843,45 @@
 	<string id="ui_mm_terrain_landscape_hint">
 		<text>Эта опция включает Terrain Landscape. На дальних дистанциях, текстуры террейна подменяются на текстуры более низкого качество. Также, отключается взаимодействие с освещением и параллакс.</text>
 	</string>
+	<string id="ui_mm_snd_device">
+		<text>Звуковое устройство</text>
+	</string>
+	<string id="ui_mm_soft_particles">
+		<text>Мягкие частицы</text>
+	</string>
+	<string id="ui_mm_soft_water">
+		<text>Мягкая вода</text>
+	</string>
+	<string id="ui_mm_r1_no_detail_textures">
+		<text>Детальные текстуры</text>
+	</string>
+	<string id="ui_mm_r2_detail_bump">
+		<text>Детальный рельеф</text>
+	</string>
+	<string id="ui_mm_r2_steep_parallax">
+		<text>Steep parallax</text>
+	</string>
+	<string id="ui_mm_r2_sun_quality">
+		<text>Качество солнца</text>
+	</string>
+	<string id="ui_mm_r3_MSAA">
+		<text>Полноэкранное сглаживание</text>
+	</string>
+	<string id="ui_mm_r3_dynamic_wet_surfaces">
+		<text>Намокание плоскостей</text>
+	</string>
+	<string id="ui_mm_sun_shafts">
+		<text>Солнечные лучи</text>
+	</string>
+	<string id="ui_mm_r3_volumetric_smoke">
+		<text>Объёмный дым</text>
+	</string>
+	<string id="ui_mm_dof">
+		<text>Глубина резкости</text>
+	</string>
+	<string id="ui_mm_volumetric_light">
+		<text>Объёмный свет</text>
+	</string>
 	<string id="ui_mm_localization">
 		<text>Язык игры</text>
 	</string>
@@ -881,5 +932,20 @@
 	</string>
 	<string id="st_move_all_to_box">
 		<text>переместить всё в ящик</text>
+	</string>
+	<string id="st_opt_off">
+		<text>отключено</text>
+	</string>
+	<string id="st_opt_low">
+		<text>низко</text>
+	</string>
+	<string id="st_opt_medium">
+		<text>средне</text>
+	</string>
+	<string id="st_opt_high">
+		<text>высоко</text>
+	</string>
+	<string id="st_opt_ultra">
+		<text>очень высоко</text>
 	</string>
 </string_table>
