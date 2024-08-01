@@ -52,7 +52,7 @@
 #include "CustomDetector.h"
 //#include "AnomalyDetector.h"
 #include "Torch.h"
-//#include "AntigasFilter.h"
+#include "AntigasFilter.h"
 
 class CWeapon;
 
@@ -331,4 +331,4 @@ TEST_OBJECT_CLASS(CScriptGameObject::IsEatableItem, CEatableItem)
 TEST_OBJECT_CLASS(CScriptGameObject::IsDetector, CCustomDetector)
 //TEST_OBJECT_CLASS(CScriptGameObject::IsDetectorAnomaly, CDetectorAnomaly)
 TEST_OBJECT_CLASS(CScriptGameObject::IsTorch, CTorch)
-//TEST_OBJECT_CLASS(CScriptGameObject::IsAntigasFilter, CAntigasFilter)
+TEST_OBJECT_CLASS(CScriptGameObject::IsAntigasFilter, CAntigasFilter)

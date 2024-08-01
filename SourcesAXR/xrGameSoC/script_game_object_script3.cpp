@@ -433,6 +433,10 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("set_actor_runback_coef",			&CScriptGameObject::SetActorRunBackCoef)
 		//-AVO
 
+		.def("set_remaining_uses", 				&CScriptGameObject::SetRemainingUses)
+		.def("get_remaining_uses", 				&CScriptGameObject::GetRemainingUses)
+		.def("get_max_uses", 					&CScriptGameObject::GetMaxUses)
+
 		.def("set_artefact_charge_level",		&CScriptGameObject::SetArtefactChargeLevel)
 		.def("get_artefact_charge_level",		&CScriptGameObject::GetArtefactChargeLevel)
 		.def("set_artefact_rank",				&CScriptGameObject::SetArtefactRank)
@@ -477,6 +481,6 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("is_detector",						&CScriptGameObject::IsDetector)
 		//.def("is_anomaly_detector",				&CScriptGameObject::IsDetectorAnomaly)
 		.def("is_torch",						&CScriptGameObject::IsTorch)
-		//.def("is_antigas_filter",				&CScriptGameObject::IsAntigasFilter)
+		.def("is_antigas_filter",				&CScriptGameObject::IsAntigasFilter)
 			;
 }

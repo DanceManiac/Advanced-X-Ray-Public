@@ -655,7 +655,7 @@ public:
 			_DECLARE_FUNCTION10(IsDetector, bool);
 			//_DECLARE_FUNCTION10(IsDetectorAnomaly, bool);
 			_DECLARE_FUNCTION10(IsTorch, bool);
-			//_DECLARE_FUNCTION10(IsAntigasFilter, bool);
+			_DECLARE_FUNCTION10(IsAntigasFilter, bool);
 
 			float				GetLuminocityHemi();
 			float				GetLuminocity();
@@ -751,6 +751,10 @@ public:
 			float				GetActorRunBackCoef() const;
 			void				SetActorRunBackCoef(float run_back_coef);
 			//-Alundaio
+
+			void 				SetRemainingUses(u8 value);
+			u8 					GetRemainingUses();
+			u8 					GetMaxUses();
 
 			void				SetArtefactChargeLevel(float charge_level);
 			float				GetArtefactChargeLevel() const;

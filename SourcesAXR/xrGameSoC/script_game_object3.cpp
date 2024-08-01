@@ -1347,6 +1347,45 @@ void CScriptGameObject::RemoveDanger(const CDangerObject& dobject)
 
 //-Alundaio
 
+void CScriptGameObject::SetRemainingUses(u8 value)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CEatableItem* eItm = IItm->cast_eatable_item();
+	if (!eItm)
+		return;
+
+	eItm->SetRemainingUses(value);
+}
+
+u8 CScriptGameObject::GetRemainingUses()
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CEatableItem* eItm = IItm->cast_eatable_item();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetPortionsNum();
+}
+
+u8 CScriptGameObject::GetMaxUses()
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CEatableItem* eItm = IItm->cast_eatable_item();
+	if (!eItm)
+		return 0;
+
+	return eItm->GetMaxUses();
+}
+
 void CScriptGameObject::SetArtefactChargeLevel(float charge_level)
 {
 	CInventoryItem* IItm = object().cast_inventory_item();
