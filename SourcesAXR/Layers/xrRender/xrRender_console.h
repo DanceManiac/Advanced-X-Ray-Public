@@ -83,7 +83,12 @@ extern ECORE_API	int			ps_r1_SoftwareSkinning;	// r1-only
 enum
 {
 	R1FLAG_DLIGHTS				= (1<<0),
+	FFONTS_SHADOW_ENABLED		= (2<<1),
+	FFONTS_SHADOW_W_BLACK_TEXT	= (3<<1),
 };
+
+extern ECORE_API Flags32 ps_r__common_flags;
+
 
 // R2
 extern ECORE_API	float		ps_r2_ssaLOD_A;
@@ -188,6 +193,9 @@ extern ECORE_API float			ps_r__opt_dist;
 extern ECORE_API u32			ps_r_panorama_scr_size;
 
 extern ECORE_API float			ps_r2_aref_strength;
+
+extern ECORE_API float			m_fonts_shadow_params_x;
+extern ECORE_API float			m_fonts_shadow_params_y;
 
 enum
 {

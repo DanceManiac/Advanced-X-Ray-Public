@@ -19,6 +19,7 @@ void dxFontRender::Initialize(LPCSTR cShader, LPCSTR cTexture)
 	pShader.create(cShader, cTexture);
 	pGeom.create(FVF::F_TL, RCache.Vertex.Buffer(), RCache.QuadIB);
 }
+
 extern ENGINE_API BOOL g_bRendering;
 extern ENGINE_API Fvector2		g_current_font_scale;
 void dxFontRender::OnRender(CGameFont &owner)
@@ -36,6 +37,10 @@ void dxFontRender::OnRender(CGameFont &owner)
 		owner.fTCHeight		= owner.fHeight/float(owner.vTS.y);
 		owner.uFlags			|= CGameFont::fsValid;
 	}
+
+	bool shadow_enabled = (ps_r__common_flags.test(FFONTS_SHADOW_ENABLED));
+	float shadow_x = m_fonts_shadow_params_x;
+	float shadow_y = m_fonts_shadow_params_y;
 
 	for (u32 i=0; i<owner.strings.size(); ){
 		// calculate first-fit
@@ -55,6 +60,18 @@ void dxFontRender::OnRender(CGameFont &owner)
 
 		const u32 last = i + count;
 
+		u32 di = i;
+
+		if (shadow_enabled)
+			RenderFragment(owner, di, true, shadow_x, shadow_y, length, last);
+
+		RenderFragment(owner, i, false, 0, 0, length, last);
+	}
+}
+
+void dxFontRender::RenderFragment(CGameFont& owner, u32& i, bool shadow_mode, float dX, float dY, u32 length, u32 last)
+{
+	{
 		// lock AGP memory
 		u32	vOffset;
 		FVF::TL* v		= (FVF::TL*)RCache.Vertex.Lock	(length*4,pGeom.stride(),vOffset);
@@ -102,6 +119,26 @@ void dxFontRender::OnRender(CGameFont &owner)
 					clr2	= color_rgba	(_R,_G,_B,_A);
 				}
 
+				if (shadow_mode)
+				{
+					// color_argb(220, 20, 20, 20)
+					bool black_text_shadow = (ps_r__common_flags.test(FFONTS_SHADOW_W_BLACK_TEXT));
+
+					u32 min_alpha = _min(color_get_A(clr), (u32)220);
+
+					u32 _R = color_get_R(clr);
+					u32 _G = color_get_G(clr);
+					u32 _B = color_get_B(clr);
+
+					float Y = 0.299f * _R + 0.587f * _G + 0.114f * _B;
+
+					u32 c = Y >= 40 ? 20 : 120;
+					if ( !black_text_shadow && (Y < 40) )
+						min_alpha = 0;
+
+					clr2 = clr = color_argb(min_alpha, c, c, c);
+				}
+				
 #ifdef USE_DX11		//	Vertex shader will cancel a DX9 correction, so make fake offset
 				X			-= 0.5f;
 				Y			-= 0.5f;

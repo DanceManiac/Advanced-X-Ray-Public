@@ -194,6 +194,8 @@ xr_token qpanorama_scr_size_token[] =
 extern int			psSkeletonUpdate;
 extern float		r__dtex_range;
 
+Flags32 ps_r__common_flags = { RFLAG_USE_SHADERS_CACHE | FFONTS_SHADOW_ENABLED }; // All renders
+
 //int		ps_r__Supersample			= 1		;
 int			ps_r__LightSleepFrames		= 10	;
 
@@ -367,8 +369,6 @@ Flags32		ps_r2_postscreen_flags = { R_FLAG_HUD_MASK
 
 Flags32		ps_r_textures_flags = { R3_NO_RAM_TEXTURES };
 
-Flags32		ps_r__common_flags = { RFLAG_USE_SHADERS_CACHE };
-
 int ps_force_enable_lens_flares = 0;
 
 float ps_r2_gloss_factor = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "gloss_factor", 10.0f);
@@ -466,6 +466,9 @@ float ps_r__opt_dist = 100.f;
 
 //Fvector4 ps_ssfx_wpn_dof_1 = { .0f, .0f, .0f, .0f };
 //extern float ps_ssfx_wpn_dof_2 = 1.0f;
+
+float		m_fonts_shadow_params_x = 2.f;
+float		m_fonts_shadow_params_y = 2.f;
 
 #ifndef _EDITOR
 #include	"../../xrEngine/xr_ioconsole.h"
@@ -1133,6 +1136,12 @@ void		xrRender_initconsole	()
 	Fvector4 clr_drag_max = { 2.55f, 2.55f, 2.55f, 1.f };
 	CMD4(CCC_Vector4,	"r_color_grading",		&ps_color_grading,			clr_drag_min, clr_drag_max);
 
+	// Fonts shadow control
+	CMD3(CCC_Mask,	"m_fonts_shadow_enabled",		&ps_r__common_flags,		FFONTS_SHADOW_ENABLED);
+	CMD3(CCC_Mask,	"m_fonts_white_shadow",			&ps_r__common_flags,		FFONTS_SHADOW_W_BLACK_TEXT);
+	CMD4(CCC_Float,	"m_fonts_shadow_x",				&m_fonts_shadow_params_x,	-10.0f, 10.0f);
+	CMD4(CCC_Float,	"m_fonts_shadow_y",				&m_fonts_shadow_params_y,	-10.0f, 10.0f);
+	
 	//tw_min.set(0, 0, 0);
 	//tw_max.set(1, 1, 1);
 
