@@ -749,6 +749,9 @@ ENGINE_API int			ps_detail_enable_collision	= 0;
 
 ENGINE_API bool			ps_enchanted_shaders		= 0; // For xrGame
 
+extern float		g_fontWidthScale;
+extern float		g_fontHeightScale;
+
 void CCC_Register()
 {
 	// General
@@ -919,5 +922,8 @@ void CCC_Register()
 	extern BOOL debug_destroy;
 	CMD4(CCC_Integer, "debug_destroy", &debug_destroy, FALSE, TRUE );
 #endif
+
+	CMD4(CCC_Float, "g_font_scale_x", &g_fontWidthScale, 0.2f, 5.0f);
+	CMD4(CCC_Float, "g_font_scale_y", &g_fontHeightScale, 0.2f, 5.0f);
 };
  

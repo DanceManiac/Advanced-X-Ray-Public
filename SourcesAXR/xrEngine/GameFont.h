@@ -39,6 +39,8 @@ protected:
 	float					fXStep;
 	float					fYStep;
 	float					fTCHeight;
+	float					fXScale{};
+	float					fYScale{};
 	xr_vector<String>		strings;
 
 	IFontRender				*pFontRender;
@@ -77,6 +79,9 @@ public:
 	IC float				GetHeight		(){return fCurrentHeight;};
 	IC void					SetInterval		(float x, float y) {vInterval.set(x,y);};
 	IC void					SetInterval		(const Fvector2& v) {vInterval.set(v);};
+
+	IC Fvector2				GetInterval		() { return vInterval; };
+
 	IC void					SetAligment		(EAligment aligment){ eCurrentAlignment=aligment; }
 
 	float					SizeOf_			( LPCSTR s );
@@ -85,6 +90,8 @@ public:
 	float					SizeOf_			( const char cChar );  // only ANSII 
 
 	float					CurrentHeight_	();
+
+	float					ScaleHeightDelta() { return (fCurrentHeight * vInterval.y * GetHeightScale() - fCurrentHeight * vInterval.y) / 2; };
 
 	void					OutSetI			(float x, float y);
 	void					OutSet			(float x, float y);
@@ -100,6 +107,7 @@ public:
 	void  					OutI			( float _x , float _y , LPCSTR fmt , ... );
 	void  					Out				( float _x , float _y , LPCSTR fmt , ... );
 	void             		OutNext			( LPCSTR fmt , ... );
+	void             		OutPrev			( LPCSTR fmt , ... );
 
 	void					OutSkip			(float val=1.f);
 
@@ -107,7 +115,14 @@ public:
 
 	IC	void				Clear			()  { strings.clear(); };
 
+	float					GetWidthScale();
+	float					GetHeightScale();
+
+	void					SetWidthScale(float f) { fXScale = f; }
+	void					SetHeightScale(float f) { fYScale = f; }
+	
 	shared_str				m_font_name;
+	bool					m_bCustom{};
 };
 
 #endif // _XR_GAMEFONT_H_

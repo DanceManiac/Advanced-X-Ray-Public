@@ -297,7 +297,7 @@ void CUITextWnd::AdjustWidthToText()
 {
 	float _len		= TextItemControl().GetFont()->SizeOf_(TextItemControl().GetText());
 	UI().ClientToScreenScaledWidth(_len);
-	SetWidth		(_len);
+	SetWidth		(iCeil(_len));
 }
 
 

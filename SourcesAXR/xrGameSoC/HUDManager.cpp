@@ -64,13 +64,7 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	static char* tex_names[] = { "texture800", "texture", "texture1600", "texture2k", "texture4k" };
 	int def_idx		= 1;//default 1024x768
 	int idx			= def_idx;
-#if 0
-	u32 w = Device.dwWidth;
 
-	if(w<=800)		idx = 0;
-	else if(w<=1280)idx = 1;
-	else 			idx = 2;
-#else
 	u32 h = Device.dwHeight;
 
 	if(h<=600)		idx = 0;
@@ -78,7 +72,6 @@ LPCSTR CFontManager::GetFontTexName (LPCSTR section)
 	else if (h<1200)	idx = 2;
 	else if (h<1440)	idx = 3;
 	else				idx = 4;
-#endif
 
 	while(idx>=0){
 		if( pSettings->line_exist(section,tex_names[idx]) )
@@ -93,12 +86,27 @@ void CFontManager::InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 	LPCSTR font_tex_name = GetFontTexName(section);
 	R_ASSERT(font_tex_name);
 
+	const char* sh_name = READ_IF_EXISTS(pSettings, r_string, section, "shader", "font");
+
 	if(!F)
-		F = xr_new<CGameFont> ("font", font_tex_name, flags);
+		F = xr_new<CGameFont>(sh_name, font_tex_name, flags);
 	else
-		F->Initialize("font",font_tex_name);
+		F->Initialize(sh_name, font_tex_name);
 
 	F->m_font_name = section;
+
+	if (!(flags & CGameFont::fsDeviceIndependent))
+	{
+		if (pSettings->line_exist(section, "scale_x"))
+		{
+			F->SetWidthScale(pSettings->r_float(section, "scale_x"));
+		}
+		if (pSettings->line_exist(section, "scale_y"))
+		{
+			F->SetHeightScale(pSettings->r_float(section, "scale_y"));
+		}
+	}
+
 	if (pSettings->line_exist(section,"size")){
 		float sz = pSettings->r_float(section,"size");
 		if (flags&CGameFont::fsDeviceIndependent)	F->SetHeightI(sz);
