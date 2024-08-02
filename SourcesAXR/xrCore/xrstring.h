@@ -1,5 +1,3 @@
-#ifndef xrstringH
-#define xrstringH
 #pragma once
 
 #pragma pack(push,4)
@@ -125,4 +123,13 @@ IC void	xr_strlwr		(shared_str& src)									{ if (*src){LPSTR lp=xr_strdup(*src
 
 #pragma pack(pop)
 
-#endif
+inline bool SplitFilename(std::string& str)
+{
+	size_t found = str.find_last_of("/\\");
+	if (found != std::string::npos)
+	{
+		str.erase(found);
+		return true;
+	}
+	return false;
+}
