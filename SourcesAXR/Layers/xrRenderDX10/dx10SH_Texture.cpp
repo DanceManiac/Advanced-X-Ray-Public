@@ -375,33 +375,40 @@ void CTexture::apply_normal	(u32 dwStage)	{
 	Apply(dwStage);
 };
 
-void CTexture::Preload	()
+void CTexture::Preload() { Preload(cName.c_str()); }
+
+void CTexture::Preload	(const char* Name)
 {
-	m_bumpmap = DEV->m_textures_description.GetBumpName(cName);
-	m_material = DEV->m_textures_description.GetMaterial(cName);
+	m_bumpmap = DEV->m_textures_description.GetBumpName(Name);
+	m_material = DEV->m_textures_description.GetMaterial(Name);
 }
 
-void CTexture::Load		()
+void CTexture::Load() { Load(cName.c_str()); }
+
+void CTexture::Load		(const char* Name)
 {
+	if (flags.bLoaded)
+		return;
+
 	flags.bLoaded					= true;
 	desc_cache						= 0;
 	if (pSurface)					return;
 
 	flags.bUser						= false;
 	flags.MemoryUsage				= 0;
-	if (0==stricmp(*cName,"$null"))	return;
-	if (0!=strstr(*cName,"$user$"))	{
+	if (0==stricmp(Name,"$null"))	return;
+	if (0!=strstr(Name,"$user$"))	{
 		flags.bUser	= true;
 		return;
 	}
 
-	Preload							();
+	Preload							(Name);
 
 	bool	bCreateView = true;
 
 	// Check for OGM
 	string_path			fn;
-	if (FS.exist(fn,"$game_textures$",*cName,".ogm")){
+	if (FS.exist(fn,"$game_textures$",Name,".ogm")){
 		// AVI
 		pTheora		= xr_new<CTheoraSurface>();
 		m_play_time	= 0xFFFFFFFF;
@@ -432,7 +439,7 @@ void CTexture::Load		()
 			desc.BindFlags = D3D_BIND_SHADER_RESOURCE;
 			desc.CPUAccessFlags = D3D_CPU_ACCESS_WRITE;
 			desc.MiscFlags = 0;
-			HRESULT hrr = HW.pDevice->CreateTexture2D(&desc, 0, &pTexture);
+			HRESULT hrr = HW.pDevice->CreateTexture2D(&desc, nullptr, &pTexture);
 
 			pSurface = pTexture;
 			if (FAILED(hrr))
@@ -445,12 +452,12 @@ void CTexture::Load		()
 			}
 			else
 			{
-				CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, 0, &m_pSRView));
+				CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, nullptr, &m_pSRView));
 			}
 
 		}
 	} else
-		if (FS.exist(fn,"$game_textures$",*cName,".avi")){
+		if (FS.exist(fn,"$game_textures$",Name,".avi")){
 			// AVI
 			pAVI = xr_new<CAviPlayerCustom>();
 
@@ -466,7 +473,7 @@ void CTexture::Load		()
 				//pAVI->m_dwWidth,pAVI->m_dwHeight,1,0,D3DFMT_A8R8G8B8,D3DPOOL_MANAGED,
 				//	&pTexture,NULL
 				//	);
-				D3D_TEXTURE2D_DESC	desc;
+				D3D_TEXTURE2D_DESC	desc{};
 				desc.Width = pAVI->m_dwWidth;
 				desc.Height = pAVI->m_dwHeight;
 				desc.MipLevels = 1;
@@ -478,7 +485,7 @@ void CTexture::Load		()
 				desc.BindFlags = D3D_BIND_SHADER_RESOURCE;
 				desc.CPUAccessFlags = D3D_CPU_ACCESS_WRITE;
 				desc.MiscFlags = 0;
-				HRESULT hrr = HW.pDevice->CreateTexture2D(&desc, 0, &pTexture);
+				HRESULT hrr = HW.pDevice->CreateTexture2D(&desc, nullptr, &pTexture);
 
 				pSurface	= pTexture;
 				if (FAILED(hrr))
@@ -491,12 +498,12 @@ void CTexture::Load		()
 				}
 				else
 				{
-					CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, 0, &m_pSRView));
+					CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, nullptr, &m_pSRView));
 				}
 
 			}
 		} else
-			if (FS.exist(fn,"$game_textures$",*cName,".seq"))
+			if (FS.exist(fn,"$game_textures$",Name,".seq"))
 			{
 				// Sequence
 				string256 buffer;
@@ -526,7 +533,7 @@ void CTexture::Load		()
 							// pSurface->SetPriority	(PRIORITY_LOW);
 							seqDATA.push_back(pSurface);
 							m_seqSRView.push_back(0);
-							HW.pDevice->CreateShaderResourceView(seqDATA.back(), NULL, & m_seqSRView.back());
+							HW.pDevice->CreateShaderResourceView(seqDATA.back(), nullptr, & m_seqSRView.back());
 							flags.MemoryUsage		+= mem;
 						}
 					}
@@ -538,8 +545,8 @@ void CTexture::Load		()
 			{
 				// Normal texture
 				u32	mem  = 0;
-				//pSurface = ::RImplementation.texture_load	(*cName,mem);
-				pSurface = ::RImplementation.texture_load	(*cName,mem, true);
+				//pSurface = ::RImplementation.texture_load	(Name,mem);
+				pSurface = ::RImplementation.texture_load	(Name, mem, true);
 
 				if (GetUsage() == D3D_USAGE_STAGING)
 				{
@@ -556,11 +563,11 @@ void CTexture::Load		()
 			}
 
 			if (pSurface && bCreateView)
-				CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, NULL, &m_pSRView));
+				CHK_DX(HW.pDevice->CreateShaderResourceView(pSurface, nullptr, &m_pSRView));
 
 			if (pSurface)
 			{
-				pSurface->SetPrivateData(WKPDID_D3DDebugObjectName, cName.size(), cName.c_str());
+				pSurface->SetPrivateData(WKPDID_D3DDebugObjectName, cName.size(), Name);
 			}
 
 			PostLoad	()		;

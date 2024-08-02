@@ -1,5 +1,5 @@
-#ifndef _RENDER_H_
-#define _RENDER_H_
+#pragma once
+
 
 #include "../xrCDB/frustum.h"
 #include "vis_common.h"
@@ -345,6 +345,24 @@ protected:
 	virtual	void					ScreenshotImpl			(ScreenshotMode mode, LPCSTR name, CMemoryWriter* memory_writer) = 0;
 };
 
+class ITexture
+{
+public:
+	virtual ~ITexture() = default;
+
+	virtual const char* GetName() const = 0;
+
+	virtual void Load(const char* Name) = 0;
+	virtual void Unload() = 0;
+};
+
+class IResourceManager
+{
+public:
+	virtual ~IResourceManager() = default;
+
+	virtual xr_vector<ITexture*> FindTexture(const char* Name) const = 0;
+};
+
 //extern ENGINE_API	IRender_interface*	Render;
 
-#endif

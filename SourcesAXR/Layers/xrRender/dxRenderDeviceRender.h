@@ -71,6 +71,8 @@ public:
 	virtual void	SetCacheXform(Fmatrix &mView, Fmatrix &mProject);
 	virtual void	OnAssetsChanged();
 
+	IResourceManager* GetResourceManager() const override;
+
 public:
 	CResourceManager*	Resources;
 	ref_shader			m_WireShader;

@@ -80,6 +80,11 @@ add_to_type_list(IKinematicsAnimatedScript)
 #undef script_type_list
 #define script_type_list save_type_list(IKinematicsAnimatedScript)
 
+using ITextureScript = class_exporter<ITexture>;
+add_to_type_list(ITextureScript)
+#undef script_type_list
+#define script_type_list save_type_list(ITextureScript)
+
 class CPatrolPointScript {
 public:
   static LPCSTR getName( CPatrolPoint* );

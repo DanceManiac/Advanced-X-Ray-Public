@@ -451,3 +451,5 @@ void  dxRenderDeviceRender::OnAssetsChanged()
 	Resources->m_textures_description.UnLoad();
 	Resources->m_textures_description.Load();
 }
+
+IResourceManager* dxRenderDeviceRender::GetResourceManager() const { return dynamic_cast<IResourceManager*>(Resources); }
