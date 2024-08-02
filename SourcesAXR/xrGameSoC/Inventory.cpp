@@ -376,7 +376,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 
 	if (Level().CurrentViewEntity() == pActor_owner)
 	{
-		if (pIItem->m_eItemPlace = eItemPlaceRuck)
+		if (pIItem->m_eItemPlace == eItemPlaceRuck)
 			Actor()->ChangeInventoryFullness(pIItem->GetOccupiedInvSpace());
 	}
 }
@@ -400,7 +400,7 @@ bool CInventory::DropItem(CGameObject *pObj)
 	VERIFY								(pIItem->m_eItemPlace!=eItemPlaceUndefined);
 
 	pIItem->object().processing_activate(); 
-	
+
 	switch(pIItem->m_eItemPlace)
 	{
 	case eItemPlaceBelt:{
@@ -442,7 +442,7 @@ bool CInventory::DropItem(CGameObject *pObj)
 
 	if (Level().CurrentViewEntity() == pActor_owner)
 	{
-		if (pIItem->m_eItemPlace = eItemPlaceRuck)
+		if (pIItem->m_eItemPlace == eItemPlaceRuck)
 			Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
 	}
 
