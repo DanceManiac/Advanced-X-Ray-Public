@@ -20,6 +20,16 @@ class CUI3tButton;
 class CUIDragDropListEx;
 class CUICellItem;
 
+
+enum EDDListType {
+	iInvalid,
+	iwSlot,
+	iwBag,
+	iwBelt,
+
+	iListTypeMax
+};
+
 class CUIInventoryWnd : public CUIDialogWnd, public CUIWndCallback
 {
 private:
@@ -108,7 +118,7 @@ protected:
 	void						ClearAllLists				();
 	void						BindDragDropListEnents		(CUIDragDropListEx* lst);
 	
-	EListType					GetType						(CUIDragDropListEx* l);
+	EDDListType					GetType						(CUIDragDropListEx* l);
 	CUIDragDropListEx*			GetSlotList					(u32 slot_idx);
 
 	bool		xr_stdcall		OnItemDrop					(CUICellItem* itm);

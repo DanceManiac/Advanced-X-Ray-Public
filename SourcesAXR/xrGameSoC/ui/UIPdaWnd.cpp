@@ -167,18 +167,38 @@ void CUIPdaWnd::Init()
 
 void CUIPdaWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 {
-    if (pWnd == UITabControl)
-    {
-        if (TAB_CHANGED == msg)
-        {
-			SetActiveSubdialog	((EPdaTabs)UITabControl->GetActiveIndex());
-		}
-    }
-    else
+	switch (msg)
 	{
-		R_ASSERT(m_pActiveDialog);
-		m_pActiveDialog->SendMessage(pWnd, msg, pData);
+	case TAB_CHANGED:
+	{
+		if (pWnd == UITabControl)
+		{
+			SetActiveSubdialog((EPdaTabs)UITabControl->GetActiveIndex());
+		}
+		break;
 	}
+	/*case BUTTON_CLICKED:
+	{
+		if (pWnd == m_btn_close)
+		{
+			if (psActorFlags.test(AF_3D_PDA))
+			{
+				if (Actor()->inventory().GetActiveSlot() == PDA_SLOT)
+					Actor()->inventory().Activate(NO_ACTIVE_SLOT);
+			}
+			else
+			{
+				HUD().GetUI()->StartStopMenu(this, true);
+			}
+		}
+		break;
+	}*/
+	default:
+	{
+		if (m_pActiveDialog)
+			m_pActiveDialog->SendMessage(pWnd, msg, pData);
+	}
+	};
 }
 
 bool CUIPdaWnd::OnMouseAction(float x, float y, EUIMessages mouse_action)
@@ -281,20 +301,6 @@ void CUIPdaWnd::Hide()
 	g_statHint->Discard();	*/
 }
 
-void CUIPdaWnd::UpdateDateTime() const
-{
-	static shared_str prevStrTime = " ";
-	xr_string strTime = *InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes);
-				strTime += " ";
-				strTime += *InventoryUtilities::GetGameDateAsString(InventoryUtilities::edpDateToDay);
-
-	if (xr_strcmp(strTime.c_str(), prevStrTime))
-	{
-		UITimerBackground->UITitleText.SetText(strTime.c_str());
-		prevStrTime = strTime.c_str();
-	}
-}
-
 void CUIPdaWnd::Update()
 {
 	inherited::Update		();
@@ -360,16 +366,16 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		Msg("not registered button identifier [%d]",UITabControl->GetActiveIndex());
 	}
 
-	luabind::functor<CUIDialogWndEx*> functor;
-	if (ai().script_engine().functor("pda.set_active_subdialog", functor))
-	{
-		CUIDialogWndEx* scriptWnd = functor(section_name);
-		if (scriptWnd)
-		{
-			scriptWnd->SetHolder(CurrentDialogHolder());
-			m_pActiveDialog = scriptWnd;
-		}
-	}
+	//luabind::functor<CUIDialogWndEx*> functor;
+	//if (ai().script_engine().functor("pda.set_active_subdialog", functor))
+	//{
+	//	CUIDialogWndEx* scriptWnd = functor(section_name);
+	//	if (scriptWnd)
+	//	{
+	//		scriptWnd->SetHolder(CurrentDialogHolder());
+	//		m_pActiveDialog = scriptWnd;
+	//	}
+	//}
 
 	UIMainPdaFrame->AttachChild		(m_pActiveDialog);
 	m_pActiveDialog->Show			(true);
@@ -378,6 +384,20 @@ void CUIPdaWnd::SetActiveSubdialog(EPdaTabs section)
 		UITabControl->SetNewActiveTab	(section);
 
 	m_pActiveSection = section;
+}
+
+void CUIPdaWnd::UpdateDateTime() const
+{
+	static shared_str prevStrTime = " ";
+	xr_string strTime = *InventoryUtilities::GetGameTimeAsString(InventoryUtilities::etpTimeToMinutes);
+				strTime += " ";
+				strTime += *InventoryUtilities::GetGameDateAsString(InventoryUtilities::edpDateToDay);
+
+	if (xr_strcmp(strTime.c_str(), prevStrTime))
+	{
+		UITimerBackground->UITitleText.SetText(strTime.c_str());
+		prevStrTime = strTime.c_str();
+	}
 }
 
 #include "UICursor.h"
@@ -397,39 +417,6 @@ void CUIPdaWnd::Draw()
 
 	inherited::Draw									();
 	DrawUpdatedSections								();
-}
-
-void CUIPdaWnd::PdaContentsChanged(pda_section::part type, bool flash) const
-{
-	if (type == pda_section::encyclopedia)
-	{
-		bool b = true;
-
-		if (type == pda_section::encyclopedia) {
-			UIEncyclopediaWnd->ReloadArticles();
-		}
-		else
-			if (type == pda_section::news) {
-				UIDiaryWnd->AddNews();
-				UIDiaryWnd->MarkNewsAsRead(UIDiaryWnd->IsShown());
-			}
-			else
-				if (type == pda_section::quests) {
-					UIEventsWnd->Reload();
-				}
-				else
-					if (type == pda_section::contacts) {
-						UIPdaContactsWnd->Reload();
-						b = false;
-					}
-
-		if (b && GameConstants::GetPDA_FlashingIconsQuestsEnabled())
-		{
-			g_pda_info_state |= type;
-			HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
-		}
-	}
-
 }
 
 void draw_sign		(CUIStatic* s, Fvector2& pos)
@@ -666,4 +653,37 @@ bool CUIPdaWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	}
 
     return inherited::OnKeyboardAction(dik, keyboard_action);
+}
+
+void CUIPdaWnd::PdaContentsChanged(pda_section::part type, bool flash) const
+{
+	if (type == pda_section::encyclopedia)
+	{
+		bool b = true;
+
+		if (type == pda_section::encyclopedia) {
+			UIEncyclopediaWnd->ReloadArticles();
+		}
+		else
+			if (type == pda_section::news) {
+				UIDiaryWnd->AddNews();
+				UIDiaryWnd->MarkNewsAsRead(UIDiaryWnd->IsShown());
+			}
+			else
+				if (type == pda_section::quests) {
+					UIEventsWnd->Reload();
+				}
+				else
+					if (type == pda_section::contacts) {
+						UIPdaContactsWnd->Reload();
+						b = false;
+					}
+
+		if (b && GameConstants::GetPDA_FlashingIconsQuestsEnabled())
+		{
+			g_pda_info_state |= type;
+			HUD().GetUI()->UIMainIngameWnd->SetFlashIconState_(CUIMainIngameWnd::efiPdaTask, true);
+		}
+	}
+
 }

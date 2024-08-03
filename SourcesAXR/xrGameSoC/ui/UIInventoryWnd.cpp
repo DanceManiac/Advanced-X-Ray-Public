@@ -293,7 +293,7 @@ void CUIInventoryWnd::InitCallbacks()
 	AddCallback(UIExitButton->WindowName(), BUTTON_CLICKED, CUIWndCallback::void_function(this, &CUIInventoryWnd::OnExitBtnClicked));
 }
 
-EListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
+EDDListType CUIInventoryWnd::GetType(CUIDragDropListEx* l)
 {
 	if(l==m_pUIBagList)			return iwBag;
 	if(l==m_pUIBeltList)		return iwBelt;

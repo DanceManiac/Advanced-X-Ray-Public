@@ -662,8 +662,8 @@ bool CUIBuyWnd::OnItemDrop(CUICellItem* itm)
 		)		
 		return false;
 
-	EListType t_new			= GetType(new_owner);
-	EListType t_old			= GetType(old_owner);
+	EDDListType t_new			= GetType(new_owner);
+	EDDListType t_old			= GetType(old_owner);
 	if(t_new == t_old)		return true;
 
 	switch(t_new)
@@ -716,7 +716,7 @@ CUIDragDropListEx* CUIBuyWnd::GetSlotList(u32 slot_idx)
 #endif // DEBUG
 }
 
-EListType CUIBuyWnd::GetType(CUIDragDropListEx* l)
+EDDListType CUIBuyWnd::GetType(CUIDragDropListEx* l)
 {
 	if(l==m_list[MP_SLOT_BELT])		
 		return iwBelt;
@@ -744,7 +744,7 @@ bool CUIBuyWnd::OnItemDbClick(CUICellItem* itm)
 {
 
 		CUIDragDropListEx*	old_owner		= itm->OwnerList();
-		EListType t_old						= GetType(old_owner);
+		EDDListType t_old						= GetType(old_owner);
 
 		switch(t_old){
 			case iwSlot:{

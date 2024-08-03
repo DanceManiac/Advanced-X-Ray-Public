@@ -18,6 +18,15 @@ typedef enum {
 	MP_SLOT_NUM
 } MP_BUY_SLOT;
 
+
+enum EDDListType {
+	iInvalid,
+	iwSlot,
+	iwBag,
+	iwBelt,
+
+	iwListTypeMax
+};
 class CUIWeaponCellItem;
 class CWeapon;
 
@@ -105,7 +114,7 @@ protected:
 	CWeapon*			GetPistol					();
 	CWeapon*			GetRifle					();
 	void				ActivatePropertiesBox		();
-	EListType			GetType						(CUIDragDropListEx* l);
+	EDDListType			GetType						(CUIDragDropListEx* l);
 	CUIDragDropListEx*	GetSlotList					(u32 slot_idx);
 	MP_BUY_SLOT			GetLocalSlot				(u32 slot);
 	bool				ToSlot						(CUICellItem* itm, bool force_place);

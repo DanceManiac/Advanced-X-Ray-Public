@@ -376,8 +376,8 @@ bool CUIInventoryWnd::OnItemDrop(CUICellItem* itm)
 		}
 		return false;
 	}
-	EListType t_new		= GetType(new_owner);
-	EListType t_old		= GetType(old_owner);
+	EDDListType t_new		= GetType(new_owner);
+	EDDListType t_old		= GetType(old_owner);
 	if(t_new == t_old)	return true;
 
 	switch(t_new){
@@ -404,7 +404,7 @@ bool CUIInventoryWnd::OnItemDbClick(CUICellItem* itm)
 		return true;
 
 	CUIDragDropListEx*	old_owner		= itm->OwnerList();
-	EListType t_old						= GetType(old_owner);
+	EDDListType t_old					= GetType(old_owner);
 
 	switch(t_old){
 		case iwSlot:{

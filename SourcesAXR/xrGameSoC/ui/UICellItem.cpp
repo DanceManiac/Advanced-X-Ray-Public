@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "UICellItem.h"
+#include "uicursor.h"
+#include "../inventory_item.h"
+#include "UIDragDropListEx.h"
 #include "../xr_level_controller.h"
 #include "../../xrEngine/xr_input.h"
 #include "../HUDManager.h"
 #include "../level.h"
 #include "object_broker.h"
 #include "UIXmlInit.h"
-#include "UIDragDropListEx.h"
 #include "UIProgressBar.h"
 #include "UIGameCustom.h"
 #include "UIGameSP.h"
@@ -247,13 +249,13 @@ bool CUICellItem::OnMouseAction(float x, float y, EUIMessages mouse_action)
 			return true;
 		}
 	}
-#pragma todo("do not forget about refresh eatable portions")
-	/*else if ( mouse_action == WINDOW_LBUTTON_DB_CLICK )
+	else if ( mouse_action == WINDOW_LBUTTON_DB_CLICK )
 	{
 		GetMessageTarget()->SendMessage( this, DRAG_DROP_ITEM_DB_CLICK, NULL );
-		HUD().GetUI()->UIGame()->ActorMenu().SetCurrentConsumable(this);
+#pragma todo("do not forget about refresh eatable portions")
+		//HUD().GetUI()->UIGame()->ActorMenu().SetCurrentConsumable(this);
 		return true;
-	}*/
+	}
 	else if ( mouse_action == WINDOW_RBUTTON_DOWN )
 	{
 		GetMessageTarget()->SendMessage( this, DRAG_DROP_ITEM_RBUTTON_CLICK, NULL );
