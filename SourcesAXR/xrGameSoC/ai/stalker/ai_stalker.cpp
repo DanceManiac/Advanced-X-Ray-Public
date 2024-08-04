@@ -1236,6 +1236,9 @@ void CAI_Stalker::on_after_change_team			()
 
 void CAI_Stalker::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)
 {
+	if (!m_boneHitProtection)
+		return;
+
 	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual());
 	CInifile* ini = pKinematics->LL_UserData();
 	if (ini)
