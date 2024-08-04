@@ -246,8 +246,6 @@ int g_svDedicateServerUpdateReate = 100;
 
 ENGINE_API xr_list<LOADING_EVENT>			g_loading_events;
 
-//extern bool IsMainMenuActive(); //ECO_RENDER add
-
 void ImGui_NewFrame()
 {
 	ImGuiIO& io = ImGui::GetIO();
@@ -386,19 +384,7 @@ void CRenderDevice::on_idle		()
 	u32 stored_cur_frame = dwFrame;
 #endif
 
-#ifdef ECO_RENDER // ECO_RENDER START
-    static u32 time_frame = 0;
-    u32 time_curr = timeGetTime();
-    u32 time_diff = time_curr - time_frame;
-    time_frame = time_curr;
-    u32 optimal = 10;
-    if (Device.Paused() || IGame_Persistent::IsMainMenuActive())
-        optimal = 32;
-    if (time_diff < optimal)
-        Sleep(optimal - time_diff);
-#else
-	Sleep						(0);
-#endif // ECO_RENDER END
+	Sleep(0);
 
 	u32 t_width = Device.dwWidth, t_height = Device.dwHeight;
 
@@ -494,10 +480,8 @@ void CRenderDevice::on_idle		()
 
 	u32 updateDelta = 1; // 1 ms
 
-//	IMainMenu* pMainMenu = g_pGamePersistent ? g_pGamePersistent->m_pMainMenu : 0;
-
 	if (Device.Paused() || bMainMenuActive())
-		updateDelta = 16; // 16 ms, ~60 FPS max while paused
+		updateDelta = 8; // 16 ms, ~60 FPS max while paused
 	else
 		updateDelta = (u32)fps_to_rate;
 
