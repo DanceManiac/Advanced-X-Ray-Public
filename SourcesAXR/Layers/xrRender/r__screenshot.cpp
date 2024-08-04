@@ -9,7 +9,8 @@
 #include "d3dx10tex.h"
 #endif	//	USE_DX11
 
-#define	GAMESAVE_SIZE	128
+//constexpr auto GAMESAVE_SIZE = 128;
+static const int save_screenshot_size = READ_IF_EXISTS(pAdvancedSettings, r_u32, "ui_settings", "gamesave_screenshot_size", 128);
 
 IC u32 convert				(float c)	{
 	u32 C=iFloor(c);
@@ -59,8 +60,8 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 	
 				D3D_TEXTURE2D_DESC desc;
 				ZeroMemory( &desc, sizeof(desc) );
-				desc.Width = GAMESAVE_SIZE;
-				desc.Height = GAMESAVE_SIZE;
+				desc.Width = save_screenshot_size;
+				desc.Height = save_screenshot_size;
 				desc.MipLevels = 1;
 				desc.ArraySize = 1;
 				desc.Format = DXGI_FORMAT_BC1_UNORM;
@@ -334,7 +335,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 			{
 				// texture
 				ID3DTexture2D*	texture	= NULL;
-				hr					= D3DXCreateTexture(HW.pDevice,GAMESAVE_SIZE,GAMESAVE_SIZE,1,0,D3DFMT_DXT1,D3DPOOL_SCRATCH,&texture);
+				hr					= D3DXCreateTexture(HW.pDevice,save_screenshot_size,save_screenshot_size,1,0,D3DFMT_DXT1,D3DPOOL_SCRATCH,&texture);
 				if(hr!=D3D_OK)		goto _end_;
 				if(NULL==texture)	goto _end_;
 
