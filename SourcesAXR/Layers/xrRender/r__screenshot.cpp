@@ -147,7 +147,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 			{
 				string64			t_stemp;
 				string_path			buf;
-
+				
 				if (strstr(Core.Params, "-ss_jpg"))
 				{
 					xr_sprintf(buf, sizeof(buf), "ss_%s_%s_(%s).jpg", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
@@ -176,7 +176,6 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 				{
 					sprintf_s(buf, sizeof(buf), "ssq_%s_%s_(%s).png", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
 					ID3DBlob* saved = 0;
-					//CHK_DX(D3DXSaveSurfaceToFileInMemory(&saved, D3DXIFF_PNG, pFB, 0, srcRect));
 
 					CHK_DX				(D3DX11SaveTextureToMemory(HW.pContext, pSrcTexture, D3DX11_IFF_PNG, &saved, 0));
 
@@ -189,9 +188,8 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 			break;
 		case IRender_interface::SM_FOR_LEVELMAP:
 		case IRender_interface::SM_FOR_CUBEMAP:
-			{
+		{
 			string_path buf;
-			TGAdesc				p;
 			VERIFY(name);
 			strconcat(sizeof(buf), buf, name, ".tga");
 			IWriter* fs = FS.w_open("$screenshots$", buf);
@@ -225,6 +223,8 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 #else
 			pTex->Unmap(0);
 #endif
+			TGAdesc p{};
+			p.format = IMG_24B;
 			p.scanlenght = Device.dwHeight * 4;
 			p.width = Device.dwHeight;
 			p.height = Device.dwHeight;
@@ -232,8 +232,7 @@ void CRender::ScreenshotImpl	(ScreenshotMode mode, LPCSTR name, CMemoryWriter* m
 			p.maketga(*fs);
 			xr_free(data);
 			FS.w_close(fs);
-			}
-			break;
+		} break;
 	}
 
 	_RELEASE(pSrcTexture);
@@ -624,4 +623,14 @@ void CRender::ScreenshotAsyncEnd(CMemoryWriter &memory_writer)
 void DoAsyncScreenshot()
 {
 	RImplementation.Target->DoAsyncScreenshot();
+}
+
+#include "../../xrCore/Spheremap/Spheremap.h"
+
+void CRender::CreatePanorama()
+{
+	string_path file_name;
+	string64 t_stemp;
+	sprintf_s(file_name, sizeof(file_name), "spheremap_panorama_%s_%s_(%s).jpg", Core.UserName, timestamp(t_stemp), (g_pGameLevel) ? g_pGameLevel->name().c_str() : "mainmenu");
+	GenerateSpheremap(file_name, ps_r_panorama_scr_size);
 }

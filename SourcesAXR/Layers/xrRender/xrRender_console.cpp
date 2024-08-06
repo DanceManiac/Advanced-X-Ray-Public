@@ -171,6 +171,21 @@ xr_token							qshader_preset_token[] = {
 	{ 0,							0												}
 };
 
+u32 ps_r_panorama_scr_size = 2048;
+xr_token qpanorama_scr_size_token[] =
+{
+	{ "512",						512											},
+	{ "1024",						1024										},
+	{ "1536",						1536										},
+	{ "2048",						2048										},
+	{ "2560",						2560										},
+	{ "3072",						3072										},
+	{ "4096",						4096										},
+	{ "8192",						8192										},
+	{ "16384",						16384										},
+	 { 0,							0											}
+};
+
 //	“Off”
 //	“DX10.0 style [Standard]”
 //	“DX10.1 style [Higher quality]”
@@ -1389,6 +1404,7 @@ void		xrRender_initconsole	()
 
 	CMD3(CCC_Mask,			"r__use_shader_cache",			&ps_r__common_flags,		RFLAG_USE_SHADERS_CACHE);
 	CMD4(CCC_Float,			"r__dyn_opt_dist",				&ps_r__opt_dist,			100.0f, 1000.0f);
+	CMD3(CCC_Token,			"r__panorama_scr_size",			&ps_r_panorama_scr_size,	qpanorama_scr_size_token);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

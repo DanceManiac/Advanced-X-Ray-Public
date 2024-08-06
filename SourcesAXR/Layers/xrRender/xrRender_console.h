@@ -185,6 +185,8 @@ extern ECORE_API int			ps_r4_pseudo_pbr;
 
 extern ECORE_API float			ps_r__opt_dist;
 
+extern ECORE_API u32			ps_r_panorama_scr_size;
+
 enum
 {
 	R2FLAG_SUN					= (1<<0),

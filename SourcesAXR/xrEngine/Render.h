@@ -308,6 +308,8 @@ public:
 	virtual void					ScreenshotAsyncBegin	() = 0;
 	virtual void					ScreenshotAsyncEnd		(CMemoryWriter& memory_writer) = 0;
 
+	virtual	void					CreatePanorama			()											= 0;
+
 	// Render mode
 	virtual void					rmNear					()											= 0;
 	virtual void					rmFar					()											= 0;

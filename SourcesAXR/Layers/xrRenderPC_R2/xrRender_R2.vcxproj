@@ -900,6 +900,12 @@
     <Text Include="todo.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\3rd party\cximage\CxImage\cximage.vcxproj">
+      <Project>{880cd250-ba77-4daf-a8d4-552f12dd3ae4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\3rd party\cximage\jpeg\Jpeg.vcxproj">
+      <Project>{e6343391-13fc-479e-b62f-1c24f7b85408}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\3rd party\imgui\imgui.vcxproj">
       <Project>{c8fbc3ce-d6de-4fc3-bc15-7b647614db09}</Project>
     </ProjectReference>

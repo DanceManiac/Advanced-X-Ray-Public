@@ -33,6 +33,7 @@ private:
 	BOOL		m_bMakeScreenshot;
 	int			m_iLMScreenshotFragment;
 	BOOL		m_bMakeLevelMap;
+	BOOL		m_bMakePanoramic;
 
 	float		m_fSpeed0;
 	float		m_fSpeed1;
@@ -47,7 +48,7 @@ private:
 	void		MakeLevelMapProcess		();
 	void		MakeScreenshotFace		();
 	void		RecordKey				();
-	void		MakeCubemap				();
+	void		MakeCubemap				(BOOL bHQ);
 	void		MakeScreenshot			();
 	void		MakeLevelMapScreenshot	(BOOL bHQ);
 public:

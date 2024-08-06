@@ -105,6 +105,7 @@ CDemoRecord::CDemoRecord(const char *name, float life_time) : CEffectorCam(cefDe
 		m_bMakeCubeMap		= FALSE;
 		m_bMakeScreenshot	= FALSE;
 		m_bMakeLevelMap		= FALSE;
+		m_bMakePanoramic	= FALSE;
 
 		m_fSpeed0		= pSettings->r_float("demo_record","speed0");
 		m_fSpeed1		= pSettings->r_float("demo_record","speed1");
@@ -270,6 +271,13 @@ void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 		N.set		(m_Camera.j);
 		D.set		(m_Camera.k);
 		psHUD_Flags.assign(s_hud_flag);
+
+		if (m_bMakePanoramic)
+		{
+			Render->CreatePanorama();
+		}
+
+		m_bMakePanoramic = FALSE;
 		m_bMakeCubeMap = FALSE;
 	break;
 	}
@@ -294,6 +302,7 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 		info.dont_apply = true;
 	}else if (m_bMakeCubeMap)
 	{
+		info.fFov		= 90.f;
 		MakeCubeMapFace	(info.d, info.n);
 		info.p.set		(m_Camera.c);
 		info.fAspect	= 1.f;
@@ -315,6 +324,7 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 			pApp->pFontSystem->OutNext	("F11");
 			pApp->pFontSystem->OutNext	("LCONTROL+F11");
 			pApp->pFontSystem->OutNext	("F12");
+			pApp->pFontSystem->OutNext	("LCONTROL+BACK");
 			pApp->pFontSystem->SetAligment(CGameFont::alLeft);
 			pApp->pFontSystem->OutSetI	(0,+.05f);
 			pApp->pFontSystem->OutNext	("= Append Key");
@@ -323,6 +333,7 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 			pApp->pFontSystem->OutNext	("= Level Map ScreenShot");
 			pApp->pFontSystem->OutNext	("= Level Map ScreenShot(High Quality)");
 			pApp->pFontSystem->OutNext	("= ScreenShot");
+			pApp->pFontSystem->OutNext	("= 360 Panorama");
 
 		}
 
@@ -405,7 +416,7 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 	if (dik == DIK_GRAVE)
 							Console->Show			();
 	if (dik == DIK_SPACE)	RecordKey				();
-	if (dik == DIK_BACK)	MakeCubemap				();
+	if (dik == DIK_BACK)	MakeCubemap				(IR_GetKeyState(DIK_LCONTROL));
 	if (dik == DIK_F11)		MakeLevelMapScreenshot	(IR_GetKeyState(DIK_LCONTROL));
 	if (dik == DIK_F12)		MakeScreenshot			();
 	if (dik == DIK_ESCAPE)	fLifeTime				= -1;
@@ -503,7 +514,7 @@ void CDemoRecord::IR_OnMouseHold		(int btn)
 	update_whith_timescale( m_vT, vT_delta );
 }
 
-void CDemoRecord::RecordKey			()
+void CDemoRecord::RecordKey()
 {
 	Fmatrix			g_matView;
  
@@ -512,13 +523,17 @@ void CDemoRecord::RecordKey			()
 	iCount++;
 }
 
-void CDemoRecord::MakeCubemap		()
+void CDemoRecord::MakeCubemap(BOOL bHQ)
 {
 	m_bMakeCubeMap	= TRUE;
+
+	if (bHQ)
+		m_bMakePanoramic = TRUE;
+
 	m_Stage			= 0;
 }
 
-void CDemoRecord::MakeScreenshot	()
+void CDemoRecord::MakeScreenshot()
 {
 	m_bMakeScreenshot = TRUE;
 	m_Stage = 0;
