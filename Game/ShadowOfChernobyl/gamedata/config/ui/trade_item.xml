@@ -44,6 +44,8 @@
 #include "ui\af_params.xml"
 #include "ui\wpn_params.xml"
 #include "ui\outfit_info.xml"
+#include "ui\booster_params.xml"
+#include "ui\inventory_items_params.xml"
 
 </w>
 

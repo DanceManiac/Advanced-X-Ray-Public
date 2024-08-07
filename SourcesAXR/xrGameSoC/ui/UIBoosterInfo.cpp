@@ -442,6 +442,7 @@ void UIBoosterInfoItem::SetCaption(LPCSTR name)
 
 void UIBoosterInfoItem::SetValue(float value, int vle, float max_val)
 {
+	R_ASSERT2(this, make_string("Please check, is this file or node connected?"));
 	value *= m_magnitude;
 	max_val *= m_magnitude;
 	string32 buf, buf2;

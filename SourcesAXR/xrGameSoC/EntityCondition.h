@@ -170,7 +170,7 @@ public:
 	virtual void			ChangeHangover			(const float value)	{};
 	virtual void			ChangeNarcotism			(const float value)	{};
 	virtual void			ChangeWithdrawal		(const float value)	{};
-	virtual void 			ChangeDrugs				(float value)		{};
+	virtual void 			ChangeDrugs				(const float value)	{};
 	virtual void			ChangeFrostbite			(const float value)	{};
 	void 					ChangeHealth			(float value);
 	void 					ChangePower				(float value);

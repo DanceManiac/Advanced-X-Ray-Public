@@ -167,7 +167,7 @@ function keep_item(npc, item)
 	
 	--if ((item:is_detector() and mfs_functions.ReadDetectorsUseBatteryEnabled()) // For future
 	--or (item:is_anomaly_detector() and mfs_functions.ReadAnomalyDetectorsUseBatteryEnabled()) 
-	if (item:is_torch() and mfs_functions.ReadTorchUseBatteryEnabled())) then
+	if (item:is_torch() and mfs_functions.ReadTorchUseBatteryEnabled()) then
 		set_charge_level(item)
 		return
 	end
