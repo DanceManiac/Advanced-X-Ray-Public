@@ -208,11 +208,11 @@ void CHudItem::OnMotionMark(u32 state, const motion_marks& M)
 void CHudItem::PlayAnimBore()
 {
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_bore_jammed", "anm_bore" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_bore_jammed", "anm_bore", "anim_bore", "anim_playing" }, true, GetState());
 	else if (IsMagazineEmpty())
-		PlayHUDMotionIfExists({ "anm_bore_empty", "anm_bore" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_bore_empty", "anm_bore", "anim_bore", "anim_playing" }, true, GetState());
 	else
-		PlayHUDMotionIfExists({ "anim_bore", "anm_bore" }, true, GetState());
+		PlayHUDMotionIfExists({ "anim_bore", "anim_playing", "anm_bore" }, true, GetState());
 }
 
 bool CHudItem::Activate() 
@@ -481,9 +481,9 @@ void CHudItem::PlayAnimIdle()
 	if (TryPlayAnimIdle()) return;
 
 	if (IsMisfireNow())
-		PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_jammed", "anm_idle", "anim_idle" }, true, GetState());
 	else if (IsMagazineEmpty())
-		PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle" }, true, GetState());
+		PlayHUDMotionIfExists({ "anm_idle_empty", "anm_idle", "anim_idle" }, true, GetState());
 	else
 		PlayHUDMotionIfExists({ "anim_idle", "anm_idle" }, true, GetState());
 }
