@@ -1,14 +1,16 @@
 
 	<intro_logo>
+		<play_each_item>1</play_each_item>
 		<global_wnd x="0" y="0" width="1024" height="768">
+		<pause_state>on</pause_state>
 			<auto_static x="0" y="0" width="1024" height="768" stretch="1">
+				<window_name>back</window_name>
 				<texture>intro\intro_back</texture>
 			</auto_static>
 		</global_wnd>
-		<play_each_item>1</play_each_item>
 
 		<item type="video">
-			<delay>1</delay>
+			<!--delay>1</delay-->
 			<pause_state>on</pause_state>
 			<sound>characters_voice\scenario\video\thq_logo_audio</sound>
 			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
@@ -16,7 +18,7 @@
 			</video_wnd>
 		</item>
 		<item type="video">
-			<delay>1</delay>
+			<!--delay>1</delay-->
 			<pause_state>on</pause_state>
 			<sound>characters_voice\scenario\video\intro_gsc_wp</sound>
 			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
@@ -26,7 +28,7 @@
 
 		<item type="video">
 			<sound>characters_voice\scenario\video\intro_gsc</sound>
-			<delay>1</delay>
+			<!--delay>1</delay-->
 			<pause_state>on</pause_state>
 			<video_wnd x="0" y="0" width="1024" height="768" stretch="1">
 				<texture x="0" y="1" width="800" height="358">intro\intro_gsc</texture>
@@ -35,7 +37,7 @@
 
 		<item type="image">
 			<length_sec>9</length_sec>
-			<pause_state>on</pause_state>
+			<pause_state>off</pause_state>
 			<main_wnd>
 				<auto_static start_time="0" length_sec="4"  x="0" y="0" width="1024" height="768" stretch="1" light_anim="asus_logo_01" light_anim_cyclic="0" la_alpha="1" la_texture="1">
 					<window_name>w1</window_name>
@@ -49,7 +51,7 @@
 		</item>
 		<item type="image">
 			<length_sec>5</length_sec>
-			<pause_state>on</pause_state>
+			<pause_state>off</pause_state>
 			<main_wnd>
 				<auto_static start_time="0" length_sec="4"  x="0" y="0" width="1024" height="768" stretch="1" light_anim="asus_logo_01" light_anim_cyclic="0" la_alpha="1" la_texture="1">
 					<window_name>w1</window_name>
