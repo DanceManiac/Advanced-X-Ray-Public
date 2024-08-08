@@ -1125,6 +1125,7 @@ void CActor::UpdateCL	()
 float	NET_Jump = 0;
 
 #include "ai\monsters\ai_monster_utils.h"
+#include "ai_object_location.h"
 
 void CActor::shedule_Update	(u32 DT)
 {
@@ -1169,6 +1170,11 @@ void CActor::shedule_Update	(u32 DT)
 
 	//обновление инвентаря
 	UpdateInventoryOwner			(DT);
+
+	// Dance Maniac: Hack for non-limited bolts.
+	if (!GameConstants::GetLimitedBolts() && &inventory() && !inventory().ItemFromSlot(BOLT_SLOT))
+		Level().spawn_item("bolt", Position(), ai_location().level_vertex_id(), ID());
+
 	if (GameID() == GAME_SINGLE)
 		GameTaskManager().UpdateTasks	();
 

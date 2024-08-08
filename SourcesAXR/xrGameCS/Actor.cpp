@@ -1045,6 +1045,10 @@ void CActor::UpdateCL	()
 {
 	UpdateInventoryOwner			(Device.dwTimeDelta);
 
+	// Dance Maniac: Hack for non-limited bolts.
+	if (!GameConstants::GetLimitedBolts() && &inventory() && !inventory().ItemFromSlot(BOLT_SLOT))
+		Level().spawn_item("bolt", Position(), ai_location().level_vertex_id(), ID());
+
 	if (load_screen_renderer.IsActive() && inventory().GetActiveSlot() == PDA_SLOT)
 		inventory().Activate(NO_ACTIVE_SLOT);
 
