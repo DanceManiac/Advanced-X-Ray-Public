@@ -673,6 +673,8 @@ bool _decompressLZ(u8** dest, unsigned* dest_sz, void* src, unsigned src_sz, int
 
 	*dest		= fs.OutPointer();
 	*dest_sz	= fs.OutSize();
+
+	return true;
 }
 
 unsigned _readLZ	(int hf, void* &d, unsigned size)
