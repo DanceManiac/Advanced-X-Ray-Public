@@ -22,6 +22,7 @@ public:
 	virtual void 	OnMoveToRuck(const SInvItemPlace& prev);
 	virtual void	OnActiveItem();
 	virtual void	OnHiddenItem();
+	virtual bool	ParentIsActor() override;
 
 	void			ToggleBackpack();
 	void			HideBackpack();

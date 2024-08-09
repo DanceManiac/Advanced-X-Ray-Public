@@ -3436,11 +3436,17 @@ BOOL CWeapon::ParentMayHaveAimBullet	()
 	return EA->cast_actor()!=0;
 }
 
-bool CWeapon::ParentIsActor	()
+bool CWeapon::ParentIsActor()
 {
-	CObject* O=H_Parent();
-	CEntityAlive* EA=smart_cast<CEntityAlive*>(O);
-	return EA->cast_actor()!=0;
+	CObject* O = H_Parent();
+	if (!O)
+		return FALSE;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return FALSE;
+
+	return EA->cast_actor() != 0;
 }
 
 extern int hud_adj_mode;

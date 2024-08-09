@@ -130,7 +130,7 @@ public:
 	virtual void UpdateXForm() override;
 	virtual void OnActiveItem() override;
 	virtual void OnHiddenItem() override;
-
+	virtual bool ParentIsActor() override;
 
 	enum ePDAState
 	{

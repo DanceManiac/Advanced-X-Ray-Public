@@ -903,3 +903,16 @@ void CPda::PlayScriptFunction()
 		m_functor();
 	}
 }
+
+bool CPda::ParentIsActor()
+{
+	CObject* O = H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return EA->cast_actor() != nullptr;
+}

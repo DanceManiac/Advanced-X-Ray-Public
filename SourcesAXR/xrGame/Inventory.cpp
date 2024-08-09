@@ -25,6 +25,7 @@
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomBackpack.h"
+#include "PDA.h"
 
 using namespace InventoryUtilities;
 

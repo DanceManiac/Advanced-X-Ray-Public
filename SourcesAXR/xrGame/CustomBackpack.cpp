@@ -278,6 +278,19 @@ void CCustomBackpack::UpdateXForm()
 	CInventoryItem::UpdateXForm();
 }
 
+bool CCustomBackpack::ParentIsActor()
+{
+	CObject* O = H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return EA->cast_actor() != nullptr;
+}
+
 bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
 {
 	bool result = inherited::install_upgrade_impl(section, test);

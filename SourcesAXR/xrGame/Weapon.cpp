@@ -3449,7 +3449,7 @@ BOOL CWeapon::ParentMayHaveAimBullet	()
 	return EA->cast_actor()!=0;
 }
 
-BOOL CWeapon::ParentIsActor	()
+bool CWeapon::ParentIsActor	()
 {
 	CObject* O			= H_Parent();
 	if (!O)
