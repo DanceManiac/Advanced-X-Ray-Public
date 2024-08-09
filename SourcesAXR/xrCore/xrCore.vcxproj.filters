@@ -91,6 +91,9 @@
     <Filter Include="Crypto">
       <UniqueIdentifier>{5a0b5a90-4e2c-4221-876e-5d218996ac19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SphereMap">
+      <UniqueIdentifier>{168b6e8c-c6ab-48a1-bc60-800b09bd3e62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FTimer.cpp">
@@ -296,6 +299,12 @@
     </ClCompile>
     <ClCompile Include="Crypto\trivial_encryptor.cpp">
       <Filter>Crypto</Filter>
+	</ClCompile>
+    <ClCompile Include="Spheremap\stb_image.cpp">
+      <Filter>SphereMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Spheremap\stb_image_write.cpp">
+      <Filter>SphereMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -614,6 +623,15 @@
     </ClInclude>
     <ClInclude Include="Crypto\trivial_encryptor.h">
       <Filter>Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="Spheremap\Spheremap.h">
+      <Filter>SphereMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Spheremap\stb_image.hpp">
+      <Filter>SphereMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Spheremap\stb_image_write.hpp">
+      <Filter>SphereMap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

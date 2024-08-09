@@ -51,6 +51,8 @@ USAGE:
    at the end of the line.)
 */
 
+#include "../stdafx.h"
+
 #ifndef INCLUDE_STB_IMAGE_WRITE_H
 #define INCLUDE_STB_IMAGE_WRITE_H
 
@@ -68,6 +70,8 @@ extern int stbi_write_tga(char const *filename, int w, int h, int comp, const vo
 
 #endif//INCLUDE_STB_IMAGE_WRITE_H
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 #ifdef STB_IMAGE_WRITE_IMPLEMENTATION
 
 #include <stdarg.h>
@@ -75,6 +79,10 @@ extern int stbi_write_tga(char const *filename, int w, int h, int comp, const vo
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <setjmp.h>
+#include <stdint.h>
+
+#include "../../3rd party/libjpeg-turbo64/include/jpeglib.h"
 
 typedef unsigned int stbiw_uint32;
 typedef int stb_image_write_test[sizeof(stbiw_uint32)==4 ? 1 : -1];
@@ -179,6 +187,99 @@ int stbi_write_tga(char const *filename, int x, int y, int comp, const void *dat
    int has_alpha = !(comp & 1);
    return outfile(filename, -1,-1, x, y, comp, (void *) data, has_alpha, 0,
                   "111 221 2222 11", 0,0,2, 0,0,0, 0,0,x,y, 24+8*has_alpha, 8*has_alpha);
+}
+
+// Dance Maniac: Added conversion and saving to jpg format
+int stbi_write_jpg(char const* filename, int x, int y, int comp, const void* data, int quality)
+{
+    struct jpeg_compress_struct cinfo;
+    struct jpeg_error_mgr jerr;
+    FILE* outfile;
+    JSAMPROW row_pointer[1];
+    int row_stride;
+
+    cinfo.err = jpeg_std_error(&jerr);
+    jpeg_create_compress(&cinfo);
+
+    if ((outfile = fopen(filename, "wb")) == NULL)
+    {
+        R_ASSERT2("[stbi_write_jpg]: Can't open [%s]", filename);
+        return 0;
+    }
+
+    jpeg_stdio_dest(&cinfo, outfile);
+
+    cinfo.image_width = x;
+    cinfo.image_height = y / 2;
+    cinfo.input_components = 3;
+    cinfo.in_color_space = JCS_RGB;
+
+    jpeg_set_defaults(&cinfo);
+    jpeg_set_quality(&cinfo, quality, TRUE);
+
+    jpeg_start_compress(&cinfo, TRUE);
+
+    row_stride = x * comp;
+
+    const uint8_t* pixels = (const uint8_t*)data;
+
+    // Отражение по вертикали, чтобы было правильно. Может заопционалить?
+    uint8_t* flipped_pixels = (uint8_t*)malloc(row_stride * cinfo.image_height);
+    if (!flipped_pixels)
+    {
+        R_ASSERT("[stbi_write_jpg]: Failed to allocate memory for flipped pixels!");
+        jpeg_finish_compress(&cinfo);
+        fclose(outfile);
+        jpeg_destroy_compress(&cinfo);
+        return 0;
+    }
+
+    for (int i = 0; i < cinfo.image_height; ++i)
+    {
+        for (int j = 0; j < cinfo.image_width; ++j)
+        {
+            memcpy(&flipped_pixels[i * row_stride + j * comp], &pixels[(i * 2 * row_stride) + (cinfo.image_width - 1 - j) * comp], comp);
+        }
+    }
+
+    while (cinfo.next_scanline < cinfo.image_height)
+    {
+        row_pointer[0] = (JSAMPROW)&flipped_pixels[cinfo.next_scanline * row_stride];
+        (void)jpeg_write_scanlines(&cinfo, row_pointer, 1);
+    }
+
+    free(flipped_pixels);
+
+    jpeg_finish_compress(&cinfo);
+    fclose(outfile);
+    jpeg_destroy_compress(&cinfo);
+
+    return 1;
+}
+
+int convert_tga_to_jpg(const char* jpg_filename, const void* data, int width, int height, int components, int quality)
+{
+    uint8_t* tga_data = (uint8_t*)data;
+    uint8_t* rgb_data = (uint8_t*)malloc(width * height * 3);
+    
+    if (!rgb_data)
+    {
+        R_ASSERT("[convert_tga_to_jpg]: Failed to allocate memory for RGB data!");
+        return 0;
+    }
+
+    for (int i = 0; i < width * height; ++i)
+    {
+        rgb_data[i * 3 + 0] = tga_data[i * components + 2]; // R
+        rgb_data[i * 3 + 1] = tga_data[i * components + 1]; // G
+        rgb_data[i * 3 + 2] = tga_data[i * components + 0]; // B
+    }
+
+    int result = stbi_write_jpg(jpg_filename, width, height, 3, rgb_data, quality);
+
+    free(rgb_data);
+
+    return result;
 }
 
 // stretchy buffer; stbi__sbpush() == vector<>::push_back() -- stbi__sbcount() == vector<>::size()

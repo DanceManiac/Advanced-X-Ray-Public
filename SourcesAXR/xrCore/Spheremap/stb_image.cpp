@@ -3220,230 +3220,146 @@ static int stbi_tga_test(stbi *s)
    return res;
 }
 
+// Dance Maniac: Fixed tga cubemap screenshots reading
 static stbi_uc *tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
-   //   read in the TGA header stuff
-   int tga_offset = get8u(s);
-   int tga_indexed = get8u(s);
-   int tga_image_type = get8u(s);
-   int tga_is_RLE = 0;
-   int tga_palette_start = get16le(s);
-   int tga_palette_len = get16le(s);
-   int tga_palette_bits = get8u(s);
-   int tga_x_origin = get16le(s);
-   int tga_y_origin = get16le(s);
-   int tga_width = get16le(s);
-   int tga_height = get16le(s);
-   int tga_bits_per_pixel = get8u(s);
-   int tga_inverted = get8u(s);
-   //   image data
-   unsigned char *tga_data;
-   unsigned char *tga_palette = NULL;
-   int i, j;
-   unsigned char raw_data[4];
-   unsigned char trans_data[4];
-   int RLE_count = 0;
-   int RLE_repeating = 0;
-   int read_next_pixel = 1;
+    uint8 *out;
+    int i, j;
+    int tga_offset, tga_indexed, tga_image_type, tga_is_RLE;
+    int tga_palette_start, tga_palette_len, tga_palette_bits;
+    int tga_x_origin, tga_y_origin, tga_width, tga_height, tga_bits_per_pixel, tga_inverted;
+    stbi_uc *tga_data, *tga_palette = NULL;
+    int target;
 
-   //   do a tiny bit of precessing
-   if ( tga_image_type >= 8 )
-   {
-      tga_image_type -= 8;
-      tga_is_RLE = 1;
-   }
-   /* int tga_alpha_bits = tga_inverted & 15; */
-   tga_inverted = 1 - ((tga_inverted >> 5) & 1);
+    tga_offset          = get8u(s);
+    tga_indexed         = get8u(s);
+    tga_image_type      = get8u(s);
+    tga_is_RLE          = (tga_image_type >= 8);
 
-   //   error check
-   if ( //(tga_indexed) ||
-      (tga_width < 1) || (tga_height < 1) ||
-      (tga_image_type < 1) || (tga_image_type > 3) ||
-      ((tga_bits_per_pixel != 8) && (tga_bits_per_pixel != 16) &&
-      (tga_bits_per_pixel != 24) && (tga_bits_per_pixel != 32))
-      )
-   {
-      return NULL; // we don't report this as a bad TGA because we don't even know if it's TGA
-   }
+    if (tga_is_RLE)
+        tga_image_type -= 8;
 
-   //   If I'm paletted, then I'll use the number of bits from the palette
-   if ( tga_indexed )
-   {
-      tga_bits_per_pixel = tga_palette_bits;
-   }
+    tga_palette_start   = get16le(s);
+    tga_palette_len     = get16le(s);
+    tga_palette_bits    = get8u(s);
+    tga_x_origin        = get16le(s);
+    tga_y_origin        = get16le(s);
+    tga_width           = get16le(s);
+    tga_height          = get16le(s);
+    tga_bits_per_pixel  = get8u(s);
+    tga_inverted        = get8u(s);
+    tga_inverted        = 1 - ((tga_inverted >> 5) & 1);
 
-   //   tga info
-   *x = tga_width;
-   *y = tga_height;
-   if ( (req_comp < 1) || (req_comp > 4) )
-   {
-      //   just use whatever the file was
-      req_comp = tga_bits_per_pixel / 8;
-      *comp = req_comp;
-   } else
-   {
-      //   force a new number of components
-      *comp = tga_bits_per_pixel/8;
-   }
-   tga_data = (unsigned char*)malloc( tga_width * tga_height * req_comp );
-   if (!tga_data) return epuc("outofmem", "Out of memory");
+    if (tga_width < 1 || tga_height < 1 || tga_image_type < 1 || tga_image_type > 3 || (tga_bits_per_pixel != 8 && tga_bits_per_pixel != 16 && tga_bits_per_pixel != 24 && tga_bits_per_pixel != 32))
+        return epuc("invalid TGA", "Corrupt TGA");
 
-   //   skip to the data's starting position (offset usually = 0)
-   skip(s, tga_offset );
-   //   do I need to load a palette?
-   if ( tga_indexed )
-   {
-      //   any data to skip? (offset usually = 0)
-      skip(s, tga_palette_start );
-      //   load the palette
-      tga_palette = (unsigned char*)malloc( tga_palette_len * tga_palette_bits / 8 );
-      if (!tga_palette) return epuc("outofmem", "Out of memory");
-      if (!getn(s, tga_palette, tga_palette_len * tga_palette_bits / 8 )) {
-         free(tga_data);
-         free(tga_palette);
-         return epuc("bad palette", "Corrupt TGA");
-      }
-   }
-   //   load the data
-   trans_data[0] = trans_data[1] = trans_data[2] = trans_data[3] = 0;
-   for (i=0; i < tga_width * tga_height; ++i)
-   {
-      //   if I'm in RLE mode, do I need to get a RLE chunk?
-      if ( tga_is_RLE )
-      {
-         if ( RLE_count == 0 )
-         {
-            //   yep, get the next byte as a RLE command
-            int RLE_cmd = get8u(s);
-            RLE_count = 1 + (RLE_cmd & 127);
-            RLE_repeating = RLE_cmd >> 7;
-            read_next_pixel = 1;
-         } else if ( !RLE_repeating )
-         {
-            read_next_pixel = 1;
-         }
-      } else
-      {
-         read_next_pixel = 1;
-      }
-      //   OK, if I need to read a pixel, do it now
-      if ( read_next_pixel )
-      {
-         //   load however much data we did have
-         if ( tga_indexed )
-         {
-            //   read in 1 byte, then perform the lookup
-            int pal_idx = get8u(s);
-            if ( pal_idx >= tga_palette_len )
+    s->img_n = tga_bits_per_pixel / 8;
+
+    if (req_comp && req_comp >= 3)
+        target = req_comp;
+    else
+        target = s->img_n;
+
+    out = (stbi_uc *)malloc(target * tga_width * tga_height);
+
+    if (!out)
+        return epuc("outofmem", "Out of memory");
+
+    if (tga_indexed)
+    {
+        tga_palette = (stbi_uc *)malloc(tga_palette_len * tga_palette_bits / 8);
+        
+        if (!tga_palette)
+            free(out); return epuc("outofmem", "Out of memory");
+
+        if (!getn(s, tga_palette, tga_palette_len * tga_palette_bits / 8))
+        {
+            free(out);
+            free(tga_palette);
+            return epuc("bad palette", "Corrupt TGA");
+        }
+    }
+
+    int RLE_count = 0, RLE_repeating = 0, read_next_pixel = 1;
+
+    for (j = 0; j < tga_height; ++j)
+    {
+        for (i = 0; i < tga_width; ++i)
+        {
+            if (tga_is_RLE)
             {
-               //   invalid index
-               pal_idx = 0;
-            }
-            pal_idx *= tga_bits_per_pixel / 8;
-            for (j = 0; j*8 < tga_bits_per_pixel; ++j)
+                if (RLE_count == 0)
+                {
+                    int RLE_cmd = get8u(s);
+                    RLE_count = 1 + (RLE_cmd & 127);
+                    RLE_repeating = RLE_cmd >> 7;
+                    read_next_pixel = 1;
+                } 
+                else if (!RLE_repeating)
+                    read_next_pixel = 1;
+            } 
+            else
+                read_next_pixel = 1;
+
+            if (read_next_pixel)
             {
-               raw_data[j] = tga_palette[pal_idx+j];
+                if (tga_indexed)
+                {
+                    int pal_idx = get8u(s);
+                    if (pal_idx >= tga_palette_len) pal_idx = 0;
+                    pal_idx *= tga_palette_bits / 8;
+                    for (int k = 0; k < tga_palette_bits / 8; ++k)
+                        out[(j * tga_width + i) * target + k] = tga_palette[pal_idx + k];
+                }
+                else
+                {
+                    if (tga_bits_per_pixel == 16)
+                    {
+                        uint16 pixel = get16le(s);
+                        out[(j * tga_width + i) * target + 0] = (pixel & 0x1F) << 3; // B
+                        out[(j * tga_width + i) * target + 1] = ((pixel >> 5) & 0x1F) << 3; // G
+                        out[(j * tga_width + i) * target + 2] = ((pixel >> 10) & 0x1F) << 3; // R
+                        if (target == 4)
+                            out[(j * tga_width + i) * target + 3] = (pixel & 0x8000) ? 255 : 0; // A
+                    }
+                    else
+                    {
+                        for (int k = 0; k < tga_bits_per_pixel / 8; ++k)
+                            out[(j * tga_width + i) * target + k] = get8u(s);
+                    }
+                }
+                read_next_pixel = 0;
             }
-         } else
-         {
-            //   read in the data raw
-            for (j = 0; j*8 < tga_bits_per_pixel; ++j)
-            {
-               raw_data[j] = get8u(s);
-            }
-         }
-         //   convert raw to the intermediate format
-         switch (tga_bits_per_pixel)
-         {
-         case 8:
-            //   Luminous => RGBA
-            trans_data[0] = raw_data[0];
-            trans_data[1] = raw_data[0];
-            trans_data[2] = raw_data[0];
-            trans_data[3] = 255;
-            break;
-         case 16:
-            //   Luminous,Alpha => RGBA
-            trans_data[0] = raw_data[0];
-            trans_data[1] = raw_data[0];
-            trans_data[2] = raw_data[0];
-            trans_data[3] = raw_data[1];
-            break;
-         case 24:
-            //   BGR => RGBA
-            trans_data[0] = raw_data[2];
-            trans_data[1] = raw_data[1];
-            trans_data[2] = raw_data[0];
-            trans_data[3] = 255;
-            break;
-         case 32:
-            //   BGRA => RGBA
-            trans_data[0] = raw_data[2];
-            trans_data[1] = raw_data[1];
-            trans_data[2] = raw_data[0];
-            trans_data[3] = raw_data[3];
-            break;
-         }
-         //   clear the reading flag for the next pixel
-         read_next_pixel = 0;
-      } // end of reading a pixel
-      //   convert to final format
-      switch (req_comp)
-      {
-      case 1:
-         //   RGBA => Luminance
-         tga_data[i*req_comp+0] = compute_y(trans_data[0],trans_data[1],trans_data[2]);
-         break;
-      case 2:
-         //   RGBA => Luminance,Alpha
-         tga_data[i*req_comp+0] = compute_y(trans_data[0],trans_data[1],trans_data[2]);
-         tga_data[i*req_comp+1] = trans_data[3];
-         break;
-      case 3:
-         //   RGBA => RGB
-         tga_data[i*req_comp+0] = trans_data[0];
-         tga_data[i*req_comp+1] = trans_data[1];
-         tga_data[i*req_comp+2] = trans_data[2];
-         break;
-      case 4:
-         //   RGBA => RGBA
-         tga_data[i*req_comp+0] = trans_data[0];
-         tga_data[i*req_comp+1] = trans_data[1];
-         tga_data[i*req_comp+2] = trans_data[2];
-         tga_data[i*req_comp+3] = trans_data[3];
-         break;
-      }
-      //   in case we're in RLE mode, keep counting down
-      --RLE_count;
-   }
-   //   do I need to invert the image?
-   if ( tga_inverted )
-   {
-      for (j = 0; j*2 < tga_height; ++j)
-      {
-         int index1 = j * tga_width * req_comp;
-         int index2 = (tga_height - 1 - j) * tga_width * req_comp;
-         for (i = tga_width * req_comp; i > 0; --i)
-         {
-            unsigned char temp = tga_data[index1];
-            tga_data[index1] = tga_data[index2];
-            tga_data[index2] = temp;
-            ++index1;
-            ++index2;
-         }
-      }
-   }
-   //   clear my palette, if I had one
-   if ( tga_palette != NULL )
-   {
-      free( tga_palette );
-   }
-   //   the things I do to get rid of an error message, and yet keep
-   //   Microsoft's C compilers happy... [8^(
-   tga_palette_start = tga_palette_len = tga_palette_bits =
-         tga_x_origin = tga_y_origin = 0;
-   //   OK, done
-   return tga_data;
+
+            if (tga_is_RLE)
+                --RLE_count;
+        }
+    }
+
+    if (tga_inverted)
+    {
+        stbi_uc t;
+
+        for (j = 0; j < tga_height >> 1; ++j)
+        {
+            stbi_uc *p1 = out + j * tga_width * target;
+            stbi_uc *p2 = out + (tga_height - 1 - j) * tga_width * target;
+            
+            for (i = 0; i < tga_width * target; ++i)
+                t = p1[i], p1[i] = p2[i], p2[i] = t;
+        }
+    }
+
+    if (tga_palette)
+        free(tga_palette);
+
+    *x = tga_width;
+    *y = tga_height;
+
+    if (comp)
+        *comp = s->img_n;
+
+    return out;
 }
 
 static stbi_uc *stbi_tga_load(stbi *s, int *x, int *y, int *comp, int req_comp)
