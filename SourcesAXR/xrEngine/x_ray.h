@@ -93,4 +93,7 @@ ENGINE_API extern float rain_particles_time;
 ENGINE_API extern int	rain_max_particles;
 ENGINE_API extern int	rain_particles_cache;
 
+//For Cubemap screenshots
+ENGINE_API extern bool	m_bCubemapScreenshotInProcess;
+
 #endif //__XR_BASE_H__

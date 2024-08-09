@@ -250,6 +250,9 @@ void CDemoRecord::MakeLevelMapProcess()
 void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 {
 	string32 buf;
+
+	m_bCubemapScreenshotInProcess = true;
+
 	switch (m_Stage){
 	case 0:
 		N.set		(cmNorm[m_Stage]);
@@ -279,6 +282,7 @@ void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 
 		m_bMakePanoramic = FALSE;
 		m_bMakeCubeMap = FALSE;
+		m_bCubemapScreenshotInProcess = false;
 	break;
 	}
 	m_Stage++;

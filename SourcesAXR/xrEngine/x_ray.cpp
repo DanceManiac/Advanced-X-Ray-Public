@@ -90,6 +90,9 @@ ENGINE_API float rain_particles_time = 0.3f;
 ENGINE_API int	rain_max_particles = 1000;
 ENGINE_API int	rain_particles_cache = 400;
 
+//For Cubemap screenshots
+ENGINE_API bool m_bCubemapScreenshotInProcess = false;
+
 extern float psHUD_FOV_def;
 extern float psHUD_FOV;
 

@@ -411,7 +411,7 @@ void CDetailManager::Render	()
 	//	return;
 
 	// MT wait
-	if (ps_r2_ls_flags.test((u32)R2FLAG_EXP_MT_DETAILS) && async_started)
+	if (ps_r2_ls_flags.test((u32)R2FLAG_EXP_MT_DETAILS) && async_started && !m_bCubemapScreenshotInProcess)
 		WaitAsync();
 	else
 		MT_CALC();
@@ -443,7 +443,7 @@ u32 reset_frame = 0;
 
 void CDetailManager::StartAsync()
 {
-	if (!(ps_r2_ls_flags.test((u32)R2FLAG_EXP_MT_DETAILS)))
+	if (!(ps_r2_ls_flags.test((u32)R2FLAG_EXP_MT_DETAILS)) || m_bCubemapScreenshotInProcess)
 	{
 		async_started = false;
 		return;
