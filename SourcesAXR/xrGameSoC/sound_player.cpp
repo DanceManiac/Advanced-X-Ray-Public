@@ -163,19 +163,20 @@ bool CSoundPlayer::need_bone_data	() const
 	return							(false);
 }
 
-void CSoundPlayer::play				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
+float CSoundPlayer::play				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
 {
 	if (!check_sound_legacy(internal_type))
-		return;
+		return 0.f;
 	
 	SOUND_COLLECTIONS::iterator	I = m_sounds.find(internal_type);
 	VERIFY						(m_sounds.end() != I);
 	CSoundCollectionParamsFull	&sound = (*I).second.first;
-	if ((*I).second.second->m_sounds.empty()) {
+	if ((*I).second.second->m_sounds.empty())
+	{
 #ifdef DEBUG
-		Msg						("- There are no sounds in sound collection \"%s\" with internal type %d (sound_script = %d)",*sound.m_sound_prefix,internal_type,StalkerSpace::eStalkerSoundScript);
+		Msg("- There are no sounds in sound collection \"%s\" with internal type %d (sound_script = %d)", *sound.m_sound_prefix, internal_type, StalkerSpace::eStalkerSoundScript);
 #endif
-		return;
+		return 0.f;
 	}
 
 	remove_inappropriate_sounds	(sound.m_synchro_mask);
@@ -224,10 +225,13 @@ void CSoundPlayer::play				(u32 internal_type, u32 max_start_time, u32 min_start
 		random_time				= (max_stop_time > min_stop_time) ? random(max_stop_time - min_stop_time) + min_stop_time : max_stop_time;
 
 	sound_single.m_stop_time	= sound_single.m_start_time + iFloor(sound_single.m_sound->get_length_sec() * 1000.0f) + random_time;
+
+	if (Device.dwTimeGlobal >= sound_single.m_start_time)
+		sound_single.play_at_pos(m_object, compute_sound_point(sound_single));
+
 	m_playing_sounds.push_back	(sound_single);
 	
-	if (Device.dwTimeGlobal >= m_playing_sounds.back().m_start_time)
-		m_playing_sounds.back().play_at_pos(m_object,compute_sound_point(m_playing_sounds.back()));
+	return sound_single.m_sound->get_length_sec() * 1000.0f;
 }
 
 IC	Fvector CSoundPlayer::compute_sound_point(const CSoundSingle &sound)

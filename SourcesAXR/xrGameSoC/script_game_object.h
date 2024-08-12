@@ -457,12 +457,12 @@ public:
 			void 				set_sight				(CScriptGameObject *object_to_look, bool torso_look, bool fire_object, bool no_pitch);
 			void 				set_sight				(const MemorySpace::CMemoryInfo *memory_object, bool	torso_look);
 			CHARACTER_RANK_VALUE GetRank				();
-			void				play_sound				(u32 internal_type);
-			void				play_sound				(u32 internal_type, u32 max_start_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time);
-			void				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id);
+			float				play_sound				(u32 internal_type);
+			float				play_sound				(u32 internal_type, u32 max_start_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time);
+			float				play_sound				(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id);
 
 			void				set_item				(MonsterSpace::EObjectAction object_action);
 			void				set_item				(MonsterSpace::EObjectAction object_action, CScriptGameObject *game_object);

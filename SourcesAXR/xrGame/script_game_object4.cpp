@@ -133,58 +133,82 @@ void CScriptGameObject::set_sound_mask	(u32 sound_mask)
 	}
 }
 
-void CScriptGameObject::play_sound		(u32 internal_type)
+float CScriptGameObject::play_sound(u32 internal_type)
 {
-	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	CCustomMonster *monster = smart_cast<CCustomMonster*>(&object());
+	
 	if (!monster)
-		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
-	else
-		monster->get_sound().play		(internal_type);
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+		return 0.f;
+    }
+
+    return monster->get_sound().play(internal_type);
 }
 
-void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time)
+float CScriptGameObject::play_sound(u32 internal_type, u32 max_start_time)
 {
-	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	CCustomMonster *monster = smart_cast<CCustomMonster*>(&object());
+	
 	if (!monster)
-		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
-	else
-		monster->get_sound().play		(internal_type,max_start_time);
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+		return 0.f;
+	}
+
+	return monster->get_sound().play(internal_type, max_start_time);
 }
 
-void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time)
+float CScriptGameObject::play_sound(u32 internal_type, u32 max_start_time, u32 min_start_time)
 {
-	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	CCustomMonster *monster = smart_cast<CCustomMonster*>(&object());
+	
 	if (!monster)
-		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
-	else
-		monster->get_sound().play		(internal_type,max_start_time,min_start_time);
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+		return 0.f;
+	}
+		
+	return monster->get_sound().play(internal_type,max_start_time,min_start_time);
 }
 
-void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time)
+float CScriptGameObject::play_sound(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time)
 {
-	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	CCustomMonster *monster = smart_cast<CCustomMonster*>(&object());
+	
 	if (!monster)
-		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
-	else
-		monster->get_sound().play		(internal_type,max_start_time,min_start_time,max_stop_time);
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+		return 0.f;
+	}
+	
+	return monster->get_sound().play(internal_type,max_start_time,min_start_time,max_stop_time);
 }
 
-void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time)
+float CScriptGameObject::play_sound(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time)
 {
-	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	CCustomMonster *monster = smart_cast<CCustomMonster*>(&object());
+	
 	if (!monster)
-		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
-	else
-		monster->get_sound().play		(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time);
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+		return 0.f;
+	}
+
+	return monster->get_sound().play(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time);
 }
 
-void CScriptGameObject::play_sound		(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
+float CScriptGameObject::play_sound(u32 internal_type, u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
 {
-	CCustomMonster				*monster = smart_cast<CCustomMonster*>(&object());
+	CCustomMonster *monster = smart_cast<CCustomMonster*>(&object());
+	
 	if (!monster)
-		ai().script_engine().script_log					(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
-	else
-		monster->get_sound().play		(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time,id);
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,"CSoundPlayer : cannot access class member play!");
+		return 0.f;
+	}
+	
+	return monster->get_sound().play(internal_type,max_start_time,min_start_time,max_stop_time,min_stop_time,id);
 }
 
 int  CScriptGameObject::active_sound_count		(bool only_playing)
