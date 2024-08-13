@@ -2,13 +2,25 @@
 #include "UIWindow.h"
 #include "inventory_space.h"
 
+#include "UIStatic.h"
+#include "UIDragDropListEx.h"
+#include "UIMultiTextStatic.h"
+#include "UI3tButton.h"
+#include "UICharacterInfo.h"
+#include "UIItemInfo.h"
+
 class CInventoryOwner;
 class CEatableItem;
 class CTrade;
-struct CUITradeInternal;
+struct SDrawStaticStruct;
 
 class CUIDragDropListEx;
 class CUICellItem;
+class CUIMultiTextStatic;
+class CUI3tButton;
+class CUIItemInfo;
+class CUICharacterInfo;
+class CUIXml;
 
 class CUITradeWnd: public CUIWindow
 {
@@ -19,6 +31,7 @@ public:
 	virtual				~CUITradeWnd				();
 
 	virtual void		Init						();
+	void				InitHighlights				(CUIXml& uiXml);
 
 	virtual void		SendMessage					(CUIWindow *pWnd, s16 msg, void *pData);
 
@@ -37,8 +50,39 @@ public:
 	void 				StartTrade					();
 	void 				StopTrade					();
 protected:
+	
+	CUIStatic			UIStaticTop;
+	CUIStatic			UIStaticBottom;
 
-	CUITradeInternal*	m_uidata;
+	CUIStatic			UIOurBagWnd;
+	CUIStatic			UIOurMoneyStatic;
+	CUIStatic			UIOthersBagWnd;
+	CUIStatic			UIOtherMoneyStatic;
+	CUIDragDropListEx	UIOurBagList;
+	CUIDragDropListEx	UIOthersBagList;
+
+	CUIStatic			UIOurTradeWnd;
+	CUIStatic			UIOthersTradeWnd;
+	CUIMultiTextStatic	UIOurPriceCaption;
+	CUIMultiTextStatic	UIOthersPriceCaption;
+	CUIDragDropListEx	UIOurTradeList;
+	CUIDragDropListEx	UIOthersTradeList;
+
+	//кнопки
+	CUI3tButton			UIPerformTradeButton;
+	CUI3tButton			UIToTalkButton;
+
+	//информация о персонажах 
+	CUIStatic			UIOurIcon;
+	CUIStatic			UIOthersIcon;
+	CUICharacterInfo	UICharacterInfoLeft;
+	CUICharacterInfo	UICharacterInfoRight;
+
+	//информация о перетаскиваемом предмете
+	CUIStatic			UIDescWnd;
+	CUIItemInfo			UIItemInfo;
+
+	SDrawStaticStruct*	UIDealMsg;
 
 	bool				bStarted;
 	bool 				ToOurTrade					();
@@ -85,11 +129,11 @@ protected:
 	CUICellItem*		CurrentItem					();
 	PIItem				CurrentIItem				();
 
-	bool		xr_stdcall		OnItemDrop			(CUICellItem* itm);
-	bool		xr_stdcall		OnItemStartDrag		(CUICellItem* itm);
-	bool		xr_stdcall		OnItemDbClick		(CUICellItem* itm);
-	bool		xr_stdcall		OnItemSelected		(CUICellItem* itm);
-	bool		xr_stdcall		OnItemRButtonClick	(CUICellItem* itm);
+	bool	xr_stdcall	OnItemDrop					(CUICellItem* itm);
+	bool	xr_stdcall	OnItemStartDrag				(CUICellItem* itm);
+	bool	xr_stdcall	OnItemDbClick				(CUICellItem* itm);
+	bool	xr_stdcall	OnItemSelected				(CUICellItem* itm);
+	bool	xr_stdcall	OnItemRButtonClick			(CUICellItem* itm);
 
 	void				BindDragDropListEnents		(CUIDragDropListEx* lst);
 
