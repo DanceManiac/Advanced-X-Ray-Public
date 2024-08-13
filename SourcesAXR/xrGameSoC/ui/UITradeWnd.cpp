@@ -76,10 +76,10 @@ void CUITradeWnd::Init()
 	xml_init.InitStatic					(uiXml, "static_icon", 0, &UIOurIcon);
 	AttachChild							(&UIOthersIcon);
 	xml_init.InitStatic					(uiXml, "static_icon", 1, &UIOthersIcon);
-	UIOurIcon.AttachChild		(&UICharacterInfoLeft);
-	UICharacterInfoLeft.Init	(0,0, UIOurIcon.GetWidth(), UIOurIcon.GetHeight(), TRADE_CHARACTER_XML);
-	UIOthersIcon.AttachChild	(&UICharacterInfoRight);
-	UICharacterInfoRight.Init	(0,0, UIOthersIcon.GetWidth(), UIOthersIcon.GetHeight(), TRADE_CHARACTER_XML);
+	UIOurIcon.AttachChild				(&UICharacterInfoLeft);
+	UICharacterInfoLeft.Init			(0,0, UIOurIcon.GetWidth(), UIOurIcon.GetHeight(), TRADE_CHARACTER_XML);
+	UIOthersIcon.AttachChild			(&UICharacterInfoRight);
+	UICharacterInfoRight.Init			(0,0, UIOthersIcon.GetWidth(), UIOthersIcon.GetHeight(), TRADE_CHARACTER_XML);
 
 
 	//Списки торговли
@@ -88,10 +88,10 @@ void CUITradeWnd::Init()
 	AttachChild							(&UIOthersBagWnd);
 	xml_init.InitStatic					(uiXml, "others_bag_static", 0, &UIOthersBagWnd);
 
-	UIOurBagWnd.AttachChild	(&UIOurMoneyStatic);
+	UIOurBagWnd.AttachChild				(&UIOurMoneyStatic);
 	xml_init.InitStatic					(uiXml, "our_money_static", 0, &UIOurMoneyStatic);
 
-	UIOthersBagWnd.AttachChild(&UIOtherMoneyStatic);
+	UIOthersBagWnd.AttachChild			(&UIOtherMoneyStatic);
 	xml_init.InitStatic					(uiXml, "other_money_static", 0, &UIOtherMoneyStatic);
 
 	AttachChild							(&UIOurTradeWnd);
@@ -99,23 +99,23 @@ void CUITradeWnd::Init()
 	AttachChild							(&UIOthersTradeWnd);
 	xml_init.InitStatic					(uiXml, "static", 1, &UIOthersTradeWnd);
 
-	UIOurTradeWnd.AttachChild	(&UIOurPriceCaption);
+	UIOurTradeWnd.AttachChild			(&UIOurPriceCaption);
 	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &UIOurPriceCaption);
 
-	UIOthersTradeWnd.AttachChild(&UIOthersPriceCaption);
+	UIOthersTradeWnd.AttachChild		(&UIOthersPriceCaption);
 	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &UIOthersPriceCaption);
 
 	//Списки Drag&Drop
-	UIOurBagWnd.AttachChild	(&UIOurBagList);	
+	UIOurBagWnd.AttachChild				(&UIOurBagList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 0, &UIOurBagList);
 
-	UIOthersBagWnd.AttachChild(&UIOthersBagList);	
+	UIOthersBagWnd.AttachChild			(&UIOthersBagList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 1, &UIOthersBagList);
 
-	UIOurTradeWnd.AttachChild	(&UIOurTradeList);	
+	UIOurTradeWnd.AttachChild			(&UIOurTradeList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 2, &UIOurTradeList);
 
-	UIOthersTradeWnd.AttachChild(&UIOthersTradeList);	
+	UIOthersTradeWnd.AttachChild		(&UIOthersTradeList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 3, &UIOthersTradeList);
 
 	AttachChild							(&UIDescWnd);
@@ -132,12 +132,13 @@ void CUITradeWnd::Init()
 	AttachChild							(&UIToTalkButton);
 	xml_init.Init3tButton				(uiXml, "button", 1, &UIToTalkButton);
 
-	UIDealMsg					= NULL;
+	UIDealMsg							= NULL;
 
 	BindDragDropListEnents				(&UIOurBagList);
 	BindDragDropListEnents				(&UIOthersBagList);
 	BindDragDropListEnents				(&UIOurTradeList);
 	BindDragDropListEnents				(&UIOthersTradeList);
+	InitHighlights						(uiXml);
 }
 
 void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
@@ -617,6 +618,9 @@ void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
 	lst->m_f_item_db_click			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemDbClick);
 	lst->m_f_item_selected			= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemSelected);
 	lst->m_f_item_rbutton_click		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemRButtonClick);
+	lst->m_f_item_focus_received	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemFocusReceive);
+	lst->m_f_item_focus_lost		= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemFocusLost);
+	lst->m_f_item_focused_update	= CUIDragDropListEx::DRAG_CELL_EVENT(this,&CUITradeWnd::OnItemFocusedUpdate);
 }
 
 void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)

@@ -10031,6 +10031,15 @@
     <ClCompile Include="WeaponAutomaticShotgun.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIInventoryWndHighlights.cpp">
+      <Filter>UI\Common\InventoryWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UITradeWndHighlights.cpp">
+      <Filter>UI\Common\TRADE</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\UICarBodyWndHighlights.cpp">
+      <Filter>UI\Common\CarBodyWnd</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

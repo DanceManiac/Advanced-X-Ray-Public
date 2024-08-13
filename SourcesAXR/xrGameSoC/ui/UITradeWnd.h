@@ -49,6 +49,14 @@ public:
 	void 				SwitchToTalk				();
 	void 				StartTrade					();
 	void 				StopTrade					();
+
+	void				clear_highlight_lists		();
+	void				set_highlight_item			(CUICellItem* cell_item);
+	void				highlight_armament			(PIItem item, CUIDragDropListEx* ddlist);
+	void				highlight_ammo_for_weapon	(PIItem weapon_item, CUIDragDropListEx* ddlist);
+	void				highlight_weapons_for_ammo	(PIItem ammo_item, CUIDragDropListEx* ddlist);
+	bool				highlight_addons_for_weapon	(PIItem weapon_item, CUICellItem* ci);
+	void				highlight_weapons_for_addon	(PIItem addon_item, CUIDragDropListEx* ddlist);
 protected:
 	
 	CUIStatic			UIStaticTop;
@@ -85,6 +93,7 @@ protected:
 	SDrawStaticStruct*	UIDealMsg;
 
 	bool				bStarted;
+	bool				m_highlight_clear;
 	bool 				ToOurTrade					();
 	bool 				ToOthersTrade				();
 	bool 				ToOurBag					();
@@ -134,6 +143,9 @@ protected:
 	bool	xr_stdcall	OnItemDbClick				(CUICellItem* itm);
 	bool	xr_stdcall	OnItemSelected				(CUICellItem* itm);
 	bool	xr_stdcall	OnItemRButtonClick			(CUICellItem* itm);
+	bool	xr_stdcall	OnItemFocusReceive			(CUICellItem* itm);
+	bool	xr_stdcall	OnItemFocusLost				(CUICellItem* itm);
+	bool	xr_stdcall	OnItemFocusedUpdate			(CUICellItem* itm);
 
 	void				BindDragDropListEnents		(CUIDragDropListEx* lst);
 

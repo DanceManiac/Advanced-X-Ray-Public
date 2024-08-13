@@ -25,6 +25,7 @@ public:
 	virtual					~CUICarBodyWnd				();
 
 	virtual void			Init						();
+			void			InitHighlights				(CUIXml& uiXml);
 	void					InitCallbacks				();
 	virtual bool			StopAnyMove					(){return true;}
 
@@ -44,6 +45,14 @@ public:
 	virtual bool			OnKeyboardAction					(int dik, EUIMessages keyboard_action);
 
 	void					UpdateLists_delayed			();
+
+	void					clear_highlight_lists		();
+	void					set_highlight_item			(CUICellItem* cell_item);
+	void					highlight_armament			(PIItem item, CUIDragDropListEx* ddlist);
+	void					highlight_ammo_for_weapon	(PIItem weapon_item, CUIDragDropListEx* ddlist);
+	void					highlight_weapons_for_ammo	(PIItem ammo_item, CUIDragDropListEx* ddlist);
+	bool					highlight_addons_for_weapon	(PIItem weapon_item, CUICellItem* ci);
+	void					highlight_weapons_for_addon	(PIItem addon_item, CUIDragDropListEx* ddlist);
 
 protected:
 	CInventoryOwner*		m_pOurObject;
@@ -79,6 +88,8 @@ protected:
 
 	CUICellItem*			m_pCurrentCellItem;
 
+	bool					m_highlight_clear;
+
 	void					UpdateLists					();
 
 	void					EatItem						(CUICellItem* itm);
@@ -102,11 +113,14 @@ protected:
 	void					TakeAll						();
 
 
-	bool		xr_stdcall	OnItemDrop					(CUICellItem* itm);
-	bool		xr_stdcall	OnItemStartDrag				(CUICellItem* itm);
-	bool		xr_stdcall	OnItemDbClick				(CUICellItem* itm);
-	bool		xr_stdcall	OnItemSelected				(CUICellItem* itm);
-	bool		xr_stdcall	OnItemRButtonClick			(CUICellItem* itm);
+	bool	xr_stdcall		OnItemDrop					(CUICellItem* itm);
+	bool	xr_stdcall		OnItemStartDrag				(CUICellItem* itm);
+	bool	xr_stdcall		OnItemDbClick				(CUICellItem* itm);
+	bool	xr_stdcall		OnItemSelected				(CUICellItem* itm);
+	bool	xr_stdcall		OnItemRButtonClick			(CUICellItem* itm);
+	bool	xr_stdcall		OnItemFocusReceive			(CUICellItem* itm);
+	bool	xr_stdcall		OnItemFocusLost				(CUICellItem* itm);
+	bool	xr_stdcall		OnItemFocusedUpdate			(CUICellItem* itm);
 
 	bool					TransferItem				(PIItem itm, CInventoryOwner* owner_from, CInventoryOwner* owner_to, bool b_check);
 	void					move_item					(u16 from_id, u16 to_id, u16 what_id);

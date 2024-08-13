@@ -214,6 +214,61 @@
 		</text_color>
     </exit_button>
 
+	<inv_slot2_highlight x="23" y="110" width="172" height="112" stretch="1">
+		<texture>ui_inGame2_weapon_highlighter</texture>
+	</inv_slot2_highlight>
+	<inv_slot3_highlight x="223" y="110" width="340" height="112" stretch="1">
+		<texture>ui_inGame2_weapon_highlighter</texture>
+	</inv_slot3_highlight>
+	<helmet_slot_highlight x="472" y="17" width="76" height="98" stretch="1">
+		<texture>ui_inGame2_helmet_highlighter</texture>
+	</helmet_slot_highlight>
+	<outfit_slot_highlight x="853" y="285" width="120" height="245" stretch="1">
+		<texture>ui_inGame2_armor_highlighter</texture>
+	</outfit_slot_highlight>
+	<detector_slot_highlight x="472" y="330" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</detector_slot_highlight>
+	<artefact_slot_highlight x="641" y="134" width="68" height="63" dx="60" stretch="1">
+		<texture>ui_inGame2_artefakt_highlighter</texture>
+	</artefact_slot_highlight>
+	
+	<knife_slot_highlight x="472" y="72" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</knife_slot_highlight>
+	
+	<binocular_slot_highlight x="472" y="22" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</binocular_slot_highlight>
+	
+	<torch_slot_highlight x="473" y="396" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</torch_slot_highlight>
+	
+	<backpack_slot_highlight x="473" y="472" width="76" height="98" stretch="1">
+		<texture>ui_inGame2_helmet_highlighter</texture>
+	</backpack_slot_highlight>
+	
+	<second_helmet_slot_highlight x="563" y="372" width="76" height="98" stretch="1">
+		<texture>ui_inGame2_helmet_highlighter</texture>
+	</second_helmet_slot_highlight>
+	
+	<dosimeter_slot_highlight x="150" y="702" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</dosimeter_slot_highlight>
+	
+	<pants_slot_highlight x="563" y="472" width="76" height="98" stretch="1">
+		<texture>ui_inGame2_helmet_highlighter</texture>
+	</pants_slot_highlight>
+	
+	<pda_slot_highlight x="150" y="602" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</pda_slot_highlight>
+
+	<pistol_slot_highlight x="372" y="72" width="76" height="48" stretch="1">
+		<texture>ui_inGame2_detector_highlighter</texture>
+	</pistol_slot_highlight>
+
 	<action_sounds>
 		<snd_open>interface\inv_open</snd_open>
 		<snd_close>interface\inv_close</snd_close>

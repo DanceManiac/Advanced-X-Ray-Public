@@ -2208,12 +2208,15 @@
     </ClCompile>
     <ClCompile Include="TacticalTorch.cpp" />
     <ClCompile Include="ui\UIBoosterInfo.cpp" />
+    <ClCompile Include="ui\UICarBodyWndHighlights.cpp" />
     <ClCompile Include="ui\UIDoubleProgressBar.cpp" />
     <ClCompile Include="ui\UIHelper.cpp" />
     <ClCompile Include="ui\UIHudStatesWnd.cpp" />
     <ClCompile Include="ui\UIInventoryItemParams.cpp" />
+    <ClCompile Include="ui\UIInventoryWndHighlights.cpp" />
     <ClCompile Include="ui\UILoadingScreen.cpp" />
     <ClCompile Include="ui\UIOutfitInfo.cpp" />
+    <ClCompile Include="ui\UITradeWndHighlights.cpp" />
     <ClCompile Include="visual_memory_manager.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">pch_script.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch_script.h</PrecompiledHeaderFile>

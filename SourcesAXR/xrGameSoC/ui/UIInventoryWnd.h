@@ -40,6 +40,7 @@ public:
 	virtual					~CUIInventoryWnd			();
 
 	virtual void			Init						();
+			void			InitHighlights				(CUIXml& uiXml);
 
 	void					InitCallbacks				();
 
@@ -106,6 +107,21 @@ protected:
 	CUIDragDropListEx*			m_pUIAutomaticList;
 	CUIOutfitDragDropList*		m_pUIOutfitList;
 
+	CUIStatic*					m_InvSlot2Highlight;
+	CUIStatic*					m_InvSlot3Highlight;
+	CUIStatic*					m_OutfitSlotHighlight;
+	CUIStatic*					m_DetectorSlotHighlight;
+	//CUIStatic*					m_QuickSlotsHighlight[4];
+	xr_vector<CUIStatic*>		m_ArtefactSlotsHighlight;
+	CUIStatic*					m_KnifeSlotHighlight;
+	CUIStatic*					m_BinocularSlotHighlight;
+	CUIStatic*					m_TorchSlotHighlight;
+	CUIStatic*					m_BackpackSlotHighlight;
+	CUIStatic*					m_PantsSlotHighlight;
+	CUIStatic*					m_PdaSlotHighlight;
+
+	bool						m_highlight_clear;
+
 	// M.F.S. Team: New Slots
 	CUIDragDropListEx*			m_pUIKnifeList;
 	CUIDragDropListEx*			m_pUITorchList;
@@ -117,6 +133,15 @@ protected:
 
 	void						ClearAllLists				();
 	void						BindDragDropListEnents		(CUIDragDropListEx* lst);
+
+	void						clear_highlight_lists		();
+	void						highlight_item_slot			(CUICellItem* cell_item);
+	void						set_highlight_item			(CUICellItem* cell_item);
+	void						highlight_armament			(PIItem item, CUIDragDropListEx* ddlist);
+	void						highlight_ammo_for_weapon	(PIItem weapon_item, CUIDragDropListEx* ddlist);
+	void						highlight_weapons_for_ammo	(PIItem ammo_item, CUIDragDropListEx* ddlist);
+	bool						highlight_addons_for_weapon	(PIItem weapon_item, CUICellItem* ci);
+	void						highlight_weapons_for_addon	(PIItem addon_item, CUIDragDropListEx* ddlist);
 	
 	EDDListType					GetType						(CUIDragDropListEx* l);
 	CUIDragDropListEx*			GetSlotList					(u32 slot_idx);
@@ -126,6 +151,9 @@ protected:
 	bool		xr_stdcall		OnItemDbClick				(CUICellItem* itm);
 	bool		xr_stdcall		OnItemSelected				(CUICellItem* itm);
 	bool		xr_stdcall		OnItemRButtonClick			(CUICellItem* itm);
+	bool		xr_stdcall		OnItemFocusReceive			(CUICellItem* itm);
+	bool		xr_stdcall		OnItemFocusLost				(CUICellItem* itm);
+	bool		xr_stdcall		OnItemFocusedUpdate			(CUICellItem* itm);
 
 
 	CUIStatic					UIProgressBack;
