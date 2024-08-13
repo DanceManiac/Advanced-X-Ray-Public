@@ -85,6 +85,14 @@ void CCustomTimer::load(IReader& packet)
 
 void CCustomTimer::Update()
 {
+	if (!this)
+	{
+		return;
+#ifdef DEBUG
+		Msg("! Custom Timer update was skipped because it was not found!");
+#endif
+	}
+
 	if (!m_bIsActive)
 		return;
 

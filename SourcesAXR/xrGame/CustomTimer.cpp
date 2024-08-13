@@ -85,8 +85,16 @@ void CCustomTimer::load(IReader& packet)
 
 void CCustomTimer::Update()
 {
-	if (!m_bIsActive)
-		return;
+    if (!this)
+    {
+        return;
+#ifdef DEBUG
+        Msg("! Custom Timer update was skipped because it was not found!");
+#endif
+    }
+
+    if (!m_bIsActive)
+        return;
 
 	ALife::_TIME_ID elapsedTime = (ai().alife().time_manager().game_time() - m_iStartTime);
 
