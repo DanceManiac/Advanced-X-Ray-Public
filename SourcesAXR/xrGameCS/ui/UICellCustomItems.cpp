@@ -11,6 +11,7 @@
 #include "../CustomDetector.h"
 #include "../Torch.h"
 #include "../AnomalyDetector.h"
+#include "../ArtefactContainer.h"
 #include "../AdvancedXrayGameConstants.h"
 
 #define INV_GRID_WIDTHF(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
@@ -104,6 +105,11 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	}
 	auto ano_det = smart_cast<CDetectorAnomaly*>(object());
 	if (ano_det && ano_det->GetCurrentChargeLevel() != smart_cast<CDetectorAnomaly*>(ci->object())->GetCurrentChargeLevel())
+	{
+		return false;
+	}
+	auto art_con = smart_cast<CArtefactContainer*>(object());
+	if (art_con && art_con->GetArtefactsInside() != smart_cast<CArtefactContainer*>(ci->object())->GetArtefactsInside())
 	{
 		return false;
 	}

@@ -32,7 +32,6 @@ public:
 				CWeaponAmmo*	 object						() {return (CWeaponAmmo*)m_pData;}
 };
 
-
 class CUIWeaponCellItem :public CUIInventoryCellItem
 {
 	typedef  CUIInventoryCellItem	inherited;
