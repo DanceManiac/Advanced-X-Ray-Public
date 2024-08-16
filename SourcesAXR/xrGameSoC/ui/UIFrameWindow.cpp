@@ -4,37 +4,34 @@
 #include "UITextureMaster.h"
 #include "UIXmlInit.h"
 #include "UIStatic.h"
+#include "../Include/xrRender/UIRender.h"
 
 CUIFrameWindow::CUIFrameWindow()
+{}
+
+void CUIFrameWindow::InitFrameWindow(Fvector2 pos, Fvector2 size)
 {
-	UITitleText					= xr_new<CUIStatic>();
-	UITitleText->SetAutoDelete	(true);
-	AttachChild					(UITitleText);
+	inherited::SetWndPos	(pos);
+	inherited::SetWndSize	(size);
+	m_UIWndFrame.SetWndPos	(pos);
+	m_UIWndFrame.SetWndSize	(size);
 }
 
-void CUIFrameWindow::Init(LPCSTR base_name, float x, float y, float width, float height)
+void CUIFrameWindow::UpdateSize()
 {
-	Init				(x,y,width,height);
-	InitTexture			(base_name);	
+	m_UIWndFrame.UpdateSize	();
+	inherited::SetWndSize	(m_UIWndFrame.GetWndSize());
 }
 
-void CUIFrameWindow::Init(float x, float y, float width, float height)
+void  CUIFrameWindow::InitTextureEx(LPCSTR texture, LPCSTR  shader)
 {
-	CUIWindow::Init		(x,y,width,height);
-	m_UIWndFrame.Init	(x,y,width,height);
-	UITitleText->Init	(0,0, width, 50);
-}
-
-void CUIFrameWindow::Init(LPCSTR base_name, Frect* pRect)
-{
-	Init(base_name, pRect->left, pRect->top, 
-				pRect->right - pRect->left, 
-				pRect->bottom - pRect->top);
-}
-
-void CUIFrameWindow::InitTexture(const char* texture){
-	m_UIWndFrame.InitTexture	(texture);
+	m_UIWndFrame.InitTextureEx	(texture, shader);
 	m_bTextureVisible			= true;
+}
+
+void CUIFrameWindow::InitTexture(LPCSTR texture)
+{
+	InitTextureEx(texture, "hud\\default");
 }
 
 void CUIFrameWindow::Draw()
@@ -50,9 +47,17 @@ void CUIFrameWindow::Draw()
 	inherited::Draw();
 }
 
-void CUIFrameWindow::Update(){
+void CUIFrameWindow::Update()
+{
 	CUIWindow::Update();
 	m_UIWndFrame.Update();
+}
+
+void CUIFrameWindow::SetWndSize(const Fvector2& size)
+{
+	inherited::SetWndSize	(size);
+	SetWidth				(size.x);
+	SetHeight				(size.y);
 }
 
 void CUIFrameWindow::SetWidth(float width)
@@ -226,7 +231,7 @@ void CUIFrameWindow::FrameClip(const Frect parentAbsR)
 	m_UIWndFrame.frame[CUIFrameRect::fmLT].SetTile(1, 1, 0, 0);
 
 	// fmT
-	UIRender->SetShader(*m_UIWndFrame.frame[CUIFrameRect::fmL].GetShader());
+	UIRender->SetShader(*m_UIWndFrame.frame[CUIFrameRect::fmT].GetShader());
 	UIRender->GetActiveTextureResolution(ts);
 	size_x		= min(m_UIWndFrame.frame[CUIFrameRect::fmRT].GetPosX(), parentAbsR.right) -
 				  max(m_UIWndFrame.frame[CUIFrameRect::fmT].GetPosX(), parentAbsR.left);
@@ -249,7 +254,7 @@ void CUIFrameWindow::FrameClip(const Frect parentAbsR)
 		max(m_UIWndFrame.frame[CUIFrameRect::fmT].GetPosY(), parentAbsR.top));
 
 	// back
-	UIRender->SetShader(*m_UIWndFrame.frame[CUIFrameRect::fmL].GetShader());
+	UIRender->SetShader(*m_UIWndFrame.frame[CUIFrameRect::fmBK].GetShader());
 	UIRender->GetActiveTextureResolution(ts);
 	size_x		= min(m_UIWndFrame.frame[CUIFrameRect::fmR].GetPosX(), parentAbsR.right) -
 				  max(m_UIWndFrame.frame[CUIFrameRect::fmBK].GetPosX(), parentAbsR.left);

@@ -16,7 +16,7 @@ CUIListBox::CUIListBox()
 	m_bImmediateSelection	= false;
 
 	SetFixedScrollBar		(false);
-	Init					();
+	//InitScrollView			();
 }
 
 void CUIListBox::SetSelectionTexture(LPCSTR texture){
@@ -47,11 +47,11 @@ CUIListBoxItem* CUIListBox::AddItem(LPCSTR text)
 		return					NULL;
 
 	CUIListBoxItem* pItem		= xr_new<CUIListBoxItem>();
-	pItem->Init					(0,0,this->GetDesiredChildWidth() - 5, m_def_item_height);
+	pItem->InitFrameLineWnd		(Fvector2().set(0,0), Fvector2().set(this->GetDesiredChildWidth()-5, m_def_item_height) );
 	if (!m_selection_texture)
         pItem->InitDefault		();
 	else
-		pItem->InitTexture		(*m_selection_texture);
+		pItem->InitTexture		(*m_selection_texture,"hud\\default");
 
 	pItem->SetSelected			(false);
 	pItem->SetText				(*CStringTable().translate(text));

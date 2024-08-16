@@ -96,6 +96,7 @@ public:
 
 	static StaticsVec InitAutoStatic	(CUIXml& xml_doc, LPCSTR tag_name, CUIWindow* pParentWnd);
 	static StaticsVec InitAutoStaticGroup(CUIXml& xml_doc, LPCSTR path, int index, CUIWindow* pParentWnd);
+	static void       InitAutoFrameLineGroup(CUIXml& xml_doc, LPCSTR path, int index, CUIWindow* pParentWnd);
 
 	// Функции для пересчета координат для применения выравнивания
 	// Params:

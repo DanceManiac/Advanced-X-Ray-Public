@@ -56,9 +56,9 @@ void CUIEncyclopediaWnd::Init()
 	R_ASSERT(m_pTreeRootFont);
 
 
-	UIEncyclopediaIdxHeader		= xr_new<CUIFrameLineWnd>(); UIEncyclopediaIdxHeader->SetAutoDelete(true);
+	UIEncyclopediaIdxHeader		= xr_new<CUIStatic>(); UIEncyclopediaIdxHeader->SetAutoDelete(true);
 	UIEncyclopediaIdxBkg->AttachChild(UIEncyclopediaIdxHeader);
-	xml_init.InitFrameLine(uiXml, "right_frame_line", 0, UIEncyclopediaIdxHeader);
+	xml_init.InitStatic(uiXml, "right_frame_line", 0, UIEncyclopediaIdxHeader);
 
 	UIAnimation					= xr_new<CUIAnimatedStatic>(); UIAnimation->SetAutoDelete(true);
 	UIEncyclopediaIdxHeader->AttachChild(UIAnimation);
@@ -68,11 +68,11 @@ void CUIEncyclopediaWnd::Init()
 	AttachChild(UIEncyclopediaInfoBkg);
 	xml_init.InitFrameWindow(uiXml, "left_frame_window", 0, UIEncyclopediaInfoBkg);
 
-	UIEncyclopediaInfoHeader	= xr_new<CUIFrameLineWnd>();UIEncyclopediaInfoHeader->SetAutoDelete(true);
+	UIEncyclopediaInfoHeader	= xr_new<CUIStatic>();UIEncyclopediaInfoHeader->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIEncyclopediaInfoHeader);
 
 	//UIEncyclopediaInfoHeader->UITitleText.SetElipsis(CUIStatic::eepBegin, 20);
-	xml_init.InitFrameLine(uiXml, "left_frame_line", 0, UIEncyclopediaInfoHeader);
+	xml_init.InitStatic(uiXml, "left_frame_line", 0, UIEncyclopediaInfoHeader);
 
 	UIArticleHeader				= xr_new<CUIStatic>(); UIArticleHeader->SetAutoDelete(true);
 	UIEncyclopediaInfoBkg->AttachChild(UIArticleHeader);
@@ -130,7 +130,7 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			}
 
 			if (UIEncyclopediaInfoHeader)
-				UIEncyclopediaInfoHeader->UITitleText.SetText(caption.c_str());
+				UIEncyclopediaInfoHeader->SetText(caption.c_str());
 			UIArticleHeader->SetText(""); // clear text on root click
 		}
 		else
@@ -162,7 +162,7 @@ void CUIEncyclopediaWnd::SendMessage(CUIWindow *pWnd, s16 msg, void* pData)
 			caption += CStringTable().translate(A->data()->name).c_str();
 
 			if (UIEncyclopediaInfoHeader)
-				UIEncyclopediaInfoHeader->UITitleText.SetText(caption.c_str());
+				UIEncyclopediaInfoHeader->SetText(caption.c_str());
 			SetCurrentArtice(pTVItem);
 			UIArticleHeader->SetTextST(*(A->data()->name));
 		}

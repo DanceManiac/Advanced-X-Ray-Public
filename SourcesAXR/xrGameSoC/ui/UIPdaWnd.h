@@ -26,7 +26,7 @@ private:
 protected:
 	//элементы декоративного интерфейса
 	CUIFrameLineWnd*		UIMainButtonsBackground;
-	CUIFrameLineWnd*		UITimerBackground;
+	CUIStatic*				UITimerBackground;
 
 	// кнопки PDA
 	CUITabControl*			UITabControl;

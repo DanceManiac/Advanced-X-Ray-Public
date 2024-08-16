@@ -84,7 +84,7 @@ void CUIActorInfoWnd::Show(bool status)
 	if (!status) return;
 	
 	UICharacterInfo->InitCharacter			(Actor());
-	UICharIconHeader->UITitleText.SetText	(Actor()->Name());
+	//UICharIconHeader->SetText	(Actor()->Name());
 	FillPointsInfo							();
 }
 
@@ -195,16 +195,12 @@ void CUIActorInfoWnd::FillPointsDetail(const shared_str& id)
 	if(!n)
 		sprintf_s								(path,"detail_part_def");
 
-	if(id=="reputation")//reputation
-	{
-		UIInfoHeader->GetTitleStatic()->SetTextST	("st_detail_list_for_community_relations");
-		FillReputationDetails						(&uiXml, path);
-		return;
-	}
+#pragma todo("implement this")
+/*
 	string256									str;
 	sprintf_s									(str,"st_detail_list_for_%s", id.c_str());
 	UIInfoHeader->GetTitleStatic()->SetTextST	(str);
-
+*/
 	SStatSectionData&	section				= Actor()->	StatisticMgr().GetSection(id);
 	vStatDetailData::const_iterator it		= section.data.begin();
 	vStatDetailData::const_iterator it_e	= section.data.end();

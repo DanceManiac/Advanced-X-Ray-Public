@@ -103,10 +103,10 @@ void CUIPdaWnd::Init()
 	xml_init.InitFrameLine	(uiXml, "mbbackground_frame_line", 0, UIMainButtonsBackground);
 
 	// Timer background
-    UITimerBackground = xr_new<CUIFrameLineWnd>();
+    UITimerBackground = xr_new<CUIStatic>();
     UITimerBackground->SetAutoDelete(true);
 	UIMainPdaFrame->AttachChild(UITimerBackground);
-	xml_init.InitFrameLine	(uiXml, "timer_frame_line", 0, UITimerBackground);
+	xml_init.InitStatic	(uiXml, "timer_frame_line", 0, UITimerBackground);
 
 	// Oкно карты
 	UIMapWnd				= xr_new<CUIMapWnd>();
@@ -395,7 +395,7 @@ void CUIPdaWnd::UpdateDateTime() const
 
 	if (xr_strcmp(strTime.c_str(), prevStrTime))
 	{
-		UITimerBackground->UITitleText.SetText(strTime.c_str());
+		UITimerBackground->SetText(strTime.c_str());
 		prevStrTime = strTime.c_str();
 	}
 }

@@ -47,8 +47,8 @@ protected:
 	// Элементы графического оформления
 	CUIFrameWindow*		UIEncyclopediaIdxBkg;
 	CUIFrameWindow*		UIEncyclopediaInfoBkg;
-	CUIFrameLineWnd*	UIEncyclopediaIdxHeader;
-	CUIFrameLineWnd*	UIEncyclopediaInfoHeader;
+	CUIStatic* UIEncyclopediaIdxHeader;
+	CUIStatic* UIEncyclopediaInfoHeader;
 	CUIAnimatedStatic*	UIAnimation;
 	CUIStatic*			UIArticleHeader;
 

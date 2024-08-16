@@ -10,19 +10,18 @@ class CUIStatic;
 class CUIFrameWindow: public CUIWindow,
 					  public CUIMultiTextureOwner
 {
-private:
 	typedef CUIWindow inherited;
 public:
-	using CUIWindow::Draw;
 					CUIFrameWindow				();
 
-	virtual void	Init						(LPCSTR base_name, float x, float y, float width, float height);
-	virtual void	Init						(float x, float y, float width, float height);
-	virtual void	Init						(LPCSTR base_name, Frect* pRect);
+			void	InitFrameWindow				(Fvector2 pos, Fvector2 size);
+			void	UpdateSize					();
 
-	virtual void	InitTexture					(const char* texture);
+	virtual void	InitTexture					(LPCSTR texture);
+	virtual void	InitTextureEx				(LPCSTR texture, LPCSTR  shader);
 			void	SetTextureColor				(u32 color)										{m_UIWndFrame.SetTextureColor(color);}
 
+	virtual void	SetWndSize					(const Fvector2& size);
 	virtual void	SetWidth					(float width);
 	virtual void	SetHeight					(float height);
 	
@@ -31,11 +30,7 @@ public:
 	virtual void	Draw						();
 	virtual void	Update						();
 	
-	//текст заголовка
-	CUIStatic*		UITitleText;
-	CUIStatic*		GetTitleStatic				()										{return UITitleText;};
 	void			SetVisiblePart				(CUIFrameRect::EFramePart p, BOOL b)	{m_UIWndFrame.SetVisiblePart(p,b);};
-
 protected:
 
 	CUIFrameRect	m_UIWndFrame;

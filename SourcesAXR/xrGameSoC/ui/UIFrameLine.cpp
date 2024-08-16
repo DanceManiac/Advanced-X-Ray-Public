@@ -1,58 +1,40 @@
-//=============================================================================
-//  Filename:   UIFrameLine.cpp
-//	Created by Roman E. Marchenko, vortex@gsc-game.kiev.ua
-//	Copyright 2004. GSC Game World
-//	---------------------------------------------------------------------------
-//  Класс аналогичный UIFrameRect за исключением того, что он предназначен для
-//	отображения затекстурированного узкого прямоуголника произвольной длинны или
-//	ширины. В качестве исходных материалов необходимо 3 текстуры: правая(нижняя),
-//	левая(верхняя) и центральная
-//=============================================================================
-
 #include "stdafx.h"
 #include "UIFrameLine.h"
 #include "../hudmanager.h"
 #include "UITextureMaster.h"
 
-//////////////////////////////////////////////////////////////////////////
-
 CUIFrameLine::CUIFrameLine()
 	:	uFlags					(0),
 		iSize					(0),
-		bHorizontalOrientation	(true)
+		bHorizontalOrientation	(true),
+		bStretchTexture			(false)
 {
 	iPos.set(0, 0);
+	m_parent_wnd_size.set(0.0f, 0.0f);
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-void CUIFrameLine::Init(LPCSTR base_name, float x, float y, float size, bool horizontal, DWORD align)
+void CUIFrameLine::InitFrameLine(Fvector2 pos, float size, bool horizontal, DWORD align)
 {
-	SetPos			(x, y);
+	SetPos			(pos);
 	SetSize			(size);
 	SetAlign		(align);
 	SetOrientation	(horizontal);
-
-	InitTexture(base_name);
 }
 
-void CUIFrameLine::InitTexture(const char* texture){
+void CUIFrameLine::InitTexture(LPCSTR texture, LPCSTR sh_name)
+{
 	string256		buf;
 
-	CUITextureMaster::InitTexture(strconcat(sizeof(buf),buf,texture,"_back"),	&elements[flBack]);
-	CUITextureMaster::InitTexture(strconcat(sizeof(buf),buf,texture,"_b"),		&elements[flFirst]);
-	CUITextureMaster::InitTexture(strconcat(sizeof(buf),buf,texture,"_e"),		&elements[flSecond]);
+	CUITextureMaster::InitTexture(strconcat(sizeof(buf),buf,texture,"_back"),sh_name,	&elements[flBack]);
+	CUITextureMaster::InitTexture(strconcat(sizeof(buf),buf,texture,"_b"),	sh_name,	&elements[flFirst]);
+	CUITextureMaster::InitTexture(strconcat(sizeof(buf),buf,texture,"_e"),	sh_name,	&elements[flSecond]);
 }
-
-//////////////////////////////////////////////////////////////////////////
 
 void CUIFrameLine::SetColor(u32 cl)
 {
 	for (int i = 0; i < flMax; ++i)
 		elements[i].SetColor(cl);
 }
-
-//////////////////////////////////////////////////////////////////////////
 
 void CUIFrameLine::UpdateSize()
 {
@@ -66,8 +48,12 @@ void CUIFrameLine::UpdateSize()
 	float s_width		= elements[flSecond].GetOriginalRect().width();
 	float s_height		= elements[flSecond].GetOriginalRect().height();
 	
-	(bHorizontalOrientation) ?
-		elements[flSecond].SetPos(iPos.x + iSize - s_width, iPos.y) :
+	if(bHorizontalOrientation && UI().is_widescreen())
+		s_width			/= 1.2f;
+
+	if(bHorizontalOrientation)
+		elements[flSecond].SetPos(iPos.x + iSize - s_width, iPos.y);
+	else
 		elements[flSecond].SetPos(iPos.x, iPos.y + iSize - s_height);
 
 	// Dimentions of element textures must be the same
@@ -85,6 +71,9 @@ void CUIFrameLine::UpdateSize()
 		back_width	= iSize - f_width - s_width;
 		back_height	= f_height;
 
+		//if (back_width < 0)
+		//	back_width = 200.f;
+
 		// Size of frameline must be equal or greater than sum of size of two side textures
 		R_ASSERT(back_width > 0);
 	}
@@ -92,9 +81,6 @@ void CUIFrameLine::UpdateSize()
 	{
 		back_width	= f_width;
 		back_height	= iSize - f_height - s_height;
-
-		// Size of frameline must be equal or greater than sum of size of two side textures
-		R_ASSERT(back_height > 0);
 	}
 
 	// Now resize back texture
@@ -122,15 +108,41 @@ void CUIFrameLine::UpdateSize()
 	uFlags |= flValidSize;
 }
 
-//////////////////////////////////////////////////////////////////////////
+void CUIFrameLine::SetElementsRect( CUIStaticItem& item, int idx )
+{
+	float srtch_width  = item.GetOriginalRect().width();
+	float srtch_height = item.GetOriginalRect().height();
+
+	if ( bStretchTexture )
+	{
+		VERIFY( (m_parent_wnd_size.x > 0.0f) && (m_parent_wnd_size.y > 0.0f) );
+		if ( bHorizontalOrientation )
+		{
+			srtch_height = m_parent_wnd_size.y;
+		}
+		else
+		{
+			srtch_width  = m_parent_wnd_size.x;
+		}
+	}
+
+	if( bHorizontalOrientation && (idx==flSecond) && UI().is_widescreen() )
+		srtch_width			/= 1.2f;
+
+	item.SetRect( Frect().set( 0.0f, 0.0f, srtch_width, srtch_height ) );
+}
 
 void CUIFrameLine::Render()
 {
 	// If size changed - update size
-	if (!(uFlags & flValidSize)) UpdateSize();
+	if ( !(uFlags & flValidSize) )
+	{
+		UpdateSize();
+	}
 	// Now render all statics
 	for (int i = 0; i < flMax; ++i)
 	{
+		SetElementsRect( elements[i], i );
 		elements[i].Render();
 	}
 }

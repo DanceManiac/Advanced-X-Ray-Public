@@ -88,18 +88,24 @@ bool CUITrackBar::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	return true;
 }
 
-void CUITrackBar::Init(float x, float y, float width, float height){
+void CUITrackBar::Init(float x, float y, float width, float height)
+{
 	string128			buf;
 	float				item_height;
 	float				item_width;
 	CUIWindow::Init		(x, y, width, DEF_CONTROL_HEIGHT);
 
+	Fvector2 size = Fvector2().set(width, height);
 
-	item_height			= CUITextureMaster::GetTextureHeight(strconcat(sizeof(buf),buf,FRAME_LINE_TEXTURE,"_b"));
-	m_pFrameLine->Init	(0, (height - item_height)/2, width, item_height);
-	m_pFrameLine->InitTexture(FRAME_LINE_TEXTURE);
-	m_pFrameLine_d->Init(0,(height - item_height)/2, width, item_height);
-	m_pFrameLine_d->InitTexture(FRAME_LINE_TEXTURE_D);
+	item_height = CUITextureMaster::GetTextureHeight(strconcat(sizeof(buf), buf, FRAME_LINE_TEXTURE, "_b"));
+	m_pFrameLine->SetWndPos(Fvector2().set(0.0f, (size.y - item_height) / 2));
+	m_pFrameLine->SetWndSize(Fvector2().set(size.x, item_height));
+
+	m_pFrameLine->InitTexture(FRAME_LINE_TEXTURE, "hud\\default");
+
+	m_pFrameLine_d->SetWndPos(Fvector2().set(0.0f, (size.y - item_height) / 2.0f));
+	m_pFrameLine_d->SetWndSize(Fvector2().set(size.x, item_height));
+	m_pFrameLine_d->InitTexture(FRAME_LINE_TEXTURE_D, "hud\\default");
 
 	strconcat			(sizeof(buf),buf,SLIDER_TEXTURE,"_e");
 	item_width			= CUITextureMaster::GetTextureWidth(buf);

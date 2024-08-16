@@ -3,59 +3,56 @@
 
 CUIFrameLineWnd::CUIFrameLineWnd()
 	:	bHorizontal(true),
-		m_bTextureAvailable(false)
+		m_bTextureAvailable(false),
+		m_bStretchTexture(false)
+{}
+
+void CUIFrameLineWnd::InitFrameLineWnd(LPCSTR base_name, Fvector2 pos, Fvector2 size, bool horizontal)
 {
-	AttachChild(&UITitleText);
+	InitFrameLineWnd(pos,size,horizontal);
+	InitTexture		(base_name,"hud\\default", horizontal);
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-void CUIFrameLineWnd::Init(float x, float y, float width, float height){
-	inherited::Init(x,y, width, height);
-	UITitleText.Init(0,0, width, 50);
-	inherited::Init(x,y, width, height);
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void CUIFrameLineWnd::Init(LPCSTR base_name, float x, float y, float width, float height, bool horizontal)
+void CUIFrameLineWnd::SetWndPos(const Fvector2& pos)
 {
-	Init(x,y,width,height);
-	InitTexture(base_name, horizontal);
-	if (horizontal)
-		UITitleText.Init(0,0, width, 50);
-	else
-		UITitleText.Init(0,0, 50, height);	
+	InitFrameLineWnd(pos,GetWndSize(),bHorizontal);
 }
 
-//////////////////////////////////////////////////////////////////////////
+void CUIFrameLineWnd::SetWndSize(const Fvector2& size)
+{
+	InitFrameLineWnd(GetWndPos(),size,bHorizontal);
+}
 
-void CUIFrameLineWnd::InitTexture(LPCSTR tex_name, bool horizontal){
+void CUIFrameLineWnd::InitFrameLineWnd(Fvector2 pos, Fvector2 size, bool horizontal)
+{
+	CUIWindow::SetWndPos		(pos);
+	CUIWindow::SetWndSize		(size);
+
+	UIFrameLine.set_parent_wnd_size(size);
+	UIFrameLine.bStretchTexture = m_bStretchTexture;
+
+	bHorizontal = horizontal;
 
 	Frect			rect;
 	GetAbsoluteRect	(rect);
 
-	bHorizontal = horizontal;
-
 	if (horizontal)
 	{
-		bool m_bDecNotNeeded = rect.right == rect.left;
-
-		UIFrameLine.Init(tex_name, rect.left, rect.top, m_bDecNotNeeded ? rect.right : rect.right - rect.left, horizontal, alNone);
-		UITitleText.Init(0,0, m_bDecNotNeeded ? rect.right : rect.right - rect.left, 50);
+		UIFrameLine.InitFrameLine(rect.lt, rect.right - rect.left, horizontal, alNone);
 	}
 	else
 	{
-		bool m_bDecNotNeeded = rect.bottom == rect.top;
-
-		UIFrameLine.Init(tex_name, rect.left, rect.top, m_bDecNotNeeded ? rect.bottom : rect.bottom - rect.top, horizontal, alNone);
-		UITitleText.Init(0,0, 50, m_bDecNotNeeded ? rect.bottom : rect.bottom - rect.top);
+		UIFrameLine.InitFrameLine(rect.lt, rect.bottom - rect.top, horizontal, alNone);
 	}
+
+	}
+
+void CUIFrameLineWnd::InitTexture(LPCSTR tex_name, LPCSTR sh_name, bool horizontal)
+{
+	UIFrameLine.InitTexture(tex_name, sh_name);
 
 	m_bTextureAvailable = true;
 }
-
-//////////////////////////////////////////////////////////////////////////
 
 void CUIFrameLineWnd::Draw()
 {
@@ -63,14 +60,12 @@ void CUIFrameLineWnd::Draw()
 	{
 		Fvector2 p;
 		GetAbsolutePos		(p);
-		UIFrameLine.SetPos	(p.x, p.y);
+		UIFrameLine.SetPos	(p);
 		UIFrameLine.Render	();
-
-		inherited::Draw();
 	}	
-}
+		inherited::Draw();
+}	
 
-//////////////////////////////////////////////////////////////////////////
 
 void CUIFrameLineWnd::SetWidth(float width)
 {
@@ -79,8 +74,6 @@ void CUIFrameLineWnd::SetWidth(float width)
 		UIFrameLine.SetSize(width);
 }
 
-//////////////////////////////////////////////////////////////////////////
-
 void CUIFrameLineWnd::SetHeight(float height)
 {
 	inherited::SetHeight(height);
@@ -88,18 +81,15 @@ void CUIFrameLineWnd::SetHeight(float height)
 		UIFrameLine.SetSize(height);
 }
 
-float CUIFrameLineWnd::GetTextureHeight(){
+float CUIFrameLineWnd::GetTextureHeight()
+{
 	return UIFrameLine.elements[0].GetRect().height();
 }
-
-//////////////////////////////////////////////////////////////////////////
 
 void CUIFrameLineWnd::SetOrientation(bool horizontal)
 {
 	UIFrameLine.SetOrientation(horizontal);
 }
-
-//////////////////////////////////////////////////////////////////////////
 
 void CUIFrameLineWnd::SetColor(u32 cl)
 {
