@@ -10,7 +10,7 @@ CUIButtonHint* g_statHint = NULL;
 CUIButtonHint::CUIButtonHint()
 	:m_ownerWnd(NULL), m_enabledOnFrame(false)
 {
-		Device.seqRender.Add		(this, 0);
+	Device.seqRender.Add(this, 0);
 
 	CUIXmlInit					xml_init;
 	CUIXml						uiXml;
@@ -25,16 +25,11 @@ CUIButtonHint::CUIButtonHint()
 
 CUIButtonHint::~CUIButtonHint()
 {
-		Device.seqRender.Remove		(this);
+	Device.seqRender.Remove(this);
 }
 
 void CUIButtonHint::OnRender()
 {
-	static u32 last_frame{};
-	if (last_frame == Device.dwFrame)
-		return;
-	last_frame = Device.dwFrame;
-
 	if (m_enabledOnFrame)
 	{
 		m_text->Update();
