@@ -1019,7 +1019,7 @@ void player_hud::update(const Fmatrix& cam_trans)
 	{
 		script_anim_offset_factor += Device.fTimeDelta * 2.5f;
 
-		if (m_bStopAtEndAnimIsRunning && Device.dwTimeGlobal >= script_anim_end)
+		if (m_bStopAtEndScriptAnimIsRunning && Device.dwTimeGlobal >= script_anim_end)
 			StopScriptAnim();
 	}
 	else
@@ -1029,7 +1029,7 @@ void player_hud::update(const Fmatrix& cam_trans)
 
 	if (m_current_motion_def)
 	{
-		if (m_bStopAtEndAnimIsRunning)
+		if (m_bStopAtEndAnimIsRunning || m_bStopAtEndScriptAnimIsRunning)
 		{
 			const xr_vector<motion_marks>& marks = m_current_motion_def->marks;
 			if (!marks.empty())
@@ -1063,6 +1063,7 @@ void player_hud::update(const Fmatrix& cam_trans)
 				m_dwMotionEndTm = 0;
 				m_dwMotionCurrTm = 0;
 				m_bStopAtEndAnimIsRunning = false;
+				m_bStopAtEndScriptAnimIsRunning = false;
 			}
 		}
 	}
@@ -1158,7 +1159,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 	if (!pSettings->section_exist(section))
 	{
 		Msg("!script motion section [%s] does not exist", section);
-		m_bStopAtEndAnimIsRunning = true;
+		m_bStopAtEndScriptAnimIsRunning = true;
 		script_anim_end = Device.dwTimeGlobal;
 		return 0;
 	}
@@ -1169,7 +1170,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 	if (!phm)
 	{
 		Msg("!script motion [%s] not found in section [%s]", anm_name, section);
-		m_bStopAtEndAnimIsRunning = true;
+		m_bStopAtEndScriptAnimIsRunning = true;
 		script_anim_end = Device.dwTimeGlobal;
 		return 0;
 	}
@@ -1238,6 +1239,7 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 	if (length > 0)
 	{
 		m_bStopAtEndAnimIsRunning	= true;
+		m_bStopAtEndScriptAnimIsRunning = true;
 		script_anim_end				= Device.dwTimeGlobal + length;
 		m_dwMotionStartTm			= Device.dwTimeGlobal;
 		m_dwMotionCurrTm			= m_dwMotionStartTm;
@@ -1245,7 +1247,10 @@ u32 player_hud::script_anim_play(u8 hand, LPCSTR section, LPCSTR anm_name, bool 
 		m_current_motion_def		= md;
 	}
 	else
-		m_bStopAtEndAnimIsRunning	= false;
+	{
+		m_bStopAtEndAnimIsRunning = false;
+		m_bStopAtEndScriptAnimIsRunning = false;
+	}
 
 	updateMovementLayerState();
 

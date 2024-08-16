@@ -341,6 +341,7 @@ private:
 	u32									m_dwMotionStartTm;
 	u32									m_dwMotionEndTm;
 	bool								m_bStopAtEndAnimIsRunning;
+	bool								m_bStopAtEndScriptAnimIsRunning;
 	bool								script_anim_item_attached;
 	bool								script_anim_item_visible;
 	IKinematics*						script_anim_item_model;
