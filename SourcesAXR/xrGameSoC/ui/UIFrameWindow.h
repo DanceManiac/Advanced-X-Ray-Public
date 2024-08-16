@@ -29,6 +29,10 @@ public:
 
 	virtual void	Draw						();
 	virtual void	Update						();
+
+	//текст заголовка
+	CUIStatic*		UITitleText;
+	CUIStatic*		GetTitleStatic				()										{return UITitleText;};
 	
 	void			SetVisiblePart				(CUIFrameRect::EFramePart p, BOOL b)	{m_UIWndFrame.SetVisiblePart(p,b);};
 protected:

@@ -154,18 +154,18 @@ void CUIWindow::script_register(lua_State *L)
 		.def(					constructor<>())
 		.def("SetWidth",				&CUIFrameWindow::SetWidth)
 		.def("SetHeight",				&CUIFrameWindow::SetHeight)
-		.def("SetColor",				&CUIFrameWindow::SetColor),
-		//.def("GetTitleStatic",			&CUIFrameWindow::GetTitleStatic)
-		//.def("Init",					(void(CUIFrameWindow::*)(LPCSTR,float,float,float,float))&CUIFrameWindow::Init),
+		.def("SetColor",				&CUIFrameWindow::SetColor)
+		.def("GetTitleStatic",			&CUIFrameWindow::GetTitleStatic)
+		.def("Init",					(void(CUIFrameWindow::*)(Fvector2, Fvector2))&CUIFrameWindow::InitFrameWindow),
 
 		class_<CUIFrameLineWnd, CUIWindow>("CUIFrameLineWnd")
 		.def(					constructor<>())
 		.def("SetWidth",						&CUIFrameLineWnd::SetWidth)
 		.def("SetHeight",						&CUIFrameLineWnd::SetHeight)
 		.def("SetOrientation",					&CUIFrameLineWnd::SetOrientation)
-		.def("SetColor",						&CUIFrameLineWnd::SetColor),
-		//.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic)
-		//.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR,float,float,float,float,bool))&CUIFrameLineWnd::Init),
+		.def("SetColor",						&CUIFrameLineWnd::SetColor)
+		.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic)
+		.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR, Fvector2, Fvector2, bool))&CUIFrameLineWnd::InitFrameLineWnd),
 
 		class_<CUILabel, CUIFrameLineWnd>("CUILabel")
 		.def(					constructor<>())

@@ -5,12 +5,15 @@ CUIFrameLineWnd::CUIFrameLineWnd()
 	:	bHorizontal(true),
 		m_bTextureAvailable(false),
 		m_bStretchTexture(false)
-{}
+{
+	AttachChild(&UITitleText);
+}
 
 void CUIFrameLineWnd::InitFrameLineWnd(LPCSTR base_name, Fvector2 pos, Fvector2 size, bool horizontal)
 {
 	InitFrameLineWnd(pos,size,horizontal);
 	InitTexture		(base_name,"hud\\default", horizontal);
+	UITitleText.Init(0, 0, size.x, 50);
 }
 
 void CUIFrameLineWnd::SetWndPos(const Fvector2& pos)
@@ -39,13 +42,15 @@ void CUIFrameLineWnd::InitFrameLineWnd(Fvector2 pos, Fvector2 size, bool horizon
 	if (horizontal)
 	{
 		UIFrameLine.InitFrameLine(rect.lt, rect.right - rect.left, horizontal, alNone);
+		UITitleText.Init(0, 0, size.x, 50);
 	}
 	else
 	{
 		UIFrameLine.InitFrameLine(rect.lt, rect.bottom - rect.top, horizontal, alNone);
+		UITitleText.Init(0, 0, 50, size.y);
 	}
 
-	}
+}
 
 void CUIFrameLineWnd::InitTexture(LPCSTR tex_name, LPCSTR sh_name, bool horizontal)
 {

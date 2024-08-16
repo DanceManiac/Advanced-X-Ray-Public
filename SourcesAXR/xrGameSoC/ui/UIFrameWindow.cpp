@@ -7,7 +7,11 @@
 #include "../Include/xrRender/UIRender.h"
 
 CUIFrameWindow::CUIFrameWindow()
-{}
+{
+	UITitleText = xr_new<CUIStatic>();
+	UITitleText->SetAutoDelete(true);
+	AttachChild(UITitleText);
+}
 
 void CUIFrameWindow::InitFrameWindow(Fvector2 pos, Fvector2 size)
 {
@@ -15,6 +19,7 @@ void CUIFrameWindow::InitFrameWindow(Fvector2 pos, Fvector2 size)
 	inherited::SetWndSize	(size);
 	m_UIWndFrame.SetWndPos	(pos);
 	m_UIWndFrame.SetWndSize	(size);
+	UITitleText->Init(0, 0, size.x, 50);
 }
 
 void CUIFrameWindow::UpdateSize()

@@ -23,6 +23,10 @@ public:
 			float GetTextureHeight();
 	void SetColor(u32 cl);
 
+	// Also we can display textual caption on the frame
+	CUIStatic		UITitleText;
+	CUIStatic*		GetTitleStatic	(){return &UITitleText;};
+
 			void SetStretchTexture	( bool bStretch )	{ m_bStretchTexture = bStretch; }
 			bool GetStretchTexture	() const			{ return m_bStretchTexture; }
 protected:
