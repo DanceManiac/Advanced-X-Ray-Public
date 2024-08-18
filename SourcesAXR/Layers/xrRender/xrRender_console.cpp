@@ -85,7 +85,7 @@ xr_token							qsun_shafts_token							[ ]={
 };
 
 //ogse sunshafts
-u32 ps_sunshafts_mode = 0;
+u32 ps_sunshafts_mode = 1;
 xr_token sunshafts_mode_token[] = {
 	{ "volumetric", 0 },
 	{ "screen_space", 1 },
@@ -260,7 +260,6 @@ Flags32		ps_r2_ls_flags				= { R2FLAG_SUN
 	|R2FLAG_SUN_FOCUS
 	|R2FLAG_SUN_TSM
 	|R2FLAG_TONEMAP
-	|R2FLAG_VOLUMETRIC_LIGHTS
 	|R2FLAG_EXP_MT_DETAILS
 	};	// r2-only
 
@@ -389,8 +388,8 @@ Fvector4 ps_dev_param_7 = { .0f, .0f, .0f, .0f };
 Fvector4 ps_dev_param_8 = { .0f, .0f, .0f, .0f };
 
 //Geometry optimization from Anomaly
-int opt_static = 0;
-int opt_dynamic = 0;
+int opt_static = 2;
+int opt_dynamic = 2;
 
 //Многопоточная загрузка текстур
 int ps_mt_texture_load = 1;
@@ -400,12 +399,12 @@ int ps_r2_ao_debug = 0;
 
 float ps_r2_reflections_distance = 300.0f;
 
-Flags32 psDeviceFlags2 = { 0 };
+Flags32 psDeviceFlags2 = { rsOptShadowGeom };
 
 //Static on R2+
 Flags32	ps_r2_static_flags = { R2FLAG_USE_BUMP };
 
-Flags32	ps_r4_shaders_flags = { R4FLAG_SSS_ADDON | R4FLAG_ES_ADDON };
+Flags32	ps_r4_shaders_flags = { R4FLAG_ES_ADDON };
 
 //Screen Space Shaders Stuff
 
