@@ -20,6 +20,7 @@ float4x4 m_current; // Current projection matrix
 float4x4 m_previous; // Previous projection matrix
 
 Texture2D ssfx_ao;
+Texture2D s_hud_mask;
 Texture2D s_prev_pos;
 Texture2D jitter0;
 
@@ -53,7 +54,10 @@ float4 main(p_screen I) : SV_Target
 	// MAT_FLORA from current pixel?
 	bool mat_flora = abs(mtl - MAT_FLORA) <= 0.04f;
 
-	float WeaponFactor = 1.0;
+	// A factor to adjust some values to only affect weapons ( closer objects )
+	float4 HudMask = s_hud_mask.Sample(smp_linear, tc);
+
+	float WeaponFactor = 1.0 - HudMask.r;
 	
 	float HUD_Multiply = clamp(1.0 - WeaponFactor, ssfx_ao_setup2.y, 1.0f);
 
@@ -148,6 +152,14 @@ float4 main(p_screen I) : SV_Target
 
 	// Velocity
 	float vel = distance(current, previous);
+
+	// HUD Mask
+	if (WeaponFactor)
+	{
+		// Use HUD motion vectors for reprojection
+		uv_rp = float2(HudMask.y, -HudMask.z) * 0.5f;
+		vel = 0; // Disable velocity. Is enough with the disocclusion?
+	}
 
 	// Sample previous frame + Reprojection UV
 	float4 prev = ssfx_ao.Sample(smp_linear, (tc - uv_rp) / ao_setup.x);

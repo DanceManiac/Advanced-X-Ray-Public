@@ -21,6 +21,7 @@ float4x4 m_previous; // Previous projection matrix
 
 // Textures
 Texture2D ssfx_ao;
+Texture2D s_hud_mask;
 Texture2D s_prev_pos;
 Texture2D jitter0;
 
@@ -56,6 +57,9 @@ float4 main(p_screen I) : SV_Target
 
 	// If MAT_FLORA we use a fake normal to align the hemisphere
 	N.xyz = mat_flora ? mul(m_V, float3(0.0f, 0.25f, 0.0f)) : N.xyz;
+
+	// A factor to adjust some values to only affect weapons ( closer objects )
+	float3 HudMask = s_hud_mask.Sample(smp_nofilter, tc).rgb;
 	
 	// Var to accumulate the IL
 	float3 il = 0;
@@ -143,6 +147,14 @@ float4 main(p_screen I) : SV_Target
 
 	// Velocity
 	float vel = distance(current.xy, previous.xy);
+
+	// HUD Mask
+	if (HudMask.r <= 0)
+	{
+		// Use HUD motion vectors for reprojection
+		uv_rp = float2(HudMask.y, -HudMask.z) * 0.5f;
+		vel = 0;
+	}
 
 	// Sample previous frame + Reprojection UV
 	float4 prev = ssfx_ao.Sample(smp_linear, (tc - uv_rp) / ao_setup.x);
