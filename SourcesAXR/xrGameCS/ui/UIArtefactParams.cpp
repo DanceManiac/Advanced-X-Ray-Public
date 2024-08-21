@@ -81,13 +81,13 @@ LPCSTR af_immunity_caption[] =  // ALife::EHitType
 {
 	"ui_inv_outfit_burn_protection",			// eHitTypeBurn=0
 	"ui_inv_outfit_shock_protection",			// eHitTypeShock=1
-	"ui_inv_outfit_strike_protection",			// eHitTypeChemicalBurn
-	"ui_inv_outfit_wound_protection",			// eHitTypeRadiation=3
-	"ui_inv_outfit_radiation_protection",		// eHitTypeTelepatic=4
-	"ui_inv_outfit_telepatic_protection",		// eHitTypeWound=5
-	"ui_inv_outfit_chemical_burn_protection",	// eHitTypeFireWound=6
-	"ui_inv_outfit_explosion_protection",		// eHitTypeStrike=7
-	"ui_inv_outfit_fire_wound_protection",		// eHitTypeExplosion=8
+	"ui_inv_outfit_chemical_burn_protection",	// eHitTypeFireWound=2
+	"ui_inv_outfit_radiation_protection",		// eHitTypeTelepatic=3
+	"ui_inv_outfit_telepatic_protection",		// eHitTypeWound=4
+	"ui_inv_outfit_wound_protection",			// eHitTypeRadiation=5
+	"ui_inv_outfit_fire_wound_protection",		// eHitTypeExplosion=6
+	"ui_inv_outfit_strike_protection",			// eHitTypeChemicalBurn=7
+	"ui_inv_outfit_explosion_protection",		// eHitTypeStrike=8
 	"",											// eHitTypeWound_2=9
 };
 

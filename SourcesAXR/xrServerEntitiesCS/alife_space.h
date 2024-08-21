@@ -113,19 +113,19 @@ namespace ALife {
 
 	enum EConditionRestoreType {
 		eHealthRestoreSpeed = u32(0),
-		eRadiationRestoreSpeed,
 		eSatietyRestoreSpeed,
 		eThirstRestoreSpeed,
-		eIntoxicationRestoreSpeed,
+		eRadiationRestoreSpeed,
+		ePowerRestoreSpeed,
+		eBleedingRestoreSpeed,
+		ePsyHealthRestoreSpeed,
 		eSleepenessRestoreSpeed,
+		eIntoxicationRestoreSpeed,
 		eAlcoholismRestoreSpeed,
 		eHangoverRestoreSpeed,
 		eNarcotismRestoreSpeed,
 		eWithDrawalRestoreSpeed,
-		ePsyHealthRestoreSpeed,
 		eFrostbiteRestoreSpeed,
-		ePowerRestoreSpeed,
-		eBleedingRestoreSpeed,
 		eRestoreTypeMax,
 	};
 
