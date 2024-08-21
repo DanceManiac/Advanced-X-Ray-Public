@@ -137,7 +137,10 @@ float4 main( vf I ) : SV_Target
 		// Reflection fog fadeout
 		float fog = 1.0 - saturate(( length(float3(Pv.x,Pv.y,ssr_hit_uv.z)) * fog_params.w + fog_params.x) * 1.4f);
 		
-		float refl_power = saturate(ray_fade * edgeFade * fog);
+		// Distance fade for reflections
+		float distance_fade = saturate(1.0 - (Pv.z / reflections_distance.x));
+		
+		float refl_power = saturate(ray_fade * edgeFade * fog * distance_fade);
 		
 		// Fallback to Skybox
 		reflection = lerp(refl_skybox * !ssfx_is_underground.x, refl_ray * G_SSR_WATER_MAP_REFLECTION, refl_power);
