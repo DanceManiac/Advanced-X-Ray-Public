@@ -555,6 +555,12 @@ ENGINE_API Fvector4 ps_ssfx_ssr = { 1.0f, 0.25f, 0.0f, 0.0f }; // Res, Blur, Tem
 ENGINE_API Fvector4 ps_ssfx_ssr_2 = { 1.0f, 1.0f, 0.5f, 0.015f }; // Quality, Fade, Int, Wpn Int
 ENGINE_API Fvector4 ps_ssfx_terrain_quality = { 12, 0, 0, 0 };
 ENGINE_API Fvector4 ps_ssfx_terrain_offset = { 0, 0, 0, 0 };
+ENGINE_API int ps_ssfx_il_quality = 32; // IL Samples
+ENGINE_API Fvector4 ps_ssfx_il = { 6.66f, 1.0f, 1.0f, 5.0f }; // Res, Int, Vibrance, Blur
+ENGINE_API Fvector4 ps_ssfx_il_setup1 = { 150.0f, 1.0f, 0.5f, 0.0f }; // Distance, HUD, Flora, -
+ENGINE_API int ps_ssfx_ao_quality = 4; // AO Samples
+ENGINE_API Fvector4 ps_ssfx_ao = { 1.0f, 5.0f, 1.0f, 2.5f }; // Res, AO int, Blur, Radius
+ENGINE_API Fvector4 ps_ssfx_ao_setup1 = { 150.0, 1.0, 1.0, 0.0 }; // Distance, HUD, Flora, Max OCC
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
 ENGINE_API float ps_r3_dyn_wet_surf_far = 100.f; // 30.0f

@@ -7,6 +7,7 @@
 #define STENCIL_CULL 0
 
 ENGINE_API extern int ps_r__ShaderNVG;
+extern ENGINE_API Fvector4 ps_ssfx_il;
 
 bool sort_function(Fvector4 i, Fvector4 j)
 {
@@ -45,6 +46,8 @@ float	hclip(float v, float dim)		{ return 2.f*v/dim - 1.f; }
 void	CRenderTarget::phase_combine	()
 {
 	PIX_EVENT(phase_combine);
+
+	bool ssfx_PrevPos_Requiered = false;
 
 	//	TODO: DX10: Remove half poxel offset
 	bool	_menu_pp	= g_pGamePersistent?g_pGamePersistent->OnRenderPPUI_query():false;
@@ -87,6 +90,50 @@ void	CRenderTarget::phase_combine	()
         else if (RImplementation.o.ssao_blur_on)
             phase_ssao();
     }
+
+	// Save previus and current matrices
+	Fvector2 m_blur_scale;
+	{
+		static Fmatrix m_saved_viewproj;
+
+		if (Render->currentViewPort == MAIN_VIEWPORT)
+		{
+			static Fvector3 saved_position;
+			Position_previous.set(saved_position);
+			saved_position.set(Device.vCameraPosition);
+
+			Fmatrix m_invview;
+			m_invview.invert(Device.mView);
+			Matrix_previous.mul(m_saved_viewproj, m_invview);
+			Matrix_current.set(Device.mProject);
+			m_saved_viewproj.set(Device.mFullTransform);
+		}
+		float scale = ps_r2_mblur / 2.f;
+		m_blur_scale.set(scale, -scale).div(12.f);
+	}
+
+	{
+		// Disable when rendering SecondViewport
+		if (Render->currentViewPort == MAIN_VIEWPORT)
+		{
+			// Clear RT
+			FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+			HW.pContext->ClearRenderTargetView(rt_ssfx_temp->pRT, ColorRGBA);
+			HW.pContext->ClearRenderTargetView(rt_ssfx_temp2->pRT, ColorRGBA);
+
+			/*if (RImplementation.o.ssfx_ao && ps_ssfx_ao.y > 0)
+			{
+				ssfx_PrevPos_Requiered = true;
+				phase_ssfx_ao(); // [SSFX] - New AO Phase
+			} */
+
+			if (RImplementation.o.ssfx_il && ps_ssfx_il.y > 0)
+			{
+				ssfx_PrevPos_Requiered = true;
+				phase_ssfx_il(); // [SSFX] - New IL Phase
+			}
+		}
+	}
 
 	FLOAT ColorRGBA[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 	// low/hi RTs
@@ -135,7 +182,7 @@ void	CRenderTarget::phase_combine	()
 	//}
 
 	// calc m-blur matrices
-	Fmatrix		m_previous, m_current;
+	/*Fmatrix		m_previous, m_current;
 	Fvector2	m_blur_scale;
 	{
 		static Fmatrix		m_saved_viewproj;
@@ -147,7 +194,7 @@ void	CRenderTarget::phase_combine	()
 		m_saved_viewproj.set(Device.mFullTransform)	;
 		float	scale		= ps_r2_mblur/2.f;
 		m_blur_scale.set	(scale,-scale).div(12.f);
-	}
+	}  */
 
 	// Draw full-screen quad textured with our scene image
 	if (!_menu_pp)
@@ -303,6 +350,9 @@ void	CRenderTarget::phase_combine	()
 	   g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
    }
 
+   if (ssfx_PrevPos_Requiered)
+	   HW.pContext->CopyResource(rt_ssfx_prevPos->pTexture->surface_get(), rt_Position->pTexture->surface_get());
+
 	// Forward rendering
 	{
 		PIX_EVENT(Forward_rendering);
@@ -421,7 +471,8 @@ void	CRenderTarget::phase_combine	()
 	if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON))
 	{
 		//Compute blur textures
-		phase_blur();
+		if (Render->currentViewPort == MAIN_VIEWPORT) // Temp fix for blur buffer and SVP
+			phase_blur();
 
 		//Compute bloom (new)
 		//phase_pp_bloom();
@@ -554,8 +605,8 @@ void	CRenderTarget::phase_combine	()
 		RCache.set_c				("e_barrier",	ps_r2_aa_barier.x,	ps_r2_aa_barier.y,	ps_r2_aa_barier.z,	0);
 		RCache.set_c				("e_weights",	ps_r2_aa_weight.x,	ps_r2_aa_weight.y,	ps_r2_aa_weight.z,	0);
 		RCache.set_c				("e_kernel",	ps_r2_aa_kernel,	ps_r2_aa_kernel,	ps_r2_aa_kernel,	0);
-		RCache.set_c				("m_current",	m_current);
-		RCache.set_c				("m_previous",	m_previous);
+		RCache.set_c				("m_current",	Matrix_current);
+		RCache.set_c				("m_previous",	Matrix_previous);
 		RCache.set_c				("m_blur",		m_blur_scale.x,m_blur_scale.y, 0,0);
 
 		float red_color = ps_color_grading.x;

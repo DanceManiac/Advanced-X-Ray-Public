@@ -16,10 +16,6 @@ uniform float4 fakescope_params3;
 	#include "settings_screenspace_FOG.h"
 #endif
 
-#ifdef SSFX_INDIRECT_LIGHT
-	#include "screenspace_il.h"
-#endif
-
 #ifdef SSFX_LUT_INUSE
 	#include "screenspace_lut.h"
 #endif
@@ -93,13 +89,6 @@ c2_out main( v2p_aa_AA I )
 	if (!isSecondVPActive())
 		img = mblur( center, ( gbd ).P, img.rgb);
 
-	// Indirect light - SCREEN SPACE SHADERS - UPDATE 14
-#ifdef SSFX_INDIRECT_LIGHT
-	ssfx_il(I.Tex0, I.HPos, gbd.P, gbd.N, img, iSample);
-#endif
-
-	// Sky Debanding Implementation  - SCREEN SPACE SHADERS - UPDATE 12.5
-	
 #ifdef SSFX_FOG
 
 	// Calc Fog

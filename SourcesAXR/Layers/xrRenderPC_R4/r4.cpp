@@ -19,6 +19,8 @@
 CRender RImplementation;
 extern ENGINE_API bool ps_enchanted_shaders;
 extern ENGINE_API Fvector4 ps_ssfx_terrain_quality;
+extern ENGINE_API int ps_ssfx_il_quality;
+extern ENGINE_API int ps_ssfx_ao_quality;
 
 //////////////////////////////////////////////////////////////////////////
 class CGlow				: public IRender_Glow
@@ -409,6 +411,7 @@ void					CRender::create					()
 
 	// Ascii's Screen Space Shaders - Check if SSS shaders exist
 	string_path fn;
+	o.ssfx_core = FS.exist(fn, "$game_shaders$", "r3\\screenspace_common", ".h") ? 1 : 0;
 	o.ssfx_rain = FS.exist(fn, "$game_shaders$", "r3\\effects_rain_splash", ".ps") ? 1 : 0;
 	o.ssfx_blood = FS.exist(fn, "$game_shaders$", "r3\\effects_wallmark_blood", ".ps") ? 1 : 0;
 	o.ssfx_branches = FS.exist(fn, "$game_shaders$", "r3\\deffer_tree_branch_bump-hq", ".vs") ? 1 : 0;
@@ -416,7 +419,11 @@ void					CRender::create					()
 	o.ssfx_ssr = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ssr", ".ps") ? 1 : 0;
 	o.ssfx_terrain = FS.exist(fn, "$game_shaders$", "r3\\deffer_terrain_high_flat_d", ".ps") ? 1 : 0;
 	o.ssfx_volumetric = FS.exist(fn, "$game_shaders$", "r3\\ssfx_volumetric_blur", ".ps") ? 1 : 0;
+	o.ssfx_ao = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ao", ".ps") ? 1 : 0;
+	o.ssfx_il = FS.exist(fn, "$game_shaders$", "r3\\ssfx_il", ".ps") ? 1 : 0;
 
+	Msg("- Supports SSS UPDATE 21");
+	Msg("- SSS CORE INSTALLED %i", o.ssfx_core);
 	Msg("- SSS HUD RAINDROPS SHADER INSTALLED %i", o.ssfx_hud_raindrops);
 	Msg("- SSS RAIN SHADER INSTALLED %i", o.ssfx_rain);
 	Msg("- SSS BLOOD SHADER INSTALLED %i", o.ssfx_blood);
@@ -424,6 +431,8 @@ void					CRender::create					()
 	Msg("- SSS SSR SHADER INSTALLED %i", o.ssfx_ssr);
 	Msg("- SSS TERRAIN SHADER INSTALLED %i", o.ssfx_terrain);
 	Msg("- SSS VOLUMETRIC SHADER INSTALLED %i", o.ssfx_volumetric);
+	Msg("- SSS AO SHADER INSTALLED %i", o.ssfx_ao);
+	Msg("- SSS IL SHADER INSTALLED %i", o.ssfx_il);
 
 	// constants
 	dxRenderDeviceRender::Instance().Resources->RegisterConstantSetup	("parallax",	&binder_parallax);
@@ -1036,6 +1045,8 @@ HRESULT	CRender::shader_compile			(
 	// Ascii's Screen Space Shaders - SSS preprocessor stuff
 	char							c_inter_grass	[32];
 	char							c_rain_quality	[32];
+	char							c_ssfx_il		[32];
+	char							c_ssfx_ao		[32];
 
 	char	sh_name[MAX_PATH] = "";
 	
@@ -1613,6 +1624,13 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_indirect_light); ++len;
+
+		xr_sprintf(c_ssfx_il, "%d", u8(_min(_max(ps_ssfx_il_quality, 0), 64)));
+		defines[def_it].Name = "SSFX_IL_QUALITY";
+		defines[def_it].Definition = c_ssfx_il;
+		def_it++;
+		xr_strcat(sh_name, c_ssfx_il);
+		len += xr_strlen(c_ssfx_il);
 	}
 	else
 	{
@@ -1691,6 +1709,21 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_puddles); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && ps_ssfx_ao_quality > 0)
+	{
+		xr_sprintf(c_ssfx_ao, "%d", u8(_min(_max(ps_ssfx_ao_quality, 2), 8)));
+		defines[def_it].Name = "SSFX_AO_QUALITY";
+		defines[def_it].Definition = c_ssfx_ao;
+		def_it++;
+		xr_strcat(sh_name, c_ssfx_ao);
+		len += xr_strlen(c_ssfx_ao);
 	}
 	else
 	{

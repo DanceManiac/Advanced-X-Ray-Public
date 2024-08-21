@@ -573,6 +573,9 @@ extern ENGINE_API Fvector4 ps_ssfx_lut;
 extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
 extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
 
+extern ENGINE_API Fvector4 ps_ssfx_il;
+extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
+
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
@@ -769,6 +772,22 @@ static class ssfx_volumetric : public R_constant_setup
 	}
 }    ssfx_volumetric;
 
+static class ssfx_il : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_il);
+	}
+}    ssfx_il;
+
+static class ssfx_il_setup1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_il_setup1);
+	}
+}    ssfx_il_setup1;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -885,6 +904,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_wsetup_grass",	&ssfx_wind_grass);
 	r_Constant				("ssfx_wsetup_trees",	&ssfx_wind_trees);
 	r_Constant				("ssfx_lut",			&ssfx_lut);
+	r_Constant				("ssfx_il_setup",		&ssfx_il);
+	r_Constant				("ssfx_il_setup2",		&ssfx_il_setup1);
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug

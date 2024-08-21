@@ -75,6 +75,7 @@ public:
 	// [SSS Stuff]
 	IBlender*					b_ssfx_ssr;
 	IBlender*					b_ssfx_volumetric_blur;
+	IBlender*					b_ssfx_ao;
 
 #ifdef DEBUG
 	struct		dbg_line_t		{
@@ -138,9 +139,18 @@ public:
 	ref_rt						rt_ssfx;
 	ref_rt						rt_ssfx_temp;
 	ref_rt						rt_ssfx_temp2;
+	ref_rt						rt_ssfx_temp3;
 	ref_rt						rt_ssfx_accum;
 	ref_rt						rt_ssfx_hud;
 	ref_shader					s_ssfx_dumb;
+	ref_rt						rt_ssfx_ao;
+	ref_rt						rt_ssfx_il;
+	ref_rt						rt_ssfx_prevPos;
+
+	Fmatrix Matrix_previous, Matrix_current;
+	Fmatrix Matrix_HUD_previous, Matrix_HUD_current;
+	Fvector3 Position_previous;
+	//bool RVelocity;
 
 	//	Igor: for async screenshots
 	ID3DTexture2D*			t_ss_async;				//32bit		(r,g,b,a) is situated in the system memory
@@ -255,6 +265,7 @@ private:
 	// Screen Space Shaders Stuff
 	ref_shader					s_ssfx_ssr;
 	ref_shader					s_ssfx_volumetric_blur;
+	ref_shader					s_ssfx_ao;
 
 	ref_geom						g_accum_point	;
 	ref_geom						g_accum_spot	;
@@ -402,6 +413,8 @@ public:
 	void						SwitchViewPort			(ViewPort vp);
 	void						phase_ssfx_ssr			(); // SSR Phase
 	void						phase_ssfx_volumetric_blur(); // Volumetric Blur
+	void						phase_ssfx_ao			(); // AO
+	void						phase_ssfx_il			(); // IL
 	void						set_viewport_size		(ID3DDeviceContext* dev, float w, float h);
 
 	//	Generates min/max sm

@@ -389,6 +389,7 @@ CRenderTarget::CRenderTarget		()
 	// Screen Space Shaders Stuff
 	b_ssfx_ssr				= xr_new<CBlender_ssfx_ssr>			(); // [Ascii1457] SSS new Phase
 	b_ssfx_volumetric_blur	= xr_new<CBlender_ssfx_volumetric_blur>(); // [Ascii1457] SSS new Phase
+	b_ssfx_ao				= xr_new<CBlender_ssfx_ao>			(); // AO
 
 	// HDAO
 	b_hdao_cs               = xr_new<CBlender_CS_HDAO>			();
@@ -528,9 +529,13 @@ CRenderTarget::CRenderTarget		()
 		rt_ssfx.create(r2_RT_ssfx, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Generic RT
 		rt_ssfx_temp.create(r2_RT_ssfx_temp, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
 		rt_ssfx_temp2.create(r2_RT_ssfx_temp2, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT 8B
+		rt_ssfx_temp3.create(r2_RT_ssfx_temp3, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
 		rt_ssfx_accum.create(r2_RT_ssfx_accum, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount); // Temp RT 16B
 		rt_ssfx_hud.create(r2_RT_ssfx_hud, vp_params_main_secondary, D3DFMT_L8); // Temp RT 8B
 		rt_flares.create(r2_RT_flares, vp_params_main_secondary, D3DFMT_A8R8G8B8);
+		rt_ssfx_ao.create(r2_RT_ssfx_ao, vp_params_main_secondary, D3DFMT_A8R8G8B8); // AO Acc
+		rt_ssfx_il.create(r2_RT_ssfx_il, vp_params_main_secondary, D3DFMT_A8R8G8B8); // IL Acc
+		rt_ssfx_prevPos.create(r2_RT_ssfx_prevPos, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount);
 	}
 
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");
@@ -547,6 +552,7 @@ CRenderTarget::CRenderTarget		()
 	s_ssfx_ssr.create(b_ssfx_ssr, "r2\\ssfx_ssr"); // SSR
 	s_ssfx_volumetric_blur.create(b_ssfx_volumetric_blur, "r2\\ssfx_volumetric_blur"); // Volumetric Blur
 	s_ssfx_dumb.create("ssfx_dumb"); // Dumb shader
+	s_ssfx_ao.create(b_ssfx_ao, "ssfx_ao"); // SSR
 
 	//DLAA
 	s_dlaa.create("effects_dlaa");
@@ -1242,6 +1248,7 @@ CRenderTarget::~CRenderTarget	()
 	xr_delete					(b_lut					); // Anomaly lut
 	xr_delete					(b_ssfx_ssr				); // [Ascii1457] SSS new Phase
 	xr_delete					(b_ssfx_volumetric_blur	); // [Ascii1457] SSS new Phase
+	xr_delete					(b_ssfx_ao				); // AO Phase
 
    if( RImplementation.o.dx10_msaa )
    {

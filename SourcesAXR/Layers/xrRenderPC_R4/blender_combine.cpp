@@ -41,6 +41,8 @@ void	CBlender_combine::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("sky_s1",			r2_T_sky1			);
 		C.r_dx10Texture		("s_occ",			r2_RT_ssao_temp		);
 		C.r_dx10Texture		("s_half_depth",	r2_RT_half_depth	);
+		C.r_dx10Texture		("ssfx_ao",			r2_RT_ssfx_temp);
+		C.r_dx10Texture		("ssfx_il",			r2_RT_ssfx_temp2);
 
 		jitter(C);
 
@@ -213,6 +215,8 @@ void	CBlender_combine_msaa::Compile(CBlender_Compile& C)
 	  C.r_dx10Texture		("s_blur_4",		r2_RT_blur_4);
 	  C.r_dx10Texture		("s_blur_8",		r2_RT_blur_8);
 	  C.r_dx10Texture		("s_flares",        r2_RT_flares);
+	  C.r_dx10Texture		("ssfx_ao",			r2_RT_ssfx_temp);
+	  C.r_dx10Texture		("ssfx_il",			r2_RT_ssfx_temp2);
 
 	  C.r_dx10Texture		("s_lut_atlas",		"shaders\\lut_atlas");
 
