@@ -536,6 +536,7 @@ CRenderTarget::CRenderTarget		()
 		rt_ssfx_ao.create(r2_RT_ssfx_ao, vp_params_main_secondary, D3DFMT_A8R8G8B8); // AO Acc
 		rt_ssfx_il.create(r2_RT_ssfx_il, vp_params_main_secondary, D3DFMT_A8R8G8B8); // IL Acc
 		rt_ssfx_prevPos.create(r2_RT_ssfx_prevPos, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount);
+		rt_ssfx_water_waves.create(r2_RT_blur_8, RtCreationParams(u32(512), (u32(512)), MAIN_VIEWPORT), D3DFMT_A8R8G8B8);
 	}
 
 	s_sunshafts.create(b_sunshafts, "r2\\sunshafts");

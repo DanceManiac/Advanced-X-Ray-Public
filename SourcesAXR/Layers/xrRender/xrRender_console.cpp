@@ -453,6 +453,7 @@ extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
+extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
@@ -1403,14 +1404,13 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,		"ssfx_terrain_quality_vec",		&ps_ssfx_terrain_quality,	Fvector4().set(0, 0, 0, 0), Fvector4().set(24, 0, 0, 0));
 	CMD4(CCC_Float,			"ssfx_terrain_quality",			&ps_ssfx_terrain_quality.x,	1, 24);
 	CMD4(CCC_Vector4,		"ssfx_terrain_offset",			&ps_ssfx_terrain_offset,	Fvector4().set(-1, -1, -1, -1), Fvector4().set(1, 1, 1, 1));
-	
 	CMD4(CCC_Integer,		"ssfx_il_quality",				&ps_ssfx_il_quality,		16, 64);
 	CMD4(CCC_Vector4,		"ssfx_il",						&ps_ssfx_il,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 3, 6));
 	CMD4(CCC_Vector4,		"ssfx_il_setup1",				&ps_ssfx_il_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
-
 	CMD4(CCC_Integer,		"ssfx_ao_quality",				&ps_ssfx_ao_quality,		2, 8);
 	CMD4(CCC_Vector4,		"ssfx_ao",						&ps_ssfx_ao,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 1, 10));
 	CMD4(CCC_Vector4,		"ssfx_ao_setup1",				&ps_ssfx_ao_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
+	CMD4(CCC_Vector3,		"ssfx_water_parallax",			&ps_ssfx_water_parallax_quality, Fvector3().set(0.0f, 0.0f, 0.0f), Fvector3().set(3.0f, 2.0f, 1.0f));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR

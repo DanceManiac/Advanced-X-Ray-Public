@@ -336,6 +336,8 @@ void	CRenderTarget::phase_combine	()
    if (RImplementation.o.ssfx_ssr)
    {
 	   phase_ssfx_ssr(); // [SSFX] - New SSR Phase
+	   // Water waves
+	   phase_ssfx_water_waves();
    }
 
    // Water rendering & Rain/thunder-bolts
@@ -347,6 +349,7 @@ void	CRenderTarget::phase_combine	()
 
 	   RCache.set_xform_world(Fidentity);
 	   RImplementation.r_dsgraph_render_water();
+
 	   g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
    }
 

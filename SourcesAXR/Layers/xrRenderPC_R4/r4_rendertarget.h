@@ -146,6 +146,7 @@ public:
 	ref_rt						rt_ssfx_ao;
 	ref_rt						rt_ssfx_il;
 	ref_rt						rt_ssfx_prevPos;
+	ref_rt						rt_ssfx_water_waves;
 
 	Fmatrix Matrix_previous, Matrix_current;
 	Fmatrix Matrix_HUD_previous, Matrix_HUD_current;
@@ -415,6 +416,7 @@ public:
 	void						phase_ssfx_volumetric_blur(); // Volumetric Blur
 	void						phase_ssfx_ao			(); // AO
 	void						phase_ssfx_il			(); // IL
+	void						phase_ssfx_water_waves	(); // Water Waves
 	void						set_viewport_size		(ID3DDeviceContext* dev, float w, float h);
 
 	//	Generates min/max sm

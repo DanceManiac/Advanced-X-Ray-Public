@@ -425,4 +425,43 @@ void CRenderTarget::phase_ssfx_volumetric_blur()
 	if (ScaleFactor > 1.0f)
 		set_viewport_size(HW.pContext, w, h);
 };
+
+void CRenderTarget::phase_ssfx_water_waves()
+{
+	//Constants
+	u32 Offset = 0;
+	u32 C = color_rgba(0, 0, 0, 255);
+
+	float d_Z = EPS_S;
+	float d_W = 1.0f;
+	u32 w = Device.dwWidth;
+	u32 h = Device.dwHeight;
+
+
+	Fvector2 p0, p1;
+	p0.set(0.0f, 0.0f);
+	p1.set(1.0f, 1.0f);
+
+	set_viewport_size(HW.pContext, 512, 512);
+
+	u_setrt(rt_ssfx_water_waves, 0, 0, NULL);
+	RCache.set_CullMode(CULL_NONE);
+	RCache.set_Stencil(FALSE);
+
+	// Fill vertex buffer
+	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+	pv->set(0, h, d_Z, d_W, C, p0.x, p1.y); pv++;
+	pv->set(0, 0, d_Z, d_W, C, p0.x, p0.y); pv++;
+	pv->set(w, h, d_Z, d_W, C, p1.x, p1.y); pv++;
+	pv->set(w, 0, d_Z, d_W, C, p1.x, p0.y); pv++;
+	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+	// Draw COLOR
+	RCache.set_Element(s_ssfx_volumetric_blur->E[2]);
+	RCache.set_c("wind_setup", g_pGamePersistent->Environment().wind_anim.w, g_pGamePersistent->Environment().CurrentEnv->wind_velocity, 0, 0);
+	RCache.set_Geometry(g_combine);
+	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+
+	set_viewport_size(HW.pContext, w, h);
+};
 #endif

@@ -576,6 +576,8 @@ extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
 extern ENGINE_API Fvector4 ps_ssfx_il;
 extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
 
+extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
+
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
@@ -727,8 +729,8 @@ static class ssfx_wind_anim : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
 	{
-		Fvector3 WindAni = g_pGamePersistent->Environment().wind_anim;
-		RCache.set_c(C, WindAni.x, WindAni.y, WindAni.z, 0);
+		Fvector4 WindAni = g_pGamePersistent->Environment().wind_anim;
+		RCache.set_c(C, WindAni.x, WindAni.y, WindAni.z, WindAni.w);
 	}
 } ssfx_wind_anim;
 
@@ -787,6 +789,14 @@ static class ssfx_il_setup1 : public R_constant_setup
 		RCache.set_c(C, ps_ssfx_il_setup1);
 	}
 }    ssfx_il_setup1;
+
+static class ssfx_water_parallax : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_water_parallax_quality.x, ps_ssfx_water_parallax_quality.y, ps_ssfx_water_parallax_quality.z, 0);
+	}
+}    ssfx_water_parallax;
 
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
@@ -906,6 +916,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_lut",			&ssfx_lut);
 	r_Constant				("ssfx_il_setup",		&ssfx_il);
 	r_Constant				("ssfx_il_setup2",		&ssfx_il_setup1);
+	r_Constant				("ssfx_water_parallax",	&ssfx_water_parallax);
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug

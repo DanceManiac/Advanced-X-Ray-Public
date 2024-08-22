@@ -196,6 +196,14 @@ void CBlender_ssfx_volumetric_blur::Compile(CBlender_Compile& C)
 		C.r_dx10Sampler("smp_linear");
 		C.r_End();
 		break;
+	case 2:	// Water Waves
+		C.r_Pass("stub_screen_space", "ssfx_water_waves", FALSE, FALSE, FALSE);
+
+		C.r_dx10Texture("water_waves", "shaders\\water_height");
+
+		C.r_dx10Sampler("smp_linear");
+		C.r_End();
+		break;
 	}
 }
 
