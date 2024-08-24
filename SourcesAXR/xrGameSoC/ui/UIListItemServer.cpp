@@ -20,52 +20,54 @@ CUIListItemServer::CUIListItemServer()
 	SetAutoDelete				(false);
 }
 
-void CUIListItemServer::Init(LIST_SRV_ITEM& params, float x, float y, float width, float height)
+void CUIListItemServer::InitItemServer			(LIST_SRV_ITEM& params, Fvector2 pos, Fvector2 size)
 {
-	CUIWindow::Init(x,y,width,height);
+	CUIWindow::SetWndPos(pos);
+	CUIWindow::SetWndSize(size);
 
 	SetTextColor(params.color);
 	SetFont(params.font);
 
 	float offset = 0.0f;
 
-	m_icon.Init(offset, 0, params.size.icon, height);
+	m_icon.SetWndPos(Fvector2().set(offset, 0.0f));
+	m_icon.SetWndSize(Fvector2().set(params.size.icon, size.y));
 	offset += params.size.icon;
 
-	m_server.Init(offset, 0, params.size.server, height);
-//	m_server.SetText(*params.info.server);
+	m_server.SetWndPos(Fvector2().set(offset, 0.0f));
+	m_server.SetWndSize(Fvector2().set(params.size.server, size.y));
 	offset += params.size.server;
 
-	m_map.Init(offset, 0, params.size.map, height);
-//	m_map.SetText(*params.info.map);
+	m_map.SetWndPos(Fvector2().set(offset, 0.0f));
+	m_map.SetWndSize(Fvector2().set(params.size.map, size.y));
 	offset += params.size.map;
 
-	m_game.Init(offset, 0, params.size.game, height);
-//	m_game.SetText(*params.info.game);
+	m_game.SetWndPos(Fvector2().set(offset, 0.0f));
+	m_game.SetWndSize(Fvector2().set(params.size.game, size.y));
 	offset += params.size.game;
 
-	m_players.Init(offset, 0, params.size.players, height);
-//	m_players.SetText(*params.info.players);
+	m_players.SetWndPos(Fvector2().set(offset, 0.0f));
+	m_players.SetWndSize(Fvector2().set(params.size.players, size.y));
 	offset += params.size.players;
 
-	m_ping.Init(offset, 0, params.size.ping, height);
-//	m_ping.SetText(*params.info.ping);
+	m_ping.SetWndPos(Fvector2().set(offset, 0.0f));
+	m_ping.SetWndSize(Fvector2().set(params.size.ping, size.y));
 	offset += params.size.ping;
 
-	m_version.Init(offset, 0, params.size.version, height);
+	m_version.SetWndPos(Fvector2().set(offset, 0.0f));
+	m_version.SetWndSize(Fvector2().set(params.size.version, size.y));
 
 	float icon_size = CUITextureMaster::GetTextureHeight("ui_icon_password");
-
-	m_iconPass.Init(0,0,icon_size,icon_size);
+	m_iconPass.SetWndPos(Fvector2().set(0.0f, 0.0f));
+	m_iconPass.SetWndSize(Fvector2().set(icon_size,icon_size));
 	m_iconPass.InitTexture("ui_icon_password");
 
-	m_iconDedicated.Init(icon_size,0,icon_size,icon_size);
+	m_iconDedicated.SetWndPos(Fvector2().set(icon_size, 0.0f));
+	m_iconDedicated.SetWndSize(Fvector2().set(icon_size,icon_size));
 	m_iconDedicated.InitTexture("ui_icon_dedicated");
 
-	//m_iconPunkBuster.Init(icon_size*2,0,icon_size,icon_size);
-	//m_iconPunkBuster.InitTexture("ui_icon_punkbuster");
-
-	m_iconUserPass.Init(icon_size*2,0,icon_size,icon_size);
+	m_iconUserPass.SetWndPos(Fvector2().set(icon_size * 2.0f, 0.0f));
+	m_iconUserPass.SetWndSize(Fvector2().set(icon_size,icon_size));
 	m_iconUserPass.InitTexture("ui_icon_punkbuster"); //("ui_icon_userpass");
 
 	SetParams(params);

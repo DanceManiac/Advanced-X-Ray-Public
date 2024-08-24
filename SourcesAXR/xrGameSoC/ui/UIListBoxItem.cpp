@@ -3,15 +3,13 @@
 #include "UIScrollView.h"
 #include "object_broker.h"
 
-//. u32 CUIListBoxItem::uid_counter = 0;
-
 CUIListBoxItem::CUIListBoxItem()
 {
 	txt_color			= 0xffffffff;
 	txt_color_s			= 0xffffffff;
-//.	uid					= uid_counter++;
 	tag					= u32(-1);
 	m_bTextureAvailable = false;
+	AttachChild			(&m_text);
 }
 
 CUIListBoxItem::~CUIListBoxItem()
@@ -33,28 +31,22 @@ void CUIListBoxItem::Draw()
 {
 	m_bTextureAvailable = m_bSelected;
 
-	u32 CurColor = GetTextColor();
+	u32 CurColor = m_text.GetTextColor();
 	u32 ResColor = (IsEnabled() ? 0xff000000 : 0x80000000) | (CurColor & 0x00ffffff);
-	SetTextColor(ResColor);
+	m_text.SetTextColor(ResColor);
 
-	CUILabel::Draw();
+	inherited::Draw();
 }
 
 void CUIListBoxItem::OnFocusReceive()
 {
-	CUILabel::OnFocusReceive();
+	inherited::OnFocusReceive();
 	GetMessageTarget()->SendMessage(this, LIST_ITEM_FOCUS_RECEIVED);
 }
 
 void CUIListBoxItem::InitDefault()
 {
-	InitTexture("ui_listline");
-}
-bool CUIListBoxItem::OnDbClick()
-{
-	smart_cast<CUIScrollView*>(GetParent()->GetParent())->SetSelected(this);
-	GetMessageTarget()->SendMessage(this, LIST_ITEM_DB_CLICKED, &tag);
-	return false;
+	InitTexture("ui_listline","hud\\default");
 }
 
 bool CUIListBoxItem::OnMouseDown(int mouse_btn)
@@ -78,7 +70,7 @@ void CUIListBoxItem::SetSelected(bool b)
 	else
 		col = txt_color;
 
-	SetTextColor(col);
+	m_text.SetTextColor(col);
 	for (u32 i = 0; i<fields.size(); i++)
 		fields[i]->SetTextColor(col);
 }
@@ -87,7 +79,7 @@ void CUIListBoxItem::SetTextColor(u32 color, u32 color_s)
 {
 	txt_color = color;
 	txt_color_s = color_s;
-	SetTextColor(color);
+	m_text.SetTextColor(color);
 }
 
 float CUIListBoxItem::FieldsLength()
@@ -98,21 +90,15 @@ float CUIListBoxItem::FieldsLength()
 	return c;
 }
 
-CGameFont* CUIListBoxItem::GetFont()
-{
-	return CUILinesOwner::GetFont();
-}
-
 CUIStatic* CUIListBoxItem::AddField(LPCSTR txt, float len, LPCSTR key)
 {
 	fields.push_back		(xr_new<CUIStatic>());
 	CUIStatic* st			= fields.back();
 	AttachChild				(st);
-	st->Init				(FieldsLength(),0, GetWidth(), len);
-	st->SetFont				(GetFont());
-	st->SetTextAlignment	(GetTextAlignment());
-	st->SetVTextAlignment	(m_lines.GetVTextAlignment());
-	st->SetTextColor		(GetTextColor());
+	st->SetWndPos			(Fvector2().set(FieldsLength(),0.0f));
+	st->SetWndSize			(Fvector2().set(GetWidth(), len));
+	st->SetFont				(m_text.GetFont());
+	st->SetTextColor		(txt_color);
 	st->SetText				(txt);	
 	st->SetWindowName		(key);
 

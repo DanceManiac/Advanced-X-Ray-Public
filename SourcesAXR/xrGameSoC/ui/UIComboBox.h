@@ -1,29 +1,21 @@
-// File:        UIComboBox.h
-// Description: guess :)
-// Created:     10.12.2004
-// Author:      Serhiy O. Vynnychenko
-// Mail:        narrator@gsc-game.kiev.ua
-// 
-// Copyright 2004 GSC Game World
-//
-
 #pragma once
+
 #include "UIEditBox.h"
-//.#include "UI3tButton.h"
-//#include "UIListWnd.h"
 #include "UIListBox.h"
 #include "UIInteractiveBackground.h"
 #include "UIOptionsItem.h"
 
 class CUIListBoxItem;
 
-class CUIComboBox : public CUIWindow, public CUIOptionsItem {
+class CUIComboBox : public CUIWindow, public CUIOptionsItem, public pureRender
+{
 	friend class CUIXmlInit;
 	typedef enum{
 		LIST_EXPANDED, 
 		LIST_FONDED    
 	} E_COMBO_STATE;
 
+	xr_vector<int>		m_disabled;
 public:
 						CUIComboBox				();
 	virtual				~CUIComboBox			();
@@ -34,22 +26,24 @@ public:
 	virtual void 		SeveBackUpValue			();
 	virtual void 		Undo					();
 
+	virtual void	OnRender					(); // only for list-box
+
 			LPCSTR		GetText					();
 
-	// methods
 	CUIListBox*			GetListWnd				();
 			void		SetListLength			(int length);
-			void		SetVertScroll			(bool bVScroll = true){m_list.SetFixedScrollBar(bVScroll);};
-//.	virtual void		AddItem					(LPCSTR str, bool bSelected);
+			void		SetVertScroll			(bool bVScroll = true){m_list_box.SetFixedScrollBar(bVScroll);};
 	CUIListBoxItem*		AddItem_				(LPCSTR str, int _data);
 	virtual void		Init					(float x, float y, float width);
+			void		InitComboBox			(Fvector2 pos, float width);
 			void		SetItem					(int i);
 
-	virtual void		Init					(float x, float y, float width, float height);	
 	virtual void		SendMessage				(CUIWindow *pWnd, s16 msg, void* pData = 0);
 	virtual void		OnFocusLost				();
 	virtual void		OnFocusReceive			();
 			int			CurrentID				()	{return m_itoken_id;}
+			void		disable_id				(int id);
+			void		enable_id				(int id);
 protected:
 	virtual void		SetState				(UIState state);	
 	virtual bool		OnMouseAction					(float x, float y, EUIMessages mouse_action);
@@ -57,6 +51,7 @@ protected:
 			void		ShowList				(bool bShow);
 			void		OnListItemSelect		();
 	virtual void		Update();
+	virtual void		Draw();
 
 protected:
 	bool				m_bInited;
@@ -66,12 +61,12 @@ protected:
 	int					m_backup_itoken_id;
 
 	CUI_IB_FrameLineWnd	m_frameLine;
-	CUILabel			m_text;
-	CUIFrameWindow		m_frameWnd;
+	CUIStatic			m_text;
+	CUIFrameWindow		m_list_frame;
 
 	u32					m_textColor[2];
 public:
-	CUIListBox			m_list;
+	CUIListBox			m_list_box;
 	void				SetTextColor			(u32 color)			{m_textColor[0] = color;};
 	void				SetTextColorD			(u32 color)			{m_textColor[1] = color;};
 

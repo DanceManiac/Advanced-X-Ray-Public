@@ -16,7 +16,7 @@ CUIListBox::CUIListBox()
 	m_bImmediateSelection	= false;
 
 	SetFixedScrollBar		(false);
-	//InitScrollView			();
+	Init					();
 }
 
 void CUIListBox::SetSelectionTexture(LPCSTR texture){
@@ -54,7 +54,7 @@ CUIListBoxItem* CUIListBox::AddItem(LPCSTR text)
 		pItem->InitTexture		(*m_selection_texture,"hud\\default");
 
 	pItem->SetSelected			(false);
-	pItem->SetText				(*CStringTable().translate(text));
+	pItem->m_text.SetText		(*CStringTable().translate(text));
 	pItem->SetTextColor			(m_text_color, m_text_color_s);
 	pItem->SetMessageTarget		(this);
 	AddWindow					(pItem, true);
@@ -67,9 +67,10 @@ void CUIListBox::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	{
 		switch (msg){
 			case LIST_ITEM_SELECT:	
+				GetMessageTarget()->SendMessage(this, LIST_ITEM_SELECT, pData);
+				break;
 			case LIST_ITEM_CLICKED:
-			case LIST_ITEM_DB_CLICKED:
-				GetMessageTarget()->SendMessage(this, msg, pData);
+				GetMessageTarget()->SendMessage(this, LIST_ITEM_CLICKED, pData);
 				break;
 			case LIST_ITEM_FOCUS_RECEIVED:
 				if (m_bImmediateSelection)
@@ -98,8 +99,10 @@ LPCSTR CUIListBox::GetSelectedText()
 	CUIWindow* w	=	GetSelected();
 
 	if(w)
-		return smart_cast<IUITextControl*>(w)->GetText();
-	else
+	{
+		CUIListBoxItem* item = smart_cast<CUIListBoxItem*>(w);
+		return item->m_text.GetText();
+	}else
 		return NULL;
 }
 
@@ -125,7 +128,8 @@ u32 CUIListBox::GetSelectedIDX()
 LPCSTR CUIListBox::GetText(u32 idx)
 {
 	R_ASSERT				(idx<GetSize());
-	return smart_cast<IUITextControl*>(GetItem(idx))->GetText();
+	CUIListBoxItem* item = smart_cast<CUIListBoxItem*>(GetItem(idx));
+	return item->m_text.GetText();
 }
 
 void CUIListBox::MoveSelectedUp()
@@ -230,7 +234,7 @@ CUIListBoxItem* CUIListBox::GetItemByText(LPCSTR txt)
 		CUIListBoxItem* item = smart_cast<CUIListBoxItem*>(*it);
 		if (item)
 		{
-			if (0 == xr_strcmp(item->GetText(), txt))
+			if (0 == xr_strcmp(item->m_text.GetText(), txt))
 				return item;
 		}
 		
@@ -292,7 +296,7 @@ float CUIListBox::GetLongestLength()
 		CUIListBoxItem* item = smart_cast<CUIListBoxItem*>(*it);
 		if (item)
 		{
-			float tmp_len = item->GetFont()->SizeOf_(item->GetText()); //all ok
+			float tmp_len = item->GetFont()->SizeOf_(item->m_text.GetText()); //all ok
 			UI().ClientToScreenScaledWidth(tmp_len);
 
 			if (tmp_len > len)

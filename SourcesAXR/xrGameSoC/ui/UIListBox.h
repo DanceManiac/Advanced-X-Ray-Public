@@ -4,8 +4,7 @@
 
 class CUIListBoxItem;
 
-class CUIListBox : 	public CUIScrollView,
-					public IUIFontControl
+class CUIListBox : 	public CUIScrollView
 {
 public:
 					CUIListBox						();

@@ -31,8 +31,6 @@ CUIListWnd::CUIListWnd()
 	
 }
 
-//////////////////////////////////////////////////////////////////////////
-
 CUIListWnd::~CUIListWnd()
 {
 	while(!m_ItemList.empty())
@@ -42,37 +40,35 @@ CUIListWnd::~CUIListWnd()
 	xr_delete			(m_ActiveBackgroundFrame);
 }
 
-//////////////////////////////////////////////////////////////////////////
-
+/*
 void CUIListWnd::Init(float x, float y, float width, float height)
 {
 	Init(x, y, width, height, m_iItemHeight);
-}
+}*/
 
-//////////////////////////////////////////////////////////////////////////
-
-void CUIListWnd::Init(float x, float y, float width, float height, float item_height)
+void CUIListWnd::InitListWnd(Fvector2 pos, Fvector2 size, float item_height)
 {
-	CUIWindow::Init(x, y, width, height);
+	inherited::SetWndPos(pos);
+	inherited::SetWndSize(size);
 
 	//добавить полосу прокрутки
 	m_ScrollBar = xr_new<CUIScrollBar>(); m_ScrollBar->SetAutoDelete(true);
 	AttachChild(m_ScrollBar);
 
 	if (!!m_scrollbar_profile)
-		m_ScrollBar->Init(width,0,height, false, *m_scrollbar_profile);
+		m_ScrollBar->Init(size.x, 0.0f, size.y, false, *m_scrollbar_profile);
 	else
-		m_ScrollBar->Init(width,0,height, false);
+		m_ScrollBar->Init(size.x, 0.0f, size.y, false);
 
 
-	m_ScrollBar->SetWndPos(m_ScrollBar->GetWndPos().x - m_ScrollBar->GetWidth(), m_ScrollBar->GetWndPos().y);
+	m_ScrollBar->SetWndPos( Fvector2().set(m_ScrollBar->GetWndPos().x - m_ScrollBar->GetWidth(), m_ScrollBar->GetWndPos().y));
 
-	SetItemWidth(width - m_ScrollBar->GetWidth());
+	SetItemWidth(size.x - m_ScrollBar->GetWidth());
 	
 	m_iFirstShownIndex = 0;
 
 	SetItemHeight(item_height);
-	m_iRowNum = iFloor(height/m_iItemHeight);
+	m_iRowNum = iFloor(size.y/m_iItemHeight);
 
 
 	
@@ -80,7 +76,7 @@ void CUIListWnd::Init(float x, float y, float width, float height, float item_he
 	
 
 	m_ScrollBar->SetRange(0,0);
-	m_ScrollBar->SetPageSize(s16(0));
+	m_ScrollBar->SetPageSize(0);
 	m_ScrollBar->SetScrollPos(s16(m_iFirstShownIndex));
 
 	m_ScrollBar->Show(false);
@@ -143,16 +139,15 @@ void CUIListWnd::RemoveItem(int index)
 	else
 		m_ScrollBar->SetRange(0,0);
 
-	m_ScrollBar->SetPageSize(s16((u32)m_iRowNum<m_ItemList.size()?
-									 m_iRowNum:m_ItemList.size()));
+	m_ScrollBar->SetPageSize( (m_iRowNum < (int)m_ItemList.size())? m_iRowNum : (int)m_ItemList.size() );
 	m_ScrollBar->SetScrollPos(s16(m_iFirstShownIndex));
 	m_ScrollBar->Refresh();
 
 	//перенумеровать индексы заново
-	i=0;
-	for(LIST_ITEM_LIST_it it=m_ItemList.begin();  m_ItemList.end() != it; ++it,i++)
+	int i_=0;
+	for(LIST_ITEM_LIST_it it1=m_ItemList.begin();  m_ItemList.end() != it1; ++it1,i_++)
 	{
-		(*it)->SetIndex(i);
+		(*it1)->SetIndex(i_);
 	}
 
 }
@@ -204,7 +199,7 @@ void CUIListWnd::RemoveAll()
 
 	//обновить полосу прокрутки
 	m_ScrollBar->SetRange(0,0);
-	m_ScrollBar->SetPageSize(0);
+	m_ScrollBar->SetPageSize(1);
 	m_ScrollBar->SetScrollPos(s16(m_iFirstShownIndex));
 
 	UpdateScrollBar();
@@ -231,12 +226,15 @@ void CUIListWnd::UpdateList()
 	   
 
 	//показать текущий список
-	for(i=m_iFirstShownIndex; 
+	for(int i=m_iFirstShownIndex; 
 			i<_min(m_ItemList.size(),m_iFirstShownIndex + m_iRowNum+1);
 			++i, ++it)
 	{
-		(*it)->SetWndRect((*it)->GetWndRect().left, m_bVertFlip?GetHeight()-(i-m_iFirstShownIndex)* m_iItemHeight-m_iItemHeight:(i-m_iFirstShownIndex)* m_iItemHeight, 
-							m_iItemWidth, m_iItemHeight);
+		Frect rect_to_set;
+		rect_to_set.lt.set((*it)->GetWndRect().left, m_bVertFlip?GetHeight()-(i-m_iFirstShownIndex)* m_iItemHeight-m_iItemHeight:(i-m_iFirstShownIndex)* m_iItemHeight);
+		rect_to_set.rb.add(rect_to_set.lt, Fvector2().set(m_iItemWidth,m_iItemHeight));
+
+		(*it)->SetWndRect	(rect_to_set);
 		(*it)->Show(true);
 		
 		if(m_bListActivity) 
@@ -554,7 +552,7 @@ void CUIListWnd::ScrollToPos(int position)
 	if (IsScrollBarEnabled())
 	{
 		int pos = position;
-		clamp(pos, m_ScrollBar->GetMinRange(), (m_ScrollBar->GetMaxRange() - m_ScrollBar->GetPageSize() + 1));
+		clamp(pos, m_ScrollBar->GetMinRange(), (m_ScrollBar->GetMaxRange() - m_ScrollBar->GetPageSize()/ + 1));
 		m_ScrollBar->SetScrollPos(pos);
 		m_iFirstShownIndex = m_ScrollBar->GetScrollPos();
 		UpdateList();

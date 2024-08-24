@@ -30,8 +30,8 @@ public:
 	CUIInteractiveBackground();
 	virtual ~CUIInteractiveBackground();
 
-	virtual void Init(float x, float y, float width, float height);
-	virtual void Init(LPCSTR texture_e, float x, float y, float width, float height);
+			void InitIB	(Fvector2 pos, Fvector2 size);
+			void InitIB	(LPCSTR texture_e, Fvector2 pos, Fvector2 size);
 			T*	 CreateE();
 			T*	 CreateD();
 			T*	 CreateT();
@@ -73,22 +73,20 @@ CUIInteractiveBackground<T>::~CUIInteractiveBackground(){
 }
 
 template <class T>
-void CUIInteractiveBackground<T>::Init(float x, float y, float width, float height)
+void CUIInteractiveBackground<T>::InitIB(Fvector2 pos, Fvector2 size)
 {
-	CUIWindow::SetWndPos	(Fvector2().set(x,y));
-	CUIWindow::SetWndSize	(Fvector2().set(width,height));
+	CUIWindow::SetWndPos(pos);
+	CUIWindow::SetWndSize(size);
 }
 
 template <class T>
-void CUIInteractiveBackground<T>::Init(LPCSTR texture_e, float x, float y, float width, float height){
-	CUIWindow::SetWndPos	(Fvector2().set(x,y));
-	CUIWindow::SetWndSize	(Fvector2().set(width,height));
+void CUIInteractiveBackground<T>::InitIB(LPCSTR texture_e, Fvector2 pos, Fvector2 size) {
+	CUIWindow::SetWndPos(pos);
+	CUIWindow::SetWndSize(size);
 
 	InitEnabledState(texture_e);
 
-	this->m_stateEnabled->InitTexture(texture_e);
-	this->m_stateEnabled->SetWndPos(Fvector2().set(0, 0));
-	this->m_stateEnabled->SetWndSize(Fvector2().set(width, height));
+	m_stateEnabled->Init(texture_e, Fvector2().set(0, 0), size);
 	m_stateCurrent = this->m_stateEnabled;
 }
 

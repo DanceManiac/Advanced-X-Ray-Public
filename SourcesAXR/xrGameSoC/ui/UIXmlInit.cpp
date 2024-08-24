@@ -77,7 +77,11 @@ bool CUIXmlInit::InitWindow(CUIXml& xml_doc, LPCSTR path,
 	InitAlignment(xml_doc, path, index, x, y, pWnd);
 	float width = xml_doc.ReadAttribFlt(path, index, "width");
 	float height = xml_doc.ReadAttribFlt(path, index, "height");
-	pWnd->Init(x, y, width, height);
+
+	if (auto combo = smart_cast<CUIComboBox*>(pWnd)) // Dance Maniac: Hack for CS Combobox initialization
+		combo->InitComboBox(Fvector2().set(x, y), width);
+	else
+		pWnd->Init(x, y, width, height);
 
    	string512 buf;
 	CGameFont *LocalFont = NULL;
@@ -484,7 +488,7 @@ bool CUIXmlInit::InitListWnd(CUIXml& xml_doc, LPCSTR path,
 	}
 
 	pWnd->SetScrollBarProfile			(xml_doc.ReadAttrib(path, index, "scroll_profile", "default"));
-	pWnd->Init							(x,y, width,height,item_height);
+	pWnd->InitListWnd					(Fvector2().set(x, y), Fvector2().set(width, height), item_height);
 	pWnd->EnableActiveBackground		(!!active_background);
 
 	if (xml_doc.ReadAttribInt(path, index, "always_show_scroll"))
@@ -1370,17 +1374,17 @@ bool CUIXmlInit::InitComboBox(CUIXml& xml_doc, const char* path, int index, CUIC
 
 	bool b = (1==xml_doc.ReadAttribInt(path, index, "always_show_scroll",1));
 
-	pWnd->m_list.SetFixedScrollBar(b);
+	pWnd->m_list_box.SetFixedScrollBar(b);
 
 	string512					_path;
 	strconcat					(sizeof(_path),_path, path, ":list_font");
 	InitFont					(xml_doc, _path, index, color, pFont);
 	pWnd->SetFont				(pFont);
-	pWnd->m_list.SetFont		(pFont);
-	pWnd->m_list.SetTextColor	(color);
+	pWnd->m_list_box.SetFont		(pFont);
+	pWnd->m_list_box.SetTextColor	(color);
 	strconcat					(sizeof(_path),_path, path, ":list_font_s");	
 	InitFont					(xml_doc, _path, index, color, pFont);
-	pWnd->m_list.SetTextColorS	(color);
+	pWnd->m_list_box.SetTextColorS	(color);
 	
 	strconcat					(sizeof(_path),_path, path, ":text_color:e");
 	if (xml_doc.NavigateToNode(_path, index)){

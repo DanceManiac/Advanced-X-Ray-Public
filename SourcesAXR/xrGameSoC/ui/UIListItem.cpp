@@ -1,7 +1,3 @@
-//////////////////////////////////////////////////////////////////////
-// UIListItem.cpp: элемент окна списка CListWnd
-//////////////////////////////////////////////////////////////////////
-
 #include"stdafx.h"
 
 #include "UIlistitem.h"
@@ -27,24 +23,26 @@ CUIListItem::~CUIListItem(void)
 {
 }
 
-void CUIListItem::Init(float x, float y, float width, float height)
+void CUIListItem::InitListItem(Fvector2 pos, Fvector2 size)
 {
-	inherited::Init(x, y, width, height);
+	inherited::SetWndPos		(pos);
+	inherited::SetWndSize		(size);
 	SetPressMode(CUIButton::DOWN_PRESS);
 	SetPushOffset( Fvector2().set(0.0f,0.0f));
 }
 
-void CUIListItem::InitTexture(LPCSTR tex_name){
+void CUIListItem::InitTexture(LPCSTR tex_name)
+{
 	CUIButton::InitTexture(tex_name);
 	SetTextX(m_UIStaticItem.GetRect().width());
 }
 
-
+/*
 void CUIListItem::Init(const char* str, float x, float y, float width, float height)
 {
 	Init(x,y,width, height);
 	SetTextST(str);	
-}
+}*/
 
 
 bool CUIListItem::IsHighlightText()

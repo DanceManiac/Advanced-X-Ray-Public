@@ -6,11 +6,11 @@ class CUIListItem :	public CUIButton
 private:
 	typedef CUIButton inherited;
 public:
-	CUIListItem(void);
-	virtual ~CUIListItem(void);
+				CUIListItem		();
+	virtual		~CUIListItem	();
 
-	virtual void Init(float x, float y, float width, float height);
-	virtual void Init(const char* str, float x, float y, float width, float height);
+			void InitListItem(Fvector2 pos, Fvector2 size);
+//.	virtual void Init(const char* str, float x, float y, float width, float height);
 	virtual void InitTexture(LPCSTR tex_name);
 	
 			void* GetData() {return m_pData;}

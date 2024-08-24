@@ -44,13 +44,10 @@ class CUIListItemServer : public CUIListItem
 public:
 	CUIListItemServer();
 
-
-	// CUISimpleWindow
-	using CUIWindow::Init;
 	virtual void Draw();
 
 	// own
-	virtual void			Init					(LIST_SRV_ITEM& params, float x, float y, float width, float height);
+			void			InitItemServer			(LIST_SRV_ITEM& params, Fvector2 pos, Fvector2 size);
 			void			SetParams				(LIST_SRV_ITEM& params);
 			void			CreateConsoleCommand	(xr_string& command, LPCSTR player_name, LPCSTR player_pass, LPCSTR server_psw);
 

@@ -11,11 +11,13 @@ void CUIListItemAdv::SetTextColor(u32 color){
 		(*it)->SetTextColor(color);
 }
 
-void CUIListItemAdv::AddField(LPCSTR val, float width){
+void CUIListItemAdv::AddField(LPCSTR val, float width)
+{
 	float height = GetHeight();
 
 	CUIStatic* st = xr_new<CUIStatic>();
-	st->Init(GetNextLeftPos(), 0, width, height);
+	st->SetWndPos			(Fvector2().set(GetNextLeftPos(), 0.0f));
+	st->SetWndSize			(Fvector2().set(width, height));
 	st->SetTextComplexMode(false);
 	st->SetText(val);
 	st->SetTextColor(GetTextColor());

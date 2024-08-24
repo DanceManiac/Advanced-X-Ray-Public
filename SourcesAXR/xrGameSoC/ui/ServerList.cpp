@@ -561,10 +561,11 @@ void CServerList::AddServerToList	(ServerInfo* pServerInfo)
 	
 	CUIListItemServer* item		= GetFreeItem();
 
-	float w						= _list.GetItemWidth();
-	float h						= _list.GetItemHeight();
+	Fvector2 sz;
+	sz.x						= _list.GetItemWidth();
+	sz.y						= _list.GetItemHeight();
 	SrvInfo2LstSrvInfo			(pServerInfo);
-	item->Init					(m_itemInfo, 0, 0, w, h);
+	item->InitItemServer		(m_itemInfo, Fvector2().set(0,0), sz);
 
 	_list.AddItem<CUIListItemServer>(item);
 };

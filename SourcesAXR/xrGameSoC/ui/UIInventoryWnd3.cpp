@@ -25,6 +25,7 @@
 #include "../Torch.h"
 #include "../CustomDetector.h"
 #include "../PDA.h"
+#include "../UICursor.h"
 
 #include "../string_table.h"
 

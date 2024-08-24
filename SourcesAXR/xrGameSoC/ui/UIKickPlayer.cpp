@@ -98,7 +98,7 @@ void CUIKickPlayer::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	if (LIST_ITEM_SELECT == msg && pWnd == m_ui_players_list)
 	{		
 		CUIListBoxItem* itm		= smart_cast<CUIListBoxItem*>(m_ui_players_list->GetSelected());
-		m_selected_item_text	= itm->GetText();
+		m_selected_item_text	= itm->m_text.GetText();
 	}
 	else if (BUTTON_CLICKED == msg)
 	{
@@ -119,11 +119,11 @@ void CUIKickPlayer::OnBtnOk()
 		switch (mode)
 		{
 			case MODE_KICK:
-                sprintf_s(command, "cl_votestart kick %s", item->GetText());
+                sprintf_s(command, "cl_votestart kick %s", item->m_text.GetText());
 				break;
 			case MODE_BAN:
 				{
-					sprintf_s(command, "cl_votestart ban %s %d", item->GetText(), m_spin_ban_sec->Value());
+					sprintf_s(command, "cl_votestart ban %s %d", item->m_text.GetText(), m_spin_ban_sec->Value());
 				}break;
 		}
 		Console->Execute			(command);

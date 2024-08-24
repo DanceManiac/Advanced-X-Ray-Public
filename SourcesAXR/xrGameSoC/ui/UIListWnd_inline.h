@@ -32,8 +32,8 @@ bool CUIListWnd::AddItem(Element* pItem, int insertBeforeIdx)
 {	
 	AttachChild(pItem);
 
-	pItem->Init(pItem->GetWndRect().left, m_bVertFlip?GetHeight()-GetItemsCount()* m_iItemHeight-m_iItemHeight:GetItemsCount()* m_iItemHeight, 
-		m_iItemWidth, m_iItemHeight);
+	pItem->InitListItem(Fvector2().set(pItem->GetWndRect().left, m_bVertFlip?GetHeight()-GetItemsCount()*m_iItemHeight-m_iItemHeight:GetItemsCount()* m_iItemHeight), 
+		Fvector2().set(m_iItemWidth, m_iItemHeight) );
 
 
 	//добавление в конец или начало списка
@@ -62,8 +62,7 @@ bool CUIListWnd::AddItem(Element* pItem, int insertBeforeIdx)
 
 	//обновить полосу прокрутки
 	m_ScrollBar->SetRange(0,s16(m_ItemList.size()-1));
-	m_ScrollBar->SetPageSize(s16(
-		(u32)m_iRowNum<m_ItemList.size()?m_iRowNum:m_ItemList.size()));
+	m_ScrollBar->SetPageSize(  (m_iRowNum < (int)m_ItemList.size() )? m_iRowNum : (int)m_ItemList.size() );
 	m_ScrollBar->SetScrollPos(s16(m_iFirstShownIndex));
 //	m_ScrollBar.Refresh();
 

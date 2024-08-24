@@ -318,7 +318,7 @@ void CUIMapList::OnBtnRightClick()
 {
 	CUIListBoxItem* itm1			= m_pList1->GetSelectedItem();
 	if (!itm1) return;
-	CUIListBoxItem* itm2			= m_pList2->AddItem( itm1->GetText() );
+	CUIListBoxItem* itm2			= m_pList2->AddItem( itm1->m_text.GetText() );
 	itm2->SetData					(itm1->GetData());
 }
 
