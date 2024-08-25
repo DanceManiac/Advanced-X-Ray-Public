@@ -41,6 +41,12 @@
 				<t r="231" g="168" b="12"/> <d r="181" g="170" b="148"/> <e r="127" g="127" b="127"/> <h r="255" g="255" b="255"/>
 			</text_color>
 		</button> 
+		<button x="120" y="7" width="60" height="20" hint="pda_btn_diary_hint">
+			<text align="l" x="0" y="0" font="letterica18" r="255" g="255" b="255">pda_btn_diary</text>
+			<text_color>
+				<t r="231" g="168" b="12"/> <d r="181" g="170" b="148"/> <e r="127" g="127" b="127"/> <h r="255" g="255" b="255"/>
+			</text_color>
+		</button>
 		<button x="195" y="7" width="60" height="20" hint="pda_btn_contacts_hint">
 			<text align="l" x="0" y="0" font="letterica18" r="255" g="255" b="255">pda_btn_contacts</text>
 			<text_color>
@@ -68,12 +74,6 @@
 		</button-->
 		<button x="440" y="7" width="100" height="20" hint="pda_btn_encyclopedia_hint">
 			<text align="l" x="0" y="0" font="letterica18" r="255" g="255" b="255">pda_btn_encyclopedia</text>
-			<text_color>
-				<t r="231" g="168" b="12"/> <d r="181" g="170" b="148"/> <e r="127" g="127" b="127"/> <h r="255" g="255" b="255"/>
-			</text_color>
-		</button>
-		<button x="120" y="7" width="60" height="20" hint="pda_btn_diary_hint">
-			<text align="l" x="0" y="0" font="letterica18" r="255" g="255" b="255">pda_btn_diary</text>
 			<text_color>
 				<t r="231" g="168" b="12"/> <d r="181" g="170" b="148"/> <e r="127" g="127" b="127"/> <h r="255" g="255" b="255"/>
 			</text_color>
