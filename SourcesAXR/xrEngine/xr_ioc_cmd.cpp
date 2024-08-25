@@ -563,7 +563,7 @@ ENGINE_API Fvector4 ps_ssfx_ao = { 1.0f, 5.0f, 1.0f, 2.5f }; // Res, AO int, Blu
 ENGINE_API Fvector4 ps_ssfx_ao_setup1 = { 150.0, 1.0, 1.0, 0.0 }; // Distance, HUD, Flora, Max OCC
 ENGINE_API Fvector4 ps_ssfx_water = { 1.0f, 0.2f, 1.0f, 0.0f }; // Res, Blur, Blur Perlin, -
 ENGINE_API Fvector3 ps_ssfx_water_quality = { 1.0f, 2.0f, 0.0f }; // SSR Quality, Parallax Quality, -
-ENGINE_API Fvector4 ps_ssfx_water_setup1 = { 0.5f, 3.0f, 0.3f, 0.05f }; // Distortion, Turbidity, Softborder, Parallax Height
+ENGINE_API Fvector4 ps_ssfx_water_setup1 = { 2.0f, 3.0f, 0.3f, 0.05f }; // Distortion, Turbidity, Softborder, Parallax Height
 ENGINE_API Fvector4 ps_ssfx_water_setup2 = { 0.75f, 6.0f, 0.25f, 1.25f }; // Reflection, Specular, Caustics, Ripples
 
 ENGINE_API float ps_r3_dyn_wet_surf_near = 10.f; // 10.0f
