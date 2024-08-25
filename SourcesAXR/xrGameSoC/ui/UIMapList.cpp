@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "UIMapList.h"
 #include "UIListBox.h"
-#include "UILabel.h"
 #include "UIFrameWindow.h"
+#include "UIFrameLineWnd.h"
 #include "UI3tButton.h"
 #include "UISpinText.h"
 #include "UIXmlInit.h"
@@ -27,8 +27,8 @@ CUIMapList::CUIMapList(){
 	m_pList2		= xr_new<CUIListBox>();
 	m_pFrame1		= xr_new<CUIFrameWindow>();
 	m_pFrame2		= xr_new<CUIFrameWindow>();
-	m_pLbl1			= xr_new<CUILabel>();
-	m_pLbl2			= xr_new<CUILabel>();
+	m_pLbl1			= xr_new<CUIFrameLineWnd>();
+	m_pLbl2			= xr_new<CUIFrameLineWnd>();
 	m_pBtnLeft		= xr_new<CUI3tButton>();
 	m_pBtnRight		= xr_new<CUI3tButton>();
 	m_pBtnUp		= xr_new<CUI3tButton>();
@@ -279,8 +279,8 @@ void CUIMapList::AddWeather(const shared_str& WeatherType, const shared_str& Wea
 void CUIMapList::InitFromXml(CUIXml& xml_doc, const char* path){
 	CUIXmlInit::InitWindow(xml_doc, path, 0, this);
 	string256 buf;
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf, path, ":header_1"),	0, m_pLbl1);
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf, path, ":header_2"),	0, m_pLbl2);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf, path, ":header_1"),	0, m_pLbl1);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf, path, ":header_2"),	0, m_pLbl2);
 	CUIXmlInit::InitFrameWindow	(xml_doc, strconcat(sizeof(buf),buf, path, ":frame_1"),		0, m_pFrame1);
 	CUIXmlInit::InitFrameWindow	(xml_doc, strconcat(sizeof(buf),buf, path, ":frame_2"),		0, m_pFrame2);
 	CUIXmlInit::InitListBox		(xml_doc, strconcat(sizeof(buf),buf, path, ":list_1"),		0, m_pList1);

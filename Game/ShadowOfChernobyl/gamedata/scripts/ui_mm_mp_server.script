@@ -31,7 +31,7 @@ function mp_server:InitControls(x, y, xml, handler)
 	map_list:SetMapInfo(handler.map_info)
 
 	handler.map_list = map_list;
-	xml:InitLabel("tab_server:cap_server_settings", self)	
+	xml:InitFrameLine("tab_server:cap_server_settings", self)	
 	xml:InitStatic("tab_server:cap_server_name",	self)
 	xml:InitStatic("tab_server:cap_password",		self)
 	xml:InitStatic("tab_server:cap_game_mode",		self)

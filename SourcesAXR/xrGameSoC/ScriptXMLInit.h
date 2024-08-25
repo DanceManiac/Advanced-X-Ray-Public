@@ -17,7 +17,7 @@ class CUICheckButton;
 class CUIListWnd;
 class CUITabControl;
 class CUIFrameLineWnd;
-class CUILabel;
+//class CUILabel;
 class CUIEditBox;
 class CUITextBanner;
 class CUIMultiTextStatic;
@@ -48,7 +48,7 @@ public:
 	CUIListWnd*			InitList(LPCSTR path, CUIWindow* parent);
 	CUIFrameWindow*		InitFrame(LPCSTR path, CUIWindow* parent);
 	CUIFrameLineWnd*	InitFrameLine(LPCSTR path, CUIWindow* parent);
-	CUILabel*			InitLabel(LPCSTR path, CUIWindow* parent);
+//	CUILabel*			InitLabel(LPCSTR path, CUIWindow* parent);
 	CUIEditBox*			InitEditBox(LPCSTR path, CUIWindow* parent);
 	CUIStatic*			InitStatic(LPCSTR path, CUIWindow* parent);
 	CUIStatic*			InitAnimStatic(LPCSTR path, CUIWindow* parent);

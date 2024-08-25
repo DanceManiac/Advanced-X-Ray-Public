@@ -19,7 +19,7 @@ class CUIProgressShape;
 class CUIListWnd;
 class CUITabControl;
 class CUIFrameLineWnd;
-class CUILabel;
+//class CUILabel;
 class CUIEditBoxEx;
 class CUIEditBox;
 class CUICustomEdit;
@@ -44,7 +44,6 @@ public:
 	static bool InitWindow				(CUIXml& xml_doc, LPCSTR path,	int index, CUIWindow* pWnd);
 	static bool InitFrameWindow			(CUIXml& xml_doc, LPCSTR path,	int index, CUIFrameWindow* pWnd);
 	static bool InitFrameLine			(CUIXml& xml_doc, LPCSTR path, int index, CUIFrameLineWnd* pWnd);
-	static bool InitLabel				(CUIXml& xml_doc, LPCSTR path, int index, CUILabel* pWnd);
 	static bool InitCustomEdit			(CUIXml& xml_doc, LPCSTR paht, int index, CUICustomEdit* pWnd);
 	static bool InitEditBox				(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBox* pWnd);
 	static bool InitEditBoxEx			(CUIXml& xml_doc, LPCSTR paht, int index, CUIEditBoxEx* pWnd);

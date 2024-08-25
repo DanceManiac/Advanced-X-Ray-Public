@@ -1,10 +1,10 @@
 #pragma once
-
+/*
 #include "UIFrameLineWnd.h"
 #include "UILines.h"
 class CLAItem;
 
-class CUILabel : public CUIFrameLineWnd, public CUILinesOwner //IUITextControl 
+class CUILabel : public CUIFrameLineWnd, public CUILinesOwner
 {
 	CLAItem*				m_lanim;
 	float					m_lainm_start_time;
@@ -15,7 +15,7 @@ public:
 	virtual void SetHeight(float height);
 	virtual void SetFont(CGameFont* pFont);
     // CUIFrameLineWnd
-	virtual void			Init(float x, float y, float width, float height);
+			void			InitLabel		(Fvector2 pos, Fvector2 size);
 	virtual void			Draw();
 	virtual void			Update			();
 
@@ -26,3 +26,4 @@ public:
 protected:
 //	Fvector2 m_textPos;
 };
+*/

@@ -4,7 +4,7 @@
 #include "game_base_space.h"
 
 class CUIListBox;
-class CUILabel;
+class CUIFrameLineWnd;
 class CUIStatic;
 class CUIFrameWindow;
 class CUI3tButton;
@@ -56,8 +56,8 @@ private:
 	CUIListBox*			m_pList2;
 	CUIFrameWindow*		m_pFrame1;
 	CUIFrameWindow*		m_pFrame2;
-	CUILabel*			m_pLbl1;
-	CUILabel*			m_pLbl2;
+	CUIFrameLineWnd*	m_pLbl1;
+	CUIFrameLineWnd*	m_pLbl2;
 	CUI3tButton*		m_pBtnLeft;
 	CUI3tButton*		m_pBtnRight;
 	CUI3tButton*		m_pBtnUp;

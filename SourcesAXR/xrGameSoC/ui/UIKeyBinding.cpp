@@ -23,9 +23,9 @@ void CUIKeyBinding::InitFromXml(CUIXml& xml_doc, LPCSTR path)
 	CUIXmlInit::InitScrollView	(xml_doc, strconcat(sizeof(buf),buf,path,":scroll_view"),0, m_scroll_wnd);
 
 	CUIXmlInit::InitFrameWindow	(xml_doc, strconcat(sizeof(buf),buf,path,":frame"),		0, &m_frame);
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf,path,":header_1"),	0, &m_header[0]);
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf,path,":header_2"),	0, &m_header[1]);
-	CUIXmlInit::InitLabel		(xml_doc, strconcat(sizeof(buf),buf,path,":header_3"),	0, &m_header[2]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":header_1"),	0, &m_header[0]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":header_2"),	0, &m_header[1]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":header_3"),	0, &m_header[2]);
 
 	FillUpList					(xml_doc, path);
 }

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-
+/*
 #include "UILabel.h"
 #include "../../xrEngine/LightAnimLibrary.h"
 
@@ -11,9 +11,12 @@ CUILabel::CUILabel()
 	m_lanim						= NULL;	
 }
 
-void CUILabel::Init(float x, float y, float width, float height){
-	CUIFrameLineWnd::Init(x,y,width,height);
-	m_lines.Init(0,0,width, height);
+void CUILabel::InitLabel(Fvector2 pos, Fvector2 size)
+{
+	CUIFrameLineWnd::SetWndPos	(pos);
+	CUIFrameLineWnd::SetWndSize	(size);
+	m_lines.SetWndPos			(pos);
+	m_lines.SetWndSize			(size);
 }
 
 void CUILabel::SetFont(CGameFont* pFont){
@@ -57,3 +60,4 @@ void CUILabel::Update()
 		SetTextColor			(clr);
 	}
 }
+*/

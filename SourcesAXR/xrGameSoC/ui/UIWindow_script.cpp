@@ -166,12 +166,12 @@ void CUIWindow::script_register(lua_State *L)
 		.def("SetColor",						&CUIFrameLineWnd::SetColor)
 		.def("GetTitleStatic",					&CUIFrameLineWnd::GetTitleStatic)
 		.def("Init",							(void(CUIFrameLineWnd::*)(LPCSTR, Fvector2, Fvector2, bool))&CUIFrameLineWnd::InitFrameLineWnd),
-
+/*
 		class_<CUILabel, CUIFrameLineWnd>("CUILabel")
 		.def(					constructor<>())
 		.def("SetText",						&CUILabel::SetText)
 		.def("GetText",						&CUILabel::GetText),
-
+*/
 		class_<CUIMMShniaga, CUIWindow>("CUIMMShniaga")
 		.def("SetVisibleMagnifier",			&CUIMMShniaga::SetVisibleMagnifier),
 

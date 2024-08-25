@@ -73,7 +73,7 @@ CUIFrameLineWnd* CScriptXmlInit::InitFrameLine(LPCSTR path, CUIWindow* parent){
 //.	if(parent) parent->AttachChild(pWnd);
 	return pWnd;
 }
-
+/*
 CUILabel* CScriptXmlInit::InitLabel(LPCSTR path, CUIWindow* parent){
 	CUILabel* pWnd = xr_new<CUILabel>();
 	CUIXmlInit::InitLabel(m_xml, path, 0, pWnd);
@@ -82,7 +82,7 @@ CUILabel* CScriptXmlInit::InitLabel(LPCSTR path, CUIWindow* parent){
 //.	if(parent) parent->AttachChild(pWnd);
 	return pWnd;
 }
-
+*/
 
 CUIEditBox* CScriptXmlInit::InitEditBox(LPCSTR path, CUIWindow* parent){
 	CUIEditBox* pWnd = xr_new<CUIEditBox>();
@@ -300,7 +300,7 @@ void CScriptXmlInit::script_register(lua_State *L){
 		.def("InitWindow",				&CScriptXmlInit::InitWindow)
 		.def("InitFrame",				&CScriptXmlInit::InitFrame)
 		.def("InitFrameLine",			&CScriptXmlInit::InitFrameLine)
-		.def("InitLabel",				&CScriptXmlInit::InitLabel)
+//		.def("InitLabel",				&CScriptXmlInit::InitLabel)
 		.def("InitEditBox",				&CScriptXmlInit::InitEditBox)		
 		.def("InitStatic",				&CScriptXmlInit::InitStatic)
 		.def("InitAnimStatic",			&CScriptXmlInit::InitAnimStatic)		

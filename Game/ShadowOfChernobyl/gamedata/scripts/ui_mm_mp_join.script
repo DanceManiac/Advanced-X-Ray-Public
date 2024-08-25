@@ -28,9 +28,9 @@ function mp_join:InitControls(x, y, xml, handler)
 
 	handler.server_list = xml:InitServerList("tab_client:server_list", self)
 	
-	xml:InitLabel("tab_client:cap_network_connection", self)
-	xml:InitLabel("tab_client:cap_server_list", self)
-	xml:InitLabel("tab_client:cap_filters",self)
+	xml:InitFrameLine("tab_client:cap_network_connection", self)
+	xml:InitFrameLine("tab_client:cap_server_list", self)
+	xml:InitFrameLine("tab_client:cap_filters",self)
 	
 	xml:InitStatic("tab_client:rust_00",self)
 	xml:InitStatic("tab_client:rust_01",self)

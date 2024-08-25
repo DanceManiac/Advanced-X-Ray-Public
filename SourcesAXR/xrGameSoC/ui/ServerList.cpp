@@ -91,7 +91,7 @@ void CServerList::Update()
 		for (int i = 0; i<4; i++)
 		{
 			m_header2[i].SetColor(subst_alpha(0xffffffff, color_get_A(m_pAnimation->GetColor())));
-			m_header2[i].SetTextColor(subst_alpha(m_header2[i].GetTextColor(), color_get_A(m_pAnimation->GetColor())));
+			m_header2[i].SetColor(subst_alpha(0xffffffff, color_get_A(m_pAnimation->GetColor())));
 		}
 
 		if (m_pAnimation->Done())
@@ -430,10 +430,10 @@ void CServerList::InitFromXml(CUIXml& xml_doc, LPCSTR path)
 	CUIXmlInit::InitEditBox			(xml_doc, strconcat(sizeof(buf),buf,path,":edit_gs_filter"),				0, &m_edit_gs_filter);
 	m_fEditPos[0] =					m_edit_gs_filter.GetWndPos().y;
 	m_fEditPos[1] =					xml_doc.ReadAttribFlt(buf,0,"y2");
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_server_properties"),			0, &m_header2[0]);
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_players_list"),				0, &m_header2[1]);
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_frags"),						0, &m_header2[2]);
-	CUIXmlInit::InitLabel			(xml_doc, strconcat(sizeof(buf),buf,path,":cap_death"),						0, &m_header2[3]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_server_properties"),			0, &m_header2[0]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_players_list"),				0, &m_header2[1]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_frags"),						0, &m_header2[2]);
+	CUIXmlInit::InitFrameLine	(xml_doc, strconcat(sizeof(buf),buf,path,":cap_death"),						0, &m_header2[3]);
 	
 	m_itemInfo.size.icon			= xml_doc.ReadAttribFlt( strconcat(sizeof(buf),buf, path, ":sizes"), 0, "icon");
 	m_itemInfo.size.server			= xml_doc.ReadAttribFlt( buf, 0, "server");

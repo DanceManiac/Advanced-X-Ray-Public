@@ -803,24 +803,6 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	return true;
 }
 
-bool CUIXmlInit::InitLabel(CUIXml& xml_doc, LPCSTR path, int index, CUILabel* pWnd){
-	InitFrameLine(xml_doc, path, index, pWnd);
-
-	string256 buf;
-	strconcat(sizeof(buf),buf,path,":text");
-	InitText(xml_doc, buf, index, (IUITextControl*)pWnd);
-
-	float text_x = xml_doc.ReadAttribFlt(buf, index, "x", 0);
-	float text_y = xml_doc.ReadAttribFlt(buf, index, "y", 0);
-
-	if (text_x)
-		pWnd->SetTextPosX(text_x);
-	if (text_y)
-        pWnd->SetTextPosY(text_y);
-
-	return true;
-}
-
 bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, const char* path, int index, CUICustomEdit* pWnd){
 	InitWindow(xml_doc, path, index, pWnd);
 
