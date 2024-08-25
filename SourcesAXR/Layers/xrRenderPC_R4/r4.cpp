@@ -294,8 +294,9 @@ void					CRender::create					()
 	o.ssao_opt_data		= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_OPT_DATA) && (ps_r_ssao != 0);
 	o.ssao_half_data	= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HALF_DATA) && o.ssao_opt_data && (ps_r_ssao != 0);
 	o.ssao_hdao			= ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HDAO) && (ps_r_ssao != 0);
-	o.ssao_hbao			= !o.ssao_hdao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HBAO) && (ps_r_ssao != 0);
-	o.ssao_ssdo			= !o.ssao_hdao && !o.ssao_hbao && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO) && (ps_r_ssao != 0);
+	o.ssao_hbao			= !o.ssao_hdao && !o.ssao_ssdo && !o.ssao_ssdo_sss && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_HBAO) && (ps_r_ssao != 0);
+	o.ssao_ssdo			= !o.ssao_hdao && !o.ssao_hbao && !o.ssao_ssdo_sss && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO) && (ps_r_ssao != 0);
+	o.ssao_ssdo_sss		= !o.ssao_hdao && !o.ssao_hbao && !o.ssao_ssdo && ps_r2_ls_flags_ext.test(R2FLAGEXT_SSAO_SSDO_SSS) && (ps_r_ssao != 0);
 
 	//	TODO: fix hbao shader to allow to perform per-subsample effect!
 	o.hbao_vectorized = false;
@@ -1756,6 +1757,19 @@ HRESULT	CRender::shader_compile			(
 		def_it++;
 		xr_strcat(sh_name, c_ssfx_water_parallax);
 		len += xr_strlen(c_ssfx_water_parallax);
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_sss_addon_enabled && o.ssao_ssdo_sss)
+	{
+		defines[def_it].Name = "SSFX_AO";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.ssao_ssdo_sss); ++len;
 	}
 	else
 	{

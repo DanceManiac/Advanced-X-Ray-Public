@@ -180,6 +180,9 @@
 	<string id="ssdo">
 		<text>SSDO</text>
 	</string>
+	<string id="ssdo_sss">
+		<text>SSDO [SSS 21]</text>
+	</string>
 	<string id="ui_mm_snd_delay">
 		<text>Задержка звуков вдалеке</text>
 	</string>

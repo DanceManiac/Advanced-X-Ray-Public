@@ -576,6 +576,8 @@ extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
 extern ENGINE_API float ps_ssfx_hud_hemi;
 extern ENGINE_API Fvector4 ps_ssfx_il;
 extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
+extern ENGINE_API Fvector4 ps_ssfx_ao;
+extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
 extern ENGINE_API Fvector4 ps_ssfx_water;
 extern ENGINE_API Fvector4 ps_ssfx_water_setup1;
 extern ENGINE_API Fvector4 ps_ssfx_water_setup2;
@@ -818,6 +820,22 @@ static class ssfx_water_setup2 : public R_constant_setup
 	}
 }    ssfx_water_setup2;
 
+static class ssfx_ao : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_ao);
+	}
+}    ssfx_ao;
+
+static class ssfx_ao_setup1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_ao_setup1);
+	}
+}    ssfx_ao_setup1;
+
 static class ssfx_hud_hemi : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -962,6 +980,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_hud_hemi",		&ssfx_hud_hemi);
 	r_Constant				("ssfx_il_setup",		&ssfx_il);
 	r_Constant				("ssfx_il_setup2",		&ssfx_il_setup1);
+	r_Constant				("ssfx_ao_setup",		&ssfx_ao);
+	r_Constant				("ssfx_ao_setup2",		&ssfx_ao_setup1);
 	r_Constant				("ssfx_water",			&ssfx_water);
 	r_Constant				("ssfx_water_setup1",	&ssfx_water_setup1);
 	r_Constant				("ssfx_water_setup2",	&ssfx_water_setup2);

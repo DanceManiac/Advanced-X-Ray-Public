@@ -13,6 +13,7 @@
 
 Texture2D s_half_depth;
 #include "ssao.ps"
+#include "ssdo.ps"
 
 #ifdef HDAO
 #define USE_HDAO 1
@@ -51,6 +52,14 @@ Texture2D<float> s_occ;
 #include "ssao_ssdo.ps"
 #endif	//	USE_SSDO
 #endif // USE_HDAO
+
+#ifdef SSFX_AO
+	#include "settings_screenspace_AO.h"
+
+	uniform float4 ssfx_ao_setup;
+	uniform float4 ssfx_ao_setup2;
+	Texture2D ssfx_ao;
+#endif
 
 #ifdef SSFX_INDIRECT_LIGHT
 	#include "settings_screenspace_IL.h"
@@ -153,6 +162,9 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 #ifdef USE_SSDO
     occ = calc_ssdo(P, N, I.tc0);
 #endif //USE SSDO
+#ifdef SSFX_AO
+    occ = calc_ssdo(P, N, I.tc0, I.pos2d, ISAMPLE);
+#endif //USE SSDO
 #endif // USE_HDAO
 
 #ifdef SSAO_QUALITY
@@ -198,7 +210,12 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 		
 #endif
 
-	hdiffuse *= occ;	
+	// AO implementation
+#ifdef SSFX_AO
+	hdiffuse.rgb *= ssfx_ao.Sample(smp_linear, I.tc0).www;
+#else
+	hdiffuse *= occ;
+#endif
 
 	hdiffuse.rgb = saturate(hdiffuse.rgb);
 	

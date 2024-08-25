@@ -7,6 +7,7 @@
 #define STENCIL_CULL 0
 
 ENGINE_API extern int ps_r__ShaderNVG;
+extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_il;
 extern ENGINE_API Fvector4 ps_ssfx_water;
 
@@ -118,11 +119,13 @@ void	CRenderTarget::phase_combine	()
 			FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 			HW.pContext->ClearRenderTargetView(rt_ssfx_temp->pRT, ColorRGBA);
 			HW.pContext->ClearRenderTargetView(rt_ssfx_temp2->pRT, ColorRGBA);
-			/*if (RImplementation.o.ssfx_ao && ps_ssfx_ao.y > 0)
+
+			if (RImplementation.o.ssfx_ao && RImplementation.o.ssao_ssdo_sss && ps_ssfx_ao.y > 0)
 			{
 				ssfx_PrevPos_Requiered = true;
 				phase_ssfx_ao(); // [SSFX] - New AO Phase
-			} */
+			} 
+
 			if (RImplementation.o.ssfx_il && ps_ssfx_il.y > 0)
 			{
 				ssfx_PrevPos_Requiered = true;
