@@ -74,7 +74,7 @@ void xrDiscordPresense::SetStatus()
 	}
 	else
 	{
-		presenseInfo.largeImageText = "Advanced X-Ray Engine";
+		presenseInfo.largeImageText = "Режим Advanced X-Ray: Тень Чернобыля";
 	}
 
 	if (g_current_renderer == 1)
