@@ -579,26 +579,25 @@ void R_dsgraph_structure::r_dsgraph_render_hud(bool NoPS)
 	
 	//PIX_EVENT(r_dsgraph_render_hud);
 
-	if(!mapHUD.empty())
+	hud_transform_helper helper;
+
+	if (!NoPS)
 	{
-		hud_transform_helper helper;
-
-		if (!NoPS)
-		{
-			mapHUD.traverse_left_right(sorted_L1);
-			mapHUD.clear();
-		}
-		else
-		{
-			HUDMask.traverse_left_right(hud_node);
-			HUDMask.clear();
-		}
-
-		// Rendering
 		mapHUD.traverse_left_right(sorted_L1);
 		mapHUD.clear();
 	}
+	else
+	{
+		HUDMask.traverse_left_right(hud_node);
+		HUDMask.clear();
+	}
 
+	//if(!mapHUD.empty())
+	//{
+		// Rendering
+	//	mapHUD.traverse_left_right(sorted_L1);
+	//	mapHUD.clear();
+	//}
 
 #if	RENDER==R_R1
 	if (g_hud && g_hud->RenderActiveItemUIQuery())

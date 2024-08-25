@@ -96,7 +96,7 @@ void CBlender_ssfx_ssr::Compile(CBlender_Compile& C)
 		C.r_dx10Texture("ssr_image", r2_RT_ssfx_ssr); // Prev Frame
 
 		C.r_dx10Texture("s_rimage", "$user$generic_temp");
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
 		C.r_dx10Texture("s_prev_pos", r2_RT_ssfx_prevPos);
 		C.r_dx10Texture("s_gloss_data", r2_RT_ssfx_temp3);
 
@@ -157,7 +157,7 @@ void CBlender_ssfx_ssr::Compile(CBlender_Compile& C)
 
 		C.r_dx10Texture("s_position", r2_RT_P);
 		C.r_dx10Texture("s_diffuse", r2_RT_albedo);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
 		C.r_dx10Texture("env_s0", r2_T_envs0);
 		C.r_dx10Texture("env_s1", r2_T_envs1);
 		C.r_dx10Texture("sky_s0", r2_T_sky0);
@@ -247,7 +247,7 @@ void CBlender_ssfx_ao::Compile(CBlender_Compile& C)
 	case 0:	// AO
 		C.r_Pass("stub_screen_space", "ssfx_ao", FALSE, FALSE, FALSE);
 		C.r_dx10Texture("s_position", r2_RT_P);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
 		C.r_dx10Texture("ssfx_ao", r2_RT_ssfx_ao);
 		C.r_dx10Texture("s_prev_pos", r2_RT_ssfx_prevPos);
 		C.r_dx10Texture("jitter0", JITTER(0));
@@ -260,7 +260,8 @@ void CBlender_ssfx_ao::Compile(CBlender_Compile& C)
 	case 1:	// Blur Phase 1
 		C.r_Pass("stub_screen_space", "ssfx_ao_blur", FALSE, FALSE, FALSE);
 		C.r_dx10Texture("ao_image", r2_RT_ssfx_temp);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
+
 		C.r_dx10Sampler("smp_nofilter");
 		C.r_dx10Sampler("smp_linear");
 		C.r_End();
@@ -269,7 +270,8 @@ void CBlender_ssfx_ao::Compile(CBlender_Compile& C)
 	case 2:	// Blur Phase 2
 		C.r_Pass("stub_screen_space", "ssfx_ao_blur", FALSE, FALSE, FALSE);
 		C.r_dx10Texture("ao_image", r2_RT_ssfx_temp3);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
+
 		C.r_dx10Sampler("smp_nofilter");
 		C.r_dx10Sampler("smp_linear");
 		C.r_End();
@@ -279,7 +281,8 @@ void CBlender_ssfx_ao::Compile(CBlender_Compile& C)
 		C.r_Pass("stub_screen_space", "ssfx_il", FALSE, FALSE, FALSE);
 		C.r_dx10Texture("s_accumulator", r2_RT_accum);
 		C.r_dx10Texture("s_position", r2_RT_P);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
+
 		C.r_dx10Texture("ssfx_ao", r2_RT_ssfx_il);
 		C.r_dx10Texture("s_prev_pos", r2_RT_ssfx_prevPos);
 		C.r_dx10Texture("jitter0", JITTER(0));
@@ -292,7 +295,8 @@ void CBlender_ssfx_ao::Compile(CBlender_Compile& C)
 	case 4:	// Blur Phase 1
 		C.r_Pass("stub_screen_space", "ssfx_il_blur", FALSE, FALSE, FALSE);
 		C.r_dx10Texture("ao_image", r2_RT_ssfx_temp2);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
+
 		C.r_dx10Sampler("smp_nofilter");
 		C.r_dx10Sampler("smp_linear");
 		C.r_End();
@@ -301,7 +305,7 @@ void CBlender_ssfx_ao::Compile(CBlender_Compile& C)
 	case 5:	// Blur Phase 2
 		C.r_Pass("stub_screen_space", "ssfx_il_blur", FALSE, FALSE, FALSE);
 		C.r_dx10Texture("ao_image", r2_RT_ssfx_temp3);
-		C.r_dx10Texture("s_hud_mask", r2_RT_ssfx_hud);
+		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);
 
 		C.r_dx10Sampler("smp_nofilter");
 		C.r_dx10Sampler("smp_linear");

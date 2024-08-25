@@ -12,7 +12,7 @@
 uniform float4 ssfx_ssr_2;
 uniform float4 ssfx_is_underground;
 
-Texture2D s_hud_mask;
+Texture2D s_ssfx_hud_mask;
 
 float4 main(p_screen I) : SV_Target
 {
@@ -29,7 +29,7 @@ float4 main(p_screen I) : SV_Target
 	float3 N 	= gbuf_unpack_normal( Pos.xy );
 	float mtl	= gbuf_unpack_mtl( Pos.w );
 
-	float HUD_mask = s_hud_mask.Sample(smp_nofilter, I.tc0).r;
+	float HUD_mask = s_ssfx_hud_mask.Sample(smp_nofilter, I.tc0).r;
 
 	bool m_flora = abs(mtl - MAT_FLORA) <= 0.04f;
 

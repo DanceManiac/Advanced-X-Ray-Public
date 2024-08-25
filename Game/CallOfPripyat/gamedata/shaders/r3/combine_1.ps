@@ -70,7 +70,7 @@ Texture2D<float> s_occ;
 #endif
 
 uniform float4 ssfx_hud_hemi;
-Texture2D s_hud_mask;
+Texture2D s_ssfx_hud_mask;
 
 struct	_input
 {
@@ -180,7 +180,7 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 	float3 hdiffuse, hspecular;
 
 	// HUD Mask
-	float HudMask = s_hud_mask.Sample(smp_linear, I.tc0).r;
+	float HudMask = s_ssfx_hud_mask.Sample(smp_linear, I.tc0).r;
 
 	// HUD hemi
 	float env_fac = 1.0 - saturate(dot(env_color.rgb, 0.15f));

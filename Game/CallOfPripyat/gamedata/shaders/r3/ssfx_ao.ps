@@ -20,7 +20,7 @@ float4x4 m_current; // Current projection matrix
 float4x4 m_previous; // Previous projection matrix
 
 Texture2D ssfx_ao;
-Texture2D s_hud_mask;
+Texture2D s_ssfx_hud_mask;
 Texture2D s_prev_pos;
 Texture2D jitter0;
 
@@ -55,7 +55,7 @@ float4 main(p_screen I) : SV_Target
 	bool mat_flora = abs(mtl - MAT_FLORA) <= 0.04f;
 
 	// A factor to adjust some values to only affect weapons ( closer objects )
-	float4 HudMask = s_hud_mask.Sample(smp_linear, tc);
+	float4 HudMask = s_ssfx_hud_mask.Sample(smp_linear, tc);
 
 	float WeaponFactor = 1.0 - HudMask.r;
 	

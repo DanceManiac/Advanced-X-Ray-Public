@@ -15,7 +15,7 @@
 uniform float4 ssfx_wetsurfaces_1; // Ripples [ Size, Speed, Min Speed, Int ]
 uniform float4 ssfx_wetsurfaces_2; // FallWater [ Size, Speed, Min Speed, Int ]
 
-Texture2D 	s_hud_mask;
+Texture2D 	s_ssfx_hud_mask;
 Texture2D	s_water;
 Texture2D	s_waterFall;
 
@@ -125,7 +125,7 @@ float4 main ( float2 tc : TEXCOORD0, float2 tcJ : TEXCOORD1, float4	Color	: COLO
 	water += waterFallZ.zxy * weights.z;
 
 	// HUD attenuations ( Remove Terrain & Flora )
-	float HUD_Attenuation = s_hud_mask.Sample(smp_nofilter, tc).r * !is_flora;
+	float HUD_Attenuation = s_ssfx_hud_mask.Sample(smp_nofilter, tc).r * !is_flora;
 
 	// Apply attenuations
 	water *= HUD_Attenuation * saturate(RainInt) * Cover;
