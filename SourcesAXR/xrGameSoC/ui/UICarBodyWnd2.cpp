@@ -23,7 +23,7 @@
 #include "../AntigasFilter.h"
 #include "../RepairKit.h"
 #include "../Torch.h"
-#include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
 #include "../PDA.h"
 
 #include "../string_table.h"
@@ -252,7 +252,16 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 			EatItem(cell_item);
 			break;
 		}
-	case BATTERY_CHARGE_DETECTOR:
+	/*case BATTERY_CHARGE_DETECTOR:
+		{
+			CBattery* battery = smart_cast<CBattery*>(item);
+			if (!battery)
+				break;
+			battery->m_iUseFor = 2;
+			EatItem(cell_item);
+			break;
+		}*/
+	case BATTERY_CHARGE_DOSIMETER:
 		{
 			CBattery* battery = smart_cast<CBattery*>(item);
 			if (!battery)
@@ -261,15 +270,6 @@ void CUICarBodyWnd::ProcessPropertiesBoxClicked(CUIWindow* w, void* d)
 			EatItem(cell_item);
 			break;
 		}
-	/*case BATTERY_CHARGE_DOSIMETER:
-		{
-			CBattery* battery = smart_cast<CBattery*>(CurrentItem());
-			if (!battery)
-				break;
-			battery->m_iUseFor = 2;
-			TryUseItem((PIItem)(UIPropertiesBox.GetClickedItem()->GetData()));
-			break;
-		} */
 	case REPAIR_KIT_OUTFIT:
 		{
 			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
@@ -426,9 +426,9 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		return;
 
 	CTorch* item_in_torch_slot = smart_cast<CTorch*>(m_pOurObject->inventory().ItemFromSlot(TORCH_SLOT));
-	CCustomDetector* item_in_detector_slot = smart_cast<CCustomDetector*>(m_pOurObject->inventory().ItemFromSlot(DETECTOR_SLOT));
+	//CCustomDetector* item_in_detector_slot = smart_cast<CCustomDetector*>(m_pOurObject->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CCustomOutfit* item_in_outfit_slot = smart_cast<CCustomOutfit*>(m_pOurObject->inventory().ItemFromSlot(OUTFIT_SLOT));
-	//PIItem	item_in_anomaly_detector_slot = m_pOurObject->inventory().ItemFromSlot(DOSIMETER_SLOT);
+	CDetectorAnomaly* item_in_anomaly_detector_slot = smart_cast<CDetectorAnomaly*>(m_pOurObject->inventory().ItemFromSlot(DETECTOR_SLOT));
 	CWeapon* item_in_knife_slot = smart_cast<CWeapon*>(m_pOurObject->inventory().ItemFromSlot(KNIFE_SLOT));
 	CWeapon* item_in_wpn1_slot = smart_cast<CWeapon*>(m_pOurObject->inventory().ItemFromSlot(PISTOL_SLOT));
 	CWeapon* item_in_wpn2_slot = smart_cast<CWeapon*>(m_pOurObject->inventory().ItemFromSlot(RIFLE_SLOT));
@@ -462,21 +462,22 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 			b_show = true;
 		}
 
-		if (item_in_detector_slot && item_in_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_detector_slot->m_SuitableBatteries) && item_in_detector_slot->GetChargeLevel() <= 0.99f)
+		/*if (item_in_detector_slot && item_in_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_detector_slot->m_SuitableBatteries) && item_in_detector_slot->GetChargeLevel() <= 0.99f)
 		{
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_detector_slot->m_name.c_str());
 			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_detector_slot, BATTERY_CHARGE_DETECTOR);
 			b_show = true;
-		}
+		} */
 
-		/*if (item_in_anomaly_detector_slot) // Это потом пригодится ещё
+		if (item_in_anomaly_detector_slot && item_in_anomaly_detector_slot->IsNecessaryItem(pBattery->cNameSect().c_str(), item_in_anomaly_detector_slot->m_SuitableBatteries) && item_in_anomaly_detector_slot->GetChargeLevel() <= 0.99f)
 		{
 			shared_str str = CStringTable().translate("st_charge_item");
 			str.printf("%s %s", str.c_str(), item_in_anomaly_detector_slot->m_name.c_str());
-			m_pUIPropertiesBox.AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_anomaly_detector_slot, BATTERY_CHARGE_DOSIMETER);
 			b_show = true;
-		}  */
+		}
+
 		return;
 	}
 	else if (pRepairKit)

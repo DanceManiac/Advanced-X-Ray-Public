@@ -446,8 +446,10 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("get_battery_charge_level",		&CScriptGameObject::GetBatteryChargeLevel)
 		.def("set_torch_charge_level",			&CScriptGameObject::SetTorchChargeLevel)
 		.def("get_torch_charge_level",			&CScriptGameObject::GetTorchChargeLevel)
-		.def("set_detector_charge_level",		&CScriptGameObject::SetDetectorChargeLevel)
-		.def("get_detector_charge_level",		&CScriptGameObject::GetDetectorChargeLevel)
+		//.def("set_detector_charge_level",		&CScriptGameObject::SetDetectorChargeLevel)
+		//.def("get_detector_charge_level",		&CScriptGameObject::GetDetectorChargeLevel)
+		.def("set_anomaly_detector_charge_level", &CScriptGameObject::SetAnoDetectorChargeLevel)
+		.def("get_anomaly_detector_charge_level", &CScriptGameObject::GetAnoDetectorChargeLevel)
 
 		.def("set_filter_condition",			&CScriptGameObject::SetFilterChargeLevel)
 		.def("get_filter_condition",			&CScriptGameObject::GetFilterChargeLevel)
@@ -478,8 +480,8 @@ class_<CScriptGameObject> script_register_game_object2(class_<CScriptGameObject>
 		.def("is_weapon_gl",					&CScriptGameObject::IsWeaponGL)
 		.def("is_inventory_box",				&CScriptGameObject::IsInventoryBox)
 		.def("is_food",							&CScriptGameObject::IsEatableItem)
-		.def("is_detector",						&CScriptGameObject::IsDetector)
-		//.def("is_anomaly_detector",				&CScriptGameObject::IsDetectorAnomaly)
+		//.def("is_detector",						&CScriptGameObject::IsDetector)
+		.def("is_anomaly_detector",				&CScriptGameObject::IsDetectorAnomaly)
 		.def("is_torch",						&CScriptGameObject::IsTorch)
 		.def("is_antigas_filter",				&CScriptGameObject::IsAntigasFilter)
 			;

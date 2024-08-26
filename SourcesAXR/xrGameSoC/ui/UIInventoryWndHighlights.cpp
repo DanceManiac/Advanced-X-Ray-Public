@@ -5,7 +5,7 @@
 
 #include "../Artefact.h"
 #include "../CustomBackpack.h"
-#include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
 #include "../CustomOutfit.h"
 #include "../GrenadeLauncher.h"
 #include "../LaserDesignator.h"
@@ -182,7 +182,7 @@ void CUIInventoryWnd::highlight_item_slot(CUICellItem* cell_item)
 
 	CWeapon* weapon = smart_cast<CWeapon*>(item);
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(item);
-	CCustomDetector* detector = smart_cast<CCustomDetector*>(item);
+	CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(item);
 	CArtefact* artefact = smart_cast<CArtefact*>(item);
 	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
@@ -217,7 +217,7 @@ void CUIInventoryWnd::highlight_item_slot(CUICellItem* cell_item)
 		return;
 	}
 
-	if (detector)
+	if (anomaly_detector)
 	{
 		m_DetectorSlotHighlight->Show(true);
 		return;
@@ -295,7 +295,7 @@ void CUIInventoryWnd::highlight_item_slot(CUICellItem* cell_item)
 
 	if (GameConstants::GetDosimeterSlotEnabled())
 	{
-		if (detector)
+		if (anomaly_detector)
 		{
 			m_DetectorSlotHighlight->Show(true);
 			return;

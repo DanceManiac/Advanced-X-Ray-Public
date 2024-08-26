@@ -52,7 +52,7 @@
 #include "WeaponMagazinedWGrenade.h"
 #include "Battery.h"
 #include "AntigasFilter.h"
-#include "CustomDetector.h"
+#include "AnomalyDetector.h"
 #include "Torch.h"
 
 namespace MemorySpace {
@@ -1490,7 +1490,7 @@ float CScriptGameObject::GetTorchChargeLevel() const
 	return eTorch->GetCurrentChargeLevel();
 }
 
-void CScriptGameObject::SetDetectorChargeLevel(float charge_level)
+/*void CScriptGameObject::SetDetectorChargeLevel(float charge_level)
 {
 	CInventoryItem* IItm = object().cast_inventory_item();
 	if (!IItm)
@@ -1510,6 +1510,32 @@ float CScriptGameObject::GetDetectorChargeLevel() const
 		return 0;
 
 	CCustomDetector* eDetector = IItm->cast_detector();
+	if (!eDetector)
+		return 0;
+
+	return eDetector->GetCurrentChargeLevel();
+}*/
+
+void CScriptGameObject::SetAnoDetectorChargeLevel(float charge_level)
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return;
+
+	CDetectorAnomaly* eDetector = IItm->cast_anomaly_detector();
+	if (!eDetector)
+		return;
+
+	eDetector->SetChargeLevel(charge_level);
+}
+
+float CScriptGameObject::GetAnoDetectorChargeLevel() const
+{
+	CInventoryItem* IItm = object().cast_inventory_item();
+	if (!IItm)
+		return 0;
+
+	CDetectorAnomaly* eDetector = IItm->cast_anomaly_detector();
 	if (!eDetector)
 		return 0;
 

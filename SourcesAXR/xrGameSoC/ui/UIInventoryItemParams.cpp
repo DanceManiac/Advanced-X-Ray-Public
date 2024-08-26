@@ -22,8 +22,8 @@
 #include "UIInventoryUtilities.h"
 
 #include "../Torch.h"
-#include "../CustomDetector.h"
-//#include "../AnomalyDetector.h"
+//#include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
 #include "../CustomBackpack.h"
 #include "../AntigasFilter.h"
@@ -206,8 +206,8 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		return;
 
 	shared_str section = pInvItem.object().cNameSect();
-	CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
-	//CDetectorAnomaly* pAnomDet = smart_cast<CDetectorAnomaly*>(&pInvItem);
+	//CCustomDetector* pDet = smart_cast<CCustomDetector*>(&pInvItem);
+	CDetectorAnomaly* pAnomDet = smart_cast<CDetectorAnomaly*>(&pInvItem);
 	CTorch* pTorch = smart_cast<CTorch*>(&pInvItem);
 	CArtefactContainer* pAfContainer = smart_cast<CArtefactContainer*>(&pInvItem);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(&pInvItem);
@@ -223,7 +223,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 	bool ShowChargeArtDet = GameConstants::GetArtDetectorUseBattery();
 	bool ShowChargeAnomDet = GameConstants::GetAnoDetectorUseBattery();
 	
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/ || pBattery)
+	if (ShowChargeTorch && pTorch || /*ShowChargeArtDet && pDet ||*/ ShowChargeAnomDet && pAnomDet || pBattery)
 	{
 		if (pBattery)
 			val = pBattery->GetCurrentChargeLevel() <= 0 ? 0 : pBattery->GetCurrentChargeLevel() * 100.f;
@@ -241,7 +241,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/)
+	if (ShowChargeTorch && pTorch || /*ShowChargeArtDet && pDet ||*/ ShowChargeAnomDet && pAnomDet)
 	{
 		val = pInvItem.GetMaxChargeLevel();
 		//if (!fis_zero(val))
@@ -256,7 +256,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}
 
-	if (ShowChargeTorch && pTorch || ShowChargeArtDet && pDet /*|| ShowChargeAnomDet && pAnomDet*/)
+	if (ShowChargeTorch && pTorch || /*ShowChargeArtDet && pDet ||*/ ShowChargeAnomDet && pAnomDet)
 	{
 		val = pInvItem.GetUnChargeLevel();
 		if (!fis_zero(val))
@@ -328,9 +328,9 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 		}
 	}*/
 
-	if (pDet) // For anomaly detectors
+	if (pAnomDet)
 	{
-		val = pDet->GetVisRadius();
+		val = pAnomDet->GetVisRadius();
 		if (!fis_zero(val))
 		{
 			m_af_vis_radius->SetValue(val, 0, 2);

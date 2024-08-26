@@ -1,6 +1,6 @@
 #pragma once
 #include "inventory_item_object.h"
-#include "../xrEngine/feel_touch.h"
+#include "../xrEngine/Feel_Touch.h"
 #include "hudsound.h"
 #include "Battery.h"
 
@@ -33,14 +33,14 @@ struct ZONE_INFO
 
 class CInventoryOwner;
 
-class CCustomDetector :
+class CDetectorAnomaly :
 	public CInventoryItemObject,
 	public Feel::Touch
 {
 	typedef	CInventoryItemObject	inherited;
 public:
-	CCustomDetector(void);
-	virtual ~CCustomDetector(void);
+	CDetectorAnomaly(void);
+	virtual ~CDetectorAnomaly(void);
 
 	virtual BOOL net_Spawn			(CSE_Abstract* DC);
 	virtual void Load				(LPCSTR section);
@@ -77,7 +77,7 @@ public:
 			float	m_fUnchargeSpeed;
 			xr_vector<shared_str> m_SuitableBatteries;
 
-	virtual CCustomDetector* cast_detector() { return this; }
+	virtual CDetectorAnomaly* cast_anomaly_detector() { return this; }
 
 protected:
 	void StopAllSounds				();

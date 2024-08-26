@@ -37,7 +37,7 @@ class CBattery;
 class CAntigasFilter;
 class CRepairKit;
 class CTorch;
-class CCustomDetector;
+class CDetectorAnomaly;
 class CCustomOutfit;
 
 struct SHit;
@@ -287,7 +287,7 @@ public:
 	virtual CAntigasFilter		*cast_filter				()	{return 0;}
 	virtual CRepairKit			*cast_repair_kit			()	{return 0;}
 	virtual CBattery			*cast_battery				()	{return 0;}
-	virtual CCustomDetector		*cast_detector				()	{return 0;}
+	virtual CDetectorAnomaly	*cast_anomaly_detector		()	{return 0;}
 	virtual CCustomOutfit		*cast_outfit				()	{return 0;}
 	virtual CWeapon				*cast_weapon				()	{return 0;}
 	virtual CFoodItem			*cast_food_item				()	{return 0;}

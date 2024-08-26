@@ -49,7 +49,7 @@
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v142</PlatformToolset>
-	<PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -592,6 +592,7 @@
     <ClInclude Include="abstract_path_manager.h" />
     <ClInclude Include="abstract_path_manager_inline.h" />
     <ClInclude Include="ai\monsters\monster_aura.h" />
+    <ClInclude Include="AnomalyDetector.h" />
     <ClInclude Include="AntigasFilter.h" />
     <ClInclude Include="ArtefactContainer.h" />
     <ClInclude Include="Battery.h" />
@@ -1072,7 +1073,6 @@
     <ClInclude Include="cover_manager_inline.h" />
     <ClInclude Include="cover_point.h" />
     <ClInclude Include="cover_point_inline.h" />
-    <ClInclude Include="CustomDetector.h" />
     <ClInclude Include="CustomMonster.h" />
     <ClInclude Include="CustomMonster_inline.h" />
     <ClInclude Include="CustomOutfit.h" />
@@ -1966,6 +1966,7 @@
     <ClCompile Include="actor_script.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
     <ClCompile Include="ai\monsters\monster_aura.cpp" />
+    <ClCompile Include="AnomalyDetector.cpp" />
     <ClCompile Include="AntigasFilter.cpp" />
     <ClCompile Include="ArtefactContainer.cpp" />
     <ClCompile Include="Battery.cpp" />
@@ -5266,7 +5267,6 @@
     <ClCompile Include="ElectricBall.cpp" />
     <ClCompile Include="RustyHairArtifact.cpp" />
     <ClCompile Include="GalantineArtifact.cpp" />
-    <ClCompile Include="CustomDetector.cpp" />
     <ClCompile Include="SimpleDetector.cpp" />
     <ClCompile Include="Torch.cpp" />
     <ClCompile Include="torch_script.cpp">

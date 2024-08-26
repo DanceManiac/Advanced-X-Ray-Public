@@ -18,9 +18,9 @@
 #include "eatable_item.h"
 //#include "AntigasFilter.h"
 #include "Artefact.h"
-#include "CustomDetector.h"
+//#include "CustomDetector.h"
 #include "Torch.h"
-//#include "AnomalyDetector.h"
+#include "AnomalyDetector.h"
 
 #include "AdvancedXrayGameConstants.h"
 
@@ -452,11 +452,11 @@ void CUICellItem::UpdateChargeLevelProgressBar()
 	{
 		PIItem itm = (PIItem)m_pData;
 		CTorch* torch = smart_cast<CTorch*>(itm);
-		CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(itm);
-		//CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(itm);
+		//CCustomDetector* artefact_detector = smart_cast<CCustomDetector*>(itm);
+		CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(itm);
 		CArtefact* artefact = smart_cast<CArtefact*>(itm);
 
-		if (torch || artefact_detector || /*anomaly_detector ||*/ artefact)
+		if (torch || /*artefact_detector ||*/ anomaly_detector || artefact)
 		{
 			Ivector2 itm_grid_size = GetGridSize();
 
@@ -475,16 +475,16 @@ void CUICellItem::UpdateChargeLevelProgressBar()
 				m_pChargeState->SetProgressPos(iCeil(torch->GetCurrentChargeLevel() * 13.0f) / 13.0f);
 				m_pChargeState->Show(true);
 			}
-			else if (artefact_detector && GameConstants::GetArtDetectorUseBattery())
+			/*else if (artefact_detector && GameConstants::GetArtDetectorUseBattery())
 			{
 				m_pChargeState->SetProgressPos(iCeil(artefact_detector->GetCurrentChargeLevel() * 13.0f) / 13.0f);
 				m_pChargeState->Show(true);
-			}
-			/*else if (anomaly_detector && GameConstants::GetAnoDetectorUseBattery())
+			}*/
+			else if (anomaly_detector && GameConstants::GetAnoDetectorUseBattery())
 			{
 				m_pChargeState->SetProgressPos(iCeil(anomaly_detector->GetCurrentChargeLevel() * 13.0f) / 13.0f);
 				m_pChargeState->Show(true);
-			}*/
+			}
 			else if (artefact && GameConstants::GetArtefactsDegradation())
 			{
 				m_pChargeState->SetProgressPos(iCeil(artefact->GetCurrentChargeLevel() * 13.0f) / 13.0f);

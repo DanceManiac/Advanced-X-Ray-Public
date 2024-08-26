@@ -6,7 +6,7 @@
 
 #include "../Artefact.h"
 #include "../CustomBackpack.h"
-#include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
 #include "../CustomOutfit.h"
 #include "../GrenadeLauncher.h"
 #include "../LaserDesignator.h"

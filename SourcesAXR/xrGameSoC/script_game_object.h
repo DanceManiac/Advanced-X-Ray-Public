@@ -652,8 +652,8 @@ public:
 			_DECLARE_FUNCTION10(IsWeaponGL, bool);
 			_DECLARE_FUNCTION10(IsInventoryBox, bool);
 			_DECLARE_FUNCTION10(IsEatableItem, bool);
-			_DECLARE_FUNCTION10(IsDetector, bool);
-			//_DECLARE_FUNCTION10(IsDetectorAnomaly, bool);
+			//_DECLARE_FUNCTION10(IsDetector, bool);
+			_DECLARE_FUNCTION10(IsDetectorAnomaly, bool);
 			_DECLARE_FUNCTION10(IsTorch, bool);
 			_DECLARE_FUNCTION10(IsAntigasFilter, bool);
 
@@ -770,6 +770,8 @@ public:
 			float				GetBatteryChargeLevel() const;
 			void				SetDetectorChargeLevel(float charge_level);
 			float				GetDetectorChargeLevel() const;
+			void				SetAnoDetectorChargeLevel(float charge_level);
+			float				GetAnoDetectorChargeLevel() const;
 			void				SetTorchChargeLevel(float charge_level);
 			float				GetTorchChargeLevel() const;
 

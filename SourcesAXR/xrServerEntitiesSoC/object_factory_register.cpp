@@ -179,6 +179,7 @@
 #	include "RepairKit.h"
 #	include "ArtefactContainer.h"
 #	include "SleepingBag.h"
+#	include "AnomalyDetector.h"
 #endif // NO_XR_GAME
 
 ENGINE_API	bool g_dedicated_server;
@@ -371,6 +372,7 @@ void CObjectFactory::register_classes	()
 	ADD(CZoneCampfire			,CSE_ALifeAnomalousZone			,CLSID_Z_CAMPFIRE				,"zone_campfire");
 	// Detectors
 	ADD(CSimpleDetector			,CSE_ALifeItemDetector			,CLSID_DETECTOR_SIMPLE			,"device_detector_simple");
+	ADD(CDetectorAnomaly		,CSE_ALifeItemDetector			,CLSID_DETECTOR_ANOMALY			,"device_detector_anomaly");
 
 	// Devices
 	ADD(CTorch					,CSE_ALifeItemTorch				,CLSID_DEVICE_TORCH				,"device_torch");

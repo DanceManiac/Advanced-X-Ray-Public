@@ -2,7 +2,7 @@
 
 #include "eatable_item_object.h"
 
-class CCustomDetector;
+class CDetectorAnomaly;
 class CTorch;
 
 class CBattery : public CEatableItemObject
@@ -25,8 +25,8 @@ public:
 			float			GetCurrentChargeLevel(void) const;
 	virtual	void			ChangeChargeLevel(float val);
 			void			ChargeTorch(CTorch* flashlight);
-			void			ChargeDetector(CCustomDetector* detector);
-			//void			ChargeAnomalyDetector();
+			//void			ChargeDetector(CCustomDetector* detector);
+			void			ChargeAnomalyDetector(CDetectorAnomaly* detector);
 
 	virtual CBattery* cast_battery() { return this; }
 protected:

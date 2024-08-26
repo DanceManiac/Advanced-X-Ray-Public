@@ -5334,9 +5334,6 @@
     <ClInclude Include="GalantineArtifact.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\GalantineArtifact</Filter>
     </ClInclude>
-    <ClInclude Include="CustomDetector.h">
-      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleDetector.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors\Simple Detector</Filter>
     </ClInclude>
@@ -6744,6 +6741,9 @@
     </ClInclude>
     <ClInclude Include="WeaponAutomaticShotgun.h">
       <Filter>Core\Client\Objects\items &amp; weapons\Weapons\Various weapons\Weapon AutomaticShotgun</Filter>
+    </ClInclude>
+    <ClInclude Include="AnomalyDetector.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -8583,9 +8583,6 @@
     <ClCompile Include="GalantineArtifact.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Artifacts\GalantineArtifact</Filter>
     </ClCompile>
-    <ClCompile Include="CustomDetector.cpp">
-      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
-    </ClCompile>
     <ClCompile Include="SimpleDetector.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors\Simple Detector</Filter>
     </ClCompile>
@@ -10039,6 +10036,9 @@
     </ClCompile>
     <ClCompile Include="ui\UICarBodyWndHighlights.cpp">
       <Filter>UI\Common\CarBodyWnd</Filter>
+    </ClCompile>
+    <ClCompile Include="AnomalyDetector.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Devices\Detectors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -18,7 +18,7 @@
 
 #include "../eatable_item.h"
 #include "../Battery.h"
-#include "../CustomDetector.h"
+#include "../AnomalyDetector.h"
 #include "../Torch.h"
 #include "../inventory.h"
 
@@ -674,11 +674,11 @@ bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 	{
 #ifdef DEBUG
 		CTorch* flashlight = smart_cast<CTorch*>(CurrentIItem());
-		CCustomDetector* detector = smart_cast<CCustomDetector*>(CurrentIItem());
+		CDetectorAnomaly* anomaly_detector = smart_cast<CDetectorAnomaly*>(CurrentIItem());
 		CBattery* battery = smart_cast<CBattery*>(CurrentIItem());
 		if(DIK_NUMPAD7 == dik && CurrentIItem())
 		{
-			if (flashlight && GameConstants::GetTorchHasBattery() || detector && GameConstants::GetAnoDetectorUseBattery() || battery)
+			if (flashlight && GameConstants::GetTorchHasBattery() || anomaly_detector && GameConstants::GetAnoDetectorUseBattery() || battery)
 			{
 				CurrentIItem()->ChangeChargeLevel(-0.05f);
 			}
@@ -688,7 +688,7 @@ bool CUIInventoryWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 		}
 		else if(DIK_NUMPAD8 == dik && CurrentIItem())
 		{
-			if (flashlight && GameConstants::GetTorchHasBattery() || detector && GameConstants::GetAnoDetectorUseBattery() || battery)
+			if (flashlight && GameConstants::GetTorchHasBattery() || anomaly_detector && GameConstants::GetAnoDetectorUseBattery() || battery)
 			{
 				CurrentIItem()->ChangeChargeLevel(0.05f);
 			}

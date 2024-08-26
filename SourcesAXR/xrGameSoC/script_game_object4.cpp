@@ -49,7 +49,7 @@
 #include "antirad.h"
 #include "BottleItem.h"
 #include "eatable_item.h"
-#include "CustomDetector.h"
+#include "AnomalyDetector.h"
 //#include "AnomalyDetector.h"
 #include "Torch.h"
 #include "AntigasFilter.h"
@@ -328,7 +328,7 @@ TEST_OBJECT_CLASS(CScriptGameObject::IsAmmo, CWeaponAmmo)
 TEST_OBJECT_CLASS(CScriptGameObject::IsWeaponGL, CWeaponMagazinedWGrenade)
 TEST_OBJECT_CLASS(CScriptGameObject::IsInventoryBox, CInventoryBox)
 TEST_OBJECT_CLASS(CScriptGameObject::IsEatableItem, CEatableItem)
-TEST_OBJECT_CLASS(CScriptGameObject::IsDetector, CCustomDetector)
-//TEST_OBJECT_CLASS(CScriptGameObject::IsDetectorAnomaly, CDetectorAnomaly)
+//TEST_OBJECT_CLASS(CScriptGameObject::IsDetector, CCustomDetector)
+TEST_OBJECT_CLASS(CScriptGameObject::IsDetectorAnomaly, CDetectorAnomaly)
 TEST_OBJECT_CLASS(CScriptGameObject::IsTorch, CTorch)
 TEST_OBJECT_CLASS(CScriptGameObject::IsAntigasFilter, CAntigasFilter)

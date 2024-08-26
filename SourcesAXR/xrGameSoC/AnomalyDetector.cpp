@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "customdetector.h"
-#include "customzone.h"
-#include "hudmanager.h"
+#include "AnomalyDetector.h"
+#include "CustomZone.h"
+#include "HudManager.h"
 #include "Artefact.h"
-#include "inventory.h"
-#include "level.h"
+#include "Inventory.h"
+#include "Level.h"
 #include "map_manager.h"
-#include "cameraEffector.h"
-#include "actor.h"
+#include "CameraEffector.h"
+#include "Actor.h"
 #include "ai_sounds.h"
 
 #include "AdvancedXrayGameConstants.h"
@@ -24,7 +24,7 @@ ZONE_INFO::~ZONE_INFO	()
 		CParticlesObject::Destroy(pParticle);
 }
 
-CCustomDetector::CCustomDetector(void) 
+CDetectorAnomaly::CDetectorAnomaly(void)
 {
 	m_bWorking					= false;
 
@@ -33,13 +33,13 @@ CCustomDetector::CCustomDetector(void)
 	m_fUnchargeSpeed			= 0.0f;
 }
 
-CCustomDetector::~CCustomDetector(void) 
+CDetectorAnomaly::~CDetectorAnomaly(void)
 {
 	ZONE_TYPE_MAP_IT it;
 	m_ZoneInfoMap.clear();
 }
 
-BOOL CCustomDetector::net_Spawn(CSE_Abstract* DC) 
+BOOL CDetectorAnomaly::net_Spawn(CSE_Abstract* DC)
 {
 	m_pCurrentActor		 = NULL;
 	m_pCurrentInvOwner	 = NULL;
@@ -47,7 +47,7 @@ BOOL CCustomDetector::net_Spawn(CSE_Abstract* DC)
 	return		(inherited::net_Spawn(DC));
 }
 
-void CCustomDetector::Load(LPCSTR section) 
+void CDetectorAnomaly::Load(LPCSTR section)
 {
 	inherited::Load			(section);
 
@@ -108,7 +108,7 @@ void CCustomDetector::Load(LPCSTR section)
 		}
 	}
 
-	if (GameConstants::GetArtDetectorUseBattery())
+	if (GameConstants::GetAnoDetectorUseBattery())
 	{
 		float rnd_charge = ::Random.randF(0.0f, m_fMaxChargeLevel);
 		m_fCurrentChargeLevel = rnd_charge;
@@ -116,7 +116,7 @@ void CCustomDetector::Load(LPCSTR section)
 }
 
 
-void CCustomDetector::shedule_Update(u32 dt) 
+void CDetectorAnomaly::shedule_Update(u32 dt)
 {
 	inherited::shedule_Update	(dt);
 	
@@ -134,7 +134,7 @@ void CCustomDetector::shedule_Update(u32 dt)
 	}
 }
 
-void CCustomDetector::StopAllSounds()
+void CDetectorAnomaly::StopAllSounds()
 {
 	ZONE_TYPE_MAP_IT it;
 	for(it = m_ZoneTypeMap.begin(); m_ZoneTypeMap.end() != it; ++it) 
@@ -145,7 +145,7 @@ void CCustomDetector::StopAllSounds()
 	}
 }
 
-void CCustomDetector::UpdateCL() 
+void CDetectorAnomaly::UpdateCL()
 {
 	inherited::UpdateCL();
 
@@ -153,7 +153,7 @@ void CCustomDetector::UpdateCL()
 	if( !H_Parent()  ) return;
 	if(!m_pCurrentActor) return;
 
-	if (GameConstants::GetArtDetectorUseBattery())
+	if (GameConstants::GetAnoDetectorUseBattery())
 		UpdateChargeLevel();
 
 	if (m_fCurrentChargeLevel <= 0.0f)
@@ -198,7 +198,7 @@ void CCustomDetector::UpdateCL()
 	}
 }
 
-void CCustomDetector::feel_touch_new(CObject* O) 
+void CDetectorAnomaly::feel_touch_new(CObject* O)
 {
 	CCustomZone *pZone = smart_cast<CCustomZone*>(O);
 	if(pZone && pZone->IsEnabled()) 
@@ -209,7 +209,7 @@ void CCustomDetector::feel_touch_new(CObject* O)
 	}
 }
 
-void CCustomDetector::feel_touch_delete(CObject* O)
+void CDetectorAnomaly::feel_touch_delete(CObject* O)
 {
 	CCustomZone *pZone = smart_cast<CCustomZone*>(O);
 	if(pZone)
@@ -219,19 +219,19 @@ void CCustomDetector::feel_touch_delete(CObject* O)
 	}
 }
 
-BOOL CCustomDetector::feel_touch_contact(CObject* O) 
+BOOL CDetectorAnomaly::feel_touch_contact(CObject* O)
 {
 	return (NULL != smart_cast<CCustomZone*>(O));
 }
 
-void CCustomDetector::OnH_A_Chield() 
+void CDetectorAnomaly::OnH_A_Chield()
 {
 	m_pCurrentActor				= smart_cast<CActor*>(H_Parent());
 	m_pCurrentInvOwner			= smart_cast<CInventoryOwner*>(H_Parent());
 	inherited::OnH_A_Chield		();
 }
 
-void CCustomDetector::OnH_B_Independent(bool just_before_destroy) 
+void CDetectorAnomaly::OnH_B_Independent(bool just_before_destroy)
 {
 	inherited::OnH_B_Independent(just_before_destroy);
 	
@@ -245,54 +245,54 @@ void CCustomDetector::OnH_B_Independent(bool just_before_destroy)
 }
 
 
-u32	CCustomDetector::ef_detector_type	() const
+u32	CDetectorAnomaly::ef_detector_type	() const
 {
 	return	(m_ef_detector_type);
 }
 
-void CCustomDetector::OnMoveToRuck(EItemPlace prev)
+void CDetectorAnomaly::OnMoveToRuck(EItemPlace prev)
 {
 	inherited::OnMoveToRuck(prev);
 	TurnOff();
 }
 
-void CCustomDetector::OnMoveToSlot()
+void CDetectorAnomaly::OnMoveToSlot()
 {
 	inherited::OnMoveToSlot	();
 	TurnOn					();
 }
 
-void CCustomDetector::OnMoveToBelt		()
+void CDetectorAnomaly::OnMoveToBelt		()
 {
 	inherited::OnMoveToBelt	();
 	TurnOn					();
 }
 
-void CCustomDetector::TurnOn()
+void CDetectorAnomaly::TurnOn()
 {
 	m_bWorking				= true;
 	UpdateMapLocations		();
 	UpdateNightVisionMode	();
 }
 
-void CCustomDetector::TurnOff() 
+void CDetectorAnomaly::TurnOff() 
 {
 	m_bWorking				= false;
 	UpdateMapLocations		();
 	UpdateNightVisionMode	();
 }
 
-void CCustomDetector::save(NET_Packet& output_packet)
+void CDetectorAnomaly::save(NET_Packet &output_packet)
 {
 	inherited::save(output_packet);
 }
 
-void CCustomDetector::load(IReader& input_packet)
+void CDetectorAnomaly::load(IReader &input_packet)
 {
 	inherited::load(input_packet);
 }
 
-void CCustomDetector::AddRemoveMapSpot(CCustomZone* pZone, bool bAdd)
+void CDetectorAnomaly::AddRemoveMapSpot(CCustomZone* pZone, bool bAdd)
 {
 	if(m_ZoneTypeMap.find(pZone->CLS_ID) == m_ZoneTypeMap.end() )return;
 	
@@ -307,14 +307,14 @@ void CCustomDetector::AddRemoveMapSpot(CCustomZone* pZone, bool bAdd)
 	}
 }
 
-void CCustomDetector::UpdateMapLocations() // called on turn on/off only
+void CDetectorAnomaly::UpdateMapLocations() // called on turn on/off only
 {
 	ZONE_INFO_MAP_IT it;
 	for(it = m_ZoneInfoMap.begin(); it != m_ZoneInfoMap.end(); ++it)
 		AddRemoveMapSpot(it->first,IsWorking());
 }
 
-void CCustomDetector::UpdateChargeLevel(void)
+void CDetectorAnomaly::UpdateChargeLevel(void)
 {
 	if (IsWorking())
 	{
@@ -323,17 +323,17 @@ void CCustomDetector::UpdateChargeLevel(void)
 	}
 }
 
-float CCustomDetector::GetUnchargeSpeed() const
+float CDetectorAnomaly::GetUnchargeSpeed() const
 {
 	return m_fUnchargeSpeed;
 }
 
-float CCustomDetector::GetCurrentChargeLevel() const
+float CDetectorAnomaly::GetCurrentChargeLevel() const
 {
 	return m_fCurrentChargeLevel;
 }
 
-void CCustomDetector::SetCurrentChargeLevel(float val)
+void CDetectorAnomaly::SetCurrentChargeLevel(float val)
 {
 	m_fCurrentChargeLevel = val;
 	float condition = 1.f * m_fCurrentChargeLevel / m_fUnchargeSpeed;
@@ -343,7 +343,7 @@ void CCustomDetector::SetCurrentChargeLevel(float val)
 		TurnOn();
 }
 
-void CCustomDetector::Recharge(float val)
+void CDetectorAnomaly::Recharge(float val)
 {
 	m_fCurrentChargeLevel += val;
 	clamp(m_fCurrentChargeLevel, 0.f, m_fMaxChargeLevel);
@@ -354,14 +354,15 @@ void CCustomDetector::Recharge(float val)
 		TurnOn();
 }
 
-bool CCustomDetector::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+bool CDetectorAnomaly::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
 {
 	return (std::find(item.begin(), item.end(), item_sect) != item.end());
 }
 
 #include "clsid_game.h"
 #include "game_base_space.h"
-void CCustomDetector::UpdateNightVisionMode()
+
+void CDetectorAnomaly::UpdateNightVisionMode()
 {
 //	CObject* tmp = Level().CurrentViewEntity();	
 	bool bNightVision = false;

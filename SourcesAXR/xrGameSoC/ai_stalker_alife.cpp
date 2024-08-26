@@ -17,7 +17,7 @@
 #include "eatable_item.h"
 #include "medkit.h"
 #include "weapon.h"
-#include "customdetector.h"
+#include "AnomalyDetector.h"
 #include "ef_storage.h"
 #include "ef_primary.h"
 #include "ef_pattern.h"
@@ -203,7 +203,7 @@ void CAI_Stalker::choose_detector				()
 		if (m_total_money < (*I).m_item->Cost())
 			continue;
 
-		CCustomDetector			*detector = smart_cast<CCustomDetector*>((*I).m_item);
+		CDetectorAnomaly			*detector = smart_cast<CDetectorAnomaly*>((*I).m_item);
 		if (!detector)
 			continue;
 
