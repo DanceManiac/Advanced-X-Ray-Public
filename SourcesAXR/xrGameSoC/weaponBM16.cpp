@@ -280,7 +280,6 @@ void  CWeaponBM16::PlayAnimIdleSprint()
 	switch (m_magazine.size())
 	{
 	case 0:
-		PlayHUDMotion("anm_idle_sprint_0", TRUE, this, GetState());
 		PlayHUDMotionIfExists({ "anm_idle_sprint_0", "anim_idle_sprint", "anim_idle" }, true, GetState());
 		break;
 	case 1:
