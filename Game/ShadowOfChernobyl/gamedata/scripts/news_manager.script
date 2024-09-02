@@ -211,9 +211,12 @@ function send_task(actor, type, task, objective)
 	end
 
 	local hud = get_hud()
-	hud:AddCustomStatic("main_task", true)
-	hud:GetCustomStatic("main_task"):wnd():SetTextST(news_text)
-	hud:GetCustomStatic("main_task").m_endTime = time_global()/1000 + 5
+	
+	if (hud) then
+		hud:AddCustomStatic("main_task", true)
+		hud:GetCustomStatic("main_task"):wnd():SetTextST(news_text)
+		hud:GetCustomStatic("main_task").m_endTime = time_global()/1000 + 5
+	end
 
 end
 function send_encyclopedy(type, title)
