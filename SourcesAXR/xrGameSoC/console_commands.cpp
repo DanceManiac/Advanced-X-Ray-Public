@@ -563,8 +563,10 @@ public:
 		Msg						("Game save overhead  : %f milliseconds",timer.GetElapsed_sec()*1000.f);
 #endif
 		SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
-		_s->wnd()->SetText			(*CStringTable().translate("st_game_saved"));
 		SDrawStaticStruct* _s2		= HUD().GetUI()->UIGame()->AddCustomStatic("game_saved_icon", true);
+
+		if (_s)
+			_s->wnd()->SetText			(*CStringTable().translate("st_game_saved"));
 
 		xr_strcat				(S,".dds");
 		FS.update_path			(S1,"$game_saves$",S);
