@@ -1,5 +1,5 @@
 #pragma once
-#include "UIWindow.h"
+#include "UIDialogWnd.h"
 #include "inventory_space.h"
 
 #include "UIStatic.h"
@@ -22,10 +22,10 @@ class CUIItemInfo;
 class CUICharacterInfo;
 class CUIXml;
 
-class CUITradeWnd: public CUIWindow
+class CUITradeWnd: public CUIDialogWnd
 {
 private:
-	typedef CUIWindow inherited;
+	typedef CUIDialogWnd inherited;
 public:
 						CUITradeWnd					();
 	virtual				~CUITradeWnd				();

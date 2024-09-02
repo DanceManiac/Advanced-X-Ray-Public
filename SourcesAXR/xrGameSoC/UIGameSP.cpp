@@ -16,6 +16,7 @@
 #include "ui/UITradeWnd.h"
 #include "ui/UIPdaWnd.h"
 #include "ui/UITalkWnd.h"
+#include "ui/UITalkDialogWnd.h"
 #include "ui/UICarBodyWnd.h"
 #include "ui/UIMessageBox.h"
 
@@ -34,14 +35,16 @@ CUIGameSP::CUIGameSP()
 	InventoryMenu	= xr_new<CUIInventoryWnd>	();
 	PdaMenu			= xr_new<CUIPdaWnd>			();
 	TalkMenu		= xr_new<CUITalkWnd>		();
+	TradeMenu		= xr_new<CUITradeWnd>		();
 	UICarBodyMenu	= xr_new<CUICarBodyWnd>		();
-	UIChangeLevelWnd= xr_new<CChangeLevelWnd>		();
+	UIChangeLevelWnd= xr_new<CChangeLevelWnd>	();
 }
 
 CUIGameSP::~CUIGameSP() 
 {
 	delete_data(InventoryMenu);
-	delete_data(PdaMenu);	
+	delete_data(PdaMenu);
+	delete_data(TradeMenu);
 	delete_data(TalkMenu);
 	delete_data(UICarBodyMenu);
 	delete_data(UIChangeLevelWnd);
@@ -55,6 +58,27 @@ void CUIGameSP::shedule_Update(u32 dt)
 	if(pActor->g_Alive())				return;
 
 	HideShownDialogs						();
+}
+
+void  CUIGameSP::StartTrade(CInventoryOwner* pActorInv, CInventoryOwner* pMech)
+{
+	TradeMenu->InitTrade		(pActorInv, pMech);
+	TradeMenu->StartTrade		();
+	TradeMenu->BringAllToTop	();
+	m_game->StartStopMenu		(TradeMenu, true);
+}
+
+void CUIGameSP::HideTradeMenu()
+{
+	if (TradeMenu->IsShown())
+	{
+		m_game->StartStopMenu(TradeMenu, true);
+		if (!TalkMenu->TalkDialogWnd()->IsShown())
+		{
+			TalkMenu->Enable(true);
+			TalkMenu->TalkDialogWnd()->Show(true);
+		}
+	}
 }
 
 void CUIGameSP::HideShownDialogs()
@@ -240,6 +264,7 @@ void CUIGameSP::reset_ui()
 	inherited::reset_ui				();
 	InventoryMenu->Reset			();
 	PdaMenu->Reset					();
+	TradeMenu->Reset				();
 	TalkMenu->Reset					();
 	UICarBodyMenu->Reset			();
 	UIChangeLevelWnd->Reset			();

@@ -55,12 +55,6 @@ void CUITalkWnd::Init()
 	UITalkDialogWnd = xr_new<CUITalkDialogWnd>();UITalkDialogWnd->SetAutoDelete(true);
 	AttachChild(UITalkDialogWnd);
 	UITalkDialogWnd->Init(0,0, UI_BASE_WIDTH, UI_BASE_HEIGHT);
-
-	/////////////////////////
-	//Меню торговли
-	UITradeWnd = xr_new<CUITradeWnd>();UITradeWnd->SetAutoDelete(true);
-	AttachChild(UITradeWnd);
-	UITradeWnd->Hide();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -91,8 +85,6 @@ void CUITalkWnd::InitTalkDialog()
 
 	UITalkDialogWnd->SetOsoznanieMode		(m_pOthersInvOwner->NeedOsoznanieMode());
 	UITalkDialogWnd->Show					();
-
-	UITradeWnd->Hide							();
 }
 
 void CUITalkWnd::InitOthersStartDialog()
@@ -178,11 +170,6 @@ void CUITalkWnd::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 	{
 		AskQuestion();
 	}
-	else if(pWnd == UITradeWnd && msg == TRADE_WND_CLOSED)
-	{
-		UITalkDialogWnd->Show();
-		UITradeWnd->Hide();
-	}
 
 	inherited::SendMessage(pWnd, msg, pData);
 }
@@ -254,9 +241,10 @@ void CUITalkWnd::Show()
 void CUITalkWnd::Hide()
 {
 	StopSnd						();
+	UITalkDialogWnd->Hide		();
 
 	inherited::Hide				();
-	UITradeWnd->Hide				();
+
 	if(!m_pActor)				return;
 	
 	ToTopicMode					();
@@ -354,15 +342,16 @@ void CUITalkWnd::AddAnswer(const shared_str& text, LPCSTR SpeakerName)
 
 void CUITalkWnd::SwitchToTrade()
 {
-	if(m_pOurInvOwner->IsTradeEnabled() && m_pOthersInvOwner->IsTradeEnabled() ){
+	if (m_pOurInvOwner->IsTradeEnabled() && m_pOthersInvOwner->IsTradeEnabled())
+	{
 
-		UITalkDialogWnd->Hide		();
-
-		UITradeWnd->InitTrade		(m_pOurInvOwner, m_pOthersInvOwner);
-		UITradeWnd->Show				();
-		UITradeWnd->StartTrade		();
-		UITradeWnd->BringAllToTop	();
-		StopSnd						();
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		if (pGameSP)
+		{
+			UITalkDialogWnd->Show(false);
+			StopSnd();
+			pGameSP->StartTrade(m_pOurInvOwner, m_pOthersInvOwner);
+		}
 	}
 }
 
@@ -375,7 +364,8 @@ bool CUITalkWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 	if (HUD().GetUI()->MainInputReceiver() == this && keyboard_action == WINDOW_KEY_PRESSED)
 	{
-		if (!UITradeWnd->IsShown() && !m_pOthersInvOwner->NeedOsoznanieMode())
+		CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+		if (pGameSP->TalkMenu->IsShown() && !m_pOthersInvOwner->NeedOsoznanieMode() && !(/*pGameSP->UpgradeMenu->IsShown() || */pGameSP->TradeMenu->IsShown()))
 		{
 			if (is_binded(kUSE, dik) || is_binded(kQUIT, dik))
 			{

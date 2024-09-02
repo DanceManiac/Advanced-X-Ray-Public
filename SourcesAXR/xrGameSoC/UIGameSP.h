@@ -5,9 +5,9 @@
 #include "game_graph_space.h"
 
 class CUIInventoryWnd;
-class CUITradeWnd;			
-class CUIPdaWnd;			
-class CUITalkWnd;			
+class CUITradeWnd;
+class CUIPdaWnd;
+class CUITalkWnd;
 class CUICarBodyWnd;
 class CInventory;
 
@@ -42,8 +42,11 @@ public:
 	void				ChangeLevel				(GameGraph::_GRAPH_ID game_vert_id, u32 level_vert_id, Fvector pos, Fvector ang, Fvector pos2, Fvector ang2, bool b);
 
 	virtual void		HideShownDialogs		();
+	virtual void		HideTradeMenu			();
+			void		StartTrade				(CInventoryOwner* pActorInv, CInventoryOwner* pMech);
 
 	CUIInventoryWnd*	InventoryMenu;
+	CUITradeWnd*		TradeMenu;
 	CUIPdaWnd*			PdaMenu;
 	CUITalkWnd*			TalkMenu;
 	CUICarBodyWnd*		UICarBodyMenu;

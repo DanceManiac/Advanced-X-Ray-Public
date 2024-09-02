@@ -63,9 +63,9 @@ protected:
 public:
 	void                AddQuestion				(const shared_str& text, const shared_str& id, int number, bool b_finalizer);
 	void				AddAnswer				(const shared_str& text, LPCSTR SpeakerName);
+	CUITalkDialogWnd*	TalkDialogWnd			() { return UITalkDialogWnd;}
 protected:
 	//для режима торговли
-	CUITradeWnd*			UITradeWnd;
 	CUITalkDialogWnd*		UITalkDialogWnd;
 
 

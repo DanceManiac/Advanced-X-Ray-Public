@@ -97,7 +97,13 @@ void CUITalkDialogWnd::Init(float x, float y, float width, float height)
 }
 
 #include "UIInventoryUtilities.h"
-	
+
+void CUITalkDialogWnd::Show(bool status) // Hrust: made different func for disabling drawing without "ui_talk_hide" message
+{
+	inherited::Show(status);
+	inherited::Enable(status);
+}
+
 void CUITalkDialogWnd::Show()
 {
 	InventoryUtilities::SendInfoToActor				("ui_talk");

@@ -153,6 +153,10 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	UICharacterInfoLeft.InitCharacter(m_pInvOwner);
 	UICharacterInfoRight.InitCharacter(m_pOthersInvOwner);
 
+	//тут же инитим торговлю
+	pOur->GetTrade()->StartTrade		(pOthers);
+	pOthers->GetTrade()->StartTrade		(pOur);
+
 	m_pInv								= &m_pInvOwner->inventory();
 	m_pOthersInv						= pOur->GetTrade()->GetPartnerInventory();
 		
@@ -189,6 +193,9 @@ extern void UpdateCameraDirection(CGameObject* pTo);
 
 void CUITradeWnd::Update()
 {
+	if (!IsShown())
+		return;
+
 	EListType et					= eNone;
 
 	if(m_pInv->ModifyFrame()==Device.dwFrame && m_pOthersInv->ModifyFrame()==Device.dwFrame){
@@ -218,7 +225,7 @@ void CUITradeWnd::Update()
 void CUITradeWnd::Show()
 {
 	InventoryUtilities::SendInfoToActor("ui_trade");
-	inherited::Show					(true);
+	inherited::Show					();
 	inherited::Enable				(true);
 
 	SetCurrentItem					(NULL);
@@ -241,7 +248,7 @@ void CUITradeWnd::Show()
 void CUITradeWnd::Hide()
 {
 	InventoryUtilities::SendInfoToActor("ui_trade_hide");
-	inherited::Show					(false);
+	inherited::Hide					();
 	inherited::Enable				(false);
 	if(bStarted)
 		StopTrade					();
@@ -608,7 +615,8 @@ void CUITradeWnd::SetCurrentItem(CUICellItem* itm)
 
 void CUITradeWnd::SwitchToTalk()
 {
-	GetMessageTarget()->SendMessage		(this, TRADE_WND_CLOSED);
+	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
+	pGameSP->HideTradeMenu();
 }
 
 void CUITradeWnd::BindDragDropListEnents(CUIDragDropListEx* lst)
@@ -643,8 +651,6 @@ void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
 
 bool CUITradeWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
-	if (inherited::OnKeyboardAction(dik, keyboard_action))return true;
-
 	if (keyboard_action == WINDOW_KEY_PRESSED)
 	{
 		if (is_binded(kUSE, dik) || is_binded(kQUIT, dik))
@@ -658,6 +664,8 @@ bool CUITradeWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 			return true;
 		}
 	}
+	if (inherited::OnKeyboardAction(dik, keyboard_action))
+		return true;
 	return false;
 }
 
