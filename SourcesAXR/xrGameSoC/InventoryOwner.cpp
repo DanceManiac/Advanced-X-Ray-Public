@@ -631,6 +631,5 @@ CInventoryItem* CInventoryOwner::GetCurrentTorch() const
 
 LPCSTR CInventoryOwner::IconName() const
 {
-	return CharacterInfo().IconName().c_str();
 	return m_character_icon.c_str();
 }
