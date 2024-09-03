@@ -210,7 +210,7 @@ void CWeaponBM16::PlayAnimIdle()
 				PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
 				return;
 			}
-			else if (strstr(guns_aim_anm_full, "_jammed"))
+			else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_jammed"))
 			{
 				char* jammed_position = strstr(guns_aim_anm_full, "_jammed");
 				int jammed_length = strlen("_jammed");
@@ -225,7 +225,7 @@ void CWeaponBM16::PlayAnimIdle()
 					return;
 				}
 			}
-			else if (strstr(guns_aim_anm_full, "_empty"))
+			else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_empty"))
 			{
 				char* empty_position = strstr(guns_aim_anm_full, "_empty");
 				int empty_length = strlen("_empty");
@@ -293,7 +293,7 @@ void CWeaponBM16::PlayAnimSprintStart()
 
 	if (isHUDAnimationExist(guns_sprint_start_anm))
 		PlayHUDMotionNew(guns_sprint_start_anm, true, GetState());
-	else if (strstr(guns_sprint_start_anm, "_jammed"))
+	else if (guns_sprint_start_anm && strstr(guns_sprint_start_anm, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_sprint_start_anm);
@@ -316,7 +316,7 @@ void CWeaponBM16::PlayAnimSprintEnd()
 
 	if (isHUDAnimationExist(guns_sprint_end_anm))
 		PlayHUDMotionNew(guns_sprint_end_anm, true, GetState());
-	else if (strstr(guns_sprint_end_anm, "_jammed"))
+	else if (guns_sprint_end_anm && strstr(guns_sprint_end_anm, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_sprint_end_anm);

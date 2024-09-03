@@ -379,7 +379,7 @@ void CWeaponShotgun::PlayAnimAim()
 			return;
 		}
 	}
-	else if (strstr(guns_aim_anm, "_jammed"))
+	else if (guns_aim_anm && strstr(guns_aim_anm, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_aim_anm);
@@ -391,7 +391,7 @@ void CWeaponShotgun::PlayAnimAim()
 			return;
 		}
 	}
-	else if (strstr(guns_aim_anm, "_empty"))
+	else if (guns_aim_anm && strstr(guns_aim_anm, "_empty"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_aim_anm);

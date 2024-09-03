@@ -602,7 +602,7 @@ void CHudItem::PlayAnimSprintStart()
 
 	if (isHUDAnimationExist(guns_sprint_start_anm))
 		PlayHUDMotionNew(guns_sprint_start_anm, true, GetState());
-	else if (strstr(guns_sprint_start_anm, "_jammed"))
+	else if (guns_sprint_start_anm && strstr(guns_sprint_start_anm, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_sprint_start_anm);
@@ -619,7 +619,7 @@ void CHudItem::PlayAnimSprintStart()
 			SwitchState(eIdle);
 		}
 	}
-	else if (strstr(guns_sprint_start_anm, "_empty"))
+	else if (guns_sprint_start_anm && strstr(guns_sprint_start_anm, "_empty"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_sprint_start_anm);
@@ -652,7 +652,7 @@ void CHudItem::PlayAnimSprintEnd()
 
 	if (isHUDAnimationExist(guns_sprint_end_anm))
 		PlayHUDMotionNew(guns_sprint_end_anm, true, GetState());
-	else if (strstr(guns_sprint_end_anm, "_jammed"))
+	else if (guns_sprint_end_anm && strstr(guns_sprint_end_anm, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_sprint_end_anm);
@@ -669,7 +669,7 @@ void CHudItem::PlayAnimSprintEnd()
 			SwitchState(eIdle);
 		}
 	}
-	else if (strstr(guns_sprint_end_anm, "_empty"))
+	else if (guns_sprint_end_anm && strstr(guns_sprint_end_anm, "_empty"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_sprint_end_anm);

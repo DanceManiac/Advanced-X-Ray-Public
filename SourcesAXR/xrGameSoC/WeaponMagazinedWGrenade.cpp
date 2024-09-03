@@ -699,7 +699,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 					PlayHUDMotionNew(guns_aim_start_anm, true, GetState());
 					return;
 				}
-				else if (strstr(guns_aim_start_anm, "_jammed"))
+				else if (guns_aim_start_anm && strstr(guns_aim_start_anm, "_jammed"))
 				{
 					char* jammed_position = strstr(guns_aim_start_anm, "_jammed");
 					int jammed_length = strlen("_jammed");
@@ -714,7 +714,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 						return;
 					}
 				}
-				else if (strstr(guns_aim_start_anm, "_empty"))
+				else if (guns_aim_start_anm && strstr(guns_aim_start_anm, "_empty"))
 				{
 					char* empty_position = strstr(guns_aim_start_anm, "_empty");
 					int empty_length = strlen("_empty");
@@ -741,7 +741,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 					PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
 					return;
 				}
-				else if (strstr(guns_aim_anm_full, "_jammed"))
+				else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_jammed"))
 				{
 					char* jammed_position = strstr(guns_aim_anm_full, "_jammed");
 					int jammed_length = strlen("_jammed");
@@ -756,7 +756,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 						return;
 					}
 				}
-				else if (strstr(guns_aim_anm_full, "_empty"))
+				else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_empty"))
 				{
 					char* empty_position = strstr(guns_aim_anm_full, "_empty");
 					int empty_length = strlen("_empty");
@@ -804,7 +804,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 					PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
 					return;
 				}
-				else if (strstr(guns_aim_end_anm, "_jammed"))
+				else if (guns_aim_end_anm && strstr(guns_aim_end_anm, "_jammed"))
 				{
 					char* jammed_position = strstr(guns_aim_end_anm, "_jammed");
 					int jammed_length = strlen("_jammed");
@@ -819,7 +819,7 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 						return;
 					}
 				}
-				else if (strstr(guns_aim_end_anm, "_empty"))
+				else if (guns_aim_end_anm && strstr(guns_aim_end_anm, "_empty"))
 				{
 					char* empty_position = strstr(guns_aim_end_anm, "_empty");
 					int empty_length = strlen("_empty");
@@ -1031,7 +1031,7 @@ void  CWeaponMagazinedWGrenade::PlayAnimModeSwitch()
 		PlayHUDMotionNew(guns_switch_anm, true, GetState());
 		return;
 	}
-	else if (strstr(guns_switch_anm, "_jammed"))
+	else if (guns_switch_anm && strstr(guns_switch_anm, "_jammed"))
 	{
 		char new_guns_switch_anm[256];
 		strcpy(new_guns_switch_anm, guns_switch_anm);
@@ -1050,7 +1050,7 @@ void  CWeaponMagazinedWGrenade::PlayAnimModeSwitch()
 				PlayHUDMotion("anim_switch_grenade_off", /*FALSE*/ TRUE, this, eSwitch);
 		}
 	}
-	else if (strstr(guns_switch_anm, "_empty"))
+	else if (guns_switch_anm && strstr(guns_switch_anm, "_empty"))
 	{
 		char new_guns_switch_anm[256];
 		strcpy(new_guns_switch_anm, guns_switch_anm);
@@ -1121,7 +1121,7 @@ void CWeaponMagazinedWGrenade::PlayAnimFireMode()
 			PlayHUDMotionNew(guns_firemode_anm, true, GetState());
 			return;
 		}
-		else if (strstr(guns_firemode_anm, "_jammed"))
+		else if (guns_firemode_anm && strstr(guns_firemode_anm, "_jammed"))
 		{
 			char new_guns_firemode_anm[256];
 			strcpy(new_guns_firemode_anm, guns_firemode_anm);
@@ -1133,7 +1133,7 @@ void CWeaponMagazinedWGrenade::PlayAnimFireMode()
 				return;
 			}
 		}
-		else if (strstr(guns_firemode_anm, "_empty"))
+		else if (guns_firemode_anm && strstr(guns_firemode_anm, "_empty"))
 		{
 			char new_guns_firemode_anm[256];
 			strcpy(new_guns_firemode_anm, guns_firemode_anm);
@@ -1157,7 +1157,7 @@ void CWeaponMagazinedWGrenade::PlayAnimFireMode()
 		PlayHUDMotionNew(guns_aim_anm_full, true, GetState());
 		return;
 	}
-	else if (strstr(guns_aim_anm_full, "_jammed"))
+	else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_aim_anm_full);
@@ -1171,7 +1171,7 @@ void CWeaponMagazinedWGrenade::PlayAnimFireMode()
 		else
 			inherited::PlayAnimFireMode();
 	}
-	else if (strstr(guns_aim_anm_full, "_empty"))
+	else if (guns_aim_anm_full && strstr(guns_aim_anm_full, "_empty"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_aim_anm_full);
@@ -1199,7 +1199,7 @@ void CWeaponMagazinedWGrenade::PlayAnimLaserSwitch()
 		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
 		return;
 	}
-	else if (strstr(guns_device_switch_anm, "_jammed"))
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_device_switch_anm);
@@ -1213,7 +1213,7 @@ void CWeaponMagazinedWGrenade::PlayAnimLaserSwitch()
 		else
 			inherited::PlayAnimLaserSwitch();
 	}
-	else if (strstr(guns_device_switch_anm, "_empty"))
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_device_switch_anm);
@@ -1241,7 +1241,7 @@ void CWeaponMagazinedWGrenade::PlayAnimFlashlightSwitch()
 		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
 		return;
 	}
-	else if (strstr(guns_device_switch_anm, "_jammed"))
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_device_switch_anm);
@@ -1255,7 +1255,7 @@ void CWeaponMagazinedWGrenade::PlayAnimFlashlightSwitch()
 		else
 			inherited::PlayAnimFlashlightSwitch();
 	}
-	else if (strstr(guns_device_switch_anm, "_empty"))
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
 	{
 		char new_guns_aim_anm[256];
 		strcpy(new_guns_aim_anm, guns_device_switch_anm);
