@@ -102,7 +102,10 @@ function options_dialog:UpdateControls()
 
 	opt:SetCurrentValues("key_binding")
 	
-	if xrRender_test_r2_hw then
+	if xrRender_test_r1_hw then
+		self.combo_r2:SetCurrentID		(1)
+		self.combo_r2:Enable			(true)
+	elseif xrRender_test_r2_hw then
 		self.combo_r2:SetCurrentID		(2)
 		self.combo_r2:Enable			(true)
 	elseif xrRender_test_r4_hw then

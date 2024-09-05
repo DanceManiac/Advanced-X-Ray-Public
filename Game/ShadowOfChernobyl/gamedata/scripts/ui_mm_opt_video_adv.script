@@ -21,6 +21,23 @@ function only_2_and_more_mode(ctrl, _id)
 	ctrl:Enable		(bEnabled)
 end
 
+function only_4_mode(ctrl, _id)
+	local bEnabled	= _id==4
+	ctrl:Enable		(bEnabled)
+end
+
+function only_not_4_mode_show(ctrl, _id)
+	local bEnabled	= _id<4
+	ctrl:Enable		(bEnabled)
+	ctrl:Show		(bEnabled)
+end
+
+function only_4_mode_show(ctrl, _id)
+	local bEnabled	= _id>=4
+	ctrl:Enable		(bEnabled)
+	ctrl:Show		(bEnabled)
+end
+
 function get_screen_space_shaders_status(ctrl, _id, _ssample_trb_val, _ssample_cb_val)
 	local bEnabled	= (get_console():get_bool("r4_screen_space_shaders") and _id>=4)
 	ctrl:Enable		(bEnabled)
@@ -51,6 +68,27 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_detail_density",		_st)
 	xml:InitTrackBar							("video_adv:track_detail_density",		_st)
 	
+--MSAA
+	--[[_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_ssample", _st)
+	ctl = xml:InitTrackBar("video_adv:track_ssample", _st)
+	handler.m_preconditions[ctl] = only_12_mode
+
+	ctl = xml:InitComboBox("video_adv:list_ssample",_st)
+	handler.m_preconditions[ctl] = only_12_mode]]--
+	
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_ssample",				_st)
+	ctl				= xml:InitTrackBar			("video_adv:track_ssample",				_st)
+	handler.ss_trb	= ctl
+	handler:Register(ctl, "trb_ssample")
+	handler.m_preconditions[ctl]				= only_not_4_mode_show
+
+	ctl				= xml:InitComboBox			("video_adv:list_ssample",				_st)
+	handler.ss_cb	= ctl
+	handler:Register(ctl, "cb_ssample")
+	handler.m_preconditions[ctl]				= only_4_mode_show
+	
 --Дальность отрисовки травы
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_detail_radius", _st)
@@ -60,11 +98,6 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_detail_scale", _st)
 	xml:InitTrackBar("video_adv:track_detail_scale", _st)
-	
-	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
-	xml:InitStatic								("video_adv:cap_r2_sun",				_st)
-	ctl			= xml:InitCheck					("video_adv:check_r2_sun",				_st)
-	handler.m_preconditions[ctl]		= only_2_and_more_mode
 	
 --Коллизия травы
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
@@ -177,11 +210,6 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r2_sun",				_st)
 	ctl			= xml:InitCheck					("video_adv:check_r2_sun",				_st)
-	handler.m_preconditions[ctl]		= only_2_and_more_mode
-	
-	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
-	xml:InitStatic								("video_adv:cap_r2_sun_details",		_st)
-	ctl			= xml:InitCheck		("video_adv:check_r2_sun_details",		_st)
 	handler.m_preconditions[ctl]		= only_2_and_more_mode
 
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)

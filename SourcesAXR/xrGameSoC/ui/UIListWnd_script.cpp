@@ -20,7 +20,7 @@ bool xrRender_test_r1_hw_script()
 
 bool xrRender_test_r2_hw_script()
 {
-	return psDeviceFlags.test(rsR2|rsR4);
+	return psDeviceFlags.test(rsR2);
 }
 
 bool xrRender_test_r4_hw_script()
