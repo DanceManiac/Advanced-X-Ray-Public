@@ -22,25 +22,27 @@
 		<text align="l" font="arial_14" color="ui_3"/>
 	</actor_inv_capacity>
 
-	<our_bag_static x="20" y="260" width="520" height="518" stretch="1">
-		<texture>ui\ui_dg_inventory_exchange_trade</texture>
-		<text x="30" y="8" font="graffiti22" r="238" g="153" b="26" complex_mode="1"/>
+	<our_bag_static x="20" y="265" width="320" height="460" stretch="1">
+		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
+		<text x="30" y="8" font="graffiti19" r="238" g="153" b="26" complex_mode="1"/>
+		<texture_offset x="0" y="-2"/>
 	</our_bag_static>
 
-	<dragdrop_list_our x="22" y="35" width="283" height="418"
+	<dragdrop_list_our x="23" y="35" width="285" height="418"
 			cell_width = "38" cell_height="38" rows_num="11" cols_num="7" 
 			unlimited="1" group_similar="1"/>
 
-	<others_bag_static x="683" y="260" width="520" height="518" stretch="1">
-		<texture>ui\ui_dg_inventory_exchange_trade</texture>
-		<text x="30" y="8" font="graffiti22" r="238" g="153" b="26">st_items</text>
+	<others_bag_static x="678" y="265" width="320" height="460" stretch="1" mirror="h">
+		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
+		<text align="r" x="-20" y="8" font="graffiti19" r="238" g="153" b="26">st_items</text>
+		<texture_offset x="10" y="-2"/>
 	</others_bag_static>
 
-	<dragdrop_list_other x="22" y="35" width="283" height="418"
+	<dragdrop_list_other x="23" y="35" width="285" height="418"
 			cell_width="38" cell_height="38" rows_num="11" cols_num="7" 
 			unlimited="1" group_similar="1"/>
 
-	<frame_window x="355" y="262" width="310" height="455">
+	<frame_window x="355" y="261" width="310" height="458">
 		<texture>ui_frame</texture>		
 		<auto_static x="5" y="-10">
 			<texture>ui\ui_inv_info_over_lt</texture>

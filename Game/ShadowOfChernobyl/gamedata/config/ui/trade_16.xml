@@ -20,17 +20,17 @@
 		<texture>ui\ui_bottom_background</texture>
 	</bottom_background>
 
-	<button x="360" y="705" width="157" height="48"  hR="255" hB="83" hG="179" highlight_text="1">
+	<button x="360" y="695" width="157" height="48"  hR="255" hB="83" hG="179" highlight_text="1">
 		<texture>ui_button_main01</texture>
 		<text font="graffiti22" r="238" g="153" b="26" align="c">ui_st_trade</text>
 	</button>
-	<button x="570" y="705" width="157" height="48"  hR="255" hB="83" hG="179" highlight_text="1">
+	<button x="533" y="695" width="157" height="48"  hR="255" hB="83" hG="179" highlight_text="1">
 		<texture>ui_button_main01</texture>
 		<text font="graffiti22" r="238" g="153" b="26" align="c">ui_st_leave</text>
 	</button>
 
 
-	<our_bag_static x="15" y="270" width="333" height="450" stretch="1">
+	<our_bag_static x="15" y="270" width="333" height="452" stretch="1">
 		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
 	</our_bag_static>
 	
@@ -39,13 +39,14 @@
 		<text align="c" y="10" font="graffiti22" r="238" g="155" b="23" complex_mode="0"/>
 	</our_money_static>
 
-	<dragdrop_list x="29" y="37" width="295" height="410"
+	<dragdrop_list x="29" y="37" width="298" height="410"
 			cell_width = "31" cell_height="41" rows_num="10" cols_num="9" 
 			group_similar="1" unlimited="1"/>
 
 
-	<others_bag_static x="680" y="270" width="333" height="455" stretch="1">
-		<texture mirror="h" width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
+	<others_bag_static x="675" y="270" width="333" height="452" stretch="1" mirror="h">
+		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
+		<texture_offset x="15" y="0"/>
 	</others_bag_static>
 
 	<other_money_static x="168" y="-17" width="119" height="46">
@@ -53,7 +54,7 @@
 		<text align="c" y="10" font="graffiti22" r="238" g="155" b="23" complex_mode="0"/>
 	</other_money_static>
 
-	<dragdrop_list x="29" y="35" width="295" height="410"
+	<dragdrop_list x="29" y="35" width="298" height="410"
 			cell_width = "31" cell_height="41" rows_num="10" cols_num="9" 
 			group_similar="1" unlimited="1"/>
 
@@ -81,9 +82,9 @@
 		<texture>ui_frame_03</texture>		
 	</desc_frame_window>
 
-	<auto_static x="651" y="70" width="105" height="14" stretch="1">
+	<auto_static_hack x="393" y="47" width="105" height="14" stretch="1">
 		<texture>ui_inventory_descr_hack</texture>
-	</auto_static>
+	</auto_static_hack>
 
 	<desc_static x="258" y="22" width="507" height="232" stretch="1">
 		<texture>ui_hud_frame_buyM</texture>		

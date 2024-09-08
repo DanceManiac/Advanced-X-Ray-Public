@@ -21,18 +21,18 @@
 	</bottom_background>
 
 	<!-- BUTTONS -->
-	<button x="350" y="705" width="157" height="48"  hR="255" hB="83" hG="179" highlight_text="1">
+	<button x="350" y="690" width="157" height="48"  hR="255" hB="83" hG="179" highlight_text="1">
 		<texture>ui_button_main01</texture>
 		<text font="graffiti22" r="238" g="153" b="26" align="c">ui_st_trade</text>
 	</button>
-	<button x="570" y="705" width="157" height="48"  hR="255" hB="83" hG="179" highlight_text="1">
+	<button x="540" y="690" width="157" height="48" hR="255" hB="83" hG="179" highlight_text="1">
 		<texture>ui_button_main01</texture>
 		<text font="graffiti22" r="238" g="153" b="26" align="c">ui_st_leave</text>
 	</button>
 
 	<!-- OUR BAG -->
-	<our_bag_static x="20" y="270" width="290" height="450">
-		<texture>ui\ui_dg_inventory_exchange_trade</texture>
+	<our_bag_static x="20" y="275" width="308" height="450" stretch="1">
+		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
 	</our_bag_static>
 	
 	<our_money_static x="0" y="-17" width="119" height="46">
@@ -40,15 +40,15 @@
 		<text align="c" y="10" font="graffiti22" r="238" g="155" b="23" complex_mode="0"/>
 	</our_money_static>
 
-	<dragdrop_list x="29" y="37" width="266" height="410"
-			cell_width = "41" cell_height="41" rows_num="10" cols_num="6" 
+	<dragdrop_list x="29" y="37" width="272" height="410"
+			cell_width = "42" cell_height="42" rows_num="10" cols_num="6" 
 			group_similar="1" unlimited="1"/>
 
 
 	<!-- OTHERS BAG -->
-	<others_bag_static x="715" y="270" width="262" height="455">
-		<texture mirror="h" width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
-	<texture_offset x="-10" y="0"/>
+	<others_bag_static x="703" y="275" width="308" height="450" stretch="1" mirror="h">
+		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
+		<texture_offset x="4" y="0"/>
 	</others_bag_static>
 
 	<other_money_static x="168" y="-17" width="119" height="46">
@@ -56,8 +56,8 @@
 		<text align="c" y="10" font="graffiti22" r="238" g="155" b="23" complex_mode="0"/>
 	</other_money_static>
 
-	<dragdrop_list x="18" y="35" width="262" height="410"
-			cell_width = "41" cell_height="41" rows_num="10" cols_num="6" 
+	<dragdrop_list x="18" y="35" width="272" height="410"
+			cell_width = "42" cell_height="42" rows_num="10" cols_num="6" 
 			group_similar="1" unlimited="1"/>
 
 	<!-- OUR TRADE -->

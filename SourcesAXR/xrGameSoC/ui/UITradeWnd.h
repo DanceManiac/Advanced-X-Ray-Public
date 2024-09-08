@@ -22,7 +22,7 @@ class CUIItemInfo;
 class CUICharacterInfo;
 class CUIXml;
 
-class CUITradeWnd: public CUIDialogWnd
+class CUITradeWnd: public CUIDialogWnd, public CUIWndCallback
 {
 private:
 	typedef CUIDialogWnd inherited;
@@ -31,11 +31,13 @@ public:
 	virtual				~CUITradeWnd				();
 
 	virtual void		Init						();
-	void				InitHighlights				(CUIXml& uiXml);
+			void		InitCallbacks				();
+			void		InitHighlights				(CUIXml& uiXml);
 
 	virtual void		SendMessage					(CUIWindow *pWnd, s16 msg, void *pData);
 
 	void				InitTrade					(CInventoryOwner* pOur, CInventoryOwner* pOthers);
+
 	
 	virtual void 		Draw						();
 	virtual void 		Update						();
@@ -45,6 +47,8 @@ public:
 	void 				DisableAll					();
 	void 				EnableAll					();
 	virtual bool		OnKeyboardAction			(int dik, EUIMessages keyboard_action);
+	void	xr_stdcall	OnExitBtnClicked			(CUIWindow* w, void* d);
+	void	xr_stdcall	OnTradeBtnClicked			(CUIWindow* w, void* d);
 
 	void 				SwitchToTalk				();
 	void 				StartTrade					();
@@ -87,8 +91,8 @@ protected:
 	CUICharacterInfo	UICharacterInfoRight;
 
 	//информация о перетаскиваемом предмете
-	CUIStatic			UIDescWnd;
-	CUIItemInfo			UIItemInfo;
+	CUIStatic*			UIDescWnd;
+	CUIItemInfo*		UIItemInfo;
 
 	SDrawStaticStruct*	UIDealMsg;
 

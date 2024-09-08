@@ -23,25 +23,27 @@
 		<text align="l" font="arial_14" color="ui_3"/>
 	</actor_inv_capacity>
 
-	<our_bag_static x="35" y="270" width="570" height="513" stretch="1">
-		<texture>ui\ui_dg_inventory_exchange_trade</texture>
+	<our_bag_static x="20" y="270" width="342" height="457" stretch="1">
+		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
 		<text x="30" y="8" font="graffiti22" r="238" g="153" b="26" complex_mode="1"/>
+		<texture_offset x="0" y="-2"/>
 	</our_bag_static>
 
-	<dragdrop_list_our x="25" y="35" width="306" height="410"
+	<dragdrop_list_our x="25" y="35" width="308" height="410"
 			cell_width="29" cell_height="39" rows_num="10" cols_num="10" 
 			unlimited="1" group_similar="1"/>
 
-	<others_bag_static x="675" y="270" width="570" height="513" stretch="1">
-		<texture>ui\ui_dg_inventory_exchange_trade</texture>
-		<text x="30" y="8" font="graffiti22" r="238" g="153" b="26">st_items</text>
+	<others_bag_static x="654" y="270" width="342" height="457" stretch="1" mirror="h">
+		<texture width="305" height="455">ui\ui_dg_inventory_exchange_trade</texture>
+		<text align="r" x="-20" y="8" font="graffiti22" r="238" g="153" b="26">st_items</text>
+		<texture_offset x="14" y="-2"/>
 	</others_bag_static>
 
-	<dragdrop_list_other x="25" y="35" width="306" height="410"
+	<dragdrop_list_other x="25" y="35" width="308" height="410"
 			cell_width="29" cell_height="39" rows_num="10" cols_num="10" 
 			unlimited="1" group_similar="1"/>
 
-	<frame_window x="385" y="274" width="287" height="452">
+	<frame_window x="370" y="274" width="287" height="452">
 		<texture>ui_frame</texture>		
 		<auto_static x="0" y="-13" width="280" height="75" stretch="1">
 			<texture>ui\ui_inv_info_over_lt</texture>
@@ -52,7 +54,7 @@
 		<texture width="258" height="271">ui\ui_inv_info_over_b</texture>
 	</descr_static>
 
-	<auto_static x="405" y="461" width="220" height="30">
+	<auto_static x="400" y="461" width="220" height="30">
 		<text font="graffiti22" r="238" g="153" b="26">ui_st_description</text>
 	</auto_static>
 

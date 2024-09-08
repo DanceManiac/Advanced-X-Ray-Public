@@ -23,6 +23,7 @@
 #include "UIMultiTextStatic.h"
 #include "UI3tButton.h"
 #include "UIItemInfo.h"
+#include "UIHelper.h"
 
 #include "UICharacterInfo.h"
 #include "UIDragDropListEx.h"
@@ -117,28 +118,33 @@ void CUITradeWnd::Init()
 
 	UIOthersTradeWnd.AttachChild		(&UIOthersTradeList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 3, &UIOthersTradeList);
-
-	AttachChild							(&UIDescWnd);
-	xml_init.InitStatic					(uiXml, "desc_static", 0, &UIDescWnd);
-	xml_init.InitAutoStatic				(uiXml, "auto_static_hack", &UIDescWnd);
-	UIDescWnd.AttachChild				(&UIItemInfo);
-	UIItemInfo.Init						(0,0, UIDescWnd.GetWidth(), UIDescWnd.GetHeight(), TRADE_ITEM_XML);
+	
+	UIDescWnd							= UIHelper::CreateStatic(uiXml, "desc_static", this);
+	if (uiXml.NavigateToNode("auto_static_hack", 0))
+		CUIStatic* hack					= UIHelper::CreateStatic(uiXml, "auto_static_hack", UIDescWnd);
+	UIItemInfo							= xr_new<CUIItemInfo>();
+	UIDescWnd->AttachChild				(UIItemInfo);
+	UIItemInfo->SetAutoDelete			(true);
+	UIItemInfo->Init					(0,0, UIDescWnd->GetWidth(), UIDescWnd->GetHeight(), TRADE_ITEM_XML);
 
 	xml_init.InitAutoStatic				(uiXml, "auto_static", this);
 
 	AttachChild							(&UIPerformTradeButton);
 	xml_init.Init3tButton				(uiXml, "button", 0, &UIPerformTradeButton);
+	UIPerformTradeButton.SetWindowName	("perform_trade");
 
 	AttachChild							(&UIToTalkButton);
 	xml_init.Init3tButton				(uiXml, "button", 1, &UIToTalkButton);
+	UIToTalkButton.SetWindowName		("to_talk");
 
 	UIDealMsg							= NULL;
-
+	 
 	BindDragDropListEnents				(&UIOurBagList);
 	BindDragDropListEnents				(&UIOthersBagList);
 	BindDragDropListEnents				(&UIOurTradeList);
 	BindDragDropListEnents				(&UIOthersTradeList);
 	InitHighlights						(uiXml);
+	InitCallbacks						();
 }
 
 void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
@@ -166,25 +172,34 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	EnableAll							();
 
 	UpdateLists							(eBoth);
-}  
+}
+
+void CUITradeWnd::InitCallbacks()
+{
+	Register(&UIToTalkButton);
+	Register(&UIPerformTradeButton);
+	AddCallback(UIToTalkButton.WindowName(), BUTTON_CLICKED, CUIWndCallback::void_function(this, &CUITradeWnd::OnExitBtnClicked));
+	AddCallback(UIPerformTradeButton.WindowName(), BUTTON_CLICKED, CUIWndCallback::void_function(this, &CUITradeWnd::OnTradeBtnClicked));
+}
 
 void CUITradeWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 {
-	if(pWnd == &UIToTalkButton && msg == BUTTON_CLICKED)
-	{
-		SwitchToTalk();
-	}
-	else if(pWnd == &UIPerformTradeButton && msg == BUTTON_CLICKED)
-	{
-		PerformTrade();
-	}
+	CUIWndCallback::OnEvent(pWnd, msg, pData);
+}
 
-	CUIWindow::SendMessage(pWnd, msg, pData);
+void CUITradeWnd::OnExitBtnClicked(CUIWindow* w, void* d)
+{
+	SwitchToTalk();
+}
+
+void CUITradeWnd::OnTradeBtnClicked(CUIWindow* w, void* d)
+{
+	PerformTrade();
 }
 
 void CUITradeWnd::Draw()
 {
-	inherited::Draw				();
+	CUIWindow::Draw				();
 	if(UIDealMsg)		UIDealMsg->Draw();
 
 }
@@ -208,7 +223,6 @@ void CUITradeWnd::Update()
 	if(et!=eNone)
 		UpdateLists					(et);
 
-	inherited::Update				();
 	UpdateCameraDirection			(smart_cast<CGameObject*>(m_pOthersInvOwner));
 
 	if(UIDealMsg){
@@ -219,6 +233,7 @@ void CUITradeWnd::Update()
 			UIDealMsg			= NULL;
 		}
 	}
+	CUIWindow::Update				();
 }
 
 #include "UIInventoryUtilities.h"
@@ -597,19 +612,19 @@ void CUITradeWnd::SetCurrentItem(CUICellItem* itm)
 {
 	if(m_pCurrentCellItem == itm) return;
 	m_pCurrentCellItem				= itm;
-	UIItemInfo.InitItem	(CurrentIItem());
+	UIItemInfo->InitItem	(CurrentIItem());
 	
 	if(!m_pCurrentCellItem)		return;
 
 	CUIDragDropListEx* owner	= itm->OwnerList();
 	bool bBuying				= (owner==&UIOurBagList) || (owner==&UIOurTradeList);
 
-	if(itm && UIItemInfo.UICost){
+	if(itm && UIItemInfo->UICost){
 
 		string256			str;
 
 		sprintf_s				(str, "%d RU", m_pOthersTrade->GetItemPrice(CurrentIItem(), bBuying) );
-		UIItemInfo.UICost->SetText (str);
+		UIItemInfo->UICost->SetText (str);
 	}
 }
 
@@ -664,7 +679,7 @@ bool CUITradeWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 			return true;
 		}
 	}
-	if (inherited::OnKeyboardAction(dik, keyboard_action))
+	if (CUIWindow::OnKeyboardAction(dik, keyboard_action))
 		return true;
 	return false;
 }
