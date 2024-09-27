@@ -798,6 +798,14 @@ static class ssfx_water_parallax : public R_constant_setup
 	}
 }    ssfx_water_parallax;
 
+static class aref_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_r2_aref_strength / 500.f, 0.f, 0.f, 0.f);
+	}
+}    aref_params;
+
 // Standart constant-binding
 void	CBlender_Compile::SetMapping	()
 {
@@ -920,7 +928,9 @@ void	CBlender_Compile::SetMapping	()
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug
-	r_Constant				("debug",			&binder_debug);
+	r_Constant				("debug",				&binder_debug);
+	//Def Aref
+	r_Constant				("aref_params",			&aref_params);
 
 	// detail
 	//if (bDetail	&& detail_scaler)

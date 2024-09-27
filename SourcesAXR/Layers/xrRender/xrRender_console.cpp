@@ -414,6 +414,8 @@ float ps_r2_img_gamma = 1.0f;
 float ps_r2_img_saturation = 1.0f;
 Fvector ps_r2_img_cg = READ_IF_EXISTS(pAdvancedSettings, r_fvector3, "start_settings", "color_grading_es", Fvector3().set(0.5f, 0.5f, 0.5f));
 
+float ps_r2_aref_strength = READ_IF_EXISTS(pAdvancedSettings, r_float, "start_settings", "r2_aref_strength", 300.f);
+
 // Ascii1457's Screen Space Shaders
 extern ENGINE_API Fvector3 ps_ssfx_shadow_cascades;
 extern ENGINE_API Fvector4 ps_ssfx_grass_shadows;
@@ -1418,6 +1420,7 @@ void		xrRender_initconsole	()
 	CMD3(CCC_Mask,			"r__use_shader_cache",			&ps_r__common_flags,		RFLAG_USE_SHADERS_CACHE);
 	CMD4(CCC_Float,			"r__dyn_opt_dist",				&ps_r__opt_dist,			100.0f, 1000.0f);
 	CMD3(CCC_Token,			"r__panorama_scr_size",			&ps_r_panorama_scr_size,	qpanorama_scr_size_token);
+	CMD4(CCC_Float,			"r2_aref_strength",				&ps_r2_aref_strength,		10.0f,	450.f);
 //	CMD3(CCC_Mask,		"r2_sun_ignore_portals",		&ps_r2_ls_flags,			R2FLAG_SUN_IGNORE_PORTALS);
 }
 

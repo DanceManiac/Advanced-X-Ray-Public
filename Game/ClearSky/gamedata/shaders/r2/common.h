@@ -67,6 +67,8 @@ uniform	half4				m_blender_mode;	//
 
 uniform half4				debug; // x - ao debug, yzw - null
 
+uniform half4				aref_params; // x - aref strength, yzw - null
+
 half          calc_fogging               (half4 w_pos)      { return dot(w_pos,fog_plane);         }
 half2         calc_detail                (half3 w_pos)      {
         float                 dtl        = distance                (w_pos,eye_position)*dt_params.w;
@@ -245,7 +247,7 @@ uniform sampler2D       s_tonemap;              // actually MidleGray / exp(Lw +
 //////////////////////////////////////////////////////////////////////////////////////////
 // Defines                                		//
 #define def_gloss       half(2.f /255.f)
-#define def_aref        half(200.f/255.f)
+#define def_aref        aref_params.x
 #define def_dbumph      half(0.333f)
 #define def_virtualh    half(0.05f)              // 5cm
 #define def_distort     half(0.05f)             // we get -0.5 .. 0.5 range, this is -512 .. 512 for 1024, so scale it
