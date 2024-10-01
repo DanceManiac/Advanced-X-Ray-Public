@@ -1180,6 +1180,25 @@ bool CInventory::Eat(PIItem pIItem)
 	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(m_pOwner);
 	R_ASSERT				(entity_alive);
 	
+	if (xr_strcmp(pItemToEat->m_use_functor_str, ""))
+	{
+		luabind::functor<void> m_functor;
+		if (ai().script_engine().functor(pItemToEat->m_use_functor_str.c_str(), m_functor))
+		{
+			m_functor();
+
+#ifdef DEBUG
+			Msg("[CInventory::Eat]: Lua function [%s] called from item [%s] by use_functor.", pItemToEat->m_use_functor_str.c_str(), pItemToEat->m_section_id.c_str());
+#endif
+		}
+#ifdef DEBUG
+		else
+		{
+			Msg("[CInventory::Eat]: ERROR: Lua function [%s] called from item [%s] by use_functor not found!", pItemToEat->m_use_functor_str.c_str(), pItemToEat->m_section_id.c_str());
+		}
+#endif
+	}
+
 #pragma todo("Find out why it works only with these hacks")
 	if (!pBattery && !pRepairKit && !pFilter && !pItemToEat->m_bUnlimited) // что это за говно вообще было???
 	{

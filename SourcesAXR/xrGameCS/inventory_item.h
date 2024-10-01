@@ -161,6 +161,8 @@ public:
 	u32							m_custom_text_clr_inv;
 	u32							m_custom_text_clr_hud;
 
+	shared_str					m_use_functor_str;
+
 	EItemPlace					m_eItemCurrPlace;
 
 

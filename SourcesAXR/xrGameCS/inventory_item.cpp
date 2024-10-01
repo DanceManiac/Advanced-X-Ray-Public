@@ -79,6 +79,8 @@ CInventoryItem::CInventoryItem()
 	m_fOccupiedInvSpace = 0.0f;
 
 	m_sPropertyBoxUseText = nullptr;
+
+	m_use_functor_str	= nullptr;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -234,6 +236,8 @@ void CInventoryItem::Load(LPCSTR section)
 		else
 			m_custom_text_clr_hud = 0;
 	}
+
+	m_use_functor_str = READ_IF_EXISTS(pSettings, r_string, section, "use_functor", "");
 }
 
 void CInventoryItem::ReloadNames()
