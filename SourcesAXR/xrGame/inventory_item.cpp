@@ -83,6 +83,7 @@ CInventoryItem::CInventoryItem()
 	m_sPropertyBoxUseText			= nullptr;
 
 	m_use_functor_str				= nullptr;
+	m_use_precondition_func			= nullptr;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -237,6 +238,7 @@ void CInventoryItem::Load(LPCSTR section)
 	}
 
 	m_use_functor_str = READ_IF_EXISTS(pSettings, r_string, section, "use_functor", "");
+	m_use_precondition_func = READ_IF_EXISTS(pSettings, r_string, section, "use_precondition", "");
 }
 
 void CInventoryItem::ReloadNames()
@@ -305,6 +307,26 @@ LPCSTR CInventoryItem::NameComplex()
 bool CInventoryItem::Useful() const
 {
 	if (!m_bCanUse) return false;
+
+	if (xr_strcmp(m_use_precondition_func, ""))
+	{
+		luabind::functor<bool> m_functor;
+		if (ai().script_engine().functor(m_use_precondition_func.c_str(), m_functor))
+		{
+			if (!m_functor())
+				return false;
+
+#ifdef DEBUG
+			Msg("[CInventoryItem::Useful]: Lua function [%s] called from item [%s] by use_precondition.", m_use_precondition_func.c_str(), m_section_id.c_str());
+#endif
+		}
+#ifdef DEBUG
+		else
+		{
+			Msg("[CInventoryItem::Useful]: ERROR: Lua function [%s] called from item [%s] by use_precondition not found!", m_use_precondition_func.c_str(), m_section_id.c_str());
+		}
+#endif
+	}
 
 	return CanTake();
 }

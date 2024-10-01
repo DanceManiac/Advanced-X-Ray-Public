@@ -162,6 +162,7 @@ public:
 	u32							m_custom_text_clr_hud;
 
 	shared_str					m_use_functor_str;
+	shared_str					m_use_precondition_func;
 
 	EItemPlace					m_eItemCurrPlace;
 
