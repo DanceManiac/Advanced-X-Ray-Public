@@ -48,7 +48,10 @@ _out main(v2p I )
 #else
 
 	float3	sky = I.factor*lerp( s0, s1, I.factor.w );
+	
+#ifndef USED_SOC_WEATHER
 	sky		*= 0.33f;
+#endif
 	
 	_out			o;
 	o.low =	sky.xyzz;

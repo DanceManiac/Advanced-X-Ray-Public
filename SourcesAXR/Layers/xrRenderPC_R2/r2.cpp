@@ -996,6 +996,14 @@ HRESULT	CRender::shader_compile			(
 		def_it						++;
 		sh_name[len] = '0' + char(ShadowOfChernobylMode); ++len;
 	}
+
+	if (g_pGamePersistent->Environment().used_soc_weather)
+	{
+		defines[def_it].Name = "USED_SOC_WEATHER";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(g_pGamePersistent->Environment().used_soc_weather); ++len;
+	}
 	
 	// Puddles
 	defines[def_it].Name = "USE_PUDDLES";

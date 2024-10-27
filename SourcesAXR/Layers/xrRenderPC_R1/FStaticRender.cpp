@@ -874,6 +874,14 @@ HRESULT	CRender::shader_compile			(
 		sh_name[len] = '0' + char(ShadowOfChernobylMode); ++len;
 	}
 
+	if (g_pGamePersistent->Environment().used_soc_weather)
+	{
+		defines[def_it].Name = "USED_SOC_WEATHER";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(g_pGamePersistent->Environment().used_soc_weather); ++len;
+	}
+
 	// finish
 	defines[def_it].Name			=	0;
 	defines[def_it].Definition		=	0;

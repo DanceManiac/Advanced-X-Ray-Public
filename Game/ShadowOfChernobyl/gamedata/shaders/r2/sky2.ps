@@ -25,7 +25,11 @@ _out         main               ( v2p I )
         half3         	s0  	= texCUBE        (s_sky0,I.tc0);
         half3         	s1      = texCUBE        (s_sky1,I.tc1);
         half3        	sky     = I.factor*lerp  (s0,s1,I.factor.w);
-				sky		= sky*0.33;
+				
+#ifndef USED_SOC_WEATHER
+	sky		*= 0.33f;
+#endif
+				
         // final tone-mapping
         _out        	o;
 #ifdef        USE_VTF
