@@ -888,11 +888,11 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 					break;
 				case 1:
 					if (IsMisfire())
-						PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_g", "anm_idle_sprint_g_jammed", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+						PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_g", "anm_idle_sprint_g_jammed", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_sprint", "anim_idle_g" }, true, GetState());
 					else if (IsMainMagazineEmpty())
-						PlayHUDMotionIfExists({ "anm_idle_sprint_empty_g", "anm_idle_sprint_g_empty", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+						PlayHUDMotionIfExists({ "anm_idle_sprint_empty_g", "anm_idle_sprint_g_empty", "anm_idle_sprint_g", "anm_idle_moving_g", "anm_idle_g", "anim_idle_sprint", "anim_idle_g" }, true, GetState());
 					else
-						PlayHUDMotionIfExists({ "anm_idle_sprint_g", "anm_idle_g", "anim_idle_g" }, true, GetState());
+						PlayHUDMotionIfExists({ "anm_idle_sprint_g", "anm_idle_g", "anim_idle_sprint", "anim_idle_g" }, true, GetState());
 					break;
 				case 2:
 					if (IsMisfire())
@@ -944,11 +944,11 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 					break;
 				case 1:
 					if (IsMisfire())
-						PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_w_gl", "anm_idle_sprint_w_gl_jammed", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+						PlayHUDMotionIfExists({ "anm_idle_sprint_jammed_w_gl", "anm_idle_sprint_w_gl_jammed", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_sprint", "anim_idle_gl" }, true, GetState());
 					else if (IsMagazineEmpty())
-						PlayHUDMotionIfExists({ "anm_idle_sprint_empty_w_gl", "anm_idle_sprint_w_gl_empty", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+						PlayHUDMotionIfExists({ "anm_idle_sprint_empty_w_gl", "anm_idle_sprint_w_gl_empty", "anm_idle_sprint_w_gl", "anm_idle_moving_w_gl", "anm_idle_w_gl", "anim_idle_sprint", "anim_idle_gl" }, true, GetState());
 					else
-						PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl", "anm_idle_w_gl", "anim_idle_gl" }, true, GetState());
+						PlayHUDMotionIfExists({ "anm_idle_sprint_w_gl", "anm_idle_w_gl", "anim_idle_sprint", "anim_idle_gl" }, true, GetState());
 					break;
 				case 2:
 					if (IsMisfire())
