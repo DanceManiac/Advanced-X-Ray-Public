@@ -123,7 +123,7 @@ function base_dialog:InitControls(caption)
 	self.main_frame:SetAutoDelete(true)
 	self.main_frame:SetWindowName("main_frame")
 	self.main_frame:InitTexture("ui\\ui_options_menu_static")
-	self.main_frame:SetTextureOffset(self.main_rect.x_ind,self.main_rect.y_ind)
+	self.main_frame:SetBaseTextureOffset(self.main_rect.x_ind,self.main_rect.y_ind)
 	self.main_frame:Init(self.main_rect.x, 
 						 self.main_rect.y, 
 						 self.main_rect.width, 

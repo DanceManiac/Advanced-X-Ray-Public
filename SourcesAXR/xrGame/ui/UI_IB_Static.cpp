@@ -10,7 +10,28 @@
 #include "StdAfx.h"
 #include "UI_IB_Static.h"
 
+void CUI_IB_Static::SetTextureOffset(Fvector2 offset)
+{
+	for(int i=0; i<S_Total; ++i)
+		if(m_states[i])
+			m_states[i]->SetTextureOffset(offset);
+}
+
+void CUI_IB_Static::SetBaseTextureOffset(Fvector2 offset)
+{
+	for(int i=0; i<S_Total; ++i)
+		if(m_states[i])
+			m_states[i]->SetBaseTextureOffset(offset);
+}
+
 void CUI_IB_Static::SetTextureOffset(float x, float y)
+{
+	for(int i=0; i<S_Total; ++i)
+		if(m_states[i])
+			m_states[i]->SetTextureOffset(x,y);
+}
+
+void CUI_IB_Static::SetBaseTextureOffset(float x, float y)
 {
 	for(int i=0; i<S_Total; ++i)
 		if(m_states[i])

@@ -1030,7 +1030,7 @@ bool CUIXmlInit::InitTextureOffset(CUIXml &xml_doc, LPCSTR path, int index, CUIS
 	float x = xml_doc.ReadAttribFlt(textureOffset, index, "x");
 	float y = xml_doc.ReadAttribFlt(textureOffset, index, "y");
 
-	pWnd->SetTextureOffset(x, y);
+	pWnd->SetBaseTextureOffset(x, y);
 
 	return true;
 }

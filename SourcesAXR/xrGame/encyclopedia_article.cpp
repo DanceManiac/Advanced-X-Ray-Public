@@ -106,14 +106,14 @@ void CEncyclopediaArticle::load_shared	(LPCSTR)
 		{
 			float dx = minSize - r.width();
 			r.x2 += dx;
-			data()->image.SetTextureOffset(dx / 2, data()->image.GetTextureOffeset()[1]);
+			data()->image.SetBaseTextureOffset(dx / 2, data()->image.GetBaseTextureOffset()[1]);
 		}
 
 		if (r.height() < minSize)
 		{
 			float dy = minSize - r.height();
 			r.y2 += dy;
-			data()->image.SetTextureOffset(data()->image.GetTextureOffeset()[0], dy / 2);
+			data()->image.SetBaseTextureOffset(data()->image.GetBaseTextureOffset()[0], dy / 2);
 		}
 
 		data()->image.SetWndRect(Frect().set(0,0,r.width(),r.height()));

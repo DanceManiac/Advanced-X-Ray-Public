@@ -181,6 +181,21 @@ void CUI3tButton::SetTextureOffset(float x, float y)
 	this->m_background.SetTextureOffset(x, y);
 }
 
+void CUI3tButton::SetBaseTextureOffset(float x, float y)
+{
+	this->m_background.SetBaseTextureOffset(x, y);
+}
+
+void CUI3tButton::SetTextureOffset(Fvector2 offset)
+{
+	this->m_background.SetTextureOffset(offset);
+}
+
+void CUI3tButton::SetBaseTextureOffset(Fvector2 offset)
+{
+	this->m_background.SetBaseTextureOffset(offset);
+}
+
 void CUI3tButton::DrawTexture()
 {
 	if (m_bTextureEnable)

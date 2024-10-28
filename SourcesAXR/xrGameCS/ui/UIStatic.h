@@ -63,8 +63,12 @@ public:
 
 			void		SetHeadingPivot				(const Fvector2& p, const Fvector2& offset, bool fixedLT)				{m_UIStaticItem.SetHeadingPivot(p,offset,fixedLT);}
 			void		ResetHeadingPivot			()				{m_UIStaticItem.ResetHeadingPivot();}
-	virtual void		SetTextureOffset			(float x, float y)			{ m_TextureOffset.set(x, y); }
-			Fvector2	GetTextureOffeset			() const					{ return m_TextureOffset; }
+	virtual void		SetTextureOffset			(float x, float y) { m_TextureOffset.set(x, y); }
+	virtual void		SetBaseTextureOffset		(float x, float y) { m_TextureOffset.set(x, y); m_BaseTextureOffset.set(x, y); }
+	virtual void		SetTextureOffset			(Fvector2 offset) { m_TextureOffset = offset; }
+	virtual void		SetBaseTextureOffset		(Fvector2 offset) { m_TextureOffset = offset; m_BaseTextureOffset = offset; }
+			Fvector2	GetTextureOffset			() const { return m_TextureOffset; }
+			Fvector2	GetBaseTextureOffset		() const { return m_BaseTextureOffset; }
 			void		TextureOn					()							{ m_bTextureEnable = true; }
 			void		TextureOff					()							{ m_bTextureEnable = false; }
 
@@ -184,6 +188,7 @@ protected:
 	float			m_fHeading;
 
 	Fvector2		m_TextureOffset;
+	Fvector2		m_BaseTextureOffset;
 
 	Frect	m_ClipRect;
 public:

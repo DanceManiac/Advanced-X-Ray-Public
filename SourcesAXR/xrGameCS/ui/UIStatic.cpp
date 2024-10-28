@@ -45,6 +45,7 @@ CUIStatic:: CUIStatic()
 	m_bStretchTexture		= false;
 
 	m_TextureOffset.set		(0.0f,0.0f);
+	m_BaseTextureOffset.set	(0.0f,0.0f);
 	m_TextOffset.set		(0.0f,0.0f);
 
 	m_ClipRect.set			(-1,-1,-1,-1);

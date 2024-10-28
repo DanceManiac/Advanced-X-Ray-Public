@@ -36,6 +36,7 @@ m_fHeading(0.0f),
 m_pTextControl(NULL)
 {
 	m_TextureOffset.set		(0.0f,0.0f);
+	m_BaseTextureOffset.set	(0.0f,0.0f);
 	m_lanim_xform.set_defaults	();
 }
 

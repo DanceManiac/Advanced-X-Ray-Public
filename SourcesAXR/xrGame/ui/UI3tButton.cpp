@@ -161,9 +161,33 @@ void CUI3tButton::InitTexture(LPCSTR tex_enabled,
 
 void CUI3tButton::SetTextureOffset(float x, float y)
 {
-	if ( m_background )
+	if (m_background)
 	{
 		this->m_background->SetTextureOffset(x, y);
+	}
+}
+
+void CUI3tButton::SetTextureOffset(Fvector2 offset)
+{
+	if (m_background)
+	{
+		this->m_background->SetTextureOffset(offset);
+	}
+}
+
+void CUI3tButton::SetBaseTextureOffset(float x, float y)
+{
+	if (m_background)
+	{
+		this->m_background->SetBaseTextureOffset(x, y);
+	}
+}
+
+void CUI3tButton::SetBaseTextureOffset(Fvector2 offset)
+{
+	if (m_background)
+	{
+		this->m_background->SetBaseTextureOffset(offset);
 	}
 }
 

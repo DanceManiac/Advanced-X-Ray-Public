@@ -21,7 +21,7 @@ public:
 	virtual			~CUI3tButton				();
 	// appearance
 
-	virtual	void 	InitButton					(Fvector2 pos, Fvector2 size);
+	virtual void 	InitButton					(Fvector2 pos, Fvector2 size);
 	virtual void 	InitTexture					(LPCSTR tex_name);
 	virtual void 	InitTexture					(LPCSTR tex_enabled, LPCSTR tex_disabled, LPCSTR tex_touched, LPCSTR tex_highlighted);
 
@@ -29,7 +29,10 @@ public:
 			void 	SetTextColorH				(u32 color);
 			void 	SetTextColorD				(u32 color);
 			void 	SetTextColorT				(u32 color);
-	virtual void 	SetTextureOffset			(float x, float y);	
+	virtual void 	SetTextureOffset			(float x, float y);
+	virtual void 	SetBaseTextureOffset		(float x, float y);
+	virtual void 	SetTextureOffset			(Fvector2 offset);
+	virtual void 	SetBaseTextureOffset		(Fvector2 offset);
 	virtual void 	SetWidth					(float width);
 	virtual void 	SetHeight					(float height);
 			void 	InitSoundH					(LPCSTR sound_file);
