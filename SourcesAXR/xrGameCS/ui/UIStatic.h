@@ -128,8 +128,8 @@ public:
 			float GetTextX					()						{return m_TextOffset.x;}
 			float GetTextY					()						{return m_TextOffset.y;}
 
-	void		SetStretchTexture			(bool stretch_texture)	{m_bStretchTexture = stretch_texture;}
-	bool		GetStretchTexture			()						{return m_bStretchTexture;}
+	virtual	void SetStretchTexture			(bool stretch_texture)	{ m_bStretchTexture = stretch_texture; }
+	virtual	bool GetStretchTexture			()						{ return m_bStretchTexture; }
 
 	void		SetClipRect					(Frect r);
 	Frect		GetSelfClipRect				();

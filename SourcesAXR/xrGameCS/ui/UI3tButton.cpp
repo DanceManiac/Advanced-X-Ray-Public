@@ -238,15 +238,16 @@ void  CUI3tButton::Draw()
 
 void CUI3tButton::DrawTexture()
 {
-	if ( m_bTextureEnable )
+	if (m_bTextureEnable)
 	{
-		if ( m_background )				
+		if (m_background)
 		{
-			m_background->SetStretchTexture(true/*GetStretchTexture()*/);
-			m_background->Draw();		
-		}else if ( m_back_frameline )	
-		{	
-			m_back_frameline->Draw();	
+			m_background->SetStretchTexture(GetStretchTexture());
+			m_background->Draw();
+		}
+		else if (m_back_frameline)
+		{
+			m_back_frameline->Draw();
 		}
 	}
 }

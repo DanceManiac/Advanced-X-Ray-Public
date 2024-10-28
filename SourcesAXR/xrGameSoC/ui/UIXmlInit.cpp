@@ -304,13 +304,13 @@ bool CUIXmlInit::Init3tButton(CUIXml& xml_doc, const char* path, int index, CUI3
 	// init hint static
 	string256 hint;
 	strconcat(sizeof(hint),hint, path, ":hint");
-
+	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") == 1;
+	pWnd->SetStretchTexture(stretch_flag);
 	if (xml_doc.NavigateToNode(hint, index))
-        InitStatic(xml_doc, hint, index, &pWnd->m_hint);
+		InitStatic(xml_doc, hint, index, &pWnd->m_hint);
 
 	int r = xml_doc.ReadAttribInt(path, index, "check_mode", -1);
-	if(r!=-1)
-	pWnd->SetCheckMode ( (r==1)?true : false);
+	pWnd->SetCheckMode 		(r == 1);
 	
 	LPCSTR text_hint		= xml_doc.ReadAttrib	(path, index, "hint", NULL);
 	if(text_hint)
@@ -613,9 +613,9 @@ bool CUIXmlInit::InitProgressShape(CUIXml& xml_doc, const char* path, int index,
     InitStatic(xml_doc, strconcat(sizeof(_path),_path, path, ":front"), index, pWnd->m_pTexture);
 
 	pWnd->m_sectorCount	= xml_doc.ReadAttribInt(path, index, "sector_count", 8);
-	pWnd->m_bClockwise	= xml_doc.ReadAttribInt(path, index, "clockwise") ? true : false;
+	pWnd->m_bClockwise	= xml_doc.ReadAttribInt(path, index, "clockwise") == 1;
 	
-	pWnd->m_blend		= ( xml_doc.ReadAttribInt(path, index, "blend", 1) == 1 )? true : false;
+	pWnd->m_blend		= xml_doc.ReadAttribInt(path, index, "blend", 1) == 1;
 	pWnd->m_angle_begin = xml_doc.ReadAttribFlt(path, index, "begin_angle", 0.0f);
 	pWnd->m_angle_end   = xml_doc.ReadAttribFlt(path, index, "end_angle", PI_MUL_2);
 	
@@ -1041,7 +1041,8 @@ bool CUIXmlInit::InitMultiTexture(CUIXml &xml_doc, LPCSTR path, int index, CUI3t
 
 	strconcat(sizeof(buff),buff, path, ":texture");
 	shared_str texture = xml_doc.Read(buff, index, NULL);
-
+	bool stretch_flag = xml_doc.ReadAttribInt(path, index, "stretch") == 1;
+	pWnd->SetStretchTexture(stretch_flag);
 	if (texture.size() > 0)
 	{
 		pWnd->InitTexture(*texture);
@@ -1081,7 +1082,9 @@ bool CUIXmlInit::InitMultiTexture(CUIXml &xml_doc, LPCSTR path, int index, CUI3t
 	}
 
 	if (success)
-        pWnd->TextureOn();
+	{
+		pWnd->TextureOn();
+	}
 
 	return success;
 }
