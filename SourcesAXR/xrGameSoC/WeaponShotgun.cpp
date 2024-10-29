@@ -39,7 +39,7 @@ void CWeaponShotgun::Load	(LPCSTR section)
 	if (m_bTriStateReload)
 	{
 		m_sounds.LoadSound(section, "snd_open_weapon", "m_sndOpen", false, m_eSoundOpen);
-		m_sounds.LoadSound(section, "snd_add_cartridge", "m_sndAddCartridge", false, m_eSoundAddCartridge);
+		m_sounds.LoadSound(section, "snd_add_cartridge", "sndAddCartridge", false, m_eSoundAddCartridge);
 
 		if (WeaponSoundExist(section, "snd_add_cartridge_empty", true))
 			m_sounds.LoadSound(section, "snd_add_cartridge_empty", "sndAddCartridgeEmpty", false, m_eSoundAddCartridge);

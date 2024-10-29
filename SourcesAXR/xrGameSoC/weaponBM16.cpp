@@ -9,7 +9,7 @@ void CWeaponBM16::Load	(LPCSTR section)
 {
 	inherited::Load		(section);
 
-	m_sounds.LoadSound(section, "snd_reload_1", "m_sndReload1", false, m_eSoundShot);
+	m_sounds.LoadSound(section, "snd_reload_1", "sndReload1", false, m_eSoundShot);
 }
 
 void CWeaponBM16::PlayReloadSound()
