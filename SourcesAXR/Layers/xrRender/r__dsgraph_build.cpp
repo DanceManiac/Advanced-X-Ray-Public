@@ -324,17 +324,6 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 
 	counter_S					++;
 
-	if (sh->flags.bLandscape && RI.phase == CRender::PHASE_NORMAL)
-	{
-		mapLandscape_Node* N = mapLandscape.insert_anyway(distSQ);
-		N->second.ssa = SSA;
-		N->second.pObject = NULL;
-		N->second.pVisual = pVisual;
-		N->second.Matrix = Fidentity;
-		N->second.se = sh;
-		return;
-	}
-
 	for ( u32 iPass = 0; iPass<sh->passes.size(); ++iPass)
 	{
 		//SPass&						pass	= *sh->passes.front	();

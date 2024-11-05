@@ -553,7 +553,6 @@ ENGINE_API Fvector4 ps_ssfx_wind_grass = { 5.0f, 1.4f, 1.5f, 0.4f }; // Branches
 ENGINE_API Fvector4 ps_ssfx_wind_trees = { 7.0f, 0.15f, 0.5f, 0.025f }; // Anim Speed, Turbulence, Push, Wave
 ENGINE_API Fvector4 ps_ssfx_ssr = { 1.0f, 0.25f, 0.0f, 0.0f }; // Res, Blur, Temp, Noise
 ENGINE_API Fvector4 ps_ssfx_ssr_2 = { 1.0f, 1.0f, 0.5f, 0.015f }; // Quality, Fade, Int, Wpn Int
-ENGINE_API Fvector4 ps_ssfx_terrain_quality = { 12, 0, 0, 0 };
 ENGINE_API Fvector4 ps_ssfx_terrain_offset = { 0, 0, 0, 0 };
 ENGINE_API int ps_ssfx_il_quality = 32; // IL Samples
 ENGINE_API Fvector4 ps_ssfx_il = { 6.66f, 1.0f, 1.0f, 5.0f }; // Res, Int, Vibrance, Blur

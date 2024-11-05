@@ -627,16 +627,6 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="r4_es_aces_tonemap" group="mm_opt_video" depend="restart"/>
         </check_aces_tonemap>
-		
-		<cap_terrain_quality x="70" y="3" width="135" height="24" hint = "ui_mm_terrain_quality_hint">
-			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_terrain_quality</text>
-        </cap_terrain_quality>	
-		<track_terrain_quality x="220" y="6" width="200" height="16" min="1.0" max="24.0" step="1.0">
-        <options_item entry="ssfx_terrain_quality" group="mm_opt_video_adv"/>
-			<output_wnd x="210" y="0" width="20" height="20" format="%.f">
-				<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
-			</output_wnd>
-        </track_terrain_quality>
 
         <cap_r1_detail_textures x="70" y="3" width="135" height="24" hint = "ui_mm_r1_detail_textures_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_r1_detail_textures</text>
@@ -867,14 +857,6 @@
 	        <texture>ui_inGame2_checkbox</texture>
             <options_item entry="r__optimize_shadow_geom" group="mm_opt_video_adv" depend="vid"/>
         </check_optimize_shadow_geom>
-		
-		<cap_terrain_landscape x="70" y="3" width="135" height="24" hint = "ui_mm_terrain_landscape_hint">
-            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_terrain_landscape</text>
-        </cap_terrain_landscape>
-        <check_terrain_landscape x="217" y="0" width="44" height="29">
-	        <texture>ui_inGame2_checkbox</texture>
-            <options_item entry="r2_terrain_z_prepass" group="mm_opt_video_adv" depend="restart"/>
-        </check_terrain_landscape>
 		
         <cap_mt_textures_load x="70" y="3" width="135" height="24" hint = "ui_mm_mt_textures_load_hint">
             <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_mt_textures_load</text>

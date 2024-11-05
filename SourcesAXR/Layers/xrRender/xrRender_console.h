@@ -265,7 +265,6 @@ extern ECORE_API Flags32 ps_r2_ls_flags_2;
 
 enum
 {
-	R2FLAG_TERRAIN_PREPASS			= (1<<0),
 };
 
 extern ECORE_API Flags32 ps_actor_shadow_flags;

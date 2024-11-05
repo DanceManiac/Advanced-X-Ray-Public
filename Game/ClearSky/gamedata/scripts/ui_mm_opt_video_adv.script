@@ -244,12 +244,6 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	
 --// Опции SSS и ES: Конец
 
---Качество террейна
-	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
-	xml:InitStatic("video_adv:cap_terrain_quality", _st)
-	xml:InitTrackBar("video_adv:track_terrain_quality", _st)
-	handler.m_preconditions[ctl]		= only_3_and_more_mode
-
 --Рендеринг бликов
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_flares", _st)
@@ -530,12 +524,6 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
 	xml:InitStatic("video_adv:cap_optimize_shadow_geom", _st)
 	ctl = xml:InitCheck("video_adv:check_optimize_shadow_geom", _st)
-	
---Оптимизация ландшафта
-	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
-	xml:InitStatic("video_adv:cap_terrain_landscape", _st)
-	ctl = xml:InitCheck("video_adv:check_terrain_landscape", _st)
-	handler.m_preconditions[ctl] = only_3_and_more_mode
 
 --Многопоточная загрузка текстур	
 	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)

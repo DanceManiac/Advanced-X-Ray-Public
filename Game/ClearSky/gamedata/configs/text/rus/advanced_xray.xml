@@ -825,18 +825,6 @@
 	<string id="ui_st_animated_backpack">
 		<text>Анимированный рюкзак</text>
 	</string>
-	<string id="ui_mm_terrain_quality">
-		<text>Качество ландшафта</text>
-	</string>
-	<string id="ui_mm_terrain_quality_hint">
-		<text>Данная опция регулирует качество ландшафта.\n \n %c[pda_green] • Нагрузка: Низкая</text>
-	</string>
-	<string id="ui_mm_terrain_landscape">
-		<text>Оптимизация ландшафта</text>
-	</string>
-	<string id="ui_mm_terrain_landscape_hint">
-		<text>Эта опция включает Terrain Landscape. На дальних дистанциях, текстуры террейна подменяются на текстуры более низкого качество. Также, отключается взаимодействие с освещением и параллакс.</text>
-	</string>
 	<string id="ui_mm_localization">
 		<text>Язык игры</text>
 	</string>

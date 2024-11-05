@@ -447,7 +447,6 @@ extern ENGINE_API Fvector4 ps_ssfx_wind_grass;
 extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
 extern ENGINE_API Fvector4 ps_ssfx_ssr ;					// Res, Blur, Temp, Noise
 extern ENGINE_API Fvector4 ps_ssfx_ssr_2 ;					// Quality, Fade, Int, Wpn Int
-extern ENGINE_API Fvector4 ps_ssfx_terrain_quality;
 extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
 extern ENGINE_API int ps_ssfx_il_quality;
 extern ENGINE_API Fvector4 ps_ssfx_il;						// Res, Int, Vibrance, Blur
@@ -1349,8 +1348,6 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Float,			"r__gamma",						&ps_r2_img_gamma,			0.5f, 2.2f);
 	//CMD4(CCC_Float,			"r__saturation",				&ps_r2_img_saturation,		0.0f, 2.0f);
 
-	CMD3(CCC_Mask,			"r2_terrain_z_prepass",			&ps_r2_ls_flags_2,			R2FLAG_TERRAIN_PREPASS); //Terrain Z Prepass @Zagolski
-
 	//tw_min.set(0, 0, 0);
 	//tw_max.set(1, 1, 1);
 
@@ -1403,8 +1400,6 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,		"ssfx_wind_trees",				&ps_ssfx_wind_trees,		Fvector4().set(0.0, 0.0, 0.0, 0.0), Fvector4().set(20.0, 5.0, 5.0, 1.0));
 	CMD4(CCC_Vector4,		"ssfx_ssr",						&ps_ssfx_ssr,				Fvector4().set(1, 0, 0, 0), Fvector4().set(2, 1, 1, 1));
 	CMD4(CCC_Vector4,		"ssfx_ssr_2",					&ps_ssfx_ssr_2,				Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 2, 2, 2));
-	CMD4(CCC_Vector4,		"ssfx_terrain_quality_vec",		&ps_ssfx_terrain_quality,	Fvector4().set(0, 0, 0, 0), Fvector4().set(24, 0, 0, 0));
-	CMD4(CCC_Float,			"ssfx_terrain_quality",			&ps_ssfx_terrain_quality.x,	1, 24);
 	CMD4(CCC_Vector4,		"ssfx_terrain_offset",			&ps_ssfx_terrain_offset,	Fvector4().set(-1, -1, -1, -1), Fvector4().set(1, 1, 1, 1));
 	CMD4(CCC_Integer,		"ssfx_il_quality",				&ps_ssfx_il_quality,		16, 64);
 	CMD4(CCC_Vector4,		"ssfx_il",						&ps_ssfx_il,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 3, 6));
