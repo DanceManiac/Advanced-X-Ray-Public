@@ -536,7 +536,7 @@ public:
 			u16 id_to_kill{};
 
 			luabind::functor<u16> m_functor;
-			if (ai().script_engine().functor("mfs_functions.get_id_by_sid", m_functor));
+			if (ai().script_engine().functor("mfs_functions.get_id_by_sid", m_functor))
 				id_to_kill = m_functor(story_id_to_kill);
 
 			if (!id_to_kill)

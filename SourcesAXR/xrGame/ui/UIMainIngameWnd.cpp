@@ -639,7 +639,7 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 		iconType = "mail";
 		break;
 	default:
-		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType);
+		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType.c_str());
 	}
 
 	R_ASSERT3(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed!", iconType.c_str());
@@ -1290,9 +1290,9 @@ void CUIMainIngameWnd::UpdateQuickSlots()
 			if(item_name.size())
 			{
 				u32 count = pActor->inventory().dwfGetSameItemCount(item_name.c_str(), true);
-				string32 str;
-				xr_sprintf(str, "x%d", count);
-				wnd->TextItemControl()->SetText(str);
+				string32 str_;
+				xr_sprintf(str_, "x%d", count);
+				wnd->TextItemControl()->SetText(str_);
 				wnd->Show(true);
 
 				CUIStatic* main_slot = m_quick_slots_icons[i];

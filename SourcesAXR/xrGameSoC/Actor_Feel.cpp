@@ -9,13 +9,14 @@
 #include "customzone.h"
 #include "../xrEngine/gamemtllib.h"
 #include "ui/UIMainIngameWnd.h"
+#include "UIGameCustom.h"
 #include "Grenade.h"
-#include "clsid_game.h"
-
+#include "WeaponRPG7.h"
+#include "ExplosiveRocket.h"
 #include "game_cl_base.h"
 #include "Level.h"
+#include "clsid_game.h"
 #include "hudmanager.h"
-#include "UIGameCustom.h"
 #include "ui\UIStatic.h"
 #include "ui\UIPdaWnd.h"
 #include "UIGameSP.h"
@@ -184,18 +185,18 @@ void	CActor::PickupModeUpdate_COD	()
 	CInventoryItem* pNearestItem = NULL;
 	for (u32 o_it=0; o_it<ISpatialResult.size(); o_it++)
 	{
-		ISpatial*		spatial	= ISpatialResult[o_it];
-		CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (spatial->dcast_CObject        ());
+		ISpatial*		spatial_	= ISpatialResult[o_it];
+		CInventoryItem*	pIItem	= smart_cast<CInventoryItem*> (spatial_->dcast_CObject        ());
+
 		if (0 == pIItem) continue;
 		if (pIItem->object().H_Parent() != NULL) continue;
 		if (!pIItem->CanTake()) continue;
-		if (pIItem->object().CLS_ID == CLSID_OBJECT_G_RPG7 || pIItem->object().CLS_ID == CLSID_OBJECT_G_FAKE)
-			continue;
+		if ( smart_cast<CExplosiveRocket*>( &pIItem->object() ) )	continue;
 
-		CGrenade*	pGrenade	= smart_cast<CGrenade*> (spatial->dcast_CObject        ());
+		CGrenade*	pGrenade	= smart_cast<CGrenade*> (spatial_->dcast_CObject        ());
 		if (pGrenade && !pGrenade->Useful()) continue;
 
-		CMissile*	pMissile	= smart_cast<CMissile*> (spatial->dcast_CObject        ());
+		CMissile*	pMissile	= smart_cast<CMissile*> (spatial_->dcast_CObject        ());
 		if (pMissile && !pMissile->Useful()) continue;
 		
 		Fvector A, B, tmp; 
@@ -216,15 +217,20 @@ void	CActor::PickupModeUpdate_COD	()
 
 	if(pNearestItem)
 	{
-		CFrustum					frustum;
-		frustum.CreateFromMatrix	(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
-		if (!CanPickItem(frustum,Device.vCameraPosition,&pNearestItem->object()))
+		CFrustum					frustum_;
+		frustum_.CreateFromMatrix	(Device.mFullTransform,FRUSTUM_P_LRTB|FRUSTUM_P_FAR);
+		if (!CanPickItem(frustum_, Device.vCameraPosition, &pNearestItem->object()))
 			pNearestItem = NULL;
 	}
 
 	if (pNearestItem && pNearestItem->cast_game_object())
 	{
 		if (Level().m_feel_deny.is_object_denied(pNearestItem->cast_game_object()))
+				pNearestItem = NULL;
+	}
+	if (pNearestItem && pNearestItem->cast_game_object())
+	{
+		if(!pNearestItem->cast_game_object()->getVisible())
 				pNearestItem = NULL;
 	}
 

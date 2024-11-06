@@ -110,8 +110,8 @@ private:
 				CCustomZone::EZoneState state);
 
 	void	SendAnomalyStates();
-	void	CheckAnomalyUpdate(u32 current_time);
-	void	CheckForWarmap(u32 current_time);
+	void	CheckAnomalyUpdate(u32 current_time_);
+	void	CheckForWarmap(u32 current_time_);
 	
 	u16		GetMinUsedAnomalyID(LPCSTR zone_name);
 	//----------------------------------------------------
@@ -172,7 +172,7 @@ private:
 	void DropArtefact(CSE_ActorMP *aOwner, CSE_ALifeItemArtefact *artefact, Fvector const *dropPosition = NULL);
 	void ReturnArtefactToBase();
 	void CheckForArtefactDelivering();
-	void CheckForArtefactReturning(u32 currentTime);
+	void CheckForArtefactReturning(u32 currentTime_);
 	BOOL CheckForAllPlayersReady();
 	bool CheckForRoundStart();
 	BOOL CheckForRoundEnd();
@@ -189,7 +189,7 @@ private:
 
 	typedef associative_vector<ClientID, u32> InvincibilityTimeouts;
 	InvincibilityTimeouts m_invTimeouts;
-	void ResetTimeoutInvincibility(u32 currentTime);
+	void ResetTimeoutInvincibility(u32 currentTime_);
 	bool ResetInvincibility(ClientID const clientId);
 
 	BOOL	isFriendlyFireEnabled	();

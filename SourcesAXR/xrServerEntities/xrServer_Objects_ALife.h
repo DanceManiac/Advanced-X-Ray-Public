@@ -97,7 +97,7 @@ public:
 	virtual bool					match_configuration	() const { return false; }
 
 #ifndef XRGAME_EXPORTS
-	virtual void 		__stdcall	on_render				(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
+	virtual void 		__stdcall	on_render				(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
 #endif
 SERVER_ENTITY_DECLARE_END
 add_to_type_list(CSE_ALifeGraphPoint)
@@ -498,7 +498,7 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeObjectHangingLamp,CSE_ALifeDynamicObjectVi
 	virtual bool					match_configuration			() const;
 	virtual bool		__stdcall	validate					();
 #ifndef XRGAME_EXPORTS
-	virtual void 		__stdcall	on_render					(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
+	virtual void 		__stdcall	on_render					(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
 #endif // #ifndef XRGAME_EXPORTS
 	virtual CSE_Abstract			*cast_abstract				() {return this;}
 SERVER_ENTITY_DECLARE_END

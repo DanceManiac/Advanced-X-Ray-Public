@@ -62,7 +62,7 @@ Ivector4 m_IV4GreenColor = Ivector4().set(0, 255, 0, 255);
 Ivector4 m_IV4NeutralColor = Ivector4().set(170, 170, 170, 255);
 LPCSTR	m_sAfInfluenceMode = "from_belt";
 LPCSTR	m_sArtefactsDegradationMode = "from_belt";
-LPCSTR	m_sMoonPhasesMode = "off";
+shared_str	m_sMoonPhasesMode = "off";
 //SSFX DoF
 Fvector4 m_FV4DefaultDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
 Fvector4 m_FV4FocusDoF = Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f);
@@ -420,7 +420,7 @@ namespace GameConstants
 		return m_sArtefactsDegradationMode;
 	}
 
-	LPCSTR GetMoonPhasesMode()
+	shared_str GetMoonPhasesMode()
 	{
 		return m_sMoonPhasesMode;
 	}

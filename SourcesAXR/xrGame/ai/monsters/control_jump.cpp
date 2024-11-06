@@ -60,9 +60,9 @@ bool CControlJump::check_start_conditions()
 	return true;
 }
 
-void CControlJump::remove_links	(CObject* object)
+void CControlJump::remove_links	(CObject* object_)
 {
-	if ( m_data.target_object == object )
+	if ( m_data.target_object == object_ )
 		m_data.target_object	=	NULL;
 }
 
@@ -650,7 +650,7 @@ bool CControlJump::can_jump(Fvector const& target, bool const aggressive_jump)
 			float time			= m_man->animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
 			// set acceleration and velocity
 			SVelocityParam &vel	= m_object->move().get_velocity(m_data.state_prepare_in_move.velocity_mask);
-			float dist = time * vel.velocity.linear;
+			dist = time * vel.velocity.linear;
 
 			// check nodes in direction
 			Fvector target_point;

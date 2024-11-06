@@ -84,10 +84,10 @@ public:
 			xr_sprintf			(temp, "%s_class_%d", prefix, i);
 			if(pSettings->line_exist(sect,temp))
 			{
-				shared_str item_sect	= pSettings->r_string(sect,temp);
+				shared_str item_sect_	= pSettings->r_string(sect,temp);
 
-				m_TypesMap.insert		(std::make_pair(item_sect, ITEM_TYPE()));
-				ITEM_TYPE& item_type	= m_TypesMap[item_sect];
+				m_TypesMap.insert		(std::make_pair(item_sect_, ITEM_TYPE()));
+				ITEM_TYPE& item_type	= m_TypesMap[item_sect_];
 
 				xr_sprintf				(temp, "%s_freq_%d", prefix, i);
 				item_type.freq			= pSettings->r_fvector2(sect,temp);
@@ -164,7 +164,7 @@ public:
 			float	GetAfVisRadius		() { return m_fAfVisRadius;};
 			float	GetUnchargeSpeed	(void) const;
 			void	Recharge			(float val);
-			bool	IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
+			bool	IsNecessaryItem		(const shared_str& item_sect_, xr_vector<shared_str> item);
 
 			//Light
 			bool		m_bLightsEnabled;

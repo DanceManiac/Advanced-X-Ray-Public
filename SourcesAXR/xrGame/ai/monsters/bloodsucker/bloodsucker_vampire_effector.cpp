@@ -24,7 +24,8 @@ BOOL CVampirePPEffector::Process(SPPInfo& pp)
 	if (time_past_perc < TIME_ATTACK) 
 	{
 		factor = 0.75f * time_past_perc / TIME_ATTACK;
-	} else if (time_past_perc > (1 - TIME_ATTACK)) 
+	}
+	else if (time_past_perc > (1 - TIME_ATTACK)) 
 	{
 		factor = 0.75f * (1-time_past_perc) / TIME_ATTACK;
 	} else {

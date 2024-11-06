@@ -554,9 +554,9 @@ CEnvironment *environment()
 	return		(g_pGamePersistent->pEnvironment);
 }
 
-CEnvDescriptor *current_environment(CEnvironment *self)
+CEnvDescriptor *current_environment(CEnvironment *self_)
 {
-	return		(self->CurrentEnv);
+	return		(self_->CurrentEnv);
 }
 extern bool g_bDisableAllInput;
 void disable_input()

@@ -466,7 +466,7 @@ bool CControlJump::can_jump(CObject *target)
 			float time			= m_man->animation().motion_time(m_data.state_prepare_in_move.motion, m_object->Visual());
 			// set acceleration and velocity
 			SVelocityParam &vel	= m_object->move().get_velocity(m_data.state_prepare_in_move.velocity_mask);
-			float dist = time * vel.velocity.linear;
+			dist = time * vel.velocity.linear;
 
 			// check nodes in direction
 			Fvector target_point;

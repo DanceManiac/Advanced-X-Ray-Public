@@ -592,15 +592,15 @@ void	CActor::Hit(SHit* pHDS)
 				CParticlesPlayer::MakeXFORM(this,HDS.bone(),HDS.dir,HDS.p_in_bone_space,pos);
 
 				// установить particles
-				CParticlesObject* ps = NULL;
+				CParticlesObject* psO = NULL;
 
 				if (eacFirstEye == cam_active && this == Level().CurrentEntity())
-					ps = CParticlesObject::Create(invincibility_fire_shield_1st,TRUE);
+					psO = CParticlesObject::Create(invincibility_fire_shield_1st,TRUE);
 				else
-					ps = CParticlesObject::Create(invincibility_fire_shield_3rd,TRUE);
+					psO = CParticlesObject::Create(invincibility_fire_shield_3rd,TRUE);
 
-				ps->UpdateParent(pos,Fvector().set(0.f,0.f,0.f));
-				GamePersistent().ps_needtoplay.push_back(ps);
+				psO->UpdateParent(pos,Fvector().set(0.f,0.f,0.f));
+				GamePersistent().ps_needtoplay.push_back(psO);
 			};
 		};
 		 
@@ -2840,7 +2840,7 @@ void CActor::NVGAnimCheckDetector()
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT));
 	bool AnimEnabled = pAdvancedSettings->line_exist("actions_animations", "switch_nightvision_section");
 
-	if (!pDet || pDet->IsHidden() || !AnimEnabled);
+	if (!pDet || pDet->IsHidden() || !AnimEnabled)
 	{
 		StartNVGAnimation();
 		return;

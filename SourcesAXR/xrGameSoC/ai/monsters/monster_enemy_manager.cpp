@@ -123,13 +123,11 @@ void CMonsterEnemyManager::update()
 	m_time_updated			= time();
 }
 
-
-
-void CMonsterEnemyManager::force_enemy (const CEntityAlive *enemy)
+void CMonsterEnemyManager::force_enemy(const CEntityAlive* enemy_)
 {
-	this->enemy		= enemy;
-	position		= enemy->Position();
-	vertex			= enemy->ai_location().level_vertex_id();
+	this->enemy		= enemy_;
+	position		= enemy_->Position();
+	vertex			= enemy_->ai_location().level_vertex_id();
 	time_last_seen	= time();
 
 	forced			= true;
@@ -175,10 +173,9 @@ void CMonsterEnemyManager::reinit()
 	m_time_start_see_enemy		= 0;
 }
 
-
-void CMonsterEnemyManager::add_enemy(const CEntityAlive *enemy)
+void CMonsterEnemyManager::add_enemy(const CEntityAlive* enemy_)
 {
-	monster->EnemyMemory.add_enemy(enemy);
+	monster->EnemyMemory.add_enemy(enemy_);
 }
 
 

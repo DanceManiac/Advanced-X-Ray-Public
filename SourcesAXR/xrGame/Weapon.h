@@ -532,11 +532,11 @@ protected:
 
 public:
 	// Alundaio
-	int						GetAmmoCount_forType(shared_str const& ammo_type) const;
-	virtual void			set_ef_main_weapon_type(u32 type) { m_ef_main_weapon_type = type; };
-	virtual void			set_ef_weapon_type(u32 type) { m_ef_weapon_type = type; };
-	virtual void			SetAmmoType(u32 type) { m_ammoType = type; };
-	u8						GetAmmoType() { return m_ammoType; };
+	int						GetAmmoCount_forType	(shared_str const& ammo_type) const;
+	virtual void			set_ef_main_weapon_type	(u32 type) { m_ef_main_weapon_type = type; };
+	virtual void			set_ef_weapon_type		(u32 type) { m_ef_weapon_type = type; };
+	virtual void			SetAmmoType				(u8 type) { m_ammoType = type; };
+	u8						GetAmmoType				() { return m_ammoType; };
 	//-Alundaio
 
 	   int					GetAmmoCount		(u8 ammo_type) const;
@@ -558,8 +558,8 @@ public:
 	virtual	float			Get_PDM_Crouch		()	const	{ return m_pdm.m_fPDM_disp_crouch			; };
 	virtual	float			Get_PDM_Crouch_NA	()	const	{ return m_pdm.m_fPDM_disp_crouch_no_acc	; };
 	virtual	float			GetCrosshairInertion()	const	{ return m_crosshair_inertion; };
-	virtual bool			IsNecessaryItem		(const shared_str& item_sect);
-	bool					IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
+	virtual bool			IsNecessaryItem		(const shared_str& item_sect_);
+	bool					IsNecessaryItem		(const shared_str& item_sect_, xr_vector<shared_str> item);
 
 			float			GetFirstBulletDisp	()	const	{ return m_first_bullet_controller.get_fire_dispertion(); };
 protected:

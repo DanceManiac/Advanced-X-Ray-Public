@@ -2,9 +2,9 @@
 #include "../state.h"
 
 
-template<typename _Object>
-class CStateBurerAttackTele : public CState<_Object> {
-	typedef CState<_Object> inherited;	
+template<typename Object>
+class CStateBurerAttackTele : public CState<Object> {
+	typedef CState<Object> inherited;	
 
 	xr_vector<CPhysicsShellHolder *>	tele_objects;
 	CPhysicsShellHolder					*selected_object;
@@ -21,7 +21,7 @@ class CStateBurerAttackTele : public CState<_Object> {
 	} m_action;
 
 public:
-						CStateBurerAttackTele	(_Object *obj);
+						CStateBurerAttackTele	(Object *obj);
 
 	virtual	void		initialize				();
 	virtual	void		execute					();

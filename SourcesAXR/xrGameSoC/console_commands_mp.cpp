@@ -544,7 +544,7 @@ public:
 			exclude_raid_from_args(args, tmp_dest, sizeof(tmp_dest));
 			if (xr_strlen(tmp_dest))
 			{
-				sscanf_s(tmp_dest, "%s", filter_string);
+				sscanf_s(tmp_dest, "%s", sizeof(filter_string));
 				tmp_functor.filter_string = filter_string;
 			}
 		}

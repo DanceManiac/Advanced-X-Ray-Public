@@ -50,7 +50,7 @@ void CWeaponKnife::Load	(LPCSTR section)
 	inherited::Load		(section);
 
 	fWallmarkSize = pSettings->r_float(section,"wm_size");
-	m_sounds.LoadSound(section,"snd_shoot"		, "sndShot"		, false, SOUND_TYPE_WEAPON_SHOOTING		);
+	m_sounds.LoadSound(section, "snd_shoot", "m_sndShot", false, SOUND_TYPE_WEAPON_SHOOTING);
 	
 	m_Hit1SpashDir		=	pSettings->r_fvector3(section, "splash1_direction");
 	m_Hit2SpashDir		=	pSettings->r_fvector3(section, "splash2_direction");

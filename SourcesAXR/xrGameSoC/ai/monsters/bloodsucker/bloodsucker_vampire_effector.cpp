@@ -25,9 +25,12 @@ BOOL CVampirePPEffector::Process(SPPInfo& pp)
 	float time_past_perc = (m_total - fLifeTime) / m_total;
 	
 	float factor;
-	if (time_past_perc < TIME_ATTACK) {
+	if (time_past_perc < TIME_ATTACK) 
+	{
 		factor = 0.75f * time_past_perc / TIME_ATTACK;
-	} else if (time_past_perc > (1 - TIME_ATTACK)) {
+	}
+	else if (time_past_perc > (1 - TIME_ATTACK)) 
+	{
 		factor = 0.75f * (1-time_past_perc) / TIME_ATTACK;
 	} else {	
 		float time_past_sine_perc = (time_past_perc - TIME_ATTACK) * (1 / ( 1 - TIME_ATTACK + TIME_ATTACK));

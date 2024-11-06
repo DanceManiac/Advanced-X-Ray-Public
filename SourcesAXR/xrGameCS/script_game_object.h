@@ -873,7 +873,7 @@ public:
 			u32					GetMainWeaponType();
 			u32					GetWeaponType();
 			u8					GetWeaponSubstate();
-			u8					GetAmmoType();
+			u32					GetAmmoType();
 
 			//CWeaponAmmo
 			u16					AmmoGetCount();
@@ -928,10 +928,10 @@ public:
 			float				GetActorClimbCoef() const;
 			void				SetActorClimbCoef(float);
 			
-			void 				SetRemainingUses(u8 value);
+			void 				SetRemainingUses(u32 value);
 			void 				DestroyObject();
-			u8 					GetRemainingUses();
-			u8 					GetMaxUses();
+			u32					GetRemainingUses();
+			u32					GetMaxUses();
 
 			void				SetArtefactChargeLevel(float charge_level);
 			float				GetArtefactChargeLevel() const;

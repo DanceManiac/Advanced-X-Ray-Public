@@ -373,7 +373,7 @@ void CUICellItem::UpdatePortionsProgressBar()
 
 		if (pEatable && pEatable->GetConstPortionsNum() > 1 && pEatable->GetConstPortionsNum() <= 8)
 		{
-			int BasePortionsNum = pEatable->GetConstPortionsNum();
+			int BasePortionsNum = (float)pEatable->GetConstPortionsNum();
 			Ivector2 itm_grid_size = GetGridSize();
 			if (m_pParentList->GetVerticalPlacement())
 				std::swap(itm_grid_size.x, itm_grid_size.y);

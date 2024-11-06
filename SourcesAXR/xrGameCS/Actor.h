@@ -847,7 +847,7 @@ public:
 	float					GetInventoryFullness() const { return m_fInventoryFullness; }
 	float					MaxCarryInvCapacity	() const;
 	void					ChangeInventoryFullness(float val);
-	u16						GetLastActiveSlot	() { return m_last_active_slot; }
+	u32						GetLastActiveSlot	() { return m_last_active_slot; }
 
 	void					SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
 	bool					GetHeatingStatus	() const { return m_bHeating; }
@@ -876,7 +876,7 @@ protected:
 	shared_str				m_sColdSteamParticleBone;
 	shared_str				m_sColdSteamParticleName;
 
-	u16						m_last_active_slot;
+	u32						m_last_active_slot;
 
 	float					m_fDevicesPsyFactor;
 

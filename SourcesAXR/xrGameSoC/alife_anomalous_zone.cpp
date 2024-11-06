@@ -75,9 +75,9 @@ void CSE_ALifeAnomalousZone::spawn_artefacts				()
 	typedef std::pair<shared_str,float>	ARTEFACT_PAIR;
 
 	string256				temp0, temp1;
-	ARTEFACT_PAIR			*m_weights = (ARTEFACT_PAIR*)_alloca(n*sizeof(ARTEFACT_PAIR));
-	ARTEFACT_PAIR			*I = m_weights;
-	ARTEFACT_PAIR			*E = m_weights + n;
+	ARTEFACT_PAIR			*weights = (ARTEFACT_PAIR*)_alloca(n*sizeof(ARTEFACT_PAIR));
+	ARTEFACT_PAIR			*I = weights;
+	ARTEFACT_PAIR			*E = weights + n;
 	for (u32 i = 0; I != E; ++I, ++i) {
 		_GetItem			(artefacts,2*i,temp0);
 		_GetItem			(artefacts,2*i + 1,temp1);
@@ -89,13 +89,13 @@ void CSE_ALifeAnomalousZone::spawn_artefacts				()
 		float fSum				= 0.f;
 		u16 p = 0;
 		for (; p < n; ++p) {
-			fSum			+= m_weights[p].second;
+			fSum			+= weights[p].second;
 			if (fSum > fProbability)
 				break;
 		}
 		if (p < n) {
-			CSE_Abstract		*l_tpSE_Abstract = alife().spawn_item(*m_weights[p].first,position(),m_tNodeID,m_tGraphID,0xffff);
-			R_ASSERT3			(l_tpSE_Abstract,"Can't spawn artefact ",*m_weights[p].first);
+			CSE_Abstract		*l_tpSE_Abstract = alife().spawn_item(*weights[p].first,position(),m_tNodeID,m_tGraphID,0xffff);
+			R_ASSERT3			(l_tpSE_Abstract,"Can't spawn artefact ",*weights[p].first);
 			CSE_ALifeDynamicObject	*i = smart_cast<CSE_ALifeDynamicObject*>(l_tpSE_Abstract);
 			R_ASSERT2			(i,"Non-ALife object in the 'game.spawn'");
 
@@ -104,11 +104,11 @@ void CSE_ALifeAnomalousZone::spawn_artefacts				()
 			ai().alife().spawns().assign_artefact_position(this,i);
 
 			Fvector				t = i->o_Position	;
-			u32					p = i->m_tNodeID	;
+			u32					p_ = i->m_tNodeID	;
 			float				q = i->m_fDistance	;
 			alife().graph().change(i,m_tGraphID,i->m_tGraphID);
 			i->o_Position		= t;
-			i->m_tNodeID		= p;
+			i->m_tNodeID		= p_;
 			i->m_fDistance		= q;
 
 			CSE_ALifeItemArtefact *l_tpALifeItemArtefact = smart_cast<CSE_ALifeItemArtefact*>(i);
@@ -118,7 +118,7 @@ void CSE_ALifeAnomalousZone::spawn_artefacts				()
 		}
 	}
 
-	for (I = m_weights; I != E; ++I)
+	for (I = weights; I != E; ++I)
 		I->~ARTEFACT_PAIR		();
 }
 

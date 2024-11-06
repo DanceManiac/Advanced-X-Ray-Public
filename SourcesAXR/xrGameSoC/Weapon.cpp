@@ -1980,7 +1980,7 @@ int CWeapon::GetSuitableAmmoTotal(bool use_item_to_spawn) const
 	return l_count + iAmmoCurrent;
 }
 
-int CWeapon::GetAmmoCount(u8 ammo_type) const
+int CWeapon::GetAmmoCount(u32 ammo_type) const
 {
 	VERIFY(m_pCurrentInventory);
 	R_ASSERT(ammo_type < m_ammoTypes.size());
@@ -3468,7 +3468,7 @@ const char* CWeapon::GetAnimAimName()
 
 		if (state && state & mcAnyMove)
 		{
-#pragma todo("DANCE MANIAC: Uncomment this for advanced moving anims.");
+#pragma todo("DANCE MANIAC: Uncomment this for advanced moving anims.")
 			if (IsScopeAttached() && m_bUseScopeAimMoveAnims)
 				return strconcat(sizeof(guns_aim_anm), guns_aim_anm, GenerateAimAnimName("anm_idle_aim_scope_moving"), (IsMisfire()) ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : "");
 			else
@@ -3535,7 +3535,7 @@ void CWeapon::OnStateSwitch(u32 S, u32 oldState)
 	if (H_Parent() == Level().CurrentEntity())
 	{
 		CActor* current_actor = smart_cast<CActor*>(H_Parent());
-#pragma todo("DANCE MANIAC: Shitty SoC UI.");
+#pragma todo("DANCE MANIAC: Shitty SoC UI.")
 		/*if (&HUD().GetUI()->UIGame()->ActorMenu() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() == mmUndefined)
 		{
 			if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor)

@@ -152,7 +152,7 @@ void CStateBloodsuckerVampireExecuteAbstract::critical_finalize()
 TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerVampireExecuteAbstract::check_start_conditions()
 {
-	const CEntityAlive	*enemy = object->EnemyMan.get_enemy();
+	const CEntityAlive	*enemy_ = object->EnemyMan.get_enemy();
 	
 	// проверить дистанцию
 // 	float dist		= object->MeleeChecker.distance_to_enemy	(enemy);
@@ -163,28 +163,28 @@ bool CStateBloodsuckerVampireExecuteAbstract::check_start_conditions()
 
 	u32 const vertex_id	=	ai().level_graph().check_position_in_direction(object->ai_location().level_vertex_id(), 
 																		   object->Position(), 
-																		   enemy->Position());
+																		   enemy_->Position());
 	if ( !ai().level_graph().valid_vertex_id(vertex_id) )
 		return false;
 
-	if ( !object->MeleeChecker.can_start_melee(enemy) ) 
+	if ( !object->MeleeChecker.can_start_melee(enemy_) ) 
 		return false;
 
 	// проверить направление на врага
-	if ( !object->control().direction().is_face_target(enemy, PI_DIV_2) ) 
+	if ( !object->control().direction().is_face_target(enemy_, PI_DIV_2) ) 
 		return false;
 
 	if ( !object->WantVampire() ) 
 		return false;
 	
 	// является ли враг актером
-	if ( !smart_cast<CActor const*>(enemy) )
+	if ( !smart_cast<CActor const*>(enemy_) )
 		return false;
 
 	if ( object->CControlledActor::is_controlling() )	
 		return false;
 
-	const CActor *actor = smart_cast<const CActor *>(enemy);
+	const CActor *actor = smart_cast<const CActor *>(enemy_);
 	
 	VERIFY(actor);
 

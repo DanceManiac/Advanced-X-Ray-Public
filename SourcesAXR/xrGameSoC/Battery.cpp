@@ -56,7 +56,7 @@ bool CBattery::Useful() const
 
 	for (TIItemContainer::iterator l_it = it_belt.begin(); it_belt.end() != l_it; ++l_it)
 	{
-		CDetectorAnomaly* detector = smart_cast<CDetectorAnomaly*>(*l_it);
+		detector = smart_cast<CDetectorAnomaly*>(*l_it);
 	}
 
 	if (!detector)
@@ -83,8 +83,7 @@ bool CBattery::Useful() const
 		else
 			return false;
 	}
-	else
-		return false;
+	return false;
 }
 
 void CBattery::UseBy(CEntityAlive* entity_alive)

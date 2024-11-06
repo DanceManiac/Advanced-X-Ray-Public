@@ -1560,7 +1560,7 @@ bool CWeaponMagazinedWGrenade::GetBriefInfo( II_BriefInfo& info )
 	return true;
 }
 
-int CWeaponMagazinedWGrenade::GetAmmoCount2( u8 ammo2_type ) const
+int CWeaponMagazinedWGrenade::GetAmmoCount2(u32 ammo2_type ) const
 {
 	VERIFY( m_pInventory );
 	R_ASSERT( ammo2_type < m_ammoTypes2.size() );

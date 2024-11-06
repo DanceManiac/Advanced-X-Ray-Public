@@ -821,7 +821,7 @@ void CUICellContainer::ReinitSize()
 	sz.add								(CellsSpacing(), CellSize());
 	sz.mul								(CellsCapacity());
 	sz.sub								(CellsSpacing());
-
+	
 	SetWndSize							(Fvector2().set(sz.x,sz.y));
 	m_pParentDragDropList->ReinitScroll	();
 }

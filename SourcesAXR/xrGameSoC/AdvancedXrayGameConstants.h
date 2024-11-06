@@ -61,5 +61,5 @@ namespace GameConstants
 	bool GetSSFX_EnableBoreDoF();
 	LPCSTR GetAfInfluenceMode();
 	LPCSTR GetArtefactDegradationMode();
-	LPCSTR GetMoonPhasesMode();
+	shared_str GetMoonPhasesMode();
 };

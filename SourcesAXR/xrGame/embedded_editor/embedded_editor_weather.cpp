@@ -306,7 +306,7 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::Combo(toUtf8(CStringTable().translate("st_weather_editor_wth_cycle").c_str()).c_str(), &iCycle, enumCycle, &cycles, env.WeatherCycles.size()))
 		env.SetWeather(cycles[iCycle], true);
 	int sel = -1;
-	for (int i = 0; i != env.CurrentWeather->size(); i++)
+	for (u32 i = 0; i != env.CurrentWeather->size(); i++)
 		if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
 			sel = i;
 	if (ImGui::Combo(toUtf8(CStringTable().translate("st_weather_editor_cur_sect").c_str()).c_str(), &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {
@@ -322,7 +322,7 @@ void ShowWeatherEditor(bool& show)
 	ImGui::Separator();
 	bool changed = false;
 	sel = -1;
-	for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_ambients_config->sections().size(); i++)
 		if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
 			sel = i;
 
@@ -400,7 +400,7 @@ void ShowWeatherEditor(bool& show)
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_sun_options").c_str()).c_str());
 
 	sel = -1;
-	for (int i = 0; i != env.m_suns_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_suns_config->sections().size(); i++)
 		if (cur->lens_flare_id == env.m_suns_config->sections()[i]->Name)
 			sel = i;
 	if (ImGui::Combo("sun", &sel, enumIni, env.m_suns_config, env.m_suns_config->sections().size())) {
@@ -426,7 +426,7 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("sun_shafts_intensity", &cur->m_fSunShaftsIntensity, 0.0f, 2.0f))
 		changed = true;
 	sel = 0;
-	for (int i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
 		if (cur->tb_id == env.m_thunderbolt_collections_config->sections()[i]->Name)
 			sel = i + 1;
 

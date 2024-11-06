@@ -3331,14 +3331,14 @@ u32	CWeapon::ef_weapon_type	() const
 	return	(m_ef_weapon_type);
 }
 
-bool CWeapon::IsNecessaryItem	    (const shared_str& item_sect)
+bool CWeapon::IsNecessaryItem	    (const shared_str& item_sect_)
 {
-	return (std::find(m_ammoTypes.begin(), m_ammoTypes.end(), item_sect) != m_ammoTypes.end() );
+	return (std::find(m_ammoTypes.begin(), m_ammoTypes.end(), item_sect_) != m_ammoTypes.end() );
 }
 
-bool CWeapon::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+bool CWeapon::IsNecessaryItem(const shared_str& item_sect_, xr_vector<shared_str> item)
 {
-	return (std::find(item.begin(), item.end(), item_sect) != item.end());
+	return (std::find(item.begin(), item.end(), item_sect_) != item.end());
 }
 
 void CWeapon::modify_holder_params		(float &range, float &fov) const

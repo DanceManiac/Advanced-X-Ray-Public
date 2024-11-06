@@ -388,14 +388,14 @@ TEMPLATE_SPECIALIZATION
 IC	typename CProblemSolverAbstract::_edge_value_type CProblemSolverAbstract::estimate_edge_weight_impl	(const _index_type &condition) const
 {
 	STATIC_CHECK				(!reverse_search,This_function_cannot_be_used_in_the_REVERSE_search);
-	_edge_value_type			result = 0;
+	_edge_value_type			result_ = 0;
 	xr_vector<COperatorCondition>::const_iterator	I = target_state().conditions().begin();
 	xr_vector<COperatorCondition>::const_iterator	E = target_state().conditions().end();
 	xr_vector<COperatorCondition>::const_iterator	i = condition.conditions().begin();
 	xr_vector<COperatorCondition>::const_iterator	e = condition.conditions().end();
 	for ( ; (I != E) && (i != e); )
 		if ((*I).condition() < (*i).condition()) {
-			++result;
+			++result_;
 			++I;
 		}
 		else
@@ -403,18 +403,18 @@ IC	typename CProblemSolverAbstract::_edge_value_type CProblemSolverAbstract::est
 				++i;
 			else {
 				if ((*I).value() != (*i).value())
-					++result;
+					++result_;
 				++I;
 				++i;
 			}
-	return					(result + _edge_value_type(E - I));
+	return					(result_ + _edge_value_type(E - I));
 }
 
 TEMPLATE_SPECIALIZATION
 IC	typename CProblemSolverAbstract::_edge_value_type CProblemSolverAbstract::estimate_edge_weight_impl	(const _index_type &condition, bool) const
 {
 	STATIC_CHECK				(reverse_search,This_function_cannot_be_used_in_the_STRAIGHT_search);
-	_edge_value_type			result = 0;
+	_edge_value_type			result_ = 0;
 	xr_vector<COperatorCondition>::const_iterator	I = current_state().conditions().begin();
 	xr_vector<COperatorCondition>::const_iterator	E = current_state().conditions().end();
 	xr_vector<COperatorCondition>::const_iterator	i = condition.conditions().begin();
@@ -428,12 +428,12 @@ IC	typename CProblemSolverAbstract::_edge_value_type CProblemSolverAbstract::est
 		else {
 			VERIFY	((*I).condition() == (*i).condition());
 			if ((*I).value() != (*i).value())
-				++result;
+				++result_;
 			++I;
 			++i;
 		}
 	}
-	return					(result);
+	return					(result_);
 }
 
 #undef TEMPLATE_SPECIALIZATION

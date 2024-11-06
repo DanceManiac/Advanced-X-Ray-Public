@@ -528,14 +528,14 @@ protected:
 
 public:
 	// Alundaio
-	int						GetAmmoCount_forType(shared_str const& ammo_type) const;
-	virtual void			set_ef_main_weapon_type(u32 type) { m_ef_main_weapon_type = type; };
-	virtual void			set_ef_weapon_type(u32 type) { m_ef_weapon_type = type; };
-	virtual void			SetAmmoType(u32 type) { m_ammoType = type; };
-	u8						GetAmmoType() { return m_ammoType; };
+	int						GetAmmoCount_forType	(shared_str const& ammo_type) const;
+	virtual void			set_ef_main_weapon_type	(u32 type) { m_ef_main_weapon_type = type; };
+	virtual void			set_ef_weapon_type		(u32 type) { m_ef_weapon_type = type; };
+	virtual void			SetAmmoType				(u32 type) { m_ammoType = type; };
+	u32						GetAmmoType				() { return m_ammoType; };
 	//-Alundaio
 
-	   int					GetAmmoCount		(u8 ammo_type) const;
+	   int					GetAmmoCount		(u32 ammo_type) const;
 	IC int					GetAmmoElapsed		()	const		{	return /*int(m_magazine.size())*/iAmmoElapsed;}
 	IC int					GetAmmoMagSize		()	const		{	return iMagazineSize;						}
 	int						GetSuitableAmmoTotal		(bool use_item_to_spawn = false)  const;

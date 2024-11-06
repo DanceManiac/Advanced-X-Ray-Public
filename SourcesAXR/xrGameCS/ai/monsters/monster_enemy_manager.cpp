@@ -132,13 +132,11 @@ void CMonsterEnemyManager::update()
 	m_time_updated			= time();
 }
 
-
-
-void CMonsterEnemyManager::force_enemy (const CEntityAlive *enemy)
+void CMonsterEnemyManager::force_enemy(const CEntityAlive* enemy_)
 {
-	this->enemy		= enemy;
-	position		= enemy->Position();
-	vertex			= enemy->ai_location().level_vertex_id();
+	this->enemy		= enemy_;
+	position		= enemy_->Position();
+	vertex			= enemy_->ai_location().level_vertex_id();
 	time_last_seen	= time();
 
 	forced			= true;
@@ -186,21 +184,19 @@ void CMonsterEnemyManager::reinit()
 	script_enemy				();
 }
 
-
-void CMonsterEnemyManager::add_enemy(const CEntityAlive *enemy)
+void CMonsterEnemyManager::add_enemy(const CEntityAlive* enemy_)
 {
-	monster->EnemyMemory.add_enemy(enemy);
+	monster->EnemyMemory.add_enemy(enemy_);
 }
-
 
 bool CMonsterEnemyManager::see_enemy_now()
 {
-	return monster->memory().visual().visible_right_now(enemy); 
+	return monster->memory().visual().visible_right_now(enemy);
 }
 
-bool CMonsterEnemyManager::see_enemy_now(const CEntityAlive* enemy)
+bool CMonsterEnemyManager::see_enemy_now(const CEntityAlive* enemy_)
 {
-	return monster->memory().visual().visible_right_now(enemy); 
+	return monster->memory().visual().visible_right_now(enemy_);
 }
 
 bool CMonsterEnemyManager::enemy_see_me_now()

@@ -956,10 +956,10 @@ public:
 			float				GetActorClimbCoef() const;
 			void				SetActorClimbCoef(float);
 			
-			void 				SetRemainingUses(u8 value);
+			void 				SetRemainingUses(u32 value);
 			void 				DestroyObject();
-			u8 					GetRemainingUses();
-			u8 					GetMaxUses();
+			u32 				GetRemainingUses();
+			u32 				GetMaxUses();
 			//-Alundaio
 
 			void				SetArtefactChargeLevel(float charge_level);

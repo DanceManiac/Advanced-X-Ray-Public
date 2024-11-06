@@ -233,8 +233,8 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		fwou_value += outfit->GetBoneArmor(spine_bone)*outfit->GetCondition();					
 		if(!outfit->bIsHelmetAvaliable)
 		{
-			u16 spine_bone = ikv->LL_BoneID("bip01_head");
-			fwou_value += outfit->GetBoneArmor(spine_bone)*outfit->GetCondition();
+			u16 head_bone = ikv->LL_BoneID("bip01_head");
+			fwou_value += outfit->GetBoneArmor(head_bone)*outfit->GetCondition();
 		}
 	}
 
@@ -251,14 +251,14 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 
 		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
 		VERIFY(ikv);
-		const auto spine_bone = ikv->LL_BoneID("bip01_spine");
+		u16 spine_bone = ikv->LL_BoneID("bip01_spine");
 
 		value = pants->GetBoneArmor(spine_bone);
 
 		fwou_value += value * pants->GetCondition();
 		if (!pants->bIsHelmetAvaliable)
 		{
-			const auto head_bone = ikv->LL_BoneID("bip01_head");
+			u16 head_bone = ikv->LL_BoneID("bip01_head");
 			fwou_value += pants->GetBoneArmor(head_bone) * pants->GetCondition();
 		}
 	}

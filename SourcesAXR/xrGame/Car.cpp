@@ -1741,7 +1741,6 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 	CExplosive::OnEvent		(P,type);
 
 	//обработка сообщений, нужных для работы с багажником машины
-	u16 id;
 	switch (type)
 	{
 	case GE_OWNERSHIP_TAKE:

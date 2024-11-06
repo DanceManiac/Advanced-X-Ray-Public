@@ -812,7 +812,7 @@ void CUIMainIngameWnd::SetFlashIconState_(EFlashingIcons type, bool enable)
 		iconType = "mail";
 		break;
 	default:
-		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType);
+		Msg("! [CUIMainIngameWnd::SetFlashIconState_]: Unknown flashing icon type: [%s]", iconType.c_str());
 	}
 
 	R_ASSERT3(icon != m_FlashingIcons.end(), "Flashing icon with this type not existed!", iconType.c_str());

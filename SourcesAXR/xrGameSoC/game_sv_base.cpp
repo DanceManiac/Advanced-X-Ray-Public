@@ -752,19 +752,24 @@ void game_sv_GameState::OnEvent (NET_Packet &tNetPacket, u16 type, u32 time, Cli
 
 bool game_sv_GameState::NewPlayerName_Exists( void* pClient, LPCSTR NewName )
 {
-	if ( !pClient || !NewName ) return false;
-	IClient* CL = (IClient*)pClient;
-	if ( !CL->name || xr_strlen( CL->name.c_str() ) == 0 ) return false;
-	bool Result = false;
-	auto ForEach = [&](IClient* client)
+	if (!pClient || !NewName) return false;
+	struct client_finder
 	{
-		IClient*	pIC	= client;
-		if ( !pIC || pIC == CL ) return;
-		string64 xName;
-		strcpy( xName, pIC->name.c_str() );
-		if ( !xr_strcmp(NewName, xName) ) Result = true;
+		IClient* CL;
+		LPCSTR NewName;
+		bool operator()(IClient* client)
+		{
+			if (client == CL) return false;
+			if (!xr_strcmp(NewName, client->name.c_str())) return true;
+			return false;
+		}
 	};
-	m_server->ForEachClientDo(ForEach);
+	client_finder tmp_predicate;
+	tmp_predicate.CL = static_cast<IClient*>(pClient);
+	tmp_predicate.NewName = NewName;
+	if (!tmp_predicate.CL->name || xr_strlen(tmp_predicate.CL->name.c_str()) == 0) return false;
+	IClient* ret_client = m_server->FindClient(tmp_predicate);
+	return (ret_client != NULL);
 }
 
 void game_sv_GameState::NewPlayerName_Generate( void* pClient, LPSTR NewPlayerName )

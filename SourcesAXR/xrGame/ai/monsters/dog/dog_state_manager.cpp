@@ -81,7 +81,7 @@ void CStateManagerDog::execute()
 	{
 		if ( atack )
 		{
-			CMonsterSquad* squad = monster_squad().get_squad(object);
+			squad = monster_squad().get_squad(object);
 			switch ( object->EnemyMan.get_danger_type() ) 
 			{
 				case eStrong: state_id = eStatePanic;  break;

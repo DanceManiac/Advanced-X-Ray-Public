@@ -278,14 +278,14 @@ bool game_sv_CaptureTheArtefact::CheckForRoundStart()
 	return false;
 }
 
-void game_sv_CaptureTheArtefact::CheckForWarmap(u32 currentTime)
+void game_sv_CaptureTheArtefact::CheckForWarmap(u32 currentTime_)
 {
 	if (m_dwWarmUp_CurTime == 0 && !m_bInWarmUp) return;
-	if (m_dwWarmUp_CurTime < currentTime)
+	if (m_dwWarmUp_CurTime < currentTime_)
 	{
-		m_dwWarmUp_CurTime	= 0;
+		m_dwWarmUp_CurTime = 0;
 		m_bInWarmUp = false;
-		Console->Execute	("g_restart_fast");
+		Console->Execute("g_restart_fast");
 	};
 }
 
@@ -1131,9 +1131,9 @@ void game_sv_CaptureTheArtefact::SendAnomalyStates()
 	u_EventSend(event_pack);
 }
 
-void game_sv_CaptureTheArtefact::CheckAnomalyUpdate(u32 currentTime)
+void game_sv_CaptureTheArtefact::CheckAnomalyUpdate(u32 currentTime_)
 {
-	if ((m_dwLastAnomalyStartTime + Get_AnomalySetLengthTime_msec()) <= currentTime)
+	if ((m_dwLastAnomalyStartTime + Get_AnomalySetLengthTime_msec()) <= currentTime_)
 		ReStartRandomAnomaly();
 }
 
@@ -2202,7 +2202,7 @@ void game_sv_CaptureTheArtefact::PrepareClientForNewRound(IClient* client)
 	assign_RP(static_cast<CSE_ALifeCreatureActor*>(clientData->owner), ps);
 }
 
-void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime)
+void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime_)
 {
 	TeamsMap::iterator		te = teams.end();
 	TeamsMap::iterator		team_iter;
@@ -2220,7 +2220,7 @@ void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime)
 
 		if (ti->second.IsArtefactActivated())
 		{
-			/*if ((currentTime - ti->second.activationArtefactTimeStart) >=
+			/*if ((currentTime_ - ti->second.activationArtefactTimeStart) >=
 				Get_ActivatedArtefactRetTime_msec())
 			{*/
 				MoveArtefactToPoint(artefact, ti->second.artefactRPoint);
@@ -2251,11 +2251,11 @@ void game_sv_CaptureTheArtefact::CheckForArtefactReturning(u32 currentTime)
 			continue;
 		}
 		if (!ti->second.freeArtefactTimeStart ||
-			((currentTime - ti->second.freeArtefactTimeStart) >= 
+			((currentTime_ - ti->second.freeArtefactTimeStart) >= 
 			Get_ArtefactReturningTime_msec()))
 		{
 			MoveArtefactToPoint(artefact, ti->second.artefactRPoint);
-			ti->second.freeArtefactTimeStart = currentTime;
+			ti->second.freeArtefactTimeStart = currentTime_;
 		}
 	}
 }

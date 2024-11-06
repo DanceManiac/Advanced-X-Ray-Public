@@ -230,18 +230,18 @@ void CWeaponShotgun::PlayAnimAim()
 		}
 	}
 
-	if (const char* guns_aim_anm = GetAnimAimName())
+	if (const char* guns_aim_anm_ = GetAnimAimName())
 	{
-		if (isHUDAnimationExist(guns_aim_anm))
+		if (isHUDAnimationExist(guns_aim_anm_))
 		{
-			PlayHUDMotionNew(guns_aim_anm, true, GetState());
+			PlayHUDMotionNew(guns_aim_anm_, true, GetState());
 			return;
 		}
-		else if (guns_aim_anm && strstr(guns_aim_anm, "_jammed"))
+		else if (guns_aim_anm_ && strstr(guns_aim_anm_, "_jammed"))
 		{
 			char new_guns_aim_anm[256];
-			strcpy(new_guns_aim_anm, guns_aim_anm);
-			new_guns_aim_anm[strlen(guns_aim_anm) - strlen("_jammed")] = '\0';
+			strcpy(new_guns_aim_anm, guns_aim_anm_);
+			new_guns_aim_anm[strlen(guns_aim_anm_) - strlen("_jammed")] = '\0';
 
 			if (isHUDAnimationExist(new_guns_aim_anm))
 			{
@@ -249,11 +249,11 @@ void CWeaponShotgun::PlayAnimAim()
 				return;
 			}
 		}
-		else if (guns_aim_anm && strstr(guns_aim_anm, "_empty"))
+		else if (guns_aim_anm_ && strstr(guns_aim_anm_, "_empty"))
 		{
 			char new_guns_aim_anm[256];
-			strcpy(new_guns_aim_anm, guns_aim_anm);
-			new_guns_aim_anm[strlen(guns_aim_anm) - strlen("_empty")] = '\0';
+			strcpy(new_guns_aim_anm, guns_aim_anm_);
+			new_guns_aim_anm[strlen(guns_aim_anm_) - strlen("_empty")] = '\0';
 
 			if (isHUDAnimationExist(new_guns_aim_anm))
 			{

@@ -340,10 +340,10 @@ bool CStateGroupEatAbstract::hungry()
 }
 
 TEMPLATE_SPECIALIZATION
-void CStateGroupEatAbstract::remove_links	(CObject* object)
+void CStateGroupEatAbstract::remove_links(CObject* object_)
 {
-	if (corpse == object)
-		corpse	= 0;
+	if (corpse == object_)
+		corpse = 0;
 }
 
 #undef TEMPLATE_SPECIALIZATION

@@ -480,7 +480,7 @@ u32 attachable_hud_item::anim_play(const shared_str& anm_name_b, BOOL bMixIn, co
 	
 	if(m_model->dcast_PKinematicsAnimated())
 	{
-		IKinematicsAnimated* ka			= m_model->dcast_PKinematicsAnimated();
+		ka			= m_model->dcast_PKinematicsAnimated();
 
 		shared_str item_anm_name;
 		if(anm->m_base_name!=anm->m_additional_name)
@@ -868,7 +868,7 @@ u32 player_hud::motion_length_script(LPCSTR section, LPCSTR anm_name, float spee
 
 	const CMotionDef* temp;
 
-#pragma todo("DANCE MANIAC: Need Edit for SoC hands.");
+#pragma todo("DANCE MANIAC: Need Edit for SoC hands.")
 	return motion_length(phm->m_animations[0].mid, temp, speed, m_model);
 }
 

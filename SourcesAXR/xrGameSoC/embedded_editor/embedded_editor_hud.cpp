@@ -22,7 +22,7 @@ void ShowHudEditor(bool& show)
 	if (!g_player_hud)
 		return;
 
-#pragma todo("DANCE MANIAC: Skip editor for SoC hands. Need adaptation.");
+#pragma todo("DANCE MANIAC: Skip editor for SoC hands. Need adaptation.")
 	if ((g_player_hud->attached_item(0) && !g_player_hud->attached_item(0)->m_has_separated_hands) || (g_player_hud->attached_item(1) && !g_player_hud->attached_item(1)->m_has_separated_hands))
 		return;
 

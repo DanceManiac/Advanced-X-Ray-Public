@@ -304,7 +304,7 @@ private:
 	collide::rq_results	rq_storage;
 
 private:
-			void						can_kill_entity			(const Fvector &position, const Fvector &direction, float distance, collide::rq_results& rq_storage);
+			void						can_kill_entity			(const Fvector &position, const Fvector &direction, float distance, collide::rq_results& rq_storage_);
 			void						can_kill_entity_from	(const Fvector &position, Fvector direction, float distance);
 			void						update_can_kill_info	();
 

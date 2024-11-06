@@ -398,7 +398,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		float cur = cur_outfit->GetDefHitTypeProtection(hit_type);
 		cur /= max_power; // = 0..1
-		float slot = cur;
+		slot = cur;
 
 		if (slot_outfit)
 		{
@@ -421,7 +421,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		float cur = cur_outfit->GetBoneArmor(spine_bone) * cur_outfit->GetCondition();
 		slot = slot_outfit ? slot_outfit->GetBoneArmor(spine_bone) * slot_outfit->GetCondition() : cur;
-		float max_power = actor->conditions().GetMaxFireWoundProtection() != 0 ? actor->conditions().GetMaxFireWoundProtection() : 1.f;
+		max_power = actor->conditions().GetMaxFireWoundProtection() != 0 ? actor->conditions().GetMaxFireWoundProtection() : 1.f;
 		cur /= max_power;
 		slot /= max_power;
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue(cur, slot);

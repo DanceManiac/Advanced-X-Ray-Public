@@ -2097,7 +2097,7 @@ int CWeapon::GetCurrentTypeAmmoTotal() const
 	return l_count + iAmmoCurrent;
 }
 
-int CWeapon::GetAmmoCount(u8 ammo_type) const
+int CWeapon::GetAmmoCount(u32 ammo_type) const
 {
 	VERIFY(m_pInventory);
 	R_ASSERT(ammo_type < m_ammoTypes.size());

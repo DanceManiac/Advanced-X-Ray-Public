@@ -1347,7 +1347,7 @@ void CScriptGameObject::RemoveDanger(const CDangerObject& dobject)
 
 //-Alundaio
 
-void CScriptGameObject::SetRemainingUses(u8 value)
+void CScriptGameObject::SetRemainingUses(u32 value)
 {
 	CInventoryItem* IItm = object().cast_inventory_item();
 	if (!IItm)
@@ -1360,7 +1360,7 @@ void CScriptGameObject::SetRemainingUses(u8 value)
 	eItm->SetRemainingUses(value);
 }
 
-u8 CScriptGameObject::GetRemainingUses()
+u32 CScriptGameObject::GetRemainingUses()
 {
 	CInventoryItem* IItm = object().cast_inventory_item();
 	if (!IItm)
@@ -1373,7 +1373,7 @@ u8 CScriptGameObject::GetRemainingUses()
 	return eItm->GetPortionsNum();
 }
 
-u8 CScriptGameObject::GetMaxUses()
+u32 CScriptGameObject::GetMaxUses()
 {
 	CInventoryItem* IItm = object().cast_inventory_item();
 	if (!IItm)

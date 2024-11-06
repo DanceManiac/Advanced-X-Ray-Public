@@ -743,10 +743,10 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 				}
 			}
 
-			if (const char* guns_aim_anm = GetAnimAimName())
+			if (const char* guns_aim_anm_ = GetAnimAimName())
 			{
 				string64 guns_aim_anm_full;
-				strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_aim_anm, m_bGrenadeMode ? "_g" : "_w_gl");
+				strconcat(sizeof(guns_aim_anm_full), guns_aim_anm_full, guns_aim_anm_, m_bGrenadeMode ? "_g" : "_w_gl");
 
 				if (isHUDAnimationExist(guns_aim_anm_full)) 
 				{
@@ -1322,10 +1322,10 @@ void CWeaponMagazinedWGrenade::net_Import	(NET_Packet& P)
 	inherited::net_Import		(P);
 }
 
-bool CWeaponMagazinedWGrenade::IsNecessaryItem	    (const shared_str& item_sect)
+bool CWeaponMagazinedWGrenade::IsNecessaryItem	    (const shared_str& item_sect_)
 {
-	return (	std::find(m_ammoTypes.begin(), m_ammoTypes.end(), item_sect) != m_ammoTypes.end() ||
-				std::find(m_ammoTypes2.begin(), m_ammoTypes2.end(), item_sect) != m_ammoTypes2.end() 
+	return (	std::find(m_ammoTypes.begin(), m_ammoTypes.end(), item_sect_) != m_ammoTypes.end() ||
+				std::find(m_ammoTypes2.begin(), m_ammoTypes2.end(), item_sect_) != m_ammoTypes2.end() 
 			);
 }
 

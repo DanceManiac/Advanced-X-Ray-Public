@@ -358,7 +358,7 @@ void ShowWeatherEditor(bool& show)
 	if (!cur)
 		return;
 
-	for (int i = 0; i != env.CurrentWeather->size(); i++)
+	for (u32 i = 0; i != env.CurrentWeather->size(); i++)
 		if (cur->m_identifier == env.CurrentWeather->at(i)->m_identifier)
 			sel = i;
 	if (ImGui::Combo(toUtf8(CStringTable().translate("st_weather_editor_cur_sect").c_str()).c_str(), &sel, enumWeather, env.CurrentWeather, env.CurrentWeather->size())) {

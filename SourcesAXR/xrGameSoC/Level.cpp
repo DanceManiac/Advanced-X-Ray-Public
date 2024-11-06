@@ -1339,7 +1339,7 @@ std::string CLevel::GetMoonPhase()
 			day += 1;
 
 		int phase = -1;
-		std::string opt_moon_phase = GameConstants::GetMoonPhasesMode();
+		shared_str opt_moon_phase = GameConstants::GetMoonPhasesMode();
 
 		if (opt_moon_phase == "28days")
 			phase = static_cast<int>(std::fmod(day, 28) / 3.5);

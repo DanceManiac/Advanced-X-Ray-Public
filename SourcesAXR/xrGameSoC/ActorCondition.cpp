@@ -301,7 +301,7 @@ void CActorCondition::AffectDamage_InjuriousMaterialAndMonstersInfluence()
 
 	float psy_influence = 0;
 	float fire_influence = 0;
-#pragma todo("DANCE MANIAC: No xrPhysics functional for GetInjuriousMaterialDamage function.");
+#pragma todo("DANCE MANIAC: No xrPhysics functional for GetInjuriousMaterialDamage function.")
 	float radiation_influence = 0; // GetInjuriousMaterialDamage(); // Get Radiation from Material
 
 	// Add Radiation and Psy Level from Monsters
@@ -1346,19 +1346,19 @@ void CActorCondition::UpdateTutorialThresholds()
 	}
 
 	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()<_cPsyHealthThr){
-//.		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
+		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_psy");
 	}
 
 	if (b && !m_condition_flags.test(eCriticalFrostbiteReached) && GetFrostbite() > _cFrostbite) {
-		//.		m_condition_flags.set			(eCriticalFrostbiteReached, TRUE);
+		m_condition_flags.set			(eCriticalFrostbiteReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_frostbite");
 	}
 
 	if(b && !m_condition_flags.test(eCantWalkWeight)){
-//.		m_condition_flags.set			(eCantWalkWeight, TRUE);
+		m_condition_flags.set			(eCantWalkWeight, TRUE);
 		b=false;
 		strcpy_s(cb_name,"_G.on_actor_cant_walk_weight");
 	}

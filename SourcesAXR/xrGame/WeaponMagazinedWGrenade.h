@@ -65,7 +65,7 @@ public:
 	virtual void	OnMagazineEmpty	();
 	virtual bool	GetBriefInfo			(II_BriefInfo& info);
 
-	virtual bool	IsNecessaryItem	    (const shared_str& item_sect);
+	virtual bool	IsNecessaryItem	    (const shared_str& item_sect_);
 
 	bool			IsGrenadeMode		() const override { return m_bGrenadeMode; }
 

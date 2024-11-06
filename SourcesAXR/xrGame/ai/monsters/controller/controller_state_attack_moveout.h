@@ -30,7 +30,7 @@ public:
 	virtual bool 	check_completion		();
 	virtual bool 	check_start_conditions	();
 
-	virtual void	remove_links			(CObject* object) {}
+	virtual void	remove_links			(CObject* object_) {}
 
 private:
 			void	update_target_point		();	

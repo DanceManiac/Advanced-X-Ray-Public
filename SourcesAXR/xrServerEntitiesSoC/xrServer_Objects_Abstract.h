@@ -115,7 +115,7 @@ public:
 	virtual CSE_Visual*				visual			() = 0;
 	virtual CSE_Motion*				motion			() = 0;
 	virtual bool					validate		() = 0;
-	virtual void 					on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F) = 0;
+	virtual void 					on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F) = 0;
 };
 
 #pragma warning(pop)

@@ -126,7 +126,7 @@ public:
 	virtual ISE_Shape*				shape			();
 	virtual CSE_Motion*				motion			();
 	virtual bool					validate		();
-	virtual void 					on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F){} 
+	virtual void 					on_render		(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F){} 
 	//
 
 	IC		const Fvector			&Position		() const					{return o_Position;};

@@ -236,8 +236,8 @@ IC	void CAbstractGraph::save			(IWriter &stream)
 
 	stream.open_chunk			(2);
 	{
-		const_vertex_iterator	I = vertices().begin();
-		const_vertex_iterator	E = vertices().end();
+		I = vertices().begin();
+		E = vertices().end();
 		for ( ; I != E; ++I) {
 			if ((*I).second->edges().empty())
 				continue;

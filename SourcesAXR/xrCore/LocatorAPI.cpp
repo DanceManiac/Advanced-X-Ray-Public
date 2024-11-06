@@ -293,7 +293,7 @@ IReader* open_chunk(void* ptr, u32 ID, pcstr archiveName, u32 archiveSize, bool 
 					g_trivial_encryptor.decode(src_data, dwSize, src_data, trivial_encryptor::key_flag::russian);
 					result = _decompressLZ(&dest, &dest_sz, src_data, dwSize, archiveSize);
 				}
-				R_ASSERT(result, "Can't decompress archive", archiveName);
+				R_ASSERT2(result, make_string("Can't decompress archive %s", archiveName));
 
 				xr_free			(src_data);
 				return xr_new<CTempReader>(dest,dest_sz,0);

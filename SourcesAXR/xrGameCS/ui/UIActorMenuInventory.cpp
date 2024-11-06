@@ -740,61 +740,68 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 			break;
 
 		case GRENADE_SLOT://fake
-			if ( m_currMenuMode == mmTrade )
+		{
+			if (m_currMenuMode == mmTrade)
 			{
 				return m_pTradeActorBagList;
 			}
-			return m_pInventoryBagList;
-			break;
+		}break;
 
+		case KNIFE_SLOT:
+		{
 			if (GameConstants::GetKnifeSlotEnabled())
 			{
-				case KNIFE_SLOT:
-					return m_pInventoryKnifeList;
-					break;
+				return m_pInventoryKnifeList;
 			}
+		}break;
 
+		case APPARATUS_SLOT:
+		{
 			if (GameConstants::GetBinocularSlotEnabled())
 			{
-				case APPARATUS_SLOT:
-					return m_pInventoryBinocularList;
-					break;
+				return m_pInventoryBinocularList;
 			}
+		}break;
 
+		case TORCH_SLOT:
+		{
 			if (GameConstants::GetTorchSlotEnabled())
 			{
-				case TORCH_SLOT:
-					return m_pInventoryTorchList;
-					break;
+				return m_pInventoryTorchList;
 			}
+		}break;
 
+		case BACKPACK_SLOT:
+		{
 			if (GameConstants::GetBackpackSlotEnabled())
 			{
-				case BACKPACK_SLOT:
-					return m_pInventoryBackpackList;
-					break;
+				return m_pInventoryBackpackList;
 			}
+		}break;
 
+		case DOSIMETER_SLOT:
+		{
 			if (GameConstants::GetDosimeterSlotEnabled())
 			{
-				case DOSIMETER_SLOT:
-					return m_pInventoryDosimeterList;
-					break;
+				return m_pInventoryDosimeterList;
 			}
+		}break;
 
+		case PANTS_SLOT:
+		{
 			if (GameConstants::GetPantsSlotEnabled())
 			{
-				case PANTS_SLOT:
-					return m_pInventoryPantsList;
-					break;
+				return m_pInventoryPantsList;
 			}
+		}break;
 
+		case PDA_SLOT:
+		{
 			if (GameConstants::GetPdaSlotEnabled())
 			{
-				case PDA_SLOT:
-					return m_pInventoryPdaList;
-					break;
+				return m_pInventoryPdaList;
 			}
+		}break;
 	};
 	return NULL;
 }
@@ -912,12 +919,12 @@ void CUIActorMenu::ActivatePropertiesBox()
 		m_UIPropertiesBox->AutoUpdateSize();
 		m_UIPropertiesBox->BringAllToTop();
 
-		Fvector2 cursor_pos;
+		Fvector2 cursor_pos_;
 		Frect						vis_rect;
 		GetAbsoluteRect				(vis_rect);
-		cursor_pos					= GetUICursor().GetCursorPosition();
-		cursor_pos.sub				(vis_rect.lt);
-		m_UIPropertiesBox->Show		(vis_rect, cursor_pos);
+		cursor_pos_					= GetUICursor().GetCursorPosition();
+		cursor_pos_.sub				(vis_rect.lt);
+		m_UIPropertiesBox->Show		(vis_rect, cursor_pos_);
 		PlaySnd						(eProperties);
 	}
 }
@@ -1368,8 +1375,8 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 		}
 	case INVENTORY_DROP_ACTION:
 		{
-			void* d = m_UIPropertiesBox->GetClickedItem()->GetData();
-			if ( d == (void*)33 )
+			void* dd = m_UIPropertiesBox->GetClickedItem()->GetData();
+			if ( dd == (void*)33 )
 			{
 				DropAllCurrentItem();
 			}

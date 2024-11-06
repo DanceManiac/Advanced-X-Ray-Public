@@ -374,7 +374,7 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 
 	if (pAfContainer)
 	{
-		val = pAfContainer->GetContainerSize();
+		val = (float)pAfContainer->GetContainerSize();
 		if (!fis_zero(val))
 		{
 			m_artefacts_count->SetValue(val);

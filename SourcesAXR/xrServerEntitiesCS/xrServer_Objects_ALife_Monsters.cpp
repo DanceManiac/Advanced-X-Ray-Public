@@ -578,7 +578,7 @@ void CSE_ALifeTrader::STATE_Read			(NET_Packet &tNetPacket, u16 size)
 			shared_str			temp;
 			tNetPacket.r_stringZ(temp);
 			tNetPacket.r_u32	();
-			for (int i=0, n=tNetPacket.r_u32(); i<n; ++i) {
+			for (int i_=0, n=tNetPacket.r_u32(); i_<n; ++i_) {
 				tNetPacket.r_stringZ(temp);
 				tNetPacket.r_u32	();
 				tNetPacket.r_u32	();

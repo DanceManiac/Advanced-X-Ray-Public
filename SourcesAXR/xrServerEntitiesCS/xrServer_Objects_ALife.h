@@ -334,7 +334,7 @@ public:
 	virtual bool					can_switch_offline		() const;
 	virtual bool					interactive				() const;
 #ifdef XRSE_FACTORY_EXPORTS
-	virtual void 			on_render				(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
+	virtual void 			on_render				(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
 	virtual	visual_data*	visual_collection		() const { return &*m_visuals.begin(); }
 	virtual	u32				visual_collection_size	() const { return m_visuals.size(); }
 #endif // #ifdef XRSE_FACTORY_EXPORTS
@@ -523,7 +523,7 @@ SERVER_ENTITY_DECLARE_BEGIN2(CSE_ALifeObjectHangingLamp,CSE_ALifeDynamicObjectVi
 	virtual bool					match_configuration			() const;
 	virtual bool			validate					();
 #ifndef XRGAME_EXPORTS
-	virtual void 			on_render					(CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
+	virtual void 			on_render					(CDUInterface* du, ISE_AbstractLEOwner* owner_, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F);
 #endif // #ifndef XRGAME_EXPORTS
 	virtual CSE_Abstract			*cast_abstract				() {return this;}
 SERVER_ENTITY_DECLARE_END

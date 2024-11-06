@@ -68,14 +68,14 @@ void CControlPathBuilderBase::find_target_point_set()
 		m_target_found.set_position( new_position );
 		// 2. быстрый тест на недостижимость цели (выбрать случайную позицию)
 		if (!m_man->path_builder().accessible(m_target_found.position())) {
-			Fvector new_position = m_target_found.position();
+			new_position = m_target_found.position();
 			m_target_found.set_node( m_man->path_builder().restrictions().accessible_nearest(m_target_found.position(), new_position ) );
 			m_target_found.set_position( new_position );
-			Fvector	pos_random;	
-			Fvector dir;		
-			dir.random_dir			();
+			Fvector	pos_random;
+			Fvector dir_;
+			dir_.random_dir			();
 
-			pos_random.mad			(m_object->Position(), dir, pmt_find_point_dist);
+			pos_random.mad			(m_object->Position(), dir_, pmt_find_point_dist);
 			set_target_accessible	(m_target_found, pos_random);
 
 			if (m_target_found.node() != u32(-1)) return;

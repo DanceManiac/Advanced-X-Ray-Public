@@ -640,7 +640,7 @@ bool CCustomDetector::install_upgrade_impl(LPCSTR section, bool test)
 	return result;
 }
 
-bool CCustomDetector::IsNecessaryItem(const shared_str& item_sect, xr_vector<shared_str> item)
+bool CCustomDetector::IsNecessaryItem(const shared_str& item_sect_, xr_vector<shared_str> item)
 {
-	return (std::find(item.begin(), item.end(), item_sect) != item.end());
+	return (std::find(item.begin(), item.end(), item_sect_) != item.end());
 }

@@ -688,7 +688,7 @@ public:
 			u32					GetMainWeaponType();
 			u32					GetWeaponType();
 			u8					GetWeaponSubstate();
-			u8					GetAmmoType();
+			u32					GetAmmoType();
 
 			//CWeaponAmmo
 			u16					AmmoGetCount();
@@ -752,9 +752,9 @@ public:
 			void				SetActorRunBackCoef(float run_back_coef);
 			//-Alundaio
 
-			void 				SetRemainingUses(u8 value);
-			u8 					GetRemainingUses();
-			u8 					GetMaxUses();
+			void 				SetRemainingUses(u32 value);
+			u32					GetRemainingUses();
+			u32					GetMaxUses();
 
 			void				SetArtefactChargeLevel(float charge_level);
 			float				GetArtefactChargeLevel() const;

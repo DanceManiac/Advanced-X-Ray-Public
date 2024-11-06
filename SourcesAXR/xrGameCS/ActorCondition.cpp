@@ -1468,19 +1468,19 @@ void CActorCondition::UpdateTutorialThresholds()
 	}
 
 	if(b && !m_condition_flags.test(ePhyHealthMinReached) && GetPsyHealth()<_cPsyHealthThr){
-//.		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
+		m_condition_flags.set			(ePhyHealthMinReached, TRUE);
 		b=false;
 		xr_strcpy(cb_name,"_G.on_actor_psy");
 	}
 
 	if (b && !m_condition_flags.test(eCriticalFrostbiteReached) && GetFrostbite() > _cFrostbite) {
-//.		m_condition_flags.set			(eCriticalFrostbiteReached, TRUE);
+		m_condition_flags.set			(eCriticalFrostbiteReached, TRUE);
 		b = false;
 		xr_strcpy(cb_name, "_G.on_actor_frostbite");
 	}
 
 	if(b && !m_condition_flags.test(eCantWalkWeight)){
-//.		m_condition_flags.set			(eCantWalkWeight, TRUE);
+		m_condition_flags.set			(eCantWalkWeight, TRUE);
 		b=false;
 		xr_strcpy(cb_name,"_G.on_actor_cant_walk_weight");
 	}

@@ -445,7 +445,7 @@ void CScriptGameObject::SetAmmoType(u8 type)
 	weapon->SetAmmoType(type);
 }
 
-u8 CScriptGameObject::GetAmmoType()
+u32 CScriptGameObject::GetAmmoType()
 {
 	CWeapon* weapon = smart_cast<CWeapon*>(&object());
 	if (!weapon) return 255;

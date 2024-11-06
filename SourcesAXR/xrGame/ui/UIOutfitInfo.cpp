@@ -409,7 +409,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		float cur = cur_outfit->GetDefHitTypeProtection(hit_type);
 		cur /= max_power; // = 0..1
-		float slot = cur;
+		slot = cur;
 
 		if (slot_outfit)
 		{
@@ -432,7 +432,7 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		float cur = cur_outfit->GetBoneArmor(spine_bone) * cur_outfit->GetCondition();
 		slot = slot_outfit ? slot_outfit->GetBoneArmor(spine_bone) * slot_outfit->GetCondition() : cur;
-		float max_power = actor->conditions().GetMaxFireWoundProtection() != 0 ? actor->conditions().GetMaxFireWoundProtection() : 1.f;
+		max_power = actor->conditions().GetMaxFireWoundProtection() != 0 ? actor->conditions().GetMaxFireWoundProtection() : 1.f;
 		cur /= max_power;
 		slot /= max_power;
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue(cur, slot);
@@ -530,11 +530,11 @@ void CUIOutfitItem::SetInfo(CHelmet* cur_helmet, CHelmet* slot_helmet)
 		}
 
 		ALife::EHitType hit_type = (ALife::EHitType)i;
-		float max_power = actor->conditions().GetZoneMaxPower(hit_type);
+		max_power = actor->conditions().GetZoneMaxPower(hit_type);
 
-		float cur = cur_helmet->GetDefHitTypeProtection(hit_type);
+		cur = cur_helmet->GetDefHitTypeProtection(hit_type);
 		cur /= max_power; // = 0..1
-		float slot = cur;
+		slot = cur;
 
 		if (slot_helmet)
 		{
@@ -555,8 +555,8 @@ void CUIOutfitItem::SetInfo(CHelmet* cur_helmet, CHelmet* slot_helmet)
 		VERIFY(ikv);
 		u16 spine_bone = ikv->LL_BoneID("bip01_head");
 
-		float cur = cur_helmet->GetBoneArmor(spine_bone) * cur_helmet->GetCondition();
-		float slot = (slot_helmet) ? slot_helmet->GetBoneArmor(spine_bone) * slot_helmet->GetCondition() : cur;
+		cur = cur_helmet->GetBoneArmor(spine_bone) * cur_helmet->GetCondition();
+		slot = (slot_helmet) ? slot_helmet->GetBoneArmor(spine_bone) * slot_helmet->GetCondition() : cur;
 
 		m_items[ALife::eHitTypeFireWound]->SetProgressValue(cur, slot);
 		pos.set(m_items[ALife::eHitTypeFireWound]->GetWndPos());

@@ -350,8 +350,8 @@ void CUIBoosterInfo::SetInfo(CInventoryItem& pInvItem)
 	//Portions
 	if (eatable)
 	{
-		val = eatable->GetPortionsNum();
-		max_value = eatable->m_iConstPortions;
+		val = (float)eatable->GetPortionsNum();
+		max_value = (float)eatable->GetConstPortionsNum();
 
 		if (max_value > 1)
 		{

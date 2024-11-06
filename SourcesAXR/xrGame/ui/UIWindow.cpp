@@ -338,9 +338,9 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 				return false;
 		}
 
-		Frect wndRect = w->GetWndRect();
+		Frect wndRect_ = w->GetWndRect();
 
-		if (wndRect.in(cursor_pos) )
+		if (wndRect_.in(cursor_pos) )
 		{
 			if(w->IsEnabled())
 			{

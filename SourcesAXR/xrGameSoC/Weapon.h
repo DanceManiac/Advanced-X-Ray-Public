@@ -555,23 +555,23 @@ public:
 
 	// Alundaio
 	int						GetAmmoCount_forType	(shared_str const& ammo_type) const;
-	int						GetAmmoCount			(u8 ammo_type) const;
-	virtual void			set_ef_main_weapon_type(u32 type) { m_ef_main_weapon_type = type; };
+	virtual void			set_ef_main_weapon_type	(u32 type) { m_ef_main_weapon_type = type; };
 	virtual void			set_ef_weapon_type		(u32 type) { m_ef_weapon_type = type; };
 	virtual void			SetAmmoType				(u32 type) { m_ammoType = type; };
-	u8						GetAmmoType				() { return m_ammoType; };
+	u32						GetAmmoType				() { return m_ammoType; };
 
 	//-Alundaio
-	IC int					GetAmmoElapsed		()	const		{	return /*int(m_magazine.size())*/iAmmoElapsed;}
-	IC int					GetAmmoMagSize		()	const		{	return iMagazineSize;						}
-	int						GetAmmoCurrent		(bool use_item_to_spawn = false)  const;
+	int						GetAmmoCount			(u32 ammo_type) const;
+	IC int					GetAmmoElapsed			()	const		{	return /*int(m_magazine.size())*/iAmmoElapsed;}
+	IC int					GetAmmoMagSize			()	const		{	return iMagazineSize;						}
+	int						GetAmmoCurrent			(bool use_item_to_spawn = false)  const;
 
-	void					SetAmmoElapsed		(int ammo_count);
+	void					SetAmmoElapsed			(int ammo_count);
 
-	virtual void			OnMagazineEmpty		();
-			void			SpawnAmmo			(u32 boxCurr = 0xffffffff, 
-													LPCSTR ammoSect = NULL, 
-													u32 ParentID = 0xffffffff);
+	virtual void			OnMagazineEmpty			();
+			void			SpawnAmmo				(u32 boxCurr = 0xffffffff, 
+														LPCSTR ammoSect = NULL, 
+														u32 ParentID = 0xffffffff);
 
 	//  [8/3/2005]
 	virtual	float			Get_PDM_Base		()	const	{ return m_fPDM_disp_base			; };

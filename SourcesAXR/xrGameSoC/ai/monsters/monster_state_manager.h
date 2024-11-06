@@ -22,4 +22,3 @@ protected:
 };
 
 #include "monster_state_manager_inline.h"
-
