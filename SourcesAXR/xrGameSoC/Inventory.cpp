@@ -671,6 +671,13 @@ bool CInventory::Activate(u32 slot, EActivationReason reason, bool bForce)
 	if (m_iActiveSlot == BACKPACK_SLOT && slot != NO_ACTIVE_SLOT && pGameSP->InventoryMenu->IsShown())
 		return false;
 
+#pragma todo("DANCE MANIAC: Hack for last thrown grenade block slots and crash game =/")
+	if (m_iActiveSlot == GRENADE_SLOT && !m_slots[m_iActiveSlot].m_pIItem)
+	{
+		m_iActiveSlot = NO_ACTIVE_SLOT;
+		Activate(NO_ACTIVE_SLOT);
+	}
+
 	if(m_iActiveSlot == slot && m_iActiveSlot != NO_ACTIVE_SLOT && m_slots[m_iActiveSlot].m_pIItem)
 	{
 		m_slots[m_iActiveSlot].m_pIItem->Activate();
