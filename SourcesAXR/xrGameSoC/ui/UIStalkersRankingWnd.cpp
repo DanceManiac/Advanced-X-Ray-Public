@@ -262,7 +262,8 @@ void CUIStalkerRankingInfoItem::SetSelected	(bool b)
 	m_text1->SetTextColor( subst_alpha(m_text1->GetTextColor(), b?255:m_stored_alpha ));
 	m_text2->SetTextColor( subst_alpha(m_text2->GetTextColor(), b?255:m_stored_alpha ));
 	m_text3->SetTextColor( subst_alpha(m_text3->GetTextColor(), b?255:m_stored_alpha ));
-	if(b){ 
+#pragma todo("DANCE MANIAC: Added `&& m_humanOwner` for disable crash then we open ranking wnd in pda. It`s not fix!")
+	if(b && m_humanOwner){
 		m_StalkersRankingWnd->ShowHumanInfo(m_humanOwner);
 	}
 
