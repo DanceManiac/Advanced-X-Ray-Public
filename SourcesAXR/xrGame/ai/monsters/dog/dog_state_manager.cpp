@@ -155,9 +155,9 @@ void CStateManagerDog::execute()
 
 	if ( prev_substate == eStateEat && current_substate != eStateEat )
 	{
-		if ( object->character_physics_support()->movement()->PHCapture() )
+		if ( object->character_physics_support()->get_movement()->PHCapture() )
 		{
-			object->character_physics_support()->movement()->PHReleaseObject();
+			object->character_physics_support()->get_movement()->PHReleaseObject();
 		}
 	}
 

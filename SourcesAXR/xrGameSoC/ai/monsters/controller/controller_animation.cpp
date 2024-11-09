@@ -19,7 +19,7 @@ void CControllerAnimation::reinit()
 
 	set_body_state			(eTorsoIdle, eLegsTypeStand);
 
-	m_man->animation().add_anim_event(m_torso[eTorsoPsyAttack], _pmt_psy_attack_time, CControlAnimation::eAnimationHit);
+	m_man->get_animation().add_anim_event(m_torso[eTorsoPsyAttack], _pmt_psy_attack_time, CControlAnimation::eAnimationHit);
 	m_wait_torso_anim_end	= false;
 
 }
@@ -165,7 +165,7 @@ void CControllerAnimation::select_velocity()
 		
 		// if we are moving, get yaw from path
 		float cur_yaw, target_yaw;
-		m_man->direction().get_heading(cur_yaw, target_yaw);
+		m_man->get_direction().get_heading(cur_yaw, target_yaw);
 		SPathRotations	path_rot = get_path_rotation(cur_yaw);
 		if ((path_rot.legs_motion == eLegsBackRun) ||
 			(path_rot.legs_motion == eLegsRunBkwdLeft) || 
@@ -188,7 +188,7 @@ void CControllerAnimation::set_path_direction()
 	float cur_yaw = Fvector().sub(m_controller->custom_dir().get_head_look_point(), m_object->Position()).getH();
 	cur_yaw = angle_normalize(-cur_yaw);
 
-	float target_yaw = m_man->path_builder().detail().direction().getH();
+	float target_yaw = m_man->path_builder().detail().get_direction().getH();
 	target_yaw = angle_normalize(-target_yaw);
 
 	SPathRotations path_rot = get_path_rotation(cur_yaw);	
@@ -229,7 +229,7 @@ void CControllerAnimation::select_legs_animation()
 	if (is_moving()) {
 		// if we are moving, get yaw from path
 		float cur_yaw, target_yaw;
-		m_man->direction().get_heading(cur_yaw, target_yaw);
+		m_man->get_direction().get_heading(cur_yaw, target_yaw);
 
 		SPathRotations	path_rot = get_path_rotation(cur_yaw);
 		legs_action		= path_rot.legs_motion;
@@ -257,7 +257,7 @@ void CControllerAnimation::select_legs_animation()
 
 CControllerAnimation::SPathRotations CControllerAnimation::get_path_rotation(float cur_yaw)
 {
-	float target_yaw = m_man->path_builder().detail().direction().getH();
+	float target_yaw = m_man->path_builder().detail().get_direction().getH();
 	target_yaw = angle_normalize(-target_yaw);
 
 	float	diff	= angle_difference(cur_yaw,target_yaw);
@@ -321,7 +321,7 @@ void CControllerAnimation::set_path_params()
 			
 			float target_yaw	= dir.getH();
 			target_yaw			= angle_normalize(-target_yaw);
-			float cur_yaw		= m_man->direction().get_heading_current();
+			float cur_yaw		= m_man->get_direction().get_heading_current();
 			
 			if (angle_difference(target_yaw,cur_yaw) > PI_DIV_2)
 				looking_fwd = false;

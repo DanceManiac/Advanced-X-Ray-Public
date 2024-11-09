@@ -76,22 +76,22 @@ void CGroupHierarchyHolder::register_in_agent_manager	(CEntity *member)
 {
 	if (!get_agent_manager() && smart_cast<CAI_Stalker*>(member)) {
 		m_agent_manager								= xr_new<CAgentManager>();
-		agent_manager().memory().set_squad_objects	(&visible_objects());
-		agent_manager().memory().set_squad_objects	(&sound_objects());
-		agent_manager().memory().set_squad_objects	(&hit_objects());
+		agent_manager().get_memory().set_squad_objects	(&visible_objects());
+		agent_manager().get_memory().set_squad_objects	(&sound_objects());
+		agent_manager().get_memory().set_squad_objects	(&hit_objects());
 	}
 
 	if (get_agent_manager())
-		agent_manager().member().add				(member);
+		agent_manager().get_member().add				(member);
 }
 
 void CGroupHierarchyHolder::register_in_group_senses	(CEntity *member)
 {
 	CCustomMonster			*monster = smart_cast<CCustomMonster*>(member);
 	if (monster) {
-		monster->memory().visual().set_squad_objects(&visible_objects());
-		monster->memory().sound().set_squad_objects	(&sound_objects());
-		monster->memory().hit().set_squad_objects	(&hit_objects());
+		monster->get_memory().visual().set_squad_objects(&visible_objects());
+		monster->get_memory().sound().set_squad_objects	(&sound_objects());
+		monster->get_memory().hit().set_squad_objects	(&hit_objects());
 	}
 }
 
@@ -120,8 +120,8 @@ void CGroupHierarchyHolder::unregister_in_squad			(CEntity *member)
 void CGroupHierarchyHolder::unregister_in_agent_manager	(CEntity *member)
 {
 	if (get_agent_manager()) {
-		agent_manager().member().remove	(member);
-		if (agent_manager().member().members().empty())
+		agent_manager().get_member().remove	(member);
+		if (agent_manager().get_member().members().empty())
 			xr_delete					(m_agent_manager);
 	}
 
@@ -136,9 +136,9 @@ void CGroupHierarchyHolder::unregister_in_group_senses	(CEntity *member)
 {
 	CCustomMonster			*monster = smart_cast<CCustomMonster*>(member);
 	if (monster) {
-		monster->memory().visual().set_squad_objects(0);
-		monster->memory().sound().set_squad_objects	(0);
-		monster->memory().hit().set_squad_objects	(0);
+		monster->get_memory().visual().set_squad_objects(0);
+		monster->get_memory().sound().set_squad_objects	(0);
+		monster->get_memory().hit().set_squad_objects	(0);
 	}
 }
 

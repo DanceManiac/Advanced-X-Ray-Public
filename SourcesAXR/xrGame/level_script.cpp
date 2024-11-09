@@ -1139,7 +1139,7 @@ void g_send(NET_Packet& P, bool bReliable = false, bool bSequential = true, bool
 	Level().Send(P);
 }
 
-void create_custom_timer(LPCSTR name, int start_value, int mode = 0)
+void create_custom_timer(LPCSTR name, int start_value, ETimerMode mode = eTimerModeMilliseconds)
 {
 	if (!Actor()->TimerManager)
 	{
@@ -1194,7 +1194,7 @@ void delete_custom_timer(LPCSTR name)
 	Actor()->TimerManager->DeleteTimer(name);
 }
 
-int get_custom_timer(LPCSTR name)
+u64 get_custom_timer(LPCSTR name)
 {
 	if (!Actor()->TimerManager)
 	{
@@ -1205,7 +1205,7 @@ int get_custom_timer(LPCSTR name)
 	return Actor()->TimerManager->GetTimerValue(name);
 }
 
-std::string get_moon_phase()
+LPCSTR get_moon_phase()
 {
 	return Level().GetMoonPhase().c_str();
 }
@@ -1422,13 +1422,13 @@ void CLevel::script_register(lua_State *L)
 		]
 		.def(						constructor<>()				)
 		.def(						constructor<const xrTime&>())
-		.def(const_self <			xrTime()					)
-		.def(const_self <=			xrTime()					)
-		.def(const_self >			xrTime()					)
-		.def(const_self >=			xrTime()					)
-		.def(const_self ==			xrTime()					)
-		.def(self +					xrTime()					)
-		.def(self -					xrTime()					)
+		.def(m_const_self <			xrTime()					)
+		.def(m_const_self <=			xrTime()					)
+		.def(m_const_self >			xrTime()					)
+		.def(m_const_self >=			xrTime()					)
+		.def(m_const_self ==			xrTime()					)
+		.def(m_self +					xrTime()					)
+		.def(m_self -					xrTime()					)
 
 		.def("diffSec"				,&xrTime::diffSec_script)
 		.def("add"					,&xrTime::add_script)

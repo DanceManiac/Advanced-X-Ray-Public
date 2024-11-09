@@ -31,13 +31,13 @@ bool bfGetActionSuccessProbability(GroupHierarchyHolder::MEMBER_REGISTRY &Member
 	int i = 0, j = 0, I = (int)Members.size(), J = (int)VisibleEnemies.size();
 	xr_vector<const CEntityAlive*>::const_iterator	II = VisibleEnemies.begin();
 	for ( ; (i < I) && (j < J); ) {
-		ai().ef_storage().non_alife().member() = smart_cast<CEntityAlive *>(Members[i]);
-		if (!(ai().ef_storage().non_alife().member()) || !(ai().ef_storage().non_alife().member()->g_Alive())) {
+		ai().ef_storage().non_alife().get_member() = smart_cast<CEntityAlive *>(Members[i]);
+		if (!(ai().ef_storage().non_alife().get_member()) || !(ai().ef_storage().non_alife().get_member()->g_Alive())) {
 			++i;
 			continue;
 		}
-		ai().ef_storage().non_alife().enemy() = *II;
-		if (!(ai().ef_storage().non_alife().enemy()) || !(ai().ef_storage().non_alife().enemy()->g_Alive())) {
+		ai().ef_storage().non_alife().get_enemy() = *II;
+		if (!(ai().ef_storage().non_alife().get_enemy()) || !(ai().ef_storage().non_alife().get_enemy()->g_Alive())) {
 			++j;
 			++II;
 			continue;
@@ -46,8 +46,8 @@ bool bfGetActionSuccessProbability(GroupHierarchyHolder::MEMBER_REGISTRY &Member
 		if (fProbability > fMinProbability) {
 			fCurrentProbability = fProbability;
 			for (++j; (i < I) && (j < J); ++j) {
-				ai().ef_storage().non_alife().enemy() = *II;
-				if (!(ai().ef_storage().non_alife().enemy()) || !(ai().ef_storage().non_alife().enemy()->g_Alive())) {
+				ai().ef_storage().non_alife().get_enemy() = *II;
+				if (!(ai().ef_storage().non_alife().get_enemy()) || !(ai().ef_storage().non_alife().get_enemy()->g_Alive())) {
 					++j;
 					++II;
 					continue;
@@ -64,8 +64,8 @@ bool bfGetActionSuccessProbability(GroupHierarchyHolder::MEMBER_REGISTRY &Member
 		else {
 			fCurrentProbability = 1.0f - fProbability;
 			for (++i; (i < I) && (j < J); ++i) {
-				ai().ef_storage().non_alife().member() = smart_cast<CEntityAlive *>(Members[i]);
-				if (!(ai().ef_storage().non_alife().member()) || !(ai().ef_storage().non_alife().member()->g_Alive())) {
+				ai().ef_storage().non_alife().get_member() = smart_cast<CEntityAlive *>(Members[i]);
+				if (!(ai().ef_storage().non_alife().get_member()) || !(ai().ef_storage().non_alife().get_member()->g_Alive())) {
 					++i;
 					continue;
 				}
@@ -104,7 +104,7 @@ u32 dwfChooseAction(u32 dwActionRefreshRate, float fMinProbability0, float fMinP
 	const CCustomMonster					*monster = smart_cast<const CCustomMonster*>(tpEntity);
 	VERIFY									(monster);
 	const CAI_Stalker						*stalker = smart_cast<const CAI_Stalker*>(monster);
-	const xr_vector<const CEntityAlive*>	&VisibleEnemies = monster->memory().enemy().objects();
+	const xr_vector<const CEntityAlive*>	&VisibleEnemies = monster->get_memory().get_enemy().objects();
 
 	GroupHierarchyHolder::MEMBER_REGISTRY	Members;
 	if (!tpEntity)
@@ -128,7 +128,7 @@ u32 dwfChooseAction(u32 dwActionRefreshRate, float fMinProbability0, float fMinP
 						continue;
 					}
 
-					if (Group.agent_manager().member().registered_in_combat(member))
+					if (Group.agent_manager().get_member().registered_in_combat(member))
 						Members.push_back	(Group.members()[k]);
 					else
 						if (member->ID() == tpEntity->ID())

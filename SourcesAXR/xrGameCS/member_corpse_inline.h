@@ -20,22 +20,22 @@ IC	bool CMemberCorpse::operator==		(CAI_Stalker *corpse) const
 	return		(m_corpse == corpse);
 }
 
-IC	void CMemberCorpse::reactor			(CAI_Stalker *reactor)
+IC	void CMemberCorpse::set_reactor			(CAI_Stalker *reactor)
 {
 	m_reactor	= reactor;
 }
 
-IC	CAI_Stalker	*CMemberCorpse::corpse	() const
+IC	CAI_Stalker	*CMemberCorpse::get_corpse	() const
 {
 	return		(m_corpse);
 }
 
-IC	CAI_Stalker	*CMemberCorpse::reactor	() const
+IC	CAI_Stalker	*CMemberCorpse::get_reactor	() const
 {
 	return		(m_reactor);
 }
 
-IC	u32	CMemberCorpse::time				() const
+IC	u32	CMemberCorpse::get_time				() const
 {
 	return		(m_time);
 }

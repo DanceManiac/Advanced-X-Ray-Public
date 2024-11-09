@@ -227,7 +227,7 @@ void CBinocularsVision::Update()
 	}
 	if (!pActor) return;
 	//-----------------------------------------------------
-	const CVisualMemoryManager::VISIBLES& vVisibles = pActor->memory().visual().objects();
+	const CVisualMemoryManager::VISIBLES& vVisibles = pActor->get_memory().visual().objects();
 
 	VIS_OBJECTS_IT	it = m_active_objects.begin();
 	for(;it!=m_active_objects.end();++it)
@@ -238,7 +238,7 @@ void CBinocularsVision::Update()
 	for (; v_it!=vVisibles.end(); ++v_it)
 	{
 		const CObject*	_object_			= (*v_it).m_object;
-		if (!pActor->memory().visual().visible_right_now(smart_cast<const CGameObject*>(_object_)))
+		if (!pActor->get_memory().visual().visible_right_now(smart_cast<const CGameObject*>(_object_)))
 			continue;
 
 		CObject* object_ = const_cast<CObject*>(_object_);

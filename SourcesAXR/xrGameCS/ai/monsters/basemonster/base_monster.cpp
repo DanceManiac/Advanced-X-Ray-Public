@@ -190,7 +190,7 @@ void CBaseMonster::update_pos_by_grouping_behaviour ()
 	}
 
 	// use physics simulation to slide along obstacles
-	character_physics_support()->movement()->VirtualMoveTo(new_pos, new_pos);
+	character_physics_support()->get_movement()->VirtualMoveTo(new_pos, new_pos);
 
 	if ( !ai().level_graph().valid_vertex_position(new_pos) )
 	{
@@ -206,7 +206,7 @@ void CBaseMonster::update_pos_by_grouping_behaviour ()
 	}
 
 	// finally, new position is valid on the ai-map, we can use it
-	character_physics_support()->movement()->SetPosition(new_pos);
+	character_physics_support()->get_movement()->SetPosition(new_pos);
 	Position() = new_pos;
 	ai_location().level_vertex(new_vertex);
 }
@@ -221,7 +221,7 @@ bool   accessible_epsilon (CBaseMonster * const object, Fvector const pos, float
 	
 	for ( u32 i=0; i<sizeof(offsets)/sizeof(offsets[0]); ++i )
 	{
-		if ( object->movement().restrictions().accessible(pos + offsets[i]) )
+		if ( object->get_movement().restrictions().accessible(pos + offsets[i]) )
 			return						true;
 	}
 
@@ -409,9 +409,9 @@ void CBaseMonster::Die(CObject* who)
 	inherited::Die(who);
 
 	if (is_special_killer(who))
-		sound().play			(MonsterSound::eMonsterSoundDieInAnomaly);
+		get_sound().play			(MonsterSound::eMonsterSoundDieInAnomaly);
 	else
-		sound().play			(MonsterSound::eMonsterSoundDie);
+		get_sound().play			(MonsterSound::eMonsterSoundDie);
 
 	monster_squad().remove_member	((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(),this);
 
@@ -479,7 +479,7 @@ CPHDestroyable*	CBaseMonster::ph_destroyable()
 bool CBaseMonster::useful(const CItemManager *manager, const CGameObject *object) const
 {
 	const Fvector& object_pos = object->Position();
-	if (!movement().restrictions().accessible(object_pos))
+	if (!get_movement().restrictions().accessible(object_pos))
 	{
 		return false;
 	}
@@ -498,7 +498,7 @@ bool CBaseMonster::useful(const CItemManager *manager, const CGameObject *object
 		object->ai_location().level_vertex(vertex_id);
 	}
 
-	if ( !movement().restrictions().accessible(object->ai_location().level_vertex_id()) )
+	if ( !get_movement().restrictions().accessible(object->ai_location().level_vertex_id()) )
 	{
 		return false;
 	}
@@ -555,7 +555,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 {
 	if (once) {
 	
-		sound().play(type);
+		get_sound().play(type);
 	
 	} else {
 
@@ -563,7 +563,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 		if ((type == MonsterSound::eMonsterSoundAggressive) && 
 			(m_prev_sound_type != MonsterSound::eMonsterSoundAggressive)) {
 			
-			sound().play(MonsterSound::eMonsterSoundAttackHit);
+			get_sound().play(MonsterSound::eMonsterSoundAttackHit);
 
 		} else {
 			// get count of monsters in squad
@@ -595,7 +595,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 				break;
 			}
 
-			sound().play(type, 0, 0, delay);
+			get_sound().play(type, 0, 0, delay);
 		} 
 	}
 
@@ -1015,5 +1015,5 @@ float CBaseMonster::get_screen_space_coverage_diagonal()
 void CBaseMonster::ReloadDamageAndAnimations()
 {
 	CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
-	control().animation().restart();
+	control().get_animation().restart();
 }

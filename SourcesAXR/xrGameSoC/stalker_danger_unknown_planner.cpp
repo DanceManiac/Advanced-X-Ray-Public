@@ -35,7 +35,7 @@ void CStalkerDangerUnknownPlanner::initialize				()
 {
 	inherited::initialize	();
 	
-	object().agent_manager().member().member(&object()).cover(0);
+	object().agent_manager().get_member().member(&object()).cover(0);
 
 	CScriptActionPlanner::m_storage.set_property(eWorldPropertyCoverReached,false);
 	CScriptActionPlanner::m_storage.set_property(eWorldPropertyLookedAround,false);

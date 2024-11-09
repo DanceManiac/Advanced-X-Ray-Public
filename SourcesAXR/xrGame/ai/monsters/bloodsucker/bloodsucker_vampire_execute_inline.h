@@ -171,7 +171,7 @@ bool CStateBloodsuckerVampireExecuteAbstract::check_start_conditions()
 		return false;
 
 	// проверить направление на врага
-	if ( !object->control().direction().is_face_target(enemy_, PI_DIV_2) ) 
+	if ( !object->control().get_direction().is_face_target(enemy_, PI_DIV_2) ) 
 		return false;
 
 	if ( !object->WantVampire() ) 
@@ -208,7 +208,7 @@ void CStateBloodsuckerVampireExecuteAbstract::execute_vampire_prepare()
 	object->com_man().ta_activate		(object->anim_triple_vampire);
 	time_vampire_started				= Device.dwTimeGlobal;
 	
-	object->sound().play(CAI_Bloodsucker::eVampireGrasp);
+	object->get_sound().play(CAI_Bloodsucker::eVampireGrasp);
 }
 
 TEMPLATE_SPECIALIZATION
@@ -223,7 +223,7 @@ void CStateBloodsuckerVampireExecuteAbstract::execute_vampire_continue()
 		return;
 	}
 	
-	object->sound().play(CAI_Bloodsucker::eVampireSucking);
+	object->get_sound().play(CAI_Bloodsucker::eVampireSucking);
 
 	// проверить на грави удар
 	if (time_vampire_started + VAMPIRE_TIME_HOLD < Device.dwTimeGlobal) {
@@ -235,7 +235,7 @@ TEMPLATE_SPECIALIZATION
 void CStateBloodsuckerVampireExecuteAbstract::execute_vampire_hit()
 {
 	object->com_man().ta_pointbreak				();
-	object->sound().play						(CAI_Bloodsucker::eVampireHit);
+	object->get_sound().play						(CAI_Bloodsucker::eVampireHit);
 	object->SatisfyVampire						();
 }
 

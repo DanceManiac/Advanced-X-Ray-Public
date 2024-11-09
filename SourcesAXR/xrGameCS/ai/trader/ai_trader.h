@@ -136,7 +136,7 @@ public:
 private:
 	CTraderAnimation	*AnimMan;
 public:
-	CTraderAnimation	&animation					() {return (*AnimMan);}
+	CTraderAnimation	&get_animation					() {return (*AnimMan);}
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CAI_Trader)

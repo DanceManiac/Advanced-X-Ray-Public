@@ -207,7 +207,7 @@ void stalker_movement_manager_obstacles::move_along_path					(CPHMovementControl
 
 const float &stalker_movement_manager_obstacles::prediction_speed	() const
 {
-	return		(object().animation().target_speed());
+	return		(object().get_animation().target_speed());
 }
 
 void stalker_movement_manager_obstacles::remove_links				(CObject *object)

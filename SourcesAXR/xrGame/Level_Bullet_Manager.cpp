@@ -221,7 +221,6 @@ SBullet& CBulletManager::AddBullet(const Fvector& position,
 	bullet.Init					(position, direction, starting_speed, power, /*power_critical,*/ impulse, sender_id, sendersweapon_id, e_hit_type, maximum_distance, cartridge, air_resistance_factor, SendHit);
 //	bullet.frame_num			= Device.dwFrame;
 	bullet.flags.aim_bullet		= AimBullet;
-	return bullet;
 
 	if (!IsGameTypeSingle())
 	{
@@ -231,6 +230,7 @@ SBullet& CBulletManager::AddBullet(const Fvector& position,
 		if (tmp_cl_game->get_reward_generator())
 			tmp_cl_game->get_reward_generator()->OnBullet_Fire(sender_id, sendersweapon_id, position, direction); 
 	}
+	return bullet;
 }
 
 void CBulletManager::UpdateWorkload()

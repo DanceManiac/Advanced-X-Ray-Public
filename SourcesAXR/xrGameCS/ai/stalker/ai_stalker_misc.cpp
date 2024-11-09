@@ -41,16 +41,16 @@ bool CAI_Stalker::useful		(const CItemManager *manager, const CGameObject *objec
 	const CExplosive	*explosive = smart_cast<const CExplosive*>(object);
 
 	if (explosive && smart_cast<const CInventoryItem*>(object))
-		agent_manager().location().add	(xr_new<CDangerObjectLocation>(object,Device.dwTimeGlobal,DANGER_INFINITE_INTERVAL,DANGER_EXPLOSIVE_DISTANCE));
+		agent_manager().get_location().add	(xr_new<CDangerObjectLocation>(object,Device.dwTimeGlobal,DANGER_INFINITE_INTERVAL,DANGER_EXPLOSIVE_DISTANCE));
 
 	if (explosive && (explosive->CurrentParentID() != 0xffff)) {
-		agent_manager().explosive().register_explosive(explosive,object);
+		agent_manager().get_explosive().register_explosive(explosive,object);
 		CEntityAlive			*entity_alive = smart_cast<CEntityAlive*>(Level().Objects.net_Find(explosive->CurrentParentID()));
 		if (entity_alive)
-			memory().danger().add(CDangerObject(entity_alive,object->Position(),Device.dwTimeGlobal,CDangerObject::eDangerTypeGrenade,CDangerObject::eDangerPerceiveTypeVisual,object));
+			get_memory().danger().add(CDangerObject(entity_alive,object->Position(),Device.dwTimeGlobal,CDangerObject::eDangerTypeGrenade,CDangerObject::eDangerPerceiveTypeVisual,object));
 	}
 
-	if (!memory().item().useful(object))
+	if (!get_memory().item().useful(object))
 		return			(false);
 
 	const CInventoryItem *inventory_item = smart_cast<const CInventoryItem*>(object);
@@ -81,10 +81,10 @@ float CAI_Stalker::evaluate		(const CItemManager *manager, const CGameObject *ob
 
 bool CAI_Stalker::useful		(const CEnemyManager *manager, const CEntityAlive *object) const
 {
-	if (!agent_manager().enemy().useful_enemy(object,this))
+	if (!agent_manager().get_enemy().useful_enemy(object,this))
 		return			(false);
 
-	return				(memory().enemy().useful(object));
+	return				(get_memory().get_enemy().useful(object));
 }
 
 ALife::ERelationType CAI_Stalker::tfGetRelationType	(const CEntityAlive *tpEntityAlive) const
@@ -104,7 +104,7 @@ ALife::ERelationType CAI_Stalker::tfGetRelationType	(const CEntityAlive *tpEntit
 
 void CAI_Stalker::react_on_grenades		()
 {
-	CMemberOrder::CGrenadeReaction	&reaction = agent_manager().member().member(this).grenade_reaction();
+	CMemberOrder::CGrenadeReaction	&reaction = agent_manager().get_member().member(this).grenade_reaction();
 	if (!reaction.m_processing)
 		return;
 
@@ -117,7 +117,7 @@ void CAI_Stalker::react_on_grenades		()
 //		interval				= missile->destroy_time() - Device.dwTimeGlobal + AFTER_GRENADE_DESTROYED_INTERVAL;
 //	m_object->agent_manager().add_danger_location(reaction.m_game_object->Position(),Device.dwTimeGlobal,interval,GRENADE_RADIUS);
 
-	if (missile && agent_manager().member().group_behaviour()) {
+	if (missile && agent_manager().get_member().group_behaviour()) {
 //		Msg						("%6d : Stalker %s : grenade reaction",Device.dwTimeGlobal,*m_object->cName());
 		CEntityAlive			*initiator = smart_cast<CEntityAlive*>(Level().Objects.net_Find(reaction.m_grenade->CurrentParentID()));
 		VERIFY2					(
@@ -131,10 +131,10 @@ void CAI_Stalker::react_on_grenades		()
 		);
 		if (initiator) {
 			if (is_relation_enemy(initiator))
-				sound().play	(StalkerSpace::eStalkerSoundGrenadeAlarm);
+				get_sound().play	(StalkerSpace::eStalkerSoundGrenadeAlarm);
 			else
 				if (missile->Position().distance_to(Position()) < FRIENDLY_GRENADE_ALARM_DIST)
-					sound().play(StalkerSpace::eStalkerSoundFriendlyGrenadeAlarm);
+					get_sound().play(StalkerSpace::eStalkerSoundFriendlyGrenadeAlarm);
 		}
 	}
 
@@ -143,31 +143,31 @@ void CAI_Stalker::react_on_grenades		()
 
 void CAI_Stalker::react_on_member_death	()
 {
-	CMemberOrder::CMemberDeathReaction	&reaction = agent_manager().member().member(this).member_death_reaction();
+	CMemberOrder::CMemberDeathReaction	&reaction = agent_manager().get_member().member(this).member_death_reaction();
 	if (!reaction.m_processing)
 		return;
 
 	if (Device.dwTimeGlobal < reaction.m_time + TOLLS_INTERVAL)
 		return;
 
-	if (agent_manager().member().group_behaviour())
-		sound().play			(StalkerSpace::eStalkerSoundTolls);
+	if (agent_manager().get_member().group_behaviour())
+		get_sound().play			(StalkerSpace::eStalkerSoundTolls);
 
 	reaction.clear				();
 }
 
 void CAI_Stalker::process_enemies		()
 {
-	if (memory().enemy().selected())
+	if (get_memory().get_enemy().selected())
 		return;
 
 	typedef MemorySpace::squad_mask_type	squad_mask_type;
 	typedef CVisualMemoryManager::VISIBLES	VISIBLES;
 
 	bool						found = false;
-	squad_mask_type				mask = memory().visual().mask();
-	VISIBLES::const_iterator	I = memory().visual().objects().begin();
-	VISIBLES::const_iterator	E = memory().visual().objects().end();
+	squad_mask_type				mask = get_memory().visual().mask();
+	VISIBLES::const_iterator	I = get_memory().visual().objects().begin();
+	VISIBLES::const_iterator	E = get_memory().visual().objects().end();
 	for ( ; I != E; ++I) {
 		if (!(*I).visible(mask))
 			continue;
@@ -182,13 +182,13 @@ void CAI_Stalker::process_enemies		()
 		if (!member->g_Alive())
 			continue;
 
-		if (!member->memory().enemy().selected()) {
-			if (!memory().danger().selected() && member->memory().danger().selected())
-				memory().danger().add(*member->memory().danger().selected());
+		if (!member->get_memory().get_enemy().selected()) {
+			if (!get_memory().danger().selected() && member->get_memory().danger().selected())
+				get_memory().danger().add(*member->get_memory().danger().selected());
 			continue;
 		}
 
-		memory().make_object_visible_somewhen	(member->memory().enemy().selected());
+		get_memory().make_object_visible_somewhen	(member->get_memory().get_enemy().selected());
 		found					= true;
 		break;
 	}

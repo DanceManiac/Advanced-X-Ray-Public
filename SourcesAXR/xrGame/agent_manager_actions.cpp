@@ -30,7 +30,7 @@ CAgentManagerActionNoOrders::CAgentManagerActionNoOrders	(CAgentManager *object,
 void CAgentManagerActionNoOrders::finalize			()
 {
 	inherited::finalize				();
-	m_object->corpse().clear		();
+	m_object->get_corpse().clear		();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ void CAgentManagerActionKillEnemy::initialize		()
 {
 	inherited::initialize						();
 	
-	m_object->location().clear					();
+	m_object->get_location().clear					();
 }
 
 void CAgentManagerActionKillEnemy::finalize			()
@@ -69,9 +69,9 @@ void CAgentManagerActionKillEnemy::execute			()
 {
 	inherited::execute							();
 
-	m_object->enemy().distribute_enemies		();
-	m_object->explosive().react_on_explosives	();
-	m_object->corpse().react_on_member_death	();
+	m_object->get_enemy().distribute_enemies		();
+	m_object->get_explosive().react_on_explosives	();
+	m_object->get_corpse().react_on_member_death	();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -87,13 +87,13 @@ void CAgentManagerActionReactOnDanger::initialize		()
 {
 	inherited::initialize			();
 
-	m_object->location().clear		();
+	m_object->get_location().clear		();
 }
 
 void CAgentManagerActionReactOnDanger::execute			()
 {
 	inherited::execute							();
 
-	m_object->explosive().react_on_explosives	();
-	m_object->corpse().react_on_member_death	();
+	m_object->get_explosive().react_on_explosives	();
+	m_object->get_corpse().react_on_member_death	();
 }

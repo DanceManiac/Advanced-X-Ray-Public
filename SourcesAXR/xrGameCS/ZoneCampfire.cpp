@@ -107,7 +107,7 @@ void CZoneCampfire::shedule_Update(u32	dt	)
 	if (m_pIdleParticles)
 	{
 		Fvector vel;
-		vel.mul(GamePersistent().Environment().wind_blast_direction,GamePersistent().Environment().wind_strength_factor);
+		vel.mul(GamePersistent().Environment().m_wind_blast_direction,GamePersistent().Environment().wind_strength_factor);
 		m_pIdleParticles->UpdateParent(XFORM(),vel);
 	}
 	inherited::shedule_Update(dt);

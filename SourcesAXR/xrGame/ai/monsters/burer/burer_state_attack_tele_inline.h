@@ -279,7 +279,7 @@ void CStateBurerAttackTele<Object>::FireAllToEnemy()
 		object->CTelekinesis::fire_t				(cur_object, enemy_pos, fire_time);
 	}
 
-	object->sound().play			(CBurer::eMonsterSoundTeleAttack);
+	object->get_sound().play			(CBurer::eMonsterSoundTeleAttack);
 }
 
 template <typename Object>
@@ -331,7 +331,7 @@ void CStateBurerAttackTele<Object>::ExecuteTeleFire()
 	object->CTelekinesis::fire_t	(selected_object,enemy_pos, fire_time);
 
 	object->StopTeleObjectParticle	(selected_object);
-	object->sound().play			(CBurer::eMonsterSoundTeleAttack);
+	object->get_sound().play			(CBurer::eMonsterSoundTeleAttack);
 }
 
 template <typename Object>

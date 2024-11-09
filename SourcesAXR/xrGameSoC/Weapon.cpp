@@ -157,9 +157,9 @@ void CWeapon::UpdateAltScope()
 	}
 
 	shared_str new_hud = pSettings->r_string(sectionNeedLoad, "hud");
-	if (new_hud != hud_sect)
+	if (new_hud != m_hud_sect)
 	{
-		hud_sect = new_hud;
+		m_hud_sect = new_hud;
 	}
 }
 
@@ -264,10 +264,10 @@ void CWeapon::Hit					(SHit* pHDS)
 
 void CWeapon::UpdateXForm	()
 {
-	if (Device.dwFrame == dwXF_Frame)
+	if (Device.dwFrame == m_dwXF_Frame)
 		return;
 
-	dwXF_Frame = Device.dwFrame;
+	m_dwXF_Frame = Device.dwFrame;
 
 	if (!GetHUDmode())
 		UpdateAddonsTransform(false);
@@ -383,12 +383,11 @@ void CWeapon::UpdateXForm	()
 	UpdatePosition	(mRes);
 }
 
-
 void CWeapon::UpdateFireDependencies_internal()
 {
-	if (Device.dwFrame!=dwFP_Frame) 
+	if (Device.dwFrame != m_dwFP_Frame)
 	{
-		dwFP_Frame			= Device.dwFrame;
+		m_dwFP_Frame = Device.dwFrame;
 
 		UpdateXForm			();
 
@@ -641,8 +640,8 @@ void CWeapon::Load		(LPCSTR section)
 
 
 	m_bHideCrosshairInZoom = true;
-	if(pSettings->line_exist(hud_sect, "zoom_hide_crosshair"))
-		m_bHideCrosshairInZoom = !!pSettings->r_bool(hud_sect, "zoom_hide_crosshair");	
+	if(pSettings->line_exist(m_hud_sect, "zoom_hide_crosshair"))
+		m_bHideCrosshairInZoom = !!pSettings->r_bool(m_hud_sect, "zoom_hide_crosshair");
 
 	//////////////////////////////////////////////////////////
 
@@ -672,8 +671,8 @@ void CWeapon::Load		(LPCSTR section)
 	//Кости для эффектов
 	m_sWpn_laser_ray_bone = READ_IF_EXISTS(pSettings, r_string, section, "laser_ray_bones", "");
 	m_sWpn_flashlight_cone_bone = READ_IF_EXISTS(pSettings, r_string, section, "torch_cone_bones", "");
-	m_sHud_wpn_laser_ray_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "laser_ray_bones", m_sWpn_laser_ray_bone);
-	m_sHud_wpn_flashlight_cone_bone = READ_IF_EXISTS(pSettings, r_string, hud_sect, "torch_cone_bones", m_sWpn_flashlight_cone_bone);
+	m_sHud_wpn_laser_ray_bone = READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "laser_ray_bones", m_sWpn_laser_ray_bone);
+	m_sHud_wpn_flashlight_cone_bone = READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "torch_cone_bones", m_sWpn_flashlight_cone_bone);
 
 	auto LoadBoneNames = [](pcstr section, pcstr line, RStringVec& list)
 	{
@@ -795,7 +794,7 @@ void CWeapon::Load		(LPCSTR section)
 		flashlight_glow->set_radius(READ_IF_EXISTS(pSettings, r_float, m_light_section, "glow_radius", 0.3f));
 	}
 
-	hud_recalc_koef = READ_IF_EXISTS(pSettings, r_float, hud_sect, "hud_recalc_koef", 1.35f); //На калаше при 1.35 вроде норм смотрится, другим стволам возможно придется подбирать другие значения.
+	hud_recalc_koef = READ_IF_EXISTS(pSettings, r_float, m_hud_sect, "hud_recalc_koef", 1.35f); //На калаше при 1.35 вроде норм смотрится, другим стволам возможно придется подбирать другие значения.
 
 	m_SuitableRepairKits.clear();
 	m_ItemsForRepair.clear();
@@ -3699,19 +3698,19 @@ void CWeapon::UpdateAimOffsets()
 		string128	val_name;
 
 		strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(hud_sect, val_name);
+		hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(m_hud_sect, val_name);
 		strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(hud_sect, val_name);
+		hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(m_hud_sect, val_name);
 
 		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
+		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
 		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
+		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, m_hud_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
 
 		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(hud_sect, val_name);
+		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(m_hud_sect, val_name);
 		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(hud_sect, val_name);
+		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
 
 		bNeedRestoreOffsets = false;
 

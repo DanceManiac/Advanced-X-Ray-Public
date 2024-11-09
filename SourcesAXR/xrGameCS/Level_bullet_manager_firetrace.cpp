@@ -86,7 +86,7 @@ BOOL CBulletManager::test_callback(const collide::ray_defs& rd, CObject* object,
 							}
 #	else
 							float					game_difficulty_hit_probability = actor->HitProbability();
-							CAI_Stalker				*stalker = smart_cast<CAI_Stalker*>(initiator);
+							stalker = smart_cast<CAI_Stalker*>(initiator);
 							if (stalker)
 								hpf					= stalker->SpecificCharacter().hit_probability_factor();
 

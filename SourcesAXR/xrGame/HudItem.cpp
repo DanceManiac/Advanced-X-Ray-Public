@@ -47,8 +47,8 @@ CHudItem::~CHudItem()
 
 void CHudItem::Load(LPCSTR section)
 {
-	hud_sect				= pSettings->r_string		(section,"hud");
-	item_sect				= section;
+	m_hud_sect				= pSettings->r_string		(section,"hud");
+	m_item_sect				= section;
 	m_animation_slot		= pSettings->r_u32			(section,"animation_slot");
 
 	m_sounds.LoadSound(section, "snd_bore", "sndBore", true);
@@ -169,7 +169,7 @@ void CHudItem::OnAnimationEnd(u32 state)
 	if (actor)
 	{
 		actor->callback(GameObject::eActorHudAnimationEnd)(smart_cast<CGameObject*>(this)->lua_game_object(),
-			this->hud_sect.c_str(), this->m_current_motion.c_str(), state,
+			this->m_hud_sect.c_str(), this->m_current_motion.c_str(), state,
 			this->animation_slot());
 	}
 
@@ -295,7 +295,7 @@ void CHudItem::OnH_B_Chield		()
 {
 	StopCurrentAnimWithoutCallback();
 
-	if (item_sect.size() && pSettings->line_exist(item_sect, "hud_fov"))
+	if (m_item_sect.size() && pSettings->line_exist(m_item_sect, "hud_fov"))
 		m_nearwall_last_hud_fov = m_base_fov;
 	else
 		m_nearwall_last_hud_fov = psHUD_FOV_def;
@@ -306,7 +306,7 @@ void CHudItem::OnH_B_Independent	(bool just_before_destroy)
 	m_sounds.StopAllSounds	();
 	UpdateXForm				();
 	
-	if (item_sect.size() && pSettings->line_exist(item_sect, "hud_fov"))
+	if (m_item_sect.size() && pSettings->line_exist(m_item_sect, "hud_fov"))
 		m_nearwall_last_hud_fov = m_base_fov;
 	else
 		m_nearwall_last_hud_fov = psHUD_FOV_def;
@@ -728,8 +728,8 @@ bool CHudItem::ParentIsActor()
 
 void CHudItem::ReplaceHudSection(LPCSTR hud_section)
 {
-	if (hud_section != hud_sect)
-		hud_sect = hud_section;
+	if (hud_section != m_hud_sect)
+		m_hud_sect = hud_section;
 }
 
 float CHudItem::GetHudFov()
@@ -744,7 +744,7 @@ float CHudItem::GetHudFov()
 
 		float fBaseFov{ psHUD_FOV_def };
 
-		if (pSettings->line_exist(item_sect, "hud_fov"))
+		if (pSettings->line_exist(m_item_sect, "hud_fov"))
 			fBaseFov = m_base_fov;
 
 		clamp(fBaseFov, 0.0f, FLT_MAX);

@@ -55,7 +55,7 @@ void CActor::cam_SetLadder()
 }
 void CActor::camUpdateLadder(float dt)
 {
-	if(!character_physics_support()->movement()->ElevatorState())
+	if(!character_physics_support()->get_movement()->ElevatorState())
 															return;
 	if(cameras[eacFirstEye]->bClampYaw) return;
 	float yaw				= (-XFORM().k.getH());
@@ -75,7 +75,7 @@ void CActor::camUpdateLadder(float dt)
 		cam_yaw								+= delta * _min(dt*10.f,1.f) ;
 	}
 
-	CElevatorState* es = character_physics_support()->movement()->ElevatorState();
+	CElevatorState* es = character_physics_support()->get_movement()->ElevatorState();
 	if(es && es->State()==CElevatorState::clbClimbingDown)
 	{
 		float &cam_pitch					= cameras[eacFirstEye]->pitch;
@@ -96,7 +96,7 @@ void CActor::cam_UnsetLadder()
 float CActor::CameraHeight()
 {
 	Fvector						R;
-	character_physics_support()->movement()->Box().getsize		(R);
+	character_physics_support()->get_movement()->Box().getsize		(R);
 	return						m_fCamHeightFactor*R.y;
 }
 
@@ -252,7 +252,7 @@ void CActor::cam_Update(float dt, float fFOV)
 	float flCurrentPlayerY	= xform.c.y;
 
 	// Smooth out stair step ups
-	if ((character_physics_support()->movement()->Environment()==peOnGround) && (flCurrentPlayerY-fPrevCamPos>0)){
+	if ((character_physics_support()->get_movement()->Environment()==peOnGround) && (flCurrentPlayerY-fPrevCamPos>0)){
 		fPrevCamPos			+= dt*1.5f;
 		if (fPrevCamPos > flCurrentPlayerY)
 			fPrevCamPos		= flCurrentPlayerY;
@@ -420,7 +420,7 @@ void CActor::OnRender	()
 	if (!bDebug)				return;
 
 	if ((dbg_net_Draw_Flags.is_any((1<<5))))
-		character_physics_support()->movement()->dbg_Draw	();
+		character_physics_support()->get_movement()->dbg_Draw	();
 
 	OnRender_Network();
 

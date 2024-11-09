@@ -46,9 +46,9 @@ void CStateMonsterLookToUnprotectedAreaAbstract::execute()
 
 	if (data.sound_type != u32(-1)) {
 		if (data.sound_delay != u32(-1))
-			object->sound().play(data.sound_type, 0,0,data.sound_delay);
+			object->get_sound().play(data.sound_type, 0,0,data.sound_delay);
 		else 
-			object->sound().play(data.sound_type);
+			object->get_sound().play(data.sound_type);
 	}
 
 }
@@ -58,7 +58,7 @@ bool CStateMonsterLookToUnprotectedAreaAbstract::check_completion()
 {	
 	if (data.time_out !=0) {
 		if (time_state_started + data.time_out < Device.dwTimeGlobal) return true;
-	} else 	if (!object->control().direction().is_turning()) return true;
+	} else 	if (!object->control().get_direction().is_turning()) return true;
 
 	return false;
 }

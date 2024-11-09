@@ -24,11 +24,11 @@ void CStateMonsterDragAbstract::initialize()
 {
 	inherited::initialize();
 
-	object->character_physics_support()->movement()->PHCaptureObject(const_cast<CEntityAlive *>(object->CorpseMan.get_corpse()));
+	object->character_physics_support()->get_movement()->PHCaptureObject(const_cast<CEntityAlive *>(object->CorpseMan.get_corpse()));
 	
 	m_failed = false;
 	
-	IPHCapture *capture = object->character_physics_support()->movement()->PHCapture();
+	IPHCapture *capture = object->character_physics_support()->get_movement()->PHCapture();
 	if (capture && !capture->Failed()) {
 		
 		const CCoverPoint *point = object->CoverMan->find_cover(object->Position(), 10.f, 30.f);
@@ -72,8 +72,8 @@ void CStateMonsterDragAbstract::finalize()
 	inherited::finalize();	
 
 	// бросить труп
-	if (object->character_physics_support()->movement()->PHCapture())
-		object->character_physics_support()->movement()->PHReleaseObject();
+	if (object->character_physics_support()->get_movement()->PHCapture())
+		object->character_physics_support()->get_movement()->PHReleaseObject();
 }
 
 TEMPLATE_SPECIALIZATION
@@ -82,8 +82,8 @@ void CStateMonsterDragAbstract::critical_finalize()
 	inherited::critical_finalize();
 
 	// бросить труп
-	if (object->character_physics_support()->movement()->PHCapture())
-		object->character_physics_support()->movement()->PHReleaseObject();
+	if (object->character_physics_support()->get_movement()->PHCapture())
+		object->character_physics_support()->get_movement()->PHReleaseObject();
 
 }
 
@@ -94,7 +94,7 @@ bool CStateMonsterDragAbstract::check_completion()
 		return true;
 	}
 
-	if (!object->character_physics_support()->movement()->PHCapture())  {
+	if (!object->character_physics_support()->get_movement()->PHCapture())  {
 		return true;
 	}
 

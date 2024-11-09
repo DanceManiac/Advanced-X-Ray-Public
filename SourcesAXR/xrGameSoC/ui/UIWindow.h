@@ -172,7 +172,7 @@ protected:
 	CGameFont*				m_pFont;
 
 	// Последняя позиция мышки
-	Fvector2 cursor_pos;
+	Fvector2				m_cursor_pos;
 
 	//время прошлого клика мышки
 	//для определения DoubleClick

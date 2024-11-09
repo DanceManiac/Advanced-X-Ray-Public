@@ -83,7 +83,7 @@ bool CStateBurerAttackGravi<Object>::check_start_conditions()
 	if ( dist < object->m_gravi.min_dist ) return false;
 	if ( dist > object->m_gravi.max_dist ) return false;
 	if ( !object->EnemyMan.see_enemy_now() ) return false; 
-	if ( !object->control().direction().is_face_target(object->EnemyMan.get_enemy(), deg(45)) ) return false;
+	if ( !object->control().get_direction().is_face_target(object->EnemyMan.get_enemy(), deg(45)) ) return false;
 
 	return								true;
 }
@@ -138,7 +138,7 @@ void CStateBurerAttackGravi<Object>::ExecuteGraviFire()
 	object->m_gravi_object.activate		(object->EnemyMan.get_enemy(), from_pos, target_pos);
 
 	object->StopGraviPrepare			();
-	object->sound().play				(CBurer::eMonsterSoundGraviAttack);
+	object->get_sound().play				(CBurer::eMonsterSoundGraviAttack);
 
 	// Interactive Grass FX
 	g_pGamePersistent->GrassBendersAddExplosion(this->object->ID(), from_pos, this->object->Direction(), 1.33f, 3.0f, ps_ssfx_grass_interactive.w, 13.0f);

@@ -39,7 +39,7 @@ void CStateBloodsuckerVampireAbstract::initialize()
 
 	enemy	= object->EnemyMan.get_enemy		();
 
-	object->sound().play						(CAI_Bloodsucker::eVampireStartHunt);
+	object->get_sound().play						(CAI_Bloodsucker::eVampireStartHunt);
 }
 
 TEMPLATE_SPECIALIZATION

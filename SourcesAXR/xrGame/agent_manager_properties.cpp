@@ -23,11 +23,11 @@
 
 CAgentManagerPropertyEvaluatorItem::_value_type CAgentManagerPropertyEvaluatorItem::evaluate	()
 {
-	CAgentMemberManager::iterator	I = m_object->member().members().begin();
-	CAgentMemberManager::iterator	E = m_object->member().members().end();
+	CAgentMemberManager::iterator	I = m_object->get_member().members().begin();
+	CAgentMemberManager::iterator	E = m_object->get_member().members().end();
 	for ( ; I != E; ++I) {
 		VERIFY				(*I);
-		if ((*I)->object().memory().item().selected())
+		if ((*I)->object().get_memory().item().selected())
 			return			(true);
 	}
 	return					(false);
@@ -39,11 +39,11 @@ CAgentManagerPropertyEvaluatorItem::_value_type CAgentManagerPropertyEvaluatorIt
 
 CAgentManagerPropertyEvaluatorEnemy::_value_type CAgentManagerPropertyEvaluatorEnemy::evaluate	()
 {
-	CAgentMemberManager::iterator	I = m_object->member().combat_members().begin();
-	CAgentMemberManager::iterator	E = m_object->member().combat_members().end();
+	CAgentMemberManager::iterator	I = m_object->get_member().combat_members().begin();
+	CAgentMemberManager::iterator	E = m_object->get_member().combat_members().end();
 	for ( ; I != E; ++I) {
 		VERIFY				(*I);
-		if ((*I)->object().memory().enemy().selected())
+		if ((*I)->object().get_memory().get_enemy().selected())
 			return			(true);
 	}
 	return					(false);
@@ -55,11 +55,11 @@ CAgentManagerPropertyEvaluatorEnemy::_value_type CAgentManagerPropertyEvaluatorE
 
 CAgentManagerPropertyEvaluatorDanger::_value_type CAgentManagerPropertyEvaluatorDanger::evaluate	()
 {
-	CAgentMemberManager::iterator	I = m_object->member().members().begin();
-	CAgentMemberManager::iterator	E = m_object->member().members().end();
+	CAgentMemberManager::iterator	I = m_object->get_member().members().begin();
+	CAgentMemberManager::iterator	E = m_object->get_member().members().end();
 	for ( ; I != E; ++I) {
 		VERIFY				(*I);
-		if ((*I)->object().memory().danger().selected())
+		if ((*I)->object().get_memory().danger().selected())
 			return			(true);
 	}
 	return					(false);

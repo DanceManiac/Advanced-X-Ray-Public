@@ -171,8 +171,8 @@ void CWeaponShotgun::switch2_Fire2	()
 		fTime						+= fTimeToFire*2.f;
 
 		// Patch for "previous frame position" :)))
-		dwFP_Frame					= 0xffffffff;
-		dwXF_Frame					= 0xffffffff;
+		m_dwFP_Frame					= 0xffffffff;
+		m_dwXF_Frame					= 0xffffffff;
 	}
 }
 

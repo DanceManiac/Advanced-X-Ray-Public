@@ -152,28 +152,28 @@ void CEnvAmbient::SSndChannel::load(CInifile& config, LPCSTR sect)
 
 CEnvAmbient::SEffect* CEnvAmbient::create_effect	(CInifile& config, LPCSTR id)
 {
-	SEffect*					result = xr_new<SEffect>();
-	result->life_time			= iFloor(config.r_float(id,"life_time")*1000.f);
-	result->particles			= config.r_string	(id,"particles");		
-	VERIFY						(result->particles.size());
-	result->offset				= config.r_fvector3	(id,"offset");
-	result->wind_gust_factor	= config.r_float(id,"wind_gust_factor");
+	SEffect*						result = xr_new<SEffect>();
+	result->m_life_time				= iFloor(config.r_float(id,"life_time")*1000.f);
+	result->m_particles				= config.r_string	(id,"particles");		
+	VERIFY							(result->m_particles.size());
+	result->m_offset				= config.r_fvector3	(id,"offset");
+	result->m_wind_gust_factor		= config.r_float(id,"wind_gust_factor");
 	
 	if (config.line_exist(id,"sound"))
-		result->sound.create	(config.r_string(id,"sound"),st_Effect,sg_SourceType);
+		result->m_sound.create	(config.r_string(id,"sound"),st_Effect,sg_SourceType);
 
 	if (config.line_exist(id,"wind_blast_strength")) {
-		result->wind_blast_strength		= config.r_float(id,"wind_blast_strength");
-		result->wind_blast_direction.setHP	(deg2rad(config.r_float(id,"wind_blast_longitude")), 0.f);
-		result->wind_blast_in_time		= config.r_float(id,"wind_blast_in_time");
-		result->wind_blast_out_time		= config.r_float(id,"wind_blast_out_time");
+		result->m_wind_blast_strength			= config.r_float(id,"wind_blast_strength");
+		result->m_wind_blast_direction.setHP	(deg2rad(config.r_float(id,"wind_blast_longitude")), 0.f);
+		result->m_wind_blast_in_time			= config.r_float(id,"wind_blast_in_time");
+		result->m_wind_blast_out_time			= config.r_float(id,"wind_blast_out_time");
 		return							(result);
 	}
 
-	result->wind_blast_strength			= 0.f;
-	result->wind_blast_direction.set	(0.f, 0.f, 1.f);
-	result->wind_blast_in_time			= 0.f;
-	result->wind_blast_out_time			= 0.f;
+	result->m_wind_blast_strength			= 0.f;
+	result->m_wind_blast_direction.set		(0.f, 0.f, 1.f);
+	result->m_wind_blast_in_time			= 0.f;
+	result->m_wind_blast_out_time			= 0.f;
 
 	return								(result);
 }
@@ -238,58 +238,58 @@ void CEnvAmbient::load(
 
 void CEnvAmbient::load_shoc(const shared_str& sect)
 {
-	section = sect;
+	m_section = sect;
 	string_path tmp;
 
 	// sounds
 	if (!pSettings->line_exist(sect, "sounds"))
-		Msg("CEnvAmbient::load_shoc: section '%s' not found", section.c_str());
+		Msg("CEnvAmbient::load_shoc: section '%s' not found", m_section.c_str());
 
 	if (pSettings->line_exist(sect, "sounds"))
 	{
 		Fvector2 t = pSettings->r_fvector2(sect, "sound_period");
-		sound_period.set(iFloor(t.x * 1000.f), iFloor(t.y * 1000.f));
-		sound_dist = pSettings->r_fvector2(sect, "sound_dist");
+		m_sound_period.set(iFloor(t.x * 1000.f), iFloor(t.y * 1000.f));
+		m_sound_dist = pSettings->r_fvector2(sect, "sound_dist");
 
-		if (sound_dist[0] > sound_dist[1])
-			std::swap(sound_dist[0], sound_dist[1]);
+		if (m_sound_dist[0] > m_sound_dist[1])
+			std::swap(m_sound_dist[0], m_sound_dist[1]);
 
 		LPCSTR snds = pSettings->r_string(sect, "sounds");
 		u32 cnt = _GetItemCount(snds);
 
 		if (cnt)
 		{
-			sounds.resize(cnt);
+			m_sounds.resize(cnt);
 
 			for (u32 k = 0; k < cnt; ++k)
-				sounds[k].create(_GetItem(snds, k, tmp), st_Effect, sg_SourceType);
+				m_sounds[k].create(_GetItem(snds, k, tmp), st_Effect, sg_SourceType);
 		}
 	}
 	// effects
 	if (pSettings->line_exist(sect, "effects"))
 	{
 		Fvector2 t = pSettings->r_fvector2(sect, "effect_period");
-		effect_period.set(iFloor(t.x * 1000.f), iFloor(t.y * 1000.f));
+		m_effect_period.set(iFloor(t.x * 1000.f), iFloor(t.y * 1000.f));
 		LPCSTR effs = pSettings->r_string(sect, "effects");
 		u32 cnt = _GetItemCount(effs);
 
 		if (cnt)
 		{
-			effects_shoc.resize(cnt);
+			m_effects_shoc.resize(cnt);
 			for (u32 k = 0; k < cnt; ++k)
 			{
 				_GetItem(effs, k, tmp);
-				effects_shoc[k].life_time = iFloor(pSettings->r_float(tmp, "life_time") * 1000.f);
-				effects_shoc[k].particles = pSettings->r_string(tmp, "particles");
-				VERIFY(effects_shoc[k].particles.size());
-				effects_shoc[k].offset = pSettings->r_fvector3(tmp, "offset");
-				effects_shoc[k].wind_gust_factor = pSettings->r_float(tmp, "wind_gust_factor");
+				m_effects_shoc[k].m_life_time = iFloor(pSettings->r_float(tmp, "life_time") * 1000.f);
+				m_effects_shoc[k].m_particles = pSettings->r_string(tmp, "particles");
+				VERIFY(m_effects_shoc[k].m_particles.size());
+				m_effects_shoc[k].m_offset = pSettings->r_fvector3(tmp, "offset");
+				m_effects_shoc[k].m_wind_gust_factor = pSettings->r_float(tmp, "wind_gust_factor");
 				if (pSettings->line_exist(tmp, "sound"))
-					effects_shoc[k].sound.create(pSettings->r_string(tmp, "sound"), st_Effect, sg_SourceType);
+					m_effects_shoc[k].m_sound.create(pSettings->r_string(tmp, "sound"), st_Effect, sg_SourceType);
 			}
 		}
 	}
-	VERIFY(!sounds.empty() || !effects_shoc.empty());
+	VERIFY(!m_sounds.empty() || !m_effects_shoc.empty());
 }
 
 //-----------------------------------------------------------------------------

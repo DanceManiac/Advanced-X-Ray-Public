@@ -13,7 +13,7 @@ bool CActor::use_MountedWeapon(CHolderCustom* object)
 	if(m_holder){
 		if(!wpn||(m_holder==wpn)){
 			m_holder->detach_Actor();
-			character_physics_support()->movement()->CreateCharacter();
+			character_physics_support()->get_movement()->CreateCharacter();
 			m_holder=NULL;
 		}
 		return true;
@@ -23,7 +23,7 @@ bool CActor::use_MountedWeapon(CHolderCustom* object)
 			if(wpn->Use(Device.vCameraPosition, Device.vCameraDirection,center)){
 				if(wpn->attach_Actor(this)){
 					// destroy actor character
-					character_physics_support()->movement()->DestroyCharacter();
+					character_physics_support()->get_movement()->DestroyCharacter();
 					PickupModeOff();
 					m_holder=wpn;
 					if (pCamBobbing){

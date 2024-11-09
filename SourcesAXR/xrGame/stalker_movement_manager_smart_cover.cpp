@@ -133,7 +133,7 @@ MotionID stalker_movement_manager_smart_cover::select_animation			(bool& animati
 		return							(MotionID());
 
 	animation_movement_controller		= true;
-	VERIFY								(m_entering_smart_cover_with_animation || current_transition().animation().has_animation());
+	VERIFY								(m_entering_smart_cover_with_animation || current_transition().get_animation().has_animation());
 	return								(m_enter_animation);
 }
 
@@ -187,7 +187,7 @@ void stalker_movement_manager_smart_cover::reach_enter_location			(u32 const& ti
 	smart_cover::loophole const&		loophole = target_loophole.enterable() ? target_loophole : nearest_enterable_loophole();
 
 	Fvector								position;
-	m_target.cover()->object().XFORM().transform_tiny(position, current_transition().animation().position());
+	m_target.cover()->object().XFORM().transform_tiny(position, current_transition().get_animation().position());
 
 	u32									level_vertex_id	= ai().level_graph().vertex( u32(-1), position);
 	if (!accessible(level_vertex_id) || !accessible(position)) {
@@ -226,14 +226,14 @@ void stalker_movement_manager_smart_cover::reach_enter_location			(u32 const& ti
 	m_current.desired_direction			(&direction);
 
 	if (target_approached(m_apply_loophole_direction_distance))
-		object().sight().setup			(CSightAction(SightManager::eSightTypeDirection, direction, true));
+		object().get_sight().setup			(CSightAction(SightManager::eSightTypeDirection, direction, true));
 	
 	inherited::update					(m_current);
 
 	if (!path_completed())
 		return;
 
-	if (!object().sight().current_action().target_reached())
+	if (!object().get_sight().current_action().target_reached())
 		return;
 
 	if (target_params().cover()->can_fire()) {
@@ -255,14 +255,14 @@ void stalker_movement_manager_smart_cover::reach_enter_location			(u32 const& ti
 		}
 	}
 
-	object().animation().global().target_matrix	(position, direction);
+	object().get_animation().global().target_matrix	(position, direction);
 
-	if (!current_transition().animation().has_animation()) {
+	if (!current_transition().get_animation().has_animation()) {
 		enter_smart_cover				();
 		return;
 	}
 
-	object().sight().setup				( CSightAction(SightManager::eSightTypeAnimationDirection, true, false) );
+	object().get_sight().setup				( CSightAction(SightManager::eSightTypeAnimationDirection, true, false) );
 
 	on_smart_cover_enter				();
 
@@ -273,9 +273,9 @@ void stalker_movement_manager_smart_cover::reach_enter_location			(u32 const& ti
 	VERIFY								(m_enter_cover_id != "");
 	VERIFY								(m_enter_loophole_id != "");
 
-	m_enter_animation					= smart_cast<IKinematicsAnimated*>(object().Visual())->ID_Cycle(current_transition().animation().animation_id());
+	m_enter_animation					= smart_cast<IKinematicsAnimated*>(object().Visual())->ID_Cycle(current_transition().get_animation().animation_id());
 
-	CStalkerAnimationManager			&animation = object().animation();
+	CStalkerAnimationManager			&animation = object().get_animation();
 
 	animation.global_selector			(CStalkerAnimationManager::AnimationSelector(this, &stalker_movement_manager_smart_cover::select_animation));
 	animation.global_callback			(CStalkerAnimationManager::AnimationCallback(this, &stalker_movement_manager_smart_cover::on_animation_end));
@@ -380,7 +380,7 @@ bool stalker_movement_manager_smart_cover::exit_transition				()
 
 void stalker_movement_manager_smart_cover::bind_global_selector								()
 {
-	CStalkerAnimationManager			&animation = object().animation();
+	CStalkerAnimationManager			&animation = object().get_animation();
 
 	animation.global_selector			(CStalkerAnimationManager::AnimationSelector(&animation_selector(), &smart_cover::animation_selector::select_animation));
 	animation.global_callback			(CStalkerAnimationManager::AnimationCallback(&animation_selector(), &smart_cover::animation_selector::on_animation_end));
@@ -393,12 +393,12 @@ void stalker_movement_manager_smart_cover::bind_global_selector								()
 
 	Fvector								position = m_current.cover()->fov_position(*m_current.cover_loophole());
 	Fvector								direction = m_current.cover()->enter_direction(*m_current.cover_loophole());
-	object().animation().global().target_matrix(position, direction);
+	object().get_animation().global().target_matrix(position, direction);
 }
 
 void  stalker_movement_manager_smart_cover::unbind_global_selector							()
 {
-	CStalkerAnimationManager			&animation = object().animation();
+	CStalkerAnimationManager			&animation = object().get_animation();
 
 	animation.global_selector			(CStalkerAnimationManager::AnimationSelector());
 	animation.global_callback			(CStalkerAnimationManager::AnimationCallback());
@@ -406,7 +406,7 @@ void  stalker_movement_manager_smart_cover::unbind_global_selector							()
 	animation.global_modifier			(CStalkerAnimationManager::AnimationModifier());
 #endif // #ifdef DEBUG
 
-	object().animation().global().target_matrix();
+	object().get_animation().global().target_matrix();
 }
 
 stalker_movement_manager_smart_cover::transition_action const &stalker_movement_manager_smart_cover::current_transition	()

@@ -383,9 +383,9 @@ protected:
 			void						on_after_take					(const CGameObject *object);
 	virtual bool						AllowItemToTrade 				(CInventoryItem const * item, EItemPlace place) const;
 public:
-	IC		CStalkerAnimationManager	&animation						() const;
-	IC		CStalkerPlanner				&brain							() const;
-	IC		CSightManager				&sight							() const;
+	IC		CStalkerAnimationManager	&get_animation						() const;
+	IC		CStalkerPlanner				&get_brain							() const;
+	IC		CSightManager				&get_sight							() const;
 
 private:
 	CStalkerSoundDataVisitor			*m_sound_user_data_visitor;
@@ -396,7 +396,7 @@ protected:
 	virtual CMovementManager			*create_movement_manager		();
 
 public:
-	IC		stalker_movement_manager_smart_cover		&movement						() const;
+	IC		stalker_movement_manager_smart_cover		& get_movement						() const;
 	virtual DLL_Pure					*_construct						();
 
 private:

@@ -55,7 +55,7 @@ void CAI_Trader::reinit	()
 	CEntityAlive::reinit	();
 	CInventoryOwner::reinit	();
 	sound().reinit			();
-	animation().reinit		();
+	get_animation().reinit		();
 
 	m_busy_now				= false;
 }
@@ -284,7 +284,7 @@ void CAI_Trader::UpdateCL()
 
 
 	if (!GetScriptControl() && !bfScriptAnimation()) 
-		animation().update_frame();
+		get_animation().update_frame();
 }
 
 BOOL CAI_Trader::UsedAI_Locations()
@@ -388,10 +388,10 @@ bool CAI_Trader::AllowItemToTrade 	(CInventoryItem const * item, EItemPlace plac
 
 void CAI_Trader::dialog_sound_start(LPCSTR phrase)
 {
-	animation().external_sound_start(phrase);
+	get_animation().external_sound_start(phrase);
 }
 
 void CAI_Trader::dialog_sound_stop()
 {
-	animation().external_sound_stop();
+	get_animation().external_sound_stop();
 }

@@ -305,8 +305,8 @@ namespace luabind {
 
     namespace {
 
-        detail::self_type self;
-        detail::const_self_type const_self;
+        detail::self_type m_self;
+        detail::const_self_type m_const_self;
 
     } // namespace unnamed
     

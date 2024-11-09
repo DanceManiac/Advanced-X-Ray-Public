@@ -82,7 +82,7 @@ void CStalkerActionDead::execute		()
 {
 	inherited::execute					();
 
-	object().movement().enable_movement(false);
+	object().get_movement().enable_movement(false);
 
 	if (fire())
 		return;

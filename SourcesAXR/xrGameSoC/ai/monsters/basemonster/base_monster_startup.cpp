@@ -34,11 +34,11 @@ void CBaseMonster::Load(LPCSTR section)
 	// load parameters from ".ltx" file
 	inherited::Load					(section);
 
-	m_corpse_cover_evaluator		= xr_new<CMonsterCorpseCoverEvaluator>	(&movement().restrictions());
-	m_enemy_cover_evaluator			= xr_new<CCoverEvaluatorFarFromEnemy>	(&movement().restrictions());
-	m_cover_evaluator_close_point	= xr_new<CCoverEvaluatorCloseToEnemy>	(&movement().restrictions());
+	m_corpse_cover_evaluator		= xr_new<CMonsterCorpseCoverEvaluator>	(&get_movement().restrictions());
+	m_enemy_cover_evaluator			= xr_new<CCoverEvaluatorFarFromEnemy>	(&get_movement().restrictions());
+	m_cover_evaluator_close_point	= xr_new<CCoverEvaluatorCloseToEnemy>	(&get_movement().restrictions());
 
-	movement().Load					(section);
+	get_movement().Load					(section);
 
 	MeleeChecker.load				(section);
 	Morale.load						(section);
@@ -108,7 +108,7 @@ void CBaseMonster::Load(LPCSTR section)
 // if sound is absent just do not load that one
 #define LOAD_SOUND(sound_name,_type,_prior,_mask,_int_type)		\
 	if (pSettings->line_exist(section,sound_name))						\
-		sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,"bip01_head");
+		get_sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,"bip01_head");
 
 void CBaseMonster::reload	(LPCSTR section)
 {
@@ -118,7 +118,7 @@ void CBaseMonster::reload	(LPCSTR section)
 		CStepManager::reload	(section);
 
 	CInventoryOwner::reload		(section);
-	movement().reload	(section);
+	get_movement().reload	(section);
 
 	// load base sounds
 	LOAD_SOUND("sound_idle",			SOUND_TYPE_MONSTER_TALKING,		MonsterSound::eLowPriority,			MonsterSound::eBaseChannel,			MonsterSound::eMonsterSoundIdle);
@@ -225,7 +225,7 @@ BOOL CBaseMonster::net_Spawn (CSE_Abstract* DC)
 
 #ifdef PRIQUEL
 	if (GetScriptControl()) {
-		m_control_manager->animation().reset_data	();
+		m_control_manager->get_animation().reset_data	();
 		ProcessScripts						();
 	}
 	m_pPhysics_support->in_NetSpawn			(e);

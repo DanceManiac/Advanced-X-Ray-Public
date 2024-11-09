@@ -61,7 +61,7 @@ public:
 		return 0;
 	}
 	SBoneInfo*				get_nearest_bone_info	(IKinematics* K, u16 bone_index);
-	Fvector					parent_vel;
+	Fvector					m_parent_vel;
 public:
 							CParticlesPlayer		(void);
 	virtual					~CParticlesPlayer		(void);
@@ -87,7 +87,7 @@ public:
 	u16						GetNearestBone			(IKinematics* K, u16 bone_id);
 	IC u16					GetRandomBone			(){ u16 l_PBCount=u16(m_Bones.size()); if(l_PBCount) return m_Bones[(u16)Random.randI(l_PBCount)].index; else return BI_NONE;}
 
-	void					SetParentVel			(const Fvector& vel) {parent_vel = vel;}
+	void					SetParentVel			(const Fvector& vel) { m_parent_vel = vel;}
 	
 	bool					IsPlaying				() {return m_bActiveBones;}
 	virtual CParticlesPlayer*	cast_particles_player	()	{return this;}

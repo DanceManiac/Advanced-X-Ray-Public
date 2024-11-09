@@ -75,7 +75,7 @@ CStalkerPropertyEvaluatorItems::CStalkerPropertyEvaluatorItems	(CAI_Stalker *obj
 
 _value_type CStalkerPropertyEvaluatorItems::evaluate	()
 {
-	return			(!!m_object->memory().item().selected());
+	return			(!!m_object->get_memory().item().selected());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -96,13 +96,13 @@ CStalkerPropertyEvaluatorEnemies::CStalkerPropertyEvaluatorEnemies	(
 
 _value_type CStalkerPropertyEvaluatorEnemies::evaluate	()
 {
-	if (m_object->memory().enemy().selected())
+	if (m_object->get_memory().get_enemy().selected())
 		return			(true);
 
 	if (m_dont_wait && *m_dont_wait)
 		return			(false);
 
-	if (Device.dwTimeGlobal < m_object->memory().enemy().last_enemy_time() + m_time_to_wait)
+	if (Device.dwTimeGlobal < m_object->get_memory().get_enemy().last_enemy_time() + m_time_to_wait)
 		return			(true);
 
 	return				(false);
@@ -119,7 +119,7 @@ CStalkerPropertyEvaluatorSeeEnemy::CStalkerPropertyEvaluatorSeeEnemy	(CAI_Stalke
 
 _value_type CStalkerPropertyEvaluatorSeeEnemy::evaluate	()
 {
-	return				(m_object->memory().enemy().selected() ? m_object->memory().visual().visible_now(m_object->memory().enemy().selected()) : false);
+	return				(m_object->get_memory().get_enemy().selected() ? m_object->get_memory().visual().visible_now(m_object->get_memory().get_enemy().selected()) : false);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -133,17 +133,17 @@ CStalkerPropertyEvaluatorEnemySeeMe::CStalkerPropertyEvaluatorEnemySeeMe	(CAI_St
 
 _value_type CStalkerPropertyEvaluatorEnemySeeMe::evaluate	()
 {
-	const CEntityAlive		*enemy = m_object->memory().enemy().selected();
+	const CEntityAlive		*enemy = m_object->get_memory().get_enemy().selected();
 	if (!enemy)
 		return				(false);
 
 	const CCustomMonster	*enemy_monster = smart_cast<const CCustomMonster*>(enemy);
 	if (enemy_monster)
-		return				(enemy_monster->memory().visual().visible_now(m_object));
+		return				(enemy_monster->get_memory().visual().visible_now(m_object));
 
 	const CActor			*actor = smart_cast<const CActor*>(enemy);
 	if (actor)
-		return				(actor->memory().visual().visible_now(m_object));
+		return				(actor->get_memory().visual().visible_now(m_object));
 
 	return					(false);
 }
@@ -246,7 +246,7 @@ _value_type CStalkerPropertyEvaluatorAnomaly::evaluate	()
 	if (!m_object->undetected_anomaly())
 		return			(false);
 
-	if (!m_object->memory().enemy().selected())
+	if (!m_object->get_memory().get_enemy().selected())
 		return			(true);
 
 	u32					result = dwfChooseAction(2000,m_object->panic_threshold(),0.f,0.f,0.f,m_object->g_Team(),m_object->g_Squad(),m_object->g_Group(),0,1,2,3,4,m_object,300.f);
@@ -267,7 +267,7 @@ _value_type CStalkerPropertyEvaluatorInsideAnomaly::evaluate	()
 	if (!m_object->inside_anomaly())
 		return			(false);
 
-	if (!m_object->memory().enemy().selected())
+	if (!m_object->get_memory().get_enemy().selected())
 		return			(true);
 
 	u32					result = dwfChooseAction(2000,m_object->panic_threshold(),0.f,0.f,0.f,m_object->g_Team(),m_object->g_Squad(),m_object->g_Group(),0,1,2,3,4,m_object,300.f);
@@ -305,7 +305,7 @@ _value_type CStalkerPropertyEvaluatorSmartTerrainTask::evaluate	()
 
 	CSE_ALifeHumanAbstract		*stalker = smart_cast<CSE_ALifeHumanAbstract*>(ai().alife().objects().object(m_object->ID()));
 	VERIFY						(stalker);
-	stalker->brain().select_task();
+	stalker->get_brain().select_task();
 	return						(stalker->m_smart_terrain_id != 0xffff);
 }
 
@@ -321,11 +321,11 @@ CStalkerPropertyEvaluatorEnemyReached::CStalkerPropertyEvaluatorEnemyReached	(CA
 
 _value_type CStalkerPropertyEvaluatorEnemyReached::evaluate	()
 {
-	const CEntityAlive			*enemy = object().memory().enemy().selected();
+	const CEntityAlive			*enemy = object().get_memory().get_enemy().selected();
 	if (!enemy)
 		return					(false);
 
-	ALife::_OBJECT_ID			processor_id = object().agent_manager().enemy().wounded_processor(enemy);
+	ALife::_OBJECT_ID			processor_id = object().agent_manager().get_enemy().wounded_processor(enemy);
 	if (processor_id != object().ID())
 		return					(false);
 
@@ -343,17 +343,17 @@ CStalkerPropertyEvaluatorPlayerOnThePath::CStalkerPropertyEvaluatorPlayerOnThePa
 
 _value_type CStalkerPropertyEvaluatorPlayerOnThePath::evaluate	()
 {
-	const CEntityAlive			*enemy = object().memory().enemy().selected();
+	const CEntityAlive			*enemy = object().get_memory().get_enemy().selected();
 	if (!enemy)
 		return					(false);
 
 	if (!object().is_relation_enemy(Actor()))
 		return					(false);
 
-	if (!m_object->memory().visual().visible_now(Actor()))
+	if (!m_object->get_memory().visual().visible_now(Actor()))
 		return					(false);
 
-	return						(object().movement().is_object_on_the_way(Actor(),2.f));
+	return						(object().get_movement().is_object_on_the_way(Actor(),2.f));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -367,7 +367,7 @@ CStalkerPropertyEvaluatorEnemyCriticallyWounded::CStalkerPropertyEvaluatorEnemyC
 
 _value_type CStalkerPropertyEvaluatorEnemyCriticallyWounded::evaluate	()
 {
-	const CEntityAlive			*enemy = object().memory().enemy().selected();
+	const CEntityAlive			*enemy = object().get_memory().get_enemy().selected();
 	if (!enemy)
 		return					(false);
 

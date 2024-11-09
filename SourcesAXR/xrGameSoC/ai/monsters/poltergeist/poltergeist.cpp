@@ -47,7 +47,7 @@ void CPoltergeist::Load(LPCSTR section)
 	anim().accel_chain_add		(eAnimWalkFwd,		eAnimRun);
 
 	invisible_vel.set(pSettings->r_float(section,"Velocity_Invisible_Linear"),pSettings->r_float(section,"Velocity_Invisible_Angular"));
-	movement().detail().add_velocity(MonsterMovement::eVelocityParameterInvisible,CDetailPathManager::STravelParams(invisible_vel.linear, invisible_vel.angular));
+	get_movement().detail().add_velocity(MonsterMovement::eVelocityParameterInvisible,CDetailPathManager::STravelParams(invisible_vel.linear, invisible_vel.angular));
 
 	anim().AddReplacedAnim(&m_bDamaged, eAnimWalkFwd, eAnimWalkDamaged);
 	anim().AddReplacedAnim(&m_bDamaged, eAnimRun,	 eAnimRunDamaged);
@@ -137,7 +137,7 @@ void CPoltergeist::reinit()
 	setVisible							(false);
 	
 	m_current_position = Position		();
-	character_physics_support()->movement()->DestroyCharacter();
+	character_physics_support()->get_movement()->DestroyCharacter();
 	
 	m_height							= 0.3f;
 	time_height_updated					= 0;
@@ -153,7 +153,7 @@ void CPoltergeist::Hide()
 	setVisible			(false);
 	
 	m_current_position	= Position		();
-	character_physics_support()->movement()->DestroyCharacter();
+	character_physics_support()->get_movement()->DestroyCharacter();
 
 	ability()->on_hide	();
 }
@@ -169,8 +169,8 @@ void CPoltergeist::Show()
 	com_man().seq_run(anim().get_motion_id(eAnimMiscAction_00));
 
 	Position() = m_current_position;
-	character_physics_support()->movement()->SetPosition(Position());
-	character_physics_support()->movement()->CreateCharacter();
+	character_physics_support()->get_movement()->SetPosition(Position());
+	character_physics_support()->get_movement()->CreateCharacter();
 	
 	ability()->on_show	();
 }

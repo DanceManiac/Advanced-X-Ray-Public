@@ -121,9 +121,9 @@ class	type_motion0: public type_motion
 		if( !chs || chs->Type( ) == CCharacterPhysicsSupport::etBitting )
 			return false;
 
-		VERIFY( chs->movement() );
+		VERIFY( chs->get_movement() );
 		
-		const Fvector stalker_velocity = chs->movement()->GetVelocity();
+		const Fvector stalker_velocity = chs->get_movement()->GetVelocity();
 		const float stalker_speed = stalker_velocity.magnitude();
 		const float min_stalker_speed = 3.65f;
 		if(stalker_speed < min_stalker_speed )

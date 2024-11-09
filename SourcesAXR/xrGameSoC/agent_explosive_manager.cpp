@@ -61,7 +61,7 @@ void CAgentExplosiveManager::register_explosive	(const CExplosive *explosive, co
 	if (missile && (missile->destroy_time() > Device.dwTimeGlobal))
 		interval						= missile->destroy_time() - Device.dwTimeGlobal + AFTER_GRENADE_DESTROYED_INTERVAL;
 
-	object().location().add				(xr_new<CDangerObjectLocation>(game_object,Device.dwTimeGlobal,interval,GRENADE_RADIUS));
+	object().get_location().add				(xr_new<CDangerObjectLocation>(game_object,Device.dwTimeGlobal,interval,GRENADE_RADIUS));
 }
 
 bool CAgentExplosiveManager::process_explosive			(CMemberOrder &member)
@@ -71,7 +71,7 @@ bool CAgentExplosiveManager::process_explosive			(CMemberOrder &member)
 	xr_vector<CDangerExplosive>::iterator	I = m_explosives.begin();
 	xr_vector<CDangerExplosive>::iterator	E = m_explosives.end();
 	for ( ; I != E; ++I) {
-		if (!member.object().memory().visual().visible_now((*I).m_game_object))
+		if (!member.object().get_memory().visual().visible_now((*I).m_game_object))
 			continue;
 
 		float		dist_sqr = (*I).m_game_object->Position().distance_to_sqr(member.object().Position());
@@ -97,8 +97,8 @@ void CAgentExplosiveManager::react_on_explosives	()
 {
 	for (;;) {
 		bool						changed = false;
-		CAgentMemberManager::iterator	I = object().member().combat_members().begin();
-		CAgentMemberManager::iterator	E = object().member().combat_members().end();
+		CAgentMemberManager::iterator	I = object().get_member().combat_members().begin();
+		CAgentMemberManager::iterator	E = object().get_member().combat_members().end();
 		for ( ; I != E; ++I)
 			if (!(*I)->grenade_reaction().m_processing)
 				changed				= process_explosive(**I);
@@ -114,7 +114,7 @@ void CAgentExplosiveManager::react_on_explosives	()
 			if (!(*I).m_reactor)
 				continue;
 
-			CMemberOrder::CGrenadeReaction	&reaction = object().member().member((*I).m_reactor).grenade_reaction();
+			CMemberOrder::CGrenadeReaction	&reaction = object().get_member().member((*I).m_reactor).grenade_reaction();
 			reaction.m_grenade		= (*I).m_grenade;
 			reaction.m_game_object	= (*I).m_game_object;
 			reaction.m_time			= (*I).m_time;

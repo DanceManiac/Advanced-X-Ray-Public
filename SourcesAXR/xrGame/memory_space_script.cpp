@@ -145,7 +145,7 @@ void CMemoryInfo::script_register(lua_State *L)
 				value("sound",				CDangerObject::eDangerPerceiveTypeSound),
 				value("hit",				CDangerObject::eDangerPerceiveTypeHit)
 			]
-			.def(							const_self == other<CDangerObject>())
+			.def(							m_const_self == other<CDangerObject>())
 			.def("position",				&CDangerObject__position)
 			.def("time",					&CDangerObject::time)
 			.def("type",					&CDangerObject::type)

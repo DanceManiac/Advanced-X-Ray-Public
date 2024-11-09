@@ -66,13 +66,13 @@ public:
 			void					remove_links		(CObject *object);
 
 public:
-	IC		CAgentCorpseManager		&corpse				() const;
-	IC		CAgentEnemyManager		&enemy				() const;
-	IC		CAgentExplosiveManager	&explosive			() const;
-	IC		CAgentLocationManager	&location			() const;
-	IC		CAgentMemberManager		&member				() const;
-	IC		CAgentMemoryManager		&memory				() const;
-	IC		CAgentManagerPlanner	&brain				() const;
+	IC		CAgentCorpseManager		&get_corpse			() const;
+	IC		CAgentEnemyManager		&get_enemy			() const;
+	IC		CAgentExplosiveManager	&get_explosive		() const;
+	IC		CAgentLocationManager	&get_location		() const;
+	IC		CAgentMemberManager		&get_member			() const;
+	IC		CAgentMemoryManager		&get_memory			() const;
+	IC		CAgentManagerPlanner	&get_brain			() const;
 };
 
 #include "agent_manager_inline.h"

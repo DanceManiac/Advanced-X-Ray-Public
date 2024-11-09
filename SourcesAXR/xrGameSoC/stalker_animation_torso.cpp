@@ -27,7 +27,7 @@ void CStalkerAnimationManager::torso_play_callback	(CBlend *blend)
 	CAI_Stalker						*object = (CAI_Stalker*)blend->CallbackParam;
 	VERIFY							(object);
 
-	CStalkerAnimationManager		&animation = object->animation();
+	CStalkerAnimationManager		&animation = object->get_animation();
 	CStalkerAnimationPair			&pair = animation.torso();
 	pair.on_animation_end			();
 
@@ -40,7 +40,7 @@ void CStalkerAnimationManager::torso_play_callback	(CBlend *blend)
 MotionID CStalkerAnimationManager::no_object_animation(const EBodyState &body_state) const
 {
 	const CAI_Stalker				&stalker = object();
-	const CStalkerMovementManager	&movement = stalker.movement();
+	const CStalkerMovementManager	&movement = stalker.get_movement();
 	const xr_vector<CAniVector>		&animation = m_data_storage->m_part_animations.A[body_state].m_torso.A[0].A;
 
 	if (eMentalStateFree == movement.mental_state()) {
@@ -76,7 +76,7 @@ MotionID CStalkerAnimationManager::unknown_object_animation(u32 slot, const EBod
 	
 	// stalker shortcuts
 	const CAI_Stalker				&stalker = object();
-	const CStalkerMovementManager	&movement = stalker.movement();
+	const CStalkerMovementManager	&movement = stalker.get_movement();
 	u32								id = stalker.CObjectHandler::planner().current_action_state_id();
 
 	switch (id) {
@@ -189,7 +189,7 @@ MotionID CStalkerAnimationManager::weapon_animation	(u32 slot, const EBodyState 
 		case CWeapon::eFire:
 		case CWeapon::eFire2 : {
 			CAI_Stalker				&stalker = object();
-			CStalkerMovementManager	&movement = stalker.movement();
+			CStalkerMovementManager	&movement = stalker.get_movement();
 			if (standing())
 				return				(animation[1].A[0]);
 

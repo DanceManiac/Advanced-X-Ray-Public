@@ -166,7 +166,7 @@ public:
 	virtual			~CDetailPathManager			();
 	virtual	void	reinit						();
 			bool	valid						() const;
-			Fvector direction					() const;
+			Fvector get_direction					() const;
 			bool	actual						() const;
 	IC		bool	failed						() const;
 	IC		bool	completed					(const Fvector &position, bool bRealCompleted = true) const;

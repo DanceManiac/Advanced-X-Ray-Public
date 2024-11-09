@@ -58,7 +58,7 @@ public:
 private:
 	shared_str				m_id;
 	property_holder_type*	m_property_holder;
-	shared_str				m_sound;
+	shared_str				m_sound_eff;
 
 public:
 	manager const&			m_manager;

@@ -25,26 +25,26 @@
 void CSE_ALifeMonsterAbstract::add_online							(const bool &update_registries)
 {
 	inherited1::add_online			(update_registries);
-	brain().on_switch_online		();
+	get_brain().on_switch_online		();
 }
 
 void CSE_ALifeMonsterAbstract::add_offline							(const xr_vector<ALife::_OBJECT_ID> &saved_children, const bool &update_registries)
 {
 	inherited1::add_offline			(saved_children,update_registries);
-	brain().on_switch_offline		();
+	get_brain().on_switch_offline		();
 }
 
 void CSE_ALifeMonsterAbstract::on_register							()
 {	
 	inherited1::on_register();
-	brain().on_register						();	
+	get_brain().on_register						();	
 }
 
 void CSE_ALifeMonsterAbstract::on_unregister							()
 {
 	inherited1::on_unregister();
 	RELATION_REGISTRY().ClearRelations								(ID);
-	brain().on_unregister					();
+	get_brain().on_unregister					();
 	if (m_group_id != 0xffff)
 		ai().alife().groups().object(m_group_id).unregister_member	(ID);
 }
@@ -55,7 +55,7 @@ void CSE_ALifeMonsterAbstract::update								()
 	if (!bfActive())
 		return;
 
-	brain().update					();
+	get_brain().update					();
 /**
 	GameGraph::_GRAPH_ID	start_game_vertex_id = m_tGraphID;
 	bool				bContinue = true;
@@ -143,7 +143,7 @@ void CSE_ALifeMonsterAbstract::update								()
 
 void CSE_ALifeMonsterAbstract::on_location_change			() const
 {
-	brain().on_location_change();
+	get_brain().on_location_change();
 }
 
 CSE_ALifeItemWeapon	*CSE_ALifeMonsterAbstract::tpfGetBestWeapon(ALife::EHitType &tHitType, float &fHitPower)
@@ -202,7 +202,7 @@ void CSE_ALifeMonsterAbstract::vfCheckForPopulationChanges	()
 	ai().ef_storage().alife_evaluation(true);
 	ALife::_TIME_ID				l_tTimeID = ai().alife().time_manager().game_time();
 	if (l_tTimeID >= l_tpALifeGroupAbstract->m_tNextBirthTime) {
-		ai().ef_storage().alife().member() = this;
+		ai().ef_storage().alife().get_member() = this;
 		l_tpALifeGroupAbstract->m_tNextBirthTime = l_tTimeID + ALife::_TIME_ID(ai().ef_storage().m_pfBirthSpeed->ffGetValue()*24*60*60*1000);
 		if (randF(100) < ai().ef_storage().m_pfBirthProbability->ffGetValue()) {
 			u32					l_dwBornCount = iFloor(float(l_tpALifeGroupAbstract->m_wCount)*randF(.5f,1.5f)*ai().ef_storage().m_pfBirthPercentage->ffGetValue()/100.f + .5f);
@@ -223,9 +223,9 @@ void CSE_ALifeMonsterAbstract::vfCheckForPopulationChanges	()
 Fvector CSE_ALifeMonsterAbstract::draw_level_position	() const
 {
 #if 0
-	brain().update				();
+	get_brain().update				();
 #endif
-	return						(brain().movement().detail().draw_level_position());
+	return						(get_brain().get_movement().detail().draw_level_position());
 }
 
 bool CSE_ALifeMonsterAbstract::redundant				() const

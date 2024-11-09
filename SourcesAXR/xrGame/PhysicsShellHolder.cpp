@@ -61,7 +61,7 @@ const IPhysicsElement* CPhysicsShellHolder::physics_character()  const
 	const CCharacterPhysicsSupport	*char_support = character_physics_support();
 	if( !char_support )
 				return 0;
-	const CPHMovementControl		*mov		  = character_physics_support()->movement();
+	const CPHMovementControl		*mov		  = character_physics_support()->get_movement();
 	VERIFY( mov );
 	return mov->IElement();
 }
@@ -561,7 +561,7 @@ IPHCapture*	CPhysicsShellHolder::PHCapture()
 	CCharacterPhysicsSupport* ph_sup = character_physics_support();
 	if( !ph_sup )
 		return 0;
-	CPHMovementControl	*mov = ph_sup->movement();
+	CPHMovementControl	*mov = ph_sup->get_movement();
 	if( !mov )
 		return 0;
 	return mov->PHCapture();
@@ -587,8 +587,8 @@ void CPhysicsShellHolder::HideAllWeapons( bool v )
 void	CPhysicsShellHolder::MovementCollisionEnable				( bool enable )
 {
  	VERIFY( character_physics_support() );
-	VERIFY( character_physics_support()->movement() );
-	character_physics_support()->movement()->CollisionEnable( enable );
+	VERIFY( character_physics_support()->get_movement() );
+	character_physics_support()->get_movement()->CollisionEnable( enable );
 }
 
 ICollisionDamageReceiver* CPhysicsShellHolder::ObjectPhCollisionDamageReceiver()						

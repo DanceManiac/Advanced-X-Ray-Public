@@ -151,7 +151,7 @@ IC	T	*CScriptGameObject::action_planner()
 		return nullptr;
 	}
 
-	return &manager->brain();
+	return &manager->get_brain();
 }
 
 CScriptActionPlanner		*script_action_planner(CScriptGameObject *obj)
@@ -166,7 +166,7 @@ void CScriptGameObject::set_enemy_callback	(const luabind::functor<bool> &functo
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member set_enemy_callback!");
 		return;
 	}
-	monster->memory().enemy().useful_callback().set(functor);
+	monster->get_memory().get_enemy().useful_callback().set(functor);
 }
 
 void CScriptGameObject::set_enemy_callback	(const luabind::functor<bool> &functor, const luabind::object &object)
@@ -176,7 +176,7 @@ void CScriptGameObject::set_enemy_callback	(const luabind::functor<bool> &functo
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member set_enemy_callback!");
 		return;
 	}
-	monster->memory().enemy().useful_callback().set(functor,object);
+	monster->get_memory().get_enemy().useful_callback().set(functor,object);
 }
 
 void CScriptGameObject::set_enemy_callback	()
@@ -186,7 +186,7 @@ void CScriptGameObject::set_enemy_callback	()
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member set_enemy_callback!");
 		return;
 	}
-	monster->memory().enemy().useful_callback().clear();
+	monster->get_memory().get_enemy().useful_callback().clear();
 }
 
 void CScriptGameObject::SetCallback(GameObject::ECallbackType type, const luabind::functor<void> &functor)

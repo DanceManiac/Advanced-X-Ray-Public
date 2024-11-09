@@ -563,7 +563,7 @@ void CUIListWnd::Update()
 {
 	if(m_bUpdateMouseMove)
 	{
-		OnMouseAction(cursor_pos.x, cursor_pos.y, WINDOW_MOUSE_MOVE);
+		OnMouseAction(m_cursor_pos.x, m_cursor_pos.y, WINDOW_MOUSE_MOVE);
 		m_bUpdateMouseMove = false;
 	}
 

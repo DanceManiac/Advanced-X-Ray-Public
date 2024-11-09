@@ -13,43 +13,43 @@ IC	shared_str CAgentManager::cName						() const
 	return		("agent_manager");
 }
 
-IC	CAgentCorpseManager	&CAgentManager::corpse			() const
+IC	CAgentCorpseManager	&CAgentManager::get_corpse			() const
 {
 	VERIFY		(m_corpse);
 	return		(*m_corpse);
 }
 
-IC	CAgentEnemyManager &CAgentManager::enemy			() const
+IC	CAgentEnemyManager &CAgentManager::get_enemy			() const
 {
 	VERIFY		(m_enemy);
 	return		(*m_enemy);
 }
 
-IC	CAgentExplosiveManager &CAgentManager::explosive	() const
+IC	CAgentExplosiveManager &CAgentManager::get_explosive	() const
 {
 	VERIFY		(m_explosive);
 	return		(*m_explosive);
 }
 
-IC	CAgentLocationManager &CAgentManager::location		() const
+IC	CAgentLocationManager &CAgentManager::get_location		() const
 {
 	VERIFY		(m_location);
 	return		(*m_location);
 }
 
-IC	CAgentMemberManager	&CAgentManager::member			() const
+IC	CAgentMemberManager	&CAgentManager::get_member			() const
 {
 	VERIFY		(m_member);
 	return		(*m_member);
 }
 
-IC	CAgentMemoryManager	&CAgentManager::memory			() const
+IC	CAgentMemoryManager	&CAgentManager::get_memory			() const
 {
 	VERIFY		(m_memory);
 	return		(*m_memory);
 }
 
-IC	CAgentManagerPlanner &CAgentManager::brain			() const
+IC	CAgentManagerPlanner &CAgentManager::get_brain			() const
 {
 	VERIFY		(m_brain);
 	return		(*m_brain);

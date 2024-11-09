@@ -39,7 +39,7 @@ const float BAD_PATH_DISTANCE_CHECK	= 2.f;
 IC	void CStalkerMovementManager::setup_head_speed		()
 {
 	if (mental_state() == eMentalStateFree) {
-		if (object().sight().enabled())
+		if (object().get_sight().enabled())
 			m_head.speed		= PI_DIV_2;
 	}
 	else
@@ -94,7 +94,7 @@ void CStalkerMovementManager::set_desired_position(const Fvector *desired_positi
 {
 	if (desired_position) {
 		m_target.m_use_desired_position	= true;
-		VERIFY2							(object().movement().accessible(*desired_position) || show_restrictions(&restrictions()),*object().cName());
+		VERIFY2							(object().get_movement().accessible(*desired_position) || show_restrictions(&restrictions()),*object().cName());
 		m_target.m_desired_position		= *desired_position;
 	}
 	else {
@@ -354,7 +354,7 @@ void CStalkerMovementManager::parse_velocity_mask	()
 	if (path().empty() || (detail().curr_travel_point_index() != m_last_turn_index))
 		m_last_turn_index		= u32(-1);
 
-	object().sight().enable		(true);
+	object().get_sight().enable		(true);
 
 	if ((movement_type() == eMovementTypeStand) || path().empty() || (path().size() <= detail().curr_travel_point_index()) || path_completed() || !actual()) {
 		object().m_fCurSpeed	= 0;
@@ -374,18 +374,18 @@ void CStalkerMovementManager::parse_velocity_mask	()
 	if (fis_zero(current_velocity.linear_velocity)) {
 		if (mental_state() == eMentalStateFree) {
 			setup_body_orientation	();
-			object().sight().enable	(false);
+			object().get_sight().enable	(false);
 //			Msg						("%d FALSE",Device.dwTimeGlobal);
 		}
 		if	(
 				(mental_state() != eMentalStateFree) ||
-//				(object().sight().current_action().sight_type() != SightManager::eSightTypePathDirection) ||
+//				(object().get_sight().current_action().sight_type() != SightManager::eSightTypePathDirection) ||
 				fis_zero(path_direction_angle(),EPS_L) ||
 				(m_last_turn_index == detail().curr_travel_point_index())
 			)
 		{
 			m_last_turn_index			= detail().curr_travel_point_index();
-			object().sight().enable(true);
+			object().get_sight().enable(true);
 //			Msg						("%d TRUE",Device.dwTimeGlobal);
 			if (detail().curr_travel_point_index() + 1 < path().size()) {
 				point				= path()[detail().curr_travel_point_index() + 1];
@@ -409,13 +409,13 @@ void CStalkerMovementManager::parse_velocity_mask	()
 			else {
 				if (!fis_zero(path_direction_angle(),PI_DIV_8*.5f)) {
 					setup_body_orientation	();
-					object().sight().enable	(false);
+					object().get_sight().enable	(false);
 					current_velocity		= detail().velocity(path()[detail().curr_travel_point_index()].velocity);
 					current_velocity.linear_velocity	= 0.f;
 					current_velocity.real_angular_velocity	= PI;
 				}
 				else
-					object().sight().enable	(true);
+					object().get_sight().enable	(true);
 			}
 		}
 	}
@@ -439,8 +439,8 @@ void CStalkerMovementManager::parse_velocity_mask	()
 	switch (point.velocity & eVelocityMentalState) {
 		case eVelocityFree : {
 #ifdef DEBUG
-			if (m_object->brain().current_action_id() == StalkerDecisionSpace::eWorldOperatorCombatPlanner) {
-				CStalkerCombatPlanner	&planner = smart_cast<CStalkerCombatPlanner&>(m_object->brain().current_action());
+			if (m_object->get_brain().current_action_id() == StalkerDecisionSpace::eWorldOperatorCombatPlanner) {
+				CStalkerCombatPlanner	&planner = smart_cast<CStalkerCombatPlanner&>(m_object->get_brain().current_action());
 				if (planner.current_action_id() != StalkerDecisionSpace::eWorldOperatorKillWoundedEnemy)
 					Msg					("~ stalker %s is doing bad thing (action %s)",*m_object->cName(),planner.current_action().m_action_name);
 			}

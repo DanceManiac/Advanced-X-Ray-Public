@@ -264,7 +264,7 @@ void CControlPathBuilder::make_inactual()
 
 bool CControlPathBuilder::can_use_distributed_compuations (u32 option) const
 {	
-	if (Actor()->memory().visual().visible_right_now(inherited_com::m_object)) return false;
+	if (Actor()->get_memory().visual().visible_right_now(inherited_com::m_object)) return false;
 	return inherited::can_use_distributed_compuations(option);
 }
 

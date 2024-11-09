@@ -210,9 +210,9 @@ void CCharacterPhysicsSupport::in_NetSpawn(CSE_Abstract* e)
 	k->CalculateBones();
 	
 	CPHSkeleton::Spawn(e);
-	movement()->EnableCharacter();
-	movement()->SetPosition(m_EntityAlife.Position());
-	movement()->SetVelocity	(0,0,0);
+	get_movement()->EnableCharacter();
+	get_movement()->SetPosition(m_EntityAlife.Position());
+	get_movement()->SetVelocity	(0,0,0);
 	if(m_eType!=etActor)
 	{
 		m_flags.set(fl_specific_bonce_demager,TRUE);
@@ -315,7 +315,7 @@ void CCharacterPhysicsSupport::in_shedule_Update( u32 DT )
 	{
 		m_EntityAlife.deactivate_physics_shell( );
 	}
-	movement( )->in_shedule_Update( DT );
+	get_movement( )->in_shedule_Update( DT );
 
 #if	0
 	if( anim_mov_state.active )
@@ -604,7 +604,7 @@ void CCharacterPhysicsSupport::CollisionCorrectObjPos(const Fvector& start_from,
 	Fvector shift;shift.sub(start_from,m_EntityAlife.Position());
 
 	Fbox box;
-	if(character_create)box.set(movement()->Box());
+	if(character_create)box.set(get_movement()->Box());
 	else	box.set(m_EntityAlife.BoundingBox());
 	Fvector vbox;Fvector activation_pos;
 	box.get_CD(activation_pos,vbox);shift.add(activation_pos);vbox.mul(2.f);
@@ -622,11 +622,11 @@ void CCharacterPhysicsSupport::CollisionCorrectObjPos(const Fvector& start_from,
 
 void CCharacterPhysicsSupport::set_movement_position( const Fvector &pos )
 {
-	VERIFY( movement() );
+	VERIFY(get_movement() );
 
 	CollisionCorrectObjPos( pos, true );
 	
-	movement()->SetPosition( m_EntityAlife.Position() );
+	get_movement()->SetPosition( m_EntityAlife.Position() );
 }
 
 void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
@@ -805,7 +805,7 @@ void CCharacterPhysicsSupport::PHGetLinearVell(Fvector &velocity)
 		m_pPhysicsShell->get_LinearVel(velocity);
 	}
 	else
-		movement()->GetCharacterVelocity(velocity);
+		get_movement()->GetCharacterVelocity(velocity);
 		
 }
 

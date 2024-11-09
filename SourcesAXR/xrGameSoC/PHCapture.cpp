@@ -285,7 +285,7 @@ void CPHCapture::object_contactCallbackFun(bool& do_colide,bool bo1,dContact& c,
 	CEntityAlive* capturer=smart_cast<CEntityAlive*>(l_pUD1->ph_ref_object);
 	if(capturer)
 	{
-		CPHCapture* capture=capturer->character_physics_support()->movement()->PHCapture();
+		CPHCapture* capture=capturer->character_physics_support()->get_movement()->PHCapture();
 		if(capture)
 		{
 			if(capture->m_taget_element->PhysicsRefObject()==l_pUD2->ph_ref_object)
@@ -303,7 +303,7 @@ void CPHCapture::object_contactCallbackFun(bool& do_colide,bool bo1,dContact& c,
 	capturer=smart_cast<CEntityAlive*>(l_pUD2->ph_ref_object);
 	if(capturer)
 	{
-		CPHCapture* capture=capturer->character_physics_support()->movement()->PHCapture();
+		CPHCapture* capture=capturer->character_physics_support()->get_movement()->PHCapture();
 		if(capture)
 		{
 			if(capture->m_taget_element->PhysicsRefObject()==l_pUD1->ph_ref_object)

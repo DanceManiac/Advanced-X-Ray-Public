@@ -333,8 +333,8 @@ void CLevelGraph::draw_objects	()
 		CCustomMonster	*tpCustomMonster = smart_cast<CCustomMonster*>(_O);
 		if (tpCustomMonster) {
 			tpCustomMonster->OnRender();
-			if (!tpCustomMonster->movement().detail().path().empty()) {
-				Fvector				temp = tpCustomMonster->movement().detail().path()[tpCustomMonster->movement().detail().path().size() - 1].position;
+			if (!tpCustomMonster->get_movement().detail().path().empty()) {
+				Fvector				temp = tpCustomMonster->get_movement().detail().path()[tpCustomMonster->get_movement().detail().path().size() - 1].position;
 				Level().debug_renderer().draw_aabb	(temp,1.f,1.f,1.f,color_xrgb(0,0,255));
 			}
 		}

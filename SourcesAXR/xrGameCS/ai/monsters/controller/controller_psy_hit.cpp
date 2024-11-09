@@ -80,7 +80,7 @@ void CControllerPsyHit::activate()
 	SControlDirectionData			*ctrl_dir = (SControlDirectionData*)m_man->data(this, ControlCom::eControlDir); 
 	VERIFY							(ctrl_dir);
 	ctrl_dir->heading.target_speed	= 3.f;
-	ctrl_dir->heading.target_angle	= m_man->direction().angle_to_target(Actor()->Position());
+	ctrl_dir->heading.target_angle	= m_man->get_direction().angle_to_target(Actor()->Position());
 
 	//////////////////////////////////////////////////////////////////////////
 	m_current_index					= 0;
@@ -234,7 +234,7 @@ void CControllerPsyHit::death_glide_start()
 
 	target_pos.mad		(src_pos,dir,dist-4.8f);
 	
-	Actor()->Cameras().AddCamEffector(xr_new<CControllerPsyHitCamEffector>(eCEControllerPsyHit, src_pos,target_pos, m_man->animation().motion_time(m_stage[1], m_object->Visual())));
+	Actor()->Cameras().AddCamEffector(xr_new<CControllerPsyHitCamEffector>(eCEControllerPsyHit, src_pos,target_pos, m_man->get_animation().motion_time(m_stage[1], m_object->Visual())));
 	smart_cast<CController *>(m_object)->draw_fire_particles();
 
 	dir.sub(src_pos,target_pos);
@@ -242,7 +242,7 @@ void CControllerPsyHit::death_glide_start()
 	float h,p;
 	dir.getHP(h,p);
 	dir.setHP(h,p+PI_DIV_3);
-	Actor()->character_physics_support()->movement()->ApplyImpulse(dir,Actor()->GetMass() * 530.f);
+	Actor()->character_physics_support()->get_movement()->ApplyImpulse(dir,Actor()->GetMass() * 530.f);
 
 	set_sound_state					(eStart);
 
@@ -259,7 +259,7 @@ void CControllerPsyHit::death_glide_start()
 	SControlDirectionData			*ctrl_dir = (SControlDirectionData*)m_man->data(this, ControlCom::eControlDir); 
 	VERIFY							(ctrl_dir);
 	ctrl_dir->heading.target_speed	= 3.f;
-	ctrl_dir->heading.target_angle	= m_man->direction().angle_to_target(Actor()->Position());
+	ctrl_dir->heading.target_angle	= m_man->get_direction().angle_to_target(Actor()->Position());
 
 	//////////////////////////////////////////////////////////////////////////
 }

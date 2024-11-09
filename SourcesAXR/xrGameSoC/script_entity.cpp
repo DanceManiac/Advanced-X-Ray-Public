@@ -148,7 +148,7 @@ bool CScriptEntity::CheckObjectVisibility(const CGameObject *tpObject)
 	if (!m_monster)
 		return			(false);
 
-	return				(m_monster->memory().visual().visible_now(tpObject));
+	return				(m_monster->get_memory().visual().visible_now(tpObject));
 }
 
 //определяет видимость определенного типа объектов, 
@@ -158,8 +158,8 @@ bool CScriptEntity::CheckTypeVisibility(const char* section_name)
 	if (!m_monster)
 		return			(false);
 
-	CVisualMemoryManager::VISIBLES::const_iterator	I = m_monster->memory().visual().objects().begin();
-	CVisualMemoryManager::VISIBLES::const_iterator	E = m_monster->memory().visual().objects().end();
+	CVisualMemoryManager::VISIBLES::const_iterator	I = m_monster->get_memory().visual().objects().begin();
+	CVisualMemoryManager::VISIBLES::const_iterator	E = m_monster->get_memory().visual().objects().end();
 	for ( ; I != E; ++I) {
 		VERIFY			((*I).m_object);
 		if (!xr_strcmp(section_name, *(*I).m_object->cNameSect()))
@@ -450,26 +450,26 @@ bool CScriptEntity::bfAssignMovement(CScriptEntityAction *tpEntityAction)
 #else
 			R_ASSERT(l_tpGameObject);
 #endif
-			m_monster->movement().set_path_type(MovementManager::ePathTypeLevelPath);
+			m_monster->get_movement().set_path_type(MovementManager::ePathTypeLevelPath);
 //			Msg			("%6d Object %s, position [%f][%f][%f]",Device.dwTimeGlobal,*l_tpGameObject->cName(),VPUSH(l_tpGameObject->Position()));
-			m_monster->movement().detail().set_dest_position(l_tpGameObject->Position());
-			m_monster->movement().set_level_dest_vertex(l_tpGameObject->ai_location().level_vertex_id());
+			m_monster->get_movement().detail().set_dest_position(l_tpGameObject->Position());
+			m_monster->get_movement().set_level_dest_vertex(l_tpGameObject->ai_location().level_vertex_id());
 			break;
 		}
 		case CScriptMovementAction::eGoalTypePatrolPath : {
-			m_monster->movement().set_path_type	(MovementManager::ePathTypePatrolPath);
-			m_monster->movement().patrol().set_path		(l_tMovementAction.m_path,l_tMovementAction.m_path_name);
-			m_monster->movement().patrol().set_start_type	(l_tMovementAction.m_tPatrolPathStart);
-			m_monster->movement().patrol().set_route_type	(l_tMovementAction.m_tPatrolPathStop);
-			m_monster->movement().patrol().set_random		(l_tMovementAction.m_bRandom);
+			m_monster->get_movement().set_path_type	(MovementManager::ePathTypePatrolPath);
+			m_monster->get_movement().patrol().set_path		(l_tMovementAction.m_path,l_tMovementAction.m_path_name);
+			m_monster->get_movement().patrol().set_start_type	(l_tMovementAction.m_tPatrolPathStart);
+			m_monster->get_movement().patrol().set_route_type	(l_tMovementAction.m_tPatrolPathStop);
+			m_monster->get_movement().patrol().set_random		(l_tMovementAction.m_bRandom);
 			if (l_tMovementAction.m_previous_patrol_point != u32(-1)) {
-				m_monster->movement().patrol().set_previous_point(l_tMovementAction.m_previous_patrol_point);
+				m_monster->get_movement().patrol().set_previous_point(l_tMovementAction.m_previous_patrol_point);
 			}
 			break;
 		}
 		case CScriptMovementAction::eGoalTypePathPosition : {
-			m_monster->movement().set_path_type(MovementManager::ePathTypeLevelPath);
-			m_monster->movement().detail().set_dest_position(l_tMovementAction.m_tDestinationPosition);
+			m_monster->get_movement().set_path_type(MovementManager::ePathTypeLevelPath);
+			m_monster->get_movement().detail().set_dest_position(l_tMovementAction.m_tDestinationPosition);
 			
 			u32					vertex_id;
 			vertex_id			= ai().level_graph().vertex(object().ai_location().level_vertex_id(),l_tMovementAction.m_tDestinationPosition);
@@ -483,37 +483,37 @@ bool CScriptEntity::bfAssignMovement(CScriptEntityAction *tpEntityAction)
 				THROW2		(ai().level_graph().valid_vertex_id(vertex_id),S);
 			}
 #endif
-			m_monster->movement().level_path().set_dest_vertex(vertex_id);
+			m_monster->get_movement().level_path().set_dest_vertex(vertex_id);
 			break;
 		}
 		case CScriptMovementAction::eGoalTypePathNodePosition : {
 			VERIFY(ai().level_graph().valid_vertex_id(l_tMovementAction.m_tNodeID));
-			m_monster->movement().set_path_type					(MovementManager::ePathTypeLevelPath);
-			m_monster->movement().detail().set_dest_position	(l_tMovementAction.m_tDestinationPosition);
-			m_monster->movement().level_path().set_dest_vertex	(l_tMovementAction.m_tNodeID);
+			m_monster->get_movement().set_path_type					(MovementManager::ePathTypeLevelPath);
+			m_monster->get_movement().detail().set_dest_position	(l_tMovementAction.m_tDestinationPosition);
+			m_monster->get_movement().level_path().set_dest_vertex	(l_tMovementAction.m_tNodeID);
 			break;
 		}
 		case CScriptMovementAction::eGoalTypeNoPathPosition : {
-			m_monster->movement().set_path_type(MovementManager::ePathTypeLevelPath);
-			if (m_monster->movement().detail().path().empty() || (m_monster->movement().detail().path()[m_monster->movement().detail().path().size() - 1].position.distance_to(l_tMovementAction.m_tDestinationPosition) > .1f)) {
-				m_monster->movement().detail().m_path.resize(2);
-				m_monster->movement().detail().m_path[0].position = object().Position();
-				m_monster->movement().detail().m_path[1].position = l_tMovementAction.m_tDestinationPosition;
-				m_monster->movement().detail().m_current_travel_point	= 0;
+			m_monster->get_movement().set_path_type(MovementManager::ePathTypeLevelPath);
+			if (m_monster->get_movement().detail().path().empty() || (m_monster->get_movement().detail().path()[m_monster->get_movement().detail().path().size() - 1].position.distance_to(l_tMovementAction.m_tDestinationPosition) > .1f)) {
+				m_monster->get_movement().detail().m_path.resize(2);
+				m_monster->get_movement().detail().m_path[0].position = object().Position();
+				m_monster->get_movement().detail().m_path[1].position = l_tMovementAction.m_tDestinationPosition;
+				m_monster->get_movement().detail().m_current_travel_point	= 0;
 			}
 
-			if (m_monster->movement().detail().m_path[1].position.similar(object().Position(),.2f))
+			if (m_monster->get_movement().detail().m_path[1].position.similar(object().Position(),.2f))
 				l_tMovementAction.m_bCompleted = true;
 
 			break;
 		}
 		default : {
-			m_monster->movement().set_desirable_speed(0.f);
+			m_monster->get_movement().set_desirable_speed(0.f);
 			return									(l_tMovementAction.m_bCompleted = true);
 		}
 	}
 
-	if (m_monster->movement().actual_all() && m_monster->movement().path_completed())
+	if (m_monster->get_movement().actual_all() && m_monster->get_movement().path_completed())
 		l_tMovementAction.m_bCompleted = true;
 
 	return		(!l_tMovementAction.m_bCompleted);

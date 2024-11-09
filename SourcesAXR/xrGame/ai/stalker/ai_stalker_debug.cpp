@@ -273,13 +273,13 @@ void CAI_Stalker::debug_text			()
 	DBG_OutText	("%s%seye range   : %f",indent,indent,object_range);
 	DBG_OutText	("%s%sFOV         : %f",indent,indent,rad2deg(object_fov));
 	if (g_Alive()) {
-		DBG_OutText	("%s%sobjects     : %d",indent,indent,memory().visual().objects().size());
-		DBG_OutText	("%s%snot yet     : %d",indent,indent,memory().visual().not_yet_visible_objects().size());
-		DBG_OutText	("%s%sin frustum  : %d",indent,indent,memory().visual().raw_objects().size());
-		if (memory().visual().visible_now(actor))
+		DBG_OutText	("%s%sobjects     : %d",indent,indent,get_memory().visual().objects().size());
+		DBG_OutText	("%s%snot yet     : %d",indent,indent,get_memory().visual().not_yet_visible_objects().size());
+		DBG_OutText	("%s%sin frustum  : %d",indent,indent,get_memory().visual().raw_objects().size());
+		if (get_memory().visual().visible_now(actor))
 			DBG_OutText("%s%sactor       : visible",indent,indent);
 		else {
-			MemorySpace::CNotYetVisibleObject	*object = memory().visual().not_yet_visible_object(actor);
+			MemorySpace::CNotYetVisibleObject	*object = get_memory().visual().not_yet_visible_object(actor);
 			if (object && !fis_zero(object->m_value))
 				DBG_OutText("%s%sactor       : not yet visible : %f",indent,indent,object->m_value);
 			else
@@ -287,31 +287,31 @@ void CAI_Stalker::debug_text			()
 		}
 		// sound
 		DBG_OutText	("%ssound",indent);
-		DBG_OutText	("%s%sobjects     : %d",indent,indent,memory().sound().objects().size());
+		DBG_OutText	("%s%sobjects     : %d",indent,indent,get_memory().get_sound().objects().size());
 #ifdef USE_SELECTED_SOUND
-		if (memory().sound().sound()) {
+		if (get_memory().get_sound().sound()) {
 			DBG_OutText	("%s%sselected",indent,indent);
 			DBG_OutText	("%s%s%stype",indent,indent,indent);
-			DBG_OutText	("%s%s%spower     : %f",indent,indent,indent,memory().sound().sound()->m_power);
-			DBG_OutText	("%s%s%sobject    : %s",indent,indent,indent,memory().sound().sound()->m_object ? *memory().sound().sound()->m_object->cName() : "unknown");
-			if (g_Alive() && memory().sound().sound()->m_object)
-				DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().sound().sound()->m_object) ? "+" : "-");
+			DBG_OutText	("%s%s%spower     : %f",indent,indent,indent,get_memory().get_sound().sound()->m_power);
+			DBG_OutText	("%s%s%sobject    : %s",indent,indent,indent,get_memory().get_sound().sound()->m_object ? *get_memory().get_sound().sound()->m_object->cName() : "unknown");
+			if (g_Alive() && get_memory().get_sound().sound()->m_object)
+				DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,get_memory().visual().visible_now(get_memory().get_sound().sound()->m_object) ? "+" : "-");
 		}
 #endif
 		// hit
 		DBG_OutText	("%shit",indent);
-		DBG_OutText	("%s%sobjects     : %d",indent,indent,memory().hit().objects().size());
-		ALife::_OBJECT_ID					object_id = memory().hit().last_hit_object_id();
+		DBG_OutText	("%s%sobjects     : %d",indent,indent,get_memory().hit().objects().size());
+		ALife::_OBJECT_ID					object_id = get_memory().hit().last_hit_object_id();
 		DBG_OutText	("%s%slast hit object id   : %d",indent,indent,object_id);
 		CObject								*object = (object_id == ALife::_OBJECT_ID(-1)) ? 0 : Level().Objects.net_Find(object_id);
 		DBG_OutText	("%s%slast hit object name : %s",indent,indent,object ? *object->cName() : "");
 #ifdef USE_SELECTED_HIT
-		if (memory().hit().hit()) {
+		if (get_memory().hit().hit()) {
 			DBG_OutText	("%s%sselected",indent,indent);
-			DBG_OutText	("%s%s%spower     : %f",indent,indent,indent,memory().hit().hit()->m_amount);
-			DBG_OutText	("%s%s%sobject    : %s",indent,indent,indent,memory().hit().hit()->m_object ? *memory().hit().hit()->m_object->cName() : "unknown");
-			if (g_Alive() && memory().hit().hit()->m_object)
-				DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().hit().hit()->m_object) ? "+" : "-");
+			DBG_OutText	("%s%s%spower     : %f",indent,indent,indent,get_memory().hit().hit()->m_amount);
+			DBG_OutText	("%s%s%sobject    : %s",indent,indent,indent,get_memory().hit().hit()->m_object ? *get_memory().hit().hit()->m_object->cName() : "unknown");
+			if (g_Alive() && get_memory().hit().hit()->m_object)
+				DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,get_memory().visual().visible_now(get_memory().hit().hit()->m_object) ? "+" : "-");
 		}
 #endif
 	}
@@ -326,31 +326,31 @@ void CAI_Stalker::debug_text			()
 		DBG_OutText("%s%sis enemy to actor : %c",indent,indent,actor->is_relation_enemy(this) ? '+' : '-');
 	}
 
-	DBG_OutText	("%s%sobjects     : %d",indent,indent,memory().enemy().objects().size());
+	DBG_OutText	("%s%sobjects     : %d",indent,indent,get_memory().get_enemy().objects().size());
 	if (g_Alive()) {
-		CEnemyManager::OBJECTS::const_iterator	I = memory().enemy().objects().begin();
-		CEnemyManager::OBJECTS::const_iterator	E = memory().enemy().objects().end();
+		CEnemyManager::OBJECTS::const_iterator	I = get_memory().get_enemy().objects().begin();
+		CEnemyManager::OBJECTS::const_iterator	E = get_memory().get_enemy().objects().end();
 		for ( ; I != E; ++I)
-			DBG_OutText	("%s%s%s%s : %s",indent,indent,indent,*(*I)->cName(),memory().visual().visible_now(*I) ? "visible" : "invisible");
+			DBG_OutText	("%s%s%s%s : %s",indent,indent,indent,*(*I)->cName(),get_memory().visual().visible_now(*I) ? "visible" : "invisible");
 	}
 
-	if (memory().enemy().selected()) {
+	if (get_memory().get_enemy().selected()) {
 		DBG_OutText	("%s%sselected",indent,indent);
 		
 		float								fuzzy = 0.f;
 		xr_vector<feel_visible_Item>::iterator I=feel_visible.begin(),E=feel_visible.end();
 		for (; I!=E; I++)
-			if (I->O->ID() == memory().enemy().selected()->ID()) {
+			if (I->O->ID() == get_memory().get_enemy().selected()->ID()) {
 				fuzzy						= I->fuzzy;
 				break;
 			}
 
 		if (g_Alive()) {
 			if ( true || !g_mt_config.test(mtAiVision) )
-				VERIFY						(!memory().visual().visible_now(memory().enemy().selected()) || (fuzzy > 0.f));
-			DBG_OutText("%s%s%svisible   : %s %f",indent,indent,indent,memory().visual().visible_now(memory().enemy().selected()) ? "+" : "-",fuzzy);
+				VERIFY						(!get_memory().visual().visible_now(get_memory().get_enemy().selected()) || (fuzzy > 0.f));
+			DBG_OutText("%s%s%svisible   : %s %f",indent,indent,indent,get_memory().visual().visible_now(get_memory().get_enemy().selected()) ? "+" : "-",fuzzy);
 		}
-		DBG_OutText	("%s%s%sobject    : %s",indent,indent,indent,*memory().enemy().selected()->cName());
+		DBG_OutText	("%s%s%sobject    : %s",indent,indent,indent,*get_memory().get_enemy().selected()->cName());
 		if (g_Alive()) {
 			float								interval = (1.f - panic_threshold())*.25f, left = -1.f, right = -1.f;
 			LPCSTR								description = "invalid";
@@ -409,19 +409,19 @@ void CAI_Stalker::debug_text			()
 	}
 	// danger
 	DBG_OutText	("%sdanger",indent);
-	DBG_OutText	("%s%sobjects     : %d",indent,indent,memory().danger().objects().size());
-	if (memory().danger().selected() && memory().danger().selected()->object()) {
+	DBG_OutText	("%s%sobjects     : %d",indent,indent,get_memory().danger().objects().size());
+	if (get_memory().danger().selected() && get_memory().danger().selected()->object()) {
 		DBG_OutText	("%s%sselected",indent,indent);
-		DBG_OutText	("%s%s%stype      : %s",indent,indent,indent,danger_type(memory().danger().selected()->type()));
-		DBG_OutText	("%s%s%stime      : %.3f (%.3f)",indent,indent,indent,float(memory().danger().selected()->time())/1000.f,float(Device.dwTimeGlobal - memory().danger().selected()->time())/1000.f);
-		DBG_OutText	("%s%s%sinitiator : %s",indent,indent,indent,*memory().danger().selected()->object()->cName());
-		if (g_Alive() && memory().danger().selected()->object())
-			DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(memory().danger().selected()->object()) ? "+" : "-");
+		DBG_OutText	("%s%s%stype      : %s",indent,indent,indent,danger_type(get_memory().danger().selected()->type()));
+		DBG_OutText	("%s%s%stime      : %.3f (%.3f)",indent,indent,indent,float(get_memory().danger().selected()->time())/1000.f,float(Device.dwTimeGlobal - get_memory().danger().selected()->time())/1000.f);
+		DBG_OutText	("%s%s%sinitiator : %s",indent,indent,indent,*get_memory().danger().selected()->object()->cName());
+		if (g_Alive() && get_memory().danger().selected()->object())
+			DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,get_memory().visual().visible_now(get_memory().danger().selected()->object()) ? "+" : "-");
 
-		if (memory().danger().selected()->dependent_object() && !!memory().danger().selected()->dependent_object()->cName()) {
-			DBG_OutText("%s%s%sdependent : %s",indent,indent,indent,*memory().danger().selected()->dependent_object()->cName());
+		if (get_memory().danger().selected()->dependent_object() && !!get_memory().danger().selected()->dependent_object()->cName()) {
+			DBG_OutText("%s%s%sdependent : %s",indent,indent,indent,*get_memory().danger().selected()->dependent_object()->cName());
 			if (g_Alive())
-				DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,memory().visual().visible_now(smart_cast<const CGameObject*>(memory().danger().selected()->dependent_object())) ? "+" : "-");
+				DBG_OutText("%s%s%svisible   : %s",indent,indent,indent,get_memory().visual().visible_now(smart_cast<const CGameObject*>(get_memory().danger().selected()->dependent_object())) ? "+" : "-");
 		}
 	}
 
@@ -433,27 +433,27 @@ void CAI_Stalker::debug_text			()
 	DBG_OutText	(" ");
 	DBG_OutText	("agent manager");
 	if (g_Alive()) {
-	DBG_OutText	("%smembers           : %d",indent,agent_manager().member().members().size());
-	DBG_OutText	("%senemies           : %d",indent,agent_manager().enemy().enemies().size());
-	DBG_OutText	("%scorpses           : %d",indent,agent_manager().corpse().corpses().size());
-	DBG_OutText	("%sdanger locations  : %d",indent,agent_manager().location().locations().size());
-	DBG_OutText	("%smembers in combat : %d",indent,agent_manager().member().combat_members().size());
+	DBG_OutText	("%smembers           : %d",indent,agent_manager().get_member().members().size());
+	DBG_OutText	("%senemies           : %d",indent,agent_manager().get_enemy().enemies().size());
+	DBG_OutText	("%scorpses           : %d",indent,agent_manager().get_corpse().corpses().size());
+	DBG_OutText	("%sdanger locations  : %d",indent,agent_manager().get_location().locations().size());
+	DBG_OutText	("%smembers in combat : %d",indent,agent_manager().get_member().combat_members().size());
 	if (g_Alive())
-		DBG_OutText("%sI am in combat    : %s",indent,agent_manager().member().registered_in_combat(this) ? "+" : "-");
-	DBG_OutText	("%smembers in detour : %d",indent,agent_manager().member().in_detour());
+		DBG_OutText("%sI am in combat    : %s",indent,agent_manager().get_member().registered_in_combat(this) ? "+" : "-");
+	DBG_OutText	("%smembers in detour : %d",indent,agent_manager().get_member().in_detour());
 	if (g_Alive())
-		DBG_OutText("%sI am in detour    : %s",indent,agent_manager().member().member(this).detour() ? "+" : "-");
+		DBG_OutText("%sI am in detour    : %s",indent,agent_manager().get_member().member(this).detour() ? "+" : "-");
 
 		if (g_Alive()) {
-			if (agent_manager().member().member(this).cover()) {
-				DBG_OutText("%scover         : [%s][%f][%f][%f]",indent,agent_manager().member().member(this).cover()->m_is_smart_cover ? "smart" : "generated", VPUSH(agent_manager().member().member(this).cover()->position()));
+			if (agent_manager().get_member().member(this).cover()) {
+				DBG_OutText("%scover         : [%s][%f][%f][%f]",indent,agent_manager().get_member().member(this).cover()->m_is_smart_cover ? "smart" : "generated", VPUSH(agent_manager().get_member().member(this).cover()->position()));
 			}
 
-			if (agent_manager().member().member(this).member_death_reaction().m_processing)
-				DBG_OutText("%react on death : %s",indent,*agent_manager().member().member(this).member_death_reaction().m_member->cName());
+			if (agent_manager().get_member().member(this).member_death_reaction().m_processing)
+				DBG_OutText("%react on death : %s",indent,*agent_manager().get_member().member(this).member_death_reaction().m_member->cName());
 
-			if (agent_manager().member().member(this).grenade_reaction().m_processing)
-				DBG_OutText("%react on grenade : %s",indent,agent_manager().member().member(this).grenade_reaction().m_game_object ? *agent_manager().member().member(this).grenade_reaction().m_game_object->cName() : "unknown");
+			if (agent_manager().get_member().member(this).grenade_reaction().m_processing)
+				DBG_OutText("%react on grenade : %s",indent,agent_manager().get_member().member(this).grenade_reaction().m_game_object ? *agent_manager().get_member().member(this).grenade_reaction().m_game_object->cName() : "unknown");
 		}
 	}
 
@@ -512,8 +512,8 @@ void CAI_Stalker::debug_text			()
 	DBG_OutText	("brain");
 	
 	// actions
-	draw_planner						(this->brain(),indent,indent,"root");
-	draw_planner						(movement().animation_selector().planner(), indent, indent, "smart cover planner");
+	draw_planner						(this->get_brain(),indent,indent,"root");
+	draw_planner						(get_movement().animation_selector().planner(), indent, indent, "smart cover planner");
 
 	// debug planner
 	if (m_debug_planner)
@@ -524,37 +524,37 @@ void CAI_Stalker::debug_text			()
 	DBG_OutText	("controls");
 	// animations
 	DBG_OutText	("%sanimations",indent);
-	DBG_OutText	("%s%sforward     : [%c]",indent,indent, animation().forward_blend_callbacks() ? '+' : '-');
-	DBG_OutText	("%s%sbackward    : [%c]",indent,indent, animation().backward_blend_callbacks() ? '+' : '-');
+	DBG_OutText	("%s%sforward     : [%c]",indent,indent, get_animation().forward_blend_callbacks() ? '+' : '-');
+	DBG_OutText	("%s%sbackward    : [%c]",indent,indent, get_animation().backward_blend_callbacks() ? '+' : '-');
 
 	DBG_OutText	("%s%shead        : [%s][%f]",indent,indent,
-		animation_name(this,animation().head().animation()),
-		animation().head().blend() ? animation().head().blend()->timeCurrent : 0.f
+		animation_name(this,get_animation().head().animation()),
+		get_animation().head().blend() ? get_animation().head().blend()->timeCurrent : 0.f
 	);
 	DBG_OutText	("%s%storso       : [%s][%f]",indent,indent,
-		animation_name(this,animation().torso().animation()),
-		animation().torso().blend() ? animation().torso().blend()->timeCurrent : 0.f
+		animation_name(this,get_animation().torso().animation()),
+		get_animation().torso().blend() ? get_animation().torso().blend()->timeCurrent : 0.f
 	);
 	DBG_OutText	("%s%slegs        : [%s][%f]",indent,indent,
-		animation_name(this,animation().legs().animation()),
-		animation().legs().blend() ? animation().legs().blend()->timeCurrent : 0.f
+		animation_name(this,get_animation().legs().animation()),
+		get_animation().legs().blend() ? get_animation().legs().blend()->timeCurrent : 0.f
 	);
 	DBG_OutText	("%s%sglobal      : [%s][%f]",indent,indent,
-		animation_name(this,animation().global().animation()),
-		animation().global().blend() ? animation().global().blend()->timeCurrent : 0.f
+		animation_name(this,get_animation().global().animation()),
+		get_animation().global().blend() ? get_animation().global().blend()->timeCurrent : 0.f
 	);
 	DBG_OutText	("%s%sscript      : [%s][%f]",indent,indent,
-		animation_name(this,animation().script().animation()),
-		animation().script().blend() ? animation().script().blend()->timeCurrent : 0.f
+		animation_name(this,get_animation().script().animation()),
+		get_animation().script().blend() ? get_animation().script().blend()->timeCurrent : 0.f
 	);
 
 	// movement
 	DBG_OutText	(" ");
 	DBG_OutText	("%smovement",indent);
-	DBG_OutText	("%s%senabled         : %s",indent,indent,movement().enabled() ? "+" : "-");
+	DBG_OutText	("%s%senabled         : %s",indent,indent,get_movement().enabled() ? "+" : "-");
 
 	LPCSTR								mental_state = "invalid";
-	switch (movement().mental_state()) {
+	switch (get_movement().mental_state()) {
 		case MonsterSpace::eMentalStateFree : {
 			mental_state				= "free";
 			break;
@@ -572,7 +572,7 @@ void CAI_Stalker::debug_text			()
 	DBG_OutText	("%s%smental state    : %s",indent,indent,mental_state);
 
 	LPCSTR								body_state = "invalid";
-	switch (movement().body_state()) {
+	switch (get_movement().body_state()) {
 		case MonsterSpace::eBodyStateStand : {
 			body_state					= "stand";
 			break;
@@ -584,11 +584,11 @@ void CAI_Stalker::debug_text			()
 		default : NODEFAULT;
 	}
 	DBG_OutText	("%s%sbody state      : %s",indent,indent,body_state);
-	DBG_OutText	("%s%smovement type   : %s (current)",indent,indent,movement_type(movement().movement_type()));
-	DBG_OutText	("%s%smovement type   : %s (target)",indent,indent, movement_type(movement().target_movement_type()));
+	DBG_OutText	("%s%smovement type   : %s (current)",indent,indent,movement_type(get_movement().movement_type()));
+	DBG_OutText	("%s%smovement type   : %s (target)",indent,indent, movement_type(get_movement().target_movement_type()));
 
 	LPCSTR						path_type = "invalid";
-	switch (movement().path_type()) {
+	switch (get_movement().path_type()) {
 		case MovementManager::ePathTypeGamePath : {
 			path_type			= "game path";
 			break;
@@ -612,83 +612,83 @@ void CAI_Stalker::debug_text			()
 	DBG_OutText	("%s%slevel vertex id : %d",indent,indent,ai_location().level_vertex_id());
 	DBG_OutText	("%s%sgame vertex id  : %d",indent,indent,ai_location().game_vertex_id());
 	
-	if (movement().path_type() == MovementManager::ePathTypePatrolPath) {
+	if (get_movement().path_type() == MovementManager::ePathTypePatrolPath) {
 		DBG_OutText("%s%spatrol",indent,indent);
-		DBG_OutText("%s%s%spath          : %s",indent,indent,indent,*movement().patrol().path_name());
-		DBG_OutText("%s%s%scompleted     : %s",indent,indent,indent,movement().patrol().completed() ? "+" : "-");
-		DBG_OutText("%s%s%scurrent point : %d",indent,indent,indent,movement().patrol().get_current_point_index());
+		DBG_OutText("%s%s%spath          : %s",indent,indent,indent,*get_movement().patrol().path_name());
+		DBG_OutText("%s%s%scompleted     : %s",indent,indent,indent,get_movement().patrol().completed() ? "+" : "-");
+		DBG_OutText("%s%s%scurrent point : %d",indent,indent,indent,get_movement().patrol().get_current_point_index());
 		if	(
-				movement().patrol().get_path()
+				get_movement().patrol().get_path()
 				&&
-				movement().patrol().get_path()->vertex(movement().patrol().get_current_point_index())
+				get_movement().patrol().get_path()->vertex(get_movement().patrol().get_current_point_index())
 			)
-			DBG_OutText("%s%s%sextrapolate   : %s",indent,indent,indent,movement().patrol().extrapolate_path() ? "+" : "-");
+			DBG_OutText("%s%s%sextrapolate   : %s",indent,indent,indent,get_movement().patrol().extrapolate_path() ? "+" : "-");
 		else
 			DBG_OutText("%s%s%sextrapolate   : unknown",indent,indent,indent);
 	}
 
-	if (movement().path_type() == MovementManager::ePathTypeGamePath) {
+	if (get_movement().path_type() == MovementManager::ePathTypeGamePath) {
 		DBG_OutText("%s%sgame",indent,indent);
-		DBG_OutText("%s%s%scompleted     : %s",indent,indent,indent,movement().game_path().completed() ? "+" : "-");
-		DBG_OutText("%s%s%spath size     : %d",indent,indent,indent,movement().game_path().path().size());
-		DBG_OutText("%s%s%scurrent point : %d",indent,indent,indent,movement().game_path().intermediate_index());
+		DBG_OutText("%s%s%scompleted     : %s",indent,indent,indent,get_movement().game_path().completed() ? "+" : "-");
+		DBG_OutText("%s%s%spath size     : %d",indent,indent,indent,get_movement().game_path().path().size());
+		DBG_OutText("%s%s%scurrent point : %d",indent,indent,indent,get_movement().game_path().intermediate_index());
 	}
 	
 	DBG_OutText	("%s%slevel",indent,indent);
-	DBG_OutText	("%s%s%spath size     : %d",indent,indent,indent,movement().level_path().path().size());
-	DBG_OutText	("%s%s%sstart vertex  : %d",indent,indent,indent,movement().level_path().path().empty() ? -1 : movement().level_path().path().front());
-	DBG_OutText	("%s%s%sdest vertex   : %d",indent,indent,indent,movement().level_path().path().empty() ? -1 : movement().level_path().path().back());
+	DBG_OutText	("%s%s%spath size     : %d",indent,indent,indent,get_movement().level_path().path().size());
+	DBG_OutText	("%s%s%sstart vertex  : %d",indent,indent,indent,get_movement().level_path().path().empty() ? -1 : get_movement().level_path().path().front());
+	DBG_OutText	("%s%s%sdest vertex   : %d",indent,indent,indent,get_movement().level_path().path().empty() ? -1 : get_movement().level_path().path().back());
 
 	DBG_OutText	("%s%sdetail",indent,indent);
-	DBG_OutText	("%s%s%svelocities    : %d",indent,indent,indent,movement().detail().velocities().size());
-	DBG_OutText	("%s%s%sextrapolate   : %f",indent,indent,indent,movement().detail().extrapolate_length());
-	DBG_OutText	("%s%s%spath size     : %d",indent,indent,indent,movement().detail().path().size());
-	if (!movement().detail().path().empty()) {
-		DBG_OutText	("%s%s%sstart point   : [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().path().front().position));
-		DBG_OutText	("%s%s%sdest point    : [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().path().back().position));
+	DBG_OutText	("%s%s%svelocities    : %d",indent,indent,indent,get_movement().detail().velocities().size());
+	DBG_OutText	("%s%s%sextrapolate   : %f",indent,indent,indent,get_movement().detail().extrapolate_length());
+	DBG_OutText	("%s%s%spath size     : %d",indent,indent,indent,get_movement().detail().path().size());
+	if (!get_movement().detail().path().empty()) {
+		DBG_OutText	("%s%s%sstart point   : [%f][%f][%f]",indent,indent,indent,VPUSH(get_movement().detail().path().front().position));
+		DBG_OutText	("%s%s%sdest point    : [%f][%f][%f]",indent,indent,indent,VPUSH(get_movement().detail().path().back().position));
 		DBG_OutText	("%s%s%scurrent point",indent,indent,indent);
-		DBG_OutText	("%s%s%s%sindex     : %d",indent,indent,indent,indent,movement().detail().curr_travel_point_index());
-		DBG_OutText	("%s%s%s%sposition  : [%f][%f][%f]",indent,indent,indent,indent,VPUSH(movement().detail().path()[movement().detail().curr_travel_point_index()].position));
-		CDetailPathManager::STravelParams	current_velocity = movement().detail().velocity(movement().detail().path()[movement().detail().curr_travel_point_index()].velocity);
+		DBG_OutText	("%s%s%s%sindex     : %d",indent,indent,indent,indent,get_movement().detail().curr_travel_point_index());
+		DBG_OutText	("%s%s%s%sposition  : [%f][%f][%f]",indent,indent,indent,indent,VPUSH(get_movement().detail().path()[get_movement().detail().curr_travel_point_index()].position));
+		CDetailPathManager::STravelParams	current_velocity = get_movement().detail().velocity(get_movement().detail().path()[get_movement().detail().curr_travel_point_index()].velocity);
 		DBG_OutText	("%s%s%s%slinear    : %f",    indent,indent,indent,indent,current_velocity.linear_velocity);
 		DBG_OutText	("%s%s%s%sangular   : %f deg",indent,indent,indent,indent,rad2deg(current_velocity.angular_velocity));
 		DBG_OutText	("%s%s%s%sangular(R): %f deg",indent,indent,indent,indent,rad2deg(current_velocity.real_angular_velocity));
-		DBG_OutText	("%s%s%sspeed(calc)   : %f",indent,indent,indent,movement().speed());
-		DBG_OutText	("%s%s%sspeed(physics): %f",indent,indent,indent,movement().speed(character_physics_support()->movement()));
+		DBG_OutText	("%s%s%sspeed(calc)   : %f",indent,indent,indent,get_movement().speed());
+		DBG_OutText	("%s%s%sspeed(physics): %f",indent,indent,indent,get_movement().speed(character_physics_support()->get_movement()));
 	}
 
-	if (movement().detail().use_dest_orientation())
-		DBG_OutText("%s%s%sorientation   : + [%f][%f][%f]",indent,indent,indent,VPUSH(movement().detail().dest_direction()));
+	if (get_movement().detail().use_dest_orientation())
+		DBG_OutText("%s%s%sorientation   : + [%f][%f][%f]",indent,indent,indent,VPUSH(get_movement().detail().dest_direction()));
 	else
 		DBG_OutText("%s%s%sorientation   : -",indent,indent,indent);
 
 
 	DBG_OutText	("%s%ssmart covers",indent,indent);
-	DBG_OutText	("%s%s%ssmart cover current : %s",indent,indent,indent,movement().current_params().cover_id().c_str());
-	DBG_OutText	("%s%s%ssmart cover target  : %s",indent,indent,indent,movement().target_params().cover_id().c_str());
-	DBG_OutText	("%s%s%sloophole current    : %s",indent,indent,indent,movement().current_params().cover() ? movement().current_params().cover_loophole_id() : "");
-	DBG_OutText	("%s%s%sloophole target     : %s",indent,indent,indent,movement().target_params().cover() ? movement().target_params().cover_loophole_id() : "");
+	DBG_OutText	("%s%s%ssmart cover current : %s",indent,indent,indent,get_movement().current_params().cover_id().c_str());
+	DBG_OutText	("%s%s%ssmart cover target  : %s",indent,indent,indent,get_movement().target_params().cover_id().c_str());
+	DBG_OutText	("%s%s%sloophole current    : %s",indent,indent,indent,get_movement().current_params().cover() ? get_movement().current_params().cover_loophole_id() : "");
+	DBG_OutText	("%s%s%sloophole target     : %s",indent,indent,indent,get_movement().target_params().cover() ? get_movement().target_params().cover_loophole_id() : "");
 
-	DBG_OutText	("%s%s%sidle min time       : %.2f",indent,indent,indent,movement().idle_min_time());
-	DBG_OutText	("%s%s%sidle max time       : %.2f",indent,indent,indent,movement().idle_max_time());
-	DBG_OutText	("%s%s%slookout min time    : %.2f",indent,indent,indent,movement().lookout_min_time());
-	DBG_OutText	("%s%s%slookout max time    : %.2f",indent,indent,indent,movement().lookout_max_time());
+	DBG_OutText	("%s%s%sidle min time       : %.2f",indent,indent,indent,get_movement().idle_min_time());
+	DBG_OutText	("%s%s%sidle max time       : %.2f",indent,indent,indent,get_movement().idle_max_time());
+	DBG_OutText	("%s%s%slookout min time    : %.2f",indent,indent,indent,get_movement().lookout_min_time());
+	DBG_OutText	("%s%s%slookout max time    : %.2f",indent,indent,indent,get_movement().lookout_max_time());
 
-	DBG_OutText	("%s%s%sapply loophole direction distance : %.2f",indent,indent,indent,movement().apply_loophole_direction_distance());
+	DBG_OutText	("%s%s%sapply loophole direction distance : %.2f",indent,indent,indent,get_movement().apply_loophole_direction_distance());
 	
 	DBG_OutText	("%s%s%suse smart covers only : %c",indent,indent,indent,use_smart_covers_only() ? '+' : '-');
 	DBG_OutText	("%s%s%sin smart cover      : %c",indent,indent,indent,lua_game_object()->in_smart_cover() ? '+' : '-');
 
-	if (movement().current_params().cover()) {
-		if (movement().current_params().cover_loophole()) {
-			if (movement().current_params().cover_fire_position()) {
+	if (get_movement().current_params().cover()) {
+		if (get_movement().current_params().cover_loophole()) {
+			if (get_movement().current_params().cover_fire_position()) {
 				DBG_OutText	(
 					"%s%s%sin loophole fov     : %c",
 					indent,
 					indent,
 					indent,
-					movement().in_current_loophole_fov(
-						*movement().current_params().cover_fire_position()
+					get_movement().in_current_loophole_fov(
+						*get_movement().current_params().cover_fire_position()
 					)
 					? '+' : '-'
 				);
@@ -697,20 +697,20 @@ void CAI_Stalker::debug_text			()
 					indent,
 					indent,
 					indent,
-					movement().in_current_loophole_range(
-						*movement().current_params().cover_fire_position()
+					get_movement().in_current_loophole_range(
+						*get_movement().current_params().cover_fire_position()
 					)
 					? '+' : '-'
 				);
 			}
-			else if (movement().current_params().cover_fire_object()) {
+			else if (get_movement().current_params().cover_fire_object()) {
 				DBG_OutText	(
 					"%s%s%sin loophole fov     : %c",
 					indent,
 					indent,
 					indent,
-					movement().in_current_loophole_fov(
-						movement().current_params().cover_fire_object()->Position()
+					get_movement().in_current_loophole_fov(
+						get_movement().current_params().cover_fire_object()->Position()
 					)
 					? '+' : '-'
 				);
@@ -719,20 +719,20 @@ void CAI_Stalker::debug_text			()
 					indent,
 					indent,
 					indent,
-					movement().in_current_loophole_range(
-						movement().current_params().cover_fire_object()->Position()
+					get_movement().in_current_loophole_range(
+						get_movement().current_params().cover_fire_object()->Position()
 					)
 					? '+' : '-'
 				);
 			}
-			else if (memory().enemy().selected()) {
-				Fvector							position = memory().memory_position(memory().enemy().selected());
+			else if (get_memory().get_enemy().selected()) {
+				Fvector							position = get_memory().memory_position(get_memory().get_enemy().selected());
 				DBG_OutText	(
 					"%s%s%sin loophole fov     : %c",
 					indent,
 					indent,
 					indent,
-					movement().in_current_loophole_fov(
+					get_movement().in_current_loophole_fov(
 						position
 					)
 					? '+' : '-'
@@ -742,7 +742,7 @@ void CAI_Stalker::debug_text			()
 					indent,
 					indent,
 					indent,
-					movement().in_current_loophole_range(
+					get_movement().in_current_loophole_range(
 						position
 					)
 					? '+' : '-'
@@ -751,56 +751,56 @@ void CAI_Stalker::debug_text			()
 		}
 	}
 	
-	if (movement().current_params().cover_fire_position()) {
-		Fvector							position = *movement().current_params().cover_fire_position();
+	if (get_movement().current_params().cover_fire_position()) {
+		Fvector							position = *get_movement().current_params().cover_fire_position();
 		DBG_OutText	("%s%s%sfire position current : [%f][%f][%f]",indent,indent,indent,VPUSH(position));
 	}
 
-	if (movement().target_params().cover_fire_position()) {
-		Fvector							position = *movement().target_params().cover_fire_position();
+	if (get_movement().target_params().cover_fire_position()) {
+		Fvector							position = *get_movement().target_params().cover_fire_position();
 		DBG_OutText	("%s%s%sfire position target  : [%f][%f][%f]",indent,indent,indent,VPUSH(position));
 	}
 
-	if (movement().current_params().cover_fire_object())
-		DBG_OutText	("%s%s%sfire object current   : %s",indent,indent,indent,movement().current_params().cover_fire_object()->cName().c_str());
+	if (get_movement().current_params().cover_fire_object())
+		DBG_OutText	("%s%s%sfire object current   : %s",indent,indent,indent,get_movement().current_params().cover_fire_object()->cName().c_str());
 
-	if (movement().target_params().cover_fire_object())
-		DBG_OutText	("%s%s%sfire object target    : %s",indent,indent,indent,movement().target_params().cover_fire_object()->cName().c_str());
+	if (get_movement().target_params().cover_fire_object())
+		DBG_OutText	("%s%s%sfire object target    : %s",indent,indent,indent,get_movement().target_params().cover_fire_object()->cName().c_str());
 
-	DBG_OutText	("%s%s%sdefault behaviour   : %c",indent,indent,indent, movement().current_params().cover() && movement().default_behaviour() ? '+' : '-');
+	DBG_OutText	("%s%s%sdefault behaviour   : %c",indent,indent,indent, get_movement().current_params().cover() && get_movement().default_behaviour() ? '+' : '-');
 	strconcat								(sizeof(temp),temp,indent,indent,indent);
-	draw_planner							(movement().target_selector(),temp,indent,"target selector");
+	draw_planner							(get_movement().target_selector(),temp,indent,"target selector");
 
 	if	(
-			movement().restrictions().out_restrictions().size() ||
-			movement().restrictions().in_restrictions().size() ||
-			movement().restrictions().base_out_restrictions().size() ||
-			movement().restrictions().base_in_restrictions().size()
+			get_movement().restrictions().out_restrictions().size() ||
+			get_movement().restrictions().in_restrictions().size() ||
+			get_movement().restrictions().base_out_restrictions().size() ||
+			get_movement().restrictions().base_in_restrictions().size()
 		) {
 		DBG_OutText	("%s%srestrictions",indent,indent);
 		strconcat							(sizeof(temp),temp,indent,indent,indent);
-		draw_restrictions					(movement().restrictions().out_restrictions(),temp,indent,"out");
-		draw_restrictions					(movement().restrictions().in_restrictions(),temp,indent,"in");
-		draw_restrictions					(movement().restrictions().base_out_restrictions(),temp,indent,"base out");
-		draw_restrictions					(movement().restrictions().base_in_restrictions(),temp,indent,"base in");
+		draw_restrictions					(get_movement().restrictions().out_restrictions(),temp,indent,"out");
+		draw_restrictions					(get_movement().restrictions().in_restrictions(),temp,indent,"in");
+		draw_restrictions					(get_movement().restrictions().base_out_restrictions(),temp,indent,"base out");
+		draw_restrictions					(get_movement().restrictions().base_in_restrictions(),temp,indent,"base in");
 	}
 
 	// sounds
 	DBG_OutText	(" ");
 	DBG_OutText	("%ssounds",indent);
-	DBG_OutText	("%s%scollections : %d",indent,indent,sound().objects().size());
+	DBG_OutText	("%s%scollections : %d",indent,indent, get_sound().objects().size());
 	
 	{
 		u32			object_count = 0;
-		CSoundPlayer::SOUND_COLLECTIONS::const_iterator	I = sound().objects().begin();
-		CSoundPlayer::SOUND_COLLECTIONS::const_iterator	E = sound().objects().end();
+		CSoundPlayer::SOUND_COLLECTIONS::const_iterator	I = get_sound().objects().begin();
+		CSoundPlayer::SOUND_COLLECTIONS::const_iterator	E = get_sound().objects().end();
 		for ( ; I != E; ++I)
 			object_count	+= (*I).second.second->m_sounds.size();
 		DBG_OutText("%s%sobjects     : %d",indent,indent,object_count);
 	}
 	{
-		xr_vector<CSoundPlayer::CSoundSingle>::const_iterator	I = sound().playing_sounds().begin();
-		xr_vector<CSoundPlayer::CSoundSingle>::const_iterator	E = sound().playing_sounds().end();
+		xr_vector<CSoundPlayer::CSoundSingle>::const_iterator	I = get_sound().playing_sounds().begin();
+		xr_vector<CSoundPlayer::CSoundSingle>::const_iterator	E = get_sound().playing_sounds().end();
 		for ( ; I != E; ++I)
 			DBG_OutText(
 				"%s%s%s[%s]%s",
@@ -827,7 +827,7 @@ void CAI_Stalker::debug_text			()
 	DBG_OutText	("%ssight",indent);
 
 	LPCSTR								sight_type = "invalid";
-	switch (sight().current_action().sight_type()) {
+	switch (get_sight().current_action().sight_type()) {
 		case SightManager::eSightTypeCurrentDirection : {
 			sight_type					= "current direction";
 			break;
@@ -875,15 +875,15 @@ void CAI_Stalker::debug_text			()
 		default : NODEFAULT;
 	}
 
-	DBG_OutText	("%s%senabled         : %c",indent,indent,sight().enabled() ? '+' : '-');
+	DBG_OutText	("%s%senabled         : %c",indent,indent,get_sight().enabled() ? '+' : '-');
 	DBG_OutText	("%s%stype            : %s",indent,indent,sight_type);
-	DBG_OutText	("%s%suse torso       : %s",indent,indent,sight().current_action().use_torso_look() ? "+" : "-");
-	DBG_OutText	("%s%shead current    : [%f][%f]",indent,indent,movement().head_orientation().current.yaw,movement().head_orientation().current.pitch);
-	DBG_OutText	("%s%shead target     : [%f][%f]",indent,indent,movement().head_orientation().target.yaw,movement().head_orientation().target.pitch);
-	DBG_OutText	("%s%sbody current    : [%f][%f]",indent,indent,movement().body_orientation().current.yaw,movement().body_orientation().current.pitch);
-	DBG_OutText	("%s%sbody target     : [%f][%f]",indent,indent,movement().body_orientation().target.yaw,movement().body_orientation().target.pitch);
+	DBG_OutText	("%s%suse torso       : %s",indent,indent,get_sight().current_action().use_torso_look() ? "+" : "-");
+	DBG_OutText	("%s%shead current    : [%f][%f]",indent,indent,get_movement().head_orientation().current.yaw,get_movement().head_orientation().current.pitch);
+	DBG_OutText	("%s%shead target     : [%f][%f]",indent,indent,get_movement().head_orientation().target.yaw,get_movement().head_orientation().target.pitch);
+	DBG_OutText	("%s%sbody current    : [%f][%f]",indent,indent,get_movement().body_orientation().current.yaw,get_movement().body_orientation().current.pitch);
+	DBG_OutText	("%s%sbody target     : [%f][%f]",indent,indent,get_movement().body_orientation().target.yaw,get_movement().body_orientation().target.pitch);
 	
-	switch (sight().current_action().sight_type()) {
+	switch (get_sight().current_action().sight_type()) {
 		case SightManager::eSightTypeCurrentDirection : {
 			break;
 		}
@@ -891,16 +891,16 @@ void CAI_Stalker::debug_text			()
 			break;
 		}
 		case SightManager::eSightTypeDirection : {
-			DBG_OutText	("%s%sdirection       : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().vector3d()));
+			DBG_OutText	("%s%sdirection       : [%f][%f][%f]",indent,indent,VPUSH(get_sight().current_action().vector3d()));
 			break;
 		}
 		case SightManager::eSightTypePosition : {
-			DBG_OutText	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().vector3d()));
+			DBG_OutText	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(get_sight().current_action().vector3d()));
 			break;
 		}
 		case SightManager::eSightTypeObject : {
-			DBG_OutText	("%s%sobject          : %s",indent,indent,*sight().current_action().object().cName());
-			DBG_OutText	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().object().Position()));
+			DBG_OutText	("%s%sobject          : %s",indent,indent,*get_sight().current_action().object().cName());
+			DBG_OutText	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(get_sight().current_action().object().Position()));
 			break;
 		}
 		case SightManager::eSightTypeCover : {
@@ -916,8 +916,8 @@ void CAI_Stalker::debug_text			()
 			break;
 		}
 		case SightManager::eSightTypeFireObject : {
-			DBG_OutText	("%s%sobject          : %s",indent,indent,*sight().current_action().object().cName());
-			DBG_OutText	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(sight().current_action().object().Position()));
+			DBG_OutText	("%s%sobject          : %s",indent,indent,*get_sight().current_action().object().cName());
+			DBG_OutText	("%s%sposition        : [%f][%f][%f]",indent,indent,VPUSH(get_sight().current_action().object().Position()));
 			DBG_OutText	("%s%svisible point   : %s",indent,indent,false ? "-" : "+");
 			break;
 		}
@@ -962,7 +962,7 @@ void CAI_Stalker::dbg_draw_vision	()
 	float						x = (1.f + v_res.x)/2.f * (Device.dwWidth);
 	float						y = (1.f - v_res.y)/2.f * (Device.dwHeight);
 
-	CNotYetVisibleObject		*object = memory().visual().not_yet_visible_object(smart_cast<CGameObject*>(Level().CurrentEntity()));
+	CNotYetVisibleObject		*object = get_memory().visual().not_yet_visible_object(smart_cast<CGameObject*>(Level().CurrentEntity()));
 	string64					out_text;
 	xr_sprintf						(out_text,"%.2f",object ? object->m_value : 0.f);
 
@@ -1023,7 +1023,7 @@ void fill_points			(CCustomMonster *self, const Fvector &position, const Fvector
 	collide::ray_defs				ray_defs(position,direction,distance,CDB::OPT_CULL,collide::rqtBoth);
 	VERIFY							(!fis_zero(ray_defs.dir.square_magnitude()));
 	
-	ray_query_param					params(self,self->memory().visual().transparency_threshold(),distance,position,direction,points);
+	ray_query_param					params(self,self->get_memory().visual().transparency_threshold(),distance,position,direction,points);
 
 	Level().ObjectSpace.RayQuery	(rq_storage,ray_defs,_ray_query_callback,&params,NULL,self);
 
@@ -1094,9 +1094,9 @@ void CAI_Stalker::dbg_draw_visibility_rays	()
 	if (!g_Alive())
 		return;
 
-	const CEntityAlive		*enemy = memory().enemy().selected() ? memory().enemy().selected() : Actor();
+	const CEntityAlive		*enemy = get_memory().get_enemy().selected() ? get_memory().get_enemy().selected() : Actor();
 	if (enemy) {
-		if (memory().visual().visible_now(enemy)) {
+		if (get_memory().visual().visible_now(enemy)) {
 			collide::rq_results	rq_storage;
 			draw_visiblity_rays	(this,enemy,rq_storage);
 		}
@@ -1387,10 +1387,10 @@ static void draw_animation_bones	(CAI_Stalker& self, Fmatrix const& transform, I
 	D.sub							(mL.c,mR.c);	
 	D.normalize						();
 
-	bool forward_blend_callbacks	= self.animation().forward_blend_callbacks();
-	bool backward_blend_callbacks	= self.animation().backward_blend_callbacks();
+	bool forward_blend_callbacks	= self.get_animation().forward_blend_callbacks();
+	bool backward_blend_callbacks	= self.get_animation().backward_blend_callbacks();
 
-	self.animation().remove_bone_callbacks	();
+	self.get_animation().remove_bone_callbacks	();
 
 #if 0
 	Fmatrix								player_head;
@@ -1399,7 +1399,7 @@ static void draw_animation_bones	(CAI_Stalker& self, Fmatrix const& transform, I
 	player_head.mulA_43					(Actor()->XFORM());
 	Fvector								target = player_head.c;
 #else // #if 0
-	Fvector								target = self.sight().aiming_position();
+	Fvector								target = self.get_sight().aiming_position();
 #endif // #if 0
 
 	Fmatrix								spine_offset;
@@ -1558,12 +1558,12 @@ static void draw_animation_bones	(CAI_Stalker& self, Fmatrix const& transform, I
 	kinematics->LL_GetBoneInstance	( shoulder_bone_id ).reset_callback ( );
 
 	if (forward_blend_callbacks)
-		self.animation().assign_bone_blend_callbacks(true);
+		self.get_animation().assign_bone_blend_callbacks(true);
 	else {
 		if (backward_blend_callbacks)
-			self.animation().assign_bone_blend_callbacks(false);
+			self.get_animation().assign_bone_blend_callbacks(false);
 		else
-			self.animation().assign_bone_callbacks();
+			self.get_animation().assign_bone_callbacks();
 	}
 
 	kinematics->CalculateBones		(TRUE);
@@ -1660,13 +1660,13 @@ void CAI_Stalker::OnRender				()
 		if (!g_Alive())
 			return;
 
-		if (!memory().enemy().selected() || !memory().visual().visible_now(memory().enemy().selected()))
+		if (!get_memory().get_enemy().selected() || !get_memory().visual().visible_now(get_memory().get_enemy().selected()))
 			return;
 
 		xr_vector<CObject*>		objects;
 		feel_vision_get			(objects);
-		if (std::find(objects.begin(),objects.end(),memory().enemy().selected()) != objects.end()) {
-			Fvector				position = feel_vision_get_vispoint(const_cast<CEntityAlive*>(memory().enemy().selected()));
+		if (std::find(objects.begin(),objects.end(),get_memory().get_enemy().selected()) != objects.end()) {
+			Fvector				position = feel_vision_get_vispoint(const_cast<CEntityAlive*>(get_memory().get_enemy().selected()));
 			Level().debug_renderer().draw_aabb	(position,.05f,.05f,.05f,color_xrgb(0*255,255,0*255));
 			return;
 		}
@@ -1703,11 +1703,11 @@ void CAI_Stalker::OnRender				()
 	{
 		Fvector current_direction;
 		Fvector target_direction;
-		current_direction.setHP(-movement().m_head.current.yaw, -movement().m_head.current.pitch);
+		current_direction.setHP(-get_movement().m_head.current.yaw, -get_movement().m_head.current.pitch);
 		current_direction.normalize();
 		current_direction.mul(4.f);
 		current_direction.add(eye_matrix.c);
-		target_direction.setHP(-movement().m_head.target.yaw, -movement().m_head.target.pitch);
+		target_direction.setHP(-get_movement().m_head.target.yaw, -get_movement().m_head.target.pitch);
 		target_direction.normalize();
 		target_direction.mul(4.f);			
 		target_direction.add(eye_matrix.c);
@@ -1720,18 +1720,18 @@ void CAI_Stalker::OnRender				()
 	{
 		Fvector					c0 = Position(),c1,t0 = Position(),t1;
 		c0.y					+= 2.f;
-		c1.setHP				(-movement().m_body.current.yaw,-movement().m_body.current.pitch);
+		c1.setHP				(-get_movement().m_body.current.yaw,-get_movement().m_body.current.pitch);
 		c1.add					(c0);
 		Level().debug_renderer().draw_line		(Fidentity,c0,c1,color_xrgb(0,255,0));
 		
 		t0.y					+= 2.f;
-		t1.setHP				(-movement().m_body.target.yaw,-movement().m_body.target.pitch);
+		t1.setHP				(-get_movement().m_body.target.yaw,-get_movement().m_body.target.pitch);
 		t1.add					(t0);
 		Level().debug_renderer().draw_line		(Fidentity,t0,t1,color_xrgb(255,0,0));
 	}
 
-	if (memory().danger().selected() && ai().level_graph().valid_vertex_position(memory().danger().selected()->position())) {
-		Fvector						position = memory().danger().selected()->position();
+	if (get_memory().danger().selected() && ai().level_graph().valid_vertex_position(get_memory().danger().selected()->position())) {
+		Fvector						position = get_memory().danger().selected()->position();
 		u32							level_vertex_id = ai().level_graph().vertex_id(position);
 		float						half_size = ai().level_graph().header().cell_size()*.5f;
 		position.y					+= 1.f;
@@ -1823,7 +1823,7 @@ void CAI_Stalker::OnRender				()
 	}
 
 	if ( g_Alive() )
-		movement().get_doors_actor().render();
+		get_movement().get_doors_actor().render();
 
 #endif // #if 0
 }

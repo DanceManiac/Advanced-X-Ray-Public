@@ -239,8 +239,8 @@ void	do_collide_and_move(const Fmatrix &xform, IPhysicsShellHolder* l_actor, CPh
 	cam_step = false;
 	VERIFY( l_actor );
 	//VERIFY( l_actor->character_physics_support() );
-	//VERIFY( l_actor->character_physics_support()->movement() );
-	//l_actor->character_physics_support()->movement()->CollisionEnable( FALSE );
+	//VERIFY( l_actor->character_physics_support()->get_movement() );
+	//l_actor->character_physics_support()->get_movement()->CollisionEnable( FALSE );
 	l_actor->MovementCollisionEnable( false );
 	shell->EnableCollision();
 	shell->CollideAll();
@@ -269,7 +269,7 @@ void	do_collide_and_move(const Fmatrix &xform, IPhysicsShellHolder* l_actor, CPh
 	}
 
 	shell->DisableCollision();
-	//l_actor->character_physics_support()->movement()->CollisionEnable( TRUE );
+	//l_actor->character_physics_support()->get_movement()->CollisionEnable( TRUE );
 	l_actor->MovementCollisionEnable( true );
 	shell->Disable();
 }
@@ -283,13 +283,13 @@ bool do_collide_not_move(const Fmatrix &xform, IPhysicsShellHolder* l_actor, CPh
 	cam_step = false;
 	VERIFY( l_actor );
 	//VERIFY( l_actor->character_physics_support() );
-	//VERIFY( l_actor->character_physics_support()->movement() );
-	//l_actor->character_physics_support()->movement()->CollisionEnable( FALSE );
+	//VERIFY( l_actor->character_physics_support()->get_movement() );
+	//l_actor->character_physics_support()->get_movement()->CollisionEnable( FALSE );
 	l_actor->MovementCollisionEnable( false );
 	shell->EnableCollision();
 	shell->CollideAll();
 	shell->DisableCollision();
-	//l_actor->character_physics_support()->movement()->CollisionEnable( TRUE );
+	//l_actor->character_physics_support()->get_movement()->CollisionEnable( TRUE );
 	l_actor->MovementCollisionEnable( true );
 	shell->Disable();
 	return cam_collided;

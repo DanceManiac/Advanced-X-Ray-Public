@@ -323,8 +323,10 @@ void ShowWeatherEditor(bool& show)
 	bool changed = false;
 	sel = -1;
 	for (u32 i = 0; i != env.m_ambients_config->sections().size(); i++)
+	{
 		if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
 			sel = i;
+	}
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_amb_light_options").c_str()).c_str());
 

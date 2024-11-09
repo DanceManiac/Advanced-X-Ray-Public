@@ -213,7 +213,7 @@ void CControlAnimationBase::SelectAnimation()
 void CControlAnimationBase::SetTurnAnimation()
 {
 	float yaw_current, yaw_target;
-	m_man->direction().get_heading(yaw_current, yaw_target);
+	m_man->get_direction().get_heading(yaw_current, yaw_target);
 	float delta_yaw	= angle_difference(yaw_target, yaw_current);
 
 	bool turn_left = true;
@@ -246,20 +246,20 @@ void CControlAnimationBase::SelectVelocities()
 
 	if (b_moving) {
 
-		u32 cur_point_velocity_index = m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index()].velocity;
+		u32 cur_point_velocity_index = m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index()].velocity;
 
 		u32 next_point_velocity_index = u32(-1);
-		if (m_object->movement().detail().path().size() > m_object->movement().detail().curr_travel_point_index() + 1) 
-			next_point_velocity_index = m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index() + 1].velocity;
+		if (m_object->get_movement().detail().path().size() > m_object->get_movement().detail().curr_travel_point_index() + 1) 
+			next_point_velocity_index = m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index() + 1].velocity;
 
 		// если сейчас стоит на месте и есть след точка (т.е. должен быть в движении),
 		// то реализовать поворот на месте, а дальше форсировать скорость со следующей точки
 		if ((cur_point_velocity_index == MonsterMovement::eVelocityParameterStand) && (next_point_velocity_index != u32(-1))) {
-			if (!m_object->control().direction().is_turning()) 
+			if (!m_object->control().get_direction().is_turning()) 
 				cur_point_velocity_index = next_point_velocity_index;
 		} 
 
-		const CDetailPathManager::STravelParams &current_velocity = m_object->movement().detail().velocity(cur_point_velocity_index);
+		const CDetailPathManager::STravelParams &current_velocity = m_object->get_movement().detail().velocity(cur_point_velocity_index);
 		path_vel.set(_abs(current_velocity.linear_velocity), current_velocity.real_angular_velocity);
 	}
 
@@ -300,7 +300,7 @@ void CControlAnimationBase::SelectVelocities()
 		EMotionAnim new_anim;
 		float		a_speed;
 
-		if (accel_chain_get(m_man->movement().real_velocity(), cur_anim_info().get_motion(), new_anim, a_speed)) {
+		if (accel_chain_get(m_man->get_movement().real_velocity(), cur_anim_info().get_motion(), new_anim, a_speed)) {
 			cur_anim_info().set_motion(new_anim);
 			
 			if (a_speed < 0.5f) a_speed		+= 0.5f;
@@ -334,7 +334,7 @@ void CControlAnimationBase::SelectVelocities()
 void CControlAnimationBase::CheckVelocityBounce()
 {
 	Fvector		temp_vec;
-	m_object->character_physics_support()->movement()->GetCharacterVelocity(temp_vec);
+	m_object->character_physics_support()->get_movement()->GetCharacterVelocity(temp_vec);
 	float		prev_speed	= m_prev_character_velocity;
 	float		cur_speed	= temp_vec.magnitude();
 

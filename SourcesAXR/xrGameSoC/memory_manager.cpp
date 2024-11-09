@@ -54,9 +54,9 @@ CMemoryManager::~CMemoryManager		()
 
 void CMemoryManager::Load			(LPCSTR section)
 {
-	sound().Load		(section);
+	get_sound().Load		(section);
 	hit().Load			(section);
-	enemy().Load		(section);
+	get_enemy().Load		(section);
 	item().Load			(section);
 	danger().Load		(section);
 }
@@ -64,9 +64,9 @@ void CMemoryManager::Load			(LPCSTR section)
 void CMemoryManager::reinit			()
 {
 	visual().reinit		();
-	sound().reinit		();
+	get_sound().reinit		();
 	hit().reinit		();
-	enemy().reinit		();
+	get_enemy().reinit		();
 	item().reinit		();
 	danger().reinit		();
 }
@@ -74,9 +74,9 @@ void CMemoryManager::reinit			()
 void CMemoryManager::reload			(LPCSTR section)
 {
 	visual().reload		(section);
-	sound().reload		(section);
+	get_sound().reload		(section);
 	hit().reload		(section);
-	enemy().reload		(section);
+	get_enemy().reload		(section);
 	item().reload		(section);
 	danger().reload		(section);
 }
@@ -90,32 +90,32 @@ void CMemoryManager::update_enemies	(const bool &registered_in_combat)
 #ifdef _DEBUG
 	g_enemy_manager_second_update	= false;
 #endif // _DEBUG
-	enemy().update		();
+	get_enemy().update		();
 
 	if	(
 			m_stalker && 
 			(
-				!enemy().selected() || 
+				!get_enemy().selected() ||
 				(
-					smart_cast<const CAI_Stalker*>(enemy().selected()) && 
-					smart_cast<const CAI_Stalker*>(enemy().selected())->wounded()
+					smart_cast<const CAI_Stalker*>(get_enemy().selected()) && 
+					smart_cast<const CAI_Stalker*>(get_enemy().selected())->wounded()
 				)
 			) &&
 			registered_in_combat
 		)
 	{
-		m_stalker->agent_manager().enemy().distribute_enemies	();
+		m_stalker->agent_manager().get_enemy().distribute_enemies	();
 
 		if (visual().enabled())
 			update		(visual().objects(),true);
 
-		update			(sound().objects(),true);
+		update			(get_sound().objects(),true);
 		update			(hit().objects(),true);
 
 #ifdef _DEBUG
 		g_enemy_manager_second_update	= true;
 #endif // _DEBUG
-		enemy().update	();
+		get_enemy().update	();
 	}
 }
 
@@ -124,21 +124,21 @@ void CMemoryManager::update			(float time_delta)
 	START_PROFILE("Memory Manager")
 
 	visual().update		(time_delta);
-	sound().update		();
+	get_sound().update		();
 	hit().update		();
 	
 	bool				registered_in_combat = false;
 	if (m_stalker)
-		registered_in_combat	= m_stalker->agent_manager().member().registered_in_combat(m_stalker);
+		registered_in_combat	= m_stalker->agent_manager().get_member().registered_in_combat(m_stalker);
 
 	// update enemies and items
-	enemy().reset		();
+	get_enemy().reset		();
 	item().reset		();
 
 	if (visual().enabled())
 		update			(visual().objects(),true);
 
-	update				(sound().objects(),registered_in_combat ? true : false);
+	update				(get_sound().objects(),registered_in_combat ? true : false);
 	update				(hit().objects(),registered_in_combat ? true : false);
 	
 	update_enemies		(registered_in_combat);
@@ -151,14 +151,14 @@ void CMemoryManager::update			(float time_delta)
 void CMemoryManager::enable			(const CObject *object, bool enable)
 {
 	visual().enable		(object,enable);
-	sound().enable		(object,enable);
+	get_sound().enable		(object,enable);
 	hit().enable		(object,enable);
 }
 
 template <typename T>
 void CMemoryManager::update			(const xr_vector<T> &objects, bool add_enemies)
 {
-	squad_mask_type					mask = m_stalker ? m_stalker->agent_manager().member().mask(m_stalker) : 0;
+	squad_mask_type					mask = m_stalker ? m_stalker->agent_manager().get_member().mask(m_stalker) : 0;
 	xr_vector<T>::const_iterator	I = objects.begin();
 	xr_vector<T>::const_iterator	E = objects.end();
 	for ( ; I != E; ++I) {
@@ -172,7 +172,7 @@ void CMemoryManager::update			(const xr_vector<T> &objects, bool add_enemies)
 		
 		if (add_enemies) {
 			const CEntityAlive		*entity_alive = smart_cast<const CEntityAlive*>((*I).m_object);
-			if (entity_alive && enemy().add(entity_alive))
+			if (entity_alive && get_enemy().add(entity_alive))
 				continue;
 		}
 
@@ -194,7 +194,7 @@ CMemoryInfo CMemoryManager::memory(const CObject *object) const
 	u32								level_time = 0;
 	const CGameObject				*game_object = smart_cast<const CGameObject*>(object);
 	VERIFY							(game_object);
-	squad_mask_type					mask = m_stalker ? m_stalker->agent_manager().member().mask(m_stalker) : squad_mask_type(-1);
+	squad_mask_type					mask = m_stalker ? m_stalker->agent_manager().get_member().mask(m_stalker) : squad_mask_type(-1);
 
 	{
 		xr_vector<CVisibleObject>::const_iterator	I = std::find(visual().objects().begin(),visual().objects().end(),object_id(object));
@@ -208,8 +208,8 @@ CMemoryInfo CMemoryManager::memory(const CObject *object) const
 	}
 
 	{
-		xr_vector<CSoundObject>::const_iterator	I = std::find(sound().objects().begin(),sound().objects().end(),object_id(object));
-		if ((sound().objects().end() != I) && (level_time < (*I).m_level_time)) {
+		xr_vector<CSoundObject>::const_iterator	I = std::find(get_sound().objects().begin(),get_sound().objects().end(),object_id(object));
+		if ((get_sound().objects().end() != I) && (level_time < (*I).m_level_time)) {
 			(CMemoryObject<CGameObject>&)result = (CMemoryObject<CGameObject>&)(*I);
 			result.m_sound_info						= true;
 			level_time								= (*I).m_level_time;
@@ -246,8 +246,8 @@ u32 CMemoryManager::memory_time(const CObject *object) const
 	}
 
 	{
-		xr_vector<CSoundObject>::const_iterator	I = std::find(sound().objects().begin(),sound().objects().end(),object_id(object));
-		if ((sound().objects().end() != I) && (result < (*I).m_level_time))
+		xr_vector<CSoundObject>::const_iterator	I = std::find(get_sound().objects().begin(),get_sound().objects().end(),object_id(object));
+		if ((get_sound().objects().end() != I) && (result < (*I).m_level_time))
 			result		= (*I).m_level_time;
 	}
 	
@@ -279,8 +279,8 @@ Fvector CMemoryManager::memory_position	(const CObject *object) const
 	}
 
 	{
-		xr_vector<CSoundObject>::const_iterator	I = std::find(sound().objects().begin(),sound().objects().end(),object_id(object));
-		if ((sound().objects().end() != I) && (time < (*I).m_level_time)) {
+		xr_vector<CSoundObject>::const_iterator	I = std::find(get_sound().objects().begin(),get_sound().objects().end(),object_id(object));
+		if ((get_sound().objects().end() != I) && (time < (*I).m_level_time)) {
 			time		= (*I).m_level_time;
 			result		= (*I).m_object_params.m_position;
 		}
@@ -301,12 +301,12 @@ void CMemoryManager::remove_links	(CObject *object)
 {
 	if (m_object->g_Alive()) {
 		visual().remove_links	(object);
-		sound().remove_links	(object);
+		get_sound().remove_links	(object);
 		hit().remove_links		(object);
 	}
 
 	danger().remove_links		(object);
-	enemy().remove_links		(object);
+	get_enemy().remove_links		(object);
 	item().remove_links			(object);
 }
 
@@ -316,13 +316,13 @@ void CMemoryManager::on_restrictions_change	()
 		return;
 
 //	danger().on_restrictions_change	();
-//	enemy().on_restrictions_change	();
+//	get_enemy().on_restrictions_change	();
 	item().on_restrictions_change	();
 }
 
 void CMemoryManager::make_object_visible_somewhen	(const CEntityAlive *enemy)
 {
-	squad_mask_type				mask = stalker().agent_manager().member().mask(&stalker());
+	squad_mask_type				mask = stalker().agent_manager().get_member().mask(&stalker());
 	MemorySpace::CVisibleObject	*obj = visual().visible_object(enemy);
 //	if (obj) {
 //		Msg						("------------------------------------------------------");
@@ -331,7 +331,7 @@ void CMemoryManager::make_object_visible_somewhen	(const CEntityAlive *enemy)
 //	LogStackTrace				("-------------make_object_visible_somewhen-------------");
 	bool						prev = obj ? obj->visible(mask) : false;
 	visual().add_visible_object	(enemy,.001f,true);
-	MemorySpace::CVisibleObject	*obj1 = object().memory().visual().visible_object(enemy);
+	MemorySpace::CVisibleObject	*obj1 = object().get_memory().visual().visible_object(enemy);
 //	if (obj1)
 //		Msg						("[%6d] make_object_visible_somewhen [%s] = %x",Device.dwTimeGlobal,*enemy->cName(),obj1->m_squad_mask.get());
 	obj1->visible				(mask,prev);
@@ -340,7 +340,7 @@ void CMemoryManager::make_object_visible_somewhen	(const CEntityAlive *enemy)
 void CMemoryManager::save							(NET_Packet &packet) const
 {
 	visual().save				(packet);
-	sound().save				(packet);
+	get_sound().save				(packet);
 	hit().save					(packet);
 	danger().save				(packet);
 }
@@ -348,7 +348,7 @@ void CMemoryManager::save							(NET_Packet &packet) const
 void CMemoryManager::load							(IReader &packet)
 {
 	visual().load				(packet);
-	sound().load				(packet);
+	get_sound().load				(packet);
 	hit().load					(packet);
 	danger().load				(packet);
 }
@@ -358,6 +358,6 @@ void CMemoryManager::load							(IReader &packet)
 void CMemoryManager::on_requested_spawn				(CObject *object)
 {
 	visual().on_requested_spawn	(object);
-	sound().on_requested_spawn	(object);
+	get_sound().on_requested_spawn	(object);
 	hit().on_requested_spawn	(object);
 }

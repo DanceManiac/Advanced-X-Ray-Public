@@ -43,7 +43,7 @@ void stalker_low_cover_planner::setup					(CAI_Stalker *object, CPropertyStorage
 
 void stalker_low_cover_planner::update					()
 {
-	MemorySpace::CMemoryInfo	mem_object = object().memory().memory(object().memory().enemy().selected());
+	MemorySpace::CMemoryInfo	mem_object = object().get_memory().memory(object().get_memory().get_enemy().selected());
 	if (mem_object.m_object)
 		object().best_cover	(mem_object.m_object_params.m_position);
 
@@ -54,12 +54,12 @@ void stalker_low_cover_planner::initialize				()
 {
 	inherited::initialize	();
 	
-	object().movement().set_movement_type(eMovementTypeStand);
-	object().movement().set_nearest_accessible_position	();
-	object().movement().set_desired_direction			(0);
-	object().movement().set_path_type					(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type			(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_mental_state				(eMentalStateDanger);
+	object().get_movement().set_movement_type(eMovementTypeStand);
+	object().get_movement().set_nearest_accessible_position	();
+	object().get_movement().set_desired_direction			(0);
+	object().get_movement().set_path_type					(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type			(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_mental_state				(eMentalStateDanger);
 
 	CScriptActionPlanner::m_storage.set_property		(eWorldPropertyInCover,true);
 }

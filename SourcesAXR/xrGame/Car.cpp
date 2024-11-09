@@ -1858,7 +1858,7 @@ void CCar::CarExplode()
 		if(!m_doors.empty())m_doors.begin()->second.GetExitPosition(m_exit_position);
 		else m_exit_position.set(Position());
 		A->detach_Vehicle();
-		if(A->g_Alive()<=0.f)A->character_physics_support()->movement()->DestroyCharacter();
+		if(A->g_Alive()<=0.f)A->character_physics_support()->get_movement()->DestroyCharacter();
 	}
 
 	if(CPHDestroyable::CanDestroy())

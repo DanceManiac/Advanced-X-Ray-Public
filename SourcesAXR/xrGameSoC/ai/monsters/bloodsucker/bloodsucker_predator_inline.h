@@ -91,7 +91,7 @@ void CStateBloodsuckerPredatorAbstract::critical_finalize()
 TEMPLATE_SPECIALIZATION
 bool CStateBloodsuckerPredatorAbstract::check_start_conditions()
 {
-	if (Actor()->memory().visual().visible_now(object)) return false;
+	if (Actor()->get_memory().visual().visible_now(object)) return false;
 	return true;
 }
 

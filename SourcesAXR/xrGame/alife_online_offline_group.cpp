@@ -63,7 +63,7 @@ void CSE_ALifeOnlineOfflineGroup::update	()
 	if (!bfActive())
 		return;
 
-	brain().update					();
+	get_brain().update					();
 
 	MEMBERS::iterator			I = m_members.begin();
 	MEMBERS::iterator			E = m_members.end();
@@ -78,7 +78,7 @@ void CSE_ALifeOnlineOfflineGroup::update	()
 
 void CSE_ALifeOnlineOfflineGroup::on_location_change			() const
 {
-	brain().on_location_change();
+	get_brain().on_location_change();
 }
 
 

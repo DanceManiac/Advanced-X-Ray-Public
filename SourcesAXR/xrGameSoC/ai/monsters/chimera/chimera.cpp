@@ -114,7 +114,7 @@ void CChimera::reinit()
 	inherited::reinit();
 	b_upper_state					= false;
 
-	movement().detail().add_velocity(MonsterMovement::eChimeraVelocityParameterUpperWalkFwd,	CDetailPathManager::STravelParams(m_fsVelocityWalkUpper.velocity.linear,	m_fsVelocityWalkUpper.velocity.angular_path, m_fsVelocityWalkUpper.velocity.angular_real));
+	get_movement().detail().add_velocity(MonsterMovement::eChimeraVelocityParameterUpperWalkFwd,	CDetailPathManager::STravelParams(m_fsVelocityWalkUpper.velocity.linear,	m_fsVelocityWalkUpper.velocity.angular_path, m_fsVelocityWalkUpper.velocity.angular_real));
 	move().load_velocity(*cNameSect(), "Velocity_JumpGround",MonsterMovement::eChimeraVelocityParameterJumpGround);
 
 	com_man().load_jump_data("jump_attack_0",0, "jump_attack_1", "jump_attack_2", u32(-1), MonsterMovement::eChimeraVelocityParameterJumpGround,0);

@@ -217,7 +217,7 @@ void CStalkerAnimationManager::play_legs()
 	if (!legs().blend())
 		return;
 
-	object().movement().setup_speed_from_animation(speed);
+	object().get_movement().setup_speed_from_animation(speed);
 }
 
 void CStalkerAnimationManager::update_impl()

@@ -416,7 +416,7 @@ protected:
 	virtual void            UpdatePosition_alt      (const Fmatrix& transform);
 	virtual void			UpdateXForm				();
 	virtual void			UpdateHudAdditional		(Fmatrix&);
-	IC		void			UpdateFireDependencies	()			{ if (dwFP_Frame==Device.dwFrame) return; UpdateFireDependencies_internal(); };
+	IC		void			UpdateFireDependencies	()			{ if (m_dwFP_Frame==Device.dwFrame) return; UpdateFireDependencies_internal(); };
 
 	virtual void			LoadFireParams		(LPCSTR section);
 public:	

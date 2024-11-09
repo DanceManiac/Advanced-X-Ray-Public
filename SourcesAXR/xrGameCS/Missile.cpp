@@ -86,7 +86,7 @@ BOOL CMissile::net_Spawn(CSE_Abstract* DC)
 {
 	BOOL l_res = inherited::net_Spawn(DC);
 
-	dwXF_Frame					= 0xffffffff;
+	m_dwXF_Frame					= 0xffffffff;
 
 	m_throw_direction.set(0.0f, 1.0f, 0.0f);
 	m_throw_matrix.identity();
@@ -410,9 +410,9 @@ void CMissile::UpdatePosition(const Fmatrix& trans)
 
 void CMissile::UpdateXForm	()
 {
-	if (Device.dwFrame!=dwXF_Frame)
+	if (Device.dwFrame!=m_dwXF_Frame)
 	{
-		dwXF_Frame			= Device.dwFrame;
+		m_dwXF_Frame			= Device.dwFrame;
 
 		if (0==H_Parent())	return;
 
@@ -618,12 +618,14 @@ bool CMissile::Action(s32 cmd, u32 flags)
 	return false;
 }
 
-void  CMissile::UpdateFireDependencies_internal	()
+void  CMissile::UpdateFireDependencies_internal()
 {
-	if (0==H_Parent())		return;
+	if (0 == H_Parent())
+		return;
 
-    if (Device.dwFrame!=dwFP_Frame){
-		dwFP_Frame = Device.dwFrame;
+	if (Device.dwFrame != m_dwFP_Frame)
+	{
+		m_dwFP_Frame = Device.dwFrame;
 
 		UpdateXForm			();
 		
@@ -684,7 +686,7 @@ void CMissile::activate_physic_shell()
 	CEntityAlive		*entity_alive = smart_cast<CEntityAlive*>(H_Root());
 	if (entity_alive && entity_alive->character_physics_support()){
 		Fvector			parent_vel;
-		entity_alive->character_physics_support()->movement()->GetCharacterVelocity(parent_vel);
+		entity_alive->character_physics_support()->get_movement()->GetCharacterVelocity(parent_vel);
 		l_vel.add		(parent_vel);
 	}
 

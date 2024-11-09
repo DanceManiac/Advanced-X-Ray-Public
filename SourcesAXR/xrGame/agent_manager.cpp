@@ -25,7 +25,7 @@ CAgentManager::CAgentManager			()
 
 CAgentManager::~CAgentManager			()
 {
-	VERIFY						(member().members().empty());
+	VERIFY						(get_member().members().empty());
 #ifdef USE_SCHEDULER_IN_AGENT_MANAGER
 	remove_scheduler			();
 #endif // USE_SCHEDULER_IN_AGENT_MANAGER
@@ -53,7 +53,7 @@ void CAgentManager::init_components		()
 	m_member					= xr_new<CAgentMemberManager>	(this);
 	m_memory					= xr_new<CAgentMemoryManager>	(this);
 	m_brain						= xr_new<CAgentManagerPlanner>	();
-	brain().setup				(this);
+	get_brain().setup				(this);
 }
 
 #ifdef USE_SCHEDULER_IN_AGENT_MANAGER
@@ -76,26 +76,26 @@ void CAgentManager::remove_components	()
 
 void CAgentManager::remove_links		(CObject *object)
 {
-	corpse().remove_links		(object);
-	enemy().remove_links		(object);
-	explosive().remove_links	(object);
-	location().remove_links		(object);
-	member().remove_links		(object);
-	memory().remove_links		(object);
-	brain().remove_links		(object);
+	get_corpse().remove_links		(object);
+	get_enemy().remove_links		(object);
+	get_explosive().remove_links	(object);
+	get_location().remove_links		(object);
+	get_member().remove_links		(object);
+	get_memory().remove_links		(object);
+	get_brain().remove_links		(object);
 }
 
 void CAgentManager::update_impl			()
 {
-	VERIFY						(!member().members().empty());
+	VERIFY						(!get_member().members().empty());
 
-	memory().update				();
-	corpse().update				();
-	enemy().update				();
-	explosive().update			();
-	location().update			();
-	member().update				();
-	brain().update				();
+	get_memory().update				();
+	get_corpse().update				();
+	get_enemy().update				();
+	get_explosive().update			();
+	get_location().update			();
+	get_member().update				();
+	get_brain().update				();
 }
 
 #ifdef USE_SCHEDULER_IN_AGENT_MANAGER

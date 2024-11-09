@@ -55,15 +55,15 @@ class ENGINE_API	CEnvAmbient
 {
 public:
 	struct SEffect{
-		u32 			life_time;
-		ref_sound		sound;		
-		shared_str		particles;
-		Fvector			offset;
-		float			wind_gust_factor;
-		float			wind_blast_in_time;
-		float			wind_blast_out_time;
-		float			wind_blast_strength;
-		Fvector			wind_blast_direction;
+		u32 			m_life_time;
+		ref_sound		m_sound;		
+		shared_str		m_particles;
+		Fvector			m_offset;
+		float			m_wind_gust_factor;
+		float			m_wind_blast_in_time;
+		float			m_wind_blast_out_time;
+		float			m_wind_blast_strength;
+		Fvector			m_wind_blast_direction;
 
 		INGAME_EDITOR_VIRTUAL	~SEffect				()	{}
 	};
@@ -97,12 +97,11 @@ protected:
 	SSndChannelVec			m_sound_channels;
 	shared_str              m_ambients_config_filename;
 
-	shared_str				section;
-	xr_vector<SEffect>		effects_shoc;
-	xr_vector<ref_sound>	sounds;
-	Fvector2				sound_dist;
-	Ivector2				sound_period;
-	Ivector2				effect_period;
+	shared_str				m_section;
+	xr_vector<SEffect>		m_effects_shoc;
+	xr_vector<ref_sound>	m_sounds;
+	Fvector2				m_sound_dist;
+	Ivector2				m_sound_period;
 
 public:
 	IC const shared_str&	name				()	{return m_load_section;}
@@ -126,10 +125,10 @@ public:
 
 	void load_shoc(const shared_str& section);
 
-	IC ref_sound* get_rnd_sound() { return sounds.empty() ? 0 : &sounds[Random.randI(sounds.size())]; }
-	IC u32 get_rnd_sound_time() { return Random.randI(sound_period.x, sound_period.y); }
-	IC float get_rnd_sound_dist() { return Random.randF(sound_dist.x, sound_dist.y); }
-	IC u32 get_rnd_effect_time_shoc() { return Random.randI(effect_period.x, effect_period.y); }
+	IC ref_sound* get_rnd_sound() { return m_sounds.empty() ? 0 : &m_sounds[Random.randI(m_sounds.size())]; }
+	IC u32 get_rnd_sound_time() { return Random.randI(m_sound_period.x, m_sound_period.y); }
+	IC float get_rnd_sound_dist() { return Random.randF(m_sound_dist.x, m_sound_dist.y); }
+	IC u32 get_rnd_effect_time_shoc() { return Random.randI(m_effect_period.x, m_effect_period.y); }
 };
 
 class ENGINE_API	CEnvDescriptor
@@ -302,8 +301,8 @@ public:
 	float					wind_gust_factor;
 
 	// wind blast params
-	float					wind_blast_strength;
-	Fvector					wind_blast_direction;
+	float					m_wind_blast_strength;
+	Fvector					m_wind_blast_direction;
 	Fquaternion				wind_blast_start_time;
 	Fquaternion				wind_blast_stop_time;
 	float					wind_blast_strength_start_value;

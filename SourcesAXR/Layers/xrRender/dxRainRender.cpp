@@ -86,7 +86,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	}
 #endif
 
-	u32 desired_items = iFloor(0.01f * (1.f + factor * 99.0f) * max_desired_items);
+	u32 desired_items = iFloor(0.01f * (1.f + factor * 99.0f) * m_imax_desired_items);
 
 	// Get to the desired items
 	if (current_items < desired_items)
@@ -98,14 +98,14 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	u32			u_rain_color	= color_rgba_f(f_rain_color.x,f_rain_color.y,f_rain_color.z,factor_visual);
 
 	// born _new_ if needed
-	float	b_radius_wrap_sqr	= _sqr((source_radius * 1.5f));
+	float	b_radius_wrap_sqr	= _sqr((m_fsource_radius * 1.5f));
 	if (owner.items.size() < current_items)
 	{
 		// owner.items.reserve		(desired_items);
 		while (owner.items.size() < current_items)
 		{
 			CEffect_Rain::Item				one;
-			owner.Born					(one, source_radius, _drop_speed);
+			owner.Born					(one, m_fsource_radius, _drop_speed);
 			owner.items.push_back		(one);
 		}
 	}
@@ -113,7 +113,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	// build source plane
 	Fplane src_plane;
 	Fvector norm	={0.f,-1.f,0.f};
-	Fvector upper; 	upper.set(Device.vCameraPosition.x,Device.vCameraPosition.y+source_offset,Device.vCameraPosition.z);
+	Fvector upper; 	upper.set(Device.vCameraPosition.x,Device.vCameraPosition.y+m_fsource_offset,Device.vCameraPosition.z);
 	src_plane.build(upper,norm);
 
 	// perform update
@@ -136,7 +136,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 
 		if (one.dwTime_Life < Device.dwTimeGlobal)
 		{
-			owner.Born(one, source_radius, _drop_speed);
+			owner.Born(one, m_fsource_radius, _drop_speed);
 
 			if (current_items > desired_items)
 				current_items--; // Out of life ( invalidated, never hit something, etc. )
@@ -154,17 +154,17 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		if (wlen>b_radius_wrap_sqr)	{
 			wlen		= _sqrt(wlen);
 			//.			Device.Statistic->TEST3.Begin();
-			if ((one.P.y-vEye.y)<sink_offset){
+			if ((one.P.y-vEye.y)<m_fsink_offset){
 				// need born
 				one.invalidate();
 			}else{
 				Fvector		inv_dir, src_p;
 				inv_dir.invert(one.D);
 				wdir.div	(wlen);
-				one.P.mad	(one.P, wdir, -(wlen+source_radius));
+				one.P.mad	(one.P, wdir, -(wlen+m_fsource_radius));
 				if (src_plane.intersectRayPoint(one.P,inv_dir,src_p)){
 					float dist_sqr	= one.P.distance_to_sqr(src_p);
-					float height	= max_distance;
+					float height	= m_fmax_distance;
 					if (owner.RayPick(src_p,one.D,height,collide::rqtBoth)){	
 						if (_sqr(height)<=dist_sqr){ 
 							one.invalidate	();								// need born
@@ -174,7 +174,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 							//							Log("2",height-dist);
 						}
 					}else{
-						owner.RenewItem		(one,max_distance-_sqrt(dist_sqr),FALSE);		// fly ...
+						owner.RenewItem		(one,m_fmax_distance-_sqrt(dist_sqr),FALSE);		// fly ...
 						//						Log("3",1.5f*b_height-dist);
 					}
 				}else{
@@ -269,8 +269,8 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		Fmatrix					mXform,mScale;
 		u32						pcount  = 0;
 		u32						v_offset,i_offset;
-		u32						vCount_Lock		= particles_cache*DM_Drop->number_vertices;
-		u32						iCount_Lock		= particles_cache*DM_Drop->number_indices;
+		u32						vCount_Lock		= m_iparticles_cache*DM_Drop->number_vertices;
+		u32						iCount_Lock		= m_iparticles_cache*DM_Drop->number_indices;
 		IRender_DetailModel::fvfVertexOut* v_ptr= (IRender_DetailModel::fvfVertexOut*) RCache.Vertex.Lock	(vCount_Lock, hGeom_Drops->vb_stride, v_offset);
 		u16*					i_ptr			= _IS.Lock													(iCount_Lock, i_offset);
 		while (P)	{
@@ -289,7 +289,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 			if (::Render->ViewBase.testSphere_dirty(P->bounds.P, P->bounds.R))
 			{
 				// Build matrix
-				float scale			=	P->time / particles_time;
+				float scale			=	P->time / m_fparticles_time;
 				mScale.scale		(scale,scale,scale);
 				mXform.mul_43		(P->mXForm,mScale);
 
@@ -299,7 +299,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 				i_ptr			+=	DM_Drop->number_indices;
 				pcount			++;
 
-				if (pcount >= particles_cache) {
+				if (pcount >= m_iparticles_cache) {
 					// flush
 					u32	dwNumPrimitives		= iCount_Lock/3;
 					RCache.Vertex.Unlock	(vCount_Lock,hGeom_Drops->vb_stride);

@@ -137,7 +137,7 @@ void CAI_Stalker::choose_weapon					(ALife::EWeaponPriorityType weapon_priority_
 {
 	CTradeItem						*best_weapon	= 0;
 	float							best_value		= -1.f;
-	ai().ef_storage().non_alife().member()	= this;
+	ai().ef_storage().non_alife().get_member()	= this;
 
 	xr_vector<CTradeItem>::iterator	I = m_temp_items.begin();
 	xr_vector<CTradeItem>::iterator	E = m_temp_items.end();
@@ -207,7 +207,7 @@ void CAI_Stalker::choose_detector				()
 {
 	CTradeItem					*best_detector	= 0;
 	float						best_value		= -1.f;
-	ai().ef_storage().non_alife().member()	= this;
+	ai().ef_storage().non_alife().get_member()	= this;
 	xr_vector<CTradeItem>::iterator	I = m_temp_items.begin();
 	xr_vector<CTradeItem>::iterator	E = m_temp_items.end();
 	for ( ; I != E; ++I) {

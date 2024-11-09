@@ -41,19 +41,19 @@ void CAI_Stalker::renderable_Render	()
 #ifdef DEBUG
 	if (g_Alive()) {
 		if (psAI_Flags.test(aiAnimationStats))
-			animation().add_animation_stats	();
+			get_animation().add_animation_stats	();
 	}
 #endif // DEBUG
 }
 
 void CAI_Stalker::Exec_Look			(float dt)
 {
-	sight().Exec_Look				(dt);
+	get_sight().Exec_Look				(dt);
 }
 
 bool CAI_Stalker::bfCheckForNodeVisibility(u32 dwNodeID, bool bIfRayPick)
 {
-	return							(memory().visual().visible(dwNodeID,movement().m_head.current.yaw,ffGetFov()));
+	return							(get_memory().visual().visible(dwNodeID, get_movement().m_head.current.yaw,ffGetFov()));
 }
 
 BOOL CAI_Stalker::feel_touch_contact	(CObject *O)

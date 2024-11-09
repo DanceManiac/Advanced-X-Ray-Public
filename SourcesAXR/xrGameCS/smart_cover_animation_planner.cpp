@@ -63,7 +63,7 @@ void animation_planner::setup			(CAI_Stalker *object, CPropertyStorage *storage)
 	add_evaluators			();
 	add_actions				();
 
-	object->movement().target_selector().setup(this, storage);
+	object->get_movement().target_selector().setup(this, storage);
 }
 
 void animation_planner::target			(StalkerDecisionSpace::EWorldProperties const &world_property)
@@ -86,8 +86,8 @@ void animation_planner::initialize		()
 	hit_callback.bind		(this, &animation_planner::hit_callback);
 	object().hit_callback	(hit_callback);
 
-	m_head_speed			= object().movement().m_head.speed;
-//	object().movement().m_head.speed	= PI_DIV_4;
+	m_head_speed			= object().get_movement().m_head.speed;
+//	object().get_movement().m_head.speed	= PI_DIV_4;
 
 	m_storage.set_property	(eWorldPropertyLookedOut,			false);
 	m_storage.set_property	(eWorldPropertyReadyToIdle,			true);
@@ -105,10 +105,10 @@ void animation_planner::finalize		()
 {
 	inherited::finalize					();
 
-	if (object().movement().target_selector().initialized())
-		object().movement().target_selector().finalize	();
+	if (object().get_movement().target_selector().initialized())
+		object().get_movement().target_selector().finalize	();
 
-	object().movement().m_head.speed	= m_head_speed;
+	object().get_movement().m_head.speed	= m_head_speed;
 	m_initialized						= false;
 	typedef CAI_Stalker::HitCallback	HitCallback;
 	object().hit_callback				(HitCallback());

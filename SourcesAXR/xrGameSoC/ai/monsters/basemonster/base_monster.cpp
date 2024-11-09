@@ -174,9 +174,9 @@ void CBaseMonster::Die(CObject* who)
 	inherited::Die(who);
 
 	if (is_special_killer(who))
-		sound().play			(MonsterSound::eMonsterSoundDieInAnomaly);
+		get_sound().play			(MonsterSound::eMonsterSoundDieInAnomaly);
 	else
-		sound().play			(MonsterSound::eMonsterSoundDie);
+		get_sound().play			(MonsterSound::eMonsterSoundDie);
 
 	monster_squad().remove_member	((u8)g_Team(),(u8)g_Squad(),(u8)g_Group(),this);
 	
@@ -219,10 +219,10 @@ CPHDestroyable*	CBaseMonster::	ph_destroyable	()
 
 bool CBaseMonster::useful(const CItemManager *manager, const CGameObject *object) const
 {
-	if (!movement().restrictions().accessible(object->Position()))
+	if (!get_movement().restrictions().accessible(object->Position()))
 		return				(false);
 
-	if (!movement().restrictions().accessible(object->ai_location().level_vertex_id()))
+	if (!get_movement().restrictions().accessible(object->ai_location().level_vertex_id()))
 		return				(false);
 
 	const CEntityAlive *pCorpse = smart_cast<const CEntityAlive *>(object); 
@@ -266,7 +266,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 {
 	if (once) {
 	
-		sound().play(type);
+		get_sound().play(type);
 	
 	} else {
 
@@ -274,7 +274,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 		if ((type == MonsterSound::eMonsterSoundAggressive) && 
 			(m_prev_sound_type != MonsterSound::eMonsterSoundAggressive)) {
 			
-			sound().play(MonsterSound::eMonsterSoundAttackHit);
+			get_sound().play(MonsterSound::eMonsterSoundAttackHit);
 
 		} else {
 			// get count of monsters in squad
@@ -306,7 +306,7 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 				break;
 			}
 
-			sound().play(type, 0, 0, delay);
+			get_sound().play(type, 0, 0, delay);
 		} 
 	}
 
@@ -631,5 +631,5 @@ bool CBaseMonster::get_enable_fire_aura_after_die()
 void CBaseMonster::ReloadDamageAndAnimations()
 {
 	CDamageManager::reload(*CObject::cNameSect(), "damage", pSettings);
-	control().animation().restart();
+	control().get_animation().restart();
 }

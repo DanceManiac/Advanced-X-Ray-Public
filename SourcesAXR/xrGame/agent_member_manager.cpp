@@ -69,8 +69,8 @@ void CAgentMemberManager::remove				(CEntity *member)
 		unregister_in_combat	(stalker);
 
 	squad_mask_type							m = mask(stalker);
-	object().memory().update_memory_masks	(m);
-	object().memory().update_memory_mask	(m,m_combat_mask);
+	object().get_memory().update_memory_masks	(m);
+	object().get_memory().update_memory_mask	(m,m_combat_mask);
 
 	iterator					I = std::find_if(m_members.begin(),m_members.end(), CMemberPredicate(stalker));
 	VERIFY						(I != m_members.end());
@@ -222,7 +222,7 @@ bool CAgentMemberManager::can_cry_noninfo_phrase() const
 		if (!registered_in_combat(&(*I)->object()))
 			continue;
 
-		if ((*I)->object().sound().active_sound_count(false))
+		if ((*I)->object().get_sound().active_sound_count(false))
 			return						(false);
 	}
 

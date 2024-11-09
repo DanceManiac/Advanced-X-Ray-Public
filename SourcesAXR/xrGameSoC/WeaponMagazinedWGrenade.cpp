@@ -65,7 +65,7 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 		CRocketLauncher::m_fLaunchSpeed = pSettings->r_float(section, "grenade_vel");
 	}
 
-	grenade_bone_name = READ_IF_EXISTS(pSettings, r_string, hud_sect, "grenade_bone", grenade_launcher_def_bone_cop);
+	grenade_bone_name = READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "grenade_bone", grenade_launcher_def_bone_cop);
 
 	// load ammo classes SECOND (grenade_class)
 	m_ammoTypes2.clear	(); 

@@ -484,12 +484,12 @@ public:
 	IC	SelfRef	inertion(const Self &mat, T v)
 	{
 		T iv = 1.f-v;
-		for (int i=0; i<4; i++)
+		for (int i_=0; i_<4; i_++)
 		{
-			m[i][0] = m[i][0]*v + mat.m[i][0]*iv;
-			m[i][1] = m[i][1]*v + mat.m[i][1]*iv;
-			m[i][2] = m[i][2]*v + mat.m[i][2]*iv;
-			m[i][3] = m[i][3]*v + mat.m[i][3]*iv;
+			m[i_][0] = m[i_][0]*v + mat.m[i_][0]*iv;
+			m[i_][1] = m[i_][1]*v + mat.m[i_][1]*iv;
+			m[i_][2] = m[i_][2]*v + mat.m[i_][2]*iv;
+			m[i_][3] = m[i_][3]*v + mat.m[i_][3]*iv;
 		}
 		return *this; 
 	}

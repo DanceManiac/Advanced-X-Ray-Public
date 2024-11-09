@@ -25,7 +25,7 @@ void CScriptWorldStateWrapper::script_register(lua_State *L)
 			.def("clear",						&CScriptWorldState::clear)
 			.def("includes",					&CScriptWorldState::includes)
 			.def("property",					&CScriptWorldState::property)
-			.def(const_self < CScriptWorldState())
-			.def(const_self == CScriptWorldState())
+			.def(m_const_self < CScriptWorldState())
+			.def(m_const_self == CScriptWorldState())
 	];
 }

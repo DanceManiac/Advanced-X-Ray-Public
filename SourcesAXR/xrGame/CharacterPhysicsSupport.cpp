@@ -176,8 +176,8 @@ void CCharacterPhysicsSupport::update_interactive_anims	()
 		return;
 	VERIFY( m_EntityAlife.cast_stalker( ) );
 	CAI_Stalker	*stalker = m_EntityAlife.cast_stalker( );
-	CBlend *b = stalker->animation().global().blend();
-	if( b && !m_interactive_animation && stalker->animation().global().callback_on_collision() )
+	CBlend *b = stalker->get_animation().global().blend();
+	if( b && !m_interactive_animation && stalker->get_animation().global().callback_on_collision() )
 		run_interactive	( b );
 	if( m_interactive_animation && !m_interactive_animation->update( m_EntityAlife.XFORM( ) ) )
 		xr_delete( m_interactive_animation );
@@ -228,9 +228,9 @@ void CCharacterPhysicsSupport::in_NetSpawn( CSE_Abstract* e )
 
 
 	CPHSkeleton::Spawn( e );
-	movement( )->EnableCharacter();
-	movement( )->SetPosition(m_EntityAlife.Position( ) );
-	movement( )->SetVelocity	( 0, 0, 0 );
+	get_movement()->EnableCharacter();
+	get_movement()->SetPosition(m_EntityAlife.Position( ) );
+	get_movement()->SetVelocity	( 0, 0, 0 );
 	if(m_eType!=etActor)
 	{
 		m_flags.set( fl_specific_bonce_demager, TRUE );
@@ -333,7 +333,7 @@ void		CCharacterPhysicsSupport::					SpawnCharacterCreate			( )
 	//	CreateCharacterSafe();
 	//VERIFY( movement() );
 
-	//if( movement()->CharacterExist() )
+	//if( get_movement()->CharacterExist() )
 	//	return;
 	//else
 	//{
@@ -387,7 +387,7 @@ void CCharacterPhysicsSupport::in_Init( )
 void CCharacterPhysicsSupport::UpdateCollisionActivatingDellay( )
 {
 	VERIFY( m_collision_activating_delay );
-	VERIFY( movement() );
+	VERIFY(get_movement() );
 	m_collision_activating_delay->update();
 	if( !m_collision_activating_delay->active() )
 		xr_delete(m_collision_activating_delay);
@@ -405,7 +405,7 @@ void CCharacterPhysicsSupport::in_shedule_Update( u32 DT )
 		CPHDestroyable::SheduleUpdate( DT );
 	else	if( m_pPhysicsShell&&m_pPhysicsShell->isFullActive( ) && !m_pPhysicsShell->isEnabled( ) )
 		m_EntityAlife.deactivate_physics_shell( );
-	movement( )->in_shedule_Update( DT );
+	get_movement( )->in_shedule_Update( DT );
 #if	0
 	if( anim_mov_state.active )
 	{
@@ -481,7 +481,7 @@ void CCharacterPhysicsSupport::KillHit( SHit &H )
 	MotionID m = m_death_anims.motion( m_EntityAlife, H, hit_angle );
 
 	CAI_Stalker* const	holder = m_EntityAlife.cast_stalker();
-	if (holder && (holder->wounded() || holder->movement().current_params().cover()) )
+	if (holder && (holder->wounded() || holder->get_movement().current_params().cover()) )
 		m		= MotionID();
 
 	if( m.valid( ) )//&& cmp( prev_pose, mXFORM ) 
@@ -754,7 +754,7 @@ bool CCharacterPhysicsSupport::CollisionCorrectObjPos(const Fvector& start_from,
 	Fvector shift;shift.set(0,0,0);
 	Fbox box;
 	if(character_create)
-		box.set( movement()->Box() );
+		box.set( get_movement()->Box() );
 	else
 	{
 		if(m_pPhysicsShell)
@@ -794,11 +794,11 @@ bool CCharacterPhysicsSupport::CollisionCorrectObjPos(const Fvector& start_from,
 
 void CCharacterPhysicsSupport::set_movement_position( const Fvector &pos)
 {
-	VERIFY( movement() );
+	VERIFY(get_movement() );
 
 	CollisionCorrectObjPos( pos, true );
 	
-	movement()->SetPosition( m_EntityAlife.Position() );
+	get_movement()->SetPosition( m_EntityAlife.Position() );
 }
 void CCharacterPhysicsSupport::ForceTransform( const Fmatrix &m )
 {
@@ -806,10 +806,10 @@ void CCharacterPhysicsSupport::ForceTransform( const Fmatrix &m )
 				return;
 	VERIFY(_valid(m));
 	m_EntityAlife.XFORM().set( m );
-	if( movement()->CharacterExist() )
-			movement()->EnableCharacter();
+	if( get_movement()->CharacterExist() )
+			get_movement()->EnableCharacter();
 	set_movement_position( m.c );
-	movement()->SetVelocity( 0, 0, 0 );
+	get_movement()->SetVelocity( 0, 0, 0 );
 
 }
 /*
@@ -878,7 +878,7 @@ void CCharacterPhysicsSupport::update_animation_collision		( )
 	if( animation_collision( ) )
 	{
 			animation_collision( )->update( mXFORM );
-			//animation_collision( )->shell()->set_LinearVel( movement()->GetVelocity() );
+			//animation_collision( )->shell()->set_LinearVel( get_movement()->GetVelocity() );
 			if( Device.dwTimeGlobal > m_physics_shell_animated_time_destroy )
 						destroy_animation_collision		( );
 	}
@@ -1338,7 +1338,7 @@ void CCharacterPhysicsSupport::PHGetLinearVell(Fvector &velocity)
 		m_pPhysicsShell->get_LinearVel(velocity);
 	}
 	else
-		movement()->GetCharacterVelocity(velocity);
+		get_movement()->GetCharacterVelocity(velocity);
 		
 }
 
@@ -1474,15 +1474,15 @@ void		CCharacterPhysicsSupport::in_Die(bool hit)
 
 u16	CCharacterPhysicsSupport::PHGetSyncItemsNumber( )
 {
-	if(movement()->CharacterExist())
+	if(get_movement()->CharacterExist())
 		return 1;
 	else 
 		return m_EntityAlife.CPhysicsShellHolder::PHGetSyncItemsNumber();
 }
 CPHSynchronize*	CCharacterPhysicsSupport::PHGetSyncItem	(u16 item)
 {
-	if(movement()->CharacterExist()) 
-		return movement()->GetSyncItem();
+	if(get_movement()->CharacterExist()) 
+		return get_movement()->GetSyncItem();
 	else	
 		return m_EntityAlife.CPhysicsShellHolder::PHGetSyncItem(item);
 }

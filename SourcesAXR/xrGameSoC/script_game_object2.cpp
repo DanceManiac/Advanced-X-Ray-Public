@@ -178,8 +178,8 @@ CScriptGameObject *CScriptGameObject::GetBestEnemy()
 	if (!monster)
 		return				(0);
 
-	if (monster->memory().enemy().selected())
-		return				(monster->memory().enemy().selected()->lua_game_object());
+	if (monster->get_memory().get_enemy().selected())
+		return				(monster->get_memory().get_enemy().selected()->lua_game_object());
 	return					(0);
 }
 
@@ -189,10 +189,10 @@ const CDangerObject *CScriptGameObject::GetBestDanger()
 	if (!monster)
 		return				(0);
 
-	if (!monster->memory().danger().selected())
+	if (!monster->get_memory().danger().selected())
 		return				(0);
 
-	return					(monster->memory().danger().selected());
+	return					(monster->get_memory().danger().selected());
 }
 
 CScriptGameObject *CScriptGameObject::GetBestItem()
@@ -201,8 +201,8 @@ CScriptGameObject *CScriptGameObject::GetBestItem()
 	if (!monster)
 		return				(0);
 
-	if (monster->memory().item().selected())
-		return				(monster->memory().item().selected()->lua_game_object());
+	if (monster->get_memory().item().selected())
+		return				(monster->get_memory().item().selected()->lua_game_object());
 	return					(0);
 }
 
@@ -214,7 +214,7 @@ u32 CScriptGameObject::memory_time(const CScriptGameObject &lua_game_object)
 		return				(0);
 	}
 	else
-		return				(monster->memory().memory_time(&lua_game_object.object()));
+		return				(monster->get_memory().memory_time(&lua_game_object.object()));
 }
 
 Fvector CScriptGameObject::memory_position(const CScriptGameObject &lua_game_object)
@@ -225,7 +225,7 @@ Fvector CScriptGameObject::memory_position(const CScriptGameObject &lua_game_obj
 		return				(Fvector().set(0.f,0.f,0.f));
 	}
 	else
-		return				(monster->memory().memory_position(&lua_game_object.object()));
+		return				(monster->get_memory().memory_position(&lua_game_object.object()));
 }
 
 void CScriptGameObject::enable_memory_object	(CScriptGameObject *game_object, bool enable)
@@ -234,7 +234,7 @@ void CScriptGameObject::enable_memory_object	(CScriptGameObject *game_object, bo
 	if (!monster)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member enable_memory_object!");
 	else
-		monster->memory().enable			(&game_object->object(),enable);
+		monster->get_memory().enable			(&game_object->object(),enable);
 }
 
 const xr_vector<CNotYetVisibleObject> &CScriptGameObject::not_yet_visible_objects() const
@@ -244,7 +244,7 @@ const xr_vector<CNotYetVisibleObject> &CScriptGameObject::not_yet_visible_object
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member not_yet_visible_objects!");
 		NODEFAULT;
 	}
-	return					(monster->memory().visual().not_yet_visible_objects());
+	return					(monster->get_memory().visual().not_yet_visible_objects());
 }
 
 float CScriptGameObject::visibility_threshold	() const
@@ -254,7 +254,7 @@ float CScriptGameObject::visibility_threshold	() const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member visibility_threshold!");
 		NODEFAULT;
 	}
-	return					(monster->memory().visual().visibility_threshold());
+	return					(monster->get_memory().visual().visibility_threshold());
 }
 
 void CScriptGameObject::enable_vision			(bool value)
@@ -264,7 +264,7 @@ void CScriptGameObject::enable_vision			(bool value)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CVisualMemoryManager : cannot access class member enable_vision!");
 		return;
 	}
-	monster->memory().visual().enable		(value);
+	monster->get_memory().visual().enable		(value);
 }
 
 bool CScriptGameObject::vision_enabled			() const
@@ -274,7 +274,7 @@ bool CScriptGameObject::vision_enabled			() const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CVisualMemoryManager : cannot access class member vision_enabled!");
 		return								(false);
 	}
-	return									(monster->memory().visual().enabled());
+	return									(monster->get_memory().visual().enabled());
 }
 
 void CScriptGameObject::set_sound_threshold		(float value)
@@ -284,7 +284,7 @@ void CScriptGameObject::set_sound_threshold		(float value)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CSoundMemoryManager : cannot access class member set_sound_threshold!");
 		return;
 	}
-	monster->memory().sound().set_threshold		(value);
+	monster->get_memory().get_sound().set_threshold		(value);
 }
 
 void CScriptGameObject::restore_sound_threshold	()
@@ -294,7 +294,7 @@ void CScriptGameObject::restore_sound_threshold	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CSoundMemoryManager : cannot access class member restore_sound_threshold!");
 		return;
 	}
-	monster->memory().sound().restore_threshold	();
+	monster->get_memory().get_sound().restore_threshold	();
 }
 
 void CScriptGameObject::SetStartDialog(LPCSTR dialog_id)
@@ -358,7 +358,7 @@ void CScriptGameObject::set_ignore_monster_threshold	(float ignore_monster_thres
 		return;
 	}
 	clamp				(ignore_monster_threshold,0.f,1.f);
-	stalker->memory().enemy().ignore_monster_threshold	(ignore_monster_threshold);
+	stalker->get_memory().get_enemy().ignore_monster_threshold	(ignore_monster_threshold);
 }
 
 void CScriptGameObject::restore_ignore_monster_threshold	()
@@ -368,7 +368,7 @@ void CScriptGameObject::restore_ignore_monster_threshold	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member restore_ignore_monster_threshold!");
 		return;
 	}
-	stalker->memory().enemy().restore_ignore_monster_threshold	();
+	stalker->get_memory().get_enemy().restore_ignore_monster_threshold	();
 }
 
 float CScriptGameObject::ignore_monster_threshold		() const
@@ -378,7 +378,7 @@ float CScriptGameObject::ignore_monster_threshold		() const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member ignore_monster_threshold!");
 		return			(0.f);
 	}
-	return				(stalker->memory().enemy().ignore_monster_threshold());
+	return				(stalker->get_memory().get_enemy().ignore_monster_threshold());
 }
 
 void CScriptGameObject::set_max_ignore_monster_distance	(const float &max_ignore_monster_distance)
@@ -388,7 +388,7 @@ void CScriptGameObject::set_max_ignore_monster_distance	(const float &max_ignore
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member set_max_ignore_monster_distance!");
 		return;
 	}
-	stalker->memory().enemy().max_ignore_monster_distance	(max_ignore_monster_distance);
+	stalker->get_memory().get_enemy().max_ignore_monster_distance	(max_ignore_monster_distance);
 }
 
 void CScriptGameObject::restore_max_ignore_monster_distance	()
@@ -398,7 +398,7 @@ void CScriptGameObject::restore_max_ignore_monster_distance	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member restore_max_ignore_monster_distance!");
 		return;
 	}
-	stalker->memory().enemy().restore_max_ignore_monster_distance	();
+	stalker->get_memory().get_enemy().restore_max_ignore_monster_distance	();
 }
 
 float CScriptGameObject::max_ignore_monster_distance	() const
@@ -408,7 +408,7 @@ float CScriptGameObject::max_ignore_monster_distance	() const
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CAI_Stalker : cannot access class member max_ignore_monster_distance!");
 		return			(0.f);
 	}
-	return				(stalker->memory().enemy().max_ignore_monster_distance());
+	return				(stalker->get_memory().get_enemy().max_ignore_monster_distance());
 }
 
 CCar* CScriptGameObject::get_car	()
@@ -448,7 +448,7 @@ u32 CScriptGameObject::location_on_path				(float distance, Fvector *location)
 	}
 
 	VERIFY									(location);
-	return									(monster->movement().detail().location_on_path(monster,distance,*location));
+	return									(monster->get_movement().detail().location_on_path(monster,distance,*location));
 }
 
 void CScriptGameObject::RemoveMemorySoundObject(const MemorySpace::CSoundObject& memory_object)
@@ -457,7 +457,7 @@ void CScriptGameObject::RemoveMemorySoundObject(const MemorySpace::CSoundObject&
 	if (!stalker)
 		return;
 
-	stalker->memory().sound().remove(&memory_object);
+	stalker->get_memory().get_sound().remove(&memory_object);
 }
 
 void CScriptGameObject::RemoveMemoryHitObject(const MemorySpace::CHitObject& memory_object)
@@ -466,7 +466,7 @@ void CScriptGameObject::RemoveMemoryHitObject(const MemorySpace::CHitObject& mem
 	if (!stalker)
 		return;
 
-	stalker->memory().hit().remove(&memory_object);
+	stalker->get_memory().hit().remove(&memory_object);
 }
 
 void CScriptGameObject::RemoveMemoryVisibleObject(const MemorySpace::CVisibleObject& memory_object)
@@ -475,7 +475,7 @@ void CScriptGameObject::RemoveMemoryVisibleObject(const MemorySpace::CVisibleObj
 	if (!stalker)
 		return;
 
-	stalker->memory().visual().remove(&memory_object);
+	stalker->get_memory().visual().remove(&memory_object);
 }
 
 void CScriptGameObject::ResetBoneProtections(pcstr imm_sect, pcstr bone_sect)

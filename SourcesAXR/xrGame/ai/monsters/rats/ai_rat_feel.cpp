@@ -38,7 +38,7 @@ void CAI_Rat::feel_sound_new(CObject* who, int eType, CSound_UserDataPtr user_da
 			if ((eType & SOUND_TYPE_MONSTER_DYING) == SOUND_TYPE_MONSTER_DYING)
 				m_fMorale += m_fMoraleDeathQuant;
 			else
-				if (((eType & SOUND_TYPE_WEAPON_SHOOTING) == SOUND_TYPE_WEAPON_SHOOTING) && !memory().enemy().selected())
+				if (((eType & SOUND_TYPE_WEAPON_SHOOTING) == SOUND_TYPE_WEAPON_SHOOTING) && !get_memory().get_enemy().selected())
 					m_fMorale += m_fMoraleFearQuant;///fDistance;
 				else
 					if ((eType & SOUND_TYPE_MONSTER_ATTACKING) == SOUND_TYPE_MONSTER_ATTACKING)

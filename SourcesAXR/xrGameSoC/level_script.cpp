@@ -83,7 +83,7 @@ CScriptGameObject *get_object_by_name(LPCSTR caObjectName)
 }
 #endif
 
-CScriptGameObject *get_object_by_id(u32 id)
+CScriptGameObject *get_object_by_id(u16 id)
 {
 	CGameObject* pGameObject = smart_cast<CGameObject*>(Level().Objects.net_Find(id));
 	if(!pGameObject)
@@ -827,7 +827,7 @@ void g_send(NET_Packet& P, bool bReliable = false, bool bSequential = true, bool
 	Level().Send(P);
 }
 
-void create_custom_timer(LPCSTR name, int start_value, int mode = 0)
+void create_custom_timer(LPCSTR name, int start_value, ETimerMode mode = eTimerModeMilliseconds)
 {
 	if (!Actor()->TimerManager)
 	{
@@ -882,7 +882,7 @@ void delete_custom_timer(LPCSTR name)
 	Actor()->TimerManager->DeleteTimer(name);
 }
 
-int get_custom_timer(LPCSTR name)
+u64 get_custom_timer(LPCSTR name)
 {
 	if (!Actor()->TimerManager)
 	{
@@ -908,7 +908,7 @@ u32 vertex_count()
 	return ai().level_graph().header().vertex_count();
 }
 
-std::string get_moon_phase()
+LPCSTR get_moon_phase()
 {
 	return Level().GetMoonPhase().c_str();
 }

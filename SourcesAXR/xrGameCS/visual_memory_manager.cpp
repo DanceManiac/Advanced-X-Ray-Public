@@ -154,7 +154,7 @@ void CVisualMemoryManager::reload				(LPCSTR section)
 
 IC	const CVisionParameters &CVisualMemoryManager::current_state() const
 {
-	return				(!m_stalker || (m_stalker->movement().mental_state() != eMentalStateDanger) ? m_free : m_danger);
+	return				(!m_stalker || (m_stalker->get_movement().mental_state() != eMentalStateDanger) ? m_free : m_danger);
 }
 
 u32	CVisualMemoryManager::visible_object_time_last_seen	(const CObject *object) const
@@ -227,7 +227,7 @@ float CVisualMemoryManager::object_visible_distance(const CGameObject *game_obje
 		m_object->XFORM().transform_tiny(eye_position,temp);
 
 		if (m_stalker) {
-			eye_direction.setHP				(-m_stalker->movement().m_head.current.yaw, -m_stalker->movement().m_head.current.pitch);
+			eye_direction.setHP				(-m_stalker->get_movement().m_head.current.yaw, -m_stalker->get_movement().m_head.current.pitch);
 		} else { // if its a monster
 			const MonsterSpace::SBoneRotation &head_orient = m_object->head_orientation();
 			eye_direction.setHP				(-head_orient.current.yaw, -head_orient.current.pitch);
@@ -599,7 +599,7 @@ IC	squad_mask_type CVisualMemoryManager::mask			() const
 	if (!m_stalker)
 		return					(squad_mask_type(-1));
 
-	return						(m_stalker->agent_manager().member().mask(m_stalker));
+	return						(m_stalker->agent_manager().get_member().mask(m_stalker));
 }
 
 void CVisualMemoryManager::update				(float time_delta)
@@ -683,10 +683,10 @@ void CVisualMemoryManager::update				(float time_delta)
 
 #if 0//def DEBUG
 	if (m_stalker) {
-		CAgentMemberManager::MEMBER_STORAGE::const_iterator	I = m_stalker->agent_manager().member().members().begin();
-		CAgentMemberManager::MEMBER_STORAGE::const_iterator	E = m_stalker->agent_manager().member().members().end();
+		CAgentMemberManager::MEMBER_STORAGE::const_iterator	I = m_stalker->agent_manager().get_member().members().begin();
+		CAgentMemberManager::MEMBER_STORAGE::const_iterator	E = m_stalker->agent_manager().get_member().members().end();
 		for ( ; I != E; ++I)
-			(*I)->object().memory().visual().check_visibles();
+			(*I)->object().get_memory().visual().check_visibles();
 	}
 #endif
 
@@ -767,7 +767,7 @@ void CVisualMemoryManager::load	(IReader &packet)
 
 	typedef CClientSpawnManager::CALLBACK_TYPE	CALLBACK_TYPE;
 	CALLBACK_TYPE					callback;
-	callback.bind					(&m_object->memory(),&CMemoryManager::on_requested_spawn);
+	callback.bind					(&m_object->get_memory(),&CMemoryManager::on_requested_spawn);
 
 	int								count = packet.r_u8();
 	for (int i=0; i<count; ++i) {

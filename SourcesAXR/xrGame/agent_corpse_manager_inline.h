@@ -8,10 +8,10 @@
 
 #pragma once
 
-IC	CAgentCorpseManager::CAgentCorpseManager	(CAgentManager *object)
+IC	CAgentCorpseManager::CAgentCorpseManager	(CAgentManager *object_)
 {
-	VERIFY						(object);
-	m_object					= object;
+	VERIFY						(object_);
+	m_object					= object_;
 }
 
 IC	CAgentManager &CAgentCorpseManager::object	() const

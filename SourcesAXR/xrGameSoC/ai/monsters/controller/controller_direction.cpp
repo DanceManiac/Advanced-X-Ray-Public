@@ -58,7 +58,7 @@ void CControllerDirection::update_head_orientation()
 	float yaw = x_spine.cur_yaw + x_head.cur_yaw;
 
 	// установить параметры вращения по yaw
-	m_head_orient.current.yaw	= m_man->direction().get_heading_current() + yaw;
+	m_head_orient.current.yaw	= m_man->get_direction().get_heading_current() + yaw;
 }
 
 void CControllerDirection::update_schedule()
@@ -81,7 +81,7 @@ void CControllerDirection::head_look_point(const Fvector &look_point)
 	float bone_angle_torso;
 
 	// установить параметры вращения по heading
-	float cur_yaw		= m_man->direction().get_heading_current();
+	float cur_yaw		= m_man->get_direction().get_heading_current();
 	float dy			= _abs(angle_normalize_signed(dir_yaw - cur_yaw));		// дельта, на которую нужно поворачиваться
 
 	bone_angle_head		= _pmt_head_bone_limit	/ (_pmt_head_bone_limit + _pmt_torso_bone_limit) * dy;

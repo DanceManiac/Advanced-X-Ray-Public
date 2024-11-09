@@ -47,8 +47,8 @@ void CControlDirection::update_frame()
 
 	// поправка угловой скорости в соответствии с текущей и таргетовой линейной скоростями
 	// heading speed correction
-	if (!fis_zero(m_man->movement().velocity_current()) && !fis_zero(m_man->movement().velocity_target()) && m_data.linear_dependency)
-		m_heading.current_speed	= m_data.heading.target_speed * m_man->movement().velocity_current() / (m_man->movement().velocity_target() + EPS_L);
+	if (!fis_zero(m_man->get_movement().velocity_current()) && !fis_zero(m_man->get_movement().velocity_target()) && m_data.linear_dependency)
+		m_heading.current_speed	= m_data.heading.target_speed * m_man->get_movement().velocity_current() / (m_man->get_movement().velocity_target() + EPS_L);
 	else 
 		velocity_lerp			(m_heading.current_speed, m_data.heading.target_speed, m_heading.current_acc, m_object->client_update_fdelta());
 
@@ -100,10 +100,10 @@ void CControlDirection::pitch_correction()
 	// extended feature to pitch by path (wall climbing)
 	// distance between two travel point must be more than 1.f
 	if (m_object->control().path_builder().is_moving_on_path() && 
-		(m_object->movement().detail().path().size() > m_object->movement().detail().curr_travel_point_index() + 1)) {
+		(m_object->get_movement().detail().path().size() > m_object->get_movement().detail().curr_travel_point_index() + 1)) {
 		
-		const DetailPathManager::STravelPathPoint	cur_point	= m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index()];
-		const DetailPathManager::STravelPathPoint	next_point	= m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index()+1];
+		const DetailPathManager::STravelPathPoint	cur_point	= m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index()];
+		const DetailPathManager::STravelPathPoint	next_point	= m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index()+1];
 		
 		if (cur_point.position.distance_to_sqr(next_point.position) > 1) {
 			// получаем искомый вектор направления

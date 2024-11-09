@@ -253,7 +253,7 @@ void CParticlesPlayer::UpdateParticles()
 			Fmatrix xform;
 			xform.setHPB(p_info.angles.x,p_info.angles.y,p_info.angles.z);
 			GetBonePos(object,b_info.index,b_info.offset,xform.c);
-			p_info.ps->UpdateParent(xform, parent_vel);
+			p_info.ps->UpdateParent(xform, m_parent_vel);
 
 			//обновить время существования
 			if(p_info.life_time!=u32(-1))

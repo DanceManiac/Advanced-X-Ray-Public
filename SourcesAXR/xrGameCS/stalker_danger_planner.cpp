@@ -52,10 +52,10 @@ void CStalkerDangerPlanner::finalize			()
 	if (!object().g_Alive())
 		return;
 
-	if (object().memory().enemy().selected())
-		object().memory().danger().time_line	(Device.dwTimeGlobal);
+	if (object().get_memory().get_enemy().selected())
+		object().get_memory().danger().time_line	(Device.dwTimeGlobal);
 
-//	object().sound().remove_active_sounds		(u32(-1));
+//	object().get_sound().remove_active_sounds		(u32(-1));
 }
 
 void CStalkerDangerPlanner::update			()
@@ -68,8 +68,8 @@ void CStalkerDangerPlanner::update			()
 void CStalkerDangerPlanner::initialize		()
 {
 	inherited::initialize						();
-	object().sound().remove_active_sounds		(u32(eStalkerSoundMaskNoHumming));
-	object().agent_manager().member().member(m_object).cover(0);
+	object().get_sound().remove_active_sounds		(u32(eStalkerSoundMaskNoHumming));
+	object().agent_manager().get_member().member(m_object).cover(0);
 }
 
 void CStalkerDangerPlanner::add_evaluators		()

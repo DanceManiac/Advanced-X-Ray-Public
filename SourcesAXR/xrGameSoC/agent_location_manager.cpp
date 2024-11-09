@@ -68,8 +68,8 @@ IC	CAgentLocationManager::CDangerLocationPtr CAgentLocationManager::location	(co
 
 bool CAgentLocationManager::suitable	(CAI_Stalker *object, const CCoverPoint *location, bool use_enemy_info) const
 {
-	CAgentMemberManager::const_iterator	I = this->object().member().members().begin();
-	CAgentMemberManager::const_iterator	E = this->object().member().members().end();
+	CAgentMemberManager::const_iterator	I = this->object().get_member().members().begin();
+	CAgentMemberManager::const_iterator	E = this->object().get_member().members().end();
 	for ( ; I != E; ++I) {
 		if ((*I)->object().ID() == object->ID())
 			continue;
@@ -90,8 +90,8 @@ bool CAgentLocationManager::suitable	(CAI_Stalker *object, const CCoverPoint *lo
 	}
 
 	if (use_enemy_info) {
-		CAgentEnemyManager::ENEMIES::const_iterator	I_ = this->object().enemy().enemies().begin();
-		CAgentEnemyManager::ENEMIES::const_iterator	E_ = this->object().enemy().enemies().end();
+		CAgentEnemyManager::ENEMIES::const_iterator	I_ = this->object().get_enemy().enemies().begin();
+		CAgentEnemyManager::ENEMIES::const_iterator	E_ = this->object().get_enemy().enemies().end();
 		for ( ; I_ != E_; ++I_)
 			if ((*I_).m_enemy_position.distance_to_sqr(location->position()) < _sqr(MIN_SUITABLE_ENEMY_DISTANCE))
 				return				(false);
@@ -102,13 +102,13 @@ bool CAgentLocationManager::suitable	(CAI_Stalker *object, const CCoverPoint *lo
 
 void CAgentLocationManager::make_suitable	(CAI_Stalker *object, const CCoverPoint *location) const
 {
-	this->object().member().member(object).cover(location);
+	this->object().get_member().member(object).cover(location);
 
 	if (!location)
 		return;
 
-	CAgentMemberManager::const_iterator	I = this->object().member().members().begin();
-	CAgentMemberManager::const_iterator	E = this->object().member().members().end();
+	CAgentMemberManager::const_iterator	I = this->object().get_member().members().begin();
+	CAgentMemberManager::const_iterator	E = this->object().get_member().members().end();
 	for ( ; I != E; ++I) {
 		if ((*I)->object().ID() == object->ID())
 			continue;
@@ -128,10 +128,10 @@ void CAgentLocationManager::make_suitable	(CAI_Stalker *object, const CCoverPoin
 void CAgentLocationManager::add	(CDangerLocationPtr location)
 {
 	typedef CAgentMemberManager::MEMBER_STORAGE MEMBER_STORAGE;
-	MEMBER_STORAGE::iterator		I = object().member().members().begin();
-	MEMBER_STORAGE::iterator		E = object().member().members().end();
+	MEMBER_STORAGE::iterator		I = object().get_member().members().begin();
+	MEMBER_STORAGE::iterator		E = object().get_member().members().end();
 	for ( ; I != E; ++I) {
-		if	(!location->mask().test(object().member().mask(&(*I)->object())))
+		if	(!location->mask().test(object().get_member().mask(&(*I)->object())))
 			continue;
 
 		(*I)->object().on_danger_location_add	(*location);
@@ -159,7 +159,7 @@ void CAgentLocationManager::remove_old_danger_covers	()
 			m_danger_locations.begin(),
 			m_danger_locations.end(),
 			CRemoveOldDangerCover(
-				&object().member()
+				&object().get_member()
 			)
 		),
 		m_danger_locations.end()
@@ -169,7 +169,7 @@ void CAgentLocationManager::remove_old_danger_covers	()
 float CAgentLocationManager::danger		(const CCoverPoint *cover, CAI_Stalker *member) const
 {
 	float						result = 1;
-	squad_mask_type				mask = object().member().mask(member);
+	squad_mask_type				mask = object().get_member().mask(member);
 	LOCATIONS::const_iterator	I = m_danger_locations.begin();
 	LOCATIONS::const_iterator	E = m_danger_locations.end();
 	for ( ; I != E; ++I) {

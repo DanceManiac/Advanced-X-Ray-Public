@@ -83,7 +83,7 @@
 //
 //	// проверка на angle и на dist
 //	float yaw_current, yaw_target;
-//	m_object->control().direction().get_heading(yaw_current, yaw_target);
+//	m_object->control().get_direction().get_heading(yaw_current, yaw_target);
 //	if (angle_difference(yaw_current, -dir_yaw) < PI_DIV_6) {
 //		try_jump_normal();
 //		return;
@@ -109,7 +109,7 @@
 //
 //	// получить вектор направления и его мир угол
 //	//// проверка на angle и на dist
-//	//if (angle_difference(m_object->movement().m_body.current.yaw, -yaw) < PI_DIV_2) {
+//	//if (angle_difference(m_object->get_movement().m_body.current.yaw, -yaw) < PI_DIV_2) {
 //	//	return;
 //	//}
 //	

@@ -55,8 +55,8 @@ void CBurer::reload(LPCSTR section)
 	inherited::reload	(section);
 
 	// add specific sounds
-	sound().add			(pSettings->r_string(section,"sound_gravi_attack"),	DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING,	MonsterSound::eHighPriority + 2,	u32(MonsterSound::eBaseChannel),	eMonsterSoundGraviAttack, "bip01_head");
-	sound().add			(pSettings->r_string(section,"sound_tele_attack"),	DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING,	MonsterSound::eHighPriority + 3,	u32(MonsterSound::eBaseChannel),	eMonsterSoundTeleAttack, "bip01_head");
+	get_sound().add			(pSettings->r_string(section,"sound_gravi_attack"),	DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING,	MonsterSound::eHighPriority + 2,	u32(MonsterSound::eBaseChannel),	eMonsterSoundGraviAttack, "bip01_head");
+	get_sound().add			(pSettings->r_string(section,"sound_tele_attack"),	DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING,	MonsterSound::eHighPriority + 3,	u32(MonsterSound::eBaseChannel),	eMonsterSoundTeleAttack, "bip01_head");
 
 	// add triple animations
 	com_man().ta_fill_data(anim_triple_gravi,	"stand_gravi_0",	"stand_gravi_1",	"stand_gravi_2",	TA_EXECUTE_ONCE, TA_DONT_SKIP_PREPARE, ControlCom::eCapturePath | ControlCom::eCaptureMovement);

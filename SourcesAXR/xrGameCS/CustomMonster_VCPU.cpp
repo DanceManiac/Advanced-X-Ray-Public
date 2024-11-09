@@ -32,14 +32,14 @@ void CCustomMonster::Exec_Look		( float dt )
 	if (animation_movement_controlled())
 		return;
 
-	movement().m_body.current.yaw	= angle_normalize_signed	(movement().m_body.current.yaw);
-	movement().m_body.current.pitch	= angle_normalize_signed	(movement().m_body.current.pitch);
-	movement().m_body.target.yaw	= angle_normalize_signed	(movement().m_body.target.yaw);
-	movement().m_body.target.pitch	= angle_normalize_signed	(movement().m_body.target.pitch);
+	get_movement().m_body.current.yaw	= angle_normalize_signed	(get_movement().m_body.current.yaw);
+	get_movement().m_body.current.pitch	= angle_normalize_signed	(get_movement().m_body.current.pitch);
+	get_movement().m_body.target.yaw	= angle_normalize_signed	(get_movement().m_body.target.yaw);
+	get_movement().m_body.target.pitch	= angle_normalize_signed	(get_movement().m_body.target.pitch);
 	
-	float pitch_speed				= get_custom_pitch_speed(movement().m_body.speed);
-	angle_lerp_bounds				(movement().m_body.current.yaw,movement().m_body.target.yaw,movement().m_body.speed,dt);
-	angle_lerp_bounds				(movement().m_body.current.pitch,movement().m_body.target.pitch,pitch_speed,dt);
+	float pitch_speed				= get_custom_pitch_speed(get_movement().m_body.speed);
+	angle_lerp_bounds				(get_movement().m_body.current.yaw, get_movement().m_body.target.yaw, get_movement().m_body.speed,dt);
+	angle_lerp_bounds				(get_movement().m_body.current.pitch, get_movement().m_body.target.pitch,pitch_speed,dt);
 
 	Fvector P						= Position();
 	XFORM().setHPB					(-NET_Last.o_model,-NET_Last.o_torso.pitch,0);

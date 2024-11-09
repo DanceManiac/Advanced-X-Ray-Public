@@ -6,7 +6,7 @@ class CBaseMonster;
 class CMonsterEnemyManager {
 	CBaseMonster		*monster;
 
-	const CEntityAlive	*enemy;
+	const CEntityAlive	*m_enemy;
 	Fvector				position;
 	u32					vertex;
 	u32					time_last_seen;
@@ -42,7 +42,7 @@ public:
 	void				force_enemy					(const CEntityAlive *enemy);
 	void				unforce_enemy				();
 
-	const CEntityAlive *get_enemy					() {return enemy;}
+	const CEntityAlive *get_enemy					() {return m_enemy;}
 	EDangerType			get_danger_type				() {return danger_type;}
 	const Fvector		&get_enemy_position			() {return position;}
 	u32					get_enemy_vertex			() {return vertex;}

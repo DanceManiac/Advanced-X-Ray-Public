@@ -766,7 +766,7 @@ private:
 
 public:
 			void				SetActorVisibility				(u16 who, float value);
-	IC		CActorMemory		&memory							() const {VERIFY(m_memory); return(*m_memory); };
+	IC		CActorMemory		&get_memory							() const {VERIFY(m_memory); return(*m_memory); };
 
 	void						OnDifficultyChanged				();
 

@@ -13,19 +13,19 @@ IC	BOOL CAI_Stalker::UsedAI_Locations							()
 	return					(TRUE);
 }
 
-IC	CStalkerAnimationManager &CAI_Stalker::animation			() const
+IC	CStalkerAnimationManager &CAI_Stalker::get_animation			() const
 {
 	VERIFY					(m_animation_manager);
 	return					(*m_animation_manager);
 }
 
-IC	CStalkerPlanner &CAI_Stalker::brain			() const
+IC	CStalkerPlanner &CAI_Stalker::get_brain			() const
 {
 	VERIFY					(m_brain);
 	return					(*m_brain);
 }
 
-IC	CSightManager &CAI_Stalker::sight							() const
+IC	CSightManager &CAI_Stalker::get_sight							() const
 {
 	VERIFY					(m_sight_manager);
 	return					(*m_sight_manager);
@@ -36,7 +36,7 @@ IC	LPCSTR CAI_Stalker::Name									() const
 	return					(CInventoryOwner::Name());
 }
 
-IC	stalker_movement_manager_smart_cover	&CAI_Stalker::movement				() const
+IC	stalker_movement_manager_smart_cover	&CAI_Stalker::get_movement				() const
 {
 	VERIFY					(m_movement_manager);
 	return					(*m_movement_manager);

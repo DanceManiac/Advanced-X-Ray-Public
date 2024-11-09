@@ -195,7 +195,7 @@ void CBaseGraviZone::AffectPullAlife(CEntityAlive* EA,const Fvector& throw_in_di
 	Fvector vel;
 	vel.set(throw_in_dir);
 	vel.mul(throw_power);
-	EA->character_physics_support()->movement()->AddControlVel(vel);
+	EA->character_physics_support()->get_movement()->AddControlVel(vel);
 }
 
 void CBaseGraviZone::AffectPullDead(CPhysicsShellHolder* GO,const Fvector& throw_in_dir,float dist)

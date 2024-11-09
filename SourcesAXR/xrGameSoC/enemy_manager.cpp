@@ -95,9 +95,9 @@ float CEnemyManager::evaluate				(const CEntityAlive *object) const
 		m_ready_to_save		= false;
 
 	const CAI_Stalker		*stalker = smart_cast<const CAI_Stalker*>(object);
-	bool					wounded = stalker ? stalker->wounded(&m_object->movement().restrictions()) : false;
+	bool					wounded = stalker ? stalker->wounded(&m_object->get_movement().restrictions()) : false;
 	if (wounded) {
-		if (m_stalker && m_stalker->agent_manager().enemy().assigned_wounded(object,m_stalker))
+		if (m_stalker && m_stalker->agent_manager().get_enemy().assigned_wounded(object,m_stalker))
 			return			(0.f);
 
 		float				distance = m_object->Position().distance_to_sqr(object->Position());
@@ -107,7 +107,7 @@ float CEnemyManager::evaluate				(const CEntityAlive *object) const
 	float					penalty = 10000.f;
 
 	// if we are hit
-	if (object->ID() == m_object->memory().hit().last_hit_object_id()) {
+	if (object->ID() == m_object->get_memory().hit().last_hit_object_id()) {
 		if (actor)
 			penalty			-= 1500.f;
 		else
@@ -115,26 +115,26 @@ float CEnemyManager::evaluate				(const CEntityAlive *object) const
 	}
 
 	// if we see object
-	if (m_object->memory().visual().visible_now(object))
+	if (m_object->get_memory().visual().visible_now(object))
 		penalty				-= 1000.f;
 
 	// if object is actor and he/she sees us
 //	if (actor) {
-//		if (smart_cast<const CActor*>(object)->memory().visual().visible_now(m_object))
+//		if (smart_cast<const CActor*>(object)->get_memory().visual().visible_now(m_object))
 //			penalty			-= 900.f;
 //	}
 //	else {
 //		// if object is npc and it sees us
 //		const CCustomMonster	*monster = smart_cast<const CCustomMonster*>(object);
-//		if (monster && monster->memory().visual().visible_now(m_object))
+//		if (monster && monster->get_memory().visual().visible_now(m_object))
 //			penalty			-= 300.f;
 //	}
 
 #ifdef USE_EVALUATOR
 	ai().ef_storage().non_alife().member_item()	= 0;
 	ai().ef_storage().non_alife().enemy_item()	= 0;
-	ai().ef_storage().non_alife().member()		= m_object;
-	ai().ef_storage().non_alife().enemy()		= object;
+	ai().ef_storage().non_alife().get_member()		= m_object;
+	ai().ef_storage().non_alife().get_enemy()		= object;
 
 	float					distance = m_object->Position().distance_to_sqr(object->Position());
 	return					(
@@ -153,14 +153,14 @@ float CEnemyManager::evaluate				(const CEntityAlive *object) const
 
 bool CEnemyManager::expedient				(const CEntityAlive *object) const
 {
-	ai().ef_storage().non_alife().member()	= m_object;
-	VERIFY									(ai().ef_storage().non_alife().member());
-	ai().ef_storage().non_alife().enemy()	= object;
+	ai().ef_storage().non_alife().get_member()	= m_object;
+	VERIFY									(ai().ef_storage().non_alife().get_member());
+	ai().ef_storage().non_alife().get_enemy()	= object;
 
 	if (ai().ef_storage().m_pfExpediency->dwfGetDiscreteValue())
 		return				(true);
 
-	if (m_object->memory().hit().hit(ai().ef_storage().non_alife().enemy()))
+	if (m_object->get_memory().hit().hit(ai().ef_storage().non_alife().get_enemy()))
 		return				(true);
 	return					(false);
 }
@@ -281,7 +281,7 @@ void CEnemyManager::on_enemy_change						(const CEntityAlive *previous_enemy)
 		return;
 	}
 
-	if (!m_object->memory().visual().visible_now(previous_enemy) && m_object->memory().visual().visible_now(selected())) {
+	if (!m_object->get_memory().visual().visible_now(previous_enemy) && m_object->get_memory().visual().visible_now(selected())) {
 		m_last_enemy_change		= Device.dwTimeGlobal;
 		return;
 	}
@@ -348,7 +348,7 @@ bool CEnemyManager::need_update				(const bool &only_wounded) const
 	if (!selected()->g_Alive())
 		return					(true);
 
-	if (enable_enemy_change() && !m_object->memory().visual().visible_now(selected()))
+	if (enable_enemy_change() && !m_object->get_memory().visual().visible_now(selected()))
 		return					(true);
 
 	if (only_wounded)

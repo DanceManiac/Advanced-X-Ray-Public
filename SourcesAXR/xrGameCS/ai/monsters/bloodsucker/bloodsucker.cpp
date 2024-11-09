@@ -210,7 +210,7 @@ void CAI_Bloodsucker::Load(LPCSTR section)
 	
 	// load other misc stuff
 	invisible_vel.set				(pSettings->r_float(section,"Velocity_Invisible_Linear"),pSettings->r_float(section,"Velocity_Invisible_Angular"));
-	movement().detail().add_velocity(MonsterMovement::eVelocityParameterInvisible,CDetailPathManager::STravelParams(invisible_vel.linear, invisible_vel.angular));
+	get_movement().detail().add_velocity(MonsterMovement::eVelocityParameterInvisible,CDetailPathManager::STravelParams(invisible_vel.linear, invisible_vel.angular));
 
 	LoadVampirePPEffector			(pSettings->r_string(section,"vampire_effector"));
 	m_vampire_min_delay				= pSettings->r_u32(section,"Vampire_Delay");
@@ -276,13 +276,13 @@ void CAI_Bloodsucker::reload(LPCSTR section)
 {
 	inherited::reload(section);
 
-	sound().add(pSettings->r_string(section,"Sound_Vampire_Grasp"),				DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 4,	MonsterSound::eBaseChannel,	eVampireGrasp,					"bip01_head");
-	sound().add(pSettings->r_string(section,"Sound_Vampire_Sucking"),			DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 3,	MonsterSound::eBaseChannel,	eVampireSucking,				"bip01_head");
-	sound().add(pSettings->r_string(section,"Sound_Vampire_Hit"),				DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 2,	MonsterSound::eBaseChannel,	eVampireHit,					"bip01_head");
-	sound().add(pSettings->r_string(section,"Sound_Vampire_StartHunt"),			DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 5,	MonsterSound::eBaseChannel,	eVampireStartHunt,				"bip01_head");
-	sound().add(pSettings->r_string(section,"Sound_Invisibility_Change_State"),	DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eNormalPriority,	MonsterSound::eChannelIndependent << 1,	eChangeVisibility,	"bip01_head");
-	sound().add(pSettings->r_string(section,"Sound_Growl"),						DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 6,	MonsterSound::eBaseChannel,	eGrowl,							"bip01_head");
-	sound().add(pSettings->r_string(section,"Sound_Alien"),						DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eCriticalPriority,	u32(MonsterSound::eCaptureAllChannels),	eAlien,				"bip01_head");
+	get_sound().add(pSettings->r_string(section,"Sound_Vampire_Grasp"),				DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 4,	MonsterSound::eBaseChannel,	eVampireGrasp,					"bip01_head");
+	get_sound().add(pSettings->r_string(section,"Sound_Vampire_Sucking"),			DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 3,	MonsterSound::eBaseChannel,	eVampireSucking,				"bip01_head");
+	get_sound().add(pSettings->r_string(section,"Sound_Vampire_Hit"),				DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 2,	MonsterSound::eBaseChannel,	eVampireHit,					"bip01_head");
+	get_sound().add(pSettings->r_string(section,"Sound_Vampire_StartHunt"),			DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 5,	MonsterSound::eBaseChannel,	eVampireStartHunt,				"bip01_head");
+	get_sound().add(pSettings->r_string(section,"Sound_Invisibility_Change_State"),	DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eNormalPriority,	MonsterSound::eChannelIndependent << 1,	eChangeVisibility,	"bip01_head");
+	get_sound().add(pSettings->r_string(section,"Sound_Growl"),						DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eHighPriority + 6,	MonsterSound::eBaseChannel,	eGrowl,							"bip01_head");
+	get_sound().add(pSettings->r_string(section,"Sound_Alien"),						DEFAULT_SAMPLE_COUNT,	SOUND_TYPE_MONSTER_ATTACKING, MonsterSound::eCriticalPriority,	u32(MonsterSound::eCaptureAllChannels),	eAlien,				"bip01_head");
 }
 
 void CAI_Bloodsucker::LoadVampirePPEffector(LPCSTR section)
@@ -336,7 +336,7 @@ void CAI_Bloodsucker::LookDirection(Fvector to_dir, float bone_turn_speed)
 	//to_dir.getHP(yaw,pitch);
 
 	//// установить параметры вращения по yaw
-	//float cur_yaw = -movement().m_body.current.yaw;						// текущий мировой угол монстра
+	//float cur_yaw = -get_movement().m_body.current.yaw;						// текущий мировой угол монстра
 	//float bone_angle;											// угол для боны	
 
 	//float dy = _abs(angle_normalize_signed(yaw - cur_yaw));		// дельта, на которую нужно поворачиваться
@@ -344,7 +344,7 @@ void CAI_Bloodsucker::LookDirection(Fvector to_dir, float bone_turn_speed)
 	//if (angle_difference(cur_yaw,yaw) <= MAX_BONE_ANGLE) {		// bone turn only
 	//	bone_angle = dy;
 	//} else {													// torso & bone turn 
-	//	if (movement().IsMoveAlongPathFinished() || !movement().enabled()) movement().m_body.target.yaw = angle_normalize(-yaw);
+	//	if (get_movement().IsMoveAlongPathFinished() || !get_movement().enabled()) get_movement().m_body.target.yaw = angle_normalize(-yaw);
 	//	if (dy / 2 < MAX_BONE_ANGLE) bone_angle = dy / 2;
 	//	else bone_angle = MAX_BONE_ANGLE;
 	//}
@@ -438,7 +438,7 @@ void CAI_Bloodsucker::UpdateCL()
 {
 	inherited::UpdateCL				();
 	CControlledActor::frame_update	();
-	character_physics_support()->movement()->CollisionEnable(!is_collision_off());
+	character_physics_support()->get_movement()->CollisionEnable(!is_collision_off());
 
 	if (g_Alive())
 	{
@@ -463,7 +463,7 @@ void CAI_Bloodsucker::shedule_Update(u32 dt)
 		}
 	}
 
-	if (m_alien_control.active())	sound().play(eAlien);
+	if (m_alien_control.active())	get_sound().play(eAlien);
 }
 
 void CAI_Bloodsucker::Die(CObject* who)
@@ -535,7 +535,7 @@ bool CAI_Bloodsucker::is_collision_off()
 void CAI_Bloodsucker::jump(const Fvector &position, float factor)
 {
 	com_man().script_jump	(position, factor);
-	sound().play			(MonsterSound::eMonsterSoundAggressive);
+	get_sound().play			(MonsterSound::eMonsterSoundAggressive);
 }
 
 void CAI_Bloodsucker::set_drag_jump(CEntityAlive* e, LPCSTR s, const Fvector &position, float factor)
@@ -588,10 +588,10 @@ void CAI_Bloodsucker::predator_start()
 	cNameVisual_set(m_visual_predator);
 	CDamageManager::reload(*cNameSect(),"damage",pSettings);
 
-	control().animation().restart	();
+	control().get_animation().restart	();
 	
 	CParticlesPlayer::StartParticles(invisible_particle_name,Fvector().set(0.0f,0.1f,0.0f),ID());		
-	sound().play					(CAI_Bloodsucker::eChangeVisibility);
+	get_sound().play					(CAI_Bloodsucker::eChangeVisibility);
 
 	m_predator						= true;
 	//state_invisible				= false;
@@ -619,21 +619,21 @@ void CAI_Bloodsucker::predator_stop()
 
 	CDamageManager::reload(*cNameSect(),"damage",pSettings);
 
-	control().animation().restart	();
+	control().get_animation().restart	();
 	
 	CParticlesPlayer::StartParticles(invisible_particle_name,Fvector().set(0.0f,0.1f,0.0f),ID());		
-	sound().play					(CAI_Bloodsucker::eChangeVisibility);
+	get_sound().play					(CAI_Bloodsucker::eChangeVisibility);
 	m_predator						= false;
 }
 
 void CAI_Bloodsucker::predator_freeze()
 {
-	control().animation().freeze	();
+	control().get_animation().freeze	();
 }
 
 void CAI_Bloodsucker::predator_unfreeze()
 {
-	control().animation().unfreeze();
+	control().get_animation().unfreeze();
 }
 
 void CAI_Bloodsucker::move_actor_cam (float angle)

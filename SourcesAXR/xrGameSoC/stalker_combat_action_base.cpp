@@ -33,7 +33,7 @@ CStalkerActionCombatBase::CStalkerActionCombatBase	(CAI_Stalker *object, LPCSTR 
 void CStalkerActionCombatBase::initialize			()
 {
 	inherited::initialize		();
-	object().sound().remove_active_sounds	(u32(eStalkerSoundMaskNoHumming));
+	object().get_sound().remove_active_sounds	(u32(eStalkerSoundMaskNoHumming));
 }
 
 void CStalkerActionCombatBase::finalize				()
@@ -43,7 +43,7 @@ void CStalkerActionCombatBase::finalize				()
 	if (!object().g_Alive())
 		return;
 
-	object().sound().set_sound_mask	(0);
+	object().get_sound().set_sound_mask	(0);
 }
 
 bool CStalkerActionCombatBase::fire_make_sense		() const
@@ -53,12 +53,12 @@ bool CStalkerActionCombatBase::fire_make_sense		() const
 
 void CStalkerActionCombatBase::fire					()
 {
-	Fvector								enemy_position = object().memory().enemy().selected()->Position();
+	Fvector								enemy_position = object().get_memory().get_enemy().selected()->Position();
 	Fvector								object_position = object().Position();
 	Fvector								direction = Fvector().sub(enemy_position,object_position);
 	float								yaw,pitch;
 	direction.getHP						(yaw,pitch);
-	const MonsterSpace::SBoneRotation	&current_angles = object().movement().head_orientation();
+	const MonsterSpace::SBoneRotation	&current_angles = object().get_movement().head_orientation();
 	if (angle_difference(-yaw,current_angles.current.yaw) > start_fire_angle_difference) {
 		aim_ready						();
 		return;
@@ -73,7 +73,7 @@ void CStalkerActionCombatBase::fire					()
 void CStalkerActionCombatBase::aim_ready			()
 {
 	u32									min_queue_size, max_queue_size, min_queue_interval, max_queue_interval;
-	float								distance = object().memory().enemy().selected()->Position().distance_to(object().Position());
+	float								distance = object().get_memory().get_enemy().selected()->Position().distance_to(object().Position());
 	select_queue_params					(distance,min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
 	object().CObjectHandler::set_goal	(eObjectActionAimReady1,object().best_weapon(),min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
 }
@@ -81,7 +81,7 @@ void CStalkerActionCombatBase::aim_ready			()
 void CStalkerActionCombatBase::aim_ready_force_full	()
 {
 	u32									min_queue_size, max_queue_size, min_queue_interval, max_queue_interval;
-	float								distance = object().memory().enemy().selected()->Position().distance_to(object().Position());
+	float								distance = object().get_memory().get_enemy().selected()->Position().distance_to(object().Position());
 	select_queue_params					(distance,min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
 	object().CObjectHandler::set_goal	(eObjectActionAimForceFull1,object().best_weapon(),min_queue_size, max_queue_size, min_queue_interval, max_queue_interval);
 }
@@ -213,8 +213,8 @@ void CStalkerActionCombatBase::select_queue_params	(const float &distance, u32 &
 
 void CStalkerActionCombatBase::play_panic_sound		(u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
 {
-	object().sound().play	(
-		object().memory().enemy().selected()->human_being() ?
+	object().get_sound().play	(
+		object().get_memory().get_enemy().selected()->human_being() ?
 		eStalkerSoundPanicHuman :
 		eStalkerSoundPanicMonster,
 		max_start_time,
@@ -227,15 +227,15 @@ void CStalkerActionCombatBase::play_panic_sound		(u32 max_start_time, u32 min_st
 
 void CStalkerActionCombatBase::play_attack_sound	(u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
 {
-	if (!object().memory().enemy().selected()->human_being())
+	if (!object().get_memory().get_enemy().selected()->human_being())
 		return;
 
-	if (!object().agent_manager().member().can_cry_noninfo_phrase())
+	if (!object().agent_manager().get_member().can_cry_noninfo_phrase())
 		return;
 
 	u32						sound_type = eStalkerSoundAttackNoAllies;
 #ifdef DEBUG
-	if (object().agent_manager().member().combat_members().empty())
+	if (object().agent_manager().get_member().combat_members().empty())
 		Msg					(
 			"! I am in combat, but there is no combat members at all (including me), npc[%s],team[%d],squad[%d],group[%d]",
 			*object().cName(),
@@ -245,8 +245,8 @@ void CStalkerActionCombatBase::play_attack_sound	(u32 max_start_time, u32 min_st
 		);
 #endif // DEBUG
 
-	if (object().agent_manager().member().combat_members().size() > 1) {
-		if (object().agent_manager().enemy().enemies().size() > 1)
+	if (object().agent_manager().get_member().combat_members().size() > 1) {
+		if (object().agent_manager().get_enemy().enemies().size() > 1)
 			sound_type		= eStalkerSoundAttackAlliesSeveralEnemies;
 		else
 			sound_type		= eStalkerSoundAttackAlliesSingleEnemy;
@@ -254,7 +254,7 @@ void CStalkerActionCombatBase::play_attack_sound	(u32 max_start_time, u32 min_st
 	else
 		sound_type			= eStalkerSoundAttackNoAllies;
 
-	object().sound().play	(
+	object().get_sound().play	(
 		sound_type,
 		max_start_time,
 		min_start_time,
@@ -266,11 +266,11 @@ void CStalkerActionCombatBase::play_attack_sound	(u32 max_start_time, u32 min_st
 
 void CStalkerActionCombatBase::play_start_search_sound	(u32 max_start_time, u32 min_start_time, u32 max_stop_time, u32 min_stop_time, u32 id)
 {
-	if (!object().agent_manager().member().can_cry_noninfo_phrase())
+	if (!object().agent_manager().get_member().can_cry_noninfo_phrase())
 		return;
 
 #ifdef DEBUG
-	if (object().agent_manager().member().combat_members().empty())
+	if (object().agent_manager().get_member().combat_members().empty())
 		Msg					("! I am in combat, but there is no combat members at all (including me), npc[%s],team[%d],squad[%d],group[%d]",
 			*object().cName(),
 			object().g_Team(),
@@ -279,9 +279,9 @@ void CStalkerActionCombatBase::play_start_search_sound	(u32 max_start_time, u32 
 		);
 #endif // DEBUG
 
-	bool					search_with_allies = object().agent_manager().member().combat_members().size() > 1;
+	bool					search_with_allies = object().agent_manager().get_member().combat_members().size() > 1;
 
-	object().sound().play	(
+	object().get_sound().play	(
 		search_with_allies ?
 		eStalkerSoundSearch1WithAllies :
 		eStalkerSoundSearch1NoAllies,

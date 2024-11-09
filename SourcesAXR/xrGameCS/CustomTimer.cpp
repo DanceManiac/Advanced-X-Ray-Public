@@ -37,7 +37,7 @@ void CCustomTimer::StartCustomTimer()
 	m_iStartTime = ai().alife().time_manager().game_time();
 
 #ifdef DEBUG
-	Msg("Custom Timer: %s : Started", m_sTimerName);
+	Msg("Custom Timer: %s : Started", m_sTimerName.c_str());
 #endif
 }
 
@@ -46,7 +46,7 @@ void CCustomTimer::StopCustomTimer()
 	m_bIsActive = false;
 
 #ifdef DEBUG
-	Msg("Custom Timer: %s : Stopped (timer value: %d)", m_sTimerName, m_iTimerCurValue);
+	Msg("Custom Timer: %s : Stopped (timer value: %d)", m_sTimerName.c_str(), m_iTimerCurValue);
 #endif
 }
 
@@ -117,7 +117,7 @@ void CCustomTimer::Update()
 	}
 }
 
-void CTimerManager::CreateTimer(std::string name, int value, int mode)
+void CTimerManager::CreateTimer(std::string name, ALife::_TIME_ID value, ETimerMode mode)
 {
 	for (auto& timer : Timers)
 	{
@@ -129,7 +129,7 @@ void CTimerManager::CreateTimer(std::string name, int value, int mode)
 #ifdef DEBUG
 		else
 		{
-			Msg("Custom Timer: %s : Created (start value: %d)", (*timer).getName(), (*timer).getValue());
+			Msg("Custom Timer: %s : Created (start value: %d)", (*timer).getName().c_str(), (*timer).getValue());
 		}
 #endif
 	}
@@ -145,11 +145,11 @@ bool CTimerManager::DeleteTimer(std::string name)
 		{
 			(*it)->StopCustomTimer();
 			Timers.erase(it);
-			return true;
 
 #ifdef DEBUG
-			Msg("Custom Timer: %s : Deleted", (*it)->getName());
+			Msg("Custom Timer: %s : Deleted", (*it)->getName().c_str());
 #endif
+			return true;
 		}
 	}
 	return false;
@@ -168,7 +168,7 @@ bool CTimerManager::ResetTimer(std::string name)
 	return false;
 }
 
-bool CTimerManager::StartTimer(std::string name, int start_time, int mode)
+bool CTimerManager::StartTimer(std::string name, ALife::_TIME_ID start_time, ETimerMode mode)
 {
 	for (auto& timer : Timers)
 	{
@@ -235,7 +235,7 @@ void CTimerManager::load(IReader& packet)
 	}
 }
 
-int CTimerManager::GetTimerValue(std::string name) const
+ALife::_TIME_ID CTimerManager::GetTimerValue(std::string name) const
 {
 	for (const auto& timer : Timers)
 	{

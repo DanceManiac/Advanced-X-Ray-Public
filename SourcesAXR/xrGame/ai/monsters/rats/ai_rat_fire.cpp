@@ -22,18 +22,18 @@ void CAI_Rat::Exec_Action(float /**dt/**/)
 	switch (m_tAction) {
 		case eRatActionAttackBegin : {
 			u32					dwTime = Device.dwTimeGlobal;
-			sound().play	(eRatSoundAttack);//,0,0,m_dwHitInterval+1,m_dwHitInterval);
-			if (memory().enemy().selected() && memory().enemy().selected()->g_Alive() && (dwTime - m_dwStartAttackTime > m_dwHitInterval)) {
+			get_sound().play	(eRatSoundAttack);//,0,0,m_dwHitInterval+1,m_dwHitInterval);
+			if (get_memory().get_enemy().selected() && get_memory().get_enemy().selected()->g_Alive() && (dwTime - m_dwStartAttackTime > m_dwHitInterval)) {
 				m_bActionStarted = true;
 				m_dwStartAttackTime = dwTime;
 				Fvector tDirection;
 				Fvector position_in_bone_space;
 				position_in_bone_space.set(0.f,0.f,0.f);
-				tDirection.sub(memory().enemy().selected()->Position(),this->Position());
+				tDirection.sub(get_memory().get_enemy().selected()->Position(),this->Position());
 				vfNormalizeSafe(tDirection);
 				
-				if (this->Local() && memory().enemy().selected()) {
-					CEntityAlive	*entity_alive = const_cast<CEntityAlive*>(memory().enemy().selected());
+				if (this->Local() && get_memory().get_enemy().selected()) {
+					CEntityAlive	*entity_alive = const_cast<CEntityAlive*>(get_memory().get_enemy().selected());
 					VERIFY			(entity_alive);
 
 //					entity_alive->Hit(m_fHitPower,tDirection,this,0,position_in_bone_space,0);
@@ -79,7 +79,7 @@ void CAI_Rat::HitSignal(float amount, Fvector& vLocalDir, CObject* who, s16 /**e
 	
 	// Play hit sound
 	if (!AlreadyDie())
-		sound().play		(eRatSoundInjuring);
+		get_sound().play		(eRatSoundInjuring);
 }
 
 bool CAI_Rat::useful		(const CItemManager *manager, const CGameObject *object) const
@@ -87,7 +87,7 @@ bool CAI_Rat::useful		(const CItemManager *manager, const CGameObject *object) c
 	if (g_Alive())
 		return			(false);
 
-	if (!memory().item().useful(object))
+	if (!get_memory().item().useful(object))
 		return			(false);
 
 	const CEntityAlive	*entity_alive = smart_cast<const CEntityAlive*>(object);

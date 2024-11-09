@@ -196,8 +196,8 @@ void CHelmet::UpdateFilterCondition(void)
 
 	if (m_bUseFilter)
 	{
-		float m_radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
-		float m_chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
+		float radia_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeRadiation) * 4;
+		float chemical_hit = CurrentGameUI()->get_zone_cur_power(ALife::eHitTypeChemicalBurn);
 
 			float uncharge_coef = (m_fFilterDegradation / 16) * Device.fTimeDelta;
 

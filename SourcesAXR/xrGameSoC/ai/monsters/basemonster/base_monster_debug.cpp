@@ -124,7 +124,7 @@ CBaseMonster::SDebugInfo CBaseMonster::show_debug_info()
 	sprintf_s(text, "Actual = [%u] Enabled = [%u]",			 control().path_builder().actual(), control().path_builder().enabled());
 	DBG().text(this).add_item(text,										x, y+=delta_y, color);
 	
-	sprintf_s(text, "Speed: Linear = [%.3f] Angular = [%.3f]", control().movement().velocity_current(), 0.f);
+	sprintf_s(text, "Speed: Linear = [%.3f] Angular = [%.3f]", control().get_movement().velocity_current(), 0.f);
 	DBG().text(this).add_item(text,										x, y+=delta_y, color);
 	
 	DBG().text(this).add_item("------- Attack Distances -------------", x, y+=delta_y, delimiter_color);
@@ -271,8 +271,8 @@ void CBaseMonster::debug_fsm()
 	DBG().object_info(this,this).add_item	 (st, color_xrgb(255,0,0), 2);
 
 	CEntityAlive *entity = smart_cast<CEntityAlive *>(Level().CurrentEntity());
-	if (entity && entity->character_physics_support()->movement()) {
-		sprintf_s(st,"VELOCITY [%f,%f,%f] Value[%f]",VPUSH(entity->character_physics_support()->movement()->GetVelocity()),entity->character_physics_support()->movement()->GetVelocityActual());
+	if (entity && entity->character_physics_support()->get_movement()) {
+		sprintf_s(st,"VELOCITY [%f,%f,%f] Value[%f]",VPUSH(entity->character_physics_support()->get_movement()->GetVelocity()),entity->character_physics_support()->get_movement()->GetVelocityActual());
 		DBG().text(this).clear();
 		DBG().text(this).add_item(st,200,100,COLOR_GREEN,100);
 	}

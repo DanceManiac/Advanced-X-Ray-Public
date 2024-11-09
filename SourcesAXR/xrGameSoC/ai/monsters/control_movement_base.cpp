@@ -65,7 +65,7 @@ void CControlMovementBase::set_velocity(float val, bool max_acc)
 	m_velocity				= val;
 	if (max_acc) m_accel	= flt_max;
 	else {
-		m_accel	= ((m_man->movement().velocity_current() > m_velocity) ? 
+		m_accel	= ((m_man->get_movement().velocity_current() > m_velocity) ? 
 						m_object->anim().accel_get(eAV_Braking) :
 						m_object->anim().accel_get(eAV_Accel));
 	}
@@ -80,7 +80,7 @@ void CControlMovementBase::stop()
 void CControlMovementBase::stop_accel()
 {
 	m_velocity	= 0.f;
-	m_accel		= ((m_man->movement().velocity_current() > m_velocity) ? 
+	m_accel		= ((m_man->get_movement().velocity_current() > m_velocity) ? 
 						m_object->anim().accel_get(eAV_Braking) :
 						flt_max);
 }
@@ -112,7 +112,7 @@ float CControlMovementBase::get_velocity_from_path()
 	}
 
 	return velocity;
-	//m_accel		= ((m_man->movement().velocity_current() > velocity) ? 
+	//m_accel		= ((m_man->get_movement().velocity_current() > velocity) ? 
 	//	m_object->anim().accel_get(eAV_Braking) :
 	//m_object->anim().accel_get(eAV_Accel));
 }

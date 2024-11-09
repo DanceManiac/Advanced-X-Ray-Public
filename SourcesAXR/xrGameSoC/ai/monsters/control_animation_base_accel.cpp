@@ -134,7 +134,7 @@ bool CControlAnimationBase::accel_check_braking(float before_interval, float nom
 		return (braking_mode = false);
 
 	float acceleration = accel_get(eAV_Braking);
-	float braking_dist	= (nominal_speed * ((braking_mode) ? nominal_speed : m_man->movement().velocity_current())) / (2 * acceleration);
+	float braking_dist	= (nominal_speed * ((braking_mode) ? nominal_speed : m_man->get_movement().velocity_current())) / (2 * acceleration);
 
 	braking_dist += before_interval;
 	if (m_man->path_builder().is_path_end(braking_dist))				return (braking_mode = true);

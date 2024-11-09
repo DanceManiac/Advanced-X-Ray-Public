@@ -239,7 +239,7 @@ void CCoverEvaluatorBest::evaluate_smart_cover(smart_cover::cover const *smart_c
 		return;
 
 	float							value;
-	smart_cover::loophole			*best_loophole = smart_cover->best_loophole(m_enemy_position, value, false, m_stalker->movement().current_params().cover() == smart_cover );
+	smart_cover::loophole			*best_loophole = smart_cover->best_loophole(m_enemy_position, value, false, m_stalker->get_movement().current_params().cover() == smart_cover );
 	if (!best_loophole)
 		return;
 

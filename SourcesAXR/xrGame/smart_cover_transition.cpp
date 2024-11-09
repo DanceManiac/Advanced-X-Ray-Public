@@ -84,7 +84,7 @@ public:
 	}
 };
 
-animation_action const &action::animation	(MonsterSpace::EBodyState const &target_body_state) const
+animation_action const &action::get_animation	(MonsterSpace::EBodyState const &target_body_state) const
 {
 	Animations::const_iterator found = 
 		std::find_if			(m_animations.begin(), m_animations.end(), body_state_predicate(target_body_state));
@@ -93,7 +93,7 @@ animation_action const &action::animation	(MonsterSpace::EBodyState const &targe
 #ifndef MASTER_GOLD
 		Msg						("! There is no animation which can transfer bot to body_state [%i], selecting random transition", target_body_state);
 #endif // #ifndef MASTER_GOLD
-		return					(animation());
+		return					(get_animation());
 	}
 
 #if 0 //for testing
@@ -106,7 +106,7 @@ animation_action const &action::animation	(MonsterSpace::EBodyState const &targe
 	return						(**found);
 }
 
-animation_action const	&action::animation	() const
+animation_action const	&action::get_animation	() const
 {
 	return						(*m_animations[Random.randI(m_animations.size())]);
 }

@@ -64,7 +64,7 @@ void CAI_Rat::SelectAnimation(const Fvector& /**_view/**/, const Fvector& /**_mo
 		if (m_bFiring)
 			tpGlobalAnimation = m_tRatAnimations.tNormal.tGlobal.tpaAttack[2];
 		else
-			if (angle_difference(movement().m_body.target.yaw,movement().m_body.current.yaw) <= MIN_TURN_ANGLE)
+			if (angle_difference(get_movement().m_body.target.yaw,get_movement().m_body.current.yaw) <= MIN_TURN_ANGLE)
 				if (m_fSpeed < 0.2f) {
 					if (m_bStanding)
 						tpGlobalAnimation = m_tRatAnimations.tNormal.tGlobal.tpaIdle[1];
@@ -80,7 +80,7 @@ void CAI_Rat::SelectAnimation(const Fvector& /**_view/**/, const Fvector& /**_mo
 						else
 							tpGlobalAnimation = m_tRatAnimations.tNormal.tGlobal.tWalk.fwd;
 			else {
-				if (left_angle(-movement().m_body.target.yaw,-movement().m_body.current.yaw))
+				if (left_angle(-get_movement().m_body.target.yaw,-get_movement().m_body.current.yaw))
 //					tpGlobalAnimation = m_tRatAnimations.tNormal.tGlobal.tpaIdle[0];
 					tpGlobalAnimation = m_tRatAnimations.tNormal.tGlobal.tpTurnLeft;
 				else
@@ -95,7 +95,7 @@ void CAI_Rat::SelectAnimation(const Fvector& /**_view/**/, const Fvector& /**_mo
 #ifdef DEBUG
 	if (psAI_Flags.is(aiAnimation)) {
 		IKinematicsAnimated	*skeleton_animated = smart_cast<IKinematicsAnimated*>(Visual());
-		Msg					("%6d %s animation : %s (%f,%f)",Device.dwTimeGlobal,"Global",skeleton_animated->LL_MotionDefName_dbg(m_tpCurrentGlobalAnimation),movement().m_body.current.yaw,movement().m_body.target.yaw);
+		Msg					("%6d %s animation : %s (%f,%f)",Device.dwTimeGlobal,"Global",skeleton_animated->LL_MotionDefName_dbg(m_tpCurrentGlobalAnimation),get_movement().m_body.current.yaw,get_movement().m_body.target.yaw);
 	}
 #endif
 }

@@ -181,9 +181,9 @@ void CSoundMemoryManager::feel_sound_new(CObject *object, int sound_type, CSound
 			// this is fake!
 			CEntityAlive	*_entity_alive = smart_cast<CEntityAlive*>(object);
 			if (_entity_alive && (self->ID() != _entity_alive->ID()) && (_entity_alive->g_Team() != entity_alive->g_Team()))
-				m_object->memory().hit().add(_entity_alive);
+				m_object->get_memory().hit().add(_entity_alive);
 		}
-		if (!m_stalker || !m_stalker->memory().enemy().selected())
+		if (!m_stalker || !m_stalker->get_memory().get_enemy().selected())
 			add				(object,sound_type,position,sound_power);
 		else {
 			if (object) {
@@ -235,7 +235,7 @@ void CSoundMemoryManager::add			(const CObject *object, int sound_type, const Fv
 
 #ifndef SAVE_NON_ALIVE_OBJECT_SOUNDS
 	// we do not want to save sounds from the non-alive objects (?!)
-	if (object && !m_object->memory().enemy().selected() && !smart_cast<const CEntityAlive*>(object))
+	if (object && !m_object->get_memory().get_enemy().selected() && !smart_cast<const CEntityAlive*>(object))
 		return;
 #endif
 
@@ -258,7 +258,7 @@ void CSoundMemoryManager::add			(const CObject *object, int sound_type, const Fv
 		const CEntityAlive	*entity_alive	= smart_cast<const CEntityAlive*>(object);
 #	endif
 	// we do not save sounds from the objects we see (?!)
-	if (m_object->memory().visual().visible_now(entity_alive))
+	if (m_object->get_memory().visual().visible_now(entity_alive))
 		return;
 #endif
 
@@ -272,7 +272,7 @@ void CSoundMemoryManager::add			(const CObject *object, int sound_type, const Fv
 	if (m_sounds->end() == J) {
 		CSoundObject			sound_object;
 
-		sound_object.fill		(game_object,self,ESoundTypes(sound_type),sound_power,!m_stalker ? squad_mask_type(-1) : m_stalker->agent_manager().member().mask(m_stalker));
+		sound_object.fill		(game_object,self,ESoundTypes(sound_type),sound_power,!m_stalker ? squad_mask_type(-1) : m_stalker->agent_manager().get_member().mask(m_stalker));
 		if (!game_object)
 			sound_object.m_object_params.m_position = position;
 #ifdef USE_FIRST_GAME_TIME
@@ -284,7 +284,7 @@ void CSoundMemoryManager::add			(const CObject *object, int sound_type, const Fv
 		add						(sound_object);
 	}
 	else {
-		(*J).fill				(game_object,self,ESoundTypes(sound_type),sound_power,(!m_stalker ? (*J).m_squad_mask.get() : ((*J).m_squad_mask.get() | m_stalker->agent_manager().member().mask(m_stalker))));
+		(*J).fill				(game_object,self,ESoundTypes(sound_type),sound_power,(!m_stalker ? (*J).m_squad_mask.get() : ((*J).m_squad_mask.get() | m_stalker->agent_manager().get_member().mask(m_stalker))));
 		if (!game_object)
 			(*J).m_object_params.m_position = position;
 	}
@@ -433,7 +433,7 @@ void CSoundMemoryManager::load	(IReader &packet)
 
 	typedef CClientSpawnManager::CALLBACK_TYPE	CALLBACK_TYPE;
 	CALLBACK_TYPE					callback;
-	callback.bind					(&m_object->memory(),&CMemoryManager::on_requested_spawn);
+	callback.bind					(&m_object->get_memory(),&CMemoryManager::on_requested_spawn);
 
 	int								count = packet.r_u8();
 	for (int i=0; i<count; ++i) {

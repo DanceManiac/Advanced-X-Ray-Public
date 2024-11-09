@@ -1053,8 +1053,8 @@ namespace luabind { namespace detail
 
 namespace luabind {	 namespace
 {
-	constexpr size_t return_value = 0;
-    constexpr size_t result = return_value;
+	constexpr size_t m_return_value = 0;
+    constexpr size_t m_result = m_return_value;
 }}
 
 #include <luabind/detail/object_funs.hpp>

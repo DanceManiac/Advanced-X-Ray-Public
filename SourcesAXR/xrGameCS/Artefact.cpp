@@ -570,9 +570,9 @@ void CArtefact::MoveTo(Fvector const &  position)
 #include "Entity_alive.h"
 void CArtefact::UpdateXForm()
 {
-	if (Device.dwFrame!=dwXF_Frame)
+	if (Device.dwFrame!=m_dwXF_Frame)
 	{
-		dwXF_Frame			= Device.dwFrame;
+		m_dwXF_Frame			= Device.dwFrame;
 
 		if (0==H_Parent())	return;
 

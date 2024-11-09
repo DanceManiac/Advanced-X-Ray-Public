@@ -26,7 +26,7 @@ void CStalkerAnimationManager::global_play_callback			(CBlend *blend)
 	CAI_Stalker				*object = (CAI_Stalker*)blend->CallbackParam;
 	VERIFY					(object);
 
-	CStalkerAnimationPair	&pair = object->animation().global();
+	CStalkerAnimationPair	&pair = object->get_animation().global();
 	pair.on_animation_end	();
 }
 
@@ -67,10 +67,10 @@ MotionID CStalkerAnimationManager::global_critical_hit		()
 
 MotionID CStalkerAnimationManager::assign_global_animation	()
 {
-	if (eMentalStatePanic != object().movement().mental_state())
+	if (eMentalStatePanic != object().get_movement().mental_state())
 		return				(global_critical_hit());
 
-	if (fis_zero(object().movement().speed(object().character_physics_support()->movement())))
+	if (fis_zero(object().get_movement().speed(object().character_physics_support()->get_movement())))
 		return				(MotionID());
 
 	return					(

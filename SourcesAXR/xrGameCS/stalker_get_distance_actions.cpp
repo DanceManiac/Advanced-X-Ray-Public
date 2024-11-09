@@ -35,14 +35,14 @@ void CStalkerActionRunToCover::initialize			()
 {
 	inherited::initialize							();
 
-	object().movement().set_mental_state			(eMentalStateDanger);
-	object().movement().set_movement_type			(eMovementTypeRun);
-	object().movement().set_body_state				(eBodyStateStand);
+	object().get_movement().set_mental_state			(eMentalStateDanger);
+	object().get_movement().set_movement_type			(eMovementTypeRun);
+	object().get_movement().set_body_state				(eBodyStateStand);
 
 	object().set_goal								(eObjectActionIdle,object().best_weapon());
-	object().sight().setup							(CSightAction(SightManager::eSightTypePathDirection));
+	object().get_sight().setup							(CSightAction(SightManager::eSightTypePathDirection));
 	
-	MemorySpace::CMemoryInfo						mem_object = object().memory().memory(object().memory().enemy().selected());
+	MemorySpace::CMemoryInfo						mem_object = object().get_memory().memory(object().get_memory().get_enemy().selected());
 	Fvector											position = mem_object.m_object_params.m_position;
 	object().m_ce_close->setup						(position,0.f,object().Position().distance_to(position),10.f);
 	const CCoverPoint								*point = ai().cover_manager().best_cover(object().Position(),10.f,*object().m_ce_close,CStalkerMovementRestrictor(m_object,true));
@@ -52,18 +52,18 @@ void CStalkerActionRunToCover::initialize			()
 	}
 
 	if (point) {
-		object().movement().set_level_dest_vertex	(point->level_vertex_id());
-		object().movement().set_desired_position	(&point->position());
+		object().get_movement().set_level_dest_vertex	(point->level_vertex_id());
+		object().get_movement().set_desired_position	(&point->position());
 		return;
 	}
 
-	if (object().movement().restrictions().accessible(mem_object.m_object_params.m_level_vertex_id)) {
-		object().movement().set_level_dest_vertex	(mem_object.m_object_params.m_level_vertex_id);
-		object().movement().set_desired_position	(&mem_object.m_object_params.m_position);
+	if (object().get_movement().restrictions().accessible(mem_object.m_object_params.m_level_vertex_id)) {
+		object().get_movement().set_level_dest_vertex	(mem_object.m_object_params.m_level_vertex_id);
+		object().get_movement().set_desired_position	(&mem_object.m_object_params.m_position);
 		return;
 	}
 
-	object().movement().set_nearest_accessible_position	(
+	object().get_movement().set_nearest_accessible_position	(
 		mem_object.m_object_params.m_position,
 		mem_object.m_object_params.m_level_vertex_id
 	);
@@ -73,16 +73,16 @@ void CStalkerActionRunToCover::execute				()
 {
 	inherited::execute								();
 
-	if (!object().memory().visual().visible_now(object().memory().enemy().selected())) {
+	if (!object().get_memory().visual().visible_now(object().get_memory().get_enemy().selected())) {
 		object().set_goal							(eObjectActionIdle,object().best_weapon());
-		object().sight().setup						(CSightAction(SightManager::eSightTypePathDirection));
+		object().get_sight().setup						(CSightAction(SightManager::eSightTypePathDirection));
 	}
 	else {
-		object().sight().setup						(CSightAction(object().memory().enemy().selected(),true,true,false));
+		object().get_sight().setup						(CSightAction(object().get_memory().get_enemy().selected(),true,true,false));
 		fire										();
 	}
 
-	if (!object().movement().path_completed())
+	if (!object().get_movement().path_completed())
 		return;
 
 	m_storage->set_property							(StalkerDecisionSpace::eWorldPropertyInCover,	true);
@@ -106,17 +106,17 @@ void CStalkerActionWaitInCover::initialize			()
 {
 	inherited::initialize							();
 
-	object().movement().set_mental_state			(eMentalStateDanger);
-	object().movement().set_movement_type			(eMovementTypeStand);
+	object().get_movement().set_mental_state			(eMentalStateDanger);
+	object().get_movement().set_movement_type			(eMovementTypeStand);
 	
-	if (object().movement().body_state() == eBodyStateStand)
-		object().movement().set_body_state			(::Random.randI(2) ? eBodyStateCrouch : eBodyStateStand);
+	if (object().get_movement().body_state() == eBodyStateStand)
+		object().get_movement().set_body_state			(::Random.randI(2) ? eBodyStateCrouch : eBodyStateStand);
 	else
-		object().movement().set_body_state			(eBodyStateCrouch);
+		object().get_movement().set_body_state			(eBodyStateCrouch);
 
 	object().set_goal								(eObjectActionIdle,object().best_weapon());
-	object().sight().clear							();
-	object().sight().setup							(CSightAction(SightManager::eSightTypePathDirection,false));
+	object().get_sight().clear							();
+	object().get_sight().setup							(CSightAction(SightManager::eSightTypePathDirection,false));
 
 	set_inertia_time								(::Random.randI(1000,3000));
 }
@@ -125,7 +125,7 @@ void CStalkerActionWaitInCover::execute				()
 {
 	inherited::execute								();
 
-	if (!completed() && !object().memory().visual().visible_now(object().memory().enemy().selected()))
+	if (!completed() && !object().get_memory().visual().visible_now(object().get_memory().get_enemy().selected()))
 		return;
 
 	m_storage->set_property							(StalkerDecisionSpace::eWorldPropertyInCover,	false);

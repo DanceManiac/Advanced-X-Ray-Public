@@ -297,8 +297,8 @@ CActor::~CActor()
 
 void CActor::reinit	()
 {
-	character_physics_support()->movement()->CreateCharacter		();
-	character_physics_support()->movement()->SetPhysicsRefObject	(this);
+	character_physics_support()->get_movement()->CreateCharacter		();
+	character_physics_support()->get_movement()->SetPhysicsRefObject	(this);
 	CEntityAlive::reinit						();
 	CInventoryOwner::reinit						();
 
@@ -307,7 +307,7 @@ void CActor::reinit	()
 
 	m_pUsableObject								= NULL;
 	if (!g_dedicated_server)
-		memory().reinit							();
+		get_memory().reinit							();
 	
 	set_input_external_handler					(0);
 	m_time_lock_accel							= 0;
@@ -320,7 +320,7 @@ void CActor::reload	(LPCSTR section)
 	material().reload			(section);
 	CStepManager::reload		(section);
 	if (!g_dedicated_server)
-		memory().reload			(section);
+		get_memory().reload			(section);
 	m_location_manager->reload	(section);
 }
 void set_box(LPCSTR section, CPHMovementControl &mc, u32 box_num )
@@ -364,19 +364,19 @@ void CActor::Load	(LPCSTR section )
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box2_center"	);
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box2_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
-	character_physics_support()->movement()->SetBox		(2,bb);
+	character_physics_support()->get_movement()->SetBox		(2,bb);
 
 	// m_PhysicMovementControl: BOX
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box1_center"	);
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box1_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
-	character_physics_support()->movement()->SetBox		(1,bb);
+	character_physics_support()->get_movement()->SetBox		(1,bb);
 
 	// m_PhysicMovementControl: BOX
 	vBOX_center= pSettings->r_fvector3	(section,"ph_box0_center"	);
 	vBOX_size	= pSettings->r_fvector3	(section,"ph_box0_size"		);
 	bb.set	(vBOX_center,vBOX_center); bb.grow(vBOX_size);
-	character_physics_support()->movement()->SetBox		(0,bb);
+	character_physics_support()->get_movement()->SetBox		(0,bb);
 	*/
 	
 
@@ -395,19 +395,19 @@ void CActor::Load	(LPCSTR section )
 	float	cs_min		= pSettings->r_float	(section,"ph_crash_speed_min"	);
 	float	cs_max		= pSettings->r_float	(section,"ph_crash_speed_max"	);
 	float	mass		= pSettings->r_float	(section,"ph_mass"				);
-	character_physics_support()->movement()->SetCrashSpeeds	(cs_min,cs_max);
-	character_physics_support()->movement()->SetMass		(mass);
+	character_physics_support()->get_movement()->SetCrashSpeeds	(cs_min,cs_max);
+	character_physics_support()->get_movement()->SetMass		(mass);
 	if(pSettings->line_exist(section,"stalker_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(rtStalker,pSettings->r_float(section,"stalker_restrictor_radius"));
+		character_physics_support()->get_movement()->SetActorRestrictorRadius(rtStalker,pSettings->r_float(section,"stalker_restrictor_radius"));
 	if(pSettings->line_exist(section,"stalker_small_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(rtStalkerSmall,pSettings->r_float(section,"stalker_small_restrictor_radius"));
+		character_physics_support()->get_movement()->SetActorRestrictorRadius(rtStalkerSmall,pSettings->r_float(section,"stalker_small_restrictor_radius"));
 	if(pSettings->line_exist(section,"medium_monster_restrictor_radius"))
-		character_physics_support()->movement()->SetActorRestrictorRadius(rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
-	character_physics_support()->movement()->Load(section);
+		character_physics_support()->get_movement()->SetActorRestrictorRadius(rtMonsterMedium,pSettings->r_float(section,"medium_monster_restrictor_radius"));
+	character_physics_support()->get_movement()->Load(section);
 
-	set_box( section, *character_physics_support()->movement(), 2 );
-	set_box( section, *character_physics_support()->movement(), 1 );
-	set_box( section, *character_physics_support()->movement(), 0 );
+	set_box( section, *character_physics_support()->get_movement(), 2 );
+	set_box( section, *character_physics_support()->get_movement(), 1 );
+	set_box( section, *character_physics_support()->get_movement(), 0 );
 
 	m_fWalkAccel				= pSettings->r_float(section,"walk_accel");	
 	m_fJumpSpeed				= pSettings->r_float(section,"jump_speed");
@@ -423,9 +423,9 @@ void CActor::Load	(LPCSTR section )
 
 
 	m_fCamHeightFactor			= pSettings->r_float(section,"camera_height_factor");
-	character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);
+	character_physics_support()->get_movement()->SetJumpUpVelocity(m_fJumpSpeed);
 	float AirControlParam		= pSettings->r_float(section,"air_control_param"	);
-	character_physics_support()->movement()->SetAirControlParam(AirControlParam);
+	character_physics_support()->get_movement()->SetAirControlParam(AirControlParam);
 
 	m_fPickupInfoRadius			= READ_IF_EXISTS(pSettings, r_float, section, "pickup_info_radius", 0.0f);
 
@@ -962,31 +962,31 @@ void CActor::g_Physics			(Fvector& _accel, float jump, float dt)
 	{
 		if(mstate_real&mcClimb&&!cameras[eacFirstEye]->bClampYaw)
 				accel.set(0.f,0.f,0.f);
-		character_physics_support()->movement()->Calculate			(accel,cameras[cam_active]->vDirection,0,jump,dt,false);
-		bool new_border_state=character_physics_support()->movement()->isOutBorder();
+		character_physics_support()->get_movement()->Calculate			(accel,cameras[cam_active]->vDirection,0,jump,dt,false);
+		bool new_border_state=character_physics_support()->get_movement()->isOutBorder();
 		if(m_bOutBorder!=new_border_state && Level().CurrentControlEntity() == this)
 		{
 			SwitchOutBorder(new_border_state);
 		}
 #ifdef DEBUG
 		if(!psActorFlags.test(AF_NO_CLIP))
-			character_physics_support()->movement()->GetPosition		(Position());
+			character_physics_support()->get_movement()->GetPosition		(Position());
 #else //DEBUG
-		character_physics_support()->movement()->GetPosition		(Position());
+		character_physics_support()->get_movement()->GetPosition		(Position());
 #endif //DEBUG
-		character_physics_support()->movement()->bSleep				=false;
+		character_physics_support()->get_movement()->bSleep				=false;
 	}
 
 	if (Local() && g_Alive()) 
 	{
-		if(character_physics_support()->movement()->gcontact_Was)
-			Cameras().AddCamEffector		(xr_new<CEffectorFall> (character_physics_support()->movement()->gcontact_Power));
+		if(character_physics_support()->get_movement()->gcontact_Was)
+			Cameras().AddCamEffector		(xr_new<CEffectorFall> (character_physics_support()->get_movement()->gcontact_Power));
 
-		if (!fis_zero(character_physics_support()->movement()->gcontact_HealthLost))	
+		if (!fis_zero(character_physics_support()->get_movement()->gcontact_HealthLost))	
 		{
 			VERIFY( character_physics_support() );
-			VERIFY( character_physics_support()->movement() );
-			ICollisionDamageInfo* di=character_physics_support()->movement()->CollisionDamageInfo();
+			VERIFY( character_physics_support()->get_movement() );
+			ICollisionDamageInfo* di=character_physics_support()->get_movement()->CollisionDamageInfo();
 			VERIFY( di );
 			bool b_hit_initiated =  di->GetAndResetInitiated();
 			Fvector hdir;di->HitDir(hdir);
@@ -995,11 +995,11 @@ void CActor::g_Physics			(Fvector& _accel, float jump, float dt)
 			if (Level().CurrentControlEntity() == this)
 			{
 				
-				SHit HDS = SHit(character_physics_support()->movement()->gcontact_HealthLost,
+				SHit HDS = SHit(character_physics_support()->get_movement()->gcontact_HealthLost,
 //.								0.0f,
 								hdir,
 								di->DamageInitiator(),
-								character_physics_support()->movement()->ContactBone(),
+								character_physics_support()->get_movement()->ContactBone(),
 								di->HitPos(),
 								0.f,
 								di->HitType(),
@@ -1059,7 +1059,7 @@ void CActor::UpdateCL	()
 			CPhysicsShellHolder	*sh = smart_cast<CPhysicsShellHolder*>(*it);
 			if(sh&&sh->character_physics_support())
 			{
-				sh->character_physics_support()->movement()->UpdateObjectBox(character_physics_support()->movement()->PHCharacter());
+				sh->character_physics_support()->get_movement()->UpdateObjectBox(character_physics_support()->get_movement()->PHCharacter());
 			}
 		}
 	}
@@ -1216,12 +1216,12 @@ void CActor::set_state_box(u32	mstate)
 		if ( mstate & mcCrouch)
 	{
 		if (isActorAccelerated(mstate_real, IsZoomAimingMode()))
-			character_physics_support()->movement()->ActivateBox(1, true);
+			character_physics_support()->get_movement()->ActivateBox(1, true);
 		else
-			character_physics_support()->movement()->ActivateBox(2, true);
+			character_physics_support()->get_movement()->ActivateBox(2, true);
 	}
 	else 
-		character_physics_support()->movement()->ActivateBox(0, true);
+		character_physics_support()->get_movement()->ActivateBox(0, true);
 }
 void CActor::shedule_Update	(u32 DT)
 {
@@ -1803,7 +1803,7 @@ void CActor::RenderText				(LPCSTR Text, Fvector dpos, float* pdup, u32 color)
 void CActor::SetPhPosition(const Fmatrix &transform)
 {
 	if(!m_pPhysicsShell){ 
-		character_physics_support()->movement()->SetPosition(transform.c);
+		character_physics_support()->get_movement()->SetPosition(transform.c);
 	}
 	//else m_phSkeleton->S
 }
@@ -1814,15 +1814,15 @@ void CActor::ForceTransform(const Fmatrix& m)
 	//			return;
 	//VERIFY(_valid(m));
 	//XFORM().set( m );
-	//if( character_physics_support()->movement()->CharacterExist() )
-	//		character_physics_support()->movement()->EnableCharacter();
+	//if( character_physics_support()->get_movement()->CharacterExist() )
+	//		character_physics_support()->get_movement()->EnableCharacter();
 	//character_physics_support()->set_movement_position( m.c );
-	//character_physics_support()->movement()->SetVelocity( 0, 0, 0 );
+	//character_physics_support()->get_movement()->SetVelocity( 0, 0, 0 );
 
 	character_physics_support()->ForceTransform( m );
 	const float block_damage_time_seconds = 2.f;
 	if(!IsGameTypeSingle())
-		character_physics_support()->movement()->BlockDamageSet( u64( block_damage_time_seconds/fixed_step ) );
+		character_physics_support()->get_movement()->BlockDamageSet( u64( block_damage_time_seconds/fixed_step ) );
 }
 
 ENGINE_API extern float		psHUD_FOV;
@@ -2401,17 +2401,17 @@ void CActor::OnDifficultyChanged	()
 
 CVisualMemoryManager	*CActor::visual_memory	() const
 {
-	return							(&memory().visual());
+	return							(&get_memory().visual());
 }
 
 float		CActor::GetMass				()
 {
-	return g_Alive()?character_physics_support()->movement()->GetMass():m_pPhysicsShell?m_pPhysicsShell->getMass():0; 
+	return g_Alive()?character_physics_support()->get_movement()->GetMass():m_pPhysicsShell?m_pPhysicsShell->getMass():0; 
 }
 
 bool CActor::is_on_ground()
 {
-	return (character_physics_support()->movement()->Environment() != CPHMovementControl::peInAir);
+	return (character_physics_support()->get_movement()->Environment() != CPHMovementControl::peInAir);
 }
 
 bool CActor::is_ai_obstacle				() const
@@ -3152,7 +3152,7 @@ bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
 				if (pholder)
 				{
 					pholder->PPhysicsShell()->SplitterHolderDeactivate();
-					if (!character_physics_support()->movement()->ActivateBoxDynamic(0))
+					if (!character_physics_support()->get_movement()->ActivateBoxDynamic(0))
 					{
 						pholder->PPhysicsShell()->SplitterHolderActivate();
 						return true;
@@ -3167,9 +3167,9 @@ bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
 
 				m_holder->detach_Actor();
 
-				character_physics_support()->movement()->CreateCharacter();
-				character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());
-				character_physics_support()->movement()->SetVelocity(m_holder->ExitVelocity());
+				character_physics_support()->get_movement()->CreateCharacter();
+				character_physics_support()->get_movement()->SetPosition(m_holder->ExitPosition());
+				character_physics_support()->get_movement()->SetVelocity(m_holder->ExitVelocity());
 
 				r_model_yaw = -m_holder->Camera()->yaw;
 				r_torso.yaw = r_model_yaw;
@@ -3212,7 +3212,7 @@ bool CActor::use_HolderEx(CHolderCustom* object, bool bForce)
 				SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 
 				// destroy actor character
-				character_physics_support()->movement()->DestroyCharacter();
+				character_physics_support()->get_movement()->DestroyCharacter();
 
 				m_holder = object;
 				CGameObject* oHolder = smart_cast<CGameObject*>(object);

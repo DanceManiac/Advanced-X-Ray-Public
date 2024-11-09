@@ -165,12 +165,12 @@ public:
 protected:
 
 	IC		void				SetPending			(BOOL H)			{ m_huditem_flags.set(fl_pending, H);}
-	shared_str					hud_sect;
-	shared_str					item_sect;
+	shared_str					m_hud_sect;
+	shared_str					m_item_sect;
 
 	//кадры момента пересчета XFORM и FirePos
-	u32							dwFP_Frame;
-	u32							dwXF_Frame;
+	u32							m_dwFP_Frame;
+	u32							m_dwXF_Frame;
 
 	IC void						EnableHudInertion		(BOOL B)		{ m_huditem_flags.set(fl_inertion_enable, B);}
 	IC void						AllowHudInertion		(BOOL B)		{ m_huditem_flags.set(fl_inertion_allow, B);}
@@ -184,7 +184,7 @@ private:
 	CInventoryItem				*m_item;
 
 public:
-	const shared_str&			HudSection				() const		{ return hud_sect;}
+	const shared_str&			HudSection				() const		{ return m_hud_sect;}
 	IC CPhysicItem&				object					() const		{ VERIFY(m_object); return(*m_object);}
 	IC CInventoryItem&			item					() const		{ VERIFY(m_item); return(*m_item);}
 	IC		u32					animation_slot			()				{ return m_animation_slot;}

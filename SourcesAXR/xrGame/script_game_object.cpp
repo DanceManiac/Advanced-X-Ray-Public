@@ -288,7 +288,7 @@ bool CScriptGameObject::CheckObjectVisibility(const CScriptGameObject *tpLuaGame
 			ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"CScriptGameObject : cannot access class member CheckObjectVisibility!");
 			return		(false);
 		}
-		return			(actor->memory().visual().visible_now(&tpLuaGameObject->object()));
+		return			(actor->get_memory().visual().visible_now(&tpLuaGameObject->object()));
 	}
 
 	return				(script_entity->CheckObjectVisibility(&tpLuaGameObject->object()));
@@ -314,7 +314,7 @@ void CScriptGameObject::set_previous_point	(int point_index)
 	if (!monster)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member set_previous_point!");
 	else
-		monster->movement().patrol().set_previous_point(point_index);
+		monster->get_movement().patrol().set_previous_point(point_index);
 }
 
 void CScriptGameObject::set_start_point	(int point_index)
@@ -323,7 +323,7 @@ void CScriptGameObject::set_start_point	(int point_index)
 	if (!monster)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot access class member set_start_point!");
 	else
-		monster->movement().patrol().set_start_point(point_index);
+		monster->get_movement().patrol().set_start_point(point_index);
 }
 
 u32 CScriptGameObject::get_current_patrol_point_index()
@@ -333,7 +333,7 @@ u32 CScriptGameObject::get_current_patrol_point_index()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CGameObject : cannot call [get_current_patrol_point_index()]!");
 		return			(u32(-1));
 	}
-	return				(monster->movement().patrol().get_current_point_index());
+	return				(monster->get_movement().patrol().get_current_point_index());
 }
 
 
@@ -635,7 +635,7 @@ void CScriptGameObject::set_patrol_extrapolate_callback(const luabind::functor<b
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member set_patrol_extrapolate_callback!");
 		return;
 	}
-	monster->movement().patrol().extrapolate_callback().set(functor);
+	monster->get_movement().patrol().extrapolate_callback().set(functor);
 }
 
 void CScriptGameObject::set_patrol_extrapolate_callback(const luabind::functor<bool> &functor, const luabind::object &object)
@@ -645,7 +645,7 @@ void CScriptGameObject::set_patrol_extrapolate_callback(const luabind::functor<b
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member set_patrol_extrapolate_callback!");
 		return;
 	}
-	monster->movement().patrol().extrapolate_callback().set(functor,object);
+	monster->get_movement().patrol().extrapolate_callback().set(functor,object);
 }
 
 void CScriptGameObject::set_patrol_extrapolate_callback()
@@ -655,7 +655,7 @@ void CScriptGameObject::set_patrol_extrapolate_callback()
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member set_patrol_extrapolate_callback!");
 		return;
 	}
-	monster->movement().patrol().extrapolate_callback().clear();
+	monster->get_movement().patrol().extrapolate_callback().clear();
 }
 
 void CScriptGameObject::extrapolate_length		(float extrapolate_length)
@@ -665,7 +665,7 @@ void CScriptGameObject::extrapolate_length		(float extrapolate_length)
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member extrapolate_length!");
 		return;
 	}
-	monster->movement().detail().extrapolate_length(extrapolate_length);
+	monster->get_movement().detail().extrapolate_length(extrapolate_length);
 }
 
 float CScriptGameObject::extrapolate_length		() const
@@ -675,7 +675,7 @@ float CScriptGameObject::extrapolate_length		() const
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster : cannot access class member extrapolate_length!");
 		return				(0.f);
 	}
-	return					(monster->movement().detail().extrapolate_length());
+	return					(monster->get_movement().detail().extrapolate_length());
 }
 
 void CScriptGameObject::set_fov					(float new_fov)
@@ -706,7 +706,7 @@ u32	CScriptGameObject::vertex_in_direction(u32 level_vertex_id, Fvector directio
 		return		(u32(-1));
 	}
 
-	if (!monster->movement().restrictions().accessible(level_vertex_id)) {
+	if (!monster->get_movement().restrictions().accessible(level_vertex_id)) {
 		ai().script_engine().script_log			(ScriptStorage::eLuaMessageTypeError,"CCustomMonster::vertex_in_direction - start vertex id is not accessible!");
 		return		(u32(-1));
 	}
@@ -716,9 +716,9 @@ u32	CScriptGameObject::vertex_in_direction(u32 level_vertex_id, Fvector directio
 	Fvector			start_position = ai().level_graph().vertex_position(level_vertex_id);
 	Fvector			finish_position = Fvector(start_position).add(direction);
 	u32				result = u32(-1);
-	monster->movement().restrictions().add_border(level_vertex_id,max_distance);
+	monster->get_movement().restrictions().add_border(level_vertex_id,max_distance);
 	ai().level_graph().farthest_vertex_in_direction(level_vertex_id,start_position,finish_position,result,0,true);
-	monster->movement().restrictions().remove_border();
+	monster->get_movement().restrictions().remove_border();
 	return			(ai().level_graph().valid_vertex_id(result) ? result : level_vertex_id);
 }
 
@@ -793,7 +793,7 @@ void CScriptGameObject::set_visual_name(LPCSTR visual)
 			stalker->ResetBoneProtections(NULL, NULL);
 			stalker->reattach_items();
 			stalker->m_pPhysics_support->in_ChangeVisual();
-			stalker->animation().reload();
+			stalker->get_animation().reload();
 		}
 
 		return;
@@ -803,7 +803,7 @@ void CScriptGameObject::set_visual_name(LPCSTR visual)
 	if (mob)
 	{
 		mob->CDamageManager::reload(*mob->cNameSect(), "damage", pSettings);
-		mob->control().animation().restart();
+		mob->control().get_animation().restart();
 	}
 }
 

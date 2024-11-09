@@ -799,10 +799,10 @@ bool CRelationMapLocation::Update()
 					if (pAct->Position().distance_to(pObj->Position()) < distance)
 						vis_res = true;
 					else
-						vis_res = Actor()->memory().visual().visible_now(pObj);
+						vis_res = Actor()->get_memory().visual().visible_now(pObj);
 				}
 				else
-					vis_res = Actor()->memory().visual().visible_now(pObj);
+					vis_res = Actor()->get_memory().visual().visible_now(pObj);
 			}
 		}
 		else

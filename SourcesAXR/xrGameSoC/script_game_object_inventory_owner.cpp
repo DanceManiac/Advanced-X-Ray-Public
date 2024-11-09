@@ -680,7 +680,7 @@ void CScriptGameObject::add_restrictions		(LPCSTR out, LPCSTR in)
 //		}
 //	}
 	
-	monster->movement().restrictions().add_restrictions(out,in);
+	monster->get_movement().restrictions().add_restrictions(out,in);
 }
 
 void CScriptGameObject::remove_restrictions		(LPCSTR out, LPCSTR in)
@@ -697,7 +697,7 @@ void CScriptGameObject::remove_restrictions		(LPCSTR out, LPCSTR in)
 //	construct_restriction_vector			(out,temp0);
 //	construct_restriction_vector			(in,temp1);
 
-	monster->movement().restrictions().remove_restrictions(out,in);
+	monster->get_movement().restrictions().remove_restrictions(out,in);
 }
 
 void CScriptGameObject::remove_all_restrictions	()
@@ -707,7 +707,7 @@ void CScriptGameObject::remove_all_restrictions	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CRestrictedObject : cannot access class member remove_all_restrictions!");
 		return;
 	}
-	monster->movement().restrictions().remove_all_restrictions	();
+	monster->get_movement().restrictions().remove_all_restrictions	();
 }
 
 LPCSTR CScriptGameObject::in_restrictions	()
@@ -717,7 +717,7 @@ LPCSTR CScriptGameObject::in_restrictions	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CRestrictedObject : cannot access class member in_restrictions!");
 		return								("");
 	}
-	return									(*monster->movement().restrictions().in_restrictions());
+	return									(*monster->get_movement().restrictions().in_restrictions());
 }
 
 LPCSTR CScriptGameObject::out_restrictions	()
@@ -727,7 +727,7 @@ LPCSTR CScriptGameObject::out_restrictions	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CRestrictedObject : cannot access class member out_restrictions!");
 		return								("");
 	}
-	return									(*monster->movement().restrictions().out_restrictions());
+	return									(*monster->get_movement().restrictions().out_restrictions());
 }
 
 LPCSTR CScriptGameObject::base_in_restrictions	()
@@ -737,7 +737,7 @@ LPCSTR CScriptGameObject::base_in_restrictions	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CRestrictedObject : cannot access class member base_in_restrictions!");
 		return								("");
 	}
-	return									(*monster->movement().restrictions().base_in_restrictions());
+	return									(*monster->get_movement().restrictions().base_in_restrictions());
 }
 
 LPCSTR CScriptGameObject::base_out_restrictions	()
@@ -747,7 +747,7 @@ LPCSTR CScriptGameObject::base_out_restrictions	()
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CRestrictedObject : cannot access class member base_out_restrictions!");
 		return								("");
 	}
-	return									(*monster->movement().restrictions().base_out_restrictions());
+	return									(*monster->get_movement().restrictions().base_out_restrictions());
 }
 
 bool CScriptGameObject::accessible_position	(const Fvector &position)
@@ -757,7 +757,7 @@ bool CScriptGameObject::accessible_position	(const Fvector &position)
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CRestrictedObject : cannot access class member accessible!");
 		return								(false);
 	}
-	return									(monster->movement().restrictions().accessible(position));
+	return									(monster->get_movement().restrictions().accessible(position));
 }
 
 bool CScriptGameObject::accessible_vertex_id(u32 level_vertex_id)
@@ -768,7 +768,7 @@ bool CScriptGameObject::accessible_vertex_id(u32 level_vertex_id)
 		return								(false);
 	}
 	THROW2									(ai().level_graph().valid_vertex_id(level_vertex_id),"Cannot check if level vertex id is accessible, because it is invalid");
-	return									(monster->movement().restrictions().accessible(level_vertex_id));
+	return									(monster->get_movement().restrictions().accessible(level_vertex_id));
 }
 
 u32	 CScriptGameObject::accessible_nearest	(const Fvector &position, Fvector &result)
@@ -778,7 +778,7 @@ u32	 CScriptGameObject::accessible_nearest	(const Fvector &position, Fvector &re
 		ai().script_engine().script_log		(ScriptStorage::eLuaMessageTypeError,"CRestrictedObject : cannot access class member accessible!");
 		return								(u32(-1));
 	}
-	return									(monster->movement().restrictions().accessible_nearest(position,result));
+	return									(monster->get_movement().restrictions().accessible_nearest(position,result));
 }
 
 void CScriptGameObject::enable_attachable_item	(bool value)
@@ -1002,7 +1002,7 @@ void CScriptGameObject::enable_movement	(bool enable)
 		return;
 	}
 
-	monster->movement().enable_movement	(enable);
+	monster->get_movement().enable_movement	(enable);
 }
 
 bool CScriptGameObject::movement_enabled()
@@ -1013,7 +1013,7 @@ bool CScriptGameObject::movement_enabled()
 		return							(false);
 	}
 
-	return								(monster->movement().enabled());
+	return								(monster->get_movement().enabled());
 }
 
 /*added by Ray Twitty (aka Shadows) START*/
@@ -1314,7 +1314,7 @@ void CScriptGameObject::SetActorJumpSpeed(float jump_speed)
 		return;
 	}
 	pActor->m_fJumpSpeed = jump_speed;
-	//character_physics_support()->movement()->SetJumpUpVelocity(m_fJumpSpeed);  
+	//character_physics_support()->get_movement()->SetJumpUpVelocity(m_fJumpSpeed);  
 }
 
 float CScriptGameObject::GetActorSprintKoef() const

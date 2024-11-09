@@ -66,14 +66,14 @@ bool CAI_Stalker::bfAssignMovement(CScriptEntityAction *tpEntityAction)
 
 	CObjectHandler::set_goal		(l_tObjectAction.m_tGoalType);
 	
-	movement().set_path_type		(movement().path_type());
-	movement().set_detail_path_type	(l_tMovementAction.m_tPathType);
-	movement().set_body_state		(l_tMovementAction.m_tBodyState);
-	movement().set_movement_type	(l_tMovementAction.m_tMovementType);
-	movement().set_mental_state		(l_tAnimationAction.m_tMentalState);
-	sight().setup					(l_tWatchAction.m_tWatchType,&l_tWatchAction.m_tWatchVector);
-	movement().update				(Device.dwTimeDelta);
-	sight().update					();
+	get_movement().set_path_type		(get_movement().path_type());
+	get_movement().set_detail_path_type	(l_tMovementAction.m_tPathType);
+	get_movement().set_body_state		(l_tMovementAction.m_tBodyState);
+	get_movement().set_movement_type	(l_tMovementAction.m_tMovementType);
+	get_movement().set_mental_state		(l_tAnimationAction.m_tMentalState);
+	get_sight().setup					(l_tWatchAction.m_tWatchType,&l_tWatchAction.m_tWatchVector);
+	get_movement().update				(Device.dwTimeDelta);
+	get_sight().update					();
 
 	return							(true);
 }
@@ -85,7 +85,7 @@ bool CAI_Stalker::bfAssignWatch(CScriptEntityAction *tpEntityAction)
 	
 	CScriptWatchAction	&l_tWatchAction = tpEntityAction->m_tWatchAction;
 
-//	float			&yaw = movement().m_head.target.yaw, &pitch = movement().m_head.target.pitch;
+//	float			&yaw = get_movement().m_head.target.yaw, &pitch = get_movement().m_head.target.pitch;
 
 	switch (l_tWatchAction.m_tGoalType) {
 		case CScriptWatchAction::eGoalTypeObject : {
@@ -100,11 +100,11 @@ bool CAI_Stalker::bfAssignWatch(CScriptEntityAction *tpEntityAction)
 
 				l_tWatchAction.m_tWatchVector	= l_tMatrix.c;
 			}
-			sight().setup(l_tWatchAction.m_tWatchType,&l_tWatchAction.m_tWatchVector);
+			get_sight().setup(l_tWatchAction.m_tWatchType,&l_tWatchAction.m_tWatchVector);
 			break;
 		}
 		case CScriptWatchAction::eGoalTypeDirection : {
-			sight().setup(l_tWatchAction.m_tWatchType,&l_tWatchAction.m_tWatchVector);
+			get_sight().setup(l_tWatchAction.m_tWatchType,&l_tWatchAction.m_tWatchVector);
 			break;
 		}
 		case CScriptWatchAction::eGoalTypeWatchType : {
@@ -118,7 +118,7 @@ bool CAI_Stalker::bfAssignWatch(CScriptEntityAction *tpEntityAction)
 		default : NODEFAULT;
 	}
 
-	if ((CScriptWatchAction::eGoalTypeWatchType != l_tWatchAction.m_tGoalType) && (angle_difference(movement().m_head.target.yaw,movement().m_head.current.yaw) < EPS_L) && (angle_difference(movement().m_head.target.pitch,movement().m_head.current.pitch) < EPS_L))
+	if ((CScriptWatchAction::eGoalTypeWatchType != l_tWatchAction.m_tGoalType) && (angle_difference(get_movement().m_head.target.yaw,get_movement().m_head.current.yaw) < EPS_L) && (angle_difference(get_movement().m_head.target.pitch,get_movement().m_head.current.pitch) < EPS_L))
 		l_tWatchAction.m_bCompleted = true;
 	else
 		l_tWatchAction.m_bCompleted = false;
@@ -299,8 +299,8 @@ bool CAI_Stalker::bfAssignAnimation(CScriptEntityAction *tpEntityAction)
 #ifdef _DEBUG
 //		Msg				("%6d Assigning animation : %s",Device.dwTimeGlobal,*tpEntityAction->m_tAnimationAction.m_caAnimationToPlay);
 #endif
-		animation().torso().reset();
-		animation().legs().reset();
+		get_animation().torso().reset();
+		get_animation().legs().reset();
 	}
 
 	return				(true);

@@ -134,7 +134,7 @@ void CStateMonsterEatAbstract::setup_substates()
 		const CEntityAlive * corpse_ = object->CorpseMan.get_corpse();
 		if ((corpse_->m_pPhysicsShell == NULL) || (!corpse_->m_pPhysicsShell->isActive())) {
 			nearest_bone_pos	= corpse_->Position();
-		} else nearest_bone_pos = object->character_physics_support()->movement()->PHCaptureGetNearestElemPos(corpse_);
+		} else nearest_bone_pos = object->character_physics_support()->get_movement()->PHCaptureGetNearestElemPos(corpse_);
 
 #ifdef _DEBUG
 		DBG().level_info(this).clear		();
@@ -211,7 +211,7 @@ void CStateMonsterEatAbstract::setup_substates()
 		const CEntityAlive * corpse_ = object->CorpseMan.get_corpse();
 		if ((corpse_->m_pPhysicsShell == NULL) || (!corpse_->m_pPhysicsShell->isActive())) {
 			nearest_bone_pos	= corpse_->Position();
-		} else nearest_bone_pos = object->character_physics_support()->movement()->PHCaptureGetNearestElemPos(corpse_);
+		} else nearest_bone_pos = object->character_physics_support()->get_movement()->PHCaptureGetNearestElemPos(corpse_);
 		
 		SStateDataMoveToPoint data;
 		data.point			= nearest_bone_pos;

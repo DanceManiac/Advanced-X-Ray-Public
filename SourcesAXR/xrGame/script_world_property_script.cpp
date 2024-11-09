@@ -21,7 +21,7 @@ void CScriptWorldPropertyWrapper::script_register(lua_State *L)
 			.def(								constructor<CScriptWorldProperty::_condition_type, CScriptWorldProperty::_value_type>())
 			.def("condition",					&CScriptWorldProperty::condition)
 			.def("value",						&CScriptWorldProperty::value)
-			.def(const_self < other<CScriptWorldProperty>())
-			.def(const_self == other<CScriptWorldProperty>())
+			.def(m_const_self < other<CScriptWorldProperty>())
+			.def(m_const_self == other<CScriptWorldProperty>())
 	];
 }

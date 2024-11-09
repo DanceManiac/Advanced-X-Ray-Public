@@ -54,7 +54,7 @@ void CScriptNetPacket::script_register(lua_State *L)
 			.def(					constructor<>()				)
 			.def("value",			&ClientID::value			)
 			.def("set",				&ClientID::set				)
-			.def(self == other<ClientID>()),
+			.def(m_self == other<ClientID>()),
 
 		class_<NET_Packet>("net_packet")
 			.def(					constructor<>()				)

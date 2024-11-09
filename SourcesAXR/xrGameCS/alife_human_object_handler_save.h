@@ -348,7 +348,7 @@ int CSE_ALifeHumanAbstract::ifChooseEquipment(OBJECT_VECTOR *tpObjectVector)
 //	CSE_ALifeInventoryItem			*l_tpALifeItemBest	= 0;
 //	float							l_fItemBestValue	= -1.f;
 //	ai().ef_storage().alife_evaluation(true);
-//	ai().ef_storage().alife().member()	= this;
+//	ai().ef_storage().alife().get_member()	= this;
 //
 //	ITEM_P_IT					I = alife().m_temp_item_vector.begin(), X;
 //	ITEM_P_IT					E = alife().m_temp_item_vector.end();
@@ -385,7 +385,7 @@ int  CSE_ALifeHumanAbstract::ifChooseWeapon(EWeaponPriorityType tWeaponPriorityT
 	CSE_ALifeInventoryItem	*l_tpALifeItemBest	= 0;
 	float					l_fItemBestValue	= -1.f;
 	ai().ef_storage().alife_evaluation	(true);
-	ai().ef_storage().alife().member()	= this;
+	ai().ef_storage().alife().get_member()	= this;
 
 	u32						l_dwSafeMoney = m_dwTotalMoney;
 	ITEM_P_IT				I = alife().m_temp_item_vector.begin();
@@ -456,7 +456,7 @@ int  CSE_ALifeHumanAbstract::ifChooseFood(OBJECT_VECTOR *tpObjectVector)
 #pragma todo("Dima to Dima : Add food and medikit items need count computations")
 	// choosing food
 	ai().ef_storage().alife_evaluation(true);
-	ai().ef_storage().alife().member()	= this;
+	ai().ef_storage().alife().get_member()	= this;
 	u32							l_dwCount = 0, l_dwSafeMoney = m_dwTotalMoney;
 	ITEM_P_IT					I = alife().m_temp_item_vector.begin();
 	ITEM_P_IT					E = alife().m_temp_item_vector.end();
@@ -525,7 +525,7 @@ int  CSE_ALifeHumanAbstract::ifChooseDetector(OBJECT_VECTOR *tpObjectVector)
 	CSE_ALifeInventoryItem		*l_tpALifeItemBest	= 0;
 	float						l_fItemBestValue	= -1.f;
 	ai().ef_storage().alife_evaluation(true);
-	ai().ef_storage().alife().member()	= this;
+	ai().ef_storage().alife().get_member()	= this;
 	ITEM_P_IT					I = alife().m_temp_item_vector.begin(), X;
 	ITEM_P_IT					E = alife().m_temp_item_vector.end();
 	for ( ; I != E; ++I) {

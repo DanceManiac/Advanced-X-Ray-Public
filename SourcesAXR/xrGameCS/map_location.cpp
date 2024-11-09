@@ -768,7 +768,7 @@ bool CRelationMapLocation::Update()
 			CEntityAlive* ea = smart_cast<CEntityAlive*>(_object_);
 			if(ea&&!ea->g_Alive()) return true;
 
-			vis_res =  Actor()->memory().visual().visible_now(smart_cast<const CGameObject*>(_object_));
+			vis_res =  Actor()->get_memory().visual().visible_now(smart_cast<const CGameObject*>(_object_));
 		}
 		else
 			vis_res = false;

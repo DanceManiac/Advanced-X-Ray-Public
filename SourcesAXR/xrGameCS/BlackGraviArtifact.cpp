@@ -207,7 +207,7 @@ void CBlackGraviArtefact::GraviStrike()
 		CEntityAlive* pEntityAlive = smart_cast<CEntityAlive*>(pGameObject);
 		if(pGameObject->m_pPhysicsShell)	hit_power = 0;
 		else if(pEntityAlive && pEntityAlive->g_Alive() && 
-				pEntityAlive->character_physics_support()->movement()->CharacterExist())
+				pEntityAlive->character_physics_support()->get_movement()->CharacterExist())
 			hit_power = 0;
 		else
 			hit_power = impulse;

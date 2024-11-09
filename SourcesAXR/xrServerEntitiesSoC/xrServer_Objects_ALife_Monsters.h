@@ -271,7 +271,7 @@ public:
 	virtual CSE_ALifeSchedulable	*cast_schedulable		() {return this;};
 	virtual CSE_ALifeMonsterAbstract*cast_monster_abstract	() {return this;};
 
-	IC		CALifeMonsterBrain		&brain					() const {VERIFY(m_brain); return(*m_brain);}
+	IC		CALifeMonsterBrain		&get_brain					() const {VERIFY(m_brain); return(*m_brain);}
 	virtual CALifeMonsterBrain		*create_brain			();
 	virtual u32						ef_creature_type		() const;
 	virtual u32						ef_weapon_type			() const;
@@ -428,7 +428,7 @@ public:
 	virtual CSE_ALifeHumanAbstract	*cast_human_abstract	() {return this;};
 	virtual bool					natural_weapon			() const {return false;}
 	virtual bool					natural_detector		() const {return false;}
-	IC		CALifeHumanBrain		&brain					() const {VERIFY(m_brain); return(*m_brain);}
+	IC		CALifeHumanBrain		&get_brain					() const {VERIFY(m_brain); return(*m_brain);}
 	virtual CALifeMonsterBrain		*create_brain			();
 
 #ifdef XRGAME_EXPORTS

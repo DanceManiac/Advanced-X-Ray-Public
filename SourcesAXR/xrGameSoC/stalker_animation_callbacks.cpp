@@ -51,7 +51,7 @@ void _detail::callback		(CBoneInstance *B)
 	Fvector c				= B->mTransform.c;
 	Fmatrix					spin;
 	float					yaw_factor = 0, pitch_factor = 0;
-	if (A->sight().use_torso_look()) {
+	if (A->get_sight().use_torso_look()) {
 		yaw_factor			= yaw_factor_fire/100.f;
 		pitch_factor		= pitch_factor_fire/100.f;
 	}
@@ -70,11 +70,11 @@ void _detail::callback		(CBoneInstance *B)
 		VERIFY				(_valid(effector_pitch));
 	}
 
-	VERIFY					(_valid(A->movement().head_orientation().current.yaw));
-	VERIFY					(_valid(A->movement().body_orientation().current.yaw));
+	VERIFY					(_valid(A->get_movement().head_orientation().current.yaw));
+	VERIFY					(_valid(A->get_movement().body_orientation().current.yaw));
 	VERIFY					(_valid(A->NET_Last.o_torso.pitch));
 
-	float					yaw		= angle_normalize_signed(-yaw_factor * angle_normalize_signed(A->movement().head_orientation().current.yaw + effector_yaw - (A->movement().body_orientation().current.yaw)));
+	float					yaw		= angle_normalize_signed(-yaw_factor * angle_normalize_signed(A->get_movement().head_orientation().current.yaw + effector_yaw - (A->get_movement().body_orientation().current.yaw)));
 	float					pitch	= angle_normalize_signed(-pitch_factor * angle_normalize_signed(A->NET_Last.o_torso.pitch + effector_pitch));
 	VERIFY					(_valid(yaw));
 	VERIFY					(_valid(pitch));

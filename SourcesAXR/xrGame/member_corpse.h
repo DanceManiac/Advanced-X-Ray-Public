@@ -19,12 +19,12 @@ private:
 public:
 	IC					CMemberCorpse	(CAI_Stalker *corpse, CAI_Stalker *reactor, u32 time);
 	IC	bool			operator==		(CAI_Stalker *corpse) const;
-	IC	void			reactor			(CAI_Stalker *reactor);
+	IC	void			set_reactor		(CAI_Stalker *reactor);
 
 public:
-	IC	CAI_Stalker		*corpse			() const;
-	IC	CAI_Stalker		*reactor		() const;
-	IC	u32				time			() const;
+	IC	CAI_Stalker		*get_corpse			() const;
+	IC	CAI_Stalker		*get_reactor		() const;
+	IC	u32				get_time			() const;
 };
 
 #include "member_corpse_inline.h"

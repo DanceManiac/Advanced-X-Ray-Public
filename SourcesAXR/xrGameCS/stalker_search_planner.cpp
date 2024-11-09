@@ -35,7 +35,7 @@ void CStalkerSearchPlanner::initialize				()
 {
 	inherited::initialize	();
 	
-	object().agent_manager().member().member(&object()).cover(0);
+	object().agent_manager().get_member().member(&object()).cover(0);
 
 	CScriptActionPlanner::m_storage.set_property(eWorldPropertyEnemyLocationReached,	false);
 	CScriptActionPlanner::m_storage.set_property(eWorldPropertyAmbushLocationReached,	false);

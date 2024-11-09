@@ -84,6 +84,6 @@ void CScriptIniFile::script_register(lua_State *L)
 #ifdef XRGAME_EXPORTS
 		def("game_ini",				&get_game_ini),
 #endif // XRGAME_EXPORTS
-		def("create_ini_file",		&create_ini_file, adopt<result>())
+		def("create_ini_file",		&create_ini_file, adopt<m_result>())
 	];
 }

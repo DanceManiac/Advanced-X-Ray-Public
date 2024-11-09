@@ -136,7 +136,7 @@ void CStalkerAnimationPair::play			(IKinematicsAnimated *skeleton_animated, Play
 		m_blend				= skeleton_animated->PlayCycle( animation(), TRUE, callback, m_object );
 
 		if (m_step_dependence && continue_interrupted_animation) {
-			if (m_object->animation().standing()) 
+			if (m_object->get_animation().standing()) 
 				pos			= 0.5f;
 
 			if (m_blend)

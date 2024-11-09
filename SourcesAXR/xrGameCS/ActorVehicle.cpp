@@ -49,7 +49,7 @@ void CActor::attach_Vehicle(CHolderCustom* vehicle)
 	u16 head_bone = pK->LL_BoneID("bip01_head");
 	pK->LL_GetBoneInstance(u16(head_bone)).set_callback(bctPhysics, VehicleHeadCallback, this);
 
-	character_physics_support()->movement()->DestroyCharacter();
+	character_physics_support()->get_movement()->DestroyCharacter();
 	mstate_wishful = 0;
 	m_holder = vehicle;
 	m_holderID = car->ID();
@@ -73,7 +73,7 @@ void CActor::detach_Vehicle()
 
 	car->PPhysicsShell()->SplitterHolderDeactivate();
 
-	if(!character_physics_support()->movement()->ActivateBoxDynamic(0))
+	if(!character_physics_support()->get_movement()->ActivateBoxDynamic(0))
 	{
 		car->PPhysicsShell()->SplitterHolderActivate();
 		return;
@@ -81,8 +81,8 @@ void CActor::detach_Vehicle()
 	car->PPhysicsShell()->SplitterHolderActivate();
 	m_holder->detach_Actor();
 
-	character_physics_support()->movement()->SetPosition(m_holder->ExitPosition());
-	character_physics_support()->movement()->SetVelocity(m_holder->ExitVelocity());
+	character_physics_support()->get_movement()->SetPosition(m_holder->ExitPosition());
+	character_physics_support()->get_movement()->SetVelocity(m_holder->ExitVelocity());
 
 	r_model_yaw=-m_holder->Camera()->yaw;
 	r_torso.yaw=r_model_yaw;

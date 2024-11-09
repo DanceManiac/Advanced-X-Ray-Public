@@ -235,7 +235,7 @@ void CALifeMonsterDetailPathManager::follow_path				(const ALife::_TIME_ID &time
 //		Msg									("%6d %s changes graph point from %d to %d",Device.dwTimeGlobal,object().name_replace(),object().m_tGraphID,(GameGraph::_GRAPH_ID)m_path.back());
 		object().alife().graph().change		(&object(),object().m_tGraphID,(GameGraph::_GRAPH_ID)m_path.back());
 		VERIFY								(m_path.back() == object().m_tGraphID);
-		object().brain().on_location_change	();
+		object().get_brain().on_location_change	();
 		VERIFY								(m_path.back() == object().m_tGraphID);
 	}
 }

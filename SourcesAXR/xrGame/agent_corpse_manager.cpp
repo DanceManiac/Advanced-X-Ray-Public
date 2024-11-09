@@ -18,7 +18,7 @@
 struct CRemoveMemberCorpsesPredicate {
 	IC	bool operator()				(CMemberCorpse &corpse) const
 	{
-		return		(!!corpse.reactor());
+		return		(!!corpse.get_reactor());
 	}
 };
 
@@ -32,7 +32,7 @@ struct CRemoveOfflineCorpsesPredicate {
 
 	IC	bool operator()						(CMemberCorpse &corpse) const
 	{
-		return		(corpse.corpse()->ID() == m_object->ID());
+		return		(corpse.get_corpse()->ID() == m_object->ID());
 	}
 };
 
@@ -43,14 +43,14 @@ bool CAgentCorpseManager::process_corpse	(CMemberOrder &member)
 	xr_vector<CMemberCorpse>::iterator	I = m_corpses.begin();
 	xr_vector<CMemberCorpse>::iterator	E = m_corpses.end();
 	for ( ; I != E; ++I) {
-		if (!member.object().memory().visual().visible_now((*I).corpse()))
+		if (!member.object().get_memory().visual().visible_now((*I).get_corpse()))
 			continue;
 
-		float		dist_sqr = (*I).corpse()->Position().distance_to_sqr(member.object().Position());
+		float		dist_sqr = (*I).get_corpse()->Position().distance_to_sqr(member.object().Position());
 		if (dist_sqr < min_dist_sqr) {
 			if	(
-					(*I).reactor() && 
-					((*I).reactor()->Position().distance_to_sqr((*I).corpse()->Position()) <= min_dist_sqr)
+					(*I).get_reactor() &&
+					((*I).get_reactor()->Position().distance_to_sqr((*I).get_corpse()->Position()) <= min_dist_sqr)
 				)
 				continue;
 			min_dist_sqr	= dist_sqr;
@@ -61,7 +61,7 @@ bool CAgentCorpseManager::process_corpse	(CMemberOrder &member)
 	if (!best_corpse)
 		return				(false);
 
-	best_corpse->reactor	(&member.object());
+	best_corpse->set_reactor	(&member.object());
 	return					(true);
 }
 
@@ -69,8 +69,8 @@ void CAgentCorpseManager::react_on_member_death			()
 {
 	for (;;) {
 		bool						changed = false;
-		CAgentMemberManager::MEMBER_STORAGE::iterator	I = object().member().combat_members().begin();
-		CAgentMemberManager::MEMBER_STORAGE::iterator	E = object().member().combat_members().end();
+		CAgentMemberManager::MEMBER_STORAGE::iterator	I = object().get_member().combat_members().begin();
+		CAgentMemberManager::MEMBER_STORAGE::iterator	E = object().get_member().combat_members().end();
 		for ( ; I != E; ++I)
 			if (!(*I)->member_death_reaction().m_processing)
 				changed				= process_corpse(**I);
@@ -83,12 +83,12 @@ void CAgentCorpseManager::react_on_member_death			()
 		MEMBER_CORPSES::iterator	I = m_corpses.begin();
 		MEMBER_CORPSES::iterator	E = m_corpses.end();
 		for ( ; I != E; ++I) {
-			if (!(*I).reactor())
+			if (!(*I).get_reactor())
 				continue;
 
-			CMemberOrder::CMemberDeathReaction	&reaction = object().member().member((*I).reactor()).member_death_reaction();
-			reaction.m_member		= (*I).corpse();
-			reaction.m_time			= (*I).time();
+			CMemberOrder::CMemberDeathReaction	&reaction = object().get_member().member((*I).get_reactor()).member_death_reaction();
+			reaction.m_member		= (*I).get_corpse();
+			reaction.m_time			= (*I).get_time();
 			reaction.m_processing	= true;
 		}
 

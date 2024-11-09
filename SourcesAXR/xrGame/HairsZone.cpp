@@ -24,7 +24,7 @@ void CHairsZone::CheckForAwaking()
 
 		CEntityAlive* pEnt = smart_cast<CEntityAlive*>(pObject);
 		if(pEnt){
-			float sp = pEnt->character_physics_support()->movement()->GetVelocityActual();
+			float sp = pEnt->character_physics_support()->get_movement()->GetVelocityActual();
 			if(sp>m_min_speed_to_react){
 				SwitchZoneState				(eZoneStateAwaking);
 				return;

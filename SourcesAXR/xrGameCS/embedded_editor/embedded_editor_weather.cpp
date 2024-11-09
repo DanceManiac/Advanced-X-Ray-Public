@@ -322,9 +322,11 @@ void ShowWeatherEditor(bool& show)
 	ImGui::Separator();
 	bool changed = false;
 	sel = -1;
-	for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_ambients_config->sections().size(); i++)
+	{
 		if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
 			sel = i;
+	}
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_amb_light_options").c_str()).c_str());
 
@@ -426,9 +428,11 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("sun_shafts_intensity", &cur->m_fSunShaftsIntensity, 0.0f, 2.0f))
 		changed = true;
 	sel = 0;
-	for (int i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
+	{
 		if (cur->tb_id == env.m_thunderbolt_collections_config->sections()[i]->Name)
 			sel = i + 1;
+	}
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_thunder_bolt_options").c_str()).c_str());
 

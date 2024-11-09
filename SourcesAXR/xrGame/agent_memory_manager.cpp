@@ -30,8 +30,8 @@ IC	void CAgentMemoryManager::reset_memory_masks					(T &objects)
 	typename T::iterator	I = objects.begin();
 	typename T::iterator	E = objects.end();
 	for ( ; I != E; ++I)
-		if (object().member().combat_mask() & (*I).m_squad_mask.get())
-			(*I).m_squad_mask.assign((*I).m_squad_mask.get() | object().member().combat_mask());
+		if (object().get_member().combat_mask() & (*I).m_squad_mask.get())
+			(*I).m_squad_mask.assign((*I).m_squad_mask.get() | object().get_member().combat_mask());
 }
 
 void CAgentMemoryManager::reset_memory_masks						()

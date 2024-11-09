@@ -69,7 +69,7 @@ void CStalkerCombatPlanner::setup				(CAI_Stalker *object, CPropertyStorage *sto
 	CScriptActionPlanner::m_storage.set_property(eWorldPropertyUseCrouchToLookOut,	true);
 	CScriptActionPlanner::m_storage.set_property(eWorldPropertyKilledWounded,		false);
 
-	this->object().brain().CStalkerPlanner::m_storage.set_property(eWorldPropertyCriticallyWounded,	false);
+	this->object().get_brain().CStalkerPlanner::m_storage.set_property(eWorldPropertyCriticallyWounded,	false);
 	
 	clear					();
 	add_evaluators			();
@@ -92,7 +92,7 @@ void CStalkerCombatPlanner::update				()
 	object().react_on_grenades		();
 	object().react_on_member_death	();
 
-//	const CEntityAlive				*enemy = object().memory().enemy().selected();
+//	const CEntityAlive				*enemy = object().get_memory().get_enemy().selected();
 //	VERIFY							(enemy);
 //	const CAI_Stalker				*stalker = smart_cast<const CAI_Stalker*>(enemy);
 //	m_last_wounded					= stalker && stalker->wounded();
@@ -111,14 +111,14 @@ void CStalkerCombatPlanner::initialize			()
 		CScriptActionPlanner::m_storage.set_property(eWorldPropertyUseSuddenness,	true);
 		CScriptActionPlanner::m_storage.set_property(eWorldPropertyKilledWounded,	false);
 
-		object().brain().CStalkerPlanner::m_storage.set_property(eWorldPropertyCriticallyWounded,	false);
+		object().get_brain().CStalkerPlanner::m_storage.set_property(eWorldPropertyCriticallyWounded,	false);
 	}
 
-	object().agent_manager().member().member(m_object).cover(0);
+	object().agent_manager().get_member().member(m_object).cover(0);
 	// this is fake, should be revisited
 	// we must clear path, since it can be built using eMentalStateFree velocities
 	// and our new path may not be ready
-	object().movement().clear_path();
+	object().get_movement().clear_path();
 
 	object().m_clutched_hammer_enabled	= true;
 
@@ -126,29 +126,29 @@ void CStalkerCombatPlanner::initialize			()
 	m_last_level_time		= 0;
 	m_last_wounded			= false;
 
-	if (!m_loaded && object().memory().enemy().selected()) {
-		CVisualMemoryManager*visual_memory_manager = object().memory().enemy().selected()->visual_memory();
+	if (!m_loaded && object().get_memory().get_enemy().selected()) {
+		CVisualMemoryManager*visual_memory_manager = object().get_memory().get_enemy().selected()->visual_memory();
 		VERIFY				(visual_memory_manager);
 		CScriptActionPlanner::m_storage.set_property(eWorldPropertyUseSuddenness,	!visual_memory_manager->visible_now(&object()));
 	}
 
 	m_loaded				= false;
 
-	if (!object().agent_manager().member().combat_members().empty())
+	if (!object().agent_manager().get_member().combat_members().empty())
 		CScriptActionPlanner::m_storage.set_property		(eWorldPropertyUseSuddenness,	false);
 
 //  this is possible when i enter combat when it is wait after combat stage
-//	VERIFY					(object().memory().enemy().selected());
+//	VERIFY					(object().get_memory().get_enemy().selected());
 
-	if (m_object->memory().visual().visible_now(m_object->memory().enemy().selected())) {
-		if (m_object->memory().enemy().selected()->human_being())
-			if (object().agent_manager().member().can_cry_noninfo_phrase())
-				if (object().agent_manager().member().members().size() > 1)
+	if (m_object->get_memory().visual().visible_now(m_object->get_memory().get_enemy().selected())) {
+		if (m_object->get_memory().get_enemy().selected()->human_being())
+			if (object().agent_manager().get_member().can_cry_noninfo_phrase())
+				if (object().agent_manager().get_member().members().size() > 1)
 					if (!CScriptActionPlanner::m_storage.property(eWorldPropertyUseSuddenness))
-						object().sound().play	(eStalkerSoundAlarm);
+						object().get_sound().play	(eStalkerSoundAlarm);
 	}
 
-	object().agent_manager().member().register_in_combat	(m_object);
+	object().agent_manager().get_member().register_in_combat	(m_object);
 }
 
 void CStalkerCombatPlanner::finalize			()
@@ -158,13 +158,13 @@ void CStalkerCombatPlanner::finalize			()
 	if (!object().g_Alive())
 		return;
 
-	object().memory().danger().time_line					(Device.dwTimeGlobal + 3000);
-	if (object().agent_manager().member().registered_in_combat(m_object))
-		object().agent_manager().member().unregister_in_combat	(m_object);
+	object().get_memory().danger().time_line					(Device.dwTimeGlobal + 3000);
+	if (object().agent_manager().get_member().registered_in_combat(m_object))
+		object().agent_manager().get_member().unregister_in_combat	(m_object);
 
 	object().m_clutched_hammer_enabled						= false;
 
-//	object().sound().remove_active_sounds					(eStalkerSoundMaskNoDanger);
+//	object().get_sound().remove_active_sounds					(eStalkerSoundMaskNoDanger);
 }
 
 void CStalkerCombatPlanner::add_evaluators		()
@@ -190,8 +190,8 @@ void CStalkerCombatPlanner::add_evaluators		()
 	add_evaluator			(eWorldPropertyPositionHolded	,xr_new<CStalkerPropertyEvaluatorMember>			((CPropertyStorage*)0,eWorldPropertyPositionHolded,true,true,"position holded"));
 	add_evaluator			(eWorldPropertyEnemyDetoured	,xr_new<CStalkerPropertyEvaluatorMember>			((CPropertyStorage*)0,eWorldPropertyEnemyDetoured,true,true,"enemy detoured"));
 	add_evaluator			(eWorldPropertyUseSuddenness	,xr_new<CStalkerPropertyEvaluatorMember>			((CPropertyStorage*)0,eWorldPropertyUseSuddenness,true,true,"use suddenness"));
-	add_evaluator			(eWorldPropertyCriticallyWounded,xr_new<CStalkerPropertyEvaluatorMember>			(&object().brain().CStalkerPlanner::m_storage,eWorldPropertyCriticallyWounded,true,true,"critically wounded"));
-	add_evaluator			(eWorldPropertyKilledWounded	,xr_new<CStalkerPropertyEvaluatorMember>			(&object().brain().CStalkerPlanner::m_storage,eWorldPropertyKilledWounded,true,true,"killed critically wounded"));
+	add_evaluator			(eWorldPropertyCriticallyWounded,xr_new<CStalkerPropertyEvaluatorMember>			(&object().get_brain().CStalkerPlanner::m_storage,eWorldPropertyCriticallyWounded,true,true,"critically wounded"));
+	add_evaluator			(eWorldPropertyKilledWounded	,xr_new<CStalkerPropertyEvaluatorMember>			(&object().get_brain().CStalkerPlanner::m_storage,eWorldPropertyKilledWounded,true,true,"killed critically wounded"));
 }
 
 void CStalkerCombatPlanner::add_actions			()

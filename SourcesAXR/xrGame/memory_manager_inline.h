@@ -19,7 +19,7 @@ IC	void CMemoryManager::fill_enemies	(const xr_vector<T> &objects, const _predic
 
 		const CEntityAlive	*_enemy = smart_cast<const CEntityAlive*>((*I).m_object);
 
-		if (_enemy && enemy().useful(_enemy))
+		if (_enemy && get_enemy().useful(_enemy))
 			predicate		(_enemy);
 	}
 }
@@ -38,7 +38,7 @@ IC	CVisualMemoryManager	&CMemoryManager::visual		() const
 	return					(*m_visual);
 }
 
-IC	CSoundMemoryManager		&CMemoryManager::sound		() const
+IC	CSoundMemoryManager		&CMemoryManager::get_sound		() const
 {
 	VERIFY					(m_sound);
 	return					(*m_sound);
@@ -50,7 +50,7 @@ IC	CHitMemoryManager		&CMemoryManager::hit		() const
 	return					(*m_hit);
 }
 
-IC	CEnemyManager			&CMemoryManager::enemy		() const
+IC	CEnemyManager			&CMemoryManager::get_enemy		() const
 {
 	VERIFY					(m_enemy);
 	return					(*m_enemy);

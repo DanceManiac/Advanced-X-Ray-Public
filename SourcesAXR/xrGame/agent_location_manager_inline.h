@@ -22,10 +22,10 @@ struct CRemoveDangerObject {
 	}
 };
 
-IC	CAgentLocationManager::CAgentLocationManager(CAgentManager *object)
+IC	CAgentLocationManager::CAgentLocationManager(CAgentManager *object_)
 {
-	VERIFY						(object);
-	m_object					= object;
+	VERIFY						(object_);
+	m_object					= object_;
 }
 
 IC	CAgentManager &CAgentLocationManager::object() const

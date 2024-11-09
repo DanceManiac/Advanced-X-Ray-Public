@@ -290,33 +290,33 @@ void CGamePersistent::WeathersUpdate()
 				if ((FALSE == bIndoor) && (0 == ambient_particles) && Device.dwTimeGlobal > ambient_effect_next_time) {
 					CEnvAmbient::SEffect* eff = env_amb->get_rnd_effect();
 					if (eff) {
-						Environment().wind_gust_factor = eff->wind_gust_factor;
+						Environment().wind_gust_factor = eff->m_wind_gust_factor;
 						ambient_effect_next_time = Device.dwTimeGlobal + env_amb->get_rnd_effect_time();
-						ambient_effect_stop_time = Device.dwTimeGlobal + eff->life_time;
+						ambient_effect_stop_time = Device.dwTimeGlobal + eff->m_life_time;
 						ambient_effect_wind_start = Device.fTimeGlobal;
-						ambient_effect_wind_in_time = Device.fTimeGlobal + eff->wind_blast_in_time;
-						ambient_effect_wind_end = Device.fTimeGlobal + eff->life_time / 1000.f;
-						ambient_effect_wind_out_time = Device.fTimeGlobal + eff->life_time / 1000.f + eff->wind_blast_out_time;
+						ambient_effect_wind_in_time = Device.fTimeGlobal + eff->m_wind_blast_in_time;
+						ambient_effect_wind_end = Device.fTimeGlobal + eff->m_life_time / 1000.f;
+						ambient_effect_wind_out_time = Device.fTimeGlobal + eff->m_life_time / 1000.f + eff->m_wind_blast_out_time;
 						ambient_effect_wind_on = true;
 
-						ambient_particles = CParticlesObject::Create(eff->particles.c_str(), FALSE, false);
-						Fvector pos; pos.add(Device.vCameraPosition, eff->offset);
+						ambient_particles = CParticlesObject::Create(eff->m_particles.c_str(), FALSE, false);
+						Fvector pos; pos.add(Device.vCameraPosition, eff->m_offset);
 						ambient_particles->play_at_pos(pos);
-						if (eff->sound._handle())		eff->sound.play_at_pos(0, pos);
+						if (eff->m_sound._handle())		eff->m_sound.play_at_pos(0, pos);
 
 
 						Environment().wind_blast_strength_start_value = Environment().wind_strength_factor;
-						Environment().wind_blast_strength_stop_value = eff->wind_blast_strength;
+						Environment().wind_blast_strength_stop_value = eff->m_wind_blast_strength;
 
 						if (Environment().wind_blast_strength_start_value == 0.f)
 						{
-							Environment().wind_blast_start_time.set(0.f, eff->wind_blast_direction.x, eff->wind_blast_direction.y, eff->wind_blast_direction.z);
+							Environment().wind_blast_start_time.set(0.f, eff->m_wind_blast_direction.x, eff->m_wind_blast_direction.y, eff->m_wind_blast_direction.z);
 						}
 						else
 						{
-							Environment().wind_blast_start_time.set(0.f, Environment().wind_blast_direction.x, Environment().wind_blast_direction.y, Environment().wind_blast_direction.z);
+							Environment().wind_blast_start_time.set(0.f, Environment().m_wind_blast_direction.x, Environment().m_wind_blast_direction.y, Environment().m_wind_blast_direction.z);
 						}
-						Environment().wind_blast_stop_time.set(0.f, eff->wind_blast_direction.x, eff->wind_blast_direction.y, eff->wind_blast_direction.z);
+						Environment().wind_blast_stop_time.set(0.f, eff->m_wind_blast_direction.x, eff->m_wind_blast_direction.y, eff->m_wind_blast_direction.z);
 					}
 				}
 			}
@@ -336,7 +336,7 @@ void CGamePersistent::WeathersUpdate()
 				}
 				Environment().wind_blast_current.slerp(Environment().wind_blast_start_time, Environment().wind_blast_stop_time, t);
 
-				Environment().wind_blast_direction.set(Environment().wind_blast_current.x, Environment().wind_blast_current.y, Environment().wind_blast_current.z);
+				Environment().m_wind_blast_direction.set(Environment().wind_blast_current.x, Environment().wind_blast_current.y, Environment().wind_blast_current.z);
 				Environment().wind_strength_factor = Environment().wind_blast_strength_start_value + t * (Environment().wind_blast_strength_stop_value - Environment().wind_blast_strength_start_value);
 			}
 
@@ -422,15 +422,15 @@ void CGamePersistent::WeathersUpdate()
 					CEnvAmbient::SEffect* eff = env_amb->get_rnd_effect();
 					if (eff)
 					{
-						Environment().wind_gust_factor = eff->wind_gust_factor;
+						Environment().wind_gust_factor = eff->m_wind_gust_factor;
 						ambient_effect_next_time = Device.dwTimeGlobal + env_amb->get_rnd_effect_time_shoc();
-						ambient_effect_stop_time = Device.dwTimeGlobal + eff->life_time;
-						ambient_particles = CParticlesObject::Create(eff->particles.c_str(), FALSE, false);
+						ambient_effect_stop_time = Device.dwTimeGlobal + eff->m_life_time;
+						ambient_particles = CParticlesObject::Create(eff->m_particles.c_str(), FALSE, false);
 						Fvector pos;
-						pos.add(Device.vCameraPosition, eff->offset);
+						pos.add(Device.vCameraPosition, eff->m_offset);
 						ambient_particles->play_at_pos(pos);
-						if (eff->sound._handle())
-							eff->sound.play_at_pos(0, pos);
+						if (eff->m_sound._handle())
+							eff->m_sound.play_at_pos(0, pos);
 					}
 				}
 				else if (!ambient_particles && Device.dwTimeGlobal > ambient_effect_next_time)

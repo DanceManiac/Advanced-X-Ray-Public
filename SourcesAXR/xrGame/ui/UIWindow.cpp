@@ -263,8 +263,8 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {	
 	Frect	wndRect = GetWndRect();
 
-	cursor_pos.x = x;
-	cursor_pos.y = y;
+	m_cursor_pos.x = x;
+	m_cursor_pos.y = y;
 
 
 	if( WINDOW_LBUTTON_DOWN == mouse_action )
@@ -283,11 +283,11 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 
 	if(GetParent()== NULL)
 	{
-		if(!wndRect.in(cursor_pos))
+		if(!wndRect.in(m_cursor_pos))
             return false;
 		//получить координаты относительно окна
-		cursor_pos.x -= wndRect.left;
-		cursor_pos.y -= wndRect.top;
+		m_cursor_pos.x -= wndRect.left;
+		m_cursor_pos.y -= wndRect.top;
 	}
 
 
@@ -295,9 +295,9 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	//сообщение направляем ему сразу
 	if(m_pMouseCapturer)
 	{
-		m_pMouseCapturer->OnMouseAction(cursor_pos.x - m_pMouseCapturer->GetWndRect().left, 
-								  cursor_pos.y - m_pMouseCapturer->GetWndRect().top, 
-								  mouse_action);
+		m_pMouseCapturer->OnMouseAction(m_cursor_pos.x - m_pMouseCapturer->GetWndRect().left,
+								m_cursor_pos.y - m_pMouseCapturer->GetWndRect().top, 
+								mouse_action);
 		return true;
 	}
 
@@ -340,18 +340,18 @@ bool CUIWindow::OnMouseAction(float x, float y, EUIMessages mouse_action)
 
 		Frect wndRect_ = w->GetWndRect();
 
-		if (wndRect_.in(cursor_pos) )
+		if (wndRect_.in(m_cursor_pos) )
 		{
 			if(w->IsEnabled())
 			{
-				if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
-							   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
+				if( w->OnMouseAction(m_cursor_pos.x -w->GetWndRect().left, 
+							m_cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 			}
 		}
 		else if (w->IsEnabled() && w->CursorOverWindow())
 		{
-			if( w->OnMouseAction(cursor_pos.x -w->GetWndRect().left, 
-						   cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
+			if( w->OnMouseAction(m_cursor_pos.x -w->GetWndRect().left,
+						m_cursor_pos.y -w->GetWndRect().top, mouse_action))return true;
 		}
 	}
 
@@ -520,11 +520,11 @@ CUIWindow* CUIWindow::GetChildMouseHandler(){
 		Frect wndRect = (*it)->GetWndRect();
 		// very strange code.... i can't understand difference between
 		// first and second condition. I Got It from OnMouseAction() method;
-		if (wndRect.in(cursor_pos) )
+		if (wndRect.in(m_cursor_pos) )
 		{
 			if((*it)->IsEnabled())
 			{
-				return pWndResult = (*it)->GetChildMouseHandler();				
+				return pWndResult = (*it)->GetChildMouseHandler();
 			}
 		}
 		else if ((*it)->IsEnabled() && (*it)->CursorOverWindow())

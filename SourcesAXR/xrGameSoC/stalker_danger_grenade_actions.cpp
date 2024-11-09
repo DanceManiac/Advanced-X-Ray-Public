@@ -42,25 +42,25 @@ void CStalkerActionDangerGrenadeTakeCover::initialize						()
 	set_property			(eWorldPropertyCoverReached,false);
 	set_property			(eWorldPropertyLookedAround,false);
 
-	object().movement().set_desired_direction	(0);
-	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_movement_type		(eMovementTypeRun);
+	object().get_movement().set_desired_direction	(0);
+	object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_movement_type		(eMovementTypeRun);
 }
 
 void CStalkerActionDangerGrenadeTakeCover::execute							()
 {
 	inherited::execute		();
-	if (!object().memory().danger().selected())
+	if (!object().get_memory().danger().selected())
 		return;
 
-	const CCoverPoint		*point = object().agent_manager().member().member(&object()).cover();
+	const CCoverPoint		*point = object().agent_manager().get_member().member(&object()).cover();
 	if (point) {
-		object().movement().set_level_dest_vertex	(point->level_vertex_id());
-		object().movement().set_desired_position	(&point->position());
+		object().get_movement().set_level_dest_vertex	(point->level_vertex_id());
+		object().get_movement().set_desired_position	(&point->position());
 	}	
 	else
-		object().movement().set_nearest_accessible_position	();
+		object().get_movement().set_nearest_accessible_position	();
 
 	EMentalState				temp;
 	{
@@ -84,15 +84,15 @@ void CStalkerActionDangerGrenadeTakeCover::execute							()
 		}
 	}
 
-	if (!object().movement().path_completed()) {
-		object().movement().set_body_state			(eBodyStateStand);
-		if (object().movement().distance_to_destination_greater(2.f)) {
-			object().movement().set_mental_state	(temp);
-			object().sight().setup					(CSightAction(SightManager::eSightTypePathDirection,true,true));
+	if (!object().get_movement().path_completed()) {
+		object().get_movement().set_body_state			(eBodyStateStand);
+		if (object().get_movement().distance_to_destination_greater(2.f)) {
+			object().get_movement().set_mental_state	(temp);
+			object().get_sight().setup					(CSightAction(SightManager::eSightTypePathDirection,true,true));
 		}
 		else {
-			object().movement().set_mental_state	(eMentalStateDanger);
-			object().sight().setup					(CSightAction(SightManager::eSightTypeCover,true,true));
+			object().get_movement().set_mental_state	(eMentalStateDanger);
+			object().get_sight().setup					(CSightAction(SightManager::eSightTypeCover,true,true));
 		}
 		return;
 	}
@@ -118,25 +118,25 @@ void CStalkerActionDangerGrenadeWaitForExplosion::initialize							()
 {
 	inherited::initialize						();
 
-	object().movement().set_desired_direction	(0);
-	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_movement_type		(eMovementTypeStand);
-	object().movement().set_mental_state		(eMentalStateDanger);
-	object().movement().set_body_state			(eBodyStateCrouch);
+	object().get_movement().set_desired_direction	(0);
+	object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_movement_type		(eMovementTypeStand);
+	object().get_movement().set_mental_state		(eMentalStateDanger);
+	object().get_movement().set_body_state			(eBodyStateCrouch);
 	object().CObjectHandler::set_goal			(eObjectActionIdle,object().best_weapon());
 }
 
 void CStalkerActionDangerGrenadeWaitForExplosion::execute							()
 {
 	inherited::execute		();
-	if (!object().memory().danger().selected())
+	if (!object().get_memory().danger().selected())
 		return;
 
-	if (fsimilar(object().movement().body_orientation().target.yaw,object().movement().body_orientation().current.yaw))
-		object().sight().setup					(CSightAction(SightManager::eSightTypeCoverLookOver,true));
+	if (fsimilar(object().get_movement().body_orientation().target.yaw,object().get_movement().body_orientation().current.yaw))
+		object().get_sight().setup					(CSightAction(SightManager::eSightTypeCoverLookOver,true));
 	else
-		object().sight().setup					(CSightAction(SightManager::eSightTypeCover,true));
+		object().get_sight().setup					(CSightAction(SightManager::eSightTypeCover,true));
 }
 
 void CStalkerActionDangerGrenadeWaitForExplosion::finalize							()
@@ -160,10 +160,10 @@ void CStalkerActionDangerGrenadeTakeCoverAfterExplosion::initialize						()
 	set_property			(eWorldPropertyCoverReached,false);
 	set_property			(eWorldPropertyLookedAround,false);
 
-	object().movement().set_desired_direction	(0);
-	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_mental_state		(eMentalStateDanger);
+	object().get_movement().set_desired_direction	(0);
+	object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_mental_state		(eMentalStateDanger);
 
 	m_direction_sight		= !!::Random.randI(2);
 }
@@ -171,26 +171,26 @@ void CStalkerActionDangerGrenadeTakeCoverAfterExplosion::initialize						()
 void CStalkerActionDangerGrenadeTakeCoverAfterExplosion::execute							()
 {
 	inherited::execute		();
-	if (!object().memory().danger().selected())
+	if (!object().get_memory().danger().selected())
 		return;
 
-	const CCoverPoint		*point = object().agent_manager().member().member(&object()).cover();
+	const CCoverPoint		*point = object().agent_manager().get_member().member(&object()).cover();
 	if (point) {
-		object().movement().set_level_dest_vertex	(point->level_vertex_id());
-		object().movement().set_desired_position	(&point->position());
+		object().get_movement().set_level_dest_vertex	(point->level_vertex_id());
+		object().get_movement().set_desired_position	(&point->position());
 	}	
 	else
-		object().movement().set_nearest_accessible_position	();
+		object().get_movement().set_nearest_accessible_position	();
 
 	object().CObjectHandler::set_goal	(eObjectActionAimReady1,object().best_weapon());
 
-	if (!object().movement().path_completed()) {
-		object().movement().set_body_state		(eBodyStateStand);
-		object().movement().set_movement_type	(eMovementTypeRun);
-		if (!m_direction_sight || !object().movement().distance_to_destination_greater(2.f))
-			object().sight().setup				(CSightAction(SightManager::eSightTypeCover,true,true));
+	if (!object().get_movement().path_completed()) {
+		object().get_movement().set_body_state		(eBodyStateStand);
+		object().get_movement().set_movement_type	(eMovementTypeRun);
+		if (!m_direction_sight || !object().get_movement().distance_to_destination_greater(2.f))
+			object().get_sight().setup				(CSightAction(SightManager::eSightTypeCover,true,true));
 		else
-			object().sight().setup				(CSightAction(SightManager::eSightTypePathDirection,true,true));
+			object().get_sight().setup				(CSightAction(SightManager::eSightTypePathDirection,true,true));
 		return;
 	}
 
@@ -217,25 +217,25 @@ void CStalkerActionDangerGrenadeLookAround::initialize						()
 
 	inherited::initialize						();
 
-	object().movement().set_desired_direction	(0);
-	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_movement_type		(eMovementTypeStand);
-	object().movement().set_mental_state		(eMentalStateDanger);
-	object().movement().set_body_state			(eBodyStateCrouch);
+	object().get_movement().set_desired_direction	(0);
+	object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_movement_type		(eMovementTypeStand);
+	object().get_movement().set_mental_state		(eMentalStateDanger);
+	object().get_movement().set_body_state			(eBodyStateCrouch);
 	object().CObjectHandler::set_goal			(eObjectActionAimReady1,object().best_weapon());
 }
 
 void CStalkerActionDangerGrenadeLookAround::execute							()
 {
 	inherited::execute		();
-	if (!object().memory().danger().selected())
+	if (!object().get_memory().danger().selected())
 		return;
 
-	if (fsimilar(object().movement().body_orientation().target.yaw,object().movement().body_orientation().current.yaw))
-		object().sight().setup					(CSightAction(SightManager::eSightTypeCoverLookOver,true));
+	if (fsimilar(object().get_movement().body_orientation().target.yaw,object().get_movement().body_orientation().current.yaw))
+		object().get_sight().setup					(CSightAction(SightManager::eSightTypeCoverLookOver,true));
 	else
-		object().sight().setup					(CSightAction(SightManager::eSightTypeCover,true));
+		object().get_sight().setup					(CSightAction(SightManager::eSightTypeCover,true));
 
 	if (completed())
 		set_property							(eWorldPropertyLookedAround,true);
@@ -258,14 +258,14 @@ CStalkerActionDangerGrenadeSearch::CStalkerActionDangerGrenadeSearch	(CAI_Stalke
 void CStalkerActionDangerGrenadeSearch::initialize						()
 {
 	inherited::initialize	();
-	object().movement().set_desired_direction	(0);
-	object().movement().set_path_type			(MovementManager::ePathTypeLevelPath);
-	object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-	object().movement().set_nearest_accessible_position();
-	object().movement().set_body_state			(eBodyStateStand);
-	object().movement().set_movement_type		(eMovementTypeStand);
-	object().movement().set_mental_state		(eMentalStateDanger);
-	object().sight().setup						(SightManager::eSightTypeCurrentDirection);
+	object().get_movement().set_desired_direction	(0);
+	object().get_movement().set_path_type			(MovementManager::ePathTypeLevelPath);
+	object().get_movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
+	object().get_movement().set_nearest_accessible_position();
+	object().get_movement().set_body_state			(eBodyStateStand);
+	object().get_movement().set_movement_type		(eMovementTypeStand);
+	object().get_movement().set_mental_state		(eMentalStateDanger);
+	object().get_sight().setup						(SightManager::eSightTypeCurrentDirection);
 	object().CObjectHandler::set_goal			(eObjectActionIdle);
 }
 

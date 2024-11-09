@@ -221,8 +221,8 @@ void CUITrackBar::UpdatePosRelativeToMouse()
 
 
 	float btn_width				= m_pSlider->GetWidth();
-	float window_width			= GetWidth();		
-	float fpos					= cursor_pos.x;
+	float window_width			= GetWidth();
+	float fpos					= m_cursor_pos.x;
 
 	if( GetInvert() )
 		fpos					= window_width - fpos;

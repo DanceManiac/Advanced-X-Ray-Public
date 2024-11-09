@@ -350,12 +350,12 @@ CPHSynchronize* CEntityAlive::PHGetSyncItem	(u16 item)
 }
 void CEntityAlive::PHUnFreeze()
 {
-	if(character_physics_support()->movement()->CharacterExist()) character_physics_support()->movement()->UnFreeze();
+	if(character_physics_support()->get_movement()->CharacterExist()) character_physics_support()->get_movement()->UnFreeze();
 	else if(m_pPhysicsShell) m_pPhysicsShell->UnFreeze();
 }
 void CEntityAlive::PHFreeze()
 {
-	if(character_physics_support()->movement()->CharacterExist()) character_physics_support()->movement()->Freeze();
+	if(character_physics_support()->get_movement()->CharacterExist()) character_physics_support()->get_movement()->Freeze();
 	else if(m_pPhysicsShell) m_pPhysicsShell->Freeze();
 }
 //////////////////////////////////////////////////////////////////////
@@ -649,7 +649,7 @@ float CEntityAlive::g_Radiation	()	const
 DLL_Pure *CEntityAlive::_construct	()
 {
 	inherited::_construct	();
-	if(character_physics_support())m_material_manager		= xr_new<CMaterialManager>(this,character_physics_support()->movement());
+	if(character_physics_support())m_material_manager		= xr_new<CMaterialManager>(this,character_physics_support()->get_movement());
 	return					(this);
 }
 

@@ -377,15 +377,19 @@ void ShowWeatherEditor(bool& show)
 
 	if (!env.used_soc_weather)
 	{
-		for (int i = 0; i != env.m_ambients_config->sections().size(); i++)
+		for (u32 i = 0; i != env.m_ambients_config->sections().size(); i++)
+		{
 			if (cur->env_ambient->name() == env.m_ambients_config->sections()[i]->Name)
 				sel = i;
+		}
 	}
 	else
 	{
 		for (int i = 0; i != env.Ambients.size(); i++ )
+		{
 			if (cur->env_ambient->name() == env.Ambients[i]->name())
 				sel = i;
+		}
 	}
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_amb_light_options").c_str()).c_str());

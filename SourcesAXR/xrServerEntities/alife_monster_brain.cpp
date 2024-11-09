@@ -109,8 +109,8 @@ void CALifeMonsterBrain::process_task			()
 {
 	CALifeSmartTerrainTask			*task = smart_terrain().task(&object());
 	THROW3							(task,"smart terrain returned nil task, while npc is registered in it",smart_terrain().name_replace());
-	movement().path_type			(MovementManager::ePathTypeGamePath);
-	movement().detail().target		(*task);
+	get_movement().path_type			(MovementManager::ePathTypeGamePath);
+	get_movement().detail().target		(*task);
 }
 
 void CALifeMonsterBrain::select_task			()
@@ -169,22 +169,22 @@ void CALifeMonsterBrain::update				()
 	else
 		default_behaviour			();
 
-	movement().update				();
+	get_movement().update				();
 }
 
 void CALifeMonsterBrain::default_behaviour	()
 {
-	movement().path_type			(MovementManager::ePathTypeNoPath);
+	get_movement().path_type			(MovementManager::ePathTypeNoPath);
 }
 
 void CALifeMonsterBrain::on_switch_online	()
 {
-	movement().on_switch_online		();
+	get_movement().on_switch_online		();
 }
 
 void CALifeMonsterBrain::on_switch_offline	()
 {
-	movement().on_switch_offline	();
+	get_movement().on_switch_offline	();
 }
 
 #endif // XRGAME_EXPORTS

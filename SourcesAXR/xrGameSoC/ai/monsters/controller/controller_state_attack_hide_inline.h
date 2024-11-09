@@ -43,7 +43,7 @@ void CStateControllerHideAbstract::execute()
 	object->anim().accel_activate		(eAT_Aggressive);
 	object->anim().accel_set_braking	(false);
 	
-	object->sound().play				(MonsterSound::eMonsterSoundAggressive, 0,0,object->db().m_dwAttackSndDelay);
+	object->get_sound().play			(MonsterSound::eMonsterSoundAggressive, 0,0,object->db().m_dwAttackSndDelay);
 	
 	if (object->HitMemory.get_last_hit_time() > object->EnemyMan.get_enemy_time_last_seen()) {
 		Fvector pos;

@@ -75,7 +75,7 @@ void CAmebaZone::PhTune(dReal step)
 		CEntityAlive	*EA=smart_cast<CEntityAlive*>((*it).object);
 		if(EA)
 		{
-			CPHMovementControl* mc=EA->character_physics_support()->movement();
+			CPHMovementControl* mc=EA->character_physics_support()->get_movement();
 			if(mc)
 			{
 				//Fvector vel;

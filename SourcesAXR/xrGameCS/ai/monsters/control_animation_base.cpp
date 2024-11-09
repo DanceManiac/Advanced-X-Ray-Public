@@ -334,15 +334,15 @@ EAction CControlAnimationBase::GetActionFromPath()
 {
 	EAction action;
 
-	u32 cur_point_velocity_index = m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index()].velocity;
+	u32 cur_point_velocity_index = m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index()].velocity;
 	action = VelocityIndex2Action(cur_point_velocity_index);
 
 	u32 next_point_velocity_index = u32(-1);
-	if (m_object->movement().detail().path().size() > m_object->movement().detail().curr_travel_point_index() + 1) 
-		next_point_velocity_index = m_object->movement().detail().path()[m_object->movement().detail().curr_travel_point_index() + 1].velocity;
+	if (m_object->get_movement().detail().path().size() > m_object->get_movement().detail().curr_travel_point_index() + 1) 
+		next_point_velocity_index = m_object->get_movement().detail().path()[m_object->get_movement().detail().curr_travel_point_index() + 1].velocity;
 
 	if ((cur_point_velocity_index == MonsterMovement::eVelocityParameterStand) && (next_point_velocity_index != u32(-1))) {
-		if (!m_object->control().direction().is_turning(deg(1))) 
+		if (!m_object->control().get_direction().is_turning(deg(1))) 
 			action = VelocityIndex2Action(next_point_velocity_index);
 	}
 
@@ -392,7 +392,7 @@ void CControlAnimationBase::ValidateAnimation()
 		return;
 	}
 
-	if (!m_object->control().direction().is_turning() && ((cur_anim_info().motion == eAnimStandTurnLeft) || (cur_anim_info().motion == eAnimStandTurnRight))) {
+	if (!m_object->control().get_direction().is_turning() && ((cur_anim_info().motion == eAnimStandTurnLeft) || (cur_anim_info().motion == eAnimStandTurnRight))) {
 		cur_anim_info().motion		= eAnimStandIdle;
 		return;
 	}
@@ -494,7 +494,7 @@ void CControlAnimationBase::check_hit(MotionID motion, float time_perc)
 
 	SAAParam &params		= AA_GetParams(motion,time_perc);
 	
-	m_object->sound().play	(MonsterSound::eMonsterSoundAttackHit);
+	m_object->get_sound().play	(MonsterSound::eMonsterSoundAttackHit);
 
 	bool should_hit = true;
 	// определить дистанцию до врага
@@ -576,13 +576,13 @@ void CControlAnimationBase::AA_reload(LPCSTR section)
 				parse_anim_params	(val, anim);
 				
 				m_attack_anims.push_back(anim);
-				m_man->animation().add_anim_event(anim.motion, anim.time, CControlAnimation::eAnimationHit);
+				m_man->get_animation().add_anim_event(anim.motion, anim.time, CControlAnimation::eAnimationHit);
 			}
 		} else {
 			parse_anim_params(val, anim);
 			
 			m_attack_anims.push_back(anim);
-			m_man->animation().add_anim_event(anim.motion, anim.time, CControlAnimation::eAnimationHit);
+			m_man->get_animation().add_anim_event(anim.motion, anim.time, CControlAnimation::eAnimationHit);
 		}
 	}
 }

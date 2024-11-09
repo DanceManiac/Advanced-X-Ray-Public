@@ -553,8 +553,8 @@ void CActor::ActorUse()
 	if (!GameConstants::GetMultiItemPickup())
 		m_bPickupMode = true;
 				
-	if(character_physics_support()->movement()->PHCapture())
-		character_physics_support()->movement()->PHReleaseObject();
+	if(character_physics_support()->get_movement()->PHCapture())
+		character_physics_support()->get_movement()->PHReleaseObject();
 
 	
 
@@ -618,9 +618,9 @@ void CActor::ActorUse()
 		if(object && Level().IR_GetKeyState(DIK_LSHIFT))
 		{
 			bool b_allow = !!pSettings->line_exist("ph_capture_visuals",object->cNameVisual());
-			if(b_allow && !character_physics_support()->movement()->PHCapture())
+			if(b_allow && !character_physics_support()->get_movement()->PHCapture())
 			{
-				character_physics_support()->movement()->PHCaptureObject( object, element );
+				character_physics_support()->get_movement()->PHCaptureObject( object, element );
 
 			}
 
@@ -847,6 +847,6 @@ void CActor::NoClipFly(int cmd)
 	mOrient.rotateY(-(cam_Active()->GetWorldYaw()));
 	mOrient.transform_dir(cur_pos);
 	Position().add(cur_pos);
-	character_physics_support()->movement()->SetPosition(Position());
+	character_physics_support()->get_movement()->SetPosition(Position());
 }
 #endif //DEBUG

@@ -21,7 +21,7 @@ void CStalkerAnimationManager::head_play_callback		(CBlend *blend)
 	CAI_Stalker				*object = (CAI_Stalker*)blend->CallbackParam;
 	VERIFY					(object);
 
-	CStalkerAnimationPair	&pair = object->animation().head();
+	CStalkerAnimationPair	&pair = object->get_animation().head();
 	pair.on_animation_end	();
 }
 
@@ -37,7 +37,7 @@ MotionID CStalkerAnimationManager::assign_head_animation	()
 		}
 	}
 
-	CSoundPlayer			&sound = object().sound();
+	CSoundPlayer			&sound = object().get_sound();
 	if (!sound.active_sound_count(true))
 		return				(animations[0]);
 

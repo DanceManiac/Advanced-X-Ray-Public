@@ -22,11 +22,11 @@ bool stalker_movement_manager_smart_cover::fill_enemy_position		(Fvector &positi
 		return			(true);
 	}
 
-	CEntityAlive const*	enemy = object().memory().enemy().selected();
+	CEntityAlive const*	enemy = object().get_memory().get_enemy().selected();
 	if (!enemy)
 		return			(false);
 
-	position			= object().memory().memory(enemy).m_object_params.m_position;
+	position			= object().get_memory().memory(enemy).m_object_params.m_position;
 	return				(true);
 }
 

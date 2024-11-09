@@ -146,7 +146,7 @@ void stalker_movement_manager_base::reinit				()
 IC	void stalker_movement_manager_base::setup_head_speed		(stalker_movement_params& movement_params)
 {
 	if (movement_params.m_mental_state == eMentalStateFree) {
-		if (object().sight().enabled())
+		if (object().get_sight().enabled())
 			m_head.speed		= PI_DIV_2;
 	}
 	else
@@ -376,7 +376,7 @@ void stalker_movement_manager_base::parse_velocity_mask	(stalker_movement_params
 	if (path().empty() || (detail().curr_travel_point_index() != m_last_turn_index))
 		m_last_turn_index		= u32(-1);
 
-	sight_manager_enable_guard	guard(object().sight(), true);
+	sight_manager_enable_guard	guard(object().get_sight(), true);
 
 	if (
 			(movement_params.m_movement_type == eMovementTypeStand) ||
@@ -408,7 +408,7 @@ void stalker_movement_manager_base::parse_velocity_mask	(stalker_movement_params
 		}
 		if	(
 				(movement_params.m_mental_state != eMentalStateFree) ||
-//				(object().sight().current_action().sight_type() != SightManager::eSightTypePathDirection) ||
+//				(object().get_sight().current_action().sight_type() != SightManager::eSightTypePathDirection) ||
 				fis_zero(path_direction_angle(),EPS_L) ||
 				(m_last_turn_index == detail().curr_travel_point_index())
 			)
@@ -468,8 +468,8 @@ void stalker_movement_manager_base::parse_velocity_mask	(stalker_movement_params
 	switch (point.velocity & eVelocityMentalState) {
 		case eVelocityFree : {
 #ifdef DEBUG
-			if (m_object->brain().current_action_id() == StalkerDecisionSpace::eWorldOperatorCombatPlanner) {
-				CStalkerCombatPlanner	&planner = smart_cast<CStalkerCombatPlanner&>(m_object->brain().current_action());
+			if (m_object->get_brain().current_action_id() == StalkerDecisionSpace::eWorldOperatorCombatPlanner) {
+				CStalkerCombatPlanner	&planner = smart_cast<CStalkerCombatPlanner&>(m_object->get_brain().current_action());
 				if (planner.current_action_id() != StalkerDecisionSpace::eWorldOperatorKillWoundedEnemy)
 					Msg					("~ stalker %s is doing bad thing (action %s)",*m_object->cName(),planner.current_action().m_action_name);
 			}

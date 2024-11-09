@@ -62,7 +62,7 @@ public:
 
 public:
 	IC		object_type					&object					() const;
-	IC		movement_manager_type		&movement				() const;
+	IC		movement_manager_type		&get_movement				() const;
 	IC		CSE_ALifeSmartZone			&smart_terrain			();
 	IC		void						can_choose_alife_tasks	(bool value);
 

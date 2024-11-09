@@ -63,7 +63,7 @@ in_cover_evaluator::in_cover_evaluator				(CAI_Stalker *object, LPCSTR evaluator
 
 _value_type in_cover_evaluator::evaluate			()
 {
-	return						(!!object().movement().current_params().cover());
+	return						(!!object().get_movement().current_params().cover());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,8 +77,8 @@ cover_actual_evaluator::cover_actual_evaluator		(CAI_Stalker *object, LPCSTR eva
 
 _value_type cover_actual_evaluator::evaluate		()
 {
-	VERIFY						(object().movement().current_params().cover());
-	return						(object().movement().current_params().cover() == object().movement().target_params().cover());
+	VERIFY						(object().get_movement().current_params().cover());
+	return						(object().get_movement().current_params().cover() == object().get_movement().target_params().cover());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ cover_entered_evaluator::cover_entered_evaluator	(CAI_Stalker *object, LPCSTR ev
 
 _value_type cover_entered_evaluator::evaluate		()
 {
-	return						(!!object().movement().current_params().cover());
+	return						(!!object().get_movement().current_params().cover());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -109,10 +109,10 @@ loophole_actual_evaluator::loophole_actual_evaluator(CAI_Stalker *object, LPCSTR
 
 _value_type loophole_actual_evaluator::evaluate		()
 {
-	if (object().movement().current_params().cover() != object().movement().target_params().cover())
+	if (object().get_movement().current_params().cover() != object().get_movement().target_params().cover())
 		return					(false);
 
-	if (object().movement().current_params().cover_loophole() != object().movement().target_params().cover_loophole())
+	if (object().get_movement().current_params().cover_loophole() != object().get_movement().target_params().cover_loophole())
 		return					(false);
 
 	return						(true);
@@ -147,13 +147,13 @@ is_action_available_evaluator::is_action_available_evaluator	(animation_planner 
 
 _value_type is_action_available_evaluator::evaluate	()
 {
-	if (!m_object->m_object->movement().current_params().cover())
+	if (!m_object->m_object->get_movement().current_params().cover())
 		return					(false);
 
-	if (!m_object->m_object->movement().current_params().cover_loophole())
+	if (!m_object->m_object->get_movement().current_params().cover_loophole())
 		return					(false);
 
-	return						(m_object->m_object->movement().current_params().cover_loophole()->is_action_available(m_action_id));
+	return						(m_object->m_object->get_movement().current_params().cover_loophole()->is_action_available(m_action_id));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -184,10 +184,10 @@ loophole_exitable_evaluator::loophole_exitable_evaluator(CAI_Stalker *object, LP
 
 _value_type loophole_exitable_evaluator::evaluate			()
 {
-	if (!m_object->movement().current_params().cover_loophole())
+	if (!m_object->get_movement().current_params().cover_loophole())
 		return					(false);
 
-	return						(object().movement().current_params().cover_loophole()->exitable());
+	return						(object().get_movement().current_params().cover_loophole()->exitable());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -202,11 +202,11 @@ can_exit_loophole_with_animation::can_exit_loophole_with_animation(CAI_Stalker *
 
 _value_type can_exit_loophole_with_animation::evaluate			()
 {
-	stalker_movement_manager_smart_cover& movement = object().movement();
+	stalker_movement_manager_smart_cover& movement = object().get_movement();
 	stalker_movement_params const& current	= movement.current_params();
 	VERIFY						(current.cover());
 
-	stalker_movement_params const& target	= object().movement().target_params();
+	stalker_movement_params const& target	= object().get_movement().target_params();
 
 	smart_cover::cover const*	current_cover = current.cover();
 	smart_cover::cover const*	target_cover = target.cover();
@@ -218,7 +218,7 @@ _value_type can_exit_loophole_with_animation::evaluate			()
 			target_cover ? target_cover->id().c_str() : "<world>"
 		);
 #endif // #ifdef DEBUG
-		return					(movement.current_transition().animation().has_animation());
+		return					(movement.current_transition().get_animation().has_animation());
 	}
 
 	smart_cover::loophole const*current_loophole = current.cover_loophole();
@@ -231,7 +231,7 @@ _value_type can_exit_loophole_with_animation::evaluate			()
 			target_loophole ? target_loophole->id().c_str() : "<world>"
 		);
 #endif // #ifdef DEBUG
-		return					(movement.current_transition().animation().has_animation());
+		return					(movement.current_transition().get_animation().has_animation());
 	}
 
 	return						(false);
@@ -250,8 +250,8 @@ default_behaviour_evaluator::default_behaviour_evaluator		(animation_planner *ob
 _value_type default_behaviour_evaluator::evaluate			()
 {
 	return						(
-		m_object->m_object->movement().default_behaviour() ||
-		m_object->m_object->movement().combat_behaviour()
+		m_object->m_object->get_movement().default_behaviour() ||
+		m_object->m_object->get_movement().combat_behaviour()
 	);
 }
 
@@ -267,13 +267,13 @@ can_fire_at_enemy_evaluator::can_fire_at_enemy_evaluator	(animation_planner *obj
 
 _value_type can_fire_at_enemy_evaluator::evaluate			()
 {
-	if (!m_object->m_object->movement().default_behaviour())
+	if (!m_object->m_object->get_movement().default_behaviour())
 		return					(true);
 
-	if (m_object->m_object->movement().current_params().cover_fire_position())
+	if (m_object->m_object->get_movement().current_params().cover_fire_position())
 		return					(true);
 
-	if (!m_object->m_object->movement().enemy_in_fov())
+	if (!m_object->m_object->get_movement().enemy_in_fov())
 		return					(false);
 
 	return						(true);

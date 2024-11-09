@@ -32,19 +32,19 @@ ICF	bool left_angle(float y1, float y2)
 	return			(_sin(y1)*_cos(y2) - _sin(y2)*_cos(y1) <= 0.f);
 }
 
-IC	CMemoryManager &CCustomMonster::memory		() const
+IC	CMemoryManager &CCustomMonster::get_memory		() const
 {
 	VERIFY			(m_memory_manager);
 	return			(*m_memory_manager);
 }
 
-IC	CMovementManager &CCustomMonster::movement	() const
+IC	CMovementManager &CCustomMonster::get_movement	() const
 {
 	VERIFY			(m_movement_manager);
 	return			(*m_movement_manager);
 }
 
-IC	CSoundPlayer &CCustomMonster::sound			() const
+IC	CSoundPlayer &CCustomMonster::get_sound			() const
 {
 	VERIFY			(m_sound_player);
 	return			(*m_sound_player);

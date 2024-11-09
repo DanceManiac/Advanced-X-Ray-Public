@@ -123,7 +123,7 @@ void RELATION_REGISTRY::Action (CEntityAlive* from, CEntityAlive* to, ERelationA
 			if(stalker)
 			{
 				bool bDangerScheme = false;
-				const CEntityAlive* stalker_enemy = stalker->memory().enemy().selected();
+				const CEntityAlive* stalker_enemy = stalker->get_memory().get_enemy().selected();
 				if(actor && stalker_enemy)
 				{
 					const CInventoryOwner* const_inv_owner_from				= inv_owner_from;

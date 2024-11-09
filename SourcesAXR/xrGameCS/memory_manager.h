@@ -71,9 +71,9 @@ public:
 
 public:
 	IC		CVisualMemoryManager&visual						() const;
-	IC		CSoundMemoryManager	&sound						() const;
+	IC		CSoundMemoryManager	&get_sound						() const;
 	IC		CHitMemoryManager	&hit						() const;
-	IC		CEnemyManager		&enemy						() const;
+	IC		CEnemyManager		&get_enemy						() const;
 	IC		CItemManager		&item						() const;
 	IC		CDangerManager		&danger						() const;
 	IC		CCustomMonster		&object						() const;

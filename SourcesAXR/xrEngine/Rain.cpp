@@ -92,7 +92,7 @@ void CEffect_Rain::Prepare(Fvector2& offset, Fvector3& axis, float W_Velocity, f
 	axis.setHP(W_Direction, pitch - PI_DIV_2);
 
 	// Get distance
-	float dist = _sin(pitch) * source_offset;
+	float dist = _sin(pitch) * m_fsource_offset;
 	float C = PI_DIV_2 - pitch;
 	dist /= _sin(C);
 
@@ -132,13 +132,13 @@ void CEffect_Rain::Born(Item& dest, const float radius, const float speed)
 	dest.D.random_dir(Rain_Axis, ::Random.randF(-drop_angle, drop_angle) * (1.5f - Wind_Velocity));
 
 	// Set final destination
-	dest.P.set(Rain_Offset.x + FinalView.x + RandomP.x, source_offset + view.y, Rain_Offset.y + FinalView.z + RandomP.y);
+	dest.P.set(Rain_Offset.x + FinalView.x + RandomP.x, m_fsource_offset + view.y, Rain_Offset.y + FinalView.z + RandomP.y);
 
 	// Set speed
 	dest.fSpeed			= ::Random.randF(drop_speed_min, drop_speed_max) * speed * clampr(Wind_Velocity * 1.5f, 0.5f, 1.0f);
 
 	// Born
-	float height		= max_distance;
+	float height		= m_fmax_distance;
 	RenewItem			(dest,height,RayPick(dest.P,dest.D,height,collide::rqtBoth));
 }
 
@@ -211,7 +211,7 @@ void	CEffect_Rain::OnFrame	()
 		{
 			snd_Wind.play		(0,sm_Looped);
 			snd_Wind.set_position(Fvector().set(0,0,0));
-			snd_Wind.set_range	(source_offset,source_offset*2.f);	
+			snd_Wind.set_range	(m_fsource_offset,m_fsource_offset*2.f);	
 			
 			m_bWindWorking = true;
 		}
@@ -242,11 +242,11 @@ void	CEffect_Rain::OnFrame	()
 			state = stWorking;
 			snd_Ambient.play(0, sm_Looped);
 			snd_Ambient.set_position(Fvector().set(0, 0, 0));
-			snd_Ambient.set_range(source_offset, source_offset*2.f);
+			snd_Ambient.set_range(m_fsource_offset, m_fsource_offset*2.f);
 
 			snd_RainOnMask.play(0, sm_Looped);
 			snd_RainOnMask.set_position(Fvector().set(0, 0, 0));
-			snd_RainOnMask.set_range(source_offset, source_offset*2.f);
+			snd_RainOnMask.set_range(m_fsource_offset, m_fsource_offset*2.f);
 			break;
 		case stWorking:
 			if (factor < EPS_L)
@@ -294,7 +294,7 @@ void	CEffect_Rain::Hit		(Fvector& pos)
 
 	const Fsphere &bv_sphere = m_pRender->GetDropBounds();
 
-	P->time						= particles_time;
+	P->time						= m_fparticles_time;
 	P->mXForm.rotateY			(::Random.randF(PI_MUL_2));
 	P->mXForm.translate_over	(pos);
 	P->mXForm.transform_tiny	(P->bounds.P, bv_sphere.P);
@@ -306,7 +306,7 @@ void	CEffect_Rain::Hit		(Fvector& pos)
 void CEffect_Rain::p_create		()
 {
 	// pool
-	particle_pool.resize	(max_particles);
+	particle_pool.resize	(m_imax_particles);
 	for (u32 it=0; it<particle_pool.size(); it++)
 	{
 		Particle&	P	= particle_pool[it];

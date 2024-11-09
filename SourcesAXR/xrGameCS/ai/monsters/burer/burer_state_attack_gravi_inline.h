@@ -98,7 +98,7 @@ bool CStateBurerAttackGraviAbstract::check_start_conditions()
 	float dist = object->Position().distance_to(object->EnemyMan.get_enemy()->Position());
 	if (dist < GOOD_DISTANCE_FOR_GRAVI) return false;
 	if (!object->EnemyMan.see_enemy_now()) return false; 
-	if (!object->control().direction().is_face_target(object->EnemyMan.get_enemy(), deg(45))) return false;
+	if (!object->control().get_direction().is_face_target(object->EnemyMan.get_enemy(), deg(45))) return false;
 	if (object->com_man().ta_is_active()) return false;
 
 	// всё ок, можно начать грави атаку
@@ -154,7 +154,7 @@ void CStateBurerAttackGraviAbstract::ExecuteGraviFire()
 	object->m_gravi_object.activate(object->EnemyMan.get_enemy(), from_pos, target_pos);
 
 	object->StopGraviPrepare	();
-	object->sound().play		(CBurer::eMonsterSoundGraviAttack);
+	object->get_sound().play		(CBurer::eMonsterSoundGraviAttack);
 	object->DeactivateShield	();
 
 	// Interactive Grass FX
