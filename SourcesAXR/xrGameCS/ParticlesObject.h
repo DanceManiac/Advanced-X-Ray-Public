@@ -3,7 +3,7 @@
 
 #include "../xrEngine/PS_instance.h"
 
-extern const Fvector zero_vel;
+extern const Fvector m_zero_vel;
 
 class CParticlesObject		:	public CPS_Instance
 {

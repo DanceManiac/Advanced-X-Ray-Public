@@ -246,7 +246,7 @@ void CBurer::UpdateGraviObject()
 
 	pos.translate_over(m_gravi_object.cur_pos);
 
-	ps->UpdateParent(pos, zero_vel);
+	ps->UpdateParent(pos, m_zero_vel);
 	ps->Play();
 	
 	// hit objects

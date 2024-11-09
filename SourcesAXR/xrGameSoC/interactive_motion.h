@@ -5,7 +5,7 @@
 class CPhysicsShell;
 class interactive_motion
 {
-	MotionID motion;
+	MotionID m_motion;
 protected:
 	Flags8	 flags;
 	enum Flag

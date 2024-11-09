@@ -62,7 +62,7 @@ void imotion_position::	interactive_motion_diagnostic( LPCSTR message )
 {
 #ifdef	DEBUG
 	VERIFY( blend );
-	interactive_motion_diag( message, *blend, shell, time_to_end );
+	interactive_motion_diag( message, *blend, m_shell, time_to_end );
 #endif
 
 }
@@ -117,13 +117,13 @@ void disable_bone_calculation(IKinematics &K, bool v )
 }
 void imotion_position::state_start( )
 {
-	VERIFY( shell );
+	VERIFY( m_shell );
 	inherited::state_start( );
 	
-	IKinematics			*K	= shell->PKinematics();
+	IKinematics			*K	= m_shell->PKinematics();
 	saved_visual_callback = K->GetUpdateCallback();
 	K->SetUpdateCallback( 0 );
-	IKinematicsAnimated	*KA = smart_cast<IKinematicsAnimated*>( shell->PKinematics() );
+	IKinematicsAnimated	*KA = smart_cast<IKinematicsAnimated*>( m_shell->PKinematics() );
 	VERIFY( KA );
 	KA->SetUpdateTracksCalback( &update_callback );
 	update_callback.motion = this;
@@ -162,29 +162,29 @@ void imotion_position::state_start( )
 	);
 	time_to_end = B.timeTotal - (SAMPLE_SPF+EPS) - B.timeCurrent;
 	time_to_end/=B.speed;
-	shell->add_ObjectContactCallback( get_depth );
+	m_shell->add_ObjectContactCallback( get_depth );
 	/*
 	collide();
 	if( flags.test( fl_switch_dm_toragdoll ) )
 	{
 		flags.assign( 0 );
-		shell->remove_ObjectContactCallback( get_depth );
+		m_shell->remove_ObjectContactCallback( get_depth );
 		return;
 	}
 */
 	
 	if( !is_enabled( ) )
 				return;
-	CPhysicsShellHolder *obj= static_cast<CPhysicsShellHolder*>( shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
+	CPhysicsShellHolder *obj= static_cast<CPhysicsShellHolder*>( m_shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
 	VERIFY( obj );
 	obj->processing_activate();
-	shell->Disable( );
+	m_shell->Disable( );
 	//K->LL_SetBoneRoot( 0 );
-	shell->EnabledCallbacks( FALSE );
+	m_shell->EnabledCallbacks( FALSE );
 	init_bones();
 
 
-	shell->mXFORM.set( obj->XFORM() );
+	m_shell->mXFORM.set( obj->XFORM() );
 	disable_update( true );
 	disable_bone_calculation( *K, true );
 	//K->CalculateBones_Invalidate();
@@ -210,7 +210,7 @@ static void dbg_draw_state_end( CPhysicsShell *shell )
 	{
 		DBG_OpenCashedDraw();
 		shell->dbg_draw_velocity( dbg_imotion_draw_velocity_scale, color_argb( 100 ,255, 0, 0 ) );
-		//shell->dbg_draw_force( 0.01, color_xrgb( 0, 0, 255 ) );
+		//m_shell->dbg_draw_force( 0.01, color_xrgb( 0, 0, 255 ) );
 		DBG_ClosedCashedDraw( 50000 );
 	}
 	if(dbg_imotion_collide_debug)
@@ -256,22 +256,22 @@ static void restore_fixes( )
 }
 void	imotion_position::state_end( )
 {
-	VERIFY( shell );
+	VERIFY( m_shell );
 	inherited::state_end( );
 	
-	CPhysicsShellHolder *obj= static_cast<CPhysicsShellHolder*>( shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
+	CPhysicsShellHolder *obj= static_cast<CPhysicsShellHolder*>( m_shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
 	VERIFY( obj );
 	obj->processing_deactivate();
-	shell->Enable();
-	shell->setForce( Fvector().set( 0.f, 0.f, 0.f ) );
-	shell->setTorque( Fvector().set( 0.f, 0.f, 0.f ) );
+	m_shell->Enable();
+	m_shell->setForce( Fvector().set( 0.f, 0.f, 0.f ) );
+	m_shell->setTorque( Fvector().set( 0.f, 0.f, 0.f ) );
 
-	shell->AnimToVelocityState( end_delta, default_l_limit * 10, default_w_limit * 10 );
+	m_shell->AnimToVelocityState( end_delta, default_l_limit * 10, default_w_limit * 10 );
 #ifdef	DEBUG
-	dbg_draw_state_end( shell );
+	dbg_draw_state_end( m_shell );
 #endif
-	shell->remove_ObjectContactCallback( get_depth );
-	IKinematics *K = shell->PKinematics();
+	m_shell->remove_ObjectContactCallback( get_depth );
+	IKinematics *K = m_shell->PKinematics();
 	disable_update( false );
 	disable_bone_calculation( *K, false );
 	K->SetUpdateCallback( saved_visual_callback );
@@ -279,13 +279,13 @@ void	imotion_position::state_end( )
 
 	save_fixes( K );
 	
-	shell->EnabledCallbacks( TRUE );
+	m_shell->EnabledCallbacks( TRUE );
 
 	restore_fixes( );
 
 	VERIFY( K );
 
-	IKinematicsAnimated	*KA = smart_cast<IKinematicsAnimated*>( shell->PKinematics() );
+	IKinematicsAnimated	*KA = smart_cast<IKinematicsAnimated*>( m_shell->PKinematics() );
 	VERIFY( KA );
 	update_callback.motion = 0;
 	KA->SetUpdateTracksCalback( 0 );
@@ -293,8 +293,8 @@ void	imotion_position::state_end( )
 #if 0
 
 			DBG_OpenCashedDraw();
-			shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 0 )  );
-			DBG_DrawBones( *shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
+			m_shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 0 )  );
+			DBG_DrawBones( *m_shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
 			DBG_ClosedCashedDraw( 50000 );
 
 #endif
@@ -318,8 +318,8 @@ void	imotion_position::state_end( )
 #if 0 
 
 			DBG_OpenCashedDraw();
-			shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 0, 255 )  );
-			DBG_DrawBones( *shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
+			m_shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 0, 255 )  );
+			DBG_DrawBones( *m_shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject() );
 			DBG_ClosedCashedDraw( 50000 );
 
 #endif
@@ -327,8 +327,8 @@ void	imotion_position::state_end( )
 
 void	imotion_position::disable_update( bool v )
 {
-	VERIFY( shell );
-	IKinematics *K = shell->PKinematics();
+	VERIFY( m_shell );
+	IKinematics *K = m_shell->PKinematics();
 	VERIFY( K );
 	//K->SetUpdateCallback( v ? 0 : saved_visual_callback );
 	update_callback.update = !v;
@@ -337,20 +337,20 @@ void	imotion_position::disable_update( bool v )
 
 void imotion_position::move_update( )
 {
-	VERIFY( shell );
-	IKinematics *K = shell->PKinematics();
+	VERIFY( m_shell );
+	IKinematics *K = m_shell->PKinematics();
 	VERIFY( K );
 
 	disable_update( false );
 	K->CalculateBones_Invalidate( );
 	K->CalculateBones(  );
 	disable_update( true );
-	VERIFY( shell );
+	VERIFY( m_shell );
 	
 }
  void imotion_position::force_calculate_bones( IKinematicsAnimated& KA )
 {
-	IKinematics *K = shell->PKinematics();
+	IKinematics *K = m_shell->PKinematics();
 	VERIFY( K );
 	VERIFY( K == smart_cast<IKinematics *>( &KA ) );
 	disable_bone_calculation( *K, false );
@@ -373,7 +373,7 @@ float imotion_position::advance_animation( float dt, IKinematicsAnimated& KA )
 
 	force_calculate_bones( KA );
 
-	shell->Disable( );
+	m_shell->Disable( );
 	return dt;
 }
 
@@ -405,15 +405,15 @@ float imotion_position::collide_animation	( float dt, IKinematicsAnimated& k )
 {
 	advance_animation( dt, k );
 #ifdef	DEBUG
-	collide_anim_dbg_draw ( shell, dt );
+	collide_anim_dbg_draw ( m_shell, dt );
 #endif
-	shell->ToAnimBonesPositions( shell_motion_has_history ? mh_not_clear : mh_unspecified );
+	m_shell->ToAnimBonesPositions( shell_motion_has_history ? mh_not_clear : mh_unspecified );
 	depth = 0;
 #ifdef DEBUG
 	if( dbg_imotion_collide_debug )
 		DBG_OpenCashedDraw();
 #endif
-	shell->CollideAll( );
+	m_shell->CollideAll( );
 #ifdef DEBUG
 	if( dbg_imotion_collide_debug )
 		DBG_ClosedCashedDraw(50000);
@@ -501,7 +501,7 @@ void  imotion_position::collide_not_move( IKinematicsAnimated& KA )
 }
 float imotion_position::move( float dt, IKinematicsAnimated& KA )
 {
-	VERIFY( shell );
+	VERIFY( m_shell );
 	//float ret = 0;
 	float	advance_time = 0.f;
 	float	collide_dt = dt;
@@ -533,17 +533,17 @@ float imotion_position::move( float dt, IKinematicsAnimated& KA )
 			time_to_end -= ad;
 			force_calculate_bones( KA );
 			//advance_time += advance_animation( -( end_delta ), KA );//+ ad
-			shell->ToAnimBonesPositions( shell_motion_has_history ? mh_not_clear : mh_unspecified );
+			m_shell->ToAnimBonesPositions( shell_motion_has_history ? mh_not_clear : mh_unspecified );
 			shell_motion_has_history = true;
 
 #ifdef DEBUG
 		if( dbg_imotion_collide_debug )
 		{
 			depth = 0;
-			shell->CollideAll();
+			m_shell->CollideAll();
 			interactive_motion_diagnostic( make_string( " move (to ragdoll): deppth= %f", depth ).c_str() );
 			DBG_OpenCashedDraw();
-			shell->dbg_draw_geometry( 0.02, color_argb( 255, 255, 0 ,255 )  );
+			m_shell->dbg_draw_geometry( 0.02, color_argb( 255, 255, 0 ,255 )  );
 			DBG_ClosedCashedDraw( 50000 );
 		}
 #endif
@@ -557,7 +557,7 @@ float imotion_position::move( float dt, IKinematicsAnimated& KA )
 
 float imotion_position::motion_collide( float dt, IKinematicsAnimated& KA )
 {
-	VERIFY( shell );
+	VERIFY( m_shell );
 
 	float advance_time = collide_animation( dt, KA );
 
@@ -576,7 +576,7 @@ float imotion_position::motion_collide( float dt, IKinematicsAnimated& KA )
 			//interactive_motion_diagnostic( make_string( " motion_collide collided0: deppth= %f", depth ).c_str() );
 			interactive_motion_diagnostic( make_string( "motion_collide 1: stoped: colide: %s, depth %f", collide_diag().c_str(), depth ).c_str() );
 			DBG_OpenCashedDraw();
-			shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 0 )  );
+			m_shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 0 )  );
 			DBG_ClosedCashedDraw( 50000 );
 		}
 #endif
@@ -591,7 +591,7 @@ float imotion_position::motion_collide( float dt, IKinematicsAnimated& KA )
 		{
 			interactive_motion_diagnostic( make_string( " motion_collide collided1: deppth= %f", depth ).c_str() );
 			DBG_OpenCashedDraw();
-			shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 255 )  );
+			m_shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 255 )  );
 			DBG_ClosedCashedDraw( 50000 );
 		}
 #endif
@@ -611,7 +611,7 @@ float imotion_position::motion_collide( float dt, IKinematicsAnimated& KA )
 		{
 			interactive_motion_diagnostic( make_string( " motion_collide collided2: deppth= %f", depth ).c_str() );
 			DBG_OpenCashedDraw();
-			shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 0 )  );
+			m_shell->dbg_draw_geometry( 0.02, color_argb( 255, 0, 255, 0 )  );
 			DBG_ClosedCashedDraw( 50000 );
 		}
 #endif
@@ -626,16 +626,16 @@ float imotion_position::motion_collide( float dt, IKinematicsAnimated& KA )
 		time_to_end += (dt-advance_time);
 		advance_time += (dt-advance_time);
 		force_calculate_bones( KA );
-		shell->ToAnimBonesPositions( shell_motion_has_history ? mh_clear : mh_unspecified );
+		m_shell->ToAnimBonesPositions( shell_motion_has_history ? mh_clear : mh_unspecified );
 
 #ifdef DEBUG
 		if( dbg_imotion_collide_debug )
 		{
 			depth = 0;
-			shell->CollideAll();
+			m_shell->CollideAll();
 			interactive_motion_diagnostic( make_string(  " motion_collide restore: %f ", depth  ).c_str() );
 			DBG_OpenCashedDraw();
-			shell->dbg_draw_geometry( 0.02, color_argb( 255, 255, 0, 0 )  );
+			m_shell->dbg_draw_geometry( 0.02, color_argb( 255, 255, 0, 0 )  );
 			DBG_ClosedCashedDraw( 50000 );
 		}
 #endif
@@ -657,7 +657,7 @@ void imotion_position::	init_bones()
 {
 	set_root_callback	();
 /*
-	IKinematics &K  = *shell->PKinematics( );
+	IKinematics &K  = *m_shell->PKinematics( );
 	u16 bn = K.LL_BoneCount();
 	for(u16 i = 1; i< bn; ++i )//ommit real root
 	{
@@ -673,7 +673,7 @@ void imotion_position::	init_bones()
 void imotion_position::	deinit_bones()
 {
 /*
-	IKinematics &K  = *shell->PKinematics( );
+	IKinematics &K  = *m_shell->PKinematics( );
 	u16 bn = K.LL_BoneCount();
 	for(u16 i = 1; i< bn; ++i )//ommit real root
 	{
@@ -688,8 +688,8 @@ void imotion_position::	deinit_bones()
 
 void	imotion_position::set_root_callback	()
 {
-	VERIFY( shell );
-	IKinematics *K  = shell->PKinematics( );
+	VERIFY( m_shell );
+	IKinematics *K  = m_shell->PKinematics( );
 	VERIFY( K );
 	CBoneInstance &bi = K->LL_GetBoneInstance( 0 );
 	VERIFY(!bi.callback());
@@ -699,8 +699,8 @@ void	imotion_position::set_root_callback	()
 
 void	imotion_position::remove_root_callback()
 {
-	VERIFY( shell );
-	IKinematics *K  = shell->PKinematics( );
+	VERIFY( m_shell );
+	IKinematics *K  = m_shell->PKinematics( );
 	VERIFY( K );
 	CBoneInstance &bi = K->LL_GetBoneInstance( 0 );
 	VERIFY( bi.callback() == rootbone_callback );
@@ -714,8 +714,8 @@ void	imotion_position::rootbone_callback	( CBoneInstance *BI )
 	VERIFY( im );
 	if( !im->update_callback.update )
 		return;
-	VERIFY( im->shell );
-	IKinematics *K  = im->shell->PKinematics( );
+	VERIFY( im->m_shell );
+	IKinematics *K  = im->m_shell->PKinematics( );
 	VERIFY( K );
 	IKinematicsAnimated *KA = smart_cast<IKinematicsAnimated *>( K );
 	VERIFY( KA );
@@ -730,7 +730,7 @@ void	imotion_position::rootbone_callback	( CBoneInstance *BI )
 	}
 	if( key )
 	{
-		key->Q.rotation( Fvector().set( 0, 1, 0 ), im->angle );
+		key->Q.rotation( Fvector().set( 0, 1, 0 ), im->m_angle );
 	}
 	KA->LL_BoneMatrixBuild( *BI, &Fidentity, keys );
 

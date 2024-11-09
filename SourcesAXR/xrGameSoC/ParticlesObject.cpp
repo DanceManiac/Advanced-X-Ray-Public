@@ -11,7 +11,7 @@
 #include "../xrEngine/render.h"
 #include "../xrEngine/igame_persistent.h"
 
-const Fvector zero_vel		= {0.f,0.f,0.f};
+const Fvector m_zero_vel		= {0.f,0.f,0.f};
 
 CParticlesObject::CParticlesObject	(LPCSTR p_name, BOOL bAutoRemove, bool destroy_on_game_load) :
 	inherited				(destroy_on_game_load)
@@ -134,7 +134,7 @@ void CParticlesObject::play_at_pos(const Fvector& pos, BOOL xform)
 
 	IParticleCustom* V			= smart_cast<IParticleCustom*>(renderable.visual); VERIFY(V);
 	Fmatrix m; m.translate		(pos); 
-	V->UpdateParent				(m,zero_vel,xform);
+	V->UpdateParent				(m, m_zero_vel,xform);
 	V->Play						();
 	dwLastTime					= Device.dwTimeGlobal-33ul;
 	mt_dt						= 0;
@@ -204,7 +204,7 @@ void CParticlesObject::SetXFORM			(const Fmatrix& m)
 	if(g_dedicated_server)		return;
 
 	IParticleCustom* V	= smart_cast<IParticleCustom*>(renderable.visual); VERIFY(V);
-	V->UpdateParent		(m,zero_vel,TRUE);
+	V->UpdateParent		(m, m_zero_vel,TRUE);
 	renderable.xform.set(m);
 	UpdateSpatial		();
 }

@@ -248,7 +248,7 @@ void CBurer::UpdateGraviObject()
 	// установить позицию
 	pos.translate_over(m_gravi_object.cur_pos);
 
-	ps->UpdateParent(pos, zero_vel);
+	ps->UpdateParent(pos, m_zero_vel);
 	ps->Play(false);
 	
 	// hit objects

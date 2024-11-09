@@ -126,9 +126,9 @@ void CWeaponShotgun::OnShotBoth()
 
 	//дым из 2х стволов
 	CParticlesObject* pSmokeParticles = NULL;
-	CShootingObject::StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, get_LastFP(),  zero_vel, true);
+	CShootingObject::StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, get_LastFP(), m_zero_vel, true);
 	pSmokeParticles = NULL;
-	CShootingObject::StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, get_LastFP2(), zero_vel, true);
+	CShootingObject::StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, get_LastFP2(), m_zero_vel, true);
 
 }
 

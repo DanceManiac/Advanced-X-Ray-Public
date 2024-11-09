@@ -3,13 +3,13 @@
 class CPhysicsShell;
 class interactive_motion
 {
-	MotionID motion;
+	MotionID m_motion;
 
 protected:
 
 	Flags8			flags;
-	CPhysicsShell	*shell;
-	float			angle;
+	CPhysicsShell	*m_shell;
+	float			m_angle;
 	enum Flag
 	{
 		fl_use_death_motion			=1<<4,

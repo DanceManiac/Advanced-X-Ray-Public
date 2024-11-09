@@ -14,7 +14,7 @@ class CCartridge;
 class CParticlesObject;
 class IRender_Sector;
 
-extern const Fvector zero_vel;
+extern const Fvector m_zero_vel;
 
 #define WEAPON_MATERIAL_NAME "objects\\bullet"
 
@@ -149,9 +149,9 @@ protected:
 	
 	////////////////////////////////////////////////
 	//общие функции для работы с партиклами оружия
-			void			StartParticles		(CParticlesObject*& pParticles, LPCSTR particles_name, const Fvector& pos, const Fvector& vel = zero_vel, bool auto_remove_flag = false);
+			void			StartParticles		(CParticlesObject*& pParticles, LPCSTR particles_name, const Fvector& pos, const Fvector& vel = m_zero_vel, bool auto_remove_flag = false);
 			void			StopParticles		(CParticlesObject*& pParticles);
-			void			UpdateParticles		(CParticlesObject*& pParticles, const Fvector& pos, const  Fvector& vel = zero_vel);
+			void			UpdateParticles		(CParticlesObject*& pParticles, const Fvector& pos, const  Fvector& vel = m_zero_vel);
 
 			void			LoadShellParticles	(LPCSTR section, LPCSTR prefix);
 			void			LoadFlameParticles	(LPCSTR section, LPCSTR prefix);

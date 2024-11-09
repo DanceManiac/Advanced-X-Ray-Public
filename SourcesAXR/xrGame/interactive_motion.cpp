@@ -37,8 +37,8 @@ void interactive_motion::init( )
 {
 	flags.assign( 0 );
 
-	shell = 0;
-	angle = 0;
+	m_shell = 0;
+	m_angle = 0;
 }
 void	interactive_motion::destroy	( )
 {
@@ -70,11 +70,11 @@ void interactive_motion::setup( const MotionID &m, CPhysicsShell *s, float _angl
 	);
 
 #endif
-	motion = m;
-	angle = _angle;
+	m_motion = m;
+	m_angle = _angle;
 	interactive_motion_diagnostic( "started", m, s );
 
-	shell = s;
+	m_shell = s;
 	flags.set( fl_use_death_motion, TRUE );
 
 }
@@ -82,8 +82,8 @@ void interactive_motion::setup( const MotionID &m, CPhysicsShell *s, float _angl
 void	interactive_motion::shell_setup				( )
 {
 
-	VERIFY( shell );
-	IKinematics	*K = shell->PKinematics();
+	VERIFY(m_shell );
+	IKinematics	*K = m_shell->PKinematics();
 	VERIFY( K );
 	
 }
@@ -97,9 +97,9 @@ void interactive_motion::anim_callback( CBlend *B )
 
 void interactive_motion::play( )
 {
-	VERIFY( shell );
-	VERIFY( motion.valid() );
-	smart_cast<IKinematicsAnimated*>( shell->PKinematics( ) )->PlayCycle( motion, TRUE, anim_callback, this );
+	VERIFY( m_shell );
+	VERIFY( m_motion.valid() );
+	smart_cast<IKinematicsAnimated*>(m_shell->PKinematics( ) )->PlayCycle(m_motion, TRUE, anim_callback, this );
 	state_start( );
 }
 
@@ -107,14 +107,14 @@ void interactive_motion::play( )
 
 void interactive_motion::state_start( )
 {
-	VERIFY( shell );
+	VERIFY(m_shell );
 	shell_setup( );
 	flags.set( fl_started, TRUE );
 }
 
 void	interactive_motion::state_end( )
 {
-	VERIFY( shell );
+	VERIFY(m_shell );
 	flags.set( fl_switch_dm_toragdoll, FALSE );
 	flags.set( fl_use_death_motion, FALSE );
 
@@ -124,8 +124,8 @@ void	interactive_motion::state_end( )
 
 void interactive_motion::update( )
 {
-	VERIFY( shell );
-	IKinematics *K  = shell->PKinematics( );
+	VERIFY(m_shell );
+	IKinematics *K  = m_shell->PKinematics( );
 	VERIFY(K);
 	
 
@@ -141,13 +141,13 @@ void interactive_motion::update( )
 void	interactive_motion::switch_to_free( )
 {
 //set to normal state
-	VERIFY( shell );
+	VERIFY(m_shell );
 	state_end( );
 ///set all matrises valide
-	CPhysicsShellHolder *obj = smart_cast<CPhysicsShellHolder*>(shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject( ));
+	CPhysicsShellHolder *obj = smart_cast<CPhysicsShellHolder*>(m_shell->get_ElementByStoreOrder( 0 )->PhysicsRefObject( ));
 	VERIFY( obj );
-	shell->InterpolateGlobalTransform( &obj->XFORM( ) );
-	IKinematics *K  = shell->PKinematics( );
+	m_shell->InterpolateGlobalTransform( &obj->XFORM( ) );
+	IKinematics *K  = m_shell->PKinematics( );
 	VERIFY( K );
 	K->CalculateBones_Invalidate( );
 	K->CalculateBones( TRUE );

@@ -145,8 +145,8 @@ void CHelicopter::OnShot		()
 
 
 	StartFlameParticles		();
-	StartSmokeParticles		(fire_pos, zero_vel);
-	OnShellDrop				(fire_pos, zero_vel);
+	StartSmokeParticles		(fire_pos, m_zero_vel);
+	OnShellDrop				(fire_pos, m_zero_vel);
 
 	m_layered_sounds.PlaySound("sndShoot", fire_pos, this, false);
 
@@ -309,7 +309,7 @@ void CHelicopter::startRocket(u16 idx)
 		Fvector::generate_orthonormal_basis(xform.k,xform.j,xform.i);
 		xform.c = rocketXFORM.c;
 		VERIFY2(_valid(xform),"CHelicopter::startRocket. Invalid xform");
-		LaunchRocket(xform,  vel, zero_vel);
+		LaunchRocket(xform,  vel, m_zero_vel);
 
 		NET_Packet P;
 		u_EventGen(P,GE_LAUNCH_ROCKET,ID());

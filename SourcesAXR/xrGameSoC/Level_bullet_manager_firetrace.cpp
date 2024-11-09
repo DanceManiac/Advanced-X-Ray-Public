@@ -276,7 +276,7 @@ NULL:*mtl_pair->CollideParticles[::Random.randI(0,mtl_pair->CollideParticles.siz
 			//отыграть партиклы попадания в материал
 			CParticlesObject* ps = CParticlesObject::Create(ps_name,TRUE);
 
-			ps->UpdateParent(pos,zero_vel);
+			ps->UpdateParent(pos, m_zero_vel);
 			GamePersistent().ps_needtoplay.push_back(ps);
 		}
 

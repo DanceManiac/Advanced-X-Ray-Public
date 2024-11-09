@@ -792,7 +792,7 @@ CParticlesObject* CBaseMonster::PlayParticles(const shared_str& name, const Fvec
 	Fvector::generate_orthonormal_basis_normalized(matrix.k,matrix.j,matrix.i);
 	matrix.translate_over	(position);
 	
-	(xformed) ?				ps->SetXFORM (matrix) : ps->UpdateParent(matrix,zero_vel); 
+	(xformed) ?				ps->SetXFORM (matrix) : ps->UpdateParent(matrix, m_zero_vel);
 	ps->Play				(false);
 
 	return ps;
