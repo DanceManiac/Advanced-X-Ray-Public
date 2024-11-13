@@ -994,15 +994,19 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Name		= "USE_SHOC_MODE";
 		defines[def_it].Definition	= "1";
 		def_it						++;
-		sh_name[len] = '0' + char(ShadowOfChernobylMode); ++len;
 	}
+	sh_name[len] = '0' + char(ShadowOfChernobylMode); ++len;
 
-	if (g_pGamePersistent->Environment().used_soc_weather)
+	if (g_pGamePersistent && g_pGamePersistent->Environment().used_soc_weather)
 	{
 		defines[def_it].Name = "USED_SOC_WEATHER";
 		defines[def_it].Definition = "1";
 		def_it++;
-		sh_name[len] = '0' + char(g_pGamePersistent->Environment().used_soc_weather); ++len;
+		sh_name[len] = '1'; ++len;
+	}
+	else
+	{
+		sh_name[len] = '0'; ++len;
 	}
 	
 	// Puddles
