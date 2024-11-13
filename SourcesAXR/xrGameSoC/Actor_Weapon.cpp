@@ -7,7 +7,8 @@
 #include "actoreffector.h"
 #include "Missile.h"
 #include "inventory.h"
-#include "weapon.h"
+#include "Weapon.h"
+#include "WeaponKnife.h"
 #include "map_manager.h"
 #include "level.h"
 #include "CharacterPhysicsSupport.h"
@@ -21,6 +22,8 @@ constexpr float VEL_MAX = 10.f;
 constexpr float VEL_A_MAX = 10.f;
 
 #define GetWeaponParam(pWeapon, func_name, def_value)	((pWeapon) ? (pWeapon->func_name) : def_value)
+
+extern int g_advanced_crosshair;
 
 //возвращает текуший разброс стрельбы (в радианах)с учетом движения
 float CActor::GetWeaponAccuracy() const
@@ -74,7 +77,7 @@ void CActor::g_fireParams(CHudItem* pHudItem, Fvector& fire_pos, Fvector& fire_d
 	}
 	else if (auto weapon = smart_cast<CWeapon*>(pHudItem))
 	{
-		if (cam_active == eacFirstEye && !(weapon->IsZoomed() && !weapon->IsRotatingToZoom()))
+		if (g_advanced_crosshair && cam_active == eacFirstEye && !smart_cast<CWeaponKnife*>(pHudItem) && !(weapon->IsZoomed() && !weapon->IsRotatingToZoom()))
 		{
 			//fire_dir = weapon->get_LastFD();
 			fire_pos = weapon->get_LastFP();
