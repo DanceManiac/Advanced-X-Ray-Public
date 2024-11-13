@@ -476,7 +476,6 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	InitCellForSlot				(RIFLE_SLOT);
 	InitCellForSlot				(OUTFIT_SLOT);
 	InitCellForSlot				(DETECTOR_SLOT);
-	InitCellForSlot				(GRENADE_SLOT);
 
 	if (GameConstants::GetKnifeSlotEnabled())
 	{

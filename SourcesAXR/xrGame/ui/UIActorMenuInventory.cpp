@@ -497,7 +497,6 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	InitCellForSlot				(INV_SLOT_3);
 	InitCellForSlot				(OUTFIT_SLOT);
 	InitCellForSlot				(DETECTOR_SLOT);
-	InitCellForSlot				(GRENADE_SLOT);
 	InitCellForSlot				(HELMET_SLOT);
 
 	if (GameConstants::GetKnifeSlotEnabled())
@@ -921,6 +920,14 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u16 slot_idx)
 			if (GameConstants::GetPdaSlotEnabled())
 			{
 				return m_pInventoryPdaList;
+			}
+		}break;
+
+		case PISTOL_SLOT:
+		{
+			if (GameConstants::GetPistolSlotEnabled())
+			{
+				return m_pInventoryPistolNewList;
 			}
 		}break;
 	};
