@@ -277,7 +277,7 @@ void CUIPdaWnd::Show()
 		SetActiveSubdialog((EPdaTabs)UITabControl->GetActiveIndex());
 	}
 	else
-		SetActiveSubdialog((EPdaTabs)eptQuests);
+		SetActiveSubdialog(m_pActiveSection);
 
 	//HUD().GetUI()->UIGame()->HideActorMenu();
 }
