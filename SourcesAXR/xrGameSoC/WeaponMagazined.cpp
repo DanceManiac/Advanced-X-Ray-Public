@@ -1195,6 +1195,7 @@ void CWeaponMagazined::switch2_Reload()
 }
 void CWeaponMagazined::switch2_Hiding()
 {
+	OnZoomOut();
 	CWeapon::FireEnd();
 	
 	if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_HIDE_EMPTY) && WeaponSoundExist(m_section_id.c_str(), "snd_close"))
