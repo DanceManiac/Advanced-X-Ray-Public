@@ -1583,7 +1583,7 @@ bool CWeaponMagazined::DetachScope(const char* item_section_name, bool b_spawn_i
 
 void CWeaponMagazined::InitAddons()
 {
-	m_fIronSightZoomFactor = READ_IF_EXISTS( pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 50.0f );
+	m_zoom_params.m_fIronSightZoomFactor = READ_IF_EXISTS( pSettings, r_float, cNameSect(), "ironsight_zoom_factor", 50.0f );
 
 	SetAnimFlag(ANM_SHOT_AIM,		"anm_shots_when_aim");
 	SetAnimFlag(ANM_SHOT_AIM_GL,	"anm_shots_w_gl_when_aim");
@@ -1620,10 +1620,10 @@ void CWeaponMagazined::InitAddons()
 			xr_delete(m_UIScope);
 
 		if (bIsSecondVPZoomPresent())
-			m_fSecondVPFovFactor = 0.0f;
+			m_zoom_params.m_fSecondVPFovFactor = 0.0f;
 
 		if (IsZoomEnabled())
-			m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
+			m_zoom_params.m_fIronSightZoomFactor = pSettings->r_float(cNameSect(), "scope_zoom_factor");
 	}
 
 	if (IsSilencerAttached() && SilencerAttachable())
@@ -1958,7 +1958,7 @@ void CWeaponMagazined::OnZoomIn			()
 }
 void CWeaponMagazined::OnZoomOut		()
 {
-	if(!m_bIsZoomModeNow) return;
+	if(!m_zoom_params.m_bIsZoomModeNow) return;
 
 	inherited::OnZoomOut();
 

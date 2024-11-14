@@ -101,20 +101,20 @@ void SBinocVisibleObj::Update()
 
 	CUIMainIngameWnd* pMaingame = HUD().GetUI()->UIMainIngameWnd;
 
-	int hud_info_r_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_e;
-	int hud_info_g_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_e;
-	int hud_info_b_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_e;
-	int hud_info_a_e	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_e;
+	int hud_info_r_e	= pMaingame->hud_info_e.x;
+	int hud_info_g_e	= pMaingame->hud_info_e.y;
+	int hud_info_b_e	= pMaingame->hud_info_e.z;
+	int hud_info_a_e	= pMaingame->hud_info_e.w;
 
-	int hud_info_r_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_n;
-	int hud_info_g_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_n;
-	int hud_info_b_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_n;
-	int hud_info_a_n	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_n;
+	int hud_info_r_n	= pMaingame->hud_info_n.x;
+	int hud_info_g_n	= pMaingame->hud_info_n.y;
+	int hud_info_b_n	= pMaingame->hud_info_n.z;
+	int hud_info_a_n	= pMaingame->hud_info_n.w;
 
-	int hud_info_r_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_r_f;
-	int hud_info_g_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_g_f;
-	int hud_info_b_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_b_f;
-	int hud_info_a_f	= HUD().GetUI()->UIMainIngameWnd->hud_info_a_f;
+	int hud_info_r_f	= pMaingame->hud_info_f.x;
+	int hud_info_g_f	= pMaingame->hud_info_f.y;
+	int hud_info_b_f	= pMaingame->hud_info_f.z;
+	int hud_info_a_f	= pMaingame->hud_info_f.w;
 
 	u32 C_ON_ENEMY		= color_rgba(hud_info_r_e, hud_info_g_e, hud_info_b_e, hud_info_a_e);
 	u32 C_ON_NEUTRAL	= color_rgba(hud_info_r_n, hud_info_g_n, hud_info_b_n, hud_info_a_n);

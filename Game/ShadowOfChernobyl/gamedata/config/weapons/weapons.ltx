@@ -1847,6 +1847,12 @@ inv_grid_x			= 17
 inv_grid_y			= 3
 grenade_vel			= 71
 
+[scope_detector]
+vis_frame_speed				= 4				; скорость, с которой наводится рамка на цель
+vis_frame_color				= 0.7,0.7,0.7,1.0	; цвет рамки RGBA (A) Не учитывается
+found_snd					= detectors\DA-2_beep1
+catch_snd					= detectors\DA-2_beep1
+
 [wpn_addon_red_laser]:identity_immunities,red_laser
 GroupControlSection	= spawn_group
 discovery_dependency =

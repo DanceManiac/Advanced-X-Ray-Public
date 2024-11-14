@@ -22,7 +22,7 @@ void CWeaponRPG7::Load	(LPCSTR section)
 	inherited::Load			(section);
 	CRocketLauncher::Load	(section);
 
-	m_fScopeZoomFactor		= pSettings->r_float	(section,"max_zoom_factor");
+	m_zoom_params.m_fScopeZoomFactor		= pSettings->r_float	(section,"max_zoom_factor");
 
 	m_sGrenadeBoneName		= READ_IF_EXISTS(pSettings, r_string, section, "grenade_bone", grenade_def_bone_cop);
 	m_sHudGrenadeBoneName	= READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "grenade_bone", grenade_def_bone_cop);

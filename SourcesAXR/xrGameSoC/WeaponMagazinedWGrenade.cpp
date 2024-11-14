@@ -53,9 +53,9 @@ void CWeaponMagazinedWGrenade::Load	(LPCSTR section)
 	SetAnimFlag(ANM_MISFIRE_GL,			"anm_reload_misfire_w_gl");
 
 	//// Sounds
-	m_sounds.LoadSound(section,"snd_shoot_grenade"	, "sndShotG",	false, m_eSoundShot);
-	m_sounds.LoadSound(section,"snd_reload_grenade"	, "sndReloadG", false, m_eSoundReload);
-	m_sounds.LoadSound(section,"snd_switch"			, "sndSwitch",	false, m_eSoundReload);
+	m_sounds.LoadSound(section,"snd_shoot_grenade", "sndShotG", false, m_eSoundShot);
+	m_sounds.LoadSound(section,"snd_reload_grenade"	, "sndReloadG"	, true, m_eSoundReload);
+	m_sounds.LoadSound(section,"snd_switch"			, "sndSwitch"		, true, m_eSoundReload);
 	
 
 	m_sFlameParticles2 = pSettings->r_string(section, "grenade_flame_particles");
@@ -118,24 +118,25 @@ BOOL CWeaponMagazinedWGrenade::net_Spawn(CSE_Abstract* DC)
 
 			CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
 		}
-	};
-	
-	xr_vector<CCartridge>* pM = NULL;
-	bool b_if_grenade_mode	= (m_bGrenadeMode && iAmmoElapsed && !getRocketCount());
-	if(b_if_grenade_mode)
-		pM = &m_magazine;
-		
-	bool b_if_simple_mode	= (!m_bGrenadeMode && m_magazine2.size() && !getRocketCount());
-	if(b_if_simple_mode)
-		pM = &m_magazine2;
-
-	if(b_if_grenade_mode || b_if_simple_mode) 
-	{
-		shared_str fake_grenade_name = pSettings->r_string(pM->back().m_ammoSect, "fake_grenade_name");
-		
-		CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
 	}
+	else
+	{
+		xr_vector<CCartridge>* pM = NULL;
+		bool b_if_grenade_mode	= (m_bGrenadeMode && iAmmoElapsed && !getRocketCount());
+		if(b_if_grenade_mode)
+			pM = &m_magazine;
+			
+		bool b_if_simple_mode	= (!m_bGrenadeMode && m_magazine2.size() && !getRocketCount());
+		if(b_if_simple_mode)
+			pM = &m_magazine2;
 
+		if(b_if_grenade_mode || b_if_simple_mode) 
+		{
+			shared_str fake_grenade_name = pSettings->r_string(pM->back().m_ammoSect, "fake_grenade_name");
+			
+			CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
+		}
+	}
 	return l_res;
 }
 
@@ -433,7 +434,6 @@ void CWeaponMagazinedWGrenade::ReloadMagazine()
 	//перезарядка подствольного гранатомета
 	if(iAmmoElapsed && !getRocketCount() && m_bGrenadeMode) 
 	{
-//.		shared_str fake_grenade_name = pSettings->r_string(*m_pAmmo->cNameSect(), "fake_grenade_name");
 		shared_str fake_grenade_name = pSettings->r_string(*m_ammoTypes[m_ammoType], "fake_grenade_name");
 		
 		CRocketLauncher::SpawnRocket(*fake_grenade_name, this);
@@ -528,7 +528,6 @@ bool CWeaponMagazinedWGrenade::Attach(PIItem pIItem, bool b_send_event)
  		//уничтожить подствольник из инвентаря
 		if(b_send_event)
 		{
-//.			pIItem->Drop();
 			if (OnServer()) 
 				pIItem->object().DestroyObject	();
 		}
@@ -540,7 +539,7 @@ bool CWeaponMagazinedWGrenade::Attach(PIItem pIItem, bool b_send_event)
         return inherited::Attach(pIItem, b_send_event);
 }
 
-bool CWeaponMagazinedWGrenade::Detach(const char* item_section_name, bool b_spawn_item)
+bool CWeaponMagazinedWGrenade::Detach(LPCSTR item_section_name, bool b_spawn_item)
 {
 	if (CSE_ALifeItemWeapon::eAddonAttachable == m_eGrenadeLauncherStatus &&
 	   0 != (m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) &&
@@ -573,19 +572,6 @@ void CWeaponMagazinedWGrenade::InitAddons()
 		{
 			CRocketLauncher::m_fLaunchSpeed = pSettings->r_float(*m_sGrenadeLauncherName,"grenade_vel");
 		}
-
-		/*if(m_bZoomEnabled && m_pHUD)
-		{
-			if(m_bGrenadeMode)
-				LoadZoomOffset(*hud_sect, "grenade_");
-			else 
-			{
-				if(IsGrenadeLauncherAttached())
-					LoadZoomOffset(*hud_sect, "grenade_normal_");
-				else
-					LoadZoomOffset(*hud_sect, "");
-			}
-		}  */
 	}
 }
 
@@ -598,7 +584,7 @@ bool	CWeaponMagazinedWGrenade::UseScopeTexture()
 
 float	CWeaponMagazinedWGrenade::CurrentZoomFactor	()
 {
-	if (IsGrenadeLauncherAttached() && m_bGrenadeMode) return m_fIronSightZoomFactor;
+	if (IsGrenadeLauncherAttached() && m_bGrenadeMode) return m_zoom_params.m_fIronSightZoomFactor;
 	return inherited::CurrentZoomFactor();
 }
 
@@ -1333,12 +1319,19 @@ void CWeaponMagazinedWGrenade::net_Import	(NET_Packet& P)
 	inherited::net_Import		(P);
 }
 
+bool CWeaponMagazinedWGrenade::IsNecessaryItem	    (const shared_str& item_sect)
+{
+	return (	std::find(m_ammoTypes.begin(), m_ammoTypes.end(), item_sect) != m_ammoTypes.end() ||
+				std::find(m_ammoTypes2.begin(), m_ammoTypes2.end(), item_sect) != m_ammoTypes2.end() 
+			);
+}
+
 u8 CWeaponMagazinedWGrenade::GetCurrentHudOffsetIdx()
 {
-	bool b_aiming = ((IsZoomed() && m_fZoomRotationFactor <= 1.f) ||
-		(!IsZoomed() && m_fZoomRotationFactor > 0.f));
-
-	if (!b_aiming)
+	bool b_aiming		= 	((IsZoomed() && m_zoom_params.m_fZoomRotationFactor<=1.f) ||
+							(!IsZoomed() && m_zoom_params.m_fZoomRotationFactor>0.f));
+	
+	if(!b_aiming)
 		return 0;
 	else
 	{
@@ -1349,13 +1342,6 @@ u8 CWeaponMagazinedWGrenade::GetCurrentHudOffsetIdx()
 		else
 			return 1;
 	}
-}
-
-bool CWeaponMagazinedWGrenade::IsNecessaryItem	    (const shared_str& item_sect)
-{
-	return (	std::find(m_ammoTypes.begin(), m_ammoTypes.end(), item_sect) != m_ammoTypes.end() ||
-				std::find(m_ammoTypes2.begin(), m_ammoTypes2.end(), item_sect) != m_ammoTypes2.end() 
-			);
 }
 
 void CWeaponMagazinedWGrenade::switch2_Unmis()

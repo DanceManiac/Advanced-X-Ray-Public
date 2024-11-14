@@ -28,18 +28,18 @@ public:
 
 	virtual	bool    bMarkCanShow		() { return IsZoomed() && !m_bGrenadeMode; }
 	virtual void	UpdateSecondVP		(bool bInGrenade = false);
-	virtual	bool	bInZoomRightNow		() const { return (m_fZoomRotationFactor > 0.05) && !m_bGrenadeMode; }
+	virtual	bool	bInZoomRightNow		() const { return (m_zoom_params.m_fZoomRotationFactor > 0.05) && !m_bGrenadeMode; }
 	virtual void    CheckMagazine		();
 	//=========================================
 
-	virtual bool	Attach(PIItem pIItem, bool b_send_event);
-	virtual bool	Detach(const char* item_section_name, bool b_spawn_item);
-	virtual bool	CanAttach(PIItem pIItem);
-	virtual bool	CanDetach(const char* item_section_name);
-	virtual void	InitAddons();
-	virtual bool	UseScopeTexture();
-	virtual	float	CurrentZoomFactor	();
-	virtual	u8		GetCurrentHudOffsetIdx();
+	virtual bool	Attach					(PIItem pIItem, bool b_send_event);
+	virtual bool	Detach					(const char* item_section_name, bool b_spawn_item);
+	virtual bool	CanAttach				(PIItem pIItem);
+	virtual bool	CanDetach				(const char* item_section_name);
+	virtual void	InitAddons				();
+	virtual bool	UseScopeTexture			();
+	virtual	float	CurrentZoomFactor		();
+	virtual	u8		GetCurrentHudOffsetIdx	();
 
 	
 	virtual void	OnStateSwitch	(u32 S, u32 oldState);
@@ -69,15 +69,15 @@ public:
 	bool			IsGrenadeMode		() const override { return m_bGrenadeMode; }
 
 	//виртуальные функции для проигрывания анимации HUD
-	virtual void	PlayAnimShow	();
-	virtual void	PlayAnimHide	();
-	virtual void	PlayAnimReload	();
-	virtual void	PlayAnimIdle	();
-	virtual void	PlayAnimShoot	();
-	virtual void	PlayAnimModeSwitch();
-	virtual void	PlayAnimBore	();
-	virtual void	PlayAnimFireMode();
-	virtual void	PlayAnimLaserSwitch();
+	virtual void	PlayAnimShow		();
+	virtual void	PlayAnimHide		();
+	virtual void	PlayAnimReload		();
+	virtual void	PlayAnimIdle		();
+	virtual void	PlayAnimShoot		();
+	virtual void	PlayAnimModeSwitch	();
+	virtual void	PlayAnimBore		();
+	virtual void	PlayAnimFireMode	();
+	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
 
 	//дополнительные параметры патронов 

@@ -66,9 +66,9 @@ void CWeaponBinoculars::OnZoomIn()
 	else
 		m_fRTZoomFactor = CurrentZoomFactor();
 	float delta, min_zoom_factor;
-	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
+	GetZoomData(m_zoom_params.m_fScopeZoomFactor, delta, min_zoom_factor);
 
-	clamp(m_fRTZoomFactor, m_fScopeZoomFactor, min_zoom_factor);
+	clamp(m_fRTZoomFactor, m_zoom_params.m_fScopeZoomFactor, min_zoom_factor);
 	SetZoomFactor(m_fRTZoomFactor);
 }
 // Lex Addon (correct by Suhar_) 24.10.2018		(end)
@@ -123,10 +123,10 @@ void CWeaponBinoculars::render_item_ui()
 void CWeaponBinoculars::ZoomInc()
 {
 	float delta,min_zoom_factor;
-	GetZoomData(m_fScopeZoomFactor, delta, min_zoom_factor);
+	GetZoomData(m_zoom_params.m_fScopeZoomFactor, delta, min_zoom_factor);
 
 	float f					= GetZoomFactor()-delta;
-	clamp					(f,m_fScopeZoomFactor,min_zoom_factor);
+	clamp					(f,m_zoom_params.m_fScopeZoomFactor,min_zoom_factor);
 	SetZoomFactor			( f );
 	// Lex Addon (correct by Suhar_) 24.10.2018		(begin)  
 	LastBinocZoomFactor = f;
@@ -147,10 +147,10 @@ void CWeaponBinoculars::GetZoomData(const float scope_factor, float& delta, floa
 void CWeaponBinoculars::ZoomDec()
 {
 	float delta,min_zoom_factor;
-	GetZoomData(m_fScopeZoomFactor,delta,min_zoom_factor);
+	GetZoomData(m_zoom_params.m_fScopeZoomFactor,delta,min_zoom_factor);
 
 	float f					= GetZoomFactor()+delta;
-	clamp					(f,m_fScopeZoomFactor,min_zoom_factor);
+	clamp					(f,m_zoom_params.m_fScopeZoomFactor,min_zoom_factor);
 	SetZoomFactor			( f );
 	// Lex Addon (correct by Suhar_) 24.10.2018		(begin)        
 	LastBinocZoomFactor = f;

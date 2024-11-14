@@ -87,24 +87,15 @@ public:
 	CGameFont*			m_HudInfoFont;
 
 	float				hud_info_item_x;
-	float				hud_info_item_y1;
-	float				hud_info_item_y2;
-	float				hud_info_item_y3;
+	Fvector3			hud_info_item_y_pos;
 
-	int					hud_info_r_n;
-	int					hud_info_g_n;
-	int					hud_info_b_n;
-	int					hud_info_a_n;
+	Ivector4			hud_info_n;
+	Ivector4			hud_info_e;
+	Ivector4			hud_info_f;
 
-	int					hud_info_r_e;
-	int					hud_info_g_e;
-	int					hud_info_b_e;
-	int					hud_info_a_e;
-
-	int					hud_info_r_f;
-	int					hud_info_g_f;
-	int					hud_info_b_f;
-	int					hud_info_a_f;
+	Ivector4			ch_info_n;
+	Ivector4			ch_info_e;
+	Ivector4			ch_info_f;
 protected:
 
 
