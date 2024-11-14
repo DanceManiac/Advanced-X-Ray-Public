@@ -54,6 +54,7 @@ struct II_BriefInfo
 	shared_str		fmj_ammo;
 	shared_str		ap_ammo;
 	shared_str		fire_mode;
+	shared_str		section;
 
 	shared_str		grenade;
 

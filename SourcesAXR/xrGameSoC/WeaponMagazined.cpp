@@ -2078,43 +2078,92 @@ void CWeaponMagazined::net_Import	(NET_Packet& P)
 	SetQueueSize(GetCurrentFireMode());
 }
 #include "string_table.h"
-void CWeaponMagazined::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
+bool CWeaponMagazined::GetBriefInfo(II_BriefInfo& info)
 {
-	int	AE					= GetAmmoElapsed();
-	int	AC					= GetAmmoCurrent();
-	
-	if(AE==0 || 0==m_magazine.size() )
-		icon_sect_name	= *m_ammoTypes[m_ammoType];
+	string32	int_str;
+	int	ae					= GetAmmoElapsed();
+	int	ac					= GetAmmoCurrent();
+
+	if (!unlimited_ammo())
+		xr_sprintf(int_str, "%d/%d", ae, ac - ae);
 	else
-		icon_sect_name	= *m_ammoTypes[m_magazine.back().m_LocalAmmoType];
+		xr_sprintf(int_str, "%d/--", ae);
 
+	info.cur_ammo = int_str;
 
-	string256		sItemName;
-	strcpy_s			(sItemName, *CStringTable().translate(pSettings->r_string(icon_sect_name.c_str(), "inv_name_short")));
-
-	if (bHasBulletsToHide)
+	if (HasFireModes())
 	{
-		last_hide_bullet = AE >= bullet_cnt ? bullet_cnt : bullet_cnt - AE - 1;
-
-		if (AE == 0) last_hide_bullet = -1;
-
-		//HUD_VisualBulletUpdate();
-	}
-
-	if ( HasFireModes() )
-		strcat_s(sItemName, GetCurrentFireModeStr());
-
-	str_name		= sItemName;
-
-
-	{
-		if (!unlimited_ammo())
-			sprintf_s			(sItemName, "%d/%d",AE,AC - AE);
+		if (m_iQueueSize == WEAPON_ININITE_QUEUE)
+		{
+			info.fire_mode = "A";
+		}
 		else
-			sprintf_s			(sItemName, "%d/--",AE);
-
-		str_count				= sItemName;
+		{
+			xr_sprintf(int_str, "%d", m_iQueueSize);
+			info.fire_mode = int_str;
+		}
 	}
+	else
+		info.fire_mode = "";
+	
+	if(ae == 0 || 0 == m_magazine.size())
+		info.icon		= *m_ammoTypes[m_ammoType];
+	else
+		info.icon		= *m_ammoTypes[m_magazine.back().m_LocalAmmoType];
+
+	GetAmmoCurrent();//update m_BriefInfo_CalcFrame
+	info.grenade = "";
+
+	u32 at_size = m_ammoTypes.size();
+	if (unlimited_ammo() || at_size == 0)
+	{
+		info.fmj_ammo._set("--");
+		info.ap_ammo._set("--");
+	}
+	else
+	{
+		//GetSuitableAmmoTotal(); //mp = all type
+
+		xr_sprintf(int_str, "%d", GetAmmoCount(0)); // !!!!!!!!!!! == 0 temp
+		if (m_ammoType == 0)
+			info.fmj_ammo = int_str;
+		else
+			info.ap_ammo = int_str;
+
+		if (at_size == 2)
+		{
+			xr_sprintf(int_str, "%d", GetAmmoCount(1));
+			if (m_ammoType == 0)
+				info.ap_ammo = int_str;
+			else
+				info.fmj_ammo = int_str;
+		}
+		else
+		{
+			info.ap_ammo = "";
+		}
+	}
+
+	if (ae != 0 && m_magazine.size() != 0)
+	{
+		LPCSTR ammo_type = m_ammoTypes[m_magazine.back().m_LocalAmmoType].c_str();
+		info.name = CStringTable().translate(pSettings->r_string(ammo_type, "inv_name_short"));
+		info.icon = ammo_type;
+	}
+	else
+	{
+		LPCSTR ammo_type = m_ammoTypes[m_ammoType].c_str();
+		info.name = CStringTable().translate(pSettings->r_string(ammo_type, "inv_name_short"));
+		info.icon = ammo_type;
+	}
+
+	if (GameConstants::GetMergedAmmoLineWithFiremodes() && HasFireModes())
+	{
+		string128 out_str = "";
+		xr_sprintf(out_str, "%s (%s)", info.name.c_str(), info.fire_mode.c_str());
+		info.name = out_str;
+	}
+	return true;
 }
 
 // AVO: for custom added sounds check if sound exists

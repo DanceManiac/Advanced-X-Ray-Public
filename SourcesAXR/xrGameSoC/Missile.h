@@ -48,7 +48,7 @@ public:
 
 	virtual void 			State						(u32 state);
 	virtual void 			OnStateSwitch				(u32 S, u32 oldState);
-	virtual void			GetBriefInfo				(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
+	virtual bool			GetBriefInfo				(II_BriefInfo& info);
 
 protected:
 	virtual void			UpdateFireDependencies_internal	();
@@ -83,6 +83,7 @@ protected:
 	bool					m_constpower;
 	float					m_fThrowForce;
 
+	bool					m_bUseBoltIcon;
 	bool					m_bIsContactGrenade;
 	bool					m_bQuickThrowActive;
 	CGameObject*			m_pOwner;

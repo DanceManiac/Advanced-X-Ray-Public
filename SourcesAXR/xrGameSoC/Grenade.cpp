@@ -364,12 +364,14 @@ void CGrenade::Deactivate()
 	inherited::Deactivate();
 }
 
-void CGrenade::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
+bool CGrenade::GetBriefInfo(II_BriefInfo& info)
 {
-	str_name				= NameShort();
+	info.name				= NameShort();
 	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
 	string16				stmp;
-	sprintf_s					(stmp, "%d", ThisGrenadeCount);
-	str_count				= stmp;
-	icon_sect_name			= *cNameSect();
+	sprintf_s				(stmp, "%d", ThisGrenadeCount);
+	info.cur_ammo			= stmp;
+	info.icon				= *cNameSect();
+
+	return true;
 }

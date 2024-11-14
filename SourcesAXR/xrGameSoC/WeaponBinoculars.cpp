@@ -169,11 +169,13 @@ void CWeaponBinoculars::load(IReader &input_packet)
 	load_data		(m_fRTZoomFactor,input_packet);
 }
 
-void CWeaponBinoculars::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
+bool CWeaponBinoculars::GetBriefInfo(II_BriefInfo& info)
 {
-	str_name		= NameShort();
-	str_count		= "";
-	icon_sect_name	= *cNameSect();
+	info.name		= NameShort();
+	info.cur_ammo	= "";
+	info.icon		= *cNameSect();
+
+	return true;
 }
 
 void CWeaponBinoculars::net_Relcase	(CObject *object)

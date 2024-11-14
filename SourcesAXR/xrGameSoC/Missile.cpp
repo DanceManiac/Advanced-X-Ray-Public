@@ -77,7 +77,7 @@ void CMissile::Load(LPCSTR section)
 	m_vThrowDir			= pSettings->r_fvector3(section,"throw_dir");
 
 	m_ef_weapon_type	= READ_IF_EXISTS(pSettings,r_u32,section,"ef_weapon_type",u32(-1));
-
+	m_bUseBoltIcon		= READ_IF_EXISTS(pSettings, r_bool, section, "use_icon", FALSE);
 	m_bIsContactGrenade = READ_IF_EXISTS(pSettings, r_bool, section, "is_contact_grenade", false);
 }
 
@@ -778,10 +778,14 @@ void CMissile::ExitContactCallback(bool& do_colide, bool bo1, dContact& c, SGame
 		l_this->set_destroy_time(5);
 }
 
-void CMissile::GetBriefInfo(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count)
+bool CMissile::GetBriefInfo(II_BriefInfo& info)
 {
-	str_name		= NameShort();
-	str_count		= "";
-	icon_sect_name	= "";
+	info.name			= NameShort();
+	info.cur_ammo		= "";
+	info.section		= "";
+	if (m_bUseBoltIcon)
+		info.icon		= *cNameSect();
+
+	return true;
 }
 

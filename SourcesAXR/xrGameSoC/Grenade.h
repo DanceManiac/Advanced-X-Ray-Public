@@ -47,7 +47,7 @@ public:
 			void			PutNextToSlot						();
 
 	virtual void			Deactivate							();
-	virtual void			GetBriefInfo						(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
+	virtual bool			GetBriefInfo						(II_BriefInfo& info);
 
 	virtual void			SendHiddenItem						();	//same as OnHiddenItem but for client... (sends message to a server)...
 protected:

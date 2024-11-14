@@ -57,7 +57,7 @@ public:
 
 	virtual bool		Action							(s32 cmd, u32 flags);
 
-	virtual void		GetBriefInfo					(xr_string& str_name, xr_string& icon_sect_name, xr_string& str_count);
+	virtual bool		GetBriefInfo					(II_BriefInfo& info);
 
 			void		FastStrike						(u32 state);
 

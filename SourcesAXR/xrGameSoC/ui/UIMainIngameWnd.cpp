@@ -905,21 +905,20 @@ void CUIMainIngameWnd::SetPickUpItem	(CInventoryItem* PickUpItem)
 void CUIMainIngameWnd::UpdateActiveItemInfo()
 {
 	PIItem item		=  m_pActor->inventory().ActiveItem();
-	if(item) 
+	if (item) 
 	{
-		xr_string					str_name;
-		xr_string					icon_sect_name;
-		xr_string					str_count;
-		item->GetBriefInfo			(str_name, icon_sect_name, str_count);
+		II_BriefInfo brief_info;
+		item->GetBriefInfo			(brief_info);
 
-		UIWeaponSignAmmo.Show		(true						);
-		UIWeaponBack.SetText		(str_name.c_str			()	);
-		UIWeaponSignAmmo.SetText	(str_count.c_str		()	);
-		SetAmmoIcon					(icon_sect_name.c_str	()	);
+		UIWeaponSignAmmo.Show		(true);
+		UIWeaponBack.SetText		(brief_info.name.c_str());
+		UIWeaponSignAmmo.SetText	(brief_info.cur_ammo.c_str());
+		SetAmmoIcon					(brief_info.icon.c_str());
 
 		//-------------------
-		m_pWeapon = smart_cast<CWeapon*> (item);		
-	}else
+		m_pWeapon = smart_cast<CWeapon*> (item);
+	}
+	else
 	{
 		UIWeaponIcon.Show			(false);
 		UIWeaponSignAmmo.Show		(false);
