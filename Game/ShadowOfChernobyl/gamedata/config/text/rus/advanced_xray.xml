@@ -948,4 +948,16 @@
 	<string id="st_opt_ultra">
 		<text>очень высоко</text>
 	</string>
+	<string id="st_line_break">
+		<text>\n </text>
+	</string>
+	<string id="st_bullet_symbol">
+		<text>•</text>
+	</string>
+	<string id="st_ammos">
+		<text>Боеприпасы:\n </text>
+	</string>
+	<string id="st_for_gl">
+		<text>\n Для подствольника:\n </text>
+	</string>
 </string_table>

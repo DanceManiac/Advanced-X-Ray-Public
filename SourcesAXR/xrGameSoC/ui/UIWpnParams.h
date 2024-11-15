@@ -16,8 +16,8 @@ public:
 	virtual						~CUIWpnParams			();
 
 	void 						InitFromXml				(CUIXml& xml_doc);
-	void 						SetInfo					(const shared_str& wnp_section);
-	bool 						Check					(const shared_str& wpn_section);
+	void 						SetInfo					(CInventoryItem const& cur_wpn);
+	bool 						Check					(CInventoryItem& wpn_section);
 
 protected:
 	CUIProgressBar				m_progressAccuracy;

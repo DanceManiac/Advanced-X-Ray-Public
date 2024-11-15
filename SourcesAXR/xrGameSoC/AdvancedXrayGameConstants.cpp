@@ -46,6 +46,8 @@ bool	m_bDisableStopping = true;
 bool	m_bDisableStoppingBolt = true;
 bool	m_bDisableStoppingGrenade = true;
 bool	m_bMergeAmmoLineWithFiremode = false;
+bool	m_bUseAutoAmmoInfo = false;
+bool	m_bUseAutoAmmoInfoDesc = false;
 bool	m_bOGSE_WpnZoomSystem = false;
 bool	m_bQuickThrowGrenadesEnabled = true;
 bool	m_bPDA_FlashingIconsEnabled = false;
@@ -107,7 +109,6 @@ namespace GameConstants
 		m_bDisableStopping = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "disable_stopping_empty", true);
 		m_bDisableStoppingBolt = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "disable_stopping_bolt", true);
 		m_bDisableStoppingGrenade = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "disable_stopping_grenade", true);
-		m_bMergeAmmoLineWithFiremode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "merge_ammo_line_with_firemode", true);
 		m_bOGSE_WpnZoomSystem = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "ogse_weapons_zoom_system", false);
 		m_bQuickThrowGrenadesEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_quick_throw_grenades", true);
 		m_bBackpackAnimsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "actions_animations", "enable_backpack_animations", false);
@@ -115,6 +116,9 @@ namespace GameConstants
 		m_i_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "integer_cmd_count", 1);
 		m_B_CMD_Count = READ_IF_EXISTS(pAdvancedSettings, r_u32, "custom_commands", "bool_cmd_count", 1);
 		m_fDistantSndDistance = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "distant_snd_distance", 150.f);
+		m_bMergeAmmoLineWithFiremode = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "merge_ammo_line_with_firemode", true);
+		m_bUseAutoAmmoInfo = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "use_auto_ammo_info", false);
+		m_bUseAutoAmmoInfoDesc = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "use_auto_ammo_info_desc", false);
 		m_bColorizeValues = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "colorize_values", true);
 		m_IV4RedColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_red", Ivector4().set(255, 0, 0, 255));
 		m_IV4GreenColor = READ_IF_EXISTS(pAdvancedSettings, r_ivector4, "ui_settings", "colorize_values_green", Ivector4().set(0, 255, 0, 255));
@@ -320,6 +324,16 @@ namespace GameConstants
 	bool GetMergedAmmoLineWithFiremodes()
 	{
 		return m_bMergeAmmoLineWithFiremode;
+	}
+
+	bool GetAutoAmmoInfo()
+	{
+		return m_bUseAutoAmmoInfo;
+	}
+
+	bool GetAutoAmmoInfoDesc()
+	{
+		return m_bUseAutoAmmoInfoDesc;
 	}
 
 	bool GetOGSE_WpnZoomSystem()

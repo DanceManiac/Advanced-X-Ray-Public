@@ -12,6 +12,10 @@
 #include "../Inventory_Item.h"
 #include "../PhysicsShellHolder.h"
 #include "../CustomOutfit.h"
+#include "../Weapon.h"
+#include "../WeaponMagazinedWGrenade.h"
+#include "../WeaponKnife.h"
+#include "../WeaponBinoculars.h"
 
 #include "UIInventoryUtilities.h"
 #include "UIWpnParams.h"
@@ -252,7 +256,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		UIDesc->Clear						();
 		VERIFY								(0==UIDesc->GetSize());
 
-		TryAddWpnInfo						(pInvItem->object().cNameSect());
+		TryAddWpnInfo						(*pInvItem);
 		TryAddArtefactInfo					(*pInvItem);
 		TryAddOutfitInfo					(*pInvItem, NULL);
 		TryAddBoosterInfo					(*pInvItem);
@@ -268,6 +272,7 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 			pItem->SetText						(*pInvItem->ItemDescription());
 			pItem->AdjustHeightToText			();
 			UIDesc->AddWindow					(pItem, true);
+			TryAddWpnAmmoInfo					(*pInvItem);
 		}
 		UIDesc->ScrollToBegin				();
 	}
@@ -314,12 +319,90 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 	}
 }
 
-void CUIItemInfo::TryAddWpnInfo(const shared_str& wpn_section)
+void CUIItemInfo::TryAddWpnAmmoInfo(CInventoryItem& pInvItem)
 {
-	if (UIWpnParams->Check(wpn_section) && GameConstants::GetShowWpnInfo())
+	if (!GameConstants::GetAutoAmmoInfo())
+		return;
+	CWeapon* pWeapon = smart_cast<CWeapon*>(&pInvItem);
+	CWeaponMagazinedWGrenade* pWeaponMagGren = smart_cast<CWeaponMagazinedWGrenade*>(&pInvItem);
+	CWeaponKnife* pKnife = smart_cast<CWeaponKnife*>(&pInvItem);
+	CWeaponBinoculars* pBinoc = smart_cast<CWeaponBinoculars*>(&pInvItem);
+	if (!pWeapon || pKnife || pBinoc)
+		return;
+	if (UIWpnParams && !UIWpnParams->Check(pInvItem))
+		return;
+	if (!!READ_IF_EXISTS(pSettings, r_bool, pWeapon->cNameSect().c_str(), "show_ammo", true) == false)
+		return;
+	bool use_desc = GameConstants::GetAutoAmmoInfoDesc();
+	LPCSTR name_or_desc = "inv_name_short";
+	if (use_desc)
+		name_or_desc = "inv_name_ammo_descr";
+	CUIStatic* m_text = nullptr;
+	m_text = xr_new<CUIStatic>();
+	m_text->Init(0.f, 0.f, UIDesc->GetWidth(), 0.f);
+	m_text->SetTextColor(m_desc_info.uDescClr);
+	m_text->SetFont(m_desc_info.pDescFont);
+	string512 ammo_list = "";
+	string512 grenades_list = "";
+	for (u32 i = 0; i < pWeapon->m_ammoTypes.size(); i++)
 	{
-		UIWpnParams->SetInfo(wpn_section);
-		UIDesc->AddWindow(UIWpnParams,false);
+		if (!!pSettings->line_exist(pWeapon->m_ammoTypes[i].c_str(), name_or_desc) == false)
+		{
+			Msg("Can't find [%s] in ammo section [%s], reading [inv_name_short]", pWeapon->m_ammoTypes[i].c_str(), name_or_desc);
+			name_or_desc = "inv_name_short";
+		}
+		if (i != 0)
+		{
+			if (i == pWeapon->m_ammoTypes.size())
+				xr_sprintf(ammo_list, "%s%s%s", ammo_list, *CStringTable().translate("st_bullet_symbol"), CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes[i].c_str(), name_or_desc)).c_str());
+			else
+				xr_sprintf(ammo_list, "%s%s %s %s", ammo_list, *CStringTable().translate("st_line_break"), *CStringTable().translate("st_bullet_symbol"), CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes[i].c_str(), name_or_desc)).c_str());
+		}
+		else
+		{
+			xr_sprintf(ammo_list, "%s %s", *CStringTable().translate("st_bullet_symbol"), CStringTable().translate(pSettings->r_string(pWeapon->m_ammoTypes.front().c_str(), name_or_desc)).c_str());
+		}
+	}
+	bool need_add_grenades = pWeaponMagGren && (pWeaponMagGren->GrenadeLauncherAttachable() || pWeaponMagGren->IsGrenadeLauncherAttached());
+	if (need_add_grenades)
+	{
+		name_or_desc = "inv_name_short";
+		for (u32 i1 = 0; i1 < pWeaponMagGren->m_ammoTypes2.size(); i1++)
+		{
+			if (i1 != 0)
+			{
+				if (i1 == pWeaponMagGren->m_ammoTypes2.size())
+					xr_sprintf(grenades_list, "%s%s%s", grenades_list, *CStringTable().translate("st_bullet_symbol"), CStringTable().translate(pSettings->r_string(pWeaponMagGren->m_ammoTypes2[i1].c_str(), name_or_desc)).c_str());
+				else
+					xr_sprintf(grenades_list, "%s%s %s %s", grenades_list, *CStringTable().translate("st_line_break"), *CStringTable().translate("st_bullet_symbol"), CStringTable().translate(pSettings->r_string(pWeaponMagGren->m_ammoTypes2[i1].c_str(), name_or_desc)).c_str());
+			}
+			else
+			{
+				xr_sprintf(grenades_list, "%s %s", *CStringTable().translate("st_bullet_symbol"), CStringTable().translate(pSettings->r_string(pWeaponMagGren->m_ammoTypes2.front().c_str(), name_or_desc)).c_str());
+			}
+		}
+	}
+	string4096 out_text = "";
+	if (need_add_grenades)
+	{
+		xr_sprintf(out_text, " %s %s %s %s", *CStringTable().translate("st_ammos"), ammo_list, *CStringTable().translate("st_for_gl"), grenades_list);
+	}
+	else
+	{
+		xr_sprintf(out_text, " %s %s", *CStringTable().translate("st_ammos"), ammo_list);
+	}
+	m_text->SetText(out_text);
+	m_text->SetTextComplexMode(true);
+	m_text->AdjustHeightToText();
+	UIDesc->AddWindow(m_text, false);
+}
+
+void CUIItemInfo::TryAddWpnInfo(CInventoryItem& pInvItem)
+{
+	if (UIWpnParams->Check(pInvItem) && GameConstants::GetShowWpnInfo())
+	{
+		UIWpnParams->SetInfo(pInvItem);
+		UIDesc->AddWindow(UIWpnParams, false);
 	}
 }
 

@@ -30,7 +30,8 @@ public:
 	void				Init				(float x, float y, float width, float height, LPCSTR xml_name);
 	void				Init				(LPCSTR xml_name);
 	void				InitItem			(CInventoryItem* pInvItem);
-	void				TryAddWpnInfo		(const shared_str& wpn_section);
+	void				TryAddWpnInfo		(CInventoryItem& pInvItem);
+	void				TryAddWpnAmmoInfo	(CInventoryItem& pInvItem);
 	void				TryAddArtefactInfo	(CInventoryItem& pInvItem);
 	void				TryAddOutfitInfo	(CInventoryItem& pInvItem, CInventoryItem* pCompareItem);
 	void				TryAddBoosterInfo	(CInventoryItem& pInvItem);

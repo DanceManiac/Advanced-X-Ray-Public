@@ -1,10 +1,15 @@
 #include "pch_script.h"
 #include "UIWpnParams.h"
 #include "UIXmlInit.h"
-#include "../level.h"
+#include "../Level.h"
 #include "game_base_space.h"
 #include "../ai_space.h"
 #include "script_engine.h"
+#include "inventory_item_object.h"
+#include "Weapon.h"
+#include "WeaponBinoculars.h"
+#include "WeaponKnife.h"
+#include "Silencer.h"
 
 struct SLuaWpnParams{
 	luabind::functor<float>		m_functorRPM;
@@ -75,21 +80,21 @@ void CUIWpnParams::InitFromXml(CUIXml& xml_doc){
 
 }
 
-void CUIWpnParams::SetInfo(const shared_str& wpn_section)
+void CUIWpnParams::SetInfo(CInventoryItem const& cur_wpn)
 {
-
-	if(!g_lua_wpn_params)
+	if (!g_lua_wpn_params)
 		g_lua_wpn_params = xr_new<SLuaWpnParams>();
 
-	m_progressRPM.SetProgressPos		(g_lua_wpn_params->m_functorRPM(*wpn_section));
-	m_progressAccuracy.SetProgressPos	(g_lua_wpn_params->m_functorAccuracy(*wpn_section));
+	LPCSTR cur_section = cur_wpn.object().cNameSect().c_str();
+	m_progressRPM.SetProgressPos		(g_lua_wpn_params->m_functorRPM(cur_section));
+	m_progressAccuracy.SetProgressPos	(g_lua_wpn_params->m_functorAccuracy(cur_section));
 	if (GameID() == GAME_SINGLE)
-        m_progressDamage.SetProgressPos	(g_lua_wpn_params->m_functorDamage(*wpn_section));
+		m_progressDamage.SetProgressPos	(g_lua_wpn_params->m_functorDamage(cur_section));
 	else
-		m_progressDamage.SetProgressPos	(g_lua_wpn_params->m_functorDamageMP(*wpn_section));
-	m_progressHandling.SetProgressPos	(g_lua_wpn_params->m_functorHandling(*wpn_section));
+		m_progressDamage.SetProgressPos	(g_lua_wpn_params->m_functorDamageMP(cur_section));
+	m_progressHandling.SetProgressPos	(g_lua_wpn_params->m_functorHandling(cur_section));
 
-	const bool showAmmo = READ_IF_EXISTS(pSettings, r_bool, wpn_section, "show_ammo", true);
+	const bool showAmmo = READ_IF_EXISTS(pSettings, r_bool, cur_section, "show_ammo", true);
 
 	m_progressRPM.Show(showAmmo);
 	m_progressAccuracy.Show(showAmmo);
@@ -97,18 +102,22 @@ void CUIWpnParams::SetInfo(const shared_str& wpn_section)
 	m_textRPM.Show(showAmmo);
 }
 
-bool CUIWpnParams::Check(const shared_str& wpn_section){
-	if (pSettings->line_exist(wpn_section, "fire_dispersion_base"))
+bool CUIWpnParams::Check(CInventoryItem& wpn_section)
+{
+	LPCSTR wpn_sect = wpn_section.object().cNameSect().c_str();
+	CWeapon* wpn = smart_cast<CWeapon*>(&wpn_section);
+	if (pSettings->line_exist(wpn_sect, "fire_dispersion_base"))
 	{
-        if (0==xr_strcmp(wpn_section, "wpn_addon_silencer"))
-            return false;
-        if (0==xr_strcmp(wpn_section, "wpn_binoc"))
-            return false;
-        if (0==xr_strcmp(wpn_section, "mp_wpn_binoc"))
-            return false;
+		if (smart_cast<CSilencer*>(&wpn_section))
+			return false;
+		if (smart_cast<CWeaponBinoculars*>(&wpn_section))
+			return false;
+		if (smart_cast<CWeaponKnife*>(&wpn_section))
+			return false;
+		if (!wpn->m_bShowWpnStats)
+			return false;
 
-        return true;		
+		return true;
 	}
-	else
-		return false;
+	return false;
 }

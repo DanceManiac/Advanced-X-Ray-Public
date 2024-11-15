@@ -45,6 +45,8 @@ namespace GameConstants
 	bool GetDisableStoppingBolt();
 	bool GetDisableStoppingGrenade();
 	bool GetMergedAmmoLineWithFiremodes();
+	bool GetAutoAmmoInfo();
+	bool GetAutoAmmoInfoDesc();
 	bool GetOGSE_WpnZoomSystem();
 	bool GetQuickThrowGrenadesEnabled();
 	bool GetPDA_FlashingIconsEnabled();
