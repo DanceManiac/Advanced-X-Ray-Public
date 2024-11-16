@@ -260,7 +260,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\SDK\binaries\soft_oal.dll $(OutDir)</Command>
+      <Command>copy /Y "..\..\SDK\binaries\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -371,7 +371,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\SDK\binaries\soft_oal.dll $(OutDir)</Command>
+      <Command>copy /Y "..\..\SDK\binaries\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mixed|Win32'">
@@ -554,7 +554,7 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\SDK\binaries\soft_oal.dll $(OutDir)</Command>
+      <Command>copy /Y "..\..\SDK\binaries\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
