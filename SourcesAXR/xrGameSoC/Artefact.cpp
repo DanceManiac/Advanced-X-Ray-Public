@@ -179,15 +179,41 @@ void CArtefact::Load(LPCSTR section)
 	if(pSettings->section_exist(/**cNameSect(), */pSettings->r_string(section,"hit_absorbation_sect")))
 		m_ArtefactHitImmunities.LoadImmunities(pSettings->r_string(section,"hit_absorbation_sect"),pSettings);
 
-	m_ConstHitTypeProtection[ALife::eHitTypeBurn]			= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeStrike]			= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeShock]			= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeWound]			= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeRadiation]		= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeTelepatic]		= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]	= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeExplosion]		= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion) * m_iAfRank;
-	m_ConstHitTypeProtection[ALife::eHitTypeFireWound]		= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound) * m_iAfRank;
+	m_ConstHitTypeProtection[ALife::eHitTypeBurn] = (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn) > 1.0) ?
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeStrike]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike) > 1.0) ? 
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeShock]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock) > 1.0) ? 
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeShock) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeWound]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound) > 1.0) ?
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeWound) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeRadiation]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation) > 1.0) ?
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeRadiation) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeTelepatic]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic) > 1.0) ?
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeTelepatic) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeChemicalBurn]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn) > 1.0) ?
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeChemicalBurn) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeExplosion]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion) > 1.0) ?
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeExplosion) - 1.0f) * m_iAfRank) + 1.0f;
+
+	m_ConstHitTypeProtection[ALife::eHitTypeFireWound]			= (m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound) > 1.0) ?
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound) - 1.0f) / m_iAfRank) + 1.0f :
+		((m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeFireWound) - 1.0f) * m_iAfRank) + 1.0f;
 
 	m_HitTypeProtection[ALife::eHitTypeBurn]			= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeBurn);
 	m_HitTypeProtection[ALife::eHitTypeStrike]			= m_ArtefactHitImmunities.GetHitImmunity(ALife::eHitTypeStrike);
@@ -345,7 +371,7 @@ void CArtefact::UpdateCL		()
 {
 	inherited::UpdateCL			();
 
-	if (GameConstants::GetArtefactsDegradation())
+	if (GameConstants::GetArtefactsDegradation() && ParentIsActor())
 		UpdateDegradation();
 	
 	if (o_fastmode || m_activationObj)
@@ -401,8 +427,10 @@ void CArtefact::UpdateDegradation()
 
 	for (size_t i = 0; i < ALife::eHitTypeMax; ++i)
 	{
-		if (!fis_zero(m_HitTypeProtection[(ALife::EHitType)i]) && !fis_zero(m_ConstHitTypeProtection[(ALife::EHitType)i]))
-			m_HitTypeProtection[(ALife::EHitType)i] = (m_ConstHitTypeProtection[(ALife::EHitType)i] / 100) * percent;
+		if (m_HitTypeProtection[(ALife::EHitType)i] < 1.0f && m_ConstHitTypeProtection[(ALife::EHitType)i] < 1.0f)
+			m_HitTypeProtection[(ALife::EHitType)i] = ((m_ConstHitTypeProtection[(ALife::EHitType)i]) * 100) / percent;
+		else if (m_HitTypeProtection[(ALife::EHitType)i] > 1.0f && m_ConstHitTypeProtection[(ALife::EHitType)i] > 1.0f)
+			m_HitTypeProtection[(ALife::EHitType)i] = m_ConstHitTypeProtection[(ALife::EHitType)i];
 	}
 
 	//Lights
@@ -943,20 +971,20 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 		}break;
 		case ALife::ePsyHealthRestoreSpeed:
 		{
-			res = 0.f; //m_fPsyHealthRestoreSpeed;
+			res = m_fPsyHealthRestoreSpeed;
 		}break;
 #pragma todo("new params are temporary empty")
 		case ALife::eSleepenessRestoreSpeed:
 		{
-			res = 0.f; //m_fSleepenessRestoreSpeed;
+			res = m_fSleepenessRestoreSpeed;
 		}break;
 		case ALife::eIntoxicationRestoreSpeed:
 		{
-			res = 0.f; //m_fIntoxicationRestoreSpeed;
+			res = m_fIntoxicationRestoreSpeed;
 		}break;
 		case ALife::eAlcoholismRestoreSpeed:
 		{
-			res = 0.f; //m_fAlcoholismRestoreSpeed;
+			res = m_fAlcoholismRestoreSpeed;
 		}break;
 		case ALife::eHangoverRestoreSpeed:
 		{
@@ -964,7 +992,7 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 		}break;
 		case ALife::eNarcotismRestoreSpeed:
 		{
-			res = 0.f; //m_fNarcotismRestoreSpeed;
+			res = m_fNarcotismRestoreSpeed;
 		}break;
 		case ALife::eWithDrawalRestoreSpeed:
 		{
@@ -972,7 +1000,7 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 		}break;
 		case ALife::eFrostbiteRestoreSpeed:
 		{
-			res = 0.f; //m_FrostbiteRestoreSpeed;
+			res = m_fFrostbiteRestoreSpeed;
 		}break;
 		default:
 		{
@@ -985,4 +1013,17 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 bool CArtefact::IsInContainer()
 {
 	return m_bInContainer;
+}
+
+bool CArtefact::ParentIsActor()
+{
+	CObject* O = H_Parent();
+	if (!O)
+		return false;
+
+	CEntityAlive* EA = smart_cast<CEntityAlive*>(O);
+	if (!EA)
+		return false;
+
+	return EA->cast_actor() != nullptr;
 }

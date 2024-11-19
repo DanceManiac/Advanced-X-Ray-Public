@@ -213,24 +213,28 @@ void CUIArtefactParams::SetInfo(CInventoryItem& pInvItem)
 	Fvector2 pos;
 	CArtefact* artefact = pInvItem.object().cast_artefact();
 
-	for ( u32 i = 0; i < ALife::eHitTypeWound_2; ++i )
+	for (u32 i = 0; i < ALife::eHitTypeMax; ++i)
 	{
+		if (i >= ALife::eHitTypeWound_2)
+			continue;
 		val = artefact->m_HitTypeProtection[(ALife::EHitType)i];
 		val = (1.0f - val);
 		val *= 100.0f;
-		if ( fis_zero(val) )
+
+		if (fis_zero(val))
 		{
 			continue;
 		}
 		m_immunity_item[i]->SetValue(val, 2);
 
-		pos.set( m_immunity_item[i]->GetWndPos() );
+		pos.set(m_immunity_item[i]->GetWndPos());
 		pos.y = h;
-		m_immunity_item[i]->SetWndPos( pos );
+		m_immunity_item[i]->SetWndPos(pos);
 
 		h += m_immunity_item[i]->GetWndSize().y;
-		AttachChild( m_immunity_item[i] );
+		AttachChild(m_immunity_item[i]);
 	}
+
 	for ( u32 i = 0; i < ALife::eRestoreTypeMax; ++i )
 	{
 		val = artefact->GetRestoreByType((ALife::EConditionRestoreType)i);

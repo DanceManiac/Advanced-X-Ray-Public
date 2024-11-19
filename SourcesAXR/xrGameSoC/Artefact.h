@@ -160,6 +160,8 @@ public:
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
 	virtual u16						bone_count_to_synchronize	() const;
 
+			bool					ParentIsActor		();
+
 			void					UpdateDegradation	();
 			bool					IsInContainer		();
 
