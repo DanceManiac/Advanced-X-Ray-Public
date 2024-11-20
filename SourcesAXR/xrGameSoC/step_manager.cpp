@@ -101,7 +101,19 @@ void CStepManager::on_animation_start(MotionID motion_id, CBlend *blend)
 	
 	// искать текущую анимацию в STEPS_MAP
 	STEPS_MAP_IT it = m_steps_map.find(motion_id);
-	if (it == m_steps_map.end()) {
+	if (it == m_steps_map.end())
+	{
+#ifdef DEBUG
+		if (auto pGameObj = m_object->cast_game_object())
+		{
+			if (auto kA = smart_cast<IKinematicsAnimated*>(pGameObj->Visual()))
+			{
+				std::pair<LPCSTR, LPCSTR> motionDefName = kA->LL_MotionDefName_dbg(motion_id);
+				Msg("! [CStepManager::on_animation_start]: No step_params found for: [object: %s, visual: %s, motion: %s, anim set: %s]", pGameObj->cName().c_str(), pGameObj->cNameVisual().c_str(), motionDefName.first, motionDefName.second);
+			}
+		}
+#endif
+
 		m_step_info.disable = true;
 		return;
 	}
