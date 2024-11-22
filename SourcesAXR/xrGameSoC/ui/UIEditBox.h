@@ -1,22 +1,17 @@
 #pragma once
-#include "../../XrServerEntitiesSoC/script_export_space.h"
+#include "../../XrServerEntitiesCS/script_export_space.h"
 #include "UIOptionsItem.h"
 #include "UIColorAnimatorWrapper.h"
 #include "UICustomEdit.h"
 #include "UIFrameLineWnd.h"
 
-//////////////////////////////////////////////////////////////////////////
-
-class game_cl_GameState;
-
-//////////////////////////////////////////////////////////////////////////
-
-class CUIEditBox : public CUIMultiTextureOwner, public CUIOptionsItem, public CUICustomEdit{
+class CUIEditBox : /*public CUIMultiTextureOwner,*/ public CUIOptionsItem, public CUICustomEdit
+{
 public:
 					CUIEditBox		();
 	virtual			~CUIEditBox		();
 
-	virtual void	Init(float x, float y, float width, float heigt);
+	virtual void	InitCustomEdit	(Fvector2 pos, Fvector2 size);
 
 	// CUIOptionsItem
 	virtual void	SetCurrentValue();
@@ -24,7 +19,8 @@ public:
 	virtual bool	IsChanged();
 
 	// CUIMultiTextureOwner
-	virtual void	InitTexture(const char* texture);
+	virtual void	InitTexture					(LPCSTR texture);
+	virtual void	InitTextureEx				(LPCSTR texture, LPCSTR  shader);
 protected:
 	CUIFrameLineWnd	m_frameLine;
 	DECLARE_SCRIPT_REGISTER_FUNCTION

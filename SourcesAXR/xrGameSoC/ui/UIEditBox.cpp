@@ -12,20 +12,27 @@
 CUIEditBox::CUIEditBox()
 {
 	AttachChild(&m_frameLine);
-	m_lines.SetTextComplexMode(false);
 }
 
 CUIEditBox::~CUIEditBox(void)
 {
 }	
 
-void CUIEditBox::Init(float x, float y, float width, float height){
-	m_frameLine.Init(0,0,width,height);
-	CUICustomEdit::Init(x,y,width,height);
+void CUIEditBox::InitCustomEdit(Fvector2 pos, Fvector2 size)
+{
+	m_frameLine.SetWndPos			(Fvector2().set(0,0));
+	m_frameLine.SetWndSize			(size);
+	CUICustomEdit::InitCustomEdit	(pos, size);
 }
 
-void CUIEditBox::InitTexture(const char* texture){
-	m_frameLine.InitTexture(texture);
+void CUIEditBox::InitTextureEx(LPCSTR texture, LPCSTR  shader)
+{
+	m_frameLine.InitTexture(texture, shader);
+}
+
+void CUIEditBox::InitTexture(LPCSTR texture)
+{
+	InitTextureEx(texture, "hud\\default");
 }
 
 void CUIEditBox::SetCurrentValue(){

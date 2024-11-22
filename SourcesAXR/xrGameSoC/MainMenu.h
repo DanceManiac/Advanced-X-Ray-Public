@@ -161,6 +161,9 @@ public:
 	//Dump UI Texture list that are suggested to be prefetched
 			void	ReportTxrsForPrefetching		();
 
+	static	LPCSTR	AddHyphens						(LPCSTR str);
+	static	LPCSTR	DelHyphens						(LPCSTR str);
+
 			bool	ValidateCDKey					();
 			bool	IsCDKeyIsValid					();
 	virtual bool CanSkipSceneRendering				() { return false; }

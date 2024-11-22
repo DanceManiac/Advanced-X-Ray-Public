@@ -803,8 +803,10 @@ bool CUIXmlInit::InitFrameLine(CUIXml& xml_doc, LPCSTR path, int index, CUIFrame
 	return true;
 }
 
-bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, const char* path, int index, CUICustomEdit* pWnd){
-	InitWindow(xml_doc, path, index, pWnd);
+bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, LPCSTR path, int index, CUICustomEdit* pWnd){
+	InitStatic(xml_doc, path, index, pWnd);
+//-	InitWindow(xml_doc, path, index, pWnd);
+	pWnd->InitCustomEdit	(pWnd->GetWndPos(),pWnd->GetWndSize());
 
 	string256				foo;	
 	u32						color;
@@ -816,46 +818,55 @@ bool CUIXmlInit::InitCustomEdit(CUIXml& xml_doc, const char* path, int index, CU
 		pWnd->SetTextColor	(color);	
 	}
 
-	strconcat				(sizeof(foo),foo,path,":text_color:d");
-	if (xml_doc.NavigateToNode(foo,index)){
-		color				= GetColor	(xml_doc, foo, index, 0x00);
-		pWnd->SetTextColorD	(color);
-	}
+// 	strconcat				(sizeof(foo),foo,path,":text_color:d");
+// 	if (xml_doc.NavigateToNode(foo,index)){
+// 		color				= GetColor	(xml_doc, foo, index, 0x00);
+// 		pWnd->SetTextColorD	(color);
+// 	}
 
 
-	strconcat				(sizeof(foo),foo,path,":text_color:cursor");
-	if (xml_doc.NavigateToNode(foo,index)){
-		color				= GetColor	(xml_doc, foo, index, 0x00);
-		pWnd->SetCursorColor(color);
-	}
+// 	strconcat				(sizeof(foo),foo,path,":text_color:cursor");
+// 	if (xml_doc.NavigateToNode(foo,index)){
+// 		color				= GetColor	(xml_doc, foo, index, 0x00);
+// 		pWnd->SetCursorColor(color);
+// 	}
 
-	if (xml_doc.ReadAttribInt(path,index,"db_click",0))
-		pWnd->SetDbClickMode();
+//	if (xml_doc.ReadAttribInt(path,index,"db_click",0))
+//		pWnd->SetDbClickMode();
 
-	if (xml_doc.ReadAttribInt(path,index,"numonly",0))
+	int max_count = xml_doc.ReadAttribInt(path, index, "max_symb_count", 0);
+	bool num_only       = (xml_doc.ReadAttribInt(path, index, "num_only", 0) == 1);
+	bool read_only      = (xml_doc.ReadAttribInt(path, index, "read_only", 0) == 1);
+	bool file_name_mode = (xml_doc.ReadAttribInt(path, index, "file_name_mode", 0) == 1);
+
+	if ( file_name_mode || read_only || num_only || 0 < max_count )
 	{
-        pWnd->SetNumbersOnly(true);
-		if (xml_doc.ReadAttribInt(path,index,"float",0))
-			pWnd->SetFloatNumbers(true);
+		if ( max_count <= 0 )
+		{
+			max_count = 32;
+		}
+		pWnd->Init( max_count, num_only, read_only, file_name_mode );
 	}
+
+//-		if (xml_doc.ReadAttribInt(path,index,"float",0))
+//-			pWnd->SetFloatNumbers(true);
+
 	if (xml_doc.ReadAttribInt(path, index, "password",0))
+	{
 		pWnd->SetPasswordMode();
+	}
 
-	float text_x = xml_doc.ReadAttribFlt(foo, index, "x", 0);
-	float text_y = xml_doc.ReadAttribFlt(foo, index, "y", 0);
+//	float text_x = xml_doc.ReadAttribFlt(foo, index, "x", 0);
+//	float text_y = xml_doc.ReadAttribFlt(foo, index, "y", 0);
 
-	if (text_x)
-		pWnd->SetTextPosX(text_x);
-	if (text_y)
-        pWnd->SetTextPosY(text_y);
-
-	int cnt = xml_doc.ReadAttribInt(path, index, "max_symb_count",0);
-	if (cnt!=0)
-		pWnd->SetMaxCharCount	(cnt);
+// 	if (text_x)
+// 		pWnd->SetTextPosX(text_x);
+// 	if (text_y)
+//         pWnd->SetTextPosY(text_y);
 
 	return true;
-
 }
+
 bool CUIXmlInit::InitEditBoxEx(CUIXml& xml_doc, const char* path, int index, CUIEditBoxEx* pWnd){
 	InitCustomEdit(xml_doc, path, index, pWnd);
 	InitTexture(xml_doc, path, index, pWnd);

@@ -28,6 +28,8 @@
 
 #include "../string_table.h"
 
+#include "UICursor.h"
+
 void CUICarBodyWnd::ActivatePropertiesBox()
 {
 	if (m_pUIPropertiesBox->IsShown())

@@ -656,14 +656,54 @@ void CMainMenu::OnDeviceReset()
 		SetNeedVidRestart();
 }
 
-extern	void	GetCDKey(char* CDKeyStr);
+LPCSTR CMainMenu::AddHyphens( LPCSTR c )
+{
+	static string64 buf;
+
+	u32 sz = xr_strlen(c);
+	u32 j = 0; 
+
+	for ( u32 i = 1; i <= 3; ++i )
+	{
+		buf[i*5 - 1] = '-';
+	}
+
+	for ( u32 i = 0; i < sz; ++i )
+	{
+		j = i + iFloor(i/4.0f);
+		buf[j] = c[i];		
+	}
+	buf[sz + iFloor(sz/4.0f)] = 0;
+
+	return buf;
+}
+
+LPCSTR CMainMenu::DelHyphens( LPCSTR c )
+{
+	static string64 buf;
+
+	u32 sz = xr_strlen( c );
+	u32 sz1 = _min( iFloor(sz/4.0f), 3 );
+
+	u32 j = 0; 
+	for ( u32 i = 0; i < sz - sz1; ++i )
+	{
+		j = i + iFloor( i/4.0f );
+		buf[i] = c[j];		
+	}
+	buf[sz - sz1] = 0;
+	
+	return buf;
+}
+
+extern	void	GetCDKey_FromRegistry(char* CDKeyStr);
 //extern	int VerifyClientCheck(const char *key, unsigned short cskey);
 
 bool CMainMenu::IsCDKeyIsValid()
 {
 	if (!m_pGameSpyFull || !m_pGameSpyFull->m_pGS_HTTP) return false;
 	string64 CDKey = "";
-	GetCDKey(CDKey);
+	GetCDKey_FromRegistry(CDKey);
 
 #ifndef DEMO_BUILD
 	if (!xr_strlen(CDKey)) return true;

@@ -1,64 +1,66 @@
+
 #pragma once
 
-#include "UILines.h"
-#include "UIWindow.h"
+#include "UIStatic.h"
 
-class CUICustomEdit : public CUIWindow, public CUILinesOwner {
-	u32				m_max_symb_count;
+namespace text_editor
+{
+	class ENGINE_API line_edit_control;
+	enum init_mode;
+};
+
+class CUICustomEdit : public CUIStatic //CUIWindow, public CUILinesOwner
+{
+private:
+	typedef			CUIStatic		inherited;
+
 public:
-	CUICustomEdit();
-	virtual ~CUICustomEdit();
-	// CUILinesOwner
-	virtual void			SetFont(CGameFont* pFont)					{CUILinesOwner::SetFont(pFont);}
-	virtual CGameFont*		GetFont()									{return CUILinesOwner::GetFont();}
-	virtual void			SetTextColor(u32 color);
-	virtual void			SetTextColorD(u32 color);
+					CUICustomEdit	();
+	virtual			~CUICustomEdit	();
 
-	virtual void	Init			(float x, float y, float width, float height);
+			void	Init			(u32 max_char_count, bool number_only_mode = false, bool read_mode = false, bool fn_mode = false );
+		
+	virtual void	InitCustomEdit	(Fvector2 pos, Fvector2 size);
 	virtual void	SendMessage		(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 
 	virtual bool	OnMouseAction			(float x, float y, EUIMessages mouse_action);
 	virtual bool	OnKeyboardAction		(int dik, EUIMessages keyboard_action);
-	virtual void	OnFocusLost		();
+	virtual bool	OnKeyboardHold	(int dik);
 
+	virtual void	OnFocusLost		();
 	virtual void	Update			();
 	virtual void	Draw			();
+	virtual void	Show			(bool status);
 
-			void	CaptureFocus	(bool bCapture) { m_bInputFocus = bCapture; }
+	IC		void	CaptureFocus	(bool bCapture) { m_bInputFocus = bCapture; }
+	
+			void	ClearText		();
 	virtual	void	SetText			(LPCSTR str);
-	virtual const char* GetText();
-			void	SetMaxCharCount	(u32 cnt)			{m_max_symb_count = cnt;}
+	virtual LPCSTR	GetText			();
+
 	virtual void	Enable			(bool status);
-			void	SetNumbersOnly	(bool status);
-			void	SetFloatNumbers	(bool status);
-			void	SetPasswordMode	(bool mode = true);			
-			void	SetDbClickMode	(bool mode = true)	{m_bFocusByDbClick = mode;}
-			void	SetCursorColor	(u32 color)			{m_lines.SetCursorColor(color);}
 			
-			void	SetLightAnim			(LPCSTR lanim);
+			void	SetPasswordMode	(bool mode = true);
 
 protected:
+			void				Register_callbacks();
 
-	bool KeyPressed(int dik);
-	bool KeyReleased(int dik);
+			void  	__stdcall	nothing();
+			void  	__stdcall	press_escape();
+			void  	__stdcall	press_commit();
 
-	void AddLetter(char c);
-	virtual void AddChar(char c);
+protected:
+	typedef  fastdelegate::FastDelegate0<void>		Callback;
 
-	bool m_bInputFocus;
-	bool m_bShift;
+	enum								{ EDIT_BUF_SIZE = 256 };
+	text_editor::line_edit_control*		m_editor_control;
+	text_editor::line_edit_control&		ec();
+	
+	u32		m_last_key_state_time;
+	char	m_out_str[EDIT_BUF_SIZE];
+	float	m_dx_cur;
 
-	bool m_bNumbersOnly;
-	bool m_bFloatNumbers;
-	bool m_bFocusByDbClick;
-
-	u32 m_textColor[2];
-
-	//DIK клавиши, кот. нажата и удерживается, 0 если такой нет
-	int m_iKeyPressAndHold;
-	bool m_bHoldWaitMode;
-
-//	u32	m_cursorColor;
-
-	CLAItem*				m_lanim;
+	bool	m_bInputFocus;
+	bool	m_force_update;
+	bool	m_read_mode;
 };

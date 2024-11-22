@@ -1,90 +1,105 @@
 #include "stdafx.h"
 
-#include "stdafx.h"
-#include <dinput.h>
-#include "../HUDManager.h"
 #include "UICustomEdit.h"
-#include "../../xrEngine/LightAnimLibrary.h"
+#include "UILines.h"
 
-
-static u32 DILetters[] = { DIK_A, DIK_B, DIK_C, DIK_D, DIK_E, 
-DIK_F, DIK_G, DIK_H, DIK_I, DIK_J, 
-DIK_K, DIK_L, DIK_M, DIK_N, DIK_O, 
-DIK_P, DIK_Q, DIK_R, DIK_S, DIK_T, 
-DIK_U, DIK_V, DIK_W, DIK_X, DIK_Y, DIK_Z,
-DIK_0, DIK_1, DIK_2, DIK_3, DIK_4, DIK_5, DIK_6, DIK_7,
-DIK_8, DIK_9};
-
-static xr_map<u32, char> gs_DIK2CHR;
+#include "../../xrEngine/line_edit_control.h"
+#include "../../xrEngine/xr_input.h"
 
 CUICustomEdit::CUICustomEdit()
 {
-	m_max_symb_count		= u32(-1);
-	char l_c;
-	for(l_c = 'a'; l_c <= 'z'; ++l_c) 
-		gs_DIK2CHR[DILetters[l_c-'a']] = l_c;
-	for(l_c = '0'; l_c <= '9'; ++l_c)
-		gs_DIK2CHR[DILetters['z'-'a'+l_c+1-'0']] = l_c;
+	m_editor_control = xr_new<text_editor::line_edit_control>( (u32)EDIT_BUF_SIZE );
+	Init( (u32)EDIT_BUF_SIZE );
 
-	m_bShift = false;
-	m_bInputFocus = false;
+	SetVTextAlignment( valCenter );
+	SetTextComplexMode( false );
+	m_pLines->SetColoringMode( false );
+	m_pLines->SetCutWordsMode( true );
+	m_pLines->SetUseNewLineMode( false );
+	
+	m_out_str[0]   = NULL;
+	m_dx_cur       = 0.0f;
+	m_read_mode    = false;
+	m_force_update = true;
+	m_last_key_state_time = 0;
+}	
 
-	m_iKeyPressAndHold = 0;
-	m_bHoldWaitMode = false;
-   
-	m_lines.SetVTextAlignment(valCenter);
-	m_lines.SetColoringMode(false);
-	m_lines.SetCutWordsMode(true);
-	m_lines.SetUseNewLineMode(false);
-	SetText("");
-	m_textPos.set(3,0);
-	m_bNumbersOnly = false;
-	m_bFloatNumbers = false;
-	m_bFocusByDbClick = false;
-
-	m_textColor[0]=color_argb(255,235,219,185);
-	m_textColor[1]=color_argb(255,100,100,100);
-}
 
 CUICustomEdit::~CUICustomEdit()
 {
+	xr_delete( m_editor_control );
 }
 
-void CUICustomEdit::SetTextColor(u32 color){
-	m_textColor[0] = color;
-}
-
-void CUICustomEdit::SetTextColorD(u32 color){
-	m_textColor[1] = color;
-}
-
-void CUICustomEdit::Init(float x, float y, float width, float height){
-	CUIWindow::Init(x,y,width,height);
-	m_lines.SetWndSize(m_wndSize);
-}
-
-void CUICustomEdit::SetLightAnim(LPCSTR lanim)
+text_editor::line_edit_control& CUICustomEdit::ec()
 {
-	if(lanim&&xr_strlen(lanim))
-		m_lanim	= LALib.FindItem(lanim);
-	else
-		m_lanim	= NULL;
+	VERIFY( m_editor_control );
+	return	*m_editor_control;
 }
 
-void CUICustomEdit::SetPasswordMode(bool mode){
-	m_lines.SetPasswordMode(mode);
+void CUICustomEdit::Register_callbacks()
+{
+	ec().assign_callback( DIK_ESCAPE,      text_editor::ks_free, Callback( this, &CUICustomEdit::press_escape ) );
+	ec().assign_callback( DIK_RETURN,      text_editor::ks_free, Callback( this, &CUICustomEdit::press_commit ) );
+	ec().assign_callback( DIK_NUMPADENTER, text_editor::ks_free, Callback( this, &CUICustomEdit::press_commit ) );
+	ec().assign_callback( DIK_GRAVE,       text_editor::ks_free, Callback( this, &CUICustomEdit::nothing ) );
+
+//	ec().assign_callback( DIK_TAB,   text_editor::ks_free,  Callback( this, &CConsole::Find_cmd      ) );
+//	ec().assign_callback( DIK_TAB,   text_editor::ks_Shift, Callback( this, &CConsole::Find_cmd_back ) );
+//	ec().assign_callback( DIK_UP,    text_editor::ks_free,  Callback( this, &CConsole::Prev_cmd      ) );
+//	ec().assign_callback( DIK_DOWN,  text_editor::ks_free,  Callback( this, &CConsole::Next_cmd      ) );
+//	ec().assign_callback( DIK_TAB,   text_editor::ks_Alt,   Callback( this, &CConsole::GamePause ) );
+
 }
 
-void CUICustomEdit::OnFocusLost(){
-	CUIWindow::OnFocusLost();
-/*	//only for CDKey control
-	if(m_bInputFocus)
+void  CUICustomEdit::Init( u32 max_char_count, bool number_only_mode, bool read_mode, bool fn_mode )
+{
+	if ( read_mode )
 	{
-		m_bInputFocus = false;
-		m_iKeyPressAndHold = 0;
-		GetMessageTarget()->SendMessage(this,EDIT_TEXT_COMMIT,NULL);
+		m_editor_control->init( max_char_count, text_editor::im_read_only );
+		m_editor_control->set_selected_mode( true );
+		m_read_mode = true;
 	}
-*/
+	else
+	{
+		if ( number_only_mode )
+		{
+			m_editor_control->init( max_char_count, text_editor::im_number_only );
+		}
+		else if ( fn_mode )
+		{
+			m_editor_control->init( max_char_count, text_editor::im_file_name_mode );
+		}
+		else
+		{
+			m_editor_control->init( max_char_count );
+		}
+		m_editor_control->set_selected_mode( false );
+		m_read_mode = false;
+	}
+	
+	Register_callbacks();
+	ClearText();
+
+	m_bInputFocus = false;
+}
+
+void CUICustomEdit::InitCustomEdit( Fvector2 pos, Fvector2 size )
+{
+	inherited::SetWndPos	( pos  );
+	inherited::SetWndSize	( size );
+}
+
+void CUICustomEdit::SetPasswordMode( bool mode )
+{
+	if ( m_pLines )
+	{
+		m_pLines->SetPasswordMode( mode );
+	}
+}
+
+void CUICustomEdit::OnFocusLost()
+{
+	inherited::OnFocusLost();
 }
 
 void CUICustomEdit::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
@@ -92,25 +107,21 @@ void CUICustomEdit::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 //	if(pWnd == GetParent())
 //	{
 		//кто-то другой захватил клавиатуру
-		if(msg == WINDOW_KEYBOARD_CAPTURE_LOST)
+		if ( msg == WINDOW_KEYBOARD_CAPTURE_LOST )
 		{
 			m_bInputFocus = false;
-			m_iKeyPressAndHold = 0;
 		}
 //	}
 }
 
 bool CUICustomEdit::OnMouseAction(float x, float y, EUIMessages mouse_action)
 {
-	if (m_bFocusByDbClick)
+//	if (m_bFocusByDbClick)
 	{
 		if(mouse_action == WINDOW_LBUTTON_DB_CLICK && !m_bInputFocus)
 		{
 			GetParent()->SetKeyboardCapture(this, true);
 			m_bInputFocus = true;
-			m_iKeyPressAndHold = 0;
-
-			m_lines.MoveCursorToEnd();
 		}
 	}
 
@@ -118,297 +129,175 @@ bool CUICustomEdit::OnMouseAction(float x, float y, EUIMessages mouse_action)
 	{
 		GetParent()->SetKeyboardCapture(this, true);
 		m_bInputFocus = true;
-		m_iKeyPressAndHold = 0;
-
-		m_lines.MoveCursorToEnd();
 	}
 	return false;
 }
 
 
-bool CUICustomEdit::OnKeyboardAction(int dik, EUIMessages keyboard_action)
+bool CUICustomEdit::OnKeyboardAction( int dik, EUIMessages keyboard_action )
 {	
-	if(!m_bInputFocus) 
+	if ( !m_bInputFocus )
+	{
 		return false;
-	if(keyboard_action == WINDOW_KEY_PRESSED)	
-	{
-		m_iKeyPressAndHold = dik;
-		m_bHoldWaitMode = true;
-
-		if(KeyPressed(dik))	return true;
 	}
-	else if(keyboard_action == WINDOW_KEY_RELEASED)	
+
+	if ( keyboard_action == WINDOW_KEY_PRESSED )
 	{
-		if(m_iKeyPressAndHold == dik)
-		{
-			m_iKeyPressAndHold = 0;
-			m_bHoldWaitMode = false;
-		}
-		if(KeyReleased(dik)) return true;
+		ec().on_key_press( dik );
+		return true;
+	}
+	
+	if ( keyboard_action == WINDOW_KEY_RELEASED )
+	{
+		ec().on_key_release( dik );
+		return true;
 	}
 	return false;
 }
 
-bool CUICustomEdit::KeyPressed(int dik)
+bool  CUICustomEdit::OnKeyboardHold(int dik)
 {
-	xr_map<u32, char>::iterator it;
-	char out_me = 0;
-	bool bChanged = false;
-	switch(dik)
+	if ( !m_bInputFocus )
 	{
-	case DIK_LEFT:
-	case DIKEYBOARD_LEFT:
-		m_lines.DecCursorPos();		
-		break;
-	case DIK_RIGHT:
-	case DIKEYBOARD_RIGHT:
-		m_lines.IncCursorPos();		
-		break;
-	case DIK_LSHIFT:
-	case DIK_RSHIFT:
-		m_bShift = true;
-		break;
-	case DIK_ESCAPE:
-		if (xr_strlen(GetText()) != 0)
-		{
-			SetText("");
-			bChanged = true;
-		}
-		else
-		{
-			GetParent()->SetKeyboardCapture(this, false);
-			m_bInputFocus = false;
-			m_iKeyPressAndHold = 0;
-		};
-		break;
-	case DIK_RETURN:
-	case DIK_NUMPADENTER:
-		GetParent()->SetKeyboardCapture(this, false);
-		m_bInputFocus = false;
-		m_iKeyPressAndHold = 0;
-		GetMessageTarget()->SendMessage(this,EDIT_TEXT_COMMIT,NULL);
-		break;
-	case DIK_BACKSPACE:
-		m_lines.DelLeftChar();
-		bChanged = true;
-		break;
-	case DIK_DELETE:
-	case DIKEYBOARD_DELETE:
-		m_lines.DelChar();
-		bChanged = true;
-		break;
-	case DIK_SPACE:
-		out_me = ' ';					break;
-	case DIK_LBRACKET:
-		out_me = m_bShift ? '{' : '[';	break;
-	case DIK_RBRACKET:
-		out_me = m_bShift ? '}' : ']';	break;
-	case DIK_SEMICOLON:
-		out_me = m_bShift ? ':' : ';';	break;
-	case DIK_APOSTROPHE:
-		out_me = m_bShift ? '"' : '\'';	break;
-	case DIK_BACKSLASH:
-		out_me = m_bShift ? '|' : '\\';	break;
-	case DIK_SLASH:
-		out_me = m_bShift ? '?' : '/';	break;
-	case DIK_COMMA:
-		out_me = m_bShift ? '<' : ',';	break;
-	case DIK_PERIOD:
-		out_me = m_bShift ? '>' : '.';	break;
-	case DIK_MINUS:
-		out_me = m_bShift ? '_' : '-';	break;
-	case DIK_EQUALS:
-		out_me = m_bShift ? '+' : '=';	break;
-	default:
-		it = gs_DIK2CHR.find(dik);
-
-		//нажата клавиша с буквой 
-		if (gs_DIK2CHR.end() != it){
-			AddLetter((*it).second);
-			bChanged = true;
-		}
-
-		break;
+		return false;
 	}
 
-	if (m_bNumbersOnly)
-	{
-		if (strstr(m_lines.GetText(), "."))
-			return true;
-		if (('.' == out_me) && m_bFloatNumbers){
-			AddChar(out_me);
-			bChanged = true;
-		}
-	}
-	else
-		if(out_me){
-			AddChar(out_me);
-			bChanged = true;
-		}
-
-		if(bChanged)
-			GetMessageTarget()->SendMessage(this,EDIT_TEXT_CHANGED,NULL);
-
-		return true;
-}
-
-bool CUICustomEdit::KeyReleased(int dik)
-{
-	switch(dik)
-	{
-	case DIK_LSHIFT:
-	case DIK_RSHIFT:
-		m_bShift = false;
-		return true;
-	}
-
+	ec().on_key_hold( dik );
 	return true;
 }
 
-
-
-void CUICustomEdit::AddChar(char c)
-{
-	if(xr_strlen(m_lines.GetText()) >= m_max_symb_count)					return;
-
-	float text_length	= m_lines.GetFont()->SizeOf_(m_lines.GetText());
-	UI().ClientToScreenScaledWidth		(text_length);
-
-	if (!m_lines.GetTextComplexMode() && (text_length > GetWidth() - 1))	return;
-
-	m_lines.AddCharAtCursor(c);
-	m_lines.ParseText();
-	if (m_lines.GetTextComplexMode())
-	{
-		if (m_lines.GetVisibleHeight() > GetHeight())
-			m_lines.DelLeftChar();
-	}
-}
-
-void CUICustomEdit::AddLetter(char c)
-{
-	if (m_bNumbersOnly)
-	{
-		if ((c >= '0' && c<='9'))
-			AddChar(c);
-
-		return;
-	}
-	if(m_bShift)
-	{
-		switch(c) {
-		case '1': c='!';	break;
-		case '2': c='@';	break;
-		case '3': c='#';	break;
-		case '4': c='$';	break;
-		case '5': c='%';	break;
-		case '6': c='^';	break;
-		case '7': c='&';	break;
-		case '8': c='*';	break;
-		case '9': c='(';	break;
-		case '0': c=')';	break;
-		default:
-			c = c-'a';
-			c = c+'A';
-		}
-	}
-
-	AddChar(c);
-}
-
-//время для обеспечивания печатания
-//символа при удерживаемой кнопке
-#define HOLD_WAIT_TIME 400
-#define HOLD_REPEAT_TIME 100
-
 void CUICustomEdit::Update()
 {
-	if(m_bInputFocus)
-	{	
-		static u32 last_time; 
+	ec().on_frame();
 
-		u32 cur_time = Device.TimerAsync();
-
-		if(m_iKeyPressAndHold)
-		{
-			if(m_bHoldWaitMode)
-			{
-				if(cur_time - last_time>HOLD_WAIT_TIME)
-				{
-					m_bHoldWaitMode = false;
-					last_time = cur_time;
-				}
-			}
-			else
-			{
-				if(cur_time - last_time>HOLD_REPEAT_TIME)
-				{
-					last_time = cur_time;
-					KeyPressed(m_iKeyPressAndHold);
-				}
-			}
-		}
-		else
-			last_time = cur_time;
+	if ( !ec().get_key_state( text_editor::ks_force ) )
+	{
+		m_last_key_state_time = Device.dwTimeGlobal;
 	}
 
-	m_lines.SetTextColor(m_textColor[IsEnabled()?0:1]);
-
-	CUIWindow::Update();
+	inherited::Update();
 }
 
 void  CUICustomEdit::Draw()
 {
-	CUIWindow::Draw			();
-	Fvector2				pos;
-	GetAbsolutePos			(pos);
-	m_lines.Draw			(pos.x + m_textPos.x, pos.y + m_textPos.y);
+	VERIFY( m_pLines );
+
+	Fvector2 pos, out;
+	GetAbsolutePos( pos );
+	CGameFont* font = m_pLines->m_pFont;
 	
-	if(m_bInputFocus)
-	{ //draw cursor here
-		Fvector2							outXY;
-		
-		outXY.x								= 0.0f;
-		float _h				= m_lines.m_pFont->CurrentHeight_();
-		UI().ClientToScreenScaledHeight(_h);
-		outXY.y								= pos.y + (GetWndSize().y - _h)/2.0f;
+	if ( ec().need_update() || m_force_update )
+	{
+		float ui_width   = GetWidth();
 
-		float								_w_tmp;
-		int i								= m_lines.m_iCursorPos;
-		string256							buff;
-		strncpy								(buff,m_lines.m_text.c_str(),i);
-		buff[i]								= 0;
-		_w_tmp								= m_lines.m_pFont->SizeOf_(buff);
-		UI().ClientToScreenScaledWidth		(_w_tmp);
-		outXY.x								= pos.x + _w_tmp;
-		
-		_w_tmp								= m_lines.m_pFont->SizeOf_("-");
-		UI().ClientToScreenScaledWidth		(_w_tmp);
-		UI().ClientToScreenScaled			(outXY);
+		LPCSTR cursor_str   = ec().str_before_cursor();
+		u32 cursor_str_size = xr_strlen( cursor_str );
 
-		m_lines.m_pFont->Out				(outXY.x, outXY.y, "_");
+		LPCSTR istr = cursor_str;
+		float str_length = font->SizeOf_( istr );
+		UI().ClientToScreenScaledWidth( str_length );
+
+		u32 ix = 0;
+		while ( (str_length > ui_width) && (ix < cursor_str_size) )
+		{
+			istr = cursor_str + ix;
+			str_length = font->SizeOf_( istr );
+			UI().ClientToScreenScaledWidth( str_length );
+			++ix;
+		}
+		istr = cursor_str + ix;
+		LPCSTR astr = ec().str_edit() + ix;
+		u32 str_size = xr_strlen( ec().str_edit() );
+
+		u32 jx = 1;
+		strncpy_s( m_out_str, sizeof(m_out_str), astr, jx );
+
+		str_length = font->SizeOf_( m_out_str );
+		UI().ClientToScreenScaledWidth( str_length );
+		while ( (str_length < ui_width) && (jx < str_size-ix) )
+		{
+			strncpy_s( m_out_str, sizeof(m_out_str), astr, jx );
+			str_length = font->SizeOf_( m_out_str );
+			UI().ClientToScreenScaledWidth( str_length );
+			++jx;
+		}
+		strncpy_s( m_out_str, sizeof(m_out_str), astr, jx );
+
+		inherited::SetText( m_out_str );
+		m_dx_cur = font->SizeOf_( istr ); // cursor_str
+
+		m_force_update = false;
 	}
+
+	inherited::Draw();
+
+	if ( m_bInputFocus ) //draw cursor here
+	{
+		out.x = pos.x + 0.0f + GetTextX() + m_pLines->GetIndentByAlign();
+		out.y = pos.y + 2.0f + GetTextY() + m_pLines->GetVIndentByAlign();
+		UI().ClientToScreenScaled( out );
+
+		out.x += m_dx_cur; // cursor_str
+
+		font->Out( out.x, out.y, "_" );
+	}
+	font->OnRender();
+}
+
+void CUICustomEdit::Show( bool status )
+{
+	//ec().reset_key_state();
+	m_force_update = true;
+	inherited::Show( status );
+}
+
+void CUICustomEdit::ClearText()
+{
+	ec().set_edit( "" );
 }
 
 void CUICustomEdit::SetText(LPCSTR str)
 {
-	CUILinesOwner::SetText(str);
+	ec().set_edit( str );
 }
 
-const char* CUICustomEdit::GetText(){
-	return CUILinesOwner::GetText();
+LPCSTR CUICustomEdit::GetText()
+{
+	return ec().str_edit();
 }
 
-void CUICustomEdit::Enable(bool status){
-	CUIWindow::Enable(status);
-	if (!status)
-		SendMessage(this,WINDOW_KEYBOARD_CAPTURE_LOST);
+void CUICustomEdit::Enable(bool status)
+{
+	inherited::Enable( status );
+	if ( !status )
+	{
+		SendMessage( this, WINDOW_KEYBOARD_CAPTURE_LOST );
+	}
 }
 
-void CUICustomEdit::SetNumbersOnly(bool status){
-	m_bNumbersOnly = status;
+// =======================================================
+
+void CUICustomEdit::nothing() {};
+
+void CUICustomEdit::press_escape()
+{
+	if ( xr_strlen( ec().str_edit() ) != 0 )
+	{
+		if ( !m_read_mode )
+		{
+			ec().set_edit( "" );
+		}
+	}
+	else
+	{
+		GetParent()->SetKeyboardCapture( this, false );
+		m_bInputFocus = false;
+	}
 }
 
-void CUICustomEdit::SetFloatNumbers(bool status){
-	m_bFloatNumbers = status;
+void CUICustomEdit::press_commit()
+{
+	m_bInputFocus = false;
+	GetParent()->SetKeyboardCapture( this, false );
+	GetMessageTarget()->SendMessage( this, EDIT_TEXT_COMMIT, NULL );
 }
