@@ -18,10 +18,14 @@
 #include "ai_object_location.h"
 #include "game_cl_base.h"
 #include "../xrEngine/motion.h"
+#include "../xrEngine/CameraBase.h"
+#include "../xrCore/_vector3d_ext.h"
 #include "artefact.h"
 #include "IKLimbsController.h"
 #include "player_hud.h"
 #include "PDA.h"
+#include "CharacterPhysicsSupport.h"
+#include "../xrPhysics/PHCharacter.h"
 
 static const float y_spin0_factor		= 0.0f;
 static const float y_spin1_factor		= 0.4f;
@@ -742,4 +746,124 @@ void CActor::g_SetAnimation( u32 mstate_rl )
 
 
 	m_current_torso_blend->timeCurrent	= m_current_legs_blend->timeCurrent/m_current_legs_blend->timeTotal*m_current_torso_blend->timeTotal;
+}
+
+//-- VlaGan: для прекращения движения впритык к препятствию
+void CActor::LegsStaticCollisionRay(int move_side)
+{
+	if (move_side != kFWD && move_side != kBACK && move_side != kR_STRAFE && move_side != kL_STRAFE)
+		return;
+
+	if (!character_physics_support())
+		return;
+
+	if (!character_physics_support()->get_movement())
+		return;
+
+	auto movement = character_physics_support()->get_movement();
+
+	//-- длина луча
+	float ray_dist = movement->PHCharacter()->ObjectRadius() + m_bLegsCollRayDelta;
+
+	//-- конечная и начальная точка луча
+	Fvector ray_pos{}, ray_pos2{};
+	movement->GetPosition(ray_pos);
+	ray_pos.y += m_bLegsCollBoxCenter.y * 2.f;
+	ray_pos2.set(ray_pos);
+
+	//-- директория луча
+	Fvector ray_dir{};
+	//-- мейби лучше будет поросто Device.vCameraDirection
+	ray_dir.set(cam_Active()->vDirection.x, 0.f, cam_Active()->vDirection.z);
+	ray_dir.normalize();
+
+	//-- кут поворота луча в зависимости от направления движения
+	float angle{};
+	EMoveCommand mv_id = {};
+	shared_str text;
+	switch (move_side)
+	{
+	case kFWD: {
+		text = "kFWD";
+		mv_id = mcFwd;
+	} break;
+
+	case kBACK: {
+		text = "kBACK";
+		angle = PI;
+		mv_id = mcBack;
+	} break;
+
+	case kL_STRAFE: {
+		text = "kL_STRAFE";
+		angle = -PI / 2.f;
+		mv_id = mcLStrafe;
+	} break;
+
+	case kR_STRAFE: {
+		text = "kR_STRAFE";
+		angle = PI / 2.f;
+		mv_id = mcRStrafe;
+	} break;
+	}
+
+	//-- поворот директории по yaw (формула Родригеcа для поворота по определенной оси)
+	Fvector k{ 0.f, 1.f, 0.f };
+	k.normalize();
+	float cosTheta = cos(angle);
+	float sinTheta = sin(angle);
+	ray_dir = (ray_dir * cosTheta) + (crossproduct(k, ray_dir) * sinTheta) + (k * (dotproduct(k, ray_dir) * (1 - cosTheta)));
+	ray_pos2.add(ray_dir * ray_dist);
+
+	collide::rq_result RQ{ nullptr, ray_dist, -1 };
+	const collide::ray_defs RD{ ray_pos, ray_dir, RQ.range, CDB::OPT_CULL, collide::rqtBoth };
+	collide::rq_results RQR;
+
+	BOOL COLLIDE_RES = Level().ObjectSpace.RayQuery(
+		RQR, RD,
+		[](collide::rq_result& result, LPVOID params)
+		{
+			auto RQ = reinterpret_cast<collide::rq_result*>(params);
+			if (result.O)
+			{
+				auto* e = smart_cast<CEntityAlive*>(result.O);
+
+				if (e && e->g_Alive())
+					return TRUE;
+
+				*RQ = result;
+				return FALSE;
+			}
+			*RQ = result;
+			return FALSE;
+		},
+		&RQ, nullptr, Level().CurrentEntity());
+
+
+	if (COLLIDE_RES)
+	{
+		//-- переберем материалы результатов, т.к может не пускать в кусты / на лестницы
+		bool check_collide_mtl{};
+		for (auto& result : RQR.r_results())
+		{
+			if (!result.O)
+			{
+				CDB::TRI* T = Level().ObjectSpace.GetStaticTris() + result.element;
+				SGameMtl* mtl = GMLib.GetMaterialByIdx(T->material);
+
+				if (mtl->Flags.is(SGameMtl::flPassable) || mtl->Flags.is(SGameMtl::flClimable))
+					continue;
+			}
+
+			check_collide_mtl = true;
+		}
+
+		if (check_collide_mtl)
+		{
+			mstate_wishful &= ~mv_id;
+
+			if (mstate_real & mv_id)
+				mstate_real &= ~mv_id;
+		}
+	}
 }

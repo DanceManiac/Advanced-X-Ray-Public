@@ -255,6 +255,10 @@ CActor::CActor() : CEntityAlive()
 	m_sColdSteamParticleName = nullptr;
 
 	m_bEatAnimActive		= false;
+
+	m_bLegsCollBoxCenter.set(0.f, 0.f, 0.f);
+	m_bLegsCollBoxSize.set	(0.f, 0.f, 0.f);
+	m_bLegsCollRayDelta		= 0.f;
 }
 
 
@@ -494,6 +498,10 @@ if(!g_dedicated_server)
 	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
 
 	m_fInventoryCapacity = READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 50.0f);
+
+	m_bLegsCollBoxCenter	= READ_IF_EXISTS(pSettings, r_fvector3, "ph_legs_cfg", "legs_phbox_center", (Fvector{ 0.0, 0.2, 0.0 }));
+	m_bLegsCollBoxSize		= READ_IF_EXISTS(pSettings, r_fvector3, "ph_legs_cfg", "legs_phbox_size",	(Fvector{ 0.2, 0.2, 0.2 }));
+	m_bLegsCollRayDelta		= READ_IF_EXISTS(pSettings, r_float,	"ph_legs_cfg", "ray_distance_delta", 0.1f);
 }
 
 void CActor::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /* = ALife::eHitTypeWound */)

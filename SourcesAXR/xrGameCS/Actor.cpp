@@ -262,6 +262,10 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 
 	m_sColdSteamParticleBone = nullptr;
 	m_sColdSteamParticleName = nullptr;
+
+	m_bLegsCollBoxCenter.set(0.f, 0.f, 0.f);
+	m_bLegsCollBoxSize.set	(0.f, 0.f, 0.f);
+	m_bLegsCollRayDelta		= 0.f;
 }
 
 
@@ -522,6 +526,10 @@ if(!g_dedicated_server)
 
 	m_sColdSteamParticleBone = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
 	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
+
+	m_bLegsCollBoxCenter	= READ_IF_EXISTS(pSettings, r_fvector3, "ph_legs_cfg", "legs_phbox_center", (Fvector{ 0.0, 0.2, 0.0 }));
+	m_bLegsCollBoxSize		= READ_IF_EXISTS(pSettings, r_fvector3, "ph_legs_cfg", "legs_phbox_size",	(Fvector{ 0.2, 0.2, 0.2 }));
+	m_bLegsCollRayDelta		= READ_IF_EXISTS(pSettings, r_float,	"ph_legs_cfg", "ray_distance_delta", 0.1f);
 }
 
 void CActor::PHHit(SHit &H)

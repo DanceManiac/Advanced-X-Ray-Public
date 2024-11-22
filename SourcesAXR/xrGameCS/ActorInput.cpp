@@ -433,6 +433,9 @@ void CActor::IR_OnKeyboardHold(int cmd)
 	
 		}break;
 	}
+
+	if (!is_actor_climbing())
+		LegsStaticCollisionRay(cmd);
 }
 
 void CActor::IR_OnMouseMove(int dx, int dy)
