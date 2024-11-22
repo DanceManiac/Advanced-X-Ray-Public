@@ -193,7 +193,8 @@ void CBaseGraviZone::AffectPullAlife(CEntityAlive* EA,const Fvector& throw_in_di
 
 	Fvector vel;
 	vel.set(throw_in_dir);
-	vel.mul(throw_power);
+#pragma todo("DANCE MANIAC: Actor tightening inside anomaly hack. It`s not fix.")
+	vel.mul(throw_power * 100.f);
 	EA->character_physics_support()->get_movement()->AddControlVel(vel);
 }
 
@@ -272,8 +273,9 @@ void CBaseGraviZone::net_Relcase(CObject* O)
 void CBaseGraviZone::exit_Zone(SZoneObjectInfo& io)
 {
 	CPhysicsShellHolder* GO = smart_cast<CPhysicsShellHolder*>(io.object);
+	CEntityAlive* Alive = smart_cast<CEntityAlive*>(io.object);
 
-	if (GO && GO->PPhysicsShell() && Telekinesis().is_active_object(GO))
+	if (!Alive && GO && GO->PPhysicsShell() && Telekinesis().is_active_object(GO))
 	{
 		Telekinesis().deactivate(GO);
 		StopTeleParticles(GO);
