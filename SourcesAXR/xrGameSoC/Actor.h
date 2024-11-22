@@ -816,6 +816,18 @@ public:
 	void						unblock_action					(EGameActions cmd);
 	// Real Wolf. End. 14.10.2014
 
+	bool						is_actor_normal();
+	bool						is_actor_crouch();
+	bool						is_actor_creep();
+	bool						is_actor_climb();
+	bool						is_actor_walking();
+	bool						is_actor_running();
+	bool						is_actor_sprinting();
+	bool						is_actor_crouching();
+	bool						is_actor_creeping();
+	bool						is_actor_climbing();
+	bool						is_actor_moving();
+
 	float						GetDevicesPsyFactor				() { return m_fDevicesPsyFactor; }
 	void						SetDevicesPsyFactor				(float psy_factor) { m_fDevicesPsyFactor = psy_factor; }
 

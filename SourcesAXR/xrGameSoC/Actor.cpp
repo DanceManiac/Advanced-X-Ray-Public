@@ -2820,3 +2820,56 @@ float CActor::MaxCarryInvCapacity() const
 
 	return res;
 }
+
+bool CActor::is_actor_normal() { return mstate_real & (mcAnyAction | mcLookout | mcCrouch | mcClimb | mcSprint) ? false : true; }
+
+bool CActor::is_actor_crouch() { return mstate_real & (mcAnyAction | mcAccel | mcClimb | mcSprint) ? false : mstate_real & mcCrouch ? true : false; }
+
+bool CActor::is_actor_creep() { return mstate_real & (mcAnyAction | mcClimb | mcSprint) ? false : (mstate_real & mcCrouch && mstate_real & mcAccel) ? true : false; }
+
+bool CActor::is_actor_climb() { return mstate_real & (mcAnyAction | mcCrouch | mcSprint) ? false : mstate_real & mcClimb ? true : false; }
+
+bool CActor::is_actor_walking()
+{
+	bool run = false;
+
+	if (mstate_real & mcAccel)
+		run = psActorFlags.test(AF_ALWAYSRUN) ? false : true;
+	else
+		run = psActorFlags.test(AF_ALWAYSRUN) ? true : false;
+
+	return ((mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcCrouch | mcClimb | mcSprint)) || run) ? false : mstate_real & mcAnyMove ? true : false;
+}
+
+bool CActor::is_actor_running()
+{
+	bool run = false;
+
+	if (mstate_real & mcAccel)
+		run = psActorFlags.test(AF_ALWAYSRUN) ? false : true;
+	else
+		run = psActorFlags.test(AF_ALWAYSRUN) ? true : false;
+
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcLookout | mcCrouch | mcClimb | mcSprint) ? false : (mstate_real & mcAnyMove && run) ? true : false;
+}
+
+bool CActor::is_actor_sprinting()
+{
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcLookout | mcCrouch | mcAccel | mcClimb) ? false :
+		(mstate_real & (mcFwd | mcLStrafe | mcRStrafe) && mstate_real & mcSprint) ? true :
+		false;
+}
+
+bool CActor::is_actor_crouching()
+{
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcAccel | mcClimb) ? false : (mstate_real & mcAnyMove && mstate_real & mcCrouch) ? true : false;
+}
+
+bool CActor::is_actor_creeping()
+{
+	return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2 | mcClimb) ? false : (mstate_real & mcAnyMove && mstate_real & mcCrouch && mstate_real & mcAccel) ? true : false;
+}
+
+bool CActor::is_actor_climbing() { return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2) ? false : (mstate_real & mcAnyMove && mstate_real & mcClimb) ? true : false; }
+
+bool CActor::is_actor_moving() { return mstate_real & mcAnyAction ? true : false; }
