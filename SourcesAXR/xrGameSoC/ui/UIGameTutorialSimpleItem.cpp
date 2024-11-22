@@ -120,6 +120,24 @@ void CUISequenceSimpleItem::Load(CUIXml* xml, int idx)
 		_si->m_wnd->Show			(false);
 		_si->m_wnd->SetWidth		(_si->m_wnd->GetWidth()*UI().get_current_kx());
 
+		if(UI().is_widescreen())
+		{
+			XML_NODE* autostatic_node	= xml->NavigateToNode("auto_static", i);
+			XML_NODE* ws_rect			= xml->NavigateToNode(autostatic_node, "widescreen_rect", 0);
+			if(ws_rect)
+			{
+				xml->SetLocalRoot		(autostatic_node);
+
+				Fvector2 pos, size;
+				pos.x					= xml->ReadAttribFlt("widescreen_rect", 0, "x");
+				pos.y					= xml->ReadAttribFlt("widescreen_rect", 0, "y");
+				size.x					= xml->ReadAttribFlt("widescreen_rect", 0, "width");
+				size.y					= xml->ReadAttribFlt("widescreen_rect", 0, "height");
+				_si->m_wnd->SetWndPos	(pos);
+				_si->m_wnd->SetWndSize	(size);
+			}
+		}
+
 		xml->SetLocalRoot			(_sr);
 	}
 	xml->SetLocalRoot				(_stored_root);
