@@ -41,10 +41,12 @@
 			<main_wnd>
 				<auto_static start_time="0" length_sec="4"  x="0" y="0" width="1024" height="768" stretch="1" light_anim="asus_logo_01" light_anim_cyclic="0" la_alpha="1" la_texture="1">
 					<window_name>w1</window_name>
+					<widescreen_rect width="1024" height="768"/>
 					<texture>ui_asus_01</texture>
 				</auto_static>
 				<auto_static start_time="4" length_sec="4"  x="0" y="0" width="1024" height="768" stretch="1" light_anim="asus_logo_01" light_anim_cyclic="0" la_alpha="1" la_texture="1">
 					<window_name>w2</window_name>
+					<widescreen_rect width="1024" height="768"/>
 					<texture>ui_asus_02</texture>
 				</auto_static>
 			</main_wnd>
@@ -55,6 +57,7 @@
 			<main_wnd>
 				<auto_static start_time="0" length_sec="4"  x="0" y="0" width="1024" height="768" stretch="1" light_anim="asus_logo_01" light_anim_cyclic="0" la_alpha="1" la_texture="1">
 					<window_name>w1</window_name>
+					<widescreen_rect width="1024" height="768"/>
 					<texture>ui\ui_nvidia_intro</texture>
 				</auto_static>
 			</main_wnd>
