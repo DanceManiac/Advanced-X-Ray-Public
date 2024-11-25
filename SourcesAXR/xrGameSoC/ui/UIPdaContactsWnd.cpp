@@ -29,6 +29,9 @@ void CUIPdaContactsWnd::Show(bool status)
 	inherited::Show(status);
 	if(status) UIDetailsWnd->Clear();
 
+#pragma todo("DANCE MANIAC: Hack for PDA contacts. Need normal fix.")
+	if (!m_flags.test(flNeedUpdate))
+		m_flags.set(flNeedUpdate, TRUE);
 }
 
 void CUIPdaContactsWnd::Init()
@@ -92,6 +95,7 @@ void CUIPdaContactsWnd::Update()
 		}
 		m_flags.set(flNeedUpdate, FALSE);
 	}
+
 	inherited::Update();
 }
 
