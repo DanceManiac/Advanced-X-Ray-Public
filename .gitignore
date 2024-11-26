@@ -26,6 +26,7 @@ SourcesAXR/[Oo]bj/
 SourcesAXR/[Ll]og/
 SourcesAXR/[Ll]ogs/
 SourcesAXR/intermediate/
+SourcesAXR/xrScripts/BuildVm/x64/
 
 # Visual Studio 2015/2017 cache/options directory
 SDK/sources/OpenAutomate/.vs
