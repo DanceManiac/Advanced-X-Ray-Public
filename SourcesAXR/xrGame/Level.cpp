@@ -656,9 +656,9 @@ void CLevel::OnFrame	()
 
 		if( IsGameTypeSingle() && Device.dwPrecacheFrame==0 )
 		{
-			//if (g_mt_config.test(mtMap)) 
-			//	Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(m_game_task_manager,&CGameTaskManager::UpdateTasks));
-			//else								
+			if (g_mt_config.test(mtMap)) 
+				Device.seqParallel.push_back	(fastdelegate::FastDelegate0<>(m_game_task_manager,&CGameTaskManager::UpdateTasks));
+			else								
 				GameTaskManager().UpdateTasks();
 		}
 	}

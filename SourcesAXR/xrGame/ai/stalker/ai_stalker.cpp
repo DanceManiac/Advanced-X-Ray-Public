@@ -1110,7 +1110,7 @@ void CAI_Stalker::shedule_Update		( u32 DT )
 #if 0//def DEBUG
 		get_memory().visual().check_visibles();
 #endif
-		if ( false && g_mt_config.test(mtAiVision) )
+		if ( g_mt_config.test(mtAiVision) )
 			Device.seqParallel.push_back(fastdelegate::FastDelegate0<>(this,&CCustomMonster::Exec_Visibility));
 		else {
 			START_PROFILE("stalker/schedule_update/vision")
