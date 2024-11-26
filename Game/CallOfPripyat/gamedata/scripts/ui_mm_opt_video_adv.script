@@ -198,6 +198,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic("video_adv:cap_es_pseudo_pbr", _st)
 	ctl = xml:InitCheck("video_adv:check_es_pseudo_pbr", _st)
 	table.insert(handler.m_preconditions, {func=get_enchanted_shaders_status, control=_st})
+	
+--ACES Tonemapping	
+	_st = xml:InitStatic("video_adv:templ_item", nil)
+	xml:InitStatic("video_adv:cap_es_aces_tonemap", _st)
+	ctl = xml:InitCheck("video_adv:check_aces_tonemap", _st)
+	table.insert(handler.m_preconditions, {func=get_enchanted_shaders_status, control=_st})
 
 --// Опции SSS и ES: Конец
 

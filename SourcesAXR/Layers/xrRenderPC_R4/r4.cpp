@@ -363,6 +363,8 @@ void					CRender::create					()
 
 	o.dx11_es_addon_enabled ? Console->Execute("shaders_preset es_shaders_preset") : Console->Execute("shaders_preset original_shaders_preset");
 
+	o.dx11_es_aces_tonemapping	= ps_r4_shaders_flags.test(R4FLAG_ES_ACES_TONEMAPPING);
+
 	o.dx11_ss_sky_debanding		= ps_r4_shaders_flags.test(R4FLAG_SS_DEBANDING);
 	o.dx11_ss_flora_fix			= ps_r4_shaders_flags.test(R4FLAG_SS_FLORAFIX);
 	o.dx11_ss_fog				= ps_r4_shaders_flags.test(R4FLAG_SS_FOG);
@@ -1484,6 +1486,19 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(ps_r4_pseudo_pbr); ++len;
+	}
+	else
+	{
+		sh_name[len] = '0';
+		++len;
+	}
+
+	if (o.dx11_es_addon_enabled && o.dx11_es_aces_tonemapping)
+	{
+		defines[def_it].Name = "USE_ACES";
+		defines[def_it].Definition = "1";
+		def_it++;
+		sh_name[len] = '0' + char(o.dx11_es_aces_tonemapping); ++len;
 	}
 	else
 	{

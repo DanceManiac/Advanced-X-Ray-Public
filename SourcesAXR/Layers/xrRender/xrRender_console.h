@@ -311,6 +311,7 @@ enum
 	R4FLAG_SS_LUT				= (1 << 9),
 	R4FLAG_SS_WIND				= (1 << 10),
 	R4FLAG_SS_PUDDLES			= (1 << 11),
+	R4FLAG_ES_ACES_TONEMAPPING  = (1 << 12),
 };
 
 //Rezy: cleanup flags

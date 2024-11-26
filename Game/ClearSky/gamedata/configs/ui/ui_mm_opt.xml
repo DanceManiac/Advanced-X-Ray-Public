@@ -832,6 +832,13 @@
 		<options_item entry="r4_es_pseudo_pbr" group="mm_opt_video" depend="restart"/>
 	</check_es_pseudo_pbr>
 	
+	<cap_es_aces_tonemap x="120" y="0" width="143" height="21" hint = "ui_mm_r4_es_aces_tonemap_hint">
+		<text font="letterica16" color="ui_6">ui_mm_r4_es_aces_tonemap</text>
+	</cap_es_aces_tonemap>
+	<check_aces_tonemap x="264" y="0" width="30" height="21">
+		<options_item entry="r4_es_aces_tonemap" group="mm_opt_video" depend="restart"/>
+	</check_aces_tonemap>
+	
 	<cap_terrain_quality x="120" y="0" width="143" height="21" hint = "ui_mm_terrain_quality_hint">
 			<text font="letterica16" color="ui_6">ui_mm_terrain_quality</text>
     </cap_terrain_quality>	

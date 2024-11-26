@@ -236,6 +236,12 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	ctl			= xml:InitCheck					("video_adv:check_es_pseudo_pbr",		_st)
 	handler.m_preconditions[ctl]		= get_enchanted_shaders_status
 	
+--ACES Tonemapping
+	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
+	xml:InitStatic								("video_adv:cap_es_aces_tonemap",		_st)
+	ctl			= xml:InitCheck					("video_adv:check_aces_tonemap",		_st)
+	handler.m_preconditions[ctl]		= get_enchanted_shaders_status
+	
 --// Опции SSS и ES: Конец
 
 --Качество террейна

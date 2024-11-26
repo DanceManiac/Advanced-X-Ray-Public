@@ -1331,6 +1331,7 @@ void		xrRender_initconsole	()
 
     // Screen Space Shaders
 	CMD3(CCC_Mask,			"r4_enchanted_shaders",			&ps_r4_shaders_flags,		R4FLAG_ES_ADDON); //Need restart
+	CMD3(CCC_Mask,			"r4_es_aces_tonemap",			&ps_r4_shaders_flags,		R4FLAG_ES_ACES_TONEMAPPING); //Need restart
 	CMD3(CCC_Mask,			"r4_screen_space_shaders",		&ps_r4_shaders_flags,		R4FLAG_SSS_ADDON); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_sky_debanding",			&ps_r4_shaders_flags,		R4FLAG_SS_DEBANDING); //Need restart
 	CMD3(CCC_Mask,			"r4_ss_flora_fix",				&ps_r4_shaders_flags,		R4FLAG_SS_FLORAFIX); //Need restart

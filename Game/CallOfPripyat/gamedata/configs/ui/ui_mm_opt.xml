@@ -620,6 +620,14 @@
             <options_item entry="r4_es_pseudo_pbr" group="mm_opt_video" depend="restart"/>
         </check_es_pseudo_pbr>
 		
+		<cap_es_aces_tonemap x="70" y="3" width="135" height="24" hint = "ui_mm_r4_es_aces_tonemap_hint">
+            <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_r4_es_aces_tonemap</text>
+        </cap_es_aces_tonemap>
+        <check_aces_tonemap x="217" y="0" width="44" height="29">
+	        <texture>ui_inGame2_checkbox</texture>
+            <options_item entry="r4_es_aces_tonemap" group="mm_opt_video" depend="restart"/>
+        </check_aces_tonemap>
+		
 		<cap_terrain_quality x="70" y="3" width="135" height="24" hint = "ui_mm_terrain_quality_hint">
 			<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_terrain_quality</text>
         </cap_terrain_quality>	
