@@ -144,7 +144,10 @@ float4 main( vf I ) : SV_Target
 	// Normal Textures
 	float3	n_tc = 0;
 	n_tc.xy = tc_parallax.xy;
+	
+#if SSFX_WATER_PARALLAX > 0
 	n_tc.z = tc_parallax.z;
+#endif
 	
 	float3	n0	= s_nmap.Sample(smp_base, n_tc.xy + (ssfx_wind_anim.ww * float2(0.23f, 0.10f) * TimeSpeed) ).rgb;
 	float3	n1	= s_nmap.Sample(smp_base, n_tc.xy - (ssfx_wind_anim.ww * float2(0.21f, 0.28f) * TimeSpeed) ).rgb;
