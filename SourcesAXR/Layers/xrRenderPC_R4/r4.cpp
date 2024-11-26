@@ -1626,19 +1626,31 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_indirect_light); ++len;
-
-		xr_sprintf(c_ssfx_il, "%d", u8(_min(_max(ps_ssfx_il_quality, 0), 64)));
-		defines[def_it].Name = "SSFX_IL_QUALITY";
-		defines[def_it].Definition = c_ssfx_il;
-		def_it++;
-		xr_strcat(sh_name, c_ssfx_il);
-		len += xr_strlen(c_ssfx_il);
 	}
 	else
 	{
 		sh_name[len] = '0';
 		++len;
 	}
+
+	//SSS IL & AO Quality
+	{
+		xr_sprintf(c_ssfx_il, "%d", u8(_min(_max(ps_ssfx_il_quality, 0), 64)));
+		defines[def_it].Name = "SSFX_IL_QUALITY";
+		defines[def_it].Definition = c_ssfx_il;
+		def_it++;
+		xr_strcat(sh_name, c_ssfx_il);
+		len += xr_strlen(c_ssfx_il);
+
+		xr_sprintf(c_ssfx_ao, "%d", u8(_min(_max(ps_ssfx_ao_quality, 2), 8)));
+		defines[def_it].Name = "SSFX_AO_QUALITY";
+		defines[def_it].Definition = c_ssfx_ao;
+		def_it++;
+		xr_strcat(sh_name, c_ssfx_ao);
+		len += xr_strlen(c_ssfx_ao);
+	}
+
+	if (o.dx11_ss_indirect_light)
 
 	if (o.dx11_sss_addon_enabled && o.dx11_ss_new_gloss)
 	{
@@ -1711,21 +1723,6 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Definition = "1";
 		def_it++;
 		sh_name[len] = '0' + char(o.dx11_ss_puddles); ++len;
-	}
-	else
-	{
-		sh_name[len] = '0';
-		++len;
-	}
-
-	if (o.dx11_sss_addon_enabled && ps_ssfx_ao_quality > 0)
-	{
-		xr_sprintf(c_ssfx_ao, "%d", u8(_min(_max(ps_ssfx_ao_quality, 2), 8)));
-		defines[def_it].Name = "SSFX_AO_QUALITY";
-		defines[def_it].Definition = c_ssfx_ao;
-		def_it++;
-		xr_strcat(sh_name, c_ssfx_ao);
-		len += xr_strlen(c_ssfx_ao);
 	}
 	else
 	{
