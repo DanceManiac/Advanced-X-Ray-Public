@@ -540,6 +540,17 @@ void					CRender::rmNormal			()
 	CHK_DX				(HW.pDevice->SetViewport(&VP));
 }
 
+CRender::SurfaceParams CRender::getSurface(const char* nameTexture)
+{
+	auto texture = DEV->_CreateTexture(nameTexture);
+	SurfaceParams surface = {};
+	surface.Surface = texture->pSurface;
+	surface.w = texture->get_Width();
+	surface.h = texture->get_Height();
+
+	return surface;
+}
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////

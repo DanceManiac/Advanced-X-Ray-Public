@@ -100,8 +100,9 @@ public:	//	Public class members (must be encapsulated furthur)
 		u32								seqMSPF;			// Sequence data milliseconds per frame
 	};
 
-private:
 	ID3DBaseTexture*					pSurface;
+
+private:
 	// Sequence data
 	xr_vector<ID3DBaseTexture*>			seqDATA;
 

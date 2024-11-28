@@ -21,6 +21,7 @@
 #include "ai_object_location.h"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "string_table.h"
+#include "../ui/UIInventoryUtilities.h"
 
 xr_map<xr_string, xr_string> m_ItemsVec{}, m_CarsVec{}, m_WeaponsVec{}, m_FoodVec{}, m_QuestItemsVec{}, m_DevicesVec{}, m_EntitiesVec{}, m_AnomaliesVec{}, m_ArtefactsVec{}, m_AmmoVec{}, m_OutfitVec{};
 LPCSTR m_sSelectedName = nullptr, m_sSelectedSection = nullptr;
@@ -387,6 +388,25 @@ void ShowSpawner(bool& show)
 		}
 
 		//Иконка
+		if (m_sSelectedSection)
+		{
+			bool m_bHasIcon = (pSettings->line_exist(m_sSelectedSection, "inv_grid_x") &&
+				pSettings->line_exist(m_sSelectedSection, "inv_grid_y") &&
+				pSettings->line_exist(m_sSelectedSection, "inv_grid_width") &&
+				pSettings->line_exist(m_sSelectedSection, "inv_grid_height"));
+
+			if (m_bHasIcon)
+			{
+				const auto surfaceParams = ::Render->getSurface("ui\\ui_icon_equipment");
+
+				float x = pSettings->r_float(m_sSelectedSection, "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
+				float y = pSettings->r_float(m_sSelectedSection, "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+				float w = pSettings->r_float(m_sSelectedSection, "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
+				float h = pSettings->r_float(m_sSelectedSection, "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+
+				ImGui::Image(surfaceParams.Surface, { w, h }, { x / surfaceParams.w, y / surfaceParams.h }, { (x + w) / surfaceParams.w, (y + h) / surfaceParams.h });
+			}
+		}
 
 		//Описание
 		if (m_sSelectedSection && pSettings->line_exist(m_sSelectedSection, "description"))

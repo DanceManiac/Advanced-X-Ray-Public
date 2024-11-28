@@ -242,6 +242,15 @@ public:
 	virtual IRender_Sector*			detectSector			(const Fvector& P)							= 0;
 	virtual IRender_Target*			getTarget				()											= 0;
 
+	struct SurfaceParams
+	{
+		float w = 0.0f;
+		float h = 0.0f;
+		void* Surface = nullptr;
+	};
+
+	virtual SurfaceParams			getSurface				(const char* nameTexture)					{ R_ASSERT(!"Method is not overridden"); return SurfaceParams(); };
+
 	// Main 
 	IC		void					set_Frustum				(CFrustum*	O	)							{ VERIFY(O);	View = O;			}
 	virtual void					set_Transform			(Fmatrix*	M	)							= 0;

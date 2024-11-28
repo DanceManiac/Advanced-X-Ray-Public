@@ -180,6 +180,8 @@ public:
 	IRender_Sector*					detectSector				(const Fvector& P, Fvector& D);
 	int								translateSector				(IRender_Sector* pSector);
 
+	virtual SurfaceParams			getSurface					(const char* nameTexture) override;
+
 	// HW-occlusion culling
 	IC u32							occq_begin					(u32&	ID		)	{ return HWOCC.occq_begin	(ID);	}
 	IC void							occq_end					(u32&	ID		)	{ HWOCC.occq_end	(ID);			}
