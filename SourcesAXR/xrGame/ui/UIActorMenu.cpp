@@ -215,6 +215,7 @@ void CUIActorMenu::Show(bool status)
 {
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
 	inherited::Show							(status);
+	clear_highlight_lists					();
 
 	if(status)
 	{

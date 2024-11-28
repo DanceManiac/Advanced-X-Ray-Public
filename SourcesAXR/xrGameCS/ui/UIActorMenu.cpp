@@ -219,11 +219,12 @@ void CUIActorMenu::SendMessage(CUIWindow* pWnd, s16 msg, void* pData)
 void CUIActorMenu::Show()
 {
 	CCustomDetector* pDet = smart_cast<CCustomDetector*>(Actor()->inventory().ItemFromSlot(DETECTOR_SLOT));
-	inherited::Show							();
+	inherited::Show						();
 
 	SetMenuMode							(m_currMenuMode);
 	PlaySnd								(eSndOpen);
 	m_ActorStateInfo->UpdateActorInfo	(m_pActorInvOwner);
+	clear_highlight_lists				();
 
 	if (Actor() && GameConstants::GetHideWeaponInInventory())
 	{
