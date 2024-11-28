@@ -754,7 +754,9 @@ static class ssfx_terrain_offset : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_ssfx_terrain_offset);
+		Fvector4 level_offset = g_discord.SSS_TerrainOffset, cmd_offset = ps_ssfx_terrain_offset, final_offset{};
+		final_offset.set(level_offset.x + cmd_offset.x, level_offset.y + cmd_offset.y, level_offset.z + cmd_offset.z, level_offset.w + cmd_offset.w);
+		RCache.set_c(C, final_offset);
 	}
 }    ssfx_terrain_offset;
 

@@ -26,6 +26,7 @@ public:
 	~xrDiscordPresense();
 
 	float LowlandFogBaseHeight;
+	Fvector4 SSS_TerrainOffset;
 	LPCSTR discord_app_id;
 private:
 	bool bInitialize = false;
