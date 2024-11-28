@@ -3805,6 +3805,8 @@ void CWeapon::SwitchZoomMode()
 
 	if (HudFovFromScope)
 		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "aim_alt_hud_fov", GetHudFov());
+
+	m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
 }
 
 void CWeapon::SwitchLaser(bool on)
