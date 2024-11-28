@@ -44,6 +44,8 @@ const float MAX_DIST_FACTOR = 0.95f;
 
 extern ENGINE_API Fvector4 ps_ssfx_wind_trees;
 
+ENGINE_API float psWeatherFogClamping = 0.f;
+
 //////////////////////////////////////////////////////////////////////////
 // environment
 CEnvironment::CEnvironment	() :
@@ -142,6 +144,8 @@ CEnvironment::CEnvironment	() :
         p_sun_color		= pSettings->r_float						("thunderbolt_common", "sun_color");
         p_fog_color		= pSettings->r_float						("thunderbolt_common", "fog_color");
 	}
+
+	psWeatherFogClamping = READ_IF_EXISTS(pAdvancedSettings, r_float, "environment", "weather_fog_clamping_max", 0.0f);
 }
 
 CEnvironment::~CEnvironment	()

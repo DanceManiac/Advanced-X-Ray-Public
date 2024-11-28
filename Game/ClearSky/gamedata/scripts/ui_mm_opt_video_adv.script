@@ -417,6 +417,11 @@ function opt_video_adv:InitControls(x, y, xml, handler)
 	xml:InitStatic								("video_adv:cap_60hz",					_st)
 	xml:InitCheck								("video_adv:check_60hz",				_st)
 	
+--Ограничитель дальности тумана
+	_st = xml:InitStatic("video_adv:templ_item", self.scroll_v)
+	xml:InitStatic("video_adv:cap_fog_clamper_max", _st)
+	ctl = xml:InitTrackBar("video_adv:track_fog_clamper_max", _st)
+	
 --Тип низинного тумана
 	_st				= xml:InitStatic			("video_adv:templ_item",				self.scroll_v)
 	xml:InitStatic								("video_adv:cap_r3_lowland_fog_type",	_st)
