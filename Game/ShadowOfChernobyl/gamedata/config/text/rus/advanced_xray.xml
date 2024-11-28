@@ -960,4 +960,7 @@
 	<string id="st_for_gl">
 		<text>\n Для подствольника:\n </text>
 	</string>
+	<string id="ui_st_currency">
+		<text>RU</text>
+	</string>
 </string_table>

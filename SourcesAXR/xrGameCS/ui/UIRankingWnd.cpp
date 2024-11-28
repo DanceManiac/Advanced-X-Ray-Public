@@ -46,7 +46,7 @@ void CUIRankingWnd::Show( bool status )
 		m_actor_ch_info->InitCharacter(Actor());
 		
 		string64 buf;
-		sprintf_s( buf, sizeof(buf), "%d %s", Actor()->get_money(), "RU" );
+		xr_sprintf(buf, sizeof(buf), "%d %s", Actor()->get_money(), *CStringTable().translate("ui_st_currency"));
 		m_money_value->SetText( buf );
 		m_money_value->AdjustWidthToText();
 		update_info();

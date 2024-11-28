@@ -10,6 +10,7 @@
 #include "../ai/monsters/BaseMonster/base_monster.h"
 #include "UIInventoryUtilities.h"
 #include "game_cl_base.h"
+#include "string_table.h"
 
 #include "../Weapon.h"
 #include "../WeaponMagazinedWGrenade.h"
@@ -1193,7 +1194,7 @@ void CUIActorMenu::UpdateActorMP()
 	int money = Game().local_player->money_for_round;
 
 	string64 buf;
-	xr_sprintf( buf, "%d RU", money );
+	xr_sprintf(buf, "%d %s", money, *CStringTable().translate("ui_st_currency"));
 	m_ActorMoney->SetText( buf );
 
 	m_ActorCharacterInfo->InitCharacterMP( Game().local_player->getName(), "ui_npc_u_nebo_1" );

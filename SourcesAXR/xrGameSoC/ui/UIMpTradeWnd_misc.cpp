@@ -13,6 +13,8 @@
 #include "object_broker.h"
 #include <dinput.h>
 
+#include "string_table.h"
+
 bool CUIMpTradeWnd::OnKeyboardAction(int dik, EUIMessages keyboard_action)
 {
 #ifdef DEBUG
@@ -89,7 +91,7 @@ void CUIMpTradeWnd::UpdateMoneyIndicator()
 void CUIMpTradeWnd::SetMoneyChangeString(int diff)
 {
 	string128								buff;
-	sprintf_s									(buff, "%+d RU", diff);
+	sprintf_s									(buff, "%+d %s", diff, *CStringTable().translate("ui_st_currency"));
 	m_static_money_change->SetText			(buff);
 	u32 clr									= (diff>0)?m_text_color_money_positive:m_text_color_money_negative;
 	m_static_money_change->SetTextColor		(clr);

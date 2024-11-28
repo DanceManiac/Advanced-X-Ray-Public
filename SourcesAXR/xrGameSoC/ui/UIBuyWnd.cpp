@@ -15,6 +15,7 @@
 #include <dinput.h>
 #include "../actor.h"
 #include "restrictions.h"
+#include "string_table.h"
 
 #define 	BELT_SLOT			5
 
@@ -612,7 +613,7 @@ void CUIBuyWnd::SetCurrentItem(CUICellItem* itm)
 	{
 		string256					str;
 		m_itemInfo.InitItem			(CurrentIItem());
-		sprintf_s						(str, "%d RU", m_bag.GetItemPrice(itm));
+		sprintf_s					(str, "%d %s", m_bag.GetItemPrice(itm), *CStringTable().translate("ui_st_currency"));
 		m_itemInfo.UICost->SetText	(str);
 
 		string64					tex_name;

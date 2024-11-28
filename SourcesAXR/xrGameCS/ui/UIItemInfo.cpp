@@ -249,13 +249,13 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	{
 		if (item_price != u32(-1))
 		{
-			xr_sprintf(str, "%d RU", item_price);// will be owerwritten in multiplayer
+			xr_sprintf(str, "%d %s", item_price, *CStringTable().translate("ui_st_currency"));// will be owerwritten in multiplayer
 			UICost->SetText(str);
 			UICost->Show(true);
 		}
 		else if (item_price == u32(-1))
 		{
-			xr_sprintf(str, "%d RU", pInvItem->Cost());// will be owerwritten in multiplayer
+			xr_sprintf(str, "%d %s", pInvItem->Cost(), *CStringTable().translate("ui_st_currency"));// will be owerwritten in multiplayer
 			UICost->SetText(str);
 			UICost->Show(true);
 		}
@@ -398,10 +398,9 @@ void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem)
 	}
 	if ( UICost && IsGameTypeSingle() )
 	{
-		xr_sprintf(str, "%d RU", pInvItem->Cost());// will be owerwritten in multiplayer
+		xr_sprintf(str, "%d %s", pInvItem->Cost(), *CStringTable().translate("ui_st_currency"));// will be owerwritten in multiplayer
 		UICost->SetText(str);
 		UICost->Show(true);
-	
 	}
 	
 	if ( UIDesc )

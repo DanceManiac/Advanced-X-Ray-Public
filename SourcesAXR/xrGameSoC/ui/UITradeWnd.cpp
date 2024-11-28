@@ -464,16 +464,16 @@ void CUITradeWnd::UpdatePrices()
 
 
 	string256				buf;
-	sprintf_s					(buf, "%d RU", m_iOurTradePrice);
+	sprintf_s					(buf, "%d %s", m_iOurTradePrice, *CStringTable().translate("ui_st_currency"));
 	UIOurPriceCaption.GetPhraseByIndex(2)->str = buf;
-	sprintf_s					(buf, "%d RU", m_iOthersTradePrice);
+	sprintf_s					(buf, "%d %s", m_iOthersTradePrice, *CStringTable().translate("ui_st_currency"));
 	UIOthersPriceCaption.GetPhraseByIndex(2)->str = buf;
 
-	sprintf_s					(buf, "%d RU", m_pInvOwner->get_money());
+	sprintf_s					(buf, "%d %s", m_pInvOwner->get_money(), *CStringTable().translate("ui_st_currency"));
 	UIOurMoneyStatic.SetText(buf);
 
 	if(!m_pOthersInvOwner->InfinitiveMoney()){
-		sprintf_s					(buf, "%d RU", m_pOthersInvOwner->get_money());
+		sprintf_s					(buf, "%d %s", m_pOthersInvOwner->get_money(), *CStringTable().translate("ui_st_currency"));
 		UIOtherMoneyStatic.SetText(buf);
 	}else
 	{
@@ -623,7 +623,7 @@ void CUITradeWnd::SetCurrentItem(CUICellItem* itm)
 
 		string256			str;
 
-		sprintf_s				(str, "%d RU", m_pOthersTrade->GetItemPrice(CurrentIItem(), bBuying) );
+		sprintf_s				(str, "%d %s", m_pOthersTrade->GetItemPrice(CurrentIItem(), bBuying), *CStringTable().translate("ui_st_currency"));
 		UIItemInfo->UICost->SetText (str);
 	}
 }

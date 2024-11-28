@@ -250,8 +250,8 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	}
 	if ( UICost && IsGameTypeSingle() && item_price!=u32(-1) )
 	{
-		xr_sprintf				(str, "%d RU", item_price);// will be owerwritten in multiplayer
-		UICost->SetText		(str);
+		xr_sprintf				(str, "%d %s", item_price, *CStringTable().translate("ui_st_currency"));// will be owerwritten in multiplayer
+		UICost->SetText			(str);
 		pos.x = UICost->GetWndPos().x;
 		if ( m_complex_desc )
 		{

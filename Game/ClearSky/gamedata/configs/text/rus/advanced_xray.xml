@@ -867,4 +867,7 @@
 	<string id="ui_inv_frostbite">
 		<text>Обморожение</text>
 	</string>
+	<string id="ui_st_currency">
+		<text>RU</text>
+	</string>
 </string_table>
