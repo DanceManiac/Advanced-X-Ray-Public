@@ -20,6 +20,7 @@
 #include "Artefact.h"
 #include "CustomOutfit.h"
 #include "CustomBackpack.h"
+#include "PDA.h"
 #include "AdvancedXrayGameConstants.h"
 #include "ActorSkills.h"
 
@@ -404,7 +405,12 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 			CActor*	control_entity		= static_cast_checked<CActor*>(Level().CurrentControlEntity());
 			R_ASSERT2					(control_entity, "current control entity is NULL");
 			CEffectorCam* ec			= control_entity->Cameras().GetCamEffector(eCEActorMoving);
-			if(NULL==ec)
+
+			auto Wpn = smart_cast<CWeapon*>(Actor()->inventory().ActiveItem());
+			auto Pda = smart_cast<CPda*>(Actor()->inventory().ActiveItem());
+			bool move_eff_blocked = (Wpn && Wpn->IsZoomed()) || (Pda && Pda->m_bZoomed);
+
+			if(NULL==ec && !move_eff_blocked)
 			{
 				string_path			eff_name;
 				xr_sprintf			(eff_name, sizeof(eff_name), "%s.anm", state_anm);
