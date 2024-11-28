@@ -118,6 +118,7 @@ extern	BOOL	g_show_wnd_rect2			;
 //-----------------------------------------------------------
 extern	float	g_fTimeFactor;
 extern	BOOL	b_hud_collision;
+extern	BOOL	m_b_actor_walk_inertion;
 		int		g_keypress_on_start = 1;
 extern	int		hud_adj_mode;
 extern	int		hud_adj_item_idx;
@@ -2360,6 +2361,7 @@ void CCC_RegisterCommands()
 	CMD1(CCC_DebugFonts,	"debug_fonts");
 	CMD4(CCC_Integer,		"g_advanced_crosshair",		&g_advanced_crosshair,		0, 1);
 	CMD4(CCC_Integer,		"hud_collision",			&b_hud_collision,			0, 1);
+	CMD4(CCC_Integer,		"actor_walk_inertion",		&m_b_actor_walk_inertion,	0, 1);
 	CMD3(CCC_Token,			"g_death_cam_mode",			&death_camera_mode,			death_camera_mode_token);
 	CMD3(CCC_Mask,			"g_3d_scopes",				&psActorFlags,				AF_3DSCOPE_ENABLE);
 	CMD3(CCC_Mask,			"g_pnv_in_scope",			&psActorFlags,				AF_PNV_W_SCOPE_DIS);

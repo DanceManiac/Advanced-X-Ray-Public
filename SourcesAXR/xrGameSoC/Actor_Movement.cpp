@@ -19,6 +19,8 @@
 #include "WeaponMagazined.h"
 #include "CharacterPhysicsSupport.h"
 
+#include "ActorEffector.h"
+
 #include "Artefact.h"
 #include "CustomOutfit.h"
 #include "CustomBackpack.h"
@@ -38,6 +40,8 @@ static const float	s_fLandingTime2		= 0.3f;// через сколько снять флаг Landing2 
 static const float	s_fJumpTime			= 0.3f;
 static const float	s_fJumpGroundTime	= 0.1f;	// для снятия флажка Jump если на земле
 	   const float	s_fFallTime			= 0.2f;
+
+BOOL m_b_actor_walk_inertion = false;
 
 IC static void generate_orthonormal_basis1(const Fvector& dir,Fvector& updir, Fvector& right)
 {
@@ -154,6 +158,7 @@ void CActor::g_cl_ValidateMState(float dt, u32 mstate_wf)
 
 void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Jump, float dt)
 {
+	float cam_eff_factor = 0.0f;
 	mstate_old = mstate_real;
 	vControlAccel.set	(0,0,0);
 
@@ -381,6 +386,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				}
 
 				vControlAccel.mul			(scale);
+				cam_eff_factor				= scale;
 			}else{
 				//				mstate_real	&= ~mcAnyMove;
 			}
@@ -391,6 +397,59 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 	//-------------------------------------------------------------------------------	
 	
+	if (IsGameTypeSingle() && cam_eff_factor > EPS && m_b_actor_walk_inertion)
+	{
+		LPCSTR state_anm = NULL;
+
+		if (mstate_real & mcSprint && !(mstate_old & mcSprint))
+			state_anm = "sprint";
+		else
+			if (mstate_real & mcLStrafe && !(mstate_old & mcLStrafe))
+				state_anm = "strafe_left";
+			else
+				if (mstate_real & mcRStrafe && !(mstate_old & mcRStrafe))
+					state_anm = "strafe_right";
+				else
+					if (mstate_real & mcFwd && !(mstate_old & mcFwd))
+						state_anm = "go_front";
+					else
+						if (mstate_real & mcBack && !(mstate_old & mcBack))
+							state_anm = "go_back";
+						else
+							if (mstate_real & mcJump && !(mstate_old & mcJump))
+								state_anm = "jump";
+							else
+								if (mstate_real & mcFall && !(mstate_old & mcFall))
+									state_anm = "down";
+
+		if (state_anm)
+		{ //play moving cam effect
+			CActor* control_entity = smart_cast<CActor*>(Level().CurrentControlEntity());
+			R_ASSERT2(control_entity, "current control entity is NULL");
+			CEffectorCam* ec = control_entity->Cameras().GetCamEffector(eCEActorMoving);
+
+			if (NULL == ec)
+			{
+				string_path			eff_name;
+				xr_sprintf(eff_name, sizeof(eff_name), "%s.anm", state_anm);
+				string_path			ce_path;
+				string_path			anm_name;
+				strconcat(sizeof(anm_name), anm_name, "camera_effects\\actor_move\\", eff_name);
+				if (FS.exist(ce_path, "$game_anims$", anm_name))
+				{
+					CAnimatorCamLerpEffectorConst* e = xr_new<CAnimatorCamLerpEffectorConst>();
+					float max_scale = 140.0f;
+					float factor = cam_eff_factor / max_scale;
+					e->SetFactor(factor);
+					e->SetType(eCEActorMoving);
+					e->SetHudAffect(false);
+					e->SetCyclic(false);
+					e->Start(anm_name);
+					control_entity->Cameras().AddCamEffector(e);
+				}
+			}
+		}
+	}
 
 	//transform local dir to world dir
 	Fmatrix				mOrient;
