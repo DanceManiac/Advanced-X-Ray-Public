@@ -53,7 +53,7 @@ void CCustomTimer::StopCustomTimer()
 void CCustomTimer::ResetCustomTimer()
 {
 #ifdef DEBUG
-	Msg("Custom Timer: %s : Reset (timer value: %d)", m_sTimerName, m_iTimerCurValue);
+	Msg("Custom Timer: %s : Reset (timer value: %d)", m_sTimerName.c_str(), m_iTimerCurValue);
 #endif
 
 	StopCustomTimer();
@@ -129,7 +129,7 @@ void CTimerManager::CreateTimer(std::string name, ALife::_TIME_ID value, ETimerM
 {
 	for (auto& timer : Timers)
 	{
-		if ((*timer).getName() == name)
+		if (timer && ((*timer).getName() == name))
 		{
 			Msg("! Custom Timer with name [%s] already exists!");
 			return;
@@ -167,7 +167,7 @@ bool CTimerManager::ResetTimer(std::string name)
 {
 	for (auto& timer : Timers)
 	{
-		if ((*timer).getName() == name)
+		if (timer && ((*timer).getName() == name))
 		{
 			(*timer).ResetCustomTimer();
 			return true;
@@ -180,7 +180,7 @@ bool CTimerManager::StartTimer(std::string name, ALife::_TIME_ID start_time, ETi
 {
 	for (auto& timer : Timers)
 	{
-		if ((*timer).getName() == name)
+		if (timer && ((*timer).getName() == name))
 		{
 			(*timer).SetOnTimerStopCallback([this, name = (*timer).getName()](std::string stopped_name)
 			{
@@ -208,7 +208,7 @@ bool CTimerManager::StopTimer(std::string name)
 {
 	for (auto& timer : Timers)
 	{
-		if ((*timer).getName() == name)
+		if (timer && ((*timer).getName() == name))
 		{
 			(*timer).StopCustomTimer();
 			return true;
@@ -224,7 +224,8 @@ void CTimerManager::save(NET_Packet& packet)
 
 	for (const auto& timer : Timers)
 	{
-		timer->save(packet);
+		if (timer)
+			timer->save(packet);
 	}
 }
 
@@ -238,8 +239,12 @@ void CTimerManager::load(IReader& packet)
 	for (u32 i = 0; i < timer_count; ++i)
 	{
 		auto timer = std::make_shared<CCustomTimer>();
-		timer->load(packet);
-		Timers.push_back(timer);
+		
+		if (timer)
+		{
+			timer->load(packet);
+			Timers.push_back(timer);
+		}
 	}
 }
 
@@ -247,7 +252,7 @@ ALife::_TIME_ID CTimerManager::GetTimerValue(std::string name) const
 {
 	for (const auto& timer : Timers)
 	{
-		if ((*timer).getName() == name)
+		if (timer && ((*timer).getName() == name))
 		{
 			return (*timer).getCurValue();
 		}
@@ -260,6 +265,7 @@ void CTimerManager::Update()
 {
 	for (auto& timer : Timers)
 	{
-		timer->Update();
+		if (timer)
+			timer->Update();
 	}
 }
