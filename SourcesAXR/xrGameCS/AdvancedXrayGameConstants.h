@@ -46,6 +46,7 @@ namespace GameConstants
 	bool GetPDA_FlashingIconsEnabled();
 	bool GetPDA_FlashingIconsQuestsEnabled();
 	bool GetFogInfluenceVolumetricLight();
+	bool GetShowSaveName();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

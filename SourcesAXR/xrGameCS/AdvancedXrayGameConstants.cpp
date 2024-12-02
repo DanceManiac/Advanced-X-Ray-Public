@@ -49,6 +49,7 @@ bool	m_bPDA_FlashingIconsQuestsEnabled = false;
 bool	m_bFogInfluenceVolumetricLight = false;
 bool	m_bEnableBoreDoF = true;
 bool	m_bBackpackAnimsEnabled = false;
+bool	m_bShowSaveName = false;
 BOOL	m_b_animated_backpack = 0;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
@@ -116,6 +117,7 @@ namespace GameConstants
 		m_bHUD_UsedItemText = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_hud_used_item_text", true);
 		m_bPDA_FlashingIconsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_pda_info_icons", false);
 		m_bPDA_FlashingIconsQuestsEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "enable_new_task_icon", false);
+		m_bShowSaveName = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "show_saved_game_name", false);
 		m_sAfInfluenceMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_infl_mode", "from_belt"); //from_belt|from_ruck|from_ruck_only_rad
 		m_sArtefactsDegradationMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "gameplay", "artefacts_degradation_mode", "from_belt"); //from_belt|from_ruck
 		m_FV4DefaultDoF = READ_IF_EXISTS(pAdvancedSettings, r_fvector4, "ssfx_dof", "default_dof", Fvector4().set(0.1f, 0.25f, 0.0f, 0.0f));
@@ -357,6 +359,11 @@ namespace GameConstants
 	bool GetFogInfluenceVolumetricLight()
 	{
 		return m_bFogInfluenceVolumetricLight;
+	}
+
+	bool GetShowSaveName()
+	{
+		return m_bShowSaveName;
 	}
 
 	Ivector4 GetRedColor()

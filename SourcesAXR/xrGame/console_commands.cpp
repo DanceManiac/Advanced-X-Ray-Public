@@ -977,8 +977,11 @@ public:
 		SDrawStaticStruct* _s		= CurrentGameUI()->AddCustomStatic("game_saved", true);
 		SDrawStaticStruct* _s2		= CurrentGameUI()->AddCustomStatic("game_saved_icon", true);
 
+		LPSTR save_name;
+		STRCONCAT(save_name, CStringTable().translate("st_game_saved").c_str(), GameConstants::GetShowSaveName() ? ": ", S : "");
+
 		if (_s)
-			_s->wnd()->TextItemControl()->SetText(CStringTable().translate("st_game_saved").c_str());
+			_s->wnd()->TextItemControl()->SetText(save_name);
 
 		xr_strcat				(S,".dds");
 		FS.update_path			(S1,"$game_saves$",S);
