@@ -176,6 +176,12 @@ SDrawStaticStruct* CUIGameCustom::AddCustomStatic(LPCSTR id, bool bSingleInstanc
 			return (*it);
 	}
 	
+	if (!m_msgs_xml->NavigateToNode(id, 0))
+	{
+		Msg("! CUIGameCustom::AddCustomStatic: XML node not found: %s%s", id, m_msgs_xml->m_xml_file_name);
+		return nullptr;
+	}
+
 	CUIXmlInit xml_init;
 	m_custom_statics.push_back		( xr_new<SDrawStaticStruct>() );
 	SDrawStaticStruct* sss			= m_custom_statics.back();
