@@ -7,6 +7,8 @@
 #include "UICharacterInfo.h"
 #include "UIDragDropListEx.h"
 #include "UIFrameWindow.h"
+#include "UIStatic.h"
+#include "UIGameCustom.h"
 #include "UIItemInfo.h"
 #include "UIPropertiesBox.h"
 #include "../ai/monsters/BaseMonster/base_monster.h"
@@ -26,6 +28,7 @@
 #include "../script_callback_ex.h"
 #include "../script_game_object.h"
 #include "../BottleItem.h"
+#include "string_table.h"
 
 #include "AdvancedXrayGameConstants.h"
 #include "Car.h"
@@ -98,6 +101,14 @@ void CUICarBodyWnd::Init()
 	m_pUIOthersBagWnd				= xr_new<CUIStatic>(); m_pUIOthersBagWnd->SetAutoDelete(true);
 	AttachChild						(m_pUIOthersBagWnd);
 	xml_init.InitStatic				(uiXml, "others_bag_static", 0, m_pUIOthersBagWnd);
+
+	if (GameConstants::GetLimitedInvBoxes())
+	{
+		m_PartnerInvCapacityInfo	= UIHelper::CreateStatic(uiXml, "partner_capacity_caption", this);
+		m_PartnerInvFullness		= UIHelper::CreateStatic(uiXml, "partner_inv_fullness", this);
+		m_PartnerInvCapacity		= UIHelper::CreateStatic(uiXml, "partner_inv_capacity", this);
+		m_PartnerInvCapacityInfo->AdjustWidthToText();
+	}
 
 	if (GameConstants::GetLimitedInventory())
 	{
@@ -331,7 +342,34 @@ void CUICarBodyWnd::UpdateLists()
 	if (GameConstants::GetLimitedInventory())
 		InventoryUtilities::UpdateCapacityStr(*m_ActorInvFullness, *m_ActorInvCapacity);
 
+	UpdateDeadBodyBag();
+
 	m_b_need_update									= false;
+}
+
+void CUICarBodyWnd::UpdateDeadBodyBag()
+{
+	string64 buf;
+
+	if (!m_pInventoryBox || !GameConstants::GetLimitedInvBoxes())
+		return;
+
+	float total = m_pInventoryBox->GetInventoryFullness();
+	float max = GameConstants::GetInvBoxCapacity();
+	LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
+	xr_sprintf(buf, "%.1f", total);
+
+	m_PartnerInvFullness->SetText(buf);
+	m_PartnerInvFullness->AdjustWidthToText();
+	xr_sprintf(buf, "%s %.1f %s", "/", max, lit_str);
+	m_PartnerInvCapacity->SetText(buf);
+	m_PartnerInvCapacity->AdjustWidthToText();
+
+	Fvector2 pos = m_PartnerInvFullness->GetWndPos();
+	pos.x = m_PartnerInvCapacity->GetWndPos().x - m_PartnerInvFullness->GetWndSize().x - 5.0f;
+	m_PartnerInvFullness->SetWndPos(pos);
+	pos.x = pos.x - m_PartnerInvCapacityInfo->GetWndSize().x - 5.0f;
+	m_PartnerInvCapacityInfo->SetWndPos(pos);
 }
 
 void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
@@ -598,6 +636,13 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 	{
 		if(false && old_owner==m_pUIOurBagList) return true;
 		bool bMoveDirection		= (old_owner==m_pUIOthersBagList);
+
+		if (GameConstants::GetLimitedInvBoxes() && !bMoveDirection && m_pInventoryBox && m_pInventoryBox->GetInventoryFullness() >= GameConstants::GetInvBoxCapacity())
+		{
+			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
+			_s->wnd()->SetText(CStringTable().translate("st_inv_box_full").c_str());
+			return false;
+		}
 
 		u16 tmp_id				= smart_cast<CGameObject*>(m_pOurObject)->ID();
 

@@ -12,6 +12,16 @@
 		<texture_offset x="-2" y="0"/>
 	</static_icon>
 
+	<partner_capacity_caption x="660" y="745" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
+	</partner_capacity_caption>
+    <partner_inv_fullness x="765" y="745" width="38" height="14">
+		<text align="l" font="arial_14" color="ui_7"/>
+	</partner_inv_fullness>
+	<partner_inv_capacity x="788" y="745" width="71" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</partner_inv_capacity>
+
 	<actor_inv_capacity_caption x="60" y="745" width="71" height="14">
 		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
 	</actor_inv_capacity_caption>

@@ -127,6 +127,16 @@
         <text align="l" font="arial_14" color="ui_7"/>
     </partner_weight>
 	
+	<partner_capacity_caption x="40" y="745" width="85" height="14">
+		<text align="r" font="arial_14" color="ui_3">ui_inv_inventory_capacity</text>
+	</partner_capacity_caption>
+	<partner_inv_fullness x="260" y="745" width="45" height="14">
+		<text align="l" font="arial_14"/>
+	</partner_inv_fullness>
+	<partner_inv_capacity x="280" y="745" width="85" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</partner_inv_capacity>
+	
 	<actor_inv_capacity_caption x="790" y="745" width="85" height="14">
 		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
 	</actor_inv_capacity_caption>

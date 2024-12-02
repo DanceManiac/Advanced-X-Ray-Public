@@ -870,4 +870,7 @@
 	<string id="ui_st_currency">
 		<text>RU</text>
 	</string>
+	<string id="st_inv_box_full">
+		<text>ящик полон</text>
+	</string>
 </string_table>

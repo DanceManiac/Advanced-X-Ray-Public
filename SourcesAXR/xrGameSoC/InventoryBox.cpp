@@ -1,15 +1,19 @@
 #include "pch_script.h"
 #include "InventoryBox.h"
+#include "inventory_item.h"
 #include "level.h"
 #include "actor.h"
 #include "game_object_space.h"
 
 #include "script_callback_ex.h"
 #include "script_game_object.h"
+#include "AdvancedXrayGameConstants.h"
 
 CInventoryBox::CInventoryBox()
 {
 	m_in_use = false;
+
+	m_iInventoryFullness = 0.0f;
 }
 
 void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
@@ -23,10 +27,15 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 			u16 id;
             P.r_u16(id);
 			CObject* itm = Level().Objects.net_Find(id);  VERIFY(itm);
+			CInventoryItem* pIItem = smart_cast<CInventoryItem*>(itm);
 			m_items.push_back	(id);
 			itm->H_SetParent	(this);
 			itm->setVisible		(FALSE);
 			itm->setEnabled		(FALSE);
+
+			if (GameConstants::GetLimitedInvBoxes())
+				m_iInventoryFullness += pIItem->GetOccupiedInvSpace();
+
 		}break;
 	case GE_OWNERSHIP_REJECT:
 		{
@@ -42,6 +51,12 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 			{
 				CGameObject* GO		= smart_cast<CGameObject*>(itm);
 				Actor()->callback(GameObject::eInvBoxItemTake)( this->lua_game_object(), GO->lua_game_object() );
+
+				if (GameConstants::GetLimitedInvBoxes())
+				{
+					CInventoryItem* inv_item = smart_cast<CInventoryItem*>(GO);
+					m_iInventoryFullness -= inv_item->GetOccupiedInvSpace();
+				}
 			}
 		}break;
 	};
@@ -61,7 +76,7 @@ void CInventoryBox::net_Relcase(CObject* O)
 {
 	inherited::net_Relcase(O);
 }
-#include "inventory_item.h"
+
 void CInventoryBox::AddAvailableItems(TIItemContainer& items_container) const
 {
 	xr_vector<u16>::const_iterator it = m_items.begin();

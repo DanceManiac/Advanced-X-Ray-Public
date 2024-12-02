@@ -74,6 +74,10 @@ protected:
 	CUIStatic*				m_pUIOurBagWnd;
 	CUIStatic*				m_pUIOthersBagWnd;
 
+	CUIStatic*				m_PartnerInvCapacityInfo;
+	CUIStatic*				m_PartnerInvFullness;
+	CUIStatic*				m_PartnerInvCapacity;
+
 	CUIStatic*				m_ActorInvCapacityInfo;
 	CUIStatic*				m_ActorInvFullness;
 	CUIStatic*				m_ActorInvCapacity;
@@ -101,6 +105,8 @@ protected:
 	void					ActivatePropertiesBox		();
 	void		xr_stdcall	ProcessPropertiesBoxClicked	(CUIWindow* w, void* d);
 	void		xr_stdcall	OnBtnTakeAll				(CUIWindow* w, void* d);
+
+	void					UpdateDeadBodyBag			();
 
 	bool					ToOurBag					();
 	bool					ToOthersBag					();

@@ -94,6 +94,14 @@ void CUIActorMenu::Construct()
 	m_PartnerBottomInfo->AdjustWidthToText();
 	m_PartnerWeight_end_x 				= m_PartnerWeight->GetWndPos().x;
 
+	if (GameConstants::GetLimitedInvBoxes())
+	{
+		m_PartnerInvCapacityInfo	= UIHelper::CreateStatic(uiXml, "partner_capacity_caption", this);
+		m_PartnerInvFullness		= UIHelper::CreateStatic(uiXml, "partner_inv_fullness", this);
+		m_PartnerInvCapacity		= UIHelper::CreateStatic(uiXml, "partner_inv_capacity", this);
+		m_PartnerInvCapacityInfo->AdjustWidthToText();
+	}
+
 	if (GameConstants::GetLimitedInventory())
 	{
 		m_ActorInvCapacityInfo	= UIHelper::CreateStatic(uiXml, "actor_inv_capacity_caption", this);

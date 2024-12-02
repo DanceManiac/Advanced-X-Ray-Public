@@ -14,6 +14,8 @@ protected:
 	bool	m_can_take;
 	bool	m_closed;
 
+	float	m_iInventoryFullness;
+
 public:
 						CInventoryBox					();
 	virtual				~CInventoryBox					();
@@ -34,6 +36,8 @@ public:
 
 				void	set_closed						(bool status, LPCSTR reason);
 	IC			bool	closed							() const { return m_closed; }
+
+				float	GetInventoryFullness			() const { return m_iInventoryFullness; }
 
 protected:
 				void	SE_update_status				();

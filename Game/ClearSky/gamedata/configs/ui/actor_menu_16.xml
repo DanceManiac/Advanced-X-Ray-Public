@@ -128,13 +128,23 @@
     <text align="l" font="arial_14" color="ui_7"/>
   </partner_weight>
   
-	<actor_inv_capacity_caption x="743" y="745" width="71" height="14">
+	<partner_capacity_caption x="123" y="745" width="68" height="14">
+		<text align="r" font="arial_14" color="ui_3">ui_inv_inventory_capacity</text>
+	</partner_capacity_caption>
+	<partner_inv_fullness x="291" y="745" width="36" height="14">
+		<text align="l" font="arial_14"/>
+	</partner_inv_fullness>
+	<partner_inv_capacity x="326" y="745" width="68" height="14">
+		<text align="l" font="arial_14" color="ui_3"/>
+	</partner_inv_capacity>
+  
+	<actor_inv_capacity_caption x="742" y="745" width="71" height="14">
 		<text align="l" font="arial_14" color="ui_3">ui_inventory_capacity</text>
 	</actor_inv_capacity_caption>
-    <actor_inv_fullness x="818" y="745" width="38" height="14">
+    <actor_inv_fullness x="818" y="744" width="38" height="14">
 		<text align="l" font="arial_14" color="ui_7"/>
 	</actor_inv_fullness>
-	<actor_inv_capacity x="860" y="745" width="71" height="14">
+	<actor_inv_capacity x="860" y="744" width="71" height="14">
 		<text align="l" font="arial_14" color="ui_3"/>
 	</actor_inv_capacity>
 

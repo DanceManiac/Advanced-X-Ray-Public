@@ -149,6 +149,10 @@ protected:
 	float						m_PartnerWeight_end_x;
 //*	CUIStatic*					m_PartnerWeightMax;
 
+	CUIStatic*					m_PartnerInvCapacityInfo;
+	CUIStatic*					m_PartnerInvFullness;
+	CUIStatic*					m_PartnerInvCapacity;
+
 	CUIStatic*					m_ActorInvCapacityInfo;
 	CUIStatic*					m_ActorInvFullness;
 	CUIStatic*					m_ActorInvCapacity;

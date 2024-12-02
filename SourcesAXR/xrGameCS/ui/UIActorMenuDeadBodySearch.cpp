@@ -7,6 +7,8 @@
 #include "UICellItem.h"
 #include "UICellItemFactory.h"
 #include "UIFrameLineWnd.h"
+#include "UIStatic.h"
+#include "UIGameCustom.h"
 
 #include "xrMessages.h"
 #include "../alife_registry_wrappers.h"
@@ -19,6 +21,7 @@
 #include "../ai/monsters/BaseMonster/base_monster.h"
 #include "clsid_game.h"
 #include "Car.h"
+#include "HUDManager.h"
 
 void move_item_from_to (u16 from_id, u16 to_id, u16 what_id)
 {
@@ -57,6 +60,14 @@ void CUIActorMenu::InitDeadBodySearchMode()
 	m_LeftBackground->Show			(true);
 	m_PartnerBottomInfo->Show		(true);
 	m_PartnerWeight->Show			(true);
+
+	if (m_pInvBox && GameConstants::GetLimitedInvBoxes())
+	{
+		m_PartnerInvCapacityInfo->Show(true);
+		m_PartnerInvFullness->Show	(true);
+		m_PartnerInvCapacity->Show	(true);
+	}
+
 	m_takeall_button->Show			(true);
 
 	if ( m_pPartnerInvOwner )
@@ -128,6 +139,14 @@ void CUIActorMenu::DeInitDeadBodySearchMode()
 	m_LeftBackground->Show			(false);
 	m_PartnerBottomInfo->Show		(false);
 	m_PartnerWeight->Show			(false);
+
+	if (GameConstants::GetLimitedInvBoxes())
+	{
+		m_PartnerInvCapacityInfo->Show(false);
+		m_PartnerInvFullness->Show	(false);
+		m_PartnerInvCapacity->Show	(false);
+	}
+
 	m_takeall_button->Show			(false);
 
 	if ( m_pInvBox )
@@ -163,6 +182,13 @@ bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)
 	}else
 		new_owner						= m_pDeadBodyBagList;
 	
+	if (GameConstants::GetLimitedInvBoxes() && m_pInvBox && m_pInvBox->GetInventoryFullness() >= GameConstants::GetInvBoxCapacity())
+	{
+		SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
+		_s->wnd()->SetText(CStringTable().translate("st_inv_box_full").c_str());
+		return false;
+	}
+
 	CUICellItem* i						= old_owner->RemoveItem(itm, (old_owner==new_owner) );
 
 	if(b_use_cursor_pos)
@@ -204,6 +230,26 @@ void CUIActorMenu::UpdateDeadBodyBag()
 	m_PartnerWeight->SetWndPos( pos );
 	pos.x = pos.x - m_PartnerBottomInfo->GetWndSize().x - 5.0f;
 	m_PartnerBottomInfo->SetWndPos( pos );
+
+	if (!m_pInvBox || !GameConstants::GetLimitedInvBoxes())
+		return;
+
+	total = m_pInvBox->GetInventoryFullness();
+	float max = GameConstants::GetInvBoxCapacity();
+	LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
+	xr_sprintf(buf, "%.1f", total);
+
+	m_PartnerInvFullness->SetText(buf);
+	m_PartnerInvFullness->AdjustWidthToText();
+	xr_sprintf(buf, "%s %.1f %s", "/", max, lit_str);
+	m_PartnerInvCapacity->SetText(buf);
+	m_PartnerInvCapacity->AdjustWidthToText();
+
+	pos = m_PartnerInvFullness->GetWndPos();
+	pos.x = m_PartnerInvCapacity->GetWndPos().x - m_PartnerInvFullness->GetWndSize().x - 5.0f;
+	m_PartnerInvFullness->SetWndPos(pos);
+	pos.x = pos.x - m_PartnerInvCapacityInfo->GetWndSize().x - 5.0f;
+	m_PartnerInvCapacityInfo->SetWndPos(pos);
 }
 
 void CUIActorMenu::TakeAllFromPartner(CUIWindow* w, void* d)
