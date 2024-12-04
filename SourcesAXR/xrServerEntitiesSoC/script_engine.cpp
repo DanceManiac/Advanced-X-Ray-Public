@@ -23,6 +23,8 @@
 #	endif
 #endif
 
+#include <tracy/TracyLua.hpp>
+
 extern void export_classes(lua_State *L);
 
 CScriptEngine::CScriptEngine			()
@@ -161,6 +163,7 @@ void CScriptEngine::init				()
 	CScriptStorage::reinit				();
 
 	luabind::open						(lua());
+	tracy::LuaRegister					(lua());
 	setup_callbacks						();
 	export_classes						(lua());
 	setup_auto_load						();

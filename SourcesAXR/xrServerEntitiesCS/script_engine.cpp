@@ -34,6 +34,8 @@
 #	endif
 #endif
 
+#include <tracy/TracyLua.hpp>
+
 void jit_command(lua_State*, LPCSTR);
 
 #if defined(USE_DEBUGGER) && defined(USE_LUA_STUDIO)
@@ -295,6 +297,7 @@ void CScriptEngine::init				()
 #endif // #ifdef USE_LUA_STUDIO
 
 	luabind::open						(lua());
+	tracy::LuaRegister					(lua());
 	setup_callbacks						();
 	export_classes						(lua());
 	setup_auto_load						();

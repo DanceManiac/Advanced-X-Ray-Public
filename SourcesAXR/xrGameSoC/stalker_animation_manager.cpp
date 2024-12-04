@@ -59,6 +59,8 @@ void CStalkerAnimationManager::reinit				()
 
 void CStalkerAnimationManager::reload				(CAI_Stalker *_object)
 {
+	ZoneScoped;
+
 	m_object					= _object;
 	m_visual					= object().Visual();
 

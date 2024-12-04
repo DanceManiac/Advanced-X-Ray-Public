@@ -156,6 +156,8 @@ void CEntity::Load		(LPCSTR section)
 
 BOOL CEntity::net_Spawn		(CSE_Abstract* DC)
 {
+	ZoneScoped;
+
 	m_level_death_time		= 0;
 	m_game_death_time		= 0;
 	m_killer_id				= ALife::_OBJECT_ID(-1);

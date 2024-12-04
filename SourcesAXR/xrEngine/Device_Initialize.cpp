@@ -68,6 +68,8 @@ PROTECT_API void CRenderDevice::Initialize()
 		ChangeDisplaySettings(&screen_settings, CDS_FULLSCREEN);
 
 		m_hWnd = CreateWindowExA(WS_EX_TOPMOST, wndclass, wndclass, m_dwWindowStyle, 0, 0, screen_width, screen_height, 0L, 0, hInstance, 0L);
+
+		TracySetProgramName("Advanced X-Ray Engine");
 }
 
 	// Save window properties

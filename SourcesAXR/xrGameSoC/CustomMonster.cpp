@@ -175,6 +175,8 @@ void CCustomMonster::Load		(LPCSTR section)
 
 void CCustomMonster::reinit		()
 {
+	ZoneScoped;
+
 	CScriptEntity::reinit		();
 	CEntityAlive::reinit		();
 	material().reinit			();
@@ -638,6 +640,8 @@ void CCustomMonster::Die	(CObject* who)
 
 BOOL CCustomMonster::net_Spawn	(CSE_Abstract* DC)
 {
+	ZoneScoped;
+
 	get_memory().reload				(*cNameSect());
 	get_memory().reinit				();
 
@@ -664,7 +668,10 @@ BOOL CCustomMonster::net_Spawn	(CSE_Abstract* DC)
 //		Msg						("%6d : Object [%d][%s][%s] is spawned DEAD",Device.dwTimeGlobal,ID(),*cName(),*cNameSect());
 	}
 
-	if (ai().get_level_graph() && UsedAI_Locations() && (e->ID_Parent == 0xffff)) {
+	if (ai().get_level_graph() && UsedAI_Locations() && (e->ID_Parent == 0xffff))
+	{
+		ZoneScopedN("CCustomMonster::net_Spawn/UsedAI_Locations");
+
 		if (ai().game_graph().valid_vertex_id(E->m_tGraphID))
 			ai_location().game_vertex				(E->m_tGraphID);
 

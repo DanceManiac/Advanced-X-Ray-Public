@@ -52,11 +52,16 @@ void CScriptBinder::reinit			()
 	if (g_bMEMO)
 		start							= Memory.mem_usage();
 #endif // DEBUG_MEMORY_MANAGER
-	if (m_object) {
-		try {
+	if (m_object)
+	{
+		ZoneScoped;
+
+		try
+		{
 			m_object->reinit	();
 		}
-		catch(...) {
+		catch(...)
+		{
 			clear			();
 		}
 	}
@@ -75,6 +80,8 @@ void CScriptBinder::Load			(LPCSTR section)
 
 void CScriptBinder::reload			(LPCSTR section)
 {
+	ZoneScoped;
+
 #ifdef DEBUG_MEMORY_MANAGER
 	u32									start = 0;
 	if (g_bMEMO)
@@ -128,11 +135,16 @@ BOOL CScriptBinder::net_Spawn		(CSE_Abstract* DC)
 #endif // DEBUG_MEMORY_MANAGER
 	CSE_Abstract			*abstract = (CSE_Abstract*)DC;
 	CSE_ALifeObject			*object = smart_cast<CSE_ALifeObject*>(abstract);
-	if (object && m_object) {
-		try {
+	if (object && m_object)
+	{
+		ZoneScoped;
+
+		try
+		{
 			return			((BOOL)m_object->net_Spawn(object));
 		}
-		catch(...) {
+		catch(...)
+		{
 			clear			();
 		}
 	}
@@ -229,11 +241,16 @@ BOOL CScriptBinder::net_SaveRelevant()
 void CScriptBinder::net_Relcase		(CObject *object)
 {
 	CGameObject						*game_object = smart_cast<CGameObject*>(object);
-	if (m_object && game_object) {
-		try {
+	if (m_object && game_object)
+	{
+		ZoneScoped;
+
+		try
+		{
 			m_object->net_Relcase	(game_object->lua_game_object());
 		}
-		catch(...) {
+		catch(...)
+		{
 			clear			();
 		}
 	}

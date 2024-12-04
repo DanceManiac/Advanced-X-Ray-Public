@@ -323,6 +323,8 @@ bool CRenderDevice::bMainMenuActive()
 
 void CRenderDevice::on_idle		()
 {
+	ZoneScoped;
+
 	if (!b_is_Ready) {
 		Sleep	(100);
 		return;
@@ -438,6 +440,8 @@ void CRenderDevice::on_idle		()
 
 		if (b_is_Active)
 		{
+			ZoneScoped;
+
 			if (Begin())
 			{
 
@@ -501,6 +505,8 @@ void CRenderDevice::on_idle		()
 
 	if (!b_is_Active)
 		Sleep		(1);
+
+	FrameMark;
 }
 
 void CRenderDevice::message_loop()

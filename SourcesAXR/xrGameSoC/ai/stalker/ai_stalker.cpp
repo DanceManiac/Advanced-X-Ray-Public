@@ -113,6 +113,8 @@ CAI_Stalker::~CAI_Stalker			()
 
 void CAI_Stalker::reinit			()
 {
+	ZoneScoped;
+
 	CObjectHandler::reinit			(this);
 	get_sight().reinit					();
 	CCustomMonster::reinit			();
@@ -447,6 +449,8 @@ void CAI_Stalker::LookAtActor(CBoneInstance* headBone)
 
 BOOL CAI_Stalker::net_Spawn			(CSE_Abstract* DC)
 {
+	ZoneScoped;
+
 #ifdef DEBUG_MEMORY_MANAGER
 	u32									start = 0;
 	if (g_bMEMO)

@@ -173,7 +173,8 @@ void CCharacterPhysicsSupport::in_Load(LPCSTR section)
 
 void CCharacterPhysicsSupport::in_NetSpawn(CSE_Abstract* e)
 {
-	
+	ZoneScoped;
+
 	if(m_EntityAlife.use_simplified_visual	())
 	{
 		m_flags.set(fl_death_anim_on,TRUE);

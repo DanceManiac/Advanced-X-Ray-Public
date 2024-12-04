@@ -70,6 +70,8 @@ void CStalkerAnimationManager::reinit				()
 
 void CStalkerAnimationManager::reload				()
 {
+	ZoneScoped;
+
 	m_visual					= object().Visual();
 
 	m_crouch_state_config		= object().SpecificCharacter().crouch_type();

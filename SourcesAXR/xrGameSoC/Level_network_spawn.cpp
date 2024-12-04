@@ -117,6 +117,7 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 
 	// Client spawn
 //	T.Start		();
+	ZoneScopedN			("Objects.Create");
 	CObject*	O		= Objects.Create	(*E->s_name);
 	// Msg				("--spawn--CREATE: %f ms",1000.f*T.GetAsync());
 
@@ -126,6 +127,8 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 #endif // DEBUG_MEMORY_MANAGER
 	if (0==O || (!O->net_Spawn	(E))) 
 	{
+		ZoneScopedN("net_Spawn");
+
 		O->net_Destroy			( );
 		if(!g_dedicated_server)
 			client_spawn_manager().clear(O->ID());
@@ -138,6 +141,9 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 #ifdef DEBUG_MEMORY_MANAGER
 		mem_alloc_gather_stats	(!!psAI_Flags.test(aiDebugOnFrameAllocs));
 #endif // DEBUG_MEMORY_MANAGER
+
+		ZoneScopedN("client_spawn_manager");
+
 		if(!g_dedicated_server)
 			client_spawn_manager().callback(O);
 		//Msg			("--spawn--SPAWN: %f ms",1000.f*T.GetAsync());
@@ -154,6 +160,7 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 
 		if (0xffff != E->ID_Parent)	
 		{
+			ZoneScopedN("GE_OWNERSHIP_TAKE");
 			NET_Packet	GEN;
 			GEN.write_start();
 			GEN.read_start();
@@ -164,6 +171,9 @@ void CLevel::g_sv_Spawn		(CSE_Abstract* E)
 	//---------------------------------------------------------
 	Game().OnSpawn(O);
 	//---------------------------------------------------------
+
+	ZoneScopedN("gameobject_on_spawn");
+
 #ifdef DEBUG_MEMORY_MANAGER
 	if (g_bMEMO) {
 		lua_gc					(ai().script_engine().lua(),LUA_GCCOLLECT,0);

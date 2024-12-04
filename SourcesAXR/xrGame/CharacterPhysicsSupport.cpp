@@ -187,6 +187,8 @@ void CCharacterPhysicsSupport::update_interactive_anims	()
 
 void CCharacterPhysicsSupport::in_NetSpawn( CSE_Abstract* e )
 {
+	ZoneScoped;
+
 	m_sv_hit = SHit();
 	if( m_EntityAlife.use_simplified_visual	( ) )
 	{

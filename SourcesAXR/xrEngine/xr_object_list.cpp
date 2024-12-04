@@ -266,6 +266,7 @@ void CObjectList::ProcessDestroyQueue()
 	if (!destroy_queue.empty()) 
 	{
 		// Info
+		ZoneScopedN("net_Relcase");
 		for (Objects::iterator oit=objects_active.begin(); oit!=objects_active.end(); oit++)
 			for (int it = destroy_queue.size()-1; it>=0; it--){	
 				(*oit)->net_Relcase		(destroy_queue[it]);
@@ -273,10 +274,13 @@ void CObjectList::ProcessDestroyQueue()
 		for (Objects::iterator oit=objects_sleeping.begin(); oit!=objects_sleeping.end(); oit++)
 			for (int it = destroy_queue.size()-1; it>=0; it--)	(*oit)->net_Relcase	(destroy_queue[it]);
 
+		ZoneScopedN("net_Relcase/2");
 		for (int it = destroy_queue.size()-1; it>=0; it--)	Sound->object_relcase	(destroy_queue[it]);
 		
 		RELCASE_CALLBACK_VEC::iterator It	= m_relcase_callbacks.begin();
 		RELCASE_CALLBACK_VEC::iterator Ite	= m_relcase_callbacks.end();
+
+		ZoneScopedN("m_relcase_callbacks");
 		for(;It!=Ite; ++It)	{
 			VERIFY			(*(*It).m_ID==(It-m_relcase_callbacks.begin()));
 			Objects::iterator dIt	= destroy_queue.begin();
@@ -288,6 +292,7 @@ void CObjectList::ProcessDestroyQueue()
 		}
 
 		// Destroy
+		ZoneScopedN("net_Destroy/Destroy");
 		for (int it = destroy_queue.size()-1; it>=0; it--)
 		{
 			CObject*		O	= destroy_queue[it];
@@ -445,6 +450,9 @@ void CObjectList::Unload	( )
 
 CObject*	CObjectList::Create				( LPCSTR	name	)
 {
+	ZoneScoped;
+	TracyMessageL				(name);
+
 	CObject*	O				= g_pGamePersistent->ObjectPool.create(name);
 //	Msg("CObjectList::Create [%x]%s", O, name);
 	objects_sleeping.push_back	(O);
