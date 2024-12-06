@@ -31,17 +31,20 @@ DEFINE_VECTOR(SCarLight*,LIGHTS_STORAGE,LIGHTS_I)
 class CCarLights
 {
 public:
-	void	ParseDefinitions	()								;
-	void	Init				(CCar* pcar)					;
-	void	Update				()								;
-	CCar*	PCar				()								{return m_pcar;}
-	void	SwitchHeadLights	()								;
-	void	TurnOnHeadLights	()								;
-	void	TurnOffHeadLights	()								;
-	bool	IsLight				(u16 bone_id)					;
+	void	ParseDefinitions	();
+	void	Init				(CCar* pcar);
+	void	Update				();
+	CCar*	PCar				() {return m_pcar;}
+	void	SwitchHeadLights	();
+	void	TurnOnHeadLights	();
+	void	TurnOffHeadLights	();
+	void	SwitchIndoorLights	();
+	void	TurnOnIndoorLights	();
+	void	TurnOffIndoorLights	();
+	bool	IsLight				(u16 bone_id);
 	bool	findLight			(u16 bone_id,SCarLight* &light);
-			CCarLights			()								;
-			~CCarLights			()								;
+			CCarLights			();
+			~CCarLights			();
 protected:
 	struct SFindLightPredicate {
 		const SCarLight *m_light;
@@ -56,15 +59,15 @@ protected:
 			return light->bone_id==m_light->bone_id;
 		}
 	};
-	LIGHTS_STORAGE	m_lights								;
-	CCar*			m_pcar									;
+	LIGHTS_STORAGE	m_lights, m_indoor_lights;
+	CCar* m_pcar;
 /*
-	Ivector2		m_head_near_lights						;
-	Ivector2		m_head_far_lights						;
-	Ivector2		m_left_turns							;
-	Ivector2		m_stops									;
-	Ivector2		m_gabarites								;
-	Ivector2		m_door_gabarites						;
+	Ivector2		m_head_near_lights;
+	Ivector2		m_head_far_lights;
+	Ivector2		m_left_turns;
+	Ivector2		m_stops;
+	Ivector2		m_gabarites;
+	Ivector2		m_door_gabarites;
 */
 private:
 };

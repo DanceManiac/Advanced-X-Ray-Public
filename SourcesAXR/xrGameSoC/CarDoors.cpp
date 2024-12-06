@@ -290,14 +290,36 @@ default:	return;
 
 void CCar::SDoor::Switch()
 {
-	switch(state) {
-case opened:
-	Close();
-	break;
-case closed: 
-	Open();
-	break;
-default:	return;
+	xr_vector<u16>::iterator l_doors;
+
+	switch(state)
+	{
+	case opened:
+	case opening:
+		{
+			Close();
+
+			xr_map<u16, SDoor>::iterator i = pcar->m_doors.begin(), e = pcar->m_doors.end();
+
+			for (; e != i; ++i)
+			{
+				if (pcar->is_IndoorLightsDoor(i->second.bone_id, l_doors) && i->second.IsOpened())
+					return;
+			}
+
+			if (pcar->is_IndoorLightsDoor(bone_id, l_doors))
+				pcar->m_indoor_lights.TurnOffIndoorLights();
+		} break;
+	case closed: 
+	case closing:
+		{
+			Open();
+
+			if (pcar->is_IndoorLightsDoor(bone_id, l_doors))
+				pcar->m_indoor_lights.TurnOnIndoorLights();
+		} break;
+	default:
+		return;
 	}
 }
 

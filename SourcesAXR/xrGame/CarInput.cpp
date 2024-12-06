@@ -189,6 +189,10 @@ void CCar::OnKeyboardPress(int cmd)
 	case kSWITCH_HORN:
 		SwitchHorn();
 		break;
+
+	case kSPRINT_TOGGLE:
+		m_indoor_lights.SwitchIndoorLights();
+		break;
 	};
 }
 

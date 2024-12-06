@@ -312,6 +312,11 @@ virtual void ApplyDamage(u16 level);
 		void SaveNetState(NET_Packet& P);
 		void RestoreNetState(const CSE_ALifeCar::SDoorState& a_state);
 		void SetDefaultNetState();
+
+		bool IsOpened() { return (state == opened); }
+		bool IsClosed() { return (state == closed); }
+		bool IsBroken() { return (state == broken); }
+
 		enum eState
 		{
 			opening,
@@ -400,6 +405,7 @@ private:
 	xr_map	  <u16,SDoor>	m_doors;
 	xr_vector <SDoor*>		m_doors_update;
 	xr_vector <Fvector>		m_gear_ratious;
+	xr_vector <u16>			m_indoor_lights_doors;
 	Fmatrix					m_sits_transforms;// driver_place
 	float					m_current_gear_ratio;
 
@@ -437,7 +443,7 @@ private:
 	float					m_ref_radius;
 	size_t					m_current_transmission_num;
 	///////////////////////////////////////////////////
-	CCarLights				m_lights;
+	CCarLights				m_lights, m_indoor_lights;
 	////////////////////////////////////////////////////
 	/////////////////////////////////////////////////
  public:
@@ -554,6 +560,7 @@ public:
 	bool					attach_Actor				(CGameObject* actor);
 	bool					is_Door						(u16 id,xr_map<u16,SDoor>::iterator& i);
 	bool					is_Door						(u16 id);
+	bool					is_IndoorLightsDoor			(u16 id,xr_vector<u16>::iterator& i);
 	bool					DoorOpen					(u16 id);
 	bool					DoorClose					(u16 id);
 	bool					DoorUse						(u16 id);

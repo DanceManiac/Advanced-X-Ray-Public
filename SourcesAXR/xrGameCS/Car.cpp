@@ -277,6 +277,7 @@ void	CCar::net_Destroy()
 	m_exhausts.clear();
 	m_breaking_wheels.clear();
 	m_doors.clear();
+	m_indoor_lights_doors.clear();
 	m_gear_ratious.clear();
 	m_car_sound->Destroy();
 	CPHUpdateObject::Deactivate();
@@ -524,6 +525,7 @@ void CCar::UpdateCL()
 
 	UpdateExhausts	();
 	m_lights.Update	();
+	m_indoor_lights.Update();
 }
 
 void	CCar::renderable_Render				( )
@@ -745,6 +747,20 @@ bool CCar::is_Door(u16 id)
 	return true;
 }
 
+bool CCar::is_IndoorLightsDoor(u16 id, xr_vector<u16>::iterator& i)
+{
+	i = std::find(m_indoor_lights_doors.begin(), m_indoor_lights_doors.end(), id);
+
+	if (i == m_indoor_lights_doors.end())
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
 bool CCar::Enter(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 {
 	xr_map<u16,SDoor>::iterator i,e;
@@ -872,7 +888,8 @@ void CCar::ParseDefinitions()
 	m_lights.Init(this);
 	m_lights.ParseDefinitions();
 
-
+	m_indoor_lights.Init(this);
+	m_indoor_lights.ParseDefinitions();
 	
 	if(ini->section_exist("animations"))
 	{
@@ -889,6 +906,20 @@ void CCar::ParseDefinitions()
 	m_sTrunkBone = READ_IF_EXISTS(ini, r_string, "car_definition", "trunk_bone", nullptr);
 
 	m_damage_particles.Init(this);
+
+	if (ini->section_exist("lights") && ini->line_exist("lights", "indoorlightdoors"))
+	{
+		LPCSTR S = ini->r_string("lights", "indoorlightdoors");
+		int count = _GetItemCount(S);
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		string64 S1;
+
+		for (int i = 0; i < count; ++i)
+		{
+			_GetItem(S, i, S1);
+			m_indoor_lights_doors.push_back(K->LL_BoneID(S1));
+		}
+	}
 }
 
 void CCar::CreateSkeleton(CSE_Abstract	*po)
@@ -1621,11 +1652,15 @@ bool CCar::DoorSwitch(u16 id)
 }
 bool CCar::DoorClose(u16 id)
 {
-
+	xr_vector<u16>::iterator l_doors;
 	xr_map<u16,SDoor>::iterator i;
 	if(is_Door(id,i)) 
 	{
 		i->second.Close();
+
+		if (is_IndoorLightsDoor(id, l_doors))
+			m_indoor_lights.TurnOffIndoorLights();
+
 		return true;
 	}
 	else
@@ -1636,11 +1671,15 @@ bool CCar::DoorClose(u16 id)
 
 bool CCar::DoorOpen(u16 id)
 {
-
+	xr_vector<u16>::iterator l_doors;
 	xr_map<u16,SDoor>::iterator i;
 	if(is_Door(id,i)) 
 	{
 		i->second.Open();
+
+		if (is_IndoorLightsDoor(id, l_doors))
+			m_indoor_lights.TurnOnIndoorLights();
+
 		return true;
 	}
 	else
@@ -1891,6 +1930,8 @@ void CCar::CarExplode()
 	if(b_exploded) return;
 	CPHSkeleton::SetNotNeedSave();
 	if(m_car_weapon)m_car_weapon->Action(CCarWeapon::eWpnActivate,0);
+	m_lights.TurnOffHeadLights();
+	m_indoor_lights.TurnOffIndoorLights();
 	m_damage_particles.Stop1(this);
 	m_damage_particles.Stop2(this);
 	b_exploded=true;
