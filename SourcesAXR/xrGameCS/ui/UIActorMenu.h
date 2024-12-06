@@ -131,10 +131,10 @@ protected:
 	CUIMessageBoxEx*			m_message_box_yes_no;
 	CUIMessageBoxEx*			m_message_box_ok;
 
-	CInventoryOwner*			m_pActorInvOwner;
-	CInventoryOwner*			m_pPartnerInvOwner;
-	CInventoryBox*				m_pInvBox;
-	CCar*						m_pCar;
+	CInventoryOwner*			m_pActorInvOwner{};
+	CInventoryOwner*			m_pPartnerInvOwner{};
+	CInventoryBox*				m_pInvBox{};
+	CCar*						m_pCar{};
 
 	CUIStatic*					m_ActorMoney;
 	CUIStatic*					m_PartnerMoney;

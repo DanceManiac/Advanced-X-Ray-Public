@@ -189,11 +189,6 @@ void CCar::OnKeyboardPress(int cmd)
 	case kSWITCH_HORN:
 		SwitchHorn();
 		break;
-
-	case kSPRINT_TOGGLE:
-		if (!CurrentGameUI()->TopInputReceiver())
-			ShowTrunk();
-		break;
 	};
 }
 

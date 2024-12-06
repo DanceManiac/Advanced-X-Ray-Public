@@ -48,6 +48,7 @@
 #include "../CustomBackpack.h"
 #include "../AnomalyDetector.h"
 #include "../PDA.h"
+#include "../Car.h"
 #include "../xrEngine/x_ray.h"
 
 extern BOOL UIRedraw;
@@ -329,14 +330,14 @@ void CUIActorMenu::CheckDistance()
 			HideDialog();
 		}
 	}
-	else if (m_pCar && Actor()->Holder())
+	else if (m_pCar && pActorGO->Position().distance_to(m_pCar->Position()) > 3.0f)
 	{
 		//nop
 	}
 	else //pBoxGO
 	{
 		VERIFY( pBoxGO );
-		if ( pActorGO->Position().distance_to( pBoxGO->Position() ) > 3.0f )
+		if ( !m_pCar && pActorGO->Position().distance_to( pBoxGO->Position() ) > 3.0f )
 		{
 			g_btnHint->Discard();
 			HideDialog();

@@ -406,6 +406,9 @@ private:
 	/////////////////////////////////////////////////////////////
 	bool					b_auto_switch_transmission;
 
+	bool					m_bHasTrunk;
+	shared_str				m_sTrunkBone;
+
 	/////////////////////////////////////////////////////////////
 	float					m_doors_torque_factor;
 	/////////////////////////////////////////////////////////////
@@ -617,7 +620,10 @@ public:
 	CInventory*						GetInventory						() {return NULL/*inventory*/;}
 		  void						VisualUpdate						(float fov=90.0f);
 		  void						AddAvailableItems					(TIItemContainer& items_container) const;
+		  bool						HasTrunk							() { return m_bHasTrunk; }
 		  void						ShowTrunk							();
+		  void						TrunkDoorClose						();
+		  void						TrunkDoorOpen						();
 protected:
 	virtual void					SpawnInitPhysics					(CSE_Abstract	*D)																;
 	virtual void					net_Save							(NET_Packet& P)																	;

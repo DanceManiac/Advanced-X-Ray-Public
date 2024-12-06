@@ -43,6 +43,7 @@
 #include "../CustomBackpack.h"
 #include "../AnomalyDetector.h"
 #include "../PDA.h"
+#include "../Car.h"
 #include "../xrEngine/x_ray.h"
 #include "../../xrServerEntitiesCS/script_engine.h"
 
@@ -338,14 +339,14 @@ void CUIActorMenu::CheckDistance()
 			GetHolder()->StartStopMenu( this, true ); // hide actor menu
 		}
 	}
-	else if (m_pCar && Actor()->Holder())
+	else if (m_pCar && pActorGO->Position().distance_to(m_pCar->Position()) > 3.0f)
 	{
 		//nop
 	}
 	else //pBoxGO
 	{
 		VERIFY( pBoxGO );
-		if ( pActorGO->Position().distance_to( pBoxGO->Position() ) > 3.0f )
+		if ( !m_pCar && pActorGO->Position().distance_to( pBoxGO->Position() ) > 3.0f )
 		{
 			g_btnHint->Discard();
 			GetHolder()->StartStopMenu( this, true ); // hide actor menu

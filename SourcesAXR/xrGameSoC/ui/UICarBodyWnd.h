@@ -55,11 +55,11 @@ public:
 	void					highlight_weapons_for_addon	(PIItem addon_item, CUIDragDropListEx* ddlist);
 
 protected:
-	CInventoryOwner*		m_pOurObject;
+	CInventoryOwner*		m_pOurObject{};
 
-	CInventoryOwner*		m_pOthersObject;
-	CInventoryBox*			m_pInventoryBox;
-	CCar*					m_pCar;
+	CInventoryOwner*		m_pOthersObject{};
+	CInventoryBox*			m_pInventoryBox{};
+	CCar*					m_pCar{};
 
 	CUIDragDropListEx*		m_pUIOurBagList;
 	CUIDragDropListEx*		m_pUIOthersBagList;

@@ -143,10 +143,10 @@ protected:
 	CUIMessageBoxEx*			m_message_box_yes_no;
 	CUIMessageBoxEx*			m_message_box_ok;
 
-	CInventoryOwner*			m_pActorInvOwner;
-	CInventoryOwner*			m_pPartnerInvOwner;
-	CInventoryBox*				m_pInvBox;
-	CCar*						m_pCar;
+	CInventoryOwner*			m_pActorInvOwner{};
+	CInventoryOwner*			m_pPartnerInvOwner{};
+	CInventoryBox*				m_pInvBox{};
+	CCar*						m_pCar{};
 
 	CUITextWnd*					m_ActorMoney;
 	CUITextWnd*					m_PartnerMoney;

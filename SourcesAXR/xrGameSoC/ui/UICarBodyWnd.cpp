@@ -287,6 +287,9 @@ void CUICarBodyWnd::Hide()
 	if(m_pInventoryBox)
 		m_pInventoryBox->m_in_use				= false;
 
+	if (m_pCar)
+		m_pCar->TrunkDoorClose();
+
 	if (smart_cast<CActor*>(Level().CurrentEntity()) && GameConstants::GetHideWeaponInInventory())
 	{
 		Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);

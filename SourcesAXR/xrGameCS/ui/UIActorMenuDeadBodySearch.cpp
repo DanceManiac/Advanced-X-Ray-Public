@@ -153,9 +153,13 @@ void CUIActorMenu::DeInitDeadBodySearchMode()
 	{
 		m_pInvBox->m_in_use = false;
 	}
+	m_pInvBox = nullptr;
 
-	m_pInvBox = NULL;
-	m_pCar = NULL;
+	if (m_pCar)
+	{
+		m_pCar->TrunkDoorClose();
+	}
+	m_pCar = nullptr;
 }
 
 bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)

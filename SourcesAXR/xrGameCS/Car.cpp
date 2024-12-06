@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "car.h"
 //#if 0
 
@@ -33,6 +34,8 @@
 #include "CharacterPhysicsSupport.h"
 #include "hudmanager.h"
 #include "UIGameSP.h"
+#include "ai_space.h"
+#include "../xrServerEntitiesCS/script_engine.h"
 
 BONE_P_MAP CCar::bone_map=BONE_P_MAP();
 
@@ -91,6 +94,10 @@ CCar::CCar()
 	m_steer_angle=0.f;
 	m_current_rpm = 0.f;
 	m_current_engine_power = 0.f;
+
+	m_bHasTrunk = false;
+	m_sTrunkBone = nullptr;
+
 #ifdef DEBUG
 	InitDebug();
 #endif
@@ -878,6 +885,9 @@ void CCar::ParseDefinitions()
 		m_doors_torque_factor=ini->r_u16("doors","open_torque_factor");
 	}
 
+	m_bHasTrunk = READ_IF_EXISTS(ini, r_bool, "car_definition", "has_trunk", false);
+	m_sTrunkBone = READ_IF_EXISTS(ini, r_string, "car_definition", "trunk_bone", nullptr);
+
 	m_damage_particles.Init(this);
 }
 
@@ -1540,11 +1550,30 @@ bool CCar::Use(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 	VERIFY(!fis_zero(Q.dir.square_magnitude()));
 	if (g_pGameLevel->ObjectSpace.RayQuery(RQR,collidable.model,Q))
 	{
+		IKinematics* K = smart_cast<IKinematics*>(Visual());
+		u16 trunkBoneID = K->LL_BoneID(m_sTrunkBone);
+
 		collide::rq_results& R = RQR;
 		int y=R.r_count();
 		for (int k=0; k<y; ++k)
 		{
 			collide::rq_result* I = R.r_begin()+k;
+
+			if (m_bHasTrunk && trunkBoneID != BI_NONE && (trunkBoneID == (u16)I->element))
+			{
+				if (!HUD().GetUI()->UIGame()->MainInputReceiver())
+				{
+					ShowTrunk();
+					TrunkDoorOpen();
+
+					luabind::functor<void> funct;
+					if (ai().script_engine().functor("mfs_functions.on_use_car_trunk", funct))
+						funct();
+				}
+
+				return false;
+			}
+
 			if(is_Door((u16)I->element,i)) 
 			{
 				bool front=i->second.IsFront(pos,dir);
@@ -2198,4 +2227,22 @@ void CCar::ShowTrunk()
 {
 	CUIGameSP* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 	if (pGameSP) pGameSP->StartCarBody(Actor(), this);
+}
+
+void CCar::TrunkDoorClose()
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	u16 trunkBoneID = K->LL_BoneID(m_sTrunkBone);
+
+	if (trunkBoneID != BI_NONE && is_Door(trunkBoneID))
+		DoorClose(trunkBoneID);
+}
+
+void CCar::TrunkDoorOpen()
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+	u16 trunkBoneID = K->LL_BoneID(m_sTrunkBone);
+
+	if (trunkBoneID != BI_NONE && is_Door(trunkBoneID))
+		DoorOpen(trunkBoneID);
 }
