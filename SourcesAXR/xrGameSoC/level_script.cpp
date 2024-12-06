@@ -32,6 +32,7 @@
 #include "alife_simulator.h"
 #include "alife_time_manager.h"
 #include "game_sv_single.h"
+#include "string_table.h"
 #include "../xrEngine/Rain.h"
 
 #include "CustomTimer.h"
@@ -959,6 +960,36 @@ bool is_developer()
 	return bDeveloperMode;
 }
 
+float get_air_temperature_f()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().CurrentEnv)
+	{
+		Msg("![level_script::get_air_temperature_f]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return 0.0f;
+	}
+
+	return g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+}
+
+luabind::internal_string get_air_temperature_fs()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().CurrentEnv)
+	{
+		Msg("![level_script::get_air_temperature_fs]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return "ERROR";
+	}
+
+	float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+	string16 temper = "";
+
+	if (cur_temperature < 0)
+		xr_sprintf(temper, "%.1f %s", cur_temperature, *CStringTable().translate("st_degree"));
+	else
+		xr_sprintf(temper, "+%.1f %s", cur_temperature, *CStringTable().translate("st_degree"));
+
+	return temper;
+}
+
 #pragma optimize("s",on)
 void CLevel::script_register(lua_State *L)
 {
@@ -1015,6 +1046,8 @@ void CLevel::script_register(lua_State *L)
 		def("get_wfx_time",						get_wfx_time),
 		def("stop_weather_fx",					stop_weather_fx),
 		def("get_moon_phase",					get_moon_phase),
+		def("get_air_temperature_f",			get_air_temperature_f),
+		def("get_air_temperature_fs",			get_air_temperature_fs),
 		def("is_developer",						is_developer),
 		def("environment",						environment),
 		

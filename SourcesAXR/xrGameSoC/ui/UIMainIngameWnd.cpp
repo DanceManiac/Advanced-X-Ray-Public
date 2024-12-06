@@ -22,6 +22,7 @@
 #include "../game_cl_base.h"
 #include "../level.h"
 #include "../seniority_hierarchy_holder.h"
+#include "../GamePersistent.h"
 
 #include "../date_time.h"
 #include "xrServer_Objects_ALife_Monsters.h"
@@ -175,6 +176,11 @@ void CUIMainIngameWnd::Init()
 	m_UIIcons					= xr_new<CUIScrollView>(); m_UIIcons->SetAutoDelete(true);
 	xml_init.InitScrollView		(uiXml, "icons_scroll_view", 0, m_UIIcons);
 	AttachChild					(m_UIIcons);
+
+	m_ind_temperature		= UIHelper::CreateStatic(uiXml, "indicator_temperature", this, false);
+	m_min_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:min_color",		0, color_rgba(255, 255, 255, 255));
+	m_mid_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:middle_color",	0, color_rgba(255, 255, 255, 255));
+	m_max_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:max_color",		0, color_rgba(255, 255, 255, 255));
 
 	m_ind_boost_psy			= UIHelper::CreateStatic(uiXml, "indicator_booster_psy", this);
 	m_ind_boost_radia		= UIHelper::CreateStatic(uiXml, "indicator_booster_radia", this);
@@ -475,6 +481,8 @@ void CUIMainIngameWnd::Update()
 			else
 				SetWarningIconColor	(ewiInvincible,0x00ffffff);
 		}
+
+		UpdateMainIndicators();
 
 		if (m_pActor->GetHeatingStatus() && GameConstants::GetActorFrostbite())
 		{
@@ -940,6 +948,36 @@ void CUIMainIngameWnd::reset_ui()
 	m_pItem							= NULL;
 	m_pPickUpItem					= NULL;
 	UIMotionIcon.ResetVisibility	();
+}
+
+void CUIMainIngameWnd::UpdateMainIndicators()
+{
+	CActor* pActor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	if (!pActor)
+		return;
+
+	if (m_ind_temperature)
+	{
+		float heating = pActor->GetCurrentHeating();
+		float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
+		float diff = cur_temperature + heating;
+		string16 temper = "";
+		Fcolor curr, neg, neut, pos;
+		float zero_to_one = remapval(diff, -30.f, 40.f, 0.f, 1.f);
+		curr.lerp(neg.set(m_min_temperature_clr), neut.set(m_mid_temperature_clr), pos.set(m_max_temperature_clr), zero_to_one);
+
+		if (diff < 0)
+			xr_sprintf(temper, "%.1f %s", diff, *CStringTable().translate("st_degree"));
+		else
+			xr_sprintf(temper, "+%.1f %s", diff, *CStringTable().translate("st_degree"));
+
+		m_ind_temperature->SetTextColor(curr.get());
+
+		if (!m_ind_temperature->IsShown())
+			m_ind_temperature->Show(true);
+
+		m_ind_temperature->SetText(temper);
+	}
 }
 
 void CUIMainIngameWnd::DrawMainIndicatorsForInventory()

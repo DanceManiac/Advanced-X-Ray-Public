@@ -52,6 +52,9 @@ public:
 	CUIStatic*			m_ind_outfit_broken;
 	CUIStatic*			m_ind_overweight;
 
+	CUIStatic*			m_ind_temperature;
+	u32					m_min_temperature_clr, m_mid_temperature_clr, m_max_temperature_clr;
+
 	CUIStatic*			m_ind_boost_psy;
 	CUIStatic*			m_ind_boost_radia;
 	CUIStatic*			m_ind_boost_chem;

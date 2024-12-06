@@ -47,6 +47,9 @@ public:
 	CUIZoneMap*			UIZoneMap;
 	CUIArtefactPanel*	UIArtefactsPanel;
 
+	CUIStatic*			m_ind_temperature;
+	u32					m_min_temperature_clr, m_mid_temperature_clr, m_max_temperature_clr;
+
 	CUIStatic*			m_ind_boost_psy;
 	CUIStatic*			m_ind_boost_radia;
 	CUIStatic*			m_ind_boost_chem;
@@ -162,6 +165,7 @@ public:
 	HUD_SOUND_ITEM		m_contactSnd;
 
 	void				ReceiveNews						(GAME_NEWS_DATA* news);
+	void				UpdateMainIndicators			();
 	void				UpdateBoosterIndicators			(const xr_map<EBoostParams, SBooster> influences);
 	
 protected:

@@ -873,4 +873,7 @@
 	<string id="st_inv_box_full">
 		<text>ящик полон</text>
 	</string>
+	<string id="st_degree">
+		<text>∞</text>
+	</string>
 </string_table>
