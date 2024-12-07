@@ -104,7 +104,7 @@ CEnvironment::CEnvironment	() :
 //	tsky1					= Device.Resources->_CreateTexture("$user$sky1");
 
 	// Environment configuration by OpenXRay (modified)
-	useDynamicSunDir = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "dynamic_sun_dir", true);
+	m_iSunDirMode			= READ_IF_EXISTS(pAdvancedSettings, r_u8, "environment", "sun_dir_mode", 0);
 
 	if (!used_soc_weather)
 	{
@@ -493,7 +493,7 @@ void CEnvironment::OnFrame()
 	lerp					(current_weight);
 
 	// Igor. Dynamic sun position.
-	if (!::Render->is_sun_static() && !useDynamicSunDir)
+	if (!::Render->is_sun_static() && !m_iSunDirMode)
 		calculate_dynamic_sun_dir();
 
 #ifndef MASTER_GOLD

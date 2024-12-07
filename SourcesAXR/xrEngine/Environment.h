@@ -220,7 +220,7 @@ public:
 
 						CEnvDescriptor	(shared_str const& identifier = 0);
 
-	void				load			(CEnvironment& environment, CInifile& config);
+	void				load			(CEnvironment& environment, CInifile& config, bool isWFX = false);
 	void				load_shoc		(CEnvironment& environment, LPCSTR exec_tm, LPCSTR S);
 	void				load_shoc		(float exec_tm, LPCSTR S, CEnvironment& environment);
 
@@ -392,7 +392,7 @@ public:
 	bool					m_paused;
 #endif // #ifdef _EDITOR
 
-	bool					useDynamicSunDir;
+	u8						m_iSunDirMode;
 
 	CInifile*				m_ambients_config;
 	CInifile*				m_sound_channels_config;
@@ -402,7 +402,7 @@ public:
 	CInifile*				m_thunderbolts_config;
 
 protected:
-	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor	(shared_str const& identifier, CInifile* config);
+	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor	(shared_str const& identifier, CInifile* config, bool isWFX = false);
 	INGAME_EDITOR_VIRTUAL	CEnvDescriptor* create_descriptor_shoc(LPCSTR exec_tm, LPCSTR S);
 	INGAME_EDITOR_VIRTUAL	void load_weathers					();
 	INGAME_EDITOR_VIRTUAL	void load_weather_effects			();

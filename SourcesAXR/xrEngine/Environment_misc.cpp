@@ -355,7 +355,7 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) : m_identifier(ide
 }
 
 #define	C_CHECK(C)	if (C.x<0 || C.x>2 || C.y<0 || C.y>2 || C.z<0 || C.z>2)	{ Msg("! Invalid '%s' in env-section '%s'",#C,m_identifier.c_str());}
-void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
+void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config, bool isWFX)
 {
 	Ivector3 tm				={0,0,0};
 	sscanf					(m_identifier.c_str(),"%d:%d:%d",&tm.x,&tm.y,&tm.z);
@@ -393,17 +393,13 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 	ambient					= config.r_fvector3	(m_identifier.c_str(),"ambient_color");
 	hemi_color				= config.r_fvector4	(m_identifier.c_str(),"hemisphere_color");
 	sun_color				= config.r_fvector3	(m_identifier.c_str(),"sun_color");
-//	if (config.line_exist(m_identifier.c_str(),"sun_altitude"))
-		sun_dir.setHP			(
-			deg2rad(config.r_float(m_identifier.c_str(),"sun_altitude")),
-			deg2rad(config.r_float(m_identifier.c_str(),"sun_longitude"))
-		);
+
+	if (environment.m_iSunDirMode < 2 || isWFX)
+		sun_dir.setHP		(deg2rad(config.r_float(m_identifier.c_str(), "sun_altitude")), deg2rad(config.r_float(m_identifier.c_str(), "sun_longitude")));
+	else
+		sun_dir.setHP		(deg2rad(pAdvancedSettings->r_float(m_identifier.c_str(), "sun_altitude")), deg2rad(pAdvancedSettings->r_float(m_identifier.c_str(), "sun_longitude")));
+
 	R_ASSERT				( _valid(sun_dir) );
-//	else
-//		sun_dir.setHP			(
-//			deg2rad(config.r_fvector2(m_identifier.c_str(),"sun_dir").y),
-//			deg2rad(config.r_fvector2(m_identifier.c_str(),"sun_dir").x)
-//		);
 	VERIFY2					(sun_dir.y < 0, "Invalid sun direction settings while loading");
 
 	lens_flare_id			= environment.eff_LensFlare->AppendDef(environment, environment.m_suns_config, config.r_string(m_identifier.c_str(),"sun"));
@@ -969,11 +965,11 @@ void    CEnvironment::load_level_specific_ambients ()
 	SECUROM_MARKER_PERFORMANCE_OFF(13)
 }
 
-CEnvDescriptor* CEnvironment::create_descriptor	(shared_str const& identifier, CInifile* config)
+CEnvDescriptor* CEnvironment::create_descriptor	(shared_str const& identifier, CInifile* config, bool isWFX)
 {
 	CEnvDescriptor*	result = xr_new<CEnvDescriptor>(identifier);
 	if (config)
-		result->load(*this, *config);
+		result->load(*this, *config, isWFX);
 	return			(result);
 }
 
@@ -1090,7 +1086,7 @@ void CEnvironment::load_weather_effects	()
 			sections_type::const_iterator	i1 = sections.begin();
 			sections_type::const_iterator	e1 = sections.end();
 			for ( ; i1 != e1; ++i1) {
-				CEnvDescriptor*			object = create_descriptor((*i1)->Name, config);
+				CEnvDescriptor*			object = create_descriptor((*i1)->Name, config, true);
 				env.push_back			(object);
 			}
 
