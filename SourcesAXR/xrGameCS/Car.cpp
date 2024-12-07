@@ -97,6 +97,7 @@ CCar::CCar()
 
 	m_bHasTrunk = false;
 	m_sTrunkBone = nullptr;
+	m_sBonnetBone = nullptr;
 
 #ifdef DEBUG
 	InitDebug();
@@ -904,6 +905,7 @@ void CCar::ParseDefinitions()
 
 	m_bHasTrunk = READ_IF_EXISTS(ini, r_bool, "car_definition", "has_trunk", false);
 	m_sTrunkBone = READ_IF_EXISTS(ini, r_string, "car_definition", "trunk_bone", nullptr);
+	m_sBonnetBone = READ_IF_EXISTS(ini, r_string, "car_definition", "bonnet_bone", nullptr);
 
 	m_damage_particles.Init(this);
 
@@ -1177,7 +1179,7 @@ void CCar::SwitchHorn()
 {
 	IKinematics* pKinematics = smart_cast<IKinematics*>(Visual());
 	CInifile* ini = pKinematics->LL_UserData();
-	snd_horn.create(ini->r_string("car_sound", "snd_horn_name"), st_Effect, sg_SourceType);
+	snd_horn.create(ini->r_string("car_sound", "horn_sound"), st_Effect, sg_SourceType);
 	snd_horn.play_at_pos(Actor(), Actor()->Position());
 }
 ///**Horn**///

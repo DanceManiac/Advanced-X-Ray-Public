@@ -31,19 +31,34 @@ void CCar::SCarSound::Init()
 		snd_engine.create		(READ_IF_EXISTS(ini, r_string, "car_sound", "snd_name", "car\\car1"), st_Effect, sg_SourceType);
 		snd_engine_start.create	(READ_IF_EXISTS(ini, r_string, "car_sound", "snd_start_name", "car\\test_car_start"), st_Effect, sg_SourceType);
 		snd_engine_stop.create	(READ_IF_EXISTS(ini, r_string, "car_sound", "snd_stop_name", "car\\test_car_stop"),	st_Effect, sg_SourceType);
+		
+		snd_door_open_start.create(READ_IF_EXISTS(ini, r_string, "car_sound", "door_open", "device\\metal_small_open"), st_Effect, sg_SourceType);
+		snd_door_close_start.create(READ_IF_EXISTS(ini, r_string, "car_sound", "door_close", "device\\metal_small_close_start"), st_Effect, sg_SourceType);
+		snd_door_close_stop.create(READ_IF_EXISTS(ini, r_string, "car_sound", "door_close_stop", "device\\metal_small_close_stop"), st_Effect, sg_SourceType);
+
+		snd_trunk_open_start.create(READ_IF_EXISTS(ini, r_string, "car_sound", "back_door_open", "device\\metal_small_open"), st_Effect, sg_SourceType);
+		snd_trunk_close_start.create(READ_IF_EXISTS(ini, r_string, "car_sound", "back_door_close", "device\\metal_small_close_start"), st_Effect, sg_SourceType);
+		snd_trunk_close_stop.create(READ_IF_EXISTS(ini, r_string, "car_sound", "back_door_close_stop", "device\\metal_small_close_stop"), st_Effect, sg_SourceType);
+
+		snd_bonnet_open_start.create(READ_IF_EXISTS(ini, r_string, "car_sound", "front_door_open", "device\\metal_small_open"), st_Effect, sg_SourceType);
+		snd_bonnet_close_start.create(READ_IF_EXISTS(ini, r_string, "car_sound", "front_door_close", "device\\metal_small_close_start"), st_Effect, sg_SourceType);
+		snd_bonnet_close_stop.create(READ_IF_EXISTS(ini, r_string, "car_sound", "front_door_close_stop", "device\\metal_small_close_stop"), st_Effect, sg_SourceType);
+
 		float fengine_start_delay = READ_IF_EXISTS(ini, r_float, "car_sound", "engine_sound_start_dellay", 0.25f);
 		engine_start_delay=iFloor((snd_engine_start._handle() ? iFloor(snd_engine_start.get_length_sec()*1000.0f) : 1.f)*fengine_start_delay);
+
 		if(ini->line_exist("car_sound","relative_pos"))
 		{
 			relative_pos.set(ini->r_fvector3("car_sound","relative_pos"));
 		}
+
 		if(ini->line_exist("car_sound","transmission_switch"))
 		{
 			snd_transmission.create(ini->r_string("car_sound","transmission_switch"),st_Effect,sg_SourceType);
 		}
-	
-	
-	} else {
+	}
+	else
+	{
 		Msg					("! Car doesn't contain sound params");
 	}
 	eCarSound=sndOff;
@@ -128,6 +143,15 @@ void CCar::SCarSound::Destroy()
 	snd_transmission.destroy();
 	snd_engine_stop.destroy();
 	snd_engine_start.destroy();
+	snd_door_open_start.destroy();
+	snd_door_close_start.destroy();
+	snd_door_close_stop.destroy();
+	snd_trunk_open_start.destroy();
+	snd_trunk_close_start.destroy();
+	snd_trunk_close_stop.destroy();
+	snd_bonnet_open_start.destroy();
+	snd_bonnet_close_start.destroy();
+	snd_bonnet_close_stop.destroy();
 }
 
 void CCar::SCarSound::SwitchOff()
@@ -183,3 +207,68 @@ void CCar::SCarSound::TransmissionSwitch()
 	}
 }
 
+void CCar::SCarSound::DoorOpenStart(u16 id)
+{
+	VERIFY(!physics_world()->Processing());
+
+	if (pcar->IsBackDoor(id))
+	{
+		snd_trunk_open_start.play(pcar);
+		SetSoundPosition(snd_trunk_open_start);
+	}
+	else if (pcar->IsFrontDoor(id))
+	{
+		snd_bonnet_open_start.play(pcar);
+		SetSoundPosition(snd_bonnet_open_start);
+	}
+	else
+	{
+		snd_door_open_start.play(pcar);
+		SetSoundPosition(snd_door_open_start);
+	}
+}
+
+void CCar::SCarSound::DoorCloseStart(u16 id)
+{
+	VERIFY(!physics_world()->Processing());
+
+	if (pcar->IsBackDoor(id))
+	{
+		snd_trunk_close_start.play(pcar);
+		SetSoundPosition(snd_trunk_close_start);
+	}
+	else if (pcar->IsFrontDoor(id))
+	{
+		snd_bonnet_close_start.play(pcar);
+		SetSoundPosition(snd_bonnet_close_start);
+	}
+	else
+	{
+		snd_door_close_start.play(pcar);
+		SetSoundPosition(snd_door_close_start);
+	}
+}
+
+void CCar::SCarSound::DoorCloseStop(u16 id)
+{
+	VERIFY(!physics_world()->Processing());
+
+	if (pcar->IsBackDoor(id))
+	{
+		snd_trunk_close_stop.stop_deffered();
+		snd_trunk_close_stop.play(pcar);
+		SetSoundPosition(snd_trunk_close_stop);
+	}
+	else if (pcar->IsFrontDoor(id))
+	{
+		snd_bonnet_close_stop.stop_deffered();
+		snd_bonnet_close_stop.play(pcar);
+		SetSoundPosition(snd_bonnet_close_stop);
+	}
+	else
+	{
+		snd_door_close_stop.stop_deffered();
+		snd_door_close_stop.play(pcar);
+		SetSoundPosition(snd_door_close_stop);
+	}
+}

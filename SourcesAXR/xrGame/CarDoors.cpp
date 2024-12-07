@@ -247,7 +247,11 @@ void CCar::SDoor::Update()
 	{
 	case closing:
 		{
-			if(pos_open*closed_angle>pos_open*GetAngle()) ClosingToClosed();
+			if (pos_open * closed_angle > pos_open * GetAngle())
+			{
+				pcar->m_car_sound->DoorCloseStop(bone_id);
+				ClosingToClosed();
+			}
 
 			break;
 		}
@@ -283,6 +287,7 @@ void CCar::SDoor::Use()
 	case opening:
 		{
 			Close();
+			pcar->m_car_sound->DoorCloseStart(bone_id);
 
 			xr_map<u16, SDoor>::iterator i = pcar->m_doors.begin(), e = pcar->m_doors.end();
 
@@ -299,6 +304,7 @@ void CCar::SDoor::Use()
 	case closing:
 		{
 			Open();
+			pcar->m_car_sound->DoorOpenStart(bone_id);
 
 			if (pcar->is_IndoorLightsDoor(bone_id, l_doors))
 				pcar->m_indoor_lights.TurnOnIndoorLights();
@@ -828,4 +834,24 @@ default: NODEFAULT;
 void CCar::SDoor::SDoorway::Trace(const Fvector &point,const Fvector &dir)
 {
 
+}
+
+bool CCar::IsBackDoor(u16 id)
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+
+	if (id == K->LL_BoneID(m_sTrunkBone))
+		return true;
+
+	return false;
+}
+
+bool CCar::IsFrontDoor(u16 id)
+{
+	IKinematics* K = smart_cast<IKinematics*>(Visual());
+
+	if (id == K->LL_BoneID(m_sBonnetBone))
+		return true;
+
+	return false;
 }

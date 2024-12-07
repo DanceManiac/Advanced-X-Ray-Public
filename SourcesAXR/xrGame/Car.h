@@ -339,10 +339,13 @@ virtual void ApplyDamage(u16 level);
 
 	struct SCarSound
 	{
-		ref_sound					snd_engine							;
-		ref_sound					snd_engine_start					;
-		ref_sound					snd_engine_stop						;
-		ref_sound					snd_transmission					;
+		ref_sound					snd_engine;
+		ref_sound					snd_engine_start;
+		ref_sound					snd_engine_stop;
+		ref_sound					snd_transmission;
+		ref_sound					snd_door_open_start, snd_door_close_start, snd_door_close_stop;
+		ref_sound					snd_trunk_open_start, snd_trunk_close_start, snd_trunk_close_stop;
+		ref_sound					snd_bonnet_open_start, snd_bonnet_close_start, snd_bonnet_close_stop;
 
 		enum ESoundState
 		{
@@ -368,6 +371,10 @@ virtual void ApplyDamage(u16 level);
 		void	Stall				()							;
 		void	Drive				()							;
 		void	TransmissionSwitch	()							;
+
+		void	DoorOpenStart		(u16 id);
+		void	DoorCloseStart		(u16 id);
+		void	DoorCloseStop		(u16 id);
 
 				SCarSound			(CCar* car)					;
 				~SCarSound			()							;
@@ -414,6 +421,7 @@ private:
 	
 	bool					m_bHasTrunk;
 	shared_str				m_sTrunkBone;
+	shared_str				m_sBonnetBone;
 
 	/////////////////////////////////////////////////////////////
 	float					m_doors_torque_factor;
@@ -561,6 +569,8 @@ public:
 	bool					is_Door						(u16 id,xr_map<u16,SDoor>::iterator& i);
 	bool					is_Door						(u16 id);
 	bool					is_IndoorLightsDoor			(u16 id,xr_vector<u16>::iterator& i);
+	bool					IsBackDoor					(u16 id);
+	bool					IsFrontDoor					(u16 id);
 	bool					DoorOpen					(u16 id);
 	bool					DoorClose					(u16 id);
 	bool					DoorUse						(u16 id);
