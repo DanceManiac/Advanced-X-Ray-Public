@@ -349,7 +349,9 @@ CEnvDescriptor::CEnvDescriptor	(shared_str const& identifier) : m_identifier(ide
     lens_flare_id		= "";
 	tb_id				= "";
     
-	env_ambient			= NULL;
+	env_ambient			= nullptr;
+
+	m_sWeatherType		= nullptr;
 }
 
 #define	C_CHECK(C)	if (C.x<0 || C.x>2 || C.y<0 || C.y>2 || C.z<0 || C.z>2)	{ Msg("! Invalid '%s' in env-section '%s'",#C,m_identifier.c_str());}
@@ -365,6 +367,10 @@ void CEnvDescriptor::load	(CEnvironment& environment, CInifile& config)
 	strconcat				(sizeof(st_env),st_env,st,"#small"		);
 	sky_texture_name		= st;
 	sky_texture_env_name	= st_env;
+
+	if (config.line_exist(m_identifier.c_str(), "weather_type"))
+		m_sWeatherType		= config.r_string(m_identifier.c_str(), "weather_type");
+
 	clouds_texture_name		= config.r_string	(m_identifier.c_str(),"clouds_texture");
 	LPCSTR	cldclr			= config.r_string	(m_identifier.c_str(),"clouds_color");
 	float	multiplier		= 0, save=0;
@@ -482,6 +488,10 @@ void CEnvDescriptor::load_shoc(float exec_tm, LPCSTR S, CEnvironment& environmen
 
 	sky_texture_name				= st;
 	sky_texture_env_name			= st_env;
+
+	if (pSettings->line_exist(m_identifier.c_str(), "weather_type"))
+		m_sWeatherType = pSettings->r_string(m_identifier.c_str(), "weather_type");
+
 	clouds_texture_name				= pSettings->r_string(m_identifier.c_str(), "clouds_texture");
 	
 	LPCSTR cldclr					= pSettings->r_string(m_identifier.c_str(), "clouds_color");

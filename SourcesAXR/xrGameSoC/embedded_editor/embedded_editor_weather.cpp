@@ -163,6 +163,7 @@ void saveWeather(shared_str name, const xr_vector<CEnvDescriptor*>& env, bool so
 		f.w_float(el->m_identifier.c_str(), "dof_kernel", el->dof_kernel);
 		f.w_float(el->m_identifier.c_str(), "dof_sky", el->dof_sky);
 		f.w_float(el->m_identifier.c_str(), "air_temperature", el->m_fAirTemperature);
+		f.w_string(el->m_identifier.c_str(), "weather_type", el->m_sWeatherType.c_str());
 	}
 	
 	string_path fileName;
@@ -637,8 +638,22 @@ void ShowWeatherEditor(bool& show)
 	if (ImGui::SliderFloat("air_temperature", &cur->m_fAirTemperature, -50.0f, 50.0f))
 		changed = true;
 
+	static char newType[256]{};
+
+	if (cur->m_sWeatherType.size())
+		strcpy(newType, cur->m_sWeatherType.c_str());
+	else
+		memset(newType, 0, sizeof(newType));
+
+	if (ImGui::InputText("weather_type", newType, 512))
+		changed = true;
+
 	if (changed)
+	{
+		cur->m_sWeatherType = newType;
 		modifiedWeathers.insert(env.CurrentWeatherName);
+	}
+
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_save").c_str()).c_str())) {
 		for (auto name : modifiedWeathers)
 			saveWeather(name, env.WeatherCycles[name], env.used_soc_weather);

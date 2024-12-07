@@ -200,6 +200,8 @@ public:
 	shared_str			lens_flare_id_phased;
 	shared_str			tb_id;
 
+	shared_str			m_sWeatherType;
+
 	//: swing values
 	struct EnvSwingValue
 	{

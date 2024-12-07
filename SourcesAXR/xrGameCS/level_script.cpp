@@ -1080,7 +1080,7 @@ luabind::internal_string get_air_temperature_fs()
 	if (!g_pGamePersistent || !g_pGamePersistent->Environment().CurrentEnv)
 	{
 		Msg("![level_script::get_air_temperature_fs]: g_pGamePersistent or CurrentEnv is nullptr!");
-		return "ERROR";
+		return "";
 	}
 
 	float cur_temperature = g_pGamePersistent->Environment().CurrentEnv->m_fAirTemperature;
@@ -1092,6 +1092,39 @@ luabind::internal_string get_air_temperature_fs()
 		xr_sprintf(temper, "+%.1f %s", cur_temperature, *CStringTable().translate("st_degree"));
 
 	return temper;
+}
+
+LPCSTR get_weather_type()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().Current[0])
+	{
+		Msg("![level_script::get_weather_type]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return "";
+	}
+
+	return g_pGamePersistent->Environment().Current[0]->m_sWeatherType.c_str();
+}
+
+luabind::internal_string get_weather_type_icon()
+{
+	if (!g_pGamePersistent || !g_pGamePersistent->Environment().Current[0])
+	{
+		Msg("![level_script::get_weather_type_icon]: g_pGamePersistent or CurrentEnv is nullptr!");
+		return "";
+	}
+
+	shared_str cur_weather_type = g_pGamePersistent->Environment().Current[0]->m_sWeatherType;
+
+	if (!cur_weather_type)
+	{
+		Msg("![level_script::get_weather_type_icon]: cur_weather_type is nullptr!");
+		return "";
+	}
+
+	string128 iconName{};
+	strconcat(sizeof(iconName), iconName, "ui_inGame2_WeatherTypeIcon_", cur_weather_type.c_str());
+
+	return iconName;
 }
 
 #pragma optimize("s",on)
@@ -1153,6 +1186,8 @@ void CLevel::script_register(lua_State *L)
 		def("get_moon_phase",					get_moon_phase),
 		def("get_air_temperature_f",			get_air_temperature_f),
 		def("get_air_temperature_fs",			get_air_temperature_fs),
+		def("get_weather_type",					get_weather_type),
+		def("get_weather_type_icon",			get_weather_type_icon),
 		def("is_developer",						is_developer),
 		def("environment",						environment),
 		

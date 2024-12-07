@@ -205,6 +205,8 @@ void CUIMainIngameWnd::Init()
 	m_mid_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:middle_color",	0, color_rgba(255, 255, 255, 255));
 	m_max_temperature_clr	= CUIXmlInit::GetColor(uiXml,	"indicator_temperature:max_color",		0, color_rgba(255, 255, 255, 255));
 
+	m_ind_weather_type		= UIHelper::CreateStatic(uiXml, "indicator_weather_icon", this, false);
+
 	m_ind_boost_psy			->Show(false);
 	m_ind_boost_radia		->Show(false);
 	m_ind_boost_chem		->Show(false);
@@ -1274,6 +1276,24 @@ void CUIMainIngameWnd::UpdateMainIndicators()
 			m_ind_temperature->Show(true);
 
 		m_ind_temperature->TextItemControl()->SetText(temper);
+	}
+
+	if (m_ind_weather_type)
+	{
+		m_ind_weather_type->Show(false);
+		shared_str cur_weather_type = g_pGamePersistent->Environment().Current[0]->m_sWeatherType;
+
+		if (cur_weather_type.size())
+		{
+
+			string128 iconName{};
+			strconcat(sizeof(iconName), iconName, "ui_inGame2_WeatherTypeIcon_", cur_weather_type.c_str());
+
+			if (!m_ind_weather_type->IsShown())
+				m_ind_weather_type->Show(true);
+
+			m_ind_weather_type->InitTexture(iconName);
+		}
 	}
 }
 
