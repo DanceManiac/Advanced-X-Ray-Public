@@ -449,12 +449,16 @@ extern ENGINE_API Fvector4 ps_ssfx_ssr ;					// Res, Blur, Temp, Noise
 extern ENGINE_API Fvector4 ps_ssfx_ssr_2 ;					// Quality, Fade, Int, Wpn Int
 extern ENGINE_API Fvector4 ps_ssfx_terrain_offset;
 extern ENGINE_API int ps_ssfx_il_quality;
+extern ENGINE_API float ps_ssfx_hud_hemi;					// HUD Hemi Offset
 extern ENGINE_API Fvector4 ps_ssfx_il;						// Res, Int, Vibrance, Blur
-extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
+extern ENGINE_API Fvector4 ps_ssfx_il_setup1;				// Distance, HUD, Flora, -
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
-extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
+extern ENGINE_API Fvector4 ps_ssfx_water;					// Res, Blur, Blur Perlin, -
+extern ENGINE_API Fvector3 ps_ssfx_water_quality;			// SSR Quality, Parallax Quality, -
+extern ENGINE_API Fvector4 ps_ssfx_water_setup1;			// Distortion, Turbidity, Softborder, Parallax Height
+extern ENGINE_API Fvector4 ps_ssfx_water_setup2;			// Reflection, Specular, Caustics, Ripples
 
 int ps_r4_ss_grass_collision = ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) ? 1 : 0;
 int ps_r4_pseudo_pbr = 0;
@@ -1410,13 +1414,17 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Vector4,		"ssfx_ssr",						&ps_ssfx_ssr,				Fvector4().set(1, 0, 0, 0), Fvector4().set(2, 1, 1, 1));
 	CMD4(CCC_Vector4,		"ssfx_ssr_2",					&ps_ssfx_ssr_2,				Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 2, 2, 2));
 	CMD4(CCC_Vector4,		"ssfx_terrain_offset",			&ps_ssfx_terrain_offset,	Fvector4().set(-1, -1, -1, -1), Fvector4().set(1, 1, 1, 1));
+	CMD4(CCC_Float,			"ssfx_hud_hemi",				&ps_ssfx_hud_hemi,			0.0f, 1.0f);
 	CMD4(CCC_Integer,		"ssfx_il_quality",				&ps_ssfx_il_quality,		16, 64);
 	CMD4(CCC_Vector4,		"ssfx_il",						&ps_ssfx_il,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 3, 6));
 	CMD4(CCC_Vector4,		"ssfx_il_setup1",				&ps_ssfx_il_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
 	CMD4(CCC_Integer,		"ssfx_ao_quality",				&ps_ssfx_ao_quality,		2, 8);
 	CMD4(CCC_Vector4,		"ssfx_ao",						&ps_ssfx_ao,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 1, 10));
 	CMD4(CCC_Vector4,		"ssfx_ao_setup1",				&ps_ssfx_ao_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
-	CMD4(CCC_Vector3,		"ssfx_water_parallax",			&ps_ssfx_water_parallax_quality, Fvector3().set(0.0f, 0.0f, 0.0f), Fvector3().set(3.0f, 2.0f, 1.0f));
+	CMD4(CCC_Vector4,		"ssfx_water",					&ps_ssfx_water,				Fvector4().set(1, 0, 0, 0), Fvector4().set(8, 1, 1, 0));
+	CMD4(CCC_Vector3,		"ssfx_water_quality",			&ps_ssfx_water_quality,		Fvector3().set(0, 0, 0), Fvector3().set(4, 3, 0));
+	CMD4(CCC_Vector4,		"ssfx_water_setup1",			&ps_ssfx_water_setup1,		Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 10, 1, 0.1));
+	CMD4(CCC_Vector4,		"ssfx_water_setup2",			&ps_ssfx_water_setup2,		Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 10, 1, 1.5));
 
 	CMD4(CCC_Integer,		"r4_ss_grass_collision",		&ps_r4_ss_grass_collision,	0, 1); //Screen Space Grass Shaders Collision
 	CMD4(CCC_Integer,		"r4_es_pseudo_pbr",				&ps_r4_pseudo_pbr,			0, 1); //Enchanted Shaders Pseudo PBR

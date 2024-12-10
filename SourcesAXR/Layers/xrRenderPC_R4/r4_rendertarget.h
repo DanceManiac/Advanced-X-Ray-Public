@@ -142,16 +142,17 @@ public:
 	ref_rt						rt_ssfx_temp3;
 	ref_rt						rt_ssfx_accum;
 	ref_rt						rt_ssfx_hud;
-	ref_shader					s_ssfx_dumb;
+	ref_rt						rt_ssfx_ssr;
+	ref_rt						rt_ssfx_water;
+	ref_rt						rt_ssfx_water_waves;
 	ref_rt						rt_ssfx_ao;
 	ref_rt						rt_ssfx_il;
 	ref_rt						rt_ssfx_prevPos;
-	ref_rt						rt_ssfx_water_waves;
 
-	Fmatrix Matrix_previous, Matrix_current;
-	Fmatrix Matrix_HUD_previous, Matrix_HUD_current;
-	Fvector3 Position_previous;
-	//bool RVelocity;
+	Fmatrix						Matrix_previous, Matrix_current;
+	Fmatrix						Matrix_HUD_previous, Matrix_HUD_current;
+	Fvector3					Position_previous;
+	bool						RVelocity;
 
 	//	Igor: for async screenshots
 	ID3DTexture2D*			t_ss_async;				//32bit		(r,g,b,a) is situated in the system memory
@@ -257,17 +258,22 @@ private:
 	ref_shader              s_accum_direct_volumetric_msaa[8];
 	ref_shader					s_accum_mask_msaa[8];
 	ref_shader					s_accum_direct_msaa[8];
-   ref_shader					s_mark_msaa_edges;
+    ref_shader					s_mark_msaa_edges;
 	ref_shader					s_accum_point_msaa[8]	;
 	ref_shader					s_accum_spot_msaa[8]	;
 	ref_shader					s_accum_reflected_msaa[8];
 	ref_shader					s_accum_volume_msaa[8];
 
+public:
 	// Screen Space Shaders Stuff
+	ref_shader					s_ssfx_water;
+	ref_shader					s_ssfx_water_ssr;
+	ref_shader					s_ssfx_ao;
+	ref_shader					s_ssfx_hud[5];
 	ref_shader					s_ssfx_ssr;
 	ref_shader					s_ssfx_volumetric_blur;
-	ref_shader					s_ssfx_ao;
 
+private:
 	ref_geom						g_accum_point	;
 	ref_geom						g_accum_spot	;
 	ref_geom						g_accum_omnipart;
@@ -414,9 +420,10 @@ public:
 	void						SwitchViewPort			(ViewPort vp);
 	void						phase_ssfx_ssr			(); // SSR Phase
 	void						phase_ssfx_volumetric_blur(); // Volumetric Blur
+	void						phase_ssfx_water_blur	(); // Water Blur
+	void						phase_ssfx_water_waves	(); // Water Waves
 	void						phase_ssfx_ao			(); // AO
 	void						phase_ssfx_il			(); // IL
-	void						phase_ssfx_water_waves	(); // Water Waves
 	void						set_viewport_size		(ID3DDeviceContext* dev, float w, float h);
 
 	//	Generates min/max sm

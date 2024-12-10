@@ -84,19 +84,66 @@ void __fastcall sorted_L1		(const T& N)
 }
 
 template<class T>
-void __fastcall sorted_L1_nops(const T& N)
+void __fastcall water_node_ssr(const T& N)
+{
+#ifdef USE_DX11
+	dxRender_Visual* V = N.second.pVisual;
+	VERIFY(V);
+	RCache.set_Shader(RImplementation.Target->s_ssfx_water_ssr);
+	RCache.set_xform_world(N.second.Matrix);
+	RImplementation.apply_object(N.second.pObject);
+	RImplementation.apply_lmaterial();
+	RCache.set_c("cam_pos", RImplementation.Target->Position_previous.x, RImplementation.Target->Position_previous.y, RImplementation.Target->Position_previous.z, 0.0f);
+	// Previous matrix data
+	RCache.set_c("m_previous", N.second.PrevMatrix);
+	N.second.PrevMatrix.set(RCache.xforms.m_wvp);
+	V->Render(calcLOD(N.second.ssa, V->vis.sphere.R));
+#endif
+}
+template<class T>
+void __fastcall water_node(const T& N)
+{
+	VERIFY(&N);
+	dxRender_Visual* V = N.second.pVisual;
+	VERIFY(V);
+
+#ifdef USE_DX11
+	if (RImplementation.o.ssfx_water)
+	{
+		RCache.set_Shader(RImplementation.Target->s_ssfx_water);
+	}
+#endif
+
+	RCache.set_xform_world(N.second.Matrix);
+	
+	RImplementation.apply_object(N.second.pObject);
+	RImplementation.apply_lmaterial();
+	// Wind settings
+	float WindDir = g_pGamePersistent->Environment().CurrentEnv->wind_direction;
+	float WindVel = g_pGamePersistent->Environment().CurrentEnv->wind_velocity;
+	RCache.set_c("wind_setup", WindDir, WindVel, 0, 0);
+	V->Render(calcLOD(N.second.ssa, V->vis.sphere.R));
+}
+template<class T>
+void __fastcall hud_node(const T& N)
 {
 	VERIFY(&N);
 	dxRender_Visual* V = N.second.pVisual;
 	VERIFY(V && V->shader._get());
-	RCache.set_Element(N.second.se);
-
-#ifdef USE_DX11
-	RCache.set_PS(RImplementation.Target->s_ssfx_dumb->E[0]->passes[0]->ps);
-#endif
-
 	RCache.set_xform_world(N.second.Matrix);
-	V->Render(0);
+#ifdef USE_DX11
+	if (N.second.se->passes[0]->ps->hud_disabled)
+		return;
+	int skinning = N.second.se->passes[0]->vs->skinning;
+	RCache.set_Shader(RImplementation.Target->s_ssfx_hud[skinning]);
+	RImplementation.Target->Matrix_HUD_previous.set(N.second.PrevMatrix);
+	N.second.PrevMatrix.set(RCache.xforms.m_wvp);
+	RImplementation.Target->RVelocity = true;
+#endif
+	V->Render(calcLOD(N.second.ssa, V->vis.sphere.R));
+#ifdef USE_DX11
+	RImplementation.Target->RVelocity = false;
+#endif
 }
 
 IC	bool	cmp_vs_nrm			(mapNormalVS::value_type* N1, mapNormalVS::value_type* N2)
@@ -543,7 +590,7 @@ void R_dsgraph_structure::r_dsgraph_render_hud(bool NoPS)
 		}
 		else
 		{
-			HUDMask.traverse_left_right(sorted_L1_nops);
+			HUDMask.traverse_left_right(hud_node);
 			HUDMask.clear();
 		}
 
@@ -644,9 +691,14 @@ void	R_dsgraph_structure::r_dsgraph_render_emissive	()
 #endif
 }
 
+void R_dsgraph_structure::r_dsgraph_render_water_ssr()
+{
+	mapWater.traverse_left_right(water_node_ssr);
+}
+
 void R_dsgraph_structure::r_dsgraph_render_water()
 {
-	mapWater.traverse_left_right(sorted_L1);
+	mapWater.traverse_left_right(water_node);
 	mapWater.clear();
 }
 
