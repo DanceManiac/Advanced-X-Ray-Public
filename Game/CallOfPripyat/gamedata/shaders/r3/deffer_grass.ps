@@ -12,6 +12,14 @@
 	#include "settings_screenspace_FLORA.h"
 #endif
 
+static float DITHER_THRESHOLDS[16] =
+{
+	1.0 / 17.0,  9.0 / 17.0,  3.0 / 17.0, 11.0 / 17.0,
+	13.0 / 17.0,  5.0 / 17.0, 15.0 / 17.0,  7.0 / 17.0,
+	4.0 / 17.0, 12.0 / 17.0,  2.0 / 17.0, 10.0 / 17.0,
+	16.0 / 17.0,  8.0 / 17.0, 14.0 / 17.0,  6.0 / 17.0
+};
+
 #ifdef	ATOC
 
 float4 	main	( p_bumped I ) : SV_Target
@@ -61,16 +69,31 @@ f_deffer 	main	( p_bumped I )
 
 	// FLORA FIXES & IMPROVEMENTS - SSS Update 18
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
-	S.normal.xy += float2(0.1f, 0.1f);
+	//S.normal.xy += float2(0.1f, 0.1f);
 	S.normal.xy *= max(5.0f * rain_params.y, 3.0f);
 
-	// FLORA FIXES & IMPROVEMENTS - SSS Update 14.3
+	// FLORA FIXES & IMPROVEMENTS - SSS Update 22
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
-  	float3 	Ne	= mul(m_WV, (float3(S.normal.x, 1, S.normal.y)));
+	
+	// Fake UP Normal
+	float3  fN	= mul(m_WV, float3(S.normal.x, 1.0f, S.normal.y));
+	fN			= normalize	(fN);
+
+	// Terrain Normal ( Engine feed the terrain normals )
+	float3  Ne	= float3(I.M1.z, I.M2.z, I.M3.z) + fN;
 			Ne	= normalize	(Ne);
 
 	float 	ms	= xmaterial;
 	S.gloss = def_gloss;
+
+	// Dither
+	float4 Postc = mul(m_P, float4(I.position.xyz, 1));
+	float2 tc = (Postc.xy / Postc.w) * float2(0.5f, -0.5f) + 0.5f;
+
+	float2 dither_uv = tc * screen_res.xy; // Aspect ratio
+	uint dither_idx = (uint(dither_uv.x) % 4) * 4 + uint(dither_uv.y) % 4;
+
+	clip(I.M1.x - DITHER_THRESHOLDS[dither_idx]);
 
 #ifdef SSFX_FLORAFIX
 	// Material value ( MAT_FLORA )

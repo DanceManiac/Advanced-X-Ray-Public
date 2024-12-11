@@ -1,6 +1,7 @@
 #include "common.h"
 #include "sload.h"
 #include "screenspace_hud_raindrops.h"
+#include "check_screenspace.h"
 
 f_deffer main( p_flat I )
 {
@@ -26,7 +27,12 @@ f_deffer main( p_flat I )
 		I.tcdh.xy = saturate(I.tcdh.xy + drops.xy * ssfx_hud_drops_1.w * 0.1f);
 
 		// Reflection adjustments
+#ifdef SSFX_SSS
+		drops.w = ssfx_hud_drops_1.z;
+#else
 		drops.w = ssfx_hud_drops_1.z * dot(L_hemi_color, SSFX_HUD_LIGHTVECTOR);
+#endif
+
 		drops.w = max(drops.w * 0.1f, 3.0f);
 	}
 

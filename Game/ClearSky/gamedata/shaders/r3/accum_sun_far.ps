@@ -6,6 +6,8 @@
 
 #ifdef SSFX_SSS
 	#include "screenspace_shadows.h"
+	Texture2D s_ssfx_sss;
+	uniform float4 ssfx_issvp;
 #endif
 
 #ifdef USE_MINMAX_SM
@@ -87,7 +89,7 @@ float4 main ( v2p_volume I ) : SV_Target
 	s += ( 1.0f - s ) * ( 1.0f - f );
 
 #ifdef SSFX_SSS
-	s *= SSFX_ScreenSpaceShadows_Far(_P, I.hpos, ISAMPLE);
+	s *= saturate(s_ssfx_sss.Sample( smp_nofilter, I.tc.xy / I.tc.w ).b + ssfx_issvp.x);
 #endif
 	// Add Shadows
 	shadows *= s;

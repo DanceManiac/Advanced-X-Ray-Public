@@ -5,6 +5,8 @@
 
 float4 benders_pos[32];
 float4 benders_setup;
+float4 exdata[61]; // Terrain Normal [xyz] & Grass alpha [w]
+int grass_align;
 
 float4 consts; // {1/quant,1/quant,diffusescale,ambient}
 float4 wave; // cx,cy,cz,tm
@@ -29,6 +31,8 @@ v2p_bumped 	main (v_detail v)
 	float4  m2 	= array[i+2];
 	float4  c0 	= array[i+3];
 
+	float4 data = exdata[i / 4]; // Adjust size ( 61 instead of 61*4 )
+	
 	// Transform pos to world coords
 	float4 P;
  	P.x = dot(m0, v.pos);
@@ -37,6 +41,9 @@ v2p_bumped 	main (v_detail v)
 	P.w = 1;
 
 	float	H = P.y - m1.w;			// height of vertex (scaled)
+
+	// Force grass to go up
+	P.xz = P.xz - 0.5f * data.xz * H * grass_align;
 
 #ifndef SSFX_WIND
 	float dp = calc_cyclic(dot(P, wave));
@@ -83,17 +90,21 @@ v2p_bumped 	main (v_detail v)
 #endif
 #endif
 
-	// FLORA FIXES & IMPROVEMENTS - SSS Update 14.6
+	// FLORA FIXES & IMPROVEMENTS - SSS Update 22
 	// https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders/
 	
-	// Fake Normal, Bi-Normal and Tangent
-	float3 N = normalize(float3(P.x - m0.w, P.y - m1.w + 1.0f, P.z - m2.w));
+	// Use terrain normal [ c0.xyz ]
+	float3 N = mul((float3x3)m_WV, data.xyz);
 
-	float3x3 xform	= mul	((float3x3)m_WV, float3x3(
-						0,0,N.x,
-						0,0,N.y,
-						0,0,N.z
-					));
+	float3x3 xform = 0;
+
+	// Normal
+	xform[0].z = N.x;
+	xform[1].z = N.y;
+	xform[2].z = N.z;
+	
+	// Alpha here
+	xform[0].x = data.w;
 
 	// Feed this transform to pixel shader
 	O.M1 			= xform[0];

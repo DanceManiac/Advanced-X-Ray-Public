@@ -106,7 +106,7 @@ float3 SSFX_yaw_vector(float3 Vec, float Rot)
 float SSFX_get_depth(float2 tc, uint iSample : SV_SAMPLEINDEX)
 {
 	#ifndef USE_MSAA
-		return s_position.Sample(smp_nofilter, tc).z;
+		return s_position.SampleLevel(smp_nofilter, tc, 0).z;
 	#else
 		return s_position.Load(int3(tc * screen_res.xy, 0), iSample).z;
 	#endif
@@ -115,7 +115,7 @@ float SSFX_get_depth(float2 tc, uint iSample : SV_SAMPLEINDEX)
 float4 SSFX_get_position(float2 tc, uint iSample : SV_SAMPLEINDEX)
 {
 	#ifndef USE_MSAA
-		return s_position.Sample(smp_nofilter, tc);
+		return s_position.SampleLevel(smp_nofilter, tc, 0);
 	#else
 		return s_position.Load(int3(tc * screen_res.xy, 0), iSample);
 	#endif
@@ -124,7 +124,7 @@ float4 SSFX_get_position(float2 tc, uint iSample : SV_SAMPLEINDEX)
 float3 SSFX_get_image(float2 tc, uint iSample : SV_SAMPLEINDEX)
 {
 	#ifndef USE_MSAA
-		return s_rimage.Sample(smp_nofilter, tc).rgb;
+		return s_rimage.SampleLevel(smp_nofilter, tc, 0).rgb;
 	#else
 		return s_rimage.Load(int3(tc * screen_res.xy, 0), 0).rgb;
 	#endif

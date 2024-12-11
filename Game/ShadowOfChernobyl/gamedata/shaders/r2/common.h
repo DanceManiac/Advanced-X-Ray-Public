@@ -247,7 +247,7 @@ uniform sampler2D       s_tonemap;              // actually MidleGray / exp(Lw +
 //////////////////////////////////////////////////////////////////////////////////////////
 // Defines                                		//
 #define def_gloss       half(2.f /255.f)
-#define def_aref        aref_params.x
+#define def_aref        (aref_params.x)
 #define def_dbumph      half(0.333f)
 #define def_virtualh    half(0.05f)              // 5cm
 #define def_distort     half(0.05f)             // we get -0.5 .. 0.5 range, this is -512 .. 512 for 1024, so scale it
