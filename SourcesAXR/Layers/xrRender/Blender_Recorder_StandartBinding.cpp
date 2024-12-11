@@ -578,9 +578,7 @@ extern ENGINE_API Fvector4 ps_ssfx_il;
 extern ENGINE_API Fvector4 ps_ssfx_il_setup1;
 extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
-extern ENGINE_API Fvector4 ps_ssfx_water;
-extern ENGINE_API Fvector4 ps_ssfx_water_setup1;
-extern ENGINE_API Fvector4 ps_ssfx_water_setup2;
+extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 
 extern ENGINE_API Fvector4 ps_ssfx_pom;
 extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;
@@ -803,29 +801,13 @@ static class ssfx_il_setup1 : public R_constant_setup
 	}
 }    ssfx_il_setup1;
 
-static class ssfx_water : public R_constant_setup
+static class ssfx_water_parallax : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
 	{
-		RCache.set_c(C, ps_ssfx_water);
+		RCache.set_c(C, ps_ssfx_water_parallax_quality.x, ps_ssfx_water_parallax_quality.y, ps_ssfx_water_parallax_quality.z, 0);
 	}
-}    ssfx_water;
-
-static class ssfx_water_setup1 : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_water_setup1);
-	}
-}    ssfx_water_setup1;
-
-static class ssfx_water_setup2 : public R_constant_setup
-{
-	virtual void setup(R_constant* C)
-	{
-		RCache.set_c(C, ps_ssfx_water_setup2);
-	}
-}    ssfx_water_setup2;
+}    ssfx_water_parallax;
 
 static class ssfx_ao : public R_constant_setup
 {
@@ -1036,9 +1018,7 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_il_setup2",		&ssfx_il_setup1);
 	r_Constant				("ssfx_ao_setup",		&ssfx_ao);
 	r_Constant				("ssfx_ao_setup2",		&ssfx_ao_setup1);
-	r_Constant				("ssfx_water",			&ssfx_water);
-	r_Constant				("ssfx_water_setup1",	&ssfx_water_setup1);
-	r_Constant				("ssfx_water_setup2",	&ssfx_water_setup2);
+	r_Constant				("ssfx_water_parallax",	&ssfx_water_parallax);
 	r_Constant				("ssfx_pom",			&ssfx_pom);
 	r_Constant				("ssfx_terrain_pom",	&ssfx_terrain_pom);
 	r_Constant				("ssfx_bloom_1",		&ssfx_bloom_1);

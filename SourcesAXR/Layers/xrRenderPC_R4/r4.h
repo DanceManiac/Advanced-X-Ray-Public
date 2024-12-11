@@ -138,7 +138,6 @@ public:
 		u32		ssfx_ssr			: 1;
 		u32		ssfx_terrain		: 1;
 		u32		ssfx_volumetric		: 1;
-		u32		ssfx_water			: 1;
 		u32		ssfx_ao				: 1;
 		u32		ssfx_il				: 1;
 		u32		ssfx_bloom			: 1;

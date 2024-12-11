@@ -42,8 +42,6 @@
 #define		r2_RT_ssfx_temp3		"$user$ssfx_temp3"
 #define		r2_RT_ssfx_accum		"$user$ssfx_accum" // SSS Volumetric
 #define		r2_RT_ssfx_hud			"$user$ssfx_hud" // HUD & Velocity Buffer
-#define		r2_RT_ssfx_ssr			"$user$ssfx_ssr" // SSR Acc
-#define		r2_RT_ssfx_water		"$user$ssfx_water" // Water Acc
 #define		r2_RT_ssfx_water_waves	"$user$ssfx_water_waves"
 #define		r2_RT_ssfx_ao			"$user$ssfx_ao" // AO Acc
 #define		r2_RT_ssfx_il			"$user$ssfx_il" // IL Acc

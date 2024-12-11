@@ -93,7 +93,7 @@ void CBlender_ssfx_ssr::Compile(CBlender_Compile& C)
 		C.r_Pass("stub_screen_space", "ssfx_ssr", FALSE, FALSE, FALSE);
 
 		C.r_dx10Texture("s_position", r2_RT_P);
-		C.r_dx10Texture("ssr_image", r2_RT_ssfx_ssr); // Prev Frame
+		C.r_dx10Texture("ssr_image", r2_RT_ssfx); // Prev Frame
 
 		C.r_dx10Texture("s_rimage", "$user$generic_temp");
 		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);

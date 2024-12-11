@@ -287,7 +287,7 @@ void R_dsgraph_structure::r_dsgraph_insert_static	(dxRender_Visual *pVisual)
 	// Water rendering
 
 #if RENDER==R_R4
-	if (sh->flags.isWater && RImplementation.o.ssfx_water)
+	if (sh->flags.isWater)
 	{
 		mapWater_Node* N = mapWater.insert_anyway(distSQ);
 		N->second.ssa = SSA;

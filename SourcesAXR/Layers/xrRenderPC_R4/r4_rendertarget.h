@@ -152,8 +152,6 @@ public:
 	ref_rt						rt_ssfx_accum;
 	ref_rt						rt_ssfx_hud;
 	ref_rt						rt_ssfx_ssr;
-	ref_rt						rt_ssfx_water;
-	ref_shader					s_ssfx_water_blur;
 	ref_rt						rt_ssfx_water_waves;
 	ref_rt						rt_ssfx_ao;
 	ref_rt						rt_ssfx_il;
@@ -296,8 +294,6 @@ private:
 
 public:
 	// Screen Space Shaders Stuff
-	ref_shader					s_ssfx_water;
-	ref_shader					s_ssfx_water_ssr;
 	ref_shader					s_ssfx_ao;
 	ref_shader					s_ssfx_hud[5];
 	ref_shader					s_ssfx_ssr;
@@ -462,7 +458,6 @@ public:
 	void						phase_ssfx_sss_ext		(light_Package& LP); // SSS Spot lights
 	void						phase_ssfx_ssr			(); // SSR Phase
 	void						phase_ssfx_volumetric_blur(); // Volumetric Blur
-	void						phase_ssfx_water_blur	(); // Water Blur
 	void						phase_ssfx_water_waves	(); // Water Waves
 	void						phase_ssfx_ao			(); // AO
 	void						phase_ssfx_il			(); // IL

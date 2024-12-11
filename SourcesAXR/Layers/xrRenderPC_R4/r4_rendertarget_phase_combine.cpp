@@ -9,7 +9,6 @@
 ENGINE_API extern int ps_r__ShaderNVG;
 extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_il;
-extern ENGINE_API Fvector4 ps_ssfx_water;
 
 bool sort_function(Fvector4 i, Fvector4 j)
 {
@@ -332,53 +331,25 @@ void	CRenderTarget::phase_combine	()
    else
 	   HW.pContext->CopyResource(rt_Generic_temp->pTexture->surface_get(), rt_Generic_0_r->pTexture->surface_get());
 
-   if (RImplementation.o.ssfx_ssr && Render->currentViewPort == MAIN_VIEWPORT)
+   if (RImplementation.o.ssfx_ssr)
    {
-	   ssfx_PrevPos_Requiered = true;
 	   phase_ssfx_ssr(); // [SSFX] - New SSR Phase
 	   // Water waves
 	   phase_ssfx_water_waves();
    }
 
-   // [SSFX] - Water SSR rendering
-   if (RImplementation.o.ssfx_water && Render->currentViewPort == MAIN_VIEWPORT)
+   // Water rendering & Rain/thunder-bolts
    {
-	   FLOAT ColorRGBA[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	   HW.pContext->ClearRenderTargetView(rt_ssfx_temp->pRT, ColorRGBA);
-	   HW.pContext->ClearRenderTargetView(rt_ssfx_temp2->pRT, ColorRGBA);
-
 	   if (!RImplementation.o.dx10_msaa)
-		   u_setrt(rt_ssfx_temp, 0, 0, 0);
+		   u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
 	   else
-		   u_setrt(rt_ssfx_temp, 0, 0, 0);
+		   u_setrt(rt_Generic_0_r, 0, 0, rt_MSAADepth->pZRT);
 
-	   float w = float(Device.dwWidth);
-	   float h = float(Device.dwHeight);
-
-	   // Render Scale
-	   set_viewport_size(HW.pContext, w / ps_ssfx_water.x, h / ps_ssfx_water.x);
-
-	   // Render Water SSR
 	   RCache.set_xform_world(Fidentity);
-	   RImplementation.r_dsgraph_render_water_ssr();
-	   // Restore Viewport
-	   set_viewport_size(HW.pContext, w, h);
-	   // Save Frame
-	   HW.pContext->CopyResource(rt_ssfx_water->pTexture->surface_get(), rt_ssfx_temp->pTexture->surface_get());
-	   // Water SSR Blur
-	   phase_ssfx_water_blur();
-	   // Water waves
-	   phase_ssfx_water_waves();
+	   RImplementation.r_dsgraph_render_water();
    }
 
-   if (!RImplementation.o.dx10_msaa)
-	   u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
-   else
-	   u_setrt(rt_Generic_0_r, 0, 0, rt_MSAADepth->pZRT);
-
-   // Final water rendering ( All the code above can be omitted if the Water module isn't installed )
-   RCache.set_xform_world(Fidentity);
-   RImplementation.r_dsgraph_render_water();
+   g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
  
    {
 	   if (RImplementation.o.ssfx_rain)

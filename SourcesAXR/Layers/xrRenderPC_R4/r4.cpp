@@ -21,7 +21,7 @@ extern ENGINE_API bool ps_enchanted_shaders;
 extern ENGINE_API int ps_ssfx_il_quality;
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API int ps_ssfx_il_quality;
-extern ENGINE_API Fvector3 ps_ssfx_water_quality;
+extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API int ps_ssfx_terrain_pom_refine;
 extern ENGINE_API int ps_ssfx_pom_refine;
@@ -415,7 +415,6 @@ void					CRender::create					()
 	o.ssfx_ssr = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ssr", ".ps") ? 1 : 0;
 	o.ssfx_terrain = FS.exist(fn, "$game_shaders$", "r3\\deffer_terrain_high_flat_d", ".ps") ? 1 : 0;
 	o.ssfx_volumetric = FS.exist(fn, "$game_shaders$", "r3\\ssfx_volumetric_blur", ".ps") ? 1 : 0;
-	o.ssfx_water = FS.exist(fn, "$game_shaders$", "r3\\ssfx_water", ".ps") ? 1 : 0;
 	o.ssfx_ao = FS.exist(fn, "$game_shaders$", "r3\\ssfx_ao", ".ps") ? 1 : 0;
 	o.ssfx_il = FS.exist(fn, "$game_shaders$", "r3\\ssfx_il", ".ps") ? 1 : 0;
 	o.ssfx_sss = FS.exist(fn, "$game_shaders$", "r3\\ssfx_sss", ".ps") ? 1 : 0;
@@ -430,7 +429,6 @@ void					CRender::create					()
 	Msg("- SSS SSR SHADER INSTALLED %i", o.ssfx_ssr);
 	Msg("- SSS TERRAIN SHADER INSTALLED %i", o.ssfx_terrain);
 	Msg("- SSS VOLUMETRIC SHADER INSTALLED %i", o.ssfx_volumetric);
-	Msg("- SSS WATER SHADER INSTALLED %i", o.ssfx_water);
 	Msg("- SSS AO SHADER INSTALLED %i", o.ssfx_ao);
 	Msg("- SSS IL SHADER INSTALLED %i", o.ssfx_il);
 	Msg("- SSS SSS SHADER INSTALLED %i", o.ssfx_sss);
@@ -1064,7 +1062,6 @@ HRESULT	CRender::shader_compile			(
 	char							c_ssfx_pom_refine[32];
 	char							c_ssfx_il		[32];
 	char							c_ssfx_ao		[32];
-	char							c_ssfx_water	[32];
 	char							c_ssfx_water_parallax[32];
 
 	char	sh_name[MAX_PATH] = "";
@@ -1747,24 +1744,9 @@ HRESULT	CRender::shader_compile			(
 		++len;
 	}
 
-	if (o.dx11_sss_addon_enabled && ps_ssfx_water_quality.x > 0)
+	if (o.dx11_sss_addon_enabled && ps_ssfx_water_parallax_quality.x > 0)
 	{
-		xr_sprintf(c_ssfx_water, "%d", u8(_min(_max(ps_ssfx_water_quality.x, 0.0f), 4.0f)));
-		defines[def_it].Name = "SSFX_WATER_QUALITY";
-		defines[def_it].Definition = c_ssfx_water;
-		def_it++;
-		xr_strcat(sh_name, c_ssfx_water);
-		len += xr_strlen(c_ssfx_water);
-	}
-	else
-	{
-		sh_name[len] = '0';
-		++len;
-	}
-
-	if (o.dx11_sss_addon_enabled && ps_ssfx_water_quality.y > 0)
-	{
-		xr_sprintf(c_ssfx_water_parallax, "%d", u8(_min(_max(ps_ssfx_water_quality.y, 0.0f), 3.0f)));
+		xr_sprintf(c_ssfx_water_parallax, "%d", u8(_min(_max(ps_ssfx_water_parallax_quality.x, 0.0f), 3.0f)));
 		defines[def_it].Name = "SSFX_WATER_PARALLAX";
 		defines[def_it].Definition = c_ssfx_water_parallax;
 		def_it++;

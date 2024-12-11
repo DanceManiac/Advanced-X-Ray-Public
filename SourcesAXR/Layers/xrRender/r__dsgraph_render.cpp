@@ -100,6 +100,23 @@ void __fastcall water_node_ssr(const T& N)
 	V->Render(calcLOD(N.second.ssa, V->vis.sphere.R));
 #endif
 }
+
+template<class T>
+void __fastcall sorted_L1_nops(const T& N)
+{
+	VERIFY(&N);
+	dxRender_Visual* V = N.second.pVisual;
+	VERIFY(V && V->shader._get());
+	RCache.set_Element(N.second.se);
+
+#ifdef USE_DX11
+	RCache.set_PS(RImplementation.Target->s_ssfx_dumb->E[0]->passes[0]->ps);
+#endif
+
+	RCache.set_xform_world(N.second.Matrix);
+	V->Render(0);
+}
+
 template<class T>
 void __fastcall water_node(const T& N)
 {
@@ -124,6 +141,7 @@ void __fastcall water_node(const T& N)
 	RCache.set_c("wind_setup", WindDir, WindVel, 0, 0);
 	V->Render(calcLOD(N.second.ssa, V->vis.sphere.R));
 }
+
 template<class T>
 void __fastcall hud_node(const T& N)
 {
@@ -697,14 +715,9 @@ void	R_dsgraph_structure::r_dsgraph_render_emissive	(bool clear, bool renderHUD)
 #endif
 }
 
-void R_dsgraph_structure::r_dsgraph_render_water_ssr()
-{
-	mapWater.traverse_left_right(water_node_ssr);
-}
-
 void R_dsgraph_structure::r_dsgraph_render_water()
 {
-	mapWater.traverse_left_right(water_node);
+	mapWater.traverse_left_right(sorted_L1);
 	mapWater.clear();
 }
 

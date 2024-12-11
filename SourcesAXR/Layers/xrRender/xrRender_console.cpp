@@ -457,10 +457,7 @@ extern ENGINE_API Fvector4 ps_ssfx_il_setup1;				// Distance, HUD, Flora, -
 extern ENGINE_API int ps_ssfx_ao_quality;
 extern ENGINE_API Fvector4 ps_ssfx_ao;
 extern ENGINE_API Fvector4 ps_ssfx_ao_setup1;
-extern ENGINE_API Fvector4 ps_ssfx_water;					// Res, Blur, Blur Perlin, -
-extern ENGINE_API Fvector3 ps_ssfx_water_quality;			// SSR Quality, Parallax Quality, -
-extern ENGINE_API Fvector4 ps_ssfx_water_setup1;			// Distortion, Turbidity, Softborder, Parallax Height
-extern ENGINE_API Fvector4 ps_ssfx_water_setup2;			// Reflection, Specular, Caustics, Ripples
+extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 extern ENGINE_API int ps_ssfx_pom_refine;
 extern ENGINE_API Fvector4 ps_ssfx_pom;						// Samples , Range, Height, AO
 extern ENGINE_API int ps_ssfx_terrain_grass_align;			// Grass align
@@ -1455,10 +1452,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"ssfx_ao_quality",				&ps_ssfx_ao_quality,		2, 8);
 	CMD4(CCC_Vector4,		"ssfx_ao",						&ps_ssfx_ao,				Fvector4().set(0, 0, 0, 0), Fvector4().set(8, 10, 1, 10));
 	CMD4(CCC_Vector4,		"ssfx_ao_setup1",				&ps_ssfx_ao_setup1,			Fvector4().set(0, 0, 0, 0), Fvector4().set(300, 1, 1, 1));
-	CMD4(CCC_Vector4,		"ssfx_water",					&ps_ssfx_water,				Fvector4().set(1, 0, 0, 0), Fvector4().set(8, 1, 1, 0));
-	CMD4(CCC_Vector3,		"ssfx_water_quality",			&ps_ssfx_water_quality,		Fvector3().set(0, 0, 0), Fvector3().set(4, 3, 0));
-	CMD4(CCC_Vector4,		"ssfx_water_setup1",			&ps_ssfx_water_setup1,		Fvector4().set(0, 0, 0, 0), Fvector4().set(2, 10, 1, 0.1));
-	CMD4(CCC_Vector4,		"ssfx_water_setup2",			&ps_ssfx_water_setup2,		Fvector4().set(0, 0, 0, 0), Fvector4().set(1, 10, 1, 1.5));
+	CMD4(CCC_Vector3,		"ssfx_water_parallax",			&ps_ssfx_water_parallax_quality, Fvector3().set(0.0f, 0.0f, 0.0f), Fvector3().set(3.0f, 2.0f, 1.0f));
 	CMD4(CCC_Integer,		"ssfx_pom_refine",				&ps_ssfx_pom_refine,		0, 1);
 	CMD4(CCC_Vector4,		"ssfx_pom",						&ps_ssfx_pom,				Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 1));
 	CMD4(CCC_Integer,		"ssfx_terrain_pom_refine",		&ps_ssfx_terrain_pom_refine, 0, 1);

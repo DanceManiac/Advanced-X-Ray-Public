@@ -539,8 +539,6 @@ CRenderTarget::CRenderTarget		()
 		rt_ssfx_temp2.create(r2_RT_ssfx_temp2, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
 		rt_ssfx_temp3.create(r2_RT_ssfx_temp3, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Temp RT
 		rt_ssfx_accum.create(r2_RT_ssfx_accum, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount); // Volumetric Acc
-		rt_ssfx_ssr.create(r2_RT_ssfx_ssr, vp_params_main_secondary, D3DFMT_A8R8G8B8); // SSR Acc
-		rt_ssfx_water.create(r2_RT_ssfx_water, vp_params_main_secondary, D3DFMT_A8R8G8B8); // Water Acc
 		rt_ssfx_ao.create(r2_RT_ssfx_ao, vp_params_main_secondary, D3DFMT_A8R8G8B8); // AO Acc
 		rt_ssfx_il.create(r2_RT_ssfx_il, vp_params_main_secondary, D3DFMT_A8R8G8B8); // IL Acc
 
@@ -598,10 +596,6 @@ CRenderTarget::CRenderTarget		()
 	s_ssfx_sss.create(b_ssfx_sss, "ssfx_sss"); // SSS
 	s_ssfx_ssr.create(b_ssfx_ssr, "ssfx_ssr"); // SSR
 	s_ssfx_volumetric_blur.create(b_ssfx_volumetric_blur, "ssfx_volumetric_blur"); // Volumetric Blur
-	
-	s_ssfx_water_ssr.create("ssfx_water_ssr"); // Water SSR
-	s_ssfx_water.create("ssfx_water"); // Water
-	s_ssfx_water_blur.create(b_ssfx_water_blur, "ssfx_water_blur"); // Water
 	s_ssfx_ao.create(b_ssfx_ao, "ssfx_ao"); // SSR
 	string32 cskin_buffer;
 	for (int skin_num = 0; skin_num < 5; skin_num++)
