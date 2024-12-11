@@ -77,6 +77,7 @@ void	CRenderTarget::phase_scene_prepare	()
 
 	//	Igor: for volumetric lights
 	m_bHasActiveVolumetric				= false;
+	m_bHasActiveVolumetric_spot			= false;
 	//	Clear later if try to draw volumetric
 }
 

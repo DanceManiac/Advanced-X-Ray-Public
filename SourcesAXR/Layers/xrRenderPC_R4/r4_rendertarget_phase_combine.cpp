@@ -379,7 +379,20 @@ void	CRenderTarget::phase_combine	()
    // Final water rendering ( All the code above can be omitted if the Water module isn't installed )
    RCache.set_xform_world(Fidentity);
    RImplementation.r_dsgraph_render_water();
-   g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
+ 
+   {
+	   if (RImplementation.o.ssfx_rain)
+	   {
+		   phase_ssfx_rain(); // Render a small color buffer to do the refraction and more
+
+		   if (!RImplementation.o.dx10_msaa)
+			   u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
+		   else
+			   u_setrt(rt_Generic_0_r, 0, 0, rt_MSAADepth->pZRT);
+	   }
+
+	   g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
+   }
 
    if (ssfx_PrevPos_Requiered)
 	   HW.pContext->CopyResource(rt_ssfx_prevPos->pTexture->surface_get(), rt_Position->pTexture->surface_get());
@@ -402,8 +415,16 @@ void	CRenderTarget::phase_combine	()
 
 	//	Igor: for volumetric lights
 	//	combine light volume here
-	if (m_bHasActiveVolumetric)
-		phase_combine_volumetric();
+	if (RImplementation.o.ssfx_volumetric)
+	{
+		if (m_bHasActiveVolumetric || m_bHasActiveVolumetric_spot)
+			phase_combine_volumetric();
+	}
+	else
+	{
+		if (m_bHasActiveVolumetric)
+			phase_combine_volumetric();
+	}
 
 	// Perform blooming filter and distortion if needed
 	RCache.set_Stencil	(FALSE);
@@ -506,7 +527,13 @@ void	CRenderTarget::phase_combine	()
 			phase_blur();
 
 		//Compute bloom (new)
-		//phase_pp_bloom();
+		if (RImplementation.o.ssfx_bloom && RImplementation.o.dx11_ss_bloom)
+		{
+			if (Render->currentViewPort == MAIN_VIEWPORT)
+				phase_ssfx_bloom();
+			else
+				HW.pContext->ClearRenderTargetView(rt_ssfx_bloom1->pRT, ColorRGBA);
+		}
 
 		// Anomaly lut
 		if (ps_r4_shaders_flags.test(R4FLAG_SS_LUT))

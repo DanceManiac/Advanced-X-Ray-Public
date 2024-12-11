@@ -582,6 +582,13 @@ extern ENGINE_API Fvector4 ps_ssfx_water;
 extern ENGINE_API Fvector4 ps_ssfx_water_setup1;
 extern ENGINE_API Fvector4 ps_ssfx_water_setup2;
 
+extern ENGINE_API Fvector4 ps_ssfx_pom;
+extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;
+
+extern ENGINE_API int ps_ssfx_bloom_use_presets;
+extern ENGINE_API Fvector4 ps_ssfx_bloom_1;
+extern ENGINE_API Fvector4 ps_ssfx_bloom_2;
+
 static class ssfx_wpn_dof_1 : public R_constant_setup
 {
 	virtual void setup(R_constant * C)
@@ -844,6 +851,53 @@ static class ssfx_hud_hemi : public R_constant_setup
 	}
 }    ssfx_hud_hemi;
 
+static class ssfx_bloom_1 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		Fvector4 BloomSetup = { 0,0,0,0 };
+
+		if (ps_ssfx_bloom_use_presets)
+		{
+			BloomSetup.x = g_pGamePersistent->Environment().CurrentEnv->bloom_threshold;
+			BloomSetup.y = g_pGamePersistent->Environment().CurrentEnv->bloom_exposure;
+			BloomSetup.w = g_pGamePersistent->Environment().CurrentEnv->bloom_sky_intensity;
+		}
+		else
+		{
+			BloomSetup.x = ps_ssfx_bloom_1.x;
+			BloomSetup.y = ps_ssfx_bloom_1.y;
+			BloomSetup.w = ps_ssfx_bloom_1.w;
+		}
+
+		RCache.set_c(C, BloomSetup);
+	}
+}    ssfx_bloom_1;
+
+static class ssfx_bloom_2 : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_bloom_2);
+	}
+}    ssfx_bloom_2;
+
+static class ssfx_terrain_pom : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_terrain_pom);
+	}
+}    ssfx_terrain_pom;
+
+static class ssfx_pom : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		RCache.set_c(C, ps_ssfx_pom);
+	}
+}    ssfx_pom;
+
 static class ssfx_issvp : public R_constant_setup
 {
 	virtual void setup(R_constant* C)
@@ -985,6 +1039,11 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("ssfx_water",			&ssfx_water);
 	r_Constant				("ssfx_water_setup1",	&ssfx_water_setup1);
 	r_Constant				("ssfx_water_setup2",	&ssfx_water_setup2);
+	r_Constant				("ssfx_pom",			&ssfx_pom);
+	r_Constant				("ssfx_terrain_pom",	&ssfx_terrain_pom);
+	r_Constant				("ssfx_bloom_1",		&ssfx_bloom_1);
+	r_Constant				("ssfx_bloom_2",		&ssfx_bloom_2);
+
 	//Reflections distance
 	r_Constant				("reflections_distance", &cl_refl_dist);
 	//AO Debug

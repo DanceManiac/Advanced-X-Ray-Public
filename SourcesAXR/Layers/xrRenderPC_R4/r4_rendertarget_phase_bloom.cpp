@@ -25,6 +25,8 @@ struct v_filter {
 };
 #pragma pack(pop)
 
+extern ENGINE_API Fvector4 ps_ssfx_bloom_2;
+
 // Gauss filtering coeffs
 // Samples:			0-central, -1, -2,..., -7, 1, 2,... 7
 // 
@@ -126,6 +128,9 @@ void CRenderTarget::phase_bloom	()
 
 	// Capture luminance values
 	phase_luminance					( );
+
+	if (RImplementation.o.ssfx_bloom)
+		return;
 
 	if (ps_r2_ls_flags.test(R2FLAG_FASTBLOOM))
 	{
@@ -331,4 +336,174 @@ void CRenderTarget::phase_bloom	()
 	// re-enable z-buffer
 	//CHK_DX		(HW.pDevice->SetRenderState	( D3DRS_ZENABLE,	TRUE				));
 	RCache.set_Z(TRUE);
+}
+
+
+void CRenderTarget::phase_ssfx_bloom()
+{
+	//Constants
+	u32 Offset = 0;
+	u32 C = color_rgba(0, 0, 0, 0);
+
+	float w = float(Device.dwWidth);
+	float h = float(Device.dwHeight);
+
+	// BLOOM BUILD ////////////////////////////////////////////////////
+	// Half resolution is the max size for everything
+	set_viewport_size(HW.pContext, w / 2.0f, h / 2.0f);
+
+	u_setrt(rt_ssfx_bloom1, 0, 0, NULL);
+	RCache.set_CullMode(CULL_NONE);
+	RCache.set_Stencil(FALSE);
+
+	// Fill vertex buffer
+	FVF::TL* pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+	pv->set(0, h, EPS_S, 1.0f, C, 0.0f, 1.0f); pv++;
+	pv->set(0, 0, EPS_S, 1.0f, C, 0.0f, 0.0f); pv++;
+	pv->set(w, h, EPS_S, 1.0f, C, 1.0f, 1.0f); pv++;
+	pv->set(w, 0, EPS_S, 1.0f, C, 1.0f, 0.0f); pv++;
+	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+	// Draw COLOR
+	RCache.set_Element(s_ssfx_bloom->E[0]);
+	RCache.set_Geometry(g_combine);
+	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+
+	// BLOOM LENS /////////////////////////////////////////////////////
+	//if (ps_r2_mask_control.x > 0)
+	{
+		set_viewport_size(HW.pContext, w / 4.0f, h / 4.0f);
+
+		u_setrt(rt_ssfx_bloom_tmp4, 0, 0, NULL);
+		RCache.set_CullMode(CULL_NONE);
+		RCache.set_Stencil(FALSE);
+
+		// Fill vertex buffer
+		pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+		pv->set(0, h, EPS_S, 1.0f, C, 0.0f, 1.0f); pv++;
+		pv->set(0, 0, EPS_S, 1.0f, C, 0.0f, 0.0f); pv++;
+		pv->set(w, h, EPS_S, 1.0f, C, 1.0f, 1.0f); pv++;
+		pv->set(w, 0, EPS_S, 1.0f, C, 1.0f, 0.0f); pv++;
+		RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+		// Draw COLOR
+		RCache.set_Element(s_ssfx_bloom_lens->E[0]);
+		RCache.set_Geometry(g_combine);
+		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+
+		// Lens 2 Phase blur
+		ref_rt* rt_LensBlur[2] = { &rt_ssfx_bloom_tmp4_2, &rt_ssfx_bloom_lens };
+
+		for (int lensblur = 0; lensblur < 2; lensblur++)
+		{
+			u_setrt(*rt_LensBlur[lensblur], 0, 0, NULL);
+			RCache.set_CullMode(CULL_NONE);
+			RCache.set_Stencil(FALSE);
+
+			// Fill vertex buffer
+			pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+			pv->set(0, h, EPS_S, 1.0f, C, 0.0f, 1.0f); pv++;
+			pv->set(0, 0, EPS_S, 1.0f, C, 0.0f, 0.0f); pv++;
+			pv->set(w, h, EPS_S, 1.0f, C, 1.0f, 1.0f); pv++;
+			pv->set(w, 0, EPS_S, 1.0f, C, 1.0f, 0.0f); pv++;
+			RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+			// Draw COLOR
+			RCache.set_Element(s_ssfx_bloom_lens->E[1 + lensblur]);
+			RCache.set_c("blur_setup", w / 4, h / 4, 0, 2.0f + (3.0f * lensblur));
+			RCache.set_Geometry(g_combine);
+			RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+		}
+	}
+
+	int SampleScale = 0;
+
+	ref_rt* rt_Down[6] = {
+		&rt_ssfx_bloom_tmp2, &rt_ssfx_bloom_tmp4, &rt_ssfx_bloom_tmp8,
+		&rt_ssfx_bloom_tmp16, &rt_ssfx_bloom_tmp32, &rt_ssfx_bloom_tmp64
+	};
+
+	// BLOOM DOWNSAMPLE ///////////////////////////////////////////////
+	for (int downsample = 0; downsample < 6; downsample++)
+	{
+		SampleScale = 1 << (downsample + 1);
+
+		set_viewport_size(HW.pContext, w / SampleScale, h / SampleScale);
+
+		u_setrt(*rt_Down[downsample], 0, 0, NULL);
+		RCache.set_CullMode(CULL_NONE);
+		RCache.set_Stencil(FALSE);
+
+		// Fill vertex buffer
+		pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+		pv->set(0, h, EPS_S, 1.0f, C, 0.0f, 1.0f); pv++;
+		pv->set(0, 0, EPS_S, 1.0f, C, 0.0f, 0.0f); pv++;
+		pv->set(w, h, EPS_S, 1.0f, C, 1.0f, 1.0f); pv++;
+		pv->set(w, 0, EPS_S, 1.0f, C, 1.0f, 0.0f); pv++;
+		RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+		// Draw COLOR
+		RCache.set_Element(s_ssfx_bloom_downsample->E[downsample]);
+		RCache.set_c("blur_setup", w / SampleScale, h / SampleScale, 0, ps_ssfx_bloom_2.x);
+		RCache.set_Geometry(g_combine);
+		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	}
+
+	// End with `rt_ssfx_bloom_tmp2`
+	ref_rt* rt_Up[5] = {
+		&rt_ssfx_bloom_tmp32_2, &rt_ssfx_bloom_tmp16_2, &rt_ssfx_bloom_tmp8_2, &rt_ssfx_bloom_tmp4_2, &rt_ssfx_bloom_tmp2
+	};
+
+	// BLOOM UPSAMPLE /////////////////////////////////////////////////
+	for (int upsample = 0; upsample < 5; upsample++)
+	{
+		SampleScale = 1 << (5 - upsample);
+
+		set_viewport_size(HW.pContext, w / SampleScale, h / SampleScale);
+
+		u_setrt(*rt_Up[upsample], 0, 0, NULL);
+		RCache.set_CullMode(CULL_NONE);
+		RCache.set_Stencil(FALSE);
+
+		// Fill vertex buffer
+		pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+		pv->set(0, h, EPS_S, 1.0f, C, 0.0f, 1.0f); pv++;
+		pv->set(0, 0, EPS_S, 1.0f, C, 0.0f, 0.0f); pv++;
+		pv->set(w, h, EPS_S, 1.0f, C, 1.0f, 1.0f); pv++;
+		pv->set(w, 0, EPS_S, 1.0f, C, 1.0f, 0.0f); pv++;
+		RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+		// Draw COLOR
+		RCache.set_Element(s_ssfx_bloom_upsample->E[upsample]);
+		RCache.set_c("blur_setup", w / SampleScale, h / SampleScale, 0, ps_ssfx_bloom_2.x);
+		RCache.set_Geometry(g_combine);
+		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+	}
+
+	// The Upsample ends with `Half Res`
+
+	// BLOOM COMBINE ///////////////////////////////////////////////
+	u_setrt(rt_ssfx_bloom1, 0, 0, NULL);
+	RCache.set_CullMode(CULL_NONE);
+	RCache.set_Stencil(FALSE);
+
+	// Fill vertex buffer
+	pv = (FVF::TL*)RCache.Vertex.Lock(4, g_combine->vb_stride, Offset);
+	pv->set(0, h, EPS_S, 1.0f, C, 0.0f, 1.0f); pv++;
+	pv->set(0, 0, EPS_S, 1.0f, C, 0.0f, 0.0f); pv++;
+	pv->set(w, h, EPS_S, 1.0f, C, 1.0f, 1.0f); pv++;
+	pv->set(w, 0, EPS_S, 1.0f, C, 1.0f, 0.0f); pv++;
+	RCache.Vertex.Unlock(4, g_combine->vb_stride);
+
+	float dirt_enabled = g_pGamePersistent ? (float)(g_pGamePersistent->GetHudGlassEnabled() && ps_r4_shaders_flags.test(R4FLAG_SS_BLOOM_MASK_DIRT) && ps_r2_postscreen_flags.test(R_FLAG_HUD_MASK)) : 0.0f;
+	
+	// Draw COLOR
+	RCache.set_Element(s_ssfx_bloom->E[1]);
+	RCache.set_c("mask_control", dirt_enabled, 0.f, 0.0f, 0.f);
+	RCache.set_Geometry(g_combine);
+	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
+
+
+	// Restore Viewport
+	set_viewport_size(HW.pContext, Device.dwWidth, Device.dwHeight);
 }

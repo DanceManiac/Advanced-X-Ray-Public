@@ -30,6 +30,9 @@ light::light		(void)	: ISpatial(g_SpatialSpace)
 
 	frame_render	= 0;
 	vp_render		= 0;
+	omnipart_num	= 0;
+	sss_id			= -1;
+	sss_refresh		= 0;
 
 #if (RENDER==R_R2) || (RENDER==R_R4)
 	ZeroMemory		(omnipart,sizeof(omnipart));
@@ -321,6 +324,9 @@ void	light::export_to	(light_Package& package)
 						L->s_spot			= s_spot	;
 						L->s_point			= s_point	;
 						L->set_flare		(flags.bFlare);
+						L->omnipart_num		= f;
+						L->omipart_parent	= omnipart[0];
+						L->flags.bActive	= true;
 						
 						// Holger - do we need to export msaa stuff as well ?
 #if	(RENDER==R_R4)
@@ -381,6 +387,7 @@ float	light::get_LOD					()
 {
 	if	(!flags.bShadow)	return 1;
 	float	distSQ			= Device.vCameraPosition.distance_to_sqr(spatial.sphere.P)+EPS;
+	distance				= distSQ;
 	float	ssa				= ps_r2_slight_fade * spatial.sphere.R/distSQ;
 	float	lod				= _sqrt(clampr((ssa - r_ssaGLOD_end)/(r_ssaGLOD_start-r_ssaGLOD_end),0.f,1.f));
 	return	lod	;

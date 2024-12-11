@@ -64,6 +64,7 @@ void	CBlender_accum_spot::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			C.L_textures[0]);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
+		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss_tmp);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -93,6 +94,7 @@ void	CBlender_accum_spot::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			C.L_textures[0]);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
+		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss_tmp);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -121,6 +123,7 @@ void	CBlender_accum_spot::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			C.L_textures[0]);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
+		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss_tmp);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -198,6 +201,7 @@ void	CBlender_accum_spot_msaa::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			C.L_textures[0]);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
+		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss_tmp);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -227,6 +231,7 @@ void	CBlender_accum_spot_msaa::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			C.L_textures[0]);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
+		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss_tmp);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");
@@ -255,6 +260,7 @@ void	CBlender_accum_spot_msaa::Compile(CBlender_Compile& C)
 		C.r_dx10Texture		("s_lmap",			C.L_textures[0]);
 		C.r_dx10Texture		("s_smap",			r2_RT_smap_depth);
 		C.r_dx10Texture		("s_accumulator",	r2_RT_accum);
+		C.r_dx10Texture		("s_ssfx_sss",		r2_RT_ssfx_sss_tmp);
 
 		C.r_dx10Sampler		("smp_nofilter");
 		C.r_dx10Sampler		("smp_material");

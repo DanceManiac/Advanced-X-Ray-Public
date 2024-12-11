@@ -226,14 +226,14 @@ void	CRender::render_lights	(light_Package& LP)
 				float h = float(Device.dwHeight);
 
 				// Adjust resolution
-				if (RImplementation.o.ssfx_volumetric && ps_ssfx_volumetric.w > 1)
-					Target->set_viewport_size(HW.pContext, w / ps_ssfx_volumetric.w, h / ps_ssfx_volumetric.w);
+				if (RImplementation.o.ssfx_volumetric)
+					Target->set_viewport_size(HW.pContext, w / 8, h / 8);
 
 				for (u32 it = 0; it < L_spot_s.size(); it++)
 					Target->accum_volumetric(L_spot_s[it]);
 
 				// Restore resolution
-				if (RImplementation.o.ssfx_volumetric && ps_ssfx_volumetric.w > 1)
+				if (RImplementation.o.ssfx_volumetric)
 					Target->set_viewport_size(HW.pContext, w, h);
 			}
 

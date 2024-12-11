@@ -5,6 +5,7 @@
 #include "../../xrEngine/x_ray.h"
 
 int current_items;
+extern ENGINE_API Fvector4 ps_ssfx_rain_drops_setup;
 
 dxRainRender::dxRainRender()
 {
@@ -75,6 +76,9 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	ref_shader& _splash_SH = DM_Drop->shader;
 	static shared_str s_shader_setup = "ssfx_rain_setup";
 
+	int rain_max_particles = m_imax_desired_items;
+	float rain_radius = m_fsource_radius;
+
 	// SSS Rain shader is available
 #if defined(USE_DX11)
 	if (ps_r4_shaders_flags.test(R4FLAG_SSS_ADDON) && RImplementation.o.ssfx_rain)
@@ -83,10 +87,12 @@ void dxRainRender::Render(CEffect_Rain &owner)
 		_drop_width = ps_ssfx_rain_1.y;
 		_drop_speed = ps_ssfx_rain_1.z;
 		_splash_SH = SH_Splash;
+		rain_max_particles = ps_ssfx_rain_drops_setup.x;
+		rain_radius = ps_ssfx_rain_drops_setup.y;
 	}
 #endif
 
-	u32 desired_items = iFloor(0.01f * (1.f + factor * 99.0f) * m_imax_desired_items);
+	u32 desired_items = iFloor(0.01f * (1.f + factor * 99.0f) * rain_max_particles);
 
 	// Get to the desired items
 	if (current_items < desired_items)
@@ -98,14 +104,14 @@ void dxRainRender::Render(CEffect_Rain &owner)
 	u32			u_rain_color	= color_rgba_f(f_rain_color.x,f_rain_color.y,f_rain_color.z,factor_visual);
 
 	// born _new_ if needed
-	float	b_radius_wrap_sqr	= _sqr((m_fsource_radius * 1.5f));
+	float	b_radius_wrap_sqr	= _sqr((rain_radius * 1.5f));
 	if (owner.items.size() < current_items)
 	{
 		// owner.items.reserve		(desired_items);
 		while (owner.items.size() < current_items)
 		{
 			CEffect_Rain::Item				one;
-			owner.Born					(one, m_fsource_radius, _drop_speed);
+			owner.Born					(one, rain_radius, _drop_speed);
 			owner.items.push_back		(one);
 		}
 	}
@@ -136,7 +142,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 
 		if (one.dwTime_Life < Device.dwTimeGlobal)
 		{
-			owner.Born(one, m_fsource_radius, _drop_speed);
+			owner.Born(one, rain_radius, _drop_speed);
 
 			if (current_items > desired_items)
 				current_items--; // Out of life ( invalidated, never hit something, etc. )
@@ -161,7 +167,7 @@ void dxRainRender::Render(CEffect_Rain &owner)
 				Fvector		inv_dir, src_p;
 				inv_dir.invert(one.D);
 				wdir.div	(wlen);
-				one.P.mad	(one.P, wdir, -(wlen+m_fsource_radius));
+				one.P.mad	(one.P, wdir, -(wlen + rain_radius));
 				if (src_plane.intersectRayPoint(one.P,inv_dir,src_p)){
 					float dist_sqr	= one.P.distance_to_sqr(src_p);
 					float height	= m_fmax_distance;

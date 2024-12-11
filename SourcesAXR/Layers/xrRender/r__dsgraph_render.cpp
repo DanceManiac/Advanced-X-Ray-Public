@@ -95,8 +95,8 @@ void __fastcall water_node_ssr(const T& N)
 	RImplementation.apply_lmaterial();
 	RCache.set_c("cam_pos", RImplementation.Target->Position_previous.x, RImplementation.Target->Position_previous.y, RImplementation.Target->Position_previous.z, 0.0f);
 	// Previous matrix data
-	RCache.set_c("m_previous", N.second.PrevMatrix);
-	N.second.PrevMatrix.set(RCache.xforms.m_wvp);
+	RCache.set_c("m_current", RImplementation.Target->Matrix_current);
+	RCache.set_c("m_previous", RImplementation.Target->Matrix_previous);
 	V->Render(calcLOD(N.second.ssa, V->vis.sphere.R));
 #endif
 }
@@ -670,12 +670,14 @@ void	R_dsgraph_structure::r_dsgraph_render_hud_sorted()
 
 //////////////////////////////////////////////////////////////////////////
 // strict-sorted render
-void	R_dsgraph_structure::r_dsgraph_render_emissive	()
+void	R_dsgraph_structure::r_dsgraph_render_emissive	(bool clear, bool renderHUD)
 {
 #if	RENDER!=R_R1
 	// Sorted (back to front)
 	mapEmissive.traverse_left_right(sorted_L1);
-	mapEmissive.clear		();
+	
+	if (clear)
+		mapEmissive.clear();
 
 	//	HACK: Calculate this only once
 
@@ -685,7 +687,12 @@ void	R_dsgraph_structure::r_dsgraph_render_emissive	()
 
 		// Sorted (back to front)
 		mapHUDEmissive.traverse_left_right(sorted_L1);
-		mapHUDEmissive.clear();
+		
+		if (clear)
+			mapHUDEmissive.clear();
+
+		if (renderHUD)
+			mapHUDSorted.traverse_right_left(sorted_L1);
 	}
 #endif
 }

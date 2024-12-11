@@ -339,6 +339,13 @@ void CDetailManager::UpdateVisibleM()
 				if (RDEVICE.dwFrame>S.frame){
 					// Calc fade factor	(per slot)
 					float	dist_sq		= EYE.distance_to_sqr	(S.vis.sphere.P);
+
+					if (dist_sq > fade_limit)
+					{
+						S.hidden = true;
+						continue;
+					}
+
 					if		(dist_sq>fade_limit)				continue;
 					float	alpha		= (dist_sq<fade_start)?0.f:(dist_sq-fade_start)/fade_range;
 					float	alpha_i		= 1.f - alpha;
@@ -365,6 +372,7 @@ void CDetailManager::UpdateVisibleM()
 							float	ssa = ps_no_scale_on_fade ? scale : scale * scale*Rq_drcp;
 							if (ssa < r_ssaDISCARD)
 							{
+								Item.alpha_target = 0;
 								continue;
 							}
 							u32		vis_id			= 0;
@@ -372,6 +380,13 @@ void CDetailManager::UpdateVisibleM()
 							
 							sp.r_items[vis_id].push_back	(el);
 
+							if (S.hidden)
+							{
+								Item.alpha = 0;
+								S.hidden = false;
+							}
+
+							Item.alpha_target = 1;
 							Item.distance = dist_sq;
 							Item.position = S.vis.sphere.P;
 
