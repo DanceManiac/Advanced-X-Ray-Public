@@ -13,6 +13,7 @@
 
 Texture2D s_half_depth;
 #include "ssao.ps"
+#include "ssdo.ps"
 
 #ifdef HDAO
 #define USE_HDAO 1
@@ -52,6 +53,14 @@ Texture2D<float> s_occ;
 #endif	//	USE_SSDO
 #endif // USE_HDAO
 
+#ifdef SSFX_AO
+	#include "settings_screenspace_AO.h"
+
+	uniform float4 ssfx_ao_setup;
+	uniform float4 ssfx_ao_setup2;
+	Texture2D ssfx_ao;
+#endif
+
 #ifdef SSFX_INDIRECT_LIGHT
 	#include "settings_screenspace_IL.h"
 
@@ -59,6 +68,9 @@ Texture2D<float> s_occ;
 	uniform float4 ssfx_il_setup;
 	uniform float4 ssfx_il_setup2;
 #endif
+
+uniform float4 ssfx_hud_hemi;
+Texture2D s_ssfx_hud_mask;
 
 struct	_input
 {
@@ -150,6 +162,9 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 #ifdef USE_SSDO
     occ = calc_ssdo(P, N, I.tc0);
 #endif //USE SSDO
+#ifdef SSFX_AO
+    occ = calc_ssdo(P, N, I.tc0, I.pos2d, ISAMPLE);
+#endif //USE SSDO
 #endif // USE_HDAO
 
 #ifdef SSAO_QUALITY
@@ -163,7 +178,19 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 	
 	// hemisphere
 	float3 hdiffuse, hspecular;
-	hmodel	(hdiffuse, hspecular, mtl, N.w, D, P.xyz, N.xyz);
+
+	// HUD Mask
+	float HudMask = s_ssfx_hud_mask.Sample(smp_linear, I.tc0).r;
+
+	// HUD hemi
+	float env_fac = 1.0 - saturate(dot(env_color.rgb, 0.15f));
+	float hud_hemi = N.w + ssfx_hud_hemi.x * env_fac;
+
+#ifdef ENCHANTED_SHADERS_ENABLED	
+	hmodel	(hdiffuse, hspecular, mtl, lerp(hud_hemi, N.w, HudMask), D, P.xyz, N.xyz);
+#else //No enchanted shaders	
+	hmodel	(hdiffuse, hspecular, mtl, lerp(hud_hemi, N.w, HudMask), D.w, P.xyz, N.xyz);
+#endif
 	
 	// IL Implementation
 #ifdef SSFX_INDIRECT_LIGHT
@@ -173,6 +200,9 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 	// Lower highs ~ Higher lows.
 	IL_sample *= 1.0f / (1.0 + IL_sample);
 
+	// Apply HUD intensity
+	IL_sample *= lerp(ssfx_il_setup2.y, 1.0f, HudMask);
+
 	// Vibrance
 	IL_sample = vibrance( IL_sample, ssfx_il_setup.z );
 
@@ -180,8 +210,15 @@ _out main ( _input I, uint iSample : SV_SAMPLEINDEX )
 		
 #endif
 
-	hdiffuse *= occ;	
+	// AO implementation
+#ifdef SSFX_AO
+	hdiffuse.rgb *= ssfx_ao.Sample(smp_linear, I.tc0).www;
+#else
+	hdiffuse *= occ;
+#endif
 
+	hdiffuse.rgb = saturate(hdiffuse.rgb);
+	
 	//hspecular *= occ;
 
 		float3       color     = L.rgb + hdiffuse.rgb;

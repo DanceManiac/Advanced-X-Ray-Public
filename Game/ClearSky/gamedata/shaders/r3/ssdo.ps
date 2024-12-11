@@ -1,16 +1,24 @@
-/**
- * @ Version: SCREEN SPACE SHADERS - UPDATE 14.6
- * @ Description: SSDO implementation
- * @ Modified time: 2023-02-07 00:11
- * @ Author: https://www.moddb.com/members/ascii1457
- * @ Mod: https://www.moddb.com/mods/stalker-anomaly/addons/screen-space-shaders
- */
+/*
+				/////////////////
+		Screen-Space Directional Occlusion.
+		Based on Tobias Ritschel tech paper.
+		Implemented by K.D. (OGSE team)
+			
+		Tweaked and modified by LVutner
+				/////////////////	
+				Credits: KD, Xerxes1138		
+				/////////////////
 
-#ifndef SSFX_READY
-	#include "screenspace_common.h"
-#endif
 
-#include "settings_screenspace_AO.h"
+				/////////////////
+				Anomaly Team 2020
+				/////////////////
+	////////////////////////////////////////////////
+	Do not copy or redistribute without permission.
+	////////////////////////////////////////////////
+*/
+
+#include "common.h"
 
 #ifndef SSAO_QUALITY
 float calc_ssdo (float3 P, float3 N, float2 tc, float4 pos2d, uint iSample)
@@ -20,134 +28,79 @@ float calc_ssdo (float3 P, float3 N, float2 tc, float4 pos2d, uint iSample)
 
 #else // SSAO_QUALITY
 
-// Internal values
+//Quality tokens
 #if SSAO_QUALITY == 3
-	#define G_SSDO_SAMPLE 32
+	#define SSDO_SAMPLE 32
 #elif SSAO_QUALITY == 2
-	#define G_SSDO_SAMPLE 16
+	#define SSDO_SAMPLE 16
 #elif SSAO_QUALITY == 1
-	#define G_SSDO_SAMPLE 8
+	#define SSDO_SAMPLE 8
 #endif
 
-float calc_ssdo (float4 P, float3 N, float2 tc, float4 pos2d, uint iSample)
-{	
-	// Rendering AO till G_SSDO_RENDER_DIST
-	if (P.z >= G_SSDO_RENDER_DIST || P.z <= SKY_EPS)
-		return 1;
+static const float3 hemisphere[32] =
+{
+	float3(-0.134, 0.044, -0.825),	float3(0.045, -0.431, -0.529),	float3(-0.537, 0.195, -0.371),
+	float3(0.525, -0.397, 0.713),	float3(0.895, 0.302, 0.139),	float3(-0.613, -0.408, -0.141),
+	float3(0.307, 0.822, 0.169),	float3(-0.819, 0.037, -0.388),	float3(0.376, 0.009, 0.193),
+	float3(-0.006, -0.103, -0.035),	float3(0.098, 0.393, 0.019),	float3(0.542, -0.218, -0.593),
+	float3(0.526, -0.183, 0.424),	float3(-0.529, -0.178, 0.684),	float3(0.066, -0.657, -0.570),
+	float3(-0.214, 0.288, 0.188),	float3(-0.689, -0.222, -0.192),	float3(-0.008, -0.212, -0.721),
+	float3(0.053, -0.863, 0.054),	float3(0.639, -0.558, 0.289),	float3(-0.255, 0.958, 0.099),
+	float3(-0.488, 0.473, -0.381),	float3(-0.592, -0.332, 0.137),	float3(0.080, 0.756, -0.494),
+	float3(-0.638, 0.319, 0.686),	float3(-0.663, 0.230, -0.634),	float3(0.235, -0.547, 0.664),
+	float3(0.164, -0.710, 0.086),	float3(-0.009, 0.493, -0.038),	float3(-0.322, 0.147, -0.105),
+	float3(-0.554, -0.725, 0.289),	float3(0.534, 0.157, -0.250),
+};
+
+float calc_ssdo (float3 P, float3 N, float2 tc, float4 pos2d, uint iSample)
+{
+	float SSAO_DEPTH_THRESHOLD = 1.0; //Depth threshold
+	float SSDO_RADIUS_MIN = 0.2; //Minimal radius - aka pseudoBakedAO
+	float SSDO_RADIUS_MAX = 30.0; //Max radius
+	float SSDO_RADIUS = smoothstep(SSDO_RADIUS_MIN, SSDO_RADIUS_MAX, length(P.xyz)); //Dynamic radius, to simulate various AO scales
+	float SSDO_RENDER_DIST = 125.0; //Rendering distance
 	
-	// Ao Noise
-	float ao_noise = frac(sin(dot(tc, float2(12.0, 78.0))) * 43758.0) * clamp(P.z * 0.05f, G_SSDO_NOISE_MIN, G_SSDO_NOISE_MAX);
+	//Return 1.0 to prevent rendering this uhh after certain distance...
+	if(P.z >= SSDO_RENDER_DIST)
+		return 1.0;
 
-	// MAT_FLORA from current pixel?
-	bool mat_flora = abs(P.w - MAT_FLORA) <= 0.04f;
-
-	// If MAT_FLORA we use a fake normal to align the hemisphere ( We can't trust much about flora normal )
-	N.xyz = mat_flora ? float3(0.0f, 0.25f, 0.0f) : N.xyz;
-
-	// A factor to adjust some values to only affect weapons ( closer objects )
-	float WeaponFactor = 1.0f - smoothstep(G_SSDO_WEAPON_LENGTH * 0.5f, G_SSDO_WEAPON_LENGTH, length(P.xyz));
+	//Sample jitter texture
+	float3 noise = jitter0.Sample(smp_jitter, tc * 64.0).xyz;
 	
-	// Var to accumulate the AO
-	float occ = 0;
+	//Accumulate our lovely AO.
+	float occ = 0.0;	
 
-	// AO Radius
-	float radius = G_SSDO_RADIUS;
-	
-	// Radius weapon adjustements
-	radius *= lerp(1.0f, G_SSDO_WEAPON_RADIUS * clamp(P.z * 2.0f, 0.2f, 1.0f), WeaponFactor);
-	
-#ifdef G_SSDO_DETAILED_RADIUS
-	float detail_radius = radius * lerp(G_SSDO_DETAILED_RADIUS, G_SSDO_DETAILED_WEAPON_RADIUS, WeaponFactor);
-#endif
-
-	[unroll (G_SSDO_SAMPLE)]
-	for (int i = 0; i < G_SSDO_SAMPLE; i++)
+	[unroll (SSDO_SAMPLE)]
+	for (int i = 0; i < SSDO_SAMPLE; i++)
 	{
-		// Use surface normal and add the hemisphere distribution
-		float3 sample_rays = (ssfx_hemisphere[i] + N.xyz) * (1.0f + ao_noise);
-
-		// Sample position
-		float3 occ_pos = P.xyz + sample_rays * radius;
+		//Get reflection sample from hemisphere points and noise, later put normals for moar details
+		float3 reflection_sample = reflect(hemisphere[i], noise) + N.xyz;
 		
-		// Sample position to UV
-		float2 occ_pos_uv = SSFX_view_to_uv(occ_pos);
+		float3 occ_pos_view = P.xyz + reflection_sample * SSDO_RADIUS;
+		float4 occ_pos_screen = proj_to_screen(mul(m_P, float4(occ_pos_view, 1.0)));
+		occ_pos_screen.xy /= occ_pos_screen.w;
 		
-		// Process valid UV coor
-		if (SSFX_is_valid_uv(occ_pos_uv))
-		{
-			// Sample depth buffer
-			float4 sample_pos = SSFX_get_position(occ_pos_uv, iSample);
-		
-			// AO Distance attenuation. To discard incorrect AO and add some attenuation through distance.
-			float atte = lerp( 0.1f, 4.0f, smoothstep(G_SSDO_WEAPON_LENGTH * 0.5f, G_SSDO_WEAPON_LENGTH, sample_pos.z));
-
-			// Pixel occluded?
-			float AO = step(sample_pos.z, occ_pos.z);
-
-			// Detailed Search if there's no AO
-#ifdef G_SSDO_DETAILED_SEARCH
-			if (AO < 1)
-			{
-				// Same has before but with smaller radius
-				occ_pos = P.xyz + sample_rays * detail_radius;
-				occ_pos_uv = SSFX_view_to_uv(occ_pos); // We don't check for a valid UV coor, is already done and this sample radius is smaller ( in theory )
-				sample_pos = SSFX_get_position(occ_pos_uv, iSample); // Get Sample
-				AO = step(sample_pos.z, occ_pos.z); // Check occlusion
-				atte *= saturate(detail_radius + WeaponFactor); // Adjust attenuation for the scenary AO
-			}
-#endif
-
-			// Distance between pixel and "occluder"
-			float3 Dist = distance(float3(occ_pos_uv.x, occ_pos_uv.y, sample_pos.z), float3(tc.x, tc.y, P.z));
-
-			// Difference attenuation
-			AO *= 1.0 - smoothstep(0.0f, atte, Dist );
-
-			// MAT_FLORA from sample?
-			bool sample_mat_flora = abs(gbuf_unpack_mtl(sample_pos.w) - MAT_FLORA) <= 0.04f || mat_flora;
+		//Sample depth buffer
+	#ifndef SSAO_OPT_DATA
+		#ifndef USE_MSAA
+			float screen_occ = s_position.Sample(smp_nofilter, occ_pos_screen.xy).z;	
+		#else
+			float screen_occ = s_position.Load(int3(occ_pos_screen.xy * screen_res.xy, 0 ), iSample).z;
+		#endif
+	#else
+		float screen_occ = s_half_depth.SampleLevel(smp_nofilter, occ_pos_screen.xy, 0).x;
+	#endif
+	
+		//Return 0.0 if ray hits the sky
+		screen_occ = lerp(screen_occ, 0.0f, is_sky(screen_occ));
 			
-			// Value for dot product for full intensity ( Adjust value for WeaponFactor, we want a extremely sensitive AO for weapons )
-			float N_a = saturate( WeaponFactor ) * 0.8f;
-
-			// Dot product using current normal and sampled normal to adjust intensity ( Change mode if MAT_FLORA )
-			if (!sample_mat_flora)
-				AO *= smoothstep(1.0f, N_a, dot(gbuf_unpack_normal( sample_pos.xy ), N ));
-			else
-				AO *= G_SSDO_FLORA_INTENSITY;
-
-			// Discard incorrect occlusion from the sky.
-			AO *= !is_sky(sample_pos.z);
-
-			// Accumulate final AO
-			occ += AO;
-		}
-		else
-		{
-			// Try next step with less radius
-			radius *= 0.75f;
-		}
+		//Someone can explain maths below? KD never told me anything about that... Crazy things	
+		float is_occluder = step(occ_pos_view.z, screen_occ);
+		float occ_coeff = saturate(is_occluder + saturate(1.0 - screen_occ) + step(SSAO_DEPTH_THRESHOLD, abs(P.z-screen_occ)));
+		occ += occ_coeff;
 	}
-	
-	// Normalize AO
-	occ /= G_SSDO_SAMPLE;
-	
-	// Invert AO
-	occ = 1.0f - occ;
-	
-	// AO intensity 
-	occ = pow(occ, G_SSDO_INTENSITY * (1.0f - (1.0f - G_SSDO_WEAPON_INTENSITY) * WeaponFactor));
-
-	// AO softer
-	occ = lerp(occ, sqrt(occ), G_SSDO_SMOOTH);
-
-	// Limit AO maximum occlusion
-	occ = clamp(occ, G_SSDO_MAX_OCCLUSION, 1.0f);
-
-	// Fadeout using G_SSDO_RENDER_DIST
-	occ += smoothstep(G_SSDO_RENDER_DIST * 0.8f, G_SSDO_RENDER_DIST, P.z);
-
-	// Return AO
-	return saturate(occ);
+	occ /= SSDO_SAMPLE;
+	occ = saturate(occ);
+	return occ;
 }
-
 #endif // SSAO_QUALITY

@@ -11,13 +11,11 @@
 Texture2D water_waves;
 
 uniform float4 wind_setup;
-uniform float4 wind_params;
-
 
 float4 main ( p_screen I ) : SV_Target
 {
-	float Wind_Int = saturate(wind_params.y * 0.2f);
-	float TimeSpeed = clamp(0.67f * Wind_Int, 0.1f, 0.67f);
+	float Wind_Int = saturate(wind_setup.y * 0.045);
+	float TimeSpeed = clamp(0.67f * Wind_Int, 0.3f, 0.67f);
 
 	float4 Tc = 0;
 	Tc.xy = I.tc0.xy + wind_setup.xx * float2(0.065f, 0.445f) * TimeSpeed;
