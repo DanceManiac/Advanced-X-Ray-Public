@@ -464,7 +464,7 @@ extern ENGINE_API int ps_ssfx_terrain_grass_align;			// Grass align
 extern ENGINE_API float ps_ssfx_terrain_grass_slope;		// Grass slope limit // Recommended 0.3f
 extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;				// Samples, Range, Height, Water Limit
 extern ENGINE_API int ps_ssfx_terrain_pom_refine;
-extern ENGINE_API int ps_ssfx_bloom_use_presets;
+extern ENGINE_API int ps_ssfx_bloom_from_weather;
 extern ENGINE_API Fvector4 ps_ssfx_bloom_1;					// Threshold, Exposure, -, Sky
 extern ENGINE_API Fvector4 ps_ssfx_bloom_2;					// Blur Radius, Vibrance, Lens, Dirt
 extern ENGINE_API Fvector4 ps_ssfx_sss_quality;				// Dir Samples, Omni Samples, Dir Enable, Omni Enable
@@ -1459,7 +1459,7 @@ void		xrRender_initconsole	()
 	CMD4(CCC_Integer,		"ssfx_terrain_grass_align",		&ps_ssfx_terrain_grass_align, 0, 1);
 	CMD4(CCC_Float,			"ssfx_terrain_grass_slope",		&ps_ssfx_terrain_grass_slope, 0, 1);
 	CMD4(CCC_Vector4,		"ssfx_terrain_pom",				&ps_ssfx_terrain_pom,		Fvector4().set(0, 0, 0, 0), Fvector4().set(36, 60, 1, 2));
-	CMD4(CCC_Integer,		"ssfx_bloom_use_presets",		&ps_ssfx_bloom_use_presets, 0, 1);
+	CMD4(CCC_Integer,		"ssfx_bloom_from_weather",		&ps_ssfx_bloom_from_weather, 0, 1);
 	CMD4(CCC_Vector4,		"ssfx_bloom_1",					&ps_ssfx_bloom_1,			Fvector4().set(1, 1, 0, 0), Fvector4().set(10, 100, 100, 10));
 	CMD4(CCC_Vector4,		"ssfx_bloom_2",					&ps_ssfx_bloom_2,			Fvector4().set(1, 0, 0, 0), Fvector4().set(5, 10, 10, 10));
 	CMD4(CCC_Vector4,		"ssfx_sss_quality",				&ps_ssfx_sss_quality,		Fvector4().set(1, 1, 0, 0), Fvector4().set(24, 12, 1, 1));

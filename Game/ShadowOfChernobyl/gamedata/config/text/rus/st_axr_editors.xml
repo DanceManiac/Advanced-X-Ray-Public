@@ -102,6 +102,9 @@
 	<string id="st_weather_editor_clr_grad_options">
 		<text>Настройки цветокоррекции</text>
 	</string>
+	<string id="st_weather_editor_bloom_options">
+		<text>Настройки блума</text>
+	</string>
 	<string id="st_weather_editor_dof_options">
 		<text>Настройки глубины резкозти</text>
 	</string>

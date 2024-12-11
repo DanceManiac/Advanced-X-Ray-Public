@@ -583,7 +583,7 @@ extern ENGINE_API Fvector3 ps_ssfx_water_parallax_quality;
 extern ENGINE_API Fvector4 ps_ssfx_pom;
 extern ENGINE_API Fvector4 ps_ssfx_terrain_pom;
 
-extern ENGINE_API int ps_ssfx_bloom_use_presets;
+extern ENGINE_API int ps_ssfx_bloom_from_weather;
 extern ENGINE_API Fvector4 ps_ssfx_bloom_1;
 extern ENGINE_API Fvector4 ps_ssfx_bloom_2;
 
@@ -839,7 +839,7 @@ static class ssfx_bloom_1 : public R_constant_setup
 	{
 		Fvector4 BloomSetup = { 0,0,0,0 };
 
-		if (ps_ssfx_bloom_use_presets)
+		if (ps_ssfx_bloom_from_weather)
 		{
 			BloomSetup.x = g_pGamePersistent->Environment().CurrentEnv->bloom_threshold;
 			BloomSetup.y = g_pGamePersistent->Environment().CurrentEnv->bloom_exposure;
