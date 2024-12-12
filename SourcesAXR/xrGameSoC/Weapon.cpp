@@ -71,11 +71,12 @@ CWeapon::CWeapon(LPCSTR name)
 
 	eHandDependence			= hdNone;
 
-	m_zoom_params.m_fCurrentZoomFactor	= GameConstants::GetOGSE_WpnZoomSystem() ? 1.f : g_fov;
-	m_zoom_params.m_fZoomRotationFactor	= 0.f;
-	m_zoom_params.m_pVision				= nullptr;
-	m_zoom_params.m_pNight_vision			= nullptr;
-	m_zoom_params.m_fSecondVPFovFactor	= 0.0f;
+	m_zoom_params.m_fCurrentZoomFactor			= GameConstants::GetOGSE_WpnZoomSystem() ? 1.f : g_fov;
+	m_zoom_params.m_fZoomRotationFactor			= 0.f;
+	m_zoom_params.m_pVision						= NULL;
+	m_zoom_params.m_pNight_vision				= NULL;
+	m_zoom_params.m_fSecondVPFovFactor			= 0.0f;
+	m_zoom_params.m_f3dZoomFactor				= 0.0f;
 
 	m_pAmmo					= NULL;
 
@@ -533,11 +534,11 @@ void CWeapon::Load		(LPCSTR section)
 	camDispertionFrac			= READ_IF_EXISTS(pSettings, r_float, section, "cam_dispersion_frac",	0.7f);
 	//  [8/2/2005]
 	//m_fParentDispersionModifier = READ_IF_EXISTS(pSettings, r_float, section, "parent_dispersion_modifier",1.0f);
-	m_fPDM_disp_base			= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_base",	1.0f);
-	m_fPDM_disp_vel_factor		= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_vel_factor",	1.0f);
-	m_fPDM_disp_accel_factor	= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_accel_factor",	1.0f);
-	m_fPDM_disp_crouch			= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_crouch",	1.0f);
-	m_fPDM_disp_crouch_no_acc	= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_crouch_no_acc",	1.0f);
+	m_pdm.m_fPDM_disp_base			= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_base",	1.0f);
+	m_pdm.m_fPDM_disp_vel_factor	= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_vel_factor", 1.0f);
+	m_pdm.m_fPDM_disp_accel_factor	= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_accel_factor",	1.0f);
+	m_pdm.m_fPDM_disp_crouch		= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_crouch",	1.0f);
+	m_pdm.m_fPDM_disp_crouch_no_acc	= READ_IF_EXISTS(pSettings, r_float, section, "PDM_disp_crouch_no_acc",	1.0f);
 	//  [8/2/2005]
 
 	fireDispersionConditionFactor = pSettings->r_float(section,"fire_dispersion_condition_factor"); 
@@ -602,9 +603,6 @@ void CWeapon::Load		(LPCSTR section)
 	m_eLaserDesignatorStatus = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "laser_designator_status", 0);
 	m_eTacticalTorchStatus	 = (ALife::EWeaponAddonStatus)READ_IF_EXISTS(pSettings, r_s32, section, "tactical_torch_status", 0);
 
-	// Added by Axel, to enable optional condition use on any item
-	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
-
 	m_zoom_params.m_bZoomEnabled = !!pSettings->r_bool(section,"zoom_enabled");
 	m_zoom_params.m_fZoomRotateTime = ROTATION_TIME;
 	//if(m_bZoomEnabled && m_pHUD) LoadZoomOffset(*hud_sect, "");
@@ -644,11 +642,13 @@ void CWeapon::Load		(LPCSTR section)
 
 	//////////////////////////////////////////////////////////
 
-	m_bHasTracers = READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
-	m_u8TracerColorID = READ_IF_EXISTS(pSettings, r_u8, section, "tracers_color_ID", u8(-1));
+
+	m_bHasTracers			= !!READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
+	m_u8TracerColorID		= READ_IF_EXISTS(pSettings, r_u8, section, "tracers_color_ID", u8(-1));
 
 	string256						temp;
-	for (int i=egdNovice; i<egdCount; ++i) {
+	for (int i=egdNovice; i<egdCount; ++i) 
+	{
 		strconcat					(sizeof(temp),temp,"hit_probability_",get_token_name(difficulty_type_token,i));
 		m_hit_probability[i]		= READ_IF_EXISTS(pSettings,r_float,section,temp,1.f);
 	}
@@ -710,15 +710,6 @@ void CWeapon::Load		(LPCSTR section)
 			}
 		}
 	}
-
-	// Added by Axel, to enable optional condition use on any item
-	m_flags.set						(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
-	m_bShowWpnStats					= READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
-	m_bEnableBoreDof				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_dof", true);
-	m_bUseAimAnmDirDependency		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
-	m_bUseScopeAimMoveAnims			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
-	m_bUseAimSilShotAnim			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_silencer_shoot_anm", false);
-	m_bAltZoomEnabled				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
 
 	if (!laser_light_render && m_eLaserDesignatorStatus)
 	{
@@ -801,6 +792,15 @@ void CWeapon::Load		(LPCSTR section)
 	LPCSTR repair_kits = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kits", "repair_kit");
 	LPCSTR items_for_repair = READ_IF_EXISTS(pSettings, r_string, section, "items_for_repair", "");
 
+
+	// Added by Axel, to enable optional condition use on any item
+	m_flags.set(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", true));
+	m_bShowWpnStats					= READ_IF_EXISTS(pSettings, r_bool, section, "show_wpn_stats", true);
+	m_bEnableBoreDof				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_dof", true);
+	m_bUseAimAnmDirDependency		= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_anm_dir_dependency", false);
+	m_bUseScopeAimMoveAnims			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
+	m_bUseAimSilShotAnim			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_silencer_shoot_anm", false);
+	m_bAltZoomEnabled				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
 	if (repair_kits && repair_kits[0])
 	{
 		string128 repair_kits_sect;
@@ -1797,14 +1797,14 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 					}
 				}
 			} 
-            return true;
+			return true;
 
 		case kWPN_ZOOM:
 			if(IsZoomEnabled())
 			{
-                if(flags&CMD_START && !IsPending())
+				if(flags&CMD_START && !IsPending())
 					OnZoomIn();
-                else if(IsZoomed())
+				else if(IsZoomed())
 					OnZoomOut();
 				return true;
 			}else 
@@ -1890,7 +1890,7 @@ int CWeapon::GetAmmoCurrent(bool use_item_to_spawn) const
 	if(m_pCurrentInventory->ModifyFrame()<=m_dwAmmoCurrentCalcFrame)
 		return l_count + iAmmoCurrent;
 
- 	m_dwAmmoCurrentCalcFrame = Device.dwFrame;
+	m_dwAmmoCurrentCalcFrame = Device.dwFrame;
 	iAmmoCurrent = 0;
 
 	for(int i = 0; i < (int)m_ammoTypes.size(); ++i) 

@@ -233,8 +233,7 @@ void CCarLights::TurnOffHeadLights()
 
 void CCarLights::SwitchIndoorLights()
 {
-
-	VERIFY(!physics_world()->Processing());
+	VERIFY(!ph_world->Processing());
 	LIGHTS_I i = m_indoor_lights.begin(), e = m_indoor_lights.end();
 
 	for (; i != e; ++i)
@@ -244,7 +243,7 @@ void CCarLights::SwitchIndoorLights()
 void CCarLights::TurnOnIndoorLights()
 {
 
-	VERIFY(!physics_world()->Processing());
+	VERIFY(!ph_world->Processing());
 	LIGHTS_I i = m_indoor_lights.begin(), e = m_indoor_lights.end();
 
 	for (; i != e; ++i)
@@ -252,7 +251,7 @@ void CCarLights::TurnOnIndoorLights()
 }
 void CCarLights::TurnOffIndoorLights()
 {
-	VERIFY(!physics_world()->Processing());
+	VERIFY(!ph_world->Processing());
 	LIGHTS_I i = m_indoor_lights.begin(), e = m_indoor_lights.end();
 
 	for (; i != e; ++i)

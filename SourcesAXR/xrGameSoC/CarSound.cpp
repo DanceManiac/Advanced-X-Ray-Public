@@ -211,7 +211,7 @@ void CCar::SCarSound::TransmissionSwitch()
 
 void CCar::SCarSound::DoorOpenStart(u16 id)
 {
-	VERIFY(!physics_world()->Processing());
+	VERIFY(!ph_world->Processing());
 
 	if (pcar->IsBackDoor(id))
 	{
@@ -232,7 +232,7 @@ void CCar::SCarSound::DoorOpenStart(u16 id)
 
 void CCar::SCarSound::DoorCloseStart(u16 id)
 {
-	VERIFY(!physics_world()->Processing());
+	VERIFY(!ph_world->Processing());
 
 	if (pcar->IsBackDoor(id))
 	{
@@ -253,7 +253,7 @@ void CCar::SCarSound::DoorCloseStart(u16 id)
 
 void CCar::SCarSound::DoorCloseStop(u16 id)
 {
-	VERIFY(!physics_world()->Processing());
+	VERIFY(!ph_world->Processing());
 
 	if (pcar->IsBackDoor(id))
 	{

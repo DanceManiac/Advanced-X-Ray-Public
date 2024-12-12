@@ -388,7 +388,7 @@ public:
 	virtual	u32				Cost				() const;
 
 public:
-    virtual EHandDependence		HandDependence		()	const		{	return eHandDependence;}
+	virtual EHandDependence		HandDependence		()	const		{	return eHandDependence;}
 			bool				IsSingleHanded		()	const		{	return m_bIsSingleHanded; }
 
 public:
@@ -451,7 +451,7 @@ public:
 private:
 	string64 guns_aim_anm;
 protected:
-	virtual void			SetDefaults			();
+	virtual void			SetDefaults				();
 
 	virtual bool			MovingAnimAllowedNow	();
 	virtual bool			IsMisfireNow			();
@@ -474,7 +474,7 @@ public:
 	virtual void			Fire2End			();
 	virtual void			Reload				();
 			void			StopShooting		();
-    
+	
 
 	// обработка визуализации выстрела
 	virtual void			OnShot				(){};
@@ -485,7 +485,6 @@ public:
 	//текущая дисперсия (в радианах) оружия с учетом используемого патрона
 	float					GetFireDispersion	(bool with_cartridge)			;
 	float					GetFireDispersion	(float cartridge_k)				;
-//	const Fvector&			GetRecoilDeltaAngle	();
 	virtual	int				ShotsFired			() { return 0; }
 
 	//параметы оружия в зависимоти от его состояния исправности
@@ -515,13 +514,15 @@ protected:
 	float					conditionDecreasePerShot;
 	float					conditionDecreasePerShotOnHit;
 
-	//  [8/2/2005]
-	float					m_fPDM_disp_base			;
-	float					m_fPDM_disp_vel_factor		;
-	float					m_fPDM_disp_accel_factor	;
-	float					m_fPDM_disp_crouch			;
-	float					m_fPDM_disp_crouch_no_acc	;
-	//  [8/2/2005]
+	struct SPDM
+	{
+		float					m_fPDM_disp_base			;
+		float					m_fPDM_disp_vel_factor		;
+		float					m_fPDM_disp_accel_factor	;
+		float					m_fPDM_disp_crouch			;
+		float					m_fPDM_disp_crouch_no_acc	;
+	};
+	SPDM					m_pdm;
 
 protected:
 	//для отдачи оружия
@@ -542,7 +543,7 @@ protected:
 			void			StopFlameParticles2	();
 			void			UpdateFlameParticles2();
 protected:
-	shared_str					m_sFlameParticles2;
+	shared_str				m_sFlameParticles2;
 	//объект партиклов для стрельбы из 2-го ствола
 	CParticlesObject*		m_pFlameParticles2;
 
@@ -571,13 +572,11 @@ public:
 														LPCSTR ammoSect = NULL, 
 														u32 ParentID = 0xffffffff);
 
-	//  [8/3/2005]
-	virtual	float			Get_PDM_Base		()	const	{ return m_fPDM_disp_base			; };
-	virtual	float			Get_PDM_Vel_F		()	const	{ return m_fPDM_disp_vel_factor		; };
-	virtual	float			Get_PDM_Accel_F		()	const	{ return m_fPDM_disp_accel_factor	; };
-	virtual	float			Get_PDM_Crouch		()	const	{ return m_fPDM_disp_crouch			; };
-	virtual	float			Get_PDM_Crouch_NA	()	const	{ return m_fPDM_disp_crouch_no_acc	; };
-	//  [8/3/2005]
+	virtual	float			Get_PDM_Base		()	const	{ return m_pdm.m_fPDM_disp_base			; };
+	virtual	float			Get_PDM_Vel_F		()	const	{ return m_pdm.m_fPDM_disp_vel_factor		; };
+	virtual	float			Get_PDM_Accel_F		()	const	{ return m_pdm.m_fPDM_disp_accel_factor	; };
+	virtual	float			Get_PDM_Crouch		()	const	{ return m_pdm.m_fPDM_disp_crouch			; };
+	virtual	float			Get_PDM_Crouch_NA	()	const	{ return m_pdm.m_fPDM_disp_crouch_no_acc	; };
 
 	virtual bool			IsNecessaryItem		(const shared_str& item_sect);
 			bool			IsNecessaryItem		(const shared_str& item_sect, xr_vector<shared_str> item);
@@ -588,9 +587,7 @@ protected:
 	//для подсчета в GetAmmoCurrent
 	mutable int				iAmmoCurrent;
 	mutable u32				m_dwAmmoCurrentCalcFrame;	//кадр на котором просчитали кол-во патронов
-	//  [10/5/2005]
 	bool					m_bAmmoWasSpawned;
-	//  [10/5/2005]
 
 public:
 	xr_vector<shared_str>	m_ammoTypes;
@@ -657,7 +654,7 @@ public:
 	virtual void			EnableActorNVisnAfterZoom	();
 			int				GetSuitableAmmoTotal		(bool use_item_to_spawn = false) const;
 
-virtual void processing_deactivate() override
+	virtual void processing_deactivate() override
 	{
 		UpdateLaser();
 		UpdateFlashlight();
