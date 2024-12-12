@@ -93,6 +93,7 @@ void CBlender_ssfx_ssr::Compile(CBlender_Compile& C)
 		C.r_Pass("stub_screen_space", "ssfx_ssr", FALSE, FALSE, FALSE);
 
 		C.r_dx10Texture("s_position", r2_RT_P);
+		C.r_dx10Texture("s_diffuse", r2_RT_albedo);
 		C.r_dx10Texture("ssr_image", r2_RT_ssfx); // Prev Frame
 
 		C.r_dx10Texture("s_rimage", "$user$generic_temp");
@@ -102,6 +103,10 @@ void CBlender_ssfx_ssr::Compile(CBlender_Compile& C)
 
 		C.r_dx10Texture("blue_noise", "shaders\\blue_noise");
 
+		C.r_dx10Texture("env_s0", r2_T_envs0);
+		C.r_dx10Texture("env_s1", r2_T_envs1);
+		C.r_dx10Texture("sky_s0", r2_T_sky0);
+		C.r_dx10Texture("sky_s1", r2_T_sky1);
 		C.r_dx10Sampler("smp_nofilter");
 		C.r_dx10Sampler("smp_rtlinear");
 		C.r_dx10Sampler("smp_linear");
@@ -112,7 +117,7 @@ void CBlender_ssfx_ssr::Compile(CBlender_Compile& C)
 	case 1:	// Blur Phase 1
 		C.r_Pass("stub_screen_space", "ssfx_ssr_blur", FALSE, FALSE, FALSE);
 
-		C.r_dx10Texture("ssr_image", r2_RT_ssfx);
+		C.r_dx10Texture("ssr_image", r2_RT_ssfx_temp2);
 		C.r_dx10Texture("s_diffuse", r2_RT_albedo);
 
 		C.r_dx10Sampler("smp_nofilter");
@@ -155,6 +160,7 @@ void CBlender_ssfx_ssr::Compile(CBlender_Compile& C)
 	case 5:	// Copy from [r2_RT_ssfx_temp2] to [r2_RT_ssfx]
 		C.r_Pass("stub_screen_space", "ssfx_ssr_gloss", FALSE, FALSE, FALSE);
 
+		C.r_dx10Texture("ssr_image", r2_RT_ssfx_temp2);
 		C.r_dx10Texture("s_position", r2_RT_P);
 		C.r_dx10Texture("s_diffuse", r2_RT_albedo);
 		C.r_dx10Texture("s_ssfx_hud_mask", r2_RT_ssfx_hud);

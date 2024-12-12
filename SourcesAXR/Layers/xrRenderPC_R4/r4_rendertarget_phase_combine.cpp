@@ -347,20 +347,6 @@ void	CRenderTarget::phase_combine	()
 
 	   RCache.set_xform_world(Fidentity);
 	   RImplementation.r_dsgraph_render_water();
-   }
-
-   g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
- 
-   {
-	   if (RImplementation.o.ssfx_rain)
-	   {
-		   phase_ssfx_rain(); // Render a small color buffer to do the refraction and more
-
-		   if (!RImplementation.o.dx10_msaa)
-			   u_setrt(rt_Generic_0, 0, 0, HW.pBaseZB);
-		   else
-			   u_setrt(rt_Generic_0_r, 0, 0, rt_MSAADepth->pZRT);
-	   }
 
 	   g_pGamePersistent->Environment().RenderLast(); // rain/thunder-bolts
    }
