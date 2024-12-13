@@ -57,6 +57,8 @@ public:
 
 	float			m_fInventoryCapacity;
 
+	bool			m_bUseAttach;
+
 protected:
 	virtual bool	install_upgrade_impl(LPCSTR section, bool test);
 };

@@ -11,7 +11,10 @@
 #include "attachable_item.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "inventory_item.h"
+#include "Inventory.h"
 #include "physicsshellholder.h"
+#include "Actor.h"
+#include "CustomBackpack.h"
 
 CAttachmentOwner::~CAttachmentOwner()
 {
@@ -91,7 +94,20 @@ void CAttachmentOwner::attach(CInventoryItem* inventory_item)
 //		VERIFY								((*I)->ID() != inventory_item->object().ID());
 	}
 
-	if (can_attach(inventory_item)) {
+	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(inventory_item);
+
+	bool need_custom_attach = false;
+
+	if (pBackpack && pBackpack->ParentIsActor() && pBackpack->m_bUseAttach)
+	{
+		CActor* pActor = smart_cast<CGameObject*>(pBackpack->H_Parent())->cast_actor();
+
+		if (pActor && pActor->inventory().ItemFromSlot(BACKPACK_SLOT) == pBackpack)
+			need_custom_attach = true;
+	}
+
+	if (can_attach(inventory_item) || need_custom_attach)
+	{
 		CAttachableItem						*attachable_item = smart_cast<CAttachableItem*>(inventory_item);
 		VERIFY								(attachable_item);
 		CGameObject							*game_object = smart_cast<CGameObject*>(this);

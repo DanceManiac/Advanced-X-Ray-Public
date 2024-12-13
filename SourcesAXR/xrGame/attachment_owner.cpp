@@ -15,6 +15,7 @@
 #include "physicsshellholder.h"
 #include "Actor.h"
 #include "ActorHelmet.h"
+#include "CustomBackpack.h"
 
 CAttachmentOwner::~CAttachmentOwner()
 {
@@ -93,19 +94,29 @@ void CAttachmentOwner::attach(CInventoryItem* inventory_item)
 			return; //already attached, fake, I'll repair It
 //		VERIFY								((*I)->ID() != inventory_item->object().ID());
 	}
+
 	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory_item);
-	bool need_attach_helm = false;
+	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(inventory_item);
+
+	bool need_custom_attach = false;
+
 	if (pHelmet && pHelmet->ParentIsActor() && pHelmet->m_bUseAttach)
 	{
 		CActor* pActor = smart_cast<CGameObject*>(pHelmet->H_Parent())->cast_actor();
+
 		if (pActor && pActor->inventory().ItemFromSlot(HELMET_SLOT) == pHelmet)
-			need_attach_helm = true;
+			need_custom_attach = true;
 	}
-	else
+
+	if (pBackpack && pBackpack->ParentIsActor() && pBackpack->m_bUseAttach)
 	{
-		need_attach_helm = false;
+		CActor* pActor = smart_cast<CGameObject*>(pBackpack->H_Parent())->cast_actor();
+
+		if (pActor && pActor->inventory().ItemFromSlot(BACKPACK_SLOT) == pBackpack)
+			need_custom_attach = true;
 	}
-	if (can_attach(inventory_item) || need_attach_helm)
+
+	if (can_attach(inventory_item) || need_custom_attach)
 	{
 		CAttachableItem						*attachable_item = smart_cast<CAttachableItem*>(inventory_item);
 		VERIFY								(attachable_item);

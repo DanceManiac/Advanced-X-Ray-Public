@@ -53,6 +53,8 @@ CCustomBackpack::CCustomBackpack()
 	m_fOverweightWalkK			= 1.0f;
 
 	m_fInventoryCapacity		= 0.0f;
+
+	m_bUseAttach				= false;
 }
 
 CCustomBackpack::~CCustomBackpack()
@@ -95,6 +97,8 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fOverweightWalkK			= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
 	m_fInventoryCapacity		= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
+
+	m_bUseAttach				= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
 }
 
 void CCustomBackpack::shedule_Update(u32 dt)
