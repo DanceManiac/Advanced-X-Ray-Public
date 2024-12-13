@@ -576,7 +576,7 @@ void CArtefact::UpdateXForm()
 
 		// Get access to entity and its visual
 		CEntityAlive*		E		= smart_cast<CEntityAlive*>(H_Parent());
-        
+		
 		if(!E)				return	;
 
 		const CInventoryOwner	*parent = smart_cast<const CInventoryOwner*>(E);
@@ -634,32 +634,32 @@ bool CArtefact::Action(s32 cmd, u32 flags)
 
 void CArtefact::OnStateSwitch(u32 S, u32 oldState)
 {
-    inherited::OnStateSwitch(S, oldState);
-    switch (S)
-    {
-    case eShowing: {
-		PlayHUDMotionIfExists({"anim_show", "anm_show"}, false, S);
-    }
-    break;
-    case eHiding: {
-        if (oldState != eHiding)
-			PlayHUDMotionIfExists({"anim_hide", "anm_hide"}, true, S);
-    }
-    break;
-    case eActivating: {
-		PlayHUDMotionIfExists({"anim_activate", "anm_activate"}, true, S);
-    }
-    break;
-    case eIdle: {
-        PlayAnimIdle();
-    }
-    break;
-    }
+	inherited::OnStateSwitch(S, oldState);
+	switch (S)
+	{
+	case eShowing:
+		{
+			PlayHUDMotionIfExists({"anim_show", "anm_show"}, false, S);
+		}break;
+	case eHiding:
+		{
+			if (oldState != eHiding)
+				PlayHUDMotionIfExists({"anim_hide", "anm_hide"}, true, S);
+		}break;
+	case eActivating:
+		{
+			PlayHUDMotionIfExists({"anim_activate", "anm_activate"}, true, S);
+		}	break;
+	case eIdle:
+		{
+			PlayAnimIdle();
+		}	break;
+	}
 }
 
 void CArtefact::PlayAnimIdle()
 {
-	PlayHUDMotionIfExists({"anim_idle", "anm_idle"}, FALSE, eIdle);
+	PlayHUDMotionIfExists({"anim_idle", "anm_idle"}, TRUE, eIdle);
 }
 
 void CArtefact::OnAnimationEnd(u32 state)
@@ -939,6 +939,11 @@ u32 CArtefact::Cost() const
 	return res;
 }
 
+bool CArtefact::IsInContainer()
+{
+	return m_bInContainer;
+}
+
 float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 {
 	float res = 0.f;
@@ -1010,11 +1015,6 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 	return res;
 }
 
-bool CArtefact::IsInContainer()
-{
-	return m_bInContainer;
-}
-
 bool CArtefact::ParentIsActor()
 {
 	CObject* O = H_Parent();
@@ -1026,4 +1026,13 @@ bool CArtefact::ParentIsActor()
 		return false;
 
 	return EA->cast_actor() != nullptr;
+}
+
+bool CArtefact::GetBriefInfo(II_BriefInfo& info)
+{
+	info.name = Name();
+	info.cur_ammo = "";
+	info.icon = cNameSect();;
+
+	return true;
 }

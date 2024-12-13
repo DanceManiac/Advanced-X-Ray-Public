@@ -135,9 +135,9 @@ public:
 	float							m_fCurrentChargeLevel;
 	float							m_fDegradationSpeed;
 	void							SetChargeLevel(float charge_level);
-	float							GetCurrentChargeLevel(void) const;
+	float							GetCurrentChargeLevel() const;
 	void							SetRank(int rank);
-	int								GetCurrentAfRank(void) const;
+	int								GetCurrentAfRank() const;
 
 	bool							m_bVolumetricLights;
 	float							m_fVolumetricQuality;
@@ -166,10 +166,11 @@ public:
 	virtual void					OnStateSwitch		(u32 S);
 	virtual void					OnAnimationEnd		(u32 state);
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
+	virtual bool					GetBriefInfo		(II_BriefInfo& info);
 
-			void					UpdateDegradation	(void);
+			void					UpdateDegradation	();
 
-	bool							IsInContainer		();
+			bool					IsInContainer		();
 
 	// optimization FAST/SLOW mode
 	u32						o_render_frame				;

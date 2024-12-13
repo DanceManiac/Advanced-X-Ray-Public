@@ -35,11 +35,10 @@ public:
 	//virtual void					renderable_Render				();
 	virtual BOOL					renderable_ShadowGenerate		()		{ return FALSE;	}
 	virtual BOOL					renderable_ShadowReceive		()		{ return TRUE;	}
-	virtual void					create_physic_shell();
+	virtual void					create_physic_shell				();
 
-	//for smart_cast
-	virtual CArtefact*				cast_artefact						()		{return this;}
-	virtual	u32						Cost								() const;
+	virtual CArtefact*				cast_artefact					()		{return this;}
+	virtual	u32						Cost							() const;
 
 			float					GetRestoreByType				(ALife::EConditionRestoreType type) const;
 
@@ -49,31 +48,25 @@ public:
 			float					GetPowerPower					() const { return m_fPowerRestoreSpeed; }
 			float					GetBleedingPower				() const { return m_fBleedingRestoreSpeed; }
 
-			void					SetHealthPower					(const float value) { m_fHealthRestoreSpeed = value; }
-			void					SetRadiationPower				(const float value) { m_fRadiationRestoreSpeed = value; }
-			void					SetSatietyPower					(const float value) { m_fSatietyRestoreSpeed = value; }
-			void					SetPowerPower					(const float value) { m_fPowerRestoreSpeed = value; }
-			void					SetBleedingPower				(const float value) { m_fBleedingRestoreSpeed = value; }
+			void					SetHealthPower					(float value) { m_fHealthRestoreSpeed = value; }
+			void					SetRadiationPower				(float value) { m_fRadiationRestoreSpeed = value; }
+			void					SetSatietyPower					(float value) { m_fSatietyRestoreSpeed = value; }
+			void					SetPowerPower					(float value) { m_fPowerRestoreSpeed = value; }
+			void					SetBleedingPower				(float value) { m_fBleedingRestoreSpeed = value; }
 
 protected:
-	virtual void					UpdateCLChild						()		{};
+	virtual void					UpdateCLChild					()		{};
 
 	u16								m_CarringBoneID;
 	shared_str						m_sParticlesName;
 protected:
 	SArtefactActivation*			m_activationObj;
-	//////////////////////////////////////////////////////////////////////////
-	//	Lights
-	//////////////////////////////////////////////////////////////////////////
-	//флаг, что подсветка может быть включена
-	bool							m_bLightsEnabled;
-	//подсветка во время полета и работы двигателя
 	ref_light						m_pTrailLight;
 	Fcolor							m_TrailLightColor;
 	float							m_fTrailLightRange;
-protected:
-	virtual void					UpdateLights();
-	
+	bool							m_bLightsEnabled;
+
+	virtual void					UpdateLights					();
 public:
 	virtual void					StartLights();
 	virtual void					StopLights();
@@ -105,14 +98,6 @@ public:
 	xr_hash_map<ALife::EHitType, float>	m_HitTypeProtection;
 	xr_hash_map<ALife::EHitType, float>	m_ConstHitTypeProtection;
 
-	bool							m_bVolumetricLights;
-	float							m_fVolumetricQuality;
-	float							m_fVolumetricDistance;
-	float							m_fVolumetricIntensity;
-
-	int								m_iAfRank;
-	bool							m_bInContainer;
-
 	//For Degradation
 	float							m_fConstHealthRestoreSpeed;
 	float							m_fConstRadiationRestoreSpeed;
@@ -137,9 +122,17 @@ public:
 	float							m_fDegradationSpeed;
 	void							SetChargeLevel(float charge_level);
 	float							GetCurrentChargeLevel() const;
-	int								GetCurrentAfRank() const;
 	void							SetRank(int rank);
+	int								GetCurrentAfRank() const;
 
+	bool							m_bVolumetricLights;
+	float							m_fVolumetricQuality;
+	float							m_fVolumetricDistance;
+	float							m_fVolumetricIntensity;
+
+	int								m_iAfRank;
+
+	bool							m_bInContainer;
 public:
 	enum EAFHudStates {
 		eIdle		= 0,
@@ -148,25 +141,25 @@ public:
 		eHidden,
 		eActivating,
 	};
-
-public:
+	virtual	void					PlayAnimIdle		();
 	virtual void					Hide				();
 	virtual void					Show				();
 	virtual	void					UpdateXForm			();
 	virtual bool					Action				(s32 cmd, u32 flags);
-	virtual	void					PlayAnimIdle		();
 	virtual void					OnStateSwitch		(u32 S, u32 oldState = 0);
 	virtual void					OnAnimationEnd		(u32 state);
 	virtual bool					IsHidden			()	const	{return GetState()==eHidden;}
+	virtual bool					GetBriefInfo		(II_BriefInfo& info);
+
 	virtual u16						bone_count_to_synchronize	() const;
 
 			bool					ParentIsActor		();
 
 			void					UpdateDegradation	();
+
 			bool					IsInContainer		();
 
 	// optimization FAST/SLOW mode
-public:						
 	u32						o_render_frame				;
 	BOOL					o_fastmode					;
 	IC void					o_switch_2_fast				()	{

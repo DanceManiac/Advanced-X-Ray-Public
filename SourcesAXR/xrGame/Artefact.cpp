@@ -639,7 +639,8 @@ bool CArtefact::Action(u16 cmd, u32 flags)
 void CArtefact::OnStateSwitch(u32 S)
 {
 	inherited::OnStateSwitch	(S);
-	switch(S){
+	switch(S)
+	{
 	case eShowing:
 		{
 			PlayHUDMotion("anm_show", FALSE, this, S);
@@ -656,12 +657,12 @@ void CArtefact::OnStateSwitch(u32 S)
 		{
 			PlayAnimIdle();
 		}break;
-	};
+	}
 }
 
 void CArtefact::PlayAnimIdle()
 {
-	PlayHUDMotion("anm_idle", FALSE, NULL, eIdle);
+	PlayHUDMotion("anm_idle", TRUE, NULL, eIdle);
 }
 
 void CArtefact::OnAnimationEnd(u32 state)
@@ -981,4 +982,13 @@ float CArtefact::GetRestoreByType(ALife::EConditionRestoreType type) const
 		}break;
 	}
 	return res;
+}
+
+bool CArtefact::GetBriefInfo(II_BriefInfo& info)
+{
+	info.name = Name();
+	info.cur_ammo = "";
+	info.icon = cNameSect();;
+
+	return true;
 }
