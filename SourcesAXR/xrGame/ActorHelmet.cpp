@@ -22,6 +22,7 @@ CHelmet::CHelmet()
 
 	m_b_HasGlass = false;
 	m_bUseFilter = false;
+	m_bUseAttach = false;
 	m_NightVisionType = 0;
 	m_fNightVisionLumFactor = 0.0f;
 	m_fFilterDegradation = 0.0f;
@@ -76,6 +77,7 @@ void CHelmet::Load(LPCSTR section)
 
 	m_b_HasGlass					= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter					= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
+	m_bUseAttach					= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
 
 	m_sShaderNightVisionSect		= READ_IF_EXISTS(pSettings, r_string, section, "shader_nightvision_sect", "shader_nightvision_default");
 	m_NightVisionType				= READ_IF_EXISTS(pSettings, r_u32, m_sShaderNightVisionSect, "shader_nightvision_type", 0);

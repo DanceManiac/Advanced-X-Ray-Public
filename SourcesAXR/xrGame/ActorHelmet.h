@@ -6,7 +6,7 @@ struct SBoneProtections;
 
 class CHelmet: public CInventoryItemObject {
 private:
-    typedef	CInventoryItemObject inherited;
+	typedef	CInventoryItemObject inherited;
 public:
 							CHelmet					();
 	virtual					~CHelmet				();
@@ -61,6 +61,7 @@ public:
 	bool					m_bSecondHelmetEnabled;
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;
+	bool					m_bUseAttach;
 
 	shared_str				m_sShaderNightVisionSect;
 	u32						m_NightVisionType;

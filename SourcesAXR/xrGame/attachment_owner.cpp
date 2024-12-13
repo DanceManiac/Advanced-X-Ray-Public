@@ -93,8 +93,20 @@ void CAttachmentOwner::attach(CInventoryItem* inventory_item)
 			return; //already attached, fake, I'll repair It
 //		VERIFY								((*I)->ID() != inventory_item->object().ID());
 	}
-
-	if (can_attach(inventory_item)) {
+	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory_item);
+	bool need_attach_helm = false;
+	if (pHelmet && pHelmet->ParentIsActor() && pHelmet->m_bUseAttach)
+	{
+		CActor* pActor = smart_cast<CGameObject*>(pHelmet->H_Parent())->cast_actor();
+		if (pActor && pActor->inventory().ItemFromSlot(HELMET_SLOT) == pHelmet)
+			need_attach_helm = true;
+	}
+	else
+	{
+		need_attach_helm = false;
+	}
+	if (can_attach(inventory_item) || need_attach_helm)
+	{
 		CAttachableItem						*attachable_item = smart_cast<CAttachableItem*>(inventory_item);
 		VERIFY								(attachable_item);
 		CGameObject							*game_object = smart_cast<CGameObject*>(this);
