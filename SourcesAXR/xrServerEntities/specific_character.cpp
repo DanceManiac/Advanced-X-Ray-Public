@@ -298,7 +298,6 @@ CHARACTER_REPUTATION_VALUE CSpecificCharacter::Reputation	() const
 
 LPCSTR CSpecificCharacter::Visual()
 {
-	string_path visual_randomized{};
 	xr_string visual_name = data()->m_sVisual.c_str();
 
 	int rnd_vis{};
@@ -312,21 +311,22 @@ LPCSTR CSpecificCharacter::Visual()
 		else
 			rnd_vis = data()->last_visual;
 
-		strconcat(sizeof(visual_randomized), visual_randomized, visual_name.c_str(), std::to_string(rnd_vis).c_str());
+		xr_string visual_randomized = visual_name;
+		visual_randomized += std::to_string(rnd_vis).c_str();
 
-		//Icon
+		// Icon
 		if (!data()->m_bForceDisabledRandomIcons)
 		{
-			string128 randomized_icon{};
-			size_t lastBackslashPos = std::string(visual_randomized).find_last_of('\\');
+			xr_string randomized_icon = "ui_npc_";
+			size_t lastBackslashPos = visual_randomized.find_last_of('\\');
 
-			std::string result = std::string(visual_randomized).substr(std::string(visual_randomized).find_last_of('\\') + 1);
-			strconcat(sizeof(randomized_icon), randomized_icon, "ui_npc_", result.c_str());
+			xr_string result = visual_randomized.substr(lastBackslashPos + 1);
+			randomized_icon += result.c_str();
 
-			data()->m_icon_name = randomized_icon;
+			data()->m_icon_name = randomized_icon.c_str();
 		}
 
-		return visual_randomized;
+		return visual_randomized.c_str();
 	}
 
 	return data()->m_sVisual.c_str();

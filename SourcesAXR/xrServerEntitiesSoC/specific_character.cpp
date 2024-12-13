@@ -5,6 +5,11 @@
 #include "PhraseDialog.h"
 #include "string_table.h"
 
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+
+#include <experimental/filesystem>
+
+namespace fs = std::experimental::filesystem;
 
 SSpecificCharacterData::SSpecificCharacterData()
 {
@@ -26,6 +31,9 @@ SSpecificCharacterData::SSpecificCharacterData()
 	m_fPanic_threshold		= 0.0f;
 	m_fHitProbabilityFactor	= 1.f;
 	m_crouch_type			= 0;
+
+	first_visual			= -1;
+	last_visual				= -1;
 }
 
 SSpecificCharacterData::~SSpecificCharacterData()
@@ -113,10 +121,7 @@ void CSpecificCharacter::load_shared	(LPCSTR)
 	{
 		shared_str dialog_name = pXML->Read(pXML->GetLocalRoot(), "actor_dialog", i, "");
 		data()->m_ActorDialogs.push_back(dialog_name);
-	}
-
-	data()->m_icon_name		= pXML->Read("icon", 0, "ui_npc_u_barman");
-		
+	}	
 
 	//игровое имя персонажа
 	data()->m_sGameName		= pXML->Read("name", 0, "");
@@ -133,6 +138,10 @@ void CSpecificCharacter::load_shared	(LPCSTR)
 
 	data()->m_sVisual		= pXML->Read("visual", 0, "");
 	
+	data()->m_bForceDisabledRandomIcons = pXML->ReadAttribInt("icon", 0, "force_disabled_random", 0) == 1;
+
+	if (data()->m_sVisual.back() != '_' || data()->m_bForceDisabledRandomIcons)
+		data()->m_icon_name = pXML->Read("icon", 0, "ui_npc_u_barman");
 
 #ifdef  XRGAME_EXPORTS
 	data()->m_sSupplySpawn	= pXML->Read("supplies", 0, "");
@@ -279,7 +288,72 @@ CHARACTER_REPUTATION_VALUE CSpecificCharacter::Reputation	() const
 	return data()->m_Reputation;
 }
 
-LPCSTR CSpecificCharacter::Visual		() const 
+LPCSTR CSpecificCharacter::Visual()
 {
+	xr_string visual_name = data()->m_sVisual.c_str();
+
+	int rnd_vis{};
+
+	if (visual_name.back() == '_')
+	{
+		SetRandomRange();
+
+		if ((data()->last_visual != data()->first_visual) && (data()->first_visual < data()->last_visual))
+			rnd_vis = ::Random.randI(data()->first_visual, data()->last_visual);
+		else
+			rnd_vis = data()->last_visual;
+
+		xr_string visual_randomized = visual_name;
+		visual_randomized += std::to_string(rnd_vis).c_str();
+
+		// Icon
+		if (!data()->m_bForceDisabledRandomIcons)
+		{
+			xr_string randomized_icon = "ui_npc_";
+			size_t lastBackslashPos = visual_randomized.find_last_of('\\');
+
+			xr_string result = visual_randomized.substr(lastBackslashPos + 1);
+			randomized_icon += result.c_str();
+
+			data()->m_icon_name = randomized_icon.c_str();
+		}
+
+		return visual_randomized.c_str();
+	}
+
 	return data()->m_sVisual.c_str();
+}
+
+void CSpecificCharacter::SetRandomRange()
+{
+	int min_num = 1000000;
+	int max_num = -1;
+
+	std::string visual_name = data()->m_sVisual.c_str();
+	std::string relative_path = RemoveSymbolsAfterSlash(visual_name);
+
+	std::string userDir = FS.get_path("$game_meshes$")->m_Path;
+	std::string path = userDir + relative_path;
+
+	visual_name = RemoveSymbolsBeforeSlash(visual_name);
+
+	for (auto& p : fs::directory_iterator(path))
+	{
+		std::string name = p.path().filename().string();
+
+		if (name.find(visual_name) == 0)
+		{
+			int test = name.length();
+			int num = std::stoi(name.substr(visual_name.length()));
+
+			if (num < min_num)
+				min_num = num;
+
+			if (num > max_num)
+				max_num = num;
+		}
+	}
+
+	data()->first_visual = min_num;
+	data()->last_visual = max_num;
 }
