@@ -2,6 +2,11 @@
 #include "uigamesp.h"
 #include "actor.h"
 #include "level.h"
+#include "../xrEngine/xr_input.h"
+
+#ifdef DEBUG
+#include "attachable_item.h"
+#endif
 
 #include "game_cl_Single.h"
 #include "ui/UIPdaAux.h"
@@ -102,8 +107,11 @@ void CUIGameSP::SetClGame (game_cl_GameState* g)
 	R_ASSERT							(m_game);
 }
 
+void attach_adjust_mode_keyb(int dik);
+void attach_draw_adjust_mode();
 void hud_adjust_mode_keyb(int dik);
 void hud_draw_adjust_mode();
+
 
 bool CUIGameSP::IR_OnKeyboardPress(int dik) 
 {
@@ -116,7 +124,14 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	if(pActor && !pActor->g_Alive())
 		return false;
 
-	hud_adjust_mode_keyb(dik);
+	if (Actor()->active_cam() == eacFirstEye)
+	{
+		hud_adjust_mode_keyb(dik);
+	}
+	if (Actor()->active_cam() == eacFreeLook)
+	{
+		attach_adjust_mode_keyb(dik);
+	}
 
 	auto Pda = pActor->GetPDA();
 
@@ -192,6 +207,13 @@ bool CUIGameSP::IR_OnKeyboardPress(int dik)
 	return false;
 }
 
+void CUIGameSP::Render()
+{
+	inherited::Render();
+	hud_draw_adjust_mode();
+	attach_draw_adjust_mode();
+}
+
 bool CUIGameSP::IR_OnKeyboardRelease(int dik) 
 {
 	if(inherited::IR_OnKeyboardRelease(dik)) return true;
@@ -200,12 +222,6 @@ bool CUIGameSP::IR_OnKeyboardRelease(int dik)
 			RemoveCustomStatic		("main_task");
 
 	return false;
-}
-
-void CUIGameSP::Render()
-{
-	inherited::Render();
-	hud_draw_adjust_mode();
 }
 
 void CUIGameSP::StartTalk()

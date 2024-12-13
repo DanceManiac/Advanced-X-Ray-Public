@@ -59,9 +59,6 @@
 #include "UIHelper.h"
 #include "UIArtefactPanel.h"
 
-void test_draw	();
-void test_key	(int dik);
-
 #include "../Include/xrRender/Kinematics.h"
 
 
@@ -331,9 +328,6 @@ float UIStaticDiskIO_start_time = 0.0f;
 void CUIMainIngameWnd::Draw()
 {
 	CActor* m_pActor		= smart_cast<CActor*>(Level().CurrentViewEntity());
-#ifdef DEBUG
-	test_draw				();
-#endif
 	// show IO icon
 	bool IOActive	= (FS.dwOpenCounter>0);
 	if	(IOActive)	UIStaticDiskIO_start_time = Device.fTimeGlobal;
@@ -565,9 +559,6 @@ void CUIMainIngameWnd::Update()
 
 bool CUIMainIngameWnd::OnKeyboardPress(int dik)
 {
-#ifdef DEBUG
-	test_key(dik);
-#endif // #ifdef DEBUG
 /*
 	if(Level().IR_GetKeyState(DIK_LSHIFT) || Level().IR_GetKeyState(DIK_RSHIFT))
 	{
@@ -857,33 +848,10 @@ void CUIMainIngameWnd::reset_ui()
 	}
 }
 
-
-#include "../../xrEngine/xr_input.h"
-#include "../GamePersistent.h"
-
-void hud_adjust_mode_keyb(int dik);
-void hud_draw_adjust_mode();
-	void attach_adjust_mode_keyb(int dik);
-	void attach_draw_adjust_mode();
-
 struct TS{
 	ref_sound test_sound;
 };
 TS* pTS = NULL;
-void test_key(int dik)
-{
-	if (Actor()->active_cam() == eacFirstEye)
-	{
-		hud_adjust_mode_keyb(dik);
-		attach_adjust_mode_keyb(dik);
-	}
-}
-
-void test_draw()
-{
-	hud_draw_adjust_mode();
-	attach_draw_adjust_mode();
-}
 
 void CUIMainIngameWnd::UpdateMainIndicators()
 {

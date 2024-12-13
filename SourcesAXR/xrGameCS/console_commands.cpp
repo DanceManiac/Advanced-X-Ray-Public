@@ -1871,21 +1871,23 @@ public		:
 	CCC_TuneAttachableItem(LPCSTR N):IConsole_Command(N){};
 	virtual void	Execute	(LPCSTR args)
 	{
-		if( CAttachableItem::m_dbgItem){
-			CAttachableItem::m_dbgItem = NULL;	
+		if( CAttachableItem::m_dbgItem)
+		{
+			CAttachableItem::m_dbgItem = NULL;
 			Msg("CCC_TuneAttachableItem switched to off");
 			return;
 		};
 
-		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
-		shared_str ssss = args;
+		CObject* obj			= Level().CurrentViewEntity();	VERIFY(obj);
+		shared_str ssss			= args;
 
 		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
-		CAttachableItem* itm = owner->attachedItem(ssss);
+		CAttachableItem* itm	= owner->attachedItem(ssss);
 		if(itm)
 		{
 			CAttachableItem::m_dbgItem = itm;
-		}else
+		}
+		else
 		{
 			CInventoryOwner* iowner = smart_cast<CInventoryOwner*>(obj);
 			PIItem active_item = iowner->m_inventory->ActiveItem();
@@ -1902,6 +1904,20 @@ public		:
 	virtual void	Info	(TInfo& I)
 	{	
 		xr_sprintf(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
+
+		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
+
+		for (u32 i = 0; i < owner->attached_objects().size(); ++i)
+		{
+			string256 out_text = "";
+			xr_sprintf(out_text, "%s%s", owner->attached_objects().at(i)->item().m_section_id.c_str(), owner->attached_objects().at(i)->bone_name() != nullptr ? "" : "(zero bone)");
+			tips.push_back(out_text);
+		}
 	}
 };
 

@@ -96,6 +96,9 @@ bool CUIGameSP::IR_UIOnKeyboardPress(int dik)
 	if (Actor()->active_cam() == eacFirstEye)
 	{
 		hud_adjust_mode_keyb(dik);
+	}
+	if (Actor()->active_cam() == eacFreeLook)
+	{
 		attach_adjust_mode_keyb(dik);
 	}
 

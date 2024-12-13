@@ -1912,8 +1912,9 @@ public		:
 	CCC_TuneAttachableItem(LPCSTR N):IConsole_Command(N){};
 	virtual void	Execute	(LPCSTR args)
 	{
-		if( CAttachableItem::m_dbgItem){
-			CAttachableItem::m_dbgItem = NULL;	
+		if( CAttachableItem::m_dbgItem)
+		{
+			CAttachableItem::m_dbgItem = NULL;
 			Msg("CCC_TuneAttachableItem switched to off");
 			return;
 		};
@@ -1926,7 +1927,8 @@ public		:
 		if(itm)
 		{
 			CAttachableItem::m_dbgItem = itm;
-		}else
+		}
+		else
 		{
 			CInventoryOwner* iowner = smart_cast<CInventoryOwner*>(obj);
 			PIItem active_item = iowner->m_inventory->ActiveItem();
@@ -1943,6 +1945,20 @@ public		:
 	virtual void	Info	(TInfo& I)
 	{	
 		xr_sprintf(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
+
+		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
+
+		for (u32 i = 0; i < owner->attached_objects().size(); ++i)
+		{
+			string256 out_text = "";
+			xr_sprintf(out_text, "%s%s", owner->attached_objects().at(i)->item().m_section_id.c_str(), owner->attached_objects().at(i)->bone_name() != nullptr ? "" : "(zero bone)");
+			tips.push_back(out_text);
+		}
 	}
 };
 
@@ -2425,10 +2441,10 @@ void CCC_RegisterCommands()
 	psActorFlags.set(AF_SIMPLE_PDA, TRUE);
 	psActorFlags.set(AF_3D_PDA, FALSE);
 
-	CMD3(CCC_Mask,				"g_3d_pda",				&psActorFlags, AF_3D_PDA);
-	CMD3(CCC_Mask,				"g_simple_pda",			&psActorFlags, AF_SIMPLE_PDA);
+	CMD3(CCC_Mask,				"g_3d_pda",				&psActorFlags,	AF_3D_PDA);
+	CMD3(CCC_Mask,				"g_simple_pda",			&psActorFlags,	AF_SIMPLE_PDA);
 
-	CMD3(CCC_Mask,				"g_crouch_toggle",		&psActorFlags, AF_CROUCH_TOGGLE);
+	CMD3(CCC_Mask,				"g_crouch_toggle",		&psActorFlags,	AF_CROUCH_TOGGLE);
 	CMD1(CCC_GameDifficulty,	"g_game_difficulty"		);
 
 	CMD3(CCC_Mask,				"g_backrun",			&psActorFlags,	AF_RUN_BACKWARD);
@@ -2629,7 +2645,6 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
-
 		CMD4(CCC_Integer,		"dbg_show_material_info", &g_dbgShowMaterialInfo, 0, 1);
 	}
 
@@ -2640,7 +2655,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,			"g_dynamic_music",		&psActorFlags,	AF_DYNAMIC_MUSIC);
 	CMD3(CCC_Mask,			"g_important_save",		&psActorFlags,	AF_IMPORTANT_SAVE);
 	CMD1(CCC_GameLanguage,	"g_language");
-	
+
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp,				"lua_help");
 	//CMD1(CCC_ShowSmartCastStats,	"show_smart_cast_stats");
