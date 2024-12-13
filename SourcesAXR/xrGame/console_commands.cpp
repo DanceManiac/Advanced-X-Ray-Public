@@ -55,7 +55,12 @@
 #include "../build_config_defines.h"
 #include "ai_object_location.h"
 #include "GametaskManager.h"
-#include "ui/UIDebugFonts.h" 
+#include "ui/UIDebugFonts.h"
+
+#include "attachable_item.h"
+#include "attachment_owner.h"
+#include "InventoryOwner.h"
+#include "Inventory.h"
 
 #ifdef DEBUG
 #	include "PHDebug.h"
@@ -342,7 +347,7 @@ public:
 		strcpy(I, "name,team,squad,group");
 	}
 };
-// g_spawn 
+// g_spawn
 
 class CCC_Giveinfo : public IConsole_Command {
 public:
@@ -460,11 +465,11 @@ public:
 	}
 };
 
-class CCC_GiveTask : public IConsole_Command 
+class CCC_GiveTask : public IConsole_Command
 {
 public:
-	CCC_GiveTask(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR task) 
+	CCC_GiveTask(LPCSTR N) : IConsole_Command(N) {};
+	virtual void Execute(LPCSTR task)
 	{
 		if (!g_pGameLevel)
 		{
@@ -786,9 +791,8 @@ public:
 		//};
 		#endif
 		Console->Hide	();
-
-		LPSTR			fn_; 
-		STRCONCAT		(fn_, args, ".xrdemo");
+		string_path		fn_; 
+		strconcat		(sizeof(fn_),fn_, args, ".xrdemo");
 		string_path		fn;
 		FS.update_path	(fn, "$game_saves$", fn_);
 
@@ -852,8 +856,6 @@ public:
 	  }
 };
 
-// helper functions --------------------------------------------
-
 bool valid_saved_game_name(LPCSTR file_name)
 {
 	LPCSTR		I = file_name;
@@ -868,35 +870,35 @@ bool valid_saved_game_name(LPCSTR file_name)
 	return		(true);
 }
 
-void get_files_list( xr_vector<shared_str>& files, LPCSTR dir, LPCSTR file_ext )
+void get_files_list(xr_vector<shared_str>& files, LPCSTR dir, LPCSTR file_ext)
 {
-	VERIFY( dir && file_ext );
+	VERIFY(dir && file_ext);
 	files.clear_not_free();
 
-	FS_Path* P = FS.get_path( dir );
-	P->m_Flags.set( FS_Path::flNeedRescan, TRUE );
-	FS.m_Flags.set( CLocatorAPI::flNeedCheck, TRUE );
+	FS_Path* P = FS.get_path(dir);
+	P->m_Flags.set(FS_Path::flNeedRescan, TRUE);
+	FS.m_Flags.set(CLocatorAPI::flNeedCheck, TRUE);
 	FS.rescan_pathes();
 
 	LPCSTR fext;
-	STRCONCAT( fext, "*", file_ext );
+	STRCONCAT(fext, "*", file_ext);
 
 	FS_FileSet  files_set;
-	FS.file_list( files_set, dir, FS_ListFiles, fext );
-	u32 len_str_ext = xr_strlen( file_ext );
+	FS.file_list(files_set, dir, FS_ListFiles, fext);
+	u32 len_str_ext = xr_strlen(file_ext);
 
 	FS_FileSetIt itb = files_set.begin();
 	FS_FileSetIt ite = files_set.end();
 
-	for( ; itb != ite; ++itb )
+	for (; itb != ite; ++itb)
 	{
 		LPCSTR fn_ext = (*itb).name.c_str();
-		VERIFY( xr_strlen(fn_ext) > len_str_ext );
+		VERIFY(xr_strlen(fn_ext) > len_str_ext);
 		string_path fn;
-		strncpy_s( fn, sizeof(fn), fn_ext, xr_strlen(fn_ext)-len_str_ext );
-		files.push_back( fn );
+		strncpy_s(fn, sizeof(fn), fn_ext, xr_strlen(fn_ext) - len_str_ext);
+		files.push_back(fn);
 	}
-	FS.m_Flags.set( CLocatorAPI::flNeedCheck, FALSE );
+	FS.m_Flags.set(CLocatorAPI::flNeedCheck, FALSE);
 }
 
 #include "UIGameCustom.h"
@@ -1006,7 +1008,7 @@ public:
 class CCC_ALifeLoadFrom : public IConsole_Command {
 public:
 	CCC_ALifeLoadFrom(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
-	virtual void Execute( LPCSTR args )
+	virtual void Execute(LPCSTR args)
 	{
 		string_path				saved_game;
 		strncpy_s				(saved_game, sizeof(saved_game), args, _MAX_PATH - 1 );
@@ -1066,10 +1068,10 @@ public:
 		net_packet.w_stringZ		(saved_game);
 		Level().Send				(net_packet,net_flags(TRUE));
 	}
-	
-	virtual void fill_tips			(vecTips& tips, u32 mode)
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
 	{
-		get_files_list				(tips, "$game_saves$", SAVE_EXTENSION);
+		get_files_list(tips, "$game_saves$", SAVE_EXTENSION);
 	}
 
 };//CCC_ALifeLoadFrom
@@ -1168,7 +1170,6 @@ public:
 		}
 	}
 };
-
 
 class CCC_FlushLog : public IConsole_Command {
 public:
@@ -1603,7 +1604,7 @@ struct CCC_JumpToLevel : public IConsole_Command {
 
 	virtual void Execute(LPCSTR level)
 	{
-		if ( !ai().get_alife() )
+		if (!ai().get_alife())
 		{
 			Msg				("! ALife simulator is needed to perform specified command!");
 			return;
@@ -1631,12 +1632,11 @@ struct CCC_JumpToLevel : public IConsole_Command {
 
 		GameGraph::LEVEL_MAP::const_iterator	itb = ai().game_graph().header().levels().begin();
 		GameGraph::LEVEL_MAP::const_iterator	ite = ai().game_graph().header().levels().end();
-		for ( ; itb != ite; ++itb )
+		for (; itb != ite; ++itb)
 		{
-			tips.push_back( (*itb).second.name() );
+			tips.push_back((*itb).second.name());
 		}
 	}
-
 };
 
 #ifndef MASTER_GOLD
@@ -1743,7 +1743,7 @@ public:
 	{
 		xr_strcpy				(I,"[0.001 - 1000.0]");
 	}
-	
+
 	virtual void	fill_tips(vecTips& tips, u32 mode)
 	{
 		TStatus  str;
@@ -1902,66 +1902,6 @@ struct CCC_DbgBullets : public CCC_Integer {
 	}
 };
 
-#include "attachable_item.h"
-#include "attachment_owner.h"
-#include "InventoryOwner.h"
-#include "Inventory.h"
-class CCC_TuneAttachableItem : public IConsole_Command
-{
-public		:
-	CCC_TuneAttachableItem(LPCSTR N):IConsole_Command(N){};
-	virtual void	Execute	(LPCSTR args)
-	{
-		if( CAttachableItem::m_dbgItem)
-		{
-			CAttachableItem::m_dbgItem = NULL;
-			Msg("CCC_TuneAttachableItem switched to off");
-			return;
-		};
-
-		CObject* obj			= Level().CurrentViewEntity();	VERIFY(obj);
-		shared_str ssss			= args;
-
-		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
-		CAttachableItem* itm	= owner->attachedItem(ssss);
-		if(itm)
-		{
-			CAttachableItem::m_dbgItem = itm;
-		}
-		else
-		{
-			CInventoryOwner* iowner = smart_cast<CInventoryOwner*>(obj);
-			PIItem active_item = iowner->m_inventory->ActiveItem();
-			if(active_item && active_item->object().cNameSect()==ssss )
-				CAttachableItem::m_dbgItem = active_item->cast_attachable_item();
-		}
-
-		if(CAttachableItem::m_dbgItem)
-			Msg("CCC_TuneAttachableItem switched to ON for [%s]",args);
-		else
-			Msg("CCC_TuneAttachableItem cannot find attached item [%s]",args);
-	}
-
-	virtual void	Info	(TInfo& I)
-	{	
-		xr_sprintf(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
-	}
-
-	virtual void fill_tips(vecTips& tips, u32 mode)
-	{
-		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
-
-		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
-
-		for (u32 i = 0; i < owner->attached_objects().size(); ++i)
-		{
-			string256 out_text = "";
-			xr_sprintf(out_text, "%s%s", owner->attached_objects().at(i)->item().m_section_id.c_str(), owner->attached_objects().at(i)->bone_name() != nullptr ? "" : "(zero bone)");
-			tips.push_back(out_text);
-		}
-	}
-};
-
 class CCC_Crash : public IConsole_Command {
 public:
 	CCC_Crash(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -2116,6 +2056,62 @@ public:
 }; // CCC_InvDropAllItems
 
 #endif // DEBUG
+
+class CCC_TuneAttachableItem : public IConsole_Command
+{
+public:
+	CCC_TuneAttachableItem(LPCSTR N) :IConsole_Command(N) {};
+	virtual void	Execute(LPCSTR args)
+	{
+		if (CAttachableItem::m_dbgItem)
+		{
+			CAttachableItem::m_dbgItem = NULL;
+			Msg("CCC_TuneAttachableItem switched to off");
+			return;
+		};
+
+		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
+		shared_str ssss = args;
+
+		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
+		CAttachableItem* itm = owner->attachedItem(ssss);
+		if (itm)
+		{
+			CAttachableItem::m_dbgItem = itm;
+		}
+		else
+		{
+			CInventoryOwner* iowner = smart_cast<CInventoryOwner*>(obj);
+			PIItem active_item = iowner->m_inventory->ActiveItem();
+			if (active_item && active_item->object().cNameSect() == ssss)
+				CAttachableItem::m_dbgItem = active_item->cast_attachable_item();
+		}
+
+		if (CAttachableItem::m_dbgItem)
+			Msg("CCC_TuneAttachableItem switched to ON for [%s]", args);
+		else
+			Msg("CCC_TuneAttachableItem cannot find attached item [%s]", args);
+	}
+
+	virtual void	Info(TInfo& I)
+	{
+		xr_sprintf(I, "allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
+
+		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
+
+		for (u32 i = 0; i < owner->attached_objects().size(); ++i)
+		{
+			string256 out_text = "";
+			xr_sprintf(out_text, "%s%s", owner->attached_objects().at(i)->item().m_section_id.c_str(), owner->attached_objects().at(i)->bone_name() != nullptr ? "" : "(zero bone)");
+			tips.push_back(out_text);
+		}
+	}
+};
 
 class CCC_DumpObjects : public IConsole_Command {
 public:
@@ -2452,7 +2448,6 @@ void CCC_RegisterCommands()
 	// alife
 #ifdef DEBUG
 	CMD1(CCC_ALifePath,			"al_path"				);		// build path
-
 #endif // DEBUG
 	
 	CMD1(CCC_ALifeSave,			"save"					);		// save game
@@ -2469,7 +2464,7 @@ void CCC_RegisterCommands()
 	CMD1(CCC_ALifeProcessTime,		"al_process_time"		);		// set process time
 	CMD1(CCC_ALifeObjectsPerUpdate,	"al_objects_per_update"	);		// set process time
 	CMD1(CCC_ALifeSwitchFactor,		"al_switch_factor"		);		// set switch factor
-#endif // #ifndef MASTER_GOLD
+#endif // MASTER_GOLD
 
 
 	CMD3(CCC_Mask,				"hud_weapon",			&psHUD_Flags,	HUD_WEAPON);
@@ -2485,16 +2480,14 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"hud_crosshair",		&psHUD_Flags,	HUD_CROSSHAIR);
 	CMD3(CCC_Mask,				"hud_crosshair_dist",	&psHUD_Flags,	HUD_CROSSHAIR_DIST);
 
-	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV_def,		0.25f,	1.0f);
+	CMD4(CCC_Float,				"hud_fov",				&psHUD_FOV_def,	0.25f,	1.0f);
 	CMD4(CCC_Float,				"cam_fov",				&g_fov,			5.0f,	180.0f);
 	CMD3(CCC_Mask,				"ph_corpse_collision",	&psActorFlags,	AF_COLLISION);
 
 	// Demo
-#if 1//ndef MASTER_GOLD
 	CMD1(CCC_DemoPlay,			"demo_play"				);
 	CMD1(CCC_DemoRecord,		"demo_record"			);
 	CMD1(CCC_DemoRecordSetPos,	"demo_set_cam_position"	);
-#endif // #ifndef MASTER_GOLD
 
 	// ai
 	CMD3(CCC_Mask,				"mt_ai_vision",			&g_mt_config,	mtAiVision);
@@ -2597,7 +2590,6 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 #endif // #if defined(USE_DEBUGGER) && defined(USE_LUA_STUDIO)
 	
 	CMD1(CCC_ShowMonsterInfo,	"ai_monster_info");
-	CMD1(CCC_TuneAttachableItem,"dbg_adjust_attachable_item");
 
 
 	CMD1(CCC_ShowAnimationStats,"ai_show_animation_stats");
@@ -2624,14 +2616,14 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 #ifndef MASTER_GOLD
 	CMD1(CCC_Script,		"run_script");
 	CMD1(CCC_ScriptCommand,	"run_string");
-#endif // MASTER_GOLD	
+#endif // MASTER_GOLD
 
 	if (bDeveloperMode)
 	{
 		CMD1(CCC_Spawn,			"g_spawn");
 		CMD1(CCC_SetWeather,	"set_weather");
 		CMD1(CCC_TimeFactor,	"time_factor");
-		CMD1(CCC_JumpToLevel,	"jump_to_level")
+		CMD1(CCC_JumpToLevel,	"jump_to_level");
 		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
 		CMD1(CCC_Giveinfo,		"g_info");
 		CMD1(CCC_Disinfo,		"d_info");
@@ -2646,6 +2638,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
 		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 5);
 		CMD4(CCC_Integer,		"dbg_show_material_info", &g_dbgShowMaterialInfo, 0, 1);
+		CMD1(CCC_TuneAttachableItem, "dbg_adjust_attachable_item");
 	}
 
 	CMD3(CCC_Mask,			"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
@@ -2875,7 +2868,7 @@ extern BOOL dbg_moving_bones_snd_player;
 	//extern BOOL g_use_new_ballistics;
 	//CMD4(CCC_Integer,	"use_new_ballistics",	&g_use_new_ballistics, 0, 1);
 	extern float g_bullet_time_factor;
-	CMD4(CCC_Float,	"g_bullet_time_factor",	&g_bullet_time_factor, 0.f, 10.f);
+	CMD4(CCC_Float, "g_bullet_time_factor", &g_bullet_time_factor, 0.f, 10.f);
 #endif
 
 	
@@ -2909,22 +2902,22 @@ extern BOOL dbg_moving_bones_snd_player;
 	CMD3(CCC_String,    "slot_3",				g_quick_use_slots[3], 32);
 
 	//M.F.S. Crosshair Type
-	CMD3(CCC_Token,		"g_crosshair_type",		&crosshair_type, crosshair_type_token);
-	CMD4(CCC_Integer,	"g_advanced_crosshair",	&g_advanced_crosshair, 0, 1);
+	CMD3(CCC_Token,		"g_crosshair_type",			&crosshair_type, crosshair_type_token);
+	CMD4(CCC_Integer,	"g_advanced_crosshair",		&g_advanced_crosshair,	0, 1);
 
-	CMD3(CCC_Token,		"g_death_cam_mode",		&death_camera_mode, death_camera_mode_token);
+	CMD3(CCC_Token,		"g_death_cam_mode",			&death_camera_mode, death_camera_mode_token);
 
-	CMD4(CCC_Integer,	"keypress_on_start",	&g_keypress_on_start, 0, 1);
+	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);
 
-	CMD4(CCC_Integer,	"quick_save_counter",	&quick_save_counter, 0, 25);
-	CMD4(CCC_Integer,	"soc_pickup_mode",		&g_b_COD_PickUpMode, 0, 1);
+	CMD4(CCC_Integer,	"quick_save_counter",		&quick_save_counter,	0, 25);
+	CMD4(CCC_Integer,	"soc_pickup_mode",			&g_b_COD_PickUpMode,	0, 1);
 
-	CMD4(CCC_BKPK_ANIM, "g_animated_backpack",  &m_b_animated_backpack, 0, 1);
+	CMD4(CCC_BKPK_ANIM, "g_animated_backpack",		&m_b_animated_backpack, 0, 1);
 
-	CMD3(CCC_UiHud_Mode, "hud_type",			&ui_hud_type, qhud_type_token);
+	CMD3(CCC_UiHud_Mode, "hud_type",				&ui_hud_type,			qhud_type_token);
 	CMD1(CCC_DebugFonts, "debug_fonts");
 
-	//Custom commands fo scripts
+	//Custom commands for scripts
 
 	i_script_cmd_name.clear();
 	b_script_cmd_name.clear();

@@ -46,7 +46,12 @@
 #include "../Include/xrRender/Kinematics.h"
 
 #include "ai_object_location.h"
-#include "ui/UIDebugFonts.h" 
+#include "ui/UIDebugFonts.h"
+
+#include "attachable_item.h"
+#include "attachment_owner.h"
+#include "InventoryOwner.h"
+#include "Inventory.h"
 
 #ifdef DEBUG
 #	include "PHDebug.h"
@@ -96,9 +101,9 @@ extern u32		last_quick;
 
 extern	u64		g_qwStartGameTime;
 extern	u64		g_qwEStartGameTime;
+extern 	int 	hud_adj_mode;
 
-ENGINE_API
-extern  float   psHUD_FOV_def;
+ENGINE_API extern float psHUD_FOV_def;
 extern	float	psSqueezeVelocity;
 extern	int		psLUA_GCSTEP;
 
@@ -119,13 +124,12 @@ extern	BOOL	g_show_wnd_rect2			;
 extern	float	g_fTimeFactor;
 extern	BOOL	b_hud_collision;
 extern	BOOL	m_b_actor_walk_inertion;
-		int		g_keypress_on_start = 1;
-extern	int		hud_adj_mode;
+int				g_keypress_on_start = 1;
+extern	BOOL	g_advanced_crosshair;
 extern	int		hud_adj_item_idx;
 //extern	float	g_bHudAdjustDeltaPos;
 //extern	float	g_bHudAdjustDeltaRot;
 
-extern	BOOL	g_advanced_crosshair;
 
 extern bool		g_saves_locked;
 
@@ -181,7 +185,6 @@ CUIOptConCom g_OptConCom;
 #endif // PURE_ALLOC
 
 #ifdef SEVERAL_ALLOCATORS
-	//ENGINE_API 	u32 engine_lua_memory_usage	();
 	extern		u32 game_lua_memory_usage	();
 #endif // SEVERAL_ALLOCATORS
 
@@ -223,6 +226,340 @@ public:
 };
 
 // console commands
+// g_spawn
+class CCC_Spawn : public IConsole_Command {
+public:
+	CCC_Spawn(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR args) {
+		if (!g_pGameLevel) return;
+
+		int count = 1;
+		char	Name[128];	Name[0] = 0;
+		sscanf(args, "%s %d", Name, &count);
+
+		if (GameID() != eGameIDSingle)
+		{
+			Msg("For this game type entity-spawning is disabled.");
+			return;
+		};
+
+		if (count > 50)
+		{
+			Msg("! [g_spawn]: Cancel the command. Maximum value of the second argument: 50. Count is: %d", count);
+			return;
+		}
+
+		if (!pSettings->section_exist(Name))
+		{
+			Msg("! Section [%s] isn`t exist...", Name);
+			return;
+		}
+
+		collide::rq_result RQ = Level().GetPickResult(Device.vCameraPosition, Device.vCameraDirection, 1000.0f, Level().CurrentControlEntity());
+		Fvector pos = Fvector(Device.vCameraPosition).add(Fvector(Device.vCameraDirection).mul(RQ.range));
+
+		if (auto tpGame = smart_cast<game_sv_Single*>(Level().Server->game))
+		{
+			for (int i = 0; i < count; ++i)
+			{
+				CSE_Abstract* entity = tpGame->alife().spawn_item(Name, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
+
+				if (CSE_ALifeAnomalousZone* anom = smart_cast<CSE_ALifeAnomalousZone*>(entity))
+				{
+					CShapeData::shape_def _shape;
+					_shape.data.sphere.P.set(0.0f, 0.0f, 0.0f);
+					_shape.data.sphere.R = 3.0f;
+					_shape.type = CShapeData::cfSphere;
+					anom->assign_shapes(&_shape, 1);
+					anom->m_space_restrictor_type = RestrictionSpace::eRestrictorTypeNone;
+				}
+			}
+		}
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections())
+		{
+			if (sect->line_exist("class") && sect->line_exist("$spawn"))
+				tips.push_back(sect->Name.c_str());
+		}
+	}
+
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+};
+// g_spawn
+
+class CCC_Giveinfo : public IConsole_Command {
+public:
+	CCC_Giveinfo(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR info_id)
+	{
+		if (!g_pGameLevel) return;
+
+		char	Name[128];	Name[0] = 0;
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+
+		if (actor)
+			actor->OnReceiveInfo(info_id);
+		else
+			Msg("! [g_info] : Actor not found!");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+		for (const auto& it : *CInfoPortion::Items())
+		{
+			auto& name = it.id;
+			tips.push_back(name);
+		}
+		std::sort(tips.begin(), tips.end());
+	}
+};
+
+class CCC_Disinfo : public IConsole_Command {
+public:
+	CCC_Disinfo(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR info_id)
+	{
+		if (!g_pGameLevel) return;
+
+		char	Name[128];	Name[0] = 0;
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+
+		if (actor)
+			actor->OnDisableInfo(info_id);
+		else
+			Msg("! [g_info] : Actor not found!");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+
+		for (const auto& it : *CInfoPortion::Items())
+		{
+			auto& name = it.id;
+			tips.push_back(name);
+		}
+
+		std::sort(tips.begin(), tips.end());
+	}
+};
+
+class CCC_Spawn_to_inv : public IConsole_Command {
+public:
+	CCC_Spawn_to_inv(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR args) {
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		int count = 1;
+		char	Name[128];	Name[0] = 0;
+		sscanf(args, "%s %d", Name, &count);
+
+		if (count > 250)
+		{
+			Msg("! [g_spawn_to_inventory]: Cancel the command. Maximum value of the second argument: 250. Cound is: %d", count);
+			return;
+		}
+
+		if (!pSettings->section_exist(Name))
+		{
+			Msg("! Section [%s] isn`t exist...", Name);
+			return;
+		}
+
+		if (!pSettings->line_exist(Name, "class") || !pSettings->line_exist(Name, "inv_weight") || !pSettings->line_exist(Name, "visual"))
+		{
+			Msg("!Failed to load section!");
+			return;
+		}
+
+		for (int i = 0; i < count; ++i)
+			Level().spawn_item(Name, Actor()->Position(), false, Actor()->ID());
+	}
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		for (auto sect : pSettings->sections()) {
+			if (sect->line_exist("class") && sect->line_exist("inv_weight"))
+				tips.push_back(sect->Name.c_str());
+		}
+	}
+};
+
+extern CUIXml* g_gameTaskXml;
+
+class CCC_GiveTask : public IConsole_Command
+{
+public:
+	CCC_GiveTask(LPCSTR N) : IConsole_Command(N) {};
+	virtual void Execute(LPCSTR task)
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		if (actor)
+			actor->GameTaskManager().GiveGameTaskToActor(task, 0, true);
+		else
+			Msg("! [g_task] : Actor not found!");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!ai().get_alife())
+		{
+			Msg("! ALife simulator is needed to perform specified command!");
+			return;
+		}
+
+		if (g_gameTaskXml)
+		{
+			const int tag_num = g_gameTaskXml->GetNodesNum(g_gameTaskXml->GetLocalRoot(), "game_task");
+
+			for (int i = 0; i < tag_num; i++)
+			{
+				XML_NODE* l_root = g_gameTaskXml->NavigateToNode("game_task", i);
+				g_gameTaskXml->SetLocalRoot(l_root);
+
+				if (auto name = g_gameTaskXml->ReadAttrib(l_root, "id", nullptr))
+				{
+					tips.emplace_back(name);
+				}
+			}
+
+			std::sort(tips.begin(), tips.end());
+		}
+	}
+};
+
+class CCC_GiveMoney : public IConsole_Command
+{
+public:
+	CCC_GiveMoney(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR money)
+	{
+		if (!g_pGameLevel)
+		{
+			Log("Error: No game level!");
+			return;
+		}
+
+		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
+		int	m_iMoney = (int)atoi(money);
+		if (actor)
+		{
+			Actor()->set_money(Actor()->get_money() + m_iMoney, false);
+		}
+		else
+			Msg("! [g_money] : Actor not found!");
+	}
+};
+
+// kill
+class CCC_KillEntity : public IConsole_Command {
+public:
+	CCC_KillEntity(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
+	virtual void Execute(LPCSTR args)
+	{
+		if (!g_pGameLevel) return;
+
+		char story_id_to_kill[128];
+		story_id_to_kill[0] = 0;
+
+		sscanf(args, "%s", story_id_to_kill);
+
+		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
+
+		if (story_id_to_kill[0] != 0)
+		{
+			u16 id_to_kill{};
+
+			luabind::functor<u16> m_functor;
+			if (ai().script_engine().functor("mfs_functions.get_id_by_sid", m_functor))
+				id_to_kill = m_functor(story_id_to_kill);
+
+			if (!id_to_kill)
+			{
+				Msg("! [kill] : Invalid story_id or NPC offline! story_id: %s", story_id_to_kill);
+				return;
+			}
+
+			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(Level().Objects.net_Find(id_to_kill));
+
+			if (entity_to_kill)
+			{
+				if (!entity_to_kill->g_Alive())
+				{
+					Msg("! [kill] : This entity is already dead!");
+					return;
+				}
+
+				entity_to_kill->KillEntity(entity_to_kill->ID());
+			}
+			else
+				Msg("! [kill] : Entity with id [%s] not found!", story_id_to_kill);
+		}
+		else if (RQ.O && story_id_to_kill[0] == 0)
+		{
+			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(RQ.O);
+
+			if (entity_to_kill)
+			{
+				if (!entity_to_kill->g_Alive())
+				{
+					Msg("! [kill] : This entity is already dead!");
+					return;
+				}
+
+				entity_to_kill->KillEntity(entity_to_kill->ID());
+			}
+			else
+				Msg("! [kill] : Is not EntityAlive!");
+		}
+		else
+			Msg("! [kill] : Empty entity to kill or is not EntityAlive!");
+	}
+
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+};
+
+struct DumpTxrsForPrefetching : public IConsole_Command {
+	DumpTxrsForPrefetching(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
+
+	virtual void Execute(LPCSTR args)
+	{
+		MainMenu()->ReportTxrsForPrefetching();
+	}
+};
+
 class CCC_GameDifficulty : public CCC_Token {
 public:
 	CCC_GameDifficulty(LPCSTR N) : CCC_Token(N,(u32*)&g_SingleGameDifficulty,difficulty_type_token)  {};
@@ -294,6 +631,32 @@ public:
 
 			Level().Server->game->SetGameTimeFactor(id1);
 		}
+	}
+	
+	virtual void	Save	(IWriter *F)	{};
+	virtual void	Status	(TStatus& S)
+	{	
+		if ( !g_pGameLevel )	return;
+
+		float v = Level().Server->game->GetGameTimeFactor();
+		xr_sprintf	(S,sizeof(S),"%3.5f", v);
+		while	(xr_strlen(S) && ('0'==S[xr_strlen(S)-1]))	S[xr_strlen(S)-1] = 0;
+	}
+	virtual void	Info	(TInfo& I)
+	{	
+		if (!OnServer())	return;
+		float v = Level().Server->game->GetGameTimeFactor();
+		xr_sprintf(I,sizeof(I)," value = %3.5f", v);
+	}
+	virtual void	fill_tips(vecTips& tips, u32 mode)
+	{
+		if (!OnServer())	return;
+		float v = Level().Server->game->GetGameTimeFactor();
+
+		TStatus  str;
+		xr_sprintf( str, sizeof(str), "%3.5f  (current)  [0.0,1000.0]", v );
+		tips.push_back( str );
+		IConsole_Command::fill_tips( tips, mode );
 	}
 };
 
@@ -371,18 +734,6 @@ public:
 	}
 };
 
-class CCC_TimeFactor : public IConsole_Command {
-public:
-					CCC_TimeFactor	(LPCSTR N) : IConsole_Command(N) {}
-	virtual void	Execute			(LPCSTR args)
-	{
-		float				time_factor = (float)atof(args);
-		clamp				(time_factor,.001f,1000.f);
-		Device.time_factor	(time_factor);
-		psSpeedOfSound		= time_factor;
-	}
-};
-
 //-----------------------------------------------------------------------
 class CCC_DemoRecord : public IConsole_Command
 {
@@ -439,13 +790,13 @@ public:
 	  }
 };
 
-bool valid_file_name(LPCSTR file_name)
+bool valid_saved_game_name(LPCSTR file_name)
 {
 
 	LPCSTR		I = file_name;
 	LPCSTR		E = file_name + xr_strlen(file_name);
 	for ( ; I != E; ++I) {
-		if (!strchr("/\\:*?\"<>|",*I))
+		if (!strchr("/\\:*?\"<>|^()[]%",*I))
 			continue;
 
 		return	(false);
@@ -511,18 +862,17 @@ public:
 		if (g_saves_locked)
 		{
 #ifdef DEBUG
-			Msg("Can`t make saved game: locked by Lua.");
+			Msg("Can`t make saved game: blocked by Lua.");
 #endif
-			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("game_save_blocked_icon", true);
-			SDrawStaticStruct* _s2 = HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
-			_s2->wnd()->SetText(*CStringTable().translate("st_saves_locked"));
+			SDrawStaticStruct* _s	= HUD().GetUI()->UIGame()->AddCustomStatic("game_save_blocked_icon", true);
+			SDrawStaticStruct* _s2	= HUD().GetUI()->UIGame()->AddCustomStatic("game_saved", true);
+			_s2->wnd()->SetText		(*CStringTable().translate("st_saves_locked"));
 			return;
 		}
 
-		string_path				S,S1;
+		string_path				S, S1;
 		S[0]					= 0;
-//.		sscanf					(args ,"%s",S);
-		xr_strcpy					(S,args);
+		strncpy_s				(S, sizeof(S), args, _MAX_PATH - 1 );
 		
 #ifdef DEBUG
 		CTimer					timer;
@@ -540,17 +890,13 @@ public:
 			net_packet.w_stringZ(S);
 			net_packet.w_u8		(0);
 			Level().Send		(net_packet,net_flags(TRUE));
-			
-			if (last_quick < quick_save_counter && quick_save_counter > 0)
-				last_quick++;
-			else
-				last_quick = 0;
+			if (last_quick < quick_save_counter && quick_save_counter > 0) last_quick++;
+			else last_quick = 0;
 		}
 		else
 		{
-			if(!valid_file_name(S))
-			{
-				Msg("invalid file name");
+			if(!valid_saved_game_name(S)){
+				Msg("! Save failed: invalid file name - %s", S);
 				return;
 			}
 
@@ -596,15 +942,14 @@ public:
 	CCC_ALifeLoadFrom(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
 	virtual void Execute(LPCSTR args)
 	{
+		string_path				saved_game;
+		strncpy_s				(saved_game, sizeof(saved_game), args, _MAX_PATH - 1 );
+
 		if (!ai().get_alife()) {
 			Log						("! ALife simulator has not been started yet");
 			return;
 		}
 
-		string256					saved_game;
-		saved_game[0]				= 0;
-//.		sscanf						(args,"%s",saved_game);
-		xr_strcpy					(saved_game, args);
 		if (!xr_strlen(saved_game)) {
 			Log						("! Specify file name!");
 			return;
@@ -619,11 +964,18 @@ public:
 			Msg						("! Cannot load saved game %s, version mismatch or saved game is corrupted",saved_game);
 			return;
 		}
+
+		if ( !valid_saved_game_name(saved_game) )
+		{
+			Msg						("! Cannot load saved game %s, invalid file name",saved_game);
+			return;
+		}
+
 /*     moved to level_network_messages.cpp
 		CSavedGameWrapper			wrapper(args);
 		if (wrapper.level_id() == ai().level_graph().level_id()) {
 			if (Device.Paused())
-				Device.Pause		(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
+				GAME_PAUSE		(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
 
 			Level().remove_objects	();
 
@@ -638,7 +990,7 @@ public:
 			MainMenu()->Activate(false);
 
 		if (Device.Paused())
-			GAME_PAUSE				(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
+			GAME_PAUSE			(FALSE, TRUE, TRUE, "CCC_ALifeLoadFrom");
 
 		NET_Packet					net_packet;
 		net_packet.w_begin			(M_LOAD_GAME);
@@ -650,7 +1002,8 @@ public:
 	{
 		get_files_list(tips, "$game_saves$", SAVE_EXTENSION);
 	}
-};
+
+};//CCC_ALifeLoadFrom
 
 class CCC_LoadLastSave : public IConsole_Command {
 public:
@@ -661,8 +1014,16 @@ public:
 
 	virtual void	Execute				(LPCSTR args)
 	{
-		if (args && *args) {
-			xr_strcpy				(g_last_saved_game,args);
+		string_path				saved_game = "";
+		if ( args )
+		{
+			strncpy_s			(saved_game, sizeof(saved_game), args, _MAX_PATH - 1 );
+		}
+
+		
+		if (saved_game && *saved_game)
+		{
+			xr_strcpy				(g_last_saved_game,saved_game);
 			return;
 		}
 
@@ -671,14 +1032,30 @@ public:
 			return;
 		}
 
-		string512				command;
+		if (!CSavedGameWrapper::saved_game_exist(g_last_saved_game)) {
+			Msg						("! Cannot find saved game %s",g_last_saved_game);
+			return;
+		}
+
+		if (!CSavedGameWrapper::valid_saved_game(g_last_saved_game)) {
+			Msg						("! Cannot load saved game %s, version mismatch or saved game is corrupted",g_last_saved_game);
+			return;
+		}
+
+		if ( !valid_saved_game_name(g_last_saved_game) )
+		{
+			Msg						("! Cannot load saved game %s, invalid file name",g_last_saved_game);
+			return;
+		}
+
+		LPSTR					command;
 		if (ai().get_alife()) {
-			strconcat			(sizeof(command),command,"load ",g_last_saved_game);
+			STRCONCAT			(command, "load ", g_last_saved_game);
 			Console->Execute	(command);
 			return;
 		}
 
-		strconcat				(sizeof(command),command,"start server(",g_last_saved_game,"/single/alife/load)");
+		STRCONCAT				(command, "start server(", g_last_saved_game, "/single/alife/load)");
 		Console->Execute		(command);
 	}
 	
@@ -705,6 +1082,24 @@ public:
 	virtual void	Info(TInfo& I)
 	{
 		strcpy_s(I, "draw all existing fonts");
+	}
+};
+
+class CCC_UiHud_Mode : public CCC_Token
+{
+public:
+	CCC_UiHud_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N, V, T) {};
+
+	virtual void	Execute(LPCSTR args) {
+		CCC_Token::Execute(args);
+
+		if (g_pGamePersistent && g_pGameLevel && Level().game)
+		{
+			if (*value >= 1 && *value <= 3)
+			{
+				HUD().OnScreenResolutionChanged();
+			}
+		}
 	}
 };
 
@@ -769,58 +1164,6 @@ public:
 	  }
 };
 
-class CCC_Script : public IConsole_Command {
-public:
-	CCC_Script(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
-	virtual void Execute(LPCSTR args) {
-		string256	S;
-		S[0]		= 0;
-		sscanf		(args ,"%s",S);
-		if (!xr_strlen(S))
-			Log("* Specify script name!");
-		else {
-			// rescan pathes
-			FS_Path* P = FS.get_path("$game_scripts$");
-			P->m_Flags.set	(FS_Path::flNeedRescan,TRUE);
-			//FS.rescan_pathes();
-			// run script
-			if (ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel))
-				ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel)->add_script(S,false,true);
-		}
-	}
-};
-
-class CCC_ScriptCommand : public IConsole_Command {
-public:
-	CCC_ScriptCommand	(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
-	virtual void	Execute				(LPCSTR args) {
-		if (!xr_strlen(args))
-			Log("* Specify string to run!");
-		else {
-#if 1
-			if (ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel))
-				ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel)->add_script(args,true,true);
-#else
-			string4096		S;
-			shared_str		m_script_name = "console command";
-			xr_sprintf			(S,"%s\n",args);
-			int				l_iErrorCode = luaL_loadbuffer(ai().script_engine().lua(),S,xr_strlen(S),"@console_command");
-			if (!l_iErrorCode) {
-				l_iErrorCode = lua_pcall(ai().script_engine().lua(),0,0,0);
-				if (l_iErrorCode) {
-					ai().script_engine().print_output(ai().script_engine().lua(),*m_script_name,l_iErrorCode);
-					return;
-				}
-			}
-			else {
-				ai().script_engine().print_output(ai().script_engine().lua(),*m_script_name,l_iErrorCode);
-				return;
-			}
-#endif
-		}
-	}
-};
-
 #ifdef DEBUG
 
 class CCC_DrawGameGraphAll : public IConsole_Command {
@@ -868,18 +1211,14 @@ public:
 		if (!ai().get_level_graph())
 			return;
 
-		string256			S;
-		S[0]				= 0;
-		sscanf				(args,"%s",S);
-
-		if (!*S) {
+		if (!*args) {
 			ai().level_graph().setup_current_level	(-1);
 			return;
 		}
 
-		const GameGraph::SLevel	*level = ai().game_graph().header().level(S,true);
+		const GameGraph::SLevel	*level = ai().game_graph().header().level(args,true);
 		if (!level) {
-			Msg				("! There is no level %s in the game graph",S);
+			Msg				("! There is no level %s in the game graph",args);
 			return;
 		}
 
@@ -1137,30 +1476,31 @@ struct CCC_ClearSmartCastStats : public IConsole_Command {
 struct CCC_JumpToLevel : public IConsole_Command {
 	CCC_JumpToLevel(LPCSTR N) : IConsole_Command(N)  {};
 
-	virtual void Execute(LPCSTR args) {
-		if (!ai().get_alife()) {
+	virtual void Execute(LPCSTR level)
+	{
+		if (!ai().get_alife())
+		{
 			Msg				("! ALife simulator is needed to perform specified command!");
 			return;
 		}
-		string256		level;
-		sscanf(args,"%s",level);
 
 		GameGraph::LEVEL_MAP::const_iterator	I = ai().game_graph().header().levels().begin();
 		GameGraph::LEVEL_MAP::const_iterator	E = ai().game_graph().header().levels().end();
-		for ( ; I != E; ++I)
-			if (!xr_strcmp((*I).second.name(),level)) {
+		for ( ; I != E; ++I )
+			if ( !xr_strcmp((*I).second.name(),level) )
+			{
 				ai().alife().jump_to_level(level);
 				return;
 			}
 		Msg							("! There is no level \"%s\" in the game graph!",level);
 	}
 
-	virtual void	Save(IWriter *F) {};
+	virtual void	Save	(IWriter *F)	{};
 	virtual void	fill_tips(vecTips& tips, u32 mode)
 	{
-		if (!ai().get_alife())
+		if ( !ai().get_alife() )
 		{
-			Msg("! ALife simulator is needed to perform specified command!");
+			Msg				("! ALife simulator is needed to perform specified command!");
 			return;
 		}
 
@@ -1170,6 +1510,90 @@ struct CCC_JumpToLevel : public IConsole_Command {
 		{
 			tips.push_back((*itb).second.name());
 		}
+	}
+};
+
+class CCC_Script : public IConsole_Command {
+public:
+	CCC_Script(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
+	virtual void Execute(LPCSTR args) {
+		string256	S;
+		S[0]		= 0;
+		sscanf		(args ,"%s",S);
+		if (!xr_strlen(S))
+			Log("* Specify script name!");
+		else {
+			// rescan pathes
+			FS_Path* P = FS.get_path("$game_scripts$");
+			P->m_Flags.set	(FS_Path::flNeedRescan,TRUE);
+			//FS.rescan_pathes();
+			// run script
+			if (ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel))
+				ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel)->add_script(S,false,true);
+		}
+	}
+};
+
+class CCC_ScriptCommand : public IConsole_Command {
+public:
+	CCC_ScriptCommand(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
+	virtual void	Execute(LPCSTR args) {
+		if (!xr_strlen(args))
+			Log("* Specify string to run!");
+		else {
+#if 1
+			if (ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel))
+				ai().script_engine().script_process(ScriptEngine::eScriptProcessorLevel)->add_script(args, true, true);
+#else
+			string4096		S;
+			shared_str		m_script_name = "console command";
+			xr_sprintf(S, "%s\n", args);
+			int				l_iErrorCode = luaL_loadbuffer(ai().script_engine().lua(), S, xr_strlen(S), "@console_command");
+			if (!l_iErrorCode)
+			{
+				l_iErrorCode = lua_pcall(ai().script_engine().lua(), 0, 0, 0);
+				if (l_iErrorCode)
+				{
+					ai().script_engine().print_output(ai().script_engine().lua(), *m_script_name, l_iErrorCode);
+					return;
+				}
+			}
+			else
+			{
+				ai().script_engine().print_output(ai().script_engine().lua(), *m_script_name, l_iErrorCode);
+				return;
+			}
+#endif
+		}
+	}
+};
+
+class CCC_TimeFactor : public IConsole_Command {
+public:
+					CCC_TimeFactor	(LPCSTR N) : IConsole_Command(N) {}
+	virtual void	Execute			(LPCSTR args)
+	{
+		float				time_factor = (float)atof(args);
+		clamp				(time_factor,EPS,1000.f);
+		Device.time_factor	(time_factor);
+		psSpeedOfSound = time_factor;
+	}
+	virtual void	Status			(TStatus &S)
+	{
+		xr_sprintf	(S,sizeof(S),"%f",Device.time_factor());
+	}
+
+	virtual void	Info	(TInfo& I)
+	{
+		xr_strcpy				(I,"[0.001 - 1000.0]");
+	}
+
+	virtual void	fill_tips(vecTips& tips, u32 mode)
+	{
+		TStatus  str;
+		xr_sprintf( str, sizeof(str), "%3.3f  (current)  [0.001 - 1000.0]", Device.time_factor() );
+		tips.push_back( str );
+		IConsole_Command::fill_tips( tips, mode );
 	}
 };
 
@@ -1320,66 +1744,6 @@ struct CCC_DbgBullets : public CCC_Integer {
 	}
 };
 
-#include "attachable_item.h"
-#include "attachment_owner.h"
-#include "InventoryOwner.h"
-#include "Inventory.h"
-class CCC_TuneAttachableItem : public IConsole_Command
-{
-public		:
-	CCC_TuneAttachableItem(LPCSTR N):IConsole_Command(N){};
-	virtual void	Execute	(LPCSTR args)
-	{
-		if( CAttachableItem::m_dbgItem)
-		{
-			CAttachableItem::m_dbgItem = NULL;
-			Msg("CCC_TuneAttachableItem switched to off");
-			return;
-		};
-
-		CObject* obj			= Level().CurrentViewEntity();	VERIFY(obj);
-		shared_str ssss			= args;
-
-		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
-		CAttachableItem* itm	= owner->attachedItem(ssss);
-		if(itm)
-		{
-			CAttachableItem::m_dbgItem = itm;
-		}
-		else
-		{
-			CInventoryOwner* iowner = smart_cast<CInventoryOwner*>(obj);
-			PIItem active_item = iowner->m_inventory->ActiveItem();
-			if(active_item && active_item->object().cNameSect()==ssss )
-				CAttachableItem::m_dbgItem = active_item->cast_attachable_item();
-		}
-
-		if(CAttachableItem::m_dbgItem)
-			Msg("CCC_TuneAttachableItem switched to ON for [%s]",args);
-		else
-			Msg("CCC_TuneAttachableItem cannot find attached item [%s]",args);
-	}
-
-	virtual void	Info	(TInfo& I)
-	{	
-		xr_sprintf(I,"allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
-	}
-
-	virtual void fill_tips(vecTips& tips, u32 mode)
-	{
-		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
-
-		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
-
-		for (u32 i = 0; i < owner->attached_objects().size(); ++i)
-		{
-			string256 out_text = "";
-			xr_sprintf(out_text, "%s%s", owner->attached_objects().at(i)->item().m_section_id.c_str(), owner->attached_objects().at(i)->bone_name() != nullptr ? "" : "(zero bone)");
-			tips.push_back(out_text);
-		}
-	}
-};
-
 class CCC_Crash : public IConsole_Command {
 public:
 	CCC_Crash(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1465,6 +1829,61 @@ public:
 
 #endif // DEBUG
 
+class CCC_TuneAttachableItem : public IConsole_Command
+{
+public:
+	CCC_TuneAttachableItem(LPCSTR N) :IConsole_Command(N) {};
+	virtual void	Execute(LPCSTR args)
+	{
+		if (CAttachableItem::m_dbgItem)
+		{
+			CAttachableItem::m_dbgItem = NULL;
+			Msg("CCC_TuneAttachableItem switched to off");
+			return;
+		};
+
+		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
+		shared_str ssss = args;
+
+		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
+		CAttachableItem* itm = owner->attachedItem(ssss);
+		if (itm)
+		{
+			CAttachableItem::m_dbgItem = itm;
+		}
+		else
+		{
+			CInventoryOwner* iowner = smart_cast<CInventoryOwner*>(obj);
+			PIItem active_item = iowner->m_inventory->ActiveItem();
+			if (active_item && active_item->object().cNameSect() == ssss)
+				CAttachableItem::m_dbgItem = active_item->cast_attachable_item();
+		}
+
+		if (CAttachableItem::m_dbgItem)
+			Msg("CCC_TuneAttachableItem switched to ON for [%s]", args);
+		else
+			Msg("CCC_TuneAttachableItem cannot find attached item [%s]", args);
+	}
+
+	virtual void	Info(TInfo& I)
+	{
+		xr_sprintf(I, "allows to change bind rotation and position offsets for attached item, <section_name> given as arguments");
+	}
+
+	virtual void fill_tips(vecTips& tips, u32 mode)
+	{
+		CObject* obj = Level().CurrentViewEntity();	VERIFY(obj);
+
+		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
+
+		for (u32 i = 0; i < owner->attached_objects().size(); ++i)
+		{
+			string256 out_text = "";
+			xr_sprintf(out_text, "%s%s", owner->attached_objects().at(i)->item().m_section_id.c_str(), owner->attached_objects().at(i)->bone_name() != nullptr ? "" : "(zero bone)");
+			tips.push_back(out_text);
+		}
+	}
+};
 class CCC_DumpObjects : public IConsole_Command {
 public:
 	CCC_DumpObjects(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
@@ -1520,189 +1939,6 @@ public:
 	  }
 };
 
-// AXR: New Commands
-
-class CCC_Spawn : public IConsole_Command {
-public:
-	CCC_Spawn(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR args) {
-		if (!g_pGameLevel) return;
-
-		int count = 1;
-		char	Name[128];	Name[0] = 0;
-		sscanf(args, "%s %d", Name, &count);
-
-		if (GameID() != eGameIDSingle)
-		{
-			Msg("For this game type entity-spawning is disabled.");
-			return;
-		};
-
-		if (count > 50)
-		{
-			Msg("! [g_spawn]: Cancel the command. Maximum value of the second argument: 50. Count is: %d", count);
-			return;
-		}
-
-		if (!pSettings->section_exist(Name))
-		{
-			Msg("! Section [%s] isn`t exist...", Name);
-			return;
-		}
-
-		collide::rq_result RQ = Level().GetPickResult(Device.vCameraPosition, Device.vCameraDirection, 1000.0f, Level().CurrentControlEntity());
-		Fvector pos = Fvector(Device.vCameraPosition).add(Fvector(Device.vCameraDirection).mul(RQ.range));
-
-		if (auto tpGame = smart_cast<game_sv_Single*>(Level().Server->game))
-		{
-			for (int i = 0; i < count; ++i)
-			{
-				CSE_Abstract* entity = tpGame->alife().spawn_item(Name, pos, Actor()->ai_location().level_vertex_id(), Actor()->ai_location().game_vertex_id(), ALife::_OBJECT_ID(-1));
-
-				if (CSE_ALifeAnomalousZone* anom = smart_cast<CSE_ALifeAnomalousZone*>(entity))
-				{
-					CShapeData::shape_def _shape;
-					_shape.data.sphere.P.set(0.0f, 0.0f, 0.0f);
-					_shape.data.sphere.R = 3.0f;
-					_shape.type = CShapeData::cfSphere;
-					anom->assign_shapes(&_shape, 1);
-					anom->m_space_restrictor_type = RestrictionSpace::eRestrictorTypeNone;
-				}
-			}
-		}
-	}
-
-	virtual void fill_tips(vecTips& tips, u32 mode)
-	{
-		for (auto sect : pSettings->sections())
-		{
-			if (sect->line_exist("class") && sect->line_exist("$spawn"))
-				tips.push_back(sect->Name.c_str());
-		}
-	}
-
-	virtual void	Info(TInfo& I)
-	{
-		strcpy(I, "name,team,squad,group");
-	}
-};
-// g_spawn
-
-class CCC_Giveinfo : public IConsole_Command {
-public:
-	CCC_Giveinfo(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR info_id)
-	{
-		if (!g_pGameLevel) return;
-
-		char	Name[128];	Name[0] = 0;
-		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
-
-		if (actor)
-			actor->OnReceiveInfo(info_id);
-		else
-			Msg("! [g_info] : Actor not found!");
-	}
-
-	virtual void fill_tips(vecTips& tips, u32 mode)
-	{
-		if (!ai().get_alife())
-		{
-			Msg("! ALife simulator is needed to perform specified command!");
-			return;
-		}
-		for (const auto& it : *CInfoPortion::Items())
-		{
-			auto& name = it.id;
-			tips.push_back(name);
-		}
-		std::sort(tips.begin(), tips.end());
-	}
-};
-
-class CCC_Disinfo : public IConsole_Command {
-public:
-	CCC_Disinfo(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR info_id)
-	{
-		if (!g_pGameLevel) return;
-
-		char	Name[128];	Name[0] = 0;
-		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
-
-		if (actor)
-			actor->OnDisableInfo(info_id);
-		else
-			Msg("! [g_info] : Actor not found!");
-	}
-
-	virtual void fill_tips(vecTips& tips, u32 mode)
-	{
-		if (!ai().get_alife())
-		{
-			Msg("! ALife simulator is needed to perform specified command!");
-			return;
-		}
-
-		for (const auto& it : *CInfoPortion::Items())
-		{
-			auto& name = it.id;
-			tips.push_back(name);
-		}
-
-		std::sort(tips.begin(), tips.end());
-	}
-};
-
-class CCC_Spawn_to_inv : public IConsole_Command {
-public:
-	CCC_Spawn_to_inv(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR args) {
-		if (!g_pGameLevel)
-		{
-			Log("Error: No game level!");
-			return;
-		}
-
-		int count = 1;
-		char	Name[128];	Name[0] = 0;
-		sscanf(args, "%s %d", Name, &count);
-
-		if (count > 250)
-		{
-			Msg("! [g_spawn_to_inventory]: Cancel the command. Maximum value of the second argument: 250. Cound is: %d", count);
-			return;
-		}
-
-		if (!pSettings->section_exist(Name))
-		{
-			Msg("! Section [%s] isn`t exist...", Name);
-			return;
-		}
-
-		if (!pSettings->line_exist(Name, "class") || !pSettings->line_exist(Name, "inv_weight") || !pSettings->line_exist(Name, "visual"))
-		{
-			Msg("!Failed to load section!");
-			return;
-		}
-
-		for (int i = 0; i < count; ++i)
-			Level().spawn_item(Name, Actor()->Position(), false, Actor()->ID());
-	}
-	virtual void	Info(TInfo& I)
-	{
-		strcpy(I, "name,team,squad,group");
-	}
-
-	virtual void fill_tips(vecTips& tips, u32 mode)
-	{
-		for (auto sect : pSettings->sections()) {
-			if (sect->line_exist("class") && sect->line_exist("inv_weight"))
-				tips.push_back(sect->Name.c_str());
-		}
-	}
-};
-
 // Change weather immediately
 class CCC_SetWeather : public IConsole_Command
 {
@@ -1727,176 +1963,6 @@ public:
 			for (auto& it : g_pGamePersistent->Environment().WeatherCycles)
 				tips.push_back(it.first);
 		}
-	}
-};
-
-class CCC_UiHud_Mode : public CCC_Token
-{
-public:
-	CCC_UiHud_Mode(LPCSTR N, u32* V, xr_token* T) : CCC_Token(N, V, T) {};
-
-	virtual void	Execute(LPCSTR args) {
-		CCC_Token::Execute(args);
-
-		if (g_pGamePersistent && g_pGameLevel && Level().game)
-		{
-			if (*value >= 1 && *value <= 3)
-			{
-				HUD().OnScreenResolutionChanged();
-			}
-		}
-	}
-};
-
-extern CUIXml* g_gameTaskXml;
-
-class CCC_GiveTask : public IConsole_Command
-{
-public:
-	CCC_GiveTask(LPCSTR N) : IConsole_Command(N) {};
-	virtual void Execute(LPCSTR task)
-	{
-		if (!g_pGameLevel)
-		{
-			Log("Error: No game level!");
-			return;
-		}
-
-		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
-		if (actor)
-			actor->GameTaskManager().GiveGameTaskToActor(task, 0, true);
-		else
-			Msg("! [g_task] : Actor not found!");
-	}
-
-	virtual void fill_tips(vecTips& tips, u32 mode)
-	{
-		if (!ai().get_alife())
-		{
-			Msg("! ALife simulator is needed to perform specified command!");
-			return;
-		}
-
-		if (g_gameTaskXml)
-		{
-			const int tag_num = g_gameTaskXml->GetNodesNum(g_gameTaskXml->GetLocalRoot(), "game_task");
-
-			for (int i = 0; i < tag_num; i++)
-			{
-				XML_NODE* l_root = g_gameTaskXml->NavigateToNode("game_task", i);
-				g_gameTaskXml->SetLocalRoot(l_root);
-
-				if (auto name = g_gameTaskXml->ReadAttrib(l_root, "id", nullptr))
-				{
-					tips.emplace_back(name);
-				}
-			}
-
-			std::sort(tips.begin(), tips.end());
-		}
-	}
-};
-
-class CCC_GiveMoney : public IConsole_Command
-{
-public:
-	CCC_GiveMoney(LPCSTR N) : IConsole_Command(N) { };
-	virtual void Execute(LPCSTR money)
-	{
-		if (!g_pGameLevel)
-		{
-			Log("Error: No game level!");
-			return;
-		}
-
-		CActor* actor = smart_cast<CActor*>(Level().CurrentEntity());
-		int	m_iMoney = (int)atoi(money);
-		if (actor)
-		{
-			Actor()->set_money(Actor()->get_money() + m_iMoney, false);
-		}
-		else
-			Msg("! [g_money] : Actor not found!");
-	}
-};
-
-struct DumpTxrsForPrefetching : public IConsole_Command {
-	DumpTxrsForPrefetching(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
-
-	virtual void Execute(LPCSTR args)
-	{
-		MainMenu()->ReportTxrsForPrefetching();
-	}
-};
-
-// kill
-class CCC_KillEntity : public IConsole_Command {
-public:
-	CCC_KillEntity(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = true; };
-	virtual void Execute(LPCSTR args)
-	{
-		if (!g_pGameLevel) return;
-
-		char story_id_to_kill[128];
-		story_id_to_kill[0] = 0;
-
-		sscanf(args, "%s", story_id_to_kill);
-
-		collide::rq_result& RQ = HUD().GetCurrentRayQuery();
-
-		if (story_id_to_kill[0] != 0)
-		{
-			u16 id_to_kill{};
-
-			luabind::functor<u16> m_functor;
-			if (ai().script_engine().functor("mfs_functions.get_id_by_sid", m_functor));
-			id_to_kill = m_functor(story_id_to_kill);
-
-			if (!id_to_kill)
-			{
-				Msg("! [kill] : Invalid story_id or NPC offline! story_id: %s", story_id_to_kill);
-				return;
-			}
-
-			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(Level().Objects.net_Find(id_to_kill));
-
-			if (entity_to_kill)
-			{
-				if (!entity_to_kill->g_Alive())
-				{
-					Msg("! [kill] : This entity is already dead!");
-					return;
-				}
-
-				entity_to_kill->KillEntity(entity_to_kill->ID());
-			}
-			else
-				Msg("! [kill] : Entity with id [%s] not found!", story_id_to_kill);
-		}
-		else if (RQ.O && story_id_to_kill[0] == 0)
-		{
-			CEntityAlive* entity_to_kill = smart_cast<CEntityAlive*>(RQ.O);
-
-			if (entity_to_kill)
-			{
-				if (!entity_to_kill->g_Alive())
-				{
-					Msg("! [kill] : This entity is already dead!");
-					return;
-				}
-
-				entity_to_kill->KillEntity(entity_to_kill->ID());
-			}
-			else
-				Msg("! [kill] : Is not EntityAlive!");
-		}
-		else
-			Msg("! [kill] : Empty entity to kill or is not EntityAlive!");
-	}
-
-	virtual void	Info(TInfo& I)
-	{
-		strcpy(I, "name,team,squad,group");
 	}
 };
 
@@ -2123,9 +2189,9 @@ void CCC_RegisterCommands()
 	CMD1(CCC_LoadLastSave,		"load_last_save"		);		// load last saved game from ...
 
 	CMD1(CCC_FlushLog,			"flush"					);		// flush log
-	CMD1(CCC_ClearLog,			"clear_log"					);
+	CMD1(CCC_ClearLog,			"clear_log"				);
 
-	CMD1(CCC_ALifeSwitchDistance,	"al_switch_distance"	);		// set switch distance
+	CMD1(CCC_ALifeSwitchDistance, "al_switch_distance"	);		// set switch distance
 
 #ifndef MASTER_GOLD
 	CMD1(CCC_ALifeTimeFactor,		"al_time_factor"		);		// set time factor
@@ -2167,6 +2233,9 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"mt_level_sounds",		&g_mt_config,	mtLevelSounds);
 	CMD3(CCC_Mask,				"mt_alife",				&g_mt_config,	mtALife);
 
+#ifndef MASTER_GOLD
+	CMD3(CCC_Mask,				"ai_dbg_lua",			&psAI_Flags,	aiLua);
+#endif // MASTER_GOLD
 #ifdef DEBUG
 	CMD4(CCC_Integer,			"lua_gcstep",			&psLUA_GCSTEP,	1, 1000);
 	CMD3(CCC_Mask,				"ai_debug",				&psAI_Flags,	aiDebug);
@@ -2175,7 +2244,6 @@ void CCC_RegisterCommands()
 	CMD3(CCC_Mask,				"ai_dbg_frustum",		&psAI_Flags,	aiFrustum);
 	CMD3(CCC_Mask,				"ai_dbg_funcs",			&psAI_Flags,	aiFuncs);
 	CMD3(CCC_Mask,				"ai_dbg_alife",			&psAI_Flags,	aiALife);
-	CMD3(CCC_Mask,				"ai_dbg_lua",			&psAI_Flags,	aiLua);
 	CMD3(CCC_Mask,				"ai_dbg_goap",			&psAI_Flags,	aiGOAP);
 	CMD3(CCC_Mask,				"ai_dbg_goap_script",	&psAI_Flags,	aiGOAPScript);
 	CMD3(CCC_Mask,				"ai_dbg_goap_object",	&psAI_Flags,	aiGOAPObject);
@@ -2220,8 +2288,7 @@ void CCC_RegisterCommands()
 	CMD1(CCC_ScriptDbg,			"script_debug_restart");
 	
 	CMD1(CCC_ShowMonsterInfo,	"ai_monster_info");
-	CMD1(CCC_DebugFonts,		"debug_fonts");
-	CMD1(CCC_TuneAttachableItem,"dbg_adjust_attachable_item");
+
 
 	CMD1(CCC_ShowAnimationStats,"ai_show_animation_stats");
 #endif // DEBUG
@@ -2243,8 +2310,38 @@ void CCC_RegisterCommands()
 	CMD4(CCC_FloatBlock,		"ph_tri_query_ex_aabb_rate",	&ph_tri_query_ex_aabb_rate	,			1.01f	,3.f			);
 #endif // DEBUG
 
-	CMD3(CCC_Mask,		"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
+#ifndef MASTER_GOLD
+	CMD1(CCC_Script,		"run_script");
+	CMD1(CCC_ScriptCommand,	"run_string");
+#endif // MASTER_GOLD
 
+	if (bDeveloperMode)
+	{
+		CMD1(CCC_Spawn,			"g_spawn");
+		CMD1(CCC_SetWeather,	"set_weather");
+		CMD1(CCC_TimeFactor,	"time_factor");
+		CMD1(CCC_JumpToLevel,	"jump_to_level");
+		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
+		CMD1(CCC_Giveinfo,		"g_info");
+		CMD1(CCC_Disinfo,		"d_info");
+		CMD1(CCC_GiveTask,		"g_task");
+		CMD1(CCC_GiveMoney,		"g_money");
+		CMD1(CCC_KillEntity,	"kill");
+		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
+		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
+		CMD1(CCC_ReloadWeather, "reload_weather");
+		CMD1(DumpTxrsForPrefetching, "ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
+		CMD3(CCC_Mask,			"g_god",			&psActorFlags, AF_GODMODE);
+		CMD3(CCC_Mask,			"g_unlimitedammo",	&psActorFlags, AF_UNLIMITEDAMMO);
+
+		CMD4(CCC_Integer,		"hud_adjust_mode",	&hud_adj_mode, 0, 7);
+		CMD4(CCC_Integer,		"dbg_show_material_info", &g_dbgShowMaterialInfo, 0, 1);
+	}
+
+	CMD3(CCC_Mask,			"g_3d_scopes",			&psActorFlags,	AF_3DSCOPE_ENABLE);
+	CMD3(CCC_Mask,			"g_pnv_in_scope",		&psActorFlags,	AF_PNV_W_SCOPE_DIS);
+	CMD3(CCC_Mask,			"g_autopickup",			&psActorFlags,	AF_AUTOPICKUP);
+	CMD1(CCC_GameLanguage,	"g_language");
 
 #ifdef DEBUG
 	CMD1(CCC_LuaHelp,				"lua_help");
@@ -2336,69 +2433,38 @@ void CCC_RegisterCommands()
 
 	CMD1(CCC_GSCheckForUpdates, "check_for_updates");
 #ifdef DEBUG
-	CMD1(CCC_DumpObjects,							"dump_all_objects");
-	CMD3(CCC_String, "stalker_death_anim", dbg_stalker_death_anim, 32);
-	CMD4(CCC_Integer, "death_anim_velocity", &b_death_anim_velocity, FALSE,	TRUE );
-	CMD4(CCC_Integer,	"show_wnd_rect",				&g_show_wnd_rect, 0, 1);
-	CMD4(CCC_Integer,	"show_wnd_rect_all",			&g_show_wnd_rect2, 0, 1);
 	CMD1(CCC_Crash,		"crash"						);
-	CMD4(CCC_Integer,		"dbg_show_ani_info",	&g_ShowAnimationInfo,	0, 1)	;
-	CMD4(CCC_Integer,		"dbg_dump_physics_step", &g_bDebugDumpPhysicsStep, 0, 1);
+	CMD1(CCC_DumpObjects,"dump_all_objects"			);
+	CMD3(CCC_String,    "stalker_death_anim",		dbg_stalker_death_anim, 32);
+	CMD4(CCC_Integer,   "death_anim_velocity",		&b_death_anim_velocity, FALSE,	TRUE );
+	CMD4(CCC_Integer,	"show_wnd_rect",			&g_show_wnd_rect, 0, 1);
+	CMD4(CCC_Integer,	"show_wnd_rect_all",		&g_show_wnd_rect2, 0, 1);
+	CMD4(CCC_Integer,	"dbg_show_ani_info",		&g_ShowAnimationInfo,	0, 1);
+	CMD4(CCC_Integer,	"dbg_dump_physics_step",	&g_bDebugDumpPhysicsStep, 0, 1);
 #endif
+	CMD4(CCC_Integer,	"hud_collision",			&b_hud_collision,		0, 1);
+	CMD4(CCC_Integer,	"actor_walk_inertion",		&m_b_actor_walk_inertion, 0, 1);
 	*g_last_saved_game	= 0;
 
-	CMD4(CCC_Integer,		"keypress_on_start",		&g_keypress_on_start, 0, 1);
+	//M.F.S. Crosshair Type
+	CMD3(CCC_Token,		"g_crosshair_type",			&crosshair_type, crosshair_type_token);
+	CMD4(CCC_Integer,	"g_advanced_crosshair",		&g_advanced_crosshair,	0, 1);
 
-	CMD4(CCC_Integer,		"g_sleep_time",				&psActorSleepTime, 1, 24);
-	// AXR: New Commands
+	CMD3(CCC_Token,		"g_death_cam_mode",			&death_camera_mode, death_camera_mode_token);
 
-	if (bDeveloperMode)
-	{
-		CMD1(CCC_Spawn,			"g_spawn");
-		CMD1(CCC_Spawn_to_inv,	"g_spawn_to_inventory");
-		CMD1(CCC_Giveinfo,		"g_info");
-		CMD1(CCC_Disinfo,		"d_info");
-		CMD1(CCC_GiveTask,		"g_task");
-		CMD1(CCC_GiveMoney,		"g_money");
-		CMD1(CCC_KillEntity,	"kill");
-		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
-		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
-		CMD1(CCC_ReloadWeather, "reload_weather");
-		CMD3(CCC_Mask,			"g_god",					&psActorFlags,				AF_GODMODE);
-		CMD3(CCC_Mask,			"g_unlimitedammo",			&psActorFlags,				AF_UNLIMITEDAMMO);
-		CMD1(CCC_SetWeather,	"set_weather");
-		CMD1(CCC_JumpToLevel,	"jump_to_level");
-		CMD1(CCC_Script,		"run_script");
-		CMD1(CCC_ScriptCommand,	"run_string");
-		CMD1(CCC_TimeFactor,	"time_factor");
-		CMD1(DumpTxrsForPrefetching, "ui_textures_for_prefetching");//Prints the list of UI textures, which caused stutterings during game
-		CMD4(CCC_Integer,		"dbg_show_material_info",	&g_dbgShowMaterialInfo,		0, 1);
-	}
+	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);
 
-	// adjust mode support
-	CMD4(CCC_Integer,			"hud_adjust_mode",			&hud_adj_mode,		0, 7);
-	//CMD4(CCC_Integer,			"hud_adjust_item_index",	&g_bHudAdjustItemIdx,	0, 1);
-	//CMD4(CCC_Float,				"hud_adjust_delta_value",	&g_bHudAdjustDeltaPos,	0.0005f, 1.f);
-	//CMD4(CCC_Float,				"hud_adjust_delta_rot",		&g_bHudAdjustDeltaRot,	0.0005f, 10.f);
+	CMD4(CCC_Integer,	"quick_save_counter",		&quick_save_counter,	0, 25);
+
+	CMD4(CCC_Integer,		"g_sleep_time",			&psActorSleepTime, 1, 24);
+
+	CMD4(CCC_BKPK_ANIM, "g_animated_backpack",		&m_b_animated_backpack, 0, 1);
 
 	CMD3(CCC_Mask,			"ph_corpse_collision",		&psActorFlags,				AF_COLLISION);
 	CMD3(CCC_Mask,			"g_crouch_toggle",			&psActorFlags,				AF_CROUCH_TOGGLE);
+	CMD3(CCC_UiHud_Mode, "hud_type",				&ui_hud_type,			qhud_type_token);
+	CMD1(CCC_DebugFonts, "debug_fonts");
 
-	//M.F.S. Crosshair Type
-	CMD3(CCC_Token,			"g_crosshair_type",			&crosshair_type,			crosshair_type_token);
-
-	CMD4(CCC_Integer,		"quick_save_counter",		&quick_save_counter,		0, 25);
-	CMD4(CCC_BKPK_ANIM,		"g_animated_backpack",		&m_b_animated_backpack,		0, 1);
-	CMD3(CCC_UiHud_Mode,	"hud_type",					&ui_hud_type,				qhud_type_token);
-	CMD1(CCC_DebugFonts,	"debug_fonts");
-	CMD4(CCC_Integer,		"g_advanced_crosshair",		&g_advanced_crosshair,		0, 1);
-	CMD4(CCC_Integer,		"hud_collision",			&b_hud_collision,			0, 1);
-	CMD4(CCC_Integer,		"actor_walk_inertion",		&m_b_actor_walk_inertion,	0, 1);
-	CMD3(CCC_Token,			"g_death_cam_mode",			&death_camera_mode,			death_camera_mode_token);
-	CMD3(CCC_Mask,			"g_3d_scopes",				&psActorFlags,				AF_3DSCOPE_ENABLE);
-	CMD3(CCC_Mask,			"g_pnv_in_scope",			&psActorFlags,				AF_PNV_W_SCOPE_DIS);
-
-	CMD1(CCC_GameLanguage,	"g_language");
 	//Custom commands for scripts
 
 	i_script_cmd_name.clear();
