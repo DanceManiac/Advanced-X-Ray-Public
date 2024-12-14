@@ -133,9 +133,12 @@ public:
 	bool b_transmission_switching;
 
 	u32	 m_dwStartTime;
+
 	float m_fuel;
 	float m_fuel_tank;
 	float m_fuel_consumption;
+	float m_fWeightImpactFactor;
+
 	u16	  m_driver_anim_type;
 
 	float   m_break_start;
@@ -423,6 +426,8 @@ private:
 	float					m_fInventoryFullness;
 	float					m_fInventoryCapacity;
 
+	float					m_fTrunkWeight;
+
 	/////////////////////////////////////////////////////////////
 	float					m_doors_torque_factor;
 	/////////////////////////////////////////////////////////////
@@ -639,6 +644,8 @@ public:
 		  void						AddAvailableItems					(TIItemContainer& items_container) const;
 		  bool						HasTrunk							() { return m_bHasTrunk; }
 		  void						ShowTrunk							();
+		  void						SetTrunkWeight						(float new_weight) { m_fTrunkWeight = new_weight; }
+		  float						GetTrunkWeight						() { return m_fTrunkWeight; }
 		  void						TrunkDoorClose						();
 		  void						TrunkDoorOpen						();
 

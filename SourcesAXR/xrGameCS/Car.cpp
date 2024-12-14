@@ -102,6 +102,8 @@ CCar::CCar()
 
 	m_fInventoryFullness = 0.0f;
 	m_fInventoryCapacity = 500.0f;
+	m_fWeightImpactFactor = 0.0f;
+	m_fTrunkWeight = 0.0f;
 
 #ifdef DEBUG
 	InitDebug();
@@ -891,6 +893,8 @@ void CCar::ParseDefinitions()
 	m_fuel=m_fuel_tank;
 	m_fuel_consumption=ini->r_float("car_definition","fuel_consumption");
 	m_fuel_consumption/=100000.f;
+	m_fWeightImpactFactor = READ_IF_EXISTS(ini, r_float, "car_definition", "fuel_weight_impack_factor", 0.0f);
+
 	if(ini->line_exist("car_definition","exhaust_particles"))
 		m_exhaust_particles = ini->r_string("car_definition","exhaust_particles");
 	///////////////////////////////lights///////////////////////////////////////////////////
@@ -1136,17 +1140,34 @@ void CCar::Drive()
 void CCar::StartEngine()
 {
 	
-	if(m_fuel<EPS||b_engine_on) return;
+	if(m_fuel<EPS||b_engine_on)
+		return;
+
 	PlayExhausts();
 	m_car_sound->Start();
 	b_engine_on=true;
 	m_current_rpm=0.f;
 	m_current_engine_power = 0.f;
 	b_starting=true;
+
+	auto it = m_items.begin();
+	auto it_e = m_items.end();
+	float trunk_weight{};
+
+	for (; it != it_e; ++it)
+	{
+		PIItem itm = smart_cast<PIItem>(Level().Objects.net_Find(*it));
+		VERIFY(itm);
+		trunk_weight += itm->Weight();
+	}
+
+	m_fTrunkWeight = trunk_weight;
 }
 void CCar::StopEngine()
 {
-	if(!b_engine_on) return;
+	if(!b_engine_on)
+		return;
+
 	//m_car_sound->Stop();
 	//StopExhausts();
 	AscCall(ascSndStall);
@@ -1795,12 +1816,20 @@ float CCar::EngineDriveSpeed()
 
 void CCar::UpdateFuel(float time_delta)
 {
-	if(!b_engine_on) return;
-	if(m_current_rpm>m_min_rpm)
-		m_fuel-=time_delta*(m_current_rpm-m_min_rpm)*m_fuel_consumption;
+	if (!b_engine_on)
+		return;
+
+	float base_fuel_consumption = m_fuel_consumption;
+	float weight_factor = 1.0f + (m_fTrunkWeight * m_fWeightImpactFactor);
+	float total_fuel_consumption = base_fuel_consumption * weight_factor;
+
+	if (m_current_rpm > m_min_rpm)
+		m_fuel -= time_delta * (m_current_rpm - m_min_rpm) * total_fuel_consumption;
 	else
-		m_fuel-=time_delta*m_min_rpm*m_fuel_consumption;
-	if(m_fuel<EPS) StopEngine();
+		m_fuel -= time_delta * m_min_rpm * m_fuel_consumption;
+
+	if (m_fuel < EPS)
+		StopEngine();
 }
 
 float CCar::AddFuel(float ammount)
