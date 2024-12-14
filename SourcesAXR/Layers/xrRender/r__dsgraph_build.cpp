@@ -704,7 +704,7 @@ void CRender::add_leafs_Dynamic(dxRender_Visual* pVisual, bool ignore)
 {
 	if (!pVisual)				return;
 
-	if (!IsValuableToRender(pVisual, false, phase == 1, *val_pTransform, ignore))
+	if (!pVisual->_ignore_optimization && !IsValuableToRender(pVisual, false, phase == 1, *val_pTransform, ignore))
 		return;
 
 	xr_vector<dxRender_Visual*>::iterator I,E;	// it may be useful for 'hierrarhy' visual
@@ -978,7 +978,7 @@ BOOL CRender::add_Dynamic(dxRender_Visual *pVisual, u32 planes)
 
 void CRender::add_Static(dxRender_Visual* pVisual, u32 planes)
 {
-	if (pVisual->_ignore_optimization || !IsValuableToRender(pVisual, true, phase == 1, *val_pTransform))
+	if (!pVisual->_ignore_optimization && !IsValuableToRender(pVisual, true, phase == 1, *val_pTransform))
 		return;
 
 	EFC_Visible VIS;

@@ -151,6 +151,8 @@ BOOL CHelicopter::net_Spawn(CSE_Abstract*	DC)
 	if (!inherited::net_Spawn(DC))
 		return			(FALSE);
 
+	renderable.visual->_ignore_optimization = true;
+
 	CPHSkeleton::Spawn((CSE_Abstract*)(DC));
 	for(u32 i=0; i<4; ++i)
 		CRocketLauncher::SpawnRocket(*m_sRocketSection, smart_cast<CGameObject*>(this));
