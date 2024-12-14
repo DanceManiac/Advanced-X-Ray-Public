@@ -22,7 +22,9 @@
 #include "UIGameCTA.h"
 #include "string_table.h"
 #include "../xrEngine/xr_ioconsole.h"
+#include <functional>
 
+using namespace std::placeholders;
 //-------------------------------------------------------------
 u32			g_sv_cta_dwInvincibleTime		=		5;	//5 seconds
 //u32			g_sv_cta_dwAnomalySetLengthTime	=		3;	//3 seconds
