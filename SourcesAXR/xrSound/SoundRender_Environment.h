@@ -1,5 +1,3 @@
-#ifndef SoundRender_EnvironmentH
-#define SoundRender_EnvironmentH
 #pragma once
 
 // refs
@@ -51,4 +49,3 @@ public:
 	void						Remove	(int id);
 	SE_VEC&						Library	();
 };
-#endif

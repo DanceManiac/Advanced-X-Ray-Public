@@ -68,7 +68,7 @@ bool CSoundRender_Source::LoadWave(pcstr pName, bool crashOnError)
 	vorbis_info* ovi		= ov_info(&ovf,-1);
 	// verify
 	R_ASSERT3				(ovi,"Invalid source info:",pName);
-	R_ASSERT3				(ovi->rate>=44100,"Invalid source rate:",pName);
+	//R_ASSERT3				(ovi->rate>=44100,"Invalid source rate:",pName);
 	if (ovi->rate != 44100)
 		Msg("! Source rate !=44100, file: [%s]", pName);
 

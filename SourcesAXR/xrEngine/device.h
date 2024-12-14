@@ -1,5 +1,3 @@
-#ifndef xr_device
-#define xr_device
 #pragma once
 
 // Note:
@@ -264,7 +262,12 @@ public:
 
 	// Mode control
 	void DumpFlags							();
+	
+#pragma warning(push)
+#pragma warning(disable:4366)
 	IC	 CTimer_paused* GetTimerGlobal		()	{ return &TimerGlobal;								}
+#pragma warning(pop)
+
 	u32	 TimerAsync							()	{ return TimerGlobal.GetElapsed_ms();				}
 	u32	 TimerAsync_MMT						()	{ return TimerMM.GetElapsed_ms() +	Timer_MM_Delta; }
 
@@ -278,15 +281,9 @@ public:
 	void Initialize							(void);
 	void ShutDown							(void);
 
-public:
-	void time_factor						(const float &time_factor)
-	{
-		Timer.time_factor		(time_factor);
-		TimerGlobal.time_factor	(time_factor);
-	}
+    void time_factor(const float& time_factor); //--#SM+#--
 	
-	IC	const float &time_factor			() const
-	{
+	inline const float time_factor() const {
 		VERIFY					(Timer.time_factor() == TimerGlobal.time_factor());
 		return					(Timer.time_factor());
 	}
@@ -366,5 +363,3 @@ public:
 };
 extern ENGINE_API CLoadScreenRenderer load_screen_renderer;
 extern ENGINE_API float fps_limit;
-
-#endif

@@ -700,13 +700,13 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
 BOOL CRenderDevice::Paused()
 {
 	return g_pauseMngr.Paused();
-};
+}
 
 void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 {
-	u16 fActive						= LOWORD(wParam);
-	BOOL fMinimized					= (BOOL) HIWORD(wParam);
-	BOOL bActive					= ((fActive!=WA_INACTIVE) && (!fMinimized))?TRUE:FALSE;
+	const u16 fActive						= LOWORD(wParam);
+	const BOOL fMinimized					= (BOOL) HIWORD(wParam);
+	const BOOL bActive					= ((fActive!=WA_INACTIVE) && (!fMinimized))?TRUE:FALSE;
 	
 	if (bActive!=Device.b_is_Active)
 	{
@@ -782,4 +782,11 @@ void CSecondVPParams::SetSVPActive(bool bState) //--#SM+#-- +SecondVP+
 bool CSecondVPParams::IsSVPFrame() //--#SM+#-- +SecondVP+
 {
 	return (Device.dwFrame % GetSVPFrameDelay() == 0);
+}
+
+void CRenderDevice::time_factor(const float& time_factor)
+{
+    Timer.time_factor(time_factor);
+    TimerGlobal.time_factor(time_factor);
+    psSoundTimeFactor = time_factor; //--#SM+#--
 }
