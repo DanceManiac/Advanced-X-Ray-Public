@@ -423,6 +423,9 @@ private:
 	shared_str				m_sTrunkBone;
 	shared_str				m_sBonnetBone;
 
+	float					m_fInventoryFullness;
+	float					m_fInventoryCapacity;
+
 	/////////////////////////////////////////////////////////////
 	float					m_doors_torque_factor;
 	/////////////////////////////////////////////////////////////
@@ -641,6 +644,10 @@ public:
 		  void						ShowTrunk							();
 		  void						TrunkDoorClose						();
 		  void						TrunkDoorOpen						();
+
+		  float						GetInventoryFullness				() const { return m_fInventoryFullness; }
+		  float						GetInventoryCapacity				() const { return m_fInventoryCapacity; }
+
 protected:
 	virtual void					SpawnInitPhysics					(CSE_Abstract	*D)																;
 	virtual void					net_Save							(NET_Packet& P)																	;

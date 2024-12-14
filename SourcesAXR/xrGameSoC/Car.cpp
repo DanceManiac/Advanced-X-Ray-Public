@@ -33,6 +33,7 @@
 #include "UIGameSP.h"
 #include "ai_space.h"
 #include "../xrServerEntitiesSoC/script_engine.h"
+#include "AdvancedXrayGameConstants.h"
 
 BONE_P_MAP CCar::bone_map=BONE_P_MAP();
 
@@ -95,6 +96,9 @@ CCar::CCar()
 	m_bHasTrunk = false;
 	m_sTrunkBone = nullptr;
 	m_sBonnetBone = nullptr;
+
+	m_fInventoryFullness = 0.0f;
+	m_fInventoryCapacity = 500.0f;
 
 #ifdef DEBUG
 	InitDebug();
@@ -169,7 +173,11 @@ void	CCar::Load					( LPCSTR section )
 	inherited::Load					(section);
 	//CPHSkeleton::Load(section);
 	ISpatial*		self				=	smart_cast<ISpatial*> (this);
-	if (self)		self->spatial.type	|=	STYPE_VISIBLEFORAI;	
+	
+	if (self)
+		self->spatial.type				|=	STYPE_VISIBLEFORAI;	
+
+	m_fInventoryCapacity				= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 500.0f);
 }
 
 BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
@@ -1831,10 +1839,15 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 			u16 id;
 			P.r_u16		(id);
 			CObject* itm = Level().Objects.net_Find(id);  VERIFY(itm);
+			CInventoryItem* pIItem = smart_cast<CInventoryItem*>(itm);
+
 			m_items.push_back(id);
 			itm->H_SetParent(this);
 			itm->setVisible(FALSE);
 			itm->setEnabled(FALSE);
+
+			if (GameConstants::GetLimitedInvBoxes())
+				m_fInventoryFullness += pIItem->GetOccupiedInvSpace();
 
 			if (auto obj = smart_cast<CGameObject*>(itm))
 			{
@@ -1856,6 +1869,12 @@ void CCar::OnEvent(NET_Packet& P, u16 type)
 
 			if (CGameObject* obj = smart_cast<CGameObject*>(itm))
 			{
+				if (GameConstants::GetLimitedInvBoxes())
+				{
+					CInventoryItem* inv_item = smart_cast<CInventoryItem*>(obj);
+					m_fInventoryFullness -= inv_item->GetOccupiedInvSpace();
+				}
+
 				//callback(GameObject::eInvBoxItemTake)(obj->lua_game_object());
 			}
 		}break;

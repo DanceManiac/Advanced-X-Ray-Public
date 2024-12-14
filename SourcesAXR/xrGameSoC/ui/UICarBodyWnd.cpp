@@ -354,25 +354,50 @@ void CUICarBodyWnd::UpdateDeadBodyBag()
 {
 	string64 buf;
 
-	if (!m_pInventoryBox || !GameConstants::GetLimitedInvBoxes())
+	if (!GameConstants::GetLimitedInvBoxes())
 		return;
 
-	float total = m_pInventoryBox->GetInventoryFullness();
-	float max = m_pInventoryBox->GetInventoryCapacity();
-	LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
-	xr_sprintf(buf, "%.1f", total);
+	float total = 0.0f;
 
-	m_PartnerInvFullness->SetText(buf);
-	m_PartnerInvFullness->AdjustWidthToText();
-	xr_sprintf(buf, "%s %.1f %s", "/", max, lit_str);
-	m_PartnerInvCapacity->SetText(buf);
-	m_PartnerInvCapacity->AdjustWidthToText();
+	if (m_pInventoryBox)
+	{
+		total = m_pInventoryBox->GetInventoryFullness();
+		float max = m_pInventoryBox->GetInventoryCapacity();
+		LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
+		xr_sprintf(buf, "%.1f", total);
 
-	Fvector2 pos = m_PartnerInvFullness->GetWndPos();
-	pos.x = m_PartnerInvCapacity->GetWndPos().x - m_PartnerInvFullness->GetWndSize().x - 5.0f;
-	m_PartnerInvFullness->SetWndPos(pos);
-	pos.x = pos.x - m_PartnerInvCapacityInfo->GetWndSize().x - 5.0f;
-	m_PartnerInvCapacityInfo->SetWndPos(pos);
+		m_PartnerInvFullness->SetText(buf);
+		m_PartnerInvFullness->AdjustWidthToText();
+		xr_sprintf(buf, "%s %.1f %s", "/", max, lit_str);
+		m_PartnerInvCapacity->SetText(buf);
+		m_PartnerInvCapacity->AdjustWidthToText();
+
+		Fvector2 pos = m_PartnerInvFullness->GetWndPos();
+		pos.x = m_PartnerInvCapacity->GetWndPos().x - m_PartnerInvFullness->GetWndSize().x - 5.0f;
+		m_PartnerInvFullness->SetWndPos(pos);
+		pos.x = pos.x - m_PartnerInvCapacityInfo->GetWndSize().x - 5.0f;
+		m_PartnerInvCapacityInfo->SetWndPos(pos);
+	}
+
+	if (m_pCar)
+	{
+		total = m_pCar->GetInventoryFullness();
+		float max = m_pCar->GetInventoryCapacity();
+		LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
+		xr_sprintf(buf, "%.1f", total);
+
+		m_PartnerInvFullness->SetText(buf);
+		m_PartnerInvFullness->AdjustWidthToText();
+		xr_sprintf(buf, "%s %.1f %s", "/", max, lit_str);
+		m_PartnerInvCapacity->SetText(buf);
+		m_PartnerInvCapacity->AdjustWidthToText();
+
+		Fvector2 pos = m_PartnerInvFullness->GetWndPos();
+		pos.x = m_PartnerInvCapacity->GetWndPos().x - m_PartnerInvFullness->GetWndSize().x - 5.0f;
+		m_PartnerInvFullness->SetWndPos(pos);
+		pos.x = pos.x - m_PartnerInvCapacityInfo->GetWndSize().x - 5.0f;
+		m_PartnerInvCapacityInfo->SetWndPos(pos);
+	}
 }
 
 void CUICarBodyWnd::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
@@ -640,11 +665,21 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 		if(false && old_owner==m_pUIOurBagList) return true;
 		bool bMoveDirection		= (old_owner==m_pUIOthersBagList);
 
-		if (GameConstants::GetLimitedInvBoxes() && !bMoveDirection && m_pInventoryBox && m_pInventoryBox->GetInventoryFullness() >= m_pInventoryBox->GetInventoryCapacity())
+		if (GameConstants::GetLimitedInvBoxes() && !bMoveDirection)
 		{
-			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
-			_s->wnd()->SetText(CStringTable().translate("st_inv_box_full").c_str());
-			return false;
+			if (m_pInventoryBox && m_pInventoryBox->GetInventoryFullness() >= m_pInventoryBox->GetInventoryCapacity())
+			{
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
+				_s->wnd()->SetText(CStringTable().translate("st_inv_box_full").c_str());
+				return false;
+			}
+
+			if (m_pCar && m_pCar->GetInventoryFullness() >= m_pCar->GetInventoryCapacity())
+			{
+				SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
+				_s->wnd()->SetText(CStringTable().translate("st_car_trunk_full").c_str());
+				return false;
+			}
 		}
 
 		u16 tmp_id				= smart_cast<CGameObject*>(m_pOurObject)->ID();
