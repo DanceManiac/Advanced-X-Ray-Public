@@ -52,7 +52,6 @@ namespace GameConstants
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();
 	float GetDistantSndDistance();
-	float GetInvBoxCapacity();
 	Ivector4 GetRedColor();
 	Ivector4 GetGreenColor();
 	Ivector4 GetNeutralColor();

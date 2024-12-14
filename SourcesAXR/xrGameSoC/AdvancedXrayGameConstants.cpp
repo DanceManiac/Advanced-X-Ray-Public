@@ -62,7 +62,6 @@ int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
 int		m_B_CMD_Count = 1;
 float	m_fDistantSndDistance = 150.f;
-float	m_fInvBoxCapacity = 500.f;
 Ivector4 m_IV4RedColor = Ivector4().set(255, 0, 0, 255);
 Ivector4 m_IV4GreenColor = Ivector4().set(0, 255, 0, 255);
 Ivector4 m_IV4NeutralColor = Ivector4().set(170, 170, 170, 255);
@@ -140,7 +139,6 @@ namespace GameConstants
 		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
 		m_bFogInfluenceVolumetricLight = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "fog_infl_volumetric_light", false);
 		m_bLimitedInvBoxes = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inv_boxes", false);
-		m_fInvBoxCapacity = READ_IF_EXISTS(pAdvancedSettings, r_float, "gameplay", "inventory_boxes_capacity", 500.f);
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -375,11 +373,6 @@ namespace GameConstants
 	float GetDistantSndDistance()
 	{
 		return m_fDistantSndDistance;
-	}
-
-	float GetInvBoxCapacity()
-	{
-		return m_fInvBoxCapacity;
 	}
 
 	bool GetUseHQ_Icons()

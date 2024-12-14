@@ -9,9 +9,13 @@ public:
 	xr_vector<u16>										m_items;
 				bool	m_in_use;
 
-				float	m_iInventoryFullness;
+				float	m_fInventoryFullness;
+				float	m_fInventoryCapacity;
 
 						CInventoryBox					();
+
+	virtual void		Load							(LPCSTR section);
+
 	virtual		void	OnEvent							(NET_Packet& P, u16 type);
 	virtual		BOOL	net_Spawn						(CSE_Abstract* DC);
 	virtual		void	net_Destroy						();
@@ -20,5 +24,6 @@ public:
 				bool	IsEmpty							() {return m_items.empty();}
 	virtual		void	UpdateCL						();
 
-				float	GetInventoryFullness			() const { return m_iInventoryFullness; }
+				float	GetInventoryFullness			() const { return m_fInventoryFullness; }
+				float	GetInventoryCapacity			() const { return m_fInventoryCapacity; }
 };

@@ -191,7 +191,7 @@ bool CUIActorMenu::ToDeadBodyBag(CUICellItem* itm, bool b_use_cursor_pos)
 	}else
 		new_owner						= m_pDeadBodyBagList;
 	
-	if (GameConstants::GetLimitedInvBoxes() && m_pInvBox && m_pInvBox->GetInventoryFullness() >= GameConstants::GetInvBoxCapacity())
+	if (GameConstants::GetLimitedInvBoxes() && m_pInvBox && m_pInvBox->GetInventoryFullness() >= m_pInvBox->GetInventoryCapacity())
 	{
 		SDrawStaticStruct* _s = CurrentGameUI()->AddCustomStatic("backpack_full", true);
 		_s->wnd()->TextItemControl()->SetText(CStringTable().translate("st_inv_box_full").c_str());
@@ -244,7 +244,7 @@ void CUIActorMenu::UpdateDeadBodyBag()
 		return;
 
 	total = m_pInvBox->GetInventoryFullness();
-	float max	= GameConstants::GetInvBoxCapacity();
+	float max	= m_pInvBox->GetInventoryCapacity();
 	LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
 	xr_sprintf(buf, "%.1f", total);
 

@@ -358,7 +358,7 @@ void CUICarBodyWnd::UpdateDeadBodyBag()
 		return;
 
 	float total = m_pInventoryBox->GetInventoryFullness();
-	float max = GameConstants::GetInvBoxCapacity();
+	float max = m_pInventoryBox->GetInventoryCapacity();
 	LPCSTR lit_str = CStringTable().translate("st_liters").c_str();
 	xr_sprintf(buf, "%.1f", total);
 
@@ -640,7 +640,7 @@ bool CUICarBodyWnd::OnItemDbClick(CUICellItem* itm)
 		if(false && old_owner==m_pUIOurBagList) return true;
 		bool bMoveDirection		= (old_owner==m_pUIOthersBagList);
 
-		if (GameConstants::GetLimitedInvBoxes() && !bMoveDirection && m_pInventoryBox && m_pInventoryBox->GetInventoryFullness() >= GameConstants::GetInvBoxCapacity())
+		if (GameConstants::GetLimitedInvBoxes() && !bMoveDirection && m_pInventoryBox && m_pInventoryBox->GetInventoryFullness() >= m_pInventoryBox->GetInventoryCapacity())
 		{
 			SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("backpack_full", true);
 			_s->wnd()->SetText(CStringTable().translate("st_inv_box_full").c_str());

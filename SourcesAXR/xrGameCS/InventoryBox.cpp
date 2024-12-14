@@ -13,7 +13,15 @@ CInventoryBox::CInventoryBox()
 {
 	m_in_use = false;
 
-	m_iInventoryFullness = 0.0f;
+	m_fInventoryFullness = 0.0f;
+	m_fInventoryCapacity = 500.0f;
+}
+
+void CInventoryBox::Load(LPCSTR section)
+{
+	inherited::Load(section);
+
+	m_fInventoryCapacity = READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 500.0f);
 }
 
 void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
@@ -35,7 +43,7 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 			itm->setEnabled		(FALSE);
 
 			if (GameConstants::GetLimitedInvBoxes())
-				m_iInventoryFullness += pIItem->GetOccupiedInvSpace();
+				m_fInventoryFullness += pIItem->GetOccupiedInvSpace();
 
 		}break;
 
@@ -62,7 +70,7 @@ void CInventoryBox::OnEvent(NET_Packet& P, u16 type)
 				if (GameConstants::GetLimitedInvBoxes())
 				{
 					CInventoryItem* inv_item = smart_cast<CInventoryItem*>(GO);
-					m_iInventoryFullness -= inv_item->GetOccupiedInvSpace();
+					m_fInventoryFullness -= inv_item->GetOccupiedInvSpace();
 				}
 			}
 		}break;
