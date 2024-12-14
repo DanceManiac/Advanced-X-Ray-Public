@@ -72,7 +72,8 @@ IC	const float	CScriptSound::GetVolume		() const
 
 IC	bool CScriptSound::IsPlaying			() const
 {
-	VERIFY				(m_sound._handle());
+//  commented for comfort work with -nosound command line option
+//	VERIFY				(m_sound._handle());
 	return				(!!m_sound._feedback());
 }
 
@@ -116,4 +117,10 @@ IC	void CScriptSound::SetParams			(CSound_params *sound_params)
 {
 	VERIFY				(m_sound._handle());
 	m_sound.set_params	(sound_params);
+}
+
+IC void CScriptSound::SetTime(float t)
+{
+	VERIFY(m_sound._handle());
+	m_sound.set_time(t);
 }
