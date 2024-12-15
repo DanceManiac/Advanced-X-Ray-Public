@@ -284,8 +284,6 @@ void CHelmet::OnMoveToRuck(const SInvItemPlace& previous_place)
 
 void CHelmet::Hit(float hit_power, ALife::EHitType hit_type)
 {
-	ChangeCondition(-hit_power);
-
 	float hit_power_not_k = hit_power;
 	hit_power *= GetHitImmunity(hit_type);
 	ChangeCondition(-hit_power);
