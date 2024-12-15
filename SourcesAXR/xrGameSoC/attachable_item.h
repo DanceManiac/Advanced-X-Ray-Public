@@ -39,6 +39,7 @@ public:
 	IC		shared_str			bone_name				() const;
 	IC		u16					bone_id					() const;
 	IC		void				set_bone_id				(u16 bone_id);
+	IC		void				set_bone_name			(shared_str new_name);
 	IC		const Fmatrix		&offset					() const;
 	IC		bool				enabled					() const;
 	virtual	void				enable					(bool value);
@@ -48,15 +49,29 @@ public:
 	static Fvector				get_pos_offset			()	{VERIFY(m_dbgItem);return m_dbgItem->m_offset.c;};
 	static	void				set_angle_offset		(Fvector val){Fvector c = get_pos_offset(); m_dbgItem->m_offset.setHPB(VPUSH(val));m_dbgItem->m_offset.c=c; }
 
+	static Fvector				get_angle_offset		(CAttachableItem* item)	{VERIFY(item);Fvector v; item->m_offset.getHPB(v); return v;};
+	static Fvector				get_pos_offset			(CAttachableItem* item)	{VERIFY(item);return item->m_offset.c;};
+	static	void				set_angle_offset		(CAttachableItem* item, Fvector val){Fvector c = get_pos_offset(item); item->m_offset.setHPB(VPUSH(val)); item->m_offset.c=c; }
+
 	static	void				rot						(int axis, float val){Fvector v = get_angle_offset(); v[axis]+=val;set_angle_offset(v);}	
 	static	void				rot_dx					(float val){Fvector v = get_angle_offset(); v.x +=val;set_angle_offset(v);}	
 	static	void				rot_dy					(float val){Fvector v = get_angle_offset(); v.y +=val;set_angle_offset(v);}	
 	static	void				rot_dz					(float val){Fvector v = get_angle_offset(); v.z +=val;set_angle_offset(v);}	
 
+	static	void				set_rot					(CAttachableItem* item, Fvector val) { Fvector v = get_angle_offset(item); v = val ;set_angle_offset(item, v); }
+	static	void				set_rot_x				(CAttachableItem* item, float val) { Fvector v = get_angle_offset(item); v.x = val;set_angle_offset(item, v); }
+	static	void				set_rot_y				(CAttachableItem* item, float val) { Fvector v = get_angle_offset(item); v.y = val;set_angle_offset(item, v); }
+	static	void				set_rot_z				(CAttachableItem* item, float val) { Fvector v = get_angle_offset(item); v.z = val;set_angle_offset(item, v); }
+
 	static	void				mov						(int axis, float val){Fvector c = get_pos_offset(); c[axis]+=val; m_dbgItem->m_offset.c=c;}	
 	static	void				mov_dx					(float val){Fvector c = get_pos_offset(); c.x +=val; m_dbgItem->m_offset.c=c;}	
 	static	void				mov_dy					(float val){Fvector c = get_pos_offset(); c.y +=val; m_dbgItem->m_offset.c=c;}	
 	static	void				mov_dz					(float val){Fvector c = get_pos_offset(); c.z +=val; m_dbgItem->m_offset.c=c;}	
+
+	static	void				set_pos					(CAttachableItem* item, Fvector val) { Fvector c = get_pos_offset(item); c = val; item->m_offset.c=c; }
+	static	void				set_pos_x				(CAttachableItem* item, float val) { Fvector c = get_pos_offset(item); c.x = val; item->m_offset.c=c; }
+	static	void				set_pos_y				(CAttachableItem* item, float val) { Fvector c = get_pos_offset(item); c.y = val; item->m_offset.c=c; }
+	static	void				set_pos_z				(CAttachableItem* item, float val) { Fvector c = get_pos_offset(item); c.z = val; item->m_offset.c=c; }
 };
 
 #include "attachable_item_inline.h"

@@ -174,4 +174,13 @@
 	<string id="st_editor_imgui_drag_intensity">
 		<text>Шаг</text>
 	</string>
+	<string id="st_editor_imgui_person_attach">
+		<text>Редактор аттачей персонажа</text>
+	</string>
+	<string id="st_npc_attaches_editor_hands_position_params">
+		<text>Параметры положения в руках</text>
+	</string>
+	<string id="st_npc_attaches_editor_strap_params">
+		<text>Параметры положения за спиной</text>
+	</string>
 </string_table>

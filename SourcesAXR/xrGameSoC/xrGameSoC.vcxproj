@@ -602,6 +602,7 @@
     <ClInclude Include="ArtefactContainer.h" />
     <ClInclude Include="Battery.h" />
     <ClInclude Include="CustomBackpack.h" />
+    <ClInclude Include="embedded_editor\embedded_editor_person_attach.h" />
     <ClInclude Include="LaserDesignator.h" />
     <ClInclude Include="opt.lua.h" />
     <ClInclude Include="opt_inline.lua.h" />
@@ -2000,6 +2001,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_helper.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_hud.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_main.cpp" />
+    <ClCompile Include="embedded_editor\embedded_editor_person_attach.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_spawner.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_weather.cpp" />

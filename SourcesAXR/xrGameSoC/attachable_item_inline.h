@@ -26,6 +26,12 @@ IC	shared_str CAttachableItem::bone_name			() const
 	return				(m_bone_name);
 }
 
+IC	void CAttachableItem::set_bone_name(shared_str new_name)
+{
+	VERIFY				(new_name);
+	m_bone_name			= new_name;
+}
+
 IC	const Fmatrix &CAttachableItem::offset			() const
 {
 	VERIFY				(m_valid);

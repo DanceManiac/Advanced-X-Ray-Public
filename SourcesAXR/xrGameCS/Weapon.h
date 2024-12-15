@@ -379,6 +379,24 @@ public:
 	IC		void			strapped_mode		(bool value) {m_strapped_mode = value;}
 	IC		bool			strapped_mode		() const {return m_strapped_mode;}
 
+			Fvector			GetHandsOffsetPos	() { return m_Offset.c; }
+			Fvector			GetHandsOffsetRot	() { Fvector v; m_Offset.getHPB(v); return v; };
+			void			SetHandsPosRot		(Fvector pos, Fvector rot) { m_Offset.setHPB(rot.x, rot.y, rot.z); m_Offset.translate_over(pos); }
+
+			Fvector			GetStrapOffsetPos	() { return m_StrapOffset.c; }
+			Fvector			GetStrapOffsetRot	() { Fvector v; m_StrapOffset.getHPB(v); return v; };
+			void			SetStrapPosRot		(Fvector pos, Fvector rot) { m_StrapOffset.setHPB(rot.x, rot.y, rot.z); m_StrapOffset.translate_over(pos); }
+
+			Fvector			GetStrapOffsetAltPos() { return m_StrapOffset_alt.c; }
+			Fvector			GetStrapOffsetAltRot() { Fvector v; m_StrapOffset_alt.getHPB(v); return v; }
+			void			SetStrapAltPosRot	(Fvector pos, Fvector rot) { m_StrapOffset_alt.setHPB(rot.x, rot.y, rot.z); m_StrapOffset_alt.translate_over(pos); }
+
+			void			SetStrapBone0		(LPCSTR bone) { m_strap_bone0 = bone; }
+			void			SetStrapBone1		(LPCSTR bone) { m_strap_bone1 = bone; }
+
+			void			SetStrapBone0_ID	(int bone_id) { m_strap_bone0_id = bone_id; }
+			void			SetStrapBone1_ID	(int bone_id) { m_strap_bone1_id = bone_id; }
+
 protected:
 	LPCSTR					m_strap_bone0;
 	LPCSTR					m_strap_bone1;

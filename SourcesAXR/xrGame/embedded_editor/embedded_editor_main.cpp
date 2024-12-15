@@ -6,6 +6,7 @@
 #include "embedded_editor_helper.h"
 #include "embedded_editor_weather.h"
 #include "embedded_editor_hud.h"
+#include "embedded_editor_person_attach.h"
 #include "embedded_editor_pos_informer.h"
 #include "embedded_editor_spawner.h"
 #include "../../build_config_defines.h"
@@ -20,6 +21,7 @@ bool bShowWindow = true;
 bool show_test_window = true;
 bool show_weather_window = false;
 bool show_hud_editor = false;
+bool show_person_attach_editor = false;
 bool show_position_informer = false;
 bool show_spawn_menu = false;
 /*bool show_info_window = false;
@@ -66,6 +68,8 @@ void ShowMain()
         show_position_informer = !show_position_informer;
 	if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_hud").c_str()).c_str()))
 		show_hud_editor = !show_hud_editor;
+    if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_person_attach").c_str()).c_str()))
+        show_person_attach_editor = !show_person_attach_editor;
     if (ImGui::Button(toUtf8(CStringTable().translate("st_editor_imgui_spawn").c_str()).c_str()))
         show_spawn_menu = !show_spawn_menu;
 
@@ -109,6 +113,8 @@ void ShowEditor()
         ShowPositionInformer(show_position_informer);
 	if (show_hud_editor)
 		ShowHudEditor(show_hud_editor);
+    if (show_person_attach_editor)
+        ShowPersonAttachEditor(show_person_attach_editor);
     if (show_spawn_menu)
     {
         if (!sections_list_created)
