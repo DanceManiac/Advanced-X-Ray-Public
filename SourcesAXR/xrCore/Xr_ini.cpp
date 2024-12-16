@@ -325,7 +325,7 @@ void	CInifile::Load(IReader* F, LPCSTR path
 
 				Current->Data.reserve( Current->Data.size() + total_count );
 
-				for (k=0; k<cnt; ++k)
+				for (int k=0; k<cnt; ++k)
 				{
 					string512	tmp;
 					_GetItem	(inherited_names,k,tmp);
@@ -519,6 +519,9 @@ BOOL			CInifile::section_exist	( const shared_str& S	)const					{ return	section
 //--------------------------------------------------------------------------------------
 CInifile::Sect& CInifile::r_section( LPCSTR S )const
 {
+	if (!S)
+		LogStackTrace("CInifile::r_section | section is nil!");
+
 	char	section[256]; xr_strcpy(section,sizeof(section),S); strlwr(section);
 	RootCIt I = std::lower_bound(DATA.begin(),DATA.end(),section,sect_pred);
 	if (!(I!=DATA.end() && xr_strcmp(*(*I)->Name,section)==0))
@@ -543,6 +546,9 @@ CInifile::Sect& CInifile::r_section( LPCSTR S )const
 
 LPCSTR	CInifile::r_string(LPCSTR S, LPCSTR L)const
 {
+	if (!S || !L || !strlen(S) || !strlen(L)) //--#SM+#-- [fix for one of "xrDebug - Invalid handler" error log]
+		Msg("!![ERROR] CInifile::r_string: S = [%s], L = [%s]", S, L);
+
 	Sect const&	I = r_section(S);
 	SectCIt	A = std::lower_bound(I.Data.begin(),I.Data.end(),L,item_pred);
 	if (A!=I.Data.end() && xr_strcmp(*A->first,L)==0)	return *A->second;

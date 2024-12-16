@@ -75,9 +75,13 @@ CDemoRecord::CDemoRecord(const char *name, float life_time) : CEffectorCam(cefDe
 	psHUD_Flags.set(HUD_CROSSHAIR, FALSE);
 */
 	m_b_redirect_input_to_level = false;
-	_unlink	(name);
-	file	= FS.w_open	(name);
-	if (file) 
+
+	if (name && name[0]) // что б можно было demo_record без файла использовать
+	{
+		_unlink	(name);
+		file	= FS.w_open	(name);
+	}
+	//if (file) 
 	{
 		g_position.set_position  = false;
 		IR_Capture		();	// capture input
@@ -115,16 +119,17 @@ CDemoRecord::CDemoRecord(const char *name, float life_time) : CEffectorCam(cefDe
 		m_fAngSpeed1	= pSettings->r_float("demo_record","ang_speed1");
 		m_fAngSpeed2	= pSettings->r_float("demo_record","ang_speed2");
 		m_fAngSpeed3	= pSettings->r_float("demo_record","ang_speed3");
-	} else {
-		fLifeTime = -1;
+	//} else {
+	//	fLifeTime = -1;
 	}
 }
 
 CDemoRecord::~CDemoRecord()
 {
+	IR_Release	();	// release input
+
 	if (file) 
 	{
-		IR_Release	();	// release input
 		FS.w_close	(file);
 	}
 
@@ -291,7 +296,7 @@ void CDemoRecord::MakeCubeMapFace(Fvector &D, Fvector &N)
 BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 {
 	info.dont_apply					= false;
-	if (0==file)					return TRUE;
+	//if (0==file)					return TRUE;
 
 	if (m_bMakeScreenshot)
 	{
@@ -410,7 +415,11 @@ BOOL CDemoRecord::ProcessCam(SCamEffectorInfo& info)
 
 void CDemoRecord::IR_OnKeyboardPress	(int dik)
 {
-	if (dik == DIK_MULTIPLY)	m_b_redirect_input_to_level	= !m_b_redirect_input_to_level;
+	if (dik == DIK_MULTIPLY)
+	{
+		m_b_redirect_input_to_level	= !m_b_redirect_input_to_level;
+		return;
+	}
 
 	if(m_b_redirect_input_to_level)
 	{
@@ -427,7 +436,7 @@ void CDemoRecord::IR_OnKeyboardPress	(int dik)
 
 	if (bDeveloperMode)
 	{
-		if (dik == DIK_RETURN)
+		if (dik == DIK_T || dik == DIK_RETURN)
 		{
 			if (g_pGameLevel->CurrentEntity())
 			{
@@ -523,7 +532,8 @@ void CDemoRecord::RecordKey()
 	Fmatrix			g_matView;
  
 	g_matView.invert(m_Camera);
-	file->w			(&g_matView,sizeof(Fmatrix));
+	if (file)
+		file->w			(&g_matView,sizeof(Fmatrix));
 	iCount++;
 }
 

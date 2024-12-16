@@ -54,6 +54,9 @@ CTexture::~CTexture()
 
 void CTexture::surface_set(ID3DBaseTexture* surf)
 {
+	if (pSurface == surf)
+		return;
+
 	if (surf)			surf->AddRef		();
 	_RELEASE			(pSurface);
 	_RELEASE			(m_pSRView);

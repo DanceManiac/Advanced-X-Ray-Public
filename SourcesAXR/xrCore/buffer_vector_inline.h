@@ -36,6 +36,7 @@ inline buffer_vector_specialized::buffer_vector	(void *buffer, size_type const &
 	m_max_end		((T*)buffer + max_count)
 {
 	assign			(other.begin(), other.end());
+	return *this;
 }
 
 TEMPLATE_SPECIALIZATION
@@ -58,6 +59,7 @@ TEMPLATE_SPECIALIZATION
 inline typename buffer_vector_specialized::self_type &buffer_vector_specialized::operator=	(self_type const &other)
 {
 	assign			(other.begin(), other.end());
+	return *this;
 }
 
 TEMPLATE_SPECIALIZATION

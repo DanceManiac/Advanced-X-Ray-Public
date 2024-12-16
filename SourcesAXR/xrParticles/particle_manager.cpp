@@ -191,6 +191,9 @@ void CParticleManager::Transform(int alist_id, const Fmatrix& full, const Fvecto
 
 	// Step through all the actions in the action list.
 	for(PAVecIt it=pa->begin(); it!=pa->end(); it++){
+		if (!(*it))
+			continue;
+
 		BOOL r 			= (*it)->m_Flags.is(ParticleAction::ALLOW_ROTATE);
 		const Fmatrix& _m = r?full:mT;
 		(*it)->Transform(_m);
@@ -303,7 +306,11 @@ void CParticleManager::SaveActions(int alist_id, IWriter& W)
     W.w_u32					(pa->size());
 
     for (PAVecIt it=pa->begin(); it!=pa->end(); it++)
-        (*it)->Save			(W);
+	{
+		if (!(*it))
+			continue;
+		(*it)->Save(W);
+	}
 }
 
 
