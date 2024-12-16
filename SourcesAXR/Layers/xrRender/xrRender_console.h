@@ -83,8 +83,8 @@ extern ECORE_API	int			ps_r1_SoftwareSkinning;	// r1-only
 enum
 {
 	R1FLAG_DLIGHTS				= (1<<0),
-	FFONTS_SHADOW_ENABLED		= (2<<1),
-	FFONTS_SHADOW_W_BLACK_TEXT	= (3<<1),
+	FFONTS_SHADOW_ENABLED		= (1<<1),
+	FFONTS_SHADOW_W_BLACK_TEXT	= (1<<2),
 };
 
 extern ECORE_API Flags32 ps_r__common_flags;

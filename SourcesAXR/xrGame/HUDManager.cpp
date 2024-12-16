@@ -116,6 +116,9 @@ void CFontManager::InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
 			F->SetHeightScale(pSettings->r_float(section, "scale_y"));
 		}
 	}
+
+	if (pSettings->line_exist(section, "font_shadow_disabled"))
+		F->SetFontShadowDisabled(pSettings->r_bool(section, "font_shadow_disabled"));
 }
 
 CFontManager::~CFontManager()

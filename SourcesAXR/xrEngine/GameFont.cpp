@@ -203,10 +203,10 @@ u16 CGameFont::GetCutLengthPos( float fTargetWidth , const char * pszText )
 	u16 i = 1;
 	for ( ; i <= len ; i++ ) {
 
-		fDelta = GetCharTC( wsStr[ i ] ).z - 2;
+		fDelta = (GetCharTC(wsStr[i]).z * GetCurrentWidthScale());
 
 		if ( IsNeedSpaceCharacter( wsStr[ i ] ) )
-			fDelta += fXStep;
+			fDelta += GetfXStep() * GetCurrentWidthScale();
 
 		if ( ( fCurWidth + fDelta ) > fTargetWidth )
 			break;
@@ -229,10 +229,10 @@ u16 CGameFont::SplitByWidth( u16 * puBuffer , u16 uBufferSize , float fTargetWid
 
 	for ( u16 i = 1 ; i <= len ; i++ ) {
 
-		fDelta = GetCharTC( wsStr[ i ] ).z - 2;
+		fDelta = GetCharTC( wsStr[ i ] ).z * GetCurrentWidthScale();
 
 		if ( IsNeedSpaceCharacter( wsStr[ i ] ) )
-			fDelta += fXStep;
+			fDelta += GetfXStep() * GetCurrentWidthScale();
 
 		if ( 
 				( ( fCurWidth + fDelta ) > fTargetWidth ) && // overlength
@@ -316,7 +316,7 @@ void CGameFont::OutSkip( float val )
 
 float CGameFont::SizeOf_( const char cChar )
 {
-	return ( GetCharTC( ( u16 ) ( u8 ) ( ( ( IsMultibyte() && cChar == ' ' ) ) ? 0 : cChar) ).z * vInterval.x );
+	return ( GetCharTC( ( u16 ) ( u8 ) ( ( ( IsMultibyte() && cChar == ' ' ) ) ? 0 : cChar) ).z * vInterval.x * GetCurrentWidthScale() );
 }
 
 float CGameFont::SizeOf_( LPCSTR s )
@@ -338,7 +338,7 @@ float CGameFont::SizeOf_( LPCSTR s )
 		for (int j=0; j<len; j++)
 			X			+= GetCharTC( ( u16 ) ( u8 ) s[ j ] ).z;
 
-	return				(X*vInterval.x) * GetWidthScale();
+	return				(X*vInterval.x) * GetCurrentWidthScale();
 }
 
 float CGameFont::SizeOf_( const wide_char *wsStr )
@@ -351,18 +351,18 @@ float CGameFont::SizeOf_( const wide_char *wsStr )
 
 	if ( len )
 		for ( unsigned int j=1 ; j <= len ; j++ ) {
-			fDelta = GetCharTC( wsStr[ j ] ).z - 2;
+			fDelta = GetCharTC( wsStr[ j ] ).z;
 			if ( IsNeedSpaceCharacter( wsStr[ j ] ) )
-				fDelta += fXStep;
+				fDelta += GetfXStep();
 			X += fDelta;
 		}
 
-	return ( X * vInterval.x );
+	return ( X * vInterval.x ) * GetCurrentWidthScale();
 }
 
 float CGameFont::CurrentHeight_	()
 {
-	return fCurrentHeight * vInterval.y * GetHeightScale();
+	return fCurrentHeight * vInterval.y * GetCurrentHeightScale();
 }
 
 void CGameFont::SetHeightI(float S)
@@ -373,18 +373,19 @@ void CGameFont::SetHeightI(float S)
 
 void CGameFont::SetHeight(float S)
 {
-	VERIFY			( !uFlags&fsDeviceIndependent );
+	VERIFY			( uFlags&fsDeviceIndependent );
 	fCurrentHeight	= S;
 };
 
-float CGameFont::GetWidthScale()
+float CGameFont::GetCurrentWidthScale() const
 {
 	if (uFlags & fsDeviceIndependent)
 		return 1.f;
 
 	return g_fontWidthScale * (!fis_zero(fXScale) ? fXScale : 1);
 }
-float CGameFont::GetHeightScale()
+
+float CGameFont::GetCurrentHeightScale() const
 {
 	if (uFlags & fsDeviceIndependent)
 		return 1.f;

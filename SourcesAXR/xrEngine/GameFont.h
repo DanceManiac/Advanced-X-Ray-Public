@@ -1,5 +1,3 @@
-#ifndef GameFontH
-#define GameFontH
 #pragma once
 
 #include "MbHelpers.h"
@@ -33,7 +31,7 @@ protected:
 	float					fCurrentHeight;
 	float					fCurrentX, fCurrentY;
 	Fvector2				vInterval;
-
+	
 	Fvector 				*TCMap;
 	float					fHeight;
 	float					fXStep;
@@ -41,6 +39,7 @@ protected:
 	float					fTCHeight;
 	float					fXScale{};
 	float					fYScale{};
+	bool					bFontShadowDisabled{};
 	xr_vector<String>		strings;
 
 	IFontRender				*pFontRender;
@@ -76,11 +75,11 @@ public:
 	IC void					SetHeightI		(float S);
 	IC void					SetHeight		(float S);
 
-	IC float				GetHeight		(){return fCurrentHeight;};
+	IC float				GetHeight		() {return fCurrentHeight;}
 	IC void					SetInterval		(float x, float y) {vInterval.set(x,y);};
 	IC void					SetInterval		(const Fvector2& v) {vInterval.set(v);};
 
-	IC Fvector2				GetInterval		() { return vInterval; };
+	IC Fvector2				GetInterval		() { return vInterval; }
 
 	IC void					SetAligment		(EAligment aligment){ eCurrentAlignment=aligment; }
 
@@ -91,7 +90,7 @@ public:
 
 	float					CurrentHeight_	();
 
-	float					ScaleHeightDelta() { return (fCurrentHeight * vInterval.y * GetHeightScale() - fCurrentHeight * vInterval.y) / 2; };
+	float					ScaleHeightDelta() { return (fCurrentHeight * vInterval.y * GetCurrentHeightScale() - fCurrentHeight * vInterval.y) / 2; }
 
 	void					OutSetI			(float x, float y);
 	void					OutSet			(float x, float y);
@@ -115,14 +114,20 @@ public:
 
 	IC	void				Clear			()  { strings.clear(); };
 
-	float					GetWidthScale();
-	float					GetHeightScale();
+	float					GetCurrentWidthScale() const;
+	float					GetCurrentHeightScale() const;
 
 	void					SetWidthScale(float f) { fXScale = f; }
 	void					SetHeightScale(float f) { fYScale = f; }
-	
+
+	float					GetWidthScale() const { return fXScale; }
+	float					GetHeightScale() const { return fYScale; }
+
+	float					GetfXStep() const { return fXStep; }
+
+	void					SetFontShadowDisabled(bool b) { bFontShadowDisabled = b; }
+	bool					GetFontShadowDisabled() const { return bFontShadowDisabled; }
+
 	shared_str				m_font_name;
 	bool					m_bCustom{};
 };
-
-#endif // _XR_GAMEFONT_H_

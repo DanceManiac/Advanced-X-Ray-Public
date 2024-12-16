@@ -62,7 +62,7 @@ void dxFontRender::OnRender(CGameFont &owner)
 
 		u32 di = i;
 
-		if (shadow_enabled)
+		if (shadow_enabled && !owner.bFontShadowDisabled)
 			RenderFragment(owner, di, true, shadow_x, shadow_y, length, last);
 
 		RenderFragment(owner, i, false, 0, 0, length, last);
@@ -91,7 +91,7 @@ void dxFontRender::RenderFragment(CGameFont& owner, u32& i, bool shadow_mode, fl
 				float	X	= float(iFloor(PS.x)) + dX;
 				float	Y	= float(iFloor(PS.y)) + dY;
 
-				float	S	= PS.height*g_current_font_scale.y * owner.GetHeightScale(); // g_current_font_scale это еще один скейлинг шрифтов для pp эффектов похоже
+				float	S	= PS.height*g_current_font_scale.y * owner.GetCurrentHeightScale(); // g_current_font_scale это еще один скейлинг шрифтов для pp эффектов похоже
 
 				float	Y2	= Y+S;
 				float fSize = 0;
@@ -151,7 +151,7 @@ void dxFontRender::RenderFragment(CGameFont& owner, u32& i, bool shadow_mode, fl
 				{
 					const Fvector l = owner.IsMultibyte() ? owner.GetCharTC( wsStr[ 1 + j ] ) : owner.GetCharTC( ( u16 ) ( u8 ) PS.string[j] );
 
-					const float scw		= l.z * g_current_font_scale.x * owner.GetHeightScale();
+					const float scw		= l.z * g_current_font_scale.x * owner.GetCurrentWidthScale();
 
 					const float fTCWidth	= l.z/owner.vTS.x;
 
@@ -176,7 +176,7 @@ void dxFontRender::RenderFragment(CGameFont& owner, u32& i, bool shadow_mode, fl
 					if ( owner.IsMultibyte() ) {
 						//X -= 2;
 						if ( IsNeedSpaceCharacter( wsStr[ 1 + j ] ) )
-							X += owner.fXStep * owner.GetInterval().x * owner.GetHeightScale();
+							X += owner.GetfXStep() * owner.GetInterval().x * owner.GetCurrentWidthScale();
 					}
 				}
 			}
