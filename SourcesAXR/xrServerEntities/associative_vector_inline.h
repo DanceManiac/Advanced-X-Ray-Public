@@ -108,6 +108,12 @@ IC	void _associative_vector::clear															()
 }
 
 TEMPLATE_SPECIALIZATION
+IC	void _associative_vector::reserve														(const size_t value)
+{
+	inherited::reserve(value);
+}
+
+TEMPLATE_SPECIALIZATION
 IC	typename _associative_vector::size_type _associative_vector::max_size					() const
 {
 	return				(inherited::max_size());

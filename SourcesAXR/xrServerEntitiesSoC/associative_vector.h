@@ -88,6 +88,7 @@ public:
 	IC		iterator					upper_bound			(const key_type &key);
 	IC		equal_range_result			equal_range			(const key_type &key);
 	IC		void						swap				(self_type &object);
+	IC		void						reserve				(const size_t value);
 
 public:
 	IC		const_iterator				begin				() const;
