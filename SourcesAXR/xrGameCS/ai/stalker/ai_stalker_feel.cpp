@@ -33,7 +33,23 @@ BOOL CAI_Stalker::feel_vision_isRelevant(CObject* O)
 
 void CAI_Stalker::renderable_Render	()
 {
-	inherited::renderable_Render		();
+	MakeMeCrow();
+
+	Fmatrix m_model_transform = XFORM();
+	if (m_fModelScale != 1.0f || m_bModelScaleRandom)
+	{
+		Fmatrix scale, t;
+		t = m_model_transform;
+		float cur_scale = m_fModelScale;
+		if (m_bModelScaleRandom)
+			cur_scale = ::Random.randF(m_fModelScaleRandomMin, m_fModelScaleRandomMax);
+		scale.scale(cur_scale, cur_scale, cur_scale);
+		m_model_transform.mul(t, scale);
+	}
+
+	::Render->set_Transform(&m_model_transform);
+	::Render->add_Visual(Visual());
+	Visual()->getVisData().hom_frame = Device.dwFrame;
 
 	if (!already_dead())
 		CInventoryOwner::renderable_Render	();

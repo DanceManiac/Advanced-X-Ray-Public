@@ -128,6 +128,10 @@ private:
 	float							m_fRankVisibility;
 	float							m_fRankImmunity;
 	bool							m_bLastHittedInHead;
+	bool							m_bModelScaleRandom;
+	float							m_fModelScale;
+	float							m_fModelScaleRandomMin;
+	float							m_fModelScaleRandomMax;
 
 	xr_vector<shared_str>			m_sCanPickedItemsVec{};
 	u32								m_iAcceptableItemCost;

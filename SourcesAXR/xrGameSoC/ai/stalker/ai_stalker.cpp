@@ -99,6 +99,11 @@ CAI_Stalker::CAI_Stalker			()
 
 	m_sColdSteamParticleBone		= nullptr;
 	m_sColdSteamParticleName		= nullptr;
+
+	m_bModelScaleRandom				= false;
+	m_fModelScale					= 1.0f;
+	m_fModelScaleRandomMin			= 1.0f;
+	m_fModelScaleRandomMax			= 1.0f;
 }
 
 CAI_Stalker::~CAI_Stalker			()
@@ -346,9 +351,9 @@ void CAI_Stalker::Load				(LPCSTR section)
 
 	m_can_select_items				= !!pSettings->r_bool(section,"can_select_items");
 
-	m_iAcceptableItemCost = READ_IF_EXISTS(pSettings, r_u32, section, "acceptable_item_cost", 0);
+	m_iAcceptableItemCost			= READ_IF_EXISTS(pSettings, r_u32, section, "acceptable_item_cost", 0);
 
-	LPCSTR can_picked_items = READ_IF_EXISTS(pSettings, r_string, section, "can_picked_items", "");
+	LPCSTR can_picked_items			= READ_IF_EXISTS(pSettings, r_string, section, "can_picked_items", "");
 
 	if (can_picked_items && can_picked_items[0])
 	{
@@ -363,8 +368,13 @@ void CAI_Stalker::Load				(LPCSTR section)
 		}
 	}
 
-	m_sColdSteamParticleBone = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
-	m_sColdSteamParticleName = READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
+	m_sColdSteamParticleBone		= READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_bone", "jaw_1");
+	m_sColdSteamParticleName		= READ_IF_EXISTS(pSettings, r_string, section, "cold_steam_particle_name", "weapons\\effects\\generic_sigarets");
+
+	m_bModelScaleRandom				= READ_IF_EXISTS(pSettings, r_bool, section, "random_scale", false);
+	m_fModelScale					= READ_IF_EXISTS(pSettings, r_float, section, "model_scale", 1.0f);
+	m_fModelScaleRandomMin			= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
+	m_fModelScaleRandomMax			= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
 }
 
 void CAI_Stalker::BoneCallback(CBoneInstance* B)
