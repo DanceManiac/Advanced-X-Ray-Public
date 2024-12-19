@@ -2374,7 +2374,7 @@ void CActor::CleanMask()
 	if (!(pOutfit && pOutfit->m_b_HasGlass))
 		return;
 
-	if (Wpn && !(Wpn->GetState() == CWeapon::eIdle))
+	if (Wpn && (!(Wpn->GetState() == CWeapon::eIdle) || Wpn->IsZoomed()))
 		return;
 
 	m_bMaskAnimActivated = true;
