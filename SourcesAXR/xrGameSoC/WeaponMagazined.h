@@ -194,6 +194,7 @@ protected:
 	virtual void	PlayAnimFireMode	();
 	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
+	virtual bool	PlayAnimAimEnd		();
 
 protected:
 

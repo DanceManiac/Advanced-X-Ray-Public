@@ -79,6 +79,7 @@ public:
 	virtual void	PlayAnimFireMode	();
 	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
+	virtual	bool	PlayAnimAimEnd		();
 
 	//дополнительные параметры патронов 
 	//для подствольника

@@ -26,6 +26,9 @@ void CWeaponBM16::PlayAnimShoot()
 	if (m_magazine.empty())
 		return;
 
+	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
+		return;
+
 	string_path guns_shoot_anm{};
 	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, pSettings->line_exist(cNameSect().c_str(), "anm_shoot") ? "anm_shoot" : "anm_shots", (this->IsZoomed() && !this->IsRotatingToZoom()) ? "_aim_" : "_", std::to_string(m_magazine.size()).c_str());
 	if (isHUDAnimationExist(guns_shoot_anm)) 
@@ -184,6 +187,19 @@ void  CWeaponBM16::PlayAnimIdleSprint()
 	}
 }
 
+bool CWeaponBM16::PlayAnimAimEnd()
+{
+	string32 guns_aim_end_anm;
+	strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end_", std::to_string(m_magazine.size()).c_str());
+	if (isHUDAnimationExist(guns_aim_end_anm))
+	{
+		PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
+		return true;
+	}
+
+	return false;
+}
+
 void CWeaponBM16::PlayAnimIdle()
 {
 	if(TryPlayAnimIdle())	return;
@@ -192,14 +208,15 @@ void CWeaponBM16::PlayAnimIdle()
 	{
 		if (IsRotatingToZoom())
 		{
-			string32 guns_aim_anm;
-			strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_start_", std::to_string(m_magazine.size()).c_str());
-			if (isHUDAnimationExist(guns_aim_anm))
+			string32 guns_aim_start_anm;
+			strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start_", std::to_string(m_magazine.size()).c_str());
+			if (isHUDAnimationExist(guns_aim_start_anm))
 			{
-				PlayHUDMotionNew(guns_aim_anm, true, GetState());
+				PlayHUDMotionNew(guns_aim_start_anm, true, GetState());
 				return;
 			}
 		}
+
 		if (const char* guns_aim_anm = GetAnimAimName())
 		{
 			string64 guns_aim_anm_full;
@@ -259,13 +276,8 @@ void CWeaponBM16::PlayAnimIdle()
 	{
 		if (IsRotatingFromZoom())
 		{
-			string32 guns_aim_anm;
-			strconcat(sizeof(guns_aim_anm), guns_aim_anm, "anm_idle_aim_end_", std::to_string(m_magazine.size()).c_str());
-			if (isHUDAnimationExist(guns_aim_anm))
-			{
-				PlayHUDMotionNew(guns_aim_anm, true, GetState());
+			if (PlayAnimAimEnd())
 				return;
-			}
 		}
 
 		switch (m_magazine.size())

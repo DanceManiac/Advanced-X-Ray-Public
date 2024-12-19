@@ -80,6 +80,7 @@ public:
 	virtual void	PlayAnimFireMode	();
 	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
+	virtual	bool	PlayAnimAimEnd		();
 	
 private:
 	virtual	void	net_Spawn_install_upgrades	( Upgrades_type saved_upgrades );

@@ -26,6 +26,8 @@ protected:
 	virtual void	PlayAnimIdleMovingCrouchSlow	() override;
 	virtual void	PlayAnimSprintStart				() override;
 	virtual void	PlayAnimSprintEnd				() override;
+	virtual	bool	PlayAnimAimEnd					();
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CWeaponBM16)

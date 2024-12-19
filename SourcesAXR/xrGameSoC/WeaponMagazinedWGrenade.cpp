@@ -665,6 +665,53 @@ void CWeaponMagazinedWGrenade::PlayAnimReload()
 		inherited::PlayAnimReload();
 }
 
+bool CWeaponMagazinedWGrenade::PlayAnimAimEnd()
+{
+	string32 guns_aim_end_anm;
+	strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
+
+	if (isHUDAnimationExist(guns_aim_end_anm))
+	{
+		PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
+		return true;
+	}
+	else if (guns_aim_end_anm && strstr(guns_aim_end_anm, "_jammed"))
+	{
+		char* jammed_position = strstr(guns_aim_end_anm, "_jammed");
+		int jammed_length = strlen("_jammed");
+
+		char new_guns_aim_end_anm[100];
+		strncpy(new_guns_aim_end_anm, guns_aim_end_anm, jammed_position - guns_aim_end_anm);
+		strcpy(new_guns_aim_end_anm + (jammed_position - guns_aim_end_anm), guns_aim_end_anm + (jammed_position - guns_aim_end_anm) + jammed_length);
+
+		if (isHUDAnimationExist(new_guns_aim_end_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+			return true;
+		}
+
+		return false;
+	}
+	else if (strstr(guns_aim_end_anm, "_empty"))
+	{
+		char* empty_position = strstr(guns_aim_end_anm, "_empty");
+		int empty_length = strlen("_empty");
+
+		char new_guns_aim_end_anm[100];
+		strncpy(new_guns_aim_end_anm, guns_aim_end_anm, empty_position - guns_aim_end_anm);
+		strcpy(new_guns_aim_end_anm + (empty_position - guns_aim_end_anm), guns_aim_end_anm + (empty_position - guns_aim_end_anm) + empty_length);
+
+		if (isHUDAnimationExist(new_guns_aim_end_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
+			return true;
+		}
+
+		return false;
+	}
+
+	return false;
+}
 
 void CWeaponMagazinedWGrenade::PlayAnimIdle()
 {
@@ -782,44 +829,8 @@ void CWeaponMagazinedWGrenade::PlayAnimIdle()
 		{
 			if (IsRotatingFromZoom())
 			{
-				string32 guns_aim_end_anm;
-				strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMainMagazineEmpty()) ? "_empty" : "", m_bGrenadeMode ? "_g" : "_w_gl"));
-
-				if (isHUDAnimationExist(guns_aim_end_anm))
-				{
-					PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
+				if (PlayAnimAimEnd())
 					return;
-				}
-				else if (guns_aim_end_anm && strstr(guns_aim_end_anm, "_jammed"))
-				{
-					char* jammed_position = strstr(guns_aim_end_anm, "_jammed");
-					int jammed_length = strlen("_jammed");
-
-					char new_guns_aim_end_anm[100];
-					strncpy(new_guns_aim_end_anm, guns_aim_end_anm, jammed_position - guns_aim_end_anm);
-					strcpy(new_guns_aim_end_anm + (jammed_position - guns_aim_end_anm), guns_aim_end_anm + (jammed_position - guns_aim_end_anm) + jammed_length);
-
-					if (isHUDAnimationExist(new_guns_aim_end_anm))
-					{
-						PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
-						return;
-					}
-				}
-				else if (guns_aim_end_anm && strstr(guns_aim_end_anm, "_empty"))
-				{
-					char* empty_position = strstr(guns_aim_end_anm, "_empty");
-					int empty_length = strlen("_empty");
-
-					char new_guns_aim_end_anm[100];
-					strncpy(new_guns_aim_end_anm, guns_aim_end_anm, empty_position - guns_aim_end_anm);
-					strcpy(new_guns_aim_end_anm + (empty_position - guns_aim_end_anm), guns_aim_end_anm + (empty_position - guns_aim_end_anm) + empty_length);
-
-					if (isHUDAnimationExist(new_guns_aim_end_anm))
-					{
-						PlayHUDMotionNew(new_guns_aim_end_anm, true, GetState());
-						return;
-					}
-				}
 			}
 
 			int act_state = 0;
@@ -989,6 +1000,9 @@ void CWeaponMagazinedWGrenade::PlayAnimShoot()
 		//HUD_VisualBulletUpdate();
 
 		VERIFY(GetState() == eFire);
+
+		if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
+			return;
 
 		if (IsGrenadeLauncherAttached())
 		{
