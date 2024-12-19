@@ -80,11 +80,29 @@ void CWeaponBM16::PlayAnimReload()
 bool CWeaponBM16::PlayAnimAimEnd()
 {
 	string32 guns_aim_end_anm;
-	strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end_", std::to_string(m_magazine.size()).c_str());
+	strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end_", IsMisfire() ? "_jammed" : "", std::to_string(m_magazine.size()).c_str());
+
 	if (isHUDAnimationExist(guns_aim_end_anm))
 	{
 		PlayHUDMotionNew(guns_aim_end_anm, true, GetState());
 		return true;
+	}
+	else if (guns_aim_end_anm && strstr(guns_aim_end_anm, "_jammed"))
+	{
+		char* jammed_position = strstr(guns_aim_end_anm, "_jammed");
+		int jammed_length = strlen("_jammed");
+
+		char new_guns_aim_anm[100];
+		strncpy(new_guns_aim_anm, guns_aim_end_anm, jammed_position - guns_aim_end_anm);
+		strcpy(new_guns_aim_anm + (jammed_position - guns_aim_end_anm), guns_aim_end_anm + (jammed_position - guns_aim_end_anm) + jammed_length);
+
+		if (isHUDAnimationExist(new_guns_aim_anm))
+		{
+			PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+			return true;
+		}
+
+		return false;
 	}
 
 	return false;
@@ -97,11 +115,27 @@ void CWeaponBM16::PlayAnimIdle()
 		if (IsRotatingToZoom())
 		{
 			string32 guns_aim_start_anm;
-			strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start_", std::to_string(m_magazine.size()).c_str());
+			strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start_", IsMisfire() ? "_jammed" : "", std::to_string(m_magazine.size()).c_str());
+
 			if (isHUDAnimationExist(guns_aim_start_anm))
 			{
 				PlayHUDMotionNew(guns_aim_start_anm, true, GetState());
 				return;
+			}
+			else if (guns_aim_start_anm && strstr(guns_aim_start_anm, "_jammed"))
+			{
+				char* jammed_position = strstr(guns_aim_start_anm, "_jammed");
+				int jammed_length = strlen("_jammed");
+
+				char new_guns_aim_anm[100];
+				strncpy(new_guns_aim_anm, guns_aim_start_anm, jammed_position - guns_aim_start_anm);
+				strcpy(new_guns_aim_anm + (jammed_position - guns_aim_start_anm), guns_aim_start_anm + (jammed_position - guns_aim_start_anm) + jammed_length);
+
+				if (isHUDAnimationExist(new_guns_aim_anm))
+				{
+					PlayHUDMotionNew(new_guns_aim_anm, true, GetState());
+					return;
+				}
 			}
 		}
 
