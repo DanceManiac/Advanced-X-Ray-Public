@@ -92,8 +92,6 @@ bool CWeaponBM16::PlayAnimAimEnd()
 
 void CWeaponBM16::PlayAnimIdle()
 {
-	if(TryPlayAnimIdle())	return;
-
 	if(IsZoomed())
 	{
 		if (IsRotatingToZoom())
@@ -149,18 +147,24 @@ void CWeaponBM16::PlayAnimIdle()
 			}
 		}
 
-		switch (m_magazine.size())
+		if (!TryPlayAnimIdle())
 		{
-		case 0:{
-			PlayHUDMotionIfExists({"anm_idle_aim_0", "anim_idle_aim"}, TRUE, GetState());
-		}break;
-		case 1:{
-			PlayHUDMotionIfExists({"anim_zoomed_idle_1", "anm_idle_aim_1", "anim_idle_aim" }, TRUE, GetState());
-		}break;
-		case 2:{
-			PlayHUDMotionIfExists({"anim_zoomed_idle_2", "anim_zoomedidle_2", "anm_idle_aim_2", "anim_idle_aim" }, TRUE, GetState());
-		}break;
-		};
+			switch (m_magazine.size())
+			{
+			case 0:
+				{
+					PlayHUDMotionIfExists({ "anm_idle_aim_0", "anim_idle_aim" }, TRUE, GetState());
+				} break;
+			case 1:
+				{
+					PlayHUDMotionIfExists({ "anim_zoomed_idle_1", "anm_idle_aim_1", "anim_idle_aim" }, TRUE, GetState());
+				} break;
+			case 2:
+				{
+					PlayHUDMotionIfExists({ "anim_zoomed_idle_2", "anim_zoomedidle_2", "anm_idle_aim_2", "anim_idle_aim" }, TRUE, GetState());
+				} break;
+			};
+		}
 	}
 	else
 	{
@@ -170,23 +174,23 @@ void CWeaponBM16::PlayAnimIdle()
 				return;
 		}
 
+		if (TryPlayAnimIdle())
+			return;
+
 		switch (m_magazine.size())
 		{
 		case 0:
-		{
-			PlayHUDMotionIfExists({"anim_idle", "anm_idle_0"}, TRUE, GetState());
-		}
-		break;
+			{
+				PlayHUDMotionIfExists({"anim_idle", "anm_idle_0"}, TRUE, GetState());
+			} break;
 		case 1:
-		{
-			PlayHUDMotionIfExists({"anim_idle_1", "anm_idle_1", "anim_idle"}, TRUE, GetState());
-		}
-		break;
+			{
+				PlayHUDMotionIfExists({"anim_idle_1", "anm_idle_1", "anim_idle"}, TRUE, GetState());
+			} break;
 		case 2:
-		{
-			PlayHUDMotionIfExists({ "anim_idle_2", "anm_idle_2", "anim_idle" }, TRUE, GetState());
-		}
-		break;
+			{
+				PlayHUDMotionIfExists({ "anim_idle_2", "anm_idle_2", "anim_idle" }, TRUE, GetState());
+			} break;
 		};
 	}
 }

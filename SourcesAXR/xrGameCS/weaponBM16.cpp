@@ -202,8 +202,6 @@ bool CWeaponBM16::PlayAnimAimEnd()
 
 void CWeaponBM16::PlayAnimIdle()
 {
-	if(TryPlayAnimIdle())	return;
-
 	if(IsZoomed())
 	{
 		if (IsRotatingToZoom())
@@ -259,17 +257,23 @@ void CWeaponBM16::PlayAnimIdle()
 			}
 		}
 
-		switch (m_magazine.size())
+		if (!TryPlayAnimIdle())
 		{
-		case 0:
-			PlayHUDMotionNew({ "anm_idle_aim_0" }, true, GetState());
-			break;
-		case 1:
-			PlayHUDMotionNew({ "anm_idle_aim_1" }, true, GetState());
-			break;
-		case 2:
-			PlayHUDMotionIfExists({ "anim_zoomed_idle_2", "anim_zoomedidle_2", "anm_idle_aim_2" }, true, GetState());
-			break;
+			switch (m_magazine.size())
+			{
+			case 0:
+				{
+					PlayHUDMotionNew({ "anm_idle_aim_0" }, true, GetState());
+				} break;
+			case 1:
+				{
+					PlayHUDMotionNew({ "anm_idle_aim_1" }, true, GetState());
+				} break;
+			case 2:
+				{
+					PlayHUDMotionIfExists({ "anim_zoomed_idle_2", "anim_zoomedidle_2", "anm_idle_aim_2" }, true, GetState());
+				} break;
+			}
 		}
 	}
 	else
@@ -280,20 +284,23 @@ void CWeaponBM16::PlayAnimIdle()
 				return;
 		}
 
+		if (TryPlayAnimIdle())
+			return;
+
 		switch (m_magazine.size())
 		{
 		case 0:
-		{
-			PlayHUDMotion("anm_idle_0", TRUE, NULL, GetState());
-		}break;
+			{
+				PlayHUDMotion("anm_idle_0", TRUE, NULL, GetState());
+			} break;
 		case 1:
-		{
-			PlayHUDMotion("anm_idle_1", TRUE, NULL, GetState());
-		}break;
+			{
+				PlayHUDMotion("anm_idle_1", TRUE, NULL, GetState());
+			} break;
 		case 2:
-		{
-			PlayHUDMotion("anm_idle_2", TRUE, NULL, GetState());
-		}break;
+			{
+				PlayHUDMotion("anm_idle_2", TRUE, NULL, GetState());
+			} break;
 		};
 	}
 }

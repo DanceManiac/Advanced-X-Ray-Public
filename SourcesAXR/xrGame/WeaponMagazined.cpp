@@ -1998,13 +1998,12 @@ bool CWeaponMagazined::PlayAnimAimEnd()
 
 void CWeaponMagazined::PlayAnimIdle()
 {
-	if(GetState()!=eIdle)	return;
-
-	if (TryPlayAnimIdle()) return;
+	if(GetState()!=eIdle)
+		return;
 
 	if(IsZoomed())
 		PlayAnimAim();
-	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_IDLE_EMPTY))
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_IDLE_EMPTY) && !TryPlayAnimIdle())
 		PlayHUDMotion("anm_idle_empty", TRUE, NULL, GetState());
 	else if (IsMisfire() && isHUDAnimationExist("anm_idle_jammed") && !TryPlayAnimIdle())
 		PlayHUDMotion("anm_idle_jammed", true, nullptr, GetState());
