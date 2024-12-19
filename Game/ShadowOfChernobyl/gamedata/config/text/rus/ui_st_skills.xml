@@ -45,6 +45,15 @@
 	<string id="st_endurance_lvl">
 		<text>Выносливость: </text>
 	</string>
+	<string id="st_packing_name">
+		<text>Упаковка</text>
+	</string>
+	<string id="st_packing_descr">
+		<text>Навык упаковки позволяет более эффективно укладывать предметы в личном ящике и рюкзаке, тем самым они занимают меньше места. С каждым новым уровнем занимаемое предметами место уменьшается.</text>
+	</string>
+	<string id="st_packing_lvl">
+		<text>Упаковка: </text>
+	</string>
 	<string id="st_buy">
 		<text>Изучить</text>
 	</string>
@@ -59,5 +68,8 @@
 	</string>
 	<string id="st_buy_endurance_descr">
 		<text>Изучить новый уровень навыка "Выносливость".</text>
+	</string>
+	<string id="st_buy_packing_descr">
+		<text>Изучить новый уровень навыка "Упаковка".</text>
 	</string>
 </string_table>

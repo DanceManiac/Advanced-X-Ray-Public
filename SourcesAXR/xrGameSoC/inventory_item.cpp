@@ -18,6 +18,7 @@
 #include "Level.h"
 #include "game_cl_base.h"
 #include "Actor.h"
+#include "ActorCondition.h"
 #include "string_table.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "../Include/xrRender/KinematicsAnimated.h"
@@ -29,6 +30,7 @@
 #include "../xrEngine/igame_persistent.h"
 #include "../xrServerEntitiesSoC/script_engine.h"
 
+#include "AdvancedXrayGameConstants.h"
 #include "Artefact.h"
 
 #ifdef DEBUG
@@ -1349,6 +1351,20 @@ int  CInventoryItem::GetYPos				() const
 u16 CInventoryItem::bone_count_to_synchronize	() const
 {
 	return 0;
+}
+
+float CInventoryItem::GetOccupiedInvSpace()
+{
+	if (GameConstants::GetActorSkillsEnabled() && Actor()->ActorSkills)
+	{
+		if (int packing_skill_lvl = Actor()->ActorSkills->get_packing_skill())
+		{
+			float packing_skill_infl = Actor()->conditions().m_fPackingSkill;
+			m_fOccupiedInvSpace *= (1.0f - (packing_skill_infl * packing_skill_lvl));
+		}
+	}
+
+	return m_fOccupiedInvSpace;
 }
 
 bool CInventoryItem::ParentIsActor()

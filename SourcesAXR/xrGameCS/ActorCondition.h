@@ -251,6 +251,7 @@ public:
 	float m_fMaxWeightSkill;
 	float m_fJumpSpeedSkill;
 	float m_fWalkAccelSkill;
+	float m_fPackingSkill;
 //--M.F.S. Team
 
 	float m_fPowerLeakSpeed;

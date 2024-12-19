@@ -213,6 +213,8 @@ void CActorCondition::LoadCondition(LPCSTR entity_section)
 	m_fMaxWeightSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_max_weight", 0.0f);
 	m_fJumpSpeedSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_jump_speed", 0.0f);
 	m_fWalkAccelSkill			= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_walk_accel", 0.0f);
+
+	m_fPackingSkill				= READ_IF_EXISTS(pSettings, r_float, "skills_influence", "skills_packing", 0.0f);
 }
 
 float CActorCondition::GetZoneMaxPower( ALife::EInfluenceType type) const

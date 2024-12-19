@@ -10,6 +10,7 @@ CActorSkills::CActorSkills()
 	powerSkillLevel = 0;
 	repairSkillLevel = 0;
 	enduranceSkillLevel = 0;
+	packingSkillLevel = 0;
 }
 
 CActorSkills::~CActorSkills() {}
@@ -21,6 +22,7 @@ void CActorSkills::save(NET_Packet& packet)
 	save_data(powerSkillLevel, packet);
 	save_data(repairSkillLevel, packet);
 	save_data(enduranceSkillLevel, packet);
+	save_data(packingSkillLevel, packet);
 }
 
 void CActorSkills::load(IReader& packet)
@@ -30,6 +32,7 @@ void CActorSkills::load(IReader& packet)
 	load_data(powerSkillLevel, packet);
 	load_data(repairSkillLevel, packet);
 	load_data(enduranceSkillLevel, packet);
+	load_data(packingSkillLevel, packet);
 }
 
 void CActorSkills::set_skills_points(int num)
@@ -147,6 +150,29 @@ int CActorSkills::get_endurance_skill()
 	return enduranceSkillLevel;
 }
 
+void CActorSkills::set_packing_skill(int num)
+{
+	packingSkillLevel = num;
+	clamp(packingSkillLevel, 0, 5);
+}
+
+void CActorSkills::inc_packing_skill(int num)
+{
+	packingSkillLevel += num;
+	clamp(packingSkillLevel, 0, 5);
+}
+
+void CActorSkills::dec_packing_skill(int num)
+{
+	packingSkillLevel -= num;
+	clamp(packingSkillLevel, 0, 5);
+}
+
+int CActorSkills::get_packing_skill()
+{
+	return packingSkillLevel;
+}
+
 void CActorSkills::BuySkill(int skill)
 {
 	int current_skill_cost = skill_cost;
@@ -193,6 +219,16 @@ void CActorSkills::BuySkill(int skill)
 				return;
 
 			enduranceSkillLevel++;
+			skills_points -= current_skill_cost;
+		} break;
+		case 5:
+		{
+			current_skill_cost *= (packingSkillLevel + 1);
+
+			if (skills_points < current_skill_cost)
+				return;
+
+			packingSkillLevel++;
 			skills_points -= current_skill_cost;
 		} break;
 	}

@@ -1065,6 +1065,26 @@ int get_endurance_skill()
 	return Actor()->ActorSkills->get_endurance_skill();
 }
 
+void set_packing_skill(int num)
+{
+	Actor()->ActorSkills->set_packing_skill(num);
+}
+
+void inc_packing_skill(int num)
+{
+	Actor()->ActorSkills->inc_packing_skill(num);
+}
+
+void dec_packing_skill(int num)
+{
+	Actor()->ActorSkills->dec_packing_skill(num);
+}
+
+int get_packing_skill()
+{
+	return Actor()->ActorSkills->get_packing_skill();
+}
+
 void buy_skill(int num)
 {
 	return Actor()->ActorSkills->BuySkill(num);
@@ -1449,6 +1469,10 @@ void CLevel::script_register(lua_State *L)
 		def("get_endurance_skill",				&get_endurance_skill),
 		def("inc_endurance_skill",				&inc_endurance_skill),
 		def("dec_endurance_skill",				&dec_endurance_skill),
+		def("set_packing_skill",				&set_packing_skill),
+		def("get_packing_skill",				&get_packing_skill),
+		def("inc_packing_skill",				&inc_packing_skill),
+		def("dec_packing_skill",				&dec_packing_skill),
 		def("buy_skill",						&buy_skill)
 	];
 

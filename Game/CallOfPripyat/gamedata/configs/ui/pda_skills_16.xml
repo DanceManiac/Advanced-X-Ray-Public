@@ -60,12 +60,16 @@
     <skill_endurance_lvl x="416" y="96" width="20" height="15" complex_mode="0">
         <text align="l" vert_align="c" font="letterica16" r="220" g="220" b="220"/>
     </skill_endurance_lvl>
-	
-    <!--bye_survival_skill x="32" y="192" width="101" height="28" check_mode="0" stretch="1">
-        <window_name>button_yes</window_name>
-        <text font="letterica18">st_bye_survival_skill_descr</text>
-        <texture>ui_inGame2_pda_button</texture>
-    </bye_survival_skill-->
+
+	<skill_packing x="150" y="192" width="128" height="128" hint="st_packing_descr">
+        <texture>ui_mfs_skill_packing</texture>
+    </skill_packing>
+    <skill_packing_name x="150" y="144" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica25" r="220" g="220" b="220"/>
+    </skill_packing_name>
+    <skill_packing_lvl x="224" y="96" width="20" height="15" complex_mode="0">
+        <text align="l" vert_align="c" font="letterica16" r="220" g="220" b="220"/>
+    </skill_packing_lvl>
 	
 	<buy_survival_skill x="160" y="416" width="128" height="19" hint="st_buy_survival_descr" frame_mode="0" stretch="1">
 		<window_name>buy_survival_skill</window_name>
@@ -114,5 +118,17 @@
             <h r="170" g="170" b="170"/>
         </text_color>
 	</buy_endurance_skill>
+	
+	<buy_packing_skill x="160" y="416" width="128" height="19" hint="st_buy_packing_descr" frame_mode="0" stretch="1">
+		<window_name>buy_packing_skill</window_name>
+        <texture>ui_inGame2_Mp_bigbuttone</texture>
+        <text align="c" vert_align="c" x="0" y="0" width="96" height="19" font="letterica16">st_buy</text>
+        <text_color>
+            <t r="255" g="255" b="255"/>
+            <d r="255" g="255" b="255"/>
+            <e r="200" g="200" b="200"/>
+            <h r="170" g="170" b="170"/>
+        </text_color>
+	</buy_packing_skill>
 	
 </w>

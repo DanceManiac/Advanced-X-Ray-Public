@@ -49,10 +49,15 @@ function pda_skills_tab:InitControls()
 	self.skill_endurance_name = xml:InitStatic("skill_endurance_name", self.pda_skills)
 	self.skill_endurance_lvl = xml:InitStatic("skill_endurance_lvl", self)
 	
+	self.skill_packing = xml:InitStatic("skill_packing", self.pda_skills)
+	self.skill_packing_name = xml:InitStatic("skill_packing_name", self.pda_skills)
+	self.skill_packing_lvl = xml:InitStatic("skill_packing_lvl", self)
+	
 	self.skill_survival_name:TextControl():SetText(transl("st_survival_name"))
 	self.skill_power_name:TextControl():SetText(transl("st_power_name"))
 	self.skill_repair_name:TextControl():SetText(transl("st_repair_name"))
 	self.skill_endurance_name:TextControl():SetText(transl("st_endurance_name"))
+	self.skill_packing_name:TextControl():SetText(transl("st_packing_name"))
 	
 	self.scroll = xml:InitScrollView("scrollbar", self)
 	
@@ -64,12 +69,15 @@ function pda_skills_tab:InitControls()
 	self:Register(self.buy_repair_skill, "buy_repair_skill")
 	self.buy_endurance_skill = xml:Init3tButton("buy_endurance_skill", self)
 	self:Register(self.buy_endurance_skill, "buy_endurance_skill")
+	self.buy_packing_skill = xml:Init3tButton("buy_packing_skill", self)
+	self:Register(self.buy_packing_skill, "buy_packing_skill")
 	
 --------------------------------------------------------------------------------
 	self:AddCallback("buy_survival_skill", ui_events.BUTTON_CLICKED, self.OnButtonSurvivalSkill, self)
 	self:AddCallback("buy_power_skill", ui_events.BUTTON_CLICKED, self.OnButtonPowerSkill, self)
 	self:AddCallback("buy_repair_skill", ui_events.BUTTON_CLICKED, self.OnButtonRepairSkill, self)
 	self:AddCallback("buy_endurance_skill", ui_events.BUTTON_CLICKED, self.OnButtonEnduranceSkill, self)
+	self:AddCallback("buy_packing_skill", ui_events.BUTTON_CLICKED, self.OnButtonPackingSkill, self)
 end
 
 function pda_skills_tab:Reset()
@@ -81,6 +89,7 @@ local s2 = transl("st_survival_lvl")
 local s3 = transl("st_power_lvl")
 local s4 = transl("st_repair_lvl")
 local s5 = transl("st_endurance_lvl")
+local s6 = transl("st_packing_lvl")
 
 function pda_skills_tab:Update()
 	CUIScriptWnd.Update(self)
@@ -90,6 +99,7 @@ function pda_skills_tab:Update()
 	self.skill_power_lvl:TextControl():SetText(s3..actor_stats.get_power_skill())
 	self.skill_repair_lvl:TextControl():SetText(s4..actor_stats.get_repair_skill())
 	self.skill_endurance_lvl:TextControl():SetText(s5..actor_stats.get_endurance_skill())
+	self.skill_packing_lvl:TextControl():SetText(s5..actor_stats.get_packing_skill())
 end
 
 function pda_skills_tab:OnButtonSurvivalSkill()
@@ -125,5 +135,14 @@ function pda_skills_tab:OnButtonEnduranceSkill()
 
 	if p >= need_points then
 		actor_stats.buy_skill(4)
+	end
+end
+
+function pda_skills_tab:OnButtonPackingSkill()
+	local p = actor_stats.get_skills_points()
+	local need_points = p * actor_stats.get_packing_skill()
+
+	if p >= need_points then
+		actor_stats.buy_skill(5)
 	end
 end

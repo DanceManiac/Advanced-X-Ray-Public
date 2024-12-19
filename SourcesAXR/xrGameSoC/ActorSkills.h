@@ -12,7 +12,8 @@ public:
 		survivalSkill,
 		powerSkill,
 		repairSkill,
-		enduranceSkill
+		enduranceSkill,
+		packingSkill
 	};
 
 	int skills_points;
@@ -21,6 +22,7 @@ public:
 	int powerSkillLevel;
 	int repairSkillLevel;
 	int enduranceSkillLevel;
+	int packingSkillLevel;
 
 	void save(NET_Packet& output_packet);
 	void load(IReader& input_packet);
@@ -49,6 +51,11 @@ public:
 	void inc_endurance_skill(int num);
 	void dec_endurance_skill(int num);
 	int get_endurance_skill();
+
+	void set_packing_skill(int num);
+	void inc_packing_skill(int num);
+	void dec_packing_skill(int num);
+	int get_packing_skill();
 
 	void BuySkill(int skill);
 };

@@ -17,6 +17,7 @@
 #include "Level.h"
 #include "game_cl_base.h"
 #include "Actor.h"
+#include "ActorCondition.h"
 #include "HUDManager.h"
 #include "string_table.h"
 #include "../Include/xrRender/Kinematics.h"
@@ -1683,6 +1684,15 @@ float CInventoryItem::GetOccupiedInvSpace()
 		}
 		else
 			m_fOccupiedInvSpace = cast_physics_shell_holder()->CFORM()->getRadius() * 10.0f;
+	}
+
+	if (GameConstants::GetActorSkillsEnabled() && Actor()->ActorSkills)
+	{
+		if (int packing_skill_lvl = Actor()->ActorSkills->get_packing_skill())
+		{
+			float packing_skill_infl = Actor()->conditions().m_fPackingSkill;
+			m_fOccupiedInvSpace *= (1.0f - (packing_skill_infl * packing_skill_lvl));
+		}
 	}
 
 	return m_fOccupiedInvSpace;

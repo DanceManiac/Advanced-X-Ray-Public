@@ -285,5 +285,6 @@
 		<texture id="ui_mfs_skill_power" 		x="128" y="0" width="128" height="128" />
 		<texture id="ui_mfs_skill_repair" 		x="256" y="0" width="128" height="128" />
 		<texture id="ui_mfs_skill_endurance" 	x="384" y="0" width="128" height="128" />
+		<texture id="ui_mfs_skill_packing" 		x="0" y="128" width="128" height="128" />
 	</file>
 </w>
