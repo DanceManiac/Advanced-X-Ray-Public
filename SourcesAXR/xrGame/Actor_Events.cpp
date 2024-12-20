@@ -269,7 +269,7 @@ void CActor::OnEvent(NET_Packet& P, u16 type)
 
 	case GEG_PLAYER_WEAPON_HIDE_STATE:
 		{
-			u16 State		= P.r_u16();
+			u32 State		= P.r_u32();
 			BOOL	Set		= !!P.r_u8();
 			inventory().SetSlotsBlocked	(State, !!Set);
 		}break;

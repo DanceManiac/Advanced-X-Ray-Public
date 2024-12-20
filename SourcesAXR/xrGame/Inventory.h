@@ -123,7 +123,7 @@ public:
 	bool 					IsBeltUseful		() const			{return m_bBeltUseful;}
 	void 					SetBeltUseful		(bool belt_useful)	{m_bBeltUseful = belt_useful;}
 
-	void					SetSlotsBlocked		(u16 mask, bool bBlock);
+	void					SetSlotsBlocked		(u32 mask, bool bBlock);
 	
 	void					BlockSlot(u16 slot_id);
 	void					UnblockSlot(u16 slot_id);

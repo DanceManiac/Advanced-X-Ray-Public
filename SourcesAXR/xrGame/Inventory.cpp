@@ -35,12 +35,12 @@ std::atomic<bool> isHidingInProgressInv(false);
 std::atomic<bool> TakeItemAnimNeeded(false);
 
 // what to block
-u16	INV_STATE_BLOCK_ALL		= 0xffff;
-u16	INV_STATE_LADDER		= INV_STATE_BLOCK_ALL;
-u16	INV_STATE_CAR			= INV_STATE_BLOCK_ALL;
-u16	INV_STATE_INV_WND		= INV_STATE_BLOCK_ALL;
-u16	INV_STATE_BUY_MENU		= INV_STATE_BLOCK_ALL;
-u16 INV_STATE_HIDE_WEAPON	= (1 << KNIFE_SLOT | 1 << INV_SLOT_2 | 1 << INV_SLOT_3 | 1 << GRENADE_SLOT |  1 << PISTOL_SLOT);
+u32	INV_STATE_BLOCK_ALL		= 0xffffffff;
+u32	INV_STATE_LADDER		= INV_STATE_BLOCK_ALL;
+u32	INV_STATE_CAR			= INV_STATE_BLOCK_ALL;
+u32	INV_STATE_INV_WND		= INV_STATE_BLOCK_ALL;
+u32	INV_STATE_BUY_MENU		= INV_STATE_BLOCK_ALL;
+u32 INV_STATE_HIDE_WEAPON	= (1 << KNIFE_SLOT | 1 << INV_SLOT_2 | 1 << INV_SLOT_3 | 1 << GRENADE_SLOT |  1 << PISTOL_SLOT);
 
 CInventorySlot::CInventorySlot() 
 {
@@ -1648,13 +1648,13 @@ void CInventory::Items_SetCurrentEntityHud(bool current_entity)
 };
 
 //call this only via Actor()->SetWeaponHideState()
-void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
+void CInventory::SetSlotsBlocked(u32 mask, bool bBlock)
 {
 	R_ASSERT(OnServer() || Level().IsDemoPlayStarted());
 
-	for(u16 i = FirstSlot(), ie = LastSlot(); i <= ie; ++i)
+	for(u32 i = FirstSlot(), ie = LastSlot(); i <= ie; ++i)
 	{
-		if(mask & (1<<i))
+		if(mask & ((u32)1<<i))
 		{
 			if (bBlock)
 				BlockSlot(i);
@@ -1666,7 +1666,8 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 	if (bBlock)
 	{
 		TryDeactivateActiveSlot();	
-	} else
+	}
+	else
 	{
 		TryActivatePrevSlot();
 	}

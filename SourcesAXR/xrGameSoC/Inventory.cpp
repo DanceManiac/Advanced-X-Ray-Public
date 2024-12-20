@@ -1450,22 +1450,26 @@ void CInventory::Items_SetCurrentEntityHud(bool current_entity)
 };
 
 //call this only via Actor()->SetWeaponHideState()
-void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
+void CInventory::SetSlotsBlocked(u32 mask, bool bBlock)
 {
 	bool bChanged = false;
-	for(int i =0; i < m_slots.size(); ++i)
+	for(u32 i = 0; i < m_slots.size(); ++i)
 	{
-		if(mask & (1<<i))
+		if(mask & ((u32)1<<i))
 		{
 			bool bCanBeActivated = m_slots[i].CanBeActivated();
 
-			if(bBlock){
+			if (bBlock)
+			{
 				++m_slots[i].m_blockCounter;
 				VERIFY2(m_slots[i].m_blockCounter< 5,"block slots overflow");
-			}else{
+			}
+			else
+			{
 				--m_slots[i].m_blockCounter;
 				VERIFY2(m_slots[i].m_blockCounter>-5,"block slots underflow");
 			}
+
 			if(bCanBeActivated != m_slots[i].CanBeActivated())
 				bChanged = true;
 		}
@@ -1479,7 +1483,8 @@ void CInventory::SetSlotsBlocked(u16 mask, bool bBlock)
 			if(PrevActiveSlot!=NO_ACTIVE_SLOT && m_slots[PrevActiveSlot].CanBeActivated()) 
 				if(Activate(PrevActiveSlot))
 					SetPrevActiveSlot(NO_ACTIVE_SLOT);
-		}else
+		}
+		else
 		{//try to hide active weapon
 			if(!m_slots[ActiveSlot].CanBeActivated() )
 				if(Activate(NO_ACTIVE_SLOT))

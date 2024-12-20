@@ -115,13 +115,13 @@ void CActor::SetCantRunState(bool bDisable)
 		u_EventSend	(P);
 	};
 }
-void CActor::SetWeaponHideState (u16 State, bool bSet)
+void CActor::SetWeaponHideState (u32 State, bool bSet)
 {
 	if (g_Alive() && this == Level().CurrentControlEntity())
 	{
 		NET_Packet	P;
 		u_EventGen	(P, GEG_PLAYER_WEAPON_HIDE_STATE, ID());
-		P.w_u16		(State);
+		P.w_u32		(State);
 		P.w_u8		(u8(bSet));
 		u_EventSend	(P);
 	};
