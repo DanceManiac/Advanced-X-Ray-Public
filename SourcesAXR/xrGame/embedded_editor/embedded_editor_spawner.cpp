@@ -147,219 +147,120 @@ bool IsDevice(CLASS_ID cls)
 
 void FillSectionsList()
 {
-		for (auto sect : pSettings->sections())
+	for (auto sect : pSettings->sections())
+	{
+		if (sect->line_exist("class") && sect->line_exist("$spawn"))
 		{
-			if (sect->line_exist("class") && sect->line_exist("$spawn"))
+			LPCSTR item_name = sect->Name.c_str();
+
+			if (pSettings->line_exist(item_name, "inv_name") && CStringTable().translate(pSettings->r_string(item_name, "inv_name")).size())
+				item_name = CStringTable().translate(pSettings->r_string(item_name, "inv_name")).c_str();
+
+			if (sect->line_exist("quest_item") && pSettings->r_bool(sect->Name.c_str(), "quest_item"))
 			{
-				LPCSTR item_name = sect->Name.c_str();
-
-				if (pSettings->line_exist(item_name, "inv_name") && CStringTable().translate(pSettings->r_string(item_name, "inv_name")).size())
-					item_name = CStringTable().translate(pSettings->r_string(item_name, "inv_name")).c_str();
-
-				if (sect->line_exist("quest_item") && pSettings->r_bool(sect->Name.c_str(), "quest_item"))
-				{
+				if (m_QuestItemsVec.find(sect->Name.c_str()) == m_QuestItemsVec.end())
 					m_QuestItemsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+			}
+			else
+			{
+				if (IsVehicle(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_CarsVec.find(sect->Name.c_str()) == m_CarsVec.end())
+						m_CarsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsEntity(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_EntitiesVec.find(sect->Name.c_str()) == m_EntitiesVec.end())
+						m_EntitiesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsArtefact(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_ArtefactsVec.find(sect->Name.c_str()) == m_ArtefactsVec.end())
+						m_ArtefactsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsWeapon(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_WeaponsVec.find(sect->Name.c_str()) == m_WeaponsVec.end())
+						m_WeaponsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsCustomZone(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_AnomaliesVec.find(sect->Name.c_str()) == m_AnomaliesVec.end())
+						m_AnomaliesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsFood(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_FoodVec.find(sect->Name.c_str()) == m_FoodVec.end())
+						m_FoodVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsOutfit(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_OutfitVec.find(sect->Name.c_str()) == m_OutfitVec.end())
+						m_OutfitVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsAmmo(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_AmmoVec.find(sect->Name.c_str()) == m_AmmoVec.end())
+						m_AmmoVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				}
+				else if (IsDevice(pSettings->r_clsid(sect->Name.c_str(), "class")))
+				{
+					if (m_DevicesVec.find(sect->Name.c_str()) == m_DevicesVec.end())
+						m_DevicesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
 				}
 				else
 				{
-					if (IsVehicle(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_CarsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsEntity(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_EntitiesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsArtefact(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_ArtefactsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsWeapon(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_WeaponsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsCustomZone(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_AnomaliesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsFood(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_FoodVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsOutfit(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_OutfitVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsAmmo(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_AmmoVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else if (IsDevice(pSettings->r_clsid(sect->Name.c_str(), "class")))
-						m_DevicesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-					else
+					if (m_ItemsVec.find(sect->Name.c_str()) == m_ItemsVec.end())
 						m_ItemsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
 				}
 			}
 		}
+	}
 }
 
 void DrawObjectsList(int mode)
 {
 	ImGui::InputText(toUtf8(CStringTable().translate("st_spawner_search").c_str()).c_str(), m_sSearchText, 512);
+
 	ImGui::BeginListBox(toUtf8(CStringTable().translate("st_spawner_items_list").c_str()).c_str(), ImVec2(300, 400));
 
-	switch (mode)
+	auto& itemsList = [&]() -> xr_map<xr_string, xr_string>&
 	{
-	case 0:
+		switch (mode)
 		{
-			for (auto it = m_CarsVec.begin(); it != m_CarsVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
+			case 0: return m_CarsVec;
+			case 1: return m_WeaponsVec;
+			case 2: return m_FoodVec;
+			case 3: return m_DevicesVec;
+			case 4: return m_EntitiesVec;
+			case 5: return m_AnomaliesVec;
+			case 6: return m_ArtefactsVec;
+			case 7: return m_AmmoVec;
+			case 8: return m_OutfitVec;
+			case 9: return m_QuestItemsVec;
+			default: return m_ItemsVec;
 		}
-		break;
-	case 1:
-		{
-			for (auto it = m_WeaponsVec.begin(); it != m_WeaponsVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	case 2:
-		{
-			for (auto it = m_FoodVec.begin(); it != m_FoodVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	case 3:
-		{
-			for (auto it = m_DevicesVec.begin(); it != m_DevicesVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	case 4:
-		{
-			for (auto it = m_EntitiesVec.begin(); it != m_EntitiesVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	case 5:
+	} ();
+
+	std::unordered_set<std::string> displayedItems;
+
+	for (auto it = itemsList.begin(); it != itemsList.end(); ++it)
 	{
-		for (auto it = m_AnomaliesVec.begin(); it != m_AnomaliesVec.end(); ++it)
+		if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
 		{
-			if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
+			if (displayedItems.find(it->second.c_str()) == displayedItems.end())
 			{
 				if (ImGui::Selectable(it->second.c_str()))
 				{
 					m_sSelectedName = it->second.c_str();
 					m_sSelectedSection = it->first.c_str();
 				}
+
+				displayedItems.insert(it->second.c_str());
 			}
 		}
 	}
-	break;
-	case 6:
-		{
-			for (auto it = m_ArtefactsVec.begin(); it != m_ArtefactsVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	case 7:
-		{
-			for (auto it = m_AmmoVec.begin(); it != m_AmmoVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	case 8:
-		{
-			for (auto it = m_OutfitVec.begin(); it != m_OutfitVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	case 9:
-		{
-			for (auto it = m_QuestItemsVec.begin(); it != m_QuestItemsVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	default:
-		{
-			for (auto it = m_ItemsVec.begin(); it != m_ItemsVec.end(); ++it)
-			{
-				if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
-				{
-					if (ImGui::Selectable(it->second.c_str()))
-					{
-						m_sSelectedName = it->second.c_str();
-						m_sSelectedSection = it->first.c_str();
-					}
-				}
-			}
-		}
-		break;
-	}
+
 	ImGui::EndListBox();
 }
 
