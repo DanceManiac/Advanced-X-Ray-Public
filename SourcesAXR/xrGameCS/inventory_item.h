@@ -170,6 +170,8 @@ public:
 	virtual void				OnMoveToSlot		() {};
 	virtual void				OnMoveToBelt		() {};
 	virtual void				OnMoveToRuck		(EItemPlace prev) {};
+	virtual void				OnDrop				() {};
+	virtual void				OnBeforeDrop		() {};
 					
 			Irect				GetInvGridRect		() const;
 			const shared_str&	GetIconName			() const		{return m_icon_name;};

@@ -442,6 +442,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy, bool dont
 	VERIFY								(pIItem->m_ItemCurrPlace.type!=eItemPlaceUndefined);
 	
 	pIItem->object().processing_activate(); 
+	pIItem->OnBeforeDrop();
 	
 	switch(pIItem->CurrPlace())
 	{
@@ -490,7 +491,8 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy, bool dont
 					}
 				}
 			}
-			m_slots[pIItem->CurrSlot()].m_pIItem = NULL;							
+			m_slots[pIItem->CurrSlot()].m_pIItem = NULL;
+			pIItem->OnDrop();
 			pIItem->object().processing_deactivate();
 		}break;
 	default:

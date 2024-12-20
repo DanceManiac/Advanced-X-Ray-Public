@@ -149,6 +149,8 @@ public:
 	virtual void				OnMoveToSlot		() {};
 	virtual void				OnMoveToBelt		() {};
 	virtual void				OnMoveToRuck		(EItemPlace prev) {};
+	virtual void				OnDrop				() {};
+	virtual void				OnBeforeDrop		() {};
 					
 			Irect				GetInvGridRect		() const;
 			int					GetGridWidth		() const ;

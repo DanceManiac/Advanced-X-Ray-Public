@@ -170,6 +170,8 @@ public:
 	virtual void				OnMoveToSlot		(const SInvItemPlace& prev) {};
 	virtual void				OnMoveToBelt		(const SInvItemPlace& prev) {};
 	virtual void				OnMoveToRuck		(const SInvItemPlace& prev) {};
+	virtual void				OnDrop				() {};
+	virtual void				OnBeforeDrop		() {};
 					
 			Irect				GetInvGridRect		() const;
 			Irect				GetUpgrIconRect		() const;
