@@ -16,13 +16,14 @@ public:
 	virtual void 	OnH_B_Independent(bool just_before_destroy);
 
 	virtual void 	shedule_Update(u32 dt);
-	virtual void 	UpdateCL();
 
 	virtual void 	OnMoveToSlot(const SInvItemPlace& prev);
 	virtual void 	OnMoveToRuck(const SInvItemPlace& prev);
 	virtual void	OnActiveItem();
 	virtual void	OnHiddenItem();
 	virtual bool	ParentIsActor() override;
+	virtual void	OnDrop() override;
+	virtual void	OnBeforeDrop() override;
 
 	void			ToggleBackpack();
 	void			HideBackpack();

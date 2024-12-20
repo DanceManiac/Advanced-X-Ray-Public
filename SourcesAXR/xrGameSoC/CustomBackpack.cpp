@@ -106,26 +106,6 @@ void CCustomBackpack::shedule_Update(u32 dt)
 	inherited::shedule_Update(dt);
 }
 
-void CCustomBackpack::UpdateCL()
-{
-	inherited::UpdateCL();
-
-	if (!ParentIsActor())
-		return;
-
-	float cam_height = Actor()->GetCamHeightFactor();
-	const float start_cam_height = pSettings->r_float("actor", "camera_height_factor");
-
-	if (GetState() == eShowing)
-		cam_height -= 0.01f;
-
-	if (GetState() == eHiding)
-		cam_height += 0.01f;
-
-	clamp(cam_height, 0.55f, start_cam_height);
-	Actor()->SetCamHeightFactor(cam_height);
-}
-
 void CCustomBackpack::OnH_A_Chield()
 {
 	inherited::OnH_A_Chield();
@@ -148,18 +128,7 @@ void CCustomBackpack::OnMoveToRuck(EItemPlace prev)
 		g_actor_allow_ladder = true;
 		g_block_actor_movement = false;
 
-		float cam_height = Actor()->GetCamHeightFactor();
-		const float start_cam_height = pSettings->r_float("actor", "camera_height_factor");
-
-		while (cam_height != start_cam_height)
-		{
-			cam_height += 0.01f;
-			clamp(cam_height, 0.55f, start_cam_height);
-			Actor()->SetCamHeightFactor(cam_height);
-		}
-
-		SwitchState(eHidden);
-		g_player_hud->detach_item(this);
+		Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
 	}
 
 	StopCurrentAnimWithoutCallback();
@@ -184,6 +153,26 @@ void CCustomBackpack::OnHiddenItem()
 		return;
 
 	SwitchState(eHiding);
+}
+
+void CCustomBackpack::OnDrop()
+{
+	inherited::OnDrop();
+
+	g_actor_allow_ladder = true;
+	g_block_actor_movement = false;
+
+	Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
+}
+
+void CCustomBackpack::OnBeforeDrop()
+{
+	inherited::OnBeforeDrop();
+
+	g_actor_allow_ladder = true;
+	g_block_actor_movement = false;
+
+	Actor()->SetCamHeightFactor(pSettings->r_float("actor", "camera_height_factor"));
 }
 
 void CCustomBackpack::HideBackpack()
@@ -219,6 +208,7 @@ void CCustomBackpack::OnStateSwitch(u32 S, u32 old_state)
 
 	inherited::OnStateSwitch(S, old_state);
 
+	const float start_cam_height = pSettings->r_float("actor", "camera_height_factor");
 	auto* pGameSP = smart_cast<CUIGameSP*>(HUD().GetUI()->UIGame());
 
 	switch (S)
@@ -227,6 +217,8 @@ void CCustomBackpack::OnStateSwitch(u32 S, u32 old_state)
 		{
 			g_actor_allow_ladder = false;
 			g_block_actor_movement = true;
+
+			Actor()->SetCamHeightFactor(start_cam_height / 2.0f);
 
 			g_player_hud->attach_item(this);
 			m_sounds.PlaySound("sndShow", Fvector().set(0, 0, 0), this, true, false);
@@ -237,6 +229,8 @@ void CCustomBackpack::OnStateSwitch(u32 S, u32 old_state)
 		{
 			g_actor_allow_ladder = true;
 			g_block_actor_movement = false;
+
+			Actor()->SetCamHeightFactor(start_cam_height);
 
 			m_sounds.PlaySound("sndHide", Fvector().set(0, 0, 0), this, true, false);
 			PlayHUDMotion("anm_hide", FALSE, this, GetState());
