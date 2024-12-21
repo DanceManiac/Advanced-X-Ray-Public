@@ -21,6 +21,7 @@
 #include "../xrCDB/xr_collide_defs.h"
 #include "weapon.h"
 #include "../xrEngine/xr_collide_form.h"
+#include "ai/monsters/basemonster/base_monster.h"
 #include "ai_space.h"
 #include "script_engine.h"
 
@@ -297,17 +298,13 @@ void CBulletManager::DynamicObjectHit	(CBulletManager::_event& E)
 {
 	//только для динамических объектов
 	VERIFY(E.R.O);
-	if (g_clear) E.Repeated = false;
-	if (GameID() == GAME_SINGLE) E.Repeated = false;
-	bool NeedShootmark = true;//!E.Repeated;
+
+	E.Repeated = false;
+	bool NeedShootmark = (E.bullet.hit_type == ALife::eHitTypeFireWound || E.bullet.hit_type == ALife::eHitTypeWound || E.bullet.hit_type == ALife::eHitTypeWound_2);//!E.Repeated;
 	
-	if (E.R.O->CLS_ID == CLSID_OBJECT_ACTOR)
+	if (CBaseMonster * monster = smart_cast<CBaseMonster *>(E.R.O))
 	{
-		game_PlayerState* ps = Game().GetPlayerByGameID(E.R.O->ID());
-		if (ps && ps->testFlag(GAME_PLAYER_FLAG_INVINCIBLE))
-		{
-			NeedShootmark = false;
-		};
+		NeedShootmark = (NeedShootmark && monster->need_shotmark());
 	}
 	
 	//визуальное обозначение попадание на объекте

@@ -152,7 +152,7 @@ public:
 			void	ActivateShield		();
 			void	DeactivateShield	();
 
-			bool	need_shotmark () const { return !m_shield_active; }
+			bool	need_shotmark		() const { return !m_shield_active; }
 
 	virtual bool	ability_distant_feel() {return true;}
 	virtual	char*	get_monster_class_name () { return "burer"; }

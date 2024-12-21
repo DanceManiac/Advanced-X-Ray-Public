@@ -21,7 +21,6 @@
 #include "../xrengine/xr_collide_form.h"
 #include "weapon.h"
 #include "ik/math3d.h"
-#include "actor.h"
 #include "ai/monsters/basemonster/base_monster.h"
 #include "ai_space.h"
 #include "../xrServerEntitiesCS/script_engine.h"
@@ -267,22 +266,13 @@ void CBulletManager::DynamicObjectHit	(CBulletManager::_event& E)
 		}
 	}
 
-	if (g_clear) E.Repeated = false;
-	if (GameID() == eGameIDSingle) E.Repeated = false;
-	bool NeedShootmark = true;//!E.Repeated;
+	E.Repeated = false;
+	bool NeedShootmark = (E.bullet.hit_type == ALife::eHitTypeFireWound || E.bullet.hit_type == ALife::eHitTypeWound || E.bullet.hit_type == ALife::eHitTypeWound_2);//!E.Repeated;
 	
-	if (smart_cast<CActor*>(E.R.O))
+	if (CBaseMonster * monster = smart_cast<CBaseMonster *>(E.R.O))
 	{
-		game_PlayerState* ps = Game().GetPlayerByGameID(E.R.O->ID());
-		if (ps && ps->testFlag(GAME_PLAYER_FLAG_INVINCIBLE))
-		{
-			NeedShootmark = false;
-		};
+		NeedShootmark = (NeedShootmark && monster->need_shotmark());
 	}
-	/*else if ( CBaseMonster * monster = smart_cast<CBaseMonster *>(E.R.O) )
-	{
-		NeedShootmark	=	monster->need_shotmark();
-	}*/
 	
 	//визуальное обозначение попадание на объекте
 //	Fvector			hit_normal;

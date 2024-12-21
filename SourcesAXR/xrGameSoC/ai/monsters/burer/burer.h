@@ -133,6 +133,8 @@ public:
 			void	ActivateShield		() {m_shield_active = true;}
 			void	DeactivateShield	() {m_shield_active = false;}
 
+			bool	need_shotmark		() const { return !m_shield_active; }
+
 	virtual bool	ability_distant_feel() {return true;}
 
 	virtual void	on_scanning			();

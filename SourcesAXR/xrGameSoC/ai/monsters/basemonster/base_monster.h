@@ -436,6 +436,8 @@ protected:
 //-------------------------------------------------------------------
 	anti_aim_ability*				m_anti_aim;
 
+private:
+	pcstr							m_head_bone_name;
 public:
 	CControl_Manager		&control() {return (*m_control_manager);}
 	
@@ -448,6 +450,8 @@ public:
 
 	virtual bool			check_start_conditions	(ControlCom::EControlType);
 	virtual void			on_activate_control		(ControlCom::EControlType){}
+
+	pcstr					get_head_bone_name() const { return m_head_bone_name; }
 
 	anti_aim_ability*		get_anti_aim() { return m_anti_aim; }
 
@@ -487,6 +491,7 @@ protected:
 	//////////////////////////////////////////////////////////////////////////
 
 public:	
+	virtual bool			need_shotmark() const { return true; }
 
 	void					ReloadDamageAndAnimations();
 //////////////////////////////////////////////////////////////////////////
