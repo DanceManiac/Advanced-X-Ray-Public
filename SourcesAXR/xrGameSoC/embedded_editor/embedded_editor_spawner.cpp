@@ -158,61 +158,30 @@ void FillSectionsList()
 
 			if (sect->line_exist("quest_item") && pSettings->r_bool(sect->Name.c_str(), "quest_item"))
 			{
-				if (m_QuestItemsVec.find(sect->Name.c_str()) == m_QuestItemsVec.end())
-					m_QuestItemsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
+				m_QuestItemsVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 			}
 			else
 			{
 				if (IsVehicle(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_CarsVec.find(sect->Name.c_str()) == m_CarsVec.end())
-						m_CarsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_CarsVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsEntity(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_EntitiesVec.find(sect->Name.c_str()) == m_EntitiesVec.end())
-						m_EntitiesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_EntitiesVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsArtefact(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_ArtefactsVec.find(sect->Name.c_str()) == m_ArtefactsVec.end())
-						m_ArtefactsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_ArtefactsVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsWeapon(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_WeaponsVec.find(sect->Name.c_str()) == m_WeaponsVec.end())
-						m_WeaponsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_WeaponsVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsCustomZone(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_AnomaliesVec.find(sect->Name.c_str()) == m_AnomaliesVec.end())
-						m_AnomaliesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_AnomaliesVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsFood(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_FoodVec.find(sect->Name.c_str()) == m_FoodVec.end())
-						m_FoodVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_FoodVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsOutfit(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_OutfitVec.find(sect->Name.c_str()) == m_OutfitVec.end())
-						m_OutfitVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_OutfitVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsAmmo(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_AmmoVec.find(sect->Name.c_str()) == m_AmmoVec.end())
-						m_AmmoVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_AmmoVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else if (IsDevice(pSettings->r_clsid(sect->Name.c_str(), "class")))
-				{
-					if (m_DevicesVec.find(sect->Name.c_str()) == m_DevicesVec.end())
-						m_DevicesVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_DevicesVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 				else
-				{
-					if (m_ItemsVec.find(sect->Name.c_str()) == m_ItemsVec.end())
-						m_ItemsVec.insert(std::make_pair(sect->Name.c_str(), toUtf8(item_name)));
-				}
+					m_ItemsVec.insert(std::make_pair(sect->Name.c_str(), item_name));
 			}
 		}
 	}
@@ -223,6 +192,9 @@ void DrawObjectsList(int mode)
 	ImGui::InputText(toUtf8(CStringTable().translate("st_spawner_search").c_str()).c_str(), m_sSearchText, 512);
 
 	ImGui::BeginListBox(toUtf8(CStringTable().translate("st_spawner_items_list").c_str()).c_str(), ImVec2(300, 400));
+
+	xr_string searchTextLower = m_sSearchText;
+	ToLowerUtf8RU(searchTextLower);
 
 	auto& itemsList = [&]() -> xr_map<xr_string, xr_string>&
 	{
@@ -246,13 +218,20 @@ void DrawObjectsList(int mode)
 
 	for (auto it = itemsList.begin(); it != itemsList.end(); ++it)
 	{
-		if (m_sSearchText[0] == '\0' || it->second.find(m_sSearchText) != std::string::npos)
+		const char* t = it->second.c_str();
+
+		xr_string itemNameLower = toUtf8(it->second.c_str()).c_str();
+		ToLowerUtf8RU(itemNameLower);
+
+		if (m_sSearchText[0] == '\0' || xr_string_find(itemNameLower, searchTextLower) != std::u32string::npos)
 		{
 			if (displayedItems.find(it->second.c_str()) == displayedItems.end())
 			{
-				if (ImGui::Selectable(it->second.c_str()))
+				shared_str itemNameUtf8 = toUtf8(it->second.c_str()).c_str();
+
+				if (ImGui::Selectable(itemNameUtf8.c_str()))
 				{
-					m_sSelectedName = it->second.c_str();
+					m_sSelectedName = itemNameUtf8.c_str();
 					m_sSelectedSection = it->first.c_str();
 				}
 
