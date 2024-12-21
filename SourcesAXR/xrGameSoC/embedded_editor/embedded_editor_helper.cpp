@@ -51,19 +51,6 @@ xr_string to_string(const luabind::object& o, xr_string offset)
     return s;
 }
 
-xr_string toUtf8(const char* s)
-{
-    static xr_vector<wchar_t> buf;
-    int n = MultiByteToWideChar(CP_ACP, 0, s, -1, nullptr, 0);
-    buf.resize(n);
-    MultiByteToWideChar(CP_ACP, 0, s, -1, &buf[0], buf.size());
-    xr_string result;
-    n = WideCharToMultiByte(CP_UTF8, 0, &buf[0], buf.size(), nullptr, 0, nullptr, nullptr);
-    result.resize(n);
-    n = WideCharToMultiByte(CP_UTF8, 0, &buf[0], buf.size(), &result[0], result.size(), nullptr, nullptr);
-    return result;
-} 
-
 bool ImGui_ListBox(const char* label, int* current_item, bool(*items_getter)(void*, int, const char**), void* data,
 	int items_count, const ImVec2& size_arg = ImVec2(0, 0))
 {
