@@ -91,6 +91,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	com_man().add_ability			(ControlCom::eComCriticalWound);
 
 	m_anti_aim						= nullptr;
+	m_head_bone_name				= "bip01_head";
 	light_bone						= "bip01_head";
 	particles_bone					= "bip01_head";
 

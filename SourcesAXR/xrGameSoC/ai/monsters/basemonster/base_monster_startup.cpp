@@ -135,7 +135,7 @@ void CBaseMonster::Load(LPCSTR section)
 // if sound is absent just do not load that one
 #define LOAD_SOUND(sound_name,_type,_prior,_mask,_int_type)		\
 	if (pSettings->line_exist(section,sound_name))						\
-		get_sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,"bip01_head");
+		get_sound().add(pSettings->r_string(section,sound_name), DEFAULT_SAMPLE_COUNT,_type,_prior,u32(_mask),_int_type,m_head_bone_name);
 
 void CBaseMonster::reload	(LPCSTR section)
 {

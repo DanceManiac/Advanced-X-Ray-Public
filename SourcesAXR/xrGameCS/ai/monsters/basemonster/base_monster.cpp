@@ -109,6 +109,8 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_feel_enemy_max_distance				=	0;
 
 	m_anti_aim								=	nullptr;
+	m_head_bone_name						=	"bip01_head";
+
 	light_bone								= "bip01_head";
 	particles_bone							= "bip01_head";
 
