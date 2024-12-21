@@ -218,12 +218,19 @@ bool CPseudoGigant::check_start_conditions(ControlCom::EControlType type)
 	if (type == ControlCom::eControlRunAttack)		
 		return true;
 
-	if (type == ControlCom::eControlThreaten) {
-		if (m_time_next_threaten > time()) return false;
-		
+	if (type == ControlCom::eControlThreaten) 
+	{
+		if (m_time_next_threaten > time()) 
+			return false;
+
+		if ( !EnemyMan.get_enemy() )
+			return false;
+
 		// check distance to enemy
 		float dist = EnemyMan.get_enemy()->Position().distance_to(Position());
-		if ((dist > m_threaten_dist_max) || (dist < m_threaten_dist_min)) return false;
+
+		if ((dist > m_threaten_dist_max) || (dist < m_threaten_dist_min)) 
+			return false;
 	}
 
 	return true;
@@ -239,29 +246,34 @@ void CPseudoGigant::on_activate_control(ControlCom::EControlType type)
 
 void CPseudoGigant::on_threaten_execute()
 {
+	Fvector& position = Position();
+
 	// разбросить объекты
 	m_nearest.clear_not_free		();
-	Level().ObjectSpace.GetNearest	(m_nearest,Position(), 15.f, NULL); 
-	for (u32 i=0;i<m_nearest.size();i++)
+	Level().ObjectSpace.GetNearest(m_nearest, position, 15.f, NULL);
+	for (u32 i=0;i<m_nearest.size();i++) 
 	{
 		CPhysicsShellHolder  *obj = smart_cast<CPhysicsShellHolder *>(m_nearest[i]);
-		if (!obj || !obj->m_pPhysicsShell ||
+		//https://github.com/OGSR/OGSR-Engine/commit/298dff12851da90e8696360241573bab0864b698
+		if (
+			!obj || !obj->m_pPhysicsShell ||
 			(obj->spawn_ini() && obj->spawn_ini()->section_exist("ph_heavy")) ||
 			(pSettings->line_exist(obj->cNameSect().c_str(), "ph_heavy") && pSettings->r_bool(obj->cNameSect().c_str(), "ph_heavy")) ||
-			(pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && pSettings->r_bool(obj->cNameSect().c_str(), "quest_item"))) continue;
+			(pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && pSettings->r_bool(obj->cNameSect().c_str(), "quest_item"))
+			) continue;
 
 		Fvector dir;
 		Fvector pos;
 		pos.set(obj->Position());
 		pos.y += 2.f;
-		dir.sub(pos, Position());
+		dir.sub(pos, position);
 		dir.normalize();
 		obj->m_pPhysicsShell->applyImpulse(dir,20 * obj->m_pPhysicsShell->getMass());
 	}
 
 	// играть звук
 	Fvector		pos;
-	pos.set		(Position());
+	pos.set(position);
 	pos.y		+= 0.1f;
 	m_sound_threaten_hit.play_at_pos(this,pos);
 
@@ -273,9 +285,11 @@ void CPseudoGigant::on_threaten_execute()
 	
 	CActor *pA = const_cast<CActor *>(smart_cast<const CActor *>(EnemyMan.get_enemy()));
 	if (!pA) return;
+	//GC: returning SoC hit conditions
 	if (pA->is_jump()) return;
+	//GC.
 
-	float dist_to_enemy = pA->Position().distance_to(Position());
+	float dist_to_enemy = pA->Position().distance_to(position);
 	float			hit_value;
 	hit_value		= m_kick_damage - m_kick_damage * dist_to_enemy / m_threaten_dist_max;
 	clamp			(hit_value,0.f,1.f);

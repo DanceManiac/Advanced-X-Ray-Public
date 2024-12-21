@@ -217,12 +217,19 @@ bool CPseudoGigant::check_start_conditions(ControlCom::EControlType type)
 	if (type == ControlCom::eControlRunAttack)		
 		return true;
 
-	if (type == ControlCom::eControlThreaten) {
-		if (m_time_next_threaten > time()) return false;
-		
+	if (type == ControlCom::eControlThreaten) 
+	{
+		if (m_time_next_threaten > time()) 
+			return false;
+
+		if ( !EnemyMan.get_enemy() )
+			return false;
+
 		// check distance to enemy
 		float dist = EnemyMan.get_enemy()->Position().distance_to(Position());
-		if ((dist > m_threaten_dist_max) || (dist < m_threaten_dist_min)) return false;
+
+		if ((dist > m_threaten_dist_max) || (dist < m_threaten_dist_min)) 
+			return false;
 	}
 
 	return true;
@@ -246,10 +253,13 @@ void CPseudoGigant::on_threaten_execute()
 	for (u32 i=0;i<m_nearest.size();i++) 
 	{
 		CPhysicsShellHolder  *obj = smart_cast<CPhysicsShellHolder *>(m_nearest[i]);
-		if (!obj || !obj->m_pPhysicsShell || 
+		//https://github.com/OGSR/OGSR-Engine/commit/298dff12851da90e8696360241573bab0864b698
+		if (
+			!obj || !obj->m_pPhysicsShell ||
 			(obj->spawn_ini() && obj->spawn_ini()->section_exist("ph_heavy")) ||
 			(pSettings->line_exist(obj->cNameSect().c_str(), "ph_heavy") && pSettings->r_bool(obj->cNameSect().c_str(), "ph_heavy")) ||
-			(pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && pSettings->r_bool(obj->cNameSect().c_str(), "quest_item"))) continue;
+			(pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && pSettings->r_bool(obj->cNameSect().c_str(), "quest_item"))
+			) continue;
 
 		Fvector dir;
 		Fvector pos;

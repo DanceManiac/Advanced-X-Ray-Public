@@ -255,10 +255,13 @@ void CPseudoGigant::on_threaten_execute()
 	for (u32 i=0;i<m_nearest.size();i++) 
 	{
 		CPhysicsShellHolder  *obj = smart_cast<CPhysicsShellHolder *>(m_nearest[i]);
-		if (!obj || !obj->m_pPhysicsShell || 
-			(obj->spawn_ini() && obj->spawn_ini()->section_exist("ph_heavy")) || 
+		//https://github.com/OGSR/OGSR-Engine/commit/298dff12851da90e8696360241573bab0864b698
+		if (
+			!obj || !obj->m_pPhysicsShell ||
+			(obj->spawn_ini() && obj->spawn_ini()->section_exist("ph_heavy")) ||
 			(pSettings->line_exist(obj->cNameSect().c_str(), "ph_heavy") && pSettings->r_bool(obj->cNameSect().c_str(), "ph_heavy")) ||
-			(pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && pSettings->r_bool(obj->cNameSect().c_str(), "quest_item"))) continue;
+			(pSettings->line_exist(obj->cNameSect().c_str(), "quest_item") && pSettings->r_bool(obj->cNameSect().c_str(), "quest_item"))
+			) continue;
 
 		Fvector dir;
 		Fvector pos;
