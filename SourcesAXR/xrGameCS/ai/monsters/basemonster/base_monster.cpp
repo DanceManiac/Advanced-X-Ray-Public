@@ -43,6 +43,8 @@
 #include "../../../ai_space.h"
 #include "../../../../XrServerEntitiesCS/script_engine.h"
 
+#include "../anti_aim_ability.h"
+
 // Lain: added 
 #include "../../../level_debug.h"
 #include "../../../../xrEngine/xrLevel.h"
@@ -106,6 +108,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_feel_enemy_who_just_hit_max_distance	=	0;
 	m_feel_enemy_max_distance				=	0;
 
+	m_anti_aim								=	nullptr;
 	light_bone								= "bip01_head";
 	particles_bone							= "bip01_head";
 
@@ -126,6 +129,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 
 CBaseMonster::~CBaseMonster()
 {
+	xr_delete(m_anti_aim);
 	xr_delete(m_steer_manager);
 	xr_delete(m_pPhysics_support);
 	xr_delete(m_corpse_cover_evaluator);
@@ -373,10 +377,10 @@ void CBaseMonster::shedule_Update(u32 dt)
 
 	update_eyes_visibility		();
 
-	//if ( m_anti_aim )
-	//{
-	//	m_anti_aim->update_schedule();
-	//}
+	if ( m_anti_aim )
+	{
+		m_anti_aim->update_schedule();
+	}
 
 	m_psy_aura.update_schedule();
 	m_fire_aura.update_schedule();
@@ -410,6 +414,11 @@ void CBaseMonster::Die(CObject* who)
 	m_radiation_aura.on_monster_death();
 	m_fire_aura.on_monster_death();
 	m_base_aura.on_monster_death();
+
+	if ( m_anti_aim )
+	{
+		m_anti_aim->on_monster_death ();
+	}
 
 	inherited::Die(who);
 

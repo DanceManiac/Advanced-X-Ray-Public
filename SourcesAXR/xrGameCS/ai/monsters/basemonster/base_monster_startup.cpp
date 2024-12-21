@@ -29,6 +29,10 @@
 #include "../../../phMovementControl.h"
 #include "../ai_monster_squad.h"
 #include "../../xrPhysics/PHWorld.h"
+#include "../control_movement_base.h"
+#include "../control_animation_base.h"
+#include "../monster_velocity_space.h"
+#include "../anti_aim_ability.h"
 
 namespace detail
 {
@@ -91,15 +95,6 @@ void CBaseMonster::Load(LPCSTR section)
 												detail::base_monster::feel_enemy_max_distance);
 	
 	//------------------------------------
-	// Auras
-	//------------------------------------
-
-	m_psy_aura.load_from_ini					(pSettings, section);
-	m_radiation_aura.load_from_ini				(pSettings, section);
-	m_fire_aura.load_from_ini					(pSettings, section);
-	m_base_aura.load_from_ini					(pSettings, section);
-
-	//------------------------------------
 	// Lain: added: separation behaviour 
 	//------------------------------------
 	float    separate_factor        = READ_IF_EXISTS(pSettings, r_float, section, "separate_factor", 0.f);
@@ -116,6 +111,15 @@ void CBaseMonster::Load(LPCSTR section)
 	}
 
 	//------------------------------------
+	// Auras
+	//------------------------------------
+
+	m_psy_aura.load_from_ini					(pSettings, section);
+	m_radiation_aura.load_from_ini				(pSettings, section);
+	m_fire_aura.load_from_ini					(pSettings, section);
+	m_base_aura.load_from_ini					(pSettings, section);
+
+	//------------------------------------
 	// Protections
 	//------------------------------------
 	m_fSkinArmor = 0.f;
@@ -128,6 +132,9 @@ void CBaseMonster::Load(LPCSTR section)
 		m_fHitFracMonster = READ_IF_EXISTS(pSettings,r_float,protections_sect,"hit_fraction_monster", 0.1f);
 		m_bSkinArmorEnabled = true;
 	}
+
+	m_force_anti_aim						=	false;
+
 	m_bVolumetricLights = READ_IF_EXISTS(pSettings, r_bool, section, "volumetric_lights", false);
 	m_fVolumetricQuality = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_quality", 1.0f);
 	m_fVolumetricDistance = READ_IF_EXISTS(pSettings, r_float, section, "volumetric_distance", 0.3f);
@@ -145,21 +152,37 @@ void CBaseMonster::Load(LPCSTR section)
 			&m_TrailLightColor.r, &m_TrailLightColor.g, &m_TrailLightColor.b);
 		m_fTrailLightRange = pSettings->r_float(section, "light_range");
 	}
-
 	m_bParticlesEnabled = !!READ_IF_EXISTS(pSettings, r_bool, section, "particles_enabled", false);
 	m_sParticlesIdleName = READ_IF_EXISTS(pSettings, r_string, section, "particles_idle", NULL);
-
-	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
-	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
 
 	m_bEnablePsyAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_psy_infl_for_dead", false);
 	m_bEnableRadAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_rad_infl_for_dead", true);
 	m_bEnableFireAuraAfterDie = READ_IF_EXISTS(pSettings, r_bool, section, "enable_fire_infl_for_dead", false);
+	m_bDropItemAfterSuperAttack = READ_IF_EXISTS(pSettings, r_bool, section, "drop_item_after_super_attack", false);
+	m_iSuperAttackDropItemPer = READ_IF_EXISTS(pSettings, r_u32, section, "super_attack_drop_item_per", 50);
 
 	m_bModelScaleRandom			= READ_IF_EXISTS(pSettings, r_bool, section, "random_scale", false);
 	m_fModelScale				= READ_IF_EXISTS(pSettings, r_float, section, "model_scale", 1.0f);
 	m_fModelScaleRandomMin		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
 	m_fModelScaleRandomMax		= READ_IF_EXISTS(pSettings, r_float, section, "model_scale_random_min", 1.0f);
+
+	//------------------------------------
+	// Anti-Aim ability
+	//------------------------------------
+	if ( pSettings->line_exist(section, "anti_aim_effectors") )
+	{
+		SVelocityParam&	velocity_stand		=	move().get_velocity(MonsterMovement::eVelocityParameterStand);
+
+		m_anti_aim							=	xr_new<anti_aim_ability>(this);
+		control().add							(m_anti_aim,  ControlCom::eAntiAim);
+
+		pcstr	anti_aim_animation			=	READ_IF_EXISTS(pSettings, r_string, section, 
+												"anti_aim_animation", "stand_attack_");
+		anim().AddAnim							(eAnimAntiAimAbility, anti_aim_animation, -1, 
+												&velocity_stand, PS_STAND);
+		m_anti_aim->load_from_ini				(pSettings, section);
+	}
+
 }
 
 steering_behaviour::manager*   CBaseMonster::get_steer_manager ()

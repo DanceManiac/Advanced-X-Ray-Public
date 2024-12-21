@@ -46,6 +46,8 @@ class CMonsterCoverManager;
 
 class CMonsterHome;
 
+class anti_aim_ability;
+
 class CBaseMonster : public CCustomMonster, public CStepManager, public CInventoryOwner 
 {
 	typedef	CCustomMonster								inherited;
@@ -225,6 +227,9 @@ protected:
 
 // members
 public:
+	void			set_force_anti_aim	(bool force_anti_aim) { m_force_anti_aim = force_anti_aim; }
+	bool 			get_force_anti_aim	() const { return m_force_anti_aim; }
+
 	// --------------------------------------------------------------------------------------
 	// Monster Settings 
 	ref_smem<SMonsterSettings>	m_base_settings;
@@ -290,6 +295,7 @@ public:
 	// Anomaly Detector
 private:
 	CAnomalyDetector		*m_anomaly_detector;
+	bool					m_force_anti_aim;
 
 public:
 	CAnomalyDetector		&anomaly_detector	() {return (*m_anomaly_detector);}
@@ -424,6 +430,12 @@ private:
 	monster_aura					m_fire_aura;
 	monster_aura					m_base_aura;
 
+protected:
+//-------------------------------------------------------------------
+// CBaseMonster's  Anti-Aim Ability
+//-------------------------------------------------------------------
+	anti_aim_ability*				m_anti_aim;
+
 public:
 	CControl_Manager		&control() {return (*m_control_manager);}
 	
@@ -436,6 +448,8 @@ public:
 
 	virtual bool			check_start_conditions	(ControlCom::EControlType);
 	virtual void			on_activate_control		(ControlCom::EControlType){}
+
+	anti_aim_ability*		get_anti_aim() { return m_anti_aim; }
 
 protected:
 	CControl_Manager		*m_control_manager;

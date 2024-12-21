@@ -214,6 +214,8 @@ enum EMotionAnim {
 	
 	//end mob home animations
 
+	eAnimAntiAimAbility,
+
 	eAnimCount,
 	eAnimUndefined			= u32(-1)
 };

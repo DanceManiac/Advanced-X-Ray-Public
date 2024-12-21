@@ -34,7 +34,7 @@ anti_aim_ability::~anti_aim_ability ()
 	do_deactivate						();
 }
 
-void   anti_aim_ability::load_from_ini (CInifile const* ini, pcstr const section)
+void   anti_aim_ability::load_from_ini (CInifile* ini, pcstr const section)
 {
 	using namespace						detail;
 
@@ -239,7 +239,7 @@ float   anti_aim_ability::calculate_angle () const
 {
 	float const opposite_angle_return_value	=	M_PI;
 
-	if ( !m_object->EnemyMan.see_enemy_now(Actor()) )
+	if ( !m_object->EnemyMan.see_enemy_now() )
 	{
 		return							opposite_angle_return_value;
 	}

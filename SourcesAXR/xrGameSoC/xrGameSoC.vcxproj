@@ -596,12 +596,15 @@
     <ClInclude Include="abstract_location_selector_inline.h" />
     <ClInclude Include="abstract_path_manager.h" />
     <ClInclude Include="abstract_path_manager_inline.h" />
+    <ClInclude Include="ai\monsters\anti_aim_ability.h" />
     <ClInclude Include="ai\monsters\monster_aura.h" />
     <ClInclude Include="AnomalyDetector.h" />
     <ClInclude Include="AntigasFilter.h" />
     <ClInclude Include="ArtefactContainer.h" />
     <ClInclude Include="Battery.h" />
     <ClInclude Include="CustomBackpack.h" />
+    <ClInclude Include="debug_text_tree.h" />
+    <ClInclude Include="debug_text_tree_inline.h" />
     <ClInclude Include="embedded_editor\embedded_editor_person_attach.h" />
     <ClInclude Include="LaserDesignator.h" />
     <ClInclude Include="opt.lua.h" />
@@ -1971,6 +1974,7 @@
     <ClCompile Include="ActorSkills.cpp" />
     <ClCompile Include="actor_script.cpp" />
     <ClCompile Include="AdvancedXrayGameConstants.cpp" />
+    <ClCompile Include="ai\monsters\anti_aim_ability.cpp" />
     <ClCompile Include="ai\monsters\monster_aura.cpp" />
     <ClCompile Include="AnomalyDetector.cpp" />
     <ClCompile Include="AntigasFilter.cpp" />
@@ -1994,6 +1998,7 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)$(ProjectName)_script.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="debug_text_tree.cpp" />
     <ClCompile Include="DynamicHudGlass.cpp" />
     <ClCompile Include="embedded_editor\editor_render.cpp" />
     <ClCompile Include="embedded_editor\editor_render_ai_map.cpp" />

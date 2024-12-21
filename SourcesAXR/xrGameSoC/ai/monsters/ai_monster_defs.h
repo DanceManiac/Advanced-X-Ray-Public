@@ -198,6 +198,8 @@ enum EMotionAnim {
 	eAnimGraviPrepare,
 	eAnimGraviFire,
 
+	eAnimAntiAimAbility,
+
 	eAnimCount,
 	eAnimUndefined			= u32(-1)
 };

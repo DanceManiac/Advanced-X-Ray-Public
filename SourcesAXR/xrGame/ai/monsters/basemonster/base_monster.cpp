@@ -106,7 +106,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_feel_enemy_who_just_hit_max_distance	=	0;
 	m_feel_enemy_max_distance				=	0;
 
-	m_anti_aim								=	NULL;
+	m_anti_aim								=	nullptr;
 	m_head_bone_name						=	"bip01_head";
 
 	m_first_tick_enemy_inaccessible			=	0;

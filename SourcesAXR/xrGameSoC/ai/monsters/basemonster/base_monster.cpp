@@ -43,6 +43,8 @@
 #include "../../../ai_space.h"
 #include "script_engine.h"
 
+#include "../anti_aim_ability.h"
+
 CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"), 
 								m_fire_aura(this, "fire"), 
 								m_radiation_aura(this, "radiation"), 
@@ -88,6 +90,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 
 	com_man().add_ability			(ControlCom::eComCriticalWound);
 
+	m_anti_aim						= nullptr;
 	light_bone						= "bip01_head";
 	particles_bone					= "bip01_head";
 
@@ -108,6 +111,7 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 
 CBaseMonster::~CBaseMonster()
 {
+	xr_delete(m_anti_aim);
 	xr_delete(m_pPhysics_support);
 	xr_delete(m_corpse_cover_evaluator);
 	xr_delete(m_enemy_cover_evaluator);
@@ -145,6 +149,11 @@ void CBaseMonster::shedule_Update(u32 dt)
 	inherited::shedule_Update	(dt);
 	control().update_schedule	();
 
+	if (m_anti_aim)
+	{
+		m_anti_aim->update_schedule();
+	}
+
 	m_psy_aura.update_schedule();
 	m_fire_aura.update_schedule();
 	m_base_aura.update_schedule();
@@ -175,6 +184,11 @@ void CBaseMonster::Die(CObject* who)
 	m_radiation_aura.on_monster_death();
 	m_fire_aura.on_monster_death();
 	m_base_aura.on_monster_death();
+
+	if (m_anti_aim)
+	{
+		m_anti_aim->on_monster_death();
+	}
 
 	inherited::Die(who);
 
