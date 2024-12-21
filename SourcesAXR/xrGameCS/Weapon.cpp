@@ -3400,19 +3400,11 @@ void CWeapon::render_item_ui()
 }
 
 bool CWeapon::unlimited_ammo() 
-{
-	if (IsGameTypeSingle())
-	{
-		if(m_pInventory)
-		{
-			return psActorFlags.test(AF_UNLIMITEDAMMO) && m_DefaultCartridge.m_flags.test(CCartridge::cfCanBeUnlimited);
-		}else
-			return false;
-	}
-
-	return ((GameID() == eGameIDDeathmatch) && 
-			m_DefaultCartridge.m_flags.test(CCartridge::cfCanBeUnlimited)); 
-			
+{ 
+	if (m_pInventory)
+		return inventory_owner().unlimited_ammo() && m_DefaultCartridge.m_flags.test(CCartridge::cfCanBeUnlimited);
+	else
+		return false;
 };
 
 LPCSTR	CWeapon::GetCurrentAmmo_ShortName	()

@@ -1368,3 +1368,8 @@ void CAI_Stalker::ReloadDamageAndAnimations()
 		get_animation().reload();
 	}
 }
+
+bool CAI_Stalker::unlimited_ammo()
+{
+	return inifinite_ammo() && CObjectHandler::planner().object().g_Alive();
+}

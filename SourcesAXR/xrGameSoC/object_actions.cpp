@@ -100,6 +100,44 @@ void CObjectActionHide::execute		()
 	set_property					(ObjectHandlerSpace::eWorldPropertyUseEnough,false);
 }
 
+// to prevent several recharges
+static bool try_advance_ammo		(CWeapon const& weapon)
+{
+	VERIFY				(weapon.m_pCurrentInventory);
+	CInventory&			inventory = *weapon.m_pCurrentInventory;
+	for(int i = 0; i < (int)weapon.m_ammoTypes.size(); ++i) 
+	{
+		LPCSTR l_ammoType = *weapon.m_ammoTypes[i];
+
+		for(TIItemContainer::iterator l_it = inventory.m_belt.begin(); inventory.m_belt.end() != l_it; ++l_it) 
+		{
+			CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);
+
+			if(l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType)) 
+			{
+				if (l_pAmmo->m_boxCurr < l_pAmmo->m_boxSize) {
+					l_pAmmo->m_boxCurr	= l_pAmmo->m_boxSize;
+					return				(true);
+				}
+			}
+		}
+
+		for(TIItemContainer::iterator l_it = inventory.m_ruck.begin(); inventory.m_ruck.end() != l_it; ++l_it) 
+		{
+			CWeaponAmmo *l_pAmmo = smart_cast<CWeaponAmmo*>(*l_it);
+			if(l_pAmmo && !xr_strcmp(l_pAmmo->cNameSect(), l_ammoType)) 
+			{
+				if (l_pAmmo->m_boxCurr < l_pAmmo->m_boxSize) {
+					l_pAmmo->m_boxCurr	= l_pAmmo->m_boxSize;
+					return				(true);
+				}
+			}
+		}
+	}
+
+	return								(false);
+}
+
 //////////////////////////////////////////////////////////////////////////
 // CObjectActionReload
 //////////////////////////////////////////////////////////////////////////
@@ -116,6 +154,12 @@ void CObjectActionReload::initialize		()
 	VERIFY						(m_item);
 	VERIFY						(object().inventory().ActiveItem());
 	VERIFY						(object().inventory().ActiveItem()->object().ID() == m_item->object().ID());
+	if (object().inifinite_ammo()) {
+		CWeapon*				weapon = smart_cast<CWeapon*>(&m_item->object());
+		VERIFY					(weapon);
+		try_advance_ammo		(*weapon);
+	}
+
 	object().inventory().Action	(kWPN_RELOAD,	CMD_START);
 }
 

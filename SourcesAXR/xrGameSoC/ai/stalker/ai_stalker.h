@@ -281,6 +281,7 @@ public:
 			void						ResetBoneProtections	(pcstr imm_sect, pcstr bone_sect);
 			void						ReloadDamageAndAnimations();
 	virtual float						GetWeaponAccuracy		() const;
+	virtual bool						unlimited_ammo			();
 	virtual	void						spawn_supplies			();
 	IC		CAgentManager				&agent_manager			() const;
 	

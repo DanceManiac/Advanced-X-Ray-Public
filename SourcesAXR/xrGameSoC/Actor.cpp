@@ -2584,6 +2584,11 @@ void CActor::SwitchNightVision(bool vision_on, bool use_sounds, bool send_event)
 	}
 }
 
+bool CActor::unlimited_ammo()
+{
+	return !!psActorFlags.test(AF_UNLIMITEDAMMO);	
+}
+
 void CActor::block_action(EGameActions cmd)
 {
 	if (m_blocked_actions.find(cmd) == m_blocked_actions.end())

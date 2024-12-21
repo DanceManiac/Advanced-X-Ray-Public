@@ -196,6 +196,7 @@ public:
 	virtual	bool						use_default_throw_force	();
 	virtual	float						missile_throw_force		(); 
 
+	virtual bool						unlimited_ammo			();
 
 	virtual bool						NeedToDestroyObject()  const;
 	virtual ALife::_TIME_ID				TimePassedAfterDeath() const;
