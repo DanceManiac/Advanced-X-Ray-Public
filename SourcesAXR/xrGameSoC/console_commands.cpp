@@ -92,8 +92,8 @@ xr_token							death_camera_mode_token[] = {
 };
 
 string_path		g_last_saved_game;
-int				quick_save_counter = 0;
-extern u32		last_quick;
+//int				quick_save_counter = 0;
+//extern u32		last_quick;
 
 //extern void show_smart_cast_stats		();
 //extern void clear_smart_cast_stats		();
@@ -880,18 +880,23 @@ public:
 #endif
 		if (!xr_strlen(S))
 		{
-			if (last_quick < 1 && quick_save_counter == 0)
+			if (psActorQuickSaveNumberCurrent >= psActorQuickSaveNumberMax || psActorQuickSaveNumberCurrent < 1 )
+				psActorQuickSaveNumberCurrent = 1;
+			else
+				++psActorQuickSaveNumberCurrent;
+			
+			if (psActorQuickSaveNumberMax <= 1)
 				strconcat(sizeof(S), S, Core.UserName, "_", "quicksave");
 			else
-				xr_sprintf(S, "%s - quicksave %d", Core.UserName, last_quick);
+				xr_sprintf(S, "%s - quicksave %d", Core.UserName, psActorQuickSaveNumberCurrent);
 
 			NET_Packet			net_packet;
 			net_packet.w_begin	(M_SAVE_GAME);
 			net_packet.w_stringZ(S);
 			net_packet.w_u8		(0);
 			Level().Send		(net_packet,net_flags(TRUE));
-			if (last_quick < quick_save_counter && quick_save_counter > 0) last_quick++;
-			else last_quick = 0;
+			//if (last_quick < quick_save_counter && quick_save_counter > 0) last_quick++;
+			//else last_quick = 0;
 		}
 		else
 		{
@@ -2444,6 +2449,9 @@ void CCC_RegisterCommands()
 #endif
 	CMD4(CCC_Integer,	"hud_collision",			&b_hud_collision,		0, 1);
 	CMD4(CCC_Integer,	"actor_walk_inertion",		&m_b_actor_walk_inertion, 0, 1);
+
+	CMD4(CCC_Integer,		"g_sleep_time",			&psActorSleepTime, 1, 24);
+
 	*g_last_saved_game	= 0;
 
 	//M.F.S. Crosshair Type
@@ -2454,9 +2462,8 @@ void CCC_RegisterCommands()
 
 	CMD4(CCC_Integer,	"keypress_on_start",		&g_keypress_on_start,	0, 1);
 
-	CMD4(CCC_Integer,	"quick_save_counter",		&quick_save_counter,	0, 25);
-
-	CMD4(CCC_Integer,		"g_sleep_time",			&psActorSleepTime, 1, 24);
+	CMD4(CCC_Integer,	"quick_save_counter_current",	&psActorQuickSaveNumberCurrent,	0, 25);
+	CMD4(CCC_Integer,	"quick_save_counter_max",		&psActorQuickSaveNumberMax, 1, 25);
 
 	CMD4(CCC_BKPK_ANIM, "g_animated_backpack",		&m_b_animated_backpack, 0, 1);
 

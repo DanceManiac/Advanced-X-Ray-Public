@@ -1182,8 +1182,8 @@
 		  <cap_quick_saves_count x="65" y="3" width="135" height="24" hint = "ui_mm_quick_saves_count_hint">
 			  <text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">ui_mm_quick_saves_count</text>
 		  </cap_quick_saves_count>
-		  <track_quick_saves_count x="225" y="1" width="235" height="16" min="0" max="25" step="1" is_integer="1">
-			  <options_item entry="quick_save_counter" group="mm_opt_gameplay"/>
+		  <track_quick_saves_count x="225" y="1" width="235" height="16" min="1" max="25" step="1" is_integer="1">
+			  <options_item entry="quick_save_counter_max" group="mm_opt_gameplay"/>
 				<output_wnd x="235" y="0" width="20" height="20" format="%d">
 					<text r="170" g="170" b="170" font="letterica16" align="r" vert_align="c">0</text>
 				</output_wnd>

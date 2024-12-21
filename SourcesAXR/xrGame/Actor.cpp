@@ -114,6 +114,8 @@ Flags32			psActorFlags=
 };
 
 int				psActorSleepTime = 1;
+int				psActorQuickSaveNumberCurrent = 0;
+int				psActorQuickSaveNumberMax = 5;
 
 ENGINE_API extern int ps_r__ShaderNVG;
 extern ENGINE_API Fvector4 ps_ssfx_hud_drops_1;

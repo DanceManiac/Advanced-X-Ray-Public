@@ -41,7 +41,7 @@
 
 bool g_bDisableAllInput = false;
 extern	float	g_fTimeFactor;
-u32	last_quick = 0;
+//u32	last_quick = 0;
 
 #define CURRENT_ENTITY()	(game?((GameID() == eGameIDSingle) ? CurrentEntity() : CurrentControlEntity()):NULL)
 
@@ -217,12 +217,12 @@ void CLevel::IR_OnKeyboardPress	(int key)
 
 	if ( game && game->OnKeyboardPress(get_binded_action(key)) )	return;
 
-	if(_curr == kQUICK_SAVE && IsGameTypeSingle())
+	if (_curr == kQUICK_SAVE)
 	{
 		Console->Execute			("save");
 		return;
 	}
-	if(_curr == kQUICK_LOAD && IsGameTypeSingle())
+	else if (_curr == kQUICK_LOAD)
 	{
 #ifdef DEBUG
 		FS.get_path					("$game_config$")->m_Flags.set(FS_Path::flNeedRescan, TRUE);
@@ -230,11 +230,14 @@ void CLevel::IR_OnKeyboardPress	(int key)
 		FS.rescan_pathes			();
 #endif // DEBUG
 		string_path					saved_game,command;
+		
+		string16 Q;
+		sprintf_s(Q, "%d", psActorQuickSaveNumberCurrent);
 
-		if (last_quick < 1)
+		if (psActorQuickSaveNumberMax <= 1)
 			strconcat(sizeof(saved_game), saved_game, Core.UserName, "_", "quicksave");
 		else
-			xr_sprintf(saved_game, "%s - quicksave %d", Core.UserName, last_quick-1);
+			xr_sprintf(saved_game, "%s - quicksave %d", Core.UserName, psActorQuickSaveNumberCurrent);
 
 		if (!CSavedGameWrapper::valid_saved_game(saved_game))
 			return;
