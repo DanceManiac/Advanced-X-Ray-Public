@@ -334,7 +334,6 @@ DEFINE_VECTOR(SAAParam, AA_VECTOR, AA_VECTOR_IT);
 struct SCurrentAnimationInfo {
 	shared_str		name;
 
-	EMotionAnim	motion;
 	u8			index;
 
 	TTime		time_started;
@@ -351,6 +350,12 @@ struct SCurrentAnimationInfo {
 
 	float			speed_change_vel;
 	CBlend			*blend;
+
+	void		set_motion (EMotionAnim	new_motion);
+	EMotionAnim	get_motion () const { return motion; }
+
+private:
+	EMotionAnim	motion;
 };
 
 

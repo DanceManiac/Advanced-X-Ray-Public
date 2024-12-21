@@ -30,8 +30,16 @@ char *dbg_action_name_table[] = {
 		"ACT_JUMP"
 };	
 
+void   SCurrentAnimationInfo::set_motion (EMotionAnim new_motion)
+{
+	motion = new_motion;
+}
+
 CControlAnimationBase::CControlAnimationBase()
 {
+	m_override_animation		=	eAnimUndefined;
+	m_override_animation_index	=	(u32)-1;
+
 	init_anim_storage	();
 }
 
@@ -58,7 +66,7 @@ void CControlAnimationBase::reinit()
 	UpdateAnimCount			();
 
 	// инициализация информации о текущей анимации
-	m_cur_anim.motion			= eAnimStandIdle;
+	m_cur_anim.set_motion			(eAnimStandIdle);
 	m_cur_anim.index			= 0;
 	m_cur_anim.time_started		= 0;
 	m_cur_anim.speed._set_current	(-1.f);
@@ -66,7 +74,7 @@ void CControlAnimationBase::reinit()
 	m_cur_anim.blend			= 0;
 	m_cur_anim.speed_change_vel	= 1.f;
 
-	prev_motion					= cur_anim_info().motion; 
+	prev_motion					= cur_anim_info().get_motion(); 
 
 	m_prev_character_velocity	= 0.01f;
 
@@ -81,6 +89,8 @@ void CControlAnimationBase::reinit()
 	braking_mode				= false;
 
 	m_state_attack				= false;
+	m_override_animation		= eAnimUndefined;
+	m_override_animation_index	= (u32)-1;
 }
 
 void CControlAnimationBase::on_start_control(ControlCom::EControlType type)
@@ -116,6 +126,72 @@ void CControlAnimationBase::on_event(ControlCom::EEventType type, ControlCom::IE
 	}
 }
 
+float CControlAnimationBase::get_animation_length (EMotionAnim anim, u32 index) const
+{
+	MotionID	motion;
+	float		length;
+	bool		res						=	get_animation_info(anim, index, motion, length);
+	R_ASSERT								(res);
+	return									length;
+}
+
+bool CControlAnimationBase::get_animation_info (EMotionAnim anim, u32 index, MotionID& motion, float& length) const
+{
+	SAnimItem*				anim_it		=	m_anim_storage[anim];
+	if ( !anim_it )
+	{
+		return								false;
+	}
+
+	char  index_string_buffer[128];
+	char* animation_name_buffer;
+	STRCONCAT(animation_name_buffer, anim_it->target_name, itoa(index, index_string_buffer, 10));
+
+	IKinematicsAnimated*	animated	=	smart_cast<IKinematicsAnimated*>(m_object->Visual());
+	if ( !animated )
+	{
+		return								false;
+	}
+
+	motion								=	animated->ID_Cycle_Safe(animation_name_buffer);
+
+	length								=	animated->get_animation_length(motion);
+	return									true;
+}
+
+float CControlAnimationBase::get_animation_hit_time (EMotionAnim anim, u32 index) const
+{
+	float const error_default_return_value	=	0.5f;
+	float		animation_time;
+	MotionID	motion;
+	bool		res				=	get_animation_info (anim, index, motion, animation_time);
+	VERIFY							(res);
+	if ( !res )
+	{
+		return						error_default_return_value;
+	}
+
+	for ( AA_VECTOR::const_iterator it	=	m_attack_anims.begin(); 
+									it	!=	m_attack_anims.end(); 
+									++it )
+	{
+		if ( it->motion == motion )
+		{
+			return it->time * animation_time;
+		}
+	}
+
+	VERIFY							( false );
+	return							error_default_return_value;
+}
+
+u32 CControlAnimationBase::get_animation_variants_count (EMotionAnim anim) const
+{
+	SAnimItem *anim_it = m_anim_storage[anim];
+	VERIFY(anim_it);
+	return anim_it->count;
+}
+
 void CControlAnimationBase::select_animation(bool anim_end)
 {
 	// start new animation
@@ -124,7 +200,7 @@ void CControlAnimationBase::select_animation(bool anim_end)
 
 	if (m_state_attack && !anim_end) return;
 	
-	if (cur_anim_info().motion == eAnimAttack) m_state_attack = true;
+	if (cur_anim_info().get_motion() == eAnimAttack) m_state_attack = true;
 	else m_state_attack = false;
 
 	
@@ -132,23 +208,38 @@ void CControlAnimationBase::select_animation(bool anim_end)
 	m_object->ForceFinalAnimation();
 
 	// получить элемент SAnimItem, соответствующий текущей анимации
-	SAnimItem *anim_it = m_anim_storage[cur_anim_info().motion];
+	SAnimItem *anim_it = m_anim_storage[cur_anim_info().get_motion()];
 	VERIFY(anim_it);
 
 	// определить необходимый индекс
 	int index;
-	if (-1 != anim_it->spec_id) index = anim_it->spec_id;
-	else {
-		VERIFY(anim_it->count != 0);
-		index = ::Random.randI(anim_it->count);
+
+	if ( m_override_animation == cur_anim_info().get_motion()
+							&&
+		 m_override_animation_index != (u32)-1 )
+	{
+		VERIFY							(anim_it->count != 0);
+		VERIFY							(m_override_animation_index < anim_it->count);
+		index						=	m_override_animation_index;
+	}
+	else if ( anim_it->spec_id != -1 ) 
+	{
+		index						=	anim_it->spec_id;
+	}
+	else 
+	{
+		VERIFY							(anim_it->count != 0);
+		index						=	::Random.randI(anim_it->count);
 	}
 
 	// установить анимацию	
 	string128	s1,s2;
 	MotionID	cur_anim		= smart_cast<IKinematicsAnimated*>(m_object->Visual())->ID_Cycle_Safe(strconcat(sizeof(s2),s2,*anim_it->target_name,itoa(index,s1,10)));
+	if ( !cur_anim.valid() )
+		FATAL							(s2);
 
 	// Setup Com
-	ctrl_data->global.motion	= cur_anim;
+	ctrl_data->global.set_motion (cur_anim);
 	ctrl_data->global.actual	= false;
 	ctrl_data->set_speed		(m_cur_anim.speed._get_target());
 
@@ -216,8 +307,8 @@ bool CControlAnimationBase::CheckTransition(EMotionAnim from, EMotionAnim to)
 void CControlAnimationBase::CheckReplacedAnim()
 {
 	for (REPLACED_ANIM_IT it=m_tReplacedAnims.begin(); m_tReplacedAnims.end()!=it ;++it) 
-		if ((cur_anim_info().motion == it->cur_anim) && (*(it->flag) == true)) { 
-			cur_anim_info().motion = it->new_anim;
+		if ((cur_anim_info().get_motion() == it->cur_anim) && (*(it->flag) == true)) { 
+			cur_anim_info().set_motion (it->new_anim);
 			return;
 		}
 }
@@ -262,7 +353,7 @@ void CControlAnimationBase::FX_Play(EHitSide side, float amount)
 {
 	if (fx_time_last_play + FX_CAN_PLAY_MIN_INTERVAL > m_object->m_dwCurrentTime) return;
 
-	SAnimItem *anim_it = m_anim_storage[cur_anim_info().motion];
+	SAnimItem *anim_it = m_anim_storage[cur_anim_info().get_motion()];
 	VERIFY(anim_it);
 
 	clamp(amount,0.f,1.f);
@@ -293,7 +384,7 @@ float CControlAnimationBase::GetAnimSpeed(EMotionAnim anim)
 
 bool CControlAnimationBase::IsTurningCurAnim()
 {
-	SAnimItem *item_it = m_anim_storage[cur_anim_info().motion];
+	SAnimItem *item_it = m_anim_storage[cur_anim_info().get_motion()];
 	VERIFY2(item_it, make_string("animation not found in m_anim_storage!"));;
 
 	if (!fis_zero(item_it->velocity.velocity.angular_real)) return true;
@@ -302,7 +393,7 @@ bool CControlAnimationBase::IsTurningCurAnim()
 
 bool CControlAnimationBase::IsStandCurAnim()
 {
-	SAnimItem *item_it = m_anim_storage[cur_anim_info().motion];
+	SAnimItem *item_it = m_anim_storage[cur_anim_info().get_motion()];
 	VERIFY2(item_it, make_string("animation not found in m_anim_storage!"));;
 
 	if (fis_zero(item_it->velocity.velocity.linear)) return true;
@@ -371,18 +462,18 @@ LPCSTR CControlAnimationBase::GetActionName(EAction action)
 
 void CControlAnimationBase::ValidateAnimation()
 {
-	SAnimItem *item_it = m_anim_storage[cur_anim_info().motion];
+	SAnimItem *item_it = m_anim_storage[cur_anim_info().get_motion()];
 
 	bool is_moving_anim		= !fis_zero(item_it->velocity.velocity.linear);
 	bool is_moving_on_path	= m_object->control().path_builder().is_moving_on_path();
 
 	if (is_moving_on_path && is_moving_anim) {
-		m_object->dir().use_path_direction(cur_anim_info().motion == eAnimDragCorpse);
+		m_object->dir().use_path_direction(cur_anim_info().get_motion() == eAnimDragCorpse);
 		return;
 	}
 
 	if (!is_moving_on_path && is_moving_anim) {
-		cur_anim_info().motion				= eAnimStandIdle;
+		cur_anim_info().set_motion(eAnimStandIdle);
 		m_object->move().stop				();
 		return;
 	}
@@ -392,8 +483,10 @@ void CControlAnimationBase::ValidateAnimation()
 		return;
 	}
 
-	if (!m_object->control().get_direction().is_turning() && ((cur_anim_info().motion == eAnimStandTurnLeft) || (cur_anim_info().motion == eAnimStandTurnRight))) {
-		cur_anim_info().motion		= eAnimStandIdle;
+	if (!m_object->control().get_direction().is_turning() && 
+		((cur_anim_info().get_motion() == eAnimStandTurnLeft) || 
+		 (cur_anim_info().get_motion() == eAnimStandTurnRight))) {
+		cur_anim_info().set_motion(eAnimStandIdle);
 		return;
 	}
 }
@@ -430,6 +523,11 @@ void CControlAnimationBase::UpdateAnimCount()
 			R_ASSERT2(count != 0, s);
 		} 
 	}
+}
+
+void   CControlAnimationBase::SetCurAnim (EMotionAnim a)
+{
+	cur_anim_info().set_motion(a);
 }
 
 CMotionDef *CControlAnimationBase::get_motion_def(SAnimItem *it, u32 index)

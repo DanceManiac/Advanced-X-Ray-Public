@@ -214,8 +214,8 @@ void CControllerAnimation::select_torso_animation()
 		target_motion			= m_torso[m_current_torso_action];
 	}
 	
-	if ((ctrl_data->torso.motion != target_motion) || m_wait_torso_anim_end) {
-		ctrl_data->torso.motion	= target_motion;
+	if ((ctrl_data->torso.get_motion() != target_motion) || m_wait_torso_anim_end) {
+		ctrl_data->torso.set_motion(target_motion);
 		ctrl_data->torso.actual	= false;
 	}
 
@@ -236,7 +236,7 @@ void CControllerAnimation::select_legs_animation()
 	
 	} else {
 		// else select standing animation
-		for (LEGS_MOTION_MAP_IT it = m_legs.begin(); it != m_legs.end(); it++) {
+		for (auto it = m_legs.begin(); it != m_legs.end(); it++) {
 			if ((it->first & m_current_legs_action) == m_current_legs_action) {
 				legs_action		= it->first;
 				break;
@@ -249,10 +249,10 @@ void CControllerAnimation::select_legs_animation()
 	SControlAnimationData		*ctrl_data = (SControlAnimationData*)m_man->data(this, ControlCom::eControlAnimation); 
 	if (!ctrl_data) return;
 	
-	if (ctrl_data->legs.motion != m_legs[legs_action])
+	if (ctrl_data->legs.get_motion() != m_legs[legs_action])
 		ctrl_data->legs.actual	= false;
 
-	ctrl_data->legs.motion	= m_legs[legs_action];
+	ctrl_data->legs.set_motion( m_legs[legs_action] );
 }
 
 CControllerAnimation::SPathRotations CControllerAnimation::get_path_rotation(float cur_yaw)
@@ -265,9 +265,9 @@ CControllerAnimation::SPathRotations CControllerAnimation::get_path_rotation(flo
 
 	diff = angle_normalize(diff);
 
-	PATH_ROTATIONS_VEC_IT it_best = m_path_rotations[m_current_legs_action].begin();
+	auto it_best = m_path_rotations[m_current_legs_action].begin();
 	float best_diff = flt_max;
-	for (PATH_ROTATIONS_VEC_IT it = m_path_rotations[m_current_legs_action].begin(); it != m_path_rotations[m_current_legs_action].end(); it++) {
+	for (auto it = m_path_rotations[m_current_legs_action].begin(); it != m_path_rotations[m_current_legs_action].end(); it++) {
 		float angle_diff = angle_normalize(it->angle);
 
 		float cur_diff = angle_difference(angle_diff, diff);
