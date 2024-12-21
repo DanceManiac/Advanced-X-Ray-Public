@@ -132,6 +132,7 @@ void CPsyDog::Think()
 
 void CPsyDog::net_Destroy()
 {
+	m_aura->on_death	();
 	delete_all_phantoms	();
 	inherited::net_Destroy();
 }
@@ -218,15 +219,18 @@ void CPsyDogPhantom::Think()
 	Fvector target;
 	target.mad(Position(),Direction(), 10.f);
 
-	// ���� � ������ ���������?
+	// нода в прямой видимости?
 	control().path_builder().restrictions().add_border(Position(), target);
 	u32 node = ai().level_graph().check_position_in_direction(ai_location().level_vertex_id(),Position(),target);
 	control().path_builder().restrictions().remove_border();
 
-	if (!ai().level_graph().valid_vertex_id(node) || !control().path_builder().accessible(node)) return;
+	
+	if ( ai().level_graph().valid_vertex_id(node) && control().path_builder().accessible(node) )
+	{
+		target.y += 1.f;
+		com_man().jump	(target);
+	}
 
-	target.y += 1.f;
-	com_man().jump	(target);
 	m_state			= eAttack;
 	
 	setVisible		(TRUE);
@@ -277,6 +281,7 @@ void CPsyDogPhantom::try_to_register_to_parent()
 	if (obj) {
 		CPsyDog *dog = smart_cast<CPsyDog *>(obj);
 		VERIFY(dog);
+		if (!dog) return;
 		
 		m_parent = dog;
 		m_parent->register_phantom	(this);

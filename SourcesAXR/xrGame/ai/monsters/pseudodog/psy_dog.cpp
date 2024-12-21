@@ -159,6 +159,7 @@ void CPsyDog::Think()
 
 void CPsyDog::net_Destroy()
 {
+	m_aura->on_death	();
 	delete_all_phantoms	();
 	inherited::net_Destroy();
 }
@@ -316,6 +317,7 @@ void CPsyDogPhantom::try_to_register_to_parent()
 	if (obj) {
 		CPsyDog *dog = smart_cast<CPsyDog *>(obj);
 		VERIFY(dog);
+		if (!dog) return;
 		
 		m_parent = dog;
 		m_parent->register_phantom	(this);
