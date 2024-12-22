@@ -185,28 +185,34 @@ void CUIActorMenu::Construct()
 	m_pTradePartnerList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
 	m_pDeadBodyBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
 	if (m_pQuickSlot				= UIHelper::CreateDragDropReferenceList(uiXml, "dragdrop_quick_slots", this, false))
-		m_pQuickSlot->Initialize	();
+	{
+		m_quick_vert_attrib			= uiXml.ReadAttrib		("dragdrop_quick_slots", 0, "horizontal", "");
+		b_quick_vert				= (0==stricmp(m_quick_vert_attrib, "false") || 0==stricmp(m_quick_vert_attrib, "0"));
+		m_pQuickSlot->Initialize	(!b_quick_vert);
+	}
 
 	Fvector2 pos{};
-	int cols = m_pInventoryBeltList->CellsCapacity().x;
-	int rows = m_pInventoryBeltList->CellsCapacity().y;
-	int counter = 1;
 	float dx = 0.0f, dy = 0.0f;
 
 	if (m_QuickSlotsHighlight[0])
 	{
 		pos		= m_QuickSlotsHighlight[0]->GetWndPos();
 		dx		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
-		dy		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dy", 24.0f);
+		dy		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dy", 0.0f);
 		for(u8 i=1;i<4;i++)
 		{
 			pos.x						+= dx;
+			pos.y						+= dy;
 			m_QuickSlotsHighlight[i]	= UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this);
 			m_QuickSlotsHighlight[i]	->SetWndPos(pos);
 			m_QuickSlotsHighlight[i]	->Show(false);
 		}
 	}
-	
+
+	int cols = m_pInventoryBeltList->CellsCapacity().x;
+	int rows = m_pInventoryBeltList->CellsCapacity().y;
+	int counter = 1;
+
 	if (uiXml.NavigateToNode("artefact_slot_highlight", 0))
 	{
 		m_bArtefactSlotsHighlightInitialized = true;

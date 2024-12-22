@@ -858,7 +858,12 @@ bool CUIActorMenu::ToQuickSlot(CUICellItem* itm)
 		
     if (m_pQuickSlot)
     {
-		u8 slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).x);
+		u8 slot_idx = 0;
+
+		if (!b_quick_vert)
+			slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).x);
+		else
+			slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).y);
 
 		if(slot_idx==255)
 			return false;

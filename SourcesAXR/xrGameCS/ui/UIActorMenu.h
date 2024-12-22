@@ -198,6 +198,8 @@ protected:
 
 public:
 	CUIDragDropReferenceList*	m_pQuickSlot;
+	LPCSTR						m_quick_vert_attrib;
+	bool						b_quick_vert;
 
 public:
 	void						SetMenuMode					(EMenuMode mode);

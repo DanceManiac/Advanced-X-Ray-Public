@@ -362,7 +362,9 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pTradePartnerList)			return iPartnerTrade;
 	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
 
-	if(l==m_pQuickSlot)					return iQuickSlot;
+	if(l == m_pQuickSlot && m_pQuickSlot != nullptr)					
+		return iQuickSlot;
+
 	if(l==m_pTrashList)					return iTrashSlot;
 
 	if (GameConstants::GetKnifeSlotEnabled())
@@ -631,8 +633,12 @@ void CUIActorMenu::clear_highlight_lists()
 		m_PistolNewSlotHighlight->Show(false);
 	}
 
-	for(u8 i=0; i<4; i++)
-		m_QuickSlotsHighlight[i]->Show(false);
+	if (m_QuickSlotsHighlight[0])
+	{
+		for(u8 i=0; i<4; i++)
+			m_QuickSlotsHighlight[i]->Show(false);
+	}
+
 	for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
 		m_ArtefactSlotsHighlight[i]->Show(false);
 
@@ -726,10 +732,10 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		m_DetectorSlotHighlight->Show(true);
 		return;
 	}
-
-	if(eatable)
+	
+	if (eatable && m_QuickSlotsHighlight[0])
 	{
-		if(cell_item->OwnerList() && GetListType(cell_item->OwnerList())==iQuickSlot)
+		if (cell_item->OwnerList() && GetListType(cell_item->OwnerList()) == iQuickSlot)
 			return;
 
 		for(u8 i=0; i<4; i++)
@@ -1101,7 +1107,8 @@ void CUIActorMenu::ClearAllLists()
 	m_pInventoryDetectorList->ClearAll			(true);
 	m_pInventoryPistolList->ClearAll			(true);
 	m_pInventoryAutomaticList->ClearAll			(true);
-	m_pQuickSlot->ClearAll						(true);
+	if (m_pQuickSlot)
+		m_pQuickSlot->ClearAll					(true);
 
 	m_pTradeActorBagList->ClearAll				(true);
 	m_pTradeActorList->ClearAll					(true);

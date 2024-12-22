@@ -19,12 +19,19 @@ CUIDragDropReferenceList::CUIDragDropReferenceList()
 CUIDragDropReferenceList::~CUIDragDropReferenceList()
 {
 }
-void CUIDragDropReferenceList::Initialize()
+void CUIDragDropReferenceList::Initialize(bool is_horizontal)
 {
-	for(int i=0; i<m_container->CellsCapacity().x; i++)
+	horizontal = is_horizontal;
+
+	for(int i=0; horizontal ? i<m_container->CellsCapacity().x : i < m_container->CellsCapacity().y; i++)
 	{
 		m_references.push_back(xr_new<CUIStatic>());
-		Fvector2 pos = Fvector2().set((m_container->CellSize().x+m_container->CellsSpacing().x)*i,0);
+		Fvector2 pos;
+		if (horizontal)
+			pos = Fvector2().set((m_container->CellSize().x + m_container->CellsSpacing().x) * i, 0);
+		else
+			pos = Fvector2().set(0, (m_container->CellSize().y + m_container->CellsSpacing().y) * i);
+
 		m_references.back()->SetAutoDelete(true);
 		m_references.back()->SetWndPos(pos);
 		m_references.back()->SetWndSize(Fvector2().set(m_container->CellSize().x, m_container->CellSize().y));
@@ -54,7 +61,7 @@ void CUIDragDropReferenceList::SetItem(CUICellItem* itm, Fvector2 abs_pos)
 }
 void CUIDragDropReferenceList::SetItem(CUICellItem* itm, Ivector2 cell_pos)
 {
-	CUIStatic* ref = m_references[cell_pos.x];
+	CUIStatic* ref = horizontal ? m_references[cell_pos.x] : m_references[cell_pos.y];
 	ref->SetShader(itm->GetShader());
 	ref->SetOriginalRect(itm->GetOriginalRect());
 	ref->TextureOn();
@@ -75,7 +82,7 @@ CUICellItem* CUIDragDropReferenceList::RemoveItem(CUICellItem* itm, bool force_r
 	Ivector2 vec2 = m_container->GetItemPos(itm);
 	if(vec2.x!=-1&&vec2.y!=-1)
 	{
-		u8 index = u8(vec2.x);
+		u8 index = u8(horizontal ? vec2.x : vec2.y);
 		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], "");
 		m_references[index]->SetTextureColor(color_rgba(255,255,255,0));
 	}
@@ -85,7 +92,7 @@ CUICellItem* CUIDragDropReferenceList::RemoveItem(CUICellItem* itm, bool force_r
 
 void CUIDragDropReferenceList::LoadItemTexture(LPCSTR section, Ivector2 cell_pos)
 {
-	CUIStatic* ref = m_references[cell_pos.x];
+	CUIStatic* ref = horizontal ? m_references[cell_pos.x] : m_references[cell_pos.y];
 	ref->SetShader(InventoryUtilities::GetEquipmentIconsShader());
 	Frect texture_rect{};
 	texture_rect.x1	= pSettings->r_float(section, "inv_grid_x")		* INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
@@ -110,7 +117,7 @@ void CUIDragDropReferenceList::ReloadReferences(CInventoryOwner* pActor)
 	m_container->ClearAll(true);
 	m_selected_item	= NULL;
 
-	for(u8 i=0; i<m_container->CellsCapacity().x; i++)
+	for(u8 i=0; i < (horizontal ? m_container->CellsCapacity().x : m_container->CellsCapacity().y); i++)
 	{
 		CUIStatic* ref = m_references[i];
 		LPCSTR item_name = ACTOR_DEFS::g_quick_use_slots[i];
@@ -119,11 +126,11 @@ void CUIDragDropReferenceList::ReloadReferences(CInventoryOwner* pActor)
 			PIItem itm = pActor->inventory().GetAny(item_name);
 			if(itm)
 			{
-				SetItem(create_cell_item(itm), Ivector2().set(i, 0));
+				SetItem(create_cell_item(itm), horizontal ? Ivector2().set(i, 0) : Ivector2().set(0, i));
 			}
 			else
 			{
-				LoadItemTexture(item_name, Ivector2().set(i, 0));
+				LoadItemTexture(item_name, horizontal ? Ivector2().set(i, 0) : Ivector2().set(0, i));
 				ref->SetTextureColor(color_rgba(255,255,255,100));
 			}
 		}
@@ -146,7 +153,9 @@ void CUIDragDropReferenceList::OnItemDBClick(CUIWindow* w, void* pData)
 		{
 			PIItem itm = actor->inventory().GetAny(ACTOR_DEFS::g_quick_use_slots[index]);
 			if(itm)
-				inherited::RemoveItem(GetCellAt(Ivector2().set(index, 0)).m_item, false);
+				inherited::RemoveItem(GetCellAt(horizontal ? Ivector2().set(index, 0) 
+					: Ivector2().set(0, index)
+					).m_item, false);
 		}
 		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], "");
 		(*it)->SetTextureColor(color_rgba(255,255,255,0));
@@ -182,9 +191,10 @@ void CUIDragDropReferenceList::OnItemDrop(CUIWindow* w, void* pData)
 			Ivector2 vec2 = m_container->GetItemPos(itm);
 			if(vec2.x!=-1&&vec2.y!=-1)
 			{
-				u8 index = u8(vec2.x);
-				shared_str tmp = ACTOR_DEFS::g_quick_use_slots[vec.x];
-				xr_strcpy(ACTOR_DEFS::g_quick_use_slots[vec.x], ACTOR_DEFS::g_quick_use_slots[index]);
+				u8 index = horizontal ? u8(vec2.x) : u8(vec2.y);
+				u8 index_vec = horizontal ? u8(vec.x) : u8(vec.y);
+				shared_str tmp = ACTOR_DEFS::g_quick_use_slots[index_vec];
+				xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index_vec], ACTOR_DEFS::g_quick_use_slots[index]);
 				xr_strcpy(ACTOR_DEFS::g_quick_use_slots[index], tmp.c_str());
 				ReloadReferences(actor);
 				return;

@@ -60,7 +60,9 @@ void CUIActorMenu::InitInventoryMode()
 	m_pInventoryDetectorList->Show		(true);
 	m_pInventoryPistolList->Show		(true);
 	m_pInventoryAutomaticList->Show		(true);
-	m_pQuickSlot->Show					(true);
+	if (m_pQuickSlot)
+		m_pQuickSlot->Show				(true);
+	
 	m_pTrashList->Show					(true);
 
 	if (m_sleep_button)
@@ -579,7 +581,8 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 			ColorizeItem( itm, !CanMoveToPartner( *itb ) );
 		}
 	}
-	m_pQuickSlot->ReloadReferences(m_pActorInvOwner);
+	if (m_pQuickSlot)
+		m_pQuickSlot->ReloadReferences(m_pActorInvOwner);
 }
 
 bool CUIActorMenu::TryActiveSlot(CUICellItem* itm)
@@ -998,13 +1001,25 @@ bool CUIActorMenu::ToQuickSlot(CUICellItem* itm)
 	if (iWH.x > 1 || iWH.y > 1)
 		return false;
 	//Alundaio: END
+		
+    if (m_pQuickSlot)
+    {
+		u8 slot_idx = 0;
 
-	u8 slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).x);
-	if(slot_idx==255)
-		return false;
+		if (!b_quick_vert)
+			slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).x);
+		else
+			slot_idx = u8(m_pQuickSlot->PickCell(GetUICursor().GetCursorPosition()).y);
 
-	m_pQuickSlot->SetItem(create_cell_item(iitem), GetUICursor().GetCursorPosition());
-	xr_strcpy(ACTOR_DEFS::g_quick_use_slots[slot_idx], iitem->m_section_id.c_str());
+		if(slot_idx==255)
+			return false;
+	
+		if (!m_pQuickSlot->CanSetItem(itm))
+			return false;
+
+		m_pQuickSlot->SetItem(create_cell_item(iitem), GetUICursor().GetCursorPosition());
+		xr_strcpy(ACTOR_DEFS::g_quick_use_slots[slot_idx], iitem->m_section_id.c_str());
+	}
 	return true;
 }
 
