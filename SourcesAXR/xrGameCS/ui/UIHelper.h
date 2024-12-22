@@ -18,7 +18,7 @@ class CUI3tButtonEx;
 class CUICheckButton;
 class UIHint;
 class CUIDragDropListEx;
-//class CUIDragDropReferenceList;
+class CUIDragDropReferenceList;
 class CUIScrollView;
 class CUIListWnd;
 class CUIAnimatedStatic;
@@ -39,8 +39,8 @@ public:
 	static	CUICheckButton*		CreateCheck			( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true );
 
 	static	UIHint*				CreateHint			( CUIXml& xml, LPCSTR ui_path /*, CUIWindow* parent*/ );
-	static	CUIDragDropListEx*	CreateDragDropListEx( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true );
-	//static	CUIDragDropReferenceList*	CreateDragDropReferenceList( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true );
+	static	CUIDragDropListEx*	CreateDragDropListEx( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true  );
+	static	CUIDragDropReferenceList*	CreateDragDropReferenceList( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true  );
 	static	CUIScrollView*		CreateScrollView	( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true );
 	static	CUIListWnd*			CreateListWnd		( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true );
 	static	CUIAnimatedStatic*	CreateAnimatedStatic( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical = true );

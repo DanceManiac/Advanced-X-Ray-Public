@@ -6891,6 +6891,9 @@
     <ClInclude Include="ui\UIDragDropListEx.h">
       <Filter>UI\UIWindows\DragDrop</Filter>
     </ClInclude>
+    <ClInclude Include="ui\UIDragDropReferenceList.h">
+      <Filter>UI\UIWindows\DragDrop</Filter>
+    </ClInclude>
     <ClInclude Include="ui\UILabel.h">
       <Filter>UI\UIWindows\Label</Filter>
     </ClInclude>
@@ -10939,6 +10942,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_pos_informer.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
+    <ClCompile Include="ui\UIDragDropReferenceList.cpp" />
     <ClCompile Include="AntigasFilter.cpp">
       <Filter>Core\Client\Objects\items &amp; weapons\Consumables</Filter>
     </ClCompile>

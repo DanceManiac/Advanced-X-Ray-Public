@@ -18,7 +18,7 @@
 #include "UICheckButton.h"
 #include "UIHint.h"
 #include "UIDragDropListEx.h"
-//#include "UIDragDropReferenceList.h"
+#include "UIDragDropReferenceList.h"
 #include "UIScrollView.h"
 #include "UIListWnd.h"
 #include "UIAnimatedStatic.h"
@@ -161,7 +161,7 @@ CUIDragDropListEx* UIHelper::CreateDragDropListEx( CUIXml& xml, LPCSTR ui_path, 
 	return ui;
 }
 
-/*CUIDragDropReferenceList* UIHelper::CreateDragDropReferenceList( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
+CUIDragDropReferenceList* UIHelper::CreateDragDropReferenceList( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {
 	// If it's not critical element, then don't crash if it doesn't exist
 	if (!critical && !xml.NavigateToNode(ui_path, 0))
@@ -172,7 +172,7 @@ CUIDragDropListEx* UIHelper::CreateDragDropListEx( CUIXml& xml, LPCSTR ui_path, 
 	ui->SetAutoDelete				( true );
 	CUIXmlInit::InitDragDropListEx	( xml, ui_path, 0, ui );
 	return ui;
-} */
+}
 
 CUIScrollView* UIHelper::CreateScrollView( CUIXml& xml, LPCSTR ui_path, CUIWindow* parent, bool critical )
 {

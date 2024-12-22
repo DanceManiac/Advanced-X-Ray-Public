@@ -150,6 +150,7 @@ public:
 class CUICellContainer :public CUIWindow
 {
 	friend class CUIDragDropListEx;
+	friend class CUIDragDropReferenceList;
 
 private:
 	typedef CUIWindow inherited;

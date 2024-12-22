@@ -2084,6 +2084,7 @@
     <ClInclude Include="ui\UIDiaryWnd.h" />
     <ClInclude Include="ui\UIDoubleProgressBar.h" />
     <ClInclude Include="ui\UIDragDropListEx.h" />
+    <ClInclude Include="ui\UIDragDropReferenceList.h" />
     <ClInclude Include="ui\UIEditBox.h" />
     <ClInclude Include="ui\UIEditBoxEx.h" />
     <ClInclude Include="ui\UIEditKeyBind.h" />
@@ -8346,6 +8347,7 @@
     <ClCompile Include="ui\UIDiaryWnd2.cpp" />
     <ClCompile Include="ui\UIDoubleProgressBar.cpp" />
     <ClCompile Include="ui\UIDragDropListEx.cpp" />
+    <ClCompile Include="ui\UIDragDropReferenceList.cpp" />
     <ClCompile Include="ui\UIEditBox.cpp" />
     <ClCompile Include="ui\UIEditBoxEx.cpp" />
     <ClCompile Include="ui\UIEditBox_script.cpp">

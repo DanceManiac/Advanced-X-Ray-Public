@@ -139,6 +139,7 @@ void CUIActorMenu::script_register(lua_State* L)
 					value("iInvalid",				int(EDDListType::iInvalid)),
 					value("iPartnerTrade",			int(EDDListType::iPartnerTrade)),
 					value("iPartnerTradeBag",		int(EDDListType::iPartnerTradeBag)),
+					value("iQuickSlot",				int(EDDListType::iQuickSlot)),
 					value("iTrashSlot",				int(EDDListType::iTrashSlot))
 				],
 

@@ -24,11 +24,13 @@
 #include "../trade_parameters.h"
 #include "../CustomOutfit.h"
 #include "../CustomDetector.h"
+#include "../eatable_item.h"
 #include "UICursor.h"
 #include "UICellItem.h"
 #include "UICharacterInfo.h"
 #include "UIItemInfo.h"
 #include "UIDragDropListEx.h"
+#include "UIDragDropReferenceList.h"
 #include "UIInventoryUpgradeWnd.h"
 #include "UI3tButton.h"
 #include "UIBtnHint.h"
@@ -370,6 +372,10 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if(l==m_pTradePartnerBagList)		return iPartnerTradeBag;
 	if(l==m_pTradePartnerList)			return iPartnerTrade;
 	if(l==m_pDeadBodyBagList)			return iDeadBodyBag;
+
+	if(l == m_pQuickSlot && m_pQuickSlot != nullptr)					
+		return iQuickSlot;
+	
 	if(l == m_pTrashList && m_pTrashList != nullptr)
 		return iTrashSlot;
 
@@ -579,6 +585,12 @@ void CUIActorMenu::clear_highlight_lists()
 	if (m_PdaSlotHighlight && GameConstants::GetPdaSlotEnabled())
 		m_PdaSlotHighlight->Show(false);
 
+	if (m_QuickSlotsHighlight[0])
+	{
+		for(u8 i=0; i<4; i++)
+			m_QuickSlotsHighlight[i]->Show(false);
+	}
+	
 	if (m_bArtefactSlotsHighlightInitialized)
 	{
 		for(u8 i=0; i<GameConstants::GetArtefactsCount(); i++)
@@ -619,6 +631,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	CWeapon* weapon = smart_cast<CWeapon*>(item);
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(item);
 	CCustomDetector* detector = smart_cast<CCustomDetector*>(item);
+	CEatableItem* eatable = smart_cast<CEatableItem*>(item);
 	CArtefact* artefact = smart_cast<CArtefact*>(item);
 	CWeaponKnife* knife = smart_cast<CWeaponKnife*>(item);
 	CWeaponBinoculars* binoculars = smart_cast<CWeaponBinoculars*>(item);
@@ -655,7 +668,17 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		m_DetectorSlotHighlight->Show(true);
 		return;
 	}
+	
+	if (eatable && m_QuickSlotsHighlight[0])
+	{
+		if (cell_item->OwnerList() && GetListType(cell_item->OwnerList()) == iQuickSlot)
+			return;
 
+		for(u8 i=0; i<4; i++)
+			m_QuickSlotsHighlight[i]->Show(true);
+		return;
+	}
+	
 	if(artefact && m_bArtefactSlotsHighlightInitialized)
 	{
 		if(cell_item->OwnerList() && GetListType(cell_item->OwnerList())==iActorBelt)
@@ -989,6 +1012,8 @@ void CUIActorMenu::ClearAllLists()
 	m_pInventoryDetectorList->ClearAll			(true);
 	m_pInventoryPistolList->ClearAll			(true);
 	m_pInventoryAutomaticList->ClearAll			(true);
+	if (m_pQuickSlot)
+		m_pQuickSlot->ClearAll					(true);
 
 	m_pTradeActorBagList->ClearAll				(true);
 	m_pTradeActorList->ClearAll					(true);

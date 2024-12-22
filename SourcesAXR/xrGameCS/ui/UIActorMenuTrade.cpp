@@ -2,6 +2,7 @@
 #include "UIActorMenu.h"
 #include "UI3tButton.h"
 #include "UIDragDropListEx.h"
+#include "UIDragDropReferenceList.h"
 #include "UICharacterInfo.h"
 #include "UIFrameLineWnd.h"
 #include "UICellItem.h"
@@ -32,6 +33,8 @@ void CUIActorMenu::InitTradeMode()
 	m_pInventoryBagList->Show		(false);
 	m_PartnerCharacterInfo->Show	(true);
 	m_PartnerMoney->Show			(true);
+	if (m_pQuickSlot)
+		m_pQuickSlot->Show			(true);
 
 	m_pTradeActorBagList->Show		(true);
 	m_pTradeActorList->Show			(true);
@@ -168,6 +171,8 @@ bool CUIActorMenu::ToActorTrade(CUICellItem* itm, bool b_use_cursor_pos)
 		CUIDragDropListEx*	old_owner		= itm->OwnerList();
 		CUIDragDropListEx*	new_owner		= NULL;
 		EDDListType			old_owner_type	= GetListType(old_owner);
+		if(old_owner_type==iQuickSlot)
+			return false;
 
 		if(b_use_cursor_pos)
 		{
@@ -311,16 +316,9 @@ bool CUIActorMenu::CanMoveToPartner(PIItem pItem)
 
 void CUIActorMenu::UpdateActor()
 {
-	if ( IsGameTypeSingle() )
-	{
-		string64 buf;
-		xr_sprintf(buf, "%d %s", m_pActorInvOwner->get_money(), *CStringTable().translate("ui_st_currency"));
-		m_ActorMoney->SetText( buf );
-	}
-	else
-	{
-		UpdateActorMP();
-	}
+	string64 buf;
+	xr_sprintf(buf, "%d %s", m_pActorInvOwner->get_money(), *CStringTable().translate("ui_st_currency"));
+	m_ActorMoney->SetText( buf );
 	
 	CActor* actor = smart_cast<CActor*>( m_pActorInvOwner );
 	if ( actor )

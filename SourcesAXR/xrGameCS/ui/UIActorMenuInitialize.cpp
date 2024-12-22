@@ -4,6 +4,7 @@
 #include "xrUIXmlParser.h"
 #include "UICharacterInfo.h"
 #include "UIDragDropListEx.h"
+#include "UIDragDropReferenceList.h"
 #include "UIActorStateInfo.h"
 #include "UIItemInfo.h"
 #include "UIFrameLineWnd.h"
@@ -19,6 +20,8 @@
 #include "object_broker.h"
 #include "UIWndCallback.h"
 #include "UIHelper.h"
+#include "ui_base.h"
+#include "../string_table.h"
 #include "AdvancedXrayGameConstants.h"
 
 CUIActorMenu::CUIActorMenu()
@@ -131,6 +134,8 @@ void CUIActorMenu::Construct()
 		m_OutfitSlotHighlight		->Show(false);
 	if (m_DetectorSlotHighlight		= UIHelper::CreateStatic(uiXml, "detector_slot_highlight", this, false))
 		m_DetectorSlotHighlight		->Show(false);
+	if (m_QuickSlotsHighlight[0]	= UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this, false))
+		m_QuickSlotsHighlight[0]->Show(false);
 
 	if (GameConstants::GetKnifeSlotEnabled())
 		if (m_KnifeSlotHighlight = UIHelper::CreateStatic(uiXml, "knife_slot_highlight", this, false))
@@ -179,6 +184,8 @@ void CUIActorMenu::Construct()
 	m_pTradePartnerBagList		= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_bag", this);
 	m_pTradePartnerList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_partner_trade", this);
 	m_pDeadBodyBagList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_deadbody_bag", this);
+	if (m_pQuickSlot				= UIHelper::CreateDragDropReferenceList(uiXml, "dragdrop_quick_slots", this, false))
+		m_pQuickSlot->Initialize	();
 
 	Fvector2 pos{};
 	int cols = m_pInventoryBeltList->CellsCapacity().x;
@@ -186,6 +193,20 @@ void CUIActorMenu::Construct()
 	int counter = 1;
 	float dx = 0.0f, dy = 0.0f;
 
+	if (m_QuickSlotsHighlight[0])
+	{
+		pos		= m_QuickSlotsHighlight[0]->GetWndPos();
+		dx		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dx", 24.0f);
+		dy		= uiXml.ReadAttribFlt("quick_slot_highlight", 0, "dy", 24.0f);
+		for(u8 i=1;i<4;i++)
+		{
+			pos.x						+= dx;
+			m_QuickSlotsHighlight[i]	= UIHelper::CreateStatic(uiXml, "quick_slot_highlight", this);
+			m_QuickSlotsHighlight[i]	->SetWndPos(pos);
+			m_QuickSlotsHighlight[i]	->Show(false);
+		}
+	}
+	
 	if (uiXml.NavigateToNode("artefact_slot_highlight", 0))
 	{
 		m_bArtefactSlotsHighlightInitialized = true;
@@ -240,7 +261,7 @@ void CUIActorMenu::Construct()
 
 	if (GameConstants::GetPdaSlotEnabled())
 		m_pInventoryPdaList			= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_pda", this, false);
-
+	
 	if (m_pTrashList				= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_trash", this, false))
 	{
 		m_pTrashList->m_f_item_drop	= CUIDragDropListEx::DRAG_CELL_EVENT	(this,&CUIActorMenu::OnItemDrop);
@@ -281,7 +302,11 @@ void CUIActorMenu::Construct()
 
 	m_ActorMoney	= UIHelper::CreateStatic(uiXml, "actor_money_static", this);
 	m_PartnerMoney	= UIHelper::CreateStatic(uiXml, "partner_money_static", this);
-	
+	m_QuickSlot1	= UIHelper::CreateStatic(uiXml, "quick_slot1_text", this, false);
+	m_QuickSlot2	= UIHelper::CreateStatic(uiXml, "quick_slot2_text", this, false);
+	m_QuickSlot3	= UIHelper::CreateStatic(uiXml, "quick_slot3_text", this, false);
+	m_QuickSlot4	= UIHelper::CreateStatic(uiXml, "quick_slot4_text", this, false);
+
 	m_trade_button		= UIHelper::Create3tButtonEx(uiXml, "trade_button", this, false);
 	m_takeall_button	= UIHelper::Create3tButtonEx(uiXml, "takeall_button", this);
 	m_exit_button		= UIHelper::Create3tButtonEx(uiXml, "exit_button", this);
@@ -357,6 +382,8 @@ void CUIActorMenu::Construct()
 	BindDragDropListEvents				(m_pTradePartnerBagList);
 	BindDragDropListEvents				(m_pTradePartnerList);
 	BindDragDropListEvents				(m_pDeadBodyBagList);
+	if (m_pQuickSlot)
+		BindDragDropListEvents			(m_pQuickSlot);
 
 	if (m_pInventoryKnifeList && GameConstants::GetKnifeSlotEnabled())
 		BindDragDropListEvents(m_pInventoryKnifeList);
@@ -382,6 +409,7 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iTrashSlot].push_back(iActorBag);
 	m_allowed_drops[iTrashSlot].push_back(iActorSlot);
 	m_allowed_drops[iTrashSlot].push_back(iActorBelt);
+	m_allowed_drops[iTrashSlot].push_back(iQuickSlot);
 
 	m_allowed_drops[iActorSlot].push_back(iActorBag);
 	m_allowed_drops[iActorSlot].push_back(iActorSlot);
@@ -393,6 +421,7 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iActorBag].push_back(iActorTrade);
 	m_allowed_drops[iActorBag].push_back(iDeadBodyBag);
 	m_allowed_drops[iActorBag].push_back(iActorBag);
+	m_allowed_drops[iActorBag].push_back(iQuickSlot);
 	
 	m_allowed_drops[iActorBelt].push_back(iActorBag);
 	m_allowed_drops[iActorBelt].push_back(iActorTrade);
@@ -403,6 +432,7 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iActorTrade].push_back(iActorBag);
 	m_allowed_drops[iActorTrade].push_back(iActorBelt);
 	m_allowed_drops[iActorTrade].push_back(iActorTrade);
+	m_allowed_drops[iActorTrade].push_back(iQuickSlot);
 
 	m_allowed_drops[iPartnerTradeBag].push_back(iPartnerTrade);
 	m_allowed_drops[iPartnerTradeBag].push_back(iPartnerTradeBag);
@@ -413,6 +443,10 @@ void CUIActorMenu::Construct()
 	m_allowed_drops[iDeadBodyBag].push_back(iActorBag);
 	m_allowed_drops[iDeadBodyBag].push_back(iActorBelt);
 	m_allowed_drops[iDeadBodyBag].push_back(iDeadBodyBag);
+
+	m_allowed_drops[iQuickSlot].push_back(iActorBag);
+	m_allowed_drops[iQuickSlot].push_back(iActorTrade);
+	m_allowed_drops[iQuickSlot].push_back(iQuickSlot);
 
 	m_upgrade_selected					= NULL;
 	SetCurrentItem						(NULL);
@@ -481,4 +515,44 @@ void CUIActorMenu::UpdateButtonsLayout()
 	}
 	
 	m_exit_button->SetWndPos(btn_exit_pos);
+
+	string32 tmp;
+	LPCSTR str;
+
+	if (m_QuickSlot1)
+	{
+		
+		str = CStringTable().translate("quick_use_str_1").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot1->SetTextST(tmp);
+	}
+	
+	if (m_QuickSlot2)
+	{
+		str = CStringTable().translate("quick_use_str_2").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot2->SetTextST(tmp);
+	}
+	
+	if (m_QuickSlot3)
+	{
+		str = CStringTable().translate("quick_use_str_3").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot3->SetTextST(tmp);
+	}
+	
+	if (m_QuickSlot4)
+	{
+		str = CStringTable().translate("quick_use_str_4").c_str();
+		strncpy_s(tmp, sizeof(tmp), str, 3);
+		if(tmp[2]==',')
+			tmp[1] = '\0';
+		m_QuickSlot4->SetTextST(tmp);
+	}
 }

@@ -2838,6 +2838,11 @@ extern BOOL dbg_moving_bones_snd_player;
 		const xr_string& cmd = b_script_cmd_name.back();
 		CMD4_X(CCC_Integer, cmd.c_str(), &b_script_cmd[i], 0, 1);
 	}
+	
+	CMD3(CCC_String, "slot_0", g_quick_use_slots[0], 32);
+	CMD3(CCC_String, "slot_1", g_quick_use_slots[1], 32);
+	CMD3(CCC_String, "slot_2", g_quick_use_slots[2], 32);
+	CMD3(CCC_String, "slot_3", g_quick_use_slots[3], 32);
 
 	//Custom commands for scripts end
 

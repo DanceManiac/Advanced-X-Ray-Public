@@ -8,6 +8,7 @@
 
 class CUICharacterInfo;
 class CUIDragDropListEx;
+class CUIDragDropReferenceList;
 class CUICellItem;
 class CUIDragItem;
 class ui_actor_state_wnd;
@@ -38,6 +39,7 @@ enum EDDListType{
 		iPartnerTradeBag,
 		iPartnerTrade,
 		iDeadBodyBag,
+		iQuickSlot,
 		iTrashSlot,
 		iListTypeMax
 };
@@ -114,6 +116,7 @@ protected:
 	CUIStatic*					m_RiffleSlotHighlight;
 	CUIStatic*					m_OutfitSlotHighlight;
 	CUIStatic*					m_DetectorSlotHighlight;
+	CUIStatic*					m_QuickSlotsHighlight[4];
 	xr_vector<CUIStatic*>		m_ArtefactSlotsHighlight;
 	CUIStatic*					m_KnifeSlotHighlight;
 	CUIStatic*					m_BinocularSlotHighlight;
@@ -138,6 +141,11 @@ protected:
 
 	CUIStatic*					m_ActorMoney;
 	CUIStatic*					m_PartnerMoney;
+	CUIStatic*					m_QuickSlot1;
+	CUIStatic*					m_QuickSlot2;
+	CUIStatic*					m_QuickSlot3;
+	CUIStatic*					m_QuickSlot4;
+	
 
 	// bottom ---------------------------------
 	CUIStatic*					m_ActorBottomInfo;
@@ -187,6 +195,9 @@ protected:
 
 	bool						m_bArtefactSlotsHighlightInitialized = false;
 	bool						m_bBeltSlotsOverInitialized = false;
+
+public:
+	CUIDragDropReferenceList*	m_pQuickSlot;
 
 public:
 	void						SetMenuMode					(EMenuMode mode);
@@ -284,6 +295,7 @@ protected:
 	bool						ToBag						(CUICellItem* itm, bool b_use_cursor_pos);
 	bool						ToBelt						(CUICellItem* itm, bool b_use_cursor_pos);
 	bool						TryUseItem					(CUICellItem* cell_itm);
+	bool						ToQuickSlot					(CUICellItem* itm);
 
 	void						UpdateActorMP				();
 	void						UpdateOutfit				();

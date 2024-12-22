@@ -118,6 +118,11 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 			if(CurrentIItem()->IsQuestItem())
 				return true;
 
+			if(t_old==iQuickSlot)	
+			{
+				old_owner->RemoveItem(itm, false);
+				return true;
+			}
 			SendEvent_Item_Drop		(CurrentIItem(), m_pActorInvOwner->object_id());
 			SetCurrentItem			(NULL);
 		}break;
@@ -153,6 +158,10 @@ bool CUIActorMenu::OnItemDrop(CUICellItem* itm)
 	case iDeadBodyBag:
 		{
 			ToDeadBodyBag(itm, true);
+		}break;
+	case iQuickSlot:
+		{
+			ToQuickSlot(itm);
 		}break;
 	};
 
@@ -239,6 +248,10 @@ bool CUIActorMenu::OnItemDbClick(CUICellItem* itm)
 			ToBag( itm, false );
 			break;
 		}
+	case iQuickSlot:
+		{
+			ToQuickSlot(itm);
+		}break;
 
 	}; //switch 
 
