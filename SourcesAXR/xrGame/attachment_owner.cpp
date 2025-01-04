@@ -45,7 +45,7 @@ void CAttachmentOwner::net_Destroy()
 {
 #ifdef DEBUG
 	if (!attached_objects().empty()) {
-		Msg						("Object %s has attached items :",*smart_cast<CGameObject*>(this)->cName());
+		Msg						("Object %s has attached items :",*this->cast_game_object()->cName());
 //		xr_vector<CAttachableItem*>::const_iterator	I = attached_objects().begin();
 //		xr_vector<CAttachableItem*>::const_iterator	E = attached_objects().end();
 //		for ( ; I != E; ++I)
@@ -68,10 +68,10 @@ void _BCL AttachmentCallback(IKinematics *tpKinematics)
 	CGameObject				*game_object = smart_cast<CGameObject*>(static_cast<CObject*>(tpKinematics->GetUpdateCallbackParam()));
 	VERIFY					(game_object);
 	
-	CAttachmentOwner		*attachment_owner = smart_cast<CAttachmentOwner*>(game_object);
+	CAttachmentOwner*		attachment_owner = game_object->cast_attachment_owner();
 	VERIFY					(attachment_owner);
 
-	IKinematics				*kinematics = smart_cast<IKinematics*>(game_object->Visual());
+	IKinematics				*kinematics = game_object->Visual()->dcast_PKinematics();
 
 	xr_vector<CAttachableItem*>::const_iterator	I = attachment_owner->attached_objects().begin();
 	xr_vector<CAttachableItem*>::const_iterator	E = attachment_owner->attached_objects().end();
@@ -118,18 +118,18 @@ void CAttachmentOwner::attach(CInventoryItem* inventory_item)
 
 	if (can_attach(inventory_item) || need_custom_attach)
 	{
-		CAttachableItem						*attachable_item = smart_cast<CAttachableItem*>(inventory_item);
+		CAttachableItem*					attachable_item = inventory_item->cast_attachable_item();
 		VERIFY								(attachable_item);
-		CGameObject							*game_object = smart_cast<CGameObject*>(this);
+		CGameObject							*game_object = this->cast_game_object();
 		VERIFY								(game_object && game_object->Visual());
 		if (m_attached_objects.empty())
 			game_object->add_visual_callback(AttachmentCallback);
-		IKinematics* pKin					= smart_cast<IKinematics*>(game_object->Visual());
+		IKinematics* pKin					= game_object->Visual()->dcast_PKinematics();
 		u16 bone_name = (u16)0;
 		if (attachable_item->bone_name() != nullptr)
 			bone_name = pKin->LL_BoneID(attachable_item->bone_name());
 		attachable_item->set_bone_id		(bone_name);
-		m_attached_objects.push_back		(smart_cast<CAttachableItem*>(inventory_item));
+		m_attached_objects.push_back		(attachable_item);
 
 		inventory_item->object().setVisible	(true);
 		attachable_item->afterAttach		();
@@ -148,7 +148,7 @@ void CAttachmentOwner::detach(CInventoryItem *inventory_item)
 			(*I)->afterDetach();
 			if (m_attached_objects.empty())
 			{
-				CGameObject					*game_object = smart_cast<CGameObject*>(this);
+				CGameObject					*game_object = this->cast_game_object();
 				VERIFY						(game_object && game_object->Visual());
 				game_object->remove_visual_callback(AttachmentCallback);
 				
@@ -189,7 +189,7 @@ bool CAttachmentOwner::can_attach			(const CInventoryItem *inventory_item) const
 
 void CAttachmentOwner::reattach_items		()
 {
-	CGameObject							*game_object = smart_cast<CGameObject*>(this);
+	CGameObject							*game_object = this->cast_game_object();
 	VERIFY								(game_object && game_object->Visual());
 
 	xr_vector<CAttachableItem*>::const_iterator	I = m_attached_objects.begin();
