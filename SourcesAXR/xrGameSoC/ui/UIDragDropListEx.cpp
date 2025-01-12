@@ -27,7 +27,7 @@ CUIDragDropListEx::CUIDragDropListEx()
 	m_selected_item				= NULL;
 	m_bConditionProgBarVisible	= false;
 
-	SetCellSize					(Ivector2().set(50,50));
+	SetCellSize					(Ivector2().set(UI().inv_grid_kx(),UI().inv_grid_kx()));
 	SetCellsCapacity			(Ivector2().set(0,0));
 
 	AttachChild					(m_container);

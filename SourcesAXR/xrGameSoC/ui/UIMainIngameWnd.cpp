@@ -395,46 +395,39 @@ void CUIMainIngameWnd::SetAmmoIcon (const shared_str& sect_name)
 
 	UIWeaponIcon.Show			(true);
 	//properties used by inventory menu
-	float iGridWidth			= pSettings->r_float(sect_name, "inv_grid_width");
-	float iGridHeight			= pSettings->r_float(sect_name, "inv_grid_height");
+	float xPos						= pSettings->r_float(sect_name, "inv_grid_x")		* UI().inv_grid_kx();
+	float yPos						= pSettings->r_float(sect_name, "inv_grid_y")		* UI().inv_grid_kx();
+	float gridWidth					= pSettings->r_float(sect_name, "inv_grid_width")	* UI().inv_grid_kx();
+	float gridHeight				= pSettings->r_float(sect_name, "inv_grid_height")	* UI().inv_grid_kx();
 
-	float iXPos				= pSettings->r_float(sect_name, "inv_grid_x");
-	float iYPos				= pSettings->r_float(sect_name, "inv_grid_y");
-
-	UIWeaponIcon.GetUIStaticItem().SetOriginalRect(	(iXPos		 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
-													(iYPos		 * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
-													(iGridWidth	 * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
-													(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
+	UIWeaponIcon.GetUIStaticItem().SetOriginalRect(xPos, yPos, gridWidth, gridHeight);
 	UIWeaponIcon.SetStretchTexture(true);
 
 	// now perform only width scale for ammo, which (W)size >2
 	// all others ammo (1x1, 1x2) will be not scaled (original picture)
-	float w = ((iGridWidth > 2) ? 1.6f : iGridWidth) * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 0.9f;
-	float h = INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) * 0.9f;//1 cell
+	float h = gridHeight * 0.65f;
+	float w = gridWidth * 0.65f;
 
-	if (GameConstants::GetUseHQ_Icons())
+	// now perform only width scale for ammo, which (W)size >2
+	if (gridWidth > 2.01f * UI().inv_grid())
 	{
-		float w = ((iGridWidth > 2) ? 1.6f : iGridWidth) * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2 * 0.9f;
-		float h = INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2 * 0.9f;//1 cell
+		w = UI().inv_grid() * 1.3f;
 	}
 
 	float x = UIWeaponIcon_rect.x1;
 	float posx_16 = 8.0f;
 	float posx = 10.0f;
 
-	if (iGridWidth == iGridHeight == 1)
+	if (gridWidth == gridHeight == 1)
 	{
 		posx_16 = 28.0f;
 		posx = 30.0f;
 	}
 
 	UIWeaponIcon.SetWndPos(x + UI().is_widescreen() ? posx_16 : posx, UIWeaponIcon_rect.y1);
-	
-	if (UI().is_widescreen())
-		UIWeaponIcon.SetWidth(w * UI().get_current_kx() * 1.05f);
-	else
-		UIWeaponIcon.SetWidth(w);
-	UIWeaponIcon.SetHeight(h);
+
+	UIWeaponIcon.SetWidth(w * UI().get_current_kx());
+	UIWeaponIcon.SetHeight(h * (1 / UI().get_icons_kx()));
 };
 
 void CUIMainIngameWnd::Update()

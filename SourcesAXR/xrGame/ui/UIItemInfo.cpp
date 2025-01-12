@@ -81,7 +81,7 @@ void CUIItemInfo::InitItemInfo(LPCSTR xml_name)
 
 	if(uiXml.NavigateToNode("main_frame",0))
 	{
-		Frect wnd_rect;
+		Frect wnd_rect{};
 		wnd_rect.x1		= uiXml.ReadAttribFlt("main_frame", 0, "x", 0);
 		wnd_rect.y1		= uiXml.ReadAttribFlt("main_frame", 0, "y", 0);
 
@@ -201,7 +201,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 {
 	if(!pCellItem)
 	{
-		m_pInvItem			= NULL;
+		m_pInvItem			= nullptr;
 		Enable				(false);
 		return;
 	}
@@ -211,7 +211,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	Enable					(NULL != m_pInvItem);
 	if(!m_pInvItem)			return;
 
-	Fvector2				pos;	pos.set( 0.0f, 0.0f );
+	Fvector2				pos{};	pos.set(0.0f, 0.0f);
 	string256				str;
 	if ( UIName )
 	{
@@ -235,7 +235,6 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 					PIItem jitem	= (PIItem)pCellItem->Child(j)->m_pData;
 					weight			+= jitem->CInventoryItem::Weight();
 				}
-
 			}
 		}
 
@@ -342,8 +341,8 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 
 		Irect item_grid_rect				= pInvItem->GetInvGridRect();
 		Frect texture_rect;
-		texture_rect.lt.set					(item_grid_rect.x1*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),	item_grid_rect.y1*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-		texture_rect.rb.set					(item_grid_rect.x2*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()),	item_grid_rect.y2*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+		texture_rect.lt.set					(item_grid_rect.x1*UI().inv_grid_kx(),	item_grid_rect.y1*UI().inv_grid_kx());
+		texture_rect.rb.set					(item_grid_rect.x2*UI().inv_grid_kx(),	item_grid_rect.y2*UI().inv_grid_kx());
 		texture_rect.rb.add					(texture_rect.lt);
 		UIItemImage->GetUIStaticItem().SetTextureRect(texture_rect);
 		UIItemImage->TextureOn				();
@@ -351,16 +350,8 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 
 		Fvector2 v_r{};
 
-		if (GameConstants::GetUseHQ_Icons())
-		{
-			v_r	= { item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons()) / 2,
-				item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons()) / 2 };
-		}
-		else
-		{
-			v_r	= { item_grid_rect.x2 * INV_GRID_WIDTH2(GameConstants::GetUseHQ_Icons()),
-				item_grid_rect.y2 * INV_GRID_HEIGHT2(GameConstants::GetUseHQ_Icons()) };
-		}
+			v_r	= { item_grid_rect.x2 * UI().inv_grid_kx(),
+				item_grid_rect.y2 * UI().inv_grid_kx() };
 		
 		v_r.x								*= UI().get_current_kx();
 

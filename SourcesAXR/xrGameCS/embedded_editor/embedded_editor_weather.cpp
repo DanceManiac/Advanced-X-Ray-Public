@@ -406,7 +406,7 @@ void ShowWeatherEditor(bool& show)
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_sun_options").c_str()).c_str());
 
 	sel = -1;
-	for (int i = 0; i != env.m_suns_config->sections().size(); i++)
+	for (u32 i = 0; i != env.m_suns_config->sections().size(); i++)
 		if (cur->lens_flare_id == env.m_suns_config->sections()[i]->Name)
 			sel = i;
 	if (ImGui::Combo("sun", &sel, enumIni, env.m_suns_config, env.m_suns_config->sections().size())) {

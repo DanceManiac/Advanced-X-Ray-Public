@@ -15,6 +15,8 @@
 #include "CameraRecoil.h"
 #include "WeaponAttaches.h"
 
+#include "ui_base.h"
+
 class CEntity;
 class ENGINE_API CMotionDef;
 class CSE_ALifeItemWeapon;
@@ -231,14 +233,14 @@ public:
 	//для отоброажения иконок апгрейдов в интерфейсе
 	int GetScopeX();
 	int GetScopeY();
-	int	GetSilencerX() {return m_iSilencerX;}
-	int	GetSilencerY() {return m_iSilencerY;}
-	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX;}
-	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY;}
-	int	GetLaserDesignatorX() {return m_iLaserX;}
-	int	GetLaserDesignatorY() {return m_iLaserY;}
-	int	GetTacticalTorchX() {return m_iTacticalTorchX;}
-	int	GetTacticalTorchY() {return m_iTacticalTorchY;}
+	int	GetSilencerX() {return m_iSilencerX * UI().get_icons_kx();}
+	int	GetSilencerY() {return m_iSilencerY * UI().get_icons_kx();}
+	int	GetGrenadeLauncherX() {return m_iGrenadeLauncherX * UI().get_icons_kx();}
+	int	GetGrenadeLauncherY() {return m_iGrenadeLauncherY * UI().get_icons_kx();}
+	int	GetLaserDesignatorX() {return m_iLaserX * UI().get_icons_kx();}
+	int	GetLaserDesignatorY() {return m_iLaserY * UI().get_icons_kx();}
+	int	GetTacticalTorchX() {return m_iTacticalTorchX * UI().get_icons_kx();}
+	int	GetTacticalTorchY() {return m_iTacticalTorchY * UI().get_icons_kx();}
 
 	const shared_str& GetGrenadeLauncherName	() const {return m_sGrenadeLauncherName;}
 	const shared_str GetScopeName				() const;

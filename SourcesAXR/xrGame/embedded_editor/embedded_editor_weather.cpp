@@ -433,8 +433,10 @@ void ShowWeatherEditor(bool& show)
 		changed = true;
 	sel = 0;
 	for (u32 i = 0; i != env.m_thunderbolt_collections_config->sections().size(); i++)
+	{
 		if (cur->tb_id == env.m_thunderbolt_collections_config->sections()[i]->Name)
 			sel = i + 1;
+	}
 
 	ImGui::Text(toUtf8(CStringTable().translate("st_weather_editor_thunder_bolt_options").c_str()).c_str());
 
@@ -531,7 +533,7 @@ void ShowWeatherEditor(bool& show)
 		changed = true;
 
 	static char newType[256]{};
-	
+
 	if (cur->m_sWeatherType.size())
 		strcpy(newType, cur->m_sWeatherType.c_str());
 	else

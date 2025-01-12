@@ -22,6 +22,7 @@
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "string_table.h"
 #include "../ui/UIInventoryUtilities.h"
+#include "../ui_base.h"
 
 xr_map<xr_string, xr_string> m_ItemsVec{}, m_CarsVec{}, m_WeaponsVec{}, m_FoodVec{}, m_QuestItemsVec{}, m_DevicesVec{}, m_EntitiesVec{}, m_AnomaliesVec{}, m_ArtefactsVec{}, m_AmmoVec{}, m_OutfitVec{};
 LPCSTR m_sSelectedName = nullptr, m_sSelectedSection = nullptr;
@@ -279,12 +280,12 @@ void ShowSpawner(bool& show)
 			{
 				const auto surfaceParams = ::Render->getSurface("ui\\ui_icon_equipment");
 
-				float x = pSettings->r_float(m_sSelectedSection, "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-				float y = pSettings->r_float(m_sSelectedSection, "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
-				float w = pSettings->r_float(m_sSelectedSection, "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-				float h = pSettings->r_float(m_sSelectedSection, "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+				float x = pSettings->r_float(m_sSelectedSection, "inv_grid_x") * UI().inv_grid_kx();
+				float y = pSettings->r_float(m_sSelectedSection, "inv_grid_y") * UI().inv_grid_kx();
+				float w = pSettings->r_float(m_sSelectedSection, "inv_grid_width") * UI().inv_grid_kx();
+				float h = pSettings->r_float(m_sSelectedSection, "inv_grid_height") * UI().inv_grid_kx();
 
-				ImGui::Image(surfaceParams.Surface, { w, h }, { x / surfaceParams.w, y / surfaceParams.h }, { (x + w) / surfaceParams.w, (y + h) / surfaceParams.h });
+				ImGui::Image(surfaceParams.Surface, { w * (1 / UI().get_icons_kx()), h * (1 / UI().get_icons_kx()) }, { x / surfaceParams.w, y / surfaceParams.h }, { (x + w) / surfaceParams.w, (y + h) / surfaceParams.h });
 			}
 		}
 

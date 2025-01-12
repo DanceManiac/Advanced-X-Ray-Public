@@ -286,8 +286,8 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		int iXPos							= pInvItem->GetXPos();
 		int iYPos							= pInvItem->GetYPos();
 
-		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(iXPos * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())), float(iYPos * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())),
-														float(iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),	float(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())));
+		UIItemImage->GetUIStaticItem().SetOriginalRect(	float(iXPos * UI().inv_grid_kx()), float(iYPos * UI().inv_grid_kx()),
+														float(iGridWidth * UI().inv_grid_kx()),	float(iGridHeight * UI().inv_grid_kx()));
 
 		UIItemImage->TextureOn				();
 		UIItemImage->ClipperOn				();
@@ -295,20 +295,10 @@ void CUIItemInfo::InitItem(CInventoryItem* pInvItem)
 		
 		Frect v_r{};
 
-		if (GameConstants::GetUseHQ_Icons())
-		{
-			v_r = { 0.0f,
-													0.0f,
-													float(iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) / 2),
-													float(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()) / 2) };
-		}
-		else
-		{
-			v_r = { 0.0f,
-													0.0f,
-													float(iGridWidth * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons())),
-													float(iGridHeight * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons())) };
-		}
+		v_r = { 0.0f,
+												0.0f,
+												float(iGridWidth * UI().inv_grid_40()),
+												float(iGridHeight * UI().inv_grid_40()) };
 
 		if(UI().is_widescreen())
 			v_r.x2 /= 1.328f;

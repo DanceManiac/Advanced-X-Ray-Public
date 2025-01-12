@@ -2,6 +2,7 @@
 #include "ui_base.h"
 #include "GamePersistent.h"
 #include "UICursor.h"
+#include "AdvancedXrayGameConstants.h"
 
 CUICursor&	GetUICursor		()	{return UI().GetUICursor();};
 ui_core&	UI				()	{return *GamePersistent().m_pUI_core;};
@@ -264,6 +265,11 @@ float ui_core::get_current_kx()
 
 	float res = (h/w)/(UI_BASE_HEIGHT/UI_BASE_WIDTH);
 	return res;
+}
+
+float ui_core::get_icons_kx()
+{
+	return (GameConstants::GetUseHQ_Icons()) ? 2.0f : 1.0f;
 }
 
 shared_str	ui_core::get_xml_name(LPCSTR fn)

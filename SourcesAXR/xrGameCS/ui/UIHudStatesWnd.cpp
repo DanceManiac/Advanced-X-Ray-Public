@@ -266,36 +266,30 @@ void CUIHudStatesWnd::SetAmmoIcon(const shared_str& sect_name)
 	m_ui_weapon_icon->Show(true);
 
 	//properties used by inventory menu
-	float xPos						= pSettings->r_float(sect_name, "inv_grid_x")		* INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-	float yPos						= pSettings->r_float(sect_name, "inv_grid_y")		* INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
-	float gridWidth					= pSettings->r_float(sect_name, "inv_grid_width")	* INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-	float gridHeight				= pSettings->r_float(sect_name, "inv_grid_height")	* INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+	float xPos						= pSettings->r_float(sect_name, "inv_grid_x")		* UI().inv_grid_kx();
+	float yPos						= pSettings->r_float(sect_name, "inv_grid_y")		* UI().inv_grid_kx();
+	float gridWidth					= pSettings->r_float(sect_name, "inv_grid_width")	* UI().inv_grid_kx();
+	float gridHeight				= pSettings->r_float(sect_name, "inv_grid_height")	* UI().inv_grid_kx();
 	m_ui_weapon_icon->GetUIStaticItem().SetOriginalRect(xPos, yPos, gridWidth, gridHeight);
 	m_ui_weapon_icon->SetStretchTexture(true);
 
 	// all others ammo (1x1, 1x2) will be not scaled (original picture)
 	float h = gridHeight * 0.65f;
-	float w = gridWidth  * 0.65f;
-	// now perform only width scale for ammo, which (W)size >2
-	if (gridWidth > 2.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
-	{
-		w = INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()) * 1.3f;
-		h /= 0.8f;
-	}
-	if (GameConstants::GetUseHQ_Icons())
-	{
-		h /= 2;
-		w /= 2;
-	}
+	float w = gridWidth * 0.65f;
 
+	// now perform only width scale for ammo, which (W)size >2
+	if (gridWidth > 2.01f * UI().inv_grid())
+	{
+		w = UI().inv_grid() * 1.3f;
+	}
 	bool is_16x10 = UI().is_widescreen();
-	if (gridWidth < 1.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
+	if (gridWidth < 1.01f)
 	{
 		m_ui_weapon_icon->SetTextureOffset( (is_16x10)? 8.33f : 10.0f, 0.0f );
 	}
 	else
 	{
-		if (gridWidth > 2.01f * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()))
+		if (gridWidth > 2.01f)
 			m_ui_weapon_icon->SetTextureOffset(3.0f, -2.0f);
 		else
 			m_ui_weapon_icon->SetTextureOffset(0.0f, 0.0f);
@@ -303,7 +297,7 @@ void CUIHudStatesWnd::SetAmmoIcon(const shared_str& sect_name)
 
 
 	m_ui_weapon_icon->SetWidth(w * UI().get_current_kx() * m_ui_weapon_icon_scale);
-	m_ui_weapon_icon->SetHeight(h * m_ui_weapon_icon_scale);
+	m_ui_weapon_icon->SetHeight(h * (1 / UI().get_icons_kx()) * m_ui_weapon_icon_scale);
 	
 }
 

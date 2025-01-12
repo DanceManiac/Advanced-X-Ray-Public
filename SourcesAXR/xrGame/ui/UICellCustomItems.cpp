@@ -13,10 +13,6 @@
 #include "../Torch.h"
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
-#include "../AdvancedXrayGameConstants.h"
-
-#define INV_GRID_WIDTHF(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
-#define INV_GRID_HEIGHTF(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
 
 namespace detail 
 {
@@ -40,12 +36,12 @@ CUIInventoryCellItem::CUIInventoryCellItem(CInventoryItem* itm)
 	inherited::SetShader							(InventoryUtilities::GetEquipmentIconsShader());
 
 	m_grid_size.set									(itm->GetInvGridRect().rb);
-	Frect rect; 
-	rect.lt.set										(	INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * itm->GetInvGridRect().x1,
-														INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * itm->GetInvGridRect().y1 );
+	Frect rect{}; 
+	rect.lt.set										(	UI().inv_grid_kx() * itm->GetInvGridRect().x1,
+														UI().inv_grid_kx() * itm->GetInvGridRect().y1 );
 
-	rect.rb.set										(	rect.lt.x+INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * m_grid_size.x,
-														rect.lt.y+INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * m_grid_size.y);
+	rect.rb.set										(	rect.lt.x + UI().inv_grid_kx() * m_grid_size.x,
+														rect.lt.y + UI().inv_grid_kx() * m_grid_size.y);
 
 	inherited::SetTextureRect						(rect);
 	inherited::SetStretchTexture					(true);
@@ -480,25 +476,25 @@ void CUIWeaponCellItem::OnAfterChild(CUIDragDropListEx* parent_list)
 void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_offset, bool b_rotate, bool is_dragging, bool is_scope, bool is_silencer, bool is_gl)
 {
 	
-		Frect					tex_rect;
-		Fvector2				base_scale;
+		Frect					tex_rect{};
+		Fvector2				base_scale{};
 
 		if(Heading())
 		{
-			base_scale.x			= GetHeight()/(INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * m_grid_size.x);
-			base_scale.y			= GetWidth()/(INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * m_grid_size.y);
+			base_scale.x			= GetHeight()/(UI().inv_grid_kx() * m_grid_size.x);
+			base_scale.y			= GetWidth()/(UI().inv_grid_kx() * m_grid_size.y);
 		}
 		else
 		{
-			base_scale.x			= GetWidth()/(INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons()) * m_grid_size.x);
-			base_scale.y			= GetHeight()/(INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons()) * m_grid_size.y);
+			base_scale.x			= GetWidth()/(UI().inv_grid_kx() * m_grid_size.x);
+			base_scale.y			= GetHeight()/(UI().inv_grid_kx() * m_grid_size.y);
 		}
-		Fvector2				cell_size;
-		cell_size.x				= pSettings->r_u32(section, "inv_grid_width")*INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
-		cell_size.y				= pSettings->r_u32(section, "inv_grid_height")*INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
+		Fvector2				cell_size{};
+		cell_size.x				= pSettings->r_u32(section, "inv_grid_width")*UI().inv_grid_kx();
+		cell_size.y				= pSettings->r_u32(section, "inv_grid_height")*UI().inv_grid_kx();
 
-		tex_rect.x1				= pSettings->r_u32(section, "inv_grid_x")*INV_GRID_WIDTHF(GameConstants::GetUseHQ_Icons());
-		tex_rect.y1				= pSettings->r_u32(section, "inv_grid_y")*INV_GRID_HEIGHTF(GameConstants::GetUseHQ_Icons());
+		tex_rect.x1				= pSettings->r_u32(section, "inv_grid_x")*UI().inv_grid_kx();
+		tex_rect.y1				= pSettings->r_u32(section, "inv_grid_y")*UI().inv_grid_kx();
 
 		tex_rect.rb.add			(tex_rect.lt,cell_size);
 
@@ -568,7 +564,7 @@ void CUIWeaponCellItem::InitAddon(CUIStatic* s, LPCSTR section, Fvector2 addon_o
 		if(b_rotate)
 		{
 			s->SetHeading			(GetHeading());
-			Fvector2 offs;
+			Fvector2 offs{};
 			offs.set				(0.0f, s->GetWndSize().y);
 			s->SetHeadingPivot		(Fvector2().set(0.0f,0.0f), /*Fvector2().set(0.0f,0.0f)*/offs, true);
 		}
@@ -608,20 +604,20 @@ CUIDragItem* CUIWeaponCellItem::CreateDragItem()
 
 	if (GetIcon(eLaser))
 	{
-		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
-		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
-		InitAddon(s, *object()->GetLaserName(), m_addon_offset[eLaser], false, true, is_scope(), is_silencer(), is_launcher());
+		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon		(s, *object()->GetLaserName(), m_addon_offset[eLaser], false, true, is_scope(), is_silencer(), is_launcher());
 		s->SetTextureColor(i->wnd()->GetTextureColor());
-		i->wnd()->AttachChild(s);
+		i->wnd			()->AttachChild(s);
 	}
 
 	if (GetIcon(eTorch))
 	{
-		s = xr_new<CUIStatic>(); s->SetAutoDelete(true);
-		s->SetShader(InventoryUtilities::GetEquipmentIconsShader());
-		InitAddon(s, *object()->GetTacticalTorchName(), m_addon_offset[eTorch], false, true, is_scope(), is_silencer(), is_launcher());
+		s				= xr_new<CUIStatic>(); s->SetAutoDelete(true);
+		s->SetShader	(InventoryUtilities::GetEquipmentIconsShader());
+		InitAddon		(s, *object()->GetTacticalTorchName(), m_addon_offset[eTorch], false, true, is_scope(), is_silencer(), is_launcher());
 		s->SetTextureColor(i->wnd()->GetTextureColor());
-		i->wnd()->AttachChild(s);
+		i->wnd			()->AttachChild(s);
 	}
 
 	return				i;

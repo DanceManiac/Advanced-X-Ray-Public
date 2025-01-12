@@ -1346,10 +1346,10 @@ void CUIMainIngameWnd::UpdateQuickSlots()
 				CUIStatic* main_slot = m_quick_slots_icons[i];
 				main_slot->SetShader(InventoryUtilities::GetEquipmentIconsShader());
 				Frect texture_rect;
-				texture_rect.x1	= pSettings->r_float(item_name, "inv_grid_x")		*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-				texture_rect.y1	= pSettings->r_float(item_name, "inv_grid_y")		*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
-				texture_rect.x2	= pSettings->r_float(item_name, "inv_grid_width")	*INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-				texture_rect.y2	= pSettings->r_float(item_name, "inv_grid_height")*INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+				texture_rect.x1	= pSettings->r_float(item_name, "inv_grid_x")		* UI().inv_grid_kx();
+				texture_rect.y1	= pSettings->r_float(item_name, "inv_grid_y")		* UI().inv_grid_kx();
+				texture_rect.x2	= pSettings->r_float(item_name, "inv_grid_width")	* UI().inv_grid_kx();
+				texture_rect.y2	= pSettings->r_float(item_name, "inv_grid_height")	* UI().inv_grid_kx();
 				texture_rect.rb.add(texture_rect.lt);
 				main_slot->SetTextureRect(texture_rect);
 				main_slot->TextureOn();

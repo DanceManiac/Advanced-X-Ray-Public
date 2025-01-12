@@ -1,7 +1,6 @@
 
 #include "stdafx.h"
 #include "Weapon.h"
-#include "AdvancedXrayGameConstants.h"
 
 static bool process_if_exists_deg2rad( LPCSTR section, LPCSTR name, float& value, bool test )
 {
@@ -31,7 +30,7 @@ bool CWeapon::install_upgrade_impl( LPCSTR section, bool test )
 	result |= install_upgrade_disp      ( section, test );
 	result |= install_upgrade_hit       ( section, test );
 	result |= install_upgrade_addon     ( section, test );
-	result |= install_upgrade_other		( section, test );
+	result |= install_upgrade_other		( section, test	);
 	return result;
 }
 
@@ -117,7 +116,7 @@ bool CWeapon::install_upgrade_disp( LPCSTR section, bool test )
 
 //	result |= process_if_exists( section, "misfire_probability", &CInifile::r_float, misfireProbability,       test );
 //	result |= process_if_exists( section, "misfire_condition_k", &CInifile::r_float, misfireConditionK,        test );
-	result |= process_if_exists( section, "condition_shot_dec",  &CInifile::r_float, conditionDecreasePerShot, test );
+	result |= process_if_exists( section, "condition_shot_dec",			&CInifile::r_float, conditionDecreasePerShot,		test );
 	result |= process_if_exists( section, "condition_queue_shot_dec",	&CInifile::r_float, conditionDecreasePerQueueShot,	test );
 	result |= process_if_exists( section, "misfire_start_condition",	&CInifile::r_float, misfireStartCondition,			test );
 	result |= process_if_exists( section, "misfire_end_condition",		&CInifile::r_float, misfireEndCondition,			test );
@@ -277,17 +276,8 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 		if ( m_eSilencerStatus == ALife::eAddonAttachable || m_eSilencerStatus == ALife::eAddonPermanent )
 		{
 			m_sSilencerName	= pSettings->r_string( section, "silencer_name" );
-
-			if (GameConstants::GetUseHQ_Icons())
-			{
-				m_iSilencerX = pSettings->r_s32(section, "silencer_x") * 2;
-				m_iSilencerY = pSettings->r_s32(section, "silencer_y") * 2;
-			}
-			else
-			{
-				m_iSilencerX = pSettings->r_s32(section, "silencer_x");
-				m_iSilencerY = pSettings->r_s32(section, "silencer_y");
-			}
+			m_iSilencerX	= pSettings->r_s32( section, "silencer_x" );
+			m_iSilencerY	= pSettings->r_s32( section, "silencer_y" );
 
 			if(m_eSilencerStatus==ALife::eAddonPermanent)
 				InitAddons();
@@ -303,17 +293,8 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 		if ( m_eGrenadeLauncherStatus == ALife::eAddonAttachable || m_eGrenadeLauncherStatus == ALife::eAddonPermanent )
 		{
 			m_sGrenadeLauncherName	= pSettings->r_string( section, "grenade_launcher_name" );
-
-			if (GameConstants::GetUseHQ_Icons())
-			{
-				m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x") * 2;
-				m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y") * 2;
-			}
-			else
-			{
-				m_iGrenadeLauncherX = pSettings->r_s32(section, "grenade_launcher_x");
-				m_iGrenadeLauncherY = pSettings->r_s32(section, "grenade_launcher_y");
-			}
+			m_iGrenadeLauncherX		= pSettings->r_s32( section, "grenade_launcher_x" );
+			m_iGrenadeLauncherY		= pSettings->r_s32( section, "grenade_launcher_y" );
 
 			if(m_eGrenadeLauncherStatus==ALife::eAddonPermanent)
 				InitAddons();
@@ -322,26 +303,18 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 	result |= result2;
 
 	temp_int = (int)m_eLaserDesignatorStatus;
-	result2 = process_if_exists_set(section, "laser_designator_status", &CInifile::r_s32, temp_int, test);
-	if (result2 && !test)
+	result2 = process_if_exists_set( section, "laser_designator_status", &CInifile::r_s32, temp_int, test );
+	if ( result2 && !test )
 	{
 		m_eLaserDesignatorStatus = (ALife::EWeaponAddonStatus)temp_int;
-		if (m_eLaserDesignatorStatus == ALife::eAddonAttachable || m_eLaserDesignatorStatus == ALife::eAddonPermanent)
+		if ( m_eLaserDesignatorStatus == ALife::eAddonAttachable || m_eLaserDesignatorStatus == ALife::eAddonPermanent )
 		{
-			m_sLaserName = pSettings->r_string(section, "laser_designator_name");
+			m_sLaserName	= pSettings->r_string( section, "laser_designator_name" );
 
-			if (GameConstants::GetUseHQ_Icons())
-			{
-				m_iLaserX = pSettings->r_s32(section, "laser_designator_x") * 2;
-				m_iLaserY = pSettings->r_s32(section, "laser_designator_y") * 2;
-			}
-			else
-			{
-				m_iLaserX = pSettings->r_s32(section, "laser_designator_x");
-				m_iLaserY = pSettings->r_s32(section, "laser_designator_y");
-			}
+			m_iLaserX = pSettings->r_s32(section, "laser_designator_x");
+			m_iLaserY = pSettings->r_s32(section, "laser_designator_y");
 
-			if (m_eLaserDesignatorStatus == ALife::eAddonPermanent)
+			if(m_eLaserDesignatorStatus == ALife::eAddonPermanent)
 				InitAddons();
 		}
 	}
@@ -356,16 +329,8 @@ bool CWeapon::install_upgrade_addon( LPCSTR section, bool test )
 		{
 			m_sTacticalTorchName = pSettings->r_string(section, "tactical_torch_name");
 
-			if (GameConstants::GetUseHQ_Icons())
-			{
-				m_iTacticalTorchX = pSettings->r_s32(section, "laser_designator_x") * 2;
-				m_iTacticalTorchY = pSettings->r_s32(section, "laser_designator_y") * 2;
-			}
-			else
-			{
-				m_iTacticalTorchX = pSettings->r_s32(section, "tactical_torch_x");
-				m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y");
-			}
+			m_iTacticalTorchX = pSettings->r_s32(section, "tactical_torch_x");
+			m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y");
 
 			if (m_eTacticalTorchStatus == ALife::eAddonPermanent)
 				InitAddons();

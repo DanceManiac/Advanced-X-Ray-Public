@@ -92,6 +92,10 @@ public:
 	virtual void	OnDeviceReset					();
 	static	bool	is_widescreen					();
 	static	float	get_current_kx					();
+	static	float	get_icons_kx					();
+	static	float	inv_grid						(){ return (50.0f); };
+	static	float	inv_grid_40						(){ return (40.0f/* * get_icons_kx()*/); };
+	static	float	inv_grid_kx						(){ return (inv_grid() * get_icons_kx()); };
 	shared_str		get_xml_name					(LPCSTR fn);
 	
 	IUIRender::ePointType		m_currentPointType;

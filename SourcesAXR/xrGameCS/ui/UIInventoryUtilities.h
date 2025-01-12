@@ -7,23 +7,6 @@
 
 class CUIStatic;
 
-//размеры сетки в текстуре инвентаря
-#define INV_GRID_WIDTH(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
-#define INV_GRID_HEIGHT(HQ_ICONS) ((HQ_ICONS) ? (100.0f) : (50.0f))
-
-//размеры сетки в текстуре иконок персонажей
-#define ICON_GRID_WIDTH			64
-#define ICON_GRID_HEIGHT		64
-//размер иконки персонажа для инвенторя и торговли
-#define CHAR_ICON_WIDTH			2
-#define CHAR_ICON_HEIGHT		2	
-
-//размер иконки персонажа в полный рост
-#define CHAR_ICON_FULL_WIDTH	2
-#define CHAR_ICON_FULL_HEIGHT	5
-
-#define TRADE_ICONS_SCALE		(4.f/5.f)
-
 namespace InventoryUtilities
 {
 

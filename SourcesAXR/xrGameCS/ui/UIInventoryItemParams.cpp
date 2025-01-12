@@ -448,10 +448,10 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 				m_stArtefacts[i]->SetShader(InventoryUtilities::GetEquipmentIconsShader());
 
 				Frect				tex_rect;
-				tex_rect.x1 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-				tex_rect.y1 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-				tex_rect.x2 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-				tex_rect.y2 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+				tex_rect.x1 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_x") * UI().inv_grid_kx());
+				tex_rect.y1 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_y") * UI().inv_grid_kx());
+				tex_rect.x2 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_width") * UI().inv_grid_kx());
+				tex_rect.y2 = float(pSettings->r_u32(af_sections_inside[i].first.c_str(), "inv_grid_height") * UI().inv_grid_kx());
 				tex_rect.rb.add(tex_rect.lt);
 				m_stArtefacts[i]->SetOriginalRect(tex_rect);
 				m_stArtefacts[i]->TextureOn();
@@ -470,10 +470,10 @@ void CUIInventoryItem::SetInfo(CInventoryItem& pInvItem)
 				{
 					if (i + 1 < af_sections_inside.size())
 					{
-						tex_rect.x1 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_x") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-						tex_rect.y1 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_y") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
-						tex_rect.x2 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_width") * INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons()));
-						tex_rect.y2 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_height") * INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons()));
+						tex_rect.x1 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_x") * UI().inv_grid_kx());
+						tex_rect.y1 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_y") * UI().inv_grid_kx());
+						tex_rect.x2 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_width") * UI().inv_grid_kx());
+						tex_rect.y2 = float(pSettings->r_u32(af_sections_inside[i + 1].first.c_str(), "inv_grid_height") * UI().inv_grid_kx());
 						tex_rect.rb.add(tex_rect.lt);
 					}
 				}

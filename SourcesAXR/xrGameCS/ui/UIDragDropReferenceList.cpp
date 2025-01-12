@@ -95,10 +95,10 @@ void CUIDragDropReferenceList::LoadItemTexture(LPCSTR section, Ivector2 cell_pos
 	CUIStatic* ref = horizontal ? m_references[cell_pos.x] : m_references[cell_pos.y];
 	ref->SetShader(InventoryUtilities::GetEquipmentIconsShader());
 	Frect texture_rect{};
-	texture_rect.x1	= pSettings->r_float(section, "inv_grid_x")		* INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-	texture_rect.y1	= pSettings->r_float(section, "inv_grid_y")		* INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
-	texture_rect.x2	= pSettings->r_float(section, "inv_grid_width")	* INV_GRID_WIDTH(GameConstants::GetUseHQ_Icons());
-	texture_rect.y2	= pSettings->r_float(section, "inv_grid_height")* INV_GRID_HEIGHT(GameConstants::GetUseHQ_Icons());
+	texture_rect.x1	= pSettings->r_float(section, "inv_grid_x")		* UI().inv_grid_kx();
+	texture_rect.y1	= pSettings->r_float(section, "inv_grid_y")		* UI().inv_grid_kx();
+	texture_rect.x2	= pSettings->r_float(section, "inv_grid_width")	* UI().inv_grid_kx();
+	texture_rect.y2	= pSettings->r_float(section, "inv_grid_height")* UI().inv_grid_kx();
 	texture_rect.rb.add(texture_rect.lt);
 	ref->SetOriginalRect(texture_rect);
 	ref->TextureOn();
