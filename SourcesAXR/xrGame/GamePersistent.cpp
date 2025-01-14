@@ -161,6 +161,7 @@ void CGamePersistent::OnAppStart()
 	__super::OnAppStart			();
 	m_pUI_core					= xr_new<ui_core>();
 	m_pMainMenu					= xr_new<CMainMenu>();
+	GameConstants::LoadConstants();
 }
 
 
@@ -202,7 +203,6 @@ void CGamePersistent::OnGameStart()
 {
 	__super::OnGameStart		();
 	UpdateGameType				();
-	GameConstants::LoadConstants();
 }
 
 LPCSTR GameTypeToString(EGameIDs gt, bool bShort)
