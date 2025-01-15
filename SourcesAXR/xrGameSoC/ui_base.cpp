@@ -206,15 +206,8 @@ void ui_core::PopScissor()
 
 ui_core::ui_core()
 {
-	if(!g_dedicated_server)
-	{
-		m_pUICursor					= xr_new<CUICursor>();
-		m_pFontManager				= xr_new<CFontManager>();
-	}else
-	{
-		m_pUICursor					= NULL;
-		m_pFontManager				= NULL;
-	}
+	m_pUICursor					= xr_new<CUICursor>();
+	m_pFontManager				= xr_new<CFontManager>();
 	m_bPostprocess				= false;
 	
 	OnDeviceReset				();
@@ -269,6 +262,7 @@ float ui_core::get_current_kx()
 {
 	float h		= float(Device.dwHeight);
 	float w		= float(Device.dwWidth);
+
 	float res = (h/w)/(UI_BASE_HEIGHT/UI_BASE_WIDTH);
 	return res;
 }

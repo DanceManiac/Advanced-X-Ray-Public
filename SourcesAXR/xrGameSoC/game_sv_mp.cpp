@@ -1381,9 +1381,6 @@ void game_sv_mp::DumpOnlineStatistic()
 		{
 			xrClientData* l_pC = (xrClientData*)client;
 
-			if (m_server->GetServerClient() == l_pC && g_dedicated_server)
-				return;
-
 			if (!l_pC->net_Ready)
 				return;
 
@@ -1465,8 +1462,6 @@ void game_sv_mp::DumpRoundStatistics()
 	m_server->ForEachClientDo([&](IClient* client)
 		{
 			xrClientData* l_pC = (xrClientData*)client;
-			if (m_server->GetServerClient() == l_pC && g_dedicated_server)
-				return;
 
 			string16					num_buf;
 			sprintf_s(num_buf, "player_%d", idx++);

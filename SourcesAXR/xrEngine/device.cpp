@@ -58,27 +58,6 @@ static INT64 g_TicksPerSecond = 0;
 
 BOOL CRenderDevice::Begin	()
 {
-#ifndef DEDICATED_SERVER
-
-	/*
-	HW.Validate		();
-	HRESULT	_hr		= HW.pDevice->TestCooperativeLevel();
-    if (FAILED(_hr))
-	{
-		// If the device was lost, do not render until we get it back
-		if		(D3DERR_DEVICELOST==_hr)		{
-			Sleep	(33);
-			return	FALSE;
-		}
-
-		// Check if the device is ready to be reset
-		if		(D3DERR_DEVICENOTRESET==_hr)
-		{
-			Reset	();
-		}
-	}
-	*/
-
 	switch (m_pRender->GetDeviceState())
 	{
 	case IRenderDeviceRender::dsOK:
@@ -102,7 +81,7 @@ BOOL CRenderDevice::Begin	()
 	m_pRender->Begin();
 
 	g_bRendering = 	TRUE;
-#endif
+
 	return		TRUE;
 }
 
@@ -113,9 +92,6 @@ void CRenderDevice::Clear	()
 
 void CRenderDevice::End		(void)
 {
-#ifndef DEDICATED_SERVER
-
-
 #ifdef INGAME_EDITOR
 	bool							load_finished = false;
 #endif // #ifdef INGAME_EDITOR
@@ -189,7 +165,6 @@ void CRenderDevice::End		(void)
 		if (load_finished && m_editor)
 			m_editor->on_load_finished	();
 #	endif // #ifdef INGAME_EDITOR
-#endif
 }
 
 
@@ -221,9 +196,6 @@ void CRenderDevice::SecondaryThreadProc(void* context)
 void CRenderDevice::PreCache	(u32 amount, bool b_draw_loadscreen, bool b_wait_user_input)
 {
 	if (m_pRender->GetForceGPU_REF()) amount=0;
-#ifdef DEDICATED_SERVER
-	amount = 0;
-#endif
 	// Msg			("* PCACHE: start for %d...",amount);
 	dwPrecacheFrame	= dwPrecacheTotal = amount;
 	if (amount && !precache_light && g_pGameLevel && g_loading_events.empty()) {
@@ -240,9 +212,6 @@ void CRenderDevice::PreCache	(u32 amount, bool b_draw_loadscreen, bool b_wait_us
 		load_screen_renderer.start	(b_wait_user_input);
 	}
 }
-
-
-int g_svDedicateServerUpdateReate = 100;
 
 ENGINE_API xr_list<LOADING_EVENT>			g_loading_events;
 
@@ -330,9 +299,6 @@ void CRenderDevice::on_idle		()
 		return;
 	}
 
-#ifdef DEDICATED_SERVER
-	u32 FrameStartTime = TimerGlobal.GetElapsed_ms();
-#endif
 	const u64 frameStartTime = TimerGlobal.GetElapsed_ms();
 
 	if (psDeviceFlags.test(rsStatistic))	g_bEnableStatGather	= TRUE;
@@ -643,8 +609,6 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
 //	Msg("pause [%s] timer=[%s] sound=[%s] reason=%s",bOn?"ON":"OFF", bTimer?"ON":"OFF", bSound?"ON":"OFF", reason);
 #endif // DEBUG
 
-#ifndef DEDICATED_SERVER	
-
 	if(bOn)
 	{
 		if(!Paused())						
@@ -693,8 +657,6 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
 		}
 	}
 
-#endif
-
 }
 
 BOOL CRenderDevice::Paused()
@@ -717,12 +679,10 @@ void CRenderDevice::OnWM_Activate(WPARAM wParam, LPARAM lParam)
 			Device.seqAppActivate.Process(rp_AppActivate);
 			app_inactive_time		+= TimerMM.GetElapsed_ms() - app_inactive_time_start;
 
-#ifndef DEDICATED_SERVER
 #	ifdef INGAME_EDITOR
 			if (!editor())
 #	endif // #ifdef INGAME_EDITOR
-				ShowCursor			(FALSE);
-#endif // #ifndef DEDICATED_SERVER
+			ShowCursor				(FALSE);
 		}else	
 		{
 			app_inactive_time_start	= TimerMM.GetElapsed_ms();

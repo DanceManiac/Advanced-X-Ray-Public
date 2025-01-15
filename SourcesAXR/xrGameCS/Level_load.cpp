@@ -14,7 +14,6 @@
 #include "level_sounds.h"
 #include "GamePersistent.h"
 
-ENGINE_API	bool g_dedicated_server;
 
 BOOL CLevel::Load_GameSpecific_Before()
 {
@@ -26,7 +25,7 @@ BOOL CLevel::Load_GameSpecific_Before()
 	if (GamePersistent().GameType() == eGameIDSingle && !ai().get_alife() && FS.exist(fn_game,"$level$","level.ai") && !net_Hosts.empty())
 		ai().load						(net_SessionName());
 
-	if (!g_dedicated_server && !ai().get_alife() && ai().get_game_graph() && FS.exist(fn_game, "$level$", "level.game")) {
+	if (!ai().get_alife() && ai().get_game_graph() && FS.exist(fn_game, "$level$", "level.game")) {
 		IReader							*stream = FS.r_open		(fn_game);
 		ai().patrol_path_storage_raw	(*stream);
 		FS.r_close						(stream);
@@ -82,7 +81,6 @@ BOOL CLevel::Load_GameSpecific_After()
 		FS.r_close		(F);
 	}
 	
-	if	(!g_dedicated_server)
 	{
 		// loading static sounds
 		VERIFY								(m_level_sound_manager);
@@ -138,7 +136,7 @@ BOOL CLevel::Load_GameSpecific_After()
 		}
 	}	
 
-	if (!g_dedicated_server) {
+	{
 		// loading scripts
 		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorLevel);
 

@@ -56,14 +56,8 @@ void CHW::Reset		(HWND hwnd)
 	_RELEASE			(pBaseRT);
 
 #ifndef _EDITOR
-//#ifndef DEDICATED_SERVER
-//	BOOL	bWindowed		= !psDeviceFlags.is	(rsFullscreen);
-//#else
-//	BOOL	bWindowed		= TRUE;
-//#endif
 	BOOL	bWindowed		= TRUE;
-	if (!g_dedicated_server)
-		bWindowed		= !psDeviceFlags.is	(rsFullscreen);
+	bWindowed				= !psDeviceFlags.is	(rsFullscreen);
 
 	selectResolution		(DevPP.BackBufferWidth, DevPP.BackBufferHeight, bWindowed);
 	// Windoze
@@ -104,10 +98,6 @@ LPCSTR _name = "d3d9.dll";
 
 void CHW::CreateD3D	()
 {
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif
-
 	hD3D            			= LoadLibrary(_name);
 	R_ASSERT2	           	 	(hD3D,"Can't find 'd3d9.dll'\nPlease install latest version of DirectX before running this program");
     typedef IDirect3D9 * WINAPI _Direct3DCreate9(UINT SDKVersion);
@@ -192,14 +182,6 @@ void	CHW::selectResolution	(u32 &dwWidth, u32 &dwHeight, BOOL bWindowed)
 	if (psCurrentVidMode[0] == 0 || psCurrentVidMode[1] == 0)
 		GetMonitorResolution(psCurrentVidMode[0], psCurrentVidMode[1]);
 
-#ifndef _EDITOR
-	if (g_dedicated_server)
-	{
-		dwWidth		= 640;
-		dwHeight	= 480;
-	}
-	else
-#endif
 	{
 		if(bWindowed)
 		{
@@ -232,17 +214,11 @@ void		CHW::CreateDevice		(HWND m_hWnd, bool move_window)
 	CreateD3D				();
 
 	// General - select adapter and device
-//#ifdef DEDICATED_SERVER
-//	BOOL  bWindowed			= TRUE;
-//#else
-//	BOOL  bWindowed			= !psDeviceFlags.is(rsFullscreen);
-//#endif
 
 	BOOL  bWindowed			= TRUE;
 	
 #ifndef _EDITOR
-	if (!g_dedicated_server)
-		bWindowed			= !psDeviceFlags.is(rsFullscreen);
+	bWindowed				= !psDeviceFlags.is(rsFullscreen);
 #else
 	bWindowed				= 1;
 #endif        
@@ -564,8 +540,7 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 {
 	BOOL	bWindowed				= TRUE;
 #ifndef _EDITOR
-	if (!g_dedicated_server)
-		bWindowed			= !psDeviceFlags.is(rsFullscreen);
+	bWindowed						= !psDeviceFlags.is(rsFullscreen);
 #endif	
 
 	u32		dwWindowStyle			= 0;
@@ -596,11 +571,6 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 
 			if (strstr(Core.Params, "-center_screen"))
 				bCenter = true;
-				
-#ifndef _EDITOR
-			if (g_dedicated_server)
-				bCenter = true;
-#endif
 
 			if (bCenter)
 			{
@@ -634,7 +604,6 @@ void	CHW::updateWindowProps	(HWND m_hWnd)
 	}
 
 #ifndef _EDITOR
-	if (!g_dedicated_server)
 	{
 		ShowCursor	(FALSE);
 		SetForegroundWindow( m_hWnd );

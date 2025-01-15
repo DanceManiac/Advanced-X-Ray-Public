@@ -15,8 +15,6 @@
 
 #include "debug_renderer.h"
 
-ENGINE_API	bool g_dedicated_server;
-
 #define			MAPROT_LIST_NAME		"maprot_list.ltx"
 string_path		MAPROT_LIST		= "";
 BOOL	net_sv_control_hit	= FALSE		;
@@ -286,7 +284,6 @@ void game_sv_GameState::net_Export_State						(NET_Packet& P, ClientID to)
 	P.w_u8			(u8(g_bCollectStatisticData));
 
 	// Players
-//	u32	p_count			= get_players_count() - ((g_dedicated_server)? 1 : 0);
 	u32 p_count = 0;
 	auto ForEach1 = [&](IClient* client)
 	{
@@ -431,7 +428,6 @@ void game_sv_GameState::Create					(shared_str &options)
 		FS.r_close	(F);
 	}
 
-	if (!g_dedicated_server)
 	{
 		// loading scripts
 		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorGame);
@@ -611,7 +607,7 @@ void game_sv_GameState::Update		()
 		C->ps->ping = u16(C->stats.getPing());
 	};
 	m_server->ForEachClientDo(ForEach);
-	if (!g_dedicated_server)
+
 	{
 		if (Level().game) {
 			CScriptProcess				*script_process = ai().script_engine().script_process(ScriptEngine::eScriptProcessorGame);
@@ -638,8 +634,7 @@ game_sv_GameState::game_sv_GameState()
 
 game_sv_GameState::~game_sv_GameState()
 {
-	if (!g_dedicated_server)
-		ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorGame);
+	ai().script_engine().remove_script_process(ScriptEngine::eScriptProcessorGame);
 	xr_delete(m_event_queue);
 
 	SaveMapList();

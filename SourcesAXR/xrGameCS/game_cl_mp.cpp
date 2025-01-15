@@ -448,7 +448,7 @@ void game_cl_mp::TranslateGameMessage	(u32 msg, NET_Packet& P)
 			string1024 mess;
 			P.r_stringZ(mess);
 			Msg( mess );
-			if ( MainMenu() && !g_dedicated_server )
+			if ( MainMenu() )
 			{
 				MainMenu()->OnSessionTerminate( mess );
 			}
@@ -575,7 +575,6 @@ void game_cl_mp::OnChatMessage(NET_Packet* P)
 	}
 	
 //#endif
-	if(g_dedicated_server)	return;
 
 	if ( team < 0 || 2 < team )	{ team = 0; }
 	
@@ -587,8 +586,6 @@ void game_cl_mp::OnChatMessage(NET_Packet* P)
 
 void game_cl_mp::CommonMessageOut		(LPCSTR msg)
 {
-	if(g_dedicated_server)	return;
-
 	if (HUD().GetUI())
         HUD().GetUI()->m_pMessagesWnd->AddLogMessage(msg);
 };
@@ -600,8 +597,6 @@ void game_cl_mp::shedule_Update(u32 dt)
 	
 	inherited::shedule_Update(dt);
 	//-----------------------------------------
-
-	if(g_dedicated_server)	return;
 
 	switch (Phase())
 	{

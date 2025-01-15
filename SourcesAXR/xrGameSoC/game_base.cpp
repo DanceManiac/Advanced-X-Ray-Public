@@ -9,8 +9,6 @@ u64		g_qwStartGameTime		= 12*60*60*1000;
 float	g_fTimeFactor			= pSettings->r_float("alife","time_factor");
 u64		g_qwEStartGameTime		= 12*60*60*1000;
 
-ENGINE_API	bool g_dedicated_server;
-
 xr_token game_types[];
 
 game_PlayerState::game_PlayerState()
@@ -170,7 +168,6 @@ game_GameState::game_GameState()
 
 CLASS_ID game_GameState::getCLASS_ID(LPCSTR game_type_name, bool isServer)
 {
-	if (!g_dedicated_server)
 	{
 		string_path		S;
 		FS.update_path	(S,"$game_config$","script.ltx");

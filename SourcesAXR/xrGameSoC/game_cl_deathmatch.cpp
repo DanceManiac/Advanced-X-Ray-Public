@@ -411,8 +411,6 @@ void game_cl_Deathmatch::shedule_Update			(u32 dt)
 
 	inherited::shedule_Update(dt);
 
-	if(g_dedicated_server)	return;
-
 	//fake	
 	if(!m_game_ui && HUD().GetUI() ) m_game_ui = smart_cast<CUIGameDM*>( HUD().GetUI()->UIGame() );
 	if(m_game_ui)

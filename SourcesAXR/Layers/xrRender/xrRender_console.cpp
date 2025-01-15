@@ -626,9 +626,6 @@ class CCC_Screenshot : public IConsole_Command
 public:
 	CCC_Screenshot(LPCSTR N) : IConsole_Command(N)  { };
 	virtual void Execute(LPCSTR args) {
-		if (g_dedicated_server)
-			return;
-
 		string_path	name;	name[0]=0;
 		sscanf		(args,"%s",	name);
 		LPCSTR		image	= xr_strlen(name)?name:0;

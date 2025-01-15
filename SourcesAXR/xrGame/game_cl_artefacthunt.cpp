@@ -293,9 +293,6 @@ void game_cl_ArtefactHunt::SetGameUI(CUIGameCustom* uigame)
 
 CUIGameCustom* game_cl_ArtefactHunt::createGameUI()
 {
-	if (g_dedicated_server)
-		return NULL;
-
 	CLASS_ID clsid			= CLSID_GAME_UI_ARTEFACTHUNT;
 	m_game_ui				= smart_cast<CUIGameAHunt*> ( NEW_INSTANCE ( clsid ) );
 	R_ASSERT				(m_game_ui);
@@ -354,9 +351,6 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 	string1024 msg;
 
 	inherited::shedule_Update		(dt);
-
-	if (g_dedicated_server)
-		return;
 
 	if (!m_game_ui)
 		return;

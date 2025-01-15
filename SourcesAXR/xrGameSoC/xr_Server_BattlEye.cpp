@@ -14,7 +14,6 @@
 #ifdef BATTLEYE
 
 extern		int		g_be_message_out;
-ENGINE_API	bool	g_dedicated_server;
 
 BattlEyeServer::BattlEyeServer( xrServer* Server )
 {
@@ -106,11 +105,6 @@ void BattlEyeServer::AddConnectedPlayers() // if net_Ready
 
 void BattlEyeServer::AddConnected_OnePlayer( xrClientData* CL )
 {
-	if ( g_dedicated_server && (CL->ID.value() == Level().Server->GetServerClient()->ID.value()) )
-	{
-		return;
-	}
-
 	if ( CL->m_guid[0] == 0 )
 	{
 		AddPlayer( CL->ID.value(), (char*)CL->ps->getName(), 0, 0 );

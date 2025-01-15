@@ -344,8 +344,6 @@ void game_cl_ArtefactHunt::shedule_Update			(u32 dt)
 
 	inherited::shedule_Update		(dt);
 
-	if(g_dedicated_server)	return;
-
 	//out game information
 //	m_game_ui->SetReinforcementCaption("");
 	m_game_ui->SetBuyMsgCaption		("");

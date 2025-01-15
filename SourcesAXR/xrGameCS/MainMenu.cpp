@@ -83,7 +83,6 @@ CMainMenu::CMainMenu()
 	GetPlayerNameFromRegistry		();
 	GetCDKeyFromRegistry			();
 
-	if(!g_dedicated_server)
 	{
 		g_btnHint						= xr_new<CUIButtonHint>();
 		g_statHint						= xr_new<CUIButtonHint>();
@@ -148,8 +147,6 @@ void CMainMenu::Activate	(bool bActivate)
 		(m_screenshotFrame == Device.dwFrame+1))	return;
 
 	bool b_is_single				= IsGameTypeSingle();
-
-	if(g_dedicated_server && bActivate) return;
 
 	if(bActivate)
 	{

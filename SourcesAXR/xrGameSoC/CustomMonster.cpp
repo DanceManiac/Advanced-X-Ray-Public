@@ -100,10 +100,9 @@ CCustomMonster::~CCustomMonster	()
 
 #ifdef DEBUG
 	Msg							("dumping client spawn manager stuff for object with id %d",ID());
-	if(!g_dedicated_server)
-		Level().client_spawn_manager().dump	(ID());
+	Level().client_spawn_manager().dump	(ID());
 #endif // DEBUG
-	if(!g_dedicated_server)
+	if ( g_pGameLevel )
 		Level().client_spawn_manager().clear(ID());
 }
 

@@ -57,7 +57,7 @@ xrClientData::~xrClientData()
 }
 
 
-xrServer::xrServer() : IPureServer(Device.GetTimerGlobal(), g_dedicated_server)
+xrServer::xrServer():IPureServer(Device.GetTimerGlobal())
 {
 	m_file_transfers	= NULL;
 	m_aDelayedPackets.clear();
@@ -1139,10 +1139,6 @@ void xrServer::KickCheaters			()
 
 void xrServer::MakeScreenshot(ClientID const & admin_id, ClientID const & cheater_id)
 {
-	if ((cheater_id == SV_Client->ID) && g_dedicated_server)
-	{
-		return;
-	}
 	for (int i = 0; i < sizeof(m_screenshot_proxies)/sizeof(clientdata_proxy*); ++i)
 	{
 		if (!m_screenshot_proxies[i]->is_active())
@@ -1154,12 +1150,9 @@ void xrServer::MakeScreenshot(ClientID const & admin_id, ClientID const & cheate
 	}
 	Msg("! ERROR: SV: not enough file transfer proxies for downloading screenshot, please try later ...");
 }
+
 void xrServer::MakeConfigDump(ClientID const & admin_id, ClientID const & cheater_id)
 {
-	if ((cheater_id == SV_Client->ID) && g_dedicated_server)
-	{
-		return;
-	}
 	for (int i = 0; i < sizeof(m_screenshot_proxies)/sizeof(clientdata_proxy*); ++i)
 	{
 		if (!m_screenshot_proxies[i]->is_active())

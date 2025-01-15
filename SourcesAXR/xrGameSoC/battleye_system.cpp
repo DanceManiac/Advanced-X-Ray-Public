@@ -271,10 +271,6 @@ void BattlEyeSystem::ReadPacketServer( u32 sender, NET_Packet* pack )
 bool BattlEyeSystem::TestLoadClient()
 {
 	m_test_load_client = false;
-	if ( g_dedicated_server )
-	{
-		return true; //false = Error
-	}
 
 	if ( LoadClient() ) // test load
 	{
@@ -327,7 +323,7 @@ bool BattlEyeSystem::InitDLL( LPCSTR dll_name, string_path& out_file )
 	ft = fopen( out_file, "r" );
 	if( ft == NULL )
 	{
-		HMODULE h_game = GetModuleHandle("xrGame.dll");
+		HMODULE h_game = GetModuleHandle("xrCore.dll");
 		R_ASSERT( h_game );
 		
 		string_path cur_dir, full_dir;

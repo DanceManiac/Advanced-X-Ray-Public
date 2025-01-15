@@ -7,6 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "pch_script.h"
+
 #include "object_factory.h"
 #include "ai_space.h"
 #include "script_engine.h"
@@ -58,12 +59,9 @@ void CObjectFactory::register_script_class			(LPCSTR unknown_class, LPCSTR clsid
 	);
 }
 
-ENGINE_API	bool g_dedicated_server;
-
 void CObjectFactory::register_script_classes()
 {
-	if (!g_dedicated_server)
-		ai();
+	ai();
 }
 
 using namespace luabind;

@@ -12,8 +12,6 @@
 #include "xr_object.h"
 #include "feel_sound.h"
 
-#include "securom_api.h"
-
 #include "../Layers/xrAPI/xrGameManager.h"
 
 ENGINE_API	IGame_Level*	g_pGameLevel	= NULL;
@@ -95,8 +93,6 @@ static bool deserialize_callback(IReader& reader)
 
 BOOL IGame_Level::Load			(u32 dwNum) 
 {
-	SECUROM_MARKER_PERFORMANCE_ON(10)
-
 	// Initialize level data
 	pApp->Level_Set				( dwNum );
 	string_path					temp;
@@ -149,22 +145,16 @@ BOOL IGame_Level::Load			(u32 dwNum)
 	// Done
 	FS.r_close					( LL_Stream );
 	bReady						= true;
-	if (!g_dedicated_server)	IR_Capture();
-#ifndef DEDICATED_SERVER
+	IR_Capture();
 	Device.seqRender.Add		(this);
-#endif
 
 	Device.seqFrame.Add			(this);
-
-	SECUROM_MARKER_PERFORMANCE_OFF(10)
 
 	return TRUE;	
 }
 
-int		psNET_DedicatedSleep	= 5;
 void	IGame_Level::OnRender		( ) 
 {
-#ifndef DEDICATED_SERVER
 //	if (_abs(Device.fTimeDelta)<EPS_S) return;
 
 	#ifdef _GPA_ENABLED	
@@ -176,11 +166,9 @@ void	IGame_Level::OnRender		( )
 	#endif // _GPA_ENABLED
 
 	// Level render, only when no client output required
-	if (!g_dedicated_server)	{
+	{
 		Render->Calculate			();
 		Render->Render				();
-	} else {
-		Sleep						(psNET_DedicatedSleep);
 	}
 
 	#ifdef _GPA_ENABLED	
@@ -190,7 +178,6 @@ void	IGame_Level::OnRender		( )
 	// Font
 //	pApp->pFontSystem->SetSizeI(0.023f);
 //	pApp->pFontSystem->OnRender	();
-#endif
 }
 
 void	IGame_Level::OnFrame		( ) 

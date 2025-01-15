@@ -403,8 +403,6 @@ void game_cl_GameState::set_type_name(LPCSTR s)
 };
 void game_cl_GameState::reset_ui()
 {
-	if(g_dedicated_server)	return;
-
 	if(!m_game_ui_custom)
 		m_game_ui_custom = HUD().GetUI()->UIGame();
 

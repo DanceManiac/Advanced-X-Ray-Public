@@ -8,8 +8,6 @@
 #include "../Layers/xrAPI/xrGameManager.h"
 #include "../../xrEngine/XR_IOConsole.h"
 
-#include "securom_api.h"
-
 extern xr_vector<xr_token> vid_quality_token;
 
 constexpr const char* r1_name = "xrRender_R1";
@@ -44,24 +42,14 @@ ENGINE_API int g_current_renderer = 0;
 ENGINE_API bool is_enough_address_space_available	()
 {
 	SYSTEM_INFO		system_info;
-
-	SECUROM_MARKER_HIGH_SECURITY_ON(12)
-
 	GetSystemInfo	( &system_info );
-
-	SECUROM_MARKER_HIGH_SECURITY_OFF(12)
-
 	return			(*(u32*)&system_info.lpMaximumApplicationAddress) > 0x90000000;	
 }
 
-#ifndef DEDICATED_SERVER
-
 void CEngineAPI::InitializeRenderer()
 {
-	SECUROM_MARKER_HIGH_SECURITY_ON(2)
-
-		// If we failed to load render,
-		// then try to fallback to lower one.
+	// If we failed to load render,
+	// then try to fallback to lower one.
 
 	if (psDeviceFlags.test(rsR4))
 	{
@@ -108,11 +96,7 @@ void CEngineAPI::InitializeRenderer()
 		else
 			g_current_renderer = 1;
 	}
-
-	SECUROM_MARKER_HIGH_SECURITY_OFF(2)
 }
-#endif // DEDICATED_SERVER
-
 
 void CEngineAPI::Initialize(void)
 {

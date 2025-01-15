@@ -95,7 +95,7 @@ void CRender::level_Load(IReader *fs)
 
 	marker						= 0;
 
-	if	(!g_dedicated_server)	{
+	{
 		// VB,IB,SWI
 		g_pGamePersistent->SetLoadStageTitle("st_loading_geometry");
 		g_pGamePersistent->LoadTitle();

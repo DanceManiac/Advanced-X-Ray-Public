@@ -248,7 +248,6 @@ extern ENGINE_API	Fvector4 ps_ssfx_lightsetup_1;
 extern ENGINE_API	float ps_r3_dyn_wet_surf_far; // 30.0f
 extern ENGINE_API	int ps_r3_dyn_wet_surf_sm_res; // 256
 
-extern ENGINE_API	bool g_dedicated_server;
 extern ENGINE_API	IGame_Persistent*	g_pGamePersistent;
 #endif //IGame_PersistentH
 

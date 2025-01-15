@@ -26,7 +26,6 @@
 #include "player_hud.h"
 #include "AdvancedXrayGameConstants.h"
 
-ENGINE_API	bool	g_dedicated_server;
 ENGINE_API  extern float psHUD_FOV;
 ENGINE_API  extern float psHUD_FOV_def;
 

@@ -45,11 +45,7 @@ public:
 	VTPause*			tune_pause	;
 	VTResume*			tune_resume	;
 	void				Initialize	();
-	
-	#ifndef DEDICATED_SERVER
 	void				InitializeRenderer();
-	#endif // DEDICATED_SERVER
-	
 	void				Destroy		();
 
 	void				CreateRendererList();

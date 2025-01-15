@@ -175,11 +175,6 @@ void	CEffect_Rain::OnFrame	()
 #ifndef _EDITOR
 	if (!g_pGameLevel)			return;
 #endif
-
-#ifdef DEDICATED_SERVER
-	return;
-#endif
-
 	// Parse states
 	float	factor				= g_pGamePersistent->Environment().CurrentEnv->rain_density;
 	float	wind_volume			= (g_pGamePersistent->Environment().CurrentEnv->wind_velocity/100) * m_fWindVolumeKoef;

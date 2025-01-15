@@ -91,9 +91,6 @@ void game_cl_Deathmatch::SetGameUI(CUIGameCustom* uigame)
 
 CUIGameCustom* game_cl_Deathmatch::createGameUI()
 {
-	if (g_dedicated_server)
-		return NULL;
-
 	CLASS_ID clsid			= CLSID_GAME_UI_DEATHMATCH;
 	m_game_ui				= smart_cast<CUIGameDM*> ( NEW_INSTANCE ( clsid ) );
 	R_ASSERT				(m_game_ui);
@@ -305,9 +302,6 @@ BOOL game_cl_Deathmatch::CanCallInventoryMenu			()
 
 void game_cl_Deathmatch::SetCurrentBuyMenu	()	
 {
-	if (g_dedicated_server)
-		return;
-
 	if (!pCurBuyMenu)
 	{
 		pCurBuyMenu	= InitBuyMenu(GetBaseCostSect(), 0);
@@ -437,7 +431,6 @@ void game_cl_Deathmatch::OnConnected()
 	inherited::OnConnected				();
 	if (m_game_ui)
 	{
-		VERIFY(!g_dedicated_server);
 		m_game_ui = smart_cast<CUIGameDM*>	(CurrentGameUI());
 		m_game_ui->SetClGame				(this);
 	}
@@ -448,8 +441,6 @@ void game_cl_Deathmatch::shedule_Update			(u32 dt)
 	CStringTable st;
 
 	inherited::shedule_Update(dt);
-
-	if(g_dedicated_server)	return;
 
 	//fake	
 	if(m_game_ui)

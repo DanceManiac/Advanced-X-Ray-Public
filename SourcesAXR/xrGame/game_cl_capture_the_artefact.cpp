@@ -111,9 +111,6 @@ void game_cl_CaptureTheArtefact::Init()
 void game_cl_CaptureTheArtefact::shedule_Update(u32 dt)
 {
 	inherited::shedule_Update(dt);
-	
-	if (g_dedicated_server)
-		return;
 
 	if ((Level().IsDemoPlayStarted() || Level().IsDemoPlayFinished())  && m_game_ui)
 	{
@@ -652,9 +649,6 @@ bool game_cl_CaptureTheArtefact::InWarmUp() const
 
 CUIGameCustom* game_cl_CaptureTheArtefact::createGameUI()
 {
-	if (g_dedicated_server)
-		return NULL;
-
 	m_game_ui				= smart_cast<CUIGameCTA*> (NEW_INSTANCE(CLSID_GAME_UI_CAPTURETHEARTEFACT));
 	VERIFY2					(m_game_ui, "failed to create Capture The Artefact game UI");
 	m_game_ui->Load			();
@@ -730,8 +724,6 @@ void game_cl_CaptureTheArtefact::OnGameMenuRespond_ChangeTeam(NET_Packet& P)
 
 void game_cl_CaptureTheArtefact::UpdateMapLocations()
 {
-	if (g_dedicated_server)
-		return;
 	//updating firends indicator
 	if (!local_player)
 		return;
@@ -819,27 +811,11 @@ void game_cl_CaptureTheArtefact::UpdateMapLocations()
 void game_cl_CaptureTheArtefact::OnSpawn(CObject* pObj)
 {
 	inherited::OnSpawn(pObj);
-	
-	if (g_dedicated_server)
-		return;
 
 	CArtefact *pArtefact = smart_cast<CArtefact*>(pObj);
 	if (pArtefact)
 	{
 		Level().MapManager().AddMapLocation(ARTEFACT_NEUTRAL, pObj->ID())->EnablePointer();
-		/*if (OnServer()) // huck :( - server logic must be ONLY ON SERVER !!!
-		{
-			if (GetGreenArtefactID() == pArtefact->ID())
-			{
-				pArtefact->MoveTo(GetGreenArtefactRPoint());
-			} else if (GetBlueArtefactID() == pArtefact->ID())
-			{
-				pArtefact->MoveTo(GetBlueArtefactRPoint());
-			} else
-			{
-				VERIFY2(false, "unknown artefact in game");
-			}
-		}*/
 		return;
 	}
 	CActor *pActor = smart_cast<CActor*>(pObj);
@@ -1666,7 +1642,6 @@ void game_cl_CaptureTheArtefact::OnConnected()
 	inherited::OnConnected	();
 	if (m_game_ui)
 	{
-		VERIFY(!g_dedicated_server);
 		m_game_ui				= smart_cast<CUIGameCTA*>	(CurrentGameUI());
 		m_game_ui->SetClGame	(this);
 	}

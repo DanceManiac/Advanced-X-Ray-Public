@@ -122,8 +122,7 @@ bool CLevel::net_start1				()
 
 			m_name					= l_name;
 
-			if (!g_dedicated_server)
-				g_pGamePersistent->LoadTitle(true, l_name);
+			g_pGamePersistent->LoadTitle(true, l_name);
 
 			int						id = pApp->Level_ID(l_name, "1.0", true);
 
@@ -156,8 +155,7 @@ bool CLevel::net_start2				()
 		Server->SLS_Default		();
 		m_name					= Server->level_name(m_caServerOptions);
 
-		if (!g_dedicated_server)
-			g_pGamePersistent->LoadTitle(true, m_name);
+		g_pGamePersistent->LoadTitle(true, m_name);
 	}
 	return true;
 }
@@ -256,7 +254,7 @@ bool xr_stdcall net_start_finalizer()
 		{
 			MainMenu()->OnLoadError("BattlEye/BEServer.dll");
 		}else */
-		if(g_connect_server_err==xrServer::ErrConnect && !psNET_direct_connect && !g_dedicated_server) 
+		if(g_connect_server_err==xrServer::ErrConnect && !psNET_direct_connect) 
 		{
 			MainMenu()->SwitchToMultiplayerMenu();
 		}
@@ -294,11 +292,8 @@ bool CLevel::net_start6()
 			Console->Execute		(buf);
 		}
 
-		if	(!g_dedicated_server)
-		{
-			if (g_hud)
-				HUD().GetUI()->OnConnected();
-		}
+		if (g_hud)
+			HUD().GetUI()->OnConnected();
 	}
 
 	return false;

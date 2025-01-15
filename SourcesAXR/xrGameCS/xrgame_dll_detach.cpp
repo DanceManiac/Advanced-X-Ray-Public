@@ -47,13 +47,10 @@ void init_game_globals()
 {
 	CreateUIGeom									();
 	InitHudSoundSettings							();
-	if(!g_dedicated_server)
-	{
-		CInfoPortion::InitInternal					();
-		CEncyclopediaArticle::InitInternal			();
-		CPhraseDialog::InitInternal					();
-		InventoryUtilities::CreateShaders			();
-	};
+	CInfoPortion::InitInternal						();
+	CEncyclopediaArticle::InitInternal				();
+	CPhraseDialog::InitInternal						();
+	InventoryUtilities::CreateShaders				();
 	CCharacterInfo::InitInternal					();
 	CSpecificCharacter::InitInternal				();
 	CHARACTER_COMMUNITY::InitInternal				();
@@ -80,19 +77,17 @@ void clean_game_globals()
 	story_ids.clear									();
 	spawn_story_ids.clear							();
 
-	if(!g_dedicated_server)
-	{
-		CInfoPortion::DeleteSharedData					();
-		CInfoPortion::DeleteIdToIndexData				();
+	CInfoPortion::DeleteSharedData					();
+	CInfoPortion::DeleteIdToIndexData				();
 
-		CEncyclopediaArticle::DeleteSharedData			();
-		CEncyclopediaArticle::DeleteIdToIndexData		();
+	CEncyclopediaArticle::DeleteSharedData			();
+	CEncyclopediaArticle::DeleteIdToIndexData		();
 
-		CPhraseDialog::DeleteSharedData					();
-		CPhraseDialog::DeleteIdToIndexData				();
+	CPhraseDialog::DeleteSharedData					();
+	CPhraseDialog::DeleteIdToIndexData				();
 		
-		InventoryUtilities::DestroyShaders				();
-	}
+	InventoryUtilities::DestroyShaders				();
+
 	CCharacterInfo::DeleteSharedData				();
 	CCharacterInfo::DeleteIdToIndexData				();
 	

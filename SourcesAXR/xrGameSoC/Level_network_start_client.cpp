@@ -159,7 +159,6 @@ bool	CLevel::net_start_client5				()
 		// HUD
 
 		// Textures
-		if	(!g_dedicated_server)
 		{
 			HUD().Load							();
 			g_pGamePersistent->SetLoadStageTitle("st_loading_textures");

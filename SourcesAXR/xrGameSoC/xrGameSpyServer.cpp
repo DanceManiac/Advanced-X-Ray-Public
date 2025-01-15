@@ -134,13 +134,12 @@ void			xrGameSpyServer::Update				()
 int				xrGameSpyServer::GetPlayersCount()
 {
 	int NumPlayers = GetClientsCount();
-	if (!g_dedicated_server || NumPlayers < 1) return NumPlayers;
-	return NumPlayers - 1;
+	return NumPlayers;
 };
 
 bool			xrGameSpyServer::NeedToCheckClient_GameSpy_CDKey	(IClient* CL)
 {
-	if (!m_bCDKey_Initialized || (CL == GetServerClient() && g_dedicated_server))
+	if (!m_bCDKey_Initialized)
 	{
 		return false;
 	};

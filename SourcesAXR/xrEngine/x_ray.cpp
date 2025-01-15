@@ -10,8 +10,6 @@
 #include "igame_persistent.h"
 #include "ILoadingScreen.h"
 
-#include "dedicated_server_only.h"
-#include "no_single.h"
 #include "../xrNetServer/NET_AuthCheck.h"
 
 #include "xr_input.h"
@@ -22,14 +20,12 @@
 #include "resource.h"
 #include "LightAnimLibrary.h"
 #include "../xrcdb/ispatial.h"
-#include "CopyProtection.h"
 #include "Text_Console.h"
 #include <process.h>
 #include <locale.h>
 
 #include "xrSash.h"
 
-#include "securom_api.h"
 #include "Rain.h"
 #include "..\Layers\xrAPI\xrGameManager.h"
 #include "Render.h"
@@ -106,72 +102,6 @@ static int start_day	= 31;	// 31
 static int start_month	= 1;	// January
 static int start_year	= 1999;	// 1999
 
-// binary hash, mainly for copy-protection
-
-#ifndef DEDICATED_SERVER
-
-#include "../xrGameSpy/gamespy/md5c.c"
-#include <ctype.h>
-#include <wincodec.h>
-#include <thread>
-
-#define DEFAULT_MODULE_HASH "3CAABCFCFF6F3A810019C6A72180F166"
-static char szEngineHash[33] = DEFAULT_MODULE_HASH;
-
-PROTECT_API char * ComputeModuleHash( char * pszHash )
-{
-	SECUROM_MARKER_HIGH_SECURITY_ON(3)
-
-	char szModuleFileName[ MAX_PATH ];
-	HANDLE hModuleHandle = NULL , hFileMapping = NULL;
-	LPVOID lpvMapping = NULL;
-	MEMORY_BASIC_INFORMATION MemoryBasicInformation;
-
-	if ( ! GetModuleFileName( NULL , szModuleFileName , MAX_PATH ) )
-		return pszHash;
-
-	hModuleHandle = CreateFile( szModuleFileName , GENERIC_READ , FILE_SHARE_READ , NULL , OPEN_EXISTING , 0 , NULL );
-
-	if ( hModuleHandle == INVALID_HANDLE_VALUE )
-		return pszHash;
-
-	hFileMapping = CreateFileMapping( hModuleHandle , NULL , PAGE_READONLY , 0 , 0 , NULL );
-
-	if ( hFileMapping == NULL ) {
-		CloseHandle( hModuleHandle );
-		return pszHash;
-	}
-
-	lpvMapping = MapViewOfFile( hFileMapping , FILE_MAP_READ , 0 , 0 , 0 );
-
-	if ( lpvMapping == NULL ) {
-		CloseHandle( hFileMapping );
-		CloseHandle( hModuleHandle );
-		return pszHash;
-	}
-
-	ZeroMemory( &MemoryBasicInformation , sizeof( MEMORY_BASIC_INFORMATION ) );
-
-	VirtualQuery( lpvMapping , &MemoryBasicInformation , sizeof( MEMORY_BASIC_INFORMATION ) );
-
-	if ( MemoryBasicInformation.RegionSize ) {
-		char szHash[33];
-		MD5Digest( ( unsigned char *)lpvMapping , (unsigned int) MemoryBasicInformation.RegionSize , szHash );
-		MD5Digest( ( unsigned char *)szHash , 32 , pszHash );
-		for ( int i = 0 ; i < 32 ; ++i )
-			pszHash[ i ] = (char)toupper( pszHash[ i ] );
-	}
-
-	UnmapViewOfFile( lpvMapping );
-	CloseHandle( hFileMapping );
-	CloseHandle( hModuleHandle );
-
-	SECUROM_MARKER_HIGH_SECURITY_OFF(3)
-
-	return pszHash;
-}
-#endif // DEDICATED_SERVER
-
 void compute_build_id	()
 {
 	build_date			= __DATE__;
@@ -236,7 +166,6 @@ void InitEngine		()
 	Engine.Initialize			( );
 	while (!g_bIntroFinished)	Sleep	(100);
 	Device.Initialize			( );
-	CheckCopyProtection			( );
 }
 
 struct path_excluder_predicate
@@ -268,10 +197,8 @@ void InitConfig(T& config, pcstr name, bool fatal = true,
 		make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
 }
 
-PROTECT_API void InitSettings()
+void InitSettings()
 {
-	Msg("# Compute Module Hash: %s", ComputeModuleHash(szEngineHash));
-
 	string_path fname;
 	FS.update_path(fname, "$game_config$", "system.ltx");
 	pSettings = xr_new<CInifile>(fname, TRUE);
@@ -317,20 +244,9 @@ PROTECT_API void InitSettings()
 	ClearSkyMode			= (xr_strcmp("cs", EngineMode) == 0);
 	ShadowOfChernobylMode	= (xr_strcmp("shoc", EngineMode) == 0);
 }
-PROTECT_API void InitConsole	()
+void InitConsole	()
 {
-	SECUROM_MARKER_SECURITY_ON(5)
-
-#ifdef DEDICATED_SERVER
-	{
-		Console						= xr_new<CTextConsole>	();		
-	}
-#else
-	//	else
-	{
-		Console						= xr_new<CConsole>	();
-	}
-#endif
+	Console						= xr_new<CConsole>	();
 	Console->Initialize			( );
 
 	xr_strcpy						(Console->ConfigFile,"user.ltx");
@@ -339,11 +255,9 @@ PROTECT_API void InitConsole	()
 		sscanf					(strstr(Core.Params,"-ltx ")+5,"%[^ ] ",c_name);
 		xr_strcpy					(Console->ConfigFile,c_name);
 	}
-
-	SECUROM_MARKER_SECURITY_OFF(5)
 }
 
-PROTECT_API void InitInput		()
+void InitInput		()
 {
 	BOOL bCaptureInput			= !strstr(Core.Params,"-i");
 
@@ -354,12 +268,12 @@ void destroyInput	()
 	xr_delete					( pInput		);
 }
 
-PROTECT_API void InitSound1		()
+void InitSound1		()
 {
 	CSound_manager_interface::_create				(0);
 }
 
-PROTECT_API void InitSound2		()
+void InitSound2		()
 {
 	CSound_manager_interface::_create				(1);
 }
@@ -423,10 +337,8 @@ void Startup()
 	}
 
 	// Initialize APP
-//#ifndef DEDICATED_SERVER
 	ShowWindow( Device.m_hWnd , SW_SHOWNORMAL );
 	Device.Create				( );
-//#endif
 	LALib.OnCreate				( );
 	pApp						= xr_new<CApplication>	();
 	g_pGamePersistent			= (IGame_Persistent*)	NEW_INSTANCE (CLSID_GAME_PERSISTANT);
@@ -440,7 +352,6 @@ void Startup()
 	logoWindow					= NULL;
 
 	// Main cycle
-	CheckCopyProtection			( );
 	Memory.mem_usage();
 	Device.Run					( );
 
@@ -847,65 +758,12 @@ struct damn_keys_filter {
 
 #include "xr_ioc_cmd.h"
 
-//typedef void DUMMY_STUFF (const void*,const u32&,void*);
-//XRCORE_API DUMMY_STUFF	*g_temporary_stuff;
-
-//#define TRIVIAL_ENCRYPTOR_DECODER
-//#include "trivial_encryptor.h"
-
-//#define RUSSIAN_BUILD
-
-#if 0
-void foo	()
-{
-	typedef std::map<int,int>	TEST_MAP;
-	TEST_MAP					temp;
-	temp.insert					(std::make_pair(0,0));
-	TEST_MAP::const_iterator	I = temp.upper_bound(2);
-	if (I == temp.end())
-		OutputDebugString		("end() returned\r\n");
-	else
-		OutputDebugString		("last element returned\r\n");
-
-	typedef void*	pvoid;
-
-	LPCSTR			path = "d:\\network\\stalker_net2";
-	FILE			*f = fopen(path,"rb");
-	int				file_handle = _fileno(f);
-	u32				buffer_size = _filelength(file_handle);
-	pvoid			buffer = xr_malloc(buffer_size);
-	size_t			result = fread(buffer,buffer_size,1,f);
-	R_ASSERT3		(!buffer_size || (result && (buffer_size >= result)),"Cannot read from file",path);
-	fclose			(f);
-
-	u32				compressed_buffer_size = rtc_csize(buffer_size);
-	pvoid			compressed_buffer = xr_malloc(compressed_buffer_size);
-	u32				compressed_size = rtc_compress(compressed_buffer,compressed_buffer_size,buffer,buffer_size);
-
-	LPCSTR			compressed_path = "d:\\network\\stalker_net2.rtc";
-	FILE			*f1 = fopen(compressed_path,"wb");
-	fwrite			(compressed_buffer,compressed_size,1,f1);
-	fclose			(f1);
-}
-#endif // 0
-
-ENGINE_API	bool g_dedicated_server	= false;
-
-#ifndef DEDICATED_SERVER
-	// forward declaration for Parental Control checks
-	BOOL IsPCAccessAllowed(); 
-#endif // DEDICATED_SERVER
-
 int APIENTRY WinMain_impl(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      char *    lpCmdLine,
                      int       nCmdShow)
 {
-#ifdef DEDICATED_SERVER
-	Debug._initialize			(true);
-#else // DEDICATED_SERVER
 	Debug._initialize			(false);
-#endif // DEDICATED_SERVER
 
 	if (!IsDebuggerPresent()) {
 
@@ -930,25 +788,16 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		}
 	}
 
-//	foo();
-#ifndef DEDICATED_SERVER
-
-	// Parental Control for Vista and upper
-	if ( ! IsPCAccessAllowed() ) {
-		MessageBox( NULL , "Access restricted" , "Parental Control" , MB_OK | MB_ICONERROR );
-		return 1;
-	}
-
 	// Check for another instance
 #ifdef NO_MULTI_INSTANCES
 	#define STALKER_PRESENCE_MUTEX "Local\\STALKER-COP"
 	
 	HANDLE hCheckPresenceMutex = INVALID_HANDLE_VALUE;
 	hCheckPresenceMutex = OpenMutex( READ_CONTROL , FALSE ,  STALKER_PRESENCE_MUTEX );
-	if ( hCheckPresenceMutex == NULL ) {
+	if ( hCheckPresenceMutex == nullptr ) {
 		// New mutex
-		hCheckPresenceMutex = CreateMutex( NULL , FALSE , STALKER_PRESENCE_MUTEX );
-		if ( hCheckPresenceMutex == NULL )
+		hCheckPresenceMutex = CreateMutex( nullptr , FALSE , STALKER_PRESENCE_MUTEX );
+		if ( hCheckPresenceMutex == nullptr )
 			// Shit happens
 			return 2;
 	} else {
@@ -957,54 +806,11 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		return 1;
 	}
 #endif
-#else // DEDICATED_SERVER
-	g_dedicated_server			= true;
-#endif // DEDICATED_SERVER
 
 	// Title window
-	//IStream* pStream = CreateStreamOnResource(MAKEINTRESOURCE(IDB_PNG1), _T("PNG"));
-
-	//WICBitmapSource* res = LoadBitmapFromStream(CreateStreamOnResource(MAKEINTRESOURCE(IDB_PNG1), _T("PNG")));
-
-	//HBITMAP img = LoadSplashImage();
-	//image.
-
 	RegisterWindowClass(hInstance);
-	//logoWindow = CreateSplashWindow(hInstance);
 	logoWindow = ShowSplash(hInstance, nCmdShow);
-
 	SendMessage(logoWindow, WM_DESTROY, 0, 0);
-
-	//SendMessageTimeout(logoWindow, WM_DESTROY,3)
-	//SetSplashImage(logoWindow, image);
-
-	//logoWindow = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_STARTUP), 0, logDlgProc);
-
-
-	//HWND logoPicture = GetDlgItem(logoWindow, IDC_STATIC_LOGO);
-	//HWND logoPicture2 = GetDlgItem(logoWindow, IDD_STARTUP);
-	//RECT logoRect;
-	//GetWindowRect(logoPicture, &logoRect);
-
-	//SetWindowLong(logoWindow, GetWindowLong(logoWindow, GWL_EXSTYLE), GetWindowLong(logoWindow, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
-	//SetWindowLong(logoPicture, GetWindowLong(logoPicture, GWL_EXSTYLE), GetWindowLong(logoPicture, GWL_EXSTYLE) | WS_EX_TRANSPARENT);
-
-	//SetLayeredWindowAttributes(logoPicture, 0, 0, LWA_ALPHA);
-
-	/*SetWindowPos(
-		logoWindow,
-#ifndef DEBUG
-		HWND_TOPMOST,
-#else
-		HWND_NOTOPMOST,
-#endif // NDEBUG
-		0,
-		0,
-		logoRect.right - logoRect.left,
-		logoRect.bottom - logoRect.top,
-		SWP_NOMOVE | SWP_SHOWWINDOW// | SWP_NOSIZE
-	);
-	UpdateWindow(logoWindow);*/
 
 	// AVI
 	g_bIntroFinished			= TRUE;
@@ -1024,9 +830,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 //	g_temporary_stuff			= &trivial_encryptor::decode;
 	
 	compute_build_id			();
-
 	Core._initialize			("xray",NULL, TRUE, fsgame[0] ? fsgame : NULL);
-
 	InitSettings				();
 
 	// Adjust player & computer name for Asian
@@ -1048,11 +852,9 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 		GCurrentGame = EGamePath::SHOC_10006;
 	}
 
-#ifndef DEDICATED_SERVER
 	{
 		damn_keys_filter		filter;
 		(void)filter;
-#endif // DEDICATED_SERVER
 
 		InitEngine				();
 
@@ -1092,7 +894,6 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 				return 0;
 		};
 
-#ifndef DEDICATED_SERVER
 		if(strstr(Core.Params,"-r2a"))	
 			Console->Execute			("renderer renderer_r2a");
 		else
@@ -1104,9 +905,6 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 			pTmp->Execute				(Console->ConfigFile);
 			xr_delete					(pTmp);
 		}
-#else
-			Console->Execute			("renderer renderer_r1");
-#endif
 //.		InitInput					( );
 		Engine.External.Initialize	( );
 		Console->Execute			("stat_memory");
@@ -1129,14 +927,11 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 				temp_wf, &si, &pi);
 
 		}
-#ifndef DEDICATED_SERVER
 #ifdef NO_MULTI_INSTANCES		
 		// Delete application presence mutex
 		CloseHandle( hCheckPresenceMutex );
 #endif
 	}
-	// here damn_keys_filter class instanse will be destroyed
-#endif // DEDICATED_SERVER
 
 	return						0;
 }
@@ -1155,29 +950,11 @@ int stack_overflow_exception_filter	(int exception_code)
        return EXCEPTION_CONTINUE_SEARCH;
 }
 
-#include <boost/crc.hpp>
-
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      char *    lpCmdLine,
                      int       nCmdShow)
 {
-	//FILE* file				= 0;
-	//fopen_s					( &file, "z:\\development\\call_of_prypiat\\resources\\gamedata\\shaders\\r3\\objects\\r4\\accum_sun_near_msaa_minmax.ps\\2048__1___________4_11141_", "rb" );
-	//u32 const file_size		= 29544;
-	//char* buffer			= (char*)malloc(file_size);
-	//fread					( buffer, file_size, 1, file );
-	//fclose					( file );
-
-	//u32 const& crc			= *(u32*)buffer;
-
-	//boost::crc_32_type		processor;
-	//processor.process_block	( buffer + 4, buffer + file_size );
-	//u32 const new_crc		= processor.checksum( );
-	//VERIFY					( new_crc == crc );
-
-	//free					(buffer);
-
 	__try 
 	{
 		WinMain_impl		(hInstance,hPrevInstance,lpCmdLine,nCmdShow);
@@ -1321,20 +1098,6 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
 		R_ASSERT	(0==g_pGameLevel);
 		R_ASSERT	(0!=g_pGamePersistent);
 
-#ifdef NO_SINGLE
-		Console->Execute("main_menu on");
-		if (	(op_server == NULL)			||
-				(!xr_strlen(op_server))		||
-				(
-					(	strstr(op_server, "/dm")	|| strstr(op_server, "/deathmatch") ||
-						strstr(op_server, "/tdm")	|| strstr(op_server, "/teamdeathmatch") ||
-						strstr(op_server, "/ah")	|| strstr(op_server, "/artefacthunt") ||
-						strstr(op_server, "/cta")	|| strstr(op_server, "/capturetheartefact")
-					) && 
-					!strstr(op_server, "/alife")
-				)
-			)
-#endif // #ifdef NO_SINGLE
 		{		
 			Console->Execute("main_menu off");
 			Console->Hide();
@@ -1414,13 +1177,9 @@ void CApplication::LoadBegin	()
 
 		g_appLoaded			= FALSE;
 
-#ifndef DEDICATED_SERVER
 		_InitializeFont		(pFontSystem,"ui_font_letterica18_russian",0);
-#endif
 		phase_timer.Start	();
 		load_stage			= 0;
-
-		CheckCopyProtection	();
 	}
 }
 
@@ -1454,7 +1213,7 @@ void CApplication::DestroyLoadingScreen()
 
 //u32 calc_progress_color(u32, u32, int, int);
 
-PROTECT_API void CApplication::LoadDraw		()
+void CApplication::LoadDraw		()
 {
 	if(g_appLoaded)				return;
 
@@ -1468,13 +1227,9 @@ PROTECT_API void CApplication::LoadDraw		()
 
 	if(!Device.Begin () )		return;
 
-	if	(g_dedicated_server)
-		Console->OnRender			();
-	else
-		load_draw_internal			();
+	load_draw_internal			();
 
 	Device.End					();
-	CheckCopyProtection			();
 }
 
 void CApplication::LoadForceFinish()
@@ -1545,8 +1300,6 @@ void CApplication::Level_Append		(LPCSTR folder)
 
 void CApplication::Level_Scan()
 {
-	SECUROM_MARKER_PERFORMANCE_ON(8)
-
 	for (u32 i=0; i<Levels.size(); i++)
 	{
 		xr_free(Levels[i].folder);
@@ -1562,8 +1315,6 @@ void CApplication::Level_Scan()
 		Level_Append((*folder)[i]);
 	
 	FS.file_list_close		(folder);
-
-	SECUROM_MARKER_PERFORMANCE_OFF(8)
 }
 
 void gen_logo_name(string_path& dest, LPCSTR level_name, int num)
@@ -1588,8 +1339,6 @@ void gen_logo_name(string_path& dest, LPCSTR level_name, int num)
 
 void CApplication::Level_Set(u32 L)
 {
-	SECUROM_MARKER_PERFORMANCE_ON(9)
-
 	if (L>=Levels.size())	return;
 	FS.get_path	("$level$")->_set	(Levels[L].folder);
 
@@ -1621,18 +1370,11 @@ void CApplication::Level_Set(u32 L)
 
 	if (path[0] && loadingScreen)
 		loadingScreen->SetLevelLogo(path);
-
-	CheckCopyProtection			();
-
-	SECUROM_MARKER_PERFORMANCE_OFF(9)
 }
 
 int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)
 {
 	int result = -1;
-
-	SECUROM_MARKER_SECURITY_ON(7)
-
 	CLocatorAPI::archives_it it		= FS.m_archives.begin();
 	CLocatorAPI::archives_it it_e	= FS.m_archives.end();
 	bool arch_res					= false;
@@ -1680,8 +1422,6 @@ int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)
 	if( arch_res )
 		g_pGamePersistent->OnAssetsChanged	();
 
-	SECUROM_MARKER_SECURITY_OFF(7)
-
 	return result;
 }
 
@@ -1713,56 +1453,6 @@ void CApplication::LoadAllArchives()
 	}
 }
 
-#ifndef DEDICATED_SERVER
-// Parential control for Vista and upper
-typedef BOOL (*PCCPROC)( CHAR* ); 
-
-BOOL IsPCAccessAllowed()
-{
-	CHAR szPCtrlChk[ MAX_PATH ] , szGDF[ MAX_PATH ] , *pszLastSlash;
-	HINSTANCE hPCtrlChk = NULL;
-	PCCPROC pctrlchk = NULL;
-	BOOL bAllowed = TRUE;
-
-	if ( ! GetModuleFileName( NULL , szPCtrlChk , MAX_PATH ) )
-		return TRUE;
-
-	if ( ( pszLastSlash = strrchr( szPCtrlChk , '\\' ) ) == NULL )
-		return TRUE;
-
-	*pszLastSlash = '\0';
-
-	strcpy_s( szGDF , szPCtrlChk );
-
-	strcat_s( szPCtrlChk , "\\pctrlchk.dll" );
-	if ( GetFileAttributes( szPCtrlChk ) == INVALID_FILE_ATTRIBUTES )
-		return TRUE;
-
-	if ( ( pszLastSlash = strrchr( szGDF , '\\' ) ) == NULL )
-		return TRUE;
-
-	*pszLastSlash = '\0';
-
-	strcat_s( szGDF , "\\Stalker-COP.exe" );
-	if ( GetFileAttributes( szGDF ) == INVALID_FILE_ATTRIBUTES )
-		return TRUE;
-
-	if ( ( hPCtrlChk = LoadLibrary( szPCtrlChk ) ) == NULL )
-		return TRUE;
-
-	if ( ( pctrlchk = (PCCPROC) GetProcAddress( hPCtrlChk , "pctrlchk" ) ) == NULL ) {
-		FreeLibrary( hPCtrlChk );
-		return TRUE;
-	}
-
-	bAllowed = pctrlchk( szGDF );
-
-	FreeLibrary( hPCtrlChk );
-
-	return bAllowed;
-}
-#endif // DEDICATED_SERVER
-
 //launcher stuff----------------------------
 extern "C"{
 	typedef int	 __cdecl LauncherFunc	(int);
@@ -1789,30 +1479,6 @@ void FreeLauncher(){
 
 int doLauncher()
 {
-/*
-	execUserScript();
-	InitLauncher();
-	int res = pLauncher(0);
-	FreeLauncher();
-	if(res == 1) // do benchmark
-		g_bBenchmark = true;
-
-	if(g_bBenchmark){ //perform benchmark cycle
-		doBenchmark();
-	
-		// InitLauncher	();
-		// pLauncher	(2);	//show results
-		// FreeLauncher	();
-
-		Core._destroy			();
-		return					(1);
-
-	};
-	if(res==8){//Quit
-		Core._destroy			();
-		return					(1);
-	}
-*/
 	return 0;
 }
 

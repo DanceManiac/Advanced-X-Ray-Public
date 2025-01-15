@@ -4,7 +4,6 @@
 
 #include "stdafx.h"
 #include "Engine.h"
-#include "dedicated_server_only.h"
 
 CEngine				Engine;
 
@@ -24,7 +23,7 @@ CEngine::~CEngine()
 
 extern	void msCreate		(LPCSTR name);
 
-PROTECT_API void CEngine::Initialize	(void)
+void CEngine::Initialize	(void)
 {
 	// Other stuff
 	Engine.Sheduler.Initialize			( );

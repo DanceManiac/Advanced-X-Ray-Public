@@ -4,10 +4,8 @@
 #include "../Include/xrRender/DrawUtils.h"
 //#include "xr_effgamma.h"
 #include "render.h"
-#include "dedicated_server_only.h"
 #include "../xrcdb/xrxrc.h"
 
-#include "securom_api.h"
 #include <imgui.h>
 
 extern XRCDB_API BOOL *cdb_bDebug;
@@ -65,10 +63,8 @@ void CRenderDevice::ConnectToRender()
 		m_pRender			= RenderFactory->CreateRenderDeviceRender();
 }
 
-PROTECT_API void CRenderDevice::Create	() 
+void CRenderDevice::Create	() 
 {
-	SECUROM_MARKER_SECURITY_ON(4)
-
 	if (b_is_Ready)		return;		// prevent double call
 	Statistic			= xr_new<CStats>();
 
@@ -124,6 +120,4 @@ cdb_bDebug		= &bDebug;
 	std::string path = userDir + fileToWrite;
 
 	ImGui::GetIO().IniFilename = xr_strdup(path.c_str());//path.c_str();
-
-	SECUROM_MARKER_SECURITY_OFF(4)
 }

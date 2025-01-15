@@ -172,10 +172,6 @@ void CTexture::Load		(const char* Name)
 	}
 
 	Preload							(Name);
-//#ifndef		DEDICATED_SERVER
-#ifndef _EDITOR
-	if (!g_dedicated_server)
-#endif
 	{
 		// Check for OGM
 		string_path			fn;
@@ -294,7 +290,6 @@ void CTexture::Load		(const char* Name)
 				flags.MemoryUsage		=	mem;
 			}
 		}
-//#endif
 	}
 	PostLoad	()		;
 }
