@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "pch_script.h"
 #include "actor.h"
 #include "weapon.h"
 #include "mercuryball.h"
@@ -21,6 +22,8 @@
 #include "ui\UIStatic.h"
 #include "string_table.h"
 #include "AdvancedXrayGameConstants.h"
+#include "script_engine.h"
+#include "ai_space.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
 
@@ -148,6 +151,27 @@ void CActor::PickupModeUpdate()
 			return;
 		}
 
+		shared_str take_precond = inv_item->GetTakePreconditionFunc();
+		if (xr_strcmp(take_precond, ""))
+		{
+			luabind::functor<bool> m_functor;
+			if (ai().script_engine().functor(take_precond.c_str(), m_functor))
+			{
+				if (!m_functor())
+					return;
+
+#ifdef DEBUG
+				Msg("[ActorFeel::PickupModeUpdate]: Lua function [%s] called from item [%s] by use_precondition.", take_precond.c_str(), inv_item->m_section_id.c_str());
+#endif
+			}
+#ifdef DEBUG
+			else
+			{
+				Msg("[ActorFeel::PickupModeUpdate]: ERROR: Lua function [%s] called from item [%s] by use_precondition not found!", take_precond.c_str(), inv_item->m_section_id.c_str());
+			}
+#endif
+		}
+
 		NET_Packet		P;
 		u_EventGen		(P,GE_OWNERSHIP_TAKE, ID());
 		P.w_u16			(m_pObjectWeLookingAt->ID());
@@ -249,6 +273,27 @@ void	CActor::PickupModeUpdate_COD	()
 			_s->wnd()->SetText(CStringTable().translate("st_backpack_full").c_str());
 
 			return;
+		}
+
+		shared_str take_precond = pNearestItem->GetTakePreconditionFunc();
+		if (xr_strcmp(take_precond, ""))
+		{
+			luabind::functor<bool> m_functor;
+			if (ai().script_engine().functor(take_precond.c_str(), m_functor))
+			{
+				if (!m_functor())
+					return;
+
+#ifdef DEBUG
+				Msg("[ActorFeel::PickupModeUpdate_COD]: Lua function [%s] called from item [%s] by use_precondition.", take_precond.c_str(), pNearestItem->m_section_id.c_str());
+#endif
+			}
+#ifdef DEBUG
+			else
+			{
+				Msg("[ActorFeel::PickupModeUpdate_COD]: ERROR: Lua function [%s] called from item [%s] by use_precondition not found!", take_precond.c_str(), pNearestItem->m_section_id.c_str());
+			}
+#endif
 		}
 		
 		CUsableScriptObject*	pUsableObject = smart_cast<CUsableScriptObject*>(pNearestItem);

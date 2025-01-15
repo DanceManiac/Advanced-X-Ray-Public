@@ -85,6 +85,7 @@ CInventoryItem::CInventoryItem()
 
 	m_use_functor_str				= nullptr;
 	m_use_precondition_func			= nullptr;
+	m_take_precondition_func		= nullptr;
 }
 
 CInventoryItem::~CInventoryItem() 
@@ -240,6 +241,7 @@ void CInventoryItem::Load(LPCSTR section)
 
 	m_use_functor_str = READ_IF_EXISTS(pSettings, r_string, section, "use_functor", "");
 	m_use_precondition_func = READ_IF_EXISTS(pSettings, r_string, section, "use_precondition", "");
+	m_take_precondition_func = READ_IF_EXISTS(pSettings, r_string, section, "take_precondition", "");
 }
 
 void CInventoryItem::ReloadNames()

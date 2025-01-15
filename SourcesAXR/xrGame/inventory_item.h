@@ -163,6 +163,7 @@ public:
 
 	shared_str					m_use_functor_str;
 	shared_str					m_use_precondition_func;
+	shared_str					m_take_precondition_func;
 
 	SInvItemPlace				m_ItemCurrPlace;
 
@@ -208,6 +209,9 @@ public:
 
 	virtual bool 				IsNecessaryItem	    (CInventoryItem* item);
 	virtual bool				IsNecessaryItem	    (const shared_str& item_sect){return false;};
+
+	shared_str					GetTakePreconditionFunc()						{ return m_take_precondition_func; }
+
 protected:	
 	u32							m_cost;
 	float						m_weight;
