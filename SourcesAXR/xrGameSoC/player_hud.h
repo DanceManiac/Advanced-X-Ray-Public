@@ -282,6 +282,8 @@ public:
 	void			StopBlendAnm		(LPCSTR name, bool bForce = false);
 	void			StopAllBlendAnms	(bool bForce);
 	float			SetBlendAnmTime		(LPCSTR name, float time);
+	bool			IsBlendAnmActive	(LPCSTR name);
+
 	void			render_hud			();	
 	void			render_item_ui		();
 	bool			render_item_ui_query();

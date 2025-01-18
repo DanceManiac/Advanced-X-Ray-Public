@@ -492,6 +492,15 @@ public:
 	float					GetConditionMisfireProbability	() const;
 	virtual	float			GetConditionToShow				() const;
 
+	struct BlendCamParams
+	{
+		shared_str name	= nullptr;
+		float speed		= 1.0f;
+		float power		= 1.0f;
+	};
+
+	void					ProcessBlendCamParams			(LPCSTR params, BlendCamParams& cam_params);
+
 public:
 	CameraRecoil			cam_recoil;			// simple mode (walk, run)
 	CameraRecoil			zoom_cam_recoil;	// using zoom =(ironsight or scope)
@@ -512,7 +521,10 @@ protected:
 	float					conditionDecreasePerQueueShot;	//увеличение изношености при выстреле очередью
 	float					conditionDecreasePerShot;		//увеличение изношености при одиночном выстреле
 	float					conditionDecreasePerShotOnHit;
-	
+
+	BlendCamParams			m_BlendAimStartCam{};
+	BlendCamParams			m_BlendAimEndCam{};
+	BlendCamParams			m_BlendAimIdleCam{};
 public:
 	float GetMisfireStartCondition	() const {return misfireStartCondition;};
 	float GetMisfireEndCondition	() const {return misfireEndCondition;};
@@ -662,6 +674,7 @@ private:
 	virtual bool			ActivationSpeedOverriden	(Fvector& dest, bool clear_override);
 
 	bool					m_bRememberActorNVisnStatus;
+
 public:
 	virtual void			SetActivationSpeedOverride	(Fvector const& speed);
 			bool			GetRememberActorNVisnStatus	() {return m_bRememberActorNVisnStatus;};

@@ -510,6 +510,15 @@ public:
 	float					GetConditionMisfireProbability	() const;
 	virtual	float			GetConditionToShow				() const;
 
+	struct BlendCamParams
+	{
+		shared_str name	= nullptr;
+		float speed		= 1.0f;
+		float power		= 1.0f;
+	};
+
+	void					ProcessBlendCamParams			(LPCSTR params, BlendCamParams& cam_params);
+
 public:
 	//отдача при стрельбе 
 	float					camMaxAngle;
@@ -531,6 +540,10 @@ protected:
 	//увеличение изношености при выстреле
 	float					conditionDecreasePerShot;
 	float					conditionDecreasePerShotOnHit;
+
+	BlendCamParams			m_BlendAimStartCam{};
+	BlendCamParams			m_BlendAimEndCam{};
+	BlendCamParams			m_BlendAimIdleCam{};
 
 	struct SPDM
 	{

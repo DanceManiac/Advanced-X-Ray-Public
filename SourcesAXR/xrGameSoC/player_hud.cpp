@@ -1473,6 +1473,19 @@ float player_hud::SetBlendAnmTime(LPCSTR name, float time)
 	return 0;
 }
 
+bool player_hud::IsBlendAnmActive(LPCSTR name)
+{
+	for (script_layer* anm : m_script_layers)
+	{
+		if (!xr_strcmp(anm->m_name, name))
+		{
+			if (anm->active)
+				return true;
+		}
+	}
+	return false;
+}
+
 void player_hud::StopScriptAnim()
 {
 	u8 part = script_anim_part;

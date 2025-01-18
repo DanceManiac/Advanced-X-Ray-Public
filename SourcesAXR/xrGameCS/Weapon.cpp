@@ -873,6 +873,47 @@ void CWeapon::Load		(LPCSTR section)
 				m_ItemsForRepair.push_back(std::make_pair(items_for_repair_sect, 0));
 		}
 	}
+
+	LPCSTR m_sBlendAimStartCamParams	= READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_start", nullptr);
+	LPCSTR m_sBlendAimEndCamParams		= READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_end", nullptr);
+	LPCSTR m_sBlendAimIdleCamParams		= READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_idle", nullptr);
+
+	ProcessBlendCamParams(m_sBlendAimStartCamParams,	m_BlendAimStartCam);
+	ProcessBlendCamParams(m_sBlendAimEndCamParams,		m_BlendAimEndCam);
+	ProcessBlendCamParams(m_sBlendAimIdleCamParams,		m_BlendAimIdleCam);
+}
+
+void CWeapon::ProcessBlendCamParams(LPCSTR params, BlendCamParams& cam_params)
+{
+    if (params && params[0])
+    {
+        string512 anim_param{}, anim_name{};
+        int count = _GetItemCount(params);
+
+        for (int it = 0; it < count; ++it)
+        {
+            _GetItem(params, it, anim_param);
+
+            switch (it)
+            {
+            case 0:
+                {
+                    strconcat(sizeof(anim_name), anim_name, "blend\\", anim_param, ".anm");
+					cam_params.name = anim_name;
+                } break;
+            case 1:
+                {
+					cam_params.speed = std::stof(anim_param);
+                } break;
+            case 2:
+                {
+					cam_params.power = std::stof(anim_param);
+                } break;
+            default:
+                break;
+            }
+        }
+    }
 }
 
 void CWeapon::LoadFireParams		(LPCSTR section)
@@ -1600,6 +1641,14 @@ void CWeapon::UpdateCL		()
 
 	if(m_zoom_params.m_pVision)
 		m_zoom_params.m_pVision->Update();
+
+	if (m_BlendAimIdleCam.name.size() && !g_player_hud->IsBlendAnmActive(m_BlendAimStartCam.name.c_str()) && !g_player_hud->IsBlendAnmActive(m_BlendAimIdleCam.name.c_str()) && GetHUDmode() &&  IsZoomed())
+	{
+		if (m_BlendAimStartCam.name.size())
+			g_player_hud->StopBlendAnm(m_BlendAimStartCam.name.c_str());
+
+		g_player_hud->PlayBlendAnm(m_BlendAimIdleCam.name.c_str(), 2, m_BlendAimIdleCam.speed, m_BlendAimIdleCam.power, true, false);
+	}
 }
 
 void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset)
@@ -2624,6 +2673,9 @@ void CWeapon::OnZoomIn()
 		last_hud_fov = psHUD_FOV_def;
 		GamePersistent().SetPickableEffectorDOF(true);
 		UpdateAimOffsets();
+
+		if (m_BlendAimStartCam.name.size())
+			g_player_hud->PlayBlendAnm(m_BlendAimStartCam.name.c_str(), 2, m_BlendAimStartCam.speed, m_BlendAimStartCam.power, false, false);
 	}
 
 	if (m_zoom_params.m_sUseBinocularVision.size() && IsScopeAttached() && NULL == m_zoom_params.m_pVision)
@@ -2673,6 +2725,14 @@ void CWeapon::OnZoomOut()
 		psHUD_FOV_def = last_hud_fov;
 		GamePersistent().SetPickableEffectorDOF(false);
 		UpdateAimOffsets();
+
+		if (m_BlendAimEndCam.name.size())
+		{
+			if (m_BlendAimIdleCam.name.size())
+				g_player_hud->StopBlendAnm(m_BlendAimIdleCam.name.c_str());
+
+			g_player_hud->PlayBlendAnm(m_BlendAimEndCam.name.c_str(), 2, m_BlendAimEndCam.speed, m_BlendAimEndCam.power, false, false);
+		}
 	}
 
 	ResetSubStateTime					();

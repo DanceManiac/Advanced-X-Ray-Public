@@ -487,6 +487,15 @@ public:
 	float					GetConditionMisfireProbability	() const;
 	virtual	float			GetConditionToShow				() const;
 
+	struct BlendCamParams
+	{
+		shared_str name	= nullptr;
+		float speed		= 1.0f;
+		float power		= 1.0f;
+	};
+
+	void					ProcessBlendCamParams			(LPCSTR params, BlendCamParams& cam_params);
+
 public:
 	CameraRecoil			cam_recoil;			// simple mode (walk, run)
 	CameraRecoil			zoom_cam_recoil;	// using zoom =(ironsight or scope)
@@ -508,6 +517,10 @@ protected:
 	float					conditionDecreasePerShot;		//увеличение изношености при одиночном выстреле
 	float					conditionDecreasePerShotOnHit;
 	
+	BlendCamParams			m_BlendAimStartCam{};
+	BlendCamParams			m_BlendAimEndCam{};
+	BlendCamParams			m_BlendAimIdleCam{};
+
 public:
 	float GetMisfireStartCondition	() const {return misfireStartCondition;};
 	float GetMisfireEndCondition	() const {return misfireEndCondition;};
