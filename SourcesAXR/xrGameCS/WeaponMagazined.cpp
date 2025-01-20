@@ -168,6 +168,15 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section,"snd_silncer_shot", "sndSilencerShot", false, m_eSoundShot);
 	}
 
+	if (WeaponSoundExist(section, "snd_zoom_in", true))
+		m_sounds.LoadSound(section, "snd_zoom_in", "sndZoomIn", true, m_eSoundEmptyClick);
+	if (WeaponSoundExist(section, "snd_zoom_out", true))
+		m_sounds.LoadSound(section, "snd_zoom_out", "sndZoomOut", true, m_eSoundEmptyClick);
+	if (WeaponSoundExist(section, "snd_sprint_start", true))
+		m_sounds.LoadSound(section, "snd_sprint_start", "sndSprintStart", true, m_eSoundEmptyClick);
+	if (WeaponSoundExist(section, "snd_sprint_end", true))
+		m_sounds.LoadSound(section, "snd_sprint_end", "sndSprintEnd", true, m_eSoundEmptyClick);
+
 	m_iBaseDispersionedBulletsCount = READ_IF_EXISTS(pSettings, r_u8, section, "base_dispersioned_bullets_count", 0);
 	m_fBaseDispersionedBulletsSpeed = READ_IF_EXISTS(pSettings, r_float, section, "base_dispersioned_bullets_speed", m_fStartBulletSpeed);
 
@@ -728,6 +737,14 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndFlashlightOff", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "snd_change_zoom"))
 		m_sounds.SetPosition("sndChangeZoom", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_zoom_in"))
+		m_sounds.SetPosition("sndZoomIn", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_zoom_out"))
+		m_sounds.SetPosition("sndZoomOut", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_start"))
+		m_sounds.SetPosition("sndSprintStart", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_end"))
+		m_sounds.SetPosition("sndSprintEnd", P);
 
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);
@@ -2090,6 +2107,9 @@ void CWeaponMagazined::OnZoomIn			()
 	CActor* pActor = smart_cast<CActor*>(H_Parent());
 	if(pActor)
 	{
+		if (m_sounds.FindSoundItem("sndZoomIn", false))
+			m_sounds.PlaySound("sndZoomIn", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+
 		CEffectorZoomInertion* S = smart_cast<CEffectorZoomInertion*>	(pActor->Cameras().GetCamEffector(eCEZoom));
 		if (!S)	
 		{
@@ -2121,8 +2141,13 @@ void CWeaponMagazined::OnZoomOut		()
 
 	CActor* pActor			= smart_cast<CActor*>(H_Parent());
 
-	if(pActor)
-		pActor->Cameras().RemoveCamEffector	(eCEZoom);
+	if (pActor)
+	{
+		if (m_sounds.FindSoundItem("sndZoomOut", false))
+			m_sounds.PlaySound("sndZoomOut", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+
+		pActor->Cameras().RemoveCamEffector(eCEZoom);
+	}
 
 }
 
