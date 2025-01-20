@@ -520,6 +520,7 @@ protected:
 	BlendCamParams			m_BlendAimStartCam{};
 	BlendCamParams			m_BlendAimEndCam{};
 	BlendCamParams			m_BlendAimIdleCam{};
+	BlendCamParams			m_BlendFakeShootCam{};
 
 public:
 	float GetMisfireStartCondition	() const {return misfireStartCondition;};

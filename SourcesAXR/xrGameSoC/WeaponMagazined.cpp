@@ -20,6 +20,7 @@
 #include "string_table.h"
 #include "script_callback_ex.h"
 #include "script_game_object.h"
+#include "player_hud.h"
 #include "AdvancedXrayGameConstants.h"
 
 ENGINE_API  extern float psHUD_FOV;
@@ -881,6 +882,9 @@ void CWeaponMagazined::OnShot		()
 
 void CWeaponMagazined::OnEmptyClick	()
 {
+	if (m_BlendFakeShootCam.name.size())
+		g_player_hud->PlayBlendAnm(m_BlendFakeShootCam.name.c_str(), 2, m_BlendFakeShootCam.speed, m_BlendFakeShootCam.power, false, false);
+
 	PlaySound	("sndEmptyClick", get_LastFP());
 	PlayAnimFakeShoot();
 }

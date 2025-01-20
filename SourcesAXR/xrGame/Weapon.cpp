@@ -882,13 +882,10 @@ void CWeapon::Load		(LPCSTR section)
 		}
 	}
 
-	LPCSTR m_sBlendAimStartCamParams	= READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_start", nullptr);
-	LPCSTR m_sBlendAimEndCamParams		= READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_end", nullptr);
-	LPCSTR m_sBlendAimIdleCamParams		= READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_idle", nullptr);
-
-	ProcessBlendCamParams(m_sBlendAimStartCamParams,	m_BlendAimStartCam);
-	ProcessBlendCamParams(m_sBlendAimEndCamParams,		m_BlendAimEndCam);
-	ProcessBlendCamParams(m_sBlendAimIdleCamParams,		m_BlendAimIdleCam);
+	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_start",	nullptr),	m_BlendAimStartCam);
+	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_end",		nullptr),	m_BlendAimStartCam);
+	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_aim_idle",		nullptr),	m_BlendAimEndCam);
+	ProcessBlendCamParams(READ_IF_EXISTS(pSettings, r_string, m_hud_sect, "blend_fakeshot",		nullptr),	m_BlendAimIdleCam);
 }
 
 void CWeapon::ProcessBlendCamParams(LPCSTR params, BlendCamParams& cam_params)
