@@ -1575,10 +1575,6 @@ void CWeapon::OnH_B_Chield		()
 }
 
 extern int hud_adj_mode;
-bool CWeapon::AllowBore()
-{
-	return true;
-}
 
 void CWeapon::UpdateCL		()
 {

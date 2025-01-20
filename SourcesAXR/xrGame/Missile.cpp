@@ -220,7 +220,7 @@ void CMissile::UpdateCL()
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
 	if(pActor && !pActor->AnyMove() && this==pActor->inventory().ActiveItem())
 	{
-		if (hud_adj_mode==0 && GetState()==eIdle && (Device.dwTimeGlobal-m_dw_curr_substate_time>20000) )
+		if (hud_adj_mode==0 && AllowBore() && GetState() == eIdle && (Device.dwTimeGlobal - m_dw_curr_substate_time>20000))
 		{
 			SwitchState			(eBore);
 			ResetSubStateTime	();

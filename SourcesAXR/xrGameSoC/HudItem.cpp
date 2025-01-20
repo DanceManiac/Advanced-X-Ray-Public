@@ -30,6 +30,7 @@ CHudItem::CHudItem()
 	m_current_motion_def		= NULL;
 	m_started_rnd_anim_idx		= u8(-1);
 	m_hud_sect					= nullptr;
+	m_bBoreEnabled				= true;
 }
 
 DLL_Pure *CHudItem::_construct	()
@@ -57,8 +58,6 @@ void CHudItem::Load(LPCSTR section)
 
 	m_animation_slot		= pSettings->r_u32			(section,"animation_slot");
 
-	m_sounds.LoadSound(section, "snd_bore", "sndBore", true);
-
 	// HUD FOV
 	m_nearwall_enabled			= READ_IF_EXISTS(pSettings, r_bool,	 section, "nearwall_on", true);
 
@@ -72,6 +71,11 @@ void CHudItem::Load(LPCSTR section)
 	
 	m_base_fov					= READ_IF_EXISTS(pSettings, r_float, section, "hud_fov", 0.0f);
 	m_nearwall_last_hud_fov		= m_base_fov > 0.0f ? m_base_fov : psHUD_FOV_def;
+
+	m_bBoreEnabled				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_bore_state", true);
+
+	if (m_bBoreEnabled)
+		m_sounds.LoadSound		(section, "snd_bore", "sndBore", true);
 }
 
 

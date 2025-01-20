@@ -162,6 +162,7 @@ public:
 	virtual bool				CheckCompatibility		(CHudItem*)			{return true;}
 	virtual bool				ParentIsActor			();
 			void				ReplaceHudSection		(LPCSTR hud_section);
+	virtual bool				AllowBore				() { return m_bBoreEnabled; }
 protected:
 
 	IC		void				SetPending			(BOOL H)			{ m_huditem_flags.set(fl_pending, H);}
@@ -178,6 +179,8 @@ protected:
 	u32							m_animation_slot;
 
 	HUD_SOUND_COLLECTION_LAYERED m_sounds;
+
+	bool 						m_bBoreEnabled;
 
 private:
 	CPhysicItem					*m_object;
