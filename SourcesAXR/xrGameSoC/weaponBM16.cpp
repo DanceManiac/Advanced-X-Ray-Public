@@ -52,6 +52,42 @@ void CWeaponBM16::PlayAnimShoot()
 	}
 }
 
+void CWeaponBM16::PlayAnimFakeShoot()
+{
+	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
+		return;
+
+	string128 guns_fakeshoot_anm{};
+	strconcat(sizeof(guns_fakeshoot_anm), guns_fakeshoot_anm, ("anm_fakeshoot"), (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "", IsMisfire() ? "_jammed" : "", "_", std::to_string(m_magazine.size()).c_str());
+
+	if (isHUDAnimationExist(guns_fakeshoot_anm))
+	{
+		PlayHUDMotionNew(guns_fakeshoot_anm, true, GetState());
+	}
+	else if (guns_fakeshoot_anm && strstr(guns_fakeshoot_anm, "_jammed"))
+	{
+		char new_guns_fakeshoot_anm[256];
+		strcpy(new_guns_fakeshoot_anm, guns_fakeshoot_anm);
+		new_guns_fakeshoot_anm[strlen(guns_fakeshoot_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_fakeshoot_anm))
+		{
+			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
+		}
+	}
+	else if (guns_fakeshoot_anm && strstr(guns_fakeshoot_anm, "_empty"))
+	{
+		char new_guns_fakeshoot_anm[256];
+		strcpy(new_guns_fakeshoot_anm, guns_fakeshoot_anm);
+		new_guns_fakeshoot_anm[strlen(guns_fakeshoot_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_fakeshoot_anm))
+		{
+			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
+		}
+	}
+}
+
 void CWeaponBM16::PlayAnimBore()
 {
 	switch( m_magazine.size() )
