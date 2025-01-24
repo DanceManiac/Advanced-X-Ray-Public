@@ -222,7 +222,10 @@ void CDialogHolder::StartStopMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 
 void CDialogHolder::StartDialog(CUIDialogWnd* pDialog, bool bDoHideIndicators)
 {
-	if (pDialog && pDialog->NeedCenterCursor())
+	// cari0us - чтобы отрубить центрирование курсора в принципе, как например нужно мне
+	const bool b_disable_center_cursor_global = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "disable_center_cursor_global", false);
+
+	if (pDialog && (pDialog->NeedCenterCursor() && !b_disable_center_cursor_global))
 	{
 		GetUICursor().SetUICursorPosition(Fvector2().set(512.0f, 384.0f));
 	}
