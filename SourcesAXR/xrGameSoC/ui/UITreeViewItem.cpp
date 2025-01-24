@@ -200,14 +200,12 @@ void CUITreeViewItem::AddItem(CUITreeViewItem *pItem)
 
 void CUITreeViewItem::DeleteAllSubItems()
 {
-	for (SubItems_it it = vSubItems.begin(); it != vSubItems.end(); ++it)
+	for (auto* vSubItem : vSubItems)
 	{
-		CUIWindow *pWindow = (*it)->GetParent();
-
-		if (pWindow)
-			pWindow->DetachChild(*it);
-
-		xr_delete(*it);
+		if (!vSubItem->GetParent())
+		{
+			xr_delete(vSubItem);
+		}
 	}
 
 	vSubItems.clear();
