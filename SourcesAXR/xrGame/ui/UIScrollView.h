@@ -15,6 +15,7 @@ enum {eVertFlip=(1<<0),eNeedRecalc=(1<<1),eFixedScrollBar=(1<<2),eItemsSelectabe
 	CUIScrollBar*	m_VScrollBar;
 	CUIWindow*		m_pad;
 
+	float			m_targetScrollPosition{};
 	float			m_rightIndent;
 	float			m_leftIndent;
 	float			m_upIndent;
@@ -60,6 +61,7 @@ public:
 	CUIWindow*		GetSelected			();
 			Fvector2 GetPadSize			();
 			void	ForceUpdate			();
+			void	ForceScrollPosition	();
 			int		GetMinScrollPos		();
 			int		GetMaxScrollPos		();
 			int		GetCurrentScrollPos	();

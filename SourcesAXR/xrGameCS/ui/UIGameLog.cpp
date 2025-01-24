@@ -28,6 +28,8 @@ CUIGameLog::~CUIGameLog()
 
 CUIStatic* CUIGameLog::AddLogMessage(LPCSTR msg)
 {
+	u32 curr_size = GetSize();
+
 	CUIStatic* pItem				= NULL;
 	ADD_TEXT_TO_VIEW3				(msg, pItem, this);
 	pItem->SetTextComplexMode		(true);
@@ -36,6 +38,13 @@ CUIStatic* CUIGameLog::AddLogMessage(LPCSTR msg)
 	pItem->SetClrAnimDelay			(5000.0f);
 	pItem->SetClrLightAnim			(CHAT_LOG_ITEMS_ANIMATION, false, true, true, true);
 	ForceUpdate						();
+
+	if (curr_size == 0)
+	{
+		const Fvector2 w_pos = { m_pad->GetWndPos().x, GetHeight() };
+		m_pad->SetWndPos(w_pos);
+	}
+
 	return							pItem;
 }
 
@@ -43,10 +52,18 @@ CUIStatic* CUIGameLog::AddLogMessage(LPCSTR msg)
 // initialization of item's height, text static and icon still necessary
 CUIPdaMsgListItem* CUIGameLog::AddPdaMessage()
 {
+	u32 curr_size							= GetSize();
+
 	CUIPdaMsgListItem* pItem				= xr_new<CUIPdaMsgListItem>();
 	pItem->InitPdaMsgListItem				(Fvector2().set(0,0), Fvector2().set(GetDesiredChildWidth(),10.0f));
     pItem->SetClrLightAnim					(CHAT_LOG_ITEMS_ANIMATION, false, true, true, true);
 	AddWindow								(pItem, true);
+
+	if (curr_size == 0)
+	{
+		const Fvector2 w_pos = { m_pad->GetWndPos().x, GetHeight() };
+		m_pad->SetWndPos(w_pos);
+	}
 
 	return pItem;
 }
@@ -113,18 +130,21 @@ void CUIGameLog::Update()
 			toDelList.push_back(pItem);
 	}
 
-	// Delete elements
+	if (!toDelList.empty())
 	{
-		xr_vector<CUIWindow*>::iterator it;
-		for (it = toDelList.begin(); it != toDelList.end(); it++)
-			RemoveWindow(*it);
+		// Delete elements
+		{
+			for (const auto& it : toDelList)
+				RemoveWindow(it);
+		}
+		ForceScrollPosition();
+
+		toDelList.clear();
 	}
 
-	// REMOVE INVISIBLE AND PART VISIBLE ITEMS
-	if(m_flags.test	(eNeedRecalc) )
-		RecalcSize			();
+	/* dsh: не могу понять, для чего это нужно. Но из-за этого, в
+	   некоторых случаях, не показываются некоторые сообщения.
 
-	toDelList.clear();
 	Frect visible_rect;
 	GetAbsoluteRect(visible_rect);
 	for(	WINDOW_LIST_it it = m_pad->GetChildWndList().begin(); 
@@ -151,4 +171,5 @@ void CUIGameLog::Update()
 
 	if(m_flags.test	(eNeedRecalc) )
 		RecalcSize			();
+	*/
 }
