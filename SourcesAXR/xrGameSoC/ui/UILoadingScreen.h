@@ -8,34 +8,46 @@
 ////////////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "../xrEngine/ILoadingScreen.h"
+#include "../../xrEngine/ILoadingScreen.h"
 #include "UIStatic.h"
 #include "UIWindow.h"
-
-class CApplication;
-class CUIProgressBar;
+#include "UIProgressBar.h"
+#include "UIProgressShape.h"
+#include <mutex>
 
 class UILoadingScreen : public ILoadingScreen, public CUIWindow
 {
-    CUIStatic* loadingProgressBackground;
-    CUIProgressBar* loadingProgress;
-    CUIStatic* loadingLogo;
-    CUIStatic* loadingProgressPercent;
+	std::recursive_mutex loadingLock;
 
-    CUIStatic* loadingStage;
-    CUIStatic* loadingHeader;
-    CUIStatic* loadingTipNumber;
-    CUIStatic* loadingTip;
+	CUIStatic* loadingProgressBackground;
+	CUIProgressBar* loadingProgress;
+	CUIProgressShape* loadingProgressShape;
+	CUIStatic* loadingProgressPercent;
+	CUIStatic* loadingLogo;
+
+	CUIStatic* loadingStage;
+	CUIStatic* loadingHeader;
+	CUIStatic* loadingTipNumber;
+	CUIStatic* loadingTip;
+
+	u32 maxTip;
+
+	bool force_stop = false;
+	bool force_drop = false;
 
 public:
-    UILoadingScreen();
+	UILoadingScreen();
 
-    void Initialize() override;
+	void Initialize() override;
 
-    void Update(const int stagesCompleted, const int stagesTotal) override;
-    void ForceFinish() override;
+	void Show(bool status) override;
+	bool IsShown() override;
 
-    void SetLevelLogo(const char* name) const override;
-    void SetStageTitle(const char* title) const override;
-    void SetStageTip(const char* header, const char* tipNumber, const char* tip) const override;
+	void Update(const int stagesCompleted, const int stagesTotal) override;
+	void ForceDrop() override;
+	void ForceFinish() override;
+
+	void SetLevelLogo(const char* name) override;
+	void SetStageTitle(const char* title) override;
+	void SetStageTip(const char* header, const char* tipNumber, const char* tip) override;
 };

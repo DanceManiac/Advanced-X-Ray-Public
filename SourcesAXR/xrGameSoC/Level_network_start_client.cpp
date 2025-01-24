@@ -182,7 +182,6 @@ bool	CLevel::net_start_client6				()
 
 		g_pGamePersistent->SetLoadStageTitle("st_client_synchronising");
 		g_pGamePersistent->LoadTitle		();
-		pApp->LoadForceFinish				();
 		Device.PreCache						(60, true, true);
 		net_start_result_total				= TRUE;
 	}

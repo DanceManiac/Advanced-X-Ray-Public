@@ -120,7 +120,7 @@ CGamePersistent::~CGamePersistent(void)
 
 void CGamePersistent::PreStart(LPCSTR op)
 {
-	pApp->SetLoadingScreen(new UILoadingScreen());
+	pApp->SetLoadingScreen(xr_new<UILoadingScreen>());
 	__super::PreStart(op);
 }
 
@@ -430,19 +430,28 @@ void CGamePersistent::WeathersUpdate()
 
 bool allow_intro ()
 {
-#ifdef MASTER_GOLD
-	if (g_SASH.IsRunning())
-#else	// #ifdef MASTER_GOLD
 	if ((0!=strstr(Core.Params, "-nointro")) || g_SASH.IsRunning())
-#endif	// #ifdef MASTER_GOLD
 	{
 		return false;
 	}else
 		return true;
 }
 
+bool allow_game_intro()
+{
+	return !strstr(Core.Params, "-nogameintro");
+}
+
 void CGamePersistent::start_logo_intro()
 {
+	if (!allow_intro())
+	{
+		m_intro_event			= nullptr;
+		Console->Show			();
+		Console->Execute		("main_menu on");
+		return;
+	}
+
 	if (Device.dwPrecacheFrame==0)
 	{
 		m_intro_event.bind		(this, &CGamePersistent::update_logo_intro);
@@ -479,10 +488,11 @@ void CGamePersistent::game_loaded()
 	{
 		if (g_pGameLevel							&&
 			g_pGameLevel->bReady					&&
-			(allow_intro() && g_keypress_on_start)	&&
+			(allow_game_intro() && g_keypress_on_start)	&&
 			load_screen_renderer.b_need_user_input	&& 
 			m_game_params.m_e_game_type == eGameIDSingle)
 		{
+			pApp->LoadForceFinish();
 			VERIFY				(NULL==m_intro);
 			m_intro				= xr_new<CUISequencer>();
 			m_intro->Start		("game_loaded");
