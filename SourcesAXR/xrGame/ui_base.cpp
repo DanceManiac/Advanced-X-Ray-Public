@@ -268,7 +268,11 @@ float ui_core::get_icons_kx()
 shared_str	ui_core::get_xml_name(LPCSTR fn)
 {
 	string_path				str;
-	if(!is_widescreen()){
+	
+	// cari0us - ну надо мне вот такое на время
+	const bool b_disable_16_xml = READ_IF_EXISTS(pAdvancedSettings, r_bool, "ui_settings", "disable_16_xml", false);
+
+	if(!is_widescreen() || b_disable_16_xml){
 		xr_sprintf(str, "%s", fn);
 		if ( NULL==strext(fn) ) xr_strcat(str, ".xml");
 	}else{
