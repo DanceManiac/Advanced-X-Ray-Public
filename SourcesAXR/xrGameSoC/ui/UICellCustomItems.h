@@ -40,7 +40,7 @@ public:
 protected:
 	CUIStatic*					m_addons					[eMaxAddon];
 	Fvector2					m_addon_offset				[eMaxAddon];
-	void						CreateIcon					(eAddonType);
+	void						CreateIcon					(eAddonType, const shared_str& sAddonName);
 	void						DestroyIcon					(eAddonType);
 	void						RefreshOffset				();
 	CUIStatic*					GetIcon						(eAddonType);

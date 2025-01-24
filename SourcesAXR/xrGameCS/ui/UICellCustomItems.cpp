@@ -13,6 +13,8 @@
 #include "../AnomalyDetector.h"
 #include "../ArtefactContainer.h"
 
+#define INV_BACKGR_ICON_NAME "__bgr_icon"  // Название CUIStatic иконки, которое используется для определения порядка отрисовки аддонов оружия --#SM+#--
+
 namespace detail 
 {
 
@@ -280,20 +282,28 @@ bool CUIWeaponCellItem::is_torch()
 	return object()->TacticalTorchAttachable() && object()->IsTacticalTorchAttached();
 }
 
-void CUIWeaponCellItem::CreateIcon(eAddonType t)
+void CUIWeaponCellItem::CreateIcon(eAddonType t, const shared_str& sAddonName) //--#SM+#--
 {
 	if(m_addons[t])				return;
 	m_addons[t]					= xr_new<CUIStatic>();	
 	m_addons[t]->SetAutoDelete	(true);
 	AttachChild					(m_addons[t]);
 	m_addons[t]->SetShader		(InventoryUtilities::GetEquipmentIconsShader());
+
+	// Регулируем порядок отрисовки иконок аддонов --#SM+#--
+	bool bIconToBackground = READ_IF_EXISTS(pSettings, r_bool, sAddonName, "inv_icon_to_back", false);
+	if (bIconToBackground)
+	{
+		m_addons[t]->SetWindowName(INV_BACKGR_ICON_NAME);
+	}
+
 	m_addons[t]->SetColor		(GetColor());
 }
 
 void CUIWeaponCellItem::DestroyIcon(eAddonType t)
 {
 	DetachChild		(m_addons[t]);
-	m_addons[t]		= NULL;
+	m_addons[t]		= nullptr;
 }
 
 CUIStatic* CUIWeaponCellItem::GetIcon(eAddonType t)
@@ -319,12 +329,45 @@ void CUIWeaponCellItem::RefreshOffset()
 }
 
 void CUIWeaponCellItem::Draw()
-{	
-	inherited::Draw();
+{
+	// Рисуем только аддоны заднего плана
+	bool bBackgrIconsFound = false;
+	for (auto it = m_ChildWndList.begin(); m_ChildWndList.end() != it; ++it)
+	{
+		if (auto pStatic = smart_cast<CUIStatic*>(*it))
+		{
+			if (pStatic->WindowName().equal(INV_BACKGR_ICON_NAME))
+			{
+				bBackgrIconsFound = true;
+				pStatic->TextureOn(); //--> Включаем текстуру у аддонов заднего плана
+			}
+			else
+				pStatic->TextureOff(); //--> Отключаем текстуру у аддонов переднего плана
+		}
+	}
+	if (bBackgrIconsFound == true)
+	{
+		TextureOff(); //--> Отключаем текстуру оружия
+		inherited::Draw(); //--> Рисуем иконки заднего плана
+		TextureOn(); //--> Включаем текстуру оружия
+	}
+
+	// Рисуем только оружие и аддоны переднего плана
+	for (auto it = m_ChildWndList.begin(); m_ChildWndList.end() != it; ++it)
+	{
+		if (auto pStatic = smart_cast<CUIStatic*>(*it))
+		{
+			if (pStatic->WindowName().equal(INV_BACKGR_ICON_NAME))
+				pStatic->TextureOff(); //--> Отключаем текстуру у аддонов заднего плана
+			else
+				pStatic->TextureOn(); //--> Включаем текстуру у аддонов переднего плана
+		}
+	}
+	inherited::Draw(); //--> Рисуем оружие и иконки переднего плана
 
 	if(m_upgrade && m_upgrade->IsShown())
 		m_upgrade->Draw();
-};
+}
 
 void CUIWeaponCellItem::Update()
 {
@@ -339,7 +382,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eSilencer) || bForceReInitAddons)
 			{
-				CreateIcon	(eSilencer);
+				CreateIcon	(eSilencer, object()->GetSilencerName());
 				RefreshOffset();
 				InitAddon	(GetIcon(eSilencer), *object()->GetSilencerName(), m_addon_offset[eSilencer], Heading());
 			}
@@ -356,7 +399,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eScope) || bForceReInitAddons)
 			{
-				CreateIcon	(eScope);
+				CreateIcon	(eScope, object()->GetScopeName());
 				RefreshOffset();
 				InitAddon	(GetIcon(eScope), *object()->GetScopeName(), m_addon_offset[eScope], Heading());
 			}
@@ -373,7 +416,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eLauncher) || bForceReInitAddons)
 			{
-				CreateIcon	(eLauncher);
+				CreateIcon	(eLauncher, object()->GetGrenadeLauncherName());
 				RefreshOffset();
 				InitAddon	(GetIcon(eLauncher), *object()->GetGrenadeLauncherName(), m_addon_offset[eLauncher], Heading());
 			}
@@ -391,7 +434,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eLaser) || bForceReInitAddons)
 			{
-				CreateIcon(eLaser);
+				CreateIcon(eLaser, object()->GetLaserName());
 				RefreshOffset();
 				InitAddon(GetIcon(eLaser), *object()->GetLaserName(), m_addon_offset[eLaser], Heading());
 			}
@@ -409,7 +452,7 @@ void CUIWeaponCellItem::Update()
 		{
 			if (!GetIcon(eTorch) || bForceReInitAddons)
 			{
-				CreateIcon(eTorch);
+				CreateIcon(eTorch, object()->GetTacticalTorchName());
 				RefreshOffset();
 				InitAddon(GetIcon(eTorch), *object()->GetTacticalTorchName(), m_addon_offset[eTorch], Heading());
 			}
