@@ -376,6 +376,12 @@ void CUIStatic::SetTextComplexMode(bool md){
 	m_pLines->SetTextComplexMode(md);
 }
 
+bool CUIStatic::GetTextComplexMode()
+{
+	CREATE_LINES;
+	return m_pLines->GetTextComplexMode();
+}
+
 CGameFont* CUIStatic::GetFont(){
 	CREATE_LINES;
 	return m_pLines->GetFont();
@@ -502,7 +508,7 @@ u32 CUIStatic::GetTextColor(){
 	return m_pLines->GetTextColor();
 }
 
-u32& CUIStatic::GetTextColorRef(){
+u32& CUIStatic::GetTextColorRef() const{
 	return m_pLines->GetTextColorRef();
 }
 
@@ -568,10 +574,16 @@ CGameFont::EAligment CUIStatic::GetTextAlignment(){
 //	m_pLines->SetTextAlignment(align);
 //}
 
-void CUIStatic::SetTextAlignment(CGameFont::EAligment align){
+void CUIStatic::SetTextAlignment(CGameFont::EAligment align)
+{
 	CREATE_LINES;
 	m_pLines->SetTextAlignment(align);
 	m_pLines->GetFont()->SetAligment((CGameFont::EAligment)align);
+}
+
+EVTextAlignment CUIStatic::GetVTextAlignment() const 
+{ 
+	return m_pLines->GetVTextAlignment(); 
 }
 
 void CUIStatic::SetVTextAlignment(EVTextAlignment al){
@@ -581,8 +593,9 @@ void CUIStatic::SetVTextAlignment(EVTextAlignment al){
 
 void CUIStatic::SetTextAlign_script(u32 align)
 {
-	m_pLines->SetTextAlignment((CGameFont::EAligment)align);
-	m_pLines->GetFont()->SetAligment((CGameFont::EAligment)align);
+	//m_pLines->SetTextAlignment((CGameFont::EAligment)align);
+	//m_pLines->GetFont()->SetAligment((CGameFont::EAligment)align);
+	SetTextAlignment((CGameFont::EAligment)align);
 }
 
 u32 CUIStatic::GetTextAlign_script()

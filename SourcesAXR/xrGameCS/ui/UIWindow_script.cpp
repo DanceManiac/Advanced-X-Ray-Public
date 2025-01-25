@@ -9,6 +9,7 @@
 #include "UIMMShniaga.h"
 #include "UITextureMaster.h"
 #include "UIScrollView.h"
+#include "../UIDialogHolder.h"
 
 CFontManager& mngr(){
 	return UI().Font();
@@ -99,10 +100,12 @@ void CUIWindow::script_register(lua_State *L)
 		.def(							constructor<>())
 		.def("AttachChild",				&CUIWindow::AttachChild, adopt<2>())
 		.def("DetachChild",				&CUIWindow::DetachChild)
+		.def("DetachAll",				&CUIWindow::DetachAll)
 		.def("SetAutoDelete",			&CUIWindow::SetAutoDelete)
 		.def("IsAutoDelete",			&CUIWindow::IsAutoDelete)
 
 		.def("SetWndRect",				(void (CUIWindow::*)(Frect))	&CUIWindow::SetWndRect_script)
+		.def("SetWndRect",				(void(CUIWindow::*)(float, float, float, float)) & CUIWindow::SetWndRect_script)
 		.def("SetWndPos",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndPos_script)
 		.def("SetWndSize",				(void (CUIWindow::*)(Fvector2)) &CUIWindow::SetWndSize_script)
 		.def("GetWndPos",				&get_wnd_pos)

@@ -355,6 +355,12 @@ void show_indicators()
 	}
 }
 
+bool game_indicators_shown() 
+{ 
+	return (HUD().GetUI() && HUD().GetUI()->GameIndicatorsShown()); 
+}
+
+Flags32 get_hud_flags() { return psHUD_Flags; }
 
 bool is_level_present()
 {
@@ -1146,6 +1152,10 @@ void CLevel::script_register(lua_State *L)
 		def("main_input_receiver",				main_input_receiver),
 		def("hide_indicators",					hide_indicators),
 		def("show_indicators",					show_indicators),
+		
+		def("game_indicators_shown",			&game_indicators_shown), 
+		def("get_hud_flags",					&get_hud_flags),
+
 		def("add_call",							((void (*) (const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &,const luabind::functor<bool> &,const luabind::functor<void> &)) &add_call)),
 		def("add_call",							((void (*) (const luabind::object &, LPCSTR, LPCSTR)) &add_call)),

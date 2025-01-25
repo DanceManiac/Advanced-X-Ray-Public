@@ -141,8 +141,11 @@ public:
 			void		SetTextColor			(u32 color)					{TextItemControl().SetTextColor(color);}
 			u32			GetTextColor			()							{return TextItemControl().GetTextColor();}
 			void		SetTextComplexMode		(bool mode = true)			{TextItemControl().SetTextComplexMode(mode);}
+			bool		GetTextComplexMode		()							{TextItemControl().GetTextComplexMode();}
 			void		SetTextAlignment		(ETextAlignment al)			{TextItemControl().SetTextAlignment(al);}
+			ETextAlignment	GetTextAlignment	()							{return TextItemControl().GetTextAlignment();}
 			void		SetVTextAlignment		(EVTextAlignment al)		{TextItemControl().SetVTextAlignment(al);}
+			EVTextAlignment	GetVTextAlignment	()							{return TextItemControl().GetVTextAlignment(); }
 			void		SetEllipsis				(bool mode)					{TextItemControl().SetEllipsis(mode);}
 			void		SetCutWordsMode			(bool mode)					{TextItemControl().SetCutWordsMode(mode);}
 			void		SetTextOffset			(float x, float y)			{TextItemControl().m_TextOffset.x = x; TextItemControl().m_TextOffset.y = y;}

@@ -51,7 +51,6 @@ public:
 	virtual void		SetOriginalRectEx			(const Frect& r)			{m_UIStaticItem.SetOriginalRectEx(r);}
 	const Frect&		GetOriginalRect				() const					{return m_UIStaticItem.GetOriginalRect();}
 	//
-			void		SetVTextAlignment(EVTextAlignment al);
 	virtual void		SetColor					(u32 color)					{ m_UIStaticItem.SetColor(color);		}
 	u32					GetColor					() const					{ return m_UIStaticItem.GetColor();		}
 	u32&				GetColorRef					()							{ return m_UIStaticItem.GetColorRef();	}
@@ -102,13 +101,16 @@ public:
 	virtual CGameFont*		GetFont					();
 	virtual void			SetTextAlignment		(ETextAlignment alignment);
 	virtual ETextAlignment	GetTextAlignment		();
+			void			SetVTextAlignment		(EVTextAlignment al);
+			EVTextAlignment	GetVTextAlignment		() const;
 
 	// text additional
 			void	SetTextComplexMode			(bool md);
+			bool	GetTextComplexMode			();
 			void	SetTextAlign_script			(u32 align);
 			u32		GetTextAlign_script			();
-			void	SetTextColor_script			(int a, int r, int g, int b){SetTextColor(color_argb(a,r,g,b));}
-			u32&	GetTextColorRef				();
+			//void	SetTextColor_script			(int a, int r, int g, int b){SetTextColor(color_argb(a,r,g,b));}
+			u32&	GetTextColorRef				() const;
 
 			void AdjustHeightToText			();
 			void AdjustWidthToText			();
