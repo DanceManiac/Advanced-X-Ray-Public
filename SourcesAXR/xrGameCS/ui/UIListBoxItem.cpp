@@ -3,13 +3,14 @@
 #include "UIScrollView.h"
 #include "object_broker.h"
 
-CUIListBoxItem::CUIListBoxItem()
+CUIListBoxItem::CUIListBoxItem(float height)
 {
 	txt_color			= 0xffffffff;
 	txt_color_s			= 0xffffffff;
 	tag					= u32(-1);
 	m_bTextureAvailable = false;
 	AttachChild			(&m_text);
+	SetHeight			(height);
 }
 
 CUIListBoxItem::~CUIListBoxItem()
@@ -49,6 +50,16 @@ void CUIListBoxItem::InitDefault()
 	InitTexture("ui_listline","hud\\default");
 }
 
+void CUIListBoxItem::SetFont(CGameFont* F)
+{
+	m_text.SetFont(F);
+}
+
+CGameFont* CUIListBoxItem::GetFont()
+{
+	return m_text.GetFont();
+}
+
 bool CUIListBoxItem::OnMouseDown(int mouse_btn)
 {
 	if (mouse_btn==MOUSE_1)
@@ -84,10 +95,23 @@ void CUIListBoxItem::SetTextColor(u32 color, u32 color_s)
 
 float CUIListBoxItem::FieldsLength()
 {
-	float c = 0;
-	for (u32 i = 0; i<fields.size(); i++)
-		c += fields[i]->GetWidth();
-	return c;
+	if (m_ChildWndList.empty())
+		return 0.0f;
+
+	float len = 0.0f;
+	/*
+		WINDOW_LIST::const_iterator it		= m_ChildWndList.begin();
+		WINDOW_LIST::const_iterator it_e	= m_ChildWndList.end();
+	
+		for(;it!=it_e;++it)
+		{
+			CUIWindow* w	= *it;
+			len				+= w->GetWndPos().x + w->GetWidth();
+		}
+	*/
+	CUIWindow* w = m_ChildWndList.back();
+	len += w->GetWndPos().x + w->GetWidth();
+	return len;
 }
 
 CUIStatic* CUIListBoxItem::AddField(LPCSTR txt, float len, LPCSTR key)
@@ -96,8 +120,10 @@ CUIStatic* CUIListBoxItem::AddField(LPCSTR txt, float len, LPCSTR key)
 	CUIStatic* st			= fields.back();
 	AttachChild				(st);
 	st->SetWndPos			(Fvector2().set(FieldsLength(),0.0f));
-	st->SetWndSize			(Fvector2().set(GetWidth(), len));
+	st->SetWndSize			(Fvector2().set(GetWidth(), GetHeight()));
 	st->SetFont				(m_text.GetFont());
+	st->SetTextAlignment	(m_text.GetTextAlignment());
+	st->SetVTextAlignment	(m_text.GetVTextAlignment());
 	st->SetTextColor		(txt_color);
 	st->SetText				(txt);	
 	st->SetWindowName		(key);
@@ -123,4 +149,14 @@ void CUIListBoxItem::SetData(void* data)
 void* CUIListBoxItem::GetData()
 {
 	return pData;
+}
+
+void CUIListBoxItem::SetText(LPCSTR txt)
+{
+	m_text.SetText(txt);
+}
+
+LPCSTR CUIListBoxItem::GetText()
+{
+	return m_text.GetText();
 }

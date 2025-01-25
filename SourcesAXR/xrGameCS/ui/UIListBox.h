@@ -34,17 +34,21 @@ virtual bool		OnMouseAction							(float x, float y, EUIMessages mouse_action);
 virtual void		SendMessage						(CUIWindow* pWnd, s16 msg, void* pData = 0);
 
 	// IUIFontControl
-	virtual void			SetTextColor			(u32 color);
+			void			SetTextColor			(u32 color);
 			void			SetTextColorS			(u32 color);
-	virtual u32				GetTextColor			();
-	virtual void			SetFont					(CGameFont* pFont);
-	virtual CGameFont*		GetFont					();
+			u32				GetTextColor			();
+			void			SetFont					(CGameFont* pFont);
+			CGameFont*		GetFont					();
+			void			SetTextAlignment		(ETextAlignment alignment);
+			ETextAlignment	GetTextAlignment		();
 
 protected:
+	CGameFont*		m_pFont;
 	float			m_def_item_height;
 	int				m_last_selection;
 	u32				m_text_color;
 	u32				m_text_color_s;
+	ETextAlignment	m_text_al;
 	shared_str		m_selection_texture;
 
 	bool			m_bImmediateSelection;

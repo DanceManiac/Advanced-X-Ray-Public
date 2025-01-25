@@ -5,6 +5,7 @@
 
 CUIListBox::CUIListBox()
 {
+	m_pFont					= nullptr;
 	m_flags.set				(eItemsSelectabe, TRUE);
 
 	m_def_item_height		 = 20;
@@ -44,15 +45,16 @@ bool CUIListBox::OnMouseAction(float x, float y, EUIMessages mouse_action)
 CUIListBoxItem* CUIListBox::AddItem(LPCSTR text)
 {
 	if (!text)			
-		return					NULL;
+		return					nullptr;
 
-	CUIListBoxItem* pItem		= xr_new<CUIListBoxItem>();
+	CUIListBoxItem* pItem		= xr_new<CUIListBoxItem>(m_def_item_height);
 	pItem->InitFrameLineWnd		(Fvector2().set(0,0), Fvector2().set(this->GetDesiredChildWidth()-5, m_def_item_height) );
 	if (!m_selection_texture)
         pItem->InitDefault		();
 	else
 		pItem->InitTexture		(*m_selection_texture,"hud\\default");
 
+	pItem->SetFont				(GetFont());
 	pItem->SetSelected			(false);
 	pItem->m_text.SetText		(*CStringTable().translate(text));
 	pItem->SetTextColor			(m_text_color, m_text_color_s);
@@ -270,12 +272,12 @@ u32 CUIListBox::GetTextColor()
 
 void CUIListBox::SetFont(CGameFont* pFont)
 {
-	CUIWindow::SetFont(pFont);
+	m_pFont = pFont;
 }
 
 CGameFont* CUIListBox::GetFont()
 {
-	return CUIWindow::GetFont();
+	return m_pFont;
 }
 
 void CUIListBox::SetTextAlignment(ETextAlignment alignment)

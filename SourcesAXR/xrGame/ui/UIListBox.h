@@ -41,11 +41,14 @@ virtual void		SendMessage						(CUIWindow* pWnd, s16 msg, void* pData = 0);
 			u32				GetTextColor			();
 			void			SetFont					(CGameFont* pFont);
 			CGameFont*		GetFont					();
+			void			SetTextAlignment		(ETextAlignment alignment);
+			ETextAlignment	GetTextAlignment		();
 
 protected:
 	CGameFont*		m_pFont;
 	float			m_def_item_height;
 	u32				m_text_color;
+	ETextAlignment	m_text_al;
 	shared_str		m_selection_texture;
 
 	bool			m_bImmediateSelection;

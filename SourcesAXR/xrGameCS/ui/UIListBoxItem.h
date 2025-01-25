@@ -5,7 +5,7 @@ class CUIListBoxItem : public CUIFrameLineWnd, public CUISelectable
 {
 	typedef				CUIFrameLineWnd inherited;
 public:
-						CUIListBoxItem();
+						CUIListBoxItem(float height);
 	virtual				~CUIListBoxItem();
 
     virtual void		SetSelected(bool b);
@@ -24,7 +24,12 @@ public:
 
 	CUIStatic			m_text;
 
+	void				SetText(LPCSTR txt);
+	LPCSTR				GetText();
 	void				SetTextColor(u32 color, u32 color_s);
+	u32					GetTextColor();
+	void				SetFont(CGameFont* F);
+	CGameFont*			GetFont();
 
 protected:
 

@@ -1389,13 +1389,11 @@ bool CUIXmlInit::InitListBox(CUIXml& xml_doc, LPCSTR path, int index, CUIListBox
 {
 	InitScrollView(xml_doc, path, index, pWnd);
 
-	char _path[512];
-
-	
-	u32 t_color;
-	CGameFont* pFnt;
-	strconcat(sizeof(_path),_path, path, ":font");
-	InitFont(xml_doc, _path, index, t_color, pFnt);
+	string512		_path;
+	u32				t_color;
+	CGameFont*		pFnt;
+	strconcat		(sizeof(_path),_path, path, ":font");
+	InitFont		(xml_doc, _path, index, t_color, pFnt);
 
 	pWnd->SetTextColor(t_color);
 	pWnd->SetFont(pFnt);
@@ -1403,6 +1401,21 @@ bool CUIXmlInit::InitListBox(CUIXml& xml_doc, LPCSTR path, int index, CUIListBox
 	strconcat(sizeof(_path),_path, path, ":font_s");	
 	t_color = GetColor(xml_doc, _path, index, 0x00);
 	pWnd->SetTextColorS(t_color);
+
+	float h					= xml_doc.ReadAttribFlt(path, index, "item_height", 18.0f);
+	pWnd->SetItemHeight		(h);
+
+	const LPCSTR selection_texture = xml_doc.ReadAttrib(path, index, "selection_texture", "ui_cb_listline");
+	pWnd->SetSelectionTexture(selection_texture);
+
+	// Load font alignment
+	shared_str al = xml_doc.ReadAttrib(_path, index, "align");
+	if (0 == xr_strcmp(al, "c"))
+		pWnd->SetTextAlignment(CGameFont::alCenter);
+	else if (0 == xr_strcmp(al, "r"))
+		pWnd->SetTextAlignment(CGameFont::alRight);
+	else if (0 == xr_strcmp(al, "l"))
+		pWnd->SetTextAlignment(CGameFont::alLeft);
 
 	return true;
 }
@@ -1488,10 +1501,30 @@ bool CUIXmlInit::InitComboBox(CUIXml& xml_doc, LPCSTR path, int index, CUIComboB
 
 	pWnd->m_list_box.SetFixedScrollBar(b);
 
+	float h = xml_doc.ReadAttribFlt(path, index, "item_height", 18.0f);
+	pWnd->m_list_box.SetItemHeight(h);
+
+	// Load font alignment
+	shared_str al = xml_doc.ReadAttrib(path, index, "align", "");
+	if (0 == xr_strcmp(al, "c"))
+		pWnd->m_text.SetTextAlignment(CGameFont::alCenter);
+	else if (0 == xr_strcmp(al, "r"))
+		pWnd->m_text.SetTextAlignment(CGameFont::alRight);
+	else if (0 == xr_strcmp(al, "l"))
+		pWnd->m_text.SetTextAlignment(CGameFont::alLeft);
+
+	al = xml_doc.ReadAttrib(path, index, "vert_align", "");
+	if (0 == xr_strcmp(al, "c"))
+		pWnd->m_text.SetVTextAlignment(valCenter);
+	else if (0 == xr_strcmp(al, "b"))
+		pWnd->m_text.SetVTextAlignment(valBotton);
+	else if (0 == xr_strcmp(al, "t"))
+		pWnd->m_text.SetVTextAlignment(valTop);
+
 	string512					_path;
 	strconcat					(sizeof(_path),_path, path, ":list_font");
 	InitFont					(xml_doc, _path, index, color, pFont);
-	pWnd->SetFont				(pFont);
+	pWnd->m_text.SetFont			(pFont);
 	pWnd->m_list_box.SetFont		(pFont);
 	pWnd->m_list_box.SetTextColor	(color);
 	strconcat					(sizeof(_path),_path, path, ":list_font_s");	
