@@ -205,6 +205,9 @@ void CUIWindow::script_register(lua_State *L)
 	// CUICheckButton
 				value("CHECK_BUTTON_SET",				int(CHECK_BUTTON_SET)),
 				value("CHECK_BUTTON_RESET",				int(CHECK_BUTTON_RESET)),
+
+	// CUITrackBar
+				value("TRACKBAR_CHANGED",				int(TRACKBAR_CHANGED)),
 				
 	// CUIRadioButton
 				value("RADIOBUTTON_SET",				int(RADIOBUTTON_SET)),

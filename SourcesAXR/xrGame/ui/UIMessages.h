@@ -41,6 +41,9 @@ enum EUIMessages
 	CHECK_BUTTON_SET,
 	CHECK_BUTTON_RESET, 
 
+	// CUITrackBar
+	TRACKBAR_CHANGED,
+
 	// CUIRadioButton
 	RADIOBUTTON_SET,
 

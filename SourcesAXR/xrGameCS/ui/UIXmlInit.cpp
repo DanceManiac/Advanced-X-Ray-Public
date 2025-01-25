@@ -1410,14 +1410,29 @@ bool CUIXmlInit::InitListBox(CUIXml& xml_doc, LPCSTR path, int index, CUIListBox
 bool CUIXmlInit::InitTrackBar(CUIXml& xml_doc, LPCSTR path, int index, CUITrackBar* pWnd)
 {
 	InitWindow			(xml_doc, path, 0, pWnd);
+	const LPCSTR frame_texture = xml_doc.ReadAttrib(path, index, "frame_texture", "ui_slider_e");
+	pWnd->SetFrameLineTexture(frame_texture);
+	const LPCSTR frame_texture_d = xml_doc.ReadAttrib(path, index, "frame_texture_d", "ui_slider_d");
+	pWnd->SetFrameLineTextureD(frame_texture_d);
+	const LPCSTR slider_texture = xml_doc.ReadAttrib(path, index, "slider_texture", "ui_slider_button");
+	pWnd->SetSliderTexture(slider_texture);
+
 	pWnd->InitTrackBar	(pWnd->GetWndPos(),pWnd->GetWndSize());
-	int is_integer		= xml_doc.ReadAttribInt(path, index, "is_integer", 0);
-	pWnd->SetType		(!is_integer);
+	const int is_integer = xml_doc.ReadAttribInt(path, index, "is_integer", 0);
+	pWnd->SetFloat		(!is_integer);
+
+	const int is_token = xml_doc.ReadAttribInt(path, index, "is_token", 0);
+	pWnd->SetToken		(is_token);
+
+	const int is_bool = xml_doc.ReadAttribInt(path, index, "is_bool", 0);
+	pWnd->SetBool		(is_bool);
+
 	InitOptionsItem		(xml_doc, path, 0, pWnd);
 
-	int invert			= xml_doc.ReadAttribInt(path, index, "invert", 0);
+	const int invert			= xml_doc.ReadAttribInt(path, index, "invert", 0);
 	pWnd->SetInvert		(!!invert);
-	float step			= xml_doc.ReadAttribFlt(path, index, "step", 0.1f);
+
+	const float step			= xml_doc.ReadAttribFlt(path, index, "step", 0.1f);
 	pWnd->SetStep		(step);
 	
 	bool is_float = !is_integer;
@@ -1449,7 +1464,7 @@ bool CUIXmlInit::InitTrackBar(CUIXml& xml_doc, LPCSTR path, int index, CUITrackB
 	if (xml_doc.NavigateToNode(buf, index))
 	{
 		InitStatic(xml_doc, buf, index, pWnd->m_static);
-		pWnd->m_static_format = xml_doc.ReadAttrib(buf, index, "format", NULL);
+		pWnd->m_static_format = xml_doc.ReadAttrib(buf, index, "format", nullptr);
 		pWnd->m_static->Enable(true);
 	}
 

@@ -3,6 +3,7 @@
 #include "UIWindow.h"
 #include "UIOptionsItem.h"
 #include "UI_IB_Static.h"
+#include "UIStatic.h"
 
 class CUI3tButton;
 class CUIFrameLineWnd;
@@ -27,10 +28,16 @@ public:
 			void	InitTrackBar			(Fvector2 pos, Fvector2 size);
 	virtual void	Enable					(bool status);
 			void	SetInvert				(bool v){m_b_invert=v;}
-			bool	GetInvert				() const	{return m_b_invert;};
+			bool	GetInvert				() const	{return m_b_invert;}
+
+			float	GetStep					();
 			void	SetStep					(float step);
-			void	SetType					(bool b_float){m_b_is_float=b_float;};
+			void	SetFloat				(bool b_float){m_b_is_float=b_float; if (b_float) {m_b_is_token = false; m_b_is_bool = false;} };
+			void	SetToken				(bool b_token){m_b_is_token= b_token; if (b_token) {m_b_is_float = false; m_b_is_bool = false;} };
+			void	SetBool					(bool b_bool){m_b_is_bool= b_bool; if (b_bool) {m_b_is_token = false; m_b_is_float = false;} };
 			void	SetBoundReady			(bool b_ready) {m_b_bound_already_set = b_ready;};
+			float	GetTrackValue			() const;
+			void	SetTrackValue			(float v);
 			bool	GetCheck				();
 			void	SetCheck				(bool b);
 			int		GetIValue				(){return m_i_val;}
@@ -40,17 +47,31 @@ public:
 
 			CUIStatic* m_static;
 			shared_str m_static_format;
+			float m_def_control_height;
+
+			LPCSTR m_frame_line_texture;
+			LPCSTR m_frame_line_texture_d;
+			LPCSTR m_slider_texture;
+			void	SetFrameLineTexture		(LPCSTR texture) { m_frame_line_texture = texture; };
+			void	SetFrameLineTextureD	(LPCSTR texture) { m_frame_line_texture_d = texture; };
+			void	SetSliderTexture		(LPCSTR texture) { m_slider_texture = texture; };
 protected:
+			//void	ShowCurrentValue		() const;
 			void 	UpdatePos				();
 			void 	UpdatePosRelativeToMouse();
+			void	OnValueChanged			();
 
     CUI3tButton*		m_pSlider;
 	CUIFrameLineWnd*	m_pFrameLine;
 	CUIFrameLineWnd*	m_pFrameLine_d;
-	bool				m_b_invert;
-	bool				m_b_is_float;
-	bool				m_b_mouse_capturer;
-	bool				m_b_bound_already_set;
+	bool				m_b_invert{ false };
+	bool				m_b_is_float{ true };
+	bool				m_b_is_token{ false };
+	bool				m_b_is_bool{ false };
+
+	bool				m_b_mouse_capturer{ false };
+    bool 				m_b_bound_already_set{ false };
+
 
 	union{
 		struct{
