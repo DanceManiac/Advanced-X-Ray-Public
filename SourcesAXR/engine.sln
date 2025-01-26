@@ -48,6 +48,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "crypto", "3rd party\crypto\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xrRender_R4", "Layers\xrRenderPC_R4\xrRender_R4.vcxproj", "{AC9B12ED-A2D7-4337-A981-5BD8430E96D8}"
 	ProjectSection(ProjectDependencies) = postProject
+		{2578C6D8-660D-48AE-9322-7422F8664F06} = {2578C6D8-660D-48AE-9322-7422F8664F06}
 		{94A1C366-3D19-48E6-8170-4ADC2E70DF97} = {94A1C366-3D19-48E6-8170-4ADC2E70DF97}
 	EndProjectSection
 EndProject
