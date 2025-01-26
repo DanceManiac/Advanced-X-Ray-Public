@@ -199,6 +199,7 @@ void attachable_hud_item::update(bool bForce)
 		ka->dcast_PKinematics()->CalculateBones_Invalidate	();
 		ka->dcast_PKinematics()->CalculateBones				(TRUE);
 	}
+	this->m_measures.merge_measures_params();
 }
 
 void attachable_hud_item::update_hud_additional(Fmatrix& trans)
@@ -391,6 +392,8 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 		m_collision_offset[1] = Fvector().set(0.f, 0.f, 0.f);
 	}
 
+	bReloadShooting				= READ_IF_EXISTS(pSettings, r_bool, sect_name, "use_new_shooting_params", false);
+
 	/*
 	if (useCopFirePoint) // cop configs
 	{
@@ -407,8 +410,6 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	m_inertion_params.m_pitch_offset_d = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_forward", PITCH_OFFSET_D);
 	m_inertion_params.m_pitch_low_limit = READ_IF_EXISTS(pSettings, r_float, sect_name, "pitch_offset_up_low_limit", PITCH_LOW_LIMIT);
 
-	m_inertion_params.m_origin_offset = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_origin_offset", ORIGIN_OFFSET_OLD);
-	m_inertion_params.m_origin_offset_aim = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_origin_aim_offset", ORIGIN_OFFSET_AIM_OLD);
 	m_inertion_params.m_tendto_speed = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_tendto_speed", TENDTO_SPEED);
 	m_inertion_params.m_tendto_speed_aim = READ_IF_EXISTS(pSettings, r_float, sect_name, "inertion_tendto_aim_speed", TENDTO_SPEED_AIM);
 
@@ -421,6 +422,42 @@ void hud_item_measures::load(const shared_str& sect_name, IKinematics* K)
 	m_inertion_params.m_offset_LRUD = READ_IF_EXISTS(pSettings, r_fvector4, sect_name, "inertion_offset_LRUD", Fvector4().set(ORIGIN_OFFSET));
 	m_inertion_params.m_offset_LRUD_aim = READ_IF_EXISTS(pSettings, r_fvector4, sect_name, "inertion_offset_LRUD_aim", Fvector4().set(ORIGIN_OFFSET_AIM));
 	//--#SM+# End--	
+
+	// Загрузка параметров смещения при стрельбе
+	m_shooting_params.m_shot_max_offset_LRUD		= READ_IF_EXISTS(pSettings, r_fvector4, sect_name, "shooting_max_LRUD", Fvector4().set(0, 0, 0, 0));
+	m_shooting_params.m_shot_max_offset_LRUD_aim	= READ_IF_EXISTS(pSettings, r_fvector4, sect_name, "shooting_max_LRUD_aim", Fvector4().set(0, 0, 0, 0));
+	m_shooting_params.m_shot_max_rot_UD				= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_max_UD_rot", Fvector2().set(0,0));
+	m_shooting_params.m_shot_max_rot_UD_aim			= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_max_UD_rot_aim", Fvector2().set(0,0));
+	m_shooting_params.m_shot_offset_BACKW			= READ_IF_EXISTS(pSettings, r_float,    sect_name, "shooting_backward_offset", 0.0f);
+	m_shooting_params.m_shot_offset_BACKW_aim		= READ_IF_EXISTS(pSettings, r_float,    sect_name, "shooting_backward_offset_aim", 0.0f);
+	m_shooting_params.m_shot_offsets_strafe			= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_strafe_offsets", Fvector2().set(0,0));
+	m_shooting_params.m_shot_offsets_strafe_aim		= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_strafe_offsets_aim", Fvector2().set(0,0));
+	m_shooting_params.m_shot_diff_per_shot			= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_diff_per_shot", Fvector2().set(0,0));
+	m_shooting_params.m_shot_power_per_shot			= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_power_per_shot", Fvector2().set(0,0));
+	m_shooting_params.m_ret_time					= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_ret_time", Fvector2().set(1.0f, 1.0f));
+	m_shooting_params.m_ret_time_fire				= READ_IF_EXISTS(pSettings, r_fvector2, sect_name, "shooting_ret_time_fire", Fvector2().set(1000.0f, 1000.0f));
+	m_shooting_params.m_ret_time_backw_koef			= READ_IF_EXISTS(pSettings, r_float,    sect_name, "shooting_ret_time_backw_k", 1.0f);
+}
+
+void hud_item_measures::merge_measures_params()
+{
+	// Смещение от стрельбы
+	if (bReloadShooting) //-> хз зачем	
+	{
+		m_shooting_params.m_shot_max_offset_LRUD     = m_shooting_params.m_shot_max_offset_LRUD;
+		m_shooting_params.m_shot_max_offset_LRUD_aim = m_shooting_params.m_shot_max_offset_LRUD_aim;
+		m_shooting_params.m_shot_max_rot_UD          = m_shooting_params.m_shot_max_rot_UD;
+		m_shooting_params.m_shot_max_rot_UD_aim      = m_shooting_params.m_shot_max_rot_UD_aim;
+		m_shooting_params.m_shot_offset_BACKW        = m_shooting_params.m_shot_offset_BACKW;
+		m_shooting_params.m_shot_offset_BACKW_aim    = m_shooting_params.m_shot_offset_BACKW_aim;
+		m_shooting_params.m_shot_offsets_strafe      = m_shooting_params.m_shot_offsets_strafe;
+		m_shooting_params.m_shot_offsets_strafe_aim  = m_shooting_params.m_shot_offsets_strafe_aim;
+		m_shooting_params.m_shot_diff_per_shot       = m_shooting_params.m_shot_diff_per_shot;
+		m_shooting_params.m_shot_power_per_shot      = m_shooting_params.m_shot_power_per_shot;
+		m_shooting_params.m_ret_time                 = m_shooting_params.m_ret_time;
+		m_shooting_params.m_ret_time_fire            = m_shooting_params.m_ret_time_fire;
+		m_shooting_params.m_ret_time_backw_koef      = m_shooting_params.m_ret_time_backw_koef;
+	}
 }
 
 attachable_hud_item::~attachable_hud_item()
@@ -1629,13 +1666,11 @@ void player_hud::update_inertion(Fmatrix& trans)
 		// load params
 		hud_item_measures::inertion_params inertion_data;
 		if (pMainHud != NULL)
-		{
+		{ // Загружаем параметры инерции из основного худа
 			inertion_data.m_pitch_offset_r = pMainHud->m_measures.m_inertion_params.m_pitch_offset_r;
 			inertion_data.m_pitch_offset_n = pMainHud->m_measures.m_inertion_params.m_pitch_offset_n;
 			inertion_data.m_pitch_offset_d = pMainHud->m_measures.m_inertion_params.m_pitch_offset_d;
 			inertion_data.m_pitch_low_limit = pMainHud->m_measures.m_inertion_params.m_pitch_low_limit;
-			inertion_data.m_origin_offset = pMainHud->m_measures.m_inertion_params.m_origin_offset;
-			inertion_data.m_origin_offset_aim = pMainHud->m_measures.m_inertion_params.m_origin_offset_aim;
 			inertion_data.m_offset_LRUD = pMainHud->m_measures.m_inertion_params.m_offset_LRUD;
 			inertion_data.m_offset_LRUD_aim = pMainHud->m_measures.m_inertion_params.m_offset_LRUD_aim;
 			inertion_data.m_tendto_speed = pMainHud->m_measures.m_inertion_params.m_tendto_speed;
@@ -1646,16 +1681,15 @@ void player_hud::update_inertion(Fmatrix& trans)
 			inertion_data.m_min_angle_aim = pMainHud->m_measures.m_inertion_params.m_min_angle_aim;
 		}
 		else
-		{
+		{ // Загружаем дефолтные параметры инерции
 			inertion_data.m_pitch_offset_r = PITCH_OFFSET_R;
 			inertion_data.m_pitch_offset_n = PITCH_OFFSET_N;
 			inertion_data.m_pitch_offset_d = PITCH_OFFSET_D;
 			inertion_data.m_pitch_low_limit = PITCH_LOW_LIMIT;
-			inertion_data.m_origin_offset = ORIGIN_OFFSET_OLD;
-			inertion_data.m_origin_offset_aim = ORIGIN_OFFSET_AIM_OLD;
 
 			inertion_data.m_offset_LRUD.set(ORIGIN_OFFSET);
 			inertion_data.m_offset_LRUD_aim.set(ORIGIN_OFFSET_AIM);
+
 			inertion_data.m_tendto_speed = TENDTO_SPEED;
 			inertion_data.m_tendto_speed_aim = TENDTO_SPEED_AIM;
 			inertion_data.m_tendto_ret_speed = TENDTO_SPEED_RET;
@@ -1664,6 +1698,9 @@ void player_hud::update_inertion(Fmatrix& trans)
 			inertion_data.m_min_angle_aim = INERT_MIN_ANGLE_AIM;
 		}
 
+		// Replaced by CWeapon::UpdateHudAdditonal()
+		// Very FPS sensitive and hard to control
+		/*
 		// calc difference
 		Fvector								diff_dir;
 		diff_dir.sub(xform.k, st_last_dir);
@@ -1681,18 +1718,19 @@ void player_hud::update_inertion(Fmatrix& trans)
 		// tend to forward
 		float _tendto_speed, _origin_offset;
 		if (pMainHud != NULL && pMainHud->m_parent_hud_item->GetCurrentHudOffsetIdx() > 0)
-		{
+		{ // Худ в режиме "Прицеливание"
 			float factor = pMainHud->m_parent_hud_item->GetInertionFactor();
 			_tendto_speed = inertion_data.m_tendto_speed_aim - (inertion_data.m_tendto_speed_aim - inertion_data.m_tendto_speed) * factor;
 			_origin_offset =
 				inertion_data.m_origin_offset_aim - (inertion_data.m_origin_offset_aim - inertion_data.m_origin_offset) * factor;
 		}
 		else
-		{
+		{ // Худ в режиме "От бедра"
 			_tendto_speed = inertion_data.m_tendto_speed;
 			_origin_offset = inertion_data.m_origin_offset;
 		}
 
+		// Фактор силы инерции
 		if (pMainHud != NULL)
 		{
 			float power_factor = pMainHud->m_parent_hud_item->GetInertionPowerFactor();
@@ -1702,7 +1740,7 @@ void player_hud::update_inertion(Fmatrix& trans)
 
 		st_last_dir.mad(diff_dir, _tendto_speed * Device.fTimeDelta);
 		origin.mad(diff_dir, _origin_offset);
-
+		*/
 		// pitch compensation
 		float pitch = angle_normalize_signed(xform.k.getP());
 

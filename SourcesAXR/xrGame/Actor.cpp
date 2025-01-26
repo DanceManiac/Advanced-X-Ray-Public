@@ -93,7 +93,7 @@ static float IReceived = 0;
 static float ICoincidenced = 0;
 extern float cammera_into_collision_shift ;
 
-u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);;
+u32	death_camera_mode = READ_IF_EXISTS(pAdvancedSettings, r_u32, "gameplay", "death_camera_mode", 1);
 
 string32		ACTOR_DEFS::g_quick_use_slots[4]={NULL, NULL, NULL, NULL};
 //skeleton
@@ -984,7 +984,22 @@ void CActor::g_Physics			(Fvector& _accel, float jump, float dt)
 	{
 		if(mstate_real&mcClimb&&!cameras[eacFirstEye]->bClampYaw)
 				accel.set(0.f,0.f,0.f);
-		character_physics_support()->get_movement()->Calculate			(accel,cameras[cam_active]->vDirection,0,jump,dt,false);
+		//character_physics_support()->get_movement()->Calculate			(accel,cameras[cam_active]->vDirection,0,jump,dt,false);
+
+		//--#SM+# Begin--
+		bool bNoInterpolate = false;
+		if (Level().CurrentControlEntity() == this)
+		{
+			CWeapon* pWeapon = smart_cast<CWeapon*>(inventory().ActiveItem());
+			if (pWeapon != nullptr)
+			{
+				//--> Фикс дрожания худа в покое во время прицеливания
+				bNoInterpolate = pWeapon->IsZoomed();
+			}
+		}
+		character_physics_support()->get_movement()->Calculate				(accel, cameras[cam_active]->vDirection, 0, jump, dt, false, bNoInterpolate);
+		//--#SM+# End--
+
 		bool new_border_state=character_physics_support()->get_movement()->isOutBorder();
 		if(m_bOutBorder!=new_border_state && Level().CurrentControlEntity() == this)
 		{

@@ -181,6 +181,7 @@ struct script_layer
 struct hud_item_measures
 {
 	enum{e_fire_point=(1<<0), e_fire_point2=(1<<1), e_shell_point=(1<<2), e_16x9_mode_now=(1<<3)};
+	void							merge_measures_params();
 	Flags8							m_prop_flags;
 
 	Fvector							m_item_attach[2];//pos,rot
@@ -198,7 +199,7 @@ struct hud_item_measures
 	Fvector							m_hands_attach[2];//pos,rot
 
 	void load						(const shared_str& sect_name, IKinematics* K);
-
+	bool							bReloadShooting; //--#SM+#--
 
 	struct inertion_params
 	{
@@ -206,8 +207,6 @@ struct hud_item_measures
 		float m_pitch_offset_n;
 		float m_pitch_offset_d;
 		float m_pitch_low_limit;
-		float m_origin_offset;      //<-- outdated
-		float m_origin_offset_aim;  //<-- outdated
 		float m_tendto_speed;
 		float m_tendto_speed_aim;
 		float m_tendto_ret_speed;
@@ -220,8 +219,25 @@ struct hud_item_measures
 		Fvector4 m_offset_LRUD_aim;
 	};
 	inertion_params m_inertion_params; //--#SM+#--
-};
 
+	struct shooting_params
+	{
+		Fvector4 m_shot_max_offset_LRUD;     // √раницы сдвига в бок при выстреле от бедра (-x, +x, +y, -y) 
+		Fvector4 m_shot_max_offset_LRUD_aim; // √раницы сдвига в бок при выстреле в зуме (-x, +x, +y, -y) 
+		Fvector2 m_shot_max_rot_UD;          // √раницы поворота по вертикали при выстреле от бедра (при смещении вверх \ вниз) 
+		Fvector2 m_shot_max_rot_UD_aim;      // √раницы поворота по вертикали при выстреле в зуме (при смещении вверх \ вниз) 
+		float m_shot_offset_BACKW;           // –ассто€ние сдвига назад при выстреле от бедра [>= 0.0f]
+		float m_shot_offset_BACKW_aim;       // –ассто€ние сдвига назад при выстреле в зуме [>= 0.0f]
+		Fvector2 m_shot_offsets_strafe;      // ‘актор изменени€ наклона (стрейфа) ствола при выстреле (мин.\макс. от бедра) vec2[0.f - 1.f]
+		Fvector2 m_shot_offsets_strafe_aim;  // ‘актор изменени€ наклона (стрейфа) ствола при выстреле (мин.\макс. в зуме) vec2[0.f - 1.f]
+		Fvector2 m_shot_diff_per_shot;       // ‘актор того, насколько большой может быть разница между текущей и новой позицией на каждый выстрел (от бедра \ в зуме) [0.f - 1.f]
+		Fvector2 m_shot_power_per_shot;      // ‘актор того, насколько сильнее мы приближаемс€ к границам сдвига и наклона с каждым выстрелом (от бедра \ в зуме) [0.f - 1.f]
+		Fvector2 m_ret_time;                 // ћаксимально возможное врем€ стабилизации ствола в исходное положение после анимации стрельбы (от бедра / в зуме) [секунд][>= 0.0f] - не вли€ет на стрейф
+		Fvector2 m_ret_time_fire;            // ћаксимально возможное врем€ стабилизации ствола в исходное положение во врем€ анимации стрельбы (от бедра / в зуме) [секунд][>= 0.0f] - не вли€ет на стрейф
+		float m_ret_time_backw_koef;         //  оэфицент времени стабилизации дл€ сдвига назад [>= 0.0f]
+	};
+	shooting_params m_shooting_params; //--#SM+#--
+};
 struct attachable_hud_item
 {
 	player_hud*						m_parent;

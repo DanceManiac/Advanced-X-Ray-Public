@@ -895,6 +895,9 @@ void CWeaponMagazined::OnShot		()
 	CGameObject* object = smart_cast<CGameObject*>(H_Parent());
 	if (object)
 		object->callback(GameObject::eOnWeaponFired)(object->lua_game_object(), this->lua_game_object(), iAmmoElapsed);
+
+	// Ёффект сдвига (отдача)
+	AddHUDShootingEffect();
 }
 
 
@@ -937,7 +940,12 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 			SwitchState(eIdle);
 
 		}break;// End of reload animation
-		case eHiding:	SwitchState(eHidden);   break;	// End of Hide
+		case eHiding:
+		{
+			SwitchState(eHidden);
+			ResetShootingEffect();
+			break;	// End of Hide
+		}
 		case eShowing:	SwitchState(eIdle);		break;	// End of Show
 		case eIdle:		switch2_Idle();			break;  // Keep showing idle
 		case eUnMisfire:
