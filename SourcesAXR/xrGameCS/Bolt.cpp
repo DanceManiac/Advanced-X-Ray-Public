@@ -172,7 +172,17 @@ void CBolt::SetInitiator			(u16 id)
 {
 	m_thrower_id=id;
 }
+
 u16	CBolt::Initiator				()
 {
 	return m_thrower_id;
+}
+
+bool CBolt::GetBriefInfo(II_BriefInfo& info)
+{
+	info.clear();
+	info.name = NameShort();
+	info.icon = *cNameSect();
+
+	return true;
 }
