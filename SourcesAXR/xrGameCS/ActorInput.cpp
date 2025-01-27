@@ -328,8 +328,8 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				string256 alt_aim_status;
 				strconcat(sizeof(alt_aim_status), alt_aim_status, "st_alt_aim_switched_", wpn->GetAltZoomStatus() ? "on" : "off");
 
-				SDrawStaticStruct* custom_static = HUD().GetUI()->UIGame()->AddCustomStatic("alt_aim_switched", true);
-				custom_static->wnd()->SetText(CStringTable().translate(alt_aim_status).c_str());
+				if (SDrawStaticStruct* custom_static = HUD().GetUI()->UIGame()->AddCustomStatic("alt_aim_switched", true))
+					custom_static->wnd()->SetText(CStringTable().translate(alt_aim_status).c_str());
 			}
 		}break;
 	}
