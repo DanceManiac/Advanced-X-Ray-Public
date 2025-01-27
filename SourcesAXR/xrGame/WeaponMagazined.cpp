@@ -175,6 +175,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_sprint_start", "sndSprintStart", true, m_eSoundEmptyClick);
 	if (WeaponSoundExist(section, "snd_sprint_end", true))
 		m_sounds.LoadSound(section, "snd_sprint_end", "sndSprintEnd", true, m_eSoundEmptyClick);
+	if (WeaponSoundExist(section, "snd_sprint_idle", true))
+		m_sounds.LoadSound(section, "snd_sprint_idle", "sndSprintIdle", true, m_eSoundEmptyClick);
 
 	m_iBaseDispersionedBulletsCount = READ_IF_EXISTS(pSettings, r_u8, section, "base_dispersioned_bullets_count", 0);
 	m_fBaseDispersionedBulletsSpeed = READ_IF_EXISTS(pSettings, r_float, section, "base_dispersioned_bullets_speed", m_fStartBulletSpeed);
@@ -748,6 +750,8 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndSprintStart", P);
 	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_end"))
 		m_sounds.SetPosition("sndSprintEnd", P);
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_idle"))
+		m_sounds.SetPosition("sndSprintIdle", P);
 
 //. nah	m_sounds.SetPosition("sndShot", P);
 	m_sounds.SetPosition("sndReload", P);

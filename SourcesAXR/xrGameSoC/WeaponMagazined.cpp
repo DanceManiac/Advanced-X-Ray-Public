@@ -171,6 +171,8 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_sprint_start", "sndSprintStart", true, m_eSoundEmptyClick);
 	if (WeaponSoundExist(section, "snd_sprint_end", true))
 		m_sounds.LoadSound(section, "snd_sprint_end", "sndSprintEnd", true, m_eSoundEmptyClick);
+	if (WeaponSoundExist(section, "snd_sprint_idle", true))
+		m_sounds.LoadSound(section, "snd_sprint_idle", "sndSprintIdle", true, m_eSoundEmptyClick);
 
 	//  [7/20/2005]
 	if (pSettings->line_exist(section, "dispersion_start"))
@@ -731,6 +733,8 @@ void CWeaponMagazined::UpdateSounds	()
 		m_sounds.SetPosition("sndSprintStart", get_LastFP());
 	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_end"))
 		m_sounds.SetPosition("sndSprintEnd", get_LastFP());
+	if (WeaponSoundExist(m_section_id.c_str(), "snd_sprint_idle"))
+		m_sounds.SetPosition("sndSprintIdle", get_LastFP());
 }
 
 void CWeaponMagazined::state_Fire	(float dt)

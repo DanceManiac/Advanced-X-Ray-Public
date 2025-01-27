@@ -176,8 +176,12 @@ void CHudItem::OnStateSwitch(u32 S, u32 oldState)
 		PlayAnimSprintStart();
 		break;
 	case eSprintEnd:
-		PlayAnimSprintEnd();
-		break;
+		{
+			PlayAnimSprintEnd();
+
+			if (m_sounds.FindSoundItem("sndSprintIdle", false))
+				m_sounds.StopSound("sndSprintIdle");
+		} break;
 	}
 	//g_player_hud->updateMovementLayerState();
 }
@@ -202,6 +206,9 @@ void CHudItem::OnAnimationEnd(u32 state)
 		{
 			m_bSprintType = true;
 			SwitchState(eIdle);
+
+			if (m_sounds.FindSoundItem("sndSprintIdle", false))
+				m_sounds.PlaySound("sndSprintIdle", HudItemData()->m_item_transform.c, object().H_Root(), !!GetHUDmode(), true, (u8)-1);
 		} break;
 	case eSprintEnd:
 		{
