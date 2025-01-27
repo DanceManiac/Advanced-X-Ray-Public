@@ -119,6 +119,7 @@ CWeapon::CWeapon()
 	m_bUseAimAnmDirDependency = false;
 	m_bUseScopeAimMoveAnims = true;
 	m_bAltZoomEnabled		= false;
+	m_bAltZoomEnabledScope	= false;
 	m_bAltZoomActive		= false;
 }
 
@@ -1169,6 +1170,9 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 
 	m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
 	Load3DScopeParams(section);
+
+	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
+	m_bAltZoomEnabledScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim", false);
 
 	if (bIsSecondVPZoomPresent())
 	{
@@ -4229,13 +4233,11 @@ void CWeapon::UpdateAimOffsets()
 		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
 		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(m_hud_sect, val_name);
 
+		m_bAltZoomEnabledScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "enable_alternative_aim", false);
 		bNeedRestoreOffsets = false;
 
 		return;
 	}
-
-	bool AimOffsetsFromScope = false;
-	AimOffsetsFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_aim_offsets", false);
 
 	bool HudFovFromScope = false;
 	HudFovFromScope = READ_IF_EXISTS(pSettings, r_bool, cur_scope_sect, "cur_scope_hud_fov", false);
@@ -4243,7 +4245,7 @@ void CWeapon::UpdateAimOffsets()
 	if (HudFovFromScope && !IsRotatingFromZoom())
 		psHUD_FOV_def = READ_IF_EXISTS(pSettings, r_float, cur_scope_sect, !m_bAltZoomActive ? "aim_hud_fov" : "aim_alt_hud_fov", GetHudFov());
 
-	if (AimOffsetsFromScope)
+	if (m_bAltZoomEnabledScope)
 	{
 		attachable_hud_item* hi = HudItemData();
 
@@ -4256,19 +4258,14 @@ void CWeapon::UpdateAimOffsets()
 		string128	val_name;
 
 		strconcat(sizeof(val_name), val_name, "aim_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		hi->m_measures.m_hands_offset[0][1] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
 		strconcat(sizeof(val_name), val_name, "aim_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][1] = pSettings->r_fvector3(cur_scope_sect, val_name);
+		hi->m_measures.m_hands_offset[1][1] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
 
 		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_pos", _prefix);
 		hi->m_measures.m_hands_offset[0][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[0][1]);
 		strconcat(sizeof(val_name), val_name, "aim_alt_hud_offset_rot", _prefix);
 		hi->m_measures.m_hands_offset[1][3] = READ_IF_EXISTS(pSettings, r_fvector3, cur_scope_sect, val_name, hi->m_measures.m_hands_offset[1][1]);
-
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_pos", _prefix);
-		hi->m_measures.m_hands_offset[0][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
-		strconcat(sizeof(val_name), val_name, "gl_hud_offset_rot", _prefix);
-		hi->m_measures.m_hands_offset[1][2] = pSettings->r_fvector3(cur_scope_sect, val_name);
 
 		bNeedRestoreOffsets = true;
 	}

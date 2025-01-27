@@ -270,7 +270,7 @@ public:
 	u8		GetAddonsState						()		const		{return m_flagsAddOnState;};
 	void	SetAddonsState						(u8 st)	{m_flagsAddOnState=st;}
 
-	bool	IsAltAimEnabled						() const {return m_bAltZoomEnabled;}
+	bool	IsAltAimEnabled						() const {return (m_bAltZoomEnabled || m_bAltZoomEnabledScope);}
 	bool	GetAltZoomStatus					() const {return m_bAltZoomActive;}
 	bool	SetAltZoomStatus					(bool status) { m_bAltZoomActive = status; }
 	void	SwitchZoomMode						();
@@ -431,6 +431,7 @@ protected:
 	bool					m_bUseAimAnmDirDependency;
 	bool					m_bUseScopeAimMoveAnims;
 	bool					m_bAltZoomEnabled;
+	bool					m_bAltZoomEnabledScope;
 	bool					m_bAltZoomActive;
 
 public:
