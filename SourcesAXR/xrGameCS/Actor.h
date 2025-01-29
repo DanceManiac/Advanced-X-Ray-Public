@@ -902,6 +902,9 @@ protected:
 
 	CNightVisionEffector*	m_night_vision;
 
+	float					m_fJumpWeightFactor;
+	float					m_fSpeedWeightFactor;
+
 DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CActor)

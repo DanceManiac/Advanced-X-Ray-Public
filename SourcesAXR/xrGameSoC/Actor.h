@@ -890,6 +890,9 @@ protected:
 
 	CNightVisionEffector*		m_night_vision;
 
+	float						m_fJumpWeightFactor;
+	float						m_fSpeedWeightFactor;
+
 public:
 	IC u32						get_state						() const { return this->mstate_real; }
 	IC u32						get_state_wishful				() const { return this->mstate_wishful; }

@@ -261,6 +261,9 @@ CActor::CActor() : CEntityAlive()
 	m_bLegsCollBoxCenter.set(0.f, 0.f, 0.f);
 	m_bLegsCollBoxSize.set	(0.f, 0.f, 0.f);
 	m_bLegsCollRayDelta		= 0.f;
+
+	m_fJumpWeightFactor		= 4.0f;
+	m_fSpeedWeightFactor	= 8.0f;
 }
 
 
@@ -501,6 +504,9 @@ void CActor::Load	(LPCSTR section )
 	m_bLegsCollBoxCenter	= READ_IF_EXISTS(pSettings, r_fvector3, "ph_legs_cfg", "legs_phbox_center", (Fvector{ 0.0, 0.2, 0.0 }));
 	m_bLegsCollBoxSize		= READ_IF_EXISTS(pSettings, r_fvector3, "ph_legs_cfg", "legs_phbox_size",	(Fvector{ 0.2, 0.2, 0.2 }));
 	m_bLegsCollRayDelta		= READ_IF_EXISTS(pSettings, r_float,	"ph_legs_cfg", "ray_distance_delta", 0.1f);
+
+	m_fJumpWeightFactor		= READ_IF_EXISTS(pSettings, r_float, section, "jump_weight_factor", 4.0f);
+	m_fSpeedWeightFactor	= READ_IF_EXISTS(pSettings, r_float, section, "speed_weight_factor", 8.0f);
 }
 
 void CActor::PHHit(float P,Fvector &dir, CObject *who,s16 element,Fvector p_in_object_space, float impulse, ALife::EHitType hit_type /* = ALife::eHitTypeWound */)
