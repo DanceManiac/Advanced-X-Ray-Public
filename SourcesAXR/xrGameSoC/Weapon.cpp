@@ -3902,10 +3902,11 @@ void CWeapon::OnStateSwitch(u32 S, u32 oldState)
 	if (H_Parent() == Level().CurrentEntity())
 	{
 		CActor* current_actor = smart_cast<CActor*>(H_Parent());
+		bool fp_cam = current_actor->cam_Active() == current_actor->cam_FirstEye();
 #pragma todo("DANCE MANIAC: Shitty SoC UI.")
 		/*if (&HUD().GetUI()->UIGame()->ActorMenu() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() == mmUndefined)
 		{
-			if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor)
+			if ((GetState() == eReload || GetState() == eUnMisfire || (GetState() == eBore && (GameConstants::GetSSFX_EnableBoreDoF() && m_bEnableBoreDof))) && current_actor && fp_cam)
 			{
 				ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_FocusDoF();
 				ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_FocusDoF().z;
