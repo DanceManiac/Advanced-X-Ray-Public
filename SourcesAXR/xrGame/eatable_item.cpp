@@ -27,6 +27,7 @@
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomOutfit.h"
+#include "CustomBackpack.h"
 #include "../xrEngine/x_ray.h"
 #include "AdvancedXrayGameConstants.h"
 
@@ -312,7 +313,13 @@ void CEatableItem::HitFromActorHit(SHit* pHDS)
 	float hit_power = pHDS->damage();
 
 	if (pHDS->hit_type == ALife::eHitTypeRadiation && hit_power > m_fIrradiationZonePower)
+	{
+		if (CCustomBackpack* backpack = smart_cast<CCustomBackpack*>(Actor()->inventory().ItemFromSlot(BACKPACK_SLOT)))
+			hit_power = std::max(hit_power - backpack->GetRadiationProtection(), 0.0f);
+
 		m_fRadioactivity += (hit_power / 10) * m_fIrradiationCoef;
+		clamp(m_fRadioactivity, 0.0f, 1.0f);
+	}
 }
 
 bool CEatableItem::UseBy (CEntityAlive* entity_alive)

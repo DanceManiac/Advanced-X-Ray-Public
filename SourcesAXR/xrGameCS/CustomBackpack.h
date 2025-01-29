@@ -34,6 +34,7 @@ public:
 	virtual	void	UpdateXForm();
 
 	float			GetInventoryCapacity() const { return m_fInventoryCapacity; }
+	float			GetRadiationProtection() { return m_fRadiationProtection; }
 
 	float			m_fPowerLoss;
 	float			m_additional_weight;
@@ -57,6 +58,7 @@ public:
 	float			m_fOverweightWalkK;
 
 	float			m_fInventoryCapacity;
+	float			m_fRadiationProtection;
 
 	bool			m_bUseAttach;
 

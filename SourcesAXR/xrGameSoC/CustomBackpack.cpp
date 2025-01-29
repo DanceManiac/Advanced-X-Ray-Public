@@ -53,6 +53,7 @@ CCustomBackpack::CCustomBackpack()
 	m_fOverweightWalkK			= 1.0f;
 
 	m_fInventoryCapacity		= 0.0f;
+	m_fRadiationProtection		= 0.0f;
 
 	m_bUseAttach				= false;
 }
@@ -97,6 +98,7 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fOverweightWalkK			= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
 	m_fInventoryCapacity		= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
+	m_fRadiationProtection		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_protection", 0.0f);
 
 	m_bUseAttach				= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
 }

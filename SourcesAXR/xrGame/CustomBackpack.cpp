@@ -48,6 +48,7 @@ CCustomBackpack::CCustomBackpack()
 	m_fOverweightWalkK			= 1.0f;
 
 	m_fInventoryCapacity		= 0.0f;
+	m_fRadiationProtection		= 0.0f;
 
 	m_bUseAttach				= false;
 }
@@ -92,6 +93,7 @@ void CCustomBackpack::Load(LPCSTR section)
 	m_fOverweightWalkK			= READ_IF_EXISTS(pSettings, r_float, section, "overweight_walk_k", 1.f);
 
 	m_fInventoryCapacity		= READ_IF_EXISTS(pSettings, r_float, section, "inventory_capacity", 0.0f);
+	m_fRadiationProtection		= READ_IF_EXISTS(pSettings, r_float, section, "radiation_protection", 0.0f);
 
 	m_bUseAttach				= READ_IF_EXISTS(pSettings, r_bool, section, "use_attaching", false);
 }
@@ -313,6 +315,7 @@ bool CCustomBackpack::install_upgrade_impl(LPCSTR section, bool test)
 	result |= process_if_exists(section, "walk_accel", &CInifile::r_float, m_fWalkAccel, test);
 	result |= process_if_exists(section, "overweight_walk_k", &CInifile::r_float, m_fOverweightWalkK, test);
 	result |= process_if_exists(section, "inventory_capacity", &CInifile::r_float, m_fInventoryCapacity, test);
+	result |= process_if_exists(section, "radiation_protection", &CInifile::r_float, m_fRadiationProtection, test);
 
 	result |= process_if_exists(section, "inv_weight", &CInifile::r_float, m_weight, test);
 
