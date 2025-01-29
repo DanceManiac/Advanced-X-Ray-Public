@@ -4322,3 +4322,8 @@ void CWeapon::ModifyUpgradeBones(shared_str bones_names, bool show)
 		RemoveBones(m_defShownBones, bones_to_remove_vec);
 	}
 }
+
+void CWeapon::DeviceSwitch()
+{
+	OnZoomOut();
+}

@@ -48,6 +48,9 @@ public:
 
 	virtual void 			State						(u32 state);
 	virtual void 			OnStateSwitch				(u32 S);
+
+	virtual void			PlayAnimDeviceSwitch		() override;
+
 	virtual bool			GetBriefInfo				(II_BriefInfo& info);
 
 protected:
@@ -61,12 +64,13 @@ protected:
 
 	//для сети
 	virtual void			net_Relcase			(CObject* O );
+	virtual void			DeviceUpdate		() override;
 protected:
 
 	//время нахождения в текущем состоянии
 	u32						m_dwStateTime;
 	bool					m_throw;
-	
+
 	//время уничтожения
 	u32						m_dwDestroyTime;
 	u32						m_dwDestroyTimeMax;

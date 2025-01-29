@@ -519,6 +519,8 @@ public:
 	virtual void			Reload();
 	void					StopShooting();
 
+	virtual void			DeviceSwitch();
+
 	// обработка визуализации выстрела
 	virtual void			OnShot() {};
 	virtual void			AddShotEffector();

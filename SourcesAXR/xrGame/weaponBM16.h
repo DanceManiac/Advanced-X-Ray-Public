@@ -28,6 +28,7 @@ protected:
 	virtual void	PlayAnimSprintStart				() override;
 	virtual void	PlayAnimSprintEnd				() override;
 	virtual	bool	PlayAnimAimEnd					();
+	virtual void	PlayAnimDeviceSwitch			() override;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };

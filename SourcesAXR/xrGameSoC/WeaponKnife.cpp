@@ -11,6 +11,10 @@
 #include "level_bullet_manager.h"
 #include "ai_sounds.h"
 #include "game_cl_single.h"
+#include "Torch.h"
+#include "Actor.h"
+#include "Inventory.h"
+#include "ActorNightvision.h"
 #include "Level_Bullet_Manager.h"
 
 #define KNIFE_MATERIAL_NAME "objects\\knife"
@@ -79,7 +83,7 @@ void CWeaponKnife::OnStateSwitch(u32 S, u32 oldState)
 			fHitImpulse		= fHitImpulse_1;
 			//-------------------------------------------
 			switch2_Attacking	(S);
-		}break;
+		} break;
 	case eFire2:
 		{
 			//-------------------------------------------
@@ -103,7 +107,31 @@ void CWeaponKnife::OnStateSwitch(u32 S, u32 oldState)
 			fHitImpulse		= fHitImpulse_2;
 			//-------------------------------------------
 			switch2_Attacking	(S);
-		}break;
+		} break;
+	case eDeviceSwitch:
+		{
+			SetPending(TRUE);
+			PlayAnimDeviceSwitch();
+		} break;
+	}
+}
+
+void CWeaponKnife::PlayAnimDeviceSwitch()
+{
+	CActor* actor = Actor();
+	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+	CNightVisionEffector* nvg = Actor()->GetNightVision();
+
+	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : "sndHeadlampOn", get_LastFP());
+
+	LPCSTR guns_device_switch_anm = HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : "anm_headlamp_on";
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+	else
+	{
+		DeviceUpdate();
+		SwitchState(eIdle);
 	}
 }
 
@@ -247,6 +275,7 @@ void CWeaponKnife::OnAnimationEnd(u32 state)
 			}
 		}break;
 	case eShowing:
+	case eDeviceSwitch:
 	case eIdle:	
 		SwitchState(eIdle);		break;	
 	}
@@ -322,6 +351,33 @@ bool CWeaponKnife::Action(s32 cmd, u32 flags)
 			return true;
 	}
 	return false;
+}
+
+void CWeaponKnife::DeviceUpdate()
+{
+	if (auto pA = smart_cast<CActor*>(H_Parent()))
+	{
+		if (HeadLampSwitch)
+		{
+			auto pActorTorch = smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT));
+			pActorTorch->Switch();
+			HeadLampSwitch = false;
+		}
+		else if (NightVisionSwitch)
+		{
+			if (pA->GetNightVision())
+			{
+				pA->SwitchNightVision(!pA->GetNightVision()->IsActive());
+				NightVisionSwitch = false;
+			}
+		}
+	}
+}
+
+void CWeaponKnife::UpdateCL()
+{
+	inherited::UpdateCL();
+	TimeLockAnimation();
 }
 
 void CWeaponKnife::LoadFireParams(LPCSTR section, LPCSTR prefix)

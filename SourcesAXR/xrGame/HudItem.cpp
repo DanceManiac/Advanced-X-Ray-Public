@@ -75,6 +75,15 @@ void CHudItem::Load(LPCSTR section)
 
 	if (m_bBoreEnabled)
 		m_sounds.LoadSound		(section, "snd_bore", "sndBore", true);
+
+	if (pSettings->line_exist(section, "snd_headlamp_on"))
+		m_sounds.LoadSound(section, "snd_headlamp_on", "sndHeadlampOn", false);
+	if (pSettings->line_exist(section, "snd_headlamp_off"))
+		m_sounds.LoadSound(section, "snd_headlamp_off", "sndHeadlampOff", false);
+	if (pSettings->line_exist(section, "snd_nv_on"))
+		m_sounds.LoadSound(section, "snd_nv_on", "sndNvOn", false);
+	if (pSettings->line_exist(section, "snd_nv_off"))
+		m_sounds.LoadSound(section, "snd_nv_off", "sndNvOff", false);
 }
 
 
@@ -774,4 +783,18 @@ float CHudItem::GetHudFov()
 	}
 
 	return m_nearwall_last_hud_fov;
+}
+
+void CHudItem::TimeLockAnimation()
+{
+	if (GetState() != eDeviceSwitch)
+		return;
+
+	string128 anm_time_param;
+	xr_strconcat(anm_time_param, "lock_time_", m_current_motion.c_str(), "_end");
+	const float time = READ_IF_EXISTS(pSettings, r_float, HudSection(), anm_time_param, 0) * 1000.f; // Читаем с конфига время анимации (например, lock_time_end_anm_reload)
+	const float current_time = Device.dwTimeGlobal - m_dwMotionStartTm;
+
+	if (time && current_time >= time)
+		DeviceUpdate();
 }

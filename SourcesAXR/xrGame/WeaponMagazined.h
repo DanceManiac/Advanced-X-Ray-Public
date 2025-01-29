@@ -6,7 +6,7 @@
 #include "hud_item_object.h"
 
 class ENGINE_API CMotionDef;
-
+																	   
 //размер очереди считается бесконечность
 //заканчиваем стрельбу, только, если кончились патроны
 #define WEAPON_ININITE_QUEUE -1
@@ -89,6 +89,10 @@ public:
 	virtual void	FireEnd			();
 	virtual void	Reload			();
 	
+	virtual void	DeviceSwitch	() override;
+protected:
+	virtual void	DeviceUpdate	() override;
+public:
 
 	virtual	void	UpdateCL		();
 	virtual void	net_Destroy		();
@@ -186,6 +190,7 @@ protected:
 	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
 	virtual bool	PlayAnimAimEnd		();
+	virtual void	PlayAnimDeviceSwitch() override;
 
 protected:
 

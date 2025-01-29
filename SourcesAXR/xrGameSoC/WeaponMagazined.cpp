@@ -21,6 +21,8 @@
 #include "script_callback_ex.h"
 #include "script_game_object.h"
 #include "player_hud.h"
+#include "Torch.h"
+#include "ActorNightVision.h"
 #include "AdvancedXrayGameConstants.h"
 
 ENGINE_API  extern float psHUD_FOV;
@@ -573,6 +575,13 @@ void CWeaponMagazined::ReloadMagazine()
 	VERIFY((u32)iAmmoElapsed == m_magazine.size());
 }
 
+void CWeaponMagazined::DeviceSwitch()
+{
+	inherited::DeviceSwitch();
+	SetPending(TRUE);
+	SwitchState(eDeviceSwitch);
+}
+
 void CWeaponMagazined::OnStateSwitch(u32 S, u32 oldState)
 {
 	HUD_VisualBulletUpdate();
@@ -647,15 +656,39 @@ void CWeaponMagazined::OnStateSwitch(u32 S, u32 oldState)
 	case eHidden:
 		switch2_Hidden	();
 		break;
+	case eDeviceSwitch:
+		PlayAnimDeviceSwitch();
+		SetPending(TRUE);
+		break;
 	}
 }
 
-void CWeaponMagazined::UpdateCL			()
+void CWeaponMagazined::DeviceUpdate()
+{
+	if (ParentIsActor())
+	{
+		CActor* actor = Actor();
+		if (HeadLampSwitch)
+		{
+			auto pActorTorch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT));
+			pActorTorch->Switch();
+			HeadLampSwitch = false;
+		}
+		else if (NightVisionSwitch)
+		{
+			if (actor->GetNightVision())
+			{
+				actor->SwitchNightVision(!actor->GetNightVision()->IsActive());
+				NightVisionSwitch = false;
+			}
+		}
+	}
+}
+
+void CWeaponMagazined::UpdateCL()
 {
 	inherited::UpdateCL	();
 	float dt = Device.fTimeDelta;
-
-	
 
 	//когда происходит апдейт состояния оружия
 	//ничего другого не делать
@@ -668,6 +701,7 @@ void CWeaponMagazined::UpdateCL			()
 		case eReload:
 		case eSprintStart:
 		case eSprintEnd:
+		case eDeviceSwitch:
 		case eIdle:
 			fTime			-=	dt;
 			if (fTime<0)	
@@ -696,6 +730,7 @@ void CWeaponMagazined::UpdateCL			()
 	}
 
 	UpdateSounds		();
+	TimeLockAnimation();
 }
 
 void CWeaponMagazined::UpdateSounds	()
@@ -975,6 +1010,11 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 			break;
 		}
 		case eFlashlightSwitch:
+		{
+			SwitchState(eIdle);
+			break;
+		}
+		case eDeviceSwitch:
 		{
 			SwitchState(eIdle);
 			break;
@@ -2009,6 +2049,50 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 		{
 			PlayHUDMotionNew(new_guns_fakeshoot_anm, true, GetState());
 		}
+	}
+}
+
+void CWeaponMagazined::PlayAnimDeviceSwitch()
+{
+	CActor* actor = Actor();
+	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+	CNightVisionEffector* nvg = Actor()->GetNightVision();
+
+	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : "sndHeadlampOn", get_LastFP());
+
+	string128 guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : "anm_headlamp_on", IsMisfire() ? "_jammed" : IsEmptyMagazine() ? "_empty" : "", IsGrenadeLauncherAttached() ? (!IsGrenadeMode() ? "_w_gl" : "_g") : "");
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_device_switch_anm[256];
+		strcpy(new_guns_device_switch_anm, guns_device_switch_anm);
+		new_guns_device_switch_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_device_switch_anm))
+		{
+			PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
+		}
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_device_switch_anm[256];
+		strcpy(new_guns_device_switch_anm, guns_device_switch_anm);
+		new_guns_device_switch_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_device_switch_anm))
+		{
+			PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
+		}
+	}
+	else
+	{
+		DeviceUpdate();
+		SwitchState(eIdle);
 	}
 }
 

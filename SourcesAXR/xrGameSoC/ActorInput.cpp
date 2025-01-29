@@ -31,6 +31,7 @@
 #include "Weapon.h"
 #include "Bolt.h"
 #include "Grenade.h"
+#include "CustomOutfit.h"
 #include "player_hud.h"
 #include "HudItem.h"
 #include "Weapon.h"
@@ -153,9 +154,22 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			if (!Actor()->m_bActionAnimInProcess)
-				NVGAnimCheckDetector();
-		}break;
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_on_2")))
+			{
+				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+				if (outfit && outfit->m_NightVisionSect.size())
+				{
+					Wpn->NightVisionSwitch = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+			{
+				if (!Actor()->m_bActionAnimInProcess)
+					NVGAnimCheckDetector();
+			}
+		} break;
 	case kTORCH:
 		{ 
 			if (hud_adj_mode)
@@ -163,8 +177,19 @@ void CActor::IR_OnKeyboardPress(int cmd)
 
 			CTorch* pTorch = smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT));
 			
-			if (pTorch && !Actor()->m_bActionAnimInProcess)
-				pTorch->Switch();
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_on_2")))
+			{
+				if (pTorch)
+				{
+					Wpn->HeadLampSwitch = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+			{
+				if (pTorch && !Actor()->m_bActionAnimInProcess)
+					pTorch->Switch();
+			}
 		} break;
 	case kCLEAN_MASK:
 		{
@@ -172,16 +197,14 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				return;
 
 			CleanMaskAnimCheckDetector();
-			break;
-		}
+		} break;
 	case kQUICK_KICK:
 		{
 			if (hud_adj_mode)
 				return;
 
 			QuickKick();
-			break;
-		}
+		} break;
 	case kQUICK_GRENADE:
 		{
 			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode)
@@ -202,8 +225,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				if (grenade->isHUDAnimationExist("anm_throw_quick"))
 					grenade->SwitchState(CGrenade::eThrowQuick);
 			}
-			break;
-		}
+		} break;
 	case kWPN_1:	
 	case kWPN_2:	
 	case kWPN_3:	

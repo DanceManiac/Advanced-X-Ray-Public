@@ -4192,3 +4192,8 @@ void CWeapon::SwitchZoomMode()
 
 	m_zoom_params.m_fCurrentZoomFactor = CurrentZoomFactor();
 }
+
+void CWeapon::DeviceSwitch()
+{
+	OnZoomOut();
+}

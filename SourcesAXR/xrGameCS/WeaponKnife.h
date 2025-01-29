@@ -19,6 +19,10 @@ protected:
 	virtual void		OnAnimationEnd				(u32 state);
 	virtual void		OnMotionMark				(u32 state, const motion_marks&);
 	virtual void		OnStateSwitch				(u32 S);
+	virtual void		DeviceUpdate				() override;
+	virtual void		UpdateCL					() override;
+
+	virtual void		PlayAnimDeviceSwitch		() override;
 
 	void				state_Attacking				(float dt);
 

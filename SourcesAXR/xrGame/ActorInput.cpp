@@ -35,6 +35,8 @@
 #include "Weapon.h"
 #include "WeaponMagazined.h"
 #include "Grenade.h"
+#include "ActorHelmet.h"
+#include "CustomOutfit.h"
 #include "script_engine.h"
 #include "PDA.h"
 #include "ui/UIPdaWnd.h"
@@ -154,33 +156,51 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			SwitchNightVision();
-			break;
-		}
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_on_2")))
+			{
+				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+				if (helmet && helmet->m_NightVisionSect.size() || helmet2 && helmet2->m_NightVisionSect.size() || outfit && outfit->m_NightVisionSect.size())
+				{
+					Wpn->NightVisionSwitch = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+				SwitchNightVision();
+		} break;
 	case kTORCH:
 		{
 			if (hud_adj_mode)
 				return;
 
-			SwitchTorch();
-			break;
-		}
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_on_2")))
+			{
+				if (smart_cast<CTorch*>(inventory().ItemFromSlot(TORCH_SLOT)))
+				{
+					Wpn->HeadLampSwitch = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+				SwitchTorch();
+		} break;
 	case kCLEAN_MASK:
 		{
 			if (hud_adj_mode)
 				return;
 
 			CleanMaskAnimCheckDetector();
-			break;
-		}
+		} break;
 	case kQUICK_KICK:
 		{
 			if (hud_adj_mode)
 				return;
 
 			QuickKick();
-			break;
-		}
+		} break;
 	case kQUICK_GRENADE:
 		{
 			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode)
@@ -201,8 +221,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				if (grenade->isHUDAnimationExist("anm_throw_quick"))
 					grenade->SwitchState(CGrenade::eThrowQuick);
 			}
-			break;
-		}
+		} break;
 	case kDETECTOR:
 		{
 			PIItem det_active					= inventory().ItemFromSlot(DETECTOR_SLOT);
@@ -212,7 +231,7 @@ void CActor::IR_OnKeyboardPress(int cmd)
 				det->ToggleDetector				(g_player_hud->attached_item(0)!=NULL);
 				return;
 			}
-		}break;
+		} break;
 /*
 	case kFLARE:{
 			PIItem fl_active = inventory().ItemFromSlot(FLARE_SLOT);

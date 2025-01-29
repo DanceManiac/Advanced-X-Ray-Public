@@ -15,10 +15,12 @@
 #include "characterphysicssupport.h"
 #include "inventory.h"
 #include "../xrEngine/IGame_Persistent.h"
+#include "Torch.h"
+#include "ActorNightvision.h"
+
 #ifdef DEBUG
 #	include "phdebug.h"
 #endif
-
 
 #define PLAYING_ANIM_TIME 10000
 
@@ -209,6 +211,27 @@ void CMissile::OnH_B_Independent(bool just_before_destroy)
 	}
 }
 
+void CMissile::DeviceUpdate()
+{
+	if (auto pA = smart_cast<CActor*>(H_Parent()))
+	{
+		if (HeadLampSwitch)
+		{
+			auto pActorTorch = smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT));
+			pActorTorch->Switch();
+			HeadLampSwitch = false;
+		}
+		else if (NightVisionSwitch)
+		{
+			if (pA->GetNightVision())
+			{
+				pA->SwitchNightVision(!pA->GetNightVision()->IsActive());
+				NightVisionSwitch = false;
+			}
+		}
+	}
+}
+
 extern int hud_adj_mode;
 
 void CMissile::UpdateCL() 
@@ -216,6 +239,8 @@ void CMissile::UpdateCL()
 	m_dwStateTime += Device.dwTimeDelta;
 
 	inherited::UpdateCL();
+
+	TimeLockAnimation();
 
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
 	if(pActor && !pActor->AnyMove() && this==pActor->inventory().ActiveItem())
@@ -338,7 +363,12 @@ void CMissile::State(u32 state)
 			}
 			else
 				SwitchState(eThrowStart);
-		}
+		} break;
+	case eDeviceSwitch:
+		{
+			SetPending(TRUE);
+			PlayAnimDeviceSwitch();
+		} break;
 /*	case eBore:
 		{
 			PlaySound			(sndPlaying,Position());
@@ -396,7 +426,10 @@ void CMissile::OnAnimationEnd(u32 state)
 	case eThrowQuick:
 		{
 			SwitchState(eThrowEnd);
-		}
+		} break;
+	case eDeviceSwitch:
+		SwitchState(eIdle);
+		break;
 	default:
 		inherited::OnAnimationEnd(state);
 	}
@@ -588,7 +621,7 @@ bool CMissile::Action(s32 cmd, u32 flags)
 				}
 			} 
 			return true;
-		}break;
+		} break;
 
 	case kWPN_ZOOM:
 		{
@@ -613,7 +646,7 @@ bool CMissile::Action(s32 cmd, u32 flags)
 					SwitchState(eThrow);
 			}
 			return true;
-		}break;
+		} break;
 	}
 	return false;
 }
@@ -811,3 +844,21 @@ bool CMissile::GetBriefInfo(II_BriefInfo& info)
 	return true;
 }
 
+void CMissile::PlayAnimDeviceSwitch()
+{
+	CActor* actor = Actor();
+	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+	CNightVisionEffector* nvg = Actor()->GetNightVision();
+
+	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : "sndHeadlampOn", Position());
+
+	LPCSTR guns_device_switch_anm = HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : "anm_headlamp_on";
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+	else
+	{
+		DeviceUpdate();
+		SwitchState(eIdle);
+	}
+}

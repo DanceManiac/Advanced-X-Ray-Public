@@ -24,7 +24,8 @@ enum EHudStates {
 		eBore,
 		eSprintStart,
 		eSprintEnd,
-		eLastBaseState = eSprintEnd,
+		eDeviceSwitch,
+		eLastBaseState = eDeviceSwitch,
 };
 
 private:
@@ -127,6 +128,7 @@ public:
 	virtual void				PlayAnimIdleSprint	();
 	virtual void				PlayAnimSprintStart	();
 	virtual void				PlayAnimSprintEnd	();
+	virtual void				PlayAnimDeviceSwitch() {};
 
 	virtual void				UpdateCL			();
 	virtual void				renderable_Render	();
@@ -176,6 +178,9 @@ protected:
 	IC void						EnableHudInertion		(BOOL B)		{ m_huditem_flags.set(fl_inertion_enable, B);}
 	IC void						AllowHudInertion		(BOOL B)		{ m_huditem_flags.set(fl_inertion_allow, B);}
 
+	void						TimeLockAnimation		();
+	virtual void				DeviceUpdate			() {};
+
 	u32							m_animation_slot;
 
 	HUD_SOUND_COLLECTION_LAYERED m_sounds;
@@ -208,5 +213,7 @@ public:
 	float m_nearwall_target_hud_fov{};
 	float m_nearwall_speed_mod{};
 	float m_base_fov{};
+
+	bool HeadLampSwitch{}, NightVisionSwitch{};
 };
 

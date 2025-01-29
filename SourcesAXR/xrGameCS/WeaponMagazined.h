@@ -11,7 +11,6 @@ class ENGINE_API CMotionDef;
 //заканчиваем стрельбу, только, если кончились патроны
 #define WEAPON_ININITE_QUEUE -1
 
-
 class CWeaponMagazined: public CWeapon
 {
 private:
@@ -88,7 +87,11 @@ public:
 	virtual void	FireStart		();
 	virtual void	FireEnd			();
 	virtual void	Reload			();
-	
+
+	virtual void	DeviceSwitch	() override;
+protected:
+	virtual void	DeviceUpdate	() override;
+public:
 
 	virtual	void	UpdateCL		();
 	virtual void	net_Destroy		();
@@ -186,6 +189,7 @@ protected:
 	virtual void	PlayAnimLaserSwitch	();
 	virtual void	PlayAnimFlashlightSwitch();
 	virtual bool	PlayAnimAimEnd		();
+	virtual void	PlayAnimDeviceSwitch() override;
 
 protected:
 

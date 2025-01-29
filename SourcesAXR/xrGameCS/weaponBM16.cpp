@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "weaponBM16.h"
+#include "Actor.h"
+#include "Inventory.h"
+#include "ActorNightVision.h"
+#include "Torch.h"
 
 CWeaponBM16::~CWeaponBM16()
 {
@@ -417,6 +421,50 @@ void CWeaponBM16::PlayAnimSprintEnd()
 	else
 	{
 		m_bSprintType = false;
+		SwitchState(eIdle);
+	}
+}
+
+void CWeaponBM16::PlayAnimDeviceSwitch()
+{
+	CActor* actor = Actor();
+	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+	CNightVisionEffector* nvg = Actor()->GetNightVision();
+
+	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : "sndHeadlampOn", get_LastFP());
+
+	string128 guns_device_switch_anm{};
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : "anm_headlamp_on", IsMisfire() ? "_jammed_" : "_", std::to_string(m_magazine.size()).c_str());
+
+	if (isHUDAnimationExist(guns_device_switch_anm))
+	{
+		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
+	{
+		char new_guns_device_switch_anm[256];
+		strcpy(new_guns_device_switch_anm, guns_device_switch_anm);
+		new_guns_device_switch_anm[strlen(guns_device_switch_anm) - strlen("_jammed")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_device_switch_anm))
+		{
+			PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
+		}
+	}
+	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
+	{
+		char new_guns_device_switch_anm[256];
+		strcpy(new_guns_device_switch_anm, guns_device_switch_anm);
+		new_guns_device_switch_anm[strlen(guns_device_switch_anm) - strlen("_empty")] = '\0';
+
+		if (isHUDAnimationExist(new_guns_device_switch_anm))
+		{
+			PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
+		}
+	}
+	else
+	{
+		DeviceUpdate();
 		SwitchState(eIdle);
 	}
 }
