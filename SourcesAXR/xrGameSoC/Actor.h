@@ -846,6 +846,8 @@ public:
 	bool						GetHeatingStatus	() const { return m_bHeating; }
 	float						GetCurrentHeating	() const { return m_fHeatingPower; }
 
+	void						SetMaskClear		(bool clear) { m_bMaskClear = clear; }
+
 	bool						HasItemsForRepair	(xr_vector<std::pair<shared_str, int>> item);
 	void						RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
 

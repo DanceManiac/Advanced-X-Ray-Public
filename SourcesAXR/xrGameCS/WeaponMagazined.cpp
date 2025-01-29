@@ -709,6 +709,11 @@ void CWeaponMagazined::DeviceUpdate()
 				NightVisionSwitch = false;
 			}
 		}
+		else if (CleanMaskAction)
+		{
+			actor->SetMaskClear(true);
+			CleanMaskAction = false;
+		}
 	}
 }
 
@@ -2146,10 +2151,10 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 	CNightVisionEffector* nvg = Actor()->GetNightVision();
 
-	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : "sndHeadlampOn", get_LastFP());
+	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", get_LastFP());
 
 	string128 guns_device_switch_anm{};
-	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : "anm_headlamp_on", IsMisfire() ? "_jammed" : IsEmptyMagazine() ? "_empty" : "", IsGrenadeLauncherAttached() ? (!IsGrenadeMode() ? "_w_gl" : "_g") : "");
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "", IsMisfire() ? "_jammed" : IsEmptyMagazine() ? "_empty" : "", IsGrenadeLauncherAttached() ? (!IsGrenadeMode() ? "_w_gl" : "_g") : "");
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{

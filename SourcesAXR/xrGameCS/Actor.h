@@ -871,6 +871,8 @@ public:
 	bool					GetHeatingStatus	() const { return m_bHeating; }
 	float					GetCurrentHeating	() const { return m_fHeatingPower; }
 
+	void					SetMaskClear		(bool clear) { m_bMaskClear = clear; }
+
 protected:
 	bool					m_bNightVisionOn;
 	bool					m_bNightVisionAllow;

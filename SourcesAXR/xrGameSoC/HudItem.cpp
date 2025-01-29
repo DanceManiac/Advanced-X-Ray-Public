@@ -85,6 +85,8 @@ void CHudItem::Load(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_nv_on", "sndNvOn", false);
 	if (pSettings->line_exist(section, "snd_nv_off"))
 		m_sounds.LoadSound(section, "snd_nv_off", "sndNvOff", false);
+	if (pSettings->line_exist(section, "snd_clean_mask"))
+		m_sounds.LoadSound(section, "snd_clean_mask", "sndCleanMask", false);
 }
 
 

@@ -122,9 +122,9 @@ void CWeaponKnife::PlayAnimDeviceSwitch()
 	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
 	CNightVisionEffector* nvg = Actor()->GetNightVision();
 
-	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : "sndHeadlampOn", get_LastFP());
+	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", get_LastFP());
 
-	LPCSTR guns_device_switch_anm = HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : "anm_headlamp_on";
+	LPCSTR guns_device_switch_anm = HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "";
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
@@ -370,6 +370,11 @@ void CWeaponKnife::DeviceUpdate()
 				pA->SwitchNightVision(!pA->GetNightVision()->IsActive());
 				NightVisionSwitch = false;
 			}
+		}
+		else if (CleanMaskAction)
+		{
+			pA->SetMaskClear(true);
+			CleanMaskAction = false;
 		}
 	}
 }

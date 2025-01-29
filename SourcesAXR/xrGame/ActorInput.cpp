@@ -192,7 +192,20 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			if (hud_adj_mode)
 				return;
 
-			CleanMaskAnimCheckDetector();
+			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && Wpn->isHUDAnimationExist("anm_clean_mask"))
+			{
+				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+
+				if (helmet && helmet->m_b_HasGlass || helmet2 && helmet2->m_b_HasGlass || outfit && outfit->m_b_HasGlass)
+				{
+					Wpn->CleanMaskAction = true;
+					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
+				}
+			}
+			else
+				CleanMaskAnimCheckDetector();
 		} break;
 	case kQUICK_KICK:
 		{

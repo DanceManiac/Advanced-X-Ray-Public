@@ -214,6 +214,6 @@ public:
 	float m_nearwall_speed_mod{};
 	float m_base_fov{};
 
-	bool HeadLampSwitch{}, NightVisionSwitch{};
+	bool HeadLampSwitch{}, NightVisionSwitch{}, CleanMaskAction{};
 };
 
