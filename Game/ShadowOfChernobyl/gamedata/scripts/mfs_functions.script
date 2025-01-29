@@ -143,11 +143,13 @@ function g_task_script(task)
 	task_manager.get_task_manager():give_task(task)
 end
 
--- 'Для команды kill. Не трогать!
-function get_id_by_sid(story_id_to_kill)
-	local npc = get_story_object(story_id_to_kill)
-
-	if npc then
-		return npc:id()
+-- 'Для отладочных команд. Не трогать!
+function get_id_by_sid(story_obj_id)
+    local obj_id = story_objects.get_story_objects_registry():get(story_obj_id)
+    
+	if obj_id == nil then
+		return nil
 	end
+	
+    return obj_id
 end

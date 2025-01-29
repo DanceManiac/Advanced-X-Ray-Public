@@ -11,6 +11,7 @@
 #include "script_debugger.h"
 #include "ai_debug.h"
 #include "alife_simulator.h"
+#include "alife_object_registry.h"
 #include "game_cl_base.h"
 #include "game_cl_single.h"
 #include "game_sv_single.h"
@@ -584,6 +585,66 @@ public:
 		}
 		else
 			Msg("! [kill] : Empty entity to kill or is not EntityAlive!");
+	}
+
+	virtual void	Info(TInfo& I)
+	{
+		strcpy(I, "name,team,squad,group");
+	}
+};
+
+// tp_to_sid
+class CCC_TeleportToSID : public IConsole_Command {
+public:
+	CCC_TeleportToSID(LPCSTR N) : IConsole_Command(N) { };
+	virtual void Execute(LPCSTR args)
+	{
+		if (!g_pGameLevel)
+			return;
+
+		char story_id_for_tp[128];
+		story_id_for_tp[0] = 0;
+
+		sscanf(args, "%s", story_id_for_tp);
+
+		if (story_id_for_tp[0] != 0)
+		{
+			u16 id_to_tp{};
+
+			luabind::functor<u16> m_functor;
+			if (ai().script_engine().functor("mfs_functions.get_id_by_sid", m_functor))
+				id_to_tp = m_functor(story_id_for_tp);
+
+			if (!id_to_tp)
+			{
+				Msg("! [tp_to_sid] : Invalid story_id! story_id: %s", story_id_for_tp);
+				return;
+			}
+
+			if (CSE_ALifeDynamicObject* alife_obj = ai().alife().objects().object(id_to_tp, true))
+			{
+				if (Actor())
+				{
+					u8 actor_level_id = ai().game_graph().vertex(ai().alife().objects().object(Actor()->ID(), true)->m_tGraphID)->level_id();
+					u8 object_level_id = ai().game_graph().vertex(alife_obj->m_tGraphID)->level_id();
+
+					if (actor_level_id != object_level_id)
+					{
+						Msg("! [tp_to_sid] : Object on another level!");
+						return;
+					}
+
+					Fvector pos = alife_obj->Position();
+					Fmatrix F = Actor()->XFORM();
+					F.c = pos;
+					Actor()->ForceTransform(F);
+				}
+			}
+			else
+				Msg("! [tp_to_sid] : Object with id [%s] not found!", story_id_for_tp);
+		}
+		else
+			Msg("! [tp_to_sid] : Empty object for teleport!");
 	}
 
 	virtual void	Info(TInfo& I)
@@ -2635,6 +2696,7 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 		CMD1(CCC_GiveTask,		"g_task");
 		CMD1(CCC_GiveMoney,		"g_money");
 		CMD1(CCC_KillEntity,	"kill");
+		CMD1(CCC_TeleportToSID,	"tp_to_sid");
 		CMD1(CCC_ReloadSystemLtx, "reload_system_ltx");
 		CMD1(CCC_ReloadAdvancedXRayCfg, "reload_axr_cfg");
 		CMD1(CCC_ReloadWeather, "reload_weather");
