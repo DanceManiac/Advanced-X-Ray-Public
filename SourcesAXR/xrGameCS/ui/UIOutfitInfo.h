@@ -2,7 +2,7 @@
 #include "UIWindow.h"
 #include "../EntityCondition.h"
 #include "UIDoubleProgressBar.h"
-#include "..\..\xrServerEntities\alife_space.h"
+#include "..\..\xrServerEntitiesCS\alife_space.h"
 
 class CUIXml;
 class CUIStatic;
