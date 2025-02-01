@@ -15,10 +15,21 @@ struct motion_descr
 {
 	MotionID		mid;
 	shared_str		name;
+	
+	const char*		eff_name{};
+};
+
+struct motion_params
+{
+	float speed_k{1.0f};
+	float start_k{0.0f};
+	float stop_k{1.0f};
 };
 
 struct player_hud_motion
 {
+	motion_params params	{};
+	
 	shared_str				m_alias_name;
 	shared_str				m_base_name;
 	shared_str				m_additional_name;
@@ -307,7 +318,7 @@ public:
 	void			render_hud			();	
 	void			render_item_ui		();
 	bool			render_item_ui_query();
-	u32				anim_play			(u16 part, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed, bool hasHands, IKinematicsAnimated* itemModel, u16 override_part = u16(-1));
+	u32				anim_play			(u16 part, const motion_params& P, const MotionID& M, BOOL bMixIn, const CMotionDef*& md, float speed, bool hasHands, IKinematicsAnimated* itemModel, u16 override_part = u16(-1));
 	u32				script_anim_play	(u8 hand, LPCSTR itm_name, LPCSTR anm_name, bool bMixIn = true, float speed = 1.f, LPCSTR attach_visual = nullptr);
 	const shared_str& section_name		() const {return m_sect_name;}
 
@@ -326,8 +337,8 @@ public:
 	void			tune				(Ivector values);
 	void			SaveCfg				(const int idx) const;
 	void			SaveAttachesCfg		(LPCSTR parent_section, CWeapon* parent_wpn) const;
-	u32				motion_length		(const MotionID& M, const CMotionDef*& md, float speed, IKinematicsAnimated* itemModel);
-	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md);
+	u32				motion_length		(const motion_params& P, const MotionID& M, const CMotionDef*& md, float speed, IKinematicsAnimated* itemModel);
+	u32				motion_length		(const shared_str& anim_name, const shared_str& hud_name, const CMotionDef*& md, float speed = 1.f);
 	u32				motion_length_script(LPCSTR section, LPCSTR anm_name, float speed);
 	void			OnMovementChanged	(ACTOR_DEFS::EMoveCommand cmd);
 	void			OnMotionMark		(const motion_marks&);

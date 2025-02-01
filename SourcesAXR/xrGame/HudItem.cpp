@@ -473,7 +473,7 @@ u32 CHudItem::PlayHUDMotion_noCB(const shared_str& motion_name, const bool bMixI
 	else
 	{
 		m_started_rnd_anim_idx				= 0;
-		return g_player_hud->motion_length	(motion_name, HudSection(), m_current_motion_def);
+		return g_player_hud->motion_length	(motion_name, HudSection(), m_current_motion_def, speed );
 	}
 }
 
