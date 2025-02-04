@@ -987,4 +987,7 @@
 	<string id="st_degree">
 		<text>°</text>
 	</string>
+	<string id="st_materials_for_repair">
+		<text>Необходимо для ремонта:</text>
+	</string>
 </string_table>

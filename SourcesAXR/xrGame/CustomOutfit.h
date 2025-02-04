@@ -82,6 +82,7 @@ public:
 	xr_vector<shared_str>	m_SuitableFilters;
 	xr_vector<shared_str>	m_SuitableRepairKits;
 	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
+	xr_vector<LPCSTR>		m_ItemsForRepairNames;
 
 	bool					bIsHelmetAvaliable;
 	bool					m_b_HasGlass;

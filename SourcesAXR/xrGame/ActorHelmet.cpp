@@ -86,6 +86,7 @@ void CHelmet::Load(LPCSTR section)
 	m_SuitableFilters.clear();
 	m_SuitableRepairKits.clear();
 	m_ItemsForRepair.clear();
+	m_ItemsForRepairNames.clear();
 
 	LPCSTR filters = READ_IF_EXISTS(pSettings, r_string, section, "suitable_filters", "antigas_filter");
 	LPCSTR repair_kits = READ_IF_EXISTS(pSettings, r_string, section, "suitable_repair_kits", "repair_kit");
@@ -128,7 +129,10 @@ void CHelmet::Load(LPCSTR section)
 			if ((it % 2 != 0 && it != 0) || it == 1)
 				m_ItemsForRepair[it / 2].second = std::stoi(items_for_repair_sect);
 			else
+			{
 				m_ItemsForRepair.push_back(std::make_pair(items_for_repair_sect, 0));
+				m_ItemsForRepairNames.push_back(pSettings->r_string(items_for_repair_sect, "inv_name"));
+			}
 		}
 	}
 

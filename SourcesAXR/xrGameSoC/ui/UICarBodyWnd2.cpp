@@ -424,7 +424,7 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 
 	LPCSTR act_str = NULL;
 
-	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()) || (pRepairKit && !pRepairKit->UseAllowed()))
+	if (!item->Useful() || (pFilter && !pFilter->UseAllowed()))
 		return;
 
 	CTorch* item_in_torch_slot = smart_cast<CTorch*>(m_pOurObject->inventory().ItemFromSlot(TORCH_SLOT));
@@ -488,7 +488,20 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		{
 			shared_str str = CStringTable().translate("st_repair");
 			str.printf("%s %s", str.c_str(), item_in_outfit_slot->m_name.c_str());
-			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT);
+			
+			shared_str repair_hint{};
+
+			if (!item_in_outfit_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_outfit_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_outfit_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_outfit_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT, repair_hint.c_str());
 			b_show = true;
 		}
 
@@ -496,7 +509,20 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		{
 			shared_str str = CStringTable().translate("st_repair");
 			str.printf("%s %s", str.c_str(), item_in_knife_slot->m_name.c_str());
-			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_knife_slot, REPAIR_KIT_KNIFE);
+
+			shared_str repair_hint{};
+
+			if (!item_in_knife_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_knife_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_knife_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_knife_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_knife_slot, REPAIR_KIT_KNIFE, repair_hint.c_str());
 			b_show = true;
 		}
 
@@ -504,7 +530,20 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		{
 			shared_str str = CStringTable().translate("st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn1_slot->m_name.c_str());
-			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn1_slot, REPAIR_KIT_WPN1);
+
+			shared_str repair_hint{};
+
+			if (!item_in_wpn1_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_wpn1_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_wpn1_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_wpn1_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn1_slot, REPAIR_KIT_WPN1, repair_hint.c_str());
 			b_show = true;
 		}
 
@@ -512,7 +551,20 @@ void CUICarBodyWnd::PropertiesBoxForUsing(PIItem item, bool& b_show)
 		{
 			shared_str str = CStringTable().translate("st_repair");
 			str.printf("%s %s", str.c_str(), item_in_wpn2_slot->m_name.c_str());
-			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn2_slot, REPAIR_KIT_WPN2);
+
+			shared_str repair_hint{};
+
+			if (!item_in_wpn2_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_wpn2_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_wpn2_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_wpn2_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_pUIPropertiesBox->AddItem(str.c_str(), (void*)item_in_wpn2_slot, REPAIR_KIT_WPN2, repair_hint.c_str());
 			b_show = true;
 		}
 		return;

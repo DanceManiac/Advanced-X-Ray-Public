@@ -700,6 +700,7 @@ public:
 
 	xr_vector<shared_str>	m_SuitableRepairKits;
 	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
+	xr_vector<LPCSTR>		m_ItemsForRepairNames;
 protected:
 	u32						m_ef_main_weapon_type;
 	u32						m_ef_weapon_type;

@@ -22,6 +22,7 @@ public:
 	xr_vector<shared_str>	m_SuitableFilters;
 	xr_vector<shared_str>	m_SuitableRepairKits;
 	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
+	xr_vector<LPCSTR>		m_ItemsForRepairNames;
 
 	virtual void			OnMoveToSlot			(const SInvItemPlace& previous_place);
 	virtual void			OnMoveToRuck			(const SInvItemPlace& previous_place);
