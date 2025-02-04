@@ -10,11 +10,14 @@ public:
 
     virtual void		SetSelected(bool b);
 	virtual void		Draw();
+	virtual void		Update();
 	virtual bool		OnMouseDown(int mouse_btn);
+	virtual void		OnFocusLost();
 	virtual void		OnFocusReceive();
 			void		InitDefault();
 			void		SetTAG(u32 value);
 			u32			GetTAG();
+			void		SetHint(LPCSTR hint_str);
 
 			void		SetData(void* data);
 			void*		GetData();
@@ -38,6 +41,7 @@ protected:
 		u32				txt_color;
 		u32				txt_color_s;
 		u32				tag;
+		LPCSTR			item_hint{};
 		void*			pData;
 };
 

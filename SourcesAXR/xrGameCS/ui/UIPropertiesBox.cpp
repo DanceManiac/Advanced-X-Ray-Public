@@ -56,11 +56,14 @@ void CUIPropertiesBox::SendMessage(CUIWindow *pWnd, s16 msg, void *pData)
 	inherited::SendMessage(pWnd, msg, pData);
 }
 
-bool CUIPropertiesBox::AddItem(const char*  str, void* pData, u32 tag_value)
+bool CUIPropertiesBox::AddItem(const char* str, void* pData, u32 tag_value, LPCSTR hint_str)
 {
 	CUIListBoxItem* itm		= m_UIListWnd.AddItem(str);
 	itm->SetTAG				(tag_value);
 	itm->SetData			(pData);
+
+	if (hint_str)
+		itm->SetHint(hint_str);
 
 	return true;
 }

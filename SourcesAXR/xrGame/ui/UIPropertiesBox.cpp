@@ -105,11 +105,15 @@ void CUIPropertiesBox::OnItemReceivedFocus(CUIWindow* w, void* d)
 	}
 }
 
-bool CUIPropertiesBox::AddItem(LPCSTR  str, void* pData, u32 tag_value)
+bool CUIPropertiesBox::AddItem(LPCSTR str, void* pData, u32 tag_value, LPCSTR hint_str)
 {
 	CUIListBoxItem* itm		= m_UIListWnd.AddTextItem(str);
 	itm->SetTAG				(tag_value);
 	itm->SetData			(pData);
+
+	if (hint_str)
+		itm->SetHint(hint_str);
+
 	if (m_sub_property_box)
 	{
 		AddCallback(
