@@ -57,6 +57,15 @@ public:
 	virtual	bool            bMarkCanShow() { return IsZoomed(); }
 	virtual void			UpdateAddonsTransform(bool for_hud);
 
+	static void				SafetyBoneCallback(CBoneInstance* P);
+	virtual void			SetSafetyBoneCallback();
+	virtual void			ResetSafetyBoneCallback();
+	virtual void			SetHudSafetyBoneCallback();
+	virtual void			ResetHudSafetyBoneCallback();
+	virtual void			UpdateSafetyRotation();
+	virtual void			CalculateSafetyRotation(float value);
+	virtual void			RecalculateSafetyRotation(bool reverse, u32 step);
+
 
 	virtual void			UpdateSecondVP(bool bInGrenade = false);
 	void					Load3DScopeParams(LPCSTR section);
@@ -125,6 +134,8 @@ public:
 	virtual void			OnH_A_Chield		();
 	virtual void			OnH_B_Independent	(bool just_before_destroy);
 	virtual void			OnH_A_Independent	();
+	virtual void			on_a_hud_attach		();
+	virtual void			on_b_hud_detach		();
 	virtual void			OnEvent				(NET_Packet& P, u16 type);// {inherited::OnEvent(P,type);}
 
 	virtual	void			Hit					(SHit* pHDS);
@@ -418,6 +429,14 @@ protected:
 	bool					m_bAltZoomEnabled;
 	bool					m_bAltZoomEnabledScope;
 	bool					m_bAltZoomActive;
+
+	shared_str				m_sSafetyBoneName;
+	Fvector4				m_fSafetyRotationSteps{};
+	float					m_fSafetyRotationSpeed;
+	float					m_fSafetyRotationTime;
+	Fvector					m_vSafetyRotationAxis;
+	Fmatrix					m_mSafetyRotation;
+
 public:
 	//загружаемые параметры
 	Fvector					vLoadedFirePoint;

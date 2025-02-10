@@ -126,6 +126,11 @@ CWeapon::CWeapon(LPCSTR name)
 	m_bAltZoomEnabled		= false;
 	m_bAltZoomEnabledScope	= false;
 	m_bAltZoomActive		= false;
+
+	m_sSafetyBoneName		= nullptr;
+	m_fSafetyRotationSpeed	= 1.0f;
+	m_fSafetyRotationTime	= 0.0f;
+	m_mSafetyRotation.identity();
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -826,6 +831,21 @@ void CWeapon::Load		(LPCSTR section)
 	m_bUseScopeAimMoveAnims			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_scope_aim_move_anm", true);
 	m_bUseAimSilShotAnim			= READ_IF_EXISTS(pSettings, r_bool, section, "enable_aim_silencer_shoot_anm", false);
 	m_bAltZoomEnabled				= READ_IF_EXISTS(pSettings, r_bool, section, "enable_alternative_aim", false);
+	m_sSafetyBoneName				= READ_IF_EXISTS(pSettings, r_string, section, "safety_bone", nullptr);
+
+	if (m_sSafetyBoneName.size())
+	{
+		m_vSafetyRotationAxis = pSettings->r_fvector3(section, "safety_rot_axis");
+		m_fSafetyRotationSpeed = READ_IF_EXISTS(pSettings, r_float, section, "safety_rot_speed", 1.0f);
+
+		for (u32 i{}; i <= 3; i++)
+		{
+			string128 safety_rot_param{};
+			strconcat(sizeof(safety_rot_param), safety_rot_param, "safety_rot_step_mode_", std::to_string(i).c_str());
+			m_fSafetyRotationSteps[i] = READ_IF_EXISTS(pSettings, r_float, section, safety_rot_param, 0.0f);
+		}
+	}
+
 	if (repair_kits && repair_kits[0])
 	{
 		string128 repair_kits_sect;
@@ -1459,6 +1479,21 @@ void CWeapon::OnH_B_Chield		()
 	m_set_next_ammoType_on_reload	= u32(-1);
 }
 
+void CWeapon::on_a_hud_attach()
+{
+	inherited::on_a_hud_attach();
+
+	if (m_sSafetyBoneName.size())
+		SetHudSafetyBoneCallback();
+}
+
+void CWeapon::on_b_hud_detach()
+{
+	inherited::on_b_hud_detach();
+
+	if (m_sSafetyBoneName.size())
+		ResetHudSafetyBoneCallback();
+}
 
 void CWeapon::UpdateCL		()
 {
@@ -1475,6 +1510,9 @@ void CWeapon::UpdateCL		()
 
 	if(!IsGameTypeSingle())
 		make_Interpolation		();
+
+	if (m_sSafetyBoneName.size())
+		UpdateSafetyRotation();
 	
 	VERIFY(smart_cast<IKinematics*>(Visual()));
 	
@@ -4200,4 +4238,68 @@ void CWeapon::SwitchZoomMode()
 void CWeapon::DeviceSwitch()
 {
 	OnZoomOut();
+}
+
+void CWeapon::SafetyBoneCallback(CBoneInstance* P)
+{
+	CWeapon* weapon = static_cast<CWeapon*>(P->callback_param());
+	P->mTransform.mulB_43(weapon->m_mSafetyRotation);
+}
+
+void CWeapon::SetSafetyBoneCallback()
+{
+	IKinematics* worldVisual = smart_cast<IKinematics*>(Visual());
+	u16 boneId = worldVisual->LL_BoneID(m_sSafetyBoneName);
+	CBoneInstance& safetyBone = worldVisual->LL_GetBoneInstance(boneId);
+	safetyBone.set_callback(bctCustom, &SafetyBoneCallback, this);
+}
+
+void CWeapon::ResetSafetyBoneCallback()
+{
+	IKinematics* worldVisual = smart_cast<IKinematics*>(Visual());
+	u16 boneId = worldVisual->LL_BoneID(m_sSafetyBoneName);
+	CBoneInstance& safetyBone = worldVisual->LL_GetBoneInstance(boneId);
+	safetyBone.reset_callback();
+}
+
+void CWeapon::SetHudSafetyBoneCallback()
+{
+	attachable_hud_item* hudItem = HudItemData();
+	IKinematics* hudVisual = hudItem->m_model;
+	u16 boneId = hudVisual->LL_BoneID(m_sSafetyBoneName);
+	CBoneInstance& safetyBone = hudVisual->LL_GetBoneInstance(boneId);
+	safetyBone.set_callback(bctCustom, &SafetyBoneCallback, this);
+}
+
+void CWeapon::ResetHudSafetyBoneCallback()
+{
+	attachable_hud_item* hudItem = HudItemData();
+	IKinematics* hudVisual = hudItem->m_model;
+	u16 boneId = hudVisual->LL_BoneID(m_sSafetyBoneName);
+	CBoneInstance& safetyBone = hudVisual->LL_GetBoneInstance(boneId);
+	safetyBone.reset_callback();
+}
+
+void CWeapon::UpdateSafetyRotation()
+{
+	if (m_fSafetyRotationTime > 0.0f)
+	{
+		CalculateSafetyRotation(m_fSafetyRotationSpeed * Device.fTimeDelta);
+		m_fSafetyRotationTime -= Device.fTimeDelta;
+	}
+}
+
+void CWeapon::CalculateSafetyRotation(float value)
+{
+	Fmatrix rotation;
+	rotation.identity();
+	rotation.rotation(m_vSafetyRotationAxis, value);
+	m_mSafetyRotation.mulB_43(rotation);
+}
+
+void CWeapon::RecalculateSafetyRotation(bool reverse, u32 step)
+{
+	m_fSafetyRotationTime = 0.0f;
+	m_mSafetyRotation.identity();
+	CalculateSafetyRotation((reverse ? PI_MUL_2 + step : PI_MUL_2 - step));
 }

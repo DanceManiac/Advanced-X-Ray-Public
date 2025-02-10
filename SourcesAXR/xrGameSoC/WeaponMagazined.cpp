@@ -305,6 +305,34 @@ void CWeaponMagazined::OnMotionMark(u32 state, const motion_marks& M)
 
 		HUD_VisualBulletUpdate();
 	}
+
+	if (strstr(*M.name, "rotate_safety") == *M.name)
+	{
+		bool reverse = false;
+		
+		switch (m_iCurFireMode)
+		{
+		case 0:
+			{
+				reverse = false;
+			} break;
+		case 1:
+			{
+				if (m_aFireModes.size() == 3)
+					reverse = false;
+				else
+					reverse = true;
+			} break;
+		case 2:
+			{
+				reverse = true;
+			} break;
+		default:
+			break;
+		}
+
+		RecalculateSafetyRotation(reverse, m_fSafetyRotationSteps[m_iCurFireMode]);
+	}
 }
 
 bool CWeaponMagazined::TryReload() 
