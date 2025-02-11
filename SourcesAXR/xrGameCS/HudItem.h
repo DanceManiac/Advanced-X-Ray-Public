@@ -25,7 +25,8 @@ enum EHudStates {
 		eSprintStart,
 		eSprintEnd,
 		eDeviceSwitch,
-		eLastBaseState = eDeviceSwitch,
+		eDetAction,
+		eLastBaseState = eDetAction,
 };
 
 private:

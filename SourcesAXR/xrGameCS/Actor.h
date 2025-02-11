@@ -849,6 +849,9 @@ public:
 	bool					is_actor_climbing();
 	bool					is_actor_moving();
 
+	bool					IsDetectorActive() const;
+	void					DetectorToogle(bool fastmode = false) const;
+
 	bool					MaskClearInProcess() { return m_bMaskClear; }
 
 	float					GetDevicesPsyFactor() { return m_fDevicesPsyFactor; }

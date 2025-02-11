@@ -26,6 +26,7 @@
 #include "player_hud.h"
 #include "Torch.h"
 #include "ActorNightVision.h"
+#include "CustomDetector.h"
 #include "AdvancedXrayGameConstants.h"
 
 ENGINE_API  extern float psHUD_FOV;
@@ -1140,6 +1141,11 @@ void CWeaponMagazined::switch2_ChangeFireMode()
 
 void CWeaponMagazined::PlayAnimFireMode()
 {
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_firemode");
+
 	string_path guns_firemode_anm{};
 
 	if (isHUDAnimationExist("anm_changefiremode"))
@@ -1978,8 +1984,13 @@ void CWeaponMagazined::PlayAnimReload()
 
 void CWeaponMagazined::PlayAnimAim()
 {
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
 	if (IsRotatingToZoom())
 	{
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_idle_aim_start");
+
 		string32 guns_aim_start_anm;
 		strconcat(sizeof(guns_aim_start_anm), guns_aim_start_anm, "anm_idle_aim_start", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
@@ -2013,6 +2024,9 @@ void CWeaponMagazined::PlayAnimAim()
 			}
 		}
 	}
+
+	if (g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_idle_aim");
 
 	if (const char* guns_aim_anm = GetAnimAimName())
 	{
@@ -2057,6 +2071,9 @@ void CWeaponMagazined::PlayAnimAim()
 
 bool CWeaponMagazined::PlayAnimAimEnd()
 {
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_idle_aim_end");
+
 	string32 guns_aim_end_anm;
 	strconcat(sizeof(guns_aim_end_anm), guns_aim_end_anm, "anm_idle_aim_end", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
@@ -2126,6 +2143,12 @@ void CWeaponMagazined::PlayAnimShoot()
 	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
 		return;
 
+	string256 guns_det_shoot_anm{};
+	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_wpn_shoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
+
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
+
 	string_path guns_shoot_anm{};
 	strconcat(sizeof(guns_shoot_anm), guns_shoot_anm, (isHUDAnimationExist("anm_shoot") ? "anm_shoot" : "anm_shots"), (iAmmoElapsed == 1) ? "_last" : "", (IsZoomed() && !IsRotatingToZoom()) ? (IsScopeAttached() ? "_aim_scope" : "_aim") : "", (IsSilencerAttached() && m_bUseAimSilShotAnim) ? "_sil" : "");
 
@@ -2141,6 +2164,12 @@ void CWeaponMagazined::PlayAnimFakeShoot()
 {
 	if ((IsRotatingToZoom() && m_zoom_params.m_fZoomRotationFactor != 0.0f) || (IsRotatingFromZoom() && m_zoom_params.m_fZoomRotationFactor != 1.0f))
 		return;
+
+	string256 guns_det_shoot_anm{};
+	strconcat(sizeof(guns_det_shoot_anm), guns_det_shoot_anm, "anm_wpn_fakeshoot", (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "");
+
+	if (auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT)); g_actor->IsDetectorActive())
+		det->PlayDetectorAnimation(true, eDetAction, guns_det_shoot_anm);
 
 	string128 guns_fakeshoot_anm{};
 	strconcat(sizeof(guns_fakeshoot_anm), guns_fakeshoot_anm, ("anm_fakeshoot"), (IsZoomed() && !IsRotatingToZoom()) ? "_aim" : "", IsMisfire() ? "_jammed" : IsEmptyMagazine() ? "_empty" : "", IsGrenadeLauncherAttached() ? (!IsGrenadeMode() ? "_w_gl" : "_g") : "");

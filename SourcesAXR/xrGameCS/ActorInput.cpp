@@ -765,7 +765,12 @@ void	CActor::OnPrevWeaponSlot()
 				IR_OnKeyboardPress(kARTEFACT);
 			}
 			else
-				IR_OnKeyboardPress(kWPN_1+(i-KNIFE_SLOT));
+			{
+				if (!IsDetectorActive())
+					IR_OnKeyboardPress(kWPN_1 + (i - KNIFE_SLOT));
+				else
+					IR_OnKeyboardPress(kWPN_2);
+			}
 			return;
 		}
 	}

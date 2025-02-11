@@ -16,6 +16,7 @@
 #include "inventory.h"
 #include "../xrEngine/IGame_Persistent.h"
 #include "Torch.h"
+#include "CustomDetector.h"
 #include "ActorNightvision.h"
 
 #ifdef DEBUG
@@ -291,6 +292,8 @@ void CMissile::shedule_Update(u32 dt)
 
 void CMissile::State(u32 state) 
 {
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
 	switch(GetState()) 
 	{
 	case eShowing:
@@ -335,16 +338,26 @@ void CMissile::State(u32 state)
 				m_throw = true;
 
 			PlayHUDMotion		("anm_throw_begin", TRUE, this, GetState());
+
+			if (g_actor->IsDetectorActive())
+				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw_begin");
+
 		} break;
 	case eReady:
 		{
 			PlayHUDMotion		("anm_throw_idle", TRUE, this, GetState());
+
+			if (g_actor->IsDetectorActive())
+				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw_idle");
 		} break;
 	case eThrow:
 		{
 			SetPending			(TRUE);
 			m_throw				= false;
 			PlayHUDMotion		("anm_throw", TRUE, this, GetState());
+
+			if (g_actor->IsDetectorActive())
+				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw");
 		} break;
 	case eThrowEnd:
 		{
@@ -355,7 +368,10 @@ void CMissile::State(u32 state)
 				return;
 			}
 
-			SwitchState			(eShowing); 
+			SwitchState			(eShowing);
+
+			if (g_actor->IsDetectorActive())
+				det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_missile_throw_end");
 		} break;
 	case eThrowQuick:
 		{	  

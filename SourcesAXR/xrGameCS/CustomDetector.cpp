@@ -34,6 +34,10 @@ bool CCustomDetector::CheckCompatibilityInt(CHudItem* itm, u16* slot_to_activate
 	CInventoryItem& iitm = itm->item();
 	u32 slot = iitm.GetSlot();
 	bool bres = (slot == PISTOL_SLOT || slot == KNIFE_SLOT || slot == BOLT_SLOT);
+
+	if (m_bDetActionsEnabled)
+		bres = bres || (slot == GRENADE_SLOT);
+
 	if (!bres && slot_to_activate)
 	{
 		*slot_to_activate = u8(-1);
@@ -63,11 +67,12 @@ bool CCustomDetector::CheckCompatibilityInt(CHudItem* itm, u16* slot_to_activate
 	{
 		CWeapon* W = smart_cast<CWeapon*>(itm);
 		if (W)
-			bres = bres &&
-			(W->GetState() != CHUDState::eBore) &&
-			(W->GetState() != CWeapon::eReload) &&
-			(W->GetState() != CWeapon::eSwitch) &&
-			!W->IsZoomed();
+		{
+			if (!m_bDetActionsEnabled)
+				bres = bres && (W->GetState() != CHUDState::eBore) && (W->GetState() != CWeapon::eReload) && (W->GetState() != CWeapon::eSwitch) && !W->IsZoomed();
+			else
+				bres = bres && (W->GetState() != CHUDState::eBore) && (W->GetState() != CWeapon::eReload) && (W->GetState() != CWeapon::eSwitch);
+		}
 	}
 	return bres;
 }
@@ -153,20 +158,63 @@ void CCustomDetector::OnStateSwitch(u32 S)
 }
 }
 
+void CCustomDetector::DetectorAction(u32 state)
+{
+	if (IsWorking() && smart_cast<CActor*>(H_Parent()))
+	{
+		if (state != eIdle)
+			SwitchState(eDetAction);
+		else
+		{
+			SwitchState(eIdle);
+		}
+	}
+}
+void CCustomDetector::PlayDetectorAnimation(bool switch_state, u32 state, const char* anm_name)
+{
+	if (!m_bDetActionsEnabled || !smart_cast<CActor*>(H_Parent()))
+		return;
+
+	if (isHUDAnimationExist(anm_name))
+	{
+		if (switch_state)
+			SwitchState(state);
+
+		SetPending(GetState() != eIdle);
+		PlayHUDMotionNew(anm_name, true, GetState());
+	}
+}
+
+void CCustomDetector::PlayAnimIdle()
+{
+	if (attachable_hud_item* i0 = g_player_hud->attached_item(0))
+	{
+		if (CWeapon* wpn = smart_cast<CWeapon*>(i0->m_parent_hud_item))
+		{
+			if (m_bDetActionsEnabled && wpn->IsZoomed())
+				return;
+		}
+	}
+
+	inherited::PlayAnimIdle();
+}
+
 void CCustomDetector::OnAnimationEnd(u32 state)
 {
 	inherited::OnAnimationEnd	(state);
 	switch(state)
 	{
-	case eShowing:
-		{
-			SwitchState					(eIdle);
-		} break;
 	case eHiding:
 		{
 			SwitchState					(eHidden);
 			TurnDetectorInternal		(false);
 			g_player_hud->detach_item	(this);
+		} break;
+	case eShowing:
+	case eIdle:
+	case eDetAction:
+		{
+			SwitchState(eIdle);
 		} break;
 	}
 }
@@ -190,6 +238,7 @@ CCustomDetector::CCustomDetector()
 	m_ui				= NULL;
 	m_bFastAnimMode		= false;
 	m_bNeedActivation	= false;
+	m_bDetActionsEnabled = false;
 
 	flash_light_bone	= "light_bone_1";
 	m_flash_bone_id		= BI_NONE;
@@ -224,6 +273,8 @@ void CCustomDetector::Load(LPCSTR section)
 
 	m_fMaxChargeLevel = READ_IF_EXISTS(pSettings, r_float, section, "max_charge_level", 1.0f);
 	m_fUnchargeSpeed = READ_IF_EXISTS(pSettings, r_float, section, "uncharge_speed", 0.0f);
+
+	m_bDetActionsEnabled = READ_IF_EXISTS(pSettings, r_bool, section, "detector_actions_enabled", false);
 
 	m_SuitableBatteries.clear();
 	LPCSTR batteries = READ_IF_EXISTS(pSettings, r_string, section, "suitable_batteries", "torch_battery");
@@ -320,7 +371,7 @@ bool CCustomDetector::IsWorking()
 	return m_bWorking && H_Parent() && H_Parent()==Level().CurrentViewEntity();
 }
 
-void CCustomDetector::UpfateWork()
+void CCustomDetector::UpdateWork()
 {
 	if (m_fCurrentChargeLevel > 0)
 		UpdateAf();
@@ -453,12 +504,13 @@ void CCustomDetector::UpdateVisibility()
 {
 	//check visibility
 	attachable_hud_item* i0 = g_player_hud->attached_item(0);
+
 	if (i0 && HudItemData())
 	{
 		bool bClimb = ((Actor()->MovingState() & mcClimb) != 0);
 		if (bClimb)
 		{
-			HideDetector		(true);
+			ToggleDetector		(true);
 			m_bNeedActivation	= true;
 		}
 		else
@@ -467,26 +519,23 @@ void CCustomDetector::UpdateVisibility()
 			if (wpn)
 			{
 				u32 state = wpn->GetState();
-				if (wpn->IsZoomed() || state == CWeapon::eReload || state == CWeapon::eSwitch)
+				if ((!m_bDetActionsEnabled && wpn->IsZoomed()) || state == CWeapon::eReload || state == CWeapon::eSwitch)
 				{
-					HideDetector		(true);
+					ToggleDetector		(true);
 					m_bNeedActivation	= true;
+					return;
 				}
 			}
 		}
 	}
-	else if (m_bNeedActivation)
+	
+	if (!IsWorking() && m_bNeedActivation)
 	{
-		attachable_hud_item* i0		= g_player_hud->attached_item(0);
-		bool bClimb					= ((Actor()->MovingState()&mcClimb) != 0);
-		if (!bClimb)
-		{
-			CHudItem* huditem		= (i0) ? i0->m_parent_hud_item : NULL;
-			bool bChecked			= !huditem || CheckCompatibilityInt(huditem, 0);
-			
-			if (bChecked)
-				ShowDetector		(true);
-		}
+		auto huditem = i0 ? i0->m_parent_hud_item : nullptr;
+		bool bChecked = !huditem || CheckCompatibilityInt(huditem, 0);
+
+		if (bChecked && GetState() == eHidden)
+			ToggleDetector(true);
 	}
 }
 
@@ -502,7 +551,7 @@ void CCustomDetector::UpdateCL()
 
 	UpdateVisibility		();
 	if( !IsWorking() )		return;
-	UpfateWork				();
+	UpdateWork				();
 }
 
 void CCustomDetector::OnH_A_Chield() 

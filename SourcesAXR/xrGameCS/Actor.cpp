@@ -3444,3 +3444,17 @@ bool CActor::is_actor_creeping()
 bool CActor::is_actor_climbing() { return mstate_real & (mcJump | mcFall | mcLanding | mcLanding2) ? false : (mstate_real & mcAnyMove && mstate_real & mcClimb) ? true : false; }
 
 bool CActor::is_actor_moving() { return mstate_real & mcAnyAction ? true : false; }
+
+bool CActor::IsDetectorActive() const
+{
+	if (auto det = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT)))
+		return det->IsWorking();
+
+	return false;
+}
+
+void CActor::DetectorToogle(bool fastmode) const
+{
+	if (auto det = smart_cast<CCustomDetector*>(inventory().ItemFromSlot(DETECTOR_SLOT)))
+		det->ToggleDetector(fastmode);
+}

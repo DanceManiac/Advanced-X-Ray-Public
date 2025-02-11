@@ -18,6 +18,7 @@
 #include "Actor.h"
 #include "Inventory.h"
 #include "ActorNightvision.h"
+#include "CustomDetector.h"
 #include "Level_Bullet_Manager.h"
 
 #define KNIFE_MATERIAL_NAME "objects\\knife"
@@ -369,10 +370,22 @@ void CWeaponKnife::switch2_Attacking	(u32 state)
 {
 	if(IsPending())	return;
 
-	if(state==eFire)
-		PlayHUDMotion("anm_attack",		FALSE, this, state);
+	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
+
+	if (state == eFire)
+	{
+		PlayHUDMotion("anm_attack", FALSE, this, state);
+
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_knife_kick_1");
+	}
 	else //eFire2
-		PlayHUDMotion("anm_attack2",	FALSE, this, state);
+	{
+		PlayHUDMotion("anm_attack2", FALSE, this, state);
+
+		if (g_actor->IsDetectorActive())
+			det->PlayDetectorAnimation(true, eDetAction, "anm_wpn_knife_kick_2");
+	}
 
 	SetPending			(TRUE);
 }

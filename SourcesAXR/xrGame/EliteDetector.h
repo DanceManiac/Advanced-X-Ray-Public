@@ -32,7 +32,7 @@ public:
 	virtual void 	shedule_Update				(u32 dt);
 	virtual LPCSTR	ui_xml_tag					() const {return "scientific";}
 protected:
-	virtual void	UpfateWork					();
+	virtual void	UpdateWork					();
 	CZoneList		m_zones;
 };
 
