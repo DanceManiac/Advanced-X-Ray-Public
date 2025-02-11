@@ -706,7 +706,7 @@ void CWeaponMagazined::DeviceUpdate()
 		{
 			if (actor->GetNightVision())
 			{
-				actor->SwitchNightVision(!actor->GetNightVision()->IsActive());
+				actor->SwitchNightVision(!actor->GetNightVisionStatus());
 				NightVisionSwitch = false;
 			}
 		}
@@ -763,7 +763,9 @@ void CWeaponMagazined::UpdateCL()
 	}
 
 	UpdateSounds		();
-	TimeLockAnimation();
+	
+	if (IsActionInProcessNow())
+		TimeLockAnimation();
 }
 
 void CWeaponMagazined::UpdateSounds	()
@@ -2089,6 +2091,10 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 {
 	CActor* actor = Actor();
 	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+
+	if (!actor->GetNightVision())
+		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
+
 	CNightVisionEffector* nvg = Actor()->GetNightVision();
 
 	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", get_LastFP());
@@ -2098,7 +2104,14 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{
-		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+		if (CleanMaskAction)
+		{
+			actor->SetMaskAnimLength(Device.dwTimeGlobal + PlayHUDMotionNew(guns_device_switch_anm, true, GetState()));
+			actor->SetMaskAnimActive(true);
+			actor->SetActionAnimInProcess(true);
+		}
+		else
+			PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
 	}
 	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_jammed"))
 	{
@@ -2108,7 +2121,14 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 
 		if (isHUDAnimationExist(new_guns_device_switch_anm))
 		{
-			PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
+			if (CleanMaskAction)
+			{
+				actor->SetMaskAnimLength(Device.dwTimeGlobal + PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState()));
+				actor->SetMaskAnimActive(true);
+				actor->SetActionAnimInProcess(true);
+			}
+			else
+				PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
 		}
 	}
 	else if (guns_device_switch_anm && strstr(guns_device_switch_anm, "_empty"))
@@ -2119,7 +2139,14 @@ void CWeaponMagazined::PlayAnimDeviceSwitch()
 
 		if (isHUDAnimationExist(new_guns_device_switch_anm))
 		{
-			PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
+			if (CleanMaskAction)
+			{
+				actor->SetMaskAnimLength(Device.dwTimeGlobal + PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState()));
+				actor->SetMaskAnimActive(true);
+				actor->SetActionAnimInProcess(true);
+			}
+			else
+				PlayHUDMotionNew(new_guns_device_switch_anm, true, GetState());
 		}
 	}
 	else

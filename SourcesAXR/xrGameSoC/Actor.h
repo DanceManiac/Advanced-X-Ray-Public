@@ -816,6 +816,7 @@ public:
 	bool						GetNightVisionStatus			() { return m_bNightVisionOn; }
 	void						SetNightVisionAllowed			(bool bAllow) { m_bNightVisionAllow = bAllow; }
 	CNightVisionEffector*		GetNightVision					() { return m_night_vision; }
+	void						SetNightVision					(CNightVisionEffector* night_vision) { m_night_vision = night_vision; }
 
 	// Real Wolf. Start. 14.10.2014
 	void						block_action					(EGameActions cmd);
@@ -846,8 +847,6 @@ public:
 	bool						GetHeatingStatus	() const { return m_bHeating; }
 	float						GetCurrentHeating	() const { return m_fHeatingPower; }
 
-	void						SetMaskClear		(bool clear) { m_bMaskClear = clear; }
-
 	bool						HasItemsForRepair	(xr_vector<std::pair<shared_str, int>> item);
 	void						RemoveItemsForRepair(xr_vector<std::pair<shared_str, int>> item);
 
@@ -857,7 +856,12 @@ public:
 	void						ChangeInventoryFullness(float val);
 	u16							GetLastActiveSlot	() { return m_last_active_slot; }
 
-	bool						MaskClearInProcess	() { return m_bMaskClear; }
+	bool						MaskClearInProcess		() { return m_bMaskClear; }
+	void						SetMaskClear			(bool clear) { m_bMaskClear = clear; }
+	bool						GetMaskClear			() { return m_bMaskClear; }
+	void						SetMaskAnimActive		(bool status) { m_bMaskAnimActivated = status; }
+	void						SetMaskAnimLength		(int length) { m_iMaskAnimLength = length; }
+	void						SetActionAnimInProcess	(bool status) { m_bActionAnimInProcess = status; }
 
 	bool						m_bEatAnimActive;
 	bool						m_bActionAnimInProcess;

@@ -824,6 +824,7 @@ public:
 	bool					GetNightVisionStatus() {return m_bNightVisionOn;}
 	void					SetNightVisionAllowed(bool bAllow) {m_bNightVisionAllow = bAllow;}
 	CNightVisionEffector*	GetNightVision() {return m_night_vision;}
+	void					SetNightVision(CNightVisionEffector* night_vision) { m_night_vision = night_vision; }
 
 	// Real Wolf. Start. 14.10.2014
 	void					block_action(EGameActions cmd);
@@ -845,7 +846,12 @@ public:
 	bool					IsDetectorActive() const;
 	void					DetectorToogle(bool fastmode = false) const;
 
-	bool					MaskClearInProcess() { return m_bMaskClear; }
+	bool					MaskClearInProcess		() { return m_bMaskClear; }
+	void					SetMaskClear			(bool clear) { m_bMaskClear = clear; }
+	bool					GetMaskClear			() { return m_bMaskClear; }
+	void					SetMaskAnimActive		(bool status) { m_bMaskAnimActivated = status; }
+	void					SetMaskAnimLength		(int length) { m_iMaskAnimLength = length; }
+	void					SetActionAnimInProcess	(bool status) { m_bActionAnimInProcess = status; }
 
 	float					GetDevicesPsyFactor() { return m_fDevicesPsyFactor; }
 	void					SetDevicesPsyFactor(float psy_factor) { m_fDevicesPsyFactor = psy_factor; }
@@ -866,8 +872,6 @@ public:
 	void					SetHeatingStatus	(bool status, float power = 0.0f) { m_bHeating = status; m_fHeatingPower = power; }
 	bool					GetHeatingStatus	() const { return m_bHeating; }
 	float					GetCurrentHeating	() const { return m_fHeatingPower; }
-
-	void					SetMaskClear		(bool clear) { m_bMaskClear = clear; }
 
 protected:
 	bool					m_bNightVisionOn;

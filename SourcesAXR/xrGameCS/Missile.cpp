@@ -226,7 +226,7 @@ void CMissile::DeviceUpdate()
 		{
 			if (pA->GetNightVision())
 			{
-				pA->SwitchNightVision(!pA->GetNightVision()->IsActive());
+				pA->SwitchNightVision(!pA->GetNightVisionStatus());
 				NightVisionSwitch = false;
 			}
 		}
@@ -246,7 +246,8 @@ void CMissile::UpdateCL()
 
 	inherited::UpdateCL();
 
-	TimeLockAnimation();
+	if (IsActionInProcessNow())
+		TimeLockAnimation();
 
 	CActor* pActor	= smart_cast<CActor*>(H_Parent());
 	if(pActor && !pActor->AnyMove() && this==pActor->inventory().ActiveItem())
@@ -867,15 +868,28 @@ bool CMissile::GetBriefInfo(II_BriefInfo& info)
 void CMissile::PlayAnimDeviceSwitch()
 {
 	CActor* actor = Actor();
-	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
-	CNightVisionEffector* nvg = Actor()->GetNightVision();
+	CTorch* torch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT));
+
+	if (!actor->GetNightVision())
+		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
+
+	CNightVisionEffector* nvg = actor->GetNightVision();
 
 	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", Position());
 
 	LPCSTR guns_device_switch_anm = HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "anm_headlamp_on" : "anm_headlamp_off") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "anm_nv_on" : "anm_nv_off") : CleanMaskAction ? "anm_clean_mask" : "";
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
-		PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+	{
+		if (CleanMaskAction)
+		{
+			actor->SetMaskAnimLength(Device.dwTimeGlobal + PlayHUDMotionNew(guns_device_switch_anm, true, GetState()));
+			actor->SetMaskAnimActive(true);
+			actor->SetActionAnimInProcess(true);
+		}
+		else
+			PlayHUDMotionNew(guns_device_switch_anm, true, GetState());
+	}
 	else
 	{
 		DeviceUpdate();

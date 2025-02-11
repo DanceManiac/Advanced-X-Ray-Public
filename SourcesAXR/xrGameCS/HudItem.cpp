@@ -472,7 +472,7 @@ u32 CHudItem::PlayHUDMotion_noCB(const shared_str& motion_name, const bool bMixI
 	}
 	if( HudItemData() )
 	{
-		return HudItemData()->anim_play		(motion_name, bMixIn, m_current_motion_def, m_started_rnd_anim_idx, speed);
+		return HudItemData()->anim_play		(motion_name, bMixIn, m_current_motion_def, m_started_rnd_anim_idx);
 	}
 	else
 	{

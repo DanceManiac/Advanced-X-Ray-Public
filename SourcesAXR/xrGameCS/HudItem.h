@@ -166,6 +166,8 @@ public:
 	virtual bool				ParentIsActor			();
 			void				ReplaceHudSection		(LPCSTR hud_section);
 	virtual bool				AllowBore				() { return m_bBoreEnabled; }
+			bool				IsActionInProcessNow	() { return (HeadLampSwitch || NightVisionSwitch || CleanMaskAction); }
+
 protected:
 
 	IC		void				SetPending			(BOOL H)			{ m_huditem_flags.set(fl_pending, H);}

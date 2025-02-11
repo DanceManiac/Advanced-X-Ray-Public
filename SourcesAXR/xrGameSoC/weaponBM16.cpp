@@ -431,6 +431,10 @@ void CWeaponBM16::PlayAnimDeviceSwitch()
 {
 	CActor* actor = Actor();
 	CTorch* torch = smart_cast<CTorch*>(Actor()->inventory().ItemFromSlot(TORCH_SLOT));
+
+	if (!actor->GetNightVision())
+		actor->SetNightVision(xr_new<CNightVisionEffector>(actor->cNameSect()));
+
 	CNightVisionEffector* nvg = Actor()->GetNightVision();
 
 	PlaySound(HeadLampSwitch && torch ? (!torch->IsSwitchedOn() ? "sndHeadlampOn" : "sndHeadlampOff") : NightVisionSwitch && nvg ? (!nvg->IsActive() ? "sndNvOn" : "sndNvOff") : CleanMaskAction ? "sndCleanMask" : "", get_LastFP());
