@@ -360,7 +360,7 @@ void CWeaponKnife::DeviceUpdate()
 		if (HeadLampSwitch)
 		{
 			auto pActorTorch = smart_cast<CTorch*>(pA->inventory().ItemFromSlot(TORCH_SLOT));
-			pActorTorch->Switch();
+			pActorTorch->Switch(!pActorTorch->IsSwitchedOn());
 			HeadLampSwitch = false;
 		}
 		else if (NightVisionSwitch)
