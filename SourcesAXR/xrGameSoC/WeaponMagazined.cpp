@@ -2016,9 +2016,9 @@ void CWeaponMagazined::PlayAnimIdle()
 
 	if (IsZoomed())
 		PlayAnimAim();
-	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_IDLE_EMPTY) && !TryPlayAnimIdle())
+	else if (iAmmoElapsed == 0 && psWpnAnimsFlag.test(ANM_IDLE_EMPTY) && !TryPlayAnimIdle() && !IsRotatingFromZoom())
 		PlayHUDMotion("anm_idle_empty", TRUE, NULL, GetState());
-	else if (IsMisfire() && isHUDAnimationExist("anm_idle_jammed") && !TryPlayAnimIdle())
+	else if (IsMisfire() && isHUDAnimationExist("anm_idle_jammed") && !TryPlayAnimIdle() && !IsRotatingFromZoom())
 		PlayHUDMotion("anm_idle_jammed", true, nullptr, GetState());
 	else
 	{
