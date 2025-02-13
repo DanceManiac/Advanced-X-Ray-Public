@@ -119,6 +119,7 @@ public:
 	virtual void	UnloadMagazine	(bool spawn_ammo = true);
 	virtual int     CheckAmmoBeforeReload(u8& v_ammoType);
 	virtual void	OnMotionMark	(u32 state, const motion_marks& M);
+					void	EngineMotionMarksUpdate(u32 state, const motion_marks& M);
 
 	virtual bool	GetBriefInfo	(II_BriefInfo& info);
 

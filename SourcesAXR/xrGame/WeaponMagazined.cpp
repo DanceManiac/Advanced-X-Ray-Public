@@ -306,27 +306,8 @@ void CWeaponMagazined::Reload()
 	TryReload();
 }
 
-void CWeaponMagazined::OnMotionMark(u32 state, const motion_marks& M)
+void CWeaponMagazined::EngineMotionMarksUpdate(u32 state, const motion_marks& M)
 {
-	inherited::OnMotionMark(state, M);
-	if (state == eReload)
-	{
-		u8 ammo_type = m_ammoType;
-		int ae = CheckAmmoBeforeReload(ammo_type);
-
-		if (ammo_type == m_ammoType)
-		{
-			Msg("Ammo elapsed: %d", iAmmoElapsed);
-			ae += iAmmoElapsed;
-		}
-
-		last_hide_bullet = ae >= bullet_cnt ? bullet_cnt : bullet_cnt - ae - 1;
-
-		Msg("Next reload: count %d with type %d", ae, ammo_type);
-
-		HUD_VisualBulletUpdate();
-	}
-
 	if (strstr(*M.name, "rotate_safety") == *M.name)
 	{
 		bool reverse = false;
@@ -354,6 +335,82 @@ void CWeaponMagazined::OnMotionMark(u32 state, const motion_marks& M)
 
 		RecalculateSafetyRotation(reverse, m_fSafetyRotationSteps[m_iCurFireMode]);
 	}
+	else if (strstr(*M.name, "device_switch") == *M.name)
+	{
+		CActor* actor = Actor();
+
+		if (!actor)
+		{
+			HeadLampSwitch			= false;
+			NightVisionSwitch		= false;
+			CleanMaskAction			= false;
+			LaserSwitchAction		= false;
+			FlashlightSwitchAction	= false;
+			return;
+		}
+
+		if (HeadLampSwitch)
+		{
+			if (CTorch* pActorTorch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT)))
+				pActorTorch->Switch(!pActorTorch->IsSwitchedOn());
+
+			HeadLampSwitch = false;
+		}
+		else if (NightVisionSwitch)
+		{
+			if (actor->GetNightVision())
+				actor->SwitchNightVision(!actor->GetNightVisionStatus());
+
+			NightVisionSwitch = false;
+		}
+		else if (CleanMaskAction)
+		{
+			actor->SetMaskClear(true);
+			CleanMaskAction = false;
+		}
+		else if (LaserSwitchAction)
+		{
+			if (!IsLaserOn())
+				m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+			else
+				m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+
+			LaserSwitchAction = false;
+		}
+		else if (FlashlightSwitchAction)
+		{
+			if (!IsFlashlightOn())
+				m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+			else
+				m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+
+			FlashlightSwitchAction = false;
+		}
+	}
+}
+
+void CWeaponMagazined::OnMotionMark(u32 state, const motion_marks& M)
+{
+	inherited::OnMotionMark(state, M);
+	if (state == eReload)
+	{
+		u8 ammo_type = m_ammoType;
+		int ae = CheckAmmoBeforeReload(ammo_type);
+
+		if (ammo_type == m_ammoType)
+		{
+			Msg("Ammo elapsed: %d", iAmmoElapsed);
+			ae += iAmmoElapsed;
+		}
+
+		last_hide_bullet = ae >= bullet_cnt ? bullet_cnt : bullet_cnt - ae - 1;
+
+		Msg("Next reload: count %d with type %d", ae, ammo_type);
+
+		HUD_VisualBulletUpdate();
+	}
+
+	EngineMotionMarksUpdate(state, M);
 }
 
 bool CWeaponMagazined::TryReload() 
@@ -728,19 +785,30 @@ void CWeaponMagazined::DeviceUpdate()
 	if (ParentIsActor())
 	{
 		CActor* actor = Actor();
+
+		if (!actor)
+		{
+			HeadLampSwitch			= false;
+			NightVisionSwitch		= false;
+			CleanMaskAction			= false;
+			LaserSwitchAction		= false;
+			FlashlightSwitchAction	= false;
+			return;
+		}
+
 		if (HeadLampSwitch)
 		{
-			auto pActorTorch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT));
-			pActorTorch->Switch(!pActorTorch->IsSwitchedOn());
+			if (CTorch* pActorTorch = smart_cast<CTorch*>(actor->inventory().ItemFromSlot(TORCH_SLOT)))
+				pActorTorch->Switch(!pActorTorch->IsSwitchedOn());
+
 			HeadLampSwitch = false;
 		}
 		else if (NightVisionSwitch)
 		{
 			if (actor->GetNightVision())
-			{
 				actor->SwitchNightVision(!actor->GetNightVisionStatus());
-				NightVisionSwitch = false;
-			}
+
+			NightVisionSwitch = false;
 		}
 		else if (CleanMaskAction)
 		{
