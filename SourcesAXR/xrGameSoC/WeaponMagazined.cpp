@@ -715,6 +715,24 @@ void CWeaponMagazined::DeviceUpdate()
 			actor->SetMaskClear(true);
 			CleanMaskAction = false;
 		}
+		else if (LaserSwitchAction)
+		{
+			if (!IsLaserOn())
+				m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+			else
+				m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
+
+			LaserSwitchAction = false;
+		}
+		else if (FlashlightSwitchAction)
+		{
+			if (!IsFlashlightOn())
+				m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+			else
+				m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
+
+			FlashlightSwitchAction = false;
+		}
 	}
 }
 
@@ -1126,6 +1144,8 @@ void CWeaponMagazined::switch2_LaserSwitch()
 	if (GetState() != eLaserSwitch)
 		return;
 
+	LaserSwitchAction = true;
+
 	FireEnd();
 	PlayAnimLaserSwitch();
 	SetPending(TRUE);
@@ -1136,6 +1156,8 @@ void CWeaponMagazined::switch2_FlashlightSwitch()
 	if (GetState() != eFlashlightSwitch)
 		return;
 
+	FlashlightSwitchAction = true;
+
 	FireEnd();
 	PlayAnimFlashlightSwitch();
 	SetPending(TRUE);
@@ -1144,7 +1166,7 @@ void CWeaponMagazined::switch2_FlashlightSwitch()
 void CWeaponMagazined::PlayAnimLaserSwitch()
 {
 	string_path guns_device_switch_anm{};
-	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_laser", IsLaserOn() ? "_on" : "_off", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_laser", !IsLaserOn() ? "_on" : "_off", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{

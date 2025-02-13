@@ -1197,8 +1197,14 @@ void CWeaponMagazinedWGrenade::PlayAnimFireMode()
 
 void CWeaponMagazinedWGrenade::PlayAnimLaserSwitch()
 {
+	if (!IsGrenadeLauncherAttached())
+	{
+		inherited::PlayAnimLaserSwitch();
+		return;
+	}
+
 	string_path guns_device_switch_anm{};
-	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_laser", IsLaserOn() ? "_on" : "_off", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_laser", !IsLaserOn() ? "_on" : "_off", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{
@@ -1239,8 +1245,14 @@ void CWeaponMagazinedWGrenade::PlayAnimLaserSwitch()
 
 void CWeaponMagazinedWGrenade::PlayAnimFlashlightSwitch()
 {
+	if (!IsGrenadeLauncherAttached())
+	{
+		inherited::PlayAnimFlashlightSwitch();
+		return;
+	}
+
 	string_path guns_device_switch_anm{};
-	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_torch", IsFlashlightOn() ? "_on" : "_off", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
+	strconcat(sizeof(guns_device_switch_anm), guns_device_switch_anm, "anm_torch", !IsFlashlightOn() ? "_on" : "_off", m_bGrenadeMode ? "_g" : "_w_gl", (IsMisfire() ? "_jammed" : (IsMagazineEmpty()) ? "_empty" : ""));
 
 	if (isHUDAnimationExist(guns_device_switch_anm))
 	{

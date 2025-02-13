@@ -1082,7 +1082,7 @@ void CWeapon::LoadTacticalTorchParams(LPCSTR section)
 			m_iTacticalTorchY = pSettings->r_s32(section, "tactical_torch_y");
 		}
 	}
-	else if (m_eLaserDesignatorStatus == ALife::eAddonPermanent)
+	else if (m_eTacticalTorchStatus == ALife::eAddonPermanent)
 	{
 		m_sTacticalTorchName = READ_IF_EXISTS(pSettings, r_string, section, "tactical_torch_name", "");
 		m_sTacticalTorchAttachSection = READ_IF_EXISTS(pSettings, r_string, section, "tactical_torch_attach_sect", "");
@@ -4217,15 +4217,11 @@ void CWeapon::SwitchLaser(bool on)
 
 	if (on)
 	{
-		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
-
 		if (isHUDAnimationExist("anm_laser_on"))
 			SwitchState(eLaserSwitch);
 	}
 	else
 	{
-		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
-
 		if (isHUDAnimationExist("anm_laser_off"))
 			SwitchState(eLaserSwitch);
 	}
@@ -4238,15 +4234,11 @@ void CWeapon::SwitchFlashlight(bool on)
 
 	if (on)
 	{
-		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
-
 		if (isHUDAnimationExist("anm_torch_on"))
 			SwitchState(eFlashlightSwitch);
 	}
 	else
 	{
-		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
-
 		if (isHUDAnimationExist("anm_torch_off"))
 			SwitchState(eFlashlightSwitch);
 	}

@@ -25,7 +25,9 @@ enum EHudStates {
 		eSprintStart,
 		eSprintEnd,
 		eDeviceSwitch,
-		eLastBaseState = eDeviceSwitch,
+		eLaserSwitch,
+		eFlashlightSwitch,
+		eLastBaseState = eFlashlightSwitch,
 };
 
 private:
@@ -165,7 +167,7 @@ public:
 	virtual bool				ParentIsActor			();
 			void				ReplaceHudSection		(LPCSTR hud_section);
 	virtual bool				AllowBore				() { return m_bBoreEnabled; }
-			bool				IsActionInProcessNow	() { return (HeadLampSwitch || NightVisionSwitch || CleanMaskAction); }
+			bool				IsActionInProcessNow	() { return (HeadLampSwitch || NightVisionSwitch || CleanMaskAction || LaserSwitchAction || FlashlightSwitchAction); }
 
 protected:
 
@@ -216,6 +218,6 @@ public:
 	float m_nearwall_speed_mod{};
 	float m_base_fov{};
 
-	bool HeadLampSwitch{}, NightVisionSwitch{}, CleanMaskAction{};
+	bool HeadLampSwitch{}, NightVisionSwitch{}, CleanMaskAction{}, LaserSwitchAction{}, FlashlightSwitchAction{};
 };
 

@@ -4031,15 +4031,11 @@ void CWeapon::SwitchLaser(bool on)
 
 	if (on)
 	{
-		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
-
 		if (isHUDAnimationExist("anm_laser_on"))
 			SwitchState(eLaserSwitch);
 	}
 	else
 	{
-		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonLaserOn;
-
 		if (isHUDAnimationExist("anm_laser_off"))
 			SwitchState(eLaserSwitch);
 	}
@@ -4052,15 +4048,11 @@ void CWeapon::SwitchFlashlight(bool on)
 
 	if (on)
 	{
-		m_flagsAddOnState |= CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
-
 		if (isHUDAnimationExist("anm_torch_on"))
 			SwitchState(eFlashlightSwitch);
 	}
 	else
 	{
-		m_flagsAddOnState &= ~CSE_ALifeItemWeapon::eWeaponAddonFlashlightOn;
-
 		if (isHUDAnimationExist("anm_torch_off"))
 			SwitchState(eFlashlightSwitch);
 	}

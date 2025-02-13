@@ -797,7 +797,7 @@ float CHudItem::GetHudFov()
 
 void CHudItem::TimeLockAnimation()
 {
-	if (GetState() != eDeviceSwitch)
+	if (GetState() != eDeviceSwitch && GetState() != eLaserSwitch && GetState() != eFlashlightSwitch)
 		return;
 
 	string128 anm_time_param;

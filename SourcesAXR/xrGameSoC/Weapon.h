@@ -195,8 +195,6 @@ public:
 		eUnMisfire,
 		eFiremodePrev,
 		eFiremodeNext,
-		eLaserSwitch,
-		eFlashlightSwitch,
 	};
 	enum EWeaponSubStates{
 		eSubstateReloadBegin		=0,
