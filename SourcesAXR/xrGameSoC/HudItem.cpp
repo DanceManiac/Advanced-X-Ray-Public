@@ -420,12 +420,14 @@ bool CHudItem::isHUDAnimationExist(LPCSTR anim_name)
 {
 	if (HudItemData()) // First person
 	{
-		string256 anim_name_r;
+		string256	anim_name_r, anim_name_def;
 		bool is_16x9 = UI().is_widescreen();
 		u16 attach_place_idx = HudItemData()->m_attach_place_idx;
 		xr_sprintf(anim_name_r, "%s%s", anim_name, (attach_place_idx == 1 && is_16x9) ? "_16x9" : "");
+		xr_sprintf(anim_name_def, "%s", anim_name);
 		player_hud_motion* anm = HudItemData()->m_hand_motions.find_motion(anim_name_r);
-		if (anm)
+		player_hud_motion* anm_def = HudItemData()->m_hand_motions.find_motion(anim_name_def);
+		if (anm || anm_def)
 			return true;
 	}
 	else // Third person
