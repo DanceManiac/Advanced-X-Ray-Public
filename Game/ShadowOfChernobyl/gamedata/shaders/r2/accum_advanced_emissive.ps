@@ -1,0 +1,27 @@
+/**
+ * @ Version: Advanced X-Ray Update 5
+ * @ Description: Mask-based emissive shader
+ * @ Modified time: 16.02.2025 14:18
+ * @ Author: M.F.S. Team (Dance Maniac)
+ * @ Link: https://ap-pro.ru/forums/topic/2813-advanced-x-ray/
+ */
+
+#include "common.h"
+#include "sload.h"
+
+uniform sampler2D s_lightmap;
+
+half4 main( p_flat I ) : COLOR
+{
+	half3 D	= tbase		(I.tcdh);	// IN:  rgb.a
+	half4 lightmapChannels = tex2D(s_lightmap, I.tcdh);
+	
+	half brightness = lightmapChannels.w;
+	half3 glowColor = lightmapChannels.xyz;
+	
+	half4 color = half4(D.rgb, 1);
+
+    half3 finalColor = (D.rgb + glowColor) * brightness;
+
+    return half4(finalColor, brightness);
+}
