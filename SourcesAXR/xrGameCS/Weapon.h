@@ -715,6 +715,7 @@ public:
 			bool			show_indicators				();
 	virtual BOOL			ParentMayHaveAimBullet		();
 	virtual bool			ParentIsActor				();
+			bool			WeaponSoundExist			(LPCSTR section, LPCSTR sound_name, bool log = false) const;
 	
 private:
 	virtual	bool			install_upgrade_ammo_class	( LPCSTR section, bool test );

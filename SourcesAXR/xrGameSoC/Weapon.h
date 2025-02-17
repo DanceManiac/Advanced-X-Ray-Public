@@ -736,6 +736,7 @@ public:
 			bool			show_indicators				();
 	virtual BOOL			ParentMayHaveAimBullet		();
 	virtual bool			ParentIsActor				();
+			bool			WeaponSoundExist			(LPCSTR section, LPCSTR sound_name, bool log = false) const;
 
 private:
 	float					m_hit_probability[egdCount];

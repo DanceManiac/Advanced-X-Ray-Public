@@ -217,8 +217,6 @@ protected:
 
 	Flags32 psWpnAnimsFlag;
 
-	bool WeaponSoundExist(LPCSTR section, LPCSTR sound_name, bool log = false) const;
-
 	virtual	int		ShotsFired			() { return m_iShotNum; }
 	virtual float	GetWeaponDeterioration	();
 

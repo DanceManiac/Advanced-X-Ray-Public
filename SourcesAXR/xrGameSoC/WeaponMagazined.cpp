@@ -2484,20 +2484,6 @@ bool CWeaponMagazined::GetBriefInfo(II_BriefInfo& info)
 	return true;
 }
 
-// AVO: for custom added sounds check if sound exists
-bool CWeaponMagazined::WeaponSoundExist(LPCSTR section, LPCSTR sound_name, bool log) const
-{
-	pcstr str;
-	bool sec_exist = process_if_exists_set(section, sound_name, &CInifile::r_string, str, true);
-	if (sec_exist)
-		return true;
-#ifdef DEBUG
-	if (log)
-		Msg("~ [WARNING] ------ Sound [%s] does not exist in [%s]", sound_name, section);
-#endif
-	return false;
-}
-
 void CWeaponMagazined::CheckMagazine()
 {
 	if (!ParentIsActor())
