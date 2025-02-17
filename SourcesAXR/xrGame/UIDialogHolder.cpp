@@ -9,6 +9,7 @@
 #include "../xrEngine/CustomHud.h"
 #include "pda.h"
 #include "inventory.h"
+#include <imgui.h>
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -38,11 +39,13 @@ bool operator == (const recvItem& i1, const recvItem& i2)
 
 CDialogHolder::CDialogHolder()
 {
-	m_b_in_update			= false;
+	m_b_in_update = false;
+	RegisterDebuggable();
 }
 
 CDialogHolder::~CDialogHolder()
 {
+	UnregisterDebuggable();
 }
 
 void CDialogHolder::StartMenu(CUIDialogWnd* pDialog, bool bDoHideIndicators)
@@ -392,4 +395,41 @@ bool CDialogHolder::IR_UIOnMouseMove(int dx, int dy)
 		}
 	};
 	return true;
+}
+
+bool CDialogHolder::FillDebugTree(const CUIDebugState& debugState)
+{
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+	if (m_input_receivers.empty())
+		ImGui::BulletText("Input receivers: 0");
+	else
+	{
+		if (ImGui::TreeNode(&m_input_receivers, "Input receivers: %zu", m_input_receivers.size()))
+		{
+			for (const auto& item : m_input_receivers)
+				item.m_item->FillDebugTree(debugState);
+			ImGui::TreePop();
+		}
+	}
+	if (m_dialogsToRender.empty())
+		ImGui::BulletText("Dialogs to render: 0");
+	else
+	{
+		if (ImGui::TreeNode(&m_dialogsToRender, "Dialogs to render: %zu", m_dialogsToRender.size()))
+		{
+			for (const auto& item : m_dialogsToRender)
+				item.wnd->FillDebugTree(debugState);
+			ImGui::TreePop();
+		}
+	}
+	return true;
+}
+
+void CDialogHolder::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	if (ImGui::CollapsingHeader(CDialogHolder::GetDebugType()))
+	{
+	}
+#endif
 }

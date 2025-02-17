@@ -154,6 +154,9 @@ public:
 
 	void	SetHint							(LPCSTR hint_text); //MNP
 
+	pcstr	GetDebugType					() override				{ return "CUIStatic"; }
+	void	FillDebugInfo					() override;
+
 	// will be need by CUI3tButton
 	// Don't change order!!!!!
 	typedef enum {

@@ -18,7 +18,7 @@ class CInventoryBox;
 class CInventoryOwner;
 class CCar;
 
-class CUIGameSP : public CUIGameCustom
+class CUIGameSP final : public CUIGameCustom
 {
 private:
 	game_cl_Single*		m_game;
@@ -28,7 +28,6 @@ public:
 	virtual				~CUIGameSP				();
 
 	virtual	void		reset_ui				();
-	virtual	void		shedule_Update			(u32 dt);
 	virtual void		SetClGame				(game_cl_GameState* g);
 	virtual bool		IR_OnKeyboardPress		(int dik);
 	virtual bool		IR_OnKeyboardRelease	(int dik);
@@ -44,6 +43,10 @@ public:
 	virtual void		Render					();
 	virtual void		HideTradeMenu			();
 			void		StartTrade				(CInventoryOwner* pActorInv, CInventoryOwner* pMech);
+
+			pcstr		GetDebugType			() override { return "CUIGameSP"; }
+			bool		FillDebugTree			(const CUIDebugState& debugState) override;
+			void		FillDebugInfo			() override;
 
 	CUIInventoryWnd*	InventoryMenu;
 	CUITradeWnd*		TradeMenu;
@@ -76,4 +79,7 @@ public:
 	virtual void		Show						();
 	virtual void		Hide						();
 	virtual bool		OnKeyboardAction					(int dik, EUIMessages keyboard_action);
+
+		pcstr			GetDebugType				() override { return "Change level window"; }
+		void			FillDebugInfo				() override;
 };

@@ -24,6 +24,9 @@ public:
 			void	SetMax				(int max)	{m_iMax=max;};
 			void	SetMin				(int min)	{m_iMin=min;};
 			int		Value				() const {return m_iVal;}
+
+			pcstr	GetDebugType		() override { return "CUISpinNum"; }
+
 protected:
 			void	SetValue			();
 	virtual bool	CanPressUp			();

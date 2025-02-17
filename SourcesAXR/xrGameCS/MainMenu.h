@@ -147,6 +147,9 @@ public:
 	void  __stdcall OnDownloadPatch					(CUIWindow*, void*);
 	void  __stdcall OnConnectToMasterServerOkClicked(CUIWindow*, void*);
 
+	pcstr			GetDebugType					() override { return "CMainMenu"; }
+	bool			FillDebugTree					(const CUIDebugState& debugState) override;
+
 	void			Show_DownloadMPMap				(LPCSTR text, LPCSTR url);
 	void  __stdcall OnDownloadMPMap_CopyURL			(CUIWindow*, void*);
 	void  __stdcall OnDownloadMPMap					(CUIWindow*, void*);

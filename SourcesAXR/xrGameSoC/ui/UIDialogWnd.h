@@ -44,6 +44,9 @@ public:
 
 			void ShowDialog1					(bool bDoHideIndicators);
 			void HideDialog1					();
+
+			pcstr GetDebugType					() override			{ return typeid(*this).name(); }
+			void FillDebugInfo					() override;
 };
 
 #endif // _UI_DIALOG_WND_H_

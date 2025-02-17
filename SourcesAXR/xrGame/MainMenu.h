@@ -180,6 +180,9 @@ public:
 	void xr_stdcall OnDownloadPatch					(CUIWindow*, void*);
 	void xr_stdcall OnConnectToMasterServerOkClicked(CUIWindow*, void*);
 
+	pcstr			GetDebugType					() override {return "CMainMenu";}
+	bool			FillDebugTree					(const CUIDebugState& debugState) override;
+
 	void			Show_DownloadMPMap				(LPCSTR text, LPCSTR url);
 	void xr_stdcall OnDownloadMPMap_CopyURL			(CUIWindow*, void*);
 	void xr_stdcall OnDownloadMPMap					(CUIWindow*, void*);

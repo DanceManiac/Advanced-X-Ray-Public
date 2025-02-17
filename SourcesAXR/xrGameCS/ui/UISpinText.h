@@ -20,6 +20,9 @@ public:
 
 			void	AddItem_(const char* item, int id);
 			LPCSTR	GetTokenText();
+
+			pcstr	GetDebugType() override { return "CUISpinText"; }
+
 protected:
 	virtual bool	CanPressUp		();
 	virtual bool	CanPressDown	();

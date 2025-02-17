@@ -29,6 +29,8 @@
 #include "AdvancedXrayGameConstants.h"
 #include "ui\UICellItem.h" //Alundaio
 
+#include <imgui.h>
+
 EGameIDs ParseStringToGameType(LPCSTR str);
 
 bool predicate_sort_stat(const SDrawStaticStruct* s1, const SDrawStaticStruct* s2) 
@@ -770,3 +772,50 @@ const GAME_WEATHERS& CMapListHelper::GetGameWeathers()
 	return m_weathers;
 }
 
+bool CUIGameCustom::FillDebugTree(const CUIDebugState& debugState)
+{
+#ifndef MASTER_GOLD
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+	
+	if (debugState.selected == this)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	const bool open = ImGui::TreeNodeEx(this, flags, "Game UI (%s)", CUIGameCustom::GetDebugType());
+	
+	if (ImGui::IsItemClicked())
+		debugState.select(this);
+
+	if (open)
+	{
+		CDialogHolder::FillDebugTree(debugState);
+
+		m_window->FillDebugTree(debugState);
+		ActorMenu().FillDebugTree(debugState);
+		PdaMenu().FillDebugTree(debugState);
+		UIMainIngameWnd->FillDebugTree(debugState);
+		m_pMessagesWnd->FillDebugTree(debugState);
+
+		for (const auto& custom_static : m_custom_statics)
+		{
+			if (custom_static)
+				custom_static->wnd()->FillDebugTree(debugState);
+		}
+		ImGui::TreePop();
+	}
+
+	return open;
+#else
+	return false;
+#endif
+}
+
+void CUIGameCustom::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CDialogHolder::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIGameCustom::GetDebugType()))
+	{
+		ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_show_game_indicators").c_str()).c_str(), &m_bShowGameIndicators);
+	}
+#endif
+}

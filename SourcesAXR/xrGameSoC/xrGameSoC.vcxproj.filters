@@ -6748,6 +6748,9 @@
     <ClInclude Include="debug_text_tree_inline.h">
       <Filter>AI\ADebug</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_ui.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -10045,6 +10048,9 @@
     </ClCompile>
     <ClCompile Include="debug_text_tree.cpp">
       <Filter>AI\ADebug</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_ui.cpp">
+      <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

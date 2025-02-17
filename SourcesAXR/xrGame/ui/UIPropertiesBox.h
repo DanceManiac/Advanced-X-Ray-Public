@@ -40,6 +40,9 @@ public:
 	
 	void				ShowSubMenu							();
 	void	xr_stdcall	OnItemReceivedFocus					(CUIWindow* w, void* d);
+
+	pcstr				GetDebugType						() override { return "CUIPropertiesBox"; }
+
 protected:
 	CUIListBox			m_UIListWnd;
 private:

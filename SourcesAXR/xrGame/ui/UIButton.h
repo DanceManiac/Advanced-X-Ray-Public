@@ -59,6 +59,8 @@ public:
 
 	void				SetPushOffset			(const Fvector2& offset)	{m_PushOffset = offset;}
 	Fvector2			GetPushOffset			()							{return m_PushOffset;}
+	
+	pcstr				GetDebugType			() override { return "CUIButton"; }
 
 	shared_str			m_hint_text;
 protected:

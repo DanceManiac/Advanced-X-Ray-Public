@@ -30,6 +30,8 @@ public:
 	virtual void	Draw						();
 	virtual void	Update						();
 
+			pcstr	GetDebugType				() override { return "CUIFrameWindow"; }
+
 	//текст заголовка
 	CUIStatic*		UITitleText;
 	CUIStatic*		GetTitleStatic				()										{return UITitleText;};

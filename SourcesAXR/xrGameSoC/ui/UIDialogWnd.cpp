@@ -13,6 +13,8 @@
 #include "UIBtnHint.h"
 #include "MainMenu.h"
 
+#include <imgui.h>
+
 CUIDialogWnd:: CUIDialogWnd()
 {
 	m_pHolder		= NULL;
@@ -172,6 +174,19 @@ bool CUIDialogWnd::IR_process()
 
 	if(Device.Paused()&&!WorkInPause())	return false;
 	return true;
+}
+
+void CUIDialogWnd::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+
+	if (ImGui::CollapsingHeader(CUIDialogWnd::GetDebugType()))
+	{
+		ImGui::LabelText("Current holder", "%s", m_pHolder ? m_pHolder->GetDebugType() : "none");
+		ImGui::LabelText("Work in pause", m_bWorkInPause ? "true" : "false");
+	}
+#endif
 }
 
 void CUIDialogWnd::Update()

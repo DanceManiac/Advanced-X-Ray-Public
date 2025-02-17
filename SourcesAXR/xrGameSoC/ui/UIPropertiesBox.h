@@ -38,6 +38,8 @@ public:
 
 	void				AutoUpdateSize						();
 
+	pcstr				GetDebugType						() override { return "CUIPropertiesBox"; }
+
 protected:
 	CUIListBox			m_UIListWnd;
 

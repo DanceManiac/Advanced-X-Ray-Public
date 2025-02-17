@@ -11,6 +11,8 @@ public:
 	virtual			~CUIListBoxItemMsgChain	() {};
 
 	virtual bool	OnMouseDown				(int mouse_btn);
+
+			pcstr	GetDebugType			() override { return "CUIListBoxItemMsgChain"; }
 };
 
 #endif //#ifndef UILISTBOXITEMMSGCHAIN_H_INCLUDED

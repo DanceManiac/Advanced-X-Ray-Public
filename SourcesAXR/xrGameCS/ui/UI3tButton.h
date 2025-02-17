@@ -63,6 +63,7 @@ public:
 	virtual bool 	OnMouseDown					(int mouse_btn);
 			void 	SetCheckMode				(bool mode) {m_bCheckMode = mode;}
 
+			pcstr	GetDebugType				() override { return "CUI3tButton"; }
 
 	CUIStatic*				m_hint;
 	bool					m_frameline_mode;

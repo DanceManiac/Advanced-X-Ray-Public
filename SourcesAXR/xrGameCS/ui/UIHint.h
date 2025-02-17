@@ -14,7 +14,7 @@ class CUIStatic;
 class CUIFrameWindow;
 class CUIXml;
 
-class UIHint : public CUIWindow
+class UIHint final : public CUIWindow
 {
 private:
 	typedef CUIWindow	inherited;
@@ -36,6 +36,8 @@ public:
 	
 //	virtual void	Update		();
 	virtual void	Draw		();
+
+			pcstr	GetDebugType() override { return "UIHint"; }
 
 protected:
 	CUIFrameWindow*	m_background;
@@ -72,6 +74,8 @@ public:
 			void	set_hint_text	( shared_str const& text );
 			void	set_hint_text_ST( shared_str const& text );
 			void	update_hint_text();
+
+			pcstr	GetDebugType	() override { return "UIHintWindow"; }
 
 private:
 	UIHint*			m_hint_wnd;

@@ -51,6 +51,8 @@ public:
 	bool m_bCyclic;
 
 	virtual void Update();
+
+			pcstr GetDebugType() override { return "CUIAnimatedStatic"; }
 };
 
 #endif	//UI_ANIMATED_STATIC_H_

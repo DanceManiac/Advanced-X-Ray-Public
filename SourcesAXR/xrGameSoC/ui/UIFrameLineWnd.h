@@ -29,6 +29,9 @@ public:
 
 			void SetStretchTexture	( bool bStretch )	{ m_bStretchTexture = bStretch; }
 			bool GetStretchTexture	() const			{ return m_bStretchTexture; }
+
+			pcstr GetDebugType		() override { return "CUIFrameLineWnd"; }
+
 protected:
 	bool			bHorizontal;
 	bool			m_bTextureAvailable;

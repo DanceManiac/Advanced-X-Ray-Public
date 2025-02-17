@@ -315,7 +315,8 @@ virtual		void			_BCL	RemoveSeqFrame		( pureFrame* f );
 virtual		CStatsPhysics*	_BCL	StatPhysics			()	{ return  Statistic ;}
 #ifdef INGAME_EDITOR
 public:
-	IC		editor::ide			*editor				() const { return m_editor; }
+	[[nodiscard]]
+	auto& editor() { return m_editor; }
 
 private:
 			void				initialize_editor	();

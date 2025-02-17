@@ -15,6 +15,8 @@ public:
 			void 	SetSelectedState	(bool state);
 			bool 	GetSelectedState	();
 
+			pcstr	GetDebugType		() override { return "CUIStatix"; }
+
 private:
 	bool			m_bSelected;
 	void			start_anim			();

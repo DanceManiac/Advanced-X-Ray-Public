@@ -8,4 +8,6 @@ public:
 								CUIScrollBox			();
 
 	virtual bool				OnMouseAction					(float x, float y, EUIMessages mouse_action);
+
+			pcstr				GetDebugType					() override { return "CUIScrollBox"; }
 };

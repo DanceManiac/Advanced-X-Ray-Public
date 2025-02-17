@@ -15,6 +15,8 @@
 #include "UICursor.h"
 #include "MainMenu.h"
 
+#include <imgui.h>
+
 const char * const	clDefault	= "default";
 #define CREATE_LINES if (!m_pLines) {m_pLines = xr_new<CUILines>(); m_pLines->SetTextAlignment(CGameFont::alLeft);}
 #define LA_CYCLIC			(1<<0)
@@ -618,6 +620,25 @@ void CUIStatic::SetClipRect(Frect r)
 void CUIStatic::SetHint(LPCSTR hint_text)
 {
 	m_stat_hint_text = hint_text;
+}
+
+void CUIStatic::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIStatic::GetDebugType()))
+	{
+		ImGui::Checkbox("Enable texture", &m_bTextureEnable);
+		ImGui::Checkbox("Stretch texture", &m_bStretchTexture);
+		ImGui::DragFloat2("Texture offset", (float*)&m_TextureOffset);
+		//m_UIStaticItem->FillDebugInfo(); // XXX: to do
+		ImGui::Checkbox("Enable heading", &m_bHeading);
+		ImGui::Checkbox("Const heading", &m_bConstHeading);
+		ImGui::DragFloat("Heading", &m_fHeading);
+		//m_pTextControl->FillDebugInfo(); // XXX: to do
+		ImGui::LabelText("Stat hint text", "%s", m_stat_hint_text.size() ? m_stat_hint_text.c_str() : "");
+	}
+#endif
 }
 
 void CUIStatic::OnFocusReceive()

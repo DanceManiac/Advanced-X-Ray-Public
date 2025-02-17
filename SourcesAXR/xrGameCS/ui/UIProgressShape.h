@@ -15,6 +15,8 @@ public:
 
 	virtual void		Draw					();
 
+			pcstr		GetDebugType			() override { return "CUIProgressShape"; }
+
 protected:
 	bool				m_bClockwise;
 	u32					m_sectorCount;

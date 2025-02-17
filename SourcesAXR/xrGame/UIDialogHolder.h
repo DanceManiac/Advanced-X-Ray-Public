@@ -1,4 +1,5 @@
 #pragma once
+#include "embedded_editor/embedded_editor_ui.h"
 
 class CUIDialogWnd;
 class CUIWindow;
@@ -20,7 +21,7 @@ public:
 	Flags8			m_flags;
 };
 
-class CDialogHolder :public pureFrame
+class CDialogHolder :public pureFrame, public CUIDebuggable
 {
 	//dialogs
 	xr_vector<recvItem>										m_input_receivers;
@@ -55,4 +56,8 @@ public:
 	virtual bool 			IR_UIOnMouseWheel				(int direction);
 	virtual bool 			IR_UIOnKeyboardHold				(int dik);
 			void			SetMainInputReceiver			(CUIDialogWnd* ir, bool _find_remove);
+
+			pcstr			GetDebugType					() override { return typeid(*this).name(); }
+			bool			FillDebugTree					(const CUIDebugState& debugState) override;
+			void			FillDebugInfo					() override;
 };

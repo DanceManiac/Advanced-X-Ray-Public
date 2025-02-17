@@ -64,6 +64,8 @@ public:
 	virtual void		Draw						();
 	virtual void		Update						();
 
+			pcstr		GetDebugType				() override { return "CUIProgressBar"; }
+
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 

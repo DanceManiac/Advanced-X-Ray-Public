@@ -99,6 +99,9 @@ public:
 	virtual void			ColorAnimationSetTextColor		(u32 color, bool only_alpha);
 
 			void			SetHint					(LPCSTR hint_text); //MNP
+
+			pcstr			GetDebugType			() override { return "CUIStatic"; }
+			void			FillDebugInfo			() override;
 protected:
 	CUILines*		m_pTextControl;
 
@@ -153,4 +156,7 @@ public:
 	virtual void		ColorAnimationSetTextColor(u32 color, bool only_alpha);
 
 	CUILines&			TextItemControl			()							{return m_lines;}
+
+			pcstr		GetDebugType			() override { return "CUITextWnd"; }
+			void		FillDebugInfo			() override;
 };

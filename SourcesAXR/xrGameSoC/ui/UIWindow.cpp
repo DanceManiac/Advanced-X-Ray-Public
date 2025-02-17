@@ -9,6 +9,8 @@
 #include "../Include/xrRender/DebugRender.h"
 #include "../Include/xrRender/UIRender.h"
 
+#include <imgui.h>
+
 poolSS< _12b, 128>	ui_allocator;
 
 #ifdef LOG_ALL_WNDS
@@ -630,4 +632,90 @@ void CUIWindow::ShowChildren(bool show){
 	for(WINDOW_LIST_it it = m_ChildWndList.begin(); m_ChildWndList.end()!=it; ++it)		
 			(*it)->Show(show);
 //.	m_dbg_flag.set(512,FALSE);
+}
+
+bool CUIWindow::FillDebugTree(const CUIDebugState& debugState)
+{
+#ifndef MASTER_GOLD
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	if (debugState.selected == this)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	if (m_ChildWndList.empty())
+		flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Bullet;
+
+	const bool open = ImGui::TreeNodeEx(this, flags, "%s (%s)", WindowName().c_str(), GetDebugType());
+
+	if (ImGui::IsItemClicked())
+		debugState.select(this);
+
+	const bool hovered = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled);
+
+	if (debugState.drawWndRects && (IsShown() || hovered))
+	{
+		Frect rect;
+		GetAbsoluteRect(rect);
+		UI().ClientToScreenScaled(rect.lt, rect.lt.x, rect.lt.y);
+		UI().ClientToScreenScaled(rect.rb, rect.rb.x, rect.rb.y);
+
+		// This is pseudo RNG, so when we are seeding it with 'this' pointer
+		// we can expect predictable and stable values (no *blinking* at all)
+		CRandom rnd;
+		rnd.seed((s32)(intptr_t)this);
+		u32 color = color_rgba(255, 0, 0, 255);
+
+		if (hovered)
+			color = color_rgba(255, 255, 0, 255);
+		else if (debugState.coloredRects)
+			color = color_rgba(rnd.randI(255), rnd.randI(255), rnd.randI(255), 255);
+
+		const auto draw_list = hovered ? ImGui::GetForegroundDrawList() : ImGui::GetBackgroundDrawList();
+		draw_list->AddRect((const ImVec2&)rect.lt, (const ImVec2&)rect.rb, color);
+	}
+
+	if (open)
+	{
+		for (const auto& child : m_ChildWndList)
+		{
+			child->FillDebugTree(debugState);
+		}
+		if (!m_ChildWndList.empty())
+			ImGui::TreePop();
+	}
+
+	return open;
+#else
+	return nullptr;
+#endif
+}
+
+void CUIWindow::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	if (!ImGui::CollapsingHeader(CUIWindow::GetDebugType()))
+		return;
+
+	ImGui::DragFloat2("Position", (float*)&m_wndPos);
+	ImGui::DragFloat2("Size", (float*)&m_wndSize);
+
+	ImGui::Checkbox("Visible", &m_bShowMe);
+	ImGui::Checkbox("Enabled", &m_bIsEnabled);
+
+	ImGui::Separator();
+	ImGui::BeginDisabled();
+	ImGui::Checkbox("Auto delete", &m_bAutoDelete);
+	ImGui::Checkbox("Cursor over window", &m_bCursorOverWindow);
+
+	ImGui::DragFloat2("Last cursor position", (float*)&m_cursor_pos);
+	ImGui::DragScalar("Last click time", ImGuiDataType_U32, &m_dwLastClickTime);
+	ImGui::DragScalar("Focus receive time", ImGuiDataType_U32, &m_dwFocusReceiveTime);
+	ImGui::EndDisabled();
+
+	ImGui::Separator();
+	ImGui::LabelText("Parent", "%s", m_pParentWnd ? m_pParentWnd->WindowName().c_str() : "none");
+	ImGui::LabelText("Mouse capturer", "%s", m_pMouseCapturer ? m_pMouseCapturer->WindowName().c_str() : "none");
+	ImGui::LabelText("Keyboard capturer", "%s", m_pKeyboardCapturer ? m_pKeyboardCapturer->WindowName().c_str() : "none");
+	ImGui::LabelText("Message target", "%s", m_pMessageTarget ? m_pMessageTarget->WindowName().c_str() : "none");
+#endif
 }

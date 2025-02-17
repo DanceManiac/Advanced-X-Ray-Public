@@ -31,6 +31,8 @@
 #include "PDA.h"
 #include "CustomBackpack.h"
 
+#include <imgui.h>
+
 CUIGameSP::CUIGameSP()
 :m_game(NULL)
 {
@@ -42,16 +44,6 @@ CUIGameSP::~CUIGameSP()
 {
 	delete_data(TalkMenu);
 	delete_data(UIChangeLevelWnd);
-}
-
-void CUIGameSP::shedule_Update(u32 dt)
-{
-	inherited::shedule_Update			(dt);
-	CActor *pActor = smart_cast<CActor*>(Level().CurrentEntity());
-	if(!pActor)							return;
-	if(pActor->g_Alive())				return;
-
-	HideShownDialogs						();
 }
 
 void CUIGameSP::HideShownDialogs()
@@ -294,6 +286,45 @@ void CUIGameSP::reset_ui()
 	UIChangeLevelWnd->Reset			();
 }
 
+bool CUIGameSP::FillDebugTree(const CUIDebugState& debugState)
+{
+	if (!CUIGameCustom::FillDebugTree(debugState))
+		return false;
+
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	if (debugState.selected == this)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	const bool open = ImGui::TreeNodeEx(this, flags, "Game UI (%s)", CUIGameSP::GetDebugType());
+
+	if (ImGui::IsItemClicked())
+		debugState.select(this);
+
+	if (open)
+	{
+		TalkMenu->FillDebugTree(debugState);
+		UIChangeLevelWnd->FillDebugTree(debugState);
+
+		//if (m_game_objective)
+		//	m_game_objective->wnd()->FillDebugTree(debugState);
+
+		ImGui::TreePop();
+	}
+
+	return open;
+}
+
+void CUIGameSP::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIGameCustom::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIGameSP::GetDebugType()))
+	{
+	}
+#endif
+}
+
 CChangeLevelWnd::CChangeLevelWnd		()
 {
 	m_messageBox			= xr_new<CUIMessageBox>();	
@@ -369,3 +400,22 @@ void CChangeLevelWnd::Hide()
 	GAME_PAUSE								(FALSE, TRUE, TRUE, "CChangeLevelWnd_hide");
 }
 
+void CChangeLevelWnd::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIDialogWnd::FillDebugInfo();
+
+	if (ImGui::CollapsingHeader(CChangeLevelWnd::GetDebugType()))
+	{
+		ImGui::Checkbox("Level change allowed", &m_b_allow_change_level);
+		ImGui::DragScalar("Game vertex ID", ImGuiDataType_U16, &m_game_vertex_id);
+		ImGui::DragScalar("Level vertex ID", ImGuiDataType_U32, &m_level_vertex_id);
+		ImGui::DragFloat3("Position", (float*)&m_position);
+		ImGui::DragFloat3("Angles", (float*)&m_angles);
+		ImGui::Separator();
+		ImGui::Checkbox("Teleport Actor on cancel", &m_b_position_cancel);
+		ImGui::DragFloat3("Position on cancel", (float*)&m_position_cancel);
+		ImGui::DragFloat3("Angles on cancel", (float*)&m_angles_cancel);
+	}
+#endif
+}

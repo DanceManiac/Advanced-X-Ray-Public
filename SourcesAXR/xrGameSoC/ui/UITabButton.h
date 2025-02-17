@@ -26,6 +26,8 @@ public:
 	virtual bool OnMouseDown(int mouse_btn);
 	virtual void Update();
 
+	pcstr GetDebugType() override { return "CUITabButton"; }
+
 //.protected:
 	// associated window
 //.	CUIFrameWindow* m_pAssociatedWindow;

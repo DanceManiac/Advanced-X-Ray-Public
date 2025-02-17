@@ -5,6 +5,8 @@
 #include "UIXmlInit.h"
 #include "UITextureMaster.h"
 
+#include <imgui.h>
+
 CUIScrollBar::CUIScrollBar()
 {
 	m_iMinPos			= 1;
@@ -458,4 +460,32 @@ void CUIScrollBar::Draw()
 void CUIScrollBar::Refresh()
 {
 	SendMessage(m_ScrollBox, SCROLLBOX_MOVE, NULL);
+}
+
+void CUIScrollBar::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CUIWindow::FillDebugInfo();
+
+	if (!ImGui::CollapsingHeader(CUIScrollBar::GetDebugType()))
+		return;
+
+	ImGui::DragFloat("Hold delay", &m_hold_delay);
+
+	if (ImGui::DragInt("Scroll position", &m_iScrollPos, 1.0f, m_iMinPos, ScrollSize()))
+	{
+		UpdateScrollBar();
+		Refresh();
+	}
+
+	ImGui::DragInt("Step size", &m_iStepSize);
+	ImGui::DragInt("Min position", &m_iMinPos);
+	ImGui::DragInt("Max position", &m_iMaxPos);
+	ImGui::DragInt("Page size", &m_iPageSize);
+	ImGui::DragInt("Scroll work area", &m_ScrollWorkArea);
+
+	ImGui::Checkbox("Enabled##CUIScrollbar", &m_b_enabled);
+	ImGui::SameLine();
+	ImGui::Checkbox("Horizontal", &m_bIsHorizontal);
+#endif
 }

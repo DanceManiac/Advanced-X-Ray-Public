@@ -5,7 +5,7 @@
 
 class UIHint;
 
-class CUICheckButton : public CUI3tButton, public CUIOptionsItem
+class CUICheckButton final : public CUI3tButton, public CUIOptionsItem
 {
 	typedef CUI3tButton			inherited;
 
@@ -38,6 +38,8 @@ public:
 	}
 
 	void SetDependControl(CUIWindow* pWnd);
+
+	pcstr GetDebugType() override { return "CUICheckButton"; }
 
 private:
 	bool							m_opt_backup_value;

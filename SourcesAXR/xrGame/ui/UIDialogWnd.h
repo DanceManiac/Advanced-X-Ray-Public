@@ -31,4 +31,7 @@ public:
 			void HideDialog						();
 
 	virtual bool IR_process						();
+
+			pcstr GetDebugType					() override						{ return typeid(*this).name(); }
+			void FillDebugInfo					() override;
 };

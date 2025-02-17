@@ -14,9 +14,9 @@ using ui_list = xr_list<T>;
 #include "UIMessages.h"
 #include "script_export_space.h"
 #include "uiabstract.h"
+#include "embedded_editor/embedded_editor_ui.h"
 
-
-class CUIWindow  : public CUISimpleWindow
+class CUIWindow  : public CUISimpleWindow, public CUIDebuggable
 {
 public:
 	using CUISimpleWindow::Init;
@@ -143,6 +143,10 @@ public:
 	CUIWindow*				FindChild			(const shared_str name);
 
 	IC bool					CursorOverWindow	() const					{ return m_bCursorOverWindow; }
+
+	pcstr					GetDebugType		() override					{ return typeid(*this).name(); }
+	bool					FillDebugTree		(const CUIDebugState& debugState) override;
+	void					FillDebugInfo		() override;
 
 protected:
 	IC void					SafeRemoveChild(CUIWindow* child)				{WINDOW_LIST_it it = std::find(m_ChildWndList.begin(),m_ChildWndList.end(),child); if(it!=m_ChildWndList.end())m_ChildWndList.erase(it);};

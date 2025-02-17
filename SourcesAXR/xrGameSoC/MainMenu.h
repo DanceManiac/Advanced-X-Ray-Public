@@ -158,6 +158,9 @@ public:
 	LPCSTR			GetGSVer						();
 	LPCSTR			GetAxrPlatform					();
 
+	pcstr			GetDebugType					() override { return "CMainMenu"; }
+	bool			FillDebugTree					(const CUIDebugState& debugState) override;
+
 	//Dump UI Texture list that are suggested to be prefetched
 			void	ReportTxrsForPrefetching		();
 

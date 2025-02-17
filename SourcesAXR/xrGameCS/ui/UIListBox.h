@@ -42,6 +42,8 @@ virtual void		SendMessage						(CUIWindow* pWnd, s16 msg, void* pData = 0);
 			void			SetTextAlignment		(ETextAlignment alignment);
 			ETextAlignment	GetTextAlignment		();
 
+			pcstr			GetDebugType			() override { return "CUIListBox"; }
+
 protected:
 	CGameFont*		m_pFont;
 	float			m_def_item_height;

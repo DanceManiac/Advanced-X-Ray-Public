@@ -3,8 +3,7 @@
 class CUICursor;
 
 #include "ui_defs.h"
-
-
+#include "embedded_editor/embedded_editor_ui.h"
 
 class CDeviceResetNotifier :public pureDeviceReset
 {
@@ -58,6 +57,7 @@ class ui_core: public CDeviceResetNotifier
 
 	CFontManager*	m_pFontManager;
 	CUICursor*		m_pUICursor;
+	CUIDebugger		m_debugger;
 
 	Fvector2		m_pp_scale_;
 	Fvector2		m_scale_;
@@ -70,6 +70,7 @@ public:
 					~ui_core						();
 	CFontManager&	Font							()								{return *m_pFontManager;}
 	CUICursor&		GetUICursor						()								{return *m_pUICursor;}
+	auto&			Debugger						()								{return m_debugger;}
 
 	IC float		ClientToScreenScaledX			(float left)	const			{return left * m_current_scale->x;};
 	IC float		ClientToScreenScaledY			(float top)		const			{return top * m_current_scale->y;};

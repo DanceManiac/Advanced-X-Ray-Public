@@ -183,4 +183,29 @@
 	<string id="st_npc_attaches_editor_strap_params">
 		<text>Параметры положения за спиной</text>
 	</string>
+	
+	<string id="st_editor_imgui_ui_debugger">
+		<text>Отладчик интерфейсов</text>
+	</string>
+	<string id="st_editor_imgui_ui_draw_rects">
+		<text>Отображать границы элементов</text>
+	</string>
+	<string id="st_editor_imgui_ui_colored_rects">
+		<text>Разноцветные границы элементов</text>
+	</string>
+	<string id="st_editor_imgui_ui_tree_and_props">
+		<text>Дерево интерфейса и свойства</text>
+	</string>
+	<string id="st_editor_imgui_ui_tree">
+		<text>Дерево</text>
+	</string>
+	<string id="st_editor_imgui_ui_selected_props">
+		<text>Свойства выбранного элемента</text>
+	</string>
+	<string id="st_editor_imgui_show_game_indicators">
+		<text>Показать игровые индикаторы</text>
+	</string>
+	<string id="st_editor_imgui_ui_debugger_mm_warning">
+		<text>Пожалуйста, откройте главное меню, чтобы увидеть структуру.</text>
+	</string>
 </string_table>

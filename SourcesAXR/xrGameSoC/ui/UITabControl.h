@@ -49,6 +49,8 @@ public:
 	const shared_str	GetCommandName				(int i);
 	CUIButton*			GetButtonByCommand			(const shared_str& n);
 			void		ResetTab					();
+
+			pcstr		GetDebugType				() override { return "CUITabControl"; }
 protected:
 	// Список кнопок - переключателей закладок
 	TABS_VECTOR			m_TabsArr;

@@ -12,6 +12,8 @@ public:
 
 	virtual bool				OnMouseAction					(float x, float y, EUIMessages mouse_action);
 	virtual void				Draw					();
+
+			pcstr				GetDebugType			() override { return "CUIScrollBox"; }
 						
 protected:
 	bool						m_bIsHorizontal;

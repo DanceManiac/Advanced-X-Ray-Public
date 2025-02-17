@@ -1,10 +1,9 @@
-#ifndef __XR_UIGAMECUSTOM_H__
-#define __XR_UIGAMECUSTOM_H__
 #pragma once
-
 
 #include "script_export_space.h"
 #include "object_interfaces.h"
+#include "UIDialogHolder.h"
+
 // refs
 class CUI;
 class CTeamBaseZone;
@@ -15,7 +14,8 @@ class CUIStatic;
 class CUIWindow;
 class CUIXml;
 
-struct SDrawStaticStruct :public IPureDestroyableObject{
+struct SDrawStaticStruct :public IPureDestroyableObject
+{
 	SDrawStaticStruct	();
 	virtual	void	destroy			();
 	CUIStatic*		m_static;
@@ -24,7 +24,7 @@ struct SDrawStaticStruct :public IPureDestroyableObject{
 	void			Draw();
 	void			Update();
 	CUIStatic*		wnd()		{return m_static;}
-	bool			IsActual();
+	bool			IsActual()	const;;
 	bool operator ==(LPCSTR str){
 		return (m_name == str);
 	}
@@ -65,9 +65,8 @@ public:
 
 extern CMapListHelper	gMapListHelper;
 
-class CUIGameCustom :public DLL_Pure, public ISheduled
+class CUIGameCustom :public DLL_Pure, public CDialogHolder
 {
-	typedef ISheduled inherited;
 protected:
 	typedef xr_vector<SDrawStaticStruct*>	st_vec;
 	typedef st_vec::iterator				st_vec_it;
@@ -83,9 +82,6 @@ protected:
 	CUIXml*				m_msgs_xml;
 public:
 	virtual void		SetClGame				(game_cl_GameState* g){};
-
-	virtual				float					shedule_Scale		();
-	virtual				void					shedule_Update		(u32 dt);
 	
 						CUIGameCustom			();
 	virtual				~CUIGameCustom			();
@@ -118,13 +114,12 @@ public:
 			SDrawStaticStruct*	GetCustomStatic		(LPCSTR id);
 			void				RemoveCustomStatic	(LPCSTR id);
 
-	virtual	shared_str	shedule_Name				() const		{ return shared_str("CUIGameCustom"); };
-	virtual bool		shedule_Needed			()					{return true;};
+			pcstr		GetDebugType				() override { return "CUIGameCustom"; }
+			bool		FillDebugTree				(const CUIDebugState& debugState) override;
+			void		FillDebugInfo				() override;
 
 	DECLARE_SCRIPT_REGISTER_FUNCTION
 };
 add_to_type_list(CUIGameCustom)
 #undef script_type_list
 #define script_type_list save_type_list(CUIGameCustom)
-
-#endif // __XR_UIGAMECUSTOM_H__

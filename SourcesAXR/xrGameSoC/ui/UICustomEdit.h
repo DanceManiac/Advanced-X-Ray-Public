@@ -42,6 +42,8 @@ public:
 			
 			void	SetPasswordMode	(bool mode = true);
 
+			pcstr	GetDebugType	() override { return "CUICustomEdit"; }
+
 protected:
 			void				Register_callbacks();
 

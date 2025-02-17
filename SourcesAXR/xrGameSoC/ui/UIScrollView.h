@@ -68,6 +68,9 @@ IC			bool	NeedShowScrollBar	();		// no comment
 			void	UpdateChildrenLenght();		// set default width for all children
 			float	Scroll2ViewV		();		// calculate scale for scroll position
 	CUIScrollBar*	ScrollBar			() {return m_VScrollBar;}
+
+			pcstr	GetDebugType		() override { return "CUIScrollView"; }
+			void	FillDebugInfo		() override;
 };
 
 #define ADD_TEXT_TO_VIEW3(txt,st,view)		st = xr_new<CUIStatic>();						\

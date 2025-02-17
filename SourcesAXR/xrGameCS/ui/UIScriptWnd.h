@@ -30,6 +30,8 @@ public:
 	virtual bool				OnKeyboardAction			(int dik, EUIMessages keyboard_action);
 	virtual bool				Dispatch			(int cmd, int param)				{return true;}
 
+			pcstr				GetDebugType		() override { return typeid(*this).name(); }
+
 template<typename T>
 IC	T*	GetControl(LPCSTR name);
 

@@ -44,6 +44,8 @@ public:
 			void	SetOptIBounds			(int imin, int imax);
 			void	SetOptFBounds			(float fmin, float fmax);
 
+			pcstr	GetDebugType			() override { return "CUITrackBar"; }
+
 			CUIStatic* m_static;
 			shared_str m_static_format;
 			float m_def_control_height;

@@ -8,6 +8,7 @@
 #include "xr_level_controller.h"
 #include "pda.h"
 #include "inventory.h"
+#include <imgui.h>
 
 dlgItem::dlgItem(CUIWindow* pWnd)
 {
@@ -37,17 +38,15 @@ bool operator == (const recvItem& i1, const recvItem& i2)
 
 CDialogHolder::CDialogHolder()
 {
-	shedule.t_min			= 5;
-	shedule.t_max			= 20;
-	shedule_register		();
 	Device.seqFrame.Add		(this,REG_PRIORITY_LOW-1000);
 	m_b_in_update			= false;
+	RegisterDebuggable		();
 }
 
 CDialogHolder::~CDialogHolder()
 {
-	shedule_unregister();
 	Device.seqFrame.Remove		(this);
+	UnregisterDebuggable();
 }
 #include "HUDManager.h"
 
@@ -262,6 +261,13 @@ void CDialogHolder::OnFrame	()
 		m_dialogsToRender.insert	(m_dialogsToRender.end(),m_dialogsToRender_new.begin(),m_dialogsToRender_new.end());
 		m_dialogsToRender_new.clear	();
 	}
+
+	if (m_dialogsToRender.empty())
+		return;
+
+	std::sort			(m_dialogsToRender.begin(), m_dialogsToRender.end());
+	while (!m_dialogsToRender.empty() && (!m_dialogsToRender[m_dialogsToRender.size()-1].enabled)) 
+		m_dialogsToRender.pop_back();
 }
 
 void CDialogHolder::CleanInternals()
@@ -273,20 +279,39 @@ void CDialogHolder::CleanInternals()
 	GetUICursor().Hide		();
 }
 
-void CDialogHolder::shedule_Update(u32 dt)
+bool CDialogHolder::FillDebugTree(const CUIDebugState& debugState)
 {
-	ISheduled::shedule_Update(dt);
-
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+	if (m_input_receivers.empty())
+		ImGui::BulletText("Input receivers: 0");
+	else
+	{
+		if (ImGui::TreeNode(&m_input_receivers, "Input receivers: %zu", m_input_receivers.size()))
+		{
+			for (const auto& item : m_input_receivers)
+				item.m_item->FillDebugTree(debugState);
+			ImGui::TreePop();
+		}
+	}
 	if (m_dialogsToRender.empty())
-		return;
-
-	std::sort			(m_dialogsToRender.begin(), m_dialogsToRender.end());
-
-	while ((m_dialogsToRender.size()) && (!m_dialogsToRender[m_dialogsToRender.size()-1].enabled)) 
-		m_dialogsToRender.pop_back();
+		ImGui::BulletText("Dialogs to render: 0");
+	else
+	{
+		if (ImGui::TreeNode(&m_dialogsToRender, "Dialogs to render: %zu", m_dialogsToRender.size()))
+		{
+			for (const auto& item : m_dialogsToRender)
+				item.wnd->FillDebugTree(debugState);
+			ImGui::TreePop();
+		}
+	}
+	return true;
 }
 
-float CDialogHolder::shedule_Scale()
+void CDialogHolder::FillDebugInfo()
 {
-	return 0.5f;
+#ifndef MASTER_GOLD
+	if (ImGui::CollapsingHeader(CDialogHolder::GetDebugType()))
+	{
+	}
+#endif
 }

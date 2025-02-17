@@ -84,4 +84,7 @@ public:
 	
 	void			TryScrollInc		();
 	void			TryScrollDec		();
+
+	pcstr			GetDebugType		() override { return "CUIScrollBar"; }
+	void			FillDebugInfo		() override;
 };

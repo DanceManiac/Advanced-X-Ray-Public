@@ -73,6 +73,9 @@ IC			bool	NeedShowScrollBar	();		// no comment
 			void	UpdateChildrenLenght();		// set default width for all children
 			float	Scroll2ViewV		();		// calculate scale for scroll position
 	CUIScrollBar*	ScrollBar		() {return m_VScrollBar;}
+
+			pcstr	GetDebugType		() override { return "CUIScrollView"; }
+			void	FillDebugInfo		() override;
 	
 	typedef fastdelegate::FastDelegate2<CUIWindow*,CUIWindow*,bool>		cmp_function;
 	cmp_function	m_sort_function;

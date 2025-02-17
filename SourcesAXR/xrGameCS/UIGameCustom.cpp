@@ -23,6 +23,8 @@
 #include "ui\UICellItem.h" //Alundaio
 #include "AdvancedXrayGameConstants.h"
 
+#include <imgui.h>
+
 EGameIDs ParseStringToGameType(LPCSTR str);
 struct predicate_remove_stat {
 	bool	operator() (SDrawStaticStruct& s) {
@@ -48,9 +50,6 @@ struct predicate_find_stat
 CUIGameCustom::CUIGameCustom()
 {
 	uFlags					= 0;
-	shedule.t_min			= 5;
-	shedule.t_max			= 20;
-	shedule_register		();
 	m_pgameCaptions			= xr_new<CUICaption>();
 	m_msgs_xml				= xr_new<CUIXml>();
 	m_msgs_xml->Load		(CONFIG_PATH, UI_PATH, "ui_custom_msgs.xml");
@@ -78,23 +77,11 @@ CUIGameCustom::CUIGameCustom()
 CUIGameCustom::~CUIGameCustom()
 {
 	delete_data				(m_pgameCaptions);
-	shedule_unregister		();
 	delete_data				(m_custom_statics);
 	delete_data				(m_msgs_xml);
 	
 	delete_data				(m_ActorMenu);	
 	delete_data				(m_PdaMenu);	
-}
-
-
-float CUIGameCustom::shedule_Scale		() 
-{
-	return 0.5f;
-};
-
-void CUIGameCustom::shedule_Update		(u32 dt)
-{
-	inherited::shedule_Update(dt);
 }
 
 bool g_b_ClearGameCaptions = false;
@@ -532,7 +519,7 @@ void SDrawStaticStruct::destroy()
 	delete_data(m_static);
 }
 
-bool SDrawStaticStruct::IsActual()
+bool SDrawStaticStruct::IsActual() const
 {
 	if(m_endTime<0) return true;
 	return Device.fTimeGlobal < m_endTime;
@@ -715,4 +702,52 @@ const GAME_WEATHERS& CMapListHelper::GetGameWeathers()
 		Load();
 
 	return m_weathers;
+}
+
+bool CUIGameCustom::FillDebugTree(const CUIDebugState& debugState)
+{
+#ifndef MASTER_GOLD
+	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
+
+	if (debugState.selected == this)
+		flags |= ImGuiTreeNodeFlags_Selected;
+
+	const bool open = ImGui::TreeNodeEx(this, flags, "Game UI (%s)", CUIGameCustom::GetDebugType());
+
+	if (ImGui::IsItemClicked())
+		debugState.select(this);
+
+	if (open)
+	{
+		CDialogHolder::FillDebugTree(debugState);
+
+		//m_window->FillDebugTree(debugState);
+		ActorMenu().FillDebugTree(debugState);
+		PdaMenu().FillDebugTree(debugState);
+		//UIMainIngameWnd->FillDebugTree(debugState);
+		//m_pMessagesWnd->FillDebugTree(debugState);
+
+		for (const auto& custom_static : m_custom_statics)
+		{
+			if (custom_static)
+				custom_static->wnd()->FillDebugTree(debugState);
+		}
+		ImGui::TreePop();
+	}
+
+	return open;
+#else
+	return false;
+#endif
+}
+
+void CUIGameCustom::FillDebugInfo()
+{
+#ifndef MASTER_GOLD
+	CDialogHolder::FillDebugInfo();
+	if (ImGui::CollapsingHeader(CUIGameCustom::GetDebugType()))
+	{
+		//ImGui::Checkbox(toUtf8(CStringTable().translate("st_editor_imgui_show_game_indicators").c_str()).c_str(), &m_bShowGameIndicators);
+	}
+#endif
 }

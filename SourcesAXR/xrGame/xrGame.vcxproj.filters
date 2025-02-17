@@ -7514,6 +7514,9 @@
     <ClInclude Include="embedded_editor\embedded_editor_person_attach.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="embedded_editor\embedded_editor_ui.h">
+      <Filter>EmbeddedEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11265,6 +11268,9 @@
       <Filter>AI\AScript\ScriptClasses\ScriptVarsStorage</Filter>
     </ClCompile>
     <ClCompile Include="embedded_editor\embedded_editor_person_attach.cpp">
+      <Filter>EmbeddedEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="embedded_editor\embedded_editor_ui.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
   </ItemGroup>
