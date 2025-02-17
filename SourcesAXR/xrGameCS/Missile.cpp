@@ -70,6 +70,9 @@ void CMissile::Load(LPCSTR section)
 {
 	inherited::Load		(section);
 
+	m_sounds.LoadSound	(section, "snd_draw", "m_sndDraw", false, SOUND_TYPE_ITEM_HIDING);
+	m_sounds.LoadSound	(section, "snd_holster", "m_sndHolster", false, SOUND_TYPE_ITEM_HIDING);
+
 	m_fMinForce			= pSettings->r_float(section,"force_min");
 	m_fConstForce		= pSettings->r_float(section,"force_const");
 	m_fMaxForce			= pSettings->r_float(section,"force_max");
@@ -295,12 +298,18 @@ void CMissile::State(u32 state)
 {
 	auto det = smart_cast<CCustomDetector*>(g_actor->inventory().ItemFromSlot(DETECTOR_SLOT));
 
+	Fvector C;
+	Center(C);
+
 	switch(GetState()) 
 	{
 	case eShowing:
         {
 			SetPending			(TRUE);
 			PlayHUDMotion("anm_show", FALSE, this, GetState());
+
+			if (m_sounds.FindSoundItem("m_sndDraw", false))
+				PlaySound		("m_sndDraw", C);
 		} break;
 	case eIdle:
 		{
@@ -313,6 +322,9 @@ void CMissile::State(u32 state)
 			{
 				SetPending			(TRUE);
 				PlayHUDMotion		("anm_hide", TRUE, this, GetState());
+
+				if (m_sounds.FindSoundItem("m_sndHolster", false))
+					PlaySound		("m_sndHolster", C);
 			}
 		} break;
 	case eHidden:

@@ -48,6 +48,8 @@ protected:
 
 	float				fHitImpulse_cur;
 
+	bool				m_bIsAltShootNow;
+
 protected:
 	virtual void		LoadFireParams					(LPCSTR section);
 public:
