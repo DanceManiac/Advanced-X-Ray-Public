@@ -1047,10 +1047,10 @@ bool CInventory::Action(s32 cmd, u32 flags)
 		}break;
 	case kARTEFACT:
 		{
-		    b_send_event = true;
+			b_send_event = true;
 			if(flags&CMD_START)
 			{
-                if((int)m_iActiveSlot == ARTEFACT_SLOT &&
+				if((int)m_iActiveSlot == ARTEFACT_SLOT &&
 					m_slots[m_iActiveSlot].m_pIItem /*&& IsGameTypeSingle()*/)
 				{
 					Activate(NO_ACTIVE_SLOT);
@@ -1352,7 +1352,7 @@ u32 CInventory::dwfGetSameItemCount(LPCSTR caSection, bool SearchAll)
 	{
 		PIItem	l_pIItem = *l_it;
 		if (!xr_strcmp(l_pIItem->object().cNameSect(), caSection))
-            ++l_dwCount;
+			++l_dwCount;
 	}
 	
 	return		(l_dwCount);
@@ -1480,6 +1480,29 @@ bool CInventory::Eat(PIItem pIItem)
 	return			true;
 }
 
+bool CInventory::ClientEat(PIItem pIItem)
+{
+	CEatableItem* pItemToEat = smart_cast<CEatableItem*>(pIItem);
+	if ( !pItemToEat )			return false;
+
+	CEntityAlive *entity_alive = smart_cast<CEntityAlive*>(m_pOwner);
+	if ( !entity_alive )		return false;
+
+	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
+	if ( !IO )					return false;
+	
+	CInventory* pInventory = pItemToEat->m_pInventory;
+	if ( !pInventory || pInventory != this )	return false;
+	if ( pInventory != IO->m_inventory )		return false;
+	if ( pItemToEat->object().H_Parent()->ID() != entity_alive->ID() )		return false;
+	
+	NET_Packet						P;
+	CGameObject::u_EventGen			(P, GEG_PLAYER_ITEM_EAT, pIItem->parent_id());
+	P.w_u16							(pIItem->object().ID());
+	CGameObject::u_EventSend		(P);
+	return true;
+}
+
 bool CInventory::InSlot(PIItem pIItem) const
 {
 	if(pIItem->GetSlot() < m_slots.size() && 
@@ -1542,7 +1565,7 @@ CInventoryItem	*CInventory::tpfGetObjectByIndex(int iIndex)
 		int			i = 0;
 		for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it, ++i) 
 			if (i == iIndex)
-                return	(*l_it);
+				return	(*l_it);
 	}
 	else {
 		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"invalid inventory index!");

@@ -93,7 +93,8 @@ public:
 	PIItem					tpfGetObjectByIndex	(int iIndex);
 	PIItem					GetItemFromInventory(LPCSTR caItemName);
 
-	bool					Eat					(PIItem pIItem);								
+	bool					Eat					(PIItem pIItem);
+	bool					ClientEat			(PIItem pIItem);
 
 	u32						GetActiveSlot		() const			{return m_iActiveSlot;}
 	

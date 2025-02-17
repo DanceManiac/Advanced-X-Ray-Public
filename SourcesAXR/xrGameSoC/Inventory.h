@@ -95,10 +95,7 @@ public:
 	PIItem					GetItemFromInventory(LPCSTR caItemName);
 
 	bool					Eat					(PIItem pIItem);
-	void					ChooseItmAnimOrNot	(PIItem pIItem);
-	bool					ItmHasAnim			(PIItem pIItem);
-	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
-	void					TakeItemAnim		(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
+	bool					ClientEat			(PIItem pIItem);
 
 	u32						GetActiveSlot		() const			{return m_iActiveSlot;}
 	
@@ -114,6 +111,11 @@ public:
 	void 					SetBeltUseful		(bool belt_useful)	{m_bBeltUseful = belt_useful;}
 
 	void					SetSlotsBlocked		(u32 mask, bool bBlock);
+
+	void					ChooseItmAnimOrNot	(PIItem pIItem);
+	bool					ItmHasAnim			(PIItem pIItem);
+	void					TakeItemAnimCheck	(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
+	void					TakeItemAnim		(CGameObject* GameObj, CObject* Obj, bool use_pickup_anim);
 	TIItemContainer			m_all;
 	TIItemContainer			m_ruck, m_belt;
 	TISlotArr				m_slots;

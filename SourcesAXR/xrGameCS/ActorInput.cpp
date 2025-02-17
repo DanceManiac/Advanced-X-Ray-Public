@@ -105,11 +105,32 @@ void CActor::IR_OnKeyboardPress(int cmd)
 			const shared_str& item_name		= g_quick_use_slots[cmd-kQUICK_USE_1];
 			if(item_name.size())
 			{
-				PIItem itm = inventory().GetAny(item_name.c_str());
+				CEatableItem* itm = nullptr;
+
+				for (auto& it : inventory().m_ruck)
+				{
+					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
+					if (!pEatable)
+						continue;
+					if (pEatable->GetPortionsNum() == 1)
+					{
+						itm = pEatable;
+						break;
+					}
+					if (pEatable->m_section_id == item_name && !itm || itm && (pEatable->GetPortionsNum() < itm->GetPortionsNum()))
+						itm = pEatable;
+				}
 
 				if(itm)
 				{
-					inventory().ChooseItmAnimOrNot(itm);
+					if (IsGameTypeSingle())
+					{
+						inventory().ChooseItmAnimOrNot(itm);
+					}
+					else
+					{
+						inventory().ClientEat(itm);
+					}
 
 					static const bool enabled = READ_IF_EXISTS(pSettings, r_bool, "null_features", "show_item_used_hud_text", true);
 					if (enabled && !inventory().ItmHasAnim(itm))
@@ -130,17 +151,40 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		case kUSE_BANDAGE:
 		case kUSE_MEDKIT:
 		{
+			const shared_str& item_name = inventory().item((cmd == kUSE_BANDAGE) ? CLSID_IITEM_BANDAGE : CLSID_IITEM_MEDKIT)->m_section_id;
+			if (item_name.size())
 			{
-				PIItem itm = inventory().item((cmd==kUSE_BANDAGE)?  CLSID_IITEM_BANDAGE:CLSID_IITEM_MEDKIT );	
-				if(itm)
+				CEatableItem* itm = nullptr;
+
+				for (auto& it : inventory().m_ruck)
 				{
-					inventory().ChooseItmAnimOrNot(itm);
+					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
+					if (!pEatable)
+						continue;
+					if (pEatable->GetPortionsNum() == 1)
+					{
+						itm = pEatable;
+						break;
+					}
+					if (pEatable->m_section_id == item_name && !itm || itm && (pEatable->GetPortionsNum() < itm->GetPortionsNum()))
+						itm = pEatable;
+				}
+				if (itm)
+				{
+					if (IsGameTypeSingle())
+					{
+						inventory().ChooseItmAnimOrNot(itm);
+					}
+					else
+					{
+						inventory().ClientEat(itm);
+					}
 
 					if (GameConstants::GetHUD_UsedItemTextEnabled() && !inventory().ItmHasAnim(itm))
 					{
 						SDrawStaticStruct* _s = HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
 						_s->m_endTime = Device.fTimeGlobal + 3.0f;
-						string1024					str;
+						string1024 str;
 						strconcat(sizeof(str), str, *CStringTable().translate("st_item_used"), ": ", itm->NameItem());
 						_s->wnd()->SetText(str);
 					}

@@ -959,10 +959,10 @@ bool CInventory::Action(u16 cmd, u32 flags)
 		}break;
 	case kARTEFACT:
 		{
-		    b_send_event = true;
+			b_send_event = true;
 			if(flags&CMD_START)
 			{
-                if(GetActiveSlot() == ARTEFACT_SLOT &&
+				if(GetActiveSlot() == ARTEFACT_SLOT &&
 					ActiveItem() /*&& IsGameTypeSingle()*/)
 				{
 					Activate(NO_ACTIVE_SLOT);
@@ -1273,7 +1273,7 @@ u32 CInventory::dwfGetSameItemCount(LPCSTR caSection, bool SearchAll)
 	{
 		PIItem	l_pIItem = *l_it;
 		if (!xr_strcmp(l_pIItem->object().cNameSect(), caSection))
-            ++l_dwCount;
+			++l_dwCount;
 	}
 	
 	return		(l_dwCount);
@@ -1498,7 +1498,7 @@ CInventoryItem	*CInventory::tpfGetObjectByIndex(int iIndex)
 		int			i = 0;
 		for(TIItemContainer::iterator l_it = l_list.begin(); l_list.end() != l_it; ++l_it, ++i) 
 			if (i == iIndex)
-                return	(*l_it);
+				return	(*l_it);
 	}
 	else {
 		ai().script_engine().script_log	(ScriptStorage::eLuaMessageTypeError,"invalid inventory index!");

@@ -265,17 +265,43 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kUSE_BANDAGE:
 	case kUSE_MEDKIT:
 		{
-			if(IsGameTypeSingle())
+			const shared_str& item_name = inventory().item((cmd == kUSE_BANDAGE) ? CLSID_IITEM_BANDAGE : CLSID_IITEM_MEDKIT)->m_section_id;
+			if (item_name.size())
 			{
-				PIItem itm = inventory().item((cmd==kUSE_BANDAGE)?  CLSID_IITEM_BANDAGE:CLSID_IITEM_MEDKIT );	
-				if(GameConstants::GetHUD_UsedItemTextEnabled() && itm)
+				CEatableItem* itm = nullptr;
+
+				for (auto& it : inventory().m_ruck)
 				{
-					inventory().ChooseItmAnimOrNot(itm);
-					SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
-					_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
-					string1024					str;
-					strconcat					(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->Name());
-					_s->wnd()->SetText			(str);
+					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
+					if (!pEatable)
+						continue;
+					if (pEatable->GetPortionsNum() == 1)
+					{
+						itm = pEatable;
+						break;
+					}
+					if (pEatable->m_section_id == item_name && !itm || pEatable->GetPortionsNum() < itm->GetPortionsNum())
+						itm = pEatable;
+				}
+				if (itm)
+				{
+
+					if (GameConstants::GetHUD_UsedItemTextEnabled() && itm)
+					{
+						if (IsGameTypeSingle())
+						{
+							inventory().ChooseItmAnimOrNot(itm);
+						}
+						else
+						{
+							inventory().ClientEat(itm);
+						}
+						SDrawStaticStruct* _s		= HUD().GetUI()->UIGame()->AddCustomStatic("item_used", true);
+						_s->m_endTime				= Device.fTimeGlobal+3.0f;// 3sec
+						string1024					str;
+						strconcat					(sizeof(str),str,*CStringTable().translate("st_item_used"),": ", itm->Name());
+						_s->wnd()->SetText			(str);
+					}
 				}
 			}
 		}break;

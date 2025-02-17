@@ -285,20 +285,34 @@ void CActor::IR_OnKeyboardPress(int cmd)
 	case kQUICK_USE_3:
 	case kQUICK_USE_4:
 		{
-			const shared_str& item_name		= g_quick_use_slots[cmd-kQUICK_USE_1];
-			if(item_name.size())
+			const shared_str& item_name = g_quick_use_slots[cmd-kQUICK_USE_1];
+			if (item_name.size())
 			{
-				PIItem itm = inventory().GetAny(item_name.c_str());
-				//CEatableItem* pItemToEat = smart_cast<CEatableItem*>(itm);
+				CEatableItem* itm = nullptr;
 
-				if(itm)
+				for (auto& it : inventory().m_ruck)
+				{
+					CEatableItem* pEatable = smart_cast<CEatableItem*>(it);
+					if (!pEatable)
+						continue;
+					if (pEatable->GetPortionsNum() == 1)
+					{
+						itm = pEatable;
+						break;
+					}
+					if (pEatable->m_section_id == item_name && !itm || itm && (pEatable->GetPortionsNum() < itm->GetPortionsNum()))
+						itm = pEatable;
+				}
+
+				if (itm)
 				{
 					if (IsGameTypeSingle())
 					{
 						inventory().ChooseItmAnimOrNot(itm);
-					} else
+					}
+					else
 					{
-						inventory().ClientEat		(itm);
+						inventory().ClientEat(itm);
 					}
 					
 					if (GameConstants::GetHUD_UsedItemTextEnabled() && !inventory().ItmHasAnim(itm))
