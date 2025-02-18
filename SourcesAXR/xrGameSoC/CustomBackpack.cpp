@@ -193,7 +193,7 @@ void CCustomBackpack::ToggleBackpack()
 {
 	if (GetState() == eHidden)
 	{
-		PIItem iitem = m_pCurrentInventory->ActiveItem();
+		PIItem iitem = m_pInventory->ActiveItem();
 		CHudItem* itm = (iitem) ? iitem->cast_hud_item() : NULL;
 		u16 slot_to_activate = NO_ACTIVE_SLOT;
 	}

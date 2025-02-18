@@ -261,7 +261,7 @@ void CMissile::shedule_Update(u32 dt)
 		if(m_dwDestroyTime <= Level().timeServer()) 
 		{
 			m_dwDestroyTime = 0xffffffff;
-			VERIFY	(!m_pCurrentInventory);
+			VERIFY	(!m_pInventory);
 			Destroy	();
 		}
 	} 
@@ -275,7 +275,7 @@ void CMissile::State(u32 state)
 	switch(GetState()) 
 	{
 	case eShowing:
-        {
+		{
 			SetPending			(TRUE);
 			PlayHUDMotionIfExists({ "anm_show", "anim_show" }, FALSE, state);
 
@@ -409,7 +409,7 @@ void CMissile::OnAnimationEnd(u32 state)
 		} break;
 	case eThrow:
 		{
-			Throw(); // Это пока нужно.
+			Throw(); // Р­С‚Рѕ РїРѕРєР° РЅСѓР¶РЅРѕ.
 			SwitchState	(eThrowEnd);
 		} break;
 	case eThrowEnd:
@@ -444,7 +444,7 @@ void CMissile::UpdateXForm	()
 
 		// Get access to entity and its visual
 		CEntityAlive*		E		= smart_cast<CEntityAlive*>(H_Parent());
-        
+		
 		if(!E)				return	;
 
 		const CInventoryOwner	*parent = smart_cast<const CInventoryOwner*>(E);
@@ -619,7 +619,7 @@ bool CMissile::Action(s32 cmd, u32 flags)
 	case kWPN_ZOOM:
 		{
 			m_constpower = false;
-        	if(flags&CMD_START) 
+			if(flags&CMD_START) 
 			{
 				m_throw = false;
 				if(GetState()==eIdle) 
@@ -771,7 +771,7 @@ u32	CMissile::ef_weapon_type		() const
 
 bool CMissile::render_item_ui_query()
 {
-	bool b_is_active_item = m_pCurrentInventory->ActiveItem()==this;
+	bool b_is_active_item = m_pInventory->ActiveItem()==this;
 	return b_is_active_item && (GetState()==eReady) && !m_throw && smart_cast<CActor*>(H_Parent());
 }
 

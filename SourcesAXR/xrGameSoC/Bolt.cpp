@@ -119,11 +119,11 @@ void CBolt::PutNextToSlot()
 	if (OnClient()) return;
 
 	VERIFY(!getDestroy());
-	//âûêèíóòü áîëò èç èíâåíòàðÿ
+	//Ð²Ñ‹ÐºÐ¸Ð½ÑƒÑ‚ÑŒ Ð±Ð¾Ð»Ñ‚ Ð¸Ð· Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€Ñ
 	NET_Packet						P;
-	if (m_pCurrentInventory)
+	if (m_pInventory)
 	{
-		m_pCurrentInventory->Ruck(this);
+		m_pInventory->Ruck(this);
 
 		this->u_EventGen(P, GEG_PLAYER_ITEM2RUCK, this->H_Parent()->ID());
 		P.w_u16(this->ID());
@@ -132,20 +132,20 @@ void CBolt::PutNextToSlot()
 	else
 		Msg("! PutNextToSlot : m_pInventory = NULL [%d][%d]", ID(), Device.dwFrame);
 
-	if (smart_cast<CInventoryOwner*>(H_Parent()) && m_pCurrentInventory)
+	if (smart_cast<CInventoryOwner*>(H_Parent()) && m_pInventory)
 	{
-		CBolt *pNext = smart_cast<CBolt*>(m_pCurrentInventory->Same(this, true));
-		if (!pNext) pNext = smart_cast<CBolt*>(m_pCurrentInventory->SameSlot(GRENADE_SLOT, this, true));
+		CBolt *pNext = smart_cast<CBolt*>(m_pInventory->Same(this, true));
+		if (!pNext) pNext = smart_cast<CBolt*>(m_pInventory->SameSlot(GRENADE_SLOT, this, true));
 
 		VERIFY(pNext != this);
 
-		if (pNext && m_pCurrentInventory->Slot(pNext))
+		if (pNext && m_pInventory->Slot(pNext))
 		{
 
 			pNext->u_EventGen(P, GEG_PLAYER_ITEM2SLOT, pNext->H_Parent()->ID());
 			P.w_u16(pNext->ID());
 			pNext->u_EventSend(P);		
-			m_pCurrentInventory->SetActiveSlot(pNext->GetSlot());
+			m_pInventory->SetActiveSlot(pNext->GetSlot());
 		}
 	}
 }

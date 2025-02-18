@@ -75,48 +75,48 @@ struct net_updateData{
 	u32				m_dwILastUpdateTime;
 };
 
-net_updateData* CInventoryItem::NetSync()			
+net_updateData* CInventoryItem::NetSync()
 {
-	if(!m_net_updateData) 
+	if (!m_net_updateData) 
 		m_net_updateData = xr_new<net_updateData>();
 	return m_net_updateData;
 }
 
 CInventoryItem::CInventoryItem() 
 {
-	m_net_updateData	= NULL;
-	m_slot				= NO_ACTIVE_SLOT;
-	m_flags.set			(Fbelt,FALSE);
-	m_flags.set			(Fruck,TRUE);
-	m_flags.set			(FRuckDefault,TRUE);
-	m_pCurrentInventory	= NULL;
+	m_net_updateData			= NULL;
+	m_slot						= NO_ACTIVE_SLOT;
+	m_flags.set					(Fbelt,FALSE);
+	m_flags.set					(Fruck,TRUE);
+	m_flags.set					(FRuckDefault,TRUE);
+	m_pInventory				= NULL;
 
-	SetDropManual		(FALSE);
+	SetDropManual				(FALSE);
 
-	m_flags.set			(FCanTake,TRUE);
-	m_flags.set			(FCanTrade,TRUE);
-	m_flags.set			(FUsingCondition,FALSE);
-	m_fCondition		= 1.0f;
-	m_fCurrentChargeLevel = 1.0f;
-	m_fUnchargeSpeed	= 0.0f;
-	m_fMaxChargeLevel	= 0.0f;
+	m_flags.set					(FCanTake,TRUE);
+	m_flags.set					(FCanTrade,TRUE);
+	m_flags.set					(FUsingCondition,FALSE);
+	m_fCondition				= 1.0f;
+	m_fCurrentChargeLevel		= 1.0f;
+	m_fUnchargeSpeed			= 0.0f;
+	m_fMaxChargeLevel			= 0.0f;
 
-	m_name = m_nameShort = NULL;
+	m_name = m_nameShort		= NULL;
 
-	m_eItemPlace		= eItemPlaceUndefined;
-	m_Description		= "";
-	m_section_id		= 0;
-	m_bCanUse			= true;
-	m_flags.set						(FIsHelperItem,FALSE);
+	m_eItemPlace				= eItemPlaceUndefined;
+	m_Description				= "";
+	m_section_id				= 0;
+	m_bCanUse					= true;
+	m_flags.set					(FIsHelperItem,FALSE);
 	
-	m_custom_text		= nullptr;
-	m_custom_text_font	= nullptr;
-	m_custom_text_clr_inv = 0;
-	m_custom_text_clr_hud = 0;
+	m_custom_text				= nullptr;
+	m_custom_text_font			= nullptr;
+	m_custom_text_clr_inv		= 0;
+	m_custom_text_clr_hud		= 0;
 
-	m_fOccupiedInvSpace = 0.0f;
+	m_fOccupiedInvSpace			= 0.0f;
 
-	m_sPropertyBoxUseText = nullptr;
+	m_sPropertyBoxUseText		= nullptr;
 
 	m_use_functor_str			= nullptr;
 	m_use_precondition_func		= nullptr;
@@ -127,13 +127,13 @@ CInventoryItem::~CInventoryItem()
 {
 	delete_data			(m_net_updateData);
 
-	bool B_GOOD			= (	!m_pCurrentInventory || 
-							(std::find(	m_pCurrentInventory->m_all.begin(),m_pCurrentInventory->m_all.end(), this)==m_pCurrentInventory->m_all.end()) );
-	if(!B_GOOD)
+	bool B_GOOD			= (	!m_pInventory || 
+							(std::find(	m_pInventory->m_all.begin(),m_pInventory->m_all.end(), this)==m_pInventory->m_all.end()) );
+	if (!B_GOOD)
 	{
 		CObject* p	= object().H_Parent();
-		Msg("inventory ptr is [%s]",m_pCurrentInventory?"not-null":"null");
-		if(p)
+		Msg("inventory ptr is [%s]",m_pInventory?"not-null":"null");
+		if (p)
 			Msg("parent name is [%s]",p->cName().c_str());
 
 			Msg("! ERROR item_id[%d] H_Parent=[%s][%d] [%d]",
@@ -178,7 +178,7 @@ void CInventoryItem::Load(LPCSTR section)
 	// Added by Axel, to enable optional condition use on any item
 	m_flags.set					(FUsingCondition, READ_IF_EXISTS(pSettings, r_bool, section, "use_condition", false));
 
-	//время убирания объекта с уровня
+	//РІСЂРµРјСЏ СѓР±РёСЂР°РЅРёСЏ РѕР±СЉРµРєС‚Р° СЃ СѓСЂРѕРІРЅСЏ
 	m_dwItemRemoveTime			= READ_IF_EXISTS(pSettings, r_u32, section,"item_remove_time",			ITEM_REMOVE_TIME);
 
 	if ( m_slot != NO_ACTIVE_SLOT )
@@ -205,55 +205,55 @@ void CInventoryItem::Load(LPCSTR section)
 	{
 		shared_str font_str = pSettings->r_string(section, "item_custom_text_font");
 		
-		if(!xr_strcmp(font_str, GRAFFITI19_FONT_NAME))
+		if (!xr_strcmp(font_str, GRAFFITI19_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti19Russian;
 		}
-		else if(!xr_strcmp(font_str, GRAFFITI22_FONT_NAME))
+		else if (!xr_strcmp(font_str, GRAFFITI22_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti22Russian;
 		}
-		else if(!xr_strcmp(font_str, GRAFFITI32_FONT_NAME))
+		else if (!xr_strcmp(font_str, GRAFFITI32_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti32Russian;
 		}
-		else if(!xr_strcmp(font_str, GRAFFITI40_FONT_NAME))
+		else if (!xr_strcmp(font_str, GRAFFITI40_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti40Russian;
 		}
-		else if(!xr_strcmp(font_str, GRAFFITI50_FONT_NAME))
+		else if (!xr_strcmp(font_str, GRAFFITI50_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontGraffiti50Russian;
 		}
-		else if(!xr_strcmp(font_str, ARIAL14_FONT_NAME))
+		else if (!xr_strcmp(font_str, ARIAL14_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontArial14;
 		}
-		else if(!xr_strcmp(font_str, ARIAL21_FONT_NAME))
+		else if (!xr_strcmp(font_str, ARIAL21_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontArial21;
 		}
-		else if(!xr_strcmp(font_str, MEDIUM_FONT_NAME))
+		else if (!xr_strcmp(font_str, MEDIUM_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontMedium;
 		}
-		else if(!xr_strcmp(font_str, SMALL_FONT_NAME))
+		else if (!xr_strcmp(font_str, SMALL_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontStat;
 		}
-		else if(!xr_strcmp(font_str, LETTERICA16_FONT_NAME))
+		else if (!xr_strcmp(font_str, LETTERICA16_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontLetterica16Russian;
 		}
-		else if(!xr_strcmp(font_str, LETTERICA18_FONT_NAME))
+		else if (!xr_strcmp(font_str, LETTERICA18_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontLetterica18Russian;
 		}
-		else if(!xr_strcmp(font_str, LETTERICA25_FONT_NAME))
+		else if (!xr_strcmp(font_str, LETTERICA25_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontLetterica25;
 		}
-		else if(!xr_strcmp(font_str, DI_FONT_NAME))
+		else if (!xr_strcmp(font_str, DI_FONT_NAME))
 		{
 			m_custom_text_font = UI().Font().pFontDI;
 		}
@@ -394,7 +394,7 @@ extern	Flags32	dbg_net_Draw_Flags;
 void CInventoryItem::UpdateCL()
 {
 #ifdef DEBUG
-	if(bDebug){
+	if (bDebug){
 		if (dbg_net_Draw_Flags.test(dbg_draw_invitem) )
 		{
 			Device.seqRender.Remove(this);
@@ -457,13 +457,13 @@ void CInventoryItem::OnEvent (NET_Packet& P, u16 type)
 	}
 }
 
-//процесс отсоединения вещи заключается в спауне новой вещи 
-//в инвентаре и установке соответствующих флагов в родительском
-//объекте, поэтому функция должна быть переопределена
+//РїСЂРѕС†РµСЃСЃ РѕС‚СЃРѕРµРґРёРЅРµРЅРёСЏ РІРµС‰Рё Р·Р°РєР»СЋС‡Р°РµС‚СЃСЏ РІ СЃРїР°СѓРЅРµ РЅРѕРІРѕР№ РІРµС‰Рё 
+//РІ РёРЅРІРµРЅС‚Р°СЂРµ Рё СѓСЃС‚Р°РЅРѕРІРєРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёС… С„Р»Р°РіРѕРІ РІ СЂРѕРґРёС‚РµР»СЊСЃРєРѕРј
+//РѕР±СЉРµРєС‚Рµ, РїРѕСЌС‚РѕРјСѓ С„СѓРЅРєС†РёСЏ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РїРµСЂРµРѕРїСЂРµРґРµР»РµРЅР°
 bool CInventoryItem::Detach(const char* item_section_name, bool b_spawn_item) 
 {
 	if (OnClient()) return true;
-	if(b_spawn_item)
+	if (b_spawn_item)
 	{
 		CSE_Abstract*		D	= F_entity_Create(item_section_name);
 		R_ASSERT		   (D);
@@ -534,8 +534,8 @@ BOOL CInventoryItem::net_Spawn			(CSE_Abstract* DC)
 
 void CInventoryItem::net_Destroy		()
 {
-	//инвентарь которому мы принадлежали
-//.	m_pCurrentInventory = NULL;
+	//РёРЅРІРµРЅС‚Р°СЂСЊ РєРѕС‚РѕСЂРѕРјСѓ РјС‹ РїСЂРёРЅР°РґР»РµР¶Р°Р»Рё
+//.	m_pInventory = NULL;
 }
 
 void CInventoryItem::save(NET_Packet &packet)
@@ -867,7 +867,7 @@ void CInventoryItem::CalculateInterpolationParams()
 		for (u32 k=0; k<3; k++)
 		{
 			P0[k] = c*(c*(c*p->SCoeff[k][0]+p->SCoeff[k][1])+p->SCoeff[k][2])+p->SCoeff[k][3];
-			P1[k] = (c*c*p->SCoeff[k][0]*3+c*p->SCoeff[k][1]*2+p->SCoeff[k][2])/3; // сокрость из формулы в 3 раза превышает скорость при расчете коэффициентов !!!!
+			P1[k] = (c*c*p->SCoeff[k][0]*3+c*p->SCoeff[k][1]*2+p->SCoeff[k][2])/3; // СЃРѕРєСЂРѕСЃС‚СЊ РёР· С„РѕСЂРјСѓР»С‹ РІ 3 СЂР°Р·Р° РїСЂРµРІС‹С€Р°РµС‚ СЃРєРѕСЂРѕСЃС‚СЊ РїСЂРё СЂР°СЃС‡РµС‚Рµ РєРѕСЌС„С„РёС†РёРµРЅС‚РѕРІ !!!!
 		};
 		P0.set(p->IStartPos);
 		P1.add(p->IStartPos);
@@ -970,7 +970,7 @@ void CInventoryItem::make_Interpolation	()
 	net_updateData* p		= NetSync();
 	p->m_dwILastUpdateTime = Level().timeServer();
 	
-	if(!object().H_Parent() && object().getVisible() && object().m_pPhysicsShell && m_flags.test(FInInterpolation) ) 
+	if (!object().H_Parent() && object().getVisible() && object().m_pPhysicsShell && m_flags.test(FInInterpolation) ) 
 	{
 
 		u32 CurTime = Level().timeServer();
@@ -1025,7 +1025,7 @@ void CInventoryItem::make_Interpolation	()
 
 	if (!object().H_Parent() && object().getVisible()) 
 	{
-		if(m_net_updateData)
+		if (m_net_updateData)
 			m_net_updateData->LastVisPos.push_back(iPos);
 	};
 #endif
@@ -1041,7 +1041,7 @@ void CInventoryItem::reload		(LPCSTR section)
 
 void CInventoryItem::reinit		()
 {
-	m_pCurrentInventory	= NULL;
+	m_pInventory	= NULL;
 	m_eItemPlace	= eItemPlaceUndefined;
 }
 
@@ -1118,7 +1118,7 @@ void CInventoryItem::UpdateXForm	()
 	Fvector			R,D,N;
 	D.sub			(mL.c,mR.c);	D.normalize_safe();
 
-	if(fis_zero(D.magnitude()))
+	if (fis_zero(D.magnitude()))
 	{
 		mRes.set(E->XFORM());
 		mRes.c.set(mR.c);
@@ -1242,7 +1242,7 @@ bool CInventoryItem::NeedToDestroyObject()	const
 
 ALife::_TIME_ID	 CInventoryItem::TimePassedAfterIndependant()	const
 {
-	if(!object().H_Parent() && m_dwItemIndependencyTime != 0)
+	if (!object().H_Parent() && m_dwItemIndependencyTime != 0)
 		return Level().timeServer() - m_dwItemIndependencyTime;
 	else
 		return 0;
@@ -1252,7 +1252,7 @@ bool	CInventoryItem::CanTrade() const
 {
 	bool res = true;
 #pragma todo("Dima to Andy : why CInventoryItem::CanTrade can be called for the item, which doesn't have owner?")
-	if(m_pCurrentInventory)
+	if (m_pInventory)
 		res = inventory_owner().AllowItemToTrade(this,m_eItemPlace);
 
 	return (res && m_flags.test(FCanTrade) && !IsQuestItem());

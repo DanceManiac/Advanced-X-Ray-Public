@@ -291,7 +291,7 @@ void CArtefact::OnH_A_Chield()
 			m_CarringBoneID = u16(-1);
 	}
 
-	if (m_LastAfContainer) //Êîñòûëü äëÿ êîíòåéíåðîâ, ïîòîì íàäî íîðìàëüíî êàê-òî ñäåëàòü
+	if (m_LastAfContainer) //ÐšÐ¾ÑÑ‚Ñ‹Ð»ÑŒ Ð´Ð»Ñ ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð¾Ð², Ð¿Ð¾Ñ‚Ð¾Ð¼ Ð½Ð°Ð´Ð¾ Ð½Ð¾Ñ€Ð¼Ð°Ð»ÑŒÐ½Ð¾ ÐºÐ°Ðº-Ñ‚Ð¾ ÑÐ´ÐµÐ»Ð°Ñ‚ÑŒ
 	{
 		SetChargeLevel(af_from_container_charge_level);
 		SetRank(af_from_container_rank);
@@ -508,7 +508,7 @@ void CArtefact::StartLights()
 	VERIFY(!ph_world->Processing());
 	if(!m_bLightsEnabled) return;
 
-	//âêëþ÷èòü ñâåòîâóþ ïîäñâåòêó îò äâèãàòåëÿ
+	//Ð²ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ ÑÐ²ÐµÑ‚Ð¾Ð²ÑƒÑŽ Ð¿Ð¾Ð´ÑÐ²ÐµÑ‚ÐºÑƒ Ð¾Ñ‚ Ð´Ð²Ð¸Ð³Ð°Ñ‚ÐµÐ»Ñ
 	m_pTrailLight->set_color(m_TrailLightColor.r, 
 		m_TrailLightColor.g, 
 		m_TrailLightColor.b);
@@ -669,8 +669,8 @@ void CArtefact::OnAnimationEnd(u32 state)
 	case eHiding:
 		{
 			SwitchState(eHidden);
-//.			if(m_pCurrentInventory->GetNextActiveSlot()!=NO_ACTIVE_SLOT)
-//.				m_pCurrentInventory->Activate(m_pCurrentInventory->GetPrevActiveSlot());
+//.			if(m_pInventory->GetNextActiveSlot()!=NO_ACTIVE_SLOT)
+//.				m_pInventory->Activate(m_pInventory->GetPrevActiveSlot());
 		}break;
 	case eShowing:
 		{

@@ -32,8 +32,8 @@ void CGrenade::Load(LPCSTR section)
 	m_sounds.LoadSound(section, "snd_throw_quick", "sndThrowQuick", false, m_eSoundCheckout);
 
 	//////////////////////////////////////
-	//âðåìÿ óáèðàíèÿ îðóæèÿ ñ óðîâíÿ
-	if(pSettings->line_exist(section,"grenade_remove_time"))
+	//Ð²Ñ€ÐµÐ¼Ñ ÑƒÐ±Ð¸Ñ€Ð°Ð½Ð¸Ñ Ð¾Ñ€ÑƒÐ¶Ð¸Ñ Ñ ÑƒÑ€Ð¾Ð²Ð½Ñ
+	if (pSettings->line_exist(section,"grenade_remove_time"))
 		m_dwGrenadeRemoveTime = pSettings->r_u32(section,"grenade_remove_time");
 	else
 		m_dwGrenadeRemoveTime = GRENADE_REMOVE_TIME;
@@ -42,7 +42,7 @@ void CGrenade::Load(LPCSTR section)
 
 void CGrenade::Hit					(SHit* pHDS)
 {
-	if( ALife::eHitTypeExplosion==pHDS->hit_type && m_grenade_detonation_threshold_hit<pHDS->damage()&&CExplosive::Initiator()==u16(-1)) 
+	if ( ALife::eHitTypeExplosion==pHDS->hit_type && m_grenade_detonation_threshold_hit<pHDS->damage()&&CExplosive::Initiator()==u16(-1)) 
 	{
 		CExplosive::SetCurrentParentID(pHDS->who->ID());
 		Destroy();
@@ -99,7 +99,7 @@ void CGrenade::State(u32 state)
 		}break;
 	case eThrowEnd:
 		{
-			if(m_thrown)
+			if (m_thrown)
 			{
 				if (m_pPhysicsShell)
 					m_pPhysicsShell->Deactivate();
@@ -151,8 +151,8 @@ void CGrenade::SendHiddenItem						()
 		Msg("MotionMarks !!![%d][%d]", ID(), Device.dwFrame);
 		Throw				();
 	}
-	CActor* pActor = smart_cast<CActor*>(m_pCurrentInventory->GetOwner());
-	if (pActor && (GetState()==eReady || GetState()==eThrow))
+	CActor* pActor = smart_cast<CActor*>(m_pInventory->GetOwner());
+	if (pActor && (GetState() == eReady || GetState() == eThrow))
 	{
 		return;
 	}
@@ -160,7 +160,7 @@ void CGrenade::SendHiddenItem						()
 	inherited::SendHiddenItem();
 }
 
-void CGrenade::Throw() 
+void CGrenade::Throw()
 {
 	if (m_thrown)
 		return;
@@ -174,7 +174,7 @@ void CGrenade::Throw()
 	if (pGrenade) 
 	{
 		pGrenade->set_destroy_time(m_dwDestroyTimeMax);
-//óñòàíîâèòü ID òîãî êòî êèíóë ãðàíàòó
+//ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð¸Ñ‚ÑŒ ID Ñ‚Ð¾Ð³Ð¾ ÐºÑ‚Ð¾ ÐºÐ¸Ð½ÑƒÐ» Ð³Ñ€Ð°Ð½Ð°Ñ‚Ñƒ
 		pGrenade->SetInitiator( H_Parent()->ID() );
 	}
 	inherited::Throw			();
@@ -214,11 +214,11 @@ void CGrenade::PutNextToSlot()
 	if (OnClient()) return;
 //	Msg ("* PutNextToSlot : %d", ID());	
 	VERIFY									(!getDestroy());
-	//âûêèíóòü ãðàíàòó èç èíâåíòàðÿ
+	//Ð²Ñ‹ÐºÐ¸Ð½ÑƒÑ‚ÑŒ Ð³Ñ€Ð°Ð½Ð°Ñ‚Ñƒ Ð¸Ð· Ð¸Ð½Ð²ÐµÐ½Ñ‚Ð°Ñ€Ñ
 	NET_Packet						P;
-	if (m_pCurrentInventory)
+	if (m_pInventory)
 	{
-		m_pCurrentInventory->Ruck					(this);
+		m_pInventory->Ruck					(this);
 //.		m_pInventory->SetActiveSlot			(NO_ACTIVE_SLOT);
 
 		this->u_EventGen				(P, GEG_PLAYER_ITEM2RUCK, this->H_Parent()->ID());
@@ -228,20 +228,20 @@ void CGrenade::PutNextToSlot()
 	else
 		Msg ("! PutNextToSlot : m_pInventory = NULL [%d][%d]", ID(), Device.dwFrame);	
 
-	if (smart_cast<CInventoryOwner*>(H_Parent()) && m_pCurrentInventory)
+	if (smart_cast<CInventoryOwner*>(H_Parent()) && m_pInventory)
 	{
-		CGrenade *pNext						= smart_cast<CGrenade*>(m_pCurrentInventory->Same(this,true)		);
-		if(!pNext) pNext					= smart_cast<CGrenade*>(m_pCurrentInventory->SameSlot(GRENADE_SLOT, this, true)	);
+		CGrenade *pNext						= smart_cast<CGrenade*>(m_pInventory->Same(this,true)		);
+		if (!pNext) pNext					= smart_cast<CGrenade*>(m_pInventory->SameSlot(GRENADE_SLOT, this, true)	);
 
 		VERIFY								(pNext != this);
 
-		if(pNext && m_pCurrentInventory->Slot(pNext) ){
+		if (pNext && m_pInventory->Slot(pNext) ){
 
 			pNext->u_EventGen				(P, GEG_PLAYER_ITEM2SLOT, pNext->H_Parent()->ID());
 			P.w_u16							(pNext->ID());
 			pNext->u_EventSend				(P);
-//			if(IsGameTypeSingle())			
-			m_pCurrentInventory->SetActiveSlot			(pNext->GetSlot());
+//			if (IsGameTypeSingle())			
+			m_pInventory->SetActiveSlot			(pNext->GetSlot());
 		}
 
 		m_thrown				= false;
@@ -263,33 +263,33 @@ void CGrenade::UpdateCL()
 	inherited::UpdateCL			();
 	CExplosive::UpdateCL		();
 
-	if(!IsGameTypeSingle())	make_Interpolation();
+	if (!IsGameTypeSingle())	make_Interpolation();
 }
 
 
 bool CGrenade::Action(s32 cmd, u32 flags) 
 {
-	if(inherited::Action(cmd, flags)) return true;
+	if (inherited::Action(cmd, flags)) return true;
 
 	switch(cmd) 
 	{
-	//ïåðåêëþ÷åíèå òèïà ãðàíàòû
+	//Ð¿ÐµÑ€ÐµÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ñ‚Ð¸Ð¿Ð° Ð³Ñ€Ð°Ð½Ð°Ñ‚Ñ‹
 	case kWPN_NEXT:
 		{
-            if(flags&CMD_START) 
+			if (flags&CMD_START) 
 			{
-				if(m_pCurrentInventory)
+				if (m_pInventory)
 				{
-					TIItemContainer::iterator it = m_pCurrentInventory->m_ruck.begin();
-					TIItemContainer::iterator it_e = m_pCurrentInventory->m_ruck.end();
+					TIItemContainer::iterator it = m_pInventory->m_ruck.begin();
+					TIItemContainer::iterator it_e = m_pInventory->m_ruck.end();
 					for(;it!=it_e;++it) 
 					{
 						CGrenade *pGrenade = smart_cast<CGrenade*>(*it);
-						if(pGrenade && xr_strcmp(pGrenade->cNameSect(), cNameSect())) 
+						if (pGrenade && xr_strcmp(pGrenade->cNameSect(), cNameSect())) 
 						{
-							m_pCurrentInventory->Ruck(this);
-							m_pCurrentInventory->SetActiveSlot(NO_ACTIVE_SLOT);
-							m_pCurrentInventory->Slot(pGrenade);
+							m_pInventory->Ruck(this);
+							m_pInventory->SetActiveSlot(NO_ACTIVE_SLOT);
+							m_pInventory->Slot(pGrenade);
 							return true;
 						}
 					}
@@ -315,7 +315,7 @@ bool CGrenade::NeedToDestroyObject()	const
 
 ALife::_TIME_ID	 CGrenade::TimePassedAfterIndependant()	const
 {
-	if(!H_Parent() && m_dwGrenadeIndependencyTime != 0)
+	if (!H_Parent() && m_dwGrenadeIndependencyTime != 0)
 		return Level().timeServer() - m_dwGrenadeIndependencyTime;
 	else
 		return 0;
@@ -344,9 +344,9 @@ void CGrenade::Deactivate()
 			CGrenade*		pGrenade	= smart_cast<CGrenade*>( m_fake_missile );
 			if ( pGrenade )
 			{
-				if ( m_pCurrentInventory->GetOwner() )
+				if ( m_pInventory->GetOwner() )
 				{
-					CActor* pActor = smart_cast<CActor*>(m_pCurrentInventory->GetOwner() );
+					CActor* pActor = smart_cast<CActor*>(m_pInventory->GetOwner() );
 					if (pActor)
 					{
 						if ( !pActor->g_Alive() )
@@ -367,7 +367,7 @@ void CGrenade::Deactivate()
 bool CGrenade::GetBriefInfo(II_BriefInfo& info)
 {
 	info.name				= NameShort();
-	u32 ThisGrenadeCount	= m_pCurrentInventory->dwfGetSameItemCount(*cNameSect(), true);
+	u32 ThisGrenadeCount	= m_pInventory->dwfGetSameItemCount(*cNameSect(), true);
 	string16				stmp;
 	sprintf_s				(stmp, "%d", ThisGrenadeCount);
 	info.cur_ammo			= stmp;

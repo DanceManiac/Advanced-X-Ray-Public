@@ -289,9 +289,9 @@ BOOL	CCustomOutfit::BonePassBullet					(int boneID)
 
 void	CCustomOutfit::OnMoveToSlot		()
 {
-	if (m_pCurrentInventory)
+	if (m_pInventory)
 	{
-		CActor* pActor = smart_cast<CActor*> (m_pCurrentInventory->GetOwner());
+		CActor* pActor = smart_cast<CActor*> (m_pInventory->GetOwner());
 		if (pActor)
 		{
 			if (m_ActorVisual.size())
@@ -316,10 +316,10 @@ void	CCustomOutfit::OnMoveToSlot		()
 
 				pActor->ChangeVisual(NewVisual);
 			}
-			if(pSettings->line_exist(cNameSect(),"bones_koeff_protection"))
+			if (pSettings->line_exist(cNameSect(),"bones_koeff_protection"))
 			{
-				m_boneProtection->reload( pSettings->r_string(cNameSect(),"bones_koeff_protection"), smart_cast<IKinematics*>(pActor->Visual()) );
-			};
+				m_boneProtection->reload(pSettings->r_string(cNameSect(), "bones_koeff_protection"), smart_cast<IKinematics*>(pActor->Visual()));
+			}
 
 			if (pSettings->line_exist(cNameSect(), "player_hud_section"))
 				g_player_hud->load(pSettings->r_string(cNameSect(), "player_hud_section"));
@@ -379,7 +379,7 @@ void CCustomOutfit::ApplySkinModel(CActor* pActor, bool bDress, bool bHUDOnly)
 
 void	CCustomOutfit::OnMoveToRuck		(EItemPlace prev)
 {
-	if (m_pCurrentInventory && prev == eItemPlaceSlot && !Level().is_removing_objects())
+	if (m_pInventory && prev == eItemPlaceSlot && !Level().is_removing_objects())
 	{
 		CActor* pActor = smart_cast<CActor*> (H_Parent());
 		if (pActor)

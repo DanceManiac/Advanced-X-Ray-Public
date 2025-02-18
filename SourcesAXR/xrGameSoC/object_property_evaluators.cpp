@@ -41,7 +41,7 @@ CObjectPropertyEvaluatorWeaponHidden::_value_type CObjectPropertyEvaluatorWeapon
 {
 	VERIFY			(m_item);
 
-	return			((m_item !=  m_item->m_pCurrentInventory->ActiveItem()) || (m_item->GetState() == CWeapon::eShowing));
+	return			((m_item !=  m_item->m_pInventory->ActiveItem()) || (m_item->GetState() == CWeapon::eShowing));
 }
 //////////////////////////////////////////////////////////////////////////
 // CObjectPropertyEvaluatorAmmo

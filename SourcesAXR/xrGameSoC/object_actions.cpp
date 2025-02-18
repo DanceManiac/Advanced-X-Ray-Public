@@ -103,8 +103,8 @@ void CObjectActionHide::execute		()
 // to prevent several recharges
 static bool try_advance_ammo		(CWeapon const& weapon)
 {
-	VERIFY				(weapon.m_pCurrentInventory);
-	CInventory&			inventory = *weapon.m_pCurrentInventory;
+	VERIFY				(weapon.m_pInventory);
+	CInventory&			inventory = *weapon.m_pInventory;
 	for(int i = 0; i < (int)weapon.m_ammoTypes.size(); ++i) 
 	{
 		LPCSTR l_ammoType = *weapon.m_ammoTypes[i];

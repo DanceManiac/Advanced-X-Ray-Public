@@ -109,7 +109,7 @@ bool CEatableItem::Useful() const
 {
 	if(!inherited::Useful()) return false;
 
-	//проверить не все ли еще съедено
+	//РїСЂРѕРІРµСЂРёС‚СЊ РЅРµ РІСЃРµ Р»Рё РµС‰Рµ СЃСЉРµРґРµРЅРѕ
 	if(Empty()) return false;
 	if (m_iPortionsNum == 0 && !m_bUnlimited) return false;
 
@@ -343,7 +343,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 
 	CInventoryOwner* IO	= smart_cast<CInventoryOwner*>(entity_alive);
 	R_ASSERT		(IO);
-	R_ASSERT		(m_pCurrentInventory==IO->m_inventory);
+	R_ASSERT		(m_pInventory==IO->m_inventory);
 	R_ASSERT		(object().H_Parent()->ID()==entity_alive->ID());
 	
 	entity_alive->conditions().ApplyInfluence(V, m_physic_item->cNameSect(), this);
@@ -360,7 +360,7 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 	
 	//entity_alive->conditions().SetMaxPower( entity_alive->conditions().GetMaxPower()+m_fMaxPowerUpInfluence );
 	
-	//уменьшить количество порций
+	//СѓРјРµРЅСЊС€РёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕСЂС†РёР№
 	if (m_iPortionsNum != -1 && !m_bUnlimited)
 	{
 		if (m_iPortionsNum > 0)

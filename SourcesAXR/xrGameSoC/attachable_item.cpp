@@ -37,7 +37,7 @@ void CAttachableItem::reload			(LPCSTR section)
 {
 	m_valid = true;
 
-	if(load_attach_position(section))
+	if (load_attach_position(section))
 		enable						(false);
 }
 
@@ -102,10 +102,10 @@ void CAttachableItem::enable			(bool value)
 
 bool  CAttachableItem::can_be_attached	() const
 {
-	if (!item().m_pCurrentInventory)
+	if (!item().m_pInventory)
 		return				(false);
 
-	if (!item().m_pCurrentInventory->IsBeltUseful())
+	if (!item().m_pInventory->IsBeltUseful())
 		return				(true);
 
 	if (item().m_eItemPlace != eItemPlaceBelt)
@@ -133,48 +133,48 @@ float ATT_ITEM_ROT_STEP = 0.01f;
 
 void attach_adjust_mode_keyb(int dik)
 {
-	if(!CAttachableItem::m_dbgItem)	return;
+	if (!CAttachableItem::m_dbgItem)	return;
 
 	bool b_move		= !!(pInput->iGetAsyncKeyState(DIK_LSHIFT));
 	bool b_rot		= !!(pInput->iGetAsyncKeyState(DIK_LMENU));
 	
 	int axis		= -1;
-	if(pInput->iGetAsyncKeyState(DIK_Z))
+	if (pInput->iGetAsyncKeyState(DIK_Z))
 		axis = 0;
 	else
-	if(pInput->iGetAsyncKeyState(DIK_X))
+	if (pInput->iGetAsyncKeyState(DIK_X))
 		axis = 1;
-	if(pInput->iGetAsyncKeyState(DIK_C))
+	if (pInput->iGetAsyncKeyState(DIK_C))
 		axis = 2;
 
-	if(!b_move && !b_rot)	return;
+	if (!b_move && !b_rot)	return;
 
 	switch(dik)
 	{
 	case DIK_LEFT:
 		{
-			if(b_move)
+			if (b_move)
 				CAttachableItem::mov(axis, ATT_ITEM_MOVE_CURR);
 			else
 				CAttachableItem::rot(axis, ATT_ITEM_ROT_CURR);
 		}break;
 	case DIK_RIGHT:
 		{
-			if(b_move)
+			if (b_move)
 				CAttachableItem::mov(axis, -ATT_ITEM_MOVE_CURR);
 			else
 				CAttachableItem::rot(axis, -ATT_ITEM_ROT_CURR);
 		}break;
 	case DIK_PRIOR:
 		{
-			if(b_move)
+			if (b_move)
 				ATT_ITEM_MOVE_CURR +=ATT_ITEM_MOVE_STEP;
 			else
 				ATT_ITEM_ROT_CURR +=ATT_ITEM_ROT_STEP;
 		}break;
 	case DIK_NEXT:
 		{
-			if(b_move)
+			if (b_move)
 				ATT_ITEM_MOVE_CURR -=ATT_ITEM_MOVE_STEP;
 			else
 				ATT_ITEM_ROT_CURR -=ATT_ITEM_ROT_STEP;
@@ -184,7 +184,7 @@ void attach_adjust_mode_keyb(int dik)
 
 void attach_draw_adjust_mode()
 {
-	if(!CAttachableItem::m_dbgItem)	return;
+	if (!CAttachableItem::m_dbgItem)	return;
 
 	string1024 _text;
 

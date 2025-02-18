@@ -66,13 +66,13 @@ void CUITradeWnd::Init()
 
 	xml_init.InitWindow					(uiXml, "main", 0, this);
 
-	//ñòàòè÷åñêèå ýëåìåíòû èíòåðôåéñà
+	//ÑÑ‚Ð°Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¸Ðµ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ñ‹ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹ÑÐ°
 	AttachChild							(&UIStaticTop);
 	xml_init.InitStatic					(uiXml, "top_background", 0, &UIStaticTop);
 	AttachChild							(&UIStaticBottom);
 	xml_init.InitStatic					(uiXml, "bottom_background", 0, &UIStaticBottom);
 
-	//èêîíêè ñ èçîáðàæåíèå íàñ è ïàðòíåðà ïî òîðãîâëå
+	//Ð¸ÐºÐ¾Ð½ÐºÐ¸ Ñ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð½Ð°Ñ Ð¸ Ð¿Ð°Ñ€Ñ‚Ð½ÐµÑ€Ð° Ð¿Ð¾ Ñ‚Ð¾Ñ€Ð³Ð¾Ð²Ð»Ðµ
 	AttachChild							(&UIOurIcon);
 	xml_init.InitStatic					(uiXml, "static_icon", 0, &UIOurIcon);
 	AttachChild							(&UIOthersIcon);
@@ -83,7 +83,7 @@ void CUITradeWnd::Init()
 	UICharacterInfoRight.Init			(0,0, UIOthersIcon.GetWidth(), UIOthersIcon.GetHeight(), TRADE_CHARACTER_XML);
 
 
-	//Ñïèñêè òîðãîâëè
+	//Ð¡Ð¿Ð¸ÑÐºÐ¸ Ñ‚Ð¾Ñ€Ð³Ð¾Ð²Ð»Ð¸
 	AttachChild							(&UIOurBagWnd);
 	xml_init.InitStatic					(uiXml, "our_bag_static", 0, &UIOurBagWnd);
 	AttachChild							(&UIOthersBagWnd);
@@ -106,7 +106,7 @@ void CUITradeWnd::Init()
 	UIOthersTradeWnd.AttachChild		(&UIOthersPriceCaption);
 	xml_init.InitMultiTextStatic		(uiXml, "price_mt_static", 0, &UIOthersPriceCaption);
 
-	//Ñïèñêè Drag&Drop
+	//Ð¡Ð¿Ð¸ÑÐºÐ¸ Drag&Drop
 	UIOurBagWnd.AttachChild				(&UIOurBagList);	
 	xml_init.InitDragDropListEx			(uiXml, "dragdrop_list", 0, &UIOurBagList);
 
@@ -159,7 +159,7 @@ void CUITradeWnd::InitTrade(CInventoryOwner* pOur, CInventoryOwner* pOthers)
 	UICharacterInfoLeft.InitCharacter(m_pInvOwner);
 	UICharacterInfoRight.InitCharacter(m_pOthersInvOwner);
 
-	//òóò æå èíèòèì òîðãîâëþ
+	//Ñ‚ÑƒÑ‚ Ð¶Ðµ Ð¸Ð½Ð¸Ñ‚Ð¸Ð¼ Ñ‚Ð¾Ñ€Ð³Ð¾Ð²Ð»ÑŽ
 	pOur->GetTrade()->StartTrade		(pOthers);
 	pOthers->GetTrade()->StartTrade		(pOur);
 
@@ -650,7 +650,7 @@ void CUITradeWnd::ColorizeItem(CUICellItem* itm, bool b)
 {
 	CInventoryItem*	jitem = (CInventoryItem*)itm->m_pData;
 	PIItem piitem = (PIItem)itm->m_pData;
-	if ((jitem->m_eItemPlace == eItemPlaceBelt || jitem->m_eItemPlace == eItemPlaceSlot) && b && piitem->m_pCurrentInventory->GetOwner() == m_pInvOwner)
+	if ((jitem->m_eItemPlace == eItemPlaceBelt || jitem->m_eItemPlace == eItemPlaceSlot) && b && piitem->m_pInventory->GetOwner() == m_pInvOwner)
 	{
 		itm->SetColor(color_rgba(180, 255, 180, 255));
 	}

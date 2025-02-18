@@ -87,24 +87,24 @@ public:
 	
 	virtual void				OnEvent				(NET_Packet& P, u16 type);
 	
-	virtual bool				Useful				() const;									// !!! Переопределить. (см. в Inventory.cpp)
+	virtual bool				Useful				() const;									// !!! РџРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ. (СЃРј. РІ Inventory.cpp)
 	virtual bool				IsUsingCondition	() const { return m_flags.test(FUsingCondition); };
 	virtual bool				Attach				(PIItem pIItem, bool b_send_event) {return false;}
 	virtual bool				Detach				(PIItem pIItem) {return false;}
-	//при детаче спаунится новая вещь при заданно названии секции
+	//РїСЂРё РґРµС‚Р°С‡Рµ СЃРїР°СѓРЅРёС‚СЃСЏ РЅРѕРІР°СЏ РІРµС‰СЊ РїСЂРё Р·Р°РґР°РЅРЅРѕ РЅР°Р·РІР°РЅРёРё СЃРµРєС†РёРё
 	virtual bool				Detach				(const char* item_section_name, bool b_spawn_item);
 	virtual bool				CanAttach			(PIItem pIItem) {return false;}
 	virtual bool				CanDetach			(LPCSTR item_section_name) {return false;}
 
 	virtual EHandDependence		HandDependence		()	const	{return hd1Hand;};
 	virtual bool				IsSingleHanded		()	const	{return true;};	
-	virtual bool				Activate			();									// !!! Переопределить. (см. в Inventory.cpp)
-	virtual void				Deactivate			();								// !!! Переопределить. (см. в Inventory.cpp)
-	virtual bool				Action				(s32 cmd, u32 flags) {return false;}	// true если известная команда, иначе false
+	virtual bool				Activate			();									// !!! РџРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ. (СЃРј. РІ Inventory.cpp)
+	virtual void				Deactivate			();								// !!! РџРµСЂРµРѕРїСЂРµРґРµР»РёС‚СЊ. (СЃРј. РІ Inventory.cpp)
+	virtual bool				Action				(s32 cmd, u32 flags) {return false;}	// true РµСЃР»Рё РёР·РІРµСЃС‚РЅР°СЏ РєРѕРјР°РЅРґР°, РёРЅР°С‡Рµ false
 
 	virtual void				OnH_B_Chield		();
 	virtual void				OnH_A_Chield		();
-    virtual void				OnH_B_Independent	(bool just_before_destroy);
+	virtual void				OnH_B_Independent	(bool just_before_destroy);
 	virtual void				OnH_A_Independent	();
 
 	virtual void				save				(NET_Packet &output_packet);
@@ -131,7 +131,7 @@ public:
 			shared_str			GetPropertyBoxUseText()	const { return m_sPropertyBoxUseText; }
 
 public:
-	CInventory*					m_pCurrentInventory;
+	CInventory*					m_pInventory;
 	shared_str					m_section_id;
 	shared_str					m_name;
 	shared_str					m_nameShort;

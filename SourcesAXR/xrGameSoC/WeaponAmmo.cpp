@@ -49,10 +49,10 @@ void CCartridge::Load(LPCSTR section, u8 LocalAmmoType)
 	fWallmarkSize			= pSettings->r_float(section, "wm_size");
 
 	m_flags.set				(cfCanBeUnlimited | cfRicochet, TRUE);
-	if(pSettings->line_exist(section,"can_be_unlimited"))
+	if (pSettings->line_exist(section,"can_be_unlimited"))
 		m_flags.set(cfCanBeUnlimited, pSettings->r_bool(section, "can_be_unlimited"));
 
-	if(pSettings->line_exist(section,"explosive"))
+	if (pSettings->line_exist(section,"explosive"))
 		m_flags.set			(cfExplosive, pSettings->r_bool(section, "explosive"));
 
 	bullet_material_idx		=  GMLib.GetMaterialIdx(WEAPON_MATERIAL_NAME);
@@ -121,7 +121,7 @@ BOOL CWeaponAmmo::net_Spawn(CSE_Abstract* DC)
 	CSE_ALifeItemAmmo* l_pW	= smart_cast<CSE_ALifeItemAmmo*>(e);
 	m_boxCurr				= l_pW->a_elapsed;
 	
-	if(m_boxCurr > m_boxSize)
+	if (m_boxCurr > m_boxSize)
 		l_pW->a_elapsed		= m_boxCurr = m_boxSize;
 
 	return					bResult;
@@ -139,7 +139,7 @@ void CWeaponAmmo::OnH_B_Chield()
 
 void CWeaponAmmo::OnH_B_Independent(bool just_before_destroy) 
 {
-	if(!Useful()) {
+	if (!Useful()) {
 		
 		if (Local()){
 			DestroyObject	();
@@ -152,24 +152,24 @@ void CWeaponAmmo::OnH_B_Independent(bool just_before_destroy)
 
 bool CWeaponAmmo::Useful() const
 {
-	// Если IItem еще не полностью использованый, вернуть true
+	// Р•СЃР»Рё IItem РµС‰Рµ РЅРµ РїРѕР»РЅРѕСЃС‚СЊСЋ РёСЃРїРѕР»СЊР·РѕРІР°РЅС‹Р№, РІРµСЂРЅСѓС‚СЊ true
 	return !!m_boxCurr;
 }
 /*
 s32 CWeaponAmmo::Sort(PIItem pIItem) 
 {
-	// Если нужно разместить IItem после this - вернуть 1, если
-	// перед - -1. Если пофиг то 0.
+	// Р•СЃР»Рё РЅСѓР¶РЅРѕ СЂР°Р·РјРµСЃС‚РёС‚СЊ IItem РїРѕСЃР»Рµ this - РІРµСЂРЅСѓС‚СЊ 1, РµСЃР»Рё
+	// РїРµСЂРµРґ - -1. Р•СЃР»Рё РїРѕС„РёРі С‚Рѕ 0.
 	CWeaponAmmo *l_pA = smart_cast<CWeaponAmmo*>(pIItem);
-	if(!l_pA) return 0;
-	if(xr_strcmp(cNameSect(), l_pA->cNameSect())) return 0;
-	if(m_boxCurr <= l_pA->m_boxCurr) return 1;
+	if (!l_pA) return 0;
+	if (xr_strcmp(cNameSect(), l_pA->cNameSect())) return 0;
+	if (m_boxCurr <= l_pA->m_boxCurr) return 1;
 	else return -1;
 }
 */
 bool CWeaponAmmo::Get(CCartridge &cartridge) 
 {
-	if(!m_boxCurr) return false;
+	if (!m_boxCurr) return false;
 	cartridge.m_ammoSect = cNameSect();
 	cartridge.m_kDist = m_kDist;
 	cartridge.m_kDisp = m_kDisp;
@@ -186,14 +186,14 @@ bool CWeaponAmmo::Get(CCartridge &cartridge)
 	cartridge.bullet_material_idx = GMLib.GetMaterialIdx(WEAPON_MATERIAL_NAME);
 	cartridge.m_InvShortName = NameShort();
 	--m_boxCurr;
-	if(m_pCurrentInventory)
-		m_pCurrentInventory->InvalidateState();
+	if (m_pInventory)
+		m_pInventory->InvalidateState();
 	return true;
 }
 
 void CWeaponAmmo::renderable_Render() 
 {
-	if(!m_ready_to_destroy)
+	if (!m_ready_to_destroy)
 		inherited::renderable_Render();
 }
 
@@ -203,7 +203,7 @@ void CWeaponAmmo::UpdateCL()
 	inherited::UpdateCL	();
 	VERIFY2								(_valid(renderable.xform),*cName());
 	
-	if(!IsGameTypeSingle())
+	if (!IsGameTypeSingle())
 		make_Interpolation	();
 
 	VERIFY2								(_valid(renderable.xform),*cName());
