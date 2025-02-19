@@ -338,91 +338,9 @@ ID3DBaseTexture*	CRender::texture_load(LPCSTR fRName, u32& ret_msize, bool bStag
 	return 0;
 #else
 
-	if (strstr(Core.Params, "-mfs_nftc")) // Dance Maniac: Not founded textures copier
-	{
-		Msg("[NFTC]: Can't find texture [%s]. Texture is being searched in reference textures folder...", fname);
-
-		string_path fn_ref, fn_dont_load;
-
-		if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".seq"))
-		{
-			Msg("[NFTC]: Texture founded: [%s] in reference textures folder. Copying begins...", fname);
-
-			if (!FS.exist(fn_dont_load, "$game_textures$", fname, ".seq"))
-				FS.file_copy(fn_ref, fn_dont_load);
-
-			string256 buffer;
-			IReader* _fs = FS.r_open(fn_dont_load);
-
-			while (!_fs->eof())
-			{
-				_fs->r_string(buffer, sizeof(buffer));
-
-				_Trim(buffer);
-				if (buffer[0])
-				{
-					if (!FS.exist(fn, "$game_textures$", buffer, ".dds"))
-					{
-						if (FS.exist(fn_ref, "$game_textures_reference$", buffer, ".dds"))
-						{
-							FS.file_copy(fn_ref, fn);
-
-							Msg("[NFTC]: Copy from reference textures folder done: [%s]", fname);
-
-							goto _DDS;
-						}
-					}
-				}
-			}
-			FS.r_close(_fs);
-		}
-
-		if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".dds"))
-		{
-			Msg("[NFTC]: Texture founded: [%s] in reference textures folder. Copying begins...", fname);
-			FS.file_copy(fn_ref, fn);
-
-			if (!FS.exist(fn_dont_load, "$game_textures$", fname, ".thm"))
-			{
-				if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".thm"))
-					FS.file_copy(fn_ref, fn_dont_load);
-			}
-
-			Msg("[NFTC]: Copy from reference textures folder done: [%s]", fname);
-
-			if (IMG.MiscFlags & D3D_RESOURCE_MISC_TEXTURECUBE)
-				goto _DDS_CUBE;
-
-			goto _DDS;
-		}
-		if (!FS.exist(fn_ref, "$game_textures_reference$", fname, ".dds") && strstr(fname, "_bump"))
-		{
-			Msg("[NFTC]: Texture founded: [%s _bump] in reference textures folder. Copying begins...", fname);
-			FS.file_copy(fn_ref, fn);
-
-			if (!FS.exist(fn, "$game_textures$", fname, ".thm"))
-			{
-				if (FS.exist(fn_ref, "$game_textures_reference$", fname, ".thm"))
-					FS.file_copy(fn_ref, fn);
-			}
-
-			Msg("[NFTC]: Copy from reference textures folder done: [%s]", fname);
-
-			goto _BUMP_from_base;
-		}
-
-		Msg("! [NFTC]: Can't find texture [%s] in reference textures folder!", fname);
-		R_ASSERT(FS.exist(fn, "$game_textures$", "ed\\ed_not_existing_texture", ".dds"));
-		goto _DDS;
-
-	}
-	else
-	{
-	CANT_LOAD:
-		Msg("! Can't find texture '%s'", fname);
-		R_ASSERT(FS.exist(fn, "$game_textures$", "ed\\ed_not_existing_texture", ".dds"));
-		goto _DDS;
-	}
+	Msg("! Can't find texture '%s'", fname);
+	R_ASSERT(FS.exist(fn, "$game_textures$", "ed\\ed_not_existing_texture", ".dds"));
+	goto _DDS;
 
 	//	Debug.fatal(DEBUG_INFO,"Can't find texture '%s'",fname);
 
