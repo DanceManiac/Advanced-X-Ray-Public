@@ -429,6 +429,8 @@ protected:
 	Fvector					m_vSafetyRotationAxis;
 	Fmatrix					m_mSafetyRotation;
 
+	bool					m_bBlockSilencerWithGL;
+
 public:
 	//загружаемые параметры
 	Fvector					vLoadedFirePoint;

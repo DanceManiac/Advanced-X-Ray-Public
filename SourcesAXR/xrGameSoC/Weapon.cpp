@@ -131,6 +131,8 @@ CWeapon::CWeapon(LPCSTR name)
 	m_fSafetyRotationSpeed	= 1.0f;
 	m_fSafetyRotationTime	= 0.0f;
 	m_mSafetyRotation.identity();
+
+	m_bBlockSilencerWithGL	= false;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -674,6 +676,8 @@ void CWeapon::Load		(LPCSTR section)
 
 	m_bHasTracers			= !!READ_IF_EXISTS(pSettings, r_bool, section, "tracers", true);
 	m_u8TracerColorID		= READ_IF_EXISTS(pSettings, r_u8, section, "tracers_color_ID", u8(-1));
+
+	m_bBlockSilencerWithGL	= READ_IF_EXISTS(pSettings, r_bool, section, "block_sil_if_gl", false);
 
 	string256						temp;
 	for (int i=egdNovice; i<egdCount; ++i) 

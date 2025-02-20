@@ -1614,16 +1614,26 @@ bool CWeaponMagazined::CanAttach(PIItem pIItem)
 		}
 		return false;
 	}
-	else if(	pSilencer &&
+	else if (pSilencer &&
 				m_eSilencerStatus == ALife::eAddonAttachable &&
-				(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 &&
-				(m_sSilencerName == pIItem->object().cNameSect()) )
-       return true;
-	else if (	pGrenadeLauncher &&
-				m_eGrenadeLauncherStatus == ALife::eAddonAttachable &&
-				(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 &&
-				(m_sGrenadeLauncherName  == pIItem->object().cNameSect()) )
-		return true;
+				(m_flagsAddOnState & CSE_ALifeItemWeapon::eWeaponAddonSilencer) == 0 &&
+				(m_sSilencerName == pIItem->object().cNameSect()))
+				{
+					if (m_bBlockSilencerWithGL && IsGrenadeLauncherAttached())
+						return false;
+
+					return true;
+				}
+	else if (pGrenadeLauncher &&
+			m_eGrenadeLauncherStatus == ALife::eAddonAttachable &&
+			(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonGrenadeLauncher) == 0 &&
+			(m_sGrenadeLauncherName  == pIItem->object().cNameSect()) )
+			{
+				if (m_bBlockSilencerWithGL && IsSilencerAttached())
+					return false;
+
+				return true;
+			}
 	else if (	pLaser &&
 				m_eLaserDesignatorStatus == ALife::eAddonAttachable &&
 				(m_flagsAddOnState&CSE_ALifeItemWeapon::eWeaponAddonLaserDesignator) == 0 &&
