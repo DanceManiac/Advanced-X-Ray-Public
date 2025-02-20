@@ -1262,20 +1262,20 @@ void CLocatorAPI::copy_file_to_build	(T *&r, LPCSTR source_name)
     }
 }
 
-bool CLocatorAPI::check_for_file	(LPCSTR path, LPCSTR _fname, string_path& fname, const file *&desc)
+bool CLocatorAPI::check_for_file	(LPCSTR path, LPCSTR _fname, string_path& fname_result, const file *&desc)
 {
 	// проверить нужно ли пересканировать пути
     check_pathes			();
 
 	// correct path
-	xr_strcpy				(fname,_fname);
-	xr_strlwr				(fname);
+	strcpy_s				(fname_result, _fname);
+	xr_strlwr				(fname_result);
 	if (path&&path[0])
-		update_path			(fname,path,fname);
+		update_path			(fname_result, path, _fname);
 
 	// Search entry
 	file					desc_f;
-	desc_f.name				= fname;
+	desc_f.name				= fname_result;
 
 	files_it				I = m_files.find(desc_f);
 	if (I == m_files.end())
@@ -1531,10 +1531,70 @@ FS_Path* CLocatorAPI::get_path(LPCSTR path)
     return P->second;
 }
 
+static std::recursive_mutex file_copy_mutex;
+
 LPCSTR CLocatorAPI::update_path(string_path& dest, LPCSTR initial, LPCSTR src)
 {
-    return get_path(initial)->_update(dest,src);
+	static bool dev_reference_copy = (strstr(Core.Params, "-mfs_nfsc") || strstr(Core.Params, "-mfs_nftc") || strstr(Core.Params, "-mfs_nfmc"));
+
+	string_path src_origin{};
+
+	if (dev_reference_copy)
+	{
+		strcpy_s(src_origin, sizeof(src_origin), src);
+	}
+
+	LPCSTR r = get_path(initial)->_update(dest, src);
+
+	if (dev_reference_copy)
+	{
+		std::scoped_lock lock(file_copy_mutex);
+		string_path fn_ref;
+
+		if (strstr(Core.Params, "-mfs_nfsc") && strcmp(initial, "$game_sounds$") == 0)
+		{
+			if (!exist(dest))
+			{
+				if (exist(fn_ref, "$game_sounds_reference$", src_origin))
+				{
+					Msg("[NFSC]: Sound founded: [%s] in $game_sounds_reference$ folder. Copying begins...", src_origin);
+					file_copy(fn_ref, dest);
+
+					Msg("[NFSC]: Copy from reference sounds folder done: [%s]", src_origin);
+				}
+			}
+		}
+		else if (strstr(Core.Params, "-mfs_nftc") && strcmp(initial, "$game_textures$") == 0)
+		{
+			if (!exist(dest))
+			{
+				if (exist(fn_ref, "$game_textures_reference$", src_origin))
+				{
+					Msg("[NFTC]: Texture founded: [%s] in $game_textures_reference$ folder. Copying begins...", src_origin);
+					file_copy(fn_ref, dest);
+
+					Msg("[NFTC]: Copy from reference textures folder done: [%s]", src_origin);
+				}
+			}
+		}
+		else if (strstr(Core.Params, "-mfs_nfmc") && strcmp(initial, "$game_meshes$") == 0)
+		{
+			if (!exist(dest))
+			{
+				if (exist(fn_ref, "$game_meshes_reference$", src_origin))
+				{
+					Msg("[NFMC]: Mesh founded: [%s] in $game_meshes_reference$ folder. Copying begins...", src_origin);
+					file_copy(fn_ref, dest);
+
+					Msg("[NFMC]: Copy from reference meshes folder done: [%s]", src_origin);
+				}
+			}
+		}
+	}
+
+	return r;
 }
+
 /*
 void CLocatorAPI::update_path(xr_string& dest, LPCSTR initial, LPCSTR src)
 {

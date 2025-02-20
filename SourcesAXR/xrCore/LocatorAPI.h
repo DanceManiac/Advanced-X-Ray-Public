@@ -95,6 +95,9 @@ private:
 	bool						Recurse			(LPCSTR path);	
 
 	files_it					file_find_it	(LPCSTR n);
+
+	CInifile*					gamedata_unused_references = nullptr;
+
 public:
 	enum{
 		flNeedRescan			= (1<<0),

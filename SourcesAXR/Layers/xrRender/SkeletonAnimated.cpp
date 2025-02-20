@@ -702,6 +702,14 @@ void CKinematicsAnimated::Load(const char* N, IReader *data, u32 dwFlags)
             {
                 if (!FS.exist(fn, "$game_meshes$", nm))
                 {
+					FS_FileSet fset;
+					FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm);
+
+					if (strstr(Core.Params, "-mfs_nfmc"))
+					{
+						FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm); // FS_FileSet is actually a set )
+					}
+
 #ifdef _EDITOR
                     Msg			("!Can't find motion file '%s'.",nm);
                     return;
@@ -741,6 +749,14 @@ void CKinematicsAnimated::Load(const char* N, IReader *data, u32 dwFlags)
             {
                 if (!FS.exist(fn, "$game_meshes$", nm))
                 {
+					FS_FileSet fset;
+					FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm);
+
+					if (strstr(Core.Params, "-mfs_nfmc"))
+					{
+						FS.file_list(fset, "$game_meshes$", FS_ListFiles, nm); // FS_FileSet is actually a set )
+					}
+
 #ifdef _EDITOR
                     Msg			("!Can't find motion file '%s'.",nm);
                     return;

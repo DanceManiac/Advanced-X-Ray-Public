@@ -139,7 +139,8 @@ bool CSoundRender_Source::load(pcstr name, bool replaceWithNoSound /*= true*/, b
 	fname				= N;
 
 	strconcat			(sizeof(fn),fn,N,".ogg");
-	if (!FS.exist("$level$",fn))	FS.update_path	(fn,"$game_sounds$",fn);
+	
+	FS.update_path	(fn,"$game_sounds$",fn);
 
 	if (!FS.exist(fn))
 	{
