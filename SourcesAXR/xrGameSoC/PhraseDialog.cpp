@@ -3,6 +3,10 @@
 #include "phrasedialogmanager.h"
 #include "gameobject.h"
 #include "ai_debug.h"
+#include "ai_space.h"
+#include "script_engine.h"
+#include "script_game_object.h"
+#include "Actor.h"
 
 SPhraseDialogData::SPhraseDialogData ()
 {
@@ -98,7 +102,7 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 	//вызвать скриптовую присоединенную функцию 
 	//активируется после сказанной фразы
 	//первый параметр - тот кто говорит фразу, второй - тот кто слушает
-	last_phrase->m_PhraseScript.Action(pSpeakerGO1, pSpeakerGO2, *phrase_dialog->m_DialogId, phrase_id.c_str() );
+	last_phrase->GetScriptHelper()->Action(pSpeakerGO1, pSpeakerGO2, *phrase_dialog->m_DialogId, phrase_id.c_str() );
 
 	//больше нет фраз, чтоб говорить
 	phrase_dialog->m_PhraseVector.clear();
@@ -117,7 +121,7 @@ bool CPhraseDialog::SayPhrase (DIALOG_SHARED_PTR& phrase_dialog, const shared_st
 			CPhraseGraph::CVertex* next_phrase_vertex = phrase_dialog->data()->m_PhraseGraph.vertex(edge.vertex_id());
 			THROW						(next_phrase_vertex);
 			shared_str next_phrase_id	= next_phrase_vertex->vertex_id();
-			if(next_phrase_vertex->data()->m_PhraseScript.Precondition(pSpeakerGO2, pSpeakerGO1, *phrase_dialog->m_DialogId, phrase_id.c_str(), next_phrase_id.c_str()))
+			if(next_phrase_vertex->data()->GetScriptHelper()->Precondition(pSpeakerGO2, pSpeakerGO1, *phrase_dialog->m_DialogId, phrase_id.c_str(), next_phrase_id.c_str()))
 			{
 				phrase_dialog->m_PhraseVector.push_back(next_phrase_vertex->data());
 #ifdef DEBUG
@@ -165,11 +169,30 @@ CPhrase* CPhraseDialog::GetPhrase(const shared_str& phrase_id)
 
 LPCSTR CPhraseDialog::GetPhraseText	(const shared_str& phrase_id, bool current_speaking)
 {
-	
-	CPhraseGraph::CVertex* phrase_vertex = data()->m_PhraseGraph.vertex(phrase_id);
-	THROW(phrase_vertex);
+	CPhrase* ph = GetPhrase(phrase_id);
 
-	return phrase_vertex->data()->GetText();
+	CGameObject* pSpeakerGO1 = (current_speaking) ? smart_cast<CGameObject*>(FirstSpeaker()) : NULL;
+	CGameObject* pSpeakerGO2 = (current_speaking) ? smart_cast<CGameObject*>(SecondSpeaker()) : NULL;
+	CGameObject* pSpeakerGO = NULL;
+
+	if (smart_cast<CActor*>(pSpeakerGO1))
+	{
+		pSpeakerGO = pSpeakerGO2;
+	}
+	else
+		pSpeakerGO = pSpeakerGO1;
+
+	if (ph->m_script_text_id.length() > 0)
+	{
+		luabind::functor<LPCSTR>	lua_function;
+		bool functor_exists = ai().script_engine().functor(ph->m_script_text_id.c_str(), lua_function);
+		THROW3(functor_exists, "Cannot find function", ph->m_script_text_id.c_str());
+
+		ph->m_script_text_val = lua_function((pSpeakerGO) ? pSpeakerGO->lua_game_object() : NULL, m_DialogId.c_str(), phrase_id.c_str());
+		return ph->m_script_text_val.c_str();
+	}
+	else
+		return ph->GetScriptHelper()->GetScriptText(ph->GetText(), pSpeakerGO1, pSpeakerGO2, m_DialogId.c_str(), phrase_id.c_str());
 }
 
 LPCSTR CPhraseDialog::DialogCaption()
@@ -213,7 +236,7 @@ void CPhraseDialog::load_shared	(LPCSTR)
 	SetCaption	( pXML->Read(dialog_node, "caption", 0, NULL) );
 
 	//предикаты начала диалога
-	data()->m_PhraseScript.Load(pXML, dialog_node);
+	data()->m_ScriptDialogHelper.Load(pXML, dialog_node);
 
 	//заполнить граф диалога фразами
 	data()->m_PhraseGraph.clear();
@@ -286,8 +309,9 @@ void CPhraseDialog::AddPhrase	(CUIXml* pXml, XML_NODE* phrase_node, const shared
 
 	int fin = pXml->ReadInt(phrase_node, "is_final", 0, 0);
 	ph->SetFinalizer(fin == 1);
+	ph->m_script_text_id = pXml->Read(phrase_node, "script_text", 0, "");
 
-	ph->m_PhraseScript.Load					(pXml, phrase_node);
+	ph->GetScriptHelper()->Load					(pXml, phrase_node);
 
 	//фразы которые собеседник может говорить после этой
 	int next_num = pXml->GetNodesNum(phrase_node, "next");
@@ -304,7 +328,7 @@ void CPhraseDialog::AddPhrase	(CUIXml* pXml, XML_NODE* phrase_node, const shared
 
 bool  CPhraseDialog::Precondition(const CGameObject* pSpeaker1, const CGameObject* pSpeaker2)
 {
-	return data()->m_PhraseScript.Precondition(pSpeaker1, pSpeaker2, m_DialogId.c_str(), "", "");
+	return data()->m_ScriptDialogHelper.Precondition(pSpeaker1, pSpeaker2, m_DialogId.c_str(), "", "");
 }
 
 void   CPhraseDialog::InitXmlIdToIndex()

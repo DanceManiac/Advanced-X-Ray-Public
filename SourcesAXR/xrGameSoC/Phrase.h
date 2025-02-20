@@ -21,6 +21,8 @@ public:
 	void				SetText			(LPCSTR text)		{m_text = text;}
 	LPCSTR				GetText			()	const;
 
+	LPCSTR				GetScriptText	()	const;
+
 	void				SetID		(const shared_str& id)			{m_ID = id;}
 	const shared_str&	GetID		()	const						{return m_ID;}
 
@@ -30,13 +32,15 @@ public:
 	int					GoodwillLevel	()	const			{return m_iGoodwillLevel;}
 
 	bool				IsDummy			()	const;
-	CPhraseScript*		GetPhraseScript	()					{return &m_PhraseScript;};
+	CDialogScriptHelper* GetScriptHelper()					{return &m_ScriptHelper;};
 
 protected:
 	//уникальный индекс в списке фраз диалога
 	shared_str		m_ID;
 	//текстовое представление фразы
 	xr_string		m_text;
+	xr_string		m_script_text_id;
+	xr_string		m_script_text_val;
 	
 	//минимальный уровень благосклоггости, необходимый для того
 	//чтоб фразу можно было сказать
@@ -44,5 +48,5 @@ protected:
 	bool            m_b_finalizer;
 	
 	//для вызова скриптовых функций
-	CPhraseScript	m_PhraseScript;
+	CDialogScriptHelper	m_ScriptHelper;
 };

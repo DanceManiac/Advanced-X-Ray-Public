@@ -10,18 +10,10 @@
 #include "ui/xrUIXmlParser.h"
 #include "actor.h"
 
-CPhraseScript::CPhraseScript	()
-{
-}
-CPhraseScript::~CPhraseScript	()
-{
-}
 
 //загрузка из XML файла
-void CPhraseScript::Load		(CUIXml* uiXml, XML_NODE* phrase_node)
+void CDialogScriptHelper::Load		(CUIXml* uiXml, XML_NODE* phrase_node)
 {
-//	m_sScriptTextFunc = uiXml.Read(phrase_node, "script_text", 0, NULL);
-
 	LoadSequence(uiXml,phrase_node, "precondition",		m_Preconditions);
 	LoadSequence(uiXml,phrase_node, "action",			m_ScriptActions);
 	
@@ -33,23 +25,24 @@ void CPhraseScript::Load		(CUIXml* uiXml, XML_NODE* phrase_node)
 }
 
 template<class T> 
-void  CPhraseScript::LoadSequence (CUIXml* uiXml, XML_NODE* phrase_node, 
+void  CDialogScriptHelper::LoadSequence (CUIXml* uiXml, XML_NODE* phrase_node, 
 								  LPCSTR tag, T&  str_vector)
 {
 	int tag_num = uiXml->GetNodesNum(phrase_node, tag);
 	str_vector.clear();
-	for(int i=0; i<tag_num; i++)
+	for(int i=0; i<tag_num; ++i)
 	{
 		LPCSTR tag_text = uiXml->Read(phrase_node, tag, i, NULL);
 		str_vector.push_back(tag_text);
 	}
 }
 
-bool  CPhraseScript::CheckInfo		(const CInventoryOwner* pOwner) const
+bool  CDialogScriptHelper::CheckInfo		(const CInventoryOwner* pOwner) const
 {
 	THROW(pOwner);
 
-	for(u32 i=0; i<m_HasInfo.size(); i++) {
+	for(u32 i=0; i<m_HasInfo.size(); ++i) 
+	{
 #pragma todo("Andy->Andy how to check infoportion existence in XML ?")
 /*		INFO_INDEX	result = CInfoPortion::IdToIndex(m_HasInfo[i],NO_INFO_INDEX,true);
 		if (result == NO_INFO_INDEX) {
@@ -87,22 +80,38 @@ bool  CPhraseScript::CheckInfo		(const CInventoryOwner* pOwner) const
 }
 
 
-void  CPhraseScript::TransferInfo	(const CInventoryOwner* pOwner) const
+void  CDialogScriptHelper::TransferInfo	(const CInventoryOwner* pOwner) const
 {
 	THROW(pOwner);
 
-	for(u32 i=0; i<m_GiveInfo.size(); i++)
+	for(u32 i=0; i<m_GiveInfo.size(); ++i)
 //.		pOwner->TransferInfo(m_GiveInfo[i], true);
 		Actor()->TransferInfo(m_GiveInfo[i], true);
 
-	for(u32 i=0; i<m_DisableInfo.size(); i++)
+	for(u32 i=0; i<m_DisableInfo.size(); ++i)
 //.		pOwner->TransferInfo(m_DisableInfo[i],false);
 		Actor()->TransferInfo(m_DisableInfo[i], false);
 }
 
+LPCSTR CDialogScriptHelper::GetScriptText(LPCSTR str_to_translate, const CGameObject* pSpeakerGO1, const CGameObject* pSpeakerGO2, LPCSTR dialog_id, LPCSTR phrase_id)
+{
+	if(!m_sScriptTextFunc.size())
+		return str_to_translate;
 
+	luabind::functor<LPCSTR>		lua_function;
+	bool functor_exists				= ai().script_engine().functor(m_sScriptTextFunc.c_str() ,lua_function);
+	THROW3							(functor_exists, "Cannot find phrase script text ", m_sScriptTextFunc.c_str());
 
-bool CPhraseScript::Precondition(const CGameObject* pSpeakerGO, LPCSTR dialog_id, LPCSTR phrase_id) const 
+	LPCSTR res						= lua_function(	pSpeakerGO1->lua_game_object(), 
+													pSpeakerGO2->lua_game_object(), 
+													dialog_id,
+													phrase_id);
+
+	return res;
+
+}
+
+bool CDialogScriptHelper::Precondition	(const CGameObject* pSpeakerGO, LPCSTR dialog_id, LPCSTR phrase_id) const 
 {
 	bool predicate_result = true;
 
@@ -133,7 +142,7 @@ bool CPhraseScript::Precondition(const CGameObject* pSpeakerGO, LPCSTR dialog_id
 	return predicate_result;
 }
 
-void CPhraseScript::Action(const CGameObject* pSpeakerGO, LPCSTR dialog_id, LPCSTR phrase_id) const 
+void CDialogScriptHelper::Action			(const CGameObject* pSpeakerGO, LPCSTR dialog_id, LPCSTR phrase_id) const 
 {
 
 	for(u32 i = 0; i<Actions().size(); ++i)
@@ -147,7 +156,7 @@ void CPhraseScript::Action(const CGameObject* pSpeakerGO, LPCSTR dialog_id, LPCS
 	TransferInfo(smart_cast<const CInventoryOwner*>(pSpeakerGO));
 }
 
-bool CPhraseScript::Precondition	(	const CGameObject* pSpeakerGO1, 
+bool CDialogScriptHelper::Precondition	(	const CGameObject* pSpeakerGO1, 
 										const CGameObject* pSpeakerGO2, 
 										LPCSTR dialog_id, 
 										LPCSTR phrase_id,
@@ -181,7 +190,7 @@ bool CPhraseScript::Precondition	(	const CGameObject* pSpeakerGO1,
 	return predicate_result;
 }
 
-void CPhraseScript::Action(const CGameObject* pSpeakerGO1, const CGameObject* pSpeakerGO2, LPCSTR dialog_id, LPCSTR phrase_id) const 
+void CDialogScriptHelper::Action			(const CGameObject* pSpeakerGO1, const CGameObject* pSpeakerGO2, LPCSTR dialog_id, LPCSTR phrase_id) const 
 {
 	TransferInfo(smart_cast<const CInventoryOwner*>(pSpeakerGO1));
 
