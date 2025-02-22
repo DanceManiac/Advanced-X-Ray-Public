@@ -362,6 +362,7 @@ public:
 	ref_geom				g_postprocess;
 	ref_shader				s_menu;
 	ref_geom				g_menu;
+	ref_rt					rt_UI3dStatic; //3d UI Static
 private:
 	float						im_noise_time;
 	u32							im_noise_shift_w;

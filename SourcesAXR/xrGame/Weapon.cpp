@@ -2373,9 +2373,10 @@ void CWeapon::UpdateHUDAddonsVisibility()
 		SetBoneVisible(m_sHud_wpn_flashlight_cone_bone, IsFlashlightOn());
 }
 
-void CWeapon::UpdateAddonsVisibility()
+void CWeapon::UpdateAddonsVisibility(IKinematics* visual)
 {
-	IKinematics* pWeaponVisual = smart_cast<IKinematics*>(Visual()); R_ASSERT(pWeaponVisual);
+	IKinematics* pWeaponVisual = visual ? visual : smart_cast<IKinematics*>(Visual());
+	R_ASSERT(pWeaponVisual);
 
 	u16 bone_id;
 	UpdateHUDAddonsVisibility();	

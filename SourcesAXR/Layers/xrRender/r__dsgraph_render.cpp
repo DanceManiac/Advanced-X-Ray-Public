@@ -592,6 +592,21 @@ template <class T> IC bool cmp_first_h(const T &lhs, const T &rhs) { return (lhs
 
 //////////////////////////////////////////////////////////////////////////
 // HUD render
+
+void R_dsgraph_structure::r_dsgraph_render_ui()
+{
+	mapUI.traverse_left_right(sorted_L1);
+	mapUI.clear();
+}
+
+void R_dsgraph_structure::r_dsgraph_render_sorted_ui()
+{
+	mapUIEmissive.traverse_left_right(sorted_L1);
+	mapUIEmissive.clear();
+	mapUISorted.traverse_left_right(sorted_L1);
+	mapUISorted.clear();
+}
+
 void R_dsgraph_structure::r_dsgraph_render_hud(bool NoPS)
 {	
 	

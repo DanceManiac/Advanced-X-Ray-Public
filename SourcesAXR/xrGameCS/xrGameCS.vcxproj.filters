@@ -7392,6 +7392,9 @@
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
     <ClInclude Include="GlobalAchievements.h" />
+    <ClInclude Include="ui\UI3dStatic.h">
+      <Filter>UI\UIWindows\Static</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11042,6 +11045,9 @@
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
     <ClCompile Include="GlobalAchievements.cpp" />
+    <ClCompile Include="ui\UI3dStatic.cpp">
+      <Filter>UI\UIWindows\Static</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="graph_abstract.h">

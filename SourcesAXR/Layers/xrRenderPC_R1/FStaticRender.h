@@ -211,6 +211,8 @@ public:
 	// [FFT++]
 	virtual void					BeforeWorldRender		(); //--#SM+#-- +SecondVP+       -
 	virtual void					AfterWorldRender		();  //--#SM+#-- +SecondVP+       UI
+
+	virtual void					Render3DStatic			() {};
 	
 	// Render mode
 	virtual void					rmNear					();

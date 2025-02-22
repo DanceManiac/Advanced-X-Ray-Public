@@ -361,7 +361,7 @@ void CUIItemInfo::InitItem(CUICellItem* pCellItem, CInventoryItem* pCompareItem,
 	}
 }
 
-void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem)
+void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem, bool icon_2d)
 {
 	m_pInvItem				= pInvItem;
 	Enable					(NULL != m_pInvItem);
@@ -431,6 +431,15 @@ void CUIItemInfo::InitItemUpgrade(CInventoryItem* pInvItem)
 	}
 	if(UIItemImage)
 	{
+		if (!icon_2d)
+		{
+			UIItemImage->Show(false);
+			return;
+		}
+
+		if (!UIItemImage->IsShown())
+			UIItemImage->Show(true);
+
 		// Загружаем картинку
 		UIItemImage->SetShader				(InventoryUtilities::GetEquipmentIconsShader());
 

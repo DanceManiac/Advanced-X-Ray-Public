@@ -77,8 +77,12 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 
 	// Select shader
 	ShaderElement*	sh		=	RImplementation.rimp_select_sh_dynamic	(pVisual,distSQ);
-	if (0==sh)								return;
-	if (!pmask[sh->flags.iPriority/2])		return;
+	
+	if (0==sh)
+		return;
+	
+	if (!pmask[sh->flags.iPriority/2] && !RImplementation.val_bUI)
+		return;
 
 	// Create common node
 	// NOTE: Invisible elements exist only in R1
@@ -128,6 +132,40 @@ void R_dsgraph_structure::r_dsgraph_insert_dynamic	(dxRender_Visual *pVisual, Fv
 		}
 #endif // RENDER!=R_R1
 		return;
+	}
+
+	// UI rendering
+	if (RI.val_bUI)
+	{
+		if (sh->flags.bStrictB2F)
+		{
+			mapSorted_Node* N = mapUISorted.insert_anyway(distSQ);
+			N->second.ssa = SSA;
+			N->second.pObject = RI.val_pObject;
+			N->second.pVisual = pVisual;
+			N->second.Matrix = *RI.val_pTransform;
+			N->second.se = sh;
+			return;
+		}
+		else
+		{
+			mapHUD_Node* N = mapUI.insert_anyway(distSQ);
+			N->second.ssa = SSA;
+			N->second.pObject = RI.val_pObject;
+			N->second.pVisual = pVisual;
+			N->second.Matrix = *RI.val_pTransform;
+			N->second.se = sh;
+			if (sh->flags.bEmissive)
+			{
+				mapSorted_Node* N_ = mapUIEmissive.insert_anyway(distSQ);
+				N_->second.ssa = SSA;
+				N_->second.pObject = RI.val_pObject;
+				N_->second.pVisual = pVisual;
+				N_->second.Matrix = *RI.val_pTransform;
+				N_->second.se = &*pVisual->shader->E[4]; // 4=L_special
+			}
+			return;
+		}
 	}
 
 	// Shadows registering

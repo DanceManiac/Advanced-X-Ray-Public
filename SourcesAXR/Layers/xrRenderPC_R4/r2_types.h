@@ -109,6 +109,8 @@
 
 #define		r2_RT_flares		"$user$flares" // KD lensflares
 
+#define		r2_RT_3dstatic		"$user$3dstatic"
+
 #define		JITTER(a) r2_jitter #a
 
 const		float				SMAP_near_plane		= .1f	;

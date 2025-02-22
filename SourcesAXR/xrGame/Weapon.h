@@ -230,7 +230,7 @@ public:
 	virtual bool UseScopeTexture() {return true;};
 
 	//обновление видимости для косточек аддонов
-			void UpdateAddonsVisibility();
+			void UpdateAddonsVisibility(IKinematics* visual = nullptr);
 			void UpdateHUDAddonsVisibility();
 	//инициализация свойств присоединенных аддонов
 	virtual void InitAddons();

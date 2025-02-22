@@ -35,6 +35,8 @@ public:
 	u32															marker;
 	bool														pmask		[2]		;
 	bool														pmask_wmark			;
+	BOOL														val_bUI;
+
 public:
 	// Dynamic scene graph
 	//R_dsgraph::mapNormal_T										mapNormal	[2]		;	// 2==(priority/2)
@@ -54,6 +56,10 @@ public:
 	R_dsgraph::mapSorted_T										mapEmissive;
 	R_dsgraph::mapSorted_T										mapHUDEmissive;
 #endif
+
+	R_dsgraph::mapHUD_T											mapUI;
+	R_dsgraph::mapHUD_T											mapUISorted;
+	R_dsgraph::mapSorted_T										mapUIEmissive;
 
 	// Runtime structures 
 	xr_vector<R_dsgraph::mapNormalVS::value_type*>				nrmVS;
@@ -94,6 +100,7 @@ public:
 public:
 	virtual		void					set_Transform			(Fmatrix*	M	)				{ VERIFY(M);	val_pTransform = M;	}
 	virtual		void					set_HUD					(BOOL 		V	)				{ val_bHUD		= V;				}
+	virtual		void					set_UI					(BOOL		V	)				{ val_bUI		= V;				}
 	virtual		BOOL					get_HUD					()								{ return		val_bHUD;			}
 	virtual		void					set_Invisible			(BOOL 		V	)				{ val_bInvisible= V;				}
 				void					set_Feedback			(R_feedback*V, u32	id)			{ val_feedback_breakp = id; val_feedback = V;		}
@@ -114,6 +121,7 @@ public:
 		marker				= 0;
 		r_pmask				(true,true);
 		b_loaded			= FALSE	;
+		val_bUI				= FALSE;
 	};
 
 	void		r_dsgraph_destroy()
@@ -163,6 +171,7 @@ public:
 		mapWmark.destroy();
 		mapEmissive.destroy();
 		mapHUDEmissive.destroy();
+		mapUI.destroy();
 #endif
 	}
 
@@ -174,6 +183,8 @@ public:
 	void		r_dsgraph_render_graph							(u32	_priority,	bool _clear=true);
 	void		r_dsgraph_render_hud							(bool NoPS = false);
 	void		r_dsgraph_render_hud_ui							();
+	void		r_dsgraph_render_ui								();
+	void		r_dsgraph_render_sorted_ui						();
 	void		r_dsgraph_render_lods							(bool	_setup_zb,	bool _clear);
 	void		r_dsgraph_render_sorted							();
 	void        r_dsgraph_render_hud_sorted                     ();

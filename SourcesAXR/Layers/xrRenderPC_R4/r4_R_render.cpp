@@ -646,6 +646,40 @@ void CRender::Render		()
 	VERIFY	(0==mapDistort.size());
 }
 
+extern float psHUD_FOV;
+void CRender::Render3DStatic()
+{
+	// RTarget = HW.pBaseRT
+	// RDepth = HW.pBaseZB
+
+	//  Change projection
+	Fmatrix Pold = Device.mProject;
+	Fmatrix FTold = Device.mFullTransform;
+	//-- VlaGan: если с худ фовом делать - то чем он больше, 
+	//-- тем больше будут крутитьс€ модели начина€ от середины экрана
+	Device.mProject.build_projection(deg2rad(5.f), Device.fASPECT, VIEWPORT_NEAR, 2.f);
+	Device.mFullTransform.mul(Device.mProject, Device.mView);
+	RCache.set_xform_project(Device.mProject);
+	constexpr float ColorRGBA[]{ 0.0f, 0.0f, 0.0f, 0.0f };
+	HW.pContext->ClearRenderTargetView(Target->rt_UI3dStatic->pRT, ColorRGBA);
+	// RContext->ClearDepthStencilView(RDepth, D3D_CLEAR_DEPTH | D3D_CLEAR_STENCIL, 1.0f, 0);
+	HW.pContext->ClearDepthStencilView(HW.pBaseZB, D3D_CLEAR_DEPTH | D3D_CLEAR_STENCIL, 1.0f, 0);
+	//  rmNormal();
+	// Target->u_setrt((u32)RCache.get_target_width(), (u32)RCache.get_target_height(), Target->rt_Position->pRT, RTarget, NULL, RDepth);
+	Target->u_setrt(Device.dwWidth, Device.dwHeight, Target->rt_UI3dStatic->pRT /* Target->rt_Position->pRT*/, HW.pBaseRT, NULL, HW.pBaseZB);
+	r_dsgraph_render_ui();
+	HW.pContext->CopyResource(Target->rt_Position->pSurface, Target->rt_secondVP->pSurface);
+	// Target->u_setrt((u32)RCache.get_target_width(), (u32)RCache.get_target_height(), RTarget, 0, 0, RDepth);
+	Target->u_setrt(Device.dwWidth, Device.dwHeight, HW.pBaseRT, 0, 0, HW.pBaseZB);
+	r_dsgraph_render_sorted_ui();
+	marker++;
+
+	// Restore projection
+	Device.mProject = Pold;
+	Device.mFullTransform = FTold;
+	RCache.set_xform_project(Device.mProject);
+}
+
 void CRender::render_forward				()
 {
 	VERIFY	(0==mapDistort.size());

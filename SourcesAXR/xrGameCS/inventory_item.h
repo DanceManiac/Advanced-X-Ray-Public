@@ -210,6 +210,8 @@ public:
 
 	shared_str					GetTakePreconditionFunc()						{ return m_take_precondition_func; }
 
+	bool						GetUpgradeIcon3D	()							{ return m_bUpgradesIcon3D; }
+
 protected:	
 	u32							m_slot;
 	u32							m_cost;
@@ -222,6 +224,9 @@ protected:
 	shared_str					m_sPropertyBoxUseText;
 
 	float						m_fOccupiedInvSpace;
+
+	bool						m_bUpgradesIcon3D;
+
 protected:
 
 	ALife::_TIME_ID				m_dwItemRemoveTime;

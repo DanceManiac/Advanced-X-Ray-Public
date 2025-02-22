@@ -2053,6 +2053,7 @@
     <ClInclude Include="ui\Restrictions.h" />
     <ClInclude Include="ui\ServerList.h" />
     <ClInclude Include="ui\TeamInfo.h" />
+    <ClInclude Include="ui\UI3dStatic.h" />
     <ClInclude Include="ui\UI3tButton.h" />
     <ClInclude Include="ui\uiabstract.h" />
     <ClInclude Include="ui\UIActorInfo.h" />
@@ -8207,6 +8208,7 @@
     <ClCompile Include="ui\ServerList.cpp" />
     <ClCompile Include="ui\ServerList_GameSpy_func.cpp" />
     <ClCompile Include="ui\TeamInfo.cpp" />
+    <ClCompile Include="ui\UI3dStatic.cpp" />
     <ClCompile Include="ui\UI3tButton.cpp" />
     <ClCompile Include="ui\CExtraContentFilter.cpp" />
     <ClCompile Include="ui\FactionState.cpp">

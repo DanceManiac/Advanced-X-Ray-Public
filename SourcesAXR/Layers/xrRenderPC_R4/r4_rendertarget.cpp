@@ -516,6 +516,8 @@ CRenderTarget::CRenderTarget		()
 		if (RImplementation.o.advancedpp)
 			rt_Generic_2.create(r2_RT_generic2, vp_params_main_secondary, D3DFMT_A16B16G16R16F, SampleCount);
 
+		rt_UI3dStatic.create(r2_RT_3dstatic, vp_params_main_secondary, D3DFMT_A8R8G8B8, 1);
+
 		if (RImplementation.o.dx10_msaa)
 			rt_Generic_temp.create("$user$generic_temp", vp_params_main_secondary, D3DFMT_A8R8G8B8, SampleCount);
 		else
