@@ -54,6 +54,7 @@ bool	m_bEnableBoreDoF = true;
 bool	m_bBackpackAnimsEnabled = false;
 bool	m_bShowSaveName = false;
 bool	m_bLimitedInvBoxes = false;
+bool	m_bGlobalAchEnabled = false;
 BOOL	m_b_animated_backpack = 0;
 int		m_iArtefactsCount = 5;
 int		m_i_CMD_Count = 1;
@@ -133,6 +134,7 @@ namespace GameConstants
 		m_sMoonPhasesMode = READ_IF_EXISTS(pAdvancedSettings, r_string, "environment", "moon_phases_mode", "off"); //off|8days|28days
 		m_bFogInfluenceVolumetricLight = READ_IF_EXISTS(pAdvancedSettings, r_bool, "environment", "fog_infl_volumetric_light", false);
 		m_bLimitedInvBoxes = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_limited_inv_boxes", false);
+		m_bGlobalAchEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "enable_global_achievements", false);
 
 		Msg("# Advanced X-Ray GameConstants are loaded");
 	}
@@ -378,6 +380,11 @@ namespace GameConstants
 	bool GetLimitedInvBoxes()
 	{
 		return m_bLimitedInvBoxes;
+	}
+
+	bool GetGlobalAchEnabled()
+	{
+		return m_bGlobalAchEnabled;
 	}
 
 	int GetArtefactsCount()

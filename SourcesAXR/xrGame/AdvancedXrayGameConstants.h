@@ -51,6 +51,7 @@ namespace GameConstants
 	bool GetFogInfluenceVolumetricLight();
 	bool GetShowSaveName();
 	bool GetLimitedInvBoxes();
+	bool GetGlobalAchEnabled();
 	int  GetArtefactsCount();
 	int  GetIntScriptCMDCount();
 	int  GetBOOLScriptCMDCount();

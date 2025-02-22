@@ -21,11 +21,12 @@
 #include <shellapi.h>
 #pragma comment(lib, "shell32.lib")
 
-
 #include "object_broker.h"
 
 #include "../xrEngine/DiscordRichPresense.h"
 #include "../xrEngine/x_ray.h"
+
+#include "AdvancedXrayGameConstants.h"
 
 #include <imgui.h>
 
@@ -116,6 +117,10 @@ CMainMenu::~CMainMenu()
 	xr_delete						(m_startDialog);
 	g_pGamePersistent->m_pMainMenu	= NULL;
 	xr_delete						(m_pGameSpyFull);
+
+	if (AchievementsManager)
+		xr_delete(AchievementsManager);
+
 	delete_data						(m_pMB_ErrDlgs);
 }
 
@@ -193,7 +198,9 @@ void CMainMenu::Activate	(bool bActivate)
 			snprintf(rpc_settings.Detail, 128, ToUTF8(*CStringTable().translate("st_discord_menu")).c_str());
 			g_discord.SetStatus();
 		}
-	}else{
+	}
+	else
+	{
 		m_deactivated_frame					= Device.dwFrame;
 		m_Flags.set							(flActive,				FALSE);
 		m_Flags.set							(flNeedChangeCapture,	TRUE);
@@ -472,6 +479,11 @@ void CMainMenu::OnFrame()
 
 void CMainMenu::OnDeviceCreate()
 {
+	if (GameConstants::GetGlobalAchEnabled() && !AchievementsManager)
+		AchievementsManager = xr_new<CGlobalAchievementsManager>();
+
+	if (AchievementsManager && !AchievementsManager->HasAchievements())
+		AchievementsManager->LoadAchievements();
 }
 
 

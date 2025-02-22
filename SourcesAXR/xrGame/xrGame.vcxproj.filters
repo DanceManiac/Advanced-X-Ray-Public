@@ -7517,6 +7517,7 @@
     <ClInclude Include="embedded_editor\embedded_editor_ui.h">
       <Filter>EmbeddedEditor</Filter>
     </ClInclude>
+    <ClInclude Include="GlobalAchievements.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11273,6 +11274,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_ui.cpp">
       <Filter>EmbeddedEditor</Filter>
     </ClCompile>
+    <ClCompile Include="GlobalAchievements.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ai\monsters\chimera\chimera_attack_state.h">

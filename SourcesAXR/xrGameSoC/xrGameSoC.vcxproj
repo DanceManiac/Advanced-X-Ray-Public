@@ -607,6 +607,7 @@
     <ClInclude Include="debug_text_tree_inline.h" />
     <ClInclude Include="embedded_editor\embedded_editor_person_attach.h" />
     <ClInclude Include="embedded_editor\embedded_editor_ui.h" />
+    <ClInclude Include="GlobalAchievements.h" />
     <ClInclude Include="LaserDesignator.h" />
     <ClInclude Include="opt.lua.h" />
     <ClInclude Include="opt_inline.lua.h" />
@@ -2013,6 +2014,7 @@
     <ClCompile Include="embedded_editor\embedded_editor_ui.cpp" />
     <ClCompile Include="embedded_editor\embedded_editor_weather.cpp" />
     <ClCompile Include="EntityCondition_script.cpp" />
+    <ClCompile Include="GlobalAchievements.cpp" />
     <ClCompile Include="LaserDesignator.cpp" />
     <ClCompile Include="magic_box3.cpp" />
     <ClCompile Include="magic_minimize_1d.cpp" />

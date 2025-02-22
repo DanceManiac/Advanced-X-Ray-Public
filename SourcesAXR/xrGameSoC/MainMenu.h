@@ -11,6 +11,7 @@ class CGameSpy_Full;
 #include "UIDialogHolder.h"
 #include "ui/UIWndCallback.h"
 #include "ui_base.h"
+#include "GlobalAchievements.h"
 
 struct  Patch_Dawnload_Progress{
 	bool		IsInProgress;
@@ -93,6 +94,8 @@ protected:
 	
 	xr_vector<CUIMessageBoxEx*>	m_pMB_ErrDlgs;
 
+	CGlobalAchievementsManager* AchievementsManager{};
+
 //.	CUIMessageBoxEx*	m_pMSB_NoNewPatch;
 //.	CUIMessageBoxEx*	m_pMSB_NewPatch;
 //.	CUIMessageBoxEx*	m_pMSB_PatchDownloadError;
@@ -170,6 +173,8 @@ public:
 			bool	ValidateCDKey					();
 			bool	IsCDKeyIsValid					();
 	virtual bool CanSkipSceneRendering				() { return false; }
+
+	CGlobalAchievementsManager* GetGlobalAchievementsManager() { return AchievementsManager; }
 };
 
 extern CMainMenu*	MainMenu();
