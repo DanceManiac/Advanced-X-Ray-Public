@@ -19,8 +19,6 @@ CUIArtefactParams::CUIArtefactParams()
 {
 	for ( u32 i = 0; i < ALife::eHitTypeMax; ++i )
 	{
-		if (i >= ALife::eHitTypeWound_2)
-			continue;
 		m_immunity_item[i] = NULL;
 	}
 	for (u32 i = 0; i < ALife::eRestoreTypeMax; ++i)
