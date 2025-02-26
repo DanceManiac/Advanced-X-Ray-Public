@@ -85,6 +85,7 @@ public:
 	xr_vector<LPCSTR>		m_ItemsForRepairNames;
 
 	bool					bIsHelmetAvaliable;
+	bool					bIsSecondHelmetAvaliable;
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;
 	bool					m_bHasLSS;

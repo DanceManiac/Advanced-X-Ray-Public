@@ -117,6 +117,7 @@ protected:
 
 	xr_vector<CUIStatic*>		m_belt_list_over;
 	CUIStatic*					m_HelmetOver;
+	CUIStatic*					m_SecondHelmetOver;
 
 	CUIStatic*					m_InvSlot2Highlight;
 	CUIStatic*					m_InvSlot3Highlight;

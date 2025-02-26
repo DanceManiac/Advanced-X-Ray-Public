@@ -332,6 +332,12 @@ void CUIActorMenu::Construct()
 	m_HelmetOver = UIHelper::CreateStatic(uiXml, "helmet_over", this);
 	m_HelmetOver->Show			(false);
 
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_SecondHelmetOver = UIHelper::CreateStatic(uiXml, "second_helmet_over", this);
+		m_SecondHelmetOver->Show(false);
+	}
+
 	m_ActorMoney	= UIHelper::CreateTextWnd(uiXml, "actor_money_static", this);
 	m_PartnerMoney	= UIHelper::CreateTextWnd(uiXml, "partner_money_static", this);
 	m_QuickSlot1	= UIHelper::CreateTextWnd(uiXml, "quick_slot1_text", this, false);

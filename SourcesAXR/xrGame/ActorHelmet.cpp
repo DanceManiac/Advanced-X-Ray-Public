@@ -241,34 +241,14 @@ void CHelmet::UpdateCL()
 void CHelmet::OnMoveToSlot(const SInvItemPlace& previous_place)
 {
 	inherited::OnMoveToSlot		(previous_place);
-	if (m_pInventory)
+	if (m_pInventory && (previous_place.type == eItemPlaceSlot))
 	{
 		CActor* pActor = smart_cast<CActor*> (H_Parent());
-		if (!pActor)
-			return;
 
-		if (previous_place.type == eItemPlaceSlot)
+		if (pActor)
 		{
 			if (pActor->GetNightVisionStatus())
 				pActor->SwitchNightVision(true, false);
-		}
-
-		CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
-		CHelmet* pHelmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
-
-		if (this == pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
-		{
-			if (pHelmet2)
-			{
-				pActor->inventory().Ruck(pHelmet2, false);
-			}
-		}
-		else if (this == pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
-		{
-			if (pHelmet1)
-			{
-				pActor->inventory().Ruck(pHelmet1, false);
-			}
 		}
 	}
 }

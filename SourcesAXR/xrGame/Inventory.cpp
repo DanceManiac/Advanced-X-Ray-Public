@@ -25,6 +25,7 @@
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomBackpack.h"
+#include "ActorHelmet.h"
 #include "PDA.h"
 
 using namespace InventoryUtilities;
@@ -1453,12 +1454,23 @@ bool CInventory::CanPutInSlot(PIItem pIItem, u16 slot_id) const
 
 	if( !GetOwner()->CanPutInSlot(pIItem, slot_id ) ) return false;
 
+	CCustomOutfit* pOutfit = m_pOwner->GetOutfit();
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-	if(slot_id==HELMET_SLOT)
+	if (pOutfit || pHelmet1 || pHelmet2)
 	{
-		CCustomOutfit* pOutfit = m_pOwner->GetOutfit();
-		if(pOutfit && !pOutfit->bIsHelmetAvaliable)
-			return false;
+		if (slot_id == HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsHelmetAvaliable) || (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled))
+				return false;
+		}
+
+		if (slot_id == SECOND_HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsSecondHelmetAvaliable) || (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled))
+				return false;
+		}
 	}
 
 	if(slot_id!=NO_ACTIVE_SLOT && 

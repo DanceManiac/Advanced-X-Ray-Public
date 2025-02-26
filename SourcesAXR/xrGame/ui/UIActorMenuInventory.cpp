@@ -614,45 +614,33 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place, u16 slot_id)
 	PIItem	iitem							= (PIItem)itm->m_pData;
 
 	bool b_own_item							= (iitem->parent_id()==m_pActorInvOwner->object_id());
+	
+	CCustomOutfit* pOutfit = m_pActorInvOwner->GetOutfit();
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
 	if (slot_id == HELMET_SLOT || slot_id == SECOND_HELMET_SLOT)
 	{
-		CCustomOutfit* pOutfit = m_pActorInvOwner->GetOutfit();
-		if(pOutfit && !pOutfit->bIsHelmetAvaliable)
-			return false;
-
-		CHelmet* helmet = smart_cast<CHelmet*>(iitem);
-
-		if (helmet)
+		if (pOutfit || pHelmet1 || pHelmet2)
 		{
 			CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
 			CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-			CUIDragDropListEx* currentHelmetList = nullptr;
-			CUICellItem* currentHelmetCell = nullptr;
-
-			if (helmet->BaseSlot() == HELMET_SLOT)
+			if (slot_id == HELMET_SLOT)
 			{
-				if (pHelmet2 && (!helmet->m_bSecondHelmetEnabled || !pHelmet2->m_bSecondHelmetEnabled))
-				{
-					currentHelmetList = GetSlotList(SECOND_HELMET_SLOT);
-				}
+				if (pOutfit && !pOutfit->bIsHelmetAvaliable)
+					return false;
+
+				if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+					return false;
 			}
-			else if (helmet->BaseSlot() == SECOND_HELMET_SLOT)
+			else if (slot_id == SECOND_HELMET_SLOT)
 			{
-				if (pHelmet1 && (!helmet->m_bSecondHelmetEnabled || !pHelmet1->m_bSecondHelmetEnabled))
-				{
-					currentHelmetList = GetSlotList(HELMET_SLOT);
-				}
-			}
+				if (pOutfit && !pOutfit->bIsSecondHelmetAvaliable)
+					return false;
 
-			if (currentHelmetList)
-			{
-				currentHelmetCell = (currentHelmetList->ItemsCount() == 1) ? currentHelmetList->GetItemIdx(0) : nullptr;
-
-				if (currentHelmetCell)
-				{
-					ToBag(currentHelmetCell, false);
-				}
+				if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
+					return false;
 			}
 		}
 	}
@@ -669,17 +657,59 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place, u16 slot_id)
 		if(slot_id==OUTFIT_SLOT)
 		{
 			CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(iitem);
-			if(pOutfit && !pOutfit->bIsHelmetAvaliable)
+			if(pOutfit)
 			{
-				CUIDragDropListEx* helmet_list		= GetSlotList(HELMET_SLOT);
-				if(helmet_list->ItemsCount()==1)
+				if (!pOutfit->bIsHelmetAvaliable)
 				{
-					CUICellItem* helmet_cell		= helmet_list->GetItemIdx(0);
-					ToBag(helmet_cell, false);
+					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
+					if (helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
+						ToBag(helmet_cell, false);
+					}
+				}
+
+				if (GameConstants::GetSecondHelmetSlotEnabled() && !pOutfit->bIsSecondHelmetAvaliable)
+				{
+					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
+					if (second_helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
+						ToBag(second_helmet_cell, false);
+					}
 				}
 			}
 		}
 
+		if (GameConstants::GetSecondHelmetSlotEnabled())
+		{
+			CHelmet* helmet = smart_cast<CHelmet*>(iitem);
+
+			if (slot_id == HELMET_SLOT)
+			{
+				if (helmet && !helmet->m_bSecondHelmetEnabled)
+				{
+					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
+					if (second_helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
+						ToBag(second_helmet_cell, false);
+					}
+				}
+			}
+			else if (slot_id == SECOND_HELMET_SLOT)
+			{
+				if (helmet && !helmet->m_bSecondHelmetEnabled)
+				{
+					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
+					if (helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
+						ToBag(helmet_cell, false);
+					}
+				}
+			}
+		}
 
 		bool result							= (!b_own_item) || m_pActorInvOwner->inventory().Slot(slot_id, iitem);
 		VERIFY								(result);
@@ -933,6 +963,14 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u16 slot_idx)
 				return m_pInventoryPistolNewList;
 			}
 		}break;
+
+		case SECOND_HELMET_SLOT:
+		{
+			if (GameConstants::GetSecondHelmetSlotEnabled())
+			{
+				return m_pInventorySecondHelmetList;
+			}
+		}break;
 	};
 	return NULL;
 }
@@ -1143,7 +1181,12 @@ void CUIActorMenu::PropertiesBoxForSlots( PIItem item, bool& b_show )
 	}
 
 	CCustomOutfit* outfit_in_slot = m_pActorInvOwner->GetOutfit();
-	if ( pHelmet && !bAlreadyDressed && (!outfit_in_slot || outfit_in_slot->bIsHelmetAvaliable))
+	CHelmet* helmet_in_slot = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* second_helmet_in_slot = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+	
+	if (pHelmet && !bAlreadyDressed && (!outfit_in_slot || outfit_in_slot->bIsHelmetAvaliable) && 
+		(!helmet_in_slot || helmet_in_slot->m_bSecondHelmetEnabled) && 
+		(!second_helmet_in_slot || second_helmet_in_slot->m_bSecondHelmetEnabled))
 	{
 		m_UIPropertiesBox->AddItem( "st_dress_helmet",  NULL, INVENTORY_TO_SLOT_ACTION );
 		b_show			= true;
@@ -2100,10 +2143,33 @@ void CUIActorMenu::UpdateOutfit()
 
 	VERIFY( m_pInventoryBeltList );
 	CCustomOutfit* outfit    = m_pActorInvOwner->GetOutfit();
+	
 	if(outfit && !outfit->bIsHelmetAvaliable)
 		m_HelmetOver->Show(true);
 	else
 		m_HelmetOver->Show(false);
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		if (outfit && !outfit->bIsSecondHelmetAvaliable)
+			m_SecondHelmetOver->Show(true);
+		else
+			m_SecondHelmetOver->Show(false);
+
+		CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+		CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+		if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
+		{
+			if (!pHelmet2)
+				m_SecondHelmetOver->Show(true);
+		}
+		else if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+		{
+			if (!pHelmet1)
+				m_HelmetOver->Show(true);
+		}
+	}
 
 	if (outfit && !m_bNeedMoveAfsToBag)
 		m_bNeedMoveAfsToBag = true;

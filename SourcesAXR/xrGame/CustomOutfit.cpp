@@ -29,6 +29,8 @@ CCustomOutfit::CCustomOutfit()
 	m_artefact_count = 0;
 	m_BonesProtectionSect = nullptr;
 
+	bIsHelmetAvaliable = true;
+	bIsSecondHelmetAvaliable = true;
 	m_b_HasGlass = false;
 	m_bUseFilter = false;
 	m_bHasLSS = false;
@@ -195,6 +197,7 @@ void CCustomOutfit::Load(LPCSTR section)
 
 	m_BonesProtectionSect	= READ_IF_EXISTS(pSettings, r_string, section, "bones_koeff_protection",  "" );
 	bIsHelmetAvaliable		= !!READ_IF_EXISTS(pSettings, r_bool, section, "helmet_avaliable", true);
+	bIsSecondHelmetAvaliable = !!READ_IF_EXISTS(pSettings, r_bool, section, "second_helmet_avaliable", bIsHelmetAvaliable);
 
 	m_b_HasGlass			= !!READ_IF_EXISTS(pSettings, r_bool, section, "has_glass", FALSE);
 	m_bUseFilter			= READ_IF_EXISTS(pSettings, r_bool, section, "use_filter", false);
@@ -382,28 +385,31 @@ void	CCustomOutfit::OnMoveToSlot		(const SInvItemPlace& prev)
 		if ( pActor )
 		{
 			ApplySkinModel(pActor, true, false);
-			if (prev.type==eItemPlaceSlot && !bIsHelmetAvaliable)
+			if (prev.type==eItemPlaceSlot || prev.type == eItemPlaceUndefined)
 			{
-				if (pActor->GetNightVisionStatus())
-					pActor->SwitchNightVision(true, false);
-
-				CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
-
-				if (pHelmet1)
+				if (!bIsHelmetAvaliable)
 				{
-					pActor->inventory().Ruck(pHelmet1, false);
+					if (pActor->GetNightVisionStatus())
+						pActor->SwitchNightVision(true, false);
+
+					CHelmet* pHelmet1 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(HELMET_SLOT));
+
+					if (pHelmet1)
+					{
+						pActor->inventory().Ruck(pHelmet1, false);
+					}
 				}
 
-				CHelmet* pHelmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
-
-				if (pHelmet2)
+				if (!bIsSecondHelmetAvaliable)
 				{
-					pActor->inventory().Ruck(pHelmet2, false);
+					CHelmet* pHelmet2 = smart_cast<CHelmet*>(pActor->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+					if (pHelmet2)
+					{
+						pActor->inventory().Ruck(pHelmet2, false);
+					}
 				}
 			}
-			/*PIItem pHelmet = pActor->inventory().ItemFromSlot(HELMET_SLOT);
-			if(pHelmet && !bIsHelmetAvaliable)
-				pActor->inventory().Ruck(pHelmet, false);*/
 		}
 	}
 }
