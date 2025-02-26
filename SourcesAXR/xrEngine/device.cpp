@@ -542,7 +542,7 @@ void CRenderDevice::FrameMove()
 
 	Core.dwFrame = dwFrame;
 
-	if(!(Paused() && !bMainMenuActive()) || load_screen_renderer.IsActive())
+	if(!(Paused() && !bMainMenuActive()) || load_screen_renderer.IsActive() || g_pGamePersistent->IsTutorialSequencerActive())
 	{
 		TimerMM.Pause(FALSE);
 		dwTimeContinual	= TimerMM.GetElapsed_ms();

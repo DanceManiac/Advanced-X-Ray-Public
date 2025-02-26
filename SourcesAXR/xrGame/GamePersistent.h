@@ -129,6 +129,7 @@ public:
 			bool		GetFogInfluenceVolumetricLight();
 			std::string	GetMoonPhase			() override;
 			u32			GetTimeHours			() override;
+			bool		IsTutorialSequencerActive() override;
 
 	virtual void		EditorOnFrame			();
 

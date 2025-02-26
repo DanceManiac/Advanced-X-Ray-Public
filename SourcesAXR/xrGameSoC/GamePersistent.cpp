@@ -1043,3 +1043,8 @@ u32 CGamePersistent::GetTimeHours()
 {
 	return Level().GetTimeHours();
 }
+
+bool CGamePersistent::IsTutorialSequencerActive()
+{
+	return ((g_tutorial && g_tutorial->IsActive()) || g_tutorial2 && g_tutorial2->IsActive());
+}

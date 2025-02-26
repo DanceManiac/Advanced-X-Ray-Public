@@ -106,6 +106,14 @@ public:
 
 	shared_str				m_check_lua_function;
 	shared_str				m_onframe_lua_function;
+
+	float GetTime() const
+	{
+		using namespace std::chrono;
+		auto now = steady_clock::now();
+		auto duration = now.time_since_epoch();
+		return duration_cast<milliseconds>(duration).count();
+	}
 };
 
 class CUISequenceSimpleItem: public CUISequenceItem

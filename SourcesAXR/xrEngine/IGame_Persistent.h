@@ -173,6 +173,8 @@ public:
 	virtual int						GetNightvisionType	() { return 0; };
 	virtual bool					IsCamFirstEye		() { return 0; };
 
+	virtual bool					IsTutorialSequencerActive() { return 0; };
+
 	virtual void					EditorOnFrame		() {};
 	virtual void					RegisterModel		(IRenderVisual* V)
 #ifndef _EDITOR
