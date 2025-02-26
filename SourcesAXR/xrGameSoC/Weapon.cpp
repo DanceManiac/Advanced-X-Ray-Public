@@ -2992,9 +2992,23 @@ void CWeapon::UpdateHudAdditional(Fmatrix& trans)
 				m_fFactor = m_fColPosition;
 		}
 
+		Fmatrix hud_rotation;
+		hud_rotation.identity();
+		hud_rotation.rotateX(curr_rot.x);
+
+		Fmatrix hud_rotation_y;
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateY(curr_rot.y);
+		hud_rotation.mulA_43(hud_rotation_y);
+
+		hud_rotation_y.identity();
+		hud_rotation_y.rotateZ(curr_rot.z);
+		hud_rotation.mulA_43(hud_rotation_y);
+
+		hud_rotation.translate_over(curr_offs);
+		trans.mulB_43(hud_rotation);
+
 		clamp(m_fFactor, 0.f, 1.f);
-		
-		summary_offset.add(curr_offs);
 	}
 	else
 	{
