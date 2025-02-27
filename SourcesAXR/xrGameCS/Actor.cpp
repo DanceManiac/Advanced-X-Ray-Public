@@ -3023,10 +3023,9 @@ void CActor::QuickKick()
 	if (pSettings->line_exist(anim_sect, "anm_use"))
 	{
 		if (active_item)
-		{
 			g_player_hud->detach_item(active_item);
-			SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
-		}
+
+		SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
 
 		string128 attach_visual{};
 		strconcat(sizeof(attach_visual), attach_visual, cur_knife->cNameVisual().c_str(), "_hud");
