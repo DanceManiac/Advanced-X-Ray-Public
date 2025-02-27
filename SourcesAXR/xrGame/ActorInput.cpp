@@ -209,14 +209,14 @@ void CActor::IR_OnKeyboardPress(int cmd)
 		} break;
 	case kQUICK_KICK:
 		{
-			if (hud_adj_mode)
+			if (hud_adj_mode || m_bQuickWeaponBlocked)
 				return;
 
 			QuickKick();
 		} break;
 	case kQUICK_GRENADE:
 		{
-			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode)
+			if (!GameConstants::GetQuickThrowGrenadesEnabled() || hud_adj_mode || m_bQuickWeaponBlocked)
 				return;
 
 			CGrenade* grenade = smart_cast<CGrenade*>(inventory().ItemFromSlot(GRENADE_SLOT));

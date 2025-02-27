@@ -115,7 +115,7 @@ void CActor::SetCantRunState(bool bDisable)
 		u_EventSend	(P);
 	};
 }
-void CActor::SetWeaponHideState (u32 State, bool bSet)
+void CActor::SetWeaponHideState (u32 State, bool bSet, bool bBlockQuickWpn)
 {
 	if (g_Alive() && this == Level().CurrentControlEntity())
 	{
@@ -125,6 +125,9 @@ void CActor::SetWeaponHideState (u32 State, bool bSet)
 		P.w_u8		(u8(bSet));
 		u_EventSend	(P);
 	};
+
+	if (bBlockQuickWpn)
+		m_bQuickWeaponBlocked = bSet;
 }
 static	u16 BestWeaponSlots [] = {
 	RIFLE_SLOT		,		// 2

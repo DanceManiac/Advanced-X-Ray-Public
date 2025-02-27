@@ -221,7 +221,7 @@ void CBloodsuckerAlien::activate()
 	if (!m_object->EnemyMan.get_enemy())	m_object->EnemyMan.add_enemy(Actor());
 
 //.	Actor()->inventory().setSlotsBlocked			(true);
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, truee, false);
 
 	// hide crosshair
 	m_crosshair_show			= !!psHUD_Flags.is(HUD_CROSSHAIR_RT);
@@ -247,7 +247,7 @@ void CBloodsuckerAlien::deactivate()
 
 	m_object->CControlledActor::release			();
 
-	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+	Actor()->SetWeaponHideState(INV_STATE_BLOCK_ALL, falsee, false);
 	if (m_crosshair_show)							psHUD_Flags.set(HUD_CROSSHAIR_RT,TRUE);
 
 	// Stop camera effector

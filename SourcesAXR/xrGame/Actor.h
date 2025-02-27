@@ -679,7 +679,7 @@ protected:
 		void							Check_for_AutoPickUp			();
 		void							SelectBestWeapon				(CObject* O);
 public:
-		void							SetWeaponHideState				(u32 State, bool bSet);
+		void							SetWeaponHideState				(u32 State, bool bSet, bool bBlockQuickWpn = true);
 private://IPhysicsShellHolder
 
 virtual	 void	_BCL	HideAllWeapons					( bool v ){ SetWeaponHideState(INV_STATE_BLOCK_ALL,v); }	
@@ -906,6 +906,8 @@ protected:
 
 	float					m_fJumpWeightFactor;
 	float					m_fSpeedWeightFactor;
+
+	bool					m_bQuickWeaponBlocked;
 
 DECLARE_SCRIPT_REGISTER_FUNCTION
 };

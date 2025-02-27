@@ -287,6 +287,8 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 
 	m_fJumpWeightFactor		= 4.0f;
 	m_fSpeedWeightFactor	= 8.0f;
+
+	m_bQuickWeaponBlocked	= false;
 }
 
 
@@ -3108,7 +3110,7 @@ void CActor::QuickKick()
 		if (active_item)
 			g_player_hud->detach_item(active_item);
 			
-		SetWeaponHideState(INV_STATE_BLOCK_ALL, true);
+		SetWeaponHideState(INV_STATE_BLOCK_ALL, true, false);
 
 		string128 attach_visual{};
 		strconcat(sizeof(attach_visual), attach_visual, cur_knife->cNameVisual().c_str(), "_hud");
@@ -3160,7 +3162,7 @@ void CActor::UpdateQuickKickAnim()
 			if (effector)
 				RemoveEffector(this, effUseItem);
 
-			SetWeaponHideState(INV_STATE_BLOCK_ALL, false);
+			SetWeaponHideState(INV_STATE_BLOCK_ALL, false, false);
 			m_iQuickKickAnimLength = Device.dwTimeGlobal;
 			m_iActionTiming = Device.dwTimeGlobal;
 			m_action_anim_sound.stop();

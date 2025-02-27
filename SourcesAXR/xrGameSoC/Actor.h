@@ -717,7 +717,7 @@ protected:
 		void							Check_for_AutoPickUp			();
 		void							SelectBestWeapon				(CObject* O);
 public:
-		void							SetWeaponHideState				(u32 State, bool bSet);
+		void							SetWeaponHideState				(u32 State, bool bSet, bool bBlockQuickWpn = true);
 		virtual CCustomOutfit*			GetOutfit() const;
 private:
 	CActorCondition				*m_entity_condition;
@@ -898,6 +898,8 @@ protected:
 
 	float						m_fJumpWeightFactor;
 	float						m_fSpeedWeightFactor;
+
+	bool						m_bQuickWeaponBlocked;
 
 public:
 	IC u32						get_state						() const { return this->mstate_real; }
