@@ -3960,6 +3960,17 @@ const float &CWeapon::hit_probability	() const
 	return					(m_hit_probability[egdNovice]);
 }
 
+void CWeapon::OnDrop()
+{
+	inherited::OnDrop();
+
+	if (&HUD().GetUI()->UIGame()->ActorMenu() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() == mmUndefined)
+	{
+		ps_ssfx_wpn_dof_1 = GameConstants::GetSSFX_DefaultDoF();
+		ps_ssfx_wpn_dof_2 = GameConstants::GetSSFX_DefaultDoF().z;
+	}
+}
+
 void CWeapon::OnStateSwitch	(u32 S)
 {
 	inherited::OnStateSwitch(S);

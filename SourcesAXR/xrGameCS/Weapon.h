@@ -717,6 +717,7 @@ public:
 			bool			show_indicators				();
 	virtual BOOL			ParentMayHaveAimBullet		();
 	virtual bool			ParentIsActor				();
+	virtual void			OnDrop						() override;
 			bool			WeaponSoundExist			(LPCSTR section, LPCSTR sound_name, bool log = false) const;
 	
 private:
