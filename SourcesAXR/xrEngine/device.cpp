@@ -542,7 +542,7 @@ void CRenderDevice::FrameMove()
 
 	Core.dwFrame = dwFrame;
 
-	if(!(Paused() && !bMainMenuActive()) || load_screen_renderer.IsActive() || g_pGamePersistent->IsTutorialSequencerActive())
+	if(!(Paused() && !bMainMenuActive()) || load_screen_renderer.IsActive() || g_pGamePersistent && g_pGamePersistent->IsTutorialSequencerActive())
 	{
 		TimerMM.Pause(FALSE);
 		dwTimeContinual	= TimerMM.GetElapsed_ms();
@@ -618,7 +618,7 @@ void CRenderDevice::Pause(BOOL bOn, BOOL bTimer, BOOL bSound
 #endif // DEBUG
 				TRUE;
 
-		if( bTimer && (!g_pGamePersistent || g_pGamePersistent->CanBePaused()) )
+		if( bTimer && (!g_pGamePersistent || g_pGamePersistent && g_pGamePersistent->CanBePaused()) )
 		{
 			g_pauseMngr.Pause				(TRUE);
 #ifdef DEBUG
