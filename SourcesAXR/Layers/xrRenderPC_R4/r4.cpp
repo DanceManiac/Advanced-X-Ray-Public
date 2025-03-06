@@ -310,8 +310,8 @@ void					CRender::create					()
 		o.ssao_opt_data = true;
 	}
 
-    if( o.ssao_hdao )
-        o.ssao_opt_data = false;
+	if( o.ssao_hdao )
+		o.ssao_opt_data = false;
 
 	//	MSAA option dependencies
 
@@ -894,7 +894,7 @@ static HRESULT create_shader				(
 
 		if ( !SUCCEEDED(_result) ) {
 			Log			("! VS: ", file_name);
-			Msg			("! CreatePixelShader hr == 0x%08x", _result);
+			Msg			("! CreateVertexShader hr == 0x%08x", _result);
 			return		E_FAIL;
 		}
 
@@ -1078,7 +1078,7 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Name		=	"SMAP_size";
 		defines[def_it].Definition	=	c_smapsize;
 		def_it						++	;
-        VERIFY(xr_strlen(c_smapsize) == 4 || atoi(c_smapsize) < 16384);
+		VERIFY(xr_strlen(c_smapsize) == 4 || atoi(c_smapsize) < 16384);
 		xr_strcat(sh_name, c_smapsize); len+=4;
 	}
 
@@ -1181,15 +1181,15 @@ HRESULT	CRender::shader_compile			(
 	}
 	sh_name[len]='0'+char(o.ssao_blur_on); ++len;
 
-    if (o.ssao_hdao)
-    {
-        defines[def_it].Name		=	"HDAO";
-        defines[def_it].Definition	=	"1";
-        def_it						++;
+	if (o.ssao_hdao)
+	{
+		defines[def_it].Name		=	"HDAO";
+		defines[def_it].Definition	=	"1";
+		def_it						++;
 		sh_name[len]='1'; ++len;
 		sh_name[len]='0'; ++len;
 		sh_name[len]='0'; ++len;
-    }
+	}
 	else {
 		sh_name[len]='0'; ++len;
 		sh_name[len]='0'+char(o.ssao_hbao); ++len;
@@ -1227,7 +1227,7 @@ HRESULT	CRender::shader_compile			(
 		}
 	}
 
-    if( o.dx10_msaa )
+	if( o.dx10_msaa )
 	{
 		if (o.dx10_msaa_opt) 
 		{
@@ -1827,7 +1827,7 @@ HRESULT	CRender::shader_compile			(
 	   defines[def_it].Name		=	"USE_MSAA";
 	   defines[def_it].Definition	=	"1";
 	   def_it						++;
-       sh_name[len]='1'; ++len;
+	   sh_name[len]='1'; ++len;
 
 	   static char samples[2];
 

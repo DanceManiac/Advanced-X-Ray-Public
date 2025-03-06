@@ -632,7 +632,7 @@ static HRESULT create_shader				(
 		_result			= HW.pDevice->CreateVertexShader(buffer, &svs_result->vs);
 		if ( !SUCCEEDED(_result) ) {
 			Log			("! VS: ", file_name);
-			Msg			("! CreatePixelShader hr == 0x%08x", _result);
+			Msg			("! CreateVertexShader hr == 0x%08x", _result);
 			return		E_FAIL;
 		}
 
@@ -723,7 +723,7 @@ HRESULT	CRender::shader_compile			(
 		defines[def_it].Name		=	"SMAP_size";
 		defines[def_it].Definition	=	c_smapsize;
 		def_it						++	;
-        VERIFY(xr_strlen(c_smapsize) == 4 || atoi(c_smapsize) < 16384);
+		VERIFY(xr_strlen(c_smapsize) == 4 || atoi(c_smapsize) < 16384);
 		xr_strcat(sh_name, c_smapsize); len+=4;
 	}
 

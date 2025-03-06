@@ -771,7 +771,7 @@ static HRESULT create_shader				(
 		_result			= HW.pDevice->CreateVertexShader(buffer, &svs_result->vs);
 		if ( !SUCCEEDED(_result) ) {
 			Log			("! VS: ", file_name);
-			Msg			("! CreatePixelShader hr == 0x%08x", _result);
+			Msg			("! CreateVertexShader hr == 0x%08x", _result);
 			return		E_FAIL;
 		}
 
