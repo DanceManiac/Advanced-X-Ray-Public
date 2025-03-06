@@ -78,6 +78,7 @@ CWeapon::CWeapon(LPCSTR name)
 	m_zoom_params.m_pNight_vision				= NULL;
 	m_zoom_params.m_fSecondVPFovFactor			= 0.0f;
 	m_zoom_params.m_f3dZoomFactor				= 0.0f;
+	m_zoom_params.m_fAltAimZoomFactor			= 50.f;
 
 	ResetShootingEffect		();
 	
@@ -1138,6 +1139,7 @@ void CWeapon::LoadCurrentScopeParams(LPCSTR section)
 		m_sScopeAttachSection = READ_IF_EXISTS(pSettings, r_string, m_section_id.c_str(), attach_sect, "");
 
 	m_zoom_params.m_fScopeZoomFactor = pSettings->r_float(section, "scope_zoom_factor");
+	m_zoom_params.m_fAltAimZoomFactor = READ_IF_EXISTS(pSettings, r_float, section, "alt_aim_zoom_factor", m_zoom_params.m_fIronSightZoomFactor);
 	Load3DScopeParams(section);
 
 	shared_str cur_scope_sect = (m_sScopeAttachSection.size() ? m_sScopeAttachSection : (m_eScopeStatus == ALife::eAddonAttachable) ? m_scopes[m_cur_scope].c_str() : "scope");
@@ -2485,11 +2487,11 @@ float CWeapon::CurrentZoomFactor()
 {
 	if (psActorFlags.test(AF_3DSCOPE_ENABLE) && IsScopeAttached())
 	{
-		return GameConstants::GetOGSE_WpnZoomSystem() ? 1.0f : bIsSecondVPZoomPresent() ? m_zoom_params.m_f3dZoomFactor : m_zoom_params.m_fScopeZoomFactor; // no change to main fov zoom when use second vp
+		return m_bAltZoomActive ? m_zoom_params.m_fAltAimZoomFactor : GameConstants::GetOGSE_WpnZoomSystem() ? 1.0f : bIsSecondVPZoomPresent() ? m_zoom_params.m_f3dZoomFactor : m_zoom_params.m_fScopeZoomFactor; // no change to main fov zoom when use second vp
 	}
 	else
 	{
-		return (IsScopeAttached() && !m_bAltZoomActive) ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
+		return (IsScopeAttached()) ? !m_bAltZoomActive ? m_zoom_params.m_fScopeZoomFactor : m_zoom_params.m_fAltAimZoomFactor : m_zoom_params.m_fIronSightZoomFactor;
 	}
 };
 
