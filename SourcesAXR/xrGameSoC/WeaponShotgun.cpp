@@ -39,6 +39,10 @@ void CWeaponShotgun::Load	(LPCSTR section)
 	if (m_bTriStateReload)
 	{
 		m_sounds.LoadSound(section, "snd_open_weapon", "m_sndOpen", false, m_eSoundOpen);
+
+		if (WeaponSoundExist(section, "snd_open_weapon_empty,", true))
+			m_sounds.LoadSound(section, "snd_open_weapon_empty,", "sndOpenEmpty", false, m_eSoundAddCartridge);
+
 		m_sounds.LoadSound(section, "snd_add_cartridge", "sndAddCartridge", false, m_eSoundAddCartridge);
 
 		if (WeaponSoundExist(section, "snd_add_cartridge_empty", true))
@@ -48,6 +52,9 @@ void CWeaponShotgun::Load	(LPCSTR section)
 			m_sounds.LoadSound(section, "snd_reload_misfire", "sndReloadMisfire", false, m_eSoundOpen);
 
 		m_sounds.LoadSound(section, "snd_close_weapon", "m_sndClose_2", false, m_eSoundClose_2);
+
+		if (WeaponSoundExist(section, "snd_close_weapon_empty,", true))
+			m_sounds.LoadSound(section, "snd_close_weapon_empty,", "sndClose_2_Empty", false, m_eSoundClose_2);
 	};
 }
 
@@ -295,7 +302,7 @@ void CWeaponShotgun::OnStateSwitch(u32 S, u32 oldState)
 void CWeaponShotgun::switch2_StartReload()
 {
 	if (!IsMisfire())
-		PlaySound("m_sndOpen", get_LastFP());
+		PlaySound((iAmmoElapsed == 0 && m_sounds.FindSoundItem("sndOpenEmpty", false)) ? "sndOpenEmpty" : "sndOpen", get_LastFP());
 	else
 		PlaySound("sndReloadMisfire", get_LastFP());
 
@@ -320,7 +327,7 @@ void CWeaponShotgun::switch2_EndReload	()
 
 	if (!IsMisfire())
 	{
-		PlaySound("sndClose_2", get_LastFP());
+		PlaySound((iAmmoElapsed == 0 && m_sounds.FindSoundItem("sndClose_2_Empty", false)) ? "sndClose_2_Empty" : "sndClose_2", get_LastFP());
 		PlayAnimCloseWeapon();
 	}
 	else
@@ -357,7 +364,11 @@ void CWeaponShotgun::PlayAnimAddOneCartridgeWeapon()
 void CWeaponShotgun::PlayAnimCloseWeapon()
 {
 	VERIFY(GetState()==eReload);
-	PlayHUDMotionIfExists({"anim_close_weapon", "anm_close_weapon", "anm_close"}, FALSE, GetState());
+
+	if (iAmmoElapsed == 0)
+		PlayHUDMotionIfExists({ "anm_close_weapon_empty", "anm_close_empty", "anm_close", "anim_close_weapon" }, true, GetState());
+	else
+		PlayHUDMotionIfExists({ "anim_close_weapon", "anm_close_weapon", "anm_close" }, FALSE, GetState());
 }
 
 void CWeaponShotgun::PlayAnimAim()
