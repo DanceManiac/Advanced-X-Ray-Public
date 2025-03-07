@@ -537,6 +537,16 @@ static class cl_device_params : public R_constant_setup
 
 } binder_device_params;
 
+static class cl_weapon_params : public R_constant_setup
+{
+	virtual void setup(R_constant* C)
+	{
+		float weapon_overheating = g_pGamePersistent->devices_shader_data.cur_weapon_overheating;
+		RCache.set_c(C, weapon_overheating, 0.0f, 0.0f, 0.0f);
+	}
+
+} binder_weapon_params;
+
 static class cl_inv_v : public R_constant_setup
 {
 	u32	marker;
@@ -991,6 +1001,8 @@ void	CBlender_Compile::SetMapping	()
 	r_Constant				("pda_params",		&binder_pda_params);
 	// Nightvision
 	r_Constant				("device_influence",	&binder_device_params);
+	// Weapon
+	r_Constant				("weapon_params",		&binder_weapon_params);
 	//Screen Space Shaders
 	r_Constant				("ssfx_wpn_dof_1",		&ssfx_wpn_dof_1);
 	r_Constant				("ssfx_wpn_dof_2",		&ssfx_wpn_dof_2);

@@ -913,13 +913,14 @@ void CWeaponMagazined::state_Fire	(float dt)
 		
 	VERIFY(!m_magazine.empty());
 //	Msg("%d && %d && (%d || %d) && (%d || %d)", !m_magazine.empty(), fTime<=0, IsWorking(), m_bFireSingleShot, m_iQueueSize < 0, m_iShotNum < m_iQueueSize);
-	while (!m_magazine.empty() && fTime<=0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
+	while (!m_magazine.empty() && fTime <= 0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
 	{
 		m_bFireSingleShot = false;
 
 		VERIFY(fTimeToFire>0.f);
 		fTime			+=	fTimeToFire;
-		
+		fTime			+= (fTimeToFire * (m_fOverheatingSubRpm / 100.f)) * m_fWeaponOverheating;
+
 		++m_iShotNum;
 		
 		OnShot			();

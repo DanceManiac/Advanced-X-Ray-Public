@@ -940,13 +940,9 @@ void CWeaponMagazined::state_Fire(float dt)
 		
 		VERIFY(!m_magazine.empty());
 
-		while (	!m_magazine.empty() && 
-				fShotTimeCounter<0 && 
-				(IsWorking() || m_bFireSingleShot) && 
-				(m_iQueueSize<0 || m_iShotNum<m_iQueueSize)
-			   )
+		while (!m_magazine.empty() && fShotTimeCounter < 0 && (IsWorking() || m_bFireSingleShot) && (m_iQueueSize < 0 || m_iShotNum < m_iQueueSize))
 		{
-			if( CheckForMisfire() )
+			if(CheckForMisfire())
 			{
 				StopShooting();
 				return;
@@ -955,7 +951,8 @@ void CWeaponMagazined::state_Fire(float dt)
 			m_bFireSingleShot		= false;
 
 			fShotTimeCounter		+=	fOneShotTime;
-			
+			fShotTimeCounter		+= (fOneShotTime * (m_fOverheatingSubRpm / 100.f)) * m_fWeaponOverheating;
+
 			++m_iShotNum;
 			
 			OnShot					();

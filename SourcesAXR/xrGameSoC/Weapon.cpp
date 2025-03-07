@@ -134,6 +134,14 @@ CWeapon::CWeapon(LPCSTR name)
 	m_mSafetyRotation.identity();
 
 	m_bBlockSilencerWithGL	= false;
+
+	m_fWeaponOverheating	= 0.0f;
+	m_fWeaponOverheatingInc = 0.0f;
+	m_fWeaponOverheatingDec = 0.0f;
+
+	m_fOverheatingSubRpm	= 0.0f;
+	m_fOverheatingMisfire	= 0.0f;
+	m_fOverheatingCond		= 0.0f;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -679,6 +687,12 @@ void CWeapon::Load		(LPCSTR section)
 	m_u8TracerColorID		= READ_IF_EXISTS(pSettings, r_u8, section, "tracers_color_ID", u8(-1));
 
 	m_bBlockSilencerWithGL	= READ_IF_EXISTS(pSettings, r_bool, section, "block_sil_if_gl", false);
+
+	m_fWeaponOverheatingInc = READ_IF_EXISTS(pSettings, r_float, section, "overheating_shot_inc", 0.0f);
+	m_fWeaponOverheatingDec = READ_IF_EXISTS(pSettings, r_float, section, "overheating_shot_dec", m_fWeaponOverheatingInc);
+	m_fOverheatingSubRpm	= READ_IF_EXISTS(pSettings, r_float, section, "overheating_rpm_factor", 0.0f);
+	m_fOverheatingMisfire	= READ_IF_EXISTS(pSettings, r_float, section, "overheating_misfire_factor", 0.0f);
+	m_fOverheatingCond		= READ_IF_EXISTS(pSettings, r_float, section, "overheating_condition_factor", 0.0f);
 
 	string256						temp;
 	for (int i=egdNovice; i<egdCount; ++i) 
@@ -1572,6 +1586,29 @@ void CWeapon::UpdateCL		()
 
 		g_player_hud->PlayBlendAnm(m_BlendAimIdleCam.name.c_str(), 2, m_BlendAimIdleCam.speed, m_BlendAimIdleCam.power, true, false);
 	}
+
+	if (H_Parent() == Level().CurrentEntity())
+	{
+		if (CActor* pA = smart_cast<CActor*>(H_Parent()); this == pA->inventory().ActiveItem())
+		{
+			if (!fis_zero(m_fWeaponOverheating))
+			{
+				m_fWeaponOverheating -= m_fWeaponOverheatingDec;
+				clamp(m_fWeaponOverheating, 0.0f, 1.0f);
+
+				if (m_fWeaponOverheating >= 0.5f)
+				{
+					Fvector vel{};
+					PHGetLinearVell(vel);
+					StartOverheatingParticles(get_LastFP(), vel);
+				}
+			}
+			else
+				StopOverheatingParticles();
+
+			g_pGamePersistent->devices_shader_data.cur_weapon_overheating = m_fWeaponOverheating;
+		}
+	}
 }
 
 void CWeapon::GetBoneOffsetPosDir(const shared_str& bone_name, Fvector& dest_pos, Fvector& dest_dir, const Fvector& offset)
@@ -2081,11 +2118,14 @@ float CWeapon::GetConditionMisfireProbability() const
 
 BOOL CWeapon::CheckForMisfire	()
 {
-	if (OnClient()) return FALSE;
+	if (OnClient())
+		return FALSE;
 
 	float rnd = ::Random.randF(0.f,1.f);
 	float mp = GetConditionMisfireProbability();
-	if(rnd < mp)
+	mp += m_fOverheatingMisfire * m_fWeaponOverheating;
+
+	if (rnd < mp)
 	{
 		FireEnd();
 

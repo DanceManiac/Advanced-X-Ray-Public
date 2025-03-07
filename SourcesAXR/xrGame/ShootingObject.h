@@ -166,6 +166,9 @@ protected:
 	//партиклы дыма
 			void			StartSmokeParticles	(const Fvector& play_pos, const Fvector& parent_vel);
 
+			void			StartOverheatingParticles(const Fvector& play_pos, const Fvector& parent_vel);
+			void			StopOverheatingParticles();
+
 	//партиклы полосы от пули
 			void			StartShotParticles	();
 
@@ -184,8 +187,12 @@ protected:
 	shared_str				m_sFlameParticlesCurrent;
 	//для выстрела 1м и 2м видом стрельбы
 	shared_str				m_sFlameParticles;
+	// Перегрев
+	shared_str				m_sOverheatingParticles;
+
 	//объект партиклов огня
 	CParticlesObject*		m_pFlameParticles;
+	CParticlesObject*		m_pOverheatingParticles;
 
 	//имя пратиклов для дыма
 	shared_str				m_sSmokeParticlesCurrent;

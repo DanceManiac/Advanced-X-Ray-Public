@@ -37,9 +37,11 @@ CShootingObject::CShootingObject(void)
 	m_fTimeToAim					= 0.0f;
 
 	//particles
-	m_sFlameParticlesCurrent		= m_sFlameParticles = NULL;
-	m_sSmokeParticlesCurrent		= m_sSmokeParticles = NULL;
-	m_sShellParticles				= NULL;
+	m_sFlameParticlesCurrent		= m_sFlameParticles = nullptr;
+	m_sSmokeParticlesCurrent		= m_sSmokeParticles = nullptr;
+	m_sOverheatingParticles			= nullptr;
+	m_sShellParticles				= nullptr;
+
 	m_bForcedParticlesHudMode		= false;
 	m_bParticlesHudMode				= false;
 	
@@ -56,7 +58,8 @@ CShootingObject::~CShootingObject(void)
 
 void CShootingObject::reinit()
 {
-	m_pFlameParticles	= NULL;
+	m_pFlameParticles		= nullptr;
+	m_pOverheatingParticles	= nullptr;
 }
 
 void CShootingObject::Load	(LPCSTR section)
@@ -80,6 +83,8 @@ void CShootingObject::Load	(LPCSTR section)
 	LoadLights			(section, "");
 	LoadShellParticles	(section, "");
 	LoadFlameParticles	(section, "");
+
+	m_sOverheatingParticles = READ_IF_EXISTS(pSettings, r_string, section, "overheating_particles", nullptr);
 }
 
 void CShootingObject::Light_Create		()
@@ -293,13 +298,30 @@ void CShootingObject::OnShellDrop	(const Fvector& play_pos,
 
 
 //партиклы дыма
-void CShootingObject::StartSmokeParticles	(const Fvector& play_pos,
-											const Fvector& parent_vel)
+void CShootingObject::StartSmokeParticles	(const Fvector& play_pos, const Fvector& parent_vel)
 {
-	CParticlesObject* pSmokeParticles = NULL;
+	CParticlesObject* pSmokeParticles = nullptr;
 	StartParticles(pSmokeParticles, *m_sSmokeParticlesCurrent, play_pos, parent_vel, true);
 }
 
+void CShootingObject::StartOverheatingParticles(const Fvector& play_pos, const Fvector& parent_vel)
+{
+	m_pOverheatingParticles = nullptr;
+	StartParticles(m_pOverheatingParticles, *m_sOverheatingParticles, play_pos, parent_vel, true);
+}
+
+void CShootingObject::StopOverheatingParticles()
+{
+	if (!m_sOverheatingParticles.size())
+		return;
+
+	if (!m_pOverheatingParticles)
+		return;
+
+	m_pOverheatingParticles->SetAutoRemove(true);
+	m_pOverheatingParticles->Stop();
+	m_pOverheatingParticles = nullptr;
+}
 
 void CShootingObject::StartFlameParticles	()
 {
@@ -318,8 +340,8 @@ void CShootingObject::StartFlameParticles	()
 	UpdateFlameParticles();
 	BOOL hudMode = IsHudModeNow() && m_bParticlesHudMode;
 	m_pFlameParticles->Play(hudMode);
-
 }
+
 void CShootingObject::StopFlameParticles	()
 {
 	if(0==m_sFlameParticlesCurrent.size()) return;

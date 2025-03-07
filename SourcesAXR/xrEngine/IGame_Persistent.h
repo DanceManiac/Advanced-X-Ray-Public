@@ -214,6 +214,7 @@ public:
 		float device_psy_zone_influence;
 		float device_radiation_zone_influence;
 		float nightvision_lum_factor;
+		float cur_weapon_overheating;
 	} devices_shader_data;
 };
 

@@ -75,8 +75,8 @@ void CWeapon::FireTrace		(const Fvector& P, const Fvector& D)
 	//повысить изношенность оружия с учетом влияния конкретного патрона
 //	float Deterioration = GetWeaponDeterioration();
 //	Msg("Deterioration = %f", Deterioration);
-	ChangeCondition(-GetWeaponDeterioration()*l_cartridge.param_s.impair);
-
+	float final_cond = (GetWeaponDeterioration() * l_cartridge.param_s.impair) + (m_fOverheatingCond * m_fWeaponOverheating);
+	ChangeCondition(-final_cond);
 	
 	float fire_disp = 0.f;
 	CActor* tmp_actor = NULL;
@@ -160,6 +160,15 @@ void CWeapon::FireEnd()
 {
 	CShootingObject::FireEnd();
 	StopShotEffector();
+}
+
+void CWeapon::FireBullet(const Fvector& pos, const Fvector& shot_dir, float fire_disp, const CCartridge& cartridge, u16 parent_id, u16 weapon_id, bool send_hit)
+{
+	CShootingObject::FireBullet(pos, shot_dir, fire_disp, cartridge, parent_id, weapon_id, send_hit);
+
+	m_fWeaponOverheating += m_fWeaponOverheatingInc;
+
+	clamp(m_fWeaponOverheating, 0.0f, 1.0f);
 }
 
 void CWeapon::StartFlameParticles2	()

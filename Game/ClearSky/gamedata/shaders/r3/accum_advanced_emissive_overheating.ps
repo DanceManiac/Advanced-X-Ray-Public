@@ -1,0 +1,31 @@
+/**
+ * @ Version: Advanced X-Ray Update 5
+ * @ Description: Mask-based emissive shader for weapon overheating
+ * @ Modified time: 07.03.2025 16:33
+ * @ Author: M.F.S. Team (Dance Maniac)
+ * @ Link: https://ap-pro.ru/forums/topic/2813-advanced-x-ray/
+ */
+
+#include "common.h"
+#include "sload.h"
+
+Texture2D s_lightmap;
+uniform float4 weapon_params; // x - overheating, yzq - null
+
+float4 main( p_flat I ) : SV_Target
+{
+	// diffuse
+	float3 D = tbase(I.tcdh); // IN: rgb.a
+	D	= SRGBToLinear(D);
+	
+	float4 lightmapChannels = s_lightmap.Sample(smp_base, I.tcdh).rgba;
+	float brightness = smoothstep(0.5, 1.0, weapon_params.x) * lightmapChannels.w;
+	
+	float3 glowColor = lightmapChannels.xyz;
+	
+	float4 color = float4(D.rgb, 1);
+
+    float3 finalColor = (D.rgb + glowColor) * brightness;
+
+    return float4(finalColor, brightness);
+}

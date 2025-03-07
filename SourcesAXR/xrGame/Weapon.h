@@ -408,6 +408,11 @@ public:
 			void			SetStrapBone0_ID	(int bone_id) { m_strap_bone0_id = bone_id; }
 			void			SetStrapBone1_ID	(int bone_id) { m_strap_bone1_id = bone_id; }
 
+			float			GetOverheating		() { return m_fWeaponOverheating; }
+			void			SetOverheating		(float overheating) { m_fWeaponOverheating = overheating; }
+
+	virtual void			FireBullet			(const Fvector& pos, const Fvector& shot_dir, float fire_disp, const CCartridge& cartridge, u16 parent_id, u16 weapon_id, bool send_hit);
+
 protected:
 	LPCSTR					m_strap_bone0;
 	LPCSTR					m_strap_bone1;
@@ -437,6 +442,9 @@ protected:
 	Fmatrix					m_mSafetyRotation;
 
 	bool					m_bBlockSilencerWithGL;
+
+	float					m_fWeaponOverheating, m_fWeaponOverheatingInc, m_fWeaponOverheatingDec;
+	float					m_fOverheatingSubRpm, m_fOverheatingMisfire, m_fOverheatingCond;
 
 public:
 	//загружаемые параметры
