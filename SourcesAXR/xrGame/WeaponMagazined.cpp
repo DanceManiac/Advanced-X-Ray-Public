@@ -106,6 +106,7 @@ void CWeaponMagazined::Load	(LPCSTR section)
 
 	//Alundaio: LAYERED_SND_SHOOT
 	m_sounds.LoadSound(section, "snd_shoot", "sndShot", false, m_eSoundShot);
+	m_sounds.LoadSound(section, "snd_mag_shot", "sndMagShot", false, m_eSoundShot);
 
 	if (WeaponSoundExist(section, "snd_shoot_actor", true))
 	{
@@ -1068,6 +1069,24 @@ void CWeaponMagazined::OnShot()
 		luabind::functor<void> funct;
 		if (ai().script_engine().functor("mfs_functions.on_actor_shoot", funct))
 			funct();
+
+		if (auto mag_shot_snd = m_sounds.FindSoundItem("sndMagShot", false))
+		{
+			float threshold = iMagazineSize * 0.30f;
+			float volume = 0.0f;
+
+			if (iAmmoElapsed <= threshold && threshold > 0)
+			{
+				volume = 2.0f * (1.0f - (iAmmoElapsed / threshold));
+				clamp(volume, 0.0f, 2.0f);
+
+				if (mag_shot_snd->m_activeSnd && mag_shot_snd->m_activeSnd->volume > volume)
+					mag_shot_snd->m_activeSnd->volume = volume;
+
+				m_sounds.PlaySound("sndMagShot", get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+				mag_shot_snd->m_activeSnd->volume = volume;
+			}
+		}
 
 		string128 sndName;
 		strconcat(sizeof(sndName), sndName, m_sSndShotCurrent.c_str(), "Actor", (iAmmoElapsed == 1) ? "Last" : "");
