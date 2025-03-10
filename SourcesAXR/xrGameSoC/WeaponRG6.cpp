@@ -149,6 +149,23 @@ u8 CWeaponRG6::AddCartridge		(u8 cnt)
 	return k;
 }
 
+void CWeaponRG6::Reload()
+{
+	if (m_bTriStateReload)
+		inheritedSG::TriStateReload();
+	else
+	{
+		if (!smart_cast<CWeaponAmmo*>(m_pInventory->GetAny(m_ammoTypes[m_ammoType].c_str())))
+			return;
+
+		shared_str fake_grenade_name = pSettings->r_string(m_ammoTypes[m_ammoType].c_str(), "fake_grenade_name");
+		inheritedSG::Reload();
+
+		for (int i = 0; i < iMagazineSize; i++)
+			inheritedRL::SpawnRocket(*fake_grenade_name, this);
+	}
+}
+
 void CWeaponRG6::OnEvent(NET_Packet& P, u16 type) 
 {
 	inheritedSG::OnEvent(P,type);
