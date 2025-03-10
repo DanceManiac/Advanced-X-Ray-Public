@@ -44,17 +44,18 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_sSndShotCurrent = nullptr;
 	m_sSilencerFlameParticles = m_sSilencerSmokeParticles = NULL;
 
-	m_bFireSingleShot = false;
-	m_iShotNum = 0;
-	bullet_cnt = 0;
-	m_iQueueSize = WEAPON_ININITE_QUEUE;
-	m_bLockType = false;
-	m_bAutoreloadEnabled = READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "autoreload_enabled", true);
-	m_bNeedBulletInGun = false;
+	m_bFireSingleShot		= false;
+	m_iShotNum				= 0;
+	bullet_cnt				= 0;
+	m_iQueueSize			= WEAPON_ININITE_QUEUE;
+	m_bLockType				= false;
+	m_bAutoreloadEnabled	= READ_IF_EXISTS(pAdvancedSettings, r_bool, "gameplay", "autoreload_enabled", true);
+	m_bNeedBulletInGun		= false;
 	m_bHasDifferentFireModes = false;
-	m_opened = false;
+	m_opened				= false;
 	m_bUseFiremodeChangeAnim = true;
-	bHasBulletsToHide = false;
+	bHasBulletsToHide		= false;
+	m_bIsRevolver			= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
@@ -155,6 +156,25 @@ void CWeaponMagazined::Load	(LPCSTR section)
 		m_sounds.LoadSound(section, "snd_reload_jammed", "sndReloadJammed", m_eSoundReload);
 	if (WeaponSoundExist(section, "snd_pump_gun", true))
 		m_sounds.LoadSound(section, "snd_pump_gun", "sndPumpGun", m_eSoundReload);
+
+	// Revolvers reload
+	m_bIsRevolver = READ_IF_EXISTS(pSettings, r_bool, section, "is_revolver", false);
+
+	if (m_bIsRevolver)
+	{
+		if (WeaponSoundExist(section, "snd_reload_6", true))
+			m_sounds.LoadSound(section, "snd_reload_6", "sndReload6", m_eSoundReload);
+		if (WeaponSoundExist(section, "snd_reload_5", true))
+			m_sounds.LoadSound(section, "snd_reload_5", "sndReload5", m_eSoundReload);
+		if (WeaponSoundExist(section, "snd_reload_4", true))
+			m_sounds.LoadSound(section, "snd_reload_4", "sndReload4", m_eSoundReload);
+		if (WeaponSoundExist(section, "snd_reload_3", true))
+			m_sounds.LoadSound(section, "snd_reload_3", "sndReload3", m_eSoundReload);
+		if (WeaponSoundExist(section, "snd_reload_2", true))
+			m_sounds.LoadSound(section, "snd_reload_2", "sndReload2", m_eSoundReload);
+		if (WeaponSoundExist(section, "snd_reload_1", true))
+			m_sounds.LoadSound(section, "snd_reload_1", "sndReload1", m_eSoundReload);
+	}
 
 	//звуки и партиклы глушителя, еслит такой есть
 	if (m_eSilencerStatus == ALife::eAddonAttachable)
@@ -1091,7 +1111,7 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 
 			bool bNeedputBullet = iAmmoElapsed > 0;
 
-			if (m_bNeedBulletInGun && bNeedputBullet)
+			if (!m_bIsRevolver && m_bNeedBulletInGun && bNeedputBullet)
 			{
 				FirstBulletInGun = m_magazine.back();
 				m_magazine.pop_back();
@@ -1100,7 +1120,7 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 
 			ReloadMagazine();
 
-			if (m_bNeedBulletInGun && bNeedputBullet)
+			if (!m_bIsRevolver && m_bNeedBulletInGun && bNeedputBullet)
 			{
 				m_magazine.push_back(FirstBulletInGun);
 				iAmmoElapsed++;
@@ -1120,8 +1140,13 @@ void CWeaponMagazined::OnAnimationEnd(u32 state)
 		case eUnMisfire:
 		{
 			bMisfire = false;
-			m_magazine.pop_back();
-			iAmmoElapsed--;
+			
+			if (!m_bIsRevolver)
+			{
+				m_magazine.pop_back();
+				iAmmoElapsed--;
+			}
+
 			SwitchState(eIdle);
 		} break; // End of UnMisfire animation
 		case eFiremodePrev:
@@ -1385,13 +1410,24 @@ void CWeaponMagazined::switch2_Empty()
 }
 void CWeaponMagazined::PlayReloadSound()
 {
-	if (iAmmoElapsed == 0)
-		if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
-			PlaySound("sndReloadEmpty", get_LastFP());
+	if (m_bIsRevolver)
+	{
+		string128 sndReloadName;
+		strconcat(sizeof(sndReloadName), sndReloadName, "sndReload", (iAmmoElapsed > 0) ? std::to_string(iAmmoElapsed).c_str() : "Empty");
+
+		if (m_sounds.FindSoundItem(sndReloadName, false))
+			m_sounds.PlaySound(sndReloadName, get_LastFP(), H_Root(), !!GetHUDmode(), false, (u8)-1);
+	}
+	else
+	{
+		if (iAmmoElapsed == 0)
+			if (m_sounds.FindSoundItem("sndReloadEmpty", false) && psWpnAnimsFlag.test(ANM_RELOAD_EMPTY))
+				PlaySound("sndReloadEmpty", get_LastFP());
+			else
+				PlaySound("sndReload", get_LastFP());
 		else
 			PlaySound("sndReload", get_LastFP());
-	else
-		PlaySound("sndReload", get_LastFP());
+	}
 }
 
 void CWeaponMagazined::switch2_Reload()
@@ -1993,10 +2029,21 @@ void CWeaponMagazined::PlayAnimReload()
 {
 	VERIFY(GetState() == eReload);
 
-	if (iAmmoElapsed == 0)
-		PlayHUDMotionIfExists({ "anm_reload_empty", "anm_reload", "anim_reload" }, true, GetState());
+	if (m_bIsRevolver)
+	{
+		string128 anmReloadName;
+		strconcat(sizeof(anmReloadName), anmReloadName, "anm_reload_", (iAmmoElapsed > 0) ? std::to_string(iAmmoElapsed).c_str() : "empty");
+
+		if (isHUDAnimationExist(anmReloadName))
+			PlayHUDMotionIfExists({ anmReloadName, "anm_reload" }, true, GetState());
+	}
 	else
-		PlayHUDMotionIfExists({ "anim_reload", "anm_reload" }, TRUE, GetState());
+	{
+		if (iAmmoElapsed == 0)
+			PlayHUDMotionIfExists({ "anm_reload_empty", "anm_reload", "anim_reload" }, true, GetState());
+		else
+			PlayHUDMotionIfExists({ "anim_reload", "anm_reload" }, TRUE, GetState());
+	}
 }
 
 void CWeaponMagazined::PlayAnimAim()
@@ -2524,7 +2571,7 @@ void CWeaponMagazined::CheckMagazine()
 
 	if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY) && iAmmoElapsed >= 1 && m_bNeedBulletInGun == false)
 	{
-		m_bNeedBulletInGun = true;
+		m_bNeedBulletInGun = !m_bIsRevolver ? true : false;
 	}
 	else if (psWpnAnimsFlag.test(ANM_RELOAD_EMPTY) && iAmmoElapsed == 0 && m_bNeedBulletInGun == true)
 	{
