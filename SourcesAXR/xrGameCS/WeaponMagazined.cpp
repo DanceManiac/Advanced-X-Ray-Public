@@ -64,6 +64,7 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	m_sSndShotCurrent			= nullptr;
 
 	m_bIsRevolver				= false;
+	m_bIsMosin					= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
