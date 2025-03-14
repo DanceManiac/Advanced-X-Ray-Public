@@ -30,6 +30,7 @@
 #include "../Medkit.h"
 #include "../Antirad.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../player_hud.h"
 #include "../CustomDetector.h"
 #include "../AnomalyDetector.h"
@@ -83,6 +84,12 @@ void CUIActorMenu::InitInventoryMode()
 
 	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
 		m_pInventoryBackpackList->Show(true);
+
+	if (m_pInventoryHelmetList && GameConstants::GetHelmetSlotEnabled())
+		m_pInventoryHelmetList->Show(true);
+
+	if (m_pInventorySecondHelmetList && GameConstants::GetSecondHelmetSlotEnabled())
+		m_pInventorySecondHelmetList->Show(true);
 
 	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
 		m_pInventoryDosimeterList->Show(true);
@@ -296,6 +303,8 @@ void CUIActorMenu::OnInventoryAction(PIItem pItem, u16 action_type)
 		GameConstants::GetBinocularSlotEnabled() ? m_pInventoryBinocularList : nullptr,
 		GameConstants::GetTorchSlotEnabled() ? m_pInventoryTorchList : nullptr,
 		GameConstants::GetBackpackSlotEnabled() ? m_pInventoryBackpackList : nullptr,
+		GameConstants::GetHelmetSlotEnabled() ? m_pInventoryHelmetList : nullptr,
+		GameConstants::GetSecondHelmetSlotEnabled() ? m_pInventorySecondHelmetList : nullptr,
 		GameConstants::GetDosimeterSlotEnabled() ? m_pInventoryDosimeterList : nullptr,
 		GameConstants::GetPantsSlotEnabled() ? m_pInventoryPantsList : nullptr,
 		GameConstants::GetPdaSlotEnabled() ? m_pInventoryPdaList : nullptr,
@@ -488,6 +497,12 @@ void CUIActorMenu::InitInventoryContents(CUIDragDropListEx* pBagList)
 	if (GameConstants::GetBackpackSlotEnabled())
 		InitCellForSlot(BACKPACK_SLOT);
 
+	if (GameConstants::GetHelmetSlotEnabled())
+		InitCellForSlot(HELMET_SLOT);
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+		InitCellForSlot(SECOND_HELMET_SLOT);
+
 	if (GameConstants::GetDosimeterSlotEnabled())
 		InitCellForSlot(DOSIMETER_SLOT);
 
@@ -567,6 +582,36 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place)
 
 	bool b_own_item							= (iitem->parent_id()==m_pActorInvOwner->object_id());
 
+	CCustomOutfit* pOutfit = m_pActorInvOwner->GetOutfit();
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+	if (_slot == HELMET_SLOT || _slot == SECOND_HELMET_SLOT)
+	{
+		if (pOutfit || pHelmet1 || pHelmet2)
+		{
+			CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+			CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+			if (_slot == HELMET_SLOT)
+			{
+				if (pOutfit && !pOutfit->bIsHelmetAvaliable)
+					return false;
+
+				if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+					return false;
+			}
+			else if (_slot == SECOND_HELMET_SLOT)
+			{
+				if (pOutfit && !pOutfit->bIsSecondHelmetAvaliable)
+					return false;
+
+				if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
+					return false;
+			}
+		}
+	}
+
 	if(m_pActorInvOwner->inventory().CanPutInSlot(iitem))
 	{
 		CUIDragDropListEx* new_owner		= GetSlotList(_slot);
@@ -574,6 +619,63 @@ bool CUIActorMenu::ToSlot(CUICellItem* itm, bool force_place)
 		if ( _slot == GRENADE_SLOT || !new_owner )
 		{
 			return true; //fake, sorry (((
+		}
+
+		if (_slot == OUTFIT_SLOT)
+		{
+			CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(iitem);
+			if (pOutfit)
+			{
+				if (GameConstants::GetHelmetSlotEnabled() && !pOutfit->bIsHelmetAvaliable)
+				{
+					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
+					if (helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
+						ToBag(helmet_cell, false);
+					}
+				}
+
+				if (GameConstants::GetSecondHelmetSlotEnabled() && !pOutfit->bIsSecondHelmetAvaliable)
+				{
+					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
+					if (second_helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
+						ToBag(second_helmet_cell, false);
+					}
+				}
+			}
+		}
+
+		if (GameConstants::GetSecondHelmetSlotEnabled() && GameConstants::GetHelmetSlotEnabled())
+		{
+			CHelmet* helmet = smart_cast<CHelmet*>(iitem);
+
+			if (_slot == HELMET_SLOT)
+			{
+				if (helmet && !helmet->m_bSecondHelmetEnabled)
+				{
+					CUIDragDropListEx* second_helmet_list = GetSlotList(SECOND_HELMET_SLOT);
+					if (second_helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* second_helmet_cell = second_helmet_list->GetItemIdx(0);
+						ToBag(second_helmet_cell, false);
+					}
+				}
+			}
+			else if (_slot == SECOND_HELMET_SLOT)
+			{
+				if (helmet && !helmet->m_bSecondHelmetEnabled)
+				{
+					CUIDragDropListEx* helmet_list = GetSlotList(HELMET_SLOT);
+					if (helmet_list->ItemsCount() == 1)
+					{
+						CUICellItem* helmet_cell = helmet_list->GetItemIdx(0);
+						ToBag(helmet_cell, false);
+					}
+				}
+			}
 		}
 
 		bool result							= (!b_own_item) || m_pActorInvOwner->inventory().Slot(iitem);
@@ -787,6 +889,22 @@ CUIDragDropListEx* CUIActorMenu::GetSlotList(u32 slot_idx)
 				return m_pInventoryPdaList;
 			}
 		}break;
+
+		case HELMET_SLOT:
+		{
+			if (GameConstants::GetHelmetSlotEnabled())
+			{
+				return m_pInventoryHelmetList;
+			}
+		}break;
+
+		case SECOND_HELMET_SLOT:
+		{
+			if (GameConstants::GetSecondHelmetSlotEnabled())
+			{
+				return m_pInventorySecondHelmetList;
+			}
+		}break;
 	};
 	return NULL;
 }
@@ -952,13 +1070,14 @@ void CUIActorMenu::ActivatePropertiesBox()
 void CUIActorMenu::PropertiesBoxForSlots( PIItem item, bool& b_show )
 {
 	CCustomOutfit* pOutfit	= smart_cast<CCustomOutfit*>( item );
+	CHelmet* pHelmet		= smart_cast<CHelmet*>		( item );
 	CInventory*  inv		= &m_pActorInvOwner->inventory();
 
 	// Флаг-признак для невлючения пункта контекстного меню: Dreess Outfit, если костюм уже надет
 	bool bAlreadyDressed	= false;
 	u32 const cur_slot		= item->GetSlot();
 
-	if (!pOutfit && cur_slot != NO_ACTIVE_SLOT
+	if (!pOutfit && !pHelmet && cur_slot != NO_ACTIVE_SLOT
 		&& !inv->m_slots[cur_slot].m_bPersistent && inv->CanPutInSlot(item) )
 	{
 		m_UIPropertiesBox->AddItem( "st_move_to_slot",  NULL, INVENTORY_TO_SLOT_ACTION );
@@ -975,7 +1094,10 @@ void CUIActorMenu::PropertiesBoxForSlots( PIItem item, bool& b_show )
 	{
 		if( !pOutfit )
 		{
-			m_UIPropertiesBox->AddItem( "st_move_to_bag",  NULL, INVENTORY_TO_BAG_ACTION );
+			if (!pHelmet)
+				m_UIPropertiesBox->AddItem("st_move_to_bag", NULL, INVENTORY_TO_BAG_ACTION);
+			else
+				m_UIPropertiesBox->AddItem("st_undress_helmet", NULL, INVENTORY_TO_BAG_ACTION);
 		}
 		else
 		{
@@ -984,9 +1106,16 @@ void CUIActorMenu::PropertiesBoxForSlots( PIItem item, bool& b_show )
 		bAlreadyDressed = true;
 		b_show			= true;
 	}
-	if ( pOutfit && !bAlreadyDressed )
+	
+	CCustomOutfit* outfit_in_slot = m_pActorInvOwner->GetOutfit();
+	CHelmet* helmet_in_slot = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* second_helmet_in_slot = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+	
+	if (pHelmet && !bAlreadyDressed && (!outfit_in_slot || outfit_in_slot->bIsHelmetAvaliable) && 
+		(!helmet_in_slot || helmet_in_slot->m_bSecondHelmetEnabled) && 
+		(!second_helmet_in_slot || second_helmet_in_slot->m_bSecondHelmetEnabled))
 	{
-		m_UIPropertiesBox->AddItem( "st_dress_outfit",  NULL, INVENTORY_TO_SLOT_ACTION );
+		m_UIPropertiesBox->AddItem( "st_dress_helmet",  NULL, INVENTORY_TO_SLOT_ACTION );
 		b_show			= true;
 	}
 }
@@ -1170,22 +1299,36 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 	CCustomDetector* item_in_art_detector_slot = smart_cast<CCustomDetector*>(inv->ItemFromSlot(DETECTOR_SLOT));
 	CDetectorAnomaly* item_in_anomaly_detector_slot = smart_cast<CDetectorAnomaly*>(inv->ItemFromSlot(DOSIMETER_SLOT));
 	CCustomOutfit* item_in_outfit_slot = smart_cast<CCustomOutfit*>(inv->ItemFromSlot(OUTFIT_SLOT));
+	CHelmet* item_in_helmet_slot = smart_cast<CHelmet*>(inv->ItemFromSlot(HELMET_SLOT));
+	CHelmet* item_in_helmet2_slot = smart_cast<CHelmet*>(inv->ItemFromSlot(SECOND_HELMET_SLOT));
 	CWeapon* item_in_knife_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(KNIFE_SLOT));
 	CWeapon* item_in_wpn1_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(PISTOL_SLOT));
 	CWeapon* item_in_wpn2_slot = smart_cast<CWeapon*>(inv->ItemFromSlot(RIFLE_SLOT));
 
 	bool outfit_use_filter = false;
+	bool helmet_use_filter = false;
+	bool helmet2_use_filter = false;
 
 	bool can_repair_outfit = false;
+	bool can_repair_helmet = false;
+	bool can_repair_helmet2 = false;
 	bool can_repair_knife = false;
 	bool can_repair_wpn1 = false;
 	bool can_repair_wpn2 = false;
 
 	if (item_in_outfit_slot && pFilter)
 		outfit_use_filter = item_in_outfit_slot->m_bUseFilter && item_in_outfit_slot->m_fFilterCondition <= 0.99f && item_in_outfit_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_outfit_slot->m_SuitableFilters);
+	if (item_in_helmet_slot && pFilter)
+		helmet_use_filter = item_in_helmet_slot->m_bUseFilter && item_in_helmet_slot->m_fFilterCondition <= 0.99f && item_in_helmet_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_helmet_slot->m_SuitableFilters);
+	if (item_in_helmet2_slot && pFilter)
+		helmet2_use_filter = item_in_helmet2_slot->m_bUseFilter && item_in_helmet2_slot->m_fFilterCondition <= 0.99f && item_in_helmet2_slot->IsNecessaryItem(pFilter->cNameSect().c_str(), item_in_helmet2_slot->m_SuitableFilters);
 
 	if (item_in_outfit_slot && pRepairKit)
 		can_repair_outfit = item_in_outfit_slot->GetCondition() < 0.9f && item_in_outfit_slot->GetCondition() >= 0.4f && item_in_outfit_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_outfit_slot->m_SuitableRepairKits);
+	if (item_in_helmet_slot && pRepairKit)
+		can_repair_helmet = item_in_helmet_slot->GetCondition() < 0.9f && item_in_helmet_slot->GetCondition() >= 0.4f && item_in_helmet_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_helmet_slot->m_SuitableRepairKits);
+	if (item_in_helmet2_slot && pRepairKit)
+		can_repair_helmet2 = item_in_helmet2_slot->GetCondition() < 0.9f && item_in_helmet2_slot->GetCondition() >= 0.4f && item_in_helmet2_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_helmet2_slot->m_SuitableRepairKits);
 	if (item_in_knife_slot && pRepairKit)
 		can_repair_knife = item_in_knife_slot->GetCondition() < 0.9f && item_in_knife_slot->GetCondition() >= 0.4f && item_in_knife_slot->IsNecessaryItem(pRepairKit->cNameSect().c_str(), item_in_knife_slot->m_SuitableRepairKits);
 	if (item_in_wpn1_slot && pRepairKit)
@@ -1244,6 +1387,23 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, FILTER_CHANGE_OUTFIT);
 			b_show = true;
 		}
+
+		if (item_in_helmet_slot && helmet_use_filter)
+		{
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
+			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, FILTER_CHANGE_HELMET);
+			b_show = true;
+		}
+
+		if (item_in_helmet2_slot && helmet2_use_filter)
+		{
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_change_filter");
+			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, FILTER_CHANGE_HELMET);
+			b_show = true;
+		}
+
 		return;
 	}
 	else if (pRepairKit)
@@ -1266,6 +1426,48 @@ void CUIActorMenu::PropertiesBoxForUsing( PIItem item, bool& b_show )
 			}
 
 			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_outfit_slot, REPAIR_KIT_OUTFIT, repair_hint.c_str());
+			b_show = true;
+		}
+
+		if (item_in_helmet_slot && can_repair_helmet)
+		{
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
+			str.printf("%s %s", str.c_str(), item_in_helmet_slot->m_name.c_str());
+
+			shared_str repair_hint{};
+
+			if (!item_in_helmet_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_helmet_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_helmet_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_helmet_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet_slot, REPAIR_KIT_HELMET, repair_hint.c_str());
+			b_show = true;
+		}
+
+		if (item_in_helmet2_slot && can_repair_helmet2)
+		{
+			shared_str str = CStringTable().translate(use_text ? use_text : "st_repair");
+			str.printf("%s %s", str.c_str(), item_in_helmet2_slot->m_name.c_str());
+
+			shared_str repair_hint{};
+
+			if (!item_in_helmet2_slot->m_ItemsForRepair.empty())
+			{
+				repair_hint = CStringTable().translate("st_materials_for_repair");
+
+				for (int i = 0; i < item_in_helmet2_slot->m_ItemsForRepair.size(); i++)
+				{
+					repair_hint.printf("%s\\n%s: x%s;\\n", repair_hint.c_str(), CStringTable().translate(item_in_helmet2_slot->m_ItemsForRepairNames[i]).c_str(), std::to_string(item_in_helmet2_slot->m_ItemsForRepair[i].second));
+				}
+			}
+
+			m_UIPropertiesBox->AddItem(str.c_str(), (void*)item_in_helmet2_slot, REPAIR_KIT_SECOND_HELMET, repair_hint.c_str());
 			b_show = true;
 		}
 
@@ -1419,8 +1621,9 @@ void CUIActorMenu::PropertiesBoxForRepair( PIItem item, bool& b_show )
 {
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>( item );
 	CWeapon*       pWeapon = smart_cast<CWeapon*>( item );
+	CHelmet*       pHelmet = smart_cast<CHelmet*>( item );
 
-	if ( (pOutfit || pWeapon) && item->GetCondition() < 0.99f )
+	if ( (pOutfit || pWeapon || pHelmet) && item->GetCondition() < 0.99f )
 	{
 		m_UIPropertiesBox->AddItem( "ui_inv_repair", NULL, INVENTORY_REPAIR );
 		b_show = true;
@@ -1601,6 +1804,25 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
 			if (!filter)
 				break;
+			filter->m_iUseFor = 1;
+			TryUseItem(cell_item);
+			break;
+		}
+	case FILTER_CHANGE_HELMET:
+		{
+			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
+			if (!filter)
+				break;
+			filter->m_iUseFor = 2;
+			TryUseItem(cell_item);
+			break;
+		}
+	case FILTER_CHANGE_SECOND_HELMET:
+		{
+			CAntigasFilter* filter = smart_cast<CAntigasFilter*>(item);
+			if (!filter)
+				break;
+			filter->m_iUseFor = 3;
 			TryUseItem(cell_item);
 			break;
 		}
@@ -1613,16 +1835,16 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			TryUseItem(cell_item);
 			break;
 		}
-	case REPAIR_KIT_KNIFE:
+	case REPAIR_KIT_HELMET:
 		{
-			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+		CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
 			if (!repair_kit)
 				break;
 			repair_kit->m_iUseFor = 2;
 			TryUseItem(cell_item);
 			break;
 		}
-	case REPAIR_KIT_WPN1:
+	case REPAIR_KIT_SECOND_HELMET:
 		{
 			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
 			if (!repair_kit)
@@ -1631,12 +1853,30 @@ void CUIActorMenu::ProcessPropertiesBoxClicked( CUIWindow* w, void* d )
 			TryUseItem(cell_item);
 			break;
 		}
-	case REPAIR_KIT_WPN2:
+	case REPAIR_KIT_KNIFE:
 		{
 			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
 			if (!repair_kit)
 				break;
 			repair_kit->m_iUseFor = 4;
+			TryUseItem(cell_item);
+			break;
+		}
+	case REPAIR_KIT_WPN1:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 5;
+			TryUseItem(cell_item);
+			break;
+		}
+	case REPAIR_KIT_WPN2:
+		{
+			CRepairKit* repair_kit = smart_cast<CRepairKit*>(item);
+			if (!repair_kit)
+				break;
+			repair_kit->m_iUseFor = 6;
 			TryUseItem(cell_item);
 			break;
 		}
@@ -1701,6 +1941,36 @@ void CUIActorMenu::UpdateOutfit()
 	VERIFY( m_pInventoryBeltList );
 	PIItem         ii_outfit = m_pActorInvOwner->inventory().m_slots[OUTFIT_SLOT].m_pIItem;
 	CCustomOutfit* outfit    = smart_cast<CCustomOutfit*>( ii_outfit );
+
+	if (GameConstants::GetHelmetSlotEnabled())
+	{
+		if (outfit && !outfit->bIsHelmetAvaliable)
+			m_HelmetOver->Show(true);
+		else
+			m_HelmetOver->Show(false);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled() && GameConstants::GetHelmetSlotEnabled())
+	{
+		if (outfit && !outfit->bIsSecondHelmetAvaliable)
+			m_SecondHelmetOver->Show(true);
+		else
+			m_SecondHelmetOver->Show(false);
+
+		CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(HELMET_SLOT));
+		CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pActorInvOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+		if (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled)
+		{
+			if (!pHelmet2)
+				m_SecondHelmetOver->Show(true);
+		}
+		else if (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled)
+		{
+			if (!pHelmet1)
+				m_HelmetOver->Show(true);
+		}
+	}
 
 	if (outfit && !m_bNeedMoveAfsToBag)
 		m_bNeedMoveAfsToBag = true;

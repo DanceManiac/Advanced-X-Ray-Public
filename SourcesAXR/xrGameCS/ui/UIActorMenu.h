@@ -93,6 +93,7 @@ protected:
 	CUIDragDropListEx*			m_pInventoryPistolList;
 	CUIDragDropListEx*			m_pInventoryAutomaticList;
 	CUIDragDropListEx*			m_pInventoryOutfitList;
+	CUIDragDropListEx*			m_pInventoryHelmetList;
 	CUIDragDropListEx*			m_pInventoryDetectorList;
 	CUIDragDropListEx*			m_pInventoryBagList;
 
@@ -106,15 +107,19 @@ protected:
 	CUIDragDropListEx*			m_pInventoryBinocularList;
 	CUIDragDropListEx*			m_pInventoryTorchList;
 	CUIDragDropListEx*			m_pInventoryBackpackList;
+	CUIDragDropListEx*			m_pInventorySecondHelmetList;
 	CUIDragDropListEx*			m_pInventoryDosimeterList;
 	CUIDragDropListEx*			m_pInventoryPantsList;
 	CUIDragDropListEx*			m_pInventoryPdaList;
 
 	xr_vector<CUIStatic*>		m_belt_list_over;
+	CUIStatic*					m_HelmetOver;
+	CUIStatic*					m_SecondHelmetOver;
 	
 	CUIStatic*					m_PistolSlotHighlight;
 	CUIStatic*					m_RiffleSlotHighlight;
 	CUIStatic*					m_OutfitSlotHighlight;
+	CUIStatic*					m_HelmetSlotHighlight;
 	CUIStatic*					m_DetectorSlotHighlight;
 	CUIStatic*					m_QuickSlotsHighlight[4];
 	xr_vector<CUIStatic*>		m_ArtefactSlotsHighlight;
@@ -122,6 +127,7 @@ protected:
 	CUIStatic*					m_BinocularSlotHighlight;
 	CUIStatic*					m_TorchSlotHighlight;
 	CUIStatic*					m_BackpackSlotHighlight;
+	CUIStatic*					m_SecondHelmetSlotHighlight;
 	CUIStatic*					m_DosimeterSlotHighlight;
 	CUIStatic*					m_PantsSlotHighlight;
 	CUIStatic*					m_PdaSlotHighlight;

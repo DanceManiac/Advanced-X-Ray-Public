@@ -327,7 +327,7 @@ void CEatableItem::HitFromActorHit(SHit* pHDS)
 	}
 }
 
-void CEatableItem::UseBy (CEntityAlive* entity_alive)
+bool CEatableItem::UseBy (CEntityAlive* entity_alive)
 {
 	SMedicineInfluenceValues	V;
 	V.Load(m_physic_item->cNameSect());
@@ -362,6 +362,8 @@ void CEatableItem::UseBy (CEntityAlive* entity_alive)
 
 	if (m_iPortionsNum > 1 && HUD().GetUI()->UIGame()->ActorMenu().IsShown() && HUD().GetUI()->UIGame()->ActorMenu().GetMenuMode() != mmDeadBodySearch)
 		HUD().GetUI()->UIGame()->ActorMenu().RefreshConsumableCells();
+
+	return true;
 }
 
 u32 CEatableItem::Cost() const

@@ -16,10 +16,13 @@ public:
 
 	virtual BOOL			net_Spawn(CSE_Abstract* DC);
 
-	virtual	void			UseBy(CEntityAlive* npc);
+	virtual	bool			UseBy(CEntityAlive* npc);
 	virtual	bool			Empty() { return m_iPortionsNum == 0; };
+	int						m_iUseFor;
 	float					m_fCondition;
 	void					ChangeInOutfit();
+	void					ChangeInHelmet();
+	void					ChangeInSecondHelmet();
 	void					ChangeFilterCondition(float val);
 	void					SetFilterCondition(float val);
 	float					GetFilterCondition(void) const;

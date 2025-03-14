@@ -34,7 +34,7 @@ public:
 			void			StartAnimation				();
 			void			SetRemainingUses			(u32 value) { if (value > m_iConstPortions) return; m_iPortionsNum = value; };
 			u32				GetMaxUses					() const { return m_iConstPortions; };
-	virtual	void			UseBy						(CEntityAlive* npc);
+	virtual	bool			UseBy						(CEntityAlive* npc);
 	virtual	bool			Empty						()						{return m_iPortionsNum==0;};
 	virtual	u32				Cost						()	const;
 	virtual float			Weight						()	const;

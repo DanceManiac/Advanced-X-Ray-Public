@@ -29,6 +29,7 @@
 #include "../Actor.h"
 #include "../ActorCondition.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../Inventory.h"
 #include "../string_table.h"
 
@@ -89,6 +90,10 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 
 	CCustomOutfit* outfit = actor->GetOutfit();
 	CCustomOutfit* pants =  smart_cast<CCustomOutfit*>(actor->inventory().ItemFromSlot(PANTS_SLOT));
+	PIItem itm = actor->inventory().ItemFromSlot(HELMET_SLOT);
+	CHelmet* helmet = smart_cast<CHelmet*>(itm);
+	itm = actor->inventory().ItemFromSlot(SECOND_HELMET_SLOT);
+	CHelmet* helmet2 = smart_cast<CHelmet*>(itm);
 
 	if (outfit)
 	{
@@ -98,6 +103,26 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 		VERIFY( ikv );
 		u16 spine_bone = ikv->LL_BoneID( "bip01_spine" );
 		value *= outfit->GetBoneArmor( spine_bone );					m_state[stt_armor]->set_text( value );
+	}
+
+	if (helmet)
+	{
+		value = helmet->GetCondition();								m_state[stt_armor]->set_progress(value);
+
+		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
+		VERIFY(ikv);
+		const auto head_bone = ikv->LL_BoneID("bip01_head");
+		value *= helmet->GetBoneArmor(head_bone);					m_state[stt_armor]->set_text(value);
+	}
+
+	if (helmet2)
+	{
+		value = helmet2->GetCondition();								m_state[stt_armor]->set_progress(value);
+
+		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
+		VERIFY(ikv);
+		const auto head_bone = ikv->LL_BoneID("bip01_head");
+		value *= helmet2->GetBoneArmor(head_bone);					m_state[stt_armor]->set_text(value);
 	}
 
 	if (pants)
@@ -130,8 +155,11 @@ void ui_actor_state_wnd::UpdateActorInfo( CInventoryOwner* owner )
 void ui_actor_state_wnd::update_round_states( CActor* actor, ALife::EHitType hit_type, EStateType stt_type )
 {
 	CCustomOutfit* outfit = actor->GetOutfit();
-	float value = (outfit)? outfit->GetDefHitTypeProtection( hit_type ) : 0.0f;
-	value += actor->GetProtection_ArtefactsOnBelt( hit_type );
+	PIItem itm = actor->inventory().ItemFromSlot(HELMET_SLOT);
+	CHelmet* helmet = smart_cast<CHelmet*>(itm);
+	float value = (outfit) ? outfit->GetDefHitTypeProtection(hit_type) : 0.0f;
+	value += actor->GetProtection_ArtefactsOnBelt(hit_type);
+	value += helmet ? helmet->GetDefHitTypeProtection(ALife::eHitTypeShock) : 0.0f;
 	
 	float max_power = actor->conditions().GetZoneMaxPower( hit_type );
 	value = value / max_power; //  = 0..1

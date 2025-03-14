@@ -22,6 +22,7 @@
 #include "../LaserDesignator.h"
 #include "../TacticalTorch.h"
 #include "../trade_parameters.h"
+#include "../ActorHelmet.h"
 #include "../CustomOutfit.h"
 #include "../CustomDetector.h"
 #include "../eatable_item.h"
@@ -391,6 +392,12 @@ EDDListType CUIActorMenu::GetListType(CUIDragDropListEx* l)
 	if ((l == m_pInventoryBackpackList) && (m_pInventoryBackpackList != nullptr) && GameConstants::GetBackpackSlotEnabled())
 		return iActorSlot;
 
+	if ((l == m_pInventoryHelmetList) && (m_pInventoryHelmetList != nullptr) && GameConstants::GetHelmetSlotEnabled())
+		return iActorSlot;
+
+	if ((l == m_pInventorySecondHelmetList) && (m_pInventorySecondHelmetList != nullptr) && GameConstants::GetSecondHelmetSlotEnabled())
+		return iActorSlot;
+
 	if ((l == m_pInventoryDosimeterList) && (m_pInventoryDosimeterList != nullptr) && GameConstants::GetDosimeterSlotEnabled())
 		return iActorSlot;
 
@@ -575,6 +582,10 @@ void CUIActorMenu::clear_highlight_lists()
 		m_TorchSlotHighlight->Show(false);
 	if (m_BackpackSlotHighlight && GameConstants::GetBackpackSlotEnabled())
 		m_BackpackSlotHighlight->Show(false);
+	if (GameConstants::GetHelmetSlotEnabled() && m_HelmetSlotHighlight)
+		m_HelmetSlotHighlight->Show(false);
+	if (GameConstants::GetSecondHelmetSlotEnabled() && m_SecondHelmetSlotHighlight)
+		m_SecondHelmetSlotHighlight->Show(false);
 
 	if (m_DosimeterSlotHighlight && GameConstants::GetDosimeterSlotEnabled())
 		m_DosimeterSlotHighlight->Show(false);
@@ -629,6 +640,7 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 		return;
 
 	CWeapon* weapon = smart_cast<CWeapon*>(item);
+	CHelmet* helmet = smart_cast<CHelmet*>(item);
 	CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(item);
 	CCustomDetector* detector = smart_cast<CCustomDetector*>(item);
 	CEatableItem* eatable = smart_cast<CEatableItem*>(item);
@@ -649,6 +661,17 @@ void CUIActorMenu::highlight_item_slot(CUICellItem* cell_item)
 	if (weapon && !pistol && !(knife || binoculars) && m_RiffleSlotHighlight)
 	{
 		m_RiffleSlotHighlight->Show(true);
+		return;
+	}
+
+	if (helmet)
+	{
+		if (GameConstants::GetHelmetSlotEnabled() && m_HelmetSlotHighlight)
+			m_HelmetSlotHighlight->Show(true);
+
+		if (GameConstants::GetSecondHelmetSlotEnabled() && m_SecondHelmetSlotHighlight)
+			m_SecondHelmetSlotHighlight->Show(true);
+
 		return;
 	}
 
@@ -1035,6 +1058,12 @@ void CUIActorMenu::ClearAllLists()
 
 	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
 		m_pInventoryDosimeterList->ClearAll(true);
+
+	if (m_pInventoryHelmetList && GameConstants::GetHelmetSlotEnabled())
+		m_pInventoryHelmetList->ClearAll(true);
+
+	if (m_pInventorySecondHelmetList && GameConstants::GetSecondHelmetSlotEnabled())
+		m_pInventorySecondHelmetList->ClearAll(true);
 
 	if (m_pInventoryPantsList && GameConstants::GetPantsSlotEnabled())
 		m_pInventoryPantsList->ClearAll(true);

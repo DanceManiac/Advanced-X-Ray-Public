@@ -26,6 +26,8 @@
 #include "location_manager.h"
 #include "gametask.h"
 #include "gametaskmanager.h"
+#include "ActorHelmet.h"
+#include "Inventory.h"
 
 CMapLocation::CMapLocation(LPCSTR type, u16 object_id)
 {
@@ -766,9 +768,35 @@ bool CRelationMapLocation::Update()
 		if(_object_)
 		{
 			CEntityAlive* ea = smart_cast<CEntityAlive*>(_object_);
-			if(ea&&!ea->g_Alive()) return true;
+			
+			if (ea&&!ea->g_Alive())
+				return true;
+			else
+			{
+				const CGameObject* pObj = smart_cast<const CGameObject*>(_object_);
+				CActor* pAct = smart_cast<CActor*>(Level().Objects.net_Find(m_pInvOwnerActorID));
+				CHelmet* helm1 = smart_cast<CHelmet*>(pAct->inventory().ItemFromSlot(HELMET_SLOT));
+				CHelmet* helm2 = smart_cast<CHelmet*>(pAct->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 
-			vis_res =  Actor()->get_memory().visual().visible_now(smart_cast<const CGameObject*>(_object_));
+				float distance = 0.0f;
+				if (helm1)
+				{
+					distance = helm1->m_fShowNearestEnemiesDistance;
+				}
+				if (helm2)
+				{
+					distance = std::max(distance, helm2->m_fShowNearestEnemiesDistance);
+				}
+				if (distance > 0.0f)
+				{
+					if (pAct->Position().distance_to(pObj->Position()) < distance)
+						vis_res = true;
+					else
+						vis_res = Actor()->get_memory().visual().visible_now(pObj);
+				}
+				else
+					vis_res = Actor()->get_memory().visual().visible_now(pObj);
+			}
 		}
 		else
 			vis_res = false;

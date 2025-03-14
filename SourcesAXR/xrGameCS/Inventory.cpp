@@ -27,6 +27,7 @@
 #include "../xrPhysics/ElevatorState.h"
 #include "CustomDetector.h"
 #include "CustomBackpack.h"
+#include "ActorHelmet.h"
 #include "PDA.h"
 
 using namespace InventoryUtilities;
@@ -625,7 +626,7 @@ bool CInventory::Slot(PIItem pIItem, bool bNotActivate, bool strict_placement)
 	m_pOwner->OnItemSlot		(pIItem, pIItem->m_eItemCurrPlace);
 	EItemPlace prev_place		= pIItem->m_eItemCurrPlace;
 	pIItem->m_eItemCurrPlace	= eItemPlaceSlot;
-	pIItem->OnMoveToSlot		();
+	pIItem->OnMoveToSlot		(prev_place);
 
 	if (prev_place == eItemPlaceRuck)
 		Actor()->ChangeInventoryFullness(-pIItem->GetOccupiedInvSpace());
@@ -1527,6 +1528,25 @@ bool CInventory::CanPutInSlot(PIItem pIItem) const
 	if(!m_bSlotsUseful) return false;
 
 	if( !GetOwner()->CanPutInSlot(pIItem, pIItem->GetSlot() ) ) return false;
+
+	CCustomOutfit* pOutfit = m_pOwner->GetOutfit();
+	CHelmet* pHelmet1 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(HELMET_SLOT));
+	CHelmet* pHelmet2 = smart_cast<CHelmet*>(m_pOwner->inventory().ItemFromSlot(SECOND_HELMET_SLOT));
+
+	if (pOutfit || pHelmet1 || pHelmet2)
+	{
+		if (pIItem->GetSlot() == HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsHelmetAvaliable) || (pHelmet2 && !pHelmet2->m_bSecondHelmetEnabled))
+				return false;
+		}
+
+		if (pIItem->GetSlot() == SECOND_HELMET_SLOT)
+		{
+			if ((pOutfit && !pOutfit->bIsSecondHelmetAvaliable) || (pHelmet1 && !pHelmet1->m_bSecondHelmetEnabled))
+				return false;
+		}
+	}
 
 	if(pIItem->GetSlot() < m_slots.size() && 
 		m_slots[pIItem->GetSlot()].m_pIItem == NULL )

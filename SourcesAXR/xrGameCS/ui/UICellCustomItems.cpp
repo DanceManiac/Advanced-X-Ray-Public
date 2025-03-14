@@ -7,6 +7,7 @@
 #include "../eatable_item.h"
 #include "../Artefact.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../AntigasFilter.h"
 #include "../CustomDetector.h"
 #include "../Torch.h"
@@ -83,6 +84,11 @@ bool CUIInventoryCellItem::EqualTo(CUICellItem* itm)
 	}
 	auto outfit = smart_cast<CCustomOutfit*>(object());
 	if (outfit && outfit->GetFilterCondition() != smart_cast<CCustomOutfit*>(ci->object())->GetFilterCondition())
+	{
+		return false;
+	}
+	auto helmet = smart_cast<CHelmet*>(object());
+	if (helmet && helmet->GetFilterCondition() != smart_cast<CHelmet*>(ci->object())->GetFilterCondition())
 	{
 		return false;
 	}

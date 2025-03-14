@@ -31,6 +31,7 @@
 #include "AdvancedXrayGameConstants.h"
 #include "DynamicHudGlass.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "Inventory.h"
 #include "string_table.h"
 #include "../xrEngine/x_ray.h"
@@ -943,9 +944,12 @@ bool CGamePersistent::GetClearMaskProcess()
 
 bool CGamePersistent::GetActorNightvision()
 {
+	CHelmet* pHelmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
 	CCustomOutfit* pOutfit = smart_cast<CCustomOutfit*>(Actor()->inventory().ItemFromSlot(OUTFIT_SLOT));
 
-	if (pOutfit)
+	if (pHelmet)
+		return (Actor()->GetNightVisionStatus() && pHelmet->m_NightVisionSect.size());
+	else if (pOutfit)
 		return (Actor()->GetNightVisionStatus() && pOutfit->m_NightVisionSect.size());
 
 	return false;
@@ -972,9 +976,15 @@ bool CGamePersistent::GetActorHelmetStatus()
 		return false;
 
 	CCustomOutfit* outfit = Actor()->GetOutfit();
+	CHelmet* helmet = smart_cast<CHelmet*>(Actor()->inventory().ItemFromSlot(HELMET_SLOT));
 
-	if (outfit)
-		return outfit->m_b_HasGlass;
+	if (outfit || helmet)
+	{
+		if (outfit && !outfit->IsHelmetAvaliable())
+			return true;
+		else if (helmet)
+			return true;
+	}
 
 	return false;
 }

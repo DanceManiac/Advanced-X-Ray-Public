@@ -35,6 +35,7 @@
 #include "Weapon.h"
 #include "WeaponMagazined.h"
 #include "Grenade.h"
+#include "ActorHelmet.h"
 #include "CustomOutfit.h"
 #include "script_engine.h"
 #include "PDA.h"
@@ -255,9 +256,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 
 			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && !Wpn->IsPending() && (Wpn->isHUDAnimationExist("anm_headlamp_on") || Wpn->isHUDAnimationExist("anm_headlamp_off")))
 			{
+				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
-				if (outfit && outfit->m_NightVisionSect.size())
+				if (helmet && helmet->m_NightVisionSect.size() || helmet2 && helmet2->m_NightVisionSect.size() || outfit && outfit->m_NightVisionSect.size())
 				{
 					Wpn->NightVisionSwitch = true;
 					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);
@@ -289,9 +292,11 @@ void CActor::IR_OnKeyboardPress(int cmd)
 
 			if (auto Wpn = smart_cast<CHudItem*>(inventory().ActiveItem()); Wpn && !Wpn->IsPending() && Wpn->isHUDAnimationExist("anm_clean_mask"))
 			{
+				auto helmet = smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
+				auto helmet2 = smart_cast<CHelmet*>(inventory().ItemFromSlot(SECOND_HELMET_SLOT));
 				auto outfit = smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
 
-				if (outfit && outfit->m_b_HasGlass)
+				if (helmet && helmet->m_b_HasGlass || helmet2 && helmet2->m_b_HasGlass || outfit && outfit->m_b_HasGlass)
 				{
 					Wpn->CleanMaskAction = true;
 					Wpn->SwitchState(CHUDState::EHudStates::eDeviceSwitch);

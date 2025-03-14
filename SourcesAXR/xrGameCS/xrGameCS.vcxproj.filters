@@ -7395,6 +7395,9 @@
     <ClInclude Include="ui\UI3dStatic.h">
       <Filter>UI\UIWindows\Static</Filter>
     </ClInclude>
+    <ClInclude Include="ActorHelmet.h">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="damage_manager.cpp">
@@ -11047,6 +11050,9 @@
     <ClCompile Include="GlobalAchievements.cpp" />
     <ClCompile Include="ui\UI3dStatic.cpp">
       <Filter>UI\UIWindows\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorHelmet.cpp">
+      <Filter>Core\Client\Objects\items &amp; weapons\Outfit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

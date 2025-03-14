@@ -59,7 +59,7 @@ public:
 			void TurnOff			();
 			bool IsWorking			() {return m_bWorking;}
 
-	virtual void OnMoveToSlot		();
+	virtual void OnMoveToSlot		(EItemPlace prev);
 	virtual void OnMoveToRuck		(EItemPlace prev);
 
 			void UpdateChargeLevel	(void);

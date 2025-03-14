@@ -17,7 +17,7 @@ public:
 
 	virtual void 	shedule_Update(u32 dt);
 
-	virtual void 	OnMoveToSlot();
+	virtual void 	OnMoveToSlot(EItemPlace prev);
 	virtual void 	OnMoveToRuck(EItemPlace prev);
 	virtual void	OnActiveItem();
 	virtual void	OnHiddenItem();

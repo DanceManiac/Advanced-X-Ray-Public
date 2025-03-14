@@ -25,6 +25,7 @@
 #include "purchase_list.h"
 #include "alife_object_registry.h"
 #include "CustomOutfit.h"
+#include "ActorHelmet.h"
 #include "CustomBackpack.h"
 #include "Bolt.h"
 #include "AdvancedXrayGameConstants.h"
@@ -546,6 +547,11 @@ void CInventoryOwner::OnItemSlot	(CInventoryItem *inventory_item, EItemPlace pre
 CCustomOutfit* CInventoryOwner::GetOutfit() const
 {
     return smart_cast<CCustomOutfit*>(inventory().ItemFromSlot(OUTFIT_SLOT));
+}
+
+CHelmet* CInventoryOwner::GetHelmet() const
+{
+	return smart_cast<CHelmet*>(inventory().ItemFromSlot(HELMET_SLOT));
 }
 
 void CInventoryOwner::on_weapon_shot_start		(CWeapon *weapon)

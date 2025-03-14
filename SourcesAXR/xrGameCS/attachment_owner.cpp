@@ -14,6 +14,7 @@
 #include "Inventory.h"
 #include "physicsshellholder.h"
 #include "Actor.h"
+#include "ActorHelmet.h"
 #include "CustomBackpack.h"
 
 CAttachmentOwner::~CAttachmentOwner()
@@ -94,9 +95,18 @@ void CAttachmentOwner::attach(CInventoryItem* inventory_item)
 //		VERIFY								((*I)->ID() != inventory_item->object().ID());
 	}
 
+	CHelmet* pHelmet = smart_cast<CHelmet*>(inventory_item);
 	CCustomBackpack* pBackpack = smart_cast<CCustomBackpack*>(inventory_item);
 
 	bool need_custom_attach = false;
+
+	if (pHelmet && pHelmet->ParentIsActor() && pHelmet->m_bUseAttach)
+	{
+		CActor* pActor = smart_cast<CGameObject*>(pHelmet->H_Parent())->cast_actor();
+
+		if (pActor && pActor->inventory().ItemFromSlot(HELMET_SLOT) == pHelmet)
+			need_custom_attach = true;
+	}
 
 	if (pBackpack && pBackpack->ParentIsActor() && pBackpack->m_bUseAttach)
 	{

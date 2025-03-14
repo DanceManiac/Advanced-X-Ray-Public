@@ -139,7 +139,7 @@ public:
 
 			bool 	IsWorking			();
 
-	virtual void 	OnMoveToSlot		();
+	virtual void 	OnMoveToSlot		(EItemPlace prev);
 	virtual void 	OnMoveToRuck		(EItemPlace prev);
 
 	virtual void	OnActiveItem		();

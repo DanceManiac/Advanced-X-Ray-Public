@@ -153,6 +153,14 @@ void CUIActorMenu::Construct()
 		if (m_BackpackSlotHighlight = UIHelper::CreateStatic(uiXml, "backpack_slot_highlight", this, false))
 			m_BackpackSlotHighlight->Show(false);
 
+	if (GameConstants::GetHelmetSlotEnabled())
+		if ((m_HelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "helmet_slot_highlight", this, false)))
+			m_HelmetSlotHighlight->Show(false);
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+		if ((m_SecondHelmetSlotHighlight = UIHelper::CreateStatic(uiXml, "second_helmet_slot_highlight", this, false)))
+			m_SecondHelmetSlotHighlight->Show(false);
+
 	if (GameConstants::GetDosimeterSlotEnabled())
 		if (m_DosimeterSlotHighlight = UIHelper::CreateStatic(uiXml, "dosimeter_slot_highlight", this, false))
 			m_DosimeterSlotHighlight->Show(false);
@@ -259,6 +267,12 @@ void CUIActorMenu::Construct()
 	if (GameConstants::GetBackpackSlotEnabled())
 		m_pInventoryBackpackList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_backpack", this, false);
 
+	if (GameConstants::GetHelmetSlotEnabled())
+		m_pInventoryHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_helmet", this, false);
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+		m_pInventorySecondHelmetList = UIHelper::CreateDragDropListEx(uiXml, "dragdrop_second_helmet", this, false);
+
 	if (GameConstants::GetDosimeterSlotEnabled())
 		m_pInventoryDosimeterList	= UIHelper::CreateDragDropListEx(uiXml, "dragdrop_dosimeter", this, false);
 
@@ -304,6 +318,18 @@ void CUIActorMenu::Construct()
 			pos.x = m_belt_list_over[0]->GetWndPos().x;
 			pos.y += dy;
 		}
+	}
+
+	if (GameConstants::GetHelmetSlotEnabled())
+	{
+		m_HelmetOver = UIHelper::CreateStatic(uiXml, "helmet_over", this);
+		m_HelmetOver->Show(false);
+	}
+
+	if (GameConstants::GetSecondHelmetSlotEnabled())
+	{
+		m_SecondHelmetOver = UIHelper::CreateStatic(uiXml, "second_helmet_over", this);
+		m_SecondHelmetOver->Show(false);
 	}
 
 	m_ActorMoney	= UIHelper::CreateStatic(uiXml, "actor_money_static", this);
@@ -402,6 +428,12 @@ void CUIActorMenu::Construct()
 
 	if (m_pInventoryBackpackList && GameConstants::GetBackpackSlotEnabled())
 		BindDragDropListEvents(m_pInventoryBackpackList);
+
+	if (m_pInventoryHelmetList && GameConstants::GetHelmetSlotEnabled())
+		BindDragDropListEvents(m_pInventoryHelmetList);
+
+	if (m_pInventorySecondHelmetList && GameConstants::GetSecondHelmetSlotEnabled())
+		BindDragDropListEvents(m_pInventorySecondHelmetList);
 
 	if (m_pInventoryDosimeterList && GameConstants::GetDosimeterSlotEnabled())
 		BindDragDropListEvents(m_pInventoryDosimeterList);

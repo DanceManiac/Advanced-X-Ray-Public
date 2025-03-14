@@ -81,10 +81,12 @@ void	CBottleItem::Hit					(SHit* pHDS)
 	}
 }
 
-void CBottleItem::UseBy				(CEntityAlive* entity_alive)
+bool CBottleItem::UseBy				(CEntityAlive* entity_alive)
 {
 	inherited::UseBy					(entity_alive);
 
 	entity_alive->conditions().ChangeAlcohol(m_alcohol);
 	entity_alive->conditions().ChangeDrugs(m_drugs);
+
+	return true;
 }

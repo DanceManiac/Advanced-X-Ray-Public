@@ -14,6 +14,7 @@
 #include "UIDoubleProgressBar.h"
 
 #include "..\CustomOutfit.h"
+#include "..\ActorHelmet.h"
 #include "..\string_table.h"
 #include "..\actor.h"
 #include "..\ActorCondition.h"
@@ -489,6 +490,87 @@ void CUIOutfitItem::SetInfo(CCustomOutfit* cur_outfit, CCustomOutfit* slot_outfi
 
 		h += m_artefacts_count->GetWndSize().y;
 		AttachChild(m_artefacts_count);
+	}
+
+	SetHeight(h);
+}
+
+void CUIOutfitItem::SetInfo(CHelmet* cur_helmet, CHelmet* slot_helmet)
+{
+	DetachAll();
+
+	CActor* actor = smart_cast<CActor*>(Level().CurrentViewEntity());
+	if (!actor)
+	{
+		return;
+	}
+
+	float h = 0.0f, cur = 0.0f, slot = 0.0f, max_power = 1.0f;
+	Fvector2 pos;
+	pos.set(GetWndPos());
+
+	for (u32 i = 0; i < max_count; ++i)
+	{
+		if (i == ALife::eHitTypeFireWound)
+		{
+			continue;
+		}
+
+		ALife::EHitType hit_type = (ALife::EHitType)i;
+		max_power = actor->conditions().GetZoneMaxPower(hit_type);
+
+		cur = cur_helmet->GetDefHitTypeProtection(hit_type);
+		cur /= max_power; // = 0..1
+		slot = cur;
+
+		if (slot_helmet)
+		{
+			slot = slot_helmet->GetDefHitTypeProtection(hit_type);
+			slot /= max_power; //  = 0..1
+		}
+		m_items[i]->SetProgressValue(cur, slot);
+		pos.set(m_items[i]->GetWndPos());
+		pos.y = h;
+		m_items[i]->SetWndPos(pos);
+		h += m_items[i]->GetWndSize().y;
+		AttachChild(m_items[i]);
+	}
+
+	if (m_items[ALife::eHitTypeFireWound])
+	{
+		IKinematics* ikv = smart_cast<IKinematics*>(actor->Visual());
+		VERIFY(ikv);
+		u16 spine_bone = ikv->LL_BoneID("bip01_head");
+
+		cur = cur_helmet->GetBoneArmor(spine_bone) * cur_helmet->GetCondition();
+		slot = (slot_helmet) ? slot_helmet->GetBoneArmor(spine_bone) * slot_helmet->GetCondition() : cur;
+
+		m_items[ALife::eHitTypeFireWound]->SetProgressValue(cur, slot);
+		pos.set(m_items[ALife::eHitTypeFireWound]->GetWndPos());
+		pos.y = h;
+		m_items[ALife::eHitTypeFireWound]->SetWndPos(pos);
+		h += m_items[ALife::eHitTypeFireWound]->GetWndSize().y;
+		AttachChild(m_items[ALife::eHitTypeFireWound]);
+	}
+
+	float cur_filter = cur_helmet->GetFilterCondition() > 0.f ? (cur_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
+	float slot_filter = cur_filter;
+
+	if (slot_helmet && (slot_helmet != cur_helmet))
+	{
+		slot_filter = slot_helmet->GetFilterCondition() > 0.f ? (slot_helmet->GetFilterCondition() * 100.0f + 1.0f - EPS) : 0.f;
+	}
+
+	if (GameConstants::GetOutfitUseFilters() && (cur_helmet->m_bUseFilter || slot_helmet && (slot_helmet != cur_helmet) && slot_helmet->m_bUseFilter))
+	{
+		m_outfit_filter_condition->SetProgressValue(cur_filter, slot_filter);
+
+		pos.set(m_outfit_filter_condition->GetWndPos());
+		pos.y = h;
+		m_outfit_filter_condition->SetWndPos(pos);
+
+		h += m_outfit_filter_condition->GetWndSize().y;
+		AttachChild(m_outfit_filter_condition);
 	}
 
 	SetHeight(h);

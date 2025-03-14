@@ -28,7 +28,7 @@ public:
 	//если на персонаже надет костюм
 	float					GetPowerLoss		();
 
-	virtual void			OnMoveToSlot		();
+	virtual void			OnMoveToSlot		(EItemPlace prev);
 	virtual void			OnMoveToRuck		(EItemPlace prev);
 	virtual void			OnH_A_Chield		();
 	virtual void			save				(NET_Packet& output_packet);
@@ -85,6 +85,8 @@ public:
 	xr_vector<std::pair<shared_str, int>> m_ItemsForRepair;
 	xr_vector<LPCSTR>		m_ItemsForRepairNames;
 
+	bool					bIsHelmetAvaliable;
+	bool					bIsSecondHelmetAvaliable;
 	bool					m_b_HasGlass;
 	bool					m_bUseFilter;
 	bool					m_bHasLSS;
@@ -106,6 +108,8 @@ public:
 			void			ReloadBonesProtection	(CActor* pActor);
 
 			IC int			GetOutfitNV_Type		() const { return m_NightVisionType; }
+
+			bool			IsHelmetAvaliable		() const { return bIsHelmetAvaliable; }
 
 	virtual CCustomOutfit*	cast_outfit() { return this; }
 

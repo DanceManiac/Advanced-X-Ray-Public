@@ -254,9 +254,9 @@ void CDetectorAnomaly::OnMoveToRuck(EItemPlace prev)
 	TurnOff();
 }
 
-void CDetectorAnomaly::OnMoveToSlot()
+void CDetectorAnomaly::OnMoveToSlot(EItemPlace prev)
 {
-	inherited::OnMoveToSlot();
+	inherited::OnMoveToSlot(prev);
 	TurnOn();
 }
 

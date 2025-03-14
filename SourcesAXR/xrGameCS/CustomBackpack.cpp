@@ -131,9 +131,9 @@ void CCustomBackpack::OnMoveToRuck(EItemPlace prev)
 	StopCurrentAnimWithoutCallback();
 }
 
-void CCustomBackpack::OnMoveToSlot()
+void CCustomBackpack::OnMoveToSlot(EItemPlace prev)
 {
-	inherited::OnMoveToSlot();
+	inherited::OnMoveToSlot(prev);
 }
 
 void CCustomBackpack::OnActiveItem()

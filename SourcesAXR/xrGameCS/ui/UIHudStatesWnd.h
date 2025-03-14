@@ -93,8 +93,8 @@ protected:
 	CUIStatic*			_ind_heating;
 	CUIStatic*			_ind_outfit_broken;
 	CUIStatic*			_ind_filter;
-	//CUIStatic*		_ind_helmet_broken;
-	//CUIStatic*		_ind_helmet_2_broken;
+	CUIStatic*			_ind_helmet_broken;
+	CUIStatic*			_ind_helmet_2_broken;
 	CUIStatic*			_ind_battery;
 
 public:

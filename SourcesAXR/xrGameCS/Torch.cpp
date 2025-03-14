@@ -84,7 +84,7 @@ CTorch::~CTorch()
 	glow_render.destroy		();
 }
 
-void CTorch::OnMoveToSlot()
+void CTorch::OnMoveToSlot(EItemPlace prev)
 {
 	CInventoryOwner* owner = smart_cast<CInventoryOwner*>(H_Parent());
 	if (owner && !owner->attached(this))

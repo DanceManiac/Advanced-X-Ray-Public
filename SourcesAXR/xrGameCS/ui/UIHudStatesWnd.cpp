@@ -5,6 +5,7 @@
 #include "../ActorCondition.h"
 #include "../EntityCondition.h"
 #include "../CustomOutfit.h"
+#include "../ActorHelmet.h"
 #include "../inventory.h"
 #include "../RadioactiveZone.h"
 
@@ -145,8 +146,8 @@ void CUIHudStatesWnd::InitFromXml( CUIXml& xml, LPCSTR path )
 	_ind_frostbite				= UIHelper::CreateStatic( xml, "indicator_frostbite",		this, false);
 	_ind_heating				= UIHelper::CreateStatic( xml, "indicator_heating",			this, false);
 	_ind_outfit_broken			= UIHelper::CreateStatic( xml, "indicator_outfit_broken",	this, false);
-	//_ind_helmet_broken			= UIHelper::CreateStatic( xml, "indicator_helmet_broken",	this, false);
-	//_ind_helmet_2_broken		= UIHelper::CreateStatic( xml, "indicator_helmet_2_broken",	this, false);
+	_ind_helmet_broken			= UIHelper::CreateStatic( xml, "indicator_helmet_broken",	this, false);
+	_ind_helmet_2_broken		= UIHelper::CreateStatic( xml, "indicator_helmet_2_broken",	this, false);
 	_ind_filter					= UIHelper::CreateStatic( xml, "indicator_filter",			this, false);
 	_ind_battery				= UIHelper::CreateStatic( xml, "indicator_torch_battery",	this, false);
 
@@ -377,8 +378,10 @@ void CUIHudStatesWnd::UpdateIndicatorType( CActor* actor, ALife::EInfluenceType 
 		return;
 	
 	CCustomOutfit* outfit = actor->GetOutfit();
-	float protect = (outfit) ? outfit->GetDefHitTypeProtection( hit_type ) : 0.0f;
-	protect += actor->GetProtection_ArtefactsOnBelt( hit_type );
+	CHelmet* helmet = smart_cast<CHelmet*>(actor->inventory().ItemFromSlot(HELMET_SLOT));
+	float protect = (outfit) ? outfit->GetDefHitTypeProtection(hit_type) : 0.0f;
+	protect += (helmet) ? helmet->GetDefHitTypeProtection(hit_type) : 0.0f;
+	protect += actor->GetProtection_ArtefactsOnBelt(hit_type);
 
 	float max_power = actor->conditions().GetZoneMaxPower( hit_type );
 	protect = protect / max_power; // = 0..1
@@ -485,7 +488,7 @@ void CUIHudStatesWnd::UpdateIndicatorIcons(CActor* actor)
 							state = weapon->GetCondition();
 				}
 
-				if ((ind_name == _ind_outfit_broken) || (ind_name == _ind_filter))
+				if ((ind_name == _ind_outfit_broken) || (ind_name == _ind_filter) || (ind_name == _ind_helmet_broken))
 				{
 					if (CCustomOutfit* outfit = smart_cast<CCustomOutfit*>(actor->inventory().ItemFromSlot(OUTFIT_SLOT)))
 					{
@@ -493,6 +496,22 @@ void CUIHudStatesWnd::UpdateIndicatorIcons(CActor* actor)
 							state = outfit->GetCondition();
 						if ((ind_name == _ind_filter) && outfit->m_bUseFilter)
 							state = outfit->GetFilterCondition();
+					}
+
+					if (CHelmet* helmet = smart_cast<CHelmet*>(actor->inventory().ItemFromSlot(HELMET_SLOT)))
+					{
+						if (ind_name == _ind_helmet_broken)
+							state = helmet->GetCondition();
+						if ((ind_name == _ind_filter) && helmet->m_bUseFilter)
+							state = helmet->GetFilterCondition();
+					}
+
+					if (CHelmet* helmet2 = smart_cast<CHelmet*>(actor->inventory().ItemFromSlot(SECOND_HELMET_SLOT)))
+					{
+						if (ind_name == _ind_helmet_2_broken)
+							state = helmet2->GetCondition();
+						if ((ind_name == _ind_filter) && helmet2->m_bUseFilter)
+							state = helmet2->GetFilterCondition();
 					}
 				}
 
@@ -592,8 +611,8 @@ void CUIHudStatesWnd::UpdateIndicatorIcons(CActor* actor)
 	CreateIndicator(_ind_frostbite,		actor->conditions().GetFrostbite(),		0.9f,					0.15f,	false);
 	CreateIndicator(_ind_heating,		actor->GetCurrentHeating(),				9.5f,					0.01f,	false);
 	CreateIndicator(_ind_outfit_broken,	1.0f,									0.1f,					0.7f,	true);
-	//CreateIndicator(_ind_helmet_broken,	1.0f,									0.1f,					0.7f,	true);
-	//CreateIndicator(_ind_helmet_2_broken,1.0f,									0.1f,					0.7f,	true);
+	CreateIndicator(_ind_helmet_broken,	1.0f,									0.1f,					0.7f,	true);
+	CreateIndicator(_ind_helmet_2_broken,1.0f,									0.1f,					0.7f,	true);
 	CreateIndicator(_ind_filter,		1.0f,									0.1f,					0.7f,	true);
 	CreateIndicator(_ind_battery,		1.0f,									0.1f,					0.7f,	false);
 }

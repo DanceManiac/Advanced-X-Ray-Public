@@ -10,6 +10,7 @@
 #include "../Include/xrRender/KinematicsAnimated.h"
 #include "../Include/xrRender/Kinematics.h"
 #include "object_broker.h"
+#include "ActorHelmet.h"
 #include "eatable_item.h"
 
 constexpr auto MAX_HEALTH = 1.0f;
@@ -346,8 +347,8 @@ float CEntityCondition::HitOutfitEffect( float hit_power, ALife::EHitType hit_ty
 		return hit_power;
 
 	CCustomOutfit* pOutfit = (CCustomOutfit*)pInvOwner->inventory().ItemFromSlot(OUTFIT_SLOT);
-	//CHelmet* pHelmet = (CHelmet*)pInvOwner->inventory().ItemFromSlot(HELMET_SLOT);
-	if(!pOutfit/* && !pHelmet*/)
+	CHelmet* pHelmet = (CHelmet*)pInvOwner->inventory().ItemFromSlot(HELMET_SLOT);
+	if (!pOutfit && !pHelmet)
 		return hit_power;
 
 	float new_hit_power = hit_power;
