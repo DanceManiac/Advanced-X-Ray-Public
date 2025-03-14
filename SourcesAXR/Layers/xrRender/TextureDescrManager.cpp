@@ -131,7 +131,7 @@ void CTextureDescrMngr::LoadTHM(LPCSTR initial)
 		R_ASSERT			(F->find_chunk(THM_CHUNK_TYPE));
 		F->r_u32			();
 		tp.Clear			();
-		tp.Load				(*F);
+		tp.Load				(*F, fn);
 		FS.r_close			(F);
 		if (STextureParams::ttImage		== tp.type ||
 			STextureParams::ttTerrain	== tp.type ||
@@ -203,7 +203,7 @@ void CTextureDescrMngr::LoadTHM()
 		R_ASSERT			(F->find_chunk(THM_CHUNK_TYPE));
 		F->r_u32			();
 		tp.Clear			();
-		tp.Load				(*F);
+		tp.Load				(*F, fn);
 		FS.r_close			(F);
 #ifdef _EDITOR
 		texture_desc& desc		= m_texture_details[fn];
