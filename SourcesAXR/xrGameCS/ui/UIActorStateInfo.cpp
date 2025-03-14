@@ -159,7 +159,7 @@ void ui_actor_state_wnd::update_round_states( CActor* actor, ALife::EHitType hit
 	CHelmet* helmet = smart_cast<CHelmet*>(itm);
 	float value = (outfit) ? outfit->GetDefHitTypeProtection(hit_type) : 0.0f;
 	value += actor->GetProtection_ArtefactsOnBelt(hit_type);
-	value += helmet ? helmet->GetDefHitTypeProtection(ALife::eHitTypeShock) : 0.0f;
+	value += helmet ? helmet->GetDefHitTypeProtection(hit_type) : 0.0f;
 	
 	float max_power = actor->conditions().GetZoneMaxPower( hit_type );
 	value = value / max_power; //  = 0..1
