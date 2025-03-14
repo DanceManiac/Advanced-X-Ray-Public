@@ -157,7 +157,7 @@ protected:
 	bool m_opened;
 	bool m_bUseFiremodeChangeAnim;
 	bool m_bIsRevolver;
-	bool m_bIsMosin;
+	bool m_bIsBoltRiffle;
 
 public:
 	virtual void	OnZoomIn			();

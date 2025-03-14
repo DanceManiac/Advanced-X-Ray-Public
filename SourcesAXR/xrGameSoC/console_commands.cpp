@@ -56,8 +56,9 @@
 
 #ifdef DEBUG
 #	include "PHDebug.h"
-#	include "game_graph.h"
 #endif // DEBUG
+
+#include "game_graph.h"
 
 #include "../../xrNetServer/NET_AuthCheck.h"
 

@@ -47,7 +47,7 @@ void CWeaponAutomaticShotgun::Load(LPCSTR section)
 			m_sounds.LoadSound(section, "snd_close_weapon_empty,", "sndClose_2_Empty", false, m_eSoundClose_2);
 	};
 
-	m_bIsMosin = READ_IF_EXISTS(pSettings, r_bool, section, "is_mosin_rifle", false);
+	m_bIsBoltRiffle = READ_IF_EXISTS(pSettings, r_bool, section, "is_bolt_rifle", false);
 }
 
 bool CWeaponAutomaticShotgun::Action(u16 cmd, u32 flags) 
@@ -67,7 +67,7 @@ bool CWeaponAutomaticShotgun::Action(u16 cmd, u32 flags)
 
 void CWeaponAutomaticShotgun::OnAnimationEnd(u32 state) 
 {
-	if(!m_bTriStateReload || (m_bIsMosin && !iAmmoElapsed) || state != eReload)
+	if(!m_bTriStateReload || (m_bIsBoltRiffle && !iAmmoElapsed) || state != eReload)
 		return inherited::OnAnimationEnd(state);
 
 	switch(m_sub_state)
@@ -98,7 +98,7 @@ void CWeaponAutomaticShotgun::OnAnimationEnd(u32 state)
 
 void CWeaponAutomaticShotgun::Reload() 
 {
-	if (!m_bTriStateReload || (m_bIsMosin && !iAmmoElapsed))
+	if (!m_bTriStateReload || (m_bIsBoltRiffle && !iAmmoElapsed))
 	{
 		inherited::Reload();
 	}
@@ -120,7 +120,7 @@ void CWeaponAutomaticShotgun::TriStateReload()
 
 void CWeaponAutomaticShotgun::OnStateSwitch	(u32 S)
 {
-	if(!m_bTriStateReload || (m_bIsMosin && !iAmmoElapsed) || S != eReload)
+	if(!m_bTriStateReload || (m_bIsBoltRiffle && !iAmmoElapsed) || S != eReload)
 	{
 		inherited::OnStateSwitch(S);
 		return;
