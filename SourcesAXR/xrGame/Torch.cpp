@@ -16,7 +16,6 @@
 
 #include "UIGameCustom.h"
 #include "CustomOutfit.h"
-#include "ActorHelmet.h"
 #include "../xrPhysics/ElevatorState.h"
 #include "player_hud.h"
 #include "Inventory.h"

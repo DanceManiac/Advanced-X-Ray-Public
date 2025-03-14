@@ -27,7 +27,6 @@
 #include "WeaponMagazinedWGrenade.h"
 #include "../UIGameCustom.h"
 #include "../UIGameSP.h"
-#include "ActorHelmet.h"
 #include "AnomalyDetector.h"
 #include "Torch.h"
 #include "AdvancedXrayGameConstants.h"
