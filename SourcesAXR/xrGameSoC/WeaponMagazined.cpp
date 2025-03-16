@@ -55,8 +55,6 @@ CWeaponMagazined::CWeaponMagazined(LPCSTR name, ESoundTypes eSoundType) : CWeapo
 	m_opened				= false;
 	m_bUseFiremodeChangeAnim = true;
 	bHasBulletsToHide		= false;
-	m_bIsRevolver			= false;
-	m_bIsBoltRiffle			= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()

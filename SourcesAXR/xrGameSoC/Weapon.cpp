@@ -142,6 +142,9 @@ CWeapon::CWeapon(LPCSTR name)
 	m_fOverheatingSubRpm	= 0.0f;
 	m_fOverheatingMisfire	= 0.0f;
 	m_fOverheatingCond		= 0.0f;
+
+	m_bIsRevolver			= false;
+	m_bIsBoltRiffle			= false;
 }
 
 const shared_str CWeapon::GetScopeName() const

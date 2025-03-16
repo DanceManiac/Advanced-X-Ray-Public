@@ -137,6 +137,9 @@ CWeapon::CWeapon()
 	m_fOverheatingSubRpm	= 0.0f;
 	m_fOverheatingMisfire	= 0.0f;
 	m_fOverheatingCond		= 0.0f;
+
+	m_bIsRevolver			= false;
+	m_bIsBoltRiffle			= false;
 }
 
 const shared_str CWeapon::GetScopeName() const
@@ -1969,7 +1972,7 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 						{
 							if(!IsPending())
 							{
-								if(GetState()!=eIdle)
+								if(GetState()!=eIdle && !(m_bIsBoltRiffle && GetState() == eFire))
 									SwitchState(eIdle);
 								OnZoomIn	();
 							}
@@ -1982,7 +1985,7 @@ bool CWeapon::Action(s32 cmd, u32 flags)
 					{
 						if(!IsZoomed() && !IsPending())
 						{
-							if(GetState()!=eIdle)
+							if(GetState()!=eIdle && !(m_bIsBoltRiffle && GetState() == eFire))
 								SwitchState(eIdle);
 							OnZoomIn	();
 						}

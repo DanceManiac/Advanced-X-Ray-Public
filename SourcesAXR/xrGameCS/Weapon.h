@@ -440,6 +440,9 @@ protected:
 	float					m_fWeaponOverheating, m_fWeaponOverheatingInc, m_fWeaponOverheatingDec;
 	float					m_fOverheatingSubRpm, m_fOverheatingMisfire, m_fOverheatingCond;
 
+	bool					m_bIsRevolver;
+	bool					m_bIsBoltRiffle;
+
 public:
 	//загружаемые параметры
 	Fvector					vLoadedFirePoint;

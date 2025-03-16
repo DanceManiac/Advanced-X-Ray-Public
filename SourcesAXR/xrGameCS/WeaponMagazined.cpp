@@ -62,9 +62,6 @@ CWeaponMagazined::CWeaponMagazined(ESoundTypes eSoundType) : CWeapon()
 	bHasBulletsToHide			= false;
 
 	m_sSndShotCurrent			= nullptr;
-
-	m_bIsRevolver				= false;
-	m_bIsBoltRiffle				= false;
 }
 
 CWeaponMagazined::~CWeaponMagazined()
